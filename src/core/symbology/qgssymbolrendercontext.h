@@ -35,7 +35,7 @@ class CORE_EXPORT QgsSymbolRenderContext
 {
   public:
 
-    //TODO QGIS 4.0 - remove mapUnitScale and renderunit
+    //TODO QGIS 5.0 - remove mapUnitScale and renderunit
 
     /**
      * Constructor for QgsSymbolRenderContext
@@ -74,23 +74,23 @@ class CORE_EXPORT QgsSymbolRenderContext
 
     /**
      * Returns the output unit for the context.
-     * \deprecated QGIS 3.40. No longer used and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. No longer used and will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED Qgis::RenderUnit outputUnit() const SIP_DEPRECATED { return mOutputUnit; }
 
     /**
      * Sets the output unit for the context.
-     * \deprecated QGIS 3.40. No longer used and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. No longer used and will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED void setOutputUnit( Qgis::RenderUnit u ) SIP_DEPRECATED { mOutputUnit = u; }
 
     /**
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED QgsMapUnitScale mapUnitScale() const SIP_DEPRECATED { return mMapUnitScale; }
 
     /**
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED void setMapUnitScale( const QgsMapUnitScale &scale ) SIP_DEPRECATED { mMapUnitScale = scale; }
 
@@ -257,8 +257,8 @@ class CORE_EXPORT QgsSymbolRenderContext
     Qgis::SymbolRenderHints mRenderHints;
     const QgsFeature *mFeature; //current feature
     QgsFields mFields;
-    int mGeometryPartCount;
-    int mGeometryPartNum;
+    int mGeometryPartCount = 0;
+    int mGeometryPartNum = 0;
     Qgis::GeometryType mOriginalGeometryType = Qgis::GeometryType::Unknown;
     std::unique_ptr< QgsLegendPatchShape > mPatchShape;
 };

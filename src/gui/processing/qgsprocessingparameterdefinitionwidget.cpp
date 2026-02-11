@@ -31,11 +31,14 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QString>
 #include <QTabWidget>
 #include <QTextEdit>
 #include <QVBoxLayout>
 
 #include "moc_qgsprocessingparameterdefinitionwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProcessingAbstractParameterDefinitionWidget::QgsProcessingAbstractParameterDefinitionWidget( QgsProcessingContext &, const QgsProcessingParameterWidgetContext &context, const QgsProcessingParameterDefinition *, const QgsProcessingAlgorithm *, QWidget *parent )
   : QWidget( parent )
@@ -190,7 +193,7 @@ QgsProcessingParameterDefinitionDialog::QgsProcessingParameterDefinitionDialog( 
   setLayout( vLayout );
   setWindowTitle( definition ? tr( "%1 Parameter Definition" ).arg( definition->description() ) : QgsApplication::processingRegistry()->parameterType( type ) ? tr( "%1 Parameter Definition" ).arg( QgsApplication::processingRegistry()->parameterType( type )->name() )
                                                                                                                                                               : tr( "Parameter Definition" ) );
-  setObjectName( QStringLiteral( "QgsProcessingParameterDefinitionDialog" ) );
+  setObjectName( u"QgsProcessingParameterDefinitionDialog"_s );
   QgsGui::enableAutoGeometryRestore( this );
 }
 

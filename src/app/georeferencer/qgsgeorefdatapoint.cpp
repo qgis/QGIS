@@ -27,7 +27,6 @@ QgsGeorefDataPoint::QgsGeorefDataPoint( QgsMapCanvas *srcCanvas, QgsMapCanvas *d
   : mSrcCanvas( srcCanvas )
   , mDstCanvas( dstCanvas )
   , mGcpPoint( sourceCoordinates, destinationPoint, destinationPointCrs, enabled )
-  , mId( -1 )
 {
   mGCPSourceItem = new QgsGCPCanvasItem( srcCanvas, this, true );
   mGCPDestinationItem = new QgsGCPCanvasItem( dstCanvas, this, false );

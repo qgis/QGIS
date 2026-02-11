@@ -59,7 +59,6 @@ class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsMapCoordsDialog.
      * \param qgisCanvas

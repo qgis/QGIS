@@ -141,6 +141,13 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
 #ifndef SIP_RUN
 
     /**
+     * Returns the color of the link at the specified \a index on the specified \a edge.
+     *
+     * \since QGIS 4.0
+     */
+    virtual QColor linkColor( Qt::Edge edge, int index ) const;
+
+    /**
      * Shows a preview of setting a new \a rect for the item.
      */
     QRectF previewItemRectChange( QRectF rect );
@@ -313,7 +320,6 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     virtual void editComponent() {}
 
   protected:
-
     /**
      * Truncates a \a text string so that it fits nicely within the item's width,
      * accounting for margins and interactive buttons.
@@ -364,6 +370,13 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * Updates the item's button positions, based on the current item rect.
      */
     void updateButtonPositions();
+
+    /**
+     * The fallback color if the parameter or output does not have a specific color.
+     *
+     * \since QGIS 4.0
+     */
+    SIP_SKIP static constexpr QColor FALLBACK_COLOR = QColor( 128, 128, 128 ); /* mid gray */
 
   private:
     QSizeF itemSize() const;
@@ -416,7 +429,6 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsModelParameterGraphicItem for the specified \a parameter, with the specified \a parent item.
      *
@@ -429,6 +441,8 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
 
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
     bool canDeleteComponent() override;
+
+    QColor linkColor( Qt::Edge edge, int index ) const override;
 
   protected:
     QColor fillColor( State state ) const override;
@@ -459,7 +473,6 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsModelChildAlgorithmGraphicItem for the specified \a child, with the specified \a parent item.
      *
@@ -476,6 +489,14 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
      * Sets the \a results obtained for this child algorithm for the last model execution through the dialog.
      */
     void setResults( const QgsProcessingModelChildAlgorithmResult &results );
+
+    /**
+     * Returns the \a results for this child algorithm for the last model execution through the dialog.
+     *
+     * \since QGIS 4.0
+     */
+    QgsProcessingModelChildAlgorithmResult results() { return mResults; };
+
 
   signals:
 
@@ -545,7 +566,6 @@ class GUI_EXPORT QgsModelOutputGraphicItem : public QgsModelComponentGraphicItem
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsModelOutputGraphicItem for the specified \a output, with the specified \a parent item.
      *
@@ -585,7 +605,6 @@ class GUI_EXPORT QgsModelCommentGraphicItem : public QgsModelComponentGraphicIte
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsModelCommentGraphicItem for the specified \a comment, with the specified \a parent item.
      *
@@ -635,7 +654,6 @@ class GUI_EXPORT QgsModelGroupBoxGraphicItem : public QgsModelComponentGraphicIt
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsModelGroupBoxGraphicItem for the specified group \a box, with the specified \a parent item.
      *

@@ -31,7 +31,6 @@
 class ANALYSIS_EXPORT QgsGeometryGapCheckError : public QgsGeometryCheckError
 {
   public:
-
     /**
      * Create a new gap check error produced by \a check on the layer \a layerId.
      * The \a geometry of the gap needs to be in map coordinates.

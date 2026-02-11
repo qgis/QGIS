@@ -18,17 +18,15 @@
 #include "qgsfeedback.h"
 
 #include <QDirIterator>
+#include <QString>
 #include <QUrl>
+#include <QtMultimedia/QMediaCaptureSession>
+#include <QtMultimedia/QVideoFrame>
+#include <QtMultimedia/QVideoFrameInput>
 
 #include "moc_qgsvideoexporter.cpp"
 
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
-#include <QtMultimedia/QMediaCaptureSession>
-#include <QtMultimedia/QVideoFrameInput>
-#include <QtMultimedia/QVideoFrame>
-#else
-#include "qgsexception.h"
-#endif
+using namespace Qt::StringLiterals;
 
 bool QgsVideoExporter::isAvailable()
 {
@@ -85,7 +83,6 @@ QStringList QgsVideoExporter::inputFiles() const
   return mInputFiles;
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
 void QgsVideoExporter::setFileFormat( QMediaFormat::FileFormat format )
 {
   mFormat = format;
@@ -110,7 +107,6 @@ QMediaRecorder::Error QgsVideoExporter::error() const
 {
   return mError;
 }
-#endif
 
 QString QgsVideoExporter::errorString() const
 {
@@ -120,7 +116,7 @@ QString QgsVideoExporter::errorString() const
 void QgsVideoExporter::writeVideo()
 {
 #if QT_VERSION < QT_VERSION_CHECK( 6, 8, 0 )
-  throw QgsNotSupportedException( QStringLiteral( "Writing video is not supported on this system" ) );
+  throw QgsNotSupportedException( u"Writing video is not supported on this system"_s );
 #else
   mSession = std::make_unique< QMediaCaptureSession >();
   mRecorder = std::make_unique< QMediaRecorder >();
@@ -196,7 +192,6 @@ void QgsVideoExporter::feedFrames()
 #endif
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
 void QgsVideoExporter::checkStatus( QMediaRecorder::RecorderState state )
 {
   switch ( state )
@@ -221,4 +216,3 @@ void QgsVideoExporter::handleError( QMediaRecorder::Error error, const QString &
   mError = error;
   mErrorString = errorString;
 }
-#endif

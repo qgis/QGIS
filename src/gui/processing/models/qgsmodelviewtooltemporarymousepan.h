@@ -32,7 +32,6 @@ class GUI_EXPORT QgsModelViewToolTemporaryMousePan : public QgsModelViewTool
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsModelViewToolTemporaryMousePan.
      */

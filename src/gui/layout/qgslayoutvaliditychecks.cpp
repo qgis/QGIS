@@ -16,17 +16,18 @@
 
 #include "qgslayoutvaliditychecks.h"
 
+#include "qgslayout.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitempicture.h"
 #include "qgslayoutitemscalebar.h"
+#include "qgslayoutmultiframe.h"
+#include "qgssettings.h"
 #include "qgsvaliditycheckcontext.h"
 
-#ifndef WITH_QTWEBKIT
-#include "qgslayoutmultiframe.h"
-#endif
-#include "qgslayout.h"
-#include "qgssettings.h"
+#include <QString>
 #include <QUrl>
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsLayoutScaleBarValidityCheck
@@ -39,7 +40,7 @@ QgsLayoutScaleBarValidityCheck *QgsLayoutScaleBarValidityCheck::create() const
 
 QString QgsLayoutScaleBarValidityCheck::id() const
 {
-  return QStringLiteral( "layout_scalebar_check" );
+  return u"layout_scalebar_check"_s;
 }
 
 int QgsLayoutScaleBarValidityCheck::checkType() const
@@ -91,7 +92,7 @@ QgsLayoutNorthArrowValidityCheck *QgsLayoutNorthArrowValidityCheck::create() con
 
 QString QgsLayoutNorthArrowValidityCheck::id() const
 {
-  return QStringLiteral( "layout_northarrow_check" );
+  return u"layout_northarrow_check"_s;
 }
 
 int QgsLayoutNorthArrowValidityCheck::checkType() const
@@ -109,7 +110,7 @@ bool QgsLayoutNorthArrowValidityCheck::prepareCheck( const QgsValidityCheckConte
     return false;
 
   QgsSettings settings;
-  const QString defaultPath = settings.value( QStringLiteral( "LayoutDesigner/defaultNorthArrow" ), QStringLiteral( ":/images/north_arrows/layout_default_north_arrow.svg" ), QgsSettings::Gui ).toString();
+  const QString defaultPath = settings.value( u"LayoutDesigner/defaultNorthArrow"_s, u":/images/north_arrows/layout_default_north_arrow.svg"_s, QgsSettings::Gui ).toString();
 
   QList<QgsLayoutItemPicture *> pictureItems;
   layoutContext->layout->layoutItems( pictureItems );
@@ -148,7 +149,7 @@ QgsLayoutOverviewValidityCheck *QgsLayoutOverviewValidityCheck::create() const
 
 QString QgsLayoutOverviewValidityCheck::id() const
 {
-  return QStringLiteral( "layout_overview_check" );
+  return u"layout_overview_check"_s;
 }
 
 int QgsLayoutOverviewValidityCheck::checkType() const
@@ -204,7 +205,7 @@ QgsLayoutPictureSourceValidityCheck *QgsLayoutPictureSourceValidityCheck::create
 
 QString QgsLayoutPictureSourceValidityCheck::id() const
 {
-  return QStringLiteral( "layout_picture_source_check" );
+  return u"layout_picture_source_check"_s;
 }
 
 int QgsLayoutPictureSourceValidityCheck::checkType() const
@@ -248,7 +249,6 @@ QList<QgsValidityCheckResult> QgsLayoutPictureSourceValidityCheck::runCheck( con
   return mResults;
 }
 
-#ifndef WITH_QTWEBKIT
 //
 // QgsLayoutHtmlItemValidityCheck
 //
@@ -260,7 +260,7 @@ QgsLayoutHtmlItemValidityCheck *QgsLayoutHtmlItemValidityCheck::create() const
 
 QString QgsLayoutHtmlItemValidityCheck::id() const
 {
-  return QStringLiteral( "layout_html_item_check" );
+  return u"layout_html_item_check"_s;
 }
 
 int QgsLayoutHtmlItemValidityCheck::checkType() const
@@ -298,4 +298,3 @@ QList<QgsValidityCheckResult> QgsLayoutHtmlItemValidityCheck::runCheck( const Qg
 {
   return mResults;
 }
-#endif

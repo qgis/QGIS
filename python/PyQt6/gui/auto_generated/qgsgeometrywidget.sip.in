@@ -27,7 +27,6 @@ as changing the stored geometry value).
 #include "qgsgeometrywidget.h"
 %End
   public:
-
     explicit QgsGeometryWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsGeometryWidget, with the specified ``parent`` widget.

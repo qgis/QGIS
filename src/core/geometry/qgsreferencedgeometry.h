@@ -24,6 +24,10 @@
 #include "qgsgeometry.h"
 #include "qgsrectangle.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \class QgsReferencedGeometryBase
  * \ingroup core
@@ -94,7 +98,7 @@ class CORE_EXPORT QgsReferencedRectangle : public QgsRectangle, public QgsRefere
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsReferencedRectangle: %1 (%2)>" ).arg( sipCpp->asWktCoordinates(), sipCpp->crs().authid() );
+    QString str = u"<QgsReferencedRectangle: %1 (%2)>"_s.arg( sipCpp->asWktCoordinates(), sipCpp->crs().authid() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -131,7 +135,7 @@ class CORE_EXPORT QgsReferencedPointXY : public QgsPointXY, public QgsReferenced
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsReferencedPointXY: %1 (%2)>" ).arg( sipCpp->asWkt(), sipCpp->crs().authid() );
+    QString str = u"<QgsReferencedPointXY: %1 (%2)>"_s.arg( sipCpp->asWkt(), sipCpp->crs().authid() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -180,7 +184,7 @@ class CORE_EXPORT QgsReferencedGeometry : public QgsGeometry, public QgsReferenc
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsReferencedGeometry: %1 (%2)>" ).arg( sipCpp->asWkt(), sipCpp->crs().authid() );
+    QString str = u"<QgsReferencedGeometry: %1 (%2)>"_s.arg( sipCpp->asWkt(), sipCpp->crs().authid() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

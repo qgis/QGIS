@@ -36,8 +36,11 @@
 #include <QColorDialog>
 #include <QDialogButtonBox>
 #include <QFontDatabase>
+#include <QString>
 
 #include "moc_qgslabelpropertydialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QString &providerId, QgsFeatureId featureId, const QFont &labelFont, const QString &labelText, bool isPinned, const QgsPalLayerSettings &layerSettings, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
@@ -49,7 +52,7 @@ QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QS
   QgsGui::enableAutoGeometryRestore( this );
 
   // set defaults to layer defaults
-  mLabelAllPartsCheckBox->setChecked( layerSettings.labelPerPart );
+  mLabelAllPartsCheckBox->setChecked( layerSettings.placementSettings().multiPartBehavior() == Qgis::MultiPartLabelingBehavior::LabelEveryPartWithEntireLabel );
 
   connect( buttonBox, &QDialogButtonBox::clicked, this, &QgsLabelPropertyDialog::buttonBox_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsLabelPropertyDialog::showHelp );
@@ -202,19 +205,19 @@ void QgsLabelPropertyDialog::init( const QString &layerId, const QString &provid
   switch ( layerSettings.multilineAlign )
   {
     case Qgis::LabelMultiLineAlignment::Left:
-      defaultMultilineAlign = QStringLiteral( "left" );
+      defaultMultilineAlign = u"left"_s;
       break;
     case Qgis::LabelMultiLineAlignment::Center:
-      defaultMultilineAlign = QStringLiteral( "center" );
+      defaultMultilineAlign = u"center"_s;
       break;
     case Qgis::LabelMultiLineAlignment::Right:
-      defaultMultilineAlign = QStringLiteral( "right" );
+      defaultMultilineAlign = u"right"_s;
       break;
     case Qgis::LabelMultiLineAlignment::Justify:
-      defaultMultilineAlign = QStringLiteral( "justify" );
+      defaultMultilineAlign = u"justify"_s;
       break;
     case Qgis::LabelMultiLineAlignment::FollowPlacement:
-      defaultMultilineAlign = QStringLiteral( "follow label placement" );
+      defaultMultilineAlign = u"follow label placement"_s;
       break;
   }
   mMultiLineAlignComboBox->setItemText( mMultiLineAlignComboBox->findData( "" ), tr( "Layer default (%1)" ).arg( defaultMultilineAlign ) );
@@ -332,7 +335,7 @@ int QgsLabelPropertyDialog::dataDefinedColumnIndex( QgsPalLayerSettings::Propert
           const QgsExpressionNodeFunction *functionNode = qgis::down_cast<const QgsExpressionNodeFunction *>( node );
           if ( const QgsExpressionFunction *function = QgsExpression::QgsExpression::Functions()[functionNode->fnIndex()] )
           {
-            if ( function->name() == QLatin1String( "coalesce" ) )
+            if ( function->name() == "coalesce"_L1 )
             {
               if ( const QgsExpressionNode *firstArg = functionNode->args()->list().value( 0 ) )
               {
@@ -886,5 +889,5 @@ void QgsLabelPropertyDialog::enableWidgetsForPinnedLabels()
 
 void QgsLabelPropertyDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#the-label-toolbar" ) );
+  QgsHelp::openHelp( u"working_with_vector/vector_properties.html#the-label-toolbar"_s );
 }

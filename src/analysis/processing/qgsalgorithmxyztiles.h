@@ -50,8 +50,6 @@ struct Tile
 struct MetaTile
 {
     MetaTile()
-      : rows( 0 )
-      , cols( 0 )
     {}
 
     void addTile( const int row, const int col, Tile tileToAdd )
@@ -75,8 +73,8 @@ struct MetaTile
     }
 
     QMap<QPair<int, int>, Tile> tiles;
-    int rows;
-    int cols;
+    int rows = 0;
+    int cols = 0;
 };
 QList<MetaTile> getMetatiles( const QgsRectangle extent, const int zoom, const int tileSize = 4 );
 
@@ -92,7 +90,6 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
     Qgis::ProcessingAlgorithmFlags flags() const override;
 
   protected:
-
     /**
      * Creates common parameters used in all algorithms
      */

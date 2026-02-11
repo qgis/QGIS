@@ -27,7 +27,11 @@
 #include "qgsrubberband3d.h"
 #include "qgswindow3dengine.h"
 
+#include <QString>
+
 #include "moc_qgs3dmaptoolpointcloudchangeattributepaintbrush.cpp"
+
+using namespace Qt::StringLiterals;
 
 class QgsPointCloudAttribute;
 Qgs3DMapToolPointCloudChangeAttributePaintbrush::Qgs3DMapToolPointCloudChangeAttributePaintbrush( Qgs3DMapCanvas *canvas )
@@ -145,7 +149,7 @@ void Qgs3DMapToolPointCloudChangeAttributePaintbrush::mouseWheelEvent( QWheelEve
   // Change the selection circle size. Moving the wheel forward (away) from the user makes
   // the circle smaller
   const QgsSettings settings;
-  const bool reverseZoom = settings.value( QStringLiteral( "qgis/reverse_wheel_zoom" ), false ).toBool();
+  const bool reverseZoom = settings.value( u"qgis/reverse_wheel_zoom"_s, false ).toBool();
   const bool shrink = reverseZoom ? event->angleDelta().y() > 0 : event->angleDelta().y() < 0;
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps

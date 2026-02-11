@@ -21,7 +21,6 @@ the position of color stops along the gradient.
 #include "qgsgradientstopeditor.h"
 %End
   public:
-
     QgsGradientStopEditor( QWidget *parent /TransferThis/ = 0, QgsGradientColorRamp *ramp = 0 );
 %Docstring
 Constructor for QgsGradientStopEditor.

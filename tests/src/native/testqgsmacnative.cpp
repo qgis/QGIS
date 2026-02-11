@@ -18,6 +18,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 //header for class being tested
 #include "qgsmacnative.h"
 
@@ -32,7 +34,7 @@ class TestQgsMacNative : public QObject
 void TestQgsMacNative::testGetRunningAppName()
 {
   QgsMacNative *macNative = new QgsMacNative();
-  QCOMPARE( QStringLiteral( "qgis_macnativetest" ), QString( macNative->currentAppLocalizedName() ) );
+  QCOMPARE( u"qgis_macnativetest"_s, QString( macNative->currentAppLocalizedName() ) );
   delete macNative;
 }
 

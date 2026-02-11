@@ -22,6 +22,10 @@
 #include "qgsmapunitscale.h"
 #include "qgsvectorlayerref.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsSpatialIndex;
 
 
@@ -204,7 +208,7 @@ class CORE_EXPORT QgsLabelingEngineRuleMinimumDistanceLabelToFeature : public Qg
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    const QString str = QStringLiteral( "<QgsLabelingEngineRuleMinimumDistanceLabelToFeature: %1>" ).arg( sipCpp->name() );
+    const QString str = u"<QgsLabelingEngineRuleMinimumDistanceLabelToFeature: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -235,7 +239,7 @@ class CORE_EXPORT QgsLabelingEngineRuleMaximumDistanceLabelToFeature : public Qg
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    const QString str = QStringLiteral( "<QgsLabelingEngineRuleMaximumDistanceLabelToFeature: %1>" ).arg( sipCpp->name() );
+    const QString str = u"<QgsLabelingEngineRuleMaximumDistanceLabelToFeature: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -274,7 +278,7 @@ class CORE_EXPORT QgsLabelingEngineRuleMinimumDistanceLabelToLabel : public QgsA
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    const QString str = QStringLiteral( "<QgsLabelingEngineRuleMinimumDistanceLabelToLabel: %1>" ).arg( sipCpp->name() );
+    const QString str = u"<QgsLabelingEngineRuleMinimumDistanceLabelToLabel: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -402,7 +406,7 @@ class CORE_EXPORT QgsLabelingEngineRuleAvoidLabelOverlapWithFeature : public Qgs
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    const QString str = QStringLiteral( "<QgsLabelingEngineRuleAvoidLabelOverlapWithFeature: %1>" ).arg( sipCpp->name() );
+    const QString str = u"<QgsLabelingEngineRuleAvoidLabelOverlapWithFeature: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

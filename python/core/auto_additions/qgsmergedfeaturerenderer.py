@@ -6,3 +6,8 @@ try:
     QgsMergedFeatureRenderer.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass
+try:
+    QgsMergedFeatureRenderer.FeatureDecoration.__doc__ = """Class used to represent features that must be rendered
+with decorations (selection, vertex markers)"""
+except (NameError, AttributeError):
+    pass

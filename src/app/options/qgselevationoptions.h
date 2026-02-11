@@ -31,7 +31,6 @@ class QgsElevationOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsEl
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsElevationOptionsWidget with the specified \a parent widget.
      */

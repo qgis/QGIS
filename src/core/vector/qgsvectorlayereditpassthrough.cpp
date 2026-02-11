@@ -23,7 +23,6 @@
 #include "moc_qgsvectorlayereditpassthrough.cpp"
 
 QgsVectorLayerEditPassthrough::QgsVectorLayerEditPassthrough( QgsVectorLayer *layer )
-  : mModified( false )
 {
   L = layer;
 }

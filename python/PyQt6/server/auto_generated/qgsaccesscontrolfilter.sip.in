@@ -37,7 +37,6 @@ Security can define any (or none) of the following method:
 #include "qgsaccesscontrolfilter.h"
 %End
   public:
-
     QgsAccessControlFilter( const QgsServerInterface *serverInterface );
 %Docstring
 Constructor :py:class:`QgsServerInterface` passed to plugins

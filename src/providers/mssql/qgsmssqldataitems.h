@@ -68,6 +68,8 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
     QString connectionUri() const { return mConnectionUri; }
     bool allowGeometrylessTables() const { return mAllowGeometrylessTables; }
 
+    using QgsDataCollectionItem::refresh;
+
   signals:
     void addGeometryColumn( const QgsMssqlLayerProperty & );
 
@@ -83,15 +85,16 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
     void setAsPopulated();
 
   private:
+    void setChildAncestorDepthRecursive( QgsDataItem *child, int depth );
     QString mConnectionUri;
     QString mService;
     QString mHost;
     QString mDatabase;
     QString mUsername;
     QString mPassword;
-    bool mUseGeometryColumns;
-    bool mUseEstimatedMetadata;
-    bool mAllowGeometrylessTables;
+    bool mUseGeometryColumns = false;
+    bool mUseEstimatedMetadata = false;
+    bool mAllowGeometrylessTables = true;
     QgsMssqlGeomColumnTypeThread *mColumnTypeThread = nullptr;
     QVariantMap mSchemaSettings;
     bool mSchemasFilteringEnabled = false;
@@ -109,6 +112,8 @@ class QgsMssqlSchemaItem : public QgsDatabaseSchemaItem
     QVector<QgsDataItem *> createChildren() override;
 
     QgsMssqlLayerItem *addLayer( const QgsMssqlLayerProperty &layerProperty, bool refresh );
+
+    using QgsDatabaseSchemaItem::refresh;
     void refresh() override; // do not refresh directly (call parent)
     void addLayers( QgsDataItem *newLayers );
 

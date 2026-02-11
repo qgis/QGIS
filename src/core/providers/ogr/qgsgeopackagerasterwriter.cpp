@@ -25,6 +25,10 @@
 #include "qgscplerrorhandler_p.h"
 #include "qgsogrutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsGeoPackageRasterWriter::QgsGeoPackageRasterWriter( const QgsMimeDataUtils::Uri &sourceUri, const QString &outputUrl ):
   mSourceUri( sourceUri ),
   mOutputUrl( outputUrl )
@@ -34,7 +38,7 @@ QgsGeoPackageRasterWriter::QgsGeoPackageRasterWriter( const QgsMimeDataUtils::Ur
 
 QgsGeoPackageRasterWriter::WriterError QgsGeoPackageRasterWriter::writeRaster( QgsFeedback *feedback, QString *errorMessage )
 {
-  const char *args[] = { "-of", "gpkg", "-co", QStringLiteral( "RASTER_TABLE=%1" ).arg( mSourceUri.name ).toUtf8().constData(), "-co", "APPEND_SUBDATASET=YES", nullptr };
+  const char *args[] = { "-of", "gpkg", "-co", u"RASTER_TABLE=%1"_s.arg( mSourceUri.name ).toUtf8().constData(), "-co", "APPEND_SUBDATASET=YES", nullptr };
   // This sends OGR/GDAL errors to the message log
   const QgsCPLErrorHandler handler( QObject::tr( "GDAL" ) );
   GDALTranslateOptions *psOptions = GDALTranslateOptionsNew( ( char ** )args, nullptr );

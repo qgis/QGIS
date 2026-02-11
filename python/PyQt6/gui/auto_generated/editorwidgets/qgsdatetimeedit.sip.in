@@ -30,7 +30,6 @@ A QDateTimeEdit with the capability of setting/reading null date/times.
 #include "qgsdatetimeedit.h"
 %End
   public:
-
     explicit QgsDateTimeEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsDateTimeEdit. The current date and time is used by
@@ -206,7 +205,6 @@ date/times.
 #include "qgsdatetimeedit.h"
 %End
   public:
-
     explicit QgsTimeEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsTimeEdit. The current time is used by default. The
@@ -258,7 +256,6 @@ A QDateEdit widget with the capability of setting/reading null dates.
 #include "qgsdatetimeedit.h"
 %End
   public:
-
     explicit QgsDateEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsDateEdit. The current time is used by default. The

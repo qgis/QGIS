@@ -22,7 +22,10 @@
 #include "qgsstaccatalog.h"
 #include "qgsstacitem.h"
 
+#include <QString>
 #include <QUrl>
+
+using namespace Qt::StringLiterals;
 
 class QgsStacController;
 class QgsStacCollection;
@@ -44,9 +47,10 @@ class CORE_EXPORT QgsStacAssetItem : public QgsDataItem
     bool hasDragEnabled() const override;
     QgsMimeDataUtils::UriList mimeUris() const override;
     bool equal( const QgsDataItem *other ) override;
-    QVariant sortKey() const override { return QStringLiteral( "4 %1" ).arg( mName ); }
+    QVariant sortKey() const override { return u"4 %1"_s.arg( mName ); }
     void updateToolTip();
     const QgsStacAsset *stacAsset() const { return mStacAsset; }
+    QgsStacController *stacController() const;
 
   private:
     const QgsStacAsset *mStacAsset;
@@ -64,7 +68,7 @@ class CORE_EXPORT QgsStacFetchMoreItem : public QgsDataItem
     QgsStacFetchMoreItem( QgsDataItem *parent, const QString &name );
 
     bool handleDoubleClick() override;
-    QVariant sortKey() const override { return QStringLiteral( "3" ); }
+    QVariant sortKey() const override { return u"3"_s; }
 
 };
 
@@ -82,7 +86,7 @@ class CORE_EXPORT QgsStacItemItem : public QgsDataItem
     bool hasDragEnabled() const override;
     QgsMimeDataUtils::UriList mimeUris() const override;
     bool equal( const QgsDataItem *other ) override;
-    QVariant sortKey() const override { return QStringLiteral( "2 %1" ).arg( mName ); }
+    QVariant sortKey() const override { return u"2 %1"_s.arg( mName ); }
 
     void updateToolTip();
     QgsStacController *stacController() const;
@@ -114,7 +118,7 @@ class CORE_EXPORT QgsStacCatalogItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
-    QVariant sortKey() const override { return QStringLiteral( "1 %1" ).arg( mName ); }
+    QVariant sortKey() const override { return u"1 %1"_s.arg( mName ); }
 
     void updateToolTip();
 

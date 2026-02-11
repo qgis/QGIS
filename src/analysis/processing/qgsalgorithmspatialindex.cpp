@@ -20,11 +20,15 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsSpatialIndexAlgorithm::name() const
 {
-  return QStringLiteral( "createspatialindex" );
+  return u"createspatialindex"_s;
 }
 
 QString QgsSpatialIndexAlgorithm::displayName() const
@@ -44,7 +48,7 @@ QString QgsSpatialIndexAlgorithm::group() const
 
 QString QgsSpatialIndexAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeneral" );
+  return u"vectorgeneral"_s;
 }
 
 Qgis::ProcessingAlgorithmFlags QgsSpatialIndexAlgorithm::flags() const
@@ -68,17 +72,17 @@ QgsSpatialIndexAlgorithm *QgsSpatialIndexAlgorithm::createInstance() const
 
 void QgsSpatialIndexAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterVectorLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
 
-  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Indexed layer" ) ) );
+  addOutput( new QgsProcessingOutputVectorLayer( u"OUTPUT"_s, QObject::tr( "Indexed layer" ) ) );
 }
 
 QVariantMap QgsSpatialIndexAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsVectorLayer *layer = parameterAsVectorLayer( parameters, QStringLiteral( "INPUT" ), context );
+  QgsVectorLayer *layer = parameterAsVectorLayer( parameters, u"INPUT"_s, context );
 
   if ( !layer )
-    throw QgsProcessingException( QObject::tr( "Could not load source layer for %1." ).arg( QLatin1String( "INPUT" ) ) );
+    throw QgsProcessingException( QObject::tr( "Could not load source layer for %1." ).arg( "INPUT"_L1 ) );
 
   QgsVectorDataProvider *provider = layer->dataProvider();
 
@@ -95,7 +99,7 @@ QVariantMap QgsSpatialIndexAlgorithm::processAlgorithm( const QVariantMap &param
   }
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), layer->id() );
+  outputs.insert( u"OUTPUT"_s, layer->id() );
   return outputs;
 }
 

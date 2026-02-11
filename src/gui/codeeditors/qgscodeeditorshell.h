@@ -100,7 +100,6 @@ class GUI_EXPORT QgsCodeEditorShell : public QgsCodeEditor
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsCodeEditorShell.
      *

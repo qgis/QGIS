@@ -25,6 +25,8 @@
 #include <QColor>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class QgsSettingsTreeNode;
 
 
@@ -93,7 +95,7 @@ class CORE_EXPORT QgsSettingsEntryBase
                           const QString &description = QString(),
                           Qgis::SettingsOptions options = Qgis::SettingsOptions() )
       : mName( key )
-      , mKey( QStringLiteral( "%1/%2" ).arg( section, key ) )
+      , mKey( u"%1/%2"_s.arg( section, key ) )
       , mDefaultValue( defaultValue )
       , mDescription( description )
       , mOptions( options )

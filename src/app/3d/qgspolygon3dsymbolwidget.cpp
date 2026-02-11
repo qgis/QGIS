@@ -20,7 +20,11 @@
 #include "qgsphongmaterialsettings.h"
 #include "qgspolygon3dsymbol.h"
 
+#include <QString>
+
 #include "moc_qgspolygon3dsymbolwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
   : Qgs3DSymbolWidget( parent )
@@ -122,7 +126,7 @@ QgsAbstract3DSymbol *QgsPolygon3DSymbolWidget::symbol()
 
 QString QgsPolygon3DSymbolWidget::symbolType() const
 {
-  return QStringLiteral( "polygon" );
+  return u"polygon"_s;
 }
 
 void QgsPolygon3DSymbolWidget::updateGuiState()

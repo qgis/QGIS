@@ -26,6 +26,7 @@ set(QGIS_APP_SRCS
   qgsbookmarkeditordialog.cpp
   qgsclipboard.cpp
   qgscustomization.cpp
+  qgscustomizationdialog.cpp
   qgsdatumtransformtablewidget.cpp
   qgscontributorsmapcanvas.cpp
   qgsdevtoolspanelwidget.cpp
@@ -60,7 +61,6 @@ set(QGIS_APP_SRCS
   qgslayertreeviewofflineindicator.cpp
   qgsmapcanvasdockwidget.cpp
   qgsmapsavedialog.cpp
-  qgsprojectlistitemdelegate.cpp
   qgspuzzlewidget.cpp
   qgsversionmigration.cpp
   qgsrasterattributetableapputils.cpp
@@ -75,7 +75,7 @@ set(QGIS_APP_SRCS
   qgsrecentprojectsitemsmodel.cpp
   qgsrecentprojectsmenueventfilter.cpp
   qgsvectorlayerdigitizingproperties.cpp
-  qgswelcomepage.cpp
+  qgswelcomescreen.cpp
 
   qgsmaptooladdfeature.cpp
   qgsmaptooladdpart.cpp
@@ -93,6 +93,7 @@ set(QGIS_APP_SRCS
   qgsmaptoolmeasureangle.cpp
   qgsmaptoolmeasurebearing.cpp
   qgsmaptoolmovefeature.cpp
+  qgsmaptoolfeaturearray.cpp
   qgsmaptooloffsetcurve.cpp
   qgsmaptooloffsetpointsymbol.cpp
   qgsmaptoolpointsymbol.cpp
@@ -307,6 +308,17 @@ set(QGIS_APP_SRCS
   vector/qgsvectorelevationpropertieswidget.cpp
 )
 
+set(APP_DWG_COMPILE_OPTIONS)
+if(HAVE_WFLAG_SUGGEST_OVERRIDE)
+  list(APPEND APP_DWG_COMPILE_OPTIONS "-Wno-suggest-override")
+endif()
+if(HAVE_WFLAG_SUGGEST_DESTRUCTOR_OVERRIDE)
+  list(APPEND APP_DWG_COMPILE_OPTIONS "-Wno-suggest-destructor-override")
+endif()
+if (APP_DWG_COMPILE_OPTIONS)
+  set_source_files_properties(dwg/qgsdwgimportdialog.cpp dwg/qgsdwgimporter.cpp PROPERTIES COMPILE_OPTIONS "${APP_DWG_COMPILE_OPTIONS}")
+endif()
+
 if (WITH_SPATIALITE)
   set(QGIS_APP_SRCS
     ${QGIS_APP_SRCS}
@@ -466,7 +478,7 @@ if (ANDROID)
 else()
   add_executable(qgis WIN32 ${QGIS_APPMAIN_SRCS})
 
-  if(WIN32 AND BUILD_WITH_QT6)
+  if(WIN32)
     qt_disable_unicode_defines(qgis)
   endif()
 
@@ -492,6 +504,29 @@ if(QGISPOSTFIX)
      LIBRARY_OUTPUT_NAME ${QGIS_APP_NAME}${QGISPOSTFIX}
   )
 endif()
+
+qt_add_qml_module(qgis_app
+    URI org.qgis.app
+    VERSION 1.0
+    QML_FILES
+        qml/WelcomeScreen.qml
+        qml/components/CustomScrollBar.qml
+        qml/components/NewsCard.qml
+        qml/components/ProjectCard.qml
+        qml/components/UpdateNotificationBar.qml
+        qml/components/FooterBar.qml
+    OUTPUT_DIRECTORY
+        ${CMAKE_CURRENT_BINARY_DIR}/qml/org/qgis/app
+    RESOURCE_PREFIX
+        /qt/qml/
+    RESOURCES
+        qml/images/basemap.jpg
+        qml/images/blank.jpg
+        qml/images/close.svg
+        qml/images/love.svg
+        qml/images/qgis.svg
+    NO_GENERATE_EXTRA_QMLDIRS
+)
 
 target_compile_definitions(qgis_app PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")
 target_compile_definitions(qgis_app PRIVATE "QGISPOSTFIX=\"${QGISPOSTFIX}\"")
@@ -520,6 +555,8 @@ target_include_directories(qgis_app PUBLIC
   ${CMAKE_SOURCE_DIR}/src/app/settings
   ${CMAKE_SOURCE_DIR}/src/app/tiledscene
   ${CMAKE_SOURCE_DIR}/src/app/vectortile
+  ${CMAKE_SOURCE_DIR}/src/app/qml
+  ${CMAKE_SOURCE_DIR}/src/app/qml/org/qgis/app
   ${CMAKE_SOURCE_DIR}/src/plugins
   ${CMAKE_SOURCE_DIR}/src/native
 
@@ -545,12 +582,12 @@ target_include_directories(qgis_app SYSTEM BEFORE PUBLIC
 add_dependencies(qgis_gui ui)
 
 target_link_libraries(qgis_app
+  PUBLIC
   ${QWT_LIBRARY}
+  ${QT_VERSION_BASE}::QuickControls2
   ${QT_VERSION_BASE}::Sql
   ${QT_VERSION_BASE}::UiTools
-  ${OPTIONAL_QTWEBKIT}
   #should only be needed for win
-  ${QT_QTMAIN_LIBRARY}
   ${QGIS_RC_LIBS}
   qgis_core
   qgis_gui
@@ -569,15 +606,15 @@ set_target_properties(qgis_app PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
 if (WITH_BINDINGS)
   add_definitions(-DWITH_BINDINGS)
-  target_link_libraries(qgis_app qgispython)
+  target_link_libraries(qgis_app PUBLIC qgispython)
 endif()
 
 if(ENABLE_MODELTEST)
-  target_link_libraries(qgis_app ${QT_VERSION_BASE}::Test)
+  target_link_libraries(qgis_app PUBLIC ${QT_VERSION_BASE}::Test)
 endif()
 
 if (WITH_3D)
-  target_link_libraries(qgis_app qgis_3d)
+  target_link_libraries(qgis_app PUBLIC qgis_3d)
 endif()
 
 GENERATE_EXPORT_HEADER(
@@ -595,7 +632,7 @@ if (NOT ANDROID)
 endif()
 
 if (APPLE)
-  target_link_libraries(qgis_app ${APP_SERVICES_LIBRARY})
+  target_link_libraries(qgis_app PUBLIC ${APP_SERVICES_LIBRARY})
 endif()
 
 if(MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -622,7 +659,7 @@ if(WIN32)
   add_definitions(-DQWT_DLL)
   add_definitions(-DQSCINTILLA_DLL)
   target_link_libraries(qgis dbghelp)
-  target_link_libraries(qgis_app dbghelp)
+  target_link_libraries(qgis_app PUBLIC dbghelp)
 endif()
 
 target_link_libraries(qgis qgis_native)
@@ -638,7 +675,7 @@ endif()
 
 target_include_directories(qgis_app PRIVATE ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal)
 if (WITH_PDAL)
-  target_link_libraries(qgis_app ${PDAL_LIBRARIES})
+  target_link_libraries(qgis_app PUBLIC ${PDAL_LIBRARIES})
 endif()
 
 if(MSVC)

@@ -20,9 +20,12 @@
 #include "qgssettingsentry.h"
 
 #include <QDialog>
+#include <QString>
 #include <QWidget>
 
 #include "moc_qgssettingseditorwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSettingsEditorWidgetWrapper *QgsSettingsEditorWidgetWrapper::fromWidget( const QWidget *widget )
 {
@@ -46,7 +49,7 @@ QWidget *QgsSettingsEditorWidgetWrapper::createEditor( const QgsSettingsEntryBas
   if ( configureEditor( editor, setting, dynamicKeyPartList ) )
     return editor;
   else
-    QgsDebugError( QStringLiteral( "editor could not be configured" ) );
+    QgsDebugError( u"editor could not be configured"_s );
   return nullptr;
 }
 

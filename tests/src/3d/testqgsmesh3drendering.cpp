@@ -32,6 +32,9 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsMesh3DRendering : public QgsTest
 {
@@ -39,7 +42,7 @@ class TestQgsMesh3DRendering : public QgsTest
 
   public:
     TestQgsMesh3DRendering()
-      : QgsTest( QStringLiteral( "Mesh 3D Rendering Tests" ), QStringLiteral( "3d" ) ) {}
+      : QgsTest( u"Mesh 3D Rendering Tests"_s, u"3d"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

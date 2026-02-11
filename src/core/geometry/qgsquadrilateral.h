@@ -24,6 +24,10 @@
 #include "qgspoint.h"
 #include "qgspolygon.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \class QgsQuadrilateral
@@ -213,7 +217,7 @@ class CORE_EXPORT QgsQuadrilateral
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsQuadrilateral: %1>" ).arg( sipCpp->toString() );
+    QString str = u"<QgsQuadrilateral: %1>"_s.arg( sipCpp->toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

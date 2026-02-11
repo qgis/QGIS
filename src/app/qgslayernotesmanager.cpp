@@ -24,8 +24,11 @@
 
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgslayernotesmanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 void QgsLayerNotesManager::editLayerNotes( QgsMapLayer *layer, QWidget *parent )
 {
@@ -54,7 +57,7 @@ QgsLayerNotesDialog::QgsLayerNotesDialog( QWidget *parent )
   connect( buttonBox->button( QDialogButtonBox::Save ), &QPushButton::clicked, this, &QDialog::accept );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#layer-notes" ) );
+    QgsHelp::openHelp( u"introduction/general_tools.html#layer-notes"_s );
   } );
   layout->addWidget( buttonBox );
 

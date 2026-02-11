@@ -29,7 +29,6 @@ an external storage backend.
       sipType = NULL;
 %End
   public:
-
     explicit QgsExternalStorageFileWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 QgsExternalStorageFileWidget creates a widget for selecting a file or a

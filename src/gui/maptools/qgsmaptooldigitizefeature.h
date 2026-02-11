@@ -34,7 +34,6 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCaptureLayerGeomet
     Q_OBJECT
 
   public:
-
     /**
      * \brief QgsMapToolDigitizeFeature is a map tool to digitize a feature geometry
      * \param canvas the map canvas
@@ -82,7 +81,6 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCaptureLayerGeomet
     void digitizingCanceled();
 
   protected:
-
     /**
      * Check if CaptureMode matches layer type. Default is TRUE.
      */
@@ -92,7 +90,7 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCaptureLayerGeomet
      * Check if CaptureMode matches layer type. Default is TRUE.
      */
     void setCheckGeometryType( bool checkGeometryType );
-    // TODO QGIS 4: remove if GRASS plugin is dropped
+    // TODO QGIS 5: remove if GRASS plugin is dropped
 
     /**
      * Called when the feature has been digitized.
@@ -107,7 +105,6 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCaptureLayerGeomet
     virtual void featureDigitized( const QgsFeature &feature ) { Q_UNUSED( feature ) }
 
   private:
-
     /**
      * individual layer per digitizing session
     */
@@ -122,7 +119,7 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCaptureLayerGeomet
     /**
      * Check if CaptureMode matches layer type. Default is TRUE.
     */
-    bool mCheckGeometryType;
+    bool mCheckGeometryType = true;
 
     friend class TestQgsRelationReferenceWidget;
 };

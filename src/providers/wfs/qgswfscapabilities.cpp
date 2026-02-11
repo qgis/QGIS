@@ -19,6 +19,10 @@
 #include "qgsogcutils.h"
 #include "qgswfsutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsWfsCapabilities::QgsWfsCapabilities()
 {
   clear();
@@ -68,7 +72,7 @@ QString QgsWfsCapabilities::getNamespaceParameterValue( const QString &WFSVersio
   if ( tryNameSpacing )
   {
     QString prefixOfTypename = QgsWFSUtils::nameSpacePrefix( typeName );
-    return "xmlns(" + prefixOfTypename + ( WFSVersion.startsWith( QLatin1String( "2.0" ) ) ? "," : "=" ) + namespaces + ")";
+    return "xmlns(" + prefixOfTypename + ( WFSVersion.startsWith( "2.0"_L1 ) ? "," : "=" ) + namespaces + ")";
   }
   return QString();
 }
@@ -86,15 +90,15 @@ bool QgsWfsCapabilities::supportsGeometryTypeFilters() const
   {
     if ( function.minArgs == 1 && function.maxArgs == 1 )
     {
-      if ( function.name == QLatin1String( "IsPoint" ) )
+      if ( function.name == "IsPoint"_L1 )
       {
         hasIsPoint = true;
       }
-      else if ( function.name == QLatin1String( "IsCurve" ) )
+      else if ( function.name == "IsCurve"_L1 )
       {
         hasIsCurve = true;
       }
-      else if ( function.name == QLatin1String( "IsSurface" ) )
+      else if ( function.name == "IsSurface"_L1 )
       {
         hasIsSurface = true;
       }

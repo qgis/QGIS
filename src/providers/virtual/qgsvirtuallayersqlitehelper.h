@@ -90,7 +90,7 @@ namespace Sqlite
     private:
       sqlite3 *db_ = nullptr;
       sqlite3_stmt *stmt_ = nullptr;
-      int nBind_;
+      int nBind_ = 1;
   };
 } // namespace Sqlite
 

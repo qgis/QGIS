@@ -77,15 +77,9 @@ if(${SIP_VERSION_STR} VERSION_GREATER 4.19.6)
   set(DOCSTRINGSTEMPLATE "")
 endif()
 
-IF(BUILD_WITH_QT6)
-  SET(QSCI_SIP_MOD_NAME Qsci/qscimod6.sip)
-  SET(BINDING_FILES_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/PyQt6)
-  SET(pyqtdist "PyQt6")
-ELSE()
-  SET(QSCI_SIP_MOD_NAME Qsci/qscimod5.sip)
-  SET(BINDING_FILES_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-  SET(pyqtdist "PyQt5")
-ENDIF()
+SET(QSCI_SIP_MOD_NAME Qsci/qscimod6.sip)
+SET(BINDING_FILES_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/PyQt6)
+ SET(pyqtdist "PyQt6")
 
 set(QGIS_PYTHON_DIR ${QGIS_PYTHON_INSTALL_DIR}/qgis)
 
@@ -103,9 +97,7 @@ elseif((${SIP_VERSION_STR} VERSION_EQUAL 4.18) OR (${SIP_VERSION_STR} VERSION_GR
   install(FILES ${QGIS_PYTHON_OUTPUT_DIRECTORY}/_core.pyi DESTINATION ${QGIS_PYTHON_DIR})
 endif()
 
-if((${PYQT_VERSION_STR} VERSION_EQUAL 5.15) OR (${PYQT_VERSION_STR} VERSION_GREATER 5.15))
-  set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} VECTOR_MAPPED_TYPE)
-endif()
+set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} VECTOR_MAPPED_TYPE)
 
 if(NOT WITH_GUI)
   set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_GUI)
@@ -136,10 +128,8 @@ endif()
 # Deprecated annotation supports message only since version 6.9.0 with abi-version 12.16 / 13.9 and above
 if(${SIP_VERSION_STR} VERSION_LESS 6.9.0)
   set(sipabi "")
-elseif(BUILD_WITH_QT6)
-  set(sipabi "\n[tool.sip.project]\nabi-version = \"13.9\"")
 else()
-  set(sipabi "\n[tool.sip.project]\nabi-version = \"12.16\"")
+  set(sipabi "\n[tool.sip.project]\nabi-version = \"13.9\"")
 endif()
 
 set(toml "
@@ -183,13 +173,6 @@ execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BI
 GENERATE_SIP_PYTHON_MODULE_CODE(qgis._core core/core.sip "${sip_files_core}" cpp_files)
 BUILD_SIP_PYTHON_MODULE(qgis._core core/core.sip ${cpp_files} "" qgis_core)
 set(SIP_CORE_CPP_FILES ${cpp_files})
-
-# TODO QGIS 4 : remove this hack when we switch completely to Qt 6 which supports only c++17
-if( ${QT_VERSION_MAJOR} EQUAL 5 AND ( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" ) )
-  # Bad hack to fix compilation with gcc 11 - for some reason it's ignoring
-  # the c++ standard version set for the target in BUILD_SIP_PYTHON_MODULE!
-  add_definitions(-std=c++14)
-endif()
 
 if((UNIX OR MINGW) AND SIP_VERSION_STR VERSION_GREATER_EQUAL 4.10 AND SIP_VERSION_STR VERSION_LESS 5.0)
   set(SIP_EXTRA_OPTIONS -P ${SIP_EXTRA_OPTIONS})
@@ -465,6 +448,13 @@ foreach(module ${PY_MODULES})
     file(GLOB sip_files ${CMAKE_CURRENT_BINARY_DIR}/${module}/*.sip)
     install(FILES ${sip_files} DESTINATION ${SIP_DEFAULT_SIP_DIR}/qgis/${module})
     install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${module}/auto_generated DESTINATION ${SIP_DEFAULT_SIP_DIR}/qgis/${module})
+  endif()
+
+  if(SIP_BUILD_EXECUTABLE)
+    add_custom_command(TARGET py${module}
+      POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${module}/build/_${module_out}/_${module_out}.pyi" "${QGIS_PYTHON_OUTPUT_DIRECTORY}"
+    )
   endif()
 endforeach(module)
 

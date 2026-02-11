@@ -113,7 +113,7 @@ key "KEY_REFERER" (for backward compatibility)
 :return: ``True`` if the update succeed
 %End
 
- bool updateDomElement( QDomElement &el ) const /Deprecated="Since 3.42. Will be removed in QGIS 4.0."/;
+ bool updateDomElement( QDomElement &el ) const /Deprecated="Since 3.42. Will be removed in QGIS 5.0."/;
 %Docstring
 Updates a DOM element by adding all the HTTP headers
 
@@ -127,7 +127,7 @@ compatibility)
 
 .. deprecated:: 3.42
 
-   Will be removed in QGIS 4.0.
+   Will be removed in QGIS 5.0.
 %End
 
 

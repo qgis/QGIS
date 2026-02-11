@@ -34,9 +34,12 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QSpinBox>
+#include <QString>
 #include <QTableWidgetItem>
 
 #include "moc_qgsattributetypeloaddialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAttributeTypeLoadDialog::QgsAttributeTypeLoadDialog( QgsVectorLayer *vl )
   : mLayer( vl )
@@ -53,7 +56,7 @@ QgsAttributeTypeLoadDialog::QgsAttributeTypeLoadDialog( QgsVectorLayer *vl )
   connect( valueComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this]( int index ) { createPreview( index ); } );
   connect( previewButton, &QAbstractButton::pressed, this, &QgsAttributeTypeLoadDialog::previewButtonPushed );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#edit-widgets" ) );
+    QgsHelp::openHelp( u"working_with_vector/vector_properties.html#edit-widgets"_s );
   } );
 }
 

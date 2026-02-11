@@ -37,7 +37,6 @@ to filter and modify the events in map coordinates
 #include "qgsmaptooladvanceddigitizing.h"
 %End
   public:
-
     explicit QgsMapToolAdvancedDigitizing( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
 %Docstring
 Creates an advanced digitizing maptool
@@ -136,8 +135,8 @@ The default is that a snap indicator is not used.
 .. versionadded:: 3.40
 %End
 
-  protected:
 
+  protected:
     void setAdvancedDigitizingAllowed( bool allowed );
 %Docstring
 Sets whether functionality of advanced digitizing dock widget is
@@ -174,7 +173,6 @@ The default is that a snap indicator is not used.
 
 
   public:
-
     virtual void cadCanvasPressEvent( QgsMapMouseEvent *e );
 %Docstring
 Override this method when subclassing this class. This will receive
@@ -218,6 +216,20 @@ Enables or disables snap to grid of mouse events. The snapping will
 occur in the layer's CRS.
 
 .. versionadded:: 3.4
+%End
+
+  signals:
+
+    void transientGeometryChanged( const QgsReferencedGeometry &geometry );
+%Docstring
+Emitted whenever the ``geometry`` associated with the tool is changed,
+including transient (i.e. non-finalized, hover state) changes.
+
+Connections to this signal should take care to check the CRS of
+``geometry``, as it may be either in the canvas CRS or an associated
+layer's CRS.
+
+.. versionadded:: 4.0
 %End
 
 };

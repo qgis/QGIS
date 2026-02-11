@@ -34,7 +34,6 @@ class GUI_EXPORT QgsLayoutViewToolSelect : public QgsLayoutViewTool
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutViewToolSelect.
      */

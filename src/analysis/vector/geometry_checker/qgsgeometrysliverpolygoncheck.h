@@ -20,6 +20,10 @@
 
 #include "qgsgeometryareacheck.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup analysis
  * \brief A sliver polygon check.
@@ -38,7 +42,7 @@ class ANALYSIS_EXPORT QgsGeometrySliverPolygonCheck : public QgsGeometryAreaChec
 
   private:
     static QString factoryDescription() { return tr( "Sliver polygon" ); }
-    static QString factoryId() { return QStringLiteral( "QgsGeometrySliverPolygonCheck" ); }
+    static QString factoryId() { return u"QgsGeometrySliverPolygonCheck"_s; }
 
     bool checkThreshold( double layerToMapUnits, const QgsAbstractGeometry *geom, double &value ) const override;
 

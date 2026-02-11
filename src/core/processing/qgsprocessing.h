@@ -25,6 +25,8 @@
 
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 //
 // Output definitions
 //
@@ -74,33 +76,33 @@ class CORE_EXPORT QgsProcessing
       switch ( type )
       {
         case Qgis::ProcessingSourceType::MapLayer:
-          return QStringLiteral( "TypeMapLayer" );
+          return u"TypeMapLayer"_s;
         case Qgis::ProcessingSourceType::VectorAnyGeometry:
-          return QStringLiteral( "TypeVectorAnyGeometry" );
+          return u"TypeVectorAnyGeometry"_s;
         case Qgis::ProcessingSourceType::VectorPoint:
-          return QStringLiteral( "TypeVectorPoint" );
+          return u"TypeVectorPoint"_s;
         case Qgis::ProcessingSourceType::VectorLine:
-          return QStringLiteral( "TypeVectorLine" );
+          return u"TypeVectorLine"_s;
         case Qgis::ProcessingSourceType::VectorPolygon:
-          return QStringLiteral( "TypeVectorPolygon" );
+          return u"TypeVectorPolygon"_s;
         case Qgis::ProcessingSourceType::Raster:
-          return QStringLiteral( "TypeRaster" );
+          return u"TypeRaster"_s;
         case Qgis::ProcessingSourceType::File:
-          return QStringLiteral( "TypeFile" );
+          return u"TypeFile"_s;
         case Qgis::ProcessingSourceType::Vector:
-          return QStringLiteral( "TypeVector" );
+          return u"TypeVector"_s;
         case Qgis::ProcessingSourceType::Mesh:
-          return QStringLiteral( "TypeMesh" );
+          return u"TypeMesh"_s;
         case Qgis::ProcessingSourceType::Plugin:
-          return QStringLiteral( "TypePlugin" );
+          return u"TypePlugin"_s;
         case Qgis::ProcessingSourceType::PointCloud:
-          return QStringLiteral( "TypePointCloud" );
+          return u"TypePointCloud"_s;
         case Qgis::ProcessingSourceType::Annotation:
-          return QStringLiteral( "TypeAnnotation" );
+          return u"TypeAnnotation"_s;
         case Qgis::ProcessingSourceType::VectorTile:
-          return QStringLiteral( "TypeVectorTile" );
+          return u"TypeVectorTile"_s;
         case Qgis::ProcessingSourceType::TiledScene:
-          return QStringLiteral( "TiledScene" );
+          return u"TiledScene"_s;
       }
       return QString();
     }
@@ -120,7 +122,7 @@ class CORE_EXPORT QgsProcessing
     static const QString TEMPORARY_OUTPUT;
 
 #ifndef SIP_RUN
-    static inline QgsSettingsTreeNode *sTreeConfiguration = QgsSettingsTree::sTreeQgis->createChildNode( QStringLiteral( "configuration" ) );
+    static inline QgsSettingsTreeNode *sTreeConfiguration = QgsSettingsTree::sTreeQgis->createChildNode( u"configuration"_s );
 
     //! Settings entry prefer filename as layer name
     static const QgsSettingsEntryBool *settingsPreferFilenameAsLayerName;
@@ -128,8 +130,8 @@ class CORE_EXPORT QgsProcessing
     static const QgsSettingsEntryString *settingsTempPath;
     //! Settings entry default output vector layer ext
     static const QgsSettingsEntryString *settingsDefaultOutputVectorLayerExt;
-    //! Settings entry default output raster layer ext
-    static const QgsSettingsEntryString *settingsDefaultOutputRasterLayerExt;
+    //! Settings entry default output raster layer format
+    static const QgsSettingsEntryString *settingsDefaultOutputRasterLayerFormat;
 #endif
 };
 

@@ -229,6 +229,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      */
     virtual void enumValues( int index, QStringList &enumList SIP_OUT ) const { Q_UNUSED( index ) enumList.clear(); }
 
+    using QgsFeatureSink::addFeatures;
     bool addFeatures( QgsFeatureList &flist SIP_INOUT, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     QString lastError() const override;
 
@@ -558,7 +559,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     virtual QgsTransaction *transaction() const;
 
     /**
-     * \deprecated QGIS 3.12. Will be removed in QGIS 4.0 - use reloadData() instead.
+     * \deprecated QGIS 3.12. Will be removed in QGIS 5.0 - use reloadData() instead.
      */
     Q_DECL_DEPRECATED virtual void forceReload() SIP_DEPRECATED { reloadData(); }
 

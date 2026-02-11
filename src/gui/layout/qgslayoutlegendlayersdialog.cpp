@@ -22,8 +22,11 @@
 #include "qgssettings.h"
 
 #include <QStandardItem>
+#include <QString>
 
 #include "moc_qgslayoutlegendlayersdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutLegendLayersDialog::QgsLayoutLegendLayersDialog( QWidget *parent )
   : QDialog( parent )
@@ -83,5 +86,5 @@ void QgsLayoutLegendLayersDialog::filterVisible( bool enabled )
 
 void QgsLayoutLegendLayersDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "print_composer/composer_items/composer_legend.html#legend-items" ) );
+  QgsHelp::openHelp( u"print_composer/composer_items/composer_legend.html#legend-items"_s );
 }

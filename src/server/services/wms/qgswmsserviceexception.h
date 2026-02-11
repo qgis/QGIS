@@ -24,6 +24,8 @@
 #include <QMetaEnum>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 namespace QgsWms
 {
 
@@ -37,7 +39,6 @@ namespace QgsWms
       Q_GADGET
 
     public:
-
       /**
        * Exception codes as defined in OGC scpecifications for WMS 1.1.1 and
        * WMS 1.3.0. Some custom QGIS codes are defined too.
@@ -70,7 +71,7 @@ namespace QgsWms
        * \param responseCode HTTP error code
        */
       QgsServiceException( const QString &code, const QString &message, const QString &locator = QString(), int responseCode = 200 )
-        : QgsOgcServiceException( code, message, locator, responseCode, QStringLiteral( "1.3.0" ) )
+        : QgsOgcServiceException( code, message, locator, responseCode, u"1.3.0"_s )
       {}
 
       /**
@@ -80,7 +81,7 @@ namespace QgsWms
        * \param responseCode HTTP error code
        */
       QgsServiceException( const QString &code, const QString &message, int responseCode )
-        : QgsOgcServiceException( code, message, QString(), responseCode, QStringLiteral( "1.3.0" ) )
+        : QgsOgcServiceException( code, message, QString(), responseCode, u"1.3.0"_s )
       {}
 
       /**
@@ -115,42 +116,42 @@ namespace QgsWms
         {
           case QgsServiceException::QGIS_MissingParameterValue:
           {
-            message = QStringLiteral( "The %1 parameter is missing." ).arg( name );
+            message = u"The %1 parameter is missing."_s.arg( name );
             break;
           }
           case QGIS_InvalidParameterValue:
           {
-            message = QStringLiteral( "The %1 parameter is invalid." ).arg( name );
+            message = u"The %1 parameter is invalid."_s.arg( name );
             break;
           }
           case OGC_InvalidFormat:
           {
-            message = QStringLiteral( "The format '%1' from %2 is not supported." ).arg( parameter.toString(), name );
+            message = u"The format '%1' from %2 is not supported."_s.arg( parameter.toString(), name );
             break;
           }
           case OGC_InvalidSRS:
           {
-            message = QStringLiteral( "The SRS is not valid." );
+            message = u"The SRS is not valid."_s;
             break;
           }
           case OGC_InvalidCRS:
           {
-            message = QStringLiteral( "The CRS is not valid." );
+            message = u"The CRS is not valid."_s;
             break;
           }
           case OGC_LayerNotDefined:
           {
-            message = QStringLiteral( "The layer '%1' does not exist." ).arg( parameter.toString() );
+            message = u"The layer '%1' does not exist."_s.arg( parameter.toString() );
             break;
           }
           case OGC_LayerNotQueryable:
           {
-            message = QStringLiteral( "The layer '%1' is not queryable." ).arg( parameter.toString() );
+            message = u"The layer '%1' is not queryable."_s.arg( parameter.toString() );
             break;
           }
           case OGC_InvalidPoint:
           {
-            message = QStringLiteral( "The point '%1' from '%2' is invalid." ).arg( parameter.toString(), name );
+            message = u"The point '%1' from '%2' is invalid."_s.arg( parameter.toString(), name );
             break;
           }
           case OGC_StyleNotDefined:
@@ -174,8 +175,8 @@ namespace QgsWms
         QString key = metaEnum.valueToKey( code );
 
         // remove prefix
-        key.replace( QLatin1String( "OGC_" ), QString() );
-        key.replace( QLatin1String( "QGIS_" ), QString() );
+        key.replace( "OGC_"_L1, QString() );
+        key.replace( "QGIS_"_L1, QString() );
 
         return key;
       }
@@ -189,7 +190,6 @@ namespace QgsWms
   class QgsSecurityException : public QgsServiceException
   {
     public:
-
       /**
        * Constructor for QgsSecurityException (HTTP error code 403 with
        * Security code name).
@@ -197,7 +197,7 @@ namespace QgsWms
        * \param locator Locator attribute according to OGC specifications
        */
       QgsSecurityException( const QString &message, const QString &locator = QString() )
-        : QgsServiceException( QStringLiteral( "Security" ), message, locator, 403 )
+        : QgsServiceException( u"Security"_s, message, locator, 403 )
       {}
   };
 
@@ -209,7 +209,6 @@ namespace QgsWms
   class QgsBadRequestException : public QgsServiceException
   {
     public:
-
       /**
        * Constructor for QgsBadRequestException (HTTP error code 400).
        * \param code Error code

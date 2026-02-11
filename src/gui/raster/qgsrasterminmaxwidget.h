@@ -139,11 +139,11 @@ class GUI_EXPORT QgsRasterMinMaxWidget : public QWidget, private Ui::QgsRasterMi
 
     QgsMapCanvas *mCanvas = nullptr;
 
-    bool mLastRectangleValid;
+    bool mLastRectangleValid = false;
     QgsRectangle mLastRectangle;
     QgsRasterMinMaxOrigin mLastMinMaxOrigin;
 
-    bool mBandsChanged;
+    bool mBandsChanged = false;
 };
 
 #endif // QGSRASTERMINMAXWIDGET_H

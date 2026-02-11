@@ -49,7 +49,6 @@ class GUI_EXPORT QgsQueryBuilder : public QgsSubsetStringEditorInterface, privat
 {
     Q_OBJECT
   public:
-
     /**
      * This constructor is used when the query builder is called from the
      * vector layer properties dialog
@@ -187,7 +186,7 @@ class GUI_EXPORT QgsQueryBuilder : public QgsSubsetStringEditorInterface, privat
     //! Filter proxy Model for values ListView
     QSortFilterProxyModel *mProxyValues = nullptr;
     //! Previous field row to delete model
-    int mPreviousFieldRow;
+    int mPreviousFieldRow = -1;
 
     //! vector layer
     QgsVectorLayer *mLayer = nullptr;

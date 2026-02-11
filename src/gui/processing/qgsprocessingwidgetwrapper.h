@@ -53,7 +53,6 @@ class QgsBrowserGuiModel;
 class GUI_EXPORT QgsProcessingContextGenerator
 {
   public:
-
     /**
      * This method needs to be reimplemented in all classes which implement this interface
      * and return a Processing context.
@@ -77,7 +76,6 @@ class GUI_EXPORT QgsProcessingContextGenerator
 class GUI_EXPORT QgsProcessingParametersGenerator
 {
   public:
-
     /**
      * Flags controlling parameter generation.
      *
@@ -275,7 +273,6 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAbstractProcessingParameterWidgetWrapper, for the specified
      * \a parameter definition and dialog \a type.
@@ -350,7 +347,7 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
      */
     const QgsProcessingParameterDefinition *parameterDefinition() const;
 
-    // TODO QGIS 4.0 -- remove
+    // TODO QGIS 5.0 -- remove
 #ifdef SIP_RUN
     % Property( name = param, get = parameterDefinition )
 #endif
@@ -420,7 +417,7 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
 
   signals:
 
-    // TODO QGIS 4.0 - remove wrapper parameter - this is kept for compatibility with 3.x API,
+    // TODO QGIS 5.0 - remove wrapper parameter - this is kept for compatibility with 3.x API,
     // yet can easily be retrieved by checking the sender()
 
     /**
@@ -429,7 +426,6 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
     void widgetValueHasChanged( QgsAbstractProcessingParameterWidgetWrapper *wrapper );
 
   protected:
-
     /**
      * Creates a new widget which allows customization of the parameter's value.
      *
@@ -584,7 +580,6 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
     ) SIP_FACTORY;
 
   protected:
-
     /**
      * Returns a list of compatible Processing parameter types for inputs
      * for this parameter.
@@ -668,7 +663,6 @@ class GUI_EXPORT QgsProcessingHiddenWidgetWrapper : public QgsAbstractProcessing
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsProcessingHiddenWidgetWrapper, for the specified
      * \a parameter definition and dialog \a type.

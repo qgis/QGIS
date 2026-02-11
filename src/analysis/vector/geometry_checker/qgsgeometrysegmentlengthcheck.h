@@ -20,6 +20,10 @@
 
 #include "qgsgeometrycheck.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup analysis
  * \brief A segment length check.
@@ -40,7 +44,7 @@ class ANALYSIS_EXPORT QgsGeometrySegmentLengthCheck : public QgsGeometryCheck
     Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
     static QString factoryDescription() { return tr( "Minimal segment length" ); }
     QString description() const override { return factoryDescription(); }
-    static QString factoryId() { return QStringLiteral( "QgsGeometrySegmentLengthCheck" ); }
+    static QString factoryId() { return u"QgsGeometrySegmentLengthCheck"_s; }
     QString id() const override { return factoryId(); }
     QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
     static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;

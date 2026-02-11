@@ -70,7 +70,6 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetProvider
 class GUI_EXPORT QgsLayerTreeEmbeddedWidgetRegistry
 {
   public:
-
     /**
      * Constructor for QgsLayerTreeEmbeddedWidgetRegistry/
      *

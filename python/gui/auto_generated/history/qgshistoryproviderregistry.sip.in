@@ -25,7 +25,6 @@ but rather accessed through :py:func:`QgsGui.historyProviderRegistry()`.
 #include "qgshistoryproviderregistry.h"
 %End
   public:
-
     QgsHistoryProviderRegistry( QObject *parent = 0, bool useMemoryDatabase = false );
 %Docstring
 Creates a new empty history provider registry.
@@ -66,18 +65,14 @@ Returns a list of the registered provider IDs.
 %End
 
     class HistoryEntryOptions
-{
+    {
 %Docstring(signature="appended")
 Contains options for storing history entries.
 
 .. versionadded:: 3.24
 %End
 
-%TypeHeaderCode
-#include "qgshistoryproviderregistry.h"
-%End
       public:
-
         HistoryEntryOptions();
 %Docstring
 Constructor for HistoryEntryOptions.

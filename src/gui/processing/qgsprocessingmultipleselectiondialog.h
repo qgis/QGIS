@@ -44,7 +44,6 @@ class GUI_EXPORT QgsProcessingMultipleSelectionPanelWidget : public QgsPanelWidg
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingMultipleSelectionPanelWidget.
      *
@@ -111,12 +110,12 @@ class GUI_EXPORT QgsProcessingMultipleSelectionPanelWidget : public QgsPanelWidg
     void selectionChanged();
 
   protected:
-
     /**
      * Adds a new option to the widget.
+     *
+     * \a icon added in QGIS 4.0
      */
-    void addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle = false );
-
+    void addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle = false, QIcon optionalIconDecoration = QIcon() );
     //! Returns pointer to the list view
     QListView *listView() const { return mSelectionList; }
 
@@ -163,7 +162,6 @@ class GUI_EXPORT QgsProcessingMultipleSelectionDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingMultipleSelectionPanelWidget.
      *
@@ -229,7 +227,6 @@ class GUI_EXPORT QgsProcessingMultipleInputPanelWidget : public QgsProcessingMul
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingMultipleInputPanelWidget.
      */
@@ -261,7 +258,6 @@ class GUI_EXPORT QgsProcessingMultipleInputPanelWidget : public QgsProcessingMul
     void dropEvent( QDropEvent *event ) override;
 
   private:
-
     /**
      * Returns a map layer, compatible with the filters set for the combo box, from
      * the specified mime \a data (if possible!).
@@ -284,7 +280,6 @@ class GUI_EXPORT QgsProcessingMultipleInputDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingMultipleInputDialog.
      *

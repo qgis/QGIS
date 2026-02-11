@@ -25,6 +25,9 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QPointer>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -33,9 +36,11 @@ QgsHttpExternalStorageStoreTask::QgsHttpExternalStorageStoreTask( const QUrl &ur
   , mUrl( url )
   , mFilePath( filePath )
   , mAuthCfg( authCfg )
-  , mFeedback( new QgsFeedback( this ) )
+  , mFeedback( std::make_unique<QgsFeedback>( this ) )
 {
 }
+
+QgsHttpExternalStorageStoreTask::~QgsHttpExternalStorageStoreTask() = default;
 
 bool QgsHttpExternalStorageStoreTask::run()
 {
@@ -43,13 +48,14 @@ bool QgsHttpExternalStorageStoreTask::run()
   request.setAuthCfg( mAuthCfg );
 
   QNetworkRequest req( mUrl );
-  QgsSetRequestInitiatorClass( req, QStringLiteral( "QgsHttpExternalStorageStoreTask" ) );
+  QgsSetRequestInitiatorClass( req, u"QgsHttpExternalStorageStoreTask"_s );
 
-  QFile *f = new QFile( mFilePath );
-  f->open( QIODevice::ReadOnly );
+  QFile f( mFilePath );
+  if ( !f.open( QIODevice::ReadOnly ) )
+    return false;
 
   if ( mPrepareRequestHandler )
-    mPrepareRequestHandler( req, f );
+    mPrepareRequestHandler( req, &f );
 
   connect( &request, &QgsBlockingNetworkRequest::uploadProgress, this, [this]( qint64 bytesReceived, qint64 bytesTotal )
   {
@@ -60,7 +66,7 @@ bool QgsHttpExternalStorageStoreTask::run()
     }
   } );
 
-  QgsBlockingNetworkRequest::ErrorCode err = request.put( req, f, mFeedback.get() );
+  QgsBlockingNetworkRequest::ErrorCode err = request.put( req, &f, mFeedback.get() );
 
   if ( err != QgsBlockingNetworkRequest::NoError )
   {
@@ -199,7 +205,7 @@ void QgsHttpExternalStorageFetchedContent::cancel()
 
 QString QgsWebDavExternalStorage::type() const
 {
-  return QStringLiteral( "WebDAV" );
+  return u"WebDAV"_s;
 };
 
 QString QgsWebDavExternalStorage::displayName() const
@@ -224,7 +230,7 @@ QgsExternalStorageFetchedContent *QgsWebDavExternalStorage::doFetch( const QStri
 
 QString QgsAwsS3ExternalStorage::type() const
 {
-  return QStringLiteral( "AWSS3" );
+  return u"AWSS3"_s;
 };
 
 QString QgsAwsS3ExternalStorage::displayName() const

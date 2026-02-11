@@ -24,7 +24,6 @@ Exporter of contours lines or polygons from a mesh layer.
 #include "qgsmeshcontours.h"
 %End
   public:
-
     QgsMeshContours( QgsMeshLayer *layer );
 %Docstring
 Constructs the mesh contours exporter. Caches the native and triangular

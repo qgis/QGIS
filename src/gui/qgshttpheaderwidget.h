@@ -39,7 +39,6 @@ class GUI_EXPORT QgsHttpHeaderWidget : public QWidget, private Ui::QgsHttpHeader
     Q_OBJECT
 
   public:
-
     /**
      * Default constructor
      * \param parent parent widget

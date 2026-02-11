@@ -40,7 +40,6 @@ enum class QgsMaterialSettingsRenderingTechnique;
 class _3D_EXPORT QgsMaterialSettingsAbstractMetadata
 {
   public:
-
     /**
      * Constructor for QgsMaterialSettingsAbstractMetadata, with the specified \a type and \a visibleName.
      *
@@ -121,7 +120,6 @@ typedef bool ( *QgsMaterialSettingsSupportsTechniqueFunc )( QgsMaterialSettingsR
 class _3D_EXPORT QgsMaterialSettingsMetadata : public QgsMaterialSettingsAbstractMetadata
 {
   public:
-
     /**
      * Constructor for QgsMaterialSettingsMetadata, with the specified \a type and \a visibleName.
      *

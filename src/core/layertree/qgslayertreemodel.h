@@ -25,8 +25,11 @@
 #include <QAbstractItemModel>
 #include <QFont>
 #include <QIcon>
+#include <QString>
 #include <QTimer>
 #include <QUuid>
+
+using namespace Qt::StringLiterals;
 
 class QgsLayerTreeNode;
 class QgsLayerTreeGroup;
@@ -541,6 +544,8 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     QMap<QString, QSet<QString>> mHitTestResults;
 
+    QMap<QString, QPair<double, double>> mHitTestResultsRendererUpdatedCanvas;
+
     std::unique_ptr< QgsLayerTreeFilterSettings > mFilterSettings;
 
     double mLegendMapViewMupp = 0;
@@ -580,7 +585,7 @@ class EmbeddedWidgetLegendNode : public QgsLayerTreeModelLegendNode
     {
       // we need a valid rule key to allow the model to build a tree out of legend nodes
       // if that's possible (if there is a node without a rule key, building of tree is canceled)
-      mRuleKey = QStringLiteral( "embedded-widget-" ) + QUuid::createUuid().toString();
+      mRuleKey = u"embedded-widget-"_s + QUuid::createUuid().toString();
     }
 
     QVariant data( int role ) const override

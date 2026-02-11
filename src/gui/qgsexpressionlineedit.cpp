@@ -28,10 +28,13 @@
 #include "qgsvectorlayer.h"
 
 #include <QHBoxLayout>
+#include <QString>
 #include <QToolButton>
 #include <QVBoxLayout>
 
 #include "moc_qgsexpressionlineedit.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsExpressionLineEdit::QgsExpressionLineEdit( QWidget *parent )
   : QWidget( parent )
@@ -39,7 +42,7 @@ QgsExpressionLineEdit::QgsExpressionLineEdit( QWidget *parent )
 {
   mButton = new QToolButton();
   mButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-  mButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
+  mButton->setIcon( QgsApplication::getThemeIcon( u"/mIconExpression.svg"_s ) );
   connect( mButton, &QAbstractButton::clicked, this, &QgsExpressionLineEdit::editExpression );
 
   //sets up layout
@@ -169,7 +172,7 @@ void QgsExpressionLineEdit::editExpression()
 
   const QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : mExpressionContext;
 
-  QgsExpressionBuilderDialog dlg( mLayer, currentExpression, this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog dlg( mLayer, currentExpression, this, u"generic"_s, context );
   dlg.setExpectedOutputFormat( mExpectedOutputFormat );
   if ( mDa )
   {

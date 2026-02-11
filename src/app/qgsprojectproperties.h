@@ -237,7 +237,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 #endif
 
   private:
-
     /**
       * Called when the user sets a CRS for the project.
       */
@@ -272,7 +271,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
         double semiMinor;
     };
     QList<EllipsoidDefs> mEllipsoidList;
-    int mEllipsoidIndex;
+    int mEllipsoidIndex = 0;
     bool mBlockCrsUpdates = false;
     QColorSpace mColorSpace;
 

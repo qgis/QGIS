@@ -121,7 +121,6 @@ namespace QgsMapToolSelectUtils
   {
       Q_OBJECT
     public:
-
       /**
       * Constructor
       * \param canvas The map canvas where where are the selected features

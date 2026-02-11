@@ -22,13 +22,17 @@
 #include "qgis_gui.h"
 #include "qgsdataitemguiprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class GUI_EXPORT QgsStacDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
     Q_OBJECT
   public:
     QgsStacDataItemGuiProvider() = default;
 
-    QString name() override { return QStringLiteral( "STAC" ); }
+    QString name() override { return u"STAC"_s; }
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 

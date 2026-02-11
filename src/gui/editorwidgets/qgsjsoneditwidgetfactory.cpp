@@ -18,6 +18,10 @@
 #include "qgsjsoneditconfigdlg.h"
 #include "qgsjsoneditwrapper.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsJsonEditWidgetFactory::QgsJsonEditWidgetFactory( const QString &name, const QIcon &icon )
   : QgsEditorWidgetFactory( name, icon )
 {
@@ -42,7 +46,7 @@ unsigned int QgsJsonEditWidgetFactory::fieldScore( const QgsVectorLayer *vl, int
     case QMetaType::Type::QVariantMap:
     {
       const QString typeName = vl->fields().field( fieldIdx ).typeName();
-      if ( typeName == QLatin1String( "json" ) || typeName == QLatin1String( "jsonb" ) )
+      if ( typeName == "json"_L1 || typeName == "jsonb"_L1 )
         return 21;
       return 15;
     }

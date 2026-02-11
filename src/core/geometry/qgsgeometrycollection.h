@@ -188,6 +188,8 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) const override;
     int vertexNumberFromVertexId( QgsVertexId id ) const override;
+
+    using QgsAbstractGeometry::boundingBoxIntersects;
     bool boundingBoxIntersects( const QgsBox3D &box3d ) const override SIP_HOLDGIL;
 
     /**
@@ -291,6 +293,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 
     double length() const override SIP_HOLDGIL;
     double area() const override SIP_HOLDGIL;
+    double area3D() const override SIP_HOLDGIL;
     double perimeter() const override SIP_HOLDGIL;
 
     bool hasCurvedSegments() const override SIP_HOLDGIL;

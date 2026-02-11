@@ -51,7 +51,6 @@ class _3D_EXPORT Qgs3DAxis : public QObject
 {
     Q_OBJECT
   public:
-
     /**
      * Default Qgs3DAxis constructor.
      *

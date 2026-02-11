@@ -66,7 +66,7 @@ class QWT_EXPORT QwtSlider : public QwtAbstractSlider
     explicit QwtSlider( QWidget* parent = NULL );
     explicit QwtSlider( Qt::Orientation, QWidget* parent = NULL );
 
-    virtual ~QwtSlider();
+    ~QwtSlider() override;
 
     void setOrientation( Qt::Orientation );
     Qt::Orientation orientation() const;

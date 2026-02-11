@@ -83,7 +83,7 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
     QgsRelationReferenceWidget *mWidget = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
-    bool mIndeterminateState;
+    bool mIndeterminateState = false;
     int mBlockChanges = 0;
 };
 

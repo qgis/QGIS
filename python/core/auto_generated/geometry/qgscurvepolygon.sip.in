@@ -11,6 +11,8 @@
 
 
 
+
+
 class QgsCurvePolygon: QgsSurface
 {
 %Docstring(signature="appended")
@@ -69,6 +71,8 @@ to the caller.
 
     virtual double area() const /HoldGIL/;
 
+    virtual double area3D() const /HoldGIL/;
+
     virtual double perimeter() const /HoldGIL/;
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
@@ -79,7 +83,10 @@ to the caller.
 
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
 
+
     virtual bool boundingBoxIntersects( const QgsBox3D &box3d ) const /HoldGIL/;
+
+    virtual bool boundingBoxIntersects( const QgsRectangle &box ) const /HoldGIL/;
 
 
     double roundness() const;

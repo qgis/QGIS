@@ -24,7 +24,6 @@ a :py:class:`QgsFields` object.
 #include "qgsprocessingaggregatewidgets.h"
 %End
   public:
-
     enum class ColumnDataIndex /BaseType=IntEnum/
     {
       SourceExpression,
@@ -136,7 +135,6 @@ fields from a :py:class:`QgsFields` object.
 #include "qgsprocessingaggregatewidgets.h"
 %End
   public:
-
     explicit QgsAggregateMappingWidget( QWidget *parent = 0, const QgsFields &sourceFields = QgsFields() );
 %Docstring
 Constructs a QgsAggregateMappingWidget from a set of ``sourceFields``. A

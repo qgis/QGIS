@@ -13,6 +13,7 @@ __copyright__ = "Copyright 2019, The QGIS Project"
 import os
 
 from qgis.core import (
+    Qgis,
     QgsExpressionContext,
     QgsExpressionContextScope,
     QgsLabeling,
@@ -97,6 +98,14 @@ class TestQgsLabelLineSettings(QgisTestCase):
         settings.setLineAnchorPercent(0.3)
         self.assertEqual(settings.lineAnchorPercent(), 0.3)
 
+        settings.setCurvedLabelMode(
+            Qgis.CurvedLabelMode.StretchCharacterSpacingToFitLine
+        )
+        self.assertEqual(
+            settings.curvedLabelMode(),
+            Qgis.CurvedLabelMode.StretchCharacterSpacingToFitLine,
+        )
+
         # check that compatibility code works
         pal_settings = QgsPalLayerSettings()
         pal_settings.placementFlags = (
@@ -178,6 +187,9 @@ class TestQgsLabelLineSettings(QgisTestCase):
         settings.setPlacementFlags(QgsLabeling.LinePlacementFlag.OnLine)
         settings.setOverrunDistance(5.6)
         settings.setLineAnchorPercent(0.3)
+        settings.setCurvedLabelMode(
+            Qgis.CurvedLabelMode.StretchCharacterSpacingToFitLine
+        )
         self.assertEqual(
             settings.placementFlags(), QgsLabeling.LinePlacementFlag.OnLine
         )
@@ -197,11 +209,16 @@ class TestQgsLabelLineSettings(QgisTestCase):
             QgsPalLayerSettings.Property.LineAnchorPercent,
             QgsProperty.fromExpression("@line_anchor"),
         )
+        props.setProperty(
+            QgsPalLayerSettings.Property.CurvedLabelMode,
+            QgsProperty.fromExpression("@curve_mode"),
+        )
         context = QgsExpressionContext()
         scope = QgsExpressionContextScope()
         scope.setVariable("placement", "AL,LO")
         scope.setVariable("dist", "11.2")
         scope.setVariable("line_anchor", "0.6")
+        scope.setVariable("curve_mode", "CharactersAtVertices")
         context.appendScope(scope)
         settings.updateDataDefinedProperties(props, context)
         self.assertEqual(
@@ -209,6 +226,9 @@ class TestQgsLabelLineSettings(QgisTestCase):
         )
         self.assertEqual(settings.overrunDistance(), 11.2)
         self.assertEqual(settings.lineAnchorPercent(), 0.6)
+        self.assertEqual(
+            settings.curvedLabelMode(), Qgis.CurvedLabelMode.PlaceCharactersAtVertices
+        )
 
 
 if __name__ == "__main__":

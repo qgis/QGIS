@@ -44,7 +44,6 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, public 
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsTableEditorFormattingWidget with the specified \a parent widget.
      */

@@ -18,8 +18,11 @@
 #include "qgsapplication.h"
 
 #include <QObject>
+#include <QString>
 
-const QString QgsClassificationEqualInterval::METHOD_ID = QStringLiteral( "EqualInterval" );
+using namespace Qt::StringLiterals;
+
+const QString QgsClassificationEqualInterval::METHOD_ID = u"EqualInterval"_s;
 
 QgsClassificationEqualInterval::QgsClassificationEqualInterval()
   : QgsClassificationMethod( SymmetricModeAvailable, 0 /*codeComplexity*/ )

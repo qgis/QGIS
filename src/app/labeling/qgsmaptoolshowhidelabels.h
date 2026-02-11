@@ -42,7 +42,7 @@ class APP_EXPORT QgsMapToolShowHideLabels : public QgsMapToolLabel
 
   protected:
     //! Flag to indicate a map canvas drag operation is taking place
-    bool mDragging;
+    bool mDragging = false;
 
     //! Stores actual select rect
     QRect mSelectRect;

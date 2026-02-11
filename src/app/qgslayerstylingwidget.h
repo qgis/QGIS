@@ -141,7 +141,7 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     /**
      * Sets an annotation item to show in the widget.
      */
-    void setAnnotationItem( QgsAnnotationLayer *layer, const QString &itemId );
+    void setAnnotationItem( QgsAnnotationLayer *layer, const QString &itemId, bool multipleItems = false );
 
     /**
      * Sets a layer tree group to show in the widget.
@@ -162,13 +162,13 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     void pushUndoItem( const QString &name, bool triggerRepaint = true );
     void emitLayerStyleChanged( const QString &currentStyleName ) { emit layerStyleChanged( currentStyleName ); };
     void emitLayerStyleRenamed();
-    int mNotSupportedPage;
-    int mLayerPage;
+    int mNotSupportedPage = 0;
+    int mLayerPage = 1;
     QTimer *mAutoApplyTimer = nullptr;
     QDomNode mLastStyleXml;
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
-    bool mBlockAutoApply;
+    bool mBlockAutoApply = false;
     QgsUndoWidget *mUndoWidget = nullptr;
     QgsMapLayer *mCurrentLayer = nullptr;
     QgsLabelingWidget *mLabelingWidget = nullptr;

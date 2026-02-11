@@ -24,6 +24,10 @@
 #include "qgsgeometryutils_base.h"
 #include "qgsrectangle.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in testqgsgeometry.cpp.
@@ -126,7 +130,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     }
     else // Invalid ctor arguments
     {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid type in constructor arguments." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_TypeError, u"Invalid type in constructor arguments."_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     % End
@@ -148,6 +152,35 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \note Not available in Python bindings
      */
     explicit QgsPoint( Qgis::WkbType wkbType, double x = std::numeric_limits<double>::quiet_NaN(), double y = std::numeric_limits<double>::quiet_NaN(), double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN() ) SIP_SKIP;
+
+    /**
+     * Create a new point from a QVector3D.
+     *
+     * \param vect vector to copy data from
+     * \param m optional m value. NaN by default.
+     * \note Not available in Python bindings
+     * \since QGIS 4.0
+     */
+    explicit QgsPoint( const QVector3D &vect, double m = std::numeric_limits<double>::quiet_NaN() ) SIP_SKIP;
+
+    /**
+     * Create a new point from a QVector4D.
+     *
+     * \param vect vector to copy data from
+     * \note Not available in Python bindings
+     * \since QGIS 4.0
+     */
+    explicit QgsPoint( const QVector4D &vect ) SIP_SKIP;
+
+    /**
+     * Create a new point from a QVector3D.
+     *
+     * \param vect vector to copy data from
+     * \param m optional m value. NaN by default.
+     * \note Not available in Python bindings
+     * \since QGIS 4.0
+     */
+    explicit QgsPoint( const QgsVector3D &vect, double m = std::numeric_limits<double>::quiet_NaN() ) SIP_SKIP;
 
 #ifndef SIP_RUN
   private:
@@ -376,6 +409,35 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     QPointF toQPointF() const SIP_HOLDGIL
     {
       return QPointF( mX, mY );
+    }
+
+    /**
+     * Returns the point as a QVector3D.
+     * \warning the conversion may decrease the accuracy (double to float values conversion)
+     * \since QGIS 4.0
+     */
+    QVector3D toVector3D() const SIP_HOLDGIL
+    {
+      return QVector3D( static_cast<float>( mX ), static_cast<float>( mY ), static_cast<float>( mZ ) ); //
+    }
+
+    /**
+     * Returns the point as a QVector4D.
+     * \warning the conversion may decrease the accuracy (double to float values conversion)
+     * \since QGIS 4.0
+     */
+    QVector4D toVector4D() const SIP_HOLDGIL
+    {
+      return QVector4D( static_cast<float>( mX ), static_cast<float>( mY ), static_cast<float>( mZ ), static_cast<float>( mM ) );
+    }
+
+    /**
+     * Returns the point as a QgsVector3D.
+     * \since QGIS 4.0
+     */
+    QgsVector3D toQgsVector3D() const SIP_HOLDGIL
+    {
+      return QgsVector3D( mX, mY, mZ );
     }
 
     /**
@@ -654,7 +716,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsPoint: %1>" ).arg( sipCpp->asWkt() );
+    QString str = u"<QgsPoint: %1>"_s.arg( sipCpp->asWkt() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

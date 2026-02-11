@@ -38,7 +38,6 @@ class GUI_EXPORT QgsPointCloudRendererWidget : public QgsPanelWidget
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsPointCloudRendererWidget, associated with the
      * specified \a layer and \a style database.

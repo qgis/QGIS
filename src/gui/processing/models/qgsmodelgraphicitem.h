@@ -18,9 +18,11 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
+#include "qgsmodelarrowitem.h"
 #include "qgsmodelcomponentgraphicitem.h"
 
 #include <QGraphicsObject>
+#include <QGraphicsTextItem>
 #include <QPicture>
 
 class QgsModelGraphicsView;
@@ -39,7 +41,6 @@ class GUI_EXPORT QgsModelDesignerFlatButtonGraphicItem : public QGraphicsObject
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsModelDesignerFlatButtonGraphicItem, with the specified \a parent item.
      *
@@ -96,7 +97,6 @@ class GUI_EXPORT QgsModelDesignerFlatButtonGraphicItem : public QGraphicsObject
     void clicked();
 
   protected:
-
     /**
      * Sets the \a picture to render for the button graphics.
      */
@@ -120,7 +120,6 @@ class GUI_EXPORT QgsModelDesignerFoldButtonGraphicItem : public QgsModelDesigner
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsModelDesignerFoldButtonGraphicItem, with the specified \a parent item.
      *
@@ -162,7 +161,6 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsModelDesignerSocketGraphicItem, with the specified \a parent item.
      *
@@ -206,13 +204,53 @@ class GUI_EXPORT QgsModelDesignerSocketGraphicItem : public QgsModelDesignerFlat
      */
     QgsModelComponentGraphicItem *componentItem() { return mComponentItem; };
 
+    /*
+     * Returns the color of the socket based on the type of data the param corresponds to.
+     * \since QGIS 4.0
+     */
+    QColor socketColor() const;
+
+    /*
+     * Returns TRUE if the parameter is set to the default parameter value.
+     * \since QGIS 4.0
+     */
+    bool isDefaultParameterValue() const;
+
+  signals:
+
+
   private:
     QgsModelComponentGraphicItem *mComponentItem = nullptr;
     QgsProcessingModelComponent *mComponent = nullptr;
     int mIndex = -1;
     Qt::Edge mEdge = Qt::Edge::TopEdge;
+    float mSocketOutlineWidth = 1.5;
 };
 
+/**
+ * \ingroup gui
+ * \brief A text with a background used to display the feature count.
+ * \warning Not stable API
+ * \since QGIS 4.0
+ */
+class GUI_EXPORT QgsModelDesignerFeatureCountGraphicItem : public QGraphicsTextItem SIP_SKIP
+{
+    Q_OBJECT
+  public:
+    QgsModelDesignerFeatureCountGraphicItem( QgsModelArrowItem *link SIP_TRANSFERTHIS, const QString &text );
+
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
+
+  protected:
+    /**
+    * Sets the position of the text along the path
+    */
+    void setPosition();
+
+  private:
+    QgsModelArrowItem *mLink = nullptr;
+    static constexpr int FONT_SIZE = 10; // Font size for the feature count text
+};
 ///@endcond
 
 #endif // QGSMODELGRAPHICITEM_H

@@ -34,7 +34,6 @@ method
 #include "qgsnewvectortabledialog.h"
 %End
   public:
-
     QgsNewVectorTableDialog( QgsAbstractDatabaseProviderConnection *conn, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 QgsNewVectorTableDialog constructor

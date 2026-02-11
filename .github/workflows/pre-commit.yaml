@@ -1,17 +1,14 @@
 name: Pre-commit checks
 
 on:
-  pull_request_target:
+  pull_request:
   push:
     branches:
       - master
       - release-*
-  issue_comment:
-    types: [created]
 
 jobs:
   pre-commit:
-    if: github.event_name != 'issue_comment' || github.event.comment.body == '/fix-precommit'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -31,12 +28,17 @@ jobs:
       - name: Install pre-commit
         run: pip install pre-commit
 
+      - name: Install deps
+        run: sudo apt-get install -y silversearcher-ag astyle flip expect
+
       - name: Run pre-commit
         run: |
-            if [ "${{ github.event_name }}" == "pull_request_target" ]; then
-              git fetch origin ${{ github.event.pull_request.base.ref }}:refs/remotes/origin/${{ github.event.pull_request.base.ref }}
+            if [ "${{ github.event_name }}" == "pull_request" ]; then
+              git fetch origin ${{ github.event.pull_request.base.ref }}
               git fetch origin pull/${{ github.event.pull_request.number }}/head:pr-head
-              MODIFIED_FILES=($(git diff --name-only origin/${{ github.event.pull_request.base.ref }} pr-head))
+              git checkout pr-head
+              MERGE_BASE=$(git merge-base origin/${{ github.event.pull_request.base.ref }} pr-head)
+              MODIFIED_FILES=($(git diff --name-only $MERGE_BASE pr-head))
             elif [ "${{ github.event_name }}" == "push" ]; then
               MODIFIED_FILES=($(git diff --name-only ${{ github.event.before }} ${{ github.sha }}))
             else
@@ -44,7 +46,7 @@ jobs:
               exit 1
             fi
             echo "Modified files: ${MODIFIED_FILES[@]}"
-            pre-commit run --files ${MODIFIED_FILES[@]} || (echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
+            pre-commit run --files ${MODIFIED_FILES[@]} || (echo "Differences:" && git diff && echo "pre-commit failed. Attempting to auto-fix..." && exit 1)
 
       - name: Commit fixes
         if: failure()
@@ -57,53 +59,3 @@ jobs:
       - name: Auto-commit fixes
         if: failure() && github.event_name == 'push'
         run: git push || echo "Failed to push changes. Please check permissions or conflicts."
-
-      - name: Push fixes to new branch
-        if: failure() && github.event_name == 'issue_comment' && github.event.comment.body == '/fix-precommit' && github.event.issue.pull_request
-        run: |
-              git checkout -b fix/pre-commit-${{ github.event.pull_request.head.sha }}
-              git push origin fix/pre-commit-${{ github.event.pull_request.head.sha }}
-
-      - name: Listen for `/fix-precommit` comment
-        if: failure() && github.event_name == 'issue_comment' && github.event.comment.body == '/fix-precommit' && github.event.issue.pull_request
-        uses: actions/github-script@v8
-        with:
-            github-token: ${{ secrets.GITHUB_TOKEN }}
-            script: |
-                const forkOwner = context.payload.pull_request.head.repo.owner.login;
-                const forkRepo = context.payload.pull_request.head.repo.name;
-                const forkBranch = context.payload.pull_request.head.ref;
-                const baseRepoOwner = context.repo.owner;
-                const baseRepoName = context.repo.repo;
-                const headBranch = `fix/pre-commit-${context.payload.pull_request.head.sha}`;
-
-                await github.rest.pulls.create({
-                    owner: forkOwner,
-                    repo: forkRepo,
-                    title: "Auto-fix: Pre-commit issues",
-                    head: `${baseRepoOwner}:${headBranch}`,
-                    base: forkBranch,
-                    body: "This PR attempts to fix pre-commit issues automatically.",
-                });
-
-      - name: Comment on PR if pre-commit failed
-        if: failure() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
-        uses: actions/github-script@v8
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number
-            });
-
-            const existingComment = comments.find(comment => comment.body.includes("⚠️ Pre-commit checks failed."));
-            if (!existingComment) {
-              await github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: "⚠️ Pre-commit checks failed. You can fix issues locally by running `pre-commit run --all-files`. Alternatively, comment `/fix-precommit` on this pull request, and I will attempt to auto-fix and open a new pull request for you."
-              });
-            }

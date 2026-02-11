@@ -20,6 +20,10 @@
 #include "qgscesiumutils.h"
 #include "qgsgltfutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #define TINYGLTF_IMPLEMENTATION
 #define TINYGLTF_NO_STB_IMAGE       // we use QImage-based reading of images
 #define TINYGLTF_NO_STB_IMAGE_WRITE // we don't need writing of images
@@ -31,7 +35,7 @@
 
 QString QgsB3DMToGltfAlgorithm::name() const
 {
-  return QStringLiteral( "b3dmtogltf" );
+  return u"b3dmtogltf"_s;
 }
 
 QString QgsB3DMToGltfAlgorithm::displayName() const
@@ -51,7 +55,7 @@ QString QgsB3DMToGltfAlgorithm::group() const
 
 QString QgsB3DMToGltfAlgorithm::groupId() const
 {
-  return QStringLiteral( "3dtiles" );
+  return u"3dtiles"_s;
 }
 
 QString QgsB3DMToGltfAlgorithm::shortHelpString() const
@@ -71,15 +75,15 @@ QgsB3DMToGltfAlgorithm *QgsB3DMToGltfAlgorithm::createInstance() const
 
 void QgsB3DMToGltfAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input B3DM" ), Qgis::ProcessingFileParameterBehavior::File, QStringLiteral( "b3dm" ), QVariant(), false, QStringLiteral( "B3DM (*.b3dm *.B3DM)" ) ) );
+  addParameter( new QgsProcessingParameterFile( u"INPUT"_s, QObject::tr( "Input B3DM" ), Qgis::ProcessingFileParameterBehavior::File, u"b3dm"_s, QVariant(), false, u"B3DM (*.b3dm *.B3DM)"_s ) );
 
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output file" ), QStringLiteral( "GLTF (*.gltf *.GLTF);;GLB (*.glb *.GLB)" ) ) );
+  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Output file" ), u"GLTF (*.gltf *.GLTF);;GLB (*.glb *.GLB)"_s ) );
 }
 
 QVariantMap QgsB3DMToGltfAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QString path = parameterAsFile( parameters, QStringLiteral( "INPUT" ), context );
-  const QString outputPath = parameterAsFile( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString path = parameterAsFile( parameters, u"INPUT"_s, context );
+  const QString outputPath = parameterAsFile( parameters, u"OUTPUT"_s, context );
 
   if ( !QFile::exists( path ) )
     throw QgsProcessingException( QObject::tr( "Could not load source file %1." ).arg( path ) );
@@ -162,7 +166,7 @@ QVariantMap QgsB3DMToGltfAlgorithm::processAlgorithm( const QVariantMap &paramet
     }
 
     const QString outputExtension = QFileInfo( outputPath ).suffix();
-    const bool isGlb = outputExtension.compare( QLatin1String( "glb" ), Qt::CaseInsensitive ) == 0;
+    const bool isGlb = outputExtension.compare( "glb"_L1, Qt::CaseInsensitive ) == 0;
     const QByteArray outputFile = QFile::encodeName( outputPath );
     std::ofstream of( outputFile.constData(), std::ios::binary | std::ios::trunc );
     if ( !of )
@@ -178,7 +182,7 @@ QVariantMap QgsB3DMToGltfAlgorithm::processAlgorithm( const QVariantMap &paramet
   }
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), outputPath );
+  outputs.insert( u"OUTPUT"_s, outputPath );
   return outputs;
 }
 

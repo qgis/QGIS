@@ -30,7 +30,11 @@
 #include "qgsmulticurve.h"
 #include "qgsmultisurface.h"
 
+#include <QString>
+
 #include "moc_qgsmeshtriangulation.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshTriangulation::QgsMeshTriangulation()
   : QObject()
@@ -126,7 +130,7 @@ void QgsMeshTriangulation::addVerticesFromFeature( const QgsFeature &feature, in
   catch ( QgsCsException &cse )
   {
     Q_UNUSED( cse )
-    QgsDebugMsgLevel( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ), 4 );
+    QgsDebugMsgLevel( u"Caught CRS exception %1"_s.arg( cse.what() ), 4 );
     return;
   }
 
@@ -166,7 +170,7 @@ void QgsMeshTriangulation::addBreakLinesFromFeature( const QgsFeature &feature, 
   catch ( QgsCsException &cse )
   {
     Q_UNUSED( cse )
-    QgsDebugMsgLevel( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ), 4 );
+    QgsDebugMsgLevel( u"Caught CRS exception %1"_s.arg( cse.what() ), 4 );
     return;
   }
 

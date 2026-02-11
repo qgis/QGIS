@@ -36,7 +36,6 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget : public QgsRasterRendererWidge
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsSingleBandGrayRendererWidget.
      * \param layer associated raster layer
@@ -90,7 +89,7 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget : public QgsRasterRendererWidge
 
   private:
     QgsRasterMinMaxWidget *mMinMaxWidget = nullptr;
-    bool mDisableMinMaxWidgetRefresh;
+    bool mDisableMinMaxWidgetRefresh = false;
     QgsColorRampLegendNodeSettings mLegendSettings;
 
     void minMaxModified();

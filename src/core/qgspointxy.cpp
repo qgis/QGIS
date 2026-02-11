@@ -24,9 +24,12 @@
 #include "qgspoint.h"
 
 #include <QObject>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgspointxy.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPointXY::QgsPointXY( const QgsPointXY &p )
   : mX( p.x() )
@@ -65,17 +68,17 @@ QString QgsPointXY::toString( int precision ) const
   {
     const QString x = std::isfinite( mX ) ? QString::number( mX, 'f', precision ) : QObject::tr( "infinite" );
     const QString y = std::isfinite( mY ) ? QString::number( mY, 'f', precision ) : QObject::tr( "infinite" );
-    return QStringLiteral( "%1,%2" ).arg( x, y );
+    return u"%1,%2"_s.arg( x, y );
   }
 }
 
 QString QgsPointXY::asWkt() const
 {
-  QString wkt = QStringLiteral( "POINT" );
+  QString wkt = u"POINT"_s;
   if ( isEmpty() )
-    wkt += QLatin1String( " EMPTY" );
+    wkt += " EMPTY"_L1;
   else
-    wkt += QStringLiteral( "(%1 %2)" ).arg( qgsDoubleToString( mX ), qgsDoubleToString( mY ) );
+    wkt += u"(%1 %2)"_s.arg( qgsDoubleToString( mX ), qgsDoubleToString( mY ) );
 
   return wkt;
 }

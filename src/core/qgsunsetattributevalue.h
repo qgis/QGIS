@@ -24,6 +24,8 @@
 #include <QString>
 #include <QVariant>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief Represents a default, "not-specified" value for a feature attribute.
@@ -61,9 +63,9 @@ class CORE_EXPORT QgsUnsetAttributeValue
     % MethodCode
     QString str;
     if ( !sipCpp->defaultValueClause().isEmpty() )
-      str = QStringLiteral( "<QgsUnsetAttributeValue: %1>" ).arg( sipCpp->defaultValueClause() );
+      str = u"<QgsUnsetAttributeValue: %1>"_s.arg( sipCpp->defaultValueClause() );
     else
-      str = QStringLiteral( "<QgsUnsetAttributeValue>" );
+      str = u"<QgsUnsetAttributeValue>"_s;
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

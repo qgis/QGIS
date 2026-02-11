@@ -42,7 +42,6 @@ class QgsCheckableItemModel : public QStandardItemModel
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsCheckableItemModel.
      * \param parent parent object
@@ -95,7 +94,6 @@ class QgsCheckBoxDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsCheckBoxDelegate.
      * \param parent parent object
@@ -127,7 +125,6 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
     Q_PROPERTY( QStringList checkedItems READ checkedItems WRITE setCheckedItems )
 
   public:
-
     /**
      * Constructor for QgsCheckableComboBox.
      */
@@ -245,7 +242,6 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
     void setCheckedItems( const QStringList &items );
 
   protected:
-
     /**
      * Handler for widget resizing
      */

@@ -10,6 +10,7 @@
 
 
 
+
 class QgsGlowEffect : QgsPaintEffect
 {
 %Docstring(signature="appended")
@@ -35,6 +36,7 @@ picture.
     virtual Qgis::PaintEffectFlags flags() const;
 
     virtual QVariantMap properties() const;
+
 
     virtual void readProperties( const QVariantMap &props );
 

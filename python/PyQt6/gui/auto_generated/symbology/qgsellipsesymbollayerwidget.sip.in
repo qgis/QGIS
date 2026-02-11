@@ -19,7 +19,6 @@ A widget for configuring a :py:class:`QgsEllipseSymbolLayer`.
 #include "qgsellipsesymbollayerwidget.h"
 %End
   public:
-
     QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsEllipseSymbolLayerWidget.

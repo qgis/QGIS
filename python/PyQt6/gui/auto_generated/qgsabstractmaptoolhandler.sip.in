@@ -55,7 +55,6 @@ modes are toggled, when other map tools are switched to, etc).
 #include "qgsabstractmaptoolhandler.h"
 %End
   public:
-
     struct Context
     {
         bool dummy;

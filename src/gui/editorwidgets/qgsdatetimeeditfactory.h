@@ -30,7 +30,6 @@ SIP_NO_FILE
 class GUI_EXPORT QgsDateTimeEditFactory : public QgsEditorWidgetFactory
 {
   public:
-
     /**
      * Constructor for QgsDateTimeEditFactory, where \a name is a human-readable
      * name for the factory and \a icon provides a visual representation of this widget type.

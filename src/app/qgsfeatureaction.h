@@ -104,7 +104,7 @@ class APP_EXPORT QgsFeatureAction : public QAction
     QUuid mActionId;
     int mIdx;
 
-    bool mFeatureSaved;
+    bool mFeatureSaved = false;
 
     bool mForceSuppressFormPopup = false;
 };

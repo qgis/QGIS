@@ -35,6 +35,8 @@
 #include <QString>
 #include <QVariantMap>
 
+using namespace Qt::StringLiterals;
+
 class QgsDataItem;
 class QgsDataItemProvider;
 class QgsTransaction;
@@ -520,7 +522,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      */
     virtual bool createDatabase( const QString &uri, QString &errorMessage SIP_OUT );
 
-    // TODO QGIS 4.0: rename createOptions to creationOptions for consistency with GDAL
+    // TODO QGIS 5.0: rename createOptions to creationOptions for consistency with GDAL
 
     /**
      * Creates a new instance of the raster data provider.
@@ -817,7 +819,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsProviderMetadata: %1>" ).arg( sipCpp->key() );
+    QString str = u"<QgsProviderMetadata: %1>"_s.arg( sipCpp->key() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -858,7 +860,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     // when all the providers are ready
     // T_provider_conn: subclass of QgsAbstractProviderConnection,
     // T_conn: provider connection class (such as QgsOgrDbConnection or QgsPostgresConn)
-    // TODO QGIS4: remove all old provider conn classes and move functionality into QgsAbstractProviderConnection subclasses
+    // TODO QGIS 5: remove all old provider conn classes and move functionality into QgsAbstractProviderConnection subclasses
     template <class T_provider_conn, class T_conn> QMap<QString, QgsAbstractProviderConnection *> connectionsProtected( bool cached = true )
     {
       if ( ! cached || mProviderConnections.isEmpty() )

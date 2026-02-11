@@ -23,6 +23,10 @@
 #include "qgsspatialindex.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QString QgsGeometryDuplicateCheckError::duplicatesString( const QMap<QString, QgsFeaturePool *> &featurePools, const QMap<QString, QList<QgsFeatureId>> &duplicates )
 {
   QStringList str;
@@ -37,7 +41,7 @@ QString QgsGeometryDuplicateCheckError::duplicatesString( const QMap<QString, Qg
     }
     str.back() += ids.join( ',' );
   }
-  return str.join( QLatin1String( "; " ) );
+  return str.join( "; "_L1 );
 }
 
 
@@ -171,7 +175,7 @@ QStringList QgsGeometryDuplicateCheck::resolutionMethods() const
 
 QString QgsGeometryDuplicateCheck::factoryId()
 {
-  return QStringLiteral( "QgsGeometryDuplicateCheck" );
+  return u"QgsGeometryDuplicateCheck"_s;
 }
 
 QgsGeometryCheck::CheckType QgsGeometryDuplicateCheck::factoryCheckType()

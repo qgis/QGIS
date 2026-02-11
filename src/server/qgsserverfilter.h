@@ -39,7 +39,6 @@ class QgsServerInterface;
 class SERVER_EXPORT QgsServerFilter
 {
   public:
-
     /**
      * Constructor
      * QgsServerInterface passed to plugins constructors
@@ -59,7 +58,7 @@ class SERVER_EXPORT QgsServerFilter
      * This method is considered as deprecated and \see onRequestReady should
      * be used instead.
      *
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED virtual void requestReady() SIP_DEPRECATED;
 
@@ -71,7 +70,7 @@ class SERVER_EXPORT QgsServerFilter
      * This method is considered as deprecated and \see onResponseComplete should
      * be used instead.
      *
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED virtual void responseComplete() SIP_DEPRECATED;
 
@@ -86,7 +85,7 @@ class SERVER_EXPORT QgsServerFilter
      * This method is considered as deprecated and \see onSendResponse should
      * be used instead.
      *
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED virtual void sendResponse() SIP_DEPRECATED;
 

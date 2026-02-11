@@ -19,6 +19,10 @@
 #include "qgstest.h"
 #include "qgstilingscheme.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup UnitTests
  * This is a unit test for the vertex tool
@@ -28,7 +32,7 @@ class TestQgsTilingScheme : public QgsTest
     Q_OBJECT
   public:
     TestQgsTilingScheme()
-      : QgsTest( QStringLiteral( "Test QgsTilingScheme" ) ) {}
+      : QgsTest( u"Test QgsTilingScheme"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

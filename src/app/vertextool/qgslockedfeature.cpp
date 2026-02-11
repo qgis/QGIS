@@ -32,7 +32,11 @@
 #include "qgsvertexeditor.h"
 #include "qgsvertexmarker.h"
 
+#include <QString>
+
 #include "moc_qgslockedfeature.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLockedFeature::QgsLockedFeature( QgsFeatureId featureId, QgsVectorLayer *layer, QgsMapCanvas *canvas )
   : mFeatureId( featureId )
@@ -230,7 +234,7 @@ void QgsLockedFeature::createVertexMap()
 {
   if ( !mGeometry )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Loading feature" ), 2 );
+    QgsDebugMsgLevel( u"Loading feature"_s, 2 );
     updateGeometry( nullptr );
   }
 

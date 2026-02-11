@@ -191,7 +191,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      */
     bool mZombie = false;
 
-    // TODO QGIS 4: make this private
+    // TODO QGIS 5: make this private
 
     /**
      * reference counting (to allow seamless copying of QgsFeatureIterator instances)

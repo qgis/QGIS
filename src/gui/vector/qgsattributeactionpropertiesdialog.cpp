@@ -30,8 +30,11 @@
 #include <QImageWriter>
 #include <QLineEdit>
 #include <QPlainTextEdit>
+#include <QString>
 
 #include "moc_qgsattributeactionpropertiesdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( Qgis::AttributeActionType type, const QString &description, const QString &shortTitle, const QString &iconPath, const QString &actionText, bool capture, const QSet<QString> &actionScopes, const QString &notificationMessage, bool isEnabledOnlyWhenEditable, QgsVectorLayer *layer, QWidget *parent )
   : QDialog( parent )
@@ -63,10 +66,10 @@ QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsVecto
   populateActionTypes();
 
   QSet<QString> defaultActionScopes;
-  defaultActionScopes << QStringLiteral( "Canvas" )
-                      << QStringLiteral( "FieldSpecific" )
-                      << QStringLiteral( "Feature" )
-                      << QStringLiteral( "FeatureForm" );
+  defaultActionScopes << u"Canvas"_s
+                      << u"FieldSpecific"_s
+                      << u"Feature"_s
+                      << u"FeatureForm"_s;
 
   init( defaultActionScopes );
 }
@@ -160,7 +163,7 @@ void QgsAttributeActionPropertiesDialog::insertExpressionOrField()
   QString selText = mActionText->selectedText();
 
   // edit the selected expression if there's one
-  if ( selText.startsWith( QLatin1String( "[%" ) ) && selText.endsWith( QLatin1String( "%]" ) ) )
+  if ( selText.startsWith( "[%"_L1 ) && selText.endsWith( "%]"_L1 ) )
     selText = selText.mid( 2, selText.size() - 4 );
 
   mActionText->insertText( "[%" + mFieldExpression->currentField() + "%]" );
@@ -172,9 +175,9 @@ void QgsAttributeActionPropertiesDialog::chooseIcon()
   QStringList formatList;
   const auto constList = list;
   for ( const QByteArray &format : constList )
-    formatList << QStringLiteral( "*.%1" ).arg( QString( format ) );
+    formatList << u"*.%1"_s.arg( QString( format ) );
 
-  const QString filter = tr( "Images( %1 ); All( *.* )" ).arg( formatList.join( QLatin1Char( ' ' ) ) );
+  const QString filter = tr( "Images( %1 ); All( *.* )" ).arg( formatList.join( ' '_L1 ) );
   const QString icon = QFileDialog::getOpenFileName( this, tr( "Choose Icon…" ), mActionIcon->text(), filter );
 
   if ( !icon.isNull() )
@@ -211,11 +214,11 @@ void QgsAttributeActionPropertiesDialog::init( const QSet<QString> &actionScopes
     QString tooltip = scope.description();
     if ( !variables.empty() )
     {
-      tooltip += QLatin1String( "<br><br>" );
+      tooltip += "<br><br>"_L1;
       tooltip += tr( "Additional variables" );
-      tooltip += QLatin1String( "<ul><li>" );
-      tooltip += variables.join( QLatin1String( "</li><li>" ) );
-      tooltip += QLatin1String( "</ul></li>" );
+      tooltip += "<ul><li>"_L1;
+      tooltip += variables.join( "</li><li>"_L1 );
+      tooltip += "</ul></li>"_L1;
     }
     actionScopeCheckBox->setToolTip( tooltip );
     actionScopeCheckBox->setProperty( "ActionScopeName", scope.id() );
@@ -244,7 +247,7 @@ void QgsAttributeActionPropertiesDialog::init( const QSet<QString> &actionScopes
 
 void QgsAttributeActionPropertiesDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#actions-properties" ) );
+  QgsHelp::openHelp( u"working_with_vector/vector_properties.html#actions-properties"_s );
 }
 
 void QgsAttributeActionPropertiesDialog::populateActionTypes()

@@ -35,7 +35,6 @@ knowledge about geographic coordinates corresponding to the event.
       sipType = 0;
 %End
   public:
-
     QgsPlotMouseEvent( QgsPlotCanvas *canvas, QMouseEvent *event );
 %Docstring
 Creates a new QgsPlotMouseEvent.

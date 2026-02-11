@@ -71,11 +71,19 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
   public:
 
     /**
-     * Layers and optional attribute index to split
-     * into multiple layers using attribute value as layer name.
+     * Encapsulates the properties of a vector layer containing features that will be exported to the DXF file.
      */
     struct CORE_EXPORT DxfLayer
     {
+        /**
+         * Constructor for DxfLayer.
+         *
+         * \param vl source vector layer
+         * \param layerOutputAttributeIndex attribute index used to split the source layer into multiple exported DXF layers, or -1 if no splitting should occur
+         * \param buildDDBlocks set to TRUE if data defined point block symbols should be created (since QGIS 3.38)
+         * \param ddBlocksMaxNumberOfClasses the maximum number of data defined symbol classes for which blocks are created, or -1 if there is no such limitation (since QGIS 3.38)
+         * \param overriddenName the overridden layer name to be used in the exported DXF. If not set, the source vector layer's name will be used. (since QGIS 3.38)
+         */
         DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1, bool buildDDBlocks = DEFAULT_DXF_DATA_DEFINED_BLOCKS, int ddBlocksMaxNumberOfClasses = -1, QString overriddenName = QString() )
           : mLayer( vl )
           , mLayerOutputAttributeIndex( layerOutputAttributeIndex )
@@ -84,40 +92,51 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
           , mOverriddenName( overriddenName )
         {}
 
-        //! Returns the layer
+        //! Returns the source vector layer.
         QgsVectorLayer *layer() const {return mLayer;}
 
         /**
-         * Returns the attribute index used to split into multiple layers.
-         * The attribute value is used for layer names.
-         * \see splitLayerAttribute
+         * Returns the attribute index used to split the source layer's features into multiple exported DXF layers.
+         *
+         * Each unique value from the associated attribute will form a separate layer in the exported DXF. The attribute value is used for the DXF layer names.
+         *
+         * \see splitLayerAttribute()
          */
         int layerOutputAttributeIndex() const {return mLayerOutputAttributeIndex;}
 
         /**
-         * If the split layer attribute is set, the vector layer
-         * will be split into several dxf layers, one per each
-         * unique value.
+         * Returns the name of the field used to split the source layer's features into multiple exported DXF layers.
+         *
+         * Each unique value from the associated attribute will form a separate layer in the exported DXF. The attribute value is used for the DXF layer names.
+         *
+         * \see layerOutputAttributeIndex()
          * \since QGIS 3.12
          */
         QString splitLayerAttribute() const;
 
         /**
-         * \brief Flag if data defined point block symbols should be created. Default is false
-         * \return True if data defined point block symbols should be created
+         * Returns TRUE if data defined point block symbols should be created.
+         *
+         * \see dataDefinedBlocksMaximumNumberOfClasses()
          * \since QGIS 3.38
          */
         bool buildDataDefinedBlocks() const { return mBuildDDBlocks; }
 
         /**
-         * \brief Returns the maximum number of data defined symbol classes for which blocks are created. Returns -1 if there is no such limitation
-         * \return
+         * Returns the maximum number of data defined symbol classes for which blocks are created.
+         *
+         * \returns -1 if there is no such limitation
+         *
+         * \see buildDataDefinedBlocks()
          * \since QGIS 3.38
          */
         int dataDefinedBlocksMaximumNumberOfClasses() const { return mDDBlocksMaxNumberOfClasses; }
 
         /**
-        * \brief Returns the overridden layer name to be used in the exported DXF.
+        * Returns the overridden layer name to be used in the exported DXF.
+        *
+        * If not set the source layer's name will be used.
+        *
         * \since QGIS 3.38
         */
         QString overriddenName() const { return mOverriddenName; }
@@ -561,7 +580,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
      * \param fid id of feature
      * \param layer dxf layer of feature
      *
-     * \deprecated QGIS 3.40. Will be made private in QGIS 4.
+     * \deprecated QGIS 3.40. Will be made private in QGIS 5.
      */
     Q_DECL_DEPRECATED void registerDxfLayer( const QString &layerId, QgsFeatureId fid, const QString &layer );
 

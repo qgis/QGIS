@@ -26,6 +26,9 @@
 
 #include <QComboBox>
 #include <QStandardItemModel>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup gui
@@ -54,7 +57,7 @@ class GUI_EXPORT QgsSettingsFlagsEditorWidgetWrapper : public QgsSettingsEditorW
 
     QString id() const override
     {
-      return QStringLiteral( "%1-%2" ).arg( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::EnumFlag ) ), QMetaEnum::fromType<FLAGS>().name() );
+      return u"%1-%2"_s.arg( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::EnumFlag ) ), QMetaEnum::fromType<FLAGS>().name() );
     }
 
     QVariant variantValueFromWidget() const override
@@ -72,7 +75,7 @@ class GUI_EXPORT QgsSettingsFlagsEditorWidgetWrapper : public QgsSettingsEditorW
       }
       else
       {
-        QgsDebugMsgLevel( QStringLiteral( "Settings editor not set for %1" ).arg( this->mSetting->definitionKey() ), 2 );
+        QgsDebugMsgLevel( u"Settings editor not set for %1"_s.arg( this->mSetting->definitionKey() ), 2 );
       }
       return false;
     }
@@ -111,7 +114,7 @@ class GUI_EXPORT QgsSettingsFlagsEditorWidgetWrapper : public QgsSettingsEditorW
       }
       else
       {
-        QgsDebugMsgLevel( QStringLiteral( "Settings editor not set for %1" ).arg( this->mSetting->definitionKey() ), 2 );
+        QgsDebugMsgLevel( u"Settings editor not set for %1"_s.arg( this->mSetting->definitionKey() ), 2 );
       }
       return false;
     }
@@ -161,7 +164,7 @@ class QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapper
 
     QString id() const override
     {
-      return QStringLiteral( "%1-%2" ).arg( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::EnumFlag ) ), QMetaEnum::fromType<ENUM>().name() );
+      return u"%1-%2"_s.arg( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::EnumFlag ) ), QMetaEnum::fromType<ENUM>().name() );
     }
 
     /**
@@ -188,7 +191,7 @@ class QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapper
       }
       else
       {
-        QgsDebugMsgLevel( QStringLiteral( "Settings editor not set for %1" ).arg( this->mSetting->definitionKey() ), 2 );
+        QgsDebugMsgLevel( u"Settings editor not set for %1"_s.arg( this->mSetting->definitionKey() ), 2 );
       }
       return false;
     }
@@ -216,7 +219,7 @@ class QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapper
       }
       else
       {
-        QgsDebugMsgLevel( QStringLiteral( "Settings editor not set for %1" ).arg( this->mSetting->definitionKey() ), 2 );
+        QgsDebugMsgLevel( u"Settings editor not set for %1"_s.arg( this->mSetting->definitionKey() ), 2 );
       }
       return false;
     }

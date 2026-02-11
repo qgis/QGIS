@@ -19,9 +19,12 @@
 #include "qgsruntimeprofiler.h"
 
 #include <QDebug>
+#include <QString>
 #include <QThread>
 
 #include "moc_qgsrunnableprovidercreator.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRunnableProviderCreator::QgsRunnableProviderCreator( const QString &layerId, const QString &providerKey, const QString &dataSource, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : mLayerId( layerId )
@@ -36,7 +39,7 @@ QgsRunnableProviderCreator::QgsRunnableProviderCreator( const QString &layerId, 
 void QgsRunnableProviderCreator::run()
 {
   // should use thread-local profiler
-  QgsScopedRuntimeProfile profile( "Create data providers/" + mLayerId, QStringLiteral( "projectload" ) );
+  QgsScopedRuntimeProfile profile( "Create data providers/" + mLayerId, u"projectload"_s );
   mDataProvider.reset( QgsProviderRegistry::instance()->createProvider( mProviderKey, mDataSource, mOptions, mFlags ) );
   mDataProvider->moveToThread( QObject::thread() );
   emit providerCreated( mDataProvider->isValid(), mLayerId );

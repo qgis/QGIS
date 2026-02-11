@@ -49,6 +49,7 @@ class CORE_EXPORT QgsMeshLayerProfileResults : public QgsAbstractProfileSurfaceR
   public:
 
     QString type() const override;
+    using QgsAbstractProfileSurfaceResults::identify;
     QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
 
   private:
@@ -82,6 +83,7 @@ class CORE_EXPORT QgsMeshLayerProfileGenerator : public QgsAbstractProfileSurfac
     bool generateProfile( const QgsProfileGenerationContext &context = QgsProfileGenerationContext() ) override;
     QgsAbstractProfileResults *takeResults() override;
     QgsFeedback *feedback() const override;
+    QString type() const override;
 
   private:
 

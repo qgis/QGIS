@@ -120,7 +120,6 @@ class GUI_EXPORT QgsRasterAttributeTableWidget : public QgsPanelWidget, private 
     Q_OBJECT
 
   public:
-
     /**
      * Creates a new QgsRasterAttributeTableWidget
      * \param parent parent widget

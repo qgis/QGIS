@@ -22,7 +22,11 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
 
+#include <QString>
+
 #include "moc_qgsvectorlayertools.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVectorLayerTools::QgsVectorLayerTools()
   : QObject( nullptr )
@@ -33,6 +37,7 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
   bool res = false;
   if ( !layer || !layer->isEditable() )
   {
+    request = QgsFeatureRequest();
     return false;
   }
 
@@ -64,7 +69,7 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
       if ( !newFeature.isValid() )
       {
         couldNotWriteCount++;
-        QgsDebugError( QStringLiteral( "Could not add new feature. Original copied feature id: %1" ).arg( f.id() ) );
+        QgsDebugError( u"Could not add new feature. Original copied feature id: %1"_s.arg( f.id() ) );
       }
       else
       {
@@ -90,7 +95,7 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
       if ( !layer->addFeature( newFeature ) )
       {
         couldNotWriteCount++;
-        QgsDebugError( QStringLiteral( "Could not add new feature. Original copied feature id: %1" ).arg( f.id() ) );
+        QgsDebugError( u"Could not add new feature. Original copied feature id: %1"_s.arg( f.id() ) );
       }
       else
       {

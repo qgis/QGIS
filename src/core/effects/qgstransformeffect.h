@@ -24,6 +24,9 @@
 #include "qgspainteffect.h"
 
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core
@@ -47,8 +50,10 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
 
     QgsTransformEffect() = default;
 
-    QString type() const override { return QStringLiteral( "transform" ); }
+    QString type() const override { return u"transform"_s; }
     QVariantMap properties() const override;
+
+    using QgsPaintEffect::readProperties;
     void readProperties( const QVariantMap &props ) override;
     QgsTransformEffect *clone() const override SIP_FACTORY;
 

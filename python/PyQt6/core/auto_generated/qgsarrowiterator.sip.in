@@ -182,6 +182,63 @@ Returns ``True`` if this wrapper object holds a valid ArrowArray
     QgsArrowArray( const QgsArrowArray &other );
 };
 
+class QgsArrowArrayStream
+{
+%Docstring(signature="appended")
+Wrapper around an ArrowArrayStream.
+
+This object provides a helper to allow array streams to be passed to or
+returned from QGIS functions in C++ or Python. See the documentation for
+the Arrow C Stream Interface for how to interact with the underlying
+ArrowArrayStream:
+https://arrow.apache.org/docs/format/CStreamInterface.html
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsarrowiterator.h"
+%End
+  public:
+    QgsArrowArrayStream();
+%Docstring
+Construct invalid array stream holder
+%End
+
+
+
+    ~QgsArrowArrayStream();
+
+
+    unsigned long long cArrayStreamAddress() const;
+%Docstring
+Returns the address of the underlying ArrowArrayStream for import or
+export across boundaries
+
+.. warning::
+
+   This is intended for advanced usage and may cause a crash if used incorrectly.
+%End
+
+    void exportToAddress( unsigned long long otherAddress );
+%Docstring
+Export this array to the address of an empty ArrowArrayStream for export
+across boundaries
+
+.. warning::
+
+   This is intended for advanced usage and may cause a crash if used incorrectly.
+%End
+
+    bool isValid() const;
+%Docstring
+Returns ``True`` if this wrapper object holds a valid ArrowArray
+%End
+
+  private:
+    QgsArrowArrayStream( const QgsArrowArrayStream &other );
+};
+
 class QgsArrowIterator
 {
 %Docstring(signature="appended")
@@ -205,12 +262,18 @@ Construct invalid iterator
 Construct iterator from an existing feature iterator
 %End
 
+
     void setSchema( const QgsArrowSchema &schema );
 %Docstring
 Set the ArrowSchema for the output of all future batches
 
 This must be set before calling
 :py:func:`~QgsArrowIterator.nextFeatures`.
+%End
+
+    QgsArrowArrayStream toArrayStream( int batchSize = 65536 ) const;
+%Docstring
+Export this iterator as an ArrowArrayStream
 %End
 
     QgsArrowArray nextFeatures( int n );

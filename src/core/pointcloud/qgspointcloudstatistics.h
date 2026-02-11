@@ -28,6 +28,12 @@
 class QgsPointCloudAttribute;
 class QgsPointCloudNodeId;
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include "qgspointcloudstatistics.h"
+% End
+#endif
+
 /**
  * \ingroup core
  * \class QgsPointCloudAttributeStatistics

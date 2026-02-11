@@ -201,7 +201,6 @@ QgsVectorLayerUndoPassthroughCommandChangeGeometry::QgsVectorLayerUndoPassthroug
   , mFid( fid )
   , mNewGeom( geom )
   , mOldGeom( mBuffer->L->getFeature( mFid ).geometry() )
-  , mFirstChange( true )
 {
   if ( mBuffer->mAddedFeatures.contains( mFid ) )
   {
@@ -283,7 +282,6 @@ QgsVectorLayerUndoPassthroughCommandChangeAttribute::QgsVectorLayerUndoPassthrou
   , mFieldIndex( field )
   , mNewValue( newValue )
   , mOldValue( mBuffer->L->getFeature( mFid ).attribute( field ) )
-  , mFirstChange( true )
 {
 
   if ( mBuffer->mAddedFeatures.contains( mFid ) )

@@ -144,134 +144,6 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
   public:
 
     /**
-     * Unit for grid values
-     */
-    enum GridUnit
-    {
-      MapUnit, //!< Grid units follow map units
-      MM, //!< Grid units in millimeters
-      CM, //!< Grid units in centimeters
-      DynamicPageSizeBased, //!< Dynamically sized, based on a on-page size range
-    };
-
-    /**
-     * Grid drawing style
-     */
-    enum GridStyle
-    {
-      Solid = 0,
-      Cross, //!< Draw line crosses at intersections of grid lines
-      Markers, //!< Draw markers at intersections of grid lines
-      FrameAnnotationsOnly //!< No grid lines over the map, only draw frame and annotations
-    };
-
-    /**
-     * Display settings for grid annotations and frames
-     */
-    enum DisplayMode
-    {
-      ShowAll = 0, //!< Show both latitude and longitude annotations/divisions
-      LatitudeOnly, //!< Show latitude/y annotations/divisions only
-      LongitudeOnly, //!< Show longitude/x annotations/divisions only
-      HideAll //!< No annotations
-    };
-
-    /**
-     * Position for grid annotations
-     */
-    enum AnnotationPosition
-    {
-      InsideMapFrame = 0, //!< Draw annotations inside the map frame
-      OutsideMapFrame, //!< Draw annotations outside the map frame
-    };
-
-    /**
-     * Direction of grid annotations
-     */
-    enum AnnotationDirection
-    {
-      Horizontal = 0, //!< Draw annotations horizontally
-      Vertical, //!< Draw annotations vertically, ascending
-      VerticalDescending, //!< Draw annotations vertically, descending
-      BoundaryDirection, //!< Annotations follow the boundary direction
-      AboveTick, //!< Draw annotations parallel to tick (above the line)
-      OnTick, //!< Draw annotations parallel to tick (on the line)
-      UnderTick, //!< Draw annotations parallel to tick (under the line)
-    };
-
-    /**
-     * Format for displaying grid annotations
-     */
-    enum AnnotationFormat
-    {
-      Decimal = 0, //!< Decimal degrees, use - for S/W coordinates
-      DegreeMinute, //!< Degree/minutes, use NSEW suffix
-      DegreeMinuteSecond, //!< Degree/minutes/seconds, use NSEW suffix
-      DecimalWithSuffix, //!< Decimal degrees, use NSEW suffix
-      DegreeMinuteNoSuffix, //!< Degree/minutes, use - for S/W coordinates
-      DegreeMinutePadded, //!< Degree/minutes, with minutes using leading zeros where required
-      DegreeMinuteSecondNoSuffix, //!< Degree/minutes/seconds, use - for S/W coordinates
-      DegreeMinuteSecondPadded, //!< Degree/minutes/seconds, with minutes using leading zeros where required
-      CustomFormat //!< Custom expression-based format
-    };
-
-    /**
-     * Border sides for annotations
-     */
-    enum BorderSide
-    {
-      Left, //!< Left border
-      Right, //!< Right border
-      Bottom, //!< Bottom border
-      Top, //!< Top border
-    };
-
-    /**
-     * Style for grid frame
-     */
-    enum FrameStyle
-    {
-      NoFrame = 0, //!< Disable grid frame
-      Zebra, //!< Black/white pattern
-      InteriorTicks,  //!< Tick markers drawn inside map frame
-      ExteriorTicks,  //!< Tick markers drawn outside map frame
-      InteriorExteriorTicks, //!< Tick markers drawn both inside and outside the map frame
-      LineBorder, //!< Simple solid line frame
-      LineBorderNautical, //!< Simple solid line frame, with nautical style diagonals on corners
-      ZebraNautical, //!< Black/white pattern, with nautical style diagonals on corners
-    };
-
-    /**
-     * Tick length mode (useful for rotated grids)
-     */
-    enum TickLengthMode
-    {
-      OrthogonalTicks = 0, //!< Align ticks orthogonaly
-      NormalizedTicks, //!< Constant tick lengths
-    };
-
-    /**
-     * Flags for controlling which side of the map a frame is drawn on
-     */
-    enum FrameSideFlag SIP_ENUM_BASETYPE( IntFlag )
-    {
-      FrameLeft = 0x01, //!< Left side of map
-      FrameRight = 0x02, //!< Right side of map
-      FrameTop = 0x04, //!< Top side of map
-      FrameBottom = 0x08 //!< Bottom side of map
-    };
-    Q_DECLARE_FLAGS( FrameSideFlags, FrameSideFlag )
-
-    /**
-     * Annotation coordinate type
-     */
-    enum AnnotationCoordinate
-    {
-      Longitude = 0, //!< Coordinate is a longitude value
-      Latitude //!< Coordinate is a latitude value
-    };
-
-    /**
      * Constructor for QgsLayoutItemMapGrid.
      * \param name friendly display name for grid
      * \param map QgsLayoutItemMap the grid is attached to
@@ -334,14 +206,14 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * and offset for grid lines.
      * \see units
      */
-    void setUnits( GridUnit unit );
+    void setUnits( Qgis::MapGridUnit unit );
 
     /**
      * Returns the units used for grid measurements such as the interval
      * and offset for grid lines.
      * \see setUnits()
      */
-    GridUnit units() const { return mGridUnit; }
+    Qgis::MapGridUnit units() const { return mGridUnit; }
 
     /**
      * Sets the \a interval between grid lines in the x-direction. The units
@@ -460,14 +332,14 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * over the map's contents.
      * \see style()
      */
-    void setStyle( GridStyle style );
+    void setStyle( Qgis::MapGridStyle style );
 
     /**
      * Returns the grid's style, which controls how the grid is drawn
      * over the map's contents.
      * \see setStyle()
      */
-    GridStyle style() const { return mGridStyle; }
+    Qgis::MapGridStyle style() const { return mGridStyle; }
 
     /**
      * Sets the \a length (in layout units) of the cross segments drawn for the grid. This is only used for grids
@@ -644,7 +516,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \param border side of map for annotations
      * \see annotationDisplay()
      */
-    void setAnnotationDisplay( DisplayMode display, BorderSide border );
+    void setAnnotationDisplay( Qgis::MapGridComponentVisibility display, Qgis::MapGridBorderSide border );
 
     /**
      * Returns the display mode for the grid annotations on a specified side of the map
@@ -654,21 +526,21 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \returns display mode for grid annotations
      * \see setAnnotationDisplay()
      */
-    DisplayMode annotationDisplay( BorderSide border ) const;
+    Qgis::MapGridComponentVisibility annotationDisplay( Qgis::MapGridBorderSide border ) const;
 
     /**
      * Sets the \a position for the grid annotations on a specified \a side of the map
      * frame.
      * \see annotationPosition()
      */
-    void setAnnotationPosition( AnnotationPosition position, BorderSide side );
+    void setAnnotationPosition( Qgis::MapGridAnnotationPosition position, Qgis::MapGridBorderSide side );
 
     /**
      * Returns the position for the grid annotations on a specified \a side of the map
      * frame.
      * \see setAnnotationPosition()
      */
-    AnnotationPosition annotationPosition( BorderSide side ) const;
+    Qgis::MapGridAnnotationPosition annotationPosition( Qgis::MapGridBorderSide side ) const;
 
     /**
      * Sets the \a distance between the map frame and annotations. Units are layout units.
@@ -686,32 +558,32 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * Sets the \a direction for drawing frame annotations for the specified map \a side.
      * \see annotationDirection()
      */
-    void setAnnotationDirection( AnnotationDirection direction, BorderSide side );
+    void setAnnotationDirection( Qgis::MapGridAnnotationDirection direction, Qgis::MapGridBorderSide side );
 
     /**
      * Sets the \a direction for drawing all frame annotations.
      * \see annotationDirection()
      */
-    void setAnnotationDirection( AnnotationDirection direction );
+    void setAnnotationDirection( Qgis::MapGridAnnotationDirection direction );
 
     /**
      * Returns the direction for drawing frame annotations, on the specified \a side
      * of the map.
      * \see setAnnotationDirection()
      */
-    AnnotationDirection annotationDirection( BorderSide border ) const;
+    Qgis::MapGridAnnotationDirection annotationDirection( Qgis::MapGridBorderSide border ) const;
 
     /**
      * Sets the \a format for drawing grid annotations.
      * \see annotationFormat()
      */
-    void setAnnotationFormat( const AnnotationFormat format ) { mGridAnnotationFormat = format; }
+    void setAnnotationFormat( const Qgis::MapGridAnnotationFormat format ) { mGridAnnotationFormat = format; }
 
     /**
      * Returns the format for drawing grid annotations.
      * \see setAnnotationFormat()
      */
-    AnnotationFormat annotationFormat() const { return mGridAnnotationFormat; }
+    Qgis::MapGridAnnotationFormat annotationFormat() const { return mGridAnnotationFormat; }
 
     /**
      * Sets the \a expression used for drawing grid annotations. This is only used when annotationFormat()
@@ -735,25 +607,25 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * Sets the grid frame \a style.
      * \see frameStyle()
      */
-    void setFrameStyle( const FrameStyle style ) { mGridFrameStyle = style; }
+    void setFrameStyle( const Qgis::MapGridFrameStyle style ) { mGridFrameStyle = style; }
 
     /**
      * Returns the grid frame style.
      * \see setFrameStyle()
      */
-    FrameStyle frameStyle() const { return mGridFrameStyle; }
+    Qgis::MapGridFrameStyle frameStyle() const { return mGridFrameStyle; }
 
     /**
      * Sets what type of grid \a divisions should be used for frames on a specified \a side of the map.
      * \see frameDivisions()
      */
-    void setFrameDivisions( DisplayMode divisions, BorderSide side );
+    void setFrameDivisions( Qgis::MapGridComponentVisibility divisions, Qgis::MapGridBorderSide side );
 
     /**
      * Returns the type of grid divisions which are used for frames on a specified \a side of the map.
      * \see setFrameDivisions()
      */
-    DisplayMode frameDivisions( BorderSide side ) const;
+    Qgis::MapGridComponentVisibility frameDivisions( Qgis::MapGridBorderSide side ) const;
 
     /**
      * Sets \a flags for grid frame sides. Setting these flags controls which sides
@@ -762,7 +634,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \see frameSideFlags()
      * \see testFrameSideFlag()
      */
-    void setFrameSideFlags( QgsLayoutItemMapGrid::FrameSideFlags flags );
+    void setFrameSideFlags( Qgis::MapGridFrameSideFlags flags );
 
     /**
      * Sets whether the grid frame is drawn for a certain side of the map item.
@@ -772,7 +644,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \see frameSideFlags()
      * \see testFrameSideFlag()
      */
-    void setFrameSideFlag( QgsLayoutItemMapGrid::FrameSideFlag flag, bool on = true );
+    void setFrameSideFlag( Qgis::MapGridFrameSideFlag flag, bool on = true );
 
     /**
      * Returns the flags which control which sides of the map item the grid frame
@@ -781,7 +653,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \see setFrameSideFlag()
      * \see testFrameSideFlag()
      */
-    QgsLayoutItemMapGrid::FrameSideFlags frameSideFlags() const;
+    Qgis::MapGridFrameSideFlags frameSideFlags() const;
 
     /**
      * Tests whether the grid frame should be drawn on a specified side of the map
@@ -792,7 +664,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \see setFrameSideFlag()
      * \see frameSideFlags()
      */
-    bool testFrameSideFlag( FrameSideFlag flag ) const;
+    bool testFrameSideFlag( Qgis::MapGridFrameSideFlag flag ) const;
 
     /**
      * Sets the grid frame \a width (in layout units). This property controls how wide the grid frame is.
@@ -829,14 +701,14 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \see rotatedTicksLengthMode()
      * \since QGIS 3.16
      */
-    void setRotatedTicksLengthMode( const TickLengthMode mode ) { mRotatedTicksLengthMode = mode; }
+    void setRotatedTicksLengthMode( const Qgis::MapGridTickLengthMode mode ) { mRotatedTicksLengthMode = mode; }
 
     /**
      * Returns the grid frame style.
      * \see setRotatedTicksLengthMode()
      * \since QGIS 3.16
      */
-    TickLengthMode rotatedTicksLengthMode() const { return mRotatedTicksLengthMode; }
+    Qgis::MapGridTickLengthMode rotatedTicksLengthMode() const { return mRotatedTicksLengthMode; }
 
     /**
      * Sets the \a minimum angle (in degrees) below which ticks are not drawn.
@@ -885,14 +757,14 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \see rotatedAnnotationsLengthMode()
      * \since QGIS 3.16
     */
-    void setRotatedAnnotationsLengthMode( const TickLengthMode mode ) { mRotatedAnnotationsLengthMode = mode; }
+    void setRotatedAnnotationsLengthMode( const Qgis::MapGridTickLengthMode mode ) { mRotatedAnnotationsLengthMode = mode; }
 
     /**
      * Returns the annotation length calculation mode.
      * \see setRotatedAnnotationsLengthMode()
      * \since QGIS 3.16
      */
-    TickLengthMode rotatedAnnotationsLengthMode() const { return mRotatedAnnotationsLengthMode; }
+    Qgis::MapGridTickLengthMode rotatedAnnotationsLengthMode() const { return mRotatedAnnotationsLengthMode; }
 
     /**
      * Sets the \a minimum angle (in degrees) below which annotations are not drawn.
@@ -1002,6 +874,22 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      */
     QColor frameFillColor2() const { return mGridFrameFillColor2; }
 
+    /**
+     * Returns the horizontal alignment for annotation text.
+     *
+     * \see setHorizontalAlignment()
+     * \since QGIS 4.0
+     */
+    Qgis::TextHorizontalAlignment horizontalAlignment() const;
+
+    /**
+     * Sets the horizontal \a alignment for annotation text.
+     *
+     * \see horizontalAlignment()
+     * \since QGIS 4.0
+     */
+    void setHorizontalAlignment( Qgis::TextHorizontalAlignment alignment );
+
     QgsExpressionContext createExpressionContext() const override;
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
     void refresh() override;
@@ -1037,20 +925,20 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
       /**
        * Updates the specified border of the extension
        */
-      void UpdateBorder( BorderSide border, double value )
+      void UpdateBorder( Qgis::MapGridBorderSide border, double value )
       {
         switch ( border )
         {
-          case QgsLayoutItemMapGrid::Left:
+          case Qgis::MapGridBorderSide::Left:
             left = std::max( left, value );
             break;
-          case QgsLayoutItemMapGrid::Right:
+          case Qgis::MapGridBorderSide::Right:
             right = std::max( right, value );
             break;
-          case QgsLayoutItemMapGrid::Top:
+          case Qgis::MapGridBorderSide::Top:
             top = std::max( top, value );
             break;
-          case QgsLayoutItemMapGrid::Bottom:
+          case Qgis::MapGridBorderSide::Bottom:
             bottom = std::max( bottom, value );
             break;
         }
@@ -1070,7 +958,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
 
     struct GridLineAnnotation
     {
-      BorderSide border = Left; // border on which the annotation is
+      Qgis::MapGridBorderSide border = Qgis::MapGridBorderSide::Left; // border on which the annotation is
       QVector2D position; // position on the frame
       QVector2D vector; // vector towards map center
       double angle = 0; // the (acute) angle formed between the vector and the border
@@ -1084,7 +972,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     {
       QPolygonF line; // the actual line, can be straight with two points or curved if transformed
       double coordinate; // the coordinate value
-      QgsLayoutItemMapGrid::AnnotationCoordinate coordinateType; // whether it's a latitude or longitude line
+      Qgis::MapGridAnnotationType coordinateType; // whether it's a latitude or longitude line
       GridLineAnnotation startAnnotation; // the annotation on the start point
       GridLineAnnotation endAnnotation; // the annotation on the end point
     };
@@ -1094,7 +982,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     mutable bool mTransformDirty = true;
 
     //! Solid or crosses
-    GridStyle mGridStyle = QgsLayoutItemMapGrid::Solid;
+    Qgis::MapGridStyle mGridStyle = Qgis::MapGridStyle::Lines;
     //! Grid line interval in x-direction (map units)
     double mGridIntervalX = 0.0;
     //! Grid line interval in y-direction (map units)
@@ -1112,43 +1000,45 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     //! True if coordinate values should be drawn
     bool mShowGridAnnotation = false;
 
+    Qgis::TextHorizontalAlignment mHAlign = Qgis::TextHorizontalAlignment::Center;
+
     //! Annotation display mode for left map side
-    DisplayMode mLeftGridAnnotationDisplay = QgsLayoutItemMapGrid::ShowAll;
+    Qgis::MapGridComponentVisibility mLeftGridAnnotationDisplay = Qgis::MapGridComponentVisibility::ShowAll;
     //! Annotation display mode for right map side
-    DisplayMode mRightGridAnnotationDisplay = QgsLayoutItemMapGrid::ShowAll;
+    Qgis::MapGridComponentVisibility mRightGridAnnotationDisplay = Qgis::MapGridComponentVisibility::ShowAll;
     //! Annotation display mode for top map side
-    DisplayMode mTopGridAnnotationDisplay = QgsLayoutItemMapGrid::ShowAll;
+    Qgis::MapGridComponentVisibility mTopGridAnnotationDisplay = Qgis::MapGridComponentVisibility::ShowAll;
     //! Annotation display mode for bottom map side
-    DisplayMode mBottomGridAnnotationDisplay = QgsLayoutItemMapGrid::ShowAll;
+    Qgis::MapGridComponentVisibility mBottomGridAnnotationDisplay = Qgis::MapGridComponentVisibility::ShowAll;
 
     //! Annotation position for left map side (inside / outside)
-    AnnotationPosition mLeftGridAnnotationPosition = QgsLayoutItemMapGrid::OutsideMapFrame;
+    Qgis::MapGridAnnotationPosition mLeftGridAnnotationPosition = Qgis::MapGridAnnotationPosition::OutsideMapFrame;
     //! Annotation position for right map side (inside / outside)
-    AnnotationPosition mRightGridAnnotationPosition = QgsLayoutItemMapGrid::OutsideMapFrame;
+    Qgis::MapGridAnnotationPosition mRightGridAnnotationPosition = Qgis::MapGridAnnotationPosition::OutsideMapFrame;
     //! Annotation position for top map side (inside / outside)
-    AnnotationPosition mTopGridAnnotationPosition = QgsLayoutItemMapGrid::OutsideMapFrame;
+    Qgis::MapGridAnnotationPosition mTopGridAnnotationPosition = Qgis::MapGridAnnotationPosition::OutsideMapFrame;
     //! Annotation position for bottom map side (inside / outside)
-    AnnotationPosition mBottomGridAnnotationPosition = QgsLayoutItemMapGrid::OutsideMapFrame;
+    Qgis::MapGridAnnotationPosition mBottomGridAnnotationPosition = Qgis::MapGridAnnotationPosition::OutsideMapFrame;
 
     //! Distance between map frame and annotation
     double mAnnotationFrameDistance = 1.0;
 
     //! Annotation direction on left side ( horizontal or vertical )
-    AnnotationDirection mLeftGridAnnotationDirection = QgsLayoutItemMapGrid::Horizontal;
+    Qgis::MapGridAnnotationDirection mLeftGridAnnotationDirection = Qgis::MapGridAnnotationDirection::Horizontal;
     //! Annotation direction on right side ( horizontal or vertical )
-    AnnotationDirection mRightGridAnnotationDirection = QgsLayoutItemMapGrid::Horizontal;
+    Qgis::MapGridAnnotationDirection mRightGridAnnotationDirection = Qgis::MapGridAnnotationDirection::Horizontal;
     //! Annotation direction on top side ( horizontal or vertical )
-    AnnotationDirection mTopGridAnnotationDirection = QgsLayoutItemMapGrid::Horizontal;
+    Qgis::MapGridAnnotationDirection mTopGridAnnotationDirection = Qgis::MapGridAnnotationDirection::Horizontal;
     //! Annotation direction on bottom side ( horizontal or vertical )
-    AnnotationDirection mBottomGridAnnotationDirection = QgsLayoutItemMapGrid::Horizontal;
-    AnnotationFormat mGridAnnotationFormat = QgsLayoutItemMapGrid::Decimal;
+    Qgis::MapGridAnnotationDirection mBottomGridAnnotationDirection = Qgis::MapGridAnnotationDirection::Horizontal;
+    Qgis::MapGridAnnotationFormat mGridAnnotationFormat = Qgis::MapGridAnnotationFormat::Decimal;
 
     QString mGridAnnotationExpressionString;
     mutable std::unique_ptr< QgsExpression > mGridAnnotationExpression;
 
-    FrameStyle mGridFrameStyle = QgsLayoutItemMapGrid::NoFrame;
+    Qgis::MapGridFrameStyle mGridFrameStyle = Qgis::MapGridFrameStyle::NoFrame;
 
-    FrameSideFlags mGridFrameSides;
+    Qgis::MapGridFrameSideFlags mGridFrameSides;
     double mGridFrameWidth = 2.0;
     double mGridFramePenThickness = 0.3;
     QColor mGridFramePenColor = QColor( 0, 0, 0 );
@@ -1157,11 +1047,11 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     double mCrossLength = 3.0;
     double mGridFrameMargin = 0.0;
     bool mRotatedTicksEnabled = false;
-    TickLengthMode mRotatedTicksLengthMode = QgsLayoutItemMapGrid::OrthogonalTicks;
+    Qgis::MapGridTickLengthMode mRotatedTicksLengthMode = Qgis::MapGridTickLengthMode::OrthogonalTicks;
     double mRotatedTicksMinimumAngle = 0.0;
     double mRotatedTicksMarginToCorner = 0.0;
     bool mRotatedAnnotationsEnabled = false;
-    TickLengthMode mRotatedAnnotationsLengthMode = QgsLayoutItemMapGrid::OrthogonalTicks;
+    Qgis::MapGridTickLengthMode mRotatedAnnotationsLengthMode = Qgis::MapGridTickLengthMode::OrthogonalTicks;
     double mRotatedAnnotationsMinimumAngle = 0.0;
     double mRotatedAnnotationsMarginToCorner = 0.0;
 
@@ -1169,20 +1059,20 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     double mMaximumIntervalWidth = 100;
 
     //! Divisions for frame on left map side
-    DisplayMode mLeftFrameDivisions = QgsLayoutItemMapGrid::ShowAll;
+    Qgis::MapGridComponentVisibility mLeftFrameDivisions = Qgis::MapGridComponentVisibility::ShowAll;
     //! Divisions for frame on right map side
-    DisplayMode mRightFrameDivisions = QgsLayoutItemMapGrid::ShowAll;
+    Qgis::MapGridComponentVisibility mRightFrameDivisions = Qgis::MapGridComponentVisibility::ShowAll;
     //! Divisions for frame on top map side
-    DisplayMode mTopFrameDivisions = QgsLayoutItemMapGrid::ShowAll;
+    Qgis::MapGridComponentVisibility mTopFrameDivisions = Qgis::MapGridComponentVisibility::ShowAll;
     //! Divisions for frame on bottom map side
-    DisplayMode mBottomFrameDivisions = QgsLayoutItemMapGrid::ShowAll;
+    Qgis::MapGridComponentVisibility mBottomFrameDivisions = Qgis::MapGridComponentVisibility::ShowAll;
 
     std::unique_ptr< QgsLineSymbol > mGridLineSymbol;
     std::unique_ptr< QgsMarkerSymbol > mGridMarkerSymbol;
 
     QgsCoordinateReferenceSystem mCRS;
 
-    GridUnit mGridUnit = MapUnit;
+    Qgis::MapGridUnit mGridUnit = Qgis::MapGridUnit::MapUnits;
 
     QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_SourceOver;
 
@@ -1202,14 +1092,15 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     double mEvaluatedAnnotationFrameDistance = 0;
     double mEvaluatedCrossLength = 0;
     double mEvaluatedGridFrameLineThickness = 0;
-    DisplayMode mEvaluatedLeftGridAnnotationDisplay = QgsLayoutItemMapGrid::ShowAll;
-    DisplayMode mEvaluatedRightGridAnnotationDisplay = QgsLayoutItemMapGrid::ShowAll;
-    DisplayMode mEvaluatedTopGridAnnotationDisplay = QgsLayoutItemMapGrid::ShowAll;
-    DisplayMode mEvaluatedBottomGridAnnotationDisplay = QgsLayoutItemMapGrid::ShowAll;
-    DisplayMode mEvaluatedLeftFrameDivisions = QgsLayoutItemMapGrid::ShowAll;
-    DisplayMode mEvaluatedRightFrameDivisions = QgsLayoutItemMapGrid::ShowAll;
-    DisplayMode mEvaluatedTopFrameDivisions = QgsLayoutItemMapGrid::ShowAll;
-    DisplayMode mEvaluatedBottomFrameDivisions = QgsLayoutItemMapGrid::ShowAll;
+    std::unique_ptr< QgsProperty > mDrawAnnotationProperty;
+    Qgis::MapGridComponentVisibility mEvaluatedLeftGridAnnotationDisplay = Qgis::MapGridComponentVisibility::ShowAll;
+    Qgis::MapGridComponentVisibility mEvaluatedRightGridAnnotationDisplay = Qgis::MapGridComponentVisibility::ShowAll;
+    Qgis::MapGridComponentVisibility mEvaluatedTopGridAnnotationDisplay = Qgis::MapGridComponentVisibility::ShowAll;
+    Qgis::MapGridComponentVisibility mEvaluatedBottomGridAnnotationDisplay = Qgis::MapGridComponentVisibility::ShowAll;
+    Qgis::MapGridComponentVisibility mEvaluatedLeftFrameDivisions = Qgis::MapGridComponentVisibility::ShowAll;
+    Qgis::MapGridComponentVisibility mEvaluatedRightFrameDivisions = Qgis::MapGridComponentVisibility::ShowAll;
+    Qgis::MapGridComponentVisibility mEvaluatedTopFrameDivisions = Qgis::MapGridComponentVisibility::ShowAll;
+    Qgis::MapGridComponentVisibility mEvaluatedBottomFrameDivisions = Qgis::MapGridComponentVisibility::ShowAll;
 
     /**
      * Updates the grid lines annotation positions
@@ -1235,9 +1126,9 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * Draw an annotation. If optional extension argument is specified, nothing will be drawn and instead
      * the extension of the annotation outside of the map frame will be stored in this variable.
      */
-    void drawCoordinateAnnotation( QgsRenderContext &context, GridLineAnnotation annot, const QString &annotationString, AnnotationCoordinate coordinateType, GridExtension *extension = nullptr ) const;
+    void drawCoordinateAnnotation( QgsRenderContext &context, GridLineAnnotation annot, const QString &annotationString, Qgis::MapGridAnnotationType coordinateType, GridExtension *extension = nullptr ) const;
 
-    QString gridAnnotationString( double value, AnnotationCoordinate coord, QgsExpressionContext &expressionContext ) const;
+    QString gridAnnotationString( double value, Qgis::MapGridAnnotationType coord, QgsExpressionContext &expressionContext, bool isGeographic ) const;
 
     /**
      * Computes the grid lines with associated coordinate value
@@ -1263,14 +1154,14 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * Draw the grid frame's border. If optional extension argument is specified, nothing will be drawn and instead
      * the maximum extension of the frame border outside of the map frame will be stored in this variable.
      */
-    void drawGridFrameBorder( QPainter *p, BorderSide border, double *extension = nullptr ) const;
+    void drawGridFrameBorder( QPainter *p, Qgis::MapGridBorderSide border, double *extension = nullptr ) const;
 
     /**
      * Returns the item border of a point (in item coordinates)
      * \param p point
      * \param coordinateType coordinate type
      */
-    BorderSide borderForLineCoord( QPointF p, AnnotationCoordinate coordinateType ) const;
+    Qgis::MapGridBorderSide borderForLineCoord( QPointF p, Qgis::MapGridAnnotationType coordinateType ) const;
 
     //! Gets parameters for drawing grid in CRS different to map CRS
     int crsGridParams( QgsRectangle &crsRect, QgsCoordinateTransform &inverseTransform ) const;
@@ -1292,7 +1183,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
 
     void drawGridFrameZebra( QPainter *p, GridExtension *extension = nullptr ) const;
 
-    void drawGridFrameZebraBorder( QPainter *p, BorderSide border, double *extension = nullptr ) const;
+    void drawGridFrameZebraBorder( QPainter *p, Qgis::MapGridBorderSide border, double *extension = nullptr ) const;
 
     void drawGridFrameTicks( QPainter *p, GridExtension *extension = nullptr ) const;
 
@@ -1300,9 +1191,9 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
 
     void calculateCrsTransformLines() const;
 
-    bool shouldShowDivisionForSide( AnnotationCoordinate coordinate, BorderSide side ) const;
-    bool shouldShowAnnotationForSide( AnnotationCoordinate coordinate, BorderSide side ) const;
-    bool shouldShowForDisplayMode( AnnotationCoordinate coordinate, DisplayMode mode ) const;
+    bool shouldShowDivisionForSide( Qgis::MapGridAnnotationType coordinate, Qgis::MapGridBorderSide side ) const;
+    bool shouldShowAnnotationForSide( Qgis::MapGridAnnotationType coordinate, Qgis::MapGridBorderSide side ) const;
+    bool shouldShowForDisplayMode( Qgis::MapGridAnnotationType coordinate, Qgis::MapGridComponentVisibility mode ) const;
     void refreshDataDefinedProperties();
 
     //! Returns diagonal of map in CRS units
@@ -1315,6 +1206,5 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
 
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayoutItemMapGrid::FrameSideFlags )
 
 #endif // QGSLAYOUTITEMMAPGRID_H

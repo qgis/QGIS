@@ -21,6 +21,9 @@
 #include "qgsprocessingparameters.h"
 
 #include <QIcon>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsVectorLayer;
 class QgsRendererRange;
@@ -66,7 +69,7 @@ class CORE_EXPORT QgsClassificationRange
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsClassificationRange: '%1'>" ).arg( sipCpp->label() );
+    QString str = u"<QgsClassificationRange: '%1'>"_s.arg( sipCpp->label() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

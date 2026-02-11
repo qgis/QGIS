@@ -15,7 +15,6 @@
 
 class QgsElevationControllerSettingsAction : QWidgetAction
 {
-
 %TypeHeaderCode
 #include "qgselevationcontrollerwidget.h"
 %End
@@ -46,7 +45,6 @@ A widget for configuring vertical elevation slicing behavior for maps.
       sipType = nullptr;
 %End
   public:
-
     QgsElevationControllerWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsElevationControllerWidget, with the specified

@@ -29,8 +29,6 @@ QgsSymbolRenderContext::QgsSymbolRenderContext( QgsRenderContext &c, Qgis::Rende
   , mRenderHints( renderHints )
   , mFeature( f )
   , mFields( fields )
-  , mGeometryPartCount( 0 )
-  , mGeometryPartNum( 0 )
 {
 }
 

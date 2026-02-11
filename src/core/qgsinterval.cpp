@@ -25,6 +25,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in test_qgsinterval.py.
@@ -246,13 +248,13 @@ QgsInterval QgsInterval::fromString( const QString &string )
   }
 
   const thread_local QMap<int, QStringList> map{{
-      {1, QStringList() << QStringLiteral( "second" ) << QStringLiteral( "seconds" ) << QObject::tr( "second|seconds", "list of words separated by | which reference years" ).split( '|' )},
-      { 0 + MINUTE, QStringList() << QStringLiteral( "minute" ) << QStringLiteral( "minutes" ) << QObject::tr( "minute|minutes", "list of words separated by | which reference minutes" ).split( '|' ) },
-      {0 + HOUR, QStringList() << QStringLiteral( "hour" ) << QStringLiteral( "hours" ) << QObject::tr( "hour|hours", "list of words separated by | which reference minutes hours" ).split( '|' )},
-      {0 + DAY, QStringList() << QStringLiteral( "day" ) << QStringLiteral( "days" ) << QObject::tr( "day|days", "list of words separated by | which reference days" ).split( '|' )},
-      {0 + WEEKS, QStringList() << QStringLiteral( "week" ) << QStringLiteral( "weeks" ) << QObject::tr( "week|weeks", "wordlist separated by | which reference weeks" ).split( '|' )},
-      {0 + MONTHS, QStringList() << QStringLiteral( "month" ) << QStringLiteral( "months" ) << QStringLiteral( "mon" ) << QObject::tr( "month|months|mon", "list of words separated by | which reference months" ).split( '|' )},
-      {0 + YEARS, QStringList() << QStringLiteral( "year" ) << QStringLiteral( "years" ) << QObject::tr( "year|years", "list of words separated by | which reference years" ).split( '|' )},
+      {1, QStringList() << u"second"_s << u"seconds"_s << QObject::tr( "second|seconds", "list of words separated by | which reference years" ).split( '|' )},
+      { 0 + MINUTE, QStringList() << u"minute"_s << u"minutes"_s << QObject::tr( "minute|minutes", "list of words separated by | which reference minutes" ).split( '|' ) },
+      {0 + HOUR, QStringList() << u"hour"_s << u"hours"_s << QObject::tr( "hour|hours", "list of words separated by | which reference minutes hours" ).split( '|' )},
+      {0 + DAY, QStringList() << u"day"_s << u"days"_s << QObject::tr( "day|days", "list of words separated by | which reference days" ).split( '|' )},
+      {0 + WEEKS, QStringList() << u"week"_s << u"weeks"_s << QObject::tr( "week|weeks", "wordlist separated by | which reference weeks" ).split( '|' )},
+      {0 + MONTHS, QStringList() << u"month"_s << u"months"_s << u"mon"_s << QObject::tr( "month|months|mon", "list of words separated by | which reference months" ).split( '|' )},
+      {0 + YEARS, QStringList() << u"year"_s << u"years"_s << QObject::tr( "year|years", "list of words separated by | which reference years" ).split( '|' )},
     }};
 
   const thread_local QRegularExpression splitRx( "\\s+" );
@@ -305,16 +307,6 @@ QDebug operator<<( QDebug dbg, const QgsInterval &interval )
     dbg.nospace() << "QgsInterval(" << interval.seconds() << ")";
   return dbg.maybeSpace();
 }
-
-#if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
-
-QgsInterval operator-( const QDateTime &dt1, const QDateTime &dt2 )
-{
-  const qint64 mSeconds = dt2.msecsTo( dt1 );
-  return QgsInterval( mSeconds / 1000.0 );
-}
-
-#endif
 
 QDateTime operator+( const QDateTime &start, const QgsInterval &interval )
 {

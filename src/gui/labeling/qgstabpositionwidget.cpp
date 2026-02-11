@@ -20,8 +20,11 @@
 #include "qgsunittypes.h"
 
 #include <QDialogButtonBox>
+#include <QString>
 
 #include "moc_qgstabpositionwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTabPositionWidget::QgsTabPositionWidget( QWidget *parent )
   : QgsPanelWidget( parent )
@@ -74,7 +77,7 @@ QList<QgsTextFormat::Tab> QgsTabPositionWidget::positions() const
 void QgsTabPositionWidget::setUnit( Qgis::RenderUnit unit )
 {
   QTreeWidgetItem *headerItem = mTabPositionTreeWidget->headerItem();
-  headerItem->setText( 0, QStringLiteral( "%1 (%2)" ).arg( tr( "Position" ), QgsUnitTypes::toAbbreviatedString( unit ) ) );
+  headerItem->setText( 0, u"%1 (%2)"_s.arg( tr( "Position" ), QgsUnitTypes::toAbbreviatedString( unit ) ) );
 }
 
 void QgsTabPositionWidget::mAddButton_clicked()

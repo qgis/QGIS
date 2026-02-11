@@ -142,7 +142,6 @@ class ANALYSIS_EXPORT QgsGeometrySnapper : public QObject
 class ANALYSIS_EXPORT QgsInternalGeometrySnapper
 {
   public:
-
     /**
      * Constructor for QgsInternalGeometrySnapper. The \a snapTolerance and \a mode parameters dictate
      * how geometries will be snapped by the snapper.

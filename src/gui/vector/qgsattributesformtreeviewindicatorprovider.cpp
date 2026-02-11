@@ -18,7 +18,11 @@
 #include "qgsapplication.h"
 #include "qgsfieldconstraints.h"
 
+#include <QString>
+
 #include "moc_qgsattributesformtreeviewindicatorprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAttributesFormTreeViewIndicatorProvider::QgsAttributesFormTreeViewIndicatorProvider( QgsAttributesFormBaseView *view )
   : QObject( view )
@@ -205,7 +209,7 @@ QString QgsFieldConstraintIndicatorProvider::iconName( QgsAttributesFormItem *it
     }
   }
 
-  return hardConstraint ? QStringLiteral( "/field_indicators/mIndicatorConstraintHard.svg" ) : QStringLiteral( "/field_indicators/mIndicatorConstraint.svg" );
+  return hardConstraint ? u"/field_indicators/mIndicatorConstraintHard.svg"_s : u"/field_indicators/mIndicatorConstraint.svg"_s;
 }
 
 QString QgsFieldConstraintIndicatorProvider::tooltipText( QgsAttributesFormItem *item )
@@ -214,7 +218,7 @@ QString QgsFieldConstraintIndicatorProvider::tooltipText( QgsAttributesFormItem 
   const QgsFieldConstraints constraints = config.mFieldConstraints;
 
   auto addOriginAndStrengthText = [=]( QString name, QgsFieldConstraints::Constraint constraint ) {
-    return QStringLiteral( "%1 (%2, %3)" ).arg( name, constraints.constraintOrigin( constraint ) == QgsFieldConstraints::ConstraintOriginProvider ? tr( "provider" ) : tr( "layer" ), constraints.constraintStrength( constraint ) == QgsFieldConstraints::ConstraintStrengthHard ? tr( "enforced" ) : tr( "unenforced" ) );
+    return u"%1 (%2, %3)"_s.arg( name, constraints.constraintOrigin( constraint ) == QgsFieldConstraints::ConstraintOriginProvider ? tr( "provider" ) : tr( "layer" ), constraints.constraintStrength( constraint ) == QgsFieldConstraints::ConstraintStrengthHard ? tr( "enforced" ) : tr( "unenforced" ) );
   };
 
   QString tooltipText;
@@ -231,7 +235,7 @@ QString QgsFieldConstraintIndicatorProvider::tooltipText( QgsAttributesFormItem 
   if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintExpression ) != QgsFieldConstraints::ConstraintOriginNotSet )
   {
     tooltipText += "\n" + addOriginAndStrengthText( tr( "Expression" ), QgsFieldConstraints::ConstraintExpression );
-    tooltipText += !constraints.constraintDescription().isEmpty() ? QStringLiteral( "\n   " ) + constraints.constraintDescription() : QString();
+    tooltipText += !constraints.constraintDescription().isEmpty() ? u"\n   "_s + constraints.constraintDescription() : QString();
   }
 
   return tooltipText;
@@ -257,13 +261,13 @@ QString QgsFieldDefaultValueIndicatorProvider::iconName( QgsAttributesFormItem *
 {
   const QgsAttributesFormData::FieldConfig config = item->data( QgsAttributesFormModel::ItemFieldConfigRole ).value< QgsAttributesFormData::FieldConfig >();
 
-  QString iconName = QStringLiteral( "/field_indicators/mIndicatorDefaultValue.svg" );
+  QString iconName = u"/field_indicators/mIndicatorDefaultValue.svg"_s;
 
   if ( !config.mDefaultValueExpression.isEmpty() )
   {
     if ( config.mApplyDefaultValueOnUpdate )
     {
-      iconName = QStringLiteral( "/field_indicators/mIndicatorDefaultValueApplyOnUpdate.svg" );
+      iconName = u"/field_indicators/mIndicatorDefaultValueApplyOnUpdate.svg"_s;
     }
   }
   return iconName;
@@ -276,7 +280,7 @@ QString QgsFieldDefaultValueIndicatorProvider::tooltipText( QgsAttributesFormIte
   if ( !config.mDefaultValueExpression.isEmpty() )
   {
     text += config.mDefaultValueExpression;
-    text += QStringLiteral( "\n(%1)" ).arg( config.mApplyDefaultValueOnUpdate ? tr( "Apply on update" ) : tr( "Do not apply on update" ) );
+    text += u"\n(%1)"_s.arg( config.mApplyDefaultValueOnUpdate ? tr( "Apply on update" ) : tr( "Do not apply on update" ) );
   }
   return text;
 }

@@ -4,7 +4,7 @@
     ---------------------
     begin                : July 2017
     copyright            : (C) 2017 by Loïc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    email                : lituus at free dot fr
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -28,9 +28,13 @@
 #include "qgspoint.h"
 #include "qgssnappingutils.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolshapecircle3tangents.cpp"
 
-const QString QgsMapToolShapeCircle3TangentsMetadata::TOOL_ID = QStringLiteral( "circle-from-3-tangents" );
+using namespace Qt::StringLiterals;
+
+const QString QgsMapToolShapeCircle3TangentsMetadata::TOOL_ID = u"circle-from-3-tangents"_s;
 
 QString QgsMapToolShapeCircle3TangentsMetadata::id() const
 {
@@ -44,7 +48,7 @@ QString QgsMapToolShapeCircle3TangentsMetadata::name() const
 
 QIcon QgsMapToolShapeCircle3TangentsMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionCircle3Tangents.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mActionCircle3Tangents.svg"_s );
 }
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeCircle3TangentsMetadata::category() const
@@ -145,8 +149,13 @@ void QgsMapToolShapeCircle3Tangents::cadCanvasMoveEvent( QgsMapMouseEvent *e, Qg
     {
       const QgsPoint pos = getFirstPointOnParallels( mPoints.at( 0 ), mPoints.at( 1 ), mPosPoints.at( 0 ), mPoints.at( 2 ), mPoints.at( 3 ), mPosPoints.at( 1 ), QgsPoint( p1 ), QgsPoint( p2 ) );
       mCircle = QgsCircle::from3Tangents( mPoints.at( 0 ), mPoints.at( 1 ), mPoints.at( 2 ), mPoints.at( 3 ), QgsPoint( p1 ), QgsPoint( p2 ), 1E-8, pos );
-      mTempRubberBand->setGeometry( mCircle.toLineString() );
-      mTempRubberBand->show();
+      const QgsGeometry newGeometry( mCircle.toLineString() );
+      if ( !newGeometry.isEmpty() )
+      {
+        mTempRubberBand->setGeometry( newGeometry.constGet()->clone() );
+        setTransientGeometry( newGeometry );
+        mTempRubberBand->show();
+      }
     }
     else
     {

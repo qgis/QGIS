@@ -39,7 +39,6 @@ class GUI_EXPORT QgsProcessingBatchAlgorithmDialogBase : public QgsProcessingAlg
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingBatchAlgorithmDialogBase.
      */

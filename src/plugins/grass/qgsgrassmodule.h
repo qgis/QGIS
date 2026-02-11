@@ -127,7 +127,6 @@ class QgsGrassModule : public QWidget, private Ui::QgsGrassModuleBase
     //void mapsetChanged();
 
   private:
-
     /**
      * Set progress bar or busy indicator if percent is 100
      * \param percent progress to show in %
@@ -172,7 +171,7 @@ class QgsGrassModule : public QWidget, private Ui::QgsGrassModuleBase
     QStringList mOutputVector;
 
     //! True if the module successfully finished
-    bool mSuccess;
+    bool mSuccess = false;
 
     //! Direct mode
     bool mDirect;

@@ -27,9 +27,12 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QStandardItemModel>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgsprocessingalignrasterlayerswidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 /// @cond private
 
@@ -50,7 +53,7 @@ QgsProcessingAlignRasterLayerDetailsWidget::QgsProcessingAlignRasterLayerDetails
   {
     filters << QObject::tr( "%1 files (*.%2)" ).arg( ext.toUpper(), ext.toLower() );
   }
-  mOutputFileWidget->setFilter( filters.join( QLatin1String( ";;" ) ) + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" ) );
+  mOutputFileWidget->setFilter( filters.join( ";;"_L1 ) + u";;"_s + QObject::tr( "All files (*.*)" ) );
 
   cmbResamplingMethod->addItem( tr( "Nearest Neighbour" ), static_cast<int>( Qgis::GdalResampleAlgorithm::RA_NearestNeighbour ) );
   cmbResamplingMethod->addItem( tr( "Bilinear (2x2 Kernel)" ), static_cast<int>( Qgis::GdalResampleAlgorithm::RA_Bilinear ) );

@@ -40,7 +40,6 @@ class QgsAttributesFormTreeViewIndicatorProvider : public QObject
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsAttributesFormTreeViewIndicatorProvider.
      *
@@ -106,7 +105,6 @@ class QgsFieldConstraintIndicatorProvider : public QgsAttributesFormTreeViewIndi
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsFieldConstraintIndicatorProvider.
      */
@@ -130,7 +128,6 @@ class QgsFieldDefaultValueIndicatorProvider : public QgsAttributesFormTreeViewIn
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsFieldDefaultValueIndicatorProvider.
      */

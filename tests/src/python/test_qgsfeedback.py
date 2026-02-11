@@ -49,6 +49,26 @@ class TestQgsFeedback(unittest.TestCase):
         self.assertEqual(len(processed_spy), 1)
         self.assertEqual(processed_spy[0][0], 25)
 
+    def testScaledFeedback(self):
+        f = QgsFeedback()
+        minScaled = 10
+        maxScaled = 90
+        scaledFeedback = QgsFeedback.createScaledFeedback(f, minScaled, maxScaled)
+
+        scaledFeedback.setProgress(-1)
+
+        scaledFeedback.setProgress(0)
+        self.assertEqual(f.progress(), minScaled)
+
+        scaledFeedback.setProgress(50)
+        self.assertEqual(f.progress(), minScaled + (maxScaled - minScaled) * 50.0 / 100)
+
+        scaledFeedback.setProgress(100)
+        self.assertEqual(f.progress(), maxScaled)
+
+        scaledFeedback.cancel()
+        self.assertTrue(f.isCanceled())
+
 
 if __name__ == "__main__":
     unittest.main()

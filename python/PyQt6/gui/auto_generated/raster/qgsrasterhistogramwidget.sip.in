@@ -21,7 +21,6 @@ A widget for display and configuring a raster layer histogram.
 #include "qgsrasterhistogramwidget.h"
 %End
   public:
-
     QgsRasterHistogramWidget( QgsRasterLayer *layer, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsRasterHistogramWidget, for the specified raster

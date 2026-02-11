@@ -196,7 +196,6 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     void changedRasterResults( QList<QgsMapToolIdentify::IdentifyResult> &results );
 
   protected:
-
     /**
      * Performs the identification.
      * To avoid being forced to specify IdentifyMode with a list of layers
@@ -355,11 +354,11 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     // Last geometry (point or polygon) in map CRS
     QgsGeometry mLastGeometry;
 
-    double mLastMapUnitsPerPixel;
+    double mLastMapUnitsPerPixel = -1.0;
 
     QgsRectangle mLastExtent;
 
-    int mCoordinatePrecision;
+    int mCoordinatePrecision = 6;
 
     IdentifyProperties mPropertiesOverrides;
 };

@@ -41,7 +41,6 @@ class QgsPointCloudLayer;
 class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
 {
   public:
-
     /**
      * Constructor for QgsPointCloud3DRenderContext.
      *
@@ -316,6 +315,23 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRe
       */
     Qgis::PointCloudZoomOutRenderBehavior zoomOutBehavior() const { return mZoomOutBehavior; }
 
+    /**
+      * Sets the overview switching scale
+      *
+      * Used to determine when point clouds
+      * switch from rendering bounding boxes to displaying full point data.
+      * The value is compared against screen space error (SSE) calculated from
+      * camera distance and node size.
+      * \since QGIS 4.0
+      */
+    void setOverviewSwitchingScale( double scale ) { mOverviewSwitchingScale = scale; }
+
+    /**
+      * Returns the overview switching scale
+      * \since QGIS 4.0
+      */
+    double overviewSwitchingScale() const { return mOverviewSwitchingScale; }
+
   private:
     QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from
     std::unique_ptr<QgsPointCloud3DSymbol> mSymbol;
@@ -323,6 +339,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRe
     bool mShowBoundingBoxes = false;
     int mPointBudget = 5000000;
     Qgis::PointCloudZoomOutRenderBehavior mZoomOutBehavior = Qgis::PointCloudZoomOutRenderBehavior::RenderExtents;
+    double mOverviewSwitchingScale = 1.0;
 
   private:
 #ifdef SIP_RUN

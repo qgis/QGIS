@@ -24,7 +24,7 @@ class QWT_EXPORT QwtSplinePleasing : public QwtSplineG1
 {
   public:
     QwtSplinePleasing();
-    virtual ~QwtSplinePleasing();
+    ~QwtSplinePleasing() override;
 
     virtual uint locality() const QWT_OVERRIDE;
 

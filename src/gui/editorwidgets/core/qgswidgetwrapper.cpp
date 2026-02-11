@@ -41,7 +41,6 @@ QgsWidgetWrapper::QgsWidgetWrapper( QgsVectorLayer *vl, QWidget *editor, QWidget
   , mWidget( editor )
   , mParent( parent )
   , mLayer( vl )
-  , mInitialized( false )
 {
 }
 

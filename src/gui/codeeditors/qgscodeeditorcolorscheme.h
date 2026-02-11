@@ -31,7 +31,6 @@
 class GUI_EXPORT QgsCodeEditorColorScheme
 {
   public:
-
     /**
      * Color roles.
      */

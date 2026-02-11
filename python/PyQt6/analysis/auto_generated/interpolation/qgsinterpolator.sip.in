@@ -17,7 +17,9 @@
 
 struct QgsInterpolatorVertexData
 {
-
+%TypeHeaderCode
+#include "qgsinterpolator.h"
+%End
     QgsInterpolatorVertexData( double x, double y, double z );
 %Docstring
 Constructor for QgsInterpolatorVertexData with the specified ``x``,
@@ -95,7 +97,6 @@ Calculates interpolation value for map coordinates x, y
 
 
   protected:
-
     Result cacheBaseData( QgsFeedback *feedback = 0 );
 %Docstring
 Caches the vertex and value data from the provider. All the vertex data

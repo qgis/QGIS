@@ -21,7 +21,11 @@
 #include "qgslogger.h"
 #include "qgsmessagebar.h"
 
+#include <QString>
+
 #include "moc_qgsbrowserguimodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsBrowserGuiModel::QgsBrowserGuiModel( QObject *parent )
   : QgsBrowserModel( parent )
@@ -53,7 +57,7 @@ Qt::ItemFlags QgsBrowserGuiModel::flags( const QModelIndex &index ) const
 
   if ( !ptr )
   {
-    QgsDebugMsgLevel( QStringLiteral( "FLAGS PROBLEM!" ), 4 );
+    QgsDebugMsgLevel( u"FLAGS PROBLEM!"_s, 4 );
     return Qt::ItemFlags();
   }
 
@@ -113,7 +117,7 @@ bool QgsBrowserGuiModel::dropMimeData( const QMimeData *data, Qt::DropAction act
   QgsDataItem *destItem = dataItem( parent );
   if ( !destItem )
   {
-    QgsDebugMsgLevel( QStringLiteral( "DROP PROBLEM!" ), 4 );
+    QgsDebugMsgLevel( u"DROP PROBLEM!"_s, 4 );
     return false;
   }
 
@@ -148,7 +152,7 @@ bool QgsBrowserGuiModel::setData( const QModelIndex &index, const QVariant &valu
   QgsDataItem *item = dataItem( index );
   if ( !item )
   {
-    QgsDebugMsgLevel( QStringLiteral( "RENAME PROBLEM!" ), 4 );
+    QgsDebugMsgLevel( u"RENAME PROBLEM!"_s, 4 );
     return false;
   }
 

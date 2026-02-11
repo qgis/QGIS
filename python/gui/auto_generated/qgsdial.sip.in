@@ -21,7 +21,6 @@ A QDial subclass with additional refinements.
 #include "qgsdial.h"
 %End
   public:
-
     QgsDial( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsDial
@@ -30,8 +29,36 @@ Constructor for QgsDial
 %End
 
     void setMinimum( const QVariant &min );
+%Docstring
+Sets the dial range's minimum value.
+%End
+
+    QVariant minimum() const;
+%Docstring
+Returns the dial range's minimum value.
+
+.. versionadded:: 4.0
+%End
     void setMaximum( const QVariant &max );
+%Docstring
+Sets the dial range's maximum value.
+%End
+
+    QVariant maximum() const;
+%Docstring
+Returns the dial range's maximum value.
+
+.. versionadded:: 4.0
+%End
     void setSingleStep( const QVariant &step );
+%Docstring
+Sets the dial's single step value.
+%End
+
+    QVariant singleStep() const;
+%Docstring
+Returns the dial's single step value.
+%End
     void setValue( const QVariant &value );
     QVariant variantValue() const;
 

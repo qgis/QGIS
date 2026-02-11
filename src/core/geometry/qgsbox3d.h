@@ -22,7 +22,10 @@
 #include "qgspoint.h"
 #include "qgsrectangle.h"
 
+#include <QString>
 #include <QVector3D>
+
+using namespace Qt::StringLiterals;
 
 class QgsVector3D;
 
@@ -72,9 +75,9 @@ class CORE_EXPORT QgsBox3D
      * Constructs a QgsBox3D from a rectangle.
      * If \a normalize is FALSE then the normalization step will not be applied automatically.
      */
-    QgsBox3D( const QgsRectangle &rect,
-              double zMin = std::numeric_limits<double>::quiet_NaN(), double zMax = std::numeric_limits<double>::quiet_NaN(),
-              bool normalize = true );
+    explicit QgsBox3D( const QgsRectangle &rect,
+                       double zMin = std::numeric_limits<double>::quiet_NaN(), double zMax = std::numeric_limits<double>::quiet_NaN(),
+                       bool normalize = true );
 
 #else
     QgsBox3D( SIP_PYOBJECT x SIP_TYPEHINT( Optional[Union[QgsPoint, QgsVector3D, QgsRectangle, float]] ) = Py_None, SIP_PYOBJECT y SIP_TYPEHINT( Optional[QgsPoint, QgsVector3D, float] ) = Py_None, SIP_PYOBJECT z SIP_TYPEHINT( Optional[Union[bool, float]] ) = Py_None, SIP_PYOBJECT x2 SIP_TYPEHINT( Optional[Union[bool, float]] ) = Py_None, SIP_PYOBJECT y2 SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT z2 SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT n SIP_TYPEHINT( Optional[bool] ) = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double x2 = 0.0, double y2 = 0.0, double z2 = 0.0, bool n = true )];
@@ -151,7 +154,7 @@ class CORE_EXPORT QgsBox3D
     }
     else // Invalid ctor arguments
     {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid type in constructor arguments." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_TypeError, u"Invalid type in constructor arguments."_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     % End
@@ -481,7 +484,7 @@ class CORE_EXPORT QgsBox3D
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsBox3D(%1, %2, %3, %4, %5, %6)>" )
+    QString str = u"<QgsBox3D(%1, %2, %3, %4, %5, %6)>"_s
                   .arg( sipCpp->xMinimum() )
                   .arg( sipCpp->yMinimum() )
                   .arg( sipCpp->zMinimum() )

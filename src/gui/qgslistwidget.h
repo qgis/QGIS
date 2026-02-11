@@ -67,7 +67,6 @@ class GUI_EXPORT QgsListWidget : public QgsTableWidgetBase
     Q_OBJECT
     Q_PROPERTY( QVariantList list READ list WRITE setList )
   public:
-
     /**
      * Constructor.
      */

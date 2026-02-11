@@ -39,7 +39,7 @@ class CORE_EXPORT QgsAttributeEditorAction : public QgsAttributeEditorElement
 
     /**
      * Creates a new element which can display a layer action, this constructor allows
-     * to create a QgsAttributeEditorAction when actions are not yet loaded.
+     * creating an QgsAttributeEditorAction when actions are not yet loaded.
      *
      * \param uuid         The action unique identifier (UUID).
      * \param parent       The parent (used as container).

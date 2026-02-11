@@ -24,7 +24,6 @@ Graphical histogram for displaying distributions of field values.
 #include "qgshistogramwidget.h"
 %End
   public:
-
     QgsHistogramWidget( QWidget *parent /TransferThis/ = 0, QgsVectorLayer *layer = 0, const QString &fieldOrExp = QString() );
 %Docstring
 QgsHistogramWidget constructor. If layer and fieldOrExp are specified
@@ -197,7 +196,6 @@ Sets the source field or expression to use for values in the histogram.
 %End
 
   protected:
-
     virtual void drawHistogram();
 %Docstring
 Updates and redraws the histogram.

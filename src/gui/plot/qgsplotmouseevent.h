@@ -48,7 +48,6 @@ class GUI_EXPORT QgsPlotMouseEvent : public QMouseEvent
 #endif
 
   public:
-
     /**
      * Creates a new QgsPlotMouseEvent.
      *

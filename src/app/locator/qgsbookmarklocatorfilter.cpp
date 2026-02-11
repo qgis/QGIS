@@ -20,8 +20,13 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsfeedback.h"
+#include "qgsstringutils.h"
+
+#include <QString>
 
 #include "moc_qgsbookmarklocatorfilter.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsBookmarkLocatorFilter::QgsBookmarkLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )
@@ -51,7 +56,7 @@ void QgsBookmarkLocatorFilter::fetchResults( const QString &string, const QgsLoc
     result.filter = this;
     result.displayString = name;
     result.setUserData( index );
-    result.icon = QgsApplication::getThemeIcon( QStringLiteral( "/mItemBookmark.svg" ) );
+    result.icon = QgsApplication::getThemeIcon( u"/mItemBookmark.svg"_s );
 
     if ( context.usingPrefix && string.isEmpty() )
     {
@@ -59,7 +64,7 @@ void QgsBookmarkLocatorFilter::fetchResults( const QString &string, const QgsLoc
       continue;
     }
 
-    result.score = fuzzyScore( result.displayString, string );
+    result.score = fuzzyScore( QgsStringUtils::unaccent( result.displayString ), QgsStringUtils::unaccent( string ) );
 
     if ( result.score > 0 )
       emit resultFetched( result );

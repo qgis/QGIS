@@ -89,7 +89,7 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
      */
     QgsRectangle mRect;
 
-    double mRectRotation;
+    double mRectRotation = 0.0;
 
     //! cached size of the item (to return in boundingRect())
     QSizeF mItemSize;

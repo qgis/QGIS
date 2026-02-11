@@ -25,7 +25,6 @@ should use this class to manage the panels.
 #include "qgspanelwidgetstack.h"
 %End
   public:
-
     QgsPanelWidgetStack( QWidget *parent = 0 );
 %Docstring
 A stack widget to manage panels in the interface. Handles the open and

@@ -124,7 +124,7 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
   private:
     QgsFeatureModel *mFeatureModel = nullptr;
     QgsIFeatureSelectionManager *mFeatureSelectionManager = nullptr;
-    bool mSyncEnabled;
+    bool mSyncEnabled = true;
 
     /**
      * If sync is disabled
@@ -142,7 +142,7 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
      * If sync is disabled
      * Is set to TRUE, if a clear and select operation should be performed before syncing
      */
-    bool mClearAndSelectBuffer;
+    bool mClearAndSelectBuffer = false;
 };
 
 #endif // QGSFEATURESELECTIONMODEL_H

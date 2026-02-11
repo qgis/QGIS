@@ -29,6 +29,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
 class QgsDataProviderTemporalCapabilities;
@@ -136,7 +138,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     virtual QString dataSourceUri( bool expandAuthConfig = false ) const
     {
-      if ( expandAuthConfig && mDataSourceURI.contains( QLatin1String( "authcfg" ) ) )
+      if ( expandAuthConfig && mDataSourceURI.contains( "authcfg"_L1 ) )
       {
         const QgsDataSourceUri uri( mDataSourceURI );
         return uri.uri( expandAuthConfig );
@@ -471,7 +473,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
       return QString();
     }
 
-    // TODO QGIS 4 -> Make `reloadData()` non virtual. This should be implemented in `reloadProviderData()`.
+    // TODO QGIS 5 -> Make `reloadData()` non virtual. This should be implemented in `reloadProviderData()`.
 
     /**
      * Reloads the data from the source for providers with data caches to synchronize,

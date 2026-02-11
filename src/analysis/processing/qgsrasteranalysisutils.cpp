@@ -26,6 +26,10 @@
 #include "qgsrasterblock.h"
 #include "qgsrasteriterator.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 void QgsRasterAnalysisUtils::cellInfoForBBox( const QgsRectangle &rasterBBox, const QgsRectangle &featureBBox, double cellSizeX, double cellSizeY, int &nCellsX, int &nCellsY, int rasterWidth, int rasterHeight, QgsRectangle &rasterBlockExtent )
@@ -184,18 +188,18 @@ void populateDataTypes()
 {
   if ( sDataTypes.empty() )
   {
-    sDataTypes.append( qMakePair( QStringLiteral( "Byte" ), Qgis::DataType::Byte ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "Int16" ), Qgis::DataType::Int16 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "UInt16" ), Qgis::DataType::UInt16 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "Int32" ), Qgis::DataType::Int32 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "UInt32" ), Qgis::DataType::UInt32 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "Float32" ), Qgis::DataType::Float32 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "Float64" ), Qgis::DataType::Float64 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "CInt16" ), Qgis::DataType::CInt16 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "CInt32" ), Qgis::DataType::CInt32 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "CFloat32" ), Qgis::DataType::CFloat32 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "CFloat64" ), Qgis::DataType::CFloat64 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "Int8" ), Qgis::DataType::Int8 ) );
+    sDataTypes.append( qMakePair( u"Byte"_s, Qgis::DataType::Byte ) );
+    sDataTypes.append( qMakePair( u"Int16"_s, Qgis::DataType::Int16 ) );
+    sDataTypes.append( qMakePair( u"UInt16"_s, Qgis::DataType::UInt16 ) );
+    sDataTypes.append( qMakePair( u"Int32"_s, Qgis::DataType::Int32 ) );
+    sDataTypes.append( qMakePair( u"UInt32"_s, Qgis::DataType::UInt32 ) );
+    sDataTypes.append( qMakePair( u"Float32"_s, Qgis::DataType::Float32 ) );
+    sDataTypes.append( qMakePair( u"Float64"_s, Qgis::DataType::Float64 ) );
+    sDataTypes.append( qMakePair( u"CInt16"_s, Qgis::DataType::CInt16 ) );
+    sDataTypes.append( qMakePair( u"CInt32"_s, Qgis::DataType::CInt32 ) );
+    sDataTypes.append( qMakePair( u"CFloat32"_s, Qgis::DataType::CFloat32 ) );
+    sDataTypes.append( qMakePair( u"CFloat64"_s, Qgis::DataType::CFloat64 ) );
+    sDataTypes.append( qMakePair( u"Int8"_s, Qgis::DataType::Int8 ) );
   }
 }
 
@@ -225,17 +229,14 @@ Qgis::DataType QgsRasterAnalysisUtils::rasterTypeChoiceToDataType( int choice )
   return sDataTypes.value( choice ).second;
 }
 
-void QgsRasterAnalysisUtils::applyRasterLogicOperator( const std::vector<QgsRasterAnalysisUtils::RasterLogicInput> &inputs, QgsRasterDataProvider *destinationRaster, double outputNoDataValue, const bool treatNoDataAsFalse, int width, int height, const QgsRectangle &extent, QgsFeedback *feedback, std::function<void( const std::vector<std::unique_ptr<QgsRasterBlock>> &, bool &, bool &, int, int, bool )> &applyLogicFunc, qgssize &noDataCount, qgssize &trueCount, qgssize &falseCount )
+void QgsRasterAnalysisUtils::applyRasterLogicOperator( const std::vector<QgsRasterAnalysisUtils::RasterLogicInput> &inputs, std::unique_ptr<QgsRasterDataProvider> destinationRaster, double outputNoDataValue, const bool treatNoDataAsFalse, int width, int height, const QgsRectangle &extent, QgsFeedback *feedback, std::function<void( const std::vector<std::unique_ptr<QgsRasterBlock>> &, bool &, bool &, int, int, bool )> &applyLogicFunc, qgssize &noDataCount, qgssize &trueCount, qgssize &falseCount )
 {
-  const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  const int nbBlocksWidth = static_cast<int>( std::ceil( 1.0 * width / maxWidth ) );
-  const int nbBlocksHeight = static_cast<int>( std::ceil( 1.0 * height / maxHeight ) );
-  const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
-
   destinationRaster->setEditable( true );
-  QgsRasterIterator outputIter( destinationRaster );
+  QgsRasterIterator outputIter( destinationRaster.get() );
   outputIter.startRasterRead( 1, width, height, extent );
+
+  const bool hasReportsDuringClose = destinationRaster->hasReportsDuringClose();
+  const double maxProgressDuringBlockWriting = hasReportsDuringClose ? 50.0 : 100.0;
 
   int iterLeft = 0;
   int iterTop = 0;
@@ -255,7 +256,7 @@ void QgsRasterAnalysisUtils::applyRasterLogicOperator( const std::vector<QgsRast
       }
     }
 
-    feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+    feedback->setProgress( maxProgressDuringBlockWriting * outputIter.progress( 1 ) );
     for ( int row = 0; row < iterRows; row++ )
     {
       if ( feedback->isCanceled() )
@@ -282,6 +283,17 @@ void QgsRasterAnalysisUtils::applyRasterLogicOperator( const std::vector<QgsRast
     }
   }
   destinationRaster->setEditable( false );
+
+  if ( hasReportsDuringClose )
+  {
+    std::unique_ptr<QgsFeedback> scaledFeedback( QgsFeedback::createScaledFeedback( feedback, maxProgressDuringBlockWriting, 100.0 ) );
+    if ( !destinationRaster->closeWithProgress( scaledFeedback.get() ) )
+    {
+      if ( feedback->isCanceled() )
+        return;
+      throw QgsProcessingException( QObject::tr( "Could not write raster dataset" ) );
+    }
+  }
 }
 
 std::vector<double> QgsRasterAnalysisUtils::getCellValuesFromBlockStack( const std::vector<std::unique_ptr<QgsRasterBlock>> &inputBlocks, int &row, int &col, bool &noDataInStack )

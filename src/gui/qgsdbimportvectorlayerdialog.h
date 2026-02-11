@@ -44,7 +44,6 @@ class GUI_EXPORT QgsDbImportVectorLayerDialog : public QDialog, private Ui::QgsD
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsDbImportVectorLayerDialog.
      *

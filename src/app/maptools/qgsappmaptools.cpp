@@ -26,6 +26,7 @@
 #include "qgsmaptooldeletering.h"
 #include "qgsmaptooleditmeshframe.h"
 #include "qgsmaptoolfeatureaction.h"
+#include "qgsmaptoolfeaturearray.h"
 #include "qgsmaptoolfillring.h"
 #include "qgsmaptoolformannotation.h"
 #include "qgsmaptoolhtmlannotation.h"
@@ -46,6 +47,7 @@
 #include "qgsmaptoolrotatepointsymbols.h"
 #include "qgsmaptoolscalefeature.h"
 #include "qgsmaptoolselect.h"
+#include "qgsmaptoolselectannotation.h"
 #include "qgsmaptoolshowhidelabels.h"
 #include "qgsmaptoolsimplify.h"
 #include "qgsmaptoolsplitfeatures.h"
@@ -76,6 +78,7 @@ QgsAppMapTools::QgsAppMapTools( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockW
   mTools.insert( Tool::AddFeature, new QgsMapToolAddFeature( canvas, cadDock, QgsMapToolCapture::CaptureNone ) );
   mTools.insert( Tool::MoveFeature, new QgsMapToolMoveFeature( canvas, QgsMapToolMoveFeature::Move ) );
   mTools.insert( Tool::MoveFeatureCopy, new QgsMapToolMoveFeature( canvas, QgsMapToolMoveFeature::CopyMove ) );
+  mTools.insert( Tool::FeatureArrayCopy, new QgsMapToolFeatureArray( canvas ) );
   mTools.insert( Tool::RotateFeature, new QgsMapToolRotateFeature( canvas ) );
   mTools.insert( Tool::ScaleFeature, new QgsMapToolScaleFeature( canvas ) );
   mTools.insert( Tool::OffsetCurve, new QgsMapToolOffsetCurve( canvas ) );
@@ -106,6 +109,7 @@ QgsAppMapTools::QgsAppMapTools( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockW
   mTools.insert( Tool::ChangeLabelProperties, new QgsMapToolChangeLabelProperties( canvas, cadDock ) );
   mTools.insert( Tool::EditMeshFrame, new QgsMapToolEditMeshFrame( canvas ) );
   mTools.insert( Tool::AnnotationEdit, new QgsMapToolModifyAnnotation( canvas, cadDock ) );
+  mTools.insert( Tool::AnnotationSelect, new QgsMapToolSelectAnnotation( canvas, cadDock ) );
 }
 
 QgsAppMapTools::~QgsAppMapTools()

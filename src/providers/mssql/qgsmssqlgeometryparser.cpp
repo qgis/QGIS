@@ -21,6 +21,10 @@
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /*   SqlGeometry/SqlGeography serialization format
 
 Simple Point (SerializationProps & IsSinglePoint)
@@ -604,7 +608,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsMssqlGeometryParser::parseSqlGeometry( u
 {
   if ( nLen < 10 )
   {
-    QgsDebugError( QStringLiteral( "ParseSqlGeometry not enough data" ) );
+    QgsDebugError( u"ParseSqlGeometry not enough data"_s );
     DumpMemoryToLog( "Not enough data", pszInput, nLen );
     return nullptr;
   }
@@ -618,7 +622,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsMssqlGeometryParser::parseSqlGeometry( u
 
   if ( mVersion == 0 || mVersion > 2 )
   {
-    QgsDebugError( QStringLiteral( "ParseSqlGeometry corrupt data" ) );
+    QgsDebugError( u"ParseSqlGeometry corrupt data"_s );
     DumpMemoryToLog( "Corrupt data", pszInput, nLen );
     return nullptr;
   }
@@ -642,7 +646,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsMssqlGeometryParser::parseSqlGeometry( u
 
     if ( nLen < 6 + mPointSize )
     {
-      QgsDebugError( QStringLiteral( "ParseSqlGeometry not enough data" ) );
+      QgsDebugError( u"ParseSqlGeometry not enough data"_s );
       DumpMemoryToLog( "Not enough data", pszInput, nLen );
       return nullptr;
     }
@@ -657,7 +661,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsMssqlGeometryParser::parseSqlGeometry( u
 
     if ( nLen < 6 + 2 * mPointSize )
     {
-      QgsDebugError( QStringLiteral( "ParseSqlGeometry not enough data" ) );
+      QgsDebugError( u"ParseSqlGeometry not enough data"_s );
       DumpMemoryToLog( "Not enough data", pszInput, nLen );
       return nullptr;
     }
@@ -682,7 +686,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsMssqlGeometryParser::parseSqlGeometry( u
 
     if ( nLen < mFigurePos )
     {
-      QgsDebugError( QStringLiteral( "ParseSqlGeometry not enough data" ) );
+      QgsDebugError( u"ParseSqlGeometry not enough data"_s );
       DumpMemoryToLog( "Not enough data", pszInput, nLen );
       return nullptr;
     }
@@ -699,7 +703,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsMssqlGeometryParser::parseSqlGeometry( u
 
     if ( nLen < mShapePos )
     {
-      QgsDebugError( QStringLiteral( "ParseSqlGeometry not enough data" ) );
+      QgsDebugError( u"ParseSqlGeometry not enough data"_s );
       DumpMemoryToLog( "Not enough data", pszInput, nLen );
       return nullptr;
     }
@@ -708,7 +712,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsMssqlGeometryParser::parseSqlGeometry( u
 
     if ( nLen < mShapePos + 9 * mNumShapes )
     {
-      QgsDebugError( QStringLiteral( "ParseSqlGeometry not enough data" ) );
+      QgsDebugError( u"ParseSqlGeometry not enough data"_s );
       DumpMemoryToLog( "Not enough data", pszInput, nLen );
       return nullptr;
     }
@@ -729,7 +733,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsMssqlGeometryParser::parseSqlGeometry( u
         mNumSegments = ReadInt32( mSegmentPos - 4 );
         if ( nLen < mSegmentPos + mNumSegments )
         {
-          QgsDebugError( QStringLiteral( "ParseSqlGeometry not enough data" ) );
+          QgsDebugError( u"ParseSqlGeometry not enough data"_s );
           DumpMemoryToLog( "Not enough data", pszInput, nLen );
           return nullptr;
         }
@@ -739,7 +743,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsMssqlGeometryParser::parseSqlGeometry( u
     // pick up the root shape
     if ( ParentOffset( 0 ) != 0xFFFFFFFF )
     {
-      QgsDebugError( QStringLiteral( "ParseSqlGeometry corrupt data" ) );
+      QgsDebugError( u"ParseSqlGeometry corrupt data"_s );
       DumpMemoryToLog( "Not enough data", pszInput, nLen );
       return nullptr;
     }
@@ -778,7 +782,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsMssqlGeometryParser::parseSqlGeometry( u
         poGeom = readCurvePolygon( 0 );
         break;
       default:
-        QgsDebugError( QStringLiteral( "ParseSqlGeometry unsupported geometry type" ) );
+        QgsDebugError( u"ParseSqlGeometry unsupported geometry type"_s );
         DumpMemoryToLog( "Unsupported geometry type", pszInput, nLen );
         return nullptr;
     }

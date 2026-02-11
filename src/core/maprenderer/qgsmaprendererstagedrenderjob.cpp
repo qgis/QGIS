@@ -25,7 +25,11 @@
 #include "qgsproject.h"
 #include "qgsrendereditemresults.h"
 
+#include <QString>
+
 #include "moc_qgsmaprendererstagedrenderjob.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapRendererStagedRenderJob::QgsMapRendererStagedRenderJob( const QgsMapSettings &settings, Flags flags )
   : QgsMapRendererAbstractCustomPainterJob( settings )
@@ -46,7 +50,7 @@ void QgsMapRendererStagedRenderJob::startPrivate()
   mRenderingStart.start();
   mErrors.clear();
 
-  QgsDebugMsgLevel( QStringLiteral( "Preparing list of layer jobs for rendering" ), 5 );
+  QgsDebugMsgLevel( u"Preparing list of layer jobs for rendering"_s, 5 );
   QElapsedTimer prepareTime;
   prepareTime.start();
 

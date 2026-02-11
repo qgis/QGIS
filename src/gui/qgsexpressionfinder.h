@@ -36,7 +36,6 @@ class QPlainTextEdit;
 class GUI_EXPORT QgsExpressionFinder
 {
   public:
-
     /**
      * Find an expression at the given position in the given text
      *

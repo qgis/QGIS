@@ -76,10 +76,25 @@ class QgsPGSchemaItem : public QgsDatabaseSchemaItem
 
     QString connectionName() const { return mConnectionName; }
 
+    /**
+     * Set if versioning of QGIS projects is enabled for this schema.
+     *
+     * \since QGIS 4.0
+     */
+    void setProjectVersioningEnabled( const bool enabled ) { mProjectVersioningEnabled = enabled; }
+
+    /**
+     * Returns if versioning of QGIS projects is enabled for this schema.
+     *
+     * \since QGIS 4.0
+     */
+    bool projectVersioningEnabled() const { return mProjectVersioningEnabled; }
+
   private:
     QgsPGLayerItem *createLayer( QgsPostgresLayerProperty layerProperty );
 
     QString mConnectionName;
+    bool mProjectVersioningEnabled = false;
 
     // QgsDataItem interface
   public:
@@ -96,6 +111,8 @@ class QgsPGLayerItem : public QgsLayerItem
     QString createUri();
 
     QString comments() const override;
+
+    bool equal( const QgsDataItem *other ) override;
 
     const QgsPostgresLayerProperty &layerInfo() const { return mLayerProperty; }
 
@@ -142,8 +159,12 @@ class QgsPGProjectItem : public QgsProjectItem
     */
     QString connectionName() const { return mConnectionName; }
 
+    using QgsProjectItem::refresh;
+    void refresh() override;
 
   private:
+    void refreshTooltip();
+
     QgsPostgresProjectUri mProjectUri;
     QString mConnectionName;
 };

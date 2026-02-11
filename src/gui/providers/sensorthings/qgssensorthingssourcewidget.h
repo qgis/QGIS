@@ -129,7 +129,7 @@ class QgsSensorThingsRemoveExpansionDelegate : public QStyledItemDelegate SIP_SK
 };
 
 
-class QgsSensorThingsSourceWidget : public QgsProviderSourceWidget, protected Ui::QgsSensorThingsSourceWidgetBase
+class QgsSensorThingsSourceWidget : public QgsProviderSourceWidget, private Ui::QgsSensorThingsSourceWidgetBase
 {
     Q_OBJECT
 

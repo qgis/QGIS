@@ -80,7 +80,7 @@ class QWT_EXPORT QwtCounter : public QWidget
     };
 
     explicit QwtCounter( QWidget* parent = NULL );
-    virtual ~QwtCounter();
+    ~QwtCounter() override;
 
     void setValid( bool );
     bool isValid() const;

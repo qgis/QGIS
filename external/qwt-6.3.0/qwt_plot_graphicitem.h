@@ -32,7 +32,7 @@ class QWT_EXPORT QwtPlotGraphicItem : public QwtPlotItem
     explicit QwtPlotGraphicItem( const QString& title = QString() );
     explicit QwtPlotGraphicItem( const QwtText& title );
 
-    virtual ~QwtPlotGraphicItem();
+    ~QwtPlotGraphicItem() override;
 
     void setGraphic( const QRectF& rect, const QwtGraphic& );
     QwtGraphic graphic() const;

@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsRuggednessFilter : QgsNineCellFilter
 {
 %Docstring(signature="appended")

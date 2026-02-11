@@ -18,7 +18,11 @@
 #include "qgsapplication.h"
 #include "qgsguiutils.h"
 
+#include <QString>
+
 #include "moc_qgsalignmentcombobox.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAlignmentComboBox::QgsAlignmentComboBox( QWidget *parent )
   : QComboBox( parent )
@@ -49,6 +53,84 @@ void QgsAlignmentComboBox::setCurrentAlignment( Qt::Alignment alignment )
     setCurrentIndex( index );
 }
 
+Qgis::TextHorizontalAlignment QgsAlignmentComboBox::horizontalAlignment() const
+{
+  switch ( currentAlignment() )
+  {
+    case Qt::AlignLeft:
+      return Qgis::TextHorizontalAlignment::Left;
+    case Qt::AlignRight:
+      return Qgis::TextHorizontalAlignment::Right;
+
+    case Qt::AlignHCenter:
+      return Qgis::TextHorizontalAlignment::Center;
+    case Qt::AlignJustify:
+      return Qgis::TextHorizontalAlignment::Justify;
+    case Qt::AlignAbsolute:
+      return Qgis::TextHorizontalAlignment::Left;
+
+    default:
+      break;
+  }
+
+  return Qgis::TextHorizontalAlignment::Left;
+}
+
+Qgis::TextVerticalAlignment QgsAlignmentComboBox::verticalAlignment() const
+{
+  switch ( currentAlignment() )
+  {
+    case Qt::AlignTop:
+      return Qgis::TextVerticalAlignment::Top;
+    case Qt::AlignBottom:
+      return Qgis::TextVerticalAlignment::Bottom;
+    case Qt::AlignVCenter:
+      return Qgis::TextVerticalAlignment::VerticalCenter;
+    case Qt::AlignBaseline:
+      return Qgis::TextVerticalAlignment::Bottom; // not yet supported
+
+    default:
+      break;
+  }
+
+  return Qgis::TextVerticalAlignment::Bottom;
+}
+
+void QgsAlignmentComboBox::setCurrentAlignment( Qgis::TextHorizontalAlignment alignment )
+{
+  switch ( alignment )
+  {
+    case Qgis::TextHorizontalAlignment::Left:
+      setCurrentAlignment( Qt::AlignmentFlag::AlignLeft );
+      break;
+    case Qgis::TextHorizontalAlignment::Center:
+      setCurrentAlignment( Qt::AlignmentFlag::AlignHCenter );
+      break;
+    case Qgis::TextHorizontalAlignment::Right:
+      setCurrentAlignment( Qt::AlignmentFlag::AlignRight );
+      break;
+    case Qgis::TextHorizontalAlignment::Justify:
+      setCurrentAlignment( Qt::AlignmentFlag::AlignJustify );
+      break;
+  }
+}
+
+void QgsAlignmentComboBox::setCurrentAlignment( Qgis::TextVerticalAlignment alignment )
+{
+  switch ( alignment )
+  {
+    case Qgis::TextVerticalAlignment::Top:
+      setCurrentAlignment( Qt::AlignmentFlag::AlignTop );
+      break;
+    case Qgis::TextVerticalAlignment::VerticalCenter:
+      setCurrentAlignment( Qt::AlignmentFlag::AlignVCenter );
+      break;
+    case Qgis::TextVerticalAlignment::Bottom:
+      setCurrentAlignment( Qt::AlignmentFlag::AlignBottom );
+      break;
+  }
+}
+
 void QgsAlignmentComboBox::customizeAlignmentDisplay( Qt::Alignment alignment, const QString &text, const QIcon &icon )
 {
   const int index = findData( QVariant( alignment ) );
@@ -69,20 +151,20 @@ void QgsAlignmentComboBox::populate()
   clear();
 
   if ( mAlignments & Qt::AlignLeft )
-    addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconAlignLeft.svg" ) ), tr( "Left" ), Qt::AlignLeft );
+    addItem( QgsApplication::getThemeIcon( u"/mIconAlignLeft.svg"_s ), tr( "Left" ), Qt::AlignLeft );
   if ( mAlignments & Qt::AlignHCenter )
-    addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconAlignCenter.svg" ) ), tr( "Center" ), Qt::AlignHCenter );
+    addItem( QgsApplication::getThemeIcon( u"/mIconAlignCenter.svg"_s ), tr( "Center" ), Qt::AlignHCenter );
   if ( mAlignments & Qt::AlignRight )
-    addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconAlignRight.svg" ) ), tr( "Right" ), Qt::AlignRight );
+    addItem( QgsApplication::getThemeIcon( u"/mIconAlignRight.svg"_s ), tr( "Right" ), Qt::AlignRight );
   if ( mAlignments & Qt::AlignJustify )
-    addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconAlignJustify.svg" ) ), tr( "Justify" ), Qt::AlignJustify );
+    addItem( QgsApplication::getThemeIcon( u"/mIconAlignJustify.svg"_s ), tr( "Justify" ), Qt::AlignJustify );
 
   if ( mAlignments & Qt::AlignTop )
-    addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconAlignTop.svg" ) ), tr( "Top" ), Qt::AlignTop );
+    addItem( QgsApplication::getThemeIcon( u"/mIconAlignTop.svg"_s ), tr( "Top" ), Qt::AlignTop );
   if ( mAlignments & Qt::AlignVCenter )
-    addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconAlignVCenter.svg" ) ), tr( "Vertical Center" ), Qt::AlignVCenter );
+    addItem( QgsApplication::getThemeIcon( u"/mIconAlignVCenter.svg"_s ), tr( "Vertical Center" ), Qt::AlignVCenter );
   if ( mAlignments & Qt::AlignBottom )
-    addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconAlignBottom.svg" ) ), tr( "Bottom" ), Qt::AlignBottom );
+    addItem( QgsApplication::getThemeIcon( u"/mIconAlignBottom.svg"_s ), tr( "Bottom" ), Qt::AlignBottom );
 
   const int index = findData( QVariant( prevAlign ) );
   if ( index >= 0 )

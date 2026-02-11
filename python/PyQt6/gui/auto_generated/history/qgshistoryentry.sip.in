@@ -8,6 +8,7 @@
 
 
 
+
 class QgsHistoryEntry
 {
 %Docstring(signature="appended")
@@ -20,7 +21,6 @@ Encapsulates a history entry.
 #include "qgshistoryentry.h"
 %End
   public:
-
     QgsHistoryEntry();
 %Docstring
 Constructor for an invalid entry.

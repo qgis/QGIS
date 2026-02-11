@@ -124,9 +124,12 @@ set(QGIS_GUI_SRCS
   annotations/qgsannotationitemguiregistry.cpp
   annotations/qgsannotationitemwidget.cpp
   annotations/qgsannotationitemwidget_impl.cpp
+  annotations/qgsannotationmaptool.cpp
   annotations/qgscreateannotationitemmaptool.cpp
   annotations/qgscreateannotationitemmaptool_impl.cpp
   annotations/qgsmaptoolmodifyannotation.cpp
+  annotations/qgsmaptoolselectannotation.cpp
+  annotations/qgsmaptoolselectannotationmousehandles.cpp
 
   auth/qgsauthauthoritieseditor.cpp
   auth/qgsauthcertificateinfo.cpp
@@ -357,8 +360,9 @@ set(QGIS_GUI_SRCS
   maptools/qgsmaptoolcapture.cpp
   maptools/qgsmaptoolcapturelayergeometry.cpp
   maptools/qgsmaptoolcapturerubberband.cpp
-  maptools/qgsmaptooledit.cpp
   maptools/qgsmaptooldigitizefeature.cpp
+  maptools/qgsmaptooledit.cpp
+  maptools/qgsmaptooleditblanksegments.cpp
   maptools/qgsmaptoolemitpoint.cpp
   maptools/qgsmaptoolextent.cpp
   maptools/qgsmaptoolidentify.cpp
@@ -1107,9 +1111,12 @@ set(QGIS_GUI_HDRS
   annotations/qgsannotationitemcommonpropertieswidget.h
   annotations/qgsannotationitemguiregistry.h
   annotations/qgsannotationitemwidget.h
+  annotations/qgsannotationmaptool.h
   annotations/qgscreateannotationitemmaptool.h
   annotations/qgscreateannotationitemmaptool_impl.h
   annotations/qgsmaptoolmodifyannotation.h
+  annotations/qgsmaptoolselectannotation.h
+  annotations/qgsmaptoolselectannotationmousehandles.h
 
   attributeformconfig/qgsattributeformcontaineredit.h
   attributeformconfig/qgsattributetypedialog.h
@@ -1371,6 +1378,7 @@ set(QGIS_GUI_HDRS
   maptools/qgsmaptoolcapturerubberband.h
   maptools/qgsmaptooldigitizefeature.h
   maptools/qgsmaptooledit.h
+  maptools/qgsmaptooleditblanksegments.h
   maptools/qgsmaptoolemitpoint.h
   maptools/qgsmaptoolextent.h
   maptools/qgsmaptoolidentify.h
@@ -1808,6 +1816,17 @@ if(WITH_INTERNAL_QWT)
     )
   endif()
 
+  set(QWT_COMPILE_OPTIONS)
+  if(HAVE_WFLAG_SUGGEST_OVERRIDE)
+    list(APPEND QWT_COMPILE_OPTIONS "-Wno-suggest-override")
+  endif()
+  if(HAVE_WFLAG_SUGGEST_DESTRUCTOR_OVERRIDE)
+    list(APPEND QWT_COMPILE_OPTIONS "-Wno-suggest-destructor-override")
+  endif()
+  if (QWT_COMPILE_OPTIONS)
+    set_source_files_properties($QGIS_QWT_SRCS PROPERTIES COMPILE_OPTIONS "${QWT_COMPILE_OPTIONS}")
+  endif()
+
   set(QGIS_GUI_SRCS
     ${QGIS_GUI_SRCS}
     ${QGIS_QWT_SRCS}
@@ -1993,12 +2012,10 @@ target_link_libraries(qgis_gui
   Qt::MultimediaWidgets
 )
 
-if (BUILD_WITH_QT6)
-  find_package(Qt6 COMPONENTS SvgWidgets REQUIRED)
-  target_link_libraries(qgis_gui
-    Qt6::SvgWidgets
-  )
-endif()
+find_package(Qt6 COMPONENTS SvgWidgets REQUIRED)
+target_link_libraries(qgis_gui
+  Qt6::SvgWidgets
+)
 
 if (WITH_QTWEBENGINE)
   find_package(${QT_VERSION_BASE} COMPONENTS WebEngineWidgets REQUIRED)

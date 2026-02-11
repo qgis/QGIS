@@ -38,7 +38,6 @@ class GUI_EXPORT QgsLayoutImageExportOptionsDialog : public QDialog, private Ui:
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutImageExportOptionsDialog
      * \param parent parent widget

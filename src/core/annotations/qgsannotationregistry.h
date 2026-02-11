@@ -28,6 +28,8 @@
 
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 // None of this is stable API!
@@ -89,9 +91,9 @@ class CORE_EXPORT QgsAnnotationRegistry
      */
     QgsAnnotationRegistry()
     {
-      addAnnotationType( QgsAnnotationMetadata( QStringLiteral( "TextAnnotationItem" ), QgsTextAnnotation::create ) );
-      addAnnotationType( QgsAnnotationMetadata( QStringLiteral( "HtmlAnnotationItem" ), QgsHtmlAnnotation::create ) );
-      addAnnotationType( QgsAnnotationMetadata( QStringLiteral( "SVGAnnotationItem" ), QgsSvgAnnotation::create ) );
+      addAnnotationType( QgsAnnotationMetadata( u"TextAnnotationItem"_s, QgsTextAnnotation::create ) );
+      addAnnotationType( QgsAnnotationMetadata( u"HtmlAnnotationItem"_s, QgsHtmlAnnotation::create ) );
+      addAnnotationType( QgsAnnotationMetadata( u"SVGAnnotationItem"_s, QgsSvgAnnotation::create ) );
     }
 
     /**

@@ -28,13 +28,16 @@
 #include "testqgsmaptoolutils.h"
 
 #include <QDir>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsMapToolEditMesh : public QgsTest
 {
     Q_OBJECT
   public:
     TestQgsMapToolEditMesh()
-      : QgsTest( QStringLiteral( "Map Tool Edit Mesh Tests" ), QStringLiteral( "app" ) )
+      : QgsTest( u"Map Tool Edit Mesh Tests"_s, u"app"_s )
     {}
 
   private slots:

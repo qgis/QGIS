@@ -33,12 +33,11 @@ class QgsAttributesFormTreeViewIndicator;
  * \ingroup gui
  * \since QGIS 3.44
  */
-class GUI_EXPORT QgsAttributesFormBaseView : public QTreeView, protected QgsExpressionContextGenerator
+class GUI_EXPORT QgsAttributesFormBaseView : public QTreeView, public QgsExpressionContextGenerator
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAttributesFormBaseView, with the given \a parent.
      *
@@ -135,7 +134,6 @@ class GUI_EXPORT QgsAttributesAvailableWidgetsView : public QgsAttributesFormBas
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAttributesAvailableWidgetsView, with the given \a parent.
      *
@@ -163,7 +161,6 @@ class GUI_EXPORT QgsAttributesFormLayoutView : public QgsAttributesFormBaseView
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAttributesFormLayoutView, with the given \a parent.
      *

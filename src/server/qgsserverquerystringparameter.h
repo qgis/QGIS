@@ -51,7 +51,6 @@ class SERVER_EXPORT QgsServerQueryStringParameter
     typedef std::function<bool( const QgsServerApiContext &, QVariant & )> customValidator;
 #endif
   public:
-
     /**
      * The Type enum represents the parameter type
      */

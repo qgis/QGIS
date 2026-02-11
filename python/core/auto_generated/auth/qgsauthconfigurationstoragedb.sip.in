@@ -111,6 +111,7 @@ Returns the database connection used by this storage.
     virtual QList<QgsAuthConfigurationStorage::SettingParameter> settingsParameters() const;
 
 
+
     virtual bool storeCertIdentity( const QSslCertificate &cert, const QString &keyPem );
 
     virtual bool removeCertIdentity( const QSslCertificate &cert );

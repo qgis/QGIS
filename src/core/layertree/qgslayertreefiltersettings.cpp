@@ -23,6 +23,10 @@
 #include "qgsmapsettings.h"
 #include "qgsreferencedgeometry.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsLayerTreeFilterSettings::QgsLayerTreeFilterSettings( const QgsMapSettings &settings )
   : mMapSettings( std::make_unique<QgsMapSettings>( settings ) )
 {
@@ -123,7 +127,7 @@ void QgsLayerTreeFilterSettings::addVisibleExtentForLayer( QgsMapLayer *layer, c
   }
   catch ( QgsCsException & )
   {
-    QgsDebugError( QStringLiteral( "Error transforming polygon to layer CRS for legend filtering" ) );
+    QgsDebugError( u"Error transforming polygon to layer CRS for legend filtering"_s );
   }
   if ( !mLayers.contains( layer ) )
     mLayers << layer;
@@ -150,7 +154,7 @@ QgsGeometry QgsLayerTreeFilterSettings::combinedVisibleExtentForLayer( const Qgs
     }
     catch ( QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "Error transforming map extent to layer CRS for legend filtering" ) );
+      QgsDebugError( u"Error transforming map extent to layer CRS for legend filtering"_s );
     }
   }
 
