@@ -2218,6 +2218,27 @@ class TestQgsExpression : public QObject
       QTest::newRow( "color hsva float" ) << "color_hsvf(0.5,0.9012,0,0.8034)" << false << QVariant( QColor::fromHsvF( 0.5f, 0.9012, 0, 0.8034 ) );
       QTest::newRow( "color hsv invalid float" ) << "color_hsvf(1.5,0.1,0,0)" << false << QVariant( QColor::fromHsvF( 1, 0.1, 0, 0 ) );
 
+      // Color addition
+      QTest::newRow( "color add int" ) << "color_rgbf(0.4,0.6,0.8) + 50" << false << QVariant( QColor( 152, 203, 254, 255 ) );
+      QTest::newRow( "color add float" ) << "color_rgbf(0.4,0.6,0.8) + 10.5" << false << QVariant( QColor( 113, 164, 215, 255 ) );
+      QTest::newRow( "color add overflow" ) << "color_rgbf(0.8,0.8,0.8) + 100" << false << QVariant( QColor( 255, 255, 255, 255 ) );
+
+      // Color subtraction
+      QTest::newRow( "color subtract int" ) << "color_rgbf(0.4,0.6,0.8) - 50" << false << QVariant( QColor( 52, 103, 154, 205 ) );
+      QTest::newRow( "color subtract float" ) << "color_rgbf(0.4,0.6,0.8) - 10.5" << false << QVariant( QColor( 92, 143, 194, 245 ) );
+      QTest::newRow( "color subtract underflow" ) << "color_rgbf(0.2,0.2,0.2) - 100" << false << QVariant( QColor( 0, 0, 0, 155 ) );
+
+      // Color multiplication
+      QTest::newRow( "color multiply int" ) << "color_rgbf(0.4,0.6,0.8) * 2" << false << QVariant( QColor( 204, 255, 255, 255 ) );
+      QTest::newRow( "color multiply float" ) << "color_rgbf(0.4,0.6,0.8) * 0.5" << false << QVariant( QColor( 51, 77, 102, 128 ) );
+      QTest::newRow( "color multiply zero" ) << "color_rgbf(0.4,0.6,0.8) * 0" << false << QVariant( QColor( 0, 0, 0, 0 ) );
+      QTest::newRow( "color multiply negative" ) << "color_rgbf(0.4,0.6,0.8) * -1" << false << QVariant( QColor( 0, 0, 0, 0 ) );
+
+      // Color division
+      QTest::newRow( "color divide int" ) << "color_rgbf(0.4,0.6,0.8) / 2" << false << QVariant( QColor( 51, 77, 102, 128 ) );
+      QTest::newRow( "color divide float" ) << "color_rgbf(0.4,0.6,0.8) / 0.5" << false << QVariant( QColor( 204, 255, 255, 255 ) );
+      QTest::newRow( "color divide zero" ) << "color_rgbf(0.4,0.6,0.8) / 0" << false << QVariant();
+
       // Precedence and associativity
       QTest::newRow( "multiplication first" ) << "1+2*3" << false << QVariant( 7 );
       QTest::newRow( "brackets first" ) << "(1+2)*(3+4)" << false << QVariant( 21 );
