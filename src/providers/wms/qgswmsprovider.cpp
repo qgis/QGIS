@@ -1343,12 +1343,6 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
     }
   }
 
-  if ( !uri.value( u"enableTime"_s, true ).toBool() )
-  {
-    format = u"yyyy-MM-dd"_s;
-    dateOnly = true;
-  }
-
   if ( range.begin().isValid() && range.end().isValid() )
   {
     switch ( temporalCapabilities()->intervalHandlingMethod() )

@@ -782,6 +782,9 @@ class QgsWmsSettings
     //! Temporal extent from dimension property in WMS-T
     QString mTemporalExtent;
 
+    //! Whether time dimension is enabled for the layer
+    QString mEnableTime = u"false"_s;
+
     //! Fixed temporal range for the data provider
     QgsDateTimeRange mFixedRange;
 

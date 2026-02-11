@@ -1107,6 +1107,60 @@ void TestQgsWmsProvider::testWmstTemporalCapabilities()
     QVERIFY( query.hasQueryItem( "TIME" ) );
     QCOMPARE( query.queryItemValue( "TIME" ), QString( "2000" ) );
   }
+
+  // 10-year period (decade) - interval notation
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_decade_interval&styles=&temporalSource=provider&timeDimensionExtent=1950/2020/P10Y&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2000-01-01T00:00:00", Qt::ISODate ), QDateTime::fromString( "2000-01-01T00:00:00", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2000" ) );
+  }
+
+  // Test enableTime=true - TIME parameter should be included
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&enableTime=true&format=image/png&layers=time_day&styles=&temporalSource=provider&timeDimensionExtent=2020-06-15&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T00:00:00Z", Qt::ISODate ), QDateTime::fromString( "2020-06-15T00:00:00Z", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15" ) );
+  }
+
+  // Test default behavior (no enableTime parameter) - should include TIME
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_year&styles=&temporalSource=provider&timeDimensionExtent=2020&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-01-01T00:00:00Z", Qt::ISODate ), QDateTime::fromString( "2020-01-01T00:00:00Z", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020" ) );
+  }
 }
 QGSTEST_MAIN( TestQgsWmsProvider )
 #include "testqgswmsprovider.moc"
