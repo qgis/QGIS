@@ -2197,6 +2197,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( JoinStyle3D )
 
     /**
+     * Geometry backend for QgsGeometry.
+     *
+     * \since QGIS 4.0
+     */
+    enum class GeometryBackend : int
+    {
+      QGIS = 1, //!< Use internal implementation
+      GEOS,     //!< Use GEOS implementation
+    };
+    Q_ENUM( GeometryBackend )
+
+    /**
      * Flags which control geos geometry creation behavior.
      *
      * \since QGIS 3.40
