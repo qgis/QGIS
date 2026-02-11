@@ -68,7 +68,7 @@ QgsPdalBuildVpcAlgorithm *QgsPdalBuildVpcAlgorithm::createInstance() const
 
 void QgsPdalBuildVpcAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMultipleLayers( u"LAYERS"_s, QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::PointCloud ) );
+  addParameter( new QgsProcessingParameterMultipleLayers( u"LAYERS"_s, QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::PointCloud, QVariant(), false, true ) );
   addParameter( new QgsProcessingParameterBoolean( u"BOUNDARY"_s, QObject::tr( "Calculate boundary polygons" ), false ) );
   addParameter( new QgsProcessingParameterBoolean( u"STATISTICS"_s, QObject::tr( "Calculate statistics" ), false ) );
   addParameter( new QgsProcessingParameterBoolean( u"OVERVIEW"_s, QObject::tr( "Build overview point cloud" ), false ) );
@@ -79,7 +79,7 @@ QStringList QgsPdalBuildVpcAlgorithm::createArgumentLists( const QVariantMap &pa
 {
   Q_UNUSED( feedback );
 
-  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"LAYERS"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  const QStringList layers = parameterAsFileList( parameters, u"LAYERS"_s, context );
   if ( layers.empty() )
   {
     feedback->reportError( QObject::tr( "No layers selected" ), true );
@@ -104,7 +104,7 @@ QStringList QgsPdalBuildVpcAlgorithm::createArgumentLists( const QVariantMap &pa
   setOutputValue( u"OUTPUT"_s, outputFileName );
 
   QStringList args;
-  args.reserve( layers.count() + 5 );
+  args.reserve( 7 );
 
   args << u"build_vpc"_s
        << u"--output=%1"_s.arg( outputFileName );
@@ -134,10 +134,7 @@ QStringList QgsPdalBuildVpcAlgorithm::createArgumentLists( const QVariantMap &pa
   }
 
   QTextStream out( &listFile );
-  for ( const QgsMapLayer *layer : std::as_const( layers ) )
-  {
-    out << layer->source() << "\n";
-  }
+  out << layers.join( '\n' );
 
   args << u"--input-file-list=%1"_s.arg( fileName );
 
