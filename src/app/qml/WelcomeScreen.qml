@@ -141,12 +141,13 @@ Item {
                 subtitle: (ProjectNativePath || ProjectPath || "").replace(/([\\\/])/g,"$1\u200b")
                 crs: Crs
                 imageSource: PreviewImagePath || ""
+                isEnabled: Exists
                 isPinned: Pinned
                 isSelected: recentProjectsListView.currentIndex === index
                 radius: 6
 
                 onClicked: (mouse) => {
-                             if (mouse.button == Qt.LeftButton) {
+                             if (mouse.button == Qt.LeftButton && isEnabled) {
                                welcomeScreenController.openProject(ProjectPath);
                              } else if (mouse.button == Qt.RightButton) {
                                recentProjectsMenu.projectIndex = index;

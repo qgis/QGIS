@@ -17,6 +17,7 @@ Rectangle {
   property bool isPinned: false
   property bool isSelected: false
   property bool isPressed: false
+  property bool isEnabled: true
 
   signal clicked(MouseEvent mouse)
 
@@ -78,6 +79,7 @@ Rectangle {
       color: "#2d3748"
       wrapMode: Text.Wrap
       elide: Text.ElideRight
+      opacity: root.isEnabled ? 1.0 : 0.5
     }
     
     Text {
@@ -89,6 +91,7 @@ Rectangle {
       color: "#4a5568"
       wrapMode: Text.NoWrap
       elide: Text.ElideRight
+      opacity: root.isEnabled ? 1.0 : 0.5
     }
 
     Text {
@@ -100,6 +103,7 @@ Rectangle {
       color: "#4a5568"
       wrapMode: Text.Wrap
       elide: Text.ElideRight
+      opacity: root.isEnabled ? 1.0 : 0.5
     }
   }
 
