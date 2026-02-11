@@ -229,6 +229,18 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
         const std::unique_ptr<QgsCustomization> &customization() const;
 
       private:
+        /**
+         * Called whenever user drop some mime \a data representing a QgsActionItem on
+         * \a parent at \a row position
+         */
+        bool dropMimeDataActions( const QMimeData *data, int row, const QModelIndex &parent );
+
+        /**
+         * Called whenever user drop some mime \a data representing a QgsProcessingAlgorithmItem on
+         * \a parent at \a row position
+         */
+        bool dropMimeDataProcessingAlgorithms( const QMimeData *data, int row, const QModelIndex &parent );
+
         Mode mMode = Mode::ActionSelector;
         QgisApp *mQgisApp = nullptr;
         std::unique_ptr<QgsCustomization> mCustomization; // current customization, copy of the application one
