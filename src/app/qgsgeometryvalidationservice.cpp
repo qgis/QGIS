@@ -14,9 +14,9 @@ email                : matthias@opengis.ch
  ***************************************************************************/
 
 
-#include "qgisapp.h"
 #include "qgsgeometryvalidationservice.h"
 
+#include "qgisapp.h"
 #include "qgsanalysis.h"
 #include "qgsfeedback.h"
 #include "qgsgeometrycheckfactory.h"
@@ -481,7 +481,7 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer,
       }
     }
     if ( allErrors.empty()
-         && QgisApp::instance()->tryCommitChanges(layer)
+         && QgisApp::instance()->tryCommitChanges( layer )
          && mLayerChecks[layer].singleFeatureCheckErrors.empty()
          && mLayerChecks[layer].commitPending )
     {

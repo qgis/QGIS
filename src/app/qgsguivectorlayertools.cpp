@@ -90,7 +90,8 @@ bool QgsGuiVectorLayerTools::saveEdits( QgsVectorLayer *layer ) const
 
   if ( layer->isModified() )
   {
-    if (!QgisApp::instance()->tryCommitChanges(layer)) {
+    if ( !QgisApp::instance()->tryCommitChanges( layer ) )
+    {
       return false;
     }
 
@@ -128,7 +129,8 @@ bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer *layer, bool allowCance
         break;
 
       case QMessageBox::Save:
-        if (!QgisApp::instance()->tryCommitChanges(layer)) {
+        if ( !QgisApp::instance()->tryCommitChanges( layer ) )
+        {
           res = false;
           layer->triggerRepaint();
           break;

@@ -11030,8 +11030,9 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
       {
         QApplication::setOverrideCursor( Qt::WaitCursor );
 
-        if (!QgisApp::instance()->tryCommitChanges(vlayer)) {
-            break;
+        if ( !QgisApp::instance()->tryCommitChanges( vlayer ) )
+        {
+          break;
         };
 
         QStringList commitErrors;
@@ -11272,8 +11273,9 @@ bool QgisApp::toggleEditingPointCloudLayer( QgsPointCloudLayer *pclayer, bool al
       {
         QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
         QgsCanvasRefreshBlocker refreshBlocker;
-        
-        if (!QgisApp::instance()->tryCommitChanges(pclayer)) {
+
+        if ( !QgisApp::instance()->tryCommitChanges( pclayer ) )
+        {
           break;
         }
 
@@ -11361,7 +11363,8 @@ void QgisApp::saveVectorLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool
 
   QStringList commitErrors;
 
-  if (!QgisApp::instance()->tryCommitChanges(vlayer)) {
+  if ( !QgisApp::instance()->tryCommitChanges( vlayer ) )
+  {
     mSaveRollbackInProgress = false;
     return;
   }
@@ -11413,7 +11416,8 @@ void QgisApp::savePointCloudLayerEdits( QgsMapLayer *layer, bool leaveEditable, 
 
   QgsCanvasRefreshBlocker refreshBlocker;
 
-  if (!QgisApp::instance()->tryCommitChanges(pclayer)) {
+  if ( !QgisApp::instance()->tryCommitChanges( pclayer ) )
+  {
     return;
   }
 
@@ -17417,17 +17421,16 @@ QMenu *QgisApp::createPopupMenu()
   return menu;
 }
 
-bool QgisApp::tryCommitChanges( QgsMapLayer * layer )
+bool QgisApp::tryCommitChanges( QgsMapLayer *layer )
 {
-  for(QgsLayerChangesCommitBlockerInterface* blocker: mLayerChangesCommitBlockers) 
-   {
-     if (!blocker->allowCommit(layer) )
-      {
-        messageBar()->pushWarning( tr("Committing changes to the layer is blocked"), 
-        tr("The ability to commit changes to the '%1' layer has been blocked by a plugin or script").arg( layer->name() ));
-        return false;
-      }
-   }
+  for ( QgsLayerChangesCommitBlockerInterface *blocker : mLayerChangesCommitBlockers )
+  {
+    if ( !blocker->allowCommit( layer ) )
+    {
+      messageBar()->pushWarning( tr( "Committing changes to the layer is blocked" ), tr( "The ability to commit changes to the '%1' layer has been blocked by a plugin or script" ).arg( layer->name() ) );
+      return false;
+    }
+  }
   return true;
 }
 

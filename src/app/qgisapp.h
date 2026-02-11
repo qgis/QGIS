@@ -19,6 +19,9 @@
 #define QGISAPP_H
 
 #include "qgslayerchangescommitblockerinterface.h"
+
+#include <QString>
+
 class QActionGroup;
 class QCheckBox;
 class QCursor;
@@ -336,12 +339,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMessageBar *messageBar();
 
     /**
-     * Displays a warning about layer `layer` being blocked from the process of
-     * committing changes using the messagebar.
-     *
-    **/
-
-    /**
      * Opens the message log dock widget, and optionally activates a specific tab by name.
      *
      * \param tabName Name of the tab to be activated.
@@ -542,7 +539,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**
      * Tries to commit changes to a \a layer
      */
-    bool tryCommitChanges( QgsMapLayer * layer );
+    bool tryCommitChanges( QgsMapLayer *layer );
 
     /**
      * Access the vector layer tools. This will be an instance of {\see QgsGuiVectorLayerTools}

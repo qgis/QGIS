@@ -50,7 +50,7 @@ Example
   public:
     virtual ~QgsLayerChangesCommitBlockerInterface();
 
-    virtual bool allowCommit( QgsMapLayer* layer ) = 0;
+    virtual bool allowCommit( QgsMapLayer *layer ) = 0;
 %Docstring
 Called whenever the QGIS application has been asked to commit changes to
 a layer.
