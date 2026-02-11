@@ -183,31 +183,41 @@ QgsPointSequence QgsBezierData::interpolateLine() const
   return result;
 }
 
-std::unique_ptr<QgsNurbsCurve> QgsBezierData::asNurbsCurve() const
+std::unique_ptr<QgsNurbsCurve> QgsBezierData::asNurbsCurve( int degree ) const
 {
   const int anchorCount = mData.count();
-  if ( anchorCount < 2 )
+  if ( anchorCount < 2 || degree < 1 )
     return nullptr;
 
-  // Build control points: anchor, handle_right, handle_left, anchor, ...
-  // A piecewise cubic Bézier with n anchors has n-1 segments
-  // Total control points: 1 + 3*(n-1) = 3n-2
+  // Build control points
   QVector<QgsPoint> ctrlPts;
+  ctrlPts.reserve( 1 + ( anchorCount - 1 ) * degree );
   ctrlPts.append( mData[0].anchor );
 
   for ( int i = 0; i < anchorCount - 1; ++i )
   {
-    ctrlPts.append( mData[i].rightHandle );
-    ctrlPts.append( mData[i + 1].leftHandle );
+    for ( int j = 1; j < degree; ++j )
+    {
+      if ( j == 1 )
+        ctrlPts.append( mData[i].rightHandle );
+      else if ( j == degree - 1 )
+        ctrlPts.append( mData[i + 1].leftHandle );
+      else
+      {
+        // degree > 3, we don't have intermediate handles.
+        // We'll just repeat the right handle as a fallback.
+        ctrlPts.append( mData[i].rightHandle );
+      }
+    }
     ctrlPts.append( mData[i + 1].anchor );
   }
 
-  QVector<double> knots = QgsNurbsCurve::generateKnotsForBezierConversion( anchorCount );
+  QVector<double> knots = QgsNurbsCurve::generateKnotsForBezierConversion( anchorCount, degree );
 
   // Uniform weights (non-rational B-spline)
   QVector<double> weights( ctrlPts.count(), 1.0 );
 
-  return std::make_unique<QgsNurbsCurve>( ctrlPts, 3, knots, weights );
+  return std::make_unique<QgsNurbsCurve>( ctrlPts, degree, knots, weights );
 }
 
 void QgsBezierData::clear()
@@ -309,6 +319,60 @@ int QgsBezierData::findClosestSegment( const QgsPoint &point, double tolerance )
   }
 
   return closestSegment;
+}
+
+QgsBezierData QgsBezierData::fromPolyBezierControlPoints( const QVector<QgsPoint> &controlPoints, int degree )
+{
+  QgsBezierData data;
+
+  if ( degree < 1 )
+    return data;
+
+  const int n = controlPoints.size();
+  if ( n < degree + 1 || ( n - 1 ) % degree != 0 )
+    return data;
+
+  const int numAnchors = ( n - 1 ) / degree + 1;
+
+  for ( int i = 0; i < numAnchors; ++i )
+  {
+    const int anchorIndex = i * degree;
+    if ( anchorIndex >= n )
+      break;
+
+    const QgsPoint &anchor = controlPoints[anchorIndex];
+    QgsPoint leftHandle = anchor;
+    QgsPoint rightHandle = anchor;
+
+    if ( i > 0 )
+    {
+      const int leftIndex = anchorIndex - 1;
+      if ( leftIndex < n )
+        leftHandle = controlPoints[leftIndex];
+    }
+
+    if ( i < numAnchors - 1 )
+    {
+      const int rightIndex = anchorIndex + 1;
+      if ( rightIndex < n )
+        rightHandle = controlPoints[rightIndex];
+    }
+
+    data.addAnchor( anchor );
+    data.moveHandle( i * 2, leftHandle );
+    data.moveHandle( i * 2 + 1, rightHandle );
+  }
+
+  return data;
+}
+
+QgsBezierData QgsBezierData::fromPolyBezierControlPoints( const QVector<QgsPointXY> &controlPoints, int degree )
+{
+  QVector<QgsPoint> points;
+  points.reserve( controlPoints.size() );
+  for ( const QgsPointXY &pt : controlPoints )
+    points.append( QgsPoint( pt ) );
+  return fromPolyBezierControlPoints( points, degree );
 }
 
 ///@endcond PRIVATE
