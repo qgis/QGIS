@@ -63,7 +63,7 @@ class CORE_EXPORT QgsPointCloudExpressionNode
       public:
         virtual ~NodeList();
         //! Takes ownership of the provided node
-        void append( QgsPointCloudExpressionNode *node ) { mList.append( node ); mNameList.append( QString() ); }
+        void append( std::unique_ptr<QgsPointCloudExpressionNode> node ) { mList.append( node.release() ); mNameList.append( QString() ); }
 
         /**
          * Returns the number of nodes in the list.
