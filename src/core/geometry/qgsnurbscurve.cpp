@@ -1492,7 +1492,15 @@ bool QgsNurbsCurve::moveVertex( QgsVertexId position, const QgsPoint &newPos )
   if ( idx < 0 || idx >= mControlPoints.size() )
     return false;
 
-  mControlPoints[idx] = newPos;
+  mControlPoints[idx].setX( newPos.x() );
+  mControlPoints[idx].setY( newPos.y() );
+
+  if ( is3D() && newPos.is3D() )
+    mControlPoints[idx].setZ( newPos.z() );
+
+  if ( isMeasure() && newPos.isMeasure() )
+    mControlPoints[idx].setM( newPos.m() );
+
   clearCache();
   return true;
 }
