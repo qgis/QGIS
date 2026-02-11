@@ -47,6 +47,10 @@ class TestQgsBezierData : public QObject
     void testFindClosestHandle();
     void testInterpolate();
     void testAsNurbsCurve();
+    void testFromPolyBezierControlPoints();
+    void testFromPolyBezierControlPointsWithZM();
+    void testFromPolyBezierControlPointsQgsPointXY();
+    void testFromPolyBezierControlPointsInvalid();
     void testClear();
 };
 
@@ -215,6 +219,129 @@ void TestQgsBezierData::testAsNurbsCurve()
   QCOMPARE( nurbs->controlPoints().size(), 4 );
   QCOMPARE( nurbs->startPoint(), QgsPoint( 0, 0 ) );
   QCOMPARE( nurbs->endPoint(), QgsPoint( 10, 10 ) );
+
+  QgsBezierData data2;
+  data2.addAnchor( QgsPoint( 0, 0 ) );
+  data2.addAnchor( QgsPoint( 10, 10 ) );
+  data2.moveHandle( 1, QgsPoint( 5, 5 ) ); // right handle of anchor 0
+  data2.moveHandle( 2, QgsPoint( 5, 5 ) ); // left handle of anchor 1
+
+  // Test degree 2 (quadratic)
+  std::unique_ptr<QgsNurbsCurve> nurbs2( data2.asNurbsCurve( 2 ) );
+  QVERIFY( nurbs2 != nullptr );
+  QCOMPARE( nurbs2->degree(), 2 );
+  QCOMPARE( nurbs2->controlPoints().size(), 3 );
+  QCOMPARE( nurbs2->controlPoints()[1], QgsPoint( 5, 5 ) );
+
+  // Test degree 1 (linear)
+  std::unique_ptr<QgsNurbsCurve> nurbs1( data2.asNurbsCurve( 1 ) );
+  QVERIFY( nurbs1 != nullptr );
+  QCOMPARE( nurbs1->degree(), 1 );
+  QCOMPARE( nurbs1->controlPoints().size(), 2 );
+}
+
+void TestQgsBezierData::testFromPolyBezierControlPoints()
+{
+  QVector<QgsPoint> controlPoints;
+  controlPoints << QgsPoint( 0, 0 )
+                << QgsPoint( 3, 3 )
+                << QgsPoint( 7, 7 )
+                << QgsPoint( 10, 10 );
+
+  QgsBezierData data = QgsBezierData::fromPolyBezierControlPoints( controlPoints );
+
+  QCOMPARE( data.anchorCount(), 2 );
+  QCOMPARE( data.handleCount(), 4 );
+
+  QCOMPARE( data.anchor( 0 ), QgsPoint( 0, 0 ) );
+  QCOMPARE( data.anchor( 1 ), QgsPoint( 10, 10 ) );
+
+  QCOMPARE( data.handle( 0 ), QgsPoint( 0, 0 ) );
+  QCOMPARE( data.handle( 1 ), QgsPoint( 3, 3 ) );
+  QCOMPARE( data.handle( 2 ), QgsPoint( 7, 7 ) );
+  QCOMPARE( data.handle( 3 ), QgsPoint( 10, 10 ) );
+
+  // Test degree 2 (quadratic): anchor, control, anchor
+  QVector<QgsPoint> controlPoints2;
+  controlPoints2 << QgsPoint( 0, 0 ) << QgsPoint( 5, 5 ) << QgsPoint( 10, 0 );
+  QgsBezierData data2 = QgsBezierData::fromPolyBezierControlPoints( controlPoints2, 2 );
+  QCOMPARE( data2.anchorCount(), 2 );
+  QCOMPARE( data2.anchor( 0 ), QgsPoint( 0, 0 ) );
+  QCOMPARE( data2.anchor( 1 ), QgsPoint( 10, 0 ) );
+  QCOMPARE( data2.handle( 1 ), QgsPoint( 5, 5 ) ); // right handle of anchor 0
+  QCOMPARE( data2.handle( 2 ), QgsPoint( 5, 5 ) ); // left handle of anchor 1
+
+  // Test degree 1 (linear): anchor, anchor
+  QVector<QgsPoint> controlPoints1;
+  controlPoints1 << QgsPoint( 0, 0 ) << QgsPoint( 10, 10 );
+  QgsBezierData data1 = QgsBezierData::fromPolyBezierControlPoints( controlPoints1, 1 );
+  QCOMPARE( data1.anchorCount(), 2 );
+  QCOMPARE( data1.anchor( 0 ), QgsPoint( 0, 0 ) );
+  QCOMPARE( data1.anchor( 1 ), QgsPoint( 10, 10 ) );
+}
+
+void TestQgsBezierData::testFromPolyBezierControlPointsWithZM()
+{
+  QVector<QgsPoint> controlPoints;
+  controlPoints << QgsPoint( 0, 0, 1.0, 10.0 )
+                << QgsPoint( 3, 3, 2.0, 20.0 )
+                << QgsPoint( 7, 7, 3.0, 30.0 )
+                << QgsPoint( 10, 10, 4.0, 40.0 )
+                << QgsPoint( 13, 7, 5.0, 50.0 )
+                << QgsPoint( 17, 3, 6.0, 60.0 )
+                << QgsPoint( 20, 0, 7.0, 70.0 );
+
+  QgsBezierData data = QgsBezierData::fromPolyBezierControlPoints( controlPoints );
+
+  QCOMPARE( data.anchorCount(), 3 );
+
+  QgsPoint anchor0 = data.anchor( 0 );
+  QCOMPARE( anchor0.x(), 0.0 );
+  QCOMPARE( anchor0.y(), 0.0 );
+  QCOMPARE( anchor0.z(), 1.0 );
+  QCOMPARE( anchor0.m(), 10.0 );
+
+  QgsPoint anchor1 = data.anchor( 1 );
+  QCOMPARE( anchor1.x(), 10.0 );
+  QCOMPARE( anchor1.y(), 10.0 );
+  QCOMPARE( anchor1.z(), 4.0 );
+  QCOMPARE( anchor1.m(), 40.0 );
+
+  QgsPoint handle1 = data.handle( 1 );
+  QCOMPARE( handle1.z(), 2.0 );
+  QCOMPARE( handle1.m(), 20.0 );
+}
+
+void TestQgsBezierData::testFromPolyBezierControlPointsQgsPointXY()
+{
+  QVector<QgsPointXY> controlPoints;
+  controlPoints << QgsPointXY( 0, 0 )
+                << QgsPointXY( 3, 3 )
+                << QgsPointXY( 7, 7 )
+                << QgsPointXY( 10, 10 );
+
+  QgsBezierData data = QgsBezierData::fromPolyBezierControlPoints( controlPoints );
+
+  QCOMPARE( data.anchorCount(), 2 );
+  QCOMPARE( data.anchor( 0 ), QgsPoint( 0, 0 ) );
+  QCOMPARE( data.anchor( 1 ), QgsPoint( 10, 10 ) );
+}
+
+void TestQgsBezierData::testFromPolyBezierControlPointsInvalid()
+{
+  QVector<QgsPoint> empty;
+  QgsBezierData data1 = QgsBezierData::fromPolyBezierControlPoints( empty );
+  QVERIFY( data1.isEmpty() );
+
+  QVector<QgsPoint> tooFew;
+  tooFew << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 2, 2 );
+  QgsBezierData data2 = QgsBezierData::fromPolyBezierControlPoints( tooFew );
+  QVERIFY( data2.isEmpty() );
+
+  QVector<QgsPoint> wrongCount;
+  wrongCount << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 2, 2 ) << QgsPoint( 3, 3 ) << QgsPoint( 4, 4 );
+  QgsBezierData data3 = QgsBezierData::fromPolyBezierControlPoints( wrongCount );
+  QVERIFY( data3.isEmpty() );
 }
 
 void TestQgsBezierData::testClear()
