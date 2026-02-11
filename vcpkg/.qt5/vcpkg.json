@@ -216,6 +216,12 @@
         "oracle-instantclient"
       ]
     },
+    "proj-data": {
+      "description": "Build with proj data",
+      "dependencies": [
+        "proj-data"
+      ]
+    },
     "server": {
       "description": "Determines whether QGIS server should be built",
       "dependencies": [

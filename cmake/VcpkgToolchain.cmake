@@ -14,6 +14,9 @@ endif()
 if(WITH_ORACLE)
   list(APPEND VCPKG_MANIFEST_FEATURES "oracle")
 endif()
+if(WITH_PROJ_DATA)
+  list(APPEND VCPKG_MANIFEST_FEATURES "proj-data")
+endif()
 
 # Binarycache can only be used on Windows or if mono is available.
 find_program(_VCPKG_MONO mono)

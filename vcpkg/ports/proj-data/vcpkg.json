@@ -1,0 +1,7 @@
+{
+  "name": "proj-data",
+  "version": "1.24.0",
+  "description": "PROJ datum grids",
+  "homepage": "https://proj.org/",
+  "license": "MIT"
+}

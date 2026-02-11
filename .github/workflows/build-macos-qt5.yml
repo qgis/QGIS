@@ -126,6 +126,7 @@ jobs:
                 -D WITH_QTWEBKIT=ON \
                 -D WITH_BINDINGS=ON \
                 -D WITH_ORACLE=ON \
+                -D WITH_PROJ_DATA=ON \
                 -D ENABLE_TESTS=OFF \
                 -D VCPKG_TARGET_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_HOST_TRIPLET="${{ matrix.triplet }}" \
