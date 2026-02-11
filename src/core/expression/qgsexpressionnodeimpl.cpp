@@ -20,6 +20,7 @@
 #include "qgsstringutils.h"
 #include "qgsvariantutils.h"
 
+#include <QColor>
 #include <QDate>
 #include <QDateTime>
 #include <QRegularExpression>
@@ -476,6 +477,69 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         QDateTime datetime2 = QgsExpressionUtils::getDateTimeValue( vR, parent );
         ENSURE_NO_EVAL_ERROR
         return QgsInterval( datetime1 - datetime2 );
+      }
+      else if ( ( mOp == boPlus || mOp == boMinus || mOp == boMul || mOp == boDiv ) &&
+                ( ( ( vL.userType() == QMetaType::Type::QColor ) && QgsExpressionUtils::isDoubleSafe( vR ) ) ||
+                  ( ( vR.userType() == QMetaType::Type::QColor ) && QgsExpressionUtils::isDoubleSafe( vL ) ) ) )
+      {
+        const bool colorLeft = vL.userType() == QMetaType::Type::QColor;
+        bool isQColor = false;
+        const QColor color = QgsExpressionUtils::getColorValue( colorLeft ? vL : vR, parent, isQColor );
+        ENSURE_NO_EVAL_ERROR
+
+        const double value = QgsExpressionUtils::getDoubleValue( colorLeft ? vR : vL, parent );
+        ENSURE_NO_EVAL_ERROR
+
+        if ( mOp == boDiv && value == 0.0 )
+        {
+          return QVariant();
+        }
+
+        // it doesn't make sense to support these operations with color element on the right
+        if ( !colorLeft && ( mOp == boPlus || mOp == boMinus || mOp == boDiv ) )
+        {
+          parent->setEvalErrorString( tr( "Can't perform /, +, - with Color on the right" ) );
+          return QVariant();
+        }
+
+        int r, g, b, a;
+
+        switch ( mOp )
+        {
+          case boPlus:
+            r = std::clamp( static_cast<int>( std::round( color.red() + value ) ), 0, 255 );
+            g = std::clamp( static_cast<int>( std::round( color.green() + value ) ), 0, 255 );
+            b = std::clamp( static_cast<int>( std::round( color.blue() + value ) ), 0, 255 );
+            a = std::clamp( static_cast<int>( std::round( color.alpha() + value ) ), 0, 255 );
+            break;
+
+          case boMinus:
+            r = std::clamp( static_cast<int>( std::round( color.red() - value ) ), 0, 255 );
+            g = std::clamp( static_cast<int>( std::round( color.green() - value ) ), 0, 255 );
+            b = std::clamp( static_cast<int>( std::round( color.blue() - value ) ), 0, 255 );
+            a = std::clamp( static_cast<int>( std::round( color.alpha() - value ) ), 0, 255 );
+            break;
+
+          case boMul:
+            r = std::clamp( static_cast<int>( std::round( color.red() * value ) ), 0, 255 );
+            g = std::clamp( static_cast<int>( std::round( color.green() * value ) ), 0, 255 );
+            b = std::clamp( static_cast<int>( std::round( color.blue() * value ) ), 0, 255 );
+            a = std::clamp( static_cast<int>( std::round( color.alpha() * value ) ), 0, 255 );
+            break;
+
+          case boDiv:
+            r = std::clamp( static_cast<int>( std::round( color.red() / value ) ), 0, 255 );
+            g = std::clamp( static_cast<int>( std::round( color.green() / value ) ), 0, 255 );
+            b = std::clamp( static_cast<int>( std::round( color.blue() / value ) ), 0, 255 );
+            a = std::clamp( static_cast<int>( std::round( color.alpha() / value ) ), 0, 255 );
+            break;
+
+          default:
+            return QVariant();
+        }
+
+        QColor result( r, g, b, a );
+        return QVariant( result );
       }
       else
       {
