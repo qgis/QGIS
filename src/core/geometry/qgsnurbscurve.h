@@ -108,10 +108,19 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
      */
     bool isRational() const SIP_HOLDGIL;
 
+
     /**
-     * Returns TRUE if this curve represents a poly-Bézier curve.
-     * A poly-Bézier is a degree 3 NURBS with (n-1) divisible by 3,
-     * where n is the number of control points.
+     * Returns TRUE if this curve represents a poly-Bézier curve structure.
+     *
+     * A poly-Bézier is a piecewise Bézier curve with C0 continuity
+     * (positional continuity only) used for editing. It requires:
+     *
+     * - Control points: (controlPointCount - 1) % degree == 0
+     * - Knot vector with multiplicity 'degree' at internal junctions
+     * - Can have 1 or more segments (like MultiPolygon can have 1+ polygons)
+     *
+     * Works for any degree ≥ 1. Note that a single-segment poly-Bézier
+     * will also return TRUE for isBezier() (degree = n-1 condition).
      */
     bool isPolyBezier() const SIP_HOLDGIL;
 
