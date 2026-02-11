@@ -12,6 +12,7 @@ if(MSVC)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   file(GLOB ALL_LIBS
     "${VCPKG_BASE_DIR}/lib/*.dylib"
+    "${VCPKG_BASE_DIR}/lib/*.so"
   )
   install(FILES ${ALL_LIBS} DESTINATION "${QGIS_LIB_SUBDIR}")
 endif()
