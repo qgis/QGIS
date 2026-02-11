@@ -19,6 +19,7 @@
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptoolmeasure.h"
+#include "qgsgeometryutils.h"
 #include "qgshelp.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
@@ -52,11 +53,11 @@ Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasure *tool, QWidget *pare
   // Hide ellipsoidal and Cartesian radio button (not needed)
   mCartesian->hide();
   mEllipsoidal->hide();
-  groupBox->hide();
 
   // Update text for 3D specific
   if ( !mMeasureArea )
   {
+    groupBox->hide();
     mTable->show();
     totalDistanceLabel->setText( tr( "Total 3D Distance" ) );
     editHorizontalTotal->show();
@@ -64,6 +65,8 @@ Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasure *tool, QWidget *pare
   }
   else
   {
+    groupBox->show();
+    groupBox->setTitle( tr( "Warning" ) );
     mTable->hide();
     totalDistanceLabel->setText( tr( "Total 3D Area" ) );
     editHorizontalTotal->show();
@@ -130,6 +133,15 @@ void Qgs3DMeasureDialog::addPoint()
     mTotal = polygon.area3D();
     mHorizontalTotal = polygon.area();
     updateTotal();
+
+    if ( !QgsGeometryUtils::isGeometryCoplanar( &polygon, 1e-3 ) )
+    {
+      mNotesLabel->setText( u"The selected points are not coplanar. The computed 3D area result may be significantly inaccurate."_s );
+    }
+    else
+    {
+      mNotesLabel->setText( QString() );
+    }
   }
 }
 
@@ -389,6 +401,7 @@ void Qgs3DMeasureDialog::updateTable()
 
 void Qgs3DMeasureDialog::resetFields()
 {
+  mNotesLabel->setText( QString() );
   mTable->clear();
   mTotal = 0.;
   mHorizontalTotal = 0.;
