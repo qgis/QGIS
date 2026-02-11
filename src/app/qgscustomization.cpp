@@ -1300,6 +1300,9 @@ void QgsCustomization::updateMenuActionVisibility( QgsCustomization::QgsItem *pa
   // add user menu
   for ( const std::unique_ptr<QgsCustomization::QgsItem> &childItem : parentItem->childItemList() )
   {
+    if ( !childItem->isVisible() )
+      continue;
+
     if ( QgsCustomization::QgsUserMenuItem *userMenu = dynamic_cast<QgsCustomization::QgsUserMenuItem *>( childItem.get() ) )
     {
       QMenu *menu = new QMenu( userMenu->title(), parentWidget );

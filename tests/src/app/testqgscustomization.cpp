@@ -730,7 +730,7 @@ void TestQgsCustomization::testModel()
   // the action is no longer visible
   QVERIFY( !findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
 
-  // test add/delete
+  // test add/setVisible/setHidden/delete
   {
     const QModelIndex menusIndex = model.index( 2, 0 );
     QCOMPARE( model.data( menusIndex, Qt::ItemDataRole::DisplayRole ), u"Menus"_s );
@@ -738,6 +738,16 @@ void TestQgsCustomization::testModel()
     const QModelIndex newItemIndex = model.addUserItem( menusIndex );
     QCOMPARE( model.data( newItemIndex, Qt::ItemDataRole::DisplayRole ), u"UserMenu_1"_s );
 
+    model.apply();
+    QVERIFY( getItem<QgsCustomization::QgsUserMenuItem>( "Menus/UserMenu_1" ) );
+    QVERIFY( findQWidget( "Menus/UserMenu_1" ) );
+
+    QVERIFY( model.setData( newItemIndex, Qt::CheckState::Unchecked, Qt::ItemDataRole::CheckStateRole ) );
+    model.apply();
+    QVERIFY( getItem<QgsCustomization::QgsUserMenuItem>( "Menus/UserMenu_1" ) );
+    QVERIFY( !findQWidget( "Menus/UserMenu_1" ) );
+
+    QVERIFY( model.setData( newItemIndex, Qt::CheckState::Checked, Qt::ItemDataRole::CheckStateRole ) );
     model.apply();
     QVERIFY( getItem<QgsCustomization::QgsUserMenuItem>( "Menus/UserMenu_1" ) );
     QVERIFY( findQWidget( "Menus/UserMenu_1" ) );
