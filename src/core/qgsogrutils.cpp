@@ -1029,7 +1029,6 @@ QgsGeometry QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
 
   // optimised case for some geometry classes, avoiding wkb conversion on OGR/QGIS sides
   // TODO - extend to other classes!
-  // NOLINTBEGIN(bugprone-branch-clone)
   switch ( QgsWkbTypes::flatType( wkbType ) )
   {
     case Qgis::WkbType::Point:
@@ -1070,7 +1069,6 @@ QgsGeometry QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
     default:
       break;
   }
-  // NOLINTEND(bugprone-branch-clone)
 
   // Fallback to inefficient WKB conversions
 

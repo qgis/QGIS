@@ -1099,7 +1099,6 @@ Qgis::GeometryOperationResult QgsGeometry::addPartV2( QgsAbstractGeometry *part,
   std::unique_ptr< QgsAbstractGeometry > p( part );
   if ( !d->geometry )
   {
-    // NOLINTBEGIN(bugprone-branch-clone)
     switch ( QgsWkbTypes::singleType( QgsWkbTypes::flatType( wkbType ) ) )
     {
       case Qgis::WkbType::Point:
@@ -1128,7 +1127,6 @@ Qgis::GeometryOperationResult QgsGeometry::addPartV2( QgsAbstractGeometry *part,
       default:
         reset( nullptr );
         return Qgis::GeometryOperationResult::AddPartNotMultiGeometry;
-        // NOLINTEND(bugprone-branch-clone)
     }
   }
   else

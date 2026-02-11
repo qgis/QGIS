@@ -854,6 +854,25 @@ Returns whether the debug side panel is shown
 .. versionadded:: 3.42
 %End
 
+    bool is2DMapOverlayEnabled() const;
+%Docstring
+Returns whether 2D map overlay is enabled
+
+.. seealso:: :py:func:`setIs2DMapOverlayEnabled`
+
+.. versionadded:: 4.0
+%End
+
+    void setIs2DMapOverlayEnabled( bool enabled );
+%Docstring
+Sets whether 2D map overlay is enabled
+
+.. seealso:: :py:func:`is2DMapOverlayEnabled`
+
+.. versionadded:: 4.0
+%End
+
+
   signals:
 
     void settingsChanged();
@@ -1176,6 +1195,15 @@ Emitted when the world's origin point has been shifted
 .. seealso:: :py:func:`setOrigin`
 
 .. versionadded:: 3.42
+%End
+
+    void show2DMapOverlayChanged();
+%Docstring
+Emitted when the 2D map overlay is enabled or disabled
+
+.. seealso:: :py:func:`setIs2DMapOverlayEnabled`
+
+.. versionadded:: 4.0
 %End
 
   private:

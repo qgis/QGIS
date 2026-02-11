@@ -737,6 +737,9 @@ Returns the formatted label for common angle snapping option.
 .. versionadded:: 3.32
 %End
 
+  public slots:
+
+
   signals:
 
     void pushWarning( const QString &message );
@@ -883,6 +886,31 @@ that must reflect the current advanced digitizing state.
 %Docstring
 Emitted whenever the weight ``value`` changes for NURBS curves. Could be
 used by widgets that must reflect the current weight value.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 4.0
+%End
+
+    void valueAreaChanged( const QString &value );
+%Docstring
+Emitted whenever the total summed area ``value`` changes. Could be used
+by widgets that must reflect the current advanced digitizing state.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 4.0
+%End
+
+    void valueTotalLengthChanged( const QString &value );
+%Docstring
+Emitted whenever the total length (or perimeter) ``value`` changes.
+Could be used by widgets that must reflect the current advanced
+digitizing state.
 
 .. note::
 
