@@ -1,0 +1,152 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingtaskqueue.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsProcessingQueuedTask
+{
+%Docstring(signature="appended")
+Represents a single queued processing task.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingtaskqueue.h"
+%End
+  public:
+
+    QgsProcessingQueuedTask( const QString &algorithmId = QString(),
+                             const QVariantMap &parameters = QVariantMap(),
+                             const QString &description = QString() );
+%Docstring
+Constructor for QgsProcessingQueuedTask.
+
+:param algorithmId: ID of the algorithm to execute
+:param parameters: parameters to pass to the algorithm
+:param description: optional description for the task
+%End
+
+    QString algorithmId() const;
+%Docstring
+Returns the algorithm ID.
+%End
+
+    QVariantMap parameters() const;
+%Docstring
+Returns the algorithm parameters.
+%End
+
+    QString description() const;
+%Docstring
+Returns the task description.
+%End
+
+};
+
+class QgsProcessingTaskQueue : QObject /NoDefaultCtors/
+{
+%Docstring(signature="appended")
+Singleton manager for a queue of processing tasks to be executed
+sequentially.
+
+This allows users to queue up different processing algorithms and
+execute them one after another, avoiding concurrent execution that could
+overload system resources.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingtaskqueue.h"
+%End
+  public:
+
+    static QgsProcessingTaskQueue *instance();
+%Docstring
+Returns the singleton instance of the task queue.
+%End
+
+    void addTask( const QString &algorithmId, const QVariantMap &parameters, const QString &description = QString() );
+%Docstring
+Adds a task to the queue.
+
+:param algorithmId: ID of the algorithm to execute
+:param parameters: parameters to pass to the algorithm
+:param description: optional description for the task
+%End
+
+    bool removeTask( int index );
+%Docstring
+Removes a task at the specified index.
+
+:param index: index of the task to remove
+
+:return: ``True`` if the task was successfully removed
+%End
+
+    bool moveTaskUp( int index );
+%Docstring
+Moves a task up in the queue.
+
+:param index: index of the task to move
+
+:return: ``True`` if the task was successfully moved
+%End
+
+    bool moveTaskDown( int index );
+%Docstring
+Moves a task down in the queue.
+
+:param index: index of the task to move
+
+:return: ``True`` if the task was successfully moved
+%End
+
+    void clear();
+%Docstring
+Clears all tasks from the queue.
+%End
+
+    QList<QgsProcessingQueuedTask> tasks() const;
+%Docstring
+Returns all tasks in the queue.
+%End
+
+    qsizetype count() const;
+%Docstring
+Returns the number of tasks in the queue.
+%End
+
+    bool isEmpty() const;
+%Docstring
+Returns ``True`` if the queue is empty.
+%End
+
+  signals:
+
+    void queueChanged();
+%Docstring
+Emitted when the queue changes (tasks added, removed, or reordered).
+%End
+
+  private:
+    QgsProcessingTaskQueue();
+    ~QgsProcessingTaskQueue();
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingtaskqueue.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

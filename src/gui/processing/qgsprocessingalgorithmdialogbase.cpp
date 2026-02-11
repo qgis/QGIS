@@ -20,6 +20,7 @@
 #include "processing/qgsprocessingalgorithm.h"
 #include "processing/qgsprocessingalgrunnertask.h"
 #include "processing/qgsprocessingprovider.h"
+#include "processing/qgsprocessingtaskqueue.h"
 #include "qgsapplication.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
@@ -286,6 +287,13 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
       } );
 
       mButtonBox->addButton( mAdvancedButton, QDialogButtonBox::ResetRole );
+
+      mButtonAddToQueue = new QPushButton( tr( "Add to Queue…" ) );
+      mButtonBox->addButton( mButtonAddToQueue, QDialogButtonBox::ResetRole );
+      connect( mButtonAddToQueue, &QPushButton::clicked, this, [this] {
+        addToQueue();
+      } );
+
       break;
     }
 
@@ -863,6 +871,24 @@ void QgsProcessingAlgorithmDialogBase::updateRunButtonVisibility()
 
 void QgsProcessingAlgorithmDialogBase::resetAdditionalGui()
 {
+}
+
+void QgsProcessingAlgorithmDialogBase::addToQueue()
+{
+  if ( !mAlgorithm )
+    return;
+
+  try
+  {
+    const QVariantMap parameters = createProcessingParameters();
+    QgsProcessingTaskQueue::instance()->addTask( mAlgorithm->id(), parameters, mAlgorithm->displayName() );
+
+    mMessageBar->pushMessage( tr( "Added to Queue" ), tr( "'%1' has been added to the processing queue." ).arg( mAlgorithm->displayName() ), Qgis::MessageLevel::Info );
+  }
+  catch ( QgsProcessingException & )
+  {
+    // Invalid parameters, do nothing
+  }
 }
 
 void QgsProcessingAlgorithmDialogBase::blockControlsWhileRunning()
