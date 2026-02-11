@@ -508,6 +508,36 @@ raster band from which the attribute table was created.
          - bandNumber: band number
 %End
 
+    bool updatePixelCounts( QgsRasterDataProvider *provider, int bandNumber, QString *errorMessage /Out/ = 0, QgsRasterBlockFeedback *feedback = 0 );
+%Docstring
+Updates the PixelCount column values by scanning the raster data.
+
+This method iterates through all pixels in the raster and counts how
+many belong to each class defined in the Raster Attribute Table.
+
+For thematic RATs (discrete values): pixels are matched exactly to
+MinMax values. For athematic RATs (value ranges): pixels are matched to
+[Min, Max) ranges.
+
+:param provider: the raster data provider to read from
+:param bandNumber: the band number (1-indexed)
+:param feedback: optional feedback object for progress reporting and
+                 cancellation
+
+:return: - ``True`` on success, ``False`` on error or cancellation
+         - errorMessage: will be set if an error occurs
+
+.. note::
+
+   This operation can be slow for large rasters as it requires reading all pixels.
+
+.. note::
+
+   The RAT must have a PixelCount column (use :py:func:`~QgsRasterAttributeTable.insertField` to add one first).
+
+.. versionadded:: 3.44
+%End
+
 
 
     static QHash<int, QgsRasterAttributeTable::UsageInformation> usageInformationInt( ) /PyName=usageInformation/;

@@ -1415,6 +1415,85 @@ class TestQgsRasterAttributeTable(QgisTestCase):
         self.assertEqual(len(ramp.stops()) + 1, len(labels))
         self.assertEqual(labels, ["red class", "blue class", "green class"])
 
+    def testUpdatePixelCounts(self):
+        """Test updatePixelCounts computes correct pixel counts from raster data"""
+
+        # Create a thematic RAT for the 2x2 int16 raster
+        # Band 1 has values: 0, 2, 4, 4 (so counts should be 1, 1, 2)
+        rat = QgsRasterAttributeTable()
+        rat.appendField(
+            QgsRasterAttributeTable.Field(
+                "Value", Qgis.RasterAttributeTableFieldUsage.MinMax, QVariant.Int
+            )
+        )
+        rat.appendField(
+            QgsRasterAttributeTable.Field(
+                "Count", Qgis.RasterAttributeTableFieldUsage.PixelCount, QVariant.Int
+            )
+        )
+        rat.appendField(
+            QgsRasterAttributeTable.Field(
+                "Class", Qgis.RasterAttributeTableFieldUsage.Name, QVariant.String
+            )
+        )
+
+        # Initial counts are 0
+        data_rows = [
+            [0, 0, "zero"],
+            [2, 0, "two"],
+            [4, 0, "four"],
+        ]
+
+        for row in data_rows:
+            rat.appendRow(row)
+
+        self.assertTrue(rat.isValid()[0])
+
+        raster = QgsRasterLayer(self.uri_2x2_1_BAND_INT16)
+        self.assertTrue(raster.isValid())
+
+        # Test updatePixelCounts
+        ok, error = rat.updatePixelCounts(raster.dataProvider(), 1)
+        self.assertTrue(ok, f"updatePixelCounts failed: {error}")
+
+        # Verify counts: value 0 has 1 pixel, value 2 has 1 pixel, value 4 has 2 pixels
+        data = rat.data()
+        self.assertEqual(data[0][1], 1)  # value 0: 1 pixel
+        self.assertEqual(data[1][1], 1)  # value 2: 1 pixel
+        self.assertEqual(data[2][1], 2)  # value 4: 2 pixels
+
+    def testUpdatePixelCountsNoColumn(self):
+        """Test updatePixelCounts fails gracefully without PixelCount column"""
+
+        rat = QgsRasterAttributeTable()
+        rat.appendField(
+            QgsRasterAttributeTable.Field(
+                "Value", Qgis.RasterAttributeTableFieldUsage.MinMax, QVariant.Int
+            )
+        )
+        rat.appendField(
+            QgsRasterAttributeTable.Field(
+                "Class", Qgis.RasterAttributeTableFieldUsage.Name, QVariant.String
+            )
+        )
+
+        data_rows = [
+            [0, "zero"],
+            [2, "two"],
+            [4, "four"],
+        ]
+
+        for row in data_rows:
+            rat.appendRow(row)
+
+        raster = QgsRasterLayer(self.uri_2x2_1_BAND_INT16)
+        self.assertTrue(raster.isValid())
+
+        # Should fail - no PixelCount column
+        ok, error = rat.updatePixelCounts(raster.dataProvider(), 1)
+        self.assertFalse(ok)
+        self.assertIn("PixelCount", error)
+
     def testFileStorage(self):
         """Test tht RAT information for external file-based RATs
         is stored in the project"""
