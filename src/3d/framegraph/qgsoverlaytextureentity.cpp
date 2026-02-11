@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsdebugtextureentity.cpp
+  qgsoverlaytextureentity.cpp
   --------------------------------------
   Date                 : June 2024
   Copyright            : (C) 2024 by Benoit De Mezzo
@@ -13,27 +13,31 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsdebugtextureentity.h"
+#include "qgsoverlaytextureentity.h"
 
 #include <QUrl>
 #include <QVector2D>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTexture>
 
-#include "moc_qgsdebugtextureentity.cpp"
+#include "moc_qgsoverlaytextureentity.cpp"
 
-QgsDebugTextureEntity::QgsDebugTextureEntity( Qt3DRender::QTexture2D *texture, Qt3DRender::QLayer *layer, QNode *parent )
+QgsOverlayTextureEntity::QgsOverlayTextureEntity( Qt3DRender::QTexture2D *texture, Qt3DRender::QLayer *layer, QNode *parent )
   : QgsRenderPassQuad( layer, parent )
 {
-  setObjectName( "DebugTextureQuad" );
+  setObjectName( "OverlayTextureQuad" );
 
   mTextureParameter = new Qt3DRender::QParameter( "previewTexture", texture );
   mCenterTextureCoords = new Qt3DRender::QParameter( "centerTexCoords", QVector2D( 0, 0 ) );
   mSizeTextureCoords = new Qt3DRender::QParameter( "sizeTexCoords", QVector2D( 1, 1 ) );
+  mIsDepth = new Qt3DRender::QParameter( "isDepth", true );
+  mFlipTextureY = new Qt3DRender::QParameter( "flipTextureY", true );
+
   mMaterial->addParameter( mTextureParameter );
   mMaterial->addParameter( mCenterTextureCoords );
   mMaterial->addParameter( mSizeTextureCoords );
-  mMaterial->addParameter( new Qt3DRender::QParameter( "isDepth", true ) );
+  mMaterial->addParameter( mIsDepth );
+  mMaterial->addParameter( mFlipTextureY );
 
   mShader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( "qrc:/shaders/preview.vert" ) ) );
   mShader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( "qrc:/shaders/preview.frag" ) ) );
@@ -43,27 +47,32 @@ QgsDebugTextureEntity::QgsDebugTextureEntity( Qt3DRender::QTexture2D *texture, Q
   setEnabled( false );
 }
 
-void QgsDebugTextureEntity::setPosition( Qt::Corner corner, double size )
+void QgsOverlayTextureEntity::setPosition( Qt::Corner corner, double size, double offset )
+{
+  setPosition( corner, QSizeF( size, size ), QSizeF( offset, offset ) );
+}
+
+void QgsOverlayTextureEntity::setPosition( Qt::Corner corner, QSizeF size, QSizeF offset )
 {
   switch ( corner )
   {
     case Qt::Corner::TopRightCorner:
-      setViewport( QPointF( 1.0f - size / 2, 0.0f + size / 2 ), 0.5 * QSizeF( size, size ) );
+      setViewport( QPointF( 1.0f - size.width() / 2 - offset.width(), offset.height() + size.height() / 2 ), 0.5 * size );
       break;
     case Qt::Corner::TopLeftCorner:
-      setViewport( QPointF( 0.0f + size / 2, 0.0f + size / 2 ), 0.5 * QSizeF( size, size ) );
+      setViewport( QPointF( offset.width() + size.width() / 2, offset.height() + size.height() / 2 ), 0.5 * size );
       break;
     case Qt::Corner::BottomRightCorner:
-      setViewport( QPointF( 1.0f - size / 2, 1.0f - size / 2 ), 0.5 * QSizeF( size, size ) );
+      setViewport( QPointF( 1.0f - size.width() / 2 - offset.width(), 1.0f - size.height() / 2 - offset.height() ), 0.5 * size );
       break;
     case Qt::Corner::BottomLeftCorner:
-      setViewport( QPointF( 0.0f + size / 2, 1.0f - size / 2 ), 0.5 * QSizeF( size, size ) );
+      setViewport( QPointF( offset.width() + size.width() / 2, 1.0f - size.height() / 2 - offset.height() ), 0.5 * size );
       break;
   }
 }
 
 
-void QgsDebugTextureEntity::setViewport( const QPointF &centerTexCoords, const QSizeF &sizeTexCoords )
+void QgsOverlayTextureEntity::setViewport( const QPointF &centerTexCoords, const QSizeF &sizeTexCoords )
 {
   mCenterTextureCoords->setValue( QVector2D( static_cast<float>( centerTexCoords.x() ), static_cast<float>( centerTexCoords.y() ) ) );
   mSizeTextureCoords->setValue( QVector2D( static_cast<float>( sizeTexCoords.width() ), static_cast<float>( sizeTexCoords.height() ) ) );

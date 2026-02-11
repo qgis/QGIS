@@ -3779,6 +3779,35 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                 </widget>
                </item>
                <item>
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_5">
+                 <property name="title">
+                  <string>Measurements</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_22">
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_35">
+                    <property name="text">
+                     <string>Show feature perimeter/total length in status bar while digitizing</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_34_a">
+                    <property name="text">
+                     <string>Show feature area in status bar while digitizing</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QComboBox" name="mComboStatusAreaDisplay"/>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QComboBox" name="mComboStatusLengthDisplay"/>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
                 <widget class="QgsCollapsibleGroupBox" name="mRubberBandGroupBox">
                  <property name="title">
                   <string>Rubberband</string>
@@ -5733,6 +5762,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
   <tabstop>mValidateGeometries</tabstop>
   <tabstop>mDefaultZValueSpinBox</tabstop>
   <tabstop>mDefaultMValueSpinBox</tabstop>
+  <tabstop>mComboStatusAreaDisplay</tabstop>
+  <tabstop>mComboStatusLengthDisplay</tabstop>
   <tabstop>mLineWidthSpinBox</tabstop>
   <tabstop>mLineColorToolButton</tabstop>
   <tabstop>mFillColorToolButton</tabstop>

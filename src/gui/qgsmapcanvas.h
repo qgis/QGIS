@@ -72,6 +72,7 @@ class QgsReferencedRectangle;
 class QgsRenderedItemResults;
 class QgsTemporaryCursorOverride;
 class QgsOverlayWidgetLayout;
+class QgsStatusBar;
 
 class QgsTemporalController;
 class QgsScreenHelper;
@@ -911,6 +912,24 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      */
     void setMapController( QgsAbstract2DMapController *controller SIP_TRANSFER );
 
+    /**
+     * Returns the associated status bar.
+     *
+     * May be NULLPTR if not set.
+     *
+     * \see setStatusBar()
+     * \since QGIS 4.0
+     */
+    QgsStatusBar *statusBar();
+
+    /**
+     * Sets the associated status \a bar.
+     *
+     * \see statusBar()
+     * \since QGIS 4.0
+     */
+    void setStatusBar( QgsStatusBar *bar );
+
   public slots:
 
     //! Repaints the canvas map
@@ -1492,6 +1511,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
 
 
     QPointer<QgsAbstract2DMapController> mMapController;
+
+    QPointer< QgsStatusBar > mStatusBar;
 
     /**
      * Returns the last cursor position on the canvas in geographical coordinates
