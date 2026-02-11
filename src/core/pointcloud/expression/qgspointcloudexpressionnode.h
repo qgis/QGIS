@@ -86,7 +86,7 @@ class CORE_EXPORT QgsPointCloudExpressionNode
         QStringList names() const { return mNameList; }
 
         //! Creates a deep copy of this list. Ownership is transferred to the caller
-        QgsPointCloudExpressionNode::NodeList *clone() const;
+        std::unique_ptr<QgsPointCloudExpressionNode::NodeList> clone() const;
 
         /**
          * Returns a string dump of the expression node.
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsPointCloudExpressionNode
      *
      * \returns a deep copy of this node.
      */
-    virtual QgsPointCloudExpressionNode *clone() const = 0;
+    virtual std::unique_ptr<QgsPointCloudExpressionNode> clone() const = 0;
 
     /**
      * Abstract virtual method which returns a list of columns required to
@@ -214,7 +214,7 @@ class CORE_EXPORT QgsPointCloudExpressionNode
      */
     double cachedStaticValue() const { return mCachedStaticValue; }
 
-    static QgsPointCloudExpressionNode *convert( const QgsExpressionNode *node, QString &error );
+    static std::unique_ptr<QgsPointCloudExpressionNode> convert( const QgsExpressionNode *node, QString &error );
 
   protected:
 

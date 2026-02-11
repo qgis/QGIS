@@ -47,11 +47,10 @@ class CORE_EXPORT QgsPointCloudExpressionNodeUnaryOperator : public QgsPointClou
     /**
      * A node unary operator is modifying the value of \a operand by negating it with \a op.
      */
-    QgsPointCloudExpressionNodeUnaryOperator( QgsPointCloudExpressionNodeUnaryOperator::UnaryOperator op, QgsPointCloudExpressionNode *operand )
+    QgsPointCloudExpressionNodeUnaryOperator( QgsPointCloudExpressionNodeUnaryOperator::UnaryOperator op, std::unique_ptr<QgsPointCloudExpressionNode> operand )
       : mOp( op )
-      , mOperand( operand )
+      , mOperand( std::move( operand ) )
     {}
-    ~QgsPointCloudExpressionNodeUnaryOperator() override { delete mOperand; }
 
     /**
      * Returns the unary operator.
@@ -61,7 +60,7 @@ class CORE_EXPORT QgsPointCloudExpressionNodeUnaryOperator : public QgsPointClou
     /**
      * Returns the node the operator will operate upon.
      */
-    QgsPointCloudExpressionNode *operand() const { return mOperand; }
+    QgsPointCloudExpressionNode *operand() const { return mOperand.get(); }
 
     QgsPointCloudExpressionNode::NodeType nodeType() const override;
     bool prepareNode( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block ) override;
@@ -77,7 +76,7 @@ class CORE_EXPORT QgsPointCloudExpressionNodeUnaryOperator : public QgsPointClou
 
     QSet<QString> referencedAttributes() const override;
     QList<const QgsPointCloudExpressionNode *> nodes() const override;
-    QgsPointCloudExpressionNode *clone() const override;
+    std::unique_ptr<QgsPointCloudExpressionNode> clone() const override;
 
     bool isStatic( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block ) const override;
 
@@ -91,7 +90,7 @@ class CORE_EXPORT QgsPointCloudExpressionNodeUnaryOperator : public QgsPointClou
 
   private:
     UnaryOperator mOp;
-    QgsPointCloudExpressionNode *mOperand = nullptr;
+    std::unique_ptr<QgsPointCloudExpressionNode> mOperand;
 
     static const char *UNARY_OPERATOR_TEXT[];
 };
@@ -137,12 +136,13 @@ class CORE_EXPORT QgsPointCloudExpressionNodeBinaryOperator : public QgsPointClo
     /**
      * Binary combination of the left and the right with op.
      */
-    QgsPointCloudExpressionNodeBinaryOperator( QgsPointCloudExpressionNodeBinaryOperator::BinaryOperator op, QgsPointCloudExpressionNode *opLeft, QgsPointCloudExpressionNode *opRight )
+    QgsPointCloudExpressionNodeBinaryOperator( QgsPointCloudExpressionNodeBinaryOperator::BinaryOperator op,
+        std::unique_ptr<QgsPointCloudExpressionNode> opLeft,
+        std::unique_ptr<QgsPointCloudExpressionNode> opRight )
       : mOp( op )
-      , mOpLeft( opLeft )
-      , mOpRight( opRight )
+      , mOpLeft( std::move( opLeft ) )
+      , mOpRight( std::move( opRight ) )
     {}
-    ~QgsPointCloudExpressionNodeBinaryOperator() override { delete mOpLeft; delete mOpRight; }
 
     /**
      * Returns the binary operator.
@@ -153,13 +153,13 @@ class CORE_EXPORT QgsPointCloudExpressionNodeBinaryOperator : public QgsPointClo
      * Returns the node to the left of the operator.
      * \see opRight()
      */
-    QgsPointCloudExpressionNode *opLeft() const { return mOpLeft; }
+    QgsPointCloudExpressionNode *opLeft() const { return mOpLeft.get(); }
 
     /**
      * Returns the node to the right of the operator.
      * \see opLeft()
      */
-    QgsPointCloudExpressionNode *opRight() const { return mOpRight; }
+    QgsPointCloudExpressionNode *opRight() const { return mOpRight.get(); }
 
     QgsPointCloudExpressionNode::NodeType nodeType() const override;
     bool prepareNode( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block ) override;
@@ -176,7 +176,7 @@ class CORE_EXPORT QgsPointCloudExpressionNodeBinaryOperator : public QgsPointClo
     QSet<QString> referencedAttributes() const override;
     QList<const QgsPointCloudExpressionNode *> nodes( ) const override;
 
-    QgsPointCloudExpressionNode *clone() const override;
+    std::unique_ptr<QgsPointCloudExpressionNode> clone() const override;
     bool isStatic( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block ) const override;
 
     /**
@@ -201,8 +201,8 @@ class CORE_EXPORT QgsPointCloudExpressionNodeBinaryOperator : public QgsPointClo
     bool compare( double diff ) const;
 
     BinaryOperator mOp;
-    QgsPointCloudExpressionNode *mOpLeft = nullptr;
-    QgsPointCloudExpressionNode *mOpRight = nullptr;
+    std::unique_ptr<QgsPointCloudExpressionNode> mOpLeft;
+    std::unique_ptr<QgsPointCloudExpressionNode> mOpRight;
 
     static const char *BINARY_OPERATOR_TEXT[];
 };
@@ -220,17 +220,17 @@ class CORE_EXPORT QgsPointCloudExpressionNodeInOperator : public QgsPointCloudEx
     /**
      * This node tests if the result of \a node is in the result of \a list. Optionally it can be inverted with \a notin which by default is FALSE.
      */
-    QgsPointCloudExpressionNodeInOperator( QgsPointCloudExpressionNode *node, QgsPointCloudExpressionNode::NodeList *list, bool notin = false )
-      : mNode( node )
-      , mList( list )
+    QgsPointCloudExpressionNodeInOperator( std::unique_ptr<QgsPointCloudExpressionNode> node,
+                                           std::unique_ptr<QgsPointCloudExpressionNode::NodeList> list, bool notin = false )
+      : mNode( std::move( node ) )
+      , mList( std::move( list ) )
       , mNotIn( notin )
     {}
-    ~QgsPointCloudExpressionNodeInOperator() override;
 
     /**
      * Returns the expression node.
      */
-    QgsPointCloudExpressionNode *node() const { return mNode; }
+    QgsPointCloudExpressionNode *node() const { return mNode.get(); }
 
     /**
      * Returns TRUE if this node is a "NOT IN" operator, or FALSE if the node is a normal "IN" operator.
@@ -240,7 +240,7 @@ class CORE_EXPORT QgsPointCloudExpressionNodeInOperator : public QgsPointCloudEx
     /**
      * Returns the list of nodes to search for matching values within.
      */
-    QgsPointCloudExpressionNode::NodeList *list() const { return mList; }
+    QgsPointCloudExpressionNode::NodeList *list() const { return mList.get(); }
 
     QgsPointCloudExpressionNode::NodeType nodeType() const override;
     bool prepareNode( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block ) override;
@@ -256,12 +256,12 @@ class CORE_EXPORT QgsPointCloudExpressionNodeInOperator : public QgsPointCloudEx
 
     QSet<QString> referencedAttributes() const override;
     QList<const QgsPointCloudExpressionNode *> nodes() const override;
-    QgsPointCloudExpressionNode *clone() const override;
+    std::unique_ptr<QgsPointCloudExpressionNode> clone() const override;
     bool isStatic( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block ) const override;
 
   private:
-    QgsPointCloudExpressionNode *mNode = nullptr;
-    QgsPointCloudExpressionNodeInOperator::NodeList *mList = nullptr;
+    std::unique_ptr<QgsPointCloudExpressionNode> mNode;
+    std::unique_ptr<QgsPointCloudExpressionNodeInOperator::NodeList> mList;
     bool mNotIn;
 };
 
@@ -300,7 +300,7 @@ class CORE_EXPORT QgsPointCloudExpressionNodeLiteral : public QgsPointCloudExpre
     QSet<QString> referencedAttributes() const override;
 
     QList<const QgsPointCloudExpressionNode *> nodes() const override;
-    QgsPointCloudExpressionNode *clone() const override;
+    std::unique_ptr<QgsPointCloudExpressionNode> clone() const override;
     bool isStatic( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block ) const override;
 
     /**
@@ -348,7 +348,7 @@ class CORE_EXPORT QgsPointCloudExpressionNodeAttributeRef : public QgsPointCloud
     QSet<QString> referencedAttributes() const override;
     QList<const QgsPointCloudExpressionNode *> nodes( ) const override;
 
-    QgsPointCloudExpressionNode *clone() const override;
+    std::unique_ptr<QgsPointCloudExpressionNode> clone() const override;
     bool isStatic( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block ) const override;
 
   private:

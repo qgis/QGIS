@@ -40,12 +40,12 @@ QgsPointCloudExpressionNode::NodeList::~NodeList()
   qDeleteAll( mList );
 }
 
-QgsPointCloudExpressionNode::NodeList *QgsPointCloudExpressionNode::NodeList::clone() const
+std::unique_ptr<QgsPointCloudExpressionNode::NodeList> QgsPointCloudExpressionNode::NodeList::clone() const
 {
-  NodeList *nl = new NodeList;
+  auto nl = std::make_unique<NodeList>();
   for ( QgsPointCloudExpressionNode *node : mList )
   {
-    nl->mList.append( node->clone() );
+    nl->mList.append( node->clone().release() );
   }
   nl->mNameList = mNameList;
 
@@ -95,7 +95,7 @@ bool QgsPointCloudExpressionNodeUnaryOperator::prepareNode( QgsPointCloudExpress
 
 QString QgsPointCloudExpressionNodeUnaryOperator::dump() const
 {
-  if ( dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOperand ) )
+  if ( dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOperand.get() ) )
     return u"%1 ( %2 )"_s.arg( UNARY_OPERATOR_TEXT[mOp], mOperand->dump() );
   else
     return u"%1 %2"_s.arg( UNARY_OPERATOR_TEXT[mOp], mOperand->dump() );
@@ -117,10 +117,10 @@ QList<const QgsPointCloudExpressionNode *> QgsPointCloudExpressionNodeUnaryOpera
   return lst;
 }
 
-QgsPointCloudExpressionNode *QgsPointCloudExpressionNodeUnaryOperator::clone() const
+std::unique_ptr<QgsPointCloudExpressionNode> QgsPointCloudExpressionNodeUnaryOperator::clone() const
 {
-  QgsPointCloudExpressionNodeUnaryOperator *copy = new QgsPointCloudExpressionNodeUnaryOperator( mOp, mOperand->clone() );
-  cloneTo( copy );
+  auto copy = std::make_unique<QgsPointCloudExpressionNodeUnaryOperator>( mOp, mOperand->clone() );
+  cloneTo( copy.get() );
   return copy;
 }
 
@@ -150,7 +150,7 @@ bool QgsPointCloudExpressionNodeUnaryOperator::convert( const QgsExpressionNodeU
 
 QString QgsPointCloudExpressionNodeUnaryOperator::toPdal() const
 {
-  if ( dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOperand ) )
+  if ( dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOperand.get() ) )
     return UNARY_OPERATOR_TEXT[mOp] == "NOT"_L1 ? u"!(%1)"_s.arg( mOperand->toPdal() ) : u"-(%1)"_s.arg( mOperand->dump() );
   else
     return UNARY_OPERATOR_TEXT[mOp] == "NOT"_L1 ? u"!%1"_s.arg( mOperand->toPdal() ) : u"-%1"_s.arg( mOperand->dump() );
@@ -311,8 +311,8 @@ bool QgsPointCloudExpressionNodeBinaryOperator::leftAssociative() const
 
 QString QgsPointCloudExpressionNodeBinaryOperator::dump() const
 {
-  QgsPointCloudExpressionNodeBinaryOperator *lOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpLeft );
-  QgsPointCloudExpressionNodeBinaryOperator *rOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpRight );
+  QgsPointCloudExpressionNodeBinaryOperator *lOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpLeft.get() );
+  QgsPointCloudExpressionNodeBinaryOperator *rOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpRight.get() );
 
   QString rdump( mOpRight->dump() );
 
@@ -349,10 +349,10 @@ QList<const QgsPointCloudExpressionNode *> QgsPointCloudExpressionNodeBinaryOper
   return lst;
 }
 
-QgsPointCloudExpressionNode *QgsPointCloudExpressionNodeBinaryOperator::clone() const
+std::unique_ptr<QgsPointCloudExpressionNode> QgsPointCloudExpressionNodeBinaryOperator::clone() const
 {
-  QgsPointCloudExpressionNodeBinaryOperator *copy = new QgsPointCloudExpressionNodeBinaryOperator( mOp, mOpLeft->clone(), mOpRight->clone() );
-  cloneTo( copy );
+  auto copy = std::make_unique<QgsPointCloudExpressionNodeBinaryOperator>( mOp, mOpLeft->clone(), mOpRight->clone() );
+  cloneTo( copy.get() );
   return copy;
 }
 
@@ -528,8 +528,8 @@ bool QgsPointCloudExpressionNodeBinaryOperator::convert( const QgsExpressionNode
 
 QString QgsPointCloudExpressionNodeBinaryOperator::toPdal() const
 {
-  QgsPointCloudExpressionNodeBinaryOperator *lOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpLeft );
-  QgsPointCloudExpressionNodeBinaryOperator *rOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpRight );
+  QgsPointCloudExpressionNodeBinaryOperator *lOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpLeft.get() );
+  QgsPointCloudExpressionNodeBinaryOperator *rOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpRight.get() );
 
   QString rdump( mOpRight->toPdal() );
 
@@ -591,12 +591,6 @@ double QgsPointCloudExpressionNodeInOperator::evalNode( QgsPointCloudExpression 
   return mNotIn ? 1. : 0.;
 }
 
-QgsPointCloudExpressionNodeInOperator::~QgsPointCloudExpressionNodeInOperator()
-{
-  delete mNode;
-  delete mList;
-}
-
 QgsPointCloudExpressionNode::NodeType QgsPointCloudExpressionNodeInOperator::nodeType() const
 {
   return ntInOperator;
@@ -640,10 +634,10 @@ QString QgsPointCloudExpressionNodeInOperator::dump() const
   return u"%1 %2 IN (%3)"_s.arg( mNode->dump(), mNotIn ? "NOT" : "", mList->dump() );
 }
 
-QgsPointCloudExpressionNode *QgsPointCloudExpressionNodeInOperator::clone() const
+std::unique_ptr<QgsPointCloudExpressionNode>  QgsPointCloudExpressionNodeInOperator::clone() const
 {
-  QgsPointCloudExpressionNodeInOperator *copy = new QgsPointCloudExpressionNodeInOperator( mNode->clone(), mList->clone(), mNotIn );
-  cloneTo( copy );
+  auto copy = std::make_unique<QgsPointCloudExpressionNodeInOperator>( mNode->clone(), mList->clone(), mNotIn );
+  cloneTo( copy.get() );
   return copy;
 }
 
@@ -715,10 +709,10 @@ QList<const QgsPointCloudExpressionNode *> QgsPointCloudExpressionNodeLiteral::n
   return lst;
 }
 
-QgsPointCloudExpressionNode *QgsPointCloudExpressionNodeLiteral::clone() const
+std::unique_ptr<QgsPointCloudExpressionNode> QgsPointCloudExpressionNodeLiteral::clone() const
 {
-  QgsPointCloudExpressionNodeLiteral *copy = new QgsPointCloudExpressionNodeLiteral( mValue );
-  cloneTo( copy );
+  auto copy = std::make_unique<QgsPointCloudExpressionNodeLiteral>( mValue );
+  cloneTo( copy.get() );
   return copy;
 }
 
@@ -797,10 +791,10 @@ QList<const QgsPointCloudExpressionNode *> QgsPointCloudExpressionNodeAttributeR
   return result;
 }
 
-QgsPointCloudExpressionNode *QgsPointCloudExpressionNodeAttributeRef::clone() const
+std::unique_ptr<QgsPointCloudExpressionNode> QgsPointCloudExpressionNodeAttributeRef::clone() const
 {
-  QgsPointCloudExpressionNodeAttributeRef *copy = new QgsPointCloudExpressionNodeAttributeRef( mName );
-  cloneTo( copy );
+  auto copy = std::make_unique<QgsPointCloudExpressionNodeAttributeRef>( mName );
+  cloneTo( copy.get() );
   return copy;
 }
 
