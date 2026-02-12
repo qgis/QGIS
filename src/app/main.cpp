@@ -966,6 +966,9 @@ int main( int argc, char *argv[] )
   // unresponsive when editing an attribute form QML widget.
   QQuickWindow::setGraphicsApi( QSGRendererInterface::Software );
 
+  // Accelerate speed of wheel scrolling
+  qputenv( "QT_QUICK_FLICKABLE_WHEEL_DECELERATION", "4500" );
+
   // Set up the QgsSettings Global Settings:
   // - use the path specified with --globalsettingsfile path,
   // - use the environment if not found
