@@ -654,31 +654,31 @@ QVector<double> QgsNurbsCurve::generateUniformKnots( int numControlPoints, int d
   return knots;
 }
 
-QVector<double> QgsNurbsCurve::generateKnotsForBezierConversion( int nAnchors )
+QVector<double> QgsNurbsCurve::generateKnotsForBezierConversion( int nAnchors, int degree )
 {
-  if ( nAnchors < 2 )
+  if ( nAnchors < 2 || degree < 1 )
     return QVector<double>();
 
-  // For n anchors, we have n-1 cubic Bézier segments
-  // Total knots: 4 + 3*(n-2) + 4 = 3n + 2
-  const int totalKnots = 3 * nAnchors + 2;
+  const int segmentCount = nAnchors - 1;
+  const int totalKnots = degree * nAnchors + degree + 1;
+
   QVector<double> knots;
   knots.reserve( totalKnots );
 
-  // First 4 knots are 0
-  for ( int i = 0; i < 4; ++i )
+  // Clamping start: (degree + 1) knots at 0
+  for ( int i = 0; i < degree + 1; ++i )
     knots.append( 0.0 );
 
-  // Interior knots with multiplicity 3
-  for ( int i = 1; i < nAnchors - 1; ++i )
+  // Interior: multiplicity 'degree' at each junction
+  for ( int segmentIndex = 1; segmentIndex < segmentCount; ++segmentIndex )
   {
-    for ( int j = 0; j < 3; ++j )
-      knots.append( static_cast<double>( i ) );
+    for ( int j = 0; j < degree; ++j )
+      knots.append( static_cast<double>( segmentIndex ) );
   }
 
-  // Last 4 knots are n-1
-  for ( int i = 0; i < 4; ++i )
-    knots.append( static_cast<double>( nAnchors - 1 ) );
+  // Clamping end: (degree + 1) knots at segmentCount
+  for ( int i = 0; i < degree + 1; ++i )
+    knots.append( static_cast<double>( segmentCount ) );
 
   return knots;
 }
