@@ -716,7 +716,7 @@ class QgsWmsSettings
      *
      * \since QGIS 4.0
      */
-    QString parseTemporalFormat( const QString &format );
+    QString parseTemporalFormat( QString format ) const;
 
     /**
      * Sets the dimension extent property

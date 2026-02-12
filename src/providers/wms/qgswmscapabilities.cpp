@@ -285,7 +285,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   return true;
 }
 
-QString QgsWmsSettings::parseTemporalFormat( const QString &extent )
+QString QgsWmsSettings::parseTemporalFormat( QString extent ) const
 {
   if ( extent.isEmpty() )
     return QString();
