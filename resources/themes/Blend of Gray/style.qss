@@ -154,6 +154,7 @@ QAbstractSpinBox::drop-down:hover {
 }
 QAbstractSpinBox::drop-down:disabled {
     background-color: transparent !important;
+    border-color: @itemdarkbackground;
 }
 
 /* ==================================================================================== */
