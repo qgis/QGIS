@@ -53,8 +53,15 @@ QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
 
   setColumnCount( 1 );
 
+  const QgsSettings settings;
+  const int red = settings.value( u"qgis/default_canvas_color_red"_s, 255 ).toInt();
+  const int green = settings.value( u"qgis/default_canvas_color_green"_s, 255 ).toInt();
+  const int blue = settings.value( u"qgis/default_canvas_color_blue"_s, 255 ).toInt();
+  const QColor canvasColor( red, green, blue );
+
   QStandardItem *emptyProjectItem = new QStandardItem();
   emptyProjectItem->setData( false, static_cast<int>( CustomRole::WritableRole ) );
+  emptyProjectItem->setData( canvasColor, static_cast<int>( CustomRole::CanvasColorRole ) );
   emptyProjectItem->setData( static_cast<int>( TemplateType::Blank ), static_cast<int>( CustomRole::TypeRole ) );
   emptyProjectItem->setData( tr( "Blank" ), static_cast<int>( CustomRole::TitleRole ) );
   connect( QgsProject::instance(), &QgsProject::crsChanged, this, [emptyProjectItem]() { emptyProjectItem->setData( QgsProject::instance()->crs().userFriendlyIdentifier(), static_cast<int>( CustomRole::CrsRole ) ); } );
@@ -64,6 +71,7 @@ QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
 
   emptyProjectItem = new QStandardItem();
   emptyProjectItem->setData( false, static_cast<int>( CustomRole::WritableRole ) );
+  emptyProjectItem->setData( canvasColor, static_cast<int>( CustomRole::CanvasColorRole ) );
   emptyProjectItem->setData( static_cast<int>( TemplateType::Basemap ), static_cast<int>( CustomRole::TypeRole ) );
   emptyProjectItem->setData( tr( "OpenStreetMap Basemap" ), static_cast<int>( CustomRole::TitleRole ) );
   emptyProjectItem->setData( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ).userFriendlyIdentifier(), static_cast<int>( CustomRole::CrsRole ) );
@@ -81,6 +89,7 @@ QHash<int, QByteArray> QgsTemplateProjectsModel::roleNames() const
   roles[static_cast<int>( CustomRole::CrsRole )] = "Crs";
   roles[static_cast<int>( CustomRole::PreviewImagePathRole )] = "PreviewImagePath";
   roles[static_cast<int>( CustomRole::WritableRole )] = "Writable";
+  roles[static_cast<int>( CustomRole::CanvasColorRole )] = "CanvasColor";
   return roles;
 }
 
@@ -107,11 +116,19 @@ void QgsTemplateProjectsModel::scanDirectory( const QString &path )
     }
   }
 
+  // Use default canvas color when preview image is missing
+  const QgsSettings settings;
+  const int red = settings.value( u"qgis/default_canvas_color_red"_s, 255 ).toInt();
+  const int green = settings.value( u"qgis/default_canvas_color_green"_s, 255 ).toInt();
+  const int blue = settings.value( u"qgis/default_canvas_color_blue"_s, 255 ).toInt();
+  const QColor canvasColor( red, green, blue );
+
   // Refill with templates from this directory
   for ( const QFileInfo &file : files )
   {
     auto item = std::make_unique<QStandardItem>( file.fileName() );
     item->setData( file.isWritable(), static_cast<int>( CustomRole::WritableRole ) );
+    item->setData( canvasColor, static_cast<int>( CustomRole::CanvasColorRole ) );
     item->setData( static_cast<int>( TemplateType::File ), static_cast<int>( CustomRole::TypeRole ) );
 
     const QString fileId = QCryptographicHash::hash( file.filePath().toUtf8(), QCryptographicHash::Sha224 ).toHex();

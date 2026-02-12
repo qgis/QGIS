@@ -521,7 +521,6 @@ qt_add_qml_module(qgis_app
         /qt/qml/
     RESOURCES
         qml/images/basemap.jpg
-        qml/images/blank.jpg
         qml/images/close.svg
         qml/images/love.svg
         qml/images/qgis.svg
