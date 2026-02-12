@@ -20,6 +20,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvassnappingutils.h"
 #include "qgsmapmouseevent.h"
+#include "qgsnurbscurve.h"
 #include "qgsproject.h"
 #include "qgssettingsregistrycore.h"
 #include "qgssnappingconfig.h"
@@ -99,6 +100,9 @@ class TestQgsVertexTool : public QObject
     void testSelectedFeaturesPriority();
     void testVertexToolCompoundCurve();
     void testMoveVertexTopoOtherMapCrs();
+    void testMoveVertexNurbsPolyBezierZ();
+    void testMoveVertexNurbsCADZ();
+    void testMoveVertexNurbsPolyBezierSymmetric();
 
   private:
     QPoint mapToScreen( double mapX, double mapY )
@@ -175,6 +179,7 @@ class TestQgsVertexTool : public QObject
     QPointer< QgsVectorLayer > mLayerLineM;
     QPointer< QgsVectorLayer > mLayerCompoundCurve;
     QPointer< QgsVectorLayer > mLayerLineReprojected;
+    QPointer< QgsVectorLayer > mLayerNurbs;
     QgsFeatureId mFidLineZF1 = 0;
     QgsFeatureId mFidLineZF2 = 0;
     QgsFeatureId mFidLineZF3 = 0;
@@ -190,6 +195,8 @@ class TestQgsVertexTool : public QObject
     QgsFeatureId mFidPointZF1 = 0;
     QgsFeatureId mFidCompoundCurveF1 = 0;
     QgsFeatureId mFidCompoundCurveF2 = 0;
+    QgsFeatureId mFidNurbsF1 = 0;
+    QgsFeatureId mFidNurbsF2 = 0;
 };
 
 TestQgsVertexTool::TestQgsVertexTool() = default;
@@ -256,7 +263,10 @@ void TestQgsVertexTool::init()
   mLayerCompoundCurve = new QgsVectorLayer( u"CompoundCurve?"_s, u"layer compound curve"_s, u"memory"_s );
   QVERIFY( mLayerCompoundCurve->isValid() );
   mLayerCompoundCurve->setCrs( mFake27700 );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerPointZ << mLayerLineZ << mLayerLineM << mLayerLineTopoPoints << mLayerCompoundCurve );
+  mLayerNurbs = new QgsVectorLayer( u"NurbsCurve?"_s, u"layer nurbs"_s, u"memory"_s );
+  QVERIFY( mLayerNurbs->isValid() );
+  mLayerNurbs->setCrs( mFake27700 );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerPointZ << mLayerLineZ << mLayerLineM << mLayerLineTopoPoints << mLayerCompoundCurve << mLayerNurbs );
 
 
   QgsFeature lineF1, lineF2;
@@ -297,6 +307,25 @@ void TestQgsVertexTool::init()
   curveF1.setGeometry( QgsGeometry::fromWkt( "CompoundCurve (CircularString (14 14, 10 10, 17 10))" ) );
   QgsFeature curveF2;
   curveF2.setGeometry( QgsGeometry::fromWkt( "CompoundCurve ((16 11, 17 11, 17 13))" ) );
+
+  // Create a simple poly-Bézier NURBS curve with 2 anchors (4 control points) with Z values
+  QVector<QgsPoint> nurbsControlPoints;
+  nurbsControlPoints << QgsPoint( 10, 1, 10 ) << QgsPoint( 11, 1, 11 ) << QgsPoint( 12, 1, 12 ) << QgsPoint( 13, 1, 13 );
+  QVector<double> nurbsKnots = QgsNurbsCurve::generateKnotsForBezierConversion( 2 );
+  QVector<double> nurbsWeights { 1.0, 1.0, 1.0, 1.0 };
+  QgsNurbsCurve *nurbsCurve = new QgsNurbsCurve( nurbsControlPoints, 3, nurbsKnots, nurbsWeights );
+  QgsFeature nurbsF1;
+  nurbsF1.setGeometry( QgsGeometry( nurbsCurve ) );
+
+  // Create a NURBS CAD mode curve (standard cubic B-spline with 5 control points) with Z values
+  QVector<QgsPoint> nurbsCADControlPoints;
+  nurbsCADControlPoints << QgsPoint( 10, 5, 20 ) << QgsPoint( 10.5, 6, 21 ) << QgsPoint( 11, 6.5, 22 ) << QgsPoint( 11.5, 6, 23 ) << QgsPoint( 12, 5, 24 );
+  QVector<double> nurbsCADKnots { 0.0, 0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0, 1.0 };
+  QVector<double> nurbsCADWeights { 1.0, 1.0, 1.0, 1.0, 1.0 };
+
+  QgsNurbsCurve *nurbsCADCurve = new QgsNurbsCurve( nurbsCADControlPoints, 3, nurbsCADKnots, nurbsCADWeights );
+  QgsFeature nurbsF2;
+  nurbsF2.setGeometry( QgsGeometry( nurbsCADCurve ) );
 
   mLayerLine->startEditing();
   mLayerLine->addFeature( lineF1 );
@@ -363,6 +392,13 @@ void TestQgsVertexTool::init()
   mFidCompoundCurveF2 = curveF2.id();
   QCOMPARE( mLayerCompoundCurve->featureCount(), ( long ) 2 );
 
+  mLayerNurbs->startEditing();
+  mLayerNurbs->addFeature( nurbsF1 );
+  mLayerNurbs->addFeature( nurbsF2 );
+  mFidNurbsF1 = nurbsF1.id();
+  mFidNurbsF2 = nurbsF2.id();
+  QCOMPARE( mLayerNurbs->featureCount(), ( long ) 2 );
+
   // just one added feature in each undo stack
   QCOMPARE( mLayerMultiLine->undoStack()->index(), 1 );
   QCOMPARE( mLayerPolygon->undoStack()->index(), 1 );
@@ -373,6 +409,7 @@ void TestQgsVertexTool::init()
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
   QCOMPARE( mLayerLineZ->undoStack()->index(), 3 );
   QCOMPARE( mLayerCompoundCurve->undoStack()->index(), 2 );
+  QCOMPARE( mLayerNurbs->undoStack()->index(), 2 );
 
   QgsProject::instance()->setTopologicalEditing( false );
 
@@ -390,7 +427,7 @@ void TestQgsVertexTool::init()
   QCOMPARE( mCanvas->mapSettings().outputSize(), QSize( 512, 512 ) );
   QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
 
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerLineReprojected << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerPointZ << mLayerLineZ << mLayerLineM << mLayerLineTopoPoints << mLayerCompoundCurve );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerLineReprojected << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerPointZ << mLayerLineZ << mLayerLineM << mLayerLineTopoPoints << mLayerCompoundCurve << mLayerNurbs );
 
   QgsMapCanvasSnappingUtils *snappingUtils = new QgsMapCanvasSnappingUtils( mCanvas, this );
   mCanvas->setSnappingUtils( snappingUtils );
@@ -406,6 +443,7 @@ void TestQgsVertexTool::init()
   snappingUtils->locatorForLayer( mLayerLineM )->init();
   snappingUtils->locatorForLayer( mLayerLineTopoPoints )->init();
   snappingUtils->locatorForLayer( mLayerCompoundCurve )->init();
+  snappingUtils->locatorForLayer( mLayerNurbs )->init();
 
   // create vertex tool
   mVertexTool = new QgsVertexTool( mCanvas, mAdvancedDigitizingDockWidget );
@@ -2014,5 +2052,162 @@ void TestQgsVertexTool::testMoveVertexTopoOtherMapCrs()
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
 }
 
+void TestQgsVertexTool::testMoveVertexNurbsPolyBezierZ()
+{
+  // Test snapping a poly-Bézier NURBS control point to another geometry with Z and verify Z is snapped
+  // Initial NURBS curve: 4 control points with Z values (10,1,10), (11,1,11), (12,1,12), (13,1,13)
+  // Target LineZ feature: mFidLineZF1 has geometry "LineStringZ (5 5 1, 6 6 1, 7 5 1)"
+
+  // Enable snapping
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  cfg.setMode( Qgis::SnappingMode::AllLayers );
+  cfg.setTolerance( 10 );
+  cfg.setTypeFlag( static_cast<Qgis::SnappingTypes>( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment ) );
+  cfg.setEnabled( true );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  // Select and move the first anchor (control point 0 at 10,1,10) to snap to vertex at (6,6,1)
+  mouseClick( 10, 1, Qt::LeftButton );
+  mouseClick( 6, 6, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  QgsGeometry geom = mLayerNurbs->getFeature( mFidNurbsF1 ).geometry();
+  const QgsNurbsCurve *nurbs = qgsgeometry_cast<const QgsNurbsCurve *>( geom.constGet() );
+  QVERIFY( nurbs != nullptr );
+  QCOMPARE( nurbs->controlPoints()[0].x(), 6.0 );
+  QCOMPARE( nurbs->controlPoints()[0].y(), 6.0 );
+  QCOMPARE( nurbs->controlPoints()[0].z(), 1.0 );
+
+  // Verify curve is still poly-Bézier
+  QVERIFY( nurbs->isPolyBezier() );
+
+  // Cleanup
+  mLayerNurbs->undoStack()->undo();
+  cfg.setEnabled( false );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  // Verify back to original position with original Z
+  geom = mLayerNurbs->getFeature( mFidNurbsF1 ).geometry();
+  nurbs = qgsgeometry_cast<const QgsNurbsCurve *>( geom.constGet() );
+  QVERIFY( nurbs != nullptr );
+  QCOMPARE( nurbs->controlPoints()[0].x(), 10.0 );
+  QCOMPARE( nurbs->controlPoints()[0].y(), 1.0 );
+  QCOMPARE( nurbs->controlPoints()[0].z(), 10.0 );
+}
+
+void TestQgsVertexTool::testMoveVertexNurbsCADZ()
+{
+  // Test snapping a NURBS CAD control point to another geometry with Z and verify Z is snapped
+  // Initial NURBS CAD curve: 5 control points with Z values (10,5,20), (10.5,6,21), (11,6.5,22), (11.5,6,23), (12,5,24)
+  // Target LineZ feature: mFidLineZF1 has geometry "LineStringZ (5 5 1, 6 6 1, 7 5 1)"
+
+  // Enable snapping
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  cfg.setMode( Qgis::SnappingMode::AllLayers );
+  cfg.setTolerance( 10 );
+  cfg.setTypeFlag( static_cast<Qgis::SnappingTypes>( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment ) );
+  cfg.setEnabled( true );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  // Select and move the middle control point (index 2 at 11,6.5,22) to snap to vertex at (7,5,1)
+  mouseClick( 11, 6.5, Qt::LeftButton );
+  mouseClick( 7, 5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  QgsGeometry geom = mLayerNurbs->getFeature( mFidNurbsF2 ).geometry();
+  const QgsNurbsCurve *nurbs = qgsgeometry_cast<const QgsNurbsCurve *>( geom.constGet() );
+  QVERIFY( nurbs != nullptr );
+  QCOMPARE( nurbs->controlPoints()[2].x(), 7.0 );
+  QCOMPARE( nurbs->controlPoints()[2].y(), 5.0 );
+  QCOMPARE( nurbs->controlPoints()[2].z(), 1.0 );
+
+  // Verify curve is not a poly-Bézier
+  QVERIFY( !nurbs->isPolyBezier() );
+
+  // Cleanup
+  mLayerNurbs->undoStack()->undo();
+  cfg.setEnabled( false );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  // Verify back to original position with original Z
+  geom = mLayerNurbs->getFeature( mFidNurbsF2 ).geometry();
+  nurbs = qgsgeometry_cast<const QgsNurbsCurve *>( geom.constGet() );
+  QVERIFY( nurbs != nullptr );
+  QCOMPARE( nurbs->controlPoints()[2].x(), 11.0 );
+  QCOMPARE( nurbs->controlPoints()[2].y(), 6.5 );
+  QCOMPARE( nurbs->controlPoints()[2].z(), 22.0 );
+}
+
+
+void TestQgsVertexTool::testMoveVertexNurbsPolyBezierSymmetric()
+{
+  // Test Alt+Drag on a poly-Bézier NURBS anchor for symmetric handle extension
+  // Use a 3-anchor curve (2 segments) to test proper symmetric movement.
+  // P0 (anchor), P1 (handle), P2 (handle), P3 (anchor), P4 (handle), P5 (handle), P6 (anchor)
+  // We'll drag P3 (index 3). Left handle P2 (index 2), Right handle P4 (index 4).
+
+  QVector<QgsPoint> controlPoints;
+  controlPoints << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 )   // Segment 1 handles
+                << QgsPoint( 4, 1 ) << QgsPoint( 5, 0 )   // Anchor 1 (index 3) at 5,0. Left Handle (index 2) at 4,1
+                << QgsPoint( 6, -1 ) << QgsPoint( 9, -1 ) // Right Handle (index 4) at 6,-1
+                << QgsPoint( 10, 0 );
+
+  QVector<double> knots = QgsNurbsCurve::generateKnotsForBezierConversion( 3 ); // 3 anchors -> 2 segments
+  QVector<double> weights( 7, 1.0 );
+
+  QgsNurbsCurve *nurbsCurve = new QgsNurbsCurve( controlPoints, 3, knots, weights );
+  QgsFeature nurbsF;
+  nurbsF.setGeometry( QgsGeometry( nurbsCurve ) );
+
+  mLayerNurbs->startEditing();
+  mLayerNurbs->addFeature( nurbsF );
+  QgsFeatureId fid = nurbsF.id();
+
+  // Ensure point locator is updated
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  cfg.setMode( Qgis::SnappingMode::AllLayers );
+  cfg.setTolerance( 10 );
+  cfg.setTypeFlag( static_cast<Qgis::SnappingTypes>( Qgis::SnappingType::Vertex ) );
+  cfg.setEnabled( true );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  mCanvas->snappingUtils()->locatorForLayer( mLayerNurbs )->init();
+
+  // Select and Alt+Move Anchor 1 (at 5,0)
+  // We drag from 5,0 to 5,2. Delta is (0, 2).
+  // Handle Right (Index 4) was (6, -1). New pos should be Anchor(5,0) + Delta(0,2) = (5, 2).
+  // Handle Left (Index 2) was (4, 1). New pos should be Anchor(5,0) - Delta(0,2) = (5, -2).
+
+  // 1. Move mouse to anchor
+  mouseMove( 5, 0 );
+
+  // 2. Alt+Click (Press + Release) to start dragging
+  mouseClick( 5, 0, Qt::LeftButton, Qt::AltModifier );
+
+  // 3. Move to new position
+  mouseMove( 5, 2 );
+
+  // 4. Click to finish dragging
+  mouseClick( 5, 2, Qt::LeftButton );
+
+  QgsGeometry geom = mLayerNurbs->getFeature( fid ).geometry();
+  const QgsNurbsCurve *nurbs = qgsgeometry_cast<const QgsNurbsCurve *>( geom.constGet() );
+  QVERIFY( nurbs != nullptr );
+
+  // Verify Anchor didn't move
+  QCOMPARE( nurbs->controlPoints()[3].x(), 5.0 );
+  QCOMPARE( nurbs->controlPoints()[3].y(), 0.0 );
+
+  // Verify Right Handle (Index 4) moved to (5, 2)
+  QCOMPARE( nurbs->controlPoints()[4].x(), 5.0 );
+  QCOMPARE( nurbs->controlPoints()[4].y(), 2.0 );
+
+  // Verify Left Handle (Index 2) moved to (5, -2)
+  QCOMPARE( nurbs->controlPoints()[2].x(), 5.0 );
+  QCOMPARE( nurbs->controlPoints()[2].y(), -2.0 );
+
+  // Cleanup
+  mLayerNurbs->undoStack()->undo();
+  cfg.setEnabled( false );
+  mCanvas->snappingUtils()->setConfig( cfg );
+}
 QGSTEST_MAIN( TestQgsVertexTool )
 #include "testqgsvertextool.moc"
