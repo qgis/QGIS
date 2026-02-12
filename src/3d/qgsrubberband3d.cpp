@@ -471,7 +471,7 @@ void QgsRubberBand3D::updateGeometry()
       // extract vertex buffer data from tessellator
       const QByteArray vertexBuffer( reinterpret_cast<const char *>( tessellator.vertexBuffer().constData() ), static_cast<int>( tessellator.vertexBuffer().count() * sizeof( float ) ) );
       const QByteArray indexBuffer( reinterpret_cast<const char *>( tessellator.indexBuffer().constData() ), static_cast<int>( tessellator.indexBuffer().count() * tessellator.indexStride() ) );
-      const int vertexCount = vertexBuffer.count() / tessellator.stride();
+      const size_t vertexCount = tessellator.uniqueVertexCount();
       const size_t indexCount = tessellator.dataVerticesCount();
 
       mPolygonGeometry->setVertexBufferData( vertexBuffer, vertexCount, QVector<QgsFeatureId>(), QVector<uint>() );
