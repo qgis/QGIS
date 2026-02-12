@@ -502,44 +502,34 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
           return QVariant();
         }
 
-        int r, g, b, a;
-
-        switch ( mOp )
+        switch ( color.spec() )
         {
-          case boPlus:
-            r = std::clamp( static_cast<int>( std::round( color.red() + value ) ), 0, 255 );
-            g = std::clamp( static_cast<int>( std::round( color.green() + value ) ), 0, 255 );
-            b = std::clamp( static_cast<int>( std::round( color.blue() + value ) ), 0, 255 );
-            a = std::clamp( static_cast<int>( std::round( color.alpha() + value ) ), 0, 255 );
-            break;
-
-          case boMinus:
-            r = std::clamp( static_cast<int>( std::round( color.red() - value ) ), 0, 255 );
-            g = std::clamp( static_cast<int>( std::round( color.green() - value ) ), 0, 255 );
-            b = std::clamp( static_cast<int>( std::round( color.blue() - value ) ), 0, 255 );
-            a = std::clamp( static_cast<int>( std::round( color.alpha() - value ) ), 0, 255 );
-            break;
-
-          case boMul:
-            r = std::clamp( static_cast<int>( std::round( color.red() * value ) ), 0, 255 );
-            g = std::clamp( static_cast<int>( std::round( color.green() * value ) ), 0, 255 );
-            b = std::clamp( static_cast<int>( std::round( color.blue() * value ) ), 0, 255 );
-            a = std::clamp( static_cast<int>( std::round( color.alpha() * value ) ), 0, 255 );
-            break;
-
-          case boDiv:
-            r = std::clamp( static_cast<int>( std::round( color.red() / value ) ), 0, 255 );
-            g = std::clamp( static_cast<int>( std::round( color.green() / value ) ), 0, 255 );
-            b = std::clamp( static_cast<int>( std::round( color.blue() / value ) ), 0, 255 );
-            a = std::clamp( static_cast<int>( std::round( color.alpha() / value ) ), 0, 255 );
-            break;
-
+          case QColor::Cmyk:
+          {
+            int c, m, y, k, a;
+            color.getCmyk( &c, &m, &y, &k, &a );
+            return QColor::fromCmyk(
+                     std::clamp( static_cast<int>( std::round( computeDouble( static_cast<double>( c ), value ) ) ), 0, 255 ),
+                     std::clamp( static_cast<int>( std::round( computeDouble( static_cast<double>( m ), value ) ) ), 0, 255 ),
+                     std::clamp( static_cast<int>( std::round( computeDouble( static_cast<double>( y ), value ) ) ), 0, 255 ),
+                     std::clamp( static_cast<int>( std::round( computeDouble( static_cast<double>( k ), value ) ) ), 0, 255 ),
+                     a
+                   );
+          }
+          case QColor::Rgb:
+          {
+            int r, g, b, a;
+            color.getRgb( &r, &g, &b, &a );
+            return QColor::fromRgb(
+                     std::clamp( static_cast<int>( std::round( computeDouble( static_cast<double>( r ), value ) ) ), 0, 255 ),
+                     std::clamp( static_cast<int>( std::round( computeDouble( static_cast<double>( g ), value ) ) ), 0, 255 ),
+                     std::clamp( static_cast<int>( std::round( computeDouble( static_cast<double>( b ), value ) ) ), 0, 255 ),
+                     a
+                   );
+          }
           default:
             return QVariant();
         }
-
-        QColor result( r, g, b, a );
-        return QVariant( result );
       }
       else
       {
