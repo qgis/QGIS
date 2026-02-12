@@ -600,12 +600,38 @@ Item {
       }
       
       RoundButton {
+        id: closeButton
         anchors{
           top: parent.top
           right: parent.right
           margins: 5
         }
       
+        background: Rectangle {
+          implicitWidth: closeButton.Material.buttonHeight
+          implicitHeight: closeButton.Material.buttonHeight
+
+          radius: closeButton.radius
+          color: closeButton.Material.buttonColor(closeButton.Material.theme, closeButton.Material.background,
+              closeButton.Material.accent, closeButton.enabled, closeButton.flat, closeButton.highlighted, false)
+
+          Rectangle {
+            width: parent.width
+            height: parent.height
+            radius: closeButton.radius
+            visible: enabled && (closeButton.hovered || closeButton.visualFocus)
+            color: "#33ffffff"
+          }
+
+          Rectangle {
+            width: parent.width
+            height: parent.height
+            radius: closeButton.radius
+            visible: closeButton.down
+            color: "#33ffffff"
+          }
+        }
+
         flat: true
         icon.source: "images/close.svg"
         icon.color: "white"
