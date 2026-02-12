@@ -296,12 +296,13 @@ Item {
 
               delegate: ProjectCard {
                 width: templatesListView.width - 12
+                backgroundColor: "#ff0000" // CanvasColor || "#ffffff"
                 title: Title || ""
                 subtitle: Crs || ""
                 imageSource: {
                   switch (Type) {
                   case TemplateProjectsModel.TemplateType.Blank:
-                    return "../images/blank.jpg";
+                    return "";
                   case TemplateProjectsModel.TemplateType.Basemap:
                     return "../images/basemap.jpg";
                   default:
