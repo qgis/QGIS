@@ -425,6 +425,9 @@ bool QgsCustomizationDialog::QgsCustomizationModel::dropMimeData( const QMimeDat
   if ( action == Qt::IgnoreAction )
     return true;
 
+  if ( row == -1 )
+    row = rowCount( parent ); // if dropped directly onto group item, insert at last position
+
   return dropMimeDataActions( data, row, parent ) || dropMimeDataProcessingAlgorithms( data, row, parent );
 }
 
@@ -455,9 +458,6 @@ bool QgsCustomizationDialog::QgsCustomizationModel::dropMimeDataActions( const Q
 
   if ( actions.isEmpty() )
     return false;
-
-  if ( row == -1 )
-    row = 0; // if dropped directly onto group item, insert at first position
 
   beginInsertRows( parent, row, row + static_cast<int>( actions.count() ) - 1 );
   for ( QPair<QgsCustomization::QgsActionItem *, QString> actionAndPath : std::as_const( actions ) )
@@ -501,9 +501,6 @@ bool QgsCustomizationDialog::QgsCustomizationModel::dropMimeDataProcessingAlgori
 
   if ( processingAlgorithms.isEmpty() )
     return false;
-
-  if ( row == -1 )
-    row = 0; // if dropped directly onto group item, insert at first position
 
   beginInsertRows( parent, row, row + static_cast<int>( processingAlgorithms.count() ) - 1 );
   for ( const QgsProcessingAlgorithm *processingAlgorithm : std::as_const( processingAlgorithms ) )
@@ -578,6 +575,7 @@ QgsCustomizationDialog::QgsCustomizationDialog( QgisApp *qgisApp )
     proxyModel->setRecursiveFilteringEnabled( true );
     proxyModel->setSourceModel( mItemsVisibilityModel );
     mTreeView->setModel( proxyModel );
+    mTreeView->setAutoScroll( true );
     mTreeView->resizeColumnToContents( 0 );
     mTreeView->header()->resizeSection( 0, 250 );
     mTreeView->setContextMenuPolicy( Qt::ContextMenuPolicy::ActionsContextMenu );
@@ -585,6 +583,7 @@ QgsCustomizationDialog::QgsCustomizationDialog( QgisApp *qgisApp )
     connect( mFilterLe, &QgsFilterLineEdit::valueChanged, proxyModel, &QSortFilterProxyModel::setFilterFixedString );
     connect( mTreeView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsCustomizationDialog::currentItemChanged );
     connect( mTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsCustomizationDialog::selectedItemsChanged );
+    connect( mItemsVisibilityModel, &QAbstractItemModel::rowsInserted, this, &QgsCustomizationDialog::onRowsInserted );
   }
 
   mActionsTreeView->setEnabled( false );
@@ -738,13 +737,16 @@ void QgsCustomizationDialog::selectedItemsChanged()
   mDeleteAction->setToolTip( tooltip );
 }
 
+void QgsCustomizationDialog::onRowsInserted( const QModelIndex &parent, int first, int )
+{
+  const QModelIndex newIndex = treeViewModel()->mapFromSource( mItemsVisibilityModel->index( first, 0, parent ) );
+  mTreeView->setCurrentIndex( newIndex );
+}
+
 void QgsCustomizationDialog::addUserItem()
 {
   const QModelIndex parentIndex = treeViewModel()->mapToSource( mTreeView->selectionModel()->currentIndex() );
-  const QModelIndex userItemIndex = mItemsVisibilityModel->addUserItem( parentIndex );
-  const QModelIndex viewUserItemIndex = treeViewModel()->mapFromSource( userItemIndex );
-  mTreeView->scrollTo( viewUserItemIndex );
-  mTreeView->setCurrentIndex( viewUserItemIndex );
+  ( void ) mItemsVisibilityModel->addUserItem( parentIndex );
 }
 
 void QgsCustomizationDialog::deleteSelectedItems()
