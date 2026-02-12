@@ -132,6 +132,7 @@ Item {
               spacing: 8
               clip: true
               visible: tabBar.currentIndex === 0
+              maximumFlickVelocity: 2000
 
               model: recentProjectsModel
 
