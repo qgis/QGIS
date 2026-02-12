@@ -2899,6 +2899,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     friend class QgsCanvasRefreshBlocker;
     friend class QgsMapToolsDigitizingTechniqueManager;
+    friend class QgsWelcomeScreenController;
 
     friend class TestQgisAppPython;
     friend class TestQgisApp;
