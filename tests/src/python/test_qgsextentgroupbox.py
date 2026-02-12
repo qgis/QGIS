@@ -15,6 +15,8 @@ import os
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
+    QgsCoordinateTransformContext,
     QgsFeature,
     QgsGeometry,
     QgsProject,
@@ -128,8 +130,8 @@ class TestQgsExtentGroupBox(QgisTestCase):
 
         w.setOutputExtentFromLayer(layer)
         self.assertEqual(
-            w.outputExtent().toString(4),
-            QgsRectangle(-118.9229, 24.5079, -83.7900, 46.7262).toString(4),
+            w.outputExtent(),
+            layer.extent(),
         )
         self.assertEqual(
             w.extentState(), QgsExtentGroupBox.ExtentState.ProjectLayerExtent
@@ -139,6 +141,12 @@ class TestQgsExtentGroupBox(QgisTestCase):
         QgsProject.instance().removeAllMapLayers()
 
     def testSetOutputCrs(self):
+        ct = QgsCoordinateTransform(
+            QgsCoordinateReferenceSystem("epsg:4326"),
+            QgsCoordinateReferenceSystem("epsg:3785"),
+            QgsCoordinateTransformContext(),
+        )
+
         w = QgsExtentGroupBox()
         w.setCheckable(True)
 
@@ -160,17 +168,12 @@ class TestQgsExtentGroupBox(QgisTestCase):
         # with reprojection
         w.setOutputCrs(QgsCoordinateReferenceSystem("epsg:3785"))
         self.assertEqual(
-            w.outputExtent().toString(4),
-            QgsRectangle(111319.4908, 222684.2085, 333958.4724, 445640.1097).toString(
-                4
-            ),
+            w.outputExtent(), ct.transformBoundingBox(QgsRectangle(1, 2, 3, 4))
         )
         # change CRS back
         w.setOutputCrs(QgsCoordinateReferenceSystem("epsg:4326"))
         # extent should be back to current - not a reprojection of the reprojected bounds
-        self.assertEqual(
-            w.outputExtent().toString(20), QgsRectangle(1, 2, 3, 4).toString(20)
-        )
+        self.assertEqual(w.outputExtent(), QgsRectangle(1, 2, 3, 4))
 
         # repeat, this time using original extents
         w = QgsExtentGroupBox()
@@ -185,17 +188,12 @@ class TestQgsExtentGroupBox(QgisTestCase):
         # with reprojection
         w.setOutputCrs(QgsCoordinateReferenceSystem("epsg:3785"))
         self.assertEqual(
-            w.outputExtent().toString(4),
-            QgsRectangle(111319.4908, 222684.2085, 333958.4724, 445640.1097).toString(
-                4
-            ),
+            w.outputExtent(), ct.transformBoundingBox(QgsRectangle(1, 2, 3, 4))
         )
         # change CRS back
         w.setOutputCrs(QgsCoordinateReferenceSystem("epsg:4326"))
         # extent should be back to original - not a reprojection of the reprojected bounds
-        self.assertEqual(
-            w.outputExtent().toString(20), QgsRectangle(1, 2, 3, 4).toString(20)
-        )
+        self.assertEqual(w.outputExtent(), QgsRectangle(1, 2, 3, 4))
 
         # repeat, this time using layer extent
         layer = QgsVectorLayer("Polygon?crs=epsg:4326", "memory", "memory")
@@ -210,17 +208,12 @@ class TestQgsExtentGroupBox(QgisTestCase):
 
         w.setOutputCrs(QgsCoordinateReferenceSystem("epsg:3785"))
         self.assertEqual(
-            w.outputExtent().toString(4),
-            QgsRectangle(111319.4908, 222684.2085, 333958.4724, 445640.1097).toString(
-                4
-            ),
+            w.outputExtent(), ct.transformBoundingBox(QgsRectangle(1, 2, 3, 4))
         )
         # change CRS back
         w.setOutputCrs(QgsCoordinateReferenceSystem("epsg:4326"))
         # extent should be back to original - not a reprojection of the reprojected bounds
-        self.assertEqual(
-            w.outputExtent().toString(20), QgsRectangle(1, 2, 3, 4).toString(20)
-        )
+        self.assertEqual(w.outputExtent(), QgsRectangle(1, 2, 3, 4))
 
         # custom extent
         w = QgsExtentGroupBox()
@@ -234,18 +227,12 @@ class TestQgsExtentGroupBox(QgisTestCase):
         # with reprojection
         w.setOutputCrs(QgsCoordinateReferenceSystem("epsg:3785"))
         self.assertEqual(
-            w.outputExtent().toString(4),
-            QgsRectangle(111319.4908, 222684.2085, 333958.4724, 445640.1097).toString(
-                4
-            ),
+            w.outputExtent(), ct.transformBoundingBox(QgsRectangle(1, 2, 3, 4))
         )
         # change CRS back
         w.setOutputCrs(QgsCoordinateReferenceSystem("epsg:4326"))
         # in this case we can't retrieve the original user extent in 4326, so we have a reprojection of the reprojected bounds
-        # just test this by restricting the test to 4 decimals
-        self.assertEqual(
-            w.outputExtent().toString(4), QgsRectangle(1, 2, 3, 4).toString(4)
-        )
+        self.assertEqual(w.outputExtent(), QgsRectangle(1, 2, 3, 4))
 
 
 if __name__ == "__main__":
