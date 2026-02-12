@@ -701,7 +701,7 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
   mDefaultValues.clear();
 
   gaiaLayerAttributeFieldPtr fld = lyr->First;
-  if ( !fld )
+  if ( !fld || mViewBased )
   {
     // defaulting to traditional loadFields()
     loadFields();
