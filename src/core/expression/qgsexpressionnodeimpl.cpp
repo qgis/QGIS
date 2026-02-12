@@ -506,26 +506,39 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         {
           case QColor::Cmyk:
           {
-            int c, m, y, k, a;
-            color.getCmyk( &c, &m, &y, &k, &a );
-            return QColor::fromCmyk(
-                     std::clamp( static_cast<int>( std::round( computeDouble( static_cast<double>( c ), value ) ) ), 0, 255 ),
-                     std::clamp( static_cast<int>( std::round( computeDouble( static_cast<double>( m ), value ) ) ), 0, 255 ),
-                     std::clamp( static_cast<int>( std::round( computeDouble( static_cast<double>( y ), value ) ) ), 0, 255 ),
-                     std::clamp( static_cast<int>( std::round( computeDouble( static_cast<double>( k ), value ) ) ), 0, 255 ),
+            float c, m, y, k, a;
+            color.getCmykF( &c, &m, &y, &k, &a );
+            return QColor::fromCmykF(
+                     static_cast<float>( std::clamp( computeDouble( static_cast<double>( c ), value ), 0.0, 1.0 ) ),
+                     static_cast<float>( std::clamp( computeDouble( static_cast<double>( m ), value ), 0.0, 1.0 ) ),
+                     static_cast<float>( std::clamp( computeDouble( static_cast<double>( y ), value ), 0.0, 1.0 ) ),
+                     static_cast<float>( std::clamp( computeDouble( static_cast<double>( k ), value ), 0.0, 1.0 ) ),
                      a
                    );
           }
+          case QColor::Hsl:
+          case QColor::Hsv:
           case QColor::Rgb:
+          case QColor::ExtendedRgb:  // color_rgbf constructor clamps it to 0-1, so we do the same here
           {
-            int r, g, b, a;
-            color.getRgb( &r, &g, &b, &a );
-            return QColor::fromRgb(
-                     std::clamp( static_cast<int>( std::round( computeDouble( static_cast<double>( r ), value ) ) ), 0, 255 ),
-                     std::clamp( static_cast<int>( std::round( computeDouble( static_cast<double>( g ), value ) ) ), 0, 255 ),
-                     std::clamp( static_cast<int>( std::round( computeDouble( static_cast<double>( b ), value ) ) ), 0, 255 ),
-                     a
-                   );
+            QColor::Spec originSpec = color.spec();
+            float r, g, b, a;
+            color.getRgbF( &r, &g, &b, &a );
+            QColor result = QColor::fromRgbF(
+                              static_cast<float>( std::clamp( computeDouble( static_cast<double>( r ), value ), 0.0, 1.0 ) ),
+                              static_cast<float>( std::clamp( computeDouble( static_cast<double>( g ), value ), 0.0, 1.0 ) ),
+                              static_cast<float>( std::clamp( computeDouble( static_cast<double>( b ), value ), 0.0, 1.0 ) ),
+                              a
+                            );
+            switch ( originSpec )
+            {
+              case QColor::Hsl:
+                return result.toHsl();
+              case QColor::Hsv:
+                return result.toHsv();
+              default:
+                return result;
+            }
           }
           default:
             return QVariant();
