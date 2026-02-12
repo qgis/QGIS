@@ -283,6 +283,21 @@ Returns a descriptive error string if the tessellation failed.
 .. versionadded:: 3.34
 %End
 
+    int uniqueVertexCount() const;
+%Docstring
+Returns unique vertex count.
+
+.. versionadded:: 4.0
+%End
+
+    void setMaterialColors( const QColor &diffuse, const QColor &ambient, const QColor &specular );
+%Docstring
+Sets the material colors for data-defined rendering. Colors are not
+applied to the already added polygons.
+
+.. versionadded:: 4.0
+%End
+
 };
 
 

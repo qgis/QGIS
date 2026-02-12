@@ -328,8 +328,12 @@ void QgsTessellator::updateStride()
     mStride += 2 * sizeof( float );
 }
 
-void QgsTessellator::addVertexPoint( const VertexPoint &vertexPoint )
+void QgsTessellator::addVertexPoint( VertexPoint &vertexPoint )
 {
+  vertexPoint.diffuseColor = mDiffuseColor;
+  vertexPoint.ambientColor = mAmbientColor;
+  vertexPoint.specularColor = mSpecularColor;
+
   if ( mVertexBuffer.contains( vertexPoint ) )
   {
     const uint32_t index = mVertexBuffer.value( vertexPoint );
@@ -718,7 +722,7 @@ void QgsTessellator::addTriangleVertices(
 
     if ( mAddTextureCoords )
     {
-      const std::pair<float, float> pr = rotateCoords( static_cast<float>( fx ), static_cast<float>( fy ), 0.0f, 0.0f, mTextureRotation );
+      const std::pair<float, float> pr = rotateCoords( static_cast<float>( pt.x() ), static_cast<float>( pt.y() ), 0.0f, 0.0f, mTextureRotation );
       vertexPoint.u = pr.first;
       vertexPoint.v = pr.second;
     }
@@ -1089,4 +1093,9 @@ QVector<float> QgsTessellator::data() const
   }
 
   return tData;
+}
+
+int QgsTessellator::uniqueVertexCount() const
+{
+  return mVertexBuffer.size();
 }

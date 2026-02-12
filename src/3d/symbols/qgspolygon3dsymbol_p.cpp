@@ -134,7 +134,6 @@ void QgsPolygon3DSymbolHandler::processPolygon( const QgsPolygon *poly, QgsFeatu
 {
   std::unique_ptr<QgsPolygon> polyClone( poly->clone() );
 
-  const uint oldVerticesCount = out.tessellator->dataVerticesCount();
   if ( mSymbol->edgesEnabled() )
   {
     // add edges before the polygon gets the Z values modified because addLineString() does its own altitude handling
@@ -222,6 +221,22 @@ void QgsPolygon3DSymbolHandler::processPolygon( const QgsPolygon *poly, QgsFeatu
   const uint startingTriangleIndex = static_cast<uint>( out.tessellator->dataVerticesCount() / 3 );
   out.triangleIndexStartingIndices.append( startingTriangleIndex );
   out.triangleIndexFids.append( fid );
+
+  if ( mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties() )
+  {
+    const QByteArray bytes = mSymbol->materialSettings()->dataDefinedVertexColorsAsByte( context.expressionContext() );
+
+    QColor diffuse;
+    QColor ambient;
+    QColor specular;
+    diffuse.setRgb( static_cast<unsigned char>( bytes[0] ), static_cast<unsigned char>( bytes[1] ), static_cast<unsigned char>( bytes[2] ) );
+    ambient.setRgb( static_cast<unsigned char>( bytes[3] ), static_cast<unsigned char>( bytes[4] ), static_cast<unsigned char>( bytes[5] ) );
+    specular.setRgb( static_cast<unsigned char>( bytes[6] ), static_cast<unsigned char>( bytes[7] ), static_cast<unsigned char>( bytes[8] ) );
+
+    out.tessellator->setMaterialColors( diffuse, ambient, specular );
+  }
+
+  const size_t oldVertexCount = out.tessellator->uniqueVertexCount();
   out.tessellator->addPolygon( *polyClone, extrusionHeight );
   if ( !out.tessellator->error().isEmpty() )
   {
@@ -229,7 +244,10 @@ void QgsPolygon3DSymbolHandler::processPolygon( const QgsPolygon *poly, QgsFeatu
   }
 
   if ( mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties() )
-    processMaterialDatadefined( out.tessellator->dataVerticesCount() - oldVerticesCount, context.expressionContext(), out );
+  {
+    const uint newUniqueVertices = out.tessellator->uniqueVertexCount() - oldVertexCount;
+    processMaterialDatadefined( newUniqueVertices, context.expressionContext(), out );
+  }
 }
 
 void QgsPolygon3DSymbolHandler::processMaterialDatadefined( uint verticesCount, const QgsExpressionContext &context, QgsPolygon3DSymbolHandler::PolygonData &out )
@@ -359,7 +377,7 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
   // extract vertex buffer data from tessellator
   const QByteArray vertexBuffer( reinterpret_cast<const char *>( polyData.tessellator->vertexBuffer().constData() ), static_cast<int>( polyData.tessellator->vertexBuffer().count() * sizeof( float ) ) );
   const QByteArray indexBuffer( reinterpret_cast<const char *>( polyData.tessellator->indexBuffer().constData() ), static_cast<int>( polyData.tessellator->indexBuffer().count() * polyData.tessellator->indexStride() ) );
-  const int vertexCount = vertexBuffer.count() / polyData.tessellator->stride();
+  const int vertexCount = polyData.tessellator->uniqueVertexCount();
   const size_t indexCount = polyData.tessellator->dataVerticesCount();
 
   const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( mSymbol->materialSettings() );
