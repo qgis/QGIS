@@ -75,6 +75,10 @@ void QgsStringStatisticalSummary::addValue( const QVariant &value )
   {
     testString( value.toString(), QgsVariantUtils::isNull( value ) );
   }
+  else
+  {
+    mCountMissing++;
+  }
 
 }
 
@@ -107,6 +111,10 @@ void QgsStringStatisticalSummary::calculateFromVariants( const QVariantList &val
     if ( variant.userType() == QMetaType::Type::QString || variant.isNull() )
     {
       testString( variant.toString(), QgsVariantUtils::isNull( variant ) );
+    }
+    else
+    {
+      mCountMissing++;
     }
   }
 

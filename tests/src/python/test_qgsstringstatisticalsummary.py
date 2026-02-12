@@ -146,7 +146,7 @@ class PyQgsStringStatisticalSummary(unittest.TestCase):
         self.assertEqual(
             set(s.distinctValues()), {"cc", "bbbb", "aaaa", "eeee", "", "9"}
         )
-        self.assertEqual(s.countMissing(), 1)
+        self.assertEqual(s.countMissing(), 4)
         self.assertEqual(s.min(), "9")
         self.assertEqual(s.max(), "eeee")
 
@@ -159,7 +159,7 @@ class PyQgsStringStatisticalSummary(unittest.TestCase):
         self.assertEqual(
             set(s.distinctValues()), {"cc", "aaaa", "bbbb", "eeee", "", "9"}
         )
-        self.assertEqual(s.countMissing(), 1)
+        self.assertEqual(s.countMissing(), 4)
         self.assertEqual(s.min(), "9")
         self.assertEqual(s.max(), "eeee")
 
