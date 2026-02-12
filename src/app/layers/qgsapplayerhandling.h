@@ -227,6 +227,13 @@ class APP_EXPORT QgsAppLayerHandling
      */
     static void loadStyleFromFile( const QList<QgsMapLayer *> &layers );
 
+    /**
+     * Save qml style for the layer
+     *
+     * \since QGIS 4.0
+     */
+    static void saveStyleFile( QgsMapLayer *layer = nullptr );
+
   private:
     template<typename T> static QList<T *> addLayerPrivate( Qgis::LayerType type, const QString &uri, const QString &baseName, const QString &providerKey, bool guiWarnings = true, bool addToLegend = true );
 

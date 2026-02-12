@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgsapplayertreeviewmenuprovider.h"
 
+#include "layers/qgsapplayerhandling.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsclipboard.h"
@@ -895,8 +896,8 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         }
 
         menuStyleManager->addSeparator()->setObjectName( u"LoadSaveStyleSeparator"_s );
-        menuStyleManager->addAction( tr( "Load Style…" ), app, [app, layer] { app->loadStyleFromFile( layer ); } );
-        menuStyleManager->addAction( tr( "Save Style…" ), app, [app, layer] { app->saveStyleFile( layer ); } );
+        menuStyleManager->addAction( tr( "Load Style…" ), app, [layer] { QgsAppLayerHandling::loadStyleFromFile( layer ); } );
+        menuStyleManager->addAction( tr( "Save Style…" ), app, [layer] { QgsAppLayerHandling::saveStyleFile( layer ); } );
 
         menu->addMenu( menuStyleManager );
       }
@@ -927,7 +928,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         {
           QgisApp *app = QgisApp::instance();
 
-          menu->addAction( tr( "Load Style…" ), app, [app, layers] { app->loadStyleFromFile( layers ); } );
+          menu->addAction( tr( "Load Style…" ), app, [layers] { QgsAppLayerHandling::loadStyleFromFile( layers ); } );
         }
       }
 

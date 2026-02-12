@@ -34,6 +34,7 @@
 #include "qgsprojecttimesettings.h"
 #include "qgsrasterlayerproperties.h"
 #include "qgsterrainprovider.h"
+#include "qgstiledscenelayerproperties.h"
 #include "qgsvectorlayerproperties.h"
 #include "qgsvectortilelayerproperties.h"
 
@@ -1937,5 +1938,49 @@ void QgsAppLayerHandling::loadStyleFromFile( const QList<QgsMapLayer *> &layers 
     } );
 
     QgisApp::instance()->visibleMessageBar()->pushItem( barItem );
+  }
+}
+
+void QgsAppLayerHandling::saveStyleFile( QgsMapLayer *layer )
+{
+  if ( !layer )
+  {
+    layer = QgisApp::instance()->activeLayer();
+  }
+
+  if ( !layer || !layer->dataProvider() )
+    return;
+
+  switch ( layer->type() )
+  {
+    case Qgis::LayerType::Vector:
+      QgsVectorLayerProperties( QgisApp::instance()->mapCanvas(), QgisApp::instance()->visibleMessageBar(), qobject_cast<QgsVectorLayer *>( layer ) ).saveStyleAs();
+      break;
+
+    case Qgis::LayerType::Raster:
+      QgsRasterLayerProperties( layer, QgisApp::instance()->mapCanvas() ).saveStyleAs();
+      break;
+
+    case Qgis::LayerType::Mesh:
+      QgsMeshLayerProperties( layer, QgisApp::instance()->mapCanvas() ).saveStyleToFile();
+      break;
+
+    case Qgis::LayerType::VectorTile:
+      QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( layer ), QgisApp::instance()->mapCanvas(), QgisApp::instance()->visibleMessageBar() ).saveStyleToFile();
+      break;
+
+    case Qgis::LayerType::PointCloud:
+      QgsPointCloudLayerProperties( qobject_cast<QgsPointCloudLayer *>( layer ), QgisApp::instance()->mapCanvas(), QgisApp::instance()->visibleMessageBar() ).saveStyleToFile();
+      break;
+
+    case Qgis::LayerType::TiledScene:
+      QgsTiledSceneLayerProperties( qobject_cast<QgsTiledSceneLayer *>( layer ), QgisApp::instance()->mapCanvas(), QgisApp::instance()->visibleMessageBar() ).saveStyleToFile();
+      break;
+
+    // Not available for these
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Group:
+      break;
   }
 }
