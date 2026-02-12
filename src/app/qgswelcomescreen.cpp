@@ -91,6 +91,27 @@ void QgsWelcomeScreenController::hideScene()
   }
 }
 
+void QgsWelcomeScreenController::forwardDrop( const QString &text, const QStringList &urls, const QVariantMap &formatsData )
+{
+  QMimeData mimeData;
+  const QStringList formats = formatsData.keys();
+  for ( const QString &format : formats )
+  {
+    mimeData.setData( format, formatsData[format].toByteArray() );
+  }
+
+  QList<QUrl> mimeDataUrls;
+  for ( const QString &url : urls )
+  {
+    mimeDataUrls << QUrl( url );
+  }
+  mimeData.setUrls( mimeDataUrls );
+  mimeData.setText( text );
+
+  QDropEvent dropEvent( QPointF( 0, 0 ), Qt::CopyAction, &mimeData, Qt::LeftButton, Qt::NoModifier );
+  QgisApp::instance()->dropEvent( &dropEvent );
+}
+
 
 QgsWelcomeScreen::QgsWelcomeScreen( bool skipVersionCheck, QWidget *parent )
   : QQuickWidget( parent )

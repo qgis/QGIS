@@ -642,6 +642,18 @@ Item {
     }
   }
   
+  DropArea {
+    anchors.fill: parent
+
+    onDropped: drop => {
+      let formatsData = {};
+      for(const format of drop.formats) {
+        formatsData[format] = drop.getDataAsArrayBuffer(format);
+      }
+      welcomeScreenController.forwardDrop(drop.text, drop.urls, formatsData);
+    }
+  }
+  
   Connections {
     target: welcomeScreenController
     
