@@ -38,6 +38,7 @@ class QgsTemplateProjectsModel : public QStandardItemModel
       CrsRole,
       PreviewImagePathRole,
       WritableRole,
+      CanvasColorRole,
     };
     Q_ENUM( CustomRole )
 

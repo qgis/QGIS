@@ -10,6 +10,7 @@ Rectangle {
   implicitHeight: 120
   radius: 6
 
+  property color backgroundColor: "#ffffff"
   property string title: ""
   property string subtitle: ""
   property string crs: ""
@@ -24,7 +25,7 @@ Rectangle {
   Rectangle {
     id: imageContainer
     anchors.fill: parent
-    color: "#ffffff"
+    color: root.imageSource != "" ? "#ffffff" : root.backgroundColor
     radius: root.radius
 
     Image {
@@ -34,6 +35,7 @@ Rectangle {
       fillMode: Image.PreserveAspectCrop
       cache: false
       opacity: 0.75
+      visible: root.imageSource != ""
     }
 
     Rectangle {
