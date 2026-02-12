@@ -3,6 +3,7 @@
     ---------------------
     begin                : December 2025
     copyright            : (C) 2025 by Loïc Bartoletti
+                           Adapted from BezierEditing plugin work by Takayuki Mizutani
     email                : loic dot bartoletti at oslandia dot com
  ***************************************************************************
  *                                                                         *
