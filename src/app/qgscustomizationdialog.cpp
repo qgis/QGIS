@@ -498,9 +498,6 @@ bool QgsCustomizationDialog::QgsCustomizationModel::dropMimeDataProcessingAlgori
   if ( processingAlgorithms.isEmpty() )
     return false;
 
-  if ( row == -1 )
-    row = 0; // if dropped directly onto group item, insert at first position
-
   beginInsertRows( parent, row, row + static_cast<int>( processingAlgorithms.count() ) - 1 );
   for ( const QgsProcessingAlgorithm *processingAlgorithm : std::as_const( processingAlgorithms ) )
   {
