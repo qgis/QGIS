@@ -104,7 +104,11 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   {
     mIsTemporal = true;
     mTemporalExtent = uri.param( u"timeDimensionExtent"_s );
-    mEnableTime = uri.param( u"enableTime"_s );
+    const QString enableTime = uri.param( u"enableTime"_s );
+    if ( !enableTime.isEmpty() )
+    {
+      mEnableTime = enableTime;
+    }
     mTimeDimensionExtent = parseTemporalExtent( mTemporalExtent );
     mTimeFormat = parseTemporalFormat( mTemporalExtent );
 
@@ -293,7 +297,7 @@ QString QgsWmsSettings::parseTemporalFormat( const QString &extent )
     item = item.split( '/' ).first().trimmed();
   }
 
-  const bool enableTime = mEnableTime.compare( u"true"_s, Qt::CaseInsensitive ) != 0;
+  const bool enableTime = mEnableTime.compare( u"true"_s, Qt::CaseInsensitive ) == 0;
 
   // Date-only formats (no 'T')
   if ( !item.contains( 'T' ) )
@@ -317,17 +321,17 @@ QString QgsWmsSettings::parseTemporalFormat( const QString &extent )
   switch ( item.size() )
   {
     case 20:
-      return hasTimezone and enableTime ? u"yyyy-MM-ddTHH:mm:ssZ"_s : u""_s;
+      return hasTimezone and enableTime ? u"yyyy-MM-ddTHH:mm:ssZ"_s : u"yyyy-MM-dd"_s;
     case 19:
-      return !hasTimezone ? u"yyyy-MM-ddTHH:mm:ss"_s : u""_s;
+      return !hasTimezone ? u"yyyy-MM-ddTHH:mm:ss"_s : u"yyyy-MM-dd"_s;
     case 17:
-      return hasTimezone and enableTime ? u"yyyy-MM-ddTHH:mmZ"_s : u""_s;
+      return hasTimezone and enableTime ? u"yyyy-MM-ddTHH:mmZ"_s : u"yyyy-MM-dd"_s;
     case 16:
-      return !hasTimezone ? u"yyyy-MM-ddTHH:mm"_s : u""_s;
+      return !hasTimezone ? u"yyyy-MM-ddTHH:mm"_s : u"yyyy-MM-dd"_s;
     case 14:
-      return hasTimezone and enableTime ? u"yyyy-MM-ddTHHZ"_s : u""_s;
+      return hasTimezone and enableTime ? u"yyyy-MM-ddTHHZ"_s : u"yyyy-MM-dd"_s;
     case 13:
-      return !hasTimezone ? u"yyyy-MM-ddTHH"_s : u""_s;
+      return !hasTimezone ? u"yyyy-MM-ddTHH"_s : u"yyyy-MM-dd"_s;
     default:
       return hasTimezone and enableTime ? u"yyyy-MM-ddTHH:mm:ssZ"_s : u"yyyy-MM-ddTHH:mm:ss"_s;
   }
