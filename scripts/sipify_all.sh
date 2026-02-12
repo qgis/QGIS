@@ -89,7 +89,7 @@ It is not aimed to be manually edited
 
       fi
       count=$((count+1))
-    done < <( ${GP}sed -n -r "s@^%Include auto_generated/(.*\.sip)@${module}/auto_generated/\1@p" python/${module}/${module}_auto.sip )
+    done < <( ${GP}sed -n -r "s@^%Include auto_generated/(.*\.sip)@${module}/auto_generated/\1@p" python/PyQt6/${module}/${module}_auto.sip )
   done
 done
 
