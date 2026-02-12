@@ -2428,28 +2428,53 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
             lyr.CreateField(field2)
             f = ogr.Feature(lyr.GetLayerDefn())
             f.SetGeometry(ogr.CreateGeometryFromWkt("POINT(1 0)"))
-            f.SetField("id2", 2)
+            f.SetField("id2", 1)
             f.SetField("name2", "name2")
             lyr.CreateFeature(f)
 
-            sql = "CREATE VIEW test_view_fields AS SELECT lyr1.GEOMETRY, lyr1.id1, lyr2.name2 FROM lyr1 JOIN lyr2 ON id1=id2"
+            sql = "CREATE VIEW test_view_fields AS SELECT lyr1.GEOMETRY AS geom, lyr1.ROWID AS gid, lyr1.id1, lyr2.name2 FROM lyr1 JOIN lyr2 ON id1=id2"
             ds.ExecuteSQL(sql)
-            sql = "INSERT into views_geometry_columns (view_name, view_geometry, view_rowid, f_table_name, f_geometry_column, read_only) VALUES ('test_view_fields', 'geom', 'rowid', 'lyr1', 'geometry', 1)"
+
+            sql = "INSERT INTO views_geometry_columns (view_name, view_geometry, view_rowid, f_table_name, f_geometry_column, read_only) VALUES ('test_view_fields', 'geom', 'rowid', 'lyr1', 'geometry', 1)"
             ds.ExecuteSQL(sql)
+
+            ds.ExecuteSQL(
+                "INSERT INTO views_geometry_columns_auth (view_name, view_geometry, hidden) VALUES ('test_view_fields', 'geom', 0)"
+            )
+            ds.ExecuteSQL(
+                "SELECT UpdateLayerStatistics('test_view_fields')", dialect="SQLITE"
+            )
+
+            # Corrupt the metadata
+            ds.ExecuteSQL(
+                "DELETE FROM views_geometry_columns_field_infos WHERE view_name = 'test_view_fields'"
+            )
+            ds.ExecuteSQL(
+                """INSERT INTO views_geometry_columns_field_infos
+            (view_name, view_geometry, ordinal, column_name, null_values,
+        integer_values,
+            double_values, text_values, blob_values, max_size, integer_min,
+        integer_max,
+            double_min, double_max) VALUES
+            ('test_view_fields', 'geom', 0, 'id1', 0, 1, 0, 0, 0, NULL, 1, 1,
+        NULL, NULL),
+            ('test_view_fields', 'geom', 1, 'name1', 0, 0, 0, 1, 0, NULL, NULL,
+        NULL, NULL, NULL),
+            ('test_view_fields', 'geom', 2, 'id2', 0, 1, 0, 0, 0, NULL, NULL,
+        NULL, NULL, NULL),
+            ('test_view_fields', 'geom', 3, 'name2', 0, 0, 0, 1, 0, NULL, NULL,
+        NULL, NULL, NULL)
+            """
+            )
 
             ds = None
 
-            md = QgsProviderRegistry.instance().providerMetadata("ogr")
-            conn = md.createConnection(tmpfile, {})
-            conn.tables("")
-            conn.table("", "views_geometry_columns")
-            rows = conn.execSql(
-                "SELECT * FROM views_geometry_columns_field_infos WHERE view_name = 'test_view_fields'"
-            ).rows()
-
             # Create a vector layer on the view and check that the fields are correctly retrieved
+            uri = QgsDataSourceUri()
+            uri.setDatabase(tmpfile)
+            uri.setDataSource("", "test_view_fields", "geom", "", "gid")
             vl = QgsVectorLayer(
-                f"dbname='{tmpfile}' table='test_view_fields' (geom) sql=",
+                uri.uri(),
                 "test_view_fields",
                 "spatialite",
             )
