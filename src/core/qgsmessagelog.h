@@ -59,22 +59,12 @@ class CORE_EXPORT QgsMessageLog : public QObject
      * If \a notifyUser is TRUE, then the message should be brought to the user's attention by various UI hints.
      * If it is FALSE, the message should appear in logs silently. Note that log viewer implementations may
      * only respect notification hints for certain message levels.
+     *
+     * The \a format parameter specifies the message format (since QGIS 4.0).
      */
     static void logMessage( const QString &message, const QString &tag = QString(), Qgis::MessageLevel level = Qgis::MessageLevel::Warning, bool notifyUser = true,
-                            const char *file = __builtin_FILE(), const char *function = __builtin_FUNCTION(), int line = __builtin_LINE() );
-    /**
-     * Adds a \a message to the log instance (and creates it if necessary).
-     *
-     * If \a notifyUser is TRUE, then the message should be brought to the user's attention by various UI hints.
-     * If it is FALSE, the message should appear in logs silently. Note that log viewer implementations may
-     * only respect notification hints for certain message levels.
-     *
-     * The \a format parameter specifies the message format.
-     *
-     * \since QGIS 4.0
-     */
-    static void logMessageWithFormat( const QString &message, const QString &tag = QString(), Qgis::MessageLevel level = Qgis::MessageLevel::Warning, Qgis::StringFormat format = Qgis::StringFormat::PlainText,
-                                      bool notifyUser = true, const char *file SIP_PYARGREMOVE = __builtin_FILE(), const char *function SIP_PYARGREMOVE = __builtin_FUNCTION(), int line SIP_PYARGREMOVE = __builtin_LINE() );
+                            const char *file = __builtin_FILE(), const char *function = __builtin_FUNCTION(), int line = __builtin_LINE(), Qgis::StringFormat format = Qgis::StringFormat::PlainText );
+
   signals:
 
     /**
