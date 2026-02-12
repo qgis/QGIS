@@ -1048,6 +1048,7 @@ def _import(name, globals={}, locals={}, fromlist=[], level=None):
     if level is None:
         level = 0
 
+    qt_version = int(QT_VERSION_STR.split(".")[0])
     if qt_version == 6 and "PyQt5" in name:
         msg = (
             "PyQt5 classes cannot be imported in a QGIS build based on Qt6.\n"
