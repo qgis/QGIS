@@ -382,6 +382,18 @@ repeated (degree+1)] where s = nAnchors - 1 (number of segments)
 .. versionadded:: 4.0
 %End
 
+    bool isAnchorVertex( int localIndex ) const /HoldGIL/;
+%Docstring
+Returns ``True`` if the control point at localIndex is an anchor vertex
+in a poly-Bézier curve. Anchor vertices are at positions 0, degree,
+2*degree, etc.
+
+:param localIndex: the control point index to check
+
+:return: ``True`` if this is an anchor vertex, ``False`` otherwise
+
+.. versionadded:: 4.0
+%End
 
 
 

@@ -353,6 +353,15 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
      */
     static QVector<double> generateKnotsForBezierConversion( int nAnchors, int degree = 3 );
 
+    /**
+     * Returns TRUE if the control point at localIndex is an anchor vertex
+     * in a poly-Bézier curve. Anchor vertices are at positions 0, degree, 2*degree, etc.
+     *
+     * \param localIndex the control point index to check
+     * \returns TRUE if this is an anchor vertex, FALSE otherwise
+     * \since QGIS 4.0
+     */
+    bool isAnchorVertex( int localIndex ) const SIP_HOLDGIL;
 
     /**
      * Cast the \a geom to a QgsNurbsCurve.

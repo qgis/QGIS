@@ -1787,3 +1787,11 @@ bool QgsNurbsCurve::setWeight( int index, double weight )
   clearCache();
   return true;
 }
+
+bool QgsNurbsCurve::isAnchorVertex( int localIndex ) const
+{
+  if ( !isPolyBezier() || localIndex < 0 || localIndex >= mControlPoints.size() )
+    return false;
+
+  return ( localIndex % mDegree ) == 0;
+}
