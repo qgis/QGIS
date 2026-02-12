@@ -222,20 +222,6 @@ void QgsPolygon3DSymbolHandler::processPolygon( const QgsPolygon *poly, QgsFeatu
   out.triangleIndexStartingIndices.append( startingTriangleIndex );
   out.triangleIndexFids.append( fid );
 
-  if ( mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties() )
-  {
-    const QByteArray bytes = mSymbol->materialSettings()->dataDefinedVertexColorsAsByte( context.expressionContext() );
-
-    QColor diffuse;
-    QColor ambient;
-    QColor specular;
-    diffuse.setRgb( static_cast<unsigned char>( bytes[0] ), static_cast<unsigned char>( bytes[1] ), static_cast<unsigned char>( bytes[2] ) );
-    ambient.setRgb( static_cast<unsigned char>( bytes[3] ), static_cast<unsigned char>( bytes[4] ), static_cast<unsigned char>( bytes[5] ) );
-    specular.setRgb( static_cast<unsigned char>( bytes[6] ), static_cast<unsigned char>( bytes[7] ), static_cast<unsigned char>( bytes[8] ) );
-
-    out.tessellator->setMaterialColors( diffuse, ambient, specular );
-  }
-
   const size_t oldVertexCount = out.tessellator->uniqueVertexCount();
   out.tessellator->addPolygon( *polyClone, extrusionHeight );
   if ( !out.tessellator->error().isEmpty() )
