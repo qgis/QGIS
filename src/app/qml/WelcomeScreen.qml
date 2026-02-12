@@ -57,9 +57,10 @@ Item {
             source: "images/qgis.svg"
             height: welcomeScreen.narrowLayout ? 35 : 50
             width: 160
-            sourceSize: Qt.size(50, 160)
             fillMode: Image.PreserveAspectFit
             horizontalAlignment: Image.AlignLeft
+            smooth: true
+            mipmap: true
           }
 
           Text {
