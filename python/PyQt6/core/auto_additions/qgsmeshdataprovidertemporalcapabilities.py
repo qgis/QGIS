@@ -1,0 +1,7 @@
+# The following has been generated automatically from src/core/mesh/qgsmeshdataprovidertemporalcapabilities.h
+QgsMeshDataProviderTemporalCapabilities.FindClosestDatasetBeforeStartRangeTime = QgsMeshDataProviderTemporalCapabilities.MatchingTemporalDatasetMethod.FindClosestDatasetBeforeStartRangeTime
+QgsMeshDataProviderTemporalCapabilities.FindClosestDatasetFromStartRangeTime = QgsMeshDataProviderTemporalCapabilities.MatchingTemporalDatasetMethod.FindClosestDatasetFromStartRangeTime
+try:
+    QgsMeshDataProviderTemporalCapabilities.__group__ = ['mesh']
+except (NameError, AttributeError):
+    pass

@@ -1,0 +1,18 @@
+# The following has been generated automatically from src/gui/qgsmanageconnectionsdialog.h
+QgsManageConnectionsDialog.Export = QgsManageConnectionsDialog.Mode.Export
+QgsManageConnectionsDialog.Import = QgsManageConnectionsDialog.Mode.Import
+QgsManageConnectionsDialog.WMS = QgsManageConnectionsDialog.Type.WMS
+QgsManageConnectionsDialog.PostGIS = QgsManageConnectionsDialog.Type.PostGIS
+QgsManageConnectionsDialog.WFS = QgsManageConnectionsDialog.Type.WFS
+QgsManageConnectionsDialog.MSSQL = QgsManageConnectionsDialog.Type.MSSQL
+QgsManageConnectionsDialog.WCS = QgsManageConnectionsDialog.Type.WCS
+QgsManageConnectionsDialog.Oracle = QgsManageConnectionsDialog.Type.Oracle
+QgsManageConnectionsDialog.HANA = QgsManageConnectionsDialog.Type.HANA
+QgsManageConnectionsDialog.XyzTiles = QgsManageConnectionsDialog.Type.XyzTiles
+QgsManageConnectionsDialog.ArcgisMapServer = QgsManageConnectionsDialog.Type.ArcgisMapServer
+QgsManageConnectionsDialog.ArcgisFeatureServer = QgsManageConnectionsDialog.Type.ArcgisFeatureServer
+QgsManageConnectionsDialog.VectorTile = QgsManageConnectionsDialog.Type.VectorTile
+QgsManageConnectionsDialog.TiledScene = QgsManageConnectionsDialog.Type.TiledScene
+QgsManageConnectionsDialog.SensorThings = QgsManageConnectionsDialog.Type.SensorThings
+QgsManageConnectionsDialog.CloudStorage = QgsManageConnectionsDialog.Type.CloudStorage
+QgsManageConnectionsDialog.STAC = QgsManageConnectionsDialog.Type.STAC

@@ -1,0 +1,17 @@
+# The following has been generated automatically from src/core/textrenderer/qgstextbackgroundsettings.h
+QgsTextBackgroundSettings.ShapeRectangle = QgsTextBackgroundSettings.ShapeType.ShapeRectangle
+QgsTextBackgroundSettings.ShapeSquare = QgsTextBackgroundSettings.ShapeType.ShapeSquare
+QgsTextBackgroundSettings.ShapeEllipse = QgsTextBackgroundSettings.ShapeType.ShapeEllipse
+QgsTextBackgroundSettings.ShapeCircle = QgsTextBackgroundSettings.ShapeType.ShapeCircle
+QgsTextBackgroundSettings.ShapeSVG = QgsTextBackgroundSettings.ShapeType.ShapeSVG
+QgsTextBackgroundSettings.ShapeMarkerSymbol = QgsTextBackgroundSettings.ShapeType.ShapeMarkerSymbol
+QgsTextBackgroundSettings.SizeBuffer = QgsTextBackgroundSettings.SizeType.SizeBuffer
+QgsTextBackgroundSettings.SizeFixed = QgsTextBackgroundSettings.SizeType.SizeFixed
+QgsTextBackgroundSettings.SizePercent = QgsTextBackgroundSettings.SizeType.SizePercent
+QgsTextBackgroundSettings.RotationSync = QgsTextBackgroundSettings.RotationType.RotationSync
+QgsTextBackgroundSettings.RotationOffset = QgsTextBackgroundSettings.RotationType.RotationOffset
+QgsTextBackgroundSettings.RotationFixed = QgsTextBackgroundSettings.RotationType.RotationFixed
+try:
+    QgsTextBackgroundSettings.__group__ = ['textrenderer']
+except (NameError, AttributeError):
+    pass
