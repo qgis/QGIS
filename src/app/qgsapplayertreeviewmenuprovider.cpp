@@ -661,7 +661,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
               {
                 // TODO QGIS 5.0 this can be removed as Load Style…/Save Style… exist in Styles submenu
                 QAction *actionSaveStyle = new QAction( tr( "Save as &QGIS Layer Style File…" ), menuExportVector );
-                connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [] { QgisApp::instance()->saveStyleFile(); } );
+                connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [] { QgsAppLayerHandling::saveStyleFile(); } );
                 menuExportVector->addAction( actionSaveStyle );
               }
               menu->addMenu( menuExportVector );
@@ -686,7 +686,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
             QAction *actionSaveStyle = new QAction( tr( "Save as &QGIS Layer Style File…" ), menuExportRaster );
             connect( actionSaveAsDefinitionLayer, &QAction::triggered, QgisApp::instance(), &QgisApp::saveAsLayerDefinition );
             menuExportRaster->addAction( actionSaveAsDefinitionLayer );
-            connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [] { QgisApp::instance()->saveStyleFile(); } );
+            connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [] { QgsAppLayerHandling::saveStyleFile(); } );
             menuExportRaster->addAction( actionSaveStyle );
             menu->addMenu( menuExportRaster );
           }
