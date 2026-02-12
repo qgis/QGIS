@@ -26,7 +26,6 @@
 #include <QString>
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 
 /**
@@ -36,7 +35,7 @@
  *
  * \since QGIS 3.32
  */
-class QgsPointCloudSubIndex
+class CORE_EXPORT QgsPointCloudSubIndex
 {
   public:
     //! Constructor

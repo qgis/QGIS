@@ -295,6 +295,15 @@ otherwise the index is fetched from the data provider.
 .. versionadded:: 3.42
 %End
 
+    QVector<QgsPointCloudSubIndex> subIndexes() const;
+%Docstring
+Returns point cloud indexes associated with the layer (only if the layer
+has a virtual point cloud data provider). If the layer is editable,
+:py:class:`QgsPointCloudEditingIndexes` are returned, otherwise the
+indexes are fetched from the data provider.
+
+.. versionadded:: 4.0
+%End
 
     bool isVpc() const;
 %Docstring

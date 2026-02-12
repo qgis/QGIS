@@ -1,0 +1,82 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudsubindex.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+class QgsPointCloudSubIndex
+{
+%Docstring(signature="appended")
+Represents an individual index and metadata for the virtual point cloud
+data provider.
+
+The index is initially ``None`` until the virtual point cloud data
+provider explicitly loads the uri.
+
+.. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudsubindex.h"
+%End
+  public:
+    QgsPointCloudSubIndex( const QString &uri, const QgsGeometry &geometry, const QgsRectangle &extent, const QgsDoubleRange &zRange, qint64 count );
+%Docstring
+Constructor
+%End
+
+    QgsPointCloudIndex index() const;
+%Docstring
+Returns the point cloud index. May be ``None`` if not loaded.
+%End
+
+    void setIndex( QgsPointCloudIndex index );
+%Docstring
+Sets the point cloud index to ``index``.
+%End
+
+    QString uri() const;
+%Docstring
+Returns the uri for this sub index
+%End
+
+    QgsRectangle extent() const;
+%Docstring
+Returns the extent for this sub index in the index's crs coordinates.
+%End
+
+    QgsDoubleRange zRange() const;
+%Docstring
+Returns the elevation range for this sub index hoping it's in meters.
+%End
+
+    QgsGeometry polygonBounds() const;
+%Docstring
+Returns the bounds of the sub index in the index's crs coordinates as a
+multi polygon geometry. This can be the same as the extent or a more
+detailed geometry like a convex hull if available.
+%End
+
+    qint64 pointCount() const;
+%Docstring
+The number of points contained in the index.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudsubindex.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

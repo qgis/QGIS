@@ -133,7 +133,33 @@ Returns the point cloud index associated with the provider.
 Can be None (e.g. the index is being created)
 %End
 
+    virtual QVector<QgsPointCloudSubIndex> subIndexes();
+%Docstring
+Returns a list of sub indexes available if the provider supports
+multiple indexes, empty list otherwise.
 
+The sub indexes contain a pointer to the individual indexes which may be
+None if not yet loaded.
+
+.. note::
+
+   Not available in Python bindings
+
+.. versionadded:: 3.32
+%End
+
+    virtual void loadSubIndex( int n );
+%Docstring
+Triggers loading of the point cloud index for the ``n`` th sub index
+
+Only applies to providers that support multiple indexes
+
+.. note::
+
+   Not available in Python bindings
+
+.. versionadded:: 3.32
+%End
 
     bool hasValidIndex() const;
 %Docstring

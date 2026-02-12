@@ -1,0 +1,146 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/vpc/qgsvirtualpointcloudprovider.h                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsVirtualPointCloudProvider: QgsPointCloudDataProvider
+{
+%Docstring(signature="appended")
+Provides access to virtual point cloud (VPC) data sources.
+
+This provider handles virtual point cloud files referencing multiple
+input point clouds and exposes them as a single point cloud layer.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsvirtualpointcloudprovider.h"
+%End
+  public:
+    QgsVirtualPointCloudProvider( const QString &uri,
+                                  const QgsDataProvider::ProviderOptions &providerOptions,
+                                  Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
+
+    ~QgsVirtualPointCloudProvider();
+
+    virtual Qgis::DataProviderFlags flags() const;
+
+    virtual QgsPointCloudDataProvider::Capabilities capabilities() const;
+
+    virtual QgsCoordinateReferenceSystem crs() const;
+
+
+    virtual QgsRectangle extent() const;
+
+    virtual QgsPointCloudAttributeCollection attributes() const;
+
+    virtual bool isValid() const;
+
+    virtual QString name() const;
+
+    virtual QString description() const;
+
+    virtual QgsPointCloudIndex index() const;
+
+    virtual qint64 pointCount() const;
+
+    virtual QVariantMap originalMetadata() const;
+
+    virtual void loadIndex( );
+
+    virtual void generateIndex( );
+
+    virtual PointCloudIndexGenerationState indexingState( );
+    virtual QgsGeometry polygonBounds() const;
+
+    virtual QVector<QgsPointCloudSubIndex> subIndexes();
+    virtual void loadSubIndex( int i );
+
+    virtual bool setSubsetString( const QString &subset, bool updateFeatureCount = false );
+
+    virtual QgsPointCloudRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const /Factory/;
+
+
+    QgsPointCloudIndex overview() const;
+%Docstring
+Returns pointer to the overview index. May be ``None`` if it doesn't
+exist.
+
+.. versionadded:: 3.42
+%End
+
+    double averageSubIndexWidth() const;
+%Docstring
+Returns the calculated average width of point clouds.
+
+.. note::
+
+   We use this value to calculate when to switch between overview and point clouds
+
+.. versionadded:: 3.42
+%End
+
+    double averageSubIndexHeight() const;
+%Docstring
+Returns the calculated average height of point clouds.
+
+.. note::
+
+   We use this value to calculate when to switch between overview and point clouds
+
+.. versionadded:: 3.42
+%End
+
+  signals:
+    void subIndexLoaded( int i );
+
+};
+
+class QgsVirtualPointCloudProviderMetadata : QgsProviderMetadata
+{
+%TypeHeaderCode
+#include "qgsvirtualpointcloudprovider.h"
+%End
+  public:
+    QgsVirtualPointCloudProviderMetadata();
+    virtual QIcon icon() const;
+
+    virtual QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const;
+
+    virtual QgsVirtualPointCloudProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
+
+    virtual QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = 0 ) const;
+
+    virtual int priorityForUri( const QString &uri ) const;
+
+    virtual QList< Qgis::LayerType > validLayerTypesForUri( const QString &uri ) const;
+
+    virtual QString encodeUri( const QVariantMap &parts ) const;
+
+    virtual QVariantMap decodeUri( const QString &uri ) const;
+
+    virtual QString filters( Qgis::FileFilterType type );
+
+    virtual ProviderCapabilities providerCapabilities() const;
+
+    virtual QList< Qgis::LayerType > supportedLayerTypes() const;
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/vpc/qgsvirtualpointcloudprovider.h                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
