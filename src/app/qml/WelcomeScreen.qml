@@ -653,6 +653,7 @@ Item {
       color: mainCard.color
 
       onInstallClicked: {
+        visible = false;
         welcomeScreenController.showPluginManager();
       }
     }
