@@ -538,7 +538,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Checks whether it's possible to commit changes to a \a layer.
-     * 
+     *
      * Returns TRUE if changes can be committed, or FALSE if the committing has been blocked (e.g. via a registered QgsLayerChangesCommitBlockerInterface object). If FALSE is returned then the changes should NOT be committed.
      */
     bool tryCommitChanges( QgsMapLayer *layer );
