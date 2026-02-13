@@ -140,6 +140,14 @@ void QgsFlatTerrainGenerator::setExtent( const QgsRectangle &extent )
   updateTilingScheme();
 }
 
+float QgsFlatTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderContext &context ) const
+{
+  Q_UNUSED( x )
+  Q_UNUSED( y )
+  Q_UNUSED( context )
+  return 0;
+}
+
 void QgsFlatTerrainGenerator::updateTilingScheme()
 {
   // the real extent will be a square where the given extent fully fits

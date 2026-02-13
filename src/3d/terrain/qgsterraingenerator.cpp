@@ -15,8 +15,6 @@
 
 #include "qgsterraingenerator.h"
 
-#include <limits>
-
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgsabstractterrainsettings.h"
@@ -50,14 +48,6 @@ void QgsTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) const
   // TODO: makes sense to have kind of default implementation?
   hMin = 0;
   hMax = 8848;
-}
-
-float QgsTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderContext &context ) const
-{
-  Q_UNUSED( x )
-  Q_UNUSED( y )
-  Q_UNUSED( context )
-  return std::numeric_limits<float>::quiet_NaN();
 }
 
 QString QgsTerrainGenerator::typeToString( QgsTerrainGenerator::Type type )
