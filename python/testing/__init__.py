@@ -29,7 +29,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
-from typing import Optional, Tuple, Union
+from typing import Optional, Union
 from warnings import warn
 
 from qgis.core import (

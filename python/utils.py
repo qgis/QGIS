@@ -33,7 +33,7 @@ import sys
 import time
 import traceback
 import warnings
-from typing import Dict, List, Optional
+from typing import Optional
 
 from qgis.core import Qgis, QgsMessageLog, QgsMessageOutput, qgsfunction
 from qgis.gui import QgsMessageBar

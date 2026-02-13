@@ -20,8 +20,6 @@ __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
 import os
-import re
-from typing import Dict
 
 from qgis.core import (
     QgsApplication,
@@ -34,7 +32,7 @@ from qgis.core import (
     QgsRasterFileWriter,
     QgsVectorFileWriter,
 )
-from qgis.PyQt.QtCore import QCoreApplication, QUrl
+from qgis.PyQt.QtCore import QCoreApplication
 
 from processing.algs.gdal.GdalAlgorithmDialog import GdalAlgorithmDialog
 from processing.algs.gdal.GdalUtils import GdalConnectionDetails, GdalUtils

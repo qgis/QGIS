@@ -23,7 +23,7 @@ import json
 import os
 import warnings
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 from qgis.core import (
     Qgis,
@@ -82,7 +82,6 @@ from qgis.PyQt.QtGui import (
 )
 from qgis.PyQt.QtWidgets import (
     QAction,
-    QComboBox,
     QFileDialog,
     QHeaderView,
     QMenu,

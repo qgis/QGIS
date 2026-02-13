@@ -26,7 +26,7 @@ import sys
 import uuid
 import warnings
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Optional
 
 from qgis.core import (
     Qgis,
