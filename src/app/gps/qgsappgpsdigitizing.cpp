@@ -336,7 +336,6 @@ void QgsAppGpsDigitizing::createFeature()
           if ( QgsProject::instance()->gpsSettings()->automaticallyCommitFeatures() )
           {
             if (!QgisApp::instance()->tryCommitChanges(vlayer)) {
-              vlayer->startEditing();
               break;
             }
 
