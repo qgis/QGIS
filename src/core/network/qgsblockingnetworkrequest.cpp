@@ -122,8 +122,6 @@ void QgsBlockingNetworkRequest::sendRequestToNetworkAccessManager( const QNetwor
       break;
 
     case Qgis::HttpMethod::Post:
-      // clangtidy false positive
-      // NOLINTBEGIN(bugprone-branch-clone)
       if ( std::holds_alternative<QHttpMultiPart *>( mPayloadDataVariant ) )
       {
         mReply = QgsNetworkAccessManager::instance()->post( request, std::get<QHttpMultiPart *>( mPayloadDataVariant ) );
@@ -137,7 +135,6 @@ void QgsBlockingNetworkRequest::sendRequestToNetworkAccessManager( const QNetwor
         // should not happen, but might if someone extends the variant type without updating this code
         QgsDebugError( QString( "Not implemented std::variant type" ) );
       }
-      // NOLINTEND(bugprone-branch-clone)
       break;
 
     case Qgis::HttpMethod::Head:
