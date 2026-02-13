@@ -2050,7 +2050,7 @@ void QgsVertexTool::stopDragging()
 
 QgsPoint QgsVertexTool::matchToLayerPoint( const QgsVectorLayer *destLayer, const QgsPointXY &mapPoint, const QgsPointLocator::Match *match )
 {
-  if ( match->layer() )
+  if ( match && match->layer() )
   {
     switch ( match->type() )
     {
