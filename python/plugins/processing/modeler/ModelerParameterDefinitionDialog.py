@@ -21,41 +21,40 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 import math
 
-from qgis.PyQt.QtCore import Qt, QByteArray, QCoreApplication
-from qgis.PyQt.QtWidgets import (
-    QDialog,
-    QVBoxLayout,
-    QLabel,
-    QLineEdit,
-    QComboBox,
-    QCheckBox,
-    QDialogButtonBox,
-    QMessageBox,
-    QTabWidget,
-    QWidget,
-    QTextEdit,
-    QHBoxLayout,
-)
-from qgis.PyQt.QtGui import QColor
-
-from qgis.gui import (
-    QgsProcessingLayerOutputDestinationWidget,
-    QgsColorButton,
-    QgsProcessingModelConfigWidget,
-    QgsGui,
-)
 from qgis.core import (
     QgsApplication,
-    QgsSettings,
     QgsProcessing,
-    QgsProcessingParameterDefinition,
     QgsProcessingDestinationParameter,
+    QgsProcessingModelAlgorithm,
+    QgsProcessingParameterDefinition,
     QgsProcessingParameterFeatureSink,
     QgsProcessingParameterFileDestination,
     QgsProcessingParameterFolderDestination,
     QgsProcessingParameterRasterDestination,
     QgsProcessingParameterVectorDestination,
-    QgsProcessingModelAlgorithm,
+    QgsSettings,
+)
+from qgis.gui import (
+    QgsColorButton,
+    QgsGui,
+    QgsProcessingLayerOutputDestinationWidget,
+    QgsProcessingModelConfigWidget,
+)
+from qgis.PyQt.QtCore import QByteArray, QCoreApplication, Qt
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtWidgets import (
+    QCheckBox,
+    QComboBox,
+    QDialog,
+    QDialogButtonBox,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QMessageBox,
+    QTabWidget,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
 )
 
 from processing.core import parameters
@@ -63,7 +62,6 @@ from processing.modeler.exceptions import UndefinedParameterException
 
 
 class ModelerParameterDefinitionWidget(QgsProcessingModelConfigWidget):
-
     def __init__(self, alg, paramType=None, param=None):
         self.alg = alg
         self.paramType = paramType
@@ -283,7 +281,6 @@ class ModelerParameterDefinitionWidget(QgsProcessingModelConfigWidget):
 
 
 class ModelerParameterDefinitionDialog(QDialog):
-
     @staticmethod
     def use_legacy_dialog(param=None, paramType=None):
         if isinstance(param, QgsProcessingDestinationParameter):
