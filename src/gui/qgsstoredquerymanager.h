@@ -20,6 +20,10 @@
 #include "qgis_gui.h"
 #include "qgssettingstree.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup gui
  * \brief A manager for stored SQL queries.
@@ -36,7 +40,7 @@ class GUI_EXPORT QgsStoredQueryManager : public QObject
   public:
 #ifndef SIP_RUN
     ///@cond PRIVATE
-    static inline QgsSettingsTreeNamedListNode *sTreeStoredQueries = QgsSettingsTree::sTreeDatabase->createNamedListNode( QStringLiteral( "stored-queries" ) );
+    static inline QgsSettingsTreeNamedListNode *sTreeStoredQueries = QgsSettingsTree::sTreeDatabase->createNamedListNode( u"stored-queries"_s );
     static const QgsSettingsEntryString *settingQueryName;
     static const QgsSettingsEntryString *settingQueryDefinition;
     ///@endcond
@@ -91,7 +95,6 @@ class GUI_EXPORT QgsStoredQueryManager : public QObject
     class QueryDetails
     {
       public:
-
         /**
          * Name of the query.
          */

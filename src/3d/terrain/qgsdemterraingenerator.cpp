@@ -116,3 +116,8 @@ void QgsDemTerrainGenerator::updateGenerator()
     mIsValid = false;
   }
 }
+
+QgsTerrainGenerator::Capabilities QgsDemTerrainGenerator::capabilities() const
+{
+  return QgsTerrainGenerator::Capability::SupportsTileResolution;
+}

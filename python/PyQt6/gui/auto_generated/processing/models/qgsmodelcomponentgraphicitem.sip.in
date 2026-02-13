@@ -231,7 +231,7 @@ The default implementation does nothing.
 Emitted by the item to request a repaint of the parent model scene.
 %End
 
-    void aboutToChange( const QString &text, int id = 0 );
+    void aboutToChange( const QString &text, const QString &id = QString() );
 %Docstring
 Emitted when the definition of the associated component is about to be
 changed by the item.
@@ -273,7 +273,6 @@ The default implementation does nothing.
 %End
 
   protected:
-
     QString truncatedTextForItem( const QString &text ) const;
 %Docstring
 Truncates a ``text`` string so that it fits nicely within the item's
@@ -326,6 +325,7 @@ comment
 Updates the item's button positions, based on the current item rect.
 %End
 
+
 };
 QFlags<QgsModelComponentGraphicItem::Flag> operator|(QgsModelComponentGraphicItem::Flag f1, QFlags<QgsModelComponentGraphicItem::Flag> f2);
 
@@ -347,7 +347,6 @@ designer.
 #include "qgsmodelcomponentgraphicitem.h"
 %End
   public:
-
     QgsModelParameterGraphicItem( QgsProcessingModelParameter *parameter /Transfer/, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent /TransferThis/ );
 %Docstring
 Constructor for QgsModelParameterGraphicItem for the specified
@@ -363,6 +362,9 @@ Ownership of ``parameter`` is transferred to the item.
     virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
 
     virtual bool canDeleteComponent();
+
+
+    virtual QColor linkColor( Qt::Edge edge, int index ) const;
 
 
   protected:
@@ -405,7 +407,6 @@ A graphic item representing a child algorithm in the model designer.
 #include "qgsmodelcomponentgraphicitem.h"
 %End
   public:
-
     QgsModelChildAlgorithmGraphicItem( QgsProcessingModelChildAlgorithm *child /Transfer/, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent /TransferThis/ );
 %Docstring
 Constructor for QgsModelChildAlgorithmGraphicItem for the specified
@@ -426,6 +427,14 @@ Ownership of ``child`` is transferred to the item.
 %Docstring
 Sets the ``results`` obtained for this child algorithm for the last
 model execution through the dialog.
+%End
+
+    QgsProcessingModelChildAlgorithmResult results();
+%Docstring
+Returns the ``results`` for this child algorithm for the last model
+execution through the dialog.
+
+.. versionadded:: 4.0
 %End
 
   signals:
@@ -503,7 +512,6 @@ A graphic item representing a model output in the model designer.
 #include "qgsmodelcomponentgraphicitem.h"
 %End
   public:
-
     QgsModelOutputGraphicItem( QgsProcessingModelOutput *output /Transfer/, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent /TransferThis/ );
 %Docstring
 Constructor for QgsModelOutputGraphicItem for the specified ``output``,
@@ -555,7 +563,6 @@ A graphic item representing a model comment in the model designer.
 #include "qgsmodelcomponentgraphicitem.h"
 %End
   public:
-
     QgsModelCommentGraphicItem( QgsProcessingModelComment *comment /Transfer/, QgsModelComponentGraphicItem *parentItem, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent /TransferThis/ );
 %Docstring
 Constructor for QgsModelCommentGraphicItem for the specified
@@ -616,7 +623,6 @@ A graphic item representing a group box in the model designer.
 #include "qgsmodelcomponentgraphicitem.h"
 %End
   public:
-
     QgsModelGroupBoxGraphicItem( QgsProcessingModelGroupBox *box /Transfer/, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent /TransferThis/ );
 %Docstring
 Constructor for QgsModelGroupBoxGraphicItem for the specified group
@@ -633,6 +639,13 @@ Ownership of ``output`` is transferred to the item.
 
     virtual bool canDeleteComponent();
 
+
+    void applyEdit( const QgsProcessingModelGroupBox &groupBox );
+%Docstring
+Applies edits to the item, using an updated ``groupBox`` definition.
+
+.. versionadded:: 4.0
+%End
 
   protected:
     virtual QColor fillColor( State state ) const;

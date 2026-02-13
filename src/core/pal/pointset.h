@@ -43,8 +43,6 @@
 #include "qgsgeos.h"
 #include "qgsrectangle.h"
 
-#include <QLinkedList>
-
 namespace pal
 {
 
@@ -126,7 +124,7 @@ namespace pal
        *
        * \warning this code is completely unreadable and cannot be understood by mortals
        */
-      static QLinkedList<PointSet *> splitPolygons( PointSet *inputShape, double labelWidth, double labelHeight );
+      static QVector<PointSet *> splitPolygons( PointSet *inputShape, double labelWidth, double labelHeight );
 
       /**
        * Extends linestrings by the specified amount at the start and end of the line,

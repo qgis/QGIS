@@ -22,8 +22,11 @@
 #include "qgssymbollayerutils.h"
 
 #include <QPainter>
+#include <QString>
 
-const QString QgsStackedBarDiagram::DIAGRAM_NAME_STACKED_BAR = QStringLiteral( "Stacked" );
+using namespace Qt::StringLiterals;
+
+const QString QgsStackedBarDiagram::DIAGRAM_NAME_STACKED_BAR = u"Stacked"_s;
 
 QgsStackedBarDiagram::QgsStackedBarDiagram()
 {
@@ -68,7 +71,7 @@ QSizeF QgsStackedBarDiagram::diagramSize( const QgsFeature &feature, const QgsRe
 
   // eh - this method returns size in unknown units ...! We'll have to fake it and use a rough estimation of
   // a conversion factor to painter units...
-  // TODO QGIS 4.0 -- these methods should all use painter units, dependent on the render context scaling...
+  // TODO QGIS 5.0 -- these methods should all use painter units, dependent on the render context scaling...
   double painterUnitConversionScale = c.convertToPainterUnits( 1, s.sizeType );
 
   const double spacing = c.convertToPainterUnits( s.spacing(), s.spacingUnit(), s.spacingMapUnitScale() ) / painterUnitConversionScale;
@@ -135,7 +138,7 @@ QSizeF QgsStackedBarDiagram::diagramSize( const QgsAttributes &attributes, const
 
   // eh - this method returns size in unknown units ...! We'll have to fake it and use a rough estimation of
   // a conversion factor to painter units...
-  // TODO QGIS 4.0 -- these methods should all use painter units, dependent on the render context scaling...
+  // TODO QGIS 5.0 -- these methods should all use painter units, dependent on the render context scaling...
   double painterUnitConversionScale = c.convertToPainterUnits( 1, s.sizeType );
 
   const double spacing = c.convertToPainterUnits( s.spacing(), s.spacingUnit(), s.spacingMapUnitScale() ) / painterUnitConversionScale;

@@ -29,8 +29,11 @@
 #include <QMetaType>
 #include <QRecursiveMutex>
 #include <QSet>
+#include <QString>
 #include <QStringList>
 #include <QVariant>
+
+using namespace Qt::StringLiterals;
 
 class QgsFeature;
 class QgsGeometry;
@@ -798,7 +801,7 @@ class CORE_EXPORT QgsExpression
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsExpression: '%1'>" ).arg( sipCpp->expression() );
+    QString str = u"<QgsExpression: '%1'>"_s.arg( sipCpp->expression() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

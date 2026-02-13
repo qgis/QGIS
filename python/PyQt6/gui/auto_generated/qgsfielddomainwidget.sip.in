@@ -24,7 +24,6 @@ A widget for configuration of the properties of a
 #include "qgsfielddomainwidget.h"
 %End
   public:
-
     QgsFieldDomainWidget( Qgis::FieldDomainType type, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFieldDomainWidget for the given domain ``type``, with
@@ -62,6 +61,13 @@ Sets if name of the field domain is editable.
 .. versionadded:: 4.0
 %End
 
+    void setPoliciesEditable( bool editable );
+%Docstring
+Sets if merge and split policies are editable.
+
+.. versionadded:: 4.0
+%End
+
   signals:
 
     void validityChanged( bool isValid );
@@ -88,7 +94,6 @@ A dialog for configuration of the properties of a
 #include "qgsfielddomainwidget.h"
 %End
   public:
-
     explicit QgsFieldDomainDialog( Qgis::FieldDomainType type, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
 %Docstring
 Constructor for QgsFieldDomainDialog for the given domain ``type``, with
@@ -114,6 +119,13 @@ Caller takes ownership of the returned object.
     void setNameEditable( bool editable );
 %Docstring
 Sets if name of the field domain is editable
+
+.. versionadded:: 4.0
+%End
+
+    void setPoliciesEditable( bool editable );
+%Docstring
+Sets if merge and split policies are editable.
 
 .. versionadded:: 4.0
 %End

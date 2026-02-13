@@ -39,23 +39,21 @@
 #include "qgslabelingenginerule.h"
 #include "qgsmessagelog.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 using namespace pal;
 
 LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, FeaturePart *feature, LabelDirectionToLine directionToLine, Qgis::LabelQuadrantPosition quadrant )
   : id( id )
   , feature( feature )
-  , probFeat( 0 )
-  , nbOverlap( 0 )
   , alpha( alpha )
   , w( w )
   , h( h )
-  , partId( -1 )
-  , upsideDown( false )
   , mQuadrant( quadrant )
   , mDirectionToLine( directionToLine )
   , mCost( cost )
-  , mHasObstacleConflict( false )
-  , mUpsideDownCharCount( 0 )
 {
   type = GEOS_POLYGON;
   nbPoints = 4;
@@ -300,12 +298,12 @@ bool LabelPosition::isInConflict( const LabelPosition *lp ) const
             return true;
           }
 #else
-          QgsMessageLog::logMessage( QStringLiteral( "label margin distance requires GEOS 3.10+" ) );
+          QgsMessageLog::logMessage( u"label margin distance requires GEOS 3.10+"_s );
 #endif
         }
         catch ( QgsGeosException &e )
         {
-          QgsDebugError( QStringLiteral( "GEOS exception: %1" ).arg( e.what() ) );
+          QgsDebugError( u"GEOS exception: %1"_s.arg( e.what() ) );
         }
       }
       else
@@ -363,12 +361,12 @@ bool LabelPosition::isInConflictMultiPart( const LabelPosition *lp ) const
         return true;
       }
 #else
-      QgsMessageLog::logMessage( QStringLiteral( "label margin distance requires GEOS 3.10+" ) );
+      QgsMessageLog::logMessage( u"label margin distance requires GEOS 3.10+"_s );
 #endif
     }
     catch ( QgsGeosException &e )
     {
-      QgsDebugError( QStringLiteral( "GEOS exception: %1" ).arg( e.what() ) );
+      QgsDebugError( u"GEOS exception: %1"_s.arg( e.what() ) );
     }
   }
   else

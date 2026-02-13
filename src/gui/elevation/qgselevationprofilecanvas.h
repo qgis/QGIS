@@ -50,7 +50,6 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsElevationProfileCanvas, with the specified \a parent widget.
      */

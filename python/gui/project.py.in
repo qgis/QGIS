@@ -1,7 +1,0 @@
-from qgis_sip_project import QgisProject, QgisBindings
-
-class QgisGuiBindings(QgisBindings):
-    name = "gui"
-
-class QgisGuiProject(QgisProject):
-    bindings_factories = [QgisGuiBindings]

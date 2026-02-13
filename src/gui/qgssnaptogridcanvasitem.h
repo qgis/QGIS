@@ -63,12 +63,12 @@ class GUI_EXPORT QgsSnapToGridCanvasItem : public QgsMapCanvasItem
 #endif
 
   public:
-
     /**
      * Will automatically be added to the \a mapCanvas.
      */
     QgsSnapToGridCanvasItem( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS );
 
+    using QgsMapCanvasItem::paint;
     void paint( QPainter *painter ) override;
 
     /**

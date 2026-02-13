@@ -24,9 +24,12 @@
 
 #include <QApplication>
 #include <QHBoxLayout>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgslocatoroptionswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLocatorOptionsWidget::QgsLocatorOptionsWidget( QgsLocatorWidget *locator, QWidget *parent )
   : QTreeView( parent )
@@ -111,7 +114,7 @@ QWidget *QgsLocatorFiltersModel::configButton( const QModelIndex &index, QWidget
     connect( bt, &QToolButton::clicked, this, [filter, bt]() { filter->openConfigWidget( bt ); } );
     bt->setMaximumSize( mIconSize, mIconSize );
     bt->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-    bt->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/settings.svg" ) ) );
+    bt->setIcon( QgsApplication::getThemeIcon( u"/propertyicons/settings.svg"_s ) );
     return w;
   }
   else

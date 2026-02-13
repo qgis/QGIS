@@ -23,10 +23,13 @@
 
 #include <QList>
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QString QgsSteppedLineScaleBarRenderer::id() const
 {
-  return QStringLiteral( "stepped" );
+  return u"stepped"_s;
 }
 
 QString QgsSteppedLineScaleBarRenderer::visibleName() const

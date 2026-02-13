@@ -104,6 +104,7 @@ Returns a geometry from within the collection.
 
     virtual int vertexNumberFromVertexId( QgsVertexId id ) const;
 
+
     virtual bool boundingBoxIntersects( const QgsBox3D &box3d ) const /HoldGIL/;
 
 
@@ -226,6 +227,8 @@ ownership to the caller.
     virtual double length() const /HoldGIL/;
 
     virtual double area() const /HoldGIL/;
+
+    virtual double area3D() const /HoldGIL/;
 
     virtual double perimeter() const /HoldGIL/;
 

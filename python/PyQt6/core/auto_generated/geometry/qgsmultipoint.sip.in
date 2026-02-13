@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsMultiPoint: QgsGeometryCollection
 {
 %Docstring(signature="appended")

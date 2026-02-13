@@ -25,6 +25,10 @@
 #include "qgsprojectelevationproperties.h"
 #include "qgsterrainprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsMeshAdvancedEditing::QgsMeshAdvancedEditing() = default;
 
 QgsMeshAdvancedEditing::~QgsMeshAdvancedEditing() = default;
@@ -626,7 +630,7 @@ bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer, QgsPr
   std::unique_ptr<QgsExpressionContextScope> expScope( QgsExpressionContextUtils::meshExpressionScope( QgsMesh::Vertex ) );
   QgsExpressionContext context;
   context.appendScope( expScope.release() );
-  context.lastScope()->setVariable( QStringLiteral( "_native_mesh" ), QVariant::fromValue( mesh ) );
+  context.lastScope()->setVariable( u"_native_mesh"_s, QVariant::fromValue( mesh ) );
 
   QVector<QgsMeshVertex> newVertices;
   newVertices.reserve( mInputVertices.count() );
@@ -682,7 +686,7 @@ bool QgsMeshTransformVerticesByExpression::calculate( QgsMeshLayer *layer, QgsPr
   for ( int i = 0; i < mInputVertices.count(); ++i )
   {
     const int vertexIndex = mInputVertices.at( i );
-    context.lastScope()->setVariable( QStringLiteral( "_mesh_vertex_index" ), vertexIndex, false );
+    context.lastScope()->setVariable( u"_mesh_vertex_index"_s, vertexIndex, false );
 
     mChangingVertexMap[vertexIndex] = i;
     const QVariant xvar = expressionX.evaluate( &context );

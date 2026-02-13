@@ -308,7 +308,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     QgsGeometryMap::ConstIterator mFetchChangedGeomIt;
     QgsFeatureMap::ConstIterator mFetchAddedFeaturesIt;
 
-    bool mFetchedFid; // when iterating by FID: indicator whether it has been fetched yet or not
+    bool mFetchedFid = false; // when iterating by FID: indicator whether it has been fetched yet or not
 
     /**
      * Information about joins used in the current select() statement.

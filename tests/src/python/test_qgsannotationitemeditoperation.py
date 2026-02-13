@@ -16,6 +16,7 @@ from qgis.core import (
     QgsAnnotationItemEditOperationAddNode,
     QgsAnnotationItemEditOperationDeleteNode,
     QgsAnnotationItemEditOperationMoveNode,
+    QgsAnnotationItemEditOperationRotateItem,
     QgsAnnotationItemEditOperationTranslateItem,
     QgsPoint,
     QgsVertexId,
@@ -58,6 +59,11 @@ class TestQgsAnnotationItemEditOperation(QgisTestCase):
         self.assertEqual(operation.itemId(), "item id")
         self.assertEqual(operation.translationX(), 6)
         self.assertEqual(operation.translationY(), 7)
+
+    def test_rotate_operation(self):
+        operation = QgsAnnotationItemEditOperationRotateItem("item id", 45)
+        self.assertEqual(operation.itemId(), "item id")
+        self.assertEqual(operation.angle(), 45)
 
 
 if __name__ == "__main__":

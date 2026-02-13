@@ -42,7 +42,6 @@
 #include "qgslabelobstaclesettings.h"
 
 #include <QHash>
-#include <QLinkedList>
 #include <QMutex>
 
 class QgsLabelFeature;
@@ -338,7 +337,7 @@ namespace pal
       Qgis::UpsideDownLabelHandling mUpsidedownLabels = Qgis::UpsideDownLabelHandling::FlipUpsideDownLabels;
 
       //! Lookup table of label features (owned by the label feature provider that created them)
-      QHash< QgsFeatureId, QgsLabelFeature *> mHashtable;
+      QHash< QPair< QgsFeatureId, int >, QgsLabelFeature *> mHashtable;
 
       QHash< QString, QVector<FeaturePart *> > mConnectedHashtable;
       QHash< QgsFeatureId, int > mConnectedFeaturesIds;

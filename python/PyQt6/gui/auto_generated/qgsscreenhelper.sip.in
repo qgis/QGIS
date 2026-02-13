@@ -21,7 +21,6 @@ A utility class for dynamic handling of changes to screen properties.
 #include "qgsscreenhelper.h"
 %End
   public:
-
     QgsScreenHelper( QWidget *parent /TransferThis/ );
 %Docstring
 Constructor for QgsScreenHelper for the specified parent ``widget``.

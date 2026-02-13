@@ -42,7 +42,6 @@ class GUI_EXPORT QgsBrowserWidget : public QgsPanelWidget, private Ui::QgsBrowse
 {
     Q_OBJECT
   public:
-
     /**
       * Constructor for QgsBrowserWidget
       * \param browserModel instance of the (shared) browser model
@@ -192,6 +191,7 @@ class GUI_EXPORT QgsBrowserWidget : public QgsPanelWidget, private Ui::QgsBrowse
     QStringList mDisabledDataItemsKeys;
 
     friend class QgsBrowserDockWidget;
+    friend class TestQgsCustomization;
 };
 
 #endif // QGSBROWSERWIDGET_H

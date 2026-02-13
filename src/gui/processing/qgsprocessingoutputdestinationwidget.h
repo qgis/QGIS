@@ -23,6 +23,7 @@
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingwidgetwrapper.h"
 
+#include <QAction>
 #include <QWidget>
 
 class QgsProcessingDestinationParameter;
@@ -41,7 +42,6 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingLayerOutputDestinationWidget, associated with the specified \a parameter.
      */
@@ -113,7 +113,7 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
 
     void menuAboutToShow();
     void skipOutput();
-    void saveToTemporary();
+    void saveToTemporary( const QString &name = QString() );
     void selectDirectory();
     void selectFile();
     void saveToGeopackage();
@@ -124,6 +124,24 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
 
   private:
     void setAppendDestination( const QString &uri, const QgsFields &destFields );
+
+    /**
+     * Checks if \a value can be used as name for temporary layer. Empty value is a valid case.
+     */
+    bool couldBeTemporaryLayerName( const QString &value ) const;
+    QString memoryProviderLayerName( const QString &value ) const;
+
+    /*
+    * Checks if two string descriptions of temporary outputs should be considered equal.
+    */
+    bool consideredEqualTemporaryOutputValues( const QString &val1, const QString &val2 ) const;
+
+    /*
+    * Converts a QVariant value to a string for comparison purposes, handling standard types nad QgsProcessingOutputLayerDefinition.
+    */
+    QString variantToString( const QVariant &value ) const;
+
+    void setupPlaceholderText();
 
     QString mimeDataToPath( const QMimeData *data );
 
@@ -140,7 +158,14 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
     QgsRemappingSinkDefinition mRemapDefinition;
     bool mUseRemapping = false;
 
+    QString mFormat;
+
     QgsProcessingContext *mContext = nullptr;
+
+    QAction *mActionTemporaryOutputIcon = nullptr;
+
+    // value used in leText in previous state, for comparison
+    QString mPreviousValueString = QgsProcessing::TEMPORARY_OUTPUT;
 
     friend class TestProcessingGui;
 };

@@ -20,8 +20,11 @@
 #include "qgslayeritem.h"
 
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgsbrowserproxymodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsBrowserProxyModel::QgsBrowserProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
@@ -91,7 +94,7 @@ void QgsBrowserProxyModel::updateFilter()
       const QStringList filterParts = mFilter.split( '|' );
       for ( const QString &f : filterParts )
       {
-        const QRegularExpression rx( QRegularExpression::wildcardToRegularExpression( QStringLiteral( "*%1*" ).arg( f.trimmed() ) ),
+        const QRegularExpression rx( QRegularExpression::wildcardToRegularExpression( u"*%1*"_s.arg( f.trimmed() ) ),
                                      mCaseSensitivity == Qt::CaseInsensitive ? QRegularExpression::CaseInsensitiveOption : QRegularExpression::NoPatternOption );
         mREList.append( rx );
       }

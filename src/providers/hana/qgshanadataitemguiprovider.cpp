@@ -34,8 +34,11 @@
 
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgshanadataitemguiprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 void QgsHanaDataItemGuiProvider::populateContextMenu(
   QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context
@@ -110,21 +113,6 @@ void QgsHanaDataItemGuiProvider::populateContextMenu(
 
     menu->addMenu( maintainMenu );
   }
-
-  if ( QgsHanaLayerItem *layerItem = qobject_cast<QgsHanaLayerItem *>( item ) )
-  {
-    const QgsHanaLayerProperty &layerInfo = layerItem->layerInfo();
-    if ( !layerInfo.isView )
-    {
-      QMenu *maintainMenu = new QMenu( tr( "Table Operations" ), menu );
-
-      QAction *actionRenameLayer = new QAction( tr( "Rename Table…" ), this );
-      connect( actionRenameLayer, &QAction::triggered, this, [layerItem, context] { renameLayer( layerItem, context ); } );
-      maintainMenu->addAction( actionRenameLayer );
-
-      menu->addMenu( maintainMenu );
-    }
-  }
 }
 
 bool QgsHanaDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGuiContext context )
@@ -132,7 +120,7 @@ bool QgsHanaDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGui
   if ( QgsHanaLayerItem *layerItem = qobject_cast<QgsHanaLayerItem *>( item ) )
   {
     const QgsHanaLayerProperty &layerInfo = layerItem->layerInfo();
-    const QString layerName = QStringLiteral( "%1.%2" ).arg( layerInfo.schemaName, layerInfo.tableName );
+    const QString layerName = u"%1.%2"_s.arg( layerInfo.schemaName, layerInfo.tableName );
     const QString caption = tr( layerInfo.isView ? "Delete View" : "Delete Table" );
     if ( QMessageBox::question( nullptr, caption, tr( "Are you sure you want to delete '%1'?" ).arg( layerName ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
       return false;
@@ -228,7 +216,7 @@ void QgsHanaDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 {
   const QString connectionName = item->name();
   QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "/HANA/connections" ) );
+  settings.beginGroup( u"/HANA/connections"_s );
   const QStringList connections = settings.childGroups();
   settings.endGroup();
 
@@ -307,7 +295,7 @@ void QgsHanaDataItemGuiProvider::deleteSchema( QgsHanaSchemaItem *schemaItem, Qg
           tableNames += tableProperty.tableName() + QLatin1Char( '\n' );
         else
         {
-          tableNames += QStringLiteral( "\n[%1 additional objects not listed]" ).arg( tables.size() - MAXIMUM_LISTED_ITEMS );
+          tableNames += u"\n[%1 additional objects not listed]"_s.arg( tables.size() - MAXIMUM_LISTED_ITEMS );
           break;
         }
       }
@@ -368,46 +356,13 @@ void QgsHanaDataItemGuiProvider::renameSchema( QgsHanaSchemaItem *schemaItem, Qg
   }
 }
 
-void QgsHanaDataItemGuiProvider::renameLayer( QgsHanaLayerItem *layerItem, QgsDataItemGuiContext context )
-{
-  const QgsHanaLayerProperty &layerInfo = layerItem->layerInfo();
-  const QString caption = tr( "Rename Table" );
-  QgsNewNameDialog dlg( tr( "table '%1.%2'" ).arg( layerInfo.schemaName, layerInfo.tableName ), layerInfo.tableName );
-  dlg.setWindowTitle( caption );
-  if ( dlg.exec() != QDialog::Accepted || dlg.name() == layerInfo.tableName )
-    return;
-
-  const QString newLayerName = dlg.name();
-  QString errorMsg;
-  try
-  {
-    const QgsHanaProviderConnection providerConn( layerItem->uri(), {} );
-    providerConn.renameVectorTable( layerInfo.schemaName, layerInfo.tableName, newLayerName );
-  }
-  catch ( const QgsProviderConnectionException &ex )
-  {
-    errorMsg = ex.what();
-  }
-
-  if ( errorMsg.isEmpty() )
-  {
-    notify( caption, tr( "'%1' renamed successfully to '%2'." ).arg( layerInfo.tableName, newLayerName ), context, Qgis::MessageLevel::Success );
-    if ( layerItem->parent() )
-      layerItem->parent()->refresh();
-  }
-  else
-  {
-    notify( caption, tr( "Unable to rename '%1'\n%2" ).arg( layerInfo.tableName, errorMsg ), context, Qgis::MessageLevel::Warning );
-  }
-}
-
 bool QgsHanaDataItemGuiProvider::handleDrop( QgsHanaConnectionItem *connectionItem, const QMimeData *data, const QString &toSchema, QgsDataItemGuiContext context )
 {
   if ( !QgsMimeDataUtils::isUriList( data ) || !connectionItem )
     return false;
 
   const QgsMimeDataUtils::UriList sourceUris = QgsMimeDataUtils::decodeUriList( data );
-  if ( sourceUris.size() == 1 && sourceUris.at( 0 ).layerType == QLatin1String( "vector" ) )
+  if ( sourceUris.size() == 1 && sourceUris.at( 0 ).layerType == "vector"_L1 )
   {
     return handleDropUri( connectionItem, sourceUris.at( 0 ), toSchema, context );
   }
@@ -430,7 +385,7 @@ bool QgsHanaDataItemGuiProvider::handleDrop( QgsHanaConnectionItem *connectionIt
     const QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
     for ( const QgsMimeDataUtils::Uri &u : lst )
     {
-      if ( u.layerType != QLatin1String( "vector" ) )
+      if ( u.layerType != "vector"_L1 )
       {
         importResults.append( tr( "%1: Not a vector layer!" ).arg( u.name ) );
         hasError = true; // only vectors can be imported
@@ -443,7 +398,7 @@ bool QgsHanaDataItemGuiProvider::handleDrop( QgsHanaConnectionItem *connectionIt
       QgsVectorLayer *srcLayer = u.vectorLayer( owner, error );
       if ( !srcLayer )
       {
-        importResults.append( QStringLiteral( "%1: %2" ).arg( u.name, error ) );
+        importResults.append( u"%1: %2"_s.arg( u.name, error ) );
         hasError = true;
         continue;
       }
@@ -455,7 +410,7 @@ bool QgsHanaDataItemGuiProvider::handleDrop( QgsHanaConnectionItem *connectionIt
         if ( geomColumn.isEmpty() )
         {
           bool fieldsInUpperCase = QgsHanaUtils::countFieldsWithFirstLetterInUppercase( srcLayer->fields() ) > srcLayer->fields().size() / 2;
-          geomColumn = ( srcLayer->geometryType() != Qgis::GeometryType::Null ) ? ( fieldsInUpperCase ? QStringLiteral( "GEOM" ) : QStringLiteral( "geom" ) ) : nullptr;
+          geomColumn = ( srcLayer->geometryType() != Qgis::GeometryType::Null ) ? ( fieldsInUpperCase ? u"GEOM"_s : u"geom"_s ) : nullptr;
         }
 
         QgsAbstractDatabaseProviderConnection::VectorLayerExporterOptions exporterOptions;
@@ -469,7 +424,7 @@ bool QgsHanaDataItemGuiProvider::handleDrop( QgsHanaConnectionItem *connectionIt
         const QString destUri = databaseConnection->createVectorLayerExporterDestinationUri( exporterOptions, providerOptions );
 
         std::unique_ptr<QgsVectorLayerExporterTask> exportTask(
-          new QgsVectorLayerExporterTask( srcLayer, destUri, QStringLiteral( "hana" ), srcLayer->crs(), providerOptions, owner )
+          new QgsVectorLayerExporterTask( srcLayer, destUri, u"hana"_s, srcLayer->crs(), providerOptions, owner )
         );
 
         // when export is successful:

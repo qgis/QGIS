@@ -19,8 +19,11 @@
 #include "qgsrendercontext.h"
 
 #include <QPainter>
+#include <QString>
 
-const QString QgsPieDiagram::DIAGRAM_NAME_PIE = QStringLiteral( "Pie" );
+using namespace Qt::StringLiterals;
+
+const QString QgsPieDiagram::DIAGRAM_NAME_PIE = u"Pie"_s;
 
 QgsPieDiagram::QgsPieDiagram()
 {

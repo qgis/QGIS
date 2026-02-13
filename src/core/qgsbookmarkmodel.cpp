@@ -19,8 +19,11 @@
 #include "qgsbookmarkmanager.h"
 
 #include <QIcon>
+#include <QString>
 
 #include "moc_qgsbookmarkmodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsBookmarkManagerModel::QgsBookmarkManagerModel( QgsBookmarkManager *manager, QgsBookmarkManager *projectManager, QObject *parent )
   : QAbstractTableModel( parent )
@@ -73,7 +76,7 @@ QVariant QgsBookmarkManagerModel::data( const QModelIndex &index, int role ) con
       return b.group();
 
     case Qt::DecorationRole:
-      return index.column() == ColumnName ? QgsApplication::getThemeIcon( QStringLiteral( "/mItemBookmark.svg" ) ) : QIcon();
+      return index.column() == ColumnName ? QgsApplication::getThemeIcon( u"/mItemBookmark.svg"_s ) : QIcon();
 
     case Qt::DisplayRole:
     case Qt::EditRole:

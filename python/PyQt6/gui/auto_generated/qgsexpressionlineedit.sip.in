@@ -32,7 +32,6 @@ which is useful where more space is available for the widget, but where
 #include "qgsexpressionlineedit.h"
 %End
   public:
-
     explicit QgsExpressionLineEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsExpressionLineEdit.

@@ -49,11 +49,7 @@ class TerrainTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGen
 
     qintptr id() const override
     {
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-      return reinterpret_cast<qintptr>( &Qt3DRender::FunctorType<TerrainTextureImageDataGenerator>::id );
-#else
       return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<TerrainTextureImageDataGenerator>::id );
-#endif
     }
 
     bool operator==( const QTextureImageDataGenerator &other ) const override

@@ -19,13 +19,17 @@ Email                : wonder dot sk at gmail dot com
 #include "qgsrasterlayerelevationproperties.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsElevationMap : public QgsTest
 {
     Q_OBJECT
 
   public:
     TestQgsElevationMap()
-      : QgsTest( QStringLiteral( "Elevation Map Tests" ), QStringLiteral( "elevation_map" ) ) {}
+      : QgsTest( u"Elevation Map Tests"_s, u"elevation_map"_s ) {}
 
   private slots:
     void initTestCase();
@@ -94,7 +98,7 @@ void TestQgsElevationMap::testRasterDemReprojected()
   mapSettings.setExtent( QgsRectangle( 770583, 5609270, 781928, 5619219 ) );
   mapSettings.setElevationShadingRenderer( elevationShadingRenderer );
 
-  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "reprojected_raster" ), QStringLiteral( "reprojected_raster" ), mapSettings );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( u"reprojected_raster"_s, u"reprojected_raster"_s, mapSettings );
 }
 
 

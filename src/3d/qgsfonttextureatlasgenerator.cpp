@@ -24,6 +24,9 @@
 #include <QPainter>
 #include <QRegularExpressionMatch>
 #include <QSet>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 // rectpack2D library
 #include <finders_interface.h>
@@ -224,7 +227,7 @@ QgsFontTextureAtlas QgsFontTextureAtlasGenerator::create( const QgsTextFormat &f
   charRects.reserve( uniqueGraphemes.size() );
   for ( const QString &c : uniqueGraphemes )
   {
-    const thread_local QRegularExpression sWhitespaceRx( QStringLiteral( "^\\s+$" ) );
+    const thread_local QRegularExpression sWhitespaceRx( u"^\\s+$"_s );
     if ( sWhitespaceRx.match( c ).hasMatch() )
       continue;
 

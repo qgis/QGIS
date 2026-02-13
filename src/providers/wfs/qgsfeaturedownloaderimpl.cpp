@@ -20,8 +20,11 @@
 #include "qgsfeaturedownloader.h"
 #include "qgsfeaturedownloaderprogresstask.h"
 
+#include <QString>
 #include <QThread>
 #include <QVector>
+
+using namespace Qt::StringLiterals;
 
 QgsFeatureDownloaderImpl::QgsFeatureDownloaderImpl( QgsBackgroundCachedSharedData *shared, QgsFeatureDownloader *downloader )
   : mSharedBase( shared )
@@ -62,14 +65,14 @@ void QgsFeatureDownloaderImpl::emitResumeMainThread()
 
 void QgsFeatureDownloaderImpl::stop()
 {
-  QgsDebugMsgLevel( QStringLiteral( "QgsFeatureDownloaderImpl::stop()" ), 4 );
+  QgsDebugMsgLevel( u"QgsFeatureDownloaderImpl::stop()"_s, 4 );
   mStop = true;
   emitDoStop();
 }
 
 void QgsFeatureDownloaderImpl::setStopFlag()
 {
-  QgsDebugMsgLevel( QStringLiteral( "QgsFeatureDownloaderImpl::setStopFlag()" ), 4 );
+  QgsDebugMsgLevel( u"QgsFeatureDownloaderImpl::setStopFlag()"_s, 4 );
   mStop = true;
 }
 

@@ -19,7 +19,7 @@ try:
     QgsModelComponentGraphicItem.__virtual_methods__ = ['flags', 'linkPointCount', 'linkPointText', 'editComment', 'canDeleteComponent', 'deleteComponent', 'editComponent', 'strokeStyle', 'titleAlignment', 'iconPicture', 'iconPixmap']
     QgsModelComponentGraphicItem.__abstract_methods__ = ['fillColor', 'strokeColor', 'textColor', 'updateStoredComponentPosition']
     QgsModelComponentGraphicItem.__overridden_methods__ = ['mouseDoubleClickEvent', 'hoverEnterEvent', 'hoverMoveEvent', 'hoverLeaveEvent', 'itemChange', 'boundingRect', 'contains', 'paint']
-    QgsModelComponentGraphicItem.__signal_arguments__ = {'aboutToChange': ['text: str', 'id: int = 0']}
+    QgsModelComponentGraphicItem.__signal_arguments__ = {'aboutToChange': ['text: str', 'id: Optional[str] = None']}
     QgsModelComponentGraphicItem.__group__ = ['processing', 'models']
 except (NameError, AttributeError):
     pass
@@ -30,7 +30,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsModelParameterGraphicItem.__overridden_methods__ = ['contextMenuEvent', 'canDeleteComponent', 'fillColor', 'strokeColor', 'textColor', 'iconPicture', 'linkPointCount', 'linkPointText', 'updateStoredComponentPosition', 'deleteComponent']
+    QgsModelParameterGraphicItem.__overridden_methods__ = ['contextMenuEvent', 'canDeleteComponent', 'linkColor', 'fillColor', 'strokeColor', 'textColor', 'iconPicture', 'linkPointCount', 'linkPointText', 'updateStoredComponentPosition', 'deleteComponent']
     QgsModelParameterGraphicItem.__group__ = ['processing', 'models']
 except (NameError, AttributeError):
     pass

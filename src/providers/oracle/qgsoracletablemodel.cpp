@@ -20,7 +20,11 @@
 #include "qgsiconutils.h"
 #include "qgslogger.h"
 
+#include <QString>
+
 #include "moc_qgsoracletablemodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsOracleTableModel::QgsOracleTableModel( QObject *parent )
   : QgsAbstractDbTableModel( parent )
@@ -72,7 +76,7 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
 
   if ( layerProperty.isView && layerProperty.pkCols.isEmpty() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "View without pk skipped." ), 2 );
+    QgsDebugMsgLevel( u"View without pk skipped."_s, 2 );
     return;
   }
 
@@ -311,14 +315,14 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
 {
   if ( !index.isValid() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "invalid index" ), 2 );
+    QgsDebugMsgLevel( u"invalid index"_s, 2 );
     return QString();
   }
 
   Qgis::WkbType wkbType = static_cast<Qgis::WkbType>( itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt() );
   if ( wkbType == Qgis::WkbType::Unknown )
   {
-    QgsDebugError( QStringLiteral( "unknown geometry type" ) );
+    QgsDebugError( u"unknown geometry type"_s );
     // no geometry type selected
     return QString();
   }
@@ -331,7 +335,7 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
   if ( isView && !isSet )
   {
     // no valid primary candidate selected
-    QgsDebugError( QStringLiteral( "no pk candidate selected" ) );
+    QgsDebugError( u"no pk candidate selected"_s );
     return QString();
   }
 
@@ -349,7 +353,7 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
     ( void ) srid.toInt( &ok );
     if ( !ok )
     {
-      QgsDebugError( QStringLiteral( "srid not numeric" ) );
+      QgsDebugError( u"srid not numeric"_s );
       return QString();
     }
   }
@@ -363,6 +367,6 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );
 
-  QgsDebugMsgLevel( QStringLiteral( "returning uri %1" ).arg( uri.uri( false ) ), 2 );
+  QgsDebugMsgLevel( u"returning uri %1"_s.arg( uri.uri( false ) ), 2 );
   return uri.uri( false );
 }

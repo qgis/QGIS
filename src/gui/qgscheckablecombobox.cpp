@@ -24,8 +24,11 @@
 #include <QLineEdit>
 #include <QMouseEvent>
 #include <QPoint>
+#include <QString>
 
 #include "moc_qgscheckablecombobox.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCheckableItemModel::QgsCheckableItemModel( QObject *parent )
   : QStandardItemModel( 0, 1, parent )
@@ -79,7 +82,7 @@ void QgsCheckBoxDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
 QgsCheckableComboBox::QgsCheckableComboBox( QWidget *parent )
   : QComboBox( parent )
   , mModel( new QgsCheckableItemModel( this ) )
-  , mSeparator( QStringLiteral( ", " ) )
+  , mSeparator( u", "_s )
 {
   setModel( mModel );
   setItemDelegate( new QgsCheckBoxDelegate( this ) );

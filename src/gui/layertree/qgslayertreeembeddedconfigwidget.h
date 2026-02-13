@@ -28,11 +28,10 @@ class QgsMapLayer;
  * \class QgsLayerTreeEmbeddedConfigWidget
  * \brief A widget to configure layer tree embedded widgets for a particular map layer.
  */
-class GUI_EXPORT QgsLayerTreeEmbeddedConfigWidget : public QWidget, protected Ui::QgsLayerTreeEmbeddedConfigWidgetBase
+class GUI_EXPORT QgsLayerTreeEmbeddedConfigWidget : public QWidget, private Ui::QgsLayerTreeEmbeddedConfigWidgetBase
 {
     Q_OBJECT
   public:
-
     /**
      * A widget to configure layer tree embedded widgets for a particular map layer.
      * \param parent The parent of the widget.

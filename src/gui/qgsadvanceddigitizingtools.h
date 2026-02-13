@@ -39,7 +39,6 @@ class GUI_EXPORT QgsAdvancedDigitizingTool : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * The advanced digitizing tool constructor.
      * \param canvas The map canvas on which the widget operates
@@ -120,7 +119,6 @@ class GUI_EXPORT QgsAdvancedDigitizingCirclesIntersectionTool : public QgsAdvanc
     Q_OBJECT
 
   public:
-
     /**
      * The advanced digitizing's circles intersection tool constructor.
      * \param canvas The map canvas on which the widget operates

@@ -48,6 +48,7 @@ class GUI_EXPORT QgsAdvancedDigitizingCanvasItem : public QgsMapCanvasItem
   public:
     explicit QgsAdvancedDigitizingCanvasItem( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
 
+    using QgsMapCanvasItem::paint;
     void paint( QPainter *painter ) override;
     void updatePosition() override;
 

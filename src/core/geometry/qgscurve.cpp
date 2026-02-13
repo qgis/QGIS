@@ -297,6 +297,7 @@ void QgsCurve::clearCache() const
   mHasCachedValidity = false;
   mValidityFailureReason.clear();
   mHasCachedSummedUpArea = false;
+  mHasCachedSummedUpArea3D = false;
   QgsAbstractGeometry::clearCache();
 }
 

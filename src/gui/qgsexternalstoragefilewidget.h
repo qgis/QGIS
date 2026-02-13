@@ -53,7 +53,6 @@ class GUI_EXPORT QgsExternalStorageFileWidget : public QgsFileWidget
     Q_PROPERTY( QString storageUrlExpression READ storageUrlExpressionString WRITE setStorageUrlExpression )
 
   public:
-
     /**
      * \brief QgsExternalStorageFileWidget creates a widget for selecting a file or a folder.
      */

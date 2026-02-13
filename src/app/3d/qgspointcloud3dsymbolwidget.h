@@ -49,6 +49,9 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
     void setZoomOutBehavior( Qgis::PointCloudZoomOutRenderBehavior zoomOutBehavior );
     Qgis::PointCloudZoomOutRenderBehavior zoomOutBehavior() const;
 
+    void setOverviewSwitchingScale( double scale );
+    double overviewSwitchingScale() const;
+
     void connectChildPanels( QgsPanelWidget *parent );
 
   private slots:
@@ -77,6 +80,14 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
     void setColorRampMinMax( double min, double max );
 
   private:
+    // for 2D rendering, see values in qgspointcloudrendererpropertieswidget.h
+    const QMap<double, QString> mOverviewSwitchingScaleMap {
+      { 5.0, "Much earlier" },
+      { 2.0, "Earlier" },
+      { 1.0, "Normal" },
+      { 0.5, "Later" }
+    };
+
     int mBlockChangedSignals = 0;
     int mDisableMinMaxWidgetRefresh = 0;
     QgsPointCloudClassifiedRendererWidget *mClassifiedRendererWidget = nullptr;

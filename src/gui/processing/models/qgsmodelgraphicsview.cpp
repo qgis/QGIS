@@ -34,9 +34,12 @@
 #include <QDragEnterEvent>
 #include <QMimeData>
 #include <QScrollBar>
+#include <QString>
 #include <QTimer>
 
 #include "moc_qgsmodelgraphicsview.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond NOT_STABLE
 
@@ -68,8 +71,8 @@ QgsModelGraphicsView::~QgsModelGraphicsView()
 
 void QgsModelGraphicsView::dragEnterEvent( QDragEnterEvent *event )
 {
-  if ( event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.algorithmid" ) )
-       || event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.parametertypeid" ) )
+  if ( event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.algorithmid"_s )
+       || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.parametertypeid"_s )
        || event->mimeData()->hasText() )
     event->acceptProposedAction();
   else
@@ -79,9 +82,9 @@ void QgsModelGraphicsView::dragEnterEvent( QDragEnterEvent *event )
 void QgsModelGraphicsView::dropEvent( QDropEvent *event )
 {
   const QPointF dropPoint = mapToScene( event->pos() );
-  if ( event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.algorithmid" ) ) )
+  if ( event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.algorithmid"_s ) )
   {
-    QByteArray data = event->mimeData()->data( QStringLiteral( "application/x-vnd.qgis.qgis.algorithmid" ) );
+    QByteArray data = event->mimeData()->data( u"application/x-vnd.qgis.qgis.algorithmid"_s );
     QDataStream stream( &data, QIODevice::ReadOnly );
     QString algorithmId;
     stream >> algorithmId;
@@ -91,9 +94,9 @@ void QgsModelGraphicsView::dropEvent( QDropEvent *event )
     } );
     event->accept();
   }
-  else if ( event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.parametertypeid" ) ) )
+  else if ( event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.parametertypeid"_s ) )
   {
-    QByteArray data = event->mimeData()->data( QStringLiteral( "application/x-vnd.qgis.qgis.parametertypeid" ) );
+    QByteArray data = event->mimeData()->data( u"application/x-vnd.qgis.qgis.parametertypeid"_s );
     QDataStream stream( &data, QIODevice::ReadOnly );
     QString paramTypeId;
     stream >> paramTypeId;
@@ -119,8 +122,8 @@ void QgsModelGraphicsView::dropEvent( QDropEvent *event )
 
 void QgsModelGraphicsView::dragMoveEvent( QDragMoveEvent *event )
 {
-  if ( event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.algorithmid" ) )
-       || event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.parametertypeid" ) )
+  if ( event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.algorithmid"_s )
+       || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.parametertypeid"_s )
        || event->mimeData()->hasText() )
     event->acceptProposedAction();
   else
@@ -148,8 +151,8 @@ void QgsModelGraphicsView::wheelZoom( QWheelEvent *event )
 {
   //get mouse wheel zoom behavior settings
   QgsSettings settings;
-  double zoomFactor = settings.value( QStringLiteral( "qgis/zoom_factor" ), 2 ).toDouble();
-  bool reverseZoom = settings.value( QStringLiteral( "qgis/reverse_wheel_zoom" ), false ).toBool();
+  double zoomFactor = settings.value( u"qgis/zoom_factor"_s, 2 ).toDouble();
+  bool reverseZoom = settings.value( u"qgis/reverse_wheel_zoom"_s, false ).toBool();
   bool zoomIn = reverseZoom ? event->angleDelta().y() < 0 : event->angleDelta().y() > 0;
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
@@ -374,12 +377,13 @@ void QgsModelGraphicsView::keyPressEvent( QKeyEvent *event )
     {
       QPointF delta = deltaForKeyEvent( event );
 
-      itemList.at( 0 )->aboutToChange( tr( "Move Items" ) );
+      startMacroCommand( tr( "Move Items" ) );
       for ( QgsModelComponentGraphicItem *item : itemList )
       {
         item->moveComponentBy( delta.x(), delta.y() );
       }
       itemList.at( 0 )->changed();
+      endMacroCommand();
     }
     event->accept();
   }
@@ -509,19 +513,29 @@ void QgsModelGraphicsView::friendlySetSceneRect()
   if ( mBlockScrollbarSignals )
     return;
 
-  QRectF modelSceneRect = modelScene()->sceneRect();
-  QRectF viewSceneRect = sceneRect();
+  const QRectF currentSceneRect = sceneRect();
 
-  QRectF visibleRect = mapToScene( viewport()->rect() ).boundingRect();
+  const QRectF modelSceneRect = modelScene()->sceneRect();
+  const QRectF visibleRect = mapToScene( viewport()->rect() ).boundingRect();
+  QRectF newSceneRect;
+  newSceneRect.setLeft( std::min( modelSceneRect.left(), visibleRect.left() ) );
+  newSceneRect.setRight( std::max( modelSceneRect.right(), visibleRect.right() ) );
+  newSceneRect.setTop( std::min( modelSceneRect.top(), visibleRect.top() ) );
+  newSceneRect.setBottom( std::max( modelSceneRect.bottom(), visibleRect.bottom() ) );
 
-  viewSceneRect.setLeft( std::min( modelSceneRect.left(), visibleRect.left() ) );
-  viewSceneRect.setRight( std::max( modelSceneRect.right(), visibleRect.right() ) );
-  viewSceneRect.setTop( std::min( modelSceneRect.top(), visibleRect.top() ) );
-  viewSceneRect.setBottom( std::max( modelSceneRect.bottom(), visibleRect.bottom() ) );
-
-  mBlockScrollbarSignals++;
-  setSceneRect( viewSceneRect );
-  mBlockScrollbarSignals--;
+  // the above conversions may involve small rounding errors which stack up and could
+  // result in unwanted small shifts of the visible scene area => only update the
+  // scene rect if the visible area change is sufficiently large to warrant this:
+  constexpr int MIN_VIEW_SHIFT_THRESHOLD_PIXELS = 20;
+  if ( std::abs( newSceneRect.left() - currentSceneRect.left() ) > MIN_VIEW_SHIFT_THRESHOLD_PIXELS
+       || std::abs( newSceneRect.right() - currentSceneRect.right() ) > MIN_VIEW_SHIFT_THRESHOLD_PIXELS
+       || std::abs( newSceneRect.top() - currentSceneRect.top() ) > MIN_VIEW_SHIFT_THRESHOLD_PIXELS
+       || std::abs( newSceneRect.bottom() - currentSceneRect.bottom() ) > MIN_VIEW_SHIFT_THRESHOLD_PIXELS )
+  {
+    mBlockScrollbarSignals++;
+    setSceneRect( newSceneRect );
+    mBlockScrollbarSignals--;
+  }
 }
 
 void QgsModelGraphicsView::copySelectedItems( QgsModelGraphicsView::ClipboardOperation operation )
@@ -536,7 +550,7 @@ void QgsModelGraphicsView::copyItems( const QList<QgsModelComponentGraphicItem *
 
   QgsReadWriteContext context;
   QDomDocument doc;
-  QDomElement documentElement = doc.createElement( QStringLiteral( "ModelComponentClipboard" ) );
+  QDomElement documentElement = doc.createElement( u"ModelComponentClipboard"_s );
   if ( operation == ClipboardCut )
   {
     emit macroCommandStarted( tr( "Cut Items" ) );
@@ -580,9 +594,9 @@ void QgsModelGraphicsView::copyItems( const QList<QgsModelComponentGraphicItem *
       }
 
       QVariantMap paramDef;
-      paramDef.insert( QStringLiteral( "component" ), component.toVariant() );
+      paramDef.insert( u"component"_s, component.toVariant() );
       const QgsProcessingParameterDefinition *def = modelScene()->model()->parameterDefinition( component.parameterName() );
-      paramDef.insert( QStringLiteral( "definition" ), def->toVariantMap() );
+      paramDef.insert( u"definition"_s, def->toVariantMap() );
 
       paramComponents << paramDef;
     }
@@ -641,9 +655,9 @@ void QgsModelGraphicsView::copyItems( const QList<QgsModelComponentGraphicItem *
     }
   }
   QVariantMap components;
-  components.insert( QStringLiteral( "parameters" ), paramComponents );
-  components.insert( QStringLiteral( "groupboxes" ), groupBoxComponents );
-  components.insert( QStringLiteral( "algs" ), algComponents );
+  components.insert( u"parameters"_s, paramComponents );
+  components.insert( u"groupboxes"_s, groupBoxComponents );
+  components.insert( u"algs"_s, algComponents );
   doc.appendChild( QgsXmlUtils::writeVariant( components, doc ) );
   if ( operation == ClipboardCut )
   {
@@ -653,7 +667,7 @@ void QgsModelGraphicsView::copyItems( const QList<QgsModelComponentGraphicItem *
   }
 
   QMimeData *mimeData = new QMimeData;
-  mimeData->setData( QStringLiteral( "text/xml" ), doc.toByteArray() );
+  mimeData->setData( u"text/xml"_s, doc.toByteArray() );
   mimeData->setText( doc.toByteArray() );
   QClipboard *clipboard = QApplication::clipboard();
   clipboard->setMimeData( mimeData );
@@ -669,12 +683,12 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
   const QMimeData *mimeData = clipboard->mimeData();
   if ( !mimeData )
     return;
-  if ( doc.setContent( mimeData->data( QStringLiteral( "text/xml" ) ) ) )
+  if ( doc.setContent( mimeData->data( u"text/xml"_s ) ) )
   {
     QDomElement docElem = doc.documentElement();
     QVariantMap res = QgsXmlUtils::readVariant( docElem ).toMap();
 
-    if ( res.contains( QStringLiteral( "parameters" ) ) && res.contains( QStringLiteral( "algs" ) ) )
+    if ( res.contains( u"parameters"_s ) && res.contains( u"algs"_s ) )
     {
       QPointF pt;
       switch ( mode )
@@ -699,7 +713,7 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
       QRectF pastedBounds;
 
       QList<QgsProcessingModelGroupBox> pastedGroups;
-      for ( const QVariant &v : res.value( QStringLiteral( "groupboxes" ) ).toList() )
+      for ( const QVariant &v : res.value( u"groupboxes"_s ).toList() )
       {
         QgsProcessingModelGroupBox box;
         // don't restore the uuid -- we need them to be unique in the model
@@ -716,11 +730,11 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
       }
 
       QStringList pastedParameters;
-      for ( const QVariant &v : res.value( QStringLiteral( "parameters" ) ).toList() )
+      for ( const QVariant &v : res.value( u"parameters"_s ).toList() )
       {
         QVariantMap param = v.toMap();
-        QVariantMap componentDef = param.value( QStringLiteral( "component" ) ).toMap();
-        QVariantMap paramDef = param.value( QStringLiteral( "definition" ) ).toMap();
+        QVariantMap componentDef = param.value( u"component"_s ).toMap();
+        QVariantMap paramDef = param.value( u"definition"_s ).toMap();
 
         std::unique_ptr<QgsProcessingParameterDefinition> paramDefinition( QgsProcessingParameters::parameterFromVariantMap( paramDef ) );
 
@@ -734,8 +748,8 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
         while ( modelScene()->model()->parameterDefinition( name ) )
         {
           next++;
-          name = QStringLiteral( "%1 (%2)" ).arg( p.parameterName() ).arg( next );
-          description = QStringLiteral( "%1 (%2)" ).arg( paramDefinition->description() ).arg( next );
+          name = u"%1 (%2)"_s.arg( p.parameterName() ).arg( next );
+          description = u"%1 (%2)"_s.arg( paramDefinition->description() ).arg( next );
         }
         paramDefinition->setName( name );
         paramDefinition->setDescription( description );
@@ -754,7 +768,7 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
       }
 
       QStringList pastedAlgorithms;
-      for ( const QVariant &v : res.value( QStringLiteral( "algs" ) ).toList() )
+      for ( const QVariant &v : res.value( u"algs"_s ).toList() )
       {
         QgsProcessingModelChildAlgorithm alg;
         alg.loadVariant( v.toMap() );
@@ -805,7 +819,7 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
             if ( unique )
               break;
             next++;
-            name = QStringLiteral( "%1 (%2)" ).arg( it.value().name() ).arg( next );
+            name = u"%1 (%2)"_s.arg( it.value().name() ).arg( next );
           }
 
           QgsProcessingModelOutput newOutput = it.value();

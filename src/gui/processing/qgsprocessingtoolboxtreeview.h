@@ -40,7 +40,6 @@ class GUI_EXPORT QgsProcessingToolboxTreeView : public QTreeView
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingToolboxTreeView, with the specified \a parent widget.
      *

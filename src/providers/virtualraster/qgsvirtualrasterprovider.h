@@ -36,6 +36,8 @@ class QgsVirtualRasterProvider : public QgsRasterDataProvider
     QgsVirtualRasterProvider &operator=( QgsVirtualRasterProvider other ) = delete;
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
+
+    using QgsRasterDataProvider::readBlock;
     bool readBlock( int bandNo, QgsRectangle const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override
     {
       Q_UNUSED( bandNo )

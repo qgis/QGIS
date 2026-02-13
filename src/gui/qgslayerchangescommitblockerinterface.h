@@ -68,7 +68,7 @@ class GUI_EXPORT QgsLayerChangesCommitBlockerInterface
      * \note It is safe to use GUI widgets in implementations of this function, including message
      * boxes or custom dialogs with event loops.
     */
-    virtual bool allowCommit( QgsMapLayer* layer ) = 0;
+    virtual bool allowCommit( QgsMapLayer *layer ) = 0;
 };
 
 #endif // QGSLAYERCHANGESCOMMITBLOCKERINTERFACE_H

@@ -22,6 +22,8 @@
 
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief Contains information about a celestial body.
@@ -55,16 +57,16 @@ class CORE_EXPORT QgsCelestialBody
     QString str;
     if ( !sipCpp->isValid() )
     {
-      str = QStringLiteral( "<QgsCelestialBody: invalid>" );
+      str = u"<QgsCelestialBody: invalid>"_s;
     }
     else
     {
       QString id;
       if ( !sipCpp->authority().isEmpty() )
-        id = QStringLiteral( "%1 (%2)" ).arg( sipCpp->name(), sipCpp->authority() );
+        id = u"%1 (%2)"_s.arg( sipCpp->name(), sipCpp->authority() );
       else
         id = sipCpp->name();
-      str = QStringLiteral( "<QgsCelestialBody: %1>" ).arg( id );
+      str = u"<QgsCelestialBody: %1>"_s.arg( id );
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End

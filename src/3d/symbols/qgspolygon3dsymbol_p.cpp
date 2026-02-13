@@ -22,6 +22,7 @@
 #include "qgslinestring.h"
 #include "qgslinevertexdata_p.h"
 #include "qgsmessagelog.h"
+#include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
 #include "qgsphongtexturedmaterialsettings.h"
 #include "qgspolygon.h"
@@ -50,7 +51,7 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
       : mSymbol( static_cast<QgsPolygon3DSymbol *>( symbol->clone() ) )
       , mSelectedIds( selectedIds ) {}
 
-    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin ) override;
+    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent ) override;
     void processFeature( const QgsFeature &f, const Qgs3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
@@ -73,29 +74,30 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
     std::unique_ptr<QgsPolygon3DSymbol> mSymbol;
     // inputs - generic
     QgsFeatureIds mSelectedIds;
-
-    //! origin (in the map coordinates) for output geometries (e.g. at the center of the chunk)
-    QgsVector3D mChunkOrigin;
-
     // outputs
     PolygonData outNormal;   //!< Features that are not selected
     PolygonData outSelected; //!< Features that are selected
 
     QgsLineVertexData outEdges; //!< When highlighting edges, this holds data for vertex/index buffer
+
+    //! This is set to TRUE when a feature is clipped to the chunk's extent
+    bool mWasClippedToExtent = false;
 };
 
 
-bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin )
+bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent )
 {
-  outEdges.withAdjacency = true;
-  outEdges.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), 0, context, chunkOrigin );
+  mChunkOrigin = chunkExtent.center();
+  mChunkOrigin.setZ( 0. ); // set the chunk origin to the bottom of the box, as the tessellator currently always considers origin z to be zero
+  mChunkExtent = chunkExtent;
 
-  mChunkOrigin = chunkOrigin;
+  outEdges.withAdjacency = true;
+  outEdges.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), 0, context, mChunkOrigin );
 
   const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( mSymbol->materialSettings() );
 
   auto tessellator = std::make_unique<QgsTessellator>();
-  tessellator->setOrigin( chunkOrigin );
+  tessellator->setOrigin( mChunkOrigin );
   tessellator->setAddNormals( true );
   tessellator->setInvertNormals( mSymbol->invertNormals() );
   tessellator->setBackFacesEnabled( mSymbol->addBackFaces() );
@@ -108,7 +110,7 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   outNormal.tessellator = std::move( tessellator );
 
   tessellator = std::make_unique<QgsTessellator>();
-  tessellator->setOrigin( chunkOrigin );
+  tessellator->setOrigin( mChunkOrigin );
   tessellator->setAddNormals( true );
   tessellator->setInvertNormals( mSymbol->invertNormals() );
   tessellator->setBackFacesEnabled( mSymbol->addBackFaces() );
@@ -135,16 +137,75 @@ void QgsPolygon3DSymbolHandler::processPolygon( const QgsPolygon *poly, QgsFeatu
   if ( mSymbol->edgesEnabled() )
   {
     // add edges before the polygon gets the Z values modified because addLineString() does its own altitude handling
-    outEdges.addLineString( *static_cast<const QgsLineString *>( polyClone->exteriorRing() ), offset );
+    const QgsAbstractGeometry *exteriorRing = static_cast<const QgsLineString *>( polyClone->exteriorRing() );
+
+    // This geometry will take ownership of the cleaned exteriorRing abstract geom.
+    // We need this to live for as long as exteriorRing is used.
+    QgsGeometry cleanedExteriorRingGeometry;
+
+    if ( mWasClippedToExtent )
+    {
+      // if the polygon was clipped to the chunk extent, then we need to remove any part of the exterior ring that
+      // overlaps the chunk extent line, otherwise the chunk extents will appear as edges. Any interior rings
+      // that were intersected by the extent will now be part of the exterior ring of the clipped geometry.
+      const QVector< QgsPointXY > extentPoints {
+        { mChunkExtent.xMinimum(), mChunkExtent.yMinimum() },
+        { mChunkExtent.xMaximum(), mChunkExtent.yMinimum() },
+        { mChunkExtent.xMaximum(), mChunkExtent.yMaximum() },
+        { mChunkExtent.xMinimum(), mChunkExtent.yMaximum() },
+        { mChunkExtent.xMinimum(), mChunkExtent.yMinimum() }
+      };
+      auto extentLinestring = std::make_unique<QgsLineString>( extentPoints );
+
+      const QgsGeometry exteriorRingGeometry( exteriorRing->clone() );
+      // it should be safe to perform the diff without any tolerance, the extent line string is a simple rectangle (chunk perimeter)
+      cleanedExteriorRingGeometry = exteriorRingGeometry.difference( QgsGeometry( extentLinestring.release() ) );
+      // make sure the diff didn't produce some degenerate geometry
+      ( void ) cleanedExteriorRingGeometry.convertGeometryCollectionToSubclass( Qgis::GeometryType::Line );
+      exteriorRing = cleanedExteriorRingGeometry.constGet()->simplifiedTypeRef();
+    }
+
+    if ( const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( exteriorRing ) )
+    {
+      outEdges.addLineString( *line, offset );
+    }
+    // if geometry was clipped to the chunk extents, we might now have a multilinestring
+    else if ( const QgsMultiLineString *mline = qgsgeometry_cast<const QgsMultiLineString *>( exteriorRing ) )
+    {
+      for ( int i = 0; i < mline->numGeometries(); ++i )
+      {
+        const QgsLineString *line = mline->lineStringN( i );
+        outEdges.addLineString( *line, offset );
+      }
+    }
+
+    // if geometry was clipped to the chunk extents and the chunk extents intersected an interior ring, then
+    // that ring is now part of the exterior ring. Hence we don't need to treat interior rings any differently
     for ( int i = 0; i < polyClone->numInteriorRings(); ++i )
       outEdges.addLineString( *static_cast<const QgsLineString *>( polyClone->interiorRing( i ) ), offset );
 
-    if ( extrusionHeight )
+    if ( extrusionHeight != 0.f )
     {
       // add roof and wall edges
-      const QgsLineString *exterior = static_cast<const QgsLineString *>( polyClone->exteriorRing() );
-      outEdges.addLineString( *exterior, extrusionHeight + offset );
-      outEdges.addVerticalLines( *exterior, extrusionHeight, offset );
+
+      if ( const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( exteriorRing ) )
+      {
+        outEdges.addLineString( *line, extrusionHeight + offset );
+        outEdges.addVerticalLines( *line, extrusionHeight, offset );
+      }
+      // if geometry was clipped to the chunk extents, we might now have a multilinestring
+      else if ( const QgsMultiLineString *mline = qgsgeometry_cast<const QgsMultiLineString *>( exteriorRing ) )
+      {
+        for ( int i = 0; i < mline->numGeometries(); ++i )
+        {
+          const QgsLineString *line = mline->lineStringN( i );
+          outEdges.addLineString( *line, extrusionHeight + offset );
+          outEdges.addVerticalLines( *line, extrusionHeight, offset );
+        }
+      }
+
+      // if geometry was clipped to the chunk extents and the chunk extents intersected an interior ring, then
+      // that ring is now part of the exterior ring. Hence we don't need to treat interior rings any differently
       for ( int i = 0; i < polyClone->numInteriorRings(); ++i )
       {
         const QgsLineString *interior = static_cast<const QgsLineString *>( polyClone->interiorRing( i ) );
@@ -184,6 +245,11 @@ void QgsPolygon3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs3D
   PolygonData &out = mSelectedIds.contains( f.id() ) ? outSelected : outNormal;
 
   QgsGeometry geom = f.geometry();
+  mWasClippedToExtent = clipGeometryIfTooLarge( geom );
+
+  if ( geom.isEmpty() )
+    return;
+
   const QgsAbstractGeometry *g = geom.constGet()->simplifiedTypeRef();
 
   // segmentize curved geometries if necessary
@@ -251,8 +317,8 @@ void QgsPolygon3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3D
   mZMin = std::min( outNormal.tessellator->zMinimum(), outSelected.tessellator->zMinimum() );
   mZMax = std::max( outNormal.tessellator->zMaximum(), outSelected.tessellator->zMaximum() );
 
-  // add entity for edges
-  if ( mSymbol->edgesEnabled() && !outEdges.indexes.isEmpty() )
+  // add entity for edges, but not when doing highlighting
+  if ( mSymbol->edgesEnabled() && !outEdges.indexes.isEmpty() && !mHighlightingEnabled )
   {
     QgsLineMaterial *mat = new QgsLineMaterial;
     mat->setLineColor( mSymbol->edgeColor() );
@@ -345,6 +411,7 @@ QgsMaterial *QgsPolygon3DSymbolHandler::material( const QgsPolygon3DSymbol *symb
   QgsMaterialContext materialContext;
   materialContext.setIsSelected( isSelected );
   materialContext.setSelectionColor( context.selectionColor() );
+  materialContext.setIsHighlighted( mHighlightingEnabled );
 
   const bool dataDefined = mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties();
   QgsMaterial *material = symbol->materialSettings()->toMaterial( dataDefined ? QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined : QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );

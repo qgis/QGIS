@@ -29,6 +29,9 @@
 #include "qgsmeshvirtualdatasetgroup.h"
 
 #include <QFileInfo>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString,
                                       const QString &outputFile,
@@ -37,10 +40,9 @@ QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString,
                                       double endTime,
                                       QgsMeshLayer *layer )
   : mFormulaString( formulaString )
-  , mOutputDriver( QStringLiteral( "DAT" ) )
+  , mOutputDriver( u"DAT"_s )
   , mOutputFile( outputFile )
   , mOutputExtent( outputExtent )
-  , mUseMask( false )
   , mStartTime( startTime )
   , mEndTime( endTime )
   , mMeshLayer( layer )
@@ -56,7 +58,7 @@ QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString,
                                       double endTime,
                                       QgsMeshLayer *layer )
   : mFormulaString( formulaString )
-  , mOutputDriver( QStringLiteral( "DAT" ) )
+  , mOutputDriver( u"DAT"_s )
   , mOutputFile( outputFile )
   , mOutputMask( outputMask )
   , mUseMask( true )
@@ -82,8 +84,6 @@ QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString,
   , mOutputGroupName( outputGroupName )
   , mOutputFile( outputFile )
   , mOutputExtent( outputExtent )
-  , mUseMask( false )
-  , mDestination( QgsMeshDatasetGroup::Persistent )
   , mStartTime( startTime )
   , mEndTime( endTime )
   , mMeshLayer( layer )
@@ -104,7 +104,6 @@ QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString,
   , mOutputFile( outputFile )
   , mOutputMask( outputMask )
   , mUseMask( true )
-  , mDestination( QgsMeshDatasetGroup::Persistent )
   , mStartTime( startTime )
   , mEndTime( endTime )
   , mMeshLayer( layer )
@@ -121,7 +120,6 @@ QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString,
   : mFormulaString( formulaString )
   , mOutputGroupName( outputGroupName )
   , mOutputExtent( outputExtent )
-  , mUseMask( false )
   , mDestination( destination )
   , mStartTime( startTime )
   , mEndTime( endTime )
@@ -186,7 +184,7 @@ QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *fe
 
   if ( !mMeshLayer ||
        !mMeshLayer->dataProvider() ||
-       mMeshLayer->providerType() != QStringLiteral( "mdal" )
+       mMeshLayer->providerType() != u"mdal"_s
      )
   {
     return CreateOutputError;

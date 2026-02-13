@@ -37,7 +37,6 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
     Q_OBJECT
 
   public:
-
     /**
      * Create a new order by dialog. This helps building order by structures.
      *
@@ -64,7 +63,6 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
     void showHelp();
 
   private:
-
     /**
      * Initialize a row with the given information
      */

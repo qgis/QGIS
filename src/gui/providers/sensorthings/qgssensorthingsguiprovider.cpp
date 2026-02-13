@@ -17,6 +17,10 @@
 
 #include "qgssensorthingsguiprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 #include <QList>
@@ -51,7 +55,7 @@ QString QgsSensorThingsSourceSelectProvider::text() const
 
 QIcon QgsSensorThingsSourceSelectProvider::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddSensorThingsLayer.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mActionAddSensorThingsLayer.svg"_s );
 }
 
 int QgsSensorThingsSourceSelectProvider::ordering() const

@@ -40,7 +40,6 @@ class GUI_EXPORT QgsLegendPatchShapeButton : public QToolButton
     Q_OBJECT
 
   public:
-
     /**
      * Construct a new patch shape button with the specified \a parent widget.
      * Use \a dialogTitle string to define the title to show in the legend patch shape widget.

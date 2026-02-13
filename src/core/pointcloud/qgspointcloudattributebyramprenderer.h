@@ -23,6 +23,10 @@
 #include "qgscolorrampshader.h"
 #include "qgspointcloudrenderer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #ifndef SIP_RUN
 
 /**
@@ -145,7 +149,7 @@ class CORE_EXPORT QgsPointCloudAttributeByRampRenderer : public QgsPointCloudRen
     double mMin = 0;
     double mMax = 100;
 
-    QString mAttribute = QStringLiteral( "Intensity" );
+    QString mAttribute = u"Intensity"_s;
     QgsColorRampShader mColorRampShader;
 
 };

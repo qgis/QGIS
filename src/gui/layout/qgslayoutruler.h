@@ -41,7 +41,6 @@ class GUI_EXPORT QgsLayoutRuler : public QWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutRuler, with the specified \a parent widget and \a orientation.
      */

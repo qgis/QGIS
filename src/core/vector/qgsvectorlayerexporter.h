@@ -334,6 +334,7 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
      */
     Qgis::VectorDataProviderAttributeEditCapabilities attributeEditCapabilities() const;
 
+    using QgsFeatureSink::addFeatures;
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     QString lastError() const override;
@@ -354,13 +355,13 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
     Qgis::VectorExportResult mError;
     QString mErrorMessage;
 
-    int mErrorCount;
+    int mErrorCount = 0;
 
     QgsVectorDataProvider *mProvider = nullptr;
 
     //! Map attribute indexes to new field indexes
     QMap<int, int> mOldToNewAttrIdx;
-    int mAttributeCount;
+    int mAttributeCount = -1;
 
     QgsFeatureList mFeatureBuffer;
     int mFeatureBufferMemoryUsage = 0;

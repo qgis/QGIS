@@ -81,7 +81,6 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsRasterLayerTemporalPropertiesWidget.
      */

@@ -18,9 +18,13 @@
 #include "qgscapabilitiescache.h"
 
 #include <QCoreApplication>
+#include <QDir>
 #include <QFileInfo>
+#include <QString>
 
 #include "moc_qgscapabilitiescache.cpp"
+
+using namespace Qt::StringLiterals;
 
 #if defined( Q_OS_LINUX )
 #include <sys/vfs.h>
@@ -29,6 +33,13 @@
 #include "qgslogger.h"
 #include "qgsserversettings.h"
 #include "qgsmessagelog.h"
+
+const QString cacheKey( const QString &pathIn )
+{
+  // Clean the given file path so that in the case where the cache inserts/searches a path like folder\sub\filename.qgs or
+  // folder/sub/filename.qgs they will both be cleaned and resolve to the same cache entry
+  return QDir::cleanPath( pathIn );
+}
 
 
 QgsCapabilitiesCache::QgsCapabilitiesCache( int size )
@@ -41,10 +52,11 @@ QgsCapabilitiesCache::QgsCapabilitiesCache( int size )
 #endif
 }
 
-const QDomDocument *QgsCapabilitiesCache::searchCapabilitiesDocument( const QString &configFilePath, const QString &key )
+const QDomDocument *QgsCapabilitiesCache::searchCapabilitiesDocument( const QString &configFilePathIn, const QString &key )
 {
   QCoreApplication::processEvents(); //get updates from file system watcher
 
+  const QString configFilePath = cacheKey( configFilePathIn );
   if ( mCachedCapabilities.contains( configFilePath ) && mCachedCapabilities[configFilePath].contains( key ) )
   {
     return &mCachedCapabilities[configFilePath][key];
@@ -55,8 +67,9 @@ const QDomDocument *QgsCapabilitiesCache::searchCapabilitiesDocument( const QStr
   }
 }
 
-void QgsCapabilitiesCache::insertCapabilitiesDocument( const QString &configFilePath, const QString &key, const QDomDocument *doc )
+void QgsCapabilitiesCache::insertCapabilitiesDocument( const QString &configFilePathIn, const QString &key, const QDomDocument *doc )
 {
+  const QString configFilePath = cacheKey( configFilePathIn );
   if ( mCachedCapabilities.size() > mCacheSize )
   {
     //remove another cache entry to avoid memory problems
@@ -64,7 +77,7 @@ void QgsCapabilitiesCache::insertCapabilitiesDocument( const QString &configFile
     mFileSystemWatcher.removePath( capIt.key() );
     mCachedCapabilities.erase( capIt );
 
-    QgsMessageLog::logMessage( QStringLiteral( "Removed cached WMS capabilities document because all %1 cache slots were taken" ).arg( mCacheSize ), QStringLiteral( "Server" ) );
+    QgsMessageLog::logMessage( u"Removed cached WMS capabilities document because all %1 cache slots were taken"_s.arg( mCacheSize ), u"Server"_s );
   }
 
   if ( !mCachedCapabilities.contains( configFilePath ) )
@@ -86,22 +99,24 @@ void QgsCapabilitiesCache::insertCapabilitiesDocument( const QString &configFile
 #endif
 }
 
-void QgsCapabilitiesCache::removeCapabilitiesDocument( const QString &path )
+void QgsCapabilitiesCache::removeCapabilitiesDocument( const QString &pathIn )
 {
+  const QString path = cacheKey( pathIn );
   mCachedCapabilities.remove( path );
   mCachedCapabilitiesTimestamps.remove( path );
   mFileSystemWatcher.removePath( path );
 }
 
-void QgsCapabilitiesCache::removeChangedEntry( const QString &path )
+void QgsCapabilitiesCache::removeChangedEntry( const QString &pathIn )
 {
-  QgsDebugMsgLevel( QStringLiteral( "Remove capabilities cache entry because file changed" ), 2 );
+  const QString path = cacheKey( pathIn );
+  QgsDebugMsgLevel( u"Remove capabilities cache entry because file changed"_s, 2 );
   removeCapabilitiesDocument( path );
 }
 
 void QgsCapabilitiesCache::removeOutdatedEntries()
 {
-  QgsDebugMsgLevel( QStringLiteral( "Checking for outdated entries" ), 2 );
+  QgsDebugMsgLevel( u"Checking for outdated entries"_s, 2 );
   for ( auto it = mCachedCapabilitiesTimestamps.constBegin(); it != mCachedCapabilitiesTimestamps.constEnd(); it++ )
   {
     const QString configFilePath = it.key();

@@ -24,6 +24,10 @@
 #include "qgspointcloudclassifiedrenderer.h"
 #include "qgspointcloudlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup qgis_3d
  * \brief 3D symbol that draws point cloud geometries as 3D objects.
@@ -36,7 +40,6 @@
 class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
 {
   public:
-
     /**
      * How to render the point cloud
      */
@@ -446,9 +449,9 @@ class _3D_EXPORT QgsRgbPointCloud3DSymbol : public QgsPointCloud3DSymbol
     QgsRgbPointCloud3DSymbol( const QgsRgbPointCloud3DSymbol &other );
 #endif
 
-    QString mRedAttribute = QStringLiteral( "Red" );
-    QString mGreenAttribute = QStringLiteral( "Green" );
-    QString mBlueAttribute = QStringLiteral( "Blue" );
+    QString mRedAttribute = u"Red"_s;
+    QString mGreenAttribute = u"Green"_s;
+    QString mBlueAttribute = u"Blue"_s;
 
     std::unique_ptr<QgsContrastEnhancement> mRedContrastEnhancement;
     std::unique_ptr<QgsContrastEnhancement> mGreenContrastEnhancement;

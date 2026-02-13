@@ -38,7 +38,6 @@ class QgsServerResponse;
 class SERVER_EXPORT QgsRequestHandler
 {
   public:
-
     /**
      * Constructor
      *
@@ -154,7 +153,7 @@ class SERVER_EXPORT QgsRequestHandler
     QString mFormat;
     QString mFormatString; //format string as it is passed in the request (with base)
     QString mService;
-    bool mExceptionRaised;
+    bool mExceptionRaised = false;
 
     QgsServerRequest &mRequest;
     QgsServerResponse &mResponse;

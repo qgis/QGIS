@@ -28,7 +28,6 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsGuiVectorLayerTools.
      */

@@ -17,6 +17,8 @@
 #ifndef QGSCLASSIFICATIONMETHODREGISTRY_H
 #define QGSCLASSIFICATIONMETHODREGISTRY_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 

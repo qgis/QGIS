@@ -22,6 +22,10 @@
 #include "qgsfillsymbol.h"
 #include "qgsplot.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsVectorLayerAbstractPlotDataGatherer;
 
 
@@ -40,7 +44,7 @@ class CORE_EXPORT QgsBarChartPlot : public Qgs2DXyPlot
     QgsBarChartPlot();
     ~QgsBarChartPlot() override = default;
 
-    QString type() const override { return QStringLiteral( "bar" ); }
+    QString type() const override { return u"bar"_s; }
 
     void renderContent( QgsRenderContext &context, QgsPlotRenderContext &plotContext, const QRectF &plotArea, const QgsPlotData &plotData = QgsPlotData() ) override;
 

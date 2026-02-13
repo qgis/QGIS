@@ -26,7 +26,7 @@
 
 class QgsMssqlDatabase;
 
-//! Class that reprents a model to display available schemas on a database and choose which will be displayed in QGIS
+//! Class that represents a model to display available schemas on a database and choose which will be displayed in QGIS
 class SchemaModel : public QAbstractListModel
 {
     Q_OBJECT

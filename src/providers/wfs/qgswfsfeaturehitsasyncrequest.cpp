@@ -21,11 +21,14 @@
 #include "qgsgml.h"
 #include "qgsmessagelog.h"
 
+#include <QString>
+
 #include "moc_qgswfsfeaturehitsasyncrequest.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsWFSFeatureHitsAsyncRequest::QgsWFSFeatureHitsAsyncRequest( QgsWFSDataSourceURI &uri )
   : QgsWfsRequest( uri )
-  , mNumberMatched( -1 )
 {
   connect( this, &QgsWfsRequest::downloadFinished, this, &QgsWFSFeatureHitsAsyncRequest::hitsReplyFinished );
 }
@@ -41,7 +44,7 @@ void QgsWFSFeatureHitsAsyncRequest::launchGet( const QUrl &url )
 
 void QgsWFSFeatureHitsAsyncRequest::launchPost( const QUrl &url, const QByteArray &data )
 {
-  sendPOST( url, QStringLiteral( "application/xml; charset=utf-8" ), data, false, /* synchronous */
+  sendPOST( url, u"application/xml; charset=utf-8"_s, data, false, /* synchronous */
             { QNetworkReply::RawHeaderPair { "Accept", "application/xml" } } );
 }
 

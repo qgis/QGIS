@@ -29,7 +29,10 @@
 #include <QDomDocument>
 #include <QFileSystemWatcher>
 #include <QObject>
+#include <QString>
 #include <QTimer>
+
+using namespace Qt::StringLiterals;
 
 #ifndef SIP_RUN
 
@@ -76,7 +79,6 @@ class SERVER_EXPORT QgsConfigCache : public QObject
 {
     Q_OBJECT
   public:
-
     /**
      * Initialize from settings.
      *
@@ -177,7 +179,7 @@ class SERVER_EXPORT QgsFileSystemCacheStrategy : public QgsAbstractCacheStrategy
     QgsFileSystemCacheStrategy();
 
     //! The name of the strategy
-    QString name() const override { return QStringLiteral( "filesystem" ); };
+    QString name() const override { return u"filesystem"_s; };
 
     //! Attach cache to this strategy
     void attach( QgsConfigCache *cache ) override;
@@ -208,7 +210,6 @@ class SERVER_EXPORT QgsFileSystemCacheStrategy : public QgsAbstractCacheStrategy
 class SERVER_EXPORT QgsPeriodicCacheStrategy : public QgsAbstractCacheStrategy
 {
   public:
-
     /**
      *  Creates a new periodic strategy
      *  \param interval The invalidation check interval in milliseconds
@@ -216,7 +217,7 @@ class SERVER_EXPORT QgsPeriodicCacheStrategy : public QgsAbstractCacheStrategy
     QgsPeriodicCacheStrategy( int interval = 3000 );
 
     //! The name of the strategy
-    QString name() const override { return QStringLiteral( "periodic" ); };
+    QString name() const override { return u"periodic"_s; };
 
     /**
      * Sets the invalidation check interval for PeriodicStrategy
@@ -266,7 +267,7 @@ class SERVER_EXPORT QgsNullCacheStrategy : public QgsAbstractCacheStrategy
     QgsNullCacheStrategy() = default;
 
     //! The name of the strategy
-    QString name() const override { return QStringLiteral( "off" ); };
+    QString name() const override { return u"off"_s; };
 
     //! Attaches cache to this strategy
     void attach( QgsConfigCache *owner ) override;

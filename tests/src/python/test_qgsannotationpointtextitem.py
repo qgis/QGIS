@@ -21,6 +21,7 @@ from qgis.core import (
     QgsAnnotationItemEditOperationAddNode,
     QgsAnnotationItemEditOperationDeleteNode,
     QgsAnnotationItemEditOperationMoveNode,
+    QgsAnnotationItemEditOperationRotateItem,
     QgsAnnotationItemEditOperationTranslateItem,
     QgsAnnotationItemNode,
     QgsAnnotationPointTextItem,
@@ -120,6 +121,19 @@ class TestQgsAnnotationPointTextItem(QgisTestCase):
             Qgis.AnnotationItemEditOperationResult.Success,
         )
         self.assertEqual(item.point().asWkt(), "POINT(112 213)")
+
+    def test_rotate_operation(self):
+        item = QgsAnnotationPointTextItem("my text", QgsPointXY(12, 13))
+        self.assertEqual(item.angle(), 0)
+
+        self.assertEqual(
+            item.applyEditV2(
+                QgsAnnotationItemEditOperationRotateItem("", 90),
+                QgsAnnotationItemEditContext(),
+            ),
+            Qgis.AnnotationItemEditOperationResult.Success,
+        )
+        self.assertEqual(item.angle(), 90)
 
     def test_apply_move_node_edit(self):
         item = QgsAnnotationPointTextItem("my text", QgsPointXY(12, 13))

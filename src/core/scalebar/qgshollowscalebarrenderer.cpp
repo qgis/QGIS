@@ -25,10 +25,13 @@
 
 #include <QList>
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QString QgsHollowScaleBarRenderer::id() const
 {
-  return QStringLiteral( "hollow" );
+  return u"hollow"_s;
 }
 
 QString QgsHollowScaleBarRenderer::visibleName() const

@@ -27,6 +27,9 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsLayout3DMap : public QgsTest
 {
@@ -34,7 +37,7 @@ class TestQgsLayout3DMap : public QgsTest
 
   public:
     TestQgsLayout3DMap()
-      : QgsTest( QStringLiteral( "Layout 3D Map Tests" ), QStringLiteral( "composer_3d" ) ) {}
+      : QgsTest( u"Layout 3D Map Tests"_s, u"composer_3d"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -104,11 +107,7 @@ void TestQgsLayout3DMap::testBasic()
   map3dItem->setMapSettings( map );
   l.addLayoutItem( map3dItem );
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composer3d_basic_qt5" ), &l, 0, 100 );
-#else
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composer3d_basic_qt6" ), &l, 0, 100 );
-#endif
+  QGSVERIFYLAYOUTCHECK( u"composer3d_basic_qt6"_s, &l, 0, 100 );
 
   QVERIFY( !map->isTemporal() );
 
@@ -118,11 +117,7 @@ void TestQgsLayout3DMap::testBasic()
 
   map3dItem->refresh();
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composer3d_basic_qt5" ), &l, 0, 100 );
-#else
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composer3d_basic_qt6" ), &l, 0, 100 );
-#endif
+  QGSVERIFYLAYOUTCHECK( u"composer3d_basic_qt6"_s, &l, 0, 100 );
 
   QVERIFY( map->isTemporal() );
   QCOMPARE( map->temporalRange(), QgsDateTimeRange( begin, end ) );

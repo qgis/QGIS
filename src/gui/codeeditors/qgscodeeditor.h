@@ -24,6 +24,8 @@
 
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 // qscintilla includes
 #include <Qsci/qsciapis.h>
 #include "qgis_sip.h"
@@ -70,7 +72,6 @@ class GUI_EXPORT QgsCodeInterpreter
     virtual QString promptForState( int state ) const = 0;
 
   protected:
-
     /**
      * Pure virtual method for executing commands in the interpreter.
      *
@@ -84,7 +85,7 @@ class GUI_EXPORT QgsCodeInterpreter
 };
 
 
-// TODO QGIS 4.0 -- Consider making QgsCodeEditor inherit QWidget only,
+// TODO QGIS 5.0 -- Consider making QgsCodeEditor inherit QWidget only,
 // with a separate getter for the QsciScintilla child widget. This
 // would give us more flexibility to add functionality to the base
 // QgsCodeEditor class, eg adding a message bar or other child widgets
@@ -103,7 +104,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
   public:
 #ifndef SIP_RUN
 
-    static inline QgsSettingsTreeNode *sTreeCodeEditor = QgsSettingsTree::sTreeGui->createChildNode( QStringLiteral( "code-editor" ) );
+    static inline QgsSettingsTreeNode *sTreeCodeEditor = QgsSettingsTree::sTreeGui->createChildNode( u"code-editor"_s );
     static const QgsSettingsEntryBool *settingContextHelpHover;
 #endif
 
@@ -605,7 +606,6 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     void editingTimeout();
 
   protected:
-
     /**
      * Returns TRUE if a \a font is a fixed pitch font.
      */

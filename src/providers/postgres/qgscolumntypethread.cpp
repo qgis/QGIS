@@ -23,8 +23,11 @@ email                : jef at norbit dot de
 #include "qgspostgresconnpool.h"
 
 #include <QMetaType>
+#include <QString>
 
 #include "moc_qgscolumntypethread.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGeomColumnTypeThread::QgsGeomColumnTypeThread( const QString &name, bool useEstimatedMetaData, bool allowGeometrylessTables )
   : mName( name )
@@ -56,7 +59,7 @@ void QgsGeomColumnTypeThread::run()
   mStopped = false;
 
   const bool dontResolveType = QgsPostgresConn::dontResolveType( mName );
-  const QString schemaToRestrict = QgsPostgresConn::publicSchemaOnly( mName ) ? QStringLiteral( "public" ) : QgsPostgresConn::schemaToRestrict( mName );
+  const QString schemaToRestrict = QgsPostgresConn::publicSchemaOnly( mName ) ? u"public"_s : QgsPostgresConn::schemaToRestrict( mName );
 
   emit progressMessage( tr( "Retrieving tables of %1…" ).arg( mName ) );
   QVector<QgsPostgresLayerProperty> layerProperties;

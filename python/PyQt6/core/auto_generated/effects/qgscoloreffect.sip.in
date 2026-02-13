@@ -10,6 +10,7 @@
 
 
 
+
 class QgsColorEffect : QgsPaintEffect /NoDefaultCtors/
 {
 %Docstring(signature="appended")
@@ -37,6 +38,7 @@ Creates a new QgsColorEffect effect from a properties string map.
 
     virtual QString type() const;
     virtual QVariantMap properties() const;
+
 
     virtual void readProperties( const QVariantMap &props );
 

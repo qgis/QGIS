@@ -92,7 +92,7 @@ class QUICK_EXPORT QgsQuickMapCanvasMap : public QQuickItem
   public:
     //! Create map canvas map
     explicit QgsQuickMapCanvasMap( QQuickItem *parent = nullptr );
-    ~QgsQuickMapCanvasMap();
+    ~QgsQuickMapCanvasMap() override;
 
     QSGNode *updatePaintNode( QSGNode *oldNode, QQuickItem::UpdatePaintNodeData * ) override;
 
@@ -145,11 +145,7 @@ class QUICK_EXPORT QgsQuickMapCanvasMap : public QQuickItem
     void incrementalRenderingChanged();
 
   protected:
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    void geometryChanged( const QRectF &newGeometry, const QRectF &oldGeometry ) override;
-#else
     void geometryChange( const QRectF &newGeometry, const QRectF &oldGeometry ) override;
-#endif
 
   public slots:
     //! Stop map rendering

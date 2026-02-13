@@ -27,43 +27,87 @@ class QgsVectorLayer;
  * \ingroup qgis_3d
  * \brief Defines configuration of how a vector layer gets tiled for 3D rendering.
  *
- * Zoom levels count tells how deep will be the quadtree and thus how many tiles will
- * be generated ( 4 ^ (count-1) ). So for example, for count=1 there will be just
- * a single tile for the whole layer, for count=3 there will be 16 tiles.
+ * Root node has the layer's extent and geometry error is set as a fraction of the extent (see maximumLeafExtent())
+ * Child nodes are created using quadtree approach - a node gets four children, each having their width/height (2D extent)
+ * and geometry error halved.
+ *
+ * For example a root tile that is 1'000 meters wide will get geometry error set as 10 meters.
+ *
+ * When loading data for each tile, we fetch up to maximumChunkFeatures() features. If the limit is hit, we will recursively
+ * create children, so that user gets to see more features when zoomed in.
+ * If the geographical extent is very large (see maximumLeafExtent()), we would still recursively create children, even if
+ * the limit of features is not hit, to avoid jitter due to numerical precision issues.
  *
  * \since QGIS 3.12
  */
 class _3D_EXPORT QgsVectorLayer3DTilingSettings
 {
   public:
-
     /**
      * Returns number of zoom levels. One zoom level means there will be one tile.
      * Every extra zoom level multiplies number of tiles by four. For example, three
      * zoom levels will produce 16 tiles at the highest zoom level. It is therefore
      * recommended to keep the number of zoom levels low to prevent excessive number
      * of tiles.
+     * \deprecated QGIS 4.0. Tiling is now done based on maximumScreenError() and maximumChunkFeatures().
      */
-    int zoomLevelsCount() const { return mZoomLevelsCount; }
+    Q_DECL_DEPRECATED int zoomLevelsCount() const SIP_DEPRECATED { return mZoomLevelsCount; }
 
     /**
      * Sets number of zoom levels. See zoomLevelsCount() documentation for more details.
+     * \deprecated QGIS 4.0. Tiling is now done based on maximumScreenError() and maximumChunkFeatures().
      */
-    void setZoomLevelsCount( int count ) { mZoomLevelsCount = count; }
+    Q_DECL_DEPRECATED void setZoomLevelsCount( int count ) SIP_DEPRECATED { mZoomLevelsCount = count; }
 
     //! Sets whether to display bounding boxes of entity's tiles (for debugging)
     void setShowBoundingBoxes( bool enabled ) { mShowBoundingBoxes = enabled; }
     //! Returns whether to display bounding boxes of entity's tiles (for debugging)
     bool showBoundingBoxes() const { return mShowBoundingBoxes; }
 
+    /**
+     * Returns the maximum number of features that will be fetched in any chunk.
+     * If more features than the maximum belong to the chunk, further features will become available in child nodes.
+     * This is meant as a control for performance - fewer features mean faster load times, but user needs to zoom in more to see everything.
+     * \see setMaximumChunkFeatures()
+     * \since QGIS 4.0
+     */
+    int maximumChunkFeatures() const { return mMaxChunkFeatures; }
+
+    /**
+     * Sets the maximum number of features that will be fetched in any chunk.
+     * If more features than the maximum belong to the chunk, further features will become available in child nodes.
+     * This is meant as a control for performance - fewer features mean faster load times, but user needs to zoom in more to see everything.
+     * \see maximumChunkFeatures()
+     * \since QGIS 4.0
+     */
+    void setMaximumChunkFeatures( int value ) { mMaxChunkFeatures = value; }
+
     //! Writes content of the object to XML
     void writeXml( QDomElement &elem ) const;
     //! Reads content of the object from XML
     void readXml( const QDomElement &elem );
 
+    /**
+     * This is the ratio of tile's largest size to geometry error and is used when setting the root tile's error.
+     * The choice of 1/100 was relatively arbitrary and based on test data.
+     * \note not available in Python bindings
+     * \since QGIS 4.0
+     */
+    static double tileGeometryErrorRatio() SIP_SKIP { return 0.01; }
+
+    /**
+     * This is the maximum width or height a tile can have and still be considered a leaf node.
+     * Children will be generated for tiles larger than this, even if their chunks did not reach the maximumChunkFeatures limit.
+     * We want to avoid having huge leaf nodes so we don't have float precision issues
+     * \note not available in Python bindings
+     * \since QGIS 4.0
+     */
+    static double maximumLeafExtent() SIP_SKIP { return 500'000; }
+
   private:
     int mZoomLevelsCount = 3;
     bool mShowBoundingBoxes = false;
+    int mMaxChunkFeatures = 1000;
 };
 
 

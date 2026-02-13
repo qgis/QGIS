@@ -19,6 +19,10 @@
 #include "qgswmtsparameters.h"
 #include "qgswmtsutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 namespace QgsWmts
 {
 
@@ -28,7 +32,7 @@ namespace QgsWmts
     const QgsWmtsParameters params( QUrlQuery( request.url() ) );
 
     // WMS query
-    QUrlQuery query = translateWmtsParamToWmsQueryItem( QStringLiteral( "GetFeatureInfo" ), params, project, serverIface );
+    QUrlQuery query = translateWmtsParamToWmsQueryItem( u"GetFeatureInfo"_s, params, project, serverIface );
 
     // GetFeatureInfo query items
     query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::QUERY_LAYERS ), params.layer() );

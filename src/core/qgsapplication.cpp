@@ -25,6 +25,7 @@
 #include "qgsactionscoperegistry.h"
 #include "qgsannotationitemregistry.h"
 #include "qgsannotationregistry.h"
+#include "qgsapplicationthemeregistry.h"
 #include "qgsauthconfigurationstorageregistry.h"
 #include "qgsauthmanager.h"
 #include "qgsbabelformatregistry.h"
@@ -80,6 +81,7 @@
 #include "qgsrendererregistry.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsscalebarrendererregistry.h"
+#include "qgsselectivemaskingsourceset.h"
 #include "qgssensorregistry.h"
 #include "qgssensorthingsutils.h"
 #include "qgssettings.h"
@@ -106,6 +108,7 @@
 #include <QFileInfo>
 #include <QFileOpenEvent>
 #include <QIcon>
+#include <QImageReader>
 #include <QLibraryInfo>
 #include <QLocale>
 #include <QMessageBox>
@@ -117,27 +120,26 @@
 #include <QRegularExpression>
 #include <QScreen>
 #include <QStandardPaths>
+#include <QString>
 #include <QStyle>
 #include <QTextStream>
 #include <QThreadPool>
 
 #include "moc_qgsapplication.cpp"
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-#include <QImageReader>
-#endif
+using namespace Qt::StringLiterals;
 
-const QgsSettingsEntryString *QgsApplication::settingsLocaleUserLocale = new QgsSettingsEntryString( QStringLiteral( "userLocale" ), QgsSettingsTree::sTreeLocale, QString() );
+const QgsSettingsEntryString *QgsApplication::settingsLocaleUserLocale = new QgsSettingsEntryString( u"userLocale"_s, QgsSettingsTree::sTreeLocale, QString() );
 
-const QgsSettingsEntryBool *QgsApplication::settingsLocaleOverrideFlag = new QgsSettingsEntryBool( QStringLiteral( "overrideFlag" ), QgsSettingsTree::sTreeLocale, false );
+const QgsSettingsEntryBool *QgsApplication::settingsLocaleOverrideFlag = new QgsSettingsEntryBool( u"overrideFlag"_s, QgsSettingsTree::sTreeLocale, false );
 
-const QgsSettingsEntryString *QgsApplication::settingsLocaleGlobalLocale = new QgsSettingsEntryString( QStringLiteral( "globalLocale" ), QgsSettingsTree::sTreeLocale, QString() );
+const QgsSettingsEntryString *QgsApplication::settingsLocaleGlobalLocale = new QgsSettingsEntryString( u"globalLocale"_s, QgsSettingsTree::sTreeLocale, QString() );
 
-const QgsSettingsEntryBool *QgsApplication::settingsLocaleShowGroupSeparator = new QgsSettingsEntryBool( QStringLiteral( "showGroupSeparator" ), QgsSettingsTree::sTreeLocale, false );
+const QgsSettingsEntryBool *QgsApplication::settingsLocaleShowGroupSeparator = new QgsSettingsEntryBool( u"showGroupSeparator"_s, QgsSettingsTree::sTreeLocale, false );
 
-const QgsSettingsEntryStringList *QgsApplication::settingsSearchPathsForSVG = new QgsSettingsEntryStringList( QStringLiteral( "searchPathsForSVG" ), QgsSettingsTree::sTreeSvg, QStringList() );
+const QgsSettingsEntryStringList *QgsApplication::settingsSearchPathsForSVG = new QgsSettingsEntryStringList( u"searchPathsForSVG"_s, QgsSettingsTree::sTreeSvg, QStringList() );
 
-const QgsSettingsEntryInteger *QgsApplication::settingsConnectionPoolMaximumConcurrentConnections = new QgsSettingsEntryInteger( QStringLiteral( "connection-pool-maximum-concurrent-connections" ), QgsSettingsTree::sTreeCore, 4, QObject::tr( "Maximum number of concurrent connections per connection pool" ), Qgis::SettingsOptions(), 4, 999 );
+const QgsSettingsEntryInteger *QgsApplication::settingsConnectionPoolMaximumConcurrentConnections = new QgsSettingsEntryInteger( u"connection-pool-maximum-concurrent-connections"_s, QgsSettingsTree::sTreeCore, 4, QObject::tr( "Maximum number of concurrent connections per connection pool" ), Qgis::SettingsOptions(), 4, 999 );
 
 #ifndef Q_OS_WIN
 #include <netinet/in.h>
@@ -177,6 +179,7 @@ struct QgsApplication::ApplicationMembers
   std::unique_ptr<Qgs3DSymbolRegistry > m3DSymbolRegistry;
   std::unique_ptr<QgsActionScopeRegistry > mActionScopeRegistry;
   std::unique_ptr<QgsAnnotationRegistry > mAnnotationRegistry;
+  std::unique_ptr<QgsApplicationThemeRegistry > mApplicationThemeRegistry;
   std::unique_ptr<QgsColorSchemeRegistry > mColorSchemeRegistry;
   std::unique_ptr<QgsLocalizedDataPathRegistry > mLocalizedDataPathRegistry;
   std::unique_ptr<QgsNumericFormatRegistry > mNumericFormatRegistry;
@@ -277,7 +280,7 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
   connect( instance(), &QgsApplication::localeChanged, &QgsDateTimeFieldFormatter::applyLocaleChange );
 
   // Delay application members initialization in desktop app (In desktop app, profile folder is not known at this point)
-  if ( platformName != QLatin1String( "desktop" ) )
+  if ( platformName != "desktop"_L1 )
   {
     mApplicationMembers = std::make_unique<ApplicationMembers>();
     try
@@ -286,7 +289,7 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
     }
     catch ( QgsSettingsException &e )
     {
-      QgsDebugError( QStringLiteral( "Error migrating old settings: %1" ).arg( e.what() ) );
+      QgsDebugError( u"Error migrating old settings: %1"_s.arg( e.what() ) );
     }
   }
   else
@@ -334,22 +337,9 @@ void registerMetaTypes()
   qRegisterMetaType<QgsLocatorResult>( "QgsLocatorResult" );
   qRegisterMetaType<QgsGradientColorRamp>( "QgsGradientColorRamp" );
   qRegisterMetaType<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  // Qt6 documentation says these are not needed anymore (https://www.qt.io/blog/whats-new-in-qmetatype-qvariant) #spellok
-  // TODO: when tests can run against Qt6 builds, check for any regressions
-  qRegisterMetaTypeStreamOperators<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
-#endif
   qRegisterMetaType<QgsRemappingSinkDefinition>( "QgsRemappingSinkDefinition" );
   qRegisterMetaType<QgsProcessingModelChildDependency>( "QgsProcessingModelChildDependency" );
   qRegisterMetaType<QgsTextFormat>( "QgsTextFormat" );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  QMetaType::registerComparators<QgsProcessingModelChildDependency>();
-  QMetaType::registerEqualsComparator<QgsProcessingFeatureSourceDefinition>();
-  QMetaType::registerEqualsComparator<QgsProperty>();
-  QMetaType::registerEqualsComparator<QgsDateTimeRange>();
-  QMetaType::registerEqualsComparator<QgsDateRange>();
-  QMetaType::registerEqualsComparator<QgsUnsetAttributeValue>();
-#endif
   qRegisterMetaType<QPainter::CompositionMode>( "QPainter::CompositionMode" );
   qRegisterMetaType<QgsDateTimeRange>( "QgsDateTimeRange" );
   qRegisterMetaType<QgsDoubleRange>( "QgsDoubleRange" );
@@ -363,12 +353,13 @@ void registerMetaTypes()
   qRegisterMetaType< QgsGpsInformation >( "QgsGpsInformation" );
   qRegisterMetaType< QgsSensorThingsExpansionDefinition >( "QgsSensorThingsExpansionDefinition" );
   qRegisterMetaType< QTimeZone >( "QTimeZone" );
+  qRegisterMetaType< QgsSelectiveMaskingSourceSet >( "QgsSelectiveMaskingSourceSet" );
 };
 
 void QgsApplication::init( QString profileFolder )
 {
   // Initialize application members in desktop app (at this point, profile folder is known)
-  if ( platform() == QLatin1String( "desktop" ) )
+  if ( platform() == "desktop"_L1 )
   {
     instance()->mApplicationMembers = std::make_unique<ApplicationMembers>();
     try
@@ -377,7 +368,7 @@ void QgsApplication::init( QString profileFolder )
     }
     catch ( QgsSettingsException &e )
     {
-      QgsDebugError( QStringLiteral( "Error migrating old settings: %1" ).arg( e.what() ) );
+      QgsDebugError( u"Error migrating old settings: %1"_s.arg( e.what() ) );
     }
   }
 
@@ -415,7 +406,7 @@ void QgsApplication::init( QString profileFolder )
 #else
     setPluginPath( *sBuildOutputPath() + '/' + QStringLiteral( QGIS_PLUGIN_SUBDIR ) );
 #endif
-    setPkgDataPath( *sBuildOutputPath() + QStringLiteral( "/data" ) ); // in buildDir/data - used for: doc, resources, svg
+    setPkgDataPath( *sBuildOutputPath() + u"/data"_s ); // in buildDir/data - used for: doc, resources, svg
     *sLibraryPath() = *sBuildOutputPath() + '/' + QGIS_LIB_SUBDIR + '/';
 #if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
     *sLibexecPath() = *sBuildOutputPath() + '/' + QGIS_LIBEXEC_SUBDIR + '/' + *sCfgIntDir() + '/';
@@ -436,7 +427,7 @@ void QgsApplication::init( QString profileFolder )
 #if defined(Q_OS_WIN) || defined(Q_OS_MACOS) && !defined(QGIS_MAC_BUNDLE)
         setPrefixPath( applicationDirPath(), true );
 #elif defined(QGIS_MAC_BUNDLE)
-        QDir myDir( applicationDirPath() + QLatin1String( "/../.." ) );
+        QDir myDir( applicationDirPath() + "/../.."_L1 );
         setPrefixPath( myDir.absolutePath(), true );
 #elif defined(ANDROID)
         // this is "/data/data/org.qgis.qgis" in android
@@ -447,7 +438,7 @@ void QgsApplication::init( QString profileFolder )
 #else
         QDir myDir( applicationDirPath() );
         // Fix for server which is one level deeper in /usr/lib/cgi-bin
-        if ( applicationDirPath().contains( QStringLiteral( "cgi-bin" ) ) )
+        if ( applicationDirPath().contains( u"cgi-bin"_s ) )
         {
           myDir.cdUp();
         }
@@ -464,7 +455,7 @@ void QgsApplication::init( QString profileFolder )
   }
 
   *sConfigPath() = profileFolder + '/'; // make sure trailing slash is included
-  *sDefaultSvgPaths() << qgisSettingsDirPath() + QStringLiteral( "svg/" );
+  *sDefaultSvgPaths() << qgisSettingsDirPath() + u"svg/"_s;
 
   // Determine the auth DB URI, the first match wins:
   // 1 - get it from QGIS_AUTH_DB_URI environment variable
@@ -486,7 +477,7 @@ void QgsApplication::init( QString profileFolder )
   // Default to sAuthDbDirPath
   if ( sAuthDbUri->isEmpty() )
   {
-    *sAuthDbUri() = QStringLiteral( "QSQLITE://" ) + *sAuthDbDirPath() + QStringLiteral( "qgis-auth.db" );
+    *sAuthDbUri() = u"QSQLITE://"_s + *sAuthDbDirPath() + u"qgis-auth.db"_s;
   }
 
   // force use of OpenGL renderer for Qt3d.
@@ -494,12 +485,12 @@ void QgsApplication::init( QString profileFolder )
 
   // store system environment variables passed to application, before they are adjusted
   QMap<QString, QString> systemEnvVarMap;
-  QString passfile( QStringLiteral( "QGIS_AUTH_PASSWORD_FILE" ) ); // QString, for comparison
+  QString passfile( u"QGIS_AUTH_PASSWORD_FILE"_s ); // QString, for comparison
 
   const auto systemEnvironment = QProcessEnvironment::systemEnvironment().toStringList();
   for ( const QString &varStr : systemEnvironment )
   {
-    int pos = varStr.indexOf( QLatin1Char( '=' ) );
+    int pos = varStr.indexOf( '='_L1 );
     if ( pos == -1 )
       continue;
     QString varStrName = varStr.left( pos );
@@ -513,13 +504,14 @@ void QgsApplication::init( QString profileFolder )
 
   // append local user-writable folder as a proj search path
   QStringList currentProjSearchPaths = QgsProjUtils::searchPaths();
-  currentProjSearchPaths.append( qgisSettingsDirPath() + QStringLiteral( "proj" ) );
+  currentProjSearchPaths.append( qgisSettingsDirPath() + u"proj"_s );
 #ifdef Q_OS_MACOS
-  // append bundled proj lib for MacOS
-  QString projLib( QDir::cleanPath( pkgDataPath().append( "/proj" ) ) );
-  if ( QFile::exists( projLib ) )
+  // Set bundled proj data path as env var, so it's also available for pyproj and subprocesses (e.g. processing algorithms)
+  const QString projData( QDir::cleanPath( pkgDataPath().append( "/proj" ) ) );
+  if ( QFile::exists( projData ) )
   {
-    currentProjSearchPaths.append( projLib );
+    qputenv( "PROJ_DATA", projData.toUtf8() );
+    currentProjSearchPaths.append( projData );
   }
 #endif // Q_OS_MACOS
 
@@ -538,10 +530,8 @@ void QgsApplication::init( QString profileFolder )
   // allow Qt to search for Qt plugins (e.g. sqldrivers) in our plugin directory
   QCoreApplication::addLibraryPath( pluginPath() );
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
   // the default of 256 is not enough for QGIS
   QImageReader::setAllocationLimit( 512 );
-#endif
 
   {
     QgsScopedRuntimeProfile profile( tr( "Load user fonts" ) );
@@ -596,16 +586,16 @@ void QgsApplication::installTranslators()
 
   }
 
-  if ( *sTranslation() != QLatin1String( "C" ) )
+  if ( *sTranslation() != "C"_L1 )
   {
     mQgisTranslator = std::make_unique<QTranslator>( this );
-    if ( mQgisTranslator->load( QStringLiteral( "qgis_" ) + *sTranslation(), i18nPath() ) )
+    if ( mQgisTranslator->load( u"qgis_"_s + *sTranslation(), i18nPath() ) )
     {
       installTranslator( mQgisTranslator.get() );
     }
     else
     {
-      QgsDebugMsgLevel( QStringLiteral( "loading of qgis translation failed %1/qgis_%2" ).arg( i18nPath(), *sTranslation() ), 2 );
+      QgsDebugMsgLevel( u"loading of qgis translation failed %1/qgis_%2"_s.arg( i18nPath(), *sTranslation() ), 2 );
     }
 
     /* Translation file for Qt.
@@ -620,23 +610,23 @@ void QgsApplication::installTranslators()
 #endif
 
     mQtTranslator = std::make_unique<QTranslator>( this );
-    if ( mQtTranslator->load( QStringLiteral( "qt_" ) + *sTranslation(), qtTranslationsPath ) )
+    if ( mQtTranslator->load( u"qt_"_s + *sTranslation(), qtTranslationsPath ) )
     {
       installTranslator( mQtTranslator.get() );
     }
     else
     {
-      QgsDebugMsgLevel( QStringLiteral( "loading of qt translation failed %1/qt_%2" ).arg( qtTranslationsPath, *sTranslation() ), 2 );
+      QgsDebugMsgLevel( u"loading of qt translation failed %1/qt_%2"_s.arg( qtTranslationsPath, *sTranslation() ), 2 );
     }
 
     mQtBaseTranslator = std::make_unique<QTranslator>( this );
-    if ( mQtBaseTranslator->load( QStringLiteral( "qtbase_" ) + *sTranslation(), qtTranslationsPath ) )
+    if ( mQtBaseTranslator->load( u"qtbase_"_s + *sTranslation(), qtTranslationsPath ) )
     {
       installTranslator( mQtBaseTranslator.get() );
     }
     else
     {
-      QgsDebugMsgLevel( QStringLiteral( "loading of qtbase translation failed %1/qt_%2" ).arg( qtTranslationsPath, *sTranslation() ), 2 );
+      QgsDebugMsgLevel( u"loading of qtbase translation failed %1/qt_%2"_s.arg( qtTranslationsPath, *sTranslation() ), 2 );
     }
   }
 }
@@ -651,7 +641,7 @@ QgsApplication::~QgsApplication()
     }
     catch ( QgsSettingsException &e )
     {
-      QgsDebugError( QStringLiteral( "An error occurred while performing backwards compatibility for settings: %1" ).arg( e.what() ) );
+      QgsDebugError( u"An error occurred while performing backwards compatibility for settings: %1"_s.arg( e.what() ) );
     }
   }
 
@@ -794,7 +784,7 @@ void QgsApplication::setPkgDataPath( const QString &pkgDataPath )
 {
   *sPkgDataPath() = pkgDataPath;
 
-  QString mySvgPath = pkgDataPath + QStringLiteral( "/svg/" );
+  QString mySvgPath = pkgDataPath + u"/svg/"_s;
 
   // avoid duplicate entries
   if ( !sDefaultSvgPaths()->contains( mySvgPath ) )
@@ -848,7 +838,7 @@ QString QgsApplication::pkgDataPath()
 
 QString QgsApplication::defaultThemePath()
 {
-  return QStringLiteral( ":/images/themes/default/" );
+  return u":/images/themes/default/"_s;
 }
 QString QgsApplication::activeThemePath()
 {
@@ -867,7 +857,7 @@ QString QgsApplication::activeThemePath()
 
 QString QgsApplication::appIconPath()
 {
-  return iconsPath() + QStringLiteral( "qgis-icon-60x60.png" );
+  return iconsPath() + u"qgis-icon-60x60.png"_s;
 }
 
 int QgsApplication::maxThreads()
@@ -889,8 +879,8 @@ QString QgsApplication::iconPath( const QString &iconFile )
 QIcon QgsApplication::getThemeIcon( const QString &name, const QColor &fillColor, const QColor &strokeColor )
 {
   const QString cacheKey = ( name.startsWith( '/' ) ? name.mid( 1 ) : name )
-                           + ( fillColor.isValid() ? QStringLiteral( "_%1" ).arg( fillColor.name( QColor::HexArgb ).mid( 1 ) ) :  QString() )
-                           + ( strokeColor.isValid() ? QStringLiteral( "_%1" ).arg( strokeColor.name( QColor::HexArgb ).mid( 1 ) ) : QString() );
+                           + ( fillColor.isValid() ? u"_%1"_s.arg( fillColor.name( QColor::HexArgb ).mid( 1 ) ) :  QString() )
+                           + ( strokeColor.isValid() ? u"_%1"_s.arg( strokeColor.name( QColor::HexArgb ).mid( 1 ) ) : QString() );
   QgsApplication *app = instance();
   if ( app && app->mIconCache.contains( cacheKey ) )
     return app->mIconCache.value( cacheKey );
@@ -903,7 +893,7 @@ QIcon QgsApplication::getThemeIcon( const QString &name, const QColor &fillColor
     // sizes are unused here!
     const QByteArray svgContent = QgsApplication::svgCache()->svgContent( path, 16, fillColor, strokeColor, 1, 1 );
 
-    const QString iconPath = sIconCacheDir()->filePath( cacheKey + QStringLiteral( ".svg" ) );
+    const QString iconPath = sIconCacheDir()->filePath( cacheKey + u".svg"_s );
     if ( const QDir dir = QFileInfo( iconPath ).dir(); !dir.exists() )
     {
       dir.mkpath( "." );
@@ -917,7 +907,7 @@ QIcon QgsApplication::getThemeIcon( const QString &name, const QColor &fillColor
     }
     else
     {
-      QgsDebugError( QStringLiteral( "Could not create colorized icon svg at %1" ).arg( iconPath ) );
+      QgsDebugError( u"Could not create colorized icon svg at %1"_s.arg( iconPath ) );
       return QIcon();
     }
 
@@ -975,42 +965,42 @@ QCursor QgsApplication::getThemeCursor( Cursor cursor )
   switch ( cursor )
   {
     case ZoomIn:
-      name = QStringLiteral( "mZoomIn.svg" );
+      name = u"mZoomIn.svg"_s;
       activeX = 13;
       activeY = 13;
       break;
     case ZoomOut:
-      name = QStringLiteral( "mZoomOut.svg" );
+      name = u"mZoomOut.svg"_s;
       activeX = 13;
       activeY = 13;
       break;
     case Identify:
       activeX = 3;
       activeY = 6;
-      name = QStringLiteral( "mIdentify.svg" );
+      name = u"mIdentify.svg"_s;
       break;
     case CrossHair:
-      name = QStringLiteral( "mCrossHair.svg" );
+      name = u"mCrossHair.svg"_s;
       break;
     case CapturePoint:
-      name = QStringLiteral( "mCapturePoint.svg" );
+      name = u"mCapturePoint.svg"_s;
       break;
     case Select:
-      name = QStringLiteral( "mSelect.svg" );
+      name = u"mSelect.svg"_s;
       activeX = 6;
       activeY = 6;
       break;
     case Sampler:
       activeX = 5;
       activeY = 5;
-      name = QStringLiteral( "mSampler.svg" );
+      name = u"mSampler.svg"_s;
       break;
       // No default
   }
   // It should never get here!
   Q_ASSERT( ! name.isEmpty( ) );
 
-  QIcon icon = getThemeIcon( QStringLiteral( "cursors" ) + QDir::separator() + name );
+  QIcon icon = getThemeIcon( u"cursors"_s + QDir::separator() + name );
   QCursor cursorIcon;
   // Check if an icon exists for this cursor (the O.S. default cursor will be used if it does not)
   if ( ! icon.isNull( ) )
@@ -1067,7 +1057,7 @@ QString QgsApplication::resolvePkgPath()
     // check if QGIS is run from build directory (not the install directory)
     QFile f;
     // "/../../.." is for Mac bundled app in build directory
-    static const QStringList paths { QStringList() << QString() << QStringLiteral( "/.." ) << QStringLiteral( "/bin" ) << QStringLiteral( "/../../.." ) };
+    static const QStringList paths { QStringList() << QString() << u"/.."_s << u"/bin"_s << u"/../../.."_s };
     for ( const QString &path : paths )
     {
       f.setFileName( prefix + path + "/qgisbuildpath.txt" );
@@ -1079,9 +1069,9 @@ QString QgsApplication::resolvePkgPath()
       ABISYM( mRunningFromBuildDir ) = true;
       *sBuildSourcePath() = f.readLine().trimmed();
       *sBuildOutputPath() = f.readLine().trimmed();
-      QgsDebugMsgLevel( QStringLiteral( "Running from build directory!" ), 4 );
-      QgsDebugMsgLevel( QStringLiteral( "- source directory: %1" ).arg( sBuildSourcePath()->toUtf8().constData() ), 4 );
-      QgsDebugMsgLevel( QStringLiteral( "- output directory of the build: %1" ).arg( sBuildOutputPath()->toUtf8().constData() ), 4 );
+      QgsDebugMsgLevel( u"Running from build directory!"_s, 4 );
+      QgsDebugMsgLevel( u"- source directory: %1"_s.arg( sBuildSourcePath()->toUtf8().constData() ), 4 );
+      QgsDebugMsgLevel( u"- output directory of the build: %1"_s.arg( sBuildOutputPath()->toUtf8().constData() ), 4 );
 #if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
       *sCfgIntDir() = prefix.split( '/', Qt::SkipEmptyParts ).last();
       qDebug( "- cfg: %s", sCfgIntDir()->toUtf8().constData() );
@@ -1110,7 +1100,7 @@ QString QgsApplication::resolvePkgPath()
 #else
     QDir dir( appPath );
     // Fix for server which is one level deeper in /usr/lib/cgi-bin
-    if ( appPath.contains( QStringLiteral( "cgi-bin" ) ) )
+    if ( appPath.contains( u"cgi-bin"_s ) )
     {
       dir.cdUp();
     }
@@ -1121,7 +1111,7 @@ QString QgsApplication::resolvePkgPath()
   }
 
   if ( ABISYM( mRunningFromBuildDir ) )
-    return *sBuildOutputPath() + QStringLiteral( "/data" );
+    return *sBuildOutputPath() + u"/data"_s;
   else
     return prefixPath + '/' + QStringLiteral( QGIS_DATA_SUBDIR );
 }
@@ -1134,29 +1124,49 @@ QString QgsApplication::themeName()
 void QgsApplication::setUITheme( const QString &themeName )
 {
   // Loop all style sheets, find matching name, load it.
-  QHash<QString, QString> themes = QgsApplication::uiThemes();
-  if ( themeName == QLatin1String( "default" ) || !themes.contains( themeName ) )
+  const QString path = applicationThemeRegistry()->themeFolder( themeName );
+  if ( themeName == "default"_L1 || path.isEmpty() )
   {
-    setThemeName( QStringLiteral( "default" ) );
+    setThemeName( u"default"_s );
     qApp->setStyleSheet( QString() );
+    instance()->themeChanged();
     return;
   }
 
-  QString path = themes.value( themeName );
-  QString stylesheetname = path + "/style.qss";
-
-  QFile file( stylesheetname );
+  QFile file( path + "/style.qss" );
   QFile variablesfile( path + "/variables.qss" );
-
   QFileInfo variableInfo( variablesfile );
 
   if ( !file.open( QIODevice::ReadOnly ) || ( variableInfo.exists() && !variablesfile.open( QIODevice::ReadOnly ) ) )
   {
+    qApp->setStyleSheet( QString() );
+    instance()->themeChanged();
     return;
   }
 
+  QFile palettefile( path + "/palette.txt" );
+  QFileInfo paletteInfo( palettefile );
+  if ( paletteInfo.exists() && palettefile.open( QIODevice::ReadOnly ) )
+  {
+    QPalette pal = qApp->palette();
+    QTextStream in( &palettefile );
+    while ( !in.atEnd() )
+    {
+      QString line = in.readLine();
+      QStringList parts = line.split( ':' );
+      if ( parts.count() == 2 )
+      {
+        int role = parts.at( 0 ).trimmed().toInt();
+        QColor color = QgsSymbolLayerUtils::decodeColor( parts.at( 1 ).trimmed() );
+        pal.setColor( static_cast< QPalette::ColorRole >( role ), color );
+      }
+    }
+    palettefile.close();
+    qApp->setPalette( pal );
+  }
+
   QString styledata = file.readAll();
-  styledata.replace( QLatin1String( "@theme_path" ), path );
+  styledata.replace( "@theme_path"_L1, path );
 
   if ( variableInfo.exists() )
   {
@@ -1181,7 +1191,7 @@ void QgsApplication::setUITheme( const QString &themeName )
   {
     // apply OS-specific UI scale factor to stylesheet's em values
     int index = 0;
-    const static QRegularExpression regex( QStringLiteral( "(?<=[\\s:])([0-9\\.]+)(?=em)" ) );
+    const static QRegularExpression regex( u"(?<=[\\s:])([0-9\\.]+)(?=em)"_s );
     QRegularExpressionMatch match = regex.match( styledata, index );
     while ( match.hasMatch() )
     {
@@ -1196,101 +1206,63 @@ void QgsApplication::setUITheme( const QString &themeName )
 
   qApp->setStyleSheet( styledata );
 
-  QFile palettefile( path + "/palette.txt" );
-  QFileInfo paletteInfo( palettefile );
-  if ( paletteInfo.exists() && palettefile.open( QIODevice::ReadOnly ) )
-  {
-    QPalette pal = qApp->palette();
-    QTextStream in( &palettefile );
-    while ( !in.atEnd() )
-    {
-      QString line = in.readLine();
-      QStringList parts = line.split( ':' );
-      if ( parts.count() == 2 )
-      {
-        int role = parts.at( 0 ).trimmed().toInt();
-        QColor color = QgsSymbolLayerUtils::decodeColor( parts.at( 1 ).trimmed() );
-        pal.setColor( static_cast< QPalette::ColorRole >( role ), color );
-      }
-    }
-    palettefile.close();
-    qApp->setPalette( pal );
-  }
-
   setThemeName( themeName );
+  instance()->themeChanged();
 }
 
 QHash<QString, QString> QgsApplication::uiThemes()
 {
-  QStringList paths = QStringList() << userThemesFolder() << defaultThemesFolder();
-  QHash<QString, QString> mapping;
-  mapping.insert( QStringLiteral( "default" ), QString() );
-  const auto constPaths = paths;
-  for ( const QString &path : constPaths )
-  {
-    QDir folder( path );
-    QFileInfoList styleFiles = folder.entryInfoList( QDir::Dirs | QDir::NoDotAndDotDot );
-    const auto constStyleFiles = styleFiles;
-    for ( const QFileInfo &info : constStyleFiles )
-    {
-      QFileInfo styleFile( info.absoluteFilePath() + "/style.qss" );
-      if ( !styleFile.exists() )
-        continue;
-
-      QString name = info.baseName();
-      QString path = info.absoluteFilePath();
-      mapping.insert( name, path );
-    }
-  }
+  QHash<QString, QString> mapping = applicationThemeRegistry()->themeFolders();
+  mapping.insert( u"default"_s, QString() );
   return mapping;
 }
 
 QString QgsApplication::authorsFilePath()
 {
-  return pkgDataPath() + QStringLiteral( "/doc/AUTHORS" );
+  return pkgDataPath() + u"/doc/AUTHORS"_s;
 }
 
 QString QgsApplication::contributorsFilePath()
 {
-  return pkgDataPath() + QStringLiteral( "/doc/CONTRIBUTORS" );
+  return pkgDataPath() + u"/doc/CONTRIBUTORS"_s;
 }
 
 QString QgsApplication::sponsorsFilePath()
 {
-  return pkgDataPath() + QStringLiteral( "/doc/SPONSORS" );
+  return pkgDataPath() + u"/doc/SPONSORS"_s;
 }
 
 QString QgsApplication::donorsFilePath()
 {
-  return pkgDataPath() + QStringLiteral( "/doc/DONORS" );
+  return pkgDataPath() + u"/doc/DONORS"_s;
 }
 
 QString QgsApplication::translatorsFilePath()
 {
-  return pkgDataPath() + QStringLiteral( "/doc/TRANSLATORS" );
+  return pkgDataPath() + u"/doc/TRANSLATORS"_s;
 }
 
 QString QgsApplication::licenceFilePath()
 {
-  return pkgDataPath() + QStringLiteral( "/doc/LICENSE" );
+  return pkgDataPath() + u"/doc/LICENSE"_s;
 }
 
 QString QgsApplication::i18nPath()
 {
   if ( ABISYM( mRunningFromBuildDir ) )
-    return *sBuildOutputPath() + QStringLiteral( "/i18n/" );
+    return *sBuildOutputPath() + u"/i18n/"_s;
   else
-    return pkgDataPath() + QStringLiteral( "/i18n/" );
+    return pkgDataPath() + u"/i18n/"_s;
 }
 
 QString QgsApplication::metadataPath()
 {
-  return pkgDataPath() + QStringLiteral( "/resources/metadata-ISO/" );
+  return pkgDataPath() + u"/resources/metadata-ISO/"_s;
 }
 
 QString QgsApplication::qgisMasterDatabaseFilePath()
 {
-  return pkgDataPath() + QStringLiteral( "/resources/qgis.db" );
+  return pkgDataPath() + u"/resources/qgis.db"_s;
 }
 
 QString QgsApplication::qgisSettingsDirPath()
@@ -1300,12 +1272,12 @@ QString QgsApplication::qgisSettingsDirPath()
 
 QString QgsApplication::qgisUserDatabaseFilePath()
 {
-  return qgisSettingsDirPath() + QStringLiteral( "qgis.db" );
+  return qgisSettingsDirPath() + u"qgis.db"_s;
 }
 
 QString QgsApplication::qgisAuthDatabaseFilePath()
 {
-  return *sAuthDbDirPath() + QStringLiteral( "qgis-auth.db" );
+  return *sAuthDbDirPath() + u"qgis-auth.db"_s;
 }
 
 QString QgsApplication::qgisAuthDatabaseUri()
@@ -1315,12 +1287,12 @@ QString QgsApplication::qgisAuthDatabaseUri()
 
 QString QgsApplication::splashPath()
 {
-  return QStringLiteral( ":/images/splash/" );
+  return u":/images/splash/"_s;
 }
 
 QString QgsApplication::iconsPath()
 {
-  return pkgDataPath() + QStringLiteral( "/images/icons/" );
+  return pkgDataPath() + u"/images/icons/"_s;
 }
 
 QString QgsApplication::srsDatabaseFilePath()
@@ -1342,7 +1314,7 @@ QString QgsApplication::srsDatabaseFilePath()
   }
   else
   {
-    return pkgDataPath() + QStringLiteral( "/resources/srs.db" );
+    return pkgDataPath() + u"/resources/srs.db"_s;
   }
 }
 
@@ -1401,12 +1373,12 @@ QMap<QString, QString> QgsApplication::systemEnvVars()
 
 QString QgsApplication::userStylePath()
 {
-  return qgisSettingsDirPath() + QStringLiteral( "symbology-style.db" );
+  return qgisSettingsDirPath() + u"symbology-style.db"_s;
 }
 
 QRegularExpression QgsApplication::shortNameRegularExpression()
 {
-  const thread_local QRegularExpression regexp( QRegularExpression::anchoredPattern( QStringLiteral( "^[A-Za-z][A-Za-z0-9\\._-]*" ) ) );
+  const thread_local QRegularExpression regexp( QRegularExpression::anchoredPattern( u"^[A-Za-z][A-Za-z0-9\\._-]*"_s ) );
   return regexp;
 }
 
@@ -1421,18 +1393,14 @@ QString QgsApplication::userLoginName()
 
   if ( GetUserName( ( TCHAR * )name, &size ) )
   {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    *sUserName() = QString::fromLocal8Bit( name );
-#else
     *sUserName() = QString::fromWCharArray( name );
-#endif
   }
 
 
 #elif QT_CONFIG(process)
   QProcess process;
 
-  process.start( QStringLiteral( "whoami" ), QStringList() );
+  process.start( u"whoami"_s, QStringList() );
   process.waitForFinished();
   *sUserName() = process.readAllStandardOutput().trimmed();
 #endif
@@ -1462,18 +1430,14 @@ QString QgsApplication::userFullName()
   //note - this only works for accounts connected to domain
   if ( GetUserNameEx( NameDisplay, ( TCHAR * )name, &size ) )
   {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    *sUserFullName() = QString::fromLocal8Bit( name );
-#else
     *sUserFullName() = QString::fromWCharArray( name );
-#endif
   }
 
   //fall back to login name
   if ( sUserFullName()->isEmpty() )
     *sUserFullName() = userLoginName();
 #elif defined(Q_OS_ANDROID) || defined(__MINGW32__)
-  *sUserFullName() = QStringLiteral( "Not available" );
+  *sUserFullName() = u"Not available"_s;
 #else
   struct passwd *p = getpwuid( getuid() );
 
@@ -1491,23 +1455,23 @@ QString QgsApplication::userFullName()
 QString QgsApplication::osName()
 {
 #if defined(Q_OS_ANDROID)
-  return QLatin1String( "android" );
+  return "android"_L1;
 #elif defined(Q_OS_MAC)
-  return QLatin1String( "osx" );
+  return "osx"_L1;
 #elif defined(Q_OS_WIN)
-  return QLatin1String( "windows" );
+  return "windows"_L1;
 #elif defined(Q_OS_LINUX)
-  return QStringLiteral( "linux" );
+  return u"linux"_s;
 #elif defined(Q_OS_FREEBSD)
-  return QStringLiteral( "freebsd" );
+  return u"freebsd"_s;
 #elif defined(Q_OS_OPENBSD)
-  return QStringLiteral( "openbsd" );
+  return u"openbsd"_s;
 #elif defined(Q_OS_NETBSD)
-  return QStringLiteral( "netbsd" );
+  return u"netbsd"_s;
 #elif defined(Q_OS_UNIX)
-  return QLatin1String( "unix" );
+  return "unix"_L1;
 #else
-  return QLatin1String( "unknown" );
+  return "unknown"_L1;
 #endif
 }
 
@@ -1535,8 +1499,8 @@ QString QgsApplication::applicationFullName()
   //last resort
   QgsSettings settings;
   *sApplicationFullName() = settings.value(
-                              QStringLiteral( "/qgis/application_full_name" ),
-                              QStringLiteral( "%1 %2" ).arg( applicationName(), platform() )
+                              u"/qgis/application_full_name"_s,
+                              u"%1 %2"_s.arg( applicationName(), platform() )
                             ).toString();
   return *sApplicationFullName();
 }
@@ -1547,7 +1511,7 @@ QString QgsApplication::locale()
   {
     QString locale = settingsLocaleUserLocale->value();
     // don't differentiate en_US and en_GB
-    if ( locale.startsWith( QLatin1String( "en" ), Qt::CaseInsensitive ) )
+    if ( locale.startsWith( "en"_L1, Qt::CaseInsensitive ) )
     {
       return locale.left( 2 );
     }
@@ -1568,22 +1532,22 @@ void QgsApplication::setLocale( const QLocale &locale )
 
 QString QgsApplication::userThemesFolder()
 {
-  return qgisSettingsDirPath() + QStringLiteral( "/themes" );
+  return qgisSettingsDirPath() + u"/themes"_s;
 }
 
 QString QgsApplication::defaultStylePath()
 {
-  return pkgDataPath() + QStringLiteral( "/resources/symbology-style.xml" );
+  return pkgDataPath() + u"/resources/symbology-style.xml"_s;
 }
 
 QString QgsApplication::defaultThemesFolder()
 {
-  return pkgDataPath() + QStringLiteral( "/resources/themes" );
+  return pkgDataPath() + u"/resources/themes"_s;
 }
 
 QString QgsApplication::serverResourcesPath()
 {
-  return pkgDataPath() + QStringLiteral( "/resources/server/" );
+  return pkgDataPath() + u"/resources/server/"_s;
 }
 
 QString QgsApplication::libraryPath()
@@ -1694,9 +1658,17 @@ void QgsApplication::exitQgis()
 
   QgsStyle::cleanDefaultStyle();
 
-  // tear-down GDAL/OGR
-  OGRCleanupAll();
-  GDALDestroyDriverManager();
+  // tear-down GDAL/OGR, but only if there are no remaining opened
+  // datasets (cf https://github.com/qgis/QGIS/issues/58724)
+  // Outputting to stdin is obviously absurd, but intended here, since
+  // we are just interested in the count of still open datasets.
+  if ( GDALDumpOpenDatasets( stdin ) == 0 )
+  {
+    OGRCleanupAll();
+    GDALDestroyDriverManager();
+  }
+  else
+    QgsDebugMsgLevel( u"Skipping call to GDALDestroyDriverManager() due to still opened datasets"_s, 5 );
 }
 
 QString QgsApplication::showSettings()
@@ -1912,8 +1884,8 @@ QString QgsApplication::absolutePathToRelativePath( const QString &aPath, const 
   QStringList targetElems = tPathUrl.split( '/', Qt::SkipEmptyParts );
   QStringList aPathElems = aPathUrl.split( '/', Qt::SkipEmptyParts );
 
-  targetElems.removeAll( QStringLiteral( "." ) );
-  aPathElems.removeAll( QStringLiteral( "." ) );
+  targetElems.removeAll( u"."_s );
+  aPathElems.removeAll( u"."_s );
 
   // remove common part
   int n = 0;
@@ -1937,23 +1909,23 @@ QString QgsApplication::absolutePathToRelativePath( const QString &aPath, const 
     // go up to the common directory
     for ( int i = 0; i < targetElems.size(); i++ )
     {
-      aPathElems.insert( 0, QStringLiteral( ".." ) );
+      aPathElems.insert( 0, u".."_s );
     }
   }
   else
   {
     // let it start with . nevertheless,
     // so relative path always start with either ./ or ../
-    aPathElems.insert( 0, QStringLiteral( "." ) );
+    aPathElems.insert( 0, u"."_s );
   }
 
-  return aPathElems.join( QLatin1Char( '/' ) );
+  return aPathElems.join( '/'_L1 );
 }
 
 QString QgsApplication::relativePathToAbsolutePath( const QString &rpath, const QString &targetPath )
 {
   // relative path should always start with ./ or ../
-  if ( !rpath.startsWith( QLatin1String( "./" ) ) && !rpath.startsWith( QLatin1String( "../" ) ) )
+  if ( !rpath.startsWith( "./"_L1 ) && !rpath.startsWith( "../"_L1 ) )
   {
     return rpath;
   }
@@ -1981,11 +1953,11 @@ QString QgsApplication::relativePathToAbsolutePath( const QString &rpath, const 
 
   // append source path elements
   targetElems << srcElems;
-  targetElems.removeAll( QStringLiteral( "." ) );
+  targetElems.removeAll( u"."_s );
 
   // resolve ..
   int pos;
-  while ( ( pos = targetElems.indexOf( QLatin1String( ".." ) ) ) > 0 )
+  while ( ( pos = targetElems.indexOf( ".."_L1 ) ) > 0 )
   {
     // remove preceding element and ..
     targetElems.removeAt( pos - 1 );
@@ -1997,7 +1969,7 @@ QString QgsApplication::relativePathToAbsolutePath( const QString &rpath, const 
   targetElems.prepend( QString() );
 #endif
 
-  return targetElems.join( QLatin1Char( '/' ) );
+  return targetElems.join( '/'_L1 );
 }
 
 QString QgsApplication::buildSourcePath()
@@ -2053,7 +2025,7 @@ void QgsApplication::setSkippedGdalDrivers( const QStringList &skippedGdalDriver
   *sDeferredSkippedGdalDrivers() = deferredSkippedGdalDrivers;
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "gdal/skipDrivers" ), skippedGdalDrivers.join( QLatin1Char( ',' ) ) );
+  settings.setValue( u"gdal/skipDrivers"_s, skippedGdalDrivers.join( ','_L1 ) );
 
   applyGdalSkippedDrivers();
 }
@@ -2062,15 +2034,15 @@ void QgsApplication::registerGdalDriversFromSettings()
 {
   QgsSettings settings;
   QString joinedList, delimiter;
-  if ( settings.contains( QStringLiteral( "gdal/skipDrivers" ) ) )
+  if ( settings.contains( u"gdal/skipDrivers"_s ) )
   {
-    joinedList = settings.value( QStringLiteral( "gdal/skipDrivers" ), QString() ).toString();
-    delimiter = QStringLiteral( "," );
+    joinedList = settings.value( u"gdal/skipDrivers"_s, QString() ).toString();
+    delimiter = u","_s;
   }
   else
   {
-    joinedList = settings.value( QStringLiteral( "gdal/skipList" ), QString() ).toString();
-    delimiter = QStringLiteral( " " );
+    joinedList = settings.value( u"gdal/skipList"_s, QString() ).toString();
+    delimiter = u" "_s;
   }
   QStringList myList;
   if ( !joinedList.isEmpty() )
@@ -2096,7 +2068,7 @@ void QgsApplication::applyGdalSkippedDrivers()
       realDisabledDriverList << driverName;
   }
   QString myDriverList = realDisabledDriverList.join( ',' );
-  QgsDebugMsgLevel( QStringLiteral( "Gdal Skipped driver list set to:" ), 2 );
+  QgsDebugMsgLevel( u"Gdal Skipped driver list set to:"_s, 2 );
   QgsDebugMsgLevel( myDriverList, 2 );
   CPLSetConfigOption( "GDAL_SKIP", myDriverList.toUtf8() );
   GDALAllRegister(); //to update driver list and skip missing ones
@@ -2174,7 +2146,7 @@ void QgsApplication::setCustomVariable( const QString &name, const QVariant &val
   // save variable to settings
   QgsSettings settings;
 
-  settings.setValue( QStringLiteral( "variables/" ) + name, value );
+  settings.setValue( u"variables/"_s + name, value );
 
   emit instance()->customVariablesChanged();
 }
@@ -2241,7 +2213,7 @@ QString QgsApplication::nullRepresentation()
   ApplicationMembers *appMembers = members();
   if ( appMembers->mNullRepresentation.isNull() )
   {
-    appMembers->mNullRepresentation = QgsSettings().value( QStringLiteral( "qgis/nullValue" ), QStringLiteral( "NULL" ) ).toString();
+    appMembers->mNullRepresentation = QgsSettings().value( u"qgis/nullValue"_s, u"NULL"_s ).toString();
   }
   return appMembers->mNullRepresentation;
 }
@@ -2253,7 +2225,7 @@ void QgsApplication::setNullRepresentation( const QString &nullRepresentation )
     return;
 
   appMembers->mNullRepresentation = nullRepresentation;
-  QgsSettings().setValue( QStringLiteral( "qgis/nullValue" ), nullRepresentation );
+  QgsSettings().setValue( u"qgis/nullValue"_s, nullRepresentation );
 
   QgsApplication *app = instance();
   if ( app )
@@ -2270,7 +2242,7 @@ bool QgsApplication::createDatabase( QString *errorMessage )
   // set a working directory up for gdal to write .aux.xml files into
   // for cases where the raster dir is read only to the user
   // if the env var is already set it will be used preferentially
-  QString myPamPath = qgisSettingsDirPath() + QStringLiteral( "gdal_pam/" );
+  QString myPamPath = qgisSettingsDirPath() + u"gdal_pam/"_s;
   QDir myDir( myPamPath );
   if ( !myDir.exists() )
   {
@@ -2468,7 +2440,7 @@ bool QgsApplication::createDatabase( QString *errorMessage )
 
     if ( sqlite3_exec( database.get(), "DROP VIEW vw_srs", nullptr, nullptr, &errmsg ) != SQLITE_OK )
     {
-      QgsDebugError( QStringLiteral( "vw_srs didn't exists in private qgis.db: %1" ).arg( errmsg ) );
+      QgsDebugError( u"vw_srs didn't exists in private qgis.db: %1"_s.arg( errmsg ) );
     }
 
     if ( sqlite3_exec( database.get(),
@@ -2499,7 +2471,7 @@ bool QgsApplication::createDatabase( QString *errorMessage )
 
 void QgsApplication::setMaxThreads( int maxThreads )
 {
-  QgsDebugMsgLevel( QStringLiteral( "maxThreads: %1" ).arg( maxThreads ), 2 );
+  QgsDebugMsgLevel( u"maxThreads: %1"_s.arg( maxThreads ), 2 );
 
   // make sure value is between 1 and #cores, if not set to -1 (use #cores)
   if ( maxThreads < 1 || maxThreads > QThread::idealThreadCount() )
@@ -2518,7 +2490,7 @@ void QgsApplication::setMaxThreads( int maxThreads )
 
   // set max thread count in QThreadPool
   QThreadPool::globalInstance()->setMaxThreadCount( maxThreads );
-  QgsDebugMsgLevel( QStringLiteral( "set QThreadPool max thread count to %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ), 2 );
+  QgsDebugMsgLevel( u"set QThreadPool max thread count to %1"_s.arg( QThreadPool::globalInstance()->maxThreadCount() ), 2 );
 }
 
 QgsTaskManager *QgsApplication::taskManager()
@@ -2719,6 +2691,11 @@ QgsPageSizeRegistry *QgsApplication::pageSizeRegistry()
 QgsAnnotationRegistry *QgsApplication::annotationRegistry()
 {
   return members()->mAnnotationRegistry.get();
+}
+
+QgsApplicationThemeRegistry *QgsApplication::applicationThemeRegistry()
+{
+  return members()->mApplicationThemeRegistry.get();
 }
 
 QgsNumericFormatRegistry *QgsApplication::numericFormatRegistry()
@@ -2923,6 +2900,11 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     profiler->end();
   }
   {
+    profiler->start( tr( "Setup application theme registry" ) );
+    mApplicationThemeRegistry = std::make_unique<QgsApplicationThemeRegistry>();
+    profiler->end();
+  }
+  {
     profiler->start( tr( "Setup annotation item registry" ) );
     mAnnotationItemRegistry = std::make_unique<QgsAnnotationItemRegistry>();
     mAnnotationItemRegistry->populate();
@@ -3008,6 +2990,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   m3DRendererRegistry.reset();
   m3DSymbolRegistry.reset();
   mAnnotationRegistry.reset();
+  mApplicationThemeRegistry.reset();
   mColorSchemeRegistry.reset();
   mFieldFormatterRegistry.reset();
   mGpsConnectionRegistry.reset();

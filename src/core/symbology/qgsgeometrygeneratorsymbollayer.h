@@ -161,7 +161,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
     /**
      * The type of the sub symbol.
      */
-    Qgis::SymbolType mSymbolType;
+    Qgis::SymbolType mSymbolType = Qgis::SymbolType::Marker;
 
     Qgis::RenderUnit mUnits = Qgis::RenderUnit::MapUnits;
 

@@ -23,6 +23,10 @@
 #include "qgsreadwritecontext.h"
 #include "qgsrectangle.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsRenderContext;
 
 /**
@@ -52,7 +56,7 @@ class CORE_EXPORT QgsTileXYZ
     int zoomLevel() const { return mZoomLevel; }
 
     //! Returns tile coordinates in a formatted string
-    QString toString() const { return QStringLiteral( "X=%1 Y=%2 Z=%3" ).arg( mColumn ).arg( mRow ).arg( mZoomLevel ); }
+    QString toString() const { return u"X=%1 Y=%2 Z=%3"_s.arg( mColumn ).arg( mRow ).arg( mZoomLevel ); }
 
     bool operator==( const QgsTileXYZ &other ) const { return mColumn == other.mColumn && mRow == other.mRow && mZoomLevel == other.mZoomLevel; }
     bool operator!=( const QgsTileXYZ &other ) const { return !( *this == other ); }
@@ -60,7 +64,7 @@ class CORE_EXPORT QgsTileXYZ
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    const QString str = QStringLiteral( "<QgsTileXYZ: %1, %2, %3>" ).arg( sipCpp->column() ).arg( sipCpp->row() ).arg( sipCpp->zoomLevel() );
+    const QString str = u"<QgsTileXYZ: %1, %2, %3>"_s.arg( sipCpp->column() ).arg( sipCpp->row() ).arg( sipCpp->zoomLevel() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

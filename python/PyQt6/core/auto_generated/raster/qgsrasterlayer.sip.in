@@ -10,6 +10,7 @@
 
 
 
+
 typedef QList < QPair< QString, QColor > > QgsLegendColorList;
 
 class QgsRasterLayer : QgsMapLayer, QgsAbstractProfileSource
@@ -418,6 +419,7 @@ Draws a preview of the rasterlayer into a QImage
     virtual void setSubLayerVisibility( const QString &name, bool vis );
 
     virtual QDateTime timestamp() const;
+
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 

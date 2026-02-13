@@ -42,7 +42,7 @@ class APP_EXPORT QgsMapToolPointSymbol : public QgsMapToolEdit
 
   protected:
     QgsVectorLayer *mActiveLayer = nullptr;
-    QgsFeatureId mFeatureNumber;
+    QgsFeatureId mFeatureNumber = -1;
 
     //! Screen coordinate of the snapped feature
     QPoint mSnappedPoint;

@@ -30,6 +30,9 @@
 #include <QFont>
 #include <QMap>
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 #define FONTMARKER_CHR_FIX  "~!_#!#_!~"
 
@@ -1160,9 +1163,9 @@ class CORE_EXPORT QgsSymbolLayerUtils
     {
       const QString exprString = property.asExpression();
       return QgsProperty::fromExpression(
-               ( !qgsDoubleNear( scaleFactorX, 0.0 ) ? "tostring(" + QString::number( scaleFactorX ) + "*(" + exprString + "))" : QStringLiteral( "'0'" ) ) +
+               ( !qgsDoubleNear( scaleFactorX, 0.0 ) ? "tostring(" + QString::number( scaleFactorX ) + "*(" + exprString + "))" : u"'0'"_s ) +
                "|| ',' || " +
-               ( !qgsDoubleNear( scaleFactorY, 0.0 ) ? "tostring(" + QString::number( scaleFactorY ) + "*(" + exprString + "))" : QStringLiteral( "'0'" ) ) );
+               ( !qgsDoubleNear( scaleFactorY, 0.0 ) ? "tostring(" + QString::number( scaleFactorY ) + "*(" + exprString + "))" : u"'0'"_s ) );
     }
 #endif
     ///@endcond

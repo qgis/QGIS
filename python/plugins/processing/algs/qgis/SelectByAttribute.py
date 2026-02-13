@@ -145,6 +145,12 @@ class SelectByAttribute(QgisAlgorithm):
             "Selects features from a vector layer based on an attribute from the layer."
         )
 
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm creates a selection in a vector layer. "
+            "The criteria for selected features is defined based on the values of an attribute from the input layer."
+        )
+
     def processAlgorithm(self, parameters, context, feedback):
         layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
 

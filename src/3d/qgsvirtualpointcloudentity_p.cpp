@@ -60,10 +60,11 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity(
 
   if ( provider()->overview() )
   {
+    // use -2 as a special identifier for overview files in chunked entity
     mOverviewEntity = new QgsPointCloudLayerChunkedEntity(
       mapSettings(),
       mLayer,
-      provider()->overview(),
+      -2,
       mCoordinateTransform,
       dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ),
       mMaximumScreenSpaceError,
@@ -85,6 +86,15 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity(
   updateBboxEntity();
   connect( this, &QgsVirtualPointCloudEntity::subIndexNeedsLoading, provider(), &QgsVirtualPointCloudProvider::loadSubIndex, Qt::QueuedConnection );
   connect( provider(), &QgsVirtualPointCloudProvider::subIndexLoaded, this, &QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex );
+}
+
+QgsVirtualPointCloudEntity::~QgsVirtualPointCloudEntity()
+{
+  qDeleteAll( mChunkedEntitiesMap );
+  mChunkedEntitiesMap.clear();
+
+  delete mOverviewEntity;
+  mOverviewEntity = nullptr;
 }
 
 QList<QgsChunkedEntity *> QgsVirtualPointCloudEntity::chunkedEntities() const
@@ -109,7 +119,7 @@ void QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex( int i )
   QgsPointCloudLayerChunkedEntity *newChunkedEntity = new QgsPointCloudLayerChunkedEntity(
     mapSettings(),
     mLayer,
-    si.index(),
+    i,
     mCoordinateTransform,
     static_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ),
     mMaximumScreenSpaceError,
@@ -130,6 +140,11 @@ void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneContext &sceneCon
 {
   QgsVector3D cameraPosMapCoords = QgsVector3D( sceneContext.cameraPos ) + mapSettings()->origin();
   const QVector<QgsPointCloudSubIndex> subIndexes = provider()->subIndexes();
+
+  const QgsPointCloudLayer3DRenderer *rendererBehavior = dynamic_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+  const double overviewSwitchingScale = rendererBehavior ? rendererBehavior->overviewSwitchingScale() : 1;
+  qsizetype subIndexesRendered = 0;
+
   for ( int i = 0; i < subIndexes.size(); ++i )
   {
     // If the chunked entity needs an update, do it even if it's occluded,
@@ -151,23 +166,30 @@ void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneContext &sceneCon
     const float epsilon = static_cast<float>( std::min( box3D.width(), box3D.height() ) ) / SPAN;
     const float distance = static_cast<float>( box3D.distanceTo( cameraPosMapCoords ) );
     const float sse = Qgs3DUtils::screenSpaceError( epsilon, distance, sceneContext.screenSizePx, sceneContext.cameraFov );
-    constexpr float THRESHOLD = .2;
+    const double THRESHOLD = 0.2 / overviewSwitchingScale;
 
     // always display as bbox for the initial temporary camera pos (0, 0, 0)
     // then once the camera changes we display as bbox depending on screen space error
-    const bool displayAsBbox = sceneContext.cameraPos.isNull() || sse < THRESHOLD;
-    if ( !displayAsBbox && !subIndexes.at( i ).index() )
-      emit subIndexNeedsLoading( i );
-
+    const bool displayAsBbox = sceneContext.cameraPos.isNull() || sse < static_cast<float>( THRESHOLD );
+    if ( !displayAsBbox )
+    {
+      subIndexesRendered += 1;
+      if ( !subIndexes.at( i ).index() )
+        emit subIndexNeedsLoading( i );
+    }
     setRenderSubIndexAsBbox( i, displayAsBbox );
     if ( !displayAsBbox && mChunkedEntitiesMap.contains( i ) )
       mChunkedEntitiesMap[i]->handleSceneUpdate( sceneContext );
   }
   updateBboxEntity();
 
-  const QgsPointCloudLayer3DRenderer *rendererBehavior = dynamic_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
   if ( provider()->overview() && rendererBehavior && ( rendererBehavior->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverview || rendererBehavior->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) )
   {
+    // no need to render the overview if all sub indexes are shown
+    if ( !mChunkedEntitiesMap.isEmpty() && subIndexesRendered == mChunkedEntitiesMap.size() )
+      mOverviewEntity->setEnabled( false );
+    else
+      mOverviewEntity->setEnabled( true );
     mOverviewEntity->handleSceneUpdate( sceneContext );
   }
 }

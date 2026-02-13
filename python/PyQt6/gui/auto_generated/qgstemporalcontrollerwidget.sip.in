@@ -24,7 +24,6 @@ A widget for controlling playback properties of a
 #include "qgstemporalcontrollerwidget.h"
 %End
   public:
-
     QgsTemporalControllerWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsTemporalControllerWidget, with the specified

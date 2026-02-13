@@ -128,7 +128,7 @@ class QgsGrassMapsetItem : public QgsDirectoryItem, public QgsGrassObjectItemBas
     QgsGrassItemActions *mActions = nullptr;
     //void showImportError(const QString& error);
     QFileSystemWatcher *mMapsetFileSystemWatcher = nullptr;
-    bool mRefreshLater;
+    bool mRefreshLater = false;
     // running imports
     static QList<QgsGrassImport *> sImports;
 

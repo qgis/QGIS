@@ -120,6 +120,7 @@ class GUI_EXPORT QgsGeometryRubberBand : public QgsMapCanvasItem
     void updatePosition() override;
 
   protected:
+    using QgsMapCanvasItem::paint;
     void paint( QPainter *painter ) override;
 
     //! Returns which geometry is handled by the rubber band, polygon or line
@@ -132,8 +133,8 @@ class GUI_EXPORT QgsGeometryRubberBand : public QgsMapCanvasItem
     std::unique_ptr<QgsAbstractGeometry> mGeometry = nullptr;
     QBrush mBrush;
     QPen mPen;
-    int mIconSize;
-    IconType mIconType;
+    int mIconSize = 5;
+    IconType mIconType = ICON_BOX;
     Qgis::GeometryType mGeometryType;
     bool mDrawVertices = true;
 

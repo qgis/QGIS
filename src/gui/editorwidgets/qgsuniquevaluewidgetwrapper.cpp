@@ -21,8 +21,11 @@
 
 #include <QCompleter>
 #include <QSettings>
+#include <QString>
 
 #include "moc_qgsuniquevaluewidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsUniqueValuesWidgetWrapper::QgsUniqueValuesWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
@@ -50,7 +53,7 @@ QVariant QgsUniqueValuesWidgetWrapper::value() const
 
 QWidget *QgsUniqueValuesWidgetWrapper::createWidget( QWidget *parent )
 {
-  if ( config( QStringLiteral( "Editable" ) ).toBool() )
+  if ( config( u"Editable"_s ).toBool() )
     return new QgsFilterLineEdit( parent );
   else
   {

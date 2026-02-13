@@ -20,10 +20,6 @@
 
 #include "qgis_core.h"
 
-#ifdef WITH_QTWEBKIT
-#include <QWebFrame>
-#else
-
 #include <QObject>
 #include <QPainter>
 #include <QUrl>
@@ -90,5 +86,4 @@ class CORE_EXPORT QWebFrame : public QObject
     void javaScriptWindowObjectCleared();
 /// @endcond
 };
-#endif
 #endif // QGSWEBFRAME_H

@@ -107,6 +107,21 @@ class RandomPointsAlongLines(QgisAlgorithm):
     def displayName(self):
         return self.tr("Random points along line")
 
+    def shortDescription(self):
+        return self.tr(
+            "Creates a point layer with a given number of points "
+            "placed on the lines of the input layer."
+        )
+
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm creates a point layer with a given number of points "
+            "placed on the lines of the input layer.\n"
+            "The location of each point is determined by randomly selecting a feature, "
+            "then a segment of the line geometry of that feature, and finally a random position on that segment. "
+            "A minimum distance between the points can be specified (Euclidean distance)."
+        )
+
     def documentationFlags(self):
         return Qgis.ProcessingAlgorithmDocumentationFlags(
             Qgis.ProcessingAlgorithmDocumentationFlag.RegeneratesPrimaryKey

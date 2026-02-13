@@ -26,10 +26,13 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QProgressBar>
+#include <QString>
 #include <QToolBar>
 #include <QTreeView>
 
 #include "moc_qgstaskmanagerwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsTaskManagerWidget
@@ -495,26 +498,26 @@ void QgsTaskStatusWidget::paintEvent( QPaintEvent *e )
   QIcon icon;
   if ( mInside && ( mCanCancel || ( mStatus == QgsTask::Queued || mStatus == QgsTask::OnHold ) ) )
   {
-    icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskCancel.svg" ) );
+    icon = QgsApplication::getThemeIcon( u"/mTaskCancel.svg"_s );
   }
   else
   {
     switch ( mStatus )
     {
       case QgsTask::Queued:
-        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskQueued.svg" ) );
+        icon = QgsApplication::getThemeIcon( u"/mTaskQueued.svg"_s );
         break;
       case QgsTask::OnHold:
-        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskOnHold.svg" ) );
+        icon = QgsApplication::getThemeIcon( u"/mTaskOnHold.svg"_s );
         break;
       case QgsTask::Running:
-        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskRunning.svg" ) );
+        icon = QgsApplication::getThemeIcon( u"/mTaskRunning.svg"_s );
         break;
       case QgsTask::Complete:
-        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskComplete.svg" ) );
+        icon = QgsApplication::getThemeIcon( u"/mTaskComplete.svg"_s );
         break;
       case QgsTask::Terminated:
-        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskTerminated.svg" ) );
+        icon = QgsApplication::getThemeIcon( u"/mTaskTerminated.svg"_s );
         break;
     }
   }

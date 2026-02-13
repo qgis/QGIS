@@ -37,7 +37,6 @@ class GUI_EXPORT QgsAuthTrustedCAsDialog : public QDialog, private Ui::QgsAuthTr
     Q_OBJECT
 
   public:
-
     /**
      * Construct a dialog that will list the trusted Certificate Authorities
      * \param parent Parent widget

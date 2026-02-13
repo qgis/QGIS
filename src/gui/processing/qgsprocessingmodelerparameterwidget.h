@@ -64,7 +64,6 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingModelerParameterWidget, for the specified
      * \a parameter definition within the given \a model.
@@ -194,6 +193,15 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
      * \since QGIS 3.24
      */
     void setSourceType( Qgis::ProcessingModelChildParameterSource type );
+
+  signals:
+
+    /**
+     * Emitted whenever the definition of the parameter is changed in the widget.
+     *
+     * \since QGIS 4.0
+     */
+    void changed();
 
   private slots:
 

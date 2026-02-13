@@ -236,7 +236,7 @@ class QWT_EXPORT QwtPlotCurve
     explicit QwtPlotCurve( const QString& title = QString() );
     explicit QwtPlotCurve( const QwtText& title );
 
-    virtual ~QwtPlotCurve();
+    ~QwtPlotCurve() override;
 
     virtual int rtti() const QWT_OVERRIDE;
 

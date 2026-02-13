@@ -18,6 +18,9 @@
 #include "qgssimplecopyexternalstorage_p.h"
 
 #include <QFileInfo>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -98,7 +101,7 @@ QString QgsSimpleCopyExternalStorageFetchedContent::filePath() const
 
 QString QgsSimpleCopyExternalStorage::type() const
 {
-  return QStringLiteral( "SimpleCopy" );
+  return u"SimpleCopy"_s;
 };
 
 QString QgsSimpleCopyExternalStorage::displayName() const

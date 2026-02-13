@@ -32,7 +32,6 @@ class GUI_EXPORT QgsGroupWmsDataDialog : public QDialog, private Ui::QgsGroupWMS
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
      * \param parent parent widget

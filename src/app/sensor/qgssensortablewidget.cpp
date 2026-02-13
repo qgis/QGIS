@@ -26,9 +26,12 @@
 #include "qgssensorwidget.h"
 
 #include <QDialogButtonBox>
+#include <QString>
 #include <QTableWidget>
 
 #include "moc_qgssensortablewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSensorSettingsWidget::QgsSensorSettingsWidget( QgsAbstractSensor *sensor, QWidget *parent )
   : QgsPanelWidget( parent )
@@ -36,7 +39,7 @@ QgsSensorSettingsWidget::QgsSensorSettingsWidget( QgsAbstractSensor *sensor, QWi
 {
   setupUi( this );
   setPanelTitle( tr( "Sensor Settings" ) );
-  setObjectName( QStringLiteral( "SensorSettings" ) );
+  setObjectName( u"SensorSettings"_s );
   connect( this, &QgsPanelWidget::panelAccepted, this, [this]() { apply(); } );
 
   mNameLineEdit->setText( sensor->name() );
@@ -97,7 +100,7 @@ QgsSensorTableWidget::QgsSensorTableWidget( QWidget *parent )
 {
   setupUi( this );
   setPanelTitle( tr( "Sensors List" ) );
-  setObjectName( QStringLiteral( "SensorsList" ) );
+  setObjectName( u"SensorsList"_s );
 
   mActionConnection->setEnabled( false );
   mActionRemoveSensor->setEnabled( false );
@@ -129,11 +132,11 @@ QgsSensorTableWidget::QgsSensorTableWidget( QWidget *parent )
         {
           if ( sensor->status() == Qgis::DeviceConnectionStatus::Disconnected )
           {
-            mActionConnection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionStart.svg" ) ) );
+            mActionConnection->setIcon( QgsApplication::getThemeIcon( u"mActionStart.svg"_s ) );
           }
           else
           {
-            mActionConnection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionStop.svg" ) ) );
+            mActionConnection->setIcon( QgsApplication::getThemeIcon( u"mActionStop.svg"_s ) );
           }
         }
       }
@@ -146,11 +149,11 @@ QgsSensorTableWidget::QgsSensorTableWidget( QWidget *parent )
     mActionEditSensor->setEnabled( current.isValid() );
     if ( current.isValid() && mSensorModel->data( current, static_cast<int>( QgsSensorModel::CustomRole::SensorStatus ) ).value<Qgis::DeviceConnectionStatus>() == Qgis::DeviceConnectionStatus::Connected )
     {
-      mActionConnection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionStop.svg" ) ) );
+      mActionConnection->setIcon( QgsApplication::getThemeIcon( u"mActionStop.svg"_s ) );
     }
     else
     {
-      mActionConnection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionStart.svg" ) ) );
+      mActionConnection->setIcon( QgsApplication::getThemeIcon( u"mActionStart.svg"_s ) );
     }
   } );
 

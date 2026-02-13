@@ -39,7 +39,6 @@ class _3D_EXPORT QgsMaterial : public Qt3DRender::QMaterial
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsMaterial, with the specified \a parent node.
      */
@@ -73,7 +72,7 @@ class _3D_EXPORT QgsMaterial : public Qt3DRender::QMaterial
 
     bool mClippingEnabled = false;
 
-    friend class TestQgs3dMaterial;
+    friend class TestQgs3DMaterial;
 };
 
 #endif // QGSMATERIAL_H

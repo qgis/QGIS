@@ -27,8 +27,11 @@
 
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgstiledscenesourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -160,7 +163,7 @@ void QgsTiledSceneSourceSelect::addButtonClicked()
     }
 
     QVariantMap parts;
-    parts.insert( QStringLiteral( "path" ), filePath );
+    parts.insert( u"path"_s, filePath );
     const QString uri = QgsProviderRegistry::instance()->encodeUri( providerKey, parts );
 
     emit addLayer( Qgis::LayerType::TiledScene, uri, QgsProviderUtils::suggestLayerNameFromFilePath( filePath ), providerKey );
@@ -224,7 +227,7 @@ void QgsTiledSceneSourceSelect::cmbConnections_currentTextChanged( const QString
 
 void QgsTiledSceneSourceSelect::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html"_s );
 }
 
 ///@endcond

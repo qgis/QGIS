@@ -46,23 +46,21 @@ class GUI_EXPORT QgsLegendLayerTreeProxyModel : public QgsLayerTreeProxyModel
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsLegendLayerTreeProxyModel, with the specified \a parent object.
      */
     QgsLegendLayerTreeProxyModel( QgsLayoutItemLegend *legend, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
-     * Sets whether the legend is showing the default legend for a project (as opposed
-     * to a customized legend).
+     * Sets the sync mode used for the legend.
      */
-    void setIsDefaultLegend( bool isDefault );
+    void setSyncMode( Qgis::LegendSyncMode mode );
 
   protected:
     bool nodeShown( QgsLayerTreeNode *node ) const override;
 
   private:
-    bool mIsDefaultLegend = true;
+    Qgis::LegendSyncMode mSyncMode = Qgis::LegendSyncMode::AllProjectLayers;
 };
 #endif
 
@@ -82,8 +80,6 @@ class GUI_EXPORT QgsLayoutLegendWidget : public QgsLayoutItemBaseWidget, public 
     explicit QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMapCanvas *mapCanvas );
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
     void setDesignerInterface( QgsLayoutDesignerInterface *iface ) override;
-    //! Updates the legend layers and groups
-    void updateLegend();
 
     //! Returns the legend item associated to this widget
     QgsLayoutItemLegend *legend() { return mLegend; }
@@ -125,7 +121,7 @@ class GUI_EXPORT QgsLayoutLegendWidget : public QgsLayoutItemBaseWidget, public 
     void mBoxSpaceSpinBox_valueChanged( double d );
     void mColumnSpaceSpinBox_valueChanged( double d );
     void maxWidthChanged( double width );
-    void mCheckBoxAutoUpdate_stateChanged( int state, bool userTriggered = true );
+    void syncModeChanged( bool userTriggered );
     void composerMapChanged( QgsLayoutItem *item );
     void mCheckboxResizeContents_toggled( bool checked );
 
@@ -142,7 +138,7 @@ class GUI_EXPORT QgsLayoutLegendWidget : public QgsLayoutItemBaseWidget, public 
     void mCountToolButton_clicked( bool checked );
     void mExpressionFilterButton_toggled( bool checked );
     void mFilterByMapCheckBox_toggled( bool checked );
-    void mUpdateAllPushButton_clicked();
+    void resetLayers( Qgis::LegendSyncMode mode );
     void mAddGroupToolButton_clicked();
     void mLayerExpressionButton_clicked();
 

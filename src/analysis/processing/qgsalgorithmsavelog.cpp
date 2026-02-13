@@ -17,13 +17,16 @@
 
 #include "qgsalgorithmsavelog.h"
 
+#include <QString>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
 QString QgsSaveLogToFileAlgorithm::name() const
 {
-  return QStringLiteral( "savelog" );
+  return u"savelog"_s;
 }
 
 Qgis::ProcessingAlgorithmFlags QgsSaveLogToFileAlgorithm::flags() const
@@ -48,7 +51,7 @@ QString QgsSaveLogToFileAlgorithm::group() const
 
 QString QgsSaveLogToFileAlgorithm::groupId() const
 {
-  return QStringLiteral( "modelertools" );
+  return u"modelertools"_s;
 }
 
 QString QgsSaveLogToFileAlgorithm::shortHelpString() const
@@ -69,14 +72,14 @@ QgsSaveLogToFileAlgorithm *QgsSaveLogToFileAlgorithm::createInstance() const
 
 void QgsSaveLogToFileAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Log file" ), QObject::tr( "Text files (*.txt);;HTML files (*.html *.HTML)" ) ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "USE_HTML" ), QObject::tr( "Use HTML formatting" ), false ) );
+  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Log file" ), QObject::tr( "Text files (*.txt);;HTML files (*.html *.HTML)" ) ) );
+  addParameter( new QgsProcessingParameterBoolean( u"USE_HTML"_s, QObject::tr( "Use HTML formatting" ), false ) );
 }
 
 QVariantMap QgsSaveLogToFileAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QString file = parameterAsFile( parameters, QStringLiteral( "OUTPUT" ), context );
-  const bool useHtml = parameterAsBool( parameters, QStringLiteral( "USE_HTML" ), context );
+  const QString file = parameterAsFile( parameters, u"OUTPUT"_s, context );
+  const bool useHtml = parameterAsBool( parameters, u"USE_HTML"_s, context );
   if ( !file.isEmpty() )
   {
     QFile exportFile( file );
@@ -85,13 +88,10 @@ QVariantMap QgsSaveLogToFileAlgorithm::processAlgorithm( const QVariantMap &para
       throw QgsProcessingException( QObject::tr( "Could not save log to file %1" ).arg( file ) );
     }
     QTextStream fout( &exportFile );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    fout.setCodec( "UTF-8" );
-#endif
     fout << ( useHtml ? feedback->htmlLog() : feedback->textLog() );
   }
   QVariantMap res;
-  res.insert( QStringLiteral( "OUTPUT" ), file );
+  res.insert( u"OUTPUT"_s, file );
   return res;
 }
 

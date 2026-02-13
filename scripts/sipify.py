@@ -45,7 +45,6 @@ class Context:
 
     def __init__(self):
         self.debug: bool = False
-        self.is_qt6: bool = False
         self.header_file: str = ""
         self.current_line: str = ""
         self.sip_run: bool = False
@@ -658,11 +657,10 @@ def replace_macros(line):
     line = re.sub(r"\bFALSE\b", "``False``", line)
     line = re.sub(r"\bNULLPTR\b", "``None``", line)
 
-    if CONTEXT.is_qt6:
-        # sip for Qt6 chokes on QList/QVector<QVariantMap>, but is happy if you expand out the map explicitly
-        line = re.sub(
-            r"(QList<\s*|QVector<\s*)QVariantMap", r"\1QMap<QString, QVariant>", line
-        )
+    # sip for Qt6 chokes on QList/QVector<QVariantMap>, but is happy if you expand out the map explicitly
+    line = re.sub(
+        r"(QList<\s*|QVector<\s*)QVariantMap", r"\1QMap<QString, QVariant>", line
+    )
 
     return line
 
@@ -677,6 +675,11 @@ def read_line():
             f"BRCK:{CONTEXT.bracket_nesting_idx[-1]} SIP:{CONTEXT.sip_run} MLT:{CONTEXT.multiline_definition} "
             f"OVR: {CONTEXT.is_override_or_make_private} CLSS: {CONTEXT.actual_class}/{len(CONTEXT.classname)} :: {new_line}"
         )
+
+    # SIP doesn't like Qt 6.4 u""_s, ""_L1 or ''_L1 literals
+    new_line = re.sub(r'u("(?:(?:\\.|[^"\\])*)")_s', r"QStringLiteral( \1 )", new_line)
+    new_line = re.sub(r'("(?:(?:\\.|[^"\\])*)")_L1', r"QLatin1String( \1 )", new_line)
+    new_line = re.sub(r"('(?:(?:\\.|[^'\\])*)')_L1", r"QLatin1Char( \1 )", new_line)
 
     new_line = replace_macros(new_line)
     return new_line
@@ -1381,14 +1384,7 @@ def remove_sip_pyargremove(input_string: str) -> str:
 
     arguments_list = split_args(arguments)
 
-    if CONTEXT.is_qt6:
-        filtered_args = [arg for arg in arguments_list if "SIP_PYARGREMOVE" not in arg]
-    else:
-        filtered_args = [
-            re.sub(r"\s*SIP_PYARGREMOVE6\s*", " ", arg)
-            for arg in arguments_list
-            if not ("SIP_PYARGREMOVE" in arg and "SIP_PYARGREMOVE6" not in arg)
-        ]
+    filtered_args = [arg for arg in arguments_list if "SIP_PYARGREMOVE" not in arg]
 
     # Reassemble the function signature
     remaining_args = ", ".join(filtered_args)
@@ -1404,8 +1400,7 @@ def fix_annotations(line):
 
     # Get removed params to be able to drop them out of the API doc
     removed_params = re.findall(r"(\w+)\s+SIP_PYARGREMOVE", line)
-    if CONTEXT.is_qt6:
-        removed_params = re.findall(r"(\w+)\s+SIP_PYARGREMOVE6?", line)
+    removed_params = re.findall(r"(\w+)\s+SIP_PYARGREMOVE6?", line)
     for param in removed_params:
         CONTEXT.skipped_params_remove.append(param)
         dbg_info(f"caught removed param: {CONTEXT.skipped_params_remove[-1]}")
@@ -1446,11 +1441,8 @@ def fix_annotations(line):
         r"SIP_VIRTUALERRORHANDLER\(\s*(\w+)\s*\)": r"/VirtualErrorHandler=\1/",
     }
 
-    if not CONTEXT.is_qt6:
-        replacements[r"SIP_THROW\(\s*([\w\s,]+?)\s*\)"] = r"throw( \1 )"
-    else:
-        # these have no effect (and aren't required) on sip >= 6
-        replacements[r"SIP_THROW\(\s*([\w\s,]+?)\s*\)"] = ""
+    # these have no effect (and aren't required) on sip >= 6
+    replacements[r"SIP_THROW\(\s*([\w\s,]+?)\s*\)"] = ""
 
     if CONTEXT.deprecated_message:
         replacements[r"\bSIP_DEPRECATED\b"] = (
@@ -1784,26 +1776,18 @@ def skip_cppcheck_comments():
 
 def fixup_qt6_len_and_hash():
     # Rewrite hardcoded return types and use proper typedefs instead
-    if CONTEXT.is_qt6:
-        CONTEXT.current_line = re.sub(
-            r"int\s*__len__\s*\(\s*\)", "Py_ssize_t __len__()", CONTEXT.current_line
-        )
-        CONTEXT.current_line = re.sub(
-            r"long\s*__hash__\s*\(\s*\)", "Py_hash_t __hash__()", CONTEXT.current_line
-        )
+    CONTEXT.current_line = re.sub(
+        r"int\s*__len__\s*\(\s*\)", "Py_ssize_t __len__()", CONTEXT.current_line
+    )
+    CONTEXT.current_line = re.sub(
+        r"long\s*__hash__\s*\(\s*\)", "Py_hash_t __hash__()", CONTEXT.current_line
+    )
 
 
 def process_pyqt_ifdefs():
     """Skip ifdefs gating PyQt5/PyQt6-only code."""
-    if CONTEXT.is_qt6 and re.match(r"^\s*#ifdef SIP_PYQT5_RUN", CONTEXT.current_line):
+    if re.match(r"^\s*#ifdef SIP_PYQT5_RUN", CONTEXT.current_line):
         dbg_info("do not process PYQT5 code")
-        while not re.match(r"^#endif", CONTEXT.current_line):
-            CONTEXT.current_line = read_line()
-
-    if not CONTEXT.is_qt6 and re.match(
-        r"^\s*#ifdef SIP_PYQT6_RUN", CONTEXT.current_line
-    ):
-        dbg_info("do not process PYQT6 code")
         while not re.match(r"^#endif", CONTEXT.current_line):
             CONTEXT.current_line = read_line()
 
@@ -1830,13 +1814,12 @@ def try_skip_sip_directives():
         while not re.match(r"^ *[/]*% *End", CONTEXT.current_line):
             write_output("COD", CONTEXT.current_line + "\n")
             CONTEXT.current_line = read_line()
-            if CONTEXT.is_qt6:
-                CONTEXT.current_line = re.sub(
-                    r"SIP_SSIZE_T", "Py_ssize_t", CONTEXT.current_line
-                )
-                CONTEXT.current_line = re.sub(
-                    r"SIPLong_AsLong", "PyLong_AsLong", CONTEXT.current_line
-                )
+            CONTEXT.current_line = re.sub(
+                r"SIP_SSIZE_T", "Py_ssize_t", CONTEXT.current_line
+            )
+            CONTEXT.current_line = re.sub(
+                r"SIPLong_AsLong", "PyLong_AsLong", CONTEXT.current_line
+            )
             CONTEXT.current_line = re.sub(
                 r"^ *[/]*% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$",
                 r"%\1\2",
@@ -1987,6 +1970,20 @@ def try_skip_forward_decl():
             return True
 
 
+def try_skip_unwanted_cpp_lines() -> bool:
+    # Skip unwanted cpp lines
+
+    # skip "using ParentClass::virtualMethod;" lines
+    match = re.match(
+        r"^\s*using\s+.*::.*;\s*$",
+        CONTEXT.current_line,
+    )
+    if match:
+        dbg_info("skipping using ParentClass::virtualMethod; line")
+        return True
+    return False
+
+
 def try_skip_friend_decl():
     # Skip friend declarations
     if re.match(r"^\s*friend class \w+", CONTEXT.current_line):
@@ -2100,45 +2097,34 @@ def try_process_sip_skip():
         return True
 
 
-def process_struct_decl():
-    struct_match = re.match(
-        r"^\s*struct(\s+\w+_EXPORT)?\s+(?P<structname>\w+)$", CONTEXT.current_line
-    )
-    if struct_match:
-        dbg_info("  going to struct => public")
-        CONTEXT.class_and_struct.append(struct_match.group("structname"))
-        CONTEXT.classname.append(
-            CONTEXT.classname[-1]
-            if CONTEXT.classname
-            else struct_match.group("structname")
-        )  # fake new class since struct has considered similarly
-        if CONTEXT.access[-1] != Visibility.Private:
-            CONTEXT.all_fully_qualified_class_names.append(
-                CONTEXT.current_fully_qualified_struct_name()
-            )
-        CONTEXT.access.append(Visibility.Public)
-        CONTEXT.exported.append(CONTEXT.exported[-1])
-        CONTEXT.bracket_nesting_idx.append(0)
-
-
 def process_class_decl():
     # class declaration started
     # https://regex101.com/r/KMQdF5/1 (older versions: https://regex101.com/r/6FWntP/16)
     class_pattern = re.compile(
-        r"""^(\s*(class))\s+([A-Z0-9_]+_EXPORT\s+)?(Q_DECL_DEPRECATED\s+)?(?P<classname>\w+)(?P<domain>\s*:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *(, *(\w|::)+ *)*>)?(::\w+(<(\w|::)+(, *(\w|::)+)*>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *(, *(\w|::)+)*>)?(::\w+(<\w+(, *(\w|::)+)?>)?)*)*)?(?P<annot>\s*/?/?\s*SIP_\w+)?\s*?(//.*|(?!;))$"""
+        r"""^(\s*(?P<kind>class|struct))\s+([A-Z0-9_]+_EXPORT\s+)?(Q_DECL_DEPRECATED\s+)?(?P<classname>\w+)(?P<domain>\s*:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *(, *(\w|::)+ *)*>)?(::\w+(<(\w|::)+(, *(\w|::)+)*>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *(, *(\w|::)+)*>)?(::\w+(<\w+(, *(\w|::)+)?>)?)*)*)?(?P<annot>\s*/?/?\s*SIP_\w+)?\s*?(//.*|(?!;))$"""
     )
     class_pattern_match = class_pattern.match(CONTEXT.current_line)
 
     if class_pattern_match:
         dbg_info("class definition started")
-        CONTEXT.exported.append(0)
         CONTEXT.bracket_nesting_idx.append(0)
         template_inheritance_template = []
         template_inheritance_class1 = []
         template_inheritance_class2 = []
         template_inheritance_class3 = []
 
-        CONTEXT.classname.append(class_pattern_match.group("classname"))
+        if class_pattern_match.group("kind") == "class":
+            CONTEXT.classname.append(class_pattern_match.group("classname"))
+            CONTEXT.exported.append(0)
+        else:
+            assert class_pattern_match.group("kind") == "struct"
+            CONTEXT.classname.append(
+                CONTEXT.classname[-1]
+                if CONTEXT.classname
+                else class_pattern_match.group("classname")
+            )
+            CONTEXT.exported.append(CONTEXT.exported[-1])
+
         CONTEXT.class_and_struct.append(class_pattern_match.group("classname"))
         if CONTEXT.access[-1] != Visibility.Private:
             CONTEXT.all_fully_qualified_class_names.append(
@@ -2208,36 +2194,54 @@ def process_class_decl():
             CONTEXT.current_line += class_pattern_match.group("annot")
             CONTEXT.current_line = fix_annotations(CONTEXT.current_line)
 
-        CONTEXT.current_line += "\n{\n"
+        # Get indentation from opening bracket on next line
+        bracket_line = CONTEXT.input_lines[CONTEXT.line_idx]
+        if not re.match(r"^\s*{\s*$", bracket_line):
+            exit_with_error("expecting { after class definition")
+        CONTEXT.current_line += f"\n{bracket_line}"
+
         if CONTEXT.comment.strip():
-            validate_docstring(CONTEXT.comment)
-            # find out how long the first paragraph in the class docstring is.
-            paragraphs = split_to_paragraphs(CONTEXT.comment)
+            # SIP 4 doesn't support docstrings on structs
+            # TODO: Delete this condition when we finally drop ancient versions of SIP.
+            if class_pattern_match.group("kind") == "struct":
+                class_name = CONTEXT.current_fully_qualified_struct_name()
+                CONTEXT.struct_docstrings[class_name] = CONTEXT.comment
+            else:
+                validate_docstring(CONTEXT.comment)
+                # find out how long the first paragraph in the class docstring is.
+                paragraphs = split_to_paragraphs(CONTEXT.comment)
 
-            first_paragraph = wrap_docstring_paragraph(paragraphs[0])
-            if re.search(
-                r"(?<![a-z]\.[a-z])(?<!e\.g)(?<!i\.e)(?<!\w\.\w)(?<![A-Z][a-z]\.)(?<![A-Z]\.)(?<=\w)\.(?=\s+[A-Z])",
-                first_paragraph,
-            ):
-                exit_with_error(
-                    f"First paragraph in docstring for {CONTEXT.current_fully_qualified_class_name()} is multi-sentence. Please split to separate paragraphs.\n\n{first_paragraph}"
+                first_paragraph = wrap_docstring_paragraph(paragraphs[0])
+                if re.search(
+                    r"(?<![a-z]\.[a-z])(?<!e\.g)(?<!i\.e)(?<!\w\.\w)(?<![A-Z][a-z]\.)(?<![A-Z]\.)(?<=\w)\.(?=\s+[A-Z])",
+                    first_paragraph,
+                ):
+                    exit_with_error(
+                        f"First paragraph in docstring for {CONTEXT.current_fully_qualified_class_name()} is multi-sentence. Please split to separate paragraphs.\n\n{first_paragraph}"
+                    )
+                if first_paragraph.strip()[-1] != ".":
+                    exit_with_error(
+                        f"First paragraph in docstring for {CONTEXT.current_fully_qualified_class_name()} is not a complete sentence. Ensure it has a trailing '.':\n\n{first_paragraph}"
+                    )
+
+                docstring = first_paragraph
+                for paragraph in paragraphs[1:]:
+                    docstring += "\n\n" + wrap_docstring_paragraph(paragraph)
+
+                CONTEXT.current_line += (
+                    '\n%Docstring(signature="appended")\n' + docstring + "\n%End\n"
                 )
-            if first_paragraph.strip()[-1] != ".":
-                exit_with_error(
-                    f"First paragraph in docstring for {CONTEXT.current_fully_qualified_class_name()} is not a complete sentence. Ensure it has a trailing '.':\n\n{first_paragraph}"
-                )
 
-            docstring = first_paragraph
-            for paragraph in paragraphs[1:]:
-                docstring += "\n\n" + wrap_docstring_paragraph(paragraph)
-
+        # Nested classes don't need this #include, since SIP will also include
+        # the one defined on the parent class
+        write_include = len(CONTEXT.class_and_struct) <= 1
+        write_header_code = write_include or template_inheritance_template
+        if write_header_code:
+            CONTEXT.current_line += "\n%TypeHeaderCode"
+        if write_include:
             CONTEXT.current_line += (
-                '%Docstring(signature="appended")\n' + docstring + "\n%End\n"
+                f'\n#include "{os.path.basename(CONTEXT.header_file)}"'
             )
-
-        CONTEXT.current_line += (
-            f'\n%TypeHeaderCode\n#include "{os.path.basename(CONTEXT.header_file)}"'
-        )
 
         # for template based inheritance, add a typedef to define the base type,
         # since SIP doesn't allow inheriting from template classes directly
@@ -2278,15 +2282,16 @@ def process_class_decl():
         CONTEXT.access[-1] = Visibility.Private  # private by default
         write_output("CLS", f"{CONTEXT.current_line}\n")
 
-        # Skip opening curly bracket, incrementing hereunder
-        skip = read_line()
-        if not re.match(r"^\s*{\s*$", skip):
-            exit_with_error("expecting { after class definition")
+        # Increment bracket count and skip line for previously-handled bracket
+        read_line()
         CONTEXT.bracket_nesting_idx[-1] += 1
 
         CONTEXT.reset_method_state()
-        CONTEXT.header_code = True
-        CONTEXT.access[-1] = Visibility.Private
+        CONTEXT.header_code = write_header_code
+        if class_pattern_match.group("kind") == "class":
+            CONTEXT.access[-1] = Visibility.Private
+        else:
+            CONTEXT.access[-1] = Visibility.Public
         return True
 
 
@@ -2401,7 +2406,7 @@ def try_save_comments():
 
 def try_process_enum_decl():
     # Handle Q_DECLARE_FLAGS in Qt6
-    if CONTEXT.is_qt6 and re.match(
+    if re.match(
         r"^\s*Q_DECLARE_FLAGS\s*\(\s*(\w+)\s*,\s*(\w+)\s*\)", CONTEXT.current_line
     ):
         flags_name = re.search(
@@ -2482,15 +2487,14 @@ def try_process_enum_decl():
 
         if enum_type in ["int", "quint32"]:
             CONTEXT.enum_int_types.append(f"{CONTEXT.actual_class}.{enum_qualname}")
-            if CONTEXT.is_qt6:
-                enum_decl += f" /BaseType={py_enum_type or 'IntEnum'}/"
+            enum_decl += f" /BaseType={py_enum_type or 'IntEnum'}/"
         elif enum_type:
             exit_with_error(f"Unhandled enum type {enum_type} for {enum_cpp_name}")
         elif isclass:
             CONTEXT.enum_class_non_int_types.append(
                 f"{CONTEXT.actual_class}.{enum_qualname}"
             )
-        elif CONTEXT.is_qt6:
+        else:
             enum_decl += " /BaseType=IntEnum/"
 
         write_output("ENU1", enum_decl)
@@ -2683,7 +2687,7 @@ def try_process_enum_decl():
                                 f"* ``{enum_member}``: {value_comment_indented}"
                             )
 
-                if not is_scope_based and CONTEXT.is_qt6 and enum_member:
+                if not is_scope_based and enum_member:
                     basename = ".".join(CONTEXT.class_and_struct)
                     if basename:
                         enum_member = "None_" if enum_member == "None" else enum_member
@@ -2911,38 +2915,24 @@ def process_flags_q_macros():
                 f"{flag} is a flags type, but was not declared with int type. Add ': int' to the enum class declaration line"
             )
         elif py_flag not in CONTEXT.enum_int_types:
-            if CONTEXT.is_qt6:
-                dbg_info("monkey patching operators for non-class enum")
-                if not CONTEXT.has_pushed_force_int:
-                    CONTEXT.output_python.append(
-                        "from enum import Enum\n\n\ndef _force_int(v): return int(v.value) if isinstance(v, Enum) else v\n\n\n"
-                    )
-                    CONTEXT.has_pushed_force_int = True
+            dbg_info("monkey patching operators for non-class enum")
+            if not CONTEXT.has_pushed_force_int:
                 CONTEXT.output_python.append(
-                    f"{py_flag}.__bool__ = lambda flag: bool(_force_int(flag))\n"
+                    "from enum import Enum\n\n\ndef _force_int(v): return int(v.value) if isinstance(v, Enum) else v\n\n\n"
                 )
-                CONTEXT.output_python.append(
-                    f"{py_flag}.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)\n"
-                )
-                CONTEXT.output_python.append(
-                    f"{py_flag}.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)\n"
-                )
-                CONTEXT.output_python.append(
-                    f"{py_flag}.__or__ = lambda flag1, flag2: {py_flag}(_force_int(flag1) | _force_int(flag2))\n"
-                )
-
-        if not CONTEXT.is_qt6:
-            for patched_type in CONTEXT.enum_monkey_patched_types:
-                if flags == f"{patched_type[0]}::{patched_type[1]}":
-                    dbg_info("monkey patching flags")
-                    if not CONTEXT.has_pushed_force_int:
-                        CONTEXT.output_python.append(
-                            "from enum import Enum\n\n\ndef _force_int(v): return int(v.value) if isinstance(v, Enum) else v\n\n\n"
-                        )
-                        CONTEXT.has_pushed_force_int = True
-                    CONTEXT.output_python.append(
-                        f"{py_flag}.__or__ = lambda flag1, flag2: {patched_type[0]}.{patched_type[1]}(_force_int(flag1) | _force_int(flag2))\n"
-                    )
+                CONTEXT.has_pushed_force_int = True
+            CONTEXT.output_python.append(
+                f"{py_flag}.__bool__ = lambda flag: bool(_force_int(flag))\n"
+            )
+            CONTEXT.output_python.append(
+                f"{py_flag}.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)\n"
+            )
+            CONTEXT.output_python.append(
+                f"{py_flag}.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)\n"
+            )
+            CONTEXT.output_python.append(
+                f"{py_flag}.__or__ = lambda flag1, flag2: {py_flag}(_force_int(flag1) | _force_int(flag2))\n"
+            )
 
 
 def process_prepend_function_specifier():
@@ -3553,6 +3543,8 @@ def process_input():
         check_end_of_typeheadercode()
         if try_skip_forward_decl():
             continue
+        if try_skip_unwanted_cpp_lines():
+            continue
         if try_skip_friend_decl():
             continue
         if try_process_q_gadget():
@@ -3564,8 +3556,6 @@ def process_input():
         if try_process_sip_skip():
             continue
         if detect_comment_block():
-            continue
-        if process_struct_decl():
             continue
         if process_class_decl():
             continue
@@ -3779,7 +3769,6 @@ if __name__ == "__main__":
         description="Convert header file to SIP and Python"
     )
     parser.add_argument("-debug", action="store_true", help="Enable debug mode")
-    parser.add_argument("-qt6", action="store_true", help="Enable Qt6 mode")
     parser.add_argument("-sip_output", help="SIP output file")
     parser.add_argument("-python_output", help="Python output file")
     parser.add_argument("-class_map", help="Class map file")
@@ -3798,7 +3787,6 @@ if __name__ == "__main__":
         sys.exit(1)
 
     CONTEXT.debug = args.debug
-    CONTEXT.is_qt6 = args.qt6
     CONTEXT.header_file = args.headerfile
     CONTEXT.input_lines = input_lines
     CONTEXT.line_count = len(input_lines)

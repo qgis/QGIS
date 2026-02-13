@@ -111,6 +111,7 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
 
     void setPenWidth( int width );
 
+    using QgsMapCanvasItem::paint;
     void paint( QPainter *p ) override;
 
     QRectF boundingRect() const override;

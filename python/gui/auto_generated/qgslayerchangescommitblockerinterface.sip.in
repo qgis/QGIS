@@ -13,7 +13,7 @@ class QgsLayerChangesCommitBlockerInterface
 {
 %Docstring(signature="appended")
 An interface that may be implemented to allow plugins or scripts to
-temporarily block block the ability to commit changes to a layer.
+temporarily block the ability to commit changes to a layer.
 
 This interface allows plugins to implement custom logic to determine
 whether it is safe for the application to commit those changes.
@@ -39,7 +39,7 @@ Example
               return True
 
        my_blocker = MyPluginCommitBlocker()
-       iface.registerLayerChangesCommitBlocker(my_blocker)
+       iface.registerApplicationExitBlocker(my_blocker)
 
 .. versionadded:: 4.0
 %End
@@ -50,7 +50,7 @@ Example
   public:
     virtual ~QgsLayerChangesCommitBlockerInterface();
 
-    virtual bool allowCommit( QgsMapLayer* layer ) = 0;
+    virtual bool allowCommit( QgsMapLayer *layer ) = 0;
 %Docstring
 Called whenever the QGIS application has been asked to commit changes to
 a layer.

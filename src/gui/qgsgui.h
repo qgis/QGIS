@@ -25,7 +25,10 @@
 #include "qgis_sip.h"
 #include "qgssettingstree.h"
 
+#include <QString>
 #include <QWidget>
+
+using namespace Qt::StringLiterals;
 
 class QgsSettingsRegistryGui;
 class QgsEditorWidgetRegistry;
@@ -69,8 +72,8 @@ class GUI_EXPORT QgsGui : public QObject
     Q_OBJECT
 
   public:
-    static inline QgsSettingsTreeNode *sTtreeWidgetGeometry = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "widget-geometry" ) ) SIP_SKIP;
-    static inline QgsSettingsTreeNode *sTtreeWidgetLastUsedValues = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "widget-last-used-values" ) ) SIP_SKIP;
+    static inline QgsSettingsTreeNode *sTtreeWidgetGeometry = QgsSettingsTree::sTreeApp->createChildNode( u"widget-geometry"_s ) SIP_SKIP;
+    static inline QgsSettingsTreeNode *sTtreeWidgetLastUsedValues = QgsSettingsTree::sTreeApp->createChildNode( u"widget-last-used-values"_s ) SIP_SKIP;
 
     /**
      * Defines the behavior to use when setting the CRS for a newly created project.

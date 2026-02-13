@@ -22,6 +22,10 @@
 #include "qgspluginlayer.h"
 #include "qgsproject.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsPluginLayerType::QgsPluginLayerType( const QString &name )
   : mName( name )
 {
@@ -57,7 +61,7 @@ QgsPluginLayerRegistry::~QgsPluginLayerRegistry()
 {
   if ( !mPluginLayerTypes.isEmpty() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "QgsPluginLayerRegistry::~QgsPluginLayerRegistry(): creator list not empty" ), 2 );
+    QgsDebugMsgLevel( u"QgsPluginLayerRegistry::~QgsPluginLayerRegistry(): creator list not empty"_s, 2 );
     const QStringList keys = mPluginLayerTypes.keys();
     for ( const QString &key : keys )
     {

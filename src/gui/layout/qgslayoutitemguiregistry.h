@@ -27,6 +27,9 @@
 
 #include <QGraphicsItem>
 #include <QIcon>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsLayout;
 class QgsLayoutView;
@@ -100,7 +103,7 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
     /**
      * Returns an icon representing creation of the layout item type.
      */
-    virtual QIcon creationIcon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ); }
+    virtual QIcon creationIcon() const { return QgsApplication::getThemeIcon( u"/mActionAddBasicRectangle.svg"_s ); }
 
     /*
      * IMPORTANT: While it seems like /Factory/ would be the correct annotations here, that's not
@@ -195,7 +198,6 @@ typedef std::function<void( QgsLayoutItem *, Qgis::MouseHandlesAction action )> 
 class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetadata
 {
   public:
-
     /**
      * Constructor for QgsLayoutItemGuiMetadata with the specified class \a type
      * and \a creationIcon, and function pointers for the various
@@ -336,7 +338,6 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
 class GUI_EXPORT QgsLayoutItemGuiGroup
 {
   public:
-
     /**
      * Constructor for QgsLayoutItemGuiGroup.
      */
@@ -380,7 +381,6 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Creates a new empty item GUI registry.
      *

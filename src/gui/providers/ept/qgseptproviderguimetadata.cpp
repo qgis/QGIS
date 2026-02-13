@@ -19,10 +19,14 @@
 
 #include "qgsapplication.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QgsEptProviderGuiMetadata::QgsEptProviderGuiMetadata()
-  : QgsProviderGuiMetadata( QStringLiteral( "ept" ) )
+  : QgsProviderGuiMetadata( u"ept"_s )
 {
 }
 

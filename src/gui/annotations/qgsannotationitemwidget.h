@@ -39,7 +39,6 @@ class GUI_EXPORT QgsAnnotationItemBaseWidget : public QgsPanelWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAnnotationItemBaseWidget.
      */
@@ -124,7 +123,6 @@ class GUI_EXPORT QgsAnnotationItemBaseWidget : public QgsPanelWidget
     void itemChanged();
 
   protected:
-
     /**
      * Attempts to update the widget to show the properties
      * for the specified \a item.

@@ -123,9 +123,9 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
     QgsLayerTreeGroup *mRoot = nullptr;
     QgsProject *mProject = nullptr;
     QStringList mLayerIdsForRemoval;
-    bool mRegistryRemovingLayers;
-    bool mEnabled;
-    bool mNewLayersVisible;
+    bool mRegistryRemovingLayers = false;
+    bool mEnabled = true;
+    bool mNewLayersVisible = true;
 
     QPointer< QgsLayerTreeGroup > mInsertionPointGroup;
     int mInsertionPointPosition = 0;

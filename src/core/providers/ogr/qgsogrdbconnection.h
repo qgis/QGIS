@@ -22,7 +22,10 @@
 #include "qgsdatasourceuri.h"
 #include "qgssettingsentryimpl.h"
 
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -41,7 +44,7 @@ class CORE_EXPORT QgsOgrDbConnection : public QObject
     //! Constructor
     explicit QgsOgrDbConnection( const QString &connName, const QString &settingsKey );
 
-    static const QStringList connectionList( const QString &driverName = QStringLiteral( "GPKG" ) );
+    static const QStringList connectionList( const QString &driverName = u"GPKG"_s );
     static void deleteConnection( const QString &connName );
     static QString selectedConnection( const QString &driverName );
     static void setSelectedConnection( const QString &connName, const QString &settingsKey );

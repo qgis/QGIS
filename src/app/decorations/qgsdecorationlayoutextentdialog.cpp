@@ -30,7 +30,11 @@
 #include "qgssymbolselectordialog.h"
 #include "qgstextformatwidget.h"
 
+#include <QString>
+
 #include "moc_qgsdecorationlayoutextentdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDecorationLayoutExtentDialog::QgsDecorationLayoutExtentDialog( QgsDecorationLayoutExtent &deco, QWidget *parent )
   : QDialog( parent )
@@ -88,5 +92,5 @@ void QgsDecorationLayoutExtentDialog::buttonBox_rejected()
 
 void QgsDecorationLayoutExtentDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#layoutextents-decoration" ) );
+  QgsHelp::openHelp( u"map_views/map_view.html#layoutextents-decoration"_s );
 }

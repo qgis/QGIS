@@ -50,7 +50,7 @@ class CORE_EXPORT QgsGpsDetector : public QObject
     Q_OBJECT
   public:
 
-    // TODO QGIS 4.0 -- remove useUnsafeSignals option
+    // TODO QGIS 5.0 -- remove useUnsafeSignals option
 
     /**
      * Constructor for QgsGpsDetector.

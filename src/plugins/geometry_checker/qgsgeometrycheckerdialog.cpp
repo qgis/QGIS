@@ -24,9 +24,12 @@
 #include "qgssettings.h"
 
 #include <QCloseEvent>
+#include <QString>
 #include <QVBoxLayout>
 
 #include "moc_qgsgeometrycheckerdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGeometryCheckerDialog::QgsGeometryCheckerDialog( QgisInterface *iface, QWidget *parent )
   : QDialog( parent )
@@ -107,5 +110,5 @@ void QgsGeometryCheckerDialog::closeEvent( QCloseEvent *ev )
 
 void QgsGeometryCheckerDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "plugins/core_plugins/plugins_geometry_checker.html" ) );
+  QgsHelp::openHelp( u"plugins/core_plugins/plugins_geometry_checker.html"_s );
 }

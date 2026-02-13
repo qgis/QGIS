@@ -8,15 +8,14 @@
 
 
 
-class QgsPaintEngineHack : QPaintEngine
+class QgsPaintEngineHack : QPaintEngine /Deprecated="Since 4.0. This class no longer does anything and will be removed in QGIS 5.0."/
 {
 %Docstring(signature="appended")
 Hack to workaround Qt #5114 by disabling PatternTransform.
 
-.. note::
+.. deprecated:: 4.0
 
-   This is not required for builds based on Qt 6.3 or later, or Qt 5.15 builds
-   using KDE's maintained fork. On these versions the class has no effect.
+   This class no longer does anything and will be removed in QGIS 5.0.
 %End
 
 %TypeHeaderCode

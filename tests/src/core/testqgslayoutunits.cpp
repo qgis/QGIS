@@ -23,12 +23,16 @@
 #include "qgstest.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsLayoutUnits : public QgsTest
 {
     Q_OBJECT
   public:
     TestQgsLayoutUnits()
-      : QgsTest( QStringLiteral( "Layout Units Tests" ) ) {}
+      : QgsTest( u"Layout Units Tests"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -233,7 +237,7 @@ void TestQgsLayoutUnits::measurementEncodeDecode()
   QCOMPARE( original, result );
 
   //test with bad string
-  result = QgsLayoutMeasurement::decodeMeasurement( QStringLiteral( "1" ) );
+  result = QgsLayoutMeasurement::decodeMeasurement( u"1"_s );
   QCOMPARE( result, QgsLayoutMeasurement( 0 ) );
 }
 
@@ -373,13 +377,13 @@ void TestQgsLayoutUnits::sizeEncodeDecode()
   QCOMPARE( original, result );
 
   //test with bad string
-  result = QgsLayoutSize::decodeSize( QStringLiteral( "1,2" ) );
+  result = QgsLayoutSize::decodeSize( u"1,2"_s );
   QCOMPARE( result, QgsLayoutSize() );
 
   //test with nan values
-  result = QgsLayoutSize::decodeSize( QStringLiteral( "nan,2,mm" ) );
+  result = QgsLayoutSize::decodeSize( u"nan,2,mm"_s );
   QCOMPARE( result, QgsLayoutSize() );
-  result = QgsLayoutSize::decodeSize( QStringLiteral( "2,nan,mm" ) );
+  result = QgsLayoutSize::decodeSize( u"2,nan,mm"_s );
   QCOMPARE( result, QgsLayoutSize() );
 }
 
@@ -519,15 +523,15 @@ void TestQgsLayoutUnits::pointEncodeDecode()
   QCOMPARE( original, result );
 
   //test with bad string
-  result = QgsLayoutPoint::decodePoint( QStringLiteral( "1,2" ) );
+  result = QgsLayoutPoint::decodePoint( u"1,2"_s );
   QCOMPARE( result, QgsLayoutPoint() );
 
   //test with nan values
-  result = QgsLayoutPoint::decodePoint( QStringLiteral( "nan,2,mm" ) );
+  result = QgsLayoutPoint::decodePoint( u"nan,2,mm"_s );
   QCOMPARE( result, QgsLayoutPoint() );
-  result = QgsLayoutPoint::decodePoint( QStringLiteral( "2,nan,mm" ) );
+  result = QgsLayoutPoint::decodePoint( u"2,nan,mm"_s );
   QCOMPARE( result, QgsLayoutPoint() );
-  result = QgsLayoutPoint::decodePoint( QStringLiteral( "9.99999e+06,1e+07,mm" ) );
+  result = QgsLayoutPoint::decodePoint( u"9.99999e+06,1e+07,mm"_s );
   QCOMPARE( result, QgsLayoutPoint() );
 }
 

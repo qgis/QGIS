@@ -31,7 +31,6 @@ class GUI_EXPORT QgsLayoutViewToolEditNodes : public QgsLayoutViewTool
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutViewToolEditNodes.
      */

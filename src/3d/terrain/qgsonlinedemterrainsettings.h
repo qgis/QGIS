@@ -33,7 +33,6 @@
 class _3D_EXPORT QgsOnlineDemTerrainSettings : public QgsAbstractTerrainSettings
 {
   public:
-
     /**
      * Creates a new instance of a QgsOnlineDemTerrainSettings object.
      */

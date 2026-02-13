@@ -27,6 +27,9 @@
 #include "qgstextshadowsettings.h"
 
 #include <QSharedDataPointer>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QMimeData;
 class QgsTextSettingsPrivate;
@@ -525,7 +528,7 @@ class CORE_EXPORT QgsTextFormat
 #ifdef SIP_RUN
         SIP_PYOBJECT __repr__();
         % MethodCode
-        const QString str = QStringLiteral( "<QgsTextFormat.Tab: %1>" ).arg( sipCpp->position() );
+        const QString str = u"<QgsTextFormat.Tab: %1>"_s.arg( sipCpp->position() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
         % End
 #endif

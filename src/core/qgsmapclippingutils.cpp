@@ -23,6 +23,9 @@
 #include "qgsrendercontext.h"
 
 #include <QPointer>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QList<QgsMapClippingRegion> QgsMapClippingUtils::collectClippingRegionsForLayer( const QgsRenderContext &context, const QgsMapLayer *layer )
 {
@@ -73,7 +76,7 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureRequestGeometry( const QList< Q
   }
   catch ( QgsCsException & )
   {
-    QgsDebugError( QStringLiteral( "Could not transform clipping region to layer CRS" ) );
+    QgsDebugError( u"Could not transform clipping region to layer CRS"_s );
     shouldFilter = false;
     return QgsGeometry();
   }
@@ -119,7 +122,7 @@ QgsGeometry QgsMapClippingUtils::calculateFeatureIntersectionGeometry( const QLi
   }
   catch ( QgsCsException & )
   {
-    QgsDebugError( QStringLiteral( "Could not transform clipping region to layer CRS" ) );
+    QgsDebugError( u"Could not transform clipping region to layer CRS"_s );
     shouldClip = false;
     return QgsGeometry();
   }
@@ -225,7 +228,7 @@ QgsGeometry QgsMapClippingUtils::calculateLabelIntersectionGeometry( const QList
   }
   catch ( QgsCsException & )
   {
-    QgsDebugError( QStringLiteral( "Could not transform clipping region to layer CRS" ) );
+    QgsDebugError( u"Could not transform clipping region to layer CRS"_s );
     shouldClip = false;
     return QgsGeometry();
   }

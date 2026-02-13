@@ -39,7 +39,6 @@ class GUI_EXPORT QgsProcessingMatrixModelerWidget : public QWidget, private Ui::
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingMatrixModelerWidget.
      */
@@ -75,6 +74,15 @@ class GUI_EXPORT QgsProcessingMatrixModelerWidget : public QWidget, private Ui::
      * \see fixedRows()
      */
     void setFixedRows( bool fixedRows );
+
+  signals:
+
+    /**
+     * Emitted when the matrix is changed in the widget.
+     *
+     * \since QGIS 4.0
+     */
+    void changed();
 
   private slots:
 

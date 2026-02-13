@@ -20,6 +20,10 @@
 #include "qgssettingstree.h"
 #include "qgssettingstreenode.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #define SIP_NO_FILE
 
 #include <QStringList>
@@ -47,7 +51,7 @@ class CORE_EXPORT QgsGdalCloudProviderConnection : public QgsAbstractProviderCon
 #ifndef SIP_RUN
 
     ///@cond PRIVATE
-    static inline QgsSettingsTreeNamedListNode *sTreeConnectionCloud = QgsSettingsTree::sTreeConnections->createNamedListNode( QStringLiteral( "cloud" ), Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
+    static inline QgsSettingsTreeNamedListNode *sTreeConnectionCloud = QgsSettingsTree::sTreeConnections->createNamedListNode( u"cloud"_s, Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
 
     static const QgsSettingsEntryString *settingsVsiHandler;
     static const QgsSettingsEntryString *settingsContainer;

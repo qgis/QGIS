@@ -642,7 +642,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         )
         self.assertEqual(
             prop.expressionString(),
-            'CASE WHEN @vector_tile_zoom >= 12 AND @vector_tile_zoom <= 13 THEN (CASE WHEN (to_real("ele") % 100 IS 0) THEN 0.75 ELSE 0 END) * 0.264583 WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN (scale_linear(@vector_tile_zoom,13,14,CASE WHEN (to_real("ele") % 100 IS 0) THEN 0.75 ELSE 0 END,CASE WHEN (to_real("ele") % 100 IS 0) THEN 1 ELSE 0 END)) * 0.264583 WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 14.5 THEN (scale_linear(@vector_tile_zoom,14,14.5,CASE WHEN (to_real("ele") % 100 IS 0) THEN 1 ELSE 0 END,CASE WHEN (to_real("ele") % 100 IS 0) THEN 1.5 ELSE CASE WHEN (to_real("ele") % 20 IS 0) THEN 0.75 ELSE 0 END END)) * 0.264583 WHEN @vector_tile_zoom > 14.5 AND @vector_tile_zoom <= 15 THEN (scale_linear(@vector_tile_zoom,14.5,15,CASE WHEN (to_real("ele") % 100 IS 0) THEN 1.5 ELSE CASE WHEN (to_real("ele") % 20 IS 0) THEN 0.75 ELSE 0 END END,CASE WHEN (to_real("ele") % 100 IS 0) THEN 1.75 ELSE CASE WHEN (to_real("ele") % 20 IS 0) THEN 1 ELSE 0 END END)) * 0.264583 WHEN @vector_tile_zoom > 15 AND @vector_tile_zoom <= 16.5 THEN (scale_linear(@vector_tile_zoom,15,16.5,CASE WHEN (to_real("ele") % 100 IS 0) THEN 1.75 ELSE CASE WHEN (to_real("ele") % 20 IS 0) THEN 1 ELSE 0 END END,CASE WHEN (to_real("ele") % 100 IS 0) THEN 2 ELSE CASE WHEN (to_real("ele") % 10 IS 0) THEN 1 ELSE 0 END END)) * 0.264583 WHEN @vector_tile_zoom > 16.5 THEN ( ( CASE WHEN (to_real("ele") % 100 IS 0) THEN 2 ELSE CASE WHEN (to_real("ele") % 10 IS 0) THEN 1 ELSE 0 END END ) * 0.264583 ) END',
+            'CASE WHEN @vector_tile_zoom >= 12 AND @vector_tile_zoom <= 13 THEN (CASE WHEN ((to_real("ele") % 100) IS 0) THEN 0.75 ELSE 0 END) * 0.264583 WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN (scale_linear(@vector_tile_zoom,13,14,CASE WHEN ((to_real("ele") % 100) IS 0) THEN 0.75 ELSE 0 END,CASE WHEN ((to_real("ele") % 100) IS 0) THEN 1 ELSE 0 END)) * 0.264583 WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 14.5 THEN (scale_linear(@vector_tile_zoom,14,14.5,CASE WHEN ((to_real("ele") % 100) IS 0) THEN 1 ELSE 0 END,CASE WHEN ((to_real("ele") % 100) IS 0) THEN 1.5 ELSE CASE WHEN ((to_real("ele") % 20) IS 0) THEN 0.75 ELSE 0 END END)) * 0.264583 WHEN @vector_tile_zoom > 14.5 AND @vector_tile_zoom <= 15 THEN (scale_linear(@vector_tile_zoom,14.5,15,CASE WHEN ((to_real("ele") % 100) IS 0) THEN 1.5 ELSE CASE WHEN ((to_real("ele") % 20) IS 0) THEN 0.75 ELSE 0 END END,CASE WHEN ((to_real("ele") % 100) IS 0) THEN 1.75 ELSE CASE WHEN ((to_real("ele") % 20) IS 0) THEN 1 ELSE 0 END END)) * 0.264583 WHEN @vector_tile_zoom > 15 AND @vector_tile_zoom <= 16.5 THEN (scale_linear(@vector_tile_zoom,15,16.5,CASE WHEN ((to_real("ele") % 100) IS 0) THEN 1.75 ELSE CASE WHEN ((to_real("ele") % 20) IS 0) THEN 1 ELSE 0 END END,CASE WHEN ((to_real("ele") % 100) IS 0) THEN 2 ELSE CASE WHEN ((to_real("ele") % 10) IS 0) THEN 1 ELSE 0 END END)) * 0.264583 WHEN @vector_tile_zoom > 16.5 THEN ( ( CASE WHEN ((to_real("ele") % 100) IS 0) THEN 2 ELSE CASE WHEN ((to_real("ele") % 10) IS 0) THEN 1 ELSE 0 END END ) * 0.264583 ) END',
         )
 
     def testParseExpression(self):
@@ -774,7 +774,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             QgsMapBoxGlStyleConverter.parseExpression(
                 ["%", 100, 20], conversion_context
             ),
-            """100 % 20""",
+            """(100 % 20)""",
         )
         self.assertEqual(
             QgsMapBoxGlStyleConverter.parseExpression(
@@ -797,7 +797,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                 conversion_context,
                 False,
             ),
-            """CASE WHEN (to_real("ele") % 100 IS 0) THEN 0.75 ELSE 0 END""",
+            """CASE WHEN ((to_real("ele") % 100) IS 0) THEN 0.75 ELSE 0 END""",
         )
 
         self.assertEqual(
@@ -888,6 +888,33 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                 True,
             ),
             """CASE  WHEN @vector_tile_zoom >= 16 THEN (CASE WHEN ("flstnrnen" IS NOT NULL) THEN concat("flstnrzae", '/', "flstnrnen") ELSE "flstnrzae" END) ELSE ('') END""",
+        )
+
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["*", -57.2957795, ["get", "drehwinkel"]],
+                conversion_context,
+                False,
+            ),
+            '(-57.2957795 * "drehwinkel")',
+        )
+
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["+", 10, ["get", "offset_a"], ["get", "offset_b"]],
+                conversion_context,
+                False,
+            ),
+            '(10 + "offset_a" + "offset_b")',
+        )
+
+        self.assertEqual(
+            QgsMapBoxGlStyleConverter.parseExpression(
+                ["*", ["+", 10, 10], ["+", 1, 2]],
+                conversion_context,
+                False,
+            ),
+            "((10 + 10) * (1 + 2))",
         )
 
     def testConvertLabels(self):
@@ -1135,6 +1162,35 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             """lower(concat(concat("name_en",' - ',"name_fr"),"bar"))""",
         )
         self.assertTrue(labeling.labelSettings().isExpression)
+
+        # allow overlap
+        style = {
+            "layout": {
+                "text-field": "name_en",
+                "text-size": 11,
+                "icon-size": 1,
+                "text-allow-overlap": True,
+            },
+            "type": "symbol",
+            "id": "poi_label",
+            "paint": {
+                "text-color": "#666",
+                "text-halo-width": 1.5,
+                "text-halo-color": "rgba(255,255,255,0.95)",
+                "text-halo-blur": 1,
+            },
+            "source-layer": "poi_label",
+        }
+        renderer, has_renderer, labeling, has_labeling = (
+            QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        )
+        self.assertFalse(has_renderer)
+        self.assertTrue(has_labeling)
+        ps = labeling.labelSettings().placementSettings()
+        self.assertEqual(
+            ps.overlapHandling(), Qgis.LabelOverlapHandling.AllowOverlapAtNoCost
+        )
+        self.assertEqual(ps.allowDegradedPlacement(), True)
 
     def testHaloMaxSize(self):
         # text-halo-width is max 1/4 of font-size
@@ -1510,6 +1566,66 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             "vertical_anchor_point": "1",
         }
         self.assertEqual(properties, expected_properties)
+
+        # data defined circle
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "id": "cicle_layer",
+            "type": "circle",
+            "paint": {
+                "circle-opacity": 0,
+                "circle-stroke-color": "#919191",
+                "circle-color": "#000000",
+                "circle-stroke-width": {"stops": [[16, 0.125], [17, 0.25], [18, 0.5]]},
+                "circle-stroke-opacity": 1,
+                "circle-radius": {
+                    "stops": [[16, 2.375], [17, 4.75], [18, 9.5], [19, 19]]
+                },
+            },
+        }
+        has_renderer, rendererStyle = QgsMapBoxGlStyleConverter.parseCircleLayer(
+            style, context
+        )
+        self.assertTrue(has_renderer)
+        self.assertEqual(
+            rendererStyle.geometryType(), QgsWkbTypes.GeometryType.PointGeometry
+        )
+        symbol_layer = rendererStyle.symbol().symbolLayers()[0]
+        properties = symbol_layer.properties()
+        expected_properties = {
+            "angle": "0",
+            "cap_style": "square",
+            "color": "0,0,0,0,rgb:0,0,0,0",
+            "horizontal_anchor_point": "1",
+            "joinstyle": "bevel",
+            "name": "circle",
+            "offset": "0,0",
+            "offset_map_unit_scale": "3x:0,0,0,0,0,0",
+            "offset_unit": "Pixel",
+            "outline_color": "145,145,145,255,rgb:0.5686275,0.5686275,0.5686275,1",
+            "outline_style": "solid",
+            "outline_width": "0.125",
+            "outline_width_map_unit_scale": "3x:0,0,0,0,0,0",
+            "outline_width_unit": "Pixel",
+            "scale_method": "diameter",
+            "size": "4.75",
+            "size_map_unit_scale": "3x:0,0,0,0,0,0",
+            "size_unit": "Pixel",
+            "vertical_anchor_point": "1",
+        }
+        self.assertEqual(properties, expected_properties)
+
+        dd_props = symbol_layer.dataDefinedProperties()
+        prop = dd_props.property(QgsSymbolLayer.Property.Size)
+        self.assertEqual(
+            prop.asExpression(),
+            "CASE WHEN @vector_tile_zoom >= 16 AND @vector_tile_zoom <= 17 THEN (scale_linear(@vector_tile_zoom,16,17,2.375,4.75)) * 2 WHEN @vector_tile_zoom > 17 AND @vector_tile_zoom <= 18 THEN (scale_linear(@vector_tile_zoom,17,18,4.75,9.5)) * 2 WHEN @vector_tile_zoom > 18 AND @vector_tile_zoom <= 19 THEN (scale_linear(@vector_tile_zoom,18,19,9.5,19)) * 2 WHEN @vector_tile_zoom > 19 THEN 38 END",
+        )
+        prop = dd_props.property(QgsSymbolLayer.Property.StrokeWidth)
+        self.assertEqual(
+            prop.asExpression(),
+            "CASE WHEN @vector_tile_zoom >= 16 AND @vector_tile_zoom <= 17 THEN scale_linear(@vector_tile_zoom,16,17,0.125,0.25) WHEN @vector_tile_zoom > 17 AND @vector_tile_zoom <= 18 THEN scale_linear(@vector_tile_zoom,17,18,0.25,0.5) WHEN @vector_tile_zoom > 18 THEN 0.5 END",
+        )
 
     def testParseArrayStops(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()

@@ -15,6 +15,10 @@
 
 #include <nlohmann/json.hpp>
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 using namespace nlohmann;
 
 #include "qgslogger.h"
@@ -69,7 +73,7 @@ QString QgsOapifCreateFeatureRequest::createFeature( const QgsOapifSharedData *s
     }
   }
 
-  const int posItems = location.lastIndexOf( QLatin1String( "/items/" ) );
+  const int posItems = location.lastIndexOf( "/items/"_L1 );
   if ( posItems < 0 )
     return QString();
 

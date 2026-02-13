@@ -50,7 +50,6 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     Q_OBJECT
 
   public:
-
     /**
      * QgsDataSourceManagerDialog constructor
       * \param browserModel instance of the (shared) browser model
@@ -170,7 +169,7 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     void makeConnections( QgsAbstractDataSourceWidget *dlg, const QString &providerKey );
     Ui::QgsDataSourceManagerDialog *ui = nullptr;
     QgsBrowserDockWidget *mBrowserWidget = nullptr;
-    int mPreviousRow;
+    int mPreviousRow = -1;
     QStringList mPageProviderKeys;
     QStringList mPageProviderNames;
     // Map canvas

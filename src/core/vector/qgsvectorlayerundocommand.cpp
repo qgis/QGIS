@@ -197,7 +197,6 @@ QgsVectorLayerUndoCommandChangeAttribute::QgsVectorLayerUndoCommandChangeAttribu
   , mFieldIndex( fieldIndex )
   , mOldValue( oldValue )
   , mNewValue( newValue )
-  , mFirstChange( true )
 {
   if ( FID_IS_NEW( mFid ) )
   {

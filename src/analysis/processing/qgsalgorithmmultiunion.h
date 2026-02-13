@@ -23,14 +23,18 @@
 #include "qgsapplication.h"
 #include "qgsprocessingalgorithm.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 class QgsMultiUnionAlgorithm : public QgsProcessingAlgorithm
 {
   public:
     QgsMultiUnionAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmUnion.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmUnion.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmUnion.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmUnion.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;

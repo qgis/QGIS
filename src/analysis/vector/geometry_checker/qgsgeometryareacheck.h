@@ -20,6 +20,10 @@
 
 #include "qgsgeometrycheck.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsSurface;
 
 /**
@@ -56,7 +60,7 @@ class ANALYSIS_EXPORT QgsGeometryAreaCheck : public QgsGeometryCheck
     static QgsGeometryCheck::CheckType factoryCheckType() { return QgsGeometryCheck::FeatureCheck; }
 
   private:
-    static QString factoryId() { return QStringLiteral( "QgsGeometryAreaCheck" ); }
+    static QString factoryId() { return u"QgsGeometryAreaCheck"_s; }
     static QString factoryDescription() { return tr( "Minimal area" ); }
     virtual bool checkThreshold( double layerToMapUnits, const QgsAbstractGeometry *geom, double &value ) const;
     bool mergeWithNeighbor( const QMap<QString, QgsFeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, int partIdx, int method, int mergeAttributeIndex, Changes &changes, QString &errMsg ) const;

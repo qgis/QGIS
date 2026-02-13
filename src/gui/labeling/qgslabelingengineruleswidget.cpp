@@ -26,8 +26,11 @@
 #include <QDialogButtonBox>
 #include <QMenu>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgslabelingengineruleswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsLabelingEngineRulesModel
@@ -404,7 +407,7 @@ QgsLabelingEngineRulesDialog::QgsLabelingEngineRulesDialog( QWidget *parent, Qt:
   : QDialog( parent, flags )
 {
   setWindowTitle( tr( "Configure Rules" ) );
-  setObjectName( QStringLiteral( "QgsLabelingEngineRulesDialog" ) );
+  setObjectName( u"QgsLabelingEngineRulesDialog"_s );
 
   mWidget = new QgsLabelingEngineRulesWidget();
 
@@ -420,7 +423,7 @@ QgsLabelingEngineRulesDialog::QgsLabelingEngineRulesDialog( QWidget *parent, Qt:
   connect( mButtonBox->button( QDialogButtonBox::Ok ), &QAbstractButton::clicked, this, &QDialog::accept );
   connect( mButtonBox->button( QDialogButtonBox::Cancel ), &QAbstractButton::clicked, this, &QDialog::reject );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#labeling-rules" ) );
+    QgsHelp::openHelp( u"working_with_vector/vector_properties.html#labeling-rules"_s );
   } );
 }
 

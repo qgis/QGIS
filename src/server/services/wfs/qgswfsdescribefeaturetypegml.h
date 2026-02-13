@@ -38,7 +38,6 @@
 class QgsWfsDescribeFeatureTypeGml
 {
   private:
-
     /**
       * Returns the GML geometry type.
       */
@@ -54,7 +53,6 @@ class QgsWfsDescribeFeatureTypeGml
     const QgsWfs::QgsWfsParameters wfsParameters;
 
   public:
-
     /**
      * Constructor
      *

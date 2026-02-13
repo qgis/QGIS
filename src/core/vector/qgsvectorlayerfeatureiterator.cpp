@@ -30,6 +30,10 @@
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsvectorlayerjoinbuffer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
 #include <QThreadStorage>
 #endif
@@ -137,7 +141,6 @@ QString QgsVectorLayerFeatureSource::id() const
 
 QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource>( source, ownSource, request )
-  , mFetchedFid( false )
 {
   mTransform = mRequest.calculateTransform( mSource->mCrs );
   mHasValidTransform = mTransform.isValid();
@@ -1183,11 +1186,11 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
 
   const QString joinFieldName = joinInfo->joinFieldName();
 
-  subsetString.append( QStringLiteral( "\"%1\"" ).arg( joinFieldName ) );
+  subsetString.append( u"\"%1\""_s.arg( joinFieldName ) );
 
   if ( QgsVariantUtils::isNull( joinValue ) )
   {
-    subsetString += QLatin1String( " IS NULL" );
+    subsetString += " IS NULL"_L1;
   }
   else
   {
@@ -1201,7 +1204,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
 
       default:
       case QMetaType::Type::QString:
-        v.replace( '\'', QLatin1String( "''" ) );
+        v.replace( '\'', "''"_L1 );
         v.prepend( '\'' ).append( '\'' );
         break;
     }

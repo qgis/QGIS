@@ -38,7 +38,6 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     Q_OBJECT
 
   public:
-
     /**
      * Creates a new instance of a QgsDemTerrainGenerator object.
      */
@@ -79,6 +78,8 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     float heightAt( double x, double y, const Qgs3DRenderContext &context ) const override;
 
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
+
+    QgsTerrainGenerator::Capabilities capabilities() const override;
 
   private:
     void updateGenerator();

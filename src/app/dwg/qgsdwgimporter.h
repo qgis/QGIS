@@ -209,12 +209,12 @@ class QgsDwgImporter : public DRW_Interface
 
     gdal::ogr_datasource_unique_ptr mDs;
     QString mDatabase;
-    bool mInTransaction;
-    int mSplineSegs;
-    int mBlockHandle;
+    bool mInTransaction = false;
+    int mSplineSegs = 8;
+    int mBlockHandle = -1;
     int mCrs;
     OGRSpatialReferenceH mCrsH = nullptr;
-    bool mUseCurves;
+    bool mUseCurves = true;
 
     QHash<QString, QString> mLayerColor;
     QHash<QString, double> mLayerLinewidth;

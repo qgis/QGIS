@@ -22,7 +22,11 @@
 #include "qgslayertreeview.h"
 #include "qgsmaplayertemporalproperties.h"
 
+#include <QString>
+
 #include "moc_qgslayertreeviewtemporalindicator.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerTreeViewTemporalIndicatorProvider::QgsLayerTreeViewTemporalIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )
@@ -50,13 +54,13 @@ void QgsLayerTreeViewTemporalIndicatorProvider::onIndicatorClicked( const QModel
   switch ( layer->type() )
   {
     case Qgis::LayerType::Raster:
-      QgisApp::instance()->showLayerProperties( layer, QStringLiteral( "mOptsPage_Temporal" ) );
+      QgisApp::instance()->showLayerProperties( layer, u"mOptsPage_Temporal"_s );
       break;
     case Qgis::LayerType::Mesh:
-      QgisApp::instance()->showLayerProperties( layer, QStringLiteral( "mOptsPage_Temporal" ) );
+      QgisApp::instance()->showLayerProperties( layer, u"mOptsPage_Temporal"_s );
       break;
     case Qgis::LayerType::Vector:
-      QgisApp::instance()->showLayerProperties( layer, QStringLiteral( "mOptsPage_Temporal" ) );
+      QgisApp::instance()->showLayerProperties( layer, u"mOptsPage_Temporal"_s );
       break;
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::VectorTile:
@@ -79,7 +83,7 @@ bool QgsLayerTreeViewTemporalIndicatorProvider::acceptLayer( QgsMapLayer *layer 
 
 QString QgsLayerTreeViewTemporalIndicatorProvider::iconName( QgsMapLayer * )
 {
-  return QStringLiteral( "/mIndicatorTemporal.svg" );
+  return u"/mIndicatorTemporal.svg"_s;
 }
 
 QString QgsLayerTreeViewTemporalIndicatorProvider::tooltipText( QgsMapLayer * )

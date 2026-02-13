@@ -35,7 +35,6 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
 {
     Q_OBJECT
   public:
-
     /**
      * New dialog constructor.
      * \param source original data source name, e.g. original layer name of the layer to be copied
@@ -146,7 +145,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     static bool exists( const QString &name, const QStringList &extensions, const QStringList &existing, Qt::CaseSensitivity cs = Qt::CaseSensitive );
   signals:
 
-    // TODO QGIS 4.0 - rename to nameChanged
+    // TODO QGIS 5.0 - rename to nameChanged
 
     /**
      * Emitted when the name is changed in the dialog.
@@ -155,7 +154,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     void newNameChanged();
 
   public slots:
-    // TODO QGIS 4.0 - rename to onNameChanged
+    // TODO QGIS 5.0 - rename to onNameChanged
     void nameChanged();
 
   protected:

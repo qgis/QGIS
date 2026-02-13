@@ -57,7 +57,7 @@ class GUI_EXPORT QgsMapToolZoom : public QgsMapTool
     bool mNativeZoomOut;
 
     //! Flag to indicate a map canvas drag operation is taking place
-    bool mDragging;
+    bool mDragging = false;
 
     //! Flag to indicate the user has canceled the current zoom operation
     bool mCanceled = false;

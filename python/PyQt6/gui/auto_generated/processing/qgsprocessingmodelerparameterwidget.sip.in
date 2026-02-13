@@ -35,7 +35,6 @@ instead they are constructed through the central registry, via calls to
 #include "qgsprocessingmodelerparameterwidget.h"
 %End
   public:
-
     QgsProcessingModelerParameterWidget( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProcessingModelerParameterWidget, for the specified
@@ -178,6 +177,16 @@ Sets the parent ``dialog`` in which the widget is shown.
 Sets the current source ``type`` for the parameter.
 
 .. versionadded:: 3.24
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted whenever the definition of the parameter is changed in the
+widget.
+
+.. versionadded:: 4.0
 %End
 
 };

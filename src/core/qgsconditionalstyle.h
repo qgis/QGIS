@@ -27,6 +27,9 @@
 #include <QHash>
 #include <QObject>
 #include <QPixmap>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsConditionalStyle;
 class QgsReadWriteContext;
@@ -311,9 +314,9 @@ class CORE_EXPORT QgsConditionalStyle
     % MethodCode
     QString str;
     if ( !sipCpp->name().isEmpty() )
-      str = QStringLiteral( "<QgsConditionalStyle: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->rule() );
+      str = u"<QgsConditionalStyle: '%1' (%2)>"_s.arg( sipCpp->name(), sipCpp->rule() );
     else
-      str = QStringLiteral( "<QgsConditionalStyle: %2>" ).arg( sipCpp->rule() );
+      str = u"<QgsConditionalStyle: %2>"_s.arg( sipCpp->rule() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

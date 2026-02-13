@@ -54,7 +54,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     Q_PROPERTY( ConstraintResult constraintResult READ constraintResult NOTIFY constraintStatusChanged )
 
   public:
-
     /**
      * Result of constraint checks.
      */
@@ -320,7 +319,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     virtual void parentFormValueChanged( const QString &attribute, const QVariant &value );
 
   protected:
-
     /**
      * This should update the widget with a visual cue if a constraint status
      * changed.
@@ -360,19 +358,18 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     bool setFormFeatureAttribute( const QString &attributeName, const QVariant &attributeValue );
 
   private:
-
     /**
     * Is called when the value of the widget needs to be changed. Updates the widget representation
     * to reflect the new value.
     *
     * \param value The new value of the attribute
     * \param additionalValues The values of potential additional fields
-    * \note Will be pure virtual in QGIS 4.x
+    * \note Will be pure virtual in QGIS 5.x
     * \since QGIS 3.10
     */
-    virtual void updateValues( const QVariant &value, const QVariantList &additionalValues = QVariantList() ); //TODO QGIS 4: make it pure virtual
+    virtual void updateValues( const QVariant &value, const QVariantList &additionalValues = QVariantList() ); //TODO QGIS 5: make it pure virtual
 
-    // TODO QGIS 4: remove
+    // TODO QGIS 5: remove
     bool isRunningDeprecatedSetValue = false;
 
     /**
@@ -390,10 +387,10 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     /**
      * Boolean storing the current validity of the constraint for this widget.
      */
-    bool mValidConstraint;
+    bool mValidConstraint = true;
 
     //! True if widget is blocking feature commits
-    bool mIsBlockingCommit;
+    bool mIsBlockingCommit = false;
 
     //! Contains the string explanation of why a constraint check failed
     QString mConstraintFailureReason;

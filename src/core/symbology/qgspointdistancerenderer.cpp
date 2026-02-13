@@ -35,11 +35,6 @@
 QgsPointDistanceRenderer::QgsPointDistanceRenderer( const QString &rendererName, const QString &labelAttributeName )
   : QgsFeatureRenderer( rendererName )
   , mLabelAttributeName( labelAttributeName )
-  , mLabelIndex( -1 )
-  , mTolerance( 3 )
-  , mToleranceUnit( Qgis::RenderUnit::Millimeters )
-  , mDrawLabels( true )
-
 {
   mRenderer.reset( QgsFeatureRenderer::defaultRenderer( Qgis::GeometryType::Point ) );
 }

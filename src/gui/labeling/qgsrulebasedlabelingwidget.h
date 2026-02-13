@@ -198,7 +198,7 @@ class GUI_EXPORT QgsLabelingRulePropsWidget : public QgsPanelWidget, private Ui:
     QgsVectorLayer *mLayer = nullptr;
 
     QgsLabelingGui *mLabelingGui = nullptr;
-    QgsPalLayerSettings *mSettings; // a clone of original settings
+    QgsPalLayerSettings *mSettings = nullptr; // a clone of original settings
 
     QgsMapCanvas *mMapCanvas = nullptr;
 };
@@ -216,7 +216,6 @@ class GUI_EXPORT QgsLabelingRulePropsDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLabelingRulePropsDialog
      * \param rule associated rule based labeling rule

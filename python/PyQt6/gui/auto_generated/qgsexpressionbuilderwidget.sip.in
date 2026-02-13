@@ -12,6 +12,7 @@
 
 
 
+
 class QgsExpressionBuilderWidget : QWidget
 {
 %Docstring(signature="appended")
@@ -24,7 +25,6 @@ A reusable widget that can be used to build an expression string.
 #include "qgsexpressionbuilderwidget.h"
 %End
   public:
-
     enum Flag /BaseType=IntEnum/
     {
       LoadNothing,

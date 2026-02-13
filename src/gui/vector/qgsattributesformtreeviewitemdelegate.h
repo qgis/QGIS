@@ -39,7 +39,6 @@ class QgsAttributesFormTreeViewProxyStyle : public QgsProxyStyle
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAttributesFormTreeViewProxyStyle. Ownership is transferred to the given tree view.
      */
@@ -64,7 +63,6 @@ class QgsAttributesFormTreeViewItemDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsAttributesFormTreeViewItemDelegate. Ownership is transferred to the given tree view.
      */

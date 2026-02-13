@@ -36,8 +36,7 @@
 #include <memory>
 #include <vector>
 
-#include <QLinkedList>
-#include <QList>
+#include <QVector>
 
 typedef struct GEOSGeom_t GEOSGeometry;
 
@@ -90,8 +89,7 @@ namespace pal
   class Util
   {
     public:
-
-      static QLinkedList<const GEOSGeometry *> *unmulti( const GEOSGeometry *the_geom );
+      static std::optional<QVector<const GEOSGeometry *>> unmulti( const GEOSGeometry *the_geom );
   };
 
 

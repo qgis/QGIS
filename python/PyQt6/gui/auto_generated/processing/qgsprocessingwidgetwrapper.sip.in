@@ -24,7 +24,6 @@ An interface for objects which can create Processing contexts.
 #include "qgsprocessingwidgetwrapper.h"
 %End
   public:
-
     virtual QgsProcessingContext *processingContext() = 0;
 %Docstring
 This method needs to be reimplemented in all classes which implement
@@ -51,7 +50,6 @@ processing algorithms.
 #include "qgsprocessingwidgetwrapper.h"
 %End
   public:
-
     enum class Flag /BaseType=IntFlag/
     {
       SkipDefaultValueParameters,
@@ -223,6 +221,55 @@ Sets the current active ``layer``.
 .. versionadded:: 3.14
 %End
 
+    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
+%Docstring
+Registers a Processing context ``generator`` class that will be used to
+retrieve a Processing context for the widget when required.
+
+The ``generator`` must exist for the lifetime of the widget, ownership
+is not transferred.
+
+.. seealso:: :py:func:`processingContextGenerator`
+
+.. versionadded:: 4.0
+%End
+
+    QgsProcessingContextGenerator *processingContextGenerator();
+%Docstring
+Returns the Processing context generator class that will be used to
+retrieve a Processing context for the widget when required.
+
+.. seealso:: :py:func:`registerProcessingContextGenerator`
+
+.. versionadded:: 4.0
+%End
+
+    QgsModelDesignerDialog *modelDesignerDialog() const;
+%Docstring
+Returns the associated model designer dialog, if applicable.
+
+.. warning::
+
+   This method is not considered stable API
+
+.. seealso:: :py:func:`setModelDesignerDialog`
+
+.. versionadded:: 4.0
+%End
+
+    void setModelDesignerDialog( QgsModelDesignerDialog *dialog );
+%Docstring
+Sets the associated model designer ``dialog``, if applicable.
+
+.. warning::
+
+   This method is not considered stable API
+
+.. seealso:: :py:func:`modelDesignerDialog`
+
+.. versionadded:: 4.0
+%End
+
 };
 
 
@@ -251,7 +298,6 @@ they are constructed through the central registry, via calls to
 #include "qgsprocessingwidgetwrapper.h"
 %End
   public:
-
     QgsAbstractProcessingParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter = 0, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsAbstractProcessingParameterWidgetWrapper, for the
@@ -414,7 +460,6 @@ is changed.
 %End
 
   protected:
-
     virtual QWidget *createWidget() = 0 /Factory/;
 %Docstring
 Creates a new widget which allows customization of the parameter's
@@ -559,7 +604,6 @@ configurable when users add it as an input to their graphical models.
 %End
 
   protected:
-
     virtual QStringList compatibleParameterTypes() const;
 %Docstring
 Returns a list of compatible Processing parameter types for inputs for
@@ -655,7 +699,6 @@ does not provide a graphical widget, yet still implements the
 #include "qgsprocessingwidgetwrapper.h"
 %End
   public:
-
     QgsProcessingHiddenWidgetWrapper( const QgsProcessingParameterDefinition *parameter = 0, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProcessingHiddenWidgetWrapper, for the specified

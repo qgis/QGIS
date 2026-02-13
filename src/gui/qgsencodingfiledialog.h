@@ -32,7 +32,6 @@ class GUI_EXPORT QgsEncodingFileDialog : public QFileDialog
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsEncodingFileDialog
      */
@@ -69,7 +68,6 @@ class GUI_EXPORT QgsEncodingSelectionDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsEncodingSelectionDialog.
      *

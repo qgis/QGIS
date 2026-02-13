@@ -57,6 +57,7 @@ typedef QMap<QString, QgsPalLayerSettings > QgsLabelSettingsMap;
  * Constants used to describe copy-paste MIME types
  */
 #define QGSCLIPBOARD_STYLE_MIME "application/qgis.style"
+#define QGSCLIPBOARD_STYLES_MIME "application/qgis.styles"
 
 /**
  * \ingroup core

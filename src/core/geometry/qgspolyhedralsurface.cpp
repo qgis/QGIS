@@ -36,6 +36,9 @@
 
 #include <QPainter>
 #include <QPainterPath>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsPolyhedralSurface::QgsPolyhedralSurface()
 {
@@ -72,7 +75,7 @@ QgsPolyhedralSurface *QgsPolyhedralSurface::createEmptyWithSameType() const
 
 QString QgsPolyhedralSurface::geometryType() const
 {
-  return QStringLiteral( "PolyhedralSurface" );
+  return u"PolyhedralSurface"_s;
 }
 
 int QgsPolyhedralSurface::dimension() const
@@ -179,11 +182,11 @@ bool QgsPolyhedralSurface::fromWkt( const QString &wkt )
 
   QString secondWithoutParentheses = parts.second;
   secondWithoutParentheses = secondWithoutParentheses.remove( '(' ).remove( ')' ).simplified().remove( ' ' );
-  if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) ||
+  if ( ( parts.second.compare( "EMPTY"_L1, Qt::CaseInsensitive ) == 0 ) ||
        secondWithoutParentheses.isEmpty() )
     return true;
 
-  QString defaultChildWkbType = QStringLiteral( "Polygon%1%2" ).arg( is3D() ? QStringLiteral( "Z" ) : QString(), isMeasure() ? QStringLiteral( "M" ) : QString() );
+  QString defaultChildWkbType = u"Polygon%1%2"_s.arg( is3D() ? u"Z"_s : QString(), isMeasure() ? u"M"_s : QString() );
 
   const QStringList blocks = QgsGeometryUtils::wktGetChildBlocks( parts.second, defaultChildWkbType );
   for ( const QString &childWkt : blocks )
@@ -256,10 +259,10 @@ QString QgsPolyhedralSurface::asWkt( int precision ) const
   QString wkt = wktTypeStr();
 
   if ( isEmpty() )
-    wkt += QLatin1String( " EMPTY" );
+    wkt += " EMPTY"_L1;
   else
   {
-    wkt += QLatin1String( " (" );
+    wkt += " ("_L1;
     for ( const QgsPolygon *patch : mPatches )
     {
       QString childWkt = patch->asWkt( precision );
@@ -281,18 +284,18 @@ QString QgsPolyhedralSurface::asWkt( int precision ) const
 
 QDomElement QgsPolyhedralSurface::asGml2( QDomDocument &, int, const QString &, const AxisOrder ) const
 {
-  QgsDebugError( QStringLiteral( "gml version 2 does not support PolyhedralSurface geometry" ) );
+  QgsDebugError( u"gml version 2 does not support PolyhedralSurface geometry"_s );
   return QDomElement();
 }
 
 QDomElement QgsPolyhedralSurface::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
-  QDomElement elemPolyhedralSurface = doc.createElementNS( ns, QStringLiteral( "PolyhedralSurface" ) );
+  QDomElement elemPolyhedralSurface = doc.createElementNS( ns, u"PolyhedralSurface"_s );
 
   if ( isEmpty() )
     return elemPolyhedralSurface;
 
-  QDomElement elemPolygonPatches = doc.createElementNS( ns, QStringLiteral( "polygonPatches" ) );
+  QDomElement elemPolygonPatches = doc.createElementNS( ns, u"polygonPatches"_s );
 
   for ( QgsPolygon *patch : mPatches )
   {
@@ -316,7 +319,7 @@ json QgsPolyhedralSurface::asJsonObject( int precision ) const
 
 QString QgsPolyhedralSurface::asKml( int ) const
 {
-  QgsDebugError( QStringLiteral( "kml format does not support PolyhedralSurface geometry" ) );
+  QgsDebugError( u"kml format does not support PolyhedralSurface geometry"_s );
   return QString( "" );
 }
 
@@ -358,6 +361,18 @@ double QgsPolyhedralSurface::area() const
   for ( const QgsPolygon *patch : mPatches )
   {
     area += patch->area();
+  }
+
+  return area;
+}
+
+double QgsPolyhedralSurface::area3D() const
+{
+  // sum area 3D of patches
+  double area = 0.0;
+  for ( const QgsPolygon *patch : mPatches )
+  {
+    area += patch->area3D();
   }
 
   return area;
@@ -1019,7 +1034,7 @@ bool QgsPolyhedralSurface::isValid( QString &error, Qgis::GeometryValidityFlags 
     const bool valid = geos.isValid( &error, flags & Qgis::GeometryValidityFlag::AllowSelfTouchingHoles, nullptr );
     if ( !valid )
     {
-      error = QStringLiteral( "Polygon %1 is invalid: %2" ).arg( QString::number( i ), error );
+      error = u"Polygon %1 is invalid: %2"_s.arg( QString::number( i ), error );
       break;
     }
   }

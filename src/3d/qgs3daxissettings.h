@@ -35,7 +35,6 @@ class QDomElement;
 class _3D_EXPORT Qgs3DAxisSettings
 {
   public:
-
     /**
      * \brief Axis representation enum
      */

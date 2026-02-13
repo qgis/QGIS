@@ -19,7 +19,6 @@ depressed.
 #include "qgslayoutviewtooltemporarykeypan.h"
 %End
   public:
-
     QgsLayoutViewToolTemporaryKeyPan( QgsLayoutView *view /TransferThis/ );
 %Docstring
 Constructor for QgsLayoutViewToolTemporaryKeyPan.

@@ -73,7 +73,7 @@ class QWT_EXPORT QwtPlotDirectPainter : public QObject
     Q_DECLARE_FLAGS( Attributes, Attribute )
 
     explicit QwtPlotDirectPainter( QObject* parent = NULL );
-    virtual ~QwtPlotDirectPainter();
+    ~QwtPlotDirectPainter() override;
 
     void setAttribute( Attribute, bool on );
     bool testAttribute( Attribute ) const;

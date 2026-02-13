@@ -29,12 +29,16 @@
 #include "qgsstyle.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsRubberBand3DRendering : public QgsTest
 {
     Q_OBJECT
   public:
     TestQgsRubberBand3DRendering()
-      : QgsTest( QStringLiteral( "Rubberband 3D Rendering Tests" ), QStringLiteral( "3d" ) ) {}
+      : QgsTest( u"Rubberband 3D Rendering Tests"_s, u"3d"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

@@ -25,6 +25,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QgsExpressionUtils::TVL QgsExpressionUtils::AND[3][3] =
@@ -381,7 +385,7 @@ QString QgsExpressionUtils::getFilePathValue( const QVariant &value, const QgsEx
   if ( QgsMapLayer *layer = getMapLayer( value, context, parent ) )
   {
     const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->source() );
-    res = parts.value( QStringLiteral( "path" ) ).toString();
+    res = parts.value( u"path"_s ).toString();
   }
   Q_NOWARN_DEPRECATED_POP
 

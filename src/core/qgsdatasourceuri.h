@@ -26,6 +26,9 @@
 
 #include <QMap>
 #include <QSet>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core
@@ -404,7 +407,7 @@ class CORE_EXPORT QgsDataSourceUri
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsDataSourceUri: %1>" ).arg( sipCpp->uri( false ) );
+    QString str = u"<QgsDataSourceUri: %1>"_s.arg( sipCpp->uri( false ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

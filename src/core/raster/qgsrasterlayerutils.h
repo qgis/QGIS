@@ -23,6 +23,9 @@
 #include "qgsrange.h"
 
 class QgsRasterLayer;
+class QgsRasterDataProvider;
+class QgsRasterMinMaxOrigin;
+class QgsRectangle;
 
 /**
  * \class QgsRasterLayerUtils
@@ -52,6 +55,21 @@ class CORE_EXPORT QgsRasterLayerUtils
       const QgsDateTimeRange &temporalRange,
       const QgsDoubleRange &elevationRange,
       bool &matched SIP_OUT );
+
+    /**
+     * Compute the \a min \a max values for \a provider along \a band according to
+     * MinMaxOrigin parameters \a mmo and \a extent.
+     *
+     * \since QGIS 4.0
+     */
+    static void computeMinMax( QgsRasterDataProvider *provider,
+                               int band,
+                               const QgsRasterMinMaxOrigin &mmo,
+                               Qgis::RasterRangeLimit limits,
+                               const QgsRectangle &extent,
+                               int sampleSize,
+                               double &min SIP_OUT,
+                               double &max SIP_OUT );
 
 };
 

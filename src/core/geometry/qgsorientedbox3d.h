@@ -27,6 +27,9 @@
 #include "qgsvector3d.h"
 
 #include <QList>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsBox3D;
 class QgsCoordinateTransform;
@@ -177,7 +180,7 @@ class CORE_EXPORT QgsOrientedBox3D
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsOrientedBox3D([%1, %2, %3], [%4, %5, %6, %7, %8, %9, %10, %11, %12])>" )
+    QString str = u"<QgsOrientedBox3D([%1, %2, %3], [%4, %5, %6, %7, %8, %9, %10, %11, %12])>"_s
                   .arg( sipCpp->centerX() )
                   .arg( sipCpp->centerY() )
                   .arg( sipCpp->centerZ() )

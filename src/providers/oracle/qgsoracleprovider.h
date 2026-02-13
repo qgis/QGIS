@@ -164,6 +164,7 @@ class QgsOracleProvider final : public QgsVectorDataProvider
     QVariant defaultValue( int fieldId ) const override;
     QString defaultValueClause( int fieldId ) const override;
     bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
+    using QgsVectorDataProvider::addFeatures;
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool addAttributes( const QList<QgsField> &attributes ) override;
@@ -209,7 +210,6 @@ class QgsOracleProvider final : public QgsVectorDataProvider
     QList<QgsRelation> discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const override;
 
   private:
-
     /**
      * \returns relation kind
      */
@@ -266,12 +266,12 @@ class QgsOracleProvider final : public QgsVectorDataProvider
     /**
      * Flag indicating if the layer data source is a valid oracle layer
      */
-    bool mValid;
+    bool mValid = false;
 
     /**
      * provider references query (instead of a table)
      */
-    bool mIsQuery;
+    bool mIsQuery = false;
 
     /**
      * Name of the table with no schema
@@ -301,7 +301,7 @@ class QgsOracleProvider final : public QgsVectorDataProvider
     /**
      * Data type for the primary key
      */
-    QgsOraclePrimaryKeyType mPrimaryKeyType;
+    QgsOraclePrimaryKeyType mPrimaryKeyType = PktUnknown;
 
     /**
      * List of primary key attributes for fetching features.
@@ -317,12 +317,12 @@ class QgsOracleProvider final : public QgsVectorDataProvider
 
     QString mGeometryColumn;                               //!< Name of the geometry column
     mutable QgsRectangle mLayerExtent;                     //!< Rectangle that contains the extent (bounding box) of the layer
-    mutable long long mFeaturesCounted;                    //!< Number of features in the layer
+    mutable long long mFeaturesCounted = -1;               //!< Number of features in the layer
     int mSrid;                                             //!< Srid of column
     Qgis::VectorProviderCapabilities mEnabledCapabilities; //!< Capabilities of layer
 
-    Qgis::WkbType mDetectedGeomType;  //!< Geometry type detected in the database
-    Qgis::WkbType mRequestedGeomType; //!< Geometry type requested in the uri
+    Qgis::WkbType mDetectedGeomType = Qgis::WkbType::Unknown;  //!< Geometry type detected in the database
+    Qgis::WkbType mRequestedGeomType = Qgis::WkbType::Unknown; //!< Geometry type requested in the uri
 
     bool getGeometryDetails();
 
@@ -384,9 +384,9 @@ class QgsOracleProvider final : public QgsVectorDataProvider
     QMap<QVariant, QgsFeatureId> mKeyToFid; //!< Map key values to feature id
     QMap<QgsFeatureId, QVariant> mFidToKey; //!< Map feature back to feature id
 
-    bool mHasSpatialIndex;     //!< Geometry column is indexed
-    QString mSpatialIndexName; //!< Name of spatial index of geometry column
-    int mOracleVersion;        //!< Oracle database version
+    bool mHasSpatialIndex = false; //!< Geometry column is indexed
+    QString mSpatialIndexName;     //!< Name of spatial index of geometry column
+    int mOracleVersion = -1;       //!< Oracle database version
 
     std::shared_ptr<QgsOracleSharedData> mShared;
 

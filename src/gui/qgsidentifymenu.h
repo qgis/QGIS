@@ -222,12 +222,12 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
 
     QgsMapCanvas *mCanvas = nullptr;
     QList<QgsHighlight *> mRubberBands;
-    bool mAllowMultipleReturn;
-    bool mExecWithSingleResult;
-    bool mShowFeatureActions;
-    bool mResultsIfExternalAction;
-    int mMaxLayerDisplay;
-    int mMaxFeatureDisplay;
+    bool mAllowMultipleReturn = true;
+    bool mExecWithSingleResult = false;
+    bool mShowFeatureActions = false;
+    bool mResultsIfExternalAction = false;
+    int mMaxLayerDisplay = 10;
+    int mMaxFeatureDisplay = 10;
 
     QgsExpressionContextScope mExpressionContextScope;
 
