@@ -317,6 +317,38 @@ QString QgsWmsSettings::parseTemporalFormat( const QString &extent ) const
 
   // DateTime formats (with 'T')
   const bool hasTimezone = item.endsWith( 'Z' );
+  const bool hasTimezoneOffset = item.contains( QRegularExpression( u"[+-]\\d{2}:\\d{2}$"_s ) );
+  const bool hasMilliseconds = item.contains( '.' );
+
+  if ( hasMilliseconds && hasTimezoneOffset && enableTime )
+  {
+    return u"yyyy-MM-ddTHH:mm:ss.zzzt"_s;
+  }
+
+  if ( hasMilliseconds && hasTimezone && enableTime )
+  {
+    return u"yyyy-MM-ddTHH:mm:ss.zzzZ"_s;
+  }
+
+  if ( hasMilliseconds && enableTime )
+  {
+    return u"yyyy-MM-ddTHH:mm:ss.zzz"_s;
+  }
+
+  if ( hasTimezoneOffset && enableTime )
+  {
+    switch ( item.size() )
+    {
+      case 25: // YYYY-MM-DDTHH:mm:ss+HH:MM
+        return u"yyyy-MM-ddTHH:mm:sst"_s;
+      case 22: // YYYY-MM-DDTHH:mm+HH:MM
+        return u"yyyy-MM-ddTHH:mmt"_s;
+      case 19: // YYYY-MM-DDTHH+HH:MM
+        return u"yyyy-MM-ddTHHt"_s;
+      default:
+        return u"yyyy-MM-ddTHH:mm:sst"_s;
+    }
+  }
 
   switch ( item.size() )
   {
