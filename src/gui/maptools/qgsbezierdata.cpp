@@ -375,4 +375,48 @@ QgsBezierData QgsBezierData::fromPolyBezierControlPoints( const QVector<QgsPoint
   return fromPolyBezierControlPoints( points, degree );
 }
 
+void QgsBezierData::calculateSymmetricHandles( QVector<QgsPoint> &controlPoints, int anchorIndex, const QgsPoint &mousePosition )
+{
+  if ( anchorIndex < 0 || anchorIndex >= controlPoints.size() )
+    return;
+
+  QgsPoint *handleFollow = nullptr;
+  if ( anchorIndex + 1 < controlPoints.size() )
+    handleFollow = &controlPoints[anchorIndex + 1];
+
+  QgsPoint *handleOpposite = nullptr;
+  if ( anchorIndex - 1 >= 0 )
+    handleOpposite = &controlPoints[anchorIndex - 1];
+
+  calculateSymmetricHandles( controlPoints.at( anchorIndex ), mousePosition, handleFollow, handleOpposite );
+}
+
+void QgsBezierData::calculateSymmetricHandles( const QgsPoint &anchor, const QgsPoint &mousePosition, QgsPoint *handleFollow, QgsPoint *handleOpposite )
+{
+  // Calculate vector from anchor to mouse
+  const double dx = mousePosition.x() - anchor.x();
+  const double dy = mousePosition.y() - anchor.y();
+
+  if ( handleFollow )
+  {
+    handleFollow->setX( anchor.x() + dx );
+    handleFollow->setY( anchor.y() + dy );
+  }
+
+  if ( handleOpposite )
+  {
+    handleOpposite->setX( anchor.x() - dx );
+    handleOpposite->setY( anchor.y() - dy );
+  }
+}
+
+void QgsBezierData::calculateSymmetricHandles( int anchorIndex, const QgsPoint &mousePosition )
+{
+  if ( anchorIndex < 0 || anchorIndex >= mData.count() )
+    return;
+
+  QgsAnchorWithHandles &awh = mData[anchorIndex];
+  calculateSymmetricHandles( awh.anchor, mousePosition, &awh.rightHandle, &awh.leftHandle );
+}
+
 ///@endcond PRIVATE
