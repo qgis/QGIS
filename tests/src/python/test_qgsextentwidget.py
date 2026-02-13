@@ -200,7 +200,10 @@ class TestQgsExtentWidget(QgisTestCase):
         # change CRS back
         w.setOutputCrs(QgsCoordinateReferenceSystem("epsg:4326"))
         # in this case we can't retrieve the original user extent in 4326, so we have a reprojection of the reprojected bounds
-        self.assertEqual(w.outputExtent(), QgsRectangle(1, 2, 3, 4))
+        # just test this by restricting the test to 4 decimals
+        self.assertEqual(
+            w.outputExtent().toString(4), QgsRectangle(1, 2, 3, 4).toString(4)
+        )
 
     def testClear(self):
         w = QgsExtentWidget()
