@@ -148,6 +148,7 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
      * This is an overloaded function.
      *
      * Performs a "post" operation on the specified \a request, using the given \a data.
+     * \since QGIS 4.0
      */
     ErrorCode post( QNetworkRequest &request, QHttpMultiPart *data, bool forceRefresh = false, QgsFeedback *feedback = nullptr );
 
