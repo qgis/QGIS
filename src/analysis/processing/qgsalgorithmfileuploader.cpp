@@ -82,7 +82,6 @@ void QgsFileUploaderAlgorithm::initAlgorithm( const QVariantMap & )
 
   auto formNameParam = std::make_unique<QgsProcessingParameterString>( u"FORM_NAME"_s, tr( "Form name field" ), QString(), false, true );
   formNameParam->setHelp( QObject::tr( "The optional form name field parameter emulates a filled-in form in which a user has pressed the submit button. This enables uploading of binary files when url end point requires a form name key" ) );
-  formNameParam->setFlags( formNameParam->flags() | Qgis::ProcessingParameterFlag::Optional );
   addParameter( formNameParam.release() );
 }
 
@@ -100,7 +99,6 @@ QVariantMap QgsFileUploaderAlgorithm::processAlgorithm( const QVariantMap &param
 
   const QString formNameKey = parameterAsString( parameters, u"FORM_NAME"_s, context );
 
-  QTimer progressTimer;
   QUrl uploadUrl;
   QStringList errors;
 
@@ -111,12 +109,9 @@ QVariantMap QgsFileUploaderAlgorithm::processAlgorithm( const QVariantMap &param
   connect( uploader, &QgsFileUploader::uploadError, this, [&errors]( const QStringList &e ) { errors = e; } );
   connect( uploader, &QgsFileUploader::uploadProgress, this, &QgsFileUploaderAlgorithm::receiveProgressFromUploader );
   connect( uploader, &QgsFileUploader::uploadCompleted, this, [&uploadUrl]( const QUrl url ) { uploadUrl = url; } );
-  connect( &progressTimer, &QTimer::timeout, this, &QgsFileUploaderAlgorithm::sendProgressFeedback );
-  progressTimer.start( 1000 );
 
   uploader->startUpload();
 
-  progressTimer.stop();
   if ( errors.size() > 0 )
     throw QgsProcessingException( errors.join( '\n' ) );
 
