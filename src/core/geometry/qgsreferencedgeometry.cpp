@@ -34,7 +34,7 @@ QgsReferencedRectangle::QgsReferencedRectangle( const QgsRectangle &rect, const 
   , QgsReferencedGeometryBase( crs )
 {}
 
-QString QgsReferencedRectangle::toString( int precision ) const
+QString QgsReferencedRectangle::toString( int precision ) const // cppcheck-suppress duplInheritedMember
 {
   QString rep;
 
