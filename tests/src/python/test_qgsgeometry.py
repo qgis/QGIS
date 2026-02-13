@@ -3436,10 +3436,10 @@ class TestQgsGeometry(QgisTestCase):
         ]
 
         def polyline1_geom():
-            return QgsGeometry.fromPolylineXY(line_points[0])  # noqa: E704,E261
+            return QgsGeometry.fromPolylineXY(line_points[0])  # noqa: E261
 
         def polyline2_geom():
-            return QgsGeometry.fromPolylineXY(line_points[1])  # noqa: E704,E261
+            return QgsGeometry.fromPolylineXY(line_points[1])  # noqa: E261
 
         # 5-+-4 0-+-9
         # |   | |   |
@@ -3472,19 +3472,19 @@ class TestQgsGeometry(QgisTestCase):
         ]
 
         def polygon1_geom():
-            return QgsGeometry.fromPolygonXY(poly_points[0])  # noqa: E704,E261
+            return QgsGeometry.fromPolygonXY(poly_points[0])  # noqa: E261
 
         def polygon2_geom():
-            return QgsGeometry.fromPolygonXY(poly_points[1])  # noqa: E704,E261
+            return QgsGeometry.fromPolygonXY(poly_points[1])  # noqa: E261
 
         def multi_polygon_geom():
-            return QgsGeometry.fromMultiPolygonXY(poly_points)  # noqa: E704,E261
+            return QgsGeometry.fromMultiPolygonXY(poly_points)  # noqa: E261
 
         def multi_polygon1_geom():
-            return QgsGeometry.fromMultiPolygonXY(poly_points[:1])  # noqa: E704,E261
+            return QgsGeometry.fromMultiPolygonXY(poly_points[:1])  # noqa: E261
 
         def multi_polygon2_geom():
-            return QgsGeometry.fromMultiPolygonXY(poly_points[1:])  # noqa: E704,E261
+            return QgsGeometry.fromMultiPolygonXY(poly_points[1:])  # noqa: E261
 
         def multi_surface_geom():
             ms = QgsMultiSurface()
@@ -3730,10 +3730,10 @@ class TestQgsGeometry(QgisTestCase):
         ]
 
         def polyline1_geom():
-            return QgsGeometry.fromPolylineXY(line_points[0])  # noqa: E704,E261
+            return QgsGeometry.fromPolylineXY(line_points[0])  # noqa: E261
 
         def polyline2_geom():
-            return QgsGeometry.fromPolylineXY(line_points[1])  # noqa: E704,E261
+            return QgsGeometry.fromPolylineXY(line_points[1])  # noqa: E261
 
         # 5-+-4 0-+-9
         # |   | |   |
@@ -3766,19 +3766,19 @@ class TestQgsGeometry(QgisTestCase):
         ]
 
         def polygon1_geom():
-            return QgsGeometry.fromPolygonXY(poly_points[0])  # noqa: E704,E261
+            return QgsGeometry.fromPolygonXY(poly_points[0])  # noqa: E261
 
         def polygon2_geom():
-            return QgsGeometry.fromPolygonXY(poly_points[1])  # noqa: E704,E261
+            return QgsGeometry.fromPolygonXY(poly_points[1])  # noqa: E261
 
         def multi_polygon_geom():
-            return QgsGeometry.fromMultiPolygonXY(poly_points)  # noqa: E704,E261
+            return QgsGeometry.fromMultiPolygonXY(poly_points)  # noqa: E261
 
         def multi_polygon1_geom():
-            return QgsGeometry.fromMultiPolygonXY(poly_points[:1])  # noqa: E704,E261
+            return QgsGeometry.fromMultiPolygonXY(poly_points[:1])  # noqa: E261
 
         def multi_polygon2_geom():
-            return QgsGeometry.fromMultiPolygonXY(poly_points[1:])  # noqa: E704,E261
+            return QgsGeometry.fromMultiPolygonXY(poly_points[1:])  # noqa: E261
 
         def multi_surface_geom():
             ms = QgsMultiSurface()
