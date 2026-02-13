@@ -478,12 +478,10 @@ void QgsVertexEditorWidget::updateEditor( QgsLockedFeature *lockedFeature )
     if ( mLockedFeature->layer() )
     {
       const QgsCoordinateReferenceSystem crs = mLockedFeature->layer()->crs();
-      mTableView->setItemDelegateForColumn( 0, new CoordinateItemDelegate( crs, this ) );
-      mTableView->setItemDelegateForColumn( 1, new CoordinateItemDelegate( crs, this ) );
-      mTableView->setItemDelegateForColumn( 2, new CoordinateItemDelegate( crs, this ) );
-      mTableView->setItemDelegateForColumn( 3, new CoordinateItemDelegate( crs, this ) );
-      mTableView->setItemDelegateForColumn( 4, new CoordinateItemDelegate( crs, this ) );
-      mTableView->setItemDelegateForColumn( 5, new CoordinateItemDelegate( crs, this ) );
+      for ( int i = 0; i <= 5; ++i ) // x, y, z, m, r, w
+      {
+        mTableView->setItemDelegateForColumn( i, new CoordinateItemDelegate( crs, this ) );
+      }
     }
   }
   else
