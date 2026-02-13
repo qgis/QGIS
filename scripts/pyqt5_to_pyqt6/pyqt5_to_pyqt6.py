@@ -612,6 +612,10 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
 
     tokens = src_to_tokens(contents)
     for i, token in reversed_enumerate(tokens):
+
+        if token.name == "DEDENT":
+            continue
+
         if token.offset in import_offsets:
             end_import_offset = Offset(*import_offsets[token.offset][-2:])
             del import_offsets[token.offset]
