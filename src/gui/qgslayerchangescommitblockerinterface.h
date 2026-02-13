@@ -22,7 +22,7 @@
 /**
  * \ingroup gui
  * \brief An interface that may be implemented to allow plugins or scripts to temporarily block
- * block the ability to commit changes to a layer.
+ * the ability to commit changes to a layer.
  *
  * This interface allows plugins to implement custom logic to determine whether it is safe
  * for the application to commit those changes.
