@@ -87,7 +87,7 @@ repos:
     rev: v0.15.1
     hooks:
       - id: ruff-check
-        args: [--target-version, py39, --select, I, --select, UP, --ignore, UP031, --ignore, UP035, --ignore, UP006, --ignore, UP030, --fix ]
+        args: [--fix]
       - id: ruff-format
 
   # MUST run last
