@@ -55,6 +55,10 @@ class TestQgsOgrUtils : public QObject
     void ogrGeometryToQgsGeometry();
     void ogrGeometryToQgsGeometry2_data();
     void ogrGeometryToQgsGeometry2();
+    void qgsWkbTypeToOgrGeometryType();
+    void qgsWkbTypeToOgrGeometryType_data();
+    void qgsWkbTypeToOgrGeometryType_approx();
+    void qgsWkbTypeToOgrGeometryType_approx_data();
     void readOgrFeatureGeometry();
     void getOgrFeatureAttribute();
     void readOgrFeatureAttributes();
@@ -281,6 +285,216 @@ void TestQgsOgrUtils::ogrGeometryToQgsGeometry2()
   // bit of trickiness here - QGIS wkt conversion changes 25D -> Z, so account for that
   wkt.replace( "25D"_L1, " Z"_L1 );
   QCOMPARE( geom.asWkt( 3 ), wkt );
+}
+
+void TestQgsOgrUtils::qgsWkbTypeToOgrGeometryType()
+{
+  QFETCH( Qgis::WkbType, qgsType );
+  QFETCH( OGRwkbGeometryType, ogrType );
+
+  const int got = static_cast<int>( QgsOgrUtils::qgsWkbTypeToOgrGeometryType( qgsType ) );
+  const int expected = static_cast<int>( ogrType );
+  QCOMPARE( got, expected );
+}
+
+void TestQgsOgrUtils::qgsWkbTypeToOgrGeometryType_data()
+{
+  QTest::addColumn<Qgis::WkbType>( "qgsType" );
+  QTest::addColumn<OGRwkbGeometryType>( "ogrType" );
+
+  QTest::newRow( "NoGeometry" ) << Qgis::WkbType::NoGeometry << wkbNone;
+  QTest::newRow( "Unknown" ) << Qgis::WkbType::Unknown << wkbUnknown;
+
+  QTest::newRow( "Point" ) << Qgis::WkbType::Point << wkbPoint;
+  QTest::newRow( "Point25D" ) << Qgis::WkbType::Point25D << wkbPoint25D;
+  QTest::newRow( "PointZ" ) << Qgis::WkbType::PointZ << wkbPoint25D;
+  QTest::newRow( "PointM" ) << Qgis::WkbType::PointM << wkbPointM;
+  QTest::newRow( "PointZM" ) << Qgis::WkbType::PointZM << wkbPointZM;
+
+  QTest::newRow( "MultiPoint" ) << Qgis::WkbType::MultiPoint << wkbMultiPoint;
+  QTest::newRow( "MultiPoint25D" ) << Qgis::WkbType::MultiPoint25D << wkbMultiPoint25D;
+  QTest::newRow( "MultiPointZ" ) << Qgis::WkbType::MultiPointZ << wkbMultiPoint25D;
+  QTest::newRow( "MultiPointM" ) << Qgis::WkbType::MultiPointM << wkbMultiPointM;
+  QTest::newRow( "MultiPointZM" ) << Qgis::WkbType::MultiPointZM << wkbMultiPointZM;
+
+  QTest::newRow( "LineString" ) << Qgis::WkbType::LineString << wkbLineString;
+  QTest::newRow( "LineString25D" ) << Qgis::WkbType::LineString25D << wkbLineString25D;
+  QTest::newRow( "LineStringZ" ) << Qgis::WkbType::LineStringZ << wkbLineString25D;
+  QTest::newRow( "LineStringM" ) << Qgis::WkbType::LineStringM << wkbLineStringM;
+  QTest::newRow( "LineStringZM" ) << Qgis::WkbType::LineStringZM << wkbLineStringZM;
+
+  QTest::newRow( "MultiLineString" ) << Qgis::WkbType::MultiLineString << wkbMultiLineString;
+  QTest::newRow( "MultiLineString25D" ) << Qgis::WkbType::MultiLineString25D << wkbMultiLineString25D;
+  QTest::newRow( "MultiLineStringZ" ) << Qgis::WkbType::MultiLineStringZ << wkbMultiLineString25D;
+  QTest::newRow( "MultiLineStringM" ) << Qgis::WkbType::MultiLineStringM << wkbMultiLineStringM;
+  QTest::newRow( "MultiLineStringZM" ) << Qgis::WkbType::MultiLineStringZM << wkbMultiLineStringZM;
+
+  QTest::newRow( "Polygon" ) << Qgis::WkbType::Polygon << wkbPolygon;
+  QTest::newRow( "Polygon25D" ) << Qgis::WkbType::Polygon25D << wkbPolygon25D;
+  QTest::newRow( "PolygonZ" ) << Qgis::WkbType::PolygonZ << wkbPolygon25D;
+  QTest::newRow( "PolygonM" ) << Qgis::WkbType::PolygonM << wkbPolygonM;
+  QTest::newRow( "PolygonZM" ) << Qgis::WkbType::PolygonZM << wkbPolygonZM;
+
+  QTest::newRow( "MultiPolygon" ) << Qgis::WkbType::MultiPolygon << wkbMultiPolygon;
+  QTest::newRow( "MultiPolygon25D" ) << Qgis::WkbType::MultiPolygon25D << wkbMultiPolygon25D;
+  QTest::newRow( "MultiPolygonZ" ) << Qgis::WkbType::MultiPolygonZ << wkbMultiPolygon25D;
+  QTest::newRow( "MultiPolygonM" ) << Qgis::WkbType::MultiPolygonM << wkbMultiPolygonM;
+  QTest::newRow( "MultiPolygonZM" ) << Qgis::WkbType::MultiPolygonZM << wkbMultiPolygonZM;
+
+  QTest::newRow( "GeometryCollection" ) << Qgis::WkbType::GeometryCollection << wkbGeometryCollection;
+  QTest::newRow( "GeometryCollectionZ" ) << Qgis::WkbType::GeometryCollectionZ << wkbGeometryCollection25D;
+  QTest::newRow( "GeometryCollectionM" ) << Qgis::WkbType::GeometryCollectionM << wkbGeometryCollectionM;
+  QTest::newRow( "GeometryCollectionZM" ) << Qgis::WkbType::GeometryCollectionZM << wkbGeometryCollectionZM;
+
+  QTest::newRow( "CircularString" ) << Qgis::WkbType::CircularString << wkbCircularString;
+  QTest::newRow( "CircularStringZ" ) << Qgis::WkbType::CircularStringZ << wkbCircularStringZ;
+  QTest::newRow( "CircularStringM" ) << Qgis::WkbType::CircularStringM << wkbCircularStringM;
+  QTest::newRow( "CircularStringZM" ) << Qgis::WkbType::CircularStringZM << wkbCircularStringZM;
+
+  QTest::newRow( "CompoundCurve" ) << Qgis::WkbType::CompoundCurve << wkbCompoundCurve;
+  QTest::newRow( "CompoundCurveZ" ) << Qgis::WkbType::CompoundCurveZ << wkbCompoundCurveZ;
+  QTest::newRow( "CompoundCurveM" ) << Qgis::WkbType::CompoundCurveM << wkbCompoundCurveM;
+  QTest::newRow( "CompoundCurveZM" ) << Qgis::WkbType::CompoundCurveZM << wkbCompoundCurveZM;
+
+  QTest::newRow( "CurvePolygon" ) << Qgis::WkbType::CurvePolygon << wkbCurvePolygon;
+  QTest::newRow( "CurvePolygonZ" ) << Qgis::WkbType::CurvePolygonZ << wkbCurvePolygonZ;
+  QTest::newRow( "CurvePolygonM" ) << Qgis::WkbType::CurvePolygonM << wkbCurvePolygonM;
+  QTest::newRow( "CurvePolygonZM" ) << Qgis::WkbType::CurvePolygonZM << wkbCurvePolygonZM;
+
+  QTest::newRow( "MultiCurve" ) << Qgis::WkbType::MultiCurve << wkbMultiCurve;
+  QTest::newRow( "MultiCurveZ" ) << Qgis::WkbType::MultiCurveZ << wkbMultiCurveZ;
+  QTest::newRow( "MultiCurveM" ) << Qgis::WkbType::MultiCurveM << wkbMultiCurveM;
+  QTest::newRow( "MultiCurveZM" ) << Qgis::WkbType::MultiCurveZM << wkbMultiCurveZM;
+
+  QTest::newRow( "MultiSurface" ) << Qgis::WkbType::MultiSurface << wkbMultiSurface;
+  QTest::newRow( "MultiSurfaceZ" ) << Qgis::WkbType::MultiSurfaceZ << wkbMultiSurfaceZ;
+  QTest::newRow( "MultiSurfaceM" ) << Qgis::WkbType::MultiSurfaceM << wkbMultiSurfaceM;
+  QTest::newRow( "MultiSurfaceZM" ) << Qgis::WkbType::MultiSurfaceZM << wkbMultiSurfaceZM;
+
+  QTest::newRow( "Triangle" ) << Qgis::WkbType::Triangle << wkbTriangle;
+  QTest::newRow( "TriangleZ" ) << Qgis::WkbType::TriangleZ << wkbTriangleZ;
+  QTest::newRow( "TriangleM" ) << Qgis::WkbType::TriangleM << wkbTriangleM;
+  QTest::newRow( "TriangleZM" ) << Qgis::WkbType::TriangleZM << wkbTriangleZM;
+
+  QTest::newRow( "PolyhedralSurface" ) << Qgis::WkbType::PolyhedralSurface << wkbPolyhedralSurface;
+  QTest::newRow( "PolyhedralSurfaceZ" ) << Qgis::WkbType::PolyhedralSurfaceZ << wkbPolyhedralSurfaceZ;
+  QTest::newRow( "PolyhedralSurfaceM" ) << Qgis::WkbType::PolyhedralSurfaceM << wkbPolyhedralSurfaceM;
+  QTest::newRow( "PolyhedralSurfaceZM" ) << Qgis::WkbType::PolyhedralSurfaceZM << wkbPolyhedralSurfaceZM;
+
+  QTest::newRow( "TIN" ) << Qgis::WkbType::TIN << wkbTIN;
+  QTest::newRow( "TINZ" ) << Qgis::WkbType::TINZ << wkbTINZ;
+  QTest::newRow( "TINM" ) << Qgis::WkbType::TINM << wkbTINM;
+  QTest::newRow( "TINZM" ) << Qgis::WkbType::TINZM << wkbTINZM;
+
+  QTest::newRow( "NurbsCurve" ) << Qgis::WkbType::NurbsCurve << wkbUnknown;
+  QTest::newRow( "NurbsCurveZ" ) << Qgis::WkbType::NurbsCurveZ << wkbUnknown;
+  QTest::newRow( "NurbsCurveM" ) << Qgis::WkbType::NurbsCurveM << wkbUnknown;
+  QTest::newRow( "NurbsCurveZM" ) << Qgis::WkbType::NurbsCurveZM << wkbUnknown;
+}
+
+void TestQgsOgrUtils::qgsWkbTypeToOgrGeometryType_approx()
+{
+  QFETCH( Qgis::WkbType, qgsType );
+  QFETCH( OGRwkbGeometryType, ogrType );
+
+  const int got = static_cast<int>( QgsOgrUtils::qgsWkbTypeToOgrGeometryType( qgsType, /* approx = */ true ) );
+  const int expected = static_cast<int>( ogrType );
+  QCOMPARE( got, expected );
+}
+
+void TestQgsOgrUtils::qgsWkbTypeToOgrGeometryType_approx_data()
+{
+  QTest::addColumn<Qgis::WkbType>( "qgsType" );
+  QTest::addColumn<OGRwkbGeometryType>( "ogrType" );
+
+  QTest::newRow( "NoGeometry" ) << Qgis::WkbType::NoGeometry << wkbNone;
+  QTest::newRow( "Unknown" ) << Qgis::WkbType::Unknown << wkbUnknown;
+
+  QTest::newRow( "Point" ) << Qgis::WkbType::Point << wkbPoint;
+  QTest::newRow( "Point25D" ) << Qgis::WkbType::Point25D << wkbPoint25D;
+  QTest::newRow( "PointZ" ) << Qgis::WkbType::PointZ << wkbPoint25D;
+  QTest::newRow( "PointM" ) << Qgis::WkbType::PointM << wkbPointM;
+  QTest::newRow( "PointZM" ) << Qgis::WkbType::PointZM << wkbPointZM;
+
+  QTest::newRow( "MultiPoint" ) << Qgis::WkbType::MultiPoint << wkbMultiPoint;
+  QTest::newRow( "MultiPoint25D" ) << Qgis::WkbType::MultiPoint25D << wkbMultiPoint25D;
+  QTest::newRow( "MultiPointZ" ) << Qgis::WkbType::MultiPointZ << wkbMultiPoint25D;
+  QTest::newRow( "MultiPointM" ) << Qgis::WkbType::MultiPointM << wkbMultiPointM;
+  QTest::newRow( "MultiPointZM" ) << Qgis::WkbType::MultiPointZM << wkbMultiPointZM;
+
+  QTest::newRow( "LineString" ) << Qgis::WkbType::LineString << wkbLineString;
+  QTest::newRow( "LineString25D" ) << Qgis::WkbType::LineString25D << wkbLineString25D;
+  QTest::newRow( "LineStringZ" ) << Qgis::WkbType::LineStringZ << wkbLineString25D;
+  QTest::newRow( "LineStringM" ) << Qgis::WkbType::LineStringM << wkbLineStringM;
+  QTest::newRow( "LineStringZM" ) << Qgis::WkbType::LineStringZM << wkbLineStringZM;
+
+  QTest::newRow( "MultiLineString" ) << Qgis::WkbType::MultiLineString << wkbMultiLineString;
+  QTest::newRow( "MultiLineString25D" ) << Qgis::WkbType::MultiLineString25D << wkbMultiLineString25D;
+  QTest::newRow( "MultiLineStringZ" ) << Qgis::WkbType::MultiLineStringZ << wkbMultiLineString25D;
+  QTest::newRow( "MultiLineStringM" ) << Qgis::WkbType::MultiLineStringM << wkbMultiLineStringM;
+  QTest::newRow( "MultiLineStringZM" ) << Qgis::WkbType::MultiLineStringZM << wkbMultiLineStringZM;
+
+  QTest::newRow( "Polygon" ) << Qgis::WkbType::Polygon << wkbPolygon;
+  QTest::newRow( "Polygon25D" ) << Qgis::WkbType::Polygon25D << wkbPolygon25D;
+  QTest::newRow( "PolygonZ" ) << Qgis::WkbType::PolygonZ << wkbPolygon25D;
+  QTest::newRow( "PolygonM" ) << Qgis::WkbType::PolygonM << wkbPolygonM;
+  QTest::newRow( "PolygonZM" ) << Qgis::WkbType::PolygonZM << wkbPolygonZM;
+
+  QTest::newRow( "MultiPolygon" ) << Qgis::WkbType::MultiPolygon << wkbMultiPolygon;
+  QTest::newRow( "MultiPolygon25D" ) << Qgis::WkbType::MultiPolygon25D << wkbMultiPolygon25D;
+  QTest::newRow( "MultiPolygonZ" ) << Qgis::WkbType::MultiPolygonZ << wkbMultiPolygon25D;
+  QTest::newRow( "MultiPolygonM" ) << Qgis::WkbType::MultiPolygonM << wkbMultiPolygonM;
+  QTest::newRow( "MultiPolygonZM" ) << Qgis::WkbType::MultiPolygonZM << wkbMultiPolygonZM;
+
+  QTest::newRow( "GeometryCollection" ) << Qgis::WkbType::GeometryCollection << wkbGeometryCollection;
+  QTest::newRow( "GeometryCollectionZ" ) << Qgis::WkbType::GeometryCollectionZ << wkbGeometryCollection25D;
+  QTest::newRow( "GeometryCollectionM" ) << Qgis::WkbType::GeometryCollectionM << wkbGeometryCollectionM;
+  QTest::newRow( "GeometryCollectionZM" ) << Qgis::WkbType::GeometryCollectionZM << wkbGeometryCollectionZM;
+
+  QTest::newRow( "CircularString" ) << Qgis::WkbType::CircularString << wkbCircularString;
+  QTest::newRow( "CircularStringZ" ) << Qgis::WkbType::CircularStringZ << wkbCircularStringZ;
+  QTest::newRow( "CircularStringM" ) << Qgis::WkbType::CircularStringM << wkbCircularStringM;
+  QTest::newRow( "CircularStringZM" ) << Qgis::WkbType::CircularStringZM << wkbCircularStringZM;
+
+  QTest::newRow( "CompoundCurve" ) << Qgis::WkbType::CompoundCurve << wkbCompoundCurve;
+  QTest::newRow( "CompoundCurveZ" ) << Qgis::WkbType::CompoundCurveZ << wkbCompoundCurveZ;
+  QTest::newRow( "CompoundCurveM" ) << Qgis::WkbType::CompoundCurveM << wkbCompoundCurveM;
+  QTest::newRow( "CompoundCurveZM" ) << Qgis::WkbType::CompoundCurveZM << wkbCompoundCurveZM;
+
+  QTest::newRow( "CurvePolygon" ) << Qgis::WkbType::CurvePolygon << wkbCurvePolygon;
+  QTest::newRow( "CurvePolygonZ" ) << Qgis::WkbType::CurvePolygonZ << wkbCurvePolygonZ;
+  QTest::newRow( "CurvePolygonM" ) << Qgis::WkbType::CurvePolygonM << wkbCurvePolygonM;
+  QTest::newRow( "CurvePolygonZM" ) << Qgis::WkbType::CurvePolygonZM << wkbCurvePolygonZM;
+
+  QTest::newRow( "MultiCurve" ) << Qgis::WkbType::MultiCurve << wkbMultiCurve;
+  QTest::newRow( "MultiCurveZ" ) << Qgis::WkbType::MultiCurveZ << wkbMultiCurveZ;
+  QTest::newRow( "MultiCurveM" ) << Qgis::WkbType::MultiCurveM << wkbMultiCurveM;
+  QTest::newRow( "MultiCurveZM" ) << Qgis::WkbType::MultiCurveZM << wkbMultiCurveZM;
+
+  QTest::newRow( "MultiSurface" ) << Qgis::WkbType::MultiSurface << wkbMultiSurface;
+  QTest::newRow( "MultiSurfaceZ" ) << Qgis::WkbType::MultiSurfaceZ << wkbMultiSurfaceZ;
+  QTest::newRow( "MultiSurfaceM" ) << Qgis::WkbType::MultiSurfaceM << wkbMultiSurfaceM;
+  QTest::newRow( "MultiSurfaceZM" ) << Qgis::WkbType::MultiSurfaceZM << wkbMultiSurfaceZM;
+
+  QTest::newRow( "Triangle" ) << Qgis::WkbType::Triangle << wkbTriangle;
+  QTest::newRow( "TriangleZ" ) << Qgis::WkbType::TriangleZ << wkbTriangleZ;
+  QTest::newRow( "TriangleM" ) << Qgis::WkbType::TriangleM << wkbTriangleM;
+  QTest::newRow( "TriangleZM" ) << Qgis::WkbType::TriangleZM << wkbTriangleZM;
+
+  QTest::newRow( "PolyhedralSurface" ) << Qgis::WkbType::PolyhedralSurface << wkbPolyhedralSurface;
+  QTest::newRow( "PolyhedralSurfaceZ" ) << Qgis::WkbType::PolyhedralSurfaceZ << wkbPolyhedralSurfaceZ;
+  QTest::newRow( "PolyhedralSurfaceM" ) << Qgis::WkbType::PolyhedralSurfaceM << wkbPolyhedralSurfaceM;
+  QTest::newRow( "PolyhedralSurfaceZM" ) << Qgis::WkbType::PolyhedralSurfaceZM << wkbPolyhedralSurfaceZM;
+
+  QTest::newRow( "TIN" ) << Qgis::WkbType::TIN << wkbTIN;
+  QTest::newRow( "TINZ" ) << Qgis::WkbType::TINZ << wkbTINZ;
+  QTest::newRow( "TINM" ) << Qgis::WkbType::TINM << wkbTINM;
+  QTest::newRow( "TINZM" ) << Qgis::WkbType::TINZM << wkbTINZM;
+
+  QTest::newRow( "NurbsCurve" ) << Qgis::WkbType::NurbsCurve << wkbLineString;
+  QTest::newRow( "NurbsCurveZ" ) << Qgis::WkbType::NurbsCurveZ << wkbLineString25D;
+  QTest::newRow( "NurbsCurveM" ) << Qgis::WkbType::NurbsCurveM << wkbLineStringM;
+  QTest::newRow( "NurbsCurveZM" ) << Qgis::WkbType::NurbsCurveZM << wkbLineStringZM;
 }
 
 void TestQgsOgrUtils::readOgrFeatureGeometry()

@@ -2517,7 +2517,7 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
     }
 
     bool policiesEditable = false;
-    QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( providerKey, item->path() );
+    QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( providerKey, connectionUri );
     if ( provider->isValid() )
     {
       if ( QgsVectorDataProvider *vectorProvider = qobject_cast<QgsVectorDataProvider *>( provider ) )
