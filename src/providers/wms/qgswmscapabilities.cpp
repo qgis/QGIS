@@ -321,7 +321,7 @@ QString QgsWmsSettings::parseTemporalFormat( QString extent ) const
   switch ( item.size() )
   {
     case 20:
-      return hasTimezone and enableTime ? u"yyyy-MM-ddTHH:mm:ssZ"_s : u"yyyy-MM-dd"_s;
+      return hasTimezone && enableTime ? u"yyyy-MM-ddTHH:mm:ssZ"_s : u"yyyy-MM-dd"_s;
     case 19:
       return !hasTimezone ? u"yyyy-MM-ddTHH:mm:ss"_s : u"yyyy-MM-dd"_s;
     case 17:
