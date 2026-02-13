@@ -539,7 +539,7 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
             elif (
                 isinstance(node, ast.ImportFrom)
                 and node.module
-                and node.module.startswith("PyQt5.")
+                and (node.module.startswith("PyQt5.") or node.module == "PyQt5")
             ):
                 fix_pyqt_import.append(Offset(node.lineno, node.col_offset))
 
