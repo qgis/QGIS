@@ -386,7 +386,6 @@ void QgsAppGpsDigitizing::createFeature()
           {
             if ( !QgisApp::instance()->tryCommitChanges( vlayer ) )
             {
-              vlayer->startEditing();
               break;
             }
 

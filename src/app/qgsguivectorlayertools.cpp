@@ -132,7 +132,6 @@ bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer *layer, bool allowCance
         if ( !QgisApp::instance()->tryCommitChanges( layer ) )
         {
           res = false;
-          layer->triggerRepaint();
           break;
         }
 
