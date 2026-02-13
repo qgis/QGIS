@@ -24,7 +24,7 @@ __author__ = "Nathan Woodrow"
 __date__ = "November 2018"
 __copyright__ = "(C) 2018, Nathan Woodrow"
 
-import typing as _typing
+from typing import Callable, Optional, Union
 
 from qgis.core import QgsProcessingAlgorithm as _QgsProcessingAlgorithm
 from qgis.core import QgsProcessingContext as _QgsProcessingContext
@@ -54,13 +54,13 @@ def algorithmHelp(id: str) -> None:
 
 
 def run(
-    algOrName: _typing.Union[str, _QgsProcessingAlgorithm],
-    parameters: _typing.Dict[str, object],
-    onFinish: _typing.Optional[_typing.Callable] = None,
-    feedback: _typing.Optional[_QgsProcessingFeedback] = None,
-    context: _typing.Optional[_QgsProcessingContext] = None,
+    algOrName: Union[str, _QgsProcessingAlgorithm],
+    parameters: dict[str, object],
+    onFinish: Optional[Callable] = None,
+    feedback: Optional[_QgsProcessingFeedback] = None,
+    context: Optional[_QgsProcessingContext] = None,
     is_child_algorithm: bool = False,
-) -> _typing.Union[_typing.Dict, None]:
+) -> Union[dict, None]:
     """
     Executes given algorithm and returns its outputs as dictionary object.
 
@@ -82,11 +82,11 @@ def run(
 
 
 def runAndLoadResults(
-    algOrName: _typing.Union[str, _QgsProcessingAlgorithm],
-    parameters: _typing.Dict[str, object],
-    feedback: _typing.Optional[_QgsProcessingFeedback] = None,
-    context: _typing.Optional[_QgsProcessingContext] = None,
-) -> _typing.Union[_typing.Dict, None]:
+    algOrName: Union[str, _QgsProcessingAlgorithm],
+    parameters: dict[str, object],
+    feedback: Optional[_QgsProcessingFeedback] = None,
+    context: Optional[_QgsProcessingContext] = None,
+) -> Union[dict, None]:
     """
     Executes given algorithm and load its results into the current QGIS project
     when possible.
@@ -107,9 +107,9 @@ def runAndLoadResults(
 
 
 def createAlgorithmDialog(
-    algOrName: _typing.Union[str, _QgsProcessingAlgorithm],
-    parameters: _typing.Dict[str, object] = {},
-) -> _typing.Union[str, _QgsProcessingAlgorithm]:
+    algOrName: Union[str, _QgsProcessingAlgorithm],
+    parameters: dict[str, object] = {},
+) -> Union[str, _QgsProcessingAlgorithm]:
     """
     Creates and returns an algorithm dialog for the specified algorithm, prepopulated
     with a given set of parameters. It is the caller's responsibility to execute
@@ -128,9 +128,9 @@ def createAlgorithmDialog(
 
 
 def execAlgorithmDialog(
-    algOrName: _typing.Union[str, _QgsProcessingAlgorithm],
-    parameters: _typing.Dict[str, object] = {},
-) -> _typing.Union[_typing.Dict, None]:
+    algOrName: Union[str, _QgsProcessingAlgorithm],
+    parameters: dict[str, object] = {},
+) -> Union[dict, None]:
     """
     Executes an algorithm dialog for the specified algorithm, prepopulated
     with a given set of parameters.
@@ -148,7 +148,7 @@ def execAlgorithmDialog(
 
 
 def createContext(
-    feedback: _typing.Optional[_QgsProcessingFeedback] = None,
+    feedback: Optional[_QgsProcessingFeedback] = None,
 ) -> _QgsProcessingContext:
     """
     Creates a default processing context
