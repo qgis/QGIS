@@ -18,6 +18,8 @@
 
 #include "qgsrenderpassquad.h"
 
+#include <QSizeF>
+
 class QgsFrameGraph;
 
 namespace Qt3DRender
