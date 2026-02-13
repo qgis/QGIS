@@ -241,6 +241,8 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   // none of the 2d/3d canvas sync options supported by globe yet
   groupBox->setVisible( map->sceneMode() == Qgis::SceneMode::Local );
 
+  mShowMapOverlayCheckBox->setChecked( map->is2DMapOverlayEnabled() );
+
   // ==================
   // Page: Advanced
 
@@ -285,6 +287,7 @@ void Qgs3DMapConfigWidget::apply()
   {
     mMap->setExtent( groupExtent->outputExtent() );
     mMap->setShowExtentIn2DView( mShowExtentIn2DViewCheckbox->isChecked() );
+    mMap->setIs2DMapOverlayEnabled( mShowMapOverlayCheckBox->isChecked() );
   }
 
   const QgsTerrainGenerator::Type terrainType = static_cast<QgsTerrainGenerator::Type>( cboTerrainType->currentData().toInt() );
@@ -383,6 +386,8 @@ void Qgs3DMapConfigWidget::apply()
   viewSyncMode.setFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D, mSync3DTo2DCheckbox->isChecked() );
   mMap->setViewSyncMode( viewSyncMode );
   mMap->setViewFrustumVisualizationEnabled( mVisualizeExtentCheckBox->isChecked() );
+
+  mMap->setIs2DMapOverlayEnabled( mShowMapOverlayCheckBox->isChecked() );
 }
 
 void Qgs3DMapConfigWidget::onTerrainTypeChanged()

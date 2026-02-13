@@ -62,7 +62,7 @@ QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
   appendRow( emptyProjectItem );
 
   emptyProjectItem = new QStandardItem();
-  emptyProjectItem->setData( static_cast<int>( TemplateType::OpenStreetMap ), static_cast<int>( CustomRole::TypeRole ) );
+  emptyProjectItem->setData( static_cast<int>( TemplateType::Basemap ), static_cast<int>( CustomRole::TypeRole ) );
   emptyProjectItem->setData( tr( "OpenStreetMap Basemap" ), static_cast<int>( CustomRole::TitleRole ) );
   emptyProjectItem->setData( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ).userFriendlyIdentifier(), static_cast<int>( CustomRole::CrsRole ) );
   emptyProjectItem->setFlags( Qt::ItemFlag::ItemIsSelectable | Qt::ItemFlag::ItemIsEnabled );

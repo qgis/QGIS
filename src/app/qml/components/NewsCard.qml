@@ -85,7 +85,7 @@ Rectangle {
 
     flat: true
     icon.source: "../images/close.svg"
-    icon.color: "black"
+    icon.color: "#1a365d"
     icon.width: 20
     icon.height: 20
     onClicked: root.closeClicked()

@@ -11,7 +11,7 @@ import "components"
 Item {
   id: welcomeScreen
 
-  property bool narrowLayout: height < 350 || width < 420
+  property bool narrowLayout: height < 350 || width < 480
 
   visible: height >= 300 && width >= 360
   width: 1100
@@ -31,15 +31,6 @@ Item {
       radius: 10
       color: "#002033"
       clip: true
-
-      layer.enabled: true
-      layer.effect: MultiEffect {
-        shadowEnabled: true
-        shadowColor: "#80000000"
-        shadowBlur: 1.0
-        shadowVerticalOffset: 8
-        shadowHorizontalOffset: 0
-      }
 
       GridLayout {
         anchors {
@@ -118,12 +109,14 @@ Item {
                 font.bold: true
                 visible: recentProjectsListView.count > 0
                 width: recentProjectsListView.count > 0 ? implicitWidth : 0
+                background: null
               }
               TabButton {
                 text: qsTr("Templates")
                 width: implicitWidth
                 font.pointSize: Application.font.pointSize * 1.1
                 font.bold: true
+                background: null
               }
             }
           }
@@ -144,7 +137,9 @@ Item {
               delegate: ProjectCard {
                 width: recentProjectsListView.width - 12
                 title: Title || ""
-                subtitle: ProjectNativePath || ProjectPath || ""
+                // Add invisible spaces after slash and backslash characters to help wrapping paths
+                subtitle: (ProjectNativePath || ProjectPath || "").replace(/([\\\/])/g,"$1\u200b")
+                crs: Crs
                 imageSource: PreviewImagePath || ""
                 isPinned: Pinned
                 isSelected: recentProjectsListView.currentIndex === index
@@ -158,7 +153,9 @@ Item {
                                recentProjectsMenu.projectPinned = Pinned;
                                recentProjectsMenu.projectExists = Exists;
                                recentProjectsMenu.projectHasNativePath = ProjectNativePath != "";
-                               recentProjectsMenu.popup(mouse.x, mouse.y);
+                               
+                               const point = mapToItem(recentProjectsListView, mouse.x, mouse.y);
+                               recentProjectsMenu.popup(point.x, point.y);
                              }
                            }
               }
@@ -181,6 +178,8 @@ Item {
                 property bool projectExists: false
                 property bool projectHasNativePath: false
 
+                background.layer.enabled: false
+                
                 MenuItem {
                   text: recentProjectsMenu.projectPinned? qsTr("Unpin from List") : qsTr("Pin to List")
                   onClicked: {
@@ -189,6 +188,11 @@ Item {
                     } else {
                       recentProjectsModel.pinProject(recentProjectsMenu.projectIndex);
                     }
+                  }
+                  background: Rectangle {
+                    implicitWidth: 200
+                    implicitHeight: parent.Material.menuItemHeight
+                    color: parent.highlighted ? parent.Material.listHighlightColor : "transparent"
                   }
                 }
                 MenuItem {
@@ -199,6 +203,11 @@ Item {
                   onClicked: {
                     recentProjectsModel.recheckProject(recentProjectsMenu.projectIndex);
                   }
+                  background: Rectangle {
+                    implicitWidth: 200
+                    implicitHeight: parent.Material.menuItemHeight
+                    color: parent.highlighted ? parent.Material.listHighlightColor : "transparent"
+                  }
                 }
                 MenuItem {
                   text: qsTr("Open Directory…")
@@ -208,11 +217,21 @@ Item {
                   onClicked: {
                     recentProjectsModel.openProject(recentProjectsMenu.projectIndex);
                   }
+                  background: Rectangle {
+                    implicitWidth: 200
+                    implicitHeight: parent.Material.menuItemHeight
+                    color: parent.highlighted ? parent.Material.listHighlightColor : "transparent"
+                  }
                 }
                 MenuItem {
                   text: qsTr("Remove from List")
                   onClicked: {
                     recentProjectsModel.removeProject(recentProjectsMenu.projectIndex);
+                  }
+                  background: Rectangle {
+                    implicitWidth: 200
+                    implicitHeight: parent.Material.menuItemHeight
+                    color: parent.highlighted ? parent.Material.listHighlightColor : "transparent"
                   }
                 }
                 MenuSeparator {}
@@ -220,6 +239,11 @@ Item {
                   text: qsTr("Clear List")
                   onClicked: {
                     welcomeScreenController.clearRecentProjects();
+                  }
+                  background: Rectangle {
+                    implicitWidth: 200
+                    implicitHeight: parent.Material.menuItemHeight
+                    color: parent.highlighted ? parent.Material.listHighlightColor : "transparent"
                   }
                 }
               }
@@ -242,7 +266,7 @@ Item {
                   switch (Type) {
                   case TemplateProjectsModel.TemplateType.Blank:
                     return "../images/blank.jpg";
-                  case TemplateProjectsModel.TemplateType.OpenStreetMap:
+                  case TemplateProjectsModel.TemplateType.Basemap:
                     return "../images/basemap.jpg";
                   default:
                     return PreviewImagePath || "";
@@ -256,7 +280,7 @@ Item {
                   case TemplateProjectsModel.TemplateType.Blank:
                     welcomeScreenController.createBlankProject(); //#spellok
                     return;
-                  case TemplateProjectsModel.TemplateType.OpenStreetMap:
+                  case TemplateProjectsModel.TemplateType.Basemap:
                     welcomeScreenController.createProjectFromBasemap();
                     return;
                   default:
@@ -287,7 +311,7 @@ Item {
 
             Text {
               Layout.fillWidth: true
-              text: newsSwitch.checked ? qsTr("Latest news") : qsTr("Welcome to QGIS!")
+              text: newsSwitch.checked && newsListView.count != 0 ? qsTr("Latest news") : qsTr("Welcome to QGIS!")
               font.pointSize: Application.font.pointSize * 1.3
               font.bold: true
               color: "#ffffff"
@@ -349,7 +373,7 @@ Item {
                 cursorShape: Qt.PointingHandCursor
                 onClicked: {
                   newsFeedParser.enabled = !newsFeedParser.enabled
-                  if (newsFeedParser.enabled && newsListView.count == 0) {
+                  if (newsFeedParser.enabled) {
                     newsFeedParser.fetch();
                   }
                 }
@@ -367,6 +391,7 @@ Item {
             id: welcomeView
             Layout.fillWidth: true
             Layout.fillHeight: true
+            visible: !newsSwitch.checked || newsListView.count == 0
             contentWidth: welcomeLayout.width
             contentHeight: welcomeLayout.height
             rightPadding: 12
@@ -381,7 +406,6 @@ Item {
             
             ColumnLayout {
               id: welcomeLayout
-              visible: !newsSwitch.checked
               width: welcomeNewsLayout.width - welcomeView.rightPadding
               spacing: 12
 
@@ -408,6 +432,7 @@ Item {
                 Layout.preferredHeight: stayUpdateLayout.childrenRect.height + 32
                 radius: 6
                 color: "#ffffff"
+                visible: !newsSwitch.checked
 
                 ColumnLayout {
                   id: stayUpdateLayout
@@ -450,7 +475,10 @@ Item {
                       anchors.fill: parent
                       cursorShape: Qt.PointingHandCursor
                       hoverEnabled: true
-                      onClicked: newsSwitch.checked = true
+                      onClicked: {
+                        newsFeedParser.enabled = true;
+                        newsFeedParser.fetch();
+                      }
                     }
                   }
                 }
@@ -473,6 +501,7 @@ Item {
               width: newsListView.width - 12
               title: Title
               description: Content
+              imageSource: ImageUrl
               showCloseButton: true
 
               onReadMoreClicked: {
@@ -550,15 +579,6 @@ Item {
       visible: false
       color: mainCard.color
 
-      layer.enabled: true
-      layer.effect: MultiEffect {
-        shadowEnabled: true
-        shadowColor: "#80000000"
-        shadowBlur: 1.0
-        shadowVerticalOffset: 8
-        shadowHorizontalOffset: 0
-      }
-
       onInstallClicked: {
         welcomeScreenController.showPluginManager();
       }
@@ -571,15 +591,6 @@ Item {
       radius: 16
       visible: false
       color: mainCard.color
-
-      layer.enabled: true
-      layer.effect: MultiEffect {
-        shadowEnabled: true
-        shadowColor: "#80000000"
-        shadowBlur: 1.0
-        shadowVerticalOffset: 8
-        shadowHorizontalOffset: 0
-      }
 
       onInstallClicked: {
         Qt.openUrlExternally("https://download.qgis.org/")
