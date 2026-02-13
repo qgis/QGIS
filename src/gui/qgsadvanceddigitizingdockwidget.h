@@ -40,6 +40,7 @@ class QgsMapTool;
 class QgsMapToolAdvancedDigitizing;
 class QgsMapMouseEvent;
 class QgsUserInputWidget;
+class QgsReferencedGeometry;
 
 /**
  * \ingroup gui
@@ -657,6 +658,19 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      */
     QString formatCommonAngleSnapping( double angle );
 
+  public slots:
+
+    /**
+     * Updates properties associated with the transient geometry from the active map tool.
+     *
+     * Transient geometry includes non-finalized changes, e.g. the current mouse hover state.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 4.0
+     */
+    void updateTransientGeometryProperties( const QgsReferencedGeometry &geometry ) SIP_SKIP;
+
   signals:
 
     /**
@@ -763,6 +777,22 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     * \since QGIS 4.0
     */
     void valueWeightChanged( const QString &value );
+
+    /**
+     * Emitted whenever the total summed area \a value changes.
+     * Could be used by widgets that must reflect the current advanced digitizing state.
+     * \note unstable API (will likely change)
+     * \since QGIS 4.0
+     */
+    void valueAreaChanged( const QString &value );
+
+    /**
+     * Emitted whenever the total length (or perimeter) \a value changes.
+     * Could be used by widgets that must reflect the current advanced digitizing state.
+     * \note unstable API (will likely change)
+     * \since QGIS 4.0
+     */
+    void valueTotalLengthChanged( const QString &value );
 
     /**
     * Emitted whenever the X parameter is \a locked.

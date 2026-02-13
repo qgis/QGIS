@@ -101,6 +101,8 @@ class TestQgsGeometryUtils : public QObject
     void transferFirstZOrMValueToPoint_qgsgeometry();
     void testPointsAreCollinear();
     void testCheckWeaklyFor3DPlane();
+    void testLineByTwoAngles();
+    void testInterpolateZ();
 };
 
 
@@ -2105,6 +2107,100 @@ void TestQgsGeometryUtils::testInterpolatePointOnCubicBezier()
   QVERIFY( qgsDoubleNear( p.y(), 0.0 ) );
   QVERIFY( qgsDoubleNear( p.z(), 13.0 ) );
   QVERIFY( qgsDoubleNear( p.m(), 23.0 ) );
+}
+
+void TestQgsGeometryUtils::testLineByTwoAngles()
+{
+  const double tolerance = 1e-8;
+
+  // Test 1: Simple right angle intersection
+  {
+    const QgsPoint pt1( 0, 0 );
+    const QgsPoint pt2( 10, 0 );
+    QgsPoint result;
+    // Point 1 bearing north, Point 2 bearing west -> intersection at origin
+    const bool ok = QgsGeometryUtils::intersectionPointOfLinesByBearing( pt1, 0.0, pt2, 3.0 * M_PI / 2.0, result );
+    QVERIFY( ok );
+    QVERIFY( qgsDoubleNear( result.x(), 0.0, tolerance ) );
+    QVERIFY( qgsDoubleNear( result.y(), 0.0, tolerance ) );
+  }
+
+  // Test 2: Lines meeting at center
+  {
+    const QgsPoint pt1( 0, 0 );
+    const QgsPoint pt2( 10, 0 );
+    QgsPoint result;
+    // Point 1 bearing NE (45 deg), Point 2 bearing NW (315 deg) -> meet at (5,5)
+    const bool ok = QgsGeometryUtils::intersectionPointOfLinesByBearing( pt1, M_PI / 4.0, pt2, 7.0 * M_PI / 4.0, result );
+    QVERIFY( ok );
+    QVERIFY( qgsDoubleNear( result.x(), 5.0, tolerance ) );
+    QVERIFY( qgsDoubleNear( result.y(), 5.0, tolerance ) );
+  }
+
+  // Test 3: Parallel lines - no intersection
+  {
+    const QgsPoint pt1( 0, 0 );
+    const QgsPoint pt2( 0, 5 );
+    QgsPoint result;
+    // Both bearing east -> parallel
+    const bool ok = QgsGeometryUtils::intersectionPointOfLinesByBearing( pt1, M_PI / 2.0, pt2, M_PI / 2.0, result );
+    QVERIFY( !ok );
+  }
+
+  // Test 4: Z value preservation
+  {
+    const QgsPoint pt1( Qgis::WkbType::PointZ, 0, 0, 100 );
+    const QgsPoint pt2( 10, 0 );
+    QgsPoint result;
+    const bool ok = QgsGeometryUtils::intersectionPointOfLinesByBearing( pt1, M_PI / 4.0, pt2, 7.0 * M_PI / 4.0, result );
+    QVERIFY( ok );
+    QVERIFY( result.is3D() );
+    QVERIFY( qgsDoubleNear( result.z(), 100.0, tolerance ) );
+  }
+
+  // Test 5: M value preservation
+  {
+    const QgsPoint pt1( Qgis::WkbType::PointM, 0, 0, 0, 50 );
+    const QgsPoint pt2( 10, 0 );
+    QgsPoint result;
+    const bool ok = QgsGeometryUtils::intersectionPointOfLinesByBearing( pt1, M_PI / 4.0, pt2, 7.0 * M_PI / 4.0, result );
+    QVERIFY( ok );
+    QVERIFY( result.isMeasure() );
+    QVERIFY( qgsDoubleNear( result.m(), 50.0, tolerance ) );
+  }
+}
+
+void TestQgsGeometryUtils::testInterpolateZ()
+{
+  QgsPoint a( 0, 0, 10 );
+  QgsPoint b( 2, 0, 20 );
+  QgsPoint c( 0, 2, 30 );
+
+  // test at points
+  QCOMPARE( QgsGeometryUtils::interpolateZ( a, b, c, 0, 0 ), 10.0 );
+  QCOMPARE( QgsGeometryUtils::interpolateZ( a, b, c, 2, 0 ), 20.0 );
+  QCOMPARE( QgsGeometryUtils::interpolateZ( a, b, c, 0, 2 ), 30.0 );
+
+  // test between points
+  QCOMPARE( QgsGeometryUtils::interpolateZ( a, b, c, 1, 0 ), 15.0 );
+  QCOMPARE( QgsGeometryUtils::interpolateZ( a, b, c, 0, 1 ), 20.0 );
+  QCOMPARE( QgsGeometryUtils::interpolateZ( a, b, c, 1, 1 ), 25.0 );
+
+  // test outside
+  QCOMPARE( QgsGeometryUtils::interpolateZ( a, b, c, -1, -1 ), std::numeric_limits<double>::quiet_NaN() );
+  QCOMPARE( QgsGeometryUtils::interpolateZ( a, b, c, 2, 2 ), std::numeric_limits<double>::quiet_NaN() );
+
+  // random points
+  QCOMPARE( QgsGeometryUtils::interpolateZ( a, b, c, 0.5, 0.5 ), 17.5 );
+  QCOMPARE( QgsGeometryUtils::interpolateZ( a, b, c, 0.25, 0.5 ), 16.25 );
+  QCOMPARE( QgsGeometryUtils::interpolateZ( a, b, c, 0.2, 0.75 ), 18.5 );
+
+  a = QgsPoint( 0, 0, 10 );
+  b = QgsPoint( 1, 1, 20 );
+  c = QgsPoint( 2, 2, 30 );
+
+  // collinear, should produce nan
+  QCOMPARE( QgsGeometryUtils::interpolateZ( a, b, c, 1, 1 ), std::numeric_limits<double>::quiet_NaN() );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )

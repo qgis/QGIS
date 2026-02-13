@@ -68,6 +68,7 @@ QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRendererWidget::renderer()
   renderer->setMaximumScreenError( mWidgetPointCloudSymbol->maximumScreenError() );
   renderer->setShowBoundingBoxes( mWidgetPointCloudSymbol->showBoundingBoxes() );
   renderer->setZoomOutBehavior( mWidgetPointCloudSymbol->zoomOutBehavior() );
+  renderer->setOverviewSwitchingScale( mWidgetPointCloudSymbol->overviewSwitchingScale() );
   return renderer;
 }
 

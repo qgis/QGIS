@@ -105,7 +105,7 @@ void QgsDxfExport::addLayers( const QList<DxfLayer> &layers )
     {
       mLayerDDBlockMaxNumberOfClasses.insert( dxfLayer.layer()->id(), dxfLayer.dataDefinedBlocksMaximumNumberOfClasses() );
     }
-    if ( dxfLayer.overriddenName() != QString() )
+    if ( !dxfLayer.overriddenName().isEmpty() )
     {
       mLayerOverriddenName.insert( dxfLayer.layer()->id(), dxfLayer.overriddenName() );
     }
@@ -1693,15 +1693,6 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, const Q
 
 void QgsDxfExport::writeMText( const QString &layer, const QString &text, const QgsPoint &pt, double width, double angle, const QColor &color )
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  if ( !mTextStream.codec()->canEncode( text ) )
-  {
-    // TODO return error
-    QgsDebugError( u"could not encode:%1"_s.arg( text ) );
-    return;
-  }
-#endif
-
   writeGroup( 0, u"MTEXT"_s );
   writeHandle();
   writeGroup( 100, u"AcDbEntity"_s );
@@ -2403,9 +2394,10 @@ QStringList QgsDxfExport::encodings()
 QString QgsDxfExport::layerName( QgsVectorLayer *vl ) const
 {
   Q_ASSERT( vl );
-  if ( !mLayerOverriddenName.value( vl->id(), QString() ).isEmpty() )
+  auto overriddenNameIt = mLayerOverriddenName.constFind( vl->id() );
+  if ( overriddenNameIt != mLayerOverriddenName.constEnd() && !overriddenNameIt.value().isEmpty() )
   {
-    return mLayerOverriddenName.value( vl->id() );
+    return overriddenNameIt.value();
   }
   else if ( mLayerTitleAsName && ( !vl->metadata().title().isEmpty() || !vl->serverProperties()->title().isEmpty() ) )
   {

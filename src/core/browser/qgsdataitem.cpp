@@ -47,7 +47,6 @@
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QVector>
-#include <QtConcurrentMap>
 #include <QtConcurrentRun>
 
 #include "moc_qgsdataitem.cpp"

@@ -136,8 +136,8 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
       QMenu *projectMenu = new QMenu( tr( "Project" ), menu );
       menu->addMenu( projectMenu );
 
-      QAction *actionSaveProject = new QAction( tr( "Save Current Project" ), projectMenu );
-      connect( actionSaveProject, &QAction::triggered, this, [schemaItem, context] { saveCurrentProject( schemaItem, context ); } );
+      QAction *actionSaveProject = new QAction( tr( "Save Current Project As…" ), projectMenu );
+      connect( actionSaveProject, &QAction::triggered, this, [schemaItem, context] { saveCurrentProjectAs( schemaItem, context ); } );
       projectMenu->addAction( actionSaveProject );
 
       QAction *actionImportProject = new QAction( tr( "Import Projects…" ), projectMenu );
@@ -928,11 +928,6 @@ void QgsPostgresDataItemGuiProvider::exportProjectToFile( QgsPGProjectItem *proj
 
 void QgsPostgresDataItemGuiProvider::renameProject( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context )
 {
-  QgsNewNameDialog dlg( tr( "project “%1”" ).arg( projectItem->name() ), projectItem->name() );
-  dlg.setWindowTitle( tr( "Rename Project" ) );
-  if ( dlg.exec() != QDialog::Accepted || dlg.name() == projectItem->name() )
-    return;
-
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( projectItem->postgresProjectUri().connInfo, false );
   if ( !conn )
   {
@@ -941,6 +936,13 @@ void QgsPostgresDataItemGuiProvider::renameProject( QgsPGProjectItem *projectIte
   }
 
   QgsProject *project = QgsProject::instance();
+
+  QgsNewNameDialog dlg( tr( "project “%1”" ).arg( projectItem->name() ), projectItem->name(), QStringList(), QgsPostgresUtils::projectNamesInSchema( conn, projectItem->schemaName() ) );
+  dlg.setWindowTitle( tr( "Rename Project" ) );
+  if ( dlg.exec() != QDialog::Accepted || dlg.name() == projectItem->name() )
+    return;
+
+  const QString newUri = projectItem->uriWithNewName( dlg.name() );
 
   QgsPostgresProjectUri pgProjectUri;
   pgProjectUri.connInfo = conn->uri();
@@ -1151,7 +1153,7 @@ void QgsPostgresDataItemGuiProvider::setProjectComment( QgsPGProjectItem *projec
   conn->unref();
 }
 
-void QgsPostgresDataItemGuiProvider::saveCurrentProject( QgsPGSchemaItem *schemaItem, QgsDataItemGuiContext context )
+void QgsPostgresDataItemGuiProvider::saveCurrentProjectAs( QgsPGSchemaItem *schemaItem, QgsDataItemGuiContext context )
 {
   const QgsDataSourceUri uri = QgsPostgresConn::connUri( schemaItem->connectionName() );
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri, false );
@@ -1172,72 +1174,40 @@ void QgsPostgresDataItemGuiProvider::saveCurrentProject( QgsPGSchemaItem *schema
   }
 
   QgsProject *project = QgsProject::instance();
-  if ( !project )
+
+  const QString baseProjectName = project->baseName().isEmpty() ? tr( "New Project" ) : project->baseName();
+
+  QgsNewNameDialog dlg( tr( "project" ), baseProjectName, QStringList(), QgsPostgresUtils::projectNamesInSchema( conn, schemaItem->name() ) );
+  dlg.setWindowTitle( tr( "Project Name" ) );
+
+  if ( dlg.exec() == QDialog::Accepted )
   {
-    notify( tr( "Save Project" ), tr( "Unable to save project to database." ), context, Qgis::MessageLevel::Warning );
-    if ( conn )
+    QgsPostgresProjectUri pgProjectUri;
+    pgProjectUri.connInfo = conn->uri();
+    pgProjectUri.schemaName = schemaItem->name();
+    pgProjectUri.projectName = dlg.name();
+
+    QString projectUri = QgsPostgresProjectStorage::encodeUri( pgProjectUri );
+
+    const QString previousFileName = project->fileName();
+
+    project->setFileName( projectUri );
+    // write project to the database
+    const bool success = project->write();
+    if ( !success )
+    {
+      notify( tr( "Save Project" ), tr( "Unable to save project “%1” to “%2”." ).arg( dlg.name(), schemaItem->name() ), context, Qgis::MessageLevel::Warning );
       conn->unref();
-    return;
-  }
-
-  QgsPostgresProjectUri pgProjectUri;
-  pgProjectUri.connInfo = conn->uri();
-  pgProjectUri.schemaName = schemaItem->name();
-  pgProjectUri.projectName = project->title().isEmpty() ? project->baseName() : project->title();
-
-  const QString previousTitle = project->title();
-
-  if ( pgProjectUri.projectName.isEmpty() )
-  {
-    bool ok;
-    const QString projectName = QInputDialog::getText( nullptr, tr( "Set Project Name" ), tr( "Name" ), QLineEdit::Normal, tr( "New Project" ), &ok );
-    if ( ok && !projectName.isEmpty() )
-    {
-      pgProjectUri.projectName = projectName;
-      project->setTitle( projectName );
-    }
-    else
-    {
-      notify( tr( "Save Project" ), tr( "Unable to save project without name to database." ), context, Qgis::MessageLevel::Warning );
+      project->setFileName( previousFileName );
       return;
     }
+
+    notify( tr( "Save Project" ), tr( "Project “%1” saved to schema “%2”." ).arg( dlg.name(), schemaItem->name() ), context, Qgis::MessageLevel::Info );
+
+    // refresh
+    schemaItem->refresh();
   }
 
-  QString projectUri = QgsPostgresProjectStorage::encodeUri( pgProjectUri );
-  const QString sqlProjectExist = u"SELECT EXISTS( SELECT 1 FROM %1.qgis_projects WHERE name = %2);"_s
-                                    .arg( QgsPostgresConn::quotedIdentifier( schemaItem->name() ), QgsPostgresConn::quotedValue( pgProjectUri.projectName ) );
-  QgsPostgresResult result( conn->LoggedPQexec( "QgsPostgresDataItemGuiProvider", sqlProjectExist ) );
-
-  if ( !( result.PQresultStatus() == PGRES_COMMAND_OK || result.PQresultStatus() == PGRES_TUPLES_OK ) )
-  {
-    notify( tr( "Save Project" ), tr( "Unable to save project to database." ), context, Qgis::MessageLevel::Warning );
-    conn->unref();
-    return;
-  }
-
-  if ( result.PQgetvalue( 0, 0 ) == "t"_L1 )
-  {
-    notify( tr( "Save Project" ), tr( "Project “%1” exist in the database. Overwriting it." ).arg( pgProjectUri.projectName ), context, Qgis::MessageLevel::Info );
-  }
-
-  const QString previousFileName = project->fileName();
-  project->setFileName( projectUri );
-
-  // write project to the database
-  const bool success = project->write();
-  if ( !success )
-  {
-    notify( tr( "Save Project" ), tr( "Unable to save project “%1” to “%2”." ).arg( project->title(), schemaItem->name() ), context, Qgis::MessageLevel::Warning );
-    conn->unref();
-    project->setFileName( previousFileName );
-    project->setTitle( previousTitle );
-    return;
-  }
-
-  notify( tr( "Save Project" ), tr( "Project “%1” saved to schema “%2”." ).arg( project->title(), schemaItem->name() ), context, Qgis::MessageLevel::Info );
-
-  // refresh
-  schemaItem->refresh();
   conn->unref();
 }
 

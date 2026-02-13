@@ -3117,6 +3117,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( RenderSubcomponentProperty )
 
     /**
+     * Selective masking source types.
+     *
+     * \since QGIS 4.0
+     */
+    enum class SelectiveMaskSourceType : int
+    {
+      SymbolLayer, //!< A mask generated from a symbol layer
+      Label, //!< A mask generated from a labeling provider
+    };
+    Q_ENUM( SelectiveMaskSourceType )
+
+    /**
      * Types of vertex.
      * \since QGIS 3.22
      */
@@ -4141,6 +4153,17 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( CadConstraintType )
 
+    /**
+     * Advanced digitizing measurement display types.
+     * \since QGIS 4.0
+     */
+    enum class CadMeasurementDisplayType : int
+    {
+      Hidden, //!< Hide measurement
+      Cartesian, //!< Use Cartesian measurements
+      Ellipsoidal, //!< Use Ellipsoidal measurements
+    };
+    Q_ENUM( CadMeasurementDisplayType )
 
     /**
      * Flags which control the behavior of QgsProjects.
@@ -4267,6 +4290,18 @@ class CORE_EXPORT Qgis
       ContinuousSurface, //!< The features should be treated as representing values on a continuous surface (eg contour lines)
     };
     Q_ENUM( VectorProfileType );
+
+    /**
+     * Types of elevation profiles to generate for point cloud sources.
+     *
+     * \since QGIS 4.0
+     */
+    enum class PointCloudProfileType : int
+    {
+      IndividualPoints, //!< Sample individual points from the point cloud
+      TriangulatedSurface, //!< Create a TIN from the point cloud using Delaunay triangulation
+    };
+    Q_ENUM( PointCloudProfileType );
 
     /**
      * Flags that control the way the QgsAbstractProfileGenerator operate.

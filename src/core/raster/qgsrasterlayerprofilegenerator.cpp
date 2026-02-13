@@ -93,6 +93,11 @@ QString QgsRasterLayerProfileGenerator::sourceId() const
   return mId;
 }
 
+QString QgsRasterLayerProfileGenerator::type() const
+{
+  return u"raster"_s;
+}
+
 Qgis::ProfileGeneratorFlags QgsRasterLayerProfileGenerator::flags() const
 {
   return Qgis::ProfileGeneratorFlag::RespectsDistanceRange | Qgis::ProfileGeneratorFlag::RespectsMaximumErrorMapUnit;

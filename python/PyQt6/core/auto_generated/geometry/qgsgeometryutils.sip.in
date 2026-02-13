@@ -1136,6 +1136,33 @@ and is retrieved from the first 3D point amongst ``p1`` and ``p2``.
          - intersection: Output parameter, the intersection point
 %End
 
+    static bool intersectionPointOfLinesByBearing( const QgsPoint &pt1, double bearing1, const QgsPoint &pt2, double bearing2, QgsPoint &intersection /Out/ ) /HoldGIL/;
+%Docstring
+Calculates the intersection point of two lines defined by point and
+bearing.
+
+Each line is defined by a point and a bearing (azimuth). The bearing is
+measured clockwise from north in radians.
+
+:param pt1: point on the first line
+:param bearing1: bearing from the first point in radians (clockwise from
+                 north)
+:param pt2: point on the second line
+:param bearing2: bearing from the second point in radians (clockwise
+                 from north)
+
+:return: - ``True`` if an intersection was found, ``False`` if lines are
+           parallel
+         - intersection: the intersection point.
+
+.. seealso:: :py:func:`lineIntersection`
+
+.. seealso:: :py:func:`QgsGeometryUtilsBase.intersectionPointOfLinesByBearing`
+
+.. versionadded:: 4.0
+%End
+
+
     static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint /Out/, bool &isIntersection /Out/, double tolerance = 1e-8, bool acceptImproperIntersection = false ) /HoldGIL/;
 %Docstring
 Compute the intersection between two segments
@@ -1452,6 +1479,20 @@ points. If successful, the points are returned in ptA, ptB, and ptC.
    searching for candidate points.
 
 .. versionadded:: 4.0
+%End
+
+    static double interpolateZ( const QgsPoint &a, const QgsPoint &b, const QgsPoint &c, double x, double y );
+%Docstring
+Interpolates the Z value at the given (x, y) location within the
+triangle defined by points a, b, and c.
+
+:param a: First vertex of the triangle.
+:param b: Second vertex of the triangle.
+:param c: Third vertex of the triangle.
+:param x: X coordinate of the point to interpolate.
+:param y: Y coordinate of the point to interpolate.
+
+:return: The interpolated Z value at the specified (x, y) location.
 %End
 
 };

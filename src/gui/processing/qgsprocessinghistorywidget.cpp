@@ -21,6 +21,7 @@
 #include "qgshistoryentry.h"
 #include "qgshistoryproviderregistry.h"
 #include "qgshistorywidget.h"
+#include "qgsprocessinghistoryprovider.h"
 
 #include <QDialogButtonBox>
 #include <QFileDialog>
@@ -97,6 +98,10 @@ QgsProcessingHistoryDialog::QgsProcessingHistoryDialog( QWidget *parent )
   setWindowTitle( tr( "Processing History" ) );
 
   QVBoxLayout *vl = new QVBoxLayout();
+
+  mMessageBar = new QgsMessageBar();
+  vl->addWidget( mMessageBar );
+
   mWidget = new QgsProcessingHistoryWidget();
   vl->addWidget( mWidget, 1 );
 
@@ -114,6 +119,8 @@ QgsProcessingHistoryDialog::QgsProcessingHistoryDialog( QWidget *parent )
   connect( saveButton, &QPushButton::clicked, mWidget, &QgsProcessingHistoryWidget::saveLog );
   connect( mButtonBox->button( QDialogButtonBox::Help ), &QPushButton::clicked, mWidget, &QgsProcessingHistoryWidget::openHelp );
   connect( mButtonBox->button( QDialogButtonBox::Close ), &QPushButton::clicked, mWidget, [this]() { close(); } );
+  auto *provider = qgis::down_cast<QgsProcessingHistoryProvider *>( QgsGui::historyProviderRegistry()->providerById( u"processing"_s ) );
+  connect( provider, &QgsProcessingHistoryProvider::showMessage, mMessageBar, [this]( const QString &message ) { mMessageBar->pushMessage( message, Qgis::MessageLevel::Warning ); } );
 
   vl->addWidget( mButtonBox );
 

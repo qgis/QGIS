@@ -701,7 +701,7 @@ QString QgsGdalProvider::bandDescription( int bandNumber )
 
   if ( GDALGetRasterCount( mGdalDataset ) > 0 )
   {
-    GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, bandNumber );
+    GDALRasterBandH gdalBand = getBand( bandNumber );
     if ( gdalBand )
     {
       const QString description { GDALGetMetadataItem( gdalBand, "DESCRIPTION", nullptr ) };
@@ -1383,7 +1383,7 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
       if ( !dimExtraValues.isEmpty() )
       {
         QStringList bandNameValues;
-        GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, bandNumber );
+        GDALRasterBandH gdalBand = getBand( bandNumber );
         GDALmetadata = GDALGetMetadata( gdalBand, nullptr );
         if ( GDALmetadata )
         {
@@ -1565,7 +1565,7 @@ double QgsGdalProvider::sample( const QgsPointXY &point, int band, bool *ok, con
     return std::numeric_limits<double>::quiet_NaN();
   }
 
-  GDALRasterBandH hBand = GDALGetRasterBand( mGdalDataset, band );
+  GDALRasterBandH hBand = getBand( band );
   if ( !hBand )
     return std::numeric_limits<double>::quiet_NaN();
 
@@ -1750,7 +1750,7 @@ Qgis::DataType QgsGdalProvider::sourceDataType( int bandNo ) const
   if ( mMaskBandExposedAsAlpha && bandNo == GDALGetRasterCount( mGdalDataset ) + 1 )
     return dataTypeFromGdal( GDT_Byte );
 
-  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
+  GDALRasterBandH myGdalBand = getBand( bandNo );
   GDALDataType myGdalDataType = GDALGetRasterDataType( myGdalBand );
   Qgis::DataType myDataType = dataTypeFromGdal( myGdalDataType );
 
@@ -1859,7 +1859,7 @@ Qgis::RasterColorInterpretation QgsGdalProvider::colorInterpretation( int bandNo
 
   if ( mMaskBandExposedAsAlpha && bandNo == GDALGetRasterCount( mGdalDataset ) + 1 )
     return colorInterpretationFromGdal( GCI_AlphaBand );
-  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
+  GDALRasterBandH myGdalBand = getBand( bandNo );
   return colorInterpretationFromGdal( GDALGetRasterColorInterpretation( myGdalBand ) );
 }
 
@@ -3543,6 +3543,8 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
         // Fields
         QgsFields ratFields;
         QStringList lowerNames;
+        // map QGIS field name to GDAL field index
+        QMap<QString, int> fieldIndices;
         QList<Qgis::RasterAttributeTableFieldUsage> usages;
         for ( int columnNumber = 0; columnNumber < GDALRATGetColumnCount( hRat ); ++columnNumber )
         {
@@ -3565,7 +3567,24 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
               type = QMetaType::Type::QString;
               break;
             }
-
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,12,0)
+            case GFT_Boolean:
+            {
+              type = QMetaType::Type::Bool;
+              break;
+            }
+            case GFT_DateTime:
+            {
+              type = QMetaType::Type::QDateTime;
+              break;
+            }
+            case GFT_WKBGeometry:
+            {
+              // TODO: This could be handled to zoom/pan to the area but the implementation is beyound the scope of a bugfix
+              QgsDebugError( u"Unhandled RAT type %1"_s.arg( GDALRATGetTypeOfCol( hRat, columnNumber ) ) );
+              continue;
+            }
+#endif
             default:
             {
               QgsDebugError( u"Unhandled RAT type %1"_s.arg( GDALRATGetTypeOfCol( hRat, columnNumber ) ) );
@@ -3575,6 +3594,7 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
           const QString name { GDALRATGetNameOfCol( hRat, columnNumber ) };
           lowerNames.append( name.toLower() );
           ratFields.append( QgsField( name, type ) );
+          fieldIndices[name] = columnNumber;
           usages.append( usage );
         }
 
@@ -3589,28 +3609,30 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
         {
           QVariantList rowData;
           const auto cFields { rat->fields() };
-          int colIdx { 0 };
           for ( const auto &field : std::as_const( cFields ) )
           {
-            switch ( field.type )
+            if ( fieldIndices.contains( field.name ) )
             {
-              case QMetaType::Type::Int:
-              case QMetaType::Type::UInt:
-              case QMetaType::Type::LongLong:
-              case QMetaType::Type::ULongLong:
+              const int gdalFieldIdx = fieldIndices[ field.name ];
+              switch ( field.type )
               {
-                rowData.push_back( GDALRATGetValueAsInt( hRat, rowIdx, colIdx ) );
-                break;
+                case QMetaType::Type::Int:
+                case QMetaType::Type::UInt:
+                case QMetaType::Type::LongLong:
+                case QMetaType::Type::ULongLong:
+                {
+                  rowData.push_back( GDALRATGetValueAsInt( hRat, rowIdx, gdalFieldIdx ) );
+                  break;
+                }
+                case QMetaType::Type::Double:
+                {
+                  rowData.push_back( GDALRATGetValueAsDouble( hRat, rowIdx, gdalFieldIdx ) );
+                  break;
+                }
+                default:
+                  rowData.push_back( GDALRATGetValueAsString( hRat, rowIdx, gdalFieldIdx ) );
               }
-              case QMetaType::Type::Double:
-              {
-                rowData.push_back( GDALRATGetValueAsDouble( hRat, rowIdx, colIdx ) );
-                break;
-              }
-              default:
-                rowData.push_back( GDALRATGetValueAsString( hRat, rowIdx, colIdx ) );
             }
-            colIdx++;
           }
           rat->appendRow( rowData );
         }

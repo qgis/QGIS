@@ -74,6 +74,13 @@ QgsPointCloudElevationPropertiesWidget::QgsPointCloudElevationPropertiesWidget( 
   mPointColorButton->setAllowOpacity( true );
   mPointColorButton->setColorDialogTitle( tr( "Point Color" ) );
 
+  mTypeCombobox->addItem( tr( "Individual Points" ), static_cast<int>( Qgis::PointCloudProfileType::IndividualPoints ) );
+  mTypeCombobox->addItem( tr( "Triangulated Surface" ), static_cast<int>( Qgis::PointCloudProfileType::TriangulatedSurface ) );
+
+  mSurfaceStyleCombobox->addItem( QgsApplication::getThemeIcon( u"mIconSurfaceElevationLine.svg"_s ), tr( "Line" ), static_cast<int>( Qgis::ProfileSurfaceSymbology::Line ) );
+  mSurfaceStyleCombobox->addItem( QgsApplication::getThemeIcon( u"mIconSurfaceElevationFillBelow.svg"_s ), tr( "Fill Below" ), static_cast<int>( Qgis::ProfileSurfaceSymbology::FillBelow ) );
+  mSurfaceStyleCombobox->addItem( QgsApplication::getThemeIcon( u"mIconSurfaceElevationFillAbove.svg"_s ), tr( "Fill Above" ), static_cast<int>( Qgis::ProfileSurfaceSymbology::FillAbove ) );
+
   syncToLayer( layer );
 
   connect( mOffsetZSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudElevationPropertiesWidget::onChanged );
@@ -87,8 +94,44 @@ QgsPointCloudElevationPropertiesWidget::QgsPointCloudElevationPropertiesWidget( 
   connect( mPointColorButton, &QgsColorButton::colorChanged, this, &QgsPointCloudElevationPropertiesWidget::onChanged );
   connect( mCheckBoxRespectLayerColors, &QCheckBox::toggled, this, &QgsPointCloudElevationPropertiesWidget::onChanged );
   connect( mOpacityByDistanceCheckBox, &QCheckBox::toggled, this, &QgsPointCloudElevationPropertiesWidget::onChanged );
-
   connect( mLayer, &QgsMapLayer::crsChanged, this, &QgsPointCloudElevationPropertiesWidget::updateVerticalCrsOptions );
+  connect( mElevationLimitSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudElevationPropertiesWidget::onChanged );
+  connect( mTypeCombobox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
+    switch ( static_cast<Qgis::PointCloudProfileType>( mTypeCombobox->currentData().toInt() ) )
+    {
+      case Qgis::PointCloudProfileType::IndividualPoints:
+        mInterpretationStackedWidget->setCurrentWidget( pageIndividualPoints );
+        break;
+      case Qgis::PointCloudProfileType::TriangulatedSurface:
+        mInterpretationStackedWidget->setCurrentWidget( pageTriangulatedSurface );
+        break;
+    }
+    onChanged();
+  } );
+  connect( mSurfaceStyleCombobox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
+    switch ( static_cast<Qgis::ProfileSurfaceSymbology>( mSurfaceStyleCombobox->currentData().toInt() ) )
+    {
+      case Qgis::ProfileSurfaceSymbology::Line:
+        labelLineStyle->show();
+        mLineStyleButton->show();
+        mElevationLimitSpinBox->hide();
+        labelFillStyle->hide();
+        mFillStyleButton->hide();
+        break;
+      case Qgis::ProfileSurfaceSymbology::FillBelow:
+      case Qgis::ProfileSurfaceSymbology::FillAbove:
+        labelLineStyle->hide();
+        mLineStyleButton->hide();
+        mElevationLimitSpinBox->show();
+        labelFillStyle->show();
+        mFillStyleButton->show();
+        break;
+    }
+
+    onChanged();
+  } );
+  connect( mLineStyleButton, &QgsSymbolButton::changed, this, &QgsPointCloudElevationPropertiesWidget::onChanged );
+  connect( mFillStyleButton, &QgsSymbolButton::changed, this, &QgsPointCloudElevationPropertiesWidget::onChanged );
 
   setProperty( "helpPage", u"working_with_point_clouds/point_clouds.html#elevation-properties"_s );
 }
@@ -112,6 +155,20 @@ void QgsPointCloudElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   mPointColorButton->setColor( properties->pointColor() );
   mCheckBoxRespectLayerColors->setChecked( properties->respectLayerColors() );
   mOpacityByDistanceCheckBox->setChecked( properties->applyOpacityByDistanceEffect() );
+  mTypeCombobox->setCurrentIndex( mTypeCombobox->findData( static_cast<int>( properties->type() ) ) );
+
+  mLineStyleButton->setSymbol( properties->profileLineSymbol()->clone() );
+  mFillStyleButton->setSymbol( properties->profileFillSymbol()->clone() );
+
+  switch ( properties->type() )
+  {
+    case Qgis::PointCloudProfileType::IndividualPoints:
+      mInterpretationStackedWidget->setCurrentWidget( pageIndividualPoints );
+      break;
+    case Qgis::PointCloudProfileType::TriangulatedSurface:
+      mInterpretationStackedWidget->setCurrentWidget( pageTriangulatedSurface );
+      break;
+  }
 
   mBlockUpdates = false;
 
@@ -138,6 +195,16 @@ void QgsPointCloudElevationPropertiesWidget::apply()
   properties->setPointColor( mPointColorButton->color() );
   properties->setRespectLayerColors( mCheckBoxRespectLayerColors->isChecked() );
   properties->setApplyOpacityByDistanceEffect( mOpacityByDistanceCheckBox->isChecked() );
+  properties->setType( static_cast<Qgis::PointCloudProfileType>( mTypeCombobox->currentData().toInt() ) );
+
+  if ( mElevationLimitSpinBox->value() != mElevationLimitSpinBox->clearValue() )
+    properties->setElevationLimit( mElevationLimitSpinBox->value() );
+  else
+    properties->setElevationLimit( std::numeric_limits<double>::quiet_NaN() );
+
+  properties->setProfileSymbology( static_cast<Qgis::ProfileSurfaceSymbology>( mSurfaceStyleCombobox->currentData().toInt() ) );
+  properties->setProfileLineSymbol( mLineStyleButton->clonedSymbol<QgsLineSymbol>() );
+  properties->setProfileFillSymbol( mFillStyleButton->clonedSymbol<QgsFillSymbol>() );
 
   mLayer->setVerticalCrs( mVerticalCrsWidget->crs() );
 

@@ -12,6 +12,7 @@ if(MSVC)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   file(GLOB ALL_LIBS
     "${VCPKG_BASE_DIR}/lib/*.dylib"
+    "${VCPKG_BASE_DIR}/lib/*.so"
   )
   install(FILES ${ALL_LIBS} DESTINATION "${QGIS_LIB_SUBDIR}")
 endif()
@@ -33,7 +34,8 @@ endif()
 if(MSVC)
   install(DIRECTORY "${VCPKG_BASE_DIR}/Qt6/" DESTINATION "${QGIS_BIN_SUBDIR}/Qt6") # qt plugins (qml and others)
 else()
-  install(DIRECTORY "${VCPKG_BASE_DIR}/Qt6/plugins/" DESTINATION "${APP_PLUGINS_DIR}/") # qt plugins (qml and others)
+  install(DIRECTORY "${VCPKG_BASE_DIR}/Qt6/plugins/" DESTINATION "${APP_PLUGINS_DIR}/") # qt plugins
+  install(DIRECTORY "${VCPKG_BASE_DIR}/Qt6/qml/" DESTINATION "${APP_PLUGINS_DIR}/../Qt6/qml/") # qml plugins
 endif()
 
 if(WITH_BINDINGS)

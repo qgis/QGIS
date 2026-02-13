@@ -34,7 +34,7 @@ Model designer dialog base class.
     virtual void closeEvent( QCloseEvent *event );
 
 
-    void beginUndoCommand( const QString &text, int id = 0 );
+    void beginUndoCommand( const QString &text, const QString &id = QString() );
 %Docstring
 Starts an undo command. This should be called before any changes are
 made to the model.
@@ -74,6 +74,17 @@ Loads a model into the designer from the specified file ``path``.
     void setModelScene( QgsModelGraphicsScene *scene /Transfer/ );
 %Docstring
 Sets the related ``scene``.
+
+.. seealso:: :py:func:`modelScene`
+%End
+
+    QgsModelGraphicsScene *modelScene();
+%Docstring
+Returns the related model scene.
+
+.. seealso:: :py:func:`setModelScene`
+
+.. versionadded:: 4.0
 %End
 
     enum class SaveAction
@@ -103,6 +114,17 @@ Raise, unminimize and activate this window.
     virtual bool saveModel( bool saveAs = false ) = 0;
 
     virtual QgsProcessingAlgorithmDialogBase *createExecutionDialog() = 0 /TransferBack/;
+
+    virtual QgsProcessingParameterWidgetContext createWidgetContext() = 0;
+%Docstring
+Creates a new widget context appropriate for the dialog.
+%End
+
+    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
+%Docstring
+Registers a Processing context ``generator`` class that will be used to
+retrieve a Processing context for the dialog when required.
+%End
 
     QToolBar *toolbar();
     QAction *actionOpen();

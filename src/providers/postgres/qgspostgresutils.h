@@ -214,6 +214,13 @@ class QgsPostgresUtils
      * \since QGIS 4.0
      */
     static bool renameProject( QgsPostgresConn *conn, const QString &schemaName, const QString &oldProjectName, const QString &newProjectName );
+  
+    /**     
+     * List projects in the specified \a schema
+     *
+     * \since QGIS 4.0
+     */
+    static QStringList projectNamesInSchema( QgsPostgresConn *conn, const QString &schema );
 };
 
 #endif

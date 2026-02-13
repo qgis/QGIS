@@ -81,6 +81,7 @@
 #include "qgsrendererregistry.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsscalebarrendererregistry.h"
+#include "qgsselectivemaskingsourceset.h"
 #include "qgssensorregistry.h"
 #include "qgssensorthingsutils.h"
 #include "qgssettings.h"
@@ -352,6 +353,7 @@ void registerMetaTypes()
   qRegisterMetaType< QgsGpsInformation >( "QgsGpsInformation" );
   qRegisterMetaType< QgsSensorThingsExpansionDefinition >( "QgsSensorThingsExpansionDefinition" );
   qRegisterMetaType< QTimeZone >( "QTimeZone" );
+  qRegisterMetaType< QgsSelectiveMaskingSourceSet >( "QgsSelectiveMaskingSourceSet" );
 };
 
 void QgsApplication::init( QString profileFolder )
@@ -504,11 +506,12 @@ void QgsApplication::init( QString profileFolder )
   QStringList currentProjSearchPaths = QgsProjUtils::searchPaths();
   currentProjSearchPaths.append( qgisSettingsDirPath() + u"proj"_s );
 #ifdef Q_OS_MACOS
-  // append bundled proj lib for MacOS
-  QString projLib( QDir::cleanPath( pkgDataPath().append( "/proj" ) ) );
-  if ( QFile::exists( projLib ) )
+  // Set bundled proj data path as env var, so it's also available for pyproj and subprocesses (e.g. processing algorithms)
+  const QString projData( QDir::cleanPath( pkgDataPath().append( "/proj" ) ) );
+  if ( QFile::exists( projData ) )
   {
-    currentProjSearchPaths.append( projLib );
+    qputenv( "PROJ_DATA", projData.toUtf8() );
+    currentProjSearchPaths.append( projData );
   }
 #endif // Q_OS_MACOS
 
@@ -1655,9 +1658,17 @@ void QgsApplication::exitQgis()
 
   QgsStyle::cleanDefaultStyle();
 
-  // tear-down GDAL/OGR
-  OGRCleanupAll();
-  GDALDestroyDriverManager();
+  // tear-down GDAL/OGR, but only if there are no remaining opened
+  // datasets (cf https://github.com/qgis/QGIS/issues/58724)
+  // Outputting to stdin is obviously absurd, but intended here, since
+  // we are just interested in the count of still open datasets.
+  if ( GDALDumpOpenDatasets( stdin ) == 0 )
+  {
+    OGRCleanupAll();
+    GDALDestroyDriverManager();
+  }
+  else
+    QgsDebugMsgLevel( u"Skipping call to GDALDestroyDriverManager() due to still opened datasets"_s, 5 );
 }
 
 QString QgsApplication::showSettings()

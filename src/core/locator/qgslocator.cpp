@@ -23,8 +23,8 @@
 #include "qgsmessagelog.h"
 #include "qgssettingsentryimpl.h"
 
+#include <QCoreApplication>
 #include <QString>
-#include <QtConcurrent>
 
 #include "moc_qgslocator.cpp"
 

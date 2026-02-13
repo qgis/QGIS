@@ -99,6 +99,12 @@ QgsMaterial *QgsSimpleLineMaterialSettings::toMaterial( QgsMaterialSettingsRende
 
     case QgsMaterialSettingsRenderingTechnique::Lines:
     {
+      if ( context.isHighlighted() )
+      {
+        // QgsHighlightMaterial does not support lines
+        return nullptr;
+      }
+
       QgsLineMaterial *mat = new QgsLineMaterial;
       if ( !context.isSelected() )
       {

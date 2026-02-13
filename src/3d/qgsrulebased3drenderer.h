@@ -251,7 +251,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRendere
          * register individual features
          * \note not available in Python bindings
          */
-        RegisterResult registerFeature( QgsFeature &feature, Qgs3DRenderContext &context, RuleToHandlerMap &handlers ) const SIP_SKIP;
+        RegisterResult registerFeature( const QgsFeature &feature, Qgs3DRenderContext &context, const RuleToHandlerMap &handlers ) const SIP_SKIP;
 
       private:
 #ifdef SIP_RUN
@@ -265,7 +265,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRendere
          * \param context   The context in which the rendering happens
          * \returns          TRUE if the feature shall be rendered
          */
-        bool isFilterOK( QgsFeature &f, Qgs3DRenderContext &context ) const;
+        bool isFilterOK( const QgsFeature &f, Qgs3DRenderContext &context ) const;
 
         /**
          * Initialize filters. Automatically called by setFilterExpression.

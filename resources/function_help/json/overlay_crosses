@@ -2,7 +2,7 @@
   "name": "overlay_crosses",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Returns whether the current feature spatially crosses at least one feature from a target layer, or an array of expression-based results for the features in the target layer crossed by the current feature.<br><br>Read more on the underlying GEOS \"Crosses\" predicate, as described in PostGIS <a href='https://postgis.net/docs/ST_Crosses.html'>ST_Crosses</a> function.",
+  "description": "Returns whether the current feature spatially crosses at least one feature from a target layer, or returns an array of expression-based results for the features in the target layer crossed by the current feature.<br><br>Read more on the underlying GEOS \"Crosses\" predicate, as described in PostGIS <a href='https://postgis.net/docs/ST_Crosses.html'>ST_Crosses</a> function.",
   "arguments": [{
     "arg": "layer",
     "description": "the layer whose overlay is checked"
