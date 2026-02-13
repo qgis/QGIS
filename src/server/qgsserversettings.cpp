@@ -491,7 +491,15 @@ QString QgsServerSettings::serviceUrl( const QString &service ) const
 
   if ( result.isEmpty() )
   {
-    result = value( QgsServerSettingsEnv::QGIS_SERVER_SERVICE_URL ).toString();
+    if ( getenv( "QGIS_SERVER_SERVICE_URL" ) )
+    {
+      result = getenv( "QGIS_SERVER_SERVICE_URL" );
+      QgsMessageLog::logMessage( u"Using QGIS_SERVER_SERVICE_URL from environment: %1"_s.arg( result ), u"Server"_s, Qgis::MessageLevel::Info );
+    }
+    else
+    {
+      result = value( QgsServerSettingsEnv::QGIS_SERVER_SERVICE_URL ).toString();
+    }
   }
 
   return result;

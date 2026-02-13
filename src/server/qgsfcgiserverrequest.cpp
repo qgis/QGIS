@@ -277,6 +277,7 @@ void QgsFcgiServerRequest::printRequestInfos( const QUrl &url ) const
   for ( auto it = hdrs.constBegin(); it != hdrs.constEnd(); it++ )
   {
     qDebug() << it.key() << ": " << it.value();
+    QgsMessageLog::logMessage( u"HTTP HEADER %1: %2"_s.arg( it.key() ).arg( QString( it.value() ) ), u"Server"_s, Qgis::MessageLevel::Info );
   }
 }
 
