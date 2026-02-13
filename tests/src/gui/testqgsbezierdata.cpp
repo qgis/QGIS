@@ -51,6 +51,7 @@ class TestQgsBezierData : public QObject
     void testFromPolyBezierControlPointsWithZM();
     void testFromPolyBezierControlPointsQgsPointXY();
     void testFromPolyBezierControlPointsInvalid();
+    void testCalculateSymmetricHandles();
     void testClear();
 };
 
@@ -342,6 +343,39 @@ void TestQgsBezierData::testFromPolyBezierControlPointsInvalid()
   wrongCount << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 2, 2 ) << QgsPoint( 3, 3 ) << QgsPoint( 4, 4 );
   QgsBezierData data3 = QgsBezierData::fromPolyBezierControlPoints( wrongCount );
   QVERIFY( data3.isEmpty() );
+}
+
+void TestQgsBezierData::testCalculateSymmetricHandles()
+{
+  // 1. Test static method with individual points
+  QgsPoint anchor( 5, 5 );
+  QgsPoint mouse( 7, 7 );
+  QgsPoint handleFollow, handleOpposite;
+  QgsBezierData::calculateSymmetricHandles( anchor, mouse, &handleFollow, &handleOpposite );
+  QCOMPARE( handleFollow, QgsPoint( 7, 7 ) );
+  QCOMPARE( handleOpposite, QgsPoint( 3, 3 ) );
+
+  // 2. Test static method with QVector
+  QVector<QgsPoint> controlPoints;
+  controlPoints << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 )                      // Anchor 0, handle right
+                << QgsPoint( 4, 4 ) << QgsPoint( 5, 5 ) << QgsPoint( 6, 6 ); // Handle Left, Anchor 1, Handle Right
+  // Index 3 is anchor. Index 4 should follow, Index 2 should be opposite.
+  QgsBezierData::calculateSymmetricHandles( controlPoints, 3, QgsPoint( 7, 7 ) );
+  QCOMPARE( controlPoints[3], QgsPoint( 5, 5 ) );
+  QCOMPARE( controlPoints[4], QgsPoint( 7, 7 ) );
+  QCOMPARE( controlPoints[2], QgsPoint( 3, 3 ) );
+
+  // 3. Test method
+  QgsBezierData data;
+  data.addAnchor( QgsPoint( 0, 0 ) );
+  data.addAnchor( QgsPoint( 5, 5 ) );
+  data.addAnchor( QgsPoint( 10, 10 ) );
+
+  // Anchor 1 is (5, 5).
+  data.calculateSymmetricHandles( 1, QgsPoint( 7, 7 ) );
+  QCOMPARE( data.anchor( 1 ), QgsPoint( 5, 5 ) );
+  QCOMPARE( data.handle( 3 ), QgsPoint( 7, 7 ) ); // right handle follows
+  QCOMPARE( data.handle( 2 ), QgsPoint( 3, 3 ) ); // left handle opposite
 }
 
 void TestQgsBezierData::testClear()
