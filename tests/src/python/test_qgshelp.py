@@ -12,17 +12,16 @@ __author__ = "Julien Cabieces"
 __date__ = "2022-09-21"
 __copyright__ = "Copyright 2022, Julien Cabieces"
 
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import QgsSettings
-from qgis.gui import QgsHelp
 import unittest
-from qgis.testing import start_app, QgisTestCase
 
 import mockedwebserver
+from qgis.core import QgsSettings
+from qgis.gui import QgsHelp
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.testing import QgisTestCase, start_app
 
 
 class TestQgsHelp(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

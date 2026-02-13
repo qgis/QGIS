@@ -12,8 +12,8 @@ __date__ = "07/03/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QCoreApplication, QModelIndex, Qt, QVariant
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsDatabaseTableModel,
@@ -22,8 +22,8 @@ from qgis.core import (
     QgsProviderRegistry,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QCoreApplication, QModelIndex, Qt, QVariant
+from qgis.testing import QgisTestCase, start_app
 
 
 class TestPyQgsDatabaseTableModel(QgisTestCase):

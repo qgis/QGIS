@@ -33,7 +33,6 @@ start_app()
 
 
 class TestQgsNurbsCurve(unittest.TestCase):
-
     def testConstructor(self):
         """Test QgsNurbsCurve constructor"""
         # Test empty constructor

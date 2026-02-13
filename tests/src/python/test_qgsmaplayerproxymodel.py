@@ -11,6 +11,8 @@ __date__ = "22/08/2018"
 __copyright__ = "Copyright 2018, The QGIS Project"
 
 
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsAnnotationLayer,
@@ -19,8 +21,7 @@ from qgis.core import (
     QgsProject,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -40,7 +41,6 @@ def create_mesh_layer(name):
 
 
 class TestQgsMapLayerProxyModel(QgisTestCase):
-
     def testGettersSetters(self):
         """test model getters/setters"""
         m = QgsMapLayerProxyModel()

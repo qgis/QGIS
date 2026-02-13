@@ -11,7 +11,6 @@ from lib2to3.fixer_base import BaseFix
 
 
 class FixQfiledialog(BaseFix):
-
     PATTERN = """
     power< 'QFileDialog' trailer< '.' filter=('getOpenFileNameAndFilter'|'getOpenFileNamesAndFilter'|'getSaveFileNameAndFilter') > any >
     |

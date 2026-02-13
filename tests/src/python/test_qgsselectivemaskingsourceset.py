@@ -6,16 +6,16 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.PyQt.QtXml import QDomDocument, QDomElement
+import unittest
+
 from qgis.core import (
-    QgsSelectiveMaskSource,
-    QgsSelectiveMaskingSourceSet,
     Qgis,
     QgsReadWriteContext,
+    QgsSelectiveMaskingSourceSet,
+    QgsSelectiveMaskSource,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtXml import QDomDocument, QDomElement
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -23,7 +23,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsSelectiveMaskingSourceSet(QgisTestCase):
-
     def test_getters_setters(self):
         mask_set = QgsSelectiveMaskingSourceSet()
 

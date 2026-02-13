@@ -19,54 +19,55 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
 import os
+import re
 import subprocess
-
-from qgis.PyQt.QtCore import (
-    Qt,
-    QTimer,
-    QCoreApplication,
-    QSize,
-    QByteArray,
-    QFileInfo,
-    QUrl,
-    QDir,
-)
-from qgis.PyQt.QtWidgets import (
-    QToolBar,
-    QToolButton,
-    QWidget,
-    QSplitter,
-    QTreeWidget,
-    QAction,
-    QFileDialog,
-    QCheckBox,
-    QSizePolicy,
-    QMenu,
-    QGridLayout,
-    QApplication,
-    QShortcut,
-)
-from qgis.PyQt.QtGui import QDesktopServices, QKeySequence, QColor, QPalette
-from qgis.PyQt.QtWidgets import QVBoxLayout, QMessageBox
-from qgis.utils import iface
-from .console_sci import ShellScintilla
-from .console_output import ShellOutputScintilla
-from .console_editor import EditorTabWidget
-from .console_settings import ConsoleOptionsFactory
-from qgis.core import Qgis, QgsApplication, QgsSettings, QgsFileUtils
-from qgis.gui import (
-    QgsFilterLineEdit,
-    QgsHelp,
-    QgsDockWidget,
-    QgsGui,
-    QgsApplicationExitBlockerInterface,
-    QgsCodeEditorDockWidget,
-    QgsShortcutsManager,
-)
+import sys
 from functools import partial
 
-import sys
-import re
+from qgis.core import Qgis, QgsApplication, QgsFileUtils, QgsSettings
+from qgis.gui import (
+    QgsApplicationExitBlockerInterface,
+    QgsCodeEditorDockWidget,
+    QgsDockWidget,
+    QgsFilterLineEdit,
+    QgsGui,
+    QgsHelp,
+    QgsShortcutsManager,
+)
+from qgis.PyQt.QtCore import (
+    QByteArray,
+    QCoreApplication,
+    QDir,
+    QFileInfo,
+    QSize,
+    Qt,
+    QTimer,
+    QUrl,
+)
+from qgis.PyQt.QtGui import QColor, QDesktopServices, QKeySequence, QPalette
+from qgis.PyQt.QtWidgets import (
+    QAction,
+    QApplication,
+    QCheckBox,
+    QFileDialog,
+    QGridLayout,
+    QMenu,
+    QMessageBox,
+    QShortcut,
+    QSizePolicy,
+    QSplitter,
+    QToolBar,
+    QToolButton,
+    QTreeWidget,
+    QVBoxLayout,
+    QWidget,
+)
+from qgis.utils import iface
+
+from .console_editor import EditorTabWidget
+from .console_output import ShellOutputScintilla
+from .console_sci import ShellScintilla
+from .console_settings import ConsoleOptionsFactory
 
 _console = None
 _options_factory = ConsoleOptionsFactory()
@@ -118,7 +119,6 @@ def init_console():
 
 
 class ConsoleExitBlocker(QgsApplicationExitBlockerInterface):
-
     def __init__(self, console):
         super().__init__()
         self.console = console
@@ -128,7 +128,6 @@ class ConsoleExitBlocker(QgsApplicationExitBlockerInterface):
 
 
 class PythonConsole(QgsCodeEditorDockWidget):
-
     def __init__(self, parent=None):
         super().__init__("PythonConsoleWindow", True)
         self.setDockObjectName("PythonConsole")
@@ -162,7 +161,6 @@ class PythonConsole(QgsCodeEditorDockWidget):
 
 
 class PythonConsoleWidget(QWidget):
-
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
         self.setWindowTitle(

@@ -19,85 +19,84 @@ __author__ = "Alexander Bruy"
 __date__ = "November 2014"
 __copyright__ = "(C) 2014, Alexander Bruy"
 
-import os
 import json
+import os
 import warnings
 from pathlib import Path
-from typing import Optional, List, Dict
+from typing import Dict, List, Optional
 
-from qgis.PyQt import uic
-from qgis.PyQt.QtWidgets import (
-    QTableWidgetItem,
-    QComboBox,
-    QHeaderView,
-    QFileDialog,
-    QMessageBox,
-    QToolButton,
-    QMenu,
-    QAction,
-)
-
-# adding to this list? also update the QgsProcessingHistoryProvider executeAlgorithm imports!!
-
-from qgis.PyQt.QtCore import (
-    QTime,  # NOQA - must be here for saved file evaluation
-    QDate,  # NOQA - must be here for saved file evaluation
-    QDateTime,  # NOQA - must be here for saved file evaluation
-)
-from qgis.PyQt.QtGui import (
-    QPalette,
-    QColor,  # NOQA - must be here for saved file evaluation
-)
-
-from qgis.PyQt.QtCore import QDir, QFileInfo, QCoreApplication
 from qgis.core import (
     Qgis,
     QgsApplication,
-    QgsSettings,
-    QgsProperty,  # NOQA - must be here for saved file evaluation
-    QgsProject,
-    QgsFeatureRequest,  # NOQA - must be here for saved file evaluation
-    QgsProcessingFeatureSourceDefinition,  # NOQA - must be here for saved file evaluation
     QgsCoordinateReferenceSystem,  # NOQA - must be here for saved file evaluation
-    QgsProcessingParameterDefinition,
+    QgsExpression,
+    QgsExpressionContextUtils,
+    QgsFeatureRequest,  # NOQA - must be here for saved file evaluation
+    QgsFileFilterGenerator,
+    QgsFileUtils,
+    QgsProcessing,
+    QgsProcessingContext,
+    QgsProcessingFeatureSourceDefinition,  # NOQA - must be here for saved file evaluation
     QgsProcessingModelAlgorithm,
+    QgsProcessingOutputLayerDefinition,
+    QgsProcessingParameterDefinition,
+    QgsProcessingParameterFeatureSink,
+    QgsProcessingParameterFeatureSource,
     QgsProcessingParameterFile,
     QgsProcessingParameterMapLayer,
-    QgsProcessingParameterRasterLayer,
     QgsProcessingParameterMeshLayer,
-    QgsProcessingParameterPointCloudLayer,
-    QgsProcessingParameterVectorLayer,
-    QgsProcessingParameterFeatureSource,
-    QgsProcessingParameterRasterDestination,
-    QgsProcessingParameterVectorDestination,
     QgsProcessingParameterMultipleLayers,
-    QgsProcessingParameterFeatureSink,
-    QgsProcessingOutputLayerDefinition,
-    QgsExpressionContextUtils,
-    QgsProcessing,
-    QgsExpression,
-    QgsRasterLayer,
+    QgsProcessingParameterPointCloudLayer,
+    QgsProcessingParameterRasterDestination,
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterVectorDestination,
+    QgsProcessingParameterVectorLayer,
     QgsProcessingUtils,
-    QgsFileFilterGenerator,
-    QgsProcessingContext,
-    QgsFileUtils,
+    QgsProject,
+    QgsProperty,  # NOQA - must be here for saved file evaluation
+    QgsRasterLayer,
+    QgsSettings,
 )
 from qgis.gui import (
-    QgsProcessingParameterWidgetContext,
-    QgsProcessingContextGenerator,
-    QgsFindFilesByPatternDialog,
-    QgsExpressionBuilderDialog,
-    QgsPanelWidget,
     QgsAbstractProcessingParameterWidgetWrapper,
+    QgsExpressionBuilderDialog,
+    QgsFindFilesByPatternDialog,
+    QgsPanelWidget,
+    QgsProcessingContextGenerator,
+    QgsProcessingParameterWidgetContext,
+)
+from qgis.PyQt import uic
+
+# adding to this list? also update the QgsProcessingHistoryProvider executeAlgorithm imports!!
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QDate,  # NOQA - must be here for saved file evaluation
+    QDateTime,  # NOQA - must be here for saved file evaluation
+    QDir,
+    QFileInfo,
+    QTime,  # NOQA - must be here for saved file evaluation
+)
+from qgis.PyQt.QtGui import (
+    QColor,  # NOQA - must be here for saved file evaluation
+    QPalette,
+)
+from qgis.PyQt.QtWidgets import (
+    QAction,
+    QComboBox,
+    QFileDialog,
+    QHeaderView,
+    QMenu,
+    QMessageBox,
+    QTableWidgetItem,
+    QToolButton,
 )
 from qgis.utils import iface
 
-from processing.gui.wrappers import WidgetWrapperFactory, WidgetWrapper
 from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
-
+from processing.gui.MultipleInputDialog import MultipleInputDialog
+from processing.gui.wrappers import WidgetWrapper, WidgetWrapperFactory
 from processing.tools import dataobjects
 from processing.tools.dataobjects import createContext
-from processing.gui.MultipleInputDialog import MultipleInputDialog
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -107,7 +106,6 @@ with warnings.catch_warnings():
 
 
 class BatchPanelFillWidget(QToolButton):
-
     def __init__(self, parameterDefinition, column, panel, parent=None):
         super().__init__(parent)
 
@@ -558,7 +556,6 @@ class BatchPanel(QgsPanelWidget, WIDGET):
         self.processing_context = createContext()
 
         class ContextGenerator(QgsProcessingContextGenerator):
-
             def __init__(self, context):
                 super().__init__()
                 self.processing_context = context

@@ -21,23 +21,24 @@ __copyright__ = "(C) 2014, Victor Olaya"
 
 import json
 from typing import List
-from qgis.PyQt.QtCore import QCoreApplication
+
+from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from qgis.core import (
     Qgis,
     QgsApplication,
+    QgsMessageLog,
     QgsProcessingAlgorithm,
     QgsProcessingProvider,
-    QgsVectorFileWriter,
-    QgsMessageLog,
     QgsRuntimeProfiler,
+    QgsVectorFileWriter,
 )
-from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from grassprovider.grass_utils import GrassUtils
+from qgis.PyQt.QtCore import QCoreApplication
+
 from grassprovider.grass_algorithm import GrassAlgorithm
+from grassprovider.grass_utils import GrassUtils
 
 
 class GrassProvider(QgsProcessingProvider):
-
     def __init__(self):
         super().__init__()
 

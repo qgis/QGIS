@@ -11,17 +11,17 @@ __date__ = "03/12/2018"
 __copyright__ = "Copyright 2018, The QGIS Project"
 
 
+import unittest
+
 from qgis.core import QgsValidityCheckResult
 from qgis.gui import QgsValidityCheckResultsModel
 from qgis.PyQt.QtCore import QModelIndex, Qt
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 app = start_app()
 
 
 class TestQgsValidityResultsWidget(QgisTestCase):
-
     def testModel(self):
         res1 = QgsValidityCheckResult()
         res1.type = QgsValidityCheckResult.Type.Warning

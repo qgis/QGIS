@@ -19,14 +19,14 @@ import inspect
 import string
 import traceback
 
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis._core import (
-    QgsExpressionFunction,
-    QgsExpression,
-    QgsMessageLog,
-    QgsFeatureRequest,
     Qgis,
+    QgsExpression,
+    QgsExpressionFunction,
+    QgsFeatureRequest,
+    QgsMessageLog,
 )
+from qgis.PyQt.QtCore import QCoreApplication
 
 
 class QgsPyExpressionFunction(QgsExpressionFunction):

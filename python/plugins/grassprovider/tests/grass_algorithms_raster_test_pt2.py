@@ -19,24 +19,21 @@ __author__ = "Médéric Ribreux"
 __date__ = "May 2016"
 __copyright__ = "(C) 2016, Médéric Ribreux"
 
-import AlgorithmsTestBase
-
-import nose2
-import shutil
 import os
+import shutil
 import tempfile
 
-from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
-from qgis.testing import QgisTestCase, start_app
+import AlgorithmsTestBase
+import nose2
 from grassprovider.grass_provider import GrassProvider
 from grassprovider.grass_utils import GrassUtils
-
+from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
+from qgis.testing import QgisTestCase, start_app
 
 testDataPath = os.path.join(os.path.dirname(__file__), "testdata")
 
 
 class TestGrassAlgorithmsRasterTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
-
     @classmethod
     def setUpClass(cls):
         start_app()

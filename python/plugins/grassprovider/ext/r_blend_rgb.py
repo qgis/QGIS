@@ -20,6 +20,7 @@ __date__ = "February 2016"
 __copyright__ = "(C) 2016, Médéric Ribreux"
 
 import os
+
 from grassprovider.grass_utils import GrassUtils
 
 

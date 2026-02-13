@@ -11,23 +11,23 @@ __date__ = "2024-02-02"
 __copyright__ = "Copyright 2024, The QGIS Project"
 
 
+import unittest
+
 from qgis.core import (
     Qgis,
-    QgsPalLayerSettings,
-    QgsLabelPlacementSettings,
-    QgsPropertyCollection,
-    QgsProperty,
     QgsExpressionContext,
     QgsExpressionContextScope,
+    QgsLabelPlacementSettings,
+    QgsPalLayerSettings,
+    QgsProperty,
+    QgsPropertyCollection,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsLabelPlacementSettings(QgisTestCase):
-
     def test_placement_settings(self):
         """
         Test placement settings

@@ -12,10 +12,7 @@ __copyright__ = "Copyright 2025, The QGIS Project"
 
 import os
 import tempfile
-
-from qgis.PyQt.QtCore import Qt, QRectF
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
 
 from qgis.core import (
     Qgis,
@@ -35,9 +32,10 @@ from qgis.core import (
     QgsTextFormat,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QRectF, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
 
@@ -46,7 +44,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "layout_chart"

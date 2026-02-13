@@ -20,7 +20,6 @@ email                : brush.tyler@gmail.com
 
 
 class NotSupportedDbType(Exception):
-
     def __init__(self, dbtype):
         from qgis.PyQt.QtWidgets import QApplication
 

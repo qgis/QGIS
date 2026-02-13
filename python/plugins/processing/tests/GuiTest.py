@@ -21,28 +21,28 @@ __copyright__ = "(C) 2017, Nyall Dawson"
 
 import os
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import (
     QgsApplication,
     QgsCoordinateReferenceSystem,
-    QgsProcessingParameterMatrix,
+    QgsFeature,
+    QgsProcessingModelAlgorithm,
     QgsProcessingOutputLayerDefinition,
     QgsProcessingParameterFeatureSink,
     QgsProcessingParameterFileDestination,
     QgsProcessingParameterFolderDestination,
-    QgsProcessingParameterVectorDestination,
-    QgsProcessingParameterRasterDestination,
+    QgsProcessingParameterMatrix,
     QgsProcessingParameterRange,
-    QgsFeature,
-    QgsProcessingModelAlgorithm,
-    QgsUnitTypes,
+    QgsProcessingParameterRasterDestination,
+    QgsProcessingParameterVectorDestination,
     QgsProject,
+    QgsUnitTypes,
 )
-from qgis.analysis import QgsNativeAlgorithms
+from qgis.testing import QgisTestCase, start_app
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
-from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.gui.wrappers import (
     BandWidgetWrapper,
     BooleanWidgetWrapper,
@@ -88,6 +88,7 @@ from processing.gui.wrappers import (
     VectorLayerWidgetWrapper,
     WidgetWrapperFactory,
 )
+from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 
 start_app()
 QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
@@ -96,7 +97,6 @@ testDataPath = os.path.join(os.path.dirname(__file__), "testdata")
 
 
 class AlgorithmDialogTest(QgisTestCase):
-
     def testCreation(self):
         alg = QgsApplication.processingRegistry().createAlgorithmById(
             "native:centroids"
@@ -106,7 +106,6 @@ class AlgorithmDialogTest(QgisTestCase):
 
 
 class WrappersTest(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

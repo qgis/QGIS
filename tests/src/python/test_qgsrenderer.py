@@ -11,6 +11,8 @@ __date__ = "07/06/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
 
+import unittest
+
 from qgis.core import (
     QgsApplication,
     QgsFeature,
@@ -19,8 +21,7 @@ from qgis.core import (
     QgsRendererAbstractMetadata,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -45,7 +46,6 @@ def createReferencingLayer():
 
 
 class TestRenderer(QgsRendererAbstractMetadata):
-
     def __init__(self, name, layerTypes=QgsRendererAbstractMetadata.LayerType.All):
         QgsRendererAbstractMetadata.__init__(self, name, "Test Renderer")
         self.types = layerTypes
@@ -66,7 +66,6 @@ def clearRegistry():
 
 
 class TestQgsRendererV2Registry(QgisTestCase):
-
     def testInstance(self):
         """test retrieving global instance"""
         self.assertTrue(QgsApplication.rendererRegistry())

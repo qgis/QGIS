@@ -11,26 +11,25 @@ __date__ = "2025-010"
 __copyright__ = "Copyright 2025, The QGIS Project"
 
 
+import unittest
+
 from qgis.core import (
-    QgsProject,
-    QgsEmbeddedScriptVisitor,
-    QgsVectorLayer,
+    Qgis,
     QgsAction,
     QgsActionManager,
     QgsEditFormConfig,
+    QgsEmbeddedScriptVisitor,
     QgsObjectVisitorContext,
-    Qgis,
+    QgsProject,
+    QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsObjectVisitor(QgisTestCase):
-
     def test_layersMatchingPath(self):
         """
         Test QgsEmbeddedScriptVisitor()

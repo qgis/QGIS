@@ -6,27 +6,27 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from processing.core.Processing import Processing, ProcessingConfig
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (
-    QgsProject,
-    QgsSettings,
-    QgsLayerTreeLayer,
-    QgsRasterLayer,
-    QgsVectorLayer,
-    QgsProcessingContext,
-    QgsLayerTreeGroup,
-    QgsLayerTreeModel,
-)
-from qgis.gui import QgsProcessingGuiUtils, QgsLayerTreeView
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from processing.core.Processing import Processing, ProcessingConfig
+from qgis.core import (
+    QgsLayerTreeGroup,
+    QgsLayerTreeLayer,
+    QgsLayerTreeModel,
+    QgsProcessingContext,
+    QgsProject,
+    QgsRasterLayer,
+    QgsSettings,
+    QgsVectorLayer,
+)
+from qgis.gui import QgsLayerTreeView, QgsProcessingGuiUtils
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsProcessingGuiUtils(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

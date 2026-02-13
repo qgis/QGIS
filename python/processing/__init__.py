@@ -27,8 +27,8 @@ __copyright__ = "(C) 2018, Nathan Woodrow"
 import typing as _typing
 
 from qgis.core import QgsProcessingAlgorithm as _QgsProcessingAlgorithm
-from qgis.core import QgsProcessingFeedback as _QgsProcessingFeedback
 from qgis.core import QgsProcessingContext as _QgsProcessingContext
+from qgis.core import QgsProcessingFeedback as _QgsProcessingFeedback
 
 from .algfactory import ProcessingAlgFactory
 

@@ -21,23 +21,22 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 import os
 
-from qgis.PyQt.QtGui import QIcon
-
 from qgis.core import (
     QgsApplication,
     QgsFeature,
+    QgsFeatureSink,
     QgsGeometry,
     QgsGeometryCollection,
-    QgsPolygon,
     QgsMultiPolygon,
     QgsMultiSurface,
-    QgsWkbTypes,
-    QgsFeatureSink,
+    QgsPolygon,
     QgsProcessing,
-    QgsProcessingParameterFeatureSource,
     QgsProcessingParameterFeatureSink,
+    QgsProcessingParameterFeatureSource,
     QgsProcessingUtils,
+    QgsWkbTypes,
 )
+from qgis.PyQt.QtGui import QIcon
 
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 from processing.tools import dataobjects, vector
@@ -46,7 +45,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class LinesToPolygons(QgisFeatureBasedAlgorithm):
-
     def icon(self):
         return QgsApplication.getThemeIcon("/algorithms/mAlgorithmLineToPolygon.svg")
 

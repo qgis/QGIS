@@ -10,14 +10,14 @@ __author__ = "Nyall Dawson"
 __date__ = "12.09.2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import QgsDataSourceUri, QgsOwsConnection, QgsSettings
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.core import QgsDataSourceUri, QgsOwsConnection, QgsSettings
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.testing import QgisTestCase, start_app
 
 
 class TestQgsOwsConnection(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

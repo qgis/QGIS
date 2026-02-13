@@ -10,7 +10,8 @@ __author__ = "(C) 2019 by Nyall Dawson"
 __date__ = "02/09/2019"
 __copyright__ = "Copyright 2019, The QGIS Project"
 
-from qgis.PyQt.QtCore import QCoreApplication, QLocale, Qt
+import unittest
+
 from qgis.core import (
     QgsBookmark,
     QgsBookmarkManager,
@@ -21,9 +22,8 @@ from qgis.core import (
     QgsReferencedRectangle,
     QgsSettings,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QCoreApplication, QLocale, Qt
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -31,7 +31,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsBookmarkManagerModel(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

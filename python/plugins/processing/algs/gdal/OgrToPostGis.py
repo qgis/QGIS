@@ -22,18 +22,17 @@ __copyright__ = "(C) 2012, Victor Olaya"
 from qgis.core import (
     QgsProcessing,
     QgsProcessingException,
-    QgsProcessingParameterFeatureSource,
-    QgsProcessingParameterString,
-    QgsProcessingParameterEnum,
-    QgsProcessingParameterCrs,
-    QgsProcessingParameterField,
-    QgsProcessingParameterExtent,
     QgsProcessingParameterBoolean,
+    QgsProcessingParameterCrs,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterExtent,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterField,
+    QgsProcessingParameterString,
 )
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
-
 from processing.tools.system import isWindows
 
 

@@ -22,18 +22,18 @@ __copyright__ = "(C) 2017, Matteo Ghetta"
 import warnings
 
 from qgis.core import (
+    QgsFeatureRequest,
     QgsProcessingException,
+    QgsProcessingParameterEnum,
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
-    QgsProcessingParameterEnum,
     QgsProcessingParameterFileDestination,
-    QgsFeatureRequest,
     QgsProcessingParameterString,
 )
+from qgis.PyQt.QtCore import QCoreApplication
+
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
-
-from qgis.PyQt.QtCore import QCoreApplication
 
 
 class BoxPlot(QgisAlgorithm):

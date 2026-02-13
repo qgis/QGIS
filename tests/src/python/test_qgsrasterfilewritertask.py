@@ -11,8 +11,8 @@ __date__ = "12/02/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QCoreApplication, QDir
 from qgis.core import (
     QgsApplication,
     QgsCoordinateTransformContext,
@@ -21,9 +21,8 @@ from qgis.core import (
     QgsRasterLayer,
     QgsRasterPipe,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QCoreApplication, QDir
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -34,7 +33,6 @@ def create_temp_filename(base_file):
 
 
 class TestQgsRasterFileWriterTask(QgisTestCase):
-
     def setUp(self):
         self.success = False
         self.fail = False

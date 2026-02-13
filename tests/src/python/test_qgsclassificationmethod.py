@@ -11,8 +11,8 @@ __date__ = "3/09/2019"
 __copyright__ = "Copyright 2019, The QGIS Project"
 
 import random
+import unittest
 
-from qgis.PyQt.QtCore import QLocale
 from qgis.core import (
     QgsClassificationFixedInterval,
     QgsClassificationJenks,
@@ -23,8 +23,8 @@ from qgis.core import (
     QgsPointXY,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QLocale
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -55,7 +55,6 @@ def createMemoryLayer(values):
 
 
 class TestQgsClassificationMethods(QgisTestCase):
-
     def testQgsClassificationLogarithmic(self):
         values = [
             2746.71,

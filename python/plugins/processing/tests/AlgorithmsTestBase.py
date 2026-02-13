@@ -20,38 +20,37 @@ __date__ = "January 2016"
 __copyright__ = "(C) 2016, Matthias Kuhn"
 
 
-import os
-import yaml
-import nose2
-import shutil
 import glob
 import hashlib
-import tempfile
+import os
 import re
-
-from osgeo import gdal
-from osgeo.gdalconst import GA_ReadOnly
-from numpy import nan_to_num
+import shutil
+import tempfile
 from copy import deepcopy
 
-from qgis.PyQt.QtCore import QT_VERSION
+import nose2
+import yaml
+from numpy import nan_to_num
+from osgeo import gdal
+from osgeo.gdalconst import GA_ReadOnly
+from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import (
     Qgis,
-    QgsVectorLayer,
-    QgsRasterLayer,
+    QgsApplication,
     QgsCoordinateReferenceSystem,
     QgsFeatureRequest,
     QgsMapLayer,
     QgsMeshLayer,
-    QgsProject,
-    QgsApplication,
     QgsProcessingContext,
-    QgsProcessingUtils,
     QgsProcessingFeedback,
+    QgsProcessingUtils,
+    QgsProject,
     QgsProperty,
+    QgsRasterLayer,
+    QgsVectorLayer,
 )
-from qgis.analysis import QgsNativeAlgorithms
-from qgis.testing import _UnexpectedSuccess, QgisTestCase, start_app
+from qgis.PyQt.QtCore import QT_VERSION
+from qgis.testing import QgisTestCase, _UnexpectedSuccess, start_app
 from utilities import unitTestDataPath
 
 import processing
@@ -68,7 +67,6 @@ def processingTestDataPath():
 
 
 class AlgorithmsTest:
-
     def test_algorithms(self):
         """
         This is the main test function. All others will be executed based on the definitions in testdata/algorithm_tests.yaml
@@ -288,9 +286,7 @@ class AlgorithmsTest:
                 tmp = ""
                 for r in param["name"].split("::|::"):
                     v = r.split("::~::")
-                    tmp += "{}::~::{}::~::{}::~::{}::|::".format(
-                        os.path.join(prefix, v[0]), v[1], v[2], v[3]
-                    )
+                    tmp += f"{os.path.join(prefix, v[0])}::~::{v[1]}::~::{v[2]}::~::{v[3]}::|::"
                 # trim final separator ::|::
                 return tmp[:-5]
             elif param["type"] == "property":

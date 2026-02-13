@@ -11,11 +11,9 @@ __date__ = "2017-05"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
 import os
+import unittest
 from time import sleep
 
-from qgis.PyQt import sip
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument, QDomNode
 from qgis.core import (
     QgsMapLayer,
     QgsMapLayerStore,
@@ -23,9 +21,10 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt import sip
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument, QDomNode
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -37,7 +36,6 @@ def createLayer(name):
 
 
 class TestQgsMapLayerStore(QgisTestCase):
-
     def setUp(self):
         pass
 

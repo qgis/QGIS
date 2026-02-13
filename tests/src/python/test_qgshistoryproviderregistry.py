@@ -10,28 +10,27 @@ __author__ = "Nyall Dawson"
 __date__ = "18/10/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
-from qgis.PyQt import sip
-from qgis.PyQt.QtCore import QDate, QDateTime, QTime, QModelIndex
-from qgis.PyQt.QtTest import QSignalSpy
+import unittest
 
 from qgis.core import Qgis
 from qgis.gui import (
     QgsAbstractHistoryProvider,
-    QgsHistoryEntry,
-    QgsHistoryProviderRegistry,
     QgsGui,
-    QgsHistoryEntryNode,
+    QgsHistoryEntry,
     QgsHistoryEntryGroup,
     QgsHistoryEntryModel,
+    QgsHistoryEntryNode,
+    QgsHistoryProviderRegistry,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt import sip
+from qgis.PyQt.QtCore import QDate, QDateTime, QModelIndex, QTime
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestEntryNode(QgsHistoryEntryGroup):
-
     def __init__(self, val):
         super().__init__()
         self.val = val
@@ -41,7 +40,6 @@ class TestEntryNode(QgsHistoryEntryGroup):
 
 
 class TestHistoryProvider(QgsAbstractHistoryProvider):
-
     def id(self) -> str:
         return "test_provider"
 
@@ -58,25 +56,21 @@ class TestHistoryProvider(QgsAbstractHistoryProvider):
 
 
 class TestHistoryProvider2(QgsAbstractHistoryProvider):
-
     def id(self) -> str:
         return "test_provider2"
 
 
 class TestNode(QgsHistoryEntryNode):
-
     def data(self, role):
         return "test"
 
 
 class TestGroup(QgsHistoryEntryGroup):
-
     def data(self, role):
         return "test"
 
 
 class TestQgsHistoryProviderRegistry(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

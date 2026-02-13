@@ -20,19 +20,18 @@ __date__ = "January 2013"
 __copyright__ = "(C) 2013, Victor Olaya"
 
 import warnings
+
 from qgis.core import (
+    QgsProcessingException,
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
     QgsProcessingParameterFileDestination,
-    QgsProcessingException,
     QgsProcessingParameterString,
 )
+from qgis.PyQt.QtCore import QCoreApplication
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-
 from processing.tools import vector
-
-from qgis.PyQt.QtCore import QCoreApplication
 
 
 class VectorLayerScatterplot3D(QgisAlgorithm):

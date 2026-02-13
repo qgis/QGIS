@@ -10,13 +10,13 @@ __author__ = "Even Rouault"
 __date__ = "2016-06-01"
 __copyright__ = "Copyright 2016, Even Rouault"
 
+import math
 import os
 import shutil
 import tempfile
-import math
+import unittest
 
 from osgeo import ogr
-from qgis.PyQt.QtCore import QByteArray, QDate, QDateTime, QTime, QVariant
 from qgis.core import (
     NULL,
     QgsFeature,
@@ -27,8 +27,8 @@ from qgis.core import (
     QgsVectorDataProvider,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QByteArray, QDate, QDateTime, QTime, QVariant
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -38,7 +38,6 @@ def GDAL_COMPUTE_VERSION(maj, min, rev):
 
 
 class TestPyQgsOGRProviderSqlite(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

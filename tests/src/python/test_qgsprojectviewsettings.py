@@ -11,10 +11,8 @@ __date__ = "30/10/2019"
 __copyright__ = "Copyright 2019, The QGIS Project"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QTemporaryDir
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgis,
     QgsCoordinateReferenceSystem,
@@ -30,9 +28,10 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.gui import QgsMapCanvas
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QTemporaryDir
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 app = start_app()
@@ -40,7 +39,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsProjectViewSettings(QgisTestCase):
-
     def testMapScales(self):
         p = QgsProjectViewSettings()
         self.assertFalse(p.mapScales())

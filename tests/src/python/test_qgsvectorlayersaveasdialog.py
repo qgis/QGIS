@@ -11,15 +11,15 @@ __date__ = "2023-04"
 __copyright__ = "Copyright 2023, The QGIS Project"
 
 import unittest
-from qgis.testing import start_app, TestCase
+
+from qgis.core import QgsFeature, QgsVectorLayer, edit
 from qgis.gui import QgsVectorLayerSaveAsDialog
-from qgis.core import QgsFeature, edit, QgsVectorLayer
+from qgis.testing import TestCase, start_app
 
 start_app()
 
 
 class TestQgsMapCanvas(TestCase):
-
     def testOpenDialog(self):
 
         layer = QgsVectorLayer(

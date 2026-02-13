@@ -29,10 +29,11 @@ import time
 from collections.abc import Callable
 from pathlib import Path
 
-
 import test_qgsdelimitedtextprovider_wanted as want  # NOQA
 
 rebuildTests = "REBUILD_DELIMITED_TEXT_TESTS" in os.environ
+
+import unittest
 
 from providertestbase import ProviderTestCase
 from qgis.core import (
@@ -58,8 +59,7 @@ from qgis.PyQt.QtCore import (
     QUrl,
     QVariant,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 from utilities import compareUrl, compareWkt, unitTestDataPath
 
 start_app()
@@ -73,7 +73,6 @@ try:
     from qgis.PyQt.QtCore import QUrlQuery
 
     class MyUrl:
-
         def __init__(self, url):
             self.url = url
             self.query = QUrlQuery()
@@ -122,7 +121,6 @@ def normalize_query_items_order(s):
 
 
 class MessageLogger(QObject):
-
     def __init__(self, tag=None):
         QObject.__init__(self)
         self.log = []
@@ -144,7 +142,6 @@ class MessageLogger(QObject):
 
 
 class TestQgsDelimitedTextProviderXY(QgisTestCase, ProviderTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -177,7 +174,6 @@ class TestQgsDelimitedTextProviderXY(QgisTestCase, ProviderTestCase):
 
 
 class TestQgsDelimitedTextProviderWKT(QgisTestCase, ProviderTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -223,7 +219,6 @@ class TestQgsDelimitedTextProviderWKT(QgisTestCase, ProviderTestCase):
 
 
 class TestQgsDelimitedTextProviderOther(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -779,9 +774,9 @@ class TestQgsDelimitedTextProviderOther(QgisTestCase):
                 os.remove(filename)
             except:
                 open(filename, "w").close()
-                assert (
-                    os.path.getsize(filename) == 0
-                ), f"removal and truncation of {filename} failed"
+                assert os.path.getsize(filename) == 0, (
+                    f"removal and truncation of {filename} failed"
+                )
             # print "Deleted file - sleeping"
             time.sleep(1)
             QCoreApplication.instance().processEvents()
@@ -970,9 +965,9 @@ class TestQgsDelimitedTextProviderOther(QgisTestCase):
 
         vl = QgsVectorLayer(url.toString(), "test", "delimitedtext")
         assert vl.isValid(), f"{basetestfile} is invalid"
-        assert (
-            vl.wkbType() == QgsWkbTypes.Type.PointZM
-        ), "wrong wkb type, should be PointZM"
+        assert vl.wkbType() == QgsWkbTypes.Type.PointZM, (
+            "wrong wkb type, should be PointZM"
+        )
         assert (
             vl.getFeature(2).geometry().asWkt()
             == "Point ZM (-71.12300000000000466 78.23000000000000398 1 2)"
@@ -1009,9 +1004,9 @@ class TestQgsDelimitedTextProviderOther(QgisTestCase):
 
         vl = QgsVectorLayer(url.toString(), "test", "delimitedtext")
         assert vl.isValid(), f"{basetestfile} is invalid"
-        assert (
-            vl.wkbType() == QgsWkbTypes.Type.PointZ
-        ), "wrong wkb type, should be PointZ"
+        assert vl.wkbType() == QgsWkbTypes.Type.PointZ, (
+            "wrong wkb type, should be PointZ"
+        )
         assert (
             vl.getFeature(2).geometry().asWkt()
             == "Point Z (-71.12300000000000466 78.23000000000000398 1)"
@@ -1054,9 +1049,9 @@ class TestQgsDelimitedTextProviderOther(QgisTestCase):
 
         vl = QgsVectorLayer(url.toString(), "test", "delimitedtext")
         assert vl.isValid(), f"{basetestfile} is invalid"
-        assert (
-            vl.wkbType() == QgsWkbTypes.Type.PointM
-        ), "wrong wkb type, should be PointM"
+        assert vl.wkbType() == QgsWkbTypes.Type.PointM, (
+            "wrong wkb type, should be PointM"
+        )
         assert (
             vl.getFeature(2).geometry().asWkt()
             == "Point M (-71.12300000000000466 78.23000000000000398 2)"

@@ -10,8 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "04/03/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
-from qgis.PyQt.QtCore import QSize
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsCoordinateReferenceSystem,
@@ -24,14 +24,14 @@ from qgis.core import (
     QgsTileXYZ,
     QgsVectorTileMatrixSet,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsTiles(QgisTestCase):
-
     def testQgsTileXYZ(self):
         tile = QgsTileXYZ(1, 2, 3)
         self.assertEqual(tile.column(), 1)
