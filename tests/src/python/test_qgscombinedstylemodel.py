@@ -10,10 +10,11 @@ __author__ = "Nyall Dawson"
 __date__ = "18/03/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
-from qgis.PyQt.QtCore import QCoreApplication, QEvent, Qt
-from qgis.core import QgsStyle, QgsStyleModel, QgsTextFormat
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.core import QgsStyle, QgsStyleModel, QgsTextFormat
+from qgis.PyQt.QtCore import QCoreApplication, QEvent, Qt
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -24,7 +25,6 @@ except ImportError:
 
 
 class TestQgsCombinedStyleModel(QgisTestCase):
-
     @unittest.skipIf(
         QgsCombinedStyleModel is None, "QgsCombinedStyleModel not available"
     )

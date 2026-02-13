@@ -22,55 +22,54 @@
  ***************************************************************************/
 """
 
-import os
 import json
+import os
 import zipfile
 from functools import partial
-
-from qgis.PyQt import sip
-from qgis.PyQt.QtCore import Qt, QObject, QDateTime, QDir, QUrl, QFileInfo, QFile
-from qgis.PyQt.QtWidgets import (
-    QApplication,
-    QDialog,
-    QDialogButtonBox,
-    QFrame,
-    QMessageBox,
-    QLabel,
-    QVBoxLayout,
-    QPushButton,
-)
-from qgis.PyQt.QtNetwork import QNetworkRequest
 
 from qgis.core import (
     Qgis,
     QgsApplication,
     QgsMessageLog,
     QgsNetworkAccessManager,
+    QgsNetworkRequestParameters,
     QgsSettings,
     QgsSettingsTree,
-    QgsNetworkRequestParameters,
 )
-from qgis.gui import QgsMessageBar, QgsPasswordLineEdit, QgsHelp
+from qgis.gui import QgsHelp, QgsMessageBar, QgsPasswordLineEdit
+from qgis.PyQt import sip
+from qgis.PyQt.QtCore import QDateTime, QDir, QFile, QFileInfo, QObject, Qt, QUrl
+from qgis.PyQt.QtNetwork import QNetworkRequest
+from qgis.PyQt.QtWidgets import (
+    QApplication,
+    QDialog,
+    QDialogButtonBox,
+    QFrame,
+    QLabel,
+    QMessageBox,
+    QPushButton,
+    QVBoxLayout,
+)
 from qgis.utils import (
+    HOME_PLUGIN_PATH,
+    OverrideCursor,
     iface,
+    isPluginLoaded,
+    loadPlugin,
+    plugins_metadata_parser,
     startPlugin,
     unloadPlugin,
-    loadPlugin,
-    OverrideCursor,
     updateAvailablePlugins,
-    plugins_metadata_parser,
-    isPluginLoaded,
-    HOME_PLUGIN_PATH,
 )
-from .installer_data import repositories, plugins, officialRepo, reposGroup, removeDir
-from .qgsplugininstallerinstallingdialog import QgsPluginInstallerInstallingDialog
-from .qgsplugininstallerpluginerrordialog import QgsPluginInstallerPluginErrorDialog
-from .qgsplugininstallerfetchingdialog import QgsPluginInstallerFetchingDialog
-from .qgsplugininstallerrepositorydialog import QgsPluginInstallerRepositoryDialog
-from .unzip import unzip
+
+from .installer_data import officialRepo, plugins, removeDir, reposGroup, repositories
 from .plugindependencies import find_dependencies
 from .qgsplugindependenciesdialog import QgsPluginDependenciesDialog
-
+from .qgsplugininstallerfetchingdialog import QgsPluginInstallerFetchingDialog
+from .qgsplugininstallerinstallingdialog import QgsPluginInstallerInstallingDialog
+from .qgsplugininstallerpluginerrordialog import QgsPluginInstallerPluginErrorDialog
+from .qgsplugininstallerrepositorydialog import QgsPluginInstallerRepositoryDialog
+from .unzip import unzip
 
 # public instances:
 pluginInstaller = None
@@ -644,9 +643,9 @@ class QgsPluginInstaller(QObject):
             dlg.editAuthCfgWgt.configId().strip()
             != repositories.all()[reposName]["authcfg"]
         ):
-            repositories.all()[reposName][
-                "authcfg"
-            ] = dlg.editAuthCfgWgt.configId().strip()
+            repositories.all()[reposName]["authcfg"] = (
+                dlg.editAuthCfgWgt.configId().strip()
+            )
         if (
             dlg.editURL.text().strip() == repositories.all()[reposName]["url"]
             and dlg.checkBoxEnabled.checkState()

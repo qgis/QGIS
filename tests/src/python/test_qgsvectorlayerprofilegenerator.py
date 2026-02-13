@@ -10,16 +10,18 @@ __author__ = "Nyall Dawson"
 __date__ = "18/03/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
-import os
 import math
+import os
+import unittest
 from typing import List, Tuple
 
-from qgis.PyQt.QtCore import QDir
 from qgis.core import (
     Qgis,
     QgsCategorizedSymbolRenderer,
     QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
     QgsCoordinateTransformContext,
+    QgsDatumTransform,
     QgsDoubleRange,
     QgsFeature,
     QgsFillSymbol,
@@ -28,6 +30,7 @@ from qgis.core import (
     QgsLineSymbol,
     QgsMapLayerElevationProperties,
     QgsMarkerSymbol,
+    QgsPoint,
     QgsProfileIdentifyContext,
     QgsProfilePlotRenderer,
     QgsProfilePoint,
@@ -41,20 +44,15 @@ from qgis.core import (
     QgsSymbolLayer,
     QgsVectorLayer,
     QgsWkbTypes,
-    QgsPoint,
-    QgsCoordinateTransform,
-    QgsDatumTransform,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QDir
+from qgis.testing import QgisTestCase, start_app
 from utilities import compareWkt, unitTestDataPath
 
 start_app()
 
 
 class TestQgsVectorLayerProfileGenerator(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "profile_chart"

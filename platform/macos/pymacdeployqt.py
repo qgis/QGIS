@@ -4,9 +4,8 @@ import argparse
 import os
 import shutil
 import subprocess
-
 from dataclasses import dataclass
-from functools import lru_cache
+from functools import cache, lru_cache
 from pathlib import Path
 from typing import Dict, List, Set, Tuple
 
@@ -26,7 +25,7 @@ class Library:
     rpaths: list[str]
 
 
-@lru_cache(maxsize=None)
+@cache
 def get_macho_info(path: str) -> bytes:
     """Run otool -l and cache the output."""
     result = subprocess.run(["otool", "-l", path], capture_output=True, check=True)

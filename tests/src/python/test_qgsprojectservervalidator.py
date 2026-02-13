@@ -13,15 +13,15 @@ __author__ = "Etienne Trimaille"
 __date__ = "27/03/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
-from qgis.core import QgsProject, QgsProjectServerValidator, QgsVectorLayer
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.core import QgsProject, QgsProjectServerValidator, QgsVectorLayer
+from qgis.testing import QgisTestCase, start_app
 
 app = start_app()
 
 
 class TestQgsprojectServerValidator(QgisTestCase):
-
     def test_project_server_validator(self):
         """Test project server validator."""
         project = QgsProject()

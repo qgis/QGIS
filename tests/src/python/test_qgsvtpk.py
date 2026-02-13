@@ -10,26 +10,24 @@ __author__ = "Nyall Dawson"
 __date__ = "04/03/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
 
 from qgis.core import (
     QgsCoordinateTransformContext,
-    QgsVectorTileLayer,
-    QgsVtpkTiles,
+    QgsReadWriteContext,
     QgsTileRange,
     QgsTileXYZ,
-    QgsReadWriteContext,
+    QgsVectorTileLayer,
+    QgsVtpkTiles,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsVtpk(QgisTestCase):
-
     def testOpenInvalid(self):
         """
         Test opening an invalid path

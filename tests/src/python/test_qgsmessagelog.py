@@ -10,16 +10,16 @@ __author__ = "Nyall Dawson"
 __date__ = "18/06/2018"
 __copyright__ = "Copyright 2018, The QGIS Project"
 
-from qgis.PyQt.QtTest import QSignalSpy
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsApplication,
     QgsMessageLog,
     QgsMessageLogNotifyBlocker,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 app = start_app()
@@ -27,7 +27,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsMessageLog(QgisTestCase):
-
     def testSignals(self):
         app_log = QgsApplication.messageLog()
 

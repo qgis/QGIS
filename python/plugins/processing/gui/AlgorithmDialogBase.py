@@ -22,12 +22,10 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 class AlgorithmDialogBase:
     class InvalidParameterValue(Exception):
-
         def __init__(self, param, widget):
             (self.parameter, self.widget) = (param, widget)
 
     class InvalidOutputExtension(Exception):
-
         def __init__(self, widget, message):
             self.widget = widget
             self.message = message

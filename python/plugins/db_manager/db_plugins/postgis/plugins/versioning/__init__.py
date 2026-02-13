@@ -18,9 +18,8 @@ email                : brush.tyler@gmail.com
 """
 
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QAction, QApplication
 from qgis.PyQt.QtGui import QIcon
-
+from qgis.PyQt.QtWidgets import QAction, QApplication
 
 # The load function is called when the "db" database or either one of its
 # children db objects (table o schema) is selected by the user.

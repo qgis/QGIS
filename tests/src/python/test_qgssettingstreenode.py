@@ -9,19 +9,20 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsSettings,
     QgsSettingsEntryEnumFlag,
-    QgsSettingsEntryString,
     QgsSettingsEntryInteger,
+    QgsSettingsEntryString,
     QgsSettingsException,
     QgsSettingsTree,
     QgsSettingsTreeNode,
     QgsUnitTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 __author__ = "Denis Rouzaud"
 __date__ = "19/12/2022"
@@ -32,7 +33,6 @@ start_app()
 
 
 class TestQgsSettingsEntry(QgisTestCase):
-
     def setUp(self):
         self.pluginName = "UnitTest"
 

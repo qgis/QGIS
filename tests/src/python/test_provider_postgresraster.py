@@ -22,24 +22,23 @@ import os
 import time
 import unittest
 
-from qgis.PyQt.QtCore import QCoreApplication, QSize
-from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
-    QgsApplication,
     Qgis,
+    QgsApplication,
     QgsCoordinateReferenceSystem,
     QgsDataSourceUri,
     QgsPointXY,
+    QgsProject,
     QgsProviderRegistry,
     QgsRaster,
     QgsRasterBandStats,
     QgsRasterLayer,
     QgsRectangle,
 )
-from qgis.core import QgsProject
-from qgis.gui import QgsMapCanvas, QgsLayerTreeMapCanvasBridge
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.gui import QgsLayerTreeMapCanvasBridge, QgsMapCanvas
+from qgis.PyQt.QtCore import QCoreApplication, QSize
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from utilities import compareWkt, unitTestDataPath
 
 QGISAPP = start_app()
@@ -47,7 +46,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsPostgresRasterProvider(QgisTestCase):
-
     @classmethod
     def _load_test_table(cls, schemaname, tablename, basename=None):
 
@@ -944,8 +942,9 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
         # Log should not contain any critical warnings
         critical_postgis_logs = list(
             filter(
-                lambda log: log[2] == Qgis.MessageLevel.Critical
-                and log[1] == "PostGIS",
+                lambda log: (
+                    log[2] == Qgis.MessageLevel.Critical and log[1] == "PostGIS"
+                ),
                 list(log_spy),
             )
         )

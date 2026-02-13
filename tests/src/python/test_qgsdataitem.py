@@ -12,18 +12,16 @@ __copyright__ = "Copyright 2020, The QGIS Project"
 
 
 import os
-
-from qgis.core import QgsDataCollectionItem, QgsDirectoryItem, QgsDataItem, Qgis
 import unittest
-from qgis.testing import start_app, QgisTestCase
 
+from qgis.core import Qgis, QgsDataCollectionItem, QgsDataItem, QgsDirectoryItem
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 app = start_app()
 
 
 class DummyDataItem(QgsDataItem):
-
     def __init__(self):
         QgsDataItem.__init__(self, Qgis.BrowserItemType.Custom, None, "dummy", "dummy")
         self.setCapabilities(
@@ -57,7 +55,6 @@ class DummyDataItem(QgsDataItem):
 
 
 class TestQgsDataItem(QgisTestCase):
-
     def test_ancestors(self):
         root_item = DummyDataItem()
         root_item.populate()

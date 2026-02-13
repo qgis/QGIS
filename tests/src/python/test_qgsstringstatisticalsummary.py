@@ -16,7 +16,6 @@ from qgis.testing import unittest
 
 
 class PyQgsStringStatisticalSummary(unittest.TestCase):
-
     def testStats(self):
         # we test twice, once with values added as a list and once using values
         # added one-at-a-time

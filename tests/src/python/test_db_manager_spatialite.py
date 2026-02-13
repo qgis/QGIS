@@ -13,14 +13,14 @@ __copyright__ = "Copyright 2016, Even Rouault"
 import os
 import shutil
 import tempfile
+import unittest
 
 from osgeo import ogr
 from plugins.db_manager.db_plugins import createDbPlugin, supportedDbTypes
 from plugins.db_manager.db_plugins.plugin import TableField
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsDataSourceUri, QgsSettings
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.testing import QgisTestCase, start_app
 
 
 def GDAL_COMPUTE_VERSION(maj, min, rev):
@@ -28,7 +28,6 @@ def GDAL_COMPUTE_VERSION(maj, min, rev):
 
 
 class TestPyQgsDBManagerSpatialite(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

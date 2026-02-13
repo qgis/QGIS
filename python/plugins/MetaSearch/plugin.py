@@ -24,13 +24,13 @@
 
 import logging
 
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtWidgets import QAction
-from qgis.PyQt.QtGui import QIcon
-
 from qgis.core import Qgis, QgsApplication
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QAction
+
 from MetaSearch.dialogs.maindialog import MetaSearchDialog
-from MetaSearch.util import get_help_url, log_message, open_url, StaticContext
+from MetaSearch.util import StaticContext, get_help_url, log_message, open_url
 
 
 class MetaSearchPlugin:

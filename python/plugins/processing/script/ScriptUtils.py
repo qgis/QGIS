@@ -19,20 +19,19 @@ __author__ = "Victor Olaya"
 __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
-from qgis.processing import alg as algfactory
-import os
-import inspect
 import importlib.util
-
-from qgis.PyQt.QtCore import QCoreApplication, QDir
+import inspect
+import os
 
 from qgis.core import (
     Qgis,
     QgsApplication,
+    QgsMessageLog,
     QgsProcessingAlgorithm,
     QgsProcessingFeatureBasedAlgorithm,
-    QgsMessageLog,
 )
+from qgis.processing import alg as algfactory
+from qgis.PyQt.QtCore import QCoreApplication, QDir
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import mkdir, userFolder

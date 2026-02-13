@@ -13,14 +13,15 @@ __copyright__ = "Copyright 2018, The QGIS Project"
 import os
 import re
 import shutil
+import unittest
 
 from processing.core.Processing import Processing
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.AlgorithmExecutor import execute_in_place_run
 from processing.tools import dataobjects
-from qgis.PyQt.QtCore import QCoreApplication, QTemporaryDir, QVariant
 from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import (
+    NULL,
     QgsApplication,
     QgsCoordinateReferenceSystem,
     QgsFeature,
@@ -39,18 +40,15 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerUtils,
     QgsWkbTypes,
-    NULL,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QCoreApplication, QTemporaryDir, QVariant
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class ConsoleFeedBack(QgsProcessingFeedback):
-
     def reportError(self, error, fatalError=False):
         print(error)
 
@@ -84,7 +82,6 @@ def _all_false():
 
 
 class TestQgsProcessingInPlace(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

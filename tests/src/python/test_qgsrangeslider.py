@@ -10,18 +10,18 @@ __author__ = "Nyall Dawson"
 __date__ = "2020-11-25"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
+import unittest
+
+from qgis.gui import QgsRangeSlider
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtWidgets import QSlider
-from qgis.gui import QgsRangeSlider
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsRangeSlider(QgisTestCase):
-
     def testSettersGetters(self):
         w = QgsRangeSlider()
         w.setOrientation(Qt.Orientation.Horizontal)

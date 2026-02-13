@@ -14,15 +14,14 @@ __copyright__ = "Copyright 2019, The QGIS Project"
 import shutil
 
 from osgeo import gdal  # NOQA
-from qgis.PyQt.QtCore import QTemporaryDir, QVariant
 from qgis.core import (
     Qgis,
-    QgsGeometry,
     QgsAbstractDatabaseProviderConnection,
     QgsCodedFieldDomain,
     QgsCodedValue,
     QgsCoordinateReferenceSystem,
     QgsFields,
+    QgsGeometry,
     QgsGlobFieldDomain,
     QgsMetadataSearchContext,
     QgsProviderConnectionException,
@@ -32,8 +31,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
+from qgis.PyQt.QtCore import QTemporaryDir, QVariant
 from qgis.testing import unittest
-
 from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
 from utilities import unitTestDataPath
 
@@ -47,7 +46,6 @@ def GDAL_COMPUTE_VERSION(maj, min, rev):
 class TestPyQgsProviderConnectionGpkg(
     unittest.TestCase, TestPyQgsProviderConnectionBase
 ):
-
     # Provider test cases must define the string URI for the test
     uri = ""
     # Provider test cases must define the provider name (e.g. "postgres" or "ogr")

@@ -11,6 +11,8 @@ __date__ = "17/05/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
 
+import unittest
+
 from qgis.core import (
     QgsPolymorphicRelation,
     QgsProject,
@@ -18,8 +20,7 @@ from qgis.core import (
     QgsRelationManager,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -43,7 +44,6 @@ def createReferencedLayer():
 
 
 class TestQgsRelationManager(QgisTestCase):
-
     def setUp(self):
         self.referencedLayer = createReferencedLayer()
         self.referencingLayer = createReferencingLayer()

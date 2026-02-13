@@ -19,32 +19,31 @@ __author__ = "Victor Olaya"
 __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
-import os
 import math
+import os
 import warnings
-
-from qgis.PyQt import uic
-from qgis.PyQt import sip
-from qgis.PyQt.QtCore import pyqtSignal, QSize
-from qgis.PyQt.QtWidgets import QDialog, QLabel, QComboBox
 
 from qgis.core import (
     Qgis,
     QgsApplication,
-    QgsExpression,
-    QgsProperty,
-    QgsUnitTypes,
-    QgsMapLayer,
     QgsCoordinateReferenceSystem,
-    QgsProcessingParameterNumber,
+    QgsExpression,
+    QgsMapLayer,
+    QgsProcessingFeatureSourceDefinition,
+    QgsProcessingModelChildParameterSource,
     QgsProcessingOutputNumber,
     QgsProcessingParameterDefinition,
-    QgsProcessingModelChildParameterSource,
-    QgsProcessingFeatureSourceDefinition,
+    QgsProcessingParameterNumber,
     QgsProcessingUtils,
+    QgsProperty,
+    QgsUnitTypes,
 )
 from qgis.gui import QgsExpressionBuilderDialog
-from processing.tools.dataobjects import createExpressionContext, createContext
+from qgis.PyQt import sip, uic
+from qgis.PyQt.QtCore import QSize, pyqtSignal
+from qgis.PyQt.QtWidgets import QComboBox, QDialog, QLabel
+
+from processing.tools.dataobjects import createContext, createExpressionContext
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 with warnings.catch_warnings():

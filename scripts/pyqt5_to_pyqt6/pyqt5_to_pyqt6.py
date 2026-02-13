@@ -47,7 +47,6 @@ import logging
 import os
 import re
 import sys
-
 from collections import defaultdict
 from collections.abc import Sequence
 from enum import Enum
@@ -90,7 +89,6 @@ try:
     import qgis.analysis as qgis_analysis  # noqa: F403
     import qgis.core as qgis_core  # noqa: F403
     import qgis.gui as qgis_gui  # noqa: F403
-
     from qgis._3d import *  # noqa: F403
     from qgis.analysis import *  # noqa: F403
     from qgis.core import *  # noqa: F403
@@ -515,7 +513,7 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
                         for e in ambiguous_enums[(node.value.id, node.attr)]
                     ]
                     sys.stderr.write(
-                        f'{filename}:{node.lineno}:{node.col_offset} WARNING: ambiguous enum, cannot fix: {node.value.id}.{node.attr}. Could be: {", ".join(possible_values)}\n'
+                        f"{filename}:{node.lineno}:{node.col_offset} WARNING: ambiguous enum, cannot fix: {node.value.id}.{node.attr}. Could be: {', '.join(possible_values)}\n"
                     )
             elif (
                 isinstance(node, ast.Attribute)
@@ -805,7 +803,6 @@ def get_class_enums(item):
     matched_classes = {item}.union(all_subclasses(item))
 
     for key, value in item.__dict__.items():
-
         if key == "baseClass":
             continue
 

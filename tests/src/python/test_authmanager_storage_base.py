@@ -9,21 +9,22 @@ the Free Software Foundation; either version 2 of the License, or
 
 import os
 import unittest
+
 from osgeo import gdal
-from qgis.PyQt.QtCore import QCoreApplication, QTemporaryDir
-from qgis.PyQt.QtNetwork import QSslCertificate
 from qgis.core import (
     Qgis,
     QgsApplication,
-    QgsSettings,
+    QgsAuthCertUtils,
+    QgsAuthConfigSslServer,
     QgsAuthConfigurationStorage,
     QgsAuthConfigurationStorageDb,
     QgsAuthMethodConfig,
-    QgsAuthConfigSslServer,
-    QgsAuthCertUtils,
     QgsNotSupportedException,
+    QgsSettings,
 )
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QCoreApplication, QTemporaryDir
+from qgis.PyQt.QtNetwork import QSslCertificate
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 __author__ = "Alessandro Pasotti"
@@ -32,7 +33,6 @@ __copyright__ = "Copyright 2024, The QGIS Project"
 
 
 class AuthManagerStorageBaseTestCase(QgisTestCase):
-
     # This must be populated by the derived class and be an instance of QgsAuthConfigurationStorage
     storage = None
     # If not None, it will be used to test the storage integration with QgsAuthManager
@@ -58,7 +58,6 @@ class AuthManagerStorageBaseTestCase(QgisTestCase):
 
 
 class TestAuthManagerStorageBase:
-
     def testInitialized(self):
 
         assert self.storage is not None

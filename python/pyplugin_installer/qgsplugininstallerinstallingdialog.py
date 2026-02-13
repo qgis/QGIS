@@ -25,16 +25,15 @@
 
 from pathlib import Path
 
-from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QDir, QUrl, QFile, QCoreApplication
-from qgis.PyQt.QtWidgets import QDialog
-from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
-
 from qgis.core import (
-    QgsNetworkAccessManager,
     QgsApplication,
+    QgsNetworkAccessManager,
     QgsNetworkRequestParameters,
 )
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import QCoreApplication, QDir, QFile, QUrl
+from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
+from qgis.PyQt.QtWidgets import QDialog
 from qgis.utils import HOME_PLUGIN_PATH
 
 from .installer_data import removeDir, repositories

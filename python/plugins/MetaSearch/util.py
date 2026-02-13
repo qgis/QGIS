@@ -23,20 +23,20 @@
 #
 ###############################################################################
 
-from gettext import gettext, ngettext
 import logging
-import warnings
 import os
+import warnings
 import webbrowser
-from xml.dom.minidom import parseString
 import xml.etree.ElementTree as etree
+from gettext import gettext, ngettext
+from xml.dom.minidom import parseString
 
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     from jinja2 import Environment, FileSystemLoader
 
 from qgis.core import Qgis, QgsMessageLog, QgsSettings
-from qgis.PyQt.QtCore import QUrl, QUrlQuery, QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication, QUrl, QUrlQuery
 from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.PyQt.uic import loadUiType
 

@@ -11,18 +11,17 @@ __date__ = "28/05/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
 import os
+import unittest
 from typing import List
 
-from qgis.PyQt.QtCore import QCoreApplication, QObject, QEvent
-from qgis.PyQt.QtWidgets import QAction, QShortcut, QWidget
 from qgis.core import QgsSettings
 from qgis.gui import QgsGui, QgsShortcutsManager
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QCoreApplication, QEvent, QObject
+from qgis.PyQt.QtWidgets import QAction, QShortcut, QWidget
+from qgis.testing import QgisTestCase, start_app
 
 
 class TestQgsShortcutsManager(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

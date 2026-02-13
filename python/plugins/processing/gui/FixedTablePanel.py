@@ -36,7 +36,6 @@ with warnings.catch_warnings():
 
 
 class FixedTablePanel(BASE, WIDGET):
-
     def __init__(self, param, parent=None):
         super().__init__(parent)
         self.setupUi(self)

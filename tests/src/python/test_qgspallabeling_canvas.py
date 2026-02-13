@@ -17,13 +17,11 @@ __copyright__ = "Copyright 2013, The QGIS Project"
 import sys
 
 from qgis.core import QgsVectorLayerSimpleLabeling
-
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
 from test_qgspallabeling_tests import TestLineBase, TestPointBase, suiteTests
 
 
 class TestCanvasBase(TestQgsPalLabeling):
-
     layer = None
     """:type: QgsVectorLayer"""
 
@@ -65,7 +63,6 @@ class TestCanvasBase(TestQgsPalLabeling):
 
 
 class TestCanvasBasePoint(TestCanvasBase):
-
     @classmethod
     def setUpClass(cls):
         TestCanvasBase.setUpClass()
@@ -73,7 +70,6 @@ class TestCanvasBasePoint(TestCanvasBase):
 
 
 class TestCanvasPoint(TestCanvasBasePoint, TestPointBase):
-
     def setUp(self):
         """Run before each test."""
         super().setUp()
@@ -81,7 +77,6 @@ class TestCanvasPoint(TestCanvasBasePoint, TestPointBase):
 
 
 class TestCanvasBaseLine(TestCanvasBase):
-
     @classmethod
     def setUpClass(cls):
         TestCanvasBase.setUpClass()
@@ -89,7 +84,6 @@ class TestCanvasBaseLine(TestCanvasBase):
 
 
 class TestCanvasLine(TestCanvasBaseLine, TestLineBase):
-
     def setUp(self):
         """Run before each test."""
         super().setUp()

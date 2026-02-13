@@ -10,15 +10,14 @@ __author__ = "Nyall Dawson"
 __date__ = "22/06/2023"
 __copyright__ = "Copyright 2023, The QGIS Project"
 
+from qgis.core import QgsRenderContext, QgsScreenProperties
 from qgis.PyQt.QtGui import QGuiApplication
-from qgis.core import QgsScreenProperties, QgsRenderContext
-from qgis.testing import unittest, start_app
+from qgis.testing import start_app, unittest
 
 qgis_app = start_app()
 
 
 class TestQgsScreenProperties(unittest.TestCase):
-
     def test_invalid(self):
         invalid = QgsScreenProperties()
         self.assertFalse(invalid.isValid())

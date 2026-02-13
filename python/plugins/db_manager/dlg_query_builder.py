@@ -20,7 +20,7 @@ Query builder dialog, based on the QSpatialite plugin (GPLv2+) by Romain Riviere
 """
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt, QObject, QEvent
+from qgis.PyQt.QtCore import QEvent, QObject, Qt
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QTextEdit
 
 from .db_plugins.plugin import VectorTable
@@ -30,7 +30,6 @@ Ui_Dialog, _ = uic.loadUiType(GuiUtils.get_ui_file_path("DlgQueryBuilder.ui"))
 
 
 class FocusEventFilter(QObject):
-
     def __init__(self, parent):
         QObject.__init__(self, parent)
         self.focus = ""

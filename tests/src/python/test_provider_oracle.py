@@ -12,9 +12,9 @@ __copyright__ = "Copyright 2016, The QGIS Project"
 
 import os
 import re
+import unittest
 
-from qgis.PyQt.QtCore import QDate, QDateTime, QTime, QVariant
-from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
+from providertestbase import ProviderTestCase
 from qgis.core import (
     NULL,
     Qgis,
@@ -35,10 +35,9 @@ from qgis.core import (
     QgsVectorLayerExporter,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
-from providertestbase import ProviderTestCase
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime, QVariant
+from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
+from qgis.testing import QgisTestCase, start_app
 from utilities import compareWkt, unitTestDataPath
 
 start_app()
@@ -46,7 +45,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -661,9 +659,7 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
             ignore_errors=True,
         )
         self.execSQLCommand(
-            """CREATE INDEX {0}_spatial_idx ON QGIS.{0}(GEOM) INDEXTYPE IS MDSYS.SPATIAL_INDEX""".format(
-                name
-            )
+            f"""CREATE INDEX {name}_spatial_idx ON QGIS.{name}(GEOM) INDEXTYPE IS MDSYS.SPATIAL_INDEX"""
         )
 
     def testEditCurves(self):
@@ -2171,7 +2167,6 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
         conn_wo_login_pwd = re.sub(pwd_pattern, "", conn_wo_login_pwd)
 
         class TestCredentials(QgsCredentials):
-
             def __init__(self, username, pwd):
                 super().__init__()
                 self.setInstance(self)

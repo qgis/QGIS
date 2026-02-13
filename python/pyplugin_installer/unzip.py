@@ -19,8 +19,8 @@
  ***************************************************************************/
 """
 
-import zipfile
 import os
+import zipfile
 
 
 def unzip(file, targetDir, password=None):

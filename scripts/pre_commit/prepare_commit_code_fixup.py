@@ -35,7 +35,6 @@
 
 import re
 import sys
-
 from functools import cmp_to_key
 from pathlib import Path
 
@@ -94,9 +93,7 @@ replace_str_qsl = re.compile(
 # replace_simple_expr_qsl = re.compile(r"""(.*)\.replace\( {simple_expr}, {u_str_s} \)(.*)""".format(simple_expr=simple_expr, u_str_s=u_str_s))
 
 # .replace( QStringLiteral( "foo" ), QStringLiteral( "foo" ) )
-replace_qsl_qsl = re.compile(
-    r"""(.*)\.replace\( ?{u_str_s}, ?{u_str_s} ?\)(.*)""".format(u_str_s=u_str_s)
-)
+replace_qsl_qsl = re.compile(rf"""(.*)\.replace\( ?{u_str_s}, ?{u_str_s} ?\)(.*)""")
 
 # .replace( QStringLiteral( "foo" ), something
 replace_qsl_something = re.compile(rf"""(.*)\.replace\( ?{u_str_s}, ?(.+)""")

@@ -14,7 +14,9 @@ import os
 import tempfile
 import unittest
 
-from qgis.PyQt.QtCore import QCoreApplication
+from processing.core.Processing import Processing
+from processing.gui.AlgorithmExecutor import execute
+from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import (
     QgsApplication,
     QgsProcessingContext,
@@ -22,13 +24,9 @@ from qgis.core import (
     QgsSettings,
     QgsVectorLayer,
 )
-from qgis.analysis import QgsNativeAlgorithms
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.testing import QgisTestCase, start_app
 from qgis.utils import spatialite_connect
-
-from processing.core.Processing import Processing
-from processing.gui.AlgorithmExecutor import execute
-
 from utilities import unitTestDataPath
 
 start_app()
@@ -43,7 +41,6 @@ class ConsoleFeedBack(QgsProcessingFeedback):
 
 
 class TestExportToSpatialite(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

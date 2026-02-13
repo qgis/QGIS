@@ -10,26 +10,26 @@ __author__ = "Nyall Dawson"
 __date__ = "02.04.2018"
 __copyright__ = "Copyright 2018, The QGIS Project"
 
-from qgis.PyQt.QtCore import QStringListModel, QItemSelectionModel
-from qgis.PyQt.QtTest import QAbstractItemModelTester, QSignalSpy
+import unittest
+
 from qgis.core import (
+    QgsCategorizedSymbolRenderer,
     QgsLayerTree,
     QgsLayerTreeModel,
-    QgsProject,
-    QgsVectorLayer,
-    QgsCategorizedSymbolRenderer,
-    QgsRendererCategory,
-    QgsMarkerSymbol,
     QgsMapLayerLegend,
+    QgsMarkerSymbol,
+    QgsProject,
+    QgsRendererCategory,
+    QgsVectorLayer,
 )
 from qgis.gui import (
+    QgsLayerTreeProxyModel,
     QgsLayerTreeView,
     QgsLayerTreeViewDefaultActions,
-    QgsLayerTreeProxyModel,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QItemSelectionModel, QStringListModel
+from qgis.PyQt.QtTest import QAbstractItemModelTester, QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 app = start_app()
@@ -37,7 +37,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsLayerTreeView(QgisTestCase):
-
     def __init__(self, methodName):
         """Run once on class initialization."""
 

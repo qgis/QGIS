@@ -19,7 +19,6 @@ from qgis.testing import unittest
 
 
 class TestQgsOptional(unittest.TestCase):
-
     def setUp(self):
         """Run before each test."""
         pass
