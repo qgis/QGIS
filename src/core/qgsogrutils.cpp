@@ -1019,6 +1019,107 @@ Qgis::WkbType QgsOgrUtils::ogrGeometryTypeToQgsWkbType( OGRwkbGeometryType ogrGe
   return Qgis::WkbType::Unknown;
 }
 
+OGRwkbGeometryType QgsOgrUtils::qgsWkbTypeToOgrGeometryType( Qgis::WkbType wkbType, bool approx )
+{
+  switch ( wkbType )
+  {
+    case Qgis::WkbType::NoGeometry: return wkbNone;
+
+    case Qgis::WkbType::Unknown: break;
+
+    case Qgis::WkbType::Point: return wkbPoint;
+    case Qgis::WkbType::Point25D: return wkbPoint25D;
+    case Qgis::WkbType::PointZ: return wkbPoint25D;
+    case Qgis::WkbType::PointM: return wkbPointM;
+    case Qgis::WkbType::PointZM: return wkbPointZM;
+
+    case Qgis::WkbType::LineString: return wkbLineString;
+    case Qgis::WkbType::LineString25D: return wkbLineString25D;
+    case Qgis::WkbType::LineStringZ: return wkbLineString25D;
+    case Qgis::WkbType::LineStringM: return wkbLineStringM;
+    case Qgis::WkbType::LineStringZM: return wkbLineStringZM;
+
+    case Qgis::WkbType::Polygon: return wkbPolygon;
+    case Qgis::WkbType::Polygon25D: return wkbPolygon25D;
+    case Qgis::WkbType::PolygonZ: return wkbPolygon25D;
+    case Qgis::WkbType::PolygonM: return wkbPolygonM;
+    case Qgis::WkbType::PolygonZM: return wkbPolygonZM;
+
+    case Qgis::WkbType::MultiPoint: return wkbMultiPoint;
+    case Qgis::WkbType::MultiPoint25D: return wkbMultiPoint25D;
+    case Qgis::WkbType::MultiPointZ: return wkbMultiPoint25D;
+    case Qgis::WkbType::MultiPointM: return wkbMultiPointM;
+    case Qgis::WkbType::MultiPointZM: return wkbMultiPointZM;
+
+    case Qgis::WkbType::MultiLineString: return wkbMultiLineString;
+    case Qgis::WkbType::MultiLineString25D: return wkbMultiLineString25D;
+    case Qgis::WkbType::MultiLineStringZ: return wkbMultiLineString25D;
+    case Qgis::WkbType::MultiLineStringM: return wkbMultiLineStringM;
+    case Qgis::WkbType::MultiLineStringZM: return wkbMultiLineStringZM;
+
+    case Qgis::WkbType::MultiPolygon: return wkbMultiPolygon;
+    case Qgis::WkbType::MultiPolygon25D: return wkbMultiPolygon25D;
+    case Qgis::WkbType::MultiPolygonZ: return wkbMultiPolygon25D;
+    case Qgis::WkbType::MultiPolygonM: return wkbMultiPolygonM;
+    case Qgis::WkbType::MultiPolygonZM: return wkbMultiPolygonZM;
+
+    case Qgis::WkbType::GeometryCollection: return wkbGeometryCollection;
+    case Qgis::WkbType::GeometryCollectionZ: return wkbGeometryCollection25D;
+    case Qgis::WkbType::GeometryCollectionM: return wkbGeometryCollectionM;
+    case Qgis::WkbType::GeometryCollectionZM: return wkbGeometryCollectionZM;
+
+    case Qgis::WkbType::Triangle: return wkbTriangle;
+    case Qgis::WkbType::TriangleZ: return wkbTriangleZ;
+    case Qgis::WkbType::TriangleM: return wkbTriangleM;
+    case Qgis::WkbType::TriangleZM: return wkbTriangleZM;
+
+    case Qgis::WkbType::CircularString: return wkbCircularString;
+    case Qgis::WkbType::CircularStringZ: return wkbCircularStringZ;
+    case Qgis::WkbType::CircularStringM: return wkbCircularStringM;
+    case Qgis::WkbType::CircularStringZM: return wkbCircularStringZM;
+
+    case Qgis::WkbType::NurbsCurve:
+      return approx ? wkbLineString : wkbUnknown;
+    case Qgis::WkbType::NurbsCurveZ:
+      return approx ? wkbLineString25D : wkbUnknown;
+    case Qgis::WkbType::NurbsCurveM:
+      return approx ? wkbLineStringM : wkbUnknown;
+    case Qgis::WkbType::NurbsCurveZM:
+      return approx ? wkbLineStringZM : wkbUnknown;
+
+    case Qgis::WkbType::CompoundCurve: return wkbCompoundCurve;
+    case Qgis::WkbType::CompoundCurveZ: return wkbCompoundCurveZ;
+    case Qgis::WkbType::CompoundCurveM: return wkbCompoundCurveM;
+    case Qgis::WkbType::CompoundCurveZM: return wkbCompoundCurveZM;
+
+    case Qgis::WkbType::MultiCurve: return wkbMultiCurve;
+    case Qgis::WkbType::MultiCurveZ: return wkbMultiCurveZ;
+    case Qgis::WkbType::MultiCurveM: return wkbMultiCurveM;
+    case Qgis::WkbType::MultiCurveZM: return wkbMultiCurveZM;
+
+    case Qgis::WkbType::CurvePolygon: return wkbCurvePolygon;
+    case Qgis::WkbType::CurvePolygonZ: return wkbCurvePolygonZ;
+    case Qgis::WkbType::CurvePolygonM: return wkbCurvePolygonM;
+    case Qgis::WkbType::CurvePolygonZM: return wkbCurvePolygonZM;
+
+    case Qgis::WkbType::MultiSurface: return wkbMultiSurface;
+    case Qgis::WkbType::MultiSurfaceZ: return wkbMultiSurfaceZ;
+    case Qgis::WkbType::MultiSurfaceM: return wkbMultiSurfaceM;
+    case Qgis::WkbType::MultiSurfaceZM: return wkbMultiSurfaceZM;
+
+    case Qgis::WkbType::PolyhedralSurface: return wkbPolyhedralSurface;
+    case Qgis::WkbType::PolyhedralSurfaceZ: return wkbPolyhedralSurfaceZ;
+    case Qgis::WkbType::PolyhedralSurfaceM: return wkbPolyhedralSurfaceM;
+    case Qgis::WkbType::PolyhedralSurfaceZM: return wkbPolyhedralSurfaceZM;
+
+    case Qgis::WkbType::TIN: return wkbTIN;
+    case Qgis::WkbType::TINZ: return wkbTINZ;
+    case Qgis::WkbType::TINM: return wkbTINM;
+    case Qgis::WkbType::TINZM: return wkbTINZM;
+  }
+  return wkbUnknown;
+}
+
 QgsGeometry QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
 {
   if ( !geom )
@@ -1029,7 +1130,6 @@ QgsGeometry QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
 
   // optimised case for some geometry classes, avoiding wkb conversion on OGR/QGIS sides
   // TODO - extend to other classes!
-  // NOLINTBEGIN(bugprone-branch-clone)
   switch ( QgsWkbTypes::flatType( wkbType ) )
   {
     case Qgis::WkbType::Point:
@@ -1070,7 +1170,6 @@ QgsGeometry QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
     default:
       break;
   }
-  // NOLINTEND(bugprone-branch-clone)
 
   // Fallback to inefficient WKB conversions
 

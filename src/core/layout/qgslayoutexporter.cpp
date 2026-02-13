@@ -27,7 +27,6 @@
 #include "qgslinestring.h"
 #include "qgsmessagelog.h"
 #include "qgsogrutils.h"
-#include "qgspaintenginehack.h"
 #include "qgsprojectstylesettings.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
@@ -585,8 +584,6 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   // as QPrinter does not support composition modes and can result
   // in items missing from the output
 
-  // weird clang-tidy false positive!
-  // NOLINTBEGIN(bugprone-branch-clone)
   if ( settings.forceVectorOutput )
   {
     mLayout->renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::ForceVector );
@@ -595,7 +592,6 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   {
     mLayout->renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   }
-  // NOLINTEND(bugprone-branch-clone)
 
   // Force synchronous legend graphics requests. Necessary for WMS GetPrint,
   // as otherwise processing the request ends before remote graphics are downloaded.
@@ -1068,8 +1064,6 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
   mLayout->renderContext().setDpi( settings.dpi );
 
   mLayout->renderContext().setFlags( settings.flags );
-  // weird clang-tidy false positive!
-  // NOLINTBEGIN(bugprone-branch-clone)
   if ( settings.forceVectorOutput )
   {
     mLayout->renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::ForceVector );
@@ -1078,7 +1072,6 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
   {
     mLayout->renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   }
-  // NOLINTEND(bugprone-branch-clone)
 
   mLayout->renderContext().setTextRenderFormat( s.textRenderFormat );
   mLayout->renderContext().setPredefinedScales( settings.predefinedMapScales );
@@ -1367,12 +1360,6 @@ void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPdfWriter *device
   // TODO: add option for this in layout
   // May not work on Windows or non-X11 Linux. Works fine on Mac using QPrinter::NativeFormat
   //printer.setFontEmbeddingEnabled( true );
-
-#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
-  // paint engine hack not required, fixed upstream
-#else
-  QgsPaintEngineHack::fixEngineFlags( static_cast<QPaintDevice *>( device )->paintEngine() );
-#endif
 }
 
 void QgsLayoutExporter::preparePrint( QgsLayout *layout, QPagedPaintDevice *device, bool setFirstPageSize )

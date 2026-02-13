@@ -42,6 +42,7 @@ from qgis.core import (
     QgsMapLayerUtils,
     QgsMemoryProviderUtils,
     QgsMultiPolygon,
+    QgsNurbsCurve,
     QgsPoint,
     QgsPointXY,
     QgsProject,
@@ -2207,6 +2208,41 @@ class TestQgsVectorFileWriter(QgisTestCase):
                 },
             )
 
+    def test_write_gpkg_fid_not_first_writeAsVectorFormat(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            dest_file_name = (
+                Path(temp_dir)
+                / "test_write_gpkg_fid_not_first_writeAsVectorFormat.gpkg"
+            ).as_posix()
+
+            srcLayer = QgsVectorLayer(
+                "Point?crs=epsg:4326&field=FID_1:integer&field=FID_2:integer",
+                "NewLayer",
+                "Memory",
+            )
+            fet = QgsFeature()
+            fet.setAttributes([1, 100])
+            pr = srcLayer.dataProvider()
+            pr.addFeatures([fet])
+            opts = QgsVectorFileWriter.SaveVectorOptions()
+            opts.driverName = "GPKG"
+            opts.layerName = srcLayer.name()
+            opts.layerOptions = ["FID=FID_2"]
+            QgsVectorFileWriter.writeAsVectorFormatV3(
+                srcLayer,
+                dest_file_name,
+                QgsProject.instance().transformContext(),
+                opts,
+            )
+
+            layer = QgsVectorLayer(dest_file_name)
+            self.assertTrue(layer.isValid())
+            layer_fields = layer.fields()
+            self.assertEqual([f.name() for f in layer_fields], ["FID_2", "FID_1"])
+            features = [f for f in layer.getFeatures()]
+            self.assertEqual(features[0][0], 100)
+            self.assertEqual(features[0][1], 1)
+
     def test_write_shp_fid_first(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             dest_file_name = Path(temp_dir) / "test_fid_first.shp"
@@ -2290,6 +2326,49 @@ class TestQgsVectorFileWriter(QgisTestCase):
                     source_fields.indexOf("FID"): layer_fields.lookupField("FID"),
                 },
             )
+
+    def testNURBSConversion(self):
+        """
+        Test conversion from NURBS to LineString
+        """
+        layer = QgsVectorLayer(
+            ("NurbsCurve?crs=epsg:4326"),
+            "test",
+            "memory",
+        )
+
+        self.assertTrue(layer.isValid())
+        myProvider = layer.dataProvider()
+
+        ft = QgsFeature()
+        control_points = [QgsPoint(0, 0), QgsPoint(5, 5), QgsPoint(10, 0)]
+        degree = 2
+        knots = [0, 0, 0, 1, 1, 1]
+        weights = [1, 1, 1]
+
+        curve = QgsNurbsCurve(control_points, degree, knots, weights)
+        ft.setGeometry(curve)
+        myResult, myFeatures = myProvider.addFeatures([ft])
+        self.assertTrue(myResult)
+        self.assertTrue(myFeatures)
+
+        options = QgsVectorFileWriter.SaveVectorOptions()
+
+        dest = os.path.join(str(QDir.tempPath()), "nurbs_as_linestring.gpkg")
+
+        write_result, error_message, new_file, new_layer = (
+            QgsVectorFileWriter.writeAsVectorFormatV3(
+                layer, dest, QgsProject.instance().transformContext(), options
+            )
+        )
+        self.assertEqual(write_result, QgsVectorFileWriter.WriterError.NoError)
+
+        res = QgsVectorLayer(dest, "result")
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.wkbType(), QgsWkbTypes.Type.LineString)
+        features = [f for f in res.getFeatures()]
+        self.assertEqual(len(features), 1)
+        self.assertTrue(features[0].geometry().asWkt().startswith("LineString"))
 
 
 if __name__ == "__main__":

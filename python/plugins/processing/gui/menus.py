@@ -52,7 +52,11 @@ toolButtonAction = None
 def initMenusAndToolbars():
     global defaultMenuEntries, toolBarButtons, toolButton, toolButtonAction
     vectorMenu = iface.vectorMenu().title()
-    analysisToolsMenu = vectorMenu + "/" + Processing.tr("&Analysis Tools")
+    analysisToolsMenu = (
+        vectorMenu
+        + "/"
+        + QCoreApplication.translate("ProcessingPlugin", "&Analysis Tools")
+    )
     defaultMenuEntries.update(
         {
             "qgis:distancematrix": analysisToolsMenu,
@@ -65,11 +69,15 @@ def initMenusAndToolbars():
             "native:lineintersections": analysisToolsMenu,
         }
     )
-    researchToolsMenu = vectorMenu + "/" + Processing.tr("&Research Tools")
+    researchToolsMenu = (
+        vectorMenu
+        + "/"
+        + QCoreApplication.translate("ProcessingPlugin", "&Research Tools")
+    )
     defaultMenuEntries.update(
         {
             "native:creategrid": researchToolsMenu,
-            "qgis:randomselection": researchToolsMenu,
+            "native:randomselection": researchToolsMenu,
             "qgis:randomselectionwithinsubsets": researchToolsMenu,
             "native:randompointsinextent": researchToolsMenu,
             "qgis:randompointsinlayerbounds": researchToolsMenu,
@@ -82,7 +90,11 @@ def initMenusAndToolbars():
             "native:polygonfromlayerextent": researchToolsMenu,
         }
     )
-    geoprocessingToolsMenu = vectorMenu + "/" + Processing.tr("&Geoprocessing Tools")
+    geoprocessingToolsMenu = (
+        vectorMenu
+        + "/"
+        + QCoreApplication.translate("ProcessingPlugin", "&Geoprocessing Tools")
+    )
     defaultMenuEntries.update(
         {
             "native:buffer": geoprocessingToolsMenu,
@@ -96,7 +108,11 @@ def initMenusAndToolbars():
             "qgis:eliminateselectedpolygons": geoprocessingToolsMenu,
         }
     )
-    geometryToolsMenu = vectorMenu + "/" + Processing.tr("G&eometry Tools")
+    geometryToolsMenu = (
+        vectorMenu
+        + "/"
+        + QCoreApplication.translate("ProcessingPlugin", "G&eometry Tools")
+    )
     defaultMenuEntries.update(
         {
             "native:checkvalidity": geometryToolsMenu,
@@ -113,7 +129,11 @@ def initMenusAndToolbars():
             "native:extractvertices": geometryToolsMenu,
         }
     )
-    managementToolsMenu = vectorMenu + "/" + Processing.tr("&Data Management Tools")
+    managementToolsMenu = (
+        vectorMenu
+        + "/"
+        + QCoreApplication.translate("ProcessingPlugin", "&Data Management Tools")
+    )
     defaultMenuEntries.update(
         {
             "native:reprojectlayer": managementToolsMenu,
@@ -126,7 +146,9 @@ def initMenusAndToolbars():
 
     rasterMenu = iface.rasterMenu().title()
     defaultMenuEntries.update({"native:alignrasters": rasterMenu})
-    projectionsMenu = rasterMenu + "/" + Processing.tr("Projections")
+    projectionsMenu = (
+        rasterMenu + "/" + QCoreApplication.translate("ProcessingPlugin", "Projections")
+    )
     defaultMenuEntries.update(
         {
             "gdal:warpreproject": projectionsMenu,
@@ -134,7 +156,9 @@ def initMenusAndToolbars():
             "gdal:assignprojection": projectionsMenu,
         }
     )
-    conversionMenu = rasterMenu + "/" + Processing.tr("Conversion")
+    conversionMenu = (
+        rasterMenu + "/" + QCoreApplication.translate("ProcessingPlugin", "Conversion")
+    )
     defaultMenuEntries.update(
         {
             "gdal:rasterize": conversionMenu,
@@ -144,7 +168,9 @@ def initMenusAndToolbars():
             "gdal:pcttorgb": conversionMenu,
         }
     )
-    extractionMenu = rasterMenu + "/" + Processing.tr("Extraction")
+    extractionMenu = (
+        rasterMenu + "/" + QCoreApplication.translate("ProcessingPlugin", "Extraction")
+    )
     defaultMenuEntries.update(
         {
             "gdal:contour": extractionMenu,
@@ -152,7 +178,9 @@ def initMenusAndToolbars():
             "gdal:cliprasterbymasklayer": extractionMenu,
         }
     )
-    analysisMenu = rasterMenu + "/" + Processing.tr("Analysis")
+    analysisMenu = (
+        rasterMenu + "/" + QCoreApplication.translate("ProcessingPlugin", "Analysis")
+    )
     defaultMenuEntries.update(
         {
             "gdal:sieve": analysisMenu,
@@ -171,7 +199,11 @@ def initMenusAndToolbars():
             "gdal:triterrainruggednessindex": analysisMenu,
         }
     )
-    miscMenu = rasterMenu + "/" + Processing.tr("Miscellaneous")
+    miscMenu = (
+        rasterMenu
+        + "/"
+        + QCoreApplication.translate("ProcessingPlugin", "Miscellaneous")
+    )
     defaultMenuEntries.update(
         {
             "gdal:buildvirtualraster": miscMenu,
@@ -200,8 +232,10 @@ def initializeMenus():
         alg = QgsApplication.processingRegistry().algorithmById(m)
         if alg is None or alg.id() != m:
             QgsMessageLog.logMessage(
-                Processing.tr("Invalid algorithm ID for menu: {}").format(m),
-                Processing.tr("Processing"),
+                QCoreApplication.translate(
+                    "ProcessingPlugin", "Invalid algorithm ID for menu: {}"
+                ).format(m),
+                QCoreApplication.translate("ProcessingPlugin", "Processing"),
             )
 
     for provider in QgsApplication.processingRegistry().providers():
@@ -321,10 +355,13 @@ def _executeAlgorithm(alg_id):
     alg = QgsApplication.processingRegistry().createAlgorithmById(alg_id)
     if alg is None:
         dlg = MessageDialog()
-        dlg.setTitle(Processing.tr("Missing Algorithm"))
+        dlg.setTitle(
+            QCoreApplication.translate("ProcessingPlugin", "Missing Algorithm")
+        )
         dlg.setMessage(
-            Processing.tr(
-                'The algorithm "{}" is no longer available. (Perhaps a plugin was uninstalled?)'
+            QCoreApplication.translate(
+                "ProcessingPlugin",
+                'The algorithm "{}" is no longer available. (Perhaps a plugin was uninstalled?)',
             ).format(alg_id)
         )
         dlg.exec()
@@ -333,10 +370,13 @@ def _executeAlgorithm(alg_id):
     ok, message = alg.canExecute()
     if not ok:
         dlg = MessageDialog()
-        dlg.setTitle(Processing.tr("Missing Dependency"))
+        dlg.setTitle(
+            QCoreApplication.translate("ProcessingPlugin", "Missing Dependency")
+        )
         dlg.setMessage(
-            Processing.tr(
-                "<h3>Missing dependency. This algorithm cannot " "be run </h3>\n{0}"
+            QCoreApplication.translate(
+                "ProcessingPlugin",
+                "<h3>Missing dependency. This algorithm cannot " "be run </h3>\n{0}",
             ).format(message)
         )
         dlg.exec()

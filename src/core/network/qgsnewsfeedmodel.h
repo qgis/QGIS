@@ -71,6 +71,7 @@ class CORE_EXPORT QgsNewsFeedModel : public QAbstractItemModel
     QModelIndex parent( const QModelIndex &index ) const override;
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    QHash<int, QByteArray> roleNames() const override;
 
   private slots:
 

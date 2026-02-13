@@ -61,6 +61,13 @@ Sets if name of the field domain is editable.
 .. versionadded:: 4.0
 %End
 
+    void setPoliciesEditable( bool editable );
+%Docstring
+Sets if merge and split policies are editable.
+
+.. versionadded:: 4.0
+%End
+
   signals:
 
     void validityChanged( bool isValid );
@@ -112,6 +119,13 @@ Caller takes ownership of the returned object.
     void setNameEditable( bool editable );
 %Docstring
 Sets if name of the field domain is editable
+
+.. versionadded:: 4.0
+%End
+
+    void setPoliciesEditable( bool editable );
+%Docstring
+Sets if merge and split policies are editable.
 
 .. versionadded:: 4.0
 %End

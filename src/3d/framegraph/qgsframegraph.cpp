@@ -18,13 +18,13 @@
 #include "qgs3dutils.h"
 #include "qgsabstractrenderview.h"
 #include "qgsambientocclusionrenderview.h"
-#include "qgsdebugtextureentity.h"
-#include "qgsdebugtexturerenderview.h"
 #include "qgsdepthrenderview.h"
 #include "qgsdirectionallightsettings.h"
 #include "qgsforwardrenderview.h"
 #include "qgsframegraphutils.h"
 #include "qgshighlightsrenderview.h"
+#include "qgsoverlaytextureentity.h"
+#include "qgsoverlaytexturerenderview.h"
 #include "qgspostprocessingentity.h"
 #include "qgsshadowrenderview.h"
 
@@ -48,7 +48,7 @@ const QString QgsFrameGraph::FORWARD_RENDERVIEW = "forward";
 const QString QgsFrameGraph::SHADOW_RENDERVIEW = "shadow";
 const QString QgsFrameGraph::AXIS3D_RENDERVIEW = "3daxis";
 const QString QgsFrameGraph::DEPTH_RENDERVIEW = "depth";
-const QString QgsFrameGraph::DEBUG_RENDERVIEW = "debug_texture";
+const QString QgsFrameGraph::OVERLAY_RENDERVIEW = "overlay_texture";
 const QString QgsFrameGraph::AMBIENT_OCCLUSION_RENDERVIEW = "ambient_occlusion";
 const QString QgsFrameGraph::HIGHLIGHTS_RENDERVIEW = "highlights";
 
@@ -67,9 +67,9 @@ void QgsFrameGraph::constructShadowRenderPass()
   registerRenderView( std::make_unique<QgsShadowRenderView>( SHADOW_RENDERVIEW ), SHADOW_RENDERVIEW );
 }
 
-void QgsFrameGraph::constructDebugTexturePass( Qt3DRender::QFrameGraphNode *topNode )
+void QgsFrameGraph::constructOverlayTexturePass( Qt3DRender::QFrameGraphNode *topNode )
 {
-  registerRenderView( std::make_unique<QgsDebugTextureRenderView>( DEBUG_RENDERVIEW ), DEBUG_RENDERVIEW, topNode );
+  registerRenderView( std::make_unique<QgsOverlayTextureRenderView>( OVERLAY_RENDERVIEW ), OVERLAY_RENDERVIEW, topNode );
 }
 
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructSubPostPassForProcessing()
@@ -147,7 +147,7 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructPostprocessingPass()
 
   // sub passes:
   constructSubPostPassForProcessing()->setParent( mRenderCaptureTargetSelector );
-  constructDebugTexturePass( mRenderCaptureTargetSelector );
+  constructOverlayTexturePass( mRenderCaptureTargetSelector );
   constructSubPostPassForRenderCapture()->setParent( mRenderCaptureTargetSelector );
 
   return mRenderCaptureTargetSelector;
@@ -386,17 +386,17 @@ void QgsFrameGraph::updateShadowSettings( const QgsShadowSettings &shadowSetting
 
 void QgsFrameGraph::updateDebugShadowMapSettings( const Qgs3DMapSettings &settings )
 {
-  QgsDebugTextureRenderView *debugRenderView = dynamic_cast<QgsDebugTextureRenderView *>( mRenderViewMap[DEBUG_RENDERVIEW].get() );
+  QgsOverlayTextureRenderView *debugRenderView = dynamic_cast<QgsOverlayTextureRenderView *>( mRenderViewMap[OVERLAY_RENDERVIEW].get() );
   if ( !debugRenderView )
     return;
 
   if ( !mShadowTextureDebugging && settings.debugShadowMapEnabled() )
   {
     Qt3DRender::QTexture2D *shadowDepthTexture = shadowRenderView().mapTexture();
-    mShadowTextureDebugging = new QgsDebugTextureEntity( shadowDepthTexture, debugRenderView->debugLayer(), this );
+    mShadowTextureDebugging = new QgsOverlayTextureEntity( shadowDepthTexture, debugRenderView->overlayLayer(), this );
   }
 
-  debugRenderView->setEnabled( settings.debugShadowMapEnabled() || settings.debugDepthMapEnabled() );
+  debugRenderView->setEnabled( settings.debugShadowMapEnabled() || settings.debugDepthMapEnabled() || settings.is2DMapOverlayEnabled() );
 
   if ( mShadowTextureDebugging )
   {
@@ -413,17 +413,17 @@ void QgsFrameGraph::updateDebugShadowMapSettings( const Qgs3DMapSettings &settin
 
 void QgsFrameGraph::updateDebugDepthMapSettings( const Qgs3DMapSettings &settings )
 {
-  QgsDebugTextureRenderView *debugRenderView = dynamic_cast<QgsDebugTextureRenderView *>( mRenderViewMap[DEBUG_RENDERVIEW].get() );
+  QgsOverlayTextureRenderView *debugRenderView = dynamic_cast<QgsOverlayTextureRenderView *>( mRenderViewMap[OVERLAY_RENDERVIEW].get() );
   if ( !debugRenderView )
     return;
 
   if ( !mDepthTextureDebugging && settings.debugDepthMapEnabled() )
   {
     Qt3DRender::QTexture2D *forwardDepthTexture = forwardRenderView().depthTexture();
-    mDepthTextureDebugging = new QgsDebugTextureEntity( forwardDepthTexture, debugRenderView->debugLayer(), this );
+    mDepthTextureDebugging = new QgsOverlayTextureEntity( forwardDepthTexture, debugRenderView->overlayLayer(), this );
   }
 
-  debugRenderView->setEnabled( settings.debugShadowMapEnabled() || settings.debugDepthMapEnabled() );
+  debugRenderView->setEnabled( settings.debugShadowMapEnabled() || settings.debugDepthMapEnabled() || settings.is2DMapOverlayEnabled() );
 
   if ( mDepthTextureDebugging )
   {
@@ -537,4 +537,10 @@ QgsHighlightsRenderView &QgsFrameGraph::highlightsRenderView()
 {
   QgsAbstractRenderView *rv = mRenderViewMap[QgsFrameGraph::HIGHLIGHTS_RENDERVIEW].get();
   return *( dynamic_cast<QgsHighlightsRenderView *>( rv ) );
+}
+
+QgsOverlayTextureRenderView &QgsFrameGraph::overlayTextureRenderView()
+{
+  QgsAbstractRenderView *renderView = mRenderViewMap[QgsFrameGraph::OVERLAY_RENDERVIEW].get();
+  return *( dynamic_cast<QgsOverlayTextureRenderView *>( renderView ) );
 }

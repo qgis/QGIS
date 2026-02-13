@@ -35,6 +35,24 @@ class QgsProcessingModelComment;
  */
 class CORE_EXPORT QgsProcessingModelComponent
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsProcessingModelChildAlgorithm *>( sipCpp ) != NULL )
+      sipType = sipType_QgsProcessingModelChildAlgorithm;
+    else if ( dynamic_cast<QgsProcessingModelComment *>( sipCpp ) != NULL )
+      sipType = sipType_QgsProcessingModelComment;
+    else if ( dynamic_cast<QgsProcessingModelGroupBox *>( sipCpp ) != NULL )
+      sipType = sipType_QgsProcessingModelGroupBox;
+    else if ( dynamic_cast<QgsProcessingModelOutput *>( sipCpp ) != NULL )
+      sipType = sipType_QgsProcessingModelOutput;
+    else if ( dynamic_cast<QgsProcessingModelParameter *>( sipCpp ) != NULL )
+      sipType = sipType_QgsProcessingModelParameter;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
   public:
 
     virtual ~QgsProcessingModelComponent() = default;

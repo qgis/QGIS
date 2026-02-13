@@ -94,7 +94,7 @@ class Qgs3DMapToolPointCloudChangeAttribute : public Qgs3DMapTool
     double mNewValue = 0;
 
   private:
-    SelectedPoints searchPoints( QgsPointCloudLayer *layer, const QgsGeos &searchPolygon, Qgs3DMapCanvas &canvas );
+    SelectedPoints searchPoints( QgsPointCloudLayer *layer, const QgsGeos &searchPolygon, Qgs3DMapCanvas &canvas, QgsPointCloudIndex &pc );
 
     QVector<int> selectedPointsInNode( const QgsGeos &searchPolygon, const QgsPointCloudNodeId &n, const MapToPixel3D &mapToPixel3D, QgsPointCloudIndex index, QgsRectangle mapExtent, QgsPointCloudLayerElevationProperties &elevationProperties, QgsAbstract3DRenderer *renderer3D );
 
