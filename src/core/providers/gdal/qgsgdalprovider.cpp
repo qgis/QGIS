@@ -778,7 +778,14 @@ bool QgsGdalProvider::readBlock( int bandNo, int xBlock, int yBlock, void *data 
   // We have to read with correct data type consistent with other readBlock functions
   int xOff = xBlock * mXBlockSize;
   int yOff = yBlock * mYBlockSize;
-  const GDALDataType gdalDataType = mGdalDataType.at( bandNo - 1 );
+  GDALDataType gdalDataType = mGdalDataType.at( bandNo - 1 );
+
+  #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,11,0)
+    if ( gdalDataType == GDT_Float16 )
+    {
+      gdalDataType = GDT_Float32;
+    }
+  #endif
   CPLErr err = gdalRasterIO( myGdalBand, GF_Read, xOff, yOff, mXBlockSize, mYBlockSize, data, mXBlockSize, mYBlockSize, gdalDataType, 0, 0 );
   if ( err != CPLE_None )
   {
@@ -938,8 +945,13 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
   const double resamplingFactor = std::max( reqXRes / srcXRes, reqYRes / srcYRes );
 
   GDALRasterBandH gdalBand = getBand( bandNo );
-  const GDALDataType type = static_cast<GDALDataType>( mGdalDataType.at( bandNo - 1 ) );
-
+  GDALDataType type = static_cast<GDALDataType>( mGdalDataType.at( bandNo - 1 ) );
+  #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,11,0)
+    if ( type == GDT_Float16 )
+    {
+      type = GDT_Float32;
+    }
+  #endif
   // Find top, bottom rows and left, right column the raster extent covers
   // These are limits in target grid space
   QRect subRect = QgsRasterBlock::subRect( reqExtent, bufferWidthPix, bufferHeightPix, intersectExtent );
@@ -1577,7 +1589,15 @@ double QgsGdalProvider::sample( const QgsPointXY &point, int band, bool *ok, con
   double value{0};
   CPLErr err {CE_Failure};
 
-  const GDALDataType dataType {GDALGetRasterDataType( hBand )};
+  GDALDataType dataType { GDALGetRasterDataType( hBand ) };
+
+  #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,11,0)
+    if ( dataType == GDT_Float16 )
+    {
+      dataType = GDT_Float32;
+    }
+  #endif
+
   switch ( dataType )
   {
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
@@ -1630,9 +1650,6 @@ double QgsGdalProvider::sample( const QgsPointXY &point, int band, bool *ok, con
       value = static_cast<double>( tempVal );
       break;
     }
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,11,0)
-    case GDT_Float16:
-#endif
     case GDT_Float32:
     {
       float tempVal{0};
@@ -4115,9 +4132,6 @@ void QgsGdalProvider::initBaseDataset()
         case GDT_Int16:
         case GDT_UInt32:
         case GDT_Int32:
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,11,0)
-        case GDT_Float16:
-#endif
         case GDT_Float32:
         case GDT_CInt16:
           myGdalDataType = GDT_Float32;
