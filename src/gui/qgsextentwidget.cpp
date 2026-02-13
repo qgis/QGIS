@@ -336,11 +336,16 @@ void QgsExtentWidget::setOutputExtentFromCondensedLineEdit()
     const QRegularExpressionMatch match = mCondensedRe.match( text );
     if ( match.hasMatch() )
     {
+      const double xMin = match.captured( 1 ).toDouble();
+      const double xMax = match.captured( 2 ).toDouble();
+      const double yMin = match.captured( 3 ).toDouble();
+      const double yMax = match.captured( 4 ).toDouble();
+      mOutputExtent = QgsRectangle( xMin, yMin, xMax, yMax );
       // Localization
-      whileBlocking( mXMinLineEdit )->setText( QLocale().toString( match.captured( 1 ).toDouble(), 'f', 10 ) );
-      whileBlocking( mXMaxLineEdit )->setText( QLocale().toString( match.captured( 2 ).toDouble(), 'f', 10 ) );
-      whileBlocking( mYMinLineEdit )->setText( QLocale().toString( match.captured( 3 ).toDouble(), 'f', 10 ) );
-      whileBlocking( mYMaxLineEdit )->setText( QLocale().toString( match.captured( 4 ).toDouble(), 'f', 10 ) );
+      whileBlocking( mXMinLineEdit )->setText( QLocale().toString( xMin, 'f', 10 ) );
+      whileBlocking( mXMaxLineEdit )->setText( QLocale().toString( xMax, 'f', 10 ) );
+      whileBlocking( mYMinLineEdit )->setText( QLocale().toString( yMin, 'f', 10 ) );
+      whileBlocking( mYMaxLineEdit )->setText( QLocale().toString( yMax, 'f', 10 ) );
       if ( !match.captured( 5 ).isEmpty() )
       {
         mOutputCrs = QgsCoordinateReferenceSystem( match.captured( 5 ) );
