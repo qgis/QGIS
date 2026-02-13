@@ -689,7 +689,9 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
 
                 imports_to_add = extra_imports.get(module, set()) - current_imports
                 if imports_to_add:
-                    additional_import_string = ", ".join(sorted(imports_to_add))
+                    additional_import_string = ", ".join(
+                        sorted(imports_to_add, key=str.casefold)
+                    )
                     if tokens[token_index - 1].src == ")":
                         token_index -= 1
                         while tokens[token_index].src.strip() in ("", ",", ")"):
