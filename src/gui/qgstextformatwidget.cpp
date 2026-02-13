@@ -469,14 +469,6 @@ void QgsTextFormatWidget::initWidget()
 
   overlapModeChanged();
 
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 3, 0 )
-  // stretch is available
-#else
-  mLabelStretch->hide();
-  mSpinStretch->hide();
-  mFontStretchDDBtn->hide();
-#endif
-
   setDockMode( false );
 
   QList<QWidget *> widgets;
@@ -743,12 +735,6 @@ void QgsTextFormatWidget::setPropertyOverrideButtonsVisible( bool visible )
   const QList<QgsPropertyOverrideButton *> buttons = findChildren<QgsPropertyOverrideButton *>();
   for ( QgsPropertyOverrideButton *button : buttons )
   {
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 3, 0 )
-    // stretch is available
-#else
-    if ( button == mFontStretchDDBtn )
-      continue; // always hidden
-#endif
     button->setVisible( visible );
   }
 }
@@ -1674,12 +1660,8 @@ void QgsTextFormatWidget::populateFontCapitalsComboBox()
   mFontCapitalsComboBox->addItem( tr( "No Change" ), static_cast<int>( Qgis::Capitalization::MixedCase ) );
   mFontCapitalsComboBox->addItem( tr( "All Uppercase" ), static_cast<int>( Qgis::Capitalization::AllUppercase ) );
   mFontCapitalsComboBox->addItem( tr( "All Lowercase" ), static_cast<int>( Qgis::Capitalization::AllLowercase ) );
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 3, 0 )
-  // Requires new enough build due to
-  // https://bugreports.qt.io/browse/QTBUG-13965
   mFontCapitalsComboBox->addItem( tr( "Small Caps" ), static_cast<int>( Qgis::Capitalization::SmallCaps ) );
   mFontCapitalsComboBox->addItem( tr( "All Small Caps" ), static_cast<int>( Qgis::Capitalization::AllSmallCaps ) );
-#endif
   mFontCapitalsComboBox->addItem( tr( "Title Case" ), static_cast<int>( Qgis::Capitalization::TitleCase ) );
   mFontCapitalsComboBox->addItem( tr( "Force First Letter to Capital" ), static_cast<int>( Qgis::Capitalization::ForceFirstLetterToCapital ) );
 }

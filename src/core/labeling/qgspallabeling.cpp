@@ -2135,7 +2135,6 @@ QgsTextFormat QgsPalLayerSettings::evaluateTextFormat( QgsRenderContext &context
         {
           evaluatedFormat.setCapitalization( Qgis::Capitalization::TitleCase );
         }
-#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
         else if ( fcase.compare( "SmallCaps"_L1, Qt::CaseInsensitive ) == 0 )
         {
           evaluatedFormat.setCapitalization( Qgis::Capitalization::SmallCaps );
@@ -2144,7 +2143,6 @@ QgsTextFormat QgsPalLayerSettings::evaluateTextFormat( QgsRenderContext &context
         {
           evaluatedFormat.setCapitalization( Qgis::Capitalization::AllSmallCaps );
         }
-#endif
       }
     }
   }

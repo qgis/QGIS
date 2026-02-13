@@ -84,6 +84,15 @@ class GUI_EXPORT QgsProcessingEnumModelerWidget : public QWidget, private Ui::Qg
      */
     void setAllowMultiple( bool allowMultiple );
 
+  signals:
+
+    /**
+     * Emitted when the widget state changes.
+     *
+     * \since QGIS 4.0
+     */
+    void changed();
+
   private slots:
 
     void addItem();
