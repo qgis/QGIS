@@ -249,6 +249,13 @@ class GUI_EXPORT QgsFieldDomainWidget : public QWidget, private Ui_QgsFieldDomai
      */
     void setNameEditable( bool editable );
 
+    /**
+     * Sets if merge and split policies are editable.
+     *
+     * \since QGIS 4.0
+     */
+    void setPoliciesEditable( bool editable );
+
   signals:
 
     /**
@@ -301,6 +308,13 @@ class GUI_EXPORT QgsFieldDomainDialog : public QDialog
      * \since QGIS 4.0
      */
     void setNameEditable( bool editable );
+
+    /**
+     * Sets if merge and split policies are editable.
+     *
+     * \since QGIS 4.0
+     */
+    void setPoliciesEditable( bool editable );
 
   public slots:
 

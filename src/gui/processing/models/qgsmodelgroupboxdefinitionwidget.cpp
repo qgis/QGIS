@@ -31,11 +31,16 @@
 
 using namespace Qt::StringLiterals;
 
-QgsModelGroupBoxDefinitionDialog::QgsModelGroupBoxDefinitionDialog( const QgsProcessingModelGroupBox &box, QWidget *parent )
-  : QDialog( parent )
+//
+// QgsModelGroupBoxDefinitionPanelWidget
+//
+
+QgsModelGroupBoxDefinitionPanelWidget::QgsModelGroupBoxDefinitionPanelWidget( const QgsProcessingModelGroupBox &box, QWidget *parent )
+  : QgsProcessingModelConfigWidget( parent )
   , mBox( box )
 {
   QVBoxLayout *commentLayout = new QVBoxLayout();
+  commentLayout->setContentsMargins( 0, 0, 0, 0 );
   commentLayout->addWidget( new QLabel( tr( "Title" ) ) );
   mCommentEdit = new QTextEdit();
   mCommentEdit->setAcceptRichText( false );
@@ -58,6 +63,37 @@ QgsModelGroupBoxDefinitionDialog::QgsModelGroupBoxDefinitionDialog( const QgsPro
   hl->addWidget( mCommentColorButton );
   commentLayout->addLayout( hl );
 
+  setLayout( commentLayout );
+
+  setPanelTitle( tr( "Group Box Properties" ) );
+  setObjectName( u"QgsModelGroupBoxDefinitionPanelWidget"_s );
+
+  mCommentEdit->setFocus();
+  mCommentEdit->selectAll();
+
+  connect( mCommentEdit, &QTextEdit::textChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( mCommentColorButton, &QgsColorButton::colorChanged, this, &QgsPanelWidget::widgetChanged );
+}
+
+QgsProcessingModelGroupBox QgsModelGroupBoxDefinitionPanelWidget::groupBox() const
+{
+  QgsProcessingModelGroupBox box = mBox;
+  box.setColor( mCommentColorButton->isNull() ? QColor() : mCommentColorButton->color() );
+  box.setDescription( mCommentEdit->toPlainText() );
+  return box;
+}
+
+//
+// QgsModelGroupBoxDefinitionDialog
+//
+
+QgsModelGroupBoxDefinitionDialog::QgsModelGroupBoxDefinitionDialog( const QgsProcessingModelGroupBox &box, QWidget *parent )
+  : QDialog( parent )
+{
+  QVBoxLayout *commentLayout = new QVBoxLayout();
+  mWidget = new QgsModelGroupBoxDefinitionPanelWidget( box );
+  commentLayout->addWidget( mWidget, 1 );
+
   QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Ok );
   connect( bbox, &QDialogButtonBox::accepted, this, &QgsModelGroupBoxDefinitionDialog::accept );
   connect( bbox, &QDialogButtonBox::rejected, this, &QgsModelGroupBoxDefinitionDialog::reject );
@@ -68,14 +104,10 @@ QgsModelGroupBoxDefinitionDialog::QgsModelGroupBoxDefinitionDialog( const QgsPro
   setObjectName( u"QgsModelGroupBoxDefinitionWidget"_s );
   QgsGui::enableAutoGeometryRestore( this );
 
-  mCommentEdit->setFocus();
-  mCommentEdit->selectAll();
+  connect( mWidget, &QgsPanelWidget::panelAccepted, this, &QgsModelGroupBoxDefinitionDialog::reject );
 }
 
 QgsProcessingModelGroupBox QgsModelGroupBoxDefinitionDialog::groupBox() const
 {
-  QgsProcessingModelGroupBox box = mBox;
-  box.setColor( mCommentColorButton->isNull() ? QColor() : mCommentColorButton->color() );
-  box.setDescription( mCommentEdit->toPlainText() );
-  return box;
+  return mWidget->groupBox();
 }
