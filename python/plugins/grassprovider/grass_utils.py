@@ -20,14 +20,10 @@ __date__ = "February 2015"
 __copyright__ = "(C) 2014-2015, Victor Olaya"
 
 import os
-import re
 import shutil
 import stat
 import subprocess
-import sys
-from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional
 
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.core.ProcessingConfig import ProcessingConfig

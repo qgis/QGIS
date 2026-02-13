@@ -12,7 +12,7 @@ GUI Utilities
 """
 
 import os
-from typing import Dict, Optional
+from typing import Optional
 
 from qgis.PyQt.QtGui import QIcon, QImage, QPixmap
 

@@ -26,7 +26,7 @@ import configparser
 import os
 import re
 import sys
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import qgis.utils
 from qgis.core import (

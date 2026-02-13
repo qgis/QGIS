@@ -20,7 +20,6 @@ __date__ = "April 2014"
 __copyright__ = "(C) 2014, Victor Olaya"
 
 import json
-from typing import List
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from qgis.core import (
@@ -30,7 +29,6 @@ from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingProvider,
     QgsRuntimeProfiler,
-    QgsVectorFileWriter,
 )
 from qgis.PyQt.QtCore import QCoreApplication
 

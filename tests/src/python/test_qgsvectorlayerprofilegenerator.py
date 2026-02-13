@@ -13,13 +13,11 @@ __copyright__ = "Copyright 2022, The QGIS Project"
 import math
 import os
 import unittest
-from typing import List, Tuple
 
 from qgis.core import (
     Qgis,
     QgsCategorizedSymbolRenderer,
     QgsCoordinateReferenceSystem,
-    QgsCoordinateTransform,
     QgsCoordinateTransformContext,
     QgsDatumTransform,
     QgsDoubleRange,
@@ -36,7 +34,6 @@ from qgis.core import (
     QgsProfilePoint,
     QgsProfileRequest,
     QgsProfileSnapContext,
-    QgsProjUtils,
     QgsProperty,
     QgsRasterDemTerrainProvider,
     QgsRasterLayer,
@@ -45,7 +42,6 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-from qgis.PyQt.QtCore import QDir
 from qgis.testing import QgisTestCase, start_app
 from utilities import compareWkt, unitTestDataPath
 

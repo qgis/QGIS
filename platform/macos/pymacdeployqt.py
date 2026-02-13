@@ -7,7 +7,6 @@ import subprocess
 from dataclasses import dataclass
 from functools import cache, lru_cache
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
 
 # System paths that should be excluded from copying
 SYSTEM_PATHS = [
