@@ -33,17 +33,14 @@
 #include "qgssettingstree.h"
 #include "qgssymbollayerutils.h"
 
-#include <QString>
 #include <QTimeZone>
 
 #include "moc_qgsappgpsdigitizing.cpp"
 
-using namespace Qt::StringLiterals;
-
-const QgsSettingsEntryString *QgsAppGpsDigitizing::settingTrackLineSymbol = new QgsSettingsEntryString( u"track-line-symbol"_s, QgsSettingsTree::sTreeGps, u"<symbol alpha=\"1\" name=\"gps-track-symbol\" force_rhr=\"0\" clip_to_extent=\"1\" type=\"line\"><layer enabled=\"1\" pass=\"0\" locked=\"0\" class=\"SimpleLine\"><Option type=\"Map\"><Option name=\"line_color\" type=\"QString\" value=\"219,30,42,255\"/><Option name=\"line_style\" type=\"QString\" value=\"solid\"/><Option name=\"line_width\" type=\"QString\" value=\"0.4\"/></Option></layer></symbol>"_s, u"Line symbol to use for GPS track line"_s, Qgis::SettingsOptions(), 0 );
+const QgsSettingsEntryString *QgsAppGpsDigitizing::settingTrackLineSymbol = new QgsSettingsEntryString( QStringLiteral( "track-line-symbol" ), QgsSettingsTree::sTreeGps, QStringLiteral( "<symbol alpha=\"1\" name=\"gps-track-symbol\" force_rhr=\"0\" clip_to_extent=\"1\" type=\"line\"><layer enabled=\"1\" pass=\"0\" locked=\"0\" class=\"SimpleLine\"><Option type=\"Map\"><Option name=\"line_color\" type=\"QString\" value=\"219,30,42,255\"/><Option name=\"line_style\" type=\"QString\" value=\"solid\"/><Option name=\"line_width\" type=\"QString\" value=\"0.4\"/></Option></layer></symbol>" ), QStringLiteral( "Line symbol to use for GPS track line" ), Qgis::SettingsOptions(), 0 );
 
 QgsUpdateGpsDetailsAction::QgsUpdateGpsDetailsAction( QgsAppGpsConnection *connection, QgsAppGpsDigitizing *digitizing, QObject *parent )
-  : QgsMapLayerAction( tr( "Update GPS Information" ), parent, Qgis::MapLayerActionTarget::SingleFeature, QgsApplication::getThemeIcon( u"/gpsicons/mActionRecenter.svg"_s ) )
+  : QgsMapLayerAction( tr( "Update GPS Information" ), parent, Qgis::MapLayerActionTarget::SingleFeature, QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mActionRecenter.svg" ) ) )
   , mConnection( connection )
   , mDigitizing( digitizing )
 {
@@ -212,7 +209,7 @@ QgsAttributeMap QgsAppGpsDigitizing::derivedAttributes() const
 void QgsAppGpsDigitizing::setGpsTrackLineSymbol( QgsLineSymbol *symbol )
 {
   QDomDocument doc;
-  const QDomElement elem = QgsSymbolLayerUtils::saveSymbol( u"gps-track-symbol"_s, symbol, doc, QgsReadWriteContext() );
+  const QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "gps-track-symbol" ), symbol, doc, QgsReadWriteContext() );
   doc.appendChild( elem );
   QgsAppGpsDigitizing::settingTrackLineSymbol->setValue( doc.toString( 0 ) );
 }
@@ -237,7 +234,7 @@ void QgsAppGpsDigitizing::addVertex( const QgsPoint &wgs84Point )
     }
     catch ( QgsCsException & )
     {
-      QgsDebugError( u"Could not transform GPS location (%1, %2) to map CRS"_s.arg( wgs84Point.x() ).arg( wgs84Point.y() ) );
+      QgsDebugError( QStringLiteral( "Could not transform GPS location (%1, %2) to map CRS" ).arg( wgs84Point.x() ).arg( wgs84Point.y() ) );
       return;
     }
   }
@@ -338,9 +335,7 @@ void QgsAppGpsDigitizing::createFeature()
         {
           if ( QgsProject::instance()->gpsSettings()->automaticallyCommitFeatures() )
           {
-            if ( !QgisApp::instance()->tryCommitChanges( vlayer ) )
-            {
-              vlayer->startEditing();
+            if (!QgisApp::instance()->tryCommitChanges(vlayer)) {
               break;
             }
 
@@ -350,7 +345,7 @@ void QgsAppGpsDigitizing::createFeature()
               QgisApp::instance()->messageBar()->pushCritical(
                 tr( "Save Layer Edits" ),
                 tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
-                  .arg( vlayer->name(), vlayer->commitErrors().join( "\n  "_L1 ) )
+                  .arg( vlayer->name(), vlayer->commitErrors().join( QLatin1String( "\n  " ) ) )
               );
             }
 
@@ -385,15 +380,14 @@ void QgsAppGpsDigitizing::createFeature()
         {
           if ( QgsProject::instance()->gpsSettings()->automaticallyCommitFeatures() )
           {
-            if ( !QgisApp::instance()->tryCommitChanges( vlayer ) )
-            {
+            if (!QgisApp::instance()->tryCommitChanges(vlayer)) {
               vlayer->startEditing();
               break;
             }
 
             if ( !vlayer->commitChanges() )
             {
-              QgisApp::instance()->messageBar()->pushCritical( tr( "Save Layer Edits" ), tr( "Could not commit changes to layer %1\n\nErrors: %2\n" ).arg( vlayer->name(), vlayer->commitErrors().join( "\n  "_L1 ) ) );
+              QgisApp::instance()->messageBar()->pushCritical( tr( "Save Layer Edits" ), tr( "Could not commit changes to layer %1\n\nErrors: %2\n" ).arg( vlayer->name(), vlayer->commitErrors().join( QLatin1String( "\n  " ) ) ) );
             }
 
             vlayer->startEditing();
