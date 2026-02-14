@@ -119,10 +119,10 @@ QList<TriangleCoords> extractTriangles( QgsTessellator &tessellator, bool withNo
   const char *vertices = vertexBuffer.constData();
   const char *indices = indexBuffer.constData();
 
-  size_t triangleCount = indexBuffer.size() / ( 3 * indexStride );
+  qsizetype triangleCount = indexBuffer.size() / ( 3 * indexStride );
   triangles.reserve( triangleCount );
 
-  for ( size_t i = 0; i < triangleCount; i++ )
+  for ( qsizetype i = 0; i < triangleCount; i++ )
   {
     size_t index0 = 0;
     size_t index1 = 0;
