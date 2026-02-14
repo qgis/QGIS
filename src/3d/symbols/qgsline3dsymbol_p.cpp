@@ -218,8 +218,8 @@ void QgsBufferedLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, cons
   QgsMaterial *material = mSymbol->materialSettings()->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
 
   // extract vertex buffer data from tessellator
-  const QByteArray vertexBuffer( ( const char * ) lineData.tessellator->vertexBuffer().constData(), static_cast<int>( lineData.tessellator->vertexBuffer().count() * sizeof( float ) ) );
-  const QByteArray indexBuffer( ( const char * ) lineData.tessellator->indexBuffer().constData(), static_cast<int>( lineData.tessellator->indexBuffer().count() * lineData.tessellator->indexStride() ) );
+  const QByteArray vertexBuffer = lineData.tessellator->vertexBuffer();
+  const QByteArray indexBuffer = lineData.tessellator->indexBuffer();
   const int vertexCount = vertexBuffer.count() / lineData.tessellator->stride();
   const size_t indexCount = lineData.tessellator->dataVerticesCount();
 

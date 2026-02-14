@@ -539,9 +539,14 @@ double minimumDistanceBetweenCoordinates( const QgsPolygon &polygon )
   return min_d != 1e20 ? std::sqrt( min_d ) : 1e20;
 }
 
-QVector<float> QgsTessellator::vertexBuffer() const
+QByteArray QgsTessellator::vertexBuffer() const
 {
-  return mData;
+  return QByteArray( reinterpret_cast<const char *>( mData.constData() ), sizeof( float ) * mData.size() );
+}
+
+QByteArray QgsTessellator::indexBuffer() const
+{
+  return QByteArray( reinterpret_cast<const char *>( mIndexBuffer.constData() ), sizeof( uint32_t ) * mIndexBuffer.size() );
 }
 
 void QgsTessellator::calculateBaseTransform( const QVector3D &pNormal, QMatrix4x4 *base ) const

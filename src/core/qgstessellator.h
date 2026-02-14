@@ -23,9 +23,7 @@
 class QgsPolygon;
 class QgsMultiPolygon;
 class QgsLineString;
-class QgsCurve;
 
-#include <QColor>
 #include <QVector>
 #include <memory>
 
@@ -202,20 +200,22 @@ class CORE_EXPORT QgsTessellator
      * Returns array of triangle vertex data
      *
      * Vertice coordinates are stored as (x, z, -y)
+     *
+     * \deprecated QGIS 4.0. Use vertexBuffer() in combination with indexBuffer().
      */
-    QVector<float> data() const;
+    Q_DECL_DEPRECATED QVector<float> data() const SIP_DEPRECATED;
 
     /**
      * Returns index buffer for the generated points.
      * \since QGIS 4.0
      */
-    QVector<uint32_t> indexBuffer() const { return mIndexBuffer; }
+    QByteArray indexBuffer() const;
 
     /**
      * Returns vertex buffer for the generated points.
      * \since QGIS 4.0
      */
-    QVector<float> vertexBuffer() const;
+    QByteArray vertexBuffer() const;
 
     //! Returns the number of vertices stored in the output data array
     int dataVerticesCount() const;
@@ -223,7 +223,10 @@ class CORE_EXPORT QgsTessellator
     //! Returns size of one vertex entry in bytes
     int stride() const { return mStride; }
 
-    //! Returns size of one index entry in bytes
+    /**
+     * Returns size of one index entry in bytes
+     * \since QGIS 4.0
+    */
     int indexStride() const { return sizeof( uint32_t ); }
 
     /**

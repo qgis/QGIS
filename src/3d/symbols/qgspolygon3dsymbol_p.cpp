@@ -360,8 +360,8 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
   QgsMaterial *mat = material( mSymbol.get(), selected, context );
 
   // extract vertex buffer data from tessellator
-  const QByteArray vertexBuffer( reinterpret_cast<const char *>( polyData.tessellator->vertexBuffer().constData() ), static_cast<int>( polyData.tessellator->vertexBuffer().count() * sizeof( float ) ) );
-  const QByteArray indexBuffer( reinterpret_cast<const char *>( polyData.tessellator->indexBuffer().constData() ), static_cast<int>( polyData.tessellator->indexBuffer().count() * polyData.tessellator->indexStride() ) );
+  const QByteArray vertexBuffer = polyData.tessellator->vertexBuffer();
+  const QByteArray indexBuffer = polyData.tessellator->indexBuffer();
   const int vertexCount = polyData.tessellator->uniqueVertexCount();
   const size_t indexCount = polyData.tessellator->dataVerticesCount();
 

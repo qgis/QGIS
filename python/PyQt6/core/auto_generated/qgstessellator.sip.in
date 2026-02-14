@@ -225,21 +225,25 @@ Tessellates a triangle and adds its vertex entries to the output data
 array
 %End
 
-    QVector<float> data() const;
+ QVector<float> data() const /Deprecated="Since 4.0. Use vertexBuffer() in combination with indexBuffer()."/;
 %Docstring
 Returns array of triangle vertex data
 
 Vertice coordinates are stored as (x, z, -y)
+
+.. deprecated:: 4.0
+
+   Use :py:func:`~QgsTessellator.vertexBuffer` in combination with :py:func:`~QgsTessellator.indexBuffer`.
 %End
 
-    QVector<uint32_t> indexBuffer() const;
+    QByteArray indexBuffer() const;
 %Docstring
 Returns index buffer for the generated points.
 
 .. versionadded:: 4.0
 %End
 
-    QVector<float> vertexBuffer() const;
+    QByteArray vertexBuffer() const;
 %Docstring
 Returns vertex buffer for the generated points.
 
@@ -259,6 +263,8 @@ Returns size of one vertex entry in bytes
     int indexStride() const;
 %Docstring
 Returns size of one index entry in bytes
+
+.. versionadded:: 4.0
 %End
 
 
