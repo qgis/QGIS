@@ -469,8 +469,8 @@ void QgsRubberBand3D::updateGeometry()
         QgsMessageLog::logMessage( tessellator.error(), QObject::tr( "3D" ) );
       }
       // extract vertex buffer data from tessellator
-      const QByteArray vertexBuffer( reinterpret_cast<const char *>( tessellator.vertexBuffer().constData() ), static_cast<int>( tessellator.vertexBuffer().count() * sizeof( float ) ) );
-      const QByteArray indexBuffer( reinterpret_cast<const char *>( tessellator.indexBuffer().constData() ), static_cast<int>( tessellator.indexBuffer().count() * tessellator.indexStride() ) );
+      const QByteArray vertexBuffer = tessellator.vertexBuffer();
+      const QByteArray indexBuffer = tessellator.indexBuffer();
       const size_t vertexCount = tessellator.uniqueVertexCount();
       const size_t indexCount = tessellator.dataVerticesCount();
 
@@ -481,6 +481,7 @@ void QgsRubberBand3D::updateGeometry()
     else
     {
       mPolygonGeometry->setVertexBufferData( QByteArray(), 0, QVector<QgsFeatureId>(), QVector<uint>() );
+      mPolygonGeometry->setIndexBufferData( QByteArray(), 0 );
     }
   }
 }
