@@ -122,6 +122,8 @@ make_unique3 = re.compile(
     r"""^(\s*)std::unique_ptr<\s*(.*?)\s*>\s*(.*?)\s*\(\s*new\s*(.*?)\s*(\(.*\s*\))\s*\)\s*;"""
 )
 
+SIP_NO_FILE_DEFINE = "#define SIP_NO_FILE"
+
 NON_STANDARD_NAMED_QGIS_HEADERS = (
     "gpsdata.h",
     "fromencodedcomponenthelper.h",
@@ -608,6 +610,10 @@ def process_file(filename: str):
     with open(input_file) as file_in:
         lines = [l[:-1] if l[-1] == "\n" else l for l in file_in.readlines()]
 
+    needs_sip_no_file = any(l.strip() == SIP_NO_FILE_DEFINE for l in lines)
+    if needs_sip_no_file:
+        lines = [l for l in lines if l.strip() != SIP_NO_FILE_DEFINE]
+
     fixed_lines = [apply_line_fixups(line) for line in lines]
 
     # check for usage of Qt String Literals (_s or _L1)
@@ -656,9 +662,26 @@ def process_file(filename: str):
         include_lines.append("#include <QString>")
 
     # dedupe includes
-    include_lines = list(set(include_lines))
-    sorted_includes = sort_includes(include_lines, input_file_stem)
-    final_output.extend(sorted_includes)
+    if include_lines:
+        include_lines = list(set(include_lines))
+        sorted_includes = sort_includes(include_lines, input_file_stem)
+        final_output.extend(sorted_includes)
+    elif needs_sip_no_file:
+        line_no = len(final_output) - 1
+        for line_no, line in enumerate(final_output):
+            if line.startswith("class") or line.startswith("namespace"):
+                break
+        # if no includes, put SIP_NO_FILE define here
+        if not final_output[line_no - 2] and not final_output[line_no - 1]:
+            del final_output[line_no - 1]
+            line_no -= 1
+        final_output.insert(line_no, SIP_NO_FILE_DEFINE)
+        final_output.insert(line_no + 1, "")
+        if final_output[line_no - 1].strip():
+            print(final_output[line_no - 1].strip())
+            final_output.insert(line_no, "")
+
+        needs_sip_no_file = False
 
     # if we detected QString literal usage, ensure the using namespace directive exists
     if uses_qt_literals:
@@ -667,9 +690,16 @@ def process_file(filename: str):
         )
 
         if not already_has_namespace_using:
-            final_output.append("")
+            if final_output[-1]:
+                final_output.append("")
             final_output.append("using namespace Qt::StringLiterals;")
             final_output.append("")
+
+    if needs_sip_no_file:
+        if final_output[-1]:
+            final_output.append("")
+        final_output.append(SIP_NO_FILE_DEFINE)
+        final_output.append("")
 
     # add remaining lines, if non-empty
     has_more_lines = False
