@@ -437,6 +437,7 @@ void QgsSpatiaLiteSourceSelect::setSql( const QModelIndex &index )
 
   if ( !vlayer->isValid() )
   {
+    QMessageBox::critical( this, tr( "SpatiaLite Error" ), tr( "Error when creating a layer. Check message log for more details." ) );
     delete vlayer;
     return;
   }
