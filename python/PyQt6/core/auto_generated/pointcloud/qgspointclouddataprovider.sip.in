@@ -141,11 +141,7 @@ multiple indexes, empty list otherwise.
 The sub indexes contain a pointer to the individual indexes which may be
 None if not yet loaded.
 
-.. note::
-
-   Not available in Python bindings
-
-.. versionadded:: 3.32
+.. versionadded:: 4.0
 %End
 
     virtual void loadSubIndex( int n );
@@ -154,11 +150,7 @@ Triggers loading of the point cloud index for the ``n`` th sub index
 
 Only applies to providers that support multiple indexes
 
-.. note::
-
-   Not available in Python bindings
-
-.. versionadded:: 3.32
+.. versionadded:: 4.0
 %End
 
     bool hasValidIndex() const;
