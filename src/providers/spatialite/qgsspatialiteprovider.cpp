@@ -610,8 +610,13 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri, const Provider
   setNativeTypes( QgsSpatiaLiteConnection::nativeTypes() );
 
   // Update extent and feature count
-  if ( !mSubsetString.isEmpty() )
-    getTableSummary();
+  if ( !mSubsetString.isEmpty() && !getTableSummary() )
+  {
+    mNumberFeatures = 0;
+    QgsDebugError( QStringLiteral( "Invalid SpatiaLite layer" ) );
+    closeDb();
+    return;
+  }
 
   mValid = true;
 }
