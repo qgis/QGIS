@@ -16,7 +16,6 @@
 #ifndef QGSPROCESSINGTININPUTLAYERSWIDGET_H
 #define QGSPROCESSINGTININPUTLAYERSWIDGET_H
 
-#define SIP_NO_FILE
 
 #include "ui_qgsprocessingtinmeshdatawidgetbase.h"
 
@@ -25,6 +24,8 @@
 
 #include <QAbstractTableModel>
 #include <QStyledItemDelegate>
+
+#define SIP_NO_FILE
 
 /// @cond PRIVATE
 

@@ -23,9 +23,10 @@
 
 #include <QVector>
 
+#define SIP_NO_FILE
+
 class Vector3D;
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup analysis

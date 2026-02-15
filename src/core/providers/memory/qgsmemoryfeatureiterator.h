@@ -15,13 +15,14 @@
 #ifndef QGSMEMORYFEATUREITERATOR_H
 #define QGSMEMORYFEATUREITERATOR_H
 
-#define SIP_NO_FILE
 
 #include "qgscoordinatetransform.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

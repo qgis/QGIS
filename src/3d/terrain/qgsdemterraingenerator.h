@@ -21,9 +21,10 @@
 #include "qgsrasterlayer.h"
 #include "qgsterraingenerator.h"
 
+#define SIP_NO_FILE
+
 class QgsDemHeightMapGenerator;
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup qgis_3d

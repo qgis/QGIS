@@ -18,11 +18,12 @@
 #ifndef QGSALGORITHMEXPORTTOSPREADSHEET_H
 #define QGSALGORITHMEXPORTTOSPREADSHEET_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsvectorfilewriter.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

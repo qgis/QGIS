@@ -18,13 +18,14 @@
 #ifndef QGSALGORITHMRASTERFREQUENCYBYCOMPARISON_H
 #define QGSALGORITHMRASTERFREQUENCYBYCOMPARISON_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsapplication.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsrasteranalysisutils.h"
 #include "qgsrasterprojector.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

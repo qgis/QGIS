@@ -17,7 +17,6 @@
 #define QGSATTRIBUTESFORMMODEL_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "qgsaction.h"
 #include "qgsaddtaborgroup.h"
@@ -28,6 +27,8 @@
 #include <QAbstractItemModel>
 #include <QPushButton>
 #include <QSortFilterProxyModel>
+
+#define SIP_NO_FILE
 
 /**
  * \brief Describes editor data contained in a QgsAttributesFormModel.

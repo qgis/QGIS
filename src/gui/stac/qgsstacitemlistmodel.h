@@ -19,8 +19,9 @@
 #include <QAbstractListModel>
 #include <QStyledItemDelegate>
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 class QgsStacItem;
 class QgsStacCollection;

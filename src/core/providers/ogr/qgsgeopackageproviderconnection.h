@@ -20,8 +20,9 @@
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsogrproviderconnection.h"
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 class QgsGeoPackageProviderConnection : public QgsOgrProviderConnection
 {

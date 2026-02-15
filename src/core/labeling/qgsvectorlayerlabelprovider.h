@@ -16,12 +16,13 @@
 #ifndef QGSVECTORLAYERLABELPROVIDER_H
 #define QGSVECTORLAYERLABELPROVIDER_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 #include "qgslabelingengine.h"
 #include "qgspallabeling.h"
 #include "qgsrenderer.h"
+
+#define SIP_NO_FILE
 
 class QgsAbstractFeatureSource;
 class QgsFeatureRenderer;

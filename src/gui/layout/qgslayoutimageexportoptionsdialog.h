@@ -19,13 +19,14 @@
 #define QGSLAYOUTIMAGEEXPORTOPTIONSDIALOG_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "ui_qgslayoutimageexportoptions.h"
 
 #include "qgis_gui.h"
 
 #include <QDialog>
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup gui

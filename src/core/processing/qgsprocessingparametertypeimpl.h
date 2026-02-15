@@ -25,9 +25,10 @@
 #include <QCoreApplication>
 #include <QString>
 
+#define SIP_NO_FILE
+
 using namespace Qt::StringLiterals;
 
-#define SIP_NO_FILE
 
 /**
  * \brief A raster layer parameter for processing algorithms.

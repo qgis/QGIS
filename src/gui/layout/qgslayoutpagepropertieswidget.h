@@ -17,7 +17,6 @@
 #define QGSLAYOUTPAGEPROPERTIESWIDGET_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "ui_qgslayoutpagepropertieswidget.h"
 
@@ -28,6 +27,8 @@
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutpoint.h"
 #include "qgslayoutsize.h"
+
+#define SIP_NO_FILE
 
 class QgsLayoutItem;
 class QgsLayoutItemPage;

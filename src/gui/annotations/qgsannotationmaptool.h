@@ -23,11 +23,11 @@
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgsmaptooledit.h"
 
+#define SIP_NO_FILE
+
 class QgsRenderedAnnotationItemDetails;
 class QgsAnnotationLayer;
 class QgsAnnotationItem;
-
-#define SIP_NO_FILE
 
 
 /**

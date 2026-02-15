@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#define SIP_NO_FILE
 
 #ifndef QGSPOINTCLOUDEXPRESSIONNODE_H
 #define QGSPOINTCLOUDEXPRESSIONNODE_H
@@ -23,6 +22,8 @@
 #include <QCoreApplication>
 #include <QSet>
 #include <QVariant>
+
+#define SIP_NO_FILE
 
 class QgsPointCloudBlock;
 class QgsPointCloudExpression;

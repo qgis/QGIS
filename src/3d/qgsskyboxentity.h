@@ -24,6 +24,8 @@
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QTexture>
 
+#define SIP_NO_FILE
+
 namespace Qt3DExtras
 {
   class QCuboidMesh;
@@ -43,7 +45,6 @@ namespace Qt3DRender
 
 class QgsImageTexture;
 
-#define SIP_NO_FILE
 
 /**
  * \brief Base class for all skybox types.

@@ -31,6 +31,8 @@
 #include "qgspointcloudindex.h"
 #include "qgspointcloudsubindex.h"
 
+#define SIP_NO_FILE
+
 class QgsAbstractTerrainProvider;
 class QgsCurve;
 class QgsGeos;
@@ -43,7 +45,6 @@ class QgsPreparedPointCloudRendererData;
 class QgsProfileRequest;
 class QgsProfileSnapContext;
 
-#define SIP_NO_FILE
 
 
 /**

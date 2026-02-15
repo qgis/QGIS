@@ -18,7 +18,6 @@
 #ifndef QGSALGORITHMEXPORTTOPOSTGRESQL_H
 #define QGSALGORITHMEXPORTTOPOSTGRESQL_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsabstractdatabaseproviderconnection.h"
@@ -27,6 +26,8 @@
 #include "qgsvectorlayerexporter.h"
 
 #include <QString>
+
+#define SIP_NO_FILE
 
 using namespace Qt::StringLiterals;
 

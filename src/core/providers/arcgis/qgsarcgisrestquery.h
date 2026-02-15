@@ -15,7 +15,6 @@
 #ifndef QGSARCGISRESTQUERY_H
 #define QGSARCGISRESTQUERY_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 #include "qgshttpheaders.h"
@@ -23,6 +22,8 @@
 
 #include <QString>
 #include <QVariantMap>
+
+#define SIP_NO_FILE
 
 class QgsFeedback;
 class QNetworkReply;

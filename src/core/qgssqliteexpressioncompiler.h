@@ -16,12 +16,13 @@
 #ifndef QGSSQLITEEXPRESSIONCOMPILER_H
 #define QGSSQLITEEXPRESSIONCOMPILER_H
 
-#define SIP_NO_FILE
 
 ///@cond PRIVATE
 
 #include "qgis_core.h"
 #include "qgssqlexpressioncompiler.h"
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup core

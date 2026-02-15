@@ -22,9 +22,10 @@
 #include "qgsvectortiledataprovider.h"
 #include "qgsvectortilematrixset.h"
 
+#define SIP_NO_FILE
+
 class QgsMbTiles;
 
-#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

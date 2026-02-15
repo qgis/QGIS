@@ -16,12 +16,13 @@
 #ifndef QGSVECTORTILELAYERRENDERER_H
 #define QGSVECTORTILELAYERRENDERER_H
 
-#define SIP_NO_FILE
 
 #include "qgsmapclippingregion.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgsvectortilematrixset.h"
 #include "qgsvectortilerenderer.h"
+
+#define SIP_NO_FILE
 
 class QgsVectorTileLayer;
 class QgsVectorTileRawData;

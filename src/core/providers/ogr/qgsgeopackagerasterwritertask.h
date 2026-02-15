@@ -19,12 +19,13 @@
 
 ///@cond PRIVATE
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 #include "qgsfeedback.h"
 #include "qgsgeopackagerasterwriter.h"
 #include "qgstaskmanager.h"
+
+#define SIP_NO_FILE
 
 /**
  * \class QgsGeoPackageRasterWriterTask

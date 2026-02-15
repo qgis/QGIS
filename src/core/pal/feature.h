@@ -30,7 +30,6 @@
 #ifndef FEATURE_H
 #define FEATURE_H
 
-#define SIP_NO_FILE
 
 
 #include <cmath>
@@ -44,6 +43,8 @@
 #include "qgstextrendererutils.h"
 
 #include <QString>
+
+#define SIP_NO_FILE
 
 namespace pal
 {

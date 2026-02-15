@@ -16,13 +16,14 @@
 #ifndef QGSPOINTCLOUDLAYERUNDOCOMMAND_H
 #define QGSPOINTCLOUDLAYERUNDOCOMMAND_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudindex.h"
 
 #include <QUndoCommand>
+
+#define SIP_NO_FILE
 
 class QgsPointCloudLayer;
 

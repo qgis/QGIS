@@ -22,8 +22,9 @@
 #include "qgis_sip.h"
 #include "qgsabstractdbtablemodel.h"
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 class QgsOgrDbTableModel : public QgsAbstractDbTableModel
 {

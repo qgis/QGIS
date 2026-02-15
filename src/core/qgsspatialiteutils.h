@@ -18,12 +18,13 @@
 #ifndef QGSSPATIALITEUTILS_H
 #define QGSSPATIALITEUTILS_H
 
-#define SIP_NO_FILE
 
 #include <functional>
 
 #include "qgis_core.h"
 #include "qgssqliteutils.h"
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup core

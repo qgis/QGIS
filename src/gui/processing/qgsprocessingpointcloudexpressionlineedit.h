@@ -18,7 +18,6 @@
 #ifndef QGSPROCESSINGPOINTCLOUDEXPRESSIONLINEEDIT_H
 #define QGSPROCESSINGPOINTCLOUDEXPRESSIONLINEEDIT_H
 
-#define SIP_NO_FILE
 
 #include "ui_qgsprocessingpointcloudexpressiondialogbase.h"
 
@@ -30,6 +29,8 @@
 #include <QStandardItem>
 #include <QStandardItemModel>
 #include <QWidget>
+
+#define SIP_NO_FILE
 
 class QgsFilterLineEdit;
 class QToolButton;

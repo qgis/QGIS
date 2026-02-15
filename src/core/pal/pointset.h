@@ -30,7 +30,6 @@
 #ifndef POINTSET_H
 #define POINTSET_H
 
-#define SIP_NO_FILE
 
 
 #include <cfloat>
@@ -42,6 +41,8 @@
 #include "qgis_core.h"
 #include "qgsgeos.h"
 #include "qgsrectangle.h"
+
+#define SIP_NO_FILE
 
 namespace pal
 {
