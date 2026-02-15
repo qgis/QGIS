@@ -157,7 +157,7 @@ void QgsSpatiaLiteSourceSelect::populateConnectionList()
   for ( const QString &name : list )
   {
     // retrieving the SQLite DB name and full path
-    const QString text = name + tr( "@" ) + QgsSpatiaLiteConnection::connectionPath( name );
+    const QString text = name + '@' + QgsSpatiaLiteConnection::connectionPath( name );
     cmbConnections->addItem( text );
   }
   setConnectionListPosition();
@@ -481,15 +481,13 @@ void QgsSpatiaLiteSourceSelect::setConnectionListPosition()
 {
   const QgsSettings settings;
   // If possible, set the item currently displayed database
-  QString toSelect = settings.value( u"SpatiaLite/connections/selected"_s ).toString();
+  QString name = settings.value( u"SpatiaLite/connections/selected"_s ).toString();
 
-  toSelect += '@' + settings.value( "/SpatiaLite/connections/" + toSelect + "/sqlitepath" ).toString();
-
-  cmbConnections->setCurrentIndex( cmbConnections->findText( toSelect ) );
+  cmbConnections->setCurrentIndex( cmbConnections->findText( name ) );
 
   if ( cmbConnections->currentIndex() < 0 )
   {
-    if ( toSelect.isNull() )
+    if ( name.isEmpty() )
       cmbConnections->setCurrentIndex( 0 );
     else
       cmbConnections->setCurrentIndex( cmbConnections->count() - 1 );
