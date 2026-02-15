@@ -120,11 +120,15 @@ QgsFcgiServerRequest::QgsFcgiServerRequest()
   // Fill the headers dictionary
   for ( const auto &headerKey : qgsEnumMap<QgsServerRequest::RequestHeader>() )
   {
-    const QString headerName = QgsStringUtils::capitalize( QString( headerKey ).replace( '_'_L1, ' '_L1 ), Qgis::Capitalization::TitleCase ).replace( ' '_L1, '-'_L1 );
+    const QString headerName = QgsStringUtils::capitalize(
+                                 QString( headerKey ).replace( '_'_L1, ' '_L1 ), Qgis::Capitalization::TitleCase
+                               )
+                               .replace( ' '_L1, '-'_L1 );
     const char *result = getenv( u"HTTP_%1"_s.arg( headerKey ).toStdString().c_str() );
     if ( result && strlen( result ) > 0 )
     {
       setHeader( headerName, result );
+      QgsMessageLog::logMessage( u"HTTP HEADER %1: %2"_s.arg( headerName ).arg( QString( result ) ), u"Server"_s, Qgis::MessageLevel::Info );
     }
   }
 
@@ -162,7 +166,9 @@ void QgsFcgiServerRequest::fillUrl( QUrl &url ) const
   // scheme
   if ( url.scheme().isEmpty() )
   {
-    QString( getenv( "HTTPS" ) ).compare( "on"_L1, Qt::CaseInsensitive ) == 0 ? url.setScheme( u"https"_s ) : url.setScheme( u"http"_s );
+    QString( getenv( "HTTPS" ) ).compare( "on"_L1, Qt::CaseInsensitive ) == 0
+    ? url.setScheme( u"https"_s )
+    : url.setScheme( u"http"_s );
   }
 }
 
@@ -231,7 +237,8 @@ void QgsFcgiServerRequest::printRequestInfos( const QUrl &url ) const
 {
   QgsMessageLog::logMessage( u"******************** New request ***************"_s, u"Server"_s, Qgis::MessageLevel::Info );
 
-  const QStringList envVars {
+  const QStringList envVars
+  {
     u"SERVER_NAME"_s,
     u"REQUEST_URI"_s,
     u"SCRIPT_NAME"_s,
@@ -270,14 +277,6 @@ void QgsFcgiServerRequest::printRequestInfos( const QUrl &url ) const
     }
   }
 
-  qDebug() << "Headers:";
-  qDebug() << "------------------------------------------------";
-  const QMap<QString, QString> &hdrs = headers();
-  for ( auto it = hdrs.constBegin(); it != hdrs.constEnd(); it++ )
-  {
-    qDebug() << it.key() << ": " << it.value();
-    QgsMessageLog::logMessage( u"HTTP HEADER %1: %2"_s.arg( it.key() ).arg( QString( it.value() ) ), u"Server"_s, Qgis::MessageLevel::Info );
-  }
 }
 
 QString QgsFcgiServerRequest::header( const QString &name ) const
