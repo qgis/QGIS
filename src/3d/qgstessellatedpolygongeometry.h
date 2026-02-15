@@ -20,6 +20,8 @@
 
 #include <Qt3DCore/QGeometry>
 
+#define SIP_NO_FILE
+
 class Qgs3DSceneExporter;
 class QgsPolygon;
 class QgsPointXY;
@@ -29,7 +31,6 @@ namespace Qt3DCore
   class QBuffer;
 }
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup qgis_3d

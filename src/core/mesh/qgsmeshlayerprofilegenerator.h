@@ -27,13 +27,14 @@
 #include "qgscoordinatetransformcontext.h"
 #include "qgstriangularmesh.h"
 
+#define SIP_NO_FILE
+
 class QgsProfileRequest;
 class QgsCurve;
 class QgsMeshLayer;
 class QgsAbstractTerrainProvider;
 class QgsProfileSnapContext;
 
-#define SIP_NO_FILE
 
 
 /**

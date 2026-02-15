@@ -24,10 +24,11 @@
 #include <QObject>
 #include <QString>
 
+#define SIP_NO_FILE
+
 using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 class QgsOgrItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {

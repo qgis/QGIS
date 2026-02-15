@@ -27,11 +27,12 @@
 // version without notice, or even be removed.
 //
 
-#define SIP_NO_FILE
 
 #include <QImage>
 #include <QSize>
 #include <Qt3DCore/QGeometry>
+
+#define SIP_NO_FILE
 
 namespace Qt3DCore
 {

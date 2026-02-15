@@ -16,10 +16,11 @@
 #ifndef QGSRASTERLAYERRENDERER_H
 #define QGSRASTERLAYERRENDERER_H
 
-#define SIP_NO_FILE
 
 #include "qgsmapclippingregion.h"
 #include "qgsmaplayerrenderer.h"
+
+#define SIP_NO_FILE
 
 class QPainter;
 

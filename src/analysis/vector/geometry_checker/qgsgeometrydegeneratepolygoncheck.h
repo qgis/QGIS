@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#define SIP_NO_FILE
 
 #ifndef QGS_GEOMETRY_DEGENERATEPOLYGON_CHECK_H
 #define QGS_GEOMETRY_DEGENERATEPOLYGON_CHECK_H
@@ -21,6 +20,8 @@
 #include "qgsgeometrycheck.h"
 
 #include <QString>
+
+#define SIP_NO_FILE
 
 using namespace Qt::StringLiterals;
 

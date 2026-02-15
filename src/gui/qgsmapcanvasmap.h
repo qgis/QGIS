@@ -18,10 +18,11 @@
 
 #include "qgsmapcanvasitem.h"
 
+#define SIP_NO_FILE
+
 class QgsMapSettings;
 class QgsMapCanvas;
 
-#define SIP_NO_FILE
 
 /// @cond PRIVATE
 

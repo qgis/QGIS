@@ -18,7 +18,6 @@
 #ifndef QGSMESHLAYERUTILS_H
 #define QGSMESHLAYERUTILS_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 #include "qgsmaptopixel.h"
@@ -28,6 +27,8 @@
 
 #include <QSize>
 #include <QVector>
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

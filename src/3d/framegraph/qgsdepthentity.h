@@ -18,12 +18,13 @@
 
 #include "qgsrenderpassquad.h"
 
+#define SIP_NO_FILE
+
 namespace Qt3DRender
 {
   class QTexture2D;
 }
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup qgis_3d

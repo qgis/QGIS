@@ -17,13 +17,14 @@
 #define QGSMAPLAYERLOADSTYLEDIALOG_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "ui_qgsvectorlayerloadstyledialog.h"
 
 #include "qgis_gui.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayerproperties.h"
+
+#define SIP_NO_FILE
 
 class QgsMapLayerStyleCategoriesModel;
 

@@ -18,10 +18,11 @@
 
 ///@cond PRIVATE
 
-#define SIP_NO_FILE
 
 #include "qgsfeedback.h"
 #include "qgsmimedatautils.h"
+
+#define SIP_NO_FILE
 
 class QgsGeoPackageRasterWriter
 {

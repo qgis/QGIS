@@ -24,12 +24,13 @@
 #include <QCache>
 #include <QReadWriteLock>
 
+#define SIP_NO_FILE
+
 class QgsTileMatrixSet;
 class QgsTileXYZ;
 class QgsVectorTileRawData;
 class QgsVectorTileMatrixSet;
 
-#define SIP_NO_FILE
 
 /**
  * Shared data class for vector tile layer data providers.

@@ -18,7 +18,6 @@
 #ifndef QGSPROCESSINGRASTERCALCULATOREXPRESSIONLINEEDIT_H
 #define QGSPROCESSINGRASTERCALCULATOREXPRESSIONLINEEDIT_H
 
-#define SIP_NO_FILE
 
 #include "ui_qgsprocessingrastercalculatorexpressiondialogbase.h"
 
@@ -27,6 +26,8 @@
 
 #include <QDialog>
 #include <QWidget>
+
+#define SIP_NO_FILE
 
 class QgsFilterLineEdit;
 class QToolButton;

@@ -19,7 +19,6 @@
 #ifndef QGSSFCGALENGINE_H
 #define QGSSFCGALENGINE_H
 
-#define SIP_NO_FILE
 
 #include <SFCGAL/capi/sfcgal_c.h>
 #include <source_location>
@@ -32,6 +31,8 @@
 #include "qgsvector3d.h"
 
 #include <QMatrix4x4>
+
+#define SIP_NO_FILE
 
 class QgsGeometry;
 class QgsSfcgalGeometry;

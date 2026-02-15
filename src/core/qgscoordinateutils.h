@@ -18,12 +18,13 @@
 #ifndef QGSCOORDINATEUTILS_H
 #define QGSCOORDINATEUTILS_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 
 #include <QObject>
 #include <QString>
+
+#define SIP_NO_FILE
 
 class QgsPointXY;
 class QgsCoordinateReferenceSystem;

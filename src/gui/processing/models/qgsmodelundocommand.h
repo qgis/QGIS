@@ -21,9 +21,10 @@
 
 #include <QUndoCommand>
 
+#define SIP_NO_FILE
+
 class QgsProcessingModelAlgorithm;
 
-#define SIP_NO_FILE
 
 ///@cond NOT_STABLE
 

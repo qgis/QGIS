@@ -20,6 +20,8 @@
 
 #include <QSizeF>
 
+#define SIP_NO_FILE
+
 class QgsFrameGraph;
 
 namespace Qt3DRender
@@ -28,7 +30,6 @@ namespace Qt3DRender
   class QParameter;
 } //namespace Qt3DRender
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup qgis_3d

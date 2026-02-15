@@ -35,9 +35,10 @@
 #include <QString>
 #include <QVector>
 
+#define SIP_NO_FILE
+
 class QgsProfileRequest;
 
-#define SIP_NO_FILE
 
 /**
  * \brief Abstract base class for storage of elevation profiles which represent a continuous surface (e.g. mesh layers and raster layers).

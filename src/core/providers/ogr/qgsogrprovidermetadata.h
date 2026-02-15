@@ -19,8 +19,9 @@ email                : nyall dot dawson at gmail dot com
 
 #include "qgsprovidermetadata.h"
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 class QgsLayerMetadataProviderResult;
 

@@ -18,7 +18,6 @@
 #ifndef QGSGEOMETRYFACTORY_H
 #define QGSGEOMETRYFACTORY_H
 
-#define SIP_NO_FILE
 
 #include <memory>
 
@@ -26,6 +25,8 @@
 #include "qgswkbtypes.h"
 
 #include <QString>
+
+#define SIP_NO_FILE
 
 class QgsAbstractGeometry;
 class QgsLineString;

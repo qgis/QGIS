@@ -17,12 +17,13 @@
 #ifndef QGSAUTHMETHODMETADATA_H
 #define QGSAUTHMETHODMETADATA_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
 #include <QString>
+
+#define SIP_NO_FILE
 
 class QgsAuthMethod;
 

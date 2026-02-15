@@ -30,7 +30,6 @@
 #ifndef LABELPOSITION_H
 #define LABELPOSITION_H
 
-#define SIP_NO_FILE
 
 
 #include <fstream>
@@ -38,6 +37,8 @@
 #include "palrtree.h"
 #include "pointset.h"
 #include "qgis_core.h"
+
+#define SIP_NO_FILE
 
 namespace pal
 {

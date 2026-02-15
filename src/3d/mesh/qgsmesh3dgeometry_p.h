@@ -27,6 +27,8 @@
 #include <QVector3D>
 #include <Qt3DCore/QGeometry>
 
+#define SIP_NO_FILE
+
 ///@cond PRIVATE
 
 //
@@ -38,7 +40,6 @@
 // version without notice, or even be removed.
 //
 
-#define SIP_NO_FILE
 
 namespace Qt3DCore
 {

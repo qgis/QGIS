@@ -33,6 +33,8 @@
 #include <QMatrix4x4>
 #include <QTime>
 
+#define SIP_NO_FILE
+
 class QgsAABB;
 class QgsChunkNode;
 class QgsChunkList;
@@ -42,8 +44,6 @@ class QgsChunkBoundsEntity;
 class QgsChunkQueueJobFactory;
 class QgsRay3D;
 class QgsRayCastContext;
-
-#define SIP_NO_FILE
 
 
 /**

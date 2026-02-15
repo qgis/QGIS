@@ -30,7 +30,6 @@
 
 #define SIP_NO_FILE
 
-
 class QgsMapToolClippingPlanes;
 class Qgs3DMapToolPointCloudChangeAttributePaintbrush;
 class QLabel;

@@ -22,11 +22,12 @@
 #include <QEasingCurve>
 #include <QVector>
 
+#define SIP_NO_FILE
+
 class QDomDocument;
 class QDomElement;
 class QgsReadWriteContext;
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup qgis_3d

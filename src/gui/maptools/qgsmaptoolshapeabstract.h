@@ -17,7 +17,6 @@
 #define QGSMAPTOOLSHAPEABSTRACT_H
 
 // no bindings for now, not stable yet
-#define SIP_NO_FILE
 
 #include "qgis_gui.h"
 #include "qgsabstractgeometry.h"
@@ -26,6 +25,8 @@
 
 #include <QIcon>
 #include <QString>
+
+#define SIP_NO_FILE
 
 class QgsMapMouseEvent;
 class QgsVectorLayer;

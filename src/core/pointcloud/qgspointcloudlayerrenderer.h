@@ -31,6 +31,8 @@
 #include <QPainter>
 #include <QString>
 
+#define SIP_NO_FILE
+
 class QgsPointCloudExtentRenderer;
 class QgsPointCloudLayer;
 class QgsPointCloudRenderContext;
@@ -38,7 +40,6 @@ class QgsPointCloudRenderer;
 class QgsPointCloudSubIndex;
 class QgsRenderContext;
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup core

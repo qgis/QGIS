@@ -19,7 +19,6 @@
 #define QGSLAYOUTATTRIBUTESELECTIONDIALOG_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "ui_qgslayoutattributeselectiondialogbase.h"
 
@@ -33,6 +32,8 @@
 #include <QMap>
 #include <QSet>
 #include <QSortFilterProxyModel>
+
+#define SIP_NO_FILE
 
 class QGridLayout;
 class QgsVectorLayer;
