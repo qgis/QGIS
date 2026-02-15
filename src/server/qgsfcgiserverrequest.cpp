@@ -118,8 +118,8 @@ QgsFcgiServerRequest::QgsFcgiServerRequest()
   {
     const QString headerName = QgsStringUtils::capitalize(
                                  QString( headerKey ).replace( '_'_L1, ' '_L1 ), Qgis::Capitalization::TitleCase
-                               )
-                               .replace( ' '_L1, '-'_L1 );
+    )
+                                 .replace( ' '_L1, '-'_L1 );
     const char *result = getenv( u"HTTP_%1"_s.arg( headerKey ).toStdString().c_str() );
     if ( result && strlen( result ) > 0 )
     {
@@ -163,8 +163,8 @@ void QgsFcgiServerRequest::fillUrl( QUrl &url ) const
   if ( url.scheme().isEmpty() )
   {
     QString( getenv( "HTTPS" ) ).compare( "on"_L1, Qt::CaseInsensitive ) == 0
-    ? url.setScheme( u"https"_s )
-    : url.setScheme( u"http"_s );
+      ? url.setScheme( u"https"_s )
+      : url.setScheme( u"http"_s );
   }
 }
 
@@ -233,8 +233,7 @@ void QgsFcgiServerRequest::printRequestInfos( const QUrl &url ) const
 {
   QgsMessageLog::logMessage( u"******************** New request ***************"_s, u"Server"_s, Qgis::MessageLevel::Info );
 
-  const QStringList envVars
-  {
+  const QStringList envVars {
     u"SERVER_NAME"_s,
     u"REQUEST_URI"_s,
     u"SCRIPT_NAME"_s,
@@ -272,7 +271,6 @@ void QgsFcgiServerRequest::printRequestInfos( const QUrl &url ) const
       QgsMessageLog::logMessage( u"%1: %2"_s.arg( envVar ).arg( QString( getenv( envVar.toStdString().c_str() ) ) ), u"Server"_s, Qgis::MessageLevel::Info );
     }
   }
-
 }
 
 QString QgsFcgiServerRequest::header( const QString &name ) const
