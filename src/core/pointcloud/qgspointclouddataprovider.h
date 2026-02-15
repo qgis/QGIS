@@ -163,8 +163,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      *
      * The sub indexes contain a pointer to the individual indexes which may be nullptr if not yet loaded.
      *
-     * \note Not available in Python bindings
-     * \since QGIS 3.32
+     * \since QGIS 4.0
      */
     virtual QVector<QgsPointCloudSubIndex> subIndexes() { return QVector<QgsPointCloudSubIndex>(); }
 
@@ -173,8 +172,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      *
      * Only applies to providers that support multiple indexes
      *
-     * \note Not available in Python bindings
-     * \since QGIS 3.32
+     * \since QGIS 4.0
      */
     virtual void loadSubIndex( int n ) { Q_UNUSED( n ) return; }
 

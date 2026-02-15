@@ -34,7 +34,7 @@
  *
  * The index is initially NULLPTR until the virtual point cloud data provider explicitly loads the uri.
  *
- * \since QGIS 3.32
+ * \since QGIS 4.0
  */
 class CORE_EXPORT QgsPointCloudSubIndex
 {

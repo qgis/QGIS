@@ -22,7 +22,7 @@ data provider.
 The index is initially ``None`` until the virtual point cloud data
 provider explicitly loads the uri.
 
-.. versionadded:: 3.32
+.. versionadded:: 4.0
 %End
 
 %TypeHeaderCode
