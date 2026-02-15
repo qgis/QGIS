@@ -4905,11 +4905,11 @@ QgsMessageBarItem.text: src/gui/qgsmessagebaritem.h#L102
 QgsMessageBarItem.title: src/gui/qgsmessagebaritem.h#L116
 QgsMessageBarItem.widget: src/gui/qgsmessagebaritem.h#L145
 QgsMessageBarItem: src/gui/qgsmessagebaritem.h#L38
-QgsMessageLogViewer.closeEvent: src/gui/qgsmessagelogviewer.h#L62
-QgsMessageLogViewer.eventFilter: src/gui/qgsmessagelogviewer.h#L64
-QgsMessageLogViewer.logMessage: src/gui/qgsmessagelogviewer.h#L52
-QgsMessageLogViewer.reject: src/gui/qgsmessagelogviewer.h#L63
-QgsMessageLogViewer.showTab: src/gui/qgsmessagelogviewer.h#L59
+QgsMessageLogViewer.closeEvent: src/gui/qgsmessagelogviewer.h#L64
+QgsMessageLogViewer.eventFilter: src/gui/qgsmessagelogviewer.h#L66
+QgsMessageLogViewer.logMessage: src/gui/qgsmessagelogviewer.h#L54
+QgsMessageLogViewer.reject: src/gui/qgsmessagelogviewer.h#L65
+QgsMessageLogViewer.showTab: src/gui/qgsmessagelogviewer.h#L61
 QgsMessageLogViewer: src/gui/qgsmessagelogviewer.h#L37
 QgsMessageViewer.appendMessage: src/gui/qgsmessageviewer.h#L40
 QgsMessageViewer.checkBoxState: src/gui/qgsmessageviewer.h#L62
