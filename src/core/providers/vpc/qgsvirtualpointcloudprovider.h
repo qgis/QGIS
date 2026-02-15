@@ -81,6 +81,14 @@ class CORE_EXPORT QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
      */
     double averageSubIndexHeight() const { return mAverageSubIndexHeight; }
 
+
+    /**
+     * Returns whether the VPC contains unsupported files (files other than COPC or EPT).
+     *
+     * \since QGIS 4.0
+     */
+    bool containsUnsupportedFiles() const { return mContainsUnsupportedFiles; }
+
   signals:
     void subIndexLoaded( int i );
 
@@ -102,7 +110,7 @@ class CORE_EXPORT QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
     QgsCoordinateReferenceSystem mCrs;
     double mAverageSubIndexWidth = 0;
     double mAverageSubIndexHeight = 0;
-
+    bool mContainsUnsupportedFiles = false;
     bool mAllEditableFiles = true;
     bool mAllLocalFiles = true;
 };

@@ -283,6 +283,7 @@ void QgsVirtualPointCloudProvider::parseFile()
     if ( !uri.endsWith( u"ept.json"_s, Qt::CaseSensitivity::CaseInsensitive ) &&
          !uri.endsWith( u"copc.laz"_s, Qt::CaseSensitivity::CaseInsensitive ) )
     {
+      mContainsUnsupportedFiles = true;
       QgsDebugError( u"Unsupported point cloud uri: %1"_s.arg( uri ) );
     }
 
