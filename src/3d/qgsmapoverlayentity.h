@@ -33,6 +33,8 @@
 #include "qgsoverlaytextureentity.h"
 #include "qgsrectangle.h"
 
+#include <Qt3DRender/QTextureImageDataPtr>
+
 class Qgs3DMapSettings;
 class QgsOverlayTextureRenderView;
 class QgsMapLayer;

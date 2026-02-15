@@ -15,9 +15,11 @@
 
 #include "qgspoint3dsymbol_p.h"
 
+#include "qgs3drendercontext.h"
 #include "qgs3dutils.h"
 #include "qgsapplication.h"
 #include "qgsbillboardgeometry.h"
+#include "qgsfeature3dhandler_p.h"
 #include "qgsgeotransform.h"
 #include "qgshighlightmaterial.h"
 #include "qgspoint3dbillboardmaterial.h"

@@ -15,6 +15,8 @@
 
 #include "qgspointcloudexpressionnodeimpl.h"
 
+#include "qgspointcloudattribute.h"
+#include "qgspointcloudblock.h"
 #include "qgspointcloudexpression.h"
 
 #include <QString>

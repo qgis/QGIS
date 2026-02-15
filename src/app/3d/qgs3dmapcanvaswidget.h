@@ -17,7 +17,6 @@
 #define QGS3DMAPCANVASWIDGET_H
 
 #include "qgis_app.h"
-#include "qgscamerapose.h"
 #include "qgsgeometry.h"
 #include "qgsrectangle.h"
 #include "qobjectuniqueptr.h"

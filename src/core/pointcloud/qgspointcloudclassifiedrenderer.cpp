@@ -17,7 +17,6 @@
 
 #include "qgspointcloudclassifiedrenderer.h"
 
-#include "qgscolorramp.h"
 #include "qgscolorutils.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgspointcloudblock.h"

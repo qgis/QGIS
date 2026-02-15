@@ -28,7 +28,6 @@
 //
 
 #include "qgis.h"
-#include "qgsaabb.h"
 #include "qgsbox3d.h"
 
 #include <QString>

@@ -27,13 +27,21 @@
 // version without notice, or even be removed.
 //
 
-#include <Qt3DCore/QEntity>
-
-class QgsGeometry;
-class QgsFeature;
-
-#include "qgs3drendercontext.h"
 #include "qgsbox3d.h"
+#include "qgsvector3d.h"
+
+#include <QSet>
+#include <QString>
+#include <QVector>
+
+namespace Qt3DCore
+{
+  class QEntity;
+}
+
+class Qgs3DRenderContext;
+class QgsFeature;
+class QgsGeometry;
 
 #define SIP_NO_FILE
 

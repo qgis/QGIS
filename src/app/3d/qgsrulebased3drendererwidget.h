@@ -24,12 +24,11 @@
 #include "qgsrulebased3drenderer.h"
 #include "qobjectuniqueptr.h"
 
+#include <QAbstractItemModel>
 #include <QWidget>
 
 class QgsVectorLayer;
 class QgsRuleBased3DRenderer;
-
-#include <QAbstractItemModel>
 
 
 class QgsRuleBased3DRendererModel : public QAbstractItemModel

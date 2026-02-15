@@ -17,12 +17,11 @@
 #define QGSDEMTERRAINGENERATOR_H
 
 #include "qgis_3d.h"
+#include "qgscoordinatetransformcontext.h"
+#include "qgsrasterlayer.h"
 #include "qgsterraingenerator.h"
 
-class QgsRasterLayer;
 class QgsDemHeightMapGenerator;
-
-#include "qgsmaplayerref.h"
 
 #define SIP_NO_FILE
 

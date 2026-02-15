@@ -18,10 +18,9 @@
 
 #include "ui_phongmaterialwidget.h"
 
-#include "qgsabstractmaterialsettings.h"
 #include "qgsmaterialsettingswidget.h"
 
-class QgsPhongMaterialSettings;
+class QgsAbstractMaterialSettings;
 
 
 //! Widget for configuration of Phong material settings
