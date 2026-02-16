@@ -2095,6 +2095,29 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
           curveToAdd = std::make_unique<QgsNurbsCurve>( nurbsControlPoints, degree, knots, weights );
         }
+
+        // Transform to layer coordinates if a layer is present
+        if ( curveToAdd )
+        {
+          QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() );
+          if ( vlayer )
+          {
+            const QgsCoordinateTransform ct = mCanvas->mapSettings().layerTransform( vlayer );
+            if ( ct.isValid() && !ct.isShortCircuited() )
+            {
+              try
+              {
+                curveToAdd->transform( ct, Qgis::TransformDirection::Reverse );
+              }
+              catch ( QgsCsException & )
+              {
+                emit messageEmitted( tr( "Cannot transform the geometry to layer coordinates" ), Qgis::MessageLevel::Warning );
+                stopCapturing();
+                return;
+              }
+            }
+          }
+        }
       }
       else
       {
