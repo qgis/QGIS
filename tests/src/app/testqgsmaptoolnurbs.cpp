@@ -53,7 +53,7 @@ class TestQgsMapToolNurbs : public QObject
     QgsMapCanvas *mCanvas = nullptr;
     std::unique_ptr<QgsVectorLayer> mLineLayer;
 
-    void resetMapTool( Qgis::NurbsMode mode );
+    void resetMapTool( Qgis::CaptureTechnique technique );
 };
 
 void TestQgsMapToolNurbs::initTestCase()
@@ -84,11 +84,10 @@ void TestQgsMapToolNurbs::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
-void TestQgsMapToolNurbs::resetMapTool( Qgis::NurbsMode mode )
+void TestQgsMapToolNurbs::resetMapTool( Qgis::CaptureTechnique technique )
 {
   mMapTool->clean();
-  mMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::NurbsCurve );
-  QgsSettingsRegistryCore::settingsDigitizingNurbsMode->setValue( mode );
+  mMapTool->setCurrentCaptureTechnique( technique );
   QgsSettingsRegistryCore::settingsDigitizingNurbsDegree->setValue( 3 );
 }
 
@@ -97,7 +96,7 @@ void TestQgsMapToolNurbs::testNurbsControlPointsMode()
   mLineLayer->startEditing();
   mLineLayer->dataProvider()->truncate();
 
-  resetMapTool( Qgis::NurbsMode::ControlPoints );
+  resetMapTool( Qgis::CaptureTechnique::NurbsCurve );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
 
@@ -127,7 +126,7 @@ void TestQgsMapToolNurbs::testNurbsPolyBezierMode()
   mLineLayer->startEditing();
   mLineLayer->dataProvider()->truncate();
 
-  resetMapTool( Qgis::NurbsMode::PolyBezier );
+  resetMapTool( Qgis::CaptureTechnique::PolyBezier );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
 
@@ -157,7 +156,7 @@ void TestQgsMapToolNurbs::testNurbsControlPointsNotEnoughPoints()
   mLineLayer->dataProvider()->truncate();
   const long long count = mLineLayer->featureCount();
 
-  resetMapTool( Qgis::NurbsMode::ControlPoints );
+  resetMapTool( Qgis::CaptureTechnique::NurbsCurve );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
 
@@ -179,7 +178,7 @@ void TestQgsMapToolNurbs::testNurbsPolyBezierNotEnoughPoints()
   mLineLayer->dataProvider()->truncate();
   const long long count = mLineLayer->featureCount();
 
-  resetMapTool( Qgis::NurbsMode::PolyBezier );
+  resetMapTool( Qgis::CaptureTechnique::PolyBezier );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
 

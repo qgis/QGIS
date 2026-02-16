@@ -121,6 +121,7 @@ bool QgsMapToolCapture::supportsTechnique( Qgis::CaptureTechnique technique ) co
     case Qgis::CaptureTechnique::CircularString:
     case Qgis::CaptureTechnique::Streaming:
     case Qgis::CaptureTechnique::Shape:
+    case Qgis::CaptureTechnique::PolyBezier:
     case Qgis::CaptureTechnique::NurbsCurve:
       return false;
   }
@@ -502,6 +503,7 @@ void QgsMapToolCapture::setCurrentCaptureTechnique( Qgis::CaptureTechnique techn
     case Qgis::CaptureTechnique::Shape:
       mLineDigitizingType = Qgis::WkbType::LineString;
       break;
+    case Qgis::CaptureTechnique::PolyBezier:
     case Qgis::CaptureTechnique::NurbsCurve:
       mLineDigitizingType = Qgis::WkbType::NurbsCurve;
       break;
@@ -547,8 +549,7 @@ void QgsMapToolCapture::setCurrentShapeMapTool( const QgsMapToolShapeMetadata *s
 void QgsMapToolCapture::cadCanvasPressEvent( QgsMapMouseEvent *e )
 {
   // Poly-Bézier mode: handle press to add anchor and start drag
-  if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::NurbsCurve
-       && QgsSettingsRegistryCore::settingsDigitizingNurbsMode->value() == Qgis::NurbsMode::PolyBezier
+  if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::PolyBezier
        && ( mode() == CaptureLine || mode() == CapturePolygon ) )
   {
     if ( e->button() == Qt::LeftButton )
@@ -648,8 +649,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       return;
     }
   }
-  else if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::NurbsCurve
-            && QgsSettingsRegistryCore::settingsDigitizingNurbsMode->value() == Qgis::NurbsMode::PolyBezier )
+  else if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::PolyBezier )
   {
     // Poly-Bézier mode handling
     const QgsPoint mapPoint = QgsPoint( point );
@@ -1164,8 +1164,7 @@ void QgsMapToolCapture::undo( bool isAutoRepeat )
   // Handle Poly-Bézier mode: delete the last anchor with its handles
   // This must be checked before the standard size() check since Poly-Bézier
   // doesn't use mCaptureCurve during capture
-  if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::NurbsCurve
-       && QgsSettingsRegistryCore::settingsDigitizingNurbsMode->value() == Qgis::NurbsMode::PolyBezier
+  if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::PolyBezier
        && mBezierData && mBezierData->anchorCount() > 0 )
   {
     mBezierData->deleteAnchor( mBezierData->anchorCount() - 1 );
@@ -1826,8 +1825,7 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     QVector<double> nurbsWeights;
 
     // Poly-Bézier mode handling
-    if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::NurbsCurve
-         && QgsSettingsRegistryCore::settingsDigitizingNurbsMode->value() == Qgis::NurbsMode::PolyBezier )
+    if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::PolyBezier )
     {
       if ( e->button() == Qt::LeftButton )
       {

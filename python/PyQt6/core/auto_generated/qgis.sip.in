@@ -284,14 +284,10 @@ The development version
       CircularString,
       Streaming,
       Shape,
+      PolyBezier,
       NurbsCurve,
     };
 
-    enum class NurbsMode /BaseType=IntEnum/
-    {
-      ControlPoints,
-      PolyBezier,
-    };
 
     enum class VectorLayerTypeFlag /BaseType=IntFlag/
     {

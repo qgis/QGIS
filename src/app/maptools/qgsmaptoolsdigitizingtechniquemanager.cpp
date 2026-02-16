@@ -51,21 +51,8 @@ QgsMapToolsDigitizingTechniqueManager::QgsMapToolsDigitizingTechniqueManager( QO
   mTechniqueActions.insert( Qgis::CaptureTechnique::CircularString, QgisApp::instance()->mActionDigitizeWithCurve );
   mTechniqueActions.insert( Qgis::CaptureTechnique::Streaming, QgisApp::instance()->mActionStreamDigitize );
   mTechniqueActions.insert( Qgis::CaptureTechnique::Shape, QgisApp::instance()->mActionDigitizeShape );
-
-  connect( QgisApp::instance()->mActionDigitizeWithBezier, &QAction::triggered, this, [this]() {
-    QgsSettingsRegistryCore::settingsDigitizingNurbsMode->setValue( Qgis::NurbsMode::PolyBezier );
-    deleteNurbsDegreeWidget();
-    setCaptureTechnique( Qgis::CaptureTechnique::NurbsCurve );
-  } );
-
-  connect( QgisApp::instance()->mActionDigitizeWithNurbs, &QAction::triggered, this, [this]() {
-    QgsSettingsRegistryCore::settingsDigitizingNurbsMode->setValue( Qgis::NurbsMode::ControlPoints );
-    createNurbsDegreeWidget();
-    setCaptureTechnique( Qgis::CaptureTechnique::NurbsCurve );
-  } );
-
-  QgisApp::instance()->mActionDigitizeWithBezier->setEnabled( false );
-  QgisApp::instance()->mActionDigitizeWithNurbs->setEnabled( false );
+  mTechniqueActions.insert( Qgis::CaptureTechnique::PolyBezier, QgisApp::instance()->mActionDigitizeWithBezier );
+  mTechniqueActions.insert( Qgis::CaptureTechnique::NurbsCurve, QgisApp::instance()->mActionDigitizeWithNurbs );
 
   mDigitizeModeToolButton = new QToolButton();
   mDigitizeModeToolButton->setPopupMode( QToolButton::MenuButtonPopup );
@@ -102,9 +89,6 @@ void QgsMapToolsDigitizingTechniqueManager::setupToolBars()
 
   QgisApp::instance()->mActionStreamDigitize->setShortcut( tr( "R", "Keyboard shortcut: toggle stream digitizing" ) );
   connect( digitizeMenu, &QMenu::triggered, this, [this]( QAction *action ) {
-    if ( action == QgisApp::instance()->mActionDigitizeWithBezier || action == QgisApp::instance()->mActionDigitizeWithNurbs )
-      return;
-
     Qgis::CaptureTechnique technique = mTechniqueActions.key( action, Qgis::CaptureTechnique::StraightSegments );
     if ( mDigitizeModeToolButton->defaultAction() != action )
     {
@@ -201,10 +185,10 @@ void QgsMapToolsDigitizingTechniqueManager::setCaptureTechnique( Qgis::CaptureTe
 
   updateDigitizeModeButton( technique );
 
-  if ( technique != Qgis::CaptureTechnique::NurbsCurve )
-  {
+  if ( technique == Qgis::CaptureTechnique::NurbsCurve )
+    createNurbsDegreeWidget();
+  else
     deleteNurbsDegreeWidget();
-  }
 
   const QList<QgsMapToolCapture *> tools = QgisApp::instance()->captureTools();
   for ( QgsMapToolCapture *tool : tools )
@@ -304,15 +288,12 @@ void QgsMapToolsDigitizingTechniqueManager::updateDigitizeModeButton( const Qgis
     case Qgis::CaptureTechnique::Shape:
       mDigitizeModeToolButton->setDefaultAction( QgisApp::instance()->mActionDigitizeShape );
       break;
-    case Qgis::CaptureTechnique::NurbsCurve:
-    {
-      const Qgis::NurbsMode mode = QgsSettingsRegistryCore::settingsDigitizingNurbsMode->value();
-      if ( mode == Qgis::NurbsMode::PolyBezier )
-        mDigitizeModeToolButton->setDefaultAction( QgisApp::instance()->mActionDigitizeWithBezier );
-      else
-        mDigitizeModeToolButton->setDefaultAction( QgisApp::instance()->mActionDigitizeWithNurbs );
+    case Qgis::CaptureTechnique::PolyBezier:
+      mDigitizeModeToolButton->setDefaultAction( QgisApp::instance()->mActionDigitizeWithBezier );
       break;
-    }
+    case Qgis::CaptureTechnique::NurbsCurve:
+      mDigitizeModeToolButton->setDefaultAction( QgisApp::instance()->mActionDigitizeWithNurbs );
+      break;
   }
 }
 
@@ -367,25 +348,10 @@ void QgsMapToolsDigitizingTechniqueManager::enableDigitizingTechniqueActions( bo
     cit.value()->setChecked( cit.value()->isEnabled() && actualCurrentTechnique == cit.key() );
   }
 
-  const bool nurbsSupported = enabled && supportedTechniques.contains( Qgis::CaptureTechnique::NurbsCurve );
-  QgisApp::instance()->mActionDigitizeWithBezier->setEnabled( nurbsSupported );
-  QgisApp::instance()->mActionDigitizeWithNurbs->setEnabled( nurbsSupported );
-  if ( nurbsSupported && actualCurrentTechnique == Qgis::CaptureTechnique::NurbsCurve )
-  {
-    const Qgis::NurbsMode mode = QgsSettingsRegistryCore::settingsDigitizingNurbsMode->value();
-    QgisApp::instance()->mActionDigitizeWithBezier->setChecked( mode == Qgis::NurbsMode::PolyBezier );
-    QgisApp::instance()->mActionDigitizeWithNurbs->setChecked( mode == Qgis::NurbsMode::ControlPoints );
-    if ( mode == Qgis::NurbsMode::ControlPoints )
-      createNurbsDegreeWidget();
-    else
-      deleteNurbsDegreeWidget();
-  }
+  if ( enabled && actualCurrentTechnique == Qgis::CaptureTechnique::NurbsCurve )
+    createNurbsDegreeWidget();
   else
-  {
-    QgisApp::instance()->mActionDigitizeWithBezier->setChecked( false );
-    QgisApp::instance()->mActionDigitizeWithNurbs->setChecked( false );
     deleteNurbsDegreeWidget();
-  }
 
   QHash<QString, QAction *>::const_iterator sit = mShapeActions.constBegin();
   for ( ; sit != mShapeActions.constEnd(); ++sit )
