@@ -123,9 +123,6 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
 
     bool createAttributeIndex( int field ) override;
 
-    //! Convert a QgsField to work with MSSQL
-    static bool convertField( QgsField &field );
-
     // Parse type name and num coordinates as stored in geometry_columns table and returns normalized (M, Z or ZM) type name
     static QString typeFromMetadata( const QString &typeName, int numCoords );
 
