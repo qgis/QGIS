@@ -1370,16 +1370,26 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
       }
     }
 
-    if ( range.begin() == range.end() )
-      setQueryItem( query, u"TIME"_s, range.begin().toString( format ) );
-    else
+    QString extent = range.begin().toString( format );
+    if ( range.begin() != range.end() )
     {
-      QString extent = range.begin().toString( format );
       extent.append( "/" );
       extent.append( range.end().toString( format ) );
-
-      setQueryItem( query, u"TIME"_s, extent );
     }
+
+    // Validate the format
+    if ( !QDateTime::fromString( extent, format ).isValid() )
+    {
+      QgsMessageLog::logMessage(
+        u"Could not determine temporal format for WMTS time dimension. QDateTime.fromString('%1', '%2').isValid() is false"_s
+          .arg( extent, format ),
+        QObject::tr( "WMS" ),
+        Qgis::MessageLevel::Warning
+      );
+      return;
+    }
+
+    setQueryItem( query, u"TIME"_s, extent );
   }
 
   // If the data provider has bi-temporal properties and they are enabled
