@@ -2470,6 +2470,20 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
             self.assertIn("name2", field_names)
             self.assertNotIn("name1", field_names)
 
+    def test_invalid_subset_string(self):
+        """Check that constructing a vector layer with the incorrect subset
+        string will result in an invalid layer.
+        Related to GH #64282.
+        """
+        testPath = f"dbname={self.dbname} table='test_filter' (geometry) key='id'"
+        table_name = "test_filter"
+        subset_string = f"SELECT * FROM {table_name} WHERE name REGEXP '^i';"
+        # unvalid subset string should result in an invalid layer
+        uri = QgsDataSourceUri(f"dbname={self.dbname}")
+        uri.setDataSource("", table_name, "geometry", subset_string, "")
+        layer = QgsVectorLayer(uri.uri(), "subset layer", "spatialite")
+        self.assertFalse(layer.isValid())
+
 
 if __name__ == "__main__":
     unittest.main()
