@@ -3781,7 +3781,7 @@ def my_form_open(dialog, layer, feature):
       <layerOpacity>1</layerOpacity>
       <SingleCategoryDiagramRenderer diagramType="Pie" attributeLegend="1">
         <DiagramCategory opacity="1" enabled="1" direction="1" backgroundColor="#ffffff" diagramOrientation="Up" barWidth="5" spacingUnitScale="3x:0,0,0,0,0,0" sizeScale="3x:0,0,0,0,0,0" scaleBasedVisibility="0" rotationOffset="270" stackedDiagramSpacingUnitScale="3x:0,0,0,0,0,0" width="15" labelPlacementMethod="XHeight" showAxis="0" spacing="0" lineSizeType="MM" minScaleDenominator="inf" height="15" penColor="#000000" penAlpha="255" scaleDependency="Area" backgroundAlpha="255" stackedDiagramSpacing="0" minimumSize="0" sizeType="MM" lineSizeScale="3x:0,0,0,0,0,0" stackedDiagramSpacingUnit="MM" penWidth="0" spacingUnit="MM" maxScaleDenominator="1e+08" stackedDiagramMode="Horizontal">
-          <fontProperties style="" description="Sans Serif,9,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+          <fontProperties style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
           <attribute color="#6fe20e" colorOpacity="1" label="pk" field="&quot;pk&quot;"/>
           <attribute color="#38c4c2" colorOpacity="1" label=" length( name )" field=" length( name )"/>
           <axisSymbol>
@@ -4312,7 +4312,7 @@ def my_form_open(dialog, layer, feature):
       <layerOpacity>1</layerOpacity>
       <SingleCategoryDiagramRenderer diagramType="Histogram" attributeLegend="1">
         <DiagramCategory opacity="1" enabled="0" direction="1" backgroundColor="#ffffff" diagramOrientation="Up" barWidth="5" spacingUnitScale="3x:0,0,0,0,0,0" sizeScale="3x:0,0,0,0,0,0" scaleBasedVisibility="0" rotationOffset="270" stackedDiagramSpacingUnitScale="3x:0,0,0,0,0,0" width="15" labelPlacementMethod="XHeight" showAxis="0" spacing="0" lineSizeType="MM" minScaleDenominator="-4.65661e-10" height="15" penColor="#000000" penAlpha="255" scaleDependency="Area" backgroundAlpha="255" stackedDiagramSpacing="0" minimumSize="0" sizeType="MM" lineSizeScale="3x:0,0,0,0,0,0" stackedDiagramSpacingUnit="MM" penWidth="0" spacingUnit="MM" maxScaleDenominator="1e+08" stackedDiagramMode="Horizontal">
-          <fontProperties style="" description="Sans Serif,9,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+          <fontProperties style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
           <attribute color="#000000" colorOpacity="1" label="" field=""/>
           <axisSymbol>
             <symbol alpha="1" force_rhr="0" clip_to_extent="1" is_animated="0" name="" type="line" frame_rate="10">
