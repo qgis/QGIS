@@ -53,6 +53,8 @@ class GUI_EXPORT QgsLayoutChartWidget : public QgsLayoutItemBaseWidget, private 
 
     void mChartTypeComboBox_currentIndexChanged( int index );
     void mChartPropertiesButton_clicked();
+    void mFlipAxesCheckBox_stateChanged( int state );
+
     void mSortCheckBox_stateChanged( int state );
     void mSortDirectionButton_clicked();
 
