@@ -20,6 +20,8 @@
 #include "qgscustomization.h"
 #include "qgscustomizationdialog.h"
 #include "qgslayertreeview.h"
+#include "qgsnativealgorithms.h"
+#include "qgsprocessingregistry.h"
 #include "qgstest.h"
 
 #include <QAbstractItemModelTester>
@@ -49,6 +51,7 @@ class TestQgsCustomization : public QgsTest
     void testBackwardCompatibility();
     void testClone();
     void testModel();
+    void testModelProcessing();
 
   private:
     template<class T>
@@ -124,6 +127,7 @@ long long TestQgsCustomization::qactionPosition( const QString &path )
 
 void TestQgsCustomization::initTestCase()
 {
+  QgsApplication::processingRegistry()->addProvider( new QgsNativeAlgorithms( QgsApplication::processingRegistry() ) );
 }
 
 void TestQgsCustomization::cleanupTestCase()
@@ -141,7 +145,6 @@ void TestQgsCustomization::init()
   QgsBrowserGuiModel *browserModel = new QgsBrowserGuiModel( this );
   mQgisApp->mBrowserWidget = new QgsBrowserDockWidget( tr( "Browser" ), browserModel, mQgisApp.get() );
   mQgisApp->mBrowserWidget->setObjectName( u"Browser"_s );
-
 
   // add a test tool bar to test action with menu
   QToolBar *toolBar = new QToolBar( "testToolBar", mQgisApp.get() );
@@ -811,6 +814,127 @@ void TestQgsCustomization::testModel()
     QVERIFY( !findQWidget( "ToolBars/UserToolBar_1" ) );
     actions = findQActions( mQgisApp->toolBarMenu(), u"UserToolBar_1"_s );
     QCOMPARE( actions.count(), 0 );
+  }
+}
+
+void TestQgsCustomization::testModelProcessing()
+{
+  mQgisApp->customization()->setEnabled( true );
+
+  QgsCustomizationDialog::QgsCustomizationModel model( mQgisApp.get(), QgsCustomizationDialog::QgsCustomizationModel::Mode::ItemVisibility );
+  QAbstractItemModelTester modelTester( &model, QAbstractItemModelTester::FailureReportingMode::Fatal );
+
+  QCOMPARE( model.rowCount(), 5 );
+
+  QgsCustomizationDialog::QgsCustomizationModel modelActionSelector( mQgisApp.get(), QgsCustomizationDialog::QgsCustomizationModel::Mode::ActionSelector );
+  QAbstractItemModelTester modelActionSelectorTester( &modelActionSelector, QAbstractItemModelTester::FailureReportingMode::Fatal );
+
+  const QModelIndexList bufferActionIndexes = modelActionSelector.match( modelActionSelector.index( 0, 0 ), Qt::ItemDataRole::DisplayRole, u"native:buffer"_s, -1, Qt::MatchRecursive | Qt::MatchFixedString );
+  QCOMPARE( bufferActionIndexes.count(), 1 );
+
+  std::unique_ptr<QMimeData> mimeData( modelActionSelector.mimeData( bufferActionIndexes ) );
+  QVERIFY( mimeData );
+
+  // add user menu and drop a processing algorithm action
+  {
+    const QModelIndex menusIndex = model.index( 2, 0 );
+    QCOMPARE( model.data( menusIndex, Qt::ItemDataRole::DisplayRole ), u"Menus"_s );
+
+    QModelIndex newMenuItemIndex = model.addUserItem( menusIndex );
+    QCOMPARE( model.data( newMenuItemIndex, Qt::ItemDataRole::DisplayRole ), u"UserMenu_1"_s );
+
+    model.apply();
+    QVERIFY( getItem<QgsCustomization::QgsUserMenuItem>( "Menus/UserMenu_1" ) );
+    QVERIFY( findQWidget( "Menus/UserMenu_1" ) );
+
+    QVERIFY( modelActionSelector.canDropMimeData( mimeData.get(), Qt::DropAction::LinkAction, 0, 0, newMenuItemIndex ) );
+
+    QCOMPARE( model.rowCount( newMenuItemIndex ), 0 );
+    QVERIFY( modelActionSelector.dropMimeData( mimeData.get(), Qt::DropAction::LinkAction, 0, 0, newMenuItemIndex ) );
+    QCOMPARE( model.rowCount( newMenuItemIndex ), 1 );
+
+    QModelIndex actionIndex = model.index( 0, 0, newMenuItemIndex );
+    QCOMPARE( model.data( actionIndex, Qt::ItemDataRole::DisplayRole ), u"ProcessingAlgorithmRef_buffer_1"_s );
+    QCOMPARE( model.data( model.index( 0, 1, newMenuItemIndex ), Qt::ItemDataRole::DisplayRole ), u"Buffer"_s );
+    QVERIFY( !model.data( actionIndex, Qt::ItemDataRole::DecorationRole ).value<QIcon>().isNull() );
+
+    QVERIFY( getItem<QgsCustomization::QgsUserMenuItem>( "Menus/UserMenu_1" ) );
+    QCOMPARE( getItem<QgsCustomization::QgsUserMenuItem>( "Menus/UserMenu_1" )->childrenCount(), 0 );
+
+    model.apply();
+    QVERIFY( getItem<QgsCustomization::QgsProcessingAlgorithmRefItem>( "Menus/UserMenu_1/ProcessingAlgorithmRef_buffer_1" ) );
+    QVERIFY( getItem<QgsCustomization::QgsProcessingAlgorithmRefItem>( "Menus/UserMenu_1/ProcessingAlgorithmRef_buffer_1" )->isVisible() );
+    QVERIFY( findQAction( u"Menus/UserMenu_1/ProcessingAlgorithmRef_buffer_1"_s ) );
+
+    model.setData( actionIndex, Qt::CheckState::Unchecked, Qt::ItemDataRole::CheckStateRole );
+    QCOMPARE( model.data( actionIndex, Qt::ItemDataRole::CheckStateRole ), Qt::CheckState::Unchecked );
+    model.apply();
+    QVERIFY( getItem<QgsCustomization::QgsProcessingAlgorithmRefItem>( "Menus/UserMenu_1/ProcessingAlgorithmRef_buffer_1" ) );
+    QVERIFY( !getItem<QgsCustomization::QgsProcessingAlgorithmRefItem>( "Menus/UserMenu_1/ProcessingAlgorithmRef_buffer_1" )->isVisible() );
+    QVERIFY( !findQAction( u"Menus/UserMenu_1/ProcessingAlgorithmRef_buffer_1"_s ) );
+
+    model.setData( actionIndex, Qt::CheckState::Checked, Qt::ItemDataRole::CheckStateRole );
+    QCOMPARE( model.data( actionIndex, Qt::ItemDataRole::CheckStateRole ), Qt::CheckState::Checked );
+    model.apply();
+    QVERIFY( getItem<QgsCustomization::QgsProcessingAlgorithmRefItem>( "Menus/UserMenu_1/ProcessingAlgorithmRef_buffer_1" ) );
+    QVERIFY( getItem<QgsCustomization::QgsProcessingAlgorithmRefItem>( "Menus/UserMenu_1/ProcessingAlgorithmRef_buffer_1" )->isVisible() );
+    QVERIFY( findQAction( u"Menus/UserMenu_1/ProcessingAlgorithmRef_buffer_1"_s ) );
+
+    model.deleteUserItems( QList<QModelIndex>() << actionIndex );
+    model.apply();
+    QVERIFY( !getItem<QgsCustomization::QgsProcessingAlgorithmRefItem>( "Menus/UserMenu_1/ProcessingAlgorithmRef_buffer_1" ) );
+    QVERIFY( !findQAction( u"Menus/UserMenu_1/ProcessingAlgorithmRef_buffer_1"_s ) );
+  }
+
+  // add user ToolBar and drop a processing algorithm action
+  {
+    const QModelIndex toolBarsIndex = model.index( 4, 0 );
+    QCOMPARE( model.data( toolBarsIndex, Qt::ItemDataRole::DisplayRole ), u"ToolBars"_s );
+
+    QModelIndex newToolBarItemIndex = model.addUserItem( toolBarsIndex );
+    QCOMPARE( model.data( newToolBarItemIndex, Qt::ItemDataRole::DisplayRole ), u"UserToolBar_1"_s );
+
+    model.apply();
+    QVERIFY( getItem<QgsCustomization::QgsUserToolBarItem>( "ToolBars/UserToolBar_1" ) );
+    QVERIFY( findQWidget( "ToolBars/UserToolBar_1" ) );
+
+    QVERIFY( modelActionSelector.canDropMimeData( mimeData.get(), Qt::DropAction::LinkAction, 0, 0, newToolBarItemIndex ) );
+
+    QCOMPARE( model.rowCount( newToolBarItemIndex ), 0 );
+    QVERIFY( modelActionSelector.dropMimeData( mimeData.get(), Qt::DropAction::LinkAction, 0, 0, newToolBarItemIndex ) );
+    QCOMPARE( model.rowCount( newToolBarItemIndex ), 1 );
+
+    QModelIndex actionIndex = model.index( 0, 0, newToolBarItemIndex );
+    QCOMPARE( model.data( actionIndex, Qt::ItemDataRole::DisplayRole ), u"ProcessingAlgorithmRef_buffer_1"_s );
+    QCOMPARE( model.data( model.index( 0, 1, newToolBarItemIndex ), Qt::ItemDataRole::DisplayRole ), u"Buffer"_s );
+    QVERIFY( !model.data( actionIndex, Qt::ItemDataRole::DecorationRole ).value<QIcon>().isNull() );
+
+    QVERIFY( getItem<QgsCustomization::QgsUserToolBarItem>( "ToolBars/UserToolBar_1" ) );
+    QCOMPARE( getItem<QgsCustomization::QgsUserToolBarItem>( "ToolBars/UserToolBar_1" )->childrenCount(), 0 );
+
+    model.apply();
+    QVERIFY( getItem<QgsCustomization::QgsProcessingAlgorithmRefItem>( "ToolBars/UserToolBar_1/ProcessingAlgorithmRef_buffer_1" ) );
+    QVERIFY( getItem<QgsCustomization::QgsProcessingAlgorithmRefItem>( "ToolBars/UserToolBar_1/ProcessingAlgorithmRef_buffer_1" )->isVisible() );
+    QVERIFY( findQAction( u"ToolBars/UserToolBar_1/ProcessingAlgorithmRef_buffer_1"_s ) );
+
+    model.setData( actionIndex, Qt::CheckState::Unchecked, Qt::ItemDataRole::CheckStateRole );
+    QCOMPARE( model.data( actionIndex, Qt::ItemDataRole::CheckStateRole ), Qt::CheckState::Unchecked );
+    model.apply();
+    QVERIFY( getItem<QgsCustomization::QgsProcessingAlgorithmRefItem>( "ToolBars/UserToolBar_1/ProcessingAlgorithmRef_buffer_1" ) );
+    QVERIFY( !getItem<QgsCustomization::QgsProcessingAlgorithmRefItem>( "ToolBars/UserToolBar_1/ProcessingAlgorithmRef_buffer_1" )->isVisible() );
+    QVERIFY( !findQAction( u"ToolBars/UserToolBar_1/ProcessingAlgorithmRef_buffer_1"_s ) );
+
+    model.setData( actionIndex, Qt::CheckState::Checked, Qt::ItemDataRole::CheckStateRole );
+    QCOMPARE( model.data( actionIndex, Qt::ItemDataRole::CheckStateRole ), Qt::CheckState::Checked );
+    model.apply();
+    QVERIFY( getItem<QgsCustomization::QgsProcessingAlgorithmRefItem>( "ToolBars/UserToolBar_1/ProcessingAlgorithmRef_buffer_1" ) );
+    QVERIFY( getItem<QgsCustomization::QgsProcessingAlgorithmRefItem>( "ToolBars/UserToolBar_1/ProcessingAlgorithmRef_buffer_1" )->isVisible() );
+    QVERIFY( findQAction( u"ToolBars/UserToolBar_1/ProcessingAlgorithmRef_buffer_1"_s ) );
+
+    model.deleteUserItems( QList<QModelIndex>() << actionIndex );
+    model.apply();
+    QVERIFY( !getItem<QgsCustomization::QgsProcessingAlgorithmRefItem>( "ToolBars/UserToolBar_1/ProcessingAlgorithmRef_buffer_1" ) );
+    QVERIFY( !findQAction( u"ToolBars/UserToolBar_1/ProcessingAlgorithmRef_buffer_1"_s ) );
   }
 }
 

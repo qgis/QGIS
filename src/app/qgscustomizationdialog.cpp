@@ -21,6 +21,8 @@
 #include "qgsfileutils.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgsprocessingalgorithm.h"
+#include "qgsprocessingregistry.h"
 #include "qgssettings.h"
 
 #include <QAbstractItemModel>
@@ -47,7 +49,8 @@ constexpr int TOOLBAR_ROW = 4;
 
 const QgsSettingsEntryString *QgsCustomizationDialog::sSettingLastSaveDir = new QgsSettingsEntryString( u"last-save-directory"_s, sTreeCustomization, QDir::homePath(), u"Last directory used when saving a customization XML file"_s );
 
-#define ACTIONPATHS_MIMEDATA_NAME "application/qgis.customization.actionpaths"
+#define ACTIONPATHS_MIMEDATA_NAME u"application/qgis.customization.actionpaths"_s
+#define PROCESSING_ALGORITHM_IDS_MIMEDATA_NAME u"application/qgis.customization.processingalgorithmsids"_s
 
 QgsCustomizationDialog::QgsCustomizationModel::QgsCustomizationModel( QgisApp *qgisApp, Mode mode, QObject *parent )
   : QAbstractItemModel( parent )
@@ -225,7 +228,8 @@ void QgsCustomizationDialog::QgsCustomizationModel::init()
   {
     case Mode::ActionSelector:
       mRootItems << mCustomization->menusItem()
-                 << mCustomization->toolBarsItem();
+                 << mCustomization->toolBarsItem()
+                 << mCustomization->processingProvidersItem();
       break;
 
     case Mode::ItemVisibility:
@@ -361,6 +365,7 @@ QMimeData *QgsCustomizationDialog::QgsCustomizationModel::mimeData( const QModel
 
 
   QStringList strActionPaths;
+  QStringList strProcessingAlgorithmIds;
   QSet<int> rows;
   for ( const QModelIndex &index : indexes )
   {
@@ -371,15 +376,33 @@ QMimeData *QgsCustomizationDialog::QgsCustomizationModel::mimeData( const QModel
     rows << index.row();
 
     QgsCustomization::QgsItem *item = index.isValid() ? static_cast<QgsCustomization::QgsItem *>( index.internalPointer() ) : nullptr;
-    if ( QgsCustomization::QgsActionItem *action = dynamic_cast<QgsCustomization::QgsActionItem *>( item ) )
+    if ( auto *action = dynamic_cast<QgsCustomization::QgsActionItem *>( item ) )
+    {
       strActionPaths << action->path();
+    }
+    else if ( auto *processingAlgorithmId = dynamic_cast<QgsCustomization::QgsProcessingAlgorithmItem *>( item ) )
+    {
+      strProcessingAlgorithmIds << processingAlgorithmId->name();
+    }
   }
 
-  QByteArray actionPaths;
-  QDataStream dataStreamWrite( &actionPaths, QIODevice::WriteOnly );
-  dataStreamWrite << strActionPaths;
+  if ( !strActionPaths.isEmpty() )
+  {
+    QByteArray actionPaths;
+    QDataStream dataStreamWrite( &actionPaths, QIODevice::WriteOnly );
+    dataStreamWrite << strActionPaths;
 
-  mimeData->setData( QStringLiteral( ACTIONPATHS_MIMEDATA_NAME ), actionPaths );
+    mimeData->setData( ACTIONPATHS_MIMEDATA_NAME, actionPaths );
+  }
+
+  if ( !strProcessingAlgorithmIds.isEmpty() )
+  {
+    QByteArray actionPaths;
+    QDataStream dataStreamWrite( &actionPaths, QIODevice::WriteOnly );
+    dataStreamWrite << strProcessingAlgorithmIds;
+
+    mimeData->setData( PROCESSING_ALGORITHM_IDS_MIMEDATA_NAME, actionPaths );
+  }
 
   return mimeData;
 }
@@ -394,7 +417,7 @@ bool QgsCustomizationDialog::QgsCustomizationModel::canDropMimeData( const QMime
          // Try to see if we can workaround thin in dragEnterEvent
          // uncomment the following lines when fixed
          /* && item && item->hasCapability( QgsCustomization::Item::ItemCapability::UserMenuChild ) */
-         && data && data->hasFormat( QStringLiteral( ACTIONPATHS_MIMEDATA_NAME ) );
+         && data && ( data->hasFormat( ACTIONPATHS_MIMEDATA_NAME ) || data->hasFormat( PROCESSING_ALGORITHM_IDS_MIMEDATA_NAME ) );
 }
 
 bool QgsCustomizationDialog::QgsCustomizationModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int, const QModelIndex &parent )
@@ -402,11 +425,21 @@ bool QgsCustomizationDialog::QgsCustomizationModel::dropMimeData( const QMimeDat
   if ( action == Qt::IgnoreAction )
     return true;
 
+  if ( row == -1 )
+    row = rowCount( parent ); // if dropped directly onto group item, insert at last position
+
+  return dropMimeDataActions( data, row, parent ) || dropMimeDataProcessingAlgorithms( data, row, parent );
+}
+
+bool QgsCustomizationDialog::QgsCustomizationModel::dropMimeDataActions( const QMimeData *data, int row, const QModelIndex &parent )
+{
   QgsCustomization::QgsItem *item = parent.isValid() ? static_cast<QgsCustomization::QgsItem *>( parent.internalPointer() ) : nullptr;
-  if ( !item || !item->hasCapability( QgsCustomization::QgsItem::ItemCapability::AddActionRefChild ) || !data || !data->hasFormat( QStringLiteral( ACTIONPATHS_MIMEDATA_NAME ) ) )
+  if ( !item || !data
+       || !item->hasCapability( QgsCustomization::QgsItem::ItemCapability::AddActionRefChild )
+       || !data->hasFormat( ACTIONPATHS_MIMEDATA_NAME ) )
     return false;
 
-  QDataStream dataStreamRead( data->data( QStringLiteral( ACTIONPATHS_MIMEDATA_NAME ) ) );
+  QDataStream dataStreamRead( data->data( ACTIONPATHS_MIMEDATA_NAME ) );
   QStringList actionPaths;
   dataStreamRead >> actionPaths;
 
@@ -426,11 +459,8 @@ bool QgsCustomizationDialog::QgsCustomizationModel::dropMimeData( const QMimeDat
   if ( actions.isEmpty() )
     return false;
 
-  if ( row == -1 )
-    row = 0; // if dropped directly onto group item, insert at first position
-
   beginInsertRows( parent, row, row + static_cast<int>( actions.count() ) - 1 );
-  for ( QPair<QgsCustomization::QgsActionItem *, QString> actionAndPath : actions )
+  for ( QPair<QgsCustomization::QgsActionItem *, QString> actionAndPath : std::as_const( actions ) )
   {
     QgsCustomization::QgsActionItem *action = actionAndPath.first;
     auto actionRef = std::make_unique<QgsCustomization::QgsActionRefItem>( mCustomization->uniqueActionName( action->name() ), action->title(), actionAndPath.second, item );
@@ -442,6 +472,49 @@ bool QgsCustomizationDialog::QgsCustomizationModel::dropMimeData( const QMimeDat
 
   return true;
 }
+
+bool QgsCustomizationDialog::QgsCustomizationModel::dropMimeDataProcessingAlgorithms( const QMimeData *data, int row, const QModelIndex &parent )
+{
+  QgsCustomization::QgsItem *item = parent.isValid() ? static_cast<QgsCustomization::QgsItem *>( parent.internalPointer() ) : nullptr;
+  if ( !QgsApplication::processingRegistry()
+       || !item || !data
+       || !item->hasCapability( QgsCustomization::QgsItem::ItemCapability::AddProcessingAlgorithmRefChild )
+       || !data->hasFormat( PROCESSING_ALGORITHM_IDS_MIMEDATA_NAME ) )
+    return false;
+
+  QDataStream dataStreamRead( data->data( PROCESSING_ALGORITHM_IDS_MIMEDATA_NAME ) );
+  QStringList processingAlgorithmIds;
+  dataStreamRead >> processingAlgorithmIds;
+
+  QList<const QgsProcessingAlgorithm *> processingAlgorithms;
+  for ( QString processingAlgorithmId : std::as_const( processingAlgorithmIds ) )
+  {
+    const QgsProcessingAlgorithm *processingAlgorithm = QgsApplication::processingRegistry()->algorithmById( processingAlgorithmId );
+    if ( !processingAlgorithm )
+    {
+      QgsDebugError( u"Invalid processing algorithm id '%1'"_s.arg( processingAlgorithmId ) );
+      continue;
+    }
+
+    processingAlgorithms << processingAlgorithm;
+  }
+
+  if ( processingAlgorithms.isEmpty() )
+    return false;
+
+  beginInsertRows( parent, row, row + static_cast<int>( processingAlgorithms.count() ) - 1 );
+  for ( const QgsProcessingAlgorithm *processingAlgorithm : std::as_const( processingAlgorithms ) )
+  {
+    auto processingAlgorithmRef = std::make_unique<QgsCustomization::QgsProcessingAlgorithmRefItem>( processingAlgorithm->id(), mCustomization->uniqueProcessingAlgorithmName( processingAlgorithm->name() ), processingAlgorithm->displayName(), item );
+    processingAlgorithmRef->setIcon( processingAlgorithm->icon() );
+    item->insertChild( row, std::move( processingAlgorithmRef ) );
+  }
+
+  endInsertRows();
+
+  return true;
+}
+
 
 ////////////////
 
@@ -502,6 +575,7 @@ QgsCustomizationDialog::QgsCustomizationDialog( QgisApp *qgisApp )
     proxyModel->setRecursiveFilteringEnabled( true );
     proxyModel->setSourceModel( mItemsVisibilityModel );
     mTreeView->setModel( proxyModel );
+    mTreeView->setAutoScroll( true );
     mTreeView->resizeColumnToContents( 0 );
     mTreeView->header()->resizeSection( 0, 250 );
     mTreeView->setContextMenuPolicy( Qt::ContextMenuPolicy::ActionsContextMenu );
@@ -509,6 +583,7 @@ QgsCustomizationDialog::QgsCustomizationDialog( QgisApp *qgisApp )
     connect( mFilterLe, &QgsFilterLineEdit::valueChanged, proxyModel, &QSortFilterProxyModel::setFilterFixedString );
     connect( mTreeView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsCustomizationDialog::currentItemChanged );
     connect( mTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsCustomizationDialog::selectedItemsChanged );
+    connect( mItemsVisibilityModel, &QAbstractItemModel::rowsInserted, this, &QgsCustomizationDialog::onRowsInserted );
   }
 
   mActionsTreeView->setEnabled( false );
@@ -662,13 +737,16 @@ void QgsCustomizationDialog::selectedItemsChanged()
   mDeleteAction->setToolTip( tooltip );
 }
 
+void QgsCustomizationDialog::onRowsInserted( const QModelIndex &parent, int first, int )
+{
+  const QModelIndex newIndex = treeViewModel()->mapFromSource( mItemsVisibilityModel->index( first, 0, parent ) );
+  mTreeView->setCurrentIndex( newIndex );
+}
+
 void QgsCustomizationDialog::addUserItem()
 {
   const QModelIndex parentIndex = treeViewModel()->mapToSource( mTreeView->selectionModel()->currentIndex() );
-  const QModelIndex userItemIndex = mItemsVisibilityModel->addUserItem( parentIndex );
-  const QModelIndex viewUserItemIndex = treeViewModel()->mapFromSource( userItemIndex );
-  mTreeView->scrollTo( viewUserItemIndex );
-  mTreeView->setCurrentIndex( viewUserItemIndex );
+  ( void ) mItemsVisibilityModel->addUserItem( parentIndex );
 }
 
 void QgsCustomizationDialog::deleteSelectedItems()
