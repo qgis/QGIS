@@ -53,6 +53,11 @@ class QgsMssqlUtils
      * Converts the string values from .STGeometryType() to a QGIS WKB type.
      */
     static Qgis::WkbType wkbTypeFromGeometryType( const QString &type );
+
+    /**
+     * Returns the Transect-SQL column definition for a QGIS \a field definition.
+     */
+    static QString columnDefinitionForField( const QgsField &field );
 };
 
 

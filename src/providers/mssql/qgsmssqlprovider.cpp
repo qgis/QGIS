@@ -1338,19 +1338,11 @@ bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
   attributeClauses.reserve( attributes.size() );
   for ( QList<QgsField>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {
-    QString type = it->typeName();
-    if ( type == "char"_L1 || type == "varchar"_L1 || type == "nvarchar"_L1 )
-    {
-      if ( it->length() > 0 )
-        type = u"%1(%2)"_s.arg( type ).arg( it->length() );
-    }
-    else if ( type == "numeric"_L1 || type == "decimal"_L1 )
-    {
-      if ( it->length() > 0 && it->precision() > 0 )
-        type = u"%1(%2,%3)"_s.arg( type ).arg( it->length() ).arg( it->precision() );
-    }
+    const QString definition = QgsMssqlUtils::columnDefinitionForField( *it );
+    if ( definition.isEmpty() )
+      return false;
 
-    attributeClauses.append( u"[%1] %2"_s.arg( it->name(), type ) );
+    attributeClauses.append( definition );
   }
   statement += attributeClauses.join( ", "_L1 );
 
