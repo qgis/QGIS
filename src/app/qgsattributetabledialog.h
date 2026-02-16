@@ -42,6 +42,12 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     Q_OBJECT
 
   public:
+    //! Settings entry autosize columns by default when opening attribute table
+    static const QgsSettingsEntryBool *settingsAutosizeAttributeTable SIP_SKIP;
+
+    //! Settings entry whether attribute tables are docked by default
+    static const QgsSettingsEntryBool *settingsAttributeTableDefaultDocked SIP_SKIP;
+
     /**
      * Constructor
      * \param layer layer pointer

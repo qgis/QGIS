@@ -125,8 +125,6 @@ const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsNetworkCacheDirec
 
 const QgsSettingsEntryInteger64 *QgsSettingsRegistryCore::settingsNetworkCacheSize = new QgsSettingsEntryInteger64( u"size-bytes"_s, QgsSettingsTree::sTreeNetworkCache, 0, u"Network disk cache size in bytes (0 = automatic size)"_s );
 
-const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsAutosizeAttributeTable = new QgsSettingsEntryBool( u"autosize-attribute-table"_s, QgsSettingsTree::sTreeAttributeTable, false );
-
 const QgsSettingsEntryEnumFlag<Qgis::EmbeddedScriptMode> *QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects = new QgsSettingsEntryEnumFlag<Qgis::EmbeddedScriptMode>( u"code-execution-behavior-undetermined-projects"_s, QgsSettingsTree::sTreeCore, Qgis::EmbeddedScriptMode::Ask, u"Behavior for embedded scripts within projects of undetermined trust"_s );
 
 const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsCodeExecutionTrustedProjectsFolders = new QgsSettingsEntryStringList( u"code-execution-trusted-projects-folders"_s, QgsSettingsTree::sTreeCore, QStringList(), u"Projects and folders that are trusted and allowed execution of embedded scripts"_s );

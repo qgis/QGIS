@@ -23,6 +23,7 @@
 #include "qgisapp.h"
 #include "qgisappstylesheet.h"
 #include "qgsapplication.h"
+#include "qgsattributetabledialog.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsbearingnumericformat.h"
 #include "qgsclipboard.h"
@@ -762,8 +763,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   cbxShowNews->setChecked( !mSettings->value( u"%1/disabled"_s.arg( QgsNewsFeedParser::keyForFeed( QgsWelcomeScreen::newsFeedUrl() ) ), false, QgsSettings::Core ).toBool() );
   cbxCheckVersion->setChecked( mSettings->value( u"/qgis/checkVersion"_s, true ).toBool() );
   cbxCheckVersion->setVisible( mSettings->value( u"/qgis/allowVersionCheck"_s, true ).toBool() );
-  cbxAttributeTableDocked->setChecked( mSettings->value( u"/qgis/dockAttributeTable"_s, false ).toBool() );
-  cbxAutosizeAttributeTable->setChecked( QgsSettingsRegistryCore::settingsAutosizeAttributeTable->value() );
+  cbxAttributeTableDocked->setChecked( QgsAttributeTableDialog::settingsAttributeTableDefaultDocked->value() );
+  cbxAutosizeAttributeTable->setChecked( QgsAttributeTableDialog::settingsAutosizeAttributeTable->value() );
 
   mComboCopyFeatureFormat->addItem( tr( "Plain Text, No Geometry" ), QgsClipboard::AttributesOnly );
   mComboCopyFeatureFormat->addItem( tr( "Plain Text, WKT Geometry" ), QgsClipboard::AttributesWithWKT );
@@ -1637,8 +1638,8 @@ void QgsOptions::saveOptions()
   mSettings->setValue( u"%1/disabled"_s.arg( QgsNewsFeedParser::keyForFeed( QgsWelcomeScreen::newsFeedUrl() ) ), !cbxShowNews->isChecked(), QgsSettings::Core );
 
   mSettings->setValue( u"/qgis/checkVersion"_s, cbxCheckVersion->isChecked() );
-  mSettings->setValue( u"/qgis/dockAttributeTable"_s, cbxAttributeTableDocked->isChecked() );
-  QgsSettingsRegistryCore::settingsAutosizeAttributeTable->setValue( cbxAutosizeAttributeTable->isChecked() );
+  QgsAttributeTableDialog::settingsAttributeTableDefaultDocked->setValue( cbxAttributeTableDocked->isChecked() );
+  QgsAttributeTableDialog::settingsAutosizeAttributeTable->setValue( cbxAutosizeAttributeTable->isChecked() );
   mSettings->setEnumValue( u"/qgis/attributeTableBehavior"_s, ( QgsAttributeTableFilterModel::FilterMode ) cmbAttrTableBehavior->currentData().toInt() );
   mSettings->setValue( u"/qgis/attributeTableView"_s, mAttrTableViewComboBox->currentData() );
   mSettings->setValue( u"/qgis/attributeTableRowCache"_s, spinBoxAttrTableRowCache->value() );

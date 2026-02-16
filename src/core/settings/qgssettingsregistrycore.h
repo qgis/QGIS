@@ -183,9 +183,6 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     //! Settings entry network cache directory
     static const QgsSettingsEntryInteger64 *settingsNetworkCacheSize;
 
-    //! Settings entry autosize columns by default when opening attribute table
-    static const QgsSettingsEntryBool *settingsAutosizeAttributeTable;
-
     //! Settings entry for behavior handling embedded scripts within projects
     static const QgsSettingsEntryEnumFlag<Qgis::EmbeddedScriptMode> *settingsCodeExecutionBehaviorUndeterminedProjects;
 
