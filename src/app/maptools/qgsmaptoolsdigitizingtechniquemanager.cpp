@@ -30,6 +30,8 @@
 
 #include <QAction>
 #include <QActionGroup>
+#include <QGridLayout>
+#include <QLabel>
 #include <QMenu>
 #include <QString>
 #include <QToolButton>
@@ -408,33 +410,39 @@ void QgsMapToolsDigitizingTechniqueManager::enableDigitizingTechniqueActions( bo
 
 void QgsMapToolsDigitizingTechniqueManager::createNurbsDegreeWidget()
 {
-  if ( mNurbsDegreeSpinBox )
+  if ( mNurbsDegreeWidget )
     return;
 
-  mNurbsDegreeSpinBox = new QgsSpinBox( QgisApp::instance() );
-  mNurbsDegreeSpinBox->setMinimum( 1 );
-  mNurbsDegreeSpinBox->setMaximum( 8 );
-  mNurbsDegreeSpinBox->setPrefix( tr( "NURBS Degree: " ) );
-  mNurbsDegreeSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingNurbsDegree->value() );
-  mNurbsDegreeSpinBox->setClearValue( 3 );
+  QGridLayout *gLayout = new QGridLayout();
+  gLayout->setContentsMargins( 3, 2, 3, 2 );
 
-  connect( mNurbsDegreeSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, []( int value ) {
+  QgsSpinBox *spinBox = new QgsSpinBox();
+  spinBox->setMinimum( 1 );
+  spinBox->setMaximum( 8 );
+  spinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingNurbsDegree->value() );
+  spinBox->setClearValue( 3 );
+
+  QLabel *label = new QLabel( tr( "NURBS Degree" ) );
+  gLayout->addWidget( label, 1, 0 );
+  gLayout->addWidget( spinBox, 1, 1 );
+  connect( spinBox, qOverload<int>( &QSpinBox::valueChanged ), this, []( int value ) {
     QgsSettingsRegistryCore::settingsDigitizingNurbsDegree->setValue( value );
   } );
 
-  QgisApp::instance()->addUserInputWidget( mNurbsDegreeSpinBox );
-  mNurbsDegreeSpinBox->setFocus( Qt::TabFocusReason );
+  mNurbsDegreeWidget = new QWidget( QgisApp::instance() );
+  mNurbsDegreeWidget->setLayout( gLayout );
+
+  QgisApp::instance()->addUserInputWidget( mNurbsDegreeWidget );
+  spinBox->setFocus( Qt::TabFocusReason );
 }
 
 void QgsMapToolsDigitizingTechniqueManager::deleteNurbsDegreeWidget()
 {
-  if ( mNurbsDegreeSpinBox )
+  if ( mNurbsDegreeWidget )
   {
-    disconnect( mNurbsDegreeSpinBox, nullptr, this, nullptr );
-    mNurbsDegreeSpinBox->releaseKeyboard();
-    mNurbsDegreeSpinBox->deleteLater();
+    mNurbsDegreeWidget->deleteLater();
   }
-  mNurbsDegreeSpinBox = nullptr;
+  mNurbsDegreeWidget = nullptr;
 }
 
 //

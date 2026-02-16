@@ -91,7 +91,7 @@ class APP_EXPORT QgsMapToolsDigitizingTechniqueManager : public QObject
     QgsStreamDigitizingSettingsAction *mStreamDigitizingSettingsAction = nullptr;
 
     //! User input widget for NURBS degree setting
-    QgsSpinBox *mNurbsDegreeSpinBox = nullptr;
+    QPointer< QWidget > mNurbsDegreeWidget;
 };
 
 #endif // QGSMAPTOOLSDIGITIZINGTECHNIQUEMANAGER_H
