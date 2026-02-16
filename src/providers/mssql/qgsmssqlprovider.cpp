@@ -2215,7 +2215,7 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
         return Qgis::VectorExportResult::ErrorAttributeTypeUnsupported;
       }
 
-      const int newAttributeIndex = attributeClauses.length();
+      const int newAttributeIndex = static_cast< int >( attributeClauses.length() );
       attributeClauses.append( columnDefinition );
       if ( oldToNewAttrIdxMap )
       {
