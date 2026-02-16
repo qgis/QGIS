@@ -2348,19 +2348,33 @@ QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, Qgis::
   }
 
   // Query the backend
-  QString where { extent.isEmpty() ? QString() : u"WHERE %1 && ST_GeomFromText( %2, %3 )"_s.arg( quotedIdentifier( mRasterColumn ) ).arg( quotedValue( extent.asWktPolygon() ) ).arg( mCrs.postgisSrid() ) };
+  const QString extentSql { extent.isEmpty() ? QString() : u"ST_GeomFromText( %1, %2 )"_s.arg( quotedValue( extent.asWktPolygon() ) ).arg( mCrs.postgisSrid() ) };
+  QString where { extent.isEmpty() ? QString() : u"WHERE %1 && %2"_s.arg( quotedIdentifier( mRasterColumn ), extentSql ) };
 
   if ( !subsetString().isEmpty() )
   {
     where.append( where.isEmpty() ? u"WHERE %1"_s.arg( subsetString() ) : u" AND %1"_s.arg( subsetString() ) );
   }
 
-  const QString sql = QStringLiteral( "SELECT (ST_SummaryStatsAgg( %1, %2, TRUE, %3 )).* "
-                                      "FROM %4 %5" )
-                        .arg( quotedIdentifier( mRasterColumn ) )
-                        .arg( bandNo )
-                        .arg( std::max<double>( 0, std::min<double>( 1, statsRatio ) ) )
-                        .arg( tableToQuery, where );
+  QString sql;
+  if ( extentSql.isEmpty() )
+  {
+    sql = u"SELECT ( ST_SummaryStatsAgg( %1 , %2, TRUE, %3 )).* "
+          "FROM %4 %5"_s
+            .arg( quotedIdentifier( mRasterColumn ) )
+            .arg( bandNo )
+            .arg( std::max<double>( 0, std::min<double>( 1, statsRatio ) ) )
+            .arg( tableToQuery, where );
+  }
+  else
+  {
+    sql = u"SELECT ( ST_SummaryStatsAgg( ST_Clip( %1, %2 ), %3, TRUE, %4 )).* "
+          "FROM %5 %6"_s
+            .arg( quotedIdentifier( mRasterColumn ), extentSql )
+            .arg( bandNo )
+            .arg( std::max<double>( 0, std::min<double>( 1, statsRatio ) ) )
+            .arg( tableToQuery, where );
+  }
 
   QgsPostgresResult result( connectionRO()->PQexec( sql ) );
 

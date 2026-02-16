@@ -1205,6 +1205,23 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
         self.assertEqual(desclist, ["default test style"])
         self.assertFalse(errmsg)
 
+    def test_ExtentStatistics(self):
+        """Test extent statistics issue GH #64917"""
+
+        stats = self.source.bandStatistics(1)
+        min_val = stats.minimumValue
+        max_val = stats.maximumValue
+        self.assertEqual(int(min_val), 136)
+
+        extent = self.source.extent()
+        extent.grow(-60)
+        small_stats = self.source.bandStatistics(
+            1, Qgis.RasterBandStatistic.All, extent
+        )
+        self.assertNotEqual(stats.minimumValue, small_stats.minimumValue)
+        self.assertNotEqual(stats.maximumValue, small_stats.maximumValue)
+        self.assertEqual(int(small_stats.minimumValue), 184)
+
 
 if __name__ == "__main__":
     unittest.main()
