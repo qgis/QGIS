@@ -843,7 +843,7 @@ def my_form_open(dialog, layer, feature):
       </selection>
       <labeling type="simple">
         <settings calloutType="simple">
-          <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Point" multilineHeight="1" fieldName="name" textOpacity="1" legendString="Aa" fontWeight="75" useSubstitutions="0" namedStyle="Bold" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="80" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="13" fontKerning="1" isExpression="0" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
+          <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Point" multilineHeight="1" fieldName="name" textOpacity="1" legendString="Aa" fontWeight="75" useSubstitutions="0" namedStyle="Bold" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="80" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="14" fontKerning="1" isExpression="0" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
             <families/>
             <text-buffer bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSize="1" bufferNoFill="0" bufferDraw="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferSizeUnits="MM" bufferJoinStyle="64" bufferOpacity="1" bufferBlendMode="0"/>
             <text-mask maskJoinStyle="128" maskEnabled="0" maskSize2="1.5" maskType="0" maskSize="1.5" maskOpacity="1" maskedSymbolLayers="" maskSizeUnits="MM" maskSizeMapUnitScale="3x:0,0,0,0,0,0"/>
@@ -1087,11 +1087,11 @@ def my_form_open(dialog, layer, feature):
       <editorlayout>generatedlayout</editorlayout>
       <attributeEditorForm>
         <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-          <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+          <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
         </labelStyle>
         <attributeEditorContainer columnCount="0" visibilityExpressionEnabled="0" verticalStretch="0" horizontalStretch="0" collapsedExpressionEnabled="0" showLabel="1" name="ttt" type="Tab" collapsedExpression="" groupBox="0" collapsed="0" visibilityExpression="">
           <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-            <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+            <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
           </labelStyle>
         </attributeEditorContainer>
       </attributeEditorForm>
@@ -1546,29 +1546,29 @@ def my_form_open(dialog, layer, feature):
       <editorlayout>generatedlayout</editorlayout>
       <attributeEditorForm>
         <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-          <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+          <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
         </labelStyle>
         <attributeEditorContainer columnCount="0" visibilityExpressionEnabled="0" verticalStretch="0" horizontalStretch="0" collapsedExpressionEnabled="0" showLabel="1" name="t" type="Tab" collapsedExpression="" groupBox="0" collapsed="0" visibilityExpression="">
           <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-            <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+            <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
           </labelStyle>
           <attributeEditorContainer columnCount="0" visibilityExpressionEnabled="0" verticalStretch="0" horizontalStretch="0" collapsedExpressionEnabled="0" showLabel="1" name="c1" type="GroupBox" collapsedExpression="" groupBox="1" collapsed="0" visibilityExpression="">
             <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-              <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+              <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
             </labelStyle>
             <attributeEditorField verticalStretch="0" index="1" horizontalStretch="0" showLabel="1" name="pkuid">
               <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-                <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+                <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
               </labelStyle>
             </attributeEditorField>
           </attributeEditorContainer>
           <attributeEditorContainer columnCount="0" visibilityExpressionEnabled="0" verticalStretch="0" horizontalStretch="0" collapsedExpressionEnabled="0" showLabel="1" name="c2" type="GroupBox" collapsedExpression="" groupBox="1" collapsed="0" visibilityExpression="">
             <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-              <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+              <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
             </labelStyle>
             <attributeEditorField verticalStretch="0" index="2" horizontalStretch="0" showLabel="1" name="color">
               <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-                <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+                <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
               </labelStyle>
             </attributeEditorField>
           </attributeEditorContainer>
@@ -2020,29 +2020,29 @@ def my_form_open(dialog, layer, feature):
       <editorlayout>generatedlayout</editorlayout>
       <attributeEditorForm>
         <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-          <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+          <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
         </labelStyle>
         <attributeEditorContainer columnCount="0" visibilityExpressionEnabled="0" verticalStretch="0" horizontalStretch="0" collapsedExpressionEnabled="0" showLabel="1" name="t" type="Tab" collapsedExpression="" groupBox="0" collapsed="0" visibilityExpression="">
           <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-            <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+            <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
           </labelStyle>
           <attributeEditorContainer columnCount="0" visibilityExpressionEnabled="0" verticalStretch="0" horizontalStretch="0" collapsedExpressionEnabled="0" showLabel="1" name="c1" type="GroupBox" collapsedExpression="" groupBox="1" collapsed="0" visibilityExpression="">
             <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-              <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+              <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
             </labelStyle>
             <attributeEditorField verticalStretch="0" index="1" horizontalStretch="0" showLabel="1" name="pkuid">
               <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-                <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+                <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
               </labelStyle>
             </attributeEditorField>
           </attributeEditorContainer>
           <attributeEditorContainer columnCount="0" visibilityExpressionEnabled="0" verticalStretch="0" horizontalStretch="0" collapsedExpressionEnabled="0" showLabel="1" name="c2" type="GroupBox" collapsedExpression="" groupBox="1" collapsed="0" visibilityExpression="">
             <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-              <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+              <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
             </labelStyle>
             <attributeEditorField verticalStretch="0" index="2" horizontalStretch="0" showLabel="1" name="color">
               <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-                <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+                <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
               </labelStyle>
             </attributeEditorField>
           </attributeEditorContainer>
@@ -2494,29 +2494,29 @@ def my_form_open(dialog, layer, feature):
       <editorlayout>generatedlayout</editorlayout>
       <attributeEditorForm>
         <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-          <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+          <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
         </labelStyle>
         <attributeEditorContainer columnCount="0" visibilityExpressionEnabled="0" verticalStretch="0" horizontalStretch="0" collapsedExpressionEnabled="0" showLabel="1" name="t" type="Tab" collapsedExpression="" groupBox="0" collapsed="0" visibilityExpression="">
           <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-            <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+            <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
           </labelStyle>
           <attributeEditorContainer columnCount="0" visibilityExpressionEnabled="0" verticalStretch="0" horizontalStretch="0" collapsedExpressionEnabled="0" showLabel="1" name="c1" type="GroupBox" collapsedExpression="" groupBox="1" collapsed="0" visibilityExpression="">
             <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-              <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+              <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
             </labelStyle>
             <attributeEditorField verticalStretch="0" index="1" horizontalStretch="0" showLabel="1" name="pkuid">
               <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-                <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+                <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
               </labelStyle>
             </attributeEditorField>
           </attributeEditorContainer>
           <attributeEditorContainer columnCount="0" visibilityExpressionEnabled="0" verticalStretch="0" horizontalStretch="0" collapsedExpressionEnabled="0" showLabel="1" name="c2" type="GroupBox" collapsedExpression="" groupBox="1" collapsed="0" visibilityExpression="">
             <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-              <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+              <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
             </labelStyle>
             <attributeEditorField verticalStretch="0" index="2" horizontalStretch="0" showLabel="1" name="color">
               <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-                <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+                <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
               </labelStyle>
             </attributeEditorField>
           </attributeEditorContainer>
@@ -3286,7 +3286,7 @@ def my_form_open(dialog, layer, feature):
       </selection>
       <labeling type="simple">
         <settings calloutType="simple">
-          <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Point" multilineHeight="1" fieldName="" textOpacity="1" legendString="Aa" fontWeight="50" useSubstitutions="0" namedStyle="Normal" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="80" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="9" fontKerning="1" isExpression="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
+          <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Point" multilineHeight="1" fieldName="" textOpacity="1" legendString="Aa" fontWeight="50" useSubstitutions="0" namedStyle="Bold" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="80" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="14" fontKerning="1" isExpression="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
             <families/>
             <text-buffer bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSize="1" bufferNoFill="0" bufferDraw="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferSizeUnits="MM" bufferJoinStyle="64" bufferOpacity="1" bufferBlendMode="0"/>
             <text-mask maskJoinStyle="128" maskEnabled="0" maskSize2="1.5" maskType="0" maskSize="1.5" maskOpacity="1" maskedSymbolLayers="" maskSizeUnits="MM" maskSizeMapUnitScale="3x:0,0,0,0,0,0"/>
@@ -3506,11 +3506,11 @@ def my_form_open(dialog, layer, feature):
       <editorlayout>generatedlayout</editorlayout>
       <attributeEditorForm>
         <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-          <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+          <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
         </labelStyle>
         <attributeEditorContainer columnCount="0" visibilityExpressionEnabled="0" verticalStretch="0" horizontalStretch="0" collapsedExpressionEnabled="0" showLabel="1" name="ttt" type="Tab" collapsedExpression="" groupBox="0" collapsed="0" visibilityExpression="">
           <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-            <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+            <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
           </labelStyle>
         </attributeEditorContainer>
       </attributeEditorForm>
@@ -5455,29 +5455,29 @@ def my_form_open(dialog, layer, feature):
       <editorlayout>generatedlayout</editorlayout>
       <attributeEditorForm>
         <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-          <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+          <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
         </labelStyle>
         <attributeEditorContainer columnCount="0" visibilityExpressionEnabled="0" verticalStretch="0" horizontalStretch="0" collapsedExpressionEnabled="0" showLabel="1" name="t" type="Tab" collapsedExpression="" groupBox="0" collapsed="0" visibilityExpression="">
           <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-            <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+            <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
           </labelStyle>
           <attributeEditorContainer columnCount="0" visibilityExpressionEnabled="0" verticalStretch="0" horizontalStretch="0" collapsedExpressionEnabled="0" showLabel="1" name="c1" type="GroupBox" collapsedExpression="" groupBox="1" collapsed="0" visibilityExpression="">
             <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-              <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+              <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
             </labelStyle>
             <attributeEditorField verticalStretch="0" index="1" horizontalStretch="0" showLabel="1" name="pkuid">
               <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-                <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+                <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
               </labelStyle>
             </attributeEditorField>
           </attributeEditorContainer>
           <attributeEditorContainer columnCount="0" visibilityExpressionEnabled="0" verticalStretch="0" horizontalStretch="0" collapsedExpressionEnabled="0" showLabel="1" name="c2" type="GroupBox" collapsedExpression="" groupBox="1" collapsed="0" visibilityExpression="">
             <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-              <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+              <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
             </labelStyle>
             <attributeEditorField verticalStretch="0" index="2" horizontalStretch="0" showLabel="1" name="color">
               <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="">
-                <labelFont style="" description="Ubuntu Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
+                <labelFont style="" description="QGIS Vera Sans,11,-1,5,50,0,0,0,0,0" italic="0" underline="0" strikethrough="0" bold="0"/>
               </labelStyle>
             </attributeEditorField>
           </attributeEditorContainer>
@@ -6242,7 +6242,7 @@ def my_form_open(dialog, layer, feature):
             <Option/>
           </customproperties>
         </LayoutObject>
-        <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="1" textOpacity="1" fontWeight="50" namedStyle="" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="10" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
+        <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="1" textOpacity="1" fontWeight="50" namedStyle="Bold" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="14" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
           <families/>
           <text-buffer bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSize="1" bufferNoFill="1" bufferDraw="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferSizeUnits="MM" bufferJoinStyle="128" bufferOpacity="1" bufferBlendMode="0"/>
           <text-mask maskJoinStyle="128" maskEnabled="0" maskSize2="1.5" maskType="0" maskSize="1.5" maskOpacity="1" maskedSymbolLayers="" maskSizeUnits="MM" maskSizeMapUnitScale="3x:0,0,0,0,0,0"/>
@@ -6407,7 +6407,7 @@ def my_form_open(dialog, layer, feature):
               </layer>
             </symbol>
           </markerStyle>
-          <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="Ubuntu Sans" tabStopDistanceUnit="Percentage" multilineHeight="1" textOpacity="1" fontWeight="50" namedStyle="" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="11" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
+          <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="1" textOpacity="1" fontWeight="50" namedStyle="Bold" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="14" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
             <families/>
             <text-buffer bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSize="1" bufferNoFill="1" bufferDraw="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferSizeUnits="MM" bufferJoinStyle="128" bufferOpacity="1" bufferBlendMode="0"/>
             <text-mask maskJoinStyle="128" maskEnabled="0" maskSize2="1.5" maskType="0" maskSize="1.5" maskOpacity="1" maskedSymbolLayers="" maskSizeUnits="MM" maskSizeMapUnitScale="3x:0,0,0,0,0,0"/>
@@ -6488,7 +6488,7 @@ def my_form_open(dialog, layer, feature):
             <Option/>
           </customproperties>
         </LayoutObject>
-        <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="1" textOpacity="1" fontWeight="75" namedStyle="" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="12" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
+        <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="1" textOpacity="1" fontWeight="75" namedStyle="Bold" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="14" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
           <families/>
           <text-buffer bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSize="1" bufferNoFill="1" bufferDraw="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferSizeUnits="MM" bufferJoinStyle="128" bufferOpacity="1" bufferBlendMode="0"/>
           <text-mask maskJoinStyle="128" maskEnabled="0" maskSize2="1.5" maskType="0" maskSize="1.5" maskOpacity="1" maskedSymbolLayers="" maskSizeUnits="MM" maskSizeMapUnitScale="3x:0,0,0,0,0,0"/>
@@ -6550,7 +6550,7 @@ def my_form_open(dialog, layer, feature):
             <Option/>
           </customproperties>
         </LayoutObject>
-        <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="1" textOpacity="1" fontWeight="75" namedStyle="" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="48" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
+        <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="1" textOpacity="1" fontWeight="75" namedStyle="Bold" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="48" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
           <families/>
           <text-buffer bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSize="1" bufferNoFill="1" bufferDraw="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferSizeUnits="MM" bufferJoinStyle="128" bufferOpacity="1" bufferBlendMode="0"/>
           <text-mask maskJoinStyle="128" maskEnabled="0" maskSize2="1.5" maskType="0" maskSize="1.5" maskOpacity="1" maskedSymbolLayers="" maskSizeUnits="MM" maskSizeMapUnitScale="3x:0,0,0,0,0,0"/>
@@ -6706,7 +6706,7 @@ def my_form_open(dialog, layer, feature):
         </filterByMaps>
         <styles>
           <style name="title" alignment="1" indent="0" marginBottom="3.5">
-            <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="MM" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="6.6444479999999997" textOpacity="1" fontWeight="50" namedStyle="" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="16" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
+            <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="MM" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="6.6444479999999997" textOpacity="1" fontWeight="50" namedStyle="Bold" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="16" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
               <families/>
               <text-buffer bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSize="1" bufferNoFill="1" bufferDraw="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferSizeUnits="MM" bufferJoinStyle="128" bufferOpacity="1" bufferBlendMode="0"/>
               <text-mask maskJoinStyle="128" maskEnabled="0" maskSize2="1.5" maskType="0" maskSize="1.5" maskOpacity="1" maskedSymbolLayers="" maskSizeUnits="MM" maskSizeMapUnitScale="3x:0,0,0,0,0,0"/>
@@ -6754,7 +6754,7 @@ def my_form_open(dialog, layer, feature):
             </text-style>
           </style>
           <style marginTop="3" name="group" alignment="1" indent="0">
-            <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="MM" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="5.9388920000000001" textOpacity="1" fontWeight="50" namedStyle="" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="14" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
+            <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="MM" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="5.9388920000000001" textOpacity="1" fontWeight="50" namedStyle="Bold" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="14" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
               <families/>
               <text-buffer bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSize="1" bufferNoFill="1" bufferDraw="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferSizeUnits="MM" bufferJoinStyle="128" bufferOpacity="1" bufferBlendMode="0"/>
               <text-mask maskJoinStyle="128" maskEnabled="0" maskSize2="1.5" maskType="0" maskSize="1.5" maskOpacity="1" maskedSymbolLayers="" maskSizeUnits="MM" maskSizeMapUnitScale="3x:0,0,0,0,0,0"/>
@@ -6802,7 +6802,7 @@ def my_form_open(dialog, layer, feature):
             </text-style>
           </style>
           <style marginTop="3" name="subgroup" alignment="1" indent="0">
-            <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="MM" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="5.2333359999999995" textOpacity="1" fontWeight="50" namedStyle="" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="12" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
+            <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="MM" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="5.2333359999999995" textOpacity="1" fontWeight="50" namedStyle="Bold" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="14" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
               <families/>
               <text-buffer bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSize="1" bufferNoFill="1" bufferDraw="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferSizeUnits="MM" bufferJoinStyle="128" bufferOpacity="1" bufferBlendMode="0"/>
               <text-mask maskJoinStyle="128" maskEnabled="0" maskSize2="1.5" maskType="0" maskSize="1.5" maskOpacity="1" maskedSymbolLayers="" maskSizeUnits="MM" maskSizeMapUnitScale="3x:0,0,0,0,0,0"/>
@@ -6850,7 +6850,7 @@ def my_form_open(dialog, layer, feature):
             </text-style>
           </style>
           <style marginTop="2.5" name="symbol" alignment="1" indent="0">
-            <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="1" textOpacity="1" fontWeight="50" namedStyle="" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="11" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
+            <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="1" textOpacity="1" fontWeight="50" namedStyle="Bold" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="14" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
               <families/>
               <text-buffer bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSize="1" bufferNoFill="1" bufferDraw="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferSizeUnits="MM" bufferJoinStyle="128" bufferOpacity="1" bufferBlendMode="0"/>
               <text-mask maskJoinStyle="128" maskEnabled="0" maskSize2="1.5" maskType="0" maskSize="1.5" maskOpacity="1" maskedSymbolLayers="" maskSizeUnits="MM" maskSizeMapUnitScale="3x:0,0,0,0,0,0"/>
@@ -6898,7 +6898,7 @@ def my_form_open(dialog, layer, feature):
             </text-style>
           </style>
           <style marginTop="2" marginLeft="2" name="symbolLabel" alignment="1" indent="0">
-            <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="MM" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="5.2333359999999995" textOpacity="1" fontWeight="50" namedStyle="" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="12" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
+            <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="MM" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="5.2333359999999995" textOpacity="1" fontWeight="50" namedStyle="Bold" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="14" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
               <families/>
               <text-buffer bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSize="1" bufferNoFill="1" bufferDraw="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferSizeUnits="MM" bufferJoinStyle="128" bufferOpacity="1" bufferBlendMode="0"/>
               <text-mask maskJoinStyle="128" maskEnabled="0" maskSize2="1.5" maskType="0" maskSize="1.5" maskOpacity="1" maskedSymbolLayers="" maskSizeUnits="MM" maskSizeMapUnitScale="3x:0,0,0,0,0,0"/>
@@ -6962,7 +6962,7 @@ def my_form_open(dialog, layer, feature):
             <Option/>
           </customproperties>
         </LayoutObject>
-        <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="1" textOpacity="1" fontWeight="50" namedStyle="" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="10" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
+        <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="1" textOpacity="1" fontWeight="50" namedStyle="Bold" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="14" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
           <families/>
           <text-buffer bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSize="1" bufferNoFill="1" bufferDraw="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferSizeUnits="MM" bufferJoinStyle="128" bufferOpacity="1" bufferBlendMode="0"/>
           <text-mask maskJoinStyle="128" maskEnabled="0" maskSize2="1.5" maskType="0" maskSize="1.5" maskOpacity="1" maskedSymbolLayers="" maskSizeUnits="MM" maskSizeMapUnitScale="3x:0,0,0,0,0,0"/>
@@ -7127,7 +7127,7 @@ def my_form_open(dialog, layer, feature):
               </layer>
             </symbol>
           </markerStyle>
-          <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="Ubuntu Sans" tabStopDistanceUnit="Percentage" multilineHeight="1" textOpacity="1" fontWeight="50" namedStyle="" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="11" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
+          <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="1" textOpacity="1" fontWeight="50" namedStyle="Bold" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="14" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
             <families/>
             <text-buffer bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSize="1" bufferNoFill="1" bufferDraw="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferSizeUnits="MM" bufferJoinStyle="128" bufferOpacity="1" bufferBlendMode="0"/>
             <text-mask maskJoinStyle="128" maskEnabled="0" maskSize2="1.5" maskType="0" maskSize="1.5" maskOpacity="1" maskedSymbolLayers="" maskSizeUnits="MM" maskSizeMapUnitScale="3x:0,0,0,0,0,0"/>
@@ -7208,7 +7208,7 @@ def my_form_open(dialog, layer, feature):
             <Option/>
           </customproperties>
         </LayoutObject>
-        <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="1" textOpacity="1" fontWeight="75" namedStyle="" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="12" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
+        <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="1" textOpacity="1" fontWeight="75" namedStyle="Bold" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="14" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
           <families/>
           <text-buffer bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSize="1" bufferNoFill="1" bufferDraw="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferSizeUnits="MM" bufferJoinStyle="128" bufferOpacity="1" bufferBlendMode="0"/>
           <text-mask maskJoinStyle="128" maskEnabled="0" maskSize2="1.5" maskType="0" maskSize="1.5" maskOpacity="1" maskedSymbolLayers="" maskSizeUnits="MM" maskSizeMapUnitScale="3x:0,0,0,0,0,0"/>
@@ -7270,7 +7270,7 @@ def my_form_open(dialog, layer, feature):
             <Option/>
           </customproperties>
         </LayoutObject>
-        <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="1" textOpacity="1" fontWeight="75" namedStyle="" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="48" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
+        <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="1" textOpacity="1" fontWeight="75" namedStyle="Bold" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="48" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
           <families/>
           <text-buffer bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSize="1" bufferNoFill="1" bufferDraw="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferSizeUnits="MM" bufferJoinStyle="128" bufferOpacity="1" bufferBlendMode="0"/>
           <text-mask maskJoinStyle="128" maskEnabled="0" maskSize2="1.5" maskType="0" maskSize="1.5" maskOpacity="1" maskedSymbolLayers="" maskSizeUnits="MM" maskSizeMapUnitScale="3x:0,0,0,0,0,0"/>
@@ -7560,7 +7560,7 @@ def my_form_open(dialog, layer, feature):
             <Option/>
           </customproperties>
         </LayoutObject>
-        <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="1" textOpacity="1" fontWeight="50" namedStyle="" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="10" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
+        <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="1" textOpacity="1" fontWeight="50" namedStyle="Bold" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="14" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
           <families/>
           <text-buffer bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSize="1" bufferNoFill="1" bufferDraw="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferSizeUnits="MM" bufferJoinStyle="128" bufferOpacity="1" bufferBlendMode="0"/>
           <text-mask maskJoinStyle="128" maskEnabled="0" maskSize2="1.5" maskType="0" maskSize="1.5" maskOpacity="1" maskedSymbolLayers="" maskSizeUnits="MM" maskSizeMapUnitScale="3x:0,0,0,0,0,0"/>
@@ -7725,7 +7725,7 @@ def my_form_open(dialog, layer, feature):
               </layer>
             </symbol>
           </markerStyle>
-          <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="Ubuntu Sans" tabStopDistanceUnit="Percentage" multilineHeight="1" textOpacity="1" fontWeight="50" namedStyle="" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="11" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
+          <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="1" textOpacity="1" fontWeight="50" namedStyle="Bold" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="14" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
             <families/>
             <text-buffer bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSize="1" bufferNoFill="1" bufferDraw="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferSizeUnits="MM" bufferJoinStyle="128" bufferOpacity="1" bufferBlendMode="0"/>
             <text-mask maskJoinStyle="128" maskEnabled="0" maskSize2="1.5" maskType="0" maskSize="1.5" maskOpacity="1" maskedSymbolLayers="" maskSizeUnits="MM" maskSizeMapUnitScale="3x:0,0,0,0,0,0"/>
@@ -7806,7 +7806,7 @@ def my_form_open(dialog, layer, feature):
             <Option/>
           </customproperties>
         </LayoutObject>
-        <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="1" textOpacity="1" fontWeight="75" namedStyle="" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="12" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
+        <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="1" textOpacity="1" fontWeight="75" namedStyle="Bold" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="14" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
           <families/>
           <text-buffer bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSize="1" bufferNoFill="1" bufferDraw="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferSizeUnits="MM" bufferJoinStyle="128" bufferOpacity="1" bufferBlendMode="0"/>
           <text-mask maskJoinStyle="128" maskEnabled="0" maskSize2="1.5" maskType="0" maskSize="1.5" maskOpacity="1" maskedSymbolLayers="" maskSizeUnits="MM" maskSizeMapUnitScale="3x:0,0,0,0,0,0"/>
@@ -7868,7 +7868,7 @@ def my_form_open(dialog, layer, feature):
             <Option/>
           </customproperties>
         </LayoutObject>
-        <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="1" textOpacity="1" fontWeight="75" namedStyle="" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="48" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
+        <text-style forcedItalic="0" blendMode="0" multilineHeightUnit="Percentage" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" allowHtml="0" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" fontFamily="QGIS Vera Sans" tabStopDistanceUnit="Percentage" multilineHeight="1" textOpacity="1" fontWeight="75" namedStyle="Bold" forcedBold="0" fontItalic="0" fontUnderline="0" textOrientation="horizontal" fontSizeUnit="Point" fontLetterSpacing="0" tabStopDistance="6" fontWordSpacing="0" fontStrikeout="0" capitalization="0" fontSize="48" fontKerning="1" fontSizeMapUnitScale="3x:0,0,0,0,0,0" textColor="0,0,0,255,rgb:0,0,0,1">
           <families/>
           <text-buffer bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSize="1" bufferNoFill="1" bufferDraw="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferSizeUnits="MM" bufferJoinStyle="128" bufferOpacity="1" bufferBlendMode="0"/>
           <text-mask maskJoinStyle="128" maskEnabled="0" maskSize2="1.5" maskType="0" maskSize="1.5" maskOpacity="1" maskedSymbolLayers="" maskSizeUnits="MM" maskSizeMapUnitScale="3x:0,0,0,0,0,0"/>
