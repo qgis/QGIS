@@ -35,6 +35,7 @@ using namespace Qt::StringLiterals;
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsmssqlutils.h"
 
 /**
  * \ingroup UnitTests
@@ -63,6 +64,8 @@ class TestQgsMssqlProvider : public QObject
     void testFieldsForTable();
     void testFieldsForQuery();
     void testEmptyLayer();
+    void testColumnDefinitionForField_data();
+    void testColumnDefinitionForField();
 
   private:
     QString mDbConn;
@@ -582,6 +585,89 @@ void TestQgsMssqlProvider::testEmptyLayer()
   QCOMPARE( oldToNewAttrIdxMap.value( 0 ), 1 );
   QCOMPARE( oldToNewAttrIdxMap.value( 1 ), 2 );
   QCOMPARE( oldToNewAttrIdxMap.value( 2 ), 3 );
+}
+
+void TestQgsMssqlProvider::testColumnDefinitionForField_data()
+{
+  QTest::addColumn<QgsField>( "field" );
+  QTest::addColumn<QString>( "definition" );
+
+  // using automatic type mapping (i.e. no explicit SQL server column type)
+  QTest::newRow( "auto_bigint" )
+    << QgsField( "id", QMetaType::Type::LongLong )
+    << "[id] bigint";
+  QTest::newRow( "auto_int" )
+    << QgsField( "age", QMetaType::Type::Int )
+    << "[age] int";
+  QTest::newRow( "auto_numeric" )
+    << QgsField( "score", QMetaType::Type::Double )
+    << "[score] numeric";
+  QTest::newRow( "auto_date" )
+    << QgsField( "dob", QMetaType::Type::QDate )
+    << "[dob] date";
+  QTest::newRow( "auto_time" )
+    << QgsField( "alarm", QMetaType::Type::QTime )
+    << "[alarm] time";
+  QTest::newRow( "auto_datetime" )
+    << QgsField( "created_at", QMetaType::Type::QDateTime )
+    << "[created_at] datetime";
+  QTest::newRow( "auto_string_with_length" )
+    << QgsField( "name", QMetaType::Type::QString, QString(), 50 )
+    << "[name] nvarchar(50)";
+  QTest::newRow( "auto_string_unlimited" )
+    << QgsField( "notes", QMetaType::Type::QString, QString(), 0 )
+    << "[notes] nvarchar(max)";
+
+  // with explicit SQL Server column type names
+  QTest::newRow( "explicit_int" )
+    << QgsField( "count", QMetaType::Type::Int, "int" )
+    << "[count] int";
+  QTest::newRow( "explicit_geometry" )
+    << QgsField( "geom", QMetaType::Type::UnknownType, "geometry" )
+    << "[geom] geometry";
+  QTest::newRow( "fmt_varchar_len" )
+    << QgsField( "code", QMetaType::Type::QString, "varchar", 10 )
+    << "[code] varchar(10)";
+  QTest::newRow( "fmt_nvarchar_len" )
+    << QgsField( "label", QMetaType::Type::QString, "nvarchar", 255 )
+    << "[label] nvarchar(255)";
+  QTest::newRow( "fmt_char_len" )
+    << QgsField( "flag", QMetaType::Type::QString, "char", 1 )
+    << "[flag] char(1)";
+  QTest::newRow( "fmt_varchar_no_len" )
+    << QgsField( "raw", QMetaType::Type::QString, "varchar", 0 )
+    << "[raw] varchar";
+
+  QTest::newRow( "fmt_numeric_full" )
+    << QgsField( "cost", QMetaType::Type::Double, "numeric", 10, 2 )
+    << "[cost] numeric(10,2)";
+  QTest::newRow( "fmt_decimal_full" )
+    << QgsField( "ratio", QMetaType::Type::Double, "decimal", 18, 6 )
+    << "[ratio] decimal(18,6)";
+  QTest::newRow( "fmt_numeric_no_prec" )
+    << QgsField( "val", QMetaType::Type::Double, "numeric", 10, 0 )
+    << "[val] numeric";
+  QTest::newRow( "fmt_decimal_no_len" )
+    << QgsField( "val2", QMetaType::Type::Double, "decimal", 0, 5 )
+    << "[val2] decimal";
+
+  // unhandled variant type
+  QTest::newRow( "unhandled_variant" )
+    << QgsField( "bad_col", QMetaType::Type::QVariantMap )
+    << QString();
+
+  // field name escaping
+  QTest::newRow( "name_escaping" )
+    << QgsField( "complex[field name]", QMetaType::Type::QString )
+    << "[complex[field name]]] nvarchar(max)";
+}
+
+void TestQgsMssqlProvider::testColumnDefinitionForField()
+{
+  QFETCH( QgsField, field );
+  QFETCH( QString, definition );
+
+  QCOMPARE( QgsMssqlUtils::columnDefinitionForField( field ), definition );
 }
 
 QGSTEST_MAIN( TestQgsMssqlProvider )

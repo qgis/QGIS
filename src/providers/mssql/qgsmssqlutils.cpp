@@ -166,3 +166,63 @@ Qgis::WkbType QgsMssqlUtils::wkbTypeFromGeometryType( const QString &type )
 {
   return QgsWkbTypes::parseType( type.toUpper() );
 }
+
+QString QgsMssqlUtils::columnDefinitionForField( const QgsField &field )
+{
+  QString type = field.typeName();
+  if ( type.isEmpty() )
+  {
+    switch ( field.type() )
+    {
+      case QMetaType::Type::LongLong:
+        type = u"bigint"_s;
+        break;
+
+      case QMetaType::Type::Int:
+        type = u"int"_s;
+        break;
+
+      case QMetaType::Type::Double:
+        type = u"numeric"_s;
+        break;
+
+      case QMetaType::Type::QDate:
+        type = u"date"_s;
+        break;
+
+      case QMetaType::Type::QTime:
+        type = u"time"_s;
+        break;
+
+      case QMetaType::Type::QDateTime:
+        type = u"datetime"_s;
+        break;
+
+      case QMetaType::Type::QString:
+        if ( field.length() > 0 )
+          type = u"nvarchar"_s;
+        else
+          type = u"nvarchar(max)"_s;
+        break;
+      default:
+        QgsDebugError( u"Unhandled variant type for column %1"_s.arg( QMetaType::typeName( field.type() ) ) );
+        return QString();
+    }
+  }
+
+  if ( type == "char"_L1 || type == "varchar"_L1 || type == "nvarchar"_L1 )
+  {
+    if ( field.length() > 0 )
+      type = u"%1(%2)"_s.arg( type ).arg( field.length() );
+  }
+  else if ( type == "numeric"_L1 || type == "decimal"_L1 )
+  {
+    if ( field.length() > 0 && field.precision() > 0 )
+      type = u"%1(%2,%3)"_s.arg( type ).arg( field.length() ).arg( field.precision() );
+  }
+
+  QString escapedName = field.name();
+  escapedName.replace( ']', "]]" );
+
+  return u"[%1] %2"_s.arg( escapedName, type );
+}
