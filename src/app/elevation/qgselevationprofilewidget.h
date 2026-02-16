@@ -90,7 +90,7 @@ class QgsElevationProfileLayersDialog : public QDialog, private Ui::QgsElevation
     QList<QgsMapLayer *> mVisibleLayers;
 };
 
-class QgsElevationProfileWidget : public QWidget
+class APP_EXPORT QgsElevationProfileWidget : public QWidget
 {
     Q_OBJECT
   public:
