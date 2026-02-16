@@ -124,6 +124,7 @@ void QgsSymbolLayer::initPropertyDefinitions()
     { static_cast< int >( QgsSymbolLayer::Property::SkipMultiples ), QgsPropertyDefinition( "skipMultiples", QObject::tr( "Skip multiples of" ), QgsPropertyDefinition::DoublePositive, origin )},
     { static_cast< int >( QgsSymbolLayer::Property::ShowMarker ), QgsPropertyDefinition( "showMarker", QObject::tr( "Show marker" ), QgsPropertyDefinition::Boolean, origin )},
     { static_cast< int >( QgsSymbolLayer::Property::BlankSegments ), QgsPropertyDefinition( "blankSegments", QObject::tr( "Line blank segments" ), QgsPropertyDefinition::String, origin )},
+    { static_cast< int >( QgsSymbolLayer::Property::ExtraItems ), QgsPropertyDefinition( "extraItems", QObject::tr( "Line extra item" ), QgsPropertyDefinition::String, origin )},
   };
 }
 
