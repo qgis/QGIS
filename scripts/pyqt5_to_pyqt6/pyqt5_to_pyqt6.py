@@ -610,7 +610,6 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
 
     tokens = src_to_tokens(contents)
     for i, token in reversed_enumerate(tokens):
-
         if token.name == "DEDENT":
             continue
 

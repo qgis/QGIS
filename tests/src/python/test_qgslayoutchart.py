@@ -32,8 +32,8 @@ from qgis.core import (
     QgsPoint,
     QgsPrintLayout,
     QgsProject,
-    QgsRectangle,
     QgsReadWriteContext,
+    QgsRectangle,
     QgsTextFormat,
     QgsVectorLayer,
 )
