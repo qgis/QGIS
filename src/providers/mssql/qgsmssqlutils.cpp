@@ -167,10 +167,10 @@ Qgis::WkbType QgsMssqlUtils::wkbTypeFromGeometryType( const QString &type )
   return QgsWkbTypes::parseType( type.toUpper() );
 }
 
-QString QgsMssqlUtils::columnDefinitionForField( const QgsField &field )
+QString QgsMssqlUtils::columnDefinitionForField( const QgsField &field, bool ignoreTypeString )
 {
   QString type = field.typeName();
-  if ( type.isEmpty() )
+  if ( ignoreTypeString || type.isEmpty() )
   {
     switch ( field.type() )
     {
