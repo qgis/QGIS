@@ -211,6 +211,69 @@ bool QgsSettingsBoolCheckBoxWrapper::valueFromWidget() const
 }
 
 
+// ******************
+// Boolean (GroupBox)
+// ******************
+
+QString QgsSettingsBoolGroupBoxWrapper::id() const
+{
+  return QString::fromUtf8( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::Bool ) ) );
+}
+
+bool QgsSettingsBoolGroupBoxWrapper::setWidgetValue( const bool &value ) const
+{
+  if ( mEditor )
+  {
+    mEditor->setChecked( value );
+    return true;
+  }
+  else
+  {
+    QgsDebugError( u"Settings editor not set for %1"_s.arg( mSetting->definitionKey() ) );
+  }
+  return false;
+}
+
+void QgsSettingsBoolGroupBoxWrapper::enableAutomaticUpdatePrivate()
+{
+  QObject::connect( this->mEditor, &QGroupBox::clicked, this, [this]( bool checked ) {
+    this->mSetting->setValue( checked, this->mDynamicKeyPartList );
+  } );
+}
+
+bool QgsSettingsBoolGroupBoxWrapper::setSettingFromWidget() const
+{
+  if ( mEditor )
+  {
+    mSetting->setValue( mEditor->isChecked(), mDynamicKeyPartList );
+    return true;
+  }
+  else
+  {
+    QgsDebugError( u"Settings editor not set for %1"_s.arg( mSetting->definitionKey() ) );
+  }
+  return false;
+}
+
+bool QgsSettingsBoolGroupBoxWrapper::valueFromWidget() const
+{
+  if ( mEditor )
+  {
+    return mEditor->isChecked();
+  }
+  else
+  {
+    QgsDebugError( QString( "editor is not set, returning a non-existing value" ) );
+  }
+  return false;
+}
+
+void QgsSettingsBoolGroupBoxWrapper::configureEditorPrivateImplementation()
+{
+  mEditor->setCheckable( true );
+}
+
+
 // *******
 // Integer
 // *******
