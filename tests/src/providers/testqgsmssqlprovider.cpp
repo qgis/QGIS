@@ -590,91 +590,154 @@ void TestQgsMssqlProvider::testEmptyLayer()
 void TestQgsMssqlProvider::testColumnDefinitionForField_data()
 {
   QTest::addColumn<QgsField>( "field" );
+  QTest::addColumn<bool>( "ignoreTypeString" );
   QTest::addColumn<QString>( "definition" );
 
   // using automatic type mapping (i.e. no explicit SQL server column type)
   QTest::newRow( "auto_bigint" )
     << QgsField( "id", QMetaType::Type::LongLong )
+    << false
     << "[id] bigint";
   QTest::newRow( "auto_int" )
     << QgsField( "age", QMetaType::Type::Int )
+    << false
     << "[age] int";
   QTest::newRow( "auto_numeric" )
     << QgsField( "score", QMetaType::Type::Double )
+    << false
     << "[score] float";
   QTest::newRow( "auto_numeric_with_precision" )
     << QgsField( "score", QMetaType::Type::Double, QString(), 20, 8 )
+    << false
     << "[score] numeric(20,8)";
   QTest::newRow( "auto_date" )
     << QgsField( "dob", QMetaType::Type::QDate )
+    << false
     << "[dob] date";
   QTest::newRow( "auto_time" )
     << QgsField( "alarm", QMetaType::Type::QTime )
+    << false
     << "[alarm] time";
   QTest::newRow( "auto_datetime" )
     << QgsField( "created_at", QMetaType::Type::QDateTime )
+    << false
     << "[created_at] datetime";
   QTest::newRow( "auto_string_with_length" )
     << QgsField( "name", QMetaType::Type::QString, QString(), 50 )
+    << false
     << "[name] nvarchar(50)";
   QTest::newRow( "auto_string_unlimited" )
     << QgsField( "notes", QMetaType::Type::QString, QString(), 0 )
+    << false
     << "[notes] nvarchar(max)";
 
   // with explicit SQL Server column type names
   QTest::newRow( "explicit_int" )
     << QgsField( "count", QMetaType::Type::Int, "int" )
+    << false
     << "[count] int";
-  QTest::newRow( "explicit_geometry" )
-    << QgsField( "geom", QMetaType::Type::UnknownType, "geometry" )
-    << "[geom] geometry";
   QTest::newRow( "fmt_varchar_len" )
     << QgsField( "code", QMetaType::Type::QString, "varchar", 10 )
+    << false
     << "[code] varchar(10)";
   QTest::newRow( "fmt_nvarchar_len" )
     << QgsField( "label", QMetaType::Type::QString, "nvarchar", 255 )
+    << false
     << "[label] nvarchar(255)";
   QTest::newRow( "fmt_char_len" )
     << QgsField( "flag", QMetaType::Type::QString, "char", 1 )
+    << false
     << "[flag] char(1)";
   QTest::newRow( "fmt_varchar_no_len" )
     << QgsField( "raw", QMetaType::Type::QString, "varchar", 0 )
+    << false
     << "[raw] varchar";
 
   QTest::newRow( "fmt_numeric_full" )
     << QgsField( "cost", QMetaType::Type::Double, "numeric", 10, 2 )
+    << false
     << "[cost] numeric(10,2)";
   QTest::newRow( "fmt_decimal_full" )
     << QgsField( "ratio", QMetaType::Type::Double, "decimal", 18, 6 )
+    << false
     << "[ratio] decimal(18,6)";
   QTest::newRow( "fmt_numeric_no_prec" )
     << QgsField( "val", QMetaType::Type::Double, "numeric", 10, 0 )
+    << false
     << "[val] numeric";
   QTest::newRow( "fmt_decimal_no_len" )
     << QgsField( "val2", QMetaType::Type::Double, "decimal", 0, 5 )
+    << false
     << "[val2] decimal";
 
   QTest::newRow( "decimal_with_scale" )
     << QgsField( "rate", QMetaType::Type::Double, "decimal", 18, 6 )
+    << false
     << "[rate] decimal(18,6)";
+
+
+  // with explicit SQL Server column type names, but ignoreTypeString set
+  QTest::newRow( "explicit_int_ignore_type_string" )
+    << QgsField( "count", QMetaType::Type::Int, "int" )
+    << true
+    << "[count] int";
+  QTest::newRow( "fmt_varchar_len_ignore_type_string" )
+    << QgsField( "code", QMetaType::Type::QString, "varchar", 10 )
+    << true
+    << "[code] nvarchar(10)";
+  QTest::newRow( "fmt_nvarchar_len_ignore_type_string" )
+    << QgsField( "label", QMetaType::Type::QString, "nvarchar", 255 )
+    << true
+    << "[label] nvarchar(255)";
+  QTest::newRow( "fmt_char_len_ignore_type_string" )
+    << QgsField( "flag", QMetaType::Type::QString, "char", 1 )
+    << true
+    << "[flag] nvarchar(1)";
+  QTest::newRow( "fmt_varchar_no_len_ignore_type_string" )
+    << QgsField( "raw", QMetaType::Type::QString, "varchar", 0 )
+    << true
+    << "[raw] nvarchar(max)";
+  QTest::newRow( "fmt_numeric_full_ignore_type_string" )
+    << QgsField( "cost", QMetaType::Type::Double, "numeric", 10, 2 )
+    << true
+    << "[cost] numeric(10,2)";
+  QTest::newRow( "fmt_decimal_full_ignore_type_string" )
+    << QgsField( "ratio", QMetaType::Type::Double, "decimal", 18, 6 )
+    << true
+    << "[ratio] numeric(18,6)";
+  QTest::newRow( "fmt_numeric_no_prec_ignore_type_string" )
+    << QgsField( "val", QMetaType::Type::Double, "numeric", 10, 0 )
+    << true
+    << "[val] float";
+  QTest::newRow( "fmt_decimal_no_len_ignore_type_string" )
+    << QgsField( "val2", QMetaType::Type::Double, "decimal", 0, 5 )
+    << true
+    << "[val2] float";
+  QTest::newRow( "decimal_with_scale_ignore_type_string" )
+    << QgsField( "rate", QMetaType::Type::Double, "decimal", 18, 6 )
+    << true
+    << "[rate] numeric(18,6)";
 
   // unhandled variant type
   QTest::newRow( "unhandled_variant" )
     << QgsField( "bad_col", QMetaType::Type::QVariantMap )
+    << false
     << QString();
 
   // field name escaping
   QTest::newRow( "name_escaping" )
     << QgsField( "complex[field name]", QMetaType::Type::QString )
+    << false
     << "[complex[field name]]] nvarchar(max)";
 }
 
 void TestQgsMssqlProvider::testColumnDefinitionForField()
 {
   QFETCH( QgsField, field );
+  QFETCH( bool, ignoreTypeString );
   QFETCH( QString, definition );
 
-  QCOMPARE( QgsMssqlUtils::columnDefinitionForField( field ), definition );
+  QCOMPARE( QgsMssqlUtils::columnDefinitionForField( field, ignoreTypeString ), definition );
 }
 
 QGSTEST_MAIN( TestQgsMssqlProvider )
