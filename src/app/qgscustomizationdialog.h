@@ -142,6 +142,11 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
      */
     void selectedItemsChanged();
 
+    /**
+     * Called whenever rows have been inserted
+     */
+    void onRowsInserted( const QModelIndex &parent, int first, int );
+
   private:
     /**
      * find QAction associated to \a toolbutton
