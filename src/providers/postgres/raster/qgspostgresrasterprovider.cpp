@@ -2324,7 +2324,17 @@ QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, Qgis::
   }
 
   QString tableToQuery { mQuery };
-  const double pixelsRatio { static_cast<double>( sampleSize ) / ( mWidth * mHeight ) };
+
+  qlonglong queryWidth { mWidth };
+  qlonglong queryHeight { mHeight };
+
+  if ( !extent.isNull() )
+  {
+    queryWidth = std::ceil( extent.width() / mScaleX );
+    queryHeight = std::ceil( extent.height() / std::abs( mScaleY ) );
+  }
+
+  const double pixelsRatio { static_cast<double>( sampleSize ) / ( queryWidth * queryHeight ) };
   double statsRatio { pixelsRatio };
 
   // Decide if overviews can be used here
@@ -2347,9 +2357,19 @@ QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, Qgis::
     }
   }
 
+  // Make sure the extent is aligned to the grid created by the raster, otherwise we might end up with wrong statistics for small rasters or small areas
+  QgsRectangle extentExpanded { extent };
+  if ( !extent.isNull() )
+  {
+    extentExpanded.setXMinimum( mExtent.xMinimum() + std::floor( ( extentExpanded.xMinimum() - mExtent.xMinimum() ) / mScaleX ) * mScaleX );
+    extentExpanded.setXMaximum( mExtent.xMinimum() + std::ceil( ( extentExpanded.xMaximum() - mExtent.xMinimum() ) / mScaleX ) * mScaleX );
+    extentExpanded.setYMinimum( mExtent.yMinimum() + std::floor( ( extentExpanded.yMinimum() - mExtent.yMinimum() ) / std::abs( mScaleY ) ) * std::abs( mScaleY ) );
+    extentExpanded.setYMaximum( mExtent.yMinimum() + std::ceil( ( extentExpanded.yMaximum() - mExtent.yMinimum() ) / std::abs( mScaleY ) ) * std::abs( mScaleY ) );
+  }
+
   // Query the backend
-  const QString extentSql { extent.isEmpty() ? QString() : u"ST_GeomFromText( %1, %2 )"_s.arg( quotedValue( extent.asWktPolygon() ) ).arg( mCrs.postgisSrid() ) };
-  QString where { extent.isEmpty() ? QString() : u"WHERE %1 && %2"_s.arg( quotedIdentifier( mRasterColumn ), extentSql ) };
+  const QString extentSql { extentExpanded.isNull() ? QString() : u"ST_GeomFromText( %1, %2 )"_s.arg( quotedValue( extentExpanded.asWktPolygon() ) ).arg( mCrs.postgisSrid() ) };
+  QString where { extentSql.isEmpty() ? QString() : u"WHERE %1 && %2"_s.arg( quotedIdentifier( mRasterColumn ), extentSql ) };
 
   if ( !subsetString().isEmpty() )
   {
@@ -2359,7 +2379,7 @@ QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, Qgis::
   QString sql;
   if ( extentSql.isEmpty() )
   {
-    sql = u"SELECT ( ST_SummaryStatsAgg( %1 , %2, TRUE, %3 )).* "
+    sql = u"SELECT ( ST_SummaryStatsAgg( %1, %2, TRUE, %3 )).* "
           "FROM %4 %5"_s
             .arg( quotedIdentifier( mRasterColumn ) )
             .arg( bandNo )
@@ -2376,7 +2396,10 @@ QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, Qgis::
             .arg( tableToQuery, where );
   }
 
+  qDebug() << "Stat sql is: " << sql;
+
   QgsPostgresResult result( connectionRO()->PQexec( sql ) );
+
 
   if ( PGRES_TUPLES_OK == result.PQresultStatus() && result.PQntuples() == 1 )
   {
