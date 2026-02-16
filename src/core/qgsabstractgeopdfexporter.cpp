@@ -248,8 +248,9 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
 
   // pages
   QDomElement page = doc.createElement( u"Page"_s );
-  const double pageWidthPdfUnits = std::ceil( details.pageSizeMm.width() / 25.4 * 72 );
-  const double pageHeightPdfUnits = std::ceil( details.pageSizeMm.height() / 25.4 * 72 );
+  // hardcode DPI of 72 to get correct page sizes in outputs -- refs discussion in https://github.com/OSGeo/gdal/pull/2961
+  const double pageWidthPdfUnits = std::ceil( details.pageSizeMm.width() / 25.4 * DPI_72 );
+  const double pageHeightPdfUnits = std::ceil( details.pageSizeMm.height() / 25.4 * DPI_72 );
   createPageDimensionXmlSection( page, doc, pageWidthPdfUnits, pageHeightPdfUnits );
 
   // georeferencing
@@ -398,18 +399,18 @@ void QgsAbstractGeospatialPdfExporter::createGeoreferencingXmlSection( QDomEleme
         the whole PDF page will be assumed to be georeferenced.
         */
       QDomElement boundingBox = doc.createElement( u"BoundingBox"_s );
-      boundingBox.setAttribute( u"x1"_s, qgsDoubleToString( section.pageBoundsMm.xMinimum() / 25.4 * 72 ) );
-      boundingBox.setAttribute( u"y1"_s, qgsDoubleToString( section.pageBoundsMm.yMinimum() / 25.4 * 72 ) );
-      boundingBox.setAttribute( u"x2"_s, qgsDoubleToString( section.pageBoundsMm.xMaximum() / 25.4 * 72 ) );
-      boundingBox.setAttribute( u"y2"_s, qgsDoubleToString( section.pageBoundsMm.yMaximum() / 25.4 * 72 ) );
+      boundingBox.setAttribute( u"x1"_s, qgsDoubleToString( section.pageBoundsMm.xMinimum() / 25.4 * DPI_72 ) );
+      boundingBox.setAttribute( u"y1"_s, qgsDoubleToString( section.pageBoundsMm.yMinimum() / 25.4 * DPI_72 ) );
+      boundingBox.setAttribute( u"x2"_s, qgsDoubleToString( section.pageBoundsMm.xMaximum() / 25.4 * DPI_72 ) );
+      boundingBox.setAttribute( u"y2"_s, qgsDoubleToString( section.pageBoundsMm.yMaximum() / 25.4 * DPI_72 ) );
       georeferencing.appendChild( boundingBox );
     }
 
     for ( const ControlPoint &point : section.controlPoints )
     {
       QDomElement cp1 = doc.createElement( u"ControlPoint"_s );
-      cp1.setAttribute( u"x"_s, qgsDoubleToString( point.pagePoint.x() / 25.4 * 72 ) );
-      cp1.setAttribute( u"y"_s, qgsDoubleToString( ( details.pageSizeMm.height() - point.pagePoint.y() ) / 25.4 * 72 ) );
+      cp1.setAttribute( u"x"_s, qgsDoubleToString( point.pagePoint.x() / 25.4 * DPI_72 ) );
+      cp1.setAttribute( u"y"_s, qgsDoubleToString( ( details.pageSizeMm.height() - point.pagePoint.y() ) / 25.4 * DPI_72 ) );
       cp1.setAttribute( u"GeoX"_s, qgsDoubleToString( point.geoPoint.x() ) );
       cp1.setAttribute( u"GeoY"_s, qgsDoubleToString( point.geoPoint.y() ) );
       georeferencing.appendChild( cp1 );
@@ -423,7 +424,7 @@ void QgsAbstractGeospatialPdfExporter::createPageDimensionXmlSection( QDomElemen
 {
   QDomElement dpi = doc.createElement( u"DPI"_s );
   // hardcode DPI of 72 to get correct page sizes in outputs -- refs discussion in https://github.com/OSGeo/gdal/pull/2961
-  dpi.appendChild( doc.createTextNode( qgsDoubleToString( 72 ) ) );
+  dpi.appendChild( doc.createTextNode( qgsDoubleToString( DPI_72 ) ) );
   pageElem.appendChild( dpi );
   // assumes DPI of 72, as noted above.
   QDomElement width = doc.createElement( u"Width"_s );

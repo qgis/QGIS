@@ -27,7 +27,10 @@
 #include <QList>
 #include <QMutex>
 #include <QPainter>
+#include <QString>
 #include <QTemporaryDir>
+
+using namespace Qt::StringLiterals;
 
 #define SIP_NO_FILE
 
@@ -472,6 +475,15 @@ class CORE_EXPORT QgsAbstractGeospatialPdfExporter
       QString sourceVectorLayer;
 
     };
+
+    /**
+     * Hardcode DPI of 72 to get correct page sizes in outputs.
+     * Refs discussion in https://github.com/OSGeo/gdal/pull/2961
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 4.0
+     */
+    static constexpr double DPI_72 = 72 SIP_SKIP;
 
   private:
 
