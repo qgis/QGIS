@@ -1772,7 +1772,10 @@ bool QgsWmsProvider::setupXyzCapabilities( const QString &uri, const QgsRectangl
   QgsDataSourceUri parsedUri;
   parsedUri.setEncodedUri( uri );
 
-  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), QgsCoordinateReferenceSystem( mSettings.mCrsId ), transformContext() );
+  // tile grid coordinates (z/x/y) always follow the EPSG:3857 numbering scheme,
+  // so we use EPSG:3857 here regardless of layer's CRS. Custom "crs" parameter
+  // that's read to mSettings.mCrsId will then affect how the returned tile data is interpreted
+  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), transformContext() );
 
   // the whole world is projected to a square:
   // X going from 180 W to 180 E
