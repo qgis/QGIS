@@ -93,7 +93,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     mActiveSubLayerVisibility.clear();
     mFeatureCount = 0;
     mImageMimeType.clear();
-    mCrsId = u"EPSG:3857"_s;
+    mCrsId = uri.hasParam( u"crs"_s ) ? uri.param( u"crs"_s ) : u"EPSG:3857"_s;
     mEnableContextualLegend = false;
 
     mIsMBTiles = uri.param( u"type"_s ) == "mbtiles"_L1;
