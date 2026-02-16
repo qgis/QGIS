@@ -555,6 +555,14 @@ void TestQgsMssqlProvider::testEmptyLayer()
   QCOMPARE( oldToNewAttrIdxMap.value( 1 ), 0 );
   QCOMPARE( oldToNewAttrIdxMap.value( 2 ), 2 );
 
+  // confirm that geometry field is LAST in table definition
+  QList<QList<QVariant> > columnNames = conn->execSql( u"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'empty_layer' AND TABLE_SCHEMA = 'qgis_test' ORDER BY ORDINAL_POSITION;"_s ).rows();
+  QCOMPARE( columnNames.size(), 4 );
+  QCOMPARE( columnNames.at( 0 ).at( 0 ), u"my_pk"_s );
+  QCOMPARE( columnNames.at( 1 ).at( 0 ), u"some_string"_s );
+  QCOMPARE( columnNames.at( 2 ).at( 0 ), u"some_real"_s );
+  QCOMPARE( columnNames.at( 3 ).at( 0 ), u"geom"_s );
+
   // creating a brand new primary key
   uri.setKeyColumn( u"my_new_pk"_s );
 
@@ -585,6 +593,14 @@ void TestQgsMssqlProvider::testEmptyLayer()
   QCOMPARE( oldToNewAttrIdxMap.value( 0 ), 1 );
   QCOMPARE( oldToNewAttrIdxMap.value( 1 ), 2 );
   QCOMPARE( oldToNewAttrIdxMap.value( 2 ), 3 );
+
+  columnNames = conn->execSql( u"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'empty_layer' AND TABLE_SCHEMA = 'qgis_test' ORDER BY ORDINAL_POSITION;"_s ).rows();
+  QCOMPARE( columnNames.size(), 5 );
+  QCOMPARE( columnNames.at( 0 ).at( 0 ), u"my_new_pk"_s );
+  QCOMPARE( columnNames.at( 1 ).at( 0 ), u"some_string"_s );
+  QCOMPARE( columnNames.at( 2 ).at( 0 ), u"my_pk"_s );
+  QCOMPARE( columnNames.at( 3 ).at( 0 ), u"some_real"_s );
+  QCOMPARE( columnNames.at( 4 ).at( 0 ), u"geom"_s );
 }
 
 void TestQgsMssqlProvider::testColumnDefinitionForField_data()
