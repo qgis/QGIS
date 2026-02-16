@@ -29,8 +29,11 @@
 #include <QDialogButtonBox>
 #include <QFont>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsdecorationtitledialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDecorationTitleDialog::QgsDecorationTitleDialog( QgsDecorationTitle &deco, QWidget *parent )
   : QDialog( parent )

@@ -20,7 +20,11 @@
 #include "qgsproviderregistry.h"
 #include "qgssensorthingsprovider.h"
 
+#include <QString>
+
 #include "moc_qgssensorthingsconnectionwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 QgsSensorThingsConnectionWidget::QgsSensorThingsConnectionWidget( QWidget *parent )

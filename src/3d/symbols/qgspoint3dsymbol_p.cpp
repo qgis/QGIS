@@ -15,15 +15,19 @@
 
 #include "qgspoint3dsymbol_p.h"
 
+#include "qgs3drendercontext.h"
 #include "qgs3dutils.h"
 #include "qgsapplication.h"
 #include "qgsbillboardgeometry.h"
+#include "qgsfeature3dhandler_p.h"
 #include "qgsgeotransform.h"
+#include "qgshighlightmaterial.h"
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgspoint3dsymbol.h"
 #include "qgssourcecache.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
 #include <QUrl>
 #include <QVector3D>
 #include <Qt3DCore/QAttribute>
@@ -45,6 +49,8 @@
 #include <Qt3DRender/QSceneLoader>
 #include <Qt3DRender/QTechnique>
 
+using namespace Qt::StringLiterals;
+
 /// @cond PRIVATE
 
 
@@ -58,7 +64,7 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
       : mSymbol( static_cast<QgsPoint3DSymbol *>( symbol->clone() ) )
       , mSelectedIds( selectedIds ) {}
 
-    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin ) override;
+    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent ) override;
     void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
@@ -79,22 +85,19 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
     std::unique_ptr<QgsPoint3DSymbol> mSymbol;
     // inputs - generic
     QgsFeatureIds mSelectedIds;
-
-    //! origin (in the map coordinates) for output geometries (e.g. at the center of the chunk)
-    QgsVector3D mChunkOrigin;
-
     // outputs
     PointData outNormal;   //!< Features that are not selected
     PointData outSelected; //!< Features that are selected
 };
 
 
-bool QgsInstancedPoint3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin )
+bool QgsInstancedPoint3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent )
 {
   Q_UNUSED( context )
   Q_UNUSED( attributeNames )
 
-  mChunkOrigin = chunkOrigin;
+  mChunkOrigin = chunkExtent.center();
+  mChunkExtent = chunkExtent;
 
   return true;
 }
@@ -196,6 +199,7 @@ void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
   QgsMaterialContext materialContext;
   materialContext.setIsSelected( selected );
   materialContext.setSelectionColor( context.selectionColor() );
+  materialContext.setIsHighlighted( mHighlightingEnabled );
   QgsMaterial *mat = material( mSymbol.get(), materialContext );
 
   // add transform (our geometry has coordinates relative to mChunkOrigin)
@@ -216,24 +220,41 @@ void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
 
 QgsMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoint3DSymbol *symbol, const QgsMaterialContext &materialContext )
 {
-  Qt3DRender::QFilterKey *filterKey = new Qt3DRender::QFilterKey;
-  filterKey->setName( u"renderingStyle"_s );
-  filterKey->setValue( "forward" );
+  std::unique_ptr<QgsMaterial> material;
 
-  Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram;
-  shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/instanced.vert"_s ) ) );
-  shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/phong.frag"_s ) ) );
+  if ( materialContext.isHighlighted() )
+  {
+    material = std::make_unique<QgsHighlightMaterial>( QgsMaterialSettingsRenderingTechnique::InstancedPoints );
+  }
+  else
+  {
+    Qt3DRender::QFilterKey *filterKey = new Qt3DRender::QFilterKey;
+    filterKey->setName( u"renderingStyle"_s );
+    filterKey->setValue( "forward" );
 
-  Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass;
-  renderPass->setShaderProgram( shaderProgram );
+    Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram;
+    shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/instanced.vert"_s ) ) );
+    shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/phong.frag"_s ) ) );
 
-  Qt3DRender::QTechnique *technique = new Qt3DRender::QTechnique;
-  technique->addFilterKey( filterKey );
-  technique->addRenderPass( renderPass );
-  technique->graphicsApiFilter()->setApi( Qt3DRender::QGraphicsApiFilter::OpenGL );
-  technique->graphicsApiFilter()->setProfile( Qt3DRender::QGraphicsApiFilter::CoreProfile );
-  technique->graphicsApiFilter()->setMajorVersion( 3 );
-  technique->graphicsApiFilter()->setMinorVersion( 2 );
+    Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass;
+    renderPass->setShaderProgram( shaderProgram );
+
+    Qt3DRender::QTechnique *technique = new Qt3DRender::QTechnique;
+    technique->addFilterKey( filterKey );
+    technique->addRenderPass( renderPass );
+    technique->graphicsApiFilter()->setApi( Qt3DRender::QGraphicsApiFilter::OpenGL );
+    technique->graphicsApiFilter()->setProfile( Qt3DRender::QGraphicsApiFilter::CoreProfile );
+    technique->graphicsApiFilter()->setMajorVersion( 3 );
+    technique->graphicsApiFilter()->setMinorVersion( 2 );
+
+    Qt3DRender::QEffect *effect = new Qt3DRender::QEffect;
+    effect->addTechnique( technique );
+
+    symbol->materialSettings()->addParametersToEffect( effect, materialContext );
+
+    material = std::make_unique<QgsMaterial>();
+    material->setEffect( effect );
+  }
 
   const QMatrix4x4 tempTransformMatrix = symbol->transform();
   // our built-in 3D geometries (e.g. cylinder, plane, ...) assume Y axis going "up",
@@ -262,17 +283,10 @@ QgsMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoint3DSymbol 
   paramInstNormal->setName( u"instNormal"_s );
   paramInstNormal->setValue( normalMatrix4 );
 
-  Qt3DRender::QEffect *effect = new Qt3DRender::QEffect;
-  effect->addTechnique( technique );
-  effect->addParameter( paramInst );
-  effect->addParameter( paramInstNormal );
+  material->addParameter( paramInst );
+  material->addParameter( paramInstNormal );
 
-  symbol->materialSettings()->addParametersToEffect( effect, materialContext );
-
-  QgsMaterial *material = new QgsMaterial;
-  material->setEffect( effect );
-
-  return material;
+  return material.release();
 }
 
 Qt3DRender::QGeometryRenderer *QgsInstancedPoint3DSymbolHandler::renderer( const QgsPoint3DSymbol *symbol, const QVector<QVector3D> &positions )
@@ -404,13 +418,13 @@ class QgsModelPoint3DSymbolHandler : public QgsFeature3DHandler
       : mSymbol( static_cast<QgsPoint3DSymbol *>( symbol->clone() ) )
       , mSelectedIds( selectedIds ) {}
 
-    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin ) override;
+    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent ) override;
     void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
   private:
     static void addSceneEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent );
-    static void addMeshEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent, bool are_selected );
+    static void addMeshEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent, bool areSelected, bool areHighlighted );
     static QgsGeoTransform *transform( QVector3D position, const QgsPoint3DSymbol *symbol, const QgsVector3D &chunkOrigin );
 
     //! temporary data we will pass to the tessellator
@@ -425,21 +439,18 @@ class QgsModelPoint3DSymbolHandler : public QgsFeature3DHandler
     std::unique_ptr<QgsPoint3DSymbol> mSymbol;
     // inputs - generic
     QgsFeatureIds mSelectedIds;
-
-    //! origin (in the map coordinates) for output geometries (e.g. at the center of the chunk)
-    QgsVector3D mChunkOrigin;
-
     // outputs
     PointData outNormal;   //!< Features that are not selected
     PointData outSelected; //!< Features that are selected
 };
 
-bool QgsModelPoint3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin )
+bool QgsModelPoint3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent )
 {
   Q_UNUSED( context )
   Q_UNUSED( attributeNames )
 
-  mChunkOrigin = chunkOrigin;
+  mChunkOrigin = chunkExtent.center();
+  mChunkExtent = chunkExtent;
 
   return true;
 }
@@ -478,15 +489,16 @@ void QgsModelPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
 
   if ( selected )
   {
-    addMeshEntities( context, out.positions, mChunkOrigin, mSymbol.get(), parent, true );
+    addMeshEntities( context, out.positions, mChunkOrigin, mSymbol.get(), parent, true, mHighlightingEnabled );
   }
   else
   {
     //  "overwriteMaterial" is a legacy setting indicating that non-embedded material should be used
     if ( mSymbol->shapeProperty( u"overwriteMaterial"_s ).toBool()
-         || ( mSymbol->materialSettings() && mSymbol->materialSettings()->type() != "null"_L1 ) )
+         || ( mSymbol->materialSettings() && mSymbol->materialSettings()->type() != "null"_L1 )
+         || mHighlightingEnabled )
     {
-      addMeshEntities( context, out.positions, mChunkOrigin, mSymbol.get(), parent, false );
+      addMeshEntities( context, out.positions, mChunkOrigin, mSymbol.get(), parent, false, mHighlightingEnabled );
     }
     else
     {
@@ -526,7 +538,7 @@ void QgsModelPoint3DSymbolHandler::addSceneEntities( const Qgs3DRenderContext &c
   }
 }
 
-void QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent, bool are_selected )
+void QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent, bool areSelected, bool areHighlighted )
 {
   if ( positions.empty() )
     return;
@@ -536,9 +548,13 @@ void QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DRenderContext &co
   {
     // build the default material
     QgsMaterialContext materialContext;
-    materialContext.setIsSelected( are_selected );
+    materialContext.setIsSelected( areSelected );
     materialContext.setSelectionColor( context.selectionColor() );
+    materialContext.setIsHighlighted( areHighlighted );
     QgsMaterial *mat = symbol->materialSettings()->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
+
+    if ( !mat )
+      return;
 
     const QUrl url = QUrl::fromLocalFile( source );
 
@@ -586,7 +602,7 @@ class QgsPoint3DBillboardSymbolHandler : public QgsFeature3DHandler
       : mSymbol( static_cast<QgsPoint3DSymbol *>( symbol->clone() ) )
       , mSelectedIds( selectedIds ) {}
 
-    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin ) override;
+    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent ) override;
     void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
@@ -603,21 +619,18 @@ class QgsPoint3DBillboardSymbolHandler : public QgsFeature3DHandler
     std::unique_ptr<QgsPoint3DSymbol> mSymbol;
     // inputs - generic
     QgsFeatureIds mSelectedIds;
-
-    //! origin (in the map coordinates) for output geometries (e.g. at the center of the chunk)
-    QgsVector3D mChunkOrigin;
-
     // outputs
     PointData outNormal;   //!< Features that are not selected
     PointData outSelected; //!< Features that are selected
 };
 
-bool QgsPoint3DBillboardSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin )
+bool QgsPoint3DBillboardSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent )
 {
   Q_UNUSED( context )
   Q_UNUSED( attributeNames )
 
-  mChunkOrigin = chunkOrigin;
+  mChunkOrigin = chunkExtent.center();
+  mChunkExtent = chunkExtent;
 
   return true;
 }

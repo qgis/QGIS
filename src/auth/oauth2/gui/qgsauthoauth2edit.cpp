@@ -29,9 +29,12 @@
 #include <QDesktopServices>
 #include <QDir>
 #include <QFileDialog>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsauthoauth2edit.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthOAuth2Edit::QgsAuthOAuth2Edit( QWidget *parent )
   : QgsAuthMethodEdit( parent )

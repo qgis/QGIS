@@ -32,7 +32,10 @@
 #include <QFontDatabase>
 #include <QMimeData>
 #include <QScreen>
+#include <QString>
 #include <QWidget>
+
+using namespace Qt::StringLiterals;
 
 QgsTextFormat::QgsTextFormat()
 {
@@ -481,11 +484,7 @@ void QgsTextFormat::setCapitalization( Qgis::Capitalization capitalization )
 {
   d->isValid = true;
   d->capitalization = capitalization;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
   d->textFont.setCapitalization( capitalization == Qgis::Capitalization::SmallCaps || capitalization == Qgis::Capitalization::AllSmallCaps ? QFont::SmallCaps : QFont::MixedCase );
-#else
-  d->textFont.setCapitalization( QFont::MixedCase );
-#endif
 }
 
 bool QgsTextFormat::allowHtmlFormatting() const
@@ -711,9 +710,7 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   {
     d->opacity = ( textStyleElem.attribute( u"textOpacity"_s ).toDouble() );
   }
-#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
   d->textFont.setStretch( textStyleElem.attribute( u"stretchFactor"_s, u"100"_s ).toInt() );
-#endif
   d->orientation = QgsTextRendererUtils::decodeTextOrientation( textStyleElem.attribute( u"textOrientation"_s ) );
   d->previewBackgroundColor = QgsColorUtils::colorFromString( textStyleElem.attribute( u"previewBkgrdColor"_s, QgsColorUtils::colorToString( Qt::white ) ) );
 
@@ -839,10 +836,8 @@ QDomElement QgsTextFormat::writeXml( QDomDocument &doc, const QgsReadWriteContex
   textStyleElem.setAttribute( u"fontWordSpacing"_s, d->textFont.wordSpacing() );
   textStyleElem.setAttribute( u"fontKerning"_s, d->textFont.kerning() );
   textStyleElem.setAttribute( u"textOpacity"_s, d->opacity );
-#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
   if ( d->textFont.stretch() > 0 )
     textStyleElem.setAttribute( u"stretchFactor"_s, d->textFont.stretch() );
-#endif
   textStyleElem.setAttribute( u"textOrientation"_s, QgsTextRendererUtils::encodeTextOrientation( d->orientation ) );
   textStyleElem.setAttribute( u"blendMode"_s, static_cast< int >( QgsPainting::getBlendModeEnum( d->blendMode ) ) );
   textStyleElem.setAttribute( u"multilineHeight"_s, d->multilineHeight );
@@ -1194,7 +1189,6 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
     }
   }
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
   if ( d->mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::FontStretchFactor ) )
   {
     context.expressionContext().setOriginalValueVariable( d->textFont.stretch() );
@@ -1204,7 +1198,6 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
       d->textFont.setStretch( val.toInt() );
     }
   }
-#endif
 
   if ( d->mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::TextOrientation ) )
   {

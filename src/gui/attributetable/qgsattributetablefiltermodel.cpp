@@ -32,8 +32,11 @@
 
 #include <QApplication>
 #include <QItemSelectionModel>
+#include <QString>
 
 #include "moc_qgsattributetablefiltermodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 //////////////////
 // Filter Model //

@@ -34,6 +34,10 @@
 #include "qgssymbollayerutils.h"
 #include "qgstextrenderer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsPropertiesDefinition QgsPlot::sPropertyDefinitions;
 
 QgsPlot::~QgsPlot() = default;

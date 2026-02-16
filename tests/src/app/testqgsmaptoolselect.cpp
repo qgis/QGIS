@@ -29,6 +29,10 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsMapToolSelect : public QObject
 {
     Q_OBJECT

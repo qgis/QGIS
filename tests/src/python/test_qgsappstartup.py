@@ -23,7 +23,6 @@ import tempfile
 import time
 
 from qgis.testing import unittest
-
 from utilities import unitTestDataPath
 
 print("CTEST_FULL_OUTPUT")
@@ -32,7 +31,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsAppStartup(unittest.TestCase):
-
     TMP_DIR = ""
 
     @classmethod
@@ -99,13 +97,13 @@ class TestPyQgsAppStartup(unittest.TestCase):
             p.poll()
             if p.returncode is not None:
                 raise Exception(
-                    f"Return code: {p.returncode}, Call: \"{' '.join(call)}\", Env: {env}"
+                    f'Return code: {p.returncode}, Call: "{" ".join(call)}", Env: {env}'
                 )
             time.sleep(1)
             s += 1
             if s > timeOut:
                 raise Exception(
-                    f"Timed out waiting for application start, Call: \"{' '.join(call)}\", Env: {env}"
+                    f'Timed out waiting for application start, Call: "{" ".join(call)}", Env: {env}'
                 )
 
         with open(myTestFile, encoding="utf-8") as res_file:
@@ -145,7 +143,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
         testfilepath = os.path.join(self.TMP_DIR, testfile).replace("\\", "/")
         testcode = [
             f"import sys\nf = open('{testfilepath}', 'a')\n",
-            "for arg in sys.argv:\n" "  f.write(arg)\n",
+            "for arg in sys.argv:\n  f.write(arg)\n",
             "  f.write('\\n')\n",
             "f.close()\n",
         ]

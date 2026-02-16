@@ -10,8 +10,10 @@ __author__ = "Mathieu Pellerin"
 __date__ = "22/8/2025"
 __copyright__ = "Copyright 2025, The QGIS Project"
 
-from qgis.PyQt.QtCore import QEventLoop
+import unittest
+
 from qgis.core import (
+    Qgis,
     QgsApplication,
     QgsExpressionContext,
     QgsExpressionContextUtils,
@@ -22,16 +24,14 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerXyPlotDataGatherer,
     QgsXyPlotSeries,
-    Qgis,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QEventLoop
+from qgis.testing import QgisTestCase, start_app
 
 app = start_app()
 
 
 class TestQgsPlot(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "plot"

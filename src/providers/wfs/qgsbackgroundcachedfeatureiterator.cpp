@@ -34,9 +34,12 @@
 #include <QFile>
 #include <QJsonDocument>
 #include <QMutex>
+#include <QString>
 #include <QTimer>
 
 #include "moc_qgsbackgroundcachedfeatureiterator.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsBackgroundCachedFeatureIterator::Constants::FIELD_GEN_COUNTER( u"__qgis_gen_counter"_s );
 const QString QgsBackgroundCachedFeatureIterator::Constants::FIELD_UNIQUE_ID( u"__qgis_unique_id"_s );

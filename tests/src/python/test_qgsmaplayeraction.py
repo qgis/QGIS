@@ -11,19 +11,17 @@ __date__ = "24/02/2018"
 __copyright__ = "Copyright 2018, The QGIS Project"
 
 import os
+import unittest
 
 from qgis.core import QgsMapLayer, QgsRasterLayer, QgsVectorLayer
 from qgis.gui import QgsMapLayerAction
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsMapLayerAction(QgisTestCase):
-
     def __init__(self, methodName):
         """Run once on class initialization."""
         QgisTestCase.__init__(self, methodName)

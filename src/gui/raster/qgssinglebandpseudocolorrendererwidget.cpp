@@ -33,10 +33,13 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 #include <QTextStream>
 #include <QTreeView>
 
 #include "moc_qgssinglebandpseudocolorrendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
   : QgsRasterRendererWidget( layer, extent )

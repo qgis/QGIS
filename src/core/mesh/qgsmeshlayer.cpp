@@ -48,10 +48,13 @@
 #include "qgsthreadingutils.h"
 #include "qgstriangularmesh.h"
 
+#include <QString>
 #include <QUrl>
 #include <QUuid>
 
 #include "moc_qgsmeshlayer.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
@@ -1894,7 +1897,7 @@ bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
     QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Legend" ) );
 
     const QDomElement legendElem = node.firstChildElement( u"legend"_s );
-    if ( QgsMapLayerLegend *l = legend(); !legendElem.isNull() )
+    if ( QgsMapLayerLegend *l = legend(); l && !legendElem.isNull() )
     {
       l->readXml( legendElem, context );
     }

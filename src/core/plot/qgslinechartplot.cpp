@@ -23,6 +23,10 @@
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayerplotdatagatherer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsLineChartPlot::QgsLineChartPlot()
 {
   setMarkerSymbolAt( 0, QgsPlotDefaultSettings::lineChartMarkerSymbol() );

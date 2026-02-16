@@ -29,6 +29,9 @@
 #include "qgsmeshvirtualdatasetgroup.h"
 
 #include <QFileInfo>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString,
                                       const QString &outputFile,

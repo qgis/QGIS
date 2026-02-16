@@ -47,14 +47,9 @@ class QgsPointCloudExpressionPrivate
       , mIsPrepared( false )
     {}
 
-    ~QgsPointCloudExpressionPrivate()
-    {
-      delete mRootNode;
-    }
-
     QAtomicInt ref;
 
-    QgsPointCloudExpressionNode *mRootNode = nullptr;
+    std::unique_ptr<QgsPointCloudExpressionNode> mRootNode;
 
     QString mParserErrorString;
     QString mEvalErrorString;

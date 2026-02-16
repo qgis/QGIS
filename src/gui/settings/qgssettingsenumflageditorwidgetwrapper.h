@@ -26,6 +26,9 @@
 
 #include <QComboBox>
 #include <QStandardItemModel>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup gui

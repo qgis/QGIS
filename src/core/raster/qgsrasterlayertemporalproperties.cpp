@@ -20,7 +20,11 @@
 #include "qgsrasterdataprovidertemporalcapabilities.h"
 #include "qgsrasterlayer.h"
 
+#include <QString>
+
 #include "moc_qgsrasterlayertemporalproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRasterLayerTemporalProperties::QgsRasterLayerTemporalProperties( QObject *parent, bool enabled )
   :  QgsMapLayerTemporalProperties( parent, enabled )

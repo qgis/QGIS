@@ -17,6 +17,10 @@
 
 #include "qgsmeshvirtualdatasetgroup.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsMeshVirtualDatasetGroup::QgsMeshVirtualDatasetGroup(
   const QString &name,
   const QString &formulaString,

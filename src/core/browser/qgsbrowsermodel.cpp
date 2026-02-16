@@ -32,11 +32,13 @@
 #include <QFuture>
 #include <QFutureWatcher>
 #include <QStorageInfo>
+#include <QString>
 #include <QStyle>
 #include <QUrl>
-#include <QtConcurrentMap>
 
 #include "moc_qgsbrowsermodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define PROJECT_HOME_PREFIX "project:"
 #define HOME_PREFIX "home:"

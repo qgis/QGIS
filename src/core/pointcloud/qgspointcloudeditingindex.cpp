@@ -25,17 +25,17 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QMutex>
+#include <QString>
 
-QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( QgsPointCloudLayer *layer )
+using namespace Qt::StringLiterals;
+
+QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( const QgsPointCloudIndex &index )
 {
-  if ( !layer ||
-       !layer->dataProvider() ||
-       !layer->dataProvider()->hasValidIndex() ||
-       !( layer->dataProvider()->capabilities() & QgsPointCloudDataProvider::Capability::ChangeAttributeValues ) )
+  if ( !index.isValid() )
     return;
 
-  mUri = layer->source();
-  mIndex = layer->dataProvider()->index();
+  mIndex = index;
+  mUri = index.uri();
 
   mAttributes = mIndex.attributes();
   mScale = mIndex.scale();

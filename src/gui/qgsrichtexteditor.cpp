@@ -46,12 +46,15 @@
 #include <QMenu>
 #include <QMimeData>
 #include <QSettings>
+#include <QString>
 #include <QTextList>
 #include <QToolButton>
 #include <QUrl>
 #include <QtDebug>
 
 #include "moc_qgsrichtexteditor.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
   : QWidget( parent )

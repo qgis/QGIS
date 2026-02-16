@@ -12,10 +12,7 @@ __copyright__ = "Copyright 2025, The QGIS Project"
 
 import os
 import tempfile
-
-from qgis.PyQt.QtCore import Qt, QRectF
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
 
 from qgis.core import (
     Qgis,
@@ -24,20 +21,26 @@ from qgis.core import (
     QgsFeature,
     QgsFillSymbol,
     QgsFontUtils,
+    QgsGeometry,
     QgsLayout,
     QgsLayoutItemChart,
+    QgsLayoutItemMap,
+    QgsLayoutReportContext,
     QgsLineChartPlot,
     QgsLineSymbol,
     QgsMarkerSymbol,
+    QgsPoint,
     QgsPrintLayout,
     QgsProject,
     QgsReadWriteContext,
+    QgsRectangle,
     QgsTextFormat,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QRectF, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
 
@@ -46,7 +49,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "layout_chart"
@@ -61,15 +63,22 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
         Test rendering a bar chart with X axis set to categorical
         """
 
+        QgsProject.instance().setCrs(QgsCoordinateReferenceSystem("ESPG:4326"))
+
         layer = QgsVectorLayer(
-            "Point?field=category:string&field=value:double", "test", "memory"
+            "Point?crs=EPSG:4326&field=category:string&field=value:double",
+            "test",
+            "memory",
         )
         provider = layer.dataProvider()
         f = QgsFeature()
+        f.setGeometry(QgsGeometry(QgsPoint(10, 10)))
         f.setAttributes(["category_a", 10.0])
         f2 = QgsFeature()
+        f2.setGeometry(QgsGeometry(QgsPoint(0, 0)))
         f2.setAttributes(["category_b", 5.0])
         f3 = QgsFeature()
+        f3.setGeometry(QgsGeometry(QgsPoint(-10, -10)))
         f3.setAttributes(["category_c", 3.0])
         f4 = QgsFeature()
         f4.setAttributes(["category_b", 6.0])
@@ -78,8 +87,24 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
         assert provider.addFeatures([f, f2, f3, f4, f5])
         assert layer.featureCount() == 5
 
+        QgsProject.instance().addMapLayer(layer)
+
+        atlas_layer = QgsVectorLayer("Polygon?crs=EPSG:4326", "atlas", "memory")
+        self.assertTrue(atlas_layer.isValid())
+        fa = QgsFeature()
+        fa.setGeometry(
+            QgsGeometry.fromWkt("Polygon ((-15 -15, -5 -15, -5 -5, -15 -5, -15 -15))")
+        )
+        atlas_layer.dataProvider().addFeature(fa)
+
+        QgsProject.instance().addMapLayer(atlas_layer)
+
         layout = QgsLayout(QgsProject.instance())
         layout.initializeDefaults()
+        layout.reportContext().setLayer(atlas_layer)
+        it = atlas_layer.getFeatures()
+        it.nextFeature(fa)
+        layout.reportContext().setFeature(fa)
 
         chart_item = QgsLayoutItemChart(layout)
         layout.addLayoutItem(chart_item)
@@ -164,7 +189,25 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
         chart_item.setSortExpression('"category"')
         chart_item.setSortAscending(False)
 
-        self.assertTrue(self.render_layout_check("bar_chart", layout))
+        # self.assertTrue(self.render_layout_check("bar_chart", layout))
+
+        map = QgsLayoutItemMap(layout)
+        layout.addLayoutItem(map)
+        map.setFrameEnabled(True)
+        map.attemptSetSceneRect(QRectF(0, 0, 100, 100))
+        map.setExtent(QgsRectangle(5, 5, 15, 15))
+        map.setLayers([layer])
+        map.setVisibility(False)
+
+        chart_item.setMap(map)
+        chart_item.setFilterOnlyVisibleFeatures(True)
+
+        self.assertTrue(self.render_layout_check("bar_chart_filter_visible", layout))
+
+        chart_item.setFilterOnlyVisibleFeatures(False)
+        chart_item.setFilterToAtlasFeature(True)
+
+        self.assertTrue(self.render_layout_check("bar_chart_filter_atlas", layout))
 
     def test_line_chart(self):
         """

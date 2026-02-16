@@ -25,7 +25,10 @@
 #include <QDir>
 #include <QDomElement>
 #include <QNetworkRequest>
+#include <QString>
 #include <QUrlQuery>
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsHttpHeaders

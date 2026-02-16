@@ -19,7 +19,11 @@
 #include "qgsrastermatrix.h"
 #include "qgsrasterprojector.h"
 
+#include <QString>
+
 #include "moc_qgsvirtualrasterprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define PROVIDER_KEY u"virtualraster"_s
 #define PROVIDER_DESCRIPTION u"Virtual Raster data provider"_s
@@ -91,7 +95,7 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
       continue;
     }
 
-    //this var is not useful right now except for the copy constructor
+    // mRasterLayers owns the layer lifetime, freed in the destructor
     mRasterLayers << rProvidedLayer;
 
     for ( int j = 0; j < rProvidedLayer->bandCount(); ++j )
@@ -128,6 +132,7 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QgsVirtualRasterProvid
   for ( const auto &it : other.mRasterLayers )
   {
     QgsRasterLayer *rcProvidedLayer = it->clone();
+    mRasterLayers << rcProvidedLayer;
     for ( int j = 0; j < rcProvidedLayer->bandCount(); ++j )
     {
       QgsRasterCalculatorEntry entry;
@@ -151,9 +156,9 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
   Q_UNUSED( bandNo );
   auto tblock = std::make_unique<QgsRasterBlock>( Qgis::DataType::Float64, width, height );
 
-  double *outputData = ( double * ) ( tblock->bits() );
+  double *outputData = reinterpret_cast<double *>( tblock->bits() );
 
-  QMap<QString, QgsRasterBlock *> inputBlocks;
+  std::map<QString, std::unique_ptr<QgsRasterBlock>> inputBlocks;
   QVector<QgsRasterCalculatorEntry>::const_iterator it = mRasterEntries.constBegin();
 
   for ( ; it != mRasterEntries.constEnd(); ++it )
@@ -172,7 +177,6 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
       block.reset( proj.block( it->bandNumber, extent, width, height, rasterBlockFeedback.get() ) );
       if ( rasterBlockFeedback->isCanceled() )
       {
-        qDeleteAll( inputBlocks );
         QgsDebugMsgLevel( "Canceled = 3, User canceled calculation", 2 );
       }
     }
@@ -181,7 +185,7 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
       block.reset( it->raster->dataProvider()->block( it->bandNumber, extent, width, height ) );
     }
 
-    inputBlocks.insert( it->ref, block.release() );
+    inputBlocks[it->ref] = std::move( block );
   }
 
   QgsRasterMatrix resultMatrix( width, 1, nullptr, std::numeric_limits<double>::quiet_NaN() );
@@ -198,7 +202,13 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
       break;
     }
 
-    if ( mCalcNode->calculate( inputBlocks, resultMatrix, i ) )
+    QMap<QString, QgsRasterBlock * > rasterDataPtrMap;
+    for ( auto it = inputBlocks.cbegin(); it != inputBlocks.cend(); ++it )
+    {
+      rasterDataPtrMap.insert( it->first, it->second.get() );
+    }
+
+    if ( mCalcNode->calculate( rasterDataPtrMap, resultMatrix, i ) )
     {
       for ( int j = 0; j < width; ++j )
       {
@@ -207,8 +217,6 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
     }
     else
     {
-      qDeleteAll( inputBlocks );
-      inputBlocks.clear();
       QgsDebugError( "calcNode was not run in a correct way" );
     }
   }

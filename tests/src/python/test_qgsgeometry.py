@@ -13,18 +13,10 @@ __copyright__ = "Copyright 2012, The QGIS Project"
 import csv
 import math
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QPointF
-from qgis.PyQt.QtGui import (
-    QBrush,
-    QColor,
-    QImage,
-    QPainter,
-    QPainterPath,
-    QPen,
-    QPolygonF,
-    QTransform,
-)
+import numpy
+import shapely
 from qgis.core import (
     Qgis,
     QgsAbstractGeometryTransformer,
@@ -55,11 +47,18 @@ from qgis.core import (
     QgsVertexId,
     QgsWkbTypes,
 )
-import unittest
-import numpy
-import shapely
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QPointF
+from qgis.PyQt.QtGui import (
+    QBrush,
+    QColor,
+    QImage,
+    QPainter,
+    QPainterPath,
+    QPen,
+    QPolygonF,
+    QTransform,
+)
+from qgis.testing import QgisTestCase, start_app
 from utilities import compareWkt, unitTestDataPath, writeShape
 
 # Convenience instances in case you may need them not used in this test
@@ -69,7 +68,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsGeometry(QgisTestCase):
-
     def setUp(self):
         self.geos309 = 30900
         self.geos310_4 = 31040
@@ -1239,28 +1237,25 @@ class TestQgsGeometry(QgisTestCase):
         with open(os.path.join(TEST_DATA_DIR, "geom_data.csv")) as f:
             reader = csv.DictReader(f)
             for i, row in enumerate(reader):
-
                 # test that geometry can be created from WKT
                 geom = QgsGeometry.fromWkt(row["wkt"])
                 if row["valid_wkt"]:
-                    assert (
-                        geom
-                    ), f"WKT conversion {i + 1} failed: could not create geom:\n{row['wkt']}\n"
+                    assert geom, (
+                        f"WKT conversion {i + 1} failed: could not create geom:\n{row['wkt']}\n"
+                    )
                 else:
-                    assert (
-                        not geom
-                    ), "Corrupt WKT {} was incorrectly converted to geometry:\n{}\n".format(
-                        i + 1, row["wkt"]
+                    assert not geom, (
+                        "Corrupt WKT {} was incorrectly converted to geometry:\n{}\n".format(
+                            i + 1, row["wkt"]
+                        )
                     )
                     continue
 
                 # test exporting to WKT results in expected string
                 result = geom.asWkt()
                 exp = row["valid_wkt"]
-                assert compareWkt(
-                    result, exp, 0.000001
-                ), "WKT conversion {}: mismatch Expected:\n{}\nGot:\n{}\n".format(
-                    i + 1, exp, result
+                assert compareWkt(result, exp, 0.000001), (
+                    f"WKT conversion {i + 1}: mismatch Expected:\n{exp}\nGot:\n{result}\n"
                 )
 
                 # test num points in geometry
@@ -1268,9 +1263,7 @@ class TestQgsGeometry(QgisTestCase):
                 self.assertEqual(
                     geom.constGet().nCoordinates(),
                     exp_nodes,
-                    "Node count {}: mismatch Expected:\n{}\nGot:\n{}\n".format(
-                        i + 1, exp_nodes, geom.constGet().nCoordinates()
-                    ),
+                    f"Node count {i + 1}: mismatch Expected:\n{exp_nodes}\nGot:\n{geom.constGet().nCoordinates()}\n",
                 )
 
                 # test num geometries in collections
@@ -1279,16 +1272,12 @@ class TestQgsGeometry(QgisTestCase):
                     self.assertEqual(
                         geom.constGet().numGeometries(),
                         exp_geometries,
-                        "Geometry count {}: mismatch Expected:\n{}\nGot:\n{}\n".format(
-                            i + 1, exp_geometries, geom.constGet().numGeometries()
-                        ),
+                        f"Geometry count {i + 1}: mismatch Expected:\n{exp_geometries}\nGot:\n{geom.constGet().numGeometries()}\n",
                     )
                 except:
                     # some geometry types don't have numGeometries()
-                    assert (
-                        exp_geometries <= 1
-                    ), "Geometry count {}:  Expected:\n{} geometries but could not call numGeometries()\n".format(
-                        i + 1, exp_geometries
+                    assert exp_geometries <= 1, (
+                        f"Geometry count {i + 1}:  Expected:\n{exp_geometries} geometries but could not call numGeometries()\n"
                     )
 
                 # test count of rings
@@ -1297,16 +1286,12 @@ class TestQgsGeometry(QgisTestCase):
                     self.assertEqual(
                         geom.constGet().numInteriorRings(),
                         exp_rings,
-                        "Ring count {}: mismatch Expected:\n{}\nGot:\n{}\n".format(
-                            i + 1, exp_rings, geom.constGet().numInteriorRings()
-                        ),
+                        f"Ring count {i + 1}: mismatch Expected:\n{exp_rings}\nGot:\n{geom.constGet().numInteriorRings()}\n",
                     )
                 except:
                     # some geometry types don't have numInteriorRings()
-                    assert (
-                        exp_rings <= 1
-                    ), "Ring count {}:  Expected:\n{} rings but could not call numInteriorRings()\n{}".format(
-                        i + 1, exp_rings, geom.constGet()
+                    assert exp_rings <= 1, (
+                        f"Ring count {i + 1}:  Expected:\n{exp_rings} rings but could not call numInteriorRings()\n{geom.constGet()}"
                     )
 
                 # test isClosed
@@ -1315,23 +1300,19 @@ class TestQgsGeometry(QgisTestCase):
                     self.assertEqual(
                         geom.constGet().isClosed(),
                         exp,
-                        "isClosed {}: mismatch Expected:\n{}\nGot:\n{}\n".format(
-                            i + 1, True, geom.constGet().isClosed()
-                        ),
+                        f"isClosed {i + 1}: mismatch Expected:\n{True}\nGot:\n{geom.constGet().isClosed()}\n",
                     )
                 except:
                     # some geometry types don't have isClosed()
-                    assert (
-                        not exp
-                    ), f"isClosed {i + 1}:  Expected:\n isClosed() but could not call isClosed()\n"
+                    assert not exp, (
+                        f"isClosed {i + 1}:  Expected:\n isClosed() but could not call isClosed()\n"
+                    )
 
                 # test geometry centroid
                 exp = row["centroid"]
                 result = geom.centroid().asWkt()
-                assert compareWkt(
-                    result, exp, 0.00001
-                ), "Centroid {}: mismatch Expected:\n{}\nGot:\n{}\n".format(
-                    i + 1, exp, result
+                assert compareWkt(result, exp, 0.00001), (
+                    f"Centroid {i + 1}: mismatch Expected:\n{exp}\nGot:\n{result}\n"
                 )
 
                 # test bounding box limits
@@ -2490,9 +2471,7 @@ class TestQgsGeometry(QgisTestCase):
                     self.assertEqual(
                         QgsPoint(pt.x(), pt.y()),
                         p,
-                        "Got {},{} Expected {} at {} / {},{},{}".format(
-                            p.x(), p.y(), pt.toString(), i, j, k, l
-                        ),
+                        f"Got {p.x()},{p.y()} Expected {pt.toString()} at {i} / {j},{k},{l}",
                     )
                     i += 1
 
@@ -2541,12 +2520,12 @@ class TestQgsGeometry(QgisTestCase):
         wkt = multipoint.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
-        assert not multipoint.deleteVertex(
-            4
-        ), "MULTIPOINT delete at 4 unexpectedly succeeded"
-        assert not multipoint.deleteVertex(
-            -1
-        ), "MULTIPOINT delete at -1 unexpectedly succeeded"
+        assert not multipoint.deleteVertex(4), (
+            "MULTIPOINT delete at 4 unexpectedly succeeded"
+        )
+        assert not multipoint.deleteVertex(-1), (
+            "MULTIPOINT delete at -1 unexpectedly succeeded"
+        )
 
         assert multipoint.deleteVertex(1), "MULTIPOINT delete at 1 failed"
         expwkt = "MultiPoint ((4 4),(6 6),(7 7))"
@@ -2574,15 +2553,15 @@ class TestQgsGeometry(QgisTestCase):
         )
 
         # try moving invalid vertices
-        assert not multipoint.moveVertex(
-            9, 9, -1
-        ), "move vertex succeeded when it should have failed"
-        assert not multipoint.moveVertex(
-            9, 9, 10
-        ), "move vertex succeeded when it should have failed"
-        assert not multipoint.moveVertex(
-            9, 9, 11
-        ), "move vertex succeeded when it should have failed"
+        assert not multipoint.moveVertex(9, 9, -1), (
+            "move vertex succeeded when it should have failed"
+        )
+        assert not multipoint.moveVertex(9, 9, 10), (
+            "move vertex succeeded when it should have failed"
+        )
+        assert not multipoint.moveVertex(9, 9, 11), (
+            "move vertex succeeded when it should have failed"
+        )
 
         for i in range(0, 10):
             assert multipoint.moveVertex(i + 1, -1 - i, i), "move vertex %d failed" % i
@@ -2604,15 +2583,15 @@ class TestQgsGeometry(QgisTestCase):
         )
 
         # try moving invalid vertices
-        assert not polyline.moveVertex(
-            9, 9, -1
-        ), "move vertex succeeded when it should have failed"
-        assert not polyline.moveVertex(
-            9, 9, 10
-        ), "move vertex succeeded when it should have failed"
-        assert not polyline.moveVertex(
-            9, 9, 11
-        ), "move vertex succeeded when it should have failed"
+        assert not polyline.moveVertex(9, 9, -1), (
+            "move vertex succeeded when it should have failed"
+        )
+        assert not polyline.moveVertex(9, 9, 10), (
+            "move vertex succeeded when it should have failed"
+        )
+        assert not polyline.moveVertex(9, 9, 11), (
+            "move vertex succeeded when it should have failed"
+        )
 
         assert polyline.moveVertex(5.5, 4.5, 3), "move vertex failed"
         expwkt = "LineString (5 0, 0 0, 0 4, 5.5 4.5, 5 1, 1 1, 1 3, 4 3, 4 2, 2 2)"
@@ -2692,9 +2671,9 @@ class TestQgsGeometry(QgisTestCase):
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
         assert not polyline.deleteVertex(-5), "Delete vertex -5 unexpectedly succeeded"
-        assert not polyline.deleteVertex(
-            100
-        ), "Delete vertex 100 unexpectedly succeeded"
+        assert not polyline.deleteVertex(100), (
+            "Delete vertex 100 unexpectedly succeeded"
+        )
 
         #   2-3 6-+-7
         #   | | |   |
@@ -2707,12 +2686,12 @@ class TestQgsGeometry(QgisTestCase):
         wkt = polyline.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
-        assert not polyline.deleteVertex(
-            -100
-        ), "Delete vertex -100 unexpectedly succeeded"
-        assert not polyline.deleteVertex(
-            100
-        ), "Delete vertex 100 unexpectedly succeeded"
+        assert not polyline.deleteVertex(-100), (
+            "Delete vertex -100 unexpectedly succeeded"
+        )
+        assert not polyline.deleteVertex(100), (
+            "Delete vertex 100 unexpectedly succeeded"
+        )
 
         assert polyline.deleteVertex(0), "Delete vertex 0 failed"
         expwkt = "MultiLineString ((1 0, 1 1, 2 1, 2 0), (3 1, 5 1, 5 0, 6 0))"
@@ -2751,9 +2730,9 @@ class TestQgsGeometry(QgisTestCase):
         wkt = polygon.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
-        assert not polygon.deleteVertex(
-            -100
-        ), "Delete vertex -100 unexpectedly succeeded"
+        assert not polygon.deleteVertex(-100), (
+            "Delete vertex -100 unexpectedly succeeded"
+        )
         assert not polygon.deleteVertex(100), "Delete vertex 100 unexpectedly succeeded"
 
         # 5-+-4 0-+-9
@@ -2840,9 +2819,9 @@ class TestQgsGeometry(QgisTestCase):
         wkt = linestring.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
-        assert not linestring.insertVertex(
-            3, 0, 5
-        ), "Insert vertex 3 0 at 5 should have failed"
+        assert not linestring.insertVertex(3, 0, 5), (
+            "Insert vertex 3 0 at 5 should have failed"
+        )
 
         polygon = QgsGeometry.fromWkt(
             "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))"
@@ -3457,10 +3436,10 @@ class TestQgsGeometry(QgisTestCase):
         ]
 
         def polyline1_geom():
-            return QgsGeometry.fromPolylineXY(line_points[0])  # noqa: E704,E261
+            return QgsGeometry.fromPolylineXY(line_points[0])  # noqa: E261
 
         def polyline2_geom():
-            return QgsGeometry.fromPolylineXY(line_points[1])  # noqa: E704,E261
+            return QgsGeometry.fromPolylineXY(line_points[1])  # noqa: E261
 
         # 5-+-4 0-+-9
         # |   | |   |
@@ -3493,19 +3472,19 @@ class TestQgsGeometry(QgisTestCase):
         ]
 
         def polygon1_geom():
-            return QgsGeometry.fromPolygonXY(poly_points[0])  # noqa: E704,E261
+            return QgsGeometry.fromPolygonXY(poly_points[0])  # noqa: E261
 
         def polygon2_geom():
-            return QgsGeometry.fromPolygonXY(poly_points[1])  # noqa: E704,E261
+            return QgsGeometry.fromPolygonXY(poly_points[1])  # noqa: E261
 
         def multi_polygon_geom():
-            return QgsGeometry.fromMultiPolygonXY(poly_points)  # noqa: E704,E261
+            return QgsGeometry.fromMultiPolygonXY(poly_points)  # noqa: E261
 
         def multi_polygon1_geom():
-            return QgsGeometry.fromMultiPolygonXY(poly_points[:1])  # noqa: E704,E261
+            return QgsGeometry.fromMultiPolygonXY(poly_points[:1])  # noqa: E261
 
         def multi_polygon2_geom():
-            return QgsGeometry.fromMultiPolygonXY(poly_points[1:])  # noqa: E704,E261
+            return QgsGeometry.fromMultiPolygonXY(poly_points[1:])  # noqa: E261
 
         def multi_surface_geom():
             ms = QgsMultiSurface()
@@ -3578,7 +3557,7 @@ class TestQgsGeometry(QgisTestCase):
         geoms[T] = polyline1_geom()
         parts[T] = curve()
         expec[T] = (
-            f"MultiLineString ({polyline1_geom().asWkt()[len('LineString '):]},{curve().curveToLine().asWkt()[len('LineString '):]})"
+            f"MultiLineString ({polyline1_geom().asWkt()[len('LineString ') :]},{curve().curveToLine().asWkt()[len('LineString ') :]})"
         )
 
         T = "polygon_add_ring_1_point"
@@ -3673,7 +3652,7 @@ class TestQgsGeometry(QgisTestCase):
         geoms[T] = multi_polygon1_geom()
         parts[T] = circle_curvepolygon()
         expec[T] = (
-            f"MultiPolygon ({polygon1_geom().asWkt()[len('Polygon '):]},{circle_polygon().asWkt()[len('Polygon '):]})"
+            f"MultiPolygon ({polygon1_geom().asWkt()[len('Polygon ') :]},{circle_polygon().asWkt()[len('Polygon ') :]})"
         )
 
         T = "multisurface_add_curvepolygon"
@@ -3751,10 +3730,10 @@ class TestQgsGeometry(QgisTestCase):
         ]
 
         def polyline1_geom():
-            return QgsGeometry.fromPolylineXY(line_points[0])  # noqa: E704,E261
+            return QgsGeometry.fromPolylineXY(line_points[0])  # noqa: E261
 
         def polyline2_geom():
-            return QgsGeometry.fromPolylineXY(line_points[1])  # noqa: E704,E261
+            return QgsGeometry.fromPolylineXY(line_points[1])  # noqa: E261
 
         # 5-+-4 0-+-9
         # |   | |   |
@@ -3787,19 +3766,19 @@ class TestQgsGeometry(QgisTestCase):
         ]
 
         def polygon1_geom():
-            return QgsGeometry.fromPolygonXY(poly_points[0])  # noqa: E704,E261
+            return QgsGeometry.fromPolygonXY(poly_points[0])  # noqa: E261
 
         def polygon2_geom():
-            return QgsGeometry.fromPolygonXY(poly_points[1])  # noqa: E704,E261
+            return QgsGeometry.fromPolygonXY(poly_points[1])  # noqa: E261
 
         def multi_polygon_geom():
-            return QgsGeometry.fromMultiPolygonXY(poly_points)  # noqa: E704,E261
+            return QgsGeometry.fromMultiPolygonXY(poly_points)  # noqa: E261
 
         def multi_polygon1_geom():
-            return QgsGeometry.fromMultiPolygonXY(poly_points[:1])  # noqa: E704,E261
+            return QgsGeometry.fromMultiPolygonXY(poly_points[:1])  # noqa: E261
 
         def multi_polygon2_geom():
-            return QgsGeometry.fromMultiPolygonXY(poly_points[1:])  # noqa: E704,E261
+            return QgsGeometry.fromMultiPolygonXY(poly_points[1:])  # noqa: E261
 
         def multi_surface_geom():
             ms = QgsMultiSurface()
@@ -3872,7 +3851,7 @@ class TestQgsGeometry(QgisTestCase):
         geoms[T] = polyline1_geom()
         parts[T] = curve()
         expec[T] = (
-            f"MultiLineString ({polyline1_geom().asWkt()[len('LineString '):]},{curve().curveToLine().asWkt()[len('LineString '):]})"
+            f"MultiLineString ({polyline1_geom().asWkt()[len('LineString ') :]},{curve().curveToLine().asWkt()[len('LineString ') :]})"
         )
 
         T = "polygon_add_ring_1_point"
@@ -3967,7 +3946,7 @@ class TestQgsGeometry(QgisTestCase):
         geoms[T] = multi_polygon1_geom()
         parts[T] = circle_curvepolygon()
         expec[T] = (
-            f"MultiPolygon ({polygon1_geom().asWkt()[len('Polygon '):]},{circle_polygon().asWkt()[len('Polygon '):]})"
+            f"MultiPolygon ({polygon1_geom().asWkt()[len('Polygon ') :]},{circle_polygon().asWkt()[len('Polygon ') :]})"
         )
 
         T = "multisurface_add_curvepolygon"
@@ -4076,27 +4055,21 @@ class TestQgsGeometry(QgisTestCase):
         point = QgsGeometry.fromPointXY(QgsPointXY(1, 1))
         wkt = point.convertToType(QgsWkbTypes.GeometryType.PointGeometry, False).asWkt()
         expWkt = "Point (1 1)"
-        assert compareWkt(
-            expWkt, wkt
-        ), "convertToType failed: from point to point. Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"convertToType failed: from point to point. Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # POINT TO MultiPoint
         wkt = point.convertToType(QgsWkbTypes.GeometryType.PointGeometry, True).asWkt()
         expWkt = "MultiPoint ((1 1))"
-        assert compareWkt(
-            expWkt, wkt
-        ), "convertToType failed: from point to multipoint. Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"convertToType failed: from point to multipoint. Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # LINE TO MultiPoint
         line = QgsGeometry.fromPolylineXY(points[0][0])
         wkt = line.convertToType(QgsWkbTypes.GeometryType.PointGeometry, True).asWkt()
         expWkt = "MultiPoint ((0 0),(1 0),(1 1),(2 1),(2 2),(0 2),(0 0))"
-        assert compareWkt(
-            expWkt, wkt
-        ), "convertToType failed: from line to multipoint. Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"convertToType failed: from line to multipoint. Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # MULTILINE TO MultiPoint
         multiLine = QgsGeometry.fromMultiPolylineXY(points[2])
@@ -4104,10 +4077,8 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.GeometryType.PointGeometry, True
         ).asWkt()
         expWkt = "MultiPoint ((10 0),(13 0),(13 3),(10 3),(10 0),(11 1),(12 1),(12 2),(11 2),(11 1))"
-        assert compareWkt(
-            expWkt, wkt
-        ), "convertToType failed: from multiline to multipoint. Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"convertToType failed: from multiline to multipoint. Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # Polygon TO MultiPoint
         polygon = QgsGeometry.fromPolygonXY(points[0])
@@ -4115,10 +4086,8 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.GeometryType.PointGeometry, True
         ).asWkt()
         expWkt = "MultiPoint ((0 0),(1 0),(1 1),(2 1),(2 2),(0 2),(0 0))"
-        assert compareWkt(
-            expWkt, wkt
-        ), "convertToType failed: from poylgon to multipoint. Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"convertToType failed: from poylgon to multipoint. Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # MultiPolygon TO MultiPoint
         multiPolygon = QgsGeometry.fromMultiPolygonXY(points)
@@ -4126,28 +4095,27 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.GeometryType.PointGeometry, True
         ).asWkt()
         expWkt = "MultiPoint ((0 0),(1 0),(1 1),(2 1),(2 2),(0 2),(0 0),(4 0),(5 0),(5 2),(3 2),(3 1),(4 1),(4 0),(10 0),(13 0),(13 3),(10 3),(10 0),(11 1),(12 1),(12 2),(11 2),(11 1))"
-        assert compareWkt(
-            expWkt, wkt
-        ), "convertToType failed: from multipoylgon to multipoint. Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"convertToType failed: from multipoylgon to multipoint. Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
 
         # ####### TO LINE ########
         # POINT TO LINE
         point = QgsGeometry.fromPointXY(QgsPointXY(1, 1))
-        self.assertFalse(
-            point.convertToType(QgsWkbTypes.GeometryType.LineGeometry, False)
-        ), "convertToType with a point should return a null geometry"
+        (
+            self.assertFalse(
+                point.convertToType(QgsWkbTypes.GeometryType.LineGeometry, False)
+            ),
+            "convertToType with a point should return a null geometry",
+        )
         # MultiPoint TO LINE
         multipoint = QgsGeometry.fromMultiPointXY(points[0][0])
         wkt = multipoint.convertToType(
             QgsWkbTypes.GeometryType.LineGeometry, False
         ).asWkt()
         expWkt = "LineString (0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)"
-        assert compareWkt(
-            expWkt, wkt
-        ), "convertToType failed: from multipoint to line. Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"convertToType failed: from multipoint to line. Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # MultiPoint TO MULTILINE
         multipoint = QgsGeometry.fromMultiPointXY(points[0][0])
@@ -4155,10 +4123,8 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.GeometryType.LineGeometry, True
         ).asWkt()
         expWkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
-        assert compareWkt(
-            expWkt, wkt
-        ), "convertToType failed: from multipoint to multiline. Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"convertToType failed: from multipoint to multiline. Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # MULTILINE (which has a single part) TO LINE
         multiLine = QgsGeometry.fromMultiPolylineXY(points[0])
@@ -4166,19 +4132,15 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.GeometryType.LineGeometry, False
         ).asWkt()
         expWkt = "LineString (0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)"
-        assert compareWkt(
-            expWkt, wkt
-        ), "convertToType failed: from multiline to line. Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"convertToType failed: from multiline to line. Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # LINE TO MULTILINE
         line = QgsGeometry.fromPolylineXY(points[0][0])
         wkt = line.convertToType(QgsWkbTypes.GeometryType.LineGeometry, True).asWkt()
         expWkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
-        assert compareWkt(
-            expWkt, wkt
-        ), "convertToType failed: from line to multiline. Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"convertToType failed: from line to multiline. Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # Polygon TO LINE
         polygon = QgsGeometry.fromPolygonXY(points[0])
@@ -4186,28 +4148,22 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.GeometryType.LineGeometry, False
         ).asWkt()
         expWkt = "LineString (0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)"
-        assert compareWkt(
-            expWkt, wkt
-        ), "convertToType failed: from polygon to line. Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"convertToType failed: from polygon to line. Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # Polygon TO MULTILINE
         polygon = QgsGeometry.fromPolygonXY(points[0])
         wkt = polygon.convertToType(QgsWkbTypes.GeometryType.LineGeometry, True).asWkt()
         expWkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
-        assert compareWkt(
-            expWkt, wkt
-        ), "convertToType failed: from polygon to multiline. Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"convertToType failed: from polygon to multiline. Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # Polygon with ring TO MULTILINE
         polygon = QgsGeometry.fromPolygonXY(points[2])
         wkt = polygon.convertToType(QgsWkbTypes.GeometryType.LineGeometry, True).asWkt()
         expWkt = "MultiLineString ((10 0, 13 0, 13 3, 10 3, 10 0), (11 1, 12 1, 12 2, 11 2, 11 1))"
-        assert compareWkt(
-            expWkt, wkt
-        ), "convertToType failed: from polygon with ring to multiline. Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"convertToType failed: from polygon with ring to multiline. Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # MultiPolygon (which has a single part) TO LINE
         multiPolygon = QgsGeometry.fromMultiPolygonXY([points[0]])
@@ -4215,10 +4171,8 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.GeometryType.LineGeometry, False
         ).asWkt()
         expWkt = "LineString (0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)"
-        assert compareWkt(
-            expWkt, wkt
-        ), "convertToType failed: from multipolygon to multiline. Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"convertToType failed: from multipolygon to multiline. Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # MultiPolygon TO MULTILINE
         multiPolygon = QgsGeometry.fromMultiPolygonXY(points)
@@ -4226,10 +4180,8 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.GeometryType.LineGeometry, True
         ).asWkt()
         expWkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0), (4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0), (10 0, 13 0, 13 3, 10 3, 10 0), (11 1, 12 1, 12 2, 11 2, 11 1))"
-        assert compareWkt(
-            expWkt, wkt
-        ), "convertToType failed: from multipolygon to multiline. Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"convertToType failed: from multipolygon to multiline. Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
 
         # ####### TO Polygon ########
@@ -4239,10 +4191,8 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.GeometryType.PolygonGeometry, False
         ).asWkt()
         expWkt = "Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
-        assert compareWkt(
-            expWkt, wkt
-        ), "convertToType failed: from multipoint to polygon. Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"convertToType failed: from multipoint to polygon. Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # MultiPoint TO MultiPolygon
         multipoint = QgsGeometry.fromMultiPointXY(points[0][0])
@@ -4250,10 +4200,8 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.GeometryType.PolygonGeometry, True
         ).asWkt()
         expWkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)))"
-        assert compareWkt(
-            expWkt, wkt
-        ), "convertToType failed: from multipoint to multipolygon. Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"convertToType failed: from multipoint to multipolygon. Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # LINE TO Polygon
         line = QgsGeometry.fromPolylineXY(points[0][0])
@@ -4261,10 +4209,8 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.GeometryType.PolygonGeometry, False
         ).asWkt()
         expWkt = "Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
-        assert compareWkt(
-            expWkt, wkt
-        ), "convertToType failed: from line to polygon. Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"convertToType failed: from line to polygon. Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # LINE ( 3 vertices, with first = last ) TO Polygon
         line = QgsGeometry.fromPolylineXY(
@@ -4286,10 +4232,8 @@ class TestQgsGeometry(QgisTestCase):
         line = QgsGeometry.fromPolylineXY(points[0][0])
         wkt = line.convertToType(QgsWkbTypes.GeometryType.PolygonGeometry, True).asWkt()
         expWkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)))"
-        assert compareWkt(
-            expWkt, wkt
-        ), "convertToType failed: from line to multipolygon. Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"convertToType failed: from line to multipolygon. Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # MULTILINE (which has a single part) TO Polygon
         multiLine = QgsGeometry.fromMultiPolylineXY(points[0])
@@ -4297,10 +4241,8 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.GeometryType.PolygonGeometry, False
         ).asWkt()
         expWkt = "Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
-        assert compareWkt(
-            expWkt, wkt
-        ), "convertToType failed: from multiline to polygon. Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"convertToType failed: from multiline to polygon. Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # MULTILINE TO MultiPolygon
         multiLine = QgsGeometry.fromMultiPolylineXY([points[0][0], points[1][0]])
@@ -4308,10 +4250,8 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.GeometryType.PolygonGeometry, True
         ).asWkt()
         expWkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))"
-        assert compareWkt(
-            expWkt, wkt
-        ), "convertToType failed: from multiline to multipolygon. Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"convertToType failed: from multiline to multipolygon. Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # Polygon TO MultiPolygon
         polygon = QgsGeometry.fromPolygonXY(points[0])
@@ -4319,10 +4259,8 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.GeometryType.PolygonGeometry, True
         ).asWkt()
         expWkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)))"
-        assert compareWkt(
-            expWkt, wkt
-        ), "convertToType failed: from polygon to multipolygon. Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"convertToType failed: from polygon to multipolygon. Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # MultiPolygon (which has a single part) TO Polygon
         multiPolygon = QgsGeometry.fromMultiPolygonXY([points[0]])
@@ -4330,10 +4268,8 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.GeometryType.PolygonGeometry, False
         ).asWkt()
         expWkt = "Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
-        assert compareWkt(
-            expWkt, wkt
-        ), "convertToType failed: from multiline to polygon. Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"convertToType failed: from multiline to polygon. Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
 
     def testRegression13053(self):
@@ -4345,9 +4281,9 @@ class TestQgsGeometry(QgisTestCase):
 
         expWkt = "MultiPolygon (((62 18, 62 19, 63 19, 63 18, 62 18)),((63 19, 63 20, 64 20, 64 19, 63 19)))"
         wkt = p.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), f"testRegression13053 failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
+        assert compareWkt(expWkt, wkt), (
+            f"testRegression13053 failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
+        )
 
     def testRegression13055(self):
         """See https://github.com/qgis/QGIS/issues/21127
@@ -4359,9 +4295,9 @@ class TestQgsGeometry(QgisTestCase):
 
         expWkt = "PolygonZ ((0 0 0, 0 1 0, 1 1 0, 0 0 0 ))"
         wkt = p.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), f"testRegression13055 failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
+        assert compareWkt(expWkt, wkt), (
+            f"testRegression13055 failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
+        )
 
     def testRegression13274(self):
         """See https://github.com/qgis/QGIS/issues/21334
@@ -4373,9 +4309,9 @@ class TestQgsGeometry(QgisTestCase):
 
         expWkt = "LineString (0 0, 1 0, 2 0)"
         wkt = c.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), f"testRegression13274 failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
+        assert compareWkt(expWkt, wkt), (
+            f"testRegression13274 failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
+        )
 
     def testReshape(self):
         """Test geometry reshaping"""
@@ -4397,18 +4333,18 @@ class TestQgsGeometry(QgisTestCase):
         g.reshapeGeometry(QgsLineString([QgsPoint(0, 1.5), QgsPoint(1.5, 0)]))
         expWkt = "Polygon ((0.5 1, 0 1, 0 0, 1 0, 1 0.5, 0.5 1))"
         wkt = g.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), f"testReshape failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
+        assert compareWkt(expWkt, wkt), (
+            f"testReshape failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
+        )
 
         # Test reshape a geometry involving the first/last vertex (https://github.com/qgis/QGIS/issues/22422)
         g.reshapeGeometry(QgsLineString([QgsPoint(0.5, 1), QgsPoint(0, 0.5)]))
 
         expWkt = "Polygon ((0 0.5, 0 0, 1 0, 1 0.5, 0.5 1, 0 0.5))"
         wkt = g.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), f"testReshape failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
+        assert compareWkt(expWkt, wkt), (
+            f"testReshape failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
+        )
 
         # Test reshape a polygon with a line starting or ending at the polygon's first vertex, no change expexted
         g = QgsGeometry.fromWkt("Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))")
@@ -4443,9 +4379,9 @@ class TestQgsGeometry(QgisTestCase):
         )
         expWkt = "LineString (-1 0, 0 0, 5 0, 5 1)"
         wkt = g.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), f"testReshape failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
+        assert compareWkt(expWkt, wkt), (
+            f"testReshape failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
+        )
         # extend end
         self.assertEqual(
             g.reshapeGeometry(
@@ -4455,9 +4391,9 @@ class TestQgsGeometry(QgisTestCase):
         )
         expWkt = "LineString (-1 0, 0 0, 5 0, 5 1, 10 1, 10 2)"
         wkt = g.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), f"testReshape failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
+        assert compareWkt(expWkt, wkt), (
+            f"testReshape failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
+        )
         # test with reversed lines
         g = QgsGeometry.fromWkt("LineString (0 0, 5 0, 5 1)")
         # extend start
@@ -4467,9 +4403,9 @@ class TestQgsGeometry(QgisTestCase):
         )
         expWkt = "LineString (-1 0, 0 0, 5 0, 5 1)"
         wkt = g.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), f"testReshape failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
+        assert compareWkt(expWkt, wkt), (
+            f"testReshape failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
+        )
         # extend end
         self.assertEqual(
             g.reshapeGeometry(
@@ -4479,9 +4415,9 @@ class TestQgsGeometry(QgisTestCase):
         )
         expWkt = "LineString (-1 0, 0 0, 5 0, 5 1, 10 1, 10 2)"
         wkt = g.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), f"testReshape failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
+        assert compareWkt(expWkt, wkt), (
+            f"testReshape failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
+        )
 
         # reshape where reshape line exactly overlaps some portions of geometry
         g = QgsGeometry.fromWkt("LineString (0 0, 5 0, 5 1, 6 1, 6 0, 7 0)")
@@ -4566,51 +4502,39 @@ class TestQgsGeometry(QgisTestCase):
         assert point.convertToMultiType()
         expWkt = "MultiPoint ((1 2))"
         wkt = point.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), "testConvertToMultiType failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"testConvertToMultiType failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # test conversion of MultiPoint
         assert point.convertToMultiType()
-        assert compareWkt(
-            expWkt, wkt
-        ), "testConvertToMultiType failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"testConvertToMultiType failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
 
         line = QgsGeometry.fromWkt("LineString (1 0, 2 0)")
         assert line.convertToMultiType()
         expWkt = "MultiLineString ((1 0, 2 0))"
         wkt = line.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), "testConvertToMultiType failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"testConvertToMultiType failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # test conversion of MultiLineString
         assert line.convertToMultiType()
-        assert compareWkt(
-            expWkt, wkt
-        ), "testConvertToMultiType failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"testConvertToMultiType failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
 
         poly = QgsGeometry.fromWkt("Polygon ((1 0, 2 0, 2 1, 1 1, 1 0))")
         assert poly.convertToMultiType()
         expWkt = "MultiPolygon (((1 0, 2 0, 2 1, 1 1, 1 0)))"
         wkt = poly.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), "testConvertToMultiType failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"testConvertToMultiType failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # test conversion of MultiPolygon
         assert poly.convertToMultiType()
-        assert compareWkt(
-            expWkt, wkt
-        ), "testConvertToMultiType failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"testConvertToMultiType failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
 
     def testConvertToCurvedMultiType(self):
@@ -4619,119 +4543,91 @@ class TestQgsGeometry(QgisTestCase):
         assert point.convertToCurvedMultiType()
         expWkt = "MultiPoint ((1 2))"
         wkt = point.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), "testConvertToCurvedMultiType failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"testConvertToCurvedMultiType failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # test conversion of MultiPoint
         assert point.convertToCurvedMultiType()
-        assert compareWkt(
-            expWkt, wkt
-        ), "testConvertToCurvedMultiType failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"testConvertToCurvedMultiType failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
 
         multipoint = QgsGeometry.fromWkt("MultiPoint ((1 2))")
         assert multipoint.convertToCurvedMultiType()
         expWkt = "MultiPoint ((1 2))"
         wkt = multipoint.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), "testConvertToCurvedMultiType failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"testConvertToCurvedMultiType failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # test conversion of MultiPoint
         assert multipoint.convertToCurvedMultiType()
-        assert compareWkt(
-            expWkt, wkt
-        ), "testConvertToCurvedMultiType failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"testConvertToCurvedMultiType failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
 
         line = QgsGeometry.fromWkt("LineString (1 0, 2 0)")
         assert line.convertToCurvedMultiType()
         expWkt = "MultiCurve (LineString (1 0, 2 0))"
         wkt = line.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), "testConvertToCurvedMultiType failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"testConvertToCurvedMultiType failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # test conversion of MultiCurve
         assert line.convertToCurvedMultiType()
-        assert compareWkt(
-            expWkt, wkt
-        ), "testConvertToCurvedMultiType failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"testConvertToCurvedMultiType failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
 
         circular = QgsGeometry.fromWkt("CircularString (0 0, 1 1, 2 0)")
         assert circular.convertToCurvedMultiType()
         expWkt = "MultiCurve (CircularString (0 0, 1 1, 2 0))"
         wkt = circular.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), "testConvertToCurvedMultiType failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"testConvertToCurvedMultiType failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # test conversion of MultiCurve
         assert circular.convertToCurvedMultiType()
-        assert compareWkt(
-            expWkt, wkt
-        ), "testConvertToCurvedMultiType failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"testConvertToCurvedMultiType failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
 
         multiline = QgsGeometry.fromWkt("MultiLineString ((1 0, 2 0))")
         assert multiline.convertToCurvedMultiType()
         expWkt = "MultiCurve (LineString (1 0, 2 0))"
         wkt = multiline.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), "testConvertToCurvedMultiType failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"testConvertToCurvedMultiType failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # test conversion of MultiCurve
         assert multiline.convertToCurvedMultiType()
-        assert compareWkt(
-            expWkt, wkt
-        ), "testConvertToCurvedMultiType failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"testConvertToCurvedMultiType failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
 
         poly = QgsGeometry.fromWkt("Polygon ((1 0, 2 0, 2 1, 1 1, 1 0))")
         assert poly.convertToCurvedMultiType()
         expWkt = "MultiSurface (Polygon((1 0, 2 0, 2 1, 1 1, 1 0)))"
         wkt = poly.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), "testConvertToCurvedMultiType failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"testConvertToCurvedMultiType failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # test conversion of MultiSurface
         assert poly.convertToCurvedMultiType()
-        assert compareWkt(
-            expWkt, wkt
-        ), "testConvertToCurvedMultiType failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"testConvertToCurvedMultiType failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
 
         multipoly = QgsGeometry.fromWkt("MultiPolygon (((1 0, 2 0, 2 1, 1 1, 1 0)))")
         assert multipoly.convertToCurvedMultiType()
         expWkt = "MultiSurface ( Polygon((1 0, 2 0, 2 1, 1 1, 1 0)))"
         wkt = multipoly.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), "testConvertToCurvedMultiType failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"testConvertToCurvedMultiType failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # test conversion of MultiSurface
         assert multipoly.convertToCurvedMultiType()
-        assert compareWkt(
-            expWkt, wkt
-        ), "testConvertToCurvedMultiType failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"testConvertToCurvedMultiType failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
 
     def testConvertToSingleType(self):
@@ -4740,34 +4636,26 @@ class TestQgsGeometry(QgisTestCase):
         assert point.convertToSingleType()
         expWkt = "Point (1 2)"
         wkt = point.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), "testConvertToSingleType failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"testConvertToSingleType failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # test conversion of Point
         assert point.convertToSingleType()
-        assert compareWkt(
-            expWkt, wkt
-        ), "testConvertToSingleType failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"testConvertToSingleType failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
 
         line = QgsGeometry.fromWkt("MultiLineString ((1 0, 2 0),(2 3, 4 5))")
         assert line.convertToSingleType()
         expWkt = "LineString (1 0, 2 0)"
         wkt = line.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), "testConvertToSingleType failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"testConvertToSingleType failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # test conversion of LineString
         assert line.convertToSingleType()
-        assert compareWkt(
-            expWkt, wkt
-        ), "testConvertToSingleType failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"testConvertToSingleType failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
 
         poly = QgsGeometry.fromWkt(
@@ -4776,17 +4664,13 @@ class TestQgsGeometry(QgisTestCase):
         assert poly.convertToSingleType()
         expWkt = "Polygon ((1 0, 2 0, 2 1, 1 1, 1 0))"
         wkt = poly.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), "testConvertToSingleType failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"testConvertToSingleType failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
         # test conversion of Polygon
         assert poly.convertToSingleType()
-        assert compareWkt(
-            expWkt, wkt
-        ), "testConvertToSingleType failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"testConvertToSingleType failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
 
     def testAddZValue(self):
@@ -4798,10 +4682,8 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.Type.CircularStringZ)
         expWkt = "CircularStringZ (1 5 2, 6 2 2, 7 3 2)"
         wkt = geom.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), "addZValue to CircularString failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"addZValue to CircularString failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
 
         # compound curve
@@ -4812,10 +4694,8 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.Type.CompoundCurveZ)
         expWkt = "CompoundCurveZ ((5 3 2, 5 13 2),CircularStringZ (5 13 2, 7 15 2, 9 13 2),(9 13 2, 9 3 2),CircularStringZ (9 3 2, 7 1 2, 5 3 2))"
         wkt = geom.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), "addZValue to CompoundCurve failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"addZValue to CompoundCurve failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
 
         # curve polygon
@@ -4825,10 +4705,8 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(geom.wkbType(), QgsWkbTypes.Type.PolygonZ)
         expWkt = "PolygonZ ((0 0 3, 1 0 3, 1 1 3, 2 1 3, 2 2 3, 0 2 3, 0 0 3))"
         wkt = geom.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), "addZValue to CurvePolygon failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"addZValue to CurvePolygon failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
 
         # geometry collection
@@ -4838,10 +4716,8 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(geom.wkbType(), QgsWkbTypes.Type.MultiPointZ)
         expWkt = "MultiPointZ ((1 2 4),(2 3 4))"
         wkt = geom.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), "addZValue to GeometryCollection failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"addZValue to GeometryCollection failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
 
         # LineString
@@ -4851,10 +4727,8 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(geom.wkbType(), QgsWkbTypes.Type.LineStringZ)
         expWkt = "LineStringZ (1 2 4, 2 3 4)"
         wkt = geom.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), "addZValue to LineString failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"addZValue to LineString failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
 
         # Point
@@ -4864,9 +4738,9 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(geom.wkbType(), QgsWkbTypes.Type.PointZ)
         expWkt = "PointZ (1 2 4)"
         wkt = geom.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), f"addZValue to Point failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
+        assert compareWkt(expWkt, wkt), (
+            f"addZValue to Point failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
+        )
 
     def testAddMValue(self):
         """Test adding m dimension to geometries"""
@@ -4877,10 +4751,8 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.Type.CircularStringM)
         expWkt = "CircularStringM (1 5 2, 6 2 2, 7 3 2)"
         wkt = geom.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), "addMValue to CircularString failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"addMValue to CircularString failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
 
         # compound curve
@@ -4891,10 +4763,8 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.Type.CompoundCurveM)
         expWkt = "CompoundCurveM ((5 3 2, 5 13 2),CircularStringM (5 13 2, 7 15 2, 9 13 2),(9 13 2, 9 3 2),CircularStringM (9 3 2, 7 1 2, 5 3 2))"
         wkt = geom.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), "addMValue to CompoundCurve failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"addMValue to CompoundCurve failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
 
         # curve polygon
@@ -4903,10 +4773,8 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.Type.PolygonM)
         expWkt = "PolygonM ((0 0 3, 1 0 3, 1 1 3, 2 1 3, 2 2 3, 0 2 3, 0 0 3))"
         wkt = geom.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), "addMValue to CurvePolygon failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"addMValue to CurvePolygon failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
 
         # geometry collection
@@ -4915,10 +4783,8 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.Type.MultiPointM)
         expWkt = "MultiPointM ((1 2 4),(2 3 4))"
         wkt = geom.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), "addMValue to GeometryCollection failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"addMValue to GeometryCollection failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
 
         # LineString
@@ -4927,10 +4793,8 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.Type.LineStringM)
         expWkt = "LineStringM (1 2 4, 2 3 4)"
         wkt = geom.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), "addMValue to LineString failed: mismatch Expected:\n{}\nGot:\n{}\n".format(
-            expWkt, wkt
+        assert compareWkt(expWkt, wkt), (
+            f"addMValue to LineString failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
         )
 
         # Point
@@ -4939,9 +4803,9 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.Type.PointM)
         expWkt = "PointM (1 2 4)"
         wkt = geom.asWkt()
-        assert compareWkt(
-            expWkt, wkt
-        ), f"addMValue to Point failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
+        assert compareWkt(expWkt, wkt), (
+            f"addMValue to Point failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n"
+        )
 
     def testDistanceToVertex(self):
         """Test distanceToVertex calculation"""
@@ -4997,13 +4861,13 @@ class TestQgsGeometry(QgisTestCase):
             for i, t in enumerate(d):
                 test_data = t.strip().split("|")
                 geom1 = QgsGeometry.fromWkt(test_data[0])
-                assert (
-                    geom1
-                ), f"Relates {i + 1} failed: could not create geom:\n{test_data[0]}\n"
+                assert geom1, (
+                    f"Relates {i + 1} failed: could not create geom:\n{test_data[0]}\n"
+                )
                 geom2 = QgsGeometry.fromWkt(test_data[1])
-                assert (
-                    geom2
-                ), f"Relates {i + 1} failed: could not create geom:\n{test_data[1]}\n"
+                assert geom2, (
+                    f"Relates {i + 1} failed: could not create geom:\n{test_data[1]}\n"
+                )
                 result = QgsGeometry.createGeometryEngine(geom1.constGet()).relate(
                     geom2.constGet()
                 )
@@ -5011,9 +4875,7 @@ class TestQgsGeometry(QgisTestCase):
                 self.assertEqual(
                     result,
                     exp,
-                    "Relates {} failed: mismatch Expected:\n{}\nGot:\n{}\nGeom1:\n{}\nGeom2:\n{}\n".format(
-                        i + 1, exp, result, test_data[0], test_data[1]
-                    ),
+                    f"Relates {i + 1} failed: mismatch Expected:\n{exp}\nGot:\n{result}\nGeom1:\n{test_data[0]}\nGeom2:\n{test_data[1]}\n",
                 )
 
     def testWkbTypes(self):
@@ -5142,6 +5004,22 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(
             QgsWkbTypes.singleType(QgsWkbTypes.Type.CircularStringZM),
             QgsWkbTypes.Type.CircularStringZM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.singleType(QgsWkbTypes.Type.NurbsCurve),
+            QgsWkbTypes.Type.NurbsCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.singleType(QgsWkbTypes.Type.NurbsCurveZ),
+            QgsWkbTypes.Type.NurbsCurveZ,
+        )
+        self.assertEqual(
+            QgsWkbTypes.singleType(QgsWkbTypes.Type.NurbsCurveM),
+            QgsWkbTypes.Type.NurbsCurveM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.singleType(QgsWkbTypes.Type.NurbsCurveZM),
+            QgsWkbTypes.Type.NurbsCurveZM,
         )
         self.assertEqual(
             QgsWkbTypes.singleType(QgsWkbTypes.Type.CompoundCurve),
@@ -5390,6 +5268,22 @@ class TestQgsGeometry(QgisTestCase):
         )
         self.assertEqual(
             QgsWkbTypes.multiType(QgsWkbTypes.Type.CircularStringZM),
+            QgsWkbTypes.Type.MultiCurveZM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.multiType(QgsWkbTypes.Type.NurbsCurve),
+            QgsWkbTypes.Type.MultiCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.multiType(QgsWkbTypes.Type.NurbsCurveZ),
+            QgsWkbTypes.Type.MultiCurveZ,
+        )
+        self.assertEqual(
+            QgsWkbTypes.multiType(QgsWkbTypes.Type.NurbsCurveM),
+            QgsWkbTypes.Type.MultiCurveM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.multiType(QgsWkbTypes.Type.NurbsCurveZM),
             QgsWkbTypes.Type.MultiCurveZM,
         )
         self.assertEqual(
@@ -5673,6 +5567,22 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.Type.MultiCurveZM,
         )
         self.assertEqual(
+            QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.NurbsCurve),
+            QgsWkbTypes.Type.MultiCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.NurbsCurveZ),
+            QgsWkbTypes.Type.MultiCurveZ,
+        )
+        self.assertEqual(
+            QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.NurbsCurveM),
+            QgsWkbTypes.Type.MultiCurveM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.NurbsCurveZM),
+            QgsWkbTypes.Type.MultiCurveZM,
+        )
+        self.assertEqual(
             QgsWkbTypes.promoteNonPointTypesToMulti(QgsWkbTypes.Type.CompoundCurve),
             QgsWkbTypes.Type.MultiCurve,
         )
@@ -5951,6 +5861,22 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.Type.CompoundCurveZM,
         )
         self.assertEqual(
+            QgsWkbTypes.curveType(QgsWkbTypes.Type.NurbsCurve),
+            QgsWkbTypes.Type.CompoundCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.curveType(QgsWkbTypes.Type.NurbsCurveZ),
+            QgsWkbTypes.Type.CompoundCurveZ,
+        )
+        self.assertEqual(
+            QgsWkbTypes.curveType(QgsWkbTypes.Type.NurbsCurveM),
+            QgsWkbTypes.Type.CompoundCurveM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.curveType(QgsWkbTypes.Type.NurbsCurveZM),
+            QgsWkbTypes.Type.CompoundCurveZM,
+        )
+        self.assertEqual(
             QgsWkbTypes.curveType(QgsWkbTypes.Type.CompoundCurve),
             QgsWkbTypes.Type.CompoundCurve,
         )
@@ -6198,6 +6124,22 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.Type.LineStringZM,
         )
         self.assertEqual(
+            QgsWkbTypes.linearType(QgsWkbTypes.Type.NurbsCurve),
+            QgsWkbTypes.Type.LineString,
+        )
+        self.assertEqual(
+            QgsWkbTypes.linearType(QgsWkbTypes.Type.NurbsCurveZ),
+            QgsWkbTypes.Type.LineStringZ,
+        )
+        self.assertEqual(
+            QgsWkbTypes.linearType(QgsWkbTypes.Type.NurbsCurveM),
+            QgsWkbTypes.Type.LineStringM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.linearType(QgsWkbTypes.Type.NurbsCurveZM),
+            QgsWkbTypes.Type.LineStringZM,
+        )
+        self.assertEqual(
             QgsWkbTypes.linearType(QgsWkbTypes.Type.CompoundCurve),
             QgsWkbTypes.Type.LineString,
         )
@@ -6412,6 +6354,22 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(
             QgsWkbTypes.flatType(QgsWkbTypes.Type.CircularStringZM),
             QgsWkbTypes.Type.CircularString,
+        )
+        self.assertEqual(
+            QgsWkbTypes.flatType(QgsWkbTypes.Type.NurbsCurve),
+            QgsWkbTypes.Type.NurbsCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.flatType(QgsWkbTypes.Type.NurbsCurveZ),
+            QgsWkbTypes.Type.NurbsCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.flatType(QgsWkbTypes.Type.NurbsCurveM),
+            QgsWkbTypes.Type.NurbsCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.flatType(QgsWkbTypes.Type.NurbsCurveZM),
+            QgsWkbTypes.Type.NurbsCurve,
         )
         self.assertEqual(
             QgsWkbTypes.flatType(QgsWkbTypes.Type.CompoundCurve),
@@ -6666,6 +6624,22 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.GeometryType.LineGeometry,
         )
         self.assertEqual(
+            QgsWkbTypes.geometryType(QgsWkbTypes.Type.NurbsCurve),
+            QgsWkbTypes.GeometryType.LineGeometry,
+        )
+        self.assertEqual(
+            QgsWkbTypes.geometryType(QgsWkbTypes.Type.NurbsCurveZ),
+            QgsWkbTypes.GeometryType.LineGeometry,
+        )
+        self.assertEqual(
+            QgsWkbTypes.geometryType(QgsWkbTypes.Type.NurbsCurveM),
+            QgsWkbTypes.GeometryType.LineGeometry,
+        )
+        self.assertEqual(
+            QgsWkbTypes.geometryType(QgsWkbTypes.Type.NurbsCurveZM),
+            QgsWkbTypes.GeometryType.LineGeometry,
+        )
+        self.assertEqual(
             QgsWkbTypes.geometryType(QgsWkbTypes.Type.CompoundCurve),
             QgsWkbTypes.GeometryType.LineGeometry,
         )
@@ -6890,6 +6864,18 @@ class TestQgsGeometry(QgisTestCase):
             "CircularStringZM",
         )
         self.assertEqual(
+            QgsWkbTypes.displayString(QgsWkbTypes.Type.NurbsCurve), "NurbsCurve"
+        )
+        self.assertEqual(
+            QgsWkbTypes.displayString(QgsWkbTypes.Type.NurbsCurveZ), "NurbsCurveZ"
+        )
+        self.assertEqual(
+            QgsWkbTypes.displayString(QgsWkbTypes.Type.NurbsCurveM), "NurbsCurveM"
+        )
+        self.assertEqual(
+            QgsWkbTypes.displayString(QgsWkbTypes.Type.NurbsCurveZM), "NurbsCurveZM"
+        )
+        self.assertEqual(
             QgsWkbTypes.displayString(QgsWkbTypes.Type.CompoundCurve), "CompoundCurve"
         )
         self.assertEqual(
@@ -7082,6 +7068,10 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(
             QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.CircularStringZM), 1
         )
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.NurbsCurve), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.NurbsCurveZ), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.NurbsCurveM), 1)
+        self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.NurbsCurveZM), 1)
         self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.CompoundCurve), 1)
         self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.CompoundCurveZ), 1)
         self.assertEqual(QgsWkbTypes.wkbDimensions(QgsWkbTypes.Type.CompoundCurveM), 1)
@@ -7184,6 +7174,10 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(
             QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.CircularStringZM), 4
         )
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.NurbsCurve), 2)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.NurbsCurveZ), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.NurbsCurveM), 3)
+        self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.NurbsCurveZM), 4)
         self.assertEqual(QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.CompoundCurve), 2)
         self.assertEqual(
             QgsWkbTypes.coordDimensions(QgsWkbTypes.Type.CompoundCurveZ), 3
@@ -7250,6 +7244,7 @@ class TestQgsGeometry(QgisTestCase):
         assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiPolygon)
         assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.GeometryCollection)
         assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CircularString)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.NurbsCurve)
         assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CompoundCurve)
         assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CurvePolygon)
         assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiCurve)
@@ -7265,6 +7260,7 @@ class TestQgsGeometry(QgisTestCase):
         assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiPolygonZ)
         assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.GeometryCollectionZ)
         assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CircularStringZ)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.NurbsCurveZ)
         assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CompoundCurveZ)
         assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CurvePolygonZ)
         assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiCurveZ)
@@ -7279,6 +7275,7 @@ class TestQgsGeometry(QgisTestCase):
         assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiPolygonM)
         assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.GeometryCollectionM)
         assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CircularStringM)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.NurbsCurveM)
         assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CompoundCurveM)
         assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CurvePolygonM)
         assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiCurveM)
@@ -7293,6 +7290,7 @@ class TestQgsGeometry(QgisTestCase):
         assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiPolygonZM)
         assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.GeometryCollectionZM)
         assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CircularStringZM)
+        assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.NurbsCurveZM)
         assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CompoundCurveZM)
         assert QgsWkbTypes.isSingleType(QgsWkbTypes.Type.CurvePolygonZM)
         assert not QgsWkbTypes.isSingleType(QgsWkbTypes.Type.MultiCurveZM)
@@ -7316,6 +7314,7 @@ class TestQgsGeometry(QgisTestCase):
         assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiPolygon)
         assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.GeometryCollection)
         assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CircularString)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.NurbsCurve)
         assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CompoundCurve)
         assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CurvePolygon)
         assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiCurve)
@@ -7331,6 +7330,7 @@ class TestQgsGeometry(QgisTestCase):
         assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiPolygonZ)
         assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.GeometryCollectionZ)
         assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CircularStringZ)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.NurbsCurveZ)
         assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CompoundCurveZ)
         assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CurvePolygonZ)
         assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiCurveZ)
@@ -7345,6 +7345,7 @@ class TestQgsGeometry(QgisTestCase):
         assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiPolygonM)
         assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.GeometryCollectionM)
         assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CircularStringM)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.NurbsCurveM)
         assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CompoundCurveM)
         assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CurvePolygonM)
         assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiCurveM)
@@ -7359,6 +7360,7 @@ class TestQgsGeometry(QgisTestCase):
         assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiPolygonZM)
         assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.GeometryCollectionZM)
         assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CircularStringZM)
+        assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.NurbsCurveZM)
         assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CompoundCurveZM)
         assert not QgsWkbTypes.isMultiType(QgsWkbTypes.Type.CurvePolygonZM)
         assert QgsWkbTypes.isMultiType(QgsWkbTypes.Type.MultiCurveZM)
@@ -7382,6 +7384,7 @@ class TestQgsGeometry(QgisTestCase):
         assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiPolygon)
         assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.GeometryCollection)
         assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.CircularString)
+        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.NurbsCurve)
         assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.CompoundCurve)
         assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.CurvePolygon)
         assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiCurve)
@@ -7397,6 +7400,7 @@ class TestQgsGeometry(QgisTestCase):
         assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiPolygonZ)
         assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.GeometryCollectionZ)
         assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.CircularStringZ)
+        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.NurbsCurveZ)
         assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.CompoundCurveZ)
         assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.CurvePolygonZ)
         assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiCurveZ)
@@ -7411,6 +7415,7 @@ class TestQgsGeometry(QgisTestCase):
         assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiPolygonM)
         assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.GeometryCollectionM)
         assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.CircularStringM)
+        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.NurbsCurveM)
         assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.CompoundCurveM)
         assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.CurvePolygonM)
         assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiCurveM)
@@ -7425,6 +7430,7 @@ class TestQgsGeometry(QgisTestCase):
         assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.TINZM)
         assert not QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.GeometryCollectionZM)
         assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.CircularStringZM)
+        assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.NurbsCurveZM)
         assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.CompoundCurveZM)
         assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.CurvePolygonZM)
         assert QgsWkbTypes.isCurvedType(QgsWkbTypes.Type.MultiCurveZM)
@@ -7448,6 +7454,7 @@ class TestQgsGeometry(QgisTestCase):
         assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiPolygon)
         assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.GeometryCollection)
         assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.CircularString)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.NurbsCurve)
         assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.CompoundCurve)
         assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.CurvePolygon)
         assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiCurve)
@@ -7463,6 +7470,7 @@ class TestQgsGeometry(QgisTestCase):
         assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiPolygonZ)
         assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.GeometryCollectionZ)
         assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.CircularStringZ)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.NurbsCurveZ)
         assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.CompoundCurveZ)
         assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.CurvePolygonZ)
         assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiCurveZ)
@@ -7477,6 +7485,7 @@ class TestQgsGeometry(QgisTestCase):
         assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiPolygonM)
         assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.GeometryCollectionM)
         assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.CircularStringM)
+        assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.NurbsCurveM)
         assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.CompoundCurveM)
         assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.CurvePolygonM)
         assert not QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiCurveM)
@@ -7491,6 +7500,7 @@ class TestQgsGeometry(QgisTestCase):
         assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiPolygonZM)
         assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.GeometryCollectionZM)
         assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.CircularStringZM)
+        assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.NurbsCurveZM)
         assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.CompoundCurveZM)
         assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.CurvePolygonZM)
         assert QgsWkbTypes.hasZ(QgsWkbTypes.Type.MultiCurveZM)
@@ -7514,6 +7524,7 @@ class TestQgsGeometry(QgisTestCase):
         assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiPolygon)
         assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.GeometryCollection)
         assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.CircularString)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.NurbsCurve)
         assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.CompoundCurve)
         assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.CurvePolygon)
         assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiCurve)
@@ -7529,6 +7540,7 @@ class TestQgsGeometry(QgisTestCase):
         assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiPolygonZ)
         assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.GeometryCollectionZ)
         assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.CircularStringZ)
+        assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.NurbsCurveZ)
         assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.CompoundCurveZ)
         assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.CurvePolygonZ)
         assert not QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiCurveZ)
@@ -7543,6 +7555,7 @@ class TestQgsGeometry(QgisTestCase):
         assert QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiPolygonM)
         assert QgsWkbTypes.hasM(QgsWkbTypes.Type.GeometryCollectionM)
         assert QgsWkbTypes.hasM(QgsWkbTypes.Type.CircularStringM)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.NurbsCurveM)
         assert QgsWkbTypes.hasM(QgsWkbTypes.Type.CompoundCurveM)
         assert QgsWkbTypes.hasM(QgsWkbTypes.Type.CurvePolygonM)
         assert QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiCurveM)
@@ -7557,6 +7570,7 @@ class TestQgsGeometry(QgisTestCase):
         assert QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiPolygonZM)
         assert QgsWkbTypes.hasM(QgsWkbTypes.Type.GeometryCollectionZM)
         assert QgsWkbTypes.hasM(QgsWkbTypes.Type.CircularStringZM)
+        assert QgsWkbTypes.hasM(QgsWkbTypes.Type.NurbsCurveZM)
         assert QgsWkbTypes.hasM(QgsWkbTypes.Type.CompoundCurveZM)
         assert QgsWkbTypes.hasM(QgsWkbTypes.Type.CurvePolygonZM)
         assert QgsWkbTypes.hasM(QgsWkbTypes.Type.MultiCurveZM)
@@ -7687,6 +7701,22 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(
             QgsWkbTypes.addZ(QgsWkbTypes.Type.CircularStringZM),
             QgsWkbTypes.Type.CircularStringZM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.addZ(QgsWkbTypes.Type.NurbsCurve),
+            QgsWkbTypes.Type.NurbsCurveZ,
+        )
+        self.assertEqual(
+            QgsWkbTypes.addZ(QgsWkbTypes.Type.NurbsCurveZ),
+            QgsWkbTypes.Type.NurbsCurveZ,
+        )
+        self.assertEqual(
+            QgsWkbTypes.addZ(QgsWkbTypes.Type.NurbsCurveM),
+            QgsWkbTypes.Type.NurbsCurveZM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.addZ(QgsWkbTypes.Type.NurbsCurveZM),
+            QgsWkbTypes.Type.NurbsCurveZM,
         )
         self.assertEqual(
             QgsWkbTypes.addZ(QgsWkbTypes.Type.CompoundCurve),
@@ -8147,6 +8177,22 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.Type.CircularStringZM,
         )
         self.assertEqual(
+            QgsWkbTypes.addM(QgsWkbTypes.Type.NurbsCurve),
+            QgsWkbTypes.Type.NurbsCurveM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.addM(QgsWkbTypes.Type.NurbsCurveZ),
+            QgsWkbTypes.Type.NurbsCurveZM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.addM(QgsWkbTypes.Type.NurbsCurveM),
+            QgsWkbTypes.Type.NurbsCurveM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.addM(QgsWkbTypes.Type.NurbsCurveZM),
+            QgsWkbTypes.Type.NurbsCurveZM,
+        )
+        self.assertEqual(
             QgsWkbTypes.addM(QgsWkbTypes.Type.CompoundCurve),
             QgsWkbTypes.Type.CompoundCurveM,
         )
@@ -8380,6 +8426,22 @@ class TestQgsGeometry(QgisTestCase):
             QgsWkbTypes.Type.CircularStringM,
         )
         self.assertEqual(
+            QgsWkbTypes.dropZ(QgsWkbTypes.Type.NurbsCurve),
+            QgsWkbTypes.Type.NurbsCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.dropZ(QgsWkbTypes.Type.NurbsCurveZ),
+            QgsWkbTypes.Type.NurbsCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.dropZ(QgsWkbTypes.Type.NurbsCurveM),
+            QgsWkbTypes.Type.NurbsCurveM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.dropZ(QgsWkbTypes.Type.NurbsCurveZM),
+            QgsWkbTypes.Type.NurbsCurveM,
+        )
+        self.assertEqual(
             QgsWkbTypes.dropZ(QgsWkbTypes.Type.CompoundCurve),
             QgsWkbTypes.Type.CompoundCurve,
         )
@@ -8610,6 +8672,22 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(
             QgsWkbTypes.dropM(QgsWkbTypes.Type.CircularStringZM),
             QgsWkbTypes.Type.CircularStringZ,
+        )
+        self.assertEqual(
+            QgsWkbTypes.dropM(QgsWkbTypes.Type.NurbsCurve),
+            QgsWkbTypes.Type.NurbsCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.dropM(QgsWkbTypes.Type.NurbsCurveZ),
+            QgsWkbTypes.Type.NurbsCurveZ,
+        )
+        self.assertEqual(
+            QgsWkbTypes.dropM(QgsWkbTypes.Type.NurbsCurveM),
+            QgsWkbTypes.Type.NurbsCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.dropM(QgsWkbTypes.Type.NurbsCurveZM),
+            QgsWkbTypes.Type.NurbsCurveZ,
         )
         self.assertEqual(
             QgsWkbTypes.dropM(QgsWkbTypes.Type.CompoundCurve),
@@ -9266,6 +9344,74 @@ class TestQgsGeometry(QgisTestCase):
         self.assertEqual(
             QgsWkbTypes.zmType(QgsWkbTypes.Type.CircularStringZM, True, True),
             QgsWkbTypes.Type.CircularStringZM,
+        )
+
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurve, False, False),
+            QgsWkbTypes.Type.NurbsCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurve, True, False),
+            QgsWkbTypes.Type.NurbsCurveZ,
+        )
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurve, False, True),
+            QgsWkbTypes.Type.NurbsCurveM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurve, True, True),
+            QgsWkbTypes.Type.NurbsCurveZM,
+        )
+
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurveZ, False, False),
+            QgsWkbTypes.Type.NurbsCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurveZ, True, False),
+            QgsWkbTypes.Type.NurbsCurveZ,
+        )
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurveZ, False, True),
+            QgsWkbTypes.Type.NurbsCurveM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurveZ, True, True),
+            QgsWkbTypes.Type.NurbsCurveZM,
+        )
+
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurveM, False, False),
+            QgsWkbTypes.Type.NurbsCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurveM, True, False),
+            QgsWkbTypes.Type.NurbsCurveZ,
+        )
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurveM, False, True),
+            QgsWkbTypes.Type.NurbsCurveM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurveM, True, True),
+            QgsWkbTypes.Type.NurbsCurveZM,
+        )
+
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurveZM, False, False),
+            QgsWkbTypes.Type.NurbsCurve,
+        )
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurveZM, True, False),
+            QgsWkbTypes.Type.NurbsCurveZ,
+        )
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurveZM, False, True),
+            QgsWkbTypes.Type.NurbsCurveM,
+        )
+        self.assertEqual(
+            QgsWkbTypes.zmType(QgsWkbTypes.Type.NurbsCurveZM, True, True),
+            QgsWkbTypes.Type.NurbsCurveZM,
         )
 
         self.assertEqual(
@@ -10121,9 +10267,7 @@ class TestQgsGeometry(QgisTestCase):
         self.assertTrue(linestring.interpolate(50).isNull())
 
         # polygon
-        polygon = QgsGeometry.fromWkt(
-            "Polygon((0 0, 10 0, 10 10, 20 20, 10 20, 0 0))"
-        )  # NOQA
+        polygon = QgsGeometry.fromWkt("Polygon((0 0, 10 0, 10 10, 20 20, 10 20, 0 0))")  # NOQA
         exp = "Point(10 5)"
         result = polygon.interpolate(15).asWkt()
         self.assertTrue(
@@ -10963,9 +11107,7 @@ class TestQgsGeometry(QgisTestCase):
                 result = QgsGeometry(input.get().centroid()).asWkt()
                 self.assertTrue(
                     compareWkt(result, exp, 0.00001),
-                    "centroid: mismatch using QgsAbstractGeometry methods Input {} \n Expected:\n{}\nGot:\n{}\n".format(
-                        t[0], exp, result
-                    ),
+                    f"centroid: mismatch using QgsAbstractGeometry methods Input {t[0]} \n Expected:\n{exp}\nGot:\n{result}\n",
                 )
 
     def testCompare(self):
@@ -11583,9 +11725,7 @@ class TestQgsGeometry(QgisTestCase):
             self.assertEqual(
                 res,
                 t[2],
-                "mismatch for {} to {}, expected:\n{}\nGot:\n{}\n".format(
-                    g1.asWkt(), g2.asWkt(), t[2], res
-                ),
+                f"mismatch for {g1.asWkt()} to {g2.asWkt()}, expected:\n{t[2]}\nGot:\n{res}\n",
             )
 
     def testBoundingBoxIntersectsRectangle(self):
@@ -11602,9 +11742,7 @@ class TestQgsGeometry(QgisTestCase):
             self.assertEqual(
                 res,
                 t[2],
-                "mismatch for {} to {}, expected:\n{}\nGot:\n{}\n".format(
-                    g1.asWkt(), t[1].toString(), t[2], res
-                ),
+                f"mismatch for {g1.asWkt()} to {t[1].toString()}, expected:\n{t[2]}\nGot:\n{res}\n",
             )
 
     def testOffsetCurve(self):
@@ -11647,9 +11785,7 @@ class TestQgsGeometry(QgisTestCase):
             self.assertIn(
                 res.asWkt(1),
                 t[2],
-                "mismatch for {} to {}, expected:\n{}\nGot:\n{}\n".format(
-                    t[0], t[1], t[2], res.asWkt(1)
-                ),
+                f"mismatch for {t[0]} to {t[1]}, expected:\n{t[2]}\nGot:\n{res.asWkt(1)}\n",
             )
 
     def testForceRHR(self):
@@ -12488,6 +12624,96 @@ class TestQgsGeometry(QgisTestCase):
             ["PolyhedralSurface Z (((1 1 2, 1 2 2, 2 2 3, 5 5 3, 1 1 2)))"],
         )
 
+        # Polygon/Triangle to TIN
+        self.assertEqual(
+            coerce_to_wkt(
+                "Polygon ((1 1, 1 2, 2 2, 1 1))",
+                QgsWkbTypes.Type.TIN,
+            ),
+            ["TIN (((1 1, 1 2, 2 2, 1 1)))"],
+        )
+        self.assertEqual(
+            coerce_to_wkt(
+                "Polygon Z((1 1 0, 1 2 0, 2 2 0, 1 1 0))",
+                QgsWkbTypes.Type.TINZ,
+            ),
+            ["TIN Z (((1 1 0, 1 2 0, 2 2 0, 1 1 0)))"],
+        )
+        self.assertEqual(
+            coerce_to_wkt(
+                "Triangle ((1 1, 1 2, 2 2, 1 1))",
+                QgsWkbTypes.Type.TIN,
+            ),
+            ["TIN (((1 1, 1 2, 2 2, 1 1)))"],
+        )
+        self.assertEqual(
+            coerce_to_wkt(
+                "MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))",
+                QgsWkbTypes.Type.TIN,
+            ),
+            ["TIN (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))"],
+        )
+
+        # PolyhedralSurface to MultiPolygon
+        self.assertEqual(
+            coerce_to_wkt(
+                "PolyhedralSurface (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))",
+                QgsWkbTypes.Type.MultiPolygon,
+            ),
+            ["MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))"],
+        )
+        self.assertEqual(
+            coerce_to_wkt(
+                "PolyhedralSurface Z (((1 1 0, 1 2 0, 2 2 0, 1 1 0)),((3 3 0, 4 3 0, 4 4 0, 3 3 0)))",
+                QgsWkbTypes.Type.MultiPolygonZ,
+            ),
+            [
+                "MultiPolygon Z (((1 1 0, 1 2 0, 2 2 0, 1 1 0)),((3 3 0, 4 3 0, 4 4 0, 3 3 0)))"
+            ],
+        )
+        # PolyhedralSurface to Polygon (single patch)
+        self.assertEqual(
+            coerce_to_wkt(
+                "PolyhedralSurface (((1 1, 1 2, 2 2, 1 1)))",
+                QgsWkbTypes.Type.Polygon,
+            ),
+            ["Polygon ((1 1, 1 2, 2 2, 1 1))"],
+        )
+        # PolyhedralSurface to Polygon (multi patches -> multiple results)
+        self.assertEqual(
+            coerce_to_wkt(
+                "PolyhedralSurface (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))",
+                QgsWkbTypes.Type.Polygon,
+            ),
+            ["Polygon ((1 1, 1 2, 2 2, 1 1))", "Polygon ((3 3, 4 3, 4 4, 3 3))"],
+        )
+
+        # TIN to MultiPolygon
+        self.assertEqual(
+            coerce_to_wkt(
+                "TIN (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))",
+                QgsWkbTypes.Type.MultiPolygon,
+            ),
+            ["MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))"],
+        )
+        self.assertEqual(
+            coerce_to_wkt(
+                "TIN Z (((1 1 0, 1 2 0, 2 2 0, 1 1 0)),((3 3 0, 4 3 0, 4 4 0, 3 3 0)))",
+                QgsWkbTypes.Type.MultiPolygonZ,
+            ),
+            [
+                "MultiPolygon Z (((1 1 0, 1 2 0, 2 2 0, 1 1 0)),((3 3 0, 4 3 0, 4 4 0, 3 3 0)))"
+            ],
+        )
+        # TIN to Polygon (single patch)
+        self.assertEqual(
+            coerce_to_wkt(
+                "TIN (((1 1, 1 2, 2 2, 1 1)))",
+                QgsWkbTypes.Type.Polygon,
+            ),
+            ["Polygon ((1 1, 1 2, 2 2, 1 1))"],
+        )
+
         # GeometryCollection of Point to MultiPoint
         self.assertEqual(
             coerce_to_wkt(
@@ -12521,6 +12747,47 @@ class TestQgsGeometry(QgisTestCase):
             ),
             ["MultiPolygon (((0 0, 0 1, 1 1, 0 0)))"],
         )
+
+        # NurbsCurve to LineString (segmentization)
+        # We don't test exact representation here due to too long WKT produced
+        result = coerce_to_wkt(
+            "NURBSCURVE(2, (0 0, 5 10, 10 0))",
+            QgsWkbTypes.Type.LineString,
+        )
+        self.assertEqual(len(result), 1)
+        self.assertTrue(result[0].startswith("LineString"))
+
+        # NurbsCurve to MultiLineString
+        result = coerce_to_wkt(
+            "NURBSCURVE(2, (0 0, 5 10, 10 0))",
+            QgsWkbTypes.Type.MultiLineString,
+        )
+        self.assertEqual(len(result), 1)
+        self.assertTrue(result[0].startswith("MultiLineString"))
+
+        # Closed NurbsCurve to Polygon
+        result = coerce_to_wkt(
+            "NURBSCURVE(2, (0 0, 10 0, 10 10, 0 10, 0 0))",
+            QgsWkbTypes.Type.Polygon,
+        )
+        self.assertEqual(len(result), 1)
+        self.assertTrue(result[0].startswith("Polygon"))
+
+        # Open NurbsCurve to Polygon (auto-close)
+        result = coerce_to_wkt(
+            "NURBSCURVE(2, (0 0, 5 10, 10 0))",
+            QgsWkbTypes.Type.Polygon,
+        )
+        self.assertEqual(len(result), 1)
+        self.assertTrue(result[0].startswith("Polygon"))
+
+        # NurbsCurve to MultiPoint
+        result = coerce_to_wkt(
+            "NURBSCURVE(2, (0 0, 5 10, 10 0))",
+            QgsWkbTypes.Type.MultiPoint,
+        )
+        self.assertEqual(len(result), 1)
+        self.assertTrue(result[0].startswith("MultiPoint"))
 
     def testTriangularWaves(self):
         """Test triangular waves"""
@@ -12819,11 +13086,11 @@ class TestQgsGeometry(QgisTestCase):
         )
         self.assertEqual(
             QgsGeometry.fromWkt("LineString (1 1, 10 1)").roundWaves(5, 2).asWkt(3),
-            "LineString (1 1, 1.092 0.701, 1.198 0.408, 1.314 0.127, 1.437 -0.136, 1.563 -0.375, 1.689 -0.584, 1.811 -0.757, 1.927 -0.888, 2.033 -0.971, 2.125 -1, 2.431 -0.888, 2.683 -0.584, 2.895 -0.136, 3.079 0.408, 3.25 1, 3.421 1.592, 3.606 2.136, 3.817 2.584, 4.069 2.888, 4.375 3, 4.681 2.888, 4.933 2.584, 5.145 2.136, 5.329 1.592, 5.5 1, 5.671 0.408, 5.856 -0.136, 6.067 -0.584, 6.319 -0.888, 6.625 -1, 6.931 -0.888, 7.183 -0.584, 7.395 -0.136, 7.579 0.408, 7.75 1, 7.921 1.592, 8.106 2.136, 8.317 2.584, 8.569 2.888, 8.875 3, 9.208 2.888, 9.514 2.584, 9.766 2.136, 9.937 1.592, 10 1)",
+            "LineString (1 1, 1.092 0.701, 1.198 0.408, 1.314 0.127, 1.437 -0.136, 1.563 -0.375, 1.689 -0.584, 1.811 -0.757, 1.927 -0.888, 2.033 -0.971, 2.125 -1, 2.431 -0.888, 2.683 -0.584, 2.894 -0.136, 3.079 0.408, 3.25 1, 3.421 1.592, 3.606 2.136, 3.817 2.584, 4.069 2.888, 4.375 3, 4.681 2.888, 4.933 2.584, 5.144 2.136, 5.329 1.592, 5.5 1, 5.671 0.408, 5.856 -0.136, 6.067 -0.584, 6.319 -0.888, 6.625 -1, 6.931 -0.888, 7.183 -0.584, 7.394 -0.136, 7.579 0.408, 7.75 1, 7.921 1.592, 8.105 2.136, 8.317 2.584, 8.569 2.888, 8.875 3, 9.208 2.888, 9.514 2.584, 9.766 2.136, 9.937 1.592, 10 1)",
         )
         self.assertEqual(
             QgsGeometry.fromWkt("LineString (1 1, 10 1)").roundWaves(8, 2).asWkt(3),
-            "LineString (1 1, 1.092 0.701, 1.198 0.408, 1.314 0.127, 1.437 -0.136, 1.563 -0.375, 1.689 -0.584, 1.811 -0.757, 1.927 -0.888, 2.033 -0.971, 2.125 -1, 2.431 -0.888, 2.683 -0.584, 2.895 -0.136, 3.079 0.408, 3.25 1, 3.421 1.592, 3.606 2.136, 3.817 2.584, 4.069 2.888, 4.375 3, 4.681 2.888, 4.933 2.584, 5.145 2.136, 5.329 1.592, 5.5 1, 5.671 0.408, 5.856 -0.136, 6.067 -0.584, 6.319 -0.888, 6.625 -1, 6.931 -0.888, 7.183 -0.584, 7.395 -0.136, 7.579 0.408, 7.75 1, 7.921 1.592, 8.106 2.136, 8.317 2.584, 8.569 2.888, 8.875 3, 9.208 2.888, 9.514 2.584, 9.766 2.136, 9.937 1.592, 10 1)",
+            "LineString (1 1, 1.092 0.701, 1.198 0.408, 1.314 0.127, 1.437 -0.136, 1.563 -0.375, 1.689 -0.584, 1.811 -0.757, 1.927 -0.888, 2.033 -0.971, 2.125 -1, 2.431 -0.888, 2.683 -0.584, 2.894 -0.136, 3.079 0.408, 3.25 1, 3.421 1.592, 3.606 2.136, 3.817 2.584, 4.069 2.888, 4.375 3, 4.681 2.888, 4.933 2.584, 5.144 2.136, 5.329 1.592, 5.5 1, 5.671 0.408, 5.856 -0.136, 6.067 -0.584, 6.319 -0.888, 6.625 -1, 6.931 -0.888, 7.183 -0.584, 7.394 -0.136, 7.579 0.408, 7.75 1, 7.921 1.592, 8.105 2.136, 8.317 2.584, 8.569 2.888, 8.875 3, 9.208 2.888, 9.514 2.584, 9.766 2.136, 9.937 1.592, 10 1)",
         )
         self.assertEqual(
             QgsGeometry.fromWkt("LineString (1 1, 10 1)")
@@ -12843,13 +13110,13 @@ class TestQgsGeometry(QgisTestCase):
             QgsGeometry.fromWkt("LineString (1 1, 10 1, 10 10)")
             .roundWaves(5, 2)
             .asWkt(3),
-            "LineString (1 1, 1.092 0.701, 1.198 0.408, 1.314 0.127, 1.437 -0.136, 1.563 -0.375, 1.689 -0.584, 1.811 -0.757, 1.927 -0.888, 2.033 -0.971, 2.125 -1, 2.431 -0.888, 2.683 -0.584, 2.895 -0.136, 3.079 0.408, 3.25 1, 3.421 1.592, 3.606 2.136, 3.817 2.584, 4.069 2.888, 4.375 3, 4.681 2.888, 4.933 2.584, 5.145 2.136, 5.329 1.592, 5.5 1, 5.671 0.408, 5.856 -0.136, 6.067 -0.584, 6.319 -0.888, 6.625 -1, 6.931 -0.888, 7.183 -0.584, 7.395 -0.136, 7.579 0.408, 7.75 1, 7.921 1.592, 8.106 2.136, 8.317 2.584, 8.569 2.888, 8.875 3, 9.182 2.891, 9.44 2.609, 9.668 2.22, 9.885 1.792, 10.109 1.391, 10.36 1.083, 10.656 0.936, 11.015 1.016, 11.457 1.39, 12 2.125, 11.888 2.431, 11.584 2.683, 11.136 2.895, 10.592 3.079, 10 3.25, 9.408 3.421, 8.864 3.606, 8.416 3.817, 8.112 4.069, 8 4.375, 8.112 4.681, 8.416 4.933, 8.864 5.145, 9.408 5.329, 10 5.5, 10.592 5.671, 11.136 5.856, 11.584 6.067, 11.888 6.319, 12 6.625, 11.888 6.931, 11.584 7.183, 11.136 7.395, 10.592 7.579, 10 7.75, 9.408 7.921, 8.864 8.106, 8.416 8.317, 8.112 8.569, 8 8.875, 8.112 9.208, 8.416 9.514, 8.864 9.766, 9.408 9.937, 10 10)",
+            "LineString (1 1, 1.092 0.701, 1.198 0.408, 1.314 0.127, 1.437 -0.136, 1.563 -0.375, 1.689 -0.584, 1.811 -0.757, 1.927 -0.888, 2.033 -0.971, 2.125 -1, 2.431 -0.888, 2.683 -0.584, 2.894 -0.136, 3.079 0.408, 3.25 1, 3.421 1.592, 3.606 2.136, 3.817 2.584, 4.069 2.888, 4.375 3, 4.681 2.888, 4.933 2.584, 5.144 2.136, 5.329 1.592, 5.5 1, 5.671 0.408, 5.856 -0.136, 6.067 -0.584, 6.319 -0.888, 6.625 -1, 6.931 -0.888, 7.183 -0.584, 7.394 -0.136, 7.579 0.408, 7.75 1, 7.921 1.592, 8.105 2.136, 8.317 2.584, 8.569 2.888, 8.875 3, 9.182 2.891, 9.44 2.609, 9.668 2.22, 9.885 1.792, 10.109 1.391, 10.36 1.083, 10.656 0.936, 11.015 1.016, 11.457 1.39, 12 2.125, 11.888 2.431, 11.584 2.683, 11.136 2.894, 10.592 3.079, 10 3.25, 9.408 3.421, 8.864 3.606, 8.416 3.817, 8.112 4.069, 8 4.375, 8.112 4.681, 8.416 4.933, 8.864 5.144, 9.408 5.329, 10 5.5, 10.592 5.671, 11.136 5.856, 11.584 6.067, 11.888 6.319, 12 6.625, 11.888 6.931, 11.584 7.183, 11.136 7.394, 10.592 7.579, 10 7.75, 9.408 7.921, 8.864 8.105, 8.416 8.317, 8.112 8.569, 8 8.875, 8.112 9.208, 8.416 9.514, 8.864 9.766, 9.408 9.937, 10 10)",
         )
         self.assertEqual(
             QgsGeometry.fromWkt("MultiLineString ((1 1, 10 1),(10 10, 0 10))")
             .roundWaves(5, 2)
             .asWkt(3),
-            "MultiLineString ((1 1, 1.092 0.701, 1.198 0.408, 1.314 0.127, 1.437 -0.136, 1.563 -0.375, 1.689 -0.584, 1.811 -0.757, 1.927 -0.888, 2.033 -0.971, 2.125 -1, 2.431 -0.888, 2.683 -0.584, 2.895 -0.136, 3.079 0.408, 3.25 1, 3.421 1.592, 3.606 2.136, 3.817 2.584, 4.069 2.888, 4.375 3, 4.681 2.888, 4.933 2.584, 5.145 2.136, 5.329 1.592, 5.5 1, 5.671 0.408, 5.856 -0.136, 6.067 -0.584, 6.319 -0.888, 6.625 -1, 6.931 -0.888, 7.183 -0.584, 7.395 -0.136, 7.579 0.408, 7.75 1, 7.921 1.592, 8.106 2.136, 8.317 2.584, 8.569 2.888, 8.875 3, 9.208 2.888, 9.514 2.584, 9.766 2.136, 9.937 1.592, 10 1),(10 10, 9.897 10.299, 9.78 10.592, 9.651 10.873, 9.515 11.136, 9.375 11.375, 9.235 11.584, 9.099 11.757, 8.97 11.888, 8.853 11.971, 8.75 12, 8.41 11.888, 8.13 11.584, 7.895 11.136, 7.69 10.592, 7.5 10, 7.31 9.408, 7.105 8.864, 6.87 8.416, 6.59 8.112, 6.25 8, 5.91 8.112, 5.63 8.416, 5.395 8.864, 5.19 9.408, 5 10, 4.81 10.592, 4.605 11.136, 4.37 11.584, 4.09 11.888, 3.75 12, 3.41 11.888, 3.13 11.584, 2.895 11.136, 2.69 10.592, 2.5 10, 2.31 9.408, 2.105 8.864, 1.87 8.416, 1.59 8.112, 1.25 8, 0.88 8.112, 0.54 8.416, 0.26 8.864, 0.07 9.408, 0 10))",
+            "MultiLineString ((1 1, 1.092 0.701, 1.198 0.408, 1.314 0.127, 1.437 -0.136, 1.563 -0.375, 1.689 -0.584, 1.811 -0.757, 1.927 -0.888, 2.033 -0.971, 2.125 -1, 2.431 -0.888, 2.683 -0.584, 2.894 -0.136, 3.079 0.408, 3.25 1, 3.421 1.592, 3.606 2.136, 3.817 2.584, 4.069 2.888, 4.375 3, 4.681 2.888, 4.933 2.584, 5.144 2.136, 5.329 1.592, 5.5 1, 5.671 0.408, 5.856 -0.136, 6.067 -0.584, 6.319 -0.888, 6.625 -1, 6.931 -0.888, 7.183 -0.584, 7.394 -0.136, 7.579 0.408, 7.75 1, 7.921 1.592, 8.105 2.136, 8.317 2.584, 8.569 2.888, 8.875 3, 9.208 2.888, 9.514 2.584, 9.766 2.136, 9.937 1.592, 10 1),(10 10, 9.897 10.299, 9.78 10.592, 9.651 10.873, 9.515 11.136, 9.375 11.375, 9.235 11.584, 9.099 11.757, 8.97 11.888, 8.853 11.971, 8.75 12, 8.41 11.888, 8.13 11.584, 7.895 11.136, 7.69 10.592, 7.5 10, 7.31 9.408, 7.105 8.864, 6.87 8.416, 6.59 8.112, 6.25 8, 5.91 8.112, 5.63 8.416, 5.395 8.864, 5.19 9.408, 5 10, 4.81 10.592, 4.605 11.136, 4.37 11.584, 4.09 11.888, 3.75 12, 3.41 11.888, 3.13 11.584, 2.895 11.136, 2.69 10.592, 2.5 10, 2.31 9.408, 2.105 8.864, 1.87 8.416, 1.59 8.112, 1.25 8, 0.88 8.112, 0.54 8.416, 0.26 8.864, 0.07 9.408, 0 10))",
         )
         self.assertEqual(
             QgsGeometry.fromWkt(
@@ -12857,7 +13124,7 @@ class TestQgsGeometry(QgisTestCase):
             )
             .roundWaves(5, 0.2)
             .asWkt(3),
-            "Polygon ((1 1, 1.092 0.97, 1.198 0.941, 1.314 0.913, 1.437 0.886, 1.563 0.863, 1.689 0.842, 1.811 0.824, 1.927 0.811, 2.033 0.803, 2.125 0.8, 2.431 0.811, 2.683 0.842, 2.895 0.886, 3.079 0.941, 3.25 1, 3.421 1.059, 3.606 1.114, 3.817 1.158, 4.069 1.189, 4.375 1.2, 4.681 1.189, 4.933 1.158, 5.145 1.114, 5.329 1.059, 5.5 1, 5.671 0.941, 5.856 0.886, 6.067 0.842, 6.319 0.811, 6.625 0.8, 6.931 0.811, 7.183 0.842, 7.395 0.886, 7.579 0.941, 7.75 1, 7.921 1.059, 8.106 1.114, 8.317 1.158, 8.569 1.189, 8.875 1.2, 9.18 1.19, 9.426 1.169, 9.62 1.149, 9.77 1.144, 9.884 1.166, 9.971 1.227, 10.038 1.341, 10.093 1.52, 10.145 1.777, 10.2 2.125, 10.189 2.431, 10.158 2.683, 10.114 2.895, 10.059 3.079, 10 3.25, 9.941 3.421, 9.886 3.606, 9.842 3.817, 9.811 4.069, 9.8 4.375, 9.811 4.681, 9.842 4.933, 9.886 5.145, 9.941 5.329, 10 5.5, 10.059 5.671, 10.114 5.856, 10.158 6.067, 10.189 6.319, 10.2 6.625, 10.189 6.931, 10.158 7.183, 10.114 7.395, 10.059 7.579, 10 7.75, 9.941 7.921, 9.886 8.106, 9.842 8.317, 9.811 8.569, 9.8 8.875, 9.81 9.18, 9.831 9.426, 9.851 9.62, 9.856 9.77, 9.834 9.884, 9.773 9.971, 9.659 10.038, 9.48 10.093, 9.223 10.145, 8.875 10.2, 8.569 10.189, 8.317 10.158, 8.106 10.114, 7.921 10.059, 7.75 10, 7.579 9.941, 7.395 9.886, 7.183 9.842, 6.931 9.811, 6.625 9.8, 6.319 9.811, 6.067 9.842, 5.856 9.886, 5.671 9.941, 5.5 10, 5.329 10.059, 5.145 10.114, 4.933 10.158, 4.681 10.189, 4.375 10.2, 4.069 10.189, 3.817 10.158, 3.606 10.114, 3.421 10.059, 3.25 10, 3.079 9.941, 2.895 9.886, 2.683 9.842, 2.431 9.811, 2.125 9.8, 1.82 9.81, 1.574 9.831, 1.38 9.851, 1.23 9.856, 1.116 9.834, 1.029 9.773, 0.962 9.659, 0.907 9.48, 0.855 9.223, 0.8 8.875, 0.811 8.569, 0.842 8.317, 0.886 8.106, 0.941 7.921, 1 7.75, 1.059 7.579, 1.114 7.395, 1.158 7.183, 1.189 6.931, 1.2 6.625, 1.189 6.319, 1.158 6.067, 1.114 5.856, 1.059 5.671, 1 5.5, 0.941 5.329, 0.886 5.145, 0.842 4.933, 0.811 4.681, 0.8 4.375, 0.811 4.069, 0.842 3.817, 0.886 3.606, 0.941 3.421, 1 3.25, 1.059 3.079, 1.114 2.895, 1.158 2.683, 1.189 2.431, 1.2 2.125, 1.189 1.792, 1.158 1.486, 1.114 1.234, 1.059 1.063, 1 1),(3 4, 3.093 3.97, 3.199 3.941, 3.315 3.913, 3.438 3.886, 3.565 3.863, 3.692 3.842, 3.815 3.824, 3.931 3.811, 4.037 3.803, 4.13 3.8, 4.437 3.811, 4.691 3.842, 4.903 3.886, 5.088 3.941, 5.26 4, 5.432 4.059, 5.617 4.114, 5.83 4.158, 6.083 4.189, 6.39 4.2, 6.697 4.19, 6.945 4.165, 7.145 4.137, 7.306 4.116, 7.437 4.11, 7.548 4.131, 7.649 4.188, 7.749 4.292, 7.857 4.453, 7.984 4.68, 7.876 4.968, 7.767 5.199, 7.658 5.386, 7.547 5.545, 7.437 5.689, 7.327 5.833, 7.216 5.992, 7.107 6.179, 6.998 6.41, 6.89 6.698, 6.707 6.663, 6.546 6.654, 6.4 6.662, 6.26 6.679, 6.115 6.698, 5.959 6.712, 5.781 6.712, 5.573 6.691, 5.326 6.641, 5.032 6.555, 4.744 6.446, 4.518 6.334, 4.344 6.214, 4.21 6.084, 4.107 5.94, 4.023 5.781, 3.95 5.602, 3.876 5.401, 3.791 5.175, 3.684 4.921, 3.585 4.748, 3.451 4.548, 3.298 4.341, 3.142 4.151, 3 4))",
+            "Polygon ((1 1, 1.092 0.97, 1.198 0.941, 1.314 0.913, 1.437 0.886, 1.563 0.863, 1.688 0.842, 1.811 0.824, 1.927 0.811, 2.033 0.803, 2.125 0.8, 2.431 0.811, 2.683 0.842, 2.894 0.886, 3.079 0.941, 3.25 1, 3.421 1.059, 3.606 1.114, 3.817 1.158, 4.069 1.189, 4.375 1.2, 4.681 1.189, 4.933 1.158, 5.144 1.114, 5.329 1.059, 5.5 1, 5.671 0.941, 5.856 0.886, 6.067 0.842, 6.319 0.811, 6.625 0.8, 6.931 0.811, 7.183 0.842, 7.394 0.886, 7.579 0.941, 7.75 1, 7.921 1.059, 8.105 1.114, 8.317 1.158, 8.569 1.189, 8.875 1.2, 9.18 1.19, 9.426 1.169, 9.62 1.149, 9.77 1.144, 9.884 1.166, 9.971 1.227, 10.038 1.341, 10.093 1.52, 10.145 1.777, 10.2 2.125, 10.189 2.431, 10.158 2.683, 10.114 2.894, 10.059 3.079, 10 3.25, 9.941 3.421, 9.886 3.606, 9.842 3.817, 9.811 4.069, 9.8 4.375, 9.811 4.681, 9.842 4.933, 9.886 5.144, 9.941 5.329, 10 5.5, 10.059 5.671, 10.114 5.856, 10.158 6.067, 10.189 6.319, 10.2 6.625, 10.189 6.931, 10.158 7.183, 10.114 7.394, 10.059 7.579, 10 7.75, 9.941 7.921, 9.886 8.105, 9.842 8.317, 9.811 8.569, 9.8 8.875, 9.81 9.18, 9.831 9.426, 9.851 9.62, 9.856 9.77, 9.834 9.884, 9.773 9.971, 9.659 10.038, 9.48 10.093, 9.223 10.145, 8.875 10.2, 8.569 10.189, 8.317 10.158, 8.105 10.114, 7.921 10.059, 7.75 10, 7.579 9.941, 7.394 9.886, 7.183 9.842, 6.931 9.811, 6.625 9.8, 6.319 9.811, 6.067 9.842, 5.856 9.886, 5.671 9.941, 5.5 10, 5.329 10.059, 5.144 10.114, 4.933 10.158, 4.681 10.189, 4.375 10.2, 4.069 10.189, 3.817 10.158, 3.605 10.114, 3.421 10.059, 3.25 10, 3.079 9.941, 2.894 9.886, 2.683 9.842, 2.431 9.811, 2.125 9.8, 1.82 9.81, 1.574 9.831, 1.38 9.851, 1.23 9.856, 1.116 9.834, 1.029 9.773, 0.962 9.659, 0.907 9.48, 0.855 9.223, 0.8 8.875, 0.811 8.569, 0.842 8.317, 0.886 8.105, 0.941 7.921, 1 7.75, 1.059 7.579, 1.114 7.394, 1.158 7.183, 1.189 6.931, 1.2 6.625, 1.189 6.319, 1.158 6.067, 1.114 5.856, 1.059 5.671, 1 5.5, 0.941 5.329, 0.886 5.144, 0.842 4.933, 0.811 4.681, 0.8 4.375, 0.811 4.069, 0.842 3.817, 0.886 3.605, 0.941 3.421, 1 3.25, 1.059 3.079, 1.114 2.894, 1.158 2.683, 1.189 2.431, 1.2 2.125, 1.189 1.792, 1.158 1.486, 1.114 1.234, 1.059 1.063, 1 1),(3 4, 3.093 3.97, 3.199 3.941, 3.315 3.913, 3.438 3.886, 3.565 3.862, 3.692 3.842, 3.815 3.824, 3.931 3.811, 4.037 3.803, 4.13 3.8, 4.437 3.811, 4.691 3.842, 4.903 3.886, 5.088 3.941, 5.26 4, 5.432 4.059, 5.617 4.114, 5.83 4.158, 6.083 4.189, 6.39 4.2, 6.697 4.19, 6.945 4.165, 7.145 4.137, 7.306 4.116, 7.437 4.11, 7.548 4.131, 7.649 4.188, 7.749 4.292, 7.857 4.453, 7.984 4.68, 7.876 4.968, 7.767 5.199, 7.658 5.386, 7.547 5.545, 7.437 5.689, 7.327 5.833, 7.216 5.992, 7.107 6.179, 6.998 6.41, 6.89 6.698, 6.707 6.663, 6.546 6.654, 6.4 6.662, 6.26 6.679, 6.115 6.698, 5.959 6.712, 5.781 6.712, 5.573 6.691, 5.326 6.641, 5.032 6.555, 4.744 6.446, 4.518 6.334, 4.344 6.214, 4.21 6.084, 4.107 5.94, 4.023 5.781, 3.95 5.602, 3.876 5.401, 3.791 5.175, 3.684 4.921, 3.585 4.748, 3.451 4.548, 3.298 4.341, 3.142 4.151, 3 4))",
         )
         self.assertEqual(
             QgsGeometry.fromWkt(
@@ -12865,7 +13132,7 @@ class TestQgsGeometry(QgisTestCase):
             )
             .roundWaves(5, 0.2)
             .asWkt(3),
-            "MultiPolygon (((1 1, 1.092 0.97, 1.198 0.941, 1.314 0.913, 1.437 0.886, 1.563 0.863, 1.689 0.842, 1.811 0.824, 1.927 0.811, 2.033 0.803, 2.125 0.8, 2.431 0.811, 2.683 0.842, 2.895 0.886, 3.079 0.941, 3.25 1, 3.421 1.059, 3.606 1.114, 3.817 1.158, 4.069 1.189, 4.375 1.2, 4.681 1.189, 4.933 1.158, 5.145 1.114, 5.329 1.059, 5.5 1, 5.671 0.941, 5.856 0.886, 6.067 0.842, 6.319 0.811, 6.625 0.8, 6.931 0.811, 7.183 0.842, 7.395 0.886, 7.579 0.941, 7.75 1, 7.921 1.059, 8.106 1.114, 8.317 1.158, 8.569 1.189, 8.875 1.2, 9.18 1.19, 9.426 1.169, 9.62 1.149, 9.77 1.144, 9.884 1.166, 9.971 1.227, 10.038 1.341, 10.093 1.52, 10.145 1.777, 10.2 2.125, 10.189 2.431, 10.158 2.683, 10.114 2.895, 10.059 3.079, 10 3.25, 9.941 3.421, 9.886 3.606, 9.842 3.817, 9.811 4.069, 9.8 4.375, 9.811 4.681, 9.842 4.933, 9.886 5.145, 9.941 5.329, 10 5.5, 10.059 5.671, 10.114 5.856, 10.158 6.067, 10.189 6.319, 10.2 6.625, 10.189 6.931, 10.158 7.183, 10.114 7.395, 10.059 7.579, 10 7.75, 9.941 7.921, 9.886 8.106, 9.842 8.317, 9.811 8.569, 9.8 8.875, 9.81 9.18, 9.831 9.426, 9.851 9.62, 9.856 9.77, 9.834 9.884, 9.773 9.971, 9.659 10.038, 9.48 10.093, 9.223 10.145, 8.875 10.2, 8.569 10.189, 8.317 10.158, 8.106 10.114, 7.921 10.059, 7.75 10, 7.579 9.941, 7.395 9.886, 7.183 9.842, 6.931 9.811, 6.625 9.8, 6.319 9.811, 6.067 9.842, 5.856 9.886, 5.671 9.941, 5.5 10, 5.329 10.059, 5.145 10.114, 4.933 10.158, 4.681 10.189, 4.375 10.2, 4.069 10.189, 3.817 10.158, 3.606 10.114, 3.421 10.059, 3.25 10, 3.079 9.941, 2.895 9.886, 2.683 9.842, 2.431 9.811, 2.125 9.8, 1.82 9.81, 1.574 9.831, 1.38 9.851, 1.23 9.856, 1.116 9.834, 1.029 9.773, 0.962 9.659, 0.907 9.48, 0.855 9.223, 0.8 8.875, 0.811 8.569, 0.842 8.317, 0.886 8.106, 0.941 7.921, 1 7.75, 1.059 7.579, 1.114 7.395, 1.158 7.183, 1.189 6.931, 1.2 6.625, 1.189 6.319, 1.158 6.067, 1.114 5.856, 1.059 5.671, 1 5.5, 0.941 5.329, 0.886 5.145, 0.842 4.933, 0.811 4.681, 0.8 4.375, 0.811 4.069, 0.842 3.817, 0.886 3.606, 0.941 3.421, 1 3.25, 1.059 3.079, 1.114 2.895, 1.158 2.683, 1.189 2.431, 1.2 2.125, 1.189 1.792, 1.158 1.486, 1.114 1.234, 1.059 1.063, 1 1)),((20 20, 20.03 20.1, 20.059 20.215, 20.087 20.34, 20.114 20.473, 20.138 20.61, 20.158 20.746, 20.176 20.879, 20.189 21.005, 20.197 21.119, 20.2 21.219, 20.189 21.551, 20.158 21.824, 20.114 22.053, 20.059 22.253, 20 22.439, 19.941 22.624, 19.886 22.824, 19.842 23.053, 19.811 23.326, 19.8 23.658, 19.811 23.99, 19.842 24.263, 19.886 24.492, 19.941 24.692, 20 24.877, 20.059 25.063, 20.114 25.263, 20.158 25.492, 20.189 25.765, 20.2 26.097, 20.189 26.428, 20.158 26.702, 20.114 26.931, 20.059 27.131, 20 27.316, 19.941 27.502, 19.886 27.701, 19.842 27.931, 19.811 28.204, 19.8 28.536, 19.812 28.865, 19.844 29.126, 19.896 29.321, 19.963 29.454, 20.043 29.529, 20.134 29.55, 20.233 29.521, 20.336 29.446, 20.442 29.327, 20.547 29.17, 20.79 28.943, 21.005 28.771, 21.198 28.641, 21.378 28.538, 21.551 28.449, 21.724 28.36, 21.904 28.257, 22.098 28.126, 22.312 27.955, 22.555 27.728, 22.781 27.486, 22.953 27.271, 23.083 27.077, 23.186 26.897, 23.276 26.724, 23.365 26.552, 23.468 26.372, 23.598 26.178, 23.77 25.963, 23.996 25.721, 24.239 25.494, 24.453 25.323, 24.647 25.192, 24.827 25.089, 25 25, 25.173 24.911, 25.353 24.808, 25.547 24.677, 25.761 24.506, 26.004 24.279, 26.23 24.037, 26.402 23.822, 26.532 23.628, 26.635 23.448, 26.724 23.276, 26.814 23.103, 26.917 22.923, 27.047 22.729, 27.219 22.514, 27.445 22.272, 27.688 22.045, 27.902 21.874, 28.096 21.743, 28.276 21.64, 28.449 21.551, 28.622 21.462, 28.802 21.359, 28.995 21.229, 29.21 21.057, 29.453 20.83, 29.533 20.562, 29.59 20.369, 29.618 20.24, 29.612 20.163, 29.565 20.129, 29.472 20.125, 29.328 20.141, 29.128 20.167, 28.866 20.19, 28.536 20.2, 28.204 20.189, 27.931 20.158, 27.701 20.114, 27.502 20.059, 27.316 20, 27.131 19.941, 26.931 19.886, 26.702 19.842, 26.428 19.811, 26.097 19.8, 25.765 19.811, 25.492 19.842, 25.263 19.886, 25.063 19.941, 24.877 20, 24.692 20.059, 24.492 20.114, 24.263 20.158, 23.99 20.189, 23.658 20.2, 23.326 20.189, 23.053 20.158, 22.824 20.114, 22.624 20.059, 22.439 20, 22.253 19.941, 22.053 19.886, 21.824 19.842, 21.551 19.811, 21.219 19.8, 21.005 19.811, 20.746 19.842, 20.473 19.886, 20.215 19.941, 20 20)))",
+            "MultiPolygon (((1 1, 1.092 0.97, 1.198 0.941, 1.314 0.913, 1.437 0.886, 1.563 0.863, 1.688 0.842, 1.811 0.824, 1.927 0.811, 2.033 0.803, 2.125 0.8, 2.431 0.811, 2.683 0.842, 2.894 0.886, 3.079 0.941, 3.25 1, 3.421 1.059, 3.606 1.114, 3.817 1.158, 4.069 1.189, 4.375 1.2, 4.681 1.189, 4.933 1.158, 5.144 1.114, 5.329 1.059, 5.5 1, 5.671 0.941, 5.856 0.886, 6.067 0.842, 6.319 0.811, 6.625 0.8, 6.931 0.811, 7.183 0.842, 7.394 0.886, 7.579 0.941, 7.75 1, 7.921 1.059, 8.105 1.114, 8.317 1.158, 8.569 1.189, 8.875 1.2, 9.18 1.19, 9.426 1.169, 9.62 1.149, 9.77 1.144, 9.884 1.166, 9.971 1.227, 10.038 1.341, 10.093 1.52, 10.145 1.777, 10.2 2.125, 10.189 2.431, 10.158 2.683, 10.114 2.894, 10.059 3.079, 10 3.25, 9.941 3.421, 9.886 3.606, 9.842 3.817, 9.811 4.069, 9.8 4.375, 9.811 4.681, 9.842 4.933, 9.886 5.144, 9.941 5.329, 10 5.5, 10.059 5.671, 10.114 5.856, 10.158 6.067, 10.189 6.319, 10.2 6.625, 10.189 6.931, 10.158 7.183, 10.114 7.394, 10.059 7.579, 10 7.75, 9.941 7.921, 9.886 8.105, 9.842 8.317, 9.811 8.569, 9.8 8.875, 9.81 9.18, 9.831 9.426, 9.851 9.62, 9.856 9.77, 9.834 9.884, 9.773 9.971, 9.659 10.038, 9.48 10.093, 9.223 10.145, 8.875 10.2, 8.569 10.189, 8.317 10.158, 8.105 10.114, 7.921 10.059, 7.75 10, 7.579 9.941, 7.394 9.886, 7.183 9.842, 6.931 9.811, 6.625 9.8, 6.319 9.811, 6.067 9.842, 5.856 9.886, 5.671 9.941, 5.5 10, 5.329 10.059, 5.144 10.114, 4.933 10.158, 4.681 10.189, 4.375 10.2, 4.069 10.189, 3.817 10.158, 3.605 10.114, 3.421 10.059, 3.25 10, 3.079 9.941, 2.894 9.886, 2.683 9.842, 2.431 9.811, 2.125 9.8, 1.82 9.81, 1.574 9.831, 1.38 9.851, 1.23 9.856, 1.116 9.834, 1.029 9.773, 0.962 9.659, 0.907 9.48, 0.855 9.223, 0.8 8.875, 0.811 8.569, 0.842 8.317, 0.886 8.105, 0.941 7.921, 1 7.75, 1.059 7.579, 1.114 7.394, 1.158 7.183, 1.189 6.931, 1.2 6.625, 1.189 6.319, 1.158 6.067, 1.114 5.856, 1.059 5.671, 1 5.5, 0.941 5.329, 0.886 5.144, 0.842 4.933, 0.811 4.681, 0.8 4.375, 0.811 4.069, 0.842 3.817, 0.886 3.605, 0.941 3.421, 1 3.25, 1.059 3.079, 1.114 2.894, 1.158 2.683, 1.189 2.431, 1.2 2.125, 1.189 1.792, 1.158 1.486, 1.114 1.234, 1.059 1.063, 1 1)),((20 20, 20.03 20.1, 20.059 20.215, 20.087 20.34, 20.114 20.473, 20.137 20.61, 20.158 20.746, 20.176 20.879, 20.189 21.005, 20.197 21.119, 20.2 21.219, 20.189 21.551, 20.158 21.824, 20.114 22.053, 20.059 22.253, 20 22.439, 19.941 22.624, 19.886 22.824, 19.842 23.053, 19.811 23.326, 19.8 23.658, 19.811 23.99, 19.842 24.263, 19.886 24.492, 19.941 24.692, 20 24.877, 20.059 25.063, 20.114 25.263, 20.158 25.492, 20.189 25.765, 20.2 26.097, 20.189 26.428, 20.158 26.702, 20.114 26.931, 20.059 27.131, 20 27.316, 19.941 27.502, 19.886 27.701, 19.842 27.931, 19.811 28.204, 19.8 28.536, 19.812 28.865, 19.844 29.126, 19.896 29.321, 19.963 29.454, 20.043 29.529, 20.134 29.55, 20.233 29.521, 20.336 29.446, 20.442 29.327, 20.547 29.17, 20.79 28.943, 21.005 28.771, 21.198 28.641, 21.378 28.538, 21.551 28.449, 21.724 28.36, 21.904 28.257, 22.098 28.126, 22.312 27.955, 22.555 27.728, 22.781 27.486, 22.953 27.271, 23.083 27.077, 23.186 26.897, 23.276 26.724, 23.365 26.552, 23.468 26.372, 23.598 26.178, 23.77 25.963, 23.996 25.721, 24.239 25.494, 24.453 25.323, 24.647 25.192, 24.827 25.089, 25 25, 25.173 24.911, 25.353 24.808, 25.547 24.677, 25.761 24.506, 26.004 24.279, 26.23 24.037, 26.402 23.822, 26.532 23.628, 26.635 23.448, 26.724 23.276, 26.814 23.103, 26.917 22.923, 27.047 22.729, 27.219 22.514, 27.445 22.272, 27.688 22.045, 27.902 21.874, 28.096 21.743, 28.276 21.64, 28.449 21.551, 28.622 21.462, 28.802 21.359, 28.995 21.229, 29.21 21.057, 29.453 20.83, 29.533 20.562, 29.59 20.369, 29.618 20.24, 29.612 20.163, 29.565 20.129, 29.472 20.125, 29.328 20.141, 29.128 20.167, 28.866 20.19, 28.536 20.2, 28.204 20.189, 27.931 20.158, 27.701 20.114, 27.502 20.059, 27.316 20, 27.131 19.941, 26.931 19.886, 26.702 19.842, 26.428 19.811, 26.097 19.8, 25.765 19.811, 25.492 19.842, 25.263 19.886, 25.063 19.941, 24.877 20, 24.692 20.059, 24.492 20.114, 24.263 20.158, 23.99 20.189, 23.658 20.2, 23.326 20.189, 23.053 20.158, 22.824 20.114, 22.624 20.059, 22.439 20, 22.253 19.941, 22.053 19.886, 21.824 19.842, 21.551 19.811, 21.219 19.8, 21.005 19.811, 20.746 19.842, 20.473 19.886, 20.215 19.941, 20 20)))",
         )
 
     def testRoundRandomizedWaves(self):
@@ -13330,7 +13597,6 @@ class TestQgsGeometry(QgisTestCase):
         """
 
         class Transformer(QgsAbstractGeometryTransformer):
-
             def transformPoint(self, x, y, z, m):
                 return True, x * 2, y + 1, z, m
 
@@ -13693,9 +13959,9 @@ class TestQgsGeometry(QgisTestCase):
             def get_geom():
                 if "geom" not in test:
                     geom = QgsGeometry.fromWkt(test["wkt"])
-                    assert (
-                        geom and not geom.isNull()
-                    ), f"Could not create geometry {test['wkt']}"
+                    assert geom and not geom.isNull(), (
+                        f"Could not create geometry {test['wkt']}"
+                    )
                 else:
                     geom = test["geom"]
                 return geom

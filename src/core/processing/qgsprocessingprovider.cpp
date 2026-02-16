@@ -23,8 +23,11 @@
 #include "qgsvectorfilewriter.h"
 
 #include <QRegularExpressionMatch>
+#include <QString>
 
 #include "moc_qgsprocessingprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProcessingProvider::QgsProcessingProvider( QObject *parent SIP_TRANSFERTHIS )
   : QObject( parent )

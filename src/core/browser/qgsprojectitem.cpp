@@ -18,8 +18,11 @@
 #include "qgsprojectitem.h"
 
 #include <QDir>
+#include <QString>
 
 #include "moc_qgsprojectitem.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProjectItem::QgsProjectItem( QgsDataItem *parent, const QString &name,
                                 const QString &path, const QString &providerKey )

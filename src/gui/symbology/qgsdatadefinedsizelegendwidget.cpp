@@ -30,9 +30,12 @@
 #include "qgsvectorlayer.h"
 
 #include <QInputDialog>
+#include <QString>
 #include <QStyledItemDelegate>
 
 #include "moc_qgsdatadefinedsizelegendwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDefinedSizeLegend *ddsLegend, const QgsProperty &ddSize, QgsMarkerSymbol *overrideSymbol, QgsMapCanvas *canvas, QWidget *parent )
   : QgsPanelWidget( parent )

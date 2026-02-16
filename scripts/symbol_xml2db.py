@@ -21,8 +21,8 @@
     shipped with QGIS by default. It then converts symbols and colorramps
     in the symbology_ng_style.xml to the database table entries.
 """
-import sqlite3
 
+import sqlite3
 from xml.dom.minidom import parse, parseString
 
 xmlfile = "../resources/symbology-style.xml"
@@ -44,15 +44,13 @@ _colorramp = (
     "favorite INTEGER)"
 )
 
-_tag = "CREATE TABLE tag(" "id INTEGER PRIMARY KEY," "name TEXT)"
+_tag = "CREATE TABLE tag(id INTEGER PRIMARY KEY,name TEXT)"
 
-_tagmap = "CREATE TABLE tagmap(" "tag_id INTEGER NOT NULL," "symbol_id INTEGER)"
+_tagmap = "CREATE TABLE tagmap(tag_id INTEGER NOT NULL,symbol_id INTEGER)"
 
-_ctagmap = "CREATE TABLE ctagmap(" "tag_id INTEGER NOT NULL," "colorramp_id INTEGER)"
+_ctagmap = "CREATE TABLE ctagmap(tag_id INTEGER NOT NULL,colorramp_id INTEGER)"
 
-_smartgroup = (
-    "CREATE TABLE smartgroup(" "id INTEGER PRIMARY KEY," "name TEXT," "xml TEXT)"
-)
+_smartgroup = "CREATE TABLE smartgroup(id INTEGER PRIMARY KEY,name TEXT,xml TEXT)"
 
 create_tables = [_symbol, _colorramp, _tag, _tagmap, _ctagmap, _smartgroup]
 

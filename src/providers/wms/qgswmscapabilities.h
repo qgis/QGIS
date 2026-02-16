@@ -29,8 +29,11 @@
 #include <QMap>
 #include <QNetworkRequest>
 #include <QSet>
+#include <QString>
 #include <QStringList>
 #include <QVector>
+
+using namespace Qt::StringLiterals;
 
 class QNetworkReply;
 

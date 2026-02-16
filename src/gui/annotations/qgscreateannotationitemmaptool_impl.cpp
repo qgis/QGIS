@@ -40,8 +40,11 @@
 
 #include <QFileDialog>
 #include <QImageReader>
+#include <QString>
 
 #include "moc_qgscreateannotationitemmaptool_impl.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -85,6 +88,7 @@ bool QgsMapToolCaptureAnnotationItem::supportsTechnique( Qgis::CaptureTechnique 
     case Qgis::CaptureTechnique::CircularString:
     case Qgis::CaptureTechnique::Streaming:
     case Qgis::CaptureTechnique::Shape:
+    case Qgis::CaptureTechnique::NurbsCurve:
       return true;
   }
   BUILTIN_UNREACHABLE

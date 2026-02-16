@@ -22,6 +22,9 @@
 #include "qgssetrequestinitiator_p.h"
 
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 template<class T>
 QByteArray QgsAbstractContentCache<T>::getContent( const QString &path, const QByteArray &missingContent, const QByteArray &fetchingContent, bool blocking ) const

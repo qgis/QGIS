@@ -11,21 +11,21 @@ __date__ = "09/05/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QFileInfo
-from qgis.PyQt.QtTest import QSignalSpy
+import numpy as np
+from osgeo import gdal
 from qgis.core import QgsRasterLayer
 from qgis.gui import QgsRasterBandComboBox
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QFileInfo
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsRasterBandComboBox(QgisTestCase):
-
     def testNoLayer(self):
         """
         Test widget with no layer
@@ -202,6 +202,35 @@ class TestQgsRasterBandComboBox(QgisTestCase):
         combo.setBand(3)
         self.assertEqual(len(signal_spy), 2)
         self.assertEqual(signal_spy[1][0], 3)
+
+    def test_GMF_PER_DATASET_mask_band(self):
+        """Test issue GH #64642 - rasters with a GMF_PER_DATASET mask band"""
+
+        # Create a temporary raster with a GMF_PER_DATASET mask band
+        temp_path = "/vsimem/test_mask_band.tif"
+        driver = gdal.GetDriverByName("GTiff")
+        dataset = driver.Create(temp_path, 2, 2, 1, gdal.GDT_Byte)
+        band = dataset.GetRasterBand(1)
+        np_data = np.array([[1, 2], [3, 4]], dtype=np.uint8)
+        band.WriteArray(np_data)
+        band.CreateMaskBand(gdal.GMF_PER_DATASET)
+        mask_band = band.GetMaskBand()
+        np_mask = np.array([[0, 255], [255, 0]], dtype=np.uint8)
+        mask_band.WriteArray(np_mask)
+        gdal_num_bands = dataset.RasterCount
+        dataset = None
+
+        # Load the raster via QGIS GDAL provider
+        layer = QgsRasterLayer(temp_path, "test_mask_band")
+        self.assertTrue(layer.isValid(), "Raster with mask band failed to load")
+        provider = layer.dataProvider()
+
+        combo = QgsRasterBandComboBox()
+        # Check that GDAL does not raise any error
+        gdal.ErrorReset()
+        combo.setLayer(layer)
+        err_mesg = gdal.GetLastErrorMsg()
+        self.assertEqual(err_mesg, "", f"GDAL error occurred: {err_mesg}")
 
 
 if __name__ == "__main__":

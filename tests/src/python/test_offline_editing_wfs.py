@@ -29,13 +29,12 @@ import re
 import subprocess
 import sys
 import tempfile
+import unittest
 from shutil import copytree, rmtree
 
-from qgis.core import QgsApplication, QgsVectorLayer
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
 from offlineditingtestbase import OfflineTestBase
+from qgis.core import QgsApplication, QgsVectorLayer
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath, waitServer
 
 try:
@@ -121,9 +120,7 @@ class TestWFST(QgisTestCase, OfflineTestBase):
         parms = {
             "srsname": "EPSG:4326",
             "typename": type_name,
-            "url": "http://127.0.0.1:{}/{}/?map={}".format(
-                self.port, self.counter, self.project_path
-            ),
+            "url": f"http://127.0.0.1:{self.port}/{self.counter}/?map={self.project_path}",
             "version": "auto",
             "table": "",
             # 'sql': '',

@@ -23,6 +23,10 @@
 #include "qgstest.h"
 #include "qgstotalcurvaturefilter.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
 #endif

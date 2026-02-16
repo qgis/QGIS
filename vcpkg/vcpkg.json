@@ -165,7 +165,10 @@
         "py-pip",
         "py-psycopg",
         "py-psycopg2",
-        "py-pydantic",
+        {
+          "name": "py-pydantic",
+          "platform": "!windows"
+        },
         "py-pyproj",
         {
           "name": "py-pyqt6",
@@ -219,6 +222,12 @@
         },
         "opencl",
         "qtdeclarative",
+        {
+          "name": "qtcharts",
+          "features": [
+            "qml"
+          ]
+        },
         "qtimageformats",
         "qtquickcontrols2",
         "qttools",
@@ -260,6 +269,12 @@
       "description": "Build with PDAL support",
       "dependencies": [
         "pdal"
+      ]
+    },
+    "proj-data": {
+      "description": "Build with proj data",
+      "dependencies": [
+        "proj-data"
       ]
     },
     "qtpositioning": {

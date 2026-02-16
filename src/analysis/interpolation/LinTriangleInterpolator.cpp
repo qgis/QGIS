@@ -18,6 +18,10 @@
 
 #include "qgslogger.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 bool LinTriangleInterpolator::calcFirstDerX( double x, double y, Vector3D *vec )
 {
   if ( vec && mTIN )

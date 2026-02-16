@@ -31,6 +31,9 @@
 #include "qgsrasterprojector.h"
 
 #include <QFile>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -567,7 +570,16 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     // qDebug() << programTemplate;
 
     // Create a program from the kernel source
-    cl::Program program( QgsOpenClUtils::buildProgram( programTemplate, QgsOpenClUtils::ExceptionBehavior::Throw ) );
+    cl::Program program;
+    try
+    {
+      program = QgsOpenClUtils::buildProgram( programTemplate, QgsOpenClUtils::ExceptionBehavior::Throw );
+    }
+    catch ( cl::Error &e )
+    {
+      mLastError = QObject::tr( "Error compiling OpenCL kernel: %1" ).arg( e.what() );
+      return QgsRasterCalculator::Result::OpenCLKernelBuildError;
+    }
 
     // Create the buffers, output is float32 (4 bytes)
     // We assume size of float = 4 because that's the size used by OpenCL and IEEE 754

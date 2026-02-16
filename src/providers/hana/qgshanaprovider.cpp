@@ -43,9 +43,12 @@
 #include "qgsrectangle.h"
 #include "qgsthreadingutils.h"
 
+#include <QString>
 #include <QtGlobal>
 
 #include "moc_qgshanaprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 using namespace NS_ODBC;
 using namespace std;

@@ -35,10 +35,13 @@
 #include <QFile>
 #include <QImageWriter>
 #include <QPdfWriter>
+#include <QString>
 #include <QTextStream>
 #include <QTimeZone>
 
 #include "moc_qgsmaprenderertask.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

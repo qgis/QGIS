@@ -10,8 +10,8 @@ __author__ = "Matthias Kuhn"
 __date__ = "20/05/2015"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
-from qgis.PyQt.QtCore import QVariant
-from qgis.PyQt.QtWidgets import QTextEdit
+import unittest
+
 from qgis.core import (
     NULL,
     QgsFeature,
@@ -22,14 +22,14 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.gui import QgsGui
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtWidgets import QTextEdit
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsTextEditWidget(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -123,7 +123,6 @@ class TestQgsTextEditWidget(QgisTestCase):
 
 
 class TestQgsValueRelationWidget(QgisTestCase):
-
     def test_enableDisable(self):
         reg = QgsGui.editorWidgetRegistry()
         layer = QgsVectorLayer("none?field=number:integer", "layer", "memory")
@@ -330,7 +329,6 @@ class TestQgsValueMapEditWidget(QgisTestCase):
 
 
 class TestQgsUuidWidget(QgisTestCase):
-
     def test_create_uuid(self):
         layer = QgsVectorLayer(
             "none?field=text_no_limit:text(0)&field=text_limit:text(10)&field=text_38:text(38)",

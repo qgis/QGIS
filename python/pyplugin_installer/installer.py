@@ -22,55 +22,54 @@
  ***************************************************************************/
 """
 
-import os
 import json
+import os
 import zipfile
 from functools import partial
-
-from qgis.PyQt import sip
-from qgis.PyQt.QtCore import Qt, QObject, QDateTime, QDir, QUrl, QFileInfo, QFile
-from qgis.PyQt.QtWidgets import (
-    QApplication,
-    QDialog,
-    QDialogButtonBox,
-    QFrame,
-    QMessageBox,
-    QLabel,
-    QVBoxLayout,
-    QPushButton,
-)
-from qgis.PyQt.QtNetwork import QNetworkRequest
 
 from qgis.core import (
     Qgis,
     QgsApplication,
     QgsMessageLog,
     QgsNetworkAccessManager,
+    QgsNetworkRequestParameters,
     QgsSettings,
     QgsSettingsTree,
-    QgsNetworkRequestParameters,
 )
-from qgis.gui import QgsMessageBar, QgsPasswordLineEdit, QgsHelp
+from qgis.gui import QgsHelp, QgsMessageBar, QgsPasswordLineEdit
+from qgis.PyQt import sip
+from qgis.PyQt.QtCore import QDateTime, QDir, QFile, QFileInfo, QObject, Qt, QUrl
+from qgis.PyQt.QtNetwork import QNetworkRequest
+from qgis.PyQt.QtWidgets import (
+    QApplication,
+    QDialog,
+    QDialogButtonBox,
+    QFrame,
+    QLabel,
+    QMessageBox,
+    QPushButton,
+    QVBoxLayout,
+)
 from qgis.utils import (
+    HOME_PLUGIN_PATH,
+    OverrideCursor,
     iface,
+    isPluginLoaded,
+    loadPlugin,
+    plugins_metadata_parser,
     startPlugin,
     unloadPlugin,
-    loadPlugin,
-    OverrideCursor,
     updateAvailablePlugins,
-    plugins_metadata_parser,
-    isPluginLoaded,
-    HOME_PLUGIN_PATH,
 )
-from .installer_data import repositories, plugins, officialRepo, reposGroup, removeDir
-from .qgsplugininstallerinstallingdialog import QgsPluginInstallerInstallingDialog
-from .qgsplugininstallerpluginerrordialog import QgsPluginInstallerPluginErrorDialog
-from .qgsplugininstallerfetchingdialog import QgsPluginInstallerFetchingDialog
-from .qgsplugininstallerrepositorydialog import QgsPluginInstallerRepositoryDialog
-from .unzip import unzip
+
+from .installer_data import officialRepo, plugins, removeDir, reposGroup, repositories
 from .plugindependencies import find_dependencies
 from .qgsplugindependenciesdialog import QgsPluginDependenciesDialog
-
+from .qgsplugininstallerfetchingdialog import QgsPluginInstallerFetchingDialog
+from .qgsplugininstallerinstallingdialog import QgsPluginInstallerInstallingDialog
+from .qgsplugininstallerpluginerrordialog import QgsPluginInstallerPluginErrorDialog
+from .qgsplugininstallerrepositorydialog import QgsPluginInstallerRepositoryDialog
+from .unzip import unzip
 
 # public instances:
 pluginInstaller = None
@@ -215,27 +214,7 @@ class QgsPluginInstaller(QObject):
         if not updatable_plugin_names:
             return
 
-        if len(updatable_plugin_names) >= 2:
-            status = self.tr("Multiple plugin updates are available")
-        else:
-            status = self.tr("An update to the {} plugin is available").format(
-                updatable_plugin_names[0]
-            )
-
-        QgsMessageLog.logMessage(
-            "Plugin update(s) available : {}".format(",".join(updatable_plugin_names)),
-            self.tr("Plugins"),
-        )
-
-        bar = iface.messageBar()
-        self.message_bar_widget = bar.createMessage("", status)
-        update_button = QPushButton(self.tr("Install Updates…"))
-        tab_index = 3  # PLUGMAN_TAB_UPGRADEABLE
-        update_button.pressed.connect(
-            partial(self.showPluginManagerWhenReady, tab_index)
-        )
-        self.message_bar_widget.layout().addWidget(update_button)
-        bar.pushWidget(self.message_bar_widget, Qgis.MessageLevel.Info)
+        iface.mainWindow().pluginUpdatesAvailable.emit(updatable_plugin_names)
 
     # ----------------------------------------- #
     def exportRepositoriesToManager(self):
@@ -664,9 +643,9 @@ class QgsPluginInstaller(QObject):
             dlg.editAuthCfgWgt.configId().strip()
             != repositories.all()[reposName]["authcfg"]
         ):
-            repositories.all()[reposName][
-                "authcfg"
-            ] = dlg.editAuthCfgWgt.configId().strip()
+            repositories.all()[reposName]["authcfg"] = (
+                dlg.editAuthCfgWgt.configId().strip()
+            )
         if (
             dlg.editURL.text().strip() == repositories.all()[reposName]["url"]
             and dlg.checkBoxEnabled.checkState()
@@ -757,7 +736,7 @@ class QgsPluginInstaller(QObject):
 
     def installFromZipFile(self, filePath):
         if not os.path.isfile(filePath):
-            return
+            return False
 
         QgsSettingsTree.node("plugin-manager").childSetting(
             "last-zip-directory"
@@ -793,7 +772,7 @@ class QgsPluginInstaller(QObject):
             msg_box.exec()
             if msg_box.clickedButton() == more_info_btn:
                 QgsHelp.openHelp("plugins/plugins.html#the-install-from-zip-tab")
-            return
+            return False
 
         pluginsDirectory = HOME_PLUGIN_PATH
         if not QDir(pluginsDirectory).exists():
@@ -891,6 +870,7 @@ class QgsPluginInstaller(QObject):
 
         level = Qgis.MessageLevel.Success if success else Qgis.MessageLevel.Critical
         iface.pluginManagerInterface().pushMessage(msg, level)
+        return success
 
     def processDependencies(self, plugin_id):
         """Processes plugin dependencies

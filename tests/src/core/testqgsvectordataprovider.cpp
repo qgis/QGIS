@@ -23,6 +23,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 Q_DECLARE_METATYPE( QgsFeatureRequest )
 
 class TestQgsVectorDataProvider : public QObject

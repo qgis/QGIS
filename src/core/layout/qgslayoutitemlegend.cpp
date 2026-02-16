@@ -43,14 +43,18 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
 #include "qgsreferencedgeometry.h"
+#include "qgssettingstree.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsvectorlayer.h"
 
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPainter>
+#include <QString>
 
 #include "moc_qgslayoutitemlegend.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsLegendFilterProxyModel
@@ -72,6 +76,15 @@ void QgsLegendFilterProxyModel::setIsDefaultLegend( bool isDefault )
   invalidateFilter();
 }
 
+void QgsLegendFilterProxyModel::setFilterToCheckedLayers( bool filter )
+{
+  if ( filter == mFilterToCheckedLayers )
+    return;
+
+  mFilterToCheckedLayers = filter;
+  invalidateFilter();
+}
+
 bool QgsLegendFilterProxyModel::layerShown( QgsMapLayer *layer ) const
 {
   if ( !layer )
@@ -82,12 +95,17 @@ bool QgsLegendFilterProxyModel::layerShown( QgsMapLayer *layer ) const
     return false;
   }
 
+  if ( mFilterToCheckedLayers && !isLayerChecked( layer ) )
+    return false;
+
   return true;
 }
 
 //
 // QgsLayoutItemLegend
 //
+
+const QgsSettingsEntryEnumFlag< Qgis::LegendSyncMode > *QgsLayoutItemLegend::settingDefaultLegendSyncMode = new QgsSettingsEntryEnumFlag< Qgis::LegendSyncMode >( u"default-legend-sync-mode"_s, QgsSettingsTree::sTreeLayout, Qgis::LegendSyncMode::VisibleLayers, u"Default sync mode to use for legend content."_s );
 
 QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
   : QgsLayoutItem( layout )
@@ -109,6 +127,7 @@ QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
   // Connect to the main layertreeroot.
   // It serves in "auto update mode" as a medium between the main app legend and this one
   connect( mLayout->project()->layerTreeRoot(), &QgsLayerTreeNode::customPropertyChanged, this, &QgsLayoutItemLegend::nodeCustomPropertyChanged );
+  connect( mLayout->project()->layerTreeRoot(), &QgsLayerTreeNode::visibilityChanged, this, &QgsLayoutItemLegend::nodeVisibilityChanged );
 
   // If project colors change, we need to redraw legend, as legend symbols may rely on project colors
   connect( mLayout->project(), &QgsProject::projectColorsChanged, this, [this]
@@ -375,6 +394,32 @@ QgsLegendRenderer QgsLayoutItemLegend::createRenderer() const
 
   QgsLegendFilterProxyModel *proxy = new QgsLegendFilterProxyModel();
   proxy->setIsDefaultLegend( !static_cast< bool >( mCustomLayerTree ) );
+  switch ( mSyncMode )
+  {
+    case Qgis::LegendSyncMode::VisibleLayers:
+      if ( mMap )
+      {
+        QgsExpressionContext expressionContext = mMap->createExpressionContext();
+        const QList<QgsMapLayer *> visibleLayers = mMap->layersToRender( &expressionContext );
+        proxy->setCheckedLayers( visibleLayers );
+        proxy->setFilterToCheckedLayers( true );
+      }
+      else if ( const QgsLayout *l = layout() )
+      {
+        // no linked map, so use project layer tree
+        if ( QgsProject *p = l->project() )
+        {
+          proxy->setCheckedLayers( p->layerTreeRoot()->checkedLayers() );
+          proxy->setFilterToCheckedLayers( true );
+        }
+      }
+      break;
+
+    case Qgis::LegendSyncMode::AllProjectLayers:
+    case Qgis::LegendSyncMode::Manual:
+      break;
+  }
+
   res.setProxyModel( proxy );
 
   return res;
@@ -394,56 +439,98 @@ const QgsLegendModel *QgsLayoutItemLegend::model() const
 
 void QgsLayoutItemLegend::setAutoUpdateModel( bool autoUpdate )
 {
-  if ( autoUpdate == autoUpdateModel() )
+  setSyncMode( autoUpdate ? Qgis::LegendSyncMode::AllProjectLayers : Qgis::LegendSyncMode::Manual );
+}
+
+void QgsLayoutItemLegend::setSyncMode( Qgis::LegendSyncMode mode )
+{
+  if ( mode == mSyncMode )
     return;
 
-  if ( autoUpdate )
+  const Qgis::LegendSyncMode oldMode = mSyncMode;
+  mSyncMode = mode;
+  switch ( mSyncMode )
   {
-    setCustomLayerTree( nullptr );
-  }
-  else
-  {
-    std::unique_ptr< QgsLayerTree > customTree( mLayout->project()->layerTreeRoot()->clone() );
+    case Qgis::LegendSyncMode::AllProjectLayers:
+    case Qgis::LegendSyncMode::VisibleLayers:
+      setCustomLayerTree( nullptr );
+      break;
 
-    // filter out excluded by default items
-    std::function< void( QgsLayerTreeGroup * )> filterNodeChildren;
-    filterNodeChildren = [&filterNodeChildren]( QgsLayerTreeGroup * group )
+    case Qgis::LegendSyncMode::Manual:
     {
-      if ( !group )
-        return;
-
-      const QList<QgsLayerTreeNode *> children = group->children();
-      for ( QgsLayerTreeNode *child : children )
-      {
-        if ( !child )
-        {
-          group->removeChildNode( child );
-          continue;
-        }
-        else if ( QgsLayerTree::isGroup( child ) )
-        {
-          filterNodeChildren( QgsLayerTree::toGroup( child ) );
-        }
-        else if ( QgsLayerTree::isLayer( child ) )
-        {
-          QgsLayerTreeLayer *layer = QgsLayerTree::toLayer( child );
-          if ( QgsMapLayer *mapLayer = layer->layer() )
-          {
-            if ( QgsMapLayerLegend *layerLegend = mapLayer->legend(); layerLegend && layerLegend->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) )
-            {
-              group->removeChildNode( child );
-            }
-          }
-        }
-      }
-    };
-    filterNodeChildren( customTree.get() );
-
-    setCustomLayerTree( customTree.release() );
+      resetManualLayers( oldMode );
+      break;
+    }
   }
 
   adjustBoxSize();
   updateFilterByMap( false );
+}
+
+void QgsLayoutItemLegend::resetManualLayers( Qgis::LegendSyncMode mode )
+{
+  if ( mSyncMode != Qgis::LegendSyncMode::Manual )
+    return;
+
+  std::unique_ptr< QgsLayerTree > customTree( mLayout->project()->layerTreeRoot()->clone() );
+
+  QList<QgsMapLayer *> mapVisibleLayers;
+  if ( mode == Qgis::LegendSyncMode::VisibleLayers )
+  {
+    if ( mMap )
+    {
+      QgsExpressionContext expressionContext = mMap->createExpressionContext();
+      mapVisibleLayers = mMap->layersToRender( &expressionContext );
+    }
+    else if ( const QgsLayout *l = layout() )
+    {
+      // no linked map, so use project layer tree
+      if ( QgsProject *p = l->project() )
+      {
+        mapVisibleLayers = p->layerTreeRoot()->checkedLayers();
+      }
+    }
+  }
+
+  // filter out excluded by default items
+  std::function< void( QgsLayerTreeGroup * )> filterNodeChildren;
+  filterNodeChildren = [mapVisibleLayers, mode, &filterNodeChildren]( QgsLayerTreeGroup * group )
+  {
+    if ( !group )
+      return;
+
+    const QList<QgsLayerTreeNode *> children = group->children();
+    for ( QgsLayerTreeNode *child : children )
+    {
+      if ( !child )
+      {
+        group->removeChildNode( child );
+        continue;
+      }
+      else if ( QgsLayerTree::isGroup( child ) )
+      {
+        filterNodeChildren( QgsLayerTree::toGroup( child ) );
+      }
+      else if ( QgsLayerTree::isLayer( child ) )
+      {
+        QgsLayerTreeLayer *layer = QgsLayerTree::toLayer( child );
+        if ( QgsMapLayer *mapLayer = layer->layer() )
+        {
+          if ( QgsMapLayerLegend *layerLegend = mapLayer->legend(); layerLegend && layerLegend->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) )
+          {
+            group->removeChildNode( child );
+          }
+          else if ( mode == Qgis::LegendSyncMode::VisibleLayers && !mapVisibleLayers.contains( mapLayer ) )
+          {
+            group->removeChildNode( child );
+          }
+        }
+      }
+    }
+  };
+  filterNodeChildren( customTree.get() );
+
+  setCustomLayerTree( customTree.release() );
 }
 
 void QgsLayoutItemLegend::nodeCustomPropertyChanged( QgsLayerTreeNode *, const QString &key )
@@ -451,17 +538,44 @@ void QgsLayoutItemLegend::nodeCustomPropertyChanged( QgsLayerTreeNode *, const Q
   if ( key == "cached_name"_L1 )
     return;
 
-  if ( autoUpdateModel() )
+  switch ( mSyncMode )
   {
-    // in "auto update" mode, some parameters on the main app legend may have been changed (expression filtering)
-    // we must then call updateItem to reflect the changes
-    updateFilterByMap( false );
+    case Qgis::LegendSyncMode::AllProjectLayers:
+    case Qgis::LegendSyncMode::VisibleLayers:
+    {
+      // in "auto update" mode, some parameters on the main app legend may have been changed (expression filtering)
+      // we must then call updateItem to reflect the changes
+      updateFilterByMap( false );
+      break;
+    }
+    case Qgis::LegendSyncMode::Manual:
+      break;
+  }
+}
+
+void QgsLayoutItemLegend::nodeVisibilityChanged( QgsLayerTreeNode * )
+{
+  switch ( mSyncMode )
+  {
+    case Qgis::LegendSyncMode::VisibleLayers:
+    {
+      updateFilterByMap( false );
+      break;
+    }
+    case Qgis::LegendSyncMode::AllProjectLayers:
+    case Qgis::LegendSyncMode::Manual:
+      break;
   }
 }
 
 bool QgsLayoutItemLegend::autoUpdateModel() const
 {
-  return !mCustomLayerTree;
+  return mSyncMode != Qgis::LegendSyncMode::Manual;
+}
+
+Qgis::LegendSyncMode QgsLayoutItemLegend::syncMode() const
+{
+  return mSyncMode;
 }
 
 void QgsLayoutItemLegend::setLegendFilterByMapEnabled( bool enabled )
@@ -813,6 +927,10 @@ bool QgsLayoutItemLegend::writePropertiesToElement( QDomElement &legendElem, QDo
     // if not using auto-update - store the custom layer tree
     mCustomLayerTree->writeXml( legendElem, context );
   }
+  else
+  {
+    legendElem.setAttribute( u"syncMode"_s, qgsEnumValueToKey( mSyncMode ) );
+  }
 
   if ( mLegendFilterByMap )
   {
@@ -964,9 +1082,13 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
     if ( mLayout )
       tree->resolveReferences( mLayout->project(), true );
     setCustomLayerTree( tree.release() );
+    mSyncMode = Qgis::LegendSyncMode::Manual;
   }
   else
+  {
     setCustomLayerTree( nullptr );
+    mSyncMode = qgsEnumKeyToValue( itemElem.attribute( u"syncMode"_s ), Qgis::LegendSyncMode::AllProjectLayers );
+  }
 
   return true;
 }

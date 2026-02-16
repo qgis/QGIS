@@ -29,6 +29,10 @@
 #include "qgsserversettings.h"
 #include "qgswfsserviceexception.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsMapLayer;
 
 /**

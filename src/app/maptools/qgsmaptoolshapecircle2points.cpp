@@ -4,7 +4,7 @@
     ---------------------
     begin                : July 2017
     copyright            : (C) 2017 by Loïc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    email                : lituus at free dot fr
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -21,7 +21,11 @@
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolcapture.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolshapecircle2points.cpp"
+
+using namespace Qt::StringLiterals;
 
 QString QgsMapToolShapeCircle2PointsMetadata::id() const
 {

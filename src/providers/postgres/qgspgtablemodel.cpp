@@ -26,8 +26,11 @@
 #include "qgssettings.h"
 
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgspgtablemodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPgTableModel::QgsPgTableModel( QObject *parent )
   : QgsAbstractDbTableModel( parent )

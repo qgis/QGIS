@@ -28,7 +28,10 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
+#include <QString>
 #include <QVariant>
+
+using namespace Qt::StringLiterals;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -368,17 +371,6 @@ Q_DECLARE_METATYPE( QgsInterval )
 
 #ifndef SIP_RUN
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
-
-/**
- * Returns the interval between two datetimes.
- * \param datetime1 start datetime
- * \param datetime2 datetime to subtract, ie subtract datetime2 from datetime1
- * \note not available in Python bindings
- */
-QgsInterval CORE_EXPORT operator-( const QDateTime &datetime1, const QDateTime &datetime2 );
-
-#endif
 
 /**
  * Returns the interval between two dates.

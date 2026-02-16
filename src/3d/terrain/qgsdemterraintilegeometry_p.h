@@ -32,7 +32,6 @@
 #include <QImage>
 #include <QSize>
 #include <Qt3DCore/QGeometry>
-#include <Qt3DExtras/qt3dextras_global.h>
 
 namespace Qt3DCore
 {

@@ -21,6 +21,10 @@
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 void QgsAccessControl::resolveFilterFeatures( const QList<QgsMapLayer *> &layers )
 {
   for ( QgsMapLayer *l : layers )

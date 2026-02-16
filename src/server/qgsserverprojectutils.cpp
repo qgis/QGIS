@@ -20,6 +20,10 @@
 #include "qgsmessagelog.h"
 #include "qgsproject.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 double QgsServerProjectUtils::ceilWithPrecision( double number, int places )
 {
   const double scaleFactor = std::pow( 10.0, places );

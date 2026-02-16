@@ -22,8 +22,11 @@
 
 #include <QBoxLayout>
 #include <QCheckBox>
+#include <QString>
 
 #include "moc_qgspointcloudlayer3drendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPointCloudLayer3DRendererWidget::QgsPointCloudLayer3DRendererWidget( QgsPointCloudLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -65,6 +68,7 @@ QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRendererWidget::renderer()
   renderer->setMaximumScreenError( mWidgetPointCloudSymbol->maximumScreenError() );
   renderer->setShowBoundingBoxes( mWidgetPointCloudSymbol->showBoundingBoxes() );
   renderer->setZoomOutBehavior( mWidgetPointCloudSymbol->zoomOutBehavior() );
+  renderer->setOverviewSwitchingScale( mWidgetPointCloudSymbol->overviewSwitchingScale() );
   return renderer;
 }
 

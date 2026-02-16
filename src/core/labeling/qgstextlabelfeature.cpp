@@ -23,8 +23,12 @@
 #include "qgstextfragment.h"
 #include "qgstextrenderer.h"
 
-QgsTextLabelFeature::QgsTextLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size )
-  : QgsLabelFeature( id, std::move( geometry ), size )
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
+QgsTextLabelFeature::QgsTextLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size, int subPartId )
+  : QgsLabelFeature( id, std::move( geometry ), size, subPartId )
 {
   mDefinedFont = QFont();
 }

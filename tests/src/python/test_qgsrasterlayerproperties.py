@@ -11,10 +11,10 @@ __date__ = "14/01/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
 import pathlib
+import tempfile
 import typing
+import unittest
 
-from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QWidget
 from qgis.core import QgsMapLayer, QgsProject, QgsRasterLayer
 from qgis.gui import (
     QgsMapCanvas,
@@ -22,10 +22,9 @@ from qgis.gui import (
     QgsMapLayerConfigWidgetFactory,
     QgsRasterLayerProperties,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-import tempfile
-
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QWidget
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -34,7 +33,6 @@ start_app()
 
 
 class TestQgsRasterLayerProperties(QgisTestCase):
-
     def setUp(self):
         QgsProject.instance().removeAllMapLayers()
 

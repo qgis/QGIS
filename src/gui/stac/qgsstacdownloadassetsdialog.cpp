@@ -26,9 +26,12 @@
 #include <QClipboard>
 #include <QMenu>
 #include <QPushButton>
+#include <QString>
 #include <QTreeWidget>
 
 #include "moc_qgsstacdownloadassetsdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

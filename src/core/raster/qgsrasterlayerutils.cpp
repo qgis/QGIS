@@ -26,6 +26,10 @@
 #include "qgsrectangle.h"
 #include "qgsthreadingutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 int QgsRasterLayerUtils::renderedBandForElevationAndTemporalRange(
   QgsRasterLayer *layer,
   const QgsDateTimeRange &temporalRange,

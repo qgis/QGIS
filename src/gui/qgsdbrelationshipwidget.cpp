@@ -22,8 +22,11 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QSortFilterProxyModel>
+#include <QString>
 
 #include "moc_qgsdbrelationshipwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsDbRelationWidget

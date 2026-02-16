@@ -49,8 +49,11 @@
 
 #include <QButtonGroup>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgstextformatwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent, QgsMapLayer *layer )
   : QWidget( parent )
@@ -320,6 +323,10 @@ void QgsTextFormatWidget::initWidget()
   mCurvedModeDescriptionLabel->setFont( font );
   updateCurvedLabelDescription();
 
+  mComboMultipartBehavior->addItem( tr( "Label Largest Part Only" ), QVariant::fromValue( Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly ) );
+  mComboMultipartBehavior->addItem( tr( "Label Every Part with Entire Label" ), QVariant::fromValue( Qgis::MultiPartLabelingBehavior::LabelEveryPartWithEntireLabel ) );
+  mComboMultipartBehavior->addItem( tr( "Split Label Text Lines over Parts" ), QVariant::fromValue( Qgis::MultiPartLabelingBehavior::SplitLabelTextLinesOverParts ) );
+
   updateAvailableShadowPositions();
 
   mBackgroundMarkerSymbolButton->setSymbolType( Qgis::SymbolType::Marker );
@@ -462,20 +469,12 @@ void QgsTextFormatWidget::initWidget()
 
   overlapModeChanged();
 
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 3, 0 )
-  // stretch is available
-#else
-  mLabelStretch->hide();
-  mSpinStretch->hide();
-  mFontStretchDDBtn->hide();
-#endif
-
   setDockMode( false );
 
   QList<QWidget *> widgets;
   widgets << btnBufferColor
           << btnTextColor
-          << chkLabelPerFeaturePart
+          << mComboMultipartBehavior
           << chkLineAbove
           << chkLineBelow
           << chkLineOn
@@ -609,7 +608,8 @@ void QgsTextFormatWidget::initWidget()
           << mComboCurvedLabelMode
           << mTabDistanceUnitWidget
           << mTabStopDistanceSpin
-          << mChkNoDuplicates;
+          << mChkNoDuplicates
+          << mCheckWhitespaceIsNotACollision;
 
   connectValueChanged( widgets );
 
@@ -735,12 +735,6 @@ void QgsTextFormatWidget::setPropertyOverrideButtonsVisible( bool visible )
   const QList<QgsPropertyOverrideButton *> buttons = findChildren<QgsPropertyOverrideButton *>();
   for ( QgsPropertyOverrideButton *button : buttons )
   {
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 3, 0 )
-    // stretch is available
-#else
-    if ( button == mFontStretchDDBtn )
-      continue; // always hidden
-#endif
     button->setVisible( visible );
   }
 }
@@ -952,6 +946,7 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   registerDataDefinedButton( mAllowInferiorPlacementDBtn, QgsPalLayerSettings::Property::AllowDegradedPlacement );
   registerDataDefinedButton( mOverlapHandlingDBtn, QgsPalLayerSettings::Property::OverlapHandling );
   registerDataDefinedButton( mCurvedLabelModeDDBtn, QgsPalLayerSettings::Property::CurvedLabelMode );
+  registerDataDefinedButton( mWhitespaceDDBtn, QgsPalLayerSettings::Property::WhitespaceCollisionHandling );
 
   // TODO: is this necessary? maybe just use the data defined-only rotation?
   //mPointAngleDDBtn, QgsPalLayerSettings::OffsetRotation,
@@ -1527,6 +1522,7 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   bool showRotationFrame = false;
   bool showMaxCharAngleFrame = false;
   bool showCurvedLabelModeFrame = false;
+  bool showWhitespaceCollisionFrame = false;
 
   const Qgis::LabelPlacement currentPlacement = static_cast<Qgis::LabelPlacement>( mPlacementModeComboBox->currentData().toInt() );
   const bool showPolygonPlacementOptions = ( currentGeometryType == Qgis::GeometryType::Polygon && currentPlacement != Qgis::LabelPlacement::Line && currentPlacement != Qgis::LabelPlacement::PerimeterCurved && currentPlacement != Qgis::LabelPlacement::OutsidePolygons );
@@ -1567,6 +1563,7 @@ void QgsTextFormatWidget::updatePlacementWidgets()
     showLineFrame = true;
     showDistanceFrame = true;
     showCurvedLabelModeFrame = currentPlacement == Qgis::LabelPlacement::Curved || currentPlacement == Qgis::LabelPlacement::PerimeterCurved;
+    showWhitespaceCollisionFrame = currentPlacement == Qgis::LabelPlacement::Curved || currentPlacement == Qgis::LabelPlacement::PerimeterCurved;
     //showRotationFrame = true; // TODO: uncomment when supported
 
     const bool offline = chkLineAbove->isChecked() || chkLineBelow->isChecked();
@@ -1596,6 +1593,7 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   mPlacementMaximumDistanceFrame->setVisible( showMaximumDistanceFrame );
   mPlacementPrioritizationFrame->setVisible( showPrioritizationFrame );
   mPlacementOffsetTypeFrame->setVisible( showOffsetTypeFrame );
+  mWhitespaceCollisionFrame->setVisible( showWhitespaceCollisionFrame );
   mPlacementRotationFrame->setVisible( showRotationFrame );
   mPlacementRepeatGroupBox->setVisible( currentGeometryType == Qgis::GeometryType::Line || ( currentGeometryType == Qgis::GeometryType::Polygon && ( currentPlacement == Qgis::LabelPlacement::Line || currentPlacement == Qgis::LabelPlacement::PerimeterCurved ) ) );
   mPlacementOverrunGroupBox->setVisible( currentGeometryType == Qgis::GeometryType::Line && currentPlacement != Qgis::LabelPlacement::Horizontal );
@@ -1662,12 +1660,8 @@ void QgsTextFormatWidget::populateFontCapitalsComboBox()
   mFontCapitalsComboBox->addItem( tr( "No Change" ), static_cast<int>( Qgis::Capitalization::MixedCase ) );
   mFontCapitalsComboBox->addItem( tr( "All Uppercase" ), static_cast<int>( Qgis::Capitalization::AllUppercase ) );
   mFontCapitalsComboBox->addItem( tr( "All Lowercase" ), static_cast<int>( Qgis::Capitalization::AllLowercase ) );
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 3, 0 )
-  // Requires new enough build due to
-  // https://bugreports.qt.io/browse/QTBUG-13965
   mFontCapitalsComboBox->addItem( tr( "Small Caps" ), static_cast<int>( Qgis::Capitalization::SmallCaps ) );
   mFontCapitalsComboBox->addItem( tr( "All Small Caps" ), static_cast<int>( Qgis::Capitalization::AllSmallCaps ) );
-#endif
   mFontCapitalsComboBox->addItem( tr( "Title Case" ), static_cast<int>( Qgis::Capitalization::TitleCase ) );
   mFontCapitalsComboBox->addItem( tr( "Force First Letter to Capital" ), static_cast<int>( Qgis::Capitalization::ForceFirstLetterToCapital ) );
 }

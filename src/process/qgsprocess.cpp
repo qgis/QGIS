@@ -22,7 +22,11 @@
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingregistry.h"
 
+#include <QString>
+
 #include "moc_qgsprocess.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_3D
 #include "qgs3dalgorithms.h"
@@ -255,7 +259,7 @@ int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel lo
 {
   mFlags = flags;
 
-  QObject::connect( QgsApplication::messageLog(), static_cast<void ( QgsMessageLog::* )( const QString &message, const QString &tag, Qgis::MessageLevel level )>( &QgsMessageLog::messageReceived ), QgsApplication::instance(), []( const QString &message, const QString &, Qgis::MessageLevel level ) {
+  QObject::connect( QgsApplication::messageLog(), static_cast<void ( QgsMessageLog::* )( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::StringFormat )>( &QgsMessageLog::messageReceivedWithFormat ), QgsApplication::instance(), []( const QString &message, const QString &, Qgis::MessageLevel level, Qgis::StringFormat ) {
     if ( level == Qgis::MessageLevel::Critical )
     {
       if ( !message.contains( "DeprecationWarning:"_L1 ) )

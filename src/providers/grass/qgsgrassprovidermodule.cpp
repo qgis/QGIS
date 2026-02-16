@@ -30,7 +30,11 @@
 #include "qgsrasterprojector.h"
 #include "qgssettings.h"
 
+#include <QString>
+
 #include "moc_qgsgrassprovidermodule.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_GUI
 #include "qgsnewnamedialog.h"
@@ -211,7 +215,7 @@ void QgsGrassItemActions::renameGrassObject()
     QgsDebugMsgLevel( obj.name() + " exists -> delete", 2 );
     if ( !QgsGrass::deleteObject( obj ) )
     {
-      QgsMessageOutput::showMessage( errorTitle, QObject::tr( "Cannot delete %1" ).arg( obj.name() ), QgsMessageOutput::MessageText );
+      QgsMessageOutput::showMessage( errorTitle, QObject::tr( "Cannot delete %1" ).arg( obj.name() ), Qgis::StringFormat::PlainText );
       return;
     }
   }
@@ -222,7 +226,7 @@ void QgsGrassItemActions::renameGrassObject()
   }
   catch ( QgsGrass::Exception &e )
   {
-    QgsMessageOutput::showMessage( errorTitle, QObject::tr( "Cannot rename %1 to %2" ).arg( mGrassObject.name(), obj.name() ) + "\n" + e.what(), QgsMessageOutput::MessageText );
+    QgsMessageOutput::showMessage( errorTitle, QObject::tr( "Cannot rename %1 to %2" ).arg( mGrassObject.name(), obj.name() ) + "\n" + e.what(), Qgis::StringFormat::PlainText );
   }
 }
 
@@ -921,7 +925,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
 
   if ( !errors.isEmpty() )
   {
-    QgsMessageOutput::showMessage( tr( "Import to GRASS mapset" ), tr( "Failed to import some layers!\n\n" ) + errors.join( QLatin1Char( '\n' ) ), QgsMessageOutput::MessageText );
+    QgsMessageOutput::showMessage( tr( "Import to GRASS mapset" ), tr( "Failed to import some layers!\n\n" ) + errors.join( QLatin1Char( '\n' ) ), Qgis::StringFormat::PlainText );
   }
 
   return true;
@@ -933,7 +937,7 @@ void QgsGrassMapsetItem::onImportFinished( QgsGrassImport *import )
   {
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
     output->setTitle( tr( "Import to GRASS mapset failed" ) );
-    output->setMessage( tr( "Failed to import %1 to %2: %3" ).arg( import->srcDescription(), import->grassObject().mapsetPath(), import->error() ), QgsMessageOutput::MessageText );
+    output->setMessage( tr( "Failed to import %1 to %2: %3" ).arg( import->srcDescription(), import->grassObject().mapsetPath(), import->error() ), Qgis::StringFormat::PlainText );
     output->showMessage();
   }
 

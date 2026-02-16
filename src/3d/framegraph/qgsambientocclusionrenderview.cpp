@@ -19,7 +19,6 @@
 #include "qgsambientocclusionrenderentity.h"
 
 #include <Qt3DRender/QCamera>
-#include <Qt3DRender/QCameraSelector>
 #include <Qt3DRender/QCullFace>
 #include <Qt3DRender/QDepthTest>
 #include <Qt3DRender/QLayer>

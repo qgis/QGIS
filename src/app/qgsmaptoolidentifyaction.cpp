@@ -41,9 +41,12 @@
 #include <QCursor>
 #include <QPixmap>
 #include <QStatusBar>
+#include <QString>
 #include <QVariant>
 
 #include "moc_qgsmaptoolidentifyaction.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas *canvas )
   : QgsMapToolIdentify( canvas )

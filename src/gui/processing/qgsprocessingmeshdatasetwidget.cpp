@@ -29,10 +29,13 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QMenu>
+#include <QString>
 #include <QToolButton>
 #include <QVBoxLayout>
 
 #include "moc_qgsprocessingmeshdatasetwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 /// @cond PRIVATE
 
@@ -753,6 +756,8 @@ QgsProcessingMeshDatasetGroupsParameterDefinitionWidget::QgsProcessingMeshDatase
     }
   }
 
+  connect( mParentLayerComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
   setLayout( vlayout );
 }
 
@@ -833,6 +838,8 @@ QgsProcessingMeshDatasetTimeParameterDefinitionWidget::QgsProcessingMeshDatasetT
         mMeshLayerParameterName = static_cast<const QgsProcessingParameterMeshDatasetGroups *>( currentDef )->meshLayerParameterName();
     } );
   }
+
+  connect( mParentDatasetComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   setLayout( vlayout );
 }

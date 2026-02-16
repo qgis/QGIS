@@ -15,6 +15,8 @@
 
 #include "qgsexpressionhighlighter.h"
 
+#include <QString>
+
 #include "moc_qgsexpressionhighlighter.cpp"
 
 using namespace Qt::StringLiterals;

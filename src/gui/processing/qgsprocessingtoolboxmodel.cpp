@@ -26,8 +26,11 @@
 
 #include <QMimeData>
 #include <QPalette>
+#include <QString>
 
 #include "moc_qgsprocessingtoolboxmodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -180,7 +183,7 @@ void QgsProcessingToolboxModel::rebuild()
   }
 
 
-  if ( mRegistry )
+  if ( mRegistry && QgsApplication::processingRegistry() )
   {
     auto groupNode = std::make_unique<QgsProcessingToolboxModelParameterGroupNode>();
 

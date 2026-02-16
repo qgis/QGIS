@@ -27,8 +27,11 @@
 #include <QJsonDocument>
 #include <QMutex>
 #include <QNetworkRequest>
+#include <QString>
 #include <QUrl>
 #include <QUrlQuery>
+
+using namespace Qt::StringLiterals;
 
 QMutex QgsNominatimGeocoder::sMutex;
 typedef QMap< QUrl, QList< QgsGeocoderResult > > CachedGeocodeResult;

@@ -16,6 +16,9 @@
 #include "qgshstoreutils.h"
 
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QVariantMap QgsHstoreUtils::parse( const QString &string )
 {

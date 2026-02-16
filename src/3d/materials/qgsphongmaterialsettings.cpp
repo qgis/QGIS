@@ -17,8 +17,10 @@
 
 #include "qgs3dutils.h"
 #include "qgscolorutils.h"
+#include "qgshighlightmaterial.h"
 
 #include <QMap>
+#include <QString>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QGeometry>
@@ -26,6 +28,8 @@
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTechnique>
+
+using namespace Qt::StringLiterals;
 
 QString QgsPhongMaterialSettings::type() const
 {
@@ -109,6 +113,11 @@ QgsMaterial *QgsPhongMaterialSettings::toMaterial( QgsMaterialSettingsRenderingT
     case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:
     case QgsMaterialSettingsRenderingTechnique::TrianglesFromModel:
     {
+      if ( context.isHighlighted() )
+      {
+        return new QgsHighlightMaterial( technique );
+      }
+
       return buildMaterial( context );
     }
 

@@ -18,7 +18,11 @@
 #include "qgsrelationmanager.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
+
 #include "moc_qgsattributeeditorrelation.cpp"
+
+using namespace Qt::StringLiterals;
 
 bool QgsAttributeEditorRelation::init( QgsRelationManager *relationManager )
 {

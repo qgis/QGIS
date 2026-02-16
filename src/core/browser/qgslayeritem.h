@@ -23,6 +23,10 @@
 #include "qgsdataitem.h"
 #include "qgslayermetadata.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief A browser item that represents a layer that can be opened with one of the providers.

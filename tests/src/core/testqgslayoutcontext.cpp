@@ -27,7 +27,10 @@
 #include "qgsvectorlayer.h"
 
 #include <QObject>
+#include <QString>
 #include <QtTest/QSignalSpy>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsLayoutContext : public QgsTest
 {

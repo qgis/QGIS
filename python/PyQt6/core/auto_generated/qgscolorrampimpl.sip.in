@@ -10,6 +10,7 @@
 
 
 
+
 class QgsGradientStop
 {
 %Docstring(signature="appended")

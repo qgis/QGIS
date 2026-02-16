@@ -18,6 +18,9 @@
 #include "qgis.h"
 
 #include <QDomElement>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsAbstractTerrainSettings::~QgsAbstractTerrainSettings() = default;
 

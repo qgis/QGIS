@@ -10,6 +10,7 @@
 
 
 
+
 class QgsLayoutItemAbstractGuiMetadata
 {
 %Docstring(signature="appended")

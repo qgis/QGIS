@@ -22,7 +22,10 @@
 #include "qgsmeshrendereractivedatasetwidget.h"
 #include "qgstest.h"
 
+#include <QString>
 #include <QTemporaryFile>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup UnitTests

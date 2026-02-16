@@ -10,8 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "14/06/2019"
 __copyright__ = "Copyright 2019, The QGIS Project"
 
-from qgis.PyQt.QtCore import QCoreApplication, QEvent
-from qgis.PyQt.QtTest import QSignalSpy
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsMeshLayer,
@@ -19,8 +19,9 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.gui import QgsMapLayerComboBox
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QCoreApplication, QEvent
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -40,7 +41,6 @@ def create_mesh_layer(name):
 
 
 class TestQgsMapLayerComboBox(QgisTestCase):
-
     def testGettersSetters(self):
         """test combo getters/setters"""
         m = QgsMapLayerComboBox()

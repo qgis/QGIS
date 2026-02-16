@@ -65,6 +65,7 @@
 #include "qgsrasterrenderer.h"
 #include "qgsrenderer.h"
 #include "qgsscalecalculator.h"
+#include "qgsselectivemaskingsourcesetmanager.h"
 #include "qgsserverapiutils.h"
 #include "qgsserverexception.h"
 #include "qgsserverfeatureid.h"
@@ -82,10 +83,13 @@
 #include <QDir>
 #include <QImage>
 #include <QPainter>
+#include <QString>
 #include <QStringList>
 #include <QTemporaryFile>
 #include <QUrl>
 #include <QXmlStreamReader>
+
+using namespace Qt::StringLiterals;
 
 //for printing
 #include "qgslayoutatlas.h"
@@ -985,67 +989,73 @@ namespace QgsWms
     c->layoutItems<QgsLayoutItemLegend>( legends );
     for ( const auto &legend : std::as_const( legends ) )
     {
-      if ( legend->autoUpdateModel() )
+      switch ( legend->syncMode() )
       {
-        // the legend has an auto-update model
-        // we will update it with map's layers
-        const QgsLayoutItemMap *map = legend->linkedMap();
-        if ( !map )
+        case Qgis::LegendSyncMode::AllProjectLayers:
+        case Qgis::LegendSyncMode::VisibleLayers:
         {
-          continue;
-        }
-
-        legend->setAutoUpdateModel( false );
-
-        // get model and layer tree root of the legend
-        QgsLegendModel *model = legend->model();
-        QStringList layerSet;
-        QList<QgsMapLayer *> mapLayers;
-        if ( map->layers().isEmpty() )
-        {
-          // in QGIS desktop, each layer has its legend, including invisible layers
-          // and using maptheme, legend items are automatically filtered
-          mapLayers = mProject->mapLayers( true ).values();
-        }
-        else
-        {
-          mapLayers = map->layers();
-        }
-        const QList<QgsMapLayer *> layerList = mapLayers;
-        for ( const auto &layer : layerList )
-          layerSet << layer->id();
-
-        //setLayerIdsToLegendModel( model, layerSet, map->scale() );
-
-        // get model and layer tree root of the legend
-        QgsLayerTree *root = model->rootGroup();
-
-        // get layerIds find in the layer tree root
-        const QStringList layerIds = root->findLayerIds();
-
-        // find the layer in the layer tree
-        // remove it if the layer id is not in map layerIds
-        for ( const auto &layerId : layerIds )
-        {
-          QgsLayerTreeLayer *nodeLayer = root->findLayer( layerId );
-          if ( !nodeLayer )
+          // the legend has an auto-update model
+          // we will update it with map's layers
+          const QgsLayoutItemMap *map = legend->linkedMap();
+          if ( !map )
           {
             continue;
           }
-          if ( !layerSet.contains( layerId ) )
+
+          legend->setSyncMode( Qgis::LegendSyncMode::Manual );
+
+          // get model and layer tree root of the legend
+          QgsLegendModel *model = legend->model();
+          QStringList layerSet;
+          QList<QgsMapLayer *> mapLayers;
+          if ( map->layers().isEmpty() )
           {
-            qobject_cast<QgsLayerTreeGroup *>( nodeLayer->parent() )->removeChildNode( nodeLayer );
+            // in QGIS desktop, each layer has its legend, including invisible layers
+            // and using maptheme, legend items are automatically filtered
+            mapLayers = mProject->mapLayers( true ).values();
           }
           else
           {
-            QgsMapLayer *layer = nodeLayer->layer();
-            if ( !layer->isInScaleRange( map->scale() ) )
+            mapLayers = map->layers();
+          }
+          const QList<QgsMapLayer *> layerList = mapLayers;
+          for ( const auto &layer : layerList )
+            layerSet << layer->id();
+
+          // get model and layer tree root of the legend
+          QgsLayerTree *root = model->rootGroup();
+
+          // get layerIds find in the layer tree root
+          const QStringList layerIds = root->findLayerIds();
+
+          // find the layer in the layer tree
+          // remove it if the layer id is not in map layerIds
+          for ( const auto &layerId : layerIds )
+          {
+            QgsLayerTreeLayer *nodeLayer = root->findLayer( layerId );
+            if ( !nodeLayer )
+            {
+              continue;
+            }
+            if ( !layerSet.contains( layerId ) )
             {
               qobject_cast<QgsLayerTreeGroup *>( nodeLayer->parent() )->removeChildNode( nodeLayer );
             }
+            else
+            {
+              QgsMapLayer *layer = nodeLayer->layer();
+              if ( !layer->isInScaleRange( map->scale() ) )
+              {
+                qobject_cast<QgsLayerTreeGroup *>( nodeLayer->parent() )->removeChildNode( nodeLayer );
+              }
+            }
           }
+          root->removeChildrenGroupWithoutLayers();
+          break;
         }
-        root->removeChildrenGroupWithoutLayers();
+
+        case Qgis::LegendSyncMode::Manual:
+          break;
       }
     }
     return true;
@@ -1476,6 +1486,8 @@ namespace QgsWms
 
     // add labeling engine settings
     mapSettings.setLabelingEngineSettings( mProject->labelingEngineSettings() );
+
+    mapSettings.setSelectiveMaskingSourceSets( mProject->selectiveMaskingSourceSetManager()->sets() );
 
     mapSettings.setScaleMethod( mProject->scaleMethod() );
 
@@ -3716,13 +3728,6 @@ namespace QgsWms
           // OGC filter
           QDomDocument filterXml;
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 5, 0 )
-          QString errorMsg;
-          if ( !filterXml.setContent( filter.mFilter, true, &errorMsg ) )
-          {
-            throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue, u"Filter string rejected. Error message: %1. The XML string was: %2"_s.arg( errorMsg, filter.mFilter ) );
-          }
-#else
           QXmlStreamReader xmlReader( filter.mFilter );
           xmlReader.addExtraNamespaceDeclaration( QXmlStreamNamespaceDeclaration( u"fes"_s, u"http://www.opengis.net/fes/2.0"_s ) );
           xmlReader.addExtraNamespaceDeclaration( QXmlStreamNamespaceDeclaration( u"ogc"_s, u"http://www.opengis.net/ogc"_s ) );
@@ -3730,7 +3735,7 @@ namespace QgsWms
           {
             throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue, u"Filter string rejected. Error %1:%2 : %3. The XML string was: %4"_s.arg( QString::number( result.errorLine ), QString::number( result.errorColumn ), result.errorMessage, filter.mFilter ) );
           }
-#endif
+
           QDomElement filterElem = filterXml.firstChildElement();
           std::unique_ptr<QgsExpression> filterExp( QgsOgcUtils::expressionFromOgcFilter( filterElem, filter.mVersion, filteredLayer ) );
 

@@ -38,9 +38,12 @@
 #include <QPainter>
 #include <QPicture>
 #include <QRegularExpression>
+#include <QString>
 #include <QSvgRenderer>
 
 #include "moc_qgssvgcache.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

@@ -21,18 +21,15 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 import os
 
+from qgis.core import QgsApplication, QgsProcessingAlgorithm
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QMessageBox
 
-from qgis.core import QgsApplication, QgsProcessingAlgorithm
-
 from processing.gui.ContextAction import ContextAction
-
 from processing.script import ScriptUtils
 
 
 class DeleteScriptAction(ContextAction):
-
     def __init__(self):
         super().__init__()
         self.name = QCoreApplication.translate("DeleteScriptAction", "Delete Script…")

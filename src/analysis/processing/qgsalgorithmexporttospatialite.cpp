@@ -23,6 +23,10 @@
 #include "qgsproviderregistry.h"
 #include "qgsvectorlayerexporter.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsExportToSpatialiteAlgorithm::name() const

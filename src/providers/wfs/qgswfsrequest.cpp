@@ -20,7 +20,11 @@
 #include "qgslogger.h"
 #include "qgswfsconstants.h"
 
+#include <QString>
+
 #include "moc_qgswfsrequest.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsWfsRequest::QgsWfsRequest( const QgsWFSDataSourceURI &uri )
   : QgsBaseNetworkRequest( uri.auth(), tr( "WFS" ) )

@@ -47,9 +47,12 @@
 #include <QDomElement>
 #include <QFontMetricsF>
 #include <QPainter>
+#include <QString>
 #include <QTextDocument>
 
 #include "moc_qgslayoutitemscalebar.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutItemScaleBar::QgsLayoutItemScaleBar( QgsLayout *layout )
   : QgsLayoutItem( layout )

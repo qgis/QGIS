@@ -20,6 +20,10 @@
 #include "qgslogger.h"
 #include "qgsstringutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 // ----------
 
 void QgsPostgresSharedData::addFeaturesCounted( long long diff )
@@ -833,4 +837,31 @@ bool QgsPostgresUtils::moveProjectVersions( QgsPostgresConn *conn, const QString
   }
 
   return true;
+}
+
+QStringList QgsPostgresUtils::projectNamesInSchema( QgsPostgresConn *conn, const QString &schema )
+{
+  QStringList projects;
+
+  if ( !QgsPostgresUtils::projectsTableExists( conn, schema ) )
+  {
+    return projects;
+  }
+
+  const QString sql = u"SELECT name FROM %1.qgis_projects"_s
+                        .arg( QgsPostgresConn::quotedIdentifier( schema ) );
+
+  QgsPostgresResult res( conn->PQexec( sql ) );
+  if ( res.PQresultStatus() != PGRES_TUPLES_OK )
+  {
+    return projects;
+  }
+
+  const int rows = res.PQntuples();
+  for ( int i = 0; i < rows; ++i )
+  {
+    projects << res.PQgetvalue( i, 0 );
+  }
+
+  return projects;
 }

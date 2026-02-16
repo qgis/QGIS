@@ -41,7 +41,10 @@
 
 #include <QDateTime>
 #include <QImage>
+#include <QString>
 #include <QVariant>
+
+using namespace Qt::StringLiterals;
 
 class QImage;
 class QByteArray;

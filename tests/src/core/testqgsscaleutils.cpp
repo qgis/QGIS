@@ -18,6 +18,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsScaleUtils : public QObject
 {
     Q_OBJECT

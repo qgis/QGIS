@@ -18,8 +18,10 @@
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatasourceuri.h"
+#include "qgsfocuskeeper.h"
+#include "qgsgui.h"
 #include "qgsmessagelog.h"
-#include "qgsprojectlistitemdelegate.h"
+#include "qgsnative.h"
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageregistry.h"
 
@@ -30,9 +32,13 @@
 #include <QFileInfo>
 #include <QPainter>
 #include <QPixmap>
+#include <QString>
 #include <QTextDocument>
+#include <QUrl>
 
 #include "moc_qgsrecentprojectsitemsmodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRecentProjectItemsModel::QgsRecentProjectItemsModel( QObject *parent )
   : QAbstractListModel( parent )
@@ -58,11 +64,17 @@ QVariant QgsRecentProjectItemsModel::data( const QModelIndex &index, int role ) 
   switch ( role )
   {
     case Qt::DisplayRole:
-    case QgsProjectListItemDelegate::TitleRole:
+    case static_cast< int >( CustomRole::TitleRole ):
+    {
       return mRecentProjects.at( index.row() ).title != mRecentProjects.at( index.row() ).path ? mRecentProjects.at( index.row() ).title : QFileInfo( mRecentProjects.at( index.row() ).path ).completeBaseName();
-    case QgsProjectListItemDelegate::PathRole:
+    }
+
+    case static_cast< int >( CustomRole::PathRole ):
+    {
       return mRecentProjects.at( index.row() ).path;
-    case QgsProjectListItemDelegate::NativePathRole:
+    }
+
+    case static_cast< int >( CustomRole::NativePathRole ):
     {
       const QString path = mRecentProjects.at( index.row() ).path;
       QString filePath;
@@ -73,33 +85,39 @@ QVariant QgsRecentProjectItemsModel::data( const QModelIndex &index, int role ) 
       }
       return QDir::toNativeSeparators( !filePath.isEmpty() ? filePath : path );
     }
-    case QgsProjectListItemDelegate::CrsRole:
+
+    case static_cast< int >( CustomRole::ExistsRole ):
+    {
+      return static_cast<bool>( flags( index ) & Qt::ItemIsEnabled );
+    }
+
+    case static_cast< int >( CustomRole::CrsRole ):
+    {
       if ( !mRecentProjects.at( index.row() ).crs.isEmpty() )
       {
         const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mRecentProjects.at( index.row() ).crs );
         return u"%1 (%2)"_s.arg( mRecentProjects.at( index.row() ).crs, crs.userFriendlyIdentifier() );
       }
-      else
-      {
-        return QString();
-      }
-    case QgsProjectListItemDelegate::PinRole:
-      return mRecentProjects.at( index.row() ).pin;
-    case Qt::DecorationRole:
+      return QString();
+    }
+
+    case static_cast< int >( CustomRole::PinnedRole ):
     {
-      const QString filename( mRecentProjects.at( index.row() ).previewImagePath );
-      if ( filename.isEmpty() )
-        return QVariant();
+      return mRecentProjects.at( index.row() ).pinned;
+    }
 
-      const QgsProjectPreviewImage thumbnail( filename );
-      if ( thumbnail.isNull() )
-        return QVariant();
-
-      return thumbnail.pixmap();
+    case static_cast< int >( CustomRole::PreviewImagePathRole ):
+    {
+      const QString imagePath = mRecentProjects.at( index.row() ).previewImagePath;
+      if ( !imagePath.isEmpty() && QFile::exists( imagePath ) )
+      {
+        return QUrl::fromLocalFile( imagePath );
+      }
+      return QVariant();
     }
 
     case Qt::ToolTipRole:
-    case QgsProjectListItemDelegate::AnonymisedNativePathRole:
+    case static_cast< int >( CustomRole::AnonymisedNativePathRole ):
     {
       QString path = mRecentProjects.at( index.row() ).path;
       QString filePath;
@@ -115,6 +133,22 @@ QVariant QgsRecentProjectItemsModel::data( const QModelIndex &index, int role ) 
     default:
       return QVariant();
   }
+}
+
+QHash<int, QByteArray> QgsRecentProjectItemsModel::roleNames() const
+{
+  QHash<int, QByteArray> roles;
+  roles[Qt::DisplayRole] = "display";
+  roles[Qt::DecorationRole] = "decoration";
+  roles[static_cast< int >( CustomRole::TitleRole )] = "Title";
+  roles[static_cast< int >( CustomRole::PathRole )] = "ProjectPath";
+  roles[static_cast< int >( CustomRole::NativePathRole )] = "ProjectNativePath";
+  roles[static_cast< int >( CustomRole::ExistsRole )] = "Exists";
+  roles[static_cast< int >( CustomRole::CrsRole )] = "Crs";
+  roles[static_cast< int >( CustomRole::PinnedRole )] = "Pinned";
+  roles[static_cast< int >( CustomRole::AnonymisedNativePathRole )] = "AnonymisedNativePath";
+  roles[static_cast< int >( CustomRole::PreviewImagePathRole )] = "PreviewImagePath";
+  return roles;
 }
 
 Qt::ItemFlags QgsRecentProjectItemsModel::flags( const QModelIndex &index ) const
@@ -134,12 +168,18 @@ Qt::ItemFlags QgsRecentProjectItemsModel::flags( const QModelIndex &index ) cons
     {
       QString path = storage->filePath( projectData.path );
       if ( storage->type() == "geopackage"_L1 && path.isEmpty() )
+      {
         projectData.exists = false;
+      }
       else
+      {
         projectData.exists = true;
+      }
     }
     else
+    {
       projectData.exists = QFile::exists( ( projectData.path ) );
+    }
     projectData.checkedExists = true;
   }
 
@@ -149,21 +189,67 @@ Qt::ItemFlags QgsRecentProjectItemsModel::flags( const QModelIndex &index ) cons
   return flags;
 }
 
-void QgsRecentProjectItemsModel::pinProject( const QModelIndex &index )
+void QgsRecentProjectItemsModel::openProject( int row )
 {
-  mRecentProjects.at( index.row() ).pin = true;
+  if ( row < 0 || row >= mRecentProjects.size() )
+  {
+    return;
+  }
+
+  QString path = mRecentProjects.at( row ).path;
+  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( path );
+  if ( storage )
+  {
+    path = storage->filePath( path );
+  }
+
+  if ( !path.isEmpty() )
+  {
+    const QgsFocusKeeper focusKeeper;
+    QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( path );
+  }
 }
 
-void QgsRecentProjectItemsModel::unpinProject( const QModelIndex &index )
+void QgsRecentProjectItemsModel::pinProject( int row )
 {
-  mRecentProjects.at( index.row() ).pin = false;
+  if ( row < 0 || row >= mRecentProjects.size() )
+  {
+    return;
+  }
+
+  mRecentProjects.at( row ).pinned = true;
+  const QModelIndex idx = index( row, 0 );
+  emit dataChanged( idx, idx, QList<int>() << static_cast<int>( QgsRecentProjectItemsModel::CustomRole::PinnedRole ) );
+
+  emit projectPinned( row );
 }
 
-void QgsRecentProjectItemsModel::removeProject( const QModelIndex &index )
+void QgsRecentProjectItemsModel::unpinProject( int row )
 {
-  beginRemoveRows( index, index.row(), index.row() );
-  mRecentProjects.removeAt( index.row() );
+  if ( row < 0 || row >= mRecentProjects.size() )
+  {
+    return;
+  }
+
+  mRecentProjects.at( row ).pinned = false;
+  const QModelIndex idx = index( row, 0 );
+  emit dataChanged( idx, idx, QList<int>() << static_cast<int>( QgsRecentProjectItemsModel::CustomRole::PinnedRole ) );
+
+  emit projectUnpinned( row );
+}
+
+void QgsRecentProjectItemsModel::removeProject( int row )
+{
+  if ( row < 0 || row >= mRecentProjects.size() )
+  {
+    return;
+  }
+
+  beginRemoveRows( QModelIndex(), row, row );
+  mRecentProjects.removeAt( row );
   endRemoveRows();
+
+  emit projectRemoved( row );
 }
 
 void QgsRecentProjectItemsModel::clear( bool clearPinned )
@@ -179,29 +265,44 @@ void QgsRecentProjectItemsModel::clear( bool clearPinned )
       std::remove_if(
         mRecentProjects.begin(),
         mRecentProjects.end(),
-        []( const QgsRecentProjectItemsModel::RecentProjectData &recentProject ) { return !recentProject.pin; }
+        []( const QgsRecentProjectItemsModel::RecentProjectData &recentProject ) { return !recentProject.pinned; }
       ),
       mRecentProjects.end()
     );
   }
   endResetModel();
+
+  emit projectsCleared( clearPinned );
 }
 
-void QgsRecentProjectItemsModel::recheckProject( const QModelIndex &index )
+void QgsRecentProjectItemsModel::recheckProject( int row )
 {
-  QString path;
-  const RecentProjectData &projectData = mRecentProjects.at( index.row() );
+  const RecentProjectData &projectData = mRecentProjects.at( row );
+  const bool previousExists = projectData.exists;
 
   QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( projectData.path );
   if ( storage )
   {
-    path = storage->filePath( projectData.path );
+    QString path = storage->filePath( projectData.path );
     if ( storage->type() == "geopackage"_L1 && path.isEmpty() )
+    {
       projectData.exists = false;
+    }
     else
+    {
       projectData.exists = true;
+    }
   }
   else
+  {
     projectData.exists = QFile::exists( ( projectData.path ) );
+  }
+
   projectData.checkedExists = true;
+
+  if ( projectData.exists != previousExists )
+  {
+    const QModelIndex idx = index( row, 0 );
+    emit dataChanged( idx, idx, QList<int>() << static_cast<int>( QgsRecentProjectItemsModel::CustomRole::ExistsRole ) );
+  }
 }

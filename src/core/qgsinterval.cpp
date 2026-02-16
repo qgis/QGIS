@@ -25,6 +25,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in test_qgsinterval.py.
@@ -305,16 +307,6 @@ QDebug operator<<( QDebug dbg, const QgsInterval &interval )
     dbg.nospace() << "QgsInterval(" << interval.seconds() << ")";
   return dbg.maybeSpace();
 }
-
-#if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
-
-QgsInterval operator-( const QDateTime &dt1, const QDateTime &dt2 )
-{
-  const qint64 mSeconds = dt2.msecsTo( dt1 );
-  return QgsInterval( mSeconds / 1000.0 );
-}
-
-#endif
 
 QDateTime operator+( const QDateTime &start, const QgsInterval &interval )
 {

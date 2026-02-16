@@ -27,6 +27,9 @@
 #include "qgssldexportcontext.h"
 
 #include <QColor>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_OPENCL
 #ifdef QGISDEBUG

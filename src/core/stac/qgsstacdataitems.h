@@ -22,7 +22,10 @@
 #include "qgsstaccatalog.h"
 #include "qgsstacitem.h"
 
+#include <QString>
 #include <QUrl>
+
+using namespace Qt::StringLiterals;
 
 class QgsStacController;
 class QgsStacCollection;

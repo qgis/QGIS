@@ -26,6 +26,10 @@
 #include "qgsmessagelog.h"
 #include "qgsogrutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
 #endif

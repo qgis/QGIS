@@ -35,6 +35,7 @@ import re
 import subprocess
 import sys
 import tempfile
+import unittest
 from shutil import copytree, rmtree
 
 from qgis.core import (
@@ -46,9 +47,7 @@ from qgis.core import (
     QgsRectangle,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath, waitServer
 
 # 0 = auto
@@ -58,7 +57,6 @@ qgis_app = start_app()
 
 
 class TestWFST(QgisTestCase):
-
     VERSION = "1.0.0"
 
     @classmethod
@@ -200,7 +198,7 @@ class TestWFST(QgisTestCase):
         for f in ogr_features:
             geom = next(
                 wfs_layer.dataProvider().getFeatures(
-                    QgsFeatureRequest(QgsExpression(f"\"id\" = {f.attribute('id')}"))
+                    QgsFeatureRequest(QgsExpression(f'"id" = {f.attribute("id")}'))
                 )
             ).geometry()
             self.assertEqual(geom.boundingBox(), f.geometry().boundingBox())

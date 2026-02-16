@@ -38,10 +38,13 @@
 #include <QMessageBox>
 #include <QSqlDatabase>
 #include <QSqlError>
+#include <QString>
 #include <QStringList>
 #include <QTextStream>
 
 #include "moc_qgsmssqlsourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 //! Used to create an editor for when the user tries to change the contents of a cell
 QWidget *QgsMssqlSourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const

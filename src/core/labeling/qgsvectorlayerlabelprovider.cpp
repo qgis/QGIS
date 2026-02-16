@@ -40,8 +40,11 @@
 #include "qgsvectorlayerfeatureiterator.h"
 
 #include <QPicture>
+#include <QString>
 #include <QTextDocument>
 #include <QTextFragment>
+
+using namespace Qt::StringLiterals;
 
 using namespace pal;
 
@@ -339,7 +342,7 @@ void QgsVectorLayerLabelProvider::drawCallout( QgsRenderContext &context, pal::L
     QgsGeometry g( QgsGeos::fromGeos( label->getFeaturePart()->feature()->geometry() ) );
     g.transform( xform.transform() );
     QgsCallout::QgsCalloutContext calloutContext;
-    calloutContext.allFeaturePartsLabeled = label->getFeaturePart()->feature()->labelAllParts();
+    calloutContext.allFeaturePartsLabeled = label->getFeaturePart()->feature()->multiPartBehavior() != Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly;
     calloutContext.originalFeatureCrs = label->getFeaturePart()->feature()->originalFeatureCrs();
     mSettings.callout()->render( context, rect, label->getAlpha() * 180 / M_PI, g, calloutContext );
 

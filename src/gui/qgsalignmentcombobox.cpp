@@ -18,7 +18,11 @@
 #include "qgsapplication.h"
 #include "qgsguiutils.h"
 
+#include <QString>
+
 #include "moc_qgsalignmentcombobox.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAlignmentComboBox::QgsAlignmentComboBox( QWidget *parent )
   : QComboBox( parent )

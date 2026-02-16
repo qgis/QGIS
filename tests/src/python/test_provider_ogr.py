@@ -11,22 +11,20 @@ __date__ = "2016-04-11"
 __copyright__ = "Copyright 2016, Even Rouault"
 
 import hashlib
+import http.server
+import math
 import os
 import shutil
+import socketserver
 import sys
 import tempfile
-import math
-from datetime import datetime
-import http.server
-import os
-import socketserver
 import threading
 import time
-import shutil
+import unittest
+from datetime import datetime
 
+import mockedwebserver
 from osgeo import gdal, ogr  # NOQA
-from qgis.PyQt.QtCore import QByteArray, QTemporaryDir, QVariant
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     NULL,
     Qgis,
@@ -66,11 +64,10 @@ from qgis.core import (
     QgsWkbTypes,
 )
 from qgis.gui import QgsGui
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QByteArray, QTemporaryDir, QVariant
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from qgis.utils import spatialite_connect
-
-import mockedwebserver
 from utilities import unitTestDataPath
 
 start_app()
@@ -100,7 +97,6 @@ def count_opened_filedescriptors(filename_to_test):
 
 
 class PyQgsOGRProvider(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

@@ -27,6 +27,10 @@
 #include "qgstextrenderer.h"
 #include "qgsvectorlayerplotdatagatherer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsPieChartPlot::QgsPieChartPlot()
 {
   setFillSymbolAt( 0, QgsPlotDefaultSettings::pieChartFillSymbol() );

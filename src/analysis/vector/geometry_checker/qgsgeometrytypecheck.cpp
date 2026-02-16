@@ -22,6 +22,10 @@
 #include "qgsmultipoint.h"
 #include "qgsmultipolygon.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QList<QgsSingleGeometryCheckError *> QgsGeometryTypeCheck::processGeometry( const QgsGeometry &geometry ) const
 {
   QList<QgsSingleGeometryCheckError *> errors;

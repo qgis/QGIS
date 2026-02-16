@@ -33,8 +33,11 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgspoint.cpp"
+
+using namespace Qt::StringLiterals;
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -97,6 +100,24 @@ QgsPoint::QgsPoint( Qgis::WkbType wkbType, double x, double y, double z, double 
 {
   Q_ASSERT( QgsWkbTypes::flatType( wkbType ) == Qgis::WkbType::Point );
   mWkbType = wkbType;
+}
+
+QgsPoint::QgsPoint( const QVector3D &vect, double m )
+  : mX( vect.x() ), mY( vect.y() ), mZ( vect.z() ), mM( m )
+{
+  mWkbType = QgsWkbTypes::zmType( Qgis::WkbType::Point, !std::isnan( mZ ), !std::isnan( mM ) );
+}
+
+QgsPoint::QgsPoint( const QVector4D &vect )
+  : mX( vect.x() ), mY( vect.y() ), mZ( vect.z() ), mM( vect.w() )
+{
+  mWkbType = QgsWkbTypes::zmType( Qgis::WkbType::Point, !std::isnan( mZ ), !std::isnan( mM ) );
+}
+
+QgsPoint::QgsPoint( const QgsVector3D &vect, double m )
+  : mX( vect.x() ), mY( vect.y() ), mZ( vect.z() ), mM( m )
+{
+  mWkbType = QgsWkbTypes::zmType( Qgis::WkbType::Point, !std::isnan( mZ ), !std::isnan( mM ) );
 }
 
 /***************************************************************************

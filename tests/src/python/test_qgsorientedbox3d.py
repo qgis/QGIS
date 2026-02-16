@@ -13,19 +13,19 @@ __date__ = "10/07/2023"
 __copyright__ = "Copyright 2023, The QGIS Project"
 
 import math
-from qgis.PyQt.QtGui import QQuaternion, QVector3D
+import unittest
+
 from qgis.core import (
+    QgsBox3D,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
     QgsCoordinateTransformContext,
     QgsMatrix4x4,
     QgsOrientedBox3D,
     QgsVector3D,
-    QgsBox3D,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtGui import QQuaternion, QVector3D
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -33,7 +33,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsOrientedBox3D(QgisTestCase):
-
     def test_oriented_bounding_box(self):
         box = QgsOrientedBox3D()
         self.assertTrue(box.isNull())

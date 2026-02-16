@@ -27,8 +27,11 @@
 #include <QGraphicsLineItem>
 #include <QMenu>
 #include <QPainter>
+#include <QString>
 
 #include "moc_qgslayoutruler.cpp"
+
+using namespace Qt::StringLiterals;
 
 const int RULER_FONT_SIZE = 8;
 const unsigned int COUNT_VALID_MULTIPLES = 3;

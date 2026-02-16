@@ -11,16 +11,16 @@ __date__ = "20/05/2015"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
 
+import unittest
+
 from qgis.core import NULL, QgsFeature, QgsGeometry, QgsPointXY, QgsVectorLayer
 from qgis.gui import QgsGui
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsRangeWidget(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

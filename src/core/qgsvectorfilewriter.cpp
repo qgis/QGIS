@@ -54,8 +54,11 @@
 #include <QMutex>
 #include <QRegularExpression>
 #include <QSet>
+#include <QString>
 #include <QTextCodec>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 QgsField QgsVectorFileWriter::FieldValueConverter::fieldDefinition( const QgsField &field )
 {
@@ -350,8 +353,6 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     options[ datasourceOptions.size()] = nullptr;
   }
 
-  mAttrIdxToOgrIdx.remove( 0 );
-
   // create the data source
   if ( action == CreateOrOverwriteFile )
     mDS.reset( OGR_Dr_CreateDataSource( poDriver, vectorFileName.toUtf8().constData(), options ) );
@@ -443,7 +444,14 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   mOgrRef = QgsOgrUtils::crsToOGRSpatialReference( srs );
 
   // datasource created, now create the output layer
-  OGRwkbGeometryType wkbType = ogrTypeFromWkbType( geometryType );
+  const OGRwkbGeometryType wkbType = ogrTypeFromWkbType( geometryType );
+  if ( wkbType == wkbUnknown && geometryType != Qgis::WkbType::Unknown )
+  {
+    mError = ErrCreateLayer;
+    mErrorMessage = QObject::tr( "QGIS geometry type %1 is not supported by GDAL" )
+                    .arg( QgsWkbTypes::translatedDisplayString( geometryType ) );
+    return;
+  }
 
   // Remove FEATURE_DATASET layer option (used for ESRI File GDB driver) if its value is not set
   int optIndex = layerOptions.indexOf( "FEATURE_DATASET="_L1 );
@@ -564,7 +572,8 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   QgsDebugMsgLevel( "creating " + QString::number( fields.size() ) + " fields", 2 );
 
   mFields = fields;
-  mAttrIdxToOgrIdx.clear();
+  mAttrIdxToProviderIdx.clear();
+  mAttrIdxToOgrLayerIdx.clear();
   QSet<int> existingIdxs;
 
   mFieldValueConverter = fieldValueConverter;
@@ -628,7 +637,8 @@ void QgsVectorFileWriter::init( QString vectorFileName,
           int ogrIdx = OGR_FD_GetFieldIndex( defn, mCodec->fromUnicode( attrField.name() ) );
           if ( ogrIdx >= 0 )
           {
-            mAttrIdxToOgrIdx.insert( fldIdx, ogrIdx );
+            mAttrIdxToProviderIdx.insert( fldIdx, ogrIdx );
+            mAttrIdxToOgrLayerIdx.insert( fldIdx, ogrIdx );
             continue;
           }
         }
@@ -1008,6 +1018,9 @@ void QgsVectorFileWriter::init( QString vectorFileName,
           }
         }
 
+        existingIdxs.insert( ogrIdx );
+        mAttrIdxToOgrLayerIdx.insert( fldIdx, ogrIdx );
+
         if ( promoteFidColumnToAttribute )
         {
           if ( ogrFidColumnName.compare( attrField.name(), Qt::CaseInsensitive ) == 0 )
@@ -1022,8 +1035,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
           }
         }
 
-        existingIdxs.insert( ogrIdx );
-        mAttrIdxToOgrIdx.insert( fldIdx, ogrIdx );
+        mAttrIdxToProviderIdx.insert( fldIdx, ogrIdx );
       }
     }
     break;
@@ -1036,7 +1048,10 @@ void QgsVectorFileWriter::init( QString vectorFileName,
         QString name( attrField.name() );
         int ogrIdx = OGR_FD_GetFieldIndex( defn, mCodec->fromUnicode( name ) );
         if ( ogrIdx >= 0 )
-          mAttrIdxToOgrIdx.insert( fldIdx, ogrIdx );
+        {
+          mAttrIdxToProviderIdx.insert( fldIdx, ogrIdx );
+          mAttrIdxToOgrLayerIdx.insert( fldIdx, ogrIdx );
+        }
       }
     }
     break;
@@ -1049,7 +1064,10 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     int fidIdx = fields.lookupField( u"FID"_s );
 
     if ( fidIdx >= 0 )
-      mAttrIdxToOgrIdx.remove( fidIdx );
+    {
+      mAttrIdxToProviderIdx.remove( fidIdx );
+      mAttrIdxToOgrLayerIdx.remove( fidIdx );
+    }
   }
 
   QgsDebugMsgLevel( u"Done creating fields"_s, 2 );
@@ -2688,14 +2706,7 @@ QStringList QgsVectorFileWriter::defaultLayerOptions( const QString &driverName 
 
 OGRwkbGeometryType QgsVectorFileWriter::ogrTypeFromWkbType( Qgis::WkbType type )
 {
-
-  OGRwkbGeometryType ogrType = static_cast<OGRwkbGeometryType>( type );
-
-  if ( type >= Qgis::WkbType::PointZ && type <= Qgis::WkbType::GeometryCollectionZ )
-  {
-    ogrType = static_cast<OGRwkbGeometryType>( QgsWkbTypes::to25D( type ) );
-  }
-  return ogrType;
+  return QgsOgrUtils::qgsWkbTypeToOgrGeometryType( type, /* approx = */ true );
 }
 
 QgsVectorFileWriter::WriterError QgsVectorFileWriter::hasError() const
@@ -2834,7 +2845,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
   gdal::ogr_feature_unique_ptr poFeature( OGR_F_Create( OGR_L_GetLayerDefn( mLayer ) ) );
 
   // attribute handling
-  for ( QMap<int, int>::const_iterator it = mAttrIdxToOgrIdx.constBegin(); it != mAttrIdxToOgrIdx.constEnd(); ++it )
+  for ( QMap<int, int>::const_iterator it = mAttrIdxToOgrLayerIdx.constBegin(); it != mAttrIdxToOgrLayerIdx.constEnd(); ++it )
   {
     int fldIdx = it.key();
     int ogrField = it.value();
@@ -3189,10 +3200,35 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
         geom.convertToMultiType();
       }
 
+      // Turn NURBS to LineString
+      if ( QgsWkbTypes::flatType( geom.wkbType() ) ==  Qgis::WkbType::NurbsCurve )
+      {
+        Qgis::WkbType coercedType = Qgis::WkbType::LineString;
+        switch ( geom.wkbType() )
+        {
+          case Qgis::WkbType::NurbsCurve: break;
+          case Qgis::WkbType::NurbsCurveZ:
+            coercedType = Qgis::WkbType::LineStringZ;
+            break;
+          case Qgis::WkbType::NurbsCurveM:
+            coercedType = Qgis::WkbType::LineStringM;
+            break;
+          case Qgis::WkbType::NurbsCurveZM:
+            coercedType = Qgis::WkbType::LineStringZM;
+            break;
+          default:
+            Q_ASSERT( false );
+            break;
+        }
+        QVector<QgsGeometry> geoms = geom.coerceToType( coercedType );
+        if ( geoms.size() == 1 )
+          geom = geoms[0];
+      }
+
+      OGRGeometryH ogrGeom = nullptr;
+      QgsAbstractGeometry::WkbFlags wkbFlags;
       if ( geom.wkbType() != mWkbType )
       {
-        OGRGeometryH mGeom2 = nullptr;
-
         // If requested WKB type is 25D and geometry WKB type is 3D,
         // we must force the use of 25D.
         if ( mWkbType >= Qgis::WkbType::Point25D && mWkbType <= Qgis::WkbType::MultiPolygon25D )
@@ -3205,7 +3241,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
           if ( wkbType >= Qgis::WkbType::PointZ && wkbType <= Qgis::WkbType::MultiPolygonZ )
           {
             Qgis::WkbType wkbType25d = static_cast<Qgis::WkbType>( static_cast< quint32>( geom.wkbType() ) - static_cast< quint32>( Qgis::WkbType::PointZ ) + static_cast<quint32>( Qgis::WkbType::Point25D ) );
-            mGeom2 = createEmptyGeometry( wkbType25d );
+            ogrGeom = createEmptyGeometry( wkbType25d );
           }
         }
 
@@ -3232,7 +3268,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
             geom.get()->addMValue( 0 );
         }
 
-        if ( !mGeom2 )
+        if ( !ogrGeom )
         {
           // there's a problem when layer type is set as wkbtype Polygon
           // although there are also features of type MultiPolygon
@@ -3242,10 +3278,10 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
           //
           // Btw. OGRGeometry must be exactly of the type of the geometry which it will receive
           // i.e. Polygons can't be imported to OGRMultiPolygon
-          mGeom2 = createEmptyGeometry( geom.wkbType() );
+          ogrGeom = createEmptyGeometry( geom.wkbType() );
         }
 
-        if ( !mGeom2 )
+        if ( !ogrGeom )
         {
           mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
                           .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
@@ -3253,46 +3289,50 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
           QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
           return nullptr;
         }
-
-        QgsAbstractGeometry::WkbFlags wkbFlags;
-        if ( mOgrDriverName == "ESRI Shapefile"_L1 )
-          wkbFlags |= QgsAbstractGeometry::FlagExportNanAsDoubleMin;
-
-        QByteArray wkb( geom.asWkb( wkbFlags ) );
-        OGRErr err = OGR_G_ImportFromWkb( mGeom2, reinterpret_cast<unsigned char *>( const_cast<char *>( wkb.constData() ) ), wkb.length() );
-        if ( err != OGRERR_NONE )
-        {
-          mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
-                          .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
-          mError = ErrFeatureWriteFailed;
-          QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
-          return nullptr;
-        }
-
-        // pass ownership to geometry
-        OGR_F_SetGeometryDirectly( poFeature.get(), mGeom2 );
       }
       else // wkb type matches
       {
-        QgsAbstractGeometry::WkbFlags wkbFlags = QgsAbstractGeometry::FlagExportTrianglesAsPolygons;
-        if ( mOgrDriverName == "ESRI Shapefile"_L1 )
-          wkbFlags |= QgsAbstractGeometry::FlagExportNanAsDoubleMin;
+        wkbFlags = QgsAbstractGeometry::FlagExportTrianglesAsPolygons;
 
-        QByteArray wkb( geom.asWkb( wkbFlags ) );
-        OGRGeometryH ogrGeom = createEmptyGeometry( mWkbType );
-        OGRErr err = OGR_G_ImportFromWkb( ogrGeom, reinterpret_cast<unsigned char *>( const_cast<char *>( wkb.constData() ) ), wkb.length() );
-        if ( err != OGRERR_NONE )
+        ogrGeom = createEmptyGeometry( mWkbType );
+        if ( !ogrGeom )
         {
-          mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
-                          .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+          mErrorMessage = QObject::tr( "Feature geometry type %1 not supported by GDAL" )
+                          .arg( QgsWkbTypes::translatedDisplayString( mWkbType ) );
           mError = ErrFeatureWriteFailed;
           QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
           return nullptr;
         }
-
-        // set geometry (ownership is passed to OGR)
-        OGR_F_SetGeometryDirectly( poFeature.get(), ogrGeom );
       }
+
+      if ( mOgrDriverName == "ESRI Shapefile"_L1 )
+        wkbFlags |= QgsAbstractGeometry::FlagExportNanAsDoubleMin;
+
+      QByteArray wkb( geom.asWkb( wkbFlags ) );
+      if ( wkb.length() > std::numeric_limits<int>::max() )
+      {
+        mErrorMessage = QObject::tr( "Feature geometry not imported (too large geometry)" );
+        mError = ErrFeatureWriteFailed;
+        QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
+        OGR_G_DestroyGeometry( ogrGeom );
+        return nullptr;
+      }
+      OGRErr err = OGR_G_ImportFromWkb(
+                     ogrGeom,
+                     reinterpret_cast<unsigned char *>( const_cast<char *>( wkb.constData() ) ),
+                     static_cast<int>( wkb.length() ) );
+      if ( err != OGRERR_NONE )
+      {
+        mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
+                        .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+        mError = ErrFeatureWriteFailed;
+        QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
+        OGR_G_DestroyGeometry( ogrGeom );
+        return nullptr;
+      }
+
+      // pass ownership to geometry
+      OGR_F_SetGeometryDirectly( poFeature.get(), ogrGeom );
     }
     else
     {
@@ -3304,12 +3344,12 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
 
 void QgsVectorFileWriter::resetMap( const QgsAttributeList &attributes )
 {
-  QMap<int, int> omap( mAttrIdxToOgrIdx );
-  mAttrIdxToOgrIdx.clear();
+  QMap<int, int> omap( mAttrIdxToOgrLayerIdx );
+  mAttrIdxToOgrLayerIdx.clear();
   for ( int i = 0; i < attributes.size(); i++ )
   {
     if ( omap.find( i ) != omap.end() )
-      mAttrIdxToOgrIdx.insert( attributes[i], omap[i] );
+      mAttrIdxToOgrLayerIdx.insert( attributes[i], omap[i] );
   }
 }
 

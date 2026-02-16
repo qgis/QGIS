@@ -19,6 +19,10 @@
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingparametertype.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief A parameter for "field mapping" configurations, which consist of a definition

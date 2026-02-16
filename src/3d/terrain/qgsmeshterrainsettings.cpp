@@ -19,6 +19,10 @@
 #include "qgsmeshlayer.h"
 #include "qgsmeshterraingenerator.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAbstractTerrainSettings *QgsMeshTerrainSettings::create()
 {
   return new QgsMeshTerrainSettings();

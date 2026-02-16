@@ -28,7 +28,11 @@
 #include "qgslayouttablecolumn.h"
 #include "qgsprintlayout.h"
 
+#include <QString>
+
 #include "moc_qgslayoutmanualtablewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QPointer<QgsTableEditorDialog> QgsLayoutManualTableWidget::sEditorDialog = nullptr;
 

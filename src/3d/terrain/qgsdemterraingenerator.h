@@ -17,12 +17,11 @@
 #define QGSDEMTERRAINGENERATOR_H
 
 #include "qgis_3d.h"
+#include "qgscoordinatetransformcontext.h"
+#include "qgsrasterlayer.h"
 #include "qgsterraingenerator.h"
 
-class QgsRasterLayer;
 class QgsDemHeightMapGenerator;
-
-#include "qgsmaplayerref.h"
 
 #define SIP_NO_FILE
 
@@ -78,6 +77,8 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     float heightAt( double x, double y, const Qgs3DRenderContext &context ) const override;
 
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
+
+    QgsTerrainGenerator::Capabilities capabilities() const override;
 
   private:
     void updateGenerator();

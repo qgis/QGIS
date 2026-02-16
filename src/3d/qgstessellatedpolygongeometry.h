@@ -76,7 +76,13 @@ class QgsTessellatedPolygonGeometry : public Qt3DCore::QGeometry
      * This is an alternative to setPolygons() - this method does not do any expensive work in the body.
      * \since QGIS 3.12
      */
-    void setData( const QByteArray &vertexBufferData, int vertexCount, const QVector<QgsFeatureId> &triangleIndexFids, const QVector<uint> &triangleIndexStartingIndices );
+    void setVertexBufferData( const QByteArray &vertexBufferData, int vertexCount, const QVector<QgsFeatureId> &triangleIndexFids, const QVector<uint> &triangleIndexStartingIndices );
+
+    /**
+     * Sets index buffer data
+     * \since QGIS 4.0
+     */
+    void setIndexBufferData( const QByteArray &indexBufferData, size_t indexCount );
 
     /**
      * Returns ID of the feature to which given triangle index belongs (used for picking).
@@ -97,6 +103,8 @@ class QgsTessellatedPolygonGeometry : public Qt3DCore::QGeometry
     Qt3DCore::QAttribute *mNormalAttribute = nullptr;
     Qt3DCore::QAttribute *mTextureCoordsAttribute = nullptr;
     Qt3DCore::QBuffer *mVertexBuffer = nullptr;
+    Qt3DCore::QBuffer *mIndexBuffer = nullptr;
+    Qt3DCore::QAttribute *mIndexAttribute = nullptr;
 
     QVector<QgsFeatureId> mTriangleIndexFids;
     QVector<uint> mTriangleIndexStartingIndices;

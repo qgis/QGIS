@@ -18,6 +18,9 @@
 #include "qgswfsgetcapabilities.h"
 
 #include <QMessageBox>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 void QgsWfsGuiUtils::displayErrorMessageOnFailedCapabilities( QgsWfsGetCapabilitiesRequest *request, QWidget *parent )
 {

@@ -30,7 +30,11 @@
 #include "qgsvectorlayer3drenderer.h"
 
 #include <QSize>
+#include <QString>
+#include <Qt3DRender/QShaderProgram>
 #include <QtMath>
+
+using namespace Qt::StringLiterals;
 
 static bool qgsVectorNear( const QVector3D &v1, const QVector3D &v2, double eps )
 {

@@ -22,7 +22,11 @@
 #include "qgslayertreeview.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgslayertreeviewmemoryindicator.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerTreeViewMemoryIndicatorProvider::QgsLayerTreeViewMemoryIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )

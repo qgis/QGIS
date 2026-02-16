@@ -24,9 +24,12 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPushButton>
+#include <QString>
 #include <QWidget>
 
 #include "moc_qgsratiolockbutton.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRatioLockButton::QgsRatioLockButton( QWidget *parent )
   : QToolButton( parent )

@@ -11,6 +11,8 @@
 
 
 
+
+
 class QgsVectorFileWriter : QgsFeatureSink
 {
 %Docstring(signature="appended")
@@ -775,6 +777,7 @@ not exist yet in the layer
 %End
 
   protected:
+
 
 
 

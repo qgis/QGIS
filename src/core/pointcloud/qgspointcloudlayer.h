@@ -30,6 +30,8 @@ class QgsPointCloudLayerRenderer;
 
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class QgsPointCloudRenderer;
 class QgsPointCloudLayerElevationProperties;
 class QgsAbstractPointCloud3DRenderer;
@@ -325,7 +327,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
     /**
      * Attempts to modify attribute values for specific points in the editing buffer.
      *
-     * \param nodesAndPoints A list of nodes to modify and points to modify within those nodes
+     * \param mappedPoints A map of index position (0 - n for subIndex position of a virtual point cloud, -1 for regular point clouds) to nodes to modify and points to modify within those nodes
      * \param attribute The attribute whose value will be updated
      * \param value The new value to set to the attribute
      * \return TRUE if the editing buffer was updated successfully, FALSE otherwise
@@ -333,9 +335,9 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      * by a call to startEditing(). Changes made to features using this method are not committed
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
      * changes can be discarded by calling rollBack().
-     * \since QGIS 3.44
+     * \since QGIS 4.0
      */
-    bool changeAttributeValue( const QHash<QgsPointCloudNodeId, QVector<int>> &nodesAndPoints, const QgsPointCloudAttribute &attribute, double value ) SIP_SKIP;
+    bool changeAttributeValue( const QHash<int, QHash<QgsPointCloudNodeId, QVector<int>>> &mappedPoints, const QgsPointCloudAttribute &attribute, double value ) SIP_SKIP;
 
     /**
      * Returns the point cloud index associated with the layer.
@@ -346,6 +348,28 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      */
     QgsPointCloudIndex index() const;
 
+    /**
+     * Returns point cloud indexes associated with the layer (only if the layer has a virtual point cloud data provider).
+     * If the layer is editable, QgsPointCloudEditingIndexes are returned,
+     * otherwise the indexes are fetched from the data provider.
+     *
+     * \since QGIS 4.0
+     */
+    QVector<QgsPointCloudSubIndex> subIndexes() const;
+
+    /**
+     * Returns whether the layer has a virtual point cloud data provider or not.
+     *
+     * \since QGIS 4.0
+     */
+    bool isVpc() const { return mIsVpc; }
+
+    /**
+     * Returns the overview point cloud index associated with the layer (only if the layer has a virtual point cloud data provider).
+     *
+     * \since QGIS 4.0
+     */
+    QgsPointCloudIndex overview() const;
 
   signals:
 
@@ -375,7 +399,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      *
      * \since QGIS 3.42
      */
-    void chunkAttributeValuesChanged( const QgsPointCloudNodeId &n );
+    void chunkAttributeValuesChanged( const QgsPointCloudNodeId &n, const int position );
 
   private slots:
     void onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state );
@@ -409,6 +433,9 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
     long mStatsCalculationTask = 0;
 
     QgsPointCloudIndex mEditIndex;
+    mutable QMap< int, QgsPointCloudIndex > mEditingIndexes;
+    bool mIsVpc = false;
+    bool mEditable = false;
     QString mCommitError;
 
     friend class TestQgsVirtualPointCloudProvider;

@@ -19,31 +19,32 @@ __author__ = "Michael Minn"
 __date__ = "May 2010"
 __copyright__ = "(C) 2010, Michael Minn"
 
-from qgis.PyQt.QtCore import QMetaType
+from math import sqrt
+
 from qgis.core import (
     Qgis,
-    QgsField,
-    QgsFields,
-    QgsProcessingUtils,
-    QgsGeometry,
     QgsDistanceArea,
     QgsFeature,
-    QgsFeatureSink,
     QgsFeatureRequest,
-    QgsWkbTypes,
-    QgsUnitTypes,
+    QgsFeatureSink,
+    QgsField,
+    QgsFields,
+    QgsGeometry,
     QgsProcessing,
-    QgsProcessingParameterFeatureSource,
-    QgsProcessingParameterField,
+    QgsProcessingAlgorithm,
+    QgsProcessingException,
     QgsProcessingParameterEnum,
     QgsProcessingParameterFeatureSink,
-    QgsProcessingException,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterField,
+    QgsProcessingUtils,
     QgsSpatialIndex,
-    QgsProcessingAlgorithm,
+    QgsUnitTypes,
+    QgsWkbTypes,
 )
-from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from qgis.PyQt.QtCore import QMetaType
 
-from math import sqrt
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class HubDistanceLines(QgisAlgorithm):

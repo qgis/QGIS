@@ -24,6 +24,7 @@
 #include "qgstriangularmesh.h"
 
 #include <QByteArray>
+#include <QString>
 #include <QUrl>
 #include <QVector2D>
 #include <QVector3D>
@@ -35,6 +36,8 @@
 #include <Qt3DRender/QTexture>
 
 #include "moc_qgsmesh3dmaterial_p.cpp"
+
+using namespace Qt::StringLiterals;
 
 class ArrowsTextureGenerator : public Qt3DRender::QTextureImageDataGenerator
 {

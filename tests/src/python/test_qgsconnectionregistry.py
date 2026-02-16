@@ -13,8 +13,8 @@ __copyright__ = "Copyright 2020, The QGIS Project"
 import os
 import shutil
 import tempfile
+import unittest
 
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
     QgsApplication,
     QgsProviderConnectionException,
@@ -22,9 +22,8 @@ from qgis.core import (
     QgsSettings,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -34,7 +33,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsConnectionRegistry(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

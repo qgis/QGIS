@@ -6,14 +6,13 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
+import unittest
+
+from qgis.core import Qgis, QgsFillSymbol, QgsMapUnitScale, QgsSymbolBufferSettings
+from qgis.gui import QgsSymbolBufferSettingsWidget
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor
-
-from qgis.core import Qgis, QgsMapUnitScale, QgsSymbolBufferSettings, QgsFillSymbol
-from qgis.gui import QgsSymbolBufferSettingsWidget
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -21,7 +20,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsSymbolBufferSettingsWidget(QgisTestCase):
-
     def testWidget(self):
         widget = QgsSymbolBufferSettingsWidget(None)
 

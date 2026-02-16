@@ -41,15 +41,17 @@
 #include <QMenu>
 #include <QMouseEvent>
 #include <QRegularExpression>
+#include <QString>
 #include <QStyle>
 #include <QTimer>
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QVector>
-#include <QtConcurrentMap>
 #include <QtConcurrentRun>
 
 #include "moc_qgsdataitem.cpp"
+
+using namespace Qt::StringLiterals;
 
 // use GDAL VSI mechanism
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
@@ -190,6 +192,11 @@ QVector<QgsDataItem *> QgsDataItem::createChildren()
   return QVector<QgsDataItem *>();
 }
 
+int QgsDataItem::creatorAncestorDepth() const
+{
+  return mCreatorAncestorDepth;
+}
+
 void QgsDataItem::populate( bool foreground )
 {
   if ( state() == Qgis::BrowserItemState::Populated || state() == Qgis::BrowserItemState::Populating )
@@ -268,10 +275,22 @@ void QgsDataItem::populate( const QVector<QgsDataItem *> &children )
 {
   QgsDebugMsgLevel( "mPath = " + mPath, 3 );
 
+  std::function< void( QgsDataItem *, int ) > setChildAncestorDepthRecursive;
+  setChildAncestorDepthRecursive = [&setChildAncestorDepthRecursive]( QgsDataItem * child, int depth )
+  {
+    child->mCreatorAncestorDepth = depth;
+    const QVector< QgsDataItem * > children = child->children();
+    for ( QgsDataItem *nextChild : children )
+    {
+      setChildAncestorDepthRecursive( nextChild, depth + 1 );
+    }
+  };
+
   for ( QgsDataItem *child : children )
   {
     if ( !child ) // should not happen
       continue;
+    setChildAncestorDepthRecursive( child, 1 );
     // update after thread finished -> refresh
     addChildItem( child, true );
   }
@@ -497,6 +516,20 @@ int QgsDataItem::findItem( QVector<QgsDataItem *> items, QgsDataItem *item )
       return i;
   }
   return -1;
+}
+
+QgsDataItem *QgsDataItem::ancestorAtDepth( int depth ) const
+{
+  if ( depth < 0 )
+    return nullptr;
+
+  QgsDataItem *result = const_cast< QgsDataItem * >( this );
+  while ( result && depth > 0 )
+  {
+    depth--;
+    result = result->parent();
+  }
+  return result;
 }
 
 bool QgsDataItem::equal( const QgsDataItem *other )

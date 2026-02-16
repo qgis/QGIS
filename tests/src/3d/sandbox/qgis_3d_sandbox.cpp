@@ -23,6 +23,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgsapplication.h"
+#include "qgscameracontroller.h"
 #include "qgsflatterrainsettings.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
@@ -41,7 +42,10 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QScreen>
+#include <QString>
 #include <QToolBar>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \param viewIdxStr empty for blank 3D view, number or string for loading from project by index/name

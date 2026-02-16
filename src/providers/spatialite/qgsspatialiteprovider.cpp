@@ -43,8 +43,11 @@ email                : a.furieri@lqt.it
 #include <QDir>
 #include <QFileInfo>
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgsspatialiteprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 using namespace nlohmann;
 
@@ -702,7 +705,7 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
   mDefaultValues.clear();
 
   gaiaLayerAttributeFieldPtr fld = lyr->First;
-  if ( !fld )
+  if ( !fld || mViewBased )
   {
     // defaulting to traditional loadFields()
     loadFields();

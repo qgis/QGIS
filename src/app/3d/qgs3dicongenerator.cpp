@@ -18,8 +18,11 @@
 #include "qgsapplication.h"
 
 #include <QDir>
+#include <QString>
 
 #include "moc_qgs3dicongenerator.cpp"
+
+using namespace Qt::StringLiterals;
 
 Qgs3DIconGenerator::Qgs3DIconGenerator( QObject *parent )
   : QgsAbstractStyleEntityIconGenerator( parent )

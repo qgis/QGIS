@@ -25,6 +25,10 @@
 #include "qgsprovidersourcewidgetprovider.h"
 #include "qgssourceselectprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //! Provider for AFS layers source select
 class QgsArcGisRestSourceSelectProvider : public QgsSourceSelectProvider
 {

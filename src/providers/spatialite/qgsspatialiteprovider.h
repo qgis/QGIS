@@ -17,6 +17,16 @@ email                : a.furieri@lqt.it
 #ifndef QGSSPATIALITEPROVIDER_H
 #define QGSSPATIALITEPROVIDER_H
 
+#include "qgsdatasourceuri.h"
+#include "qgsfields.h"
+#include "qgsprovidermetadata.h"
+#include "qgsrectangle.h"
+#include "qgsvectordataprovider.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 extern "C"
 {
 #include <sqlite3.h>
@@ -24,11 +34,6 @@ extern "C"
 #include <spatialite.h>
 #include <spatialite/gaiageo.h>
 }
-
-#include "qgsvectordataprovider.h"
-#include "qgsrectangle.h"
-#include "qgsfields.h"
-#include "qgsprovidermetadata.h"
 
 class QgsFeature;
 class QgsField;
@@ -38,7 +43,6 @@ class QgsSpatiaLiteFeatureIterator;
 class QgsSpatiaLiteTransaction;
 class QgsTransaction;
 
-#include "qgsdatasourceuri.h"
 
 /**
  * \class QgsSpatiaLiteProvider

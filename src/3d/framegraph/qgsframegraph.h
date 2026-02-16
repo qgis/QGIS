@@ -18,8 +18,6 @@
 
 #include <map>
 
-#include "qgspointlightsettings.h"
-
 #include <QWindow>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QCameraSelector>
@@ -40,18 +38,22 @@
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QViewport>
 
-class QgsDirectionalLightSettings;
-class QgsCameraController;
-class QgsRectangle;
-class QgsPostprocessingEntity;
+class Qgs3DMapSettings;
 class QgsAbstractRenderView;
-class QgsForwardRenderView;
-class QgsShadowRenderView;
-class QgsDepthRenderView;
-class QgsShadowSettings;
-class QgsDebugTextureEntity;
 class QgsAmbientOcclusionRenderView;
 class QgsAmbientOcclusionSettings;
+class QgsCameraController;
+class QgsDepthRenderView;
+class QgsDirectionalLightSettings;
+class QgsForwardRenderView;
+class QgsHighlightsRenderView;
+class QgsLightSource;
+class QgsOverlayTextureEntity;
+class QgsOverlayTextureRenderView;
+class QgsPostprocessingEntity;
+class QgsRectangle;
+class QgsShadowRenderView;
+class QgsShadowSettings;
 
 #define SIP_NO_FILE
 
@@ -193,6 +195,18 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     QgsAmbientOcclusionRenderView &ambientOcclusionRenderView();
 
     /**
+     * Returns overlay texture renderview
+     * \since QGIS 4.0
+     */
+    QgsOverlayTextureRenderView &overlayTextureRenderView();
+
+    /**
+     * Returns the highlights renderview, used for rendering highlight overlays of identified features
+     * \since QGIS 4.0
+     */
+    QgsHighlightsRenderView &highlightsRenderView();
+
+    /**
      * Updates shadow bias, light and texture size according to \a shadowSettings and \a lightSources
      * \since QGIS 3.44
      */
@@ -226,9 +240,10 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     static const QString SHADOW_RENDERVIEW;
     static const QString AXIS3D_RENDERVIEW;
     static const QString DEPTH_RENDERVIEW;
-    static const QString DEBUG_RENDERVIEW;
+    static const QString OVERLAY_RENDERVIEW;
     //! Ambient occlusion render view name
     static const QString AMBIENT_OCCLUSION_RENDERVIEW;
+    static const QString HIGHLIGHTS_RENDERVIEW;
 
   private:
     Qt3DRender::QRenderSurfaceSelector *mRenderSurfaceSelector = nullptr;
@@ -262,13 +277,14 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     Qt3DCore::QEntity *mRubberBandsRootEntity = nullptr;
 
     //! shadow texture debugging
-    QgsDebugTextureEntity *mShadowTextureDebugging = nullptr;
+    QgsOverlayTextureEntity *mShadowTextureDebugging = nullptr;
     //! depth texture debugging
-    QgsDebugTextureEntity *mDepthTextureDebugging = nullptr;
+    QgsOverlayTextureEntity *mDepthTextureDebugging = nullptr;
 
     void constructShadowRenderPass();
     void constructForwardRenderPass();
-    void constructDebugTexturePass( Qt3DRender::QFrameGraphNode *topNode = nullptr );
+    void constructHighlightsPass();
+    void constructOverlayTexturePass( Qt3DRender::QFrameGraphNode *topNode = nullptr );
     Qt3DRender::QFrameGraphNode *constructPostprocessingPass();
     void constructDepthRenderPass();
     void constructAmbientOcclusionRenderPass();

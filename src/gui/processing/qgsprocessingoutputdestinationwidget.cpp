@@ -32,10 +32,13 @@
 #include <QInputDialog>
 #include <QLocale>
 #include <QMenu>
+#include <QString>
 #include <QTextCodec>
 #include <QUrl>
 
 #include "moc_qgsprocessingoutputdestinationwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond NOT_STABLE
 
@@ -472,10 +475,18 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
     mUseRemapping = false;
     if ( mParameter->type() == QgsProcessingParameterRasterDestination::typeName() )
     {
-      int spacePos = static_cast<int>( lastFilter.indexOf( ' ' ) );
-      if ( spacePos > 0 )
+      const QgsProcessingParameterRasterDestination *rasterParam = static_cast<const QgsProcessingParameterRasterDestination *>( mParameter );
+      const QList<QPair<QString, QString>> formatAndExtensions = rasterParam->supportedOutputRasterLayerFormatAndExtensions();
+      Q_ASSERT( formatAndExtensions.size() + 1 == filters.size() ); // filters have one more entry for all files
+      int idxFilter = 0;
+      for ( const QString &f : filters )
       {
-        mFormat = lastFilter.left( spacePos );
+        if ( f == lastFilter )
+        {
+          mFormat = formatAndExtensions[idxFilter].first;
+          break;
+        }
+        ++idxFilter;
       }
     }
     filename = QgsFileUtils::addExtensionFromFilter( filename, lastFilter );

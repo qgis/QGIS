@@ -19,7 +19,11 @@
 
 #include "qgsmaplayer.h"
 
+#include <QString>
+
 #include "moc_qgsmaplayerrefreshsettingswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapLayerRefreshSettingsWidget::QgsMapLayerRefreshSettingsWidget( QWidget *parent, QgsMapLayer *layer )
   : QWidget( parent )

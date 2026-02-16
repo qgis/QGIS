@@ -23,9 +23,12 @@
 
 #include <QMouseEvent>
 #include <QPainter>
+#include <QString>
 #include <QVBoxLayout>
 
 #include "moc_qgscurveeditorwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 // QWT Charting widget
 #include <qwt_global.h>

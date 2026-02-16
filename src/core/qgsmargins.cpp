@@ -15,6 +15,10 @@
 
 #include "qgsmargins.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QString QgsMargins::toString() const
 {
   if ( isNull() )

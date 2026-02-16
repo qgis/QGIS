@@ -62,6 +62,10 @@ class GUI_EXPORT QgsLayoutChartWidget : public QgsLayoutItemBaseWidget, private 
     void mRemoveSeriesPushButton_clicked();
     void mSeriesPropertiesButton_clicked();
 
+    void mLinkedMapComboBox_itemChanged( QgsLayoutItem *item );
+    void mFilterOnlyVisibleFeaturesCheckBox_stateChanged( int state );
+    void mIntersectAtlasCheckBox_stateChanged( int state );
+
   private:
     //! Sets the GUI elements to the values of mChartItem
     void setGuiElementValues();

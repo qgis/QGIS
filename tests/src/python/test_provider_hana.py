@@ -16,8 +16,9 @@ __date__ = "2019-11-21"
 __copyright__ = "Copyright 2019, The QGIS Project"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QByteArray, QDate, QDateTime, QTime, QVariant
+from providertestbase import ProviderTestCase
 from qgis.core import (
     NULL,
     QgsCoordinateReferenceSystem,
@@ -37,10 +38,8 @@ from qgis.core import (
     QgsVectorLayerExporter,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
-from providertestbase import ProviderTestCase
+from qgis.PyQt.QtCore import QByteArray, QDate, QDateTime, QTime, QVariant
+from qgis.testing import QgisTestCase, start_app
 from test_hana_utils import QgsHanaProviderUtils
 from utilities import unitTestDataPath
 

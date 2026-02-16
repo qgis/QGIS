@@ -46,6 +46,10 @@
 #include "qgstextlabelfeature.h"
 #include "qgstextrendererutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 using namespace pal;
 
 FeaturePart::FeaturePart( QgsLabelFeature *feat, const GEOSGeometry *geom )
@@ -167,6 +171,11 @@ QgsFeatureId FeaturePart::featureId() const
   return mLF->id();
 }
 
+int FeaturePart::subPartId() const
+{
+  return mLF->subPartId();
+}
+
 std::size_t FeaturePart::maximumPointCandidates() const
 {
   return mLF->layer()->maximumPointLabelCandidates();
@@ -224,7 +233,7 @@ bool FeaturePart::hasSameLabelFeatureAs( FeaturePart *part ) const
   if ( mLF->layer()->name() != part->layer()->name() )
     return false;
 
-  if ( mLF->id() == part->featureId() )
+  if ( mLF->id() == part->featureId() && mLF->subPartId() == part->subPartId() )
     return true;
 
   // any part of joined features are also treated as having the same label feature
@@ -1443,8 +1452,25 @@ std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet 
   firstPosition->setPartId( it->graphemeIndex );
   LabelPosition *previousPosition = firstPosition.get();
   it++;
+
+  bool skipWhitespace = false;
+  switch ( mLF->whitespaceCollisionHandling() )
+  {
+    case Qgis::LabelWhitespaceCollisionHandling::TreatWhitespaceAsCollision:
+      break;
+
+    case Qgis::LabelWhitespaceCollisionHandling::IgnoreWhitespaceCollisions:
+      skipWhitespace = true;
+      break;
+  }
+
   while ( it != placement->graphemePlacement.constEnd() )
   {
+    if ( skipWhitespace && it->isWhitespace )
+    {
+      it++;
+      continue;
+    }
     auto position = std::make_unique< LabelPosition >( 0, it->x, it->y, it->width, it->height, it->angle, 0.0001, this, LabelPosition::LabelDirectionToLine::SameDirection, Qgis::LabelQuadrantPosition::Over );
     position->setPartId( it->graphemeIndex );
 
@@ -1470,8 +1496,6 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
   if ( characterCount == 0 )
     return 0;
 
-  // clang-tidy false positive
-  // NOLINTBEGIN(bugprone-branch-clone)
   switch ( mLF->curvedLabelMode() )
   {
     case Qgis::CurvedLabelMode::Default:
@@ -1481,7 +1505,6 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
     case Qgis::CurvedLabelMode::PlaceCharactersAtVertices:
       return createCurvedCandidateWithCharactersAtVertices( lPos, mapShape, pal );
   }
-  // NOLINTEND(bugprone-branch-clone)
   BUILTIN_UNREACHABLE
 }
 
@@ -1642,7 +1665,7 @@ std::size_t FeaturePart::createDefaultCurvedCandidatesAlongLine( std::vector<std
     double lineAnchorPoint = 0;
     if ( !usingStretchToFitMode )
     {
-      if ( originalPoint && offset != NoOffset )
+      if ( originalPoint )
       {
         // the actual anchor point for the offset curves is the closest point on those offset curves
         // to the anchor point on the original line. This avoids anchor points which differ greatly

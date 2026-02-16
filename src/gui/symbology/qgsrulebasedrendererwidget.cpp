@@ -37,10 +37,13 @@
 #include <QPointer>
 #include <QProgressDialog>
 #include <QScreen>
+#include <QString>
 #include <QTreeWidgetItem>
 #include <QVBoxLayout>
 
 #include "moc_qgsrulebasedrendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"

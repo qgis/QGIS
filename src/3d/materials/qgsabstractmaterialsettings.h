@@ -22,6 +22,9 @@
 #include "qgspropertycollection.h"
 
 #include <QColor>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QDomElement;
 class QgsReadWriteContext;
@@ -92,8 +95,25 @@ class _3D_EXPORT QgsMaterialContext
      */
     void setSelectionColor( const QColor &color ) { mSelectedColor = color; }
 
+    /**
+     * Returns TRUE if the material should represent a highlighted state.
+     *
+     * \see setIsHighlighted()
+     * \since QGIS 4.0
+     */
+    bool isHighlighted() const { return mIsHighlighted; }
+
+    /**
+     * Sets whether the material should represent a highlighted state.
+     *
+     * \see isHighlighted()
+     * \since QGIS 4.0
+     */
+    void setIsHighlighted( bool isHighlighted ) { mIsHighlighted = isHighlighted; }
+
   private:
     bool mIsSelected = false;
+    bool mIsHighlighted = false;
 
     QColor mSelectedColor;
 };

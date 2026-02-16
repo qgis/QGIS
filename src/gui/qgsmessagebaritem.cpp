@@ -26,9 +26,12 @@
 #include <QFileInfo>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QString>
 #include <QTextBrowser>
 
 #include "moc_qgsmessagebaritem.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMessageBarItem::QgsMessageBarItem( const QString &text, Qgis::MessageLevel level, int duration, QWidget *parent )
   : QWidget( parent )

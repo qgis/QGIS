@@ -17,10 +17,8 @@
 
 #include "qgspointcloudstatscalculationtask.h"
 
+#include "qgsfeedback.h"
 #include "qgspointcloudindex.h"
-#include "qgspointcloudrenderer.h"
-
-#include <QtConcurrent/QtConcurrent>
 
 #include "moc_qgspointcloudstatscalculationtask.cpp"
 

@@ -22,17 +22,17 @@ __copyright__ = "(C) 2019, Alexander Bruy"
 import os
 
 from qgis.core import (
-    QgsRasterFileWriter,
     QgsProcessingException,
     QgsProcessingParameterDefinition,
-    QgsProcessingParameterRasterLayer,
     QgsProcessingParameterEnum,
-    QgsProcessingParameterString,
     QgsProcessingParameterRasterDestination,
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterString,
+    QgsRasterFileWriter,
 )
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
-
 from processing.tools.system import isWindows
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]

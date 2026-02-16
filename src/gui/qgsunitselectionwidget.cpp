@@ -21,8 +21,11 @@
 #include "qgshelp.h"
 
 #include <QDialogButtonBox>
+#include <QString>
 
 #include "moc_qgsunitselectionwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapUnitScaleWidget::QgsMapUnitScaleWidget( QWidget *parent )
   : QgsPanelWidget( parent )

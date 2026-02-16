@@ -28,8 +28,11 @@
 
 #include <QApplication>
 #include <QMainWindow>
+#include <QString>
 #include <QtTest/QSignalSpy>
 #include <QtTest/QTest>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsLayoutGui : public QObject
 {

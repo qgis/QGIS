@@ -22,7 +22,11 @@
 #include "qgslayoutundostack.h"
 #include "qgslayoututils.h"
 
+#include <QString>
+
 #include "moc_qgslayoutitemgroup.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutItemGroup::QgsLayoutItemGroup( QgsLayout *layout )
   : QgsLayoutItem( layout )

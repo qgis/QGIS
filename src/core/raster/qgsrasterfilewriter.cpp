@@ -36,7 +36,10 @@
 #include <QCoreApplication>
 #include <QProgressDialog>
 #include <QRegularExpression>
+#include <QString>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 QgsRasterDataProvider *QgsRasterFileWriter::createOneBandRaster( Qgis::DataType dataType, int width, int height, const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs )
 {

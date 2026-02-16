@@ -19,6 +19,10 @@
 #include "qgsdataitemguiprovider.h"
 #include "qgsmimedatautils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsMssqlConnectionItem;
 class QgsMssqlLayerItem;
 

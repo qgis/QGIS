@@ -47,6 +47,13 @@ class QgsPdalAlgorithmBase : public QgsProcessingAlgorithm
     void createCommonParameters();
 
     /**
+     * Creates VPC output format advanced parameter.
+     *
+     * \since QGIS 4.0
+     */
+    void createVpcOutputFormatParameter();
+
+    /**
      * Evaluates common advanced parameters and adds them to the pdal_wrench
      * command line.
      */
@@ -56,6 +63,12 @@ class QgsPdalAlgorithmBase : public QgsProcessingAlgorithm
      * Adds "--threads"parameter to the pdal_wrench command line.
      */
     void applyThreadsParameter( QStringList &arguments, QgsProcessingContext &context );
+
+    /**
+     * Adds "--vpc-output-format" parameter to the pdal_wrench command line if the \a outputFilename is a VPC file.
+     * \since QGIS 4.0
+     */
+    void applyVpcOutputFormatParameter( const QString &outputFilename, QStringList &arguments, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 
     /**
      * "Fixes" output file name by changing suffix to .vpc if input file
@@ -101,6 +114,21 @@ class QgsPdalAlgorithmBase : public QgsProcessingAlgorithm
      * \since QGIS 3.44
      */
     QgsPointCloudLayer *parameterAsPointCloudLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags ) const;
+
+  protected:
+    /**
+     * Runs pdal_wrench process with given \a processArgs command line arguments. Can communicate using \a feedback.
+     *
+     * \since QGIS 4.0
+     */
+    void runWrenchProcess( const QStringList &processArgs, QgsProcessingFeedback *feedback );
+
+    /**
+     * Builds QVariantMap of outputs from algorithm.
+     *
+     * \since QGIS 4.0
+     */
+    QVariantMap getOutputs( const QVariantMap &parameters, QgsProcessingContext &context );
 
   private:
     QMap<QString, QVariant> mOutputValues;

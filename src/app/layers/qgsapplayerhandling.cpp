@@ -22,13 +22,18 @@
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayertemporalproperties.h"
 #include "qgsmessagebar.h"
+#include "qgsmessageviewer.h"
 #include "qgspointcloudlayer.h"
 #include "qgsproject.h"
 #include "qgsprojectelevationproperties.h"
 #include "qgsprojecttimesettings.h"
 #include "qgsterrainprovider.h"
 
+#include <QString>
+
 #include "moc_qgsapplayerhandling.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_3D
 #include "qgspointcloudlayer3drenderer.h"
@@ -208,6 +213,31 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
         }
       }
 #endif
+
+      if ( const QgsVirtualPointCloudProvider *vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider *>( layer->dataProvider() ) )
+      {
+        if ( vpcProvider->containsUnsupportedFiles() )
+        {
+          QgsMessageBarItem *barItem = new QgsMessageBarItem( QObject::tr( "Unsupported files in VPC layer" ), QObject::tr( "Layer %1 references point cloud files that can only be displayed by their extents." ).arg( layer->name() ), Qgis::MessageLevel::Warning, 0 );
+          QPushButton *button = new QPushButton( QObject::tr( "More Info" ), barItem );
+          barItem->setWidget( button );
+          QObject::connect( button, &QPushButton::clicked, barItem, [barItem, layer]() {
+            const QString message = QObject::tr( "Layer %1 references point cloud files that can only be displayed by their extents." ).arg( layer->name() )
+                                    + u"\n"_s
+                                    + QObject::tr( "QGIS can display the actual points of a virtual point cloud only if the referenced point cloud files are in COPC or EPT format." )
+                                    + u"\n\n"_s
+                                    + QObject::tr( "You can convert the files to COPC format by running the Build virtual point cloud (VPC) algorithm and enabling the Convert individual files to COPC format checkbox." );
+
+            QgsMessageViewer *dialog = new QgsMessageViewer( barItem );
+            dialog->setTitle( QObject::tr( "Unsupported files in VPC layer" ) );
+            dialog->setMessageAsPlainText( message );
+            dialog->showMessage();
+          } );
+
+          QgisApp::instance()->visibleMessageBar()->pushItem( barItem );
+        }
+      }
+
       break;
     }
   }

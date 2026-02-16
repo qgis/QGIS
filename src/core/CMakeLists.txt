@@ -132,6 +132,8 @@ set(QGIS_CORE_SRCS
   symbology/qgsrendererrange.cpp
   symbology/qgsrendererregistry.cpp
   symbology/qgsrulebasedrenderer.cpp
+  symbology/qgsselectivemaskingsource.cpp
+  symbology/qgsselectivemaskingsourceset.cpp
   symbology/qgssinglesymbolrenderer.cpp
   symbology/qgsstyle.cpp
   symbology/qgsstylemodel.cpp
@@ -547,6 +549,7 @@ set(QGIS_CORE_SRCS
   qgsmathutils.cpp
   qgsmatrix4x4.cpp
   qgsmbtiles.cpp
+  qgsmeasureutils.cpp
   qgsmessagelog.cpp
   qgsmessageoutput.cpp
   qgsmimedatautils.cpp
@@ -774,6 +777,8 @@ set(QGIS_CORE_SRCS
   project/qgsprojectdisplaysettings.cpp
   project/qgsprojectgpssettings.cpp
   project/qgsprojectproperty.cpp
+  project/qgsselectivemaskingsourcesetmanager.cpp
+  project/qgsselectivemaskingsourcesetmanagermodel.cpp
   project/qgsprojectservervalidator.cpp
   project/qgsprojectstorage.cpp
   project/qgsprojectstorageregistry.cpp
@@ -943,6 +948,8 @@ set(QGIS_CORE_SRCS
   geometry/qgsmultipoint.cpp
   geometry/qgsmultipolygon.cpp
   geometry/qgsmultisurface.cpp
+  geometry/qgsnurbscurve.cpp
+  geometry/qgsnurbsutils.cpp
   geometry/qgsorientedbox3d.cpp
   geometry/qgspoint.cpp
   geometry/qgspolygon.cpp
@@ -1269,6 +1276,7 @@ set(QGIS_CORE_HDRS
   qgsmathutils.h
   qgsmatrix4x4.h
   qgsmbtiles.h
+  qgsmeasureutils.h
   qgsmessagelog.h
   qgsmessageoutput.h
   qgsmimedatautils.h
@@ -1545,6 +1553,8 @@ set(QGIS_CORE_HDRS
   geometry/qgsmultipoint.h
   geometry/qgsmultipolygon.h
   geometry/qgsmultisurface.h
+  geometry/qgsnurbscurve.h
+  geometry/qgsnurbsutils.h
   geometry/qgsorientedbox3d.h
   geometry/qgspoint.h
   geometry/qgspolygon.h
@@ -1873,6 +1883,8 @@ set(QGIS_CORE_HDRS
   project/qgsprojectfiletransform.h
   project/qgsprojectgpssettings.h
   project/qgsprojectproperty.h
+  project/qgsselectivemaskingsourcesetmanager.h
+  project/qgsselectivemaskingsourcesetmanagermodel.h
   project/qgsprojectservervalidator.h
   project/qgsprojectstorage.h
   project/qgsprojectstorageregistry.h
@@ -2051,6 +2063,8 @@ set(QGIS_CORE_HDRS
   symbology/qgsrendererrange.h
   symbology/qgsrendererregistry.h
   symbology/qgsrulebasedrenderer.h
+  symbology/qgsselectivemaskingsource.h
+  symbology/qgsselectivemaskingsourceset.h
   symbology/qgssinglesymbolrenderer.h
   symbology/qgsstyle.h
   symbology/qgsstyleentityvisitor.h

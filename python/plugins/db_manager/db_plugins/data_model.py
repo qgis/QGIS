@@ -18,24 +18,22 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
+from qgis.core import QgsTask
 from qgis.PyQt.QtCore import (
-    Qt,
-    QElapsedTimer,
-    QRegularExpression,
     QAbstractTableModel,
-    pyqtSignal,
+    QElapsedTimer,
     QObject,
+    QRegularExpression,
+    Qt,
+    pyqtSignal,
 )
-from qgis.PyQt.QtGui import QFont, QStandardItemModel, QStandardItem
+from qgis.PyQt.QtGui import QFont, QStandardItem, QStandardItemModel
 from qgis.PyQt.QtWidgets import QApplication
 
-from qgis.core import QgsTask
-
-from .plugin import DbError, BaseError
+from .plugin import BaseError, DbError
 
 
 class BaseTableModel(QAbstractTableModel):
-
     def __init__(self, header=None, data=None, parent=None):
         QAbstractTableModel.__init__(self, parent)
         self._header = header if header else []
@@ -110,7 +108,6 @@ class BaseTableModel(QAbstractTableModel):
 
 
 class TableDataModel(BaseTableModel):
-
     def __init__(self, table, parent=None):
         self.db = table.database().connector
         self.table = table
@@ -183,7 +180,6 @@ class SqlResultModelAsync(QObject):
 
 
 class SqlResultModelTask(QgsTask):
-
     def __init__(self, db, sql, parent):
         super().__init__(
             description=QApplication.translate("DBManagerPlugin", "Executing SQL")
@@ -196,7 +192,6 @@ class SqlResultModelTask(QgsTask):
 
 
 class SqlResultModel(BaseTableModel):
-
     def __init__(self, db, sql, parent=None):
         self.db = db.connector
 
@@ -236,7 +231,6 @@ class SqlResultModel(BaseTableModel):
 
 
 class SimpleTableModel(QStandardItemModel):
-
     def __init__(self, header, editable=False, parent=None):
         self.header = header
         self.editable = editable
@@ -274,7 +268,6 @@ class SimpleTableModel(QStandardItemModel):
 
 
 class TableFieldsModel(SimpleTableModel):
-
     def __init__(self, parent, editable=False):
         SimpleTableModel.__init__(
             self, ["Name", "Type", "Null", "Default", "Comment"], editable, parent
@@ -349,7 +342,6 @@ class TableFieldsModel(SimpleTableModel):
 
 
 class TableConstraintsModel(SimpleTableModel):
-
     def __init__(self, parent, editable=False):
         SimpleTableModel.__init__(
             self,
@@ -390,7 +382,6 @@ class TableConstraintsModel(SimpleTableModel):
 
 
 class TableIndexesModel(SimpleTableModel):
-
     def __init__(self, parent, editable=False):
         SimpleTableModel.__init__(
             self,

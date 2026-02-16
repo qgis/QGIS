@@ -40,7 +40,10 @@ email                : nyall dot dawson at gmail dot com
 #include <QInputDialog>
 #include <QRegularExpression>
 #include <QStorageInfo>
+#include <QString>
 #include <QTextCodec>
+
+using namespace Qt::StringLiterals;
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -1795,6 +1798,16 @@ OGRwkbGeometryType QgsOgrProviderUtils::ogrTypeFromQgisType( Qgis::WkbType type 
       return wkbCircularStringM;
     case Qgis::WkbType::CircularStringZM:
       return wkbCircularStringZM;
+
+    // NURBS curves are converted to CompoundCurve for OGR compatibility
+    case Qgis::WkbType::NurbsCurve:
+      return wkbCompoundCurve;
+    case Qgis::WkbType::NurbsCurveZ:
+      return wkbCompoundCurveZ;
+    case Qgis::WkbType::NurbsCurveM:
+      return wkbCompoundCurveM;
+    case Qgis::WkbType::NurbsCurveZM:
+      return wkbCompoundCurveZM;
 
     case Qgis::WkbType::CompoundCurve:
       return wkbCompoundCurve;

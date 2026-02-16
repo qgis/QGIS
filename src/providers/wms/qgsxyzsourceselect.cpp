@@ -28,8 +28,11 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsxyzsourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsXyzSourceSelect::QgsXyzSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )

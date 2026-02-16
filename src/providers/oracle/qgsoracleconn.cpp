@@ -29,8 +29,11 @@
 #include <QSqlDriver>
 #include <QSqlError>
 #include <QSqlField>
+#include <QString>
 
 #include "moc_qgsoracleconn.cpp"
+
+using namespace Qt::StringLiterals;
 
 QMap<QPair<QString, QThread *>, QgsOracleConn *> QgsOracleConn::sConnections;
 int QgsOracleConn::snConnections = 0;

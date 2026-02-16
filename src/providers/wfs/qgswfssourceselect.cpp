@@ -47,8 +47,11 @@
 #include <QMessageBox>
 #include <QPainter>
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgswfssourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 enum
 {

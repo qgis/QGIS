@@ -22,15 +22,15 @@ __author__ = "Nyall Dawson"
 __date__ = "June 2021"
 __copyright__ = "(C) 2021, Nyall Dawson"
 
+import unittest
+
 from qgis.core import (
     QgsExpressionContext,
     QgsProperty,
     QgsRasterPipe,
     QgsSingleBandPseudoColorRenderer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -40,7 +40,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsRasterPipe(QgisTestCase):
-
     def test_data_defined_properties(self):
         pipe = QgsRasterPipe()
 

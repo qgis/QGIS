@@ -12,19 +12,17 @@ __copyright__ = "Copyright 2022, The QGIS Project"
 
 import os
 
+from qgis.core import QgsColorUtils, QgsReadWriteContext, QgsSymbolLayerUtils
 from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.core import QgsColorUtils, QgsReadWriteContext, QgsSymbolLayerUtils
 from qgis.testing import unittest
-
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsColorUtils(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

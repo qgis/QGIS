@@ -30,10 +30,13 @@
 #include <QLineEdit>
 #include <QProgressBar>
 #include <QRegularExpression>
+#include <QString>
 #include <QToolButton>
 #include <QUrl>
 
 #include "moc_qgsexternalstoragefilewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define FILEPATH_VARIABLE "selected_file_path"
 

@@ -78,9 +78,12 @@
 #include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsinbuiltdataitemproviders.cpp"
+
+using namespace Qt::StringLiterals;
 
 QString QgsAppDirectoryItemGuiProvider::name()
 {
@@ -1856,7 +1859,72 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
     }
 
     // Move to schema should not be available for connections and schemata
-    const bool isTable = qobject_cast<QgsLayerItem *>( item );
+    QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
+    const bool isTable = static_cast< bool >( layerItem );
+    if ( selectedItems.size() == 1 && layerItem && layerItem->mapLayerType() == Qgis::LayerType::Vector && conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::RenameVectorTable ) )
+    {
+      // some providers implement their own Rename Table action, with provider-specific logic.
+      // Until we can make the generic method flexible enough to handle that logic, hide the generic
+      // action from these providers so we don't get two different Rename actions.
+
+      const bool providerImplementsRename = layerItem->providerKey() == "postgresraster"_L1 || layerItem->providerKey() == u"postgres"_s
+                                            || qobject_cast< QgsGeoPackageVectorLayerItem * >( layerItem );
+      if ( !providerImplementsRename )
+      {
+        QAction *renameTableAction = new QAction( tr( "Rename Table…" ), menu );
+        const QString connectionUri = conn->uri();
+        const QString providerKey = conn->providerKey();
+        const QString schema = item->parent()->name();
+        const QString tableName = item->name();
+
+        QPointer< QgsLayerItem > layerItem( qobject_cast<QgsLayerItem *>( item ) );
+
+        connect( renameTableAction, &QAction::triggered, renameTableAction, [providerKey, connectionUri, schema, tableName, context, layerItem = std::move( layerItem )] {
+          QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
+          if ( !md )
+            return;
+
+          std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
+
+          QgsNewNameDialog dlg( tr( "Table %1.%2" ).arg( schema, tableName ), tableName );
+          dlg.setWindowTitle( tr( "Rename Table" ) );
+          if ( dlg.exec() != QDialog::Accepted || dlg.name() == tableName )
+            return;
+
+          QString errCause;
+          try
+          {
+            conn2->renameVectorTable( schema, tableName, dlg.name() );
+          }
+          catch ( QgsProviderConnectionException &ex )
+          {
+            errCause = ex.what();
+          }
+
+          if ( !errCause.isEmpty() )
+          {
+            notify( tr( "Cannot rename table" ), errCause, context, Qgis::MessageLevel::Critical );
+          }
+          else if ( context.messageBar() )
+          {
+            context.messageBar()->pushMessage( tr( "Renamed table to %1" ).arg( dlg.name() ), Qgis::MessageLevel::Success );
+          }
+
+          if ( layerItem )
+          {
+            // it's not always the direct parent responsible for creating layer items -- ensure we refresh
+            // the correct ancestor to get the newly renamed table showing
+            if ( QgsDataItem *itemToRefresh = layerItem->ancestorAtDepth( layerItem->creatorAncestorDepth() ) )
+            {
+              itemToRefresh->refresh();
+            }
+          }
+        } );
+
+        QgsDataItemGuiProviderUtils::addToSubMenu( menu, renameTableAction, tr( "Manage" ) );
+      }
+    }
+
     if ( isTable && conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::MoveTableToSchema ) )
     {
       const QString connectionUri = conn->uri();
@@ -2104,6 +2172,8 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
         }
         else if ( context.messageBar() )
         {
+          if ( item->parent() )
+            item->parent()->refresh();
           context.messageBar()->pushMessage( tr( "Edited comment on %1" ).arg( fullName ), Qgis::MessageLevel::Success );
         }
       } );
@@ -2270,7 +2340,7 @@ bool QgsDatabaseItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiCo
             {
               QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
               output->setTitle( tr( "Import to database" ) );
-              output->setMessage( tr( "Failed to import some vector layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
+              output->setMessage( tr( "Failed to import some vector layers!\n\n" ) + errorMessage, Qgis::StringFormat::PlainText );
               output->showMessage();
             }
           } );
@@ -2288,7 +2358,7 @@ bool QgsDatabaseItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiCo
   {
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
     output->setTitle( tr( "Import to database" ) );
-    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QLatin1Char( '\n' ) ), QgsMessageOutput::MessageText );
+    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QLatin1Char( '\n' ) ), Qgis::StringFormat::PlainText );
     output->showMessage();
   }
   if ( hasSubTasks )
@@ -2446,6 +2516,19 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
       connectionUri = fileItem->path();
     }
 
+    bool policiesEditable = false;
+    QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( providerKey, connectionUri );
+    if ( provider->isValid() )
+    {
+      if ( QgsVectorDataProvider *vectorProvider = qobject_cast<QgsVectorDataProvider *>( provider ) )
+      {
+        if ( vectorProvider->storageType() == "OpenFileGDB"_L1 )
+        {
+          policiesEditable = true;
+        }
+      }
+    }
+
     // Check if domain creation is supported
     QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
     if ( md )
@@ -2460,9 +2543,10 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
           QMenu *createFieldDomainMenu = new QMenu( tr( "New Field Domain" ), menu );
           menu->addMenu( createFieldDomainMenu );
 
-          auto createDomain = [context, itemWeakPointer = QPointer<QgsDataItem>( item ), md, connectionUri]( Qgis::FieldDomainType type ) {
+          auto createDomain = [context, itemWeakPointer = QPointer<QgsDataItem>( item ), md, connectionUri, policiesEditable]( Qgis::FieldDomainType type ) {
             QgsFieldDomainDialog dialog( type, QgisApp::instance() );
             dialog.setWindowTitle( tr( "New Field Domain" ) );
+            dialog.setPoliciesEditable( policiesEditable );
             if ( dialog.exec() )
             {
               std::unique_ptr<QgsFieldDomain> newDomain( dialog.createFieldDomain() );
@@ -2525,11 +2609,12 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
             QAction *editFieldDomainAction = new QAction( QObject::tr( "Edit Field Domain…" ), menu );
             menu->addAction( editFieldDomainAction );
 
-            connect( editFieldDomainAction, &QAction::triggered, this, [context, item, md, connectionUri, fieldDomainLambda = std::move( fieldDomain )] {
+            connect( editFieldDomainAction, &QAction::triggered, this, [context, item, md, connectionUri, policiesEditable, fieldDomainLambda = std::move( fieldDomain )] {
               QgsFieldDomainDialog dialog( fieldDomainLambda->type(), QgisApp::instance() );
               dialog.setWindowTitle( tr( "Edit Field Domain" ) );
               dialog.setFieldDomain( fieldDomainLambda.get() );
               dialog.setNameEditable( false );
+              dialog.setPoliciesEditable( policiesEditable );
 
               if ( dialog.exec() )
               {

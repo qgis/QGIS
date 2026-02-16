@@ -10,21 +10,20 @@ __author__ = "Jean Felder"
 __date__ = "05/02/2025"
 __copyright__ = "Copyright 2025, The QGIS Project"
 
-from qgis.core import (
-    QgsLayerTreeRegistryBridge,
-    QgsLayerTree,
-    QgsProject,
-    QgsLayerTreeGroup,
-)
-
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.core import (
+    QgsLayerTree,
+    QgsLayerTreeGroup,
+    QgsLayerTreeRegistryBridge,
+    QgsProject,
+)
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsLayerTreeRegistryBridge(QgisTestCase):
-
     def test_constructor(self):
         project = QgsProject()
         root_group = QgsLayerTree()

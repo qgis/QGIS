@@ -12,9 +12,9 @@ __copyright__ = "Copyright 2016, The QGIS Project"
 
 import os
 import re
+import unittest
 
-from qgis.PyQt.QtCore import QDate, QDateTime, QTime, QVariant
-from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
+from providertestbase import ProviderTestCase
 from qgis.core import (
     NULL,
     Qgis,
@@ -35,10 +35,9 @@ from qgis.core import (
     QgsVectorLayerExporter,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
-from providertestbase import ProviderTestCase
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime, QVariant
+from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
+from qgis.testing import QgisTestCase, start_app
 from utilities import compareWkt, unitTestDataPath
 
 start_app()
@@ -46,7 +45,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -661,9 +659,7 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
             ignore_errors=True,
         )
         self.execSQLCommand(
-            """CREATE INDEX {0}_spatial_idx ON QGIS.{0}(GEOM) INDEXTYPE IS MDSYS.SPATIAL_INDEX""".format(
-                name
-            )
+            f"""CREATE INDEX {name}_spatial_idx ON QGIS.{name}(GEOM) INDEXTYPE IS MDSYS.SPATIAL_INDEX"""
         )
 
     def testEditCurves(self):
@@ -2091,6 +2087,61 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
 
             self.execSQLCommand(f'DROP TABLE "QGIS"."DETECT_{name}"')
 
+    def testDetermineGeometryColumnNameTableInSdo_geom_metadata(self):
+        """
+        Try connecting to a spatial layer without explicitly stating the geometry column name
+        or SRID, for a table registered in sdo_geom_metadata
+        """
+        vl = QgsVectorLayer(
+            f'{self.dbconn} table="QGIS"."SOME_DATA" type=POINT sql=',
+            "testpoints",
+            "oracle",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().wkbType(), Qgis.WkbType.Point)
+        self.assertEqual(vl.dataProvider().geometryColumnName(), "GEOM")
+        self.assertEqual(vl.dataProvider().crs().authid(), "EPSG:4326")
+
+        self.assertEqual(
+            {f["pk"]: f.geometry().asWkt(1) for f in vl.dataProvider().getFeatures()},
+            {
+                5: "Point (-71.1 78.2)",
+                3: "",
+                1: "Point (-70.3 66.3)",
+                2: "Point (-68.2 70.8)",
+                4: "Point (-65.3 78.3)",
+            },
+        )
+
+    def testDetermineGeometryColumnNameTableNotInSdo_geom_metadata(self):
+        """
+        Try connecting to a spatial layer without explicitly stating the geometry column name
+        or SRID, for a table NOT registered in sdo_geom_metadata
+        """
+        vl = QgsVectorLayer(
+            f'{self.dbconn} table="QGIS"."POINT_DATA" type=POINT sql=',
+            "testpoints",
+            "oracle",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().wkbType(), Qgis.WkbType.Point)
+        self.assertEqual(vl.dataProvider().geometryColumnName(), "GEOM")
+        self.assertEqual(vl.dataProvider().crs().authid(), "EPSG:4326")
+
+        self.assertEqual(
+            {f["pk"]: f.geometry().asWkt(1) for f in vl.dataProvider().getFeatures()},
+            {
+                1: "Point (1 2)",
+                2: "Point Z (1 2 3)",
+                3: "MultiPoint Z ((1 2 3),(4 5 6))",
+                4: "MultiPoint ((1 2),(3 4))",
+                5: "MultiPoint Z ((1 2 3),(4 5 6))",
+                6: "Point (1 2)",
+                7: "Point (3 4)",
+                8: "Point (5 6)",
+            },
+        )
+
     def testCredentialsCache(self):
         """
         Test that credentials are correctly cached when using
@@ -2116,7 +2167,6 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
         conn_wo_login_pwd = re.sub(pwd_pattern, "", conn_wo_login_pwd)
 
         class TestCredentials(QgsCredentials):
-
             def __init__(self, username, pwd):
                 super().__init__()
                 self.setInstance(self)

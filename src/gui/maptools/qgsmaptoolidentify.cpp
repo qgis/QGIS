@@ -49,6 +49,7 @@
 #include "qgssettings.h"
 #include "qgssymbol.h"
 #include "qgstiles.h"
+#include "qgsunittypes.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayertemporalproperties.h"
@@ -61,9 +62,12 @@
 #include <QMouseEvent>
 #include <QPixmap>
 #include <QStatusBar>
+#include <QString>
 #include <QVariant>
 
 #include "moc_qgsmaptoolidentify.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapToolIdentify::QgsMapToolIdentify( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )

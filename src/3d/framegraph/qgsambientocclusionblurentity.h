@@ -18,6 +18,12 @@
 
 #include "qgsrenderpassquad.h"
 
+namespace Qt3DRender
+{
+  class QParameter;
+  class QTexture2D;
+} //namespace Qt3DRender
+
 #define SIP_NO_FILE
 
 /**

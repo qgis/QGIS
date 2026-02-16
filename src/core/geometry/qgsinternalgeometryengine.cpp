@@ -36,8 +36,11 @@
 #include "qgspolygon.h"
 #include "qgstessellator.h"
 
+#include <QString>
 #include <QTransform>
 #include <queue>
+
+using namespace Qt::StringLiterals;
 
 QgsInternalGeometryEngine::QgsInternalGeometryEngine( const QgsGeometry &geometry )
   : mGeometry( geometry.constGet() )
@@ -1281,7 +1284,10 @@ QVector<QgsPointXY> randomPointsInPolygonPoly2TriBackend( const QgsAbstractGeome
     return QVector< QgsPointXY >();
   }
 
+  // tessellator data() method can be removed when minimum GEOS version is 3.11 or above
+  QT_WARNING_PUSH QT_WARNING_DISABLE_DEPRECATED
   const QVector<float> triangleData = t.data();
+  QT_WARNING_POP
   if ( triangleData.empty() )
     return QVector< QgsPointXY >(); //hm
 

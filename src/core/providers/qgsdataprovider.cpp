@@ -19,8 +19,11 @@
 #include "qgsthreadingutils.h"
 
 #include <QMutexLocker>
+#include <QString>
 
 #include "moc_qgsdataprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define SUBLAYER_SEPARATOR u"!!::!!"_s
 

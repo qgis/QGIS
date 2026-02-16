@@ -70,12 +70,15 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 #include <QSvgWidget>
 #include <QTextStream>
 #include <QToolButton>
 #include <QUiLoader>
 
 #include "moc_qgsattributeform.cpp"
+
+using namespace Qt::StringLiterals;
 
 int QgsAttributeForm::sFormCounter = 0;
 

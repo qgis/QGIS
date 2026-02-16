@@ -19,6 +19,7 @@
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
+#include "qgscameracontroller.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgspointcloud3dsymbol.h"
@@ -27,6 +28,10 @@
 #include "qgsprojectviewsettings.h"
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsSingleColorPointCloud3DSymbol;
 class TestQgs3DMapScene : public QgsTest

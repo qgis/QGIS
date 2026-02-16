@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: 🐩 Install CMake and Ninja
-        uses: lukka/get-cmake@9e07ecdcee1b12e5037e42f410b67f03e2f626e1 # latest
+        uses: lukka/get-cmake@f176ccd3f28bda569c43aae4894f06b2435a3375 # latest
         with:
           # Pin to specific version to avoid rebuilding too often
           # Also helps to avoid spurious build failures like https://github.com/qgis/QGIS/pull/47098
@@ -119,6 +119,7 @@ jobs:
                 -D WITH_ORACLE=ON \
                 -D WITH_GEOGRAPHICLIB=OFF \
                 -D WITH_SFCGAL=ON \
+                -D WITH_PROJ_DATA=ON \
                 -D VCPKG_TARGET_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_HOST_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_INSTALL_OPTIONS="--only-binarycaching" \
@@ -244,6 +245,6 @@ jobs:
           body: |
             ### 🍎 MacOS Qt6 builds
             Download [MacOS Qt6 builds of this PR for testing](${{ steps.artifact-mac-qt6.outputs.artifact-url }}).
-            _This installer is not signed, `control`+click > `open` the app to avoid the warning_
+            _This app is not notarized, run `sudo xattr -d com.apple.quarantine /Applications/QGIS*.app` to avoid the warning_
             *(Built from commit ${{ github.event.pull_request.head.sha }})*
           pr: ${{ github.event.number }}

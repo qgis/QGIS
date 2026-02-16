@@ -34,11 +34,14 @@
 #include "qgsvertexid.h"
 
 #include <QColor>
+#include <QString>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QGeometry>
 #include <Qt3DRender/QGeometryRenderer>
+
+using namespace Qt::StringLiterals;
 
 /// @cond PRIVATE
 
@@ -466,14 +469,19 @@ void QgsRubberBand3D::updateGeometry()
         QgsMessageLog::logMessage( tessellator.error(), QObject::tr( "3D" ) );
       }
       // extract vertex buffer data from tessellator
-      const QByteArray data( reinterpret_cast<const char *>( tessellator.data().constData() ), static_cast<int>( tessellator.data().count() * sizeof( float ) ) );
-      const int vertexCount = static_cast<int>( data.count() ) / tessellator.stride();
-      mPolygonGeometry->setData( data, vertexCount, QVector<QgsFeatureId>(), QVector<uint>() );
+      const QByteArray vertexBuffer = tessellator.vertexBuffer();
+      const QByteArray indexBuffer = tessellator.indexBuffer();
+      const size_t vertexCount = tessellator.uniqueVertexCount();
+      const size_t indexCount = tessellator.dataVerticesCount();
+
+      mPolygonGeometry->setVertexBufferData( vertexBuffer, vertexCount, QVector<QgsFeatureId>(), QVector<uint>() );
+      mPolygonGeometry->setIndexBufferData( indexBuffer, indexCount );
       mPolygonTransform->setGeoTranslation( mMapSettings->origin() );
     }
     else
     {
-      mPolygonGeometry->setData( QByteArray(), 0, QVector<QgsFeatureId>(), QVector<uint>() );
+      mPolygonGeometry->setVertexBufferData( QByteArray(), 0, QVector<QgsFeatureId>(), QVector<uint>() );
+      mPolygonGeometry->setIndexBufferData( QByteArray(), 0 );
     }
   }
 }

@@ -20,7 +20,10 @@
 #include "qgssymbol.h"
 
 #include <QLocale>
+#include <QString>
 #include <QUuid>
+
+using namespace Qt::StringLiterals;
 
 QgsRendererRange::QgsRendererRange( const QgsClassificationRange &range, QgsSymbol *symbol, bool render, const QString &uuid )
   : mLowerValue( range.lowerBound() )

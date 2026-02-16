@@ -23,6 +23,10 @@
 #include "qgspolygon.h"
 #include "qgstessellator.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsTessellateAlgorithm::name() const

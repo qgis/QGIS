@@ -24,6 +24,8 @@
 
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 // qscintilla includes
 #include <Qsci/qsciapis.h>
 #include "qgis_sip.h"

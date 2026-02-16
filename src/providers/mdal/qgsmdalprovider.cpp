@@ -30,8 +30,11 @@
 #include <QFileInfo>
 #include <QIcon>
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgsmdalprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsMdalProvider::MDAL_PROVIDER_KEY = u"mdal"_s;
 const QString QgsMdalProvider::MDAL_PROVIDER_DESCRIPTION = u"MDAL provider"_s;

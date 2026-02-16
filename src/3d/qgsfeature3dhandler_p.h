@@ -27,11 +27,21 @@
 // version without notice, or even be removed.
 //
 
-#include <Qt3DCore/QEntity>
+#include "qgsbox3d.h"
+#include "qgsvector3d.h"
 
+#include <QSet>
+#include <QString>
+#include <QVector>
+
+namespace Qt3DCore
+{
+  class QEntity;
+}
+
+class Qgs3DRenderContext;
 class QgsFeature;
-
-#include "qgs3drendercontext.h"
+class QgsGeometry;
 
 #define SIP_NO_FILE
 
@@ -49,7 +59,7 @@ class QgsFeature3DHandler
      * Called before feature iteration starts to initialize, get required attributes.
      * \returns TRUE on success (on FALSE the handler failed to initialize and processFeature() / finalize() should not be called
      */
-    virtual bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin ) = 0;
+    virtual bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent ) = 0;
 
     /**
      * Called for every feature to extract information out of it into some
@@ -80,14 +90,47 @@ class QgsFeature3DHandler
      */
     int featureCount() const { return mFeatureCount; }
 
+    /**
+     * Sets whether the feature handler should use highlight material for the created 3D entities. This is used
+     * for highlighting identified features.
+     * \since QGIS 4.0
+     */
+    void setHighlightingEnabled( bool enable ) { mHighlightingEnabled = enable; }
+
+    /**
+     * Returns whether the feature handler will use highlight material for the created 3D entities.
+     * \since QGIS 4.0
+     */
+    bool highlightingEnabled() const { return mHighlightingEnabled; }
+
   protected:
     //! updates zMinimum, zMaximum from the vector of positions in 3D world coordinates
     void updateZRangeFromPositions( const QVector<QVector3D> &positions );
+
+    /**
+     * Clips \a geom to the chunk extents if it is larger than MAX_GEOM_BBOX_SIZE
+     * Return TRUE if \a geom was clipped, FALSE otherwise
+     */
+    bool clipGeometryIfTooLarge( QgsGeometry &geom ) const;
 
   protected:
     float mZMin = std::numeric_limits<float>::max();
     float mZMax = std::numeric_limits<float>::lowest();
     int mFeatureCount = 0;
+    bool mHighlightingEnabled = false;
+
+    /**
+     * Origin (in map coordinates) for output geometries - it is kind of arbitrary, but it should be
+     * picked so that the coordinates are relatively small to avoid numerical precision issues (e.g. at the center of the chunk)
+     */
+    QgsVector3D mChunkOrigin;
+
+    //! bounding box of the chunk
+    QgsBox3D mChunkExtent;
+
+  private:
+    //! features whose bbox is larger than this should be clipped to the chunk's extents
+    static constexpr double MAX_GEOM_BBOX_SIZE = 1e6;
 };
 
 

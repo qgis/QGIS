@@ -17,7 +17,10 @@
 
 #include "qgsalgorithmsavelog.h"
 
+#include <QString>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

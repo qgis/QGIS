@@ -38,8 +38,11 @@
 #include <QKeyEvent>
 #include <QLabel>
 #include <QSettings>
+#include <QString>
 
 #include "moc_qgsmaptoolrotatefeature.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAngleMagnetWidget::QgsAngleMagnetWidget( const QString &label, QWidget *parent )
   : QWidget( parent )
