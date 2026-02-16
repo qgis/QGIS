@@ -477,7 +477,7 @@ void QgsSpatiaLiteSourceSelect::setConnectionListPosition()
 {
   const QgsSettings settings;
   // If possible, set the item currently displayed database
-  QString name = settings.value( QStringLiteral( "SpatiaLite/connections/selected" ) ).toString();
+  const QString name = settings.value( QStringLiteral( "SpatiaLite/connections/selected" ) ).toString();
 
   cmbConnections->setCurrentIndex( cmbConnections->findText( name ) );
 
