@@ -150,7 +150,6 @@ class CORE_EXPORT Qgis
     Q_DECLARE_FLAGS( AuthConfigurationStorageCapabilities, AuthConfigurationStorageCapability )
     Q_FLAG( AuthConfigurationStorageCapabilities )
 
-
     /**
      * \brief Level for messages
      * This will be used both for message log and message bar in application.
@@ -164,6 +163,18 @@ class CORE_EXPORT Qgis
       NoLevel = 4, //!< No level
     };
     Q_ENUM( MessageLevel )
+
+    /**
+     * \brief Format of log message
+     *
+     * \since QGIS 4.0. Prior to QGIS 4.0 this was available as QgsMessageOutput.MessageType
+     */
+    enum class StringFormat SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMessageOutput, MessageType ) : int
+      {
+      PlainText SIP_MONKEYPATCH_COMPAT_NAME( MessageText ), //!< Text message
+      Html SIP_MONKEYPATCH_COMPAT_NAME( MessageHtml ), //!< HTML message
+    };
+    Q_ENUM( StringFormat )
 
     /**
      * \brief Flags controlling behavior of network requests.

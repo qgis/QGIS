@@ -21,18 +21,18 @@ __copyright__ = "(C) 2018, Mathieu Pellerin"
 
 import os
 
+from qgis.core import (
+    QgsProcessingException,
+    QgsProcessingParameterBand,
+    QgsProcessingParameterDefinition,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterRasterDestination,
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterString,
+    QgsRasterFileWriter,
+)
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (
-    QgsRasterFileWriter,
-    QgsProcessingException,
-    QgsProcessingParameterEnum,
-    QgsProcessingParameterDefinition,
-    QgsProcessingParameterRasterLayer,
-    QgsProcessingParameterBand,
-    QgsProcessingParameterString,
-    QgsProcessingParameterRasterDestination,
-)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 

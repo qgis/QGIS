@@ -11,15 +11,15 @@ __date__ = "25/01/2023"
 __copyright__ = "Copyright 2023, The QGIS Project"
 
 
-from qgis.gui import QgsMediaWidget
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.gui import QgsMediaWidget
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsMediaWidget(QgisTestCase):
-
     def testMediaPath(self):
         """
         Test media path

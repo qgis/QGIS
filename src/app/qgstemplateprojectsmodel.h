@@ -37,6 +37,8 @@ class QgsTemplateProjectsModel : public QStandardItemModel
       NativePathRole,
       CrsRole,
       PreviewImagePathRole,
+      WritableRole,
+      CanvasColorRole,
     };
     Q_ENUM( CustomRole )
 
@@ -47,7 +49,7 @@ class QgsTemplateProjectsModel : public QStandardItemModel
     enum class TemplateType : int
     {
       Blank,
-      OpenStreetMap,
+      Basemap,
       File,
     };
     Q_ENUM( TemplateType )

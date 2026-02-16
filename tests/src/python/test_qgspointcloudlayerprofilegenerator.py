@@ -11,10 +11,11 @@ __date__ = "18/03/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
 import os
+import unittest
 
-from qgis.PyQt.QtGui import QColor
 from qgis.core import (
     Qgis,
+    QgsCoordinateReferenceSystem,
     QgsDoubleRange,
     QgsLineString,
     QgsPointCloudLayer,
@@ -26,18 +27,15 @@ from qgis.core import (
     QgsProfileSnapContext,
     QgsProviderRegistry,
     QgsUnitTypes,
-    QgsCoordinateReferenceSystem,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtGui import QColor
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsPointCloudLayerProfileGenerator(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "profile_chart"

@@ -39,6 +39,7 @@ Rectangle {
       icon.width: 20
       icon.height: 20
       font.bold: true
+      background.layer.enabled: false
       onClicked: root.supportClicked()
     }
 
@@ -46,11 +47,13 @@ Rectangle {
       radius: 20
       Layout.preferredHeight: 50
       Layout.preferredWidth: implicitWidth * 1.2
+      visible: root.width >= 310
       highlighted: true
       Material.accent: "#8c8c8c"
       text: qsTr("Go to qgis.org")
       font.bold: true
-      onClicked: root.supportClicked()
+      background.layer.enabled: false
+      onClicked: root.websiteClicked()
     }
   }
 }

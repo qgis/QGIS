@@ -25,7 +25,6 @@ namespace Qt3DExtras
   class QForwardRenderer;
 }
 
-
 class Qgs3DMapCanvas;
 class QWindow;
 

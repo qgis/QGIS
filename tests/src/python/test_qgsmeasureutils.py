@@ -6,14 +6,14 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import QgsMeasureUtils, QgsProject, Qgis, QgsSettings
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.core import Qgis, QgsMeasureUtils, QgsProject, QgsSettings
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.testing import QgisTestCase, start_app
 
 
 class TestQgsMeasureUtils(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

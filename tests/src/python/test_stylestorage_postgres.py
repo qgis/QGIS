@@ -1,4 +1,4 @@
-""""Style storage tests for postgres
+""" "Style storage tests for postgres
 
 .. note:: This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,12 +15,10 @@ import os
 
 from qgis.core import QgsDataSourceUri
 from qgis.testing import unittest
-
 from stylestoragebase import StyleStorageTestBase, StyleStorageTestCaseBase
 
 
 class StyleStorageTest(StyleStorageTestCaseBase, StyleStorageTestBase):
-
     # Provider test cases must define the provider name (e.g. "postgres" or "ogr")
     providerKey = "postgres"
 

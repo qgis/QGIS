@@ -27,11 +27,11 @@
 // version without notice, or even be removed.
 //
 
-#include <numeric>
-
 #include "qgs3dmapsceneentity.h"
+#include "qgsraycasthit.h"
 
-#define SIP_NO_FILE
+#include <QMatrix4x4>
+#include <QTime>
 
 class QgsAABB;
 class QgsChunkNode;
@@ -43,14 +43,7 @@ class QgsChunkQueueJobFactory;
 class QgsRay3D;
 class QgsRayCastContext;
 
-
-#include <QVector3D>
-#include <QMatrix4x4>
-
-#include <QTime>
-
-#include "qgschunknode.h"
-#include "qgsraycasthit.h"
+#define SIP_NO_FILE
 
 
 /**

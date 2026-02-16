@@ -16,9 +16,9 @@
 #ifndef QGS3DSYMBOLREGISTRY_H
 #define QGS3DSYMBOLREGISTRY_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgswkbtypes.h"
 
 #include <QDomElement>
 #include <QMap>

@@ -17,13 +17,13 @@
 
 import os
 import unittest
-from qgis.PyQt.QtTest import QSignalSpy
+
 from qgis.core import QgsProcessingFeedback, QgsProcessingMultiStepFeedback
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import unittest
 
 
 class TestQgsProcessingFeedback(unittest.TestCase):
-
     def test_multi_step_feedback_default(self):
         """
         Test basic equal-weight step progression

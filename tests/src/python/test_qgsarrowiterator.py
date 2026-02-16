@@ -33,6 +33,7 @@ from qgis.core import (
     QgsArrowIterator,
     QgsArrowSchema,
     QgsCoordinateReferenceSystem,
+    QgsException,
     QgsFeature,
     QgsField,
     QgsFields,
@@ -40,15 +41,13 @@ from qgis.core import (
     QgsMemoryProviderUtils,
     QgsPointXY,
     QgsWkbTypes,
-    QgsException,
 )
-
 from qgis.PyQt.QtCore import (
-    QMetaType,
     QByteArray,
     QDate,
-    QTime,
     QDateTime,
+    QMetaType,
+    QTime,
     QTimeZone,
 )
 from qgis.testing import QgisTestCase
@@ -58,7 +57,6 @@ from qgis.testing import QgisTestCase
 @unittest.skipIf(pa is None, "pyarrow is not available")
 @unittest.skipIf(shapely is None, "shapely is not available")
 class TestQgsArrowIterator(QgisTestCase):
-
     def create_test_layer_with_geometry(self, crs):
         # Create fields
         fields = QgsFields()

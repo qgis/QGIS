@@ -13,10 +13,10 @@ __copyright__ = "Copyright 2018, Nyall Dawson"
 import math
 import os
 import struct
-import numpy as np
+import unittest
 
+import numpy as np
 from osgeo import gdal
-from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.core import (
     Qgis,
     QgsPointXY,
@@ -24,11 +24,10 @@ from qgis.core import (
     QgsRasterLayer,
     QgsRectangle,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
-from utilities import unitTestDataPath
+from qgis.PyQt.QtCore import QTemporaryDir
+from qgis.testing import QgisTestCase, start_app
 from raster_provider_test_base import RasterProviderTestCase
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -39,7 +38,6 @@ def GDAL_COMPUTE_VERSION(maj, min, rev):
 
 
 class PyQgsGdalProvider(QgisTestCase, RasterProviderTestCase):
-
     def get_layer(self, test_id: str) -> QgsRasterLayer:
         return QgsRasterLayer(
             self.get_test_data_path("landsat_4326.tif").as_posix(), test_id

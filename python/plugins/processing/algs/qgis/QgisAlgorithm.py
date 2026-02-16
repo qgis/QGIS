@@ -24,7 +24,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 
 class QgisAlgorithm(QgsProcessingAlgorithm):
-
     def __init__(self):
         super().__init__()
 
@@ -38,7 +37,6 @@ class QgisAlgorithm(QgsProcessingAlgorithm):
 
 
 class QgisFeatureBasedAlgorithm(QgsProcessingFeatureBasedAlgorithm):
-
     def __init__(self):
         super().__init__()
 

@@ -11,8 +11,9 @@ __date__ = "2015-12-07"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QDate, QDateTime, QDir, QTime, QVariant, QMetaType
+from providertestbase import ProviderTestCase
 from qgis.core import (
     NULL,
     Qgis,
@@ -25,21 +26,19 @@ from qgis.core import (
     QgsFieldConstraints,
     QgsGeometry,
     QgsPointXY,
+    QgsProviderConnectionException,
     QgsProviderRegistry,
     QgsRectangle,
     QgsSettings,
+    QgsUnsetAttributeValue,
+    QgsVectorDataProvider,
     QgsVectorLayer,
     QgsVectorLayerExporter,
-    QgsWkbTypes,
-    QgsProviderConnectionException,
-    QgsVectorDataProvider,
-    QgsUnsetAttributeValue,
     QgsVectorLayerUtils,
+    QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
-from providertestbase import ProviderTestCase
+from qgis.PyQt.QtCore import QDate, QDateTime, QDir, QMetaType, QTime, QVariant
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -47,7 +46,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class MssqlProviderTestBase(ProviderTestCase):
-
     def getSubsetString(self):
         return "[cnt] > 100 and [cnt] < 410"
 
@@ -155,7 +153,6 @@ class MssqlProviderTestBase(ProviderTestCase):
 
 
 class TestPyQgsMssqlProvider(QgisTestCase, MssqlProviderTestBase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -171,9 +168,9 @@ class TestPyQgsMssqlProvider(QgisTestCase, MssqlProviderTestBase):
             "test",
             "mssql",
         )
-        assert (
-            cls.vl.dataProvider() is not None
-        ), f"No data provider for {cls.vl.source()}"
+        assert cls.vl.dataProvider() is not None, (
+            f"No data provider for {cls.vl.source()}"
+        )
         assert cls.vl.isValid(), cls.vl.dataProvider().error().message()
         cls.source = cls.vl.dataProvider()
         cls.poly_vl = QgsVectorLayer(
@@ -1737,7 +1734,6 @@ class TestPyQgsMssqlProvider(QgisTestCase, MssqlProviderTestBase):
 
 
 class TestPyQgsMssqlProviderQuery(QgisTestCase, MssqlProviderTestBase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -1753,9 +1749,9 @@ class TestPyQgsMssqlProviderQuery(QgisTestCase, MssqlProviderTestBase):
             "test",
             "mssql",
         )
-        assert (
-            cls.vl.dataProvider() is not None
-        ), f"No data provider for {cls.vl.source()}"
+        assert cls.vl.dataProvider() is not None, (
+            f"No data provider for {cls.vl.source()}"
+        )
         assert cls.vl.isValid(), cls.vl.dataProvider().error().message()
         cls.source = cls.vl.dataProvider()
         cls.poly_vl = QgsVectorLayer(

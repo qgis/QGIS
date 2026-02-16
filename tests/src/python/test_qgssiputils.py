@@ -6,19 +6,19 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.core import (
-    QgsSipUtils,
-    QgsGeometry,
-    QgsSingleSymbolRenderer,
-    QgsPoint,
-    QgsFillSymbol,
-)
 import unittest
+
+from qgis.core import (
+    QgsFillSymbol,
+    QgsGeometry,
+    QgsPoint,
+    QgsSingleSymbolRenderer,
+    QgsSipUtils,
+)
 from qgis.testing import QgisTestCase
 
 
 class TestQgsSipUtils(QgisTestCase):
-
     def test_isPyOwned(self):
         p = QgsPoint()
         self.assertTrue(QgsSipUtils.isPyOwned(p))

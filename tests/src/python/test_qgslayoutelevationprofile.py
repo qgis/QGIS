@@ -12,10 +12,7 @@ __copyright__ = "Copyright 2023, The QGIS Project"
 
 import os
 import tempfile
-
-from qgis.PyQt.QtCore import Qt, QRectF
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
-from qgis.PyQt.QtTest import QSignalSpy
+import unittest
 
 from qgis.core import (
     Qgis,
@@ -31,20 +28,21 @@ from qgis.core import (
     QgsGeometry,
     QgsLayout,
     QgsLayoutItemElevationProfile,
+    QgsLayoutItemShape,
     QgsLineString,
     QgsLineSymbol,
+    QgsMarkerSymbol,
     QgsPrintLayout,
     QgsProject,
     QgsRasterLayer,
+    QgsSimpleFillSymbolLayer,
     QgsTextFormat,
     QgsVectorLayer,
-    QgsSimpleFillSymbolLayer,
-    QgsLayoutItemShape,
-    QgsMarkerSymbol,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QRectF, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
 
@@ -89,7 +87,6 @@ class MyDummyProfileSource(QgsAbstractProfileSource):
 
 
 class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "layout_profile"

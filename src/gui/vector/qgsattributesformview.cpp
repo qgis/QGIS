@@ -681,9 +681,9 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
       expressionWidgetBox->layout()->addWidget( editExpressionButton );
       layout->addWidget( text );
       QScrollArea *textPreviewBox = new QgsScrollArea();
-      textPreviewBox->setLayout( new QGridLayout );
+      textPreviewBox->setWidgetResizable( true );
       textPreviewBox->setMinimumWidth( 200 );
-      textPreviewBox->layout()->addWidget( textWrapper->widget() );
+      textPreviewBox->setWidget( textWrapper->widget() );
       //emit to load preview for the first time
       emit text->textChanged();
       textSplitter->addWidget( textPreviewBox );

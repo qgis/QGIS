@@ -12,12 +12,11 @@ __copyright__ = "Copyright 2020, The QGIS Project"
 
 import os
 
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import QgsProviderRegistry
 from qgis.gui import QgsDatabaseSchemaComboBox
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import unittest
-
 from utilities import start_app, unitTestDataPath
 
 start_app()
@@ -26,7 +25,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsDatabaseSchemaComboBox(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

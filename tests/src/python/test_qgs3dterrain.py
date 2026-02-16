@@ -6,28 +6,28 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
+import unittest
+
+from qgis._3d import (
+    Qgs3DTerrainRegistry,
+    QgsDemTerrainSettings,
+    QgsFlatTerrainSettings,
+    QgsMesh3DSymbol,
+    QgsMeshTerrainSettings,
+    QgsOnlineDemTerrainSettings,
+    QgsQuantizedMeshTerrainSettings,
+)
+from qgis.core import (
+    QgsMeshLayer,
+    QgsProject,
+    QgsRasterLayer,
+    QgsReadWriteContext,
+    QgsTiledSceneLayer,
+)
 from qgis.PyQt.QtXml import (
     QDomDocument,
 )
-from qgis.core import (
-    QgsProject,
-    QgsRasterLayer,
-    QgsMeshLayer,
-    QgsTiledSceneLayer,
-    QgsReadWriteContext,
-)
-from qgis._3d import (
-    QgsFlatTerrainSettings,
-    QgsDemTerrainSettings,
-    QgsOnlineDemTerrainSettings,
-    QgsMeshTerrainSettings,
-    Qgs3DTerrainRegistry,
-    QgsQuantizedMeshTerrainSettings,
-    QgsMesh3DSymbol,
-)
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -35,7 +35,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgs3DTerrain(QgisTestCase):
-
     def test_flat_terrain(self):
         settings = QgsFlatTerrainSettings.create()
         self.assertIsInstance(settings, QgsFlatTerrainSettings)

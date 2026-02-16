@@ -10,29 +10,28 @@ __author__ = "Nyall Dawson"
 __date__ = "09/11/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
-from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
+
 from qgis.core import (
     Qgis,
+    QgsDoubleRange,
     QgsPointCloudClassifiedRenderer,
     QgsPointCloudLayer,
     QgsPointCloudLayerElevationProperties,
     QgsProviderRegistry,
     QgsReadWriteContext,
     QgsUnitTypes,
-    QgsDoubleRange,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsPointCloudElevationProperties(QgisTestCase):
-
     def testBasic(self):
         props = QgsPointCloudLayerElevationProperties(None)
         self.assertEqual(props.zScale(), 1)

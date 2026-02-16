@@ -5,11 +5,11 @@ the terms of the GNU General Public License as published by the Free Software
 Foundation; either version 2 of the License, or (at your option) any later
 version.
 """
+
 import argparse
 import os
 import re
 import sys
-
 from collections import defaultdict
 from enum import Enum, auto
 from typing import Any, Optional
@@ -42,10 +42,8 @@ class MultiLineType(Enum):
 
 
 class Context:
-
     def __init__(self):
         self.debug: bool = False
-        self.is_qt6: bool = False
         self.header_file: str = ""
         self.current_line: str = ""
         self.sip_run: bool = False
@@ -658,11 +656,10 @@ def replace_macros(line):
     line = re.sub(r"\bFALSE\b", "``False``", line)
     line = re.sub(r"\bNULLPTR\b", "``None``", line)
 
-    if CONTEXT.is_qt6:
-        # sip for Qt6 chokes on QList/QVector<QVariantMap>, but is happy if you expand out the map explicitly
-        line = re.sub(
-            r"(QList<\s*|QVector<\s*)QVariantMap", r"\1QMap<QString, QVariant>", line
-        )
+    # sip for Qt6 chokes on QList/QVector<QVariantMap>, but is happy if you expand out the map explicitly
+    line = re.sub(
+        r"(QList<\s*|QVector<\s*)QVariantMap", r"\1QMap<QString, QVariant>", line
+    )
 
     return line
 
@@ -833,11 +830,11 @@ def process_doxygen_line(line: str) -> str:
         )
     if re.search(r"<li>", line):
         exit_with_error(
-            "Don't use raw html lists in documentation. " "Use markdown lists instead"
+            "Don't use raw html lists in documentation. Use markdown lists instead"
         )
     if re.search(r"<[ib]>", line):
         exit_with_error(
-            "Don't use raw <i> or <b> tags in documentation. " "Use markdown instead"
+            "Don't use raw <i> or <b> tags in documentation. Use markdown instead"
         )
 
     # Detect code snippet
@@ -1105,7 +1102,6 @@ def detect_and_remove_following_body_or_initializerlist():
         or re.search(pattern2, CONTEXT.current_line)
         or re.match(pattern3, CONTEXT.current_line)
     ):
-
         dbg_info(
             "remove constructor definition, function bodies, member initializing list (1)"
         )
@@ -1386,14 +1382,7 @@ def remove_sip_pyargremove(input_string: str) -> str:
 
     arguments_list = split_args(arguments)
 
-    if CONTEXT.is_qt6:
-        filtered_args = [arg for arg in arguments_list if "SIP_PYARGREMOVE" not in arg]
-    else:
-        filtered_args = [
-            re.sub(r"\s*SIP_PYARGREMOVE6\s*", " ", arg)
-            for arg in arguments_list
-            if not ("SIP_PYARGREMOVE" in arg and "SIP_PYARGREMOVE6" not in arg)
-        ]
+    filtered_args = [arg for arg in arguments_list if "SIP_PYARGREMOVE" not in arg]
 
     # Reassemble the function signature
     remaining_args = ", ".join(filtered_args)
@@ -1409,8 +1398,7 @@ def fix_annotations(line):
 
     # Get removed params to be able to drop them out of the API doc
     removed_params = re.findall(r"(\w+)\s+SIP_PYARGREMOVE", line)
-    if CONTEXT.is_qt6:
-        removed_params = re.findall(r"(\w+)\s+SIP_PYARGREMOVE6?", line)
+    removed_params = re.findall(r"(\w+)\s+SIP_PYARGREMOVE6?", line)
     for param in removed_params:
         CONTEXT.skipped_params_remove.append(param)
         dbg_info(f"caught removed param: {CONTEXT.skipped_params_remove[-1]}")
@@ -1451,11 +1439,8 @@ def fix_annotations(line):
         r"SIP_VIRTUALERRORHANDLER\(\s*(\w+)\s*\)": r"/VirtualErrorHandler=\1/",
     }
 
-    if not CONTEXT.is_qt6:
-        replacements[r"SIP_THROW\(\s*([\w\s,]+?)\s*\)"] = r"throw( \1 )"
-    else:
-        # these have no effect (and aren't required) on sip >= 6
-        replacements[r"SIP_THROW\(\s*([\w\s,]+?)\s*\)"] = ""
+    # these have no effect (and aren't required) on sip >= 6
+    replacements[r"SIP_THROW\(\s*([\w\s,]+?)\s*\)"] = ""
 
     if CONTEXT.deprecated_message:
         replacements[r"\bSIP_DEPRECATED\b"] = (
@@ -1665,7 +1650,7 @@ def parse_argument(arg: str) -> tuple[str, str, Optional[str]]:
             else:
                 default_value = f'"{default_value}"'
         elif cpp_type in ("bool",):
-            default_value = f'{"False" if default_value == "false" else "True"}'
+            default_value = f"{'False' if default_value == 'false' else 'True'}"
         elif cpp_type.startswith("Q"):
             default_value = default_value.replace("::", ".")
         else:
@@ -1789,26 +1774,18 @@ def skip_cppcheck_comments():
 
 def fixup_qt6_len_and_hash():
     # Rewrite hardcoded return types and use proper typedefs instead
-    if CONTEXT.is_qt6:
-        CONTEXT.current_line = re.sub(
-            r"int\s*__len__\s*\(\s*\)", "Py_ssize_t __len__()", CONTEXT.current_line
-        )
-        CONTEXT.current_line = re.sub(
-            r"long\s*__hash__\s*\(\s*\)", "Py_hash_t __hash__()", CONTEXT.current_line
-        )
+    CONTEXT.current_line = re.sub(
+        r"int\s*__len__\s*\(\s*\)", "Py_ssize_t __len__()", CONTEXT.current_line
+    )
+    CONTEXT.current_line = re.sub(
+        r"long\s*__hash__\s*\(\s*\)", "Py_hash_t __hash__()", CONTEXT.current_line
+    )
 
 
 def process_pyqt_ifdefs():
     """Skip ifdefs gating PyQt5/PyQt6-only code."""
-    if CONTEXT.is_qt6 and re.match(r"^\s*#ifdef SIP_PYQT5_RUN", CONTEXT.current_line):
+    if re.match(r"^\s*#ifdef SIP_PYQT5_RUN", CONTEXT.current_line):
         dbg_info("do not process PYQT5 code")
-        while not re.match(r"^#endif", CONTEXT.current_line):
-            CONTEXT.current_line = read_line()
-
-    if not CONTEXT.is_qt6 and re.match(
-        r"^\s*#ifdef SIP_PYQT6_RUN", CONTEXT.current_line
-    ):
-        dbg_info("do not process PYQT6 code")
         while not re.match(r"^#endif", CONTEXT.current_line):
             CONTEXT.current_line = read_line()
 
@@ -1835,13 +1812,12 @@ def try_skip_sip_directives():
         while not re.match(r"^ *[/]*% *End", CONTEXT.current_line):
             write_output("COD", CONTEXT.current_line + "\n")
             CONTEXT.current_line = read_line()
-            if CONTEXT.is_qt6:
-                CONTEXT.current_line = re.sub(
-                    r"SIP_SSIZE_T", "Py_ssize_t", CONTEXT.current_line
-                )
-                CONTEXT.current_line = re.sub(
-                    r"SIPLong_AsLong", "PyLong_AsLong", CONTEXT.current_line
-                )
+            CONTEXT.current_line = re.sub(
+                r"SIP_SSIZE_T", "Py_ssize_t", CONTEXT.current_line
+            )
+            CONTEXT.current_line = re.sub(
+                r"SIPLong_AsLong", "PyLong_AsLong", CONTEXT.current_line
+            )
             CONTEXT.current_line = re.sub(
                 r"^ *[/]*% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$",
                 r"%\1\2",
@@ -2204,7 +2180,9 @@ def process_class_decl():
                 r"\b(?P<tpl>(?!QList)\w+)< *(?P<cls1>(\w|::)+) *(, *(?P<cls2>(\w|::)+)? *(, *(?P<cls3>(\w|::)+)? *)?)? *>"
             )
             m = tpl_replace_pattern.sub(
-                lambda tpl_match: f"{tpl_match.group('tpl') or ''}{tpl_match.group('cls1') or ''}{tpl_match.group('cls2') or ''}{tpl_match.group('cls3') or ''}Base",
+                lambda tpl_match: (
+                    f"{tpl_match.group('tpl') or ''}{tpl_match.group('cls1') or ''}{tpl_match.group('cls2') or ''}{tpl_match.group('cls3') or ''}Base"
+                ),
                 m,
             )
             m = re.sub(r"(\w+)< *(?:\w|::)+ *>", "", m)
@@ -2428,7 +2406,7 @@ def try_save_comments():
 
 def try_process_enum_decl():
     # Handle Q_DECLARE_FLAGS in Qt6
-    if CONTEXT.is_qt6 and re.match(
+    if re.match(
         r"^\s*Q_DECLARE_FLAGS\s*\(\s*(\w+)\s*,\s*(\w+)\s*\)", CONTEXT.current_line
     ):
         flags_name = re.search(
@@ -2509,15 +2487,14 @@ def try_process_enum_decl():
 
         if enum_type in ["int", "quint32"]:
             CONTEXT.enum_int_types.append(f"{CONTEXT.actual_class}.{enum_qualname}")
-            if CONTEXT.is_qt6:
-                enum_decl += f" /BaseType={py_enum_type or 'IntEnum'}/"
+            enum_decl += f" /BaseType={py_enum_type or 'IntEnum'}/"
         elif enum_type:
             exit_with_error(f"Unhandled enum type {enum_type} for {enum_cpp_name}")
         elif isclass:
             CONTEXT.enum_class_non_int_types.append(
                 f"{CONTEXT.actual_class}.{enum_qualname}"
             )
-        elif CONTEXT.is_qt6:
+        else:
             enum_decl += " /BaseType=IntEnum/"
 
         write_output("ENU1", enum_decl)
@@ -2710,7 +2687,7 @@ def try_process_enum_decl():
                                 f"* ``{enum_member}``: {value_comment_indented}"
                             )
 
-                if not is_scope_based and CONTEXT.is_qt6 and enum_member:
+                if not is_scope_based and enum_member:
                     basename = ".".join(CONTEXT.class_and_struct)
                     if basename:
                         enum_member = "None_" if enum_member == "None" else enum_member
@@ -2938,38 +2915,24 @@ def process_flags_q_macros():
                 f"{flag} is a flags type, but was not declared with int type. Add ': int' to the enum class declaration line"
             )
         elif py_flag not in CONTEXT.enum_int_types:
-            if CONTEXT.is_qt6:
-                dbg_info("monkey patching operators for non-class enum")
-                if not CONTEXT.has_pushed_force_int:
-                    CONTEXT.output_python.append(
-                        "from enum import Enum\n\n\ndef _force_int(v): return int(v.value) if isinstance(v, Enum) else v\n\n\n"
-                    )
-                    CONTEXT.has_pushed_force_int = True
+            dbg_info("monkey patching operators for non-class enum")
+            if not CONTEXT.has_pushed_force_int:
                 CONTEXT.output_python.append(
-                    f"{py_flag}.__bool__ = lambda flag: bool(_force_int(flag))\n"
+                    "from enum import Enum\n\n\ndef _force_int(v): return int(v.value) if isinstance(v, Enum) else v\n\n\n"
                 )
-                CONTEXT.output_python.append(
-                    f"{py_flag}.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)\n"
-                )
-                CONTEXT.output_python.append(
-                    f"{py_flag}.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)\n"
-                )
-                CONTEXT.output_python.append(
-                    f"{py_flag}.__or__ = lambda flag1, flag2: {py_flag}(_force_int(flag1) | _force_int(flag2))\n"
-                )
-
-        if not CONTEXT.is_qt6:
-            for patched_type in CONTEXT.enum_monkey_patched_types:
-                if flags == f"{patched_type[0]}::{patched_type[1]}":
-                    dbg_info("monkey patching flags")
-                    if not CONTEXT.has_pushed_force_int:
-                        CONTEXT.output_python.append(
-                            "from enum import Enum\n\n\ndef _force_int(v): return int(v.value) if isinstance(v, Enum) else v\n\n\n"
-                        )
-                        CONTEXT.has_pushed_force_int = True
-                    CONTEXT.output_python.append(
-                        f"{py_flag}.__or__ = lambda flag1, flag2: {patched_type[0]}.{patched_type[1]}(_force_int(flag1) | _force_int(flag2))\n"
-                    )
+                CONTEXT.has_pushed_force_int = True
+            CONTEXT.output_python.append(
+                f"{py_flag}.__bool__ = lambda flag: bool(_force_int(flag))\n"
+            )
+            CONTEXT.output_python.append(
+                f"{py_flag}.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)\n"
+            )
+            CONTEXT.output_python.append(
+                f"{py_flag}.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)\n"
+            )
+            CONTEXT.output_python.append(
+                f"{py_flag}.__or__ = lambda flag1, flag2: {py_flag}(_force_int(flag1) | _force_int(flag2))\n"
+            )
 
 
 def process_prepend_function_specifier():
@@ -3074,18 +3037,18 @@ def process_method_decl():
             ):
                 CONTEXT.virtual_methods[class_name][CONTEXT.current_method_name] = False
         else:
-            CONTEXT.virtual_methods[class_name][
-                CONTEXT.current_method_name
-            ] = is_virtual
+            CONTEXT.virtual_methods[class_name][CONTEXT.current_method_name] = (
+                is_virtual
+            )
 
         if is_abstract:
             CONTEXT.abstract_methods[class_name][CONTEXT.current_method_name] = True
 
         if CONTEXT.multiline_definition != MultiLineType.Method:
             if CONTEXT.current_method_is_override:
-                CONTEXT.overridden_methods[class_name][
-                    CONTEXT.current_method_name
-                ] = True
+                CONTEXT.overridden_methods[class_name][CONTEXT.current_method_name] = (
+                    True
+                )
 
         if CONTEXT.access[-1] == Visibility.Signals:
             CONTEXT.current_signal_args = []
@@ -3240,9 +3203,9 @@ def process_comments():
             dbg_info(
                 f"storing attribute docstring for {class_name} : {attribute_name_match.group(2)}"
             )
-            CONTEXT.attribute_docstrings[class_name][
-                attribute_name_match.group(2)
-            ] = CONTEXT.comment
+            CONTEXT.attribute_docstrings[class_name][attribute_name_match.group(2)] = (
+                CONTEXT.comment
+            )
 
             try:
                 typehint = convert_type(attribute_name_match.group(1))
@@ -3253,9 +3216,9 @@ def process_comments():
             dbg_info(
                 f"storing attribute typehint {typehint} for {class_name} (was {attribute_name_match.group(1)})"
             )
-            CONTEXT.attribute_typehints[class_name][
-                attribute_name_match.group(2)
-            ] = typehint
+            CONTEXT.attribute_typehints[class_name][attribute_name_match.group(2)] = (
+                typehint
+            )
         elif (
             CONTEXT.current_fully_qualified_struct_name()
             and re.search(r"\s*struct ", CONTEXT.current_line)
@@ -3794,7 +3757,6 @@ def generate_python_output():
             )
 
     if args.python_output and CONTEXT.output_python:
-
         with open(args.python_output, "w") as f:
             f.write("".join(python_header()))
             f.write("".join(CONTEXT.output_python))
@@ -3806,7 +3768,6 @@ if __name__ == "__main__":
         description="Convert header file to SIP and Python"
     )
     parser.add_argument("-debug", action="store_true", help="Enable debug mode")
-    parser.add_argument("-qt6", action="store_true", help="Enable Qt6 mode")
     parser.add_argument("-sip_output", help="SIP output file")
     parser.add_argument("-python_output", help="Python output file")
     parser.add_argument("-class_map", help="Class map file")
@@ -3825,7 +3786,6 @@ if __name__ == "__main__":
         sys.exit(1)
 
     CONTEXT.debug = args.debug
-    CONTEXT.is_qt6 = args.qt6
     CONTEXT.header_file = args.headerfile
     CONTEXT.input_lines = input_lines
     CONTEXT.line_count = len(input_lines)

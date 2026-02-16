@@ -19,13 +19,14 @@
 #include "qgscoordinatetransform.h"
 #include "qgsquantizedmeshdataprovider.h"
 #include "qgsrectangle.h"
-#include "qgsterrainentity.h"
 #include "qgsterraingenerator.h"
 #include "qgstiledsceneindex.h"
 #include "qgstiledscenelayer.h"
 #include "qgstiles.h"
 
 #include <QPointer>
+
+class QgsTerrainEntity;
 
 #define SIP_NO_FILE
 

@@ -19,6 +19,7 @@
 #include "qgs3drendercontext.h"
 #include "qgs3dsceneexporter.h"
 #include "qgs3dutils.h"
+#include "qgscameracontroller.h"
 #include "qgsdemterrainsettings.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsflatterrainsettings.h"

@@ -11,9 +11,9 @@ __date__ = "2021-07-30"
 __copyright__ = "Copyright 2021, The QGIS Project"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import Qt, QDateTime, QVariant, QTime, QDate
-
+from providertestbase import ProviderTestCase
 from qgis.core import (
     QgsFeature,
     QgsPathResolver,
@@ -22,10 +22,8 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
-from providertestbase import ProviderTestCase
+from qgis.PyQt.QtCore import QDate, QDateTime, Qt, QTime, QVariant
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -33,7 +31,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsGpxProvider(QgisTestCase, ProviderTestCase):
-
     @classmethod
     def createLayer(cls):
         vl = QgsVectorLayer(

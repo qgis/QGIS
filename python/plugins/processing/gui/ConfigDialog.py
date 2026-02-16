@@ -22,34 +22,33 @@ __copyright__ = "(C) 2012, Victor Olaya"
 import os
 import warnings
 
-from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt, QEvent
-from qgis.PyQt.QtWidgets import (
-    QFileDialog,
-    QStyle,
-    QMessageBox,
-    QStyledItemDelegate,
-    QLineEdit,
-    QWidget,
-    QToolButton,
-    QHBoxLayout,
-    QComboBox,
-    QPushButton,
-    QApplication,
-)
-from qgis.PyQt.QtGui import QIcon, QStandardItemModel, QStandardItem, QCursor
-
+from qgis.core import NULL, QgsApplication, QgsSettings
 from qgis.gui import (
     QgsDoubleSpinBox,
-    QgsSpinBox,
-    QgsOptionsPageWidget,
     QgsOptionsDialogHighlightWidget,
+    QgsOptionsPageWidget,
+    QgsSpinBox,
 )
-from qgis.core import NULL, QgsApplication, QgsSettings
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import QEvent, Qt
+from qgis.PyQt.QtGui import QCursor, QIcon, QStandardItem, QStandardItemModel
+from qgis.PyQt.QtWidgets import (
+    QApplication,
+    QComboBox,
+    QFileDialog,
+    QHBoxLayout,
+    QLineEdit,
+    QMessageBox,
+    QPushButton,
+    QStyle,
+    QStyledItemDelegate,
+    QToolButton,
+    QWidget,
+)
 from qgis.utils import OverrideCursor
 
-from processing.core.ProcessingConfig import ProcessingConfig, settingsWatcher, Setting
 from processing.core.Processing import Processing
+from processing.core.ProcessingConfig import ProcessingConfig, Setting, settingsWatcher
 from processing.gui.DirectorySelectorDialog import DirectorySelectorDialog
 from processing.gui.menus import defaultMenuEntries, menusSettingsGroup
 
@@ -60,7 +59,6 @@ with warnings.catch_warnings():
 
 
 class ConfigOptionsPage(QgsOptionsPageWidget):
-
     def __init__(self, parent):
         super().__init__(parent)
         self.config_widget = ConfigDialog(False)
@@ -81,7 +79,6 @@ class ConfigOptionsPage(QgsOptionsPageWidget):
 
 
 class ProcessingTreeHighlight(QgsOptionsDialogHighlightWidget):
-
     def __init__(self, config_dialog):
         super().__init__(config_dialog.tree)
         self.config_dialog = config_dialog
@@ -97,7 +94,6 @@ class ProcessingTreeHighlight(QgsOptionsDialogHighlightWidget):
 
 
 class ConfigDialog(BASE, WIDGET):
-
     def __init__(self, showSearch=True):
         super().__init__(None)
         self.setupUi(self)
@@ -352,7 +348,6 @@ class ConfigDialog(BASE, WIDGET):
 
 
 class SettingItem(QStandardItem):
-
     def __init__(self, setting):
         QStandardItem.__init__(self)
         self.setting = setting
@@ -369,7 +364,6 @@ class SettingItem(QStandardItem):
 
 
 class SettingDelegate(QStyledItemDelegate):
-
     def __init__(self, parent=None):
         QStyledItemDelegate.__init__(self, parent)
 
@@ -455,7 +449,6 @@ class SettingDelegate(QStyledItemDelegate):
 
 
 class FileDirectorySelector(QWidget):
-
     def __init__(self, parent=None, selectFile=False, placeholder=""):
         QWidget.__init__(self, parent)
 
@@ -506,7 +499,6 @@ class FileDirectorySelector(QWidget):
 
 
 class MultipleDirectorySelector(QWidget):
-
     def __init__(self, parent=None, placeholder=""):
         QWidget.__init__(self, parent)
 

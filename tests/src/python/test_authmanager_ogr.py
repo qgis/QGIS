@@ -9,13 +9,14 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
+import unittest
+
 from qgis.core import (
     QgsApplication,
     QgsAuthMethodConfig,
     QgsProviderRegistry,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 __author__ = "Alessandro Pasotti"
 __date__ = "14/11/2017"
@@ -44,7 +45,6 @@ TEST_URIS = {
 
 
 class TestAuthManager(QgisTestCase):
-
     @classmethod
     def setUpAuth(cls):
         """Run before all tests and set up authentication"""

@@ -22,11 +22,10 @@ __copyright__ = "(C) 2012, Victor Olaya"
 import os
 import warnings
 
+from qgis.core import QgsProcessingParameterNumber
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import pyqtSignal
 from qgis.PyQt.QtWidgets import QDialog
-
-from qgis.core import QgsProcessingParameterNumber
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 

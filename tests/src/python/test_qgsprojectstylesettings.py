@@ -10,19 +10,9 @@ __author__ = "Mathieu Pellerin"
 __date__ = "09/05/2022"
 __copyright__ = "Copyright 2019, The QGIS Project"
 
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QDir,
-    QEvent,
-    QModelIndex,
-    Qt,
-    QTemporaryDir,
-    QTemporaryFile,
-    QT_VERSION,
-)
-from qgis.PyQt.QtGui import QColor, QColorSpace, QFont
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
+import os
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsGradientColorRamp,
@@ -36,11 +26,20 @@ from qgis.core import (
     QgsTextFormat,
     QgsWkbTypes,
 )
-
-import unittest
-import os
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import (
+    QT_VERSION,
+    QCoreApplication,
+    QDir,
+    QEvent,
+    QModelIndex,
+    Qt,
+    QTemporaryDir,
+    QTemporaryFile,
+)
+from qgis.PyQt.QtGui import QColor, QColorSpace, QFont
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 try:
@@ -53,7 +52,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsProjectViewSettings(QgisTestCase):
-
     def testDefaultSymbol(self):
         project = QgsProject()
         p = project.styleSettings()

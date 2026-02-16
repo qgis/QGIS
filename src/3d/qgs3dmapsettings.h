@@ -787,6 +787,23 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     bool showDebugPanel() const;
 
+    /**
+     * Returns whether 2D map overlay is enabled
+     *
+     * \see setIs2DMapOverlayEnabled()
+     * \since QGIS 4.0
+     */
+    bool is2DMapOverlayEnabled() const;
+
+    /**
+     * Sets whether 2D map overlay is enabled
+     *
+     * \see is2DMapOverlayEnabled()
+     * \since QGIS 4.0
+     */
+    void setIs2DMapOverlayEnabled( bool enabled );
+
+
   signals:
 
     /**
@@ -1045,6 +1062,13 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void originChanged();
 
+    /**
+     * Emitted when the 2D map overlay is enabled or disabled
+     * \see setIs2DMapOverlayEnabled()
+     * \since QGIS 4.0
+     */
+    void show2DMapOverlayChanged();
+
   private:
 #ifdef SIP_RUN
     Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );
@@ -1117,6 +1141,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QgsRectangle mExtent; //!< 2d extent used to limit the 3d view
 
     bool mShowExtentIn2DView = false;
+
+    bool mShow2DMapOverlay = false;
 };
 
 

@@ -7,18 +7,17 @@ the Free Software Foundation; either version 2 of the License, or
 """
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QDate, QTime, QDateTime
 from qgis.core import (
     Qgis,
-    QgsRasterLayerUtils,
-    QgsRasterLayer,
-    QgsDoubleRange,
     QgsDateTimeRange,
+    QgsDoubleRange,
+    QgsRasterLayer,
+    QgsRasterLayerUtils,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -28,7 +27,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsRasterLayerUtils(QgisTestCase):
-
     def test_rendered_band_for_elevation_and_temporal_ranges(self):
         raster_layer = QgsRasterLayer(os.path.join(TEST_DATA_DIR, "landsat_4326.tif"))
         self.assertTrue(raster_layer.isValid())

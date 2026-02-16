@@ -22,40 +22,37 @@ __copyright__ = "(C) 2012, Victor Olaya"
 import datetime
 import time
 
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtWidgets import QMessageBox, QPushButton, QDialogButtonBox
-from qgis.PyQt.QtGui import QColor, QPalette
-
 from qgis.core import (
     Qgis,
     QgsApplication,
-    QgsProcessingAlgRunnerTask,
-    QgsProcessingOutputHtml,
     QgsProcessingAlgorithm,
-    QgsProxyProgressTask,
+    QgsProcessingAlgRunnerTask,
     QgsProcessingFeatureSourceDefinition,
+    QgsProcessingOutputHtml,
+    QgsProxyProgressTask,
 )
 from qgis.gui import (
     QgsGui,
     QgsProcessingAlgorithmDialogBase,
-    QgsProcessingParametersGenerator,
     QgsProcessingContextGenerator,
+    QgsProcessingParametersGenerator,
 )
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtGui import QColor, QPalette
+from qgis.PyQt.QtWidgets import QDialogButtonBox, QMessageBox, QPushButton
 from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingResults import resultsList
-from processing.gui.ParametersPanel import ParametersPanel
-from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
-from processing.gui.AlgorithmExecutor import executeIterating, execute, execute_in_place
+from processing.gui.AlgorithmExecutor import execute, execute_in_place, executeIterating
+from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
+from processing.gui.ParametersPanel import ParametersPanel
 from processing.gui.Postprocessing import handleAlgorithmResults
-
 from processing.tools import dataobjects
 
 
 class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
-
     def __init__(self, alg, in_place=False, parent=None):
         super().__init__(parent)
 
@@ -289,19 +286,9 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 str_seconds = [self.tr("second"), self.tr("seconds")][seconds != 1]
 
                 if hours > 0:
-                    elapsed = "{0:0.2f} {1} ({2} {3} {4} {5} {6:0.0f} {1})".format(
-                        delta_t,
-                        str_seconds,
-                        hours,
-                        str_hours,
-                        minutes,
-                        str_minutes,
-                        seconds,
-                    )
+                    elapsed = f"{delta_t:0.2f} {str_seconds} ({hours} {str_hours} {minutes} {str_minutes} {seconds:0.0f} {str_seconds})"
                 elif minutes > 0:
-                    elapsed = "{0:0.2f} {1} ({2} {3} {4:0.0f} {1})".format(
-                        delta_t, str_seconds, minutes, str_minutes, seconds
-                    )
+                    elapsed = f"{delta_t:0.2f} {str_seconds} ({minutes} {str_minutes} {seconds:0.0f} {str_seconds})"
                 else:
                     elapsed = f"{delta_t:0.2f} {str_seconds}"
 
@@ -453,7 +440,6 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         generated_html_outputs = False
 
         if not in_place and self.iterateParam is None:
-
             # add html results to results dock
             for out in self.algorithm().outputDefinitions():
                 if (

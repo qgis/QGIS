@@ -6,17 +6,16 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.core import Qgis, QgsProject, QgsMeshLayer, QgsMeshDatasetIndex
-import unittest
 import tempfile
+import unittest
 
-from qgis.testing import start_app, QgisTestCase
+from qgis.core import Qgis, QgsMeshDatasetIndex, QgsMeshLayer, QgsProject
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsMeshLayer(QgisTestCase):
-
     def test_dataset_group_metadata(self):
         """
         Test datasetGroupMetadata

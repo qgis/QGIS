@@ -46,10 +46,10 @@ list is usually recognized as higher, except following suffixes:
 ALPHA, BETA, RC, PREVIEW and TRUNK which make the version number lower.
 """
 
-from qgis.core import Qgis
-
 import re
-from packaging.version import Version, InvalidVersion
+
+from packaging.version import InvalidVersion, Version
+from qgis.core import Qgis
 
 # ------------------------------------------------------------------------ #
 

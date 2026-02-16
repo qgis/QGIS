@@ -23,32 +23,30 @@ __copyright__ = "(C) 2009, Martin Dobias"
 QGIS utilities module
 
 """
-from typing import List, Dict, Optional
+import builtins
+import configparser
+import functools
+import glob
+import os
+import os.path
+import sys
+import time
+import traceback
+import warnings
+from typing import Optional
 
+from qgis.core import Qgis, QgsMessageLog, QgsMessageOutput, qgsfunction
+from qgis.gui import QgsMessageBar
 from qgis.PyQt.QtCore import (
     QT_VERSION_STR,
     QCoreApplication,
     QLocale,
     QThread,
-    qDebug,
     QUrl,
+    qDebug,
 )
 from qgis.PyQt.QtGui import QDesktopServices
-from qgis.PyQt.QtWidgets import QPushButton, QApplication
-from qgis.core import Qgis, QgsMessageLog, qgsfunction, QgsMessageOutput
-from qgis.gui import QgsMessageBar
-
-import os
-import sys
-import traceback
-import glob
-import os.path
-import configparser
-import warnings
-import time
-import functools
-
-import builtins
+from qgis.PyQt.QtWidgets import QApplication, QPushButton
 
 builtins.__dict__["unicode"] = str
 builtins.__dict__["basestring"] = str
@@ -825,6 +823,7 @@ def closeProjectMacro():
 def _list_project_expression_functions():
     """Get a list of expression functions stored in the current project"""
     import ast
+
     from qgis.core import QgsProject
 
     functions = []
@@ -858,8 +857,8 @@ def clean_project_expression_functions():
             QgsExpression.unregisterFunction(function)
 
         # Reload user expressions
-        from qgis.core import QgsApplication
         import expressions
+        from qgis.core import QgsApplication
 
         userpythonhome = os.path.join(QgsApplication.qgisSettingsDirPath(), "python")
         expressionspath = os.path.join(userpythonhome, "expressions")
@@ -886,8 +885,8 @@ serverIface = None
 
 
 def initServerInterface(pointer):
-    from qgis.server import QgsServerInterface
     from qgis.PyQt.sip import wrapinstance
+    from qgis.server import QgsServerInterface
 
     sys.excepthook = sys.__excepthook__
     global serverIface
@@ -928,8 +927,8 @@ def startServerPlugin(packageName: str):
 def spatialite_connect(*args, **kwargs):
     """returns a dbapi2.Connection to a SpatiaLite db
     using the "mod_spatialite" extension (python3)"""
-    import sqlite3
     import re
+    import sqlite3
 
     def fcnRegexp(pattern, string):
         result = re.search(pattern, string)
@@ -1048,24 +1047,8 @@ def _import(name, globals={}, locals={}, fromlist=[], level=None):
     if level is None:
         level = 0
 
-    if "PyQt4" in name:
-        msg = (
-            "PyQt4 classes cannot be imported in QGIS 3.x.\n"
-            "Use {} or preferably the version independent {} import instead.".format(
-                name.replace("PyQt4", "PyQt5"), name.replace("PyQt4", "qgis.PyQt")
-            )
-        )
-        raise ImportError(msg)
     qt_version = int(QT_VERSION_STR.split(".")[0])
-    if qt_version == 5 and "PyQt6" in name:
-        msg = (
-            "PyQt6 classes cannot be imported in a QGIS build based on Qt5.\n"
-            "Use {} or preferably the version independent {} import instead (where available).".format(
-                name.replace("PyQt6", "PyQt5"), name.replace("PyQt6", "qgis.PyQt")
-            )
-        )
-        raise ImportError(msg)
-    elif qt_version == 6 and "PyQt5" in name:
+    if qt_version == 6 and "PyQt5" in name:
         msg = (
             "PyQt5 classes cannot be imported in a QGIS build based on Qt6.\n"
             "Use {} or preferably the version independent {} import instead (where available).".format(
@@ -1130,8 +1113,9 @@ def processing_algorithm_from_script(filepath: str):
 
     Warning -- this ALSO execs the file as a script, so treat with caution!
     """
-    import sys
     import inspect
+    import sys
+
     from qgis.processing import alg
 
     filename = filepath.replace("\\\\", "/")

@@ -18,11 +18,10 @@
 #ifndef QGSPOINTCLOUDSUBINDEX_H
 #define QGSPOINTCLOUDSUBINDEX_H
 
-#include <memory>
-
 #include "qgsgeometry.h"
 #include "qgspointcloudindex.h"
 #include "qgsrange.h"
+#include "qgsrectangle.h"
 
 #include <QString>
 

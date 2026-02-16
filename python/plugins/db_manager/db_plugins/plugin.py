@@ -18,42 +18,38 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from qgis.PyQt.QtCore import Qt, QObject, pyqtSignal, QByteArray
-
-from qgis.PyQt.QtWidgets import (
-    QFormLayout,
-    QComboBox,
-    QCheckBox,
-    QDialogButtonBox,
-    QPushButton,
-    QLabel,
-    QApplication,
-    QAction,
-    QMenu,
-    QInputDialog,
-    QMessageBox,
-    QDialog,
-    QWidget,
-)
-
-from qgis.PyQt.QtGui import QKeySequence
-
 from qgis.core import (
     Qgis,
     QgsApplication,
-    QgsSettings,
+    QgsCoordinateReferenceSystem,
     QgsMapLayerType,
-    QgsWkbTypes,
+    QgsMessageLog,
+    QgsProject,
     QgsProviderConnectionException,
     QgsProviderRegistry,
-    QgsVectorLayer,
     QgsRasterLayer,
-    QgsProject,
-    QgsMessageLog,
-    QgsCoordinateReferenceSystem,
+    QgsSettings,
+    QgsVectorLayer,
+    QgsWkbTypes,
 )
-
 from qgis.gui import QgsMessageBarItem, QgsProjectionSelectionWidget
+from qgis.PyQt.QtCore import QByteArray, QObject, Qt, pyqtSignal
+from qgis.PyQt.QtGui import QKeySequence
+from qgis.PyQt.QtWidgets import (
+    QAction,
+    QApplication,
+    QCheckBox,
+    QComboBox,
+    QDialog,
+    QDialogButtonBox,
+    QFormLayout,
+    QInputDialog,
+    QLabel,
+    QMenu,
+    QMessageBox,
+    QPushButton,
+    QWidget,
+)
 
 from ..db_plugins import createDbPlugin
 
@@ -88,7 +84,6 @@ class ConnectionError(BaseError):
 
 
 class DbError(BaseError):
-
     def __init__(self, e, query=None):
         BaseError.__init__(self, e)
         self.query = str(query) if query is not None else None
@@ -266,7 +261,6 @@ class DbItemObject(QObject):
 
 
 class Database(DbItemObject):
-
     def __init__(self, dbplugin, uri):
         super().__init__(dbplugin)
         self.connector = self.connectorsFactory(uri)
@@ -751,7 +745,6 @@ class Database(DbItemObject):
 
 
 class Schema(DbItemObject):
-
     def __init__(self, db):
         DbItemObject.__init__(self, db)
         self.oid = self.name = self.owner = self.perms = None
@@ -898,12 +891,7 @@ class Table(DbItemObject):
 
     def mimeUri(self):
         layerType = "raster" if self.type == Table.RasterType else "vector"
-        return "{}:{}:{}:{}".format(
-            layerType,
-            self.database().dbplugin().providerName(),
-            self.name,
-            self.uri().uri(False),
-        )
+        return f"{layerType}:{self.database().dbplugin().providerName()}:{self.name}:{self.uri().uri(False)}"
 
     def toMapLayer(self, geometryType=None, crs=None):
         provider = self.database().dbplugin().providerName()
@@ -1225,7 +1213,6 @@ class Table(DbItemObject):
 
 
 class VectorTable(Table):
-
     def __init__(self, db, schema=None, parent=None):
         if not hasattr(
             self, "type"
@@ -1438,7 +1425,6 @@ class VectorTable(Table):
 
 
 class RasterTable(Table):
-
     def __init__(self, db, schema=None, parent=None):
         if not hasattr(
             self, "type"
@@ -1457,7 +1443,6 @@ class RasterTable(Table):
 
 
 class TableSubItemObject(QObject):
-
     def __init__(self, table):
         QObject.__init__(self, table)
 
@@ -1469,7 +1454,6 @@ class TableSubItemObject(QObject):
 
 
 class TableField(TableSubItemObject):
-
     def __init__(self, table):
         TableSubItemObject.__init__(self, table)
         self.num = self.name = self.dataType = self.modifier = self.notNull = (
@@ -1615,7 +1599,6 @@ class TableConstraint(TableSubItemObject):
 
 
 class TableIndex(TableSubItemObject):
-
     def __init__(self, table):
         TableSubItemObject.__init__(self, table)
         self.name = self.columns = self.isUnique = None
@@ -1672,7 +1655,6 @@ class TableTrigger(TableSubItemObject):
 
 
 class TableRule(TableSubItemObject):
-
     def __init__(self, table):
         TableSubItemObject.__init__(self, table)
         self.name = self.definition = None

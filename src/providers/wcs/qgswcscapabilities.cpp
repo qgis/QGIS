@@ -1293,7 +1293,7 @@ void QgsWcsCapabilities::showMessageBox( const QString &title, const QString &te
 {
   QgsMessageOutput *message = QgsMessageOutput::createMessageOutput();
   message->setTitle( title );
-  message->setMessage( text, QgsMessageOutput::MessageText );
+  message->setMessage( text, Qgis::StringFormat::PlainText );
   message->showMessage();
 }
 

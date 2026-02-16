@@ -21,18 +21,18 @@ __copyright__ = "(C) 2015, Giovanni Manghi"
 
 from qgis.core import (
     QgsProcessingException,
-    QgsProcessingParameterDefinition,
-    QgsProcessingParameterRasterLayer,
     QgsProcessingParameterBand,
-    QgsProcessingParameterNumber,
+    QgsProcessingParameterDefinition,
     QgsProcessingParameterEnum,
     QgsProcessingParameterExtent,
-    QgsProcessingParameterString,
+    QgsProcessingParameterNumber,
     QgsProcessingParameterRasterDestination,
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterString,
 )
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
-
 from processing.tools.system import isWindows
 
 

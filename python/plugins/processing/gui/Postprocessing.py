@@ -22,18 +22,18 @@ __copyright__ = "(C) 2012, Victor Olaya"
 import traceback
 from typing import Optional
 
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
     Qgis,
+    QgsMapLayer,
+    QgsMessageLog,
+    QgsProcessingAlgorithm,
+    QgsProcessingContext,
     QgsProcessingFeedback,
     QgsProcessingUtils,
-    QgsMapLayer,
     QgsWkbTypes,
-    QgsMessageLog,
-    QgsProcessingContext,
-    QgsProcessingAlgorithm,
 )
 from qgis.gui import QgsProcessingGuiUtils
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig

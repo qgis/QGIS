@@ -13,7 +13,8 @@ __date__ = "05.06.2018"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
 
-from qgis.PyQt.QtCore import QVariant
+import unittest
+
 from qgis.core import (
     QgsAnnotationLayer,
     QgsBookmark,
@@ -62,14 +63,13 @@ from qgis.core import (
     QgsVectorTileLayer,
     QgsVertexId,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QVariant
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestPython__repr__(QgisTestCase):
-
     def testQgsGeometryRepr(self):
 
         g = QgsGeometry()

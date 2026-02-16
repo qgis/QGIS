@@ -113,7 +113,6 @@ The development version
     typedef QFlags<Qgis::AuthConfigurationStorageCapability> AuthConfigurationStorageCapabilities;
 
 
-
     enum MessageLevel /BaseType=IntEnum/
     {
       Info,
@@ -121,6 +120,12 @@ The development version
       Critical,
       Success,
       NoLevel,
+    };
+
+    enum class StringFormat /BaseType=IntEnum/
+      {
+      PlainText,
+      Html,
     };
 
     enum class NetworkRequestFlag /BaseType=IntFlag/

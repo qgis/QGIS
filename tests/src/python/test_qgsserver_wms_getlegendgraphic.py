@@ -19,34 +19,30 @@ import os
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ["QT_HASH_SEED"] = "1"
 
-import re
 import json
-import urllib.request
-import urllib.parse
+import re
 import urllib.error
-
-from qgis.testing import unittest
-from qgis.PyQt.QtCore import QSize
+import urllib.parse
+import urllib.request
 
 import osgeo.gdal  # NOQA
-
-from test_qgsserver_wms import TestQgsServerWMSTestBase
 from qgis.core import (
-    QgsProject,
-    QgsSymbol,
-    QgsWkbTypes,
     QgsMarkerSymbol,
-    QgsRuleBasedRenderer,
-    QgsVectorLayer,
+    QgsProject,
     QgsRasterLayer,
+    QgsRuleBasedRenderer,
+    QgsSymbol,
+    QgsVectorLayer,
+    QgsWkbTypes,
 )
-
+from qgis.PyQt.QtCore import QSize
 from qgis.server import (
     QgsBufferServerRequest,
     QgsBufferServerResponse,
     QgsServer,
 )
-
+from qgis.testing import unittest
+from test_qgsserver_wms import TestQgsServerWMSTestBase
 from utilities import (
     unitTestDataPath,
 )
@@ -1751,14 +1747,14 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
     def test_wms_GetLegendGraphic_JSON(self):
         self.wms_request_compare(
             "GetLegendGraphic",
-            "&LAYERS=testlayer%20%C3%A8%C3%A9" "&FORMAT=application/json",
+            "&LAYERS=testlayer%20%C3%A8%C3%A9&FORMAT=application/json",
             ["wms_getlegendgraphic_json", "wms_getlegendgraphic_json2"],
         )
 
     def test_wms_GetLegendGraphic_JSON_multiple_layers(self):
         self.wms_request_compare(
             "GetLegendGraphic",
-            "&LAYERS=testlayer%20%C3%A8%C3%A9,testlayer3" "&FORMAT=application/json",
+            "&LAYERS=testlayer%20%C3%A8%C3%A9,testlayer3&FORMAT=application/json",
             [
                 "wms_getlegendgraphic_json_multiple_layers",
                 "wms_getlegendgraphic_json_multiple_layers2",
@@ -1769,7 +1765,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
     def test_wms_GetLegendGraphic_JSON_multiple_symbol(self):
         self.wms_request_compare(
             "GetLegendGraphic",
-            "&LAYERS=cdb_lines" "&FORMAT=application/json",
+            "&LAYERS=cdb_lines&FORMAT=application/json",
             [
                 "wms_getlegendgraphic_json_multiple_symbol",
                 "wms_getlegendgraphic_json_multiple_symbol2",

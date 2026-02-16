@@ -18,18 +18,17 @@ email                : hugo dot mercier at oslandia dot com
 """
 
 # this will disable the dbplugin if the connector raise an ImportError
-from .connector import VLayerConnector
-
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtGui import QIcon
 from qgis.core import (
     QgsApplication,
-    QgsVectorLayer,
     QgsProject,
+    QgsVectorLayer,
     QgsVirtualLayerDefinition,
 )
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtGui import QIcon
 
-from ..plugin import DBPlugin, Database, Table, VectorTable, TableField
+from ..plugin import Database, DBPlugin, Table, TableField, VectorTable
+from .connector import VLayerConnector
 
 
 def classFactory():
@@ -37,7 +36,6 @@ def classFactory():
 
 
 class VLayerDBPlugin(DBPlugin):
-
     @classmethod
     def icon(self):
         return QgsApplication.getThemeIcon("/mIconVirtualLayer.svg")
@@ -81,7 +79,6 @@ class VLayerDBPlugin(DBPlugin):
 
 
 class FakeDatabase(Database):
-
     def __init__(self, connection, uri):
         Database.__init__(self, connection, uri)
 
@@ -147,16 +144,13 @@ class FakeDatabase(Database):
         return True
 
     def spatialIndexClause(self, src_table, src_column, dest_table, dest_column):
-        return '"{}"._search_frame_ = "{}"."{}"'.format(
-            src_table, dest_table, dest_column
-        )
+        return f'"{src_table}"._search_frame_ = "{dest_table}"."{dest_column}"'
 
     def supportsComment(self):
         return False
 
 
 class LTable(Table):
-
     def __init__(self, row, db, schema=None):
         Table.__init__(self, db, None)
         self.name, self.isView, self.isSysTable = row
@@ -174,7 +168,6 @@ class LTable(Table):
 
 
 class LVectorTable(LTable, VectorTable):
-
     def __init__(self, row, db, schema=None):
         LTable.__init__(self, row[:-5], db, schema)
         VectorTable.__init__(self, db, schema)
@@ -212,7 +205,6 @@ class LVectorTable(LTable, VectorTable):
 
 
 class LTableField(TableField):
-
     def __init__(self, row, table):
         TableField.__init__(self, table)
         (

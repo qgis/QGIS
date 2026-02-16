@@ -10,20 +10,19 @@ __author__ = "Nyall Dawson"
 __date__ = "04/06/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
-from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtTest import QSignalSpy
+import unittest
+
 from qgis.core import QgsTextFormat
 from qgis.gui import QgsFontButton, QgsMapCanvas
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from utilities import getTestFont
 
 start_app()
 
 
 class TestQgsFontButton(QgisTestCase):
-
     def testGettersSetters(self):
         button = QgsFontButton()
         canvas = QgsMapCanvas()

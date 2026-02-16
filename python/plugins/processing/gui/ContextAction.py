@@ -24,7 +24,6 @@ from qgis.PyQt.QtGui import QIcon
 
 
 class ContextAction:
-
     def __init__(self):
         self.name = None
         self.is_separator = False

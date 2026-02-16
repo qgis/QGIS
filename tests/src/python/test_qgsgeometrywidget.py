@@ -10,23 +10,23 @@ __author__ = "Nyall Dawson"
 __date__ = "15/02/2023"
 __copyright__ = "Copyright 2023, The QGIS Project"
 
-from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtTest import QSignalSpy
+import unittest
+
 from qgis.core import (
-    QgsWkbTypes,
+    QgsCoordinateReferenceSystem,
     QgsGeometry,
     QgsReferencedGeometry,
-    QgsCoordinateReferenceSystem,
+    QgsWkbTypes,
 )
 from qgis.gui import QgsGeometryWidget
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsGeometryWidget(QgisTestCase):
-
     def testGeometryValue(self):
         widget = QgsGeometryWidget()
 

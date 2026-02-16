@@ -121,6 +121,7 @@ jobs:
                 -D WITH_ORACLE=ON \
                 -D WITH_GEOGRAPHICLIB=OFF \
                 -D WITH_SFCGAL=ON \
+                -D WITH_PROJ_DATA=ON \
                 -D VCPKG_TARGET_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_HOST_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_INSTALL_OPTIONS="--only-binarycaching" \
@@ -246,6 +247,6 @@ jobs:
           body: |
             ### 🍎 MacOS Qt6 builds
             Download [MacOS Qt6 builds of this PR for testing](${{ steps.artifact-mac-qt6.outputs.artifact-url }}).
-            _This installer is not signed, `control`+click > `open` the app to avoid the warning_
+            _This app is not notarized, run `sudo xattr -d com.apple.quarantine /Applications/QGIS*.app` to avoid the warning_
             *(Built from commit ${{ github.event.pull_request.head.sha }})*
           pr: ${{ github.event.number }}

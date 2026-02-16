@@ -4,54 +4,40 @@ import QtQuick.Controls
 import QtQuick.Controls.Material.impl
 import QtQuick.Effects
 
-Item {
+Rectangle {
   id: root
   implicitWidth: 280
-  implicitHeight: 100
+  implicitHeight: 120
+  radius: 6
 
-  property int radius: 6
+  property color backgroundColor: "#ffffff"
   property string title: ""
   property string subtitle: ""
+  property string crs: ""
   property string imageSource: ""
   property bool isPinned: false
   property bool isSelected: false
   property bool isPressed: false
+  property bool isEnabled: true
 
   signal clicked(MouseEvent mouse)
 
-  Item {
+  Rectangle {
     id: imageContainer
     anchors.fill: parent
+    color: root.imageSource != "" ? "#ffffff" : root.backgroundColor
+    radius: root.radius
 
     Image {
       id: sourceImage
       anchors.fill: parent
       source: root.imageSource
       fillMode: Image.PreserveAspectCrop
-      visible: false
       cache: false
-      layer.enabled: true
+      opacity: 0.75
+      visible: root.imageSource != ""
     }
 
-    Item {
-      id: mask
-      anchors.fill: parent
-      layer.enabled: true
-      visible: false
-
-      Rectangle {
-        anchors.fill: parent
-        radius: root.radius
-      }
-    }
-
-    MultiEffect {
-      anchors.fill: sourceImage
-      source: sourceImage
-      maskEnabled: true
-      maskSource: mask
-    }
-    
     Rectangle {
       anchors.fill: parent
       radius: root.radius
@@ -79,15 +65,6 @@ Item {
         }
       }
     }
-    
-    Ripple {
-      clip: true
-      width: imageContainer.width
-      height: imageContainer.height
-      pressed: mouseArea.pressed
-      active: mouseArea.pressed
-      color: "#3393b023"
-    }
   }
 
   ColumnLayout {
@@ -102,20 +79,33 @@ Item {
       font.pointSize: Application.font.pointSize
       font.bold: true
       color: "#2d3748"
-      wrapMode: Text.WordWrap
+      wrapMode: Text.Wrap
       elide: Text.ElideRight
-      maximumLineCount: 1
+      opacity: root.isEnabled ? 1.0 : 0.5
+    }
+    
+    Text {
+      Layout.fillWidth: true
+      Layout.rightMargin: 40
+      visible: root.crs != ""
+      text: root.crs
+      font.pointSize: Application.font.pointSize * 0.9
+      color: "#4a5568"
+      wrapMode: Text.NoWrap
+      elide: Text.ElideRight
+      opacity: root.isEnabled ? 1.0 : 0.5
     }
 
     Text {
-      Layout.preferredWidth: parent.width / 3 * 2
+      Layout.fillWidth: true
+      Layout.rightMargin: 40
       Layout.fillHeight: true
       text: root.subtitle
       font.pointSize: Application.font.pointSize * 0.9
       color: "#4a5568"
-      wrapMode: Text.WordWrap
+      wrapMode: Text.Wrap
       elide: Text.ElideRight
-      maximumLineCount: 2
+      opacity: root.isEnabled ? 1.0 : 0.5
     }
   }
 

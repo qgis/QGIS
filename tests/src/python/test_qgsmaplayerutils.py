@@ -11,6 +11,8 @@ __date__ = "2021-05"
 __copyright__ = "Copyright 2021, The QGIS Project"
 
 
+import unittest
+
 from qgis.core import (
     QgsAnnotationLayer,
     QgsCoordinateReferenceSystem,
@@ -22,16 +24,13 @@ from qgis.core import (
     QgsRasterLayer,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsMapLayerUtils(QgisTestCase):
-
     def testCombinedExtent(self):
         extent = QgsMapLayerUtils.combinedExtent(
             [], QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext()

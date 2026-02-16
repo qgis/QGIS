@@ -13,10 +13,9 @@ __copyright__ = "Copyright 2017, The QGIS Project"
 import os
 import tempfile
 
-from qgis.PyQt.QtCore import QTemporaryDir, QTemporaryFile, QByteArray
 from qgis.core import QgsZipUtils
+from qgis.PyQt.QtCore import QByteArray, QTemporaryDir, QTemporaryFile
 from qgis.testing import unittest
-
 from utilities import unitTestDataPath
 
 
@@ -30,7 +29,6 @@ def tmpPath():
 
 
 class TestQgsZip(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

@@ -1952,7 +1952,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
       connect( detailsButton, &QPushButton::clicked, this, [detailsButton, licenseDetails] {
         QgsMessageViewer *dialog = new QgsMessageViewer( detailsButton );
         dialog->setTitle( tr( "Font License" ) );
-        dialog->setMessage( licenseDetails, QgsMessageOutput::MessageText );
+        dialog->setMessage( licenseDetails, Qgis::StringFormat::PlainText );
         dialog->showMessage();
       } );
       messageWidget->layout()->addWidget( detailsButton );
@@ -1975,7 +1975,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
       connect( detailsButton, &QPushButton::clicked, this, [error] {
         QgsMessageViewer *dialog = new QgsMessageViewer( nullptr, QgsGuiUtils::ModalDialogFlags, true );
         dialog->setTitle( tr( "Font Install Failed" ) );
-        dialog->setMessage( error, QgsMessageOutput::MessageText );
+        dialog->setMessage( error, Qgis::StringFormat::PlainText );
         dialog->showMessage();
       } );
       messageWidget->layout()->addWidget( detailsButton );
@@ -2483,7 +2483,7 @@ QList<QgsMapLayer *> QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList
       if ( QgsMessageViewer *dialog = dynamic_cast<QgsMessageViewer *>( QgsMessageOutput::createMessageOutput() ) )
       {
         dialog->setTitle( title );
-        dialog->setMessage( longMessage, QgsMessageOutput::MessageHtml );
+        dialog->setMessage( longMessage, Qgis::StringFormat::Html );
         dialog->showMessage();
       }
     } );
@@ -5890,7 +5890,7 @@ void QgisApp::fileExit()
   }
 
   QgsCanvasRefreshBlocker refreshBlocker;
-  if ( checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() && checkExitBlockers() && checkUnsavedRasterAttributeTableEdits() )
+  if ( canCreateNewProject() )
   {
     closeProject();
     userProfileManager()->updateLastProfileName();
@@ -5923,7 +5923,7 @@ void QgisApp::fileClose()
 
 bool QgisApp::canCreateNewProject()
 {
-  return !checkUnsavedLayerEdits() || !checkMemoryLayers() || !saveDirty() || !checkUnsavedRasterAttributeTableEdits();
+  return checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() && checkExitBlockers() && checkUnsavedRasterAttributeTableEdits();
 }
 
 //as file new but accepts flags to indicate whether we should prompt to save
@@ -9060,15 +9060,18 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
   QString newTitle = QString( currentTitle );
 
   QString typeString;
+  QString conflictingNameWarning;
   QString helpPage;
   switch ( type )
   {
     case QgsMasterLayoutInterface::PrintLayout:
       typeString = tr( "print layout" );
+      conflictingNameWarning = tr( "A print layout with this title already exists." );
       helpPage = u"print_composer/index.html"_s;
       break;
     case QgsMasterLayoutInterface::Report:
       typeString = tr( "report" );
+      conflictingNameWarning = tr( "A report with this title already exists." );
       helpPage = u"print_composer/create_reports.html"_s;
       break;
   }
@@ -9097,7 +9100,7 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
     dlg.setHintString( titleMsg );
     dlg.setOverwriteEnabled( false );
     dlg.setAllowEmptyName( true );
-    dlg.setConflictingNameWarning( tr( "A %1 with this title already exists." ).arg( typeString ) );
+    dlg.setConflictingNameWarning( conflictingNameWarning );
 
     dlg.buttonBox()->addButton( QDialogButtonBox::Help );
     connect( dlg.buttonBox(), &QDialogButtonBox::helpRequested, this, [helpPage] {
@@ -12536,7 +12539,7 @@ void QgisApp::showPluginManager( int tabIndex )
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     // Call pluginManagerInterface()->showPluginManager() as soon as the plugin installer says the remote data is fetched.
-    QgsPythonRunner::run( u"pyplugin_installer.instance().showPluginManagerWhenReady()"_s.arg( tabIndex ) );
+    QgsPythonRunner::run( u"pyplugin_installer.instance().showPluginManagerWhenReady(%1)"_s.arg( tabIndex ) );
   }
   else
 #endif

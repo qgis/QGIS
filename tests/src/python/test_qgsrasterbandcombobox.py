@@ -11,22 +11,21 @@ __date__ = "09/05/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
 import os
-from osgeo import gdal
+import unittest
+
 import numpy as np
-from qgis.PyQt.QtCore import QFileInfo
-from qgis.PyQt.QtTest import QSignalSpy
+from osgeo import gdal
 from qgis.core import QgsRasterLayer
 from qgis.gui import QgsRasterBandComboBox
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QFileInfo
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsRasterBandComboBox(QgisTestCase):
-
     def testNoLayer(self):
         """
         Test widget with no layer

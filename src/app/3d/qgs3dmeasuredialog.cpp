@@ -20,6 +20,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptoolmeasureline.h"
 #include "qgshelp.h"
+#include "qgsunittypes.h"
 
 #include <QCloseEvent>
 #include <QPushButton>

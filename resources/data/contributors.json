@@ -582,8 +582,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -70.413406,
-          19.745284
+          6.890548,
+          46.470139
         ]
       }
     },
@@ -1245,6 +1245,40 @@
         "coordinates": [
           -1.010,
           46.130
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Damiano Lombardi",
+        "Committer": "No",
+        "First Commit Message": "Fix cmake config to find qca headers on Opensuse tumbleweed",
+        "First Commit Date": "07-09-2020",
+        "GIT Nickname": "domi4484"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.6071,
+          46.5279
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Dave Signer",
+        "Committer": "Yes",
+        "First Commit Message": "Use QStringLiteral",
+        "First Commit Date": "14-06-2017",
+        "GIT Nickname": "signedav"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.765546,
+          47.518775
         ]
       }
     }

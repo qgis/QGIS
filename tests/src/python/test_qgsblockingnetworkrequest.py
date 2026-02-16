@@ -10,20 +10,19 @@ __author__ = "Nyall Dawson"
 __date__ = "12/11/2018"
 __copyright__ = "Copyright 2018, The QGIS Project"
 
+import unittest
+
+import mockedwebserver
+from qgis.core import QgsBlockingNetworkRequest
 from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
 from qgis.PyQt.QtTest import QSignalSpy
-from qgis.core import QgsBlockingNetworkRequest
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
-import mockedwebserver
+from qgis.testing import QgisTestCase, start_app
 
 app = start_app()
 
 
 class TestQgsBlockingNetworkRequest(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

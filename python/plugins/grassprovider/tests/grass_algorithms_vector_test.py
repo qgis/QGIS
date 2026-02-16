@@ -19,35 +19,32 @@ __author__ = "Nyall Dawson"
 __date__ = "March 2018"
 __copyright__ = "(C) 2018, Nyall Dawson"
 
-import AlgorithmsTestBase
-
-import nose2
-import shutil
 import os
-import tempfile
 import re
+import shutil
+import tempfile
 
+import AlgorithmsTestBase
+import nose2
+from grassprovider.grass_provider import GrassProvider
+from grassprovider.grass_utils import GrassUtils
 from qgis.core import (
-    QgsVectorLayer,
     QgsApplication,
     QgsFeature,
     QgsGeometry,
     QgsPointXY,
     QgsProcessingContext,
-    QgsProject,
-    QgsProcessingFeedback,
     QgsProcessingFeatureSourceDefinition,
+    QgsProcessingFeedback,
+    QgsProject,
+    QgsVectorLayer,
 )
 from qgis.testing import QgisTestCase, start_app
-from grassprovider.grass_provider import GrassProvider
-from grassprovider.grass_utils import GrassUtils
-
 
 testDataPath = os.path.join(os.path.dirname(__file__), "testdata")
 
 
 class TestGrassAlgorithmsVectorTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
-
     @classmethod
     def setUpClass(cls):
         start_app()
