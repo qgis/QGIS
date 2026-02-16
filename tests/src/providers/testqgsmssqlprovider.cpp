@@ -526,10 +526,12 @@ void TestQgsMssqlProvider::testEmptyLayer()
 
   uri.setKeyColumn( u"my_pk"_s );
 
-  QCOMPARE(
-    metadata->createEmptyLayer( uri.uri(), fields, Qgis::WkbType::Point, QgsCoordinateReferenceSystem( "EPSG:3111" ), true, oldToNewAttrIdxMap, errorMessage, {}, createdUri ),
-    Qgis::VectorExportResult::Success
-  );
+  Qgis::VectorExportResult res = metadata->createEmptyLayer( uri.uri(), fields, Qgis::WkbType::Point, QgsCoordinateReferenceSystem( "EPSG:3111" ), true, oldToNewAttrIdxMap, errorMessage, {}, createdUri );
+  if ( !errorMessage.isEmpty() )
+  {
+    QgsDebugError( errorMessage );
+  }
+  QCOMPARE( res, Qgis::VectorExportResult::Success );
 
   auto vl = std::make_unique< QgsVectorLayer >( createdUri, "test", "mssql" );
   QVERIFY( vl->isValid() );
@@ -553,10 +555,12 @@ void TestQgsMssqlProvider::testEmptyLayer()
   // creating a brand new primary key
   uri.setKeyColumn( u"my_new_pk"_s );
 
-  QCOMPARE(
-    metadata->createEmptyLayer( uri.uri(), fields, Qgis::WkbType::Point, QgsCoordinateReferenceSystem( "EPSG:3111" ), true, oldToNewAttrIdxMap, errorMessage, {}, createdUri ),
-    Qgis::VectorExportResult::Success
-  );
+  res = metadata->createEmptyLayer( uri.uri(), fields, Qgis::WkbType::Point, QgsCoordinateReferenceSystem( "EPSG:3111" ), true, oldToNewAttrIdxMap, errorMessage, {}, createdUri );
+  if ( !errorMessage.isEmpty() )
+  {
+    QgsDebugError( errorMessage );
+  }
+  QCOMPARE( res, Qgis::VectorExportResult::Success );
 
   vl = std::make_unique< QgsVectorLayer >( createdUri, "test", "mssql" );
   QVERIFY( vl->isValid() );
