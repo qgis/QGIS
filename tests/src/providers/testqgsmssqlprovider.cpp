@@ -601,7 +601,10 @@ void TestQgsMssqlProvider::testColumnDefinitionForField_data()
     << "[age] int";
   QTest::newRow( "auto_numeric" )
     << QgsField( "score", QMetaType::Type::Double )
-    << "[score] numeric";
+    << "[score] float";
+  QTest::newRow( "auto_numeric_with_precision" )
+    << QgsField( "score", QMetaType::Type::Double, QString(), 20, 8 )
+    << "[score] numeric(20,8)";
   QTest::newRow( "auto_date" )
     << QgsField( "dob", QMetaType::Type::QDate )
     << "[dob] date";
@@ -650,6 +653,10 @@ void TestQgsMssqlProvider::testColumnDefinitionForField_data()
   QTest::newRow( "fmt_decimal_no_len" )
     << QgsField( "val2", QMetaType::Type::Double, "decimal", 0, 5 )
     << "[val2] decimal";
+
+  QTest::newRow( "decimal_with_scale" )
+    << QgsField( "rate", QMetaType::Type::Double, "decimal", 18, 6 )
+    << "[rate] decimal(18,6)";
 
   // unhandled variant type
   QTest::newRow( "unhandled_variant" )

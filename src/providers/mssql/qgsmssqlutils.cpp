@@ -183,7 +183,14 @@ QString QgsMssqlUtils::columnDefinitionForField( const QgsField &field )
         break;
 
       case QMetaType::Type::Double:
-        type = u"numeric"_s;
+        if ( field.length() <= 0 || field.precision() <= 0 )
+        {
+          type = u"float"_s;
+        }
+        else
+        {
+          type = u"numeric"_s;
+        }
         break;
 
       case QMetaType::Type::QDate:
