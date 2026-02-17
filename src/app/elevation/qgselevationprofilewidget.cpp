@@ -48,6 +48,7 @@
 #include "qgslayertreeregistrybridge.h"
 #include "qgselevationprofilelayertreeview.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgsshortcutsmanager.h"
 #include "qgselevationprofiletoolidentify.h"
 #include "qgselevationprofiletoolmeasure.h"
@@ -100,6 +101,9 @@ QgsElevationProfileLayersDialog::QgsElevationProfileLayersDialog( QWidget *paren
 
   connect( mFilterLineEdit, &QLineEdit::textChanged, mModel, &QgsMapLayerProxyModel::setFilterString );
   connect( mCheckBoxVisibleLayers, &QCheckBox::toggled, this, &QgsElevationProfileLayersDialog::filterVisible );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( QStringLiteral( "map_views/elevation_profile.html" ) );
+  } );
 
   mFilterLineEdit->setFocus();
 }
