@@ -10460,10 +10460,10 @@ QgsMeshLayer.QgsMeshLayer: src/core/mesh/qgsmeshlayer.h#L112
 QgsMeshLayer.QgsMeshLayer: src/core/mesh/qgsmeshlayer.h#L163
 QgsMeshLayer.__repr__: src/core/mesh/qgsmeshlayer.h#L172
 QgsMeshLayer.activeScalarDatasetAtTime: src/core/mesh/qgsmeshlayer.h#L636
-QgsMeshLayer.activeScalarDatasetGroupChanged: src/core/mesh/qgsmeshlayer.h#L1035
+QgsMeshLayer.activeScalarDatasetGroupChanged: src/core/mesh/qgsmeshlayer.h#L1038
 QgsMeshLayer.activeScalarDatasetIndex: src/core/mesh/qgsmeshlayer.h#L999
 QgsMeshLayer.activeVectorDatasetAtTime: src/core/mesh/qgsmeshlayer.h#L649
-QgsMeshLayer.activeVectorDatasetGroupChanged: src/core/mesh/qgsmeshlayer.h#L1042
+QgsMeshLayer.activeVectorDatasetGroupChanged: src/core/mesh/qgsmeshlayer.h#L1045
 QgsMeshLayer.addDatasets: src/core/mesh/qgsmeshlayer.h#L216
 QgsMeshLayer.addDatasets: src/core/mesh/qgsmeshlayer.h#L236
 QgsMeshLayer.areFacesActive: src/core/mesh/qgsmeshlayer.h#L507
@@ -10505,6 +10505,7 @@ QgsMeshLayer.isModified: src/core/mesh/qgsmeshlayer.h#L904
 QgsMeshLayer.labeling: src/core/mesh/qgsmeshlayer.h#L975
 QgsMeshLayer.labelsEnabled: src/core/mesh/qgsmeshlayer.h#L945
 QgsMeshLayer.loadDefaultStyle: src/core/mesh/qgsmeshlayer.h#L205
+QgsMeshLayer.loadNamedStyle: src/core/mesh/qgsmeshlayer.h#L1020
 QgsMeshLayer.meshEdgeCount: src/core/mesh/qgsmeshlayer.h#L935
 QgsMeshLayer.meshEditor: src/core/mesh/qgsmeshlayer.h#L897
 QgsMeshLayer.meshFaceCount: src/core/mesh/qgsmeshlayer.h#L928
@@ -10518,7 +10519,7 @@ QgsMeshLayer.readSymbology: src/core/mesh/qgsmeshlayer.h#L188
 QgsMeshLayer.readXml: src/core/mesh/qgsmeshlayer.h#L196
 QgsMeshLayer.reindex: src/core/mesh/qgsmeshlayer.h#L890
 QgsMeshLayer.reload: src/core/mesh/qgsmeshlayer.h#L200
-QgsMeshLayer.reloaded: src/core/mesh/qgsmeshlayer.h#L1056
+QgsMeshLayer.reloaded: src/core/mesh/qgsmeshlayer.h#L1059
 QgsMeshLayer.removeDatasets: src/core/mesh/qgsmeshlayer.h#L226
 QgsMeshLayer.rendererSettings: src/core/mesh/qgsmeshlayer.h#L315
 QgsMeshLayer.resetDatasetGroupTreeItem: src/core/mesh/qgsmeshlayer.h#L807
@@ -10531,7 +10532,7 @@ QgsMeshLayer.setReferenceTime: src/core/mesh/qgsmeshlayer.h#L696
 QgsMeshLayer.setRendererSettings: src/core/mesh/qgsmeshlayer.h#L323
 QgsMeshLayer.setTemporalMatchingMethod: src/core/mesh/qgsmeshlayer.h#L705
 QgsMeshLayer.setTimeSettings: src/core/mesh/qgsmeshlayer.h#L337
-QgsMeshLayer.setTransformContext: src/core/mesh/qgsmeshlayer.h#L1026
+QgsMeshLayer.setTransformContext: src/core/mesh/qgsmeshlayer.h#L1029
 QgsMeshLayer.snapOnElement: src/core/mesh/qgsmeshlayer.h#L728
 QgsMeshLayer.startFrameEditing: src/core/mesh/qgsmeshlayer.h#L837
 QgsMeshLayer.startFrameEditing: src/core/mesh/qgsmeshlayer.h#L849
@@ -10542,7 +10543,7 @@ QgsMeshLayer.subLayers: src/core/mesh/qgsmeshlayer.h#L201
 QgsMeshLayer.supportsEditing: src/core/mesh/qgsmeshlayer.h#L204
 QgsMeshLayer.temporalProperties: src/core/mesh/qgsmeshlayer.h#L198
 QgsMeshLayer.timeSettings: src/core/mesh/qgsmeshlayer.h#L330
-QgsMeshLayer.timeSettingsChanged: src/core/mesh/qgsmeshlayer.h#L1049
+QgsMeshLayer.timeSettingsChanged: src/core/mesh/qgsmeshlayer.h#L1052
 QgsMeshLayer.updateTriangularMesh: src/core/mesh/qgsmeshlayer.h#L305
 QgsMeshLayer.writeStyle: src/core/mesh/qgsmeshlayer.h#L192
 QgsMeshLayer.writeSymbology: src/core/mesh/qgsmeshlayer.h#L190
