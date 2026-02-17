@@ -83,6 +83,13 @@ class GUI_EXPORT QgsMapLayerLoadStyleDialog : public QDialog, private Ui::QgsVec
      */
     QString selectedStyleId();
 
+    /**
+     * Do not allow loading styles from databases, only from files.
+     * Sets the dialog accordingly, disable style type selection combo box and set it to file.
+     *
+     */
+    void allowLoadingOnlyFromFiles();
+
   public slots:
     void accept() override;
 

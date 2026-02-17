@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgsapplayertreeviewmenuprovider.h"
 
+#include "layers/qgsapplayerhandling.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsclipboard.h"
@@ -658,8 +659,9 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
               menuExportVector->addAction( actionSaveAsDefinitionLayer );
               if ( vlayer->isSpatial() )
               {
+                // TODO QGIS 5.0 this can be removed as Load Style…/Save Style… exist in Styles submenu
                 QAction *actionSaveStyle = new QAction( tr( "Save as &QGIS Layer Style File…" ), menuExportVector );
-                connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [] { QgisApp::instance()->saveStyleFile(); } );
+                connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [] { QgsAppLayerHandling::saveStyleFile(); } );
                 menuExportVector->addAction( actionSaveStyle );
               }
               menu->addMenu( menuExportVector );
@@ -684,7 +686,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
             QAction *actionSaveStyle = new QAction( tr( "Save as &QGIS Layer Style File…" ), menuExportRaster );
             connect( actionSaveAsDefinitionLayer, &QAction::triggered, QgisApp::instance(), &QgisApp::saveAsLayerDefinition );
             menuExportRaster->addAction( actionSaveAsDefinitionLayer );
-            connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [] { QgisApp::instance()->saveStyleFile(); } );
+            connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [] { QgsAppLayerHandling::saveStyleFile(); } );
             menuExportRaster->addAction( actionSaveStyle );
             menu->addMenu( menuExportRaster );
           }
@@ -893,6 +895,10 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           }
         }
 
+        menuStyleManager->addSeparator()->setObjectName( u"LoadSaveStyleSeparator"_s );
+        menuStyleManager->addAction( tr( "Load Style…" ), app, [layer] { QgsAppLayerHandling::loadStyleFromFile( layer ); } );
+        menuStyleManager->addAction( tr( "Save Style…" ), app, [layer] { QgsAppLayerHandling::saveStyleFile( layer ); } );
+
         menu->addMenu( menuStyleManager );
       }
       else
@@ -900,6 +906,29 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         if ( QgisApp::instance()->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
         {
           menu->addAction( tr( "Paste Style" ), QgisApp::instance(), &QgisApp::applyStyleToGroup );
+        }
+
+        const QList<QgsLayerTreeLayer *> selectedLayerNodes = mView->selectedLayerNodes();
+        QList<QgsMapLayer *> layers;
+        layers.reserve( selectedLayerNodes.size() );
+
+        for ( QgsLayerTreeLayer *l : selectedLayerNodes )
+        {
+          QgsMapLayer *layer = QgsLayerTree::toLayer( l )->layer();
+          layers.push_back( layer );
+        }
+
+        bool allLayersSameType = false;
+        if ( !layers.empty() )
+        {
+          allLayersSameType = std::all_of( layers.begin() + 1, layers.end(), [firstType = layers.at( 0 )->type()]( QgsMapLayer *layer ) { return layer->type() == firstType; } );
+        }
+
+        if ( allLayersSameType )
+        {
+          QgisApp *app = QgisApp::instance();
+
+          menu->addAction( tr( "Load Style…" ), app, [layers] { QgsAppLayerHandling::loadStyleFromFile( layers ); } );
         }
       }
 

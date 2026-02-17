@@ -8430,50 +8430,6 @@ void QgisApp::saveAsLayerDefinition()
   settings.setValue( u"UI/lastQLRDir"_s, fi.path() );
 }
 
-void QgisApp::saveStyleFile( QgsMapLayer *layer )
-{
-  if ( !layer )
-  {
-    layer = activeLayer();
-  }
-
-  if ( !layer || !layer->dataProvider() )
-    return;
-
-  switch ( layer->type() )
-  {
-    case Qgis::LayerType::Vector:
-      QgsVectorLayerProperties( mMapCanvas, visibleMessageBar(), qobject_cast<QgsVectorLayer *>( layer ) ).saveStyleAs();
-      break;
-
-    case Qgis::LayerType::Raster:
-      QgsRasterLayerProperties( layer, mMapCanvas ).saveStyleAs();
-      break;
-
-    case Qgis::LayerType::Mesh:
-      QgsMeshLayerProperties( layer, mMapCanvas ).saveStyleToFile();
-      break;
-
-    case Qgis::LayerType::VectorTile:
-      QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( layer ), mMapCanvas, visibleMessageBar() ).saveStyleToFile();
-      break;
-
-    case Qgis::LayerType::PointCloud:
-      QgsPointCloudLayerProperties( qobject_cast<QgsPointCloudLayer *>( layer ), mMapCanvas, visibleMessageBar() ).saveStyleToFile();
-      break;
-
-    case Qgis::LayerType::TiledScene:
-      QgsTiledSceneLayerProperties( qobject_cast<QgsTiledSceneLayer *>( layer ), mMapCanvas, visibleMessageBar() ).saveStyleToFile();
-      break;
-
-    // Not available for these
-    case Qgis::LayerType::Annotation:
-    case Qgis::LayerType::Plugin:
-    case Qgis::LayerType::Group:
-      break;
-  }
-}
-
 ///@cond PRIVATE
 
 /**

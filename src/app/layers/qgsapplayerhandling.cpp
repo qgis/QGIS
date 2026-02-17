@@ -17,17 +17,26 @@
 #include "qgsapplayerhandling.h"
 
 #include "qgisapp.h"
+#include "qgsfileutils.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerelevationproperties.h"
+#include "qgsmaplayerloadstyledialog.h"
 #include "qgsmeshlayer.h"
+#include "qgsmeshlayerproperties.h"
 #include "qgsmeshlayertemporalproperties.h"
 #include "qgsmessagebar.h"
 #include "qgsmessageviewer.h"
 #include "qgspointcloudlayer.h"
+#include "qgspointcloudlayerproperties.h"
 #include "qgsproject.h"
 #include "qgsprojectelevationproperties.h"
 #include "qgsprojecttimesettings.h"
+#include "qgsrasterlayerproperties.h"
 #include "qgsterrainprovider.h"
+#include "qgstiledscenelayerproperties.h"
+#include "qgsvectorlayerproperties.h"
+#include "qgsvectortilelayerproperties.h"
 
 #include <QString>
 
@@ -1771,5 +1780,207 @@ void QgsAppLayerHandling::onVectorLayerStyleLoaded( QgsVectorLayer *vl, QgsMapLa
     {
       resolveVectorLayerWeakRelations( vl );
     }
+  }
+}
+
+void QgsAppLayerHandling::loadStyleFromFile( QgsMapLayer *layer )
+{
+  if ( !layer )
+    return;
+
+  switch ( layer->type() )
+  {
+    case Qgis::LayerType::Vector:
+    {
+      QgsVectorLayerProperties( QgisApp::instance()->mapCanvas(), QgisApp::instance()->visibleMessageBar(), qobject_cast<QgsVectorLayer *>( layer ) ).loadStyle();
+      break;
+    }
+    case Qgis::LayerType::Raster:
+      QgsRasterLayerProperties( layer, QgisApp::instance()->mapCanvas() ).loadStyle();
+      break;
+
+    case Qgis::LayerType::Mesh:
+      QgsMeshLayerProperties( layer, QgisApp::instance()->mapCanvas() ).loadStyleFromFile();
+      break;
+
+    case Qgis::LayerType::VectorTile:
+      QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( layer ), QgisApp::instance()->mapCanvas(), QgisApp::instance()->visibleMessageBar() ).loadStyleFromFile();
+      break;
+
+    case Qgis::LayerType::PointCloud:
+      QgsPointCloudLayerProperties( qobject_cast<QgsPointCloudLayer *>( layer ), QgisApp::instance()->mapCanvas(), QgisApp::instance()->visibleMessageBar() ).loadStyleFromFile();
+      break;
+
+    // Not available for these
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::TiledScene:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Group:
+      break;
+  }
+}
+
+void QgsAppLayerHandling::loadStyleFromFile( const QList<QgsMapLayer *> &layers )
+{
+  if ( layers.empty() )
+  {
+    return;
+  }
+
+  const bool allLayersSameType = std::all_of( layers.begin() + 1, layers.end(), [firstType = layers.at( 0 )->type()]( QgsMapLayer *layer ) { return layer->type() == firstType; } );
+
+  if ( !allLayersSameType )
+  {
+    QgisApp::instance()->visibleMessageBar()->pushMessage( QObject::tr( "Load Style" ), QObject::tr( "Cannot load style if all the layers are not of the same layer type." ), Qgis::MessageLevel::Critical );
+    return;
+  }
+
+  QString errorMsg;
+  QStringList ids, names, descriptions, failedLayers;
+
+  QString filePath;
+  QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories;
+  QgsLayerPropertiesDialog::StyleType type = QgsLayerPropertiesDialog::StyleType::QML;
+
+  // vectors and rasters have more complex options including categories, so they need QgsMapLayerLoadStyleDialog
+  switch ( layers.at( 0 )->type() )
+  {
+    case Qgis::LayerType::Vector:
+    case Qgis::LayerType::Raster:
+    {
+      QgsMapLayerLoadStyleDialog dlg( layers[0], nullptr );
+      dlg.allowLoadingOnlyFromFiles();
+      dlg.initializeLists( ids, names, descriptions, 0 );
+      if ( dlg.exec() )
+      {
+        filePath = dlg.filePath();
+        categories = dlg.styleCategories();
+        type = dlg.currentStyleType();
+      }
+      break;
+    }
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::VectorTile:
+    case Qgis::LayerType::PointCloud:
+    {
+      QgsSettings settings;
+      const QString lastUsedDir = settings.value( u"style/lastStyleDir"_s, QDir::homePath() ).toString();
+
+      filePath = QFileDialog::getOpenFileName(
+        nullptr,
+        QObject::tr( "Load Layer Properties from Style File" ),
+        lastUsedDir,
+        QObject::tr( "QGIS Layer Style File" ) + u" (*.qml)"_s
+      );
+      if ( filePath.isEmpty() )
+        return;
+
+      filePath = QgsFileUtils::ensureFileNameHasExtension( filePath, { u"qml"_s } );
+
+      settings.setValue( u"style/lastStyleDir"_s, QFileInfo( filePath ).absolutePath() );
+      break;
+    }
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::TiledScene:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Group:
+    {
+      break;
+    }
+  }
+
+  if ( !filePath.isEmpty() )
+  {
+    for ( QgsMapLayer *layer : layers )
+    {
+      bool loaded = false;
+
+      switch ( type )
+      {
+        case QgsLayerPropertiesDialog::SLD:
+        {
+          errorMsg = layer->loadSldStyle( filePath, loaded );
+          break;
+        }
+        case QgsLayerPropertiesDialog::QML:
+        {
+          errorMsg = layer->loadNamedStyle( filePath, loaded, false, categories );
+          break;
+        }
+        case QgsLayerPropertiesDialog::DatasourceDatabase:
+        case QgsLayerPropertiesDialog::UserDatabase:
+        {
+          break;
+        }
+      }
+
+      if ( !loaded )
+      {
+        failedLayers.append( layer->name() );
+      }
+    }
+  }
+
+  if ( !failedLayers.empty() )
+  {
+    QgsMessageBarItem *barItem = new QgsMessageBarItem( QObject::tr( "Load Style" ), QObject::tr( "Could not load style for layers." ), Qgis::MessageLevel::Warning, 0 );
+    QPushButton *button = new QPushButton( QObject::tr( "More Info" ), barItem );
+    barItem->setWidget( button );
+    QObject::connect( button, &QPushButton::clicked, barItem, [barItem, failedLayers]() {
+      const QString message = QObject::tr( "Could not load style for layers." )
+                              + u"\n\n"_s
+                              + QObject::tr( "Layers where style loading failed:  %1." ).arg( failedLayers.join( ", " ) );
+
+      QgsMessageViewer *dialog = new QgsMessageViewer( barItem );
+      dialog->setTitle( QObject::tr( "Load Style" ) );
+      dialog->setMessageAsPlainText( message );
+      dialog->showMessage();
+    } );
+
+    QgisApp::instance()->visibleMessageBar()->pushItem( barItem );
+  }
+}
+
+void QgsAppLayerHandling::saveStyleFile( QgsMapLayer *layer )
+{
+  if ( !layer )
+  {
+    layer = QgisApp::instance()->activeLayer();
+  }
+
+  if ( !layer || !layer->dataProvider() )
+    return;
+
+  switch ( layer->type() )
+  {
+    case Qgis::LayerType::Vector:
+      QgsVectorLayerProperties( QgisApp::instance()->mapCanvas(), QgisApp::instance()->visibleMessageBar(), qobject_cast<QgsVectorLayer *>( layer ) ).saveStyleAs();
+      break;
+
+    case Qgis::LayerType::Raster:
+      QgsRasterLayerProperties( layer, QgisApp::instance()->mapCanvas() ).saveStyleAs();
+      break;
+
+    case Qgis::LayerType::Mesh:
+      QgsMeshLayerProperties( layer, QgisApp::instance()->mapCanvas() ).saveStyleToFile();
+      break;
+
+    case Qgis::LayerType::VectorTile:
+      QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( layer ), QgisApp::instance()->mapCanvas(), QgisApp::instance()->visibleMessageBar() ).saveStyleToFile();
+      break;
+
+    case Qgis::LayerType::PointCloud:
+      QgsPointCloudLayerProperties( qobject_cast<QgsPointCloudLayer *>( layer ), QgisApp::instance()->mapCanvas(), QgisApp::instance()->visibleMessageBar() ).saveStyleToFile();
+      break;
+
+    case Qgis::LayerType::TiledScene:
+      QgsTiledSceneLayerProperties( qobject_cast<QgsTiledSceneLayer *>( layer ), QgisApp::instance()->mapCanvas(), QgisApp::instance()->visibleMessageBar() ).saveStyleToFile();
+      break;
+
+    // Not available for these
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Group:
+      break;
   }
 }
