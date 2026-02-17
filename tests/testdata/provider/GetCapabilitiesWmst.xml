@@ -285,6 +285,95 @@
         <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
       </Layer>
 
+      <!-- yyyy-MM-ddThh:mm:ss.zzzZ (milliseconds with Z) -->
+      <Layer>
+        <Name>time_ms_z</Name>
+        <Title>Time yyyy-MM-ddThh:mm:ss.zzzZ</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020-06-15T12:30:45.123Z">
+          2020-06-15T12:30:45.123Z
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- yyyy-MM-ddThh:mm:ss.zzz (milliseconds without timezone) -->
+      <Layer>
+        <Name>time_ms</Name>
+        <Title>Time yyyy-MM-ddThh:mm:ss.zzz</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020-06-15T12:30:45.123">
+          2020-06-15T12:30:45.123
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- yyyy-MM-ddThh:mm:ss.zzzt (milliseconds with timezone offset) -->
+      <Layer>
+        <Name>time_ms_offset</Name>
+        <Title>Time yyyy-MM-ddThh:mm:ss.zzzt</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020-06-15T12:30:45.123+02:00">
+          2020-06-15T12:30:45.123+02:00
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- yyyy-MM-ddThh:mm:sst (seconds with timezone offset) -->
+      <Layer>
+        <Name>time_sec_offset</Name>
+        <Title>Time yyyy-MM-ddThh:mm:sst</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020-06-15T12:30:45+02:00">
+          2020-06-15T12:30:45+02:00
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- yyyy-MM-ddThh:mmt (minutes with timezone offset) -->
+      <Layer>
+        <Name>time_min_offset</Name>
+        <Title>Time yyyy-MM-ddThh:mmt</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020-06-15T12:30+02:00">
+          2020-06-15T12:30+02:00
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- yyyy-MM-ddThht (hours with timezone offset) -->
+      <Layer>
+        <Name>time_hour_offset</Name>
+        <Title>Time yyyy-MM-ddThht</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020-06-15T12+02:00">
+          2020-06-15T12+02:00
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- Test layer for enableTime=false with milliseconds -->
+      <Layer>
+        <Name>time_ms_disabled</Name>
+        <Title>Time ms with enableTime=false</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020-06-15T12:30:45.123Z">
+          2020-06-15T12:30:45.123Z
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- Test layer for enableTime=false with timezone offset -->
+      <Layer>
+        <Name>time_offset_disabled</Name>
+        <Title>Time offset with enableTime=false</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020-06-15T12:30:45+02:00">
+          2020-06-15T12:30:45+02:00
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+
     </Layer>
   </Capability>
 </WMS_Capabilities>
