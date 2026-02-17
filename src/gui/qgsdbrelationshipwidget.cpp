@@ -17,6 +17,7 @@
 #include "moc_qgsdbrelationshipwidget.cpp"
 #include "qgsgui.h"
 #include "qgsdatabasetablemodel.h"
+#include "qgshelp.h"
 #include "qgsproviderregistry.h"
 #include <QDialogButtonBox>
 #include <QPushButton>
@@ -190,9 +191,12 @@ QgsDbRelationDialog::QgsDbRelationDialog( QgsAbstractDatabaseProviderConnection 
   mWidget = new QgsDbRelationWidget( connection );
   vLayout->addWidget( mWidget, 1 );
 
-  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+  mButtonBox = new QDialogButtonBox( QDialogButtonBox::StandardButton::Cancel | QDialogButtonBox::StandardButton::Help | QDialogButtonBox::StandardButton::Ok );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( QStringLiteral( "working_with_vector/joins_relations.html#dataset-stored-relationships" ) );
+  } );
   vLayout->addWidget( mButtonBox );
 
   setLayout( vLayout );
