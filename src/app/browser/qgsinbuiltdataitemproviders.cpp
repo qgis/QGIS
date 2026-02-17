@@ -1456,7 +1456,16 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
           QAction *renameFieldAction = new QAction( tr( "Rename Field…" ), menu );
           const QString itemName { item->name() };
 
-          connect( renameFieldAction, &QAction::triggered, fieldsItem, [md, fieldsItem, itemName, context] {
+          connect( renameFieldAction, &QAction::triggered, fieldsItem, [md, fieldsItem, itemName, providerKey, context] {
+            if ( !QgsProjectUtils::layersMatchingUri( QgsProject::instance(), providerKey, fieldsItem->connectionUri() ).isEmpty() )
+            {
+              if ( context.messageBar() )
+              {
+                context.messageBar()->pushCritical( tr( "Rename Field" ), tr( "This table is open in the current QGIS project and cannot be modified" ) );
+              }
+              return;
+            }
+
             // Confirmation dialog
             QgsNewNameDialog dlg( tr( "field “%1”" ).arg( itemName ), itemName );
             dlg.setWindowTitle( tr( "Rename Field" ) );
@@ -1538,7 +1547,16 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
           const bool supportsCascade { conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteFieldCascade ) };
           const QString itemName { item->name() };
 
-          connect( deleteFieldAction, &QAction::triggered, fieldsItem, [md, fieldsItem, itemName, context, supportsCascade] {
+          connect( deleteFieldAction, &QAction::triggered, fieldsItem, [md, fieldsItem, itemName, providerKey, context, supportsCascade] {
+            if ( !QgsProjectUtils::layersMatchingUri( QgsProject::instance(), providerKey, fieldsItem->connectionUri() ).isEmpty() )
+            {
+              if ( context.messageBar() )
+              {
+                context.messageBar()->pushCritical( tr( "Delete Field" ), tr( "This table is open in the current QGIS project and cannot be modified" ) );
+              }
+              return;
+            }
+
             // Confirmation dialog
             QString message { tr( "Delete '%1' permanently?" ).arg( itemName ) };
             if ( fieldsItem->tableProperty() && fieldsItem->tableProperty()->primaryKeyColumns().contains( itemName ) )
