@@ -2,8 +2,8 @@
                          qgsregularpolygon.cpp
                          --------------
     begin                : May 2017
-    copyright            : (C) 2017 by Loîc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    copyright            : (C) 2017 by Loïc Bartoletti
+    email                : lituus at free dot fr
  ***************************************************************************/
 
 /***************************************************************************
@@ -20,6 +20,10 @@
 #include <memory>
 
 #include "qgsgeometryutils.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &center, const double radius, const double azimuth, const unsigned int numSides, const ConstructionOption circle )
   : mCenter( center )

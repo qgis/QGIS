@@ -17,7 +17,6 @@
 
 #include "qgisapp.h"
 #include "qgs3dmapcanvaswidget.h"
-#include "qgsdockablewidgethelper.h"
 #include "qgsmapviewsmanager.h"
 #include "qgsnewnamedialog.h"
 
@@ -172,7 +171,7 @@ QString Qgs3DViewsManagerDialog::askUserForATitle( QString oldTitle, QString act
   dlg.setHintString( tr( "Enter a unique 3D map view title" ) );
   dlg.setOverwriteEnabled( false );
   dlg.setAllowEmptyName( false );
-  dlg.setConflictingNameWarning( tr( "Title already exists!" ) );
+  dlg.setConflictingNameWarning( tr( "A 3D map view with this title already exists." ) );
 
   if ( dlg.exec() != QDialog::Accepted )
     return QString();

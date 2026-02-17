@@ -21,14 +21,15 @@ __copyright__ = "(C) 2014, Michael Douchin"
 from qgis.core import (
     QgsExpression,
     QgsProcessing,
-    QgsVectorLayer,
     QgsProcessingAlgorithm,
     QgsProcessingException,
-    QgsProcessingParameterVectorLayer,
-    QgsProcessingParameterExpression,
-    QgsProcessingParameterEnum,
     QgsProcessingOutputVectorLayer,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterExpression,
+    QgsProcessingParameterVectorLayer,
+    QgsVectorLayer,
 )
+
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 

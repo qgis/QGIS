@@ -18,11 +18,12 @@
 #ifndef QGSMAPTOOLSHAPEREGISTRY_H
 #define QGSMAPTOOLSHAPEREGISTRY_H
 
-#define SIP_NO_FILE
 
 #include "qgis_gui.h"
 #include "qgsabstractrelationeditorwidget.h"
 #include "qgsmaptoolshapeabstract.h"
+
+#define SIP_NO_FILE
 
 class QgsMapToolShapeMetadata;
 class QgsMapToolCapture;

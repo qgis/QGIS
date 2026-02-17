@@ -19,6 +19,9 @@
 
 #include <QObject>
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 //qgis includes...
 #include <qgstemporalnavigationobject.h>

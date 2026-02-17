@@ -46,6 +46,9 @@
 #include "qgsvectorlayer.h"
 
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QVariant QgsProcessingFeatureSourceDefinition::toVariant() const
 {
@@ -7152,6 +7155,9 @@ QString QgsProcessingParameterRasterDestination::createFileFilter() const
 {
   QStringList filters;
   const QList<QPair<QString, QString>> formatAndExtensions = supportedOutputRasterLayerFormatAndExtensions();
+  // Note: the returned filter list MUST be in the same order as the output
+  // of supportedOutputRasterLayerFormatAndExtensions(), otherwise
+  // QgsProcessingLayerOutputDestinationWidget::selectFile() will misbehave.
   for ( const QPair<QString, QString> &formatAndExt : std::as_const( formatAndExtensions ) )
   {
     QString format = formatAndExt.first;

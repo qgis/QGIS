@@ -70,6 +70,7 @@
 #include <QPainter>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+#include <QString>
 #include <QStringBuilder>
 #include <QTextCodec>
 #include <QThread>
@@ -78,6 +79,8 @@
 #include <QUrlQuery>
 
 #include "moc_qgswmsprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef QGISDEBUG
 #include <QFile>
@@ -2688,9 +2691,16 @@ QString QgsWmsProvider::htmlMetadata() const
     // Layer properties
     if ( n < mCaps.mLayersSupported.size() )
     {
-      metadata += u"<tr><th class=\"strong\" id=\"otherlayers\">"_s % tr( "Other Layers" ) % u"</th></tr>"_s;
+      static const int MAX_OTHERLAYERS_COUNT = 10;
+      QString description = tr( "Other Layers" );
+      if ( mCaps.mLayersSupported.size() > MAX_OTHERLAYERS_COUNT )
+      {
+        description += tr( " (only the first %1 are listed)" ).arg( MAX_OTHERLAYERS_COUNT );
+      }
 
-      for ( int i = 0; i < mCaps.mLayersSupported.size(); i++ )
+      metadata += u"<tr><th class=\"strong\" id=\"otherlayers\">"_s % description % u"</th></tr>"_s;
+
+      for ( int i = 0; i < std::min( static_cast<int>( mCaps.mLayersSupported.size() ), MAX_OTHERLAYERS_COUNT ); i++ )
       {
         if ( !mSettings.mActiveSubLayers.contains( mCaps.mLayersSupported[i].name ) )
         {
@@ -3972,7 +3982,7 @@ void QgsWmsProvider::showMessageBox( const QString &title, const QString &text )
 {
   QgsMessageOutput *message = QgsMessageOutput::createMessageOutput();
   message->setTitle( title );
-  message->setMessage( text, QgsMessageOutput::MessageText );
+  message->setMessage( text, Qgis::StringFormat::PlainText );
   message->showMessage();
 }
 

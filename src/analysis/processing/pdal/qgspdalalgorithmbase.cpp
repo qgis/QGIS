@@ -25,6 +25,9 @@
 #include "qgsrunprocess.h"
 
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -65,6 +68,15 @@ void QgsPdalAlgorithmBase::createCommonParameters()
   auto extentParam = std::make_unique<QgsProcessingParameterExtent>( u"FILTER_EXTENT"_s, QObject::tr( "Cropping extent" ), QVariant(), true );
   extentParam->setFlags( extentParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( extentParam.release() );
+}
+
+void QgsPdalAlgorithmBase::createVpcOutputFormatParameter()
+{
+  const QStringList outputFormats { u"COPC"_s, u"LAZ"_s, u"LAS"_s };
+  auto paramVpcOutputFormat = std::make_unique<QgsProcessingParameterEnum>( u"VPC_OUTPUT_FORMAT"_s, QObject::tr( "VPC Output Format" ), outputFormats, false, u"COPC"_s );
+  paramVpcOutputFormat->setHelp( QObject::tr( "Specify the underlying format in which data are stored for VPC output.\nSelect COPC if you need to render the output VPC in QGIS. LAZ/LAS may be faster to process, however only allow rendering of the point cloud extents." ) );
+  paramVpcOutputFormat->setFlags( paramVpcOutputFormat->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( paramVpcOutputFormat.release() );
 }
 
 void QgsPdalAlgorithmBase::applyCommonParameters( QStringList &arguments, QgsCoordinateReferenceSystem crs, const QVariantMap &parameters, QgsProcessingContext &context )
@@ -167,6 +179,14 @@ class EnableElevationPropertiesPostProcessor : public QgsProcessingLayerPostProc
 QVariantMap QgsPdalAlgorithmBase::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   const QStringList processArgs = createArgumentLists( parameters, context, feedback );
+
+  runWrenchProcess( processArgs, feedback );
+
+  return getOutputs( parameters, context );
+}
+
+void QgsPdalAlgorithmBase::runWrenchProcess( const QStringList &processArgs, QgsProcessingFeedback *feedback )
+{
   const QString wrenchPath = wrenchExecutableBinary();
 
   if ( !QFileInfo::exists( wrenchPath ) )
@@ -259,7 +279,10 @@ QVariantMap QgsPdalAlgorithmBase::processAlgorithm( const QVariantMap &parameter
   {
     throw QgsProcessingException( QObject::tr( "Process returned error code %1" ).arg( res ) );
   }
+}
 
+QVariantMap QgsPdalAlgorithmBase::getOutputs( const QVariantMap &parameters, QgsProcessingContext &context )
+{
   QVariantMap outputs;
   QgsProcessingOutputDefinitions outDefinitions = outputDefinitions();
   for ( const QgsProcessingOutputDefinition *output : outDefinitions )
@@ -286,7 +309,6 @@ QVariantMap QgsPdalAlgorithmBase::processAlgorithm( const QVariantMap &parameter
 
   return outputs;
 }
-
 QgsPointCloudLayer *QgsPdalAlgorithmBase::parameterAsPointCloudLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags ) const
 {
   QgsPointCloudLayer *layer = QgsProcessingParameters::parameterAsPointCloudLayer( parameterDefinition( name ), parameters, context, flags );
@@ -327,6 +349,21 @@ QString QgsPdalAlgorithmBase::copcIndexFile( const QString &filename )
   const QDir directory = fi.absoluteDir();
   const QString outputFile = u"%1/%2.copc.laz"_s.arg( directory.absolutePath() ).arg( fi.completeBaseName() );
   return outputFile;
+}
+
+void QgsPdalAlgorithmBase::applyVpcOutputFormatParameter( const QString &outputFilename, QStringList &arguments, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  if ( outputFilename.endsWith( u".vpc"_s, Qt::CaseInsensitive ) )
+  {
+    QString vpcOutputFormat = parameterAsEnumString( parameters, u"VPC_OUTPUT_FORMAT"_s, context );
+
+    if ( vpcOutputFormat == "LAZ"_L1 || vpcOutputFormat == "LAS"_L1 )
+    {
+      feedback->pushWarning( QObject::tr( "The VPC file will contain LAS or LAZ files. Such files cannot be properly rendered in QGIS, only the point cloud extents will be displayed. Use COPC as VPC Output Format for proper rendering." ) );
+    }
+
+    arguments << u"--vpc-output-format=%1"_s.arg( vpcOutputFormat.toLower() );
+  }
 }
 
 ///@endcond

@@ -16,7 +16,6 @@
 #ifndef QGSOGRUTILS_H
 #define QGSOGRUTILS_H
 
-#define SIP_NO_FILE
 
 #include <cpl_conv.h>
 #include <cpl_string.h>
@@ -27,6 +26,8 @@
 #include "qgis_core.h"
 #include "qgsfeature.h"
 #include "qgsvectordataprovider.h"
+
+#define SIP_NO_FILE
 
 class QgsCoordinateReferenceSystem;
 class QgsFieldDomain;
@@ -312,7 +313,7 @@ class CORE_EXPORT QgsOgrUtils
      *
      * \since QGIS 3.2
      */
-    static QStringList cStringListToQStringList( char **stringList );
+    static QStringList cStringListToQStringList( const char *const *stringList );
 
     /**
      * Converts a OGRwkbGeometryType to QgsWkbTypes::Type
@@ -320,6 +321,18 @@ class CORE_EXPORT QgsOgrUtils
      * \since QGIS 3.4.9
      */
     static Qgis::WkbType ogrGeometryTypeToQgsWkbType( OGRwkbGeometryType ogrGeomType );
+
+    /**
+     * Converts a QgsWkbTypes::Type to a OGRwkbGeometryType
+     *
+     * If \a approx is set to true, an attempt will be made to find the closest
+     * OGR geometry type when there is no exact match.
+     *
+     * It may return wkbUnknown if there is no match.
+     *
+     * \since QGIS 4.0
+     */
+    static OGRwkbGeometryType qgsWkbTypeToOgrGeometryType( Qgis::WkbType wkbType, bool approx = false );
 
     /**
      * Returns a WKT string corresponding to the specified OGR \a srs object.

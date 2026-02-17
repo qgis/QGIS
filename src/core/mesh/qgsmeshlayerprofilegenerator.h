@@ -27,13 +27,14 @@
 #include "qgscoordinatetransformcontext.h"
 #include "qgstriangularmesh.h"
 
+#define SIP_NO_FILE
+
 class QgsProfileRequest;
 class QgsCurve;
 class QgsMeshLayer;
 class QgsAbstractTerrainProvider;
 class QgsProfileSnapContext;
 
-#define SIP_NO_FILE
 
 
 /**
@@ -83,6 +84,7 @@ class CORE_EXPORT QgsMeshLayerProfileGenerator : public QgsAbstractProfileSurfac
     bool generateProfile( const QgsProfileGenerationContext &context = QgsProfileGenerationContext() ) override;
     QgsAbstractProfileResults *takeResults() override;
     QgsFeedback *feedback() const override;
+    QString type() const override;
 
   private:
 

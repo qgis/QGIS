@@ -18,7 +18,10 @@
 #include "qgsstringutils.h"
 
 #include <QDateTime>
+#include <QString>
 #include <QStringBuilder>
+
+using namespace Qt::StringLiterals;
 
 QgsLayerMetadataFormatter::QgsLayerMetadataFormatter( const QgsLayerMetadata &metadata )
   : mMetadata( metadata )

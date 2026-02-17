@@ -1,4 +1,4 @@
-""""Test QgsLegendSettings
+""" "Test QgsLegendSettings
 
 .. note:: This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -9,23 +9,22 @@ Run with ctest -V -R PyQgsLegendSettings
 
 """
 
-from qgis.PyQt.QtCore import Qt, QSizeF
-from qgis.PyQt.QtGui import QColor
+import unittest
 
 from qgis.core import (
     Qgis,
-    QgsLegendStyle,
-    QgsLegendSettings,
     QgsExpressionContext,
     QgsExpressionContextScope,
-    QgsTextFormat,
-    QgsRenderContext,
+    QgsLegendSettings,
+    QgsLegendStyle,
     QgsPalLayerSettings,
     QgsProperty,
+    QgsRenderContext,
+    QgsTextFormat,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QSizeF, Qt
+from qgis.PyQt.QtGui import QColor
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 QGISAPP = start_app()
@@ -33,7 +32,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsLegendSettings(QgisTestCase):
-
     def test_getters_setters(self):
         settings = QgsLegendSettings()
 

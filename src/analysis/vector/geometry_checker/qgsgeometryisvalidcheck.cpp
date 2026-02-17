@@ -19,6 +19,10 @@ email                : matthias@opengis.ch
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsGeometryIsValidCheck::QgsGeometryIsValidCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
   : QgsSingleGeometryCheck( context, configuration )
 {}

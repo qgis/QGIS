@@ -11,10 +11,9 @@ __date__ = "15/07/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
 import os
-from osgeo import gdal
+import unittest
 
-from qgis.PyQt.QtCore import QMetaType, QTemporaryDir, QVariant
-from qgis.PyQt.QtTest import QSignalSpy
+from osgeo import gdal
 from qgis.core import (
     Qgis,
     QgsCoordinateTransformContext,
@@ -26,8 +25,9 @@ from qgis.core import (
     QgsVectorFileWriter,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QMetaType, QTemporaryDir, QVariant
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -66,7 +66,6 @@ def createEmptyLinestringLayer():
 
 
 class TestQgsVectorLayerEditBuffer(QgisTestCase):
-
     def testAddFeatures(self):
         # test adding features to an edit buffer
         layer = createEmptyLayer()
@@ -743,7 +742,6 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
             # This is totally broken at least on OGR/GPKG: the rollback
             # does not restore the original fields
             if False:
-
                 layer_a.undoStack().redo()
                 self.assertEqual(buffer.deletedAttributeIds(), [attr_idx])
                 self.assertEqual(layer_a.fields().lookupField(field.name()), -1)
@@ -803,7 +801,6 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
 
                 # Undo/redo
                 for i in range(9):
-
                     # Undo
                     spy_attribute_changed = QSignalSpy(layer_a.attributeValueChanged)
                     layer_a.undoStack().undo()

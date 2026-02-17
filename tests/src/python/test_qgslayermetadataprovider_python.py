@@ -1,4 +1,4 @@
-""""Test for a python implementation of layer metadata provider
+""" "Test for a python implementation of layer metadata provider
 
 .. note:: This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -13,11 +13,10 @@ __copyright__ = "Copyright 2022, ItOpen"
 
 import os
 import shutil
+import unittest
 from functools import partial
 from stat import S_IREAD, S_IRGRP, S_IROTH, S_IWUSR
 
-from qgis.PyQt.QtCore import QTemporaryDir
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     QgsAbstractLayerMetadataProvider,
     QgsLayerMetadata,
@@ -32,9 +31,9 @@ from qgis.core import (
     QgsRectangle,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QTemporaryDir
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -118,7 +117,6 @@ QGIS_APP = start_app()
 
 
 class TestPythonLayerMetadataProvider(QgisTestCase):
-
     def setUp(self):
 
         super().setUp()

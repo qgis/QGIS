@@ -18,6 +18,10 @@
 #include "qgsdxfexport.h"
 #include "qgsprocessingparameterdxflayers.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsDxfExportAlgorithm::name() const

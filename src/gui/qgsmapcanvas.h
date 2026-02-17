@@ -72,6 +72,7 @@ class QgsReferencedRectangle;
 class QgsRenderedItemResults;
 class QgsTemporaryCursorOverride;
 class QgsOverlayWidgetLayout;
+class QgsStatusBar;
 
 class QgsTemporalController;
 class QgsScreenHelper;
@@ -822,6 +823,13 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     const QgsLabelingEngineSettings &labelingEngineSettings() const;
 
     /**
+     * Sets a list of all selective masking source sets defined for the map canvas.
+     *
+     * \since QGIS 4.0
+     */
+    void setSelectiveMaskingSourceSets( const QVector< QgsSelectiveMaskingSourceSet > &sets );
+
+    /**
      * Returns TRUE if canvas map preview jobs (low priority render jobs which render portions
      * of the view just outside of the canvas extent, to allow preview of these
      * out-of-canvas areas when panning or zooming out the map) are enabled
@@ -903,6 +911,24 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * \since QGIS 3.34
      */
     void setMapController( QgsAbstract2DMapController *controller SIP_TRANSFER );
+
+    /**
+     * Returns the associated status bar.
+     *
+     * May be NULLPTR if not set.
+     *
+     * \see setStatusBar()
+     * \since QGIS 4.0
+     */
+    QgsStatusBar *statusBar();
+
+    /**
+     * Sets the associated status \a bar.
+     *
+     * \see statusBar()
+     * \since QGIS 4.0
+     */
+    void setStatusBar( QgsStatusBar *bar );
 
   public slots:
 
@@ -1485,6 +1511,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
 
 
     QPointer<QgsAbstract2DMapController> mMapController;
+
+    QPointer< QgsStatusBar > mStatusBar;
 
     /**
      * Returns the last cursor position on the canvas in geographical coordinates

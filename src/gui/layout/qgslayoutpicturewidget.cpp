@@ -34,9 +34,12 @@
 #include <QMessageBox>
 #include <QPainter>
 #include <QProgressDialog>
+#include <QString>
 #include <QSvgRenderer>
 
 #include "moc_qgslayoutpicturewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
   : QgsLayoutItemBaseWidget( nullptr, picture )

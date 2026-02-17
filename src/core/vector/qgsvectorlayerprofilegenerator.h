@@ -30,6 +30,8 @@
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
 
+#define SIP_NO_FILE
+
 class QgsProfileRequest;
 class QgsCurve;
 class QgsVectorLayer;
@@ -40,7 +42,6 @@ class QgsLineString;
 class QgsPolygon;
 class QgsProfileSnapContext;
 
-#define SIP_NO_FILE
 
 
 /**
@@ -117,6 +118,7 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileSurf
     bool generateProfile( const QgsProfileGenerationContext &context = QgsProfileGenerationContext() ) override;
     QgsAbstractProfileResults *takeResults() override;
     QgsFeedback *feedback() const override;
+    QString type() const override;
 
   private:
 
@@ -185,6 +187,7 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileSurf
     QgsCoordinateTransform mTargetToTerrainProviderTransform;
 
     std::unique_ptr< QgsVectorLayerProfileResults > mResults;
+    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
 
     bool mRespectLayerSymbology = true;
     std::unique_ptr< QgsMarkerSymbol > mProfileMarkerSymbol;

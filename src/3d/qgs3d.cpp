@@ -20,7 +20,6 @@
 #include "qgs3drendererregistry.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgs3dterrainregistry.h"
-#include "qgsabstract3drenderer.h"
 #include "qgsannotationlayer3drenderer.h"
 #include "qgsapplication.h"
 #include "qgsgoochmaterialsettings.h"
@@ -41,6 +40,10 @@
 #include "qgsstyle.h"
 #include "qgstiledscenelayer3drenderer.h"
 #include "qgsvectorlayer3drenderer.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 Qgs3D *Qgs3D::instance()
 {

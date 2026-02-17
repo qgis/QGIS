@@ -113,7 +113,6 @@ The development version
     typedef QFlags<Qgis::AuthConfigurationStorageCapability> AuthConfigurationStorageCapabilities;
 
 
-
     enum MessageLevel /BaseType=IntEnum/
     {
       Info,
@@ -121,6 +120,12 @@ The development version
       Critical,
       Success,
       NoLevel,
+    };
+
+    enum class StringFormat /BaseType=IntEnum/
+      {
+      PlainText,
+      Html,
     };
 
     enum class NetworkRequestFlag /BaseType=IntFlag/
@@ -192,6 +197,7 @@ The development version
       MultiSurface,
       PolyhedralSurface,
       TIN,
+      NurbsCurve,
       NoGeometry,
       PointZ,
       LineStringZ,
@@ -208,6 +214,7 @@ The development version
       MultiSurfaceZ,
       PolyhedralSurfaceZ,
       TINZ,
+      NurbsCurveZ,
       PointM,
       LineStringM,
       PolygonM,
@@ -223,6 +230,7 @@ The development version
       MultiSurfaceM,
       PolyhedralSurfaceM,
       TINM,
+      NurbsCurveM,
       PointZM,
       LineStringZM,
       PolygonZM,
@@ -238,6 +246,7 @@ The development version
       PolyhedralSurfaceZM,
       TINZM,
       TriangleZM,
+      NurbsCurveZM,
       Point25D,
       LineString25D,
       Polygon25D,
@@ -280,7 +289,10 @@ The development version
       CircularString,
       Streaming,
       Shape,
+      PolyBezier,
+      NurbsCurve,
     };
+
 
     enum class VectorLayerTypeFlag /BaseType=IntFlag/
     {
@@ -722,6 +734,12 @@ The development version
       AllowOverlapAtNoCost,
     };
 
+    enum class LabelWhitespaceCollisionHandling /BaseType=IntEnum/
+    {
+      TreatWhitespaceAsCollision,
+      IgnoreWhitespaceCollisions,
+    };
+
     enum class LabelPrioritization /BaseType=IntEnum/
     {
       PreferCloser,
@@ -741,6 +759,14 @@ The development version
       OutsidePolygons,
     };
 
+    enum class CurvedLabelMode /BaseType=IntEnum/
+    {
+      Default,
+      PlaceCharactersAtVertices,
+      StretchCharacterSpacingToFitLine,
+      StretchWordSpacingToFitLine,
+    };
+
     enum class LabelPredefinedPointPosition /BaseType=IntEnum/
       {
       TopLeft,
@@ -756,6 +782,13 @@ The development version
       BottomSlightlyRight,
       BottomRight,
       OverPoint,
+    };
+
+    enum class MultiPartLabelingBehavior /BaseType=IntEnum/
+    {
+      LabelLargestPartOnly,
+      LabelEveryPartWithEntireLabel,
+      SplitLabelTextLinesOverParts,
     };
 
     enum class LabelOffsetType /BaseType=IntEnum/
@@ -1770,10 +1803,17 @@ The development version
       GlowSpread,
     };
 
+    enum class SelectiveMaskSourceType /BaseType=IntEnum/
+    {
+      SymbolLayer,
+      Label,
+    };
+
     enum class VertexType /BaseType=IntEnum/
       {
       Segment,
       Curve,
+      ControlPoint,
     };
 
     enum class MarkerShape /BaseType=IntEnum/
@@ -2310,6 +2350,12 @@ The development version
       MValue,
     };
 
+    enum class CadMeasurementDisplayType /BaseType=IntEnum/
+    {
+      Hidden,
+      Cartesian,
+      Ellipsoidal,
+    };
 
     enum class ProjectFlag /BaseType=IntFlag/
     {
@@ -2379,6 +2425,12 @@ The development version
     {
       IndividualFeatures,
       ContinuousSurface,
+    };
+
+    enum class PointCloudProfileType /BaseType=IntEnum/
+    {
+      IndividualPoints,
+      TriangulatedSurface,
     };
 
     enum class ProfileGeneratorFlag /BaseType=IntFlag/
@@ -2570,6 +2622,13 @@ The development version
       Subgroup,
       Symbol,
       SymbolLabel,
+    };
+
+    enum class LegendSyncMode /BaseType=IntEnum/
+    {
+      AllProjectLayers,
+      VisibleLayers,
+      Manual,
     };
 
     enum class LegendJsonRenderFlag /BaseType=IntFlag/

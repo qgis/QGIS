@@ -17,6 +17,10 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterinterface.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsRasterIterator::QgsRasterIterator( QgsRasterInterface *input, int tileOverlapPixels )
   : mInput( input )
   , mTileOverlapPixels( tileOverlapPixels )

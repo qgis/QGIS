@@ -21,7 +21,11 @@
 #include "qgsreadwritecontext.h"
 #include "qgsstyleentityvisitor.h"
 
+#include <QString>
+
 #include "moc_qgsprintlayout.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPrintLayout::QgsPrintLayout( QgsProject *project )
   : QgsLayout( project )

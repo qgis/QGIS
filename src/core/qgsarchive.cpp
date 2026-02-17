@@ -22,6 +22,10 @@
 #include "qgsmessagelog.h"
 #include "qgsziputils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #ifdef Q_OS_WIN
 #include <windows.h>
 #endif

@@ -22,8 +22,13 @@
 #include "qgsdatasourceuri.h"
 #include "qgsprojectstorage.h"
 
-///@cond PRIVATE
+#include <QString>
+
 #define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
+
+///@cond PRIVATE
 
 //! Stores information parsed from postgres project URI
 typedef struct

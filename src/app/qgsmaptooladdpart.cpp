@@ -52,6 +52,8 @@ bool QgsMapToolAddPart::supportsTechnique( Qgis::CaptureTechnique technique ) co
 
     case Qgis::CaptureTechnique::CircularString:
     case Qgis::CaptureTechnique::Shape:
+    case Qgis::CaptureTechnique::PolyBezier:
+    case Qgis::CaptureTechnique::NurbsCurve:
       return mode() != QgsMapToolCapture::CapturePoint;
   }
   return false;
@@ -211,10 +213,13 @@ QgsVectorLayer *QgsMapToolAddPart::getLayerAndCheckSelection()
   {
     // Only one selected feature
     // For single-type layers only allow features without geometry
+    // Exception: TIN and PolyhedralSurface can hold multiple patches even though they are "single" types
     QgsFeatureIterator selectedFeatures = layer->getSelectedFeatures();
     QgsFeature selectedFeature;
     selectedFeatures.nextFeature( selectedFeature );
-    if ( QgsWkbTypes::isSingleType( layer->wkbType() ) && selectedFeature.geometry().constGet() )
+    const Qgis::WkbType layerFlatType = QgsWkbTypes::flatType( layer->wkbType() );
+    const bool isSurfaceWithPatches = ( layerFlatType == Qgis::WkbType::TIN || layerFlatType == Qgis::WkbType::PolyhedralSurface );
+    if ( QgsWkbTypes::isSingleType( layer->wkbType() ) && !isSurfaceWithPatches && selectedFeature.geometry().constGet() )
     {
       selectionErrorMsg = tr( "This layer does not support multipart geometries." );
     }

@@ -13,12 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#define SIP_NO_FILE
 
 #ifndef QGSGEOMETRYPOINTCOVEREDBYLINECHECK_H
 #define QGSGEOMETRYPOINTCOVEREDBYLINECHECK_H
 
 #include "qgsgeometrycheck.h"
+
+#include <QString>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup analysis

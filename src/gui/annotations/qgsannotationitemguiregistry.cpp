@@ -22,8 +22,11 @@
 #include "qgscreateannotationitemmaptool_impl.h"
 
 #include <QImageReader>
+#include <QString>
 
 #include "moc_qgsannotationitemguiregistry.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsAnnotationItemAbstractGuiMetadata

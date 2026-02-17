@@ -27,8 +27,9 @@
 #include <QStyledItemDelegate>
 #include <QUrl>
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 class QgsStacSearchParametersDialog;
 class QgsStacItemListModel;

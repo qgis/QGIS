@@ -21,30 +21,25 @@
 #include <optional>
 
 #include "qgis_core.h"
-#include "qgscolorramp.h"
-#include "qgserror.h"
 #include "qgsgeometry.h"
-#include "qgsidentifycontext.h"
 #include "qgsmapclippingregion.h"
 #include "qgsmaplayerrenderer.h"
-#include "qgspointcloudextentrenderer.h"
 #include "qgspointcloudindex.h"
-#include "qgspointcloudrenderer.h"
-#include "qgsrasterinterface.h"
-#include "qgsreadwritecontext.h"
 
 #include <QDomElement>
 #include <QElapsedTimer>
 #include <QPainter>
 #include <QString>
 
-class QgsRenderContext;
-class QgsPointCloudLayer;
-class QgsPointCloudRenderer;
-class QgsPointCloudRenderContext;
-class QgsPointCloudSubIndex;
-
 #define SIP_NO_FILE
+
+class QgsPointCloudExtentRenderer;
+class QgsPointCloudLayer;
+class QgsPointCloudRenderContext;
+class QgsPointCloudRenderer;
+class QgsPointCloudSubIndex;
+class QgsRenderContext;
+
 
 /**
  * \ingroup core

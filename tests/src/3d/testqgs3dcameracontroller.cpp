@@ -20,6 +20,7 @@
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
+#include "qgscameracontroller.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgsphongmaterialsettings.h"
@@ -30,6 +31,10 @@
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgs3DCameraController : public QgsTest
 {
@@ -1316,7 +1321,7 @@ void TestQgs3DCameraController::testOrthographic()
   QMouseEvent mouseReleaseEvent1( QEvent::MouseButtonRelease, midPos + movement1, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onMouseReleased( new Qt3DInput::QMouseEvent( mouseReleaseEvent1 ) );
 
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QgsVector3D( -1853, 582, 0 ), 5 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QgsVector3D( -2338, 582, 0 ), 5 );
 
   // Rotate to look sideways
   QMouseEvent mousePressEvent2( QEvent::MouseButtonPress, midPos, Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
@@ -1332,7 +1337,7 @@ void TestQgs3DCameraController::testOrthographic()
   QMouseEvent mouseReleaseEvent2( QEvent::MouseButtonRelease, midPos + movement2, Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
   scene->cameraController()->onMouseReleased( new Qt3DInput::QMouseEvent( mouseReleaseEvent2 ) );
 
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QgsVector3D( -1853, 1690, 403 ), 5 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QgsVector3D( -2338, 1690, 403 ), 5 );
   QGSCOMPARENEAR( scene->cameraController()->pitch(), 40, 1 );
   QGSCOMPARENEAR( scene->cameraController()->yaw(), 0, 1 );
 
@@ -1350,7 +1355,7 @@ void TestQgs3DCameraController::testOrthographic()
   QMouseEvent mouseReleaseEvent3( QEvent::MouseButtonRelease, midPos + movement3, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onMouseReleased( new Qt3DInput::QMouseEvent( mouseReleaseEvent3 ) );
 
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QgsVector3D( -1853, -193, 403 ), 5 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QgsVector3D( -2338, 502, 137 ), 5 );
 
   delete scene;
   mapSettings->setLayers( {} );

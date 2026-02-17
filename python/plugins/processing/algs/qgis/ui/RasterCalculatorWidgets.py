@@ -19,41 +19,42 @@ __author__ = "Victor Olaya"
 __date__ = "November 2016"
 __copyright__ = "(C) 2016, Victor Olaya"
 
-import os
-from functools import partial
-import re
 import json
+import os
+import re
+from functools import partial
 
-from qgis.utils import iface
+from qgis.analysis import QgsRasterCalcNode, QgsRasterCalculatorEntry
+from qgis.core import (
+    QgsProcessingOutputRasterLayer,
+    QgsProcessingParameterDefinition,
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingUtils,
+    QgsProject,
+)
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QTextCursor
 from qgis.PyQt.QtWidgets import (
-    QLineEdit,
-    QPushButton,
-    QLabel,
     QComboBox,
-    QSpacerItem,
-    QSizePolicy,
+    QLabel,
+    QLineEdit,
     QListWidgetItem,
+    QPushButton,
+    QSizePolicy,
+    QSpacerItem,
 )
+from qgis.utils import iface
 
-from qgis.core import (
-    QgsProcessingUtils,
-    QgsProcessingParameterDefinition,
-    QgsProcessingParameterRasterLayer,
-    QgsProcessingOutputRasterLayer,
-    QgsProject,
-)
-
-from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD, DIALOG_BATCH
 from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
+from processing.gui.wrappers import (
+    DIALOG_BATCH,
+    DIALOG_STANDARD,
+    InvalidParameterValue,
+    WidgetWrapper,
+)
 from processing.tools import dataobjects
 from processing.tools.system import userFolder
-
-from processing.gui.wrappers import InvalidParameterValue
-
-from qgis.analysis import QgsRasterCalculatorEntry, QgsRasterCalcNode
 
 pluginPath = os.path.dirname(__file__)
 WIDGET_ADD_NEW, BASE_ADD_NEW = uic.loadUiType(
@@ -62,7 +63,6 @@ WIDGET_ADD_NEW, BASE_ADD_NEW = uic.loadUiType(
 
 
 class AddNewExpressionDialog(BASE_ADD_NEW, WIDGET_ADD_NEW):
-
     def __init__(self, expression):
         super().__init__()
         self.setupUi(self)
@@ -88,7 +88,6 @@ WIDGET_DLG, BASE_DLG = uic.loadUiType(
 
 
 class PredefinedExpressionDialog(BASE_DLG, WIDGET_DLG):
-
     def __init__(self, expression, options):
         super().__init__()
         self.setupUi(self)
@@ -253,7 +252,6 @@ class ExpressionWidget(BASE, WIDGET):
 
 
 class ExpressionWidgetWrapper(WidgetWrapper):
-
     def _panel(self, options):
         return ExpressionWidget(options)
 
@@ -309,7 +307,6 @@ class ExpressionWidgetWrapper(WidgetWrapper):
 
 
 class LayersListWidgetWrapper(WidgetWrapper):
-
     def createWidget(self):
         if self.dialogType == DIALOG_BATCH:
             widget = BatchInputSelectionPanel(

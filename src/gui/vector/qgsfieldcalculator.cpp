@@ -33,8 +33,11 @@
 #include "qgsvectorlayerjoinbuffer.h"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsfieldcalculator.cpp"
+
+using namespace Qt::StringLiterals;
 
 // FTC = FieldTypeCombo
 constexpr int FTC_TYPE_ROLE_IDX = 0;

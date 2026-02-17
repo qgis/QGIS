@@ -17,6 +17,9 @@
 
 #include <QDomDocument>
 #include <QEasingCurve>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 Qgs3DAnimationSettings::Qgs3DAnimationSettings() = default;
 

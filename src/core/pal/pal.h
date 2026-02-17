@@ -30,7 +30,6 @@
 #ifndef PAL_H
 #define PAL_H
 
-#define SIP_NO_FILE
 
 
 #include <ctime>
@@ -44,7 +43,12 @@
 
 #include <QList>
 #include <QMutex>
+#include <QString>
 #include <QStringList>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 class QgsSettingsEntryInteger;
 

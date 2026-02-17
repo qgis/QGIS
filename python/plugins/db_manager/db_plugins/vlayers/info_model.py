@@ -19,12 +19,11 @@ email                : hugo dot mercier at oslandia dot com
 
 from qgis.PyQt.QtWidgets import QApplication
 
-from ..info_model import DatabaseInfo
 from ..html_elems import HtmlTable
+from ..info_model import DatabaseInfo
 
 
 class LDatabaseInfo(DatabaseInfo):
-
     def __init__(self, db):
         self.db = db
 

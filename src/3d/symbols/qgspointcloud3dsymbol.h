@@ -20,9 +20,13 @@
 #include "qgsabstract3dsymbol.h"
 #include "qgscolorrampshader.h"
 #include "qgscontrastenhancement.h"
-#include "qgsmaterial.h"
 #include "qgspointcloudclassifiedrenderer.h"
-#include "qgspointcloudlayer.h"
+
+#include <QString>
+
+class QgsMaterial;
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup qgis_3d

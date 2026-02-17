@@ -1,7 +1,0 @@
-from qgis_sip_project import QgisProject, QgisBindings
-
-class QgisAnalysisBindings(QgisBindings):
-    name = "analysis"
-
-class QgisAnalysisProject(QgisProject):
-    bindings_factories = [QgisAnalysisBindings]

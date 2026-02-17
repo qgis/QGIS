@@ -20,13 +20,14 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptool.h"
 #include "qgs3dutils.h"
+#include "qgscameracontroller.h"
 #include "qgsframegraph.h"
-#include "qgspointcloudlayer3drenderer.h"
 #include "qgsraycastcontext.h"
-#include "qgsrubberband3d.h"
 #include "qgstemporalcontroller.h"
 #include "qgswindow3dengine.h"
 
+#include <QString>
+#include <QTimer>
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DCore/QCoreAspect>
 #include <Qt3DInput/QInputAspect>
@@ -37,6 +38,8 @@
 #include <Qt3DRender/QRenderSettings>
 
 #include "moc_qgs3dmapcanvas.cpp"
+
+using namespace Qt::StringLiterals;
 
 Qgs3DMapCanvas::Qgs3DMapCanvas()
   : m_aspectEngine( new Qt3DCore::QAspectEngine )
@@ -82,8 +85,6 @@ Qgs3DMapCanvas::~Qgs3DMapCanvas()
   mScene = nullptr;
   mMapSettings->deleteLater();
   mMapSettings = nullptr;
-  qDeleteAll( mHighlights );
-  mHighlights.clear();
 
   delete m_aspectEngine;
 }
@@ -160,6 +161,8 @@ void Qgs3DMapCanvas::setMapSettings( Qgs3DMapSettings *mapSettings )
   connect( mScene, &Qgs3DMapScene::fpsCounterEnabledChanged, this, &Qgs3DMapCanvas::fpsCounterEnabledChanged );
   connect( mScene, &Qgs3DMapScene::viewed2DExtentFrom3DChanged, this, &Qgs3DMapCanvas::viewed2DExtentFrom3DChanged );
 
+  mHighlightsHandler.reset( new Qgs3DHighlightFeatureHandler( mScene ) );
+
   delete mMapSettings;
   mMapSettings = mapSettings;
 
@@ -192,10 +195,23 @@ QgsRayCastResult Qgs3DMapCanvas::castRay( const QPoint &screenPoint, QgsRayCastC
   return res;
 }
 
-void Qgs3DMapCanvas::enableCrossSection( const QgsPointXY &startPoint, const QgsPointXY &endPoint, double width, bool setSideView )
+void Qgs3DMapCanvas::setCrossSection( const QgsCrossSection &crossSection )
 {
+  mCrossSection = crossSection;
+
   if ( !mScene )
     return;
+
+  if ( !mCrossSection.isValid() )
+  {
+    mScene->disableClipping();
+    emit crossSectionEnabledChanged( false );
+    return;
+  }
+
+  const QgsPoint startPoint = mCrossSection.startPoint();
+  const QgsPoint endPoint = mCrossSection.endPoint();
+  const double width = mCrossSection.halfWidth();
 
   const QgsVector3D startVec { startPoint.x(), startPoint.y(), 0 };
   const QgsVector3D endVec { endPoint.x(), endPoint.y(), 0 };
@@ -206,38 +222,10 @@ void Qgs3DMapCanvas::enableCrossSection( const QgsPointXY &startPoint, const Qgs
     mMapSettings->origin()
   );
 
-  if ( setSideView )
-  {
-    // calculate the middle of the front side defined by clipping planes
-    QgsVector linePerpVec( ( endPoint - startPoint ).x(), ( endPoint - startPoint ).y() );
-    linePerpVec = -linePerpVec.normalized().perpVector();
-    const QgsVector3D linePerpVec3D( linePerpVec.x(), linePerpVec.y(), 0 );
-    const QgsVector3D frontStartPoint( startVec + linePerpVec3D * width );
-    const QgsVector3D frontEndPoint( endVec + linePerpVec3D * width );
-
-    const QgsCameraPose camPose = Qgs3DUtils::lineSegmentToCameraPose(
-      frontStartPoint,
-      frontEndPoint,
-      mScene->elevationRange( true ),
-      mScene->cameraController()->camera()->fieldOfView(),
-      mMapSettings->origin()
-    );
-
-    mScene->cameraController()->setCameraPose( camPose );
-  }
-
   mScene->enableClipping( clippingPlanes );
   emit crossSectionEnabledChanged( true );
 }
 
-void Qgs3DMapCanvas::disableCrossSection()
-{
-  if ( !mScene )
-    return;
-
-  mScene->disableClipping();
-  emit crossSectionEnabledChanged( false );
-}
 
 bool Qgs3DMapCanvas::crossSectionEnabled() const
 {
@@ -417,53 +405,10 @@ QVector<QgsPointXY> Qgs3DMapCanvas::viewFrustum2DExtent()
 
 void Qgs3DMapCanvas::highlightFeature( const QgsFeature &feature, QgsMapLayer *layer )
 {
-  // we only support point clouds for now
-  if ( layer->type() != Qgis::LayerType::PointCloud )
-    return;
-
-  const QgsGeometry geom = feature.geometry();
-  const QgsPoint pt( geom.vertexAt( 0 ) );
-
-  if ( !mHighlights.contains( layer ) )
-  {
-    QgsRubberBand3D *band = new QgsRubberBand3D( *mMapSettings, mEngine, mEngine->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Point );
-
-    const QgsSettings settings;
-    const QColor color = QColor( settings.value( u"Map/highlight/color"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
-    band->setColor( color );
-    band->setMarkerType( QgsRubberBand3D::MarkerType::Square );
-    if ( QgsPointCloudLayer3DRenderer *pcRenderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( layer->renderer3D() ) )
-    {
-      band->setWidth( pcRenderer->symbol()->pointSize() + 1 );
-    }
-    mHighlights.insert( layer, band );
-
-    connect( layer, &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapCanvas::updateHighlightSizes );
-  }
-  mHighlights[layer]->addPoint( pt );
-}
-
-void Qgs3DMapCanvas::updateHighlightSizes()
-{
-  if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() ) )
-  {
-    if ( QgsPointCloudLayer3DRenderer *rnd = dynamic_cast<QgsPointCloudLayer3DRenderer *>( layer->renderer3D() ) )
-    {
-      if ( mHighlights.contains( layer ) )
-      {
-        mHighlights[layer]->setWidth( rnd->symbol()->pointSize() + 1 );
-      }
-    }
-  }
+  mHighlightsHandler->highlightFeature( feature, layer );
 }
 
 void Qgs3DMapCanvas::clearHighlights()
 {
-  for ( auto it = mHighlights.keyBegin(); it != mHighlights.keyEnd(); it++ )
-  {
-    disconnect( it.base().key(), &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapCanvas::updateHighlightSizes );
-  }
-
-  qDeleteAll( mHighlights );
-  mHighlights.clear();
+  mHighlightsHandler->clearHighlights();
 }

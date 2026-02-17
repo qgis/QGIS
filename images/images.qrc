@@ -293,7 +293,9 @@
         <file>themes/default/mActionDeselectAll.svg</file>
         <file>themes/default/mActionDeselectActiveLayer.svg</file>
         <file>themes/default/mActionDigitizeShape.svg</file>
+        <file>themes/default/mActionDigitizeWithBezier.svg</file>
         <file>themes/default/mActionDigitizeWithCurve.svg</file>
+        <file>themes/default/mActionDigitizeWithNURBS.svg</file>
         <file>themes/default/mActionDigitizeWithSegment.svg</file>
         <file>themes/default/mActionDuplicateLayer.svg</file>
         <file>themes/default/mActionDuplicateComposer.svg</file>
@@ -341,6 +343,7 @@
         <file>themes/default/mActionLabel.svg</file>
         <file>themes/default/mActionLabeling.svg</file>
         <file>themes/default/mActionLayers.svg</file>
+        <file>themes/default/mActionListActions.svg</file>
         <file>themes/default/mActionLocalCumulativeCutStretch.svg</file>
         <file>themes/default/mActionLocalHistogramStretch.svg</file>
         <file>themes/default/mActionLockItems.svg</file>
@@ -1060,6 +1063,8 @@
         <file>themes/default/field_indicators/mIndicatorDefaultValue.svg</file>
         <file>themes/default/field_indicators/mIndicatorDefaultValueApplyOnUpdate.svg</file>
         <file>themes/default/mIconRenderOnTerrain.svg</file>
+        <file>themes/default/mIconFloaterCartesian.svg</file>
+        <file>themes/default/mIconFloaterEllipsoid.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

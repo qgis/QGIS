@@ -20,6 +20,10 @@
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgssettingstree.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsAnnotationItem;
 class QgsAnnotationLayer;
 

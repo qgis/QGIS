@@ -14,13 +14,12 @@ __copyright__ = "Copyright 2020, The QGIS Project"
 import os
 
 from qgis.core import (
-    QgsAbstractDatabaseProviderConnection,
-    QgsProviderRegistry,
-    QgsDataSourceUri,
     Qgis,
+    QgsAbstractDatabaseProviderConnection,
+    QgsDataSourceUri,
+    QgsProviderRegistry,
 )
 from qgis.testing import unittest
-
 from test_hana_utils import QgsHanaProviderUtils
 from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
 

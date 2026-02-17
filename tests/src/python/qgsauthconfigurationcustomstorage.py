@@ -1,22 +1,22 @@
 """A custom storage for QgsAuthManager that stores the authentication
-   configurations in memory.
+configurations in memory.
 
-   WARNING: For testing purposes only.
+WARNING: For testing purposes only.
 
 """
 
 import json
 import uuid
+
 from qgis.core import (
     Qgis,
+    QgsAuthCertUtils,
+    QgsAuthConfigSslServer,
     QgsAuthConfigurationStorage,
     QgsAuthMethodConfig,
-    QgsAuthConfigSslServer,
-    QgsAuthCertUtils,
 )
-
-from qgis.PyQt.QtNetwork import QSslCertificate
 from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtNetwork import QSslCertificate
 
 
 class QgsAuthConfigurationCustomStorage(QgsAuthConfigurationStorage):

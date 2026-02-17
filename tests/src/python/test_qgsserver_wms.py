@@ -26,17 +26,16 @@ import urllib.parse
 import urllib.request
 
 import osgeo.gdal  # NOQA
-
 from owslib.wms import WebMapService
 from qgis.core import (
-    QgsProject,
-    QgsMemoryProviderUtils,
-    QgsWkbTypes,
     QgsCoordinateReferenceSystem,
-    QgsFields,
     QgsField,
+    QgsFields,
+    QgsMemoryProviderUtils,
     QgsPalLayerSettings,
+    QgsProject,
     QgsVectorLayerSimpleLabeling,
+    QgsWkbTypes,
 )
 from qgis.PyQt.QtCore import QUrl, QUrlQuery, QVariant
 from qgis.server import (

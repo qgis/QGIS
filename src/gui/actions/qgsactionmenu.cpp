@@ -23,7 +23,11 @@
 #include "qgsmaplayeractionregistry.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsactionmenu.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsActionMenu::QgsActionMenu( QgsVectorLayer *layer, const QgsFeature &feature, const QString &actionScope, QWidget *parent )
   : QMenu( parent )

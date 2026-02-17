@@ -19,17 +19,18 @@ __author__ = "Even Rouault"
 __date__ = "December 2025"
 __copyright__ = "(C) 2025, Even Rouault"
 
-from osgeo import gdal
 import os
 
+from osgeo import gdal
 from qgis.core import (
     Qgis,
     QgsProcessing,
     QgsProcessingException,
-    QgsProcessingParameterFile,
     QgsProcessingParameterBoolean,
+    QgsProcessingParameterFile,
     QgsProcessingParameterVectorDestination,
 )
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 

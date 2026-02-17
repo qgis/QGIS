@@ -341,6 +341,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void updateCalloutFrameStatus();
     void updateDataDefinedAlignment();
     void overlapModeChanged();
+    void updateCurvedLabelDescription();
 };
 
 

@@ -25,6 +25,9 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QPointer>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

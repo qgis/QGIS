@@ -24,7 +24,10 @@
 #include <QDialog>
 #include <QObject>
 #include <QSignalSpy>
+#include <QString>
 #include <QTemporaryDir>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsNewDatabaseTableNameWidget : public QObject
 {

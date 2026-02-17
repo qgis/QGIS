@@ -21,6 +21,9 @@
 #include "qgsdatetimesearchwidgetwrapper.h"
 
 #include <QSettings>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsDateTimeEditFactory::QgsDateTimeEditFactory( const QString &name, const QIcon &icon )
   : QgsEditorWidgetFactory( name, icon )

@@ -34,7 +34,11 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsproviderutils.h"
 #include "qgsvectorfilewriter.h"
 
+#include <QString>
+
 #include "moc_qgsogrprovidermetadata.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>
@@ -105,7 +109,7 @@ bool QgsOgrProviderMetadata::createDatabase( const QString &uri, QString &errorM
     return false;
   }
 
-  char **metadata = GDALGetMetadata( poDriver, nullptr );
+  CSLConstList metadata = GDALGetMetadata( poDriver, nullptr );
 
   if ( !CSLFetchBoolean( metadata, GDAL_DCAP_VECTOR, false )
        || !CSLFetchBoolean( metadata, GDAL_DCAP_CREATE, false ) )

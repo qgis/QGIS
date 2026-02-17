@@ -27,7 +27,11 @@
 #include "qgsmargins.h"
 #include "qgsprintlayout.h"
 
+#include <QString>
+
 #include "moc_qgslayoutpropertieswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout *layout )
   : QgsPanelWidget( parent )

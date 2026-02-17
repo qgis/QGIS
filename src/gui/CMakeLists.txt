@@ -124,9 +124,12 @@ set(QGIS_GUI_SRCS
   annotations/qgsannotationitemguiregistry.cpp
   annotations/qgsannotationitemwidget.cpp
   annotations/qgsannotationitemwidget_impl.cpp
+  annotations/qgsannotationmaptool.cpp
   annotations/qgscreateannotationitemmaptool.cpp
   annotations/qgscreateannotationitemmaptool_impl.cpp
   annotations/qgsmaptoolmodifyannotation.cpp
+  annotations/qgsmaptoolselectannotation.cpp
+  annotations/qgsmaptoolselectannotationmousehandles.cpp
 
   auth/qgsauthauthoritieseditor.cpp
   auth/qgsauthcertificateinfo.cpp
@@ -358,6 +361,10 @@ set(QGIS_GUI_SRCS
   maptools/qgsmaptoolcapturelayergeometry.cpp
   maptools/qgsmaptoolcapturerubberband.cpp
   maptools/qgsmaptooldigitizefeature.cpp
+
+  maptools/qgsbezierdata.cpp
+  maptools/qgsbeziermarker.cpp
+
   maptools/qgsmaptooledit.cpp
   maptools/qgsmaptooleditblanksegments.cpp
   maptools/qgsmaptoolemitpoint.cpp
@@ -449,6 +456,8 @@ set(QGIS_GUI_SRCS
 
   processing/models/qgsmodelarrowitem.cpp
   processing/models/qgsmodelcomponentgraphicitem.cpp
+  processing/models/qgsmodeldesignerconfigdockwidget.cpp
+  processing/models/qgsmodeldesignerconfigwidget.cpp
   processing/models/qgsmodeldesignerdialog.cpp
   processing/models/qgsmodeldesignerinputstreewidget.cpp
   processing/models/qgsmodelgraphicitem.cpp
@@ -1107,9 +1116,12 @@ set(QGIS_GUI_HDRS
   annotations/qgsannotationitemcommonpropertieswidget.h
   annotations/qgsannotationitemguiregistry.h
   annotations/qgsannotationitemwidget.h
+  annotations/qgsannotationmaptool.h
   annotations/qgscreateannotationitemmaptool.h
   annotations/qgscreateannotationitemmaptool_impl.h
   annotations/qgsmaptoolmodifyannotation.h
+  annotations/qgsmaptoolselectannotation.h
+  annotations/qgsmaptoolselectannotationmousehandles.h
 
   attributeformconfig/qgsattributeformcontaineredit.h
   attributeformconfig/qgsattributetypedialog.h
@@ -1369,6 +1381,8 @@ set(QGIS_GUI_HDRS
   maptools/qgsmaptoolcapture.h
   maptools/qgsmaptoolcapturelayergeometry.h
   maptools/qgsmaptoolcapturerubberband.h
+  maptools/qgsbezierdata.h
+  maptools/qgsbeziermarker.h
   maptools/qgsmaptooldigitizefeature.h
   maptools/qgsmaptooledit.h
   maptools/qgsmaptooleditblanksegments.h
@@ -1461,6 +1475,8 @@ set(QGIS_GUI_HDRS
 
   processing/models/qgsmodelarrowitem.h
   processing/models/qgsmodelcomponentgraphicitem.h
+  processing/models/qgsmodeldesignerconfigdockwidget.h
+  processing/models/qgsmodeldesignerconfigwidget.h
   processing/models/qgsmodeldesignerdialog.h
   processing/models/qgsmodeldesignerinputstreewidget.h
   processing/models/qgsmodelgraphicitem.h

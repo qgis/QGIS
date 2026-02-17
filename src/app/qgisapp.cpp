@@ -46,14 +46,18 @@
 #include <QProcess>
 #include <QProgressBar>
 #include <QProgressDialog>
+#include <QQuickStyle>
 #include <QRegularExpression>
 #include <QScreen>
 #include <QShortcut>
 #include <QSpinBox>
 #include <QSplashScreen>
 #include <QStandardPaths>
+#include <QString>
 #include <QUrl>
 #include <QUrlQuery>
+
+using namespace Qt::StringLiterals;
 
 #ifndef QT_NO_SSL
 #include <QSslConfiguration>
@@ -93,6 +97,9 @@
 #include "qgsfixattributedialog.h"
 #include "qgsprojecttimesettings.h"
 #include "qgsgeometrycollection.h"
+#include "qgspolyhedralsurface.h"
+#include "qgstriangle.h"
+#include "qgstriangulatedsurface.h"
 #include "maptools/qgsappmaptools.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsauxiliarystorage.h"
@@ -102,6 +109,7 @@
 
 #include "qgsbrowserwidget.h"
 #include "annotations/qgsannotationitempropertieswidget.h"
+#include "qgsmaptoolselectannotation.h"
 #include "qgsmaptoolmodifyannotation.h"
 #include "qgsannotationlayer.h"
 #include "qgsdockablewidgethelper.h"
@@ -249,6 +257,7 @@
 #include "qgscustomdrophandler.h"
 #include "qgscustomprojectopenhandler.h"
 #include "qgscustomization.h"
+#include "qgscustomizationdialog.h"
 #include "qgscustomlayerorderwidget.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgsdataitemguiproviderregistry.h"
@@ -364,7 +373,6 @@
 #include "qgspdalalgorithms.h"
 #include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
-#include "qgspluginmanager.h"
 #include "qgspluginregistry.h"
 #include "qgspointxy.h"
 #include "qgspuzzlewidget.h"
@@ -403,6 +411,7 @@
 #include "qgsrenderedlayerstatistics.h"
 #include "qgsreport.h"
 #include "qgsscalevisibilitydialog.h"
+#include "qgsselectivemaskingsourcesetmanager.h"
 #include "qgsgroupwmsdatadialog.h"
 #include "qgsselectbyformdialog.h"
 #include "qgselevationshadingrenderersettingswidget.h"
@@ -435,7 +444,7 @@
 #include "qgsmapthemes.h"
 #include "qgsmessagelogviewer.h"
 #include "qgsmaplayeractionregistry.h"
-#include "qgswelcomepage.h"
+#include "qgswelcomescreen.h"
 #include "qgsrecentprojectsmenueventfilter.h"
 #include "qgsversioninfo.h"
 #include "qgslegendfilterbutton.h"
@@ -817,7 +826,8 @@ void QgisApp::annotationItemTypeAdded( int id )
       groupToolButton->setAutoRaise( true );
       groupToolButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
       groupToolButton->setToolTip( groupText );
-      mAnnotationsToolBar->insertWidget( mAnnotationsItemInsertBefore, groupToolButton );
+      QAction *action = mAnnotationsToolBar->insertWidget( mAnnotationsItemInsertBefore, groupToolButton );
+      action->setObjectName( u"annotationGroupToolButton"_s );
       mAnnotationItemGroupToolButtons.insert( groupId, groupToolButton );
       groupButton = groupToolButton;
     }
@@ -993,6 +1003,8 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
   QColor splashTextColor = Qgis::releaseName() == "Master"_L1 ? QColor( 93, 153, 51 ) : Qt::black;
 
+  QQuickStyle::setStyle( u"Material"_s );
+
   startProfile( tr( "Create user profile manager" ) );
   mUserProfileManager = new QgsUserProfileManager( QString(), this );
   mUserProfileManager->setRootLocation( rootProfileLocation );
@@ -1111,54 +1123,15 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   centralLayout->addWidget( mInfoBar, 0, 0, 1, 1 );
   endProfile();
 
-  startProfile( tr( "Welcome page" ) );
-  mWelcomePage = new QgsWelcomePage( options.testFlag( AppOption::SkipVersionCheck ) );
-  connect( mWelcomePage, &QgsWelcomePage::projectRemoved, this, [this]( int row ) {
-    mRecentProjects.removeAt( row );
-    saveRecentProjects();
-    updateRecentProjectPaths();
-  } );
-  connect( mWelcomePage, &QgsWelcomePage::projectPinned, this, [this]( int row ) {
-    mRecentProjects.at( row ).pin = true;
-    saveRecentProjects();
-    updateRecentProjectPaths();
-  } );
-  connect( mWelcomePage, &QgsWelcomePage::projectUnpinned, this, [this]( int row ) {
-    mRecentProjects.at( row ).pin = false;
-    saveRecentProjects();
-    updateRecentProjectPaths();
-  } );
-  connect( mWelcomePage, &QgsWelcomePage::projectsCleared, this, [this]( bool clearPinned ) {
-    if ( clearPinned )
-    {
-      mRecentProjects.clear();
-    }
-    else
-    {
-      mRecentProjects.erase(
-        std::remove_if(
-          mRecentProjects.begin(),
-          mRecentProjects.end(),
-          []( const QgsRecentProjectItemsModel::RecentProjectData &recentProject ) { return !recentProject.pin; }
-        ),
-        mRecentProjects.end()
-      );
-    }
-    saveRecentProjects();
-    updateRecentProjectPaths();
-  } );
-  endProfile();
-
   mCentralContainer = new QStackedWidget;
   mCentralContainer->insertWidget( 0, mMapCanvas );
-  mCentralContainer->insertWidget( 1, mWelcomePage );
-
   centralLayout->addWidget( mCentralContainer, 0, 0, 2, 1 );
+
   mInfoBar->raise();
 
   connect( QgsProject::instance(), &QgsProject::layersAdded, this, &QgisApp::showMapCanvas );
 
-  mCentralContainer->setCurrentIndex( mProjOpen ? 0 : 1 );
+  mCentralContainer->setCurrentIndex( 0 );
 
   startProfile( tr( "User input dock" ) );
   // User Input Dock Widget
@@ -1270,10 +1243,10 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeRegularPolygonCenterPointMetadata() );
   QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeRegularPolygonCenterCornerMetadata() );
 
-  functionProfile( &QgisApp::readSettings, this, u"Read settings"_s );
   functionProfile( &QgisApp::createToolBars, this, u"Toolbars"_s );
   functionProfile( &QgisApp::createStatusBar, this, u"Status bar"_s );
   functionProfile( &QgisApp::setupCanvasTools, this, u"Create canvas tools"_s );
+  mMapCanvas->setStatusBar( mStatusBar );
 
   applyDefaultSettingsToCanvas( mMapCanvas );
 
@@ -1657,11 +1630,6 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsProjectDataItemProvider() );
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsStacDataItemProvider() );
 
-  // now when all data item providers are registered, customize both browsers
-  QgsCustomization::instance()->updateBrowserWidget( mBrowserWidget );
-  QgsCustomization::instance()->updateBrowserWidget( mBrowserWidget2 );
-
-
   // populate annotation toolbar with initial items...
   const QList<int> itemMetadataIds = QgsGui::annotationItemGuiRegistry()->itemMetadataIds();
   for ( int id : itemMetadataIds )
@@ -1715,13 +1683,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
     mActionShowPythonDialog = nullptr;
   }
 
-  // Update recent project list (as possible custom project storages are now registered by plugins)
-  mSplash->showMessage( tr( "Updating recent project paths" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
-  qApp->processEvents();
-  startProfile( tr( "Update recent project paths" ) );
-  updateRecentProjectPaths();
-  mWelcomePage->setRecentProjects( mRecentProjects );
-  endProfile();
+  functionProfile( &QgisApp::readSettings, this, u"Read theme settings"_s );
 
   // Set icon size of toolbars
   if ( settings.contains( u"/qgis/toolbarIconSize"_s ) )
@@ -1774,11 +1736,6 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   qApp->processEvents();
   startProfile( tr( "Restore window state" ) );
   restoreWindowState();
-  endProfile();
-
-  // do main window customization - after window state has been restored, before the window is shown
-  startProfile( tr( "Update customization on main window" ) );
-  QgsCustomization::instance()->updateMainWindow( mToolbarMenu, mPanelMenu );
   endProfile();
 
   mSplash->showMessage( tr( "Populate saved styles" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
@@ -1893,6 +1850,8 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
 #ifdef HAVE_3D
   registerShortcuts( u"Ctrl+Shift+E"_s, u"m3DSetSceneExtent"_s, tr( "Set 3D Scene Extent on 2D Map View" ) );
+  registerShortcuts( u"Ctrl+Shift+]"_s, u"m3DCrossSectionNudgeLeft"_s, tr( "Nudge 3D Cross section to the left" ) );
+  registerShortcuts( u"Ctrl+Shift+["_s, u"m3DCrossSectionNudgeRight"_s, tr( "Nudge 3D Cross section to the right" ) );
   connect( QgsProject::instance()->viewsManager(), &QgsMapViewsManager::views3DListChanged, this, &QgisApp::views3DMenuAboutToShow );
 
   Qgs3DMapScene::sOpenScenesFunction = [this]() -> QMap<QString, Qgs3DMapScene *> {
@@ -1926,7 +1885,11 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   updateCrsStatusBar();
   endProfile();
 
-  connect( qobject_cast<QgsMapToolModifyAnnotation *>( mMapTools->mapTool( QgsAppMapTools::AnnotationEdit ) ), &QgsMapToolModifyAnnotation::itemSelected, mMapStyleWidget, &QgsLayerStylingWidget::setAnnotationItem );
+  connect( qobject_cast<QgsMapToolSelectAnnotation *>( mMapTools->mapTool( QgsAppMapTools::AnnotationSelect ) ), &QgsMapToolSelectAnnotation::singleItemSelected, mMapStyleWidget, [this]( QgsAnnotationLayer *layer, const QString &itemId ) { mMapStyleWidget->setAnnotationItem( layer, itemId, false ); } );
+  connect( qobject_cast<QgsMapToolSelectAnnotation *>( mMapTools->mapTool( QgsAppMapTools::AnnotationSelect ) ), &QgsMapToolSelectAnnotation::multipleItemsSelected, mMapStyleWidget, [this] { mMapStyleWidget->setAnnotationItem( nullptr, QString(), true ); } );
+  connect( qobject_cast<QgsMapToolSelectAnnotation *>( mMapTools->mapTool( QgsAppMapTools::AnnotationSelect ) ), &QgsMapToolSelectAnnotation::selectionCleared, mMapStyleWidget, [this] { mMapStyleWidget->setAnnotationItem( nullptr, QString(), false ); } );
+
+  connect( qobject_cast<QgsMapToolModifyAnnotation *>( mMapTools->mapTool( QgsAppMapTools::AnnotationEdit ) ), &QgsMapToolModifyAnnotation::itemSelected, mMapStyleWidget, [this]( QgsAnnotationLayer *layer, const QString &itemId ) { mMapStyleWidget->setAnnotationItem( layer, itemId, false ); } );
   connect( qobject_cast<QgsMapToolModifyAnnotation *>( mMapTools->mapTool( QgsAppMapTools::AnnotationEdit ) ), &QgsMapToolModifyAnnotation::selectionCleared, mMapStyleWidget, [this] { mMapStyleWidget->setAnnotationItem( nullptr, QString() ); } );
 
   // request notification of FileOpen events (double clicking a file icon in Mac OS X Finder)
@@ -1952,10 +1915,10 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
   // the most important part of the initialization: make sure that people can play puzzle if they need
   QgsPuzzleWidget *puzzleWidget = new QgsPuzzleWidget( mMapCanvas );
-  mCentralContainer->insertWidget( 2, puzzleWidget );
+  mCentralContainer->insertWidget( 1, puzzleWidget );
   connect( mCoordsEdit, &QgsStatusBarCoordinatesWidget::weAreBored, this, [this, puzzleWidget] {
     if ( puzzleWidget->letsGetThePartyStarted() )
-      mCentralContainer->setCurrentIndex( 2 );
+      mCentralContainer->setCurrentIndex( 1 );
   } );
   connect( puzzleWidget, &QgsPuzzleWidget::done, this, [this] {
     mCentralContainer->setCurrentIndex( 0 );
@@ -1989,7 +1952,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
       connect( detailsButton, &QPushButton::clicked, this, [detailsButton, licenseDetails] {
         QgsMessageViewer *dialog = new QgsMessageViewer( detailsButton );
         dialog->setTitle( tr( "Font License" ) );
-        dialog->setMessage( licenseDetails, QgsMessageOutput::MessageText );
+        dialog->setMessage( licenseDetails, Qgis::StringFormat::PlainText );
         dialog->showMessage();
       } );
       messageWidget->layout()->addWidget( detailsButton );
@@ -2012,7 +1975,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
       connect( detailsButton, &QPushButton::clicked, this, [error] {
         QgsMessageViewer *dialog = new QgsMessageViewer( nullptr, QgsGuiUtils::ModalDialogFlags, true );
         dialog->setTitle( tr( "Font Install Failed" ) );
-        dialog->setMessage( error, QgsMessageOutput::MessageText );
+        dialog->setMessage( error, Qgis::StringFormat::PlainText );
         dialog->showMessage();
       } );
       messageWidget->layout()->addWidget( detailsButton );
@@ -2056,6 +2019,72 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
       messageBar()->pushWidget( messageWidget, Qgis::MessageLevel::Critical, 0 );
     }
   }
+
+  startProfile( tr( "Welcome screen" ) );
+  connect( this, &QgisApp::pluginUpdatesAvailable, this, [this]( const QStringList &plugins ) {
+    const QString updateMessage = tr( "Plugin update(s) available: %1" ).arg( plugins.join( ", "_L1 ) );
+    QgsMessageLog::logMessage( updateMessage, tr( "Plugins" ) );
+
+    if ( mWelcomeScreen->isVisible() )
+    {
+      mWelcomeScreen->pluginUpdatesAvailableReceived( plugins );
+    }
+
+    // Be extra visible, show in message bar too
+    QgsMessageBarItem *messageWidget = QgsMessageBar::createMessage( tr( "Plugins" ), updateMessage );
+    QPushButton *updateButton = new QPushButton( tr( "Install Updates…" ) );
+    connect( updateButton, &QPushButton::clicked, []() {
+      QgisApp::instance()->showPluginManager( static_cast<int>( QgsPluginManager::Tabs::UpgradeablePlugins ) );
+    } );
+    messageWidget->layout()->addWidget( updateButton );
+    messageBar()->pushWidget( messageWidget, Qgis::MessageLevel::Warning, 0 );
+  } );
+
+  QgsWelcomeScreen::registerTypes();
+
+  mWelcomeScreen = new QgsWelcomeScreen( options.testFlag( AppOption::SkipVersionCheck ), this->centralWidget() );
+  connect( mWelcomeScreen, &QgsWelcomeScreen::projectRemoved, this, [this]( int row ) {
+    mRecentProjects.removeAt( row );
+    saveRecentProjects();
+    updateRecentProjectPaths();
+  } );
+  connect( mWelcomeScreen, &QgsWelcomeScreen::projectPinned, this, [this]( int row ) {
+    mRecentProjects.at( row ).pinned = true;
+    saveRecentProjects();
+    updateRecentProjectPaths();
+  } );
+  connect( mWelcomeScreen, &QgsWelcomeScreen::projectUnpinned, this, [this]( int row ) {
+    mRecentProjects.at( row ).pinned = false;
+    saveRecentProjects();
+    updateRecentProjectPaths();
+  } );
+  connect( mWelcomeScreen, &QgsWelcomeScreen::projectsCleared, this, [this]( bool clearPinned ) {
+    if ( clearPinned )
+    {
+      mRecentProjects.clear();
+    }
+    else
+    {
+      mRecentProjects.erase(
+        std::remove_if(
+          mRecentProjects.begin(),
+          mRecentProjects.end(),
+          []( const QgsRecentProjectItemsModel::RecentProjectData &recentProject ) { return !recentProject.pinned; }
+        ),
+        mRecentProjects.end()
+      );
+    }
+    saveRecentProjects();
+    updateRecentProjectPaths();
+  } );
+
+  updateRecentProjectPaths();
+  mWelcomeScreen->setRecentProjects( mRecentProjects );
+  if ( !mProjOpen )
+  {
+    mWelcomeScreen->showScene();
+  }
+  endProfile();
 }
 
 QgisApp::QgisApp()
@@ -2151,7 +2180,7 @@ QgisApp::~QgisApp()
   delete mTracer;
 
   delete mVectorLayerTools;
-  delete mWelcomePage;
+  delete mWelcomeScreen;
   delete mBookMarksDockWidget;
 
   // Gracefully delete window manager now
@@ -2196,11 +2225,19 @@ QgisApp::~QgisApp()
   }
 
   // these may have references to map layers which need to be cleaned up
-  mBrowserWidget->close(); // close first, to trigger save of state
-  delete mBrowserWidget;
-  mBrowserWidget = nullptr;
-  delete mBrowserWidget2;
-  mBrowserWidget2 = nullptr;
+  if ( mBrowserWidget )
+  {
+    mBrowserWidget->close(); // close first, to trigger save of state
+    delete mBrowserWidget;
+    mBrowserWidget = nullptr;
+  }
+
+  if ( mBrowserWidget2 )
+  {
+    delete mBrowserWidget2;
+    mBrowserWidget2 = nullptr;
+  }
+
   delete mBrowserModel;
   mBrowserModel = nullptr;
   delete mGeometryValidationDock;
@@ -2446,7 +2483,7 @@ QList<QgsMapLayer *> QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList
       if ( QgsMessageViewer *dialog = dynamic_cast<QgsMessageViewer *>( QgsMessageOutput::createMessageOutput() ) )
       {
         dialog->setTitle( title );
-        dialog->setMessage( longMessage, QgsMessageOutput::MessageHtml );
+        dialog->setMessage( longMessage, Qgis::StringFormat::Html );
         dialog->showMessage();
       }
     } );
@@ -2661,6 +2698,22 @@ bool QgisApp::event( QEvent *event )
   {
     done = gestureEvent( static_cast<QGestureEvent *>( event ) );
   }
+  else if ( event->type() == QEvent::ShortcutOverride )
+  {
+    if ( mMapCanvas->mapTool() )
+    {
+      QKeyEvent *keyEvent = static_cast<QKeyEvent *>( event );
+      if ( mMapCanvas->mapTool()->shortcutEvent( keyEvent ) )
+      {
+        event->accept();
+        done = true;
+      }
+    }
+    if ( !done )
+    {
+      done = QMainWindow::event( event );
+    }
+  }
   else
   {
     // pass other events to base class
@@ -2836,9 +2889,9 @@ void QgisApp::readRecentProjects()
     data.path = settings.value( u"path"_s ).toString();
     data.previewImagePath = settings.value( u"previewImage"_s ).toString();
     data.crs = settings.value( u"crs"_s ).toString();
-    data.pin = settings.value( u"pin"_s ).toBool();
+    data.pinned = settings.value( u"pin"_s ).toBool();
     settings.endGroup();
-    if ( data.pin )
+    if ( data.pinned )
     {
       mRecentProjects.insert( pinPos, data );
       pinPos++;
@@ -2875,7 +2928,7 @@ void QgisApp::applyDefaultSettingsToCanvas( QgsMapCanvas *canvas )
 void QgisApp::readSettings()
 {
   QgsSettings settings;
-  QString themeName = settings.value( u"UI/UITheme"_s, "default" ).toString();
+  const QString themeName = settings.value( u"UI/UITheme"_s, "default" ).toString();
   setTheme( themeName );
 
   // Read legacy settings
@@ -3094,7 +3147,7 @@ void QgisApp::createActions()
 
   // Plugin Menu Items
 
-  connect( mActionManagePlugins, &QAction::triggered, this, &QgisApp::showPluginManager );
+  connect( mActionManagePlugins, &QAction::triggered, this, [this]( bool ) { showPluginManager(); } );
   connect( mActionShowPythonDialog, &QAction::triggered, this, &QgisApp::showPythonDialog );
 
   // Settings Menu Items
@@ -3201,6 +3254,7 @@ void QgisApp::createActions()
   connect( mActionDiagramProperties, &QAction::triggered, this, &QgisApp::diagramProperties );
 
   connect( mActionCreateAnnotationLayer, &QAction::triggered, this, &QgisApp::createAnnotationLayer );
+  connect( mActionSelectAnnotation, &QAction::triggered, this, [this] { mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::AnnotationSelect ) ); } );
   connect( mActionModifyAnnotation, &QAction::triggered, this, [this] { mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::AnnotationEdit ) ); } );
   connect( mMainAnnotationLayerProperties, &QAction::triggered, this, [this] {
     showLayerProperties( QgsProject::instance()->mainAnnotationLayer() );
@@ -3338,6 +3392,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionChangeLabelProperties );
   mMapToolGroup->addAction( mActionReverseLine );
   mMapToolGroup->addAction( mActionTrimExtendFeature );
+  mMapToolGroup->addAction( mActionSelectAnnotation );
   mMapToolGroup->addAction( mActionModifyAnnotation );
 
   //
@@ -3395,9 +3450,8 @@ void QgisApp::createMenus()
 
   // Connect once for the entire submenu.
   connect( mRecentProjectsMenu, &QMenu::triggered, this, static_cast<void ( QgisApp::* )( QAction *action )>( &QgisApp::openProject ) );
-  QgsRecentProjectsMenuEventFilter *recentsProjectMenuEventFilter = new QgsRecentProjectsMenuEventFilter( mWelcomePage, mRecentProjectsMenu );
+  QgsRecentProjectsMenuEventFilter *recentsProjectMenuEventFilter = new QgsRecentProjectsMenuEventFilter( mWelcomeScreen, mRecentProjectsMenu );
   mRecentProjectsMenu->installEventFilter( recentsProjectMenuEventFilter );
-
 
   connect( mProjectFromTemplateMenu, &QMenu::triggered, this, &QgisApp::fileNewFromTemplateAction );
 
@@ -3558,7 +3612,8 @@ void QgisApp::createToolBars()
   mSnappingWidget = new QgsSnappingWidget( QgsProject::instance(), mMapCanvas, mSnappingToolBar );
   mSnappingWidget->setObjectName( u"mSnappingWidget"_s );
   connect( mSnappingWidget, &QgsSnappingWidget::snappingConfigChanged, QgsProject::instance(), [this] { QgsProject::instance()->setSnappingConfig( mSnappingWidget->config() ); } );
-  mSnappingToolBar->addWidget( mSnappingWidget );
+  QAction *action = mSnappingToolBar->addWidget( mSnappingWidget );
+  action->setObjectName( u"mSnappingWidget"_s );
 
   mTracer = new QgsMapCanvasTracer( mMapCanvas, messageBar() );
   mTracer->setActionEnableTracing( mSnappingWidget->enableTracingAction() );
@@ -3580,7 +3635,8 @@ void QgisApp::createToolBars()
   // sort actions in toolbar menu
   std::sort( toolbarMenuActions.begin(), toolbarMenuActions.end(), cmpByText_ );
 
-  mToolbarMenu->addActions( toolbarMenuActions );
+  if ( mToolbarMenu )
+    mToolbarMenu->addActions( toolbarMenuActions );
 
   // advanced selection tool button
   QToolButton *bt = new QToolButton( mSelectionToolBar );
@@ -3858,7 +3914,8 @@ void QgisApp::createToolBars()
   showVertexEditorAction->setCheckable( true );
   showVertexEditorAction->setProperty( "no_default_action", true );
   vertexToolButton->addAction( showVertexEditorAction );
-  mVertexEditorDock->setToggleVisibilityAction( showVertexEditorAction );
+  if ( mVertexEditorDock )
+    mVertexEditorDock->setToggleVisibilityAction( showVertexEditorAction );
 
   vertexToolButton->setDefaultAction( defActionVertexTool );
   QAction *actionVertexTool = mDigitizeToolBar->insertWidget( mActionMultiEditAttributes, vertexToolButton );
@@ -3896,7 +3953,8 @@ void QgisApp::createToolBars()
     meshEditMenu->addSeparator();
     meshEditMenu->addAction( editMeshMapTool->digitizingWidgetActionSettings() );
     meshEditToolButton->setMenu( meshEditMenu );
-    mMeshToolBar->addWidget( meshEditToolButton );
+    QAction *action = mMeshToolBar->addWidget( meshEditToolButton );
+    action->setObjectName( u"meshEditToolButtonAction"_s );
 
     QToolButton *meshSelectToolButton = new QToolButton();
     meshSelectToolButton->setPopupMode( QToolButton::MenuButtonPopup );
@@ -3910,7 +3968,8 @@ void QgisApp::createToolBars()
     }
 
     meshSelectToolButton->setDefaultAction( editMeshMapTool->defaultSelectActions() );
-    mMeshToolBar->addWidget( meshSelectToolButton );
+    action = mMeshToolBar->addWidget( meshSelectToolButton );
+    action->setObjectName( u"meshSelectToolButtonAction"_s );
 
     mMeshToolBar->addAction( ( editMeshMapTool->transformAction() ) );
 
@@ -3923,7 +3982,8 @@ void QgisApp::createToolBars()
     meshForceByLineMenu->addSeparator();
     meshForceByLineMenu->addAction( editMeshMapTool->forceByLineWidgetActionSettings() );
     meshForceByLinesToolButton->setMenu( meshForceByLineMenu );
-    mMeshToolBar->addWidget( meshForceByLinesToolButton );
+    action = mMeshToolBar->addWidget( meshForceByLinesToolButton );
+    action->setObjectName( u"meshForceByLinesToolButton"_s );
 
     for ( QAction *mapToolAction : editMeshMapTool->mapToolActions() )
       mMapToolGroup->addAction( mapToolAction );
@@ -3938,7 +3998,8 @@ void QgisApp::createToolBars()
   annotationLayerMenu->addAction( mMainAnnotationLayerProperties );
   annotationLayerToolButton->setMenu( annotationLayerMenu );
   annotationLayerToolButton->setDefaultAction( mActionCreateAnnotationLayer );
-  mAnnotationsToolBar->insertWidget( mAnnotationsToolBar->actions().at( 0 ), annotationLayerToolButton );
+  QAction *act = mAnnotationsToolBar->insertWidget( mAnnotationsToolBar->actions().at( 0 ), annotationLayerToolButton );
+  act->setObjectName( u"annotationLayerToolButtonAction"_s );
 
   // Registered annotation items will be inserted before this separator
   mAnnotationsItemInsertBefore = mAnnotationsToolBar->addSeparator();
@@ -3980,7 +4041,7 @@ void QgisApp::createStatusBar()
   statusBarFont.setPointSize( fontSize );
   statusBar()->setFont( statusBarFont );
 
-  mStatusBar = new QgsStatusBar();
+  mStatusBar = new QgsStatusBar( this );
   mStatusBar->setParentStatusBar( QMainWindow::statusBar() );
   mStatusBar->setFont( statusBarFont );
 
@@ -4185,8 +4246,8 @@ void QgisApp::setTheme( const QString &themeName )
 
   QString theme = themeName;
 
-  mStyleSheetBuilder->updateStyleSheet();
   QgsApplication::setUITheme( theme );
+  mStyleSheetBuilder->updateStyleSheet();
 
   mActionNewProject->setIcon( QgsApplication::getThemeIcon( u"/mActionFileNew.svg"_s ) );
   mActionOpenProject->setIcon( QgsApplication::getThemeIcon( u"/mActionFileOpen.svg"_s ) );
@@ -4228,7 +4289,8 @@ void QgisApp::setTheme( const QString &themeName )
   mActionToggleFullScreen->setIcon( QgsApplication::getThemeIcon( u"/mActionToggleFullScreen.png"_s ) );
   mActionProjectProperties->setIcon( QgsApplication::getThemeIcon( u"/mActionProjectProperties.svg"_s ) );
   mActionManagePlugins->setIcon( QgsApplication::getThemeIcon( u"/mActionShowPluginManager.svg"_s ) );
-  mActionShowPythonDialog->setIcon( QgsApplication::getThemeIcon( u"console/mIconRunConsole.svg"_s ) );
+  if ( mActionShowPythonDialog ) // may be null if python is disabled
+    mActionShowPythonDialog->setIcon( QgsApplication::getThemeIcon( u"console/mIconRunConsole.svg"_s ) );
   mActionCheckQgisVersion->setIcon( QgsApplication::getThemeIcon( u"/mIconSuccess.svg"_s ) );
   mActionOptions->setIcon( QgsApplication::getThemeIcon( u"/mActionOptions.svg"_s ) );
   mActionConfigureShortcuts->setIcon( QgsApplication::getThemeIcon( u"/mActionKeyboardShortcuts.svg"_s ) );
@@ -4403,6 +4465,9 @@ void QgisApp::setupConnections()
   connect( QgsProject::instance(), &QgsProject::labelingEngineSettingsChanged, mMapCanvas, [this] {
     mMapCanvas->setLabelingEngineSettings( QgsProject::instance()->labelingEngineSettings() );
   } );
+  connect( QgsProject::instance()->selectiveMaskingSourceSetManager(), &QgsSelectiveMaskingSourceSetManager::changed, mMapCanvas, [this] {
+    mMapCanvas->setSelectiveMaskingSourceSets( QgsProject::instance()->selectiveMaskingSourceSetManager()->sets() );
+  } );
 
   connect( QgsProject::instance(), &QgsProject::backgroundColorChanged, this, [this] {
     const QColor backgroundColor = QgsProject::instance()->backgroundColor();
@@ -4568,6 +4633,7 @@ void QgisApp::setupCanvasTools()
   mMapTools->mapTool( QgsAppMapTools::MoveLabel )->setAction( mActionMoveLabel );
   mMapTools->mapTool( QgsAppMapTools::RotateLabel )->setAction( mActionRotateLabel );
   mMapTools->mapTool( QgsAppMapTools::ChangeLabelProperties )->setAction( mActionChangeLabelProperties );
+  mMapTools->mapTool( QgsAppMapTools::AnnotationSelect )->setAction( mActionSelectAnnotation );
   mMapTools->mapTool( QgsAppMapTools::AnnotationEdit )->setAction( mActionModifyAnnotation );
 
   //ensure that non edit tool is initialized or we will get crashes in some situations
@@ -4646,7 +4712,8 @@ void QgisApp::addToolBar( QToolBar *toolBar, Qt::ToolBarArea area )
 {
   QMainWindow::addToolBar( area, toolBar );
   // add to the Toolbar submenu
-  mToolbarMenu->addAction( toolBar->toggleViewAction() );
+  if ( mToolbarMenu )
+    mToolbarMenu->addAction( toolBar->toggleViewAction() );
 }
 
 QgsLayerTreeView *QgisApp::layerTreeView()
@@ -4706,8 +4773,14 @@ QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name, bo
   mapCanvas->freeze( true );
   mapCanvas->setObjectName( name );
   mapCanvas->setProject( QgsProject::instance() );
+  mapCanvas->setStatusBar( mStatusBar );
+
   connect( mapCanvas, &QgsMapCanvas::messageEmitted, this, &QgisApp::displayMessage );
   connect( mLayerTreeCanvasBridge, &QgsLayerTreeMapCanvasBridge::canvasLayersChanged, mapCanvas, &QgsMapCanvas::setLayers );
+
+  connect( QgsProject::instance()->selectiveMaskingSourceSetManager(), &QgsSelectiveMaskingSourceSetManager::changed, mapCanvas, [mapCanvas] {
+    mapCanvas->setSelectiveMaskingSourceSets( QgsProject::instance()->selectiveMaskingSourceSetManager()->sets() );
+  } );
 
   applyProjectSettingsToCanvas( mapCanvas );
   applyDefaultSettingsToCanvas( mapCanvas );
@@ -5242,7 +5315,7 @@ void QgisApp::updateRecentProjectPaths()
     }
 
     action->setData( projectIndex++ );
-    if ( recentProject.pin )
+    if ( recentProject.pinned )
     {
       action->setIcon( QgsApplication::getThemeIcon( u"/pin.svg"_s ) );
     }
@@ -5253,7 +5326,7 @@ void QgisApp::updateRecentProjectPaths()
   {
     mRecentProjectsMenu->addSeparator();
     QAction *clearRecentProjectsAction = mRecentProjectsMenu->addAction( tr( "Clear List" ) );
-    connect( clearRecentProjectsAction, &QAction::triggered, mWelcomePage, [this]() { mWelcomePage->clearRecentProjects(); } );
+    connect( clearRecentProjectsAction, &QAction::triggered, mWelcomeScreen, [this]() { mWelcomeScreen->clearRecentProjects(); } );
   }
 
   std::vector<QgsNative::RecentProjectProperties> recentProjects;
@@ -5295,7 +5368,7 @@ void QgisApp::saveRecentProjectPath( bool savePreviewImage, const QIcon &iconOve
 
   int idx = mRecentProjects.indexOf( projectData );
   if ( idx != -1 )
-    projectData.pin = mRecentProjects.at( idx ).pin;
+    projectData.pinned = mRecentProjects.at( idx ).pinned;
 
   if ( savePreviewImage )
   {
@@ -5319,7 +5392,7 @@ void QgisApp::saveRecentProjectPath( bool savePreviewImage, const QIcon &iconOve
   bool pinnedTop = true;
   for ( const QgsRecentProjectItemsModel::RecentProjectData &recentProject : std::as_const( mRecentProjects ) )
   {
-    if ( recentProject.pin )
+    if ( recentProject.pinned )
     {
       pinnedCount++;
       if ( pinnedTop )
@@ -5337,7 +5410,7 @@ void QgisApp::saveRecentProjectPath( bool savePreviewImage, const QIcon &iconOve
   mRecentProjects.removeAll( projectData );
 
   // Insert this file to the list
-  mRecentProjects.insert( projectData.pin ? 0 : nonPinnedPos, projectData );
+  mRecentProjects.insert( projectData.pinned ? 0 : nonPinnedPos, projectData );
 
   const uint maxProjects = QgsSettings().value( u"maxRecentProjects"_s, 20, QgsSettings::App ).toUInt();
 
@@ -5357,8 +5430,10 @@ void QgisApp::saveRecentProjectPath( bool savePreviewImage, const QIcon &iconOve
   updateRecentProjectPaths();
 
   // Update welcome page list
-  if ( mWelcomePage )
-    mWelcomePage->setRecentProjects( mRecentProjects );
+  if ( mWelcomeScreen )
+  {
+    mWelcomeScreen->setRecentProjects( mRecentProjects );
+  }
 
 } // QgisApp::saveRecentProjectPath
 
@@ -5379,7 +5454,7 @@ void QgisApp::saveRecentProjects()
     settings.setValue( u"path"_s, recentProject.path );
     settings.setValue( u"previewImage"_s, recentProject.previewImagePath );
     settings.setValue( u"crs"_s, recentProject.crs );
-    settings.setValue( u"pin"_s, recentProject.pin );
+    settings.setValue( u"pin"_s, recentProject.pinned );
     settings.endGroup();
   }
 }
@@ -5686,6 +5761,17 @@ QString QgisApp::getVersionString()
   return versionString;
 }
 
+void QgisApp::setCustomization( std::unique_ptr<QgsCustomization> customization )
+{
+  mCustomization = std::move( customization );
+  mCustomization->setQgisApp( this );
+}
+
+QgsCustomization *QgisApp::customization() const
+{
+  return mCustomization.get();
+}
+
 QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QStringList &supportedCrs, const QStringList &supportedFormats ) const
 {
   QString newuri = uri;
@@ -5804,7 +5890,7 @@ void QgisApp::fileExit()
   }
 
   QgsCanvasRefreshBlocker refreshBlocker;
-  if ( checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() && checkExitBlockers() && checkUnsavedRasterAttributeTableEdits() )
+  if ( canCreateNewProject() )
   {
     closeProject();
     userProfileManager()->updateLastProfileName();
@@ -5830,9 +5916,15 @@ bool QgisApp::fileNewBlank()
 void QgisApp::fileClose()
 {
   if ( fileNewBlank() )
-    mCentralContainer->setCurrentIndex( 1 );
+  {
+    mWelcomeScreen->showScene();
+  }
 }
 
+bool QgisApp::canCreateNewProject()
+{
+  return checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() && checkExitBlockers() && checkUnsavedRasterAttributeTableEdits();
+}
 
 //as file new but accepts flags to indicate whether we should prompt to save
 bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
@@ -5842,7 +5934,7 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
 
   if ( promptToSaveFlag )
   {
-    if ( !checkUnsavedLayerEdits() || !checkMemoryLayers() || !saveDirty() || !checkUnsavedRasterAttributeTableEdits() )
+    if ( !canCreateNewProject() )
     {
       return false; //cancel pressed
     }
@@ -5909,12 +6001,32 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   return true;
 }
 
+bool QgisApp::fileNewWithBasemap()
+{
+  if ( checkTasksDependOnProject() )
+    return false;
+
+  if ( !canCreateNewProject() )
+  {
+    return false; //cancel pressed
+  }
+
+  [[maybe_unused]] QgsProjectDirtyBlocker dirtyBlocker( QgsProject::instance() );
+  QgsProject::instance()->clear();
+
+  QgsRasterLayer *basemapLayer = new QgsRasterLayer( u"type=xyz&tilePixelRatio=1&url=https://tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0&crs=EPSG3857"_s, u"OpenStreetMap"_s, "wms"_L1 );
+  QgsProject::instance()->setCrs( basemapLayer->crs() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << basemapLayer );
+
+  return true;
+}
+
 bool QgisApp::fileNewFromTemplate( const QString &fileName )
 {
   if ( checkTasksDependOnProject() )
     return false;
 
-  if ( !checkUnsavedLayerEdits() || !checkMemoryLayers() || !saveDirty() || !checkUnsavedRasterAttributeTableEdits() )
+  if ( !canCreateNewProject() )
   {
     return false; //cancel pressed
   }
@@ -6267,6 +6379,9 @@ void QgisApp::showRasterCalculator()
 
       case QgsRasterCalculator::Result::CalculationError:
         visibleMessageBar()->pushMessage( tr( "Raster calculator" ), tr( "An error occurred while performing the calculation." ), Qgis::MessageLevel::Critical );
+        break;
+      case QgsRasterCalculator::Result::OpenCLKernelBuildError:
+        visibleMessageBar()->pushMessage( tr( "Raster calculator" ), tr( "An error occurred while performing the calculation using OpenCL. See OpenCL log messages for details." ), Qgis::MessageLevel::Critical );
         break;
     }
     p.hide();
@@ -8868,6 +8983,24 @@ QgsGeometry QgisApp::unionGeometries( const QgsVectorLayer *vl, QgsFeatureList &
   if ( !featureList.at( 0 ).hasGeometry() )
     return QgsGeometry();
 
+  const Qgis::WkbType layerFlatType = QgsWkbTypes::flatType( vl->wkbType() );
+
+  // Special handling for TIN: collect patches instead of geometric union
+  if ( layerFlatType == Qgis::WkbType::TIN )
+  {
+    QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
+
+    QVector<QgsGeometry> geometries;
+    geometries.reserve( featureList.size() );
+    for ( const QgsFeature &feature : std::as_const( featureList ) )
+    {
+      geometries.append( feature.geometry() );
+    }
+
+    return QgsGeometry::collectTinPatches( geometries );
+  }
+
+  // Standard handling for other geometry types: use GEOS combine
   QgsGeometry unionGeom = featureList.at( 0 ).geometry();
 
   QProgressDialog progress( tr( "Merging features…" ), tr( "Abort" ), 0, featureList.size(), this );
@@ -8902,6 +9035,16 @@ QgsGeometry QgisApp::unionGeometries( const QgsVectorLayer *vl, QgsFeatureList &
     unionGeom.convertToMultiType();
   }
 
+  // Convert result to PolyhedralSurface if layer type requires it
+  if ( layerFlatType == Qgis::WkbType::PolyhedralSurface )
+  {
+    QVector<QgsGeometry> converted = unionGeom.coerceToType( vl->wkbType() );
+    if ( !converted.isEmpty() )
+    {
+      unionGeom = converted.at( 0 );
+    }
+  }
+
   QApplication::restoreOverrideCursor();
   progress.setValue( featureList.size() );
   return unionGeom;
@@ -8917,15 +9060,18 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
   QString newTitle = QString( currentTitle );
 
   QString typeString;
+  QString conflictingNameWarning;
   QString helpPage;
   switch ( type )
   {
     case QgsMasterLayoutInterface::PrintLayout:
       typeString = tr( "print layout" );
+      conflictingNameWarning = tr( "A print layout with this title already exists." );
       helpPage = u"print_composer/index.html"_s;
       break;
     case QgsMasterLayoutInterface::Report:
       typeString = tr( "report" );
+      conflictingNameWarning = tr( "A report with this title already exists." );
       helpPage = u"print_composer/create_reports.html"_s;
       break;
   }
@@ -8954,7 +9100,7 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
     dlg.setHintString( titleMsg );
     dlg.setOverwriteEnabled( false );
     dlg.setAllowEmptyName( true );
-    dlg.setConflictingNameWarning( tr( "Title already exists!" ) );
+    dlg.setConflictingNameWarning( conflictingNameWarning );
 
     dlg.buttonBox()->addButton( QDialogButtonBox::Help );
     connect( dlg.buttonBox(), &QDialogButtonBox::helpRequested, this, [helpPage] {
@@ -10481,9 +10627,7 @@ QgsVectorLayer *QgisApp::pasteAsNewMemoryVector( const QString &layerName )
 
 void QgisApp::copyStyle( QgsMapLayer *sourceLayer, QgsMapLayer::StyleCategories categories )
 {
-  QgsMapLayer *selectionLayer = sourceLayer ? sourceLayer : activeLayer();
-
-  if ( selectionLayer )
+  if ( QgsMapLayer *selectionLayer = sourceLayer ? sourceLayer : activeLayer() )
   {
     QString errorMsg;
     QDomDocument doc( u"qgis"_s );
@@ -10503,10 +10647,52 @@ void QgisApp::copyStyle( QgsMapLayer *sourceLayer, QgsMapLayer::StyleCategories 
   }
 }
 
+void QgisApp::copyAllStyles( QgsMapLayer *sourceLayer )
+{
+  if ( QgsMapLayer *selectionLayer = sourceLayer ? sourceLayer : activeLayer() )
+  {
+    QString errorMsg;
+    QDomDocument tempDoc( u"qgis"_s );
+    QgsReadWriteContext context;
+
+    // QgsMapLayerStyleManager does not store current style, so export that first
+    selectionLayer->exportNamedStyle( tempDoc, errorMsg, context );
+    if ( !errorMsg.isEmpty() )
+    {
+      visibleMessageBar()->pushMessage( tr( "Cannot copy styles" ), errorMsg, Qgis::MessageLevel::Critical );
+      return;
+    }
+
+    QDomImplementation DomImplementation;
+    const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgisLayerStyles"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
+    QDomDocument doc( documentType );
+
+    QDomElement rootNode = doc.createElement( u"qgisLayerStyles"_s );
+
+    QDomElement styleElem = doc.createElement( u"defaultStyle"_s );
+    QDomNode currentStyleNode = doc.importNode( tempDoc.documentElement(), true );
+    styleElem.appendChild( currentStyleNode );
+    rootNode.appendChild( styleElem );
+
+    // export other styles
+    QgsMapLayerStyleManager *mgr = selectionLayer->styleManager();
+    QDomElement stylesElem = doc.createElement( u"styles"_s );
+    mgr->writeXml( stylesElem );
+
+    rootNode.appendChild( stylesElem );
+    doc.appendChild( rootNode );
+
+    // Copies data in text form as well, so the XML can be pasted into a text editor
+    clipboard()->setData( QStringLiteral( QGSCLIPBOARD_STYLES_MIME ), doc.toByteArray(), doc.toString() );
+
+    // Enables the paste menu element
+    mActionPasteStyle->setEnabled( true );
+  }
+}
+
 void QgisApp::pasteStyle( QgsMapLayer *destinationLayer, QgsMapLayer::StyleCategories categories )
 {
-  QgsMapLayer *selectionLayer = destinationLayer ? destinationLayer : activeLayer();
-  if ( selectionLayer )
+  if ( QgsMapLayer *selectionLayer = destinationLayer ? destinationLayer : activeLayer() )
   {
     if ( clipboard()->hasFormat( QStringLiteral( QGSCLIPBOARD_STYLE_MIME ) ) )
     {
@@ -10530,6 +10716,51 @@ void QgisApp::pasteStyle( QgsMapLayer *destinationLayer, QgsMapLayer::StyleCateg
       if ( !selectionLayer->importNamedStyle( doc, errorMsg, categories ) )
       {
         visibleMessageBar()->pushMessage( tr( "Cannot paste style" ), errorMsg, Qgis::MessageLevel::Critical );
+        return;
+      }
+
+      mLayerTreeView->refreshLayerSymbology( selectionLayer->id() );
+      selectionLayer->triggerRepaint();
+      QgsProject::instance()->setDirty( true );
+    }
+  }
+}
+
+void QgisApp::pasteAllStyles( QgsMapLayer *destinationLayer )
+{
+  if ( QgsMapLayer *selectionLayer = destinationLayer ? destinationLayer : activeLayer() )
+  {
+    if ( clipboard()->hasFormat( QStringLiteral( QGSCLIPBOARD_STYLES_MIME ) ) )
+    {
+      QDomImplementation DomImplementation;
+      const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgisLayerStyles"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
+      QDomDocument doc( documentType );
+
+      QString errorMsg;
+      int errorLine, errorColumn;
+      if ( !doc.setContent( clipboard()->data( QStringLiteral( QGSCLIPBOARD_STYLES_MIME ) ), false, &errorMsg, &errorLine, &errorColumn ) )
+      {
+        visibleMessageBar()->pushMessage( tr( "Cannot parse styles" ), errorMsg, Qgis::MessageLevel::Critical );
+        return;
+      }
+
+      const QDomElement rootElement { doc.firstChildElement( u"qgisLayerStyles"_s ).firstChildElement( u"defaultStyle"_s ).firstChildElement( u"qgis"_s ) };
+      const Qgis::LayerType styleOriginType { qgsEnumKeyToValue( rootElement.attribute( u"layerType"_s ), Qgis::LayerType::Vector ) };
+      if ( selectionLayer->type() != styleOriginType )
+      {
+        visibleMessageBar()->pushMessage( tr( "Cannot paste styles to layer '%1' because the type doesn't match (%2 → %3)" ).arg( selectionLayer->name(), QgsMapLayerUtils::layerTypeToString( styleOriginType ), QgsMapLayerUtils::layerTypeToString( selectionLayer->type() ) ), errorMsg, Qgis::MessageLevel::Warning );
+        return;
+      }
+
+      QgsMapLayerStyleManager *mgr = selectionLayer->styleManager();
+      mgr->readXml( doc.firstChildElement( u"qgisLayerStyles"_s ).firstChildElement( u"styles"_s ) );
+
+      QDomDocument currentStyleDoc( u"qgis"_s );
+      QDomNode importedNode = currentStyleDoc.importNode( rootElement, true );
+      currentStyleDoc.appendChild( importedNode );
+      if ( !selectionLayer->importNamedStyle( currentStyleDoc, errorMsg ) )
+      {
+        visibleMessageBar()->pushMessage( tr( "Cannot paste styles" ), errorMsg, Qgis::MessageLevel::Critical );
         return;
       }
 
@@ -12302,13 +12533,13 @@ void QgisApp::zoomToLayerExtent()
   mLayerTreeView->defaultActions()->zoomToLayers( mMapCanvas );
 }
 
-void QgisApp::showPluginManager()
+void QgisApp::showPluginManager( int tabIndex )
 {
 #ifdef WITH_BINDINGS
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     // Call pluginManagerInterface()->showPluginManager() as soon as the plugin installer says the remote data is fetched.
-    QgsPythonRunner::run( u"pyplugin_installer.instance().showPluginManagerWhenReady()"_s );
+    QgsPythonRunner::run( u"pyplugin_installer.instance().showPluginManagerWhenReady(%1)"_s.arg( tabIndex ) );
   }
   else
 #endif
@@ -12517,7 +12748,18 @@ void QgisApp::configureShortcuts()
 
 void QgisApp::customize()
 {
-  QgsCustomization::instance()->openDialog( this );
+  if ( !mCustomization )
+  {
+    QgsDebugError( "Missing customization object" );
+    return;
+  }
+
+  if ( !mCustomizationDialog )
+  {
+    mCustomizationDialog.reset( new QgsCustomizationDialog( this ) );
+  }
+
+  mCustomizationDialog->show();
 }
 
 void QgisApp::options()
@@ -12713,8 +12955,6 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
     double factor = mySettings.value( u"qgis/magnifier_factor_default"_s, 1.0 ).toDouble();
     mMagnifierWidget->setDefaultFactor( factor );
     mMagnifierWidget->updateMagnification( factor );
-
-    mWelcomePage->updateNewsFeedVisibility();
   }
 }
 
@@ -14627,7 +14867,10 @@ void QgisApp::showMapCanvas()
 {
   // Map layers changed -> switch to map canvas
   if ( mCentralContainer )
+  {
     mCentralContainer->setCurrentIndex( 0 );
+    mWelcomeScreen->hideScene();
+  }
 }
 
 void QgisApp::markDirty()
@@ -16029,7 +16272,7 @@ void QgisApp::renameView()
   renameDlg.setWindowTitle( tr( "Map Views" ) );
   //renameDlg.setHintString( tr( "Name of the new view" ) );
   renameDlg.setOverwriteEnabled( false );
-  renameDlg.setConflictingNameWarning( tr( "A view with this name already exists" ) );
+  renameDlg.setConflictingNameWarning( tr( "A view with this name already exists." ) );
   renameDlg.buttonBox()->addButton( QDialogButtonBox::Help );
   connect( renameDlg.buttonBox(), &QDialogButtonBox::helpRequested, this, [] {
     QgsHelp::openHelp( u"map_views/map_view.html"_s );
@@ -16103,7 +16346,7 @@ void QgisApp::keyPressEvent( QKeyEvent *e )
 void QgisApp::newProfile()
 {
   QgsNewNameDialog dlg( QString(), QString(), QStringList(), userProfileManager()->allProfiles(), Qt::CaseInsensitive, this );
-  dlg.setConflictingNameWarning( tr( "A profile with this name already exists" ) );
+  dlg.setConflictingNameWarning( tr( "A user profile with this name already exists." ) );
   dlg.setOverwriteEnabled( false );
   dlg.setHintString( tr( "New profile name" ) );
   dlg.setWindowTitle( tr( "New Profile Name" ) );
@@ -16166,8 +16409,10 @@ void QgisApp::createPreviewImage( const QString &path, const QIcon &icon )
 {
   // Render the map canvas
   const double devicePixelRatio = mMapCanvas->mapSettings().devicePixelRatio();
-  QSize previewSize( 250, 177 ); // h = w / std::sqrt(2)
-  QRect previewRect( QPoint( ( mMapCanvas->width() - previewSize.width() ) / 2, ( mMapCanvas->height() - previewSize.height() ) / 2 ), previewSize );
+  const int mapCanvasWidth = mMapCanvas->width();
+  const int mapCanvasHeight = mMapCanvas->height();
+  QSize previewSize( std::min( 512, mapCanvasWidth ), std::min( 512, mapCanvasHeight ) );
+  QRect previewRect( QPoint( ( mapCanvasWidth - previewSize.width() ) / 2, ( mapCanvasHeight - previewSize.height() ) / 2 ), previewSize );
 
   QPixmap previewImage( previewSize * devicePixelRatio );
   previewImage.setDevicePixelRatio( devicePixelRatio );
@@ -16178,7 +16423,7 @@ void QgisApp::createPreviewImage( const QString &path, const QIcon &icon )
   if ( !icon.isNull() )
   {
     QPixmap pixmap = icon.pixmap( QSize( 24, 24 ) );
-    previewPainter.drawPixmap( QPointF( 250 - 24 - 5, 177 - 24 - 5 ), pixmap );
+    previewPainter.drawPixmap( QPointF( previewSize.width() - pixmap.width() - 5, previewSize.height() - pixmap.height() - 5 ), pixmap );
   }
   previewPainter.end();
 

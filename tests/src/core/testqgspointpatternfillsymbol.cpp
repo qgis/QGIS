@@ -24,6 +24,8 @@
 #include <QStringList>
 #include <QSvgGenerator>
 
+using namespace Qt::StringLiterals;
+
 //qgis includes...
 #include <qgsmaplayer.h>
 #include <qgsvectorlayer.h>

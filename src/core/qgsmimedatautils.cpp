@@ -22,7 +22,10 @@
 #include "qgsvectorlayer.h"
 
 #include <QRegularExpression>
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 static const char *QGIS_URILIST_MIMETYPE = "application/x-vnd.qgis.qgis.uri";
 

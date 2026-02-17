@@ -21,6 +21,10 @@
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingparametertype.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \brief A parameter for Processing algorithms specifying how rasters should be aligned.
  *

@@ -48,8 +48,11 @@
 #include <QFile>
 #include <QPagedPaintDevice>
 #include <QPainter>
+#include <QString>
 #include <QSvgRenderer>
 #include <QtMath>
+
+using namespace Qt::StringLiterals;
 
 QgsSimpleFillSymbolLayer::QgsSimpleFillSymbolLayer( const QColor &color, Qt::BrushStyle style, const QColor &strokeColor, Qt::PenStyle strokeStyle, double strokeWidth,
     Qt::PenJoinStyle penJoinStyle )
@@ -383,8 +386,7 @@ QgsSimpleFillSymbolLayer *QgsSimpleFillSymbolLayer::clone() const
   sl->setOffsetMapUnitScale( mOffsetMapUnitScale );
   sl->setStrokeWidthUnit( mStrokeWidthUnit );
   sl->setStrokeWidthMapUnitScale( mStrokeWidthMapUnitScale );
-  copyDataDefinedProperties( sl.get() );
-  copyPaintEffect( sl.get() );
+  copyCommonProperties( sl.get() );
   return sl.release();
 }
 
@@ -1068,8 +1070,7 @@ QgsGradientFillSymbolLayer *QgsGradientFillSymbolLayer::clone() const
   sl->setOffset( mOffset );
   sl->setOffsetUnit( mOffsetUnit );
   sl->setOffsetMapUnitScale( mOffsetMapUnitScale );
-  copyDataDefinedProperties( sl.get() );
-  copyPaintEffect( sl.get() );
+  copyCommonProperties( sl.get() );
   return sl.release();
 }
 
@@ -1728,8 +1729,7 @@ QgsShapeburstFillSymbolLayer *QgsShapeburstFillSymbolLayer::clone() const
   sl->setOffset( mOffset );
   sl->setOffsetUnit( mOffsetUnit );
   sl->setOffsetMapUnitScale( mOffsetMapUnitScale );
-  copyDataDefinedProperties( sl.get() );
-  copyPaintEffect( sl.get() );
+  copyCommonProperties( sl.get() );
   return sl.release();
 }
 
@@ -2261,8 +2261,7 @@ QgsSVGFillSymbolLayer *QgsSVGFillSymbolLayer::clone() const
   {
     clonedLayer->setSubSymbol( mStroke->clone() );
   }
-  copyDataDefinedProperties( clonedLayer.get() );
-  copyPaintEffect( clonedLayer.get() );
+  copyCommonProperties( clonedLayer.get() );
   return clonedLayer.release();
 }
 
@@ -3457,8 +3456,7 @@ QgsLinePatternFillSymbolLayer *QgsLinePatternFillSymbolLayer::clone() const
   {
     clonedLayer->setSubSymbol( mFillLineSymbol->clone() );
   }
-  copyPaintEffect( clonedLayer );
-  copyDataDefinedProperties( clonedLayer );
+  copyCommonProperties( clonedLayer );
   return clonedLayer;
 }
 
@@ -4434,8 +4432,7 @@ QgsPointPatternFillSymbolLayer *QgsPointPatternFillSymbolLayer::clone() const
     clonedLayer->setSubSymbol( mMarkerSymbol->clone() );
   }
   clonedLayer->setClipMode( mClipMode );
-  copyDataDefinedProperties( clonedLayer );
-  copyPaintEffect( clonedLayer );
+  copyCommonProperties( clonedLayer );
   return clonedLayer;
 }
 
@@ -5031,8 +5028,7 @@ QgsCentroidFillSymbolLayer *QgsCentroidFillSymbolLayer::clone() const
   x->setPointOnAllParts( mPointOnAllParts );
   x->setClipPoints( mClipPoints );
   x->setClipOnCurrentPartOnly( mClipOnCurrentPartOnly );
-  copyDataDefinedProperties( x.get() );
-  copyPaintEffect( x.get() );
+  copyCommonProperties( x.get() );
   return x.release();
 }
 
@@ -5373,8 +5369,7 @@ QgsRasterFillSymbolLayer *QgsRasterFillSymbolLayer::clone() const
   sl->setSizeUnit( mSizeUnit );
   sl->setSizeMapUnitScale( mSizeMapUnitScale );
 
-  copyDataDefinedProperties( sl.get() );
-  copyPaintEffect( sl.get() );
+  copyCommonProperties( sl.get() );
   return sl.release();
 }
 
@@ -5799,8 +5794,7 @@ QgsRandomMarkerFillSymbolLayer *QgsRandomMarkerFillSymbolLayer::clone() const
   res->setDensityAreaUnitScale( mDensityAreaUnitScale );
   res->mClipPoints = mClipPoints;
   res->setSubSymbol( mMarker->clone() );
-  copyDataDefinedProperties( res.get() );
-  copyPaintEffect( res.get() );
+  copyCommonProperties( res.get() );
   return res.release();
 }
 

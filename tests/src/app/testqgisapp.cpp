@@ -15,13 +15,21 @@
 #include <gdal.h>
 
 #include "qgisapp.h"
+#include "qgsclipboard.h"
+#include "qgsfillsymbol.h"
 #include "qgsmaplayerlegend.h"
 #include "qgsmaplayerstore.h"
+#include "qgsmaplayerstylemanager.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgsstyle.h"
 #include "qgstest.h"
 
 #include <QApplication>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup UnitTests
@@ -41,6 +49,7 @@ class TestQgisApp : public QObject
     void cleanup();         // will be called after every testfunction.
     //! Test for issue GH #63346
     void pasteRasterStyleCategory();
+    void copyPasteMultipleStyles();
 
   public slots:
     void addVectorLayerShp();
@@ -235,6 +244,51 @@ void TestQgisApp::pasteRasterStyleCategory()
   // Paste style to raster 2
   mQgisApp->pasteStyle( &rl2, QgsMapLayer::StyleCategory::Legend );
   QVERIFY( !rl2.legend()->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) );
+}
+
+void TestQgisApp::copyPasteMultipleStyles()
+{
+  auto sourceLayer = std::make_unique< QgsVectorLayer >( u"Polygon?crs=EPSG:4326"_s, u"polygons"_s, u"memory"_s );
+  auto destLayer = std::make_unique< QgsVectorLayer >( u"Polygon?crs=EPSG:4326"_s, u"polygons"_s, u"memory"_s );
+
+  sourceLayer->setRenderer( new QgsSingleSymbolRenderer( QgsFillSymbol::createSimple( { { "color", "#110011" } } ).release() ) );
+  sourceLayer->styleManager()->addStyleFromLayer( u"second style"_s );
+  sourceLayer->styleManager()->setCurrentStyle( u"second style"_s );
+  sourceLayer->setRenderer( new QgsSingleSymbolRenderer( QgsFillSymbol::createSimple( { { "color", "#220022" } } ).release() ) );
+  sourceLayer->styleManager()->addStyleFromLayer( u"third style"_s );
+  sourceLayer->styleManager()->setCurrentStyle( u"third style"_s );
+  sourceLayer->setRenderer( new QgsSingleSymbolRenderer( QgsFillSymbol::createSimple( { { "color", "#330033" } } ).release() ) );
+  QCOMPARE( sourceLayer->styleManager()->currentStyle(), u"third style"_s );
+
+  destLayer->setRenderer( new QgsSingleSymbolRenderer( QgsFillSymbol::createSimple( { { "color", "#ff0000" } } ).release() ) );
+
+  // copy all styles
+  mQgisApp->copyAllStyles( sourceLayer.get() );
+  QVERIFY( mQgisApp->clipboard()->hasFormat( QStringLiteral( QGSCLIPBOARD_STYLES_MIME ) ) );
+
+  mQgisApp->pasteAllStyles( destLayer.get() );
+  QCOMPARE( destLayer->styleManager()->styles().count(), 3 );
+  QVERIFY( destLayer->styleManager()->styles().contains( u"default" ) );
+  QVERIFY( destLayer->styleManager()->styles().contains( u"second style" ) );
+  QVERIFY( destLayer->styleManager()->styles().contains( u"third style" ) );
+
+  QCOMPARE( destLayer->styleManager()->currentStyle(), u"third style"_s );
+  QCOMPARE( dynamic_cast< QgsSingleSymbolRenderer *>( destLayer->renderer() )->symbol()->symbolLayer( 0 )->color().name(), u"#330033"_s );
+
+  destLayer->styleManager()->setCurrentStyle( u"second style"_s );
+  QCOMPARE( dynamic_cast< QgsSingleSymbolRenderer *>( destLayer->renderer() )->symbol()->symbolLayer( 0 )->color().name(), u"#220022"_s );
+
+  destLayer->styleManager()->setCurrentStyle( u"default"_s );
+  QCOMPARE( dynamic_cast< QgsSingleSymbolRenderer *>( destLayer->renderer() )->symbol()->symbolLayer( 0 )->color().name(), u"#110011"_s );
+
+  // make sure pasting styles onto layer with multiple existing styles clears those
+  // copy two styles from dest layer back to source layer, the missing one should be removed
+  destLayer->styleManager()->removeStyle( u"second style"_s );
+  mQgisApp->copyAllStyles( destLayer.get() );
+  mQgisApp->pasteAllStyles( sourceLayer.get() );
+  QCOMPARE( sourceLayer->styleManager()->styles().count(), 2 );
+  QVERIFY( sourceLayer->styleManager()->styles().contains( u"default" ) );
+  QVERIFY( sourceLayer->styleManager()->styles().contains( u"third style" ) );
 }
 
 

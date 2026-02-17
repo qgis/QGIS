@@ -23,6 +23,9 @@
 #include <QFile>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 void QgsColorUtils::writeXml( const QColor &color, const QString &identifier, QDomDocument &document, QDomElement &element, const QgsReadWriteContext & )
 {
@@ -351,7 +354,7 @@ QString QgsColorUtils::saveIccProfile( const QColorSpace &colorSpace, const QStr
 Qgis::ColorModel QgsColorUtils::toColorModel( QColorSpace::ColorModel colorModel, bool *ok )
 {
   bool lok = false;
-  Qgis::ColorModel res;
+  Qgis::ColorModel res = Qgis::ColorModel::Rgb;
   switch ( colorModel )
   {
     case QColorSpace::ColorModel::Cmyk:
@@ -367,7 +370,6 @@ Qgis::ColorModel QgsColorUtils::toColorModel( QColorSpace::ColorModel colorModel
     case QColorSpace::ColorModel::Undefined:
     case QColorSpace::ColorModel::Gray: // not supported
       lok = false;
-      res = Qgis::ColorModel::Rgb;
   }
 
   if ( ok )

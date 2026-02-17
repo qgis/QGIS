@@ -21,8 +21,11 @@
 #include "vector/qgsvectorlayer.h"
 
 #include <QDomNode>
+#include <QString>
 
 #include "moc_qgsmaplayerserverproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 // QgsServerMetadataUrlProperties
 

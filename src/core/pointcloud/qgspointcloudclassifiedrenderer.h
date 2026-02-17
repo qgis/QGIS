@@ -20,8 +20,11 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgscolorrampshader.h"
 #include "qgspointcloudrenderer.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core

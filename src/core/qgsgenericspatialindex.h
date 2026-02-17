@@ -27,6 +27,9 @@
 
 #define SIP_NO_FILE
 
+using namespace Qt::StringLiterals;
+
+
 #include <functional>
 #include <spatialindex/SpatialIndex.h>
 

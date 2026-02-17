@@ -20,10 +20,10 @@
 #include <memory>
 
 #include "qgis_gui.h"
+#include "qgsmapmouseevent.h"
 #include "qgsmaptooledit.h"
 #include "qgsreferencedgeometry.h"
 
-class QgsMapMouseEvent;
 class QgsAdvancedDigitizingDockWidget;
 class QgsSnapToGridCanvasItem;
 class QgsSnapIndicator;
@@ -116,6 +116,14 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      * \since QGIS 3.40
      */
     bool useSnappingIndicator() const;
+
+    /**
+     * Calculates geometry measures for a \a geometry, including area and total length (or perimeter).
+     *
+     * \note Not available in Python bindings.
+     * \since QGIS 4.0
+     */
+    SIP_SKIP static void calculateGeometryMeasures( const QgsReferencedGeometry &geometry, const QgsCoordinateReferenceSystem &destinationCrs, Qgis::CadMeasurementDisplayType areaType, Qgis::CadMeasurementDisplayType totalLengthType, QString &areaString, QString &totalLengthString );
 
   protected:
     /**
@@ -230,6 +238,8 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     void cadPointChanged( const QgsPointXY &point );
 
     void onCurrentLayerChanged();
+
+    void onTransientGeometryChanged( const QgsReferencedGeometry &geometry );
 
   private:
     //! Whether to allow use of advanced digitizing dock at this point

@@ -18,7 +18,6 @@
 #ifndef QGSMESHCALCUTILS_H
 #define QGSMESHCALCUTILS_H
 
-#define SIP_NO_FILE
 
 ///@cond PRIVATE
 
@@ -35,6 +34,8 @@
 #include <QMap>
 #include <QStringList>
 #include <QVector>
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup core

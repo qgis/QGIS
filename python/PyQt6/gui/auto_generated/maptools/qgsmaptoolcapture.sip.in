@@ -12,6 +12,8 @@
 
 
 
+
+
 class QgsMapToolCapture : QgsMapToolAdvancedDigitizing
 {
 %Docstring(signature="appended")
@@ -115,6 +117,8 @@ Gets the capture curve
 Returns a list of matches for each point on the captureCurve.
 %End
 
+    virtual void cadCanvasPressEvent( QgsMapMouseEvent *e );
+
     virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e );
 
     virtual void cadCanvasReleaseEvent( QgsMapMouseEvent *e );
@@ -126,6 +130,26 @@ Returns a list of matches for each point on the captureCurve.
 Intercept key events like Esc or Del to delete the last point
 
 :param e: key event
+%End
+
+    virtual void keyReleaseEvent( QKeyEvent *e );
+
+%Docstring
+Handles key release events for NURBS weight editing mode.
+
+:param e: key event
+
+.. versionadded:: 4.0
+%End
+
+    virtual void wheelEvent( QWheelEvent *e );
+
+%Docstring
+Handles wheel events for NURBS weight editing.
+
+:param e: wheel event
+
+.. versionadded:: 4.0
 %End
 
     void deleteTempRubberBand();

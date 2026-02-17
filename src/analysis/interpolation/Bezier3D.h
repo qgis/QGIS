@@ -21,7 +21,12 @@
 #include "qgis_analysis.h"
 #include "qgslogger.h"
 
+#include <QString>
+
 #define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
+
 
 /**
  * \ingroup analysis

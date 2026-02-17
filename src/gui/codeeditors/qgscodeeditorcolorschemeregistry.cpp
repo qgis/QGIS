@@ -15,6 +15,9 @@
 #include "qgscodeeditorcolorschemeregistry.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsCodeEditorColorSchemeRegistry::QgsCodeEditorColorSchemeRegistry()
 {

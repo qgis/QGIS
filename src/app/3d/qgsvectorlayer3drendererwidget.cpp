@@ -30,13 +30,19 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QStackedWidget>
+#include <QString>
 
 #include "moc_qgsvectorlayer3drendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
   , mLayer( layer )
 {
+  // If layer is null, the widget cannot be created.
+  Q_ASSERT( mLayer );
+
   QVBoxLayout *scrollLayout = new QVBoxLayout();
   scrollLayout->setContentsMargins( 0, 0, 0, 0 );
 
@@ -57,17 +63,22 @@ QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QgsVectorLayer
 
 void QgsSingleSymbol3DRendererWidget::setLayer( QgsVectorLayer *layer )
 {
-  QgsAbstract3DRenderer *r = layer->renderer3D();
+  // If layer is null, the widget cannot be updated.
+  Q_ASSERT( layer );
+
+  mLayer = layer;
+
+  QgsAbstract3DRenderer *r = mLayer->renderer3D();
   if ( r && r->type() == "vector"_L1 )
   {
     QgsVectorLayer3DRenderer *vectorRenderer = static_cast<QgsVectorLayer3DRenderer *>( r );
-    widgetSymbol->setSymbol( vectorRenderer->symbol(), layer );
+    widgetSymbol->setSymbol( vectorRenderer->symbol(), mLayer );
   }
   else
   {
-    const std::unique_ptr<QgsAbstract3DSymbol> sym( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( layer->geometryType() ) );
-    sym->setDefaultPropertiesFromLayer( layer );
-    widgetSymbol->setSymbol( sym.get(), layer );
+    const std::unique_ptr<QgsAbstract3DSymbol> sym( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( mLayer->geometryType() ) );
+    sym->setDefaultPropertiesFromLayer( mLayer );
+    widgetSymbol->setSymbol( sym.get(), mLayer );
   }
 }
 
@@ -151,6 +162,10 @@ void QgsVectorLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
   if ( r && ( r->type() == "vector"_L1 || r->type() == "rulebased"_L1 ) )
   {
     widgetBaseProperties->load( static_cast<QgsAbstractVectorLayer3DRenderer *>( r ) );
+  }
+  else
+  {
+    widgetBaseProperties->reset();
   }
 }
 

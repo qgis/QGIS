@@ -17,7 +17,11 @@
 
 #include "qgsjsoneditwidget.h"
 
+#include <QString>
+
 #include "moc_qgsjsoneditwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsJsonEditWrapper::QgsJsonEditWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )

@@ -30,7 +30,11 @@
 #include "qgslayoututils.h"
 #include "qgstextrenderer.h"
 
+#include <QString>
+
 #include "moc_qgslayouttable.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsLayoutTableStyle

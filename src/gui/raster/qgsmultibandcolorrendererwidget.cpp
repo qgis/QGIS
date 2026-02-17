@@ -23,7 +23,11 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterminmaxwidget.h"
 
+#include <QString>
+
 #include "moc_qgsmultibandcolorrendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMultiBandColorRendererWidget::QgsMultiBandColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
   : QgsRasterRendererWidget( layer, extent )

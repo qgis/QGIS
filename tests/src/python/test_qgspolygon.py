@@ -20,7 +20,6 @@ start_app()
 
 
 class TestQgsPolygon(QgisTestCase):
-
     def testFuzzyComparisons(self):
         ######
         # 2D #

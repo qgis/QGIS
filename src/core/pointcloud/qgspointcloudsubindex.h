@@ -18,16 +18,14 @@
 #ifndef QGSPOINTCLOUDSUBINDEX_H
 #define QGSPOINTCLOUDSUBINDEX_H
 
-#include <memory>
-
 #include "qgsgeometry.h"
 #include "qgspointcloudindex.h"
 #include "qgsrange.h"
+#include "qgsrectangle.h"
 
 #include <QString>
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 
 /**
@@ -35,9 +33,9 @@
  *
  * The index is initially NULLPTR until the virtual point cloud data provider explicitly loads the uri.
  *
- * \since QGIS 3.32
+ * \since QGIS 4.0
  */
-class QgsPointCloudSubIndex
+class CORE_EXPORT QgsPointCloudSubIndex
 {
   public:
     //! Constructor

@@ -12,7 +12,13 @@ Email                : nyall dot dawson at gmail dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <clocale>
+
 #include "qgstest.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -81,6 +87,10 @@ class TestQgsRasterCalculator : public QgsTest
     void testCreationOptions();
     void testNoDataValue();
 
+#ifdef HAVE_OPENCL
+    void testComparisonExpressionWithOpenCL(); // Test issue GH #64574
+#endif
+
   private:
     QgsRasterLayer *mpLandsatRasterLayer = nullptr;
     QgsRasterLayer *mpLandsatRasterLayer4326 = nullptr;
@@ -100,6 +110,8 @@ void TestQgsRasterCalculator::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
+  // To ensure consistent decimal separator set LC_NUMERIC=C
+  std::setlocale( LC_NUMERIC, "C" );
 
   QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
 
@@ -856,7 +868,7 @@ void TestQgsRasterCalculator::toString()
   QCOMPARE( _test( QStringLiteral( R"raw(("r@1"<100.09)*0.1)raw" ), true ), QString( R"raw(( float ) ( ( float ) "r@1" < ( float ) 100.09 ) * ( float ) 0.1)raw" ) );
   //test the conditional statement
   QCOMPARE( _test( u"if( \"raster@1\" > 5 , 100 , 5)"_s, false ), QString( "if( \"raster@1\" > 5 , 100 , 5 )" ) );
-  QCOMPARE( _test( u"if( \"raster@1\" > 5 , 100 , 5)"_s, true ), QString( " ( ( float ) ( ( float ) \"raster@1\" > ( float ) 5 ) ) ? ( ( float ) 100 ) : ( ( float ) 5 ) " ) );
+  QCOMPARE( _test( u"if( \"raster@1\" > 5 , 100 , 5)"_s, true ), QString( " ( bool ) ( ( float ) ( ( float ) \"raster@1\" > ( float ) 5 ) ) ? ( ( float ) 100 ) : ( ( float ) 5 ) " ) );
 
   QString error;
   std::unique_ptr<QgsRasterCalcNode> calcNode( QgsRasterCalcNode::parseRasterCalcString( u"min( \"raster@1\" )"_s, error ) );
@@ -1191,6 +1203,26 @@ void TestQgsRasterCalculator::testNoDataValue()
   QVERIFY( result->dataProvider()->sourceHasNoDataValue( 1 ) );
   QCOMPARE( result->dataProvider()->sourceNoDataValue( 1 ), -5555.0 );
 }
+
+#ifdef HAVE_OPENCL
+void TestQgsRasterCalculator::testComparisonExpressionWithOpenCL()
+{
+  if ( QgsOpenClUtils::available() )
+    QgsOpenClUtils::setEnabled( true );
+
+
+  QStringList operators;
+  operators << "=" << "!=" << "<" << "<=" << ">" << ">=";
+  for ( const auto &op : std::as_const( operators ) )
+  {
+    const QString expression = u"if ( \"dem@1\" %1 1, 0, 1 )"_s.arg( op );
+    QTemporaryDir tmpDir;
+    const QString tmpFile = tmpDir.path() + "/output.tif";
+    QgsRasterCalculator rc( expression, tmpFile, u"GTiff"_s, QgsRectangle(), QgsCoordinateReferenceSystem(), 2, 2, { QgsRasterCalculatorEntry { u"dem@1"_s, mpLandsatRasterLayer, 1 } }, QgsProject::instance()->transformContext() );
+    QCOMPARE( rc.processCalculation(), QgsRasterCalculator::Result::Success );
+  }
+}
+#endif
 
 QGSTEST_MAIN( TestQgsRasterCalculator )
 #include "testqgsrastercalculator.moc"

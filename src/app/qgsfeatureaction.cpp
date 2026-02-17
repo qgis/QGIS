@@ -32,8 +32,11 @@
 #include "qgsvectorlayerutils.h"
 
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsfeatureaction.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *layer, QUuid actionId, int defaultAttr, QObject *parent )
   : QAction( name, parent )

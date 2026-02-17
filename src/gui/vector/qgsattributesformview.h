@@ -17,12 +17,13 @@
 #define QGSATTRIBUTESFORMVIEW_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "qgis_gui.h"
 #include "qgsattributesformmodel.h"
 
 #include <QTreeView>
+
+#define SIP_NO_FILE
 
 class QgsAttributesFormTreeViewIndicator;
 

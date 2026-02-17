@@ -14,7 +14,6 @@ from qgis.testing.mocked import get_iface
 
 
 class QgsRendererRasterPropertiesTestCases(TestCase):
-
     def setUp(self):
         self.iface = get_iface()
 

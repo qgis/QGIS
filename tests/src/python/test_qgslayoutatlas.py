@@ -14,10 +14,8 @@ import glob
 import os
 import shutil
 import tempfile
+import unittest
 
-from qgis.PyQt.QtCore import QFileInfo, QRectF
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     QgsCategorizedSymbolRenderer,
     QgsCoordinateReferenceSystem,
@@ -42,17 +40,16 @@ from qgis.core import (
     QgsSingleSymbolRenderer,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
-
+from qgis.PyQt.QtCore import QFileInfo, QRectF
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsLayoutAtlas(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "atlas"

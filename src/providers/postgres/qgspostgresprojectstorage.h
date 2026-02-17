@@ -20,8 +20,12 @@
 #include "qgsdatasourceuri.h"
 #include "qgsprojectstorage.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //! Stores information parsed from postgres project URI
-typedef struct
+struct QgsPostgresProjectUri
 {
     bool valid;
 
@@ -29,8 +33,9 @@ typedef struct
 
     QString schemaName;
     QString projectName;
-
-} QgsPostgresProjectUri;
+    bool isVersion = false;
+    QString dateSaved;
+};
 
 
 //! Implements storage of QGIS projects inside a PostgreSQL table

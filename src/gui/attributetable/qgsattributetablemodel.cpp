@@ -38,10 +38,13 @@
 #include "qgsvectorlayercache.h"
 #include "qgsvectorlayerutils.h"
 
+#include <QString>
 #include <QUuid>
 #include <QVariant>
 
 #include "moc_qgsattributetablemodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent )
   : QAbstractTableModel( parent )

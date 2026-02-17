@@ -17,7 +17,11 @@
 
 #include "qgsgdalsourceselect.h"
 
+#include <QString>
+
 #include "moc_qgsgdalsourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

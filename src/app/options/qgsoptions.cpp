@@ -39,6 +39,7 @@
 #include "qgsgui.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgslayout.h"
+#include "qgslayoutitemlegend.h"
 #include "qgslocaldefaultsettings.h"
 #include "qgslocalizeddatapathregistry.h"
 #include "qgslocatoroptionswidget.h"
@@ -60,9 +61,13 @@
 #include "qgssymbollayerutils.h"
 #include "qgstolerance.h"
 #include "qgsunittypes.h"
-#include "qgswelcomepage.h"
+#include "qgswelcomescreen.h"
+
+#include <QString>
 
 #include "moc_qgsoptions.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -233,6 +238,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mProjectTrustBehaviorComboBox->addItem( tr( "Never Ask for Trust" ), QVariant::fromValue( Qgis::EmbeddedScriptMode::NeverAsk ) );
   mProjectTrustBehaviorComboBox->addItem( tr( "Ask for Trust" ), QVariant::fromValue( Qgis::EmbeddedScriptMode::Ask ) );
   mProjectTrustBehaviorComboBox->addItem( tr( "Always Execute (Not Recommended)" ), QVariant::fromValue( Qgis::EmbeddedScriptMode::Always ) );
+
+  mLegendSyncModeCombo->addItem( tr( "Synchronize to All Project Layers" ), QVariant::fromValue( Qgis::LegendSyncMode::AllProjectLayers ) );
+  mLegendSyncModeCombo->addItem( tr( "Synchronize to Visible Layers" ), QVariant::fromValue( Qgis::LegendSyncMode::VisibleLayers ) );
+  mLegendSyncModeCombo->addItem( tr( "Manual" ), QVariant::fromValue( Qgis::LegendSyncMode::Manual ) );
 
   mIdentifyHighlightColorButton->setColorDialogTitle( tr( "Identify Highlight Color" ) );
   mIdentifyHighlightColorButton->setAllowOpacity( true );
@@ -750,7 +759,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   cbxLegendClassifiers->setChecked( mSettings->value( u"/qgis/showLegendClassifiers"_s, false ).toBool() );
   mShowFeatureCountByDefaultCheckBox->setChecked( QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers->value() );
   cbxHideSplash->setChecked( mSettings->value( u"/qgis/hideSplash"_s, false ).toBool() );
-  cbxShowNews->setChecked( !mSettings->value( u"%1/disabled"_s.arg( QgsNewsFeedParser::keyForFeed( QgsWelcomePage::newsFeedUrl() ) ), false, QgsSettings::Core ).toBool() );
+  cbxShowNews->setChecked( !mSettings->value( u"%1/disabled"_s.arg( QgsNewsFeedParser::keyForFeed( QgsWelcomeScreen::newsFeedUrl() ) ), false, QgsSettings::Core ).toBool() );
   cbxCheckVersion->setChecked( mSettings->value( u"/qgis/checkVersion"_s, true ).toBool() );
   cbxCheckVersion->setVisible( mSettings->value( u"/qgis/allowVersionCheck"_s, true ).toBool() );
   cbxAttributeTableDocked->setChecked( mSettings->value( u"/qgis/dockAttributeTable"_s, false ).toBool() );
@@ -1009,6 +1018,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   mComposerFontComboBox->blockSignals( false );
 
+  mLegendSyncModeCombo->setCurrentIndex( mLegendSyncModeCombo->findData( QVariant::fromValue( QgsLayoutItemLegend::settingDefaultLegendSyncMode->value() ) ) );
+
   //default layout grid color
   int gridRed, gridGreen, gridBlue, gridAlpha;
   gridRed = mSettings->value( u"LayoutDesigner/gridRed"_s, 190, QgsSettings::Gui ).toInt();
@@ -1089,6 +1100,15 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
 
   //set elements in digitizing tab
+  mComboStatusAreaDisplay->addItem( tr( "Hidden" ), QVariant::fromValue( Qgis::CadMeasurementDisplayType::Hidden ) );
+  // see https://github.com/qgis/QGIS/pull/64496#discussion_r2681223874, re-enable if there's demand
+  //mComboStatusAreaDisplay->addItem( tr( "Show Cartesian Area" ), QVariant::fromValue( Qgis::CadMeasurementDisplayType::Cartesian ) );
+  mComboStatusAreaDisplay->addItem( tr( "Show Ellipsoidal Area" ), QVariant::fromValue( Qgis::CadMeasurementDisplayType::Ellipsoidal ) );
+  mComboStatusLengthDisplay->addItem( tr( "Hidden" ), QVariant::fromValue( Qgis::CadMeasurementDisplayType::Hidden ) );
+  // see https://github.com/qgis/QGIS/pull/64496#discussion_r2681223874, re-enable if there's demand
+  //mComboStatusLengthDisplay->addItem( tr( "Show Cartesian Distances" ), QVariant::fromValue( Qgis::CadMeasurementDisplayType::Cartesian ) );
+  mComboStatusLengthDisplay->addItem( tr( "Show Ellipsoidal Distances" ), QVariant::fromValue( Qgis::CadMeasurementDisplayType::Ellipsoidal ) );
+
   mLineWidthSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingLineWidth->value() );
   mLineColorToolButton->setColor( QgsSettingsRegistryCore::settingsDigitizingLineColor->value() );
   mLineColorToolButton->setAllowOpacity( true );
@@ -1178,6 +1198,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   chkReuseLastValues->setChecked( QgsSettingsRegistryCore::settingsDigitizingReuseLastValues->value() );
   chkDisableAttributeValuesDlg->setChecked( QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog->value() );
   mValidateGeometries->setCurrentIndex( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->value() );
+  mComboStatusAreaDisplay->setCurrentIndex( mComboStatusAreaDisplay->findData( QVariant::fromValue( QgsSettingsRegistryCore::settingsDigitizingStatusBarAreaDisplay->value() ) ) );
+  mComboStatusLengthDisplay->setCurrentIndex( mComboStatusLengthDisplay->findData( QVariant::fromValue( QgsSettingsRegistryCore::settingsDigitizingStatusBarTotalLengthDisplay->value() ) ) );
 
   mSnappingMainDialogComboBox->clear();
   mSnappingMainDialogComboBox->addItem( tr( "Dialog" ), "dialog" );
@@ -1612,7 +1634,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( u"/qgis/showLegendClassifiers"_s, cbxLegendClassifiers->isChecked() );
   QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers->setValue( mShowFeatureCountByDefaultCheckBox->isChecked() );
   mSettings->setValue( u"/qgis/hideSplash"_s, cbxHideSplash->isChecked() );
-  mSettings->setValue( u"%1/disabled"_s.arg( QgsNewsFeedParser::keyForFeed( QgsWelcomePage::newsFeedUrl() ) ), !cbxShowNews->isChecked(), QgsSettings::Core );
+  mSettings->setValue( u"%1/disabled"_s.arg( QgsNewsFeedParser::keyForFeed( QgsWelcomeScreen::newsFeedUrl() ) ), !cbxShowNews->isChecked(), QgsSettings::Core );
 
   mSettings->setValue( u"/qgis/checkVersion"_s, cbxCheckVersion->isChecked() );
   mSettings->setValue( u"/qgis/dockAttributeTable"_s, cbxAttributeTableDocked->isChecked() );
@@ -1826,6 +1848,9 @@ void QgsOptions::saveOptions()
   QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog->setValue( chkDisableAttributeValuesDlg->isChecked() );
   QgsSettingsRegistryCore::settingsDigitizingValidateGeometries->setValue( mValidateGeometries->currentIndex() );
 
+  QgsSettingsRegistryCore::settingsDigitizingStatusBarAreaDisplay->setValue( mComboStatusAreaDisplay->currentData().value< Qgis::CadMeasurementDisplayType >() );
+  QgsSettingsRegistryCore::settingsDigitizingStatusBarTotalLengthDisplay->setValue( mComboStatusLengthDisplay->currentData().value< Qgis::CadMeasurementDisplayType >() );
+
   QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle->setValue( mOffsetJoinStyleComboBox->currentData().value<Qgis::JoinStyle>() );
   QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg->setValue( mOffsetQuadSegSpinBox->value() );
   QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit->setValue( mCurveOffsetMiterLimitComboBox->value() );
@@ -1858,6 +1883,8 @@ void QgsOptions::saveOptions()
   //default font
   QString layoutFont = mComposerFontComboBox->currentFont().family();
   mSettings->setValue( u"LayoutDesigner/defaultFont"_s, layoutFont, QgsSettings::Gui );
+
+  QgsLayoutItemLegend::settingDefaultLegendSyncMode->setValue( mLegendSyncModeCombo->currentData().value< Qgis::LegendSyncMode >() );
 
   //grid color
   mSettings->setValue( u"LayoutDesigner/gridRed"_s, mGridColorButton->color().red(), QgsSettings::Gui );

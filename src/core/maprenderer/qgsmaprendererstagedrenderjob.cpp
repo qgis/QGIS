@@ -25,7 +25,11 @@
 #include "qgsproject.h"
 #include "qgsrendereditemresults.h"
 
+#include <QString>
+
 #include "moc_qgsmaprendererstagedrenderjob.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapRendererStagedRenderJob::QgsMapRendererStagedRenderJob( const QgsMapSettings &settings, Flags flags )
   : QgsMapRendererAbstractCustomPainterJob( settings )

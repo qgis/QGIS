@@ -17,7 +17,11 @@
 
 #include "qgsapplication.h"
 
+#include <QString>
+
 #include "moc_qgsmaplayerstylecategoriesmodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapLayerStyleCategoriesModel::QgsMapLayerStyleCategoriesModel( Qgis::LayerType type, QObject *parent )
   : QAbstractListModel( parent )

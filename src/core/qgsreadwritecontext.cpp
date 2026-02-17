@@ -14,6 +14,10 @@
  ***************************************************************************/
 #include "qgsreadwritecontext.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 class DefaultTranslator : public QgsProjectTranslator
 {

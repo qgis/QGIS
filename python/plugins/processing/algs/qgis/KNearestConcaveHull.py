@@ -22,11 +22,8 @@ __author__ = "Detlev Neumann"
 __date__ = "November 2014"
 __copyright__ = "(C) 2014, Detlev Neumann"
 
-import os.path
 import math
-
-from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtCore import QMetaType
+import os.path
 
 from qgis.core import (
     QgsApplication,
@@ -37,6 +34,8 @@ from qgis.core import (
     QgsField,
     QgsFields,
     QgsGeometry,
+    QgsPoint,
+    QgsPointXY,
     QgsProcessing,
     QgsProcessingAlgorithm,
     QgsProcessingException,
@@ -44,10 +43,11 @@ from qgis.core import (
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
     QgsProcessingParameterNumber,
-    QgsPoint,
-    QgsPointXY,
     QgsWkbTypes,
 )
+from qgis.PyQt.QtCore import QMetaType
+from qgis.PyQt.QtGui import QIcon
+
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
@@ -570,7 +570,6 @@ def concave_hull(points_list, k):
 
     # as long as point_set is not empty or search is returning to the starting point
     while (current_point != first_point) or (step == 2) and (len(point_set) > 0):
-
         # after 3 iterations add the first point to point_set again, otherwise a hull cannot be closed
         if step == 5:
             point_set = add_point(point_set, first_point)

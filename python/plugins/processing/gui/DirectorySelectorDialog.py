@@ -22,16 +22,16 @@ __copyright__ = "(C) 2016, Victor Olaya"
 import os
 import warnings
 
-from qgis.PyQt import uic
 from qgis.core import QgsSettings
+from qgis.PyQt import uic
+from qgis.PyQt.QtGui import QStandardItem, QStandardItemModel
 from qgis.PyQt.QtWidgets import (
-    QDialog,
     QAbstractItemView,
-    QPushButton,
+    QDialog,
     QDialogButtonBox,
     QFileDialog,
+    QPushButton,
 )
-from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 with warnings.catch_warnings():
@@ -42,7 +42,6 @@ with warnings.catch_warnings():
 
 
 class DirectorySelectorDialog(BASE, WIDGET):
-
     def __init__(self, parent, options):
         super().__init__(None)
         self.setupUi(self)

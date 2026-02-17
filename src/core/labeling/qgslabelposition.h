@@ -23,6 +23,9 @@
 #include "qgsrectangle.h"
 
 #include <QFont>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core

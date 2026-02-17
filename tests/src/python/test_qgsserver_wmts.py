@@ -25,7 +25,6 @@ import urllib.parse
 import urllib.request
 
 import osgeo.gdal  # NOQA
-
 from qgis.core import QgsProject
 from qgis.testing import unittest
 from test_qgsserver import QgsServerTestBase

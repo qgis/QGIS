@@ -25,6 +25,9 @@
 #include "qgsprofilesnapping.h"
 
 #include <QPainterPath>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsAbstractProfileSurfaceResults

@@ -19,12 +19,13 @@
 #define QGSLAYOUTCHARTWIDGET_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "ui_qgslayoutchartwidgetbase.h"
 
 #include "qgis_gui.h"
 #include "qgslayoutitemwidget.h"
+
+#define SIP_NO_FILE
 
 class QgsLayoutItemChart;
 
@@ -61,6 +62,10 @@ class GUI_EXPORT QgsLayoutChartWidget : public QgsLayoutItemBaseWidget, private 
     void mAddSeriesPushButton_clicked();
     void mRemoveSeriesPushButton_clicked();
     void mSeriesPropertiesButton_clicked();
+
+    void mLinkedMapComboBox_itemChanged( QgsLayoutItem *item );
+    void mFilterOnlyVisibleFeaturesCheckBox_stateChanged( int state );
+    void mIntersectAtlasCheckBox_stateChanged( int state );
 
   private:
     //! Sets the GUI elements to the values of mChartItem

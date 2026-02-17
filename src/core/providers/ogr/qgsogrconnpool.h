@@ -20,13 +20,18 @@
 #include "qgsogrprovidermetadata.h"
 #include "qgsogrproviderutils.h"
 
+#include <QString>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
+
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>
 #include "qgis_sip.h"
 #include <cpl_string.h>
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 struct QgsOgrConn
 {

@@ -21,17 +21,16 @@ __copyright__ = "(C) 2013, Alexander Bruy"
 
 import os
 
+from osgeo import gdal, osr
+from qgis.core import (
+    QgsProcessingException,
+    QgsProcessingOutputFile,
+    QgsProcessingParameterBoolean,
+    QgsProcessingParameterRasterLayer,
+)
 from qgis.PyQt.QtGui import QIcon
 
-from osgeo import gdal, osr
-
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from qgis.core import QgsProcessingException
-from qgis.core import (
-    QgsProcessingParameterRasterLayer,
-    QgsProcessingParameterBoolean,
-    QgsProcessingOutputFile,
-)
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -90,7 +89,7 @@ class ExtractProjection(GdalAlgorithm):
         raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if raster.dataProvider().name() != "gdal":
             raise QgsProcessingException(
-                self.tr("This algorithm can " "only be used with " "GDAL raster layers")
+                self.tr("This algorithm can only be used with GDAL raster layers")
             )
         rasterPath = raster.source()
         rasterDS = gdal.Open(rasterPath, gdal.GA_ReadOnly)

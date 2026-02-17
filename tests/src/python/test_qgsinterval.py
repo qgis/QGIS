@@ -16,7 +16,6 @@ from qgis.testing import unittest
 
 
 class TestQgsInterval(unittest.TestCase):
-
     def testIntervalConstructor(self):
         """Test QgsInterval constructor"""
 

@@ -22,40 +22,46 @@
  ***************************************************************************/
 """
 
-from typing import Dict, Optional, Any
-
-from qgis.PyQt.QtCore import (
-    pyqtSignal,
-    QObject,
-    QCoreApplication,
-    QFile,
-    QDir,
-    QDirIterator,
-    QDate,
-    QUrl,
-    QFileInfo,
-    QLocale,
-    QByteArray,
-    QT_VERSION_STR,
-)
-from qgis.PyQt.QtXml import QDomDocument
-from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
-from qgis.core import Qgis, QgsSettings, QgsSettingsTree, QgsNetworkRequestParameters
-import sys
+import configparser
 import os
 import re
-import configparser
-import qgis.utils
-from qgis.core import QgsNetworkAccessManager, QgsApplication
-from qgis.gui import QgsGui
-from qgis.utils import iface, plugin_paths, HOME_PLUGIN_PATH
-from .version_compare import (
-    pyQgisVersion,
-    compareVersions,
-    normalizeVersion,
-    isCompatible,
-)
+import sys
+from typing import Any, Optional
 
+import qgis.utils
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsNetworkAccessManager,
+    QgsNetworkRequestParameters,
+    QgsSettings,
+    QgsSettingsTree,
+)
+from qgis.gui import QgsGui
+from qgis.PyQt.QtCore import (
+    QT_VERSION_STR,
+    QByteArray,
+    QCoreApplication,
+    QDate,
+    QDir,
+    QDirIterator,
+    QFile,
+    QFileInfo,
+    QLocale,
+    QObject,
+    QUrl,
+    pyqtSignal,
+)
+from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.utils import HOME_PLUGIN_PATH, iface, plugin_paths
+
+from .version_compare import (
+    compareVersions,
+    isCompatible,
+    normalizeVersion,
+    pyQgisVersion,
+)
 
 """
 Data structure:
@@ -431,11 +437,12 @@ class Repositories(QObject):
             self.mRepositories[reposName]["state"] = Repositories.STATE_UNAVAILABLE
             self.mRepositories[reposName]["error"] = reply.errorString()
             if reply.error() == QNetworkReply.NetworkError.OperationCanceledError:
-                self.mRepositories[reposName][
-                    "error"
-                ] += "\n\n" + QCoreApplication.translate(
-                    "QgsPluginInstaller",
-                    "If you haven't canceled the download manually, it was most likely caused by a timeout. In this case consider increasing the connection timeout value in QGIS options window.",
+                self.mRepositories[reposName]["error"] += (
+                    "\n\n"
+                    + QCoreApplication.translate(
+                        "QgsPluginInstaller",
+                        "If you haven't canceled the download manually, it was most likely caused by a timeout. In this case consider increasing the connection timeout value in QGIS options window.",
+                    )
                 )
         elif reply.attribute(QNetworkRequest.Attribute.HttpStatusCodeAttribute) == 301:
             redirectionUrl = reply.attribute(
@@ -726,9 +733,7 @@ class Plugins(QObject):
         self.mPlugins = {}  # the dict of plugins (dicts)
         self.repoCache = {}  # the dict of lists of plugins (dicts)
         self.localCache = {}  # the dict of plugins (dicts)
-        self.obsoletePlugins = (
-            []
-        )  # the list of outdated 'user' plugins masking newer 'system' ones
+        self.obsoletePlugins = []  # the list of outdated 'user' plugins masking newer 'system' ones
 
     # ----------------------------------------- #
     def all(self):
@@ -1030,7 +1035,6 @@ class Plugins(QObject):
                         and not plugin["experimental"]
                     )
                 ):
-
                     # The mPlugins dict contains now locally installed plugins.
                     # Now, add the available one if not present yet or update it if present already.
                     if key not in self.mPlugins:

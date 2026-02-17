@@ -25,9 +25,13 @@
 #include <QDomElement>
 #include <QMainWindow>
 #include <QPointer>
+#include <QString>
 #include <QToolButton>
 
 #define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
+
 
 class QgsDockWidget;
 

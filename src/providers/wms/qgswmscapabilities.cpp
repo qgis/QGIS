@@ -32,9 +32,12 @@
 #include <QFile>
 #include <QNetworkCacheMetaData>
 #include <QRegularExpression>
+#include <QString>
 #include <QUrlQuery>
 
 #include "moc_qgswmscapabilities.cpp"
+
+using namespace Qt::StringLiterals;
 
 bool QgsWmsSettings::parseUri( const QString &uriString )
 {

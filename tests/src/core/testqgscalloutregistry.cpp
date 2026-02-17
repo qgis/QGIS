@@ -21,6 +21,9 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 //dummy callout for testing
 class DummyCallout : public QgsCallout

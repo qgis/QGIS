@@ -22,7 +22,10 @@
 #include "qgsvectorlayer.h"
 #include "testqgsmaptoolutils.h"
 
+#include <QString>
 #include <qstringliteral.h>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsMapToolEditBlankSegments : public QgsTest
 {

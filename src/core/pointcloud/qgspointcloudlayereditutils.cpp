@@ -22,6 +22,9 @@
 #include "qgslazdecoder.h"
 
 #include <QMutex>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 static void updatePoint( char *pointBuffer, int pointFormat, const QString &attributeName, double newValue )
 {

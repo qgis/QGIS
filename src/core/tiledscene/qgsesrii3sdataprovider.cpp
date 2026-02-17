@@ -36,8 +36,11 @@
 #include <QFileInfo>
 #include <QIcon>
 #include <QQuaternion>
+#include <QString>
 
 #include "moc_qgsesrii3sdataprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define I3S_PROVIDER_KEY u"esrii3s"_s
 #define I3S_PROVIDER_DESCRIPTION u"ESRI I3S data provider"_s
@@ -714,7 +717,8 @@ QgsEsriI3SDataProvider::QgsEsriI3SDataProvider( const QString &uri,
   , mShared( std::make_shared< QgsEsriI3SDataProviderSharedData >() )
 {
   QgsDataSourceUri dataSource( dataSourceUri() );
-  QString sourcePath = dataSource.param( u"url"_s );
+  const QString url = dataSource.param( u"url"_s );
+  QString sourcePath = QUrl::fromPercentEncoding( url.toUtf8() );
 
   if ( sourcePath.isEmpty() )
   {

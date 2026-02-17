@@ -18,11 +18,12 @@
 #ifndef QGSALGORITHMRECLASSIFYBYLAYER_H
 #define QGSALGORITHMRECLASSIFYBYLAYER_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsreclassifyutils.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

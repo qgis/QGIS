@@ -20,22 +20,11 @@ __copyright__ = "Copyright 2015, The QGIS Project"
 
 import os
 import time
+import unittest
 from datetime import datetime
 
 import psycopg2
-from qgis.PyQt.QtCore import (
-    QByteArray,
-    QDate,
-    QDateTime,
-    QDir,
-    QObject,
-    QTemporaryDir,
-    QTemporaryFile,
-    QTime,
-    QVariant,
-)
-from qgis.PyQt.QtWidgets import QLabel
-from qgis.PyQt.QtXml import QDomDocument
+from providertestbase import ProviderTestCase
 from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import (
     NULL,
@@ -47,6 +36,7 @@ from qgis.core import (
     QgsDefaultValue,
     QgsFeature,
     QgsFeatureRequest,
+    QgsFeatureSink,
     QgsFeatureSource,
     QgsFieldConstraints,
     QgsGeometry,
@@ -60,21 +50,30 @@ from qgis.core import (
     QgsRectangle,
     QgsReferencedGeometry,
     QgsSettings,
+    QgsSettingsTree,
     QgsTransactionGroup,
+    QgsUnsetAttributeValue,
     QgsVectorDataProvider,
     QgsVectorLayer,
     QgsVectorLayerExporter,
     QgsVectorLayerUtils,
     QgsWkbTypes,
-    QgsSettingsTree,
-    QgsUnsetAttributeValue,
-    QgsFeatureSink,
 )
 from qgis.gui import QgsAttributeForm, QgsGui
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
-from providertestbase import ProviderTestCase
+from qgis.PyQt.QtCore import (
+    QByteArray,
+    QDate,
+    QDateTime,
+    QDir,
+    QObject,
+    QTemporaryDir,
+    QTemporaryFile,
+    QTime,
+    QVariant,
+)
+from qgis.PyQt.QtWidgets import QLabel
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import compareWkt, unitTestDataPath
 
 QGISAPP = start_app()
@@ -82,7 +81,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -133,9 +131,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         # 1. test that the estimated extent contains the real one
         self.assertTrue(
             estmExt.contains(realExt),
-            "Estimated extent {} does not contain real extent {}".format(
-                estmExt, realExt
-            ),
+            f"Estimated extent {estmExt} does not contain real extent {realExt}",
         )
         # 2. test that the estimated extent is not larger than 10% of real extent
         self.assertLess(
@@ -166,17 +162,13 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
                     f"DROP TABLE IF EXISTS {schema}.{table}_edit CASCADE"
                 )
                 tester.execSQLCommand(
-                    "CREATE TABLE {s}.{t}_edit AS SELECT * FROM {s}.{t}".format(
-                        s=schema, t=table
-                    )
+                    f"CREATE TABLE {schema}.{table}_edit AS SELECT * FROM {schema}.{table}"
                 )
 
             def __del__(self):
                 self.tester.execSQLCommand(f"TRUNCATE TABLE {self.schema}.{self.table}")
                 self.tester.execSQLCommand(
-                    "INSERT INTO {s}.{t} SELECT * FROM {s}.{t}_edit".format(
-                        s=self.schema, t=self.table
-                    )
+                    f"INSERT INTO {self.schema}.{self.table} SELECT * FROM {self.schema}.{self.table}_edit"
                 )
                 self.tester.execSQLCommand(
                     f"DROP TABLE {self.schema}.{self.table}_edit"
@@ -435,7 +427,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
             'CREATE TABLE qgis_test."citext_table_edit" ( pk SERIAL NOT NULL PRIMARY KEY, txt citext)'
         )
         self.execSQLCommand(
-            'INSERT INTO qgis_test."citext_table_edit" (pk, txt) VALUES ' "(1, 'text')"
+            "INSERT INTO qgis_test.\"citext_table_edit\" (pk, txt) VALUES (1, 'text')"
         )
         vl = QgsVectorLayer(
             self.dbconn + ' sslmode=disable table="qgis_test"."citext_table_edit" sql=',
@@ -538,6 +530,58 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         )
 
         test_table(self.dbconn, "pt4d", "Point ZM (1 2 3 4)")
+
+    def testTinPolyhedralSurfaceExactIntersect(self):
+        """
+        Test for fix: intersect method for PolyhedralSurface and TIN types
+        See: https://github.com/qgis/QGIS/pull/64621
+        """
+
+        def test_intersect(table_name, geom_type):
+            vl = QgsVectorLayer(
+                f'{self.dbconn} srid=4326 table="qgis_test".{table_name} (geom) sql=',
+                f"test_{table_name}",
+                "postgres",
+            )
+            self.assertTrue(vl.isValid(), f"Layer {table_name} should be valid")
+
+            # Rectangle that intersects the geometry (within [0,0]-[1,1])
+            intersecting_rect = QgsRectangle(0.25, 0.25, 0.75, 0.75)
+
+            # Rectangle outside the geometry
+            non_intersecting_rect = QgsRectangle(5, 5, 6, 6)
+
+            # Test 1: ExactIntersect with intersecting rectangle
+            request = QgsFeatureRequest()
+            request.setFilterRect(intersecting_rect)
+            request.setFlags(QgsFeatureRequest.Flag.ExactIntersect)
+
+            features = list(vl.getFeatures(request))
+            self.assertEqual(
+                len(features),
+                1,
+                f"{geom_type}: Expected 1 feature with intersecting rect, got {len(features)}",
+            )
+
+            # Test 2: ExactIntersect with non-intersecting rectangle
+            request = QgsFeatureRequest()
+            request.setFilterRect(non_intersecting_rect)
+            request.setFlags(QgsFeatureRequest.Flag.ExactIntersect)
+
+            features = list(vl.getFeatures(request))
+            self.assertEqual(
+                len(features),
+                0,
+                f"{geom_type}: Expected 0 features with non-intersecting rect, got {len(features)}",
+            )
+
+        # Test TIN 2D and 3D
+        test_intersect("tin2d", "TIN 2D")
+        test_intersect("tin3d", "TIN 3D")
+
+        # Test PolyhedralSurface 2D and 3D
+        test_intersect("ps2d", "PolyhedralSurface 2D")
+        test_intersect("ps3d", "PolyhedralSurface 3D")
 
     def testMetadata(self):
         """Test that metadata is correctly acquired from provider"""
@@ -775,9 +819,9 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         expected_geometry = "Point (-68.047619047619051 -0.90476190476190477)"
         expected_area = 43069568296.34387
 
-        assert compareWkt(
-            generated_geometry, expected_geometry
-        ), f"Geometry mismatch! Expected:\n{expected_geometry}\nGot:\n{generated_geometry}\n"
+        assert compareWkt(generated_geometry, expected_geometry), (
+            f"Geometry mismatch! Expected:\n{expected_geometry}\nGot:\n{generated_geometry}\n"
+        )
         self.assertAlmostEqual(f2["poly_area"], expected_area, places=4)
         self.assertEqual(f2["name"], "QGIS-3")
 
@@ -844,9 +888,9 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         expected_geometry = "Point (-67.42424242424242209 -0.81818181818181823)"
         expected_area = 67718478405.28429
 
-        assert compareWkt(
-            generated_geometry, expected_geometry
-        ), f"Geometry mismatch! Expected:\n{expected_geometry}\nGot:\n{generated_geometry}\n"
+        assert compareWkt(generated_geometry, expected_geometry), (
+            f"Geometry mismatch! Expected:\n{expected_geometry}\nGot:\n{generated_geometry}\n"
+        )
         self.assertAlmostEqual(f2["poly_area"], expected_area, places=4)
         self.assertEqual(f2["name"], "New")
 
@@ -878,9 +922,9 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         expected_geometry = "Point (-68.0477406158202 -0.904960604589168)"
         expected_area = 43088884296.69713
 
-        assert compareWkt(
-            generated_geometry, expected_geometry
-        ), f"Geometry mismatch! Expected:\n{expected_geometry}\nGot:\n{generated_geometry}\n"
+        assert compareWkt(generated_geometry, expected_geometry), (
+            f"Geometry mismatch! Expected:\n{expected_geometry}\nGot:\n{generated_geometry}\n"
+        )
         self.assertEqual(f4["poly_area"], expected_area)
 
         # Restore test table (after editing it)
@@ -1378,9 +1422,9 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         self.assertTrue(f2.isValid())
         self.assertAlmostEqual(f2["pk"], 0.2222222222222222)
         self.assertEqual(f2["value"], "newly inserted")
-        assert compareWkt(
-            f2.geometry().asWkt(), newpointwkt
-        ), f"Geometry mismatch. Expected: {f2.geometry().asWkt()} Got: {newpointwkt} \n"
+        assert compareWkt(f2.geometry().asWkt(), newpointwkt), (
+            f"Geometry mismatch. Expected: {f2.geometry().asWkt()} Got: {newpointwkt} \n"
+        )
         # One more check: can we retrieve the same row with the value that we got from this layer?
         floatpk = f2["pk"]
         f3 = next(
@@ -1476,9 +1520,9 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         self.assertTrue(f2.isValid())
         self.assertAlmostEqual(f2["pk"], 0.2222222222222222, places=15)
         self.assertEqual(f2["value"], "newly inserted")
-        assert compareWkt(
-            f2.geometry().asWkt(), newpointwkt
-        ), f"Geometry mismatch. Expected: {f2.geometry().asWkt()} Got: {newpointwkt} \n"
+        assert compareWkt(f2.geometry().asWkt(), newpointwkt), (
+            f"Geometry mismatch. Expected: {f2.geometry().asWkt()} Got: {newpointwkt} \n"
+        )
         # One more check: can we retrieve the same row with the value that we got from this layer?
         doublepk = f2["pk"]
         f3 = next(
@@ -3027,7 +3071,6 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
         vl0.dataProvider().setListening(True)
 
         class Notified(QObject):
-
             def __init__(self):
                 super().__init__()
                 self.received = ""
@@ -4132,83 +4175,56 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
     def testExtractWithinDistanceAlgorithm(self):
 
         with self.temporarySchema("extract_within_distance") as schema:
-
             # Create and populate target table in PseudoWebMercator CRS
             self.execSQLCommand(
-                "CREATE TABLE {}.target_3857 (id serial primary key, g geometry(linestring, 3857))".format(
-                    schema
-                )
+                f"CREATE TABLE {schema}.target_3857 (id serial primary key, g geometry(linestring, 3857))"
             )
             # -- first line (id=1)
             self.execSQLCommand(
-                "INSERT INTO {}.target_3857 (g) values('SRID=3857;LINESTRING(0 0, 1000 1000)')".format(
-                    schema
-                )
+                f"INSERT INTO {schema}.target_3857 (g) values('SRID=3857;LINESTRING(0 0, 1000 1000)')"
             )
             # -- secodn line is a great circle line on the right (id=2)
             self.execSQLCommand(
-                "INSERT INTO {}.target_3857 (g) values( ST_Transform('SRID=4326;LINESTRING(80 0,160 80)'::geometry, 3857) )".format(
-                    schema
-                )
+                f"INSERT INTO {schema}.target_3857 (g) values( ST_Transform('SRID=4326;LINESTRING(80 0,160 80)'::geometry, 3857) )"
             )
 
             # Create and populate reference table in PseudoWebMercator CRS
             self.execSQLCommand(
-                "CREATE TABLE {}.reference_3857 (id serial primary key, g geometry(point, 3857))".format(
-                    schema
-                )
+                f"CREATE TABLE {schema}.reference_3857 (id serial primary key, g geometry(point, 3857))"
             )
             self.execSQLCommand(
-                "INSERT INTO {}.reference_3857 (g) values('SRID=3857;POINT(500 999)')".format(
-                    schema
-                )
+                f"INSERT INTO {schema}.reference_3857 (g) values('SRID=3857;POINT(500 999)')"
             )
             self.execSQLCommand(
-                "INSERT INTO {}.reference_3857 (g) values('SRID=3857;POINT(501 999)')".format(
-                    schema
-                )
+                f"INSERT INTO {schema}.reference_3857 (g) values('SRID=3857;POINT(501 999)')"
             )
             self.execSQLCommand(
                 # -- this reference (id=3) is ON the first line (id=1) in webmercator
                 # -- and probably very close in latlong WGS84
-                "INSERT INTO {}.reference_3857 (g) values('SRID=3857;POINT(500 500)')".format(
-                    schema
-                )
+                f"INSERT INTO {schema}.reference_3857 (g) values('SRID=3857;POINT(500 500)')"
             )
             self.execSQLCommand(
                 # -- this reference (id=4) is at ~ 5 meters from second line (id=2) in webmercator
-                "INSERT INTO {}.reference_3857 (g) values('SRID=3857;POINT(12072440.688888172 5525668.358321408)')".format(
-                    schema
-                )
+                f"INSERT INTO {schema}.reference_3857 (g) values('SRID=3857;POINT(12072440.688888172 5525668.358321408)')"
             )
             self.execSQLCommand(
-                "INSERT INTO {}.reference_3857 (g) values('SRID=3857;POINT(503 999)')".format(
-                    schema
-                )
+                f"INSERT INTO {schema}.reference_3857 (g) values('SRID=3857;POINT(503 999)')"
             )
             self.execSQLCommand(
-                "INSERT INTO {}.reference_3857 (g) values('SRID=3857;POINT(504 999)')".format(
-                    schema
-                )
+                f"INSERT INTO {schema}.reference_3857 (g) values('SRID=3857;POINT(504 999)')"
             )
 
             # Create and populate target and reference table in WGS84 latlong
             self.execSQLCommand(
-                "CREATE TABLE {0}.target_4326 AS SELECT id, ST_Transform(g, 4326)::geometry(linestring,4326) as g FROM {0}.target_3857".format(
-                    schema
-                )
+                f"CREATE TABLE {schema}.target_4326 AS SELECT id, ST_Transform(g, 4326)::geometry(linestring,4326) as g FROM {schema}.target_3857"
             )
             self.execSQLCommand(
-                "CREATE TABLE {0}.reference_4326 AS SELECT id, ST_Transform(g, 4326)::geometry(point,4326) as g FROM {0}.reference_3857".format(
-                    schema
-                )
+                f"CREATE TABLE {schema}.reference_4326 AS SELECT id, ST_Transform(g, 4326)::geometry(point,4326) as g FROM {schema}.reference_3857"
             )
 
             # Create target and reference layers
             vl_target_3857 = QgsVectorLayer(
-                '{} sslmode=disable key=id srid=3857 type=LINESTRING table="{}"."target_3857" (g) sql='.format(
-                    self.dbconn, schema
-                ),
+                f'{self.dbconn} sslmode=disable key=id srid=3857 type=LINESTRING table="{schema}"."target_3857" (g) sql=',
                 "target_3857",
                 "postgres",
             )
@@ -4217,9 +4233,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
                 f"Could not create a layer from the '{schema}.target_3857' table using dbconn '{self.dbconn}'",
             )
             vl_reference_3857 = QgsVectorLayer(
-                '{} sslmode=disable key=id srid=3857 type=POINT table="{}"."reference_3857" (g) sql='.format(
-                    self.dbconn, schema
-                ),
+                f'{self.dbconn} sslmode=disable key=id srid=3857 type=POINT table="{schema}"."reference_3857" (g) sql=',
                 "reference_3857",
                 "postgres",
             )
@@ -4228,9 +4242,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
                 f"Could not create a layer from the '{schema}.reference_3857' table using dbconn '{self.dbconn}'",
             )
             vl_target_4326 = QgsVectorLayer(
-                '{} sslmode=disable key=id srid=4326 type=LINESTRING table="{}"."target_4326" (g) sql='.format(
-                    self.dbconn, schema
-                ),
+                f'{self.dbconn} sslmode=disable key=id srid=4326 type=LINESTRING table="{schema}"."target_4326" (g) sql=',
                 "target_4326",
                 "postgres",
             )
@@ -4239,9 +4251,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
                 f"Could not create a layer from the '{schema}.target_4326' table using dbconn '{self.dbconn}'",
             )
             vl_reference_4326 = QgsVectorLayer(
-                '{} sslmode=disable key=id srid=4326 type=POINT table="{}"."reference_4326" (g) sql='.format(
-                    self.dbconn, schema
-                ),
+                f'{self.dbconn} sslmode=disable key=id srid=4326 type=POINT table="{schema}"."reference_4326" (g) sql=',
                 "reference_4326",
                 "postgres",
             )
@@ -4693,7 +4703,6 @@ CREATE UNLOGGED TABLE public.qgis_issue_gh_28835 (
 
 
 class TestPyQgsPostgresProviderCompoundKey(QgisTestCase, ProviderTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -4804,9 +4813,9 @@ class TestPyQgsPostgresProviderCompoundKey(QgisTestCase, ProviderTestCase):
         self.assertEqual(ft3["key1"], 21)
         self.assertEqual(ft3["key2"], 42)
 
-        assert compareWkt(
-            ft3.geometry().asWkt(), geomwkt
-        ), f"Geometry mismatch. Expected: {ft3.geometry().asWkt()} Got: {geomwkt}\n"
+        assert compareWkt(ft3.geometry().asWkt(), geomwkt), (
+            f"Geometry mismatch. Expected: {ft3.geometry().asWkt()} Got: {geomwkt}\n"
+        )
 
         # Now, we leave the record as we found it, so further tests can proceed
         vl.startEditing()
@@ -4828,7 +4837,6 @@ class TestPyQgsPostgresProviderCompoundKey(QgisTestCase, ProviderTestCase):
 
 
 class TestPyQgsPostgresProviderBigintSinglePk(QgisTestCase, ProviderTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -4916,10 +4924,8 @@ class TestPyQgsPostgresProviderBigintSinglePk(QgisTestCase, ProviderTestCase):
 
             result = [feature.id()]
             expected = [id]
-            assert (
-                result == expected
-            ), "Expected {} and got {} when testing for feature ID filter".format(
-                expected, result
+            assert result == expected, (
+                f"Expected {expected} and got {result} when testing for feature ID filter"
             )
 
             # test that results match QgsFeatureRequest.acceptFeature
@@ -5012,10 +5018,8 @@ class TestPyQgsPostgresProviderBigintSinglePk(QgisTestCase, ProviderTestCase):
 
         for pk, geom in list(expected_geometries.items()):
             if geom:
-                assert compareWkt(
-                    geom, geometries[pk]
-                ), "Geometry {} mismatch Expected:\n{}\nGot:\n{}\n".format(
-                    pk, geom, geometries[pk]
+                assert compareWkt(geom, geometries[pk]), (
+                    f"Geometry {pk} mismatch Expected:\n{geom}\nGot:\n{geometries[pk]}\n"
                 )
             else:
                 self.assertFalse(geometries[pk], f"Expected null geometry for {pk}")
@@ -5294,9 +5298,9 @@ class TestPyQgsPostgresProviderBigintSinglePk(QgisTestCase, ProviderTestCase):
         ft = next(vl.getFeatures(QgsFeatureRequest().setFilterExpression("pk = 42")))
         self.assertTrue(ft.isValid())
         self.assertEqual(ft["name"], "Honey")
-        assert compareWkt(
-            ft.geometry().asWkt(), geomwkt
-        ), f"Geometry mismatch. Expected: {ft.geometry().asWkt()} Got: {geomwkt}\n"
+        assert compareWkt(ft.geometry().asWkt(), geomwkt), (
+            f"Geometry mismatch. Expected: {ft.geometry().asWkt()} Got: {geomwkt}\n"
+        )
 
     def testDuplicatedFieldNamesInQueryLayers(self):
         """Test regresssion GH #36205"""
@@ -5682,7 +5686,6 @@ class TestPyQgsPostgresProviderBigintSinglePk(QgisTestCase, ProviderTestCase):
 
 
 class TestPyQgsPostgresProviderAsyncCreation(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

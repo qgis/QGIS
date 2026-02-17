@@ -18,7 +18,6 @@
 #ifndef QGSMESHMEMORYDATAPROVIDER_H
 #define QGSMESHMEMORYDATAPROVIDER_H
 
-#define SIP_NO_FILE
 
 ///@cond PRIVATE
 
@@ -30,6 +29,8 @@
 #include "qgsrectangle.h"
 
 #include <QString>
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup core

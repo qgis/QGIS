@@ -23,6 +23,10 @@
 #include "qgsmaplayerref.h"
 #include "qgsreadwritecontext.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsMapLayer;
 
 /**

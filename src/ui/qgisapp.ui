@@ -807,6 +807,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="mActionSelectAnnotation"/>
    <addaction name="mActionModifyAnnotation"/>
   </widget>
   <action name="mActionNewProject">
@@ -3308,13 +3309,28 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
     <string>New Annotation Layer</string>
    </property>
   </action>
-  <action name="mActionModifyAnnotation">
+  <action name="mActionSelectAnnotation">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionSelect.svg</normaloff>:/images/themes/default/mActionSelect.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select Annotations</string>
+   </property>
+   <property name="toolTip">
+    <string>Select Annotations</string>
+   </property>
+  </action>
+  <action name="mActionModifyAnnotation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditNodesItem.svg</normaloff>:/images/themes/default/mActionEditNodesItem.svg</iconset>
    </property>
    <property name="text">
     <string>Modify Annotations</string>
@@ -3370,6 +3386,36 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="text">
     <string>Digitize Shape</string>
+   </property>
+  </action>
+  <action name="mActionDigitizeWithBezier">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDigitizeWithBezier.svg</normaloff>:/images/themes/default/mActionDigitizeWithBezier.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Digitize with Bézier Curve</string>
+   </property>
+   <property name="toolTip">
+    <string>Digitizes NURBS curves with Bézier (handles and anchors)</string>
+   </property>
+  </action>
+  <action name="mActionDigitizeWithNurbs">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDigitizeWithNURBS.svg</normaloff>:/images/themes/default/mActionDigitizeWithNURBS.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Digitize with NURBS Curve</string>
+   </property>
+   <property name="toolTip">
+    <string>Digitizes NURBS curves with control points</string>
    </property>
   </action>
   <action name="mActionElevationProfile">

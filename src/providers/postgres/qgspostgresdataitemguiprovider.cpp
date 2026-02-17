@@ -29,6 +29,8 @@
 #include "qgspostgresconn.h"
 #include "qgspostgresdataitems.h"
 #include "qgspostgresimportprojectdialog.h"
+#include "qgspostgresprojectstoragedialog.h"
+#include "qgspostgresprojectversionsdialog.h"
 #include "qgspostgresutils.h"
 #include "qgsproject.h"
 #include "qgsprovidermetadata.h"
@@ -41,8 +43,11 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QPair>
+#include <QString>
 
 #include "moc_qgspostgresdataitemguiprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
@@ -131,13 +136,21 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
       QMenu *projectMenu = new QMenu( tr( "Project" ), menu );
       menu->addMenu( projectMenu );
 
-      QAction *actionSaveProject = new QAction( tr( "Save Current Project" ), projectMenu );
-      connect( actionSaveProject, &QAction::triggered, this, [schemaItem, context] { saveCurrentProject( schemaItem, context ); } );
+      QAction *actionSaveProject = new QAction( tr( "Save Current Project As…" ), projectMenu );
+      connect( actionSaveProject, &QAction::triggered, this, [schemaItem, context] { saveCurrentProjectAs( schemaItem, context ); } );
       projectMenu->addAction( actionSaveProject );
 
       QAction *actionImportProject = new QAction( tr( "Import Projects…" ), projectMenu );
       projectMenu->addAction( actionImportProject );
       connect( actionImportProject, &QAction::triggered, this, [schemaItem, context] { saveProjects( schemaItem, context ); } );
+
+      QAction *enableAllowProjectVersioning = new QAction( tr( "Enable Projects Versioning…" ), projectMenu );
+      projectMenu->addAction( enableAllowProjectVersioning );
+      enableAllowProjectVersioning->setEnabled( !schemaItem->projectVersioningEnabled() );
+      connect( enableAllowProjectVersioning, &QAction::triggered, this, [schemaItem, context] {
+        bool enabled = enableProjectsVersioning( schemaItem->connectionName(), schemaItem->name(), context );
+        schemaItem->setProjectVersioningEnabled( enabled );
+      } );
     }
   }
 
@@ -196,6 +209,40 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
       QAction *setProjectCommentAction = new QAction( tr( "Set Comment…" ), menu );
       connect( setProjectCommentAction, &QAction::triggered, this, [projectItem, context] { setProjectComment( projectItem, context ); } );
       menu->addAction( setProjectCommentAction );
+
+      // Project versioning
+      QgsPGSchemaItem *parentSchemaItem = qobject_cast<QgsPGSchemaItem *>( item->parent() );
+
+      if ( parentSchemaItem && parentSchemaItem->projectVersioningEnabled() )
+      {
+        QAction *showProjectVersions = new QAction( tr( "Show Project Versions…" ), menu );
+        menu->addAction( showProjectVersions );
+        connect( showProjectVersions, &QAction::triggered, this, [projectItem] {
+          QgsPostgresProjectVersionsDialog dlg = QgsPostgresProjectVersionsDialog( projectItem->connectionName(), projectItem->schemaName(), projectItem->name(), nullptr );
+          if ( dlg.exec() == QDialog::Accepted )
+          // TODO if provider would have access to QgsInterface we could handle closing currently open project correctly, right now the project is just closed
+          {
+            const QString uri = dlg.selectedProjectUri();
+            if ( !uri.isEmpty() )
+            {
+              QgsTemporaryCursorOverride override( Qt::WaitCursor );
+              QgsProject::instance()->read( uri );
+            }
+          }
+        } );
+      }
+      else
+      {
+        QAction *enableAllowProjectVersioning = new QAction( tr( "Enable Projects Versioning…" ), menu );
+        menu->addAction( enableAllowProjectVersioning );
+        connect( enableAllowProjectVersioning, &QAction::triggered, this, [projectItem, parentSchemaItem, context] {
+          bool enabled = enableProjectsVersioning( projectItem->connectionName(), projectItem->schemaName(), context );
+          if ( parentSchemaItem )
+          {
+            parentSchemaItem->setProjectVersioningEnabled( enabled );
+          }
+        } );
+      }
     }
     else
     {
@@ -736,7 +783,7 @@ bool QgsPostgresDataItemGuiProvider::handleDrop( QgsPGConnectionItem *connection
         {
           QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
           output->setTitle( tr( "Import to PostgreSQL database" ) );
-          output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
+          output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, Qgis::StringFormat::PlainText );
           output->showMessage();
         }
         if ( connectionItemPointer )
@@ -756,7 +803,7 @@ bool QgsPostgresDataItemGuiProvider::handleDrop( QgsPGConnectionItem *connection
   {
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
     output->setTitle( tr( "Import to PostgreSQL database" ) );
-    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QLatin1Char( '\n' ) ), QgsMessageOutput::MessageText );
+    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QLatin1Char( '\n' ) ), Qgis::StringFormat::PlainText );
     output->showMessage();
   }
 
@@ -881,17 +928,17 @@ void QgsPostgresDataItemGuiProvider::exportProjectToFile( QgsPGProjectItem *proj
 
 void QgsPostgresDataItemGuiProvider::renameProject( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context )
 {
-  QgsNewNameDialog dlg( tr( "project “%1”" ).arg( projectItem->name() ), projectItem->name() );
-  dlg.setWindowTitle( tr( "Rename Project" ) );
-  if ( dlg.exec() != QDialog::Accepted || dlg.name() == projectItem->name() )
-    return;
-
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( projectItem->postgresProjectUri().connInfo, false );
   if ( !conn )
   {
     notify( tr( "Rename Project" ), tr( "Unable to rename project." ), context, Qgis::MessageLevel::Warning );
     return;
   }
+
+  QgsNewNameDialog dlg( tr( "project “%1”" ).arg( projectItem->name() ), projectItem->name(), QStringList(), QgsPostgresUtils::projectNamesInSchema( conn, projectItem->schemaName() ) );
+  dlg.setWindowTitle( tr( "Rename Project" ) );
+  if ( dlg.exec() != QDialog::Accepted || dlg.name() == projectItem->name() )
+    return;
 
   const QString newUri = projectItem->uriWithNewName( dlg.name() );
 
@@ -1107,7 +1154,7 @@ void QgsPostgresDataItemGuiProvider::setProjectComment( QgsPGProjectItem *projec
   conn->unref();
 }
 
-void QgsPostgresDataItemGuiProvider::saveCurrentProject( QgsPGSchemaItem *schemaItem, QgsDataItemGuiContext context )
+void QgsPostgresDataItemGuiProvider::saveCurrentProjectAs( QgsPGSchemaItem *schemaItem, QgsDataItemGuiContext context )
 {
   const QgsDataSourceUri uri = QgsPostgresConn::connUri( schemaItem->connectionName() );
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri, false );
@@ -1128,69 +1175,40 @@ void QgsPostgresDataItemGuiProvider::saveCurrentProject( QgsPGSchemaItem *schema
   }
 
   QgsProject *project = QgsProject::instance();
-  if ( !project )
+
+  const QString baseProjectName = project->baseName().isEmpty() ? tr( "New Project" ) : project->baseName();
+
+  QgsNewNameDialog dlg( tr( "project" ), baseProjectName, QStringList(), QgsPostgresUtils::projectNamesInSchema( conn, schemaItem->name() ) );
+  dlg.setWindowTitle( tr( "Project Name" ) );
+
+  if ( dlg.exec() == QDialog::Accepted )
   {
-    notify( tr( "Save Project" ), tr( "Unable to save project to database." ), context, Qgis::MessageLevel::Warning );
-    if ( conn )
+    QgsPostgresProjectUri pgProjectUri;
+    pgProjectUri.connInfo = conn->uri();
+    pgProjectUri.schemaName = schemaItem->name();
+    pgProjectUri.projectName = dlg.name();
+
+    QString projectUri = QgsPostgresProjectStorage::encodeUri( pgProjectUri );
+
+    const QString previousFileName = project->fileName();
+
+    project->setFileName( projectUri );
+    // write project to the database
+    const bool success = project->write();
+    if ( !success )
+    {
+      notify( tr( "Save Project" ), tr( "Unable to save project “%1” to “%2”." ).arg( dlg.name(), schemaItem->name() ), context, Qgis::MessageLevel::Warning );
       conn->unref();
-    return;
-  }
-
-  QgsPostgresProjectUri pgProjectUri;
-  pgProjectUri.connInfo = conn->uri();
-  pgProjectUri.schemaName = schemaItem->name();
-  pgProjectUri.projectName = project->title().isEmpty() ? project->baseName() : project->title();
-
-  if ( pgProjectUri.projectName.isEmpty() )
-  {
-    bool ok;
-    const QString projectName = QInputDialog::getText( nullptr, tr( "Set Project Name" ), tr( "Name" ), QLineEdit::Normal, tr( "New Project" ), &ok );
-    if ( ok && !projectName.isEmpty() )
-    {
-      pgProjectUri.projectName = projectName;
-    }
-    else
-    {
-      notify( tr( "Save Project" ), tr( "Unable to save project without name to database." ), context, Qgis::MessageLevel::Warning );
+      project->setFileName( previousFileName );
       return;
     }
+
+    notify( tr( "Save Project" ), tr( "Project “%1” saved to schema “%2”." ).arg( dlg.name(), schemaItem->name() ), context, Qgis::MessageLevel::Info );
+
+    // refresh
+    schemaItem->refresh();
   }
 
-  QString projectUri = QgsPostgresProjectStorage::encodeUri( pgProjectUri );
-  const QString sqlProjectExist = u"SELECT EXISTS( SELECT 1 FROM %1.qgis_projects WHERE name = %2);"_s
-                                    .arg( QgsPostgresConn::quotedIdentifier( schemaItem->name() ), QgsPostgresConn::quotedValue( pgProjectUri.projectName ) );
-  QgsPostgresResult result( conn->LoggedPQexec( "QgsPostgresDataItemGuiProvider", sqlProjectExist ) );
-
-  if ( !( result.PQresultStatus() == PGRES_COMMAND_OK || result.PQresultStatus() == PGRES_TUPLES_OK ) )
-  {
-    notify( tr( "Save Project" ), tr( "Unable to save project to database." ), context, Qgis::MessageLevel::Warning );
-    conn->unref();
-    return;
-  }
-
-  if ( result.PQgetvalue( 0, 0 ) == "t"_L1 )
-  {
-    notify( tr( "Save Project" ), tr( "Project “%1” exist in the database. Overwriting it." ).arg( pgProjectUri.projectName ), context, Qgis::MessageLevel::Info );
-  }
-
-  // read the project, set title and new filename
-  QgsProject savedProject;
-  savedProject.read( project->fileName() );
-  savedProject.setFileName( projectUri );
-
-  // write project to the database
-  const bool success = savedProject.write();
-  if ( !success )
-  {
-    notify( tr( "Save Project" ), tr( "Unable to save project “%1” to “%2”." ).arg( savedProject.title(), schemaItem->name() ), context, Qgis::MessageLevel::Warning );
-    conn->unref();
-    return;
-  }
-
-  notify( tr( "Save Project" ), tr( "Project “%1” saved to schema “%2”." ).arg( savedProject.title(), schemaItem->name() ), context, Qgis::MessageLevel::Info );
-
-  // refresh
-  schemaItem->refresh();
   conn->unref();
 }
 
@@ -1261,4 +1279,37 @@ void QgsPostgresDataItemGuiProvider::saveProjects( QgsPGSchemaItem *schemaItem, 
   }
 
   conn->unref();
+}
+
+
+bool QgsPostgresDataItemGuiProvider::enableProjectsVersioning( const QString connectionName, const QString &schemaName, QgsDataItemGuiContext context )
+{
+  const QgsDataSourceUri uri = QgsPostgresConn::connUri( connectionName );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri, false );
+
+  if ( QgsPostgresUtils::qgisProjectVersioningEnabled( conn, schemaName ) )
+  {
+    notify( tr( "QGIS Project Versioning" ), tr( "Versioning of QGIS projects already active in schema “%1”." ).arg( schemaName ), context, Qgis::MessageLevel::Info );
+    conn->unref();
+    return false;
+  }
+
+  QMessageBox::StandardButton result = QgsPostgresProjectStorageDialog::questionAllowProjectVersioning( nullptr, schemaName );
+
+  if ( result == QMessageBox::StandardButton::Yes )
+  {
+    if ( !QgsPostgresUtils::enableQgisProjectVersioning( conn, schemaName ) )
+    {
+      notify( tr( "QGIS Project Versioning" ), tr( "Cannot setup versioning of QGIS projects in schema “%1”." ).arg( schemaName ), context, Qgis::MessageLevel::Critical );
+      conn->unref();
+      return false;
+    }
+
+    notify( tr( "QGIS Project Versioning" ), tr( "Versioning of QGIS projects setup in schema “%1”." ).arg( schemaName ), context, Qgis::MessageLevel::Success );
+    conn->unref();
+    return true;
+  }
+
+  conn->unref();
+  return false;
 }

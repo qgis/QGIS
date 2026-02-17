@@ -10,6 +10,7 @@
 
 
 
+
 class QgsGlowEffect : QgsPaintEffect
 {
 %Docstring(signature="appended")

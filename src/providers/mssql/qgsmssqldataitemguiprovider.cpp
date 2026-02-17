@@ -34,8 +34,11 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsmssqldataitemguiprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 void QgsMssqlDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
@@ -355,7 +358,7 @@ bool QgsMssqlDataItemGuiProvider::handleDrop( QgsMssqlConnectionItem *connection
         {
           QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
           output->setTitle( tr( "Import to MS SQL Server database" ) );
-          output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
+          output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, Qgis::StringFormat::PlainText );
           output->showMessage();
         }
         if ( connectionItemPointer )
@@ -380,7 +383,7 @@ bool QgsMssqlDataItemGuiProvider::handleDrop( QgsMssqlConnectionItem *connection
   {
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
     output->setTitle( tr( "Import to MS SQL Server database" ) );
-    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QLatin1Char( '\n' ) ), QgsMessageOutput::MessageText );
+    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QLatin1Char( '\n' ) ), Qgis::StringFormat::PlainText );
     output->showMessage();
   }
 

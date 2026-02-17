@@ -10,16 +10,16 @@ __author__ = "Nyall Dawson"
 __date__ = "16/08/2015"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
-from qgis.PyQt.QtCore import QVariant
-from qgis.core import Qgis, QgsField, QgsCoordinateReferenceSystem
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.core import Qgis, QgsCoordinateReferenceSystem, QgsField
+from qgis.PyQt.QtCore import QVariant
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsField(QgisTestCase):
-
     def test_metadata(self):
         field = QgsField()
         self.assertFalse(field.metadata())

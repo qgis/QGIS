@@ -31,10 +31,10 @@
 
 #include <Qt3DCore/QEntity>
 
+#define SIP_NO_FILE
+
 class QgsBox3D;
 class Qgs3DWiredMesh;
-
-#define SIP_NO_FILE
 
 
 /**

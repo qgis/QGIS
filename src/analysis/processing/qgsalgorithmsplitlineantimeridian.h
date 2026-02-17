@@ -18,11 +18,12 @@
 #ifndef QGSALGORITHMSPLITLINEANTIMERIDIAN_H
 #define QGSALGORITHMSPLITLINEANTIMERIDIAN_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsdistancearea.h"
 #include "qgsprocessingalgorithm.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

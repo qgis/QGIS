@@ -37,10 +37,13 @@
 #include <QNetworkRequest>
 #include <QProcess>
 #include <QShortcut>
+#include <QString>
 #include <QToolButton>
 #include <QVBoxLayout>
 
 #include "moc_qgscodeeditorwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCodeEditorWidget::QgsCodeEditorWidget(
   QgsCodeEditor *editor,

@@ -21,8 +21,11 @@
 
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsfielddomainwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsAbstractFieldDomainWidget
@@ -85,6 +88,12 @@ void QgsFieldDomainWidget::setNameEditable( bool editable )
   mNameEdit->setEnabled( editable );
 }
 
+void QgsFieldDomainWidget::setPoliciesEditable( bool editable )
+{
+  mComboSplitPolicy->setEnabled( editable );
+  mComboMergePolicy->setEnabled( editable );
+}
+
 QgsFieldDomain *QgsRangeDomainWidget::createFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType ) const
 {
   return new QgsRangeFieldDomain( name, description, fieldType, mMinSpinBox->value(), mMinInclusiveCheckBox->isChecked(), mMaxSpinBox->value(), mMaxInclusiveCheckBox->isChecked() );
@@ -119,6 +128,11 @@ void QgsGlobDomainWidget::setFieldDomain( const QgsFieldDomain *domain )
 void QgsFieldDomainDialog::setNameEditable( bool editable )
 {
   mWidget->setNameEditable( editable );
+}
+
+void QgsFieldDomainDialog::setPoliciesEditable( bool editable )
+{
+  mWidget->setPoliciesEditable( editable );
 }
 
 QgsFieldDomain *QgsGlobDomainWidget::createFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType ) const

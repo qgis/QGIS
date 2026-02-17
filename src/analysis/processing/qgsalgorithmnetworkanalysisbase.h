@@ -18,7 +18,6 @@
 #ifndef QGSALGORITHMNETWORKANALYSISBASE_H
 #define QGSALGORITHMNETWORKANALYSISBASE_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsapplication.h"
@@ -26,6 +25,12 @@
 #include "qgsgraphbuilder.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsvectorlayerdirector.h"
+
+#include <QString>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

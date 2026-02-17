@@ -14,21 +14,20 @@ import os
 import unittest
 from typing import Optional
 
-from qgis.PyQt.QtCore import QSize, Qt
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (
-    QgsMapLayer,
     QgsCoordinateReferenceSystem,
     QgsFillSymbol,
     QgsGeometryGeneratorSymbolLayer,
+    QgsMapLayer,
     QgsRectangle,
     QgsSingleSymbolRenderer,
     QgsSymbol,
     QgsVectorLayer,
 )
 from qgis.gui import QgsHighlight, QgsMapCanvas
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QSize, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 app = start_app()

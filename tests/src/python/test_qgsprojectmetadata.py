@@ -12,23 +12,23 @@ __author__ = "Nyall Dawson"
 __date__ = "19/03/2018"
 __copyright__ = "Copyright 2018, The QGIS Project"
 
-from qgis.PyQt.QtCore import QDate, QDateTime, QTime
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
+
 from qgis.core import (
     QgsAbstractMetadataBase,
     QgsNativeProjectMetadataValidator,
     QgsProject,
     QgsProjectMetadata,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsProjectMetadata(QgisTestCase):
-
     def testGettersSetters(self):
         m = QgsProjectMetadata()
 

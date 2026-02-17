@@ -25,8 +25,11 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QSettings>
+#include <QString>
 
 #include "moc_qgsexternalresourcewidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsExternalResourceWidgetWrapper::QgsExternalResourceWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QgsMessageBar *messageBar, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )

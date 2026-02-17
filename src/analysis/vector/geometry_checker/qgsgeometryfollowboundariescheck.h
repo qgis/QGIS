@@ -13,12 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#define SIP_NO_FILE
 
 #ifndef QGSGEOMETRYFOLLOWBOUNDARIESCHECK_H
 #define QGSGEOMETRYFOLLOWBOUNDARIESCHECK_H
 
 #include "qgsgeometrycheck.h"
+
+#include <QString>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 class QgsSpatialIndex;
 

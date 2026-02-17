@@ -42,7 +42,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectortilelayer.h"
 
+#include <QString>
 #include <QTimer>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsIdentify : public QObject
 {

@@ -13,13 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#define SIP_NO_FILE
 
 #ifndef QGS_GEOMETRY_OVERLAP_CHECK_H
 #define QGS_GEOMETRY_OVERLAP_CHECK_H
 
 #include "qgsgeometrycheck.h"
 #include "qgsgeometrycheckerror.h"
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup analysis

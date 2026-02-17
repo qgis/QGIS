@@ -16,6 +16,7 @@
 #include <memory>
 
 #include "qgs3d.h"
+#include "qgs3dhighlightfeaturehandler.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3drendercontext.h"
@@ -68,6 +69,10 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QSignalSpy>
+#include <QString>
+#include <Qt3DRender/QGeometryRenderer>
+
+using namespace Qt::StringLiterals;
 
 class TestQgs3DRendering : public QgsTest
 {
@@ -120,6 +125,9 @@ class TestQgs3DRendering : public QgsTest
     void testDebugMap();
     void testAnnotationLayerBillboards();
     void testAnnotationLayerText();
+    void testExtrudedPolygonsHighlighting();
+    void testInstancedRenderingHighlighting();
+    void testModelPointRenderingHighlighting();
 
   private:
     QImage convertDepthImageToGrayscaleImage( const QImage &depthImage );
@@ -2618,6 +2626,189 @@ void TestQgs3DRendering::testAnnotationLayerText()
   delete map;
 
   QGSVERIFYIMAGECHECK( "annotation_text_rendering_2", "annotation_text_rendering_2", img2, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testExtrudedPolygonsHighlighting()
+{
+  const QgsRectangle fullExtent = mLayerDtm->extent();
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), map->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, -250, 0 ), 500, 45, 0 );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion", "polygon3d_extrusion", img, QString(), 40, QSize( 0, 0 ), 2 );
+
+  auto highlighter = std::make_unique<Qgs3DHighlightFeatureHandler>( scene );
+  QgsFeatureRequest req;
+  req.setFilterFids( { 105, 269, 388, 395, 397 } );
+  QgsFeature feature;
+  QgsFeatureIterator fit = mLayerBuildings->getFeatures( req );
+  while ( fit.nextFeature( feature ) )
+    highlighter->highlightFeature( feature, mLayerBuildings );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_highlighting", "polygon3d_extrusion_highlighting", img, QString(), 40, QSize( 0, 0 ), 2 );
+
+  highlighter->clearHighlights();
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion", "polygon3d_extrusion", img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testInstancedRenderingHighlighting()
+{
+  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
+
+  auto layerPointsZ = std::make_unique<QgsVectorLayer>( "PointZ?crs=EPSG:27700", "points Z", "memory" );
+
+  QgsPoint *p1 = new QgsPoint( 1000, 1000, 50 );
+  QgsPoint *p2 = new QgsPoint( 1000, 2000, 100 );
+  QgsPoint *p3 = new QgsPoint( 2000, 2000, 200 );
+
+  QgsFeature f1( layerPointsZ->fields() );
+  QgsFeature f2( layerPointsZ->fields() );
+  QgsFeature f3( layerPointsZ->fields() );
+
+  f1.setGeometry( QgsGeometry( p1 ) );
+  f2.setGeometry( QgsGeometry( p2 ) );
+  f3.setGeometry( QgsGeometry( p3 ) );
+
+  QgsFeatureList featureList;
+  featureList << f1 << f2 << f3;
+  layerPointsZ->dataProvider()->addFeatures( featureList );
+
+  QgsPoint3DSymbol *sphere3DSymbol = new QgsPoint3DSymbol();
+  sphere3DSymbol->setShape( Qgis::Point3DShape::Sphere );
+  QVariantMap vmSphere;
+  vmSphere[u"radius"_s] = 80.0f;
+  sphere3DSymbol->setShapeProperties( vmSphere );
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::gray );
+  sphere3DSymbol->setMaterialSettings( materialSettings.clone() );
+
+  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( sphere3DSymbol ) );
+
+  Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
+  mapSettings->setCrs( mProject->crs() );
+  mapSettings->setExtent( fullExtent );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << layerPointsZ.get() );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( mapSettings->crs(), mapSettings->transformContext() );
+  mapSettings->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 0 );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage imgSphere = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "sphere_rendering", "sphere_rendering", imgSphere, QString(), 40, QSize( 0, 0 ), 2 );
+
+  auto highlighter = std::make_unique<Qgs3DHighlightFeatureHandler>( scene );
+  highlighter->highlightFeature( f1, layerPointsZ.get() );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  imgSphere = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "sphere_rendering_highlighting", "sphere_rendering_highlighting", imgSphere, QString(), 40, QSize( 0, 0 ), 2 );
+
+  highlighter->clearHighlights();
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  imgSphere = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "sphere_rendering", "sphere_rendering", imgSphere, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+
+void TestQgs3DRendering::testModelPointRenderingHighlighting()
+{
+  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
+
+  auto layerPointsZ = std::make_unique<QgsVectorLayer>( "PointZ?crs=EPSG:27700", "points Z", "memory" );
+
+  QgsPoint *p1 = new QgsPoint( 1000, 1000, 50 );
+  QgsPoint *p2 = new QgsPoint( 1000, 2000, 100 );
+  QgsPoint *p3 = new QgsPoint( 2000, 2000, 200 );
+
+  QgsFeature f1( layerPointsZ->fields() );
+  QgsFeature f2( layerPointsZ->fields() );
+  QgsFeature f3( layerPointsZ->fields() );
+
+  f1.setGeometry( QgsGeometry( p1 ) );
+  f2.setGeometry( QgsGeometry( p2 ) );
+  f3.setGeometry( QgsGeometry( p3 ) );
+
+  QgsFeatureList featureList;
+  featureList << f1 << f2 << f3;
+  layerPointsZ->dataProvider()->addFeatures( featureList );
+
+  QgsPoint3DSymbol *symbol = new QgsPoint3DSymbol();
+  symbol->setShape( Qgis::Point3DShape::Model );
+  QVariantMap vMap;
+  vMap[u"model"_s] = testDataPath( "/mesh/tree.obj" );
+  symbol->setShapeProperties( vMap );
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::green );
+  symbol->setMaterialSettings( materialSettings.clone() );
+  QMatrix4x4 id;
+  id.scale( 100.0f );
+  symbol->setTransform( id );
+
+  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( symbol ) );
+
+  Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
+  mapSettings->setCrs( mProject->crs() );
+  mapSettings->setExtent( fullExtent );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << layerPointsZ.get() );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( mapSettings->crs(), mapSettings->transformContext() );
+  mapSettings->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 60, 0 );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage imgModel = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "model_rendering", "model_rendering", imgModel, QString(), 80, QSize( 0, 0 ), 2 );
+
+  auto highlighter = std::make_unique<Qgs3DHighlightFeatureHandler>( scene );
+  highlighter->highlightFeature( f1, layerPointsZ.get() );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  imgModel = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "model_rendering_highlighting", "model_rendering_highlighting", imgModel, QString(), 80, QSize( 0, 0 ), 2 );
+
+  highlighter->clearHighlights();
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  imgModel = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "model_rendering", "model_rendering", imgModel, QString(), 80, QSize( 0, 0 ), 2 );
 }
 
 QGSTEST_MAIN( TestQgs3DRendering )

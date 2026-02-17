@@ -15,13 +15,14 @@
 
 #ifndef QGSEXPRESSIONADDFUNCTIONFILEDIALOG_H
 #define QGSEXPRESSIONADDFUNCTIONFILEDIALOG_H
-#define SIP_NO_FILE
 
 #include "ui_qgsexpressionaddfunctionfiledialogbase.h"
 
 #include "qgis_gui.h"
 
 #include <QDialog>
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup gui

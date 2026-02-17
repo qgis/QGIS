@@ -14,10 +14,10 @@ import os
 import shutil
 import struct
 import tempfile
+import unittest
 from contextlib import contextmanager
 
 from osgeo import gdal
-from qgis.PyQt.QtGui import qRed
 from qgis.core import (
     QgsBilinearRasterResampler,
     QgsCubicRasterResampler,
@@ -27,9 +27,8 @@ from qgis.core import (
     QgsRectangle,
     QgsSingleBandGrayRenderer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtGui import qRed
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -38,7 +37,6 @@ start_app()
 
 
 class TestQgsRasterResampler(QgisTestCase):
-
     def checkBlockContents(self, block, expected):
         res = []
         for r in range(block.height()):

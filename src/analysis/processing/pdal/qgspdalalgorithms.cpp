@@ -20,7 +20,9 @@
 #include "qgsalgorithmpdalassignprojection.h"
 #include "qgsalgorithmpdalboundary.h"
 #include "qgsalgorithmpdalbuildvpc.h"
+#include "qgsalgorithmpdalclassifyground.h"
 #include "qgsalgorithmpdalclip.h"
+#include "qgsalgorithmpdalcompare.h"
 #include "qgsalgorithmpdalconvertformat.h"
 #include "qgsalgorithmpdalcreatecopc.h"
 #include "qgsalgorithmpdaldensity.h"
@@ -28,16 +30,25 @@
 #include "qgsalgorithmpdalexportrastertin.h"
 #include "qgsalgorithmpdalexportvector.h"
 #include "qgsalgorithmpdalfilter.h"
+#include "qgsalgorithmpdalfilternoiseradius.h"
+#include "qgsalgorithmpdalfilternoisestatistical.h"
+#include "qgsalgorithmpdalheightabovegroundnearestneighbour.h"
+#include "qgsalgorithmpdalheightabovegroundtriangulation.h"
 #include "qgsalgorithmpdalinformation.h"
 #include "qgsalgorithmpdalmerge.h"
 #include "qgsalgorithmpdalreproject.h"
 #include "qgsalgorithmpdalthinbydecimate.h"
 #include "qgsalgorithmpdalthinbyradius.h"
 #include "qgsalgorithmpdaltile.h"
+#include "qgsalgorithmpdaltransform.h"
 #include "qgsapplication.h"
 #include "qgsruntimeprofiler.h"
 
+#include <QString>
+
 #include "moc_qgspdalalgorithms.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -111,6 +122,13 @@ void QgsPdalAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPdalThinByDecimateAlgorithm() );
   addAlgorithm( new QgsPdalThinByRadiusAlgorithm() );
   addAlgorithm( new QgsPdalTileAlgorithm() );
+  addAlgorithm( new QgsPdalHeightAboveGroundNearestNeighbourAlgorithm() );
+  addAlgorithm( new QgsPdalHeightAboveGroundTriangulationAlgorithm() );
+  addAlgorithm( new QgsPdalFilterNoiseStatisticalAlgorithm() );
+  addAlgorithm( new QgsPdalFilterNoiseRadiusAlgorithm() );
+  addAlgorithm( new QgsPdalClassifyGroundAlgorithm() );
+  addAlgorithm( new QgsPdalTransformAlgorithm() );
+  addAlgorithm( new QgsPdalCompareAlgorithm() );
 }
 
 ///@endcond

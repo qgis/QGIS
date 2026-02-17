@@ -22,9 +22,13 @@
 #include "qgsmimedatautils.h"
 
 #include <QObject>
+#include <QString>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 class QgsGeoPackageCollectionItem;
 class QgsGeoPackageRootItem;

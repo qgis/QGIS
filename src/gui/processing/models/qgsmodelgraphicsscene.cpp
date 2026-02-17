@@ -30,8 +30,11 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsTextItem>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsmodelgraphicsscene.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond NOT_STABLE
 
@@ -313,7 +316,7 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
 
       item->setPos( pos );
       item->component()->setPosition( pos );
-      outputItems.insert( outputIt.key(), item );
+      outputItems.insert( outputIt.value().childOutputName(), item );
       QgsModelArrowItem *arrow = new QgsModelArrowItem( mChildAlgorithmItems[it.value().childId()], Qt::BottomEdge, idx, QgsModelArrowItem::Marker::Circle, item, QgsModelArrowItem::Marker::Circle );
       addItem( arrow );
 
@@ -373,6 +376,19 @@ QgsModelChildAlgorithmGraphicItem *QgsModelGraphicsScene::childAlgorithmItem( co
 QgsModelComponentGraphicItem *QgsModelGraphicsScene::parameterItem( const QString &name )
 {
   return mParameterItems.value( name );
+}
+
+QgsModelComponentGraphicItem *QgsModelGraphicsScene::outputItem( const QString &childId, const QString &childOutputName )
+{
+  auto it = mOutputItems.constFind( childId );
+  if ( it == mOutputItems.constEnd() )
+    return nullptr;
+
+  auto outputIt = it->constFind( childOutputName );
+  if ( outputIt == it->constEnd() )
+    return nullptr;
+
+  return outputIt.value();
 }
 
 void QgsModelGraphicsScene::selectAll()
@@ -609,7 +625,7 @@ void QgsModelGraphicsScene::showWarning( const QString &shortMessage, const QStr
   connect( detailsButton, &QPushButton::clicked, detailsButton, [detailsButton, title, longMessage] {
     QgsMessageViewer *dialog = new QgsMessageViewer( detailsButton );
     dialog->setTitle( title );
-    dialog->setMessage( longMessage, QgsMessageOutput::MessageHtml );
+    dialog->setMessage( longMessage, Qgis::StringFormat::Html );
     dialog->showMessage();
   } );
   messageWidget->layout()->addWidget( detailsButton );

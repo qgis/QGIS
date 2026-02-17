@@ -10,13 +10,12 @@ __author__ = "Nyall Dawson"
 __date__ = "25/07/2014"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
-from qgis.PyQt.QtCore import QLocale
 from qgis.core import Qgis, QgsCoordinateFormatter, QgsPointXY
+from qgis.PyQt.QtCore import QLocale
 from qgis.testing import unittest
 
 
 class TestQgsCoordinateFormatter(unittest.TestCase):
-
     def setUp(self):
         super().setUp()
         QLocale.setDefault(QLocale(QLocale.Language.English))

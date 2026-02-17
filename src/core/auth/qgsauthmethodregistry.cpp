@@ -24,6 +24,10 @@
 #include "qgsmessagelog.h"
 #include "qgsmessageoutput.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #ifdef HAVE_STATIC_PROVIDERS
 #include "qgsauthbasicmethod.h"
 #include "qgsauthesritokenmethod.h"
@@ -127,7 +131,7 @@ void QgsAuthMethodRegistry::init()
 
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
     output->setTitle( QObject::tr( "No Authentication Methods" ) );
-    output->setMessage( msg, QgsMessageOutput::MessageText );
+    output->setMessage( msg, Qgis::StringFormat::PlainText );
     output->showMessage();
     return;
   }

@@ -30,10 +30,13 @@
 #include <QSqlDriver>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QString>
 #include <QTextStream>
 #include <QTime>
 #include <QTimer>
 #include <QVariant>
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_AUTH
 #include <QtCrypto>
@@ -1642,9 +1645,6 @@ bool QgsAuthManager::exportAuthenticationConfigsToXml( const QString &filename, 
     return false;
 
   QTextStream ts( &file );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  ts.setCodec( "UTF-8" );
-#endif
   document.save( ts, 2 );
   file.close();
   return true;

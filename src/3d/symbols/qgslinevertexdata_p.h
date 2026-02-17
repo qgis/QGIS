@@ -27,14 +27,13 @@
 // version without notice, or even be removed.
 //
 
+#include "qgis.h"
+#include "qgs3drendercontext.h"
+
 #include <QVector>
 #include <QVector3D>
 
 #define SIP_NO_FILE
-
-#include "qgis.h"
-#include "qgs3drendercontext.h"
-
 
 namespace Qt3DCore
 {

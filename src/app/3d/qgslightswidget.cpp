@@ -17,12 +17,14 @@
 
 #include "qgs3dmapsettings.h"
 #include "qgsapplication.h"
-#include "qgssettings.h"
 
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgslightswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLightsWidget::QgsLightsWidget( QWidget *parent )
   : QWidget( parent )

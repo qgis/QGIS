@@ -24,10 +24,13 @@
 #include <QDesktopServices>
 #include <QMimeDatabase>
 #include <QNetworkRequest>
+#include <QString>
 #include <QUrl>
 #include <QUrlQuery>
 
 #include "moc_qgsalgorithmhttprequest.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

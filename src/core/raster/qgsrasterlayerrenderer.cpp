@@ -46,9 +46,12 @@
 
 #include <QElapsedTimer>
 #include <QPointer>
+#include <QString>
 #include <QThread>
 
 #include "moc_qgsrasterlayerrenderer.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

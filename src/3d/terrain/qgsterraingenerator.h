@@ -20,6 +20,8 @@
 #include "qgschunkloader.h"
 #include "qgstilingscheme.h"
 
+#define SIP_NO_FILE
+
 class QgsAABB;
 class Qgs3DMapSettings;
 class Qgs3DRenderContext;
@@ -31,7 +33,6 @@ class QDomElement;
 class QDomDocument;
 class QgsProject;
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup qgis_3d
@@ -58,6 +59,28 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
       Mesh,          //!< Terrain is built from mesh layer with z value on vertices
       QuantizedMesh, //!< Terrain is built from quantized mesh tiles
     };
+
+    /**
+     * Specific capabilities of the terrain generator
+     *
+     * \since QGIS 4.0
+     */
+    enum class Capability : int
+    {
+      NoCapabilities = 1 << 0,         //!< No specific capabilities
+      SupportsTileResolution = 1 << 1, //!< Supports tile resolution
+    };
+
+    Q_ENUM( Capability )
+    Q_DECLARE_FLAGS( Capabilities, Capability )
+    Q_FLAG( Capabilities )
+
+    /**
+     * Returns flags containing the supported capabilities
+     *
+     * \since QGIS.4.0
+     */
+    virtual QgsTerrainGenerator::Capabilities capabilities() const;
 
     //! Sets terrain entity for the generator (does not transfer ownership)
     virtual void setTerrain( QgsTerrainEntity *t ) { mTerrain = t; }

@@ -21,7 +21,11 @@
 #include "qgspointcloudrendererpropertieswidget.h"
 #include "qgsstyle.h"
 
+#include <QString>
+
 #include "moc_qgspointcloudlayerstylewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPointCloudRendererWidgetFactory::QgsPointCloudRendererWidgetFactory( QObject *parent )
   : QObject( parent )

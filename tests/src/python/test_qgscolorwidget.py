@@ -10,17 +10,16 @@ __author__ = "Julien Cabieces"
 __date__ = "02/05/2024"
 __copyright__ = "Copyright 2024, The QGIS Project"
 
-from qgis.PyQt.QtGui import QColor
-from qgis.gui import QgsColorWidget
-
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.gui import QgsColorWidget
+from qgis.PyQt.QtGui import QColor
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsColorWidget(QgisTestCase):
-
     def testAlterColor(self):
         """
         test alterColor method

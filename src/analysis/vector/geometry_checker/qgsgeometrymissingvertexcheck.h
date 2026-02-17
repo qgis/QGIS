@@ -13,13 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#define SIP_NO_FILE
 
 #ifndef QGSGEOMETRYMISSINGVERTEXCHECK_H
 #define QGSGEOMETRYMISSINGVERTEXCHECK_H
 
 #include "qgsgeometrycheck.h"
 #include "qgsgeometrycheckerror.h"
+
+#define SIP_NO_FILE
 
 class QgsCurvePolygon;
 

@@ -11,6 +11,7 @@ __date__ = "18/03/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
 import os
+import unittest
 
 from qgis.core import (
     Qgis,
@@ -22,16 +23,13 @@ from qgis.core import (
     QgsProfileSnapContext,
     QgsRasterLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsRasterLayerProfileGenerator(QgisTestCase):
-
     def testGeneration(self):
         rl = QgsRasterLayer(os.path.join(unitTestDataPath(), "3d", "dtm.tif"), "DTM")
         self.assertTrue(rl.isValid())

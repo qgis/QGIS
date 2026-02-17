@@ -20,9 +20,12 @@
 #include "qgsvectortileconnection.h"
 #include "qgsvectortiledataitems.h"
 
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsvectortileprovidermetadata.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

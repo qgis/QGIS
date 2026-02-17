@@ -32,7 +32,10 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QString>
 #include <QUrl>
+
+using namespace Qt::StringLiterals;
 
 QgsVectorTileWriter::QgsVectorTileWriter()
 {

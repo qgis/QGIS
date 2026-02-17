@@ -10,13 +10,11 @@ __author__ = "Nyall Dawson"
 __date__ = "24/1/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
-import time
 import os
 import tempfile
+import time
+import unittest
 
-from qgis.PyQt.QtCore import QDate, QDateTime, QTime, Qt
-from qgis.PyQt.QtGui import QImage
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgis,
     QgsAnnotationLayer,
@@ -41,15 +39,16 @@ from qgis.core import (
     QgsTemporalNavigationObject,
     QgsVectorLayer,
 )
-from qgis.gui import QgsMapCanvas, QgsMapToolPan, QgsMapToolZoom, QgsMapToolEmitPoint
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.gui import QgsMapCanvas, QgsMapToolEmitPoint, QgsMapToolPan, QgsMapToolZoom
+from qgis.PyQt.QtCore import QDate, QDateTime, Qt, QTime
+from qgis.PyQt.QtGui import QImage
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 
 app = start_app()
 
 
 class TestQgsMapCanvas(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "mapcanvas"

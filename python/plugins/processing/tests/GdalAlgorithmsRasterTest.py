@@ -19,33 +19,44 @@ __author__ = "Matthias Kuhn"
 __date__ = "January 2016"
 __copyright__ = "(C) 2016, Matthias Kuhn"
 
-import nose2
 import os
 import shutil
 import tempfile
 
+import AlgorithmsTestBase
+import nose2
 from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsPointXY,
     QgsProcessingContext,
     QgsProcessingException,
     QgsProcessingFeedback,
-    QgsRectangle,
-    QgsReferencedRectangle,
-    QgsRasterLayer,
+    QgsProcessingRasterLayerDefinition,
     QgsProject,
     QgsProjUtils,
-    QgsPointXY,
-    QgsCoordinateReferenceSystem,
-    QgsProcessingRasterLayerDefinition,
+    QgsRasterLayer,
+    QgsRectangle,
+    QgsReferencedRectangle,
 )
-
 from qgis.testing import QgisTestCase, start_app, unittest
 
-import AlgorithmsTestBase
-from processing.algs.gdal.GdalUtils import GdalUtils
+from processing.algs.gdal.aspect import aspect
 from processing.algs.gdal.AssignProjection import AssignProjection
+from processing.algs.gdal.buildvrt import buildvrt
 from processing.algs.gdal.ClipRasterByExtent import ClipRasterByExtent
 from processing.algs.gdal.ClipRasterByMask import ClipRasterByMask
 from processing.algs.gdal.ColorRelief import ColorRelief
+from processing.algs.gdal.contour import contour, contour_polygon
+from processing.algs.gdal.CreateCloudOptimizedGeoTiff import CreateCloudOptimizedGeoTIFF
+from processing.algs.gdal.DatasetIdentify import DatasetIdentify
+from processing.algs.gdal.fillnodata import fillnodata
+from processing.algs.gdal.gdal2tiles import gdal2tiles
+from processing.algs.gdal.gdal2xyz import gdal2xyz
+from processing.algs.gdal.gdaladdo import gdaladdo
+from processing.algs.gdal.gdalcalc import gdalcalc
+from processing.algs.gdal.gdalinfo import gdalinfo
+from processing.algs.gdal.gdaltindex import gdaltindex
+from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.algs.gdal.GridAverage import GridAverage
 from processing.algs.gdal.GridDataMetrics import GridDataMetrics
 from processing.algs.gdal.GridInverseDistance import GridInverseDistance
@@ -54,43 +65,30 @@ from processing.algs.gdal.GridInverseDistanceNearestNeighbor import (
 )
 from processing.algs.gdal.GridLinear import GridLinear
 from processing.algs.gdal.GridNearestNeighbor import GridNearestNeighbor
-from processing.algs.gdal.gdal2tiles import gdal2tiles
-from processing.algs.gdal.gdalcalc import gdalcalc
-from processing.algs.gdal.gdaltindex import gdaltindex
-from processing.algs.gdal.contour import contour, contour_polygon
-from processing.algs.gdal.gdalinfo import gdalinfo
 from processing.algs.gdal.hillshade import hillshade
-from processing.algs.gdal.aspect import aspect
-from processing.algs.gdal.buildvrt import buildvrt
-from processing.algs.gdal.proximity import proximity
-from processing.algs.gdal.rasterize import rasterize
-from processing.algs.gdal.retile import retile
-from processing.algs.gdal.translate import translate
-from processing.algs.gdal.warp import warp
-from processing.algs.gdal.fillnodata import fillnodata
-from processing.algs.gdal.rearrange_bands import rearrange_bands
-from processing.algs.gdal.gdaladdo import gdaladdo
-from processing.algs.gdal.sieve import sieve
-from processing.algs.gdal.gdal2xyz import gdal2xyz
-from processing.algs.gdal.polygonize import polygonize
-from processing.algs.gdal.pansharp import pansharp
 from processing.algs.gdal.merge import merge
 from processing.algs.gdal.nearblack import nearblack
-from processing.algs.gdal.slope import slope
+from processing.algs.gdal.pansharp import pansharp
+from processing.algs.gdal.pct2rgb import pct2rgb
+from processing.algs.gdal.polygonize import polygonize
+from processing.algs.gdal.proximity import proximity
+from processing.algs.gdal.rasterize import rasterize
 from processing.algs.gdal.rasterize_over import rasterize_over
 from processing.algs.gdal.rasterize_over_fixed_value import rasterize_over_fixed_value
-from processing.algs.gdal.viewshed import viewshed
-from processing.algs.gdal.roughness import roughness
-from processing.algs.gdal.pct2rgb import pct2rgb
+from processing.algs.gdal.rearrange_bands import rearrange_bands
+from processing.algs.gdal.retile import retile
 from processing.algs.gdal.rgb2pct import rgb2pct
-from processing.algs.gdal.CreateCloudOptimizedGeoTiff import CreateCloudOptimizedGeoTIFF
-from processing.algs.gdal.DatasetIdentify import DatasetIdentify
+from processing.algs.gdal.roughness import roughness
+from processing.algs.gdal.sieve import sieve
+from processing.algs.gdal.slope import slope
+from processing.algs.gdal.translate import translate
+from processing.algs.gdal.viewshed import viewshed
+from processing.algs.gdal.warp import warp
 
 testDataPath = os.path.join(os.path.dirname(__file__), "testdata")
 
 
 class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
-
     @classmethod
     def setUpClass(cls):
         start_app()
@@ -6600,7 +6598,6 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
         alg.initAlgorithm()
 
         with tempfile.TemporaryDirectory() as outdir:
-
             rlayer = QgsRasterLayer(source_dem, "Input dem")
             self.assertTrue(rlayer.isValid())
 
@@ -6608,7 +6605,6 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             self.assertTrue(os.path.exists(os.path.join(outdir, "dem.tif")))
 
         with tempfile.TemporaryDirectory() as outdir:
-
             rlayer1 = QgsRasterLayer(source_dem, "Input dem")
             self.assertTrue(rlayer1.isValid())
             rlayer2 = QgsRasterLayer(source_raster, "Input raster")
@@ -6626,7 +6622,10 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
 
-        with tempfile.TemporaryDirectory() as indir, tempfile.TemporaryDirectory() as outdir:
+        with (
+            tempfile.TemporaryDirectory() as indir,
+            tempfile.TemporaryDirectory() as outdir,
+        ):
             outsource = outdir + "/out.csv"
             alg = DatasetIdentify()
             alg.initAlgorithm()

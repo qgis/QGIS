@@ -30,8 +30,11 @@
 
 #include <QMessageBox>
 #include <QScreen>
+#include <QString>
 
 #include "moc_qgsgui.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef Q_OS_MACOS
 #include "qgsmacnative.h"

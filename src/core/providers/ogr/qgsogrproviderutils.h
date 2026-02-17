@@ -21,6 +21,8 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsvectordataprovider.h"
 #include "qgswkbtypes.h"
 
+#define SIP_NO_FILE
+
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>
 
@@ -34,7 +36,6 @@ class QgsCoordinateReferenceSystem;
 class QgsProviderSublayerDetails;
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 /**
  * Releases a QgsOgrLayer

@@ -27,7 +27,10 @@
 #include "qgsprojutils.h"
 #include "qgsreadwritelocker.h"
 
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 /// @cond PRIVATE
 

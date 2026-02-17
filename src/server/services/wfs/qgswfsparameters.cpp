@@ -21,8 +21,11 @@
 
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+#include <QString>
 
 #include "moc_qgswfsparameters.cpp"
+
+using namespace Qt::StringLiterals;
 
 namespace QgsWfs
 {

@@ -13,7 +13,6 @@ __author__ = "Alessandro Pasotti"
 __date__ = "2018-03-18"
 __copyright__ = "Copyright 2018, The QGIS Project"
 
-from qgis.PyQt.QtCore import QVariant
 from qgis._core import QgsUnsetAttributeValue
 from qgis.core import (
     Qgis,
@@ -33,14 +32,14 @@ from qgis.core import (
     QgsProject,
     QgsRectangle,
     QgsSpatialIndex,
+    QgsUnsetAttributeValue,
     QgsVectorDataProvider,
     QgsVectorLayer,
-    QgsUnsetAttributeValue,
 )
+from qgis.PyQt.QtCore import QVariant
 
 
 class PyFeatureIterator(QgsAbstractFeatureIterator):
-
     def __init__(self, source, request):
         super().__init__(request)
         self._request = request if request is not None else QgsFeatureRequest()
@@ -212,7 +211,6 @@ class PyFeatureIterator(QgsAbstractFeatureIterator):
 
 
 class PyFeatureSource(QgsAbstractFeatureSource):
-
     def __init__(self, provider):
         super().__init__()
         self._provider = provider
@@ -235,7 +233,6 @@ class PyFeatureSource(QgsAbstractFeatureSource):
 
 
 class PyProvider(QgsVectorDataProvider):
-
     next_feature_id = 1
 
     @classmethod

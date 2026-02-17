@@ -24,17 +24,17 @@ import re
 
 from qgis.core import (
     QgsDataProvider,
-    QgsRasterLayer,
-    QgsWkbTypes,
-    QgsVectorLayer,
-    QgsProject,
-    QgsSettings,
+    QgsExpressionContext,
+    QgsExpressionContextScope,
+    QgsExpressionContextUtils,
+    QgsFeatureRequest,
     QgsProcessingContext,
     QgsProcessingUtils,
-    QgsFeatureRequest,
-    QgsExpressionContext,
-    QgsExpressionContextUtils,
-    QgsExpressionContextScope,
+    QgsProject,
+    QgsRasterLayer,
+    QgsSettings,
+    QgsVectorLayer,
+    QgsWkbTypes,
 )
 from qgis.gui import QgsSublayersDialog
 from qgis.PyQt.QtCore import QCoreApplication

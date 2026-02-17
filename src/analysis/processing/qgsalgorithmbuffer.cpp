@@ -20,6 +20,10 @@
 #include "qgsmessagelog.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsBufferAlgorithm::name() const

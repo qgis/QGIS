@@ -41,9 +41,14 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QMimeData>
 #include <QShortcut>
+#include <QString>
+#include <QtConcurrentRun>
 
 #include "moc_qgsqueryresultwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 const QgsSettingsEntryString *QgsQueryResultWidget::settingLastSourceFolder = new QgsSettingsEntryString( u"last-source-folder"_s, sTreeSqlQueries, QString(), u"Last used folder for SQL source files"_s );
@@ -1041,8 +1046,6 @@ void QgsQueryResultWidget::storeCurrentQuery( Qgis::QueryStorageBackend backend 
 
 void QgsQueryResultWidget::showHistoryPanel( bool show )
 {
-  // the below code block trips up the clang analyser!
-  // NOLINTBEGIN(bugprone-branch-clone)
   if ( show )
   {
     mHistoryWidget = new QgsDatabaseQueryHistoryWidget();
@@ -1064,7 +1067,6 @@ void QgsQueryResultWidget::showHistoryPanel( bool show )
     mPanelStack->closePanel( mHistoryWidget );
     mHistoryWidget->deleteLater();
   }
-  // NOLINTEND(bugprone-branch-clone)
 }
 
 

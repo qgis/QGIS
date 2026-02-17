@@ -40,8 +40,11 @@
 #include <QGroupBox>
 #include <QMessageBox>
 #include <QPlainTextEdit>
+#include <QString>
 
 #include "moc_qgsgeometrycheckerresulttab.cpp"
+
+using namespace Qt::StringLiterals;
 
 QString QgsGeometryCheckerResultTab::sSettingsGroup = u"/geometry_checker/default_fix_methods/"_s;
 

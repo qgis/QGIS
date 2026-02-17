@@ -24,7 +24,6 @@ back to QgsVectorLayer.
 #define QGSATTRIBUTEACTIONDIALOG_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "ui_qgsattributeactiondialogbase.h"
 
@@ -33,6 +32,8 @@ back to QgsVectorLayer.
 #include "qgsattributetableconfig.h"
 
 #include <QMap>
+
+#define SIP_NO_FILE
 
 class QgsActionManager;
 class QgsVectorLayer;

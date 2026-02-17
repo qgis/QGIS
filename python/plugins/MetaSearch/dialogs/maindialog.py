@@ -28,18 +28,7 @@
 
 import json
 import os.path
-from urllib.request import build_opener, install_opener, ProxyHandler
-
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import (
-    QDialog,
-    QComboBox,
-    QDialogButtonBox,
-    QMessageBox,
-    QTreeWidgetItem,
-    QWidget,
-)
-from qgis.PyQt.QtGui import QColor
+from urllib.request import ProxyHandler, build_opener, install_opener
 
 from qgis.core import (
     Qgis,
@@ -48,13 +37,23 @@ from qgis.core import (
     QgsCoordinateTransform,
     QgsGeometry,
     QgsPointXY,
-    QgsProviderRegistry,
-    QgsSettings,
     QgsProject,
+    QgsProviderRegistry,
     QgsRectangle,
+    QgsSettings,
     QgsSettingsTree,
 )
-from qgis.gui import QgsRubberBand, QgsGui
+from qgis.gui import QgsGui, QgsRubberBand
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtWidgets import (
+    QComboBox,
+    QDialog,
+    QDialogButtonBox,
+    QMessageBox,
+    QTreeWidgetItem,
+    QWidget,
+)
 from qgis.utils import OverrideCursor
 
 try:
@@ -63,21 +62,21 @@ except ImportError:
     pass
 
 from MetaSearch import link_types
+from MetaSearch.dialogs.apidialog import APIRequestResponseDialog
 from MetaSearch.dialogs.manageconnectionsdialog import ManageConnectionsDialog
 from MetaSearch.dialogs.newconnectiondialog import NewConnectionDialog
 from MetaSearch.dialogs.recorddialog import RecordDialog
-from MetaSearch.dialogs.apidialog import APIRequestResponseDialog
 from MetaSearch.search_backend import get_catalog_service
 from MetaSearch.util import (
+    StaticContext,
     clean_ows_url,
     get_connections_from_file,
-    get_ui_class,
     get_help_url,
+    get_ui_class,
     normalize_text,
     open_url,
     render_template,
     serialize_string,
-    StaticContext,
 )
 
 BASE_CLASS = get_ui_class("maindialog.ui")

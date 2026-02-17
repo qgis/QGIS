@@ -21,6 +21,7 @@ TODO:
 
 #include <pdal/util/FileUtils.hpp>
 #include <pdal/pdal_config.hpp>
+#include <pdal/pdal_features.hpp>
 
 #include "gdal_version.h"
 
@@ -29,7 +30,7 @@ TODO:
 
 extern int runTile(std::vector<std::string> arglist);  // tile/tile.cpp
 
-std::string WRENCH_VERSION = "1.3.0";
+std::string WRENCH_VERSION = "1.4.0";
 
 void printUsage()
 {
@@ -42,6 +43,10 @@ void printUsage()
     std::cout << "   build_vpc              Creates a virtual point cloud" << std::endl;
     std::cout << "   classify_ground        Classify ground points" << std::endl;
     std::cout << "   clip                   Outputs only points that are inside of the clipping polygons" << std::endl;
+// TODO this check can be removed once PDAL 2.10 is widely used    
+#if PDAL_VERSION_MAJOR > 2 || ( PDAL_VERSION_MAJOR == 2 && PDAL_VERSION_MINOR >= 10 )
+    std::cout << "   compare                Compares two point clouds for differences" << std::endl;
+#endif    
     std::cout << "   density                Exports a raster where each cell contains number of points" << std::endl;
     std::cout << "   filter_noise           Classify noise points" << std::endl;
     std::cout << "   height_above_ground    Calculates height above ground for each point" << std::endl;
@@ -154,6 +159,14 @@ int main(int argc, char* argv[])
         ClassifyGround classifyGround;
         runAlg(args, classifyGround);
     }
+// TODO this check can be removed once PDAL 2.10 is is widely used    
+#if PDAL_VERSION_MAJOR > 2 || ( PDAL_VERSION_MAJOR == 2 && PDAL_VERSION_MINOR >= 10 )
+    else if (cmd == "compare")
+    {
+        ComparePointClouds comparison;
+        runAlg(args, comparison);
+    }
+#endif    
     else
     {
         std::cerr << "unknown command: " << cmd << std::endl;

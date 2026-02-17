@@ -13,17 +13,17 @@ the Free Software Foundation; either version 2 of the License, or
 import os
 import unittest
 
+from qgis.core import (
+    QgsAuthConfigurationStorageDb,
+    QgsProviderConnectionException,
+    QgsProviderRegistry,
+)
+from qgis.PyQt import QtSql
+from qgis.PyQt.QtCore import QTemporaryDir
 from test_authmanager_storage_base import (
     AuthManagerStorageBaseTestCase,
     TestAuthManagerStorageBase,
 )
-from qgis.PyQt.QtCore import QTemporaryDir
-from qgis.core import (
-    QgsAuthConfigurationStorageDb,
-    QgsProviderRegistry,
-    QgsProviderConnectionException,
-)
-from qgis.PyQt import QtSql
 
 __author__ = "Alessandro Pasotti"
 __date__ = "2024-06-24"
@@ -37,7 +37,6 @@ __copyright__ = "Copyright 2024, The QGIS Project"
     "QPSQL/QPSQL7 driver not available",
 )
 class TestAuthStoragePsql(AuthManagerStorageBaseTestCase, TestAuthManagerStorageBase):
-
     @classmethod
     def setUpClass(cls):
         """Run before tests"""
@@ -107,7 +106,7 @@ class TestAuthStoragePsql(AuthManagerStorageBaseTestCase, TestAuthManagerStorage
         assert cls.storage.type() == "DB-QPSQL"
 
         if config["schema"]:
-            schema = f"\"{config['schema']}\"."
+            schema = f'"{config["schema"]}".'
         else:
             schema = ""
 

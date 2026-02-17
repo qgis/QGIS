@@ -24,7 +24,11 @@
 #include "qgsprocessingbatch.h"
 #include "qgsproxyprogresstask.h"
 
+#include <QString>
+
 #include "moc_qgsprocessingbatchalgorithmdialogbase.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond NOT_STABLE
 QgsProcessingBatchAlgorithmDialogBase::QgsProcessingBatchAlgorithmDialogBase( QWidget *parent, Qt::WindowFlags flags )

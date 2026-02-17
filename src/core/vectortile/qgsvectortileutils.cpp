@@ -37,6 +37,9 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QPolygon>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 void QgsVectorTileUtils::updateUriSources( QString &uri, bool forceUpdate )
 {

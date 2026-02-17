@@ -10,11 +10,13 @@ __author__ = "Chris Crook"
 __date__ = "3/10/2014"
 __copyright__ = "Copyright 2014, The QGIS Project"
 
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
+
 from qgis.core import (
+    QgsClassificationFixedInterval,
+    QgsClassificationPrettyBreaks,
     QgsFeature,
+    QgsFillSymbol,
     QgsGeometry,
     QgsGradientColorRamp,
     QgsGraduatedSymbolRenderer,
@@ -25,12 +27,11 @@ from qgis.core import (
     QgsRendererRange,
     QgsRendererRangeLabelFormat,
     QgsVectorLayer,
-    QgsFillSymbol,
-    QgsClassificationFixedInterval,
-    QgsClassificationPrettyBreaks,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -163,7 +164,6 @@ def dumpGraduatedRenderer(r):
 
 
 class TestQgsGraduatedSymbolRenderer(QgisTestCase):
-
     def testQgsRendererRange_1(self):
         """Test QgsRendererRange getter/setter functions"""
         range = QgsRendererRange()
@@ -278,9 +278,7 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
             self.assertEqual(
                 result,
                 expected,
-                "Number format error {}:{}:{} => {}".format(
-                    precision, trim, value, result
-                ),
+                f"Number format error {precision}:{trim}:{value} => {result}",
             )
 
         # Label tests - label format, expected result.

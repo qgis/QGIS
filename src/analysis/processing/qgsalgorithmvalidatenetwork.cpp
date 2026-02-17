@@ -26,6 +26,10 @@
 #include "qgsspatialindexkdbush.h"
 #include "qgsvectorlayerdirector.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsValidateNetworkAlgorithm::name() const

@@ -33,6 +33,8 @@
 #include <QLocale>
 #include <QMessageBox>
 #include <QPixmap>
+#include <QQuickWindow>
+#include <QSGRendererInterface>
 #include <QScreen>
 #include <QSplashScreen>
 #include <QStandardPaths>
@@ -41,6 +43,8 @@
 #include <QStyle>
 #include <QStyleFactory>
 #include <QSurfaceFormat>
+
+using namespace Qt::StringLiterals;
 
 #if !defined( Q_OS_WIN )
 #include "sigwatch.h"
@@ -579,7 +583,7 @@ int main( int argc, char *argv[] )
 #endif
 
   bool myRestoreDefaultWindowState = false;
-  bool myCustomization = true;
+  bool enableCustomization = true;
 
   QString dxfOutputFile;
   Qgis::FeatureSymbologyExport dxfSymbologyMode = Qgis::FeatureSymbologyExport::PerSymbolLayer;
@@ -680,7 +684,7 @@ int main( int argc, char *argv[] )
         }
         else if ( arg == "--nocustomization"_L1 || arg == "-C"_L1 )
         {
-          myCustomization = false;
+          enableCustomization = false;
         }
         else if ( i + 1 < argc && ( arg == "--profile"_L1 ) )
         {
@@ -911,7 +915,7 @@ int main( int argc, char *argv[] )
 #endif
 
 
-#if defined( Q_OS_UNIX ) && !defined( Q_OS_MAC ) && !defined( ANDROID )
+#if defined( Q_OS_UNIX ) && !defined( Q_OS_MACOS ) && !defined( ANDROID )
   bool myUseGuiFlag = nullptr != getenv( "DISPLAY" );
 #else
   bool myUseGuiFlag = true;
@@ -928,13 +932,6 @@ int main( int argc, char *argv[] )
     exit( 1 ); //exit for now until a version of qgis is capable of running non interactive
   }
 
-  // GUI customization is enabled according to settings (loaded when instance is created)
-  // we force disabled here if --nocustomization argument is used
-  if ( !myCustomization )
-  {
-    QgsCustomization::instance()->setEnabled( false );
-  }
-
   QCoreApplication::setOrganizationName( QgsApplication::QGIS_ORGANIZATION_NAME );
   QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );
   QCoreApplication::setApplicationName( QgsApplication::QGIS_APPLICATION_NAME );
@@ -945,7 +942,7 @@ int main( int argc, char *argv[] )
 #if !defined( QT_NO_OPENGL )
   QSurfaceFormat format;
   format.setRenderableType( QSurfaceFormat::OpenGL );
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
   format.setVersion( 4, 1 ); //OpenGL is deprecated on MacOS, use last supported version
   format.setProfile( QSurfaceFormat::CoreProfile );
 #else
@@ -963,6 +960,14 @@ int main( int argc, char *argv[] )
 #if !defined( QT_NO_OPENGL )
   QCoreApplication::setAttribute( Qt::AA_ShareOpenGLContexts, true );
 #endif
+
+  // Workaround upstream Qt issue (https://qt-project.atlassian.net/browse/QTBUG-139109) which
+  // causes QGIS' main window to flash on app launch and make the app completely
+  // unresponsive when editing an attribute form QML widget.
+  QQuickWindow::setGraphicsApi( QSGRendererInterface::Software );
+
+  // Accelerate speed of wheel scrolling
+  qputenv( "QT_QUICK_FLICKABLE_WHEEL_DECELERATION", "4500" );
 
   // Set up the QgsSettings Global Settings:
   // - use the path specified with --globalsettingsfile path,
@@ -1306,32 +1311,12 @@ int main( int argc, char *argv[] )
   QgsDebugMsgLevel( u"Rewritten macOS QCoreApplication::libraryPaths: %1"_s.arg( QCoreApplication::libraryPaths().join( " " ) ), 4 );
 #endif
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
   // Set hidpi icons; use SVG icons, as PNGs will be relatively too small
   QCoreApplication::setAttribute( Qt::AA_UseHighDpiPixmaps );
 #else
   QgsApplication::setWindowIcon( QIcon( QgsApplication::appIconPath() ) );
 #endif
-
-  // TODO: use QgsSettings
-  QSettings *customizationsettings = nullptr;
-
-  if ( !customizationfile.isEmpty() )
-  {
-    // Using the customizationfile option always overrides the option and config path options.
-    QgsCustomization::instance()->setEnabled( true );
-  }
-  else
-  {
-    // Use the default file location
-    customizationfile = profileFolder + QDir::separator() + u"QGIS"_s + QDir::separator() + u"QGISCUSTOMIZATION3.ini"_s;
-  }
-
-  customizationsettings = new QSettings( customizationfile, QSettings::IniFormat );
-
-  // Load and set possible default customization, must be done after QgsApplication init and QgsSettings ( QCoreApplication ) init
-  QgsCustomization::instance()->setSettings( customizationsettings );
-  QgsCustomization::instance()->loadDefault();
 
 #ifdef Q_OS_MACOS
   if ( !getenv( "GDAL_DRIVER_PATH" ) )
@@ -1480,8 +1465,20 @@ int main( int argc, char *argv[] )
     QgsApplication::setAuthDatabaseDirPath( authdbdirectory );
   }
 
+  if ( customizationfile.isEmpty() )
+  {
+    // Use the default file location
+    customizationfile = profileFolder + QDir::separator() + u"QGIS"_s + QDir::separator() + u"QGISCUSTOMIZATION.xml"_s;
+  }
+
+  auto customization = std::make_unique<QgsCustomization>( customizationfile );
+  if ( !enableCustomization )
+  {
+    customization->setEnabled( false );
+  }
+
   //set up splash screen
-  QString splashPath( QgsCustomization::instance()->splashPath() );
+  QString splashPath( customization->splashPath() );
   QPixmap pixmap( splashPath + u"splash.png"_s );
 
   if ( QScreen *screen = QGuiApplication::primaryScreen() )
@@ -1555,11 +1552,7 @@ int main( int argc, char *argv[] )
 
   QgisApp *qgis = new QgisApp( mypSplash, qgisAppOptions, rootProfileFolder, profileName ); // "QgisApp" used to find canonical instance
   qgis->setObjectName( u"QgisApp"_s );
-
-  QgsApplication::connect(
-    &myApp, &QgsApplication::preNotify,
-    QgsCustomization::instance(), &QgsCustomization::preNotify
-  );
+  qgis->setCustomization( std::move( customization ) );
 
   /////////////////////////////////////////////////////////////////////
   // Load a project file if one was specified

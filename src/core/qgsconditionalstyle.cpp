@@ -21,8 +21,11 @@
 #include "qgssymbollayerutils.h"
 
 #include <QPainter>
+#include <QString>
 
 #include "moc_qgsconditionalstyle.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsConditionalLayerStyles::QgsConditionalLayerStyles( QObject *parent )
   : QObject( parent )

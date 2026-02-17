@@ -17,7 +17,6 @@
 #ifndef QGSEXPRESSIONUTILS_H
 #define QGSEXPRESSIONUTILS_H
 
-#define SIP_NO_FILE
 
 #include <functional>
 
@@ -31,8 +30,13 @@
 #include <QDate>
 #include <QDateTime>
 #include <QLocale>
+#include <QString>
 #include <QThread>
 #include <QTime>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 class QgsMapLayer;
 class QgsGradientColorRamp;

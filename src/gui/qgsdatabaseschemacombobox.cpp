@@ -20,9 +20,12 @@
 #include "qgsdatabaseschemamodel.h"
 
 #include <QHBoxLayout>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgsdatabaseschemacombobox.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDatabaseSchemaComboBox::QgsDatabaseSchemaComboBox( const QString &provider, const QString &connection, QWidget *parent )
   : QWidget( parent )

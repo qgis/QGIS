@@ -16,14 +16,18 @@
 #ifndef QGSTHREADINGUTILS_H
 #define QGSTHREADINGUTILS_H
 
-#define SIP_NO_FILE
 
 #include "qgsconfig.h"
 
 #include "qgis_core.h"
 #include "qgsfeedback.h"
 
+#include <QString>
 #include <QThread>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 #if defined( QGISDEBUG ) || defined( AGGRESSIVE_SAFE_MODE )
 #include <QDebug>

@@ -10,16 +10,16 @@ __author__ = "Nyall Dawson"
 __date__ = "05/10/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.gui import QgsPanelWidget, QgsPanelWidgetStack
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.gui import QgsPanelWidget, QgsPanelWidgetStack
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsPanelWidgetStack(QgisTestCase):
-
     def testMainPanel(self):
         """test mainPanel methods"""
 

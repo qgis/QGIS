@@ -22,10 +22,14 @@
 #include "qgsdatasourceuri.h"
 #include "qgssettingsentryimpl.h"
 
+#include <QString>
 #include <QStringList>
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
+
+///@cond PRIVATE
 
 /*!
  * \brief  Generic OGR DB Connections management

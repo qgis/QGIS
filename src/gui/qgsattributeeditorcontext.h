@@ -53,7 +53,8 @@ class GUI_EXPORT QgsAttributeEditorContext
       MultiEditMode,       //!< Multi edit mode, for editing fields of multiple features at once
       SearchMode,          //!< Form values are used for searching/filtering the layer
       AggregateSearchMode, //!< Form is in aggregate search mode, show each widget in this mode
-      IdentifyMode         //!< Identify the feature
+      IdentifyMode,        //!< Identify the feature
+      PreviewMode          //!< Preview mode, for previewing attribute configurations \since QGIS 4.0
     };
     Q_ENUM( Mode )
 

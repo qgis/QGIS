@@ -31,10 +31,13 @@
 #include "qgsterraintextureimage_p.h"
 #include "qgsterraintileentity_p.h"
 
+#include <QString>
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QGeometryRenderer>
 
 #include "moc_qgsterrainentity.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

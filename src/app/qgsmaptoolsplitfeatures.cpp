@@ -39,6 +39,8 @@ bool QgsMapToolSplitFeatures::supportsTechnique( Qgis::CaptureTechnique techniqu
     case Qgis::CaptureTechnique::StraightSegments:
     case Qgis::CaptureTechnique::CircularString:
     case Qgis::CaptureTechnique::Streaming:
+    case Qgis::CaptureTechnique::PolyBezier:
+    case Qgis::CaptureTechnique::NurbsCurve:
       return true;
 
     case Qgis::CaptureTechnique::Shape:

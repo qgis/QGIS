@@ -22,6 +22,10 @@
 #include "qgsproviderregistry.h"
 #include "qgsvectorfilewriter.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsExportToPostgresqlAlgorithm::name() const

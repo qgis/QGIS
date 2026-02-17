@@ -17,15 +17,16 @@
 #define QGSRENDERPASSQUAD_H
 
 #include <Qt3DCore/QEntity>
-#include <Qt3DRender/QCamera>
-#include <Qt3DRender/QEffect>
-#include <Qt3DRender/QLayer>
-#include <Qt3DRender/QMaterial>
-#include <Qt3DRender/QParameter>
-#include <Qt3DRender/QShaderProgram>
-#include <Qt3DRender/QTexture>
 
 #define SIP_NO_FILE
+
+namespace Qt3DRender
+{
+  class QMaterial;
+  class QLayer;
+  class QShaderProgram;
+} //namespace Qt3DRender
+
 
 /**
  * \ingroup qgis_3d

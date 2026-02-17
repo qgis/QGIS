@@ -12,11 +12,11 @@ the Free Software Foundation; either version 2 of the License, or
 
 import unittest
 
+from qgsauthconfigurationcustomstorage import QgsAuthConfigurationCustomStorage
 from test_authmanager_storage_base import (
     AuthManagerStorageBaseTestCase,
     TestAuthManagerStorageBase,
 )
-from qgsauthconfigurationcustomstorage import QgsAuthConfigurationCustomStorage
 
 __author__ = "Alessandro Pasotti"
 __date__ = "2024-06-24"
@@ -24,7 +24,6 @@ __copyright__ = "Copyright 2024, The QGIS Project"
 
 
 class TestAuthStorageCustom(AuthManagerStorageBaseTestCase, TestAuthManagerStorageBase):
-
     @classmethod
     def setUpClass(cls):
         """Run before each tests"""

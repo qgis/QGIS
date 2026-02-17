@@ -46,6 +46,7 @@
 #include <QFileInfo>
 #include <QRegularExpression>
 #include <QSettings>
+#include <QString>
 #include <QStringBuilder>
 #include <QStringList>
 #include <QUrl>
@@ -58,6 +59,8 @@
 #include <QtSql/QSqlRecord>
 
 #include "moc_qgsmssqlprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 constexpr int sMssqlConQueryLogFilePrefixLength = CMAKE_SOURCE_DIR[sizeof( CMAKE_SOURCE_DIR ) - 1] == '/' ? sizeof( CMAKE_SOURCE_DIR ) + 1 : sizeof( CMAKE_SOURCE_DIR );
 #define LoggedExec( query, sql ) execLogged( query, sql, QString( QString( __FILE__ ).mid( sMssqlConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")" ) )
@@ -76,8 +79,6 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
 {
   if ( !mUri.srid().isEmpty() )
     mSRId = mUri.srid().toInt();
-  else
-    mSRId = -1;
 
   mWkbType = mUri.wkbType();
 
@@ -160,9 +161,9 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
 
     if ( !mIsQuery )
     {
-      if ( mSRId < 0 || mWkbType == Qgis::WkbType::Unknown || mGeometryColName.isEmpty() )
+      if ( mSRId <= 0 || mWkbType == Qgis::WkbType::Unknown || mGeometryColName.isEmpty() )
       {
-        loadMetadata();
+        loadMetadataFromGeometryColumnsTable();
       }
       else
       {
@@ -229,7 +230,7 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
       {
         // table contains no geometries
         mWkbType = Qgis::WkbType::NoGeometry;
-        mSRId = 0;
+        mSRId = -1;
       }
     }
   }
@@ -267,25 +268,33 @@ QgsFeatureIterator QgsMssqlProvider::getFeatures( const QgsFeatureRequest &reque
   return QgsFeatureIterator( new QgsMssqlFeatureIterator( new QgsMssqlFeatureSource( this ), true, request ) );
 }
 
-void QgsMssqlProvider::loadMetadata()
+void QgsMssqlProvider::loadMetadataFromGeometryColumnsTable()
 {
-  mSRId = 0;
+  mSRId = -1;
   mWkbType = Qgis::WkbType::Unknown;
 
   QSqlQuery query = createQuery();
   query.setForwardOnly( true );
-  if ( !LoggedExec( query, u"SELECT f_geometry_column, srid, geometry_type, coord_dimension FROM geometry_columns WHERE f_table_schema=%1 AND f_table_name=%2"_s.arg( QgsMssqlUtils::quotedValue( mSchemaName ), QgsMssqlUtils::quotedValue( mTableName ) ) ) )
+  const QString sql = u"IF OBJECT_ID('geometry_columns', 'U') IS NOT NULL "
+                      u"SELECT f_geometry_column, srid, geometry_type, coord_dimension "
+                      u"FROM geometry_columns WHERE f_table_schema=%1 AND f_table_name=%2"_s
+                        .arg( QgsMssqlUtils::quotedValue( mSchemaName ), QgsMssqlUtils::quotedValue( mTableName ) );
+
+  if ( !LoggedExec( query, sql ) )
   {
     QgsDebugError( u"SQL:%1\n  Error:%2"_s.arg( query.lastQuery(), query.lastError().text() ) );
   }
-
-  if ( query.isActive() && query.next() )
+  else if ( query.isActive() && query.next() )
   {
     mGeometryColName = query.value( 0 ).toString();
     mSRId = query.value( 1 ).toInt();
     const int dimensions = query.value( 3 ).toInt();
     const QString detectedType { QgsMssqlProvider::typeFromMetadata( query.value( 2 ).toString().toUpper(), dimensions ) };
     mWkbType = getWkbType( detectedType );
+  }
+  else
+  {
+    QgsDebugError( u"Could not retrieve geometry metadata for %1.%2 from geometry_columns: table does not exist or no matching record"_s.arg( QgsMssqlUtils::quotedIdentifier( mSchemaName ), QgsMssqlUtils::quotedIdentifier( mTableName ) ) );
   }
 }
 
@@ -708,7 +717,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
       return;
   }
 
-  if ( !mIsQuery )
+  if ( !mIsQuery && mSRId > 0 )
   {
     // Get the extents from the spatial index table to speed up load times.
     // We have to use max() and min() because you can have more then one index but the biggest area is what we want to use.
@@ -737,6 +746,15 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
 
   // If we can't find the extents in the spatial index table just do what we normally do.
   bool readAllGeography = false;
+  QString sridColumns;
+  if ( mSRId <= 0 )
+  {
+    // piggy-back unknown SRId retrieval onto extent calculation, using min(Srid) and max(Srid) to get single scalar values
+    // since the extent query will only return a SINGLE row. That's enough to tell us whether there's a single distinct
+    // srid in use
+    sridColumns = u", min(%1.STSrid), max(%1.STSrid)"_s.arg( QgsMssqlUtils::quotedIdentifier( mGeometryColName ) );
+  }
+
   if ( estimate )
   {
     if ( mGeometryColType == "geometry"_L1 )
@@ -745,6 +763,9 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
         statement = u"select min(%1.STPointN(1).STX), min(%1.STPointN(1).STY), max(%1.STPointN(1).STX), max(%1.STPointN(1).STY)"_s.arg( QgsMssqlUtils::quotedIdentifier( mGeometryColName ) );
       else
         statement = u"select min(case when (%1.STIsValid() = 1) THEN %1.STPointN(1).STX else NULL end), min(case when (%1.STIsValid() = 1) THEN %1.STPointN(1).STY else NULL end), max(case when (%1.STIsValid() = 1) THEN %1.STPointN(1).STX else NULL end), max(case when (%1.STIsValid() = 1) THEN %1.STPointN(1).STY else NULL end)"_s.arg( QgsMssqlUtils::quotedIdentifier( mGeometryColName ) );
+
+      if ( !sridColumns.isEmpty() )
+        statement += sridColumns;
     }
     else
     {
@@ -766,6 +787,8 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
         statement = u"select min(%1.STEnvelope().STPointN(1).STX), min(%1.STEnvelope().STPointN(1).STY), max(%1.STEnvelope().STPointN(3).STX), max(%1.STEnvelope().STPointN(3).STY)"_s.arg( QgsMssqlUtils::quotedIdentifier( mGeometryColName ) );
       else
         statement = u"select min(case when (%1.STIsValid() = 1) THEN %1.STEnvelope().STPointN(1).STX  else NULL end), min(case when (%1.STIsValid() = 1) THEN %1.STEnvelope().STPointN(1).STY else NULL end), max(case when (%1.STIsValid() = 1) THEN %1.STEnvelope().STPointN(3).STX else NULL end), max(case when (%1.STIsValid() = 1) THEN %1.STEnvelope().STPointN(3).STY else NULL end)"_s.arg( QgsMssqlUtils::quotedIdentifier( mGeometryColName ) );
+      if ( !sridColumns.isEmpty() )
+        statement += sridColumns;
     }
     else
     {
@@ -806,16 +829,43 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
 
     // See https://docs.microsoft.com/en-us/previous-versions/software-testing/cc441928(v=msdn.10)
     const QString sampleFilter = QString( "(ABS(CAST((BINARY_CHECKSUM(%1)) as int)) % 100) = 42" ).arg( cols );
+    const int sampleFilterCol = sridColumns.isEmpty() ? 4 : 6;
 
     const QString statementSample = statement + ( mSqlWhereClause.isEmpty() ? " WHERE " : " AND " ) + sampleFilter;
 
-    if ( LoggedExec( query, statementSample ) && query.next() && !QgsVariantUtils::isNull( query.value( 0 ) ) && query.value( 4 ).toInt() >= minSampleCount )
+    if ( LoggedExec( query, statementSample ) && query.next() )
     {
-      mExtent.setXMinimum( query.value( 0 ).toDouble() );
-      mExtent.setYMinimum( query.value( 1 ).toDouble() );
-      mExtent.setXMaximum( query.value( 2 ).toDouble() );
-      mExtent.setYMaximum( query.value( 3 ).toDouble() );
-      return;
+      const int sampleCount = query.value( sampleFilterCol ).toInt();
+      if ( sampleCount < minSampleCount )
+      {
+        QgsDebugMsgLevel( u"Could not use estimated statistics for %1.%2: sample count %3 is too low"_s.arg( QgsMssqlUtils::quotedIdentifier( mSchemaName ), QgsMssqlUtils::quotedIdentifier( mTableName ) ).arg( sampleCount ), 2 );
+      }
+      if ( !QgsVariantUtils::isNull( query.value( 0 ) ) && sampleCount >= minSampleCount )
+      {
+        mExtent.setXMinimum( query.value( 0 ).toDouble() );
+        mExtent.setYMinimum( query.value( 1 ).toDouble() );
+        mExtent.setXMaximum( query.value( 2 ).toDouble() );
+        mExtent.setYMaximum( query.value( 3 ).toDouble() );
+
+        if ( mSRId <= 0 )
+        {
+          QSet< int > srIdExtrema;
+          if ( !QgsVariantUtils::isNull( query.value( 4 ) ) )
+            srIdExtrema.insert( query.value( 4 ).toInt() );
+          if ( !QgsVariantUtils::isNull( query.value( 5 ) ) )
+            srIdExtrema.insert( query.value( 5 ).toInt() );
+          if ( srIdExtrema.size() == 1 )
+          {
+            mSRId = *srIdExtrema.constBegin();
+          }
+          else
+          {
+            QgsDebugError( u"Could not determine srid for %1.%2: found multiple IDs"_s.arg( QgsMssqlUtils::quotedIdentifier( mSchemaName ), QgsMssqlUtils::quotedIdentifier( mTableName ) ) );
+          }
+        }
+
+        return;
+      }
     }
   }
 
@@ -845,6 +895,24 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
       mExtent.setXMaximum( query.value( 2 ).toDouble() );
       mExtent.setYMaximum( query.value( 3 ).toDouble() );
     }
+
+    if ( mSRId <= 0 )
+    {
+      QSet< int > srIdExtrema;
+      if ( !QgsVariantUtils::isNull( query.value( 4 ) ) )
+        srIdExtrema.insert( query.value( 4 ).toInt() );
+      if ( !QgsVariantUtils::isNull( query.value( 5 ) ) )
+        srIdExtrema.insert( query.value( 5 ).toInt() );
+      if ( srIdExtrema.size() == 1 )
+      {
+        mSRId = *srIdExtrema.constBegin();
+      }
+      else
+      {
+        QgsDebugError( u"Could not determine srid for %1.%2: found multiple IDs"_s.arg( QgsMssqlUtils::quotedIdentifier( mSchemaName ), QgsMssqlUtils::quotedIdentifier( mTableName ) ) );
+      }
+    }
+
     return;
   }
 
@@ -1270,19 +1338,11 @@ bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
   attributeClauses.reserve( attributes.size() );
   for ( QList<QgsField>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {
-    QString type = it->typeName();
-    if ( type == "char"_L1 || type == "varchar"_L1 || type == "nvarchar"_L1 )
-    {
-      if ( it->length() > 0 )
-        type = u"%1(%2)"_s.arg( type ).arg( it->length() );
-    }
-    else if ( type == "numeric"_L1 || type == "decimal"_L1 )
-    {
-      if ( it->length() > 0 && it->precision() > 0 )
-        type = u"%1(%2,%3)"_s.arg( type ).arg( it->length() ).arg( it->precision() );
-    }
+    const QString definition = QgsMssqlUtils::columnDefinitionForField( *it );
+    if ( definition.isEmpty() )
+      return false;
 
-    attributeClauses.append( u"[%1] %2"_s.arg( it->name(), type ) );
+    attributeClauses.append( definition );
   }
   statement += attributeClauses.join( ", "_L1 );
 
@@ -1910,68 +1970,6 @@ Qgis::VectorLayerTypeFlags QgsMssqlProvider::vectorLayerTypeFlags() const
   return flags;
 }
 
-bool QgsMssqlProvider::convertField( QgsField &field )
-{
-  QString fieldType = u"nvarchar(max)"_s; //default to string
-  int fieldSize = field.length();
-  int fieldPrec = field.precision();
-  switch ( field.type() )
-  {
-    case QMetaType::Type::LongLong:
-      fieldType = u"bigint"_s;
-      fieldSize = -1;
-      fieldPrec = 0;
-      break;
-
-    case QMetaType::Type::QDateTime:
-      fieldType = u"datetime"_s;
-      fieldPrec = 0;
-      break;
-
-    case QMetaType::Type::QDate:
-      fieldType = u"date"_s;
-      fieldPrec = 0;
-      break;
-
-    case QMetaType::Type::QTime:
-      fieldType = u"time"_s;
-      fieldPrec = 0;
-      break;
-
-    case QMetaType::Type::QString:
-      fieldType = u"nvarchar(max)"_s;
-      fieldPrec = 0;
-      break;
-
-    case QMetaType::Type::Int:
-      fieldType = u"int"_s;
-      fieldSize = -1;
-      fieldPrec = 0;
-      break;
-
-    case QMetaType::Type::Double:
-      if ( fieldSize <= 0 || fieldPrec <= 0 )
-      {
-        fieldType = u"float"_s;
-        fieldSize = -1;
-        fieldPrec = 0;
-      }
-      else
-      {
-        fieldType = u"decimal"_s;
-      }
-      break;
-
-    default:
-      return false;
-  }
-
-  field.setTypeName( fieldType );
-  field.setLength( fieldSize );
-  field.setPrecision( fieldPrec );
-  return true;
-}
-
 void QgsMssqlProvider::mssqlWkbTypeAndDimension( Qgis::WkbType wkbType, QString &geometryType, int &dim )
 {
   const Qgis::WkbType flatType = QgsWkbTypes::flatType( wkbType );
@@ -2177,23 +2175,74 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
     }
   }
 
+  QStringList attributeClauses;
+  attributeClauses.reserve( fields.size() + 1 );
+  if ( oldToNewAttrIdxMap )
+    oldToNewAttrIdxMap->clear();
+
+  const QString pkColumnDefinition = u"[%1] [int] IDENTITY(1,1) NOT NULL"_s.arg( primaryKey );
+  attributeClauses << pkColumnDefinition;
+
+  const bool skipConvertFields = options && options->value( u"skipConvertFields"_s, false ).toBool();
+  if ( fields.size() > 0 )
+  {
+    for ( int originalFieldIndex = 0; originalFieldIndex < fields.size(); ++originalFieldIndex )
+    {
+      const QgsField field = fields.at( originalFieldIndex );
+      if ( field.name() == geometryColumn )
+      {
+        // Found a field with the same name of the geometry column. Skip it!
+
+        // TODO -- this should probably be reported to the user, or cause the table creation to fail??
+        QgsDebugError( u"Field %1 skipped as it collides with geometry column name"_s.arg( field.name() ) );
+        continue;
+      }
+      else if ( field.name() == primaryKey )
+      {
+        if ( oldToNewAttrIdxMap )
+        {
+          oldToNewAttrIdxMap->insert( originalFieldIndex, 0 );
+        }
+        continue;
+      }
+
+      const QString columnDefinition = QgsMssqlUtils::columnDefinitionForField( field, !skipConvertFields );
+      if ( columnDefinition.isEmpty() )
+      {
+        if ( errorMessage )
+          *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( field.name() );
+
+        return Qgis::VectorExportResult::ErrorAttributeTypeUnsupported;
+      }
+
+      const int newAttributeIndex = static_cast< int >( attributeClauses.length() );
+      attributeClauses.append( columnDefinition );
+      if ( oldToNewAttrIdxMap )
+      {
+        oldToNewAttrIdxMap->insert( originalFieldIndex, newAttributeIndex );
+      }
+    }
+  }
+
+  const QString columnDefinitions = attributeClauses.join( ", "_L1 );
+
   if ( !geometryColumn.isEmpty() )
   {
     sql = QStringLiteral( "IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[%1].[%2]') AND type in (N'U')) DROP TABLE [%1].[%2]\n"
-                          "CREATE TABLE [%1].[%2]([%3] [int] IDENTITY(1,1) NOT NULL, [%4] [geometry] NULL CONSTRAINT [PK_%2] PRIMARY KEY CLUSTERED ( [%3] ASC ))\n"
+                          "CREATE TABLE [%1].[%2](%9, [%4] [geometry] NULL CONSTRAINT [PK_%2] PRIMARY KEY CLUSTERED ( [%3] ASC ))\n"
                           "DELETE FROM geometry_columns WHERE f_table_schema = '%1' AND f_table_name = '%2'\n"
                           "INSERT INTO [geometry_columns] ([f_table_catalog], [f_table_schema],[f_table_name], "
                           "[f_geometry_column],[coord_dimension],[srid],[geometry_type]) VALUES ('%5', '%1', '%2', '%4', %6, %7, '%8')" )
-            .arg( schemaName, tableName, primaryKey, geometryColumn, dbName, QString::number( dim ), QString::number( srid ), geometryType );
+            .arg( schemaName, tableName, primaryKey, geometryColumn, dbName, QString::number( dim ), QString::number( srid ), geometryType, columnDefinitions );
   }
   else
   {
     //geometryless table
     sql = QStringLiteral( "IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[%1].[%2]') AND type in (N'U')) DROP TABLE [%1].[%2]\n"
-                          "CREATE TABLE [%1].[%2]([%3] [int] IDENTITY(1,1) NOT NULL CONSTRAINT [PK_%2] PRIMARY KEY CLUSTERED ( [%3] ASC ))\n"
+                          "CREATE TABLE [%1].[%2](%4 CONSTRAINT [PK_%2] PRIMARY KEY CLUSTERED ( [%3] ASC ))\n"
                           "DELETE FROM geometry_columns WHERE f_table_schema = '%1' AND f_table_name = '%2'\n"
     )
-            .arg( schemaName, tableName, primaryKey );
+            .arg( schemaName, tableName, primaryKey, columnDefinitions );
   }
 
   logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( sql, uri, u"mssql"_s, u"QgsMssqlProvider"_s, QGS_QUERY_LOG_ORIGIN );
@@ -2224,58 +2273,6 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
     return Qgis::VectorExportResult::ErrorInvalidLayer;
   }
 
-  // add fields to the layer
-  if ( oldToNewAttrIdxMap )
-    oldToNewAttrIdxMap->clear();
-
-  if ( fields.size() > 0 )
-  {
-    const QgsFields providerFields = provider->fields();
-    int offset = providerFields.size();
-
-    // get the list of fields
-    QList<QgsField> flist;
-    for ( int originalFieldIndex = 0, n = fields.size(); originalFieldIndex < n; ++originalFieldIndex )
-    {
-      QgsField field = fields.at( originalFieldIndex );
-      if ( field.name() == geometryColumn )
-      {
-        // Found a field with the same name of the geometry column. Skip it!
-        continue;
-      }
-
-      const int providerIndex = providerFields.lookupField( field.name() );
-
-      if ( providerIndex >= 0 )
-      {
-        // we've already created this field (i.e. it was set in the CREATE TABLE statement), so
-        // we don't need to re-add it now
-        if ( oldToNewAttrIdxMap )
-          oldToNewAttrIdxMap->insert( originalFieldIndex, providerIndex );
-        continue;
-      }
-
-      if ( !( options && options->value( u"skipConvertFields"_s, false ).toBool() ) && !convertField( field ) )
-      {
-        if ( errorMessage )
-          *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( field.name() );
-
-        return Qgis::VectorExportResult::ErrorAttributeTypeUnsupported;
-      }
-
-      flist.append( field );
-      if ( oldToNewAttrIdxMap )
-        oldToNewAttrIdxMap->insert( originalFieldIndex, offset++ );
-    }
-
-    if ( !provider->addAttributes( flist ) )
-    {
-      if ( errorMessage )
-        *errorMessage = QObject::tr( "Creation of fields failed" );
-
-      return Qgis::VectorExportResult::ErrorAttributeCreationFailed;
-    }
-  }
   return Qgis::VectorExportResult::Success;
 }
 
