@@ -61,7 +61,7 @@ class QgsGeometryByExpressionAlgorithm : public QgsProcessingFeatureBasedAlgorit
   private:
     Qgis::WkbType mWkbType = Qgis::WkbType::Unknown;
     QgsExpression mExpression;
-    QgsExpressionContext mExpressionContext;
+    bool mExpressionPrepared = false;
 };
 
 ///@endcond PRIVATE
