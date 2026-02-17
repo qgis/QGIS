@@ -78,17 +78,15 @@ void QgsVertexEditorModel::setFeature( QgsLockedFeature *lockedFeature )
 
     mHasZ = QgsWkbTypes::hasZ( layerWKBType );
     mHasM = QgsWkbTypes::hasM( layerWKBType );
-
-    mZCol = mHasZ ? 2 : -1;
-
-    mMCol = mHasM ? ( 2 + ( mHasZ ? 1 : 0 ) ) : -1;
-
     mHasWeight = QgsWkbTypes::isNurbsType( layerWKBType );
 
     // Calculate column indices based on which dimensions are present
     // Column order: X, Y, [Z], [M], [R (radius)], [Weight]
-    mRCol = mHasR ? ( 2 + ( mHasZ ? 1 : 0 ) + ( mHasM ? 1 : 0 ) ) : -1;
-    mWeightCol = mHasWeight ? ( 2 + ( mHasZ ? 1 : 0 ) + ( mHasM ? 1 : 0 ) + ( mHasR ? 1 : 0 ) ) : -1;
+    int nextCol = 2;
+    mZCol = mHasZ ? nextCol++ : -1;
+    mMCol = mHasM ? nextCol++ : -1;
+    mRCol = mHasR ? nextCol++ : -1;
+    mWeightCol = mHasWeight ? nextCol++ : -1;
   }
 
   endResetModel();
