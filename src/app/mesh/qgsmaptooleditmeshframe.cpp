@@ -1208,7 +1208,7 @@ void QgsMapToolEditMeshFrame::moveSelection( const QgsPointXY &destinationPoint 
   // we test only the faces that are deformed on the border, moving and not deformed faces are tested later
   mIsMovingAllowed = mCurrentEditor->canBeTransformed( qgis::setToList( borderMovingFace ), transformFunction );
 
-  if ( mIsMovingAllowed )
+  if ( mIsMovingAllowed && !movingFacesGeometry.isEmpty() )
   {
     //to finish test if the polygons formed by the moving faces contains something else
     const QList<int> &faceIndexesIntersect = mCurrentLayer->triangularMesh()->nativeFaceIndexForRectangle( movingFacesGeometry.boundingBox() );
