@@ -175,7 +175,7 @@ void QgsAnnotationLayerProperties::showHelp()
   }
   else
   {
-    QgsHelp::openHelp( QStringLiteral( "working_with_vector_tiles/vector_tiles_properties.html" ) );
+    QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#annotation-tools" ) );
   }
 }
 
