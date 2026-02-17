@@ -402,7 +402,7 @@ class QgsSpatiaLiteProviderMetadata final : public QgsProviderMetadata
   public:
     QgsSpatiaLiteProviderMetadata();
     QIcon icon() const override;
-
+    QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     void cleanupProvider() override;
     QString getStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
     bool styleExists( const QString &uri, const QString &styleId, QString &errorCause ) override;
@@ -417,6 +417,7 @@ class QgsSpatiaLiteProviderMetadata final : public QgsProviderMetadata
     ProviderCapabilities providerCapabilities() const override;
     QgsSpatiaLiteProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QList<Qgis::LayerType> supportedLayerTypes() const override;
+    bool urisReferToSame( const QString &uri1, const QString &uri2, Qgis::SourceHierarchyLevel level = Qgis::SourceHierarchyLevel::Object ) const override;
 
     Qgis::VectorExportResult createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options, QString &createdLayerUri ) override;
     bool createDb( const QString &dbPath, QString &errCause ) override;
