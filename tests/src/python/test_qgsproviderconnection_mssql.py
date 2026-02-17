@@ -446,6 +446,59 @@ class TestPyQgsProviderConnectionMssql(
         self.assertEqual(res_ds.geometryColumn(), "geometry")
         self.assertEqual(res_ds.keyColumn(), "pk")
 
+    def test_rename_table_geometry_columns(self):
+        """
+        Test renaming table which is present in geometry_columns metadata table
+        """
+
+        md = QgsProviderRegistry.instance().providerMetadata("mssql")
+        conn = md.createConnection(self.uri, {})
+        conn.dropVectorTable("qgis_test", "test_rename_gc")
+        conn.dropVectorTable("qgis_test", "test_renamed_gc")
+        conn.dropVectorTable("qgis_test", "test_renamed_gc2")
+        conn.createVectorTable(
+            "qgis_test",
+            "test_rename_gc",
+            QgsFields(),
+            Qgis.WkbType.PolygonZ,
+            QgsCoordinateReferenceSystem(),
+            True,
+            {},
+        )
+        # make sure table is present in geometry_columns
+        res = conn.executeSql(
+            """SELECT f_table_schema, f_table_name from geometry_columns WHERE  f_table_schema = 'qgis_test' AND f_table_name = 'test_rename_gc';"""
+        )
+        self.assertEqual(res, [["qgis_test", "test_rename_gc"]])
+
+        # rename table
+        conn.renameVectorTable("qgis_test", "test_rename_gc", "test_renamed_gc")
+
+        # make sure it was renamed
+        vl = QgsVectorLayer(
+            conn.tableUri("qgis_test", "test_renamed_gc"), "test_renamed_gc", "mssql"
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), Qgis.WkbType.PolygonZ)
+
+        # make sure it was renamed also in geometry_columns metadata table
+        res = conn.executeSql(
+            """SELECT f_table_schema, f_table_name from geometry_columns WHERE  f_table_schema = 'qgis_test' AND f_table_name = 'test_renamed_gc';"""
+        )
+        self.assertEqual(res, [["qgis_test", "test_renamed_gc"]])
+
+        # rename again
+        conn.renameVectorTable("qgis_test", "test_renamed_gc", "test_renamed_gc2")
+        vl = QgsVectorLayer(
+            conn.tableUri("qgis_test", "test_renamed_gc2"), "test_renamed_gc2", "mssql"
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), Qgis.WkbType.PolygonZ)
+        res = conn.executeSql(
+            """SELECT f_table_schema, f_table_name from geometry_columns WHERE  f_table_schema = 'qgis_test' AND f_table_name = 'test_renamed_gc2';"""
+        )
+        self.assertEqual(res, [["qgis_test", "test_renamed_gc2"]])
+
     def test_move_table_to_schema(self):
         """Test that table can be moved to another schema."""
 
