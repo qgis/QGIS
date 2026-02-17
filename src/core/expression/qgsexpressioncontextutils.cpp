@@ -419,7 +419,7 @@ QList<QgsExpressionContextScope *> QgsExpressionContextUtils::globalProjectLayer
   QList<QgsExpressionContextScope *> scopes;
   scopes << globalScope();
 
-  QgsProject *project = QgsProject::instance();  // TODO: use project associated with layer skip-keyword-check
+  QgsProject *project = layer && layer->project() ? layer->project() : QgsProject::instance();
   if ( project )
     scopes << projectScope( project );
 
