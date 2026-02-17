@@ -551,6 +551,62 @@ class TestPyQgsProviderConnectionMssql(
         table = conn.table("qgis_schema_test", "table_to_move")
         self.assertEqual(table.tableName(), "table_to_move")
 
+    def test_move_table_to_schema_geometry_columns(self):
+        """
+        Test that table can be moved to another schema when table is
+        in geometry_columns metadata table.
+        """
+
+        md = QgsProviderRegistry.instance().providerMetadata("mssql")
+        conn = md.createConnection(self.uri, {})
+
+        conn.dropVectorTable("qgis_test", "table_to_move_gc")
+        conn.createVectorTable(
+            "qgis_test",
+            "table_to_move_gc",
+            QgsFields(),
+            Qgis.WkbType.PolygonZ,
+            QgsCoordinateReferenceSystem(),
+            True,
+            {},
+        )
+        # make sure table is present in geometry_columns
+        res = conn.executeSql(
+            """SELECT f_table_schema, f_table_name from geometry_columns WHERE f_table_schema = 'qgis_test' AND f_table_name = 'table_to_move_gc';"""
+        )
+        self.assertEqual(res, [["qgis_test", "table_to_move_gc"]])
+
+        try:
+            conn.dropSchema("qgis_schema_test", True)
+        except QgsProviderConnectionException:
+            # likely schema does not exist
+            pass
+
+        conn.executeSql("CREATE SCHEMA qgis_schema_test;")
+
+        # test table exist
+        table = conn.table("qgis_test", "table_to_move_gc")
+        self.assertEqual(table.tableName(), "table_to_move_gc")
+
+        # move table to another schema
+        conn.moveTableToSchema(
+            "qgis_test",
+            "table_to_move_gc",
+            "qgis_schema_test",
+        )
+
+        vl = QgsVectorLayer(
+            conn.tableUri("qgis_schema_test", "table_to_move_gc"),
+            "table_to_move_gc",
+            "mssql",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), Qgis.WkbType.PolygonZ)
+        res = conn.executeSql(
+            """SELECT f_table_schema, f_table_name from geometry_columns WHERE  f_table_schema = 'qgis_schema_test' AND f_table_name = 'table_to_move_gc';"""
+        )
+        self.assertEqual(res, [["qgis_schema_test", "table_to_move_gc"]])
+
     def test_rename_field(self):
         """Test rename fields"""
         md = QgsProviderRegistry.instance().providerMetadata("mssql")

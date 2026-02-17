@@ -880,8 +880,15 @@ QString QgsMssqlProviderConnection::defaultPrimaryKeyColumnName() const
 
 void QgsMssqlProviderConnection::moveTableToSchema( const QString &sourceSchema, const QString &tableName, const QString &targetSchema ) const
 {
-  executeSqlPrivate( u"ALTER SCHEMA %1 TRANSFER %2.%3"_s
-                       .arg( QgsMssqlUtils::quotedIdentifier( targetSchema ), QgsMssqlUtils::quotedIdentifier( sourceSchema ), QgsMssqlUtils::quotedIdentifier( tableName ) ) );
+  QString sql = u"ALTER SCHEMA %1 TRANSFER %2.%3;\n"_s
+                  .arg( QgsMssqlUtils::quotedIdentifier( targetSchema ), QgsMssqlUtils::quotedIdentifier( sourceSchema ), QgsMssqlUtils::quotedIdentifier( tableName ) );
+  sql += u"if exists (select * from INFORMATION_SCHEMA.TABLES where TABLE_NAME = 'geometry_columns' )\n"
+         "UPDATE geometry_columns SET f_table_schema = %1 WHERE f_table_schema = %2 AND f_table_name = %3;"_s.arg(
+           QgsMssqlUtils::quotedValue( targetSchema ),
+           QgsMssqlUtils::quotedValue( sourceSchema ),
+           QgsMssqlUtils::quotedValue( tableName )
+         );
+  executeSqlPrivate( sql );
 }
 
 QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsMssqlProviderConnection::sqlOptions( const QString &layerSource )
