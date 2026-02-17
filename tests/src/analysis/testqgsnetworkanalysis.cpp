@@ -610,10 +610,10 @@ void TestQgsNetworkAnalysis::testSpeedStrategy()
 void TestQgsNetworkAnalysis::testCurvedGeometries()
 {
   // CompaundCurve containing straight lines
-  auto network = std::make_unique<QgsVectorLayer>( u"CompoundCurve?crs=epsg:4326&field=cost:int"_s, u"x"_s, u"memory"_s );
+  auto network = std::make_unique<QgsVectorLayer>( QStringLiteral( "CompoundCurve?crs=epsg:4326&field=cost:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
 
   QgsFeature ff( 0 );
-  QgsGeometry refGeom = QgsGeometry::fromWkt( u"COMPOUNDCURVE((0 0, 10 0), (10 0, 10 10))"_s );
+  QgsGeometry refGeom = QgsGeometry::fromWkt( QStringLiteral( "COMPOUNDCURVE((0 0, 10 0), (10 0, 10 10))" ) );
   ff.setGeometry( refGeom );
   ff.setAttributes( QgsAttributes() << 1 );
   network->dataProvider()->addFeatures( QgsFeatureList() << ff );
@@ -664,8 +664,8 @@ void TestQgsNetworkAnalysis::testCurvedGeometries()
   QCOMPARE( graph->edgeCount(), 8 );
 
   // CompaundCurve containing both straight line and CircularString
-  network.reset( new QgsVectorLayer( u"CompoundCurve?crs=epsg:4326&field=cost:int"_s, u"x"_s, u"memory"_s ) );
-  refGeom = QgsGeometry::fromWkt( u"CompoundCurve((0 0, 5 0), CircularString(5 0, 7.5 2.5, 10 0))"_s );
+  network.reset( new QgsVectorLayer( QStringLiteral( "CompoundCurve?crs=epsg:4326&field=cost:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) ) );
+  refGeom = QgsGeometry::fromWkt( QStringLiteral( "CompoundCurve((0 0, 5 0), CircularString(5 0, 7.5 2.5, 10 0))" ) );
   ff.setGeometry( refGeom );
   network->dataProvider()->addFeatures( QgsFeatureList() << ff );
 
@@ -697,8 +697,8 @@ void TestQgsNetworkAnalysis::testCurvedGeometries()
   QVERIFY( junctionFound );
 
   // CircularString
-  network.reset( new QgsVectorLayer( u"CircularString?crs=epsg:4326&field=cost:int"_s, u"x"_s, u"memory"_s ) );
-  refGeom = QgsGeometry::fromWkt( u"CircularString(0 0, 5 5, 10 0)"_s );
+  network.reset( new QgsVectorLayer( QStringLiteral( "CircularString?crs=epsg:4326&field=cost:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) ) );
+  refGeom = QgsGeometry::fromWkt( QStringLiteral( "CircularString(0 0, 5 5, 10 0)" ) );
   ff.setGeometry( refGeom );
   network->dataProvider()->addFeatures( QgsFeatureList() << ff );
   director.reset( new QgsVectorLayerDirector( network.get(), -1, QString(), QString(), QString(), QgsVectorLayerDirector::DirectionBoth ) );
@@ -746,11 +746,11 @@ void TestQgsNetworkAnalysis::testCurvedGeometries()
   totalLength = builder->distanceArea()->convertLengthMeasurement( totalLength, Qgis::DistanceUnit::Degrees );
   const double expectedLength = M_PI * 5.0;
   const double tolerance = expectedLength * 0.05;
-  QVERIFY2( std::abs( totalLength - expectedLength ) < tolerance, u"Path length %1 differs from expected %2 by more than tolerance %3"_s.arg( totalLength ).arg( expectedLength ).arg( tolerance ).toLatin1().constData() );
+  QVERIFY2( std::abs( totalLength - expectedLength ) < tolerance, QStringLiteral( "Path length %1 differs from expected %2 by more than tolerance %3" ).arg( totalLength ).arg( expectedLength ).arg( tolerance ).toLatin1().constData() );
 
   // MultiCurve
-  network.reset( new QgsVectorLayer( u"MultiCurve?crs=epsg:4326&field=cost:int"_s, u"x"_s, u"memory"_s ) );
-  refGeom = QgsGeometry::fromWkt( u"MultiCurve(CircularString(0 0, 2.5 2.5, 5 0), CircularString(5 0, 7.5 -2.5, 10 0))"_s );
+  network.reset( new QgsVectorLayer( QStringLiteral( "MultiCurve?crs=epsg:4326&field=cost:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) ) );
+  refGeom = QgsGeometry::fromWkt( QStringLiteral( "MultiCurve(CircularString(0 0, 2.5 2.5, 5 0), CircularString(5 0, 7.5 -2.5, 10 0))" ) );
   ff.setGeometry( refGeom );
   network->dataProvider()->addFeatures( QgsFeatureList() << ff );
   director.reset( new QgsVectorLayerDirector( network.get(), -1, QString(), QString(), QString(), QgsVectorLayerDirector::DirectionBoth ) );
