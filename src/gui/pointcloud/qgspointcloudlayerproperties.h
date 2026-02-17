@@ -18,11 +18,13 @@
 
 #include "ui_qgspointcloudlayerpropertiesbase.h"
 
-#include "qgis_app.h"
+#include "qgis_gui.h"
 #include "qgslayerpropertiesdialog.h"
-#include "qgspointcloudlayer.h"
+#include "qgspointcloudattribute.h"
 
 #include <QAbstractTableModel>
+
+#define SIP_NO_FILE
 
 class QgsMapLayer;
 class QgsMapCanvas;
@@ -32,6 +34,8 @@ class QgsMetadataWidget;
 class QgsMapLayerConfigWidgetFactory;
 class QgsMapLayerConfigWidget;
 class QgsLayerPropertiesGuiUtils;
+
+///@cond private
 
 class QgsPointCloudAttributeStatisticsModel : public QAbstractTableModel
 {
@@ -83,15 +87,26 @@ class QgsPointCloudClassificationStatisticsModel : public QAbstractTableModel
     QList<int> mClassifications;
 };
 
-class APP_EXPORT QgsPointCloudLayerProperties : public QgsLayerPropertiesDialog, private Ui::QgsPointCloudLayerPropertiesBase
+///@endcond private
+
+/**
+ * \ingroup gui
+ * \class QgsPointCloudLayerProperties
+ * \brief Layer properties dialog for point cloud layers.
+ * \since QGIS 4.0 in the GUI API
+ */
+class GUI_EXPORT QgsPointCloudLayerProperties : public QgsLayerPropertiesDialog, private Ui::QgsPointCloudLayerPropertiesBase
 {
     Q_OBJECT
   public:
+    //! Constructor
     QgsPointCloudLayerProperties( QgsPointCloudLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
-  private slots:
+  protected slots:
     void apply() final;
     void rollback() final;
+
+  private slots:
 
     void aboutToShowStyleMenu();
     void showHelp();
