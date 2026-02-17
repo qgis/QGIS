@@ -82,11 +82,6 @@ void QgsMapToolsDigitizingTechniqueManager::setupToolBars()
     actionGroup->addAction( it.value() );
   }
 
-  digitizeMenu->addAction( QgisApp::instance()->mActionDigitizeWithBezier );
-  digitizeMenu->addAction( QgisApp::instance()->mActionDigitizeWithNurbs );
-  actionGroup->addAction( QgisApp::instance()->mActionDigitizeWithBezier );
-  actionGroup->addAction( QgisApp::instance()->mActionDigitizeWithNurbs );
-
   QgisApp::instance()->mActionStreamDigitize->setShortcut( tr( "R", "Keyboard shortcut: toggle stream digitizing" ) );
   connect( digitizeMenu, &QMenu::triggered, this, [this]( QAction *action ) {
     Qgis::CaptureTechnique technique = mTechniqueActions.key( action, Qgis::CaptureTechnique::StraightSegments );
