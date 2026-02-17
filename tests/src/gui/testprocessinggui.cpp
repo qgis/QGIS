@@ -476,6 +476,32 @@ void TestProcessingGui::testModelUndo()
   QCOMPARE( model.designerParameterValues(), params );
   command.redo();
   QCOMPARE( model.designerParameterValues(), params );
+
+  // merge logic
+  QgsModelUndoCommand command1( &model, u"c1"_s );
+  QgsModelUndoCommand command2( &model, u"c2"_s );
+  // not compatible, no operation or id string
+  QVERIFY( !command1.mergeWith( &command2 ) );
+  QVERIFY( !command2.mergeWith( &command1 ) );
+
+  QgsModelUndoCommand command3( &model, u"c1"_s, QgsModelUndoCommand::CommandOperation::GroupChanged );
+  QgsModelUndoCommand command4( &model, u"c2"_s, QgsModelUndoCommand::CommandOperation::NameChanged );
+  QgsModelUndoCommand command5( &model, u"c3"_s, QgsModelUndoCommand::CommandOperation::NameChanged );
+  // not compatible, different operation
+  QVERIFY( !command3.mergeWith( &command4 ) );
+  QVERIFY( !command4.mergeWith( &command3 ) );
+  // compatible, same operation
+  QVERIFY( command4.mergeWith( &command5 ) );
+
+  QgsModelUndoCommand command6( &model, u"c1"_s, u"id1"_s );
+  QgsModelUndoCommand command7( &model, u"c2"_s, u"id2"_s );
+  QgsModelUndoCommand command8( &model, u"c3"_s, u"id2"_s );
+  // not compatible, different id string
+  QVERIFY( !command6.mergeWith( &command7 ) );
+  QVERIFY( !command6.mergeWith( &command8 ) );
+  QVERIFY( !command7.mergeWith( &command6 ) );
+  // compatible, same id string
+  QVERIFY( command7.mergeWith( &command8 ) );
 }
 
 void TestProcessingGui::testSetGetConfig()
@@ -11690,7 +11716,7 @@ void TestProcessingGui::testModelGraphicsView()
   }
   QVERIFY( outputItem );
   QCOMPARE( dynamic_cast<QgsProcessingModelOutput *>( outputItem->component() )->childOutputName(), u"my_output"_s );
-
+  QCOMPARE( scene.outputItem( u"buffer"_s, u"my_output"_s ), outputItem );
 
   layerCommentItem = nullptr;
   QgsModelCommentGraphicItem *algCommentItem = nullptr;

@@ -33,6 +33,8 @@
 #include <QLocale>
 #include <QMessageBox>
 #include <QPixmap>
+#include <QQuickWindow>
+#include <QSGRendererInterface>
 #include <QScreen>
 #include <QSplashScreen>
 #include <QStandardPaths>
@@ -958,6 +960,11 @@ int main( int argc, char *argv[] )
 #if !defined( QT_NO_OPENGL )
   QCoreApplication::setAttribute( Qt::AA_ShareOpenGLContexts, true );
 #endif
+
+  // Workaround upstream Qt issue (https://qt-project.atlassian.net/browse/QTBUG-139109) which
+  // causes QGIS' main window to flash on app launch and make the app completely
+  // unresponsive when editing an attribute form QML widget.
+  QQuickWindow::setGraphicsApi( QSGRendererInterface::Software );
 
   // Set up the QgsSettings Global Settings:
   // - use the path specified with --globalsettingsfile path,

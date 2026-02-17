@@ -50,11 +50,8 @@ fi
 pids=()
 iPid=0
 
-for root_dir in python python/PyQt6; do
-
-  if [[ $root_dir == "python/PyQt6" ]]; then
-    IS_QT6="-qt6"
-  fi
+ROOT_DIRS=("python/PyQt6")
+for root_dir in "${ROOT_DIRS[@]}"; do
 
   for module in "${modules[@]}"; do
     module_dir=${root_dir}/${module}
@@ -86,13 +83,13 @@ It is not aimed to be manually edited
         if [[ ${CLASS_MAP} -eq 1 ]]; then
           CLASS_MAP_CALL="-c ${module_dir}/class_map.yaml"
         fi
-        ./scripts/sipify.py $IS_QT6 -s ${root_dir}/${sipfile}.in -p ${module_dir}/auto_additions/${pyfile} ${CLASS_MAP_CALL} ${header} &
+        ./scripts/sipify.py -s ${root_dir}/${sipfile}.in -p ${module_dir}/auto_additions/${pyfile} ${CLASS_MAP_CALL} ${header} &
         pids[iPid]=$!
         iPid=$((iPid+1))
 
       fi
       count=$((count+1))
-    done < <( ${GP}sed -n -r "s@^%Include auto_generated/(.*\.sip)@${module}/auto_generated/\1@p" python/${module}/${module}_auto.sip )
+    done < <( ${GP}sed -n -r "s@^%Include auto_generated/(.*\.sip)@${module}/auto_generated/\1@p" python/PyQt6/${module}/${module}_auto.sip )
   done
 done
 
@@ -101,7 +98,7 @@ for pid in "${pids[@]}"; do
 done
 
 if [[ ${CLASS_MAP} -eq 1 ]]; then
-  for root_dir in python python/PyQt6; do
+  for root_dir in "${ROOT_DIRS[@]}"; do
     for module in "${modules[@]}"; do
       module_dir=${root_dir}/${module}
       echo "sorting ${module_dir}/class_map.yaml"

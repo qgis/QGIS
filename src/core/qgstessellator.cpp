@@ -606,7 +606,6 @@ void QgsTessellator::addTriangleVertices(
     if ( fz > mZMax )
       mZMax = static_cast<float>( fz );
 
-    // NOLINTBEGIN(bugprone-branch-clone)
     if ( mOutputZUp )
     {
       mData << static_cast<float>( fx ) << static_cast<float>( fy ) << static_cast<float>( fz );
@@ -619,7 +618,6 @@ void QgsTessellator::addTriangleVertices(
       if ( mAddNormals )
         mData << normal.x() << normal.z() << - normal.y();
     }
-    // NOLINTEND(bugprone-branch-clone)
 
     if ( mAddTextureCoords )
     {
@@ -829,7 +827,6 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       try
       {
         std::vector<QVector3D> trianglePoints;
-        // NOLINTBEGIN(bugprone-branch-clone)
         switch ( mTriangulationAlgorithm )
         {
           case Qgis::TriangulationAlgorithm::ConstrainedDelaunay:
@@ -839,7 +836,6 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
             trianglePoints = generateEarcutTriangles( polygonNew.get() );
             break;
         }
-        // NOLINTEND(bugprone-branch-clone)
 
         if ( trianglePoints.empty() )
         {

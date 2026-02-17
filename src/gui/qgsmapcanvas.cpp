@@ -65,6 +65,7 @@ email                : sherman at mrcc.com
 #include "qgsscreenhelper.h"
 #include "qgssettings.h"
 #include "qgssettingsregistrygui.h"
+#include "qgsstatusbar.h"
 #include "qgssvgcache.h"
 #include "qgssymbollayerutils.h"
 #include "qgstemporalcontroller.h"
@@ -1054,6 +1055,16 @@ QgsRectangle QgsMapCanvas::imageRect( const QImage &img, const QgsMapSettings &m
   double res = m2p.mapUnitsPerPixel() / img.devicePixelRatioF();
   QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + img.width() * res, topLeft.y() - img.height() * res );
   return rect;
+}
+
+QgsStatusBar *QgsMapCanvas::statusBar()
+{
+  return mStatusBar.data();
+}
+
+void QgsMapCanvas::setStatusBar( QgsStatusBar *bar )
+{
+  mStatusBar = bar;
 }
 
 bool QgsMapCanvas::previewJobsEnabled() const

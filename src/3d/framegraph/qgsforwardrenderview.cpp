@@ -23,6 +23,7 @@
 #include <Qt3DRender/QClipPlane>
 #include <Qt3DRender/QColorMask>
 #include <Qt3DRender/QCullFace>
+#include <Qt3DRender/QDebugOverlay>
 #include <Qt3DRender/QDepthTest>
 #include <Qt3DRender/QFrustumCulling>
 #include <Qt3DRender/QLayer>
@@ -37,10 +38,6 @@
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QViewport>
 #include <Qt3DRender/qsubtreeenabler.h>
-
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 15, 0 )
-#include <Qt3DRender/QDebugOverlay>
-#endif
 
 QgsForwardRenderView::QgsForwardRenderView( const QString &viewName, Qt3DRender::QCamera *mainCamera )
   : QgsAbstractRenderView( viewName )
