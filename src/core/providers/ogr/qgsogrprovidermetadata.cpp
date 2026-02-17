@@ -778,7 +778,7 @@ QString QgsOgrProviderMetadata::filters( Qgis::FileFilterType type )
 
 QgsProviderMetadata::ProviderMetadataCapabilities QgsOgrProviderMetadata::capabilities() const
 {
-  return QuerySublayers | CreateDatabase;
+  return QuerySublayers | CreateDatabase | UrisReferToSame;
 }
 
 bool QgsOgrProviderMetadata::uriIsBlocklisted( const QString &uri ) const
@@ -1230,6 +1230,26 @@ QStringList QgsOgrProviderMetadata::sidecarFilesForUri( const QString &uri ) con
 QList<Qgis::LayerType> QgsOgrProviderMetadata::supportedLayerTypes() const
 {
   return { Qgis::LayerType::Vector };
+}
+
+bool QgsOgrProviderMetadata::urisReferToSame( const QString &uri1, const QString &uri2, Qgis::SourceHierarchyLevel level ) const
+{
+  const QVariantMap parts1 = decodeUri( uri1 );
+  const QVariantMap parts2 = decodeUri( uri2 );
+
+  const bool sameConnection = parts1.value( u"path"_s ) == parts2.value( u"path"_s )
+                              && parts1.value( u"vsiPrefix"_s ) == parts2.value( u"vsiPrefix"_s )
+                              && parts1.value( u"vsiSuffix"_s ) == parts2.value( u"vsiSuffix"_s );
+  const bool sameTable = parts1.value( u"layerName"_s ) == parts2.value( u"layerName"_s );
+  switch ( level )
+  {
+    case Qgis::SourceHierarchyLevel::Connection:
+    case Qgis::SourceHierarchyLevel::Group:
+      return sameConnection;
+    case Qgis::SourceHierarchyLevel::Object:
+      return sameConnection && sameTable;
+  }
+  return false;
 }
 
 QMap<QString, QgsAbstractProviderConnection *> QgsOgrProviderMetadata::connections( bool cached )
