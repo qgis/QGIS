@@ -79,7 +79,7 @@ void QgsDefaultSearchWidgetWrapper::setExpression( const QString &expression )
       const double doubleValue = QgsDoubleValidator::toDouble( exp, &ok );
       if ( ok )
       {
-        exp = QString::number( doubleValue );
+        exp = QString::number( doubleValue, 'f', QLocale::FloatingPointShortest );
       }
     }
     str = u"%1 %2 '%3'"_s
