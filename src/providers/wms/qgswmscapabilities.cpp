@@ -104,7 +104,13 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   {
     mIsTemporal = true;
     mTemporalExtent = uri.param( u"timeDimensionExtent"_s );
+    const QString enableTime = uri.param( u"enableTime"_s );
+    if ( !enableTime.isEmpty() )
+    {
+      mEnableTime = enableTime;
+    }
     mTimeDimensionExtent = parseTemporalExtent( mTemporalExtent );
+    mTimeFormat = parseTemporalFormat( mTemporalExtent );
 
     if ( !mTimeDimensionExtent.datesResolutionList.isEmpty() && !mTimeDimensionExtent.datesResolutionList.constFirst().dates.dateTimes.empty() )
     {
@@ -277,6 +283,90 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   mFeatureCount = uri.param( u"featureCount"_s ).toInt(); // default to 0
 
   return true;
+}
+
+QString QgsWmsSettings::parseTemporalFormat( const QString &extent ) const
+{
+  if ( extent.isEmpty() )
+    return QString();
+
+  QString item = extent.split( ',' ).first().trimmed();
+
+  if ( item.contains( '/' ) )
+  {
+    item = item.split( '/' ).first().trimmed();
+  }
+
+  const bool enableTime = mEnableTime.compare( u"true"_s, Qt::CaseInsensitive ) == 0;
+
+  // Date-only formats (no 'T')
+  if ( !item.contains( 'T' ) )
+  {
+    switch ( item.size() )
+    {
+      case 4:
+        return u"yyyy"_s; // 2020
+      case 7:
+        return u"yyyy-MM"_s; // 2020-06
+      case 10:
+        return u"yyyy-MM-dd"_s; // 2020-06-15
+      default:
+        return u"yyyy-MM-dd"_s;
+    }
+  }
+
+  // DateTime formats (with 'T')
+  const bool hasTimezone = item.endsWith( 'Z' );
+  const bool hasTimezoneOffset = item.contains( QRegularExpression( u"[+-]\\d{2}:\\d{2}$"_s ) );
+  const bool hasMilliseconds = item.contains( '.' );
+
+  if ( hasMilliseconds && hasTimezoneOffset && enableTime )
+  {
+    return u"yyyy-MM-ddTHH:mm:ss.zzzt"_s;
+  }
+
+  if ( hasMilliseconds && hasTimezone && enableTime )
+  {
+    return u"yyyy-MM-ddTHH:mm:ss.zzzZ"_s;
+  }
+
+  if ( hasMilliseconds && enableTime )
+  {
+    return u"yyyy-MM-ddTHH:mm:ss.zzz"_s;
+  }
+
+  if ( hasTimezoneOffset && enableTime )
+  {
+    switch ( item.size() )
+    {
+      case 25: // YYYY-MM-DDTHH:mm:ss+HH:MM
+        return u"yyyy-MM-ddTHH:mm:sst"_s;
+      case 22: // YYYY-MM-DDTHH:mm+HH:MM
+        return u"yyyy-MM-ddTHH:mmt"_s;
+      case 19: // YYYY-MM-DDTHH+HH:MM
+        return u"yyyy-MM-ddTHHt"_s;
+      default:
+        return u"yyyy-MM-ddTHH:mm:sst"_s;
+    }
+  }
+
+  switch ( item.size() )
+  {
+    case 20:
+      return hasTimezone && enableTime ? u"yyyy-MM-ddTHH:mm:ssZ"_s : u"yyyy-MM-dd"_s;
+    case 19:
+      return !hasTimezone ? u"yyyy-MM-ddTHH:mm:ss"_s : u"yyyy-MM-dd"_s;
+    case 17:
+      return hasTimezone and enableTime ? u"yyyy-MM-ddTHH:mmZ"_s : u"yyyy-MM-dd"_s;
+    case 16:
+      return !hasTimezone ? u"yyyy-MM-ddTHH:mm"_s : u"yyyy-MM-dd"_s;
+    case 14:
+      return hasTimezone and enableTime ? u"yyyy-MM-ddTHHZ"_s : u"yyyy-MM-dd"_s;
+    case 13:
+      return !hasTimezone ? u"yyyy-MM-ddTHH"_s : u"yyyy-MM-dd"_s;
+    default:
+      return hasTimezone and enableTime ? u"yyyy-MM-ddTHH:mm:ssZ"_s : u"yyyy-MM-dd"_s;
+  }
 }
 
 QgsWmstDimensionExtent QgsWmsSettings::parseTemporalExtent( const QString &extent )
