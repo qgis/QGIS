@@ -197,7 +197,7 @@ QgsDbRelationDialog::QgsDbRelationDialog( QgsAbstractDatabaseProviderConnection 
   mWidget = new QgsDbRelationWidget( connection );
   vLayout->addWidget( mWidget, 1 );
 
-  mButtonBox = new QDialogButtonBox( QDialogButtonBox::StandardButton::Cancel | QDialogButtonBox::StandardButton::Help | QDialogButtonBox::StandardButton::OK );
+  mButtonBox = new QDialogButtonBox( QDialogButtonBox::StandardButton::Cancel | QDialogButtonBox::StandardButton::Help | QDialogButtonBox::StandardButton::Ok );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
