@@ -59,6 +59,18 @@ according to MinMaxOrigin parameters ``mmo`` and ``extent``.
 .. versionadded:: 4.0
 %End
 
+    static QgsRectangle alignRasterExtent( const QgsRectangle &extent, const QgsPointXY &origin, double pixelSizeX, double pixelSizeY );
+%Docstring
+Returns a new extent that includes the given ``extent`` with corners
+coordinates aligned to the pixel grid defined by the ``origin`` and
+``pixelSizeX`` and ``pixelSizeY`` arguments.
+
+The resulting extent will be expanded if necessary to ensure that its
+corners fall on pixel boundaries defined by the origin and pixel sizes.
+
+.. versionadded:: 4.0
+%End
+
 };
 
 /************************************************************************

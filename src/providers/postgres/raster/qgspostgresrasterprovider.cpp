@@ -25,6 +25,7 @@
 #include "qgspostgresprovidermetadatautils.h"
 #include "qgspostgresutils.h"
 #include "qgsraster.h"
+#include "qgsrasterlayerutils.h"
 #include "qgsrectangle.h"
 #include "qgsstringutils.h"
 
@@ -2361,10 +2362,7 @@ QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, Qgis::
   QgsRectangle extentExpanded { extent };
   if ( !extent.isNull() )
   {
-    extentExpanded.setXMinimum( mExtent.xMinimum() + std::floor( ( extentExpanded.xMinimum() - mExtent.xMinimum() ) / mScaleX ) * mScaleX );
-    extentExpanded.setXMaximum( mExtent.xMinimum() + std::ceil( ( extentExpanded.xMaximum() - mExtent.xMinimum() ) / mScaleX ) * mScaleX );
-    extentExpanded.setYMinimum( mExtent.yMinimum() + std::floor( ( extentExpanded.yMinimum() - mExtent.yMinimum() ) / std::abs( mScaleY ) ) * std::abs( mScaleY ) );
-    extentExpanded.setYMaximum( mExtent.yMinimum() + std::ceil( ( extentExpanded.yMaximum() - mExtent.yMinimum() ) / std::abs( mScaleY ) ) * std::abs( mScaleY ) );
+    extentExpanded = QgsRasterLayerUtils::alignRasterExtent( extent, QgsPointXY( mExtent.xMinimum(), mExtent.yMinimum() ), mScaleX, mScaleY );
   }
 
   // Query the backend

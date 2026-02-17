@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgspointxy.h"
 #include "qgsrange.h"
 
 class QgsRasterLayer;
@@ -70,6 +71,16 @@ class CORE_EXPORT QgsRasterLayerUtils
                                int sampleSize,
                                double &min SIP_OUT,
                                double &max SIP_OUT );
+
+    /**
+     * Returns a new extent that includes the given \a extent with corners coordinates
+     * aligned to the pixel grid defined by the \a origin and \a pixelSizeX and \a pixelSizeY arguments.
+     *
+     * The resulting extent will be expanded if necessary to ensure that its corners fall on pixel boundaries defined by the origin and pixel sizes.
+     *
+     * \since QGIS 4.0
+     */
+    static QgsRectangle alignRasterExtent( const QgsRectangle &extent, const QgsPointXY &origin, double pixelSizeX, double pixelSizeY );
 
 };
 

@@ -283,3 +283,14 @@ void QgsRasterLayerUtils::computeMinMax( QgsRasterDataProvider *provider,
   }
   QgsDebugMsgLevel( u"band = %1 min = %2 max = %3"_s.arg( band ).arg( min ).arg( max ), 4 );
 }
+
+QgsRectangle QgsRasterLayerUtils::alignRasterExtent( const QgsRectangle &extent, const QgsPointXY &origin, double pixelSizeX, double pixelSizeY )
+{
+  // This may be negative to indicate inverted NS axis: make sure to use absolute value for calculations
+  const double absPixelSizeY { std::abs( pixelSizeY ) };
+  const double minX { origin.x() + std::floor( ( extent.xMinimum() - origin.x() ) / pixelSizeX ) *pixelSizeX };
+  const double minY { origin.y() + std::floor( ( extent.yMinimum() - origin.y() ) / absPixelSizeY ) *absPixelSizeY };
+  const double maxX { origin.x() + std::ceil( ( extent.xMaximum() - origin.x() ) / pixelSizeX ) *pixelSizeX };
+  const double maxY { origin.y() + std::ceil( ( extent.yMaximum() - origin.y() ) / absPixelSizeY ) *absPixelSizeY };
+  return QgsRectangle( minX, minY, maxX, maxY );
+}
