@@ -68,6 +68,7 @@ QgsLayoutChartWidget::QgsLayoutChartWidget( QgsLayoutItemChart *chartItem )
   connect( mIntersectAtlasCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutChartWidget::mIntersectAtlasCheckBox_stateChanged );
 
   setGuiElementValues();
+  updateButtonsState();
 
   connect( mChartItem, &QgsLayoutObject::changed, this, &QgsLayoutChartWidget::setGuiElementValues );
 }
@@ -237,6 +238,7 @@ void QgsLayoutChartWidget::changeLayer( QgsMapLayer *layer )
   mChartItem->setSourceLayer( vl );
   mChartItem->update();
   mChartItem->endCommand();
+  updateButtonsState();
 }
 
 void QgsLayoutChartWidget::changeSortExpression( const QString &expression, bool )
@@ -343,6 +345,7 @@ void QgsLayoutChartWidget::mAddSeriesPushButton_clicked()
 
   mSeriesListWidget->setCurrentRow( mSeriesListWidget->count() - 1 );
   mSeriesListWidget_currentItemChanged( mSeriesListWidget->currentItem(), nullptr );
+  updateButtonsState();
 }
 
 void QgsLayoutChartWidget::mRemoveSeriesPushButton_clicked()
@@ -368,6 +371,7 @@ void QgsLayoutChartWidget::mRemoveSeriesPushButton_clicked()
   mChartItem->setSeriesList( seriesList );
   mChartItem->endCommand();
   mChartItem->update();
+  updateButtonsState();
 }
 
 void QgsLayoutChartWidget::mSeriesPropertiesButton_clicked()
@@ -456,4 +460,17 @@ void QgsLayoutChartWidget::mIntersectAtlasCheckBox_stateChanged( int state )
   mChartItem->setFilterToAtlasFeature( filterToAtlas );
   mChartItem->endCommand();
   mChartItem->update();
+}
+
+void QgsLayoutChartWidget::updateButtonsState()
+{
+  if ( !mChartItem )
+  {
+    return;
+  }
+
+  const bool enable = qobject_cast<QgsVectorLayer *>( mLayerComboBox->currentLayer() ) != nullptr;
+  mSortCheckBox->setEnabled( enable );
+  mAddSeriesPushButton->setEnabled( enable );
+  mRemoveSeriesPushButton->setEnabled( mSeriesListWidget->count() > 0 );
 }

@@ -71,6 +71,9 @@ class GUI_EXPORT QgsLayoutChartWidget : public QgsLayoutItemBaseWidget, private 
     //! Sets the GUI elements to the values of mChartItem
     void setGuiElementValues();
 
+    //! Updates buttons state when selecting a layer or adding/removing series
+    void updateButtonsState();
+
     //! Adds a new item to the series list widget
     QListWidgetItem *addSeriesListItem( const QString &name );
 
