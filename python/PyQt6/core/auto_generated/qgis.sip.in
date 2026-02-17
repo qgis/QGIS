@@ -866,6 +866,13 @@ The development version
     typedef QFlags<Qgis::UriCleaningFlag> UriCleaningFlags;
 
 
+    enum class SourceHierarchyLevel /BaseType=IntEnum/
+    {
+      Connection,
+      Group,
+      Object,
+    };
+
     enum class SublayerQueryFlag /BaseType=IntFlag/
     {
       FastScan,

@@ -213,6 +213,11 @@ QString QgsProviderMetadata::cleanUri( const QString &uri, Qgis::UriCleaningFlag
   return uri;
 }
 
+bool QgsProviderMetadata::urisReferToSame( const QString &, const QString &, Qgis::SourceHierarchyLevel ) const
+{
+  return false;
+}
+
 Qgis::VectorExportResult QgsProviderMetadata::createEmptyLayer( const QString &, const QgsFields &,
     Qgis::WkbType, const QgsCoordinateReferenceSystem &,
     bool, QMap<int, int> &,
