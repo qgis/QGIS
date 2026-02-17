@@ -5847,6 +5847,24 @@ QList<Qgis::LayerType> QgsSpatiaLiteProviderMetadata::supportedLayerTypes() cons
   return { Qgis::LayerType::Vector };
 }
 
+bool QgsSpatiaLiteProviderMetadata::urisReferToSame( const QString &uri1, const QString &uri2, Qgis::SourceHierarchyLevel level ) const
+{
+  const QVariantMap parts1 = decodeUri( uri1 );
+  const QVariantMap parts2 = decodeUri( uri2 );
+
+  const bool sameConnection = parts1.value( u"path"_s ) == parts2.value( u"path"_s );
+  const bool sameTable = parts1.value( u"layerName"_s ) == parts2.value( u"layerName"_s );
+  switch ( level )
+  {
+    case Qgis::SourceHierarchyLevel::Connection:
+    case Qgis::SourceHierarchyLevel::Group:
+      return sameConnection;
+    case Qgis::SourceHierarchyLevel::Object:
+      return sameConnection && sameTable;
+  }
+  return false;
+}
+
 QString QgsSpatiaLiteProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   QgsDataSourceUri dsUri;
@@ -6477,6 +6495,11 @@ QgsSpatiaLiteProviderMetadata::QgsSpatiaLiteProviderMetadata()
 QIcon QgsSpatiaLiteProviderMetadata::icon() const
 {
   return QgsApplication::getThemeIcon( u"mIconSpatialite.svg"_s );
+}
+
+QgsProviderMetadata::ProviderMetadataCapabilities QgsSpatiaLiteProviderMetadata::capabilities() const
+{
+  return QgsProviderMetadata::ProviderMetadataCapability::UrisReferToSame;
 }
 
 QList<QgsDataItemProvider *> QgsSpatiaLiteProviderMetadata::dataItemProviders() const
