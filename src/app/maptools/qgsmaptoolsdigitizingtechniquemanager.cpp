@@ -30,7 +30,8 @@
 
 #include <QAction>
 #include <QActionGroup>
-#include <QComboBox>
+#include <QGridLayout>
+#include <QLabel>
 #include <QMenu>
 #include <QString>
 #include <QToolButton>
@@ -50,6 +51,7 @@ QgsMapToolsDigitizingTechniqueManager::QgsMapToolsDigitizingTechniqueManager( QO
   mTechniqueActions.insert( Qgis::CaptureTechnique::CircularString, QgisApp::instance()->mActionDigitizeWithCurve );
   mTechniqueActions.insert( Qgis::CaptureTechnique::Streaming, QgisApp::instance()->mActionStreamDigitize );
   mTechniqueActions.insert( Qgis::CaptureTechnique::Shape, QgisApp::instance()->mActionDigitizeShape );
+  mTechniqueActions.insert( Qgis::CaptureTechnique::PolyBezier, QgisApp::instance()->mActionDigitizeWithBezier );
   mTechniqueActions.insert( Qgis::CaptureTechnique::NurbsCurve, QgisApp::instance()->mActionDigitizeWithNurbs );
 
   mDigitizeModeToolButton = new QToolButton();
@@ -79,6 +81,7 @@ void QgsMapToolsDigitizingTechniqueManager::setupToolBars()
     digitizeMenu->addAction( it.value() );
     actionGroup->addAction( it.value() );
   }
+
   QgisApp::instance()->mActionStreamDigitize->setShortcut( tr( "R", "Keyboard shortcut: toggle stream digitizing" ) );
   connect( digitizeMenu, &QMenu::triggered, this, [this]( QAction *action ) {
     Qgis::CaptureTechnique technique = mTechniqueActions.key( action, Qgis::CaptureTechnique::StraightSegments );
@@ -94,10 +97,8 @@ void QgsMapToolsDigitizingTechniqueManager::setupToolBars()
   } );
 
   mStreamDigitizingSettingsAction = new QgsStreamDigitizingSettingsAction( QgisApp::instance() );
-  mNurbsDigitizingSettingsAction = new QgsNurbsDigitizingSettingsAction( QgisApp::instance() );
   digitizeMenu->addSeparator();
   digitizeMenu->addAction( mStreamDigitizingSettingsAction );
-  digitizeMenu->addAction( mNurbsDigitizingSettingsAction );
 
   mDigitizeModeToolButton->setMenu( digitizeMenu );
 
@@ -167,17 +168,23 @@ void QgsMapToolsDigitizingTechniqueManager::setupToolBars()
 
 QgsMapToolsDigitizingTechniqueManager::~QgsMapToolsDigitizingTechniqueManager()
 {
+  deleteNurbsDegreeWidget();
 }
 
 void QgsMapToolsDigitizingTechniqueManager::setCaptureTechnique( Qgis::CaptureTechnique technique, bool alsoSetShapeTool )
 {
   settingsDigitizingTechnique->setValue( technique );
 
-  mTechniqueActions.value( technique )->setChecked( true );
+  if ( mTechniqueActions.contains( technique ) )
+    mTechniqueActions.value( technique )->setChecked( true );
 
   updateDigitizeModeButton( technique );
 
-  // QgisApp::captureTools returns all registered capture tools + the eventual current capture tool
+  if ( technique == Qgis::CaptureTechnique::NurbsCurve )
+    createNurbsDegreeWidget();
+  else
+    deleteNurbsDegreeWidget();
+
   const QList<QgsMapToolCapture *> tools = QgisApp::instance()->captureTools();
   for ( QgsMapToolCapture *tool : tools )
   {
@@ -276,6 +283,9 @@ void QgsMapToolsDigitizingTechniqueManager::updateDigitizeModeButton( const Qgis
     case Qgis::CaptureTechnique::Shape:
       mDigitizeModeToolButton->setDefaultAction( QgisApp::instance()->mActionDigitizeShape );
       break;
+    case Qgis::CaptureTechnique::PolyBezier:
+      mDigitizeModeToolButton->setDefaultAction( QgisApp::instance()->mActionDigitizeWithBezier );
+      break;
     case Qgis::CaptureTechnique::NurbsCurve:
       mDigitizeModeToolButton->setDefaultAction( QgisApp::instance()->mActionDigitizeWithNurbs );
       break;
@@ -308,6 +318,8 @@ void QgsMapToolsDigitizingTechniqueManager::enableDigitizingTechniqueActions( bo
           if ( tool->supportsTechnique( *technique ) )
             supportedTechniques.insert( *technique );
         }
+        if ( tool->supportsTechnique( Qgis::CaptureTechnique::NurbsCurve ) )
+          supportedTechniques.insert( Qgis::CaptureTechnique::NurbsCurve );
         break;
       }
     }
@@ -331,6 +343,11 @@ void QgsMapToolsDigitizingTechniqueManager::enableDigitizingTechniqueActions( bo
     cit.value()->setChecked( cit.value()->isEnabled() && actualCurrentTechnique == cit.key() );
   }
 
+  if ( enabled && actualCurrentTechnique == Qgis::CaptureTechnique::NurbsCurve )
+    createNurbsDegreeWidget();
+  else
+    deleteNurbsDegreeWidget();
+
   QHash<QString, QAction *>::const_iterator sit = mShapeActions.constBegin();
   for ( ; sit != mShapeActions.constEnd(); ++sit )
   {
@@ -350,6 +367,43 @@ void QgsMapToolsDigitizingTechniqueManager::enableDigitizingTechniqueActions( bo
       }
     }
   }
+}
+
+void QgsMapToolsDigitizingTechniqueManager::createNurbsDegreeWidget()
+{
+  if ( mNurbsDegreeWidget )
+    return;
+
+  QGridLayout *gLayout = new QGridLayout();
+  gLayout->setContentsMargins( 3, 2, 3, 2 );
+
+  QgsSpinBox *spinBox = new QgsSpinBox();
+  spinBox->setMinimum( 1 );
+  spinBox->setMaximum( 8 );
+  spinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingNurbsDegree->value() );
+  spinBox->setClearValue( 3 );
+
+  QLabel *label = new QLabel( tr( "NURBS Degree" ) );
+  gLayout->addWidget( label, 1, 0 );
+  gLayout->addWidget( spinBox, 1, 1 );
+  connect( spinBox, qOverload<int>( &QSpinBox::valueChanged ), this, []( int value ) {
+    QgsSettingsRegistryCore::settingsDigitizingNurbsDegree->setValue( value );
+  } );
+
+  mNurbsDegreeWidget = new QWidget( QgisApp::instance() );
+  mNurbsDegreeWidget->setLayout( gLayout );
+
+  QgisApp::instance()->addUserInputWidget( mNurbsDegreeWidget );
+  spinBox->setFocus( Qt::TabFocusReason );
+}
+
+void QgsMapToolsDigitizingTechniqueManager::deleteNurbsDegreeWidget()
+{
+  if ( mNurbsDegreeWidget )
+  {
+    mNurbsDegreeWidget->deleteLater();
+  }
+  mNurbsDegreeWidget = nullptr;
 }
 
 //
@@ -384,70 +438,3 @@ QgsStreamDigitizingSettingsAction::QgsStreamDigitizingSettingsAction( QWidget *p
 }
 
 QgsStreamDigitizingSettingsAction::~QgsStreamDigitizingSettingsAction() = default;
-
-//
-// QgsNurbsDigitizingSettingsAction
-//
-
-QgsNurbsDigitizingSettingsAction::QgsNurbsDigitizingSettingsAction( QWidget *parent )
-  : QWidgetAction( parent )
-{
-  QGridLayout *gLayout = new QGridLayout();
-  gLayout->setContentsMargins( 3, 2, 3, 2 );
-
-  // Mode ComboBox
-  mNurbsModeComboBox = new QComboBox();
-  mNurbsModeComboBox->addItem( tr( "Control Points" ), static_cast<int>( Qgis::NurbsMode::ControlPoints ) );
-
-  // Set current index based on saved setting
-  const Qgis::NurbsMode currentMode = QgsSettingsRegistryCore::settingsDigitizingNurbsMode->value();
-  mNurbsModeComboBox->setCurrentIndex( mNurbsModeComboBox->findData( static_cast<int>( currentMode ) ) );
-
-  QLabel *modeLabel = new QLabel( tr( "NURBS Mode" ) );
-  gLayout->addWidget( modeLabel, 0, 0 );
-  gLayout->addWidget( mNurbsModeComboBox, 0, 1 );
-
-  connect( mNurbsModeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsNurbsDigitizingSettingsAction::updateDegreeEnabled );
-  connect( mNurbsModeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int index ) {
-    Q_UNUSED( index )
-    // Get the mode from the combo box data
-    Qgis::NurbsMode mode = static_cast<Qgis::NurbsMode>( mNurbsModeComboBox->currentData().toInt() );
-    QgsSettingsRegistryCore::settingsDigitizingNurbsMode->setValue( mode );
-  } );
-
-  // Degree SpinBox
-  mNurbsDegreeSpinBox = new QgsSpinBox();
-  mNurbsDegreeSpinBox->setKeyboardTracking( false );
-  mNurbsDegreeSpinBox->setRange( 1, 5 );
-  mNurbsDegreeSpinBox->setWrapping( false );
-  mNurbsDegreeSpinBox->setSingleStep( 1 );
-  mNurbsDegreeSpinBox->setClearValue( 3 );
-  mNurbsDegreeSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingNurbsDegree->value() );
-
-  mNurbsDegreeLabel = new QLabel( tr( "Degree" ) );
-  gLayout->addWidget( mNurbsDegreeLabel, 1, 0 );
-  gLayout->addWidget( mNurbsDegreeSpinBox, 1, 1 );
-  connect( mNurbsDegreeSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, []( int value ) {
-    QgsSettingsRegistryCore::settingsDigitizingNurbsDegree->setValue( value );
-  } );
-
-  // Set initial enabled state based on current mode
-  const bool enableDegree = ( currentMode == Qgis::NurbsMode::ControlPoints );
-  mNurbsDegreeLabel->setEnabled( enableDegree );
-  mNurbsDegreeSpinBox->setEnabled( enableDegree );
-
-  QWidget *w = new QWidget( parent );
-  w->setLayout( gLayout );
-  setDefaultWidget( w );
-}
-
-QgsNurbsDigitizingSettingsAction::~QgsNurbsDigitizingSettingsAction() = default;
-
-void QgsNurbsDigitizingSettingsAction::updateDegreeEnabled( int modeIndex )
-{
-  Q_UNUSED( modeIndex )
-  const Qgis::NurbsMode mode = static_cast<Qgis::NurbsMode>( mNurbsModeComboBox->currentData().toInt() );
-  const bool enableDegree = ( mode == Qgis::NurbsMode::ControlPoints );
-  mNurbsDegreeLabel->setEnabled( enableDegree );
-  mNurbsDegreeSpinBox->setEnabled( enableDegree );
-}

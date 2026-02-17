@@ -94,11 +94,21 @@ NURBS).
 Returns ``True`` if this curve is rational (has non-uniform weights).
 %End
 
+
     bool isPolyBezier() const /HoldGIL/;
 %Docstring
-Returns ``True`` if this curve represents a poly-Bézier curve. A
-poly-Bézier is a degree 3 NURBS with (n-1) divisible by 3, where n is
-the number of control points.
+Returns ``True`` if this curve represents a poly-Bézier curve structure.
+
+A poly-Bézier is a piecewise Bézier curve with C0 continuity (positional
+continuity only) used for editing. It requires:
+
+- Control points: (controlPointCount - 1) % degree == 0
+- Knot vector with multiplicity 'degree' at internal junctions
+- Can have 1 or more segments (like MultiPolygon can have 1+ polygons)
+
+Works for any degree ≥ 1. Note that a single-segment poly-Bézier will
+also return ``True`` for :py:func:`~QgsNurbsCurve.isBezier` (degree =
+n-1 condition).
 %End
 
     virtual bool isClosed() const /HoldGIL/;
@@ -362,6 +372,35 @@ with:
 :param degree: degree of the NURBS curve (must be >= 1)
 
 :return: the generated knot vector
+
+.. versionadded:: 4.0
+%End
+
+    static QVector<double> generateKnotsForBezierConversion( int nAnchors, int degree = 3 );
+%Docstring
+Generates a knot vector for converting piecewise Bézier curves to NURBS.
+
+Creates a knot vector with multiplicity 'degree' at junctions for C0
+continuity. Format: [0 repeated (degree+1), 1 repeated degree, ..., s
+repeated (degree+1)] where s = nAnchors - 1 (number of segments)
+
+:param nAnchors: number of anchor points (must be >= 2)
+:param degree: degree of the curve (must be >= 1), defaults to 3 (cubic)
+
+:return: the generated knot vector, or empty if invalid parameters
+
+.. versionadded:: 4.0
+%End
+
+    bool isAnchorVertex( int localIndex ) const /HoldGIL/;
+%Docstring
+Returns ``True`` if the control point at localIndex is an anchor vertex
+in a poly-Bézier curve. Anchor vertices are at positions 0, degree,
+2*degree, etc.
+
+:param localIndex: the control point index to check
+
+:return: ``True`` if this is an anchor vertex, ``False`` otherwise
 
 .. versionadded:: 4.0
 %End

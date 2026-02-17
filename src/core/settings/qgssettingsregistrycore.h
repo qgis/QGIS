@@ -58,12 +58,6 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
      */
     static const QgsSettingsEntryInteger *settingsDigitizingNurbsDegree;
 
-    /**
-     * Settings entry digitizing NURBS mode
-     * \since QGIS 4.0
-     */
-    static const QgsSettingsEntryEnumFlag<Qgis::NurbsMode> *settingsDigitizingNurbsMode;
-
     //! Settings entry digitizing line width
     static const QgsSettingsEntryInteger *settingsDigitizingLineWidth;
 
