@@ -78,6 +78,8 @@ class CORE_EXPORT QgsRasterLayerUtils
      *
      * The resulting extent will be expanded if necessary to ensure that its corners fall on pixel boundaries defined by the origin and pixel sizes.
      *
+     * \returns The aligned extent or the original extent if pixel sizes are zero (to avoid division by zero) or if the extent is empty.
+     *
      * \since QGIS 4.0
      */
     static QgsRectangle alignRasterExtent( const QgsRectangle &extent, const QgsPointXY &origin, double pixelSizeX, double pixelSizeY );
