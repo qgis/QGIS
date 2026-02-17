@@ -1466,8 +1466,15 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
               return;
             }
 
+            const QgsFields existingFields = fieldsItem->fields();
+            QStringList existingFieldNames = existingFields.names();
+            existingFieldNames.removeAll( itemName );
+
             // Confirmation dialog
-            QgsNewNameDialog dlg( tr( "field “%1”" ).arg( itemName ), itemName );
+            QgsNewNameDialog dlg( tr( "field “%1”" ).arg( itemName ), itemName, {}, existingFieldNames );
+            dlg.setOverwriteEnabled( false );
+            dlg.setConflictingNameWarning( tr( "A field with this name already exists." ) );
+
             dlg.setWindowTitle( tr( "Rename Field" ) );
             if ( dlg.exec() != QDialog::Accepted || dlg.name() == itemName )
               return;
