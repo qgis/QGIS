@@ -365,7 +365,7 @@ QString QgsWmsSettings::parseTemporalFormat( const QString &extent ) const
     case 13:
       return !hasTimezone ? u"yyyy-MM-ddTHH"_s : u"yyyy-MM-dd"_s;
     default:
-      return hasTimezone and enableTime ? u"yyyy-MM-ddTHH:mm:ssZ"_s : u"yyyy-MM-ddTHH:mm:ss"_s;
+      return hasTimezone and enableTime ? u"yyyy-MM-ddTHH:mm:ssZ"_s : u"yyyy-MM-dd"_s;
   }
 }
 
