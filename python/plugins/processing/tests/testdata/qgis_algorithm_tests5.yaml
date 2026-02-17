@@ -703,3 +703,20 @@ tests:
       OUTPUT:
         name: expected/force_ccw_multipolys.gml
         type: vector
+
+  - algorithm: native:geometrybyexpression
+    name: Geometry by expression (using @layer_name)
+    params:
+      EXPRESSION: "scale(\n  geometry:=$geometry, \n  x_scale:=0.5, \n  y_scale:=0.5,\
+        \ \n  center:=centroid(\n    aggregate(layer:=@layer_name, aggregate:='collect',\
+        \ expression:=@geometry)\n  )\n)"
+      INPUT:
+        name: polys.gml|layername=polys2
+        type: vector
+      OUTPUT_GEOMETRY: 0
+      WITH_M: false
+      WITH_Z: false
+    results:
+      OUTPUT:
+        name: expected/geometry_by_expression_layerref.gml
+        type: vector
