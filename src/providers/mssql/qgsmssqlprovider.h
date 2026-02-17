@@ -112,7 +112,7 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
     bool deleteFeatures( const QgsFeatureIds &id ) override;
 
     bool addAttributes( const QList<QgsField> &attributes ) override;
-
+    bool renameAttributes( const QgsFieldNameMap &renamedAttributes ) override;
     bool deleteAttributes( const QgsAttributeIds &attributes ) override;
 
     bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;

@@ -1362,6 +1362,56 @@ bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
   return true;
 }
 
+bool QgsMssqlProvider::renameAttributes( const QgsFieldNameMap &renamedAttributes )
+{
+  if ( mIsQuery )
+    return false;
+
+  if ( renamedAttributes.isEmpty() )
+    return true;
+
+  QSqlQuery query = createQuery();
+  query.setForwardOnly( true );
+
+  QgsFieldNameMap::const_iterator renameIt = renamedAttributes.constBegin();
+  QString sql = u"BEGIN TRANSACTION; BEGIN TRY\n"_s;
+
+  for ( ; renameIt != renamedAttributes.constEnd(); ++renameIt )
+  {
+    int fieldIndex = renameIt.key();
+    if ( fieldIndex < 0 || fieldIndex >= mAttributeFields.count() )
+    {
+      pushError( tr( "Invalid attribute index: %1" ).arg( fieldIndex ) );
+      return false;
+    }
+    if ( mAttributeFields.indexFromName( renameIt.value() ) >= 0 )
+    {
+      //field name already in use
+      pushError( tr( "Error renaming field %1: name '%2' already exists" ).arg( fieldIndex ).arg( renameIt.value() ) );
+      return false;
+    }
+
+    sql += u"EXECUTE sp_rename '%1.%2.%3', %4, 'COLUMN';\n"_s
+             .arg( QgsMssqlUtils::quotedIdentifier( mSchemaName ), QgsMssqlUtils::quotedIdentifier( mTableName ), QgsMssqlUtils::quotedIdentifier( mAttributeFields.at( fieldIndex ).name() ), QgsMssqlUtils::quotedValue( renameIt.value() ) );
+  }
+
+  sql += "COMMIT TRANSACTION;\nEND TRY\nBEGIN CATCH\nROLLBACK TRANSACTION;\nEND CATCH;"_L1;
+  if ( !LoggedExec( query, sql ) )
+  {
+    QgsDebugError( u"SQL:%1\n  Error:%2"_s.arg( query.lastQuery(), query.lastError().text() ) );
+    return false;
+  }
+
+  query.finish();
+
+  loadFields();
+
+  if ( mTransaction )
+    mTransaction->dirtyLastSavePoint();
+
+  return true;
+}
+
 bool QgsMssqlProvider::deleteAttributes( const QgsAttributeIds &attributes )
 {
   if ( mIsQuery )
@@ -1734,7 +1784,7 @@ Qgis::VectorProviderCapabilities QgsMssqlProvider::capabilities() const
   const bool hasGeom = !mGeometryColName.isEmpty();
   if ( !mIsQuery )
   {
-    cap |= Qgis::VectorProviderCapability::CreateAttributeIndex | Qgis::VectorProviderCapability::AddFeatures | Qgis::VectorProviderCapability::AddAttributes | Qgis::VectorProviderCapability::TransactionSupport;
+    cap |= Qgis::VectorProviderCapability::CreateAttributeIndex | Qgis::VectorProviderCapability::AddFeatures | Qgis::VectorProviderCapability::AddAttributes | Qgis::VectorProviderCapability::RenameAttributes | Qgis::VectorProviderCapability::TransactionSupport;
     if ( hasGeom )
     {
       cap |= Qgis::VectorProviderCapability::CreateSpatialIndex;
