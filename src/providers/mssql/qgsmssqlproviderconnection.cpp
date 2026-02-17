@@ -155,8 +155,14 @@ void QgsMssqlProviderConnection::dropTablePrivate( const QString &schema, const 
 
 void QgsMssqlProviderConnection::renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const
 {
-  executeSqlPrivate( u"EXECUTE sp_rename '%1.%2', %3"_s
-                       .arg( QgsMssqlUtils::quotedIdentifier( schema ), QgsMssqlUtils::quotedIdentifier( name ), QgsMssqlUtils::quotedValue( newName ) ) );
+  QString sql = u"EXECUTE sp_rename '%1.%2', %3;\n"_s.arg( QgsMssqlUtils::quotedIdentifier( schema ), QgsMssqlUtils::quotedIdentifier( name ), QgsMssqlUtils::quotedValue( newName ) );
+  sql += u"if exists (select * from INFORMATION_SCHEMA.TABLES where TABLE_NAME = 'geometry_columns' )\n"
+         "UPDATE geometry_columns SET f_table_name = %1 WHERE f_table_schema = %2 AND f_table_name = %3;"_s.arg(
+           QgsMssqlUtils::quotedValue( newName ),
+           QgsMssqlUtils::quotedValue( schema ),
+           QgsMssqlUtils::quotedValue( name )
+         );
+  executeSqlPrivate( sql );
 }
 
 void QgsMssqlProviderConnection::createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const
