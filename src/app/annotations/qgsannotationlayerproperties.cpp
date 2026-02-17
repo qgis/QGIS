@@ -180,7 +180,7 @@ void QgsAnnotationLayerProperties::showHelp()
   }
   else
   {
-    QgsHelp::openHelp( u"working_with_vector_tiles/vector_tiles_properties.html"_s );
+    QgsHelp::openHelp( u"map_views/map_view.html#annotation-tools"_s );
   }
 }
 
