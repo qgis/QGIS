@@ -21,6 +21,8 @@
 #include "qgis_gui.h"
 #include "qgslayerpropertiesdialog.h"
 
+#define SIP_NO_FILE
+
 class QgsTiledSceneLayer;
 class QgsMessageBar;
 class QgsMetadataWidget;

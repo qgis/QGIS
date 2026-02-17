@@ -24,6 +24,8 @@
 
 #include <QAbstractTableModel>
 
+#define SIP_NO_FILE
+
 class QgsMapLayer;
 class QgsMapCanvas;
 class QgsMessageBar;
@@ -35,7 +37,6 @@ class QgsLayerPropertiesGuiUtils;
 
 ///@cond private
 
-#ifndef SIP_RUN
 class QgsPointCloudAttributeStatisticsModel : public QAbstractTableModel
 {
     Q_OBJECT
@@ -85,7 +86,6 @@ class QgsPointCloudClassificationStatisticsModel : public QAbstractTableModel
     QString mAttribute;
     QList<int> mClassifications;
 };
-#endif
 
 ///@endcond private
 
