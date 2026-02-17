@@ -4119,6 +4119,11 @@ QgsOracleProviderMetadata::QgsOracleProviderMetadata()
 {
 }
 
+QgsProviderMetadata::ProviderMetadataCapabilities QgsOracleProviderMetadata::capabilities() const
+{
+  return QgsProviderMetadata::ProviderMetadataCapability::UrisReferToSame;
+}
+
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return QSqlDatabase::isDriverAvailable( "QOCISPATIAL" ) ? new QgsOracleProviderMetadata() : nullptr;
@@ -4250,6 +4255,30 @@ void QgsOracleProviderMetadata::saveConnection( const QgsAbstractProviderConnect
 QList<Qgis::LayerType> QgsOracleProviderMetadata::supportedLayerTypes() const
 {
   return { Qgis::LayerType::Vector };
+}
+
+bool QgsOracleProviderMetadata::urisReferToSame( const QString &uri1, const QString &uri2, Qgis::SourceHierarchyLevel level ) const
+{
+  const QVariantMap parts1 = decodeUri( uri1 );
+  const QVariantMap parts2 = decodeUri( uri2 );
+
+  const bool sameConnection = parts1.value( u"host"_s ) == parts2.value( u"host"_s )
+                              && parts1.value( u"dbname"_s ) == parts2.value( u"dbname"_s )
+                              && parts1.value( u"port"_s ) == parts2.value( u"port"_s )
+                              && parts1.value( u"service"_s ) == parts2.value( u"service"_s )
+                              && parts1.value( u"dbworkspace"_s ) == parts2.value( u"dbworkspace"_s );
+  const bool sameSchema = parts1.value( u"schema"_s ) == parts2.value( u"schema"_s );
+  const bool sameTable = parts1.value( u"table"_s ) == parts2.value( u"table"_s );
+  switch ( level )
+  {
+    case Qgis::SourceHierarchyLevel::Connection:
+      return sameConnection;
+    case Qgis::SourceHierarchyLevel::Group:
+      return sameConnection && sameSchema;
+    case Qgis::SourceHierarchyLevel::Object:
+      return sameConnection && sameSchema && sameTable;
+  }
+  return false;
 }
 
 QIcon QgsOracleProviderMetadata::icon() const
