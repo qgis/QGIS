@@ -1443,6 +1443,19 @@ class CORE_EXPORT Qgis
     Q_FLAG( UriCleaningFlags )
 
     /**
+     * Defines the structural levels within a data source hierarchy.
+     *
+     * \since QGIS 4.0
+     */
+    enum class SourceHierarchyLevel : int
+    {
+      Connection, //!< The top-level container, e.g. database connection, catalog (for remote services), or file (for file-based databases).
+      Group, //!< An intermediate logical grouping, e.g. a database schema or layer group.
+      Object, //!< Represents a specific data entity, e.g. a table, view, or layer.
+    };
+    Q_ENUM( SourceHierarchyLevel )
+
+    /**
      * Flags which control how data providers will scan for sublayers in a dataset.
      *
      * \since QGIS 3.22
