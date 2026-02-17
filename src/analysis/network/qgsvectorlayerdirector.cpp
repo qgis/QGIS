@@ -125,7 +125,7 @@ class QgsNetworkVisitor : public SpatialIndex::IVisitor
 
     void visitData( const IData &d ) override
     {
-      mPoints.append( d.getIdentifier() );
+      mPoints.append( static_cast<int>( d.getIdentifier() ) );
     }
 
     void visitData( std::vector<const IData *> &v ) override
@@ -210,10 +210,15 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
       return;
 
     QgsMultiPolylineXY mpl;
-    if ( QgsWkbTypes::flatType( feature.geometry().wkbType() ) == Qgis::WkbType::MultiLineString )
+    const Qgis::WkbType wkbType = QgsWkbTypes::flatType( feature.geometry().wkbType() );
+    if ( QgsWkbTypes::geometryType( wkbType ) == Qgis::GeometryType::Line && QgsWkbTypes::isMultiType( wkbType ) )
+    {
       mpl = feature.geometry().asMultiPolyline();
-    else if ( QgsWkbTypes::flatType( feature.geometry().wkbType() ) == Qgis::WkbType::LineString )
+    }
+    else if ( QgsWkbTypes::geometryType( wkbType ) == Qgis::GeometryType::Line && !QgsWkbTypes::isMultiType( wkbType ) )
+    {
       mpl.push_back( feature.geometry().asPolyline() );
+    }
 
     for ( const QgsPolylineXY &line : std::as_const( mpl ) )
     {
@@ -227,7 +232,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
         if ( pt2Idx == -1 )
         {
           // no vertex already exists within tolerance - add to points, and index
-          addPointToIndex( pt2, graphVertices.count() );
+          addPointToIndex( pt2, static_cast<int>( graphVertices.count() ) );
           graphVertices.push_back( pt2 );
         }
         else
@@ -272,7 +277,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
       }
     }
     if ( feedback )
-      feedback->setProgress( 100.0 * static_cast<double>( ++step ) / featureCount );
+      feedback->setProgress( 100.0 * static_cast<double>( ++step ) / static_cast<double>( featureCount ) );
   }
 
   // build a hash of feature ids to tie points which depend on this feature
@@ -293,7 +298,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
     if ( ptIdx == -1 )
     {
       // no vertex already within tolerance, add to index and network vertices
-      addPointToIndex( point, graphVertices.count() );
+      addPointToIndex( point, static_cast<int>( graphVertices.count() ) );
       graphVertices.push_back( point );
     }
     else
@@ -307,7 +312,6 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
   {
     additionalTiePoints[i].mTiedPoint = snappedPoints.at( additionalTiePoints.at( i ).additionalPointId );
   }
-
 
   // begin graph construction
 
@@ -331,10 +335,15 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
 
     // begin features segments and add arc to the Graph;
     QgsMultiPolylineXY mpl;
-    if ( QgsWkbTypes::flatType( feature.geometry().wkbType() ) == Qgis::WkbType::MultiLineString )
+    const Qgis::WkbType wkbType = QgsWkbTypes::flatType( feature.geometry().wkbType() );
+    if ( QgsWkbTypes::geometryType( wkbType ) == Qgis::GeometryType::Line && QgsWkbTypes::isMultiType( wkbType ) )
+    {
       mpl = feature.geometry().asMultiPolyline();
-    else if ( QgsWkbTypes::flatType( feature.geometry().wkbType() ) == Qgis::WkbType::LineString )
+    }
+    else if ( QgsWkbTypes::geometryType( wkbType ) == Qgis::GeometryType::Line && !QgsWkbTypes::isMultiType( wkbType ) )
+    {
       mpl.push_back( feature.geometry().asPolyline() );
+    }
 
     for ( const QgsPolylineXY &line : std::as_const( mpl ) )
     {
@@ -345,7 +354,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
       {
         pt2 = ct.transform( point );
         int pPt2idx = findPointWithinTolerance( pt2 );
-        Q_ASSERT_X( pPt2idx >= 0, "QgsVectorLayerDirectory::makeGraph", "encountered a vertex which was not present in graph" );
+        Q_ASSERT_X( pPt2idx >= 0, "QgsVectorLayerDirector::makeGraph", "encountered a vertex which was not present in graph" );
         pt2 = graphVertices.at( pPt2idx );
 
         if ( !isFirstPoint )
@@ -374,7 +383,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
             arcPt2 = arcPointIt.value();
 
             pt2idx = findPointWithinTolerance( arcPt2 );
-            Q_ASSERT_X( pt2idx >= 0, "QgsVectorLayerDirectory::makeGraph", "encountered a vertex which was not present in graph" );
+            Q_ASSERT_X( pt2idx >= 0, "QgsVectorLayerDirector::makeGraph", "encountered a vertex which was not present in graph" );
             arcPt2 = graphVertices.at( pt2idx );
 
             if ( !isFirstPoint && arcPt1 != arcPt2 )
@@ -417,7 +426,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
     }
     if ( feedback )
     {
-      feedback->setProgress( 100.0 * static_cast<double>( ++step ) / featureCount );
+      feedback->setProgress( 100.0 * static_cast<double>( ++step ) / static_cast<double>( featureCount ) );
     }
   }
 }

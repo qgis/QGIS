@@ -5,11 +5,11 @@ the terms of the GNU General Public License as published by the Free Software
 Foundation; either version 2 of the License, or (at your option) any later
 version.
 """
+
 import argparse
 import os
 import re
 import sys
-
 from collections import defaultdict
 from enum import Enum, auto
 from typing import Any, Optional
@@ -42,7 +42,6 @@ class MultiLineType(Enum):
 
 
 class Context:
-
     def __init__(self):
         self.debug: bool = False
         self.header_file: str = ""
@@ -831,11 +830,11 @@ def process_doxygen_line(line: str) -> str:
         )
     if re.search(r"<li>", line):
         exit_with_error(
-            "Don't use raw html lists in documentation. " "Use markdown lists instead"
+            "Don't use raw html lists in documentation. Use markdown lists instead"
         )
     if re.search(r"<[ib]>", line):
         exit_with_error(
-            "Don't use raw <i> or <b> tags in documentation. " "Use markdown instead"
+            "Don't use raw <i> or <b> tags in documentation. Use markdown instead"
         )
 
     # Detect code snippet
@@ -1103,7 +1102,6 @@ def detect_and_remove_following_body_or_initializerlist():
         or re.search(pattern2, CONTEXT.current_line)
         or re.match(pattern3, CONTEXT.current_line)
     ):
-
         dbg_info(
             "remove constructor definition, function bodies, member initializing list (1)"
         )
@@ -1652,7 +1650,7 @@ def parse_argument(arg: str) -> tuple[str, str, Optional[str]]:
             else:
                 default_value = f'"{default_value}"'
         elif cpp_type in ("bool",):
-            default_value = f'{"False" if default_value == "false" else "True"}'
+            default_value = f"{'False' if default_value == 'false' else 'True'}"
         elif cpp_type.startswith("Q"):
             default_value = default_value.replace("::", ".")
         else:
@@ -2182,7 +2180,9 @@ def process_class_decl():
                 r"\b(?P<tpl>(?!QList)\w+)< *(?P<cls1>(\w|::)+) *(, *(?P<cls2>(\w|::)+)? *(, *(?P<cls3>(\w|::)+)? *)?)? *>"
             )
             m = tpl_replace_pattern.sub(
-                lambda tpl_match: f"{tpl_match.group('tpl') or ''}{tpl_match.group('cls1') or ''}{tpl_match.group('cls2') or ''}{tpl_match.group('cls3') or ''}Base",
+                lambda tpl_match: (
+                    f"{tpl_match.group('tpl') or ''}{tpl_match.group('cls1') or ''}{tpl_match.group('cls2') or ''}{tpl_match.group('cls3') or ''}Base"
+                ),
                 m,
             )
             m = re.sub(r"(\w+)< *(?:\w|::)+ *>", "", m)
@@ -3037,18 +3037,18 @@ def process_method_decl():
             ):
                 CONTEXT.virtual_methods[class_name][CONTEXT.current_method_name] = False
         else:
-            CONTEXT.virtual_methods[class_name][
-                CONTEXT.current_method_name
-            ] = is_virtual
+            CONTEXT.virtual_methods[class_name][CONTEXT.current_method_name] = (
+                is_virtual
+            )
 
         if is_abstract:
             CONTEXT.abstract_methods[class_name][CONTEXT.current_method_name] = True
 
         if CONTEXT.multiline_definition != MultiLineType.Method:
             if CONTEXT.current_method_is_override:
-                CONTEXT.overridden_methods[class_name][
-                    CONTEXT.current_method_name
-                ] = True
+                CONTEXT.overridden_methods[class_name][CONTEXT.current_method_name] = (
+                    True
+                )
 
         if CONTEXT.access[-1] == Visibility.Signals:
             CONTEXT.current_signal_args = []
@@ -3203,9 +3203,9 @@ def process_comments():
             dbg_info(
                 f"storing attribute docstring for {class_name} : {attribute_name_match.group(2)}"
             )
-            CONTEXT.attribute_docstrings[class_name][
-                attribute_name_match.group(2)
-            ] = CONTEXT.comment
+            CONTEXT.attribute_docstrings[class_name][attribute_name_match.group(2)] = (
+                CONTEXT.comment
+            )
 
             try:
                 typehint = convert_type(attribute_name_match.group(1))
@@ -3216,9 +3216,9 @@ def process_comments():
             dbg_info(
                 f"storing attribute typehint {typehint} for {class_name} (was {attribute_name_match.group(1)})"
             )
-            CONTEXT.attribute_typehints[class_name][
-                attribute_name_match.group(2)
-            ] = typehint
+            CONTEXT.attribute_typehints[class_name][attribute_name_match.group(2)] = (
+                typehint
+            )
         elif (
             CONTEXT.current_fully_qualified_struct_name()
             and re.search(r"\s*struct ", CONTEXT.current_line)
@@ -3757,7 +3757,6 @@ def generate_python_output():
             )
 
     if args.python_output and CONTEXT.output_python:
-
         with open(args.python_output, "w") as f:
             f.write("".join(python_header()))
             f.write("".join(CONTEXT.output_python))

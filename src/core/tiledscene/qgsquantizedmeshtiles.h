@@ -24,11 +24,12 @@
 
 #include <qbytearray.h>
 
+#define SIP_NO_FILE
+
 #define TINYGLTF_NO_STB_IMAGE         // we use QImage-based reading of images
 #define TINYGLTF_NO_STB_IMAGE_WRITE   // we don't need writing of images
 #include "tiny_gltf.h"
 
-#define SIP_NO_FILE
 
 // Definition copied from format spec: https://github.com/CesiumGS/quantized-mesh
 #pragma pack (push, 1)

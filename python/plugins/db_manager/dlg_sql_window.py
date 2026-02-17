@@ -20,42 +20,40 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from hashlib import md5
-
 import os
-
-from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt, pyqtSignal, QDir, QCoreApplication
-from qgis.PyQt.QtWidgets import (
-    QDialog,
-    QWidget,
-    QAction,
-    QApplication,
-    QInputDialog,
-    QStyledItemDelegate,
-    QTableWidgetItem,
-    QFileDialog,
-    QMessageBox,
-)
-from qgis.PyQt.QtGui import (
-    QKeySequence,
-    QCursor,
-    QClipboard,
-    QIcon,
-    QStandardItemModel,
-    QStandardItem,
-)
-from qgis.PyQt.Qsci import QsciAPIs, QsciScintilla
+from hashlib import md5
 
 from qgis.core import (
     Qgis,
-    QgsProject,
     QgsApplication,
-    QgsTask,
-    QgsSettings,
     QgsMapLayerType,
+    QgsProject,
+    QgsSettings,
+    QgsTask,
 )
 from qgis.gui import QgsGui
+from qgis.PyQt import uic
+from qgis.PyQt.Qsci import QsciAPIs, QsciScintilla
+from qgis.PyQt.QtCore import QCoreApplication, QDir, Qt, pyqtSignal
+from qgis.PyQt.QtGui import (
+    QClipboard,
+    QCursor,
+    QIcon,
+    QKeySequence,
+    QStandardItem,
+    QStandardItemModel,
+)
+from qgis.PyQt.QtWidgets import (
+    QAction,
+    QApplication,
+    QDialog,
+    QFileDialog,
+    QInputDialog,
+    QMessageBox,
+    QStyledItemDelegate,
+    QTableWidgetItem,
+    QWidget,
+)
 from qgis.utils import OverrideCursor
 
 from .db_plugins.plugin import BaseError
@@ -67,8 +65,9 @@ from .gui_utils import GuiUtils
 try:
     from qgis.gui import QgsCodeEditorSQL  # NOQA
 except:
-    from .sqledit import SqlEdit
     from qgis import gui
+
+    from .sqledit import SqlEdit
 
     gui.QgsCodeEditorSQL = SqlEdit
 
@@ -560,9 +559,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
                         break
                     aliasIndex += 1
 
-                sql = "SELECT * FROM ({}\n) AS {} LIMIT 0".format(
-                    str(query), connector.quoteId(alias)
-                )
+                sql = f"SELECT * FROM ({str(query)}\n) AS {connector.quoteId(alias)} LIMIT 0"
             else:
                 sql = "SELECT * FROM (%s\n) WHERE 1=0" % str(query)
 

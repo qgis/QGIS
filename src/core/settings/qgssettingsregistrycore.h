@@ -58,12 +58,6 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
      */
     static const QgsSettingsEntryInteger *settingsDigitizingNurbsDegree;
 
-    /**
-     * Settings entry digitizing NURBS mode
-     * \since QGIS 4.0
-     */
-    static const QgsSettingsEntryEnumFlag<Qgis::NurbsMode> *settingsDigitizingNurbsMode;
-
     //! Settings entry digitizing line width
     static const QgsSettingsEntryInteger *settingsDigitizingLineWidth;
 
@@ -188,9 +182,6 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
 
     //! Settings entry network cache directory
     static const QgsSettingsEntryInteger64 *settingsNetworkCacheSize;
-
-    //! Settings entry autosize columns by default when opening attribute table
-    static const QgsSettingsEntryBool *settingsAutosizeAttributeTable;
 
     //! Settings entry for behavior handling embedded scripts within projects
     static const QgsSettingsEntryEnumFlag<Qgis::EmbeddedScriptMode> *settingsCodeExecutionBehaviorUndeterminedProjects;

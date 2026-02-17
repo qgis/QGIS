@@ -17,7 +17,6 @@
 #define QGS3DMAPSCENE_H
 
 #include "qgis_3d.h"
-#include "qgscameracontroller.h"
 #include "qgsmapoverlayentity.h"
 #include "qgsrectangle.h"
 #include "qobjectuniqueptr.h"
@@ -59,6 +58,7 @@ class Qgs3DMapExportSettings;
 class QgsChunkNode;
 class QgsDoubleRange;
 class Qgs3DMapSceneEntity;
+class QgsCameraController;
 
 
 /**

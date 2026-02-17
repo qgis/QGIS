@@ -18,12 +18,13 @@
 #ifndef QGSDIMENSIONFILTER_H
 #define QGSDIMENSIONFILTER_H
 
-#define SIP_NO_FILE
 
 #include "qgis_server.h"
 #include "qgsfeaturefilterprovider.h"
 
 #include <QHash>
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup server

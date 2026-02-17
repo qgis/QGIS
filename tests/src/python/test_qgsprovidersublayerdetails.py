@@ -11,6 +11,7 @@ __date__ = "16/03/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
 import os
+import unittest
 
 from qgis.core import (
     Qgis,
@@ -20,9 +21,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -31,7 +30,6 @@ start_app()
 
 
 class TestQgsProviderSublayerDetails(QgisTestCase):
-
     def testGettersSetters(self):
         """
         Test provider list

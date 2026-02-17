@@ -6,19 +6,19 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
+
 from qgis.core import (
     Qgis,
-    QgsSelectiveMaskingSourceSetManager,
-    QgsSelectiveMaskingSourceSet,
-    QgsSelectiveMaskSource,
     QgsProject,
     QgsReadWriteContext,
+    QgsSelectiveMaskingSourceSet,
+    QgsSelectiveMaskingSourceSetManager,
+    QgsSelectiveMaskSource,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -26,7 +26,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsSelectiveMaskingSourceSetManager(QgisTestCase):
-
     def setUp(self):
         """Run before each test."""
         self.manager = None

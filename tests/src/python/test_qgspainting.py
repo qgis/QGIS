@@ -19,17 +19,15 @@ __author__ = "Nyall Dawson"
 __date__ = "August 2023"
 __copyright__ = "(C) 2023, Nyall Dawson"
 
-from qgis.PyQt.QtCore import Qt, QPointF
-from qgis.PyQt.QtGui import QImage, QPainter, QPolygonF
+import unittest
 
 from qgis.core import (
     QgsPainting,
 )
-
-import unittest
+from qgis.PyQt.QtCore import QPointF, Qt
+from qgis.PyQt.QtGui import QImage, QPainter, QPolygonF
 from qgis.testing import QgisTestCase
-
-from utilities import unitTestDataPath, start_app
+from utilities import start_app, unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
 start_app()

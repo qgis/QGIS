@@ -10,17 +10,16 @@ __author__ = "Tim Sutton"
 __date__ = "20/08/2012"
 __copyright__ = "Copyright 2012, The QGIS Project"
 
-from qgis.core import QgsPointXY, QgsRectangle, QgsVector
 import unittest
-from qgis.testing import start_app, QgisTestCase
 
+from qgis.core import QgsPointXY, QgsRectangle, QgsVector
+from qgis.testing import QgisTestCase, start_app
 from utilities import compareWkt
 
 start_app()
 
 
 class TestQgsRectangle(QgisTestCase):
-
     def testCtor(self):
         rect = QgsRectangle(5.0, 5.0, 10.0, 10.0)
         self.assertEqual(rect.xMinimum(), 5.0)
@@ -113,7 +112,7 @@ class TestQgsRectangle(QgisTestCase):
     def testAsWktCoordinates(self):
         """Test that we can get a proper wkt representation fo the rect"""
         rect1 = QgsRectangle(0.0, 0.0, 5.0, 5.0)
-        myExpectedWkt = "0 0, " "5 5"
+        myExpectedWkt = "0 0, 5 5"
         myWkt = rect1.asWktCoordinates()
         myMessage = f"Expected: {myExpectedWkt}\nGot: {myWkt}\n"
         self.assertTrue(compareWkt(myWkt, myExpectedWkt), myMessage)
@@ -121,7 +120,7 @@ class TestQgsRectangle(QgisTestCase):
     def testAsWktPolygon(self):
         """Test that we can get a proper rect wkt polygon representation for rect"""
         rect1 = QgsRectangle(0.0, 0.0, 5.0, 5.0)
-        myExpectedWkt = "Polygon ((0 0, " "5 0, " "5 5, " "0 5, " "0 0))"
+        myExpectedWkt = "Polygon ((0 0, 5 0, 5 5, 0 5, 0 0))"
         myWkt = rect1.asWktPolygon()
         myMessage = f"Expected: {myExpectedWkt}\nGot: {myWkt}\n"
         self.assertTrue(compareWkt(myWkt, myExpectedWkt), myMessage)

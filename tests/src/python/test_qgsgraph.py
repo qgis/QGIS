@@ -11,16 +11,16 @@ __date__ = "08/11/2021"
 __copyright__ = "Copyright 2021, The QGIS Project"
 
 
+import unittest
+
 from qgis.analysis import QgsGraph
 from qgis.core import QgsPointXY
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsGraph(QgisTestCase):
-
     def test_empty_graph(self):
         graph = QgsGraph()
         self.assertEqual(graph.vertexCount(), 0)

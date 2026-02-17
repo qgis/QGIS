@@ -1338,19 +1338,11 @@ bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
   attributeClauses.reserve( attributes.size() );
   for ( QList<QgsField>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {
-    QString type = it->typeName();
-    if ( type == "char"_L1 || type == "varchar"_L1 || type == "nvarchar"_L1 )
-    {
-      if ( it->length() > 0 )
-        type = u"%1(%2)"_s.arg( type ).arg( it->length() );
-    }
-    else if ( type == "numeric"_L1 || type == "decimal"_L1 )
-    {
-      if ( it->length() > 0 && it->precision() > 0 )
-        type = u"%1(%2,%3)"_s.arg( type ).arg( it->length() ).arg( it->precision() );
-    }
+    const QString definition = QgsMssqlUtils::columnDefinitionForField( *it );
+    if ( definition.isEmpty() )
+      return false;
 
-    attributeClauses.append( u"[%1] %2"_s.arg( it->name(), type ) );
+    attributeClauses.append( definition );
   }
   statement += attributeClauses.join( ", "_L1 );
 
@@ -1978,68 +1970,6 @@ Qgis::VectorLayerTypeFlags QgsMssqlProvider::vectorLayerTypeFlags() const
   return flags;
 }
 
-bool QgsMssqlProvider::convertField( QgsField &field )
-{
-  QString fieldType = u"nvarchar(max)"_s; //default to string
-  int fieldSize = field.length();
-  int fieldPrec = field.precision();
-  switch ( field.type() )
-  {
-    case QMetaType::Type::LongLong:
-      fieldType = u"bigint"_s;
-      fieldSize = -1;
-      fieldPrec = 0;
-      break;
-
-    case QMetaType::Type::QDateTime:
-      fieldType = u"datetime"_s;
-      fieldPrec = 0;
-      break;
-
-    case QMetaType::Type::QDate:
-      fieldType = u"date"_s;
-      fieldPrec = 0;
-      break;
-
-    case QMetaType::Type::QTime:
-      fieldType = u"time"_s;
-      fieldPrec = 0;
-      break;
-
-    case QMetaType::Type::QString:
-      fieldType = u"nvarchar(max)"_s;
-      fieldPrec = 0;
-      break;
-
-    case QMetaType::Type::Int:
-      fieldType = u"int"_s;
-      fieldSize = -1;
-      fieldPrec = 0;
-      break;
-
-    case QMetaType::Type::Double:
-      if ( fieldSize <= 0 || fieldPrec <= 0 )
-      {
-        fieldType = u"float"_s;
-        fieldSize = -1;
-        fieldPrec = 0;
-      }
-      else
-      {
-        fieldType = u"decimal"_s;
-      }
-      break;
-
-    default:
-      return false;
-  }
-
-  field.setTypeName( fieldType );
-  field.setLength( fieldSize );
-  field.setPrecision( fieldPrec );
-  return true;
-}
-
 void QgsMssqlProvider::mssqlWkbTypeAndDimension( Qgis::WkbType wkbType, QString &geometryType, int &dim )
 {
   const Qgis::WkbType flatType = QgsWkbTypes::flatType( wkbType );
@@ -2245,23 +2175,74 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
     }
   }
 
+  QStringList attributeClauses;
+  attributeClauses.reserve( fields.size() + 1 );
+  if ( oldToNewAttrIdxMap )
+    oldToNewAttrIdxMap->clear();
+
+  const QString pkColumnDefinition = u"[%1] [int] IDENTITY(1,1) NOT NULL"_s.arg( primaryKey );
+  attributeClauses << pkColumnDefinition;
+
+  const bool skipConvertFields = options && options->value( u"skipConvertFields"_s, false ).toBool();
+  if ( fields.size() > 0 )
+  {
+    for ( int originalFieldIndex = 0; originalFieldIndex < fields.size(); ++originalFieldIndex )
+    {
+      const QgsField field = fields.at( originalFieldIndex );
+      if ( field.name() == geometryColumn )
+      {
+        // Found a field with the same name of the geometry column. Skip it!
+
+        // TODO -- this should probably be reported to the user, or cause the table creation to fail??
+        QgsDebugError( u"Field %1 skipped as it collides with geometry column name"_s.arg( field.name() ) );
+        continue;
+      }
+      else if ( field.name() == primaryKey )
+      {
+        if ( oldToNewAttrIdxMap )
+        {
+          oldToNewAttrIdxMap->insert( originalFieldIndex, 0 );
+        }
+        continue;
+      }
+
+      const QString columnDefinition = QgsMssqlUtils::columnDefinitionForField( field, !skipConvertFields );
+      if ( columnDefinition.isEmpty() )
+      {
+        if ( errorMessage )
+          *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( field.name() );
+
+        return Qgis::VectorExportResult::ErrorAttributeTypeUnsupported;
+      }
+
+      const int newAttributeIndex = static_cast< int >( attributeClauses.length() );
+      attributeClauses.append( columnDefinition );
+      if ( oldToNewAttrIdxMap )
+      {
+        oldToNewAttrIdxMap->insert( originalFieldIndex, newAttributeIndex );
+      }
+    }
+  }
+
+  const QString columnDefinitions = attributeClauses.join( ", "_L1 );
+
   if ( !geometryColumn.isEmpty() )
   {
     sql = QStringLiteral( "IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[%1].[%2]') AND type in (N'U')) DROP TABLE [%1].[%2]\n"
-                          "CREATE TABLE [%1].[%2]([%3] [int] IDENTITY(1,1) NOT NULL, [%4] [geometry] NULL CONSTRAINT [PK_%2] PRIMARY KEY CLUSTERED ( [%3] ASC ))\n"
+                          "CREATE TABLE [%1].[%2](%9, [%4] [geometry] NULL CONSTRAINT [PK_%2] PRIMARY KEY CLUSTERED ( [%3] ASC ))\n"
                           "DELETE FROM geometry_columns WHERE f_table_schema = '%1' AND f_table_name = '%2'\n"
                           "INSERT INTO [geometry_columns] ([f_table_catalog], [f_table_schema],[f_table_name], "
                           "[f_geometry_column],[coord_dimension],[srid],[geometry_type]) VALUES ('%5', '%1', '%2', '%4', %6, %7, '%8')" )
-            .arg( schemaName, tableName, primaryKey, geometryColumn, dbName, QString::number( dim ), QString::number( srid ), geometryType );
+            .arg( schemaName, tableName, primaryKey, geometryColumn, dbName, QString::number( dim ), QString::number( srid ), geometryType, columnDefinitions );
   }
   else
   {
     //geometryless table
     sql = QStringLiteral( "IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[%1].[%2]') AND type in (N'U')) DROP TABLE [%1].[%2]\n"
-                          "CREATE TABLE [%1].[%2]([%3] [int] IDENTITY(1,1) NOT NULL CONSTRAINT [PK_%2] PRIMARY KEY CLUSTERED ( [%3] ASC ))\n"
+                          "CREATE TABLE [%1].[%2](%4 CONSTRAINT [PK_%2] PRIMARY KEY CLUSTERED ( [%3] ASC ))\n"
                           "DELETE FROM geometry_columns WHERE f_table_schema = '%1' AND f_table_name = '%2'\n"
     )
-            .arg( schemaName, tableName, primaryKey );
+            .arg( schemaName, tableName, primaryKey, columnDefinitions );
   }
 
   logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( sql, uri, u"mssql"_s, u"QgsMssqlProvider"_s, QGS_QUERY_LOG_ORIGIN );
@@ -2292,58 +2273,6 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
     return Qgis::VectorExportResult::ErrorInvalidLayer;
   }
 
-  // add fields to the layer
-  if ( oldToNewAttrIdxMap )
-    oldToNewAttrIdxMap->clear();
-
-  if ( fields.size() > 0 )
-  {
-    const QgsFields providerFields = provider->fields();
-    int offset = providerFields.size();
-
-    // get the list of fields
-    QList<QgsField> flist;
-    for ( int originalFieldIndex = 0, n = fields.size(); originalFieldIndex < n; ++originalFieldIndex )
-    {
-      QgsField field = fields.at( originalFieldIndex );
-      if ( field.name() == geometryColumn )
-      {
-        // Found a field with the same name of the geometry column. Skip it!
-        continue;
-      }
-
-      const int providerIndex = providerFields.lookupField( field.name() );
-
-      if ( providerIndex >= 0 )
-      {
-        // we've already created this field (i.e. it was set in the CREATE TABLE statement), so
-        // we don't need to re-add it now
-        if ( oldToNewAttrIdxMap )
-          oldToNewAttrIdxMap->insert( originalFieldIndex, providerIndex );
-        continue;
-      }
-
-      if ( !( options && options->value( u"skipConvertFields"_s, false ).toBool() ) && !convertField( field ) )
-      {
-        if ( errorMessage )
-          *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( field.name() );
-
-        return Qgis::VectorExportResult::ErrorAttributeTypeUnsupported;
-      }
-
-      flist.append( field );
-      if ( oldToNewAttrIdxMap )
-        oldToNewAttrIdxMap->insert( originalFieldIndex, offset++ );
-    }
-
-    if ( !provider->addAttributes( flist ) )
-    {
-      if ( errorMessage )
-        *errorMessage = QObject::tr( "Creation of fields failed" );
-
-      return Qgis::VectorExportResult::ErrorAttributeCreationFailed;
-    }
-  }
   return Qgis::VectorExportResult::Success;
 }
 

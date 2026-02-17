@@ -15,13 +15,12 @@ import os
 import socketserver
 import threading
 import time
+import unittest
 
+from qgis.core import QgsApplication
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QColor
-from qgis.core import QgsApplication
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -29,14 +28,12 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class SlowHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
-
     def do_GET(self):
         time.sleep(1)
         return http.server.SimpleHTTPRequestHandler.do_GET(self)
 
 
 class TestQgsSvgCache(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "svg_cache"

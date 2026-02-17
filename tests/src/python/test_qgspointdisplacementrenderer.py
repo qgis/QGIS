@@ -23,10 +23,8 @@ __date__ = "September 2016"
 __copyright__ = "(C) 2016, Nyall Dawson"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QSize
-from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     QgsCategorizedSymbolRenderer,
     QgsFeature,
@@ -51,9 +49,10 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -63,7 +62,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsPointDisplacementRenderer(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "displacement_renderer"

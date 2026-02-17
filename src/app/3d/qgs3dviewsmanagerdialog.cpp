@@ -17,7 +17,6 @@
 
 #include "qgisapp.h"
 #include "qgs3dmapcanvaswidget.h"
-#include "qgsdockablewidgethelper.h"
 #include "qgsmapviewsmanager.h"
 #include "qgsnewnamedialog.h"
 

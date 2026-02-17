@@ -22,8 +22,9 @@
 #include "qgsproviderguimetadata.h"
 #include "qgsprovidersourcewidgetprovider.h"
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 class QgsMbtilesVectorTileSourceWidgetProvider : public QgsProviderSourceWidgetProvider
 {

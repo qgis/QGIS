@@ -11,8 +11,8 @@ __date__ = "31/05/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
 import os
+import unittest
 
-from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsFeature,
@@ -22,9 +22,8 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.gui import QgsExtentGroupBox
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -32,7 +31,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsExtentGroupBox(QgisTestCase):
-
     def testGettersSetters(self):
         """test widget getters/setters"""
         w = QgsExtentGroupBox()

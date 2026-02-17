@@ -13,27 +13,25 @@ __copyright__ = "Copyright 2019, The QGIS Project"
 
 import os
 
-from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
+    Qgis,
+    QgsAbstractDatabaseProviderConnection,
+    QgsCoordinateReferenceSystem,
     QgsDataSourceUri,
+    QgsField,
+    QgsFields,
+    QgsProviderConnectionException,
     QgsProviderRegistry,
     QgsVectorLayer,
-    Qgis,
-    QgsCoordinateReferenceSystem,
-    QgsFields,
-    QgsAbstractDatabaseProviderConnection,
-    QgsProviderConnectionException,
-    QgsField,
 )
+from qgis.PyQt.QtCore import QVariant
 from qgis.testing import unittest
-
 from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
 
 
 class TestPyQgsProviderConnectionMssql(
     unittest.TestCase, TestPyQgsProviderConnectionBase
 ):
-
     # Provider test cases must define the string URI for the test
     uri = ""
     # Provider test cases must define the provider name (e.g. "postgres" or "ogr")

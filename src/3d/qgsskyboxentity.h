@@ -18,21 +18,33 @@
 
 #include "qgis_3d.h"
 
-#include <QVector3D>
+#include <QMap>
+#include <QString>
+#include <QVector>
 #include <Qt3DCore/QEntity>
-#include <Qt3DExtras/QCuboidMesh>
-#include <Qt3DExtras/QPlaneMesh>
-#include <Qt3DRender/QEffect>
-#include <Qt3DRender/QFilterKey>
-#include <Qt3DRender/QMaterial>
-#include <Qt3DRender/QParameter>
-#include <Qt3DRender/QRenderPass>
-#include <Qt3DRender/QShaderProgram>
 #include <Qt3DRender/QTexture>
+
+#define SIP_NO_FILE
+
+namespace Qt3DExtras
+{
+  class QCuboidMesh;
+}
+
+namespace Qt3DRender
+{
+  class QEffect;
+  class QFilterKey;
+  class QMaterial;
+  class QParameter;
+  class QRenderPass;
+  class QShaderProgram;
+  class QTechnique;
+  class QTexture;
+} //namespace Qt3DRender
 
 class QgsImageTexture;
 
-#define SIP_NO_FILE
 
 /**
  * \brief Base class for all skybox types.

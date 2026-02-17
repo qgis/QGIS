@@ -16,29 +16,29 @@
 """
 
 from qgis.core import (
-    QgsProcessingModelChildAlgorithm,
-    QgsProcessingModelParameter,
     QgsProcessingContext,
+    QgsProcessingModelChildAlgorithm,
     QgsProcessingModelOutput,
+    QgsProcessingModelParameter,
     QgsProcessingParameterDefinition,
 )
 from qgis.gui import (
     QgsProcessingModelConfigWidgetFactory,
-    QgsProcessingParameterWidgetContext,
     QgsProcessingParameterDefinitionPanelWidget,
+    QgsProcessingParameterWidgetContext,
 )
+
 from processing.modeler.ModelerParameterDefinitionDialog import (
     ModelerParameterDefinitionDialog,
     ModelerParameterDefinitionWidget,
 )
 from processing.modeler.ModelerParametersDialog import (
-    ModelerParametersWidget,
     ModelerParametersDialog,
+    ModelerParametersWidget,
 )
 
 
 class ModelConfigWidgetFactory(QgsProcessingModelConfigWidgetFactory):
-
     def supportsComponent(self, component):
         return isinstance(
             component,

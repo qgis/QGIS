@@ -19,6 +19,7 @@ Email                : nyall dot dawson at gmail dot com
 using namespace Qt::StringLiterals;
 
 //header for class being tested
+#include "qgis.h"
 #include "qgsgeometry.h"
 #include <qgsapplication.h>
 #include "qgsvectordataprovider.h"
@@ -51,6 +52,7 @@ class TestQgsNetworkAnalysis : public QgsTest
     void testRouteFail();
     void testRouteFail2();
     void testSpeedStrategy();
+    void testCurvedGeometries();
 
   private:
     std::unique_ptr<QgsVectorLayer> buildNetwork();
@@ -149,7 +151,6 @@ std::unique_ptr<QgsVectorLayer> TestQgsNetworkAnalysis::buildNetwork()
 
   return l;
 }
-
 
 void TestQgsNetworkAnalysis::testBuild()
 {
@@ -610,6 +611,179 @@ void TestQgsNetworkAnalysis::testSpeedStrategy()
   QCOMPARE( strategyAttribute1.cost( DISTANCE_IN_METERS, featureWithNegativeAttributes ).toDouble(), DISTANCE_IN_FEET / 60 );
 }
 
+void TestQgsNetworkAnalysis::testCurvedGeometries()
+{
+  // CompaundCurve containing straight lines
+  auto network = std::make_unique<QgsVectorLayer>( u"CompoundCurve?crs=epsg:4326&field=cost:int"_s, u"x"_s, u"memory"_s );
+
+  QgsFeature ff( 0 );
+  QgsGeometry refGeom = QgsGeometry::fromWkt( u"COMPOUNDCURVE((0 0, 10 0), (10 0, 10 10))"_s );
+  ff.setGeometry( refGeom );
+  ff.setAttributes( QgsAttributes() << 1 );
+  network->dataProvider()->addFeatures( QgsFeatureList() << ff );
+
+  auto director = std::make_unique<QgsVectorLayerDirector>( network.get(), -1, QString(), QString(), QString(), QgsVectorLayerDirector::DirectionBoth );
+  auto strategy = std::make_unique<QgsNetworkDistanceStrategy>();
+  director->addStrategy( strategy.release() );
+  auto builder = std::make_unique<QgsGraphBuilder>( network->sourceCrs(), true, 0 );
+
+  QVector<QgsPointXY> snapped;
+  director->makeGraph( builder.get(), QVector<QgsPointXY>() << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 10 ), snapped );
+  QCOMPARE( snapped, QVector<QgsPointXY>() << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 10 ) );
+  std::unique_ptr<QgsGraph> graph( builder->takeGraph() );
+  QCOMPARE( graph->vertexCount(), 3 );
+  QCOMPARE( graph->edgeCount(), 4 );
+
+  QCOMPARE( graph->vertex( 0 ).point(), QgsPointXY( 0, 0 ) );
+  QCOMPARE( graph->vertex( 0 ).outgoingEdges(), QList<int>() << 0 );
+  QCOMPARE( graph->edge( 0 ).fromVertex(), 0 );
+  QCOMPARE( graph->edge( 0 ).toVertex(), 1 );
+  QCOMPARE( graph->vertex( 0 ).incomingEdges(), QList<int>() << 1 );
+  QCOMPARE( graph->edge( 1 ).fromVertex(), 1 );
+  QCOMPARE( graph->edge( 1 ).toVertex(), 0 );
+  QCOMPARE( graph->vertex( 1 ).point(), QgsPointXY( 10, 0 ) );
+  QCOMPARE( graph->vertex( 1 ).outgoingEdges(), QList<int>() << 1 << 2 );
+  QCOMPARE( graph->vertex( 1 ).incomingEdges(), QList<int>() << 0 << 3 );
+  QCOMPARE( graph->edge( 3 ).fromVertex(), 2 );
+  QCOMPARE( graph->edge( 3 ).toVertex(), 1 );
+  QCOMPARE( graph->edge( 2 ).fromVertex(), 1 );
+  QCOMPARE( graph->edge( 2 ).toVertex(), 2 );
+  QCOMPARE( graph->vertex( 2 ).point(), QgsPointXY( 10, 10 ) );
+  QCOMPARE( graph->vertex( 2 ).outgoingEdges(), QList<int>() << 3 );
+  QCOMPARE( graph->vertex( 2 ).incomingEdges(), QList<int>() << 2 );
+
+  builder = std::make_unique<QgsGraphBuilder>( network->sourceCrs(), true, 0 );
+  director->makeGraph( builder.get(), QVector<QgsPointXY>() << QgsPointXY( 10, 0 ) << QgsPointXY( 10, 10 ), snapped );
+  QCOMPARE( snapped, QVector<QgsPointXY>() << QgsPointXY( 10, 0 ) << QgsPointXY( 10, 10 ) );
+
+  builder = std::make_unique<QgsGraphBuilder>( network->sourceCrs(), true, 0 );
+  director->makeGraph( builder.get(), QVector<QgsPointXY>(), snapped );
+  QCOMPARE( snapped, QVector<QgsPointXY>() );
+
+  builder = std::make_unique<QgsGraphBuilder>( network->sourceCrs(), true, 0 );
+  director->makeGraph( builder.get(), QVector<QgsPointXY>() << QgsPointXY( 0.2, 0.1 ) << QgsPointXY( 10.1, 9 ), snapped );
+  QCOMPARE( snapped, QVector<QgsPointXY>() << QgsPointXY( 0.2, 0.0 ) << QgsPointXY( 10.0, 9 ) );
+  graph.reset( builder->takeGraph() );
+  QCOMPARE( graph->vertexCount(), 5 );
+  QCOMPARE( graph->edgeCount(), 8 );
+
+  // CompaundCurve containing both straight line and CircularString
+  network.reset( new QgsVectorLayer( u"CompoundCurve?crs=epsg:4326&field=cost:int"_s, u"x"_s, u"memory"_s ) );
+  refGeom = QgsGeometry::fromWkt( u"CompoundCurve((0 0, 5 0), CircularString(5 0, 7.5 2.5, 10 0))"_s );
+  ff.setGeometry( refGeom );
+  network->dataProvider()->addFeatures( QgsFeatureList() << ff );
+
+  director.reset( new QgsVectorLayerDirector( network.get(), -1, QString(), QString(), QString(), QgsVectorLayerDirector::DirectionBoth ) );
+  strategy.reset( new QgsNetworkDistanceStrategy() );
+  director->addStrategy( strategy.release() );
+  builder.reset( new QgsGraphBuilder( network->sourceCrs(), true, 0 ) );
+  snapped.clear();
+  director->makeGraph( builder.get(), QVector<QgsPointXY>() << QgsPointXY( 0, 0 ) << QgsPointXY( 5, 0 ) << QgsPointXY( 10, 0 ), snapped );
+  QCOMPARE( snapped, QVector<QgsPointXY>() << QgsPointXY( 0, 0 ) << QgsPointXY( 5, 0 ) << QgsPointXY( 10, 0 ) );
+  graph.reset( builder->takeGraph() );
+  // CircularString should be segmentized, creating multiple vertices
+  QVERIFY( graph->vertexCount() > 3 );
+  QVERIFY( graph->edgeCount() > 4 );
+  QCOMPARE( graph->vertex( 0 ).point(), QgsPointXY( 0, 0 ) );
+  QCOMPARE( graph->vertex( graph->vertexCount() - 1 ).point(), QgsPointXY( 10, 0 ) );
+  // check that junction point (5, 0) exists in the graph
+  bool junctionFound = false;
+  for ( int i = 0; i < graph->vertexCount(); ++i )
+  {
+    if ( graph->vertex( i ).point() == QgsPointXY( 5, 0 ) )
+    {
+      junctionFound = true;
+      QVERIFY( graph->vertex( i ).outgoingEdges().size() > 0 );
+      QVERIFY( graph->vertex( i ).incomingEdges().size() > 0 );
+      break;
+    }
+  }
+  QVERIFY( junctionFound );
+
+  // CircularString
+  network.reset( new QgsVectorLayer( u"CircularString?crs=epsg:4326&field=cost:int"_s, u"x"_s, u"memory"_s ) );
+  refGeom = QgsGeometry::fromWkt( u"CircularString(0 0, 5 5, 10 0)"_s );
+  ff.setGeometry( refGeom );
+  network->dataProvider()->addFeatures( QgsFeatureList() << ff );
+  director.reset( new QgsVectorLayerDirector( network.get(), -1, QString(), QString(), QString(), QgsVectorLayerDirector::DirectionBoth ) );
+  strategy.reset( new QgsNetworkDistanceStrategy() );
+  director->addStrategy( strategy.release() );
+  builder.reset( new QgsGraphBuilder( network->sourceCrs(), true, 0 ) );
+  snapped.clear();
+  director->makeGraph( builder.get(), QVector<QgsPointXY>() << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 0 ), snapped );
+  QCOMPARE( snapped, QVector<QgsPointXY>() << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 0 ) );
+  graph.reset( builder->takeGraph() );
+  // CircularString should be segmentized, creating multiple vertices
+  QVERIFY( graph->vertexCount() > 3 );
+  QVERIFY( graph->edgeCount() > 4 );
+  QCOMPARE( graph->vertex( 0 ).point(), QgsPointXY( 0, 0 ) );
+  QCOMPARE( graph->vertex( graph->vertexCount() - 1 ).point(), QgsPointXY( 10, 0 ) );
+
+  // check curve segmentization, the apex should be near (5, 5)
+  bool apexFound = false;
+  double maxY = 0.0;
+  for ( int i = 0; i < graph->vertexCount(); ++i )
+  {
+    double y = graph->vertex( i ).point().y();
+    if ( y > maxY )
+    {
+      maxY = y;
+    }
+    if ( std::abs( graph->vertex( i ).point().x() - 5.0 ) < 0.05 && y > 4.95 )
+    {
+      apexFound = true;
+    }
+  }
+  QVERIFY( apexFound );
+  QVERIFY( maxY > 4.95 );
+
+  // total path length through the graph
+  double totalLength = 0.0;
+  for ( int i = 0; i < graph->edgeCount(); i += 2 ) // only forward edges
+  {
+    QVector<QVariant> edgeStrategies = graph->edge( i ).strategies();
+    if ( !edgeStrategies.isEmpty() )
+    {
+      totalLength += edgeStrategies[0].toDouble();
+    }
+  }
+  totalLength = builder->distanceArea()->convertLengthMeasurement( totalLength, Qgis::DistanceUnit::Degrees );
+  const double expectedLength = M_PI * 5.0;
+  const double tolerance = expectedLength * 0.05;
+  QVERIFY2( std::abs( totalLength - expectedLength ) < tolerance, u"Path length %1 differs from expected %2 by more than tolerance %3"_s.arg( totalLength ).arg( expectedLength ).arg( tolerance ).toLatin1().constData() );
+
+  // MultiCurve
+  network.reset( new QgsVectorLayer( u"MultiCurve?crs=epsg:4326&field=cost:int"_s, u"x"_s, u"memory"_s ) );
+  refGeom = QgsGeometry::fromWkt( u"MultiCurve(CircularString(0 0, 2.5 2.5, 5 0), CircularString(5 0, 7.5 -2.5, 10 0))"_s );
+  ff.setGeometry( refGeom );
+  network->dataProvider()->addFeatures( QgsFeatureList() << ff );
+  director.reset( new QgsVectorLayerDirector( network.get(), -1, QString(), QString(), QString(), QgsVectorLayerDirector::DirectionBoth ) );
+  strategy.reset( new QgsNetworkDistanceStrategy() );
+  director->addStrategy( strategy.release() );
+  builder.reset( new QgsGraphBuilder( network->sourceCrs(), true, 0 ) );
+  snapped.clear();
+  director->makeGraph( builder.get(), QVector<QgsPointXY>() << QgsPointXY( 0, 0 ) << QgsPointXY( 5, 0 ) << QgsPointXY( 10, 0 ), snapped );
+  QCOMPARE( snapped, QVector<QgsPointXY>() << QgsPointXY( 0, 0 ) << QgsPointXY( 5, 0 ) << QgsPointXY( 10, 0 ) );
+  graph.reset( builder->takeGraph() );
+  // CircularStrings should be segmentized, creating multiple vertices
+  QVERIFY( graph->vertexCount() > 6 );
+  QVERIFY( graph->edgeCount() > 4 );
+  QCOMPARE( graph->vertex( 0 ).point(), QgsPointXY( 0, 0 ) );
+  QCOMPARE( graph->vertex( graph->vertexCount() - 1 ).point(), QgsPointXY( 10, 0 ) );
+  // check that junction point (5, 0) exists in the graph
+  junctionFound = false;
+  for ( int i = 0; i < graph->vertexCount(); ++i )
+  {
+    if ( graph->vertex( i ).point() == QgsPointXY( 5, 0 ) )
+    {
+      junctionFound = true;
+      QVERIFY( graph->vertex( i ).outgoingEdges().size() > 0 );
+      QVERIFY( graph->vertex( i ).incomingEdges().size() > 0 );
+      break;
+    }
+  }
+  QVERIFY( junctionFound );
+}
 
 QGSTEST_MAIN( TestQgsNetworkAnalysis )
 #include "testqgsnetworkanalysis.moc"

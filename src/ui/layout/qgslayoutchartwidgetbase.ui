@@ -226,6 +226,37 @@
          </layout>
         </widget>
        </item>
+       <item row="5" column="0" colspan="3">
+        <widget class="QCheckBox" name="mFilterOnlyVisibleFeaturesCheckBox">
+         <property name="text">
+          <string>Use only features visible within a map</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0" colspan="3">
+        <layout class="QHBoxLayout" name="linkedMapLayout">
+         <item>
+          <widget class="QLabel" name="mLinkedMapLabel">
+           <property name="text">
+            <string>Linked map</string>
+           </property>
+           <property name="buddy">
+            <cstring>mLinkedMapComboBox</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QgsLayoutItemComboBox" name="mLinkedMapComboBox"/>
+         </item>
+        </layout>
+       </item>
+       <item row="7" column="0" colspan="3">
+        <widget class="QCheckBox" name="mIntersectAtlasCheckBox">
+         <property name="text">
+          <string>Use only features intersecting atlas feature</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </widget>

@@ -26,6 +26,8 @@
 #include "qgscoordinatetransformcontext.h"
 #include "qgscurve.h"
 
+#define SIP_NO_FILE
+
 class QgsProfileRequest;
 class QgsRasterLayer;
 class QgsRasterDataProvider;
@@ -33,7 +35,6 @@ class QgsRasterBlockFeedback;
 class QgsLineSymbol;
 class QgsProfileSnapContext;
 
-#define SIP_NO_FILE
 
 /**
  * \brief Implementation of QgsAbstractProfileResults for raster layers.

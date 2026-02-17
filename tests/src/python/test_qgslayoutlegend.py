@@ -11,19 +11,16 @@ __date__ = "24/10/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
 import os
+import unittest
 from time import sleep
-
-from qgis.PyQt.QtCore import Qt, QRectF
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
-from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (
     Qgis,
-    QgsMapLayer,
     QgsCategorizedSymbolRenderer,
     QgsCoordinateReferenceSystem,
     QgsExpression,
     QgsFeature,
+    QgsFeatureRequest,
     QgsFillSymbol,
     QgsFontUtils,
     QgsGeometry,
@@ -32,12 +29,14 @@ from qgis.core import (
     QgsLayoutItem,
     QgsLayoutItemLegend,
     QgsLayoutItemMap,
+    QgsLayoutItemShape,
     QgsLayoutMeasurement,
     QgsLayoutObject,
     QgsLayoutPoint,
     QgsLayoutSize,
     QgsLegendStyle,
     QgsLineSymbol,
+    QgsMapLayer,
     QgsMapLayerLegendUtils,
     QgsMapSettings,
     QgsMapThemeCollection,
@@ -45,21 +44,20 @@ from qgis.core import (
     QgsPrintLayout,
     QgsProject,
     QgsProperty,
+    QgsReadWriteContext,
     QgsRectangle,
     QgsRendererCategory,
     QgsRuleBasedRenderer,
+    QgsSimpleFillSymbolLayer,
     QgsSingleSymbolRenderer,
     QgsSymbol,
-    QgsVectorLayer,
-    QgsReadWriteContext,
     QgsTextFormat,
-    QgsFeatureRequest,
-    QgsLayoutItemShape,
-    QgsSimpleFillSymbolLayer,
+    QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QRectF, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
 
@@ -68,7 +66,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsLayoutItemLegend(QgisTestCase, LayoutItemTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

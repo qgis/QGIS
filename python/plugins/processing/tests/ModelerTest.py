@@ -20,24 +20,24 @@ __date__ = "November 2016"
 __copyright__ = "(C) 2016, Nyall Dawson"
 
 import unittest
-from qgis.testing import start_app, QgisTestCase
 
 from qgis.core import (
     QgsProcessingModelAlgorithm,
     QgsProcessingModelParameter,
-    QgsProcessingParameterString,
-    QgsProcessingParameterNumber,
     QgsProcessingParameterDistance,
     QgsProcessingParameterField,
     QgsProcessingParameterFile,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterString,
 )
+from qgis.testing import QgisTestCase, start_app
+
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 
 start_app()
 
 
 class ModelerTest(QgisTestCase):
-
     def testModelerParametersDialogAvailableValuesOfType(self):
         # test getAvailableValuesOfType from ModelerParametersDialog
 

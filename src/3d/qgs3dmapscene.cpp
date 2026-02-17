@@ -33,13 +33,13 @@
 #include "qgscameracontroller.h"
 #include "qgschunkedentity.h"
 #include "qgschunknode.h"
-#include "qgsdirectionallightsettings.h"
 #include "qgseventtracing.h"
 #include "qgsforwardrenderview.h"
 #include "qgsframegraph.h"
 #include "qgsgeotransform.h"
 #include "qgsglobechunkedentity.h"
 #include "qgshighlightsrenderview.h"
+#include "qgslightsource.h"
 #include "qgslinematerial_p.h"
 #include "qgslogger.h"
 #include "qgsmaplayerelevationproperties.h"
@@ -1277,7 +1277,7 @@ bool Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
     QString message = tr( "The following layers were not exported:" ) + "\n";
     for ( const QString &layerName : notParsedLayers )
       message += layerName + "\n";
-    QgsMessageOutput::showMessage( tr( "3D exporter warning" ), message, QgsMessageOutput::MessageText );
+    QgsMessageOutput::showMessage( tr( "3D exporter warning" ), message, Qgis::StringFormat::PlainText );
   }
 
   return true;

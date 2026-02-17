@@ -1,5 +1,4 @@
-"""Migrate imports of PyQt4 to PyQt wrapper
-"""
+"""Migrate imports of PyQt4 to PyQt wrapper"""
 
 # Author: Juergen E. Fischer
 # Adapted from fix_urllib
@@ -440,37 +439,34 @@ def build_pattern():
                     assert len(dotted) == 2
                     from_name = f"dotted_name<{dotted[0]!r} '.' {dotted[1]!r}>"
 
-            yield """import_name< 'import' (module={}
-                                  | dotted_as_names< any* module={} any* >) >
-                  """.format(
-                from_name, from_name
-            )
-            yield """import_from< 'from' mod_member={} 'import'
-                       ( member={} | import_as_name< member={} 'as' any > |
+            yield f"""import_name< 'import' (module={from_name}
+                                  | dotted_as_names< any* module={from_name} any* >) >
+                  """
+            yield f"""import_from< 'from' mod_member={from_name} 'import'
+                       ( member={members} | import_as_name< member={members} 'as' any > |
                          import_as_names< members=any*  >) >
-                  """.format(
-                from_name, members, members
-            )
-            yield """import_from< 'from' mod_member={} 'import' '('
-                       ( member={} | import_as_name< member={} 'as' any > |
+                  """
+            yield f"""import_from< 'from' mod_member={from_name} 'import' '('
+                       ( member={members} | import_as_name< member={members} 'as' any > |
                          import_as_names< members=any*  >) ')' >
-                  """.format(
-                from_name, members, members
+                  """
+            yield (
+                """import_from< 'from' module_star=%s 'import' star='*' >
+                  """
+                % from_name
             )
-            yield """import_from< 'from' module_star=%s 'import' star='*' >
-                  """ % from_name
-            yield """import_name< 'import'
+            yield (
+                """import_name< 'import'
                                   dotted_as_name< module_as=%s 'as' any > >
-                  """ % from_name
-            # bare_with_attr has a special significance for FixImports.match().
-            yield """power< bare_with_attr={} trailer< '.' member={} > any* >
-                  """.format(
-                from_name, members
+                  """
+                % from_name
             )
+            # bare_with_attr has a special significance for FixImports.match().
+            yield f"""power< bare_with_attr={from_name} trailer< '.' member={members} > any* >
+                  """
 
 
 class FixPyqt(FixImports):
-
     def build_pattern(self):
         return "|".join(build_pattern())
 

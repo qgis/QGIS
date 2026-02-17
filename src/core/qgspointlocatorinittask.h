@@ -27,9 +27,10 @@
 // version without notice, or even be removed.
 //
 
-#define SIP_NO_FILE
 
 #include "qgstaskmanager.h"
+
+#define SIP_NO_FILE
 
 class QgsPointLocator;
 

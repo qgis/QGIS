@@ -16,12 +16,10 @@ import urllib.parse
 
 from qgis.PyQt.QtCore import QSize
 from qgis.testing import unittest
-
 from test_qgsserver_accesscontrol import TestQgsServerAccessControl
 
 
 class TestQgsServerAccessControlWMSGetlegendgraphic(TestQgsServerAccessControl):
-
     # Set to True to re-generate reference files for this class
     # regenerate_reference = True
 

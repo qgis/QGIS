@@ -19,30 +19,31 @@ __author__ = "Victor Olaya"
 __date__ = "September 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
+from collections import defaultdict
+
 from qgis.core import (
-    QgsProcessingParameterFeatureSource,
-    QgsStatisticalSummary,
-    QgsDateTimeStatisticalSummary,
-    QgsStringStatisticalSummary,
-    QgsFeatureRequest,
-    QgsApplication,
-    QgsProcessingException,
-    QgsProcessingParameterField,
-    QgsProcessingParameterFeatureSink,
-    QgsFields,
-    QgsField,
-    QgsWkbTypes,
-    QgsCoordinateReferenceSystem,
-    QgsFeature,
-    QgsFeatureSink,
-    QgsProcessing,
-    QgsProcessingFeatureSource,
     NULL,
+    QgsApplication,
+    QgsCoordinateReferenceSystem,
+    QgsDateTimeStatisticalSummary,
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsFeatureSink,
+    QgsField,
+    QgsFields,
+    QgsProcessing,
+    QgsProcessingException,
+    QgsProcessingFeatureSource,
+    QgsProcessingParameterFeatureSink,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterField,
+    QgsStatisticalSummary,
+    QgsStringStatisticalSummary,
+    QgsWkbTypes,
 )
 from qgis.PyQt.QtCore import QMetaType
-from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
-from collections import defaultdict
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class StatisticsByCategories(QgisAlgorithm):

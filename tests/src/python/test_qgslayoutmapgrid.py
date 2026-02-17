@@ -10,12 +10,9 @@ __author__ = "(C) 2017 by Nyall Dawson"
 __date__ = "20/10/2017"
 __copyright__ = "Copyright 2012, The QGIS Project"
 
+import unittest
 from typing import Optional
 
-from qgis.PyQt.QtCore import QDir, QRectF
-from qgis.PyQt.QtGui import QColor, QPainter
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgis,
     QgsCoordinateReferenceSystem,
@@ -23,18 +20,19 @@ from qgis.core import (
     QgsLayoutItemMap,
     QgsLayoutItemMapGrid,
     QgsLayoutObject,
+    QgsLineSymbol,
     QgsProject,
     QgsProperty,
-    QgsRectangle,
-    QgsTextFormat,
-    QgsLineSymbol,
-    QgsProperty,
-    QgsSymbolLayer,
     QgsReadWriteContext,
+    QgsRectangle,
+    QgsSymbolLayer,
+    QgsTextFormat,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QDir, QRectF
+from qgis.PyQt.QtGui import QColor, QPainter
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import getTestFont, unitTestDataPath
 
 start_app()

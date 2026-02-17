@@ -19,30 +19,28 @@ __author__ = "Nyall Dawson"
 __date__ = "February 2017"
 __copyright__ = "(C) 2017, Nyall Dawson"
 
-import os
 import operator
+import os
 import sys
-
 from collections import defaultdict
 
 from qgis.core import (
+    NULL,
+    QgsFeatureSink,
     QgsField,
     QgsFields,
-    QgsProcessingUtils,
-    QgsFeatureSink,
     QgsGeometry,
-    QgsSpatialIndex,
     QgsPointXY,
-    NULL,
     QgsProcessing,
     QgsProcessingException,
-    QgsProcessingParameterFeatureSource,
     QgsProcessingParameterDistance,
-    QgsProcessingParameterNumber,
     QgsProcessingParameterEnum,
     QgsProcessingParameterFeatureSink,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterNumber,
+    QgsProcessingUtils,
+    QgsSpatialIndex,
 )
-
 from qgis.PyQt.QtCore import QMetaType
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -267,7 +265,6 @@ class TopoColor(QgisAlgorithm):
 
 
 class ColoringAlgorithm:
-
     @staticmethod
     def balanced(features, graph, feedback, balance=0, min_colors=4):
         feature_colors = {}
@@ -372,7 +369,6 @@ class ColoringAlgorithm:
 
 
 class Graph:
-
     def __init__(self, sort_graph=True):
         self.sort_graph = sort_graph
         self.node_edge = {}

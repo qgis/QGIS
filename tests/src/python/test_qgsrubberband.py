@@ -6,16 +6,16 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.gui import QgsRubberBand
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.gui import QgsRubberBand
+from qgis.testing import QgisTestCase, start_app
 from qgis.testing.mocked import get_iface
 
 start_app()
 
 
 class TestQgsRubberBand(QgisTestCase):
-
     def setUp(self):
         self.iface = get_iface()
 

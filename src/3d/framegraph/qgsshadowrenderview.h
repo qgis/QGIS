@@ -18,6 +18,8 @@
 
 #include "qgsabstractrenderview.h"
 
+#define SIP_NO_FILE
+
 class QColor;
 class QRect;
 class QSurface;
@@ -54,7 +56,6 @@ class QgsShadowSettings;
 class QgsDirectionalLightSettings;
 class QgsLightSource;
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup qgis_3d

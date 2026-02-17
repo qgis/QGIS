@@ -16,13 +16,14 @@
 #ifndef QGSSETTINGSENTRYENUMFLAG_H
 #define QGSSETTINGSENTRYENUMFLAG_H
 
-#define SIP_NO_FILE
 
 #include "qgis.h"
 #include "qgslogger.h"
 #include "qgssettingsentry.h"
 
 #include <QString>
+
+#define SIP_NO_FILE
 
 using namespace Qt::StringLiterals;
 

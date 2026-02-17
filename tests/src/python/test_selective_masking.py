@@ -16,16 +16,18 @@ __date__ = "28/06/2019"
 import os
 import subprocess
 import tempfile
+import unittest
 
-from qgis.PyQt.QtCore import QRectF, QSize, Qt, QUuid, QCoreApplication
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (
     Qgis,
+    QgsCategorizedSymbolRenderer,
     QgsCoordinateReferenceSystem,
+    QgsFontUtils,
     QgsLayout,
     QgsLayoutExporter,
     QgsLayoutItemMap,
     QgsLayoutItemPage,
+    QgsLayoutRenderContext,
     QgsLayoutSize,
     QgsLineSymbol,
     QgsMapRendererCache,
@@ -45,6 +47,9 @@ from qgis.core import (
     QgsProperty,
     QgsRectangle,
     QgsRenderContext,
+    QgsSelectiveMaskingSourceSet,
+    QgsSelectiveMaskSource,
+    QgsSettings,
     QgsSingleSymbolRenderer,
     QgsSvgMarkerSymbolLayer,
     QgsSymbolLayerId,
@@ -52,16 +57,10 @@ from qgis.core import (
     QgsSymbolLayerUtils,
     QgsUnitTypes,
     QgsWkbTypes,
-    QgsFontUtils,
-    QgsSettings,
-    QgsLayoutRenderContext,
-    QgsSelectiveMaskSource,
-    QgsSelectiveMaskingSourceSet,
-    QgsCategorizedSymbolRenderer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QCoreApplication, QRectF, QSize, Qt, QUuid
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.testing import QgisTestCase, start_app
 from utilities import getTempfilePath, getTestFont, unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -87,7 +86,6 @@ def renderMapToImageWithTime(mapsettings, parallel=False, cache=None):
 
 
 class TestSelectiveMasking(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "selective_masking"
@@ -960,11 +958,13 @@ class TestSelectiveMasking(QgisTestCase):
             ("as_big_preview", lambda: p.bigSymbolPreviewImage().save(tmp)),
             (
                 "sl_preview",
-                lambda: QgsSymbolLayerUtils.symbolLayerPreviewIcon(
-                    mask_layer, QgsUnitTypes.RenderUnit.RenderPixels, QSize(64, 64)
-                )
-                .pixmap(QSize(64, 64))
-                .save(tmp),
+                lambda: (
+                    QgsSymbolLayerUtils.symbolLayerPreviewIcon(
+                        mask_layer, QgsUnitTypes.RenderUnit.RenderPixels, QSize(64, 64)
+                    )
+                    .pixmap(QSize(64, 64))
+                    .save(tmp)
+                ),
             ),
         ]:
             with tempfile.TemporaryDirectory() as temp_dir:

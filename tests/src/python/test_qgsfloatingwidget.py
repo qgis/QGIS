@@ -10,17 +10,17 @@ __author__ = "Nyall Dawson"
 __date__ = "26/04/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
+import unittest
+
+from qgis.gui import QgsFloatingWidget
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QGridLayout, QWidget
-from qgis.gui import QgsFloatingWidget
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsFloatingWidget(QgisTestCase):
-
     def testAnchor(self):
         """test setting anchor point for widget"""
         main_frame = QWidget()

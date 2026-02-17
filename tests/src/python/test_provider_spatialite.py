@@ -15,11 +15,13 @@ import re
 import shutil
 import sys
 import tempfile
+import unittest
 from datetime import datetime
 
 from osgeo import ogr
-from qgis.PyQt.QtCore import QByteArray, QVariant
+from providertestbase import ProviderTestCase
 from qgis.core import (
+    NULL,
     Qgis,
     QgsBox3D,
     QgsDataSourceUri,
@@ -40,14 +42,11 @@ from qgis.core import (
     QgsVectorLayerExporter,
     QgsVectorLayerUtils,
     QgsWkbTypes,
-    NULL,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QByteArray, QVariant
+from qgis.testing import QgisTestCase, start_app
 from qgis.utils import spatialite_connect
-
-from providertestbase import ProviderTestCase
-from utilities import unitTestDataPath, compareWkt
+from utilities import compareWkt, unitTestDataPath
 
 # Pass no_exit=True: for some reason this crashes sometimes on exit on Travis
 start_app(True)
@@ -70,7 +69,6 @@ def count_opened_filedescriptors(filename_to_test):
 
 
 class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -78,9 +76,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
         print(" ### Setup Spatialite Provider Test Class")
         # setup provider for base tests
         cls.vl = QgsVectorLayer(
-            "dbname='{}/provider/spatialite.db' table=\"somedata\" (geom) sql=".format(
-                TEST_DATA_DIR
-            ),
+            f"dbname='{TEST_DATA_DIR}/provider/spatialite.db' table=\"somedata\" (geom) sql=",
             "test",
             "spatialite",
         )
@@ -88,9 +84,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
         cls.source = cls.vl.dataProvider()
 
         cls.vl_poly = QgsVectorLayer(
-            "dbname='{}/provider/spatialite.db' table=\"somepolydata\" (geom) sql=".format(
-                TEST_DATA_DIR
-            ),
+            f"dbname='{TEST_DATA_DIR}/provider/spatialite.db' table=\"somepolydata\" (geom) sql=",
             "test",
             "spatialite",
         )
@@ -386,9 +380,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
         """Returns the layer for attribute change CHECK constraint violation"""
 
         vl = QgsVectorLayer(
-            "dbname='{}' table=\"check_constraint\" (geometry) sql=".format(
-                self.dbname
-            ),
+            f"dbname='{self.dbname}' table=\"check_constraint\" (geometry) sql=",
             "check_constraint",
             "spatialite",
         )
@@ -398,9 +390,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
         """Returns the layer for UNIQUE and NOT NULL constraints detection"""
 
         vl = QgsVectorLayer(
-            "dbname='{}' table=\"unique_not_null_constraints\" (geometry) sql=".format(
-                self.dbname
-            ),
+            f"dbname='{self.dbname}' table=\"unique_not_null_constraints\" (geometry) sql=",
             "unique_not_null_constraints",
             "spatialite",
         )
@@ -1585,9 +1575,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
 
         for i in range(11, 21):
             sql = 'INSERT INTO "test pk" (id, name, geometry) '
-            sql += "VALUES ({id}, 'name {id}', GeomFromText('POINT({id} {id})', 4326))".format(
-                id=i
-            )
+            sql += f"VALUES ({i}, 'name {i}', GeomFromText('POINT({i} {i})', 4326))"
             cur.execute(sql)
 
         def _make_table(table_name):
@@ -1602,9 +1590,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
 
             for i in range(11, 21):
                 sql = f'INSERT INTO "{table_name}" (name, geom) '
-                sql += "VALUES ('name {id}', GeomFromText('POINT({id} {id})', 4326))".format(
-                    id=i
-                )
+                sql += f"VALUES ('name {i}', GeomFromText('POINT({i} {i})', 4326))"
                 cur.execute(sql)
 
         _make_table("somedata")
@@ -1625,7 +1611,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
                 self.assertEqual(vl.getFeature(i - offset)["name"], f"name {i}")
                 self.assertEqual(f.id(), i - offset)
                 self.assertEqual(f["name"], f"name {i}")
-                self.assertEqual(f.geometry().asWkt(), "Point ({id} {id})".format(id=i))
+                self.assertEqual(f.geometry().asWkt(), f"Point ({i} {i})")
                 i += 1
 
         vl_pk = QgsVectorLayer(
@@ -2331,9 +2317,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
         con = spatialite_connect(self.dbname, isolation_level=None)
         cur = con.cursor()
         cur.execute("BEGIN")
-        sql = (
-            sql
-        ) = """CREATE TABLE table54622 (
+        sql = sql = """CREATE TABLE table54622 (
             _id INTEGER PRIMARY KEY AUTOINCREMENT)"""
         cur.execute(sql)
         sql = "SELECT AddGeometryColumn('table54622', 'geometry', 25832, 'MULTIPOLYGON', 'XY', 0)"
@@ -2485,6 +2469,20 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
             self.assertNotIn("id2", field_names)
             self.assertIn("name2", field_names)
             self.assertNotIn("name1", field_names)
+
+    def test_invalid_subset_string(self):
+        """Check that constructing a vector layer with the incorrect subset
+        string will result in an invalid layer.
+        Related to GH #64282.
+        """
+        testPath = f"dbname={self.dbname} table='test_filter' (geometry) key='id'"
+        table_name = "test_filter"
+        subset_string = f"SELECT * FROM {table_name} WHERE name REGEXP '^i';"
+        # unvalid subset string should result in an invalid layer
+        uri = QgsDataSourceUri(f"dbname={self.dbname}")
+        uri.setDataSource("", table_name, "geometry", subset_string, "")
+        layer = QgsVectorLayer(uri.uri(), "subset layer", "spatialite")
+        self.assertFalse(layer.isValid())
 
 
 if __name__ == "__main__":

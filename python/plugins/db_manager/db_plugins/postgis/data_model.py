@@ -19,17 +19,17 @@ email                : brush.tyler@gmail.com
 """
 
 from qgis.core import QgsMessageLog
-from ..plugin import BaseError
+
 from ..data_model import (
-    TableDataModel,
     SqlResultModel,
     SqlResultModelAsync,
     SqlResultModelTask,
+    TableDataModel,
 )
+from ..plugin import BaseError
 
 
 class PGTableDataModel(TableDataModel):
-
     def __init__(self, table, parent=None):
         self.cursor = None
         TableDataModel.__init__(self, table, parent)
@@ -88,7 +88,6 @@ class PGTableDataModel(TableDataModel):
 
 
 class PGSqlResultModelTask(SqlResultModelTask):
-
     def __init__(self, db, sql, parent):
         super().__init__(db, sql, parent)
 
@@ -107,7 +106,6 @@ class PGSqlResultModelTask(SqlResultModelTask):
 
 
 class PGSqlResultModelAsync(SqlResultModelAsync):
-
     def __init__(self, db, sql, parent):
         super().__init__()
 

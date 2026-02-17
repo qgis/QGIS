@@ -10,7 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "02/11/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
-from qgis.PyQt.QtCore import QVariant
+import unittest
+
 from qgis.analysis import QgsBatchGeocodeAlgorithm
 from qgis.core import (
     NULL,
@@ -27,14 +28,13 @@ from qgis.core import (
     QgsRectangle,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QVariant
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestGeocoder(QgsGeocoderInterface):
-
     def flags(self):
         return QgsGeocoderInterface.Flag.GeocodesStrings
 
@@ -73,7 +73,6 @@ class TestGeocoder(QgsGeocoderInterface):
 
 
 class TestGeocoderExtraFields(QgsGeocoderInterface):
-
     def flags(self):
         return QgsGeocoderInterface.Flag.GeocodesStrings
 
@@ -118,7 +117,6 @@ class TestGeocoderExtraFields(QgsGeocoderInterface):
 
 
 class TestGeocoderAlgorithm(QgsBatchGeocodeAlgorithm):
-
     def __init__(self, geocoder):
         super().__init__(geocoder)
         self.geocoder = geocoder
@@ -134,7 +132,6 @@ class TestGeocoderAlgorithm(QgsBatchGeocodeAlgorithm):
 
 
 class TestQgsBatchGeocodeAlgorithm(QgisTestCase):
-
     def test_algorithm(self):
         geocoder = TestGeocoder()
 

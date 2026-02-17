@@ -11,10 +11,9 @@ __date__ = "20/10/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
 import os
+import unittest
 from typing import Optional
 
-from qgis.PyQt.QtCore import QDir, QFileInfo, QRectF
-from qgis.PyQt.QtGui import QPainter
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsFeature,
@@ -34,9 +33,9 @@ from qgis.core import (
     QgsSymbolLayer,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QDir, QFileInfo, QRectF
+from qgis.PyQt.QtGui import QPainter
+from qgis.testing import QgisTestCase, start_app
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
 
@@ -45,7 +44,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

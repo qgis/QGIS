@@ -10,12 +10,12 @@ __author__ = "(C) 2020 by Nyall Dawson"
 __date__ = "20/04/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
-from qgis.PyQt.QtTest import QSignalSpy
+import unittest
+
 from qgis.core import QgsGeometry, QgsLegendPatchShape, QgsSymbol
 from qgis.gui import QgsLegendPatchShapeWidget
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -23,7 +23,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsLegendPatchShapeWidget(QgisTestCase):
-
     def testWidget(self):
         shape = QgsLegendPatchShape(
             QgsSymbol.SymbolType.Line,

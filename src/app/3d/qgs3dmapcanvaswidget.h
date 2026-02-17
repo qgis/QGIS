@@ -17,7 +17,6 @@
 #define QGS3DMAPCANVASWIDGET_H
 
 #include "qgis_app.h"
-#include "qgscamerapose.h"
 #include "qgsgeometry.h"
 #include "qgsrectangle.h"
 #include "qobjectuniqueptr.h"
@@ -30,7 +29,6 @@
 #include <QWidgetAction>
 
 #define SIP_NO_FILE
-
 
 class QgsMapToolClippingPlanes;
 class Qgs3DMapToolPointCloudChangeAttributePaintbrush;

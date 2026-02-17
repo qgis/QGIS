@@ -13,7 +13,6 @@ __copyright__ = "Copyright 2016, The QGIS Project"
 import json
 import os
 import sys
-
 from pathlib import Path
 
 try:
@@ -28,7 +27,6 @@ REGENERATE_LISTS = False
 
 
 class TestQgsDocCoverage(unittest.TestCase):
-
     def testCoverage(self):
         print("CTEST_FULL_OUTPUT")
         prefixPath = os.environ["QGIS_PREFIX_PATH"]

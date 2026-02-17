@@ -11,14 +11,8 @@ __date__ = "29/07/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
 import json
+import unittest
 
-from qgis.PyQt.QtCore import (
-    Qt,
-    QCoreApplication,
-    QSize,
-    QSizeF,
-)
-from qgis.PyQt.QtGui import QColor, QImage
 from qgis.core import (
     Qgis,
     QgsApplication,
@@ -32,11 +26,16 @@ from qgis.core import (
     QgsSymbol,
     QgsSymbolLayer,
     QgsWkbTypes,
+    qgsDoubleNear,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-from qgis.core import qgsDoubleNear
-
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QSize,
+    QSizeF,
+    Qt,
+)
+from qgis.PyQt.QtGui import QColor, QImage
+from qgis.testing import QgisTestCase, start_app
 from utilities import getTestFont, unitTestDataPath
 
 start_app()

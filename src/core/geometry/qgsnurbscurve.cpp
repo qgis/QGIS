@@ -119,8 +119,55 @@ bool QgsNurbsCurve::isRational() const
 
 bool QgsNurbsCurve::isPolyBezier() const
 {
-  const int n = mControlPoints.size();
-  return mDegree == 3 && n >= 4 && ( n - 1 ) % 3 == 0;
+  const int controlPointCount = mControlPoints.size();
+  const int degree = mDegree;
+
+  // Basic requirements: degree >= 1, at least degree+1 points,
+  // and the number of control points must satisfy (controlPointCount - 1) % degree == 0.
+  if ( degree < 1 || controlPointCount < degree + 1 || ( controlPointCount - 1 ) % degree != 0 )
+    return false;
+
+  const int segmentCount = ( controlPointCount - 1 ) / degree;
+  const int expectedKnotCount = controlPointCount + degree + 1;
+
+  if ( mKnots.size() != expectedKnotCount )
+    return false;
+
+  // 1. Check that the knot vector is non-decreasing
+  for ( int i = 1; i < expectedKnotCount; ++i )
+  {
+    if ( mKnots[i] < mKnots[i - 1] && !qgsDoubleNear( mKnots[i], mKnots[i - 1] ) )
+      return false;
+  }
+
+  // 2. Check clamping: first degree+1 knots must be 0.0
+  for ( int i = 0; i < degree + 1; ++i )
+  {
+    if ( !qgsDoubleNear( mKnots[i], 0.0 ) )
+      return false;
+  }
+
+  // 3. Check clamping: last degree+1 knots must be equal to the number of segments
+  const double lastKnotValue = static_cast<double>( segmentCount );
+  for ( int i = expectedKnotCount - ( degree + 1 ); i < expectedKnotCount; ++i )
+  {
+    if ( !qgsDoubleNear( mKnots[i], lastKnotValue ) )
+      return false;
+  }
+
+  // 4. Check interior knots: multiplicity 'degree' at each integer junction
+  for ( int segmentIndex = 1; segmentIndex < segmentCount; ++segmentIndex )
+  {
+    const double knotValue = static_cast<double>( segmentIndex );
+    const int startIndex = ( degree + 1 ) + ( segmentIndex - 1 ) * degree;
+    for ( int j = 0; j < degree; ++j )
+    {
+      if ( !qgsDoubleNear( mKnots[startIndex + j], knotValue ) )
+        return false;
+    }
+  }
+
+  return true;
 }
 
 /**
@@ -651,6 +698,35 @@ QVector<double> QgsNurbsCurve::generateUniformKnots( int numControlPoints, int d
     else
       knots.append( static_cast<double>( i - degree ) / ( numControlPoints - degree ) );
   }
+  return knots;
+}
+
+QVector<double> QgsNurbsCurve::generateKnotsForBezierConversion( int nAnchors, int degree )
+{
+  if ( nAnchors < 2 || degree < 1 )
+    return QVector<double>();
+
+  const int segmentCount = nAnchors - 1;
+  const int totalKnots = degree * nAnchors + degree + 1;
+
+  QVector<double> knots;
+  knots.reserve( totalKnots );
+
+  // Clamping start: (degree + 1) knots at 0
+  for ( int i = 0; i < degree + 1; ++i )
+    knots.append( 0.0 );
+
+  // Interior: multiplicity 'degree' at each junction
+  for ( int segmentIndex = 1; segmentIndex < segmentCount; ++segmentIndex )
+  {
+    for ( int j = 0; j < degree; ++j )
+      knots.append( static_cast<double>( segmentIndex ) );
+  }
+
+  // Clamping end: (degree + 1) knots at segmentCount
+  for ( int i = 0; i < degree + 1; ++i )
+    knots.append( static_cast<double>( segmentCount ) );
+
   return knots;
 }
 
@@ -1757,4 +1833,12 @@ bool QgsNurbsCurve::setWeight( int index, double weight )
   mWeights[index] = weight;
   clearCache();
   return true;
+}
+
+bool QgsNurbsCurve::isAnchorVertex( int localIndex ) const
+{
+  if ( !isPolyBezier() || localIndex < 0 || localIndex >= mControlPoints.size() )
+    return false;
+
+  return ( localIndex % mDegree ) == 0;
 }

@@ -23,12 +23,13 @@
 #include "qgspropertyoverridebutton.h"
 #include "qgstextformatwidget.h"
 
+#define SIP_NO_FILE
+
 class QDialogButtonBox;
 
 class QgsMeshLayer;
 class QgsVectorTileLayer;
 
-#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

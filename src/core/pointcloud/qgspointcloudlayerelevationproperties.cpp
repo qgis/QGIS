@@ -26,6 +26,7 @@
 #include "qgslinesymbollayer.h"
 #include "qgspointcloudlayer.h"
 #include "qgssymbollayerutils.h"
+#include "qgsunittypes.h"
 #include "qgsvirtualpointcloudprovider.h"
 
 #include <QString>

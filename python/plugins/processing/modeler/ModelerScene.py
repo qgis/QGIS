@@ -20,10 +20,11 @@ __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
 from qgis.gui import QgsModelGraphicsScene
+
 from processing.modeler.ModelerGraphicItem import (
+    ModelerChildAlgorithmGraphicItem,
     ModelerInputGraphicItem,
     ModelerOutputGraphicItem,
-    ModelerChildAlgorithmGraphicItem,
 )
 
 

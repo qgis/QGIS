@@ -16,7 +16,6 @@
 #ifndef QGSMAPTOOLEDITBLANKSEGMENTS_H
 #define QGSMAPTOOLEDITBLANKSEGMENTS_H
 
-#define SIP_NO_FILE
 
 #include "qgsfeatureid.h"
 #include "qgslinesymbollayer.h"
@@ -25,6 +24,8 @@
 #include "qgsrubberband.h"
 #include "qgssymbol.h"
 #include "qobjectuniqueptr.h"
+
+#define SIP_NO_FILE
 
 class QgsMapToolBlankSegmentRubberBand;
 class QgsVectorLayer;

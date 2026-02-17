@@ -22,18 +22,19 @@ __copyright__ = "(C) 2013, Victor Olaya"
 from qgis.core import (
     QgsApplication,
     QgsProcessingAlgorithm,
+    QgsProcessingOutputLayerDefinition,
     QgsProcessingParameterDefinition,
     QgsProcessingParameterEnum,
     QgsProcessingParameterFeatureSink,
-    QgsProcessingParameterVectorDestination,
     QgsProcessingParameterRasterDestination,
-    QgsProcessingOutputLayerDefinition,
+    QgsProcessingParameterVectorDestination,
     QgsProject,
 )
-from processing.core.Processing import Processing
-from processing.gui.Postprocessing import handleAlgorithmResults
-from processing.gui.AlgorithmDialog import AlgorithmDialog
 from qgis.utils import iface
+
+from processing.core.Processing import Processing
+from processing.gui.AlgorithmDialog import AlgorithmDialog
+from processing.gui.Postprocessing import handleAlgorithmResults
 
 
 # changing this signature? make sure you update the signature in

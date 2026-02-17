@@ -21,9 +21,10 @@
 
 #include <QTreeWidget>
 
+#define SIP_NO_FILE
+
 class QMimeData;
 
-#define SIP_NO_FILE
 
 ///@cond NOT_STABLE
 

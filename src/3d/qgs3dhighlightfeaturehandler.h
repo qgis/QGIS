@@ -23,6 +23,8 @@
 #include <QObject>
 #include <QVector>
 
+#define SIP_NO_FILE
+
 class QTimer;
 class Qgs3DMapScene;
 class Qgs3DMapSceneEntity;
@@ -31,7 +33,6 @@ class QgsFeature;
 class QgsMapLayer;
 class QgsRubberBand3D;
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup qgis_3d

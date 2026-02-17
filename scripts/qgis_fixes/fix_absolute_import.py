@@ -4,7 +4,6 @@ from libfuturize.fixes.fix_absolute_import import (
 
 
 class FixAbsoluteImport(FixAbsoluteImportOrig):
-
     def probably_a_local_import(self, imp_name):
         if imp_name.startswith("PyQt"):
             return False

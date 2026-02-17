@@ -48,7 +48,6 @@ class QgsFrameGraph;
 class Qgs3DMapSettings;
 class Qgs3DAxis;
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup qgis_3d

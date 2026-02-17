@@ -17,7 +17,6 @@
 
 #include "qgs3dmapsettings.h"
 #include "qgsapplication.h"
-#include "qgssettings.h"
 
 #include <QMenu>
 #include <QMessageBox>

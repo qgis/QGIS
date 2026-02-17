@@ -267,6 +267,12 @@
         "pdal"
       ]
     },
+    "proj-data": {
+      "description": "Build with proj data",
+      "dependencies": [
+        "proj-data"
+      ]
+    },
     "qtpositioning": {
       "description": "Build with QtPositioning support",
       "dependencies": [

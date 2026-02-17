@@ -43,6 +43,7 @@
 #include <QString>
 #include <QTimer>
 #include <Qt3DCore/QTransform>
+#include <Qt3DRender/QGeometryRenderer>
 #include <QtConcurrentRun>
 
 #include "moc_qgsannotationlayerchunkloader_p.cpp"

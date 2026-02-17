@@ -20,6 +20,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3drendercontext.h"
 #include "qgs3dutils.h"
+#include "qgscameracontroller.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmeshlayer.h"

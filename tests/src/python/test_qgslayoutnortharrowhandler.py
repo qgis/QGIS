@@ -10,8 +10,8 @@ __author__ = "(C) 2020 by Nyall Dawson"
 __date__ = "05/04/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
-from qgis.PyQt.QtCore import QRectF
-from qgis.PyQt.QtTest import QSignalSpy
+import unittest
+
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsLayout,
@@ -20,9 +20,9 @@ from qgis.core import (
     QgsProject,
     QgsRectangle,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QRectF
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -30,7 +30,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsLayoutNorthArrowHandler(QgisTestCase):
-
     def testNorthArrowWithMapItemRotation(self):
         """Test arrow rotation when map item is also rotated"""
 

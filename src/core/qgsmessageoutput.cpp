@@ -44,21 +44,21 @@ QgsMessageOutput *QgsMessageOutput::createMessageOutput()
   return mMessageOutputCreator();
 }
 
-void QgsMessageOutput::showMessage( const QString &title, const QString &message, MessageType msgType )
+void QgsMessageOutput::showMessage( const QString &title, const QString &message, Qgis::StringFormat format )
 {
   QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
   output->setTitle( title );
-  output->setMessage( message, msgType );
+  output->setMessage( message, format );
   output->showMessage();
 }
 
 ////////////////////////////////
 // QgsMessageOutputConsole
 
-void QgsMessageOutputConsole::setMessage( const QString &message, MessageType msgType )
+void QgsMessageOutputConsole::setMessage( const QString &message, Qgis::StringFormat format )
 {
   mMessage = message;
-  mMsgType = msgType;
+  mFormat = format;
 }
 
 void QgsMessageOutputConsole::appendMessage( const QString &message )
@@ -68,7 +68,7 @@ void QgsMessageOutputConsole::appendMessage( const QString &message )
 
 void QgsMessageOutputConsole::showMessage( bool )
 {
-  if ( mMsgType == MessageHtml )
+  if ( mFormat == Qgis::StringFormat::Html )
   {
     mMessage.replace( "<br>"_L1, "\n"_L1 );
     mMessage.replace( "&nbsp;"_L1, " "_L1 );

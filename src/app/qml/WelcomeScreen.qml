@@ -57,9 +57,10 @@ Item {
             source: "images/qgis.svg"
             height: welcomeScreen.narrowLayout ? 35 : 50
             width: 160
-            sourceSize: Qt.size(50, 160)
             fillMode: Image.PreserveAspectFit
             horizontalAlignment: Image.AlignLeft
+            smooth: true
+            mipmap: true
           }
 
           Text {
@@ -131,6 +132,7 @@ Item {
               spacing: 8
               clip: true
               visible: tabBar.currentIndex === 0
+              maximumFlickVelocity: 2000
 
               model: recentProjectsModel
 
@@ -141,12 +143,13 @@ Item {
                 subtitle: (ProjectNativePath || ProjectPath || "").replace(/([\\\/])/g,"$1\u200b")
                 crs: Crs
                 imageSource: PreviewImagePath || ""
+                isEnabled: Exists
                 isPinned: Pinned
                 isSelected: recentProjectsListView.currentIndex === index
                 radius: 6
 
                 onClicked: (mouse) => {
-                             if (mouse.button == Qt.LeftButton) {
+                             if (mouse.button == Qt.LeftButton && isEnabled) {
                                welcomeScreenController.openProject(ProjectPath);
                              } else if (mouse.button == Qt.RightButton) {
                                recentProjectsMenu.projectIndex = index;
@@ -171,6 +174,33 @@ Item {
               }
 
               Menu {
+                id: templateProjectsMenu
+                
+                property int projectIndex: 0
+                
+                background: Rectangle {
+                  implicitWidth: 200
+                  implicitHeight: templateProjectsMenu.Material.menuItemHeight
+                  radius: templateProjectsMenu.Material.roundedScale
+                  color: templateProjectsMenu.Material.dialogColor
+                  border.color: templateProjectsMenu.Material.listHighlightColor
+                  border.width: 1
+                }
+                
+                MenuItem {
+                  text: qsTr("Delete Template…")
+                  onClicked: {
+                    welcomeScreenController.removeTemplateProject(templateProjectsMenu.projectIndex)
+                  }
+                  background: Rectangle {
+                    implicitWidth: 200
+                    implicitHeight: parent.Material.menuItemHeight
+                    color: parent.highlighted ? parent.Material.listHighlightColor : "transparent"
+                  }
+                }
+              }
+
+              Menu {
                 id: recentProjectsMenu
 
                 property int projectIndex: 0
@@ -178,7 +208,14 @@ Item {
                 property bool projectExists: false
                 property bool projectHasNativePath: false
 
-                background.layer.enabled: false
+                background: Rectangle {
+                  implicitWidth: 200
+                  implicitHeight: templateProjectsMenu.Material.menuItemHeight
+                  radius: templateProjectsMenu.Material.roundedScale
+                  color: templateProjectsMenu.Material.dialogColor
+                  border.color: templateProjectsMenu.Material.listHighlightColor
+                  border.width: 1
+                }
                 
                 MenuItem {
                   text: recentProjectsMenu.projectPinned? qsTr("Unpin from List") : qsTr("Pin to List")
@@ -260,12 +297,13 @@ Item {
 
               delegate: ProjectCard {
                 width: templatesListView.width - 12
+                backgroundColor: CanvasColor || "#ffffff"
                 title: Title || ""
                 subtitle: Crs || ""
                 imageSource: {
                   switch (Type) {
                   case TemplateProjectsModel.TemplateType.Blank:
-                    return "../images/blank.jpg";
+                    return "";
                   case TemplateProjectsModel.TemplateType.Basemap:
                     return "../images/basemap.jpg";
                   default:
@@ -275,17 +313,26 @@ Item {
                 isSelected: templatesListView.currentIndex === index
                 radius: 6
 
-                onClicked: {
-                  switch (Type) {
-                  case TemplateProjectsModel.TemplateType.Blank:
-                    welcomeScreenController.createBlankProject(); //#spellok
-                    return;
-                  case TemplateProjectsModel.TemplateType.Basemap:
-                    welcomeScreenController.createProjectFromBasemap();
-                    return;
-                  default:
-                    welcomeScreenController.createProjectFromTemplate(TemplateNativePath || ""); //#spellok
-                    return;
+                onClicked: (mouse) => {
+                  if (mouse.button == Qt.LeftButton) {
+                    switch (Type) {
+                    case TemplateProjectsModel.TemplateType.Blank:
+                      welcomeScreenController.createBlankProject(); //#spellok
+                      return;
+                    case TemplateProjectsModel.TemplateType.Basemap:
+                      welcomeScreenController.createProjectFromBasemap();
+                      return;
+                    default:
+                      welcomeScreenController.createProjectFromTemplate(TemplateNativePath || ""); //#spellok
+                      return;
+                    }
+                  } else if (mouse.button == Qt.RightButton) {
+                    if (Type == TemplateProjectsModel.TemplateType.File && Writable) {
+                      templateProjectsMenu.projectIndex = index;
+                      
+                      const point = mapToItem(templatesListView, mouse.x, mouse.y);
+                      templateProjectsMenu.popup(point.x, point.y);
+                    }
                   }
                 }
               }
@@ -554,12 +601,38 @@ Item {
       }
       
       RoundButton {
+        id: closeButton
         anchors{
           top: parent.top
           right: parent.right
           margins: 5
         }
       
+        background: Rectangle {
+          implicitWidth: closeButton.Material.buttonHeight
+          implicitHeight: closeButton.Material.buttonHeight
+
+          radius: closeButton.radius
+          color: closeButton.Material.buttonColor(closeButton.Material.theme, closeButton.Material.background,
+              closeButton.Material.accent, closeButton.enabled, closeButton.flat, closeButton.highlighted, false)
+
+          Rectangle {
+            width: parent.width
+            height: parent.height
+            radius: closeButton.radius
+            visible: enabled && (closeButton.hovered || closeButton.visualFocus)
+            color: "#33ffffff"
+          }
+
+          Rectangle {
+            width: parent.width
+            height: parent.height
+            radius: closeButton.radius
+            visible: closeButton.down
+            color: "#33ffffff"
+          }
+        }
+
         flat: true
         icon.source: "images/close.svg"
         icon.color: "white"
@@ -580,6 +653,7 @@ Item {
       color: mainCard.color
 
       onInstallClicked: {
+        visible = false;
         welcomeScreenController.showPluginManager();
       }
     }
@@ -595,6 +669,18 @@ Item {
       onInstallClicked: {
         Qt.openUrlExternally("https://download.qgis.org/")
       }
+    }
+  }
+  
+  DropArea {
+    anchors.fill: parent
+
+    onDropped: drop => {
+      let formatsData = {};
+      for(const format of drop.formats) {
+        formatsData[format] = drop.getDataAsArrayBuffer(format);
+      }
+      welcomeScreenController.forwardDrop(drop.text, drop.urls, formatsData);
     }
   }
   

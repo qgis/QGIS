@@ -15,10 +15,9 @@
 ***************************************************************************
 """
 
-from qgis.PyQt.QtWidgets import QComboBox
-
 from qgis.core import QgsSettingsEntryBase
 from qgis.gui import QgsSettingsEditorWidgetWrapper
+from qgis.PyQt.QtWidgets import QComboBox
 
 
 class PyQgsSettingsEnumEditorWidgetWrapper(QgsSettingsEditorWidgetWrapper):

@@ -29,8 +29,8 @@
 from qgis.core import QgsSettings
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox
 
-from MetaSearch.util import get_ui_class
 from MetaSearch.search_backend import CATALOG_TYPES
+from MetaSearch.util import get_ui_class
 
 BASE_CLASS = get_ui_class("newconnectiondialog.ui")
 

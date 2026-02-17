@@ -10,19 +10,20 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtTest import QSignalSpy
+import os
+import unittest
+
+from qgis.core import QgsDataSourceUri, QgsSettings
 from qgis.gui import (
     QgsAbstractDataSourceWidget,
     QgsGui,
     QgsSourceSelectProvider,
     QgsSourceSelectProviderRegistry,
 )
-from qgis.core import QgsDataSourceUri, QgsSettings
-import unittest
-import os
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 __author__ = "Alessandro Pasotti"
@@ -35,7 +36,6 @@ class ConcreteDataSourceWidget(QgsAbstractDataSourceWidget):
 
 
 class ConcreteSourceSelectProvider(QgsSourceSelectProvider):
-
     def providerKey(self):
         return "MyTestProviderKey"
 
@@ -53,7 +53,6 @@ class ConcreteSourceSelectProvider(QgsSourceSelectProvider):
 
 
 class ConcreteSourceSelectProvider2(QgsSourceSelectProvider):
-
     def providerKey(self):
         return "MyTestProviderKey2"
 
@@ -77,7 +76,6 @@ class ConcreteSourceSelectProvider2(QgsSourceSelectProvider):
 
 
 class TestQgsSourceSelectProvider(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

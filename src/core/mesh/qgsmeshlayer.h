@@ -1016,6 +1016,9 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
      */
     QStringList extraDatasetUris() const { return mExtraDatasetUri; }
 
+    using QgsMapLayer::loadNamedStyle;
+    QString loadNamedStyle( const QString &uri, bool &resultFlag SIP_OUT, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories, Qgis::LoadStyleFlags flags = Qgis::LoadStyleFlags() ) override;
+
   public slots:
 
     /**

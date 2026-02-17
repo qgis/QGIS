@@ -10,18 +10,18 @@ __author__ = "Nyall Dawson"
 __date__ = "25/05/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
-from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtTest import QSignalSpy
+import unittest
+
 from qgis.core import QgsApplication, QgsProjectColorScheme
 from qgis.gui import QgsColorButton
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsColorButton(QgisTestCase):
-
     def testClearingColors(self):
         """
         Test setting colors to transparent

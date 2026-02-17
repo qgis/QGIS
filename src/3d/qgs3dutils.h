@@ -15,7 +15,6 @@
 
 #ifndef QGS3DUTILS_H
 #define QGS3DUTILS_H
-#define SIP_NO_FILE
 
 #include <memory>
 
@@ -29,6 +28,8 @@
 
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QCullFace>
+
+#define SIP_NO_FILE
 
 class QgsCameraPose;
 class QgsLineString;

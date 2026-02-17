@@ -1,5 +1,4 @@
 import re
-
 from pathlib import Path
 
 # path to checked out Google Fonts repo
@@ -1565,7 +1564,6 @@ fonts = [
 
 font_details = {}
 for p in path.rglob("*METADATA.pb"):
-
     with open(p, encoding="utf8") as f_in:
         contents = f_in.readlines()
 
@@ -1588,7 +1586,7 @@ for p in path.rglob("*METADATA.pb"):
         match = re.match(r'\s*filename: "(.*)"', line)
         if match:
             filenames.append(
-                f'{github_path}/{match.group(1).replace("[", "%5B").replace("]", "%5D")}'
+                f"{github_path}/{match.group(1).replace('[', '%5B').replace(']', '%5D')}"
             )
 
     license_path = None

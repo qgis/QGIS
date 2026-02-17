@@ -20,33 +20,32 @@ __date__ = "March 2016"
 __copyright__ = "(C) 2016, Hugo Mercier"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QSize, Qt
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (
     QgsArrowSymbolLayer,
+    QgsCentroidFillSymbolLayer,
     QgsFeature,
     QgsFillSymbol,
     QgsGeometry,
     QgsLineSymbol,
     QgsMapSettings,
+    QgsMarkerSymbol,
     QgsProject,
     QgsProperty,
     QgsRectangle,
     QgsRenderContext,
+    QgsSimpleFillSymbolLayer,
+    QgsSimpleMarkerSymbolLayer,
     QgsSingleSymbolRenderer,
     QgsSymbol,
     QgsSymbolLayer,
     QgsVectorLayer,
-    QgsSimpleFillSymbolLayer,
-    QgsCentroidFillSymbolLayer,
-    QgsSimpleMarkerSymbolLayer,
-    QgsMarkerSymbol,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QSize, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.testing import QgisTestCase, start_app
 from qgis.testing.mocked import get_iface
-
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -56,7 +55,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsArrowSymbolLayer(QgisTestCase):
-
     def setUp(self):
         self.iface = get_iface()
 

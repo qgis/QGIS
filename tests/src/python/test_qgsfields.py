@@ -10,16 +10,16 @@ __author__ = "Nyall Dawson"
 __date__ = "16/08/2015"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
-from qgis.PyQt.QtCore import QDate, QVariant
-from qgis.core import NULL, QgsVectorLayer
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.core import NULL, QgsVectorLayer
+from qgis.PyQt.QtCore import QDate, QVariant
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsFields(QgisTestCase):
-
     def test_exceptions(self):
         ml = QgsVectorLayer(
             "Point?crs=epsg:4236&field=id:integer&field=value:double",

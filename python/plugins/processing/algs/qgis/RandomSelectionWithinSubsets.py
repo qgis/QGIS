@@ -21,23 +21,23 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 import os
 import random
-
-from qgis.PyQt.QtGui import QIcon
+from collections import defaultdict
 
 from qgis.core import (
     QgsApplication,
     QgsFeatureRequest,
-    QgsProcessingException,
-    QgsProcessingUtils,
     QgsProcessingAlgorithm,
-    QgsProcessingParameterVectorLayer,
+    QgsProcessingException,
+    QgsProcessingOutputVectorLayer,
     QgsProcessingParameterEnum,
+    QgsProcessingParameterFeatureSink,
     QgsProcessingParameterField,
     QgsProcessingParameterNumber,
-    QgsProcessingParameterFeatureSink,
-    QgsProcessingOutputVectorLayer,
+    QgsProcessingParameterVectorLayer,
+    QgsProcessingUtils,
 )
-from collections import defaultdict
+from qgis.PyQt.QtGui import QIcon
+
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]

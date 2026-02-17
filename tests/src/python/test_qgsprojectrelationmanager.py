@@ -11,15 +11,14 @@ __date__ = "19/12/2019"
 __copyright__ = "Copyright 2019, The QGIS Project"
 
 import os
+import unittest
 
 from qgis.core import (
     QgsProject,
     QgsRelation,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -52,7 +51,6 @@ def createReferencedLayer():
 
 
 class TestQgsProjectRelationManager(QgisTestCase):
-
     def setUp(self):
         self.referencedLayer = createReferencedLayer()
         self.referencingLayer = createReferencingLayer()

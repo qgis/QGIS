@@ -11,7 +11,6 @@ from qgis.testing import unittest
 
 
 class TestQgsSelectionContext(unittest.TestCase):
-
     def testBasic(self):
         context = QgsSelectionContext()
         context.setScale(1000)

@@ -15,10 +15,6 @@
 
 #include "qgsskyboxentity.h"
 
-#include "qgsimagecache.h"
-#include "qgsimagetexture.h"
-#include "qgsproject.h"
-
 #include <QString>
 #include <QUrl>
 #include <Qt3DCore/QEntity>

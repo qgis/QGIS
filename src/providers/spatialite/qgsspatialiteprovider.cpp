@@ -545,7 +545,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri, const Provider
     }
 
     // if DB has Z geometry we do NOT use the v.4.0 AbstractInterface as it does not retrieve Z extent data
-    if ( lyr->GeometryType == GAIA_XY_Z || lyr->GeometryType == GAIA_XY_Z_M )
+    if ( lyr->Dimensions == GAIA_XY_Z || lyr->Dimensions == GAIA_XY_Z_M )
     {
       if ( !getTableSummary() ) // gets the extent and feature count
       {
@@ -614,8 +614,13 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri, const Provider
   setNativeTypes( QgsSpatiaLiteConnection::nativeTypes() );
 
   // Update extent and feature count
-  if ( !mSubsetString.isEmpty() )
-    getTableSummary();
+  if ( !mSubsetString.isEmpty() && !getTableSummary() )
+  {
+    mNumberFeatures = 0;
+    QgsDebugError( u"Invalid SpatiaLite layer"_s );
+    closeDb();
+    return;
+  }
 
   mValid = true;
 }

@@ -12,11 +12,9 @@ __copyright__ = "Copyright 2018, The QGIS Project"
 
 import filecmp
 import os
+import unittest
 from shutil import copyfile
 
-from qgis.PyQt.QtCore import QSize, QTemporaryDir
-from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtXml import QDomDocument, QDomNode
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsDataProvider,
@@ -27,9 +25,10 @@ from qgis.core import (
     QgsRectangle,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QSize, QTemporaryDir
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtXml import QDomDocument, QDomNode
+from qgis.testing import QgisTestCase, start_app
 from utilities import renderMapToImage, unitTestDataPath
 
 app = start_app()
@@ -37,7 +36,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsProjectBadLayers(QgisTestCase):
-
     def setUp(self):
         p = QgsProject.instance()
         p.removeAllMapLayers()

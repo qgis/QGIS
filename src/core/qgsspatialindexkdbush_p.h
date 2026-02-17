@@ -18,7 +18,6 @@
 #ifndef QGSSPATIALINDEXKDBUSH_PRIVATE_H
 #define QGSSPATIALINDEXKDBUSH_PRIVATE_H
 
-#define SIP_NO_FILE
 
 /// @cond PRIVATE
 
@@ -42,6 +41,8 @@
 #include "qgsspatialindexkdbushdata.h"
 
 #include <QList>
+
+#define SIP_NO_FILE
 
 class PointXYKDBush : public kdbush::KDBush< std::pair<double, double>, QgsSpatialIndexKDBushData, std::size_t >
 {
