@@ -109,6 +109,9 @@ QgsElevationProfileLayersDialog::QgsElevationProfileLayersDialog( QWidget *paren
 
   connect( mFilterLineEdit, &QLineEdit::textChanged, mModel, &QgsMapLayerProxyModel::setFilterString );
   connect( mCheckBoxVisibleLayers, &QCheckBox::toggled, this, &QgsElevationProfileLayersDialog::filterVisible );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( u"map_views/elevation_profile.html"_s );
+  } );
 
   mFilterLineEdit->setFocus();
 }
