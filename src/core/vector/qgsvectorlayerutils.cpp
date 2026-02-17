@@ -1653,7 +1653,7 @@ QgsFeatureIds QgsVectorLayerUtils::filterValidFeatureIds( const QgsVectorLayer *
     return QgsFeatureIds();
 
   if ( featureIds.isEmpty() )
-    return featureIds;
+    return QgsFeatureIds();
 
   // build up an optimised feature request
   QgsFeatureRequest request;

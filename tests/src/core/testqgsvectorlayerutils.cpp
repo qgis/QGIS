@@ -146,8 +146,6 @@ void TestQgsVectorLayerUtils::testGetFeatureSource()
   thread2->quit();
 }
 
-}
-
 void TestQgsVectorLayerUtils::testGetValues()
 {
   const QString pointFileName = mTestDataDir + "points.shp";
@@ -547,7 +545,7 @@ void TestQgsVectorLayerUtils::testObjectsMaskedByLabels()
 
 void TestQgsVectorLayerUtils::testFilterValidFeatureIds()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=id:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( u"Point?field=id:integer"_s, u"test"_s, u"memory"_s );
   QVERIFY( layer->isValid() );
 
   QgsFeature f1( layer->fields() );

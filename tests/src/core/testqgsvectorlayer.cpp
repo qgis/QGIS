@@ -545,7 +545,7 @@ void TestQgsVectorLayer::testAddFeatureExtentUpdated()
 
 void TestQgsVectorLayer::testSelectByIdsValidation()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=id:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( u"Point?field=id:integer"_s, u"test"_s, u"memory"_s );
   QVERIFY( layer->isValid() );
 
   QgsFeature f1( layer->fields() );
@@ -582,12 +582,10 @@ void TestQgsVectorLayer::testSelectByIdsValidation()
   QCOMPARE( layer->selectedFeatureCount(), 0 );
   QVERIFY( layer->selectedFeatureIds().isEmpty() );
 
-
   testIds = { 1, 2, 3, 4, 5 };
   layer->selectByIds( testIds, Qgis::SelectBehavior::SetSelection, true );
   QCOMPARE( layer->selectedFeatureCount(), 5 );
   QCOMPARE( layer->selectedFeatureIds().size(), 5 );
-
 
   testIds = { 1, 2 };
   layer->selectByIds( testIds, Qgis::SelectBehavior::SetSelection, true );
@@ -601,7 +599,6 @@ void TestQgsVectorLayer::testSelectByIdsValidation()
   QVERIFY( layer->selectedFeatureIds().contains( 3 ) );
   QVERIFY( !layer->selectedFeatureIds().contains( 99 ) );
 }
-
 
 QGSTEST_MAIN( TestQgsVectorLayer )
 #include "testqgsvectorlayer.moc"
