@@ -531,9 +531,9 @@ QList<QgsAbstractProfileSource *> QgsLayoutItemElevationProfile::sources() const
 
   QList< QgsAbstractProfileSource * > sources;
   sources.reserve( mSources.count() );
-  for ( auto source : mSources )
+  for ( const auto &source : mSources )
   {
-    if ( QgsMapLayerRef *layerRef = std::get_if< QgsMapLayerRef >( &source ) )
+    if ( const QgsMapLayerRef *layerRef = std::get_if< QgsMapLayerRef >( &source ) )
     {
       if ( QgsMapLayer *layer = layerRef->get() )
       {
@@ -558,9 +558,10 @@ void QgsLayoutItemElevationProfile::setSources( const QList<QgsAbstractProfileSo
   mSources.reserve( sources.count() );
   for ( auto *profileSource : sources )
   {
-    if ( auto layerRef = QgsMapLayerRef( dynamic_cast<QgsMapLayer *>( profileSource ) ) )
+    QgsMapLayer *layer = dynamic_cast<QgsMapLayer *>( profileSource );
+    if ( layer )
     {
-      mSources << layerRef;
+      mSources << QgsMapLayerRef( layer );
     }
     else if ( QgsApplication::profileSourceRegistry()->findSourceById( profileSource->profileSourceId() ) )
     {
@@ -921,9 +922,9 @@ bool QgsLayoutItemElevationProfile::writePropertiesToElement( QDomElement &layou
 
   {
     QDomElement sourcesElement = doc.createElement( u"profileSources"_s );
-    for ( auto source : mSources )
+    for ( const auto &source : mSources )
     {
-      if ( QgsMapLayerRef *layerRef = std::get_if< QgsMapLayerRef >( &source ) )
+      if ( const QgsMapLayerRef *layerRef = std::get_if< QgsMapLayerRef >( &source ) )
       {
         if ( layerRef->get() )
         {
@@ -1243,6 +1244,6 @@ void QgsLayoutItemElevationProfile::setSourcesPrivate()
 {
   mSources.clear();
   mSources.reserve( QgsApplication::profileSourceRegistry()->profileSources().count() );
-  for ( auto source : QgsApplication::profileSourceRegistry()->profileSources() )
+  for ( QgsAbstractProfileSource *source : QgsApplication::profileSourceRegistry()->profileSources() )
     mSources << source;
 }
