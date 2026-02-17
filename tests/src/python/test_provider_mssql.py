@@ -280,6 +280,70 @@ class TestPyQgsMssqlProvider(QgisTestCase, MssqlProviderTestBase):
             )
 
     # HERE GO THE PROVIDER SPECIFIC TESTS
+    def testRenameAttributes(self):
+        """Test renameAttributes()"""
+        self.execSQLCommand("DROP TABLE IF EXISTS qgis_test.rename_attrs")
+        self.execSQLCommand(
+            """CREATE TABLE qgis_test.rename_attrs (pk INTEGER PRIMARY KEY,cnt integer, name nvarchar(max), name2 nvarchar(max), num_char nvarchar(max), dt datetime, [date] date, [time] time, geom geometry)"""
+        )
+        vl = QgsVectorLayer(
+            '%s table="qgis_test"."rename_attrs" sql=' % (self.dbconn),
+            "renames",
+            "mssql",
+        )
+        self.assertTrue(vl.isValid())
+        provider = vl.dataProvider()
+        self.assertTrue(provider.renameAttributes({1: "field1", 2: "field2"}))
+        self.assertEqual(
+            [f.name() for f in provider.fields()],
+            ["pk", "field1", "field2", "name2", "num_char", "dt", "date", "time"],
+        )
+
+        # bad rename
+        self.assertFalse(provider.renameAttributes({-1: "not_a_field"}))
+        self.assertFalse(provider.renameAttributes({100: "not_a_field"}))
+        # already exists
+        self.assertFalse(provider.renameAttributes({1: "field2"}))
+
+        # rename one field
+        self.assertTrue(provider.renameAttributes({1: "newname"}))
+        self.assertEqual(
+            [f.name() for f in provider.fields()],
+            ["pk", "newname", "field2", "name2", "num_char", "dt", "date", "time"],
+        )
+        vl.updateFields()
+        self.assertEqual(
+            [f.name() for f in vl.fields()],
+            ["pk", "newname", "field2", "name2", "num_char", "dt", "date", "time"],
+        )
+
+        # rename two fields
+        self.assertTrue(provider.renameAttributes({1: "newname2", 2: "another"}))
+        self.assertEqual(
+            [f.name() for f in provider.fields()],
+            ["pk", "newname2", "another", "name2", "num_char", "dt", "date", "time"],
+        )
+        vl.updateFields()
+        self.assertEqual(
+            [f.name() for f in vl.fields()],
+            ["pk", "newname2", "another", "name2", "num_char", "dt", "date", "time"],
+        )
+
+        # close layer and reopen, then recheck to confirm that changes were saved to db
+        del vl
+        vl = None
+        vl = QgsVectorLayer(
+            '%s table="qgis_test"."rename_attrs" sql=' % (self.dbconn),
+            "renames",
+            "mssql",
+        )
+        self.assertTrue(vl.isValid())
+        provider = vl.dataProvider()
+        self.assertEqual(
+            [f.name() for f in provider.fields()],
+            ["pk", "newname2", "another", "name2", "num_char", "dt", "date", "time"],
+        )
+
     def testDateTimeTypes(self):
         vl = QgsVectorLayer(
             '%s table="qgis_test"."date_times" sql=' % (self.dbconn),
