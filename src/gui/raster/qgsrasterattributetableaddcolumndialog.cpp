@@ -20,8 +20,11 @@
 #include "qgsrasterattributetable.h"
 
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsrasterattributetableaddcolumndialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRasterAttributeTableAddColumnDialog::QgsRasterAttributeTableAddColumnDialog( QgsRasterAttributeTable *attributeTable, QWidget *parent )
   : QDialog( parent )

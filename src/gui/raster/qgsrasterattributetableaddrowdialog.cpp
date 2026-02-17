@@ -18,7 +18,11 @@
 #include "qgsgui.h"
 #include "qgshelp.h"
 
+#include <QString>
+
 #include "moc_qgsrasterattributetableaddrowdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRasterAttributeTableAddRowDialog::QgsRasterAttributeTableAddRowDialog( QWidget *parent )
   : QDialog( parent )
