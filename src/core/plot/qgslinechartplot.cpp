@@ -85,13 +85,13 @@ void QgsLineChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCo
   {
     xScale = plotArea.height() / ( maxX - minX );
     yScale = plotArea.width() / ( maxY - minY );
-    categoriesWidth = plotArea.height() / categories.size();
+    categoriesWidth = plotArea.height() / static_cast<double>( categories.size() );
   }
   else
   {
     xScale = plotArea.width() / ( maxX - minX );
     yScale = plotArea.height() / ( maxY - minY );
-    categoriesWidth = plotArea.width() / categories.size();
+    categoriesWidth = plotArea.width() / static_cast<double>( categories.size() );
   }
 
   int seriesIndex = 0;

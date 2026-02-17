@@ -87,7 +87,7 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
   {
     xScale = plotArea.height() / ( maxX - minX );
     yScale = plotArea.width() / ( maxY - minY );
-    categoriesWidth = plotArea.height() / categories.size();
+    categoriesWidth = plotArea.height() / static_cast<double>( categories.size() );
     valuesWidth = plotArea.height() * ( minorIntervalX / ( maxX - minY ) );
     barsWidth = xAxis().type() == Qgis::PlotAxisType::Categorical ? categoriesWidth / 2 : valuesWidth / 2;
     barWidth = barsWidth / seriesList.size();
@@ -96,7 +96,7 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
   {
     xScale = plotArea.width() / ( maxX - minX );
     yScale = plotArea.height() / ( maxY - minY );
-    categoriesWidth = plotArea.width() / categories.size();
+    categoriesWidth = plotArea.width() / static_cast<double>( categories.size() );
     valuesWidth = plotArea.width() * ( minorIntervalX / ( maxX - minX ) );
     barsWidth = xAxis().type() == Qgis::PlotAxisType::Categorical ? categoriesWidth / 2 : valuesWidth / 2;
     barWidth = barsWidth / seriesList.size();
