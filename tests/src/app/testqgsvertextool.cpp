@@ -518,7 +518,7 @@ void TestQgsVertexTool::testTopologicalEditingMoveVertexOnIntersectionZ()
 
   // The undo stack gets two entries, one for the vertex move and one for the topological point
   QCOMPARE( mLayerLineZ->undoStack()->index(), 5 );
-  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt(), QString( "LineString Z (5 5 1, 5.5 5.5 5, 6 6 1, 7 5 1)" ) );
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt(), QString( "LineString Z (5 5 1, 5.5 5.5 1, 6 6 1, 7 5 1)" ) );
   QCOMPARE( mLayerLineZ->getFeature( mFidLineZF3 ).geometry().asWkt(), QString( "LineString Z (5.5 5.5 5, 7 5.5 10)" ) );
 
   // Two undo steps, one for the vertex move, one for the topological point
@@ -563,7 +563,7 @@ void TestQgsVertexTool::testTopologicalEditingMoveVerticesOnSegmentZ()
 
   // Verifies than the temp line has been moved and topological vertices added.
   QCOMPARE( mLayerLineZ->getFeature( linez.id() ).geometry().asWkt(), QString( "LineString Z (5.5 7 6.25, 6.5 7 10)" ) );
-  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF2 ).geometry().asWkt(), QString( "LineString Z (5 7 5, 5.5 7 6.25, 6.5 7 10, 7 7 10)" ) );
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF2 ).geometry().asWkt(), QString( "LineString Z (5 7 5, 5.5 7 6.25, 6.5 7 8.75, 7 7 10)" ) );
 
   // Undo changes
   mLayerLineZ->deleteFeature( linez.id() );

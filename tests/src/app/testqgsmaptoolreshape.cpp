@@ -681,7 +681,7 @@ void TestQgsMapToolReshape::testWithSnapToSegment()
   utils.mouseClick( 1, 2, Qt::LeftButton, {}, true );
   utils.mouseClick( 1, 2, Qt::RightButton );
 
-  QCOMPARE( mLayerPolygonZ->getFeature( 1 ).geometry().asWkt( 1 ), u"Polygon Z ((1.2 1.7 333, 1 5 333, 5.7 4.2 333, 7 5 4, 3 2 1, 0 1 2, 1.2 1.7 333))"_s );
+  QCOMPARE( mLayerPolygonZ->getFeature( 1 ).geometry().asWkt( 1 ), u"Polygon Z ((1.2 1.7 2.3, 1 5 333, 5.7 4.2 3.6, 7 5 4, 3 2 1, 0 1 2, 1.2 1.7 2.3))"_s );
 
   mLayerLine->undoStack()->undo();
 
