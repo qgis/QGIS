@@ -1420,6 +1420,13 @@ QgsDoubleRange QgsElevationProfileCanvas::visibleElevationRange() const
   return QgsDoubleRange( mPlotItem->yMinimum(), mPlotItem->yMaximum() );
 }
 
+QgsDoubleRange QgsElevationProfileCanvas::dataElevationRange() const
+{
+  if ( mCurrentJob )
+    return mCurrentJob->zRange();
+  return QgsDoubleRange();
+}
+
 const Qgs2DXyPlot &QgsElevationProfileCanvas::plot() const
 {
   return *mPlotItem;
