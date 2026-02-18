@@ -942,8 +942,6 @@ void QgsPostgresDataItemGuiProvider::renameProject( QgsPGProjectItem *projectIte
   if ( dlg.exec() != QDialog::Accepted || dlg.name() == projectItem->name() )
     return;
 
-  const QString newUri = projectItem->uriWithNewName( dlg.name() );
-
   QgsPostgresProjectUri pgProjectUri;
   pgProjectUri.connInfo = conn->uri();
   pgProjectUri.schemaName = projectItem->schemaName();
