@@ -1224,8 +1224,7 @@ void QgsElevationProfileCanvas::setSources( const QList<QgsAbstractProfileSource
   mSources.reserve( sources.count() );
   for ( QgsAbstractProfileSource *profileSource : sources )
   {
-    QgsMapLayer *layer = dynamic_cast<QgsMapLayer *>( profileSource );
-    if ( layer )
+    if ( auto layer = dynamic_cast<QgsMapLayer *>( profileSource ) )
     {
       mSources << QgsWeakMapLayerPointer( layer );
     }
