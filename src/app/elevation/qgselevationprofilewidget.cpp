@@ -33,6 +33,7 @@
 #include "qgsfillsymbol.h"
 #include "qgsfillsymbollayer.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgslayertree.h"
 #include "qgslayertreeregistrybridge.h"
 #include "qgslayertreeviewdefaultactions.h"
