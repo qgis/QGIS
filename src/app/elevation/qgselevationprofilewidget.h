@@ -123,6 +123,8 @@ class QgsElevationProfileWidget : public QWidget
 
   signals:
     void toggleDockModeRequested( bool docked );
+    void profileDataChanged( QgsElevationProfile *profile, double zMin, double zMax );
+    void profileCursorMoved( QgsElevationProfile *profile, const QgsPointXY &mapPoint, const QgsProfilePoint &profilePoint );
 
   private slots:
     void addLayers();
