@@ -1447,36 +1447,39 @@ void QgsVertexTool::updateFeatureBand( const QgsPointLocator::Match &m )
 
     QgsGeometry geom = cachedGeometry( m.layer(), m.featureId() );
 
-    // Check if this is a NURBS curve
-    const QgsNurbsCurve *nurbs = QgsNurbsUtils::extractNurbsCurve( geom.constGet() );
-
-    if ( nurbs && !nurbs->controlPoints().isEmpty() )
+    if ( QgsNurbsUtils::containsNurbsCurve( geom.constGet() ) )
     {
-      QVector<QgsPointXY> mapPoints = transformNurbsControlPointsToMap( m.layer(), nurbs->controlPoints() );
+      // Check if this is a NURBS curve
+      const QgsNurbsCurve *nurbs = QgsNurbsUtils::extractNurbsCurve( geom.constGet() );
 
-      if ( nurbs->isPolyBezier() )
+      if ( nurbs && !nurbs->controlPoints().isEmpty() )
       {
-        // Poly-Bézier mode: visualize with anchors/handles
-        QgsBezierData bezierData = QgsBezierData::fromPolyBezierControlPoints( mapPoints, nurbs->degree() );
-        mBezierMarker->updateFromData( bezierData );
-        mBezierMarker->setVisible( true );
-        mBezierMarker->setHandlesVisible( true );
+        QVector<QgsPointXY> mapPoints = transformNurbsControlPointsToMap( m.layer(), nurbs->controlPoints() );
 
-        mNurbsControlPolygonBand->setVisible( false );
-        mFeatureBandMarkers->setVisible( false );
-      }
-      else
-      {
-        // CAD mode: show control polygon
-        mBezierMarker->setVisible( false );
+        if ( nurbs->isPolyBezier() )
+        {
+          // Poly-Bézier mode: visualize with anchors/handles
+          QgsBezierData bezierData = QgsBezierData::fromPolyBezierControlPoints( mapPoints, nurbs->degree() );
+          mBezierMarker->updateFromData( bezierData );
+          mBezierMarker->setVisible( true );
+          mBezierMarker->setHandlesVisible( true );
 
-        mNurbsControlPolygonBand->reset( Qgis::GeometryType::Line );
-        for ( const QgsPointXY &pt : mapPoints )
-          mNurbsControlPolygonBand->addPoint( pt );
-        mNurbsControlPolygonBand->setVisible( true );
+          mNurbsControlPolygonBand->setVisible( false );
+          mFeatureBandMarkers->setVisible( false );
+        }
+        else
+        {
+          // CAD mode: show control polygon
+          mBezierMarker->setVisible( false );
 
-        mFeatureBandMarkers->setToGeometry( geometryToMultiPoint( geom ), m.layer() );
-        mFeatureBandMarkers->setVisible( true );
+          mNurbsControlPolygonBand->reset( Qgis::GeometryType::Line );
+          for ( const QgsPointXY &pt : mapPoints )
+            mNurbsControlPolygonBand->addPoint( pt );
+          mNurbsControlPolygonBand->setVisible( true );
+
+          mFeatureBandMarkers->setToGeometry( geometryToMultiPoint( geom ), m.layer() );
+          mFeatureBandMarkers->setVisible( true );
+        }
       }
     }
     else
