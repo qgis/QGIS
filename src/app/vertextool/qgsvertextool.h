@@ -17,6 +17,7 @@
 #define QGSVERTEXTOOL_H
 
 #include <memory>
+#include <vector>
 
 #include "qgis_app.h"
 #include "qgsbeziermarker.h"
@@ -411,15 +412,15 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     //! structure to keep information about a rubber band used for dragging of a NURBS curve \since QGIS 4.0
     struct NurbsBand
     {
-        const QgsNurbsCurve *nurbs = nullptr; //!< NURBS curve pointer for identification
-        QgsRubberBand *curveBand = nullptr;   //!< Evaluated NURBS curve visualization
-        QgsRubberBand *controlBand = nullptr; //!< Control polygon
-        QVector<QgsPointXY> controlPoints;    //!< Control points in map coordinates
-        QVector<int> movingIndices;           //!< Indices of control points being dragged
-        QVector<QgsVector> offsets;           //!< Offset vectors from mouse cursor to each moving control point
-        int degree = 3;                       //!< NURBS curve degree
-        QVector<double> knots;                //!< Knot vector
-        QVector<double> weights;              //!< Weight vector for rational curves
+        const QgsNurbsCurve *nurbs = nullptr;        //!< NURBS curve pointer for identification
+        QObjectUniquePtr<QgsRubberBand> curveBand;   //!< Evaluated NURBS curve visualization
+        QObjectUniquePtr<QgsRubberBand> controlBand; //!< Control polygon
+        QVector<QgsPointXY> controlPoints;           //!< Control points in map coordinates
+        QVector<int> movingIndices;                  //!< Indices of control points being dragged
+        QVector<QgsVector> offsets;                  //!< Offset vectors from mouse cursor to each moving control point
+        int degree = 3;                              //!< NURBS curve degree
+        QVector<double> knots;                       //!< Knot vector
+        QVector<double> weights;                     //!< Weight vector for rational curves
 
         //! Update geometry of the rubber bands on the current mouse cursor position (in map units)
         void updateRubberBand( const QgsPointXY &mapPoint );
@@ -438,7 +439,7 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     //! list of active rubber bands for circular segments
     QList<CircularBand> mDragCircularBands;
     //! list of active rubber bands for NURBS curves \since QGIS 4.0
-    QList<NurbsBand> mDragNurbsBands;
+    std::vector<NurbsBand> mDragNurbsBands;
 
     //! rubber band for displaying NURBS control polygon in edit mode \since QGIS 4.0
     QObjectUniquePtr<QgsRubberBand> mNurbsControlPolygonBand;
