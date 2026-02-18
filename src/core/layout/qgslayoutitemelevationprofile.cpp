@@ -556,10 +556,9 @@ void QgsLayoutItemElevationProfile::setSources( const QList<QgsAbstractProfileSo
 {
   mSources.clear();
   mSources.reserve( sources.count() );
-  for ( auto *profileSource : sources )
+  for ( QgsAbstractProfileSource *profileSource : sources )
   {
-    QgsMapLayer *layer = dynamic_cast<QgsMapLayer *>( profileSource );
-    if ( layer )
+    if ( auto layer = dynamic_cast<QgsMapLayer *>( profileSource ) )
     {
       mSources << QgsMapLayerRef( layer );
     }
