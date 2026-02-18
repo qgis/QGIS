@@ -894,7 +894,37 @@ bool QgsGeometry::addTopologicalPoint( const QgsPoint &point, double snappingTol
   if ( sqrDistVertexSnap < sqrSnappingTolerance )
     return false;  // the vertex already exists - do not insert it
 
-  if ( !insertVertex( point, segmentAfterVertex ) )
+  // Let's ignore the Z and M values of the supplied topological point and calculate
+  // interpolated values instead, using the previous and next geometry vertices.
+  // This should make sure that the geometry's Z and M values are preserved when adding
+  // topological points and splitting
+  double z = std::numeric_limits<double>::quiet_NaN();
+  double m = std::numeric_limits<double>::quiet_NaN();
+  if ( d->geometry.get()->is3D() || d->geometry.get()->isMeasure() )
+  {
+    const QgsPoint vertexBefore = vertexAt( segmentAfterVertex - 1 );
+    const QgsPoint vertexAfter = vertexAt( segmentAfterVertex );
+
+    const double segmentLength = vertexBefore.distance( vertexAfter.x(), vertexAfter.y() );
+    const double distanceToIntersection = vertexBefore.distance( point.x(), point.y() );
+    const double factor = distanceToIntersection / segmentLength;
+
+    if ( d->geometry.get()->is3D() )
+    {
+      const double beforeZ = vertexBefore.z();
+      const double afterZ = vertexAfter.z();
+      z = beforeZ + ( afterZ - beforeZ ) * factor;
+    }
+    if ( d->geometry.get()->isMeasure() )
+    {
+      const double beforeM = vertexBefore.m();
+      const double afterM = vertexAfter.m();
+      m = beforeM + ( afterM - beforeM ) * factor;
+    }
+  }
+  QgsPoint interpolatedPoint( point.x(), point.y(), z, m );
+
+  if ( !insertVertex( interpolatedPoint, segmentAfterVertex ) )
   {
     QgsDebugError( u"failed to insert topo point"_s );
     return false;

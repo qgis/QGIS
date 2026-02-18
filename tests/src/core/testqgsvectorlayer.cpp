@@ -330,7 +330,7 @@ void TestQgsVectorLayer::testAddTopologicalPoints()
 
   layerLine->startEditing();
   layerLine->addFeature( lineF1 );
-  const QgsFeatureId fidLineF1 = lineF1.id();
+  QgsFeatureId fidLineF1 = lineF1.id();
   QCOMPARE( layerLine->featureCount(), ( long ) 1 );
 
   QCOMPARE( layerLine->undoStack()->index(), 1 );
@@ -356,6 +356,14 @@ void TestQgsVectorLayer::testAddTopologicalPoints()
   QCOMPARE( layerLine->undoStack()->index(), 2 );
   QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 2, 1 5)" ).asWkt() );
 
+  // add point with Z on segment of linestring
+  layerLine->undoStack()->undo();
+  result = layerLine->addTopologicalPoints( QgsPoint( 1, 2, 3 ) );
+  QCOMPARE( result, 0 );
+
+  QCOMPARE( layerLine->undoStack()->index(), 2 );
+  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 2, 1 5)" ).asWkt() );
+
   // add points from disjoint geometry - nothing should happen
   result = layerLine->addTopologicalPoints( QgsGeometry::fromWkt( "LINESTRING(2 0, 2 1, 2 2)" ) );
   QCOMPARE( result, 2 );
@@ -369,6 +377,35 @@ void TestQgsVectorLayer::testAddTopologicalPoints()
 
   QCOMPARE( layerLine->undoStack()->index(), 2 );
   QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 2, 1 3, 1 4, 1 5)" ).asWkt() );
+
+  delete layerLine;
+
+  layerLine = new QgsVectorLayer( u"LineString?crs=EPSG:27700"_s, u"layer line"_s, u"memory"_s );
+  QVERIFY( layerLine->isValid() );
+
+  lineF1.setGeometry( QgsGeometry::fromWkt( u"LineString Z ( 0 0 0, 10 10 10 )"_s ) );
+
+  layerLine->startEditing();
+  layerLine->addFeature( lineF1 );
+  fidLineF1 = lineF1.id();
+  QCOMPARE( layerLine->featureCount(), ( long ) 1 );
+
+  QCOMPARE( layerLine->undoStack()->index(), 1 );
+
+  // add point on segment of linestring
+  result = layerLine->addTopologicalPoints( QgsPoint( 2, 2 ) );
+  QCOMPARE( result, 0 );
+
+  QCOMPARE( layerLine->undoStack()->index(), 2 );
+  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(0 0 0, 2 2 2, 10 10 10)" ).asWkt() );
+
+  // add point with Z on segment of linestring
+  layerLine->undoStack()->undo();
+  result = layerLine->addTopologicalPoints( QgsPoint( 2, 2, 42 ) );
+  QCOMPARE( result, 0 );
+
+  QCOMPARE( layerLine->undoStack()->index(), 2 );
+  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(0 0 0, 2 2 2, 10 10 10)" ).asWkt() );
 
   delete layerLine;
 

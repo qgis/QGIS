@@ -2609,6 +2609,33 @@ void TestQgsGeometry::splitGeometry()
   QCOMPARE( newGeoms[0].asWkt( 0 ), u"MultiLineString ((0 2, 1 1))"_s );
   QCOMPARE( newGeoms[1].asWkt( 0 ), u"MultiLineString ((1 1, 2 0))"_s );
   QCOMPARE( newGeoms[2].asWkt( 0 ), u"MultiLineString ((0 1, 1 0))"_s );
+
+  // Split point with no Z should not affect the Z of new geoms
+  g2 = QgsGeometry::fromWkt( "LineString Z (0 0 0, 10 10 10)" );
+  testPoints.clear();
+  newGeoms.clear();
+  QCOMPARE( g2.splitGeometry( QgsPointSequence() << QgsPoint( 2, 2 ), newGeoms, false, testPoints, false ), Qgis::GeometryOperationResult::Success );
+  QCOMPARE( newGeoms.count(), 2 );
+  QCOMPARE( newGeoms[0].asWkt( 0 ), u"LineString Z (0 0 0, 2 2 2)"_s );
+  QCOMPARE( newGeoms[1].asWkt( 0 ), u"LineString Z (2 2 2, 10 10 10)"_s );
+
+  // Split point Z should not propagate to new geoms
+  g2 = QgsGeometry::fromWkt( "LineString Z (0 0 0, 10 10 10)" );
+  testPoints.clear();
+  newGeoms.clear();
+  QCOMPARE( g2.splitGeometry( QgsPointSequence() << QgsPoint( 2, 2, 42 ), newGeoms, false, testPoints, false ), Qgis::GeometryOperationResult::Success );
+  QCOMPARE( newGeoms.count(), 2 );
+  QCOMPARE( newGeoms[0].asWkt( 0 ), u"LineString Z (0 0 0, 2 2 2)"_s );
+  QCOMPARE( newGeoms[1].asWkt( 0 ), u"LineString Z (2 2 2, 10 10 10)"_s );
+
+  // Split point Z should not affect a 2d geometry
+  g2 = QgsGeometry::fromWkt( "LineString (0 0, 10 10)" );
+  testPoints.clear();
+  newGeoms.clear();
+  QCOMPARE( g2.splitGeometry( QgsPointSequence() << QgsPoint( 2, 2, 42 ), newGeoms, false, testPoints, false ), Qgis::GeometryOperationResult::Success );
+  QCOMPARE( newGeoms.count(), 2 );
+  QCOMPARE( newGeoms[0].asWkt( 0 ), u"LineString (0 0, 2 2)"_s );
+  QCOMPARE( newGeoms[1].asWkt( 0 ), u"LineString (2 2, 10 10)"_s );
 }
 
 void TestQgsGeometry::snappedToGrid()
