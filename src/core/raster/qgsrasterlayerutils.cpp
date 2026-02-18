@@ -287,7 +287,7 @@ void QgsRasterLayerUtils::computeMinMax( QgsRasterDataProvider *provider,
 QgsRectangle QgsRasterLayerUtils::alignRasterExtent( const QgsRectangle &extent, const QgsPointXY &origin, double pixelSizeX, double pixelSizeY )
 {
   // Return original extent if pixel sizes are zero (to avoid division by zero) or if the extent is empty
-  if ( pixelSizeX == 0.0 || pixelSizeY == 0.0 || extent.isEmpty() )
+  if ( qgsDoubleNear( pixelSizeX, 0.0 ) || qgsDoubleNear( pixelSizeY, 0.0 ) || extent.isEmpty() )
   {
     return extent;
   }
