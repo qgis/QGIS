@@ -161,7 +161,7 @@ class GUI_EXPORT QgsBezierData
 
     /**
      * Converts the Poly-Bézier data to a QgsNurbsCurve.
-     * The resulting curve is a piecewise Bézier of degree \a degree represented as NURBS.
+     * The resulting curve is a piecewise Bézier of \a degree represented as NURBS.
      * \param degree The degree of the Bézier segments (defaults to 3 for cubic).
      * \returns new QgsNurbsCurve. Returns nullptr if less than 2 anchors or degree < 1.
      */
