@@ -137,6 +137,15 @@ void QgsLayoutChartWidget::setGuiElementValues()
       addSeriesListItem( series.name() );
     }
 
+    if ( !seriesList.isEmpty() )
+    {
+      mSeriesListWidget->setCurrentRow( 0 );
+    }
+    else
+    {
+      mSeriesPropertiesButton->setEnabled( false );
+    }
+
     whileBlocking( mFilterOnlyVisibleFeaturesCheckBox )->setChecked( mChartItem->filterOnlyVisibleFeatures() );
     mLinkedMapLabel->setEnabled( mFilterOnlyVisibleFeaturesCheckBox->isChecked() );
     mLinkedMapComboBox->setEnabled( mFilterOnlyVisibleFeaturesCheckBox->isChecked() );
