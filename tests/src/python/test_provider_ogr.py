@@ -5099,7 +5099,7 @@ class PyQgsOGRProvider(QgisTestCase):
         """
         Test provider metadata urisReferToSame
         """
-        metadata = QgsProviderRegistry.instance().providerMetadata("spatialite")
+        metadata = QgsProviderRegistry.instance().providerMetadata("ogr")
 
         uri1_parts = {
             "path": "some_db.zip",
@@ -5164,7 +5164,7 @@ class PyQgsOGRProvider(QgisTestCase):
         """
         Test provider metadata urisReferToSame
         """
-        metadata = QgsProviderRegistry.instance().providerMetadata("spatialite")
+        metadata = QgsProviderRegistry.instance().providerMetadata("ogr")
 
         uri1_parts = {
             "path": "some_db.gpkg",
@@ -5200,6 +5200,45 @@ class PyQgsOGRProvider(QgisTestCase):
         uri2_parts["path"] = "some_db.gpkg"
         uri2_parts["layerName"] = "table1"
         uri2 = metadata.encodeUri(uri2_parts)
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Object)
+        )
+
+    def test_urisReferToSameDatabase(self):
+        """
+        Test provider metadata urisReferToSame with database sources
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata("ogr")
+
+        uri1 = "MySQL:westholland,user=root,password=psv9570,port=3306|layername=table1"
+        uri2 = "MySQL:westholland,user=root,password=psv9570,port=3306|layername=table2"
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Object)
+        )
+
+        uri2 = (
+            "MySQL:westholland2,user=root,password=psv9570,port=3306|layername=table2"
+        )
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+
+        uri2 = "MySQL:westholland,user=root,password=psv9570,port=3306|layername=table1"
         self.assertTrue(
             metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
         )

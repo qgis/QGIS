@@ -1239,7 +1239,8 @@ bool QgsOgrProviderMetadata::urisReferToSame( const QString &uri1, const QString
 
   const bool sameConnection = parts1.value( u"path"_s ) == parts2.value( u"path"_s )
                               && parts1.value( u"vsiPrefix"_s ) == parts2.value( u"vsiPrefix"_s )
-                              && parts1.value( u"vsiSuffix"_s ) == parts2.value( u"vsiSuffix"_s );
+                              && parts1.value( u"vsiSuffix"_s ) == parts2.value( u"vsiSuffix"_s )
+                              && parts1.value( u"databaseName"_s ) == parts2.value( u"databaseName"_s );
   const bool sameTable = parts1.value( u"layerName"_s ) == parts2.value( u"layerName"_s );
   switch ( level )
   {
