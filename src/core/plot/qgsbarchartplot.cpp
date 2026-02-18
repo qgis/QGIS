@@ -77,12 +77,31 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
   double labelIntervalY = yAxis().labelInterval();
   Qgs2DXyPlot::applyDataDefinedProperties( context, minX, maxX, minY, maxY, majorIntervalX, minorIntervalX, labelIntervalX, majorIntervalY, minorIntervalY, labelIntervalY );
 
-  const double xScale = plotArea.width() / ( maxX - minX );
-  const double yScale = plotArea.height() / ( maxY - minY );
-  const double categoriesWidth = plotArea.width() / categories.size();
-  const double valuesWidth = plotArea.width() * ( minorIntervalX / ( maxX - minX ) );
-  const double barsWidth = xAxis().type() == Qgis::PlotAxisType::Categorical ? categoriesWidth / 2 : valuesWidth / 2;
-  const double barWidth = barsWidth / seriesList.size();
+  double xScale = 0.0;
+  double yScale = 0.0;
+  double categoriesWidth = 0.0;
+  double valuesWidth = 0.0;
+  double barsWidth = 0.0;
+  double barWidth = 0.0;
+  if ( flipAxes() )
+  {
+    xScale = plotArea.height() / ( maxX - minX );
+    yScale = plotArea.width() / ( maxY - minY );
+    categoriesWidth = plotArea.height() / static_cast<double>( categories.size() );
+    valuesWidth = plotArea.height() * ( minorIntervalX / ( maxX - minY ) );
+    barsWidth = xAxis().type() == Qgis::PlotAxisType::Categorical ? categoriesWidth / 2 : valuesWidth / 2;
+    barWidth = barsWidth / seriesList.size();
+  }
+  else
+  {
+    xScale = plotArea.width() / ( maxX - minX );
+    yScale = plotArea.height() / ( maxY - minY );
+    categoriesWidth = plotArea.width() / static_cast<double>( categories.size() );
+    valuesWidth = plotArea.width() * ( minorIntervalX / ( maxX - minX ) );
+    barsWidth = xAxis().type() == Qgis::PlotAxisType::Categorical ? categoriesWidth / 2 : valuesWidth / 2;
+    barWidth = barsWidth / seriesList.size();
+  }
+
   int seriesIndex = 0;
   for ( const QgsAbstractPlotSeries *series : seriesList )
   {
@@ -116,13 +135,24 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
             break;
         }
 
-        double y = ( pair.second - minY ) * yScale;
-
+        const double y = ( pair.second - minY ) * yScale;
         const double zero = ( 0.0 - minY ) * yScale;
-        const QPoint topLeft( plotArea.left() + x,
-                              plotArea.y() + plotArea.height() - y );
-        const QPoint bottomRight( plotArea.left() + x + barWidth,
-                                  plotArea.y() + plotArea.height() - zero );
+        QPoint topLeft;
+        QPoint bottomRight;
+        if ( flipAxes() )
+        {
+          topLeft = QPoint( plotArea.x() + zero,
+                            plotArea.bottom() - x - barWidth );
+          bottomRight = QPoint( plotArea.x() + y,
+                                plotArea.bottom() - x );
+        }
+        else
+        {
+          topLeft = QPoint( plotArea.left() + x,
+                            plotArea.y() + plotArea.height() - y );
+          bottomRight = QPoint( plotArea.left() + x + barWidth,
+                                plotArea.y() + plotArea.height() - zero );
+        }
 
         chartScope->addVariable( QgsExpressionContextScope::StaticVariable( u"chart_value"_s, pair.second, true ) );
         symbol->renderPolygon( QPolygonF( QRectF( topLeft, bottomRight ) ), nullptr, nullptr, context );

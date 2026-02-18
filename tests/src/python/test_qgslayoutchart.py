@@ -209,6 +209,12 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
 
         self.assertTrue(self.render_layout_check("bar_chart_filter_atlas", layout))
 
+        chart_item.setFilterOnlyVisibleFeatures(False)
+        chart_item.setFilterToAtlasFeature(False)
+        chart_item.plot().setFlipAxes(True)
+
+        self.assertTrue(self.render_layout_check("bar_chart_invert", layout))
+
     def test_line_chart(self):
         """
         Test rendering a bar chart with X axis set to interval
@@ -332,6 +338,10 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
         chart_item.setSortAscending(True)
 
         self.assertTrue(self.render_layout_check("line_chart", layout))
+
+        chart_item.plot().setFlipAxes(True)
+
+        self.assertTrue(self.render_layout_check("line_chart_invert", layout))
 
     def test_read_write(self):
         layer = QgsVectorLayer(

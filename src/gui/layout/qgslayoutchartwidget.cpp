@@ -47,6 +47,7 @@ QgsLayoutChartWidget::QgsLayoutChartWidget( QgsLayoutItemChart *chartItem )
 
   connect( mChartTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutChartWidget::mChartTypeComboBox_currentIndexChanged );
   connect( mChartPropertiesButton, &QPushButton::clicked, this, &QgsLayoutChartWidget::mChartPropertiesButton_clicked );
+  connect( mFlipAxesCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutChartWidget::mFlipAxesCheckBox_stateChanged );
 
   connect( mLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsLayoutChartWidget::changeLayer );
   connect( mLayerComboBox, &QgsMapLayerComboBox::layerChanged, mSortExpressionWidget, &QgsFieldExpressionWidget::setLayer );
@@ -107,6 +108,18 @@ void QgsLayoutChartWidget::setGuiElementValues()
   {
     whileBlocking( mChartTypeComboBox )->setCurrentIndex( mChartTypeComboBox->findData( mChartItem->plot()->type() ) );
     whileBlocking( mLayerComboBox )->setLayer( mChartItem->sourceLayer() );
+
+    Qgs2DXyPlot *plot2DXy = dynamic_cast<Qgs2DXyPlot *>( mChartItem->plot() );
+    if ( plot2DXy )
+    {
+      mFlipAxesCheckBox->setEnabled( true );
+      whileBlocking( mFlipAxesCheckBox )->setChecked( plot2DXy->flipAxes() );
+    }
+    else
+    {
+      mFlipAxesCheckBox->setEnabled( false );
+      whileBlocking( mFlipAxesCheckBox )->setChecked( false );
+    }
 
     whileBlocking( mSortCheckBox )->setCheckState( mChartItem->sortFeatures() ? Qt::Checked : Qt::Unchecked );
 
@@ -172,6 +185,13 @@ void QgsLayoutChartWidget::mChartTypeComboBox_currentIndexChanged( int )
       newPlot2DXy->yAxis().setGridIntervalMinor( oldPlot2DXy->yAxis().gridIntervalMinor() );
       newPlot2DXy->yAxis().setLabelInterval( oldPlot2DXy->yAxis().labelInterval() );
     }
+    mFlipAxesCheckBox->setEnabled( true );
+    mFlipAxesCheckBox->setChecked( newPlot2DXy->flipAxes() );
+  }
+  else
+  {
+    mFlipAxesCheckBox->setEnabled( false );
+    mFlipAxesCheckBox->setChecked( false );
   }
 
   mChartItem->beginCommand( tr( "Change Chart Type" ) );
@@ -218,6 +238,25 @@ void QgsLayoutChartWidget::mChartPropertiesButton_clicked()
   } );
 
   openPanel( widget );
+}
+
+void QgsLayoutChartWidget::mFlipAxesCheckBox_stateChanged( int state )
+{
+  if ( !mChartItem )
+  {
+    return;
+  }
+
+  Qgs2DXyPlot *plot2DXy = dynamic_cast<Qgs2DXyPlot *>( mChartItem->plot() );
+  if ( !plot2DXy )
+  {
+    return;
+  }
+
+  mChartItem->beginCommand( tr( "Modify Chart" ) );
+  plot2DXy->setFlipAxes( state == Qt::Checked );
+  mChartItem->endCommand();
+  mChartItem->update();
 }
 
 void QgsLayoutChartWidget::changeLayer( QgsMapLayer *layer )
