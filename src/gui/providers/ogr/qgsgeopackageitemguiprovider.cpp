@@ -274,6 +274,7 @@ void QgsGeoPackageItemGuiProvider::renameVectorLayer( const QString &uri, const 
   dlg.setRegularExpression( QStringLiteral( R"re([^|]+)re" ) );
 
   dlg.setOverwriteEnabled( false );
+  dlg.setConflictingNameWarning( tr( "A table with this name already exists." ) );
 
   if ( dlg.exec() != dlg.Accepted || dlg.name().isEmpty() || dlg.name() == layerName )
     return;
