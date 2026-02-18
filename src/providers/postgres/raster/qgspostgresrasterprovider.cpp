@@ -2359,11 +2359,7 @@ QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, Qgis::
   }
 
   // Make sure the extent is aligned to the grid created by the raster, otherwise we might end up with wrong statistics for small rasters or small areas
-  QgsRectangle extentExpanded { extent };
-  if ( !extent.isNull() )
-  {
-    extentExpanded = QgsRasterLayerUtils::alignRasterExtent( extent, QgsPointXY( mExtent.xMinimum(), mExtent.yMinimum() ), mScaleX, mScaleY );
-  }
+  const QgsRectangle extentExpanded { QgsRasterLayerUtils::alignRasterExtent( extent, QgsPointXY( mExtent.xMinimum(), mExtent.yMinimum() ), mScaleX, mScaleY ) };
 
   // Query the backend
   const QString extentSql { extentExpanded.isNull() ? QString() : u"ST_GeomFromText( %1, %2 )"_s.arg( quotedValue( extentExpanded.asWktPolygon() ) ).arg( mCrs.postgisSrid() ) };
@@ -2393,8 +2389,6 @@ QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, Qgis::
             .arg( std::max<double>( 0, std::min<double>( 1, statsRatio ) ) )
             .arg( tableToQuery, where );
   }
-
-  qDebug() << "Stat sql is: " << sql;
 
   QgsPostgresResult result( connectionRO()->PQexec( sql ) );
 
