@@ -17,7 +17,11 @@
 
 #include "qgis.h"
 #include "qgs3d.h"
+#include "qgs3dmapcanvas.h"
+#include "qgs3dmapcanvaswidget.h"
+#include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgscameracontroller.h"
 #include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
 
@@ -96,7 +100,6 @@ void Qgs3DOptionsWidget::apply()
 {
   QgsSettings settings;
   settings.setEnumValue( u"map3d/defaultNavigation"_s, mCameraNavigationModeCombo->currentData().value<Qgis::NavigationMode>(), QgsSettings::App );
-  settings.setEnumValue( u"map3d/axisInversion"_s, mInvertVerticalAxisCombo->currentData().value<Qgis::VerticalAxisInversion>(), QgsSettings::App );
   settings.setValue( u"map3d/defaultProjection"_s, static_cast<Qt3DRender::QCameraLens::ProjectionType>( cboCameraProjectionType->currentData().toInt() ), QgsSettings::App );
   settings.setValue( u"map3d/defaultMovementSpeed"_s, mCameraMovementSpeed->value(), QgsSettings::App );
   settings.setValue( u"map3d/defaultFieldOfView"_s, spinCameraFieldOfView->value(), QgsSettings::App );
@@ -106,6 +109,20 @@ void Qgs3DOptionsWidget::apply()
   Qgs3D::settingMsaaEnabled->setValue( mMSAA->isChecked() );
   Qgs3D::settingTextureFilterQuality->setValue( mTextureFilterQualityCombo->currentData().value< Qgis::TextureFilterQuality >() );
   Qgs3D::settingShadowQuality->setValue( mShadowQualityCombo->currentData().value< Qgis::ShadowQuality >() );
+
+  auto axisInversion = mInvertVerticalAxisCombo->currentData().value<Qgis::VerticalAxisInversion>();
+  settings.setEnumValue( u"map3d/axisInversion"_s, axisInversion, QgsSettings::App );
+  // Apply axis inversion setting to existing map views
+  for ( auto view : QgisApp::instance()->get3DMapViews() )
+  {
+    Qgs3DMapCanvas *canvas = view->mapCanvas3D();
+    if ( !canvas )
+      continue;
+    QgsCameraController *cameraController = canvas->cameraController();
+    if ( !cameraController )
+      continue;
+    cameraController->setVerticalAxisInversion( axisInversion );
+  }
 }
 
 
