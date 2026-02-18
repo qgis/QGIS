@@ -129,52 +129,11 @@ QString QgsHistogramDiagram::diagramName() const
   return QgsHistogramDiagram::DIAGRAM_NAME_HISTOGRAM;
 }
 
-QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )
+QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes &, const QgsRenderContext &, const QgsDiagramSettings & )
 {
-  QSizeF size;
-
-  if ( attributes.isEmpty() )
-  {
-    return QSizeF(); //zero size if no attributes
-  }
-
-  double maxValue = attributes.at( 0 ).toDouble();
-
-  for ( int i = 0; i < attributes.count(); ++i )
-  {
-    maxValue = std::max( attributes.at( i ).toDouble(), maxValue );
-  }
-
-  // eh - this method returns size in unknown units ...! We'll have to fake it and use a rough estimation of
-  // a conversion factor to painter units...
-  // TODO QGIS 5.0 -- these methods should all use painter units, dependent on the render context scaling...
-  double painterUnitConversionScale = c.convertToPainterUnits( 1, s.sizeType );
-
-  const double spacing = c.convertToPainterUnits( s.spacing(), s.spacingUnit(), s.spacingMapUnitScale() ) / painterUnitConversionScale;
-
-  switch ( s.diagramOrientation )
-  {
-    case QgsDiagramSettings::Up:
-    case QgsDiagramSettings::Down:
-      mScaleFactor = maxValue / s.size.height();
-      size.scale( s.barWidth * s.categoryColors.size() + spacing * std::max( 0, static_cast<int>( s.categoryAttributes.size() ) - 1 ), s.size.height(), Qt::IgnoreAspectRatio );
-      break;
-
-    case QgsDiagramSettings::Right:
-    case QgsDiagramSettings::Left:
-      mScaleFactor = maxValue / s.size.width();
-      size.scale( s.size.width(), s.barWidth * s.categoryColors.size() + spacing * std::max( 0, static_cast<int>( s.categoryAttributes.size() ) - 1 ), Qt::IgnoreAspectRatio );
-      break;
-  }
-
-  if ( s.showAxis() && s.axisLineSymbol() )
-  {
-    const double maxBleed = QgsSymbolLayerUtils::estimateMaxSymbolBleed( s.axisLineSymbol(), c ) / painterUnitConversionScale;
-    size.setWidth( size.width() + 2 * maxBleed );
-    size.setHeight( size.height() + 2 * maxBleed );
-  }
-
-  return size;
+  // Since histograms only support interpolated size,
+  // we only keep this method for compatibility reasons.
+  return QSizeF();
 }
 
 void QgsHistogramDiagram::renderDiagram( const QgsFeature &feature, QgsRenderContext &c, const QgsDiagramSettings &s, QPointF position )
