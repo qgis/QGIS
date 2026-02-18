@@ -673,20 +673,6 @@ Sets the camera movement speed
 .. versionadded:: 3.18
 %End
 
-    Qgis::VerticalAxisInversion cameraVerticalAxisInversion() const;
-%Docstring
-Returns the camera vertical axis inversion setting
-
-.. versionadded:: 4.0
-%End
-
-    void setCameraVerticalAxisInversion( Qgis::VerticalAxisInversion inversion );
-%Docstring
-Sets the camera vertical axis inversion setting
-
-.. versionadded:: 4.0
-%End
-
     void setOutputDpi( const double dpi );
 %Docstring
 Sets DPI used for conversion between real world units (e.g. mm) and
@@ -1121,13 +1107,6 @@ Emitted when the camera navigation mode was changed
 Emitted when the camera movement speed was changed
 
 .. versionadded:: 3.18
-%End
-
-    void cameraVerticalAxisInversionChanged();
-%Docstring
-Emitted when the camera vertical axis inversion setting was changed
-
-.. versionadded:: 4.0
 %End
 
     void skyboxSettingsChanged();

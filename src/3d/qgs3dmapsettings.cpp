@@ -72,7 +72,6 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mProjectionType( other.mProjectionType )
   , mCameraNavigationMode( other.mCameraNavigationMode )
   , mCameraMovementSpeed( other.mCameraMovementSpeed )
-  , mCameraVerticalAxisInversion( other.mCameraVerticalAxisInversion )
   , mLayers( other.mLayers )
   , mTransformContext( other.mTransformContext )
   , mPathResolver( other.mPathResolver )
@@ -163,7 +162,6 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
     else if ( cameraNavigationMode == "globe-terrain-based-navigation"_L1 )
       mCameraNavigationMode = Qgis::NavigationMode::GlobeTerrainBased;
     mCameraMovementSpeed = elemCamera.attribute( u"camera-movement-speed"_s, u"5.0"_s ).toDouble();
-    mCameraVerticalAxisInversion = static_cast<Qgis::VerticalAxisInversion>( elemCamera.attribute( u"camera-vertical-axis-inversion"_s, u"0"_s ).toInt() );
   }
 
   QDomElement elemColor = elem.firstChildElement( u"color"_s );
@@ -348,7 +346,6 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
       break;
   }
   elemCamera.setAttribute( u"camera-movement-speed"_s, mCameraMovementSpeed );
-  elemCamera.setAttribute( u"camera-vertical-axis-inversion"_s, static_cast<int>( mCameraVerticalAxisInversion ) );
   elem.appendChild( elemCamera );
 
   QDomElement elemColor = doc.createElement( u"color"_s );
@@ -1226,24 +1223,6 @@ void Qgs3DMapSettings::setCameraMovementSpeed( double movementSpeed )
   emit cameraMovementSpeedChanged();
 }
 
-Qgis::VerticalAxisInversion Qgs3DMapSettings::cameraVerticalAxisInversion() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return mCameraVerticalAxisInversion;
-}
-
-void Qgs3DMapSettings::setCameraVerticalAxisInversion( Qgis::VerticalAxisInversion inversion )
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  if ( mCameraVerticalAxisInversion == inversion )
-    return;
-
-  mCameraVerticalAxisInversion = inversion;
-  emit cameraVerticalAxisInversionChanged();
-}
-
 void Qgs3DMapSettings::setOutputDpi( const double dpi )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -1528,7 +1507,6 @@ void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()
   connect( this, &Qgs3DMapSettings::projectionTypeChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::cameraNavigationModeChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::cameraMovementSpeedChanged, this, &Qgs3DMapSettings::settingsChanged );
-  connect( this, &Qgs3DMapSettings::cameraVerticalAxisInversionChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::skyboxSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::shadowSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::fpsCounterEnabledChanged, this, &Qgs3DMapSettings::settingsChanged );

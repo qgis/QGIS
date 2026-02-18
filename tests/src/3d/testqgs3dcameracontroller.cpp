@@ -295,7 +295,6 @@ void TestQgs3DCameraController::testRotationCenter()
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
   mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
-  mapSettings->setCameraVerticalAxisInversion( Qgis::VerticalAxisInversion::Never );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -310,6 +309,7 @@ void TestQgs3DCameraController::testRotationCenter()
 
   // look from the top
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 0, 0 );
+  scene->cameraController()->setVerticalAxisInversion( Qgis::VerticalAxisInversion::Never );
   QVector3D initialCamViewCenter = scene->cameraController()->camera()->viewCenter();
   QVector3D initialCamPosition = scene->cameraController()->camera()->position();
   float initialPitch = scene->cameraController()->pitch();
@@ -447,7 +447,6 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
   mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
-  mapSettings->setCameraVerticalAxisInversion( Qgis::VerticalAxisInversion::Never );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -462,6 +461,7 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
 
   // look from the top
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 0, 0 );
+  scene->cameraController()->setVerticalAxisInversion( Qgis::VerticalAxisInversion::Never );
   waitForNearPlane( engine, scene, 1000 );
 
   QVector3D initialCamViewCenter = scene->cameraController()->camera()->viewCenter();
@@ -591,7 +591,6 @@ void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
   mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
-  mapSettings->setCameraVerticalAxisInversion( Qgis::VerticalAxisInversion::Never );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -606,6 +605,7 @@ void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
 
   // look from the top
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 0, 0 );
+  scene->cameraController()->setVerticalAxisInversion( Qgis::VerticalAxisInversion::Never );
   waitForNearPlane( engine, scene, 1000 );
 
   QVector3D initialCamViewCenter = scene->cameraController()->camera()->viewCenter();
@@ -1012,7 +1012,6 @@ void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
   mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
-  mapSettings->setCameraVerticalAxisInversion( Qgis::VerticalAxisInversion::Never );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -1027,6 +1026,7 @@ void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
 
   // look from the top
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 0, 0 );
+  scene->cameraController()->setVerticalAxisInversion( Qgis::VerticalAxisInversion::Never );
   QVector3D initialCamViewCenter = scene->cameraController()->camera()->viewCenter();
   QVector3D initialCamPosition = scene->cameraController()->camera()->position();
   float initialPitch = scene->cameraController()->pitch();
