@@ -26,7 +26,6 @@
 
 class QgsNurbsCurve;
 
-
 ///@cond PRIVATE
 
 /**
