@@ -55,11 +55,12 @@ QgsExpressionContext QgsPlotWidget::createExpressionContext() const
   context.appendScope( plotScope.release() );
 
   auto chartScope = std::make_unique<QgsExpressionContextScope>( u"chart"_s );
+  chartScope->addVariable( QgsExpressionContextScope::StaticVariable( u"chart_series_name"_s, QString(), true ) );
   chartScope->addVariable( QgsExpressionContextScope::StaticVariable( u"chart_category"_s, QString(), true ) );
   chartScope->addVariable( QgsExpressionContextScope::StaticVariable( u"chart_value"_s, 0.0, true ) );
   context.appendScope( chartScope.release() );
 
-  context.setHighlightedVariables( { u"plot_axis"_s, u"plot_axis_value"_s, u"chart_category"_s, u"chart_value"_s } );
+  context.setHighlightedVariables( { u"plot_axis"_s, u"plot_axis_value"_s, u"chart_series_name"_s, u"chart_category"_s, u"chart_value"_s } );
 
   return context;
 }

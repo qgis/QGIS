@@ -194,8 +194,10 @@ bool QgsVectorLayerXyPlotDataGatherer::run()
       break;
   }
 
+  int seriesIndex = 0;
   for ( std::unique_ptr<QgsXyPlotSeries> &series : gatheredSeries )
   {
+    series->setName( mSeriesDetails[seriesIndex++].name );
     mData.addSeries( series.release() );
   }
 

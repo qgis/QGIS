@@ -382,7 +382,7 @@ void QgsLayoutItemChart::prepareGatherer()
     QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> xYSeriesList;
     for ( const SeriesDetails &series : mSeriesList )
     {
-      xYSeriesList << QgsVectorLayerXyPlotDataGatherer::XySeriesDetails( series.xExpression(), series.yExpression(), series.filterExpression() );
+      xYSeriesList << QgsVectorLayerXyPlotDataGatherer::XySeriesDetails( series.name(), series.xExpression(), series.yExpression(), series.filterExpression() );
     }
 
     QgsFeatureRequest request;
