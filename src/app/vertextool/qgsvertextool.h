@@ -338,7 +338,6 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
      */
     QVector<QgsPointXY> transformNurbsControlPointsToMap( QgsVectorLayer *layer, const QgsPointSequence &controlPoints );
 
-  private:
     QgsVertexEditor *vertexEditor();
 
     // members used for temporary highlight of stuff
