@@ -507,6 +507,8 @@ class TestQgsDiagram : public QgsTest
 
     void testHistogramNegative()
     {
+      // Make sure we have features with both values positive,
+      // both values negative, and mixed positive-negative
       QgsDiagramSettings ds;
       QColor col1 = Qt::red;
       QColor col2 = Qt::yellow;
@@ -552,6 +554,63 @@ class TestQgsDiagram : public QgsTest
       ds.diagramOrientation = QgsDiagramSettings::Right;
       dr->setDiagramSettings( ds );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "histogram_negative_right", "histogram_negative_right", *mMapSettings, 200, 15 );
+    }
+
+    void testHistogramAxisNegative()
+    {
+      // Make sure we have features with both values positive,
+      // both values negative, and mixed positive-negative
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      ds.categoryColors = QList<QColor>() << col1 << col2;
+      ds.categoryAttributes = QList<QString>() << u"\"Pilots\" - 2"_s << u"\"Cabin Crew\" - 2"_s;
+      ds.minimumScale = -1;
+      ds.maximumScale = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = Qgis::RenderUnit::Millimeters;
+      ds.size = QSizeF( 5, 5 );
+      ds.rotationOffset = 0;
+      ds.setShowAxis( true );
+
+      QVariantMap props;
+      props.insert( u"width"_s, u"2"_s );
+      props.insert( u"color"_s, u"#ff00ff"_s );
+      ds.setAxisLineSymbol( QgsLineSymbol::createSimple( props ).release() );
+
+      QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
+      dr->setLowerValue( 0.0 );
+      dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
+      dr->setUpperValue( 4 );
+      dr->setUpperSize( QSizeF( 40, 40 ) );
+      dr->setClassificationField( u"Cabin Crew"_s );
+      dr->setDiagram( new QgsHistogramDiagram() );
+      dr->setDiagramSettings( ds );
+      mPointsLayer->setDiagramRenderer( dr );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+      dls.setShowAllDiagrams( true );
+      mPointsLayer->setDiagramLayerSettings( dls );
+
+      QGSVERIFYRENDERMAPSETTINGSCHECK( "histogram_axis_negative_up", "histogram_axis_negative_up", *mMapSettings, 200, 15 );
+
+      ds.diagramOrientation = QgsDiagramSettings::Down;
+      dr->setDiagramSettings( ds );
+      QGSVERIFYRENDERMAPSETTINGSCHECK( "histogram_axis_negative_down", "histogram_axis_negative_down", *mMapSettings, 200, 15 );
+
+      ds.diagramOrientation = QgsDiagramSettings::Left;
+      dr->setDiagramSettings( ds );
+      QGSVERIFYRENDERMAPSETTINGSCHECK( "histogram_axis_negative_left", "histogram_axis_negative_left", *mMapSettings, 200, 15 );
+
+      ds.diagramOrientation = QgsDiagramSettings::Right;
+      dr->setDiagramSettings( ds );
+      QGSVERIFYRENDERMAPSETTINGSCHECK( "histogram_axis_negative_right", "histogram_axis_negative_right", *mMapSettings, 200, 15 );
     }
 
     void testStackedFixSize()
