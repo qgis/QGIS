@@ -199,9 +199,13 @@ std::unique_ptr<QgsNurbsCurve> QgsBezierData::asNurbsCurve( int degree ) const
     for ( int j = 1; j < degree; ++j )
     {
       if ( j == 1 )
+      {
         ctrlPts.append( mData[i].rightHandle );
+      }
       else if ( j == degree - 1 )
+      {
         ctrlPts.append( mData[i + 1].leftHandle );
+      }
       else
       {
         // degree > 3, we don't have intermediate handles.
