@@ -50,11 +50,14 @@ class QgsMapCanvas;
 class QgsDockableWidgetHelper;
 class QgsMessageBar;
 class QgsRubberBand;
+class QgsRubberBand3D;
 class QgsDoubleSpinBox;
 class Qgs3DMapClippingToleranceWidgetSettingsAction;
 class QgsSettingsEntryDouble;
 class QgsSettingsEntryBool;
 class QgsGeometry;
+class QgsElevationProfile;
+class QgsProfilePoint;
 
 //! Helper validator for classification classes
 class ClassValidator : public QValidator
@@ -110,6 +113,10 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     void nudgeCurve( Qgis::BufferSide side );
 
+    void setProfileData( QgsElevationProfile *profile, double zMin, double zMax );
+
+    void updateProfileCursorPosition( QgsElevationProfile *profile, const QgsPointXY &mapPoint, const QgsProfilePoint &profilePoint );
+
   private slots:
     void resetView();
     void configure();
@@ -158,6 +165,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void setClippingTolerance( double tolerance );
     void lockCrossSectionTolerance( bool enabled );
     void updateClippingRubberBand();
+    void updateProfileRubberBands( QgsElevationProfile *profile );
+    void onProfileDestroyed( QObject *profile );
 
     QString mCanvasName;
     Qgs3DMapCanvas *mCanvas = nullptr;
@@ -233,6 +242,20 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     Qgs3DMapClippingToleranceWidgetSettingsAction *mClippingToleranceAction = nullptr;
 
     QMenu *mToolbarMenu = nullptr;
+
+    struct ElevationProfileData
+    {
+        std::unique_ptr<QgsRubberBand3D> rubberBandZMin;
+        std::unique_ptr<QgsRubberBand3D> rubberBandZMax;
+        std::vector<std::unique_ptr<QgsRubberBand3D>> rubberBandSideLines;
+        std::unique_ptr<QgsRubberBand3D> cursorLineRubberBand;
+        std::unique_ptr<QgsRubberBand3D> cursorPolygonRubberBand;
+        Qgis::GeometryType geomType = Qgis::GeometryType::Line; // used for rubberBandZMin and ZMax
+        double zMin = 0;
+        double zMax = 0;
+    };
+
+    std::unordered_map<QgsElevationProfile *, ElevationProfileData> mElevationProfileData;
 };
 
 class Qgs3DMapClippingToleranceWidgetSettingsAction : public QWidgetAction

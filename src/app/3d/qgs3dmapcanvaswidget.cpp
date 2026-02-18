@@ -35,11 +35,15 @@
 #include "qgsapplication.h"
 #include "qgscameracontroller.h"
 #include "qgscrosssection.h"
+#include "qgscurve.h"
 #include "qgsdockablewidgethelper.h"
+#include "qgselevationprofile.h"
 #include "qgsflatterrainsettings.h"
+#include "qgsframegraph.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgsidentifyresultsdialog.h"
+#include "qgslinestring.h"
 #include "qgsmap3dexportwidget.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapthemecollection.h"
@@ -50,10 +54,14 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgspointcloudquerybuilder.h"
+#include "qgspolygon.h"
+#include "qgsprofilepoint.h"
 #include "qgsrubberband.h"
+#include "qgsrubberband3d.h"
 #include "qgssettings.h"
 #include "qgssettingstree.h"
 #include "qgsshortcutsmanager.h"
+#include "qgswindow3dengine.h"
 
 #include <QAction>
 #include <QActionGroup>
@@ -1380,6 +1388,270 @@ void Qgs3DMapCanvasWidget::updateCheckedActionsFromMapSettings( const Qgs3DMapSe
   whileBlocking( mActionSync3DNavTo2D )->setChecked( mapSettings->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) );
   whileBlocking( mShowFrustumPolygon )->setChecked( mapSettings->viewFrustumVisualizationEnabled() );
   whileBlocking( mActionShow2DMapOverlay )->setChecked( mapSettings->is2DMapOverlayEnabled() );
+}
+
+void Qgs3DMapCanvasWidget::onProfileDestroyed( QObject *obj )
+{
+  if ( QgsElevationProfile *profile = static_cast<QgsElevationProfile *>( obj ) )
+    mElevationProfileData.erase( profile );
+}
+
+void Qgs3DMapCanvasWidget::updateProfileCursorPosition( QgsElevationProfile *profile, const QgsPointXY &mapPoint, const QgsProfilePoint &profilePoint )
+{
+  if ( !mCanvas || !mElevationProfileData.contains( profile ) )
+    return;
+
+  ElevationProfileData &data = mElevationProfileData[profile];
+
+  QgsCurve *curve = profile->profileCurve();
+  if ( mapPoint.isEmpty() || profilePoint.isEmpty() || !curve )
+  {
+    data.cursorLineRubberBand.reset();
+    data.cursorPolygonRubberBand.reset();
+    return;
+  }
+
+  if ( !data.cursorLineRubberBand )
+  {
+    data.cursorLineRubberBand = std::make_unique<QgsRubberBand3D>( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Line );
+    data.cursorLineRubberBand->setColor( QColor( 0, 0, 0, 200 ) );
+    data.cursorLineRubberBand->setWidth( 3 );
+    data.cursorLineRubberBand->setMarkersEnabled( false );
+  }
+
+  QgsGeometry cursorGeom( new QgsLineString( QVector<QgsPoint> {
+    QgsPoint( mapPoint.x(), mapPoint.y(), data.zMin ),
+    QgsPoint( mapPoint.x(), mapPoint.y(), data.zMax ),
+  } ) );
+  data.cursorLineRubberBand->setGeometry( cursorGeom );
+
+  std::unique_ptr<QgsPoint> p0( curve->interpolatePoint( profilePoint.distance() ) );
+  std::unique_ptr<QgsPoint> p1( curve->interpolatePoint( curve->length() ) );
+
+  if ( !p0 || !p1 )
+  {
+    data.cursorLineRubberBand.reset();
+    data.cursorPolygonRubberBand.reset();
+    return;
+  }
+
+  double dx = p1->x() - p0->x();
+  double dy = p1->y() - p0->y();
+
+  const double length = std::sqrt( dx * dx + dy * dy );
+
+  dx /= length;
+  dy /= length;
+
+  const double tolerance = profile->tolerance();
+  const double normalX = -dy * tolerance;
+  const double normalY = dx * tolerance;
+
+  const double x = mapPoint.x();
+  const double y = mapPoint.y();
+
+  QgsGeometry polyGeom( new QgsPolygon( new QgsLineString( QVector<QgsPoint> {
+    QgsPoint( x + normalX, y + normalY, data.zMin ),
+    QgsPoint( x - normalX, y - normalY, data.zMin ),
+    QgsPoint( x - normalX, y - normalY, data.zMax ),
+    QgsPoint( x + normalX, y + normalY, data.zMax ),
+    QgsPoint( x + normalX, y + normalY, data.zMin ),
+  } ) ) );
+
+  if ( !data.cursorPolygonRubberBand )
+  {
+    data.cursorPolygonRubberBand = std::make_unique<QgsRubberBand3D>( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Polygon );
+    data.cursorPolygonRubberBand->setColor( QColor( 50, 50, 50, 100 ) );
+    data.cursorPolygonRubberBand->setWidth( 0 );
+    data.cursorPolygonRubberBand->setMarkersEnabled( false );
+  }
+
+  data.cursorPolygonRubberBand->setGeometry( polyGeom );
+}
+
+void Qgs3DMapCanvasWidget::setProfileData( QgsElevationProfile *profile, double zMin, double zMax )
+{
+  // only when the generation of the profile finishes, we get zMin and zMax
+  // however, rasters and point clouds trigger profile generation on every elevation profile canvas move/zoom
+  // so Z values of the profile curve in 3D can fluctuate when dealing with those formats and zooming/moving in elevation canvas
+  if ( !profile )
+    return;
+
+  if ( mElevationProfileData.contains( profile ) )
+  {
+    ElevationProfileData &data = mElevationProfileData[profile];
+    data.zMin = zMin;
+    data.zMax = zMax;
+    updateProfileRubberBands( profile );
+    return;
+  }
+
+  ElevationProfileData profileData;
+  profileData.zMin = zMin;
+  profileData.zMax = zMax;
+  mElevationProfileData[profile] = std::move( profileData );
+
+  connect( profile, &QgsElevationProfile::profileCurveChanged, this, [this, profile] { updateProfileRubberBands( profile ); } );
+  connect( profile, &QgsElevationProfile::toleranceChanged, this, [this, profile] { updateProfileRubberBands( profile ); } );
+  connect( profile, &QObject::destroyed, this, &Qgs3DMapCanvasWidget::onProfileDestroyed );
+
+  updateProfileRubberBands( profile );
+}
+
+void Qgs3DMapCanvasWidget::updateProfileRubberBands( QgsElevationProfile *profile )
+{
+  if ( !mCanvas || !mElevationProfileData.contains( profile ) )
+    return;
+
+  ElevationProfileData &data = mElevationProfileData[profile];
+
+  QgsCurve *curve = profile->profileCurve();
+  if ( !curve )
+  {
+    data.rubberBandZMin.reset();
+    data.rubberBandZMax.reset();
+    data.rubberBandSideLines.clear();
+    return;
+  }
+
+  const double tolerance = profile->tolerance();
+  QgsGeometry curveGeom( curve->clone() );
+
+  QgsGeometry rubberBandGeom;
+  Qgis::GeometryType geomType;
+  if ( tolerance > 0 )
+  {
+    rubberBandGeom = curveGeom.buffer( tolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 );
+    geomType = Qgis::GeometryType::Polygon;
+  }
+  else
+  {
+    rubberBandGeom = curveGeom;
+    geomType = Qgis::GeometryType::Line;
+  }
+
+  if ( data.geomType != geomType )
+  {
+    data.rubberBandZMin.reset();
+    data.rubberBandZMax.reset();
+    data.rubberBandSideLines.clear();
+    data.geomType = geomType;
+  }
+
+  if ( !data.rubberBandZMin )
+  {
+    data.rubberBandZMin = std::make_unique<QgsRubberBand3D>( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity(), geomType );
+    data.rubberBandZMin->setColor( QColor( 200, 200, 200, 200 ) );
+    data.rubberBandZMin->setOutlineColor( QColor( 200, 200, 200, 200 ) );
+    data.rubberBandZMin->setWidth( 3 );
+    data.rubberBandZMin->setMarkersEnabled( false );
+    data.rubberBandZMin->setFillEnabled( false );
+  }
+
+  if ( !data.rubberBandZMax )
+  {
+    data.rubberBandZMax = std::make_unique<QgsRubberBand3D>( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity(), geomType );
+    data.rubberBandZMax->setColor( QColor( 200, 200, 200, 200 ) );
+    data.rubberBandZMax->setOutlineColor( QColor( 200, 200, 200, 200 ) );
+    data.rubberBandZMax->setWidth( 3 );
+    data.rubberBandZMax->setMarkersEnabled( false );
+    data.rubberBandZMax->setFillEnabled( false );
+  }
+
+  QgsGeometry geomZMin = rubberBandGeom;
+  QgsGeometry geomZMax = rubberBandGeom;
+
+  QgsAbstractGeometry *gZMin = geomZMin.get();
+  gZMin->addZValue( data.zMin );
+
+  QgsAbstractGeometry *gZMax = geomZMax.get();
+  gZMax->addZValue( data.zMax );
+
+  data.rubberBandZMin->setGeometry( geomZMin );
+  data.rubberBandZMax->setGeometry( geomZMax );
+
+  QVector<QgsPointXY> sidePoints; // used to construct vertical lines at the sides of the bottom/top polygons
+  if ( tolerance > 0 )
+  {
+    const int numCurvePoints = curve->numPoints();
+
+    // vertical lines at the beggining
+    QgsPoint pt1 = curve->vertexAt( QgsVertexId( 0, 0, 0 ) );
+    QgsPoint pt2 = curve->vertexAt( QgsVertexId( 0, 0, 1 ) );
+
+    double x, y;
+    QgsGeometryUtilsBase::perpendicularOffsetPointAlongSegment( pt1.x(), pt1.y(), pt2.x(), pt2.y(), 0.0, tolerance, &x, &y );
+    sidePoints.append( QgsPointXY( x, y ) );
+
+    QgsGeometryUtilsBase::perpendicularOffsetPointAlongSegment( pt1.x(), pt1.y(), pt2.x(), pt2.y(), 0.0, -tolerance, &x, &y );
+    sidePoints.append( QgsPointXY( x, y ) );
+
+    // we want only one vertical line at the arch middle point (where the curve bends, if curve is made out of multiple lines)
+    for ( int i = 1; i < numCurvePoints - 1; i++ )
+    {
+      const QgsPoint vertexPrevious = curve->vertexAt( QgsVertexId( 0, 0, i - 1 ) );
+      const QgsPoint vertexMiddle = curve->vertexAt( QgsVertexId( 0, 0, i ) );
+      const QgsPoint vertexNext = curve->vertexAt( QgsVertexId( 0, 0, i + 1 ) );
+
+      const double anglePreviousMiddle = QgsGeometryUtilsBase::lineAngle( vertexPrevious.x(), vertexPrevious.y(), vertexMiddle.x(), vertexMiddle.y() );
+      const double angleMiddleNext = QgsGeometryUtilsBase::lineAngle( vertexMiddle.x(), vertexMiddle.y(), vertexNext.x(), vertexNext.y() );
+
+      const double averageAngle = QgsGeometryUtilsBase::averageAngle( anglePreviousMiddle, angleMiddleNext ) - M_PI_2;
+      const double dx = std::sin( averageAngle );
+      const double dy = std::cos( averageAngle );
+
+      const double turnAngle = QgsGeometryUtilsBase::normalizedAngle( angleMiddleNext - anglePreviousMiddle );
+      const double angleHalf = turnAngle < M_PI ? turnAngle * 0.5 : ( 2.0 * M_PI - turnAngle ) * 0.5;
+
+      const double miter = tolerance / std::cos( angleHalf );
+
+      const double left = turnAngle < M_PI ? tolerance : miter;
+      const double right = turnAngle < M_PI ? miter : tolerance;
+
+      sidePoints.append( QgsPointXY( vertexMiddle.x() + dx * left, vertexMiddle.y() + dy * left ) );
+      sidePoints.append( QgsPointXY( vertexMiddle.x() - dx * right, vertexMiddle.y() - dy * right ) );
+    }
+
+    // vertical lines at the end
+    pt1 = curve->vertexAt( QgsVertexId( 0, 0, numCurvePoints - 2 ) );
+    pt2 = curve->vertexAt( QgsVertexId( 0, 0, numCurvePoints - 1 ) );
+
+    QgsGeometryUtilsBase::perpendicularOffsetPointAlongSegment( pt1.x(), pt1.y(), pt2.x(), pt2.y(), 1.0, tolerance, &x, &y );
+    sidePoints.append( QgsPointXY( x, y ) );
+
+    QgsGeometryUtilsBase::perpendicularOffsetPointAlongSegment( pt1.x(), pt1.y(), pt2.x(), pt2.y(), 1.0, -tolerance, &x, &y );
+    sidePoints.append( QgsPointXY( x, y ) );
+  }
+  else // not a polygon, so we just construct vertical lines at each vertex of the curve
+  {
+    for ( auto vertex = rubberBandGeom.vertices_begin(); vertex != rubberBandGeom.vertices_end(); vertex++ )
+    {
+      sidePoints.append( QgsPointXY( ( *vertex ).x(), ( *vertex ).y() ) );
+    }
+  }
+
+  data.rubberBandSideLines.resize( sidePoints.size() );
+
+  // construct vertical lines from zMin to zMax
+  for ( qsizetype i = 0; i < sidePoints.size(); i++ )
+  {
+    const QgsPointXY &point = sidePoints[i];
+
+    QgsGeometry lineGeom( new QgsLineString( QVector<QgsPoint> {
+      QgsPoint( point.x(), point.y(), data.zMin ),
+      QgsPoint( point.x(), point.y(), data.zMax ),
+    } ) );
+
+    if ( !data.rubberBandSideLines[i] )
+    {
+      data.rubberBandSideLines[i] = std::make_unique<QgsRubberBand3D>( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Line );
+      data.rubberBandSideLines[i]->setColor( QColor( 200, 200, 200, 150 ) );
+      data.rubberBandSideLines[i]->setWidth( 3 );
+      data.rubberBandSideLines[i]->setMarkersEnabled( false );
+    }
+
+    data.rubberBandSideLines[i]->setGeometry( lineGeom );
+  }
 }
 
 //
