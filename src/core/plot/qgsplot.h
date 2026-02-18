@@ -611,8 +611,7 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
      * Returns the area of the plot which corresponds to the actual plot content (excluding all titles and other components which sit
      * outside the plot area).
      *
-     * The \a plotArea argument specifies that area of the plot which corresponds to the actual plot content. Implementations
-     * should take care to scale values accordingly to render points correctly inside this plot area.
+     * The optional \a plotData argument can be passed on to support calculation of label sizes when an axis' type is categorical.
      */
     virtual QRectF interiorPlotArea( QgsRenderContext &context, QgsPlotRenderContext &plotContext, const QgsPlotData &plotData = QgsPlotData() ) const;
 
@@ -817,7 +816,7 @@ class CORE_EXPORT Qgs2DXyPlot : public Qgs2DPlot
     bool flipAxes() const { return mFlipAxes; }
 
     /**
-     * Sets whethert he X and Y axes are flipped.
+     * Sets whether the X and Y axes are flipped.
      */
     void setFlipAxes( bool flipAxes );
 
