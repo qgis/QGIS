@@ -1893,8 +1893,28 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 
           std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
 
-          QgsNewNameDialog dlg( tr( "Table %1.%2" ).arg( schema, tableName ), tableName );
+          QStringList existingTableNames;
+          try
+          {
+            const QList<QgsAbstractDatabaseProviderConnection::TableProperty> existingTables = conn2->tables( schema );
+            existingTableNames.reserve( existingTables.size() );
+            for ( const QgsAbstractDatabaseProviderConnection::TableProperty &table : existingTables )
+            {
+              if ( table.tableName() != tableName )
+              {
+                existingTableNames.append( table.tableName() );
+              }
+            }
+          }
+          catch ( QgsProviderConnectionException &ex )
+          {
+            ( void ) ex;
+          }
+
+          QgsNewNameDialog dlg( tr( "Table %1.%2" ).arg( schema, tableName ), tableName, {}, existingTableNames );
           dlg.setWindowTitle( tr( "Rename Table" ) );
+          dlg.setOverwriteEnabled( false );
+          dlg.setConflictingNameWarning( tr( "A table with this name already exists." ) );
           if ( dlg.exec() != QDialog::Accepted || dlg.name() == tableName )
             return;
 
