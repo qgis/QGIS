@@ -2335,7 +2335,7 @@ QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, Qgis::
     queryHeight = std::ceil( extent.height() / std::abs( mScaleY ) );
   }
 
-  const double pixelsRatio { static_cast<double>( sampleSize ) / ( queryWidth * queryHeight ) };
+  const double pixelsRatio { sampleSize / static_cast<double>( queryWidth * queryHeight ) };
   double statsRatio { pixelsRatio };
 
   // Decide if overviews can be used here
