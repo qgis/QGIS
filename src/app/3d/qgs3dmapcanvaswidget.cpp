@@ -1425,8 +1425,16 @@ void Qgs3DMapCanvasWidget::updateProfileCursorPosition( QgsElevationProfile *pro
   } ) );
   data.cursorLineRubberBand->setGeometry( cursorGeom );
 
-  std::unique_ptr<QgsPoint> p0( curve->interpolatePoint( profilePoint.distance() ) );
-  std::unique_ptr<QgsPoint> p1( curve->interpolatePoint( curve->length() ) );
+  // we need to properly rotate the curve depending on where it is
+  const double curveLength = curve->length();
+  const double offset = std::min( 0.1, curveLength * 0.001 );
+  const double profilePointDistance = profilePoint.distance();
+
+  const double d0 = std::max( 0.0, profilePointDistance - offset );
+  const double d1 = std::min( curveLength, profilePointDistance + offset );
+
+  std::unique_ptr<QgsPoint> p0( curve->interpolatePoint( d0 ) );
+  std::unique_ptr<QgsPoint> p1( curve->interpolatePoint( d1 ) );
 
   if ( !p0 || !p1 )
   {
