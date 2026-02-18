@@ -114,6 +114,23 @@ int CPL_STDCALL progressCallback( double dfComplete,
   return true;
 }
 
+static GDALDataType toQgisSupportedGdalDataType( GDALDataType eDT )
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
+  if ( eDT == GDT_Int64 || eDT == GDT_UInt64 )
+  {
+    eDT = GDT_Float64;
+  }
+#endif
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,11,0)
+  if ( eDT == GDT_Float16 )
+  {
+    eDT = GDT_Float32;
+  }
+#endif
+  return eDT;
+}
+
 QgsGdalProvider::QgsGdalProvider( const QString &uri, const QgsError &error )
   : QgsRasterDataProvider( uri, QgsDataProvider::ProviderOptions() )
   , mpRefCounter( new QAtomicInt( 1 ) )
@@ -1553,7 +1570,7 @@ double QgsGdalProvider::sample( const QgsPointXY &point, int band, bool *ok, con
     {
       float tempVal{0};
       err = GDALRasterIO( hBand, GF_Read, col, row, 1, 1,
-                          &tempVal, 1, 1, dataType, 0, 0 );
+                          &tempVal, 1, 1, GDT_Float32, 0, 0 );
       value = static_cast<double>( tempVal );
       break;
     }
@@ -3858,6 +3875,8 @@ void QgsGdalProvider::initBaseDataset()
     GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, i );
     GDALDataType myGdalDataType = GDALGetRasterDataType( myGdalBand );
 
+    myGdalDataType = toQgisSupportedGdalDataType( myGdalDataType );
+
     int isValid = false;
     double myNoDataValue = GDALGetRasterNoDataValue( myGdalBand, &isValid );
     // We check that the double value we just got is representable in the
@@ -3961,13 +3980,6 @@ void QgsGdalProvider::initBaseDataset()
       }
     }
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
-    if ( myGdalDataType == GDT_Int64 || myGdalDataType == GDT_UInt64 )
-    {
-      myGdalDataType = GDT_Float64;
-    }
-#endif
-
     mGdalDataType.append( myGdalDataType );
     //mInternalNoDataValue.append( myInternalNoDataValue );
   }
@@ -4038,10 +4050,8 @@ bool QgsGdalProvider::write( const void *data, int band, int width, int height, 
     return false;
   }
   GDALDataType gdalDataType = GDALGetRasterDataType( rasterBand );
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
-  if ( gdalDataType == GDT_Int64 || gdalDataType == GDT_UInt64 )
-    gdalDataType = GDT_Float64;
-#endif
+
+  gdalDataType = toQgisSupportedGdalDataType( gdalDataType );
 
   return gdalRasterIO( rasterBand, GF_Write, xOffset, yOffset, width, height, const_cast< void * >( data ), width, height, gdalDataType, 0, 0 ) == CE_None;
 }
