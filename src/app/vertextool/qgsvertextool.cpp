@@ -457,9 +457,9 @@ void QgsVertexTool::addDragNurbsBand( QgsVectorLayer *layer, const QgsNurbsCurve
 
     NurbsBand band;
     band.nurbs = nurbs;
-    band.curveBand = createRubberBand( Qgis::GeometryType::Line, true );
-    band.controlBand = createRubberBand( Qgis::GeometryType::Line, true );
-    applyNurbsControlPolygonStyle( band.controlBand );
+    band.curveBand.reset( createRubberBand( Qgis::GeometryType::Line, true ) );
+    band.controlBand.reset( createRubberBand( Qgis::GeometryType::Line, true ) );
+    applyNurbsControlPolygonStyle( band.controlBand.data() );
 
     band.controlPoints = std::move( mapControlPoints );
     band.degree = nurbs->degree();
@@ -475,7 +475,7 @@ void QgsVertexTool::addDragNurbsBand( QgsVectorLayer *layer, const QgsNurbsCurve
 
     band.updateRubberBand( mapPoint );
 
-    mDragNurbsBands << band;
+    mDragNurbsBands.emplace_back( std::move( band ) );
   }
 }
 
@@ -493,11 +493,6 @@ void QgsVertexTool::clearDragBands()
     delete b.band;
   mDragCircularBands.clear();
 
-  for ( const NurbsBand &band : std::as_const( mDragNurbsBands ) )
-  {
-    delete band.curveBand;
-    delete band.controlBand;
-  }
   mDragNurbsBands.clear();
 
   mBezierMarker->setVisible( false );
