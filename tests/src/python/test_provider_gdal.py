@@ -638,6 +638,45 @@ class PyQgsGdalProvider(QgisTestCase, RasterProviderTestCase):
         band_type = provider.sourceDataType(2)
         self.assertEqual(band_type, Qgis.DataType.Byte)
 
+    @unittest.skipIf(
+        int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 11, 0),
+        "GDAL 3.11.0 required",
+    )
+    def testFloat16(self):
+        """Test Float16 support (as Float32)"""
+
+        tmp_dir = QTemporaryDir()
+        tmpfile = os.path.join(tmp_dir.path(), "testFloat16.tif")
+        ds = gdal.GetDriverByName("GTiff").Create(tmpfile, 2, 2, 1, gdal.GDT_Float16)
+        ds.WriteRaster(0, 0, 2, 2, struct.pack("e" * 4, 1.5, 127.5, 0, -128.5))
+        ds = None
+
+        raster_layer = QgsRasterLayer(tmpfile, "test")
+        self.assertTrue(raster_layer.isValid())
+        self.assertEqual(raster_layer.dataProvider().dataType(1), Qgis.DataType.Float32)
+
+        extent = raster_layer.extent()
+        block = raster_layer.dataProvider().block(1, extent, 2, 2)
+
+        full_content = [1.5, 127.5, 0, -128.5]
+        self.checkBlockContents(block, full_content)
+
+        pos = QgsPointXY(0, 0)
+        value_sample = raster_layer.dataProvider().sample(pos, 1)[0]
+        self.assertEqual(value_sample, full_content[0])
+
+        pos = QgsPointXY(1, 0)
+        value_sample = raster_layer.dataProvider().sample(pos, 1)[0]
+        self.assertEqual(value_sample, full_content[1])
+
+        pos = QgsPointXY(0, -1)
+        value_sample = raster_layer.dataProvider().sample(pos, 1)[0]
+        self.assertEqual(value_sample, full_content[2])
+
+        pos = QgsPointXY(1, -1)
+        value_sample = raster_layer.dataProvider().sample(pos, 1)[0]
+        self.assertEqual(value_sample, full_content[3])
+
 
 if __name__ == "__main__":
     unittest.main()
