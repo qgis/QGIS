@@ -176,6 +176,15 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
             }
         )
         plot.setFillSymbolAt(0, series_symbol)
+        series2_symbol = QgsFillSymbol.createSimple(
+            {
+                "color": "#BB0000",
+                "outline_color": "#003300",
+                "outline_style": "solid",
+                "outline_width": 1,
+            }
+        )
+        plot.setFillSymbolAt(1, series2_symbol)
 
         chart_item.setPlot(plot)
 
@@ -189,7 +198,19 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
         chart_item.setSortExpression('"category"')
         chart_item.setSortAscending(False)
 
-        # self.assertTrue(self.render_layout_check("bar_chart", layout))
+        self.assertTrue(self.render_layout_check("bar_chart", layout))
+
+        series_details.setFilterExpression('"value" < 10')
+        series2_details = QgsLayoutItemChart.SeriesDetails("Series 2")
+        series2_details.setXExpression('"category"')
+        series2_details.setYExpression('"value"')
+        series2_details.setFilterExpression('"value" >= 10')
+        chart_item.setSeriesList([series_details, series2_details])
+
+        self.assertTrue(self.render_layout_check("bar_chart_multiple_series", layout))
+
+        series_details.setFilterExpression("")
+        chart_item.setSeriesList([series_details])
 
         map = QgsLayoutItemMap(layout)
         layout.addLayoutItem(map)

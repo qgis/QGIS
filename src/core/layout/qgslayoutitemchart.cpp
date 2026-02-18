@@ -386,15 +386,17 @@ void QgsLayoutItemChart::prepareGatherer()
     }
 
     QgsFeatureRequest request;
+    QStringList filterExpressions;
     for ( QgsLayoutItemChart::SeriesDetails &series : mSeriesList )
     {
-      if ( series.filterExpression().isEmpty() )
+      if ( !series.filterExpression().isEmpty() )
       {
-        request = QgsFeatureRequest();
-        break;
+        filterExpressions << series.filterExpression();
       }
-
-      request.combineFilterExpression( series.filterExpression() );
+    }
+    if ( !filterExpressions.isEmpty() )
+    {
+      request.setFilterExpression( u"(%1)"_s.arg( filterExpressions.join( ") OR ("_L1 ) ) );
     }
 
     if ( mSortFeatures && !mSortExpression.isEmpty() )
@@ -426,6 +428,7 @@ void QgsLayoutItemChart::prepareGatherer()
         request.setDistanceWithin( visibleRegionGeometry, 0.0 );
       }
     }
+    request.setExpressionContext( createExpressionContext() );
 
     QgsFeatureIterator featureIterator = mVectorLayer->getFeatures( request );
 
