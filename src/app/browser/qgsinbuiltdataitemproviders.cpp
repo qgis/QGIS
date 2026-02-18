@@ -2015,10 +2015,37 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 
         if ( dlg->exec() == QDialog::Accepted )
         {
+          std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
+          const QString targetSchema = dlg->selectedSchema();
+          QStringList existingTableNamesInTargetSchema;
+          try
+          {
+            const QList<QgsAbstractDatabaseProviderConnection::TableProperty> existingTablesInTargetSchema = conn->tables( targetSchema );
+            existingTableNamesInTargetSchema.reserve( existingTablesInTargetSchema.size() );
+            for ( const QgsAbstractDatabaseProviderConnection::TableProperty &table : existingTablesInTargetSchema )
+            {
+              existingTableNamesInTargetSchema.append( table.tableName() );
+            }
+          }
+          catch ( QgsProviderConnectionException &ex )
+          {
+            ( void ) ex;
+          }
+          conn.reset();
+
           if ( selectedItems.count() == 1 )
           {
+            const QString tableName = item->name();
+            if ( existingTableNamesInTargetSchema.contains( tableName ) )
+            {
+              if ( context.messageBar() )
+              {
+                context.messageBar()->pushCritical( QString(), tr( "Cannot move %1 to %2: a table with the same name already exists in the schema" ).arg( tableName, targetSchema ) );
+              }
+              return;
+            }
             std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn3( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
-            bool success = moveTableToSchema( std::move( conn3 ), item->parent()->name(), item->name(), dlg->selectedSchema(), context, true );
+            bool success = moveTableToSchema( std::move( conn3 ), item->parent()->name(), tableName, targetSchema, context, true );
             if ( !success )
               return;
 
@@ -2029,16 +2056,43 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
             if ( !item->parent() || !qobject_cast<QgsDataCollectionItem *>( item->parent()->parent() ) )
               return;
 
-            QgsDataItemGuiProviderUtils::refreshChildWithName( item->parent()->parent(), dlg->selectedSchema() );
+            QgsDataItemGuiProviderUtils::refreshChildWithName( item->parent()->parent(), targetSchema );
           }
           else
           {
             int numberImported = 0;
             QSet<QString> schemasToRefresh;
+
+            QStringList nameClashes;
+            for ( const QgsDataItem *selectedItem : selectedItems )
+            {
+              const QString tableName = selectedItem->name();
+              if ( existingTableNamesInTargetSchema.contains( tableName ) )
+              {
+                nameClashes.append( tableName );
+              }
+            }
+            if ( !nameClashes.isEmpty() )
+            {
+              if ( context.messageBar() )
+              {
+                if ( nameClashes.size() == 1 )
+                {
+                  context.messageBar()->pushCritical( QString(), tr( "Cannot move %1 to %2: a table with the same name already exists in the schema" ).arg( nameClashes.at( 0 ), targetSchema ) );
+                }
+                else
+                {
+                  const QString names = nameClashes.join( tr( ", " ) );
+                  context.messageBar()->pushCritical( QString(), tr( "Cannot move %1 to %2: tables with the same names already exists in the schema" ).arg( names, targetSchema ) );
+                }
+              }
+              return;
+            }
+
             for ( const QgsDataItem *selectedItem : selectedItems )
             {
               std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn3( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
-              bool success = moveTableToSchema( std::move( conn3 ), selectedItem->parent()->name(), selectedItem->name(), dlg->selectedSchema(), context, false );
+              bool success = moveTableToSchema( std::move( conn3 ), selectedItem->parent()->name(), selectedItem->name(), targetSchema, context, false );
 
               if ( success )
               {
@@ -2057,14 +2111,14 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
               return;
 
             // add target schema to schemas to refresh
-            schemasToRefresh.insert( dlg->selectedSchema() );
+            schemasToRefresh.insert( targetSchema );
 
             for ( const QString &schema : schemasToRefresh )
             {
               QgsDataItemGuiProviderUtils::refreshChildWithName( dbItem, schema );
             }
 
-            notify( tr( "Move Tables" ), tr( "%1 tables moved to schema %2" ).arg( numberImported ).arg( dlg->selectedSchema() ), context, Qgis::MessageLevel::Success );
+            notify( tr( "Move Tables" ), tr( "%1 tables moved to schema %2" ).arg( numberImported ).arg( targetSchema ), context, Qgis::MessageLevel::Success );
           }
         }
       } );
