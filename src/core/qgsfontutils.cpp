@@ -55,17 +55,25 @@ bool QgsFontUtils::fontFamilyHasStyle( const QString &family, const QString &sty
   if ( fontDB.styles( family ).contains( style ) )
     return true;
 
-#ifdef Q_OS_WIN
   QString modified( style );
+#ifdef Q_OS_WIN
   if ( style == "Roman" )
     modified = "Normal";
-  if ( style == "Oblique" )
+  else if ( style == "Oblique" )
     modified = "Italic";
-  if ( style == "Bold Oblique" )
+  else if ( style == "Bold Oblique" )
     modified = "Bold Italic";
   if ( fontDB.styles( family ).contains( modified ) )
     return true;
 #endif
+
+  // Deal with Qt6 Normal -> Regular style renaming
+  if ( style == "Normal" )
+    modified = "Regular";
+  else if ( style == QCoreApplication::translate( "QFontDatabase", qPrintable( u"Normal"_s ) ) )
+    modified = QCoreApplication::translate( "QFontDatabase", qPrintable( u"Regular"_s ) );
+  if ( fontDB.styles( family ).contains( modified ) )
+    return true;
 
   return false;
 }
