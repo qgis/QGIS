@@ -453,6 +453,8 @@ void QgsBarChartPlotWidget::setPlot( QgsPlot *plot )
   mSpinTopMargin->setValue( chartPlot->margins().top() );
   mSpinBottomMargin->setValue( chartPlot->margins().bottom() );
 
+  mFlipAxes = chartPlot->flipAxes();
+
   mPropertyCollection = chartPlot->dataDefinedProperties();
 
   updateDataDefinedButton( mDDBtnMinXAxis );
@@ -531,6 +533,7 @@ QgsPlot *QgsBarChartPlotWidget::createPlot()
   margins.setBottom( mSpinBottomMargin->value() );
   chartPlot->setMargins( margins );
 
+  chartPlot->setFlipAxes( mFlipAxes );
   chartPlot->setDataDefinedProperties( mPropertyCollection );
 
   return plot;
@@ -920,6 +923,8 @@ void QgsLineChartPlotWidget::setPlot( QgsPlot *plot )
   mSpinTopMargin->setValue( chartPlot->margins().top() );
   mSpinBottomMargin->setValue( chartPlot->margins().bottom() );
 
+  mFlipAxes = chartPlot->flipAxes();
+
   mPropertyCollection = chartPlot->dataDefinedProperties();
 
   updateDataDefinedButton( mDDBtnMinXAxis );
@@ -1002,6 +1007,7 @@ QgsPlot *QgsLineChartPlotWidget::createPlot()
   margins.setBottom( mSpinBottomMargin->value() );
   chartPlot->setMargins( margins );
 
+  chartPlot->setFlipAxes( mFlipAxes );
   chartPlot->setDataDefinedProperties( mPropertyCollection );
 
   return plot;
