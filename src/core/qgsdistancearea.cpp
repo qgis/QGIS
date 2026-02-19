@@ -362,6 +362,8 @@ double QgsDistanceArea::measureLine( const QgsCurve *curve ) const
 
 double QgsDistanceArea::measureLine( const QVector<QgsPointXY> &points ) const
 {
+  ensureCoordinateTransformUpToDate();
+
   if ( points.size() < 2 )
     return 0;
 
@@ -408,6 +410,8 @@ double QgsDistanceArea::measureLine( const QVector<QgsPointXY> &points ) const
 
 double QgsDistanceArea::measureLine( const QgsPointXY &p1, const QgsPointXY &p2 ) const
 {
+  ensureCoordinateTransformUpToDate();
+
   double result;
 
   if ( willUseEllipsoid() )
@@ -447,6 +451,8 @@ double QgsDistanceArea::measureLine( const QgsPointXY &p1, const QgsPointXY &p2 
 
 double QgsDistanceArea::measureLineProjected( const QgsPointXY &p1, double distance, double azimuth, QgsPointXY *projectedPoint ) const
 {
+  ensureCoordinateTransformUpToDate();
+
   double result = 0.0;
   QgsPointXY p2;
   if ( mCoordTransform.sourceCrs().isGeographic() && willUseEllipsoid() )
@@ -591,6 +597,8 @@ double QgsDistanceArea::latitudeGeodesicCrossesAntimeridian( const QgsPointXY &p
 
 QgsGeometry QgsDistanceArea::splitGeometryAtAntimeridian( const QgsGeometry &geometry ) const
 {
+  ensureCoordinateTransformUpToDate();
+
   if ( QgsWkbTypes::geometryType( geometry.wkbType() ) != Qgis::GeometryType::Line )
     return geometry;
 
@@ -718,6 +726,8 @@ QgsGeometry QgsDistanceArea::splitGeometryAtAntimeridian( const QgsGeometry &geo
 
 QVector< QVector<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &p1, const QgsPointXY &p2, const double interval, const bool breakLine ) const
 {
+  ensureCoordinateTransformUpToDate();
+
   if ( !willUseEllipsoid() )
   {
     return QVector< QVector< QgsPointXY > >() << ( QVector< QgsPointXY >() << p1 << p2 );
@@ -836,11 +846,15 @@ QVector< QVector<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &
 
 Qgis::DistanceUnit QgsDistanceArea::lengthUnits() const
 {
+  ensureCoordinateTransformUpToDate();
+
   return willUseEllipsoid() ? Qgis::DistanceUnit::Meters : mCoordTransform.sourceCrs().mapUnits();
 }
 
 Qgis::AreaUnit QgsDistanceArea::areaUnits() const
 {
+  ensureCoordinateTransformUpToDate();
+
   return willUseEllipsoid() ? Qgis::AreaUnit::SquareMeters :
          QgsUnitTypes::distanceToAreaUnit( mCoordTransform.sourceCrs().mapUnits() );
 }
@@ -862,6 +876,8 @@ double QgsDistanceArea::measurePolygon( const QgsCurve *curve ) const
 
 double QgsDistanceArea::measurePolygon( const QVector<QgsPointXY> &points ) const
 {
+  ensureCoordinateTransformUpToDate();
+
   if ( willUseEllipsoid() )
   {
     QVector<QgsPointXY> pts;
@@ -880,6 +896,8 @@ double QgsDistanceArea::measurePolygon( const QVector<QgsPointXY> &points ) cons
 
 double QgsDistanceArea::bearing( const QgsPointXY &p1, const QgsPointXY &p2 ) const
 {
+  ensureCoordinateTransformUpToDate();
+
   QgsPointXY pp1 = p1, pp2 = p2;
   double bearing;
 
