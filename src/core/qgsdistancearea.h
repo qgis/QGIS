@@ -394,6 +394,12 @@ class CORE_EXPORT QgsDistanceArea
 
     mutable std::unique_ptr< geod_geodesic > mGeod;
 
+    QgsCoordinateReferenceSystem mDestinationCrs; // the ellipsoid CRS, which is the destination CRS for mCoordTransform
+    QgsCoordinateReferenceSystem mSourceCrs;
+    QgsCoordinateTransformContext mCoordTransformContext;
+
+    mutable bool mCoordTransformDirty = false;
+
     // utility functions for polygon area measurement
 
     double measure( const QgsAbstractGeometry *geomV2, MeasureType type = Default ) const;

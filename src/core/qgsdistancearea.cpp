@@ -65,6 +65,10 @@ QgsDistanceArea::QgsDistanceArea( const QgsDistanceArea &other )
   , mSemiMajor( other.mSemiMajor )
   , mSemiMinor( other.mSemiMinor )
   , mInvFlattening( other.mInvFlattening )
+  , mDestinationCrs( other.mDestinationCrs )
+  , mSourceCrs( other.mSourceCrs )
+  , mCoordTransformContext( other.mCoordTransformContext )
+  , mCoordTransformDirty( other.mCoordTransformDirty )
 //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
 {
   computeAreaInit();
@@ -78,6 +82,10 @@ QgsDistanceArea::QgsDistanceArea( QgsDistanceArea &&other )
   , mSemiMinor( other.mSemiMinor )
   , mInvFlattening( other.mInvFlattening )
   , mGeod( std::move( other.mGeod ) )
+  , mDestinationCrs( std::move( other.mDestinationCrs ) )
+  , mSourceCrs( std::move( other.mSourceCrs ) )
+  , mCoordTransformContext( std::move( other.mCoordTransformContext ) )
+  , mCoordTransformDirty( other.mCoordTransformDirty )
 {
 }
 
@@ -92,6 +100,10 @@ QgsDistanceArea &QgsDistanceArea::operator=( const QgsDistanceArea &other )
   mSemiMajor = other.mSemiMajor;
   mSemiMinor = other.mSemiMinor;
   mInvFlattening = other.mInvFlattening;
+  mDestinationCrs = other.mDestinationCrs;
+  mSourceCrs = other.mSourceCrs;
+  mCoordTransformContext = other.mCoordTransformContext;
+  mCoordTransformDirty = other.mCoordTransformDirty;
   computeAreaInit();
   //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
   return *this;
@@ -107,6 +119,10 @@ QgsDistanceArea &QgsDistanceArea::operator=( QgsDistanceArea &&other )
   mSemiMajor = other.mSemiMajor;
   mSemiMinor = other.mSemiMinor;
   mInvFlattening = other.mInvFlattening;
+  mSourceCrs = other.mSourceCrs;
+  mDestinationCrs = other.mDestinationCrs;
+  mCoordTransformContext = other.mCoordTransformContext;
+  mCoordTransformDirty = other.mCoordTransformDirty;
   mGeod = std::move( other.mGeod );
   return *this;
 }
@@ -118,12 +134,15 @@ bool QgsDistanceArea::willUseEllipsoid() const
 
 void QgsDistanceArea::setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateTransformContext &context )
 {
-  mCoordTransform.setContext( context );
-  mCoordTransform.setSourceCrs( srcCRS );
+  mSourceCrs = srcCRS;
+  mCoordTransformContext = context;
+  mCoordTransformDirty = true;
 }
 
 bool QgsDistanceArea::setEllipsoid( const QString &ellipsoid )
 {
+  mCoordTransformDirty = true;
+
   // Shortcut if ellipsoid is none.
   if ( ellipsoid == Qgis::geoNone() )
   {
@@ -150,6 +169,8 @@ bool QgsDistanceArea::setEllipsoid( const QString &ellipsoid )
 // Also, b = a-(a/invf)
 bool QgsDistanceArea::setEllipsoid( double semiMajor, double semiMinor )
 {
+  mCoordTransformDirty = true;
+
   mEllipsoid = u"PARAMETER:%1:%2"_s.arg( qgsDoubleToString( semiMajor ), qgsDoubleToString( semiMinor ) );
   mSemiMajor = semiMajor;
   mSemiMinor = semiMinor;
@@ -912,14 +933,14 @@ void QgsDistanceArea::setFromParams( const QgsEllipsoidUtils::EllipsoidParameter
   if ( params.useCustomParameters )
   {
     setEllipsoid( params.semiMajor, params.semiMinor );
-    mCoordTransform.setDestinationCrs( params.crs );
+    mDestinationCrs = params.crs;
   }
   else
   {
     mSemiMajor = params.semiMajor;
     mSemiMinor = params.semiMinor;
     mInvFlattening = params.inverseFlattening;
-    mCoordTransform.setDestinationCrs( params.crs );
+    mDestinationCrs = params.crs;
     computeAreaInit();
   }
 }
