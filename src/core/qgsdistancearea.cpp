@@ -145,6 +145,7 @@ bool QgsDistanceArea::setEllipsoid( const QString &ellipsoid )
   if ( ellipsoid == Qgis::geoNone() )
   {
     mEllipsoid = Qgis::geoNone();
+    mDestinationCrs = QgsCoordinateReferenceSystem();
     mGeod.reset();
     return true;
   }
