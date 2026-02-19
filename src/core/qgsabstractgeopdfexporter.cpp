@@ -513,7 +513,7 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
 
     if ( !component.mapLayerId.isEmpty() )
     {
-      createdLayerIds.insert( component.mapLayerId );
+      createdLayerIds.insert( id );
     }
   }
 
