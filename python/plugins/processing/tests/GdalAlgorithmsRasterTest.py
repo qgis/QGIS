@@ -749,15 +749,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             # TEST: WMS layer and no scale, therefore NO XML
             wms_layer = wms_layer_1_3_0_frankfurt("clipbyext_no_scale", "EPSG:25832")
             self.assertTrue(wms_layer.isValid())
-            wms_source = wms_layer.publicSource()
-
-            # Setup a project to allow processing to find the WMS layer
-            project = QgsProject()
-            project.setFileName(os.path.join(outdir, "clip_by_extent_tests.qgs"))
-            project.addMapLayer(wms_layer)
-            self.assertEqual(project.count(), 1)
-
-            context.setProject(project)
+            wms_source = "wms://" + wms_layer.publicSource()
 
             command = alg.getConsoleCommands(
                 {
@@ -1139,15 +1131,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             # TEST: WMS layer and no scale, therefore NO XML
             wms_layer = wms_layer_1_3_0_frankfurt("clipbymask_no_scale", "EPSG:25832")
             self.assertTrue(wms_layer.isValid())
-            wms_source = wms_layer.publicSource()
-
-            # Setup a project to allow processing to find the WMS layer
-            project = QgsProject()
-            project.setFileName(os.path.join(outdir, "clip_by_mask_tests.qgs"))
-            project.addMapLayer(wms_layer)
-            self.assertEqual(project.count(), 1)
-
-            context.setProject(project)
+            wms_source = "wms://" + wms_layer.publicSource()
 
             command = alg.getConsoleCommands(
                 {
