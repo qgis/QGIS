@@ -9,12 +9,18 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 #include "qgscoordinateboundspreviewmapwidget.h"
-#include "moc_qgscoordinateboundspreviewmapwidget.cpp"
-#include "qgsrubberband.h"
-#include "qgsvertexmarker.h"
+
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
 #include "qgsmaptoolpan.h"
+#include "qgsrubberband.h"
+#include "qgsvectorlayer.h"
+#include "qgsvertexmarker.h"
+
+#include <QString>
+
+#include "moc_qgscoordinateboundspreviewmapwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCoordinateBoundsPreviewMapWidget::QgsCoordinateBoundsPreviewMapWidget( QWidget *parent )
   : QgsMapCanvas( parent )
@@ -32,13 +38,13 @@ QgsCoordinateBoundsPreviewMapWidget::QgsCoordinateBoundsPreviewMapWidget( QWidge
   mCanvasCenterMarker->setColor( QColor( 185, 84, 210 ) );
   mCanvasCenterMarker->setPenWidth( 3 );
 
-  const QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:4326" ) );
+  const QgsCoordinateReferenceSystem srs( u"EPSG:4326"_s );
   setDestinationCrs( srs );
 
-  const QString layerPath = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.gpkg|layername=countries" );
+  const QString layerPath = QgsApplication::pkgDataPath() + u"/resources/data/world_map.gpkg|layername=countries"_s;
   QgsVectorLayer::LayerOptions options;
   options.forceReadOnly = true;
-  mLayers << new QgsVectorLayer( layerPath, tr( "World Map" ), QStringLiteral( "ogr" ), options );
+  mLayers << new QgsVectorLayer( layerPath, tr( "World Map" ), u"ogr"_s, options );
   setLayers( mLayers );
   mPanTool = new QgsMapToolPan( this );
   setMapTool( mPanTool );

@@ -14,8 +14,13 @@
  ***************************************************************************/
 
 #include "qgswfsguiutils.h"
+
 #include "qgswfsgetcapabilities.h"
+
 #include <QMessageBox>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 void QgsWfsGuiUtils::displayErrorMessageOnFailedCapabilities( QgsWfsGetCapabilitiesRequest *request, QWidget *parent )
 {
@@ -52,7 +57,7 @@ void QgsWfsGuiUtils::displayErrorMessageOnFailedCapabilities( QgsWfsGetCapabilit
   QMessageBox *box = new QMessageBox( QMessageBox::Critical, title, request->errorMessage(), QMessageBox::Ok, parent );
   box->setAttribute( Qt::WA_DeleteOnClose );
   box->setModal( true );
-  box->setObjectName( QStringLiteral( "WFSCapabilitiesErrorBox" ) );
+  box->setObjectName( u"WFSCapabilitiesErrorBox"_s );
   if ( !parent->property( "hideDialogs" ).toBool() )
     box->open();
 }

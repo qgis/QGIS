@@ -12,27 +12,32 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QAction>
-#include <QVBoxLayout>
-#include <QToolBar>
-#include <QInputDialog>
-#include <QMessageBox>
-#include <QFileDialog>
-
 #include "qgsmaplayerstylemanagerwidget.h"
-#include "moc_qgsmaplayerstylemanagerwidget.cpp"
+
+#include "qgsapplication.h"
 #include "qgslogger.h"
-#include "qgsmaplayer.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerstylemanager.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectortilelayer.h"
-#include "qgsapplication.h"
-#include "qgsvectorlayerproperties.h"
-#include "qgsvectortilelayerproperties.h"
-#include "qgsrasterlayerproperties.h"
 #include "qgsmeshlayerproperties.h"
+#include "qgsrasterlayerproperties.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerproperties.h"
+#include "qgsvectortilelayer.h"
+#include "qgsvectortilelayerproperties.h"
+
+#include <QAction>
+#include <QFileDialog>
+#include <QInputDialog>
+#include <QMessageBox>
+#include <QString>
+#include <QToolBar>
+#include <QVBoxLayout>
+
+#include "moc_qgsmaplayerstylemanagerwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -45,24 +50,21 @@ QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer *layer
 
   QToolBar *toolbar = new QToolBar( this );
   QAction *addAction = toolbar->addAction( tr( "Add" ) );
-  addAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "symbologyAdd.svg" ) ) );
+  addAction->setIcon( QgsApplication::getThemeIcon( u"symbologyAdd.svg"_s ) );
   connect( addAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::addStyle );
   QAction *removeAction = toolbar->addAction( tr( "Remove Current" ) );
-  removeAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "symbologyRemove.svg" ) ) );
+  removeAction->setIcon( QgsApplication::getThemeIcon( u"symbologyRemove.svg"_s ) );
   connect( removeAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::removeStyle );
   QAction *loadFromFileAction = toolbar->addAction( tr( "Load Style" ) );
-  loadFromFileAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileOpen.svg" ) ) );
+  loadFromFileAction->setIcon( QgsApplication::getThemeIcon( u"/mActionFileOpen.svg"_s ) );
   connect( loadFromFileAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::loadStyle );
   QAction *saveAction = toolbar->addAction( tr( "Save Style" ) );
-  saveAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileSave.svg" ) ) );
+  saveAction->setIcon( QgsApplication::getThemeIcon( u"mActionFileSave.svg"_s ) );
   connect( saveAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::saveStyle );
   QAction *saveAsDefaultAction = toolbar->addAction( tr( "Save as Default" ) );
   connect( saveAsDefaultAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::saveAsDefault );
   QAction *loadDefaultAction = toolbar->addAction( tr( "Restore Default" ) );
   connect( loadDefaultAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::loadDefault );
-
-  //broken connect - not sure what the purpose of this was?
-  //  connect( canvas, &QgsMapCanvas::mapCanvasRefreshed, this, SLOT( updateCurrent() ) );
 
   connect( mStyleList, &QAbstractItemView::clicked, this, &QgsMapLayerStyleManagerWidget::styleClicked );
 
@@ -114,7 +116,7 @@ void QgsMapLayerStyleManagerWidget::currentStyleChanged( const QString &name )
 
 void QgsMapLayerStyleManagerWidget::styleAdded( const QString &name )
 {
-  QgsDebugMsgLevel( QStringLiteral( "Style added" ), 2 );
+  QgsDebugMsgLevel( u"Style added"_s, 2 );
   QStandardItem *item = new QStandardItem( name );
   item->setData( name );
   mModel->appendRow( item );
@@ -144,7 +146,7 @@ void QgsMapLayerStyleManagerWidget::styleRenamed( const QString &oldname, const 
 void QgsMapLayerStyleManagerWidget::addStyle()
 {
   bool ok;
-  const QString text = QInputDialog::getText( nullptr, tr( "New Style" ), tr( "Style name:" ), QLineEdit::Normal, QStringLiteral( "new style" ), &ok );
+  const QString text = QInputDialog::getText( nullptr, tr( "New Style" ), tr( "Style name:" ), QLineEdit::Normal, u"new style"_s, &ok );
   if ( !ok || text.isEmpty() )
     return;
 
@@ -164,7 +166,7 @@ void QgsMapLayerStyleManagerWidget::removeStyle()
   const QString current = mLayer->styleManager()->currentStyle();
   const bool res = mLayer->styleManager()->removeStyle( current );
   if ( !res )
-    QgsDebugError( QStringLiteral( "Failed to remove current style" ) );
+    QgsDebugError( u"Failed to remove current style"_s );
 }
 
 void QgsMapLayerStyleManagerWidget::renameStyle( QStandardItem *item )

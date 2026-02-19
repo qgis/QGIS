@@ -14,29 +14,38 @@
  ***************************************************************************/
 
 #include "qgsprocessingmaplayercombobox.h"
-#include "moc_qgsprocessingmaplayercombobox.cpp"
+
+#include "qgsapplication.h"
+#include "qgsdatasourceselectdialog.h"
+#include "qgsfeatureid.h"
+#include "qgsguiutils.h"
 #include "qgsmaplayercombobox.h"
 #include "qgsmimedatautils.h"
-#include "qgsprocessingparameters.h"
-#include "qgssettings.h"
-#include "qgsvectorlayer.h"
-#include "qgsfeatureid.h"
-#include "qgsapplication.h"
-#include "qgsguiutils.h"
 #include "qgspanelwidget.h"
 #include "qgsprocessingfeaturesourceoptionswidget.h"
-#include "qgsdatasourceselectdialog.h"
-#include "qgsprocessingwidgetwrapper.h"
+#include "qgsprocessingparameters.h"
 #include "qgsprocessingprovider.h"
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QToolButton>
+#include "qgsprocessingrastersourceoptionswidget.h"
+#include "qgsprocessingwidgetwrapper.h"
+#include "qgsproviderregistry.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
+#include "qgswmsutils.h"
+
+#include <QAction>
 #include <QCheckBox>
 #include <QDragEnterEvent>
-#include <QMenu>
-#include <QAction>
 #include <QFileDialog>
+#include <QHBoxLayout>
+#include <QMenu>
+#include <QString>
+#include <QToolButton>
 #include <QUrl>
+#include <QVBoxLayout>
+
+#include "moc_qgsprocessingmaplayercombobox.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -56,7 +65,7 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() && type == Qgis::ProcessingMode::Standard )
   {
     mIterateButton = new QToolButton();
-    mIterateButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconIterate.svg" ) ) );
+    mIterateButton->setIcon( QgsApplication::getThemeIcon( u"mIconIterate.svg"_s ) );
     mIterateButton->setToolTip( tr( "Iterate over this layer, creating a separate output for every feature in the layer" ) );
     mIterateButton->setCheckable( true );
     mIterateButton->setAutoRaise( true );
@@ -72,7 +81,7 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() )
   {
     mSettingsButton = new QToolButton();
-    mSettingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ) );
+    mSettingsButton->setIcon( QgsApplication::getThemeIcon( u"mActionOptions.svg"_s ) );
     mSettingsButton->setToolTip( tr( "Advanced options" ) );
 
     // button width is 1.25 * icon size, height 1.1 * icon size. But we round to ensure even pixel sizes for equal margins
@@ -81,6 +90,22 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
     mSettingsButton->setAutoRaise( true );
 
     connect( mSettingsButton, &QToolButton::clicked, this, &QgsProcessingMapLayerComboBox::showSourceOptions );
+    layout->addWidget( mSettingsButton );
+    layout->setAlignment( mSettingsButton, Qt::AlignTop );
+  }
+  else if ( mParameter->type() == QgsProcessingParameterRasterLayer::typeName() )
+  {
+    mSettingsButton = new QToolButton();
+    mSettingsButton->setIcon( QgsApplication::getThemeIcon( u"mActionOptions.svg"_s ) );
+    mSettingsButton->setToolTip( tr( "Advanced options" ) );
+    mSettingsButton->setEnabled( false ); // Only WMS layers will access raster advanced options for now
+
+    // button width is 1.25 * icon size, height 1.1 * icon size. But we round to ensure even pixel sizes for equal margins
+    mSettingsButton->setFixedSize( 2 * static_cast<int>( 1.25 * iconSize / 2.0 ), 2 * static_cast<int>( iconSize * 1.1 / 2.0 ) );
+    mSettingsButton->setIconSize( QSize( iconSize, iconSize ) );
+    mSettingsButton->setAutoRaise( true );
+
+    connect( mSettingsButton, &QToolButton::clicked, this, &QgsProcessingMapLayerComboBox::showRasterSourceOptions );
     layout->addWidget( mSettingsButton );
     layout->setAlignment( mSettingsButton, Qt::AlignTop );
   }
@@ -180,12 +205,18 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
       filters |= Qgis::LayerFilter::MeshLayer;
     if ( dataTypes.contains( static_cast<int>( Qgis::ProcessingSourceType::PointCloud ) ) )
       filters |= Qgis::LayerFilter::PointCloudLayer;
+    if ( dataTypes.contains( static_cast<int>( Qgis::ProcessingSourceType::Annotation ) ) )
+      filters |= Qgis::LayerFilter::AnnotationLayer;
+    if ( dataTypes.contains( static_cast<int>( Qgis::ProcessingSourceType::VectorTile ) ) )
+      filters |= Qgis::LayerFilter::VectorTileLayer;
+    if ( dataTypes.contains( static_cast<int>( Qgis::ProcessingSourceType::TiledScene ) ) )
+      filters |= Qgis::LayerFilter::TiledSceneLayer;
     if ( !filters )
       filters = Qgis::LayerFilter::All;
   }
 
   QgsSettings settings;
-  if ( settings.value( QStringLiteral( "Processing/Configuration/SHOW_CRS_DEF" ), true ).toBool() )
+  if ( settings.value( u"Processing/Configuration/SHOW_CRS_DEF"_s, true ).toBool() )
     mCombo->setShowCrs( true );
 
   if ( filters )
@@ -195,7 +226,7 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   // see https://github.com/qgis/QGIS/issues/55890
   if ( mayBeRaster && ( !mParameter->provider() || !mParameter->provider()->flags().testFlag( Qgis::ProcessingProviderFlag::CompatibleWithVirtualRaster ) ) )
   {
-    mCombo->setExcludedProviders( mCombo->excludedProviders() << QStringLiteral( "virtualraster" ) );
+    mCombo->setExcludedProviders( mCombo->excludedProviders() << u"virtualraster"_s );
   }
 
   if ( mParameter->flags() & Qgis::ProcessingParameterFlag::Optional )
@@ -206,7 +237,7 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
 
   connect( mCombo, &QgsMapLayerComboBox::layerChanged, this, &QgsProcessingMapLayerComboBox::onLayerChanged );
   if ( mUseSelectionCheckBox )
-    connect( mUseSelectionCheckBox, &QCheckBox::toggled, this, [=] {
+    connect( mUseSelectionCheckBox, &QCheckBox::toggled, this, [this] {
       if ( !mBlockChangedSignal )
         emit valueChanged();
     } );
@@ -267,6 +298,19 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
     mFilterExpression.clear();
     mIsOverridingDefaultGeometryCheck = false;
     mGeometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid;
+  }
+
+  if ( val.userType() == qMetaTypeId<QgsProcessingRasterLayerDefinition>() )
+  {
+    QgsProcessingRasterLayerDefinition fromVar = qvariant_cast<QgsProcessingRasterLayerDefinition>( val );
+    val = fromVar.source;
+    mRasterReferenceScale = fromVar.referenceScale;
+    mRasterDpi = fromVar.dpi;
+  }
+  else
+  {
+    mRasterReferenceScale = 0;
+    mRasterDpi = 96;
   }
 
   if ( val.userType() == qMetaTypeId<QgsProperty>() )
@@ -367,6 +411,8 @@ QVariant QgsProcessingMapLayerComboBox::value() const
   {
     if ( selectedOnly || iterate || mFeatureLimit != -1 || mIsOverridingDefaultGeometryCheck || !mFilterExpression.isEmpty() )
       return QgsProcessingFeatureSourceDefinition( layer->id(), selectedOnly, mFeatureLimit, ( iterate ? Qgis::ProcessingFeatureSourceDefinitionFlag::CreateIndividualOutputPerInputFeature : Qgis::ProcessingFeatureSourceDefinitionFlags() ) | ( mIsOverridingDefaultGeometryCheck ? Qgis::ProcessingFeatureSourceDefinitionFlag::OverrideDefaultGeometryCheck : Qgis::ProcessingFeatureSourceDefinitionFlags() ), mGeometryCheck, mFilterExpression );
+    else if ( mRasterReferenceScale != 0 )
+      return QgsProcessingRasterLayerDefinition( layer->id(), mRasterReferenceScale, mRasterDpi );
     else
       return layer->id();
   }
@@ -376,6 +422,8 @@ QVariant QgsProcessingMapLayerComboBox::value() const
     {
       if ( selectedOnly || iterate || mFeatureLimit != -1 || mIsOverridingDefaultGeometryCheck || !mFilterExpression.isEmpty() )
         return QgsProcessingFeatureSourceDefinition( mCombo->currentText(), selectedOnly, mFeatureLimit, ( iterate ? Qgis::ProcessingFeatureSourceDefinitionFlag::CreateIndividualOutputPerInputFeature : Qgis::ProcessingFeatureSourceDefinitionFlags() ) | ( mIsOverridingDefaultGeometryCheck ? Qgis::ProcessingFeatureSourceDefinitionFlag::OverrideDefaultGeometryCheck : Qgis::ProcessingFeatureSourceDefinitionFlags() ), mGeometryCheck, mFilterExpression );
+      else if ( mRasterReferenceScale != 0 )
+        return QgsProcessingRasterLayerDefinition( mCombo->currentText(), mRasterReferenceScale, mRasterDpi );
       else
         return mCombo->currentText();
     }
@@ -428,7 +476,7 @@ QString QgsProcessingMapLayerComboBox::compatibleUriFromMimeData( const QMimeDat
   {
     if ( ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName()
            || mParameter->type() == QgsProcessingParameterVectorLayer::typeName() )
-         && u.layerType == QLatin1String( "vector" ) )
+         && u.layerType == "vector"_L1 )
     {
       QList<int> dataTypes = mParameter->type() == QgsProcessingParameterFeatureSource::typeName() ? static_cast<QgsProcessingParameterFeatureSource *>( mParameter.get() )->dataTypes()
                                                                                                    : ( mParameter->type() == QgsProcessingParameterVectorLayer::typeName() ? static_cast<QgsProcessingParameterVectorLayer *>( mParameter.get() )->dataTypes()
@@ -461,13 +509,13 @@ QString QgsProcessingMapLayerComboBox::compatibleUriFromMimeData( const QMimeDat
           break;
       }
       if ( acceptable )
-        return u.providerKey != QLatin1String( "ogr" ) ? QgsProcessingUtils::encodeProviderKeyAndUri( u.providerKey, u.uri ) : u.uri;
+        return u.providerKey != "ogr"_L1 ? QgsProcessingUtils::encodeProviderKeyAndUri( u.providerKey, u.uri ) : u.uri;
     }
     else if ( mParameter->type() == QgsProcessingParameterRasterLayer::typeName()
-              && u.layerType == QLatin1String( "raster" ) && u.providerKey == QLatin1String( "gdal" ) )
+              && u.layerType == "raster"_L1 && u.providerKey == "gdal"_L1 )
       return u.uri;
     else if ( mParameter->type() == QgsProcessingParameterMeshLayer::typeName()
-              && u.layerType == QLatin1String( "mesh" ) && u.providerKey == QLatin1String( "mdal" ) )
+              && u.layerType == "mesh"_L1 && u.providerKey == "mdal"_L1 )
       return u.uri;
     else if ( mParameter->type() == QgsProcessingParameterMapLayer::typeName() )
     {
@@ -477,7 +525,7 @@ QString QgsProcessingMapLayerComboBox::compatibleUriFromMimeData( const QMimeDat
         return u.uri;
       }
 
-      if ( u.layerType == QLatin1String( "vector" ) && u.providerKey == QLatin1String( "ogr" ) )
+      if ( u.layerType == "vector"_L1 && u.providerKey == "ogr"_L1 )
       {
         switch ( QgsWkbTypes::geometryType( u.wkbType ) )
         {
@@ -503,10 +551,10 @@ QString QgsProcessingMapLayerComboBox::compatibleUriFromMimeData( const QMimeDat
             return u.uri;
         }
       }
-      else if ( u.layerType == QLatin1String( "raster" ) && u.providerKey == QLatin1String( "gdal" )
+      else if ( u.layerType == "raster"_L1 && u.providerKey == "gdal"_L1
                 && dataTypes.contains( static_cast<int>( Qgis::ProcessingSourceType::Raster ) ) )
         return u.uri;
-      else if ( u.layerType == QLatin1String( "mesh" ) && u.providerKey == QLatin1String( "mdal" )
+      else if ( u.layerType == "mesh"_L1 && u.providerKey == "mdal"_L1
                 && dataTypes.contains( static_cast<int>( Qgis::ProcessingSourceType::Mesh ) ) )
         return u.uri;
     }
@@ -613,6 +661,14 @@ void QgsProcessingMapLayerComboBox::onLayerChanged( QgsMapLayer *layer )
     }
   }
 
+  if ( mParameter->type() == QgsProcessingParameterRasterLayer::typeName() )
+  {
+    // Only WMS layers whose parameter supports WmsScale and WmsDpi will access raster advanced options for now.
+    QgsProcessingParameterRasterLayer *rasterParameter = qgis::down_cast<QgsProcessingParameterRasterLayer *>( mParameter.get() );
+    const bool supportsRasterOptions = rasterParameter->parameterCapabilities().testFlag( Qgis::RasterProcessingParameterCapability::WmsScale ) || rasterParameter->parameterCapabilities().testFlag( Qgis::RasterProcessingParameterCapability::WmsDpi );
+    mSettingsButton->setEnabled( supportsRasterOptions && QgsWmsUtils::isWmsLayer( layer ) );
+  }
+
   mPrevLayer = layer;
   if ( !mBlockChangedSignal )
     emit valueChanged();
@@ -639,7 +695,7 @@ void QgsProcessingMapLayerComboBox::showSourceOptions()
 
     panel->openPanel( widget );
 
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [=] {
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget] {
       bool changed = false;
       changed = changed | ( widget->featureLimit() != mFeatureLimit );
       changed = changed | ( widget->filterExpression() != mFilterExpression );
@@ -657,6 +713,34 @@ void QgsProcessingMapLayerComboBox::showSourceOptions()
   }
 }
 
+void QgsProcessingMapLayerComboBox::showRasterSourceOptions()
+{
+  if ( QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this ) )
+  {
+    QgsProcessingRasterSourceOptionsWidget *widget = new QgsProcessingRasterSourceOptionsWidget();
+    widget->setPanelTitle( tr( "%1 Options" ).arg( mParameter->description() ) );
+    widget->setReferenceScale( mRasterReferenceScale );
+    widget->setDpi( mRasterDpi );
+
+    QgsProcessingParameterRasterLayer *rasterParameter = qgis::down_cast<QgsProcessingParameterRasterLayer *>( mParameter.get() );
+    widget->setWidgetParameterCapabilities( rasterParameter->parameterCapabilities() );
+
+    panel->openPanel( widget );
+
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget] {
+      bool changed = false;
+      changed = changed | ( widget->referenceScale() != mRasterReferenceScale );
+      changed = changed | ( widget->dpi() != mRasterDpi );
+
+      mRasterReferenceScale = widget->referenceScale();
+      mRasterDpi = widget->dpi();
+
+      if ( changed )
+        emit valueChanged();
+    } );
+  }
+}
+
 void QgsProcessingMapLayerComboBox::selectFromFile()
 {
   QgsSettings settings;
@@ -667,8 +751,8 @@ void QgsProcessingMapLayerComboBox::selectFromFile()
     path = initialValue;
   else if ( QFileInfo::exists( QFileInfo( initialValue ).path() ) && QFileInfo( initialValue ).path() != '.' )
     path = QFileInfo( initialValue ).path();
-  else if ( settings.contains( QStringLiteral( "/Processing/LastInputPath" ) ) )
-    path = settings.value( QStringLiteral( "/Processing/LastInputPath" ) ).toString();
+  else if ( settings.contains( u"/Processing/LastInputPath"_s ) )
+    path = settings.value( u"/Processing/LastInputPath"_s ).toString();
 
   QString filter;
   if ( const QgsFileFilterGenerator *generator = dynamic_cast<const QgsFileFilterGenerator *>( mParameter.get() ) )
@@ -680,7 +764,7 @@ void QgsProcessingMapLayerComboBox::selectFromFile()
   if ( filename.isEmpty() )
     return;
 
-  settings.setValue( QStringLiteral( "/Processing/LastInputPath" ), QFileInfo( filename ).path() );
+  settings.setValue( u"/Processing/LastInputPath"_s, QFileInfo( filename ).path() );
   QgsProcessingContext context;
   setValue( filename, context );
 }
@@ -694,14 +778,14 @@ void QgsProcessingMapLayerComboBox::browseForLayer()
 
     panel->openPanel( widget );
 
-    connect( widget, &QgsDataSourceSelectWidget::itemTriggered, this, [=]( const QgsMimeDataUtils::Uri & ) {
+    connect( widget, &QgsDataSourceSelectWidget::itemTriggered, this, [widget]( const QgsMimeDataUtils::Uri & ) {
       widget->acceptPanel();
     } );
-    connect( widget, &QgsPanelWidget::panelAccepted, this, [=]() {
+    connect( widget, &QgsPanelWidget::panelAccepted, this, [this, widget]() {
       QgsProcessingContext context;
       if ( widget->uri().uri.isEmpty() )
         setValue( QVariant(), context );
-      else if ( widget->uri().providerKey == QLatin1String( "ogr" ) )
+      else if ( widget->uri().providerKey == "ogr"_L1 )
         setValue( widget->uri().uri, context );
       else
         setValue( QgsProcessingUtils::encodeProviderKeyAndUri( widget->uri().providerKey, widget->uri().uri ), context );

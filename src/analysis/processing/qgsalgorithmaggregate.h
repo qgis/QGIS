@@ -21,8 +21,8 @@
 #define SIP_NO_FILE
 
 #include "qgis_sip.h"
-#include "qgsprocessingalgorithm.h"
 #include "qgsdistancearea.h"
+#include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
 
@@ -41,6 +41,7 @@ class QgsAggregateAlgorithm : public QgsProcessingAlgorithm
     QString shortHelpString() const override;
     QString shortDescription() const override;
     bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
+    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QgsAggregateAlgorithm *createInstance() const override SIP_FACTORY;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
 

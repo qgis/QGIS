@@ -16,26 +16,30 @@
  ***************************************************************************/
 
 #include "qgslayoutmousehandles.h"
-#include "moc_qgslayoutmousehandles.cpp"
+
+#include <limits>
+
 #include "qgis.h"
 #include "qgsgui.h"
 #include "qgslayout.h"
+#include "qgslayoutframe.h"
 #include "qgslayoutitem.h"
+#include "qgslayoutitemgroup.h"
+#include "qgslayoutitemguiregistry.h"
+#include "qgslayoutmultiframe.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayoutsnapper.h"
+#include "qgslayoutundostack.h"
 #include "qgslayoututils.h"
 #include "qgslayoutview.h"
 #include "qgslayoutviewtoolselect.h"
-#include "qgslayoutitemguiregistry.h"
-#include "qgslayoutsnapper.h"
-#include "qgslayoutitemgroup.h"
-#include "qgslayoutmultiframe.h"
-#include "qgslayoutframe.h"
-#include "qgslayoutundostack.h"
-#include "qgslayoutrendercontext.h"
-#include <QGraphicsView>
+
 #include <QGraphicsSceneHoverEvent>
+#include <QGraphicsView>
 #include <QPainter>
 #include <QWidget>
-#include <limits>
+
+#include "moc_qgslayoutmousehandles.cpp"
 
 ///@cond PRIVATE
 
@@ -44,6 +48,8 @@ QgsLayoutMouseHandles::QgsLayoutMouseHandles( QgsLayout *layout, QgsLayoutView *
   , mLayout( layout )
   , mView( view )
 {
+  setRotationEnabled( true );
+
   //listen for selection changes, and update handles accordingly
   connect( mLayout, &QGraphicsScene::selectionChanged, this, &QgsLayoutMouseHandles::selectionChanged );
 
@@ -251,9 +257,19 @@ void QgsLayoutMouseHandles::moveItem( QGraphicsItem *item, double deltaX, double
   qgis::down_cast<QgsLayoutItem *>( item )->attemptMoveBy( deltaX, deltaY );
 }
 
+void QgsLayoutMouseHandles::rotateItem( QGraphicsItem *item, double deltaDegree, double deltaCenterX, double deltaCenterY )
+{
+  QgsLayoutItem *itm = qgis::down_cast<QgsLayoutItem *>( item );
+  QgsLayoutItem::ReferencePoint previousReferencePoint = itm->referencePoint();
+  itm->setReferencePoint( QgsLayoutItem::Middle );
+  itm->attemptMoveBy( deltaCenterX, deltaCenterY );
+  itm->setItemRotation( itm->itemRotation() + deltaDegree, true );
+  itm->setReferencePoint( previousReferencePoint );
+}
+
 void QgsLayoutMouseHandles::setItemRect( QGraphicsItem *item, QRectF rect )
 {
-  QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item );
+  QgsLayoutItem *layoutItem = qgis::down_cast<QgsLayoutItem *>( item );
   layoutItem->attemptSetSceneRect( rect, true );
 }
 

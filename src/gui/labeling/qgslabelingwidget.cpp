@@ -13,22 +13,28 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDialogButtonBox>
-#include <QDomElement>
-
 #include "qgslabelingwidget.h"
-#include "moc_qgslabelingwidget.cpp"
 
+#include <memory>
+
+#include "qgsapplication.h"
 #include "qgslabelengineconfigdialog.h"
+#include "qgslabelingengineruleswidget.h"
 #include "qgslabelinggui.h"
+#include "qgslabelobstaclesettingswidget.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
 #include "qgsrulebasedlabelingwidget.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
-#include "qgsproject.h"
-#include "qgsapplication.h"
-#include "qgslabelobstaclesettingswidget.h"
-#include "qgslabelingengineruleswidget.h"
-#include "qgsmapcanvas.h"
+
+#include <QDialogButtonBox>
+#include <QDomElement>
+#include <QString>
+
+#include "moc_qgslabelingwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLabelingWidget::QgsLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent, QgsMessageBar *messageBar )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -39,10 +45,10 @@ QgsLabelingWidget::QgsLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canva
 {
   setupUi( this );
 
-  mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingNone.svg" ) ), tr( "No Labels" ), ModeNone );
-  mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ), tr( "Single Labels" ), ModeSingle );
-  mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingRuleBased.svg" ) ), tr( "Rule-based Labeling" ), ModeRuleBased );
-  mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingObstacle.svg" ) ), tr( "Blocking" ), ModeBlocking );
+  mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( u"labelingNone.svg"_s ), tr( "No Labels" ), ModeNone );
+  mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( u"labelingSingle.svg"_s ), tr( "Single Labels" ), ModeSingle );
+  mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( u"labelingRuleBased.svg"_s ), tr( "Rule-based Labeling" ), ModeRuleBased );
+  mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( u"labelingObstacle.svg"_s ), tr( "Blocking" ), ModeBlocking );
 
   connect( mLabelRulesButton, &QAbstractButton::clicked, this, &QgsLabelingWidget::showLabelingEngineRulesPrivate );
   connect( mEngineSettingsButton, &QAbstractButton::clicked, this, &QgsLabelingWidget::showEngineConfigDialogPrivate );
@@ -104,11 +110,11 @@ void QgsLabelingWidget::adaptToLayer()
   whileBlocking( mLabelModeComboBox )->setCurrentIndex( -1 );
 
   // pick the right mode of the layer
-  if ( mLayer->labelsEnabled() && mLayer->labeling()->type() == QLatin1String( "rule-based" ) )
+  if ( mLayer->labelsEnabled() && mLayer->labeling()->type() == "rule-based"_L1 )
   {
     mLabelModeComboBox->setCurrentIndex( mLabelModeComboBox->findData( ModeRuleBased ) );
   }
-  else if ( mLayer->labelsEnabled() && mLayer->labeling()->type() == QLatin1String( "simple" ) )
+  else if ( mLayer->labelsEnabled() && mLayer->labeling()->type() == "simple"_L1 )
   {
     const QgsPalLayerSettings lyr = mLayer->labeling()->settings();
 
@@ -200,11 +206,11 @@ void QgsLabelingWidget::labelModeChanged( int index )
     case ModeBlocking:
     {
       mSimpleSettings.reset();
-      if ( mLayer->labeling() && mLayer->labeling()->type() == QLatin1String( "simple" ) )
+      if ( mLayer->labeling() && mLayer->labeling()->type() == "simple"_L1 )
       {
-        mSimpleSettings.reset( new QgsPalLayerSettings( mLayer->labeling()->settings() ) );
+        mSimpleSettings = std::make_unique<QgsPalLayerSettings>( mLayer->labeling()->settings() );
       }
-      else if ( mLayer->labeling() && mLayer->labeling()->type() == QLatin1String( "rule-based" ) )
+      else if ( mLayer->labeling() && mLayer->labeling()->type() == "rule-based"_L1 )
       {
         // changing from rule-based to simple labels... grab first rule, and copy settings
         const QgsRuleBasedLabeling *rl = static_cast<const QgsRuleBasedLabeling *>( mLayer->labeling() );
@@ -213,7 +219,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
           if ( const QgsRuleBasedLabeling::Rule *firstChild = rootRule->children().value( 0 ) )
           {
             if ( firstChild->settings() )
-              mSimpleSettings.reset( new QgsPalLayerSettings( *firstChild->settings() ) );
+              mSimpleSettings = std::make_unique<QgsPalLayerSettings>( *firstChild->settings() );
           }
         }
       }
@@ -258,7 +264,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
           mSimpleSettings->obstacleSettings().setIsObstacle( true );
           mSimpleSettings->drawLabels = false;
 
-          connect( obstacleWidget, &QgsLabelSettingsWidgetBase::changed, this, [=] {
+          connect( obstacleWidget, &QgsLabelSettingsWidgetBase::changed, this, [this, obstacleWidget] {
             mSimpleSettings->setObstacleSettings( obstacleWidget->settings() );
             obstacleWidget->updateDataDefinedProperties( mSimpleSettings->dataDefinedProperties() );
             emit widgetChanged();

@@ -18,20 +18,20 @@
 #define DEG2RAD(x)    ((x)*M_PI/180)
 #define DEFAULT_SCALE_METHOD              Qgis::ScaleMethod::ScaleDiameter
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsfields.h"
 #include "qgspropertycollection.h"
 #include "qgssymbolrendercontext.h"
 
 #include <QColor>
-#include <QMap>
-#include <QPointF>
-#include <QSet>
 #include <QDomDocument>
 #include <QDomElement>
-#include <QPainterPath>
 #include <QImage>
+#include <QMap>
+#include <QPainterPath>
+#include <QPointF>
+#include <QSet>
 
 class QPainter;
 class QSize;
@@ -218,6 +218,7 @@ class CORE_EXPORT QgsSymbolLayer
       LineClipping SIP_MONKEYPATCH_COMPAT_NAME( PropertyLineClipping ), //!< Line clipping mode \since QGIS 3.24
       SkipMultiples, //!< Skip multiples of \since QGIS 3.40
       ShowMarker, //!< Show markers \since QGIS 3.40
+      BlankSegments, //!< String list of distance to define blank segments along line for templated line symbol layers. \since QGIS 4.0
     };
     // *INDENT-ON*
 
@@ -465,6 +466,21 @@ class CORE_EXPORT QgsSymbolLayer
     virtual bool isCompatibleWithSymbol( QgsSymbol *symbol ) const;
 
     /**
+     * Returns TRUE if this symbol layer will always render identically
+     * to an \a other symbol layer.
+     *
+     * \note This method is pessimistic, in that it will return FALSE in circumstances
+     * where it is not possible to guarantee that in 100% of cases the layer will
+     * render pixel-identically to the other layer. For instance, calling
+     * rendersIdenticallyTo() with the same symbol layer as \a other may
+     * return FALSE if the symbol layer contains data-defined overrides, such
+     * as those using feature attributes or expression variables.
+     *
+     * \since QGIS 4.0
+     */
+    virtual bool rendersIdenticallyTo( const QgsSymbolLayer *other ) const;
+
+    /**
      * Returns TRUE if the symbol layer rendering can cause visible artifacts across a single feature
      * when the feature is rendered as a series of adjacent map tiles each containing a portion of the feature's geometry.
      *
@@ -645,6 +661,30 @@ class CORE_EXPORT QgsSymbolLayer
     virtual QList<QgsSymbolLayerReference> masks() const;
 
     /**
+     * Returns the selective masking source set ID for this symbol layer.
+     *
+     * If non-empty, the symbols from this symbol layer will be masked
+     * by objects from the matching selective masking source set
+     * (see QgsSelectiveMaskingSourceSetManager).
+     *
+     * \see setSelectiveMaskingSourceSetId()
+     * \since QGIS 4.0
+     */
+    QString selectiveMaskingSourceSetId() const;
+
+    /**
+     * Sets the selective masking source set \a id for this symbol layer.
+     *
+     * If non-empty, the symbols from this symbol layer will be masked
+     * by objects from the matching selective masking source set
+     * (see QgsSelectiveMaskingSourceSetManager).
+     *
+     * \see selectiveMaskingSourceSetId()
+     * \since QGIS 4.0
+     */
+    void setSelectiveMaskingSourceSetId( const QString &id );
+
+    /**
      * Prepares all mask internal objects according to what is defined in \a context
      * This should be called prior to calling startRender() method.
      * \see QgsRenderContext::addSymbolLayerClipPath()
@@ -708,6 +748,8 @@ class CORE_EXPORT QgsSymbolLayer
     QString mId;
     QgsPropertyCollection mDataDefinedProperties;
 
+    QString mSelectiveMaskingSourceSetId;
+
     std::unique_ptr< QgsPaintEffect > mPaintEffect;
     QgsFields mFields;
 
@@ -728,14 +770,27 @@ class CORE_EXPORT QgsSymbolLayer
     void restoreOldDataDefinedProperties( const QVariantMap &stringMap );
 
     /**
+     * Copies all common base class properties from this layer to another symbol layer.
+     *
+     * Includes data defined properties and paint effects.
+     *
+     * \since QGIS 4.0
+     */
+    void copyCommonProperties( QgsSymbolLayer *destLayer ) const;
+
+    /**
      * Copies all data defined properties of this layer to another symbol layer.
      * \param destLayer destination layer
+     *
+     * \see copyCommonProperties()
      */
     void copyDataDefinedProperties( QgsSymbolLayer *destLayer ) const;
 
     /**
      * Copies paint effect of this layer to another symbol layer
      * \param destLayer destination layer
+     *
+     * \see copyCommonProperties()
      */
     void copyPaintEffect( QgsSymbolLayer *destLayer ) const;
 
@@ -970,6 +1025,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      */
     Qgis::VerticalAnchorPoint verticalAnchorPoint() const { return mVerticalAnchorPoint; }
 
+    using QgsSymbolLayer::toSld;
     bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
 
     /**
@@ -994,8 +1050,8 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
     Qgis::RenderUnit outputUnit() const override;
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
-    virtual double dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
-    virtual double dxfAngle( QgsSymbolRenderContext &context ) const override;
+    double dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
+    double dxfAngle( QgsSymbolRenderContext &context ) const override;
 
     /**
      * Returns the approximate bounding box of the marker symbol layer, taking into account
@@ -1229,7 +1285,7 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
     */
     const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
-    // TODO QGIS 4.0 - setWidthUnit(), widthUnit(), setWidthUnitScale(), widthUnitScale()
+    // TODO QGIS 5.0 - setWidthUnit(), widthUnit(), setWidthUnitScale(), widthUnitScale()
     // only apply to simple line symbol layers and do not belong here.
 
     /**

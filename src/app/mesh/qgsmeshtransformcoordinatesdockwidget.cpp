@@ -15,20 +15,21 @@
  ***************************************************************************/
 
 #include "qgsmeshtransformcoordinatesdockwidget.h"
-#include "moc_qgsmeshtransformcoordinatesdockwidget.cpp"
 
-#include "qgsgui.h"
+#include "qgsapplication.h"
+#include "qgscoordinateutils.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsmesheditor.h"
-#include "qgsmeshlayer.h"
-#include "qgsmeshadvancedediting.h"
-#include "qgsproject.h"
+#include "qgsgui.h"
 #include "qgsguiutils.h"
 #include "qgshelp.h"
-#include "qgscoordinateutils.h"
-#include "qgsapplication.h"
-#include "qgsterrainprovider.h"
+#include "qgsmeshadvancedediting.h"
+#include "qgsmesheditor.h"
+#include "qgsmeshlayer.h"
+#include "qgsproject.h"
 #include "qgsprojectelevationproperties.h"
+#include "qgsterrainprovider.h"
+
+#include "moc_qgsmeshtransformcoordinatesdockwidget.cpp"
 
 QgsMeshTransformCoordinatesDockWidget::QgsMeshTransformCoordinatesDockWidget( QWidget *parent )
   : QgsDockWidget( parent )
@@ -57,11 +58,11 @@ QgsMeshTransformCoordinatesDockWidget::QgsMeshTransformCoordinatesDockWidget( QW
   connect( mButtonApply, &QPushButton::clicked, this, &QgsMeshTransformCoordinatesDockWidget::apply );
   connect( mButtonImport, &QToolButton::toggled, this, &QgsMeshTransformCoordinatesDockWidget::onImportVertexClicked );
 
-  connect( mCheckBoxZ, &QCheckBox::toggled, this, [=]( const bool checked ) {
+  connect( mCheckBoxZ, &QCheckBox::toggled, this, [this]( const bool checked ) {
     if ( checked )
       mCheckBoxZFromProjectTerrain->setChecked( false );
   } );
-  connect( mCheckBoxZFromProjectTerrain, &QCheckBox::toggled, this, [=]( const bool checked ) {
+  connect( mCheckBoxZFromProjectTerrain, &QCheckBox::toggled, this, [this]( const bool checked ) {
     if ( checked )
       mCheckBoxZ->setChecked( false );
   } );

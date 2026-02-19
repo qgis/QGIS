@@ -14,15 +14,21 @@
  ***************************************************************************/
 
 #include "qgsrasterbandcombobox.h"
-#include "moc_qgsrasterbandcombobox.cpp"
-#include "qgsrasterlayer.h"
+
 #include "qgsrasterdataprovider.h"
+#include "qgsrasterlayer.h"
+
+#include <QString>
+
+#include "moc_qgsrasterbandcombobox.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRasterBandComboBox::QgsRasterBandComboBox( QWidget *parent )
   : QComboBox( parent )
   , mNotSetString( tr( "Not set" ) )
 {
-  connect( this, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( this, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this] {
     if ( mLayer && mLayer->isValid() )
     {
       const int newBand = currentIndex() >= 0 ? currentData().toInt() : -1;
@@ -34,7 +40,7 @@ QgsRasterBandComboBox::QgsRasterBandComboBox( QWidget *parent )
     }
   } );
 
-  connect( this, &QComboBox::currentTextChanged, this, [=]( const QString &value ) {
+  connect( this, &QComboBox::currentTextChanged, this, [this]( const QString &value ) {
     if ( !mLayer || !mLayer->isValid() )
     {
       bool ok = false;
@@ -174,7 +180,7 @@ QString QgsRasterBandComboBox::displayBandName( QgsRasterDataProvider *provider,
   // name if it is already there
   if ( !description.isEmpty() )
   {
-    return name.contains( description, Qt::CaseInsensitive ) ? name : QStringLiteral( "%1 - %2" ).arg( name, description );
+    return name.contains( description, Qt::CaseInsensitive ) ? name : u"%1 - %2"_s.arg( name, description );
   }
   return name;
 }

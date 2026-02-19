@@ -11,8 +11,6 @@
 
 
 
-
-
 template<T,V,U>
 class QgsSettingsEditorWidgetWrapperTemplate : QgsSettingsEditorWidgetWrapper
 {
@@ -32,9 +30,11 @@ Constructor
 %End
     virtual QString id() const = 0;
 
+
     virtual bool setWidgetFromSetting() const;
 
     virtual bool setSettingFromWidget() const = 0;
+
 
     virtual bool setWidgetFromVariant( const QVariant &value ) const;
 
@@ -61,6 +61,7 @@ Returns the setting
 %End
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const = 0;
+
 
   protected:
     virtual QWidget *createEditorPrivate( QWidget *parent = 0 ) const;
@@ -160,6 +161,14 @@ Constructor of the wrapper for a given ``setting`` and its widget
 %Docstring
 Constructor of the wrapper for a given ``setting`` and its widget
 ``editor``
+%End
+
+    QgsSettingsStringComboBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, Mode mode, int role, const QStringList &dynamicKeyPartList = QStringList() );
+%Docstring
+Constructor of the wrapper for a given ``setting`` and its widget
+``editor``
+
+.. versionadded:: 3.44.3
 %End
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;

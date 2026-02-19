@@ -14,17 +14,22 @@
  ***************************************************************************/
 
 #include "qgsstacitemlistmodel.h"
-#include "moc_qgsstacitemlistmodel.cpp"
-#include "qgsstacitem.h"
-#include "qgsstaccollection.h"
+
 #include "qgsnetworkcontentfetcher.h"
+#include "qgsstaccollection.h"
+#include "qgsstacitem.h"
 
 #include <QAbstractItemView>
-#include <QScrollBar>
-#include <QPainter>
-#include <QApplication>
-#include <QTextDocument>
 #include <QAbstractTextDocumentLayout>
+#include <QApplication>
+#include <QPainter>
+#include <QScrollBar>
+#include <QString>
+#include <QTextDocument>
+
+#include "moc_qgsstacitemlistmodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -53,7 +58,7 @@ QVariant QgsStacItemListModel::data( const QModelIndex &index, int role ) const
       const QMap<QString, QgsStacAsset> assets = mItems.at( index.row() )->assets();
       for ( auto it = assets.constBegin(); it != assets.constEnd(); ++it )
       {
-        if ( it->roles().contains( QLatin1String( "thumbnail" ) ) )
+        if ( it->roles().contains( "thumbnail"_L1 ) )
         {
           return mThumbnails[it->href()];
         }
@@ -137,7 +142,7 @@ void QgsStacItemListModel::setCollections( const QVector<QgsStacCollection *> &c
   }
 }
 
-void QgsStacItemListModel::addItems( const QVector<QgsStacItem *> &items )
+void QgsStacItemListModel::addItems( const QVector<QgsStacItem *> &items, const QString &authcfg )
 {
   int nextItemIndex = mItems.count();
   beginInsertRows( QModelIndex(), mItems.size(), mItems.size() + items.size() - 1 );
@@ -149,15 +154,19 @@ void QgsStacItemListModel::addItems( const QVector<QgsStacItem *> &items )
     const QMap<QString, QgsStacAsset> assets = item->assets();
     for ( auto it = assets.constBegin(); it != assets.constEnd(); ++it )
     {
-      if ( it->roles().contains( QLatin1String( "thumbnail" ) ) )
+      if ( it->roles().contains( "thumbnail"_L1 ) )
       {
         const QString href = it->href();
         QgsNetworkContentFetcher *f = new QgsNetworkContentFetcher();
-        f->fetchContent( href );
+        f->fetchContent( href, authcfg );
         connect( f, &QgsNetworkContentFetcher::finished, this, [this, f, href, nextItemIndex] {
           if ( f->reply()->error() == QNetworkReply::NoError )
           {
-            const QImage img = QImage::fromData( f->reply()->readAll() );
+            const QByteArray data = f->reply()->readAll();
+            const QImage img = QImage::fromData( data );
+            if ( img.isNull() )
+              return;
+
             QImage previewImage( img.size(), QImage::Format_ARGB32 );
             previewImage.fill( Qt::transparent );
             QPainter previewPainter( &previewImage );
@@ -245,8 +254,8 @@ void QgsStacItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
     iconSize /= w->devicePixelRatioF();
   }
 
-  doc.setHtml( QStringLiteral( "<div style='font-size:%1px'><span style='font-weight:bold;'>%2</span><br>%3<br><br><i>%4</i></div>" )
-                 .arg( QString::number( textSize ), index.data( QgsStacItemListModel::Role::Title ).toString(), index.data( QgsStacItemListModel::Role::Collection ).toString(), index.data( QgsStacItemListModel::Role::Formats ).toStringList().join( QLatin1String( ", " ) ) ) );
+  doc.setHtml( u"<div style='font-size:%1px'><span style='font-weight:bold;'>%2</span><br>%3<br><br><i>%4</i></div>"_s
+                 .arg( QString::number( textSize ), index.data( QgsStacItemListModel::Role::Title ).toString(), index.data( QgsStacItemListModel::Role::Collection ).toString(), index.data( QgsStacItemListModel::Role::Formats ).toStringList().join( ", "_L1 ) ) );
   doc.setTextWidth( option.rect.width() - ( !icon.isNull() ? iconSize.width() + 4.375 * mRoundedRectSizePixels : 4.375 * mRoundedRectSizePixels ) );
 
   if ( !icon.isNull() )

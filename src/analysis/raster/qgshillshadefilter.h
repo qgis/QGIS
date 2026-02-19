@@ -18,8 +18,12 @@
 #ifndef QGSHILLSHADEFILTER_H
 #define QGSHILLSHADEFILTER_H
 
-#include "qgsderivativefilter.h"
 #include "qgis_analysis.h"
+#include "qgsderivativefilter.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup analysis
@@ -43,7 +47,7 @@ class ANALYSIS_EXPORT QgsHillshadeFilter : public QgsDerivativeFilter
 
     const QString openClProgramBaseName() const override
     {
-      return QStringLiteral( "hillshade" );
+      return u"hillshade"_s;
     }
 #endif
 

@@ -13,32 +13,37 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsoffscreen3dengine.h"
-#include "qgstest.h"
-#include "qgsmultirenderchecker.h"
+#include <memory>
 
-#include "qgsproject.h"
-#include "qgsapplication.h"
 #include "qgs3d.h"
-#include "qgspointcloudlayer.h"
-#include "qgspointcloudextentrenderer.h"
-#include "qgspointcloudattributebyramprenderer.h"
-#include "qgspointcloudrgbrenderer.h"
-#include "qgspointcloudclassifiedrenderer.h"
-#include "qgspointcloudlayer3drenderer.h"
-#include "qgspointcloud3dsymbol.h"
-#include "qgspointlightsettings.h"
-#include "qgsstyle.h"
-#include "qgs3dutils.h"
-#include "qgs3dmapsettings.h"
 #include "qgs3dmapscene.h"
+#include "qgs3dmapsettings.h"
+#include "qgs3dutils.h"
+#include "qgsapplication.h"
+#include "qgsmultirenderchecker.h"
+#include "qgsoffscreen3dengine.h"
+#include "qgspointcloud3dsymbol.h"
+#include "qgspointcloudattributebyramprenderer.h"
+#include "qgspointcloudclassifiedrenderer.h"
+#include "qgspointcloudextentrenderer.h"
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudlayer3drenderer.h"
+#include "qgspointcloudrgbrenderer.h"
+#include "qgspointlightsettings.h"
+#include "qgsproject.h"
+#include "qgsstyle.h"
+#include "qgstest.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsPointCloud3DRendering : public QgsTest
 {
     Q_OBJECT
   public:
     TestQgsPointCloud3DRendering()
-      : QgsTest( QStringLiteral( "Point Cloud 3D Rendering Tests" ), QStringLiteral( "3d" ) ) {}
+      : QgsTest( u"Point Cloud 3D Rendering Tests"_s, u"3d"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -73,7 +78,7 @@ void TestQgsPointCloud3DRendering::initTestCase()
   QgsApplication::initQgis();
   Qgs3D::initialize();
 
-  mProject.reset( new QgsProject );
+  mProject = std::make_unique<QgsProject>();
 
   const QString dataDir( TEST_DATA_DIR );
 
@@ -105,14 +110,14 @@ void TestQgsPointCloud3DRendering::testSync3DRendererTo2DRenderer()
   // gather different 2D renderers
   QgsPointCloudExtentRenderer *extent2DRenderer = new QgsPointCloudExtentRenderer();
   QgsPointCloudAttributeByRampRenderer *colorramp2DRenderer = new QgsPointCloudAttributeByRampRenderer();
-  colorramp2DRenderer->setAttribute( QStringLiteral( "Z" ) );
+  colorramp2DRenderer->setAttribute( u"Z"_s );
   QgsColorRampShader shader = QgsColorRampShader( 0.98, 1.25 );
-  shader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Viridis" ) ) );
+  shader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( u"Viridis"_s ) );
   shader.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
   colorramp2DRenderer->setColorRampShader( shader );
   QgsPointCloudRgbRenderer *rgb2DRenderer = new QgsPointCloudRgbRenderer();
   QgsPointCloudClassifiedRenderer *classification2DRenderer = new QgsPointCloudClassifiedRenderer();
-  classification2DRenderer->setAttribute( QStringLiteral( "Classification" ) );
+  classification2DRenderer->setAttribute( u"Classification"_s );
   auto categories = QgsPointCloudClassifiedRenderer::defaultCategories();
   // change a couple of categories
   categories[2].setRenderState( false );
@@ -177,14 +182,14 @@ void TestQgsPointCloud3DRendering::testDisableSync3DRendererTo2DRenderer()
   // gather different 2D renderers
   QgsPointCloudExtentRenderer *extent2DRenderer = new QgsPointCloudExtentRenderer();
   QgsPointCloudAttributeByRampRenderer *colorramp2DRenderer = new QgsPointCloudAttributeByRampRenderer();
-  colorramp2DRenderer->setAttribute( QStringLiteral( "Z" ) );
+  colorramp2DRenderer->setAttribute( u"Z"_s );
   QgsColorRampShader shader = QgsColorRampShader( 0.98, 1.25 );
-  shader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Viridis" ) ) );
+  shader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( u"Viridis"_s ) );
   shader.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
   colorramp2DRenderer->setColorRampShader( shader );
   QgsPointCloudRgbRenderer *rgb2DRenderer = dynamic_cast<QgsPointCloudRgbRenderer *>( mLayer->renderer()->clone() );
   QgsPointCloudClassifiedRenderer *classification2DRenderer = new QgsPointCloudClassifiedRenderer();
-  classification2DRenderer->setAttribute( QStringLiteral( "Classification" ) );
+  classification2DRenderer->setAttribute( u"Classification"_s );
   auto categories = QgsPointCloudClassifiedRenderer::defaultCategories();
   // change a couple of categories
   categories[2].setRenderState( false );
@@ -255,7 +260,7 @@ void TestQgsPointCloud3DRendering::testPointCloudSingleColor()
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 1000, 0 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;
@@ -290,7 +295,7 @@ void TestQgsPointCloud3DRendering::testPointCloudSingleColorClipping()
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;
@@ -358,7 +363,7 @@ void TestQgsPointCloud3DRendering::testPointCloudAttributeByRamp()
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 1000, 0 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;
@@ -366,9 +371,9 @@ void TestQgsPointCloud3DRendering::testPointCloudAttributeByRamp()
   engine.setRootEntity( scene );
 
   QgsColorRampPointCloud3DSymbol *symbol = new QgsColorRampPointCloud3DSymbol();
-  symbol->setAttribute( QStringLiteral( "Intensity" ) );
+  symbol->setAttribute( u"Intensity"_s );
   QgsColorRampShader shader = QgsColorRampShader( 199, 2086 );
-  shader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Viridis" ) ) );
+  shader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( u"Viridis"_s ) );
   shader.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
   symbol->setColorRampShader( shader );
   symbol->setPointSize( 10 );
@@ -397,7 +402,7 @@ void TestQgsPointCloud3DRendering::testPointCloudClassification()
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 1000, 0 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;
@@ -405,7 +410,7 @@ void TestQgsPointCloud3DRendering::testPointCloudClassification()
   engine.setRootEntity( scene );
 
   QgsClassificationPointCloud3DSymbol *symbol = new QgsClassificationPointCloud3DSymbol();
-  symbol->setAttribute( QStringLiteral( "Classification" ) );
+  symbol->setAttribute( u"Classification"_s );
   auto categories = QgsPointCloudClassifiedRenderer::defaultCategories();
   symbol->setCategoriesList( categories );
   symbol->setPointSize( 10 );
@@ -434,7 +439,7 @@ void TestQgsPointCloud3DRendering::testPointCloudClassificationOverridePointSize
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 1000, 0 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;
@@ -442,7 +447,7 @@ void TestQgsPointCloud3DRendering::testPointCloudClassificationOverridePointSize
   engine.setRootEntity( scene );
 
   QgsClassificationPointCloud3DSymbol *symbol = new QgsClassificationPointCloud3DSymbol();
-  symbol->setAttribute( QStringLiteral( "Classification" ) );
+  symbol->setAttribute( u"Classification"_s );
   auto categories = QgsPointCloudClassifiedRenderer::defaultCategories();
   categories[2].setPointSize( 4 );
   categories[5].setPointSize( 7 );
@@ -474,7 +479,7 @@ void TestQgsPointCloud3DRendering::testPointCloudFilteredClassification()
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 1000, 0 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;
@@ -482,7 +487,7 @@ void TestQgsPointCloud3DRendering::testPointCloudFilteredClassification()
   engine.setRootEntity( scene );
 
   QgsClassificationPointCloud3DSymbol *symbol = new QgsClassificationPointCloud3DSymbol();
-  symbol->setAttribute( QStringLiteral( "Classification" ) );
+  symbol->setAttribute( u"Classification"_s );
   auto categories = QgsPointCloudClassifiedRenderer::defaultCategories();
   symbol->setCategoriesList( categories );
   symbol->setPointSize( 10 );
@@ -514,7 +519,7 @@ void TestQgsPointCloud3DRendering::testPointCloudFilteredSceneExtent()
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 1000, 0 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;
@@ -522,7 +527,7 @@ void TestQgsPointCloud3DRendering::testPointCloudFilteredSceneExtent()
   engine.setRootEntity( scene );
 
   QgsClassificationPointCloud3DSymbol *symbol = new QgsClassificationPointCloud3DSymbol();
-  symbol->setAttribute( QStringLiteral( "Classification" ) );
+  symbol->setAttribute( u"Classification"_s );
   auto categories = QgsPointCloudClassifiedRenderer::defaultCategories();
   symbol->setCategoriesList( categories );
   symbol->setPointSize( 10 );
@@ -551,7 +556,7 @@ void TestQgsPointCloud3DRendering::testPointCloud3DExtents()
   map->setLayers( QList<QgsMapLayer *>() << mVpcLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 1000, 0 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;
@@ -559,7 +564,7 @@ void TestQgsPointCloud3DRendering::testPointCloud3DExtents()
   engine.setRootEntity( scene );
 
   QgsClassificationPointCloud3DSymbol *symbol = new QgsClassificationPointCloud3DSymbol();
-  symbol->setAttribute( QStringLiteral( "Classification" ) );
+  symbol->setAttribute( u"Classification"_s );
   symbol->setCategoriesList( QgsPointCloudClassifiedRenderer::defaultCategories() );
   symbol->setPointSize( 10 );
 
@@ -585,7 +590,7 @@ void TestQgsPointCloud3DRendering::testPointCloud3DOverview()
   map->setLayers( QList<QgsMapLayer *>() << mVpcLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 1000, 0 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;
@@ -594,7 +599,7 @@ void TestQgsPointCloud3DRendering::testPointCloud3DOverview()
 
   //Classification symbol
   QgsClassificationPointCloud3DSymbol *symbol = new QgsClassificationPointCloud3DSymbol();
-  symbol->setAttribute( QStringLiteral( "Classification" ) );
+  symbol->setAttribute( u"Classification"_s );
   symbol->setCategoriesList( QgsPointCloudClassifiedRenderer::defaultCategories() );
   symbol->setPointSize( 3 );
 

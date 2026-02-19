@@ -15,12 +15,15 @@
 #ifndef QGSMIMEDATAUTILS_H
 #define QGSMIMEDATAUTILS_H
 
-#include <QMimeData>
-#include <QStringList>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgswkbtypes.h"
+
+#include <QMimeData>
+#include <QString>
+#include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 class QgsLayerItem;
 class QgsLayerTreeNode;
@@ -163,7 +166,7 @@ class CORE_EXPORT QgsMimeDataUtils
 #ifdef SIP_RUN
       SIP_PYOBJECT __repr__();
       % MethodCode
-      QString str = QStringLiteral( "<QgsMimeDataUtils::Uri (%1): %2>" ).arg( sipCpp->providerKey, sipCpp->uri );
+      QString str = u"<QgsMimeDataUtils::Uri (%1): %2>"_s.arg( sipCpp->providerKey, sipCpp->uri );
       sipRes = PyUnicode_FromString( str.toUtf8().constData() );
       % End
 #endif

@@ -14,8 +14,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrasterattributetableaddrowdialog.h"
-#include "moc_qgsrasterattributetableaddrowdialog.cpp"
+
 #include "qgsgui.h"
+
+#include "moc_qgsrasterattributetableaddrowdialog.cpp"
 
 QgsRasterAttributeTableAddRowDialog::QgsRasterAttributeTableAddRowDialog( QWidget *parent )
   : QDialog( parent )

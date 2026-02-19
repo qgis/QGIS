@@ -14,32 +14,34 @@
  ***************************************************************************/
 
 #include "qgsannotationitemcommonpropertieswidget.h"
-#include "moc_qgsannotationitemcommonpropertieswidget.cpp"
+
 #include "qgsannotationitem.h"
-#include "qgscalloutpanelwidget.h"
 #include "qgsapplication.h"
+#include "qgscalloutpanelwidget.h"
 #include "qgscalloutsregistry.h"
+
+#include "moc_qgsannotationitemcommonpropertieswidget.cpp"
 
 QgsAnnotationItemCommonPropertiesWidget::QgsAnnotationItemCommonPropertiesWidget( QWidget *parent )
   : QWidget( parent )
 {
   setupUi( this );
 
-  connect( mSpinZIndex, qOverload<int>( &QSpinBox::valueChanged ), this, [=] {
+  connect( mSpinZIndex, qOverload<int>( &QSpinBox::valueChanged ), this, [this] {
     if ( !mBlockChangedSignal )
       emit itemChanged();
   } );
   mSpinZIndex->setClearValue( 0 );
 
-  connect( mReferenceScaleGroup, &QGroupBox::toggled, this, [=] {
+  connect( mReferenceScaleGroup, &QGroupBox::toggled, this, [this] {
     if ( !mBlockChangedSignal )
       emit itemChanged();
   } );
-  connect( mReferenceScaleWidget, &QgsScaleWidget::scaleChanged, this, [=] {
+  connect( mReferenceScaleWidget, &QgsScaleWidget::scaleChanged, this, [this] {
     if ( !mBlockChangedSignal )
       emit itemChanged();
   } );
-  connect( mCalloutCheckBox, &QCheckBox::toggled, this, [=] {
+  connect( mCalloutCheckBox, &QCheckBox::toggled, this, [this] {
     if ( !mBlockChangedSignal )
       emit itemChanged();
   } );

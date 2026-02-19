@@ -34,7 +34,7 @@ class GUI_EXPORT QgsTemporalMapSettingsWidget : public QgsPanelWidget, private U
       */
     QgsTemporalMapSettingsWidget( QWidget *parent = nullptr );
 
-    ~QgsTemporalMapSettingsWidget() = default;
+    ~QgsTemporalMapSettingsWidget() override = default;
 
     /**
      * Returns the value of frame rate from widget input

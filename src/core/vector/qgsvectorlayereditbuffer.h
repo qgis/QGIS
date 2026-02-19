@@ -16,12 +16,12 @@
 #define QGSVECTORLAYEREDITBUFFER_H
 
 #include "qgis_core.h"
-#include <QList>
-#include <QSet>
-
 #include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
+
+#include <QList>
+#include <QSet>
 
 class QgsVectorLayer;
 class QgsVectorLayerEditBufferGroup;

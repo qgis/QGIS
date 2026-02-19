@@ -13,11 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsembeddedsymbolrendererwidget.h"
-#include "moc_qgsembeddedsymbolrendererwidget.cpp"
+
+#include <memory>
+
 #include "qgsembeddedsymbolrenderer.h"
 #include "qgsrendererregistry.h"
 #include "qgssymbol.h"
 #include "qgsvectorlayer.h"
+
+#include "moc_qgsembeddedsymbolrendererwidget.cpp"
 
 QgsRendererWidget *QgsEmbeddedSymbolRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {
@@ -63,7 +67,7 @@ QgsEmbeddedSymbolRendererWidget::QgsEmbeddedSymbolRendererWidget( QgsVectorLayer
   if ( !mRenderer )
   {
     // use default embedded renderer
-    mRenderer.reset( new QgsEmbeddedSymbolRenderer( QgsSymbol::defaultSymbol( type ) ) );
+    mRenderer = std::make_unique<QgsEmbeddedSymbolRenderer>( QgsSymbol::defaultSymbol( type ) );
     if ( renderer )
       renderer->copyRendererData( mRenderer.get() );
   }
@@ -73,7 +77,7 @@ QgsEmbeddedSymbolRendererWidget::QgsEmbeddedSymbolRendererWidget( QgsVectorLayer
   mDefaultSymbolToolButton->setLayer( mLayer );
   mDefaultSymbolToolButton->registerExpressionContextGenerator( this );
 
-  connect( mDefaultSymbolToolButton, &QgsSymbolButton::changed, this, [=] {
+  connect( mDefaultSymbolToolButton, &QgsSymbolButton::changed, this, [this] {
     mRenderer->setDefaultSymbol( mDefaultSymbolToolButton->symbol()->clone() );
     emit widgetChanged();
   } );

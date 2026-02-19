@@ -8,7 +8,6 @@
 
 
 
-
 class QgsAuthConfigurationStorageDb : QgsAuthConfigurationStorage
 {
 %Docstring(signature="appended")
@@ -110,6 +109,7 @@ Returns the database connection used by this storage.
     virtual bool initialize();
 
     virtual QList<QgsAuthConfigurationStorage::SettingParameter> settingsParameters() const;
+
 
 
     virtual bool storeCertIdentity( const QSslCertificate &cert, const QString &keyPem );
@@ -235,7 +235,7 @@ ready for the insertion into a SQL query.
 
     bool authDbOpen() const;
 %Docstring
-Opens the connction to the database.
+Opens the connection to the database.
 
 :return: ``True`` if the connection was opened successfully, ``False``
          otherwise.

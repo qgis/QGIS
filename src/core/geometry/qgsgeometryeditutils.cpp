@@ -14,15 +14,20 @@ email                : marco.hugentobler at sourcepole dot com
  ***************************************************************************/
 
 #include "qgsgeometryeditutils.h"
-#include "qgsfeatureiterator.h"
+
+#include <limits>
+
 #include "qgscurve.h"
 #include "qgscurvepolygon.h"
-#include "qgspolygon.h"
+#include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
-#include "qgsgeometryengine.h"
-#include "qgsvectorlayer.h"
 #include "qgsgeometrycollection.h"
-#include <limits>
+#include "qgsgeometryengine.h"
+#include "qgspolygon.h"
+#include "qgspolyhedralsurface.h"
+#include "qgstriangle.h"
+#include "qgstriangulatedsurface.h"
+#include "qgsvectorlayer.h"
 
 Qgis::GeometryOperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry *geom, std::unique_ptr<QgsCurve> ring )
 {
@@ -34,9 +39,20 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry
   QVector< QgsCurvePolygon * > polygonList;
   QgsCurvePolygon *curvePoly = qgsgeometry_cast< QgsCurvePolygon * >( geom );
   QgsGeometryCollection *multiGeom = qgsgeometry_cast< QgsGeometryCollection * >( geom );
+  QgsPolyhedralSurface *polySurface = qgsgeometry_cast< QgsPolyhedralSurface * >( geom );
+
   if ( curvePoly )
   {
     polygonList.append( curvePoly );
+  }
+  else if ( polySurface )
+  {
+    // PolyhedralSurface: collect all patches (which are QgsPolygon* that inherit from QgsCurvePolygon)
+    polygonList.reserve( polySurface->numPatches() );
+    for ( int i = 0; i < polySurface->numPatches(); ++i )
+    {
+      polygonList.append( polySurface->patchN( i ) );
+    }
   }
   else if ( multiGeom )
   {
@@ -48,7 +64,7 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry
   }
   else
   {
-    return Qgis::GeometryOperationResult::InvalidInputGeometryType; //not polygon / multipolygon;
+    return Qgis::GeometryOperationResult::InvalidInputGeometryType; //not polygon / multipolygon / polyhedral surface;
   }
 
   //ring must be closed
@@ -102,6 +118,91 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
 
   if ( !part )
   {
+    return Qgis::GeometryOperationResult::InvalidInputGeometryType;
+  }
+
+  // Handle TIN - add triangle as patch
+  if ( QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::TIN )
+  {
+    QgsTriangulatedSurface *tin = qgsgeometry_cast<QgsTriangulatedSurface *>( geom );
+    if ( !tin )
+    {
+      return Qgis::GeometryOperationResult::InvalidBaseGeometry;
+    }
+
+    // Part can be a Triangle or a Polygon (that must be a triangle)
+    if ( QgsTriangle *triangle = qgsgeometry_cast<QgsTriangle *>( part.get() ) )
+    {
+      tin->addPatch( triangle->clone() );
+      return Qgis::GeometryOperationResult::Success;
+    }
+    else if ( QgsPolygon *polygon = qgsgeometry_cast<QgsPolygon *>( part.get() ) )
+    {
+      // Validate that the polygon can be converted to a triangle (3 vertices + closing point)
+      if ( polygon->exteriorRing() && polygon->exteriorRing()->numPoints() == 4 )
+      {
+        auto triangle = std::make_unique<QgsTriangle>();
+        triangle->setExteriorRing( polygon->exteriorRing()->clone() );
+        if ( !triangle->isEmpty() )
+        {
+          tin->addPatch( triangle.release() );
+          return Qgis::GeometryOperationResult::Success;
+        }
+      }
+      return Qgis::GeometryOperationResult::InvalidInputGeometryType;
+    }
+    else if ( QgsCurve *curve = qgsgeometry_cast<QgsCurve *>( part.get() ) )
+    {
+      // A closed curve with exactly 4 points (3 vertices + closing)
+      if ( curve->isClosed() && curve->numPoints() == 4 )
+      {
+        auto triangle = std::make_unique<QgsTriangle>();
+        triangle->setExteriorRing( curve->clone() );
+        if ( !triangle->isEmpty() )
+        {
+          tin->addPatch( triangle.release() );
+          return Qgis::GeometryOperationResult::Success;
+        }
+      }
+      return Qgis::GeometryOperationResult::InvalidInputGeometryType;
+    }
+    return Qgis::GeometryOperationResult::InvalidInputGeometryType;
+  }
+
+  // Handle PolyhedralSurface - add polygon as patch
+  if ( QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::PolyhedralSurface )
+  {
+    QgsPolyhedralSurface *polySurface = qgsgeometry_cast<QgsPolyhedralSurface *>( geom );
+    if ( !polySurface )
+    {
+      return Qgis::GeometryOperationResult::InvalidBaseGeometry;
+    }
+
+    // Part can be a Polygon or a CurvePolygon
+    if ( QgsPolygon *polygon = qgsgeometry_cast<QgsPolygon *>( part.get() ) )
+    {
+      polySurface->addPatch( polygon->clone() );
+      return Qgis::GeometryOperationResult::Success;
+    }
+    else if ( const QgsCurvePolygon *curvePolygon = qgsgeometry_cast<const QgsCurvePolygon *>( part.get() ) )
+    {
+      // Convert curve polygon to polygon
+      std::unique_ptr<QgsPolygon> polygon( curvePolygon->toPolygon() );
+      polySurface->addPatch( polygon.release() );
+      return Qgis::GeometryOperationResult::Success;
+    }
+    else if ( QgsCurve *curve = qgsgeometry_cast<QgsCurve *>( part.get() ) )
+    {
+      // A closed curve becomes a polygon patch
+      if ( curve->isClosed() && curve->numPoints() >= 4 )
+      {
+        auto polygon = std::make_unique<QgsPolygon>();
+        polygon->setExteriorRing( curve->clone() );
+        polySurface->addPatch( polygon.release() );
+        return Qgis::GeometryOperationResult::Success;
+      }
+      return Qgis::GeometryOperationResult::InvalidInputGeometryType;
+    }
     return Qgis::GeometryOperationResult::InvalidInputGeometryType;
   }
 
@@ -211,7 +312,7 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
           std::unique_ptr< QgsCurve > line( curve->segmentize() );
           part = std::move( line );
         }
-        added = geomCollection->addGeometry( qgsgeometry_cast<QgsCurve *>( part.release() ) );
+        added = geomCollection->addGeometry( qgis::down_cast<QgsCurve *>( part.release() ) );
       }
       else
       {

@@ -18,10 +18,11 @@
 class QTextCodec;
 
 #include "qgis_core.h"
-#include <QList>
-#include <QSet>
-#include <QMap>
+
 #include <QHash>
+#include <QList>
+#include <QMap>
+#include <QSet>
 
 //QGIS Includes
 #include "qgis_sip.h"
@@ -168,7 +169,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * Returns a short comment for the data that this provider is
      * providing access to (e.g. the comment for postgres table).
      */
-    virtual QString dataComment() const override;
+    QString dataComment() const override;
 
     /**
      * Returns the minimum value of an attribute
@@ -228,6 +229,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      */
     virtual void enumValues( int index, QStringList &enumList SIP_OUT ) const { Q_UNUSED( index ) enumList.clear(); }
 
+    using QgsFeatureSink::addFeatures;
     bool addFeatures( QgsFeatureList &flist SIP_INOUT, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     QString lastError() const override;
 
@@ -557,7 +559,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     virtual QgsTransaction *transaction() const;
 
     /**
-     * \deprecated QGIS 3.12. Will be removed in QGIS 4.0 - use reloadData() instead.
+     * \deprecated QGIS 3.12. Will be removed in QGIS 5.0 - use reloadData() instead.
      */
     Q_DECL_DEPRECATED virtual void forceReload() SIP_DEPRECATED { reloadData(); }
 
@@ -573,12 +575,6 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \returns the list of N-1 relations from this provider.
      */
     virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const;
-
-    /**
-     * Gets metadata, dependent on the provider type, that will be display in the metadata tab of the layer properties.
-     * \returns The provider metadata
-     */
-    virtual QVariantMap metadata() const { return QVariantMap(); }
 
     /**
      * Gets the translated metadata key.

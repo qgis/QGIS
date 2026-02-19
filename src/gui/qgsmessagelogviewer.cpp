@@ -16,21 +16,26 @@
  ***************************************************************************/
 
 #include "qgsmessagelogviewer.h"
-#include "moc_qgsmessagelogviewer.cpp"
+
+#include "qgsapplication.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
-#include "qgsapplication.h"
 
-#include <QFile>
 #include <QDateTime>
-#include <QTableWidget>
-#include <QToolButton>
-#include <QStatusBar>
-#include <QToolTip>
-#include <QPlainTextEdit>
-#include <QScrollBar>
 #include <QDebug>
 #include <QDesktopServices>
+#include <QFile>
+#include <QPlainTextEdit>
+#include <QScrollBar>
+#include <QStatusBar>
+#include <QString>
+#include <QTableWidget>
+#include <QToolButton>
+#include <QToolTip>
+
+#include "moc_qgsmessagelogviewer.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMessageLogViewer::QgsMessageLogViewer( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -40,6 +45,10 @@ QgsMessageLogViewer::QgsMessageLogViewer( QWidget *parent, Qt::WindowFlags fl )
   connect( QgsApplication::messageLog(), static_cast<void ( QgsMessageLog::* )( const QString &, const QString &, Qgis::MessageLevel )>( &QgsMessageLog::messageReceived ), this, static_cast<void ( QgsMessageLogViewer::* )( const QString &, const QString &, Qgis::MessageLevel )>( &QgsMessageLogViewer::logMessage ) );
 
   connect( tabWidget, &QTabWidget::tabCloseRequested, this, &QgsMessageLogViewer::closeTab );
+
+  connect( tabWidget, &QTabWidget::currentChanged, this, [this]( int index ) {
+    tabWidget->setTabIcon( index, QIcon() );
+  } );
 
   mTabBarContextMenu = new QMenu( this );
   tabWidget->tabBar()->setContextMenuPolicy( Qt::CustomContextMenu );
@@ -120,15 +129,17 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
   if ( i < tabWidget->count() )
   {
     w = qobject_cast<QPlainTextEdit *>( tabWidget->widget( i ) );
-    tabWidget->setCurrentIndex( i );
+    if ( i != tabWidget->currentIndex() )
+    {
+      tabWidget->setTabIcon( i, QgsApplication::getThemeIcon( u"mMessageLog.svg"_s ) );
+    }
   }
   else
   {
     w = new QPlainTextEdit( this );
     w->setReadOnly( true );
     w->viewport()->installEventFilter( this );
-    tabWidget->addTab( w, cleanedTag );
-    tabWidget->setCurrentIndex( tabWidget->count() - 1 );
+    i = tabWidget->addTab( w, QgsApplication::getThemeIcon( u"mMessageLog.svg"_s ), cleanedTag );
   }
 
   QString levelString;
@@ -139,39 +150,51 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
   switch ( level )
   {
     case Qgis::MessageLevel::Info:
-      levelString = QStringLiteral( "INFO" );
-      colorName = settings.value( QStringLiteral( "colors/info" ), QString() ).toString();
+      levelString = u"INFO"_s;
+      colorName = settings.value( u"colors/info"_s, QString() ).toString();
       break;
     case Qgis::MessageLevel::Warning:
-      levelString = QStringLiteral( "WARNING" );
-      colorName = settings.value( QStringLiteral( "colors/warning" ), QString() ).toString();
+      levelString = u"WARNING"_s;
+      colorName = settings.value( u"colors/warning"_s, QString() ).toString();
       break;
     case Qgis::MessageLevel::Critical:
-      levelString = QStringLiteral( "CRITICAL" );
-      colorName = settings.value( QStringLiteral( "colors/critical" ), QString() ).toString();
+      levelString = u"CRITICAL"_s;
+      colorName = settings.value( u"colors/critical"_s, QString() ).toString();
       break;
     case Qgis::MessageLevel::Success:
-      levelString = QStringLiteral( "SUCCESS" );
-      colorName = settings.value( QStringLiteral( "colors/success" ), QString() ).toString();
+      levelString = u"SUCCESS"_s;
+      colorName = settings.value( u"colors/success"_s, QString() ).toString();
       break;
     case Qgis::MessageLevel::NoLevel:
-      levelString = QStringLiteral( "NONE" );
-      colorName = settings.value( QStringLiteral( "colors/default" ), QString() ).toString();
+      levelString = u"NONE"_s;
+      colorName = settings.value( u"colors/default"_s, QString() ).toString();
       break;
   }
   const QColor color = QColor( !colorName.isEmpty() ? colorName : defaultColorName );
 
-  const QString prefix = QStringLiteral( "<font color=\"%1\">%2 &nbsp;&nbsp;&nbsp; %3 &nbsp;&nbsp;&nbsp;</font>" )
+  const QString prefix = u"<font color=\"%1\">%2 &nbsp;&nbsp;&nbsp; %3 &nbsp;&nbsp;&nbsp;</font>"_s
                            .arg( color.name(), QDateTime::currentDateTime().toString( Qt::ISODate ), levelString );
   QString cleanedMessage = message.toHtmlEscaped();
   if ( mMessageLoggedCount == MESSAGE_COUNT_LIMIT )
     cleanedMessage = tr( "Message log truncated" );
 
-  cleanedMessage = cleanedMessage.prepend( prefix ).replace( '\n', QLatin1String( "<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;" ) );
+  cleanedMessage = cleanedMessage.prepend( prefix ).replace( '\n', "<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"_L1 );
   w->appendHtml( cleanedMessage );
   w->verticalScrollBar()->setValue( w->verticalScrollBar()->maximum() );
   tabWidget->show();
   emptyLabel->hide();
+}
+
+void QgsMessageLogViewer::showTab( const QString &tag )
+{
+  for ( int i = 0; i < tabWidget->count(); i++ )
+  {
+    if ( tabWidget->tabText( i ).remove( QChar( '&' ) ) == tag )
+    {
+      tabWidget->setCurrentIndex( i );
+      return;
+    }
+  }
 }
 
 void QgsMessageLogViewer::closeTab( int index )

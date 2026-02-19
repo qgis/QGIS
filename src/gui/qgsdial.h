@@ -18,10 +18,11 @@
 #ifndef QGSDIAL_H
 #define QGSDIAL_H
 
-#include <QDial>
-#include <QVariant>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QDial>
+#include <QVariant>
 
 class QPaintEvent;
 
@@ -40,9 +41,38 @@ class GUI_EXPORT QgsDial : public QDial
      */
     QgsDial( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+    /**
+     * Sets the dial range's minimum value.
+     */
     void setMinimum( const QVariant &min );
+
+    /**
+     * Returns the dial range's minimum value.
+     * \since QGIS 4.0
+     */
+    QVariant minimum() const { return mMin; };
+
+    /**
+     * Sets the dial range's maximum value.
+     */
     void setMaximum( const QVariant &max );
+
+    /**
+     * Returns the dial range's maximum value.
+     * \since QGIS 4.0
+     */
+    QVariant maximum() const { return mMax; };
+
+    /**
+     * Sets the dial's single step value.
+     */
     void setSingleStep( const QVariant &step );
+
+    /**
+     * Returns the dial's single step value.
+     */
+    QVariant singleStep() const { return mStep; };
+
     void setValue( const QVariant &value );
     QVariant variantValue() const;
 

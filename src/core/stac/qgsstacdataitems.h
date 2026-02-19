@@ -17,12 +17,15 @@
 #define QGSSTACDATAITEMS_H
 
 #include "qgis_core.h"
-#include "qgsdataitemprovider.h"
 #include "qgsconnectionsitem.h"
+#include "qgsdataitemprovider.h"
 #include "qgsstaccatalog.h"
 #include "qgsstacitem.h"
 
+#include <QString>
 #include <QUrl>
+
+using namespace Qt::StringLiterals;
 
 class QgsStacController;
 class QgsStacCollection;
@@ -30,7 +33,34 @@ class QgsStacCollection;
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
-//! Item to display that there are additional STAC items which are not loaded
+
+/**
+ * \brief Item for STAC Asset within a collection or item.
+ * \since QGIS 4.0
+*/
+class CORE_EXPORT QgsStacAssetItem : public QgsDataItem
+{
+    Q_OBJECT
+  public:
+    QgsStacAssetItem( QgsDataItem *parent, const QString &name, const QgsStacAsset *asset );
+
+    bool hasDragEnabled() const override;
+    QgsMimeDataUtils::UriList mimeUris() const override;
+    bool equal( const QgsDataItem *other ) override;
+    QVariant sortKey() const override { return u"4 %1"_s.arg( mName ); }
+    void updateToolTip();
+    const QgsStacAsset *stacAsset() const { return mStacAsset; }
+    QgsStacController *stacController() const;
+
+  private:
+    const QgsStacAsset *mStacAsset;
+    const QString mName;
+};
+
+/**
+ * \brief Item to display that there are additional STAC items which are not loaded.
+ * \since QGIS 3.40
+*/
 class CORE_EXPORT QgsStacFetchMoreItem : public QgsDataItem
 {
     Q_OBJECT
@@ -38,11 +68,14 @@ class CORE_EXPORT QgsStacFetchMoreItem : public QgsDataItem
     QgsStacFetchMoreItem( QgsDataItem *parent, const QString &name );
 
     bool handleDoubleClick() override;
-    QVariant sortKey() const override { return QStringLiteral( "3" ); }
+    QVariant sortKey() const override { return u"3"_s; }
 
 };
 
-//! Item for STAC Items within a catalog or collection
+/**
+ * \brief Item for STAC Items within a catalog or collection.
+ * \since QGIS 3.40
+*/
 class CORE_EXPORT QgsStacItemItem : public QgsDataItem
 {
     Q_OBJECT
@@ -53,10 +86,10 @@ class CORE_EXPORT QgsStacItemItem : public QgsDataItem
     bool hasDragEnabled() const override;
     QgsMimeDataUtils::UriList mimeUris() const override;
     bool equal( const QgsDataItem *other ) override;
-    QVariant sortKey() const override { return QStringLiteral( "2 %1" ).arg( mName ); }
+    QVariant sortKey() const override { return u"2 %1"_s.arg( mName ); }
 
     void updateToolTip();
-    QgsStacController *stacController();
+    QgsStacController *stacController() const;
 
     //! takes ownership
     void setStacItem( std::unique_ptr< QgsStacItem > item );
@@ -73,7 +106,10 @@ class CORE_EXPORT QgsStacItemItem : public QgsDataItem
     QString mConnName;
 };
 
-//! Item for catalogs and collections
+/**
+ * \brief Item for catalogs and collections.
+ * \since QGIS 3.40
+*/
 class CORE_EXPORT QgsStacCatalogItem : public QgsDataCollectionItem
 {
     Q_OBJECT
@@ -82,7 +118,7 @@ class CORE_EXPORT QgsStacCatalogItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
-    QVariant sortKey() const override { return QStringLiteral( "1 %1" ).arg( mName ); }
+    QVariant sortKey() const override { return u"1 %1"_s.arg( mName ); }
 
     void updateToolTip();
 
@@ -119,7 +155,10 @@ class CORE_EXPORT QgsStacCatalogItem : public QgsDataCollectionItem
     QUrl mFetchMoreUrl;
 };
 
-//! Item for STAC connections, is also a catalog itself
+/**
+ * \brief Item for STAC connections, is also a catalog itself.
+ * \since QGIS 3.40
+*/
 class CORE_EXPORT QgsStacConnectionItem : public QgsStacCatalogItem
 {
     Q_OBJECT
@@ -135,7 +174,10 @@ class CORE_EXPORT QgsStacConnectionItem : public QgsStacCatalogItem
     std::unique_ptr<QgsStacController> mController;
 };
 
-//! Root item for STAC connections
+/**
+ * \brief Root item for STAC connections.
+ * \since QGIS 3.40
+*/
 class CORE_EXPORT QgsStacRootItem : public QgsConnectionsRootItem
 {
     Q_OBJECT
@@ -150,7 +192,10 @@ class CORE_EXPORT QgsStacRootItem : public QgsConnectionsRootItem
     void onConnectionsChanged();
 };
 
-//! Provider for STAC root data item
+/**
+ * \brief Provider for STAC root data item.
+ * \since QGIS 3.40
+*/
 class CORE_EXPORT QgsStacDataItemProvider : public QgsDataItemProvider
 {
   public:

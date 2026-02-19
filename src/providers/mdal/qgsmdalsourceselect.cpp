@@ -15,12 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMessageBox>
-
 #include "qgsmdalsourceselect.h"
-#include "moc_qgsmdalsourceselect.cpp"
-#include "qgsproviderregistry.h"
+
 #include "qgshelp.h"
+#include "qgsproviderregistry.h"
+
+#include <QMessageBox>
+#include <QString>
+
+#include "moc_qgsmdalsourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMdalSourceSelect::QgsMdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
@@ -31,7 +36,7 @@ QgsMdalSourceSelect::QgsMdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   mFileWidget->setDialogTitle( tr( "Open MDAL Supported Mesh Dataset(s)" ) );
   mFileWidget->setFilter( QgsProviderRegistry::instance()->fileMeshFilters() );
   mFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
-  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [=]( const QString &path ) {
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [this]( const QString &path ) {
     mMeshPath = path;
     emit enableButtons( !mMeshPath.isEmpty() );
   } );
@@ -49,13 +54,13 @@ void QgsMdalSourceSelect::addButtonClicked()
   for ( const QString &path : QgsFileWidget::splitFilePaths( mMeshPath ) )
   {
     Q_NOWARN_DEPRECATED_PUSH
-    emit addMeshLayer( path, QFileInfo( path ).completeBaseName(), QStringLiteral( "mdal" ) );
+    emit addMeshLayer( path, QFileInfo( path ).completeBaseName(), u"mdal"_s );
     Q_NOWARN_DEPRECATED_POP
-    emit addLayer( Qgis::LayerType::Mesh, path, QFileInfo( path ).completeBaseName(), QStringLiteral( "mdal" ) );
+    emit addLayer( Qgis::LayerType::Mesh, path, QFileInfo( path ).completeBaseName(), u"mdal"_s );
   }
 }
 
 void QgsMdalSourceSelect::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-mesh-layer" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html#loading-a-mesh-layer"_s );
 }

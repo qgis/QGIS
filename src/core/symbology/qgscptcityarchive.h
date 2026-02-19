@@ -17,9 +17,9 @@
 #ifndef QGSCPTCITYARCHIVE_H
 #define QGSCPTCITYARCHIVE_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgscolorrampimpl.h"
 
 #include <QAbstractItemModel>
@@ -165,21 +165,21 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
     virtual bool equal( const QgsCptCityDataItem *other );
 
     /**
-     * \deprecated QGIS 3.40. Is unused and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Is unused and will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED virtual QWidget *paramWidget() SIP_DEPRECATED { return nullptr; }
 
     /**
      * Returns TRUE if the item accepts drag & dropped layers - e.g. for import.
      *
-     * \deprecated QGIS 3.40. Is unused and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Is unused and will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED virtual bool acceptDrop() SIP_DEPRECATED { return false; }
 
     /**
      * Tries to process the \a data dropped on this item.
      *
-     * \deprecated QGIS 3.40. Is unused and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Is unused and will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) SIP_DEPRECATED { Q_UNUSED( data ); Q_UNUSED( action ); return false; }
 
@@ -215,14 +215,14 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
     Type mType;
     QgsCptCityDataItem *mParent = nullptr;
     QVector<QgsCptCityDataItem *> mChildren; // easier to have it always
-    bool mPopulated;
+    bool mPopulated = false;
     QString mName;
     QString mPath; // it is also used to identify item in tree
     QString mInfo;
     QString mShortInfo;
     QString mToolTip;
     QIcon mIcon;
-    bool mValid;
+    bool mValid = true;
 
   signals:
 
@@ -324,7 +324,7 @@ class CORE_EXPORT QgsCptCityCollectionItem : public QgsCptCityDataItem
     QVector<QgsCptCityDataItem *> childrenRamps( bool recursive );
 
   protected:
-    bool mPopulatedRamps;
+    bool mPopulatedRamps = false;
 };
 
 /**

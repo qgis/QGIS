@@ -18,12 +18,15 @@
 
 #define SIP_NO_FILE
 
+#include "qgis_core.h"
+#include "qgsabstractproviderconnection.h"
+#include "qgshttpheaders.h"
+#include "qgssettingstree.h"
+
+#include <QString>
 #include <QStringList>
 
-#include "qgshttpheaders.h"
-#include "qgis_core.h"
-#include "qgssettingstree.h"
-#include "qgsabstractproviderconnection.h"
+using namespace Qt::StringLiterals;
 
 class QgsSettingsEntryBool;
 class QgsSettingsEntryDouble;
@@ -47,7 +50,7 @@ class CORE_EXPORT QgsSensorThingsProviderConnection : public QgsAbstractProvider
 
     ///@cond PRIVATE
     static inline QgsSettingsTreeNamedListNode *sTreeSensorThingsConnections = QgsSettingsTree::sTreeConnections->createNamedListNode(
-          QStringLiteral( "sensorthings" ), Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
+          u"sensorthings"_s, Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
 
     static const QgsSettingsEntryString *settingsUrl;
     static const QgsSettingsEntryVariantMap *settingsHeaders;

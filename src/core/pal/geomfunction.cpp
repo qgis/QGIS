@@ -27,14 +27,16 @@
  *
  */
 
-#include "qgsgeometryutils_base.h"
 #include "geomfunction.h"
-#include "feature.h"
-#include "util.h"
-#include "qgis.h"
-#include "pal.h"
-#include "qgsmessagelog.h"
+
 #include <vector>
+
+#include "feature.h"
+#include "pal.h"
+#include "qgis.h"
+#include "qgsgeometryutils_base.h"
+#include "qgsmessagelog.h"
+#include "util.h"
 
 using namespace pal;
 
@@ -336,7 +338,7 @@ bool GeomFunction::containsCandidate( const GEOSPreparedGeometry *geom, double x
     const bool result = ( GEOSPreparedContainsProperly_r( geosctxt, geom, bboxGeos.get() ) == 1 );
     return result;
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     qWarning( "GEOS exception: %s", e.what() );
     Q_NOWARN_UNREACHABLE_PUSH

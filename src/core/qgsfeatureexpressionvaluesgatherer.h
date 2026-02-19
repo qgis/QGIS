@@ -15,13 +15,14 @@
 #ifndef QGSFEATUREEXPRESSIONVALUESGATHERER_H
 #define QGSFEATUREEXPRESSIONVALUESGATHERER_H
 
-#include <QThread>
-#include <QMutex>
 #include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
-#include "qgsexpressioncontextutils.h"
+
+#include <QMutex>
+#include <QThread>
 
 #define SIP_NO_FILE
 
@@ -59,9 +60,31 @@ class QgsFeatureExpressionValuesGatherer: public QThread
     {
     }
 
+    QgsFeatureExpressionValuesGatherer( QgsVectorLayer *layer,
+                                        const QString &displayExpression = QString(),
+                                        const QString &orderExpression = QString(),
+                                        const QgsFeatureRequest &request = QgsFeatureRequest(),
+                                        const QStringList &identifierFields = QStringList() )
+      : mSource( new QgsVectorLayerFeatureSource( layer ) )
+      , mDisplayExpression( displayExpression.isEmpty() ? layer->displayExpression() : displayExpression )
+      , mOrderExpression( orderExpression.isEmpty() ? displayExpression.isEmpty() ? layer->displayExpression() : displayExpression : orderExpression )
+      , mExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) )
+      , mRequest( request )
+      , mIdentifierFields( identifierFields )
+    {
+    }
+
     struct Entry
     {
       Entry() = default;
+
+      Entry( const QVariantList &_identifierFields, const QString &_value, const QString &_orderValue, const QgsFeature &_feature )
+        : identifierFields( _identifierFields )
+        , featureId( _feature.isValid() ? _feature.id() : FID_NULL )
+        , value( _value )
+        , orderValue( _orderValue )
+        , feature( _feature )
+      {}
 
       Entry( const QVariantList &_identifierFields, const QString &_value, const QgsFeature &_feature )
         : identifierFields( _identifierFields )
@@ -79,6 +102,7 @@ class QgsFeatureExpressionValuesGatherer: public QThread
       QVariantList identifierFields;
       QgsFeatureId featureId;
       QString value;
+      QString orderValue;
       QgsFeature feature;
 
       bool operator()( const Entry &lhs, const Entry &rhs ) const;
@@ -96,6 +120,7 @@ class QgsFeatureExpressionValuesGatherer: public QThread
       QgsFeatureIterator iterator = mSource->getFeatures( mRequest );
 
       mDisplayExpression.prepare( &mExpressionContext );
+      mOrderExpression.prepare( &mExpressionContext );
 
       QgsFeature feature;
       QList<int> attributeIndexes;
@@ -110,8 +135,9 @@ class QgsFeatureExpressionValuesGatherer: public QThread
           attributes << feature.attribute( idx );
 
         const QString expressionValue = mDisplayExpression.evaluate( &mExpressionContext ).toString();
+        const QString orderValue = mOrderExpression.evaluate( &mExpressionContext ).toString();
 
-        mEntries.append( Entry( attributes, expressionValue, feature ) );
+        mEntries.append( Entry( attributes, expressionValue, orderValue, feature ) );
 
         const QMutexLocker locker( &mCancelMutex );
         if ( mWasCanceled )
@@ -165,6 +191,7 @@ class QgsFeatureExpressionValuesGatherer: public QThread
   private:
     std::unique_ptr<QgsVectorLayerFeatureSource> mSource;
     QgsExpression mDisplayExpression;
+    QgsExpression mOrderExpression;
     QgsExpressionContext mExpressionContext;
     QgsFeatureRequest mRequest;
     bool mWasCanceled = false;

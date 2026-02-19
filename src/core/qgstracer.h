@@ -18,16 +18,17 @@
 
 class QgsVectorLayer;
 
-#include "qgis_core.h"
-#include <QSet>
-#include <QVector>
 #include <memory>
 
-#include "qgsfeatureid.h"
+#include "qgis_core.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
-#include "qgsrectangle.h"
+#include "qgsfeatureid.h"
 #include "qgsgeometry.h"
+#include "qgsrectangle.h"
+
+#include <QSet>
+#include <QVector>
 
 struct QgsTracerGraph;
 class QgsFeatureRenderer;
@@ -91,14 +92,14 @@ class CORE_EXPORT QgsTracer : public QObject
      */
     void setOffset( double offset );
 
-    // TODO QGIS 4.0 -- use Qgis::JoinStyle instead of int!
+    // TODO QGIS 5.0 -- use Qgis::JoinStyle instead of int!
 
     /**
      * Gets extra parameters for offset curve algorithm (used when offset is non-zero)
      */
     void offsetParameters( int &quadSegments SIP_OUT, int &joinStyle SIP_OUT, double &miterLimit SIP_OUT );
 
-    // TODO QGIS 4.0 -- use Qgis::JoinStyle instead of int!
+    // TODO QGIS 5.0 -- use Qgis::JoinStyle instead of int!
 
     /**
      * Set extra parameters for offset curve algorithm (used when offset is non-zero)
@@ -199,7 +200,7 @@ class CORE_EXPORT QgsTracer : public QObject
     //! Extent for graph building (empty extent means no limit)
     QgsRectangle mExtent;
     //! If FALSE, no vertices will be added on intersections unless they exist in the original layers
-    bool mAddPointsOnIntersections = false;
+    bool mAddPointsOnIntersections = true;
     //! Holds the input layers' intersections. Only populated when mAddPointsOnIntersections == false
     QgsGeometry mIntersections;
 

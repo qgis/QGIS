@@ -14,22 +14,27 @@
  ***************************************************************************/
 
 #include "qgssymbolslistwidget.h"
-#include "moc_qgssymbolslistwidget.cpp"
-#include "qgsextentbufferdialog.h"
-#include "qgsstylesavedialog.h"
-#include "qgsstyleitemslistwidget.h"
-#include "qgsvectorlayer.h"
-#include "qgsnewauxiliarylayerdialog.h"
+
 #include "qgsauxiliarystorage.h"
-#include "qgsmarkersymbol.h"
+#include "qgsextentbufferdialog.h"
 #include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgsnewauxiliarylayerdialog.h"
+#include "qgsprojectstylesettings.h"
+#include "qgsstyleitemslistwidget.h"
+#include "qgsstylesavedialog.h"
 #include "qgssymbolanimationsettingswidget.h"
 #include "qgssymbolbuffersettingswidget.h"
-#include "qgsprojectstylesettings.h"
+#include "qgsvectorlayer.h"
 
-#include <QMessageBox>
 #include <QAction>
 #include <QMenu>
+#include <QMessageBox>
+#include <QString>
+
+#include "moc_qgssymbolslistwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent, QgsVectorLayer *layer )
   : QWidget( parent )
@@ -125,14 +130,20 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   connect( mSymbolUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSymbolsListWidget::mSymbolUnitWidget_changed );
   connect( mSymbolColorButton, &QgsColorButton::colorChanged, this, &QgsSymbolsListWidget::setSymbolColor );
 
-  registerSymbolDataDefinedButton( opacityDDBtn, QgsSymbol::Property::Opacity );
+  if ( opacityDDBtn )
+  {
+    registerSymbolDataDefinedButton( opacityDDBtn, QgsSymbol::Property::Opacity );
+  }
 
   connect( this, &QgsSymbolsListWidget::changed, this, &QgsSymbolsListWidget::updateAssistantSymbol );
-  updateAssistantSymbol();
+  if ( mSymbol )
+  {
+    updateAssistantSymbol();
+  }
 
   mSymbolColorButton->setAllowOpacity( true );
   mSymbolColorButton->setColorDialogTitle( tr( "Select Color" ) );
-  mSymbolColorButton->setContext( QStringLiteral( "symbology" ) );
+  mSymbolColorButton->setContext( u"symbology"_s );
 
   connect( mSymbolOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsSymbolsListWidget::opacityChanged );
 
@@ -307,7 +318,7 @@ void QgsSymbolsListWidget::showExtentBufferSettings()
     widget->setPanelTitle( tr( "Extent Buffer" ) );
     widget->setContext( mContext );
 
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [=]() {
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget]() {
       mSymbol->setExtentBuffer( widget->extentBuffer() );
       mSymbol->setDataDefinedProperty( QgsSymbol::Property::ExtentBuffer, widget->dataDefinedProperty() );
       mSymbol->setExtentBufferSizeUnit( widget->sizeUnit() );
@@ -574,7 +585,7 @@ QgsExpressionContext QgsSymbolsListWidget::createExpressionContext() const
     expContext.appendScope( new QgsExpressionContextScope( scope ) );
   }
 
-  expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE << QgsExpressionContext::EXPR_SYMBOL_COLOR << QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT << QgsExpressionContext::EXPR_GEOMETRY_PART_NUM << QgsExpressionContext::EXPR_GEOMETRY_RING_NUM << QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT << QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE << QStringLiteral( "symbol_layer_count" ) << QStringLiteral( "symbol_layer_index" ) << QStringLiteral( "symbol_frame" ) );
+  expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE << QgsExpressionContext::EXPR_SYMBOL_COLOR << QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT << QgsExpressionContext::EXPR_GEOMETRY_PART_NUM << QgsExpressionContext::EXPR_GEOMETRY_RING_NUM << QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT << QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE << u"symbol_layer_count"_s << u"symbol_layer_index"_s << u"symbol_frame"_s );
 
   return expContext;
 }
@@ -583,7 +594,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
 {
   updateSymbolColor();
 
-  const auto overrideButtons { findChildren<QgsPropertyOverrideButton *>() };
+  const QList<QgsPropertyOverrideButton *> overrideButtons { findChildren<QgsPropertyOverrideButton *>() };
   for ( QgsPropertyOverrideButton *button : overrideButtons )
   {
     button->registerExpressionContextGenerator( this );

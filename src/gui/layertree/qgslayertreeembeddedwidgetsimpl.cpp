@@ -14,14 +14,19 @@
  ***************************************************************************/
 
 #include "qgslayertreeembeddedwidgetsimpl.h"
-#include "moc_qgslayertreeembeddedwidgetsimpl.cpp"
+
+#include "qgsmaplayer.h"
 
 #include <QFontMetrics>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QSlider>
+#include <QString>
 #include <QTimer>
-#include "qgsmaplayer.h"
+
+#include "moc_qgslayertreeembeddedwidgetsimpl.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -92,7 +97,7 @@ void QgsLayerTreeOpacityWidget::layerTrChanged()
 
 QString QgsLayerTreeOpacityWidget::Provider::id() const
 {
-  return QStringLiteral( "transparency" );
+  return u"transparency"_s;
 }
 
 QString QgsLayerTreeOpacityWidget::Provider::name() const

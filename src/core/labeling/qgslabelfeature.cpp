@@ -13,12 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslabelfeature.h"
+
 #include "feature.h"
 #include "qgsgeometry.h"
 #include "qgsgeos.h"
 
-QgsLabelFeature::QgsLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size )
+QgsLabelFeature::QgsLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size, int subPartId )
   : mId( id )
+  , mSubPartId( subPartId )
   , mGeometry( std::move( geometry ) )
   , mSize( size )
 {

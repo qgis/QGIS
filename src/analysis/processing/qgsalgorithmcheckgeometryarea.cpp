@@ -16,18 +16,23 @@
  ***************************************************************************/
 
 #include "qgsalgorithmcheckgeometryarea.h"
+
+#include "qgsgeometryareacheck.h"
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheckerror.h"
-#include "qgsgeometryareacheck.h"
 #include "qgspoint.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectordataproviderfeaturepool.h"
+#include "qgsvectorlayer.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
 QString QgsGeometryCheckAreaAlgorithm::name() const
 {
-  return QStringLiteral( "checkgeometryarea" );
+  return u"checkgeometryarea"_s;
 }
 
 QString QgsGeometryCheckAreaAlgorithm::displayName() const
@@ -52,7 +57,7 @@ QString QgsGeometryCheckAreaAlgorithm::group() const
 
 QString QgsGeometryCheckAreaAlgorithm::groupId() const
 {
-  return QStringLiteral( "checkgeometry" );
+  return u"checkgeometry"_s;
 }
 
 QString QgsGeometryCheckAreaAlgorithm::shortHelpString() const
@@ -63,7 +68,7 @@ QString QgsGeometryCheckAreaAlgorithm::shortHelpString() const
 
 Qgis::ProcessingAlgorithmFlags QgsGeometryCheckAreaAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 QgsGeometryCheckAreaAlgorithm *QgsGeometryCheckAreaAlgorithm::createInstance() const
@@ -75,30 +80,28 @@ void QgsGeometryCheckAreaAlgorithm::initAlgorithm( const QVariantMap &configurat
 {
   Q_UNUSED( configuration )
 
-  // inputs
   addParameter(
     new QgsProcessingParameterFeatureSource(
-      QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
+      u"INPUT"_s, QObject::tr( "Input layer" ),
       QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
     )
   );
   addParameter( new QgsProcessingParameterField(
-    QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
+    u"UNIQUE_ID"_s, QObject::tr( "Unique feature identifier" ), QString(), u"INPUT"_s
   ) );
   addParameter( new QgsProcessingParameterArea(
-    QStringLiteral( "AREATHRESHOLD" ), QObject::tr( "Area threshold" ), 0, QStringLiteral( "INPUT" )
+    u"AREATHRESHOLD"_s, QObject::tr( "Area threshold" ), 0, u"INPUT"_s
   ) );
 
-  // outputs
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Small polygons errors" ), Qgis::ProcessingSourceType::VectorPoint
+    u"ERRORS"_s, QObject::tr( "Small polygons errors" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Small polygons features" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, false
+    u"OUTPUT"_s, QObject::tr( "Small polygons features" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, false
   ) );
 
-  std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
-    QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
+  auto tolerance = std::make_unique<QgsProcessingParameterNumber>(
+    u"TOLERANCE"_s, QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
   );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
   tolerance->setHelp( QObject::tr( "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
@@ -108,21 +111,21 @@ void QgsGeometryCheckAreaAlgorithm::initAlgorithm( const QVariantMap &configurat
 
 bool QgsGeometryCheckAreaAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mTolerance = parameterAsInt( parameters, QStringLiteral( "TOLERANCE" ), context );
+  mTolerance = parameterAsInt( parameters, u"TOLERANCE"_s, context );
   return true;
 }
 
 QgsFields QgsGeometryCheckAreaAlgorithm::outputFields()
 {
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "gc_layerid" ), QMetaType::QString ) );
-  fields.append( QgsField( QStringLiteral( "gc_layername" ), QMetaType::QString ) );
-  fields.append( QgsField( QStringLiteral( "gc_partidx" ), QMetaType::Int ) );
-  fields.append( QgsField( QStringLiteral( "gc_ringidx" ), QMetaType::Int ) );
-  fields.append( QgsField( QStringLiteral( "gc_vertidx" ), QMetaType::Int ) );
-  fields.append( QgsField( QStringLiteral( "gc_errorx" ), QMetaType::Double ) );
-  fields.append( QgsField( QStringLiteral( "gc_errory" ), QMetaType::Double ) );
-  fields.append( QgsField( QStringLiteral( "gc_error" ), QMetaType::QString ) );
+  fields.append( QgsField( u"gc_layerid"_s, QMetaType::QString ) );
+  fields.append( QgsField( u"gc_layername"_s, QMetaType::QString ) );
+  fields.append( QgsField( u"gc_partidx"_s, QMetaType::Int ) );
+  fields.append( QgsField( u"gc_ringidx"_s, QMetaType::Int ) );
+  fields.append( QgsField( u"gc_vertidx"_s, QMetaType::Int ) );
+  fields.append( QgsField( u"gc_errorx"_s, QMetaType::Double ) );
+  fields.append( QgsField( u"gc_errory"_s, QMetaType::Double ) );
+  fields.append( QgsField( u"gc_error"_s, QMetaType::QString ) );
   return fields;
 }
 
@@ -130,12 +133,12 @@ QVariantMap QgsGeometryCheckAreaAlgorithm::processAlgorithm( const QVariantMap &
 {
   QString dest_output;
   QString dest_errors;
-  const std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  const std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !input )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  QString uniqueIdFieldName( parameterAsString( parameters, QStringLiteral( "UNIQUE_ID" ), context ) );
-  int uniqueIdFieldIdx = input->fields().indexFromName( uniqueIdFieldName );
+  const QString uniqueIdFieldName( parameterAsString( parameters, u"UNIQUE_ID"_s, context ) );
+  const int uniqueIdFieldIdx = input->fields().indexFromName( uniqueIdFieldName );
   if ( uniqueIdFieldIdx == -1 )
     throw QgsProcessingException( QObject::tr( "Missing field %1 in input layer" ).arg( uniqueIdFieldName ) );
 
@@ -145,26 +148,24 @@ QVariantMap QgsGeometryCheckAreaAlgorithm::processAlgorithm( const QVariantMap &
   fields.append( uniqueIdField );
 
   const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink(
-    parameters, QStringLiteral( "OUTPUT" ), context, dest_output, fields, input->wkbType(), input->sourceCrs()
+    parameters, u"OUTPUT"_s, context, dest_output, fields, input->wkbType(), input->sourceCrs()
   ) );
 
   const std::unique_ptr<QgsFeatureSink> sink_errors( parameterAsSink(
-    parameters, QStringLiteral( "ERRORS" ), context, dest_errors, fields, Qgis::WkbType::Point, input->sourceCrs()
+    parameters, u"ERRORS"_s, context, dest_errors, fields, Qgis::WkbType::Point, input->sourceCrs()
   ) );
   if ( !sink_errors )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "ERRORS" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"ERRORS"_s ) );
 
   QgsProcessingMultiStepFeedback multiStepFeedback( 3, feedback );
 
-  QgsProject *project = QgsProject::instance();
-
-  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), project->transformContext(), project );
+  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), context.transformContext(), context.project(), uniqueIdFieldIdx );
 
   // Test detection
   QList<QgsGeometryCheckError *> checkErrors;
   QStringList messages;
 
-  const double areaThreshold = parameterAsDouble( parameters, QStringLiteral( "AREATHRESHOLD" ), context );
+  const double areaThreshold = parameterAsDouble( parameters, u"AREATHRESHOLD"_s, context );
 
   QVariantMap configurationCheck;
   configurationCheck.insert( "areaThreshold", areaThreshold );
@@ -180,7 +181,19 @@ QVariantMap QgsGeometryCheckAreaAlgorithm::processAlgorithm( const QVariantMap &
 
   multiStepFeedback.setCurrentStep( 2 );
   feedback->setProgressText( QObject::tr( "Collecting errors…" ) );
-  check.collectErrors( featurePools, checkErrors, messages, feedback );
+  QgsGeometryCheck::Result res = check.collectErrors( featurePools, checkErrors, messages, feedback );
+  if ( res == QgsGeometryCheck::Result::Success )
+  {
+    feedback->pushInfo( QObject::tr( "Errors collected successfully." ) );
+  }
+  else if ( res == QgsGeometryCheck::Result::Canceled )
+  {
+    throw QgsProcessingException( QObject::tr( "Operation was canceled." ) );
+  }
+  else if ( res == QgsGeometryCheck::Result::DuplicatedUniqueId )
+  {
+    throw QgsProcessingException( QObject::tr( "Field '%1' contains non-unique values and can not be used as unique ID." ).arg( uniqueIdFieldName ) );
+  }
 
   multiStepFeedback.setCurrentStep( 3 );
   feedback->setProgressText( QObject::tr( "Exporting errors…" ) );
@@ -210,11 +223,11 @@ QVariantMap QgsGeometryCheckAreaAlgorithm::processAlgorithm( const QVariantMap &
 
     f.setGeometry( error->geometry() );
     if ( sink_output && !sink_output->addFeature( f, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, u"OUTPUT"_s ) );
 
     f.setGeometry( QgsGeometry::fromPoint( QgsPoint( error->location().x(), error->location().y() ) ) );
     if ( !sink_errors->addFeature( f, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink_errors.get(), parameters, QStringLiteral( "ERRORS" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink_errors.get(), parameters, u"ERRORS"_s ) );
 
     i++;
     feedback->setProgress( 100.0 * step * static_cast<double>( i ) );
@@ -228,8 +241,8 @@ QVariantMap QgsGeometryCheckAreaAlgorithm::processAlgorithm( const QVariantMap &
 
   QVariantMap outputs;
   if ( sink_output )
-    outputs.insert( QStringLiteral( "OUTPUT" ), dest_output );
-  outputs.insert( QStringLiteral( "ERRORS" ), dest_errors );
+    outputs.insert( u"OUTPUT"_s, dest_output );
+  outputs.insert( u"ERRORS"_s, dest_errors );
 
   return outputs;
 }

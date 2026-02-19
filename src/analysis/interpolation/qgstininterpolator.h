@@ -18,9 +18,10 @@
 #ifndef QGSTININTERPOLATOR_H
 #define QGSTININTERPOLATOR_H
 
-#include "qgsinterpolator.h"
-#include <QString>
 #include "qgis_analysis.h"
+#include "qgsinterpolator.h"
+
+#include <QString>
 
 class QgsFeatureSink;
 class QgsTriangulation;
@@ -37,7 +38,7 @@ class ANALYSIS_EXPORT QgsTinInterpolator : public QgsInterpolator
 {
   public:
     //! Indicates the type of interpolation to be performed
-    enum class TinInterpolation : int
+    enum class TinInterpolation SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTinInterpolator, TinInterpolation ) : int
     {
       Linear,       //!< Linear interpolation
       CloughTocher, //!< Clough-Tocher interpolation
@@ -74,7 +75,7 @@ class ANALYSIS_EXPORT QgsTinInterpolator : public QgsInterpolator
   private:
     QgsTriangulation *mTriangulation = nullptr;
     TriangleInterpolator *mTriangleInterpolator = nullptr;
-    bool mIsInitialized;
+    bool mIsInitialized = false;
     QgsFeedback *mFeedback = nullptr;
 
     //! Feature sink for triangulation

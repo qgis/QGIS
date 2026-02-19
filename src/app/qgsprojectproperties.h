@@ -22,17 +22,17 @@
 
 #include "ui_qgsprojectpropertiesbase.h"
 
+#include "qgis.h"
+#include "qgis_app.h"
+#include "qgsguiutils.h"
+#include "qgshelp.h"
 #include "qgsoptionsdialogbase.h"
 #include "qgsoptionswidgetfactory.h"
-#include "qgis.h"
-#include "qgsunittypes.h"
-#include "qgsguiutils.h"
 #include "qgsscalewidget.h"
-#include "qgshelp.h"
-#include "qgis_app.h"
+#include "qgsunittypes.h"
 
-#include <QList>
 #include <QColorSpace>
+#include <QList>
 
 class QgsMapCanvas;
 class QgsRelationManagerDialog;
@@ -250,6 +250,8 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     QDoubleSpinBox *mWMSDefaultMapUnitsPerMm = nullptr;
     QgsScaleWidget *mWMSDefaultMapUnitScale = nullptr;
+    QgsExtentWidget *mExtentWidget;
+
 
     QgsCoordinateReferenceSystem mCrs;
 
@@ -269,7 +271,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
         double semiMinor;
     };
     QList<EllipsoidDefs> mEllipsoidList;
-    int mEllipsoidIndex;
+    int mEllipsoidIndex = 0;
     bool mBlockCrsUpdates = false;
     QColorSpace mColorSpace;
 

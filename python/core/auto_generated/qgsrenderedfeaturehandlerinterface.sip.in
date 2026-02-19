@@ -9,6 +9,7 @@
 
 
 
+
 class QgsRenderedFeatureHandlerInterface
 {
 %Docstring(signature="appended")

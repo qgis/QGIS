@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsCoordinateTransform
 {
 %Docstring(signature="appended")
@@ -122,7 +124,7 @@ flags which dictate the behavior of the transformation.
  explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
         const QgsCoordinateReferenceSystem &destination,
         int sourceDatumTransformId,
-        int destinationDatumTransformId ) /Deprecated="Since 3.40. Will be removed in QGIS 4.0. Use the constructor with a QgsCoordinateTransformContext argument instead."/;
+        int destinationDatumTransformId ) /Deprecated="Since 3.40. Will be removed in QGIS 5.0. Use the constructor with a QgsCoordinateTransformContext argument instead."/;
 %Docstring
 Constructs a QgsCoordinateTransform to transform from the ``source`` to
 ``destination`` coordinate reference system, with the specified datum
@@ -130,7 +132,7 @@ transforms (see :py:class:`QgsDatumTransform`).
 
 .. deprecated:: 3.40
 
-   Will be removed in QGIS 4.0. Use the constructor with a :py:class:`QgsCoordinateTransformContext` argument instead.
+   Will be removed in QGIS 5.0. Use the constructor with a :py:class:`QgsCoordinateTransformContext` argument instead.
 %End
 
     QgsCoordinateTransform( const QgsCoordinateTransform &o );

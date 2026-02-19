@@ -10,6 +10,7 @@
 
 
 
+
 class QgsMessageLogViewer : QDialog
 {
 %Docstring(signature="appended")
@@ -31,6 +32,13 @@ to the system's :py:func:`QgsApplication.messageLog()` instance.
     void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
 %Docstring
 Logs a ``message`` to the viewer.
+%End
+
+    void showTab( const QString &tag );
+%Docstring
+Activates the tab whose title matches the given ``tag``, if any.
+
+.. versionadded:: 3.44
 %End
 
   protected:

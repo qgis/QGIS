@@ -4,7 +4,7 @@
     ---------------------
     begin                : July 2017
     copyright            : (C) 2017 by Loïc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    email                : lituus at free dot fr
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,15 +15,21 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapecircle3points.h"
-#include "moc_qgsmaptoolshapecircle3points.cpp"
+
+#include "qgsapplication.h"
 #include "qgsgeometryrubberband.h"
 #include "qgslinestring.h"
-#include "qgspoint.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolcapture.h"
-#include "qgsapplication.h"
+#include "qgspoint.h"
 
-const QString QgsMapToolShapeCircle3PointsMetadata::TOOL_ID = QStringLiteral( "circle-from-3-points" );
+#include <QString>
+
+#include "moc_qgsmaptoolshapecircle3points.cpp"
+
+using namespace Qt::StringLiterals;
+
+const QString QgsMapToolShapeCircle3PointsMetadata::TOOL_ID = u"circle-from-3-points"_s;
 
 QString QgsMapToolShapeCircle3PointsMetadata::id() const
 {
@@ -37,7 +43,7 @@ QString QgsMapToolShapeCircle3PointsMetadata::name() const
 
 QIcon QgsMapToolShapeCircle3PointsMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionCircle3Points.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mActionCircle3Points.svg"_s );
 }
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeCircle3PointsMetadata::category() const
@@ -65,6 +71,9 @@ bool QgsMapToolShapeCircle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e, Q
   }
   else if ( e->button() == Qt::RightButton )
   {
+    if ( mCircle.isEmpty() )
+      return false;
+
     mPoints.append( mParentTool->mapPoint( *e ) );
     addCircleToParentTool();
     return true;
@@ -93,7 +102,12 @@ void QgsMapToolShapeCircle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsM
     case 2:
     {
       mCircle = QgsCircle::from3Points( mPoints.at( 0 ), mPoints.at( 1 ), mParentTool->mapPoint( *e ) );
-      mTempRubberBand->setGeometry( mCircle.toCircularString( true ) );
+      const QgsGeometry newGeometry( mCircle.toCircularString( true ) );
+      if ( !newGeometry.isEmpty() )
+      {
+        mTempRubberBand->setGeometry( newGeometry.constGet()->clone() );
+        setTransientGeometry( newGeometry );
+      }
     }
     break;
     default:

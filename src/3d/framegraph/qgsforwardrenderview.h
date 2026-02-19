@@ -70,7 +70,7 @@ class QgsForwardRenderView : public QgsAbstractRenderView
     //! Returns current render target selector
     Qt3DRender::QRenderTargetSelector *renderTargetSelector() { return mRenderTargetSelector; }
 
-    virtual void updateWindowResize( int width, int height ) override;
+    void updateWindowResize( int width, int height ) override;
 
     //! Returns forward depth texture
     Qt3DRender::QTexture2D *depthTexture() const;
@@ -114,9 +114,7 @@ class QgsForwardRenderView : public QgsAbstractRenderView
     Qt3DRender::QTexture2D *mColorTexture = nullptr;
     Qt3DRender::QTexture2D *mDepthTexture = nullptr;
     // QDebugOverlay added in the forward pass
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 15, 0 )
     Qt3DRender::QDebugOverlay *mDebugOverlay = nullptr;
-#endif
 
     /**
      * Builds the three forward passes needed by forward: one for solid objects, followed by two for transparent objects

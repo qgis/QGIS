@@ -15,21 +15,26 @@
  ***************************************************************************/
 
 #include "qgsrasterlabeling.h"
-#include "qgsrasterlayer.h"
-#include "labelposition.h"
+
 #include "feature.h"
-#include "qgstextrenderer.h"
-#include "qgstextlabelfeature.h"
-#include "qgsstyleentityvisitor.h"
-#include "qgsstyle.h"
+#include "labelposition.h"
+#include "qgsapplication.h"
+#include "qgsbasicnumericformat.h"
+#include "qgsmessagelog.h"
 #include "qgsnumericformat.h"
 #include "qgsnumericformatregistry.h"
-#include "qgsbasicnumericformat.h"
-#include "qgsapplication.h"
-#include "qgsscaleutils.h"
-#include "qgsmessagelog.h"
-#include "qgsrasterpipe.h"
+#include "qgsrasterlayer.h"
 #include "qgsrasterlayerrenderer.h"
+#include "qgsrasterpipe.h"
+#include "qgsscaleutils.h"
+#include "qgsstyle.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgstextlabelfeature.h"
+#include "qgstextrenderer.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsRasterLayerLabelProvider::QgsRasterLayerLabelProvider( QgsRasterLayer *layer )
   : QgsAbstractLabelProvider( layer )
@@ -47,7 +52,7 @@ QgsRasterLayerLabelProvider::~QgsRasterLayerLabelProvider()
 void QgsRasterLayerLabelProvider::addLabel( const QgsPoint &mapPoint, const QString &text, QgsRenderContext &context )
 {
   QgsPoint geom = mapPoint;
-  const QgsTextDocument doc = QgsTextDocument::fromTextAndFormat( { text }, mFormat );
+  const QgsTextDocument doc = QgsTextDocument::fromTextAndFormat( text.split( "\n" ), mFormat );
   QgsTextDocumentMetrics documentMetrics = QgsTextDocumentMetrics::calculateMetrics( doc, mFormat, context );
   const QSizeF size = documentMetrics.documentSize( Qgis::TextLayoutMode::Point, Qgis::TextOrientation::Horizontal );
 
@@ -226,7 +231,7 @@ void QgsRasterLayerLabelProvider::generateLabels( QgsRenderContext &context, Qgs
     }
     catch ( QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "Could not transform raster pixel to map crs" ) );
+      QgsDebugError( u"Could not transform raster pixel to map crs"_s );
       return;
     }
     const QgsPointXY p1PainterUnits = context.mapToPixel().transform( p1 );
@@ -239,7 +244,8 @@ void QgsRasterLayerLabelProvider::generateLabels( QgsRenderContext &context, Qgs
 
   iterator.startRasterRead( mBandNumber, subRegionWidth, subRegionHeight, rasterSubRegion, feedback );
 
-  const QgsNumericFormatContext numericContext;
+  QgsNumericFormatContext numericContext;
+  numericContext.setExpressionContext( context.expressionContext() );
   QgsNumericFormat *numericFormat = mNumericFormat.get();
 
   int iterLeft = 0;
@@ -296,7 +302,7 @@ void QgsRasterLayerLabelProvider::generateLabels( QgsRenderContext &context, Qgs
           }
           catch ( QgsCsException & )
           {
-            QgsDebugError( QStringLiteral( "Could not transform raster pixel center to map crs" ) );
+            QgsDebugError( u"Could not transform raster pixel center to map crs"_s );
           }
         }
         currentX += rasterUnitsPerPixelX;
@@ -322,8 +328,8 @@ bool QgsAbstractRasterLayerLabeling::isInScaleRange( double ) const
 
 QgsAbstractRasterLayerLabeling *QgsAbstractRasterLayerLabeling::createFromElement( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  const QString type = element.attribute( QStringLiteral( "type" ) );
-  if ( type == QLatin1String( "simple" ) )
+  const QString type = element.attribute( u"type"_s );
+  if ( type == "simple"_L1 )
   {
     return QgsRasterLayerSimpleLabeling::create( element, context );
   }
@@ -338,7 +344,7 @@ void QgsAbstractRasterLayerLabeling::toSld( QDomNode &parent, const QVariantMap 
   Q_UNUSED( parent )
   Q_UNUSED( props )
   QDomDocument doc = parent.ownerDocument();
-  parent.appendChild( doc.createComment( QStringLiteral( "SE Export for %1 not implemented yet" ).arg( type() ) ) );
+  parent.appendChild( doc.createComment( u"SE Export for %1 not implemented yet"_s.arg( type() ) ) );
 }
 
 bool QgsAbstractRasterLayerLabeling::accept( QgsStyleEntityVisitorInterface * ) const
@@ -363,7 +369,7 @@ QgsRasterLayerSimpleLabeling::~QgsRasterLayerSimpleLabeling() = default;
 
 QString QgsRasterLayerSimpleLabeling::type() const
 {
-  return QStringLiteral( "simple" );
+  return u"simple"_s;
 }
 
 QgsRasterLayerSimpleLabeling *QgsRasterLayerSimpleLabeling::clone() const
@@ -408,50 +414,50 @@ std::unique_ptr< QgsRasterLayerLabelProvider > QgsRasterLayerSimpleLabeling::pro
 
 QDomElement QgsRasterLayerSimpleLabeling::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  QDomElement elem = doc.createElement( QStringLiteral( "labeling" ) );
-  elem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "simple" ) );
-  elem.setAttribute( QStringLiteral( "band" ), mBandNumber );
-  elem.setAttribute( QStringLiteral( "priority" ), mPriority );
-  elem.setAttribute( QStringLiteral( "zIndex" ), mZIndex );
+  QDomElement elem = doc.createElement( u"labeling"_s );
+  elem.setAttribute( u"type"_s, u"simple"_s );
+  elem.setAttribute( u"band"_s, mBandNumber );
+  elem.setAttribute( u"priority"_s, mPriority );
+  elem.setAttribute( u"zIndex"_s, mZIndex );
 
   if ( mResampleOver > 1 )
   {
-    elem.setAttribute( QStringLiteral( "resampleOver" ), mResampleOver );
+    elem.setAttribute( u"resampleOver"_s, mResampleOver );
   }
-  elem.setAttribute( QStringLiteral( "resampleMethod" ), qgsEnumValueToKey( mResampleMethod ) );
+  elem.setAttribute( u"resampleMethod"_s, qgsEnumValueToKey( mResampleMethod ) );
 
   {
-    QDomElement textFormatElem = doc.createElement( QStringLiteral( "textFormat" ) );
+    QDomElement textFormatElem = doc.createElement( u"textFormat"_s );
     textFormatElem.appendChild( mTextFormat.writeXml( doc, context ) );
     elem.appendChild( textFormatElem );
   }
 
   {
-    QDomElement numericFormatElem = doc.createElement( QStringLiteral( "numericFormat" ) );
+    QDomElement numericFormatElem = doc.createElement( u"numericFormat"_s );
     mNumericFormat->writeXml( numericFormatElem, doc, context );
     elem.appendChild( numericFormatElem );
   }
 
   {
-    QDomElement placementElem = doc.createElement( QStringLiteral( "placement" ) );
-    placementElem.setAttribute( QStringLiteral( "overlapHandling" ), qgsEnumValueToKey( mPlacementSettings.overlapHandling() ) );
+    QDomElement placementElem = doc.createElement( u"placement"_s );
+    placementElem.setAttribute( u"overlapHandling"_s, qgsEnumValueToKey( mPlacementSettings.overlapHandling() ) );
     elem.appendChild( placementElem );
   }
 
   {
-    QDomElement thinningElem = doc.createElement( QStringLiteral( "thinning" ) );
-    thinningElem.setAttribute( QStringLiteral( "maxNumLabels" ), mThinningSettings.maximumNumberLabels() );
-    thinningElem.setAttribute( QStringLiteral( "limitNumLabels" ), mThinningSettings.limitNumberOfLabelsEnabled() );
-    thinningElem.setAttribute( QStringLiteral( "minFeatureSize" ), mThinningSettings.minimumFeatureSize() );
+    QDomElement thinningElem = doc.createElement( u"thinning"_s );
+    thinningElem.setAttribute( u"maxNumLabels"_s, mThinningSettings.maximumNumberLabels() );
+    thinningElem.setAttribute( u"limitNumLabels"_s, mThinningSettings.limitNumberOfLabelsEnabled() );
+    thinningElem.setAttribute( u"minFeatureSize"_s, mThinningSettings.minimumFeatureSize() );
     elem.appendChild( thinningElem );
   }
 
   {
-    QDomElement renderingElem = doc.createElement( QStringLiteral( "rendering" ) );
-    renderingElem.setAttribute( QStringLiteral( "scaleVisibility" ), mScaleVisibility );
+    QDomElement renderingElem = doc.createElement( u"rendering"_s );
+    renderingElem.setAttribute( u"scaleVisibility"_s, mScaleVisibility );
     // note the element names are "flipped" vs the member -- this is intentional, and done to match vector labeling
-    renderingElem.setAttribute( QStringLiteral( "scaleMin" ), mMaximumScale );
-    renderingElem.setAttribute( QStringLiteral( "scaleMax" ), mMinimumScale );
+    renderingElem.setAttribute( u"scaleMin"_s, mMaximumScale );
+    renderingElem.setAttribute( u"scaleMax"_s, mMinimumScale );
     elem.appendChild( renderingElem );
   }
 
@@ -480,42 +486,42 @@ bool QgsRasterLayerSimpleLabeling::hasNonDefaultCompositionMode() const
 QgsRasterLayerSimpleLabeling *QgsRasterLayerSimpleLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
 {
   auto res = std::make_unique< QgsRasterLayerSimpleLabeling >();
-  res->setBand( element.attribute( QStringLiteral( "band" ), QStringLiteral( "1" ) ).toInt() );
-  res->setPriority( element.attribute( QStringLiteral( "priority" ), QStringLiteral( "0.5" ) ).toDouble() );
-  res->setZIndex( element.attribute( QStringLiteral( "zIndex" ), QStringLiteral( "0" ) ).toDouble() );
-  res->setResampleOver( element.attribute( QStringLiteral( "resampleOver" ), QStringLiteral( "1" ) ).toInt() );
-  res->setResampleMethod( qgsEnumKeyToValue( element.attribute( QStringLiteral( "resampleMethod" ) ), Qgis::RasterResamplingMethod::Average ) );
+  res->setBand( element.attribute( u"band"_s, u"1"_s ).toInt() );
+  res->setPriority( element.attribute( u"priority"_s, u"0.5"_s ).toDouble() );
+  res->setZIndex( element.attribute( u"zIndex"_s, u"0"_s ).toDouble() );
+  res->setResampleOver( element.attribute( u"resampleOver"_s, u"1"_s ).toInt() );
+  res->setResampleMethod( qgsEnumKeyToValue( element.attribute( u"resampleMethod"_s ), Qgis::RasterResamplingMethod::Average ) );
 
-  const QDomElement textFormatElem = element.firstChildElement( QStringLiteral( "textFormat" ) );
+  const QDomElement textFormatElem = element.firstChildElement( u"textFormat"_s );
   if ( !textFormatElem.isNull() )
   {
-    const QDomNodeList textFormatNodeList = textFormatElem.elementsByTagName( QStringLiteral( "text-style" ) );
+    const QDomNodeList textFormatNodeList = textFormatElem.elementsByTagName( u"text-style"_s );
     const QDomElement textFormatElem = textFormatNodeList.at( 0 ).toElement();
     QgsTextFormat format;
     format.readXml( textFormatElem, context );
     res->setTextFormat( format );
   }
 
-  const QDomNodeList numericFormatNodeList = element.elementsByTagName( QStringLiteral( "numericFormat" ) );
+  const QDomNodeList numericFormatNodeList = element.elementsByTagName( u"numericFormat"_s );
   if ( !numericFormatNodeList.isEmpty() )
   {
     const QDomElement numericFormatElem = numericFormatNodeList.at( 0 ).toElement();
     res->mNumericFormat.reset( QgsApplication::numericFormatRegistry()->createFromXml( numericFormatElem, context ) );
   }
 
-  QDomElement placementElem = element.firstChildElement( QStringLiteral( "placement" ) );
-  res->mPlacementSettings.setOverlapHandling( qgsEnumKeyToValue( placementElem.attribute( QStringLiteral( "overlapHandling" ) ), Qgis::LabelOverlapHandling::PreventOverlap ) );
+  QDomElement placementElem = element.firstChildElement( u"placement"_s );
+  res->mPlacementSettings.setOverlapHandling( qgsEnumKeyToValue( placementElem.attribute( u"overlapHandling"_s ), Qgis::LabelOverlapHandling::PreventOverlap ) );
 
-  QDomElement thinningElem = element.firstChildElement( QStringLiteral( "thinning" ) );
-  res->mThinningSettings.setMaximumNumberLabels( thinningElem.attribute( QStringLiteral( "maxNumLabels" ), QStringLiteral( "4000" ) ).toInt() );
-  res->mThinningSettings.setLimitNumberLabelsEnabled( thinningElem.attribute( QStringLiteral( "limitNumLabels" ), QStringLiteral( "1" ) ).toInt() );
-  res->mThinningSettings.setMinimumFeatureSize( thinningElem.attribute( QStringLiteral( "minFeatureSize" ), QStringLiteral( "8" ) ).toDouble() );
+  QDomElement thinningElem = element.firstChildElement( u"thinning"_s );
+  res->mThinningSettings.setMaximumNumberLabels( thinningElem.attribute( u"maxNumLabels"_s, u"4000"_s ).toInt() );
+  res->mThinningSettings.setLimitNumberLabelsEnabled( thinningElem.attribute( u"limitNumLabels"_s, u"1"_s ).toInt() );
+  res->mThinningSettings.setMinimumFeatureSize( thinningElem.attribute( u"minFeatureSize"_s, u"8"_s ).toDouble() );
 
-  QDomElement renderingElem = element.firstChildElement( QStringLiteral( "rendering" ) );
+  QDomElement renderingElem = element.firstChildElement( u"rendering"_s );
   // note the element names are "flipped" vs the member -- this is intentional, and done to match vector labeling
-  res->mMaximumScale = renderingElem.attribute( QStringLiteral( "scaleMin" ), QStringLiteral( "0" ) ).toDouble();
-  res->mMinimumScale = renderingElem.attribute( QStringLiteral( "scaleMax" ), QStringLiteral( "0" ) ).toDouble();
-  res->mScaleVisibility = renderingElem.attribute( QStringLiteral( "scaleVisibility" ) ).toInt();
+  res->mMaximumScale = renderingElem.attribute( u"scaleMin"_s, u"0"_s ).toDouble();
+  res->mMinimumScale = renderingElem.attribute( u"scaleMax"_s, u"0"_s ).toDouble();
+  res->mScaleVisibility = renderingElem.attribute( u"scaleVisibility"_s ).toInt();
 
   return res.release();
 }

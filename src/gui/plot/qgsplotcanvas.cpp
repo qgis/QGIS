@@ -17,21 +17,26 @@
  ***************************************************************************/
 
 #include "qgsplotcanvas.h"
-#include "moc_qgsplotcanvas.cpp"
+
+#include "qgslogger.h"
 #include "qgsplotmouseevent.h"
 #include "qgsplottool.h"
-#include "qgslogger.h"
 #include "qgsplottransienttools.h"
 #include "qgssettings.h"
 
-#include <QMenu>
-#include <QKeyEvent>
 #include <QGestureEvent>
+#include <QKeyEvent>
+#include <QMenu>
+#include <QString>
+
+#include "moc_qgsplotcanvas.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPlotCanvas::QgsPlotCanvas( QWidget *parent )
   : QGraphicsView( parent )
 {
-  setObjectName( QStringLiteral( "PlotCanvas" ) );
+  setObjectName( u"PlotCanvas"_s );
   mScene = new QGraphicsScene( this );
   setScene( mScene );
 
@@ -166,7 +171,7 @@ void QgsPlotCanvas::mousePressEvent( QMouseEvent *event )
       setTool( mMidMouseButtonPanTool );
       event->accept();
     }
-    else if ( event->button() == Qt::RightButton && mTool->flags() & Qgis::PlotToolFlag::ShowContextMenu )
+    else if ( event->button() == Qt::RightButton && mTool && mTool->flags() & Qgis::PlotToolFlag::ShowContextMenu )
     {
       auto me = std::make_unique<QgsPlotMouseEvent>( this, event );
       showContextMenu( me.get() );

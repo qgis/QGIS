@@ -13,7 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstiledscenerendererregistry.h"
+
 #include "qgstiledscenerenderer.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 // default renderers
 #include "qgstiledscenetexturerenderer.h"
@@ -22,10 +27,10 @@
 QgsTiledSceneRendererRegistry::QgsTiledSceneRendererRegistry()
 {
   // add default renderers
-  addRenderer( new QgsTiledSceneRendererMetadata( QStringLiteral( "texture" ),
+  addRenderer( new QgsTiledSceneRendererMetadata( u"texture"_s,
                QObject::tr( "Textured" ),
                QgsTiledSceneTextureRenderer::create ) );
-  addRenderer( new QgsTiledSceneRendererMetadata( QStringLiteral( "wireframe" ),
+  addRenderer( new QgsTiledSceneRendererMetadata( u"wireframe"_s,
                QObject::tr( "Wireframe" ),
                QgsTiledSceneWireframeRenderer::create ) );
 }

@@ -19,8 +19,8 @@
 #define QGSMESHTERRAINTILELOADER_H
 
 #include "qgsmesh3dsymbol.h"
-#include "qgstriangularmesh.h"
 #include "qgsterraintileloader.h"
+#include "qgstriangularmesh.h"
 
 #define SIP_NO_FILE
 
@@ -33,6 +33,8 @@ class QgsMeshTerrainTileLoader : public QgsTerrainTileLoader
   public:
     //! Construct the loader for a node
     QgsMeshTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, const QgsTriangularMesh &triangularMesh, const QgsMesh3DSymbol *symbol );
+
+    void start() override;
 
     //! Create the 3D entity and returns it
     Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;

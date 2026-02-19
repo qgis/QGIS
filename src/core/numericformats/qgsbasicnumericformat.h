@@ -15,16 +15,17 @@
 #ifndef QGSBASICNUMERICFORMAT_H
 #define QGSBASICNUMERICFORMAT_H
 
+#include <iostream>
+#include <memory>
+#include <sstream>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsnumericformat.h"
-#include <sstream>
-#include <iostream>
-#include <memory>
 
 /**
  * \ingroup core
- * \brief A numeric formater which returns a simple text representation of a value.
+ * \brief A numeric formatter which returns a simple text representation of a value.
  *
  * \since QGIS 3.12
  */

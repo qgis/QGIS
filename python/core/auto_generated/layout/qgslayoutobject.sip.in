@@ -9,6 +9,7 @@
 
 
 
+
 class QgsLayoutObject: QObject, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")
@@ -31,6 +32,7 @@ A base class for objects which belong to a layout.
 #include "qgslayoutitempage.h"
 #include "qgslayoutitemmarker.h"
 #include "qgslayoutitemelevationprofile.h"
+#include "qgslayoutitemchart.h"
 %End
 %ConvertToSubClassCode
     if ( QgsLayoutItem *item = qobject_cast< QgsLayoutItem * >( sipCpp ) )
@@ -96,6 +98,10 @@ A base class for objects which belong to a layout.
         case QGraphicsItem::UserType + 118:
           sipType = sipType_QgsLayoutItemElevationProfile;
           *sipCppRet = static_cast<QgsLayoutItemElevationProfile *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 119:
+          sipType = sipType_QgsLayoutItemChart;
+          *sipCppRet = static_cast<QgsLayoutItemChart *>( sipCpp );
           break;
 
         // did you read that comment above? NO? Go read it now. You're about to break stuff.
@@ -167,6 +173,7 @@ A base class for objects which belong to a layout.
       MapGridFrameDivisionsRight,
       MapGridFrameDivisionsTop,
       MapGridFrameDivisionsBottom,
+      MapGridDrawAnnotation,
       MapCrs,
       StartDateTime,
       EndDateTime,

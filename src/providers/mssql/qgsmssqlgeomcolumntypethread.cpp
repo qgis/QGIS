@@ -13,14 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmssqlgeomcolumntypethread.h"
-#include "moc_qgsmssqlgeomcolumntypethread.cpp"
+
+#include "qgslogger.h"
+#include "qgsmssqldatabase.h"
+#include "qgsmssqlprovider.h"
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QString>
 
-#include "qgslogger.h"
-#include "qgsmssqlprovider.h"
-#include "qgsmssqldatabase.h"
+#include "moc_qgsmssqlgeomcolumntypethread.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMssqlGeomColumnTypeThread::QgsMssqlGeomColumnTypeThread( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool useEstimatedMetadata, bool disableInvalidGeometryHandling )
   : mService( service )
@@ -48,7 +52,14 @@ void QgsMssqlGeomColumnTypeThread::run()
 {
   mStopped = false;
 
-  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( mService, mHost, mDatabase, mUsername, mPassword );
+  QgsDataSourceUri uri;
+  uri.setService( mService );
+  uri.setHost( mHost );
+  uri.setDatabase( mDatabase );
+  uri.setUsername( mUsername );
+  uri.setPassword( mPassword );
+
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( uri );
   if ( !db->isValid() )
   {
     QgsDebugError( db->errorText() );
@@ -63,8 +74,8 @@ void QgsMssqlGeomColumnTypeThread::run()
 
     if ( !mStopped )
     {
-      const QString table = QStringLiteral( "%1[%2]" )
-                              .arg( layerProperty.schemaName.isEmpty() ? QString() : QStringLiteral( "[%1]." ).arg( layerProperty.schemaName ), layerProperty.tableName );
+      const QString table = u"%1[%2]"_s
+                              .arg( layerProperty.schemaName.isEmpty() ? QString() : u"[%1]."_s.arg( layerProperty.schemaName ), layerProperty.tableName );
 
       QString query;
       if ( mDisableInvalidGeometryHandling )
@@ -77,7 +88,7 @@ void QgsMssqlGeomColumnTypeThread::run()
                                 " FROM %2"
                                 " WHERE [%1] IS NOT NULL %4"
                                 " GROUP BY [%1].STGeometryType(), [%1].STSrid, [%1].HasZ, [%1].HasM" )
-                  .arg( layerProperty.geometryColName, table, mUseEstimatedMetadata ? "TOP 1" : "", layerProperty.sql.isEmpty() ? QString() : QStringLiteral( " AND %1" ).arg( layerProperty.sql ) );
+                  .arg( layerProperty.geometryColName, table, mUseEstimatedMetadata ? "TOP 1" : "", layerProperty.sql.isEmpty() ? QString() : u" AND %1"_s.arg( layerProperty.sql ) );
       }
       else
       {
@@ -89,7 +100,7 @@ void QgsMssqlGeomColumnTypeThread::run()
                         GROUP BY type, srid, hasz, hasm
                         )raw"
         )
-                  .arg( layerProperty.geometryColName, table, mUseEstimatedMetadata ? "TOP 1" : "", layerProperty.sql.isEmpty() ? QString() : QStringLiteral( " AND %1" ).arg( layerProperty.sql ) );
+                  .arg( layerProperty.geometryColName, table, mUseEstimatedMetadata ? "TOP 1" : "", layerProperty.sql.isEmpty() ? QString() : u" AND %1"_s.arg( layerProperty.sql ) );
       }
 
       // issue the sql query
@@ -131,8 +142,8 @@ void QgsMssqlGeomColumnTypeThread::run()
           srids << srid;
         }
 
-        type = types.join( QLatin1Char( ',' ) );
-        srid = srids.join( QLatin1Char( ',' ) );
+        type = types.join( ','_L1 );
+        srid = srids.join( ','_L1 );
       }
 
       layerProperty.type = type;

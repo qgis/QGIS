@@ -13,10 +13,11 @@
 
 
 
-
 typedef QVector<QgsPointXY> QgsPolylineXY;
 
-typedef QgsPointSequence QgsPolyline;
+typedef QVector<QgsPoint> QgsPolyline;
+
+typedef QVector<QVector< QgsPoint >> QgsMultiPolyline;
 
 typedef QVector<QVector<QgsPointXY>> QgsPolygonXY;
 
@@ -41,7 +42,6 @@ Encapsulates parameters under which a geometry operation is performed.
 #include "qgsgeometry.h"
 %End
   public:
-
     double gridSize() const;
 %Docstring
 Returns the grid size which will be used to snap vertices of a geometry.
@@ -105,7 +105,6 @@ as the point, line, polygon, curve or other geometry subclasses.
     static const QMetaObject staticMetaObject;
 
   public:
-
     QgsGeometry() /HoldGIL/;
 
     QgsGeometry( const QgsGeometry & );
@@ -169,7 +168,7 @@ transferred.
 
 .. note::
 
-   This method is deprecated for usage in Python and will be removed from Python bindings with QGIS 4.
+   This method is deprecated for usage in Python and will be removed from Python bindings with QGIS 5.
    Using this method will confuse Python's memory management and type information system.
    Better create a new QgsGeometry object instead.
 
@@ -258,7 +257,7 @@ Example
 .. code-block:: python
 
        # Create a polygon geometry with a single exterior ring (a triangle)
-       polygon = QgsGeometry.fromPolygonXY([[QgsPointXY(1, 2), QgsPointXY(5, 2), QgsPointXY(5, 10), QgsPointXY(1, 2)]]))
+       polygon = QgsGeometry.fromPolygonXY([[QgsPointXY(1, 2), QgsPointXY(5, 2), QgsPointXY(5, 10), QgsPointXY(1, 2)]])
 
        # Create a donut shaped polygon geometry with an interior ring
        polygon = QgsGeometry.fromPolygonXY([[QgsPointXY(1, 2), QgsPointXY(5, 2), QgsPointXY(5, 10), QgsPointXY(1, 10), QgsPointXY(1, 2)],
@@ -290,8 +289,31 @@ surface geometry.
 Creates a new multipart geometry from a list of QgsGeometry objects
 %End
 
-    static QgsGeometry createWedgeBuffer( const QgsPoint &center, double azimuth, double angularWidth,
-                                          double outerRadius, double innerRadius = 0 );
+    static QgsGeometry collectTinPatches( const QVector<QgsGeometry> &geometries );
+%Docstring
+Collects all patches from a list of TIN or Triangle geometries into a
+single TIN geometry.
+
+This method iterates through the input ``geometries`` and extracts all
+triangle patches, combining them into a single
+:py:class:`QgsTriangulatedSurface`. Input geometries can be either
+:py:class:`QgsTriangulatedSurface` (TIN) or :py:class:`QgsTriangle`
+objects. Other geometry types are ignored.
+
+The resulting TIN will preserve Z and M values if present in the first
+valid input geometry.
+
+:param geometries: list of input geometries (should be TIN or Triangle
+                   types)
+
+:return: a QgsGeometry containing a QgsTriangulatedSurface with all
+         collected patches, or a null geometry if no valid TIN/Triangle
+         geometries were found
+
+.. versionadded:: 4.0
+%End
+
+    static QgsGeometry createWedgeBuffer( const QgsPoint &center, double azimuth, double angularWidth, double outerRadius, double innerRadius = 0 );
 %Docstring
 Creates a wedge shaped buffer from a ``center`` point.
 
@@ -310,8 +332,7 @@ Polygon geometry.
 .. versionadded:: 3.2
 %End
 
-    static QgsGeometry createWedgeBufferFromAngles( const QgsPoint &center, double startAngle, double endAngle,
-        double outerRadius, double innerRadius = 0 );
+    static QgsGeometry createWedgeBufferFromAngles( const QgsPoint &center, double startAngle, double endAngle, double outerRadius, double innerRadius = 0 );
 %Docstring
 Creates a wedge shaped buffer from a ``center`` point.
 
@@ -384,7 +405,7 @@ test performed by :py:func:`~QgsGeometry.isGeosEqual`.
 Compares the geometry with another geometry using GEOS.
 
 This method performs a slow, topological check, where geometries are
-considered equal if all of the their component edges overlap. E.g. lines
+considered equal if all of their component edges overlap. E.g. lines
 with the same vertex locations but opposite direction will be considered
 equal by this method.
 
@@ -450,6 +471,28 @@ Returns the planar, 2-dimensional area of the geometry.
    celestial body).
 
 .. seealso:: :py:func:`length`
+
+.. seealso:: :py:func:`area3D`
+%End
+
+    double area3D() const;
+%Docstring
+Returns the 3-dimensional surface area of the geometry.
+
+.. warning::
+
+   QgsGeometry objects are inherently Cartesian/planar geometries, and the area
+   returned by this method is calculated using strictly Cartesian mathematics.
+
+.. warning::
+
+   This method assumes the horizontal and vertical coordinates are in the same unit.
+
+:raises QgsInvalidArgumentException: if the area cannot be calculated.
+
+.. seealso:: :py:func:`area`
+
+.. versionadded:: 4.0
 %End
 
     double length() const;
@@ -537,7 +580,7 @@ Example
        # parts can be modified during the iteration
        geometry = QgsGeometry.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
        for part in geometry.parts():
-           part.transform(ct)
+           part.transform(ct=QgsCoordinateTransform()) # Dummy transform
 
        # part iteration can also be combined with vertex iteration
        geometry = QgsGeometry.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
@@ -801,12 +844,15 @@ not correspond to a valid vertex on this geometry
 Deletes the vertex at the given position number and item (first number
 is index 0)
 
+For Point geometries, this clears the geometry. For MultiPoint
+geometries, this removes the point geometry at the specified index. For
+other geometry types, this removes the vertex at the specified index. If
+the removal of the vertex would result in an invalid geometry (e.g. a
+LineString with less than 2 vertices), the geometry is cleared instead.
+
 :return: ``False`` if atVertex does not correspond to a valid vertex on
-         this geometry (including if this geometry is a Point), or if
-         the number of remaining vertices in the linestring would be
-         less than two. It is up to the caller to distinguish between
-         these error conditions. (Or maybe we add another method to this
-         object to help make the distinction?)
+         this geometry or if the geometry is null, ``True`` if the
+         vertex was successfully deleted or the geometry was cleared.
 %End
 
     bool toggleCircularAtVertex( int atVertex );
@@ -909,7 +955,7 @@ multipolygons.
 :return: OperationResult a result code: success or reason of failure
 %End
 
- Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /PyName=addPointsXY,Deprecated="Since 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis.WkbType geometry type instead of Qgis.GeometryType."/;
+ Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /PyName=addPointsXY,Deprecated="Since 3.38. Will be removed in QGIS 5.0. Use addPartV2 which accepts Qgis.WkbType geometry type instead of Qgis.GeometryType."/;
 %Docstring
 Adds a new part to a the geometry.
 
@@ -920,7 +966,7 @@ Adds a new part to a the geometry.
 
 .. deprecated:: 3.38
 
-   Will be removed in QGIS 4.0. Use addPartV2 which accepts :py:class:`Qgis`.WkbType geometry type instead of :py:class:`Qgis`.GeometryType.
+   Will be removed in QGIS 5.0. Use addPartV2 which accepts :py:class:`Qgis`.WkbType geometry type instead of :py:class:`Qgis`.GeometryType.
 %End
 
     Qgis::GeometryOperationResult addPartV2( const QVector<QgsPointXY> &points, Qgis::WkbType wkbType = Qgis::WkbType::Unknown ) /PyName=addPointsXYV2/;
@@ -935,7 +981,7 @@ Adds a new part to a the geometry.
 .. versionadded:: 3.38
 %End
 
- Qgis::GeometryOperationResult addPart( const QgsPointSequence &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /PyName=addPoints,Deprecated="Since 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis.WkbType geometry type instead of Qgis.GeometryType."/;
+ Qgis::GeometryOperationResult addPart( const QgsPointSequence &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /PyName=addPoints,Deprecated="Since 3.38. Will be removed in QGIS 5.0. Use addPartV2 which accepts Qgis.WkbType geometry type instead of Qgis.GeometryType."/;
 %Docstring
 Adds a new part to a the geometry.
 
@@ -946,7 +992,7 @@ Adds a new part to a the geometry.
 
 .. deprecated:: 3.38
 
-   Will be removed in QGIS 4.0. Use addPartV2 which accepts :py:class:`Qgis`.WkbType geometry type instead of :py:class:`Qgis`.GeometryType.
+   Will be removed in QGIS 5.0. Use addPartV2 which accepts :py:class:`Qgis`.WkbType geometry type instead of :py:class:`Qgis`.GeometryType.
 %End
 
     Qgis::GeometryOperationResult addPartV2( const QgsPointSequence &points, Qgis::WkbType wkbType = Qgis::WkbType::Unknown ) /PyName=addPointsV2/;
@@ -961,7 +1007,7 @@ Adds a new part to a the geometry.
 .. versionadded:: 3.38
 %End
 
- Qgis::GeometryOperationResult addPart( QgsAbstractGeometry *part /Transfer/, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /Deprecated="Since 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis.WkbType geometry type instead of Qgis.GeometryType."/;
+ Qgis::GeometryOperationResult addPart( QgsAbstractGeometry *part /Transfer/, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /Deprecated="Since 3.38. Will be removed in QGIS 5.0. Use addPartV2 which accepts Qgis.WkbType geometry type instead of Qgis.GeometryType."/;
 %Docstring
 Adds a new part to this geometry.
 
@@ -972,7 +1018,7 @@ Adds a new part to this geometry.
 
 .. deprecated:: 3.38
 
-   Will be removed in QGIS 4.0. Use addPartV2 which accepts :py:class:`Qgis`.WkbType geometry type instead of :py:class:`Qgis`.GeometryType.
+   Will be removed in QGIS 5.0. Use addPartV2 which accepts :py:class:`Qgis`.WkbType geometry type instead of :py:class:`Qgis`.GeometryType.
 %End
 
     Qgis::GeometryOperationResult addPartV2( QgsAbstractGeometry *part /Transfer/, Qgis::WkbType wkbType = Qgis::WkbType::Unknown );
@@ -1086,8 +1132,7 @@ Example:
       if ( PyList_Check( a0 ) && PyList_GET_SIZE( a0 ) )
       {
         PyObject *p0 = PyList_GetItem( a0, 0 );
-        if ( sipCanConvertToType( p0, sipType_QgsPointXY, SIP_NOT_NONE ) &&
-             sipCanConvertToType( a0, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) )
+        if ( sipCanConvertToType( p0, sipType_QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( a0, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) )
         {
           QVector<QgsGeometry> newGeometries;
           QVector<QgsPointXY> topologyTestPoints;
@@ -1109,8 +1154,7 @@ Example:
           sipReleaseType( splitLine, sipType_QVector_0100QgsPointXY, state );
         }
 
-        else if ( sipCanConvertToType( p0, sipType_QgsPoint, SIP_NOT_NONE ) &&
-                  sipCanConvertToType( a0, sipType_QVector_0100QgsPoint, SIP_NOT_NONE ) )
+        else if ( sipCanConvertToType( p0, sipType_QgsPoint, SIP_NOT_NONE ) && sipCanConvertToType( a0, sipType_QVector_0100QgsPoint, SIP_NOT_NONE ) )
         {
           QVector<QgsGeometry> newGeometries;
           QVector<QgsPoint> topologyTestPoints;
@@ -1145,7 +1189,7 @@ Example:
     }
 %End
 
-    Qgis::GeometryOperationResult splitGeometry( const QgsCurve *curve,  QVector<QgsGeometry> &newGeometries /Out/, bool preserveCircular, bool topological, QgsPointSequence &topologyTestPoints /Out/, bool splitFeature = true );
+    Qgis::GeometryOperationResult splitGeometry( const QgsCurve *curve, QVector<QgsGeometry> &newGeometries /Out/, bool preserveCircular, bool topological, QgsPointSequence &topologyTestPoints /Out/, bool splitFeature = true );
 %Docstring
 Splits this geometry according to a given curve.
 
@@ -1210,6 +1254,9 @@ height of the rotated bounding box will also be returned.
 If an error was encountered while creating the result, more information
 can be retrieved by calling :py:func:`~QgsGeometry.lastError` on the
 returned geometry.
+
+For singlepart point geometries, the result is equivalent to the
+bounding box of the geometry.
 
 .. seealso:: :py:func:`boundingBox`
 %End
@@ -1363,11 +1410,7 @@ will be generated.
 .. versionadded:: 3.24
 %End
 
-    QgsGeometry applyDashPattern( const QVector< double > &pattern,
-                                  Qgis::DashPatternLineEndingRule startRule = Qgis::DashPatternLineEndingRule::NoRule,
-                                  Qgis::DashPatternLineEndingRule endRule = Qgis::DashPatternLineEndingRule::NoRule,
-                                  Qgis::DashPatternSizeAdjustment adjustment = Qgis::DashPatternSizeAdjustment::ScaleBothDashAndGap,
-                                  double patternOffset = 0 ) const;
+    QgsGeometry applyDashPattern( const QVector< double > &pattern, Qgis::DashPatternLineEndingRule startRule = Qgis::DashPatternLineEndingRule::NoRule, Qgis::DashPatternLineEndingRule endRule = Qgis::DashPatternLineEndingRule::NoRule, Qgis::DashPatternSizeAdjustment adjustment = Qgis::DashPatternSizeAdjustment::ScaleBothDashAndGap, double patternOffset = 0 ) const;
 %Docstring
 Applies a dash pattern to a geometry, returning a MultiLineString
 geometry which is the input geometry stroked along each line/ring with
@@ -1601,9 +1644,7 @@ Returns an offset line at a given distance and side from an input line.
                    (JoinStyleMiter only)
 %End
 
-    QgsGeometry singleSidedBuffer( double distance, int segments, Qgis::BufferSide side,
-                                   Qgis::JoinStyle joinStyle = Qgis::JoinStyle::Round,
-                                   double miterLimit = 2.0 ) const;
+    QgsGeometry singleSidedBuffer( double distance, int segments, Qgis::BufferSide side, Qgis::JoinStyle joinStyle = Qgis::JoinStyle::Round, double miterLimit = 2.0 ) const;
 %Docstring
 Returns a single sided buffer for a (multi)line geometry. The buffer is
 only applied to one side of the line.
@@ -2173,7 +2214,7 @@ Since QGIS 3.28 the optional ``parameters`` argument can be used to
 specify parameters which control the union results.
 %End
 
-    QgsGeometry mergeLines() const;
+    QgsGeometry mergeLines( const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 %Docstring
 Merges any connected lines in a LineString/MultiLineString geometry and
 converts them to single line strings.
@@ -2181,6 +2222,9 @@ converts them to single line strings.
 :return: a LineString or MultiLineString geometry, with any connected
          lines joined. An empty geometry will be returned if the input
          geometry was not a MultiLineString geometry.
+
+Since QGIS 3.44 the optional ``parameters`` argument can be used to
+specify parameters which control the mergeLines results.
 %End
 
     QgsGeometry difference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
@@ -2327,6 +2371,8 @@ the specified type. E.g.
 - curved geometries will be segmented if ``type`` is non-curved.
 - multi geometries will be converted to a list of single geometries
 - single geometries will be upgraded to multi geometries
+- PolyhedralSurface/TIN will be converted to multi polygon
+- multipolygon, polygon and triangle will be converted to TIN
 - z or m values will be added or dropped as required.
 
 Since QGIS 3.24, the parameters ``defaultZ`` and ``defaultM`` control
@@ -2343,6 +2389,12 @@ geometries to points. By default duplicated nodes are ignored.
    of geometries instead of the geometry family (point/line/polygon), and tries more exhaustively
    to coerce geometries to the desired ``type``. It also correctly maintains curves and z/m values
    wherever appropriate.
+
+.. note::
+
+   If an error occurs during conversion (e.g., attempting to convert a polygon with
+   non-triangular vertices to a Triangle or TIN geometry), an empty vector will be returned and the
+   error message can be retrieved by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
 
 .. versionadded:: 3.14
 %End
@@ -2839,14 +2891,11 @@ This convention matches the OGC Simple Features specification.
 %End
 
     class Error
-{
+    {
 %Docstring(signature="appended")
 A geometry error.
 %End
 
-%TypeHeaderCode
-#include "qgsgeometry.h"
-%End
       public:
         Error();
 
@@ -3065,18 +3114,14 @@ should match.
       int state1;
       int sipIsErr = 0;
 
-      if ( PyList_Check( a0 ) && PyList_Check( a1 ) &&
-           PyList_GET_SIZE( a0 ) && PyList_GET_SIZE( a1 ) )
+      if ( PyList_Check( a0 ) && PyList_Check( a1 ) && PyList_GET_SIZE( a0 ) && PyList_GET_SIZE( a1 ) )
       {
         PyObject *o0 = PyList_GetItem( a0, 0 );
         PyObject *o1 = PyList_GetItem( a1, 0 );
         if ( o0 && o1 )
         {
           // compare polyline - polyline
-          if ( sipCanConvertToType( o0, sipType_QgsPointXY, SIP_NOT_NONE ) &&
-               sipCanConvertToType( o1, sipType_QgsPointXY, SIP_NOT_NONE ) &&
-               sipCanConvertToType( a0, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) &&
-               sipCanConvertToType( a1, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) )
+          if ( sipCanConvertToType( o0, sipType_QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( o1, sipType_QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( a0, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( a1, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) )
           {
             QgsPolylineXY *p0;
             QgsPolylineXY *p1;
@@ -3089,18 +3134,14 @@ should match.
             sipReleaseType( p0, sipType_QVector_0100QgsPointXY, state0 );
             sipReleaseType( p1, sipType_QVector_0100QgsPointXY, state1 );
           }
-          else if ( PyList_Check( o0 ) && PyList_Check( o1 ) &&
-                    PyList_GET_SIZE( o0 ) && PyList_GET_SIZE( o1 ) )
+          else if ( PyList_Check( o0 ) && PyList_Check( o1 ) && PyList_GET_SIZE( o0 ) && PyList_GET_SIZE( o1 ) )
           {
             PyObject *oo0 = PyList_GetItem( o0, 0 );
             PyObject *oo1 = PyList_GetItem( o1, 0 );
             if ( oo0 && oo1 )
             {
               // compare polygon - polygon
-              if ( sipCanConvertToType( oo0, sipType_QgsPointXY, SIP_NOT_NONE ) &&
-                   sipCanConvertToType( oo1, sipType_QgsPointXY, SIP_NOT_NONE ) &&
-                   sipCanConvertToType( a0, sipType_QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) &&
-                   sipCanConvertToType( a1, sipType_QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) )
+              if ( sipCanConvertToType( oo0, sipType_QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( oo1, sipType_QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( a0, sipType_QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( a1, sipType_QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) )
               {
                 QgsPolygonXY *p0;
                 QgsPolygonXY *p1;
@@ -3113,18 +3154,14 @@ should match.
                 sipReleaseType( p0, sipType_QVector_0600QVector_0100QgsPointXY, state0 );
                 sipReleaseType( p1, sipType_QVector_0600QVector_0100QgsPointXY, state1 );
               }
-              else if ( PyList_Check( oo0 ) && PyList_Check( oo1 ) &&
-                        PyList_GET_SIZE( oo0 ) && PyList_GET_SIZE( oo1 ) )
+              else if ( PyList_Check( oo0 ) && PyList_Check( oo1 ) && PyList_GET_SIZE( oo0 ) && PyList_GET_SIZE( oo1 ) )
               {
                 PyObject *ooo0 = PyList_GetItem( oo0, 0 );
                 PyObject *ooo1 = PyList_GetItem( oo1, 0 );
                 if ( ooo0 && ooo1 )
                 {
                   // compare multipolygon - multipolygon
-                  if ( sipCanConvertToType( ooo0, sipType_QgsPointXY, SIP_NOT_NONE ) &&
-                       sipCanConvertToType( ooo1, sipType_QgsPointXY, SIP_NOT_NONE ) &&
-                       sipCanConvertToType( a0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) &&
-                       sipCanConvertToType( a1, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) )
+                  if ( sipCanConvertToType( ooo0, sipType_QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( ooo1, sipType_QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( a0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( a1, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) )
                   {
                     QgsMultiPolygonXY *p0;
                     QgsMultiPolygonXY *p1;
@@ -3146,8 +3183,7 @@ should match.
     }
 %End
 
-    QgsGeometry smooth( unsigned int iterations = 1, double offset = 0.25,
-                        double minimumDistance = -1.0, double maxAngle = 180.0 ) const;
+    QgsGeometry smooth( unsigned int iterations = 1, double offset = 0.25, double minimumDistance = -1.0, double maxAngle = 180.0 ) const;
 %Docstring
 Smooths a geometry by rounding off corners using the Chaikin algorithm.
 This operation roughly doubles the number of vertices in a geometry.
@@ -3242,6 +3278,102 @@ Downgrades a point list from :py:class:`QgsPoint` to
 %End
 
     operator QVariant() const;
+
+
+    QgsGeometry fillet( int vertexIndex, double radius, int segments = 8 ) const;
+%Docstring
+Creates a fillet (rounded corner) at the specified vertex.
+
+This method replaces a sharp corner at the given vertex with a smooth
+circular arc. The behavior depends on the geometry type:
+
+- For LineString: the arc is segmented into linear segments
+- For CompoundCurve: the arc is preserved as a CircularString
+
+:param vertexIndex: index of the vertex to fillet (must be > 0 and <
+                    numPoints - 1)
+:param radius: radius of the fillet arc
+:param segments: number of segments to use for LineString approximation
+                 (ignored for CompoundCurve)
+
+:return: new geometry with fillet applied, or invalid geometry on
+         failure
+
+.. versionadded:: 4.0
+%End
+
+    static QgsGeometry fillet( const QgsPoint &segment1Start, const QgsPoint &segment1End, const QgsPoint &segment2Start, const QgsPoint &segment2End, double radius, int segments = 8 );
+%Docstring
+Creates a fillet (rounded corner) between two line segments.
+
+This method creates a smooth circular arc connecting two line segments.
+
+:param segment1Start: start point of first segment
+:param segment1End: end point of first segment
+:param segment2Start: start point of second segment
+:param segment2End: end point of second segment
+:param radius: radius of the fillet arc
+:param segments: number of segments to use for LineString approximation
+                 (returns a CircularString when segments = 0)
+
+:return: new geometry with fillet applied, or invalid geometry on
+         failure
+
+:raises QgsInvalidArgumentException: same as
+                                     QgsGeometryUtils.createFilletGeometry
+
+.. seealso:: :py:func:`QgsGeometryUtils.createFilletGeometry`
+
+.. versionadded:: 4.0
+%End
+
+    QgsGeometry chamfer( int vertexIndex, double distance1, double distance2 = -1.0 ) const;
+%Docstring
+Creates a chamfer (angled corner) at the specified vertex.
+
+This method replaces a sharp corner at the given vertex with a straight
+line connecting points at specified distances along the adjacent
+segments.
+
+:param vertexIndex: index of the vertex to chamfer (must be > 0 and <
+                    numPoints - 1)
+:param distance1: distance along the first segment from the vertex (must
+                  be > 0)
+:param distance2: distance along the second segment from the vertex (if
+                  < 0, uses distance1)
+
+:return: new geometry with chamfer applied, or invalid geometry on
+         failure
+
+.. versionadded:: 4.0
+%End
+
+    static QgsGeometry chamfer( const QgsPoint &segment1Start, const QgsPoint &segment1End, const QgsPoint &segment2Start, const QgsPoint &segment2End, double distance1, double distance2 = -1.0 );
+%Docstring
+Creates a chamfer (angled corner) between two line segments.
+
+This method creates a straight line connecting two line segments at
+specified distances.
+
+:param segment1Start: start point of first segment
+:param segment1End: end point of first segment
+:param segment2Start: start point of second segment
+:param segment2End: end point of second segment
+:param distance1: distance along the first segment from intersection
+:param distance2: distance along the second segment from intersection
+                  (if < 0, uses distance1)
+
+:return: new geometry with chamfer applied, or invalid geometry on
+         failure
+
+:raises QgsInvalidArgumentException: same as
+                                     QgsGeometryUtils.createChamferGeometry
+
+.. seealso:: :py:func:`QgsGeometryUtils.createChamferGeometry`
+
+.. versionadded:: 4.0
+%End
+
 
 }; // class QgsGeometry
 

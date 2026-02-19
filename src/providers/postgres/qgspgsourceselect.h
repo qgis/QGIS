@@ -17,17 +17,17 @@
 #ifndef QGSPGSOURCESELECT_H
 #define QGSPGSOURCESELECT_H
 
-#include "qgsguiutils.h"
-#include "qgsdatasourceuri.h"
-#include "qgshelp.h"
-#include "qgsproviderregistry.h"
 #include "qgsabstractdbsourceselect.h"
+#include "qgsdatasourceuri.h"
+#include "qgsguiutils.h"
+#include "qgshelp.h"
 #include "qgspostgresconn.h"
+#include "qgsproviderregistry.h"
 
-#include <QMap>
-#include <QPair>
 #include <QIcon>
 #include <QItemDelegate>
+#include <QMap>
+#include <QPair>
 
 class QPushButton;
 class QgsGeomColumnTypeThread;
@@ -76,6 +76,8 @@ class QgsPgSourceSelect : public QgsAbstractDbSourceSelect
     QString connectionInfo( bool expandAuthCfg = true );
     //! Data source URI
     QgsDataSourceUri dataSourceUri();
+
+    QString settingPath() const override;
 
   signals:
     void addGeometryColumn( const QgsPostgresLayerProperty & );

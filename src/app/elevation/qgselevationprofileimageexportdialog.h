@@ -18,11 +18,12 @@
 #define QGSELEVATIONPROFILEIMAGEEXPORTDIALOG_H
 
 #include "ui_qgselevationprofileimageexportoptionsdialog.h"
+
 #include "qgslayoutmeasurementconverter.h"
 
 #include <QDialog>
 
-class Qgs2DPlot;
+class Qgs2DXyPlot;
 class QgsElevationProfileExportSettingsWidget;
 
 /**
@@ -37,12 +38,12 @@ class QgsElevationProfileImageExportDialog : public QDialog, private Ui::QgsElev
     /**
      * Sets the initial plot settings to show in the widget.
      */
-    void setPlotSettings( const Qgs2DPlot &plot );
+    void setPlotSettings( const Qgs2DXyPlot &plot );
 
     /**
      * Updates plot settings based on the widget's state.
      */
-    void updatePlotSettings( Qgs2DPlot &plot );
+    void updatePlotSettings( Qgs2DXyPlot &plot );
 
     void setImageSize( const QSize &size );
     QSize imageSize() const;

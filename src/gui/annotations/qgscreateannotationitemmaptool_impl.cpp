@@ -14,32 +14,37 @@
  ***************************************************************************/
 
 #include "qgscreateannotationitemmaptool_impl.h"
-#include "moc_qgscreateannotationitemmaptool_impl.cpp"
-#include "qgsmapmouseevent.h"
-#include "qgsannotationpointtextitem.h"
-#include "qgsannotationmarkeritem.h"
-#include "qgsannotationlineitem.h"
-#include "qgsannotationpolygonitem.h"
-#include "qgsannotationlinetextitem.h"
-#include "qgsannotationrectangletextitem.h"
-#include "qgsannotationpictureitem.h"
-#include "qgsannotationlayer.h"
-#include "qgsstyle.h"
-#include "qgsmapcanvas.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
+
 #include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsannotationlayer.h"
+#include "qgsannotationlineitem.h"
+#include "qgsannotationlinetextitem.h"
+#include "qgsannotationmarkeritem.h"
+#include "qgsannotationpictureitem.h"
+#include "qgsannotationpointtextitem.h"
+#include "qgsannotationpolygonitem.h"
+#include "qgsannotationrectangletextitem.h"
 #include "qgsapplication.h"
-#include "qgsrecentstylehandler.h"
 #include "qgscurvepolygon.h"
+#include "qgsfillsymbol.h"
+#include "qgsimagecache.h"
+#include "qgslinesymbol.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmarkersymbol.h"
+#include "qgsrecentstylehandler.h"
 #include "qgsrubberband.h"
 #include "qgssettingsregistrycore.h"
+#include "qgsstyle.h"
 #include "qgssvgcache.h"
-#include "qgsimagecache.h"
 
 #include <QFileDialog>
 #include <QImageReader>
+#include <QString>
+
+#include "moc_qgscreateannotationitemmaptool_impl.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -83,6 +88,7 @@ bool QgsMapToolCaptureAnnotationItem::supportsTechnique( Qgis::CaptureTechnique 
     case Qgis::CaptureTechnique::CircularString:
     case Qgis::CaptureTechnique::Streaming:
     case Qgis::CaptureTechnique::Shape:
+    case Qgis::CaptureTechnique::NurbsCurve:
       return true;
   }
   BUILTIN_UNREACHABLE
@@ -150,7 +156,7 @@ void QgsCreateMarkerItemMapTool::cadCanvasReleaseEvent( QgsMapMouseEvent *event 
   const QgsPointXY layerPoint = toLayerCoordinates( mHandler->targetLayer(), event->mapPoint() );
   auto createdItem = std::make_unique<QgsAnnotationMarkerItem>( QgsPoint( layerPoint ) );
 
-  std::unique_ptr<QgsMarkerSymbol> markerSymbol = QgsApplication::recentStyleHandler()->recentSymbol<QgsMarkerSymbol>( QStringLiteral( "marker_annotation_item" ) );
+  std::unique_ptr<QgsMarkerSymbol> markerSymbol = QgsApplication::recentStyleHandler()->recentSymbol<QgsMarkerSymbol>( u"marker_annotation_item"_s );
   if ( !markerSymbol )
     markerSymbol.reset( qgis::down_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) ) );
   createdItem->setSymbol( markerSymbol.release() );
@@ -184,9 +190,9 @@ void QgsCreateLineItemMapTool::lineCaptured( const QgsCurve *line )
   std::unique_ptr<QgsAbstractGeometry> geometry( line->simplifiedTypeRef()->clone() );
   if ( qgsgeometry_cast<QgsCurve *>( geometry.get() ) )
   {
-    auto createdItem = std::make_unique<QgsAnnotationLineItem>( qgsgeometry_cast<QgsCurve *>( geometry.release() ) );
+    auto createdItem = std::make_unique<QgsAnnotationLineItem>( qgis::down_cast<QgsCurve *>( geometry.release() ) );
 
-    std::unique_ptr<QgsLineSymbol> lineSymbol = QgsApplication::recentStyleHandler()->recentSymbol<QgsLineSymbol>( QStringLiteral( "line_annotation_item" ) );
+    std::unique_ptr<QgsLineSymbol> lineSymbol = QgsApplication::recentStyleHandler()->recentSymbol<QgsLineSymbol>( u"line_annotation_item"_s );
     if ( !lineSymbol )
       lineSymbol.reset( qgis::down_cast<QgsLineSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Line ) ) );
     createdItem->setSymbol( lineSymbol.release() );
@@ -217,10 +223,10 @@ void QgsCreatePolygonItemMapTool::polygonCaptured( const QgsCurvePolygon *polygo
   if ( qgsgeometry_cast<QgsCurve *>( geometry.get() ) )
   {
     auto newPolygon = std::make_unique<QgsCurvePolygon>();
-    newPolygon->setExteriorRing( qgsgeometry_cast<QgsCurve *>( geometry.release() ) );
+    newPolygon->setExteriorRing( qgis::down_cast<QgsCurve *>( geometry.release() ) );
     auto createdItem = std::make_unique<QgsAnnotationPolygonItem>( newPolygon.release() );
 
-    std::unique_ptr<QgsFillSymbol> fillSymbol = QgsApplication::recentStyleHandler()->recentSymbol<QgsFillSymbol>( QStringLiteral( "polygon_annotation_item" ) );
+    std::unique_ptr<QgsFillSymbol> fillSymbol = QgsApplication::recentStyleHandler()->recentSymbol<QgsFillSymbol>( u"polygon_annotation_item"_s );
     if ( !fillSymbol )
       fillSymbol.reset( qgis::down_cast<QgsFillSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) ) );
     createdItem->setSymbol( fillSymbol.release() );
@@ -237,7 +243,7 @@ void QgsCreatePolygonItemMapTool::polygonCaptured( const QgsCurvePolygon *polygo
 // QgsCreatePictureItemMapTool
 //
 
-const QgsSettingsEntryString *QgsCreatePictureItemMapTool::settingLastSourceFolder = new QgsSettingsEntryString( QStringLiteral( "last-source-folder" ), sTreePicture, QString(), QStringLiteral( "Last used folder for picture annotation source files" ) );
+const QgsSettingsEntryString *QgsCreatePictureItemMapTool::settingLastSourceFolder = new QgsSettingsEntryString( u"last-source-folder"_s, sTreePicture, QString(), u"Last used folder for picture annotation source files"_s );
 
 QgsCreatePictureItemMapTool::QgsCreatePictureItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
@@ -280,13 +286,13 @@ void QgsCreatePictureItemMapTool::cadCanvasPressEvent( QgsMapMouseEvent *event )
     mRubberBand.reset();
 
     QStringList formatsFilter;
-    formatsFilter.append( QStringLiteral( "*.svg" ) );
+    formatsFilter.append( u"*.svg"_s );
     const QByteArrayList supportedFormats = QImageReader::supportedImageFormats();
     for ( const auto &format : supportedFormats )
     {
-      formatsFilter.append( QString( QStringLiteral( "*.%1" ) ).arg( QString( format ) ) );
+      formatsFilter.append( QString( u"*.%1"_s ).arg( QString( format ) ) );
     }
-    const QString dialogFilter = QStringLiteral( "%1 (%2);;%3 (*.*)" ).arg( tr( "Images" ), formatsFilter.join( QLatin1Char( ' ' ) ), tr( "All files" ) );
+    const QString dialogFilter = u"%1 (%2);;%3 (*.*)"_s.arg( tr( "Images" ), formatsFilter.join( ' '_L1 ), tr( "All files" ) );
     const QString initialDir = settingLastSourceFolder->value();
     const QString imagePath = QFileDialog::getOpenFileName( nullptr, tr( "Add Picture Annotation" ), initialDir.isEmpty() ? QDir::homePath() : initialDir, dialogFilter );
 
@@ -309,7 +315,7 @@ void QgsCreatePictureItemMapTool::cadCanvasPressEvent( QgsMapMouseEvent *event )
     Qgis::PictureFormat format = Qgis::PictureFormat::Unknown;
 
     QSizeF size;
-    if ( pathInfo.suffix().compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
+    if ( pathInfo.suffix().compare( "svg"_L1, Qt::CaseInsensitive ) == 0 )
     {
       format = Qgis::PictureFormat::SVG;
       size = QgsApplication::svgCache()->svgViewboxSize( imagePath, 100, QColor(), QColor(), 1, 1 );
@@ -501,9 +507,9 @@ void QgsCreateLineTextItemMapTool::lineCaptured( const QgsCurve *line )
   std::unique_ptr<QgsAbstractGeometry> geometry( line->simplifiedTypeRef()->clone() );
   if ( qgsgeometry_cast<QgsCurve *>( geometry.get() ) )
   {
-    auto createdItem = std::make_unique<QgsAnnotationLineTextItem>( tr( "Text" ), qgsgeometry_cast<QgsCurve *>( geometry.release() ) );
+    auto createdItem = std::make_unique<QgsAnnotationLineTextItem>( tr( "Text" ), qgis::down_cast<QgsCurve *>( geometry.release() ) );
 
-    std::unique_ptr<QgsLineSymbol> lineSymbol = QgsApplication::recentStyleHandler()->recentSymbol<QgsLineSymbol>( QStringLiteral( "line_annotation_item" ) );
+    std::unique_ptr<QgsLineSymbol> lineSymbol = QgsApplication::recentStyleHandler()->recentSymbol<QgsLineSymbol>( u"line_annotation_item"_s );
     if ( !lineSymbol )
       lineSymbol.reset( qgis::down_cast<QgsLineSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Line ) ) );
 

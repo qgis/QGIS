@@ -16,14 +16,13 @@
 #ifndef QGSRULEBASEDRENDERER_H
 #define QGSRULEBASEDRENDERER_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsfields.h"
 #include "qgsfeature.h"
-#include "qgis.h"
-
-#include "qgsrenderer.h"
+#include "qgsfields.h"
 #include "qgsrendercontext.h"
+#include "qgsrenderer.h"
 
 class QgsExpression;
 
@@ -109,6 +108,9 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
       QgsRuleBasedRenderer::RenderLevel &operator=( const QgsRuleBasedRenderer::RenderLevel &rh )
       {
+        if ( &rh == this )
+          return *this;
+
         zIndex = rh.zIndex;
         qDeleteAll( jobs );
         jobs.clear();
@@ -398,10 +400,11 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          * \param ruleElem  The XML rule element
          * \param symbolMap Symbol map
          * \param reuseId set to TRUE to create an exact copy of the original symbol or FALSE to create a new rule with the same parameters as the original but a new unique ruleKey(). (Since QGIS 3.30)
+         * \param context The rendering context (Since QGIS 4.0)
          *
          * \returns A new rule
          */
-        static QgsRuleBasedRenderer::Rule *create( QDomElement &ruleElem, QgsSymbolMap &symbolMap, bool reuseId = true ) SIP_FACTORY;
+        static QgsRuleBasedRenderer::Rule *create( QDomElement &ruleElem, QgsSymbolMap &symbolMap, bool reuseId = true, const QgsReadWriteContext &context = QgsReadWriteContext() ) SIP_FACTORY;
 
         /**
          * Returns all children rules of this rule

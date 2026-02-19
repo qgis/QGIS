@@ -37,7 +37,7 @@ namespace fs = std::filesystem;
 void Thin::addArgs()
 {
     argOutput = &programArgs.add("output,o", "Output point cloud file", outputFile);
-    argOutputFormat = &programArgs.add("output-format", "Output format (las/laz/copc)", outputFormat);
+    argOutputFormatVpc = &programArgs.add("vpc-output-format", "Output format (las/laz/copc)", outputFormatVpc, "copc");
     argMode = &programArgs.add("mode", " 'every-nth' or 'sample' - either to keep every N-th point or to keep points based on their distance", mode);
     argStepEveryN = &programArgs.add("step-every-nth", "Keep every N-th point", stepEveryN);
     argStepSample = &programArgs.add("step-sample", "Minimum spacing between points", stepSample);
@@ -78,17 +78,20 @@ bool Thin::checkArgs()
         return false;
     }
 
-    if (argOutputFormat->set())
+    if (argOutputFormatVpc->set())
     {
-        if (outputFormat != "las" && outputFormat != "laz")
+        if (outputFormatVpc != "las" && outputFormatVpc != "laz" && outputFormatVpc != "copc")
         {
-            std::cerr << "unknown output format: " << outputFormat << std::endl;
+            std::cerr << "unknown output format: " << outputFormatVpc << std::endl;
             return false;
         }
     }
-    else
-        outputFormat = "las";  // uncompressed by default
 
+    if ( ends_with(outputFile, ".vpc") && outputFormatVpc == "copc" )
+    {
+        isStreaming = false;
+    }
+    
     return true;
 }
 
@@ -97,7 +100,7 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, std::str
 {
     std::unique_ptr<PipelineManager> manager( new PipelineManager );
 
-    Stage& r = manager->makeReader( tile->inputFilenames[0], "");
+    Stage& r = makeReader(manager.get(), tile->inputFilenames[0]);
 
     Stage *last = &r;
 
@@ -138,9 +141,7 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, std::str
         last = &manager->makeFilter( "filters.sample", *last, sample_opts );
     }
 
-    pdal::Options writer_opts;
-    writer_opts.add(pdal::Option("forward", "all"));  // TODO: maybe we could use lower scale than the original
-    manager->makeWriter( tile->outputFilename, "", *last, writer_opts);
+    makeWriter(manager.get(), tile->outputFilename, last);
 
     return manager;
 }
@@ -165,14 +166,7 @@ void Thin::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipel
             ParallelJobInfo tile(ParallelJobInfo::FileBased, BOX2D(), filterExpression, filterBounds);
             tile.inputFilenames.push_back(f.filename);
 
-            // for input file /x/y/z.las that goes to /tmp/hello.vpc,
-            // individual output file will be called /tmp/hello/z.las
-            fs::path inputBasename = fs::path(f.filename).stem();
-
-            if (!ends_with(outputFile, ".vpc"))
-                tile.outputFilename = (outputSubdir / inputBasename).string() + ".las";
-            else
-                tile.outputFilename = (outputSubdir / inputBasename).string() + "." + outputFormat;
+            tile.outputFilename = tileOutputFileName(outputFile, outputFormatVpc, outputSubdir, f.filename);
 
             tileOutputFiles.push_back(tile.outputFilename);
 

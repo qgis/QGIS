@@ -10,6 +10,7 @@
 
 
 
+
 class QgsAbstractDatabaseProviderConnection : QgsAbstractProviderConnection
 {
 %Docstring(signature="appended")
@@ -140,6 +141,8 @@ Sets the query execution time to ``queryExecutionTime`` milliseconds.
 
 
     };
+
+
 
     struct SqlVectorLayerOptions
     {
@@ -946,6 +949,35 @@ Adds a new field ``domain`` to the database.
 :raises QgsProviderConnectionException: if any errors are encountered.
 
 .. versionadded:: 3.26
+%End
+
+    virtual void updateFieldDomain( QgsFieldDomain *domain, const QString &schema ) const throw( QgsProviderConnectionException );
+%Docstring
+Update an existing field ``domain`` in the database, the domain is
+identified by name.
+
+:param domain: field domain to update
+:param schema: name of the schema (schema is ignored if not supported by
+               the backend).
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. versionadded:: 4.0
+%End
+
+    virtual void deleteFieldDomain( const QString &name, const QString &schema ) const throw( QgsProviderConnectionException );
+%Docstring
+Deletes the field domain with the specified ``name`` from the provider.
+
+:param name: name of the field domain to be deleted
+:param schema: name of the schema (schema is ignored if not supported by
+               the backend).
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. seealso:: :py:func:`fieldDomainNames`
+
+.. versionadded:: 4.0
 %End
 
     virtual void setFieldAlias( const QString &fieldName, const QString &schema, const QString &tableName, const QString &alias ) const throw( QgsProviderConnectionException );

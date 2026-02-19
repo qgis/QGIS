@@ -18,10 +18,10 @@
 
 #define SIP_NO_FILE
 
-#include "qgsprocessingwidgetwrapper.h"
-#include "qgsprocessingparameterdefinitionwidget.h"
-
 #include "ui_qgsprocessingaggregatemappingpanelbase.h"
+
+#include "qgsprocessingparameterdefinitionwidget.h"
+#include "qgsprocessingwidgetwrapper.h"
 
 class QLineEdit;
 class QToolButton;
@@ -60,6 +60,9 @@ class GUI_EXPORT QgsProcessingAggregatePanelWidget : public QgsPanelWidget, priv
 
     QgsVectorLayer *mLayer = nullptr;
     bool mBlockChangedSignal = false;
+
+    bool mSkipConfirmDialog = false;
+    friend class TestProcessingGui;
 };
 
 

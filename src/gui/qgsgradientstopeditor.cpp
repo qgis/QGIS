@@ -14,25 +14,18 @@
  ***************************************************************************/
 
 #include "qgsgradientstopeditor.h"
-#include "moc_qgsgradientstopeditor.cpp"
+
 #include "qgsapplication.h"
 #include "qgssymbollayerutils.h"
 
-#include <QPainter>
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <QStyleOptionFrameV3>
-#else
-#include <QStyleOptionFrame>
-#endif
 #include <QMouseEvent>
+#include <QPainter>
+#include <QString>
+#include <QStyleOptionFrame>
 
-#define MARKER_WIDTH 11
-#define MARKER_HEIGHT 14
-#define MARKER_GAP 1.5
-#define MARGIN_BOTTOM ( MARKER_HEIGHT + 2 )
-#define MARGIN_X ( MARKER_WIDTH / 2 )
-#define FRAME_MARGIN 2
-#define CLICK_THRESHOLD ( MARKER_WIDTH / 2 + 3 )
+#include "moc_qgsgradientstopeditor.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGradientStopEditor::QgsGradientStopEditor( QWidget *parent, QgsGradientColorRamp *ramp )
   : QWidget( parent )
@@ -106,7 +99,7 @@ void QgsGradientStopEditor::paintEvent( QPaintEvent *event )
   painter.setBrush( checkBrush );
   painter.setPen( Qt::NoPen );
 
-  QRect box( frameRect.x() + FRAME_MARGIN, frameRect.y() + FRAME_MARGIN, frameRect.width() - 2 * FRAME_MARGIN, frameRect.height() - 2 * FRAME_MARGIN );
+  QRect box( frameRect.x() + FRAME_MARGIN_PX, frameRect.y() + FRAME_MARGIN_PX, frameRect.width() - 2 * FRAME_MARGIN_PX, frameRect.height() - 2 * FRAME_MARGIN_PX );
 
   painter.drawRect( box );
 
@@ -395,7 +388,7 @@ void QgsGradientStopEditor::keyPressEvent( QKeyEvent *e )
     if ( selectedStopIsMovable() )
     {
       // calculate offset corresponding to 1 px
-      double offsetDiff = pointToRelativePosition( rect().x() + MARGIN_X + FRAME_MARGIN + 2 ) - pointToRelativePosition( rect().x() + MARGIN_X + FRAME_MARGIN + 1 );
+      double offsetDiff = pointToRelativePosition( rect().x() + MARGIN_X + FRAME_MARGIN_PX + 2 ) - pointToRelativePosition( rect().x() + MARGIN_X + FRAME_MARGIN_PX + 1 );
 
       if ( e->modifiers() & Qt::ShiftModifier )
         offsetDiff *= 10.0;
@@ -420,7 +413,7 @@ QPixmap QgsGradientStopEditor::transparentBackground()
   static QPixmap sTranspBkgrd;
 
   if ( sTranspBkgrd.isNull() )
-    sTranspBkgrd = QgsApplication::getThemePixmap( QStringLiteral( "/transp-background_8x8.png" ) );
+    sTranspBkgrd = QgsApplication::getThemePixmap( u"/transp-background_8x8.png"_s );
 
   return sTranspBkgrd;
 }
@@ -447,8 +440,8 @@ void QgsGradientStopEditor::drawStopMarker( QPainter &painter, QPoint topMiddle,
 
 double QgsGradientStopEditor::pointToRelativePosition( int x ) const
 {
-  int left = rect().x() + MARGIN_X + FRAME_MARGIN;
-  int right = left + rect().width() - 2 * MARGIN_X - 2 * FRAME_MARGIN;
+  int left = rect().x() + MARGIN_X + FRAME_MARGIN_PX;
+  int right = left + rect().width() - 2 * MARGIN_X - 2 * FRAME_MARGIN_PX;
 
   if ( x <= left )
     return 0;
@@ -460,8 +453,8 @@ double QgsGradientStopEditor::pointToRelativePosition( int x ) const
 
 int QgsGradientStopEditor::relativePositionToPoint( double position ) const
 {
-  int left = rect().x() + MARGIN_X + FRAME_MARGIN;
-  int right = left + rect().width() - 2 * MARGIN_X - 2 * FRAME_MARGIN;
+  int left = rect().x() + MARGIN_X + FRAME_MARGIN_PX;
+  int right = left + rect().width() - 2 * MARGIN_X - 2 * FRAME_MARGIN_PX;
 
   if ( position <= 0 )
     return left;

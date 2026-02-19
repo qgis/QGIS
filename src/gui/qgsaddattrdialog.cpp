@@ -16,17 +16,22 @@
  ***************************************************************************/
 
 #include "qgsaddattrdialog.h"
-#include "moc_qgsaddattrdialog.cpp"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
-#include "qgslogger.h"
+
 #include "qgsfields.h"
+#include "qgslogger.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 #include <QMessageBox>
+#include <QString>
+
+#include "moc_qgsaddattrdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
-  , mIsShapeFile( vlayer && vlayer->providerType() == QLatin1String( "ogr" ) && vlayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
+  , mIsShapeFile( vlayer && vlayer->providerType() == "ogr"_L1 && vlayer->storageType() == "ESRI Shapefile"_L1 )
 {
   setupUi( this );
   connect( mTypeBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAddAttrDialog::mTypeBox_currentIndexChanged );
@@ -41,7 +46,7 @@ QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt:
   const QList<QgsVectorDataProvider::NativeType> &typelist = vlayer->dataProvider()->nativeTypes();
   for ( int i = 0; i < typelist.size(); i++ )
   {
-    QgsDebugMsgLevel( QStringLiteral( "name:%1 type:%2 typeName:%3 length:%4-%5 prec:%6-%7" ).arg( typelist[i].mTypeDesc ).arg( typelist[i].mType ).arg( typelist[i].mTypeName ).arg( typelist[i].mMinLen ).arg( typelist[i].mMaxLen ).arg( typelist[i].mMinPrec ).arg( typelist[i].mMaxPrec ), 2 );
+    QgsDebugMsgLevel( u"name:%1 type:%2 typeName:%3 length:%4-%5 prec:%6-%7"_s.arg( typelist[i].mTypeDesc ).arg( typelist[i].mType ).arg( typelist[i].mTypeName ).arg( typelist[i].mMinLen ).arg( typelist[i].mMaxLen ).arg( typelist[i].mMinPrec ).arg( typelist[i].mMaxPrec ), 2 );
 
     whileBlocking( mTypeBox )->addItem( QgsFields::iconForFieldType( typelist[i].mType, typelist[i].mSubType, typelist[i].mTypeName ), typelist[i].mTypeDesc );
     mTypeBox->setItemData( i, static_cast<int>( typelist[i].mType ), Qt::UserRole );
@@ -124,7 +129,7 @@ void QgsAddAttrDialog::setPrecisionMinMax()
 void QgsAddAttrDialog::accept()
 {
   const QString newName = mNameEdit->text().trimmed();
-  if ( mIsShapeFile && newName.compare( QLatin1String( "shape" ), Qt::CaseInsensitive ) == 0 )
+  if ( mIsShapeFile && newName.compare( "shape"_L1, Qt::CaseInsensitive ) == 0 )
   {
     QMessageBox::warning( this, tr( "Add Field" ), tr( "Invalid field name. This field name is reserved and cannot be used." ) );
     return;
@@ -151,7 +156,7 @@ void QgsAddAttrDialog::accept()
 
 QgsField QgsAddAttrDialog::field() const
 {
-  QgsDebugMsgLevel( QStringLiteral( "idx:%1 name:%2 type:%3 typeName:%4 length:%5 prec:%6 comment:%7" ).arg( mTypeBox->currentIndex() ).arg( mNameEdit->text() ).arg( mTypeBox->currentData( Qt::UserRole ).toInt() ).arg( mTypeBox->currentData( Qt::UserRole + 1 ).toString() ).arg( mLength->value() ).arg( mPrec->value() ).arg( mCommentEdit->text() ), 2 );
+  QgsDebugMsgLevel( u"idx:%1 name:%2 type:%3 typeName:%4 length:%5 prec:%6 comment:%7"_s.arg( mTypeBox->currentIndex() ).arg( mNameEdit->text() ).arg( mTypeBox->currentData( Qt::UserRole ).toInt() ).arg( mTypeBox->currentData( Qt::UserRole + 1 ).toString() ).arg( mLength->value() ).arg( mPrec->value() ).arg( mCommentEdit->text() ), 2 );
 
   QgsField res = QgsField(
     mNameEdit->text(),

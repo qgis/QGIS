@@ -16,8 +16,8 @@
 #ifndef QGSPOINTCLOUDEDITINGINDEX_H
 #define QGSPOINTCLOUDEDITINGINDEX_H
 
-#include "qgspointcloudindex.h"
 #include "qgis_core.h"
+#include "qgspointcloudindex.h"
 
 #define SIP_NO_FILE
 
@@ -35,10 +35,10 @@ class QgsPointCloudLayer;
 class CORE_EXPORT QgsPointCloudEditingIndex : public QgsAbstractPointCloudIndex
 {
   public:
-    //! Ctor
-    explicit QgsPointCloudEditingIndex( QgsPointCloudLayer *layer );
+    //! Constructor
+    explicit QgsPointCloudEditingIndex( const QgsPointCloudIndex &index );
 
-    void load( const QString &fileName ) override;
+    void load( const QString &fileName, const QString &authcfg = QString() ) override;
     bool isValid() const override;
     Qgis::PointCloudAccessType accessType() const override;
     QgsCoordinateReferenceSystem crs() const override;

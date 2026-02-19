@@ -25,6 +25,7 @@ set(TESTS
   testqgsmultipoint.cpp
   testqgsmultipolygon.cpp
   testqgsmultisurface.cpp
+  testqgsnurbscurve.cpp
   testqgspoint.cpp
   testqgspointxy.cpp
   testqgspolygon.cpp
@@ -34,11 +35,16 @@ set(TESTS
   testqgsregularpolygon.cpp
   testqgstriangle.cpp
   testqgstriangulatedsurface.cpp
+  testqgsvertexid.cpp
   )
 
 foreach(TESTSRC ${TESTS})
   add_qgis_test(${TESTSRC} MODULE core_geometry LINKEDLIBRARIES qgis_core)
 endforeach(TESTSRC)
+
+if (WITH_SFCGAL)
+add_qgis_test(testqgssfcgal.cpp MODULE core_geometry LINKEDLIBRARIES qgis_core)
+endif()
 
 add_qgis_test(testqgsgeometry.cpp MODULE core LINKEDLIBRARIES qgis_core)
 add_qgis_test(testqgsgeometrycollection.cpp MODULE core LINKEDLIBRARIES qgis_core)

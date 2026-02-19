@@ -14,17 +14,19 @@
  ***************************************************************************/
 
 #include "qgsmodelviewtool.h"
-#include "moc_qgsmodelviewtool.cpp"
-#include "qgsmodelgraphicsview.h"
+
 #include "qgsmodelgraphicsscene.h"
+#include "qgsmodelgraphicsview.h"
 #include "qgsmodelviewmouseevent.h"
+
+#include "moc_qgsmodelviewtool.cpp"
 
 QgsModelViewTool::QgsModelViewTool( QgsModelGraphicsView *view, const QString &name )
   : QObject( view )
   , mView( view )
   , mToolName( name )
 {
-  connect( mView, &QgsModelGraphicsView::willBeDeleted, this, [=] {
+  connect( mView, &QgsModelGraphicsView::willBeDeleted, this, [this] {
     mView = nullptr;
   } );
 }

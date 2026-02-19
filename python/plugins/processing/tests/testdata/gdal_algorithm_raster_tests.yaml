@@ -30,7 +30,9 @@ tests:
       PROJWIN: 18.673038221977773,18.699957975064194,45.782253906735804,45.80350236352593
     results:
       OUTPUT:
-        hash: f4dd2d3693afe0b95a6b6d0c98a57331b8f7c6a61a372f52da912c07
+        hash:
+        - f4dd2d3693afe0b95a6b6d0c98a57331b8f7c6a61a372f52da912c07
+        - e79f95890526c087e3c7420a0aa2c268585b49050e025bb082ab5715
         type: rasterhash
 
   - algorithm: gdal:cliprasterbyextent
@@ -47,7 +49,9 @@ tests:
         [EPSG:4326]
     results:
       OUTPUT:
-        hash: c71cf9c654ee0f27ea8778576787301a868556e52773cb061a8fff00
+        hash:
+        - c71cf9c654ee0f27ea8778576787301a868556e52773cb061a8fff00
+        - d7859c674dbae0324e76f4c053b233a002f4d3d1baafa3ed38f5b82a
         type: rasterhash
 
   - algorithm: gdal:cliprasterbymasklayer

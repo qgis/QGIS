@@ -17,16 +17,17 @@
 #define QGSAUTHCONFIGURATIONSTORAGE_H
 
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgsauthconfig.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsauthcertutils.h"
+#include "qgsauthconfig.h"
 #include "qgsexception.h"
 
-#include <QString>
 #include <QObject>
+#include <QString>
 
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core
@@ -65,7 +66,7 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
      */
     QgsAuthConfigurationStorage( const QMap<QString, QVariant> &settings );
 
-    virtual ~QgsAuthConfigurationStorage() {}
+    ~QgsAuthConfigurationStorage() override {}
 
     /**
      * Returns a human readable localized short name of the storage implementation (e.g "SQLite").
@@ -498,7 +499,7 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
      * \param level Message log level
      * \see QgsMessageLog
      */
-    void messageLog( const QString &message, const QString &tag = QStringLiteral( "Authentication" ), Qgis::MessageLevel level = Qgis::MessageLevel::Info );
+    void messageLog( const QString &message, const QString &tag = u"Authentication"_s, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
 
     /**
      * Emitted when the storage was updated.

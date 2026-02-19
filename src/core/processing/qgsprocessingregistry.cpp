@@ -16,16 +16,22 @@
  ***************************************************************************/
 
 #include "qgsprocessingregistry.h"
-#include "moc_qgsprocessingregistry.cpp"
-#include "qgsvectorfilewriter.h"
-#include "qgsprocessingparametertypeimpl.h"
-#include "qgsprocessingparametermeshdataset.h"
-#include "qgsprocessingparametervectortilewriterlayers.h"
-#include "qgsprocessingparametertininputlayers.h"
-#include "qgsprocessingparameterfieldmap.h"
+
 #include "qgsprocessingparameteraggregate.h"
-#include "qgsprocessingparameterdxflayers.h"
 #include "qgsprocessingparameteralignrasterlayers.h"
+#include "qgsprocessingparameterdxflayers.h"
+#include "qgsprocessingparameterfieldmap.h"
+#include "qgsprocessingparametermeshdataset.h"
+#include "qgsprocessingparametertininputlayers.h"
+#include "qgsprocessingparametertypeimpl.h"
+#include "qgsprocessingparametervectortilewriterlayers.h"
+#include "qgsvectorfilewriter.h"
+
+#include <QString>
+
+#include "moc_qgsprocessingregistry.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   : QObject( parent )
@@ -108,14 +114,14 @@ bool QgsProcessingRegistry::addProvider( QgsProcessingProvider *provider )
 
   if ( providerById( provider->id() ) )
   {
-    QgsLogger::warning( QStringLiteral( "Duplicate provider %1 registered" ).arg( provider->id() ) );
+    QgsLogger::warning( u"Duplicate provider %1 registered"_s.arg( provider->id() ) );
     delete provider;
     return false;
   }
 
   if ( !provider->load() )
   {
-    QgsLogger::warning( QStringLiteral( "Provider %1 cannot load" ).arg( provider->id() ) );
+    QgsLogger::warning( u"Provider %1 cannot load"_s.arg( provider->id() ) );
     delete provider;
     return false;
   }
@@ -166,8 +172,8 @@ QgsProcessingProvider *QgsProcessingRegistry::providerById( const QString &id ) 
     return it.value();
 
   // transparently map old references to "grass7" provider to "grass" provider
-  if ( id.compare( QLatin1String( "grass7" ), Qt::CaseInsensitive ) == 0 )
-    return providerById( QStringLiteral( "grass" ) );
+  if ( id.compare( "grass7"_L1, Qt::CaseInsensitive ) == 0 )
+    return providerById( u"grass"_s );
 
   return nullptr;
 }
@@ -208,7 +214,7 @@ const QgsProcessingAlgorithm *QgsProcessingRegistry::algorithmById( const QStrin
   const QString id = mAlgorithmAliases.value( constId, constId );
 
   // try to match just the one target provider, if we can determine it from the id easily
-  static thread_local QRegularExpression reSplitProviderId( QStringLiteral( "^(.*?):(.*)$" ) );
+  static thread_local QRegularExpression reSplitProviderId( u"^(.*?):(.*)$"_s );
   const QRegularExpressionMatch match = reSplitProviderId.match( id );
   if ( match.hasMatch() )
   {
@@ -221,10 +227,10 @@ const QgsProcessingAlgorithm *QgsProcessingRegistry::algorithmById( const QStrin
     // try mapping 'qgis' algs to 'native' algs - this allows us to freely move algorithms
     // from the python 'qgis' provider to the c++ 'native' provider without breaking API
     // or existing models
-    if ( match.captured( 1 ) == QLatin1String( "qgis" ) )
+    if ( match.captured( 1 ) == "qgis"_L1 )
     {
       const QString algorithmName = id.mid( 5 );
-      if ( QgsProcessingProvider *provider = mProviders.value( QStringLiteral( "native" ) ) )
+      if ( QgsProcessingProvider *provider = mProviders.value( u"native"_s ) )
       {
         if ( const QgsProcessingAlgorithm *algorithm = provider->algorithm( algorithmName ) )
           return algorithm;
@@ -270,7 +276,7 @@ bool QgsProcessingRegistry::addParameterType( QgsProcessingParameterType *type )
   }
   else
   {
-    QgsLogger::warning( QStringLiteral( "Duplicate parameter type %1 (\"%2\") registered" ).arg( type->id(), type->name() ) );
+    QgsLogger::warning( u"Duplicate parameter type %1 (\"%2\") registered"_s.arg( type->id(), type->name() ) );
 
     if ( mParameterTypes.value( type->id() ) != type )
       delete type;

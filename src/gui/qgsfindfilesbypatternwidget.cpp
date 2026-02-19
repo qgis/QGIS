@@ -14,14 +14,18 @@
  ***************************************************************************/
 
 #include "qgsfindfilesbypatternwidget.h"
-#include "moc_qgsfindfilesbypatternwidget.cpp"
+
 #include "qgsgui.h"
 #include "qgssettings.h"
 
+#include <QDialogButtonBox>
 #include <QDir>
 #include <QDirIterator>
-#include <QDialogButtonBox>
+#include <QString>
 
+#include "moc_qgsfindfilesbypatternwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFindFilesByPatternWidget::QgsFindFilesByPatternWidget( QWidget *parent )
   : QWidget( parent )
@@ -38,11 +42,11 @@ QgsFindFilesByPatternWidget::QgsFindFilesByPatternWidget( QWidget *parent )
   connect( mFindButton, &QPushButton::clicked, this, &QgsFindFilesByPatternWidget::find );
 
   const QgsSettings settings;
-  mFolderWidget->setFilePath( settings.value( QStringLiteral( "qgis/lastFindRecursiveFolder" ) ).toString() );
+  mFolderWidget->setFilePath( settings.value( u"qgis/lastFindRecursiveFolder"_s ).toString() );
   mFindButton->setEnabled( !mFolderWidget->filePath().isEmpty() );
-  connect( mFolderWidget, &QgsFileWidget::fileChanged, this, [=]( const QString &filePath ) {
+  connect( mFolderWidget, &QgsFileWidget::fileChanged, this, [this]( const QString &filePath ) {
     QgsSettings settings;
-    settings.setValue( QStringLiteral( "qgis/lastFindRecursiveFolder" ), filePath );
+    settings.setValue( u"qgis/lastFindRecursiveFolder"_s, filePath );
     mFindButton->setEnabled( !filePath.isEmpty() );
   } );
 }
@@ -133,7 +137,7 @@ QgsFindFilesByPatternDialog::QgsFindFilesByPatternDialog( QWidget *parent )
   setLayout( vLayout );
 
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
-  connect( mWidget, &QgsFindFilesByPatternWidget::findComplete, this, [=]( const QStringList &files ) {
+  connect( mWidget, &QgsFindFilesByPatternWidget::findComplete, this, [this]( const QStringList &files ) {
     mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( !files.empty() );
   } );
 }

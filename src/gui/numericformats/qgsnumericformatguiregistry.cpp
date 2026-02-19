@@ -16,14 +16,19 @@
  ***************************************************************************/
 
 #include "qgsnumericformatguiregistry.h"
+
 #include "qgis.h"
 #include "qgsnumericformatwidget.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 class QgsBasicNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
-    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override
     {
       return new QgsBasicNumericFormatWidget( format );
     }
@@ -32,7 +37,7 @@ class QgsBasicNumericFormatConfigurationWidgetFactory : public QgsNumericFormatC
 class QgsBearingNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
-    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override
     {
       return new QgsBearingNumericFormatWidget( format );
     }
@@ -41,7 +46,7 @@ class QgsBearingNumericFormatConfigurationWidgetFactory : public QgsNumericForma
 class QgsGeographicCoordinateNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
-    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override
     {
       return new QgsGeographicCoordinateNumericFormatWidget( format );
     }
@@ -50,7 +55,7 @@ class QgsGeographicCoordinateNumericFormatConfigurationWidgetFactory : public Qg
 class QgsCurrencyNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
-    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override
     {
       return new QgsCurrencyNumericFormatWidget( format );
     }
@@ -59,7 +64,7 @@ class QgsCurrencyNumericFormatConfigurationWidgetFactory : public QgsNumericForm
 class QgsPercentageNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
-    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override
     {
       return new QgsPercentageNumericFormatWidget( format );
     }
@@ -68,7 +73,7 @@ class QgsPercentageNumericFormatConfigurationWidgetFactory : public QgsNumericFo
 class QgsScientificNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
-    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override
     {
       return new QgsScientificNumericFormatWidget( format );
     }
@@ -77,7 +82,7 @@ class QgsScientificNumericFormatConfigurationWidgetFactory : public QgsNumericFo
 class QgsFractionNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
-    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override
     {
       return new QgsFractionNumericFormatWidget( format );
     }
@@ -86,7 +91,7 @@ class QgsFractionNumericFormatConfigurationWidgetFactory : public QgsNumericForm
 class QgsExpressionBasedNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
-    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
+    QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const override
     {
       return new QgsExpressionBasedNumericFormatWidget( format );
     }
@@ -96,14 +101,14 @@ class QgsExpressionBasedNumericFormatConfigurationWidgetFactory : public QgsNume
 
 QgsNumericFormatGuiRegistry::QgsNumericFormatGuiRegistry()
 {
-  addFormatConfigurationWidgetFactory( QStringLiteral( "basic" ), new QgsBasicNumericFormatConfigurationWidgetFactory() );
-  addFormatConfigurationWidgetFactory( QStringLiteral( "bearing" ), new QgsBearingNumericFormatConfigurationWidgetFactory() );
-  addFormatConfigurationWidgetFactory( QStringLiteral( "currency" ), new QgsCurrencyNumericFormatConfigurationWidgetFactory() );
-  addFormatConfigurationWidgetFactory( QStringLiteral( "percentage" ), new QgsPercentageNumericFormatConfigurationWidgetFactory() );
-  addFormatConfigurationWidgetFactory( QStringLiteral( "scientific" ), new QgsScientificNumericFormatConfigurationWidgetFactory() );
-  addFormatConfigurationWidgetFactory( QStringLiteral( "fraction" ), new QgsFractionNumericFormatConfigurationWidgetFactory() );
-  addFormatConfigurationWidgetFactory( QStringLiteral( "geographiccoordinate" ), new QgsGeographicCoordinateNumericFormatConfigurationWidgetFactory() );
-  addFormatConfigurationWidgetFactory( QStringLiteral( "expression" ), new QgsExpressionBasedNumericFormatConfigurationWidgetFactory() );
+  addFormatConfigurationWidgetFactory( u"basic"_s, new QgsBasicNumericFormatConfigurationWidgetFactory() );
+  addFormatConfigurationWidgetFactory( u"bearing"_s, new QgsBearingNumericFormatConfigurationWidgetFactory() );
+  addFormatConfigurationWidgetFactory( u"currency"_s, new QgsCurrencyNumericFormatConfigurationWidgetFactory() );
+  addFormatConfigurationWidgetFactory( u"percentage"_s, new QgsPercentageNumericFormatConfigurationWidgetFactory() );
+  addFormatConfigurationWidgetFactory( u"scientific"_s, new QgsScientificNumericFormatConfigurationWidgetFactory() );
+  addFormatConfigurationWidgetFactory( u"fraction"_s, new QgsFractionNumericFormatConfigurationWidgetFactory() );
+  addFormatConfigurationWidgetFactory( u"geographiccoordinate"_s, new QgsGeographicCoordinateNumericFormatConfigurationWidgetFactory() );
+  addFormatConfigurationWidgetFactory( u"expression"_s, new QgsExpressionBasedNumericFormatConfigurationWidgetFactory() );
 }
 
 QgsNumericFormatGuiRegistry::~QgsNumericFormatGuiRegistry()
@@ -127,8 +132,9 @@ QgsNumericFormatWidget *QgsNumericFormatGuiRegistry::formatConfigurationWidget( 
   if ( !format )
     return nullptr;
 
-  if ( !mFormatConfigurationWidgetFactories.contains( format->id() ) )
+  auto it = mFormatConfigurationWidgetFactories.constFind( format->id() );
+  if ( it == mFormatConfigurationWidgetFactories.constEnd() )
     return nullptr;
 
-  return mFormatConfigurationWidgetFactories.value( format->id() )->create( format );
+  return it.value()->create( format );
 }

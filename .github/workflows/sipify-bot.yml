@@ -9,12 +9,13 @@ on:
 
 jobs:
   sipify:
+    if: github.repository == 'qgis/QGIS'
     runs-on: [ubuntu-latest]
     steps:
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
-          python-version: '3.12'
+          python-version: '3.13'
 
       - name: Install Requirements
         run: pip install nose2 mock termcolor pyyaml
@@ -24,7 +25,7 @@ jobs:
         if: ${{ github.event_name == 'issue_comment' }}
         id: comment-branch
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: run sipify
         run: ./scripts/sipify_all.sh -m

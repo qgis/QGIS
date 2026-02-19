@@ -15,13 +15,15 @@
  ***************************************************************************/
 
 #include "qgslayoutguidewidget.h"
-#include "moc_qgslayoutguidewidget.cpp"
-#include "qgslayout.h"
-#include "qgslayoutview.h"
+
 #include "qgsdoublespinbox.h"
-#include "qgslayoutunitscombobox.h"
+#include "qgslayout.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
+#include "qgslayoutunitscombobox.h"
+#include "qgslayoutview.h"
+
+#include "moc_qgslayoutguidewidget.cpp"
 
 QgsLayoutGuideWidget::QgsLayoutGuideWidget( QWidget *parent, QgsLayout *layout, QgsLayoutView *layoutView )
   : QgsPanelWidget( parent )
@@ -58,7 +60,7 @@ QgsLayoutGuideWidget::QgsLayoutGuideWidget( QWidget *parent, QgsLayout *layout, 
 
   connect( mLayout->pageCollection(), &QgsLayoutPageCollection::changed, this, &QgsLayoutGuideWidget::updatePageCount );
   updatePageCount();
-  connect( mPageNumberComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( mPageNumberComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     setCurrentPage( mPageNumberComboBox->currentData().toInt() );
   } );
 
@@ -177,7 +179,7 @@ QWidget *QgsLayoutGuidePositionDelegate::createEditor( QWidget *parent, const QS
   spin->setMaximum( 1000000 );
   spin->setDecimals( 2 );
   spin->setShowClearButton( false );
-  connect( spin, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [=]( double ) {
+  connect( spin, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [this, spin]( double ) {
     // we want to update on every spin change, not just the final
     const_cast<QgsLayoutGuidePositionDelegate *>( this )->emit commitData( spin );
   } );
@@ -198,7 +200,7 @@ QgsLayoutGuideUnitDelegate::QgsLayoutGuideUnitDelegate( QObject *parent )
 QWidget *QgsLayoutGuideUnitDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const
 {
   QgsLayoutUnitsComboBox *unitsCb = new QgsLayoutUnitsComboBox( parent );
-  connect( unitsCb, &QgsLayoutUnitsComboBox::unitChanged, this, [=]( Qgis::LayoutUnit ) {
+  connect( unitsCb, &QgsLayoutUnitsComboBox::unitChanged, this, [this, unitsCb]( Qgis::LayoutUnit ) {
     // we want to update on every unit change, not just the final
     const_cast<QgsLayoutGuideUnitDelegate *>( this )->emit commitData( unitsCb );
   } );

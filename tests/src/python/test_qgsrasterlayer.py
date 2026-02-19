@@ -16,6 +16,7 @@ __copyright__ = "Copyright 2012, The QGIS Project"
 import filecmp
 import os
 from shutil import copyfile
+import tempfile
 
 import numpy
 import numpy as np
@@ -410,7 +411,6 @@ class TestQgsRasterLayer(QgisTestCase):
         self.assertIsInstance(layer.serverProperties(), QgsMapLayerServerProperties)
 
     def testQgsRasterMinMaxOrigin(self):
-
         mmo = QgsRasterMinMaxOrigin()
         mmo_default = QgsRasterMinMaxOrigin()
         self.assertEqual(mmo, mmo_default)
@@ -1271,6 +1271,53 @@ class TestQgsRasterLayer(QgisTestCase):
         )
         self.assertEqual(rl.renderer().opacity(), 0.6)
 
+    def testRasterType(self):
+        """Test that raster type is correctly assigned/detected"""
+        # multiband
+        file_path = os.path.join(
+            unitTestDataPath(), "raster", "band3_byte_noct_epsg4326.tif"
+        )
+        layer = QgsRasterLayer(file_path, "test_raster", "gdal")
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.bandCount(), 3)
+        self.assertEqual(layer.rasterType(), Qgis.RasterLayerType.Multiband)
+
+        # singleband, gray
+        file_path = os.path.join(
+            unitTestDataPath(), "raster", "band1_byte_noct_epsg4326.tif"
+        )
+        layer = QgsRasterLayer(file_path, "test_raster", "gdal")
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.bandCount(), 1)
+        self.assertEqual(layer.rasterType(), Qgis.RasterLayerType.GrayOrUndefined)
+
+        # singleband, palette
+        file_path = os.path.join(
+            unitTestDataPath(), "raster", "band1_byte_ct_epsg4326.tif"
+        )
+        layer = QgsRasterLayer(file_path, "test_raster", "gdal")
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.bandCount(), 1)
+        self.assertEqual(layer.rasterType(), Qgis.RasterLayerType.Palette)
+
+        # gray with alpha
+        file_path = os.path.join(
+            unitTestDataPath(), "raster", "band1_byte_noct_alpha_epsg4326.tif"
+        )
+        layer = QgsRasterLayer(file_path, "test_raster", "gdal")
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.bandCount(), 2)
+        self.assertEqual(layer.rasterType(), Qgis.RasterLayerType.GrayOrUndefined)
+
+        # paletted with alpha
+        file_path = os.path.join(
+            unitTestDataPath(), "raster", "band1_byte_ct_alpha_epsg4326.tif"
+        )
+        layer = QgsRasterLayer(file_path, "test_raster", "gdal")
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.bandCount(), 2)
+        self.assertEqual(layer.rasterType(), Qgis.RasterLayerType.Palette)
+
 
 class TestQgsRasterLayerTransformContext(QgisTestCase):
 
@@ -1523,6 +1570,46 @@ class TestQgsRasterLayerTransformContext(QgisTestCase):
         self.assertEqual(type(arrays[0]), np.ndarray)
         self.assertEqual(arrays.shape, (1, 4, 4))
         self.assertEqual(arrays[0].dtype, np.float64)
+
+    def test_legend_settings(self):
+        rl = QgsRasterLayer(
+            os.path.join(
+                unitTestDataPath("raster"), "rnd_percentile_raster5_float64.tif"
+            ),
+            "test",
+            "gdal",
+        )
+        self.assertTrue(rl.isValid())
+
+        self.assertFalse(rl.legend().flags() & Qgis.MapLayerLegendFlag.ExcludeByDefault)
+        rl.legend().setFlag(Qgis.MapLayerLegendFlag.ExcludeByDefault)
+        self.assertTrue(rl.legend().flags() & Qgis.MapLayerLegendFlag.ExcludeByDefault)
+
+        p = QgsProject()
+        p.addMapLayer(rl)
+
+        # test saving and restoring
+        with tempfile.TemporaryDirectory() as temp:
+            self.assertTrue(p.write(temp + "/test.qgs"))
+
+            p2 = QgsProject()
+            self.assertTrue(p2.read(temp + "/test.qgs"))
+
+            rl2 = list(p2.mapLayers().values())[0]
+            self.assertEqual(rl2.name(), rl.name())
+
+            self.assertTrue(
+                rl2.legend().flags() & Qgis.MapLayerLegendFlag.ExcludeByDefault
+            )
+
+    def test_htmlMetadata_COG(self):
+        """Check if layer properties report COG layout"""
+        path = os.path.join(unitTestDataPath("raster"), "byte_cog.tif")
+        layer = QgsRasterLayer(path, QFileInfo(path).baseName())
+        self.assertIn(
+            '<tr><td class="highlight">Data layout</td><td>Cloud Optimized GeoTIFF (COG)</td></tr>',
+            layer.htmlMetadata(),
+        )
 
 
 if __name__ == "__main__":

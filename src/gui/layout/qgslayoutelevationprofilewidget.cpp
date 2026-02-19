@@ -16,26 +16,33 @@
  ***************************************************************************/
 
 #include "qgslayoutelevationprofilewidget.h"
-#include "moc_qgslayoutelevationprofilewidget.cpp"
-#include "qgslayoutitemelevationprofile.h"
-#include "qgslayoutitemwidget.h"
-#include "qgslayoutitemregistry.h"
-#include "qgsplot.h"
+
+#include "qgscurve.h"
+#include "qgselevationprofilecanvas.h"
+#include "qgselevationprofilelayertreeview.h"
 #include "qgsfillsymbol.h"
-#include "qgslinesymbol.h"
-#include "qgsvectorlayer.h"
-#include "qgsnumericformatselectorwidget.h"
-#include "qgslayout.h"
+#include "qgsgui.h"
 #include "qgslayertree.h"
 #include "qgslayertreeregistrybridge.h"
-#include "qgselevationprofilelayertreeview.h"
-#include "qgselevationprofilecanvas.h"
-#include "qgscurve.h"
+#include "qgslayout.h"
 #include "qgslayoutatlas.h"
+#include "qgslayoutitemelevationprofile.h"
+#include "qgslayoutitemregistry.h"
+#include "qgslayoutitemwidget.h"
 #include "qgslayoutreportcontext.h"
+#include "qgslinesymbol.h"
+#include "qgsnumericformatselectorwidget.h"
+#include "qgsplot.h"
 #include "qgsprofilerenderer.h"
-#include "qgsgui.h"
+#include "qgsprofilesourceregistry.h"
+#include "qgsvectorlayer.h"
+
 #include <QMenu>
+#include <QString>
+
+#include "moc_qgslayoutelevationprofilewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 std::function<void( QgsLayoutElevationProfileWidget *, QMenu * )> QgsLayoutElevationProfileWidget::sBuildCopyMenuFunction = []( QgsLayoutElevationProfileWidget *, QMenu * ) {};
 
@@ -51,11 +58,11 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   setPanelTitle( tr( "Elevation Profile Properties" ) );
 
   mCopyFromDockMenu = new QMenu( this );
-  connect( mCopyFromDockMenu, &QMenu::aboutToShow, this, [=] {
+  connect( mCopyFromDockMenu, &QMenu::aboutToShow, this, [this] {
     sBuildCopyMenuFunction( this, mCopyFromDockMenu );
   } );
 
-  connect( mActionRefresh, &QAction::triggered, this, [=] {
+  connect( mActionRefresh, &QAction::triggered, this, [this] {
     if ( !mProfile )
     {
       return;
@@ -69,7 +76,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   copyFromDockButton->setToolTip( tr( "Copy From Profile" ) );
   copyFromDockButton->setMenu( mCopyFromDockMenu );
   copyFromDockButton->setPopupMode( QToolButton::InstantPopup );
-  copyFromDockButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCopyProfileSettings.svg" ) ) );
+  copyFromDockButton->setIcon( QgsApplication::getThemeIcon( u"/mActionCopyProfileSettings.svg"_s ) );
 
   mDockToolbar->addWidget( copyFromDockButton );
 
@@ -77,11 +84,11 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   mItemPropertiesWidget = new QgsLayoutItemPropertiesWidget( this, profile );
   mainLayout->addWidget( mItemPropertiesWidget );
 
-  connect( mLayerTree.get(), &QgsLayerTree::layerOrderChanged, this, &QgsLayoutElevationProfileWidget::updateItemLayers );
-  connect( mLayerTree.get(), &QgsLayerTreeGroup::visibilityChanged, this, &QgsLayoutElevationProfileWidget::updateItemLayers );
+  connect( mLayerTree.get(), &QgsLayerTree::layerOrderChanged, this, &QgsLayoutElevationProfileWidget::updateItemSources );
+  connect( mLayerTree.get(), &QgsLayerTreeGroup::visibilityChanged, this, &QgsLayoutElevationProfileWidget::updateItemSources );
 
   mSpinTolerance->setClearValue( 0 );
-  connect( mSpinTolerance, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mSpinTolerance, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -92,7 +99,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->endCommand();
   } );
 
-  connect( mCheckControlledByAtlas, &QCheckBox::toggled, this, [=] {
+  connect( mCheckControlledByAtlas, &QCheckBox::toggled, this, [this] {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -105,7 +112,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
 
   // subsections indicator
   mSubsectionsSymbolButton->setSymbolType( Qgis::SymbolType::Line );
-  connect( mSubsectionsSymbolButton, &QgsSymbolButton::changed, this, [=] {
+  connect( mSubsectionsSymbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -117,7 +124,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
   mSubsectionsSymbolButton->setDefaultSymbol( QgsProfilePlotRenderer::defaultSubSectionsSymbol().release() );
 
-  connect( mSubsectionsActivateCheck, &QGroupBox::toggled, this, [=] {
+  connect( mSubsectionsActivateCheck, &QGroupBox::toggled, this, [this] {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -132,7 +139,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
 
   mSpinMinDistance->setClearValue( 0 );
-  connect( mSpinMinDistance, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mSpinMinDistance, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -143,7 +150,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->endCommand();
   } );
 
-  connect( mSpinMaxDistance, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mSpinMaxDistance, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -155,7 +162,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
 
   mSpinMinElevation->setClearValue( 0 );
-  connect( mSpinMinElevation, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mSpinMinElevation, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -166,7 +173,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->endCommand();
   } );
 
-  connect( mSpinMaxElevation, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mSpinMaxElevation, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -178,7 +185,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
 
   mDistanceAxisMajorLinesSymbolButton->setSymbolType( Qgis::SymbolType::Line );
-  connect( mDistanceAxisMajorLinesSymbolButton, &QgsSymbolButton::changed, this, [=] {
+  connect( mDistanceAxisMajorLinesSymbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -191,7 +198,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   mDistanceAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol() );
 
   mDistanceAxisMinorLinesSymbolButton->setSymbolType( Qgis::SymbolType::Line );
-  connect( mDistanceAxisMinorLinesSymbolButton, &QgsSymbolButton::changed, this, [=] {
+  connect( mDistanceAxisMinorLinesSymbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -203,7 +210,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
   mDistanceAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol() );
 
-  connect( mDistanceAxisMajorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mDistanceAxisMajorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -214,7 +221,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->endCommand();
   } );
 
-  connect( mDistanceAxisMinorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mDistanceAxisMinorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -225,7 +232,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->endCommand();
   } );
 
-  connect( mDistanceAxisLabelIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mDistanceAxisLabelIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -237,7 +244,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
 
   mElevationAxisMajorLinesSymbolButton->setSymbolType( Qgis::SymbolType::Line );
-  connect( mElevationAxisMajorLinesSymbolButton, &QgsSymbolButton::changed, this, [=] {
+  connect( mElevationAxisMajorLinesSymbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -250,7 +257,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   mElevationAxisMajorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMajorSymbol() );
 
   mElevationAxisMinorLinesSymbolButton->setSymbolType( Qgis::SymbolType::Line );
-  connect( mElevationAxisMinorLinesSymbolButton, &QgsSymbolButton::changed, this, [=] {
+  connect( mElevationAxisMinorLinesSymbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -262,7 +269,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
   mElevationAxisMinorLinesSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::axisGridMinorSymbol() );
 
-  connect( mElevationAxisLabelIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mElevationAxisLabelIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -273,7 +280,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->endCommand();
   } );
 
-  connect( mElevationAxisMajorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mElevationAxisMajorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -284,7 +291,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->endCommand();
   } );
 
-  connect( mElevationAxisMinorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mElevationAxisMinorIntervalSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -296,7 +303,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
 
   mChartBackgroundSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
-  connect( mChartBackgroundSymbolButton, &QgsSymbolButton::changed, this, [=] {
+  connect( mChartBackgroundSymbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -309,7 +316,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   mChartBackgroundSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBackgroundSymbol() );
 
   mChartBorderSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
-  connect( mChartBorderSymbolButton, &QgsSymbolButton::changed, this, [=] {
+  connect( mChartBorderSymbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -321,14 +328,14 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
   mChartBorderSymbolButton->setDefaultSymbol( QgsPlotDefaultSettings::chartBorderSymbol() );
 
-  connect( mDistanceAxisLabelFormatButton, &QPushButton::clicked, this, [=] {
+  connect( mDistanceAxisLabelFormatButton, &QPushButton::clicked, this, [this] {
     if ( !mProfile || mBlockChanges )
       return;
 
     QgsNumericFormatSelectorWidget *widget = new QgsNumericFormatSelectorWidget( this );
     widget->setPanelTitle( tr( "Distance Number Format" ) );
     widget->setFormat( mProfile->plot()->xAxis().numericFormat() );
-    connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [=] {
+    connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [this, widget] {
       mProfile->beginCommand( tr( "Change Profile Chart Distance Format" ), QgsLayoutItem::UndoElevationProfileDistanceFormat );
       mProfile->plot()->xAxis().setNumericFormat( widget->format() );
       mProfile->invalidateCache();
@@ -338,14 +345,14 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     openPanel( widget );
   } );
 
-  connect( mElevationAxisLabelFormatButton, &QPushButton::clicked, this, [=] {
+  connect( mElevationAxisLabelFormatButton, &QPushButton::clicked, this, [this] {
     if ( !mProfile || mBlockChanges )
       return;
 
     QgsNumericFormatSelectorWidget *widget = new QgsNumericFormatSelectorWidget( this );
     widget->setPanelTitle( tr( "Elevation Number Format" ) );
     widget->setFormat( mProfile->plot()->yAxis().numericFormat() );
-    connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [=] {
+    connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [this, widget] {
       mProfile->beginCommand( tr( "Change Profile Chart Elevation Format" ), QgsLayoutItem::UndoElevationProfileElevationFormat );
       mProfile->plot()->yAxis().setNumericFormat( widget->format() );
       mProfile->invalidateCache();
@@ -360,7 +367,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   mDistanceAxisLabelFontButton->setMode( QgsFontButton::ModeTextRenderer );
   mElevationAxisLabelFontButton->setMode( QgsFontButton::ModeTextRenderer );
 
-  connect( mDistanceAxisLabelFontButton, &QgsFontButton::changed, this, [=] {
+  connect( mDistanceAxisLabelFontButton, &QgsFontButton::changed, this, [this] {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -371,7 +378,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mProfile->update();
   } );
 
-  connect( mElevationAxisLabelFontButton, &QgsFontButton::changed, this, [=] {
+  connect( mElevationAxisLabelFontButton, &QgsFontButton::changed, this, [this] {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -383,7 +390,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
 
   mSpinLeftMargin->setClearValue( 0 );
-  connect( mSpinLeftMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mSpinLeftMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -397,7 +404,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
 
   mSpinRightMargin->setClearValue( 0 );
-  connect( mSpinRightMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mSpinRightMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -411,7 +418,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
 
   mSpinTopMargin->setClearValue( 0 );
-  connect( mSpinTopMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mSpinTopMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -425,7 +432,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   } );
 
   mSpinBottomMargin->setClearValue( 0 );
-  connect( mSpinBottomMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mSpinBottomMargin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -464,7 +471,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
     mDistanceUnitCombo->addItem( title, QVariant::fromValue( unit ) );
   }
 
-  connect( mDistanceUnitCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( mDistanceUnitCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -480,7 +487,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   mDistanceLabelsCombo->addItem( tr( "First Value" ), QVariant::fromValue( Qgis::PlotAxisSuffixPlacement::FirstLabel ) );
   mDistanceLabelsCombo->addItem( tr( "Last Value" ), QVariant::fromValue( Qgis::PlotAxisSuffixPlacement::LastLabel ) );
   mDistanceLabelsCombo->addItem( tr( "First and Last Values" ), QVariant::fromValue( Qgis::PlotAxisSuffixPlacement::FirstAndLastLabels ) );
-  connect( mDistanceLabelsCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( mDistanceLabelsCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     if ( !mProfile || mBlockChanges )
       return;
 
@@ -516,7 +523,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
   mTreeViewContainer->setLayout( vl );
 
   mBlockChanges++;
-  mLayerTreeView->populateInitialLayers( mProfile->layout() && mProfile->layout()->project() ? mProfile->layout()->project() : QgsProject::instance() );
+  mLayerTreeView->populateInitialSources( mProfile->layout() && mProfile->layout()->project() ? mProfile->layout()->project() : QgsProject::instance() );
   mBlockChanges--;
 
   setGuiElementValues();
@@ -543,7 +550,7 @@ QgsLayoutElevationProfileWidget::QgsLayoutElevationProfileWidget( QgsLayoutItemE
 
   if ( mProfile->layout() )
   {
-    connect( &mProfile->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, this, [=]( QgsVectorLayer *layer ) {
+    connect( &mProfile->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, this, [this]( QgsVectorLayer *layer ) {
       mSubsectionsSymbolButton->setLayer( layer );
       mDistanceAxisMajorLinesSymbolButton->setLayer( layer );
       mDistanceAxisMinorLinesSymbolButton->setLayer( layer );
@@ -575,7 +582,14 @@ void QgsLayoutElevationProfileWidget::setMasterLayout( QgsMasterLayoutInterface 
 
 QgsExpressionContext QgsLayoutElevationProfileWidget::createExpressionContext() const
 {
-  return mProfile->createExpressionContext();
+  QgsExpressionContext context = mProfile->createExpressionContext();
+
+  auto plotScope = std::make_unique<QgsExpressionContextScope>( u"plot"_s );
+  plotScope->addVariable( QgsExpressionContextScope::StaticVariable( u"plot_axis"_s, QString(), true ) );
+  plotScope->addVariable( QgsExpressionContextScope::StaticVariable( u"plot_axis_value"_s, 0.0, true ) );
+  context.appendScope( plotScope.release() );
+
+  return context;
 }
 
 void QgsLayoutElevationProfileWidget::setDesignerInterface( QgsLayoutDesignerInterface *iface )
@@ -627,7 +641,7 @@ void QgsLayoutElevationProfileWidget::copySettingsFromProfileCanvas( QgsElevatio
   mDistanceAxisLabelIntervalSpin->setClearValue( canvas->plot().xAxis().labelInterval() );
   mProfile->plot()->xAxis().setLabelInterval( canvas->plot().xAxis().labelInterval() );
 
-  mSpinMinElevation->setValue( canvas->plot().xMinimum() );
+  mSpinMinElevation->setValue( canvas->plot().yMinimum() );
   mSpinMinElevation->setClearValue( canvas->plot().yMinimum() );
   mProfile->plot()->setYMinimum( canvas->plot().yMinimum() );
 
@@ -657,19 +671,65 @@ void QgsLayoutElevationProfileWidget::copySettingsFromProfileCanvas( QgsElevatio
   }
 
   QList<QgsMapLayer *> canvasLayers = canvas->layers();
-  // canvas layers are in opposite direction to what the layout item requires
-  std::reverse( canvasLayers.begin(), canvasLayers.end() );
   mProfile->setLayers( canvasLayers );
-  const QList<QgsLayerTreeLayer *> layers = mLayerTree->findLayers();
-  for ( QgsLayerTreeLayer *layer : layers )
-  {
-    layer->setItemVisibilityChecked( mProfile->layers().contains( layer->layer() ) );
-  }
-  mLayerTree->reorderGroupLayers( mProfile->layers() );
+
+  QList<QgsAbstractProfileSource *> canvasSources = canvas->sources();
+  mProfile->setSources( canvasSources );
+
+  syncLayerTreeAndProfileItemSources();
 
   mProfile->invalidateCache();
   mProfile->update();
   mBlockChanges--;
+}
+
+void QgsLayoutElevationProfileWidget::syncLayerTreeAndProfileItemSources()
+{
+  // Update layer tree node visibility, based on layout item profile
+  const QList<QgsLayerTreeNode *> nodes = mLayerTree->findLayersAndCustomNodes();
+  for ( QgsLayerTreeNode *node : nodes )
+  {
+    QgsAbstractProfileSource *source = nullptr;
+    if ( QgsLayerTree::isLayer( node ) )
+    {
+      QgsLayerTreeLayer *layerNode = QgsLayerTree::toLayer( node );
+      QgsMapLayer *layer = layerNode->layer();
+      if ( !layer )
+        continue;
+
+      source = layer->profileSource();
+    }
+    else if ( QgsLayerTree::isCustomNode( node ) && node->customProperty( u"source"_s ) == QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE )
+    {
+      QgsLayerTreeCustomNode *customNode = QgsLayerTree::toCustomNode( node );
+      source = QgsApplication::profileSourceRegistry()->findSourceById( customNode->nodeId() );
+    }
+
+    if ( !source )
+    {
+      node->setItemVisibilityChecked( false );
+    }
+    else
+    {
+      node->setItemVisibilityChecked( mProfile->sources().contains( source ) );
+    }
+  }
+
+  // Update layer tree node ordering, based on layout item profile
+  QList< QgsLayerTreeNode * > orderedNodes;
+  const QList<QgsAbstractProfileSource *> profileSources = mProfile->sources();
+  for ( const QgsAbstractProfileSource *source : profileSources )
+  {
+    if ( QgsLayerTreeLayer *layerNode = mLayerTree->findLayer( source->profileSourceId() ) )
+    {
+      orderedNodes << layerNode;
+    }
+    else if ( QgsLayerTreeCustomNode *customNode = mLayerTree->findCustomNode( source->profileSourceId() ) )
+    {
+      orderedNodes << customNode;
+    }
+  }
+  mLayerTree->reorderGroupLayersAndCustomNodes( orderedNodes );
 }
 
 bool QgsLayoutElevationProfileWidget::setNewItem( QgsLayoutItem *item )
@@ -755,12 +815,7 @@ void QgsLayoutElevationProfileWidget::setGuiElementValues()
   mSpinTopMargin->setValue( mProfile->plot()->margins().top() );
   mSpinBottomMargin->setValue( mProfile->plot()->margins().bottom() );
 
-  const QList<QgsLayerTreeLayer *> layers = mLayerTree->findLayers();
-  for ( QgsLayerTreeLayer *layer : layers )
-  {
-    layer->setItemVisibilityChecked( mProfile->layers().contains( layer->layer() ) );
-  }
-  mLayerTree->reorderGroupLayers( mProfile->layers() );
+  syncLayerTreeAndProfileItemSources();
 
   updateDataDefinedButton( mDDBtnTolerance );
   updateDataDefinedButton( mDDBtnMinDistance );
@@ -781,21 +836,43 @@ void QgsLayoutElevationProfileWidget::setGuiElementValues()
   mBlockChanges--;
 }
 
-void QgsLayoutElevationProfileWidget::updateItemLayers()
+void QgsLayoutElevationProfileWidget::updateItemSources()
 {
   if ( mBlockChanges )
     return;
 
   QList<QgsMapLayer *> layers;
-  const QList<QgsMapLayer *> layerOrder = mLayerTree->layerOrder();
-  layers.reserve( layerOrder.size() );
-  for ( QgsMapLayer *layer : layerOrder )
+  QList<QgsAbstractProfileSource *> sources;
+  const QList<QgsLayerTreeNode *> layerAndCustomNodeOrder = mLayerTree->layerAndCustomNodeOrder();
+  for ( QgsLayerTreeNode *node : layerAndCustomNodeOrder )
   {
-    if ( mLayerTree->findLayer( layer )->isVisible() )
-      layers << layer;
+    if ( QgsLayerTree::isLayer( node ) )
+    {
+      QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
+      if ( mLayerTree->findLayer( layer )->isVisible() )
+      {
+        layers << layer;
+        sources << layer->profileSource();
+      }
+    }
+    else if ( QgsLayerTree::isCustomNode( node ) && node->customProperty( u"source"_s ) == QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE )
+    {
+      QgsLayerTreeCustomNode *customNode = QgsLayerTree::toCustomNode( node );
+      if ( mLayerTree->findCustomNode( customNode->nodeId() )->isVisible() )
+      {
+        if ( QgsAbstractProfileSource *customSource = QgsApplication::profileSourceRegistry()->findSourceById( customNode->nodeId() ) )
+        {
+          sources << customSource;
+        }
+      }
+    }
   }
 
+  // Legacy: layer tree layers are in opposite direction to what the elevation profile requires
+  std::reverse( layers.begin(), layers.end() );
   mProfile->setLayers( layers );
+
+  mProfile->setSources( sources );
   mProfile->update();
 }
 

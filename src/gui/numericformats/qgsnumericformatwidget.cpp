@@ -14,18 +14,24 @@
  ***************************************************************************/
 
 #include "qgsnumericformatwidget.h"
-#include "moc_qgsnumericformatwidget.cpp"
-#include "qgsbasicnumericformat.h"
-#include "qgscurrencynumericformat.h"
-#include "qgspercentagenumericformat.h"
-#include "qgsbearingnumericformat.h"
-#include "qgsscientificnumericformat.h"
-#include "qgsfractionnumericformat.h"
-#include "qgscoordinatenumericformat.h"
-#include "qgsexpressionbasednumericformat.h"
-#include "qgsgui.h"
+
 #include "qgis.h"
+#include "qgsbasicnumericformat.h"
+#include "qgsbearingnumericformat.h"
+#include "qgscoordinatenumericformat.h"
+#include "qgscurrencynumericformat.h"
+#include "qgsexpressionbasednumericformat.h"
+#include "qgsfractionnumericformat.h"
+#include "qgsgui.h"
+#include "qgspercentagenumericformat.h"
+#include "qgsscientificnumericformat.h"
+
 #include <QDialogButtonBox>
+#include <QString>
+
+#include "moc_qgsnumericformatwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 void QgsNumericFormatWidget::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
 {
@@ -52,31 +58,31 @@ QgsBasicNumericFormatWidget::QgsBasicNumericFormatWidget( const QgsNumericFormat
   mThousandsLineEdit->setShowClearButton( true );
   mDecimalLineEdit->setShowClearButton( true );
 
-  connect( mShowPlusCheckBox, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mShowPlusCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
     mFormat->setShowPlusSign( checked );
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mShowTrailingZerosCheckBox, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mShowTrailingZerosCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
     mFormat->setShowTrailingZeros( checked );
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mShowThousandsCheckBox, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mShowThousandsCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
     mFormat->setShowThousandsSeparator( checked );
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mDecimalsSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [=]( int value ) {
+  connect( mDecimalsSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [this]( int value ) {
     mFormat->setNumberDecimalPlaces( value );
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mRadDecimalPlaces, &QRadioButton::toggled, this, [=]( bool checked ) {
+  connect( mRadDecimalPlaces, &QRadioButton::toggled, this, [this]( bool checked ) {
     if ( !checked )
       return;
 
@@ -85,7 +91,7 @@ QgsBasicNumericFormatWidget::QgsBasicNumericFormatWidget( const QgsNumericFormat
       emit changed();
   } );
 
-  connect( mRadSignificantFigures, &QRadioButton::toggled, this, [=]( bool checked ) {
+  connect( mRadSignificantFigures, &QRadioButton::toggled, this, [this]( bool checked ) {
     if ( !checked )
       return;
 
@@ -94,13 +100,13 @@ QgsBasicNumericFormatWidget::QgsBasicNumericFormatWidget( const QgsNumericFormat
       emit changed();
   } );
 
-  connect( mThousandsLineEdit, &QLineEdit::textChanged, this, [=]( const QString &text ) {
+  connect( mThousandsLineEdit, &QLineEdit::textChanged, this, [this]( const QString &text ) {
     mFormat->setThousandsSeparator( text.isEmpty() ? QChar() : text.at( 0 ) );
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mDecimalLineEdit, &QLineEdit::textChanged, this, [=]( const QString &text ) {
+  connect( mDecimalLineEdit, &QLineEdit::textChanged, this, [this]( const QString &text ) {
     mFormat->setDecimalSeparator( text.isEmpty() ? QChar() : text.at( 0 ) );
     if ( !mBlockSignals )
       emit changed();
@@ -155,19 +161,19 @@ QgsBearingNumericFormatWidget::QgsBearingNumericFormatWidget( const QgsNumericFo
 
   setFormat( format->clone() );
 
-  connect( mShowTrailingZerosCheckBox, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mShowTrailingZerosCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
     mFormat->setShowTrailingZeros( checked );
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mDecimalsSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [=]( int value ) {
+  connect( mDecimalsSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [this]( int value ) {
     mFormat->setNumberDecimalPlaces( value );
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mFormatComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( mFormatComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     mFormat->setDirectionFormat( static_cast<QgsBearingNumericFormat::FormatDirectionOption>( mFormatComboBox->currentData().toInt() ) );
     if ( !mBlockSignals )
       emit changed();
@@ -211,7 +217,7 @@ QgsBearingNumericFormatDialog::QgsBearingNumericFormatDialog( const QgsNumericFo
 
   connect( mWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
 
-  setObjectName( QStringLiteral( "QgsBearingNumericFormatDialog" ) );
+  setObjectName( u"QgsBearingNumericFormatDialog"_s );
   QgsGui::enableAutoGeometryRestore( this );
 }
 
@@ -242,37 +248,37 @@ QgsGeographicCoordinateNumericFormatWidget::QgsGeographicCoordinateNumericFormat
   }
   setFormat( format->clone() );
 
-  connect( mShowTrailingZerosCheckBox, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mShowTrailingZerosCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
     mFormat->setShowTrailingZeros( checked );
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mShowDirectionalSuffixCheckBox, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mShowDirectionalSuffixCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
     mFormat->setShowDirectionalSuffix( checked );
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mShowLeadingZerosCheckBox, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mShowLeadingZerosCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
     mFormat->setShowLeadingZeros( checked );
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mShowLeadingZerosForDegreesCheckBox, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mShowLeadingZerosForDegreesCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
     mFormat->setShowDegreeLeadingZeros( checked );
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mDecimalsSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [=]( int value ) {
+  connect( mDecimalsSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [this]( int value ) {
     mFormat->setNumberDecimalPlaces( value );
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mFormatComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( mFormatComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     mFormat->setAngleFormat( static_cast<QgsGeographicCoordinateNumericFormat::AngleFormat>( mFormatComboBox->currentData().toInt() ) );
     if ( !mBlockSignals )
       emit changed();
@@ -319,7 +325,7 @@ QgsGeographicCoordinateNumericFormatDialog::QgsGeographicCoordinateNumericFormat
 
   connect( mWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
 
-  setObjectName( QStringLiteral( "QgsGeographicCoordinateNumericFormatDialog" ) );
+  setObjectName( u"QgsGeographicCoordinateNumericFormatDialog"_s );
   QgsGui::enableAutoGeometryRestore( this );
 }
 
@@ -339,37 +345,37 @@ QgsCurrencyNumericFormatWidget::QgsCurrencyNumericFormatWidget( const QgsNumeric
   mDecimalsSpinBox->setClearValue( 2 );
   setFormat( format->clone() );
 
-  connect( mShowPlusCheckBox, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mShowPlusCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
     mFormat->setShowPlusSign( checked );
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mShowTrailingZerosCheckBox, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mShowTrailingZerosCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
     mFormat->setShowTrailingZeros( checked );
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mShowThousandsCheckBox, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mShowThousandsCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
     mFormat->setShowThousandsSeparator( checked );
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mDecimalsSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [=]( int value ) {
+  connect( mDecimalsSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [this]( int value ) {
     mFormat->setNumberDecimalPlaces( value );
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mPrefixLineEdit, &QLineEdit::textChanged, this, [=]( const QString &text ) {
+  connect( mPrefixLineEdit, &QLineEdit::textChanged, this, [this]( const QString &text ) {
     mFormat->setPrefix( text );
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mSuffixLineEdit, &QLineEdit::textChanged, this, [=]( const QString &text ) {
+  connect( mSuffixLineEdit, &QLineEdit::textChanged, this, [this]( const QString &text ) {
     mFormat->setSuffix( text );
     if ( !mBlockSignals )
       emit changed();
@@ -414,31 +420,31 @@ QgsPercentageNumericFormatWidget::QgsPercentageNumericFormatWidget( const QgsNum
 
   setFormat( format->clone() );
 
-  connect( mShowTrailingZerosCheckBox, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mShowTrailingZerosCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
     mFormat->setShowTrailingZeros( checked );
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mShowPlusCheckBox, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mShowPlusCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
     mFormat->setShowPlusSign( checked );
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mShowThousandsCheckBox, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mShowThousandsCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
     mFormat->setShowThousandsSeparator( checked );
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mDecimalsSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [=]( int value ) {
+  connect( mDecimalsSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [this]( int value ) {
     mFormat->setNumberDecimalPlaces( value );
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mScalingComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( mScalingComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     mFormat->setInputValues( static_cast<QgsPercentageNumericFormat::InputValues>( mScalingComboBox->currentData().toInt() ) );
     if ( !mBlockSignals )
       emit changed();
@@ -475,19 +481,19 @@ QgsScientificNumericFormatWidget::QgsScientificNumericFormatWidget( const QgsNum
   mDecimalsSpinBox->setClearValue( 6 );
   setFormat( format->clone() );
 
-  connect( mShowPlusCheckBox, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mShowPlusCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
     mFormat->setShowPlusSign( checked );
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mShowTrailingZerosCheckBox, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mShowTrailingZerosCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
     mFormat->setShowTrailingZeros( checked );
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mDecimalsSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [=]( int value ) {
+  connect( mDecimalsSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [this]( int value ) {
     mFormat->setNumberDecimalPlaces( value );
     if ( !mBlockSignals )
       emit changed();
@@ -524,31 +530,31 @@ QgsFractionNumericFormatWidget::QgsFractionNumericFormatWidget( const QgsNumeric
 
   mThousandsLineEdit->setShowClearButton( true );
 
-  connect( mUseDedicatedUnicodeCheckBox, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mUseDedicatedUnicodeCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
     mFormat->setUseDedicatedUnicodeCharacters( checked );
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mUseUnicodeSupersubscriptCheckBox, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mUseUnicodeSupersubscriptCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
     mFormat->setUseUnicodeSuperSubscript( checked );
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mShowPlusCheckBox, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mShowPlusCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
     mFormat->setShowPlusSign( checked );
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mShowThousandsCheckBox, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mShowThousandsCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
     mFormat->setShowThousandsSeparator( checked );
     if ( !mBlockSignals )
       emit changed();
   } );
 
-  connect( mThousandsLineEdit, &QLineEdit::textChanged, this, [=]( const QString &text ) {
+  connect( mThousandsLineEdit, &QLineEdit::textChanged, this, [this]( const QString &text ) {
     mFormat->setThousandsSeparator( text.isEmpty() ? QChar() : text.at( 0 ) );
     if ( !mBlockSignals )
       emit changed();
@@ -588,7 +594,7 @@ QgsExpressionBasedNumericFormatWidget::QgsExpressionBasedNumericFormatWidget( co
   mExpressionSelector->setMultiLine( true );
   mExpressionSelector->registerExpressionContextGenerator( this );
 
-  connect( mExpressionSelector, &QgsExpressionLineEdit::expressionChanged, this, [=]( const QString &text ) {
+  connect( mExpressionSelector, &QgsExpressionLineEdit::expressionChanged, this, [this]( const QString &text ) {
     mFormat->setExpression( text );
     if ( !mBlockSignals )
       emit changed();
@@ -600,9 +606,9 @@ QgsExpressionContext QgsExpressionBasedNumericFormatWidget::createExpressionCont
   QgsExpressionContext context = QgsNumericFormatWidget::createExpressionContext();
 
   QgsExpressionContextScope *scope = new QgsExpressionContextScope();
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "value" ), 1234.5678 ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( u"value"_s, 1234.5678 ) );
   context.appendScope( scope );
-  context.setHighlightedVariables( { QStringLiteral( "value" ) } );
+  context.setHighlightedVariables( { u"value"_s } );
   return context;
 }
 

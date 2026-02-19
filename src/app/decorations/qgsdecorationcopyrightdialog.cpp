@@ -11,16 +11,21 @@
  ***************************************************************************/
 
 #include "qgsdecorationcopyrightdialog.h"
-#include "moc_qgsdecorationcopyrightdialog.cpp"
-#include "qgsdecorationcopyright.h"
 
 #include "qgisapp.h"
+#include "qgsdecorationcopyright.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontext.h"
+#include "qgsexpressionfinder.h"
+#include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgsmapcanvas.h"
-#include "qgsgui.h"
-#include "qgsexpressionfinder.h"
+
+#include <QString>
+
+#include "moc_qgsdecorationcopyrightdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 //qt includes
 #include <QColorDialog>
@@ -52,7 +57,7 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   if ( !mDeco.enabled() && mDeco.mLabelText.isEmpty() )
   {
     const QDate now = QDate::currentDate();
-    const QString defaultString = QStringLiteral( "%1 %2 %3" ).arg( QChar( 0x00A9 ), QgsProject::instance()->metadata().author(), now.toString( QStringLiteral( "yyyy" ) ) );
+    const QString defaultString = u"%1 %2 %3"_s.arg( QChar( 0x00A9 ), QgsProject::instance()->metadata().author(), now.toString( u"yyyy"_s ) );
     txtCopyrightText->setPlainText( defaultString );
   }
   else
@@ -67,7 +72,7 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   cboPlacement->addItem( tr( "Bottom Left" ), QgsDecorationItem::BottomLeft );
   cboPlacement->addItem( tr( "Bottom Center" ), QgsDecorationItem::BottomCenter );
   cboPlacement->addItem( tr( "Bottom Right" ), QgsDecorationItem::BottomRight );
-  connect( cboPlacement, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( cboPlacement, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     spnHorizontal->setMinimum( cboPlacement->currentData() == QgsDecorationItem::TopCenter || cboPlacement->currentData() == QgsDecorationItem::BottomCenter ? -100 : 0 );
   } );
   cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );
@@ -98,7 +103,7 @@ void QgsDecorationCopyrightDialog::buttonBox_rejected()
 void QgsDecorationCopyrightDialog::mInsertExpressionButton_clicked()
 {
   QString expression = QgsExpressionFinder::findAndSelectActiveExpression( txtCopyrightText );
-  QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, QStringLiteral( "generic" ), QgisApp::instance()->mapCanvas()->mapSettings().expressionContext() );
+  QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, u"generic"_s, QgisApp::instance()->mapCanvas()->mapSettings().expressionContext() );
 
   exprDlg.setWindowTitle( QObject::tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
@@ -125,5 +130,5 @@ void QgsDecorationCopyrightDialog::apply()
 
 void QgsDecorationCopyrightDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#copyright-decoration" ) );
+  QgsHelp::openHelp( u"map_views/map_view.html#copyright-decoration"_s );
 }

@@ -12,13 +12,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <memory>
+
 #include "qgstest.h"
-#include <QObject>
-#include <QString>
+
 #include <QApplication>
 #include <QCheckBox>
-#include <memory>
+#include <QObject>
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 //qgis includes...
 #include "qgis.h"
@@ -44,7 +48,7 @@ class TestQgis : public QgsTest
 
   public:
     TestQgis()
-      : QgsTest( QStringLiteral( "Qgis Tests" ) ) {}
+      : QgsTest( u"Qgis Tests"_s ) {}
 
   private slots:
     void init() {}    // will be called before each testfunction is executed.
@@ -55,6 +59,8 @@ class TestQgis : public QgsTest
     void permissiveToLongLong();
     void doubleToString();
     void signalBlocker();
+    void qVariantOperators_data();
+    void qVariantOperators();
     void qVariantCompare_data();
     void qVariantCompare();
     void testNanCompatibleEquals_data();
@@ -76,34 +82,34 @@ void TestQgis::permissiveToDouble()
 {
   //good inputs
   bool ok = false;
-  double result = qgsPermissiveToDouble( QStringLiteral( "1000" ), ok );
+  double result = qgsPermissiveToDouble( u"1000"_s, ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.0 );
   ok = false;
-  result = qgsPermissiveToDouble( QStringLiteral( "1" ) + QLocale().groupSeparator() + "000", ok );
+  result = qgsPermissiveToDouble( u"1"_s + QLocale().groupSeparator() + "000", ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.0 );
   ok = false;
-  result = qgsPermissiveToDouble( QStringLiteral( "5" ) + QLocale().decimalPoint() + "5", ok );
+  result = qgsPermissiveToDouble( u"5"_s + QLocale().decimalPoint() + "5", ok );
   QVERIFY( ok );
   QCOMPARE( result, 5.5 );
   ok = false;
-  result = qgsPermissiveToDouble( QStringLiteral( "1" ) + QLocale().groupSeparator() + "000" + QLocale().decimalPoint() + "5", ok );
+  result = qgsPermissiveToDouble( u"1"_s + QLocale().groupSeparator() + "000" + QLocale().decimalPoint() + "5", ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.5 );
 
   //bad input
   ok = false;
-  ( void ) qgsPermissiveToDouble( QStringLiteral( "a" ), ok );
+  ( void ) qgsPermissiveToDouble( u"a"_s, ok );
   QVERIFY( !ok );
 
   //messy input (invalid thousand separator position), should still be converted
   ok = false;
-  result = qgsPermissiveToDouble( QStringLiteral( "10" ) + QLocale().groupSeparator() + "00", ok );
+  result = qgsPermissiveToDouble( u"10"_s + QLocale().groupSeparator() + "00", ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.0 );
   ok = false;
-  result = qgsPermissiveToDouble( QStringLiteral( "10" ) + QLocale().groupSeparator() + "00" + QLocale().decimalPoint() + "5", ok );
+  result = qgsPermissiveToDouble( u"10"_s + QLocale().groupSeparator() + "00" + QLocale().decimalPoint() + "5", ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.5 );
 }
@@ -112,22 +118,22 @@ void TestQgis::permissiveToInt()
 {
   //good inputs
   bool ok = false;
-  int result = qgsPermissiveToInt( QStringLiteral( "1000" ), ok );
+  int result = qgsPermissiveToInt( u"1000"_s, ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000 );
   ok = false;
-  result = qgsPermissiveToInt( QStringLiteral( "1%01000" ).arg( QLocale().groupSeparator() ), ok );
+  result = qgsPermissiveToInt( u"1%01000"_s.arg( QLocale().groupSeparator() ), ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000 );
 
   //bad input
   ok = false;
-  ( void ) qgsPermissiveToInt( QStringLiteral( "a" ), ok );
+  ( void ) qgsPermissiveToInt( u"a"_s, ok );
   QVERIFY( !ok );
 
   //messy input (invalid thousand separator position), should still be converted
   ok = false;
-  result = qgsPermissiveToInt( QStringLiteral( "10%0100" ).arg( QLocale().groupSeparator() ), ok );
+  result = qgsPermissiveToInt( u"10%0100"_s.arg( QLocale().groupSeparator() ), ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000 );
 }
@@ -136,57 +142,57 @@ void TestQgis::permissiveToLongLong()
 {
   //good inputs
   bool ok = false;
-  qlonglong result = qgsPermissiveToLongLong( QStringLiteral( "1000" ), ok );
+  qlonglong result = qgsPermissiveToLongLong( u"1000"_s, ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000 );
   ok = false;
-  result = qgsPermissiveToLongLong( QStringLiteral( "1%01000" ).arg( QLocale().groupSeparator() ), ok );
+  result = qgsPermissiveToLongLong( u"1%01000"_s.arg( QLocale().groupSeparator() ), ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000 );
 
   //bad input
   ok = false;
-  ( void ) qgsPermissiveToLongLong( QStringLiteral( "a" ), ok );
+  ( void ) qgsPermissiveToLongLong( u"a"_s, ok );
   QVERIFY( !ok );
 
   //messy input (invalid thousand separator position), should still be converted
   ok = false;
-  result = qgsPermissiveToLongLong( QStringLiteral( "10%0100" ).arg( QLocale().groupSeparator() ), ok );
+  result = qgsPermissiveToLongLong( u"10%0100"_s.arg( QLocale().groupSeparator() ), ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000 );
 }
 
 void TestQgis::doubleToString()
 {
-  QCOMPARE( qgsDoubleToString( 5.6783212, 5 ), QStringLiteral( "5.67832" ) );
-  QCOMPARE( qgsDoubleToString( 5.5555555, 5 ), QStringLiteral( "5.55556" ) );
-  QCOMPARE( qgsDoubleToString( 12.2, 1 ), QStringLiteral( "12.2" ) );
-  QCOMPARE( qgsDoubleToString( 12.2, 2 ), QStringLiteral( "12.2" ) );
-  QCOMPARE( qgsDoubleToString( 12.2, 10 ), QStringLiteral( "12.2" ) );
-  QCOMPARE( qgsDoubleToString( 12.234333, 1 ), QStringLiteral( "12.2" ) );
-  QCOMPARE( qgsDoubleToString( 12, 1 ), QStringLiteral( "12" ) );
-  QCOMPARE( qgsDoubleToString( 12, 0 ), QStringLiteral( "12" ) );
-  QCOMPARE( qgsDoubleToString( 12000, 0 ), QStringLiteral( "12000" ) );
-  QCOMPARE( qgsDoubleToString( 12000, 1 ), QStringLiteral( "12000" ) );
-  QCOMPARE( qgsDoubleToString( 12000, 10 ), QStringLiteral( "12000" ) );
-  QCOMPARE( qgsDoubleToString( 12345, -1 ), QStringLiteral( "12350" ) );
-  QCOMPARE( qgsDoubleToString( 12345.0111, -1 ), QStringLiteral( "12350" ) );
-  QCOMPARE( qgsDoubleToString( 12345.0111, -2 ), QStringLiteral( "12300" ) );
-  QCOMPARE( qgsDoubleToString( 12345.0111, -3 ), QStringLiteral( "12000" ) );
-  QCOMPARE( qgsDoubleToString( 12345.0111, -4 ), QStringLiteral( "10000" ) );
-  QCOMPARE( qgsDoubleToString( 12345.0111, -5 ), QStringLiteral( "0" ) );
-  QCOMPARE( qgsDoubleToString( 62345.0111, -5 ), QStringLiteral( "100000" ) );
-  QCOMPARE( qgsDoubleToString( 12345.0111, -6 ), QStringLiteral( "0" ) );
-  QCOMPARE( qgsDoubleToString( -12345.0111, -1 ), QStringLiteral( "-12350" ) );
-  QCOMPARE( qgsDoubleToString( -12345.0111, -2 ), QStringLiteral( "-12300" ) );
-  QCOMPARE( qgsDoubleToString( -12345.0111, -3 ), QStringLiteral( "-12000" ) );
-  QCOMPARE( qgsDoubleToString( -12345.0111, -4 ), QStringLiteral( "-10000" ) );
-  QCOMPARE( qgsDoubleToString( -12345.0111, -5 ), QStringLiteral( "0" ) );
-  QCOMPARE( qgsDoubleToString( -62345.0111, -5 ), QStringLiteral( "-100000" ) );
-  QCOMPARE( qgsDoubleToString( -12345.0111, -6 ), QStringLiteral( "0" ) );
-  QCOMPARE( qgsDoubleToString( 12345.12300000, 7 ), QStringLiteral( "12345.123" ) );
-  QCOMPARE( qgsDoubleToString( 12345.00011111, 2 ), QStringLiteral( "12345" ) );
-  QCOMPARE( qgsDoubleToString( -0.000000000708115, 0 ), QStringLiteral( "0" ) );
+  QCOMPARE( qgsDoubleToString( 5.6783212, 5 ), u"5.67832"_s );
+  QCOMPARE( qgsDoubleToString( 5.5555555, 5 ), u"5.55556"_s );
+  QCOMPARE( qgsDoubleToString( 12.2, 1 ), u"12.2"_s );
+  QCOMPARE( qgsDoubleToString( 12.2, 2 ), u"12.2"_s );
+  QCOMPARE( qgsDoubleToString( 12.2, 10 ), u"12.2"_s );
+  QCOMPARE( qgsDoubleToString( 12.234333, 1 ), u"12.2"_s );
+  QCOMPARE( qgsDoubleToString( 12, 1 ), u"12"_s );
+  QCOMPARE( qgsDoubleToString( 12, 0 ), u"12"_s );
+  QCOMPARE( qgsDoubleToString( 12000, 0 ), u"12000"_s );
+  QCOMPARE( qgsDoubleToString( 12000, 1 ), u"12000"_s );
+  QCOMPARE( qgsDoubleToString( 12000, 10 ), u"12000"_s );
+  QCOMPARE( qgsDoubleToString( 12345, -1 ), u"12350"_s );
+  QCOMPARE( qgsDoubleToString( 12345.0111, -1 ), u"12350"_s );
+  QCOMPARE( qgsDoubleToString( 12345.0111, -2 ), u"12300"_s );
+  QCOMPARE( qgsDoubleToString( 12345.0111, -3 ), u"12000"_s );
+  QCOMPARE( qgsDoubleToString( 12345.0111, -4 ), u"10000"_s );
+  QCOMPARE( qgsDoubleToString( 12345.0111, -5 ), u"0"_s );
+  QCOMPARE( qgsDoubleToString( 62345.0111, -5 ), u"100000"_s );
+  QCOMPARE( qgsDoubleToString( 12345.0111, -6 ), u"0"_s );
+  QCOMPARE( qgsDoubleToString( -12345.0111, -1 ), u"-12350"_s );
+  QCOMPARE( qgsDoubleToString( -12345.0111, -2 ), u"-12300"_s );
+  QCOMPARE( qgsDoubleToString( -12345.0111, -3 ), u"-12000"_s );
+  QCOMPARE( qgsDoubleToString( -12345.0111, -4 ), u"-10000"_s );
+  QCOMPARE( qgsDoubleToString( -12345.0111, -5 ), u"0"_s );
+  QCOMPARE( qgsDoubleToString( -62345.0111, -5 ), u"-100000"_s );
+  QCOMPARE( qgsDoubleToString( -12345.0111, -6 ), u"0"_s );
+  QCOMPARE( qgsDoubleToString( 12345.12300000, 7 ), u"12345.123"_s );
+  QCOMPARE( qgsDoubleToString( 12345.00011111, 2 ), u"12345"_s );
+  QCOMPARE( qgsDoubleToString( -0.000000000708115, 0 ), u"0"_s );
 }
 
 void TestQgis::signalBlocker()
@@ -260,6 +266,116 @@ void TestQgis::signalBlocker()
   QVERIFY( checkbox->signalsBlocked() );
 }
 
+void TestQgis::qVariantOperators_data()
+{
+  QTest::addColumn<QVariant>( "lhs" );
+  QTest::addColumn<QVariant>( "rhs" );
+  QTest::addColumn<bool>( "lessThan" );
+  QTest::addColumn<bool>( "greaterThan" );
+
+  QTest::newRow( "both invalid" ) << QVariant() << QVariant() << false << false;
+  QTest::newRow( "invalid to value" ) << QVariant() << QVariant( 2 ) << true << false;
+  QTest::newRow( "invalid to value 2" ) << QVariant( 2 ) << QVariant() << false << true;
+  QTest::newRow( "invalid to null" ) << QVariant() << QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) << true << false;
+  QTest::newRow( "invalid to null2 " ) << QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) << QVariant() << false << true;
+  QTest::newRow( "both null" ) << QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) << QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) << false << false;
+  QTest::newRow( "null to value" ) << QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) << QVariant( "a" ) << true << false;
+  QTest::newRow( "null to value 2" ) << QVariant( "a" ) << QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) << false << true;
+
+  // type mismatches -- we MUST NOT compare the values here, just the types.
+  // otherwise we break use of QMap< QVariant, ... > and incorrectly match different
+  // variant types with the same value in the map.
+  QTest::newRow( "int vs double" ) << QVariant( 1 ) << QVariant( 2.0 ) << true << false;
+  QTest::newRow( "double vs int" ) << QVariant( 1.0 ) << QVariant( 2 ) << false << true;
+  QTest::newRow( "int vs double same" ) << QVariant( 1 ) << QVariant( 1.0 ) << true << false;
+  QTest::newRow( "double vs int same" ) << QVariant( 1.0 ) << QVariant( 1 ) << false << true;
+  QTest::newRow( "int vs string" ) << QVariant( 1 ) << QVariant( "2" ) << true << false;
+  QTest::newRow( "string vs int" ) << QVariant( "1" ) << QVariant( 2 ) << false << true;
+  QTest::newRow( "int vs string same" ) << QVariant( 1 ) << QVariant( "1" ) << true << false;
+  QTest::newRow( "string vs int same" ) << QVariant( "1" ) << QVariant( 1 ) << false << true;
+
+  // matching types
+  QTest::newRow( "int" ) << QVariant( 1 ) << QVariant( 2 ) << true << false;
+  QTest::newRow( "int 2" ) << QVariant( 1 ) << QVariant( -2 ) << false << true;
+  QTest::newRow( "int 3" ) << QVariant( 0 ) << QVariant( 1 ) << true << false;
+  QTest::newRow( "int equal" ) << QVariant( 1 ) << QVariant( 1 ) << false << false;
+  QTest::newRow( "uint" ) << QVariant( 1u ) << QVariant( 2u ) << true << false;
+  QTest::newRow( "uint 2" ) << QVariant( 2u ) << QVariant( 0u ) << false << true;
+  QTest::newRow( "uint equal" ) << QVariant( 2u ) << QVariant( 2u ) << false << false;
+  QTest::newRow( "long long" ) << QVariant( 1LL ) << QVariant( 2LL ) << true << false;
+  QTest::newRow( "long long 2" ) << QVariant( 1LL ) << QVariant( -2LL ) << false << true;
+  QTest::newRow( "long long 3" ) << QVariant( 0LL ) << QVariant( 1LL ) << true << false;
+  QTest::newRow( "long long equal" ) << QVariant( 1LL ) << QVariant( 1LL ) << false << false;
+  QTest::newRow( "ulong long" ) << QVariant( 1uLL ) << QVariant( 2uLL ) << true << false;
+  QTest::newRow( "ulong long 2" ) << QVariant( 2uLL ) << QVariant( 0uLL ) << false << true;
+  QTest::newRow( "ulong long equal" ) << QVariant( 2uLL ) << QVariant( 2uLL ) << false << false;
+  QTest::newRow( "double" ) << QVariant( 1.5 ) << QVariant( 2.5 ) << true << false;
+  QTest::newRow( "double 2" ) << QVariant( 1.5 ) << QVariant( -2.5 ) << false << true;
+  QTest::newRow( "double 3" ) << QVariant( 0.5 ) << QVariant( 1.5 ) << true << false;
+  QTest::newRow( "double equal" ) << QVariant( 1.5 ) << QVariant( 1.5 ) << false << false;
+  QTest::newRow( "double both nan" ) << QVariant( std::numeric_limits<double>::quiet_NaN() ) << QVariant( std::numeric_limits<double>::quiet_NaN() ) << false << false;
+  QTest::newRow( "double lhs nan" ) << QVariant( 5.5 ) << QVariant( std::numeric_limits<double>::quiet_NaN() ) << false << true;
+  QTest::newRow( "double rhs nan" ) << QVariant( std::numeric_limits<double>::quiet_NaN() ) << QVariant( 5.5 ) << true << false;
+  QTest::newRow( "float" ) << QVariant( 1.5f ) << QVariant( 2.5f ) << true << false;
+  QTest::newRow( "float 2" ) << QVariant( 1.5f ) << QVariant( -2.5f ) << false << true;
+  QTest::newRow( "float 3" ) << QVariant( 0.5f ) << QVariant( 1.5f ) << true << false;
+  QTest::newRow( "float equal" ) << QVariant( 1.5f ) << QVariant( 1.5f ) << false << false;
+  QTest::newRow( "float both nan" ) << QVariant( std::numeric_limits<float>::quiet_NaN() ) << QVariant( std::numeric_limits<float>::quiet_NaN() ) << false << false;
+  QTest::newRow( "float lhs nan" ) << QVariant( 5.5f ) << QVariant( std::numeric_limits<float>::quiet_NaN() ) << false << true;
+  QTest::newRow( "float rhs nan" ) << QVariant( std::numeric_limits<float>::quiet_NaN() ) << QVariant( 5.5f ) << true << false;
+  QTest::newRow( "char" ) << QVariant( 'b' ) << QVariant( 'x' ) << true << false;
+  QTest::newRow( "char 2" ) << QVariant( 'x' ) << QVariant( 'b' ) << false << true;
+  QTest::newRow( "char equal" ) << QVariant( 'x' ) << QVariant( 'x' ) << false << false;
+  QTest::newRow( "date" ) << QVariant( QDate( 2000, 5, 6 ) ) << QVariant( QDate( 2000, 8, 6 ) ) << true << false;
+  QTest::newRow( "date 2" ) << QVariant( QDate( 2000, 8, 6 ) ) << QVariant( QDate( 2000, 5, 6 ) ) << false << true;
+  QTest::newRow( "date equal" ) << QVariant( QDate( 2000, 8, 6 ) ) << QVariant( QDate( 2000, 8, 6 ) ) << false << false;
+  QTest::newRow( "time" ) << QVariant( QTime( 13, 5, 6 ) ) << QVariant( QTime( 13, 8, 6 ) ) << true << false;
+  QTest::newRow( "time 2" ) << QVariant( QTime( 18, 8, 6 ) ) << QVariant( QTime( 13, 5, 6 ) ) << false << true;
+  QTest::newRow( "time equal" ) << QVariant( QTime( 18, 8, 6 ) ) << QVariant( QTime( 18, 8, 6 ) ) << false << false;
+  QTest::newRow( "datetime" ) << QVariant( QDateTime( QDate( 2000, 5, 6 ), QTime( 13, 5, 6 ) ) ) << QVariant( QDateTime( QDate( 2000, 8, 6 ), QTime( 13, 5, 6 ) ) ) << true << false;
+  QTest::newRow( "datetime 2" ) << QVariant( QDateTime( QDate( 2000, 8, 6 ), QTime( 13, 5, 6 ) ) ) << QVariant( QDateTime( QDate( 2000, 5, 6 ), QTime( 13, 5, 6 ) ) ) << false << true;
+  QTest::newRow( "datetime 3" ) << QVariant( QDateTime( QDate( 2000, 5, 6 ), QTime( 13, 5, 6 ) ) ) << QVariant( QDateTime( QDate( 2000, 5, 6 ), QTime( 13, 9, 6 ) ) ) << true << false;
+  QTest::newRow( "datetime 4" ) << QVariant( QDateTime( QDate( 2000, 5, 6 ), QTime( 13, 9, 6 ) ) ) << QVariant( QDateTime( QDate( 2000, 5, 6 ), QTime( 13, 5, 6 ) ) ) << false << true;
+  QTest::newRow( "datetime equal" ) << QVariant( QDateTime( QDate( 2000, 5, 6 ), QTime( 13, 9, 6 ) ) ) << QVariant( QDateTime( QDate( 2000, 5, 6 ), QTime( 13, 9, 6 ) ) ) << false << false;
+  QTest::newRow( "bool" ) << QVariant( false ) << QVariant( true ) << true << false;
+  QTest::newRow( "bool 2" ) << QVariant( true ) << QVariant( false ) << false << true;
+  QTest::newRow( "bool equal true" ) << QVariant( true ) << QVariant( true ) << false << false;
+  QTest::newRow( "bool equal false" ) << QVariant( false ) << QVariant( false ) << false << false;
+  QTest::newRow( "qvariantlist both empty" ) << QVariant( QVariantList() ) << QVariant( QVariantList() ) << false << false;
+  QTest::newRow( "qvariantlist" ) << QVariant( QVariantList() << QVariant( 5 ) ) << QVariant( QVariantList() << QVariant( 9 ) ) << true << false;
+  QTest::newRow( "qvariantlist 2" ) << QVariant( QVariantList() << QVariant( 9 ) ) << QVariant( QVariantList() << QVariant( 5 ) ) << false << true;
+  QTest::newRow( "qvariantlist equal one element" ) << QVariant( QVariantList() << QVariant( 9 ) ) << QVariant( QVariantList() << QVariant( 9 ) ) << false << false;
+  QTest::newRow( "qvariantlist 3" ) << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 3 ) ) << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) << true << false;
+  QTest::newRow( "qvariantlist 4" ) << QVariant( QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) ) << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 3 ) ) << false << true;
+  QTest::newRow( "qvariantlist equal two element" ) << QVariant( QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) ) << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) << false << false;
+  QTest::newRow( "qvariantlist 5" ) << QVariant( QVariantList() << QVariant( 5 ) ) << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) << true << false;
+  QTest::newRow( "qvariantlist 5" ) << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) << QVariant( QVariantList() << QVariant( 5 ) ) << false << true;
+  QTest::newRow( "qstringlist empty" ) << QVariant( QStringList() ) << QVariant( QStringList() ) << false << false;
+  QTest::newRow( "qstringlist" ) << QVariant( QStringList() << u"aa"_s ) << QVariant( QStringList() << u"bb"_s ) << true << false;
+  QTest::newRow( "qstringlist 2" ) << QVariant( QStringList() << u"bb"_s ) << QVariant( QStringList() << u"aa"_s ) << false << true;
+  QTest::newRow( "qstringlist equal one element" ) << QVariant( QStringList() << u"bb"_s ) << QVariant( QStringList() << u"bb"_s ) << false << false;
+  QTest::newRow( "qstringlist 3" ) << QVariant( QStringList() << u"aa"_s << u"cc"_s ) << QVariant( QStringList() << u"aa"_s << u"xx"_s ) << true << false;
+  QTest::newRow( "qstringlist 4" ) << QVariant( QStringList() << u"aa"_s << u"xx"_s ) << QVariant( QStringList() << u"aa"_s << u"cc"_s ) << false << true;
+  QTest::newRow( "qstringlist equal two element" ) << QVariant( QStringList() << u"aa"_s << u"xx"_s ) << QVariant( QStringList() << u"aa"_s << u"xx"_s ) << false << false;
+  QTest::newRow( "qstringlist 5" ) << QVariant( QStringList() << u"aa"_s ) << QVariant( QStringList() << u"aa"_s << u"xx"_s ) << true << false;
+  QTest::newRow( "qstringlist 6" ) << QVariant( QStringList() << u"aa"_s << u"xx"_s ) << QVariant( QStringList() << u"aa"_s ) << false << true;
+  QTest::newRow( "string both empty" ) << QVariant( QString() ) << QVariant( QString() ) << false << false;
+  QTest::newRow( "string" ) << QVariant( "a b c" ) << QVariant( "d e f" ) << true << false;
+  QTest::newRow( "string 2" ) << QVariant( "d e f" ) << QVariant( "a b c" ) << false << true;
+  QTest::newRow( "string equal" ) << QVariant( "a b c" ) << QVariant( "a b c" ) << false << false;
+}
+
+void TestQgis::qVariantOperators()
+{
+  QFETCH( QVariant, lhs );
+  QFETCH( QVariant, rhs );
+  QFETCH( bool, lessThan );
+  QFETCH( bool, greaterThan );
+
+  QCOMPARE( lhs < rhs, lessThan );
+  QCOMPARE( lhs > rhs, greaterThan );
+}
+
 void TestQgis::qVariantCompare_data()
 {
   QTest::addColumn<QVariant>( "lhs" );
@@ -276,6 +392,122 @@ void TestQgis::qVariantCompare_data()
   QTest::newRow( "both null" ) << QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) << QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) << false << false << 0;
   QTest::newRow( "null to value" ) << QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) << QVariant( "a" ) << true << false << -1;
   QTest::newRow( "null to value 2" ) << QVariant( "a" ) << QgsVariantUtils::createNullVariant( QMetaType::Type::QString ) << false << true << 1;
+
+  // type mismatches -- we DO compare the values here, and are tolerant to different variant types!
+  QTest::newRow( "int vs double less than" ) << QVariant( 1 ) << QVariant( 2.0 ) << true << false << -1;
+  QTest::newRow( "int vs double less than truncation" ) << QVariant( 1 ) << QVariant( 1.1 ) << true << false << -1;
+  QTest::newRow( "int vs double greater than" ) << QVariant( 2 ) << QVariant( 1.0 ) << false << true << 1;
+  QTest::newRow( "int vs double greater than truncation" ) << QVariant( -2 ) << QVariant( -2.1 ) << false << true << 1;
+  QTest::newRow( "int vs double same" ) << QVariant( 1 ) << QVariant( 1.0 ) << false << false << 0;
+
+  QTest::newRow( "int vs float less than" ) << QVariant( 1 ) << QVariant( 2.0f ) << true << false << -1;
+  QTest::newRow( "int vs float less than truncation" ) << QVariant( 1 ) << QVariant( 1.1f ) << true << false << -1;
+  QTest::newRow( "int vs float greater than" ) << QVariant( 2 ) << QVariant( 1.0f ) << false << true << 1;
+  QTest::newRow( "int vs float greater than truncation" ) << QVariant( -2 ) << QVariant( -2.1f ) << false << true << 1;
+  QTest::newRow( "int vs float same" ) << QVariant( 1 ) << QVariant( 1.0f ) << false << false << 0;
+
+  QTest::newRow( "long long vs double less than" ) << QVariant( 1LL ) << QVariant( 2.0 ) << true << false << -1;
+  QTest::newRow( "long long vs double less than truncation" ) << QVariant( 1LL ) << QVariant( 1.1 ) << true << false << -1;
+  QTest::newRow( "long long vs double greater than" ) << QVariant( 2LL ) << QVariant( 1.0 ) << false << true << 1;
+  QTest::newRow( "long long vs double greater than truncation" ) << QVariant( -2LL ) << QVariant( -2.1 ) << false << true << 1;
+  QTest::newRow( "long long vs double same" ) << QVariant( 1LL ) << QVariant( 1.0 ) << false << false << 0;
+
+  QTest::newRow( "long long vs float less than" ) << QVariant( 1LL ) << QVariant( 2.0f ) << true << false << -1;
+  QTest::newRow( "long long vs float less than truncation" ) << QVariant( 1LL ) << QVariant( 1.1f ) << true << false << -1;
+  QTest::newRow( "long long vs float greater than" ) << QVariant( 2LL ) << QVariant( 1.0f ) << false << true << 1;
+  QTest::newRow( "long long vs float greater than truncation" ) << QVariant( -2LL ) << QVariant( -2.1f ) << false << true << 1;
+  QTest::newRow( "long long vs float same" ) << QVariant( 1LL ) << QVariant( 1.0f ) << false << false << 0;
+
+  QTest::newRow( "long long vs int less than" ) << QVariant( 1LL ) << QVariant( 2 ) << true << false << -1;
+  QTest::newRow( "long long vs int greater than" ) << QVariant( 2LL ) << QVariant( 1 ) << false << true << 1;
+  QTest::newRow( "long long vs int same" ) << QVariant( 1LL ) << QVariant( 1 ) << false << false << 0;
+  QTest::newRow( "int vs long long less than" ) << QVariant( 1 ) << QVariant( 2LL ) << true << false << -1;
+  QTest::newRow( "int vs long long greater than" ) << QVariant( 2 ) << QVariant( 1LL ) << false << true << 1;
+  QTest::newRow( "int vs long long same" ) << QVariant( 1 ) << QVariant( 1LL ) << false << false << 0;
+
+  QTest::newRow( "double vs int less than" ) << QVariant( 1.0 ) << QVariant( 2 ) << true << false << -1;
+  QTest::newRow( "double vs int less than truncation" ) << QVariant( -2.1 ) << QVariant( -2 ) << true << false << -1;
+  QTest::newRow( "double vs int greater than" ) << QVariant( 2.0 ) << QVariant( 1 ) << false << true << 1;
+  QTest::newRow( "double vs int greater than truncation" ) << QVariant( 1.1 ) << QVariant( 1 ) << false << true << 1;
+  QTest::newRow( "double vs int same" ) << QVariant( 1.0 ) << QVariant( 1 ) << false << false << 0;
+
+  QTest::newRow( "double vs long long less than" ) << QVariant( 1.0 ) << QVariant( 2LL ) << true << false << -1;
+  QTest::newRow( "double vs long long less than truncation" ) << QVariant( -2.1 ) << QVariant( -2LL ) << true << false << -1;
+  QTest::newRow( "double vs long long greater than" ) << QVariant( 2.0 ) << QVariant( 1LL ) << false << true << 1;
+  QTest::newRow( "double vs long long greater than truncation" ) << QVariant( 1.1 ) << QVariant( 1LL ) << false << true << 1;
+  QTest::newRow( "double vs long long same" ) << QVariant( 1.0 ) << QVariant( 1LL ) << false << false << 0;
+
+  QTest::newRow( "float vs int less than" ) << QVariant( 1.0f ) << QVariant( 2 ) << true << false << -1;
+  QTest::newRow( "float vs int less than truncation" ) << QVariant( -2.1f ) << QVariant( -2 ) << true << false << -1;
+  QTest::newRow( "float vs int greater than" ) << QVariant( 2.0f ) << QVariant( 1 ) << false << true << 1;
+  QTest::newRow( "float vs int greater than truncation" ) << QVariant( 1.1f ) << QVariant( 1 ) << false << true << 1;
+  QTest::newRow( "float vs int same" ) << QVariant( 1.0f ) << QVariant( 1 ) << false << false << 0;
+
+  QTest::newRow( "float vs long long less than" ) << QVariant( 1.0f ) << QVariant( 2LL ) << true << false << -1;
+  QTest::newRow( "float vs long long less than truncation" ) << QVariant( -2.1f ) << QVariant( -2LL ) << true << false << -1;
+  QTest::newRow( "float vs long long greater than" ) << QVariant( 2.0f ) << QVariant( 1LL ) << false << true << 1;
+  QTest::newRow( "float vs long long greater than truncation" ) << QVariant( 1.1f ) << QVariant( 1LL ) << false << true << 1;
+  QTest::newRow( "float vs long long same" ) << QVariant( 1.0f ) << QVariant( 1LL ) << false << false << 0;
+
+  QTest::newRow( "int vs string less than" ) << QVariant( 1 ) << QVariant( "2" ) << true << false << -1;
+  QTest::newRow( "int vs string greater than" ) << QVariant( 2 ) << QVariant( "1" ) << false << true << 1;
+  QTest::newRow( "int vs string same" ) << QVariant( 2 ) << QVariant( "2" ) << false << false << 0;
+  QTest::newRow( "int vs string non numeric" ) << QVariant( 2 ) << QVariant( "aaaa" ) << true << false << -1;
+  QTest::newRow( "non numeric string vs int" ) << QVariant( "abc" ) << QVariant( 2 ) << false << true << 1;
+  QTest::newRow( "int 0 vs string non numeric" ) << QVariant( 0 ) << QVariant( "aaaa" ) << true << false << -1;
+  QTest::newRow( "non numeric string vs int 0" ) << QVariant( "abc" ) << QVariant( 0 ) << false << true << 1;
+
+  QTest::newRow( "long long vs string less than" ) << QVariant( 1LL ) << QVariant( "2" ) << true << false << -1;
+  QTest::newRow( "long long vs string greater than" ) << QVariant( 2LL ) << QVariant( "1" ) << false << true << 1;
+  QTest::newRow( "long long vs string same" ) << QVariant( 2LL ) << QVariant( "2" ) << false << false << 0;
+  QTest::newRow( "long long vs string non numeric" ) << QVariant( 2LL ) << QVariant( "aaaa" ) << true << false << -1;
+  QTest::newRow( "non numeric string vs long long" ) << QVariant( "abc" ) << QVariant( 2LL ) << false << true << 1;
+  QTest::newRow( "long long 0 vs string non numeric" ) << QVariant( 0LL ) << QVariant( "aaaa" ) << true << false << -1;
+  QTest::newRow( "non numeric string vs long long 0" ) << QVariant( "abc" ) << QVariant( 0LL ) << false << true << 1;
+
+  QTest::newRow( "int vs double string less than" ) << QVariant( 1 ) << QVariant( "2.0" ) << true << false << -1;
+  QTest::newRow( "int vs double string less than truncation" ) << QVariant( 1 ) << QVariant( "1.1" ) << true << false << -1;
+  QTest::newRow( "int vs double string greater than" ) << QVariant( 2 ) << QVariant( "1.0" ) << false << true << 1;
+  QTest::newRow( "int vs double string greater than truncation" ) << QVariant( -2 ) << QVariant( "-2.1" ) << false << true << 1;
+  QTest::newRow( "int vs double string same" ) << QVariant( 2 ) << QVariant( "2.0" ) << false << false << 0;
+  QTest::newRow( "long long vs double string less than" ) << QVariant( 1LL ) << QVariant( "2.0" ) << true << false << -1;
+  QTest::newRow( "long long vs double string less than truncation" ) << QVariant( 1LL ) << QVariant( "1.1" ) << true << false << -1;
+  QTest::newRow( "long long vs double string greater than" ) << QVariant( 2LL ) << QVariant( "1.0" ) << false << true << 1;
+  QTest::newRow( "long long vs double string greater than truncation" ) << QVariant( -2LL ) << QVariant( "-2.1" ) << false << true << 1;
+  QTest::newRow( "long long vs double string same" ) << QVariant( 2LL ) << QVariant( "2.0" ) << false << false << 0;
+  QTest::newRow( "double vs non numeric string" ) << QVariant( 2.1 ) << QVariant( "abc" ) << true << false << -1;
+  QTest::newRow( "double 0 vs non numeric string" ) << QVariant( 0 ) << QVariant( "abc" ) << true << false << -1;
+  QTest::newRow( "non numeric string vs double" ) << QVariant( "abc" ) << QVariant( 2.0 ) << false << true << 1;
+  QTest::newRow( "float vs non numeric string" ) << QVariant( 2.1f ) << QVariant( "abc" ) << true << false << -1;
+  QTest::newRow( "float 0 vs non numeric string" ) << QVariant( 0.f ) << QVariant( "abc" ) << true << false << -1;
+  QTest::newRow( "non numeric string vs float" ) << QVariant( "abc" ) << QVariant( 2.0f ) << false << true << 1;
+
+  QTest::newRow( "string vs int less than" ) << QVariant( "1" ) << QVariant( 2 ) << true << false << -1;
+  QTest::newRow( "string vs int less than truncation" ) << QVariant( "-2.1" ) << QVariant( -2 ) << true << false << -1;
+  QTest::newRow( "string vs int greater than" ) << QVariant( "2" ) << QVariant( 1 ) << false << true << 1;
+  QTest::newRow( "string vs int greater than truncation" ) << QVariant( "2.1" ) << QVariant( 2 ) << false << true << 1;
+  QTest::newRow( "string vs int same" ) << QVariant( "2" ) << QVariant( 2 ) << false << false << 0;
+  QTest::newRow( "string double vs int same" ) << QVariant( "2.0" ) << QVariant( 2 ) << false << false << 0;
+
+  QTest::newRow( "string vs long long less than" ) << QVariant( "1" ) << QVariant( 2LL ) << true << false << -1;
+  QTest::newRow( "string vs long long less than truncation" ) << QVariant( "-2.1" ) << QVariant( -2LL ) << true << false << -1;
+  QTest::newRow( "string vs long long greater than" ) << QVariant( "2" ) << QVariant( 1LL ) << false << true << 1;
+  QTest::newRow( "string vs long long greater than truncation" ) << QVariant( "2.1" ) << QVariant( 2LL ) << false << true << 1;
+  QTest::newRow( "string vs long long same" ) << QVariant( "2" ) << QVariant( 2LL ) << false << false << 0;
+  QTest::newRow( "string double vs long long same" ) << QVariant( "2.0" ) << QVariant( 2LL ) << false << false << 0;
+
+  QTest::newRow( "string vs double same" ) << QVariant( "2" ) << QVariant( 2.0 ) << false << false << 0;
+  QTest::newRow( "string vs double less than" ) << QVariant( "1" ) << QVariant( 2.0 ) << true << false << -1;
+  QTest::newRow( "string vs double less than truncation" ) << QVariant( "1" ) << QVariant( 1.1 ) << true << false << -1;
+  QTest::newRow( "string vs double greater than" ) << QVariant( "3" ) << QVariant( 2.0 ) << false << true << 1;
+  QTest::newRow( "string vs double greater than truncation" ) << QVariant( "-3" ) << QVariant( -3.1 ) << false << true << 1;
+  QTest::newRow( "string double vs double same" ) << QVariant( "2.1" ) << QVariant( 2.1 ) << false << false << 0;
+  QTest::newRow( "string double vs double less than" ) << QVariant( "2.05" ) << QVariant( 2.1 ) << true << false << -1;
+  QTest::newRow( "string double vs double greater than" ) << QVariant( "2.15" ) << QVariant( 2.1 ) << false << true << 1;
+  QTest::newRow( "string vs float same" ) << QVariant( "2" ) << QVariant( 2.0f ) << false << false << 0;
+  QTest::newRow( "string double vs float less than" ) << QVariant( "2.05" ) << QVariant( 2.1f ) << true << false << -1;
+  QTest::newRow( "string double vs float greater than" ) << QVariant( "2.15" ) << QVariant( 2.1f ) << false << true << 1;
+  QTest::newRow( "string double vs float" ) << QVariant( "2.1" ) << QVariant( 2.2f ) << true << false << -1;
 
   QTest::newRow( "int" ) << QVariant( 1 ) << QVariant( 2 ) << true << false << -1;
   QTest::newRow( "int 2" ) << QVariant( 1 ) << QVariant( -2 ) << false << true << 1;
@@ -333,14 +565,14 @@ void TestQgis::qVariantCompare_data()
   QTest::newRow( "qvariantlist 5" ) << QVariant( QVariantList() << QVariant( 5 ) ) << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) << true << false << -1;
   QTest::newRow( "qvariantlist 5" ) << QVariant( QVariantList() << QVariant( 5 ) << QVariant( 6 ) ) << QVariant( QVariantList() << QVariant( 5 ) ) << false << true << 1;
   QTest::newRow( "qstringlist empty" ) << QVariant( QStringList() ) << QVariant( QStringList() ) << false << false << 0;
-  QTest::newRow( "qstringlist" ) << QVariant( QStringList() << QStringLiteral( "aa" ) ) << QVariant( QStringList() << QStringLiteral( "bb" ) ) << true << false << -1;
-  QTest::newRow( "qstringlist 2" ) << QVariant( QStringList() << QStringLiteral( "bb" ) ) << QVariant( QStringList() << QStringLiteral( "aa" ) ) << false << true << 1;
-  QTest::newRow( "qstringlist equal one element" ) << QVariant( QStringList() << QStringLiteral( "bb" ) ) << QVariant( QStringList() << QStringLiteral( "bb" ) ) << false << false << 0;
-  QTest::newRow( "qstringlist 3" ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "cc" ) ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "xx" ) ) << true << false << -1;
-  QTest::newRow( "qstringlist 4" ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "xx" ) ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "cc" ) ) << false << true << 1;
-  QTest::newRow( "qstringlist equal two element" ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "xx" ) ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "xx" ) ) << false << false << 0;
-  QTest::newRow( "qstringlist 5" ) << QVariant( QStringList() << QStringLiteral( "aa" ) ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "xx" ) ) << true << false << -1;
-  QTest::newRow( "qstringlist 6" ) << QVariant( QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "xx" ) ) << QVariant( QStringList() << QStringLiteral( "aa" ) ) << false << true << 1;
+  QTest::newRow( "qstringlist" ) << QVariant( QStringList() << u"aa"_s ) << QVariant( QStringList() << u"bb"_s ) << true << false << -1;
+  QTest::newRow( "qstringlist 2" ) << QVariant( QStringList() << u"bb"_s ) << QVariant( QStringList() << u"aa"_s ) << false << true << 1;
+  QTest::newRow( "qstringlist equal one element" ) << QVariant( QStringList() << u"bb"_s ) << QVariant( QStringList() << u"bb"_s ) << false << false << 0;
+  QTest::newRow( "qstringlist 3" ) << QVariant( QStringList() << u"aa"_s << u"cc"_s ) << QVariant( QStringList() << u"aa"_s << u"xx"_s ) << true << false << -1;
+  QTest::newRow( "qstringlist 4" ) << QVariant( QStringList() << u"aa"_s << u"xx"_s ) << QVariant( QStringList() << u"aa"_s << u"cc"_s ) << false << true << 1;
+  QTest::newRow( "qstringlist equal two element" ) << QVariant( QStringList() << u"aa"_s << u"xx"_s ) << QVariant( QStringList() << u"aa"_s << u"xx"_s ) << false << false << 0;
+  QTest::newRow( "qstringlist 5" ) << QVariant( QStringList() << u"aa"_s ) << QVariant( QStringList() << u"aa"_s << u"xx"_s ) << true << false << -1;
+  QTest::newRow( "qstringlist 6" ) << QVariant( QStringList() << u"aa"_s << u"xx"_s ) << QVariant( QStringList() << u"aa"_s ) << false << true << 1;
   QTest::newRow( "string both empty" ) << QVariant( QString() ) << QVariant( QString() ) << false << false << 0;
   QTest::newRow( "string" ) << QVariant( "a b c" ) << QVariant( "d e f" ) << true << false << -1;
   QTest::newRow( "string 2" ) << QVariant( "d e f" ) << QVariant( "a b c" ) << false << true << 1;
@@ -465,13 +697,25 @@ void TestQgis::testQgsVariantEqual()
 
   // NULL should not be equal to invalid
   QVERIFY( !qgsVariantEqual( QVariant(), QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) ) );
+
+  // string
+  QVERIFY( qgsVariantEqual( QString( "" ), QString( "" ) ) );
+  QVERIFY( qgsVariantEqual( QString(), QString() ) );
+  QVERIFY( !qgsVariantEqual( QString( "" ), QString() ) );
+  QVERIFY( !qgsVariantEqual( QString(), QString( "" ) ) );
+  QVERIFY( !qgsVariantEqual( QString( "abc" ), QString() ) );
+  QVERIFY( !qgsVariantEqual( QString(), QString( "abc" ) ) );
+  QVERIFY( !qgsVariantEqual( QString( "abc" ), QString( "" ) ) );
+  QVERIFY( !qgsVariantEqual( QString( "" ), QString( "abc" ) ) );
+  QVERIFY( !qgsVariantEqual( QString( "def" ), QString( "abc" ) ) );
+  QVERIFY( qgsVariantEqual( QString( "abc" ), QString( "abc" ) ) );
 }
 
 void TestQgis::testQgsEnumMapList()
 {
   QCOMPARE( qgsEnumList<TestEnum>(), QList<TestEnum>( { TestEnum::TestEnum1, TestEnum::TestEnum2, TestEnum::TestEnum3 } ) );
   QCOMPARE( qgsEnumMap<TestEnum>().keys(), QList<TestEnum>( { TestEnum::TestEnum1, TestEnum::TestEnum2, TestEnum::TestEnum3 } ) );
-  QCOMPARE( qgsEnumMap<TestEnum>().values(), QStringList( { QStringLiteral( "TestEnum1" ), QStringLiteral( "TestEnum2" ), QStringLiteral( "TestEnum3" ) } ) );
+  QCOMPARE( qgsEnumMap<TestEnum>().values(), QStringList( { u"TestEnum1"_s, u"TestEnum2"_s, u"TestEnum3"_s } ) );
 }
 
 
@@ -482,7 +726,7 @@ void TestQgis::testQgsEnumValueToKey()
   QgsMapLayerModel::CustomRole badValue = static_cast<QgsMapLayerModel::CustomRole>( -1 );
   QMetaEnum metaEnum = QMetaEnum::fromType<QgsMapLayerModel::CustomRole>();
   QVERIFY( !metaEnum.valueToKey( static_cast<int>( badValue ) ) );
-  QCOMPARE( qgsEnumValueToKey( value, &ok ), QStringLiteral( "Layer" ) );
+  QCOMPARE( qgsEnumValueToKey( value, &ok ), u"Layer"_s );
   QCOMPARE( ok, true );
   QCOMPARE( qgsEnumValueToKey( badValue, &ok ), QString() );
   QCOMPARE( ok, false );
@@ -491,11 +735,11 @@ void TestQgis::testQgsEnumKeyToValue()
 {
   bool ok = false;
   QgsMapLayerModel::CustomRole defaultValue = QgsMapLayerModel::CustomRole::LayerId;
-  QCOMPARE( qgsEnumKeyToValue( QStringLiteral( "Additional" ), defaultValue, false, &ok ), QgsMapLayerModel::CustomRole::Additional );
+  QCOMPARE( qgsEnumKeyToValue( u"Additional"_s, defaultValue, false, &ok ), QgsMapLayerModel::CustomRole::Additional );
   QCOMPARE( ok, true );
-  QCOMPARE( qgsEnumKeyToValue( QStringLiteral( "UnknownKey" ), defaultValue, false, &ok ), defaultValue );
+  QCOMPARE( qgsEnumKeyToValue( u"UnknownKey"_s, defaultValue, false, &ok ), defaultValue );
   QCOMPARE( ok, false );
-  QCOMPARE( qgsEnumKeyToValue( QStringLiteral( "UnknownKey" ), defaultValue, true, &ok ), defaultValue );
+  QCOMPARE( qgsEnumKeyToValue( u"UnknownKey"_s, defaultValue, true, &ok ), defaultValue );
   QCOMPARE( ok, false );
 
   // try with int values as string keys
@@ -515,7 +759,7 @@ void TestQgis::testQgsFlagValueToKeys()
 {
   bool ok = false;
   QgsFieldProxyModel::Filters filters = QgsFieldProxyModel::Filter::String | QgsFieldProxyModel::Filter::Double;
-  QCOMPARE( qgsFlagValueToKeys( filters, &ok ), QStringLiteral( "String|Double" ) );
+  QCOMPARE( qgsFlagValueToKeys( filters, &ok ), u"String|Double"_s );
   QCOMPARE( ok, true );
   QCOMPARE( qgsFlagValueToKeys( QgsFieldProxyModel::Filters( -10 ), &ok ), QString() );
   QCOMPARE( ok, false );
@@ -530,11 +774,11 @@ void TestQgis::testQgsFlagKeysToValue()
   QCOMPARE( qgsFlagKeysToValue( QString(), defaultValue, false, &ok ), defaultValue );
   QCOMPARE( ok, false );
 
-  QCOMPARE( qgsFlagKeysToValue( QStringLiteral( "String|Double" ), defaultValue, false, &ok ), newValue );
+  QCOMPARE( qgsFlagKeysToValue( u"String|Double"_s, defaultValue, false, &ok ), newValue );
   QCOMPARE( ok, true );
-  QCOMPARE( qgsFlagKeysToValue( QStringLiteral( "UnknownKey" ), defaultValue, false, &ok ), defaultValue );
+  QCOMPARE( qgsFlagKeysToValue( u"UnknownKey"_s, defaultValue, false, &ok ), defaultValue );
   QCOMPARE( ok, false );
-  QCOMPARE( qgsFlagKeysToValue( QStringLiteral( "UnknownKey" ), defaultValue, true, &ok ), defaultValue );
+  QCOMPARE( qgsFlagKeysToValue( u"UnknownKey"_s, defaultValue, true, &ok ), defaultValue );
   QCOMPARE( ok, false );
 
   // try with int values as string keys
@@ -574,7 +818,7 @@ void TestQgis::testQgsMapJoin()
   map.insert( "titi", 4 );
   map.insert( "tata", 5 );
 
-  QString res = qgsMapJoinValues( map, QStringLiteral( ", " ) );
+  QString res = qgsMapJoinValues( map, u", "_s );
 
   QRegularExpression re( "[3|4|5], [3|4|5], [3|4|5]" );
   QVERIFY( re.match( res ).hasMatch() );
@@ -582,7 +826,7 @@ void TestQgis::testQgsMapJoin()
   QVERIFY( res.contains( "4" ) );
   QVERIFY( res.contains( "5" ) );
 
-  res = qgsMapJoinKeys( map, QStringLiteral( ", " ) );
+  res = qgsMapJoinKeys( map, u", "_s );
 
   re.setPattern( "(tutu|titi|tata), (tutu|titi|tata), (tutu|titi|tata)" );
   QVERIFY( re.match( res ).hasMatch() );
@@ -600,7 +844,7 @@ void TestQgis::testQgsSetJoin()
   set.insert( 4 );
   set.insert( 5 );
 
-  const QString res = qgsSetJoin( set, QStringLiteral( ", " ) );
+  const QString res = qgsSetJoin( set, u", "_s );
 
   const thread_local QRegularExpression re( "[3|4|5], [3|4|5], [3|4|5]" );
   QVERIFY( re.match( res ).hasMatch() );

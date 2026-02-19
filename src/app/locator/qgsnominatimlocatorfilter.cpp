@@ -16,23 +16,28 @@
  ***************************************************************************/
 
 #include "qgsnominatimlocatorfilter.h"
-#include "moc_qgsnominatimlocatorfilter.cpp"
+
+#include "qgisapp.h"
 #include "qgsgeocoder.h"
 #include "qgslocatorfilter.h"
+#include "qgsmessagebar.h"
+#include "qgsmessagebaritem.h"
 #include "qgsnominatimgeocoder.h"
 #include "qgssettings.h"
-#include "qgsmessagebaritem.h"
-#include "qgsmessagebar.h"
-#include "qgisapp.h"
 #include "qgssettingsentryimpl.h"
 
 #include <QDesktopServices>
 #include <QPushButton>
+#include <QString>
 
-const QgsSettingsEntryString *QgsNominatimLocatorFilter::settingCountryCodes = new QgsSettingsEntryString( QStringLiteral( "country-codes" ), sTreeAppLocatorFilters, QString(), QStringLiteral( "Country codes" ) );
+#include "moc_qgsnominatimlocatorfilter.cpp"
+
+using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryString *QgsNominatimLocatorFilter::settingCountryCodes = new QgsSettingsEntryString( u"country-codes"_s, sTreeAppLocatorFilters, QString(), u"Country codes"_s );
 
 QgsNominatimLocatorFilter::QgsNominatimLocatorFilter( QgsGeocoderInterface *geocoder, QgsMapCanvas *canvas )
-  : QgsGeocoderLocatorFilter( QStringLiteral( "nominatimgeocoder" ), tr( "Nominatim Geocoder" ), QStringLiteral( ">" ), geocoder, canvas )
+  : QgsGeocoderLocatorFilter( u"nominatimgeocoder"_s, tr( "Nominatim Geocoder" ), u">"_s, geocoder, canvas )
 {
   setFetchResultsDelay( 1000 );
   setUseWithoutPrefix( false );
@@ -64,8 +69,8 @@ void QgsNominatimLocatorFilter::triggerResult( const QgsLocatorResult &result )
 
     QgsMessageBarItem *messageWidget = QgsMessageBar::createMessage( tr( "The Nominatim geocoder data is made available by OpenStreetMap Foundation and contributors." ) );
     QPushButton *learnMoreButton = new QPushButton( tr( "Learn more" ) );
-    connect( learnMoreButton, &QPushButton::clicked, learnMoreButton, [=] {
-      QDesktopServices::openUrl( QStringLiteral( "https://nominatim.org/" ) );
+    connect( learnMoreButton, &QPushButton::clicked, learnMoreButton, [] {
+      QDesktopServices::openUrl( u"https://nominatim.org/"_s );
     } );
     messageWidget->layout()->addWidget( learnMoreButton );
     QgisApp::instance()->messageBar()->pushWidget( messageWidget, Qgis::MessageLevel::Info );

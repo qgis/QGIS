@@ -14,15 +14,23 @@
  ***************************************************************************/
 
 #include "qgsprocessingtoolboxmodel.h"
-#include "moc_qgsprocessingtoolboxmodel.cpp"
-#include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgsprocessingregistry.h"
-#include "qgsprocessingrecentalgorithmlog.h"
-#include "qgsprocessingfavoritealgorithmmanager.h"
+
 #include <functional>
-#include <QPalette>
+
+#include "qgsapplication.h"
+#include "qgsprocessingfavoritealgorithmmanager.h"
+#include "qgsprocessingrecentalgorithmlog.h"
+#include "qgsprocessingregistry.h"
+#include "qgsstringutils.h"
+#include "qgsvectorlayer.h"
+
 #include <QMimeData>
+#include <QPalette>
+#include <QString>
+
+#include "moc_qgsprocessingtoolboxmodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -136,10 +144,10 @@ QgsProcessingToolboxModel::QgsProcessingToolboxModel( QObject *parent, QgsProces
   rebuild();
 
   if ( mRecentLog )
-    connect( mRecentLog, &QgsProcessingRecentAlgorithmLog::changed, this, [=] { repopulateRecentAlgorithms(); } );
+    connect( mRecentLog, &QgsProcessingRecentAlgorithmLog::changed, this, [this] { repopulateRecentAlgorithms(); } );
 
   if ( mFavoriteManager )
-    connect( mFavoriteManager, &QgsProcessingFavoriteAlgorithmManager::changed, this, [=] { repopulateFavoriteAlgorithms(); } );
+    connect( mFavoriteManager, &QgsProcessingFavoriteAlgorithmManager::changed, this, [this] { repopulateFavoriteAlgorithms(); } );
 
   connect( mRegistry, &QgsProcessingRegistry::providerAdded, this, &QgsProcessingToolboxModel::rebuild );
   connect( mRegistry, &QgsProcessingRegistry::providerRemoved, this, &QgsProcessingToolboxModel::rebuild );
@@ -175,7 +183,7 @@ void QgsProcessingToolboxModel::rebuild()
   }
 
 
-  if ( mRegistry )
+  if ( mRegistry && QgsApplication::processingRegistry() )
   {
     auto groupNode = std::make_unique<QgsProcessingToolboxModelParameterGroupNode>();
 
@@ -392,12 +400,12 @@ void QgsProcessingToolboxModel::addProvider( QgsProcessingProvider *provider )
 
 bool QgsProcessingToolboxModel::isTopLevelProvider( const QString &providerId )
 {
-  return providerId == QLatin1String( "qgis" ) || providerId == QLatin1String( "native" ) || providerId == QLatin1String( "3d" ) || providerId == QLatin1String( "pdal" );
+  return providerId == "qgis"_L1 || providerId == "native"_L1 || providerId == "3d"_L1 || providerId == "pdal"_L1;
 }
 
 QString QgsProcessingToolboxModel::toolTipForAlgorithm( const QgsProcessingAlgorithm *algorithm )
 {
-  return QStringLiteral( "<p><b>%1</b></p>%2<p>%3</p>%4" ).arg( algorithm->displayName(), !algorithm->shortDescription().isEmpty() ? QStringLiteral( "<p>%1</p>" ).arg( algorithm->shortDescription() ) : QString(), QObject::tr( "Algorithm ID: ‘%1’" ).arg( QStringLiteral( "<i>%1</i>" ).arg( algorithm->id() ) ), ( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::KnownIssues ) ? QStringLiteral( "<b style=\"color:red\">%1</b>" ).arg( QObject::tr( "Warning: Algorithm has known issues" ) ) : QString() );
+  return u"<p><b>%1</b></p>%2<p>%3</p>%4"_s.arg( algorithm->displayName(), !algorithm->shortDescription().isEmpty() ? u"<p>%1</p>"_s.arg( algorithm->shortDescription() ) : QString(), QObject::tr( "Algorithm ID: ‘%1’" ).arg( u"<i>%1</i>"_s.arg( algorithm->id() ) ), ( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::KnownIssues ) ? u"<b style=\"color:red\">%1</b>"_s.arg( QObject::tr( "Warning: Algorithm has known issues" ) ) : QString() );
 }
 
 Qt::ItemFlags QgsProcessingToolboxModel::flags( const QModelIndex &index ) const
@@ -503,20 +511,20 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
           else if ( algorithm )
           {
             if ( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::KnownIssues )
-              return QgsApplication::getThemeIcon( QStringLiteral( "mIconWarning.svg" ) );
+              return QgsApplication::getThemeIcon( u"mIconWarning.svg"_s );
             return algorithm->icon();
           }
           else if ( paramType )
-            return QgsApplication::getThemeIcon( QStringLiteral( "mIconModelInput.svg" ) );
+            return QgsApplication::getThemeIcon( u"mIconModelInput.svg"_s );
           else if ( isRecentNode )
-            return QgsApplication::getThemeIcon( QStringLiteral( "/mIconHistory.svg" ) );
+            return QgsApplication::getThemeIcon( u"/mIconHistory.svg"_s );
           else if ( isFavoriteNode )
-            return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFavorites.svg" ) );
+            return QgsApplication::getThemeIcon( u"/mIconFavorites.svg"_s );
           else if ( isParameterGroupNode )
-            return QgsApplication::getThemeIcon( QStringLiteral( "/mIconModelInput.svg" ) );
+            return QgsApplication::getThemeIcon( u"/mIconModelInput.svg"_s );
           else if ( !index.parent().isValid() )
             // top level groups get the QGIS icon
-            return QgsApplication::getThemeIcon( QStringLiteral( "/providerQgis.svg" ) );
+            return QgsApplication::getThemeIcon( u"/providerQgis.svg"_s );
           else
             return QVariant();
         }
@@ -708,7 +716,7 @@ QMimeData *QgsProcessingToolboxModel::mimeData( const QModelIndexList &indexes )
     {
       stream << algorithm->id();
     }
-    mimeData->setData( QStringLiteral( "application/x-vnd.qgis.qgis.algorithmid" ), encodedData );
+    mimeData->setData( u"application/x-vnd.qgis.qgis.algorithmid"_s, encodedData );
     return mimeData.release();
   }
   if ( isParameter( indexes.at( 0 ) ) )
@@ -722,7 +730,7 @@ QMimeData *QgsProcessingToolboxModel::mimeData( const QModelIndexList &indexes )
     {
       stream << paramType->id();
     }
-    mimeData->setData( QStringLiteral( "application/x-vnd.qgis.qgis.parametertypeid" ), encodedData );
+    mimeData->setData( u"application/x-vnd.qgis.qgis.parametertypeid"_s, encodedData );
     return mimeData.release();
   }
   return nullptr;
@@ -824,8 +832,8 @@ QgsProcessingToolboxProxyModel::QgsProcessingToolboxProxyModel( QObject *parent,
   setFilterCaseSensitivity( Qt::CaseInsensitive );
   sort( 0 );
 
-  connect( mModel, &QgsProcessingToolboxModel::recentAlgorithmAdded, this, [=] { invalidateFilter(); } );
-  connect( mModel, &QgsProcessingToolboxModel::favoriteAlgorithmAdded, this, [=] { invalidateFilter(); } );
+  connect( mModel, &QgsProcessingToolboxModel::recentAlgorithmAdded, this, [this] { invalidateFilter(); } );
+  connect( mModel, &QgsProcessingToolboxModel::favoriteAlgorithmAdded, this, [this] { invalidateFilter(); } );
 }
 
 QgsProcessingToolboxModel *QgsProcessingToolboxProxyModel::toolboxModel()
@@ -895,9 +903,10 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
       for ( const QString &part : partsToMatch )
       {
         bool found = false;
+        const QString unaccentedPart = QgsStringUtils::unaccent( part );
         for ( const QString &partToSearch : std::as_const( partsToSearch ) )
         {
-          if ( partToSearch.contains( part, Qt::CaseInsensitive ) )
+          if ( QgsStringUtils::unaccent( partToSearch ).contains( unaccentedPart, Qt::CaseInsensitive ) )
           {
             found = true;
             break;
@@ -950,9 +959,10 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
       for ( const QString &part : partsToMatch )
       {
         bool found = false;
+        const QString unaccentedPart = QgsStringUtils::unaccent( part );
         for ( const QString &partToSearch : std::as_const( partsToSearch ) )
         {
-          if ( partToSearch.contains( part, Qt::CaseInsensitive ) )
+          if ( QgsStringUtils::unaccent( partToSearch ).contains( unaccentedPart, Qt::CaseInsensitive ) )
           {
             found = true;
             break;

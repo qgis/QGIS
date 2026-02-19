@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsmapunitscale.h"
+
 #include <QString>
 
 class QgsPropertyCollection;
@@ -363,6 +364,22 @@ class CORE_EXPORT QgsLabelLineSettings
      */
     void setAnchorTextPoint( AnchorTextPoint point ) { mAnchorTextPoint = point; }
 
+    /**
+     * Returns the mode which determine how curved labels are generated and placed.
+     *
+     * \see setCurvedLabelMode()
+     * \since QGIS 4.0
+     */
+    Qgis::CurvedLabelMode curvedLabelMode() const { return mCurvedLabelMode; }
+
+    /**
+     * Sets the \a mode which determine how curved labels are generated and placed.
+     *
+     * \see curvedLabelMode()
+     * \since QGIS 4.0
+     */
+    void setCurvedLabelMode( Qgis::CurvedLabelMode mode ) { mCurvedLabelMode = mode; }
+
   private:
     Qgis::LabelLinePlacementFlags mPlacementFlags = Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation;
     bool mMergeLines = false;
@@ -379,6 +396,8 @@ class CORE_EXPORT QgsLabelLineSettings
     AnchorType mAnchorType = AnchorType::HintOnly;
     AnchorClipping mAnchorClipping = AnchorClipping::UseVisiblePartsOfLine;
     AnchorTextPoint mAnchorTextPoint = AnchorTextPoint::FollowPlacement;
+
+    Qgis::CurvedLabelMode mCurvedLabelMode = Qgis::CurvedLabelMode::Default;
 };
 
 #endif // QGSLABELLINESETTINGS_H

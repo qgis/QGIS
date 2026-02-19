@@ -15,21 +15,24 @@
 
 #include "qgsmapsettings.h"
 
-#include "qgsscalecalculator.h"
-#include "qgsmaptopixel.h"
-#include "qgslogger.h"
-
-#include "qgsmessagelog.h"
-#include "qgsmaplayer.h"
-#include "qgsmaplayerlistutils_p.h"
-#include "qgsxmlutils.h"
+#include "qgscoordinatetransform.h"
+#include "qgsellipsoidutils.h"
 #include "qgsexception.h"
 #include "qgsgeometry.h"
 #include "qgsgrouplayer.h"
-#include "qgscoordinatetransform.h"
-#include "qgsellipsoidutils.h"
-#include "qgsunittypes.h"
+#include "qgslogger.h"
+#include "qgsmaplayer.h"
+#include "qgsmaplayerlistutils_p.h"
+#include "qgsmaptopixel.h"
+#include "qgsmessagelog.h"
 #include "qgspainting.h"
+#include "qgsscalecalculator.h"
+#include "qgsunittypes.h"
+#include "qgsxmlutils.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsMapSettings::QgsMapSettings()
   : mDpi( QgsPainting::qtDefaultDpiX() ) // DPI that will be used by default for QImage instances
@@ -61,7 +64,7 @@ void QgsMapSettings::setMagnificationFactor( double factor, const QgsPointXY *ce
   mExtent = ext;
   mDpi = mDpi / ratio;
 
-  QgsDebugMsgLevel( QStringLiteral( "Magnification factor: %1  dpi: %2  ratio: %3" ).arg( factor ).arg( mDpi ).arg( ratio ), 3 );
+  QgsDebugMsgLevel( u"Magnification factor: %1  dpi: %2  ratio: %3"_s.arg( factor ).arg( mDpi ).arg( ratio ), 3 );
 
   updateDerived();
 }
@@ -220,17 +223,17 @@ void QgsMapSettings::updateDerived()
   }
 #endif
 
-  QgsDebugMsgLevel( QStringLiteral( "Map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mapUnitsPerPixelX ), qgsDoubleToString( mapUnitsPerPixelY ) ), 5 );
-  QgsDebugMsgLevel( QStringLiteral( "Pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mSize.width() ), qgsDoubleToString( mSize.height() ) ), 5 );
-  QgsDebugMsgLevel( QStringLiteral( "Extent dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() ), qgsDoubleToString( mExtent.height() ) ), 5 );
+  QgsDebugMsgLevel( u"Map units per pixel (x,y) : %1, %2"_s.arg( qgsDoubleToString( mapUnitsPerPixelX ), qgsDoubleToString( mapUnitsPerPixelY ) ), 5 );
+  QgsDebugMsgLevel( u"Pixmap dimensions (x,y) : %1, %2"_s.arg( qgsDoubleToString( mSize.width() ), qgsDoubleToString( mSize.height() ) ), 5 );
+  QgsDebugMsgLevel( u"Extent dimensions (x,y) : %1, %2"_s.arg( qgsDoubleToString( mExtent.width() ), qgsDoubleToString( mExtent.height() ) ), 5 );
   QgsDebugMsgLevel( mExtent.toString(), 5 );
-  QgsDebugMsgLevel( QStringLiteral( "Adjusted map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / myWidth ), qgsDoubleToString( mVisibleExtent.height() / myHeight ) ), 5 );
-  QgsDebugMsgLevel( QStringLiteral( "Recalced pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / mMapUnitsPerPixel ), qgsDoubleToString( mVisibleExtent.height() / mMapUnitsPerPixel ) ), 5 );
-  QgsDebugMsgLevel( QStringLiteral( "Scale (assuming meters as map units) = 1:%1" ).arg( qgsDoubleToString( mScale ) ), 5 );
-  QgsDebugMsgLevel( QStringLiteral( "Rotation: %1 degrees" ).arg( mRotation ), 5 );
-  QgsDebugMsgLevel( QStringLiteral( "Extent: %1" ).arg( mExtent.asWktCoordinates() ), 5 );
-  QgsDebugMsgLevel( QStringLiteral( "Visible Extent: %1" ).arg( mVisibleExtent.asWktCoordinates() ), 5 );
-  QgsDebugMsgLevel( QStringLiteral( "Magnification factor: %1" ).arg( mMagnificationFactor ), 5 );
+  QgsDebugMsgLevel( u"Adjusted map units per pixel (x,y) : %1, %2"_s.arg( qgsDoubleToString( mVisibleExtent.width() / myWidth ), qgsDoubleToString( mVisibleExtent.height() / myHeight ) ), 5 );
+  QgsDebugMsgLevel( u"Recalced pixmap dimensions (x,y) : %1, %2"_s.arg( qgsDoubleToString( mVisibleExtent.width() / mMapUnitsPerPixel ), qgsDoubleToString( mVisibleExtent.height() / mMapUnitsPerPixel ) ), 5 );
+  QgsDebugMsgLevel( u"Scale (assuming meters as map units) = 1:%1"_s.arg( qgsDoubleToString( mScale ) ), 5 );
+  QgsDebugMsgLevel( u"Rotation: %1 degrees"_s.arg( mRotation ), 5 );
+  QgsDebugMsgLevel( u"Extent: %1"_s.arg( mExtent.asWktCoordinates() ), 5 );
+  QgsDebugMsgLevel( u"Visible Extent: %1"_s.arg( mVisibleExtent.asWktCoordinates() ), 5 );
+  QgsDebugMsgLevel( u"Magnification factor: %1"_s.arg( mMagnificationFactor ), 5 );
 
 }
 
@@ -299,12 +302,19 @@ void QgsMapSettings::setDpiTarget( double dpi )
 
 QStringList QgsMapSettings::layerIds( bool expandGroupLayers ) const
 {
-  const QList<QgsMapLayer * > mapLayers = layers( expandGroupLayers );
-  QStringList res;
-  res.reserve( mapLayers.size() );
-  for ( const QgsMapLayer *layer : mapLayers )
-    res << layer->id();
-  return res;
+  if ( !expandGroupLayers || !mHasGroupLayers )
+  {
+    return mLayerIds;
+  }
+  else
+  {
+    const QList<QgsMapLayer * > mapLayers = layers( expandGroupLayers );
+    QStringList res;
+    res.reserve( mapLayers.size() );
+    for ( const QgsMapLayer *layer : mapLayers )
+      res << layer->id();
+    return res;
+  }
 }
 
 QList<QgsMapLayer *> QgsMapSettings::layers( bool expandGroupLayers ) const
@@ -363,6 +373,18 @@ void QgsMapSettings::setLayers( const QList<QgsMapLayer *> &layers )
   } ), filteredList.end() );
 
   mLayers = _qgis_listRawToQPointer( filteredList );
+
+  // pre-generate and store layer IDs, so that we can safely access them from other threads
+  // without needing to touch the actual map layer object
+  mLayerIds.clear();
+  mHasGroupLayers = false;
+  mLayerIds.reserve( mLayers.size() );
+  for ( const QgsMapLayer *layer : std::as_const( mLayers ) )
+  {
+    mLayerIds << layer->id();
+    if ( layer->type() == Qgis::LayerType::Group )
+      mHasGroupLayers = true;
+  }
 }
 
 QMap<QString, QString> QgsMapSettings::layerStyleOverrides() const
@@ -504,7 +526,7 @@ QgsCoordinateTransformContext QgsMapSettings::transformContext() const
 {
 #ifdef QGISDEBUG
   if ( !mHasTransformContext )
-    QgsDebugMsgLevel( QStringLiteral( "No QgsCoordinateTransformContext context set for transform" ), 4 );
+    QgsDebugMsgLevel( u"No QgsCoordinateTransformContext context set for transform"_s, 4 );
 #endif
 
   return mTransformContext;
@@ -572,9 +594,9 @@ QgsRectangle QgsMapSettings::layerExtentToOutputExtent( const QgsMapLayer *layer
     QgsCoordinateTransform ct = layerTransform( layer );
     if ( ct.isValid() )
     {
-      QgsDebugMsgLevel( QStringLiteral( "sourceCrs = %1" ).arg( ct.sourceCrs().authid() ), 3 );
-      QgsDebugMsgLevel( QStringLiteral( "destCRS = %1" ).arg( ct.destinationCrs().authid() ), 3 );
-      QgsDebugMsgLevel( QStringLiteral( "extent %1" ).arg( extent.toString() ), 3 );
+      QgsDebugMsgLevel( u"sourceCrs = %1"_s.arg( ct.sourceCrs().authid() ), 3 );
+      QgsDebugMsgLevel( u"destCRS = %1"_s.arg( ct.destinationCrs().authid() ), 3 );
+      QgsDebugMsgLevel( u"extent %1"_s.arg( extent.toString() ), 3 );
       ct.setBallparkTransformsAreAppropriate( true );
       extent = ct.transformBoundingBox( extent );
     }
@@ -584,7 +606,7 @@ QgsRectangle QgsMapSettings::layerExtentToOutputExtent( const QgsMapLayer *layer
     QgsMessageLog::logMessage( QObject::tr( "Transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "proj extent = %1 " ).arg( extent.toString() ), 3 );
+  QgsDebugMsgLevel( u"proj extent = %1 "_s.arg( extent.toString() ), 3 );
 
   return extent;
 }
@@ -598,9 +620,9 @@ QgsRectangle QgsMapSettings::outputExtentToLayerExtent( const QgsMapLayer *layer
     ct.setBallparkTransformsAreAppropriate( true );
     if ( ct.isValid() )
     {
-      QgsDebugMsgLevel( QStringLiteral( "sourceCrs = %1" ).arg( ct.sourceCrs().authid() ), 3 );
-      QgsDebugMsgLevel( QStringLiteral( "destCRS = %1" ).arg( ct.destinationCrs().authid() ), 3 );
-      QgsDebugMsgLevel( QStringLiteral( "extent = %1" ).arg( extent.toString() ), 3 );
+      QgsDebugMsgLevel( u"sourceCrs = %1"_s.arg( ct.sourceCrs().authid() ), 3 );
+      QgsDebugMsgLevel( u"destCRS = %1"_s.arg( ct.destinationCrs().authid() ), 3 );
+      QgsDebugMsgLevel( u"extent = %1"_s.arg( extent.toString() ), 3 );
       extent = ct.transformBoundingBox( extent, Qgis::TransformDirection::Reverse );
     }
   }
@@ -609,7 +631,7 @@ QgsRectangle QgsMapSettings::outputExtentToLayerExtent( const QgsMapLayer *layer
     QgsMessageLog::logMessage( QObject::tr( "Transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "proj extent =  %1" ).arg( extent.toString() ), 3 );
+  QgsDebugMsgLevel( u"proj extent =  %1"_s.arg( extent.toString() ), 3 );
 
   return extent;
 }
@@ -735,7 +757,7 @@ QgsRectangle QgsMapSettings::fullExtent() const
 
   // iterate through the map layers and test each layers extent
   // against the current min and max values
-  QgsDebugMsgLevel( QStringLiteral( "Layer count: %1" ).arg( mLayers.count() ), 5 );
+  QgsDebugMsgLevel( u"Layer count: %1"_s.arg( mLayers.count() ), 5 );
   const auto constMLayers = mLayers;
   for ( const QgsWeakMapLayerPointer &layerPtr : constMLayers )
   {
@@ -789,7 +811,7 @@ void QgsMapSettings::readXml( QDomNode &node )
 {
   // set destination CRS
   QgsCoordinateReferenceSystem srs;
-  const QDomNode srsNode = node.namedItem( QStringLiteral( "destinationsrs" ) );
+  const QDomNode srsNode = node.namedItem( u"destinationsrs"_s );
   if ( !srsNode.isNull() )
   {
     srs.readXml( srsNode );
@@ -797,12 +819,12 @@ void QgsMapSettings::readXml( QDomNode &node )
   setDestinationCrs( srs );
 
   // set extent
-  const QDomNode extentNode = node.namedItem( QStringLiteral( "extent" ) );
+  const QDomNode extentNode = node.namedItem( u"extent"_s );
   const QgsRectangle aoi = QgsXmlUtils::readRectangle( extentNode.toElement() );
   setExtent( aoi );
 
   // set rotation
-  const QDomNode rotationNode = node.namedItem( QStringLiteral( "rotation" ) );
+  const QDomNode rotationNode = node.namedItem( u"rotation"_s );
   const QString rotationVal = rotationNode.toElement().text();
   if ( ! rotationVal.isEmpty() )
   {
@@ -811,10 +833,10 @@ void QgsMapSettings::readXml( QDomNode &node )
   }
 
   //render map tile
-  const QDomElement renderMapTileElem = node.firstChildElement( QStringLiteral( "rendermaptile" ) );
+  const QDomElement renderMapTileElem = node.firstChildElement( u"rendermaptile"_s );
   if ( !renderMapTileElem.isNull() )
   {
-    setFlag( Qgis::MapSettingsFlag::RenderMapTile, renderMapTileElem.text() == QLatin1String( "1" ) );
+    setFlag( Qgis::MapSettingsFlag::RenderMapTile, renderMapTileElem.text() == "1"_L1 );
   }
 }
 
@@ -829,7 +851,7 @@ void QgsMapSettings::writeXml( QDomNode &node, QDomDocument &doc )
   node.appendChild( QgsXmlUtils::writeRectangle( extent(), doc ) );
 
   // Write current view rotation
-  QDomElement rotNode = doc.createElement( QStringLiteral( "rotation" ) );
+  QDomElement rotNode = doc.createElement( u"rotation"_s );
   rotNode.appendChild(
     doc.createTextNode( qgsDoubleToString( rotation() ) )
   );
@@ -838,13 +860,13 @@ void QgsMapSettings::writeXml( QDomNode &node, QDomDocument &doc )
   // destination CRS
   if ( mDestCRS.isValid() )
   {
-    QDomElement srsNode = doc.createElement( QStringLiteral( "destinationsrs" ) );
+    QDomElement srsNode = doc.createElement( u"destinationsrs"_s );
     node.appendChild( srsNode );
     mDestCRS.writeXml( srsNode, doc );
   }
 
   //render map tile
-  QDomElement renderMapTileElem = doc.createElement( QStringLiteral( "rendermaptile" ) );
+  QDomElement renderMapTileElem = doc.createElement( u"rendermaptile"_s );
   const QDomText renderMapTileText = doc.createTextNode( testFlag( Qgis::MapSettingsFlag::RenderMapTile ) ? "1" : "0" );
   renderMapTileElem.appendChild( renderMapTileText );
   node.appendChild( renderMapTileElem );
@@ -962,6 +984,21 @@ void QgsMapSettings::setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPoli
       mFlags.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, true );
       mFlags.setFlag( Qgis::MapSettingsFlag::UseAdvancedEffects, false );
       break;
+  }
+}
+
+QHash<QString, QgsSelectiveMaskingSourceSet> QgsMapSettings::selectiveMaskingSourceSets() const
+{
+  return mSelectiveMaskingSourceSets;
+}
+
+void QgsMapSettings::setSelectiveMaskingSourceSets( const QVector<QgsSelectiveMaskingSourceSet> &sets )
+{
+  mSelectiveMaskingSourceSets.clear();
+  mSelectiveMaskingSourceSets.reserve( sets.size() );
+  for ( const QgsSelectiveMaskingSourceSet &set : sets )
+  {
+    mSelectiveMaskingSourceSets.insert( set.id(), set );
   }
 }
 

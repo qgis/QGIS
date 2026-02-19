@@ -17,16 +17,16 @@
 #define QGSMSSQLDATABASE_H
 
 
+#include <memory>
+
+#include "qgsdatasourceuri.h"
+#include "qgsfields.h"
+
 #include <QMap>
 #include <QMutex>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
-
-#include <memory>
-
-#include "qgsfields.h"
-#include "qgsdatasourceuri.h"
 
 class QgsDataSourceUri;
 
@@ -63,7 +63,6 @@ class QgsMssqlDatabase
      * \note The function is thread-safe
      */
     static std::shared_ptr<QgsMssqlDatabase> connectDb( const QString &uri, bool transaction = false );
-    static std::shared_ptr<QgsMssqlDatabase> connectDb( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool transaction = false );
     static std::shared_ptr<QgsMssqlDatabase> connectDb( const QgsDataSourceUri &uri, bool transaction = false );
 
     /////
@@ -125,7 +124,7 @@ class QgsMssqlDatabase
      * The database may not be open -- openDatabase() should be called to
      * ensure that it is ready for use.
      */
-    static QSqlDatabase getDatabase( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool transaction = false );
+    static QSqlDatabase getDatabase( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool transaction = false, int timeout = 0 );
 
     static QMap<QString, std::weak_ptr<QgsMssqlDatabase>> sConnections;
 
@@ -142,7 +141,7 @@ class QgsMssqlQuery : public QSqlQuery
   public:
     explicit QgsMssqlQuery( std::shared_ptr<QgsMssqlDatabase> db )
       : QSqlQuery( db->db() )
-      , mDb( db )
+      , mDb( std::move( db ) )
     {
       if ( mDb->hasTransaction() )
         mDb->mTransactionMutex->lock();

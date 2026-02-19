@@ -42,40 +42,55 @@ jobs:
     strategy:
       matrix:
         include:
-          - distro-version: '24.04'
-            qt-version: 5
+          - distro: ubuntu
+            distro-version: '25.10'
+            qt-version: 6
             run-tests: true
-            with-qt6: OFF
-            with-qt5: ON
             with-3d: ON
             with-quick: ON
             with-clazy: ON
             with-grass7: OFF
             with-grass8: OFF
-            with-webengine: OFF
             with-pdf4qt: OFF
+            with-pdal: OFF
+            with-sfcgal: ON
             with-compile-commands: ON
+            with-model-test: ON
+            with-internal-spatialindex: ON
+            with-pg-test: ON
+            with-mssql-test: ON
+            with-hana-test: ON
+            with-oracle-test: ON
+            with-qspatialite: ON
+            with-server-landingpage-webapp: ON
             # LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
             experimental: false
             unity-builds: ON
 
-          - distro-version: '39'
+          - distro: fedora
+            distro-version: '42'
             qt-version: 6
             run-tests: true
-            with-qt6: ON
-            with-qt5: OFF
             with-3d: ON
             with-quick: ON
             with-clazy: OFF
             with-grass7: OFF
             with-grass8: ON
-            with-webengine: ON
+            with-pdal: ON
             with-pdf4qt: ON
+            with-sfcgal: ON
             with-compile-commands: OFF
+            with-model-test: OFF
+            with-internal-spatialindex: OFF
+            with-pg-test: OFF
+            with-mssql-test: OFF
+            with-hana-test: OFF
+            with-oracle-test: OFF
+            with-qspatialite: OFF
+            with-server-landingpage-webapp: OFF
             LD_PRELOAD: ''
             experimental: false
             unity-builds: ON
-
 
       fail-fast: false
 
@@ -96,7 +111,7 @@ jobs:
           swap-storage: true
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set vars
         env:
@@ -129,8 +144,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
-          tags: qgis/qgis3-build-deps-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}:${{ github.event.pull_request.base.ref || github.ref_name }}
+          file: .docker/qgis3-${{ matrix.distro }}-qt${{ matrix.qt-version }}-build-deps.dockerfile
+          tags: qgis/qgis3-build-deps-${{ matrix.distro }}-qt${{ matrix.qt-version }}:${{ github.event.pull_request.base.ref || github.ref_name }}
           push: ${{ github.event_name == 'push' && github.repository == 'qgis/QGIS' }}
           pull: true
           build-args:
@@ -140,12 +155,12 @@ jobs:
         run: docker tag ${{ steps.docker-build.outputs.imageid }} qgis3-build-deps
 
       - name: Restore build cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: /home/runner/QGIS/.ccache
-          key: build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-${{ github.event.pull_request.base.ref || github.ref_name }}
+          key: build-ccache-${{ matrix.distro }}-qt${{ matrix.qt-version }}-${{ github.event.pull_request.base.ref || github.ref_name }}
           restore-keys: |
-            build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-master
+            build-ccache-${{ matrix.distro }}-qt${{ matrix.qt-version }}-master
 
       - name: Compile QGIS
         id: compile
@@ -156,37 +171,44 @@ jobs:
                      --env-file .docker/docker-variables.env \
                      --env CCACHE_DIR=/root/.ccache \
                      --env PUSH_TO_CDASH=true \
-                     --env WITH_QT5=${{ matrix.with-qt5 }} \
-                     --env BUILD_WITH_QT6=${{ matrix.with-qt6 }} \
                      --env WITH_QUICK=${{ matrix.with-quick }} \
                      --env WITH_3D=${{ matrix.with-3d }} \
                      --env WITH_GRASS7=${{ matrix.with-grass7 }} \
                      --env WITH_GRASS8=${{ matrix.with-grass8 }} \
-                     --env WITH_QTWEBENGINE=${{ matrix.with-webengine }} \
                      --env WITH_PDF4QT=${{ matrix.with-pdf4qt }} \
+                     --env WITH_PDAL=${{ matrix.with-pdal }} \
                      --env LD_PRELOAD=${{ matrix.LD_PRELOAD }} \
                      --env WITH_CLAZY=${{ matrix.with-clazy }} \
+                     --env WITH_SFCGAL=${{ matrix.with-sfcgal }} \
                      --env WITH_COMPILE_COMMANDS=${{ matrix.with-compile-commands }} \
                      --env ENABLE_UNITY_BUILDS=${{ matrix.unity-builds }} \
+                     --env WITH_INTERNAL_SPATIALINDEX=${{ matrix.with-internal-spatialindex }} \
+                     --env WITH_MODEL_TEST=${{ matrix.with-model-test }} \
+                     --env WITH_PG_TEST=${{ matrix.with-pg-test }} \
+                     --env WITH_MSSQL_TEST=${{ matrix.with-mssql-test }} \
+                     --env WITH_HANA_TEST=${{ matrix.with-hana-test }} \
+                     --env WITH_ORACLE_TEST=${{ matrix.with-oracle-test }} \
+                     --env WITH_QSPATIALITE=${{ matrix.with-qspatialite-test }} \
+                     --env WITH_SERVER_LANDINGPAGE_WEBAPP=${{ matrix.with-server-landingpage-webapp }} \
                      qgis3-build-deps \
                      /root/QGIS/.docker/docker-qgis-build.sh
 
       - name: Save build cache for push only
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         if: ${{ github.event_name == 'push' }}
         with:
           path: /home/runner/QGIS/.ccache
-          key: build-ccache-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}-${{ github.ref_name }}-${{ github.run_id }}
+          key: build-ccache-${{ matrix.distro }}-qt${{ matrix.qt-version }}-${{ github.ref_name }}-${{ github.run_id }}
 
       - name: Push artifact
         id: push_artifact
         if: ${{ matrix.run-tests }}
         run: tar --exclude='*.o' -cvzf build.tgz build
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: ${{ matrix.run-tests }}
         with:
-          name: build-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}.tgz
+          name: build-${{ matrix.distro }}-qt${{ matrix.qt-version }}.tgz
           path: ./build.tgz
           retention-days: 1
 
@@ -242,32 +264,49 @@ jobs:
 
     strategy:
       matrix:
-        qt-version: [5, 6]
-        test-batch: [ALL_BUT_PROVIDERS, POSTGRES, HANA, SQLSERVER]
 
         include:
-          - qt-version: 5
-            distro-version: 24.04
+          - qt-version: 6
+            distro: ubuntu
+            distro-version: '25.10'
             docker-target: binary-only
+            test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
+            test-batch: ALL_BUT_PROVIDERS
 
           - qt-version: 6
-            distro-version: 39
+            distro: fedora
+            distro-version: '42'
             docker-target: binary-only
-
-          - qt-version: 5
-            distro-version: 24.04
-            test-batch: ORACLE
-            docker-target: binary-for-oracle
-
-        exclude:
-          - qt-version: 6
-            test-batch: HANA
+            test-blocklist-file: .ci/test_blocklist_qt6_fedora.txt
+            test-batch: ALL_BUT_PROVIDERS
 
           - qt-version: 6
+            distro: ubuntu
+            distro-version: '25.10'
             test-batch: POSTGRES
+            test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
+            docker-target: binary-only
 
           - qt-version: 6
+            distro: ubuntu
+            distro-version: '25.10'
+            test-batch: HANA
+            test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
+            docker-target: binary-only
+
+          - qt-version: 6
+            distro: ubuntu
+            distro-version: '25.10'
             test-batch: SQLSERVER
+            test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
+            docker-target: binary-only
+
+          - qt-version: 6
+            distro: ubuntu
+            distro-version: '25.10'
+            test-batch: ORACLE
+            test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
+            docker-target: binary-for-oracle
 
       fail-fast: false
 
@@ -282,7 +321,7 @@ jobs:
           swap-storage: true
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set vars
         env:
@@ -311,8 +350,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
-          tags: qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.base.ref || github.ref_name }}
+          file: .docker/qgis3-${{ matrix.distro }}-qt${{ matrix.qt-version }}-build-deps.dockerfile
+          tags: qgis/qgis3-${{ matrix.distro }}-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.base.ref || github.ref_name }}
           push: ${{ github.event_name == 'push' && github.repository == 'qgis/QGIS' }}
           pull: true
           target: ${{ matrix.docker-target }}
@@ -330,9 +369,9 @@ jobs:
           sudo df -h
 
       - name: Download build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
-          name: build-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}.tgz
+          name: build-${{ matrix.distro }}-qt${{ matrix.qt-version }}.tgz
           path: .
 
       - name: Extract build artifact
@@ -351,6 +390,7 @@ jobs:
           TEST_BATCH: ${{matrix.test-batch}}
           QGIS_COMMON_GIT_DIR: ${{ github.workspace }}
           GITHUB_SHA: ${{ github.sha }}
+          TEST_BLOCKLIST_FILE: ${{matrix.test-blocklist-file}}
         run: |
           DOCKERFILE=$( ( [[ ${{ matrix.test-batch }} == "ORACLE"   ]] && echo "docker-compose-testing-oracle.yml" ) \
                      || ( [[ ${{ matrix.test-batch }} == "POSTGRES" ]] && echo "docker-compose-testing-postgres.yml" ) \
@@ -359,9 +399,10 @@ jobs:
           [[ ${{ matrix.test-batch }} == "ORACLE" ]] && sudo rm -rf /usr/share/dotnet/sdk
           echo "TEST_BATCH=$TEST_BATCH"
           echo "DOCKERFILE=$DOCKERFILE"
+          echo "TEST_BLOCKLIST_FILE=$TEST_BLOCKLIST_FILE"
           mkdir -p /tmp/webdav_tests && chmod 777 /tmp/webdav_tests
           mkdir -p /tmp/minio_tests/test-bucket && chmod -R 777 /tmp/minio_tests
-          docker compose -f .docker/$DOCKERFILE run -e GITHUB_SHA=$GITHUB_SHA qgis-deps /root/QGIS/.docker/docker-qgis-test.sh $TEST_BATCH
+          docker compose -f .docker/$DOCKERFILE run -e GITHUB_SHA=$GITHUB_SHA qgis-deps /root/QGIS/.docker/docker-qgis-test.sh $TEST_BATCH $TEST_BLOCKLIST_FILE
 
       - name: Fix permissions on test report
         if: ${{ failure() }}
@@ -381,9 +422,9 @@ jobs:
 
       - name: Archive test results report
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
-          name: test-results-qt${{ matrix.qt-version }}
+          name: test-results-${{ matrix.distro }}-qt${{ matrix.qt-version }}-${{ matrix.test-batch }}
           path: qgis_test_report
 
   clang-tidy:
@@ -394,8 +435,9 @@ jobs:
     strategy:
       matrix:
         include:
-          - distro-version: '24.04'
-            qt-version: 5
+          - distro: ubuntu
+            distro-version: '25.10'
+            qt-version: 6
 
     steps:
       - name: Free Disk Space (Ubuntu)
@@ -407,7 +449,7 @@ jobs:
           swap-storage: true
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 2
 
@@ -423,8 +465,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
-          tags: qgis/qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.base.ref || github.ref_name }}
+          file: .docker/qgis3-${{ matrix.distro }}-qt${{ matrix.qt-version }}-build-deps.dockerfile
+          tags: qgis/qgis3-${{ matrix.distro }}-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.base.ref || github.ref_name }}
           push: ${{ github.event_name == 'push' && github.repository == 'qgis/QGIS' }}
           pull: true
           target: ${{ matrix.docker-target }}
@@ -435,9 +477,9 @@ jobs:
         run: docker tag ${{ steps.docker-build.outputs.imageid }} qgis3-build-deps-binary-image
 
       - name: Download build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
-          name: build-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}.tgz
+          name: build-${{ matrix.distro }}-qt${{ matrix.qt-version }}.tgz
           path: .
 
       - name: Extract build artifact

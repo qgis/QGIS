@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
 #include "qgsmatrix4x4.h"
+#include "qgstest.h"
 
 /**
  * \ingroup UnitTests

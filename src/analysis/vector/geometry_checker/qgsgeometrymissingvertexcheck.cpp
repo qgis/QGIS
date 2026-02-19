@@ -14,39 +14,56 @@
  ***************************************************************************/
 
 #include "qgsgeometrymissingvertexcheck.h"
-#include "moc_qgsgeometrymissingvertexcheck.cpp"
 
+#include "qgsapplication.h"
+#include "qgscurve.h"
+#include "qgscurvepolygon.h"
 #include "qgsfeedback.h"
 #include "qgsgeometrycollection.h"
-#include "qgsmultipolygon.h"
-#include "qgscurvepolygon.h"
-#include "qgscurve.h"
 #include "qgsgeometryengine.h"
 #include "qgsgeometryutils.h"
-#include "qgsapplication.h"
+#include "qgsmultipolygon.h"
+
+#include <QString>
+
+#include "moc_qgsgeometrymissingvertexcheck.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGeometryMissingVertexCheck::QgsGeometryMissingVertexCheck( const QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfiguration )
   : QgsGeometryCheck( context, geometryCheckConfiguration )
 
 {}
 
-void QgsGeometryMissingVertexCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+QgsGeometryCheck::Result QgsGeometryMissingVertexCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
   Q_UNUSED( messages )
   if ( feedback )
     feedback->setProgress( feedback->progress() + 1.0 );
 
+  QMap<QString, QSet<QVariant>> uniqueIds;
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
-
   QgsFeaturePool *featurePool = featurePools.value( featureIds.firstKey() );
-
+  if ( !featurePool )
+  {
+    QgsDebugError( u"Could not retrieve feature pool for %1"_s.arg( featureIds.firstKey() ) );
+    return QgsGeometryCheck::Result::Canceled;
+  }
   const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), nullptr, mContext, true );
-
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
     if ( feedback && feedback->isCanceled() )
     {
-      break;
+      return QgsGeometryCheck::Result::Canceled;
+    }
+
+    if ( context()->uniqueIdFieldIndex != -1 )
+    {
+      QgsGeometryCheck::Result result = checkUniqueId( layerFeature, uniqueIds );
+      if ( result != QgsGeometryCheck::Result::Success )
+      {
+        return result;
+      }
     }
 
     const QgsGeometry geometry = layerFeature.geometry();
@@ -68,6 +85,7 @@ void QgsGeometryMissingVertexCheck::collectErrors( const QMap<QString, QgsFeatur
       }
     }
   }
+  return QgsGeometryCheck::Result::Success;
 }
 
 void QgsGeometryMissingVertexCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
@@ -252,7 +270,7 @@ QString QgsGeometryMissingVertexCheck::factoryDescription()
 
 QString QgsGeometryMissingVertexCheck::factoryId()
 {
-  return QStringLiteral( "QgsGeometryMissingVertexCheck" );
+  return u"QgsGeometryMissingVertexCheck"_s;
 }
 
 QgsGeometryCheck::Flags QgsGeometryMissingVertexCheck::factoryFlags()
@@ -294,7 +312,7 @@ void QgsGeometryMissingVertexCheckError::setInvolvedFeatures( const QMap<QString
 QIcon QgsGeometryMissingVertexCheckError::icon() const
 {
   if ( status() == QgsGeometryCheckError::StatusFixed )
-    return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCheckGeometry.svg" ) );
+    return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmCheckGeometry.svg"_s );
   else
-    return QgsApplication::getThemeIcon( QStringLiteral( "/checks/MissingVertex.svg" ) );
+    return QgsApplication::getThemeIcon( u"/checks/MissingVertex.svg"_s );
 }

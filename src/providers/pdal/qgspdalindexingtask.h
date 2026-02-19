@@ -16,8 +16,11 @@
 #ifndef QGSPDALINDEXINGTASK_H
 #define QGSPDALINDEXINGTASK_H
 
-#include <QObject>
 #include "qgstaskmanager.h"
+
+#include <QObject>
+
+class QTemporaryDir;
 
 class QgsPdalIndexingTask : public QgsTask
 {
@@ -36,13 +39,14 @@ class QgsPdalIndexingTask : public QgsTask
   private:
     bool prepareOutputPath();
     bool runUntwine();
-    void cleanTemp();
+    void cleanup();
 
     QString guessUntwineExecutableBinary() const;
     QString mUntwineExecutableBinary;
     QString mOutputPath;
     QString mFile;
     QString mErrorMessage;
+    std::unique_ptr<QTemporaryDir> mTempDir;
 };
 
 #endif // QGSPDALINDEXINGTASK_H

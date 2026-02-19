@@ -16,23 +16,28 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmapcanvas.h"
-#include "qgsmaplayer.h"
-#include "qgsproject.h"
 #include "qgsmapoverviewcanvas.h"
-#include "moc_qgsmapoverviewcanvas.cpp"
-#include "qgsmaprenderersequentialjob.h"
-#include "qgsmaptopixel.h"
-#include "qgsprojectviewsettings.h"
-#include "qgslogger.h"
 
-#include <QPainter>
-#include <QPainterPath>
-#include <QPaintEvent>
-#include <QResizeEvent>
-#include <QMouseEvent>
 #include <limits>
 
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
+#include "qgsmaprenderersequentialjob.h"
+#include "qgsmaptopixel.h"
+#include "qgsproject.h"
+#include "qgsprojectviewsettings.h"
+
+#include <QMouseEvent>
+#include <QPaintEvent>
+#include <QPainter>
+#include <QPainterPath>
+#include <QResizeEvent>
+#include <QString>
+
+#include "moc_qgsmapoverviewcanvas.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget *parent, QgsMapCanvas *mapCanvas )
   : QWidget( parent )
@@ -40,7 +45,7 @@ QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget *parent, QgsMapCanvas *mapCa
 
 {
   setAutoFillBackground( true );
-  setObjectName( QStringLiteral( "theOverviewCanvas" ) );
+  setObjectName( u"theOverviewCanvas"_s );
   mPanningWidget = new QgsPanningWidget( this );
 
   mSettings.setTransformContext( mMapCanvas->mapSettings().transformContext() );
@@ -157,7 +162,7 @@ void QgsMapOverviewCanvas::mouseReleaseEvent( QMouseEvent *e )
 void QgsMapOverviewCanvas::wheelEvent( QWheelEvent *e )
 {
   QgsSettings settings;
-  bool reverseZoom = settings.value( QStringLiteral( "qgis/reverse_wheel_zoom" ), false ).toBool();
+  bool reverseZoom = settings.value( u"qgis/reverse_wheel_zoom"_s, false ).toBool();
   bool zoomIn = reverseZoom ? e->angleDelta().y() < 0 : e->angleDelta().y() > 0;
   double zoomFactor = zoomIn ? 1. / mMapCanvas->zoomInFactor() : mMapCanvas->zoomOutFactor();
 
@@ -211,13 +216,13 @@ void QgsMapOverviewCanvas::refresh()
 
   if ( mJob )
   {
-    QgsDebugMsgLevel( QStringLiteral( "oveview - canceling old" ), 2 );
+    QgsDebugMsgLevel( u"oveview - canceling old"_s, 2 );
     mJob->cancel();
-    QgsDebugMsgLevel( QStringLiteral( "oveview - deleting old" ), 2 );
+    QgsDebugMsgLevel( u"oveview - deleting old"_s, 2 );
     delete mJob; // get rid of previous job (if any)
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "oveview - starting new" ), 2 );
+  QgsDebugMsgLevel( u"oveview - starting new"_s, 2 );
 
   mSettings.setDevicePixelRatio( static_cast<float>( devicePixelRatioF() ) );
 
@@ -237,7 +242,7 @@ void QgsMapOverviewCanvas::refresh()
 
 void QgsMapOverviewCanvas::mapRenderingFinished()
 {
-  QgsDebugMsgLevel( QStringLiteral( "overview - finished" ), 2 );
+  QgsDebugMsgLevel( u"overview - finished"_s, 2 );
   mPixmap = QPixmap::fromImage( mJob->renderedImage() );
 
   delete mJob;
@@ -336,7 +341,7 @@ QList<QgsMapLayer *> QgsMapOverviewCanvas::layers() const
 QgsPanningWidget::QgsPanningWidget( QWidget *parent )
   : QWidget( parent )
 {
-  setObjectName( QStringLiteral( "panningWidget" ) );
+  setObjectName( u"panningWidget"_s );
   setMinimumSize( 5, 5 );
   setAttribute( Qt::WA_NoSystemBackground );
 }

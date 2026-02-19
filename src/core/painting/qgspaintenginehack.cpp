@@ -15,49 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgspaintenginehack.h"
 #include "qgsconfig.h"
+#include "qgspaintenginehack.h"
 
 // Hack to workaround Qt #5114 by disabling PatternTransform
 void QgsPaintEngineHack::fixFlags()
-{
-#if defined(HAS_KDE_QT5_PDF_TRANSFORM_FIX) || QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
-  // not required, fixed upstream
-#else
-  gccaps = PaintEngineFeatures();
-  gccaps |= ( QPaintEngine::PrimitiveTransform
-              // | QPaintEngine::PatternTransform
-              | QPaintEngine::PixmapTransform
-              | QPaintEngine::PatternBrush
-              // | QPaintEngine::LinearGradientFill
-              // | QPaintEngine::RadialGradientFill
-              // | QPaintEngine::ConicalGradientFill
-              | QPaintEngine::AlphaBlend
-              // | QPaintEngine::PorterDuff
-              | QPaintEngine::PainterPaths
-              | QPaintEngine::Antialiasing
-              | QPaintEngine::BrushStroke
-              | QPaintEngine::ConstantOpacity
-              | QPaintEngine::MaskedBrush
-              // | QPaintEngine::PerspectiveTransform
-              | QPaintEngine::BlendModes
-              // | QPaintEngine::ObjectBoundingModeGradients
-              | QPaintEngine::RasterOpModes
-              | QPaintEngine::PaintOutsidePaintEvent
-            );
-#endif
-}
+{}
 
 void QgsPaintEngineHack::fixEngineFlags( QPaintEngine *engine )
 {
-#if defined(HAS_KDE_QT5_PDF_TRANSFORM_FIX) || QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
-  // not required, fixed upstream
   ( void )engine;
-#else
-  if ( !engine )
-    return;
-
-  QgsPaintEngineHack *hack = static_cast<QgsPaintEngineHack *>( engine );
-  hack->fixFlags();
-#endif
 }

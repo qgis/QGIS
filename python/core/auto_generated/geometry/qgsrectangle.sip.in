@@ -13,6 +13,7 @@
 
 
 
+
 class QgsRectangle
 {
 %Docstring(signature="appended")
@@ -128,14 +129,14 @@ A null rectangle is also empty by definition.
 .. versionadded:: 3.34
 %End
 
- void setMinimal() /Deprecated="Since 3.34. Will be removed in QGIS 4.0. Use setNull()."/;
+ void setMinimal() /Deprecated="Since 3.34. Will be removed in QGIS 5.0. Use setNull()."/;
 %Docstring
 Set a rectangle so that min corner is at max and max corner is at min.
 It is NOT normalized.
 
 .. deprecated:: 3.34
 
-   Will be removed in QGIS 4.0. Use :py:func:`~QgsRectangle.setNull`.
+   Will be removed in QGIS 5.0. Use :py:func:`~QgsRectangle.setNull`.
 %End
 
     double xMaximum() const /HoldGIL/;
@@ -322,9 +323,24 @@ segment).
 %Docstring
 Test if the rectangle is null (holding no spatial information).
 
-A null rectangle is also an empty rectangle.
+A rectangle is considered null if all its coordinates are NaN, if it has
+not been defined yet, or if it has been explicitly initialized as null.
+A null rectangle is also an empty rectangle and an invalid rectangle.
 
 .. seealso:: :py:func:`setNull`
+%End
+
+    bool isValid() const;
+%Docstring
+Test if the rectangle is valid
+
+A rectangle is considered invalid if at least one of its coordinates is
+NaN or infinite, or if a maximum coordinate is less than or equal to the
+corresponding minimum coordinate.
+
+.. seealso:: :py:func:`isNull`
+
+.. versionadded:: 4.0
 %End
 
     bool isMaximal() const;

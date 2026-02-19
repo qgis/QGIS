@@ -2418,6 +2418,7 @@ EXPAND_AS_DEFINED      = "SIP_ABSTRACT" \
                          "SIP_NODEFAULTCTORS" \
                          "SIP_NO_FILE" \
                          "SIP_OUT" \
+                         "SIP_DOCSTRING_OUT" \
                          "SIP_PROPERTY" \
                          "SIP_PYARGDEFAULT" \
                          "SIP_PYARGREMOVE" \
@@ -2438,7 +2439,8 @@ EXPAND_AS_DEFINED      = "SIP_ABSTRACT" \
                          "SIP_MONKEYPATCH_COMPAT_NAME" \
                          "SIP_MONKEYPATCH_SCOPEENUM" \
                          "SIP_MONKEYPATCH_SCOPEENUM_UNNEST" \
-                         "SIP_MONKEYPATCH_FLAGS_UNNEST"
+                         "SIP_MONKEYPATCH_FLAGS_UNNEST" \
+                         "SIP_INSERT_QLIST_ENUM_CONVERSION_CODE"
 
 # If the SKIP_FUNCTION_MACROS tag is set to YES then doxygen's preprocessor will
 # remove all references to function-like macros that are alone on a line, have
@@ -2473,7 +2475,7 @@ TAGFILES               = @DOXYGEN_TAGS@
 # tag file that is based on the input files it reads. See section "Linking to
 # external documentation" for more information about the usage of tag files.
 
-GENERATE_TAGFILE       =
+GENERATE_TAGFILE       = @CMAKE_CURRENT_BINARY_DIR@/api/qgis.tag
 
 # If the ALLEXTERNALS tag is set to YES, all external classes and namespaces
 # will be listed in the class and namespace index. If set to NO, only the

@@ -110,6 +110,8 @@ class InterpolationDataWidget(BASE, WIDGET):
 
     def addLayer(self):
         layer = self.cmbLayers.currentLayer()
+        if not layer:
+            return
 
         attribute = ""
         if self.chkUseZCoordinate.isChecked():
@@ -164,8 +166,10 @@ class InterpolationDataWidget(BASE, WIDGET):
             layer = QgsProcessingUtils.mapLayerFromString(
                 v[0], dataobjects.createContext()
             )
-            field_index = int(v[2])
+            if layer is None or not layer.isValid():
+                continue
 
+            field_index = int(v[2])
             if field_index == -1:
                 field_name = "Z_COORD"
             else:

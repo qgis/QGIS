@@ -67,6 +67,9 @@ HINTS[15]="Avoid module-wide import of QtWidgets, which results in all Qt Widget
 IMPORTS[16]="#include <QtWidgets/QtWidgets>"
 HINTS[16]="Avoid module-wide import of QtWidgets, which results in all Qt Widget headers being imported."
 
+IMPORTS[17]="#include <QtConcurrent>"
+HINTS[17]="Avoid module-wide import of QtConcurrent, which results in QtCore being imported. Include only the required header, eg. <QtConcurrentRun>, <QtConcurrentMap> etc."
+
 RES=
 DIR=$(git rev-parse --show-toplevel)
 
@@ -74,7 +77,7 @@ pushd "${DIR}" > /dev/null || exit
 
 for i in "${!IMPORTS[@]}"
 do
-  FOUND=$(git grep -n "${IMPORTS[$i]}" -- ':!*external/qt3dextra-headers*' ':!external/o2/examples*' ':!ChangeLog' ':!tests/code_layout/test_qt_imports.sh')
+  FOUND=$(git grep -n "${IMPORTS[$i]}" -- ':!external/o2/examples*' ':!ChangeLog' ':!tests/code_layout/test_qt_imports.sh')
 
   if [[  ${FOUND} ]]; then
     echo "Found source files with a module-wide Qt import: ${IMPORTS[$i]}!"

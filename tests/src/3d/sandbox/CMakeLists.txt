@@ -18,14 +18,11 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 
 include_directories(SYSTEM
   ${QT_INCLUDE_DIR}
-  ${QT5_3DEXTRA_INCLUDE_DIR}
 )
 
 add_executable(qgis_3d_sandbox
   qgis_3d_sandbox.cpp
 )
-# require c++17
-target_compile_features(qgis_3d_sandbox PRIVATE cxx_std_17)
 
 set_target_properties(qgis_3d_sandbox PROPERTIES AUTORCC TRUE)
 target_link_libraries(qgis_3d_sandbox

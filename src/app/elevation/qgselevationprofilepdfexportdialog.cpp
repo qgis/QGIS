@@ -16,12 +16,18 @@
  ***************************************************************************/
 
 #include "qgselevationprofilepdfexportdialog.h"
-#include "moc_qgselevationprofilepdfexportdialog.cpp"
-#include "qgsplot.h"
+
 #include "qgselevationprofileexportsettingswidget.h"
 #include "qgsgui.h"
 #include "qgslayoutitempage.h"
 #include "qgspagesizeregistry.h"
+#include "qgsplot.h"
+
+#include <QString>
+
+#include "moc_qgselevationprofilepdfexportdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsElevationProfilePdfExportDialog::QgsElevationProfilePdfExportDialog( QWidget *parent )
   : QDialog( parent )
@@ -44,7 +50,7 @@ QgsElevationProfilePdfExportDialog::QgsElevationProfilePdfExportDialog( QWidget 
   }
   mPageSizeComboBox->addItem( tr( "Custom" ) );
 
-  const QgsPageSize a4Size = QgsApplication::pageSizeRegistry()->find( QStringLiteral( "A4" ) ).at( 0 );
+  const QgsPageSize a4Size = QgsApplication::pageSizeRegistry()->find( u"A4"_s ).at( 0 );
   mWidthSpin->setValue( a4Size.size.width() );
   mHeightSpin->setValue( a4Size.size.height() );
   mSizeUnitsComboBox->setUnit( a4Size.size.units() );
@@ -62,7 +68,7 @@ QgsElevationProfilePdfExportDialog::QgsElevationProfilePdfExportDialog( QWidget 
   connect( mWidthSpin, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsElevationProfilePdfExportDialog::setToCustomSize );
   connect( mHeightSpin, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsElevationProfilePdfExportDialog::setToCustomSize );
 
-  whileBlocking( mPageSizeComboBox )->setCurrentIndex( mPageSizeComboBox->findData( QStringLiteral( "A4" ) ) );
+  whileBlocking( mPageSizeComboBox )->setCurrentIndex( mPageSizeComboBox->findData( u"A4"_s ) );
   mLockAspectRatio->setEnabled( false );
   mLockAspectRatio->setLocked( false );
   mSizeUnitsComboBox->setEnabled( false );
@@ -71,12 +77,12 @@ QgsElevationProfilePdfExportDialog::QgsElevationProfilePdfExportDialog( QWidget 
   mPageOrientationComboBox->setCurrentIndex( mPageOrientationComboBox->findData( QgsLayoutItemPage::Landscape ) );
 }
 
-void QgsElevationProfilePdfExportDialog::setPlotSettings( const Qgs2DPlot &plot )
+void QgsElevationProfilePdfExportDialog::setPlotSettings( const Qgs2DXyPlot &plot )
 {
   mProfileSettingsWidget->setPlotSettings( plot );
 }
 
-void QgsElevationProfilePdfExportDialog::updatePlotSettings( Qgs2DPlot &plot )
+void QgsElevationProfilePdfExportDialog::updatePlotSettings( Qgs2DXyPlot &plot )
 {
   mProfileSettingsWidget->updatePlotSettings( plot );
 }

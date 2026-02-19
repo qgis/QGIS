@@ -16,10 +16,13 @@
  ***************************************************************************/
 
 #include "qgsmenuheader.h"
-#include "moc_qgsmenuheader.cpp"
+
 #include "qgis.h"
-#include <QPainter>
+
 #include <QApplication>
+#include <QPainter>
+
+#include "moc_qgsmenuheader.cpp"
 
 QgsMenuHeader::QgsMenuHeader( const QString &text, QWidget *parent )
   : QWidget( parent )

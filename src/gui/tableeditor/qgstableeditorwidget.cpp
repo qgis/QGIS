@@ -16,13 +16,16 @@
 // along with CppSheets. If not, see <https://www.gnu.org/licenses/>.
 
 #include "qgstableeditorwidget.h"
-#include "moc_qgstableeditorwidget.cpp"
+
 #include "qgsnumericformat.h"
-#include <QStringList>
-#include <QKeyEvent>
+
 #include <QHeaderView>
+#include <QKeyEvent>
 #include <QMenu>
 #include <QPlainTextEdit>
+#include <QStringList>
+
+#include "moc_qgstableeditorwidget.cpp"
 
 QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
   : QTableWidget( parent )
@@ -31,13 +34,13 @@ QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
   mCellMenu = new QMenu( this );
   setColumnCount( 0 );
   setRowCount( 0 );
-  connect( this, &QgsTableEditorWidget::cellChanged, this, [=] {
+  connect( this, &QgsTableEditorWidget::cellChanged, this, [this] {
     if ( !mBlockSignals )
       emit tableChanged();
   } );
 
   setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( this, &QWidget::customContextMenuRequested, this, [=]( const QPoint &point ) {
+  connect( this, &QWidget::customContextMenuRequested, this, [this]( const QPoint &point ) {
     mCellMenu->clear();
     if ( canMergeSelection() )
     {
@@ -55,7 +58,7 @@ QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
 
 
   horizontalHeader()->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( horizontalHeader(), &QWidget::customContextMenuRequested, this, [=]( const QPoint &point ) {
+  connect( horizontalHeader(), &QWidget::customContextMenuRequested, this, [this]( const QPoint &point ) {
     const int column = horizontalHeader()->logicalIndexAt( point.x() );
 
     QSet<int> selectedColumns;
@@ -96,7 +99,7 @@ QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
   } );
 
   verticalHeader()->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( verticalHeader(), &QWidget::customContextMenuRequested, this, [=]( const QPoint &point ) {
+  connect( verticalHeader(), &QWidget::customContextMenuRequested, this, [this]( const QPoint &point ) {
     const int row = verticalHeader()->logicalIndexAt( point.y() );
 
     QSet<int> selectedRows;
@@ -142,7 +145,7 @@ QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
   setItemDelegate( delegate );
 
 
-  connect( this, &QTableWidget::cellDoubleClicked, this, [=] {
+  connect( this, &QTableWidget::cellDoubleClicked, this, [this] {
     if ( QgsTableEditorDelegate *d = qobject_cast<QgsTableEditorDelegate *>( itemDelegate() ) )
     {
       d->setWeakEditorMode( false );
@@ -692,7 +695,7 @@ QgsTextFormat QgsTableEditorWidget::selectionTextFormat()
     QgsTextFormat cellFormat = model()->data( index, TextFormat ).value<QgsTextFormat>();
     if ( first )
     {
-      format = cellFormat;
+      format = std::move( cellFormat );
       first = false;
     }
     else if ( cellFormat == format )
@@ -1578,9 +1581,9 @@ QWidget *QgsTableEditorDelegate::createEditor( QWidget *parent, const QStyleOpti
   QgsTableEditorTextEdit *w = new QgsTableEditorTextEdit( parent );
   w->setWeakEditorMode( mWeakEditorMode );
 
-  if ( !w->style()->styleHint( QStyle::SH_ItemView_DrawDelegateFrame, 0, w ) )
+  if ( !w->style()->styleHint( QStyle::SH_ItemView_DrawDelegateFrame, nullptr, w ) )
     w->setFrameShape( QFrame::NoFrame );
-  if ( !w->style()->styleHint( QStyle::SH_ItemView_ShowDecorationSelected, 0, w ) )
+  if ( !w->style()->styleHint( QStyle::SH_ItemView_ShowDecorationSelected, nullptr, w ) )
     w->setWidgetOwnsGeometry( true );
 
   return w;

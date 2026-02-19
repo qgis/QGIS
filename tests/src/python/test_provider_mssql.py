@@ -33,6 +33,8 @@ from qgis.core import (
     QgsWkbTypes,
     QgsProviderConnectionException,
     QgsVectorDataProvider,
+    QgsUnsetAttributeValue,
+    QgsVectorLayerUtils,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -926,14 +928,14 @@ class TestPyQgsMssqlProvider(QgisTestCase, MssqlProviderTestBase):
         fields = vl.fields()
 
         f = next(
-            vl.getFeatures(QgsFeatureRequest().setFilterExpression("pk3 = 3.14159274"))
+            vl.getFeatures(QgsFeatureRequest().setFilterExpression("pk3 = 3.141592741"))
         )
         # first of all: we must be able to fetch a valid feature
         self.assertTrue(f.isValid())
         self.assertEqual(f["pk1"], 1)
         self.assertEqual(f["pk2"], 2)
 
-        self.assertEqual(round(f["pk3"], 6), round(3.14159274, 6))
+        self.assertAlmostEqual(f["pk3"], 3.141592741, 8)
         self.assertEqual(f["value"], "test 2")
 
         # can we edit a field?
@@ -949,13 +951,12 @@ class TestPyQgsMssqlProvider(QgisTestCase, MssqlProviderTestBase):
         )
         self.assertTrue(vl2.isValid())
         f2 = next(
-            vl.getFeatures(QgsFeatureRequest().setFilterExpression("pk3 = 3.14159274"))
+            vl.getFeatures(QgsFeatureRequest().setFilterExpression("pk3 = 3.141592741"))
         )
         self.assertTrue(f2.isValid())
 
         # just making sure we have the correct feature
-        # Only 6 decimals for PostgreSQL 11.
-        self.assertEqual(round(f2["pk3"], 6), round(3.14159274, 6))
+        self.assertAlmostEqual(f2["pk3"], 3.141592741, 8)
 
         # Then, making sure we really did change our value.
         self.assertEqual(f2["value"], "Edited Test 2")
@@ -1555,6 +1556,183 @@ class TestPyQgsMssqlProvider(QgisTestCase, MssqlProviderTestBase):
                     QTime(12, 13, 1),
                 ],
             ],
+        )
+
+    def testSkipConstraintCheck(self):
+        md = QgsProviderRegistry.instance().providerMetadata("mssql")
+        conn = md.createConnection(self.dbconn, {})
+
+        conn.execSql("DROP TABLE IF EXISTS qgis_test.test_constraint")
+        conn.execSql(
+            """CREATE TABLE [qgis_test].[test_constraint](
+        [pk] [int] IDENTITY(1,1) NOT NULL,
+        [name] [nchar](10) NULL,
+        [geom] [geometry] NULL,
+ CONSTRAINT [constraint_PK_test_table]  PRIMARY KEY CLUSTERED
+(
+        [pk] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]"""
+        )
+
+        vl = QgsVectorLayer(
+            '%s table="qgis_test"."test_constraint" sql=' % (self.dbconn),
+            "someData",
+            "mssql",
+        )
+
+        default_clause = "Autogenerate"
+        vl.dataProvider().setProviderProperty(
+            QgsDataProvider.ProviderProperty.EvaluateDefaultValues, False
+        )
+        self.assertTrue(
+            vl.dataProvider().skipConstraintCheck(
+                0, QgsFieldConstraints.Constraint.ConstraintUnique, default_clause
+            )
+        )
+        self.assertFalse(
+            vl.dataProvider().skipConstraintCheck(
+                0, QgsFieldConstraints.Constraint.ConstraintUnique, 59
+            )
+        )
+        self.assertTrue(
+            vl.dataProvider().skipConstraintCheck(
+                0,
+                QgsFieldConstraints.Constraint.ConstraintUnique,
+                QgsUnsetAttributeValue(),
+            )
+        )
+        self.assertTrue(
+            vl.dataProvider().skipConstraintCheck(
+                0,
+                QgsFieldConstraints.Constraint.ConstraintNotNull,
+                QgsUnsetAttributeValue(),
+            )
+        )
+
+    def testUnsetAttributeValue(self):
+        """Test that QgsUnsetAttributeValue is handled correctly by the provider."""
+
+        self.execSQLCommand(
+            'DROP TABLE IF EXISTS qgis_test."test_unset_attribute_value"'
+        )
+        self.execSQLCommand(
+            'CREATE TABLE qgis_test."test_unset_attribute_value" ([pk] [int] IDENTITY(1,1) NOT NULL, test_int SMALLINT UNIQUE NOT NULL DEFAULT 16, test_int_no_default SMALLINT NOT NULL)'
+        )
+
+        vl = QgsVectorLayer(
+            self.dbconn
+            + ' sslmode=disable table="qgis_test"."test_unset_attribute_value" sql=',
+            "test",
+            "mssql",
+        )
+
+        self.assertTrue(vl.isValid())
+
+        feature = QgsFeature(vl.fields())
+        feature.setAttribute("test_int", QgsUnsetAttributeValue())
+        feature.setAttribute("test_int_no_default", 17)
+
+        self.assertTrue(vl.dataProvider().addFeatures([feature]))
+
+        # Reload the layer and check the value
+        vl = QgsVectorLayer(
+            self.dbconn
+            + ' sslmode=disable table="qgis_test"."test_unset_attribute_value" sql=',
+            "test",
+            "mssql",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 1)
+        f = next(vl.getFeatures())
+        self.assertEqual(f.attribute("test_int"), 16)
+        self.assertEqual(f.attribute("test_int_no_default"), 17)
+
+        self.assertFalse(
+            QgsVectorLayerUtils.valueExists(vl, 1, QgsUnsetAttributeValue())
+        )
+        self.assertTrue(QgsVectorLayerUtils.valueExists(vl, 1, 16))
+        self.assertFalse(QgsVectorLayerUtils.valueExists(vl, 1, 17))
+        self.assertTrue(QgsVectorLayerUtils.valueExists(vl, 2, 17))
+        self.assertFalse(QgsVectorLayerUtils.valueExists(vl, 2, 16))
+        self.assertTrue(QgsVectorLayerUtils.validateAttribute(vl, f, 1)[0])
+        f["test_int"] = QgsUnsetAttributeValue()
+        self.assertTrue(QgsVectorLayerUtils.validateAttribute(vl, f, 1)[0])
+        f["test_int_no_default"] = QgsUnsetAttributeValue()
+
+        self.assertFalse(
+            vl.dataProvider().skipConstraintCheck(
+                2, QgsFieldConstraints.Constraint.ConstraintUnique, 18
+            )
+        )
+        self.assertFalse(
+            vl.dataProvider().skipConstraintCheck(
+                2, QgsFieldConstraints.Constraint.ConstraintNotNull, 18
+            )
+        )
+        self.assertFalse(QgsVectorLayerUtils.validateAttribute(vl, f, 2)[0])
+
+    def test_retrieve_geom_column(self):
+        """
+        Test creating provider with no explicit geometry column name specified
+        """
+        vl = QgsVectorLayer(
+            self.dbconn
+            + ' sslmode=disable key=\'pk\' type=POINT table="qgis_test"."someData" sql=',
+            "test",
+            "mssql",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().geometryColumnName(), "geom")
+        self.assertEqual(vl.dataProvider().crs().authid(), "EPSG:4326")
+        self.assertEqual(
+            {f["pk"]: f.geometry().asWkt(1) for f in vl.dataProvider().getFeatures()},
+            {
+                1: "Point (-70.3 66.3)",
+                2: "Point (-68.2 70.8)",
+                3: "",
+                4: "Point (-65.3 78.3)",
+                5: "Point (-71.1 78.2)",
+            },
+        )
+
+    def test_retrieve_geom_column_estimate(self):
+        """
+        Test creating provider with no explicit geometry column name specified
+        """
+        vl = QgsVectorLayer(
+            self.dbconn
+            + ' sslmode=disable key=\'pk\' type=POLYGON table="qgis_test"."invalid_polys" estimatedmetadata="true" sql=',
+            "test",
+            "mssql",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().geometryColumnName(), "ogr_geometry")
+        self.assertEqual(vl.dataProvider().crs().authid(), "EPSG:4167")
+
+    def test_retrieve_geom_column_and_pk(self):
+        """
+        Test creating provider with no explicit geometry column name or pk specified
+        """
+        vl = QgsVectorLayer(
+            self.dbconn
+            + ' sslmode=disable type=POINT table="qgis_test"."someData" sql=',
+            "test",
+            "mssql",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().geometryColumnName(), "geom")
+        self.assertEqual(vl.dataProvider().crs().authid(), "EPSG:4326")
+        self.assertEqual(vl.dataProvider().pkAttributeIndexes(), [0])
+        self.assertEqual(
+            {f["pk"]: f.geometry().asWkt(1) for f in vl.dataProvider().getFeatures()},
+            {
+                1: "Point (-70.3 66.3)",
+                2: "Point (-68.2 70.8)",
+                3: "",
+                4: "Point (-65.3 78.3)",
+                5: "Point (-71.1 78.2)",
+            },
         )
 
 

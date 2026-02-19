@@ -18,15 +18,15 @@
 #ifndef QGSMSSQLFEATUREITERATOR_H
 #define QGSMSSQLFEATUREITERATOR_H
 
-#include "qgsmssqlgeometryparser.h"
+#include "qgscoordinatetransform.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfields.h"
-#include <QtSql/QSqlDatabase>
-#include <QtSql/QSqlQuery>
-#include <QtSql/QSqlError>
-#include "qgscoordinatetransform.h"
-
+#include "qgsmssqlgeometryparser.h"
 #include "qgsmssqlprovider.h"
+
+#include <QtSql/QSqlDatabase>
+#include <QtSql/QSqlError>
+#include <QtSql/QSqlQuery>
 
 class QgsMssqlProvider;
 class QgsMssqlQuery;
@@ -59,13 +59,7 @@ class QgsMssqlFeatureSource final : public QgsAbstractFeatureSource
     QString mQuery;
 
     // login
-    QString mUserName;
-    QString mPassword;
-
-    // server access
-    QString mService;
-    QString mDatabaseName;
-    QString mHost;
+    QgsDataSourceUri mUri;
 
     // SQL statement used to limit the features retrieved
     QString mSqlWhereClause;
@@ -77,7 +71,7 @@ class QgsMssqlFeatureSource final : public QgsAbstractFeatureSource
     std::shared_ptr<QgsMssqlDatabase> mTransactionConn;
 
     // Return True if this feature source has spatial attributes.
-    bool isSpatial() { return !mGeometryColName.isEmpty() || !mGeometryColType.isEmpty(); }
+    bool isSpatial() const { return !mGeometryColName.isEmpty() || !mGeometryColType.isEmpty(); }
 
     // Uri information for query logger
     QString mConnInfo;

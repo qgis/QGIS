@@ -18,19 +18,17 @@
 #define QGSGPSINFORMATIONWIDGET_H
 
 #include "ui_qgsgpsinformationwidgetbase.h"
-#include "qgis_app.h"
 
+#include "qgis_app.h"
 #include "qgspanelwidget.h"
 #include "qgspointxy.h"
 
+#include <QPointer>
+#include <QTextStream>
 #include <qwt_plot_curve.h>
-#ifdef WITH_QWTPOLAR
-#include <qwt_polar_plot.h>
 #include <qwt_polar_grid.h>
 #include <qwt_polar_marker.h>
-#endif
-#include <QTextStream>
-#include <QPointer>
+#include <qwt_polar_plot.h>
 
 class QextSerialPort;
 class QgsAppGpsConnection;
@@ -76,11 +74,9 @@ class APP_EXPORT QgsGpsInformationWidget : public QgsPanelWidget, private Ui::Qg
 
     QwtPlot *mPlot = nullptr;
     QwtPlotCurve *mCurve = nullptr;
-#ifdef WITH_QWTPOLAR
     QwtPolarPlot *mpSatellitesWidget = nullptr;
     QwtPolarGrid *mpSatellitesGrid = nullptr;
     QList<QwtPolarMarker *> mMarkerList;
-#endif
 
     QgsPointXY mLastGpsPosition;
 

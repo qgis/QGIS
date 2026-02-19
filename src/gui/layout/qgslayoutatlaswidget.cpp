@@ -14,18 +14,23 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgslayoutatlaswidget.h"
+
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgslayoutatlas.h"
+#include "qgslayoutreportcontext.h"
+#include "qgslayoutundostack.h"
+#include "qgsmessagebar.h"
+#include "qgsprintlayout.h"
+
 #include <QComboBox>
 #include <QImageWriter>
+#include <QString>
 
-#include "qgslayoutatlaswidget.h"
 #include "moc_qgslayoutatlaswidget.cpp"
-#include "qgsprintlayout.h"
-#include "qgslayoutatlas.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgslayoutundostack.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsmessagebar.h"
-#include "qgslayoutreportcontext.h"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutAtlasWidget::QgsLayoutAtlasWidget( QWidget *parent, QgsPrintLayout *layout )
   : QWidget( parent )
@@ -36,6 +41,7 @@ QgsLayoutAtlasWidget::QgsLayoutAtlasWidget( QWidget *parent, QgsPrintLayout *lay
   connect( mUseAtlasCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutAtlasWidget::mUseAtlasCheckBox_stateChanged );
   connect( mAtlasFilenamePatternEdit, &QLineEdit::editingFinished, this, &QgsLayoutAtlasWidget::mAtlasFilenamePatternEdit_editingFinished );
   connect( mAtlasFilenameExpressionButton, &QToolButton::clicked, this, &QgsLayoutAtlasWidget::mAtlasFilenameExpressionButton_clicked );
+  connect( mAtlasLimitCoverageLayerRenderCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutAtlasWidget::mAtlasLimitCoverageLayerRenderCheckBox_stateChanged );
   connect( mAtlasHideCoverageCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutAtlasWidget::mAtlasHideCoverageCheckBox_stateChanged );
   connect( mAtlasSingleFileCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutAtlasWidget::mAtlasSingleFileCheckBox_stateChanged );
   connect( mAtlasSortFeatureCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutAtlasWidget::mAtlasSortFeatureCheckBox_stateChanged );
@@ -66,7 +72,7 @@ QgsLayoutAtlasWidget::QgsLayoutAtlasWidget( QWidget *parent, QgsPrintLayout *lay
   {
     mAtlasFileFormat->addItem( QString( formats.at( i ) ) );
   }
-  connect( mAtlasFileFormat, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) { changeFileFormat(); } );
+  connect( mAtlasFileFormat, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) { changeFileFormat(); } );
 
   updateGuiElements();
 }
@@ -152,7 +158,7 @@ void QgsLayoutAtlasWidget::mAtlasFilenameExpressionButton_clicked()
   }
 
   const QgsExpressionContext context = mLayout->createExpressionContext();
-  QgsExpressionBuilderDialog exprDlg( mAtlas->coverageLayer(), mAtlasFilenamePatternEdit->text(), this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog exprDlg( mAtlas->coverageLayer(), mAtlasFilenamePatternEdit->text(), this, u"generic"_s, context );
   exprDlg.setWindowTitle( tr( "Expression Based Filename" ) );
 
   if ( exprDlg.exec() == QDialog::Accepted )
@@ -176,16 +182,30 @@ void QgsLayoutAtlasWidget::mAtlasFilenameExpressionButton_clicked()
   }
 }
 
+void QgsLayoutAtlasWidget::mAtlasLimitCoverageLayerRenderCheckBox_stateChanged( int state )
+{
+  if ( !mLayout )
+    return;
+
+  mBlockUpdates = true;
+  mLayout->undoStack()->beginCommand( mAtlas, tr( "Toggle Limit Atlas Layer Rendering to Current Feature" ) );
+  mAtlas->setLimitCoverageLayerRenderToCurrentFeature( state == Qt::Checked );
+  mLayout->undoStack()->endCommand();
+  mBlockUpdates = false;
+}
+
 void QgsLayoutAtlasWidget::mAtlasHideCoverageCheckBox_stateChanged( int state )
 {
   if ( !mLayout )
     return;
 
   mBlockUpdates = true;
-  mLayout->undoStack()->beginCommand( mAtlas, tr( "Toggle Atlas Layer" ) );
+  mLayout->undoStack()->beginCommand( mAtlas, tr( "Toggle Atlas Layer Visibility" ) );
   mAtlas->setHideCoverage( state == Qt::Checked );
   mLayout->undoStack()->endCommand();
   mBlockUpdates = false;
+
+  mAtlasLimitCoverageLayerRenderCheckBox->setEnabled( state != Qt::Checked );
 }
 
 void QgsLayoutAtlasWidget::mAtlasSingleFileCheckBox_stateChanged( int state )
@@ -204,7 +224,7 @@ void QgsLayoutAtlasWidget::mAtlasSingleFileCheckBox_stateChanged( int state )
     mAtlasFilenameExpressionButton->setEnabled( true );
   }
 
-  mLayout->setCustomProperty( QStringLiteral( "singleFile" ), state == Qt::Checked );
+  mLayout->setCustomProperty( u"singleFile"_s, state == Qt::Checked );
 }
 
 void QgsLayoutAtlasWidget::mAtlasSortFeatureCheckBox_stateChanged( int state )
@@ -329,7 +349,7 @@ void QgsLayoutAtlasWidget::mAtlasFeatureFilterButton_clicked()
   }
 
   const QgsExpressionContext context = mLayout->createExpressionContext();
-  QgsExpressionBuilderDialog exprDlg( vl, mAtlasFeatureFilterEdit->text(), this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog exprDlg( vl, mAtlasFeatureFilterEdit->text(), this, u"generic"_s, context );
   exprDlg.setWindowTitle( tr( "Expression Based Filter" ) );
 
   if ( exprDlg.exec() == QDialog::Accepted )
@@ -375,7 +395,7 @@ void QgsLayoutAtlasWidget::changeFileFormat()
   if ( !mLayout )
     return;
 
-  mLayout->setCustomProperty( QStringLiteral( "atlasRasterFormat" ), mAtlasFileFormat->currentText() );
+  mLayout->setCustomProperty( u"atlasRasterFormat"_s, mAtlasFileFormat->currentText() );
 }
 
 void QgsLayoutAtlasWidget::updateGuiElements()
@@ -396,9 +416,10 @@ void QgsLayoutAtlasWidget::updateGuiElements()
   mAtlasSortExpressionWidget->setField( mAtlas->sortExpression() );
 
   mAtlasFilenamePatternEdit->setText( mAtlas->filenameExpression() );
+  mAtlasLimitCoverageLayerRenderCheckBox->setCheckState( mAtlas->limitCoverageLayerRenderToCurrentFeature() ? Qt::Checked : Qt::Unchecked );
   mAtlasHideCoverageCheckBox->setCheckState( mAtlas->hideCoverage() ? Qt::Checked : Qt::Unchecked );
 
-  const bool singleFile = mLayout->customProperty( QStringLiteral( "singleFile" ) ).toBool();
+  const bool singleFile = mLayout->customProperty( u"singleFile"_s, true ).toBool();
   mAtlasSingleFileCheckBox->setCheckState( singleFile ? Qt::Checked : Qt::Unchecked );
   mAtlasFilenamePatternEdit->setEnabled( !singleFile );
   mAtlasFilenameExpressionButton->setEnabled( !singleFile );
@@ -414,7 +435,7 @@ void QgsLayoutAtlasWidget::updateGuiElements()
   mAtlasFeatureFilterEdit->setEnabled( mAtlas->filterFeatures() );
   mAtlasFeatureFilterButton->setEnabled( mAtlas->filterFeatures() );
 
-  mAtlasFileFormat->setCurrentIndex( mAtlasFileFormat->findText( mLayout->customProperty( QStringLiteral( "atlasRasterFormat" ), QStringLiteral( "png" ) ).toString() ) );
+  mAtlasFileFormat->setCurrentIndex( mAtlasFileFormat->findText( mLayout->customProperty( u"atlasRasterFormat"_s, u"png"_s ).toString() ) );
 
   blockAllSignals( false );
 }
@@ -428,6 +449,7 @@ void QgsLayoutAtlasWidget::blockAllSignals( bool b )
   mPageNameWidget->blockSignals( b );
   mAtlasSortExpressionWidget->blockSignals( b );
   mAtlasFilenamePatternEdit->blockSignals( b );
+  mAtlasLimitCoverageLayerRenderCheckBox->blockSignals( b );
   mAtlasHideCoverageCheckBox->blockSignals( b );
   mAtlasSingleFileCheckBox->blockSignals( b );
   mAtlasSortFeatureCheckBox->blockSignals( b );

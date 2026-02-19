@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgsphongmaterialwidget.h"
-#include "moc_qgsphongmaterialwidget.cpp"
 
-#include "qgsphongmaterialsettings.h"
 #include "qgis.h"
+#include "qgsphongmaterialsettings.h"
+
+#include "moc_qgsphongmaterialwidget.cpp"
 
 QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent, bool hasOpacity )
   : QgsMaterialSettingsWidget( parent )
@@ -34,7 +35,7 @@ QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent, bool hasOpacity
   connect( btnDiffuse, &QgsColorButton::colorChanged, this, &QgsPhongMaterialWidget::changed );
   connect( btnAmbient, &QgsColorButton::colorChanged, this, &QgsPhongMaterialWidget::changed );
   connect( btnSpecular, &QgsColorButton::colorChanged, this, &QgsPhongMaterialWidget::changed );
-  connect( spinShininess, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [=] {
+  connect( spinShininess, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [this] {
     updateWidgetState();
     emit changed();
   } );

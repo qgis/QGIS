@@ -14,14 +14,20 @@
  ***************************************************************************/
 
 #include "qgscolorswatchgrid.h"
-#include "moc_qgscolorswatchgrid.cpp"
+
 #include "qgsapplication.h"
-#include "qgssymbollayerutils.h"
 #include "qgscolortooltip_p.h"
-#include <QPainter>
-#include <QMouseEvent>
-#include <QMenu>
+#include "qgssymbollayerutils.h"
+
 #include <QBuffer>
+#include <QMenu>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QString>
+
+#include "moc_qgscolorswatchgrid.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define NUMBER_COLORS_PER_ROW 10 //number of color swatches per row
 
@@ -29,11 +35,6 @@ QgsColorSwatchGrid::QgsColorSwatchGrid( QgsColorScheme *scheme, const QString &c
   : QWidget( parent )
   , mScheme( scheme )
   , mContext( context )
-  , mDrawBoxDepressed( false )
-  , mCurrentHoverBox( -1 )
-  , mFocused( false )
-  , mCurrentFocusBox( 0 )
-  , mPressedOnWidget( false )
 {
   //need to receive all mouse over events
   setMouseTracking( true );
@@ -124,7 +125,7 @@ void QgsColorSwatchGrid::updateTooltip( const int colorIdx )
 
     QString info;
     if ( !colorName.isEmpty() )
-      info += QStringLiteral( "<h3>%1</h3><p>" ).arg( colorName );
+      info += u"<h3>%1</h3><p>"_s.arg( colorName );
 
     info += QgsColorTooltip::htmlDescription( color, this );
 
@@ -328,7 +329,7 @@ QPixmap QgsColorSwatchGrid::transparentBackground()
   static QPixmap sTranspBkgrd;
 
   if ( sTranspBkgrd.isNull() )
-    sTranspBkgrd = QgsApplication::getThemePixmap( QStringLiteral( "/transp-background_8x8.png" ) );
+    sTranspBkgrd = QgsApplication::getThemePixmap( u"/transp-background_8x8.png"_s );
 
   return sTranspBkgrd;
 }
@@ -359,8 +360,6 @@ int QgsColorSwatchGrid::swatchForPosition( QPoint position ) const
 QgsColorSwatchGridAction::QgsColorSwatchGridAction( QgsColorScheme *scheme, QMenu *menu, const QString &context, QWidget *parent )
   : QWidgetAction( parent )
   , mMenu( menu )
-  , mSuppressRecurse( false )
-  , mDismissOnColorSelection( true )
 {
   mColorSwatchGrid = new QgsColorSwatchGrid( scheme, context, parent );
 

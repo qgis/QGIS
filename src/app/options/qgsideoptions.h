@@ -16,6 +16,7 @@
 #define QGSIDEOPTIONS_H
 
 #include "ui_qgsideoptionswidgetbase.h"
+
 #include "qgsoptionswidgetfactory.h"
 
 /**

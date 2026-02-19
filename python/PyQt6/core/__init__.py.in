@@ -25,6 +25,7 @@ import typing as _typing
 
 from qgis.PyQt.QtCore import NULL
 from qgis.PyQt.QtCore import Qt as _Qt
+from qgis.PyQt.QtCore import QMetaType as _QMetaType
 from qgis._core import *
 
 @MONKEYPATCH_INJECTIONS@
@@ -151,7 +152,11 @@ QgsSettingsEntryEnumFlag = PyQgsSettingsEntryEnumFlag
 QgsProviderMetadata = PyProviderMetadata
 
 # monkey patch deprecated enum values to maintain API
-# TODO - remove for QGIS 4.0
+# TODO - remove for QGIS 5.0
+Qgis.PythonEmbeddedMode = Qgis.EmbeddedScriptMode
+Qgis.PythonEmbeddedType = Qgis.EmbeddedScriptType
+Qgis.PythonMacroMode = Qgis.PythonEmbeddedMode
+
 QgsMarkerLineSymbolLayer.Interval = Qgis.MarkerLinePlacement.Interval
 QgsMarkerLineSymbolLayer.Vertex = Qgis.MarkerLinePlacement.Vertex
 QgsMarkerLineSymbolLayer.LastVertex = Qgis.MarkerLinePlacement.LastVertex
@@ -317,13 +322,13 @@ DEFAULT_LINE_WIDTH = Qgis.DEFAULT_LINE_WIDTH
 DEFAULT_SEGMENT_EPSILON = Qgis.DEFAULT_SEGMENT_EPSILON
 PROJECT_SCALES = Qgis.defaultProjectScales()
 
-# TODO QGIS 4.0 - remove, require use of explicit getter/setter
+# TODO QGIS 5.0 - remove, require use of explicit getter/setter
 
 QgsAbstractMetadataBaseValidator.ValidationResult.identifier = property(QgsAbstractMetadataBaseValidator.ValidationResult._identifier)
 QgsAbstractMetadataBaseValidator.ValidationResult.identifier = QgsAbstractMetadataBaseValidator.ValidationResult.identifier.setter(QgsAbstractMetadataBaseValidator.ValidationResult.setIdentifier)
 
 
-# TODO QGIS 4.0 - remove, replaced by Qgis.LinePlacementFlags
+# TODO QGIS 5.0 - remove, replaced by Qgis.LinePlacementFlags
 class _LinePlacementFlags:
   OnLine = 1
   AboveLine = 2
@@ -359,6 +364,17 @@ def _set_merge_lines(self, merge):
 
 QgsPalLayerSettings.mergeLines = property(_get_merge_lines)
 QgsPalLayerSettings.mergeLines = QgsPalLayerSettings.mergeLines.setter(_set_merge_lines)
+
+def _get_label_per_part(self):
+    return self.placementSettings().multiPartBehavior() == Qgis.MultiPartLabelingBehavior.LabelEveryPartWithEntireLabel
+
+
+def _set_label_per_part(self, label_per_part):
+    self.placementSettings().setMultiPartBehavior(Qgis.MultiPartLabelingBehavior.LabelEveryPartWithEntireLabel if label_per_part else Qgis.MultiPartLabelingBehavior.LabelLargestPartOnly)
+
+
+QgsPalLayerSettings.labelPerPart = property(_get_label_per_part)
+QgsPalLayerSettings.labelPerPart = QgsPalLayerSettings.labelPerPart.setter(_set_label_per_part)
 
 
 def _get_add_direction_symbol(self):
@@ -409,7 +425,7 @@ QgsPalLayerSettings.reverseDirectionSymbol = property(_get_reverse_direction_sym
 QgsPalLayerSettings.reverseDirectionSymbol = QgsPalLayerSettings.reverseDirectionSymbol.setter(_set_reverse_direction_symbol)
 
 
-# TODO QGIS 4.0 - remove, replaced by QgsLabelLineSettings.DirectionSymbolPlacement
+# TODO QGIS 5.0 - remove, replaced by QgsLabelLineSettings.DirectionSymbolPlacement
 class _DirectionSymbols:
   SymbolLeftRight = 0
   SymbolAbove = 1
@@ -545,7 +561,7 @@ QgsPalLayerSettings.obstacleFactor = QgsPalLayerSettings.obstacleFactor.setter(_
 
 
 
-# TODO QGIS 4.0 - remove, replaced by QgsLabelObstacleSettings.ObstacleType
+# TODO QGIS 5.0 - remove, replaced by QgsLabelObstacleSettings.ObstacleType
 
 QgsPalLayerSettings.ObstacleType = QgsLabelObstacleSettings.ObstacleType
 QgsPalLayerSettings.PolygonInterior = QgsLabelObstacleSettings.ObstacleType.PolygonInterior
@@ -599,6 +615,8 @@ QgsProcessingException.__doc__ = "Custom exception class for processing related 
 QgsProviderConnectionException.__doc__ = "Custom exception class for provider connection related exceptions."
 QgsNotSupportedException.__doc__ = "Custom exception class which is raised when an operation is not supported."
 QgsSettingsException.__doc__ = "Custom exception class for settings related exceptions."
+QgsSfcgalException.__doc__ = "Custom exception class for SfCGAL related operations."
+QgsInvalidArgumentException.__doc__ = "Custom exception class when argument are invalid.\n\nIe. algorithms or processing can not continue computation."
 QgsException.__doc__ = "Defines a QGIS exception class."
 
 try:
@@ -622,6 +640,21 @@ try:
        Qgis.DataType.ARGB32_Premultiplied: None
        }
       return qgis_to_numpy_dtype_dict[dataType]
+
+   def _qvariant_type_to_numeric_data_type(dataType: _QMetaType.Type) -> _typing.Optional[_numpy.dtype]:
+      qmetatype_to_numpy_dtype_dict = {
+        _QMetaType.Type.Int: _numpy.int32,
+            _QMetaType.Type.UInt: _numpy.uint32,
+            _QMetaType.Type.LongLong:_numpy.int64,
+            _QMetaType.Type.ULongLong: _numpy.uint64,
+            _QMetaType.Type.Short: _numpy.int16,
+            _QMetaType.Type.UShort: _numpy.uint16,
+            _QMetaType.Type.Long: _numpy.int64,
+            _QMetaType.Type.ULong: _numpy.uint64,
+            _QMetaType.Type.Float: _numpy.float32,
+            _QMetaType.Type.Double: _numpy.float64,
+       }
+      return qmetatype_to_numpy_dtype_dict.get(dataType)
 
    def _raster_block_as_numpy(self, use_masking:bool = True) -> _typing.Union[_numpy.ndarray, _numpy.ma.MaskedArray]:
       raster_dtype = _qgis_data_type_to_numeric_data_type(self.dataType())
@@ -656,6 +689,26 @@ try:
           return _numpy.array(arrays)
 
    QgsRasterLayer.as_numpy = _raster_layer_as_numpy
+
+   def _field_as_numpy(self, field_name: str, null_value: object, request: _typing.Optional[QgsFeatureRequest] = None) -> _numpy.ma.MaskedArray:
+      field_index = self.fields().lookupField(field_name)
+      if field_index < 0:
+         raise KeyError(f"Field '{field_name}' does not exist.")
+      field = self.fields().at(field_index)
+      numpy_dtype = _qvariant_type_to_numeric_data_type(field.type())
+      if numpy_dtype is None:
+         raise TypeError(f"The field data type '{str(field.type())}' is not compatible with NumPy arrays.")
+
+      if request is None:
+         request = QgsFeatureRequest().setFlags(Qgis.FeatureRequestFlag.NoGeometry).setSubsetOfAttributes([
+        field_index
+      ])
+
+      src_array = QgsVectorLayerUtils.fieldToDataArray(self.fields(), field_name, self.getFeatures(request), null_value)
+      numpy_array = _numpy.frombuffer(src_array.data(), dtype=numpy_dtype)
+      return _numpy.ma.masked_equal(numpy_array, null_value)
+
+   QgsVectorLayer.field_as_numpy = _field_as_numpy
 
    def _qgsgeometry_as_numpy(self) -> _typing.Union[_numpy.ndarray, _typing.List[_numpy.ndarray]]:
        wkb_type = self.wkbType()
@@ -730,6 +783,10 @@ except ModuleNotFoundError:
 
    QgsGeometry.as_numpy = _geometry_as_numpy
 
+   def _field_as_numpy(self, field_name: str, null_value, request: _typing.Optional[QgsFeatureRequest] = None):
+      raise QgsNotSupportedException('QgsVectorLayer.field_as_numpy is not available, numpy is not installed on the system')
+
+   QgsVectorLayer.field_as_numpy = _field_as_numpy
 try:
    import shapely as _shapely
    import shapely.geometry as _sg
@@ -763,6 +820,33 @@ except ModuleNotFoundError:
 
    QgsGeometry.from_shapely = _geometry_from_shapely
 
+try:
+   import geopandas as _gpd
+
+   def _vector_layer_as_geopandas(self) -> _gpd.GeoDataFrame:
+       """
+       Returns the vector layer as a GeoPandas GeoDataFrame.
+       
+       :raises QgsNotSupportedException: if geopandas is not available on the system
+       
+       .. versionadded:: 4.0
+       """
+       features = list(self.getFeatures())
+       
+       geometries = [feat.geometry().as_shapely() if not feat.geometry().isEmpty() else None for feat in features]
+       
+       field_names = [field.name() for field in self.fields()]
+       data = {field_name: [feat[field_index] for feat in features] for field_index, field_name in enumerate(field_names)}
+
+       return _gpd.GeoDataFrame(data, geometry=geometries, crs=self.crs().authid())
+
+   QgsVectorLayer.as_geopandas = _vector_layer_as_geopandas
+
+except ModuleNotFoundError:
+   def _vector_layer_as_geopandas(self):
+       raise QgsNotSupportedException('QgsVectorLayer.as_geopandas is not available, geopandas is not installed on the system')
+
+   QgsVectorLayer.as_geopandas = _vector_layer_as_geopandas
 
 QgsRasterBlock.as_numpy.__doc__ = """
 Returns the block data as a numpy array.
@@ -808,4 +892,41 @@ Creates a new geometry from a shapely object.
 :raises QgsNotSupportedException: if shapely is not available on the system
 
 .. versionadded:: 3.44
+"""
+
+QgsVectorLayer.as_geopandas.__doc__ = """
+Returns the vector layer as a GeoPandas GeoDataFrame.
+
+All features from the layer are converted to a GeoDataFrame, including their geometries 
+(converted to shapely objects) and all attribute values. The CRS is preserved from the 
+original layer.
+
+:raises QgsNotSupportedException: if geopandas is not available on the system
+
+.. versionadded:: 4.0
+"""
+
+QgsVectorLayer.field_as_numpy.__doc__ = """
+Returns the values from a field as a numpy masked array.
+
+:param field_name: field name to source values from
+:param null_value: value to use when original field value is a null. Must
+                   be of the same data type as the source field. This value will be
+                   used as the mask when converting the array to a numpy masked array, and must
+                   be carefully selected to avoid conflicts with valid, existing field values.
+:param request: optional QgsFeatureRequest to control which features to source values from.
+                If not specified, an optimized feature request over all layer features will
+                be used.
+
+.. warning::
+
+   Only numeric field types are supported.
+
+:raises KeyError: if the field name is not found
+
+:raises TypeError: if the field is of a non-supported type
+
+:raises QgsNotSupportedException: if numpy is not available on the system
+
+.. versionadded:: 4.0
 """

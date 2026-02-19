@@ -14,16 +14,19 @@
  ***************************************************************************/
 
 #include "qgsappquerylogger.h"
-#include "moc_qgsappquerylogger.cpp"
-#include "qgsdatabasequeryloggernode.h"
-#include "qgsapplication.h"
+
 #include "devtools/qgsdevtoolsmodelnode.h"
-#include "qgssettings.h"
 #include "qgis.h"
-#include <QThread>
+#include "qgsapplication.h"
+#include "qgsdatabasequeryloggernode.h"
+#include "qgssettings.h"
+
 #include <QApplication>
-#include <QUrlQuery>
 #include <QPainter>
+#include <QThread>
+#include <QUrlQuery>
+
+#include "moc_qgsappquerylogger.cpp"
 
 QgsAppQueryLogger::QgsAppQueryLogger( QObject *parent )
   : QAbstractItemModel( parent )
@@ -141,7 +144,7 @@ void QgsAppQueryLogger::removeRequestRows( const QList<int> &rows )
 
   for ( int row : std::as_const( res ) )
   {
-    int popId = data( index( row, 0, QModelIndex() ), QgsDevToolsModelNode::RoleId ).toInt();
+    int popId = data( index( row, 0, QModelIndex() ), static_cast<int>( Qgis::DevToolsNodeRole::Id ) ).toInt();
     mQueryGroups.remove( popId );
 
     beginRemoveRows( QModelIndex(), row, row );
@@ -217,11 +220,11 @@ QVariant QgsAppQueryLogger::data( const QModelIndex &index, int role ) const
       switch ( role )
       {
         case Qt::DisplayRole:
-        case QgsDevToolsModelNode::RoleElapsedTime:
-        case QgsDevToolsModelNode::RoleSort:
-          return node->data( QgsDevToolsModelNode::RoleElapsedTime );
+        case static_cast<int>( Qgis::DevToolsNodeRole::ElapsedTime ):
+        case static_cast<int>( Qgis::DevToolsNodeRole::Sort ):
+          return node->data( static_cast<int>( Qgis::DevToolsNodeRole::ElapsedTime ) );
 
-        case QgsDevToolsModelNode::RoleMaximumTime:
+        case static_cast<int>( Qgis::DevToolsNodeRole::MaximumTime ):
           return mMaxCost;
 
         default:
@@ -291,7 +294,8 @@ bool QgsDatabaseQueryLoggerProxyModel::filterAcceptsRow( int source_row, const Q
       }
       for ( int i = 0; i < request->childCount(); i++ )
       {
-        if ( QgsDevToolsModelValueNode *valueNode = static_cast<QgsDevToolsModelValueNode *>( request->childAt( i ) ); valueNode->value().contains( mFilterString, Qt::CaseInsensitive ) )
+        QgsDevToolsModelValueNode *valueNode = static_cast<QgsDevToolsModelValueNode *>( request->childAt( i ) );
+        if ( valueNode && valueNode->value().contains( mFilterString, Qt::CaseInsensitive ) )
         {
           return true;
         }

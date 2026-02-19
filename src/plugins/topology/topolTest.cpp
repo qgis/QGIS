@@ -16,24 +16,30 @@
  ***************************************************************************/
 
 #include "topolTest.h"
+
+#include <cmath>
+#include <map>
+#include <set>
+
+#include "qgisinterface.h"
+#include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
+#include "qgsgeometry.h"
+#include "qgsgeometrycollection.h"
+#include "qgsgeos.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmessagelog.h"
+#include "qgsspatialindex.h"
+#include "qgsvectorlayer.h"
+
+#include <QDebug>
+#include <QString>
+#include <qlogging.h>
+
 #include "moc_topolTest.cpp"
 
-#include "qgsvectorlayer.h"
-#include "qgsfeatureiterator.h"
-#include "qgsmapcanvas.h"
-#include "qgsgeometry.h"
-#include "qgsfeature.h"
-#include "qgsspatialindex.h"
-#include "qgisinterface.h"
-#include "qgslogger.h"
-#include "qgsmessagelog.h"
-#include "qgsgeos.h"
-#include "qgsgeometrycollection.h"
-#include <qlogging.h>
-#include <QDebug>
-#include <cmath>
-#include <set>
-#include <map>
+using namespace Qt::StringLiterals;
 
 static bool _canExportToGeos( const QgsGeometry &geom )
 {
@@ -186,7 +192,7 @@ ErrorList topolTest::checkDanglingLines( QgsVectorLayer *layer1, QgsVectorLayer 
 
       FeatureLayer ftrLayer1;
       //need to fetch attributes?? being safe side by fetching..
-      layer1->getFeatures( QgsFeatureRequest().setFilterFid( k ) ).nextFeature( feat );
+      ( void ) layer1->getFeatures( QgsFeatureRequest().setFilterFid( k ).setLimit( 1 ) ).nextFeature( feat );
       ftrLayer1.feature = feat;
       ftrLayer1.layer = layer1;
 
@@ -1310,7 +1316,7 @@ QgsSpatialIndex *topolTest::createIndex( QgsVectorLayer *layer, const QgsRectang
 
 ErrorList topolTest::runTest( const QString &testName, QgsVectorLayer *layer1, QgsVectorLayer *layer2, ValidateType type )
 {
-  QgsDebugMsgLevel( QStringLiteral( "Running test %1" ).arg( testName ), 2 );
+  QgsDebugMsgLevel( u"Running test %1"_s.arg( testName ), 2 );
   ErrorList errors;
 
   if ( !layer1 )

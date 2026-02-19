@@ -14,19 +14,24 @@
  ***************************************************************************/
 
 #include "qgstextfragment.h"
-#include <QFontMetricsF>
-#include <QTextFragment>
+
 #include "qgsstringutils.h"
 
+#include <QFontMetricsF>
+#include <QString>
+#include <QTextFragment>
+
+using namespace Qt::StringLiterals;
+
 QgsTextFragment::QgsTextFragment( const QString &text, const QgsTextCharacterFormat &format )
-  : mText( text != QStringLiteral( "\ufffc" ) ? text : QString() )
-  , mIsImage( text == QStringLiteral( "\ufffc" ) )
+  : mText( text != u"\ufffc"_s ? text : QString() )
+  , mIsImage( text == u"\ufffc"_s )
   , mCharFormat( format )
 {}
 
 QgsTextFragment::QgsTextFragment( const QTextFragment &fragment )
-  : mText( fragment.text() != QStringLiteral( "\ufffc" ) ? fragment.text() : QString() )
-  , mIsImage( fragment.text() == QStringLiteral( "\ufffc" ) )
+  : mText( fragment.text() != u"\ufffc"_s ? fragment.text() : QString() )
+  , mIsImage( fragment.text() == u"\ufffc"_s )
   , mCharFormat( fragment.charFormat() )
 {
 }

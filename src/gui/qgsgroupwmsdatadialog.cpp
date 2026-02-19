@@ -14,10 +14,13 @@
 ***************************************************************************/
 
 #include "qgsgroupwmsdatadialog.h"
-#include "moc_qgsgroupwmsdatadialog.cpp"
+
+#include "qgsgui.h"
 #include "qgsmaplayerserverproperties.h"
 
 #include <QRegularExpressionValidator>
+
+#include "moc_qgsgroupwmsdatadialog.cpp"
 
 QgsGroupWmsDataDialog::QgsGroupWmsDataDialog( QWidget *parent, Qt::WindowFlags fl )
   : QgsGroupWmsDataDialog( QgsMapLayerServerProperties(), parent, fl )
@@ -29,6 +32,7 @@ QgsGroupWmsDataDialog::QgsGroupWmsDataDialog( const QgsMapLayerServerProperties 
   , mServerProperties( std::make_unique<QgsMapLayerServerProperties>() )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   serverProperties.copyTo( mServerProperties.get() );
 

@@ -13,10 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsarrowsymbollayerwidget.h"
-#include "moc_qgsarrowsymbollayerwidget.cpp"
+
 #include "qgsarrowsymbollayer.h"
 #include "qgsvectorlayer.h"
+
 #include <QColorDialog>
+#include <QString>
+
+#include "moc_qgsarrowsymbollayerwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsArrowSymbolLayerWidget::QgsArrowSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )
@@ -35,8 +41,8 @@ QgsArrowSymbolLayerWidget::QgsArrowSymbolLayerWidget( QgsVectorLayer *vl, QWidge
   connect( mArrowTypeCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsArrowSymbolLayerWidget::mArrowTypeCombo_currentIndexChanged );
   connect( mOffsetSpin, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsArrowSymbolLayerWidget::mOffsetSpin_valueChanged );
   connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsArrowSymbolLayerWidget::mOffsetUnitWidget_changed );
-  connect( mCurvedArrowChck, &QCheckBox::stateChanged, this, &QgsArrowSymbolLayerWidget::mCurvedArrowChck_stateChanged );
-  connect( mRepeatArrowChck, &QCheckBox::stateChanged, this, &QgsArrowSymbolLayerWidget::mRepeatArrowChck_stateChanged );
+  connect( mCurvedArrowCheck, &QCheckBox::stateChanged, this, &QgsArrowSymbolLayerWidget::mCurvedArrowChck_stateChanged );
+  connect( mRepeatArrowCheck, &QCheckBox::stateChanged, this, &QgsArrowSymbolLayerWidget::mRepeatArrowChck_stateChanged );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
   mArrowWidthUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
@@ -50,7 +56,7 @@ QgsArrowSymbolLayerWidget::QgsArrowSymbolLayerWidget( QgsVectorLayer *vl, QWidge
 
 void QgsArrowSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
-  if ( !layer || layer->layerType() != QLatin1String( "ArrowLine" ) )
+  if ( !layer || layer->layerType() != "ArrowLine"_L1 )
   {
     return;
   }
@@ -79,8 +85,8 @@ void QgsArrowSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mOffsetUnitWidget->setUnit( mLayer->offsetUnit() );
   mOffsetUnitWidget->setMapUnitScale( mLayer->offsetMapUnitScale() );
 
-  mCurvedArrowChck->setChecked( mLayer->isCurved() );
-  mRepeatArrowChck->setChecked( mLayer->isRepeated() );
+  mCurvedArrowCheck->setChecked( mLayer->isCurved() );
+  mRepeatArrowCheck->setChecked( mLayer->isRepeated() );
 
   registerDataDefinedButton( mArrowWidthDDBtn, QgsSymbolLayer::Property::ArrowWidth );
   registerDataDefinedButton( mArrowStartWidthDDBtn, QgsSymbolLayer::Property::ArrowStartWidth );

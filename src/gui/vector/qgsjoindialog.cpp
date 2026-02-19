@@ -16,26 +16,31 @@
  ***************************************************************************/
 
 #include "qgsjoindialog.h"
-#include "moc_qgsjoindialog.cpp"
+
+#include "qgsfieldcombobox.h"
+#include "qgshelp.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayercombobox.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerjoininfo.h"
-#include "qgsmaplayercombobox.h"
-#include "qgsfieldcombobox.h"
-#include "qgshelp.h"
 
-#include <QStandardItemModel>
 #include <QPushButton>
+#include <QStandardItemModel>
+#include <QString>
+
+#include "moc_qgsjoindialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsJoinDialog::QgsJoinDialog( QgsVectorLayer *layer, QList<QgsMapLayer *> alreadyJoinedLayers, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
   , mLayer( layer )
 {
   setupUi( this );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [=] {
-    QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#joins-properties" ) );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( u"working_with_vector/vector_properties.html#joins-properties"_s );
   } );
 
   if ( !mLayer )

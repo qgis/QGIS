@@ -14,13 +14,14 @@
  ***************************************************************************/
 
 #include "qgsabstract3dengine.h"
-#include "moc_qgsabstract3dengine.cpp"
 
 #include "qgsframegraph.h"
 #include "qgslogger.h"
 
 #include <Qt3DRender/QRenderCapture>
 #include <Qt3DRender/QRenderSettings>
+
+#include "moc_qgsabstract3dengine.cpp"
 
 QgsAbstract3DEngine::QgsAbstract3DEngine( QObject *parent )
   : QObject( parent )
@@ -33,7 +34,7 @@ void QgsAbstract3DEngine::requestCaptureImage()
   mFrameGraph->setRenderCaptureEnabled( true );
   captureReply = mFrameGraph->renderCapture()->requestCapture();
 
-  connect( captureReply, &Qt3DRender::QRenderCaptureReply::completed, this, [=] {
+  connect( captureReply, &Qt3DRender::QRenderCaptureReply::completed, this, [this, captureReply] {
     emit imageCaptured( captureReply->image() );
     captureReply->deleteLater();
     mFrameGraph->setRenderCaptureEnabled( false );
@@ -45,7 +46,7 @@ void QgsAbstract3DEngine::requestDepthBufferCapture()
   Qt3DRender::QRenderCaptureReply *captureReply;
   captureReply = mFrameGraph->depthRenderCapture()->requestCapture();
 
-  connect( captureReply, &Qt3DRender::QRenderCaptureReply::completed, this, [=] {
+  connect( captureReply, &Qt3DRender::QRenderCaptureReply::completed, this, [this, captureReply] {
     emit depthBufferCaptured( captureReply->image() );
     captureReply->deleteLater();
   } );

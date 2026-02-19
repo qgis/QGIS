@@ -13,26 +13,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "qgs3d.h"
-#include "qgs3dutils.h"
-
-#include "qgsbox3d.h"
-#include "qgsray3d.h"
-
 #include "qgs3dexportobject.h"
 #include "qgs3dmapscene.h"
+#include "qgs3dutils.h"
+#include "qgsbox3d.h"
 #include "qgscameracontroller.h"
 #include "qgsflatterrainsettings.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgsrasterlayer.h"
+#include "qgsray3d.h"
+#include "qgsraycastcontext.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
 
 #include <QSize>
+#include <QString>
 #include <QtMath>
+
+using namespace Qt::StringLiterals;
 
 static bool qgsVectorNear( const QVector3D &v1, const QVector3D &v2, double eps )
 {
@@ -70,7 +71,7 @@ class TestQgs3DUtils : public QgsTest
     Q_OBJECT
   public:
     TestQgs3DUtils()
-      : QgsTest( QStringLiteral( "3D Utils" ), QStringLiteral( "3d" ) ) {}
+      : QgsTest( u"3D Utils"_s, u"3d"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -215,12 +216,12 @@ void TestQgs3DUtils::testQgsBox3DDistanceTo()
   {
     const QgsBox3D box( -1, -1, -1, 1, 1, 1 );
     QCOMPARE( box.distanceTo( QgsVector3D( 0, 0, 0 ) ), 0.0 );
-    QCOMPARE( box.distanceTo( QgsVector3D( 2, 2, 2 ) ), qSqrt( 3.0 ) );
+    QCOMPARE( box.distanceTo( QgsVector3D( 2, 2, 2 ) ), std::sqrt( 3.0 ) );
   }
   {
     const QgsBox3D box( 1, 2, 1, 4, 3, 3 );
     QCOMPARE( box.distanceTo( QgsVector3D( 1, 2, 1 ) ), 0.0 );
-    QCOMPARE( box.distanceTo( QgsVector3D( 0, 0, 0 ) ), qSqrt( 6.0 ) );
+    QCOMPARE( box.distanceTo( QgsVector3D( 0, 0, 0 ) ), std::sqrt( 6.0 ) );
   }
 }
 
@@ -346,8 +347,6 @@ void TestQgs3DUtils::testExportToObj()
   // case where all vertices are used
   {
     Qgs3DExportObject object( "all_faces" );
-    object.setupPositionCoordinates( positionData, QMatrix4x4() );
-    QCOMPARE( object.vertexPosition().size(), positionData.size() );
 
     // exported vertice indexes
     QVector<uint> indexData = {
@@ -383,7 +382,9 @@ void TestQgs3DUtils::testExportToObj()
       29,
     };
 
-    object.setupFaces( indexData );
+    object.setupTriangle( positionData, indexData, QMatrix4x4() );
+    QCOMPARE( object.vertexPosition().size(), positionData.size() );
+
     QCOMPARE( object.indexes().size(), indexData.size() );
 
     object.setupNormalCoordinates( normalsData, QMatrix4x4() );
@@ -391,7 +392,7 @@ void TestQgs3DUtils::testExportToObj()
 
 
     QFile file( myTmpDir + "all_faces.obj" );
-    file.open( QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate );
+    QVERIFY( file.open( QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate ) );
     QTextStream out( &file );
 
     out << "o " << object.name() << "\n";
@@ -421,17 +422,16 @@ void TestQgs3DUtils::testExportToObj()
     };
 
     Qgs3DExportObject object( "sparse_faces" );
-    object.setupPositionCoordinates( positionData, QMatrix4x4() );
+    object.setupTriangle( positionData, indexData, QMatrix4x4() );
     QCOMPARE( object.vertexPosition().size(), positionData.size() );
 
-    object.setupFaces( indexData );
     QCOMPARE( object.indexes().size(), indexData.size() );
 
     object.setupNormalCoordinates( normalsData, QMatrix4x4() );
     QCOMPARE( object.normals().size(), normalsData.size() );
 
     QFile file( myTmpDir + "sparse_faces.obj" );
-    file.open( QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate );
+    QVERIFY( file.open( QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate ) );
     QTextStream out( &file );
     out << "o " << object.name() << "\n";
     object.saveTo( out, 1.0, QVector3D( 0, 0, 0 ), 3 );
@@ -649,14 +649,22 @@ void TestQgs3DUtils::test3DSceneRay3D()
   Qt3DRender::QCamera *camera = scene->cameraController()->camera();
   const QPoint clickedPoint1( 115, 374 );
   const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( clickedPoint1, winSize, camera );
-  const QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> allHits1 = Qgs3DUtils::castRay( scene, ray1, QgsRayCastingUtils::RayCastContext( true, winSize, camera->farPlane() ) );
+  QgsRayCastContext context;
+  context.setMaximumDistance( camera->farPlane() );
+  const QgsRayCastResult result1 = Qgs3DUtils::castRay( scene, ray1, context );
+
+  const QList< QgsRayCastHit > terrainHits1 = result1.terrainHits();
+  const QList< QgsRayCastHit > allHits1 = result1.allHits();
+  const QList< QgsRayCastHit > buildingsHits1 = result1.layerHits( mLayerBuildings );
+
+  QVERIFY( result1.hasLayerHits() );
+  QVERIFY( result1.hasTerrainHits() );
   QCOMPARE( allHits1.size(), 2 );
-  QVERIFY( allHits1.contains( mLayerBuildings ) );
-  QVERIFY( allHits1.contains( nullptr ) );
-  QCOMPARE( allHits1[mLayerBuildings].size(), 1 );
-  QCOMPARE( allHits1[nullptr].size(), 1 );
-  const float buildingDistance1 = allHits1[mLayerBuildings][0].distance;
-  const float terrainDistance1 = allHits1[nullptr][0].distance;
+  QCOMPARE( terrainHits1.size(), 1 );
+  QCOMPARE( buildingsHits1.size(), 1 );
+
+  const double buildingDistance1 = buildingsHits1.constFirst().distance();
+  const double terrainDistance1 = terrainHits1.constFirst().distance();
   QGSCOMPARENEAR( buildingDistance1, 33.59, 1.0 );
   QGSCOMPARENEAR( terrainDistance1, 45.46, 1.0 );
 
@@ -665,12 +673,19 @@ void TestQgs3DUtils::test3DSceneRay3D()
   // the building layer should not be hit
   const QPoint clickedPoint2( 419, 326 );
   const QgsRay3D ray2 = Qgs3DUtils::rayFromScreenPoint( clickedPoint2, winSize, camera );
-  const QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> allHits2 = Qgs3DUtils::castRay( scene, ray2, QgsRayCastingUtils::RayCastContext( true, winSize, camera->farPlane() ) );
+  const QgsRayCastResult result2 = Qgs3DUtils::castRay( scene, ray2, context );
+
+  const QList< QgsRayCastHit > terrainHits2 = result2.terrainHits();
+  const QList< QgsRayCastHit > allHits2 = result2.allHits();
+  const QList< QgsRayCastHit > buildingsHits2 = result2.layerHits( mLayerBuildings );
+
+  QVERIFY( !result2.hasLayerHits() );
+  QVERIFY( result2.hasTerrainHits() );
   QCOMPARE( allHits2.size(), 1 );
-  QVERIFY( !allHits2.contains( mLayerBuildings ) );
-  QVERIFY( allHits2.contains( nullptr ) );
-  QCOMPARE( allHits2[nullptr].size(), 1 );
-  const float terrainDistance2 = allHits2[nullptr][0].distance;
+  QCOMPARE( terrainHits2.size(), 1 );
+  QCOMPARE( buildingsHits2.size(), 0 );
+
+  const double terrainDistance2 = terrainHits2.constFirst().distance();
   QGSCOMPARENEAR( terrainDistance2, 45.59, 1.0 );
 
   delete scene;

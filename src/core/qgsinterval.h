@@ -22,12 +22,16 @@
  * See details in QEP #17
  ****************************************************************************/
 
-#include <QVariant>
 #include <chrono>
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
+
+#include <QString>
+#include <QVariant>
+
+using namespace Qt::StringLiterals;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -99,11 +103,11 @@ class CORE_EXPORT QgsInterval
     % MethodCode
     QString str;
     if ( ! sipCpp->isValid() )
-      str = QStringLiteral( "<QgsInterval: invalid>" );
+      str = u"<QgsInterval: invalid>"_s;
     else if ( sipCpp->originalUnit() != Qgis::TemporalUnit::Unknown )
-      str = QStringLiteral( "<QgsInterval: %1 %2>" ).arg( sipCpp->originalDuration() ).arg( QgsUnitTypes::toString( sipCpp->originalUnit() ) );
+      str = u"<QgsInterval: %1 %2>"_s.arg( sipCpp->originalDuration() ).arg( QgsUnitTypes::toString( sipCpp->originalUnit() ) );
     else
-      str = QStringLiteral( "<QgsInterval: %1 seconds>" ).arg( sipCpp->seconds() );
+      str = u"<QgsInterval: %1 seconds>"_s.arg( sipCpp->seconds() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -367,17 +371,6 @@ Q_DECLARE_METATYPE( QgsInterval )
 
 #ifndef SIP_RUN
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
-
-/**
- * Returns the interval between two datetimes.
- * \param datetime1 start datetime
- * \param datetime2 datetime to subtract, ie subtract datetime2 from datetime1
- * \note not available in Python bindings
- */
-QgsInterval CORE_EXPORT operator-( const QDateTime &datetime1, const QDateTime &datetime2 );
-
-#endif
 
 /**
  * Returns the interval between two dates.

@@ -14,20 +14,24 @@
  ***************************************************************************/
 
 #include "qgsvaluemapconfigdlg.h"
-#include "moc_qgsvaluemapconfigdlg.cpp"
 
-#include "qgsattributetypeloaddialog.h"
-#include "qgsvaluemapfieldformatter.h"
 #include "qgsapplication.h"
+#include "qgsattributetypeloaddialog.h"
 #include "qgssettings.h"
+#include "qgsvaluemapfieldformatter.h"
 
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QTextStream>
 #include <QClipboard>
+#include <QFileDialog>
 #include <QKeyEvent>
+#include <QMessageBox>
 #include <QMimeData>
 #include <QRegularExpression>
+#include <QString>
+#include <QTextStream>
+
+#include "moc_qgsvaluemapconfigdlg.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )
@@ -35,7 +39,7 @@ QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QW
   setupUi( this );
 
   mValueMapErrorsLabel->setVisible( false );
-  mValueMapErrorsLabel->setStyleSheet( QStringLiteral( "QLabel { color : red; }" ) );
+  mValueMapErrorsLabel->setStyleSheet( u"QLabel { color : red; }"_s );
 
   tableWidget->insertRow( 0 );
 
@@ -81,7 +85,7 @@ QVariantMap QgsValueMapConfigDlg::config()
   }
 
   QVariantMap cfg;
-  cfg.insert( QStringLiteral( "map" ), valueList );
+  cfg.insert( u"map"_s, valueList );
   return cfg;
 }
 
@@ -93,7 +97,7 @@ void QgsValueMapConfigDlg::setConfig( const QVariantMap &config )
     tableWidget->removeRow( i );
   }
 
-  QList<QVariant> valueList = config.value( QStringLiteral( "map" ) ).toList();
+  QList<QVariant> valueList = config.value( u"map"_s ).toList();
   QList<QPair<QString, QVariant>> orderedList;
 
   if ( valueList.count() > 0 )
@@ -106,7 +110,7 @@ void QgsValueMapConfigDlg::setConfig( const QVariantMap &config )
   else
   {
     int row = 0;
-    const QVariantMap values = config.value( QStringLiteral( "map" ) ).toMap();
+    const QVariantMap values = config.value( u"map"_s ).toMap();
     for ( QVariantMap::ConstIterator mit = values.constBegin(); mit != values.constEnd(); mit++, row++ )
     {
       if ( QgsVariantUtils::isNull( mit.value() ) )
@@ -140,7 +144,7 @@ void QgsValueMapConfigDlg::vCellChanged( int row, int column )
                                        .arg( item->text(), QString::number( layer()->fields().field( field() ).length() ) );
         item->setText( validValue );
         mValueMapErrorsLabel->setVisible( true );
-        mValueMapErrorsLabel->setText( QStringLiteral( "%1<br>%2" ).arg( errorMessage, mValueMapErrorsLabel->text() ) );
+        mValueMapErrorsLabel->setText( u"%1<br>%2"_s.arg( errorMessage, mValueMapErrorsLabel->text() ) );
       }
     }
   }
@@ -198,7 +202,7 @@ void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant>> &lis
 
   if ( insertNull )
   {
-    setRow( row, QgsValueMapFieldFormatter::NULL_VALUE, QStringLiteral( "<NULL>" ) );
+    setRow( row, QgsValueMapFieldFormatter::NULL_VALUE, u"<NULL>"_s );
     ++row;
   }
 
@@ -237,7 +241,7 @@ void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant>> &lis
       if ( !reportedErrors.isEmpty() )
       {
         mValueMapErrorsLabel->setVisible( true );
-        mValueMapErrorsLabel->setText( reportedErrors.join( QLatin1String( "<br>" ) ) );
+        mValueMapErrorsLabel->setText( reportedErrors.join( "<br>"_L1 ) );
       }
     }
     ++row;
@@ -246,7 +250,7 @@ void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant>> &lis
 
 QString QgsValueMapConfigDlg::checkValueLength( const QString &value )
 {
-  if ( value == QgsApplication::nullRepresentation() )
+  if ( value == QgsValueMapFieldFormatter::NULL_VALUE || value == QgsApplication::nullRepresentation() )
   {
     return value;
   }
@@ -264,7 +268,7 @@ QString QgsValueMapConfigDlg::checkValueLength( const QString &value )
 
 void QgsValueMapConfigDlg::populateComboBox( QComboBox *comboBox, const QVariantMap &config, bool skipNull )
 {
-  const QList<QVariant> valueList = config.value( QStringLiteral( "map" ) ).toList();
+  const QList<QVariant> valueList = config.value( u"map"_s ).toList();
 
   if ( !valueList.empty() )
   {
@@ -280,7 +284,7 @@ void QgsValueMapConfigDlg::populateComboBox( QComboBox *comboBox, const QVariant
   }
   else
   {
-    const QVariantMap map = config.value( QStringLiteral( "map" ) ).toMap();
+    const QVariantMap map = config.value( u"map"_s ).toMap();
     for ( auto it = map.constBegin(); it != map.constEnd(); ++it )
     {
       if ( skipNull && it.value() == QgsValueMapFieldFormatter::NULL_VALUE )
@@ -353,13 +357,13 @@ void QgsValueMapConfigDlg::copySelectionToClipboard()
     clipboardText.append( text );
     previous = current;
   }
-  mimeData->setData( QStringLiteral( "text/plain" ), clipboardText.toUtf8() );
+  mimeData->setData( u"text/plain"_s, clipboardText.toUtf8() );
   QApplication::clipboard()->setMimeData( mimeData.release() );
 }
 
 void QgsValueMapConfigDlg::addNullButtonPushed()
 {
-  setRow( tableWidget->rowCount() - 1, QgsValueMapFieldFormatter::NULL_VALUE, QStringLiteral( "<NULL>" ) );
+  setRow( tableWidget->rowCount() - 1, QgsValueMapFieldFormatter::NULL_VALUE, u"<NULL>"_s );
 }
 
 void QgsValueMapConfigDlg::loadFromLayerButtonPushed()
@@ -404,7 +408,7 @@ void QgsValueMapConfigDlg::loadMapFromCSV( const QString &filePath )
     while ( matches.hasNext() && ceils.size() < 2 )
     {
       const QRegularExpressionMatch match = matches.next();
-      ceils << match.capturedTexts().last().trimmed().replace( QLatin1String( "\"\"" ), QLatin1String( "\"" ) );
+      ceils << match.capturedTexts().last().trimmed().replace( "\"\""_L1, "\""_L1 );
     }
 
     if ( ceils.size() != 2 )

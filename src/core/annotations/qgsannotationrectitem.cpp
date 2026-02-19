@@ -16,20 +16,25 @@
  ***************************************************************************/
 
 #include "qgsannotationrectitem.h"
-#include "qgsapplication.h"
-#include "qgsgeometry.h"
-#include "qgsrendercontext.h"
-#include "qgsannotationitemnode.h"
+
 #include "qgsannotationitemeditoperation.h"
-#include "qgspainting.h"
-#include "qgsfillsymbol.h"
-#include "qgssymbollayerutils.h"
-#include "qgsfillsymbollayer.h"
-#include "qgslinesymbollayer.h"
+#include "qgsannotationitemnode.h"
+#include "qgsapplication.h"
 #include "qgscalloutsregistry.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgsgeometry.h"
 #include "qgslinestring.h"
+#include "qgslinesymbollayer.h"
+#include "qgspainting.h"
 #include "qgspolygon.h"
+#include "qgsrendercontext.h"
+#include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsAnnotationRectItem::QgsAnnotationRectItem( const QgsRectangle &bounds )
   : QgsAnnotationItem()
@@ -233,7 +238,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationRectItem::applyEditV2( QgsA
   {
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
-      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      QgsAnnotationItemEditOperationMoveNode *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
       if ( moveOperation->nodeId().part == 0 )
       {
         switch ( mPlacementMode )
@@ -347,6 +352,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationRectItem::applyEditV2( QgsA
 
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
     case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
+    case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:
       break;
   }
   return Qgis::AnnotationItemEditOperationResult::Invalid;
@@ -358,7 +364,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationRectItem::transient
   {
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
-      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      QgsAnnotationItemEditOperationMoveNode *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
       if ( moveOperation->nodeId().part == 0 )
       {
         switch ( mPlacementMode )
@@ -406,7 +412,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationRectItem::transient
       }
       else
       {
-        QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+        QgsAnnotationItemEditOperationMoveNode *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
         return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( moveOperation->after().clone() ) );
       }
       break;
@@ -487,6 +493,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationRectItem::transient
       break;
     }
 
+    case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
     case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
       break;
@@ -681,28 +688,28 @@ void QgsAnnotationRectItem::copyCommonProperties( const QgsAnnotationItem *other
 
 bool QgsAnnotationRectItem::writeCommonProperties( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
-  element.setAttribute( QStringLiteral( "xMin" ), qgsDoubleToString( mBounds.xMinimum() ) );
-  element.setAttribute( QStringLiteral( "xMax" ), qgsDoubleToString( mBounds.xMaximum() ) );
-  element.setAttribute( QStringLiteral( "yMin" ), qgsDoubleToString( mBounds.yMinimum() ) );
-  element.setAttribute( QStringLiteral( "yMax" ), qgsDoubleToString( mBounds.yMaximum() ) );
-  element.setAttribute( QStringLiteral( "sizeMode" ), qgsEnumValueToKey( mPlacementMode ) );
-  element.setAttribute( QStringLiteral( "fixedWidth" ), qgsDoubleToString( mFixedSize.width() ) );
-  element.setAttribute( QStringLiteral( "fixedHeight" ), qgsDoubleToString( mFixedSize.height() ) );
-  element.setAttribute( QStringLiteral( "fixedSizeUnit" ), QgsUnitTypes::encodeUnit( mFixedSizeUnit ) );
+  element.setAttribute( u"xMin"_s, qgsDoubleToString( mBounds.xMinimum() ) );
+  element.setAttribute( u"xMax"_s, qgsDoubleToString( mBounds.xMaximum() ) );
+  element.setAttribute( u"yMin"_s, qgsDoubleToString( mBounds.yMinimum() ) );
+  element.setAttribute( u"yMax"_s, qgsDoubleToString( mBounds.yMaximum() ) );
+  element.setAttribute( u"sizeMode"_s, qgsEnumValueToKey( mPlacementMode ) );
+  element.setAttribute( u"fixedWidth"_s, qgsDoubleToString( mFixedSize.width() ) );
+  element.setAttribute( u"fixedHeight"_s, qgsDoubleToString( mFixedSize.height() ) );
+  element.setAttribute( u"fixedSizeUnit"_s, QgsUnitTypes::encodeUnit( mFixedSizeUnit ) );
 
-  element.setAttribute( QStringLiteral( "backgroundEnabled" ), mDrawBackground ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  element.setAttribute( u"backgroundEnabled"_s, mDrawBackground ? u"1"_s : u"0"_s );
   if ( mBackgroundSymbol )
   {
-    QDomElement backgroundElement = document.createElement( QStringLiteral( "backgroundSymbol" ) );
-    backgroundElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "backgroundSymbol" ), mBackgroundSymbol.get(), document, context ) );
+    QDomElement backgroundElement = document.createElement( u"backgroundSymbol"_s );
+    backgroundElement.appendChild( QgsSymbolLayerUtils::saveSymbol( u"backgroundSymbol"_s, mBackgroundSymbol.get(), document, context ) );
     element.appendChild( backgroundElement );
   }
 
-  element.setAttribute( QStringLiteral( "frameEnabled" ), mDrawFrame ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  element.setAttribute( u"frameEnabled"_s, mDrawFrame ? u"1"_s : u"0"_s );
   if ( mFrameSymbol )
   {
-    QDomElement frameElement = document.createElement( QStringLiteral( "frameSymbol" ) );
-    frameElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "frameSymbol" ), mFrameSymbol.get(), document, context ) );
+    QDomElement frameElement = document.createElement( u"frameSymbol"_s );
+    frameElement.appendChild( QgsSymbolLayerUtils::saveSymbol( u"frameSymbol"_s, mFrameSymbol.get(), document, context ) );
     element.appendChild( frameElement );
   }
 
@@ -711,28 +718,28 @@ bool QgsAnnotationRectItem::writeCommonProperties( QDomElement &element, QDomDoc
 
 bool QgsAnnotationRectItem::readCommonProperties( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  mBounds.setXMinimum( element.attribute( QStringLiteral( "xMin" ) ).toDouble() );
-  mBounds.setXMaximum( element.attribute( QStringLiteral( "xMax" ) ).toDouble() );
-  mBounds.setYMinimum( element.attribute( QStringLiteral( "yMin" ) ).toDouble() );
-  mBounds.setYMaximum( element.attribute( QStringLiteral( "yMax" ) ).toDouble() );
+  mBounds.setXMinimum( element.attribute( u"xMin"_s ).toDouble() );
+  mBounds.setXMaximum( element.attribute( u"xMax"_s ).toDouble() );
+  mBounds.setYMinimum( element.attribute( u"yMin"_s ).toDouble() );
+  mBounds.setYMaximum( element.attribute( u"yMax"_s ).toDouble() );
 
-  mPlacementMode = qgsEnumKeyToValue( element.attribute( QStringLiteral( "sizeMode" ) ), Qgis::AnnotationPlacementMode::SpatialBounds );
+  mPlacementMode = qgsEnumKeyToValue( element.attribute( u"sizeMode"_s ), Qgis::AnnotationPlacementMode::SpatialBounds );
 
   mFixedSize = QSizeF(
-                 element.attribute( QStringLiteral( "fixedWidth" ) ).toDouble(),
-                 element.attribute( QStringLiteral( "fixedHeight" ) ).toDouble()
+                 element.attribute( u"fixedWidth"_s ).toDouble(),
+                 element.attribute( u"fixedHeight"_s ).toDouble()
                );
-  mFixedSizeUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "fixedSizeUnit" ) ) );
+  mFixedSizeUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( u"fixedSizeUnit"_s ) );
 
-  mDrawBackground = element.attribute( QStringLiteral( "backgroundEnabled" ), QStringLiteral( "0" ) ).toInt();
-  const QDomElement backgroundSymbolElem = element.firstChildElement( QStringLiteral( "backgroundSymbol" ) ).firstChildElement();
+  mDrawBackground = element.attribute( u"backgroundEnabled"_s, u"0"_s ).toInt();
+  const QDomElement backgroundSymbolElem = element.firstChildElement( u"backgroundSymbol"_s ).firstChildElement();
   if ( !backgroundSymbolElem.isNull() )
   {
     setBackgroundSymbol( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( backgroundSymbolElem, context ).release() );
   }
 
-  mDrawFrame = element.attribute( QStringLiteral( "frameEnabled" ), QStringLiteral( "0" ) ).toInt();
-  const QDomElement frameSymbolElem = element.firstChildElement( QStringLiteral( "frameSymbol" ) ).firstChildElement();
+  mDrawFrame = element.attribute( u"frameEnabled"_s, u"0"_s ).toInt();
+  const QDomElement frameSymbolElem = element.firstChildElement( u"frameSymbol"_s ).firstChildElement();
   if ( !frameSymbolElem.isNull() )
   {
     setFrameSymbol( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( frameSymbolElem, context ).release() );

@@ -18,12 +18,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgswmsutils.h"
 #include "qgswmsgetmap.h"
+
 #include "qgswmsrenderer.h"
 #include "qgswmsserviceexception.h"
+#include "qgswmsutils.h"
 
 #include <QImage>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 namespace QgsWms
 {
@@ -32,7 +36,7 @@ namespace QgsWms
   {
     if ( request.serverParameters().version().isEmpty() )
     {
-      throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported, QStringLiteral( "Please add the value of the VERSION parameter" ), 501 );
+      throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported, u"Please add the value of the VERSION parameter"_s, 501 );
     }
 
     // prepare render context
@@ -59,12 +63,12 @@ namespace QgsWms
 
     if ( result )
     {
-      const QString format = request.parameters().value( QStringLiteral( "FORMAT" ), QStringLiteral( "PNG" ) );
+      const QString format = request.parameters().value( u"FORMAT"_s, u"PNG"_s );
       writeImage( response, *result, format, context.imageQuality() );
     }
     else
     {
-      throw QgsException( QStringLiteral( "Failed to compute GetMap image" ) );
+      throw QgsException( u"Failed to compute GetMap image"_s );
     }
   }
 } // namespace QgsWms

@@ -16,16 +16,21 @@
  ***************************************************************************/
 
 #include "qgslayoutimageexportoptionsdialog.h"
-#include "moc_qgslayoutimageexportoptionsdialog.cpp"
+
 #include "qgis.h"
-#include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgssettings.h"
 
 #include <QCheckBox>
 #include <QPushButton>
-#include <QSpinBox>
 #include <QSlider>
+#include <QSpinBox>
+#include <QString>
+
+#include "moc_qgslayoutimageexportoptionsdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutImageExportOptionsDialog::QgsLayoutImageExportOptionsDialog( QWidget *parent, const QString &fileExtension, Qt::WindowFlags flags )
   : QDialog( parent, flags )
@@ -227,7 +232,7 @@ void QgsLayoutImageExportOptionsDialog::clipToContentsToggled( bool state )
 
 void QgsLayoutImageExportOptionsDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "print_composer/create_output.html" ) );
+  QgsHelp::openHelp( u"print_composer/create_output.html"_s );
 }
 
 bool QgsLayoutImageExportOptionsDialog::shouldShowQuality() const

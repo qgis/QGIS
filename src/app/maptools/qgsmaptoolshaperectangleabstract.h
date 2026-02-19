@@ -3,7 +3,7 @@
     ---------------------
     begin                : July 2017
     copyright            : (C) 2017
-    email                : lbartoletti at tuxfamily dot org
+    email                : lituus at free dot fr
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,10 +16,10 @@
 #ifndef QGSMAPTOOLSHAPERECTANGLEABSTRACT_H
 #define QGSMAPTOOLSHAPERECTANGLEABSTRACT_H
 
+#include "qgis_app.h"
 #include "qgsmaptoolshapecircleabstract.h"
 #include "qgspolygon.h"
 #include "qgsquadrilateral.h"
-#include "qgis_app.h"
 
 class APP_EXPORT QgsMapToolShapeRectangleAbstract : public QgsMapToolShapeAbstract
 {

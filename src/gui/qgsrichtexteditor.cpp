@@ -29,27 +29,32 @@
 ****************************************************************************/
 
 #include "qgsrichtexteditor.h"
-#include "moc_qgsrichtexteditor.cpp"
-#include "qgsguiutils.h"
-#include "qgscolorbutton.h"
+
 #include "qgscodeeditor.h"
 #include "qgscodeeditorhtml.h"
 #include "qgscodeeditorwidget.h"
+#include "qgscolorbutton.h"
+#include "qgsguiutils.h"
 
-#include <QMimeData>
 #include <QApplication>
 #include <QClipboard>
-#include <QFontDatabase>
-#include <QInputDialog>
-#include <QTextList>
-#include <QtDebug>
-#include <QFileDialog>
-#include <QImageReader>
-#include <QSettings>
-#include <QUrl>
-#include <QMenu>
 #include <QComboBox>
+#include <QFileDialog>
+#include <QFontDatabase>
+#include <QImageReader>
+#include <QInputDialog>
+#include <QMenu>
+#include <QMimeData>
+#include <QSettings>
+#include <QString>
+#include <QTextList>
 #include <QToolButton>
+#include <QUrl>
+#include <QtDebug>
+
+#include "moc_qgsrichtexteditor.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
   : QWidget( parent )
@@ -103,13 +108,13 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
 #endif
 
   // link
-  mActionInsertLink->setShortcut( QKeySequence( QStringLiteral( "CTRL+L" ) ) );
+  mActionInsertLink->setShortcut( QKeySequence( u"CTRL+L"_s ) );
   connect( mActionInsertLink, &QAction::triggered, this, &QgsRichTextEditor::textLink );
 
   // bold, italic & underline
-  mActionBold->setShortcut( QKeySequence( QStringLiteral( "CTRL+B" ) ) );
-  mActionItalic->setShortcut( QKeySequence( QStringLiteral( "CTRL+I" ) ) );
-  mActionUnderline->setShortcut( QKeySequence( QStringLiteral( "CTRL+U" ) ) );
+  mActionBold->setShortcut( QKeySequence( u"CTRL+B"_s ) );
+  mActionItalic->setShortcut( QKeySequence( u"CTRL+I"_s ) );
+  mActionUnderline->setShortcut( QKeySequence( u"CTRL+U"_s ) );
 
   connect( mActionBold, &QAction::triggered, this, &QgsRichTextEditor::textBold );
   connect( mActionItalic, &QAction::triggered, this, &QgsRichTextEditor::textItalic );
@@ -117,14 +122,14 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
   connect( mActionStrikeOut, &QAction::triggered, this, &QgsRichTextEditor::textStrikeout );
 
   // lists
-  mActionBulletList->setShortcut( QKeySequence( QStringLiteral( "CTRL+-" ) ) );
-  mActionOrderedList->setShortcut( QKeySequence( QStringLiteral( "CTRL+=" ) ) );
+  mActionBulletList->setShortcut( QKeySequence( u"CTRL+-"_s ) );
+  mActionOrderedList->setShortcut( QKeySequence( u"CTRL+="_s ) );
   connect( mActionBulletList, &QAction::triggered, this, &QgsRichTextEditor::listBullet );
   connect( mActionOrderedList, &QAction::triggered, this, &QgsRichTextEditor::listOrdered );
 
   // indentation
-  mActionDecreaseIndent->setShortcut( QKeySequence( QStringLiteral( "CTRL+," ) ) );
-  mActionIncreaseIndent->setShortcut( QKeySequence( QStringLiteral( "CTRL+." ) ) );
+  mActionDecreaseIndent->setShortcut( QKeySequence( u"CTRL+,"_s ) );
+  mActionIncreaseIndent->setShortcut( QKeySequence( u"CTRL+."_s ) );
   connect( mActionIncreaseIndent, &QAction::triggered, this, &QgsRichTextEditor::increaseIndentation );
   connect( mActionDecreaseIndent, &QAction::triggered, this, &QgsRichTextEditor::decreaseIndentation );
 
@@ -207,7 +212,7 @@ void QgsRichTextEditor::setMode( Mode mode )
   mForeColorButton->setColor( palette().windowText().color() );
   mForeColorButton->setShowNoColor( false );
   mForeColorButton->setToolTip( tr( "Foreground color" ) );
-  mForeColorButton->setMinimumWidth( QFontMetrics( font() ).horizontalAdvance( QStringLiteral( "x" ) ) * 10 );
+  mForeColorButton->setMinimumWidth( QFontMetrics( font() ).horizontalAdvance( u"x"_s ) * 10 );
   mForeColorButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
 
   connect( mForeColorButton, &QgsColorButton::colorChanged, this, &QgsRichTextEditor::textFgColor );
@@ -225,7 +230,7 @@ void QgsRichTextEditor::setMode( Mode mode )
   mBackColorButton->setShowNull( true, tr( "No Background Color" ) );
   mBackColorButton->setToNull();
   mBackColorButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
-  mBackColorButton->setMinimumWidth( QFontMetrics( font() ).horizontalAdvance( QStringLiteral( "x" ) ) * 10 );
+  mBackColorButton->setMinimumWidth( QFontMetrics( font() ).horizontalAdvance( u"x"_s ) * 10 );
   connect( mBackColorButton, &QgsColorButton::colorChanged, this, &QgsRichTextEditor::textBgColor );
 
   if ( mode == Mode::QTextDocument )
@@ -248,7 +253,7 @@ void QgsRichTextEditor::setMode( Mode mode )
   if ( mode != Mode::PlainText )
   {
     QAction *removeFormat = new QAction( tr( "Remove Character Formatting" ), menu );
-    removeFormat->setShortcut( QKeySequence( QStringLiteral( "CTRL+M" ) ) );
+    removeFormat->setShortcut( QKeySequence( u"CTRL+M"_s ) );
     connect( removeFormat, &QAction::triggered, this, &QgsRichTextEditor::textRemoveFormat );
     mTextEdit->addAction( removeFormat );
 
@@ -269,7 +274,7 @@ void QgsRichTextEditor::setMode( Mode mode )
   menuButton->setMenu( menu );
   menuButton->setPopupMode( QToolButton::InstantPopup );
   menuButton->setToolTip( tr( "Advanced Options" ) );
-  menuButton->setText( QStringLiteral( "…" ) );
+  menuButton->setText( u"…"_s );
 
   QWidget *spacer = new QWidget();
   spacer->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
@@ -757,7 +762,7 @@ void QgsRichTextEditor::setText( const QString &text )
     return;
   }
 
-  const thread_local QRegularExpression sIsHtmlRx( QStringLiteral( "^\\s*<" ) );
+  const thread_local QRegularExpression sIsHtmlRx( u"^\\s*<"_s );
   if ( sIsHtmlRx.match( text ).hasMatch() )
   {
     mTextEdit->setHtml( text );
@@ -773,7 +778,7 @@ void QgsRichTextEditor::setText( const QString &text )
 void QgsRichTextEditor::insertImage()
 {
   const QSettings s;
-  const QString attdir = s.value( QStringLiteral( "general/filedialog-path" ) ).toString();
+  const QString attdir = s.value( u"general/filedialog-path"_s ).toString();
   const QString file = QFileDialog::getOpenFileName( this, tr( "Select an image" ), attdir, tr( "JPEG (*.jpg);; GIF (*.gif);; PNG (*.png);; BMP (*.bmp);; All (*)" ) );
   if ( file.isEmpty() )
     return;

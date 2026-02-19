@@ -17,12 +17,13 @@
 #define QGS3DMAPSCENE_H
 
 #include "qgis_3d.h"
-
-#include <Qt3DCore/QEntity>
-
-#include "qgsrectangle.h"
 #include "qgscameracontroller.h"
+#include "qgsmapoverlayentity.h"
+#include "qgsrectangle.h"
+#include "qobjectuniqueptr.h"
+
 #include <QVector4D>
+#include <Qt3DCore/QEntity>
 
 #ifndef SIP_RUN
 namespace Qt3DRender
@@ -132,7 +133,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      * Given screen error (in pixels) and distance from camera (in 3D world coordinates), this function
      * estimates the error in world space. Takes into account camera's field of view and the screen (3D view) size.
      */
-    float worldSpaceError( float epsilon, float distance ) const;
+    double worldSpaceError( double epsilon, double distance ) const;
 
     /**
      * Exports the scene according to the scene export settings
@@ -365,10 +366,13 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void onDebugOverlayEnabledChanged();
     void onStopUpdatesChanged();
     void on3DAxisSettingsChanged();
+    void onShowMapOverlayChanged();
 
     void onOriginChanged();
 
     bool updateCameraNearFarPlanes();
+
+    void applyPendingOverlayUpdate();
 
   private:
 #ifdef SIP_RUN
@@ -382,12 +386,16 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void addCameraRotationCenterEntity( QgsCameraController *controller );
     void setSceneState( SceneState state );
     void updateSceneState();
-    void updateScene( bool forceUpdate = false );
+    //! \returns whether at least one node was told to update
+    bool updateScene( bool forceUpdate = false );
     void finalizeNewEntity( Qt3DCore::QEntity *newEntity );
     int maximumTextureSize() const;
 
     void handleClippingOnEntity( QEntity *entity ) const;
     void handleClippingOnAllEntities() const;
+
+    void schedule2DMapOverlayUpdate();
+    void update2DMapOverlay( const QVector<QgsPointXY> &extent2DAsPoints );
 
   private:
     Qgs3DMapSettings &mMap;
@@ -419,5 +427,11 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
 
     QList<QVector4D> mClipPlanesEquations;
     int mMaxClipPlanes = 6;
+
+    //! 2d map overlay
+    QObjectUniquePtr<QgsMapOverlayEntity> mMapOverlayEntity = nullptr;
+    QTimer *mOverlayUpdateTimer = nullptr;
+
+    friend class TestQgs3DRendering;
 };
 #endif // QGS3DMAPSCENE_H

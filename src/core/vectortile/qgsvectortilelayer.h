@@ -18,9 +18,13 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsfeatureid.h"
 #include "qgsmaplayer.h"
 #include "qgsvectortilematrixset.h"
-#include "qgsfeatureid.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsVectorTileRenderer;
 class QgsVectorTileLabeling;
@@ -119,7 +123,7 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsVectorTileLayer: '%1'>" ).arg( sipCpp->name() );
+    QString str = u"<QgsVectorTileLayer: '%1'>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -171,8 +175,8 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
 
     QString loadDefaultMetadata( bool &resultFlag SIP_OUT ) override;
 
-    QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const FINAL;
-    QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const FINAL;
+    QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const final;
+    QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const final;
     QString htmlMetadata() const override;
 
     // new methods

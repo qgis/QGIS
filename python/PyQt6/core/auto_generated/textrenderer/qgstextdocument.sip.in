@@ -29,6 +29,8 @@ objects.
   public:
 
     QgsTextDocument();
+    QgsTextDocument( const QgsTextDocument &other );
+
     ~QgsTextDocument();
 
     explicit QgsTextDocument( const QgsTextBlock &block );
@@ -163,6 +165,14 @@ enabled, the ``useMaxLineLengthWhenAutoWrapping`` argument controls
 whether the lines should be wrapped to an ideal maximum of
 ``autoWrapLength`` characters, or if ``False`` then the lines are
 wrapped to an ideal minimum length of ``autoWrapLength`` characters.
+%End
+
+    QVector< QgsTextDocument > splitBlocksToDocuments() const;
+%Docstring
+Splits the text document, such that each block in the document becomes a
+separate document of its own.
+
+.. versionadded:: 4.0
 %End
 
     void applyCapitalization( Qgis::Capitalization capitalization );

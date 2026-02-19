@@ -14,23 +14,27 @@
  ***************************************************************************/
 
 #include "qgsmapthemes.h"
-#include "moc_qgsmapthemes.cpp"
-#include "qgsmapthemecollection.h"
 
+#include "qgisapp.h"
+#include "qgshelp.h"
 #include "qgslayertree.h"
 #include "qgslayertreemapcanvasbridge.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgslayertreeview.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsmapthemecollection.h"
+#include "qgsnewnamedialog.h"
 #include "qgsproject.h"
 #include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
-#include "qgisapp.h"
-#include "qgsnewnamedialog.h"
-#include "qgshelp.h"
 
 #include <QMessageBox>
+#include <QString>
+
+#include "moc_qgsmapthemes.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapThemes *QgsMapThemes::sInstance;
 
@@ -50,7 +54,7 @@ QgsMapThemes::QgsMapThemes()
   mReplaceMenu = new QMenu( tr( "Replace Theme" ) );
   mMenu->addMenu( mReplaceMenu );
   mActionRenameCurrentPreset = mMenu->addAction( tr( "Rename Current Theme…" ), this, &QgsMapThemes::renameCurrentPreset );
-  mActionAddPreset = mMenu->addAction( tr( "Add Theme…" ), this, [=] { addPreset(); } );
+  mActionAddPreset = mMenu->addAction( tr( "Add Theme…" ), this, [this] { addPreset(); } );
   mMenuSeparator = mMenu->addSeparator();
 
   mActionRemoveCurrentPreset = mMenu->addAction( tr( "Remove Current Theme" ), this, &QgsMapThemes::removeCurrentPreset );
@@ -222,5 +226,5 @@ void QgsMapThemes::menuAboutToShow()
 
 void QgsMapThemes::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#configuring-map-themes" ) );
+  QgsHelp::openHelp( u"introduction/general_tools.html#configuring-map-themes"_s );
 }

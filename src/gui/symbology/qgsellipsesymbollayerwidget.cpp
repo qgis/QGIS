@@ -13,11 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsellipsesymbollayerwidget.h"
-#include "moc_qgsellipsesymbollayerwidget.cpp"
+
 #include "qgsellipsesymbollayer.h"
-#include "qgsvectorlayer.h"
 #include "qgssymbollayerutils.h"
+#include "qgsvectorlayer.h"
+
 #include <QColorDialog>
+#include <QString>
+
+#include "moc_qgsellipsesymbollayerwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )
@@ -55,12 +61,12 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QW
 
   btnChangeColorFill->setAllowOpacity( true );
   btnChangeColorFill->setColorDialogTitle( tr( "Select Fill Color" ) );
-  btnChangeColorFill->setContext( QStringLiteral( "symbology" ) );
+  btnChangeColorFill->setContext( u"symbology"_s );
   btnChangeColorFill->setShowNoColor( true );
   btnChangeColorFill->setNoColorString( tr( "Transparent Fill" ) );
   btnChangeColorStroke->setAllowOpacity( true );
   btnChangeColorStroke->setColorDialogTitle( tr( "Select Stroke Color" ) );
-  btnChangeColorStroke->setContext( QStringLiteral( "symbology" ) );
+  btnChangeColorStroke->setContext( u"symbology"_s );
   btnChangeColorStroke->setShowNoColor( true );
   btnChangeColorStroke->setNoColorString( tr( "Transparent Stroke" ) );
 
@@ -105,7 +111,7 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QW
 
 void QgsEllipseSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
-  if ( !layer || layer->layerType() != QLatin1String( "EllipseMarker" ) )
+  if ( !layer || layer->layerType() != "EllipseMarker"_L1 )
   {
     return;
   }

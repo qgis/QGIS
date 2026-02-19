@@ -26,6 +26,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QMetaType
 
 from qgis.core import (
+    Qgis,
     QgsApplication,
     QgsFeatureRequest,
     QgsField,
@@ -71,6 +72,9 @@ class PointDistance(QgisAlgorithm):
 
     def groupId(self):
         return "vectoranalysis"
+
+    def documentationFlags(self):
+        return Qgis.ProcessingAlgorithmDocumentationFlag.RespectsEllipsoid
 
     def __init__(self):
         super().__init__()
@@ -143,6 +147,16 @@ class PointDistance(QgisAlgorithm):
 
     def displayName(self):
         return self.tr("Distance matrix")
+
+    def shortDescription(self):
+        return self.tr(
+            "Creates a table containing a matrix of distances between all the points in a points layer."
+        )
+
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm creates a table containing a distance matrix, with distances between all the points in a points layer."
+        )
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)

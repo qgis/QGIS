@@ -62,7 +62,7 @@ namespace MDAL
       std::vector<std::string> findMeshesNames() const;
       std::vector<std::string> mAllMeshNames; // all mesh names in file
       std::string mMeshName; // processed mesh name
-      int mMeshDimension;
+      int mMeshDimension = 0;
       std::string nodeZVariableName() const;
 
       void populate1DMeshDimensions( MDAL::CFDimensions &dims ) const;

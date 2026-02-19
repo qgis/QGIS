@@ -33,13 +33,15 @@
 #define SIP_NO_FILE
 
 
-#include "qgis_core.h"
 #include <list>
-#include <QList>
-#include "palrtree.h"
-#include "qgsrendercontext.h"
 #include <memory>
 #include <vector>
+
+#include "palrtree.h"
+#include "qgis_core.h"
+#include "qgsrendercontext.h"
+
+#include <QList>
 
 namespace pal
 {
@@ -59,8 +61,8 @@ namespace pal
   {
     int degree;
     double delta;
-    int *feat = nullptr;
-    int *label = nullptr;
+    std::vector< int > feat;
+    std::vector< int > label;
   };
 
   /**
@@ -228,7 +230,7 @@ namespace pal
       double mNbOverlap = 0.0;
 
       // seed is actually a feature ID, maybe it should be renamed?
-      Chain *chain( int seed );
+      std::unique_ptr< Chain > chain( int seed );
 
       Pal *pal = nullptr;
 

@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsBookmark
 {
 %Docstring(signature="appended")

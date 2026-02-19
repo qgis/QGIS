@@ -18,11 +18,12 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
-#include <QTreeView>
 #include "qgsfeatureid.h"
 #include "qgsmimedatautils.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessinggui.h"
+
+#include <QTreeView>
 
 class QgsMapLayerComboBox;
 class QToolButton;
@@ -131,6 +132,7 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
     void onLayerChanged( QgsMapLayer *layer );
     void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect );
     void showSourceOptions();
+    void showRasterSourceOptions();
     void selectFromFile();
     void browseForLayer();
 
@@ -146,6 +148,8 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
     QString mFilterExpression;
     bool mIsOverridingDefaultGeometryCheck = false;
     Qgis::InvalidGeometryCheck mGeometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid;
+    double mRasterReferenceScale = 0;
+    int mRasterDpi = 0;
     QPointer<QgsMapLayer> mPrevLayer;
     int mBlockChangedSignal = 0;
 

@@ -215,27 +215,7 @@ class QgsPluginInstaller(QObject):
         if not updatable_plugin_names:
             return
 
-        if len(updatable_plugin_names) >= 2:
-            status = self.tr("Multiple plugin updates are available")
-        else:
-            status = self.tr("An update to the {} plugin is available").format(
-                updatable_plugin_names[0]
-            )
-
-        QgsMessageLog.logMessage(
-            "Plugin update(s) available : {}".format(",".join(updatable_plugin_names)),
-            self.tr("Plugins"),
-        )
-
-        bar = iface.messageBar()
-        self.message_bar_widget = bar.createMessage("", status)
-        update_button = QPushButton(self.tr("Install Updates…"))
-        tab_index = 3  # PLUGMAN_TAB_UPGRADEABLE
-        update_button.pressed.connect(
-            partial(self.showPluginManagerWhenReady, tab_index)
-        )
-        self.message_bar_widget.layout().addWidget(update_button)
-        bar.pushWidget(self.message_bar_widget, Qgis.MessageLevel.Info)
+        iface.mainWindow().pluginUpdatesAvailable.emit(updatable_plugin_names)
 
     # ----------------------------------------- #
     def exportRepositoriesToManager(self):
@@ -359,7 +339,7 @@ class QgsPluginInstaller(QObject):
     # ----------------------------------------- #
     def exportSettingsGroup(self):
         """Return QgsSettings settingsGroup value"""
-        # todo QGIS 4 remove
+        # todo QGIS 5 remove
         return "plugin-manager"
 
     # ----------------------------------------- #
@@ -757,7 +737,7 @@ class QgsPluginInstaller(QObject):
 
     def installFromZipFile(self, filePath):
         if not os.path.isfile(filePath):
-            return
+            return False
 
         QgsSettingsTree.node("plugin-manager").childSetting(
             "last-zip-directory"
@@ -793,7 +773,7 @@ class QgsPluginInstaller(QObject):
             msg_box.exec()
             if msg_box.clickedButton() == more_info_btn:
                 QgsHelp.openHelp("plugins/plugins.html#the-install-from-zip-tab")
-            return
+            return False
 
         pluginsDirectory = HOME_PLUGIN_PATH
         if not QDir(pluginsDirectory).exists():
@@ -891,6 +871,7 @@ class QgsPluginInstaller(QObject):
 
         level = Qgis.MessageLevel.Success if success else Qgis.MessageLevel.Critical
         iface.pluginManagerInterface().pushMessage(msg, level)
+        return success
 
     def processDependencies(self, plugin_id):
         """Processes plugin dependencies
@@ -904,7 +885,7 @@ class QgsPluginInstaller(QObject):
             dlg = QgsPluginDependenciesDialog(
                 plugin_id, to_install, to_upgrade, not_found
             )
-            if dlg.exec() == QgsPluginDependenciesDialog.Accepted:
+            if dlg.exec() == QDialog.DialogCode.Accepted:
                 actions = dlg.actions()
                 for dependency_plugin_id, action_data in actions.items():
                     try:

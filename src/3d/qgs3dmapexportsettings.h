@@ -18,9 +18,9 @@
 
 #include "qgis_3d.h"
 
-#include <QString>
-#include <QObject>
 #include <QDir>
+#include <QObject>
+#include <QString>
 
 /**
  * \brief Manages the various settings the user can choose from when exporting a 3D scene.
@@ -53,6 +53,16 @@ class _3D_EXPORT Qgs3DMapExportSettings
     //! Returns the scale of the exported model
     float scale() const { return mScale; }
 
+    /**
+     * Returns whether terrain export is enabled.
+     * It terrain export is disabled, the terrain resolution and terrain texture resolution
+     * parameters have no effect.
+     *
+     * \see setTerrainExportEnabled()
+     * \since QGIS 4.0
+     */
+    bool terrainExportEnabled() const { return mTerrainExportEnabled; }
+
     //! Sets the scene name
     void setSceneName( const QString &sceneName ) { mSceneName = sceneName; }
     //! Sets the scene's .obj file folder path
@@ -70,6 +80,14 @@ class _3D_EXPORT Qgs3DMapExportSettings
     //! Sets the scale of exported model
     void setScale( float scale ) { mScale = scale; }
 
+    /**
+     * Sets whether terrain export is enabled.
+     *
+     * \see terrainExportEnabled()
+     * \since QGIS 4.0
+     */
+    void setTerrainExportEnabled( bool enabled ) { mTerrainExportEnabled = enabled; }
+
   private:
     QString mSceneName = QString( "Scene" );
     QString mSceneFolderPath = QDir::homePath();
@@ -79,6 +97,7 @@ class _3D_EXPORT Qgs3DMapExportSettings
     bool mExportTextures = false;
     int mTerrainTextureResolution = 512;
     float mScale = 1.0f;
+    bool mTerrainExportEnabled = true;
 };
 
 #endif // QGS3DMAPEXPORTSETTINGS_H

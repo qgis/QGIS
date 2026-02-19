@@ -16,12 +16,15 @@
  ***************************************************************************/
 
 #include "qgsobjectcustomproperties.h"
+
 #include "qgis.h"
 #include "qgsxmlutils.h"
 
 #include <QDomNode>
+#include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
 
 QStringList QgsObjectCustomProperties::keys() const
 {
@@ -50,7 +53,7 @@ bool QgsObjectCustomProperties::contains( const QString &key ) const
 
 void QgsObjectCustomProperties::readXml( const QDomNode &parentNode, const QString &keyStartsWith )
 {
-  const QDomNode propsNode = parentNode.namedItem( QStringLiteral( "customproperties" ) );
+  const QDomNode propsNode = parentNode.namedItem( u"customproperties"_s );
   if ( propsNode.isNull() ) // no properties stored...
     return;
 
@@ -91,25 +94,25 @@ void QgsObjectCustomProperties::readXml( const QDomNode &parentNode, const QStri
     for ( int i = 0; i < nodes.size(); i++ )
     {
       const QDomNode propNode = nodes.at( i );
-      if ( propNode.isNull() || propNode.nodeName() != QLatin1String( "property" ) )
+      if ( propNode.isNull() || propNode.nodeName() != "property"_L1 )
         continue;
       const QDomElement propElement = propNode.toElement();
 
-      const QString key = propElement.attribute( QStringLiteral( "key" ) );
+      const QString key = propElement.attribute( u"key"_s );
       if ( key.isEmpty() || key.startsWith( keyStartsWith ) )
       {
-        if ( propElement.hasAttribute( QStringLiteral( "value" ) ) )
+        if ( propElement.hasAttribute( u"value"_s ) )
         {
-          const QString value = propElement.attribute( QStringLiteral( "value" ) );
+          const QString value = propElement.attribute( u"value"_s );
           mMap[key] = QVariant( value );
         }
         else
         {
           QStringList list;
 
-          for ( QDomElement itemElement = propElement.firstChildElement( QStringLiteral( "value" ) );
+          for ( QDomElement itemElement = propElement.firstChildElement( u"value"_s );
                 !itemElement.isNull();
-                itemElement = itemElement.nextSiblingElement( QStringLiteral( "value" ) ) )
+                itemElement = itemElement.nextSiblingElement( u"value"_s ) )
           {
             list << itemElement.text();
           }
@@ -124,13 +127,13 @@ void QgsObjectCustomProperties::readXml( const QDomNode &parentNode, const QStri
 void QgsObjectCustomProperties::writeXml( QDomNode &parentNode, QDomDocument &doc ) const
 {
   //remove already existing <customproperties> tags
-  const QDomNodeList propertyList = parentNode.toElement().elementsByTagName( QStringLiteral( "customproperties" ) );
+  const QDomNodeList propertyList = parentNode.toElement().elementsByTagName( u"customproperties"_s );
   for ( int i = 0; i < propertyList.size(); ++i )
   {
     parentNode.removeChild( propertyList.at( i ) );
   }
 
-  QDomElement propsElement = doc.createElement( QStringLiteral( "customproperties" ) );
+  QDomElement propsElement = doc.createElement( u"customproperties"_s );
   propsElement.appendChild( QgsXmlUtils::writeVariant( mMap, doc ) );
   parentNode.appendChild( propsElement );
 }

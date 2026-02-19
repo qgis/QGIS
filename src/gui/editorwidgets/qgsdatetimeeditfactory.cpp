@@ -14,15 +14,19 @@
  ***************************************************************************/
 
 #include "qgsdatetimeeditfactory.h"
+
+#include "qgsdatetimeedit.h"
 #include "qgsdatetimeeditconfig.h"
 #include "qgsdatetimeeditwrapper.h"
 #include "qgsdatetimesearchwidgetwrapper.h"
-#include "qgsdatetimeedit.h"
 
 #include <QSettings>
+#include <QString>
 
-QgsDateTimeEditFactory::QgsDateTimeEditFactory( const QString &name )
-  : QgsEditorWidgetFactory( name )
+using namespace Qt::StringLiterals;
+
+QgsDateTimeEditFactory::QgsDateTimeEditFactory( const QString &name, const QIcon &icon )
+  : QgsEditorWidgetFactory( name, icon )
 {
 }
 
@@ -53,7 +57,7 @@ unsigned int QgsDateTimeEditFactory::fieldScore( const QgsVectorLayer *vl, int f
 {
   const QgsField field = vl->fields().field( fieldIdx );
   const QVariantMap config = field.editorWidgetSetup().config();
-  if ( field.isDateOrTime() || config.contains( QStringLiteral( "field_format" ) ) )
+  if ( field.isDateOrTime() || config.contains( u"field_format"_s ) )
   {
     return 20;
   }

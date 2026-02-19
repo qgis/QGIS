@@ -14,13 +14,18 @@
  ***************************************************************************/
 
 #include "qgsfeaturepickermodelbase.h"
-#include "moc_qgsfeaturepickermodelbase.cpp"
-#include "qgsfeatureexpressionvaluesgatherer.h"
 
-#include "qgsvectorlayer.h"
 #include "qgsconditionalstyle.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsfeatureexpressionvaluesgatherer.h"
 #include "qgsvaluerelationfieldformatter.h"
+#include "qgsvectorlayer.h"
+
+#include <QString>
+
+#include "moc_qgsfeaturepickermodelbase.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFeaturePickerModelBase::QgsFeaturePickerModelBase( QObject *parent )
   : QAbstractItemModel( parent )
@@ -302,7 +307,35 @@ void QgsFeaturePickerModelBase::updateCompleter()
   else
   {
     // We got strings for a filter selection
-    std::sort( entries.begin(), entries.end(), []( const QgsFeatureExpressionValuesGatherer::Entry & a, const QgsFeatureExpressionValuesGatherer::Entry & b ) { return a.value.localeAwareCompare( b.value ) < 0; } );
+    std::sort( entries.begin(), entries.end(), [&]( const QgsFeatureExpressionValuesGatherer::Entry & a, const QgsFeatureExpressionValuesGatherer::Entry & b )
+    {
+      bool ok = false;
+      double aNumericOrderValue = a.orderValue.toDouble( &ok );
+      if ( ok )
+      {
+        double bNumericOrderValue = b.orderValue.toDouble( &ok );
+        if ( ok )
+        {
+          if ( mSortOrder == Qt::DescendingOrder )
+          {
+            return aNumericOrderValue > bNumericOrderValue;
+          }
+          else
+          {
+            return aNumericOrderValue < bNumericOrderValue;
+          }
+        }
+      }
+      if ( mSortOrder == Qt::DescendingOrder )
+      {
+        return a.orderValue.localeAwareCompare( b.orderValue ) > 0;
+      }
+      else
+      {
+        return a.orderValue.localeAwareCompare( b.orderValue ) < 0;
+      }
+
+    } );
 
     if ( mAllowNull && mSourceLayer )
     {
@@ -433,9 +466,9 @@ void QgsFeaturePickerModelBase::scheduledReload()
     if ( mFilterValue.isEmpty() && !mFilterExpression.isEmpty() )
       filterClause = mFilterExpression;
     else if ( mFilterExpression.isEmpty() && !mFilterValue.isEmpty() )
-      filterClause = QStringLiteral( "(%1) ILIKE '%%2%'" ).arg( mDisplayExpression, mFilterValue );
+      filterClause = u"(%1) ILIKE '%%2%'"_s.arg( mDisplayExpression, mFilterValue );
     else if ( !mFilterExpression.isEmpty() && !mFilterValue.isEmpty() )
-      filterClause = QStringLiteral( "(%1) AND ((%2) ILIKE '%%3%')" ).arg( mFilterExpression, mDisplayExpression, mFilterValue );
+      filterClause = u"(%1) AND ((%2) ILIKE '%%3%')"_s.arg( mFilterExpression, mDisplayExpression, mFilterValue );
 
     if ( !filterClause.isEmpty() )
     {
@@ -690,3 +723,36 @@ void QgsFeaturePickerModelBase::setExtraIdentifierValue( const QVariant &extraId
   emit extraIdentifierValueChanged();
 }
 
+
+QString QgsFeaturePickerModelBase::orderExpression() const
+{
+  return mOrderExpression.expression();
+}
+
+
+void QgsFeaturePickerModelBase::setOrderExpression( const QString &orderExpression )
+{
+  if ( mOrderExpression.expression() == orderExpression )
+    return;
+
+  mOrderExpression = QgsExpression( orderExpression );
+  reload();
+  emit orderExpressionChanged();
+}
+
+
+Qt::SortOrder QgsFeaturePickerModelBase::sortOrder() const
+{
+  return mSortOrder;
+}
+
+
+void QgsFeaturePickerModelBase::setSortOrder( const Qt::SortOrder sortOrder )
+{
+  if ( mSortOrder == sortOrder )
+    return;
+
+  mSortOrder = sortOrder;
+  reload();
+  emit sortOrderChanged();
+}

@@ -14,7 +14,13 @@
  ***************************************************************************/
 
 #include "qgsmaptoolcapture.h"
-#include "moc_qgsmaptoolcapture.cpp"
+
+#include <algorithm>
+#include <memory>
+
+#include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsadvanceddigitizingfloater.h"
+#include "qgsapplication.h"
 #include "qgsexception.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometryvalidator.h"
@@ -23,27 +29,28 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvastracer.h"
 #include "qgsmapmouseevent.h"
-#include "qgspolygon.h"
-#include "qgsrubberband.h"
-#include "qgssnapindicator.h"
-#include "qgsvectorlayer.h"
-#include "qgsvertexmarker.h"
-#include "qgssettingsregistrycore.h"
-#include "qgsapplication.h"
-#include "qgsproject.h"
 #include "qgsmaptoolcapturerubberband.h"
 #include "qgsmaptoolshapeabstract.h"
 #include "qgsmaptoolshaperegistry.h"
+#include "qgsnurbscurve.h"
+#include "qgspolygon.h"
+#include "qgsproject.h"
+#include "qgsrubberband.h"
+#include "qgssettingsregistrycore.h"
+#include "qgssnapindicator.h"
 #include "qgssnappingutils.h"
-#include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsvectorlayer.h"
+#include "qgsvertexmarker.h"
 
 #include <QAction>
 #include <QCursor>
 #include <QPixmap>
 #include <QStatusBar>
-#include <algorithm>
-#include <memory>
+#include <QString>
 
+#include "moc_qgsmaptoolcapture.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
   : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
@@ -52,7 +59,7 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizin
 {
   mTempRubberBand.setParentOwner( canvas );
 
-  mSnapIndicator.reset( new QgsSnapIndicator( canvas ) );
+  mSnapIndicator = std::make_unique<QgsSnapIndicator>( canvas );
 
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
 
@@ -61,7 +68,7 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizin
   QgsVectorLayer::LayerOptions layerOptions;
   layerOptions.skipCrsValidation = true;
   layerOptions.loadDefaultStyle = false;
-  mExtraSnapLayer = new QgsVectorLayer( QStringLiteral( "LineString?crs=" ), QStringLiteral( "extra snap" ), QStringLiteral( "memory" ), layerOptions );
+  mExtraSnapLayer = new QgsVectorLayer( u"LineString?crs="_s, u"extra snap"_s, u"memory"_s, layerOptions );
   mExtraSnapLayer->startEditing();
   QgsFeature f;
   mExtraSnapLayer->addFeature( f );
@@ -108,6 +115,7 @@ bool QgsMapToolCapture::supportsTechnique( Qgis::CaptureTechnique technique ) co
     case Qgis::CaptureTechnique::CircularString:
     case Qgis::CaptureTechnique::Streaming:
     case Qgis::CaptureTechnique::Shape:
+    case Qgis::CaptureTechnique::NurbsCurve:
       return false;
   }
   BUILTIN_UNREACHABLE
@@ -122,7 +130,9 @@ void QgsMapToolCapture::activate()
   QgsMapToolAdvancedDigitizing::activate();
 
   if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape && mCurrentShapeMapTool )
-    mCurrentShapeMapTool->activate( mCaptureMode, mCaptureLastPoint );
+  {
+    setCurrentShapeMapToolIsActivated( true );
+  }
 }
 
 void QgsMapToolCapture::deactivate()
@@ -135,7 +145,9 @@ void QgsMapToolCapture::deactivate()
   mCanvas->snappingUtils()->removeExtraSnapLayer( mExtraSnapLayer );
 
   if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape && mCurrentShapeMapTool )
-    mCurrentShapeMapTool->deactivate();
+  {
+    setCurrentShapeMapToolIsActivated( false );
+  }
 
   QgsMapToolAdvancedDigitizing::deactivate();
 }
@@ -258,6 +270,37 @@ bool QgsMapToolCapture::tracingMouseMove( QgsMapMouseEvent *e )
   mTempRubberBand->addPoint( QgsPoint( points[points.size() - 1] ) );
 
   tracer->reportError( QgsTracer::ErrNone, false ); // clear messagebar if there was any error
+
+  QgsCoordinateReferenceSystem targetCrs = mCanvas->mapSettings().destinationCrs();
+  if ( QgsMapLayer *l = layer() )
+  {
+    // if we have a layer, then the geometry will be in the layer's CRS, not the canvas'
+    targetCrs = l->crs();
+  }
+
+  std::unique_ptr< QgsCompoundCurve > tempCurve( mCaptureCurve.clone() );
+  try
+  {
+    std::unique_ptr< QgsCurve > tracedCurve( mTempRubberBand->curve() );
+    tracedCurve->transform( QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), targetCrs, QgsProject::instance()->transformContext() ) );
+    tempCurve->addCurve( tracedCurve.release() );
+    if ( mCaptureMode == CapturePolygon )
+    {
+      tempCurve->close();
+      auto curvePolygon = std::make_unique< QgsCurvePolygon >();
+      curvePolygon->setExteriorRing( tempCurve.release() );
+      emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( curvePolygon ) ), targetCrs ) );
+    }
+    else
+    {
+      emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( tempCurve ) ), targetCrs ) );
+    }
+  }
+  catch ( QgsCsException &e )
+  {
+    QgsDebugError( e.what() );
+  }
+
   return true;
 }
 
@@ -331,10 +374,6 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
   // Curves de-approximation
   if ( QgsSettingsRegistryCore::settingsDigitizingConvertToCurve->value() )
   {
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    int pointBefore = mCaptureCurve.numPoints();
-#endif
-
     // If the tool and the layer support curves
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() );
     if ( vlayer && capabilities().testFlag( QgsMapToolCapture::Capability::SupportsCurves ) && vlayer->dataProvider()->capabilities().testFlag( Qgis::VectorProviderCapability::CircularGeometries ) )
@@ -355,18 +394,7 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
       }
     }
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    // sync the snapping matches list
-    const int pointAfter = mCaptureCurve.numPoints();
-
-    for ( ; pointBefore < pointAfter; ++pointBefore )
-      mSnappingMatches.append( QgsPointLocator::Match() );
-
-    for ( ; pointBefore > pointAfter; --pointBefore )
-      mSnappingMatches.removeLast();
-#else
     mSnappingMatches.resize( mCaptureCurve.numPoints() );
-#endif
   }
 
   tracer->reportError( QgsTracer::ErrNone, true ); // clear messagebar if there was any error
@@ -405,6 +433,20 @@ void QgsMapToolCapture::resetRubberBand()
   mRubberBand->addGeometry( QgsGeometry( lineString ), layer() );
 }
 
+void QgsMapToolCapture::setCurrentShapeMapToolIsActivated( bool activated )
+{
+  if ( activated )
+  {
+    connect( mCurrentShapeMapTool, &QgsMapToolShapeAbstract::transientGeometryChanged, this, &QgsMapToolAdvancedDigitizing::transientGeometryChanged );
+    mCurrentShapeMapTool->activate( mCaptureMode, mCaptureLastPoint );
+  }
+  else
+  {
+    disconnect( mCurrentShapeMapTool, &QgsMapToolShapeAbstract::transientGeometryChanged, this, &QgsMapToolAdvancedDigitizing::transientGeometryChanged );
+    mCurrentShapeMapTool->deactivate();
+  }
+}
+
 QgsRubberBand *QgsMapToolCapture::takeRubberBand()
 {
   return mRubberBand.release();
@@ -435,7 +477,7 @@ void QgsMapToolCapture::setCurrentCaptureTechnique( Qgis::CaptureTechnique techn
 
   if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape && mCurrentShapeMapTool )
   {
-    mCurrentShapeMapTool->deactivate();
+    setCurrentShapeMapToolIsActivated( false );
     clean();
   }
 
@@ -454,6 +496,9 @@ void QgsMapToolCapture::setCurrentCaptureTechnique( Qgis::CaptureTechnique techn
     case Qgis::CaptureTechnique::Shape:
       mLineDigitizingType = Qgis::WkbType::LineString;
       break;
+    case Qgis::CaptureTechnique::NurbsCurve:
+      mLineDigitizingType = Qgis::WkbType::NurbsCurve;
+      break;
   }
 
   if ( mTempRubberBand )
@@ -464,7 +509,7 @@ void QgsMapToolCapture::setCurrentCaptureTechnique( Qgis::CaptureTechnique techn
   if ( technique == Qgis::CaptureTechnique::Shape && mCurrentShapeMapTool && isActive() )
   {
     clean();
-    mCurrentShapeMapTool->activate( mCaptureMode, mCaptureLastPoint );
+    setCurrentShapeMapToolIsActivated( true );
   }
 }
 
@@ -475,7 +520,9 @@ void QgsMapToolCapture::setCurrentShapeMapTool( const QgsMapToolShapeMetadata *s
     if ( shapeMapToolMetadata && mCurrentShapeMapTool->id() == shapeMapToolMetadata->id() )
       return;
     if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape )
-      mCurrentShapeMapTool->deactivate();
+    {
+      setCurrentShapeMapToolIsActivated( false );
+    }
     mCurrentShapeMapTool->deleteLater();
   }
 
@@ -485,7 +532,9 @@ void QgsMapToolCapture::setCurrentShapeMapTool( const QgsMapToolShapeMetadata *s
   {
     clean();
     if ( mCurrentShapeMapTool )
-      mCurrentShapeMapTool->activate( mCaptureMode, mCaptureLastPoint );
+    {
+      setCurrentShapeMapToolIsActivated( true );
+    }
   }
 }
 
@@ -524,6 +573,13 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   {
     const QgsPoint mapPoint = QgsPoint( point );
 
+    QgsCoordinateReferenceSystem targetCrs = mCanvas->mapSettings().destinationCrs();
+    if ( QgsMapLayer *l = layer() )
+    {
+      // if we have a layer, then the geometry will be in the layer's CRS, not the canvas'
+      targetCrs = l->crs();
+    }
+
     if ( mCaptureMode != CapturePoint && mTempRubberBand && mCapturing )
     {
       bool hasTrace = false;
@@ -540,11 +596,24 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
         mAllowAddingStreamingPoints = true;
         addVertex( mapPoint );
         mAllowAddingStreamingPoints = false;
+
+        std::unique_ptr< QgsCompoundCurve > tempCurve( mCaptureCurve.clone() );
+        if ( mCaptureMode == CapturePolygon )
+        {
+          auto curvePolygon = std::make_unique< QgsCurvePolygon >();
+          tempCurve->close();
+          curvePolygon->setExteriorRing( tempCurve.release() );
+          emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( curvePolygon ) ), targetCrs ) );
+        }
+        else
+        {
+          emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( tempCurve ) ), targetCrs ) );
+        }
       }
       else if ( tracingEnabled() && mCaptureCurve.numPoints() != 0 )
       {
         // Store the intermediate point for circular string to retrieve after tracing mouse move if
-        // the digitizing type is circular and the temp rubber band is effectivly circular and if this point is existing
+        // the digitizing type is circular and the temp rubber band is effectively circular and if this point is existing
         // Store an empty point if the digitizing type is linear ot the point is not existing (curve not complete)
         if ( mLineDigitizingType == Qgis::WkbType::CircularString && mTempRubberBand->stringType() == Qgis::WkbType::CircularString && mTempRubberBand->curveIsComplete() )
           mCircularItermediatePoint = mTempRubberBand->pointFromEnd( 1 );
@@ -581,6 +650,32 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
           // fix existing rubber band after tracing - the last point may have been moved if using offset
           if ( mRubberBand->numberOfVertices() )
             mRubberBand->movePoint( mapPt );
+
+          std::unique_ptr< QgsCompoundCurve > tempCurve( mCaptureCurve.clone() );
+
+          // add mouse hover point to current captured geometry
+          try
+          {
+            QgsPoint hoverPointTargetCrs = mapPoint;
+            hoverPointTargetCrs.transform( QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), targetCrs, QgsProject::instance()->transformContext() ) );
+            tempCurve->addCurve( new QgsLineString( tempCurve->endPoint(), hoverPointTargetCrs ) );
+          }
+          catch ( QgsCsException &e )
+          {
+            QgsDebugError( e.what() );
+          }
+
+          if ( mCaptureMode == CapturePolygon )
+          {
+            auto curvePolygon = std::make_unique< QgsCurvePolygon >();
+            tempCurve->close();
+            curvePolygon->setExteriorRing( tempCurve.release() );
+            emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( curvePolygon ) ), targetCrs ) );
+          }
+          else
+          {
+            emit transientGeometryChanged( QgsReferencedGeometry( QgsGeometry( std::move( tempCurve ) ), targetCrs ) );
+          }
         }
         else if ( mTempRubberBand )
           mTempRubberBand->movePoint( mapPoint );
@@ -608,7 +703,7 @@ int QgsMapToolCapture::nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint
     }
     catch ( QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "transformation to layer coordinate failed" ) );
+      QgsDebugError( u"transformation to layer coordinate failed"_s );
       return 2;
     }
   }
@@ -699,7 +794,7 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
 {
   if ( mode() == CaptureNone )
   {
-    QgsDebugError( QStringLiteral( "invalid capture mode" ) );
+    QgsDebugError( u"invalid capture mode"_s );
     return 2;
   }
 
@@ -902,6 +997,15 @@ void QgsMapToolCapture::undo( bool isAutoRepeat )
       return;
     }
 
+    // Handle NURBS ControlPoints mode: remove last control point
+    if ( QgsWkbTypes::isNurbsType( mTempRubberBand->stringType() ) && mTempRubberBand->pointsCount() > 1 )
+    {
+      mTempRubberBand->removeLastPoint();
+      mTempRubberBand->movePoint( lastPoint );
+      mCadDockWidget->removePreviousPoint();
+      return;
+    }
+
     QgsVertexId vertexToRemove;
     vertexToRemove.part = 0;
     vertexToRemove.ring = 0;
@@ -1003,6 +1107,78 @@ void QgsMapToolCapture::keyPressEvent( QKeyEvent *e )
     // Override default shortcut management in MapCanvas
     e->ignore();
   }
+  else if ( e->key() == Qt::Key_W && !e->isAutoRepeat() )
+  {
+    // Enable NURBS weight editing mode when W is pressed
+    if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::NurbsCurve && mTempRubberBand && mTempRubberBand->pointsCount() >= 2 )
+    {
+      mWeightEditMode = true;
+      // Edit the last control point by default (the one being digitized)
+      mWeightEditControlPointIndex = mTempRubberBand->pointsCount() - 2; // -2 because last point is the cursor position
+
+      // Enable and update weight via CAD dock widget (which will notify the floater)
+      if ( cadDockWidget() )
+      {
+        cadDockWidget()->setWeight( QString::number( mTempRubberBand->weight( mWeightEditControlPointIndex ), 'f', 2 ), true );
+      }
+      e->ignore();
+    }
+  }
+}
+
+void QgsMapToolCapture::keyReleaseEvent( QKeyEvent *e )
+{
+  if ( e->key() == Qt::Key_W && !e->isAutoRepeat() )
+  {
+    if ( mWeightEditMode )
+    {
+      mWeightEditMode = false;
+      mWeightEditControlPointIndex = -1;
+
+      // Disable weight editing via CAD dock widget
+      if ( cadDockWidget() )
+      {
+        cadDockWidget()->setWeight( QString(), false );
+      }
+
+      e->accept();
+      return;
+    }
+  }
+
+  QgsMapToolAdvancedDigitizing::keyReleaseEvent( e );
+}
+
+void QgsMapToolCapture::wheelEvent( QWheelEvent *e )
+{
+  if ( mWeightEditMode )
+  {
+    // Adjust weight with mouse wheel
+    // Base adjustment: 0.1 per wheel step
+    // Ctrl modifier: fine adjustment (0.01 per step)
+    // Shift modifier: coarse adjustment (1.0 per step)
+    double adjustment = e->angleDelta().y() > 0 ? 0.1 : -0.1;
+    if ( e->modifiers() & Qt::ControlModifier )
+      adjustment *= 0.1;
+    else if ( e->modifiers() & Qt::ShiftModifier )
+      adjustment *= 10.0;
+
+    const double currentWeight = mTempRubberBand->weight( mWeightEditControlPointIndex );
+    const double newWeight = std::max( 0.01, currentWeight + adjustment );
+
+    if ( mTempRubberBand->setWeight( mWeightEditControlPointIndex, newWeight ) )
+    {
+      if ( cadDockWidget() )
+      {
+        cadDockWidget()->setWeight( QString::number( newWeight, 'f', 2 ), true );
+      }
+    }
+
+    e->accept();
+    return;
+  }
+
+  QgsMapToolAdvancedDigitizing::wheelEvent( e );
 }
 
 void QgsMapToolCapture::startCapturing()
@@ -1021,6 +1197,17 @@ void QgsMapToolCapture::stopCapturing()
 
   deleteTempRubberBand();
 
+  // Reset weight editing mode when stopping capture
+  if ( mWeightEditMode )
+  {
+    mWeightEditMode = false;
+    mWeightEditControlPointIndex = -1;
+    if ( cadDockWidget() )
+    {
+      cadDockWidget()->setWeight( QString(), false );
+    }
+  }
+
   qDeleteAll( mGeomErrorMarkers );
   mGeomErrorMarkers.clear();
   mGeomErrors.clear();
@@ -1036,6 +1223,8 @@ void QgsMapToolCapture::stopCapturing()
   mSnappingMatches.clear();
   if ( auto *lCurrentVectorLayer = currentVectorLayer() )
     lCurrentVectorLayer->triggerRepaint();
+
+  emit transientGeometryChanged( QgsReferencedGeometry() );
 }
 
 void QgsMapToolCapture::deleteTempRubberBand()
@@ -1108,7 +1297,7 @@ void QgsMapToolCapture::validateGeometry()
   mValidator = new QgsGeometryValidator( geom, nullptr, method );
   connect( mValidator, &QgsGeometryValidator::errorFound, this, &QgsMapToolCapture::addError );
   mValidator->start();
-  QgsDebugMsgLevel( QStringLiteral( "Validation started" ), 4 );
+  QgsDebugMsgLevel( u"Validation started"_s, 4 );
 }
 
 void QgsMapToolCapture::addError( const QgsGeometry::Error &e )
@@ -1337,6 +1526,8 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   else if ( mode() == CaptureLine || mode() == CapturePolygon )
   {
     bool digitizingFinished = false;
+    QgsPointSequence nurbsControlPoints;
+    QVector<double> nurbsWeights;
 
     if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape )
     {
@@ -1377,25 +1568,76 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       else if ( e->button() == Qt::RightButton )
       {
         // End of string
-        deleteTempRubberBand();
 
-        //lines: bail out if there are not at least two vertices
-        if ( mode() == CaptureLine && size() < 2 )
+        // Extract NURBS control points and weights from the rubberband before deleting it
+        if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::NurbsCurve && mTempRubberBand )
         {
-          stopCapturing();
-          return;
+          const int rbPointCount = mTempRubberBand->pointsCount();
+          if ( rbPointCount > 1 )
+          {
+            // Exclude the last point (cursor position)
+            for ( int i = 0; i < rbPointCount - 1; ++i )
+            {
+              nurbsControlPoints.append( mTempRubberBand->pointFromEnd( rbPointCount - 1 - i ) );
+            }
+            // Also extract weights (in correct order)
+            const QVector<double> &rbWeights = mTempRubberBand->weights();
+            for ( int i = 0; i < rbPointCount - 1; ++i )
+            {
+              if ( i < rbWeights.size() )
+                nurbsWeights.append( rbWeights[i] );
+              else
+                nurbsWeights.append( 1.0 );
+            }
+          }
         }
 
-        //polygons: bail out if there are not at least two vertices
-        if ( mode() == CapturePolygon && size() < 3 )
+        deleteTempRubberBand();
+
+        if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::NurbsCurve )
         {
-          stopCapturing();
-          return;
+          // Minimum 4 control points required for degree 3 NURBS
+          if ( mode() == CaptureLine && nurbsControlPoints.count() < 4 )
+          {
+            stopCapturing();
+            return;
+          }
+          if ( mode() == CapturePolygon && nurbsControlPoints.count() < 4 )
+          {
+            stopCapturing();
+            return;
+          }
+        }
+        else
+        {
+          //lines: bail out if there are not at least two vertices
+          if ( mode() == CaptureLine && size() < 2 )
+          {
+            stopCapturing();
+            return;
+          }
+
+          //polygons: bail out if there are not at least two vertices
+          if ( mode() == CapturePolygon && size() < 3 )
+          {
+            stopCapturing();
+            return;
+          }
         }
 
         if ( mode() == CapturePolygon || e->modifiers() == Qt::ShiftModifier )
         {
-          closePolygon();
+          // Close NURBS curve by adding first control point at the end
+          if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::NurbsCurve && !nurbsControlPoints.isEmpty() )
+          {
+            nurbsControlPoints.append( nurbsControlPoints.first() );
+            if ( !nurbsWeights.isEmpty() )
+              nurbsWeights.append( nurbsWeights.first() );
+          }
+          else
+          {
+            closePolygon();
+          }
         }
 
         digitizingFinished = true;
@@ -1405,7 +1647,59 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     if ( digitizingFinished )
     {
       QgsGeometry g;
-      std::unique_ptr<QgsCurve> curveToAdd( captureCurve()->clone() );
+      std::unique_ptr<QgsCurve> curveToAdd;
+
+      // Create a single NurbsCurve from all control points
+      if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::NurbsCurve )
+      {
+        // Get degree from settings
+        int degree = QgsSettingsRegistryCore::settingsDigitizingNurbsDegree->value();
+        const int n = nurbsControlPoints.size();
+
+        // Adapt degree if not enough control points
+        if ( n < degree + 1 )
+        {
+          degree = std::max( 1, n - 1 );
+          if ( n < 2 )
+          {
+            curveToAdd = std::make_unique<QgsLineString>( nurbsControlPoints );
+          }
+        }
+
+        if ( !curveToAdd )
+        {
+          // Generate uniform clamped knot vector (size = n + degree + 1)
+          const int knotCount = n + degree + 1;
+          QVector<double> knots( knotCount );
+
+          // First (degree + 1) knots are 0
+          for ( int i = 0; i <= degree; ++i )
+            knots[i] = 0.0;
+
+          // Last (degree + 1) knots are 1
+          for ( int i = knotCount - degree - 1; i < knotCount; ++i )
+            knots[i] = 1.0;
+
+          // Middle knots are uniformly spaced
+          const int numMiddleKnots = n - degree - 1;
+          for ( int i = 0; i < numMiddleKnots; ++i )
+          {
+            knots[degree + 1 + i] = static_cast<double>( i + 1 ) / ( numMiddleKnots + 1 );
+          }
+
+          // Ensure we have the right number of weights
+          QVector<double> weights = nurbsWeights;
+          while ( weights.size() < n )
+            weights.append( 1.0 );
+          weights.resize( n );
+
+          curveToAdd = std::make_unique<QgsNurbsCurve>( nurbsControlPoints, degree, knots, weights );
+        }
+      }
+      else
+      {
+        curveToAdd.reset( captureCurve()->clone() );
+      }
 
       if ( mode() == CaptureLine )
       {
@@ -1415,25 +1709,30 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       }
       else
       {
-        //does compoundcurve contain circular strings?
-        //does provider support circular strings?
-        if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() ) )
+        // For NURBS curves, keep the already-created curve
+        // For other curves, check provider support for curved segments
+        if ( mCurrentCaptureTechnique != Qgis::CaptureTechnique::NurbsCurve )
         {
-          const bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
-          const bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & Qgis::VectorProviderCapability::CircularGeometries;
-
-          if ( hasCurvedSegments && providerSupportsCurvedSegments )
+          //does compoundcurve contain circular strings?
+          //does provider support circular strings?
+          if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() ) )
           {
-            curveToAdd.reset( captureCurve()->clone() );
+            const bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
+            const bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & Qgis::VectorProviderCapability::CircularGeometries;
+
+            if ( hasCurvedSegments && providerSupportsCurvedSegments )
+            {
+              curveToAdd.reset( captureCurve()->clone() );
+            }
+            else
+            {
+              curveToAdd.reset( captureCurve()->curveToLine() );
+            }
           }
           else
           {
-            curveToAdd.reset( captureCurve()->curveToLine() );
+            curveToAdd.reset( captureCurve()->clone() );
           }
-        }
-        else
-        {
-          curveToAdd.reset( captureCurve()->clone() );
         }
         std::unique_ptr<QgsCurvePolygon> poly { new QgsCurvePolygon() };
         poly->setExteriorRing( curveToAdd.release() );

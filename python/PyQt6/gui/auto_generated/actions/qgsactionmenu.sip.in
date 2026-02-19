@@ -92,7 +92,7 @@ Sets an expression context scope used to resolve underlying actions.
 Returns an expression context scope used to resolve underlying actions.
 %End
 
-    QList<QgsAction> menuActions();
+    QList<QgsAction> menuActions() const;
 %Docstring
 Returns menu actions
 
@@ -111,6 +111,26 @@ Returns ``True`` if the menu has no valid actions.
     void reinit();
 %Docstring
 Emitted after actions have been reloaded.
+%End
+
+    void messageEmitted( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
+%Docstring
+Emitted when a ``message`` should be shown to the user in the
+application message bar.
+
+.. seealso:: :py:func:`messageDiscarded`
+
+.. versionadded:: 4.0
+%End
+
+    void messageDiscarded();
+%Docstring
+Emitted when the previous message from the tool should be cleared from
+the application message bar.
+
+.. seealso:: :py:func:`messageEmitted`
+
+.. versionadded:: 4.0
 %End
 
 };

@@ -14,10 +14,9 @@
  ***************************************************************************/
 #include "qgsdataitemguiproviderregistry.h"
 
-#include "qgsproviderregistry.h"
-
 #include "qgsdataitemguiprovider.h"
 #include "qgsproviderguiregistry.h"
+#include "qgsproviderregistry.h"
 
 QgsDataItemGuiProviderRegistry::QgsDataItemGuiProviderRegistry() = default;
 

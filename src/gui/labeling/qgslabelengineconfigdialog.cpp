@@ -13,22 +13,27 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslabelengineconfigdialog.h"
-#include "moc_qgslabelengineconfigdialog.cpp"
 
-#include "qgslabelingenginesettings.h"
-#include "qgsproject.h"
 #include "pal/pal.h"
-#include "qgshelp.h"
-#include "qgsmessagebar.h"
-#include "qgsmapcanvas.h"
-#include "qgsgui.h"
 #include "qgsapplication.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgslabelingenginesettings.h"
+#include "qgsmapcanvas.h"
+#include "qgsmessagebar.h"
+#include "qgsproject.h"
 #include "qgsrendercontext.h"
+
 #include <QAction>
 #include <QDialogButtonBox>
-#include <QPushButton>
-#include <QMessageBox>
 #include <QMenu>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QString>
+
+#include "moc_qgslabelengineconfigdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLabelEngineConfigWidget::QgsLabelEngineConfigWidget( QgsMapCanvas *canvas, QWidget *parent )
   : QgsPanelWidget( parent ), mCanvas( canvas )
@@ -52,7 +57,7 @@ QgsLabelEngineConfigWidget::QgsLabelEngineConfigWidget( QgsMapCanvas *canvas, QW
 
   mPreviousEngineVersion = engineSettings.placementVersion();
   mPlacementVersionComboBox->setCurrentIndex( mPlacementVersionComboBox->findData( static_cast<int>( mPreviousEngineVersion ) ) );
-  connect( mPlacementVersionComboBox, &QComboBox::currentTextChanged, this, [=]() {
+  connect( mPlacementVersionComboBox, &QComboBox::currentTextChanged, this, [this]() {
     if ( static_cast<Qgis::LabelPlacementEngineVersion>( mPlacementVersionComboBox->currentData().toInt() ) != mPreviousEngineVersion )
     {
       mMessageBar->pushMessage( QString(), tr( "Version changes will alter label placement in the project." ), Qgis::MessageLevel::Warning );
@@ -94,7 +99,7 @@ QgsLabelEngineConfigWidget::QgsLabelEngineConfigWidget( QgsMapCanvas *canvas, QW
   QAction *resetAction = new QAction( tr( "Restore Defaults" ), this );
   mWidgetMenu->addAction( resetAction );
   connect( resetAction, &QAction::triggered, this, &QgsLabelEngineConfigWidget::setDefaults );
-  QAction *helpAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionHelpContents.svg" ) ), tr( "Help…" ), this );
+  QAction *helpAction = new QAction( QgsApplication::getThemeIcon( u"/mActionHelpContents.svg"_s ), tr( "Help…" ), this );
   mWidgetMenu->addAction( helpAction );
   connect( helpAction, &QAction::triggered, this, &QgsLabelEngineConfigWidget::showHelp );
 }
@@ -148,7 +153,7 @@ void QgsLabelEngineConfigWidget::setDefaults()
 
 void QgsLabelEngineConfigWidget::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#setting-the-automated-placement-engine" ) );
+  QgsHelp::openHelp( u"working_with_vector/vector_properties.html#setting-the-automated-placement-engine"_s );
 }
 
 //
@@ -170,7 +175,7 @@ QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QgsMapCanvas *canvas, QW
   vLayout->addWidget( bbox );
   setLayout( vLayout );
 
-  setObjectName( QStringLiteral( "QgsLabelSettingsWidgetDialog" ) );
+  setObjectName( u"QgsLabelSettingsWidgetDialog"_s );
   QgsGui::enableAutoGeometryRestore( this );
 }
 

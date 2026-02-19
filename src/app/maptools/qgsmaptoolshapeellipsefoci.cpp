@@ -4,7 +4,7 @@
     ---------------------
     begin                : July 2017
     copyright            : (C) 2017 by Loïc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    email                : lituus at free dot fr
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,16 +15,23 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapeellipsefoci.h"
-#include "moc_qgsmaptoolshapeellipsefoci.cpp"
+
+#include <memory>
+
+#include "qgsapplication.h"
 #include "qgsgeometryrubberband.h"
 #include "qgslinestring.h"
-#include "qgspoint.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolcapture.h"
-#include <memory>
-#include "qgsapplication.h"
+#include "qgspoint.h"
 
-const QString QgsMapToolShapeEllipseFociMetadata::TOOL_ID = QStringLiteral( "ellipse-from-foci" );
+#include <QString>
+
+#include "moc_qgsmaptoolshapeellipsefoci.cpp"
+
+using namespace Qt::StringLiterals;
+
+const QString QgsMapToolShapeEllipseFociMetadata::TOOL_ID = u"ellipse-from-foci"_s;
 
 QString QgsMapToolShapeEllipseFociMetadata::id() const
 {
@@ -38,7 +45,7 @@ QString QgsMapToolShapeEllipseFociMetadata::name() const
 
 QIcon QgsMapToolShapeEllipseFociMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionEllipseFoci.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mActionEllipseFoci.svg"_s );
 }
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeEllipseFociMetadata::category() const
@@ -74,6 +81,9 @@ bool QgsMapToolShapeEllipseFoci::cadCanvasReleaseEvent( QgsMapMouseEvent *e, Qgs
   }
   else if ( e->button() == Qt::RightButton )
   {
+    if ( mEllipse.isEmpty() )
+      return false;
+
     addEllipseToParentTool();
     return true;
   }
@@ -102,7 +112,12 @@ void QgsMapToolShapeEllipseFoci::cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsMap
       case 2:
       {
         mEllipse = QgsEllipse::fromFoci( mPoints.at( 0 ), mPoints.at( 1 ), point );
-        mTempRubberBand->setGeometry( mEllipse.toPolygon() );
+        const QgsGeometry newGeometry( mEllipse.toPolygon() );
+        if ( !newGeometry.isEmpty() )
+        {
+          mTempRubberBand->setGeometry( newGeometry.constGet()->clone() );
+          setTransientGeometry( newGeometry );
+        }
       }
       break;
       default:

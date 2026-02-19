@@ -14,18 +14,24 @@
  ***************************************************************************/
 
 #include "qgsnumericformatselectorwidget.h"
-#include "moc_qgsnumericformatselectorwidget.cpp"
-#include "qgsapplication.h"
-#include "qgsnumericformatregistry.h"
-#include "qgsnumericformat.h"
-#include "qgsnumericformatwidget.h"
+
 #include "qgis.h"
-#include "qgsgui.h"
-#include "qgsnumericformatguiregistry.h"
-#include "qgsreadwritecontext.h"
+#include "qgsapplication.h"
 #include "qgsbasicnumericformat.h"
+#include "qgsgui.h"
+#include "qgsnumericformat.h"
+#include "qgsnumericformatguiregistry.h"
+#include "qgsnumericformatregistry.h"
+#include "qgsnumericformatwidget.h"
+#include "qgsreadwritecontext.h"
+
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QString>
+
+#include "moc_qgsnumericformatselectorwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsNumericFormatSelectorWidget::QgsNumericFormatSelectorWidget( QWidget *parent )
   : QgsPanelWidget( parent )
@@ -60,7 +66,7 @@ void QgsNumericFormatSelectorWidget::setFormat( const QgsNumericFormat *format )
   const int index = mCategoryCombo->findData( id );
   if ( index < 0 )
   {
-    whileBlocking( mCategoryCombo )->setCurrentIndex( mCategoryCombo->findData( QStringLiteral( "fallback" ) ) );
+    whileBlocking( mCategoryCombo )->setCurrentIndex( mCategoryCombo->findData( u"fallback"_s ) );
   }
   else
     mCategoryCombo->setCurrentIndex( index );
@@ -112,7 +118,7 @@ void QgsNumericFormatSelectorWidget::populateTypes()
 {
   QStringList ids = QgsApplication::numericFormatRegistry()->formats();
 
-  std::sort( ids.begin(), ids.end(), [=]( const QString &a, const QString &b ) -> bool {
+  std::sort( ids.begin(), ids.end(), []( const QString &a, const QString &b ) -> bool {
     if ( QgsApplication::numericFormatRegistry()->sortKey( a ) < QgsApplication::numericFormatRegistry()->sortKey( b ) )
       return true;
     else if ( QgsApplication::numericFormatRegistry()->sortKey( a ) > QgsApplication::numericFormatRegistry()->sortKey( b ) )
@@ -161,7 +167,7 @@ void QgsNumericFormatSelectorWidget::updateFormatWidget()
 void QgsNumericFormatSelectorWidget::updateSampleText()
 {
   const double sampleValue = mCurrentFormat->suggestSampleValue();
-  mSampleLabel->setText( QStringLiteral( "%1 %2 <b>%3</b>" ).arg( mPreviewFormat->formatDouble( sampleValue, QgsNumericFormatContext() ) ).arg( QChar( 0x2192 ) ).arg( mCurrentFormat->formatDouble( sampleValue, QgsNumericFormatContext() ) ) );
+  mSampleLabel->setText( u"%1 %2 <b>%3</b>"_s.arg( mPreviewFormat->formatDouble( sampleValue, QgsNumericFormatContext() ) ).arg( QChar( 0x2192 ) ).arg( mCurrentFormat->formatDouble( sampleValue, QgsNumericFormatContext() ) ) );
 }
 
 //

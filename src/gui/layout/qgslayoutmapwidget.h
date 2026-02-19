@@ -21,12 +21,13 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include "qgis_gui.h"
-#include "ui_qgslayoutmapwidgetbase.h"
-#include "ui_qgslayoutmaplabelingwidgetbase.h"
 #include "ui_qgslayoutmapclippingwidgetbase.h"
-#include "qgslayoutitemwidget.h"
+#include "ui_qgslayoutmaplabelingwidgetbase.h"
+#include "ui_qgslayoutmapwidgetbase.h"
+
+#include "qgis_gui.h"
 #include "qgslayoutitemmapgrid.h"
+#include "qgslayoutitemwidget.h"
 
 class QgsMapLayer;
 class QgsLayoutItemMap;
@@ -34,6 +35,7 @@ class QgsLayoutItemMapOverview;
 class QgsLayoutMapLabelingWidget;
 class QgsLayoutMapClippingWidget;
 class QgsBookmarkManagerProxyModel;
+class QgsReferencedRectangle;
 
 /**
  * \ingroup gui
@@ -144,6 +146,7 @@ class GUI_EXPORT QgsLayoutMapWidget : public QgsLayoutItemBaseWidget, private Ui
     void showLabelSettings();
     void showClipSettings();
     void switchToMoveContentTool();
+    void aboutToShowLayersMenu();
     void aboutToShowBookmarkMenu();
 
   private:
@@ -153,7 +156,9 @@ class GUI_EXPORT QgsLayoutMapWidget : public QgsLayoutItemBaseWidget, private Ui
     QgsLayoutDesignerInterface *mInterface = nullptr;
     QPointer<QgsLayoutMapLabelingWidget> mLabelWidget;
     QPointer<QgsLayoutMapClippingWidget> mClipWidget;
+    QMenu *mLayersMenu = nullptr;
     QMenu *mBookmarkMenu = nullptr;
+    QgsMapLayerProxyModel *mMapLayerModel = nullptr;
     QgsBookmarkManagerProxyModel *mBookmarkModel = nullptr;
     QString mReportTypeString;
     int mBlockThemeComboChanges = 0;
@@ -190,6 +195,8 @@ class GUI_EXPORT QgsLayoutMapWidget : public QgsLayoutItemBaseWidget, private Ui
      * The order will match the layer order from the map canvas
      */
     QList<QgsMapLayer *> orderedPresetVisibleLayers( const QString &name ) const;
+
+    void setToCustomExtent( const QgsReferencedRectangle &extent );
 };
 
 /**

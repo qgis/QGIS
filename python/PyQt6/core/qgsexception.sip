@@ -1,7 +1,8 @@
 %Exception QgsCsException(SIP_Exception) /PyName=QgsCsException/
 {
 %TypeHeaderCode
-#include <qgsexception.h>
+#include "qgsexception.h"
+
 %End
 %RaiseCode
   SIP_BLOCK_THREADS
@@ -9,6 +10,12 @@
   SIP_UNBLOCK_THREADS
 %End
 };
+
+// don't forget to define docstring in __init__.py.in!
+%TypeHintCode
+class QgsCsException(Exception):
+    def __init__(self, *args, **kwargs) -> None: ...
+%End
 
 %Exception QgsProcessingException(SIP_Exception) /PyName=QgsProcessingException/
 {
@@ -22,6 +29,12 @@
 %End
 };
 
+// don't forget to define docstring in __init__.py.in!
+%TypeHintCode
+class QgsProcessingException(Exception):
+    def __init__(self, *args, **kwargs) -> None: ...
+%End
+
 %Exception QgsProviderConnectionException(SIP_Exception) /PyName=QgsProviderConnectionException/
 {
 %TypeHeaderCode
@@ -33,6 +46,12 @@
   SIP_UNBLOCK_THREADS
 %End
 };
+
+// don't forget to define docstring in __init__.py.in!
+%TypeHintCode
+class QgsProviderConnectionException(Exception):
+    def __init__(self, *args, **kwargs) -> None: ...
+%End
 
 %Exception QgsNotSupportedException(SIP_Exception) /PyName=QgsNotSupportedException/
 {
@@ -46,6 +65,12 @@
 %End
 };
 
+// don't forget to define docstring in __init__.py.in!
+%TypeHintCode
+class QgsNotSupportedException(Exception):
+    def __init__(self, *args, **kwargs) -> None: ...
+%End
+
 %Exception QgsSettingsException(SIP_Exception) /PyName=QgsSettingsException/
 {
 %TypeHeaderCode
@@ -58,6 +83,47 @@
 %End
 };
 
+// don't forget to define docstring in __init__.py.in!
+%TypeHintCode
+class QgsSettingsException(Exception):
+    def __init__(self, *args, **kwargs) -> None: ...
+%End
+
+%Exception QgsSfcgalException(SIP_Exception) /PyName=QgsSfcgalException/
+{
+%TypeHeaderCode
+#include <qgsexception.h>
+%End
+%RaiseCode
+  SIP_BLOCK_THREADS
+  PyErr_SetString(sipException_QgsSfcgalException, sipExceptionRef.what().toUtf8().constData() );
+  SIP_UNBLOCK_THREADS
+%End
+};
+
+// don't forget to define docstring in __init__.py.in!
+%TypeHintCode
+class QgsSfcgalException(Exception):
+    def __init__(self, *args, **kwargs) -> None: ...
+%End
+
+%Exception QgsInvalidArgumentException(SIP_Exception) /PyName=QgsInvalidArgumentException/
+{
+%TypeHeaderCode
+#include <qgsexception.h>
+%End
+%RaiseCode
+  SIP_BLOCK_THREADS
+  PyErr_SetString(sipException_QgsInvalidArgumentException, sipExceptionRef.what().toUtf8().constData() );
+  SIP_UNBLOCK_THREADS
+%End
+};
+
+// don't forget to define docstring in __init__.py.in!
+%TypeHintCode
+class QgsInvalidArgumentException(Exception):
+    def __init__(self, *args, **kwargs) -> None: ...
+%End
 
 // IMPORTANT -- QgsException MUST be last listed, or it will greedily prevent the more
 // specialized exceptions from being raised
@@ -73,6 +139,12 @@
   SIP_UNBLOCK_THREADS
 %End
 };
+
+// don't forget to define docstring in __init__.py.in!
+%TypeHintCode
+class QgsException(Exception):
+    def __init__(self, *args, **kwargs) -> None: ...
+%End
 
 // IMPORTANT -- QgsException MUST be last listed, or it will greedily prevent the more
 // specialized exceptions from being raised

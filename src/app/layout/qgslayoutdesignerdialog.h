@@ -17,9 +17,11 @@
 #ifndef QGSLAYOUTDESIGNERDIALOG_H
 #define QGSLAYOUTDESIGNERDIALOG_H
 
-#include "ui_qgslayoutdesignerbase.h"
 #include "qgsconfig.h"
+#include "ui_qgslayoutdesignerbase.h"
+
 #include "qgslayoutdesignerinterface.h"
+
 #include <QToolButton>
 
 class QgsLayoutDesignerDialog;
@@ -365,6 +367,8 @@ class QgsLayoutDesignerDialog : public QMainWindow, public Ui::QgsLayoutDesigner
     void setTitle( const QString &title );
 
     void itemTypeAdded( int id );
+    void itemTypeRemoved( int id );
+    void itemGroupRemoved( const QString &groupId );
     void statusZoomCombo_currentIndexChanged( int index );
     void statusZoomCombo_zoomEntered();
     void sliderZoomChanged( int value );

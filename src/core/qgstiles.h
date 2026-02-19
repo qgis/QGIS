@@ -16,13 +16,16 @@
 #ifndef QGSTILES_H
 #define QGSTILES_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-
-#include "qgis.h"
-#include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsreadwritecontext.h"
+#include "qgsrectangle.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsRenderContext;
 
@@ -53,7 +56,7 @@ class CORE_EXPORT QgsTileXYZ
     int zoomLevel() const { return mZoomLevel; }
 
     //! Returns tile coordinates in a formatted string
-    QString toString() const { return QStringLiteral( "X=%1 Y=%2 Z=%3" ).arg( mColumn ).arg( mRow ).arg( mZoomLevel ); }
+    QString toString() const { return u"X=%1 Y=%2 Z=%3"_s.arg( mColumn ).arg( mRow ).arg( mZoomLevel ); }
 
     bool operator==( const QgsTileXYZ &other ) const { return mColumn == other.mColumn && mRow == other.mRow && mZoomLevel == other.mZoomLevel; }
     bool operator!=( const QgsTileXYZ &other ) const { return !( *this == other ); }
@@ -61,7 +64,7 @@ class CORE_EXPORT QgsTileXYZ
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    const QString str = QStringLiteral( "<QgsTileXYZ: %1, %2, %3>" ).arg( sipCpp->column() ).arg( sipCpp->row() ).arg( sipCpp->zoomLevel() );
+    const QString str = u"<QgsTileXYZ: %1, %2, %3>"_s.arg( sipCpp->column() ).arg( sipCpp->row() ).arg( sipCpp->zoomLevel() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -71,6 +74,16 @@ class CORE_EXPORT QgsTileXYZ
     int mRow = -1;
     int mZoomLevel = -1;
 };
+
+#ifndef SIP_RUN
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wattributes"
+#elif defined(_MSC_VER)
+__pragma( warning( push ) )
+__pragma( warning( disable: 4273 ) )
+#endif
+#endif
 
 /**
  * Returns a hash for a tile \a id.
@@ -85,6 +98,13 @@ CORE_EXPORT inline uint qHash( QgsTileXYZ id ) SIP_SKIP
   return h1 ^ ( h2 << 1 ) ^ ( h3 << 2 );
 }
 
+#ifndef SIP_RUN
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
+#pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+__pragma( warning( pop ) )
+#endif
+#endif
 
 /**
  * \ingroup core

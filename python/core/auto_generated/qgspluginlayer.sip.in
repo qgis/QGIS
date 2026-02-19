@@ -7,6 +7,8 @@
  ************************************************************************/
 
 
+
+
 class QgsPluginLayer : QgsMapLayer
 {
 %Docstring(signature="appended")
@@ -43,7 +45,7 @@ Returns a new instance equivalent to this one.
 :return: a new layer instance
 %End
 
-    QString pluginLayerType();
+    QString pluginLayerType() const;
 %Docstring
 Returns plugin layer type (the same as used in
 :py:class:`QgsPluginLayerRegistry`)

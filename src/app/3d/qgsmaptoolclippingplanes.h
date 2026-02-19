@@ -16,14 +16,14 @@
 #ifndef QGSMAPTOOLCLIPPINGPLANES_H
 #define QGSMAPTOOLCLIPPINGPLANES_H
 
+#include "qgsgeometry.h"
 #include "qgsmaptool.h"
-#include "qgspointxy.h"
-#include "qgsrubberband.h"
 #include "qobjectuniqueptr.h"
-
 
 class Qgs3DMapCanvasWidget;
 class QgsMapCanvas;
+class QgsRubberBand;
+class QgsCoordinateTransform;
 
 
 /**
@@ -51,6 +51,13 @@ class QgsMapToolClippingPlanes : public QgsMapTool
     void clearHighLightedArea() const;
     //! Returns the Geometry of clipped area
     QgsGeometry clippedPolygon() const;
+    //! Sets the type of capture: dynamic requires third point, static required just two points
+    void setToleranceLocked( bool enable );
+    //!Returns the current capture type, true for dynamic, false for static
+    bool isToleranceLocked() { return mToleranceLocked; }
+
+  signals:
+    void finishedSuccessfully();
 
   private:
     void clearRubberBand() const;
@@ -58,9 +65,10 @@ class QgsMapToolClippingPlanes : public QgsMapTool
     QObjectUniquePtr<QgsRubberBand> mRubberBandPolygon;
     QObjectUniquePtr<QgsRubberBand> mRubberBandLines;
     QObjectUniquePtr<QgsRubberBand> mRubberBandPoints;
-    Qgs3DMapCanvasWidget *m3DCanvas = nullptr;
-    bool mClicked = false;
-    double mRectangleWidth = 0;
+    std::unique_ptr<QgsCoordinateTransform> mCt;
+    Qgs3DMapCanvasWidget *m3DCanvasWidget = nullptr;
+    bool mToleranceLocked = true;
+    double mRectangleWidth = 0.0;
 };
 
 #endif //QGSMAPTOOLCLIPPINGPLANES_H

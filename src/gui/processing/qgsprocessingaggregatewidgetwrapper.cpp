@@ -14,22 +14,24 @@
  ***************************************************************************/
 
 #include "qgsprocessingaggregatewidgetwrapper.h"
-#include "moc_qgsprocessingaggregatewidgetwrapper.cpp"
+
+#include "qgspanelwidget.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingmodelalgorithm.h"
+#include "qgsprocessingparameteraggregate.h"
 
 #include <QBoxLayout>
+#include <QItemSelectionModel>
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QStandardItemModel>
+#include <QString>
 #include <QToolButton>
-#include <QItemSelectionModel>
 
-#include "qgspanelwidget.h"
+#include "moc_qgsprocessingaggregatewidgetwrapper.cpp"
 
-#include "qgsprocessingcontext.h"
-#include "qgsprocessingmodelalgorithm.h"
-
-#include "qgsprocessingparameteraggregate.h"
+using namespace Qt::StringLiterals;
 
 /// @cond private
 
@@ -56,7 +58,7 @@ QgsProcessingAggregatePanelWidget::QgsProcessingAggregatePanelWidget( QWidget *p
   connect( mDownButton, &QPushButton::clicked, mFieldsView, &QgsAggregateMappingWidget::moveSelectedFieldsDown );
   connect( mLoadLayerFieldsButton, &QPushButton::clicked, this, &QgsProcessingAggregatePanelWidget::loadLayerFields );
 
-  connect( mFieldsView, &QgsAggregateMappingWidget::changed, this, [=] {
+  connect( mFieldsView, &QgsAggregateMappingWidget::changed, this, [this] {
     if ( !mBlockChangedSignal )
     {
       emit changed();
@@ -74,6 +76,11 @@ void QgsProcessingAggregatePanelWidget::setLayer( QgsVectorLayer *layer )
   if ( mModel->rowCount() == 0 )
   {
     loadFieldsFromLayer();
+    return;
+  }
+
+  if ( mSkipConfirmDialog )
+  {
     return;
   }
 
@@ -103,15 +110,15 @@ QVariant QgsProcessingAggregatePanelWidget::value() const
   for ( const QgsAggregateMappingModel::Aggregate &aggregate : mapping )
   {
     QVariantMap def;
-    def.insert( QStringLiteral( "name" ), aggregate.field.name() );
-    def.insert( QStringLiteral( "type" ), static_cast<int>( aggregate.field.type() ) );
-    def.insert( QStringLiteral( "type_name" ), aggregate.field.typeName() );
-    def.insert( QStringLiteral( "length" ), aggregate.field.length() );
-    def.insert( QStringLiteral( "precision" ), aggregate.field.precision() );
-    def.insert( QStringLiteral( "sub_type" ), static_cast<int>( aggregate.field.subType() ) );
-    def.insert( QStringLiteral( "input" ), aggregate.source );
-    def.insert( QStringLiteral( "aggregate" ), aggregate.aggregate );
-    def.insert( QStringLiteral( "delimiter" ), aggregate.delimiter );
+    def.insert( u"name"_s, aggregate.field.name() );
+    def.insert( u"type"_s, static_cast<int>( aggregate.field.type() ) );
+    def.insert( u"type_name"_s, aggregate.field.typeName() );
+    def.insert( u"length"_s, aggregate.field.length() );
+    def.insert( u"precision"_s, aggregate.field.precision() );
+    def.insert( u"sub_type"_s, static_cast<int>( aggregate.field.subType() ) );
+    def.insert( u"input"_s, aggregate.source );
+    def.insert( u"aggregate"_s, aggregate.aggregate );
+    def.insert( u"delimiter"_s, aggregate.delimiter );
     results.append( def );
   }
   return results;
@@ -129,14 +136,14 @@ void QgsProcessingAggregatePanelWidget::setValue( const QVariant &value )
   for ( const QVariant &field : fields )
   {
     const QVariantMap map = field.toMap();
-    const QgsField f( map.value( QStringLiteral( "name" ) ).toString(), static_cast<QMetaType::Type>( map.value( QStringLiteral( "type" ), static_cast<int>( QMetaType::Type::UnknownType ) ).toInt() ), map.value( QStringLiteral( "type_name" ), QVariant::typeToName( static_cast<QMetaType::Type>( map.value( QStringLiteral( "type" ), static_cast<int>( QMetaType::Type::UnknownType ) ).toInt() ) ) ).toString(), map.value( QStringLiteral( "length" ), 0 ).toInt(), map.value( QStringLiteral( "precision" ), 0 ).toInt(), QString(), static_cast<QMetaType::Type>( map.value( QStringLiteral( "sub_type" ), QgsVariantUtils::createNullVariant( QMetaType::Type::UnknownType ) ).toInt() ) );
+    const QgsField f( map.value( u"name"_s ).toString(), static_cast<QMetaType::Type>( map.value( u"type"_s, static_cast<int>( QMetaType::Type::UnknownType ) ).toInt() ), map.value( u"type_name"_s, QVariant::typeToName( static_cast<QMetaType::Type>( map.value( u"type"_s, static_cast<int>( QMetaType::Type::UnknownType ) ).toInt() ) ) ).toString(), map.value( u"length"_s, 0 ).toInt(), map.value( u"precision"_s, 0 ).toInt(), QString(), static_cast<QMetaType::Type>( map.value( u"sub_type"_s, QgsVariantUtils::createNullVariant( QMetaType::Type::UnknownType ) ).toInt() ) );
 
     QgsAggregateMappingModel::Aggregate aggregate;
     aggregate.field = f;
 
-    aggregate.source = map.value( QStringLiteral( "input" ) ).toString();
-    aggregate.aggregate = map.value( QStringLiteral( "aggregate" ) ).toString();
-    aggregate.delimiter = map.value( QStringLiteral( "delimiter" ) ).toString();
+    aggregate.source = map.value( u"input"_s ).toString();
+    aggregate.aggregate = map.value( u"aggregate"_s ).toString();
+    aggregate.delimiter = map.value( u"delimiter"_s ).toString();
 
     aggregates.append( aggregate );
   }
@@ -167,7 +174,7 @@ void QgsProcessingAggregatePanelWidget::loadFieldsFromLayer()
 void QgsProcessingAggregatePanelWidget::addField()
 {
   const int rowCount = mModel->rowCount();
-  mModel->appendField( QgsField( QStringLiteral( "new_field" ) ) );
+  mModel->appendField( QgsField( u"new_field"_s ) );
   const QModelIndex index = mModel->index( rowCount, 0 );
   mFieldsView->selectionModel()->select(
     index,
@@ -273,7 +280,7 @@ QWidget *QgsProcessingAggregateWidgetWrapper::createWidget()
   mPanel->setToolTip( parameterDefinition()->toolTip() );
   mPanel->registerExpressionContextGenerator( this );
 
-  connect( mPanel, &QgsProcessingAggregatePanelWidget::changed, this, [=] {
+  connect( mPanel, &QgsProcessingAggregatePanelWidget::changed, this, [this] {
     emit widgetValueHasChanged( this );
   } );
 
@@ -298,7 +305,7 @@ void QgsProcessingAggregateWidgetWrapper::postInitialize( const QList<QgsAbstrac
         if ( wrapper->parameterDefinition()->name() == static_cast<const QgsProcessingParameterAggregate *>( parameterDefinition() )->parentLayerParameterName() )
         {
           setParentLayerWrapperValue( wrapper );
-          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [=] {
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [this, wrapper] {
             setParentLayerWrapperValue( wrapper );
           } );
           break;

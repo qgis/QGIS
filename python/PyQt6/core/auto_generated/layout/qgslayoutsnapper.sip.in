@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsLayoutSnapper: QgsLayoutSerializableObject
 {
 %Docstring(signature="appended")

@@ -16,17 +16,16 @@
 #ifndef QGSSERVERQUERYSTRINGPARAMETER_H
 #define QGSSERVERQUERYSTRINGPARAMETER_H
 
-#include "qgsserverapicontext.h"
 #include "qgis_server.h"
 #include "qgis_sip.h"
+#include "qgsserverapicontext.h"
+
+#include <QObject>
 #include <QString>
 #include <QVariant>
-#include <QObject>
-
-
-#include <nlohmann/json.hpp>
 
 #ifndef SIP_RUN
+#include <nlohmann/json.hpp>
 using namespace nlohmann;
 #endif
 

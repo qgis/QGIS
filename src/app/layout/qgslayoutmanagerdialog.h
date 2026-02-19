@@ -17,10 +17,10 @@
 #ifndef QGSLAYOUTMANAGERDIALOG_H
 #define QGSLAYOUTMANAGERDIALOG_H
 
+#include "ui_qgslayoutmanagerbase.h"
+
 #include <QItemDelegate>
 #include <QSortFilterProxyModel>
-
-#include "ui_qgslayoutmanagerbase.h"
 
 class QListWidgetItem;
 class QgsLayoutDesignerDialog;

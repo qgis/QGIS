@@ -15,19 +15,22 @@
 
 #include "qgslegendrenderer.h"
 
+#include <memory>
+
+#include "qgsexpressioncontextutils.h"
 #include "qgslayertree.h"
+#include "qgslayertreefilterproxymodel.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgslegendstyle.h"
 #include "qgsrendercontext.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgstextrenderer.h"
-#include "qgslayertreefilterproxymodel.h"
 
 #include <QJsonObject>
 #include <QPainter>
+#include <QString>
 
-
+using namespace Qt::StringLiterals;
 
 QgsLegendRenderer::QgsLegendRenderer( QgsLayerTreeModel *legendModel, const QgsLegendSettings &settings )
   : mLegendModel( legendModel )
@@ -46,6 +49,15 @@ QgsLegendRenderer::QgsLegendRenderer( QgsLegendRenderer &&other )
   mProxyModel->setLayerTreeModel( mLegendModel );
 }
 
+void QgsLegendRenderer::setProxyModel( QgsLayerTreeFilterProxyModel *model )
+{
+  if ( mProxyModel.get() == model )
+    return;
+
+  mProxyModel.reset( model );
+  mProxyModel->setLayerTreeModel( mLegendModel );
+}
+
 QgsLegendRenderer::~QgsLegendRenderer() = default;
 
 QSizeF QgsLegendRenderer::minimumSize( QgsRenderContext *renderContext )
@@ -54,9 +66,9 @@ QSizeF QgsLegendRenderer::minimumSize( QgsRenderContext *renderContext )
 
   if ( !renderContext )
   {
-    // QGIS 4.0 - make render context mandatory
+    // QGIS 5.0 - make render context mandatory
     Q_NOWARN_DEPRECATED_PUSH
-    tmpContext.reset( new QgsRenderContext( QgsRenderContext::fromQPainter( nullptr ) ) );
+    tmpContext = std::make_unique<QgsRenderContext>( QgsRenderContext::fromQPainter( nullptr ) );
     tmpContext->setRendererScale( mSettings.mapScale() );
     tmpContext->setMapToPixel( QgsMapToPixel( 1 / ( mSettings.mmPerMapUnit() * tmpContext->scaleFactor() ) ) );
     tmpContext->setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering, true );
@@ -90,7 +102,7 @@ QJsonObject QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &conte
     return json;
 
   json = exportLegendToJson( context, rootGroup );
-  json[QStringLiteral( "title" )] = mSettings.title();
+  json[u"title"_s] = mSettings.title();
   return json;
 }
 
@@ -111,8 +123,8 @@ QJsonObject QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &conte
       const QString text = mLegendModel->data( idx, Qt::DisplayRole ).toString();
 
       QJsonObject group = exportLegendToJson( context, nodeGroup );
-      group[ QStringLiteral( "type" ) ] = QStringLiteral( "group" );
-      group[ QStringLiteral( "title" ) ] = text;
+      group[ u"type"_s ] = u"group"_s;
+      group[ u"title"_s ] = text;
       nodes.append( group );
     }
     else if ( QgsLayerTree::isLayer( node ) )
@@ -134,7 +146,7 @@ QJsonObject QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &conte
       if ( legendNodes.count() == 1 )
       {
         QJsonObject group = legendNodes.at( 0 )->exportToJson( mSettings, context );
-        group[ QStringLiteral( "type" ) ] = QStringLiteral( "layer" );
+        group[ u"type"_s ] = u"layer"_s;
         if ( mSettings.jsonRenderFlags().testFlag( Qgis::LegendJsonRenderFlag::ShowRuleDetails ) )
         {
           if ( QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ) )
@@ -148,7 +160,7 @@ QJsonObject QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &conte
                 const QString ruleExp { vLayer->renderer()->legendKeyToExpression( ruleKey, vLayer, ok ) };
                 if ( ok )
                 {
-                  group[ QStringLiteral( "rule" ) ] = ruleExp;
+                  group[ u"rule"_s ] = ruleExp;
                 }
               }
             }
@@ -159,8 +171,8 @@ QJsonObject QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &conte
       else if ( legendNodes.count() > 1 )
       {
         QJsonObject group;
-        group[ QStringLiteral( "type" ) ] = QStringLiteral( "layer" );
-        group[ QStringLiteral( "title" ) ] = text;
+        group[ u"type"_s ] = u"layer"_s;
+        group[ u"title"_s ] = text;
 
         QJsonArray symbols;
         for ( int j = 0; j < legendNodes.count(); j++ )
@@ -180,7 +192,7 @@ QJsonObject QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &conte
                   const QString ruleExp { vLayer->renderer()->legendKeyToExpression( ruleKey, vLayer, ok ) };
                   if ( ok )
                   {
-                    symbol[ QStringLiteral( "rule" ) ] = ruleExp;
+                    symbol[ u"rule"_s ] = ruleExp;
                   }
                 }
               }
@@ -188,14 +200,14 @@ QJsonObject QgsLegendRenderer::exportLegendToJson( const QgsRenderContext &conte
           }
           symbols.append( symbol );
         }
-        group[ QStringLiteral( "symbols" ) ] = symbols;
+        group[ u"symbols"_s ] = symbols;
 
         nodes.append( group );
       }
     }
   }
 
-  json[QStringLiteral( "nodes" )] = nodes;
+  json[u"nodes"_s] = nodes;
   return json;
 }
 
@@ -342,10 +354,10 @@ QList<QgsLegendRenderer::LegendComponentGroup> QgsLegendRenderer::createComponen
     if ( QgsLayerTree::isGroup( node ) )
     {
       QgsLayerTreeGroup *nodeGroup = QgsLayerTree::toGroup( node );
-      QString style = node->customProperty( QStringLiteral( "legend/title-style" ) ).toString();
+      QString style = node->customProperty( u"legend/title-style"_s ).toString();
       // Update the required indent for the group/subgroup items, starting from the indent accumulated from parent groups
       double newIndent = indent;
-      if ( style == QLatin1String( "subgroup" ) )
+      if ( style == "subgroup"_L1 )
       {
         newIndent += mSettings.style( Qgis::LegendComponent::Subgroup ).indent( );
       }
@@ -374,14 +386,14 @@ QList<QgsLegendRenderer::LegendComponentGroup> QgsLegendRenderer::createComponen
           subgroups[0].components.prepend( component );
           subgroups[0].size.rheight() += component.size.height();
           subgroups[0].size.rwidth() = std::max( component.size.width(), subgroups[0].size.width() );
-          if ( nodeGroup->customProperty( QStringLiteral( "legend/column-break" ) ).toInt() )
+          if ( nodeGroup->customProperty( u"legend/column-break"_s ).toInt() )
             subgroups[0].placeColumnBreakBeforeGroup = true;
         }
         else
         {
           // no subitems, create new group
           LegendComponentGroup group;
-          group.placeColumnBreakBeforeGroup = nodeGroup->customProperty( QStringLiteral( "legend/column-break" ) ).toInt();
+          group.placeColumnBreakBeforeGroup = nodeGroup->customProperty( u"legend/column-break"_s ).toInt();
           group.components.append( component );
           group.size.rwidth() += component.size.width();
           group.size.rheight() += component.size.height();
@@ -415,7 +427,7 @@ QList<QgsLegendRenderer::LegendComponentGroup> QgsLegendRenderer::createComponen
       }
 
       LegendComponentGroup group;
-      group.placeColumnBreakBeforeGroup = nodeLayer->customProperty( QStringLiteral( "legend/column-break" ) ).toInt();
+      group.placeColumnBreakBeforeGroup = nodeLayer->customProperty( u"legend/column-break"_s ).toInt();
 
       if ( layerStyle != Qgis::LegendComponent::Hidden )
       {
@@ -731,7 +743,7 @@ int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups 
     {
       if ( QgsLayerTreeModelLegendNode *legendNode = qobject_cast<QgsLayerTreeModelLegendNode *>( group.components.at( j ).item ) )
       {
-        QString key = QStringLiteral( "%1-%2" ).arg( reinterpret_cast< qulonglong >( legendNode->layerNode() ) ).arg( group.column );
+        QString key = u"%1-%2"_s.arg( reinterpret_cast< qulonglong >( legendNode->layerNode() ) ).arg( group.column );
         maxSymbolWidth[key] = std::max( group.components.at( j ).symbolSize.width(), maxSymbolWidth[key] );
       }
     }
@@ -743,7 +755,7 @@ int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups 
     {
       if ( QgsLayerTreeModelLegendNode *legendNode = qobject_cast<QgsLayerTreeModelLegendNode *>( group.components.at( j ).item ) )
       {
-        QString key = QStringLiteral( "%1-%2" ).arg( reinterpret_cast< qulonglong >( legendNode->layerNode() ) ).arg( group.column );
+        QString key = u"%1-%2"_s.arg( reinterpret_cast< qulonglong >( legendNode->layerNode() ) ).arg( group.column );
         double space = mSettings.style( Qgis::LegendComponent::Symbol ).margin( QgsLegendStyle::Right ) +
                        mSettings.style( Qgis::LegendComponent::SymbolLabel ).margin( QgsLegendStyle::Left );
         group.components[j].labelXOffset = maxSymbolWidth[key] + space;
@@ -960,7 +972,7 @@ QgsLegendRenderer::LegendComponent QgsLegendRenderer::drawSymbolItem( QgsLayerTr
 
   ctx.patchSize = symbolItem->userPatchSize();
 
-  QgsLayerTreeModelLegendNode::ItemMetrics im = symbolItem->draw( mSettings, &ctx );
+  QgsLayerTreeModelLegendNode::ItemMetrics im = symbolItem->draw( mSettings, ctx );
 
   if ( symbolScope )
     delete context.expressionContext().popScope();
@@ -972,7 +984,7 @@ QgsLegendRenderer::LegendComponent QgsLegendRenderer::drawSymbolItem( QgsLayerTr
   component.item = symbolItem;
   component.symbolSize = im.symbolSize;
   component.labelSize = im.labelSize;
-  //QgsDebugMsgLevel( QStringLiteral( "symbol height = %1 label height = %2").arg( symbolSize.height()).arg( labelSize.height() ), 2);
+  //QgsDebugMsgLevel( u"symbol height = %1 label height = %2"_s.arg( symbolSize.height()).arg( labelSize.height() ), 2);
   // NOTE -- we hard code left/right margins below, because those are the only ones exposed for use currently.
   // ideally we could (should?) expose all these margins as settings, and then adapt the below to respect the current symbol/text alignment
   // and consider the correct margin sides...
@@ -1084,12 +1096,12 @@ QSizeF QgsLegendRenderer::drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QgsRende
 
 Qgis::LegendComponent QgsLegendRenderer::nodeLegendStyle( QgsLayerTreeNode *node, QgsLayerTreeModel *model )
 {
-  QString style = node->customProperty( QStringLiteral( "legend/title-style" ) ).toString();
-  if ( style == QLatin1String( "hidden" ) )
+  QString style = node->customProperty( u"legend/title-style"_s ).toString();
+  if ( style == "hidden"_L1 )
     return Qgis::LegendComponent::Hidden;
-  else if ( style == QLatin1String( "group" ) )
+  else if ( style == "group"_L1 )
     return Qgis::LegendComponent::Group;
-  else if ( style == QLatin1String( "subgroup" ) )
+  else if ( style == "subgroup"_L1 )
     return Qgis::LegendComponent::Subgroup;
 
   // use a default otherwise
@@ -1121,22 +1133,22 @@ void QgsLegendRenderer::setNodeLegendStyle( QgsLayerTreeNode *node, Qgis::Legend
   switch ( style )
   {
     case Qgis::LegendComponent::Hidden:
-      str = QStringLiteral( "hidden" );
+      str = u"hidden"_s;
       break;
     case Qgis::LegendComponent::Group:
-      str = QStringLiteral( "group" );
+      str = u"group"_s;
       break;
     case Qgis::LegendComponent::Subgroup:
-      str = QStringLiteral( "subgroup" );
+      str = u"subgroup"_s;
       break;
     default:
       break; // nothing
   }
 
   if ( !str.isEmpty() )
-    node->setCustomProperty( QStringLiteral( "legend/title-style" ), str );
+    node->setCustomProperty( u"legend/title-style"_s, str );
   else
-    node->removeCustomProperty( QStringLiteral( "legend/title-style" ) );
+    node->removeCustomProperty( u"legend/title-style"_s );
 }
 
 void QgsLegendRenderer::drawLegend( QgsRenderContext &context )

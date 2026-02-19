@@ -14,21 +14,25 @@
  ***************************************************************************/
 
 #include "qgsprocessingalignrasterlayerswidgetwrapper.h"
-#include "moc_qgsprocessingalignrasterlayerswidgetwrapper.cpp"
+
+#include "qgis.h"
+#include "qgspanelwidget.h"
+#include "qgsprocessingoutputs.h"
+#include "qgsprocessingparameteralignrasterlayers.h"
+#include "qgsprocessingparameters.h"
+#include "qgsrasterfilewriter.h"
 
 #include <QBoxLayout>
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QStandardItemModel>
+#include <QString>
 #include <QToolButton>
 
-#include "qgspanelwidget.h"
-#include "qgsprocessingparameters.h"
-#include "qgsprocessingoutputs.h"
-#include "qgsprocessingparameteralignrasterlayers.h"
-#include "qgsrasterfilewriter.h"
-#include "qgis.h"
+#include "moc_qgsprocessingalignrasterlayerswidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 /// @cond private
 
@@ -49,7 +53,7 @@ QgsProcessingAlignRasterLayerDetailsWidget::QgsProcessingAlignRasterLayerDetails
   {
     filters << QObject::tr( "%1 files (*.%2)" ).arg( ext.toUpper(), ext.toLower() );
   }
-  mOutputFileWidget->setFilter( filters.join( QLatin1String( ";;" ) ) + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" ) );
+  mOutputFileWidget->setFilter( filters.join( ";;"_L1 ) + u";;"_s + QObject::tr( "All files (*.*)" ) );
 
   cmbResamplingMethod->addItem( tr( "Nearest Neighbour" ), static_cast<int>( Qgis::GdalResampleAlgorithm::RA_NearestNeighbour ) );
   cmbResamplingMethod->addItem( tr( "Bilinear (2x2 Kernel)" ), static_cast<int>( Qgis::GdalResampleAlgorithm::RA_Bilinear ) );
@@ -152,7 +156,7 @@ void QgsProcessingAlignRasterLayersPanelWidget::configureRaster()
     widget->setPanelTitle( tr( "Configure Raster" ) );
     widget->buttonBox()->hide();
 
-    connect( widget, &QgsProcessingAlignRasterLayerDetailsWidget::widgetChanged, this, [=]() {
+    connect( widget, &QgsProcessingAlignRasterLayerDetailsWidget::widgetChanged, this, [this, item, widget]() {
       setItemValue( item, widget->value() );
     } );
     panel->openPanel( widget );
@@ -238,7 +242,7 @@ void QgsProcessingAlignRasterLayersWidget::showDialog()
   {
     QgsProcessingAlignRasterLayersPanelWidget *widget = new QgsProcessingAlignRasterLayersPanelWidget( mValue, mProject );
     widget->setPanelTitle( tr( "Input layers" ) );
-    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [=]() {
+    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [this, widget]() {
       setValue( widget->selectedOptions() );
     } );
     connect( widget, &QgsProcessingMultipleSelectionPanelWidget::acceptClicked, widget, &QgsPanelWidget::acceptPanel );
@@ -295,7 +299,7 @@ QWidget *QgsProcessingAlignRasterLayersWidgetWrapper::createWidget()
   {
     mPanel->setToolTip( parameterDefinition()->toolTip() );
   }
-  connect( mPanel, &QgsProcessingAlignRasterLayersWidget::changed, this, [=] {
+  connect( mPanel, &QgsProcessingAlignRasterLayersWidget::changed, this, [this] {
     emit widgetValueHasChanged( this );
   } );
   return mPanel;

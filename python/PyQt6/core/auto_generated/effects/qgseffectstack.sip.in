@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsEffectStack : QgsPaintEffect /NoDefaultCtors/
 {
 %Docstring(signature="appended")
@@ -58,6 +60,8 @@ Creates a new QgsEffectStack effect from a single initial effect.
 %End
 
     ~QgsEffectStack();
+
+    virtual Qgis::PaintEffectFlags flags() const;
 
     virtual QString type() const;
     virtual QgsEffectStack *clone() const /Factory/;

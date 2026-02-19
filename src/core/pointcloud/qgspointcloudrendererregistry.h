@@ -18,10 +18,11 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgspointcloudclassifiedrenderer.h"
+
+#include <QDomElement>
 #include <QIcon>
 #include <QMap>
 #include <QStringList>
-#include <QDomElement>
 
 class QgsPointCloudRenderer;
 class QgsReadWriteContext;

@@ -15,17 +15,23 @@
 
 
 #include "qgspainteffectwidget.h"
-#include "moc_qgspainteffectwidget.cpp"
+
+#include "qgsblureffect.h"
+#include "qgscoloreffect.h"
+#include "qgscolorramp.h"
+#include "qgscolorrampbutton.h"
+#include "qgsgloweffect.h"
 #include "qgslogger.h"
 #include "qgspainteffect.h"
 #include "qgsshadoweffect.h"
-#include "qgsblureffect.h"
-#include "qgsgloweffect.h"
-#include "qgstransformeffect.h"
-#include "qgscoloreffect.h"
 #include "qgsstyle.h"
-#include "qgscolorramp.h"
-#include "qgscolorrampbutton.h"
+#include "qgstransformeffect.h"
+
+#include <QString>
+
+#include "moc_qgspainteffectwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // draw source
@@ -44,7 +50,7 @@ QgsDrawSourceWidget::QgsDrawSourceWidget( QWidget *parent )
 
 void QgsDrawSourceWidget::setPaintEffect( QgsPaintEffect *effect )
 {
-  if ( !effect || effect->type() != QLatin1String( "drawSource" ) )
+  if ( !effect || effect->type() != "drawSource"_L1 )
     return;
 
   mEffect = static_cast<QgsDrawSourceEffect *>( effect );
@@ -135,7 +141,7 @@ QgsBlurWidget::QgsBlurWidget( QWidget *parent )
 
 void QgsBlurWidget::setPaintEffect( QgsPaintEffect *effect )
 {
-  if ( !effect || effect->type() != QLatin1String( "blur" ) )
+  if ( !effect || effect->type() != "blur"_L1 )
     return;
 
   mEffect = static_cast<QgsBlurEffect *>( effect );
@@ -268,7 +274,7 @@ QgsShadowEffectWidget::QgsShadowEffectWidget( QWidget *parent )
 
   mShadowColorBtn->setAllowOpacity( false );
   mShadowColorBtn->setColorDialogTitle( tr( "Select Shadow Color" ) );
-  mShadowColorBtn->setContext( QStringLiteral( "symbology" ) );
+  mShadowColorBtn->setContext( u"symbology"_s );
   mShadowOffsetAngleSpnBx->setClearValue( 0 );
 
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
@@ -281,7 +287,7 @@ QgsShadowEffectWidget::QgsShadowEffectWidget( QWidget *parent )
 
 void QgsShadowEffectWidget::setPaintEffect( QgsPaintEffect *effect )
 {
-  if ( !effect || ( effect->type() != QLatin1String( "dropShadow" ) && effect->type() != QLatin1String( "innerShadow" ) ) )
+  if ( !effect || ( effect->type() != "dropShadow"_L1 && effect->type() != "innerShadow"_L1 ) )
     return;
 
   mEffect = static_cast<QgsShadowEffect *>( effect );
@@ -447,7 +453,7 @@ QgsGlowWidget::QgsGlowWidget( QWidget *parent )
 
   mColorBtn->setAllowOpacity( false );
   mColorBtn->setColorDialogTitle( tr( "Select Glow Color" ) );
-  mColorBtn->setContext( QStringLiteral( "symbology" ) );
+  mColorBtn->setContext( u"symbology"_s );
 
   mSpreadUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
   mBlurUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
@@ -463,7 +469,7 @@ QgsGlowWidget::QgsGlowWidget( QWidget *parent )
 
 void QgsGlowWidget::setPaintEffect( QgsPaintEffect *effect )
 {
-  if ( !effect || ( effect->type() != QLatin1String( "outerGlow" ) && effect->type() != QLatin1String( "innerGlow" ) ) )
+  if ( !effect || ( effect->type() != "outerGlow"_L1 && effect->type() != "innerGlow"_L1 ) )
     return;
 
   mEffect = static_cast<QgsGlowEffect *>( effect );
@@ -669,7 +675,7 @@ QgsTransformWidget::QgsTransformWidget( QWidget *parent )
 
 void QgsTransformWidget::setPaintEffect( QgsPaintEffect *effect )
 {
-  if ( !effect || effect->type() != QLatin1String( "transform" ) )
+  if ( !effect || effect->type() != "transform"_L1 )
     return;
 
   mEffect = static_cast<QgsTransformEffect *>( effect );
@@ -859,7 +865,7 @@ QgsColorEffectWidget::QgsColorEffectWidget( QWidget *parent )
 
 void QgsColorEffectWidget::setPaintEffect( QgsPaintEffect *effect )
 {
-  if ( !effect || effect->type() != QLatin1String( "color" ) )
+  if ( !effect || effect->type() != "color"_L1 )
     return;
 
   mEffect = static_cast<QgsColorEffect *>( effect );

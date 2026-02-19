@@ -15,21 +15,26 @@
  ***************************************************************************/
 
 #include "qgslayoutscalebarwidget.h"
-#include "moc_qgslayoutscalebarwidget.cpp"
+
+#include "qgsfillsymbol.h"
+#include "qgslayout.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemscalebar.h"
-#include "qgsscalebarrendererregistry.h"
-#include "qgslayout.h"
-#include "qgsnumericformatselectorwidget.h"
-#include "qgslayoutundostack.h"
-#include "qgsfillsymbol.h"
-#include "qgslinesymbol.h"
 #include "qgslayoutreportcontext.h"
+#include "qgslayoutundostack.h"
+#include "qgslinesymbol.h"
+#include "qgsnumericformatselectorwidget.h"
+#include "qgsscalebarrendererregistry.h"
 #include "qgsvectorlayer.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
+#include <QString>
 #include <QWidget>
+
+#include "moc_qgslayoutscalebarwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBar )
   : QgsLayoutItemBaseWidget( nullptr, scaleBar )
@@ -56,7 +61,7 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   connect( mMinWidthSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mMinWidthSpinBox_valueChanged );
   connect( mMaxWidthSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutScaleBarWidget::mMaxWidthSpinBox_valueChanged );
   connect( mNumberFormatPushButton, &QPushButton::clicked, this, &QgsLayoutScaleBarWidget::changeNumberFormat );
-  connect( mScaleMethodWidget, &QgsScaleMethodWidget::methodChanged, this, [=] {
+  connect( mScaleMethodWidget, &QgsScaleMethodWidget::methodChanged, this, [this] {
     if ( !mScalebar )
     {
       return;
@@ -118,7 +123,8 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   mAlignmentComboBox->setAvailableAlignments( Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight );
 
   //units combo box
-  mUnitsComboBox->addItem( tr( "Map units" ), static_cast<int>( Qgis::DistanceUnit::Unknown ) );
+
+  mUnitsComboBox->addItem( linkedMapUnitsString( scaleBar ), static_cast<int>( Qgis::DistanceUnit::Unknown ) );
   mUnitsComboBox->addItem( tr( "Meters" ), static_cast<int>( Qgis::DistanceUnit::Meters ) );
   mUnitsComboBox->addItem( tr( "Kilometers" ), static_cast<int>( Qgis::DistanceUnit::Kilometers ) );
   mUnitsComboBox->addItem( tr( "Feet" ), static_cast<int>( Qgis::DistanceUnit::Feet ) );
@@ -195,10 +201,10 @@ void QgsLayoutScaleBarWidget::setMasterLayout( QgsMasterLayoutInterface *masterL
 QgsExpressionContext QgsLayoutScaleBarWidget::createExpressionContext() const
 {
   QgsExpressionContext context = mScalebar->createExpressionContext();
-  QgsExpressionContextScope *scaleScope = new QgsExpressionContextScope( QStringLiteral( "scalebar_text" ) );
-  scaleScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "scale_value" ), 0, true, false ) );
+  QgsExpressionContextScope *scaleScope = new QgsExpressionContextScope( u"scalebar_text"_s );
+  scaleScope->addVariable( QgsExpressionContextScope::StaticVariable( u"scale_value"_s, 0, true, false ) );
   context.appendScope( scaleScope );
-  context.setHighlightedVariables( QStringList() << QStringLiteral( "scale_value" ) );
+  context.setHighlightedVariables( QStringList() << u"scale_value"_s );
   return context;
 }
 
@@ -486,7 +492,7 @@ void QgsLayoutScaleBarWidget::changeNumberFormat()
   QgsNumericFormatSelectorWidget *widget = new QgsNumericFormatSelectorWidget( this );
   widget->setPanelTitle( tr( "Number Format" ) );
   widget->setFormat( mScalebar->numericFormat() );
-  connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [=] {
+  connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [this, widget] {
     mScalebar->beginCommand( tr( "Set Scalebar Number Format" ) );
     disconnectUpdateSignal();
     mScalebar->setNumericFormat( widget->format() );
@@ -823,6 +829,8 @@ void QgsLayoutScaleBarWidget::mapChanged( QgsLayoutItem *item )
   mScalebar->update();
   connectUpdateSignal();
   mScalebar->endCommand();
+
+  mUnitsComboBox->setItemText( mUnitsComboBox->findData( static_cast<int>( Qgis::DistanceUnit::Unknown ) ), linkedMapUnitsString( mScalebar ) );
 }
 
 void QgsLayoutScaleBarWidget::mMinWidthSpinBox_valueChanged( double )
@@ -865,4 +873,21 @@ void QgsLayoutScaleBarWidget::populateDataDefinedButtons()
   updateDataDefinedButton( mHeightDDBtn );
   updateDataDefinedButton( mSubdivisionHeightDDBtn );
   updateDataDefinedButton( mRightSegmentSubdivisionsDDBtn );
+}
+
+QString QgsLayoutScaleBarWidget::linkedMapUnitsString( QgsLayoutItemScaleBar *scalebar )
+{
+  QString mapUnit;
+  if ( scalebar )
+  {
+    if ( QgsLayoutItemMap *map = scalebar->linkedMap() )
+    {
+      const Qgis::DistanceUnit mapCrsUnits = map->crs().mapUnits();
+      if ( mapCrsUnits != Qgis::DistanceUnit::Unknown )
+      {
+        mapUnit = QgsUnitTypes::toString( mapCrsUnits );
+      }
+    }
+  }
+  return mapUnit.isEmpty() ? tr( "Map Units" ) : tr( "Map Units (%1)" ).arg( mapUnit );
 }

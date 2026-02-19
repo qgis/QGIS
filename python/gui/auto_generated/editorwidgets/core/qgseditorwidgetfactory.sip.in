@@ -9,6 +9,7 @@
 
 
 
+
 class QgsEditorWidgetFactory
 {
 %Docstring(signature="appended")
@@ -28,11 +29,12 @@ dialog.
 #include "qgseditorwidgetfactory.h"
 %End
   public:
-    QgsEditorWidgetFactory( const QString &name );
+    QgsEditorWidgetFactory( const QString &name, const QIcon &icon = QIcon() );
 %Docstring
 Constructor
 
 :param name: A human readable name for this widget type
+:param icon: An icon for this widget type (since QGIS 4.0)
 %End
 
     virtual ~QgsEditorWidgetFactory();
@@ -56,9 +58,16 @@ calling this method directly.
 
     QString name() const;
 %Docstring
-Returns The human readable identifier name of this widget type
+Returns the human readable identifier name of this widget type
 
 :return: a name
+%End
+
+    QIcon icon() const;
+%Docstring
+Returns the icon of this widget type
+
+.. versionadded:: 4.0
 %End
 
     virtual bool isReadOnly() const;

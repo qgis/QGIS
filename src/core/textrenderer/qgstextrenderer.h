@@ -16,14 +16,14 @@
 #ifndef QGSTEXTRENDERER_H
 #define QGSTEXTRENDERER_H
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
-#include "qgstextblock.h"
-#include "qgsmapunitscale.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsmapunitscale.h"
+#include "qgstextblock.h"
 
-#include <QPicture>
 #include <QPainterPath>
+#include <QPicture>
 
 class QgsTextDocument;
 class QgsTextDocumentMetrics;
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsTextRenderer
      */
     static int sizeToPixel( double size, const QgsRenderContext &c, Qgis::RenderUnit unit, const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
 
-    // TODO QGIS 4.0 -- remove drawAsOutlines from below methods!
+    // TODO QGIS 5.0 -- remove drawAsOutlines from below methods!
 
     /**
      * Draws text within a rectangle using the specified settings.
@@ -182,12 +182,14 @@ class CORE_EXPORT QgsTextRenderer
      * \param format text format
      * \param offsetAlongLine offset along the line (in painter units) to start text at
      * \param offsetFromLine offset from the line (in painter units). Negative values will shift the text to the left of the line, positive values will shift the text to the right.
+     * \param flags curved text behavior flags (since QGIS 4.0)
      *
      * \since QGIS 3.32
      */
     static void drawTextOnLine( const QPolygonF &line, const QString &text,
                                 QgsRenderContext &context, const QgsTextFormat &format,
-                                double offsetAlongLine = 0, double offsetFromLine = 0 );
+                                double offsetAlongLine = 0, double offsetFromLine = 0,
+                                Qgis::CurvedTextFlags flags = Qgis::CurvedTextFlag::UseBaselinePlacement | Qgis::CurvedTextFlag::TruncateStringWhenLineIsTooShort );
 
     /**
      * Draws a text document along a line using the specified settings.
@@ -198,6 +200,7 @@ class CORE_EXPORT QgsTextRenderer
      * \param context render context
      * \param offsetAlongLine offset along the line (in painter units) to start text at
      * \param offsetFromLine offset from the line (in painter units). Negative values will shift the text to the left of the line, positive values will shift the text to the right.
+     * \param flags curved text behavior flags (since QGIS 4.0)
      *
      * \since QGIS 3.32
      */
@@ -206,7 +209,8 @@ class CORE_EXPORT QgsTextRenderer
                                     const QgsTextDocument &document,
                                     QgsRenderContext &context,
                                     double offsetAlongLine = 0,
-                                    double offsetFromLine = 0 );
+                                    double offsetFromLine = 0,
+                                    Qgis::CurvedTextFlags flags = Qgis::CurvedTextFlag::UseBaselinePlacement | Qgis::CurvedTextFlag::TruncateStringWhenLineIsTooShort );
 
     /**
      * Draws a single component of rendered text using the specified settings.

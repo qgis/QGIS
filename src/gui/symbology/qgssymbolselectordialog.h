@@ -16,20 +16,19 @@
 #ifndef QGSSYMBOLSELECTORDIALOG_H
 #define QGSSYMBOLSELECTORDIALOG_H
 
-#include <QDialog>
-#include "qgis_sip.h"
-
 #include "ui_qgssymbolselectordialogbase.h"
 
-#include "qgspanelwidget.h"
-#include "qgssymbolwidgetcontext.h"
-#include "qgsproperty.h"
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgshelp.h"
+#include "qgspanelwidget.h"
+#include "qgsproperty.h"
+#include "qgssymbolwidgetcontext.h"
 
-#include <QStandardItemModel>
+#include <QDialog>
 #include <QDialogButtonBox>
 #include <QPointer>
-#include "qgis_gui.h"
+#include <QStandardItemModel>
 
 class QgsStyle;
 class QgsSymbol;
@@ -62,16 +61,16 @@ class DataDefinedRestorer : public QObject
   private:
     QgsMarkerSymbol *mMarker = nullptr;
     const QgsMarkerSymbolLayer *mMarkerSymbolLayer = nullptr;
-    double mSize;
-    double mAngle;
+    double mSize = 0;
+    double mAngle = 0;
     QPointF mMarkerOffset;
     QgsProperty mDDSize;
     QgsProperty mDDAngle;
 
     QgsLineSymbol *mLine = nullptr;
     const QgsLineSymbolLayer *mLineSymbolLayer = nullptr;
-    double mWidth;
-    double mLineOffset;
+    double mWidth = 0;
+    double mLineOffset = 0;
     QgsProperty mDDWidth;
 
     void save();
@@ -92,7 +91,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget : public QgsPanelWidget, private Ui::Qg
     friend class QgsSymbolSelectorDialog;
 
   public:
-    // TODO QGIS 4.0 - transfer ownership of symbol to widget!
+    // TODO QGIS 5.0 - transfer ownership of symbol to widget!
 
     /**
      * Symbol selector widget that can be used to select and build a symbol
@@ -104,7 +103,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget : public QgsPanelWidget, private Ui::Qg
      */
     QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    // TODO QGIS 4.0 -- remove when normal constructor takes ownership
+    // TODO QGIS 5.0 -- remove when normal constructor takes ownership
 
     /**
      * Creates a QgsSymbolSelectorWidget which takes ownership of a symbol and maintains
@@ -136,7 +135,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget : public QgsPanelWidget, private Ui::Qg
      */
     QgsSymbol *symbol() { return mSymbol; }
 
-    // TODO QGIS 4.0 - transfer ownership of symbol to widget!
+    // TODO QGIS 5.0 - transfer ownership of symbol to widget!
 
     /**
      * Loads the given symbol into the widget.

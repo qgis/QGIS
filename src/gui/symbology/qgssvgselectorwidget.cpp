@@ -15,30 +15,34 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgssvgselectorwidget.h"
-#include "moc_qgssvgselectorwidget.cpp"
 
 #include "qgsapplication.h"
+#include "qgsfieldexpressionwidget.h"
+#include "qgsgui.h"
 #include "qgslogger.h"
 #include "qgspathresolver.h"
 #include "qgsproject.h"
+#include "qgssettings.h"
 #include "qgssvgcache.h"
 #include "qgssymbollayerutils.h"
-#include "qgssettings.h"
-#include "qgsgui.h"
-#include "qgsfieldexpressionwidget.h"
 #include "qgssymbollayerwidget.h"
 #include "qgsvectorlayer.h"
 
 #include <QAbstractListModel>
-#include <QSortFilterProxyModel>
 #include <QCheckBox>
 #include <QDir>
 #include <QFileDialog>
+#include <QMenu>
 #include <QModelIndex>
 #include <QPixmapCache>
+#include <QSortFilterProxyModel>
+#include <QString>
 #include <QStyle>
 #include <QTime>
-#include <QMenu>
+
+#include "moc_qgssvgselectorwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 // QgsSvgSelectorLoader
 
@@ -86,7 +90,7 @@ void QgsSvgSelectorLoader::loadPath( const QString &path )
   if ( mCanceled )
     return;
 
-  QgsDebugMsgLevel( QStringLiteral( "loading path: %1" ).arg( path ), 2 );
+  QgsDebugMsgLevel( u"loading path: %1"_s.arg( path ), 2 );
 
   if ( path.isEmpty() )
   {
@@ -124,7 +128,7 @@ void QgsSvgSelectorLoader::loadPath( const QString &path )
 
       QString newPath = dir.path() + '/' + item;
       loadPath( newPath );
-      QgsDebugMsgLevel( QStringLiteral( "added path: %1" ).arg( newPath ), 2 );
+      QgsDebugMsgLevel( u"added path: %1"_s.arg( newPath ), 2 );
     }
   }
 }
@@ -140,7 +144,7 @@ void QgsSvgSelectorLoader::loadImages( const QString &path )
 
     // TODO test if it is correct SVG
     QString svgPath = dir.path() + '/' + item;
-    // QgsDebugMsgLevel( QStringLiteral( "adding svg: %1" ).arg( svgPath ), 2 );
+    // QgsDebugMsgLevel( u"adding svg: %1"_s.arg( svgPath ), 2 );
 
     // add it to the list of queued SVGs
     mQueuedSvgs << svgPath;
@@ -345,12 +349,12 @@ QgsSvgSelectorGroupsModel::QgsSvgSelectorGroupsModel( QObject *parent )
     baseGroup->setData( QVariant( svgPaths.at( i ) ) );
     baseGroup->setEditable( false );
     baseGroup->setCheckable( false );
-    baseGroup->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconFolder.svg" ) ) );
+    baseGroup->setIcon( QgsApplication::getThemeIcon( u"mIconFolder.svg"_s ) );
     baseGroup->setToolTip( dir.path() );
     parentItem->appendRow( baseGroup );
     parentPaths << svgPaths.at( i );
     mPathItemHash.insert( svgPaths.at( i ), baseGroup );
-    QgsDebugMsgLevel( QStringLiteral( "SVG base path %1: %2" ).arg( i ).arg( baseGroup->data().toString() ), 2 );
+    QgsDebugMsgLevel( u"SVG base path %1: %2"_s.arg( i ).arg( baseGroup->data().toString() ), 2 );
   }
   mLoader->setParentPaths( parentPaths );
   connect( mLoader, &QgsSvgGroupLoader::foundPath, this, &QgsSvgSelectorGroupsModel::addPath );
@@ -374,7 +378,7 @@ void QgsSvgSelectorGroupsModel::addPath( const QString &parentPath, const QStrin
   group->setEditable( false );
   group->setCheckable( false );
   group->setToolTip( fullPath );
-  group->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconFolder.svg" ) ) );
+  group->setIcon( QgsApplication::getThemeIcon( u"mIconFolder.svg"_s ) );
   parentGroup->appendRow( group );
   mPathItemHash.insert( fullPath, group );
 }
@@ -395,7 +399,7 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
   mGroupsTreeView->setHeaderHidden( true );
   populateList();
 
-  connect( mSvgFilterLineEdit, &QgsFilterLineEdit::textChanged, this, [=]( const QString &filterText ) {
+  connect( mSvgFilterLineEdit, &QgsFilterLineEdit::textChanged, this, [this]( const QString &filterText ) {
     if ( !mImagesListView->selectionModel()->selectedIndexes().isEmpty() )
     {
       disconnect( mImagesListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgSelectorWidget::svgSelectionChanged );
@@ -421,7 +425,7 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
   connect( mImagesListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgSelectorWidget::svgSelectionChanged );
   connect( mGroupsTreeView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgSelectorWidget::populateIcons );
   connect( mAddParameterButton, &QToolButton::clicked, mParametersModel, &QgsSvgParametersModel::addParameter );
-  connect( mRemoveParameterButton, &QToolButton::clicked, this, [=]() {
+  connect( mRemoveParameterButton, &QToolButton::clicked, this, [this]() {
     const QModelIndexList selectedRows = mParametersTreeView->selectionModel()->selectedRows();
     if ( selectedRows.count() > 0 )
       mParametersModel->removeParameters( selectedRows );
@@ -575,9 +579,9 @@ QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget *parent, Qt::WindowFlags fl,
 QgsSvgParametersModel::QgsSvgParametersModel( QObject *parent )
   : QAbstractTableModel( parent )
 {
-  connect( this, &QAbstractTableModel::rowsInserted, this, [=]() { emit parametersChanged( parameters() ); } );
-  connect( this, &QAbstractTableModel::rowsRemoved, this, [=]() { emit parametersChanged( parameters() ); } );
-  connect( this, &QAbstractTableModel::dataChanged, this, [=]() { emit parametersChanged( parameters() ); } );
+  connect( this, &QAbstractTableModel::rowsInserted, this, [this]() { emit parametersChanged( parameters() ); } );
+  connect( this, &QAbstractTableModel::rowsRemoved, this, [this]() { emit parametersChanged( parameters() ); } );
+  connect( this, &QAbstractTableModel::dataChanged, this, [this]() { emit parametersChanged( parameters() ); } );
 }
 
 void QgsSvgParametersModel::setParameters( const QMap<QString, QgsProperty> &parameters )
@@ -713,9 +717,9 @@ void QgsSvgParametersModel::addParameter()
   int i = 1;
   QStringList currentNames;
   std::transform( mParameters.begin(), mParameters.end(), std::back_inserter( currentNames ), []( const Parameter &parameter ) { return parameter.name; } );
-  while ( currentNames.contains( QStringLiteral( "param%1" ).arg( i ) ) )
+  while ( currentNames.contains( u"param%1"_s.arg( i ) ) )
     i++;
-  mParameters.append( Parameter( QStringLiteral( "param%1" ).arg( i ), QgsProperty() ) );
+  mParameters.append( Parameter( u"param%1"_s.arg( i ), QgsProperty() ) );
   endResetModel();
 }
 

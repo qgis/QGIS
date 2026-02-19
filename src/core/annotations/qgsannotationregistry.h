@@ -18,13 +18,17 @@
 
 #define SIP_NO_FILE
 
+#include <functional>
+
 #include "qgis_core.h"
 #include "qgsannotation.h"
-#include "qgstextannotation.h"
-#include "qgssvgannotation.h"
 #include "qgshtmlannotation.h"
+#include "qgssvgannotation.h"
+#include "qgstextannotation.h"
+
 #include <QString>
-#include <functional>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -87,9 +91,9 @@ class CORE_EXPORT QgsAnnotationRegistry
      */
     QgsAnnotationRegistry()
     {
-      addAnnotationType( QgsAnnotationMetadata( QStringLiteral( "TextAnnotationItem" ), QgsTextAnnotation::create ) );
-      addAnnotationType( QgsAnnotationMetadata( QStringLiteral( "HtmlAnnotationItem" ), QgsHtmlAnnotation::create ) );
-      addAnnotationType( QgsAnnotationMetadata( QStringLiteral( "SVGAnnotationItem" ), QgsSvgAnnotation::create ) );
+      addAnnotationType( QgsAnnotationMetadata( u"TextAnnotationItem"_s, QgsTextAnnotation::create ) );
+      addAnnotationType( QgsAnnotationMetadata( u"HtmlAnnotationItem"_s, QgsHtmlAnnotation::create ) );
+      addAnnotationType( QgsAnnotationMetadata( u"SVGAnnotationItem"_s, QgsSvgAnnotation::create ) );
     }
 
     /**

@@ -8,6 +8,9 @@
     "description": "a geometry"
   }],
   "examples": [{
+    "expression": "is_multipart(@geometry)",
+    "returns": "checks if the current feature's geometry is multipart"
+  },{
     "expression": "is_multipart(geom_from_wkt('MULTIPOINT ((0 0),(1 1),(2 2))'))",
     "returns": "TRUE"
   }, {

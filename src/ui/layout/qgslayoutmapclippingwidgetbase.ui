@@ -41,7 +41,7 @@
       <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="6" column="0">
+      <item row="7" column="0">
        <widget class="QTreeView" name="mLayersTreeView">
         <property name="headerHidden">
          <bool>true</bool>
@@ -74,7 +74,7 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="0">
+      <item row="8" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <spacer name="horizontalSpacer">
@@ -112,14 +112,14 @@
         </item>
        </layout>
       </item>
-      <item row="5" column="0">
+      <item row="6" column="0">
        <widget class="QRadioButton" name="mRadioClipSelectedLayers">
         <property name="text">
          <string>Clip selected layers</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
+      <item row="5" column="0">
        <widget class="QRadioButton" name="mRadioClipAllLayers">
         <property name="text">
          <string>Clip all layers</string>
@@ -130,6 +130,13 @@
        <widget class="QCheckBox" name="mForceLabelsInsideCheckBox">
         <property name="text">
          <string>Force labels inside atlas feature</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QCheckBox" name="mClipFrameCheckBox">
+        <property name="text">
+         <string>Clip frame to atlas feature</string>
         </property>
        </widget>
       </item>

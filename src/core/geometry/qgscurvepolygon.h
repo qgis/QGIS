@@ -18,11 +18,17 @@
 #ifndef QGSCURVEPOLYGON_H
 #define QGSCURVEPOLYGON_H
 
+#include <limits>
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgssurface.h"
 #include "qgscurve.h"
-#include <memory>
+#include "qgssurface.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsPolygon;
 
@@ -140,12 +146,15 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
     //surface interface
     double area() const override SIP_HOLDGIL;
+    double area3D() const override SIP_HOLDGIL;
     double perimeter() const override SIP_HOLDGIL;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const override SIP_FACTORY;
     QgsCurvePolygon *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
+
     bool boundingBoxIntersects( const QgsBox3D &box3d ) const override SIP_HOLDGIL;
+    bool boundingBoxIntersects( const QgsRectangle &box ) const override SIP_HOLDGIL;
 
     /**
      * Returns the roundness of the curve polygon.
@@ -457,8 +466,8 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     % MethodCode
     QString wkt = sipCpp->asWkt();
     if ( wkt.length() > 1000 )
-      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
-    QString str = QStringLiteral( "<QgsCurvePolygon: %1>" ).arg( wkt );
+      wkt = wkt.left( 1000 ) + u"..."_s;
+    QString str = u"<QgsCurvePolygon: %1>"_s.arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

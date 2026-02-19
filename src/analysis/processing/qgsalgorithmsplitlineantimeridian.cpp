@@ -16,17 +16,22 @@
  ***************************************************************************/
 
 #include "qgsalgorithmsplitlineantimeridian.h"
-#include "qgscurve.h"
-#include "qgslinestring.h"
+
 #include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
+#include "qgscurve.h"
 #include "qgsgeometrycollection.h"
+#include "qgslinestring.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
 QString QgsSplitGeometryAtAntimeridianAlgorithm::name() const
 {
-  return QStringLiteral( "antimeridiansplit" );
+  return u"antimeridiansplit"_s;
 }
 
 QString QgsSplitGeometryAtAntimeridianAlgorithm::displayName() const
@@ -46,7 +51,7 @@ QString QgsSplitGeometryAtAntimeridianAlgorithm::group() const
 
 QString QgsSplitGeometryAtAntimeridianAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsSplitGeometryAtAntimeridianAlgorithm::shortDescription() const
@@ -65,6 +70,11 @@ QString QgsSplitGeometryAtAntimeridianAlgorithm::shortHelpString() const
                       "be used when calculating this breakpoint.\n\n"
                       "If the input geometry contains M or Z values, these will be linearly interpolated for the new vertices "
                       "created at the antimeridian." );
+}
+
+Qgis::ProcessingAlgorithmDocumentationFlags QgsSplitGeometryAtAntimeridianAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RespectsEllipsoid;
 }
 
 QList<int> QgsSplitGeometryAtAntimeridianAlgorithm::inputLayerTypes() const

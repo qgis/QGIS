@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsBabelFormatRegistry
 {
 %Docstring(signature="appended")

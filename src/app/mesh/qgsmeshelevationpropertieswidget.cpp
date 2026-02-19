@@ -14,23 +14,29 @@
  ***************************************************************************/
 
 #include "qgsmeshelevationpropertieswidget.h"
-#include "moc_qgsmeshelevationpropertieswidget.cpp"
+
 #include "qgsapplication.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
 #include "qgsmaplayer.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerelevationproperties.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsexpressioncontextutils.h"
-#include <QMenu>
+
 #include <QAction>
+#include <QMenu>
+#include <QString>
+
+#include "moc_qgsmeshelevationpropertieswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshElevationPropertiesWidget::QgsMeshElevationPropertiesWidget( QgsMeshLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
   setupUi( this );
-  setObjectName( QStringLiteral( "mOptsPage_Elevation" ) );
+  setObjectName( u"mOptsPage_Elevation"_s );
 
   mModeComboBox->addItem( tr( "From Vertices" ), QVariant::fromValue( Qgis::MeshElevationMode::FromVertices ) );
   mModeComboBox->addItem( tr( "Fixed Elevation Range" ), QVariant::fromValue( Qgis::MeshElevationMode::FixedElevationRange ) );
@@ -48,9 +54,9 @@ QgsMeshElevationPropertiesWidget::QgsMeshElevationPropertiesWidget( QgsMeshLayer
   mScaleZSpinBox->setClearValue( 1 );
   mLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
   mFillStyleButton->setSymbolType( Qgis::SymbolType::Fill );
-  mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationLine.svg" ) ), tr( "Line" ), static_cast<int>( Qgis::ProfileSurfaceSymbology::Line ) );
-  mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationFillBelow.svg" ) ), tr( "Fill Below" ), static_cast<int>( Qgis::ProfileSurfaceSymbology::FillBelow ) );
-  mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationFillAbove.svg" ) ), tr( "Fill Above" ), static_cast<int>( Qgis::ProfileSurfaceSymbology::FillAbove ) );
+  mStyleComboBox->addItem( QgsApplication::getThemeIcon( u"mIconSurfaceElevationLine.svg"_s ), tr( "Line" ), static_cast<int>( Qgis::ProfileSurfaceSymbology::Line ) );
+  mStyleComboBox->addItem( QgsApplication::getThemeIcon( u"mIconSurfaceElevationFillBelow.svg"_s ), tr( "Fill Below" ), static_cast<int>( Qgis::ProfileSurfaceSymbology::FillBelow ) );
+  mStyleComboBox->addItem( QgsApplication::getThemeIcon( u"mIconSurfaceElevationFillAbove.svg"_s ), tr( "Fill Above" ), static_cast<int>( Qgis::ProfileSurfaceSymbology::FillAbove ) );
   mElevationLimitSpinBox->setClearValue( mElevationLimitSpinBox->minimum(), tr( "Not set" ) );
 
   mFixedLowerSpinBox->setClearValueMode( QgsDoubleSpinBox::ClearValueMode::MinimumValue, tr( "Not set" ) );
@@ -87,7 +93,7 @@ QgsMeshElevationPropertiesWidget::QgsMeshElevationPropertiesWidget( QgsMeshLayer
   connect( mElevationLimitSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsMeshElevationPropertiesWidget::onChanged );
   connect( mLineStyleButton, &QgsSymbolButton::changed, this, &QgsMeshElevationPropertiesWidget::onChanged );
   connect( mFillStyleButton, &QgsSymbolButton::changed, this, &QgsMeshElevationPropertiesWidget::onChanged );
-  connect( mStyleComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( mStyleComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
     switch ( static_cast<Qgis::ProfileSurfaceSymbology>( mStyleComboBox->currentData().toInt() ) )
     {
       case Qgis::ProfileSurfaceSymbology::Line:
@@ -102,7 +108,7 @@ QgsMeshElevationPropertiesWidget::QgsMeshElevationPropertiesWidget( QgsMeshLayer
     onChanged();
   } );
 
-  setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#elevation-properties" ) );
+  setProperty( "helpPage", u"working_with_mesh/mesh_properties.html#elevation-properties"_s );
 }
 
 void QgsMeshElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
@@ -230,15 +236,15 @@ void QgsMeshElevationPropertiesWidget::calculateRangeByExpression( bool isUpper 
 {
   QgsExpressionContext expressionContext;
   QgsExpressionContextScope *groupScope = new QgsExpressionContextScope();
-  groupScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "group" ), 1, true, false, tr( "Group number" ) ) );
+  groupScope->addVariable( QgsExpressionContextScope::StaticVariable( u"group"_s, 1, true, false, tr( "Group number" ) ) );
   const int groupIndex = mLayer->datasetGroupsIndexes().at( 0 );
   const QgsMeshDatasetGroupMetadata meta = mLayer->datasetGroupMetadata( groupIndex );
-  groupScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "group_name" ), meta.name(), true, false, tr( "Group name" ) ) );
+  groupScope->addVariable( QgsExpressionContextScope::StaticVariable( u"group_name"_s, meta.name(), true, false, tr( "Group name" ) ) );
 
   expressionContext.appendScope( groupScope );
-  expressionContext.setHighlightedVariables( { QStringLiteral( "group" ), QStringLiteral( "group_name" ) } );
+  expressionContext.setHighlightedVariables( { u"group"_s, u"group_name"_s } );
 
-  QgsExpressionBuilderDialog dlg = QgsExpressionBuilderDialog( nullptr, isUpper ? mFixedRangeUpperExpression : mFixedRangeLowerExpression, this, QStringLiteral( "generic" ), expressionContext );
+  QgsExpressionBuilderDialog dlg = QgsExpressionBuilderDialog( nullptr, isUpper ? mFixedRangeUpperExpression : mFixedRangeLowerExpression, this, u"generic"_s, expressionContext );
 
   QList<QPair<QString, QVariant>> groupChoices;
   for ( int group = 0; group < mLayer->datasetGroupCount(); ++group )
@@ -262,10 +268,10 @@ void QgsMeshElevationPropertiesWidget::calculateRangeByExpression( bool isUpper 
     exp.prepare( &expressionContext );
     for ( int group = 0; group < mLayer->datasetGroupCount(); ++group )
     {
-      groupScope->setVariable( QStringLiteral( "group" ), group + 1 );
+      groupScope->setVariable( u"group"_s, group + 1 );
       const int groupIndex = mLayer->datasetGroupsIndexes().at( group );
       const QgsMeshDatasetGroupMetadata meta = mLayer->datasetGroupMetadata( groupIndex );
-      groupScope->setVariable( QStringLiteral( "group_name" ), meta.name() );
+      groupScope->setVariable( u"group_name"_s, meta.name() );
 
       const QVariant res = exp.evaluate( &expressionContext );
       mFixedRangePerGroupModel->setData( mFixedRangePerGroupModel->index( group, isUpper ? 2 : 1 ), res, Qt::EditRole );
@@ -278,12 +284,12 @@ QgsExpressionContext QgsMeshElevationPropertiesWidget::createExpressionContextFo
   QgsExpressionContext context;
   context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
   QgsExpressionContextScope *groupScope = new QgsExpressionContextScope();
-  groupScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "group" ), group + 1, true, false, tr( "Group number" ) ) );
+  groupScope->addVariable( QgsExpressionContextScope::StaticVariable( u"group"_s, group + 1, true, false, tr( "Group number" ) ) );
   const int groupIndex = mLayer->datasetGroupsIndexes().at( group );
   const QgsMeshDatasetGroupMetadata meta = mLayer->datasetGroupMetadata( groupIndex );
-  groupScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "group_name" ), meta.name(), true, false, tr( "Group name" ) ) );
+  groupScope->addVariable( QgsExpressionContextScope::StaticVariable( u"group_name"_s, meta.name(), true, false, tr( "Group name" ) ) );
   context.appendScope( groupScope );
-  context.setHighlightedVariables( { QStringLiteral( "group" ), QStringLiteral( "group_name" ) } );
+  context.setHighlightedVariables( { u"group"_s, u"group_name"_s } );
   return context;
 }
 
@@ -295,7 +301,7 @@ QgsExpressionContext QgsMeshElevationPropertiesWidget::createExpressionContextFo
 QgsMeshElevationPropertiesWidgetFactory::QgsMeshElevationPropertiesWidgetFactory( QObject *parent )
   : QObject( parent )
 {
-  setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/elevationscale.svg" ) ) );
+  setIcon( QgsApplication::getThemeIcon( u"propertyicons/elevationscale.svg"_s ) );
   setTitle( tr( "Elevation" ) );
 }
 
@@ -321,7 +327,7 @@ bool QgsMeshElevationPropertiesWidgetFactory::supportsLayer( QgsMapLayer *layer 
 
 QString QgsMeshElevationPropertiesWidgetFactory::layerPropertiesPagePositionHint() const
 {
-  return QStringLiteral( "mOptsPage_Metadata" );
+  return u"mOptsPage_Metadata"_s;
 }
 
 

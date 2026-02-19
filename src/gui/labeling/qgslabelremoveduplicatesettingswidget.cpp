@@ -15,8 +15,10 @@
 
 
 #include "qgslabelremoveduplicatesettingswidget.h"
-#include "moc_qgslabelremoveduplicatesettingswidget.cpp"
+
 #include "qgsexpressioncontextutils.h"
+
+#include "moc_qgslabelremoveduplicatesettingswidget.cpp"
 
 QgsLabelRemoveDuplicatesSettingsWidget::QgsLabelRemoveDuplicatesSettingsWidget( QWidget *parent, QgsMapLayer *layer )
   : QgsLabelSettingsWidgetBase( parent, layer )
@@ -27,11 +29,11 @@ QgsLabelRemoveDuplicatesSettingsWidget::QgsLabelRemoveDuplicatesSettingsWidget( 
 
   mNoRepeatDistUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
 
-  connect( mNoRepeatDistSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [=]( double ) {
+  connect( mNoRepeatDistSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double ) {
     if ( !mBlockSignals )
       emit changed();
   } );
-  connect( mNoRepeatDistUnitWidget, &QgsUnitSelectionWidget::changed, this, [=] {
+  connect( mNoRepeatDistUnitWidget, &QgsUnitSelectionWidget::changed, this, [this] {
     if ( !mBlockSignals )
       emit changed();
   } );

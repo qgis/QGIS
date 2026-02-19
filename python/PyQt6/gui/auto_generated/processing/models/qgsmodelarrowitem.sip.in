@@ -11,6 +11,7 @@
 
 
 
+
 class QgsModelArrowItem : QObject, QGraphicsPathItem
 {
 %Docstring(signature="appended")
@@ -72,6 +73,15 @@ points on both items.
     void setPenStyle( Qt::PenStyle style );
 %Docstring
 Sets the pen ``style`` to use for rendering the arrow line.
+%End
+
+  signals:
+
+    void painterPathUpdated();
+%Docstring
+Emitted when the path is updated.
+
+.. versionadded:: 4.0
 %End
 
   public slots:

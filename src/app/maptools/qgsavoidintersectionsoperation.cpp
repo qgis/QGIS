@@ -13,16 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QPushButton>
+#include "qgsavoidintersectionsoperation.h"
 
 #include "qgis.h"
 #include "qgisapp.h"
-#include "qgsavoidintersectionsoperation.h"
-#include "moc_qgsavoidintersectionsoperation.cpp"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
+
+#include <QPushButton>
+
+#include "moc_qgsavoidintersectionsoperation.cpp"
 
 QgsAvoidIntersectionsOperation::Result QgsAvoidIntersectionsOperation::apply( QgsVectorLayer *layer, QgsFeatureId fid, QgsGeometry &geom, const QHash<QgsVectorLayer *, QSet<QgsFeatureId>> &ignoreFeatures )
 {
@@ -82,7 +84,7 @@ QgsAvoidIntersectionsOperation::Result QgsAvoidIntersectionsOperation::apply( Qg
         QgsMessageBarItem *messageBarItem = QgisApp::instance()->messageBar()->createMessage( tr( "Avoid overlaps" ), tr( "Only the largest of multiple created geometries was preserved." ) );
         QPushButton *restoreButton = new QPushButton( tr( "Restore others" ) );
         QPointer<QgsVectorLayer> layerPtr( layer );
-        connect( restoreButton, &QPushButton::clicked, restoreButton, [=] {
+        connect( restoreButton, &QPushButton::clicked, restoreButton, [layerPtr = std::move( layerPtr ), removedFeatures] {
           if ( !layerPtr )
             return;
           layerPtr->beginEditCommand( tr( "Restored geometry parts removed by avoid overlaps" ) );

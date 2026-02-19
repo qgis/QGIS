@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgsrastersinglecolorrendererwidget.h"
-#include "moc_qgsrastersinglecolorrendererwidget.cpp"
-#include "qgsrastersinglecolorrenderer.h"
-#include "qgsrasterlayer.h"
+
 #include "qgsrasterdataprovider.h"
+#include "qgsrasterlayer.h"
+#include "qgsrastersinglecolorrenderer.h"
+
+#include "moc_qgsrastersinglecolorrendererwidget.cpp"
 
 QgsRasterSingleColorRendererWidget::QgsRasterSingleColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
   : QgsRasterRendererWidget( layer, extent )
@@ -36,8 +38,8 @@ QgsRasterSingleColorRendererWidget::QgsRasterSingleColorRendererWidget( QgsRaste
 
     mBandComboBox->setLayer( layer );
 
-    connect( mBandComboBox, &QgsRasterBandComboBox::bandChanged, this, [=]( int ) { emit widgetChanged(); } );
-    connect( mColorButton, &QgsColorButton::colorChanged, this, [=]( const QColor & ) { emit widgetChanged(); } );
+    connect( mBandComboBox, &QgsRasterBandComboBox::bandChanged, this, [this]( int ) { emit widgetChanged(); } );
+    connect( mColorButton, &QgsColorButton::colorChanged, this, [this]( const QColor & ) { emit widgetChanged(); } );
 
     setFromRenderer( layer->renderer() );
   }

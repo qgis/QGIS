@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgsmetalroughmaterialwidget.h"
-#include "moc_qgsmetalroughmaterialwidget.cpp"
 
-#include "qgsmetalroughmaterialsettings.h"
 #include "qgis.h"
+#include "qgsmetalroughmaterialsettings.h"
+
+#include "moc_qgsmetalroughmaterialwidget.cpp"
 
 QgsMetalRoughMaterialWidget::QgsMetalRoughMaterialWidget( QWidget *parent, bool )
   : QgsMaterialSettingsWidget( parent )
@@ -30,11 +31,11 @@ QgsMetalRoughMaterialWidget::QgsMetalRoughMaterialWidget( QWidget *parent, bool 
   setSettings( &defaultMaterial, nullptr );
 
   connect( mButtonBaseColor, &QgsColorButton::colorChanged, this, &QgsMetalRoughMaterialWidget::changed );
-  connect( mSpinMetalness, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [=] {
+  connect( mSpinMetalness, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [this] {
     updateWidgetState();
     emit changed();
   } );
-  connect( mSpinRoughness, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [=] {
+  connect( mSpinRoughness, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [this] {
     updateWidgetState();
     emit changed();
   } );

@@ -19,12 +19,13 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgspropertycollection.h"
-#include "qgsobjectcustomproperties.h"
 #include "qgsexpressioncontextgenerator.h"
-#include <QObject>
+#include "qgsobjectcustomproperties.h"
+#include "qgspropertycollection.h"
+
 #include <QDomNode>
 #include <QMap>
+#include <QObject>
 #include <QPointer>
 
 class QgsLayout;
@@ -51,6 +52,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
     //SIP_TYPEHEADER_INCLUDE( "qgslayoutitempage.h" );
     //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemmarker.h" );
     //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemelevationprofile.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemchart.h" );
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -117,6 +119,10 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
         case QGraphicsItem::UserType + 118:
           sipType = sipType_QgsLayoutItemElevationProfile;
           *sipCppRet = static_cast<QgsLayoutItemElevationProfile *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 119:
+          sipType = sipType_QgsLayoutItemChart;
+          *sipCppRet = static_cast<QgsLayoutItemChart *>( sipCpp );
           break;
 
         // did you read that comment above? NO? Go read it now. You're about to break stuff.
@@ -195,6 +201,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       MapGridFrameDivisionsRight, //!< Map frame division display right
       MapGridFrameDivisionsTop, //!< Map frame division display top
       MapGridFrameDivisionsBottom, //!< Map frame division display bottom
+      MapGridDrawAnnotation, //!< Map annotation visibility (for individual annotations) \since QGIS 4.0
       MapCrs, //!< Map CRS
       StartDateTime, //!< Temporal range's start DateTime
       EndDateTime, //!< Temporal range's end DateTime

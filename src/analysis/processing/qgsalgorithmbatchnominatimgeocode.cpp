@@ -15,12 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsalgorithmbatchgeocode.h"
 #include "qgsalgorithmbatchnominatimgeocode.h"
+
+#include "qgsalgorithmbatchgeocode.h"
 #include "qgsgeocoder.h"
-#include "qgsgeocoderresult.h"
 #include "qgsgeocodercontext.h"
+#include "qgsgeocoderresult.h"
 #include "qgsvectorlayer.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -31,7 +36,7 @@ QgsBatchNominatimGeocodeAlgorithm::QgsBatchNominatimGeocodeAlgorithm()
 
 QString QgsBatchNominatimGeocodeAlgorithm::name() const
 {
-  return QStringLiteral( "batchnominatimgeocoder" );
+  return u"batchnominatimgeocoder"_s;
 }
 
 QString QgsBatchNominatimGeocodeAlgorithm::displayName() const
@@ -46,7 +51,7 @@ QStringList QgsBatchNominatimGeocodeAlgorithm::tags() const
 
 QgsCoordinateReferenceSystem QgsBatchNominatimGeocodeAlgorithm::outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const
 {
-  mOutputCrs = inputCrs.isValid() ? inputCrs : QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+  mOutputCrs = inputCrs.isValid() ? inputCrs : QgsCoordinateReferenceSystem( u"EPSG:4326"_s );
   return mOutputCrs;
 }
 
@@ -57,7 +62,7 @@ QgsBatchNominatimGeocodeAlgorithm *QgsBatchNominatimGeocodeAlgorithm::createInst
 
 QString QgsBatchNominatimGeocodeAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm performs batch geocoding using the <a href=\"#\">Nominatim</a> service against an input layer string field.\n\n"
+  return QObject::tr( "This algorithm performs batch geocoding using the <a href=\"https://nominatim.qgis.org/\">Nominatim</a> service against an input layer string field.\n\n"
                       "The output layer will have a point geometry reflecting the geocoded location as well as a number of attributes associated to the geocoded location." );
 }
 

@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 #include "qgsprocessingcontext.h"
+
 #include <QGraphicsScene>
 
 class QgsProcessingModelAlgorithm;
@@ -31,6 +32,7 @@ class QgsProcessingModelComment;
 class QgsModelChildAlgorithmGraphicItem;
 class QgsProcessingModelGroupBox;
 class QgsMessageBar;
+class QgsModelArrowItem;
 
 ///@cond NOT_STABLE
 
@@ -50,7 +52,8 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     {
       GroupBox = 0,         //!< A logical group box
       ArrowLink = 1,        //!< An arrow linking model items
-      ModelComponent = 2,   //!< Model components (e.g. algorithms, inputs and outputs)
+      ArrowDecoration = 2,  //!< An arrow decoration (used for display feature count at the moment)
+      ModelComponent = 10,  //!< Model components (e.g. algorithms, inputs and outputs)
       MouseHandles = 99,    //!< Mouse handles
       RubberBand = 100,     //!< Rubber band item
       ZSnapIndicator = 101, //!< Z-value for snapping indicator
@@ -60,8 +63,9 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     //! Flags for controlling how the scene is rendered and scene behavior
     enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
-      FlagHideControls = 1 << 1, //!< If set, item interactive controls will be hidden
-      FlagHideComments = 1 << 2, //!< If set, comments will be hidden
+      FlagHideControls = 1 << 1,     //!< If set, item interactive controls will be hidden
+      FlagHideComments = 1 << 2,     //!< If set, comments will be hidden
+      FlagHideFeatureCount = 1 << 3, //!< If set, Feature count will be hidden
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -120,14 +124,14 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
 
     /**
      * Returns the graphic item corresponding to the specified child algorithm
-     * 
+     *
      * \since QGIS 3.44
      */
     QgsModelChildAlgorithmGraphicItem *childAlgorithmItem( const QString &childId );
 
     /**
      * Returns the QgsModelComponentGraphicItem corresponding to the specified child algorithm
-     * 
+     *
      * \since QGIS 3.44
      */
     QgsModelComponentGraphicItem *parameterItem( const QString &name );
@@ -153,7 +157,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     /**
      * Sets the \a result of the last run of the model through the designer window.
      */
-    void setLastRunResult( const QgsProcessingModelResult &result );
+    void setLastRunResult( const QgsProcessingModelResult &result, QgsProcessingContext &context );
 
     /**
      * Returns the message bar associated with the scene.
@@ -176,10 +180,19 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
 
     /**
      * Requests a complete rebuild of a model by emitting the according signal
-     * 
+     *
      * \since QGIS 3.44
      */
     void requestRebuildRequired();
+
+    /**
+     * Updates the scene rect based on the bounds of the model.
+
+     * The bounding rectangle of the model is calculated off all components of the model, with an additional margin arounds items.
+     *
+     * \since QGIS 4.0
+     */
+    void updateBounds();
 
   signals:
 
@@ -271,6 +284,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     QList<LinkSource> linkSourcesForParameterValue( QgsProcessingModelAlgorithm *model, const QVariant &value, const QString &childId, QgsProcessingContext &context ) const;
 
     void addCommentItemForComponent( QgsProcessingModelAlgorithm *model, const QgsProcessingModelComponent &component, QgsModelComponentGraphicItem *parentItem );
+    void addFeatureCountItemForArrow( QgsModelArrowItem *arrow, const QString &layerId );
 
     Flags mFlags = Flags();
 
@@ -281,6 +295,9 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     QMap<QString, QMap<QString, QgsModelComponentGraphicItem *>> mOutputItems;
     QMap<QString, QgsModelComponentGraphicItem *> mGroupBoxItems;
     QgsProcessingModelResult mLastResult;
+    QMap<QString, long long> mLastResultCount;
+
+    static constexpr int SCENE_COMPONENT_MARGIN = 50;
 
     QgsMessageBar *mMessageBar = nullptr;
 };

@@ -14,13 +14,19 @@
  ***************************************************************************/
 
 #include "qgsdbrelationshipwidget.h"
-#include "moc_qgsdbrelationshipwidget.cpp"
-#include "qgsgui.h"
+
 #include "qgsdatabasetablemodel.h"
+#include "qgsgui.h"
 #include "qgsproviderregistry.h"
+
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QSortFilterProxyModel>
+#include <QString>
+
+#include "moc_qgsdbrelationshipwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsDbRelationWidget
@@ -85,14 +91,14 @@ QgsDbRelationWidget::QgsDbRelationWidget( QgsAbstractDatabaseProviderConnection 
   mLeftTableCombo->setModel( mProxyModel );
   mRightTableCombo->setModel( mProxyModel );
 
-  connect( mNameEdit, &QLineEdit::textChanged, this, [=] {
+  connect( mNameEdit, &QLineEdit::textChanged, this, [this] {
     emit validityChanged( isValid() );
   } );
-  connect( mLeftTableCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( mLeftTableCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     mLeftFieldsCombo->setFields( mConnection->fields( QString(), mLeftTableCombo->currentText() ) );
     emit validityChanged( isValid() );
   } );
-  connect( mRightTableCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( mRightTableCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     mRightFieldsCombo->setFields( mConnection->fields( QString(), mRightTableCombo->currentText() ) );
     emit validityChanged( isValid() );
   } );
@@ -106,7 +112,7 @@ QgsDbRelationWidget::QgsDbRelationWidget( QgsAbstractDatabaseProviderConnection 
           mRelatedTableTypeCombo
         } )
   {
-    connect( combo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+    connect( combo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
       emit validityChanged( isValid() );
     } );
   }
@@ -123,9 +129,9 @@ void QgsDbRelationWidget::setRelationship( const QgsWeakRelation &relationship )
   mStrengthCombo->setCurrentIndex( mStrengthCombo->findData( QVariant::fromValue( mRelation.strength() ) ) );
 
   QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( mConnection->providerKey(), mRelation.referencedLayerSource() );
-  mLeftTableCombo->setCurrentText( parts.value( QStringLiteral( "layerName" ) ).toString() );
+  mLeftTableCombo->setCurrentText( parts.value( u"layerName"_s ).toString() );
   parts = QgsProviderRegistry::instance()->decodeUri( mConnection->providerKey(), mRelation.referencingLayerSource() );
-  mRightTableCombo->setCurrentText( parts.value( QStringLiteral( "layerName" ) ).toString() );
+  mRightTableCombo->setCurrentText( parts.value( u"layerName"_s ).toString() );
 
   mCardinalityCombo->setCurrentIndex( mCardinalityCombo->findData( QVariant::fromValue( mRelation.cardinality() ) ) );
   mLeftFieldsCombo->setCurrentText( mRelation.referencedLayerFields().value( 0 ) );
@@ -184,7 +190,7 @@ bool QgsDbRelationWidget::isValid() const
 QgsDbRelationDialog::QgsDbRelationDialog( QgsAbstractDatabaseProviderConnection *connection, QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
 {
-  setObjectName( QStringLiteral( "QgsDbRelationDialog" ) );
+  setObjectName( u"QgsDbRelationDialog"_s );
 
   QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsDbRelationWidget( connection );

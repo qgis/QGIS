@@ -19,6 +19,10 @@
 #include "qgscreateannotationitemmaptool.h"
 #include "qgsmaptoolcapture.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #define SIP_NO_FILE
 
 class QgsSettingsEntryString;
@@ -180,7 +184,7 @@ class GUI_EXPORT QgsCreatePictureItemMapTool : public QgsMapToolAdvancedDigitizi
     Q_OBJECT
 
   public:
-    static inline QgsSettingsTreeNode *sTreePicture = QgsCreateAnnotationItemMapToolInterface::sTreeAnnotationTools->createChildNode( QStringLiteral( "picture-item" ) );
+    static inline QgsSettingsTreeNode *sTreePicture = QgsCreateAnnotationItemMapToolInterface::sTreeAnnotationTools->createChildNode( u"picture-item"_s );
     static const QgsSettingsEntryString *settingLastSourceFolder;
 
     //! Constructor

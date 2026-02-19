@@ -13,14 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsappcoordinateoperationhandlers.h"
-#include "moc_qgsappcoordinateoperationhandlers.cpp"
-#include "qgscoordinatetransform.h"
+
 #include "qgisapp.h"
+#include "qgscoordinatetransform.h"
+#include "qgsinstallgridshiftdialog.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsmessageoutput.h"
 #include "qgsproject.h"
-#include "qgsinstallgridshiftdialog.h"
+
+#include <QString>
+
+#include "moc_qgsappcoordinateoperationhandlers.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsAppMissingRequiredGridHandler
@@ -28,27 +34,27 @@
 QgsAppMissingGridHandler::QgsAppMissingGridHandler( QObject *parent )
   : QObject( parent )
 {
-  QgsCoordinateTransform::setCustomMissingRequiredGridHandler( [=]( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::GridDetails &grid ) {
+  QgsCoordinateTransform::setCustomMissingRequiredGridHandler( [this]( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::GridDetails &grid ) {
     emit missingRequiredGrid( sourceCrs, destinationCrs, grid );
   } );
 
-  QgsCoordinateTransform::setCustomMissingPreferredGridHandler( [=]( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &preferredOperation, const QgsDatumTransform::TransformDetails &availableOperation ) {
+  QgsCoordinateTransform::setCustomMissingPreferredGridHandler( [this]( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &preferredOperation, const QgsDatumTransform::TransformDetails &availableOperation ) {
     emit missingPreferredGrid( sourceCrs, destinationCrs, preferredOperation, availableOperation );
   } );
 
-  QgsCoordinateTransform::setCustomCoordinateOperationCreationErrorHandler( [=]( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &error ) {
+  QgsCoordinateTransform::setCustomCoordinateOperationCreationErrorHandler( [this]( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &error ) {
     emit coordinateOperationCreationError( sourceCrs, destinationCrs, error );
   } );
 
-  QgsCoordinateTransform::setCustomMissingGridUsedByContextHandler( [=]( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &desired ) {
+  QgsCoordinateTransform::setCustomMissingGridUsedByContextHandler( [this]( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &desired ) {
     emit missingGridUsedByContextHandler( sourceCrs, destinationCrs, desired );
   } );
 
-  QgsCoordinateTransform::setFallbackOperationOccurredHandler( [=]( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &desired ) {
+  QgsCoordinateTransform::setFallbackOperationOccurredHandler( [this]( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &desired ) {
     emit fallbackOperationOccurred( sourceCrs, destinationCrs, desired );
   } );
 
-  QgsCoordinateTransform::setDynamicCrsToDynamicCrsWarningHandler( [=]( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs ) {
+  QgsCoordinateTransform::setDynamicCrsToDynamicCrsWarningHandler( [this]( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs ) {
     emit dynamicToDynamicWarning( sourceCrs, destinationCrs );
   } );
 
@@ -59,7 +65,7 @@ QgsAppMissingGridHandler::QgsAppMissingGridHandler( QObject *parent )
   connect( this, &QgsAppMissingGridHandler::fallbackOperationOccurred, this, &QgsAppMissingGridHandler::onFallbackOperationOccurred, Qt::QueuedConnection );
   connect( this, &QgsAppMissingGridHandler::dynamicToDynamicWarning, this, &QgsAppMissingGridHandler::onDynamicToDynamicWarning, Qt::QueuedConnection );
 
-  connect( QgsProject::instance(), &QgsProject::cleared, this, [=] {
+  connect( QgsProject::instance(), &QgsProject::cleared, this, [this] {
     mAlreadyWarnedPairsForProject.clear();
     mAlreadyWarnedBallparkPairsForProject.clear();
   } );
@@ -136,7 +142,7 @@ void QgsAppMissingGridHandler::onMissingPreferredGrid( const QgsCoordinateRefere
           downloadMessage = tr( "This grid is available for download from <a href=\"%1\">%1</a>." ).arg( grid.url );
         }
       }
-      gridMessage += QStringLiteral( "<li>%1</li>" ).arg( m );
+      gridMessage += u"<li>%1</li>"_s.arg( m );
     }
   }
   if ( !gridMessage.isEmpty() )
@@ -222,7 +228,7 @@ void QgsAppMissingGridHandler::onMissingGridUsedByContextHandler( const QgsCoord
           downloadMessage = tr( "This grid is available for download from <a href=\"%1\">%1</a>." ).arg( grid.url );
         }
       }
-      gridMessage += QStringLiteral( "<li>%1</li>" ).arg( m );
+      gridMessage += u"<li>%1</li>"_s.arg( m );
     }
   }
   if ( !gridMessage.isEmpty() )

@@ -21,6 +21,7 @@ from qgis.core import (
     QgsAnnotationItemEditOperationAddNode,
     QgsAnnotationItemEditOperationDeleteNode,
     QgsAnnotationItemEditOperationMoveNode,
+    QgsAnnotationItemEditOperationRotateItem,
     QgsAnnotationItemEditOperationTranslateItem,
     QgsAnnotationItemNode,
     QgsAnnotationLineItem,
@@ -116,6 +117,27 @@ class TestQgsAnnotationLineItem(QgisTestCase):
         self.assertEqual(
             item.geometry().asWkt(), "LineString (112 213, 114 213, 114 215)"
         )
+
+    def test_rotate_operation(self):
+        item = QgsAnnotationLineItem(
+            QgsLineString(
+                [
+                    QgsPoint(0, 0),
+                    QgsPoint(5, 10),
+                    QgsPoint(10, 0),
+                ]
+            )
+        )
+        self.assertEqual(item.geometry().asWkt(), "LineString (0 0, 5 10, 10 0)")
+
+        self.assertEqual(
+            item.applyEditV2(
+                QgsAnnotationItemEditOperationRotateItem("", 90),
+                QgsAnnotationItemEditContext(),
+            ),
+            Qgis.AnnotationItemEditOperationResult.Success,
+        )
+        self.assertEqual(item.geometry().asWkt(), "LineString (0 10, 10 5, 0 0)")
 
     def test_apply_move_node_edit(self):
         item = QgsAnnotationLineItem(

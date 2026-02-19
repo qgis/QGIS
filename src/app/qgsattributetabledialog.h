@@ -17,14 +17,15 @@
 #ifndef QGSATTRIBUTETABLEDIALOG_H_
 #define QGSATTRIBUTETABLEDIALOG_H_
 
-#include <QDialog>
-#include <QModelIndex>
-#include <QItemSelectionModel>
+#include "ui_qgsattributetabledialog.h"
 
 #include <ctime>
 
 #include "qgis_app.h"
-#include "ui_qgsattributetabledialog.h"
+
+#include <QDialog>
+#include <QItemSelectionModel>
+#include <QModelIndex>
 
 class QPushButton;
 class QLineEdit;
@@ -223,6 +224,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void formFilterSet( const QString &filter, QgsAttributeForm::FilterType type );
     void showContextMenu( QgsActionMenu *menu, QgsFeatureId fid );
     void updateLayerModifiedActions();
+    void zoomToFeature( QgsFeatureId fid );
 
   private:
     QMenu *mMenuActions = nullptr;

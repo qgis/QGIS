@@ -15,14 +15,16 @@
 #ifndef QGSFIELDDOMAINWIDGET_H
 #define QGSFIELDDOMAINWIDGET_H
 
+#include "ui_qgscodedvaluedomainwidgetbase.h"
+#include "ui_qgsfielddomainwidgetbase.h"
+#include "ui_qgsglobdomainwidgetbase.h"
+#include "ui_qgsrangedomainwidgetbase.h"
+
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "ui_qgsfielddomainwidgetbase.h"
-#include "ui_qgsrangedomainwidgetbase.h"
-#include "ui_qgsglobdomainwidgetbase.h"
-#include "ui_qgscodedvaluedomainwidgetbase.h"
-#include "qgis.h"
 #include "qgsfielddomain.h"
+
 #include <QAbstractTableModel>
 #include <QDialog>
 
@@ -49,7 +51,7 @@ class GUI_EXPORT QgsAbstractFieldDomainWidget : public QWidget
      */
     QgsAbstractFieldDomainWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    virtual ~QgsAbstractFieldDomainWidget();
+    ~QgsAbstractFieldDomainWidget() override;
 
     /**
      * Sets the current field domain to show properties for in the widget.
@@ -240,6 +242,20 @@ class GUI_EXPORT QgsFieldDomainWidget : public QWidget, private Ui_QgsFieldDomai
      */
     bool isValid() const;
 
+    /**
+     * Sets if name of the field domain is editable.
+     *
+     * \since QGIS 4.0
+     */
+    void setNameEditable( bool editable );
+
+    /**
+     * Sets if merge and split policies are editable.
+     *
+     * \since QGIS 4.0
+     */
+    void setPoliciesEditable( bool editable );
+
   signals:
 
     /**
@@ -285,6 +301,20 @@ class GUI_EXPORT QgsFieldDomainDialog : public QDialog
      * \see setFieldDomain()
      */
     QgsFieldDomain *createFieldDomain() const SIP_FACTORY;
+
+    /**
+     * Sets if name of the field domain is editable
+     *
+     * \since QGIS 4.0
+     */
+    void setNameEditable( bool editable );
+
+    /**
+     * Sets if merge and split policies are editable.
+     *
+     * \since QGIS 4.0
+     */
+    void setPoliciesEditable( bool editable );
 
   public slots:
 

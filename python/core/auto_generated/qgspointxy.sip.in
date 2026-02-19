@@ -12,6 +12,7 @@
 
 
 
+
 class QgsPointXY
 {
 %Docstring(signature="appended")

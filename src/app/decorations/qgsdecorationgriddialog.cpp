@@ -16,17 +16,21 @@
  ***************************************************************************/
 
 #include "qgsdecorationgriddialog.h"
-#include "moc_qgsdecorationgriddialog.cpp"
 
-#include "qgsdecorationgrid.h"
-
-#include "qgshelp.h"
-#include "qgssymbol.h"
-#include "qgssymbolselectordialog.h"
 #include "qgisapp.h"
+#include "qgsdecorationgrid.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
+#include "qgssymbol.h"
+#include "qgssymbolselectordialog.h"
+
+#include <QString>
+
+#include "moc_qgsdecorationgriddialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidget *parent )
   : QDialog( parent )
@@ -38,7 +42,7 @@ QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidg
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDecorationGridDialog::buttonBox_accepted );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsDecorationGridDialog::buttonBox_rejected );
-  connect( mGridTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=]( int ) { updateSymbolButtons(); } );
+  connect( mGridTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this]( int ) { updateSymbolButtons(); } );
   connect( mPbtnUpdateFromExtents, &QPushButton::clicked, this, &QgsDecorationGridDialog::mPbtnUpdateFromExtents_clicked );
   connect( mPbtnUpdateFromLayer, &QPushButton::clicked, this, &QgsDecorationGridDialog::mPbtnUpdateFromLayer_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDecorationGridDialog::showHelp );
@@ -47,7 +51,7 @@ QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidg
   mLineSymbolButton->setSymbolType( Qgis::SymbolType::Line );
 
   grpEnable->setChecked( mDeco.enabled() );
-  connect( grpEnable, &QGroupBox::toggled, this, [=] { updateSymbolButtons(); } );
+  connect( grpEnable, &QGroupBox::toggled, this, [this] { updateSymbolButtons(); } );
 
   mOffsetXEdit->setShowClearButton( true );
   mOffsetXEdit->setClearValue( 0 );
@@ -151,7 +155,7 @@ void QgsDecorationGridDialog::updateDecoFromGui()
 
 void QgsDecorationGridDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#grid-decoration" ) );
+  QgsHelp::openHelp( u"map_views/map_view.html#grid-decoration"_s );
 }
 
 void QgsDecorationGridDialog::buttonBox_accepted()

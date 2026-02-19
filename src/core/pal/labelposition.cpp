@@ -27,33 +27,33 @@
  *
  */
 
-#include "layer.h"
+#include "labelposition.h"
+
+#include <cmath>
+
 #include "costcalculator.h"
 #include "feature.h"
-#include "labelposition.h"
-#include "qgsgeos.h"
+#include "layer.h"
 #include "qgsgeometryutils_base.h"
+#include "qgsgeos.h"
 #include "qgslabelingenginerule.h"
 #include "qgsmessagelog.h"
-#include <cmath>
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 using namespace pal;
 
 LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, FeaturePart *feature, LabelDirectionToLine directionToLine, Qgis::LabelQuadrantPosition quadrant )
   : id( id )
   , feature( feature )
-  , probFeat( 0 )
-  , nbOverlap( 0 )
   , alpha( alpha )
   , w( w )
   , h( h )
-  , partId( -1 )
-  , upsideDown( false )
   , mQuadrant( quadrant )
   , mDirectionToLine( directionToLine )
   , mCost( cost )
-  , mHasObstacleConflict( false )
-  , mUpsideDownCharCount( 0 )
 {
   type = GEOS_POLYGON;
   nbPoints = 4;
@@ -190,7 +190,7 @@ bool LabelPosition::intersects( const GEOSPreparedGeometry *geometry )
       return mNextPart->intersects( geometry );
     }
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
@@ -217,7 +217,7 @@ bool LabelPosition::within( const GEOSPreparedGeometry *geometry )
       return mNextPart->within( geometry );
     }
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
@@ -298,12 +298,12 @@ bool LabelPosition::isInConflict( const LabelPosition *lp ) const
             return true;
           }
 #else
-          QgsMessageLog::logMessage( QStringLiteral( "label margin distance requires GEOS 3.10+" ) );
+          QgsMessageLog::logMessage( u"label margin distance requires GEOS 3.10+"_s );
 #endif
         }
-        catch ( GEOSException &e )
+        catch ( QgsGeosException &e )
         {
-          QgsDebugError( QStringLiteral( "GEOS exception: %1" ).arg( e.what() ) );
+          QgsDebugError( u"GEOS exception: %1"_s.arg( e.what() ) );
         }
       }
       else
@@ -318,7 +318,7 @@ bool LabelPosition::isInConflict( const LabelPosition *lp ) const
                                 mOuterBoundsGeos ? mOuterBoundsGeos.get() : mGeos ) == 1 );
           return result;
         }
-        catch ( GEOSException &e )
+        catch ( QgsGeosException &e )
         {
           qWarning( "GEOS exception: %s", e.what() );
           QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
@@ -361,12 +361,12 @@ bool LabelPosition::isInConflictMultiPart( const LabelPosition *lp ) const
         return true;
       }
 #else
-      QgsMessageLog::logMessage( QStringLiteral( "label margin distance requires GEOS 3.10+" ) );
+      QgsMessageLog::logMessage( u"label margin distance requires GEOS 3.10+"_s );
 #endif
     }
-    catch ( GEOSException &e )
+    catch ( QgsGeosException &e )
     {
-      QgsDebugError( QStringLiteral( "GEOS exception: %1" ).arg( e.what() ) );
+      QgsDebugError( u"GEOS exception: %1"_s.arg( e.what() ) );
     }
   }
   else
@@ -376,7 +376,7 @@ bool LabelPosition::isInConflictMultiPart( const LabelPosition *lp ) const
       const bool result = ( GEOSPreparedIntersects_r( geosctxt, preparedMultiPartGeom(), lp->mMultipartGeos ) == 1 );
       return result;
     }
-    catch ( GEOSException &e )
+    catch ( QgsGeosException &e )
     {
       qWarning( "GEOS exception: %s", e.what() );
       QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
@@ -695,7 +695,7 @@ double LabelPosition::getDistanceToPoint( double xp, double yp, bool useOuterBou
         geos::unique_ptr point( GEOSGeom_createPointFromXY_r( geosctxt, xp, yp ) );
         contains = ( GEOSPreparedContainsProperly_r( geosctxt, mPreparedOuterBoundsGeos, point.get() ) == 1 );
       }
-      catch ( GEOSException & )
+      catch ( QgsGeosException & )
       {
         contains = false;
       }
@@ -747,7 +747,7 @@ double LabelPosition::getDistanceToPoint( double xp, double yp, bool useOuterBou
             distance = QgsGeometryUtilsBase::sqrDistance2D( xp, yp, nx, ny );
           }
         }
-        catch ( GEOSException &e )
+        catch ( QgsGeosException &e )
         {
           qWarning( "GEOS exception: %s", e.what() );
           QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
@@ -788,7 +788,7 @@ bool LabelPosition::crossesLine( PointSet *line ) const
       return mNextPart->crossesLine( line );
     }
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
@@ -820,7 +820,7 @@ bool LabelPosition::crossesBoundary( PointSet *polygon ) const
       return mNextPart->crossesBoundary( polygon );
     }
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
@@ -855,7 +855,7 @@ bool LabelPosition::intersectsWithPolygon( PointSet *polygon ) const
       return true;
     }
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
@@ -914,7 +914,7 @@ double LabelPosition::polygonIntersectionCostForParts( PointSet *polygon ) const
         cost += 4;
     }
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );

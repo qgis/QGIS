@@ -14,6 +14,11 @@
  ***************************************************************************/
 
 #include <nlohmann/json.hpp>
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 using namespace nlohmann;
 
 #include "qgslogger.h"
@@ -34,7 +39,7 @@ QgsOapifApiRequest::QgsOapifApiRequest( const QgsDataSourceUri &baseUri, const Q
 
 bool QgsOapifApiRequest::request( bool synchronous, bool forceRefresh )
 {
-  if ( !sendGET( QUrl( mUrl ), QStringLiteral( "application/vnd.oai.openapi+json;version=3.0, application/openapi+json;version=3.0, application/json" ), synchronous, forceRefresh ) )
+  if ( !sendGET( QUrl( mUrl ), u"application/vnd.oai.openapi+json;version=3.0, application/openapi+json;version=3.0, application/json"_s, synchronous, forceRefresh ) )
   {
     emit gotResponse();
     return false;
@@ -53,7 +58,7 @@ static const json *resolveRef( const json &j, const std::string &ref )
 {
   if ( ref.compare( 0, 2, "#/" ) != 0 )
     return nullptr;
-  const auto subPaths = QString::fromStdString( ref.substr( 2 ) ).split( QLatin1Char( '/' ) );
+  const auto subPaths = QString::fromStdString( ref.substr( 2 ) ).split( '/'_L1 );
   const json *ret = &j;
   for ( const auto &subPath : subPaths )
   {
@@ -83,7 +88,7 @@ void QgsOapifApiRequest::processReply()
     return;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "parsing API response: " ) + buffer, 4 );
+  QgsDebugMsgLevel( u"parsing API response: "_s + buffer, 4 );
 
   QTextCodec::ConverterState state;
   QTextCodec *codec = QTextCodec::codecForName( "UTF-8" );

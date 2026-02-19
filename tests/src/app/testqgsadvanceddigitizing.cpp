@@ -14,18 +14,19 @@
  ***************************************************************************/
 
 #include "qgisapp.h"
-#include "qgstest.h"
-
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
-#include "qgsvectorlayer.h"
-#include "qgsmaptooladdfeature.h"
 #include "qgsmapcanvassnappingutils.h"
+#include "qgsmaptooladdfeature.h"
 #include "qgssettingsregistrycore.h"
-
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 #include "testqgsmaptoolutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsAdvancedDigitizing : public QObject
 {
@@ -88,7 +89,7 @@ void TestQgsAdvancedDigitizing::initTestCase()
   mQgisApp = new QgisApp();
 
   mCanvas = new QgsMapCanvas();
-  setCanvasCrs( QStringLiteral( "EPSG:3950" ) );
+  setCanvasCrs( u"EPSG:3950"_s );
 
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 33 );
   QgsSettingsRegistryCore::settingsDigitizingDefaultMValue->setValue( 66 );
@@ -96,19 +97,19 @@ void TestQgsAdvancedDigitizing::initTestCase()
   // make test layers
   QList<QgsMapLayer *> layers;
 
-  mLayer3950 = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:3950" ), QStringLiteral( "line layer" ), QStringLiteral( "memory" ) );
+  mLayer3950 = new QgsVectorLayer( u"LineString?crs=EPSG:3950"_s, u"line layer"_s, u"memory"_s );
   QVERIFY( mLayer3950->isValid() );
   layers << mLayer3950;
 
-  mLayer3950ZM = new QgsVectorLayer( QStringLiteral( "LineStringZM?crs=EPSG:3950" ), QStringLiteral( "ZM line layer" ), QStringLiteral( "memory" ) );
+  mLayer3950ZM = new QgsVectorLayer( u"LineStringZM?crs=EPSG:3950"_s, u"ZM line layer"_s, u"memory"_s );
   QVERIFY( mLayer3950ZM->isValid() );
   layers << mLayer3950ZM;
 
-  mLayer4326 = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:4326" ), QStringLiteral( "line layer diff crs" ), QStringLiteral( "memory" ) );
+  mLayer4326 = new QgsVectorLayer( u"LineString?crs=EPSG:4326"_s, u"line layer diff crs"_s, u"memory"_s );
   QVERIFY( mLayer4326->isValid() );
   layers << mLayer4326;
 
-  mLayer4326ZM = new QgsVectorLayer( QStringLiteral( "LineStringZM?crs=EPSG:4326" ), QStringLiteral( "ZM line layer diff crs" ), QStringLiteral( "memory" ) );
+  mLayer4326ZM = new QgsVectorLayer( u"LineStringZM?crs=EPSG:4326"_s, u"ZM line layer diff crs"_s, u"memory"_s );
   QVERIFY( mLayer4326ZM->isValid() );
   layers << mLayer4326ZM;
 
@@ -128,6 +129,7 @@ void TestQgsAdvancedDigitizing::initTestCase()
   snapConfig.setMode( Qgis::SnappingMode::AllLayers );
   snapConfig.setTypeFlag( Qgis::SnappingType::Vertex );
   snapConfig.setTolerance( 1.0 );
+  QgsProject::instance()->setSnappingConfig( snapConfig );
 
   QgsMapSettings mapSettings;
   mapSettings.setExtent( QgsRectangle( 0, 0, 8, 8 ) );
@@ -144,7 +146,7 @@ void TestQgsAdvancedDigitizing::initTestCase()
   snappingUtils->locatorForLayer( mLayer4326ZM )->init();
 
   mCanvas->setSnappingUtils( snappingUtils );
-
+  QgsProject::instance()->setSnappingConfig( snapConfig );
   // create base map tool
   mCaptureTool = new QgsMapToolAddFeature( mCanvas, mAdvancedDigitizingDockWidget, QgsMapToolCapture::CaptureLine );
   mCanvas->setMapTool( mCaptureTool );
@@ -181,6 +183,7 @@ void TestQgsAdvancedDigitizing::cleanup()
   snapConfig.setMode( Qgis::SnappingMode::AllLayers );
   snapConfig.setTypeFlag( Qgis::SnappingType::Vertex );
   snappingUtils->setConfig( snapConfig );
+  QgsProject::instance()->setSnappingConfig( snapConfig );
 
   // reset all layers
   mLayer3950->rollBack();
@@ -248,12 +251,12 @@ void TestQgsAdvancedDigitizing::distanceConstraint()
   capacities = mAdvancedDigitizingDockWidget->capacities();
   QVERIFY( capacities.testFlag( QgsAdvancedDigitizingDockWidget::Distance ) );
 
-  mAdvancedDigitizingDockWidget->setDistance( QStringLiteral( "10" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setDistance( u"10"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
 
   utils.mouseClick( 2, 2, Qt::LeftButton );
   utils.mouseClick( 1, 2, Qt::RightButton );
 
-  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (1 1, 8.07 8.07)" ) );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), u"LineString (1 1, 8.07 8.07)"_s );
 
   // activate constraint on the third point
   oldFeatures = utils.existingFeatureIds();
@@ -261,12 +264,12 @@ void TestQgsAdvancedDigitizing::distanceConstraint()
   utils.mouseClick( 1, 1, Qt::LeftButton );
   utils.mouseClick( 2, 2, Qt::LeftButton );
 
-  mAdvancedDigitizingDockWidget->setDistance( QStringLiteral( "5" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setDistance( u"5"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
 
   utils.mouseClick( 3, 2, Qt::LeftButton );
   utils.mouseClick( 1, 2, Qt::RightButton );
 
-  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (1 1, 2 2, 7 2)" ) );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), u"LineString (1 1, 2 2, 7 2)"_s );
 
   capacities = mAdvancedDigitizingDockWidget->capacities();
   QVERIFY( !capacities.testFlag( QgsAdvancedDigitizingDockWidget::Distance ) );
@@ -281,12 +284,12 @@ void TestQgsAdvancedDigitizing::distanceConstraintDiffCrs()
 
   utils.mouseClick( 1, 1, Qt::LeftButton );
 
-  mAdvancedDigitizingDockWidget->setDistance( QStringLiteral( "10" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setDistance( u"10"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
 
   utils.mouseClick( 2, 2, Qt::LeftButton );
   utils.mouseClick( 1, 2, Qt::RightButton );
 
-  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (1 1, 8.07 8.07)" ) );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), u"LineString (1 1, 8.07 8.07)"_s );
 
   // activate constraint on third point
   oldFeatures = utils.existingFeatureIds();
@@ -294,12 +297,12 @@ void TestQgsAdvancedDigitizing::distanceConstraintDiffCrs()
   utils.mouseClick( 1, 1, Qt::LeftButton );
   utils.mouseClick( 2, 2, Qt::LeftButton );
 
-  mAdvancedDigitizingDockWidget->setDistance( QStringLiteral( "5" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setDistance( u"5"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
 
   utils.mouseClick( 3, 2, Qt::LeftButton );
   utils.mouseClick( 1, 2, Qt::RightButton );
 
-  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (1 1, 2 2, 7 2)" ) );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), u"LineString (1 1, 2 2, 7 2)"_s );
 }
 
 void TestQgsAdvancedDigitizing::distanceConstraintWhenSnapping()
@@ -314,7 +317,7 @@ void TestQgsAdvancedDigitizing::distanceConstraintWhenSnapping()
   utils.mouseClick( 2, 2, Qt::LeftButton );
   utils.mouseClick( 2, 2, Qt::RightButton );
 
-  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (1 1, 2 2)" ) );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), u"LineString (1 1, 2 2)"_s );
   oldFeatures = utils.existingFeatureIds();
 
   // with no digitized vertex
@@ -330,12 +333,12 @@ void TestQgsAdvancedDigitizing::distanceConstraintWhenSnapping()
   capacities = mAdvancedDigitizingDockWidget->capacities();
   QVERIFY( capacities.testFlag( QgsAdvancedDigitizingDockWidget::Distance ) );
 
-  mAdvancedDigitizingDockWidget->setDistance( QStringLiteral( "10" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setDistance( u"10"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
 
   utils.mouseClick( 2, 2, Qt::LeftButton );
   utils.mouseClick( 1, 2, Qt::RightButton );
 
-  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (1 1, 8.07 8.07)" ) );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), u"LineString (1 1, 8.07 8.07)"_s );
 
   // activate constraint on the third point
   oldFeatures = utils.existingFeatureIds();
@@ -343,12 +346,12 @@ void TestQgsAdvancedDigitizing::distanceConstraintWhenSnapping()
   utils.mouseClick( 1, 1, Qt::LeftButton );
   utils.mouseClick( 2, 2, Qt::LeftButton );
 
-  mAdvancedDigitizingDockWidget->setDistance( QStringLiteral( "5" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setDistance( u"5"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
 
   utils.mouseClick( 3, 2, Qt::LeftButton );
   utils.mouseClick( 1, 2, Qt::RightButton );
 
-  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (1 1, 2 2, 7 2)" ) );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), u"LineString (1 1, 2 2, 7 2)"_s );
 
   capacities = mAdvancedDigitizingDockWidget->capacities();
   QVERIFY( !capacities.testFlag( QgsAdvancedDigitizingDockWidget::Distance ) );
@@ -371,40 +374,40 @@ void TestQgsAdvancedDigitizing::angleConstraint()
   capacities = mAdvancedDigitizingDockWidget->capacities();
   QVERIFY( capacities.testFlag( QgsAdvancedDigitizingDockWidget::AbsoluteAngle ) );
 
-  mAdvancedDigitizingDockWidget->setAngle( QStringLiteral( "90" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setAngle( u"90"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
 
   utils.mouseClick( 2, 2, Qt::LeftButton );
   utils.mouseClick( 2, 2, Qt::RightButton );
 
-  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (1 1, 1 2)" ) );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), u"LineString (1 1, 1 2)"_s );
 
   // and in the other side
   oldFeatures = utils.existingFeatureIds();
 
   utils.mouseClick( 1, 1, Qt::LeftButton );
 
-  mAdvancedDigitizingDockWidget->setAngle( QStringLiteral( "90" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setAngle( u"90"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
 
   utils.mouseClick( 2, -2, Qt::LeftButton );
   utils.mouseClick( 2, -2, Qt::RightButton );
 
-  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (1 1, 1 -2)" ) );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), u"LineString (1 1, 1 -2)"_s );
 
   // try with an angle of 45°
   oldFeatures = utils.existingFeatureIds();
 
   utils.mouseClick( 0, 0, Qt::LeftButton );
 
-  mAdvancedDigitizingDockWidget->setAngle( QStringLiteral( "45" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setAngle( u"45"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
 
   utils.mouseClick( 0, 2, Qt::LeftButton );
   utils.mouseClick( 0, 2, Qt::RightButton );
-  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (0 0, 1 1)" ) );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), u"LineString (0 0, 1 1)"_s );
 }
 
 void TestQgsAdvancedDigitizing::angleConstraintWithGeographicCrs()
 {
-  setCanvasCrs( QStringLiteral( "EPSG:4326" ) );
+  setCanvasCrs( u"EPSG:4326"_s );
 
   QVERIFY( mCanvas->mapSettings().destinationCrs().isGeographic() );
 
@@ -426,15 +429,15 @@ void TestQgsAdvancedDigitizing::angleConstraintWithGeographicCrs()
 
   // constraint angle can be forced even with geographical
   // should be normal ?
-  mAdvancedDigitizingDockWidget->setAngle( QStringLiteral( "90" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setAngle( u"90"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
   QVERIFY( mAdvancedDigitizingDockWidget->constraintAngle()->isLocked() );
 
   utils.mouseClick( 2, 2, Qt::LeftButton );
   utils.mouseClick( 2, 2, Qt::RightButton );
 
-  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (1 1, 1 2)" ) );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), u"LineString (1 1, 1 2)"_s );
 
-  setCanvasCrs( QStringLiteral( "EPSG:3950" ) );
+  setCanvasCrs( u"EPSG:3950"_s );
 }
 
 void TestQgsAdvancedDigitizing::commonAngleConstraint()
@@ -462,7 +465,7 @@ void TestQgsAdvancedDigitizing::commonAngleConstraint()
   // Check if position is correctly snapped to 90°
   utils.mouseClick( 0.01, 12, Qt::LeftButton );
   utils.mouseClick( 0.01, 12, Qt::RightButton );
-  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (0 0, 0 12)" ) );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), u"LineString (0 0, 0 12)"_s );
 
   // Disable common angle constraint
   mAdvancedDigitizingDockWidget->mCommonAngleConstraint = 0.0;
@@ -480,26 +483,26 @@ void TestQgsAdvancedDigitizing::distanceConstraintWithAngleConstraint()
   // first
   utils.mouseClick( 0, 0, Qt::LeftButton );
 
-  mAdvancedDigitizingDockWidget->setDistance( QStringLiteral( "10" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
-  mAdvancedDigitizingDockWidget->setAngle( QStringLiteral( "45" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setDistance( u"10"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setAngle( u"45"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
 
   utils.mouseClick( 0, 2, Qt::LeftButton );
   utils.mouseClick( 0, 2, Qt::RightButton );
 
-  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (0 0, 7.07 7.07)" ) );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), u"LineString (0 0, 7.07 7.07)"_s );
 
   // second
   oldFeatures = utils.existingFeatureIds();
 
   utils.mouseClick( 0, 0, Qt::LeftButton );
 
-  mAdvancedDigitizingDockWidget->setDistance( QStringLiteral( "10" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
-  mAdvancedDigitizingDockWidget->setAngle( QStringLiteral( "45" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setDistance( u"10"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setAngle( u"45"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
 
   utils.mouseClick( -1000, 59, Qt::LeftButton );
   utils.mouseClick( 0, 2, Qt::RightButton );
 
-  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (0 0, -7.07 -7.07)" ) );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), u"LineString (0 0, -7.07 -7.07)"_s );
 }
 
 
@@ -510,31 +513,31 @@ void TestQgsAdvancedDigitizing::coordinateConstraint()
 
   QVERIFY( mAdvancedDigitizingDockWidget->cadEnabled() );
 
-  mAdvancedDigitizingDockWidget->setX( QStringLiteral( "5" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setX( u"5"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
   utils.mouseClick( 0, 0, Qt::LeftButton );
 
-  mAdvancedDigitizingDockWidget->setY( QStringLiteral( "5" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setY( u"5"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
   utils.mouseClick( 3, 9, Qt::LeftButton );
 
-  mAdvancedDigitizingDockWidget->setX( QStringLiteral( "6" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
-  mAdvancedDigitizingDockWidget->setY( QStringLiteral( "7" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setX( u"6"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setY( u"7"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
   utils.mouseClick( 0, 0, Qt::LeftButton );
 
   utils.mouseClick( 0, 2, Qt::RightButton );
 
-  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (5 0, 3 5, 6 7)" ) );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), u"LineString (5 0, 3 5, 6 7)"_s );
 
   // set Z/M constraints should have no effect
   oldFeatures = utils.existingFeatureIds();
   utils.mouseClick( 0, 0, Qt::LeftButton );
 
-  mAdvancedDigitizingDockWidget->setZ( QStringLiteral( "3" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
-  mAdvancedDigitizingDockWidget->setM( QStringLiteral( "3" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setZ( u"3"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setM( u"3"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
   utils.mouseClick( 0, 2, Qt::LeftButton );
 
   utils.mouseClick( 0, 2, Qt::RightButton );
 
-  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (0 0, 0 2)" ) );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), u"LineString (0 0, 0 2)"_s );
 }
 
 
@@ -545,27 +548,27 @@ void TestQgsAdvancedDigitizing::coordinateConstraintWithZM()
 
   QVERIFY( mAdvancedDigitizingDockWidget->cadEnabled() );
 
-  mAdvancedDigitizingDockWidget->setX( QStringLiteral( "5" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setX( u"5"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
   utils.mouseClick( 0, 0, Qt::LeftButton );
 
-  mAdvancedDigitizingDockWidget->setY( QStringLiteral( "5" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setY( u"5"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
   utils.mouseClick( 3, 9, Qt::LeftButton );
 
-  mAdvancedDigitizingDockWidget->setZ( QStringLiteral( "5" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setZ( u"5"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
   utils.mouseClick( 4, 4, Qt::LeftButton );
 
-  mAdvancedDigitizingDockWidget->setM( QStringLiteral( "5" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setM( u"5"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
   utils.mouseClick( 6, 6, Qt::LeftButton );
 
-  mAdvancedDigitizingDockWidget->setX( QStringLiteral( "9" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
-  mAdvancedDigitizingDockWidget->setY( QStringLiteral( "9" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
-  mAdvancedDigitizingDockWidget->setZ( QStringLiteral( "9" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
-  mAdvancedDigitizingDockWidget->setM( QStringLiteral( "9" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setX( u"9"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setY( u"9"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setZ( u"9"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setM( u"9"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
   utils.mouseClick( 0, 0, Qt::LeftButton );
 
   utils.mouseClick( 0, 2, Qt::RightButton );
 
-  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString ZM (5 0 33 66, 3 5 33 66, 4 4 5 66, 6 6 33 5, 9 9 9 9)" ) );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), u"LineString ZM (5 0 33 66, 3 5 33 66, 4 4 5 66, 6 6 33 5, 9 9 9 9)"_s );
 }
 
 void TestQgsAdvancedDigitizing::coordinateConstraintWhenSnapping()
@@ -581,12 +584,13 @@ void TestQgsAdvancedDigitizing::coordinateConstraintWhenSnapping()
   utils.mouseClick( 2, 2, Qt::LeftButton );
   utils.mouseClick( 2, 2, Qt::RightButton );
 
-  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (1 1, 2 2)" ) );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), u"LineString (1 1, 2 2)"_s );
 
   oldFeatures = utils.existingFeatureIds();
 
   QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
   snapConfig.setEnabled( true );
+  QgsProject::instance()->setSnappingConfig( snapConfig );
   mCanvas->snappingUtils()->setConfig( snapConfig );
 
   // move to trigger a re-indexing and wait for it to complete
@@ -604,28 +608,28 @@ void TestQgsAdvancedDigitizing::coordinateConstraintWhenSnapping()
   utils.mouseClick( 2.02, 2, Qt::LeftButton );
   utils.mouseClick( 2, 2, Qt::RightButton );
 
-  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (0 2, 2 2)" ) );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), u"LineString (0 2, 2 2)"_s );
 
   oldFeatures = utils.existingFeatureIds();
 
   utils.mouseClick( 0, -2, Qt::LeftButton );
 
-  mAdvancedDigitizingDockWidget->setX( QStringLiteral( "0" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setX( u"0"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
   utils.mouseClick( 2.02, 2, Qt::LeftButton ); // shouldn't snap to (2 2)
   utils.mouseClick( -2, -2, Qt::RightButton );
 
-  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (0 -2, 0 2)" ) );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), u"LineString (0 -2, 0 2)"_s );
 
   oldFeatures = utils.existingFeatureIds();
 
   utils.mouseClick( 0, -2, Qt::LeftButton );
 
-  mAdvancedDigitizingDockWidget->setX( QStringLiteral( "2.02" ), // shouldn't snap to (2 2)
+  mAdvancedDigitizingDockWidget->setX( u"2.02"_s, // shouldn't snap to (2 2)
                                        QgsAdvancedDigitizingDockWidget::ReturnPressed );
   utils.mouseClick( 0, 2, Qt::LeftButton );
   utils.mouseClick( -2, -2, Qt::RightButton );
 
-  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (0 -2, 2.02 2)" ) );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), u"LineString (0 -2, 2.02 2)"_s );
 }
 
 void TestQgsAdvancedDigitizing::perpendicularConstraint()
@@ -638,11 +642,12 @@ void TestQgsAdvancedDigitizing::perpendicularConstraint()
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseClick( 0, 10, Qt::LeftButton );
   utils.mouseClick( 1, 1, Qt::RightButton );
-  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (0 0, 0 10)" ) );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), u"LineString (0 0, 0 10)"_s );
 
   QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
   snapConfig.setEnabled( true );
   snapConfig.setTypeFlag( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment );
+  QgsProject::instance()->setSnappingConfig( snapConfig );
   mCanvas->snappingUtils()->setConfig( snapConfig );
 
   // test snapping on segment
@@ -677,12 +682,14 @@ void TestQgsAdvancedDigitizing::xyExtensionConstraint()
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseClick( 10, 10, Qt::LeftButton );
   utils.mouseClick( 1, 1, Qt::RightButton );
-  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (0 0, 10 10)" ) );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), u"LineString (0 0, 10 10)"_s );
 
   QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
   snapConfig.setEnabled( true );
   snapConfig.setTypeFlag( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment );
+  QgsProject::instance()->setSnappingConfig( snapConfig );
   mCanvas->snappingUtils()->setConfig( snapConfig );
+  QgsProject::instance()->setSnappingConfig( snapConfig );
 
   // test snapping on segment
   utils.mouseMove( 4.9, 5.1 );
@@ -730,11 +737,12 @@ void TestQgsAdvancedDigitizing::lineExtensionConstraint()
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseClick( 10, 10, Qt::LeftButton );
   utils.mouseClick( 1, 1, Qt::RightButton );
-  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (0 0, 10 10)" ) );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), u"LineString (0 0, 10 10)"_s );
 
   QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
   snapConfig.setEnabled( true );
   snapConfig.setTypeFlag( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment );
+  QgsProject::instance()->setSnappingConfig( snapConfig );
   mCanvas->snappingUtils()->setConfig( snapConfig );
 
   // test snapping on segment
@@ -778,12 +786,13 @@ void TestQgsAdvancedDigitizing::lineExtensionConstraintGeographicCrs()
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseClick( 10, 10, Qt::LeftButton );
   utils.mouseClick( 1, 1, Qt::RightButton );
-  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (0 0, 10 10)" ) );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), u"LineString (0 0, 10 10)"_s );
 
   QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
   snapConfig.setEnabled( true );
   snapConfig.setTypeFlag( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment );
   mCanvas->snappingUtils()->setConfig( snapConfig );
+  QgsProject::instance()->setSnappingConfig( snapConfig );
 
   // Wait for indexing to complete
   if ( QgsPointLocator *loc = mCanvas->snappingUtils()->locatorForLayer( mLayer4326 ) )
@@ -853,7 +862,7 @@ void TestQgsAdvancedDigitizing::cadPointList()
   QCOMPARE( mAdvancedDigitizingDockWidget->pointsCount(), 6 );
 
   utils.mouseClick( 1, 1, Qt::RightButton );
-  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (0 0, 0 1, 0 2, 0 3, 0 4)" ) );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), u"LineString (0 0, 0 1, 0 2, 0 3, 0 4)"_s );
 
   utils.mouseMove( 1, 1 );
 
@@ -884,11 +893,12 @@ void TestQgsAdvancedDigitizing::lockedSnapVertices()
   utils.mouseClick( 0, 4, Qt::LeftButton );
   utils.mouseClick( 0, 4, Qt::RightButton );
 
-  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (0 0, 0 1, 0 2, 0 3, 0 4)" ) );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), u"LineString (0 0, 0 1, 0 2, 0 3, 0 4)"_s );
 
   QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
   snapConfig.setEnabled( true );
   mCanvas->snappingUtils()->setConfig( snapConfig );
+  QgsProject::instance()->setSnappingConfig( snapConfig );
 
   // no locked snap vertex while xy vertex constraint or line extension
   QCOMPARE( mAdvancedDigitizingDockWidget->lockedSnapVertices().size(), 0 );
@@ -989,6 +999,7 @@ void TestQgsAdvancedDigitizing::currentPointWhenSanpping()
 
   QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
   snapConfig.setEnabled( true );
+  QgsProject::instance()->setSnappingConfig( snapConfig );
   mCanvas->snappingUtils()->setConfig( snapConfig );
 
   QCOMPARE( mCanvas->snappingUtils()->currentLayer(), mLayer3950 );
@@ -1031,6 +1042,7 @@ void TestQgsAdvancedDigitizing::currentPointWhenSanppingWithDiffCanvasCRS()
 
   QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
   snapConfig.setEnabled( true );
+  QgsProject::instance()->setSnappingConfig( snapConfig );
   mCanvas->snappingUtils()->setConfig( snapConfig );
 
   QCOMPARE( mCanvas->snappingUtils()->currentLayer(), mLayer4326 );
@@ -1057,6 +1069,13 @@ void TestQgsAdvancedDigitizing::releaseLockAfterDisable()
   // activate advanced digitizing
   getMapToolDigitizingUtils( mLayer4326 );
 
+  // enable snapping
+  QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
+  snapConfig.setEnabled( true );
+  snapConfig.setTypeFlag( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment );
+  QgsProject::instance()->setSnappingConfig( snapConfig );
+  mCanvas->snappingUtils()->setConfig( snapConfig );
+
   QVERIFY( mAdvancedDigitizingDockWidget->cadEnabled() );
 
   QCOMPARE( mAdvancedDigitizingDockWidget->betweenLineConstraint(), Qgis::BetweenLineConstraint::NoConstraint );
@@ -1070,12 +1089,12 @@ void TestQgsAdvancedDigitizing::releaseLockAfterDisable()
   QVERIFY( !mAdvancedDigitizingDockWidget->constraintXyVertex()->isLocked() );
 
   // enable some constraints
-  mAdvancedDigitizingDockWidget->setAngle( QStringLiteral( "0" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
-  mAdvancedDigitizingDockWidget->setDistance( QStringLiteral( "0" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
-  mAdvancedDigitizingDockWidget->setX( QStringLiteral( "0" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
-  mAdvancedDigitizingDockWidget->setY( QStringLiteral( "0" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
-  mAdvancedDigitizingDockWidget->setZ( QStringLiteral( "0" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
-  mAdvancedDigitizingDockWidget->setM( QStringLiteral( "0" ), QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setAngle( u"0"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setDistance( u"0"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setX( u"0"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setY( u"0"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setZ( u"0"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
+  mAdvancedDigitizingDockWidget->setM( u"0"_s, QgsAdvancedDigitizingDockWidget::ReturnPressed );
 
 
   QCOMPARE( mAdvancedDigitizingDockWidget->betweenLineConstraint(), Qgis::BetweenLineConstraint::NoConstraint );
@@ -1179,6 +1198,7 @@ void TestQgsAdvancedDigitizing::constructionGuides()
 
   QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
   snapConfig.setEnabled( true );
+  QgsProject::instance()->setSnappingConfig( snapConfig );
   mCanvas->snappingUtils()->setConfig( snapConfig );
 
   mAdvancedDigitizingDockWidget->mSnapToConstructionGuides->setChecked( true );

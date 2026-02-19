@@ -16,15 +16,15 @@
 #ifndef QGSADVANCEDDIGITIZINGFLOATER
 #define QGSADVANCEDDIGITIZINGFLOATER
 
-#include <QWidget>
-#include <QString>
-
 #include "ui_qgsadvanceddigitizingfloaterbase.h"
-#include "qgsadvanceddigitizingdockwidget.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 
 #include <QPointer>
+#include <QString>
+#include <QWidget>
 
 class QgsMapCanvas;
 class QgsAdvancedDigitizingDockWidget;
@@ -47,18 +47,20 @@ class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsA
     //! Available floater items
     enum class FloaterItem : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      XCoordinate = 1 << 1,
-      YCoordinate = 1 << 2,
-      MCoordinate = 1 << 3,
-      ZCoordinate = 1 << 4,
-      Angle = 1 << 5,
-      CommonAngleSnapping = 1 << 6,
-      Distance = 1 << 7,
-      Bearing = 1 << 8,
+      XCoordinate = 1 << 1,         //!< X coordinate
+      YCoordinate = 1 << 2,         //!< Y coordinate
+      MCoordinate = 1 << 3,         //!< M coordinate
+      ZCoordinate = 1 << 4,         //!< Z coordinate
+      Angle = 1 << 5,               //!< Angle between segments
+      CommonAngleSnapping = 1 << 6, //!< Common angles
+      Distance = 1 << 7,            //!< Distance (segment length)
+      Bearing = 1 << 8,             //!< Segment bearing
+      Weight = 1 << 9,              //!< Weight for NURBSCurve \since QGIS 4.0
+      Area = 1 << 10,               //!< Total area \since QGIS 4.0
+      TotalLength = 1 << 11,        //!< Total length (or perimeter) \since QGIS 4.0
     };
     Q_DECLARE_FLAGS( FloaterItems, FloaterItem )
     Q_FLAG( FloaterItem )
-
 
     /**
      * Create an advanced digitizing floater widget
@@ -81,7 +83,24 @@ class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsA
     * \param item floater item
     * \since QGIS 3.32
     */
-    bool itemVisibility( const QgsAdvancedDigitizingFloater::FloaterItem &item ) const;
+    bool itemVisibility( QgsAdvancedDigitizingFloater::FloaterItem item ) const;
+
+    /**
+     * Returns the measurement display type for a floater \a item.
+     *
+     * If the \a item does not support measurement types (see itemSupportsMeasurementType()), Qgis::CadMeasurementDisplayType::Hidden will
+     * be returned. For these items use itemVisibility() instead.
+     *
+     * \since QGIS 4.0
+     */
+    Qgis::CadMeasurementDisplayType itemMeasurementDisplayType( QgsAdvancedDigitizingFloater::FloaterItem item ) const;
+
+    /**
+     * Returns TRUE if a floater \a item supports display in different Qgis::CadMeasurementDisplayType values.
+     *
+     * \since QGIS 4.0
+     */
+    static bool itemSupportsMeasurementType( QgsAdvancedDigitizingFloater::FloaterItem item );
 
   public slots:
 
@@ -101,7 +120,35 @@ class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsA
     * \param visible
     * \since QGIS 3.32
     */
-    void setItemVisibility( const QgsAdvancedDigitizingFloater::FloaterItem &item, bool visible );
+    void setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem item, bool visible );
+
+    /**
+     * Set whether the measurement display \a type for a floater \a item.
+     *
+     * \since QGIS 4.0
+     */
+    void setItemMeasurementType( QgsAdvancedDigitizingFloater::FloaterItem item, Qgis::CadMeasurementDisplayType type );
+
+  public slots:
+    /**
+    * Updates the weight value displayed in the floater for NURBSCurve.
+    * \param text The weight value as a string
+    * \since QGIS 4.0
+    */
+    void changeWeight( const QString &text );
+
+    /**
+    * Shows or hides the weight widget in the floater for NURBSCurve.
+    * \param enabled Whether weight editing is active
+    * \since QGIS 4.0
+    */
+    void enabledChangedWeight( bool enabled );
+
+    /**
+    * Requests focus on the weight input field for NURBSCurve.
+    * \since QGIS 4.0
+    */
+    void focusOnWeight();
 
   private slots:
 
@@ -113,6 +160,8 @@ class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsA
     void changeDistance( const QString &text );
     void changeAngle( const QString &text );
     void changeBearing( const QString &text );
+    void changeArea( const QString &text );
+    void changeTotalLength( const QString &text );
     void changeLockX( bool locked );
     void changeLockY( bool locked );
     void changeLockZ( bool locked );

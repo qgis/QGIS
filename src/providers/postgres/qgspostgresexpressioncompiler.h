@@ -16,10 +16,10 @@
 #ifndef QGSPOSTGRESEXPRESSIONCOMPILER_H
 #define QGSPOSTGRESEXPRESSIONCOMPILER_H
 
-#include "qgssqlexpressioncompiler.h"
 #include "qgsexpression.h"
 #include "qgspostgresconn.h"
 #include "qgspostgresfeatureiterator.h"
+#include "qgssqlexpressioncompiler.h"
 
 class QgsPostgresExpressionCompiler : public QgsSqlExpressionCompiler
 {

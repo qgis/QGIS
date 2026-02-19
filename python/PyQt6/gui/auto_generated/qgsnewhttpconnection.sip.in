@@ -10,6 +10,9 @@
 
 
 
+
+
+
 class QgsNewHttpConnection : QDialog
 {
 %Docstring(signature="appended")
@@ -42,7 +45,7 @@ for an HTTP Server for WMS, etc.
 
 
     QgsNewHttpConnection( QWidget *parent /TransferThis/ = 0, QgsNewHttpConnection::ConnectionTypes types = ConnectionWms,
-                          const QString &settingsKey = "WMS", // TODO QGIS 4 remove arg rename
+                          const QString &settingsKey = "WMS", // TODO QGIS 5 remove arg rename
                           const QString &connectionName = QString(), QgsNewHttpConnection::Flags flags = QgsNewHttpConnection::Flags(), Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 Constructor for QgsNewHttpConnection.
@@ -62,6 +65,13 @@ Returns the current connection name.
     QString url() const;
 %Docstring
 Returns the current connection url.
+%End
+
+    QString originalConnectionName() const;
+%Docstring
+Returns the original connection name (might be empty)
+
+.. versionadded:: 4.0
 %End
 
   public slots:
@@ -90,6 +100,25 @@ settings are not valid and the dialog should not be acceptable.
 %Docstring
 Returns the "test connection" button.
 %End
+
+
+
+
+    bool ignoreAxisOrientation() const;
+%Docstring
+Returns the ignore axis orientation checkbox status.
+
+.. versionadded:: 4.0
+%End
+
+
+    bool invertAxisOrientation() const;
+%Docstring
+Returns the invert axis orientation checkbox status.
+
+.. versionadded:: 4.0
+%End
+
 
 
 

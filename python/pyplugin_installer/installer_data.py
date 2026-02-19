@@ -43,7 +43,6 @@ from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 from qgis.core import Qgis, QgsSettings, QgsSettingsTree, QgsNetworkRequestParameters
 import sys
 import os
-import codecs
 import re
 import configparser
 import qgis.utils
@@ -658,8 +657,14 @@ class Repositories(QObject):
                         .text()
                         .strip()
                     )
+                    supports_qt6 = pluginNodes.item(i).firstChildElement(
+                        "supports_qt6"
+                    ).text().strip().upper() in ["TRUE", "YES"]
                     if not qgisMaximumVersion:
-                        qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
+                        if qgisMinimumVersion[0] == "3" and supports_qt6:
+                            qgisMaximumVersion = "4.99"
+                        else:
+                            qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
                     # if compatible, add the plugin to the list
                     if not pluginNodes.item(i).firstChildElement(
                         "disabled"
@@ -784,7 +789,7 @@ class Plugins(QObject):
             global errorDetails
             cp = configparser.ConfigParser()
             try:
-                with codecs.open(metadataFile, "r", "utf8") as f:
+                with open(metadataFile, encoding="utf8") as f:
                     cp.read_file(f)
                 return cp.get("general", fct)
             except Exception as e:
@@ -845,13 +850,19 @@ class Plugins(QObject):
                 qgisMinimumVersion = "0"
             qgisMaximumVersion = pluginMetadata("qgisMaximumVersion").strip()
             if not qgisMaximumVersion:
-                qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
+                if qgisMinimumVersion[0] == "3" and supports_qt6:
+                    qgisMaximumVersion = "4.99"
+                else:
+                    qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
             # if compatible, add the plugin to the list
             if not isCompatible(
                 pyQgisVersion(), qgisMinimumVersion, qgisMaximumVersion
             ):
                 error = "incompatible"
-                errorDetails = f"{qgisMinimumVersion} - {qgisMaximumVersion}"
+                errorDetails = QCoreApplication.translate(
+                    "QgsPluginInstaller",
+                    "Plugin designed for QGIS {minVersion} - {maxVersion}",
+                ).format(minVersion=qgisMinimumVersion, maxVersion=qgisMaximumVersion)
         elif not os.path.exists(metadataFile):
             error = "broken"
             errorDetails = QCoreApplication.translate(

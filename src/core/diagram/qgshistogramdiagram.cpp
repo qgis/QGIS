@@ -13,15 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgshistogramdiagram.h"
+
 #include "qgsdiagramrenderer.h"
-#include "qgsrendercontext.h"
 #include "qgsexpression.h"
-#include "qgssymbollayerutils.h"
 #include "qgslinesymbol.h"
+#include "qgsrendercontext.h"
+#include "qgssymbollayerutils.h"
 
 #include <QPainter>
+#include <QString>
 
-const QString QgsHistogramDiagram::DIAGRAM_NAME_HISTOGRAM = QStringLiteral( "Histogram" );
+using namespace Qt::StringLiterals;
+
+const QString QgsHistogramDiagram::DIAGRAM_NAME_HISTOGRAM = u"Histogram"_s;
 
 QgsHistogramDiagram::QgsHistogramDiagram()
 {
@@ -67,7 +71,7 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsFeature &feature, const QgsRen
 
   // eh - this method returns size in unknown units ...! We'll have to fake it and use a rough estimation of
   // a conversion factor to painter units...
-  // TODO QGIS 4.0 -- these methods should all use painter units, dependent on the render context scaling...
+  // TODO QGIS 5.0 -- these methods should all use painter units, dependent on the render context scaling...
   double painterUnitConversionScale = c.convertToPainterUnits( 1, s.sizeType );
 
   const double spacing = c.convertToPainterUnits( s.spacing(), s.spacingUnit(), s.spacingMapUnitScale() ) / painterUnitConversionScale;
@@ -135,7 +139,7 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes &attributes, const 
 
   // eh - this method returns size in unknown units ...! We'll have to fake it and use a rough estimation of
   // a conversion factor to painter units...
-  // TODO QGIS 4.0 -- these methods should all use painter units, dependent on the render context scaling...
+  // TODO QGIS 5.0 -- these methods should all use painter units, dependent on the render context scaling...
   double painterUnitConversionScale = c.convertToPainterUnits( 1, s.sizeType );
 
   const double spacing = c.convertToPainterUnits( s.spacing(), s.spacingUnit(), s.spacingMapUnitScale() ) / painterUnitConversionScale;

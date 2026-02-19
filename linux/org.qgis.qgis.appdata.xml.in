@@ -17,6 +17,7 @@
 
   <metadata_license>CC-BY-3.0</metadata_license>
   <project_license>GPL-2.0+</project_license>
+  <url type="vcs-browser">https://github.com/qgis/QGIS/</url>
   <url type="bugtracker">https://github.com/qgis/QGIS/issues</url>
   <url type="donation">https://qgis.org/funding/donate/</url>
   <url type="faq">https://qgis.org/resources/support/faq/</url>
@@ -25,6 +26,7 @@
 
   <project_group>QGIS</project_group>
   <releases>
+    <release version="3.44.0" date="2025-06-20" />
     <release version="3.42.0" date="2025-02-21" />
     <release version="3.40.0" date="2024-10-25" />
     <release version="3.38.0" date="2024-06-21" />

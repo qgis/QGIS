@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgsrasterlabelsettingswidget.h"
-#include "moc_qgsrasterlabelsettingswidget.cpp"
+
+#include "qgsbasicnumericformat.h"
+#include "qgsnumericformatselectorwidget.h"
 #include "qgsrasterbandcombobox.h"
 #include "qgsrasterlabeling.h"
-#include "qgsnumericformatselectorwidget.h"
-#include "qgsbasicnumericformat.h"
 
 #include <QPushButton>
+
+#include "moc_qgsrasterlabelsettingswidget.cpp"
 
 QgsRasterLabelSettingsWidget::QgsRasterLabelSettingsWidget( QgsRasterLayer *layer, QgsMapCanvas *mapCanvas, QWidget *parent )
   : QgsLabelingGui( mapCanvas, parent, layer )
@@ -146,7 +148,7 @@ QgsRasterLabelSettingsWidget::QgsRasterLabelSettingsWidget( QgsRasterLayer *laye
   mInferiorPlacementWidget->hide();
   mLabelRenderingDDFrame->hide();
   mUpsidedownFrame->hide();
-  mLabelEveryPartWidget->hide();
+  mMultipartBehaviorWidget->hide();
   mFramePixelSizeVisibility->hide();
   line->hide();
 
@@ -234,7 +236,7 @@ void QgsRasterLabelSettingsWidget::changeNumberFormat()
     widget->setPanelTitle( tr( "Number Format" ) );
     widget->setFormat( mNumberFormat.get() );
     widget->registerExpressionContextGenerator( this );
-    connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [=] {
+    connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [this, widget] {
       if ( !mBlockChangesSignal )
       {
         mNumberFormat.reset( widget->format() );

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgeopackageprojectstorageguiprovider.h"
+
 ///@cond PRIVATE
 
 #include "qgsgeopackageprojectstoragedialog.h"

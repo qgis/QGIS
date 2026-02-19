@@ -13,23 +13,28 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsfeaturelistview.h"
+
+#include "qgsactionmenu.h"
+#include "qgsattributetablemodel.h"
+#include "qgsfeaturelistmodel.h"
+#include "qgsfeaturelistviewdelegate.h"
+#include "qgsfeatureselectionmodel.h"
+#include "qgslogger.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayercache.h"
+#include "qgsvectorlayerselectionmanager.h"
+
 #include <QHeaderView>
 #include <QKeyEvent>
 #include <QMenu>
 #include <QSet>
 #include <QSettings>
+#include <QString>
 
-#include "qgsattributetablemodel.h"
-#include "qgsfeaturelistmodel.h"
-#include "qgsfeaturelistviewdelegate.h"
-#include "qgsfeaturelistview.h"
 #include "moc_qgsfeaturelistview.cpp"
-#include "qgsfeatureselectionmodel.h"
-#include "qgslogger.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectorlayerselectionmanager.h"
-#include "qgsvectorlayercache.h"
-#include "qgsactionmenu.h"
+
+using namespace Qt::StringLiterals;
 
 QgsFeatureListView::QgsFeatureListView( QWidget *parent )
   : QListView( parent )
@@ -90,7 +95,7 @@ void QgsFeatureListView::setModel( QgsFeatureListModel *featureListModel )
   connect( mFeatureSelectionModel, static_cast<void ( QgsFeatureSelectionModel::* )( const QModelIndexList &indexes )>( &QgsFeatureSelectionModel::requestRepaint ), this, static_cast<void ( QgsFeatureListView::* )( const QModelIndexList &indexes )>( &QgsFeatureListView::repaintRequested ) );
   connect( mFeatureSelectionModel, static_cast<void ( QgsFeatureSelectionModel::* )()>( &QgsFeatureSelectionModel::requestRepaint ), this, static_cast<void ( QgsFeatureListView::* )()>( &QgsFeatureListView::repaintRequested ) );
   connect( mCurrentEditSelectionModel, &QItemSelectionModel::selectionChanged, this, &QgsFeatureListView::editSelectionChanged );
-  connect( mModel->layerCache()->layer(), &QgsVectorLayer::attributeValueChanged, this, [=] { repaintRequested(); } );
+  connect( mModel->layerCache()->layer(), &QgsVectorLayer::attributeValueChanged, this, [this] { repaintRequested(); } );
   connect( featureListModel, &QgsFeatureListModel::rowsRemoved, this, [this]() { ensureEditSelection(); } );
   connect( featureListModel, &QgsFeatureListModel::rowsInserted, this, [this]() { ensureEditSelection(); } );
   connect( featureListModel, &QgsFeatureListModel::modelReset, this, [this]() { ensureEditSelection(); } );
@@ -166,7 +171,7 @@ void QgsFeatureListView::mousePressEvent( QMouseEvent *event )
   }
   else
   {
-    QgsDebugError( QStringLiteral( "No model assigned to this view" ) );
+    QgsDebugError( u"No model assigned to this view"_s );
   }
 }
 
@@ -301,7 +306,7 @@ void QgsFeatureListView::mouseMoveEvent( QMouseEvent *event )
   }
   else
   {
-    QgsDebugError( QStringLiteral( "No model assigned to this view" ) );
+    QgsDebugError( u"No model assigned to this view"_s );
   }
 }
 
@@ -391,7 +396,7 @@ void QgsFeatureListView::contextMenuEvent( QContextMenuEvent *event )
   {
     const QgsFeature feature = mModel->data( index, QgsFeatureListModel::FeatureWithGeometryRole ).value<QgsFeature>();
 
-    QgsActionMenu *menu = new QgsActionMenu( mModel->layerCache()->layer(), feature, QStringLiteral( "Feature" ), this );
+    QgsActionMenu *menu = new QgsActionMenu( mModel->layerCache()->layer(), feature, u"Feature"_s, this );
 
     // Index is from feature list model, but we need an index from the
     // filter model to be passed to listeners, using fid instead would

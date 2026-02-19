@@ -16,21 +16,19 @@
 #ifndef QGSSETTINGSEDITORWIDGETWRAPPERIMPL_H
 #define QGSSETTINGSEDITORWIDGETWRAPPERIMPL_H
 
-#include <QColor>
-
 #include "qgis_gui.h"
-#include "qgssettingseditorwidgetwrapper.h"
-#include "qgslogger.h"
-
-#include "qgssettingsentryimpl.h"
 #include "qgscolorbutton.h"
-#include <QComboBox>
-#include <QLineEdit>
-#include <QCheckBox>
-#include <QSpinBox>
-#include <QDoubleSpinBox>
-#include <QTableWidget>
+#include "qgslogger.h"
+#include "qgssettingseditorwidgetwrapper.h"
+#include "qgssettingsentryimpl.h"
 
+#include <QCheckBox>
+#include <QColor>
+#include <QComboBox>
+#include <QDoubleSpinBox>
+#include <QLineEdit>
+#include <QSpinBox>
+#include <QTableWidget>
 
 //TODO variant map
 
@@ -50,9 +48,9 @@ class QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEditorWidgetWra
     QgsSettingsEditorWidgetWrapperTemplate( QObject *parent = nullptr )
       : QgsSettingsEditorWidgetWrapper( parent ) {}
 
-    virtual QString id() const override = 0;
+    QString id() const override = 0;
 
-    virtual bool setWidgetFromSetting() const override
+    bool setWidgetFromSetting() const override
     {
       if ( mSetting )
         return setWidgetValue( mSetting->value( mDynamicKeyPartList ) );
@@ -61,7 +59,7 @@ class QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEditorWidgetWra
       return false;
     }
 
-    virtual bool setSettingFromWidget() const override = 0;
+    bool setSettingFromWidget() const override = 0;
 
     bool setWidgetFromVariant( const QVariant &value ) const override
     {
@@ -85,10 +83,10 @@ class QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEditorWidgetWra
     //! Returns the setting
     const T *setting() const { return mSetting; }
 
-    virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override = 0;
+    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override = 0;
 
   protected:
-    virtual QWidget *createEditorPrivate( QWidget *parent = nullptr ) const override
+    QWidget *createEditorPrivate( QWidget *parent = nullptr ) const override
     {
       V *editor = new V( parent );
       editor->setAutoFillBackground( true );
@@ -178,6 +176,13 @@ class GUI_EXPORT QgsSettingsStringComboBoxWrapper : public QgsSettingsEditorWidg
     QgsSettingsStringComboBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, Mode mode, const QStringList &dynamicKeyPartList = QStringList() )
       : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString, QComboBox, QString>( editor ), mMode( mode ) { configureEditor( editor, setting, dynamicKeyPartList ); }
 
+    /**
+     * Constructor of the wrapper for a given \a setting and its widget \a editor
+     * \since QGIS 3.44.3
+     */
+    QgsSettingsStringComboBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, Mode mode, int role, const QStringList &dynamicKeyPartList = QStringList() )
+      : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString, QComboBox, QString>( editor ), mMode( mode ), mDataRole( role ) { configureEditor( editor, setting, dynamicKeyPartList ); }
+
     QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsStringComboBoxWrapper( parent ); }
 
     QString id() const override;
@@ -192,6 +197,7 @@ class GUI_EXPORT QgsSettingsStringComboBoxWrapper : public QgsSettingsEditorWidg
 
   private:
     Mode mMode = Mode::Text;
+    int mDataRole = Qt::UserRole; // Default to UserRole, can be changed in the constructor
 };
 
 

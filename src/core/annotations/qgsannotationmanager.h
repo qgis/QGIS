@@ -16,10 +16,11 @@
 #ifndef QGSANNOTATIONMANAGER_H
 #define QGSANNOTATIONMANAGER_H
 
-#include "qgis_core.h"
 #include "qgis.h"
-#include <QObject>
+#include "qgis_core.h"
+
 #include <QDomElement>
+#include <QObject>
 
 class QgsReadWriteContext;
 class QgsProject;

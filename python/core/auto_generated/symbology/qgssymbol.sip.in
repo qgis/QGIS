@@ -560,6 +560,23 @@ Returns a large (roughly 100x100 pixel) preview image for the symbol.
 Returns a string dump of the symbol's properties.
 %End
 
+    bool rendersIdenticallyTo( const QgsSymbol *other ) const;
+%Docstring
+Returns ``True`` if this symbol will always render identically to an
+``other`` symbol.
+
+.. note::
+
+   This method is pessimistic, in that it will return ``False`` in circumstances
+   where it is not possible to guarantee that in 100% of cases the symbol will
+   render pixel-identically to the other symbol. For instance, calling
+   :py:func:`~QgsSymbol.rendersIdenticallyTo` with the same symbol as ``other`` may
+   return ``False`` if the symbol contains data-defined overrides, such
+   as those using feature attributes or expression variables.
+
+.. versionadded:: 4.0
+%End
+
     virtual QgsSymbol *clone() const = 0 /Factory/;
 %Docstring
 Returns a deep copy of this symbol.
@@ -853,7 +870,7 @@ layers returned ``True``.
 .. versionadded:: 3.18
 %End
 
- void setLayer( const QgsVectorLayer *layer ) /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
+ void setLayer( const QgsVectorLayer *layer ) /Deprecated="Since 3.40. Will be removed in QGIS 5.0."/;
 %Docstring
 Sets the vector ``layer`` associated with the symbol.
 
@@ -863,14 +880,14 @@ Sets the vector ``layer`` associated with the symbol.
 
 .. deprecated:: 3.40
 
-   Will be removed in QGIS 4.0.
+   Will be removed in QGIS 5.0.
 %End
 
- const QgsVectorLayer *layer() const /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
+ const QgsVectorLayer *layer() const /Deprecated="Since 3.40. Will be removed in QGIS 5.0."/;
 %Docstring
 .. deprecated:: 3.40
 
-   Will be removed in QGIS 4.0.
+   Will be removed in QGIS 5.0.
 %End
 
     void renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false, Qgis::VertexMarkerType currentVertexMarkerType = Qgis::VertexMarkerType::SemiTransparentCircle, double currentVertexMarkerSize = 0.0 ) throw( QgsCsException );

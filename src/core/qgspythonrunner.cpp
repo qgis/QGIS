@@ -13,7 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspythonrunner.h"
+
 #include "qgslogger.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsPythonRunner *QgsPythonRunner::sInstance = nullptr;
 
@@ -34,7 +39,7 @@ bool QgsPythonRunner::run( const QString &command, const QString &messageOnError
   }
   else
   {
-    QgsDebugError( QStringLiteral( "Unable to run Python command: runner not available!" ) );
+    QgsDebugError( u"Unable to run Python command: runner not available!"_s );
     return false;
   }
 }
@@ -48,7 +53,7 @@ bool QgsPythonRunner::runFile( const QString &filename, const QString &messageOn
   }
   else
   {
-    QgsDebugError( QStringLiteral( "Unable to run Python command: runner not available!" ) );
+    QgsDebugError( u"Unable to run Python command: runner not available!"_s );
     return false;
   }
 }
@@ -61,7 +66,7 @@ bool QgsPythonRunner::eval( const QString &command, QString &result )
   }
   else
   {
-    QgsDebugError( QStringLiteral( "Unable to run Python command: runner not available!" ) );
+    QgsDebugError( u"Unable to run Python command: runner not available!"_s );
     return false;
   }
 }
@@ -74,7 +79,7 @@ bool QgsPythonRunner::setArgv( const QStringList &arguments, const QString &mess
   }
   else
   {
-    QgsDebugError( QStringLiteral( "Unable to run Python command: runner not available!" ) );
+    QgsDebugError( u"Unable to run Python command: runner not available!"_s );
     return false;
   }
 }

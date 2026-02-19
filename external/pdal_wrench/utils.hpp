@@ -14,7 +14,9 @@
 
 #include <pdal/PipelineManager.hpp>
 #include <mutex>
+#include <filesystem>
 
+namespace fs = std::filesystem;
 using namespace pdal;
 
 // tiling scheme containing tileCountX x tileCountY square tiles of tileSize x tileSize,
@@ -49,9 +51,9 @@ struct Tiling
 // where N,M are some integer values
 struct TileAlignment
 {
-    double originX;
-    double originY;
-    double tileSize;
+    double originX {-1};
+    double originY {-1};
+    double tileSize {1000};
 
     // returns tiling that fully covers given bounding box, using this tile alignment
     Tiling coverBounds(const BOX2D &box) const
@@ -259,3 +261,23 @@ inline std::string join_strings(const std::vector<std::string>& list, char delim
 
 
 bool rasterTilesToCog(const std::vector<std::string> &inputFiles, const std::string &outputFile);
+
+/**
+ * Create reader stage with some default options.
+ */
+pdal::Stage &makeReader( pdal::PipelineManager *manager, const std::string &inputFile, pdal::Options options = pdal::Options() );
+
+/**
+ * Create writer stage with some default options.
+ */
+pdal::Stage &makeWriter(pdal::PipelineManager *manager, const std::string &outputFile, pdal::Stage *parent, pdal::Options options = pdal::Options() );
+
+/**
+ * Handle saving output for multiple tiles if the output is VPC or the data need to be merged.
+ */
+void buildOutput(std::string outputFile, std::vector<std::string> &tileOutputFiles);
+
+/**
+ * Generate tile output file name based on outputFile and outputFormat.
+ */
+std::string tileOutputFileName(const std::string &outputFile, const std::string &outputFormat, const fs::path &outputSubdir, const std::string &tileFilename);

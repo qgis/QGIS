@@ -14,13 +14,17 @@ email                : marco.hugentobler at sourcepole dot com
  *                                                                         *
  ***************************************************************************/
 
+#include "qgspdfwriter.h"
+
 #include "qgsapplication.h"
 #include "qgsmaprenderertask.h"
 #include "qgsmapsettings.h"
 #include "qgsmodule.h"
-#include "qgspdfwriter.h"
 #include "qgswmsrenderer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 namespace QgsWms
 {
@@ -37,7 +41,11 @@ namespace QgsWms
     context.setFlag( QgsWmsRenderContext::UseTileBuffer );
     context.setParameters( request.wmsParameters() );
     QTemporaryFile tmpFile;
-    tmpFile.open();
+    if ( !tmpFile.open() )
+    {
+      QgsDebugError( u"Can't open temporary file"_s );
+      // TODO return error to the user?
+    }
     QgsRenderer renderer( context );
     std::unique_ptr<QgsMapRendererTask> pdfTask = renderer.getPdf( tmpFile.fileName() );
     QgsApplication::taskManager()->addTask( pdfTask.get() );

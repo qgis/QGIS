@@ -20,11 +20,13 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgslayoutitem.h"
-#include "qgslayertreemodel.h"
-#include "qgslegendsettings.h"
-#include "qgslayertree.h"
 #include "qgsexpressioncontext.h"
+#include "qgslayertree.h"
+#include "qgslayertreefilterproxymodel.h"
+#include "qgslayertreemodel.h"
+#include "qgslayoutitem.h"
+#include "qgslegendsettings.h"
+#include "qgssettingsentryenumflag.h"
 
 class QgsLayerTreeModel;
 class QgsSymbol;
@@ -102,7 +104,47 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
 
 };
 
+#ifndef SIP_RUN
+/**
+ * \ingroup core
+ * \brief A layout item subclass for map legend filtering.
+ * \note Not available in Python bindings
+ * \since QGIS 4.0
+ */
+class CORE_EXPORT QgsLegendFilterProxyModel : public QgsLayerTreeFilterProxyModel
+{
+    Q_OBJECT
+  public:
 
+    /**
+     * Constructor for QgsLegendFilterProxyModel, with the specified \a parent object.
+     */
+    QgsLegendFilterProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Sets whether the legend is showing the default legend for a project (as opposed
+     * to a customized legend).
+     */
+    void setIsDefaultLegend( bool isDefault );
+
+    /**
+     * Sets whether only checked layers should be shown.
+     *
+     * By default all layers are shown, regardless of their checked status.
+     *
+     * \see setCheckedLayers()
+     */
+    void setFilterToCheckedLayers( bool filter );
+
+  private:
+
+    bool layerShown( QgsMapLayer *layer ) const override;
+
+    bool mIsDefaultLegend = true;
+    bool mFilterToCheckedLayers = false;
+
+};
+#endif
 
 /**
  * \ingroup core
@@ -113,6 +155,13 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     Q_OBJECT
 
   public:
+
+    /**
+     * Settings entry - Layout legend synchronization mode.
+     *
+     * \since QGIS 4.0
+     */
+    static const QgsSettingsEntryEnumFlag< Qgis::LegendSyncMode > *settingDefaultLegendSyncMode SIP_SKIP;
 
     /**
      * Constructor for QgsLayoutItemLegend, with the specified parent \a layout.
@@ -169,15 +218,50 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
      * Sets whether the legend content should auto update to reflect changes in the project's
      * layer tree.
      * \see autoUpdateModel()
+     * \deprecated QGIS 4.0. Use setSyncMode() instead.
      */
-    void setAutoUpdateModel( bool autoUpdate );
+    Q_DECL_DEPRECATED void setAutoUpdateModel( bool autoUpdate ) SIP_DEPRECATED;
 
     /**
      * Returns whether the legend content should auto update to reflect changes in the project's
      * layer tree.
      * \see setAutoUpdateModel()
+     * \deprecated QGIS 4.0. Use syncMode() instead.
      */
-    bool autoUpdateModel() const;
+    Q_DECL_DEPRECATED bool autoUpdateModel() const SIP_DEPRECATED;
+
+    /**
+     * Sets the legend's synchronization \a mode.
+     *
+     * Depending on the \a mode, this sets whether the legend content should auto update to reflect
+     * changes in the project's layer tree.
+     *
+     * \see syncMode()
+     * \since QGIS 4.0
+     */
+    void setSyncMode( Qgis::LegendSyncMode mode );
+
+    /**
+     * Resets the current legend manual configuration, including layer set and settings.
+     *
+     * The \a mode argument controls the layers to include after resetting.
+     *
+     * \note This method has no effect if the legend's syncMode() is not Qgis::LegendSyncMode::Manual.
+     *
+     * \since QGIS 4.0
+     */
+    void resetManualLayers( Qgis::LegendSyncMode mode );
+
+    /**
+     * Returns the legend's synchronization mode.
+     *
+     * Depending on the mode, this reflects whether the legend content should auto update to reflect
+     * changes in the project's layer tree.
+     *
+     * \see setSyncMode()
+     * \since QGIS 4.0
+     */
+    Qgis::LegendSyncMode syncMode() const;
 
     /**
      * Set whether legend items should be filtered to show just the ones visible in the associated map.
@@ -651,6 +735,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     void onAtlasFeature();
 
     void nodeCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );
+    void nodeVisibilityChanged( QgsLayerTreeNode *node );
 
     //! Clears any data cached for the legend model
     void clearLegendCachedData();
@@ -667,10 +752,20 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     void ensureModelIsInitialized() const;
 
+    /**
+     * Determines whether the legend requires filtering because of renderer settings (UpdatedCanvas on raster or mesh layers).
+     *
+     * \since QGIS 4.0
+     */
+    bool requiresFilteringBecauseOfRendererSetting();
+
     QgsLegendRenderer createRenderer() const;
 
     std::unique_ptr< QgsLegendModel > mLegendModel;
     std::unique_ptr< QgsLayerTree > mCustomLayerTree;
+
+    Qgis::LegendSyncMode mSyncMode = Qgis::LegendSyncMode::AllProjectLayers;
+
     bool mDeferLegendModelInitialization = true;
 
     QgsLegendSettings mSettings;

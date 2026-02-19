@@ -9,7 +9,6 @@
 
 
 
-
 class QgsHistoryProviderRegistry : QObject
 {
 %Docstring(signature="appended")
@@ -66,16 +65,13 @@ Returns a list of the registered provider IDs.
 %End
 
     class HistoryEntryOptions
-{
+    {
 %Docstring(signature="appended")
 Contains options for storing history entries.
 
 .. versionadded:: 3.24
 %End
 
-%TypeHeaderCode
-#include "qgshistoryproviderregistry.h"
-%End
       public:
         HistoryEntryOptions();
 %Docstring

@@ -19,6 +19,7 @@ on:
     - 'external/**'
     - 'CMakeLists.txt'
     - '.github/workflows/ogc.yml'
+    - '.ci/ogc/**'
   pull_request:
     branches:
       - master
@@ -32,6 +33,7 @@ on:
     - 'external/**'
     - 'CMakeLists.txt'
     - '.github/workflows/ogc.yml'
+    - '.ci/ogc/**'
 
 permissions:
   contents: read
@@ -41,10 +43,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Restore build cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: /home/runner/QGIS/.ccache
           key: build-ccache-ogc-${{ github.event.pull_request.base.ref || github.ref_name }}
@@ -72,7 +74,7 @@ jobs:
           DOCKER_IMAGE: ${{ steps.docker-build.outputs.imageid }}
 
       - name: Save build cache for push only
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         if: ${{ github.event_name == 'push' }}
         with:
           path: /home/runner/QGIS/.ccache

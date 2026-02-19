@@ -13,22 +13,22 @@ email                : jef at norbit dot de
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
 #include "qgsgeometryvalidator.h"
-#include "moc_qgsgeometryvalidator.cpp"
-#include "qgsgeometry.h"
-#include "qgslogger.h"
-#include "qgsgeos.h"
-#include "qgsgeometrycollection.h"
-#include "qgscurvepolygon.h"
+
+#include "qgis.h"
 #include "qgscurve.h"
+#include "qgscurvepolygon.h"
+#include "qgsgeometry.h"
+#include "qgsgeometrycollection.h"
+#include "qgsgeos.h"
+#include "qgslogger.h"
 #include "qgsvertexid.h"
+
+#include "moc_qgsgeometryvalidator.cpp"
 
 QgsGeometryValidator::QgsGeometryValidator( const QgsGeometry &geometry, QVector<QgsGeometry::Error> *errors, Qgis::GeometryValidationEngine method )
   : mGeometry( geometry )
   , mErrors( errors )
-  , mStop( false )
-  , mErrorCount( 0 )
   , mMethod( method )
 {
 }
@@ -217,7 +217,13 @@ void QgsGeometryValidator::validatePolygon( int partIndex, const QgsCurvePolygon
     {
       const QString msg = QObject::tr( "ring %1 of polygon %2 not in exterior ring" ).arg( i + 1 ).arg( partIndex );
       QgsDebugMsgLevel( msg, 2 );
-      emit errorFound( QgsGeometry::Error( msg ) );
+      const QgsCurve *interiorRing = polygon->interiorRing( i );
+
+      if ( interiorRing->numPoints() == 0 )
+        emit errorFound( QgsGeometry::Error( msg ) );
+      else
+        emit errorFound( QgsGeometry::Error( msg, QgsPointXY( interiorRing->startPoint() ) ) );
+
       mErrorCount++;
     }
   }

@@ -16,10 +16,11 @@
 #ifndef QGSMESH3DSYMBOLWIDGET_H
 #define QGSMESH3DSYMBOLWIDGET_H
 
-#include <QWidget>
+#include "ui_qgsmesh3dpropswidget.h"
 
 #include "qgsmesh3dsymbol.h"
-#include "ui_qgsmesh3dpropswidget.h"
+
+#include <QWidget>
 
 class QgsMeshDatasetGroupListModel;
 class QgsMesh3DSymbol;

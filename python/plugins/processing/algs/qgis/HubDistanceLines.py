@@ -21,6 +21,7 @@ __copyright__ = "(C) 2010, Michael Minn"
 
 from qgis.PyQt.QtCore import QMetaType
 from qgis.core import (
+    Qgis,
     QgsField,
     QgsFields,
     QgsProcessingUtils,
@@ -38,6 +39,7 @@ from qgis.core import (
     QgsProcessingParameterFeatureSink,
     QgsProcessingException,
     QgsSpatialIndex,
+    QgsProcessingAlgorithm,
 )
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -67,8 +69,14 @@ class HubDistanceLines(QgisAlgorithm):
     def groupId(self):
         return "vectoranalysis"
 
+    def documentationFlags(self):
+        return Qgis.ProcessingAlgorithmDocumentationFlag.RespectsEllipsoid
+
     def __init__(self):
         super().__init__()
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.Flag.FlagDeprecated
 
     def initAlgorithm(self, config=None):
         self.units = [
@@ -115,6 +123,19 @@ class HubDistanceLines(QgisAlgorithm):
 
     def displayName(self):
         return self.tr("Distance to nearest hub (line to hub)")
+
+    def shortDescription(self):
+        return self.tr(
+            "Creates lines that join each feature from an input vector to the nearest feature in a destination layer."
+        )
+
+    def shortHelpString(self):
+        return self.tr(
+            "Given an origin and a destination layers, this algorithm computes "
+            "the distance between origin features and their closest destination one. "
+            "Distance calculations are based on the feature's center.\n"
+            "The resulting layer contains lines linking each origin point with its nearest destination feature."
+        )
 
     def processAlgorithm(self, parameters, context, feedback):
         if parameters[self.INPUT] == parameters[self.HUBS]:

@@ -15,21 +15,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgshelp.h"
-#include "qgsgui.h"
-#include "qgsmanageconnectionsdialog.h"
 #include "qgssensorthingssourceselect.h"
-#include "moc_qgssensorthingssourceselect.cpp"
+
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsmanageconnectionsdialog.h"
 #include "qgssensorthingsconnection.h"
-#include "qgssensorthingsconnectionwidget.h"
 #include "qgssensorthingsconnectiondialog.h"
-#include "qgssensorthingssourcewidget.h"
+#include "qgssensorthingsconnectionwidget.h"
 #include "qgssensorthingsprovider.h"
+#include "qgssensorthingssourcewidget.h"
 #include "qgssensorthingssubseteditor.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
+
+#include "moc_qgssensorthingssourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -64,7 +69,7 @@ QgsSensorThingsSourceSelect::QgsSensorThingsSourceSelect( QWidget *parent, Qt::W
       return;
 
     mBlockChanges++;
-    cmbConnections->setCurrentIndex( cmbConnections->findData( QStringLiteral( "~~custom~~" ) ) );
+    cmbConnections->setCurrentIndex( cmbConnections->findData( u"~~custom~~"_s ) );
     mSourceWidget->setSourceUri( mConnectionWidget->sourceUri() );
     mBlockChanges--;
   } );
@@ -86,7 +91,7 @@ QgsSensorThingsSourceSelect::QgsSensorThingsSourceSelect( QWidget *parent, Qt::W
 
 void QgsSensorThingsSourceSelect::btnNew_clicked()
 {
-  const bool isCustom = cmbConnections->currentData().toString() == QLatin1String( "~~custom~~" );
+  const bool isCustom = cmbConnections->currentData().toString() == "~~custom~~"_L1;
   QgsSensorThingsConnectionDialog nc( this );
   if ( isCustom )
   {
@@ -159,7 +164,7 @@ void QgsSensorThingsSourceSelect::btnLoad_clicked()
 
 void QgsSensorThingsSourceSelect::addButtonClicked()
 {
-  const bool isCustom = cmbConnections->currentData().toString() == QLatin1String( "~~custom~~" );
+  const bool isCustom = cmbConnections->currentData().toString() == "~~custom~~"_L1;
 
   const QString providerUri = mConnectionWidget->sourceUri();
   QString layerUri = mSourceWidget->updateUriFromGui( providerUri );
@@ -170,45 +175,45 @@ void QgsSensorThingsSourceSelect::addButtonClicked()
   );
 
   if ( !txtSubsetSQL->text().isEmpty() )
-    uriParts.insert( QStringLiteral( "sql" ), txtSubsetSQL->text() );
+    uriParts.insert( u"sql"_s, txtSubsetSQL->text() );
 
   layerUri = QgsProviderRegistry::instance()->encodeUri(
     QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY,
     uriParts
   );
 
-  const Qgis::SensorThingsEntity type = QgsSensorThingsUtils::stringToEntity( uriParts.value( QStringLiteral( "entity" ) ).toString() );
+  const Qgis::SensorThingsEntity type = QgsSensorThingsUtils::stringToEntity( uriParts.value( u"entity"_s ).toString() );
 
   QString baseName;
   if ( QgsSensorThingsUtils::entityTypeHasGeometry( type ) )
   {
-    const QString geometryType = uriParts.value( QStringLiteral( "geometryType" ) ).toString();
+    const QString geometryType = uriParts.value( u"geometryType"_s ).toString();
     QString geometryNamePart;
-    if ( geometryType.compare( QLatin1String( "point" ), Qt::CaseInsensitive ) == 0 || geometryType.compare( QLatin1String( "multipoint" ), Qt::CaseInsensitive ) == 0 )
+    if ( geometryType.compare( "point"_L1, Qt::CaseInsensitive ) == 0 || geometryType.compare( "multipoint"_L1, Qt::CaseInsensitive ) == 0 )
     {
       geometryNamePart = tr( "Points" );
     }
-    else if ( geometryType.compare( QLatin1String( "line" ), Qt::CaseInsensitive ) == 0 )
+    else if ( geometryType.compare( "line"_L1, Qt::CaseInsensitive ) == 0 )
     {
       geometryNamePart = tr( "Lines" );
     }
-    else if ( geometryType.compare( QLatin1String( "polygon" ), Qt::CaseInsensitive ) == 0 )
+    else if ( geometryType.compare( "polygon"_L1, Qt::CaseInsensitive ) == 0 )
     {
       geometryNamePart = tr( "Polygons" );
     }
 
     if ( !geometryNamePart.isEmpty() )
     {
-      baseName = QStringLiteral( "%1 - %2 (%3)" ).arg( isCustom ? tr( "SensorThings" ) : cmbConnections->currentText(), QgsSensorThingsUtils::displayString( type, true ), geometryNamePart );
+      baseName = u"%1 - %2 (%3)"_s.arg( isCustom ? tr( "SensorThings" ) : cmbConnections->currentText(), QgsSensorThingsUtils::displayString( type, true ), geometryNamePart );
     }
     else
     {
-      baseName = QStringLiteral( "%1 - %2" ).arg( isCustom ? tr( "SensorThings" ) : cmbConnections->currentText(), QgsSensorThingsUtils::displayString( type, true ) );
+      baseName = u"%1 - %2"_s.arg( isCustom ? tr( "SensorThings" ) : cmbConnections->currentText(), QgsSensorThingsUtils::displayString( type, true ) );
     }
   }
   else
   {
-    baseName = QStringLiteral( "%1 - %2" ).arg( isCustom ? tr( "SensorThings" ) : cmbConnections->currentText(), QgsSensorThingsUtils::displayString( type, true ) );
+    baseName = u"%1 - %2"_s.arg( isCustom ? tr( "SensorThings" ) : cmbConnections->currentText(), QgsSensorThingsUtils::displayString( type, true ) );
   }
 
   Q_NOWARN_DEPRECATED_PUSH
@@ -228,7 +233,7 @@ void QgsSensorThingsSourceSelect::populateConnectionList()
 {
   cmbConnections->blockSignals( true );
   cmbConnections->clear();
-  cmbConnections->addItem( tr( "Custom" ), QStringLiteral( "~~custom~~" ) );
+  cmbConnections->addItem( tr( "Custom" ), u"~~custom~~"_s );
   cmbConnections->addItems( QgsSensorThingsProviderConnection::connectionList() );
   cmbConnections->blockSignals( false );
 
@@ -251,7 +256,7 @@ void QgsSensorThingsSourceSelect::setConnectionListPosition()
       cmbConnections->setCurrentIndex( cmbConnections->count() - 1 );
   }
 
-  const bool isCustom = cmbConnections->currentData().toString() == QLatin1String( "~~custom~~" );
+  const bool isCustom = cmbConnections->currentData().toString() == "~~custom~~"_L1;
   btnEdit->setDisabled( isCustom );
   btnDelete->setDisabled( isCustom );
 }
@@ -260,7 +265,7 @@ void QgsSensorThingsSourceSelect::cmbConnections_currentTextChanged( const QStri
 {
   QgsSensorThingsProviderConnection::setSelectedConnection( text );
 
-  const bool isCustom = cmbConnections->currentData().toString() == QLatin1String( "~~custom~~" );
+  const bool isCustom = cmbConnections->currentData().toString() == "~~custom~~"_L1;
   btnEdit->setDisabled( isCustom );
   btnDelete->setDisabled( isCustom );
 
@@ -300,7 +305,7 @@ void QgsSensorThingsSourceSelect::validate()
 #if 0 // TODO
 void QgsSensorThingsSourceSelect::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#using-xyz-tile-services" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html#using-xyz-tile-services"_s );
 }
 #endif
 

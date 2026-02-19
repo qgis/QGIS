@@ -19,13 +19,12 @@
 #ifndef QGSMAPSERVERPROVIDER_H
 #define QGSMAPSERVERPROVIDER_H
 
+#include "qgscoordinatereferencesystem.h"
+#include "qgshttpheaders.h"
+#include "qgsprovidermetadata.h"
 #include "qgsrasterdataprovider.h"
 
-#include "qgshttpheaders.h"
 #include <QNetworkRequest>
-
-#include "qgscoordinatereferencesystem.h"
-#include "qgsprovidermetadata.h"
 
 class QgsArcGisAsyncQuery;
 class QgsAmsProvider;
@@ -136,6 +135,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
     } TileImage;
 
   protected:
+    using QgsRasterDataProvider::readBlock;
     bool readBlock( int bandNo, const QgsRectangle &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     QImage draw( const QgsRectangle &viewExtent, int pixelWidth, int pixelHeight, QgsRasterBlockFeedback *feedback = nullptr );

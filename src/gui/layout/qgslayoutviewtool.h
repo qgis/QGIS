@@ -16,10 +16,11 @@
 #ifndef QGSLAYOUTVIEWTOOL_H
 #define QGSLAYOUTVIEWTOOL_H
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
-#include <QCursor>
+#include "qgis_sip.h"
+
 #include <QAction>
+#include <QCursor>
 #include <QPointer>
 
 class QMouseEvent;

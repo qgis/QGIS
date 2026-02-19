@@ -13,10 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgdalprovider.h"
 #include "qgsstacasset.h"
 
+#include "qgsgdalprovider.h"
+
+#include <QString>
 #include <QUrl>
+
+using namespace Qt::StringLiterals;
 
 QgsStacAsset::QgsStacAsset( const QString &href,
                             const QString &title,
@@ -63,76 +67,129 @@ bool QgsStacAsset::isCloudOptimized() const
 
 QString QgsStacAsset::formatName() const
 {
-  if ( mMediaType == QLatin1String( "image/tiff; application=geotiff; profile=cloud-optimized" ) ||
-       mMediaType == QLatin1String( "image/vnd.stac.geotiff; cloud-optimized=true" ) )
-    return QStringLiteral( "COG" );
-  else if ( mMediaType == QLatin1String( "application/vnd.laszip+copc" ) )
-    return QStringLiteral( "COPC" );
-  else if ( mHref.endsWith( QLatin1String( "/ept.json" ) ) )
-    return QStringLiteral( "EPT" );
-  else if ( mMediaType.contains( QLatin1String( "cloud-optimized=true" ), Qt::CaseInsensitive ) )
-  {
-    // could use GDAL identify, but PDAL does not have the equivalent so split string
-    const QStringList parts = mMediaType.split( QRegExp( "[/;]+" ), Qt::SkipEmptyParts );
-    if ( parts.size() > 1 )
-      return parts[1];
-  }
+  if ( mMediaType == "image/tiff; application=geotiff; profile=cloud-optimized"_L1 ||
+       mMediaType == "image/vnd.stac.geotiff; cloud-optimized=true"_L1 )
+    return u"COG"_s;
+  else if ( mMediaType == "application/vnd.laszip+copc"_L1 )
+    return u"COPC"_s;
+  else if ( mHref.endsWith( "/ept.json"_L1 ) )
+    return u"EPT"_s;
+  else if ( mMediaType == "application/vnd+zarr"_L1 )
+    return u"Zarr"_s;
+  else if ( mMediaType == "application/vnd.apache.parquet"_L1 )
+    return u"Parquet"_s;
+  else if ( mMediaType.contains( "tiledb"_L1, Qt::CaseInsensitive ) )
+    return u"TileDB"_s;
   return QString();
 }
 
-QgsMimeDataUtils::Uri QgsStacAsset::uri() const
+
+QgsMimeDataUtils::Uri QgsStacAsset::uri( const QString &authcfg ) const
 {
   QgsMimeDataUtils::Uri uri;
   QUrl url( href() );
-
-  if ( isCloudOptimized() )
+  if ( ( formatName() == "COG"_L1 ) ||
+       ( formatName() == "Zarr"_L1 ) ||
+       ( formatName() == "TileDB"_L1 ) ||
+       ( formatName() == "Parquet"_L1 ) )
   {
-    if ( href().startsWith( QLatin1String( "http" ), Qt::CaseInsensitive ) ||
-         href().startsWith( QLatin1String( "ftp" ), Qt::CaseInsensitive ) )
+    if ( formatName() == "Parquet"_L1 )
     {
-      uri.uri = QStringLiteral( "/vsicurl/%1" ).arg( href() );
+      uri.layerType = u"vector"_s;
+      uri.providerKey = u"ogr"_s;
     }
-    else if ( href().startsWith( QLatin1String( "s3://" ), Qt::CaseInsensitive ) )
+    else
     {
-      uri.uri = QStringLiteral( "/vsis3/%1" ).arg( href().mid( 5 ) );
+      uri.layerType = u"raster"_s;
+      uri.providerKey = u"gdal"_s;
     }
-    else if ( href().startsWith( QLatin1String( "azure://" ), Qt::CaseInsensitive ) )
+
+    if ( href().startsWith( "http"_L1, Qt::CaseInsensitive ) ||
+         href().startsWith( "ftp"_L1, Qt::CaseInsensitive ) )
     {
-      uri.uri = QStringLiteral( "/vsiaz/%1" ).arg( href().mid( 8 ) );
+      uri.uri = u"/vsicurl/%1"_s.arg( href() );
+      if ( !authcfg.isEmpty() )
+        uri.uri.append( u" authcfg='%1'"_s.arg( authcfg ) );
     }
-    else if ( href().startsWith( QLatin1String( "gcp://" ), Qt::CaseInsensitive ) )
+    else if ( href().startsWith( "s3://"_L1, Qt::CaseInsensitive ) )
     {
-      uri.uri = QStringLiteral( "/vsigs/%1" ).arg( href().mid( 6 ) );
+      uri.uri = u"/vsis3/%1"_s.arg( href().mid( 5 ) );
+    }
+    else if ( href().startsWith( "azure://"_L1, Qt::CaseInsensitive ) )
+    {
+      uri.uri = u"/vsiaz/%1"_s.arg( href().mid( 8 ) );
+    }
+    else if ( href().startsWith( "az://"_L1, Qt::CaseInsensitive ) )
+    {
+      uri.uri = u"/vsiaz/%1"_s.arg( href().mid( 5 ) );
+    }
+    else if ( href().startsWith( "gcp://"_L1, Qt::CaseInsensitive ) )
+    {
+      uri.uri = u"/vsigs/%1"_s.arg( href().mid( 6 ) );
     }
     else
     {
       uri.uri = href();
     }
+
+    if ( formatName() == "Zarr"_L1 )
+    {
+      uri.uri = u"ZARR:\"%1\""_s.arg( uri.uri );
+    }
+  }
+  else if ( formatName() == "COPC"_L1 )
+  {
+    uri.layerType = u"pointcloud"_s;
+    uri.providerKey = u"copc"_s;
+    uri.uri = href();
+    if ( !authcfg.isEmpty() )
+      uri.uri.append( u" authcfg='%1'"_s.arg( authcfg ) );
+  }
+  else if ( formatName() == "EPT"_L1 )
+  {
+    uri.layerType = u"pointcloud"_s;
+    uri.providerKey = u"ept"_s;
+    uri.uri = href();
+    if ( !authcfg.isEmpty() )
+      uri.uri.append( u" authcfg='%1'"_s.arg( authcfg ) );
   }
   else
   {
     return {};
   }
 
-  QString errMsg;
-
-  if ( ( formatName() == QLatin1String( "COG" ) ) ||
-       QgsGdalProvider::isValidRasterFileName( uri.uri, errMsg ) )
-  {
-    uri.layerType = QStringLiteral( "raster" );
-    uri.providerKey = QStringLiteral( "gdal" );
-  }
-  else
-  {
-    uri.layerType = QStringLiteral( "pointcloud" );
-    uri.providerKey = formatName().toLower();
-#ifndef PDAL_2_9_OR_HIGHER
-    // reset and don't use /vsi/ as not supported
-    uri.uri = href();
-#endif
-  }
-
   uri.name = title().isEmpty() ? url.fileName() : title();
 
   return uri;
+}
+
+QString QgsStacAsset::toHtml( const QString &assetId ) const
+{
+  QString html = u"<h1>%1</h1>\n<hr>\n"_s.arg( "Asset"_L1 );
+  html += "<table class=\"list-view\">\n"_L1;
+  html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"id"_s, assetId );
+  html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"title"_s, title() );
+  html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"description"_s, description() );
+  html += u"<tr><td class=\"highlight\">%1</td><td><a href=\"%2\">%2</a></td></tr>\n"_s.arg( u"url"_s, href() );
+  html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"type"_s, mediaType() );
+  html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"roles"_s, roles().join( ',' ) );
+  html += "</table><br/>\n"_L1;
+  return html;
+}
+
+bool QgsStacAsset::isDownloadable() const
+{
+  /*
+   * Directory-based data types like Zarr should not offer downloads.
+   * Download attempts might
+   * - fail with 4xx,
+   * - succeed but download an HTML directory listing response, or
+   * - something else that does not meet the user's needs.
+   */
+  if ( ( formatName() == "Zarr"_L1 ) || ( formatName() == "TileDB"_L1 ) )
+  {
+    return false;
+  }
+
+  return true;
 }

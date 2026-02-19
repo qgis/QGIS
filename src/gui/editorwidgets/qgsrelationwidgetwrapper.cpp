@@ -14,19 +14,24 @@
  ***************************************************************************/
 
 #include "qgsrelationwidgetwrapper.h"
-#include "moc_qgsrelationwidgetwrapper.cpp"
 
-#include "qgsrelationeditorwidget.h"
-#include "qgsattributeeditorcontext.h"
-#include "qgsproject.h"
-#include "qgsrelationmanager.h"
 #include "qgsabstractrelationeditorwidget.h"
-#include "qgsrelationwidgetregistry.h"
+#include "qgsattributeeditorcontext.h"
 #include "qgsgui.h"
+#include "qgsproject.h"
+#include "qgsrelationeditorwidget.h"
+#include "qgsrelationmanager.h"
+#include "qgsrelationwidgetregistry.h"
+
+#include <QString>
 #include <QWidget>
 
+#include "moc_qgsrelationwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
+
 QgsRelationWidgetWrapper::QgsRelationWidgetWrapper( QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor, QWidget *parent )
-  : QgsRelationWidgetWrapper( QStringLiteral( "relation_editor" ), vl, relation, editor, parent )
+  : QgsRelationWidgetWrapper( u"relation_editor"_s, vl, relation, editor, parent )
 {
 }
 
@@ -47,8 +52,8 @@ QWidget *QgsRelationWidgetWrapper::createWidget( QWidget *parent )
 
   if ( !relationEditorWidget )
   {
-    QgsLogger::warning( QStringLiteral( "Failed to create relation widget \"%1\", fallback to \"basic\" relation widget" ).arg( mRelationEditorId ) );
-    relationEditorWidget = QgsGui::relationWidgetRegistry()->create( QStringLiteral( "relation_editor" ), widgetConfig(), parent );
+    QgsLogger::warning( u"Failed to create relation widget \"%1\", fallback to \"basic\" relation widget"_s.arg( mRelationEditorId ) );
+    relationEditorWidget = QgsGui::relationWidgetRegistry()->create( u"relation_editor"_s, widgetConfig(), parent );
   }
 
   connect( relationEditorWidget, &QgsAbstractRelationEditorWidget::relatedFeaturesChanged, this, &QgsRelationWidgetWrapper::relatedFeaturesChanged );
@@ -93,10 +98,12 @@ void QgsRelationWidgetWrapper::aboutToSave()
   // Calling isModified() will emit a beforeModifiedCheck()
   // signal that will make the embedded form to send any
   // outstanding widget changes to the edit buffer
-  mRelation.referencingLayer()->isModified();
+  ( void ) mRelation.referencingLayer()->isModified();
 
   if ( mNmRelation.isValid() )
-    mNmRelation.referencedLayer()->isModified();
+  {
+    ( void ) mNmRelation.referencedLayer()->isModified();
+  }
 }
 
 QgsRelation QgsRelationWidgetWrapper::relation() const
@@ -171,13 +178,13 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
 
   // read the legacy config of force-suppress-popup to support settings made on autoconfigurated forms
   // it will be overwritten on specific widget configuration
-  if ( config( QStringLiteral( "force-suppress-popup" ), false ).toBool() )
+  if ( config( u"force-suppress-popup"_s, false ).toBool() )
   {
     const_cast<QgsVectorLayerTools *>( myContext.vectorLayerTools() )->setForceSuppressFormPopup( true );
   }
 
   /* TODO: this seems to have no effect
-  if ( config( QStringLiteral( "hide-save-child-edits" ), false ).toBool() )
+  if ( config( u"hide-save-child-edits"_s, false ).toBool() )
   {
     w->setShowSaveChildEditsButton( false );
   }
@@ -185,7 +192,7 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
 
   // read the legacy config of nm-rel to support settings made on autoconfigurated forms
   // it will be overwritten on specific widget configuration
-  mNmRelation = QgsProject::instance()->relationManager()->relation( config( QStringLiteral( "nm-rel" ) ).toString() );
+  mNmRelation = QgsProject::instance()->relationManager()->relation( config( u"nm-rel"_s ).toString() );
 
   // If this widget is already embedded by the same relation, reduce functionality
   const QgsAttributeEditorContext *ctx = &context();
@@ -244,7 +251,7 @@ void QgsRelationWidgetWrapper::setVisibleButtons( const QgsAttributeEditorRelati
 
 QgsAttributeEditorRelation::Buttons QgsRelationWidgetWrapper::visibleButtons() const
 {
-  return qgsFlagKeysToValue( mWidget->config().value( QStringLiteral( "buttons" ) ).toString(), QgsAttributeEditorRelation::AllButtons );
+  return qgsFlagKeysToValue( mWidget->config().value( u"buttons"_s ).toString(), QgsAttributeEditorRelation::AllButtons );
 }
 
 void QgsRelationWidgetWrapper::setForceSuppressFormPopup( bool forceSuppressFormPopup )

@@ -61,7 +61,8 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile)
     std::vector<Stage*> readers;
     for (const std::string& f : tile->inputFilenames)
     {
-        readers.push_back(&manager->makeReader(f, ""));
+        Stage& reader = makeReader( manager.get(), f );
+        readers.push_back(&reader);
     }
 
     std::vector<Stage*> last = readers;
@@ -99,9 +100,19 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile)
         last.push_back(filterExpr);
     }
 
-    pdal::Options options;
-    options.add(pdal::Option("forward", "all"));
-    Stage* writer = &manager->makeWriter(tile->outputFilename, "", options);
+    // this is a special case for merging COPC files
+    // writers.copc does not support multiple inputs
+    //  merge step is necessary before writing the output
+    if (ends_with(tile->outputFilename, ".copc.laz"))
+    {
+        Stage *merge = &manager->makeFilter("filters.merge");
+        for (Stage *stage : last)
+            merge->setInput(*stage);
+        last.clear();
+        last.push_back(merge);
+    }
+
+    Stage* writer = &makeWriter(manager.get(), tile->outputFilename, nullptr);
     for (Stage *s : last)
         writer->setInput(*s);
 
@@ -111,6 +122,7 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile)
 void Merge::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines)
 {
     ParallelJobInfo tile(ParallelJobInfo::Single, BOX2D(), filterExpression, filterBounds);
+    std::vector<std::string> inputFilesToProcess;
     if (!inputFileList.empty())
     {
         std::ifstream inputFile(inputFileList);
@@ -123,34 +135,37 @@ void Merge::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipe
 
         while (std::getline(inputFile, line))
         {
-            inputFiles.push_back(line);
+            inputFilesToProcess.push_back(line);
         }
     }
     
-    std::vector<std::string> vpcFilesToRemove;
-    vpcFilesToRemove.reserve(inputFiles.size());
+    inputFiles.reserve(inputFilesToProcess.size());
 
-    for (const std::string& inputFile : inputFiles)
-    {
+    std::function<void(const std::string& inputFile)> processInputFile;
+    processInputFile = [&processInputFile,this](const std::string& inputFile) {
         if (ends_with(inputFile, ".vpc"))
-        {   
-            vpcFilesToRemove.push_back(inputFile);
-
+        {
             VirtualPointCloud vpc;
             if (!vpc.read(inputFile))
+            {
                 std::cerr << "could not open input VPC: " << inputFile << std::endl;
                 return;
-            
+            }
+
             for (const VirtualPointCloud::File& vpcSingleFile : vpc.files)
             {
-                inputFiles.push_back(vpcSingleFile.filename);
+                processInputFile(vpcSingleFile.filename);
             }
         }
-    }
+        else
+        {
+            inputFiles.push_back(inputFile);
+        }
+    };
 
-    for (const std::string& f : vpcFilesToRemove)
+    for (const std::string& inputFile : inputFilesToProcess)
     {
-        inputFiles.erase(std::remove(inputFiles.begin(), inputFiles.end(), f), inputFiles.end());
+        processInputFile(inputFile);
     }
 
     tile.inputFilenames = inputFiles;

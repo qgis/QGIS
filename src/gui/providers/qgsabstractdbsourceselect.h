@@ -17,9 +17,11 @@
 #define QGSABSTRACTDBSOURCESELECT_H
 
 
-#include "qgis_gui.h"
 #include "ui_qgsdbsourceselectbase.h"
+
+#include "qgis_gui.h"
 #include "qgsabstractdatasourcewidget.h"
+#include "qgssettingsentryimpl.h"
 
 class QSortFilterProxyModel;
 class QgsAbstractDbTableModel;
@@ -30,12 +32,29 @@ class QItemDelegate;
  * \brief Base class for database source widget selectors.
  * \since QGIS 3.24
  */
-class GUI_EXPORT QgsAbstractDbSourceSelect : public QgsAbstractDataSourceWidget, protected Ui::QgsDbSourceSelectBase
+class GUI_EXPORT QgsAbstractDbSourceSelect : public QgsAbstractDataSourceWidget, public Ui::QgsDbSourceSelectBase
 {
     Q_OBJECT
   public:
+#ifndef SIP_RUN
+    static const QgsSettingsEntryBool *settingSearchColumnAll;
+    static const QgsSettingsEntryInteger *settingSearchColumn;
+    static const QgsSettingsEntryBool *settingSearchRegex;
+    static const QgsSettingsEntryBool *settingHoldDialogOpen;
+    static const QgsSettingsEntryInteger *settingColumnWidths;
+#endif
+
     //! Constructor
     QgsAbstractDbSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
+
+    /**
+     * Returns the setting path of the derived source select
+     *
+     * \returns setting path
+     * \note Might be pure virtual in QGIS 5.x
+     * \since QGIS 3.44
+     */
+    virtual QString settingPath() const { return QString(); }
 
   protected:
     //! Sets the source model for the table and optionally a delegate
@@ -45,6 +64,13 @@ class GUI_EXPORT QgsAbstractDbSourceSelect : public QgsAbstractDataSourceWidget,
     QSortFilterProxyModel *proxyModel() { return mProxyModel; }
 
     QPushButton *mBuildQueryButton = nullptr;
+
+    /**
+     * Stores the settings made in the gui
+     *
+     * \since QGIS 3.44
+     */
+    void storeSettings();
 
   protected slots:
 

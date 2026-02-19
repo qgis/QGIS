@@ -15,18 +15,23 @@
  ***************************************************************************/
 
 #include "qgscolordialog.h"
-#include "moc_qgscolordialog.cpp"
-#include "qgssettings.h"
+
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgssettings.h"
 
-#include <QPushButton>
-#include <QMenu>
-#include <QToolButton>
 #include <QFileDialog>
+#include <QInputDialog>
+#include <QMenu>
 #include <QMessageBox>
 #include <QMouseEvent>
-#include <QInputDialog>
+#include <QPushButton>
+#include <QString>
+#include <QToolButton>
+
+#include "moc_qgscolordialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsColorDialog::QgsColorDialog( QWidget *parent, Qt::WindowFlags fl, const QColor &color )
   : QDialog( parent, fl )
@@ -82,7 +87,7 @@ QColor QgsColorDialog::getColor( const QColor &initialColor, QWidget *parent, co
 
   const QgsSettings settings;
   //using native color dialogs?
-  const bool useNative = settings.value( QStringLiteral( "qgis/native_color_dialogs" ), false ).toBool();
+  const bool useNative = settings.value( u"qgis/native_color_dialogs"_s, false ).toBool();
   if ( useNative )
   {
     return QColorDialog::getColor( initialColor, parent, dialogTitle, allowOpacity ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption ) 0 );
@@ -155,5 +160,5 @@ void QgsColorDialog::closeEvent( QCloseEvent *e )
 
 void QgsColorDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#color-selector" ) );
+  QgsHelp::openHelp( u"introduction/general_tools.html#color-selector"_s );
 }

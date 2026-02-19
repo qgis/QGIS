@@ -16,7 +16,9 @@
 #include "qgstest.h"
 #include "qobjectuniqueptr.h"
 
-#include "qgstest.h"
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQObjectUniquePtr : public QObject
 {
@@ -30,6 +32,7 @@ class TestQObjectUniquePtr : public QObject
     void testSwap();
     void testOperatorArrow();
     void testDeleteLater();
+    void testVector();
 };
 
 void TestQObjectUniquePtr::testMemLeak()
@@ -101,7 +104,7 @@ void TestQObjectUniquePtr::testOperatorArrow()
   QObject *o = new QObject();
   o->setObjectName( "Teddy" );
   const QObjectUniquePtr<QObject> obj( o );
-  QCOMPARE( obj->objectName(), QStringLiteral( "Teddy" ) );
+  QCOMPARE( obj->objectName(), u"Teddy"_s );
 }
 
 void TestQObjectUniquePtr::testDeleteLater()
@@ -122,6 +125,33 @@ void TestQObjectUniquePtr::testDeleteLater()
   QVERIFY( obj.isNull() );
   QVERIFY( obj2.isNull() );
 }
+
+void TestQObjectUniquePtr::testVector()
+{
+  std::vector<QObjectUniquePtr<QObject>> objects;
+
+  objects.emplace_back( new QObject )->setObjectName( "TESTA" );
+  objects.emplace_back( new QObject )->setObjectName( "TESTB" );
+
+  QVERIFY( !objects.at( 0 ).isNull() );
+  QVERIFY( !objects.at( 1 ).isNull() );
+
+  QCOMPARE( objects.at( 0 )->objectName(), "TESTA" );
+  QCOMPARE( objects.at( 1 )->objectName(), "TESTB" );
+
+  int nbObjectDestroyed = 0;
+  auto onDestroyed = [&nbObjectDestroyed]() { nbObjectDestroyed++; };
+
+  connect( objects.at( 0 ), &QObject::destroyed, this, onDestroyed );
+  connect( objects.at( 1 ), &QObject::destroyed, this, onDestroyed );
+
+  objects.erase( objects.cbegin() );
+
+  QCOMPARE( objects.size(), 1 );
+  QCOMPARE( nbObjectDestroyed, 1 );
+  QCOMPARE( objects.at( 0 )->objectName(), "TESTB" );
+}
+
 
 QGSTEST_MAIN( TestQObjectUniquePtr )
 #include "testqobjectuniqueptr.moc"

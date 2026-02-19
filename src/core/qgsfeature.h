@@ -16,8 +16,14 @@ email                : sherman at mrcc.com
 #ifndef QGSFEATURE_H
 #define QGSFEATURE_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsattributes.h"
+#include "qgsfeatureid.h"
+#include "qgsfields.h"
+#include "qgsvariantutils.h"
 
 #include <QExplicitlySharedDataPointer>
 #include <QList>
@@ -27,12 +33,8 @@ email                : sherman at mrcc.com
 #include <QVariant>
 #include <QVector>
 
-#include "qgsattributes.h"
-#include "qgsfields.h"
-#include "qgsfeatureid.h"
-#include "qgsvariantutils.h"
+using namespace Qt::StringLiterals;
 
-#include <memory>
 class QgsFeature;
 class QgsFeaturePrivate;
 class QgsField;
@@ -578,12 +580,12 @@ class CORE_EXPORT QgsFeature
     const int attributeSize = sipCpp->attributeCount();
     if ( fieldSize == 0 && attributeSize != 0 )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Field definition has not been set for feature" ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Field definition has not been set for feature"_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     else if ( fieldSize != attributeSize )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Feature attribute size (%1) does not match number of fields (%2)" ).arg( attributeSize ).arg( fieldSize ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Feature attribute size (%1) does not match number of fields (%2)"_s.arg( attributeSize ).arg( fieldSize ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else

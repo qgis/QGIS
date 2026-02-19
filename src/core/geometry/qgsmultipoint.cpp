@@ -14,13 +14,18 @@ email                : marco.hugentobler at sourcepole dot com
  ***************************************************************************/
 
 #include "qgsmultipoint.h"
+
+#include <nlohmann/json.hpp>
+
 #include "qgspoint.h"
 #include "qgsvertexid.h"
 
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QRegularExpression>
-#include <nlohmann/json.hpp>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsMultiPoint::QgsMultiPoint()
 {
@@ -118,7 +123,7 @@ const QgsPoint *QgsMultiPoint::pointN( int index ) const
 
 QString QgsMultiPoint::geometryType() const
 {
-  return QStringLiteral( "MultiPoint" );
+  return u"MultiPoint"_s;
 }
 
 QgsMultiPoint *QgsMultiPoint::createEmptyWithSameType() const
@@ -142,15 +147,15 @@ bool QgsMultiPoint::fromWkt( const QString &wkt )
 {
   QString collectionWkt( wkt );
   //test for non-standard MultiPoint(x1 y1, x2 y2) format
-  const thread_local QRegularExpression regex( QStringLiteral( "^\\s*MultiPoint\\s*[ZM]*\\s*\\(\\s*[-\\d]" ), QRegularExpression::CaseInsensitiveOption );
+  const thread_local QRegularExpression regex( u"^\\s*MultiPoint\\s*[ZM]*\\s*\\(\\s*[-\\d]"_s, QRegularExpression::CaseInsensitiveOption );
   const QRegularExpressionMatch match = regex.match( collectionWkt );
   if ( match.hasMatch() )
   {
     //alternate style without extra brackets, upgrade to standard
-    collectionWkt.replace( '(', QLatin1String( "((" ) ).replace( ')', QLatin1String( "))" ) ).replace( ',', QLatin1String( "),(" ) );
+    collectionWkt.replace( '(', "(("_L1 ).replace( ')', "))"_L1 ).replace( ',', "),("_L1 );
   }
 
-  return fromCollectionWkt( collectionWkt, { Qgis::WkbType::Point }, QStringLiteral( "Point" ) );
+  return fromCollectionWkt( collectionWkt, { Qgis::WkbType::Point }, u"Point"_s );
 }
 
 void QgsMultiPoint::clear()
@@ -161,7 +166,7 @@ void QgsMultiPoint::clear()
 
 QDomElement QgsMultiPoint::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
-  QDomElement elemMultiPoint = doc.createElementNS( ns, QStringLiteral( "MultiPoint" ) );
+  QDomElement elemMultiPoint = doc.createElementNS( ns, u"MultiPoint"_s );
 
   if ( isEmpty() )
     return elemMultiPoint;
@@ -170,7 +175,7 @@ QDomElement QgsMultiPoint::asGml2( QDomDocument &doc, int precision, const QStri
   {
     if ( qgsgeometry_cast<const QgsPoint *>( geom ) )
     {
-      QDomElement elemPointMember = doc.createElementNS( ns, QStringLiteral( "pointMember" ) );
+      QDomElement elemPointMember = doc.createElementNS( ns, u"pointMember"_s );
       elemPointMember.appendChild( geom->asGml2( doc, precision, ns, axisOrder ) );
       elemMultiPoint.appendChild( elemPointMember );
     }
@@ -181,7 +186,7 @@ QDomElement QgsMultiPoint::asGml2( QDomDocument &doc, int precision, const QStri
 
 QDomElement QgsMultiPoint::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
-  QDomElement elemMultiPoint = doc.createElementNS( ns, QStringLiteral( "MultiPoint" ) );
+  QDomElement elemMultiPoint = doc.createElementNS( ns, u"MultiPoint"_s );
 
   if ( isEmpty() )
     return elemMultiPoint;
@@ -190,7 +195,7 @@ QDomElement QgsMultiPoint::asGml3( QDomDocument &doc, int precision, const QStri
   {
     if ( qgsgeometry_cast<const QgsPoint *>( geom ) )
     {
-      QDomElement elemPointMember = doc.createElementNS( ns, QStringLiteral( "pointMember" ) );
+      QDomElement elemPointMember = doc.createElementNS( ns, u"pointMember"_s );
       elemPointMember.appendChild( geom->asGml3( doc, precision, ns, axisOrder ) );
       elemMultiPoint.appendChild( elemPointMember );
     }

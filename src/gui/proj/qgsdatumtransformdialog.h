@@ -19,10 +19,11 @@
 #define QGSDATUMTRANSFORMDIALOG_H
 
 #include "ui_qgsdatumtransformdialogbase.h"
+
+#include "qgis_gui.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsguiutils.h"
-#include "qgis_gui.h"
 
 #define SIP_NO_FILE
 
@@ -74,7 +75,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
      */
     static bool run( const QgsCoordinateReferenceSystem &sourceCrs = QgsCoordinateReferenceSystem(), const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(), QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr, const QString &windowTitle = QString() );
 
-    // TODO QGIS 4.0 - remove selectedDatumTransform, forceChoice
+    // TODO QGIS 5.0 - remove selectedDatumTransform, forceChoice
 
     /**
      * Constructor for QgsDatumTransformDialog.

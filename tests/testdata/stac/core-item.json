@@ -120,6 +120,31 @@
     "ephemeris": {
       "href": "http://cool-sat.com/catalog/20201211_223832_CS2/20201211_223832_CS2.EPH",
       "title": "Satellite Ephemeris Metadata"
+    },
+    "zarr-store": {
+      "href": "https://objectstore.eodc.eu:2222/e05ab01a9d56408d82ac32d69a5aae2a:202505-s02msil2a/22/products/cpm_v256/S2B_MSIL2A_20250522T125039_N0511_R095_T26TML_20250522T133252.zarr",
+      "title": "Example Zarr Store",
+      "type": "application/vnd+zarr",
+      "roles": [
+        "data",
+        "metadata"
+      ]
+    },
+    "geoparquet-file": {
+      "href": "https://github.com/opengeospatial/geoparquet/raw/refs/heads/main/examples/example.parquet",
+      "title": "GeoParquet File",
+      "type": "application/vnd.apache.parquet",
+      "roles": [
+        "data"
+      ]
+    },
+    "tiledb-array": {
+      "href": "az://some-url.com/tiledb_array",
+      "title": "Example TileDB array",
+      "type": "application/tiledb",
+      "roles": [
+        "data"
+      ]
     }
   }
 }

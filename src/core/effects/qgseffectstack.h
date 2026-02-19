@@ -21,6 +21,10 @@
 #include "qgis_sip.h"
 #include "qgspainteffect.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \class QgsEffectStack
@@ -71,7 +75,8 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect SIP_NODEFAULTCTORS
 
     ~QgsEffectStack() override;
 
-    QString type() const override { return QStringLiteral( "effectStack" ); }
+    Qgis::PaintEffectFlags flags() const override;
+    QString type() const override { return u"effectStack"_s; }
     QgsEffectStack *clone() const override SIP_FACTORY;
     bool saveProperties( QDomDocument &doc, QDomElement &element ) const override;
     bool readProperties( const QDomElement &element ) override;

@@ -20,6 +20,10 @@
 #include "qgsogrprovidermetadata.h"
 #include "qgsogrproviderutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>
 #include "qgis_sip.h"
@@ -45,10 +49,10 @@ inline void qgsConnectionPool_ConnectionCreate( const QString &connInfo, QgsOgrC
   c = new QgsOgrConn;
 
   const QVariantMap parts = QgsOgrProviderMetadata().decodeUri( connInfo );
-  const QString fullPath = parts.value( QStringLiteral( "vsiPrefix" ) ).toString()
-                           + parts.value( QStringLiteral( "path" ) ).toString()
-                           + parts.value( QStringLiteral( "vsiSuffix" ) ).toString();
-  const QStringList openOptions = parts.value( QStringLiteral( "openOptions" ) ).toStringList();
+  const QString fullPath = parts.value( u"vsiPrefix"_s ).toString()
+                           + parts.value( u"path"_s ).toString()
+                           + parts.value( u"vsiSuffix"_s ).toString();
+  const QStringList openOptions = parts.value( u"openOptions"_s ).toStringList();
   char **papszOpenOptions = nullptr;
   for ( const QString &option : openOptions )
   {
@@ -85,7 +89,7 @@ class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgr
     explicit QgsOgrConnPoolGroup( const QString &name )
       : QgsConnectionPoolGroup<QgsOgrConn*>( name )
     {
-      initTimer( this );
+      initTimer<QgsOgrConnPoolGroup>( this );
     }
 
     QgsOgrConnPoolGroup( const QgsOgrConnPoolGroup &other ) = delete;
@@ -98,7 +102,7 @@ class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgr
       return --mRefCount == 0;
     }
 
-  protected slots:
+  public slots:
     void handleConnectionExpired() { onConnectionExpired(); }
     void startExpirationTimer() { expirationTimer->start(); }
     void stopExpirationTimer() { expirationTimer->stop(); }

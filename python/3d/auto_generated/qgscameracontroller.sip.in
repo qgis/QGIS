@@ -153,7 +153,7 @@ pointing towards north. The angle should range from 0 to 360.
 %Docstring
 Writes camera configuration to the given DOM element
 %End
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, QgsVector3D savedOrigin );
 %Docstring
 Reads camera configuration from the given DOM element
 %End
@@ -205,13 +205,26 @@ given new pitch and heading angle.
 .. versionadded:: 3.42
 %End
 
-    void zoomCameraAroundPivot( const QVector3D &oldCameraPosition, double zoomFactor, const QVector3D &pivotPoint );
+ void zoomCameraAroundPivot( const QVector3D &oldCameraPosition, double zoomFactor, const QVector3D &pivotPoint ) /Deprecated="Since 3.44.4. Use version with oldDistanceFromCenterPoint argument instead."/;
 %Docstring
 Zooms camera by given zoom factor (>1 one means zoom in) while keeping
 the pivot point (given in world coordinates) at the same screen
 coordinates after the zoom.
 
 .. versionadded:: 3.42
+
+.. deprecated:: 3.44.4
+
+   Use version with oldDistanceFromCenterPoint argument instead.
+%End
+
+    void zoomCameraAroundPivot( const QVector3D &oldCameraPosition, double oldDistanceFromCenterPoint, double zoomFactor, const QVector3D &pivotPoint );
+%Docstring
+Zooms camera by given zoom factor (>1 one means zoom in) while keeping
+the pivot point (given in world coordinates) at the same screen
+coordinates after the zoom.
+
+.. versionadded:: 3.44.4
 %End
 
     bool keyboardEventFilter( QKeyEvent *event );
@@ -298,6 +311,14 @@ Returns the origin of the scene in map coordinates
 .. versionadded:: 3.44
 %End
 
+    void setCrossSectionSideView( const QgsCrossSection &crossSection );
+%Docstring
+Sets the cross section side view definition for the 3D map canvas. The
+camera will be positioned to look at the cross section from the side.
+
+.. versionadded:: 4.0
+%End
+
     void rotateCameraToHome();
 %Docstring
 .. versionadded:: 3.44
@@ -342,6 +363,14 @@ Sets the depth buffer image used by the camera controller to calculate
 world position from a pixel's coordinates and depth
 
 .. versionadded:: 3.24
+%End
+
+    void moveCenterPoint( const QVector3D &posDiff );
+%Docstring
+Moves camera position by the given difference vector in world
+coordinates
+
+.. versionadded:: 4.0
 %End
 
   private:

@@ -18,7 +18,6 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-
 #include "qgshistoryprovider.h"
 
 /**
@@ -62,11 +61,22 @@ class GUI_EXPORT QgsProcessingHistoryProvider : public QgsAbstractHistoryProvide
      */
     void createTest( const QString &command );
 
+    /**
+     * Emitted when the provider needs to display a \a message.
+     *
+     * \since QGIS 4.0
+     */
+    void showMessage( const QString &message );
+
   private:
     //! Executes some python commands
     void emitExecute( const QString &commands );
 
+    //! Creates a test for a python commands
     void emitCreateTest( const QString &command );
+
+    //! Shows a message to user
+    void emitShowMessage( const QString &message );
 
     //! Returns the path to the old log file
     QString oldLogPath() const;

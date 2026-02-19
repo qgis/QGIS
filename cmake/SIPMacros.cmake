@@ -26,8 +26,8 @@
 #     option for SIP.)
 #
 # SIP_CONCAT_PARTS - An integer which defines the number of parts the C++ code
-#     of each module should be split into. Defaults to 8. (Corresponds to the
-#     -j option for SIP.)
+#     of each module should be split into. (Corresponds to the -j option for
+#     SIP.)
 #
 # SIP_DISABLE_FEATURES - List of feature names which should be disabled
 #     running SIP. (Corresponds to the -x option for SIP.)
@@ -40,7 +40,11 @@
 
 SET(SIP_INCLUDES)
 SET(SIP_TAGS)
-SET(SIP_CONCAT_PARTS 16)
+if(${SIP_VERSION_STR} VERSION_LESS 6.14.0)
+  SET(SIP_CONCAT_PARTS 38)
+else()
+  SET(SIP_CONCAT_PARTS 38)
+endif()
 SET(SIP_DISABLE_FEATURES)
 SET(SIP_EXTRA_OPTIONS)
 SET(SIP_EXTRA_OBJECTS)
@@ -76,7 +80,6 @@ MACRO(GENERATE_SIP_PYTHON_MODULE_CODE MODULE_NAME MODULE_SIP SIP_FILES CPP_FILES
 
   ENDFOREACH (_sip_file)
 
-  SET(_message "-DMESSAGE=Generating CPP code for module ${MODULE_NAME}")
   SET(_sip_output_files)
 
   # Suppress warnings
@@ -106,21 +109,29 @@ MACRO(GENERATE_SIP_PYTHON_MODULE_CODE MODULE_NAME MODULE_SIP SIP_FILES CPP_FILES
 
   IF (SIP_BUILD_EXECUTABLE)
 
-    FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${_module_path}/build/${_child_module_name})    # Output goes in this dir.
+    FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${_module_path}/out/${_child_module_name})    # Output goes in this dir.
 
     FOREACH(CONCAT_NUM RANGE 0 ${SIP_CONCAT_PARTS} )
       IF( ${CONCAT_NUM} LESS ${SIP_CONCAT_PARTS} )
-        SET(_sip_output_files ${_sip_output_files} ${CMAKE_CURRENT_BINARY_DIR}/${_module_path}/build/${_child_module_name}/sip${_child_module_name}part${CONCAT_NUM}.cpp )
+        SET(_sip_output_files ${_sip_output_files} ${CMAKE_CURRENT_BINARY_DIR}/${_module_path}/out/${_child_module_name}/sip${_child_module_name}part${CONCAT_NUM}.cpp )
       ENDIF( ${CONCAT_NUM} LESS ${SIP_CONCAT_PARTS} )
     ENDFOREACH(CONCAT_NUM RANGE 0 ${SIP_CONCAT_PARTS} )
 
-    SET(SIPCMD ${SIP_BUILD_EXECUTABLE} --no-protected-is-public --pep484-pyi --no-make --concatenate=${SIP_CONCAT_PARTS} --qmake=${QMAKE_EXECUTABLE} --include-dir=${CMAKE_CURRENT_BINARY_DIR} --include-dir=${PYQT_SIP_DIR} --api-dir ${CMAKE_BINARY_DIR}/python ${SIP_BUILD_EXTRA_OPTIONS})
+    # Make our common files available in the SIP build
+    IF(WIN32)
+      set(SIP_PYTHONPATH "${CMAKE_SOURCE_DIR}\\python\\common;$ENV{PYTHONPATH}")
+    ELSE()
+      set(SIP_PYTHONPATH "${CMAKE_SOURCE_DIR}/python/common:$ENV{PYTHONPATH}")
+    ENDIF()
+
+    SET(_sip_disable_features ${SIP_DISABLE_FEATURES})
+    LIST(TRANSFORM _sip_disable_features PREPEND --disable-feature=)
+
+    SET(SIPCMD ${SIP_BUILD_EXECUTABLE} ${_sip_disable_features} --no-protected-is-public --pep484-pyi --no-make --concatenate=${SIP_CONCAT_PARTS} --qmake=${QMAKE_EXECUTABLE} --include-dir=${CMAKE_CURRENT_BINARY_DIR} --include-dir=${PYQT_SIP_DIR} --api-dir ${CMAKE_BINARY_DIR}/python ${SIP_BUILD_EXTRA_OPTIONS})
 
     ADD_CUSTOM_COMMAND(
       OUTPUT ${_sip_output_files}
-      COMMAND ${CMAKE_COMMAND} -E echo ${message}
-      COMMAND ${SIPCMD}
-      COMMAND ${CMAKE_COMMAND} -E touch ${_sip_output_files}
+      COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${SIP_PYTHONPATH} ${SIPCMD}
       WORKING_DIRECTORY ${_module_path}
       MAIN_DEPENDENCY ${_configured_module_sip}
       DEPENDS ${SIP_EXTRA_FILES_DEPEND}
@@ -156,7 +167,6 @@ MACRO(GENERATE_SIP_PYTHON_MODULE_CODE MODULE_NAME MODULE_SIP SIP_FILES CPP_FILES
     SET(SIPCMD ${SIP_BINARY_PATH} ${_sip_tags} -w -e ${_sip_x} ${SIP_EXTRA_OPTIONS} -j ${SIP_CONCAT_PARTS} -c ${CMAKE_CURRENT_BINARY_DIR}/${_module_path} -I ${CMAKE_CURRENT_BINARY_DIR}/${_module_path} ${_sip_includes} ${_configured_module_sip})
     ADD_CUSTOM_COMMAND(
       OUTPUT ${_sip_output_files}
-      COMMAND ${CMAKE_COMMAND} -E echo ${message}
       COMMAND ${CMAKE_COMMAND} -E touch ${_sip_output_files}
       COMMAND ${SIPCMD}
       MAIN_DEPENDENCY ${_configured_module_sip}
@@ -185,7 +195,7 @@ MACRO(BUILD_SIP_PYTHON_MODULE MODULE_NAME SIP_FILES EXTRA_OBJECTS)
 
   ADD_LIBRARY(${_logical_name} MODULE ${_sip_output_files} ${EXTRA_OBJECTS})
   SET_PROPERTY(TARGET ${_logical_name} PROPERTY AUTOMOC OFF)
-  TARGET_INCLUDE_DIRECTORIES(${_logical_name} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/${_module_path}/build)
+  TARGET_INCLUDE_DIRECTORIES(${_logical_name} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/${_module_path}/out)
 
   IF (${SIP_VERSION_STR} VERSION_LESS 5.0.0)
     # require c++14 only -- sip breaks with newer versions due to reliance on throw(...) annotations removed in c++17
@@ -203,9 +213,8 @@ MACRO(BUILD_SIP_PYTHON_MODULE MODULE_NAME SIP_FILES EXTRA_OBJECTS)
     ADD_CUSTOM_COMMAND(TARGET ${_logical_name} POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E echo "Copying extension ${_child_module_name}"
       COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<TARGET_FILE:${_logical_name}>" "${_runtime_output}/${_child_module_name}.pyd"
-      DEPENDS ${_logical_name}
       )
   ENDIF(WIN32)
 
-  INSTALL(TARGETS ${_logical_name} DESTINATION "${Python_SITEARCH}/${_parent_module_path}")
+  INSTALL(TARGETS ${_logical_name} DESTINATION "${QGIS_PYTHON_INSTALL_DIR}/${_parent_module_path}")
 ENDMACRO(BUILD_SIP_PYTHON_MODULE MODULE_NAME SIP_FILES EXTRA_OBJECTS)

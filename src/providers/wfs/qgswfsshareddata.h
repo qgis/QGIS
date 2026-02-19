@@ -15,13 +15,18 @@
 #ifndef QGSWFSSHAREDDATA_H
 #define QGSWFSSHAREDDATA_H
 
-#include "qgswfsfeatureiterator.h"
-#include "qgswfsrequest.h"
-#include "qgswfscapabilities.h"
-#include "qgsogcutils.h"
-
-#include "qgsbackgroundcachedshareddata.h"
 #include "qgsbackgroundcachedfeatureiterator.h"
+#include "qgsbackgroundcachedshareddata.h"
+#include "qgsogcutils.h"
+#include "qgswfscapabilities.h"
+#include "qgswfsrequest.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
+class QgsFeatureDownloaderImpl;
+class QgsGmlStreamingParser;
 
 //! Class shared between provider and feature source
 class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
@@ -39,9 +44,6 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
 
     //! Returns srsName
     QString srsName() const;
-
-    //! Return provider geometry attribute name
-    const QString &geometryAttribute() const { return mGeometryAttribute; }
 
     //! Return list of layer properties.
     const QList<QgsOgcUtils::LayerProperties> &layerProperties() const { return mLayerPropertiesList; }
@@ -74,6 +76,18 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     //! Creates a deep copy of this shared data
     QgsWFSSharedData *clone() const;
 
+    /**
+     * Returns TRUE if the initial GetFeature request was issued
+     * \note This does not mean that the request actually returned any feature, only that it was completed successfully.
+     */
+    bool initialGetFeatureIssued() const;
+
+    /**
+     * Sets whether the initial GetFeature request was \a issued
+     * \note This does not mean that the request actually returned any feature, only that it was completed successfully.
+     */
+    void setInitialGetFeatureIssued( bool issued );
+
   signals:
 
     //! Raise error
@@ -87,26 +101,14 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     friend class QgsWFSProvider;
     friend class QgsWFSSingleFeatureRequest;
 
-    //! Datasource URI
-    QgsWFSDataSourceURI mURI;
-
     //! WFS version to use. Comes from GetCapabilities response
     QString mWFSVersion;
-
-    //! Name of geometry attribute
-    QString mGeometryAttribute;
 
     //! Layer properties
     QList<QgsOgcUtils::LayerProperties> mLayerPropertiesList;
 
     //! Map a field name to the pair (typename, fieldname) that describes its source field
     QMap<QString, QPair<QString, QString>> mMapFieldNameToSrcLayerNameFieldName;
-
-    //! Map a field name to the pair (xpath, isNestedContent)
-    QMap<QString, QPair<QString, bool>> mFieldNameToXPathAndIsNestedContentMap;
-
-    //! Map a namespace prefix to its URI
-    QMap<QString, QString> mNamespacePrefixToURIMap;
 
     //! Preferred HTTP method
     Qgis::HttpMethod mHttpMethod = Qgis::HttpMethod::Get;
@@ -116,9 +118,6 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
 
     //! Server capabilities
     QgsWfsCapabilities mCaps;
-
-    //! If we have already issued a warning about missing feature ids
-    bool mHasWarnedAboutMissingFeatureId = false;
 
     /**
      * If the server (typically MapServer WFS 1.1) honours EPSG axis order, but returns
@@ -130,9 +129,6 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
      * If the server (typically ESRI with WFS-T 1.1 in 2020) does not like "pos" and "posList", and requires "coordinates" for WFS 1.1 transactions
      */
     bool mServerPrefersCoordinatesForTransactions_1_1 = false;
-
-    //! Geometry type of the features in this layer
-    Qgis::WkbType mWKBType = Qgis::WkbType::Unknown;
 
     //! Geometry type filter to ensure geometries returned by the layer are of type mWKBType.
     QString mWFSGeometryTypeFilter;
@@ -157,9 +153,7 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
 
     void invalidateCacheBaseUnderLock() override;
 
-    bool supportsLimitedFeatureCountDownloads() const override { return !( mWFSVersion.startsWith( QLatin1String( "1.0" ) ) ); }
-
-    QString layerName() const override { return mURI.typeName(); }
+    bool supportsLimitedFeatureCountDownloads() const override { return !( mWFSVersion.startsWith( "1.0"_L1 ) ); }
 
     bool hasServerSideFilter() const override { return !mWFSFilter.isEmpty(); }
 
@@ -170,6 +164,8 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     long long getFeatureCountFromServer() const override;
 
     void getVersionValues( QgsOgcUtils::GMLVersion &gmlVersion, QgsOgcUtils::FilterVersion &filterVersion, bool &honourAxisOrientation ) const;
+
+    bool mInitialGetFeatureIssued = false;
 };
 
 //! Utility class to issue a GetFeature resultType=hits request

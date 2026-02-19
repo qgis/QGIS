@@ -14,13 +14,16 @@ email                : hugo dot mercier at oslandia dot com
  *                                                                         *
  ***************************************************************************/
 
-#include <QString>
-#include <QVariant>
+#include "qgsvirtuallayersqlitehelper.h"
 
 #include <stdexcept>
 
-#include "qgsvirtuallayersqlitehelper.h"
 #include "qgslogger.h"
+
+#include <QString>
+#include <QVariant>
+
+using namespace Qt::StringLiterals;
 
 QgsScopedSqlite::QgsScopedSqlite( const QString &path, bool withExtension )
 {
@@ -40,7 +43,7 @@ QgsScopedSqlite::QgsScopedSqlite( const QString &path, bool withExtension )
 
   if ( r )
   {
-    const QString err = QStringLiteral( "%1 [%2]" ).arg( sqlite3_errmsg( db_ ), path );
+    const QString err = u"%1 [%2]"_s.arg( sqlite3_errmsg( db_ ), path );
     QgsDebugError( err );
     throw std::runtime_error( err.toUtf8().constData() );
   }
@@ -101,13 +104,13 @@ namespace Sqlite
 {
   Query::Query( sqlite3 *db, const QString &q )
     : db_( db )
-    , nBind_( 1 )
+
   {
     const QByteArray ba( q.toUtf8() );
     const int r = sqlite3_prepare_v2( db, ba.constData(), ba.size(), &stmt_, nullptr );
     if ( r )
     {
-      const QString err = QStringLiteral( "Query preparation error on %1: %2" ).arg( q, sqlite3_errmsg( db ) );
+      const QString err = u"Query preparation error on %1: %2"_s.arg( q, sqlite3_errmsg( db ) );
       throw std::runtime_error( err.toUtf8().constData() );
     }
   }
@@ -165,7 +168,7 @@ namespace Sqlite
     const int r = sqlite3_exec( db, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
     if ( r )
     {
-      const QString err = QStringLiteral( "Query execution error on %1: %2 - %3" ).arg( sql ).arg( r ).arg( QString::fromUtf8( errMsg ) );
+      const QString err = u"Query execution error on %1: %2 - %3"_s.arg( sql ).arg( r ).arg( QString::fromUtf8( errMsg ) );
       sqlite3_free( errMsg );
       throw std::runtime_error( err.toUtf8().constData() );
     }
@@ -201,7 +204,7 @@ namespace Sqlite
     return sqlite3_column_int( stmt_, i );
   }
 
-  qint64 Query::columnInt64( int i ) const
+  long long Query::columnInt64( int i ) const
   {
     return sqlite3_column_int64( stmt_, i );
   }

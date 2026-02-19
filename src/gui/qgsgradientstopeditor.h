@@ -16,11 +16,11 @@
 #ifndef QGSGRADIENTSTOPEDITOR_H
 #define QGSGRADIENTSTOPEDITOR_H
 
-#include "qgscolorrampimpl.h"
-#include "qgis_sip.h"
-#include <QWidget>
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgscolorrampimpl.h"
 
+#include <QWidget>
 
 /**
  * \ingroup gui
@@ -200,6 +200,14 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
 
     //! Polygon for stop triangle marker inner
     QPolygonF sInnerTriangle;
+
+    static constexpr int FRAME_MARGIN_PX = 2;
+    static constexpr int MARKER_WIDTH = 11;
+    static constexpr int MARKER_HEIGHT = 14;
+    static constexpr double MARKER_GAP = 1.5;
+    static constexpr int MARGIN_BOTTOM = MARKER_HEIGHT + 2;
+    static constexpr int MARGIN_X = MARKER_WIDTH / 2;
+    static constexpr int CLICK_THRESHOLD = MARKER_WIDTH / 2 + 3;
 };
 
 #endif // QGSGRADIENTSTOPEDITOR_H

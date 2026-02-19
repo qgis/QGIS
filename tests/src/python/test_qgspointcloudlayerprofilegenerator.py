@@ -78,7 +78,7 @@ class TestQgsPointCloudLayerProfileGenerator(QgisTestCase):
         generator = pcl.createProfileGenerator(req)
         self.assertFalse(generator.generateProfile())
         results = generator.takeResults()
-        self.assertTrue(results is None)
+        self.assertFalse(results)
 
         req.setTolerance(0.05)
         generator = pcl.createProfileGenerator(req)
@@ -1195,6 +1195,181 @@ class TestQgsPointCloudLayerProfileGenerator(QgisTestCase):
         self.assertEqual(features[-1].geometry.asWkt(3), "Point Z (7.44 2.71 -5.41)")
         self.assertAlmostEqual(features[-1].attributes["distance"], 0.063658039178, 4)
         self.assertAlmostEqual(features[-1].attributes["elevation"], -5.409997397, 4)
+
+    @unittest.skipIf(
+        "copc" not in QgsProviderRegistry.instance().providerList(),
+        "COPC provider not available",
+    )
+    def test_54349_regression(self):
+        # https://github.com/qgis/QGIS/issues/54349
+        pcl = QgsPointCloudLayer(
+            "https://github.com/PDAL/data/raw/refs/heads/main/autzen/autzen-classified.copc.laz",
+            providerLib="copc",
+        )
+        self.assertTrue(pcl.isValid())
+
+        pcl.elevationProperties().setMaximumScreenError(30)
+        pcl.elevationProperties().setMaximumScreenErrorUnit(
+            QgsUnitTypes.RenderUnit.RenderMillimeters
+        )
+
+        # curve in pcl extent
+        curve = QgsLineString()
+        curve.fromWkt("LineString (637780 850995, 637785 850995)")
+
+        req = QgsProfileRequest(curve)
+        req.setCrs(pcl.crs())
+        req.setTolerance(0.5)
+        generator = pcl.createProfileGenerator(req)
+
+        context = QgsProfileGenerationContext()
+        context.setMapUnitsPerDistancePixel(0.50)
+
+        self.assertTrue(generator.generateProfile(context))
+        results = generator.takeResults()
+        self.assertEqual(
+            self.round_dict(results.distanceToHeightMap(), 1),
+            {
+                1.5: 420.4,
+                2.5: 420.4,
+                2.6: 420.4,
+                3.9: 420.2,
+            },
+        )
+
+        # curve outside pcl extent
+        curve = QgsLineString()
+        curve.fromWkt("LineString (639000 850722, 639005 850722)")
+
+        req = QgsProfileRequest(curve)
+        req.setCrs(pcl.crs())
+        req.setTolerance(0.5)
+        generator = pcl.createProfileGenerator(req)
+
+        self.assertFalse(generator.generateProfile(context))
+        results = generator.takeResults()
+        self.assertFalse(results)
+
+    @unittest.skipIf(
+        "copc" not in QgsProviderRegistry.instance().providerList(),
+        "COPC provider not available",
+    )
+    def testProfileRenderTriangulatedSurface(self):
+        pcl = QgsPointCloudLayer(
+            os.path.join(
+                unitTestDataPath(),
+                "point_clouds",
+                "copc",
+                "no-extrabytes-dataset.copc.laz",
+            ),
+            "test",
+            "copc",
+        )
+        self.assertTrue(pcl.isValid())
+        pcl.elevationProperties().setMaximumScreenError(0.3)
+        pcl.elevationProperties().setMaximumScreenErrorUnit(
+            QgsUnitTypes.RenderUnit.RenderMillimeters
+        )
+        pcl.elevationProperties().setType(
+            Qgis.PointCloudProfileType.TriangulatedSurface
+        )
+
+        curve = QgsLineString()
+        curve.fromWkt("LineString (527935 6210950, 527950 6210950)")
+
+        req = QgsProfileRequest(curve)
+        req.setCrs(pcl.crs())
+        req.setTolerance(10)
+        generator = pcl.createProfileGenerator(req)
+
+        context = QgsProfileGenerationContext()
+
+        self.assertTrue(generator.generateProfile(context))
+        results = generator.takeResults()
+        self.assertTrue(results)
+
+        self.assertEqual(
+            self.round_dict(results.distanceToHeightMap(), 2),
+            {
+                0.02: 150.04,
+                0.04: 150.05,
+                0.11: 150.06,
+                0.17: 150.06,
+                0.55: 150.1,
+                0.59: 150.1,
+                0.6: 150.1,
+                0.89: 150.12,
+                0.93: 150.13,
+                1.46: 150.17,
+                1.48: 150.18,
+                1.56: 150.18,
+                1.79: 150.21,
+                1.86: 150.2,
+                2.28: 150.21,
+                2.66: 150.28,
+                2.75: 150.3,
+                2.85: 150.3,
+                3.05: 150.29,
+                3.26: 150.31,
+                3.56: 150.32,
+                3.67: 150.33,
+                3.97: 150.35,
+                4.25: 150.36,
+                4.4: 150.38,
+                4.64: 150.41,
+                4.82: 150.41,
+                5.17: 150.41,
+                5.37: 150.42,
+                5.46: 150.43,
+                5.87: 150.46,
+                5.95: 150.45,
+                6.17: 150.44,
+                6.33: 150.45,
+                6.8: 150.5,
+                6.9: 150.52,
+                7.02: 150.52,
+                7.17: 150.53,
+                7.31: 150.53,
+                7.47: 150.54,
+                7.94: 150.58,
+                8.34: 150.6,
+                9.0: 150.64,
+                9.06: 150.64,
+                9.07: 150.64,
+                9.33: 150.66,
+                9.38: 150.66,
+                9.64: 150.67,
+                9.74: 150.68,
+                10.2: 150.73,
+                10.28: 150.73,
+                10.44: 150.74,
+                10.92: 150.75,
+                11.04: 150.77,
+                11.15: 150.78,
+                11.26: 150.79,
+                11.59: 150.8,
+                12.01: 150.8,
+                12.19: 150.81,
+                12.33: 150.83,
+                12.48: 150.85,
+                12.62: 150.86,
+                12.97: 150.89,
+                13.25: 150.91,
+                13.31: 150.91,
+                13.54: 150.94,
+                13.7: 150.94,
+                13.95: 150.94,
+                14.07: 150.95,
+                14.28: 151.01,
+                14.36: 151.01,
+                14.43: 151.03,
+                14.51: 151.03,
+                14.79: 151.04,
+                14.84: 151.04,
+                14.93: 151.05,
+                14.98: 151.04,
+            },
+        )
 
 
 if __name__ == "__main__":

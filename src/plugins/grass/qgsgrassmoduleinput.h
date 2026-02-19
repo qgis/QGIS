@@ -16,6 +16,14 @@
 #ifndef QGSGRASSMODULEINPUT_H
 #define QGSGRASSMODULEINPUT_H
 
+#include "qgis.h"
+#include "qgsgrass.h"
+#include "qgsgrassmodule.h"
+#include "qgsgrassmoduleparam.h"
+#include "qgsgrassplugin.h"
+#include "qgsgrassprovider.h"
+#include "qgsgrassvector.h"
+
 #include <QAbstractProxyModel>
 #include <QCheckBox>
 #include <QComboBox>
@@ -28,17 +36,11 @@
 #include <QSortFilterProxyModel>
 #include <QStandardItem>
 #include <QStandardItemModel>
+#include <QString>
 #include <QStyledItemDelegate>
 #include <QTreeView>
 
-#include "qgis.h"
-
-#include "qgsgrass.h"
-#include "qgsgrassmodule.h"
-#include "qgsgrassmoduleparam.h"
-#include "qgsgrassplugin.h"
-#include "qgsgrassprovider.h"
-#include "qgsgrassvector.h"
+using namespace Qt::StringLiterals;
 
 extern "C"
 {
@@ -85,7 +87,7 @@ class QgsGrassModuleInputModel : public QStandardItemModel
     QStringList watchedDirs()
     {
       QStringList l;
-      l << QStringLiteral( "cellhd" ) << QStringLiteral( "vector" ) << QStringLiteral( "tgis" );
+      l << u"cellhd"_s << u"vector"_s << u"tgis"_s;
       return l;
     }
     // names of
@@ -196,7 +198,7 @@ class QgsGrassModuleInputComboBox : public QComboBox
     QgsGrassModuleInputProxy *mProxy = nullptr;
     QgsGrassModuleInputTreeView *mTreeView = nullptr;
     // Skip next hidePopup
-    bool mSkipHide;
+    bool mSkipHide = false;
 };
 
 class QgsGrassModuleInputSelectedDelegate : public QStyledItemDelegate
@@ -270,12 +272,12 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     //! Does this options causes use of region?
     //  Raster input/output uses region by default
     //  Use of region can be forced by 'region' attribute in qgm
-    bool usesRegion() { return mUsesRegion; }
+    bool usesRegion() const { return mUsesRegion; }
 
     //! Should be used region of this input
     bool useRegion();
 
-    QgsGrassObject::Type type() { return mType; }
+    QgsGrassObject::Type type() const { return mType; }
 
     void setGeometryTypeOption( const QString &optionName ) { mGeometryTypeOption = optionName; }
     QString geometryTypeOption() const { return mGeometryTypeOption; }
@@ -298,7 +300,7 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
 
   private:
     //! Input type
-    QgsGrassObject::Type mType;
+    QgsGrassObject::Type mType = QgsGrassObject::Vector;
 
     // Module options
     QgsGrassModuleStandardOptions *mModuleStandardOptions = nullptr;
@@ -347,10 +349,10 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
 
     //! The input map will be updated -> must be from current mapset
     // TODO
-    bool mUpdate;
+    bool mUpdate = false;
 
     //! Uses region
-    bool mUsesRegion;
+    bool mUsesRegion = false;
 
     QgsGrassModuleInput( const QgsGrassModuleInput & ) = delete;
     QgsGrassModuleInput &operator=( const QgsGrassModuleInput & ) = delete;

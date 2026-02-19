@@ -112,6 +112,8 @@ class VLayerRegistry:
 class VLayerConnector(DBConnector):
 
     def __init__(self, uri):
+        super().__init__(uri)
+
         self.mapSridToName = {}
 
     def _execute(self, cursor, sql):
@@ -212,6 +214,9 @@ class VLayerConnector(DBConnector):
         lst = []
         for _, l in QgsProject.instance().mapLayers().items():
             if l.type() == QgsMapLayerType.VectorLayer:
+
+                if not l.isValid():
+                    continue
 
                 lname = l.name()
                 # if there is already a layer with this name, use the layer id

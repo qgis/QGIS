@@ -12,19 +12,23 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsfeatureselectionmodel.h"
+
 #include "qgsattributetablemodel.h"
 #include "qgsfeaturemodel.h"
 #include "qgsifeatureselectionmanager.h"
-#include "qgsfeatureselectionmodel.h"
-#include "moc_qgsfeatureselectionmodel.cpp"
-#include "qgsvectorlayer.h"
 #include "qgslogger.h"
+#include "qgsvectorlayer.h"
+
+#include <QString>
+
+#include "moc_qgsfeatureselectionmodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFeatureSelectionModel::QgsFeatureSelectionModel( QAbstractItemModel *model, QgsFeatureModel *featureModel, QgsIFeatureSelectionManager *featureSelectionManager, QObject *parent )
   : QItemSelectionModel( model, parent )
   , mFeatureModel( featureModel )
-  , mSyncEnabled( true )
-  , mClearAndSelectBuffer( false )
 {
   setFeatureSelectionManager( featureSelectionManager );
 }
@@ -74,7 +78,7 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
 {
   QgsFeatureIds ids;
 
-  QgsDebugMsgLevel( QStringLiteral( "Index count: %1" ).arg( selection.indexes().size() ), 2 );
+  QgsDebugMsgLevel( u"Index count: %1"_s.arg( selection.indexes().size() ), 2 );
 
   const auto constIndexes = selection.indexes();
   for ( const QModelIndex &index : constIndexes )

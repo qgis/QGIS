@@ -13,25 +13,25 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsziputils.h"
+
 #include <fstream>
-
-#include <QFileInfo>
-#include <QDir>
-
-#include "zip.h"
-
+#include <iostream>
+#include <zip.h>
 #include <zlib.h>
 
-#include "qgsmessagelog.h"
-#include "qgsziputils.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 
-#include <iostream>
+#include <QDir>
+#include <QFileInfo>
+#include <QString>
 
+using namespace Qt::StringLiterals;
 
 bool QgsZipUtils::isZipFile( const QString &filename )
 {
-  return QFileInfo( filename ).suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) == 0;
+  return QFileInfo( filename ).suffix().compare( "qgz"_L1, Qt::CaseInsensitive ) == 0;
 }
 
 bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QStringList &files, bool checkConsistency )
@@ -92,7 +92,7 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
 
           const QFileInfo newFile( QDir( dir ), fileName );
 
-          if ( !QString( QDir::cleanPath( newFile.absolutePath() ) + QStringLiteral( "/" ) ).startsWith( QDir( dir ).absolutePath() + QStringLiteral( "/" ) ) )
+          if ( !QString( QDir::cleanPath( newFile.absolutePath() ) + u"/"_s ).startsWith( QDir( dir ).absolutePath() + u"/"_s ) )
           {
             QgsMessageLog::logMessage( QObject::tr( "Skipped file %1 outside of the directory %2" ).arg(
                                          newFile.absoluteFilePath(),
@@ -341,4 +341,64 @@ const QStringList QgsZipUtils::files( const QString &zip )
   }
 
   return files;
+}
+
+bool QgsZipUtils::extractFileFromZip( const QString &zipFilename, const QString &filenameInZip, QByteArray &bytesOut )
+{
+  if ( !QFileInfo::exists( zipFilename ) )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Error zip file does not exist: '%1'" ).arg( zipFilename ) );
+    return false;
+  }
+
+  if ( filenameInZip.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Error file name in zip is empty" ) );
+    return false;
+  }
+
+  int err = 0;
+  const QByteArray zipFilenamePtr = zipFilename.toUtf8();
+  struct zip *z = zip_open( zipFilenamePtr.constData(), 0, &err );
+  if ( !z )
+  {
+    zip_error_t error;
+    zip_error_init_with_code( &error, err );
+    QgsMessageLog::logMessage( QObject::tr( "Error opening zip archive '%1': %2" ).arg( zipFilename, zip_error_strerror( &error ) ) );
+    zip_error_fini( &error );
+    return false;
+  }
+
+  const QByteArray filenameInZipPtr = filenameInZip.toUtf8();
+  struct zip_stat st;
+  zip_stat_init( &st );
+  if ( zip_stat( z, filenameInZipPtr.constData(), 0, &st ) != 0 )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "File '%1' not found in zip archive '%2': %3" ).arg( filenameInZip, zipFilename, zip_strerror( z ) ) );
+    zip_close( z );
+    return false;
+  }
+
+  zip_file *zf = zip_fopen( z, filenameInZipPtr.constData(), 0 );
+  if ( !zf )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Could not open file '%1' in zip archive '%2': %3" ).arg( filenameInZip, zipFilename, zip_strerror( z ) ) );
+    zip_close( z );
+    return false;
+  }
+
+  bytesOut.resize( static_cast<int>( st.size ) );
+  zip_int64_t readBytes = zip_fread( zf, bytesOut.data(), st.size );
+
+  zip_fclose( zf );
+  zip_close( z );
+
+  // If successful, the number of bytes actually read is returned.
+  if ( static_cast<zip_uint64_t>( readBytes ) != st.size )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Error reading file '%1' from zip archive '%2'." ).arg( filenameInZip, zipFilename ) );
+    return false;
+  }
+
+  return true;
 }

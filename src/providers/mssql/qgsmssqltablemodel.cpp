@@ -16,12 +16,18 @@
  ***************************************************************************/
 
 #include "qgsmssqltablemodel.h"
-#include "moc_qgsmssqltablemodel.cpp"
-#include "qgsmssqlconnection.h"
-#include "qgslogger.h"
+
 #include "qgsdatasourceuri.h"
 #include "qgsiconutils.h"
+#include "qgslogger.h"
+#include "qgsmssqlconnection.h"
 #include "qgsmssqlutils.h"
+
+#include <QString>
+
+#include "moc_qgsmssqltablemodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMssqlTableModel::QgsMssqlTableModel( QObject *parent )
   : QgsAbstractDbTableModel( parent )
@@ -72,7 +78,7 @@ bool QgsMssqlTableModel::searchableColumn( int column ) const
 
 void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProperty )
 {
-  QgsDebugMsgLevel( QStringLiteral( "%1.%2.%3 type=%4 srid=%5 pk=%6 sql=%7 view=%8" ).arg( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName, layerProperty.type, layerProperty.srid, layerProperty.pkCols.join( ',' ), layerProperty.sql, layerProperty.isView ? "yes" : "no" ), 2 );
+  QgsDebugMsgLevel( u"%1.%2.%3 type=%4 srid=%5 pk=%6 sql=%7 view=%8"_s.arg( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName, layerProperty.type, layerProperty.srid, layerProperty.pkCols.join( ',' ), layerProperty.sql, layerProperty.isView ? "yes" : "no" ), 2 );
 
   // is there already a root item with the given scheme Name?
   QStandardItem *schemaItem = nullptr;
@@ -97,7 +103,7 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
     wkbType = Qgis::WkbType::NoGeometry;
   }
 
-  bool needToDetect = wkbType == Qgis::WkbType::Unknown && layerProperty.type != QLatin1String( "GEOMETRYCOLLECTION" );
+  bool needToDetect = wkbType == Qgis::WkbType::Unknown && layerProperty.type != "GEOMETRYCOLLECTION"_L1;
 
   QList<QStandardItem *> childItemList;
 
@@ -402,17 +408,17 @@ QString QgsMssqlTableModel::layerURI( const QModelIndex &index, const QString &c
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );
 
-  uri.setParam( QStringLiteral( "disableInvalidGeometryHandling" ), disableInvalidGeometryHandling ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  uri.setParam( u"disableInvalidGeometryHandling"_s, disableInvalidGeometryHandling ? u"1"_s : u"0"_s );
 
   if ( QgsMssqlConnection::geometryColumnsOnly( mConnectionName ) )
   {
-    uri.setParam( QStringLiteral( "extentInGeometryColumns" ), QgsMssqlConnection::extentInGeometryColumns( mConnectionName ) ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+    uri.setParam( u"extentInGeometryColumns"_s, QgsMssqlConnection::extentInGeometryColumns( mConnectionName ) ? u"1"_s : u"0"_s );
   }
 
   QStandardItem *isViewItem = itemFromIndex( index.sibling( index.row(), DbtmView ) );
 
   if ( isViewItem->data( Qt::UserRole + 1 ).toBool() )
-    uri.setParam( QStringLiteral( "primaryKeyInGeometryColumns" ), QgsMssqlConnection::primaryKeyInGeometryColumns( mConnectionName ) ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+    uri.setParam( u"primaryKeyInGeometryColumns"_s, QgsMssqlConnection::primaryKeyInGeometryColumns( mConnectionName ) ? u"1"_s : u"0"_s );
 
   return uri.uri();
 }

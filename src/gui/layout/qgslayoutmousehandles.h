@@ -20,11 +20,12 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include "qgsgraphicsviewmousehandles.h"
-#include <QPointer>
 #include <memory>
 
 #include "qgis_gui.h"
+#include "qgsgraphicsviewmousehandles.h"
+
+#include <QPointer>
 
 class QgsLayout;
 class QGraphicsView;
@@ -74,6 +75,7 @@ class GUI_EXPORT QgsLayoutMouseHandles : public QgsGraphicsViewMouseHandles
     void expandItemList( const QList<QGraphicsItem *> &items, QList<QGraphicsItem *> &collected ) const override;
     void expandItemList( const QList<QgsLayoutItem *> &items, QList<QGraphicsItem *> &collected ) const;
     void moveItem( QGraphicsItem *item, double deltaX, double deltaY ) override;
+    void rotateItem( QGraphicsItem *item, double deltaDegree, double deltaCenterX, double deltaCenterY ) override;
     void setItemRect( QGraphicsItem *item, QRectF rect ) override;
     void showStatusMessage( const QString &message ) override;
     void hideAlignItems() override;

@@ -11,6 +11,7 @@
 
 
 
+
 class QgsLegendRenderer
 {
 %Docstring(signature="appended")
@@ -35,6 +36,18 @@ not changed, and the model must exist for the lifetime of this renderer.
 %End
     ~QgsLegendRenderer();
 
+
+    void setProxyModel( QgsLayerTreeFilterProxyModel *model /Transfer/ );
+%Docstring
+Sets the filter proxy ``model`` to use for filtering the legend model
+content during rendering.
+
+Ownership of ``proxy`` is transferred to the renderer.
+
+.. seealso:: :py:func:`proxyModel`
+
+.. versionadded:: 4.0
+%End
 
     QgsLayerTreeFilterProxyModel *proxyModel();
 %Docstring

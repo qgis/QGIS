@@ -1,0 +1,133 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/plot/qgspiechartplot.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsPieChartPlot : Qgs2DPlot
+{
+%Docstring(signature="appended")
+A simple pie chart class.
+
+.. warning::
+
+   This class is not considered stable API, and may change in future!
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgspiechartplot.h"
+%End
+  public:
+
+    QgsPieChartPlot();
+    ~QgsPieChartPlot();
+
+    virtual QString type() const;
+
+    virtual void renderContent( QgsRenderContext &context, QgsPlotRenderContext &plotContext, const QRectF &plotArea, const QgsPlotData &plotData = QgsPlotData() );
+
+
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+
+    QgsFillSymbol *fillSymbolAt( int index ) const;
+%Docstring
+Returns the fill symbol for the series with matching ``index``.
+%End
+
+    void setFillSymbolAt( int index, QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the fill ``symbol`` to use for the series with matching ``index``.
+%End
+
+    QgsColorRamp *colorRampAt( int index ) const;
+%Docstring
+Returns the color ramp for the series with matching ``index``.
+%End
+
+    void setColorRampAt( int index, QgsColorRamp *ramp /Transfer/ );
+%Docstring
+Sets the color ``ramp`` for the series with matching ``index``.
+%End
+
+    int fillSymbolCount() const;
+%Docstring
+Returns the fill symbols list count.
+%End
+
+    int colorRampCount() const;
+%Docstring
+Returns the color ramps list count.
+%End
+
+    QgsTextFormat textFormat() const;
+%Docstring
+Returns the text format used for the pie chart labels.
+
+.. seealso:: :py:func:`setTextFormat`
+%End
+
+    void setTextFormat( const QgsTextFormat &format );
+%Docstring
+Sets the text ``format`` used for the pie chart labels.
+
+.. seealso:: :py:func:`textFormat`
+%End
+
+    QgsNumericFormat *numericFormat() const;
+%Docstring
+Returns the numeric format used for the pie chart labels.
+
+.. seealso:: :py:func:`setNumericFormat`
+%End
+
+    void setNumericFormat( QgsNumericFormat *format /Transfer/ );
+%Docstring
+Sets the numeric ``format`` used for the pie chart labels.
+
+Ownership of ``format`` is transferred to the plot.
+
+.. seealso:: :py:func:`numericFormat`
+%End
+
+    Qgis::PieChartLabelType labelType() const;
+%Docstring
+Returns the pie chart label type.
+%End
+
+    void setLabelType( Qgis::PieChartLabelType type );
+%Docstring
+Sets the pie chart label type.
+%End
+
+    static QgsPieChartPlot *create() /Factory/;
+%Docstring
+Returns a new pie chart.
+%End
+
+    static QgsVectorLayerAbstractPlotDataGatherer *createDataGatherer( QgsPlot *plot ) /TransferBack/;
+%Docstring
+Returns a new data gatherer for a given pie chart ``plot``.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/plot/qgspiechartplot.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

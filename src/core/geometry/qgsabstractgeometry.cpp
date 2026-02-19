@@ -14,16 +14,19 @@ email                : marco.hugentobler at sourcepole dot com
  ***************************************************************************/
 
 #include "qgsabstractgeometry.h"
-#include "moc_qgsabstractgeometry.cpp"
-#include "qgspoint.h"
-#include "qgsgeometrycollection.h"
-#include "qgsvertexid.h"
-#include "qgscurve.h"
-#include "qgsbox3d.h"
 
-#include <nlohmann/json.hpp>
 #include <limits>
+#include <nlohmann/json.hpp>
+
+#include "qgsbox3d.h"
+#include "qgscurve.h"
+#include "qgsgeometrycollection.h"
+#include "qgspoint.h"
+#include "qgsvertexid.h"
+
 #include <QTransform>
+
+#include "moc_qgsabstractgeometry.cpp"
 
 QgsAbstractGeometry::QgsAbstractGeometry( const QgsAbstractGeometry &geom )
 {
@@ -205,6 +208,11 @@ double QgsAbstractGeometry::perimeter() const
 }
 
 double QgsAbstractGeometry::area() const
+{
+  return 0.0;
+}
+
+double QgsAbstractGeometry::area3D() const
 {
   return 0.0;
 }

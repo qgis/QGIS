@@ -24,6 +24,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (
+    Qgis,
     QgsRasterFileWriter,
     QgsProcessing,
     QgsProcessingException,
@@ -37,6 +38,7 @@ from qgis.core import (
     QgsProcessingParameterNumber,
     QgsProcessingParameterBoolean,
     QgsProcessingParameterRasterDestination,
+    QgsProcessingRasterLayerDefinition,
 )
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -85,9 +87,17 @@ class ClipRasterByMask(GdalAlgorithm):
             "Int8",
         ]
 
-        self.addParameter(
-            QgsProcessingParameterRasterLayer(self.INPUT, self.tr("Input layer"))
+        input_param = QgsProcessingParameterRasterLayer(
+            self.INPUT, self.tr("Input layer")
         )
+        # Support advance raster options panel
+        input_param.setParameterCapabilities(
+            input_param.parameterCapabilities()
+            | Qgis.RasterProcessingParameterCapability.WmsScale
+            | Qgis.RasterProcessingParameterCapability.WmsDpi
+        )
+        self.addParameter(input_param)
+
         self.addParameter(
             QgsProcessingParameterFeatureSource(
                 self.MASK,
@@ -180,7 +190,7 @@ class ClipRasterByMask(GdalAlgorithm):
         self.addParameter(multithreading_param)
 
         # backwards compatibility parameter
-        # TODO QGIS 4: remove parameter and related logic
+        # TODO QGIS 5: remove parameter and related logic
         options_param = QgsProcessingParameterString(
             self.OPTIONS,
             self.tr("Additional creation options"),
@@ -261,7 +271,6 @@ class ClipRasterByMask(GdalAlgorithm):
             raise QgsProcessingException(
                 self.invalidRasterError(parameters, self.INPUT)
             )
-        input_details = GdalUtils.gdal_connection_details_from_layer(inLayer)
 
         mask_details = self.getOgrCompatibleSource(
             self.MASK, parameters, context, feedback, executing
@@ -281,6 +290,48 @@ class ClipRasterByMask(GdalAlgorithm):
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, out)
 
+        _bbox = None
+        # If it's a WMS layer and scale/DPI were given,
+        # choose a BBOX depending on alg parameters
+        if (
+            inLayer.providerType() == "wms"
+            and isinstance(parameters[self.INPUT], QgsProcessingRasterLayerDefinition)
+            and parameters[self.INPUT].referenceScale > 0
+        ):
+            # For the input WMS's BBOX, if -te is given, then use -te, projected to input's
+            # crs. Otherwise, use mask layer's extent, projected to input's crs.
+            if not bbox.isNull() and not bbox.isEmpty():
+                if bboxCrs != inLayer.crs():
+                    _bbox = self.parameterAsExtent(
+                        parameters, self.EXTENT, context, inLayer.crs()
+                    )
+                else:
+                    _bbox = bbox
+            else:
+                _bbox = self.parameterAsExtent(
+                    parameters, self.MASK, context, inLayer.crs()
+                )
+
+            if _bbox.isNull() or _bbox.isEmpty():
+                raise QgsProcessingException(
+                    "Invalid extent in mask layer ({}) and in target extent ({}).".format(
+                        parameters[self.INPUT],
+                        (
+                            parameters[self.EXTENT]
+                            if self.EXTENT in parameters
+                            else "EXTENT"
+                        ),
+                    )
+                )
+
+        input_details = GdalUtils.gdal_connection_details_from_layer(
+            inLayer,
+            self.INPUT,
+            parameters,
+            context,
+            _bbox,  # Chosen BBOX for WMS
+        )
+
         arguments = ["-overwrite"]
 
         if sourceCrs.isValid():
@@ -291,7 +342,7 @@ class ClipRasterByMask(GdalAlgorithm):
             arguments.append("-t_srs")
             arguments.append(GdalUtils.gdal_crs_string(targetCrs))
 
-        if not bbox.isNull():
+        if not bbox.isNull() and not bbox.isEmpty():
             arguments.append("-te")
             arguments.append(str(bbox.xMinimum()))
             arguments.append(str(bbox.yMinimum()))
@@ -309,7 +360,7 @@ class ClipRasterByMask(GdalAlgorithm):
 
             arguments.append("-ot " + self.TYPES[data_type])
 
-        output_format = QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1])
+        output_format = self.outputFormat(parameters, self.OUTPUT, context)
         if not output_format:
             raise QgsProcessingException(self.tr("Output format is invalid"))
 

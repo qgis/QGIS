@@ -16,13 +16,13 @@
 #ifndef QGSTEXTDOCUMENT_H
 #define QGSTEXTDOCUMENT_H
 
-#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsstringutils.h"
 #include "qgstextblock.h"
 
-#include <QVector>
 #include <QSizeF>
+#include <QVector>
 
 class QgsTextFragment;
 class QgsTextFormat;
@@ -43,6 +43,11 @@ class CORE_EXPORT QgsTextDocument
   public:
 
     QgsTextDocument();
+    QgsTextDocument( const QgsTextDocument &other );
+    SIP_SKIP QgsTextDocument( QgsTextDocument &&other );
+    QgsTextDocument &operator=( const QgsTextDocument &other );
+    QgsTextDocument &operator=( QgsTextDocument &&other );
+
     ~QgsTextDocument();
 
     /**
@@ -201,6 +206,13 @@ class CORE_EXPORT QgsTextDocument
      * if FALSE then the lines are wrapped to an ideal minimum length of \a autoWrapLength characters.
      */
     void splitLines( const QString &wrapCharacter, int autoWrapLength = 0, bool useMaxLineLengthWhenAutoWrapping = true );
+
+    /**
+     * Splits the text document, such that each block in the document becomes a separate document of its own.
+     *
+     * \since QGIS 4.0
+     */
+    QVector< QgsTextDocument > splitBlocksToDocuments() const;
 
     /**
      * Applies a \a capitalization style to the document's text.

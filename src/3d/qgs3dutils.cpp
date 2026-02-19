@@ -16,50 +16,48 @@
 #include "qgs3dutils.h"
 
 #include "qgs3dmapcanvas.h"
-#include "qgslinestring.h"
-#include "qgspolygon.h"
-#include "qgsfeaturerequest.h"
-#include "qgsfeatureiterator.h"
-#include "qgsfeature.h"
-#include "qgsabstractgeometry.h"
-#include "qgsvectorlayer.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsfeedback.h"
-#include "qgsglobechunkedentity.h"
-#include "qgsoffscreen3dengine.h"
 #include "qgs3dmapscene.h"
 #include "qgsabstract3dengine.h"
-#include "qgsterraingenerator.h"
+#include "qgsabstractgeometry.h"
+#include "qgsabstractterrainsettings.h"
+#include "qgsapplication.h"
 #include "qgscameracontroller.h"
 #include "qgschunkedentity.h"
-#include "qgsterrainentity.h"
-#include "qgsraycastingutils_p.h"
-#include "qgsabstractterrainsettings.h"
-#include "qgspointcloudrenderer.h"
+#include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfeaturerequest.h"
+#include "qgsfeedback.h"
+#include "qgsglobechunkedentity.h"
+#include "qgslinestring.h"
+#include "qgsoffscreen3dengine.h"
 #include "qgspointcloud3dsymbol.h"
-#include "qgspointcloudlayer3drenderer.h"
-#include "qgspointcloudrgbrenderer.h"
 #include "qgspointcloudattributebyramprenderer.h"
 #include "qgspointcloudclassifiedrenderer.h"
+#include "qgspointcloudlayer3drenderer.h"
+#include "qgspointcloudrenderer.h"
+#include "qgspointcloudrgbrenderer.h"
+#include "qgspolygon.h"
+#include "qgsraycastcontext.h"
+#include "qgsraycastresult.h"
+#include "qgsterrainentity.h"
+#include "qgsterraingenerator.h"
+#include "qgsvectorlayer.h"
 
-#include <QtMath>
-#include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DRender/QRenderSettings>
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
+#include <QString>
+#include <Qt3DCore/QBuffer>
+#include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DLogic/QFrameAction>
+#include <Qt3DRender/QRenderSettings>
+#include <QtMath>
+
+using namespace Qt::StringLiterals;
 
 #if !defined( Q_OS_MAC )
 #include <GL/gl.h>
 #endif
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QBuffer>
-typedef Qt3DRender::QBuffer Qt3DQBuffer;
-#else
-#include <Qt3DCore/QBuffer>
-typedef Qt3DCore::QBuffer Qt3DQBuffer;
-#endif
 
 // declared here as Qgs3DTypes has no cpp file
 const char *Qgs3DTypes::PROP_NAME_3D_RENDERER_FLAG = "PROP_NAME_3D_RENDERER_FLAG";
@@ -80,6 +78,14 @@ void Qgs3DUtils::waitForFrame( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene
   frameAction->deleteLater();
 
   engine.renderSettings()->setRenderPolicy( oldPolicy );
+}
+
+void Qgs3DUtils::waitForEntitiesLoaded( Qgs3DMapScene *scene )
+{
+  while ( scene->totalPendingJobsCount() > 0 )
+  {
+    QgsApplication::processEvents();
+  }
 }
 
 QImage Qgs3DUtils::captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene )
@@ -178,14 +184,14 @@ QImage Qgs3DUtils::captureSceneDepthBuffer( QgsAbstract3DEngine &engine, Qgs3DMa
 double Qgs3DUtils::calculateEntityGpuMemorySize( Qt3DCore::QEntity *entity )
 {
   long long usedGpuMemory = 0;
-  for ( Qt3DQBuffer *buffer : entity->findChildren<Qt3DQBuffer *>() )
+  for ( Qt3DCore::QBuffer *buffer : entity->findChildren<Qt3DCore::QBuffer *>() )
   {
     usedGpuMemory += buffer->data().size();
   }
   for ( Qt3DRender::QTexture2D *tex : entity->findChildren<Qt3DRender::QTexture2D *>() )
   {
     // TODO : lift the assumption that the texture is RGBA
-    usedGpuMemory += tex->width() * tex->height() * 4;
+    usedGpuMemory += static_cast< long long >( tex->width() ) * static_cast< long long >( tex->height() ) * 4;
   }
   return usedGpuMemory / 1024.0 / 1024.0;
 }
@@ -216,13 +222,13 @@ bool Qgs3DUtils::exportAnimation( const Qgs3DAnimationSettings &animationSetting
     return false;
   }
 
-  const int numberOfDigits = fileNameTemplate.count( QLatin1Char( '#' ) );
+  const int numberOfDigits = fileNameTemplate.count( '#'_L1 );
   if ( numberOfDigits < 0 )
   {
     error = QObject::tr( "Wrong filename template format (must contain #)" );
     return false;
   }
-  const QString token( numberOfDigits, QLatin1Char( '#' ) );
+  const QString token( numberOfDigits, '#'_L1 );
   if ( !fileNameTemplate.contains( token ) )
   {
     error = QObject::tr( "Filename template must contain all # placeholders in one continuous group." );
@@ -262,7 +268,7 @@ bool Qgs3DUtils::exportAnimation( const Qgs3DAnimationSettings &animationSetting
     scene->cameraController()->setLookingAtMapPoint( kf.point, kf.dist, kf.pitch, kf.yaw );
 
     QString fileName( fileNameTemplate );
-    const QString frameNoPaddedLeft( QStringLiteral( "%1" ).arg( frameNo, numberOfDigits, 10, QChar( '0' ) ) ); // e.g. 0001
+    const QString frameNoPaddedLeft( u"%1"_s.arg( frameNo, numberOfDigits, 10, QChar( '0' ) ) ); // e.g. 0001
     fileName.replace( token, frameNoPaddedLeft );
     const QString path = QDir( outputDirectory ).filePath( fileName );
 
@@ -295,11 +301,11 @@ QString Qgs3DUtils::altClampingToString( Qgis::AltitudeClamping altClamp )
   switch ( altClamp )
   {
     case Qgis::AltitudeClamping::Absolute:
-      return QStringLiteral( "absolute" );
+      return u"absolute"_s;
     case Qgis::AltitudeClamping::Relative:
-      return QStringLiteral( "relative" );
+      return u"relative"_s;
     case Qgis::AltitudeClamping::Terrain:
-      return QStringLiteral( "terrain" );
+      return u"terrain"_s;
   }
   BUILTIN_UNREACHABLE
 }
@@ -307,9 +313,9 @@ QString Qgs3DUtils::altClampingToString( Qgis::AltitudeClamping altClamp )
 
 Qgis::AltitudeClamping Qgs3DUtils::altClampingFromString( const QString &str )
 {
-  if ( str == QLatin1String( "absolute" ) )
+  if ( str == "absolute"_L1 )
     return Qgis::AltitudeClamping::Absolute;
-  else if ( str == QLatin1String( "terrain" ) )
+  else if ( str == "terrain"_L1 )
     return Qgis::AltitudeClamping::Terrain;
   else // "relative"  (default)
     return Qgis::AltitudeClamping::Relative;
@@ -321,9 +327,9 @@ QString Qgs3DUtils::altBindingToString( Qgis::AltitudeBinding altBind )
   switch ( altBind )
   {
     case Qgis::AltitudeBinding::Vertex:
-      return QStringLiteral( "vertex" );
+      return u"vertex"_s;
     case Qgis::AltitudeBinding::Centroid:
-      return QStringLiteral( "centroid" );
+      return u"centroid"_s;
   }
   BUILTIN_UNREACHABLE
 }
@@ -331,7 +337,7 @@ QString Qgs3DUtils::altBindingToString( Qgis::AltitudeBinding altBind )
 
 Qgis::AltitudeBinding Qgs3DUtils::altBindingFromString( const QString &str )
 {
-  if ( str == QLatin1String( "vertex" ) )
+  if ( str == "vertex"_L1 )
     return Qgis::AltitudeBinding::Vertex;
   else // "centroid"  (default)
     return Qgis::AltitudeBinding::Centroid;
@@ -342,24 +348,24 @@ QString Qgs3DUtils::cullingModeToString( Qgs3DTypes::CullingMode mode )
   switch ( mode )
   {
     case Qgs3DTypes::NoCulling:
-      return QStringLiteral( "no-culling" );
+      return u"no-culling"_s;
     case Qgs3DTypes::Front:
-      return QStringLiteral( "front" );
+      return u"front"_s;
     case Qgs3DTypes::Back:
-      return QStringLiteral( "back" );
+      return u"back"_s;
     case Qgs3DTypes::FrontAndBack:
-      return QStringLiteral( "front-and-back" );
+      return u"front-and-back"_s;
   }
   BUILTIN_UNREACHABLE
 }
 
 Qgs3DTypes::CullingMode Qgs3DUtils::cullingModeFromString( const QString &str )
 {
-  if ( str == QLatin1String( "front" ) )
+  if ( str == "front"_L1 )
     return Qgs3DTypes::Front;
-  else if ( str == QLatin1String( "back" ) )
+  else if ( str == "back"_L1 )
     return Qgs3DTypes::Back;
-  else if ( str == QLatin1String( "front-and-back" ) )
+  else if ( str == "front-and-back"_L1 )
     return Qgs3DTypes::FrontAndBack;
   else
     return Qgs3DTypes::NoCulling;
@@ -537,7 +543,7 @@ void Qgs3DUtils::extractPointPositions( const QgsFeature &f, const Qgs3DRenderCo
       static_cast<float>( pt.y() - chunkOrigin.y() ),
       h
     ) );
-    QgsDebugMsgLevel( QStringLiteral( "%1 %2 %3" ).arg( positions.last().x() ).arg( positions.last().y() ).arg( positions.last().z() ), 2 );
+    QgsDebugMsgLevel( u"%1 %2 %3"_s.arg( positions.last().x() ).arg( positions.last().y() ).arg( positions.last().z() ), 2 );
   }
 }
 
@@ -623,7 +629,7 @@ QgsRectangle Qgs3DUtils::tryReprojectExtent2D( const QgsRectangle &extent, const
     catch ( const QgsCsException & )
     {
       // bad luck, can't reproject for some reason
-      QgsDebugError( QStringLiteral( "3D utils: transformation of extent failed: " ) + extentMapCrs.toString( -1 ) );
+      QgsDebugError( u"3D utils: transformation of extent failed: "_s + extentMapCrs.toString( -1 ) );
     }
   }
   return extentMapCrs;
@@ -726,15 +732,6 @@ void Qgs3DUtils::estimateVectorLayerZRange( QgsVectorLayer *layer, double &zMin,
   }
 }
 
-QgsExpressionContext Qgs3DUtils::globalProjectLayerExpressionContext( QgsVectorLayer *layer )
-{
-  QgsExpressionContext exprContext;
-  exprContext << QgsExpressionContextUtils::globalScope()
-              << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-              << QgsExpressionContextUtils::layerScope( layer );
-  return exprContext;
-}
-
 QgsPhongMaterialSettings Qgs3DUtils::phongMaterialFromQt3DComponent( Qt3DExtras::QPhongMaterial *material )
 {
   QgsPhongMaterialSettings settings;
@@ -773,15 +770,16 @@ QgsRay3D Qgs3DUtils::rayFromScreenPoint( const QPoint &point, const QSize &windo
 
 QVector3D Qgs3DUtils::screenPointToWorldPos( const QPoint &screenPoint, double depth, const QSize &screenSize, Qt3DRender::QCamera *camera )
 {
-  double dNear = camera->nearPlane();
-  double dFar = camera->farPlane();
-  double distance = ( 2.0 * dNear * dFar ) / ( dFar + dNear - ( depth * 2 - 1 ) * ( dFar - dNear ) );
+  // Transform pixel coordinates and [0.0, 1.0]-range sampled depth to [-1.0, 1.0]
+  // normalised device coordinates used by projection matrix.
+  QVector3D screenPointNdc {
+    ( static_cast<float>( screenPoint.x() ) / ( static_cast<float>( screenSize.width() ) / 2.0f ) - 1.0f ),
+    -( static_cast<float>( screenPoint.y() ) / ( static_cast<float>( screenSize.height() ) / 2.0f ) - 1.0f ),
+    static_cast<float>( depth * 2 - 1 ),
+  };
 
-  QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( screenPoint, screenSize, camera );
-  double dot = QVector3D::dotProduct( ray.direction(), camera->viewVector().normalized() );
-  distance /= dot;
-
-  return ray.origin() + distance * ray.direction();
+  // Apply inverse of projection matrix, then view matrix, to get from NDC to world coords.
+  return camera->viewMatrix().inverted() * camera->projectionMatrix().inverted() * screenPointNdc;
 }
 
 void Qgs3DUtils::pitchAndYawFromViewVector( QVector3D vect, double &pitch, double &yaw )
@@ -808,18 +806,18 @@ std::unique_ptr<QgsPointCloudLayer3DRenderer> Qgs3DUtils::convert2DPointCloudRen
     return nullptr;
 
   std::unique_ptr<QgsPointCloud3DSymbol> symbol3D;
-  if ( renderer->type() == QLatin1String( "ramp" ) )
+  if ( renderer->type() == "ramp"_L1 )
   {
-    const QgsPointCloudAttributeByRampRenderer *renderer2D = dynamic_cast<const QgsPointCloudAttributeByRampRenderer *>( renderer );
+    const QgsPointCloudAttributeByRampRenderer *renderer2D = qgis::down_cast<const QgsPointCloudAttributeByRampRenderer *>( renderer );
     symbol3D = std::make_unique<QgsColorRampPointCloud3DSymbol>();
     QgsColorRampPointCloud3DSymbol *symbol = static_cast<QgsColorRampPointCloud3DSymbol *>( symbol3D.get() );
     symbol->setAttribute( renderer2D->attribute() );
     symbol->setColorRampShaderMinMax( renderer2D->minimum(), renderer2D->maximum() );
     symbol->setColorRampShader( renderer2D->colorRampShader() );
   }
-  else if ( renderer->type() == QLatin1String( "rgb" ) )
+  else if ( renderer->type() == "rgb"_L1 )
   {
-    const QgsPointCloudRgbRenderer *renderer2D = dynamic_cast<const QgsPointCloudRgbRenderer *>( renderer );
+    const QgsPointCloudRgbRenderer *renderer2D = qgis::down_cast<const QgsPointCloudRgbRenderer *>( renderer );
     symbol3D = std::make_unique<QgsRgbPointCloud3DSymbol>();
     QgsRgbPointCloud3DSymbol *symbol = static_cast<QgsRgbPointCloud3DSymbol *>( symbol3D.get() );
     symbol->setRedAttribute( renderer2D->redAttribute() );
@@ -830,9 +828,9 @@ std::unique_ptr<QgsPointCloudLayer3DRenderer> Qgs3DUtils::convert2DPointCloudRen
     symbol->setGreenContrastEnhancement( renderer2D->greenContrastEnhancement() ? new QgsContrastEnhancement( *renderer2D->greenContrastEnhancement() ) : nullptr );
     symbol->setBlueContrastEnhancement( renderer2D->blueContrastEnhancement() ? new QgsContrastEnhancement( *renderer2D->blueContrastEnhancement() ) : nullptr );
   }
-  else if ( renderer->type() == QLatin1String( "classified" ) )
+  else if ( renderer->type() == "classified"_L1 )
   {
-    const QgsPointCloudClassifiedRenderer *renderer2D = dynamic_cast<const QgsPointCloudClassifiedRenderer *>( renderer );
+    const QgsPointCloudClassifiedRenderer *renderer2D = qgis::down_cast<const QgsPointCloudClassifiedRenderer *>( renderer );
     symbol3D = std::make_unique<QgsClassificationPointCloud3DSymbol>();
     QgsClassificationPointCloud3DSymbol *symbol = static_cast<QgsClassificationPointCloud3DSymbol *>( symbol3D.get() );
     symbol->setAttribute( renderer2D->attribute() );
@@ -848,10 +846,9 @@ std::unique_ptr<QgsPointCloudLayer3DRenderer> Qgs3DUtils::convert2DPointCloudRen
   return nullptr;
 }
 
-QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> Qgs3DUtils::castRay( Qgs3DMapScene *scene, const QgsRay3D &ray, const QgsRayCastingUtils::RayCastContext &context )
+QgsRayCastResult Qgs3DUtils::castRay( Qgs3DMapScene *scene, const QgsRay3D &ray, const QgsRayCastContext &context )
 {
-  QgsRayCastingUtils::Ray3D r( ray.origin(), ray.direction(), context.maxDistance );
-  QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> results;
+  QgsRayCastResult results;
   const QList<QgsMapLayer *> keys = scene->layers();
   for ( QgsMapLayer *layer : keys )
   {
@@ -859,22 +856,25 @@ QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> Qgs3DUtils::castRay( Q
 
     if ( QgsChunkedEntity *chunkedEntity = qobject_cast<QgsChunkedEntity *>( entity ) )
     {
-      const QVector<QgsRayCastingUtils::RayHit> result = chunkedEntity->rayIntersection( r, context );
-      if ( !result.isEmpty() )
-        results[layer] = result;
+      const QList<QgsRayCastHit> hits = chunkedEntity->rayIntersection( ray, context );
+
+      if ( !hits.isEmpty() )
+        results.addLayerHits( layer, hits );
     }
   }
   if ( QgsTerrainEntity *terrain = scene->terrainEntity() )
   {
-    const QVector<QgsRayCastingUtils::RayHit> result = terrain->rayIntersection( r, context );
-    if ( !result.isEmpty() )
-      results[nullptr] = result; // Terrain hits are not tied to a layer so we use nullptr as their key here
+    const QList<QgsRayCastHit> hits = terrain->rayIntersection( ray, context );
+
+    if ( !hits.isEmpty() )
+      results.addTerrainHits( hits );
   }
   if ( QgsGlobeEntity *globe = scene->globeEntity() )
   {
-    const QVector<QgsRayCastingUtils::RayHit> result = globe->rayIntersection( r, context );
-    if ( !result.isEmpty() )
-      results[nullptr] = result; // Terrain hits are not tied to a layer so we use nullptr as their key here
+    const QList<QgsRayCastHit> hits = globe->rayIntersection( ray, context );
+
+    if ( !hits.isEmpty() )
+      results.addTerrainHits( hits );
   }
   return results;
 }
@@ -1171,7 +1171,7 @@ QgsCameraPose Qgs3DUtils::lineSegmentToCameraPose( const QgsVector3D &startPoint
 
 std::unique_ptr<Qt3DRender::QCamera> Qgs3DUtils::copyCamera( Qt3DRender::QCamera *cam )
 {
-  std::unique_ptr<Qt3DRender::QCamera> copy = std::make_unique<Qt3DRender::QCamera>();
+  auto copy = std::make_unique<Qt3DRender::QCamera>();
   copy->setPosition( cam->position() );
   copy->setViewCenter( cam->viewCenter() );
   copy->setUpVector( cam->upVector() );

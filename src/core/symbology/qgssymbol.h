@@ -16,8 +16,8 @@
 #ifndef QGSSYMBOL_H
 #define QGSSYMBOL_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgspropertycollection.h"
 #include "qgsrendercontext.h"
 #include "qgsscreenproperties.h"
@@ -566,6 +566,21 @@ class CORE_EXPORT QgsSymbol
     QString dump() const;
 
     /**
+     * Returns TRUE if this symbol will always render identically
+     * to an \a other symbol.
+     *
+     * \note This method is pessimistic, in that it will return FALSE in circumstances
+     * where it is not possible to guarantee that in 100% of cases the symbol will
+     * render pixel-identically to the other symbol. For instance, calling
+     * rendersIdenticallyTo() with the same symbol as \a other may
+     * return FALSE if the symbol contains data-defined overrides, such
+     * as those using feature attributes or expression variables.
+     *
+     * \since QGIS 4.0
+     */
+    bool rendersIdenticallyTo( const QgsSymbol *other ) const;
+
+    /**
      * Returns a deep copy of this symbol.
      *
      * Ownership is transferred to the caller.
@@ -833,12 +848,12 @@ class CORE_EXPORT QgsSymbol
      * Sets the vector \a layer associated with the symbol.
      *
      * \note the layer will be NULLPTR after stopRender
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED void setLayer( const QgsVectorLayer *layer ) SIP_DEPRECATED;
 
     /**
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED const QgsVectorLayer *layer() const SIP_DEPRECATED;
 

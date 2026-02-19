@@ -14,18 +14,23 @@
  ***************************************************************************/
 
 #include "qgsdatabasequeryloggernode.h"
-#include "qgis.h"
-#include "qgsjsonutils.h"
-#include <QUrlQuery>
-#include <QColor>
-#include <QBrush>
-#include <QFont>
-#include <QAction>
-#include <QDesktopServices>
-#include <QApplication>
-#include <QClipboard>
+
 #include <nlohmann/json.hpp>
 
+#include "qgis.h"
+#include "qgsjsonutils.h"
+
+#include <QAction>
+#include <QApplication>
+#include <QBrush>
+#include <QClipboard>
+#include <QColor>
+#include <QDesktopServices>
+#include <QFont>
+#include <QString>
+#include <QUrlQuery>
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsDatabaseQueryLoggerRootNode
@@ -86,28 +91,28 @@ QVariant QgsDatabaseQueryLoggerQueryGroup::data( int role ) const
   switch ( role )
   {
     case Qt::DisplayRole:
-      return QStringLiteral( "%1 %2" ).arg( QString::number( mQueryId ), mSql );
+      return u"%1 %2"_s.arg( QString::number( mQueryId ), mSql );
 
-    case QgsDevToolsModelNode::RoleSort:
+    case static_cast<int>( Qgis::DevToolsNodeRole::Sort ):
       return mQueryId;
 
     case Qt::ToolTipRole:
     {
       // Show no more than 255 characters
-      return mSql.length() > 255 ? mSql.mid( 0, 255 ).append( QStringLiteral( "…" ) ) : mSql;
+      return mSql.length() > 255 ? mSql.mid( 0, 255 ).append( u"…"_s ) : mSql;
 
 #if 0
       QString bytes = QObject::tr( "unknown" );
       if ( mBytesTotal != 0 )
       {
         if ( mBytesReceived > 0 && mBytesReceived < mBytesTotal )
-          bytes = QStringLiteral( "%1/%2" ).arg( QString::number( mBytesReceived ), QString::number( mBytesTotal ) );
+          bytes = u"%1/%2"_s.arg( QString::number( mBytesReceived ), QString::number( mBytesTotal ) );
         else if ( mBytesReceived > 0 && mBytesReceived == mBytesTotal )
           bytes = QString::number( mBytesTotal );
       }
       // ?? adding <br/> instead of \n after (very long) url seems to break url up
       // COMPLETE, Status: 200 - text/xml; charset=utf-8 - 2334 bytes - 657 milliseconds
-      return QStringLiteral( "%1<br/>%2 - Status: %3 - %4 - %5 bytes - %6 msec - %7 replies" )
+      return u"%1<br/>%2 - Status: %3 - %4 - %5 bytes - %6 msec - %7 replies"_s
              .arg( mUrl.url(),
                    statusToString( mStatus ),
                    QString::number( mHttpStatus ),
@@ -118,13 +123,13 @@ QVariant QgsDatabaseQueryLoggerQueryGroup::data( int role ) const
 #endif
     }
 
-    case RoleStatus:
+    case static_cast<int>( Qgis::DevToolsNodeRole::Status ):
       return static_cast<int>( mStatus );
 
-    case RoleId:
+    case static_cast<int>( Qgis::DevToolsNodeRole::Id ):
       return mQueryId;
 
-    case RoleElapsedTime:
+    case static_cast<int>( Qgis::DevToolsNodeRole::ElapsedTime ):
       return mElapsed;
 
     case Qt::ForegroundRole:
@@ -166,13 +171,13 @@ QList<QAction *> QgsDatabaseQueryLoggerQueryGroup::actions( QObject *parent )
   QList<QAction *> res;
 
   QAction *copyUrlAction = new QAction( QObject::tr( "Copy SQL" ), parent );
-  QObject::connect( copyUrlAction, &QAction::triggered, copyUrlAction, [=] {
+  QObject::connect( copyUrlAction, &QAction::triggered, copyUrlAction, [this] {
     QApplication::clipboard()->setText( mSql );
   } );
   res << copyUrlAction;
 
   QAction *copyJsonAction = new QAction( QObject::tr( "Copy as JSON" ), parent );
-  QObject::connect( copyJsonAction, &QAction::triggered, copyJsonAction, [=] {
+  QObject::connect( copyJsonAction, &QAction::triggered, copyJsonAction, [this] {
     const QVariant value = toVariant();
     const QString json = QString::fromStdString( QgsJsonUtils::jsonFromVariant( value ).dump( 2 ) );
     QApplication::clipboard()->setText( json );
@@ -185,7 +190,7 @@ QList<QAction *> QgsDatabaseQueryLoggerQueryGroup::actions( QObject *parent )
 QVariant QgsDatabaseQueryLoggerQueryGroup::toVariant() const
 {
   QVariantMap res;
-  res.insert( QStringLiteral( "SQL" ), mSql );
+  res.insert( u"SQL"_s, mSql );
 
   for ( const auto &child : std::as_const( mChildren ) )
   {

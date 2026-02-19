@@ -1,11 +1,11 @@
 <svg viewBox="0 0 61.000001 79.056502" xmlns="http://www.w3.org/2000/svg">
-<g stroke="param(outline)" transform="translate(-.062 -17.1875)">
+<g stroke="param(outline)" stroke-opacity="param(outline-opacity)" transform="translate(-.062 -17.1875)">
 <g fill="none" transform="translate(-1.438 30.744)">
 <path d="m61 35c0 16.02-12.984 29-29 29-16.02 0-29-12.984-29-29 0-16.02 12.984-29 29-29 16.02 0 29 12.984 29 29z" stroke-width="3"/>
 <path d="m55 35c0 12.979-10.521 23.5-23.5 23.5-12.979 0-23.5-10.521-23.5-23.5 0-12.979 10.521-23.5 23.5-23.5 12.979 0 23.5 10.521 23.5 23.5z" stroke-width=".49700001" transform="matrix(1.01148 0 0 .99988 -.089 .004)"/>
 <path d="m32 35v-32" stroke-width=".25"/>
 </g>
-<path d="m30.562 21.291l28.938 73.826-29-29-29 29z" fill="param(fill)" stroke-width="3"/>
+<path d="m30.562 21.291l28.938 73.826-29-29-29 29z" fill="param(fill)" fill-opacity="param(fill-opacity)" stroke-width="3"/>
 <path d="m30.562 21.291l29 73.45-29-29-29 29z" fill="none" stroke-linecap="square"/>
 <g fill="none" stroke-width=".25" transform="translate(0 -3.829)">
 <path d="m4 92.82l6.74-3.891"/>

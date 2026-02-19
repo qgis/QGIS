@@ -11,7 +11,6 @@
 
 
 
-
 class QgsPointCloudNodeId
 {
 %Docstring(signature="appended")
@@ -170,9 +169,14 @@ concurrent access to the index is memory safe.
     operator bool() const;
 
 
-    void load( const QString &fileName );
+    void load( const QString &url, const QString &authcfg = QString() );
 %Docstring
-Loads the index from the file
+Loads the index from a ``url``
+
+:param url: The URL to load the index from. Can be a local file or an
+            http(s) URL.
+:param authcfg: Optionally apply this authentication configuration for
+                network requests (since QGIS 4.0)
 
 .. seealso:: :py:func:`QgsAbstractPointCloudIndex.load`
 %End
@@ -379,6 +383,11 @@ Returns ``True`` if there are uncommitted changes, ``False`` otherwise
     QList<QgsPointCloudNodeId> updatedNodes() const;
 %Docstring
 Returns a list of node IDs that have been modified
+%End
+
+    QString uri() const;
+%Docstring
+Returns the uri used to load the index
 %End
 
 };

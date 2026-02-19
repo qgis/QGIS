@@ -21,6 +21,7 @@ __copyright__ = "(C) 2010, Michael Minn"
 
 from qgis.PyQt.QtCore import QMetaType
 from qgis.core import (
+    Qgis,
     QgsField,
     QgsFields,
     QgsProcessingUtils,
@@ -38,6 +39,7 @@ from qgis.core import (
     QgsProcessingParameterEnum,
     QgsProcessingParameterFeatureSink,
     QgsProcessingException,
+    QgsProcessingAlgorithm,
 )
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -64,8 +66,14 @@ class HubDistancePoints(QgisAlgorithm):
     def groupId(self):
         return "vectoranalysis"
 
+    def documentationFlags(self):
+        return Qgis.ProcessingAlgorithmDocumentationFlag.RespectsEllipsoid
+
     def __init__(self):
         super().__init__()
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.Flag.FlagDeprecated
 
     def initAlgorithm(self, config=None):
         self.units = [
@@ -112,6 +120,20 @@ class HubDistancePoints(QgisAlgorithm):
 
     def displayName(self):
         return self.tr("Distance to nearest hub (points)")
+
+    def shortDescription(self):
+        return self.tr(
+            "Computes the distance between origin features and their closest destination one."
+        )
+
+    def shortHelpString(self):
+        return self.tr(
+            "Given an origin and a destination layers, this algorithm computes the distance "
+            "between origin features and their closest destination one. "
+            "Distance calculations are based on the feature's center.\n"
+            "The resulting layer contains origin features center point with an additional field "
+            "indicating the identifier of the nearest destination feature and the distance to it."
+        )
 
     def processAlgorithm(self, parameters, context, feedback):
         if parameters[self.INPUT] == parameters[self.HUBS]:

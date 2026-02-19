@@ -16,38 +16,42 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QFileInfo>
-#include <QString>
-#include <QMenu>
-#include <QDialog>
+#include "qgisappinterface.h"
+
+#include "qgisapp.h"
+#include "qgisappstylesheet.h"
+#include "qgsappgpsdigitizing.h"
+#include "qgsapplayertreeviewmenuprovider.h"
+#include "qgsappmaptools.h"
+#include "qgsattributedialog.h"
+#include "qgsattributetabledialog.h"
+#include "qgsfeatureaction.h"
+#include "qgsgui.h"
+#include "qgslayertreeview.h"
+#include "qgslayoutdesignerdialog.h"
+#include "qgslocator.h"
+#include "qgslocatorwidget.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
+#include "qgsmaptooladvanceddigitizing.h"
+#include "qgsmessagebar.h"
+#include "qgspointcloudlayer.h"
+#include "qgsproject.h"
+#include "qgsshortcutsmanager.h"
+#include "qgsvectordataprovider.h"
+
 #include <QAbstractButton>
+#include <QDialog>
+#include <QFileInfo>
+#include <QMenu>
 #include <QSignalMapper>
+#include <QString>
 #include <QTimer>
 #include <QUiLoader>
 
-#include "qgisappinterface.h"
 #include "moc_qgisappinterface.cpp"
-#include "qgisappstylesheet.h"
-#include "qgisapp.h"
-#include "qgsapplayertreeviewmenuprovider.h"
-#include "qgsgui.h"
-#include "qgsmaplayer.h"
-#include "qgsmaptooladvanceddigitizing.h"
-#include "qgsmapcanvas.h"
-#include "qgsproject.h"
-#include "qgslayertreeview.h"
-#include "qgslayoutdesignerdialog.h"
-#include "qgsshortcutsmanager.h"
-#include "qgsattributedialog.h"
-#include "qgsvectordataprovider.h"
-#include "qgsfeatureaction.h"
-#include "qgsattributetabledialog.h"
-#include "qgslocatorwidget.h"
-#include "qgslocator.h"
-#include "qgsmessagebar.h"
-#include "qgsappmaptools.h"
-#include "qgspointcloudlayer.h"
-#include "qgsappgpsdigitizing.h"
+
+using namespace Qt::StringLiterals;
 
 QgisAppInterface::QgisAppInterface( QgisApp *_qgis )
   : qgis( _qgis )
@@ -427,9 +431,9 @@ QgsMessageBar *QgisAppInterface::messageBar()
   return qgis->messageBar();
 }
 
-void QgisAppInterface::openMessageLog()
+void QgisAppInterface::openMessageLog( const QString &tabName )
 {
-  qgis->openMessageLog();
+  qgis->openMessageLog( tabName );
 }
 
 
@@ -491,8 +495,8 @@ QMap<QString, QVariant> QgisAppInterface::defaultStyleSheetOptions()
 
   // for compatibility with older code, re-add the fontPointSize and fontFamily values which are
   // no longer handled by the styleSheetBuilder method.
-  res.insert( QStringLiteral( "fontPointSize" ), qgis->styleSheetBuilder()->fontSize() );
-  res.insert( QStringLiteral( "fontFamily" ), qgis->styleSheetBuilder()->fontFamily() );
+  res.insert( u"fontPointSize"_s, qgis->styleSheetBuilder()->fontSize() );
+  res.insert( u"fontFamily"_s, qgis->styleSheetBuilder()->fontFamily() );
 
   return res;
 }
@@ -501,13 +505,13 @@ void QgisAppInterface::buildStyleSheet( const QMap<QString, QVariant> &opts )
 {
   // remove unwanted fontPointSize / fontFamily keys, which may be present from older code
   QMap<QString, QVariant> newOpts = opts;
-  if ( newOpts.contains( QStringLiteral( "fontPointSize" ) ) && ( newOpts.value( QStringLiteral( "fontPointSize" ) ).toDouble() == qgis->styleSheetBuilder()->defaultFont().pointSizeF() || newOpts.value( QStringLiteral( "fontPointSize" ) ).toString() == QString::number( qgis->styleSheetBuilder()->defaultFont().pointSizeF() ) ) )
+  if ( newOpts.contains( u"fontPointSize"_s ) && ( newOpts.value( u"fontPointSize"_s ).toDouble() == qgis->styleSheetBuilder()->defaultFont().pointSizeF() || newOpts.value( u"fontPointSize"_s ).toString() == QString::number( qgis->styleSheetBuilder()->defaultFont().pointSizeF() ) ) )
   {
-    newOpts.remove( QStringLiteral( "fontPointSize" ) );
+    newOpts.remove( u"fontPointSize"_s );
   }
-  if ( newOpts.contains( QStringLiteral( "fontFamily" ) ) && newOpts.value( QStringLiteral( "fontFamily" ) ).toString() == qgis->styleSheetBuilder()->defaultFont().family() )
+  if ( newOpts.contains( u"fontFamily"_s ) && newOpts.value( u"fontFamily"_s ).toString() == qgis->styleSheetBuilder()->defaultFont().family() )
   {
-    newOpts.remove( QStringLiteral( "fontFamily" ) );
+    newOpts.remove( u"fontFamily"_s );
   }
 
   qgis->styleSheetBuilder()->applyStyleSheet( newOpts );
@@ -517,13 +521,13 @@ void QgisAppInterface::saveStyleSheetOptions( const QMap<QString, QVariant> &opt
 {
   // remove unwanted fontPointSize / fontFamily keys, which may be present from older code
   QMap<QString, QVariant> newOpts = opts;
-  if ( newOpts.contains( QStringLiteral( "fontPointSize" ) ) && ( newOpts.value( QStringLiteral( "fontPointSize" ) ).toDouble() == qgis->styleSheetBuilder()->defaultFont().pointSizeF() || newOpts.value( QStringLiteral( "fontPointSize" ) ).toString() == QString::number( qgis->styleSheetBuilder()->defaultFont().pointSizeF() ) ) )
+  if ( newOpts.contains( u"fontPointSize"_s ) && ( newOpts.value( u"fontPointSize"_s ).toDouble() == qgis->styleSheetBuilder()->defaultFont().pointSizeF() || newOpts.value( u"fontPointSize"_s ).toString() == QString::number( qgis->styleSheetBuilder()->defaultFont().pointSizeF() ) ) )
   {
-    newOpts.remove( QStringLiteral( "fontPointSize" ) );
+    newOpts.remove( u"fontPointSize"_s );
   }
-  if ( newOpts.contains( QStringLiteral( "fontFamily" ) ) && newOpts.value( QStringLiteral( "fontFamily" ) ).toString() == qgis->styleSheetBuilder()->defaultFont().family() )
+  if ( newOpts.contains( u"fontFamily"_s ) && newOpts.value( u"fontFamily"_s ).toString() == qgis->styleSheetBuilder()->defaultFont().family() )
   {
-    newOpts.remove( QStringLiteral( "fontFamily" ) );
+    newOpts.remove( u"fontFamily"_s );
   }
 
   qgis->styleSheetBuilder()->saveToSettings( opts );
@@ -913,7 +917,7 @@ bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, b
 
 void QgisAppInterface::preloadForm( const QString &uifile )
 {
-  QTimer::singleShot( 0, this, [=] {
+  QTimer::singleShot( 0, this, [this, uifile] {
     cacheloadForm( uifile );
   } );
 }

@@ -15,27 +15,33 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmaprenderertask.h"
+
+#include <cpl_conv.h>
+#include <gdal.h>
+#include <memory>
+
+#include "qgsabstractgeopdfexporter.h"
 #include "qgsannotation.h"
 #include "qgsannotationmanager.h"
-#include "qgsmaprenderertask.h"
-#include "moc_qgsmaprenderertask.cpp"
+#include "qgsfeaturerequest.h"
+#include "qgslogger.h"
+#include "qgsmaprendererstagedrenderjob.h"
 #include "qgsmapsettingsutils.h"
 #include "qgsogrutils.h"
-#include "qgslogger.h"
-#include "qgsabstractgeopdfexporter.h"
-#include "qgsmaprendererstagedrenderjob.h"
 #include "qgsrenderedfeaturehandlerinterface.h"
-#include "qgsfeaturerequest.h"
 #include "qgsvectorlayer.h"
 
 #include <QFile>
 #include <QImageWriter>
+#include <QPdfWriter>
+#include <QString>
 #include <QTextStream>
 #include <QTimeZone>
-#include <QPdfWriter>
 
-#include "gdal.h"
-#include "cpl_conv.h"
+#include "moc_qgsmaprenderertask.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -90,7 +96,7 @@ class QgsMapRendererTaskRenderedFeatureHandler : public QgsRenderedFeatureHandle
       // is it a hack retrieving the layer ID from an expression context like this? possibly... BUT
       // the alternative is adding a layer ID member to QgsRenderContext, and that's just asking for people to abuse it
       // and use it to retrieve QgsMapLayers mid-way through a render operation. Lesser of two evils it is!
-      const QString layerId = context.renderContext.expressionContext().variable( QStringLiteral( "layer_id" ) ).toString();
+      const QString layerId = context.renderContext.expressionContext().variable( u"layer_id"_s ).toString();
 
       QgsGeometry transformed = renderedBounds;
       transformed.transform( mTransform );
@@ -119,15 +125,15 @@ class QgsMapRendererTaskRenderedFeatureHandler : public QgsRenderedFeatureHandle
 
 QgsMapRendererTask::QgsMapRendererTask( const QgsMapSettings &ms, const QString &fileName, const QString &fileFormat, const bool forceRaster, QgsTask::Flags flags,
                                         const bool geoPDF, const QgsAbstractGeospatialPdfExporter::ExportDetails &geospatialPdfExportDetails )
-  : QgsTask( fileFormat == QLatin1String( "PDF" ) ? tr( "Saving as PDF" ) : tr( "Saving as image" ), flags )
+  : QgsTask( fileFormat == "PDF"_L1 ? tr( "Saving as PDF" ) : tr( "Saving as image" ), flags )
   , mMapSettings( ms )
   , mFileName( fileName )
   , mFileFormat( fileFormat )
   , mForceRaster( forceRaster )
-  , mGeospatialPDF( geoPDF && mFileFormat == QLatin1String( "PDF" ) && QgsAbstractGeospatialPdfExporter::geospatialPDFCreationAvailable() )
+  , mGeospatialPDF( geoPDF && mFileFormat == "PDF"_L1 && QgsAbstractGeospatialPdfExporter::geospatialPDFCreationAvailable() )
   , mGeospatialPdfExportDetails( geospatialPdfExportDetails )
 {
-  if ( mFileFormat == QLatin1String( "PDF" ) && !qgsDoubleNear( mMapSettings.devicePixelRatio(), 1.0 ) )
+  if ( mFileFormat == "PDF"_L1 && !qgsDoubleNear( mMapSettings.devicePixelRatio(), 1.0 ) )
   {
     mMapSettings.setOutputSize( mMapSettings.outputSize() * mMapSettings.devicePixelRatio() );
     mMapSettings.setOutputDpi( mMapSettings.outputDpi() * mMapSettings.devicePixelRatio() );
@@ -189,11 +195,11 @@ bool QgsMapRendererTask::run()
     {
       QgsAbstractGeospatialPdfExporter::ComponentLayerDetail component;
 
-      component.name = QStringLiteral( "layer_%1" ).arg( outputLayer );
+      component.name = u"layer_%1"_s.arg( outputLayer );
       component.mapLayerId = job->currentLayerId();
       component.opacity = job->currentLayerOpacity();
       component.compositionMode = job->currentLayerCompositionMode();
-      component.sourcePdfPath = mGeospatialPdfExporter->generateTemporaryFilepath( QStringLiteral( "layer_%1.pdf" ).arg( outputLayer ) );
+      component.sourcePdfPath = mGeospatialPdfExporter->generateTemporaryFilepath( u"layer_%1.pdf"_s.arg( outputLayer ) );
       pdfComponents << component;
 
       QPdfWriter pdfWriter( component.sourcePdfPath );
@@ -299,7 +305,7 @@ bool QgsMapRendererTask::run()
   {
     mDestPainter->end();
 
-    if ( mFileFormat == QLatin1String( "PDF" ) )
+    if ( mFileFormat == "PDF"_L1 )
     {
       if ( mForceRaster )
       {
@@ -333,9 +339,10 @@ bool QgsMapRendererTask::run()
           {
             QString creationDateString;
             const QDateTime creationDateTime = mGeospatialPdfExportDetails.creationDateTime;
+#if QT_FEATURE_timezone > 0
             if ( creationDateTime.isValid() )
             {
-              creationDateString = QStringLiteral( "D:%1" ).arg( mGeospatialPdfExportDetails.creationDateTime.toString( QStringLiteral( "yyyyMMddHHmmss" ) ) );
+              creationDateString = u"D:%1"_s.arg( mGeospatialPdfExportDetails.creationDateTime.toString( u"yyyyMMddHHmmss"_s ) );
               if ( creationDateTime.timeZone().isValid() )
               {
                 int offsetFromUtc = creationDateTime.timeZone().offsetFromUtc( creationDateTime );
@@ -343,13 +350,16 @@ bool QgsMapRendererTask::run()
                 offsetFromUtc = std::abs( offsetFromUtc );
                 const int offsetHours = offsetFromUtc / 3600;
                 const int offsetMins = ( offsetFromUtc % 3600 ) / 60;
-                creationDateString += QStringLiteral( "%1'%2'" ).arg( offsetHours ).arg( offsetMins );
+                creationDateString += u"%1'%2'"_s.arg( offsetHours ).arg( offsetMins );
               }
             }
+#else
+            QgsDebugError( u"Qt is built without timezone support, skipping timezone for pdf export"_s );
+#endif
             GDALSetMetadataItem( outputDS.get(), "CREATION_DATE", creationDateString.toUtf8().constData(), nullptr );
 
             GDALSetMetadataItem( outputDS.get(), "AUTHOR", mGeospatialPdfExportDetails.author.toUtf8().constData(), nullptr );
-            const QString creator = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
+            const QString creator = u"QGIS %1"_s.arg( Qgis::version() );
             GDALSetMetadataItem( outputDS.get(), "CREATOR", creator.toUtf8().constData(), nullptr );
             GDALSetMetadataItem( outputDS.get(), "PRODUCER", creator.toUtf8().constData(), nullptr );
             GDALSetMetadataItem( outputDS.get(), "SUBJECT", mGeospatialPdfExportDetails.subject.toUtf8().constData(), nullptr );
@@ -359,7 +369,7 @@ bool QgsMapRendererTask::run()
             QStringList allKeywords;
             for ( auto it = keywords.constBegin(); it != keywords.constEnd(); ++it )
             {
-              allKeywords.append( QStringLiteral( "%1: %2" ).arg( it.key(), it.value().join( ',' ) ) );
+              allKeywords.append( u"%1: %2"_s.arg( it.key(), it.value().join( ',' ) ) );
             }
             const QString keywordString = allKeywords.join( ';' );
             GDALSetMetadataItem( outputDS.get(), "KEYWORDS", keywordString.toUtf8().constData(), nullptr );
@@ -368,10 +378,10 @@ bool QgsMapRendererTask::run()
         CPLSetThreadLocalConfigOption( "GDAL_PDF_DPI", nullptr );
       }
     }
-    else if ( mFileFormat != QLatin1String( "PDF" ) )
+    else if ( mFileFormat != "PDF"_L1 )
     {
       QImageWriter writer( mFileName, mFileFormat.toLocal8Bit().data() );
-      if ( mFileFormat.compare( QLatin1String( "TIF" ), Qt::CaseInsensitive ) == 0 || mFileFormat.compare( QLatin1String( "TIFF" ), Qt::CaseInsensitive ) == 0 )
+      if ( mFileFormat.compare( "TIF"_L1, Qt::CaseInsensitive ) == 0 || mFileFormat.compare( "TIFF"_L1, Qt::CaseInsensitive ) == 0 )
       {
         // Enable LZW compression
         writer.setCompression( 1 );
@@ -390,7 +400,7 @@ bool QgsMapRendererTask::run()
         // build the world file name
         const QString outputSuffix = info.suffix();
         bool skipWorldFile = false;
-        if ( outputSuffix.compare( QLatin1String( "TIF" ), Qt::CaseInsensitive ) == 0 || outputSuffix.compare( QLatin1String( "TIFF" ), Qt::CaseInsensitive ) == 0 )
+        if ( outputSuffix.compare( "TIF"_L1, Qt::CaseInsensitive ) == 0 || outputSuffix.compare( "TIFF"_L1, Qt::CaseInsensitive ) == 0 )
         {
           const gdal::dataset_unique_ptr outputDS( GDALOpen( mFileName.toUtf8().constData(), GA_Update ) );
           if ( outputDS )
@@ -459,16 +469,16 @@ void QgsMapRendererTask::prepare()
       mMapLayerOrder << layer->id();
     }
 
-    mJob.reset( new QgsMapRendererStagedRenderJob( mMapSettings, QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer ) );
+    mJob = std::make_unique<QgsMapRendererStagedRenderJob>( mMapSettings, QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer );
     mJob->start();
     return;
   }
 
   mDestPainter = mPainter;
 
-  if ( mFileFormat == QLatin1String( "PDF" ) )
+  if ( mFileFormat == "PDF"_L1 )
   {
-    mPdfWriter.reset( new QPdfWriter( mFileName ) );
+    mPdfWriter = std::make_unique<QPdfWriter>( mFileName );
     mPdfWriter->setPageOrientation( QPageLayout::Orientation::Portrait );
     // paper size needs to be given in millimeters in order to be able to set a resolution to pass onto the map renderer
     const QSizeF outputSize = mMapSettings.outputSize();
@@ -479,7 +489,7 @@ void QgsMapRendererTask::prepare()
 
     if ( !mForceRaster )
     {
-      mTempPainter.reset( new QPainter( mPdfWriter.get() ) );
+      mTempPainter = std::make_unique<QPainter>( mPdfWriter.get() );
       mDestPainter = mTempPainter.get();
     }
   }
@@ -499,7 +509,7 @@ void QgsMapRendererTask::prepare()
     mImage.setDotsPerMeterX( 1000 * mMapSettings.outputDpi() / 25.4 );
     mImage.setDotsPerMeterY( 1000 * mMapSettings.outputDpi() / 25.4 );
 
-    mTempPainter.reset( new QPainter( &mImage ) );
+    mTempPainter = std::make_unique<QPainter>( &mImage );
     mDestPainter = mTempPainter.get();
   }
 
@@ -509,6 +519,6 @@ void QgsMapRendererTask::prepare()
     return;
   }
 
-  mJob.reset( new QgsMapRendererCustomPainterJob( mMapSettings, mDestPainter ) );
+  mJob = std::make_unique<QgsMapRendererCustomPainterJob>( mMapSettings, mDestPainter );
   static_cast< QgsMapRendererCustomPainterJob *>( mJob.get() )->prepare();
 }

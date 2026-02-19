@@ -17,8 +17,11 @@
 #define QGSVECTORTILELABELING_H
 
 #include "qgis_core.h"
-
 #include "qgsvectorlayerlabelprovider.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsVectorTileLayer;
 class QgsVectorTileRendererData;
@@ -39,7 +42,7 @@ class QgsVectorTileLabelProvider : public QgsVectorLayerLabelProvider
     //! Returns field names for each sub-layer that are required for labeling
     virtual QMap<QString, QSet<QString> > usedAttributes( const QgsRenderContext &context, int tileZoom ) const = 0;
 
-    //TODO QGIS 4.0 -- make pure virtual
+    //TODO QGIS 5.0 -- make pure virtual
 
     /**
      * Returns a list of the layers required for labeling.
@@ -75,7 +78,7 @@ class CORE_EXPORT QgsVectorTileLabeling
 
     const QString type = sipCpp->type();
 
-    if ( type == QLatin1String( "basic" ) )
+    if ( type == "basic"_L1 )
       sipType = sipType_QgsVectorTileBasicLabeling;
     else
       sipType = 0;

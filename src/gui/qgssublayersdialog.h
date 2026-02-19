@@ -16,18 +16,20 @@
 #ifndef QGSSUBLAYERSDIALOG_H
 #define QGSSUBLAYERSDIALOG_H
 
-#include <QDialog>
-#include <QCheckBox>
 #include "ui_qgssublayersdialogbase.h"
-#include "qgis_sip.h"
-#include "qgis_gui.h"
+
 #include "qgis.h"
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QCheckBox>
+#include <QDialog>
 
 /**
  * \ingroup gui
  * \class QgsSublayersDialog
  * \brief Presents a choice of sublayers.
- * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
+ * \deprecated QGIS 3.40. Will be removed in QGIS 5.0.
  */
 class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDialogBase
 {
@@ -111,7 +113,7 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
      * \param fl window flags
      * \param dataSourceUri data source URI
      *
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED QgsSublayersDialog( ProviderType providerType, const QString &name, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = Qt::WindowFlags(), const QString &dataSourceUri = QString() ) SIP_DEPRECATED;
 

@@ -14,22 +14,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthpkipathsedit.h"
-#include "moc_qgsauthpkipathsedit.cpp"
 #include "ui_qgsauthpkipathsedit.h"
+#include "qgsauthpkipathsedit.h"
+
+#include "qgsapplication.h"
+#include "qgsauthcertutils.h"
+#include "qgsauthguiutils.h"
+#include "qgsauthmanager.h"
+#include "qgslogger.h"
 
 #include <QDateTime>
 #include <QFile>
 #include <QFileInfo>
 #include <QSslCertificate>
 #include <QSslKey>
+#include <QString>
 
-#include "qgsapplication.h"
-#include "qgsauthcertutils.h"
-#include "qgsauthmanager.h"
-#include "qgsauthguiutils.h"
-#include "qgslogger.h"
+#include "moc_qgsauthpkipathsedit.cpp"
 
+using namespace Qt::StringLiterals;
 
 QgsAuthPkiPathsEdit::QgsAuthPkiPathsEdit( QWidget *parent )
   : QgsAuthMethodEdit( parent )
@@ -37,7 +40,7 @@ QgsAuthPkiPathsEdit::QgsAuthPkiPathsEdit( QWidget *parent )
   setupUi( this );
   connect( btnPkiPathsCert, &QToolButton::clicked, this, &QgsAuthPkiPathsEdit::btnPkiPathsCert_clicked );
   connect( btnPkiPathsKey, &QToolButton::clicked, this, &QgsAuthPkiPathsEdit::btnPkiPathsKey_clicked );
-  connect( cbAddCas, &QCheckBox::stateChanged, this, [=]( int state ) { cbAddRootCa->setEnabled( state == Qt::Checked ); } );
+  connect( cbAddCas, &QCheckBox::stateChanged, this, [this]( int state ) { cbAddRootCa->setEnabled( state == Qt::Checked ); } );
   lblCas->hide();
   twCas->hide();
   cbAddCas->hide();
@@ -89,11 +92,11 @@ bool QgsAuthPkiPathsEdit::validateConfig()
 QgsStringMap QgsAuthPkiPathsEdit::configMap() const
 {
   QgsStringMap config;
-  config.insert( QStringLiteral( "certpath" ), lePkiPathsCert->text() );
-  config.insert( QStringLiteral( "keypath" ), lePkiPathsKey->text() );
-  config.insert( QStringLiteral( "keypass" ), lePkiPathsKeyPass->text() );
-  config.insert( QStringLiteral( "addcas" ), cbAddCas->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-  config.insert( QStringLiteral( "addrootca" ), cbAddRootCa->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+  config.insert( u"certpath"_s, lePkiPathsCert->text() );
+  config.insert( u"keypath"_s, lePkiPathsKey->text() );
+  config.insert( u"keypass"_s, lePkiPathsKeyPass->text() );
+  config.insert( u"addcas"_s, cbAddCas->isChecked() ? u"true"_s : u"false"_s );
+  config.insert( u"addrootca"_s, cbAddRootCa->isChecked() ? u"true"_s : u"false"_s );
 
   return config;
 }
@@ -103,11 +106,11 @@ void QgsAuthPkiPathsEdit::loadConfig( const QgsStringMap &configmap )
   clearConfig();
 
   mConfigMap = configmap;
-  lePkiPathsCert->setText( configmap.value( QStringLiteral( "certpath" ) ) );
-  lePkiPathsKey->setText( configmap.value( QStringLiteral( "keypath" ) ) );
-  lePkiPathsKeyPass->setText( configmap.value( QStringLiteral( "keypass" ) ) );
-  cbAddCas->setChecked( configmap.value( QStringLiteral( "addcas" ), QStringLiteral( "false " ) ) == QLatin1String( "true" ) );
-  cbAddRootCa->setChecked( configmap.value( QStringLiteral( "addrootca" ), QStringLiteral( "false " ) ) == QLatin1String( "true" ) );
+  lePkiPathsCert->setText( configmap.value( u"certpath"_s ) );
+  lePkiPathsKey->setText( configmap.value( u"keypath"_s ) );
+  lePkiPathsKeyPass->setText( configmap.value( u"keypass"_s ) );
+  cbAddCas->setChecked( configmap.value( u"addcas"_s, u"false "_s ) == "true"_L1 );
+  cbAddRootCa->setChecked( configmap.value( u"addrootca"_s, u"false "_s ) == "true"_L1 );
 
   validateConfig();
 }
@@ -140,11 +143,11 @@ void QgsAuthPkiPathsEdit::writePkiMessage( QLineEdit *lineedit, const QString &m
   switch ( valid )
   {
     case Valid:
-      ss = QgsAuthGuiUtils::greenTextStyleSheet( QStringLiteral( "QLineEdit" ) );
+      ss = QgsAuthGuiUtils::greenTextStyleSheet( u"QLineEdit"_s );
       txt = tr( "Valid: %1" ).arg( msg );
       break;
     case Invalid:
-      ss = QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QLineEdit" ) );
+      ss = QgsAuthGuiUtils::redTextStyleSheet( u"QLineEdit"_s );
       txt = tr( "Invalid: %1" ).arg( msg );
       break;
     case Unknown:
@@ -229,7 +232,7 @@ bool QgsAuthPkiPathsEdit::populateCas()
     {
       item = new QTreeWidgetItem( twCas, QStringList( cert.subjectInfo( QSslCertificate::SubjectInfo::CommonName ) ) );
     }
-    item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ) );
+    item->setIcon( 0, QgsApplication::getThemeIcon( u"/mIconCertificate.svg"_s ) );
     item->setToolTip( 0, tr( "<ul><li>Serial #: %1</li><li>Expiry date: %2</li></ul>" ).arg( cert.serialNumber(), cert.expiryDate().toString( Qt::TextDate ) ) );
     prevItem = item;
   }

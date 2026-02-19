@@ -13,29 +13,34 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspostgresdataitems.h"
-#include "moc_qgspostgresdataitems.cpp"
 
+#include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsapplication.h"
+#include "qgsdatasourceuri.h"
+#include "qgsfieldsitem.h"
+#include "qgslogger.h"
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
 #include "qgspostgresprojectstorage.h"
-#include "qgslogger.h"
-#include "qgsdatasourceuri.h"
-#include "qgsapplication.h"
-#include "qgsprojectstorageregistry.h"
-#include "qgssettings.h"
-#include "qgsprojectitem.h"
-#include "qgsfieldsitem.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
-#include "qgsabstractdatabaseproviderconnection.h"
+#include "qgspostgresutils.h"
 #include "qgsproject.h"
+#include "qgsprojectitem.h"
+#include "qgsprojectstorageregistry.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgssettings.h"
 
+#include <QString>
+
+#include "moc_qgspostgresdataitems.cpp"
+
+using namespace Qt::StringLiterals;
 
 // ---------------------------------------------------------------------------
 QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "PostGIS" ) )
+  : QgsDataCollectionItem( parent, name, path, u"PostGIS"_s )
 {
-  mIconName = QStringLiteral( "mIconConnect.svg" );
+  mIconName = u"mIconConnect.svg"_s;
   mCapabilities |= Qgis::BrowserItemCapability::Collapse;
 }
 
@@ -54,7 +59,7 @@ QVector<QgsDataItem *> QgsPGConnectionItem::createChildren()
   }
 
   QList<QgsPostgresSchemaProperty> schemas;
-  const QString restrictToSchema = QgsPostgresConn::publicSchemaOnly( mName ) ? QStringLiteral( "public" ) : QgsPostgresConn::schemaToRestrict( mName );
+  const QString restrictToSchema = QgsPostgresConn::publicSchemaOnly( mName ) ? u"public"_s : QgsPostgresConn::schemaToRestrict( mName );
   const bool ok = conn->getSchemas( schemas, !restrictToSchema.isEmpty() ? QStringList { restrictToSchema } : QStringList {} );
 
   QgsPostgresConnPool::instance()->releaseConnection( conn );
@@ -108,7 +113,7 @@ void QgsPGConnectionItem::refreshSchema( const QString &schema )
 
 // ---------------------------------------------------------------------------
 QgsPGLayerItem::QgsPGLayerItem( QgsDataItem *parent, const QString &name, const QString &path, Qgis::BrowserLayerType layerType, const QgsPostgresLayerProperty &layerProperty )
-  : QgsLayerItem( parent, name, path, QString(), layerType, layerProperty.isRaster ? QStringLiteral( "postgresraster" ) : QStringLiteral( "postgres" ) )
+  : QgsLayerItem( parent, name, path, QString(), layerType, layerProperty.isRaster ? u"postgresraster"_s : u"postgres"_s )
   , mLayerProperty( layerProperty )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Delete | Qgis::BrowserItemCapability::Fertile;
@@ -123,13 +128,24 @@ QString QgsPGLayerItem::comments() const
   return mLayerProperty.tableComment;
 }
 
+bool QgsPGLayerItem::equal( const QgsDataItem *other )
+{
+  // Call parent class first
+  if ( !QgsLayerItem::equal( other ) )
+    return false;
+
+  // Also compare tooltips (which contain table comments)
+  const QgsPGLayerItem *o = qobject_cast<const QgsPGLayerItem *>( other );
+  return o && toolTip() == o->toolTip();
+}
+
 QString QgsPGLayerItem::createUri()
 {
   QgsPGConnectionItem *connItem = qobject_cast<QgsPGConnectionItem *>( parent() ? parent()->parent() : nullptr );
 
   if ( !connItem )
   {
-    QgsDebugError( QStringLiteral( "connection item not found." ) );
+    QgsDebugError( u"connection item not found."_s );
     return QString();
   }
 
@@ -138,10 +154,10 @@ QString QgsPGLayerItem::createUri()
   QgsDataSourceUri uri( QgsPostgresConn::connectionInfo( QgsPostgresConn::connUri( connName ), false ) );
 
   const QgsSettings &settings = QgsSettings();
-  QString basekey = QStringLiteral( "/PostgreSQL/connections/%1" ).arg( connName );
+  QString basekey = u"/PostgreSQL/connections/%1"_s.arg( connName );
 
   const QStringList defPk( settings.value(
-                                     QStringLiteral( "%1/keys/%2/%3" ).arg( basekey, mLayerProperty.schemaName, mLayerProperty.tableName ),
+                                     u"%1/keys/%2/%3"_s.arg( basekey, mLayerProperty.schemaName, mLayerProperty.tableName ),
                                      QVariant( !mLayerProperty.pkCols.isEmpty() ? QStringList( mLayerProperty.pkCols.at( 0 ) ) : QStringList() )
   )
                              .toStringList() );
@@ -160,16 +176,24 @@ QString QgsPGLayerItem::createUri()
   if ( uri.wkbType() != Qgis::WkbType::NoGeometry && mLayerProperty.srids.at( 0 ) != std::numeric_limits<int>::min() )
     uri.setSrid( QString::number( mLayerProperty.srids.at( 0 ) ) );
 
-  QgsDebugMsgLevel( QStringLiteral( "layer uri: %1" ).arg( uri.uri( false ) ), 2 );
+  QgsDebugMsgLevel( u"layer uri: %1"_s.arg( uri.uri( false ) ), 2 );
   return uri.uri( false );
 }
 
 // ---------------------------------------------------------------------------
 QgsPGSchemaItem::QgsPGSchemaItem( QgsDataItem *parent, const QString &connectionName, const QString &name, const QString &path )
-  : QgsDatabaseSchemaItem( parent, name, path, QStringLiteral( "PostGIS" ) )
+  : QgsDatabaseSchemaItem( parent, name, path, u"PostGIS"_s )
   , mConnectionName( connectionName )
 {
-  mIconName = QStringLiteral( "mIconDbSchema.svg" );
+  mIconName = u"mIconDbSchema.svg"_s;
+
+  const QgsDataSourceUri uri = QgsPostgresConn::connUri( mConnectionName );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri, false );
+  if ( conn )
+  {
+    mProjectVersioningEnabled = QgsPostgresUtils::qgisProjectVersioningEnabled( conn, mName );
+  }
+  conn->unref();
 }
 
 QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
@@ -215,7 +239,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
           for ( const QgsLayerMetadataProviderResult &result : std::as_const( results ) )
           {
             const QgsDataSourceUri resUri { result.uri() };
-            layerMetadata.insert( QStringLiteral( "%1.%2" ).arg( resUri.schema(), resUri.table() ), static_cast<QgsLayerMetadata>( result ) );
+            layerMetadata.insert( u"%1.%2"_s.arg( resUri.schema(), resUri.table() ), static_cast<QgsLayerMetadata>( result ) );
           }
         }
       }
@@ -236,7 +260,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
     {
       if ( dontResolveType )
       {
-        QgsDebugMsgLevel( QStringLiteral( "skipping column %1.%2 without type constraint" ).arg( layerProperty.schemaName, layerProperty.tableName ), 2 );
+        QgsDebugMsgLevel( u"skipping column %1.%2 without type constraint"_s.arg( layerProperty.schemaName, layerProperty.tableName ), 2 );
         continue;
       }
       // If the table is empty there is no way we can retrieve layer types, let's make a copy and restore it
@@ -256,7 +280,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
       {
         items.append( layerItem );
         // Attach metadata
-        const QString mdKey { QStringLiteral( "%1.%2" ).arg( layerProperty.at( i ).schemaName, layerProperty.at( i ).tableName ) };
+        const QString mdKey { u"%1.%2"_s.arg( layerProperty.at( i ).schemaName, layerProperty.at( i ).tableName ) };
         if ( allowMetadataInDatabase && layerMetadata.contains( mdKey ) )
         {
           if ( QgsLayerItem *lItem = static_cast<QgsLayerItem *>( layerItem ) )
@@ -282,7 +306,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
     {
       QgsPostgresProjectUri projectUri( postUri );
       projectUri.projectName = projectName;
-      items.append( new QgsPGProjectItem( this, projectName, projectUri ) );
+      items.append( new QgsPGProjectItem( this, projectName, projectUri, mConnectionName ) );
     }
   }
 
@@ -350,7 +374,7 @@ QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProp
       default:
         if ( !layerProperty.geometryColName.isEmpty() )
         {
-          QgsDebugMsgLevel( QStringLiteral( "Adding layer item %1.%2 without type constraint as geometryless table" ).arg( layerProperty.schemaName, layerProperty.tableName ), 2 );
+          QgsDebugMsgLevel( u"Adding layer item %1.%2 without type constraint as geometryless table"_s.arg( layerProperty.schemaName, layerProperty.tableName ), 2 );
         }
         layerType = Qgis::BrowserLayerType::TableLayer;
         tip = tr( "as geometryless table" );
@@ -365,16 +389,16 @@ QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProp
 QVector<QgsDataItem *> QgsPGLayerItem::createChildren()
 {
   QVector<QgsDataItem *> children;
-  children.push_back( new QgsFieldsItem( this, uri() + QStringLiteral( "/columns/ " ), createUri(), providerKey(), mLayerProperty.schemaName, mLayerProperty.tableName ) );
+  children.push_back( new QgsFieldsItem( this, uri() + u"/columns/ "_s, createUri(), providerKey(), mLayerProperty.schemaName, mLayerProperty.tableName ) );
   return children;
 }
 
 // ---------------------------------------------------------------------------
 QgsPGRootItem::QgsPGRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "PostGIS" ) )
+  : QgsConnectionsRootItem( parent, name, path, u"PostGIS"_s )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Fast;
-  mIconName = QStringLiteral( "mIconPostgis.svg" );
+  mIconName = u"mIconPostgis.svg"_s;
   populate();
 }
 
@@ -396,12 +420,12 @@ void QgsPGRootItem::onConnectionsChanged()
 
 QString QgsPostgresDataItemProvider::name()
 {
-  return QStringLiteral( "PostGIS" );
+  return u"PostGIS"_s;
 }
 
 QString QgsPostgresDataItemProvider::dataProviderKey() const
 {
-  return QStringLiteral( "postgres" );
+  return u"postgres"_s;
 }
 
 Qgis::DataItemProviderCapabilities QgsPostgresDataItemProvider::capabilities() const
@@ -412,7 +436,7 @@ Qgis::DataItemProviderCapabilities QgsPostgresDataItemProvider::capabilities() c
 QgsDataItem *QgsPostgresDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
 {
   Q_UNUSED( pathIn )
-  return new QgsPGRootItem( parentItem, QObject::tr( "PostgreSQL" ), QStringLiteral( "pg:" ) );
+  return new QgsPGRootItem( parentItem, QObject::tr( "PostgreSQL" ), u"pg:"_s );
 }
 
 
@@ -421,10 +445,12 @@ bool QgsPGSchemaItem::layerCollection() const
   return true;
 }
 
-QgsPGProjectItem::QgsPGProjectItem( QgsDataItem *parent, const QString name, const QgsPostgresProjectUri postgresProjectUri )
-  : QgsProjectItem( parent, name, QgsPostgresProjectStorage::encodeUri( postgresProjectUri ), QStringLiteral( "postgres" ) ), mProjectUri( postgresProjectUri )
+QgsPGProjectItem::QgsPGProjectItem( QgsDataItem *parent, const QString name, const QgsPostgresProjectUri &postgresProjectUri, const QString &connectionName )
+  : QgsProjectItem( parent, name, QgsPostgresProjectStorage::encodeUri( postgresProjectUri ), u"postgres"_s ), mProjectUri( postgresProjectUri ), mConnectionName( connectionName )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Delete | Qgis::BrowserItemCapability::Fertile;
+
+  refreshTooltip();
 }
 
 QString QgsPGProjectItem::uriWithNewName( const QString &newProjectName )
@@ -432,4 +458,44 @@ QString QgsPGProjectItem::uriWithNewName( const QString &newProjectName )
   QgsPostgresProjectUri postgresProjectUri( mProjectUri );
   postgresProjectUri.projectName = newProjectName;
   return QgsPostgresProjectStorage::encodeUri( postgresProjectUri );
+}
+
+void QgsPGProjectItem::refresh()
+{
+  QgsProjectItem::refresh();
+  refreshTooltip();
+}
+
+void QgsPGProjectItem::refreshTooltip()
+{
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( "postgres" ) };
+  if ( md )
+  {
+    QgsPostgresConn *conn = QgsPostgresConn::connectDb( mProjectUri.connInfo, false );
+    if ( conn )
+    {
+      QString commentColumn;
+      if ( QgsPostgresUtils::columnExists( conn, mProjectUri.schemaName, u"qgis_projects"_s, u"comment"_s ) )
+      {
+        commentColumn = u", comment "_s;
+      }
+
+      const QString sql = QStringLiteral( "SELECT (metadata->>'last_modified_time')::timestamp(0)::TEXT AS time, "
+                                          "metadata->>'last_modified_user' AS user %1"
+                                          "FROM %2.qgis_projects WHERE name = %3" )
+                            .arg( commentColumn, QgsPostgresConn::quotedIdentifier( mProjectUri.schemaName ), QgsPostgresConn::quotedValue( mName ) );
+
+      QgsPostgresResult res( conn->PQexec( sql ) );
+
+      if ( res.PQntuples() == 1 )
+      {
+        const QString tooltip = QStringLiteral( "%1: %2\n"
+                                                "%3: %4\n"
+                                                "%5: %6" )
+                                  .arg( tr( "Last modified time" ), res.PQgetvalue( 0, 0 ), tr( "Last modified user" ), res.PQgetvalue( 0, 1 ), tr( "Comment" ), commentColumn.isEmpty() ? QString() : res.PQgetvalue( 0, 2 ) );
+        setToolTip( tooltip );
+      }
+      conn->unref();
+    }
+  }
 }

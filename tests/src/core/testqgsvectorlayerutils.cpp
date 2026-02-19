@@ -1,5 +1,5 @@
 /***************************************************************************
-     test_template.cpp
+     testqgsvectorlayerutils.cpp
      --------------------------------------
     Date                 : Sun Sep 16 12:22:23 AKDT 2007
     Copyright            : (C) 2007 by Gary E. Sherman
@@ -12,11 +12,21 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
+#include <memory>
 
-#include "qgsvectorlayerutils.h"
+#include "qgsfillsymbol.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgssymbollayer.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
+
+#include <QMetaType>
+#include <QString>
 #include <QThread>
+#include <QtGlobal>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup UnitTests
@@ -36,6 +46,13 @@ class TestQgsVectorLayerUtils : public QObject
     void cleanup() {}       // will be called after every testfunction.
 
     void testGetFeatureSource();
+    void testGetValues();
+    void testUniqueValues();
+    void testObjectsMaskedBySymbolLayers();
+    void testObjectsMaskedByLabels();
+
+  private:
+    QString mTestDataDir;
 };
 
 void TestQgsVectorLayerUtils::initTestCase()
@@ -43,6 +60,9 @@ void TestQgsVectorLayerUtils::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
+
+  const QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  mTestDataDir = myDataDir + '/';
 }
 
 void TestQgsVectorLayerUtils::cleanupTestCase()
@@ -66,7 +86,7 @@ class FeatureFetcher : public QThread
       auto fs = QgsVectorLayerUtils::getFeatureSource( mLayer );
       if ( fs )
         fs->getFeatures().nextFeature( feat );
-      emit resultReady( feat.attribute( QStringLiteral( "col1" ) ) );
+      emit resultReady( feat.attribute( u"col1"_s ) );
     }
 
   signals:
@@ -79,17 +99,17 @@ class FeatureFetcher : public QThread
 
 void TestQgsVectorLayerUtils::testGetFeatureSource()
 {
-  auto vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl = std::make_unique<QgsVectorLayer>( u"Point?field=col1:integer"_s, u"vl"_s, u"memory"_s );
   vl->startEditing();
   QgsFeature f1( vl->fields(), 1 );
-  f1.setAttribute( QStringLiteral( "col1" ), 10 );
+  f1.setAttribute( u"col1"_s, 10 );
   vl->addFeature( f1 );
 
   const QPointer<QgsVectorLayer> vlPtr( vl.get() );
 
   QgsFeature feat;
   QgsVectorLayerUtils::getFeatureSource( vlPtr )->getFeatures().nextFeature( feat );
-  QCOMPARE( feat.attribute( QStringLiteral( "col1" ) ).toInt(), 10 );
+  QCOMPARE( feat.attribute( u"col1"_s ).toInt(), 10 );
 
   FeatureFetcher *thread = new FeatureFetcher( vlPtr );
 
@@ -123,6 +143,403 @@ void TestQgsVectorLayerUtils::testGetFeatureSource()
     QCoreApplication::processEvents();
   QVERIFY( result.isNull() );
   thread2->quit();
+}
+
+void TestQgsVectorLayerUtils::testGetValues()
+{
+  const QString pointFileName = mTestDataDir + "points.shp";
+  const QFileInfo pointFileInfo( pointFileName );
+
+  auto pointsLayer = std::make_unique<QgsVectorLayer>( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), u"ogr"_s );
+  QVERIFY( pointsLayer->isValid() );
+
+  // from an attribute
+  bool retrievedValues = false;
+  QList<QVariant> valuesAttr = QgsVectorLayerUtils::getValues( pointsLayer.get(), u"Class"_s, retrievedValues );
+  QVERIFY( retrievedValues );
+  QCOMPARE( valuesAttr.size(), 17 );
+  QCOMPARE( valuesAttr[0].typeId(), QMetaType::QString );
+
+  int nrJet = 0;
+  int nrBiPlane = 0;
+  int nrB52 = 0;
+  for ( const QVariant &value : valuesAttr )
+  {
+    if ( value.toString() == "Jet" )
+    {
+      nrJet += 1;
+    }
+    else if ( value.toString() == "Biplane" )
+    {
+      nrBiPlane += 1;
+    }
+    else if ( value.toString() == "B52" )
+    {
+      nrB52 += 1;
+    }
+  }
+
+  QCOMPARE( nrJet, 8 );
+  QCOMPARE( nrBiPlane, 5 );
+  QCOMPARE( nrB52, 4 );
+
+  // from an expression
+  retrievedValues = false;
+  QList<QVariant> valuesExp = QgsVectorLayerUtils::getValues( pointsLayer.get(), u"Pilots+4"_s, retrievedValues );
+  QVERIFY( retrievedValues );
+  QCOMPARE( valuesExp.size(), 17 );
+  QCOMPARE( valuesExp[0].typeId(), QMetaType::LongLong );
+
+  double minVal = std::numeric_limits<int>::max();
+  double maxVal = -std::numeric_limits<int>::max();
+  for ( const QVariant &value : valuesExp )
+  {
+    const double valI = value.toInt();
+    if ( valI > maxVal )
+    {
+      maxVal = valI;
+    }
+    if ( valI < minVal )
+    {
+      minVal = valI;
+    }
+  }
+
+  QCOMPARE( minVal, 5 );
+  QCOMPARE( maxVal, 7 );
+}
+
+void TestQgsVectorLayerUtils::testUniqueValues()
+{
+  const QString pointFileName = mTestDataDir + "points.shp";
+  const QFileInfo pointFileInfo( pointFileName );
+
+  auto pointsLayer = std::make_unique<QgsVectorLayer>( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), u"ogr"_s );
+
+  // from an attribute
+  {
+    bool retrievedValues = false;
+    QList<QVariant> valuesAttr = QgsVectorLayerUtils::uniqueValues( pointsLayer.get(), u"Class"_s, retrievedValues );
+    QVERIFY( retrievedValues );
+    QCOMPARE( valuesAttr.size(), 3 );
+    QCOMPARE( valuesAttr[0].typeId(), QMetaType::QString );
+
+    std::sort( valuesAttr.begin(), valuesAttr.end(), []( const QVariant &a, const QVariant &b ) {
+      return a.toString() < b.toString();
+    } );
+
+    QList<QVariant> expectedAttr;
+    expectedAttr << u"B52"_s << u"Biplane"_s << u"Jet"_s;
+    QCOMPARE( valuesAttr, expectedAttr );
+  }
+
+  // from an attribute - limit to 2 values
+  {
+    bool retrievedValues = false;
+    QList<QVariant> valuesAttr = QgsVectorLayerUtils::uniqueValues( pointsLayer.get(), u"Class"_s, retrievedValues, false, 2 );
+    QVERIFY( retrievedValues );
+    QCOMPARE( valuesAttr.size(), 2 );
+    QCOMPARE( valuesAttr[0].typeId(), QMetaType::QString );
+
+    std::sort( valuesAttr.begin(), valuesAttr.end(), []( const QVariant &a, const QVariant &b ) {
+      return a.toString() < b.toString();
+    } );
+
+    QList<QVariant> expectedAttr;
+    expectedAttr << u"B52"_s << u"Biplane"_s;
+    QCOMPARE( valuesAttr, expectedAttr );
+  }
+
+  // from an attribute - selected only
+  {
+    QCOMPARE( pointsLayer->selectedFeatureCount(), 0 );
+    QgsFeatureIds selectedFeatures = { 1, 4, 7 };
+    pointsLayer->selectByIds( selectedFeatures );
+    QCOMPARE( pointsLayer->selectedFeatureCount(), 3 );
+
+    bool retrievedValues = false;
+    QList<QVariant> valuesAttr = QgsVectorLayerUtils::uniqueValues( pointsLayer.get(), u"Class"_s, retrievedValues, true );
+    QVERIFY( retrievedValues );
+    QCOMPARE( valuesAttr.size(), 2 );
+    QCOMPARE( valuesAttr[0].typeId(), QMetaType::QString );
+
+    std::sort( valuesAttr.begin(), valuesAttr.end(), []( const QVariant &a, const QVariant &b ) {
+      return a.toString() < b.toString();
+    } );
+
+    QList<QVariant> expectedAttr;
+    expectedAttr << u"Biplane"_s << u"Jet"_s;
+    QCOMPARE( valuesAttr, expectedAttr );
+
+    pointsLayer->deselect( selectedFeatures );
+    QCOMPARE( pointsLayer->selectedFeatureCount(), 0 );
+  }
+
+  // from an attribute - selected only - limit to 1
+  {
+    QCOMPARE( pointsLayer->selectedFeatureCount(), 0 );
+    QgsFeatureIds selectedFeatures = { 1, 4, 7 };
+    pointsLayer->selectByIds( selectedFeatures );
+    QCOMPARE( pointsLayer->selectedFeatureCount(), 3 );
+
+    bool retrievedValues = false;
+    const QList<QVariant> valuesAttr = QgsVectorLayerUtils::uniqueValues( pointsLayer.get(), u"Class"_s, retrievedValues, true, 1 );
+    QVERIFY( retrievedValues );
+    QCOMPARE( valuesAttr.size(), 1 );
+    QCOMPARE( valuesAttr[0].typeId(), QMetaType::QString );
+
+    QList<QVariant> expectedAttr = { u"Biplane"_s };
+    QCOMPARE( valuesAttr, expectedAttr );
+
+    pointsLayer->deselect( selectedFeatures );
+    QCOMPARE( pointsLayer->selectedFeatureCount(), 0 );
+  }
+
+  // from an attribute - layer with a null value
+  {
+    auto uniqueLayer = std::make_unique<QgsVectorLayer>( "Point?crs=EPSG:4326", "points_test", "memory" );
+    QVERIFY( uniqueLayer->isValid() );
+    uniqueLayer->dataProvider()->addAttributes( { QgsField( "name", QMetaType::Type::QString ) } );
+    uniqueLayer->updateFields();
+
+    QList<QgsFeature> features;
+    for ( int i = 0; i < 5; i++ )
+    {
+      QgsFeature feature( uniqueLayer->fields() );
+      feature.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( i, i ) ) );
+      if ( i != 2 )
+      {
+        feature.setAttribute( "name", QString( "Point_%1" ).arg( i ) );
+      }
+      features.append( feature );
+    }
+    uniqueLayer->dataProvider()->addFeatures( features );
+
+    bool retrievedValues = false;
+    QList<QVariant> valuesAttr = QgsVectorLayerUtils::uniqueValues( uniqueLayer.get(), u"name"_s, retrievedValues );
+    QVERIFY( retrievedValues );
+    QCOMPARE( valuesAttr.size(), 4 );
+    std::sort( valuesAttr.begin(), valuesAttr.end(), []( const QVariant &a, const QVariant &b ) {
+      return a.toString() < b.toString();
+    } );
+
+    QList<QVariant> expectedAttr;
+    expectedAttr << u"Point_0"_s << u"Point_1"_s << u"Point_3"_s << u"Point_4"_s;
+    QCOMPARE( valuesAttr, expectedAttr );
+  }
+
+  // from an expression
+  {
+    bool retrievedValues = false;
+    QList<QVariant> valuesExp = QgsVectorLayerUtils::uniqueValues( pointsLayer.get(), u"Pilots+4"_s, retrievedValues );
+    QVERIFY( retrievedValues );
+    QCOMPARE( valuesExp.size(), 3 );
+    QCOMPARE( valuesExp[0].typeId(), QMetaType::LongLong );
+    std::sort( valuesExp.begin(), valuesExp.end(), []( const QVariant &a, const QVariant &b ) {
+      return a.toInt() < b.toInt();
+    } );
+    QList<QVariant> expectedExp;
+    expectedExp << 5 << 6 << 7;
+    QCOMPARE( valuesExp, expectedExp );
+  }
+
+  // from an expression - limit to 2 values
+  {
+    bool retrievedValues = false;
+    QList<QVariant> valuesExp = QgsVectorLayerUtils::uniqueValues( pointsLayer.get(), u"Pilots+4"_s, retrievedValues, false, 2 );
+    QVERIFY( retrievedValues );
+    QCOMPARE( valuesExp.size(), 2 );
+    QCOMPARE( valuesExp[0].typeId(), QMetaType::LongLong );
+    std::sort( valuesExp.begin(), valuesExp.end(), []( const QVariant &a, const QVariant &b ) {
+      return a.toInt() < b.toInt();
+    } );
+    QList<QVariant> expectedExp;
+    expectedExp << 6 << 7;
+    QCOMPARE( valuesExp, expectedExp );
+  }
+
+  // from an expression - selected only
+  {
+    QCOMPARE( pointsLayer->selectedFeatureCount(), 0 );
+    QgsFeatureIds selectedFeatures = { 1, 8, 9 };
+    pointsLayer->selectByIds( selectedFeatures );
+    QCOMPARE( pointsLayer->selectedFeatureCount(), 3 );
+
+    bool retrievedValues = false;
+    QList<QVariant> valuesExp = QgsVectorLayerUtils::uniqueValues( pointsLayer.get(), u"Pilots+4"_s, retrievedValues, true );
+    QVERIFY( retrievedValues );
+    QCOMPARE( valuesExp.size(), 2 );
+    QCOMPARE( valuesExp[0].typeId(), QMetaType::LongLong );
+    std::sort( valuesExp.begin(), valuesExp.end(), []( const QVariant &a, const QVariant &b ) {
+      return a.toInt() < b.toInt();
+    } );
+    QList<QVariant> expectedExp;
+    expectedExp << 6 << 7;
+    QCOMPARE( valuesExp, expectedExp );
+
+    pointsLayer->deselect( selectedFeatures );
+    QCOMPARE( pointsLayer->selectedFeatureCount(), 0 );
+  }
+
+  // from an expression - selected only - limit to 1
+  {
+    QCOMPARE( pointsLayer->selectedFeatureCount(), 0 );
+    QgsFeatureIds selectedFeatures = { 1, 8, 9 };
+    pointsLayer->selectByIds( selectedFeatures );
+    QCOMPARE( pointsLayer->selectedFeatureCount(), 3 );
+
+    bool retrievedValues = false;
+    QList<QVariant> valuesExp = QgsVectorLayerUtils::uniqueValues( pointsLayer.get(), u"Pilots+4"_s, retrievedValues, true, 1 );
+    QVERIFY( retrievedValues );
+    QCOMPARE( valuesExp.size(), 1 );
+    QCOMPARE( valuesExp[0].typeId(), QMetaType::LongLong );
+    QList<QVariant> expectedExp = { 7 };
+    QCOMPARE( valuesExp, expectedExp );
+
+    pointsLayer->deselect( selectedFeatures );
+    QCOMPARE( pointsLayer->selectedFeatureCount(), 0 );
+  }
+}
+
+void TestQgsVectorLayerUtils::testObjectsMaskedBySymbolLayers()
+{
+  // the 'masking' layer is the one "casting" the mask (e.g., the points hiding the roads)
+  auto maskingLayer = std::make_unique<QgsVectorLayer>( u"Point?field=f:int"_s, u"Masking Layer"_s, u"memory"_s );
+  // the 'masked' layer is the one being hidden (e.g., the roads)
+  auto maskedLayer = std::make_unique<QgsVectorLayer>( u"Polygon?field=f:int"_s, u"Masked Layer"_s, u"memory"_s );
+
+  QVERIFY( maskingLayer->isValid() );
+  QVERIFY( maskedLayer->isValid() );
+
+  // we need to attach a symbol layer to the *masked* layer that points to a selective masking set
+  QgsSingleSymbolRenderer *maskedRenderer = new QgsSingleSymbolRenderer( new QgsFillSymbol() );
+  maskedLayer->setRenderer( maskedRenderer );
+
+  QgsSymbolLayer *maskedSymbolLayer = maskedRenderer->symbol()->symbolLayer( 0 );
+  const QString maskedSymbolLayerId = maskedSymbolLayer->id();
+  const QString setId = u"Set1"_s;
+
+  // assign this set ID to the symbol layer we want masked
+  maskedSymbolLayer->setSelectiveMaskingSourceSetId( setId );
+
+  QgsSelectiveMaskingSourceSet set;
+  set.setId( setId );
+  set.setName( u"Test Set"_s );
+
+  QHash<QString, QgsSelectiveMaskingSourceSet> sets;
+  QVector<QgsVectorLayer *> allLayers = { maskedLayer.get() };
+
+  // test first with no masking configured
+  QgsMaskedLayers result = QgsVectorLayerUtils::collectObjectsMaskedBySymbolLayersFromLayer(
+    maskingLayer.get(),
+    sets,
+    allLayers
+  );
+  QVERIFY( result.isEmpty() );
+
+  // configure the set so that maskingLayer is a mask source
+  QgsSelectiveMaskSource symbolSource( maskingLayer->id(), Qgis::SelectiveMaskSourceType::SymbolLayer, u"source_1"_s );
+  set.setSources( { symbolSource } );
+  sets.insert( setId, set );
+
+  result = QgsVectorLayerUtils::collectObjectsMaskedBySymbolLayersFromLayer(
+    maskingLayer.get(),
+    sets,
+    allLayers
+  );
+
+  QVERIFY( !result.isEmpty() );
+  QVERIFY( result.contains( maskedLayer->id() ) );
+  QVERIFY( result[maskedLayer->id()].symbolLayerIdsToMask.contains( maskedSymbolLayerId ) );
+  QVERIFY( !result[maskedLayer->id()].hasEffects );
+
+  QgsSelectiveMaskSource wrongLayerSource( u"wrong_layer_id"_s, Qgis::SelectiveMaskSourceType::SymbolLayer, u"source_1"_s );
+  set.setSources( { wrongLayerSource } );
+  sets[setId] = set;
+
+  result = QgsVectorLayerUtils::collectObjectsMaskedBySymbolLayersFromLayer( maskingLayer.get(), sets, allLayers );
+  QVERIFY( result.isEmpty() );
+
+  // mismatching source type (Label instead of SymbolLayer)
+  QgsSelectiveMaskSource labelSource( maskingLayer->id(), Qgis::SelectiveMaskSourceType::Label, u"rule_1"_s );
+  set.setSources( { labelSource } );
+  sets[setId] = set;
+
+  result = QgsVectorLayerUtils::collectObjectsMaskedBySymbolLayersFromLayer( maskingLayer.get(), sets, allLayers );
+  QVERIFY( result.isEmpty() );
+}
+
+void TestQgsVectorLayerUtils::testObjectsMaskedByLabels()
+{
+  // the 'masking' layer is the one "casting" the mask (e.g., the points hiding the roads)
+  auto maskingLayer = std::make_unique<QgsVectorLayer>( u"Point?field=f:int"_s, u"Masking Layer"_s, u"memory"_s );
+  // the 'masked' layer is the one being hidden (e.g., the roads)
+  auto maskedLayer = std::make_unique<QgsVectorLayer>( u"Polygon?field=f:int"_s, u"Masked Layer"_s, u"memory"_s );
+
+  QVERIFY( maskingLayer->isValid() );
+  QVERIFY( maskedLayer->isValid() );
+
+  // we need to attach a symbol layer to the *masked* layer that points to a selective masking set
+  QgsSingleSymbolRenderer *maskedRenderer = new QgsSingleSymbolRenderer( new QgsFillSymbol() );
+  maskedLayer->setRenderer( maskedRenderer );
+
+  QgsSymbolLayer *maskedSymbolLayer = maskedRenderer->symbol()->symbolLayer( 0 );
+  const QString maskedSymbolLayerId = maskedSymbolLayer->id();
+  const QString setId = u"Set1"_s;
+
+  // assign this set ID to the symbol layer we want masked
+  maskedSymbolLayer->setSelectiveMaskingSourceSetId( setId );
+
+  QgsSelectiveMaskingSourceSet set;
+  set.setId( setId );
+  set.setName( u"Test Set"_s );
+
+  QHash<QString, QgsSelectiveMaskingSourceSet> sets;
+  QVector<QgsVectorLayer *> allLayers = { maskedLayer.get() };
+
+  // test first with no masking configured
+  QHash<QString, QgsMaskedLayers> labelResult = QgsVectorLayerUtils::collectObjectsMaskedByLabelsFromLayer(
+    maskingLayer.get(),
+    sets,
+    allLayers
+  );
+  QVERIFY( labelResult.isEmpty() );
+
+  const QString labelRuleId = u"RuleA"_s;
+  // configure the set so that maskingLayer is a mask source via its labels
+  QgsSelectiveMaskSource labelSource( maskingLayer->id(), Qgis::SelectiveMaskSourceType::Label, labelRuleId );
+  set.setSources( { labelSource } );
+  sets[setId] = set;
+
+  labelResult = QgsVectorLayerUtils::collectObjectsMaskedByLabelsFromLayer(
+    maskingLayer.get(),
+    sets,
+    allLayers
+  );
+
+  QVERIFY( !labelResult.isEmpty() );
+  QVERIFY( labelResult.contains( labelRuleId ) );
+
+  QgsMaskedLayers ruleLayers = labelResult[labelRuleId];
+  QVERIFY( ruleLayers.contains( maskedLayer->id() ) );
+  QVERIFY( ruleLayers[maskedLayer->id()].symbolLayerIdsToMask.contains( maskedSymbolLayerId ) );
+  QVERIFY( !ruleLayers[maskedLayer->id()].hasEffects );
+
+  // mismatching layer ID
+  QgsSelectiveMaskSource wrongLayerSource( u"wrong_layer_id"_s, Qgis::SelectiveMaskSourceType::Label, labelRuleId );
+  set.setSources( { wrongLayerSource } );
+  sets[setId] = set;
+
+  labelResult = QgsVectorLayerUtils::collectObjectsMaskedByLabelsFromLayer( maskingLayer.get(), sets, allLayers );
+  QVERIFY( labelResult.isEmpty() );
+
+  // mismatching source type (SymbolLayer instead of Label)
+  QgsSelectiveMaskSource symbolSource( maskingLayer->id(), Qgis::SelectiveMaskSourceType::SymbolLayer, u"source_1"_s );
+  set.setSources( { symbolSource } );
+  sets[setId] = set;
+
+  labelResult = QgsVectorLayerUtils::collectObjectsMaskedByLabelsFromLayer( maskingLayer.get(), sets, allLayers );
+  QVERIFY( labelResult.isEmpty() );
 }
 
 QGSTEST_MAIN( TestQgsVectorLayerUtils )

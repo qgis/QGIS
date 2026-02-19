@@ -14,28 +14,28 @@
  ***************************************************************************/
 
 #include "qgspointcloudeditingindex.h"
-#include "qgspointcloudlayer.h"
-#include "qgspointcloudlayereditutils.h"
+
 #include "qgscoordinatereferencesystem.h"
 #include "qgscopcpointcloudindex.h"
 #include "qgscopcupdate.h"
 #include "qgslazdecoder.h"
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudlayereditutils.h"
 
 #include <QDir>
 #include <QFileInfo>
 #include <QMutex>
+#include <QString>
 
+using namespace Qt::StringLiterals;
 
-QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( QgsPointCloudLayer *layer )
+QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( const QgsPointCloudIndex &index )
 {
-  if ( !layer ||
-       !layer->dataProvider() ||
-       !layer->dataProvider()->hasValidIndex() ||
-       !( layer->dataProvider()->capabilities() & QgsPointCloudDataProvider::Capability::ChangeAttributeValues ) )
+  if ( !index.isValid() )
     return;
 
-  mUri = layer->source();
-  mIndex = layer->dataProvider()->index();
+  mIndex = index;
+  mUri = index.uri();
 
   mAttributes = mIndex.attributes();
   mScale = mIndex.scale();
@@ -48,7 +48,7 @@ QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( QgsPointCloudLayer *layer 
   mIsValid = true;
 }
 
-void QgsPointCloudEditingIndex::load( const QString & )
+void QgsPointCloudEditingIndex::load( const QString &, const QString & )
 {
   return;
 }
@@ -170,7 +170,7 @@ bool QgsPointCloudEditingIndex::commitChanges( QString *errorMessage )
   }
 
   QFileInfo fileInfo( mUri );
-  const QString outputFilename = fileInfo.dir().filePath( fileInfo.baseName() + QStringLiteral( "-update.copc.laz" ) );
+  const QString outputFilename = fileInfo.dir().filePath( fileInfo.baseName() + u"-update.copc.laz"_s );
 
   if ( !QgsCopcUpdate::writeUpdatedFile( mUri, outputFilename, updatedChunks, errorMessage ) )
   {
@@ -181,11 +181,11 @@ bool QgsPointCloudEditingIndex::commitChanges( QString *errorMessage )
   QgsCopcPointCloudIndex *copcIndex = static_cast<QgsCopcPointCloudIndex *>( mIndex.get() );
   copcIndex->reset();
 
-  const QString originalFilename = fileInfo.dir().filePath( fileInfo.baseName() + QStringLiteral( "-original.copc.laz" ) );
+  const QString originalFilename = fileInfo.dir().filePath( fileInfo.baseName() + u"-original.copc.laz"_s );
   if ( !QFile::rename( mUri, originalFilename ) )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Rename of the old COPC failed!" );
+      *errorMessage = u"Rename of the old COPC failed!"_s;
     QFile::remove( outputFilename );
     return false;
   }
@@ -193,7 +193,7 @@ bool QgsPointCloudEditingIndex::commitChanges( QString *errorMessage )
   if ( !QFile::rename( outputFilename, mUri ) )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Rename of the new COPC failed!" );
+      *errorMessage = u"Rename of the new COPC failed!"_s;
     QFile::rename( originalFilename, mUri );
     QFile::remove( outputFilename );
     return false;
@@ -202,7 +202,7 @@ bool QgsPointCloudEditingIndex::commitChanges( QString *errorMessage )
   if ( !QFile::remove( originalFilename ) )
   {
     if ( errorMessage )
-      *errorMessage = QStringLiteral( "Removal of the old COPC failed!" );
+      *errorMessage = u"Removal of the old COPC failed!"_s;
     // TODO: cleanup here as well?
     return false;
   }

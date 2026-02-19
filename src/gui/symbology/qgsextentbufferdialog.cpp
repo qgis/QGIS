@@ -14,8 +14,7 @@
  ***************************************************************************/
 
 #include "qgsextentbufferdialog.h"
-#include "moc_qgsextentbufferdialog.cpp"
-#include "qdialogbuttonbox.h"
+
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgshelp.h"
@@ -26,6 +25,13 @@
 #include "qgssymbolwidgetcontext.h"
 #include "qgsunittypes.h"
 #include "qgsvectorlayer.h"
+
+#include <QString>
+#include <qdialogbuttonbox.h>
+
+#include "moc_qgsextentbufferdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsExtentBufferWidget::QgsExtentBufferWidget( QgsSymbol *symbol, QgsVectorLayer *layer, QWidget *parent )
   : QgsPanelWidget( parent ), mSymbol( symbol ), mLayer( layer )
@@ -38,11 +44,11 @@ QgsExtentBufferWidget::QgsExtentBufferWidget( QgsSymbol *symbol, QgsVectorLayer 
   mExtentBufferUnitSelectionWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
   mExtentBufferUnitSelectionWidget->setUnit( mSymbol->extentBufferSizeUnit() );
 
-  connect( mExtentBufferSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [=]() {
+  connect( mExtentBufferSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [this]() {
     emit widgetChanged();
   } );
 
-  connect( mExtentBufferUnitSelectionWidget, &QgsUnitSelectionWidget::changed, this, [=]() {
+  connect( mExtentBufferUnitSelectionWidget, &QgsUnitSelectionWidget::changed, this, [this]() {
     emit widgetChanged();
   } );
 
@@ -64,7 +70,7 @@ void QgsExtentBufferWidget::registerDataDefinedButton( QgsPropertyOverrideButton
   // pass in nullptr to avoid id, feature and geometry variables being added
   // since the buffer is not evaluated per-feature
   button->init( static_cast<int>( key ), mSymbol->dataDefinedProperties(), QgsSymbol::propertyDefinitions(), nullptr );
-  connect( button, &QgsPropertyOverrideButton::changed, this, [=]() {
+  connect( button, &QgsPropertyOverrideButton::changed, this, [this]() {
     emit widgetChanged();
   } );
 
@@ -172,5 +178,5 @@ void QgsExtentBufferDialog::setContext( const QgsSymbolWidgetContext &context )
 
 void QgsExtentBufferDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#extent-buffer" ) );
+  QgsHelp::openHelp( u"working_with_vector/vector_properties.html#extent-buffer"_s );
 }

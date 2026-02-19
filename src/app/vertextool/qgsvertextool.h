@@ -18,13 +18,13 @@
 
 #include <memory>
 
-#include <QPointer>
-
 #include "qgis_app.h"
-#include "qgsmaptooladvanceddigitizing.h"
 #include "qgsgeometry.h"
+#include "qgsmaptooladvanceddigitizing.h"
 #include "qgspointlocator.h"
 #include "qobjectuniqueptr.h"
+
+#include <QPointer>
 
 class QRubberBand;
 
@@ -300,8 +300,6 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     //! Updates vertex band based on the current match
     void updateVertexBand( const QgsPointLocator::Match &m );
 
-    //! Handles mouse press event when in range selection method
-    void rangeMethodPressEvent( QgsMapMouseEvent *e );
     //! Handles mouse release event when in range selection method
     void rangeMethodReleaseEvent( QgsMapMouseEvent *e );
     //! Handles mouse move event when in range selection method
@@ -510,6 +508,8 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     std::unique_ptr<Vertex> mRangeSelectionFirstVertex;
 
     VertexToolMode mMode = AllLayers;
+
+    friend class TestQgsVertexTool;
 };
 
 

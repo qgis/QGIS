@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgsphongtexturedmaterialwidget.h"
-#include "moc_qgsphongtexturedmaterialwidget.cpp"
 
-#include "qgsphongtexturedmaterialsettings.h"
 #include "qgis.h"
+#include "qgsphongtexturedmaterialsettings.h"
+
+#include "moc_qgsphongtexturedmaterialwidget.cpp"
 
 QgsPhongTexturedMaterialWidget::QgsPhongTexturedMaterialWidget( QWidget *parent )
   : QgsMaterialSettingsWidget( parent )
@@ -33,7 +34,7 @@ QgsPhongTexturedMaterialWidget::QgsPhongTexturedMaterialWidget( QWidget *parent 
 
   connect( btnAmbient, &QgsColorButton::colorChanged, this, &QgsPhongTexturedMaterialWidget::changed );
   connect( btnSpecular, &QgsColorButton::colorChanged, this, &QgsPhongTexturedMaterialWidget::changed );
-  connect( spinShininess, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [=] {
+  connect( spinShininess, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [this] {
     updateWidgetState();
     emit changed();
   } );

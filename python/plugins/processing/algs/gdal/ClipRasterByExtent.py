@@ -24,6 +24,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (
+    Qgis,
     QgsRasterFileWriter,
     QgsProcessingException,
     QgsProcessingParameterDefinition,
@@ -34,6 +35,7 @@ from qgis.core import (
     QgsProcessingParameterNumber,
     QgsProcessingParameterBoolean,
     QgsProcessingParameterRasterDestination,
+    QgsProcessingRasterLayerDefinition,
 )
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -73,9 +75,17 @@ class ClipRasterByExtent(GdalAlgorithm):
             "Int8",
         ]
 
-        self.addParameter(
-            QgsProcessingParameterRasterLayer(self.INPUT, self.tr("Input layer"))
+        input_param = QgsProcessingParameterRasterLayer(
+            self.INPUT, self.tr("Input layer")
         )
+        # Support advance raster options panel
+        input_param.setParameterCapabilities(
+            input_param.parameterCapabilities()
+            | Qgis.RasterProcessingParameterCapability.WmsScale
+            | Qgis.RasterProcessingParameterCapability.WmsDpi
+        )
+        self.addParameter(input_param)
+
         self.addParameter(
             QgsProcessingParameterExtent(self.EXTENT, self.tr("Clipping extent"))
         )
@@ -97,7 +107,7 @@ class ClipRasterByExtent(GdalAlgorithm):
         )
 
         # backwards compatibility parameter
-        # TODO QGIS 4: remove parameter and related logic
+        # TODO QGIS 5: remove parameter and related logic
         options_param = QgsProcessingParameterString(
             self.OPTIONS,
             self.tr("Additional creation options"),
@@ -180,21 +190,33 @@ class ClipRasterByExtent(GdalAlgorithm):
                     parameters[self.INPUT] if self.INPUT in parameters else "INPUT"
                 )
             )
-        input_details = GdalUtils.gdal_connection_details_from_layer(inLayer)
 
         bbox = self.parameterAsExtent(parameters, self.EXTENT, context, inLayer.crs())
-        override_crs = self.parameterAsBoolean(parameters, self.OVERCRS, context)
-        if self.NODATA in parameters and parameters[self.NODATA] is not None:
-            nodata = self.parameterAsDouble(parameters, self.NODATA, context)
-        else:
-            nodata = None
-        options = self.parameterAsString(parameters, self.OPTIONS, context)
-        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
-        self.setOutputValue(self.OUTPUT, out)
+        if bbox.isNull() or bbox.isEmpty():
+            raise QgsProcessingException(
+                "Invalid extent {}".format(
+                    parameters[self.EXTENT] if self.EXTENT in parameters else "EXTENT"
+                )
+            )
+
+        input_details = GdalUtils.gdal_connection_details_from_layer(
+            inLayer,
+            self.INPUT,
+            parameters,
+            context,
+            bbox,
+        )
 
         arguments = []
 
-        if not bbox.isNull():
+        # If not a WMS or scale/DPI were not given, add -projwin
+        if (
+            inLayer.providerType() != "wms"
+            or not isinstance(
+                parameters[self.INPUT], QgsProcessingRasterLayerDefinition
+            )
+            or parameters[self.INPUT].referenceScale == 0
+        ):
             arguments.extend(
                 [
                     "-projwin",
@@ -204,6 +226,14 @@ class ClipRasterByExtent(GdalAlgorithm):
                     str(bbox.yMinimum()),
                 ]
             )
+
+        override_crs = self.parameterAsBoolean(parameters, self.OVERCRS, context)
+        if self.NODATA in parameters and parameters[self.NODATA] is not None:
+            nodata = self.parameterAsDouble(parameters, self.NODATA, context)
+        else:
+            nodata = None
+        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
 
         crs = inLayer.crs()
         if override_crs and crs.isValid():
@@ -221,7 +251,7 @@ class ClipRasterByExtent(GdalAlgorithm):
 
             arguments.append("-ot " + self.TYPES[data_type])
 
-        output_format = QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1])
+        output_format = self.outputFormat(parameters, self.OUTPUT, context)
         if not output_format:
             raise QgsProcessingException(self.tr("Output format is invalid"))
 

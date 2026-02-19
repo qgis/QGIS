@@ -16,11 +16,16 @@
  ***************************************************************************/
 
 #include "qgseffectstack.h"
-#include "qgspainteffectregistry.h"
-#include "qgsrendercontext.h"
+
 #include "qgsapplication.h"
+#include "qgspainteffectregistry.h"
 #include "qgspainting.h"
+#include "qgsrendercontext.h"
+
 #include <QPicture>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsEffectStack::QgsEffectStack( const QgsEffectStack &other )
   : QgsPaintEffect( other )
@@ -48,6 +53,19 @@ QgsEffectStack::~QgsEffectStack()
   clearStack();
 }
 
+Qgis::PaintEffectFlags QgsEffectStack::flags() const
+{
+  Qgis::PaintEffectFlags res;
+  for ( const QgsPaintEffect *effect : mEffectList )
+  {
+    if ( effect->flags().testFlag( Qgis::PaintEffectFlag::RequiresRasterization ) )
+    {
+      res.setFlag( Qgis::PaintEffectFlag::RequiresRasterization );
+    }
+  }
+  return res;
+}
+
 QgsEffectStack &QgsEffectStack::operator=( const QgsEffectStack &rhs )
 {
   if ( &rhs == this )
@@ -65,6 +83,9 @@ QgsEffectStack &QgsEffectStack::operator=( const QgsEffectStack &rhs )
 
 QgsEffectStack &QgsEffectStack::operator=( QgsEffectStack &&other )
 {
+  if ( &other == this )
+    return *this;
+
   std::swap( mEffectList, other.mEffectList );
   mEnabled = other.enabled();
   return *this;
@@ -80,6 +101,27 @@ QgsPaintEffect *QgsEffectStack::create( const QVariantMap &map )
 void QgsEffectStack::draw( QgsRenderContext &context )
 {
   QPainter *destPainter = context.painter();
+
+  if ( context.rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::ForceVector )
+  {
+    // can we render this stack if we're forcing vectors?
+    bool requiresRasterization = false;
+    for ( const QgsPaintEffect *effect : std::as_const( mEffectList ) )
+    {
+      if ( effect->enabled() && effect->flags().testFlag( Qgis::PaintEffectFlag::RequiresRasterization ) )
+      {
+        requiresRasterization = true;
+        break;
+      }
+    }
+
+    if ( requiresRasterization )
+    {
+      //just draw unmodified source, we can't render this effect stack when forcing vectors
+      drawSource( *context.painter() );
+    }
+    return;
+  }
 
   //first, we build up a list of rendered effects
   //we do this moving backwards through the stack, so that each effect's results
@@ -97,7 +139,7 @@ void QgsEffectStack::draw( QgsRenderContext &context )
     }
 
     const QPicture *pic = nullptr;
-    if ( effect->type() == QLatin1String( "drawSource" ) )
+    if ( effect->type() == "drawSource"_L1 )
     {
       //draw source is always the original source, regardless of previous effect results
       pic = &sourcePic;
@@ -154,9 +196,9 @@ bool QgsEffectStack::saveProperties( QDomDocument &doc, QDomElement &element ) c
     return false;
   }
 
-  QDomElement effectElement = doc.createElement( QStringLiteral( "effect" ) );
-  effectElement.setAttribute( QStringLiteral( "type" ), type() );
-  effectElement.setAttribute( QStringLiteral( "enabled" ), mEnabled );
+  QDomElement effectElement = doc.createElement( u"effect"_s );
+  effectElement.setAttribute( u"type"_s, type() );
+  effectElement.setAttribute( u"enabled"_s, mEnabled );
 
   bool ok = true;
   for ( QgsPaintEffect *effect : mEffectList )
@@ -176,7 +218,7 @@ bool QgsEffectStack::readProperties( const QDomElement &element )
     return false;
   }
 
-  mEnabled = ( element.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
+  mEnabled = ( element.attribute( u"enabled"_s, u"0"_s ) != "0"_L1 );
 
   clearStack();
 

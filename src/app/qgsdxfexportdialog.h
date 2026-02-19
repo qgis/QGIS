@@ -19,19 +19,23 @@
 #define QGSDXFEXPORTDIALOG_H
 
 #include "ui_qgsdxfexportdialogbase.h"
+
+#include "qgsdxfexport.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeview.h"
-#include "qgsdxfexport.h"
-#include "qgssettingstree.h"
-#include "qgssettingsentryimpl.h"
-#include "qgsxmlutils.h"
-#include "qgsvectorlayerref.h"
 #include "qgsmessagebar.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
+#include "qgsvectorlayerref.h"
+#include "qgsxmlutils.h"
 
+#include <QItemDelegate>
 #include <QList>
 #include <QPair>
 #include <QSet>
-#include <QItemDelegate>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsLayerTreeGroup;
 class QgsLayerTreeNode;
@@ -104,8 +108,8 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
 {
     Q_OBJECT
   public:
-    static inline QgsSettingsTreeNode *sTreeAppDdxf = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "dxf" ) );
-    static const inline QgsSettingsEntryString *settingsDxfLastSettingsDir = new QgsSettingsEntryString( QStringLiteral( "last-settings-dir" ), sTreeAppDdxf, QDir::homePath() );
+    static inline QgsSettingsTreeNode *sTreeAppDdxf = QgsSettingsTree::sTreeApp->createChildNode( u"dxf"_s );
+    static const inline QgsSettingsEntryString *settingsDxfLastSettingsDir = new QgsSettingsEntryString( u"last-settings-dir"_s, sTreeAppDdxf, QDir::homePath() );
 
     QgsDxfExportDialog( QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
     ~QgsDxfExportDialog() override;

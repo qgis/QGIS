@@ -12,16 +12,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgsmeshlayer.h"
-#include "qgsmeshdataprovider.h"
-#include "qgsmeshcalculatordialog.h"
 #include "qgsfeedback.h"
+#include "qgsmeshcalculatordialog.h"
+#include "qgsmeshdataprovider.h"
+#include "qgsmeshlayer.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 
+#include <QString>
 #include <QTemporaryFile>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup UnitTests
@@ -57,7 +60,7 @@ void TestQgsMeshCalculatorDialog::initTestCase()
   QgsApplication::initQgis();
   mQgisApp = new QgisApp();
 
-  const QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/" );
+  const QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + u"/mesh/"_s;
   const QString uri( testDataDir + "/quad_and_triangle.2dm" );
   mpMeshLayer = new QgsMeshLayer( uri, "Triangle and Quad MDAL", "mdal" );
   mpMeshLayer->dataProvider()->addDataset( testDataDir + "/quad_and_triangle_vertex_scalar.dat" );
@@ -90,13 +93,13 @@ void TestQgsMeshCalculatorDialog::testCalc()
   const int groupCount = mpMeshLayer->dataProvider()->datasetGroupCount();
 
   QTemporaryFile tmpFile;
-  tmpFile.open(); // fileName is not available until open
+  QVERIFY( tmpFile.open() ); // fileName is not available until open
   const QString tmpName = tmpFile.fileName();
   tmpFile.close();
 
   // this next part is fragile, and may need to be modified if the dialog changes:
   dialog->mOutputDatasetFileWidget->setFilePath( tmpName );
-  dialog->mExpressionTextEdit->setText( QStringLiteral( "\"VertexScalarDataset\" * 2 " ) );
+  dialog->mExpressionTextEdit->setText( u"\"VertexScalarDataset\" * 2 "_s );
   dialog->accept();
   std::unique_ptr<QgsMeshCalculator> calculator = dialog->calculator();
 

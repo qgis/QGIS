@@ -23,23 +23,28 @@
  ***************************************************************************/
 
 #include "qgsalgorithmrasterize.h"
-#include "qgsprocessingparameters.h"
-#include "qgsprovidermetadata.h"
-#include "qgsmaplayerutils.h"
-#include "qgsmapthemecollection.h"
-#include "qgsrasterfilewriter.h"
-#include "qgsmaprenderercustompainterjob.h"
-#include "gdal.h"
+
+#include <gdal.h>
+
 #include "qgsgdalutils.h"
 #include "qgslayertree.h"
+#include "qgsmaplayerutils.h"
+#include "qgsmaprenderercustompainterjob.h"
+#include "qgsmapthemecollection.h"
+#include "qgsprocessingparameters.h"
+#include "qgsprovidermetadata.h"
+#include "qgsrasterfilewriter.h"
 
-#include <QtConcurrent>
+#include <QString>
+#include <QtConcurrentRun>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
 QString QgsRasterizeAlgorithm::name() const
 {
-  return QStringLiteral( "rasterize" );
+  return u"rasterize"_s;
 }
 
 QString QgsRasterizeAlgorithm::displayName() const
@@ -64,17 +69,17 @@ QString QgsRasterizeAlgorithm::group() const
 
 QString QgsRasterizeAlgorithm::groupId() const
 {
-  return QStringLiteral( "rastertools" );
+  return u"rastertools"_s;
 }
 
 void QgsRasterizeAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterExtent(
-    QStringLiteral( "EXTENT" ),
+    u"EXTENT"_s,
     QObject::tr( "Minimum extent to render" )
   ) );
   addParameter( new QgsProcessingParameterNumber(
-    QStringLiteral( "EXTENT_BUFFER" ),
+    u"EXTENT_BUFFER"_s,
     QObject::tr( "Buffer around tiles in map units" ),
     Qgis::ProcessingNumberParameterType::Double,
     0,
@@ -82,7 +87,7 @@ void QgsRasterizeAlgorithm::initAlgorithm( const QVariantMap & )
     0
   ) );
   addParameter( new QgsProcessingParameterNumber(
-    QStringLiteral( "TILE_SIZE" ),
+    u"TILE_SIZE"_s,
     QObject::tr( "Tile size" ),
     Qgis::ProcessingNumberParameterType::Integer,
     1024,
@@ -90,7 +95,7 @@ void QgsRasterizeAlgorithm::initAlgorithm( const QVariantMap & )
     64
   ) );
   addParameter( new QgsProcessingParameterNumber(
-    QStringLiteral( "MAP_UNITS_PER_PIXEL" ),
+    u"MAP_UNITS_PER_PIXEL"_s,
     QObject::tr( "Map units per pixel" ),
     Qgis::ProcessingNumberParameterType::Double,
     100,
@@ -98,26 +103,26 @@ void QgsRasterizeAlgorithm::initAlgorithm( const QVariantMap & )
     0
   ) );
   addParameter( new QgsProcessingParameterBoolean(
-    QStringLiteral( "MAKE_BACKGROUND_TRANSPARENT" ),
+    u"MAKE_BACKGROUND_TRANSPARENT"_s,
     QObject::tr( "Make background transparent" ),
     false
   ) );
 
   addParameter( new QgsProcessingParameterMapTheme(
-    QStringLiteral( "MAP_THEME" ),
+    u"MAP_THEME"_s,
     QObject::tr( "Map theme to render" ),
     QVariant(), true
   ) );
 
   addParameter( new QgsProcessingParameterMultipleLayers(
-    QStringLiteral( "LAYERS" ),
+    u"LAYERS"_s,
     QObject::tr( "Layers to render" ),
     Qgis::ProcessingSourceType::MapLayer,
     QVariant(),
     true
   ) );
   addParameter( new QgsProcessingParameterRasterDestination(
-    QStringLiteral( "OUTPUT" ),
+    u"OUTPUT"_s,
     QObject::tr( "Output layer" )
   ) );
 }
@@ -145,12 +150,20 @@ QgsRasterizeAlgorithm *QgsRasterizeAlgorithm::createInstance() const
 QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   // Note: MAP_THEME and LAYERS are handled and cloned in prepareAlgorithm
-  const QgsRectangle extent { parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, mCrs ) };
-  const int tileSize { parameterAsInt( parameters, QStringLiteral( "TILE_SIZE" ), context ) };
-  const bool transparent { parameterAsBool( parameters, QStringLiteral( "MAKE_BACKGROUND_TRANSPARENT" ), context ) };
-  const double mapUnitsPerPixel { parameterAsDouble( parameters, QStringLiteral( "MAP_UNITS_PER_PIXEL" ), context ) };
-  const double extentBuffer { parameterAsDouble( parameters, QStringLiteral( "EXTENT_BUFFER" ), context ) };
-  const QString outputLayerFileName { parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context ) };
+  const QgsRectangle extent { parameterAsExtent( parameters, u"EXTENT"_s, context, mCrs ) };
+  const int tileSize { parameterAsInt( parameters, u"TILE_SIZE"_s, context ) };
+  if ( tileSize <= 0 )
+  {
+    throw QgsProcessingException( QObject::tr( "Tile size must be > 0" ) );
+  }
+  const bool transparent { parameterAsBool( parameters, u"MAKE_BACKGROUND_TRANSPARENT"_s, context ) };
+  const double mapUnitsPerPixel { parameterAsDouble( parameters, u"MAP_UNITS_PER_PIXEL"_s, context ) };
+  if ( mapUnitsPerPixel <= 0 )
+  {
+    throw QgsProcessingException( QObject::tr( "Map units per pixel must be > 0" ) );
+  }
+  const double extentBuffer { parameterAsDouble( parameters, u"EXTENT_BUFFER"_s, context ) };
+  const QString outputLayerFileName { parameterAsOutputLayer( parameters, u"OUTPUT"_s, context ) };
 
   int xTileCount { static_cast<int>( ceil( extent.width() / mapUnitsPerPixel / tileSize ) ) };
   int yTileCount { static_cast<int>( ceil( extent.height() / mapUnitsPerPixel / tileSize ) ) };
@@ -200,12 +213,12 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
           const int nbTilesHeight = std::ceil( extentLayer.height() / resolutions.at( i ) / 256 );
           totalTiles = static_cast<int64_t>( nbTilesWidth ) * nbTilesHeight;
         }
-        feedback->pushInfo( QStringLiteral( "%1" ).arg( totalTiles ) );
+        feedback->pushInfo( u"%1"_s.arg( totalTiles ) );
 
         if ( totalTiles > MAXIMUM_OPENSTREETMAP_TILES_FETCH )
         {
           // Prevent bulk downloading of tiles from openstreetmap.org as per OSMF tile usage policy
-          feedback->pushFormattedMessage( QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" ).arg( rasterLayer->name(), QStringLiteral( "<a href=\"https://operations.osmfoundation.org/policies/tiles/\">" ), QStringLiteral( "</a>" ) ), QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" ).arg( rasterLayer->name(), QString(), QString() ) );
+          feedback->pushFormattedMessage( QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" ).arg( rasterLayer->name(), u"<a href=\"https://operations.osmfoundation.org/policies/tiles/\">"_s, u"</a>"_s ), QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" ).arg( rasterLayer->name(), QString(), QString() ) );
 
           layer->deleteLater();
           std::vector<std::unique_ptr<QgsMapLayer>>::iterator position = std::find( mMapLayers.begin(), mMapLayers.end(), layer );
@@ -218,7 +231,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
     }
   }
 
-  const QString driverName { QgsRasterFileWriter::driverForExtension( QFileInfo( outputLayerFileName ).suffix() ) };
+  const QString driverName = parameterAsOutputRasterFormat( parameters, u"OUTPUT"_s, context );
   if ( driverName.isEmpty() )
   {
     throw QgsProcessingException( QObject::tr( "Invalid output raster format" ) );
@@ -235,6 +248,13 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
   {
     throw QgsProcessingException( QObject::tr( "Error creating GDAL output layer" ) );
   }
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+  const bool hasReportsDuringClose = GDALDatasetGetCloseReportsProgress( hOutputDataset.get() );
+  const double maxProgressDuringBlockWriting = hasReportsDuringClose ? 50.0 : 100.0;
+#else
+  constexpr double maxProgressDuringBlockWriting = 100.0;
+#endif
 
   GDALSetProjection( hOutputDataset.get(), mCrs.toWkt( Qgis::CrsWktVariant::PreferredGdal ).toLatin1().constData() );
   double geoTransform[6];
@@ -320,7 +340,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
       QMutexLocker locker( &rasterWriteLocker );
       err = GDALDatasetRasterIO( hOutputDataset.get(), GF_Write, xOffset, yOffset, tileSize, tileSize, buffer.get(), tileSize, tileSize, GDT_Byte, nBands, nullptr, 0, 0, 0 );
       rendered++;
-      feedback->setProgress( static_cast<double>( rendered ) / numTiles * 100.0 );
+      feedback->setProgress( static_cast<double>( rendered ) / numTiles * maxProgressDuringBlockWriting );
     }
     if ( err != CE_None )
     {
@@ -349,7 +369,23 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
     f.waitForFinished();
   }
 
-  return { { QStringLiteral( "OUTPUT" ), outputLayerFileName } };
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+  if ( hasReportsDuringClose )
+  {
+    QgsGdalProgressAdapter progress( feedback, maxProgressDuringBlockWriting );
+    if ( GDALDatasetRunCloseWithoutDestroyingEx(
+           hOutputDataset.get(), QgsGdalProgressAdapter::progressCallback, &progress
+         )
+         != CE_None )
+    {
+      if ( feedback->isCanceled() )
+        return {};
+      throw QgsProcessingException( QObject::tr( "Error writing output raster" ) );
+    }
+  }
+#endif
+
+  return { { u"OUTPUT"_s, outputLayerFileName } };
 }
 
 
@@ -357,8 +393,8 @@ bool QgsRasterizeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
 {
   Q_UNUSED( feedback )
   // Retrieve and clone layers
-  const QString mapTheme { parameterAsString( parameters, QStringLiteral( "MAP_THEME" ), context ) };
-  const QList<QgsMapLayer *> mapLayers { parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context ) };
+  const QString mapTheme { parameterAsString( parameters, u"MAP_THEME"_s, context ) };
+  const QList<QgsMapLayer *> mapLayers { parameterAsLayerList( parameters, u"LAYERS"_s, context ) };
   if ( !mapTheme.isEmpty() && context.project()->mapThemeCollection()->hasMapTheme( mapTheme ) )
   {
     const auto constLayers { context.project()->mapThemeCollection()->mapThemeVisibleLayers( mapTheme ) };
@@ -395,11 +431,11 @@ bool QgsRasterizeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
 
   mCrs = context.project()->crs();
 
-  int red = context.project()->readNumEntry( QStringLiteral( "Gui" ), "/CanvasColorRedPart", 255 );
-  int green = context.project()->readNumEntry( QStringLiteral( "Gui" ), "/CanvasColorGreenPart", 255 );
-  int blue = context.project()->readNumEntry( QStringLiteral( "Gui" ), "/CanvasColorBluePart", 255 );
+  int red = context.project()->readNumEntry( u"Gui"_s, "/CanvasColorRedPart", 255 );
+  int green = context.project()->readNumEntry( u"Gui"_s, "/CanvasColorGreenPart", 255 );
+  int blue = context.project()->readNumEntry( u"Gui"_s, "/CanvasColorBluePart", 255 );
 
-  const bool transparent { parameterAsBool( parameters, QStringLiteral( "MAKE_BACKGROUND_TRANSPARENT" ), context ) };
+  const bool transparent { parameterAsBool( parameters, u"MAKE_BACKGROUND_TRANSPARENT"_s, context ) };
   QColor bgColor;
   if ( transparent )
   {

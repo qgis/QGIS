@@ -20,16 +20,17 @@
 #include "qgis_core.h"
 #include "qgsgrouplayer.h"
 #include "qgslayoutitem.h"
+#include "qgslayoutitemmapgrid.h"
+#include "qgslayoutitemmapoverview.h"
 #include "qgslayoutitemregistry.h"
 #include "qgsmaplayerref.h"
 #include "qgsmaprenderercustompainterjob.h"
-#include "qgslayoutitemmapgrid.h"
-#include "qgslayoutitemmapoverview.h"
 #include "qgsmaprendererstagedrenderjob.h"
 #include "qgstemporalrangeobject.h"
 
 class QgsAnnotation;
 class QgsRenderedFeatureHandlerInterface;
+class QgsGroupedFeatureFilterProvider;
 
 /**
  * \ingroup core
@@ -89,6 +90,22 @@ class CORE_EXPORT QgsLayoutItemMapAtlasClippingSettings : public QObject
      * \see forceLabelsInsideFeature()
      */
     void setForceLabelsInsideFeature( bool forceInside );
+
+    /**
+     * Returns TRUE if the map item shape will be clipped to the atlas feature geometry.
+     *
+     * \see setClipItemShape()
+     * \since QGIS 4.0
+     */
+    bool clipItemShape() const;
+
+    /**
+     * Sets whether the map item shape will be clipped to the atlas feature geometry.
+     *
+     * \see clipItemShape()
+     * \since QGIS 4.0
+     */
+    void setClipItemShape( bool clipItemShape );
 
     /**
      * Returns TRUE if clipping should be restricted to a subset of layers.
@@ -158,6 +175,7 @@ class CORE_EXPORT QgsLayoutItemMapAtlasClippingSettings : public QObject
     QList< QgsMapLayerRef > mLayersToClip;
     QgsMapClippingRegion::FeatureClippingType mFeatureClippingType = QgsMapClippingRegion::FeatureClippingType::ClipPainterOnly;
     bool mForceLabelsInsideFeature = false;
+    bool mClipItemShape = false;
 };
 
 
@@ -320,6 +338,13 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
     Q_OBJECT
 
   public:
+
+    /**
+     * Settings entry - Whether to force rasterized clipping masks, regardless of output format.
+     *
+     * \since QGIS 4.0
+     */
+    static const QgsSettingsEntryBool *settingForceRasterMasks SIP_SKIP;
 
     /**
      * Scaling modes used for the serial rendering (atlas)
@@ -768,8 +793,10 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
     /**
      * Returns a list of the layers which will be rendered within this map item, considering
      * any locked layers, linked map theme, and data defined settings.
+     * \param context the expression context
+     * \param includeInvalidLayers include invalid layers in the maplayer list
      */
-    QList<QgsMapLayer *> layersToRender( const QgsExpressionContext *context = nullptr ) const;
+    QList<QgsMapLayer *> layersToRender( const QgsExpressionContext *context = nullptr, bool includeInvalidLayers = false ) const;
 
     /**
      * Sets the specified layout \a item as a "label blocking item" for this map.
@@ -1226,6 +1253,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
     QgsLayoutItemMapAtlasClippingSettings *mAtlasClippingSettings = nullptr;
     QgsLayoutItemMapItemClipPathSettings *mItemClippingSettings = nullptr;
 
+    std::unique_ptr<QgsGroupedFeatureFilterProvider> mAtlasFeatureFilterProvider;
+
     /**
      * Refresh the map's extents, considering data defined extent, scale and rotation
      * \param context expression context for evaluating data defined map parameters
@@ -1244,6 +1273,11 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
      * Key is the original layer id, value is the cloned group
      */
     std::map<QString, std::unique_ptr<QgsGroupLayer>> mGroupLayers;
+
+    /**
+     * Return TRUE if the map item has a custom frame path.
+     */
+    bool hasCustomFramePath() const;
 
     friend class QgsLayoutItemMapGrid;
     friend class QgsLayoutItemMapOverview;

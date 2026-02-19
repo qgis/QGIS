@@ -16,12 +16,12 @@
 #ifndef QGSATTRIBUTETABLEVIEW_H
 #define QGSATTRIBUTETABLEVIEW_H
 
-#include <QAction>
+#include "qgis_gui.h"
+#include "qgsattributetableconfig.h"
 #include "qgsfeatureid.h"
 #include "qgstableview.h"
 
-#include "qgis_gui.h"
-#include "qgsattributetableconfig.h"
+#include <QAction>
 
 class QgsAttributeTableDelegate;
 class QgsAttributeTableFilterModel;
@@ -179,6 +179,13 @@ class GUI_EXPORT QgsAttributeTableView : public QgsTableView
      * \deprecated QGIS 3.40. No longer used.
      */
     Q_DECL_DEPRECATED void finished() SIP_DEPRECATED;
+
+    /**
+     * Emitted when a row header is double-clicked.
+     * \param fid the feature ID of the double-clicked row.
+     * \since QGIS 4.0
+     */
+    void rowHeaderDoubleClicked( QgsFeatureId fid );
 
   public slots:
     void repaintRequested( const QModelIndexList &indexes );

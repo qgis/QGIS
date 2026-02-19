@@ -17,13 +17,14 @@
 #ifndef QGSBOOKMARKS_H
 #define QGSBOOKMARKS_H
 
-#include <QSqlTableModel>
-#include <QSortFilterProxyModel>
-#include <QStyledItemDelegate>
-
 #include "ui_qgsbookmarksbase.h"
-#include "qgsdockwidget.h"
+
 #include "qgis_app.h"
+#include "qgsdockwidget.h"
+
+#include <QSortFilterProxyModel>
+#include <QSqlTableModel>
+#include <QStyledItemDelegate>
 
 class QgsBookmark;
 class QgsBookmarkManager;

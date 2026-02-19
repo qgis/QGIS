@@ -14,33 +14,37 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "limits"
+#include <limits>
+#include <memory>
 
-#include "qgstest.h"
-#include "qgsprocessingregistry.h"
-#include "qgsprocessingprovider.h"
-#include "qgsprocessingalgorithm.h"
-#include "qgsprocessingcontext.h"
-#include "qgsnativealgorithms.h"
-#include "qgsvectorlayer.h"
-#include "qgsrasteranalysisutils.cpp"
-#include "qgsprintlayout.h"
-#include "qgslayertree.h"
-#include "qgslayoutmanager.h"
-#include "qgslayoutitemmap.h"
-#include "qgspallabeling.h"
-#include "qgsfontutils.h"
-#include "qgsvectorlayerlabeling.h"
-#include "qgsmeshlayer.h"
 #include "qgsalgorithmgpsbabeltools.h"
 #include "qgsannotationlayer.h"
 #include "qgsannotationmarkeritem.h"
-#include "qgstextformat.h"
-#include "qgsreferencedgeometry.h"
 #include "qgsdxfexport.h"
-#include "qgssinglesymbolrenderer.h"
+#include "qgsfontutils.h"
+#include "qgslayertree.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutmanager.h"
 #include "qgslinesymbol.h"
+#include "qgsmeshlayer.h"
+#include "qgsnativealgorithms.h"
+#include "qgspallabeling.h"
+#include "qgsprintlayout.h"
+#include "qgsprocessingalgorithm.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingprovider.h"
+#include "qgsprocessingregistry.h"
+#include "qgsreferencedgeometry.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgstest.h"
+#include "qgstextformat.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerlabeling.h"
 
+#include <QString>
+#include <qgsrasteranalysisutils.cpp>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsProcessingAlgsPt2 : public QgsTest
 {
@@ -48,8 +52,10 @@ class TestQgsProcessingAlgsPt2 : public QgsTest
 
   public:
     TestQgsProcessingAlgsPt2()
-      : QgsTest( QStringLiteral( "Processing Algorithms Pt 2" ), QStringLiteral( "processing_algorithm" ) )
-    {}
+      : QgsTest( u"Processing Algorithms Pt 2"_s, u"processing_algorithm"_s )
+    {
+      QgsFontUtils::loadStandardTestFonts( { u"Bold"_s } );
+    }
 
   private:
     /**
@@ -139,18 +145,18 @@ QgsFeature TestQgsProcessingAlgsPt2::runForFeature( const std::unique_ptr<QgsPro
   QgsProcessingFeedback feedback;
   context->setFeedback( &feedback );
 
-  auto inputLayer = std::make_unique<QgsVectorLayer>( layerType, QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
+  auto inputLayer = std::make_unique<QgsVectorLayer>( layerType, u"layer"_s, u"memory"_s );
   inputLayer->dataProvider()->addFeature( feature );
 
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue<QgsMapLayer *>( inputLayer.get() ) );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue<QgsMapLayer *>( inputLayer.get() ) );
 
-  parameters.insert( QStringLiteral( "OUTPUT" ), QStringLiteral( "memory:" ) );
+  parameters.insert( u"OUTPUT"_s, u"memory:"_s );
 
   bool ok = false;
   const auto res = alg->run( parameters, *context, &feedback, &ok );
   QgsFeature result;
 
-  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( res.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( res.value( u"OUTPUT"_s ).toString() ) ) );
   outputLayer->getFeatures().nextFeature( result );
 
   return result;
@@ -162,9 +168,9 @@ void TestQgsProcessingAlgsPt2::initTestCase()
   QgsApplication::initQgis();
 
   // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   QgsApplication::processingRegistry()->addProvider( new QgsNativeAlgorithms( QgsApplication::processingRegistry() ) );
 
@@ -173,7 +179,7 @@ void TestQgsProcessingAlgsPt2::initTestCase()
   const QString pointsFileName = dataDir + "/points.shp";
   const QFileInfo pointFileInfo( pointsFileName );
   mPointLayerPath = pointFileInfo.filePath();
-  mPointsLayer = new QgsVectorLayer( mPointLayerPath, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  mPointsLayer = new QgsVectorLayer( mPointLayerPath, u"points"_s, u"ogr"_s );
   QVERIFY( mPointsLayer->isValid() );
   // Register the layer with the registry
   QgsProject::instance()->addMapLayers(
@@ -185,7 +191,7 @@ void TestQgsProcessingAlgsPt2::initTestCase()
   //
   const QString polysFileName = dataDir + "/polys.shp";
   const QFileInfo polyFileInfo( polysFileName );
-  mPolygonLayer = new QgsVectorLayer( polyFileInfo.filePath(), QStringLiteral( "polygons" ), QStringLiteral( "ogr" ) );
+  mPolygonLayer = new QgsVectorLayer( polyFileInfo.filePath(), u"polygons"_s, u"ogr"_s );
   // Register the layer with the registry
   QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mPolygonLayer
@@ -194,8 +200,8 @@ void TestQgsProcessingAlgsPt2::initTestCase()
 
   //add a mesh layer
   const QString uri( dataDir + "/mesh/quad_and_triangle.2dm" );
-  const QString meshLayerName = QStringLiteral( "mesh layer" );
-  QgsMeshLayer *meshLayer = new QgsMeshLayer( uri, meshLayerName, QStringLiteral( "mdal" ) );
+  const QString meshLayerName = u"mesh layer"_s;
+  QgsMeshLayer *meshLayer = new QgsMeshLayer( uri, meshLayerName, u"mdal"_s );
   // Register the layer with the registry
   QgsProject::instance()->addMapLayer( meshLayer );
   QVERIFY( meshLayer->isValid() );
@@ -207,8 +213,8 @@ void TestQgsProcessingAlgsPt2::initTestCase()
 
   //add a 1D mesh layer
   const QString uri1d( dataDir + "/mesh/lines.2dm" );
-  const QString meshLayer1dName = QStringLiteral( "mesh layer 1D" );
-  QgsMeshLayer *meshLayer1d = new QgsMeshLayer( uri1d, meshLayer1dName, QStringLiteral( "mdal" ) );
+  const QString meshLayer1dName = u"mesh layer 1D"_s;
+  QgsMeshLayer *meshLayer1d = new QgsMeshLayer( uri1d, meshLayer1dName, u"mdal"_s );
   // Register the layer with the registry
   QgsProject::instance()->addMapLayer( meshLayer1d );
   QVERIFY( meshLayer1d->isValid() );
@@ -224,7 +230,7 @@ void TestQgsProcessingAlgsPt2::cleanupTestCase()
 
 QVariantMap pkgAlg( const QStringList &layers, const QString &outputGpkg, bool overwrite, bool selectedFeaturesOnly, bool saveMetadata, bool *ok )
 {
-  const QgsProcessingAlgorithm *package( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:package" ) ) );
+  const QgsProcessingAlgorithm *package( QgsApplication::processingRegistry()->algorithmById( u"native:package"_s ) );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -232,11 +238,11 @@ QVariantMap pkgAlg( const QStringList &layers, const QString &outputGpkg, bool o
   QgsProcessingFeedback feedback;
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "LAYERS" ), layers );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputGpkg );
-  parameters.insert( QStringLiteral( "OVERWRITE" ), overwrite );
-  parameters.insert( QStringLiteral( "SELECTED_FEATURES_ONLY" ), selectedFeaturesOnly );
-  parameters.insert( QStringLiteral( "SAVE_METADATA" ), saveMetadata );
+  parameters.insert( u"LAYERS"_s, layers );
+  parameters.insert( u"OUTPUT"_s, outputGpkg );
+  parameters.insert( u"OVERWRITE"_s, overwrite );
+  parameters.insert( u"SELECTED_FEATURES_ONLY"_s, selectedFeaturesOnly );
+  parameters.insert( u"SAVE_METADATA"_s, saveMetadata );
   return package->run( parameters, *context, &feedback, ok );
 }
 
@@ -245,10 +251,10 @@ void TestQgsProcessingAlgsPt2::exportLayoutPdf()
   QgsProject p;
   QgsPrintLayout *layout = new QgsPrintLayout( &p );
   layout->initializeDefaults();
-  layout->setName( QStringLiteral( "my layout" ) );
+  layout->setName( u"my layout"_s );
   p.layoutManager()->addLayout( layout );
 
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:printlayouttopdf" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:printlayouttopdf"_s ) );
   QVERIFY( alg != nullptr );
 
   const QString outputPdf = QDir::tempPath() + "/my_layout.pdf";
@@ -256,8 +262,8 @@ void TestQgsProcessingAlgsPt2::exportLayoutPdf()
     QFile::remove( outputPdf );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "LAYOUT" ), QStringLiteral( "missing" ) );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputPdf );
+  parameters.insert( u"LAYOUT"_s, u"missing"_s );
+  parameters.insert( u"OUTPUT"_s, outputPdf );
 
   bool ok = false;
   auto context = std::make_unique<QgsProcessingContext>();
@@ -269,7 +275,7 @@ void TestQgsProcessingAlgsPt2::exportLayoutPdf()
   QVERIFY( !ok );
   QVERIFY( !QFile::exists( outputPdf ) );
 
-  parameters.insert( QStringLiteral( "LAYOUT" ), QStringLiteral( "my layout" ) );
+  parameters.insert( u"LAYOUT"_s, u"my layout"_s );
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
@@ -281,7 +287,7 @@ void TestQgsProcessingAlgsPt2::exportLayoutPng()
   QgsProject p;
   QgsPrintLayout *layout = new QgsPrintLayout( &p );
   layout->initializeDefaults();
-  layout->setName( QStringLiteral( "my layout" ) );
+  layout->setName( u"my layout"_s );
 
   QgsLayoutItemMap *map = new QgsLayoutItemMap( layout );
   map->setBackgroundEnabled( false );
@@ -292,7 +298,7 @@ void TestQgsProcessingAlgsPt2::exportLayoutPng()
 
   p.layoutManager()->addLayout( layout );
 
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:printlayouttoimage" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:printlayouttoimage"_s ) );
   QVERIFY( alg != nullptr );
 
   QString outputPng = QDir::tempPath() + "/my_layout.png";
@@ -300,8 +306,8 @@ void TestQgsProcessingAlgsPt2::exportLayoutPng()
     QFile::remove( outputPng );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "LAYOUT" ), QStringLiteral( "missing" ) );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputPng );
+  parameters.insert( u"LAYOUT"_s, u"missing"_s );
+  parameters.insert( u"OUTPUT"_s, outputPng );
 
   bool ok = false;
   auto context = std::make_unique<QgsProcessingContext>();
@@ -313,7 +319,7 @@ void TestQgsProcessingAlgsPt2::exportLayoutPng()
   QVERIFY( !ok );
   QVERIFY( !QFile::exists( outputPng ) );
 
-  parameters.insert( QStringLiteral( "LAYOUT" ), QStringLiteral( "my layout" ) );
+  parameters.insert( u"LAYOUT"_s, u"my layout"_s );
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
   QVERIFY( QFile::exists( outputPng ) );
@@ -322,9 +328,9 @@ void TestQgsProcessingAlgsPt2::exportLayoutPng()
   if ( QFile::exists( outputPng ) )
     QFile::remove( outputPng );
 
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputPng );
-  parameters.insert( QStringLiteral( "LAYERS" ), QVariantList() << QVariant::fromValue( mPointsLayer ) );
-  parameters.insert( QStringLiteral( "DPI" ), 96 );
+  parameters.insert( u"OUTPUT"_s, outputPng );
+  parameters.insert( u"LAYERS"_s, QVariantList() << QVariant::fromValue( mPointsLayer ) );
+  parameters.insert( u"DPI"_s, 96 );
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
   QVERIFY( QFile::exists( outputPng ) );
@@ -339,7 +345,7 @@ void TestQgsProcessingAlgsPt2::exportAtlasLayoutPdf()
 
   QgsPrintLayout *layout = new QgsPrintLayout( &p );
   layout->initializeDefaults();
-  layout->setName( QStringLiteral( "my layout" ) );
+  layout->setName( u"my layout"_s );
 
   QgsLayoutItemMap *map = new QgsLayoutItemMap( layout );
   map->setBackgroundEnabled( false );
@@ -350,7 +356,7 @@ void TestQgsProcessingAlgsPt2::exportAtlasLayoutPdf()
 
   p.layoutManager()->addLayout( layout );
 
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:atlaslayouttopdf" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:atlaslayouttopdf"_s ) );
   QVERIFY( alg != nullptr );
 
   const QString outputPdf = QDir::tempPath() + "/my_atlas_layout.pdf";
@@ -358,10 +364,10 @@ void TestQgsProcessingAlgsPt2::exportAtlasLayoutPdf()
     QFile::remove( outputPdf );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "LAYOUT" ), QStringLiteral( "my layout" ) );
-  parameters.insert( QStringLiteral( "COVERAGE_LAYER" ), QVariant::fromValue( polygonLayer ) );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputPdf );
-  parameters.insert( QStringLiteral( "DPI" ), 96 );
+  parameters.insert( u"LAYOUT"_s, u"my layout"_s );
+  parameters.insert( u"COVERAGE_LAYER"_s, QVariant::fromValue( polygonLayer ) );
+  parameters.insert( u"OUTPUT"_s, outputPdf );
+  parameters.insert( u"DPI"_s, 96 );
 
   bool ok = false;
   auto context = std::make_unique<QgsProcessingContext>();
@@ -382,7 +388,7 @@ void TestQgsProcessingAlgsPt2::exportAtlasLayoutPdfMultiple()
 
   QgsPrintLayout *layout = new QgsPrintLayout( &p );
   layout->initializeDefaults();
-  layout->setName( QStringLiteral( "my layout" ) );
+  layout->setName( u"my layout"_s );
 
   QgsLayoutItemMap *map = new QgsLayoutItemMap( layout );
   map->setBackgroundEnabled( false );
@@ -393,7 +399,7 @@ void TestQgsProcessingAlgsPt2::exportAtlasLayoutPdfMultiple()
 
   p.layoutManager()->addLayout( layout );
 
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:atlaslayouttomultiplepdf" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:atlaslayouttomultiplepdf"_s ) );
   QVERIFY( alg != nullptr );
 
   const QString outputPdfDir = QDir::tempPath() + "/atlas_pdf";
@@ -403,10 +409,10 @@ void TestQgsProcessingAlgsPt2::exportAtlasLayoutPdfMultiple()
   QDir().mkdir( outputPdfDir );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "LAYOUT" ), QStringLiteral( "my layout" ) );
-  parameters.insert( QStringLiteral( "COVERAGE_LAYER" ), QVariant::fromValue( polygonLayer ) );
-  parameters.insert( QStringLiteral( "OUTPUT_FOLDER" ), outputPdfDir );
-  parameters.insert( QStringLiteral( "DPI" ), 96 );
+  parameters.insert( u"LAYOUT"_s, u"my layout"_s );
+  parameters.insert( u"COVERAGE_LAYER"_s, QVariant::fromValue( polygonLayer ) );
+  parameters.insert( u"OUTPUT_FOLDER"_s, outputPdfDir );
+  parameters.insert( u"DPI"_s, 96 );
 
   bool ok = false;
   auto context = std::make_unique<QgsProcessingContext>();
@@ -429,7 +435,7 @@ void TestQgsProcessingAlgsPt2::exportAtlasLayoutPng()
 
   QgsPrintLayout *layout = new QgsPrintLayout( &p );
   layout->initializeDefaults();
-  layout->setName( QStringLiteral( "my layout" ) );
+  layout->setName( u"my layout"_s );
 
   QgsLayoutItemMap *map = new QgsLayoutItemMap( layout );
   map->setBackgroundEnabled( false );
@@ -440,7 +446,7 @@ void TestQgsProcessingAlgsPt2::exportAtlasLayoutPng()
 
   p.layoutManager()->addLayout( layout );
 
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:atlaslayouttoimage" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:atlaslayouttoimage"_s ) );
   QVERIFY( alg != nullptr );
 
   const QDir tempDir( QDir::tempPath() );
@@ -453,11 +459,11 @@ void TestQgsProcessingAlgsPt2::exportAtlasLayoutPng()
   }
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "LAYOUT" ), QStringLiteral( "my layout" ) );
-  parameters.insert( QStringLiteral( "COVERAGE_LAYER" ), QVariant::fromValue( polygonLayer ) );
-  parameters.insert( QStringLiteral( "FOLDER" ), QString( QDir::tempPath() + "/my_atlas" ) );
-  parameters.insert( QStringLiteral( "FILENAME_EXPRESSION" ), QStringLiteral( "'export_'||@atlas_featurenumber" ) );
-  parameters.insert( QStringLiteral( "DPI" ), 96 );
+  parameters.insert( u"LAYOUT"_s, u"my layout"_s );
+  parameters.insert( u"COVERAGE_LAYER"_s, QVariant::fromValue( polygonLayer ) );
+  parameters.insert( u"FOLDER"_s, QString( QDir::tempPath() + "/my_atlas" ) );
+  parameters.insert( u"FILENAME_EXPRESSION"_s, u"'export_'||@atlas_featurenumber"_s );
+  parameters.insert( u"DPI"_s, 96 );
 
   bool ok = false;
   auto context = std::make_unique<QgsProcessingContext>();
@@ -471,8 +477,8 @@ void TestQgsProcessingAlgsPt2::exportAtlasLayoutPng()
   QVERIFY( QFile::exists( QDir::tempPath() + "/my_atlas/export_10.png" ) );
   QGSVERIFYIMAGECHECK( "export_atlas", "export_atlas", QDir::tempPath() + "/my_atlas/export_1.png", QString(), 500, QSize( 3, 3 ) );
 
-  parameters[QStringLiteral( "FILENAME_EXPRESSION" )] = QStringLiteral( "'custom_'||@atlas_featurenumber" );
-  parameters.insert( QStringLiteral( "LAYERS" ), QVariantList() << QVariant::fromValue( mPointsLayer ) );
+  parameters[u"FILENAME_EXPRESSION"_s] = u"'custom_'||@atlas_featurenumber"_s;
+  parameters.insert( u"LAYERS"_s, QVariantList() << QVariant::fromValue( mPointsLayer ) );
 
   ok = false;
   results.clear();
@@ -486,29 +492,29 @@ void TestQgsProcessingAlgsPt2::exportAtlasLayoutPng()
 
 void TestQgsProcessingAlgsPt2::tinMeshCreation()
 {
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:tinmeshcreation" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:tinmeshcreation"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantList inputLayers;
 
   QVariantMap pointLayer;
-  pointLayer[QStringLiteral( "source" )] = "points";
-  pointLayer[QStringLiteral( "type" )] = 0;
-  pointLayer[QStringLiteral( "attributeIndex" )] = mPointsLayer->fields().indexOf( "Importance" );
+  pointLayer[u"source"_s] = "points";
+  pointLayer[u"type"_s] = 0;
+  pointLayer[u"attributeIndex"_s] = mPointsLayer->fields().indexOf( "Importance" );
 
   inputLayers.append( pointLayer );
 
   QVariantMap polyLayer;
-  polyLayer[QStringLiteral( "source" )] = "polygons";
-  polyLayer[QStringLiteral( "type" )] = 2;
-  polyLayer[QStringLiteral( "attributeIndex" )] = mPolygonLayer->fields().indexOf( "Value" );
+  polyLayer[u"source"_s] = "polygons";
+  polyLayer[u"type"_s] = 2;
+  polyLayer[u"attributeIndex"_s] = mPolygonLayer->fields().indexOf( "Value" );
 
   inputLayers.append( polyLayer );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "SOURCE_DATA" ), inputLayers );
-  parameters.insert( QStringLiteral( "OUTPUT_MESH" ), QString( QDir::tempPath() + "/meshLayer.2dm" ) );
-  parameters.insert( QStringLiteral( "MESH_FORMAT" ), 0 );
+  parameters.insert( u"SOURCE_DATA"_s, inputLayers );
+  parameters.insert( u"OUTPUT_MESH"_s, QString( QDir::tempPath() + "/meshLayer.2dm" ) );
+  parameters.insert( u"MESH_FORMAT"_s, 0 );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -532,25 +538,25 @@ void TestQgsProcessingAlgsPt2::tinMeshCreation()
 
 void TestQgsProcessingAlgsPt2::exportMeshVertices()
 {
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:exportmeshvertices" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:exportmeshvertices"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), "mesh layer" );
+  parameters.insert( u"INPUT"_s, "mesh layer" );
 
   QVariantList datasetGroup;
   datasetGroup << 1 << 2;
-  parameters.insert( QStringLiteral( "DATASET_GROUPS" ), datasetGroup );
+  parameters.insert( u"DATASET_GROUPS"_s, datasetGroup );
 
   QVariantMap datasetTime;
-  datasetTime[QStringLiteral( "type" )] = QStringLiteral( "dataset-time-step" );
+  datasetTime[u"type"_s] = u"dataset-time-step"_s;
   QVariantList datasetIndex;
   datasetIndex << 1 << 1;
-  datasetTime[QStringLiteral( "value" )] = datasetIndex;
-  parameters.insert( QStringLiteral( "DATASET_TIME" ), datasetTime );
+  datasetTime[u"value"_s] = datasetIndex;
+  parameters.insert( u"DATASET_TIME"_s, datasetTime );
 
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "VECTOR_OPTION" ), 2 );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"VECTOR_OPTION"_s, 2 );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -560,22 +566,22 @@ void TestQgsProcessingAlgsPt2::exportMeshVertices()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QgsVectorLayer *resultLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QgsVectorLayer *resultLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) );
   QVERIFY( resultLayer );
   QVERIFY( resultLayer->isValid() );
   QVERIFY( resultLayer->geometryType() == Qgis::GeometryType::Point );
   QCOMPARE( resultLayer->featureCount(), 5l );
   QCOMPARE( resultLayer->fields().count(), 5 );
-  QCOMPARE( resultLayer->fields().at( 0 ).name(), QStringLiteral( "VertexScalarDataset" ) );
-  QCOMPARE( resultLayer->fields().at( 1 ).name(), QStringLiteral( "VertexVectorDataset_x" ) );
-  QCOMPARE( resultLayer->fields().at( 2 ).name(), QStringLiteral( "VertexVectorDataset_y" ) );
-  QCOMPARE( resultLayer->fields().at( 3 ).name(), QStringLiteral( "VertexVectorDataset_mag" ) );
-  QCOMPARE( resultLayer->fields().at( 4 ).name(), QStringLiteral( "VertexVectorDataset_dir" ) );
+  QCOMPARE( resultLayer->fields().at( 0 ).name(), u"VertexScalarDataset"_s );
+  QCOMPARE( resultLayer->fields().at( 1 ).name(), u"VertexVectorDataset_x"_s );
+  QCOMPARE( resultLayer->fields().at( 2 ).name(), u"VertexVectorDataset_y"_s );
+  QCOMPARE( resultLayer->fields().at( 3 ).name(), u"VertexVectorDataset_mag"_s );
+  QCOMPARE( resultLayer->fields().at( 4 ).name(), u"VertexVectorDataset_dir"_s );
 
   QgsFeatureIterator featIt = resultLayer->getFeatures();
   QgsFeature feat;
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "Point Z (1000 2000 20)" ), feat.geometry().asWkt() );
+  QCOMPARE( u"Point Z (1000 2000 20)"_s, feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toDouble(), 2.0 );
   QCOMPARE( feat.attributes().at( 1 ).toDouble(), 2.0 );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.0 );
@@ -583,28 +589,28 @@ void TestQgsProcessingAlgsPt2::exportMeshVertices()
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 45.0, 2 ) );
 
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "Point Z (2000 2000 30)" ), feat.geometry().asWkt() );
+  QCOMPARE( u"Point Z (2000 2000 30)"_s, feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toDouble(), 3.0 );
   QCOMPARE( feat.attributes().at( 1 ).toDouble(), 3.0 );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.0 );
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 3 ).toDouble(), 3.605, 2 ) );
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 56.3099, 2 ) );
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "Point Z (3000 2000 40)" ), feat.geometry().asWkt() );
+  QCOMPARE( u"Point Z (3000 2000 40)"_s, feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toDouble(), 4.0 );
   QCOMPARE( feat.attributes().at( 1 ).toDouble(), 4.0 );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 3.0 );
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 3 ).toDouble(), 5.0, 2 ) );
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 53.130, 2 ) );
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "Point Z (2000 3000 50)" ), feat.geometry().asWkt() );
+  QCOMPARE( u"Point Z (2000 3000 50)"_s, feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toDouble(), 3.0 );
   QCOMPARE( feat.attributes().at( 1 ).toDouble(), 3.0 );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 3.0 );
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 3 ).toDouble(), 4.242, 2 ) );
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 45, 2 ) );
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "Point Z (1000 3000 10)" ), feat.geometry().asWkt() );
+  QCOMPARE( u"Point Z (1000 3000 10)"_s, feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toDouble(), 2.0 );
   QCOMPARE( feat.attributes().at( 1 ).toDouble(), 2.0 );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), -1.0 );
@@ -614,25 +620,25 @@ void TestQgsProcessingAlgsPt2::exportMeshVertices()
 
 void TestQgsProcessingAlgsPt2::exportMeshFaces()
 {
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:exportmeshfaces" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:exportmeshfaces"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), "mesh layer" );
+  parameters.insert( u"INPUT"_s, "mesh layer" );
 
   QVariantList datasetGroup;
   datasetGroup << 3 << 4;
-  parameters.insert( QStringLiteral( "DATASET_GROUPS" ), datasetGroup );
+  parameters.insert( u"DATASET_GROUPS"_s, datasetGroup );
 
   QVariantMap datasetTime;
-  datasetTime[QStringLiteral( "type" )] = QStringLiteral( "dataset-time-step" );
+  datasetTime[u"type"_s] = u"dataset-time-step"_s;
   QVariantList datasetIndex;
   datasetIndex << 1 << 1;
-  datasetTime[QStringLiteral( "value" )] = datasetIndex;
-  parameters.insert( QStringLiteral( "DATASET_TIME" ), datasetTime );
+  datasetTime[u"value"_s] = datasetIndex;
+  parameters.insert( u"DATASET_TIME"_s, datasetTime );
 
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "VECTOR_OPTION" ), 2 );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"VECTOR_OPTION"_s, 2 );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -642,22 +648,22 @@ void TestQgsProcessingAlgsPt2::exportMeshFaces()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QgsVectorLayer *resultLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QgsVectorLayer *resultLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) );
   QVERIFY( resultLayer );
   QVERIFY( resultLayer->isValid() );
   QVERIFY( resultLayer->geometryType() == Qgis::GeometryType::Polygon );
   QCOMPARE( resultLayer->featureCount(), 2l );
   QCOMPARE( resultLayer->fields().count(), 5 );
-  QCOMPARE( resultLayer->fields().at( 0 ).name(), QStringLiteral( "FaceScalarDataset" ) );
-  QCOMPARE( resultLayer->fields().at( 1 ).name(), QStringLiteral( "FaceVectorDataset_x" ) );
-  QCOMPARE( resultLayer->fields().at( 2 ).name(), QStringLiteral( "FaceVectorDataset_y" ) );
-  QCOMPARE( resultLayer->fields().at( 3 ).name(), QStringLiteral( "FaceVectorDataset_mag" ) );
-  QCOMPARE( resultLayer->fields().at( 4 ).name(), QStringLiteral( "FaceVectorDataset_dir" ) );
+  QCOMPARE( resultLayer->fields().at( 0 ).name(), u"FaceScalarDataset"_s );
+  QCOMPARE( resultLayer->fields().at( 1 ).name(), u"FaceVectorDataset_x"_s );
+  QCOMPARE( resultLayer->fields().at( 2 ).name(), u"FaceVectorDataset_y"_s );
+  QCOMPARE( resultLayer->fields().at( 3 ).name(), u"FaceVectorDataset_mag"_s );
+  QCOMPARE( resultLayer->fields().at( 4 ).name(), u"FaceVectorDataset_dir"_s );
 
   QgsFeatureIterator featIt = resultLayer->getFeatures();
   QgsFeature feat;
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "Polygon Z ((1000 2000 20, 2000 2000 30, 2000 3000 50, 1000 3000 10, 1000 2000 20))" ), feat.geometry().asWkt() );
+  QCOMPARE( u"Polygon Z ((1000 2000 20, 2000 2000 30, 2000 3000 50, 1000 3000 10, 1000 2000 20))"_s, feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toDouble(), 2.0 );
   QCOMPARE( feat.attributes().at( 1 ).toDouble(), 2.0 );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.0 );
@@ -665,7 +671,7 @@ void TestQgsProcessingAlgsPt2::exportMeshFaces()
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 45.0, 2 ) );
 
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "Polygon Z ((2000 2000 30, 3000 2000 40, 2000 3000 50, 2000 2000 30))" ), feat.geometry().asWkt() );
+  QCOMPARE( u"Polygon Z ((2000 2000 30, 3000 2000 40, 2000 3000 50, 2000 2000 30))"_s, feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toDouble(), 3.0 );
   QCOMPARE( feat.attributes().at( 1 ).toDouble(), 3.0 );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 3.0 );
@@ -675,25 +681,25 @@ void TestQgsProcessingAlgsPt2::exportMeshFaces()
 
 void TestQgsProcessingAlgsPt2::exportMeshEdges()
 {
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:exportmeshedges" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:exportmeshedges"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), "mesh layer 1D" );
+  parameters.insert( u"INPUT"_s, "mesh layer 1D" );
 
   QVariantList datasetGroup;
   datasetGroup << 1 << 2;
-  parameters.insert( QStringLiteral( "DATASET_GROUPS" ), datasetGroup );
+  parameters.insert( u"DATASET_GROUPS"_s, datasetGroup );
 
   QVariantMap datasetTime;
-  datasetTime[QStringLiteral( "type" )] = QStringLiteral( "dataset-time-step" );
+  datasetTime[u"type"_s] = u"dataset-time-step"_s;
   QVariantList datasetIndex;
   datasetIndex << 1 << 1;
-  datasetTime[QStringLiteral( "value" )] = datasetIndex;
-  parameters.insert( QStringLiteral( "DATASET_TIME" ), datasetTime );
+  datasetTime[u"value"_s] = datasetIndex;
+  parameters.insert( u"DATASET_TIME"_s, datasetTime );
 
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "VECTOR_OPTION" ), 2 );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"VECTOR_OPTION"_s, 2 );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -703,22 +709,22 @@ void TestQgsProcessingAlgsPt2::exportMeshEdges()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QgsVectorLayer *resultLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QgsVectorLayer *resultLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) );
   QVERIFY( resultLayer );
   QVERIFY( resultLayer->isValid() );
   QVERIFY( resultLayer->geometryType() == Qgis::GeometryType::Line );
   QCOMPARE( resultLayer->featureCount(), 3l );
   QCOMPARE( resultLayer->fields().count(), 5 );
-  QCOMPARE( resultLayer->fields().at( 0 ).name(), QStringLiteral( "EdgeScalarDataset" ) );
-  QCOMPARE( resultLayer->fields().at( 1 ).name(), QStringLiteral( "EdgeVectorDataset_x" ) );
-  QCOMPARE( resultLayer->fields().at( 2 ).name(), QStringLiteral( "EdgeVectorDataset_y" ) );
-  QCOMPARE( resultLayer->fields().at( 3 ).name(), QStringLiteral( "EdgeVectorDataset_mag" ) );
-  QCOMPARE( resultLayer->fields().at( 4 ).name(), QStringLiteral( "EdgeVectorDataset_dir" ) );
+  QCOMPARE( resultLayer->fields().at( 0 ).name(), u"EdgeScalarDataset"_s );
+  QCOMPARE( resultLayer->fields().at( 1 ).name(), u"EdgeVectorDataset_x"_s );
+  QCOMPARE( resultLayer->fields().at( 2 ).name(), u"EdgeVectorDataset_y"_s );
+  QCOMPARE( resultLayer->fields().at( 3 ).name(), u"EdgeVectorDataset_mag"_s );
+  QCOMPARE( resultLayer->fields().at( 4 ).name(), u"EdgeVectorDataset_dir"_s );
 
   QgsFeatureIterator featIt = resultLayer->getFeatures();
   QgsFeature feat;
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "LineString Z (1000 2000 20, 2000 2000 30)" ), feat.geometry().asWkt() );
+  QCOMPARE( u"LineString Z (1000 2000 20, 2000 2000 30)"_s, feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toDouble(), 2.0 );
   QCOMPARE( feat.attributes().at( 1 ).toDouble(), 2.0 );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.0 );
@@ -726,7 +732,7 @@ void TestQgsProcessingAlgsPt2::exportMeshEdges()
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 45.0, 2 ) );
 
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "LineString Z (2000 2000 30, 3000 2000 40)" ), feat.geometry().asWkt() );
+  QCOMPARE( u"LineString Z (2000 2000 30, 3000 2000 40)"_s, feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toDouble(), 3.0 );
   QCOMPARE( feat.attributes().at( 1 ).toDouble(), 3.0 );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 3.0 );
@@ -734,7 +740,7 @@ void TestQgsProcessingAlgsPt2::exportMeshEdges()
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 45.0, 2 ) );
 
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "LineString Z (3000 2000 40, 2000 3000 50)" ), feat.geometry().asWkt() );
+  QCOMPARE( u"LineString Z (3000 2000 40, 2000 3000 50)"_s, feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toDouble(), 4.0 );
   QCOMPARE( feat.attributes().at( 1 ).toDouble(), 4.0 );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 4.0 );
@@ -744,31 +750,31 @@ void TestQgsProcessingAlgsPt2::exportMeshEdges()
 
 void TestQgsProcessingAlgsPt2::exportMeshOnGrid()
 {
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:exportmeshongrid" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:exportmeshongrid"_s ) );
   QVERIFY( alg != nullptr );
 
   const QString dataDir = QString( TEST_DATA_DIR ); //defined in CmakeLists.txt
   const QString meshUri( dataDir + "/mesh/trap_steady_05_3D.nc" );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), meshUri );
+  parameters.insert( u"INPUT"_s, meshUri );
 
   QVariantList datasetGroup;
   for ( int i = 0; i < 12; ++i )
     datasetGroup.append( i );
-  parameters.insert( QStringLiteral( "DATASET_GROUPS" ), datasetGroup );
+  parameters.insert( u"DATASET_GROUPS"_s, datasetGroup );
 
   QVariantMap datasetTime;
-  datasetTime[QStringLiteral( "type" )] = QStringLiteral( "dataset-time-step" );
+  datasetTime[u"type"_s] = u"dataset-time-step"_s;
   QVariantList datasetIndex;
   datasetIndex << 1 << 1;
-  datasetTime[QStringLiteral( "value" )] = datasetIndex;
-  parameters.insert( QStringLiteral( "DATASET_TIME" ), datasetTime );
+  datasetTime[u"value"_s] = datasetIndex;
+  parameters.insert( u"DATASET_TIME"_s, datasetTime );
 
-  parameters.insert( QStringLiteral( "GRID_SPACING" ), 25.0 );
+  parameters.insert( u"GRID_SPACING"_s, 25.0 );
 
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "VECTOR_OPTION" ), 2 );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"VECTOR_OPTION"_s, 2 );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -778,19 +784,19 @@ void TestQgsProcessingAlgsPt2::exportMeshOnGrid()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QgsVectorLayer *resultLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QgsVectorLayer *resultLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) );
   QVERIFY( resultLayer );
   QVERIFY( resultLayer->isValid() );
   QVERIFY( resultLayer->geometryType() == Qgis::GeometryType::Point );
   QCOMPARE( resultLayer->featureCount(), 205l );
   QCOMPARE( resultLayer->fields().count(), 21 );
   QStringList fieldsName;
-  fieldsName << QStringLiteral( "Bed Elevation" ) << QStringLiteral( "temperature" ) << QStringLiteral( "temperature/Maximums" )
-             << QStringLiteral( "temperature/Minimums" ) << QStringLiteral( "temperature/Time at Maximums" ) << QStringLiteral( "temperature/Time at Minimums" )
-             << QStringLiteral( "velocity_x" ) << QStringLiteral( "velocity_y" ) << QStringLiteral( "velocity_mag" ) << QStringLiteral( "velocity_dir" )
-             << QStringLiteral( "velocity/Maximums_x" ) << QStringLiteral( "velocity/Maximums_y" ) << QStringLiteral( "velocity/Maximums_mag" ) << QStringLiteral( "velocity/Maximums_dir" )
-             << QStringLiteral( "velocity/Minimums_x" ) << QStringLiteral( "velocity/Minimums_y" ) << QStringLiteral( "velocity/Minimums_mag" ) << QStringLiteral( "velocity/Minimums_dir" )
-             << QStringLiteral( "velocity/Time at Maximums" ) << QStringLiteral( "velocity/Time at Minimums" ) << QStringLiteral( "water depth" );
+  fieldsName << u"Bed Elevation"_s << u"temperature"_s << u"temperature/Maximums"_s
+             << u"temperature/Minimums"_s << u"temperature/Time at Maximums"_s << u"temperature/Time at Minimums"_s
+             << u"velocity_x"_s << u"velocity_y"_s << u"velocity_mag"_s << u"velocity_dir"_s
+             << u"velocity/Maximums_x"_s << u"velocity/Maximums_y"_s << u"velocity/Maximums_mag"_s << u"velocity/Maximums_dir"_s
+             << u"velocity/Minimums_x"_s << u"velocity/Minimums_y"_s << u"velocity/Minimums_mag"_s << u"velocity/Minimums_dir"_s
+             << u"velocity/Time at Maximums"_s << u"velocity/Time at Minimums"_s << u"water depth"_s;
 
   for ( int i = 0; i < fieldsName.count(); ++i )
     QCOMPARE( fieldsName.at( i ), resultLayer->fields().at( i ).name() );
@@ -799,7 +805,7 @@ void TestQgsProcessingAlgsPt2::exportMeshOnGrid()
   QgsFeature feat;
   for ( int i = 0; i < 8; ++i )
     featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "Point (25 50)" ), feat.geometry().asWkt() );
+  QCOMPARE( u"Point (25 50)"_s, feat.geometry().asWkt() );
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 0 ).toDouble(), -5.025, 2 ) );
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 1 ).toDouble(), 1.463, 2 ) );
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 2 ).toDouble(), 5.00, 2 ) );
@@ -809,26 +815,26 @@ void TestQgsProcessingAlgsPt2::exportMeshOnGrid()
 
 void TestQgsProcessingAlgsPt2::rasterizeMesh()
 {
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:meshrasterize" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:meshrasterize"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), "mesh layer" );
+  parameters.insert( u"INPUT"_s, "mesh layer" );
 
   QVariantList datasetGroup;
   datasetGroup << 1 << 2 << 3;
-  parameters.insert( QStringLiteral( "DATASET_GROUPS" ), datasetGroup );
+  parameters.insert( u"DATASET_GROUPS"_s, datasetGroup );
 
   QVariantMap datasetTime;
-  datasetTime[QStringLiteral( "type" )] = QStringLiteral( "dataset-time-step" );
+  datasetTime[u"type"_s] = u"dataset-time-step"_s;
   QVariantList datasetIndex;
   datasetIndex << 1 << 1;
-  datasetTime[QStringLiteral( "value" )] = datasetIndex;
-  parameters.insert( QStringLiteral( "DATASET_TIME" ), datasetTime );
+  datasetTime[u"value"_s] = datasetIndex;
+  parameters.insert( u"DATASET_TIME"_s, datasetTime );
 
-  parameters.insert( QStringLiteral( "PIXEL_SIZE" ), 200.0 );
+  parameters.insert( u"PIXEL_SIZE"_s, 200.0 );
 
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -838,7 +844,7 @@ void TestQgsProcessingAlgsPt2::rasterizeMesh()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  auto outputRaster = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+  auto outputRaster = std::make_unique<QgsRasterLayer>( results.value( u"OUTPUT"_s ).toString(), "output", "gdal" );
   QVERIFY( outputRaster );
   QVERIFY( outputRaster->isValid() );
   QgsRasterDataProvider *outputProvider = outputRaster->dataProvider();
@@ -877,25 +883,25 @@ void TestQgsProcessingAlgsPt2::rasterizeMesh()
 
 void TestQgsProcessingAlgsPt2::exportMeshContours()
 {
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:meshcontours" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:meshcontours"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), "mesh layer" );
+  parameters.insert( u"INPUT"_s, "mesh layer" );
 
   QVariantList datasetGroup;
   datasetGroup << 1 << 2 << 3;
-  parameters.insert( QStringLiteral( "DATASET_GROUPS" ), datasetGroup );
+  parameters.insert( u"DATASET_GROUPS"_s, datasetGroup );
 
   QVariantMap datasetTime;
-  datasetTime[QStringLiteral( "type" )] = QStringLiteral( "dataset-time-step" );
+  datasetTime[u"type"_s] = u"dataset-time-step"_s;
   QVariantList datasetIndex;
   datasetIndex << 1 << 1;
-  datasetTime[QStringLiteral( "value" )] = datasetIndex;
-  parameters.insert( QStringLiteral( "DATASET_TIME" ), datasetTime );
+  datasetTime[u"value"_s] = datasetIndex;
+  parameters.insert( u"DATASET_TIME"_s, datasetTime );
 
-  parameters.insert( QStringLiteral( "OUTPUT_LINES" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "OUTPUT_POLYGONS" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"OUTPUT_LINES"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"OUTPUT_POLYGONS"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -907,154 +913,154 @@ void TestQgsProcessingAlgsPt2::exportMeshContours()
   QVERIFY( !ok );
 
   // min>max
-  parameters.insert( QStringLiteral( "INCREMENT" ), 0.5 );
-  parameters.insert( QStringLiteral( "MINIMUM" ), 5.0 );
-  parameters.insert( QStringLiteral( "MAXIMUM" ), 2.0 );
+  parameters.insert( u"INCREMENT"_s, 0.5 );
+  parameters.insert( u"MINIMUM"_s, 5.0 );
+  parameters.insert( u"MAXIMUM"_s, 2.0 );
 
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( !ok );
 
   // min-max<increrment
-  parameters.insert( QStringLiteral( "INCREMENT" ), 10 );
-  parameters.insert( QStringLiteral( "MINIMUM" ), 5.0 );
-  parameters.insert( QStringLiteral( "MAXIMUM" ), 2.0 );
+  parameters.insert( u"INCREMENT"_s, 10 );
+  parameters.insert( u"MINIMUM"_s, 5.0 );
+  parameters.insert( u"MAXIMUM"_s, 2.0 );
 
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( !ok );
 
   // min-max<increrment
-  parameters.insert( QStringLiteral( "INCREMENT" ), 2 );
-  parameters.insert( QStringLiteral( "MINIMUM" ), 0.25 );
-  parameters.insert( QStringLiteral( "MAXIMUM" ), 6.25 );
+  parameters.insert( u"INCREMENT"_s, 2 );
+  parameters.insert( u"MINIMUM"_s, 0.25 );
+  parameters.insert( u"MAXIMUM"_s, 6.25 );
 
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QgsVectorLayer *resultLinesLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT_LINES" ) ).toString() ) );
+  QgsVectorLayer *resultLinesLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT_LINES"_s ).toString() ) );
   QVERIFY( resultLinesLayer );
   QVERIFY( resultLinesLayer->isValid() );
   QgsAttributeList attributeList = resultLinesLayer->attributeList();
   QCOMPARE( resultLinesLayer->fields().count(), 3 );
-  QCOMPARE( resultLinesLayer->fields().at( 0 ).name(), QStringLiteral( "group" ) );
-  QCOMPARE( resultLinesLayer->fields().at( 1 ).name(), QStringLiteral( "time" ) );
-  QCOMPARE( resultLinesLayer->fields().at( 2 ).name(), QStringLiteral( "value" ) );
+  QCOMPARE( resultLinesLayer->fields().at( 0 ).name(), u"group"_s );
+  QCOMPARE( resultLinesLayer->fields().at( 1 ).name(), u"time"_s );
+  QCOMPARE( resultLinesLayer->fields().at( 2 ).name(), u"value"_s );
 
   QCOMPARE( resultLinesLayer->featureCount(), 4l );
   QgsFeatureIterator featIt = resultLinesLayer->getFeatures();
   QgsFeature feat;
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "LineString Z (1250 3000 20, 1250 2250 27.5, 1250 2000 22.5)" ), feat.geometry().asWkt() );
-  QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "VertexScalarDataset" ) );
-  QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
+  QCOMPARE( u"LineString Z (1250 3000 20, 1250 2250 27.5, 1250 2000 22.5)"_s, feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toString(), u"VertexScalarDataset"_s );
+  QCOMPARE( feat.attributes().at( 1 ).toString(), u"1950-01-01 01:00:00"_s );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.25 );
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "LineString Z (1006.94319345290614365 3000 10.27772773811624596, 1000 2976.48044676110157525 10.23519553238898538)" ), feat.geometry().asWkt() );
-  QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "VertexVectorDataset" ) );
-  QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
+  QCOMPARE( u"LineString Z (1006.94319345290614365 3000 10.27772773811624596, 1000 2976.48044676110157525 10.23519553238898538)"_s, feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toString(), u"VertexVectorDataset"_s );
+  QCOMPARE( feat.attributes().at( 1 ).toString(), u"1950-01-01 01:00:00"_s );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.25 );
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "LineString Z (2009.71706923721990279 2990.28293076277986984 49.90282930762779756, 2462.15304528350043256 2000 34.62153045283500319)" ), feat.geometry().asWkt() );
-  QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "VertexVectorDataset" ) );
-  QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
+  QCOMPARE( u"LineString Z (2009.71706923721990279 2990.28293076277986984 49.90282930762779756, 2462.15304528350043256 2000 34.62153045283500319)"_s, feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toString(), u"VertexVectorDataset"_s );
+  QCOMPARE( feat.attributes().at( 1 ).toString(), u"1950-01-01 01:00:00"_s );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 4.25 );
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "LineString Z (1500 3000 30, 1500 2500 35, 1500 2000 25)" ), feat.geometry().asWkt() );
-  QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "FaceScalarDataset" ) );
-  QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
+  QCOMPARE( u"LineString Z (1500 3000 30, 1500 2500 35, 1500 2000 25)"_s, feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toString(), u"FaceScalarDataset"_s );
+  QCOMPARE( feat.attributes().at( 1 ).toString(), u"1950-01-01 01:00:00"_s );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.25 );
 
-  QgsVectorLayer *resultpolygonLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT_POLYGONS" ) ).toString() ) );
+  QgsVectorLayer *resultpolygonLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT_POLYGONS"_s ).toString() ) );
   QVERIFY( resultpolygonLayer );
   QVERIFY( resultpolygonLayer->isValid() );
   attributeList = resultpolygonLayer->attributeList();
   QCOMPARE( resultpolygonLayer->fields().count(), 4 );
-  QCOMPARE( resultpolygonLayer->fields().at( 0 ).name(), QStringLiteral( "group" ) );
-  QCOMPARE( resultpolygonLayer->fields().at( 1 ).name(), QStringLiteral( "time" ) );
-  QCOMPARE( resultpolygonLayer->fields().at( 2 ).name(), QStringLiteral( "min_value" ) );
-  QCOMPARE( resultpolygonLayer->fields().at( 3 ).name(), QStringLiteral( "max_value" ) );
+  QCOMPARE( resultpolygonLayer->fields().at( 0 ).name(), u"group"_s );
+  QCOMPARE( resultpolygonLayer->fields().at( 1 ).name(), u"time"_s );
+  QCOMPARE( resultpolygonLayer->fields().at( 2 ).name(), u"min_value"_s );
+  QCOMPARE( resultpolygonLayer->fields().at( 3 ).name(), u"max_value"_s );
 
   QCOMPARE( resultpolygonLayer->featureCount(), 6l );
   featIt = resultpolygonLayer->getFeatures();
   featIt.nextFeature( feat );
   QgsGeometry geom = feat.geometry();
   geom.normalize();
-  QCOMPARE( geom.asWkt(), QStringLiteral( "Polygon Z ((1000 2000 20, 1000 3000 10, 1250 3000 20, 1250 2250 27.5, 1250 2000 22.5, 1000 2000 20))" ) );
-  QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "VertexScalarDataset" ) );
-  QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
+  QCOMPARE( geom.asWkt(), u"Polygon Z ((1000 2000 20, 1000 3000 10, 1250 3000 20, 1250 2250 27.5, 1250 2000 22.5, 1000 2000 20))"_s );
+  QCOMPARE( feat.attributes().at( 0 ).toString(), u"VertexScalarDataset"_s );
+  QCOMPARE( feat.attributes().at( 1 ).toString(), u"1950-01-01 01:00:00"_s );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 0.25 );
   QCOMPARE( feat.attributes().at( 3 ).toDouble(), 2.25 );
   featIt.nextFeature( feat );
   geom = feat.geometry();
   geom.normalize();
-  QCOMPARE( geom.asWkt(), QStringLiteral( "Polygon Z ((1250 2000 22.5, 1250 2250 27.5, 1250 3000 20, 2000 3000 50, 3000 2000 40, 2000 2000 30, 1250 2000 22.5))" ) );
-  QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "VertexScalarDataset" ) );
-  QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
+  QCOMPARE( geom.asWkt(), u"Polygon Z ((1250 2000 22.5, 1250 2250 27.5, 1250 3000 20, 2000 3000 50, 3000 2000 40, 2000 2000 30, 1250 2000 22.5))"_s );
+  QCOMPARE( feat.attributes().at( 0 ).toString(), u"VertexScalarDataset"_s );
+  QCOMPARE( feat.attributes().at( 1 ).toString(), u"1950-01-01 01:00:00"_s );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.25 );
   QCOMPARE( feat.attributes().at( 3 ).toDouble(), 4.25 );
   featIt.nextFeature( feat );
   geom = feat.geometry();
   geom.normalize();
-  QCOMPARE( geom.asWkt( 2 ), QStringLiteral( "Polygon Z ((1000 2976.48 10.24, 1000 3000 10, 1006.94 3000 10.28, 1000 2976.48 10.24))" ) );
-  QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "VertexVectorDataset" ) );
-  QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
+  QCOMPARE( geom.asWkt( 2 ), u"Polygon Z ((1000 2976.48 10.24, 1000 3000 10, 1006.94 3000 10.28, 1000 2976.48 10.24))"_s );
+  QCOMPARE( feat.attributes().at( 0 ).toString(), u"VertexVectorDataset"_s );
+  QCOMPARE( feat.attributes().at( 1 ).toString(), u"1950-01-01 01:00:00"_s );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 0.25 );
   QCOMPARE( feat.attributes().at( 3 ).toDouble(), 2.25 );
   featIt.nextFeature( feat );
   featIt.nextFeature( feat );
   geom = feat.geometry();
   geom.normalize();
-  QCOMPARE( geom.asWkt(), QStringLiteral( "Polygon Z ((1000 2000 20, 1000 3000 10, 1500 3000 30, 1500 2500 35, 1500 2000 25, 1000 2000 20))" ) );
-  QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "FaceScalarDataset" ) );
-  QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
+  QCOMPARE( geom.asWkt(), u"Polygon Z ((1000 2000 20, 1000 3000 10, 1500 3000 30, 1500 2500 35, 1500 2000 25, 1000 2000 20))"_s );
+  QCOMPARE( feat.attributes().at( 0 ).toString(), u"FaceScalarDataset"_s );
+  QCOMPARE( feat.attributes().at( 1 ).toString(), u"1950-01-01 01:00:00"_s );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 0.25 );
   QCOMPARE( feat.attributes().at( 3 ).toDouble(), 2.25 );
   featIt.nextFeature( feat );
   geom = feat.geometry();
   geom.normalize();
-  QCOMPARE( geom.asWkt(), QStringLiteral( "Polygon Z ((1500 2000 25, 1500 2500 35, 1500 3000 30, 2000 3000 50, 3000 2000 40, 2000 2000 30, 1500 2000 25))" ) );
-  QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "FaceScalarDataset" ) );
-  QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
+  QCOMPARE( geom.asWkt(), u"Polygon Z ((1500 2000 25, 1500 2500 35, 1500 3000 30, 2000 3000 50, 3000 2000 40, 2000 2000 30, 1500 2000 25))"_s );
+  QCOMPARE( feat.attributes().at( 0 ).toString(), u"FaceScalarDataset"_s );
+  QCOMPARE( feat.attributes().at( 1 ).toString(), u"1950-01-01 01:00:00"_s );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.25 );
   QCOMPARE( feat.attributes().at( 3 ).toDouble(), 4.25 );
 
-  parameters.insert( QStringLiteral( "CONTOUR_LEVEL_LIST" ), QStringLiteral( "4,2,3" ) );
+  parameters.insert( u"CONTOUR_LEVEL_LIST"_s, u"4,2,3"_s );
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( !ok );
 
-  parameters.insert( QStringLiteral( "CONTOUR_LEVEL_LIST" ), QStringLiteral( "2,2,3" ) );
+  parameters.insert( u"CONTOUR_LEVEL_LIST"_s, u"2,2,3"_s );
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( !ok );
 
-  parameters.insert( QStringLiteral( "CONTOUR_LEVEL_LIST" ), QStringLiteral( "1,2,3" ) );
+  parameters.insert( u"CONTOUR_LEVEL_LIST"_s, u"1,2,3"_s );
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 }
 
 void TestQgsProcessingAlgsPt2::exportMeshCrossSection()
 {
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:meshexportcrosssection" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:meshexportcrosssection"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), "mesh layer" );
+  parameters.insert( u"INPUT"_s, "mesh layer" );
 
   QVariantList datasetGroup;
   datasetGroup << 1 << 2 << 3;
-  parameters.insert( QStringLiteral( "DATASET_GROUPS" ), datasetGroup );
+  parameters.insert( u"DATASET_GROUPS"_s, datasetGroup );
 
   QVariantMap datasetTime;
-  datasetTime[QStringLiteral( "type" )] = QStringLiteral( "dataset-time-step" );
+  datasetTime[u"type"_s] = u"dataset-time-step"_s;
   QVariantList datasetIndex;
   datasetIndex << 1 << 1;
-  datasetTime[QStringLiteral( "value" )] = datasetIndex;
-  parameters.insert( QStringLiteral( "DATASET_TIME" ), datasetTime );
+  datasetTime[u"value"_s] = datasetIndex;
+  parameters.insert( u"DATASET_TIME"_s, datasetTime );
 
-  parameters.insert( QStringLiteral( "RESOLUTION" ), 100 );
+  parameters.insert( u"RESOLUTION"_s, 100 );
 
   const QString outputPath = QDir::tempPath() + "/test_mesh_xs.csv";
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputPath );
+  parameters.insert( u"OUTPUT"_s, outputPath );
 
-  QgsVectorLayer *layerLine = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "lines_for_xs" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *layerLine = new QgsVectorLayer( u"LineString"_s, u"lines_for_xs"_s, u"memory"_s );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -1066,8 +1072,8 @@ void TestQgsProcessingAlgsPt2::exportMeshCrossSection()
   QVERIFY( !ok );
 
   QStringList wktLines;
-  wktLines << QStringLiteral( "LineString (1500 2200, 2500 2200)" );
-  wktLines << QStringLiteral( "LineString (1500 1500, 1500 3200)" );
+  wktLines << u"LineString (1500 2200, 2500 2200)"_s;
+  wktLines << u"LineString (1500 1500, 1500 3200)"_s;
 
   QgsFeatureList flist;
   for ( const QString &wkt : wktLines )
@@ -1079,7 +1085,7 @@ void TestQgsProcessingAlgsPt2::exportMeshCrossSection()
   layerLine->dataProvider()->addFeatures( flist );
   QgsProject::instance()->addMapLayer( layerLine );
   QgsProject::instance()->addMapLayer( layerLine );
-  parameters.insert( QStringLiteral( "INPUT_LINES" ), layerLine->name() );
+  parameters.insert( u"INPUT_LINES"_s, layerLine->name() );
 
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
@@ -1088,38 +1094,38 @@ void TestQgsProcessingAlgsPt2::exportMeshCrossSection()
   QVERIFY( outputFile.open( QIODevice::ReadOnly ) );
   QTextStream textStream( &outputFile );
   const QString header = textStream.readLine();
-  QCOMPARE( header, QStringLiteral( "fid,x,y,offset,VertexScalarDataset,VertexVectorDataset,FaceScalarDataset" ) );
+  QCOMPARE( header, u"fid,x,y,offset,VertexScalarDataset,VertexVectorDataset,FaceScalarDataset"_s );
 
   QStringList expectedLines;
-  expectedLines << QStringLiteral( "1,1500.00,2200.00,0.00,2.50,3.33,2.00" )
-                << QStringLiteral( "1,1600.00,2200.00,100.00,2.60,3.41,2.00" )
-                << QStringLiteral( "1,1700.00,2200.00,200.00,2.70,3.48,2.00" )
-                << QStringLiteral( "1,1800.00,2200.00,300.00,2.80,3.56,2.00" )
-                << QStringLiteral( "1,1900.00,2200.00,400.00,2.90,3.64,2.00" )
-                << QStringLiteral( "1,2000.00,2200.00,500.00,3.00,3.72,2.00" )
-                << QStringLiteral( "1,2100.00,2200.00,600.00,3.10,3.86,3.00" )
-                << QStringLiteral( "1,2200.00,2200.00,700.00,3.20,4.00,3.00" )
-                << QStringLiteral( "1,2300.00,2200.00,800.00,3.30,4.14,3.00" )
-                << QStringLiteral( "1,2400.00,2200.00,900.00,3.40,4.28,3.00" )
-                << QStringLiteral( "1,2500.00,2200.00,1000.00,3.50,4.42,3.00" )
-                << QStringLiteral( "2,1500.00,1500.00,0.00, , , " )
-                << QStringLiteral( "2,1500.00,1600.00,100.00, , , " )
-                << QStringLiteral( "2,1500.00,1700.00,200.00, , , " )
-                << QStringLiteral( "2,1500.00,1800.00,300.00, , , " )
-                << QStringLiteral( "2,1500.00,1900.00,400.00, , , " )
-                << QStringLiteral( "2,1500.00,2000.00,500.00,2.50,3.20,2.00" )
-                << QStringLiteral( "2,1500.00,2100.00,600.00,2.50,3.26,2.00" )
-                << QStringLiteral( "2,1500.00,2200.00,700.00,2.50,3.33,2.00" )
-                << QStringLiteral( "2,1500.00,2300.00,800.00,2.50,3.40,2.00" )
-                << QStringLiteral( "2,1500.00,2400.00,900.00,2.50,3.47,2.00" )
-                << QStringLiteral( "2,1500.00,2500.00,1000.00,2.50,3.54,2.00" )
-                << QStringLiteral( "2,1500.00,2600.00,1100.00,2.50,3.33,2.00" )
-                << QStringLiteral( "2,1500.00,2700.00,1200.00,2.50,3.14,2.00" )
-                << QStringLiteral( "2,1500.00,2800.00,1300.00,2.50,2.97,2.00" )
-                << QStringLiteral( "2,1500.00,2900.00,1400.00,2.50,2.82,2.00" )
-                << QStringLiteral( "2,1500.00,3000.00,1500.00,2.50,2.69,2.00" )
-                << QStringLiteral( "2,1500.00,3100.00,1600.00, , , " )
-                << QStringLiteral( "2,1500.00,3200.00,1700.00, , , " );
+  expectedLines << u"1,1500.00,2200.00,0.00,2.50,3.33,2.00"_s
+                << u"1,1600.00,2200.00,100.00,2.60,3.41,2.00"_s
+                << u"1,1700.00,2200.00,200.00,2.70,3.48,2.00"_s
+                << u"1,1800.00,2200.00,300.00,2.80,3.56,2.00"_s
+                << u"1,1900.00,2200.00,400.00,2.90,3.64,2.00"_s
+                << u"1,2000.00,2200.00,500.00,3.00,3.72,2.00"_s
+                << u"1,2100.00,2200.00,600.00,3.10,3.86,3.00"_s
+                << u"1,2200.00,2200.00,700.00,3.20,4.00,3.00"_s
+                << u"1,2300.00,2200.00,800.00,3.30,4.14,3.00"_s
+                << u"1,2400.00,2200.00,900.00,3.40,4.28,3.00"_s
+                << u"1,2500.00,2200.00,1000.00,3.50,4.42,3.00"_s
+                << u"2,1500.00,1500.00,0.00, , , "_s
+                << u"2,1500.00,1600.00,100.00, , , "_s
+                << u"2,1500.00,1700.00,200.00, , , "_s
+                << u"2,1500.00,1800.00,300.00, , , "_s
+                << u"2,1500.00,1900.00,400.00, , , "_s
+                << u"2,1500.00,2000.00,500.00,2.50,3.20,2.00"_s
+                << u"2,1500.00,2100.00,600.00,2.50,3.26,2.00"_s
+                << u"2,1500.00,2200.00,700.00,2.50,3.33,2.00"_s
+                << u"2,1500.00,2300.00,800.00,2.50,3.40,2.00"_s
+                << u"2,1500.00,2400.00,900.00,2.50,3.47,2.00"_s
+                << u"2,1500.00,2500.00,1000.00,2.50,3.54,2.00"_s
+                << u"2,1500.00,2600.00,1100.00,2.50,3.33,2.00"_s
+                << u"2,1500.00,2700.00,1200.00,2.50,3.14,2.00"_s
+                << u"2,1500.00,2800.00,1300.00,2.50,2.97,2.00"_s
+                << u"2,1500.00,2900.00,1400.00,2.50,2.82,2.00"_s
+                << u"2,1500.00,3000.00,1500.00,2.50,2.69,2.00"_s
+                << u"2,1500.00,3100.00,1600.00, , , "_s
+                << u"2,1500.00,3200.00,1700.00, , , "_s;
   QString line = textStream.readLine();
   int i = 0;
   QVERIFY( !line.isEmpty() );
@@ -1135,12 +1141,12 @@ void TestQgsProcessingAlgsPt2::exportMeshCrossSection()
 
 void TestQgsProcessingAlgsPt2::fileDownloader()
 {
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:filedownloader" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:filedownloader"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "URL" ), QStringLiteral( "https://version.qgis.org/version.txt" ) );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"URL"_s, u"https://version.qgis.org/version.txt"_s );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   auto context = std::make_unique<QgsProcessingContext>();
   QgsProcessingFeedback feedback;
@@ -1150,20 +1156,20 @@ void TestQgsProcessingAlgsPt2::fileDownloader()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
   // verify that temporary outputs have the URL file extension appended
-  QVERIFY( results.value( QStringLiteral( "OUTPUT" ) ).toString().endsWith( QLatin1String( ".txt" ) ) );
+  QVERIFY( results.value( u"OUTPUT"_s ).toString().endsWith( ".txt"_L1 ) );
 
-  const QString outputFileName = QgsProcessingUtils::generateTempFilename( QStringLiteral( "qgis_version.txt" ) );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputFileName );
+  const QString outputFileName = QgsProcessingUtils::generateTempFilename( u"qgis_version.txt"_s );
+  parameters.insert( u"OUTPUT"_s, outputFileName );
 
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
   // compare result filename is the same as provided
-  QCOMPARE( outputFileName, results.value( QStringLiteral( "OUTPUT" ) ).toString() );
+  QCOMPARE( outputFileName, results.value( u"OUTPUT"_s ).toString() );
 }
 
 void TestQgsProcessingAlgsPt2::rasterize()
 {
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:rasterize" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:rasterize"_s ) );
   QVERIFY( alg != nullptr );
 
   const QString outputTif = QDir::tempPath() + "/rasterize_output.tif";
@@ -1171,19 +1177,19 @@ void TestQgsProcessingAlgsPt2::rasterize()
     QFile::remove( outputTif );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "EXTENT" ), QStringLiteral( "-120,-80,15,55" ) );
-  parameters.insert( QStringLiteral( "TILE_SIZE" ), 320 );
-  parameters.insert( QStringLiteral( "MAP_UNITS_PER_PIXEL" ), 0.125 );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputTif );
+  parameters.insert( u"EXTENT"_s, u"-120,-80,15,55"_s );
+  parameters.insert( u"TILE_SIZE"_s, 320 );
+  parameters.insert( u"MAP_UNITS_PER_PIXEL"_s, 0.125 );
+  parameters.insert( u"OUTPUT"_s, outputTif );
 
   // create a temporary project with three layers, but only two are visible
   // (to test that the algorithm in the default setup without defined LAYERS or MAP_THEME uses only vsisible
   // layers that and in the correct order)
   QgsProject project;
   const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QgsVectorLayer *pointsLayer = new QgsVectorLayer( dataDir + "/points.shp", QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
-  QgsVectorLayer *linesLayer = new QgsVectorLayer( dataDir + "/lines.shp", QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
-  QgsVectorLayer *polygonLayer = new QgsVectorLayer( dataDir + "/polys.shp", QStringLiteral( "polygons" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *pointsLayer = new QgsVectorLayer( dataDir + "/points.shp", u"points"_s, u"ogr"_s );
+  QgsVectorLayer *linesLayer = new QgsVectorLayer( dataDir + "/lines.shp", u"lines"_s, u"ogr"_s );
+  QgsVectorLayer *polygonLayer = new QgsVectorLayer( dataDir + "/polys.shp", u"polygons"_s, u"ogr"_s );
   QVERIFY( pointsLayer->isValid() && linesLayer->isValid() && polygonLayer->isValid() );
   project.addMapLayers( QList<QgsMapLayer *>() << pointsLayer << linesLayer << polygonLayer );
   QgsLayerTreeLayer *nodePolygons = project.layerTreeRoot()->findLayer( polygonLayer );
@@ -1201,7 +1207,7 @@ void TestQgsProcessingAlgsPt2::rasterize()
   QVERIFY( QFile::exists( outputTif ) );
 
   QgsRenderChecker checker;
-  checker.setControlPathPrefix( QStringLiteral( "processing_algorithm" ) );
+  checker.setControlPathPrefix( u"processing_algorithm"_s );
   checker.setControlExtension( "tif" );
   checker.setControlName( "expected_rasterize" );
   checker.setRenderedImage( outputTif );
@@ -1214,34 +1220,34 @@ void TestQgsProcessingAlgsPt2::convertGpxFeatureType()
   QStringList processArgs;
   QStringList logArgs;
 
-  QgsConvertGpxFeatureTypeAlgorithm::createArgumentLists( QStringLiteral( "/home/me/my input file.gpx" ), QStringLiteral( "/home/me/my output file.gpx" ), QgsConvertGpxFeatureTypeAlgorithm::WaypointsFromRoute, processArgs, logArgs );
-  QCOMPARE( processArgs, QStringList( { QStringLiteral( "-i" ), QStringLiteral( "gpx" ), QStringLiteral( "-f" ), QStringLiteral( "/home/me/my input file.gpx" ), QStringLiteral( "-x" ), QStringLiteral( "transform,wpt=rte,del" ), QStringLiteral( "-o" ), QStringLiteral( "gpx" ), QStringLiteral( "-F" ), QStringLiteral( "/home/me/my output file.gpx" ) } ) );
+  QgsConvertGpxFeatureTypeAlgorithm::createArgumentLists( u"/home/me/my input file.gpx"_s, u"/home/me/my output file.gpx"_s, QgsConvertGpxFeatureTypeAlgorithm::WaypointsFromRoute, processArgs, logArgs );
+  QCOMPARE( processArgs, QStringList( { u"-i"_s, u"gpx"_s, u"-f"_s, u"/home/me/my input file.gpx"_s, u"-x"_s, u"transform,wpt=rte,del"_s, u"-o"_s, u"gpx"_s, u"-F"_s, u"/home/me/my output file.gpx"_s } ) );
   // when showing the babel command, filenames should be wrapped in "", which is what QProcess does internally (hence the processArgs don't have these)
-  QCOMPARE( logArgs, QStringList( { QStringLiteral( "-i" ), QStringLiteral( "gpx" ), QStringLiteral( "-f" ), QStringLiteral( "\"/home/me/my input file.gpx\"" ), QStringLiteral( "-x" ), QStringLiteral( "transform,wpt=rte,del" ), QStringLiteral( "-o" ), QStringLiteral( "gpx" ), QStringLiteral( "-F" ), QStringLiteral( "\"/home/me/my output file.gpx\"" ) } ) );
+  QCOMPARE( logArgs, QStringList( { u"-i"_s, u"gpx"_s, u"-f"_s, u"\"/home/me/my input file.gpx\""_s, u"-x"_s, u"transform,wpt=rte,del"_s, u"-o"_s, u"gpx"_s, u"-F"_s, u"\"/home/me/my output file.gpx\""_s } ) );
 
   logArgs.clear();
   processArgs.clear();
-  QgsConvertGpxFeatureTypeAlgorithm::createArgumentLists( QStringLiteral( "/home/me/my input file.gpx" ), QStringLiteral( "/home/me/my output file.gpx" ), QgsConvertGpxFeatureTypeAlgorithm::WaypointsFromTrack, processArgs, logArgs );
-  QCOMPARE( processArgs, QStringList( { QStringLiteral( "-i" ), QStringLiteral( "gpx" ), QStringLiteral( "-f" ), QStringLiteral( "/home/me/my input file.gpx" ), QStringLiteral( "-x" ), QStringLiteral( "transform,wpt=trk,del" ), QStringLiteral( "-o" ), QStringLiteral( "gpx" ), QStringLiteral( "-F" ), QStringLiteral( "/home/me/my output file.gpx" ) } ) );
+  QgsConvertGpxFeatureTypeAlgorithm::createArgumentLists( u"/home/me/my input file.gpx"_s, u"/home/me/my output file.gpx"_s, QgsConvertGpxFeatureTypeAlgorithm::WaypointsFromTrack, processArgs, logArgs );
+  QCOMPARE( processArgs, QStringList( { u"-i"_s, u"gpx"_s, u"-f"_s, u"/home/me/my input file.gpx"_s, u"-x"_s, u"transform,wpt=trk,del"_s, u"-o"_s, u"gpx"_s, u"-F"_s, u"/home/me/my output file.gpx"_s } ) );
   // when showing the babel command, filenames should be wrapped in "", which is what QProcess does internally (hence the processArgs don't have these)
-  QCOMPARE( logArgs, QStringList( { QStringLiteral( "-i" ), QStringLiteral( "gpx" ), QStringLiteral( "-f" ), QStringLiteral( "\"/home/me/my input file.gpx\"" ), QStringLiteral( "-x" ), QStringLiteral( "transform,wpt=trk,del" ), QStringLiteral( "-o" ), QStringLiteral( "gpx" ), QStringLiteral( "-F" ), QStringLiteral( "\"/home/me/my output file.gpx\"" ) } ) );
-
-  logArgs.clear();
-  processArgs.clear();
-
-  QgsConvertGpxFeatureTypeAlgorithm::createArgumentLists( QStringLiteral( "/home/me/my input file.gpx" ), QStringLiteral( "/home/me/my output file.gpx" ), QgsConvertGpxFeatureTypeAlgorithm::RouteFromWaypoints, processArgs, logArgs );
-  QCOMPARE( processArgs, QStringList( { QStringLiteral( "-i" ), QStringLiteral( "gpx" ), QStringLiteral( "-f" ), QStringLiteral( "/home/me/my input file.gpx" ), QStringLiteral( "-x" ), QStringLiteral( "transform,rte=wpt,del" ), QStringLiteral( "-o" ), QStringLiteral( "gpx" ), QStringLiteral( "-F" ), QStringLiteral( "/home/me/my output file.gpx" ) } ) );
-  // when showing the babel command, filenames should be wrapped in "", which is what QProcess does internally (hence the processArgs don't have these)
-  QCOMPARE( logArgs, QStringList( { QStringLiteral( "-i" ), QStringLiteral( "gpx" ), QStringLiteral( "-f" ), QStringLiteral( "\"/home/me/my input file.gpx\"" ), QStringLiteral( "-x" ), QStringLiteral( "transform,rte=wpt,del" ), QStringLiteral( "-o" ), QStringLiteral( "gpx" ), QStringLiteral( "-F" ), QStringLiteral( "\"/home/me/my output file.gpx\"" ) } ) );
-
+  QCOMPARE( logArgs, QStringList( { u"-i"_s, u"gpx"_s, u"-f"_s, u"\"/home/me/my input file.gpx\""_s, u"-x"_s, u"transform,wpt=trk,del"_s, u"-o"_s, u"gpx"_s, u"-F"_s, u"\"/home/me/my output file.gpx\""_s } ) );
 
   logArgs.clear();
   processArgs.clear();
 
-  QgsConvertGpxFeatureTypeAlgorithm::createArgumentLists( QStringLiteral( "/home/me/my input file.gpx" ), QStringLiteral( "/home/me/my output file.gpx" ), QgsConvertGpxFeatureTypeAlgorithm::TrackFromWaypoints, processArgs, logArgs );
-  QCOMPARE( processArgs, QStringList( { QStringLiteral( "-i" ), QStringLiteral( "gpx" ), QStringLiteral( "-f" ), QStringLiteral( "/home/me/my input file.gpx" ), QStringLiteral( "-x" ), QStringLiteral( "transform,trk=wpt,del" ), QStringLiteral( "-o" ), QStringLiteral( "gpx" ), QStringLiteral( "-F" ), QStringLiteral( "/home/me/my output file.gpx" ) } ) );
+  QgsConvertGpxFeatureTypeAlgorithm::createArgumentLists( u"/home/me/my input file.gpx"_s, u"/home/me/my output file.gpx"_s, QgsConvertGpxFeatureTypeAlgorithm::RouteFromWaypoints, processArgs, logArgs );
+  QCOMPARE( processArgs, QStringList( { u"-i"_s, u"gpx"_s, u"-f"_s, u"/home/me/my input file.gpx"_s, u"-x"_s, u"transform,rte=wpt,del"_s, u"-o"_s, u"gpx"_s, u"-F"_s, u"/home/me/my output file.gpx"_s } ) );
   // when showing the babel command, filenames should be wrapped in "", which is what QProcess does internally (hence the processArgs don't have these)
-  QCOMPARE( logArgs, QStringList( { QStringLiteral( "-i" ), QStringLiteral( "gpx" ), QStringLiteral( "-f" ), QStringLiteral( "\"/home/me/my input file.gpx\"" ), QStringLiteral( "-x" ), QStringLiteral( "transform,trk=wpt,del" ), QStringLiteral( "-o" ), QStringLiteral( "gpx" ), QStringLiteral( "-F" ), QStringLiteral( "\"/home/me/my output file.gpx\"" ) } ) );
+  QCOMPARE( logArgs, QStringList( { u"-i"_s, u"gpx"_s, u"-f"_s, u"\"/home/me/my input file.gpx\""_s, u"-x"_s, u"transform,rte=wpt,del"_s, u"-o"_s, u"gpx"_s, u"-F"_s, u"\"/home/me/my output file.gpx\""_s } ) );
+
+
+  logArgs.clear();
+  processArgs.clear();
+
+  QgsConvertGpxFeatureTypeAlgorithm::createArgumentLists( u"/home/me/my input file.gpx"_s, u"/home/me/my output file.gpx"_s, QgsConvertGpxFeatureTypeAlgorithm::TrackFromWaypoints, processArgs, logArgs );
+  QCOMPARE( processArgs, QStringList( { u"-i"_s, u"gpx"_s, u"-f"_s, u"/home/me/my input file.gpx"_s, u"-x"_s, u"transform,trk=wpt,del"_s, u"-o"_s, u"gpx"_s, u"-F"_s, u"/home/me/my output file.gpx"_s } ) );
+  // when showing the babel command, filenames should be wrapped in "", which is what QProcess does internally (hence the processArgs don't have these)
+  QCOMPARE( logArgs, QStringList( { u"-i"_s, u"gpx"_s, u"-f"_s, u"\"/home/me/my input file.gpx\""_s, u"-x"_s, u"transform,trk=wpt,del"_s, u"-o"_s, u"gpx"_s, u"-F"_s, u"\"/home/me/my output file.gpx\""_s } ) );
 }
 
 class TestProcessingFeedback : public QgsProcessingFeedback
@@ -1260,14 +1266,14 @@ void TestQgsProcessingAlgsPt2::convertGpsData()
 {
   TestProcessingFeedback feedback;
 
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:convertgpsdata" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:convertgpsdata"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QStringLiteral( "%1/GARMIN_ATRK.NVM" ).arg( TEST_DATA_DIR ) );
-  parameters.insert( QStringLiteral( "FORMAT" ), QStringLiteral( "garmin_xt" ) );
-  parameters.insert( QStringLiteral( "FEATURE_TYPE" ), 0 ); // waypoints
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, u"%1/GARMIN_ATRK.NVM"_s.arg( TEST_DATA_DIR ) );
+  parameters.insert( u"FORMAT"_s, u"garmin_xt"_s );
+  parameters.insert( u"FEATURE_TYPE"_s, 0 ); // waypoints
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   auto context = std::make_unique<QgsProcessingContext>();
@@ -1277,61 +1283,61 @@ void TestQgsProcessingAlgsPt2::convertGpsData()
   // garmin_xt format does not support waypoints, exception should have been raised
   QVERIFY( !ok );
 
-  QCOMPARE( feedback.errors, QStringList() << QStringLiteral( "The GPSBabel format \u201Cgarmin_xt\u201D does not support converting waypoints." ) );
+  QCOMPARE( feedback.errors, QStringList() << u"The GPSBabel format \u201Cgarmin_xt\u201D does not support converting waypoints."_s );
   feedback.errors.clear();
 
-  parameters.insert( QStringLiteral( "FEATURE_TYPE" ), 1 ); // routes
+  parameters.insert( u"FEATURE_TYPE"_s, 1 ); // routes
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   // garmin_xt format does not support routes, exception should have been raised
   QVERIFY( !ok );
-  QCOMPARE( feedback.errors, QStringList() << QStringLiteral( "The GPSBabel format \u201Cgarmin_xt\u201D does not support converting routes." ) );
+  QCOMPARE( feedback.errors, QStringList() << u"The GPSBabel format \u201Cgarmin_xt\u201D does not support converting routes."_s );
   feedback.errors.clear();
 
-  parameters.insert( QStringLiteral( "FEATURE_TYPE" ), 2 ); // tracks
+  parameters.insert( u"FEATURE_TYPE"_s, 2 ); // tracks
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   // garmin_xt format does support tracks!
   QVERIFY( ok );
 
-  QgsVectorLayer *resultLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT_LAYER" ) ).toString() ) );
+  QgsVectorLayer *resultLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT_LAYER"_s ).toString() ) );
   QVERIFY( resultLayer );
-  QCOMPARE( resultLayer->providerType(), QStringLiteral( "gpx" ) );
+  QCOMPARE( resultLayer->providerType(), u"gpx"_s );
   QCOMPARE( resultLayer->wkbType(), Qgis::WkbType::LineString );
   QCOMPARE( resultLayer->featureCount(), 1LL );
 
   // algorithm should also run when given the description for a format, not the format name
-  parameters.insert( QStringLiteral( "FORMAT" ), QStringLiteral( "Mobile Garmin XT Track files" ) );
+  parameters.insert( u"FORMAT"_s, u"Mobile Garmin XT Track files"_s );
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
-  resultLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT_LAYER" ) ).toString() ) );
+  resultLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT_LAYER"_s ).toString() ) );
   QVERIFY( resultLayer );
-  QCOMPARE( resultLayer->providerType(), QStringLiteral( "gpx" ) );
+  QCOMPARE( resultLayer->providerType(), u"gpx"_s );
   QCOMPARE( resultLayer->wkbType(), Qgis::WkbType::LineString );
   QCOMPARE( resultLayer->featureCount(), 1LL );
 
   // try with a format which doesn't exist
   feedback.errors.clear();
-  parameters.insert( QStringLiteral( "FORMAT" ), QStringLiteral( "not a format" ) );
+  parameters.insert( u"FORMAT"_s, u"not a format"_s );
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( !ok );
-  QVERIFY( feedback.errors.value( 0 ).startsWith( QStringLiteral( "Unknown GPSBabel format \u201Cnot a format\u201D." ) ) );
+  QVERIFY( feedback.errors.value( 0 ).startsWith( u"Unknown GPSBabel format \u201Cnot a format\u201D."_s ) );
 }
 
 void TestQgsProcessingAlgsPt2::downloadGpsData()
 {
   TestProcessingFeedback feedback;
 
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:downloadgpsdata" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:downloadgpsdata"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "DEVICE" ), QStringLiteral( "xxx" ) );
-  parameters.insert( QStringLiteral( "PORT" ), QStringLiteral( "usb:" ) );
-  parameters.insert( QStringLiteral( "FEATURE_TYPE" ), 0 ); // waypoints
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"DEVICE"_s, u"xxx"_s );
+  parameters.insert( u"PORT"_s, u"usb:"_s );
+  parameters.insert( u"FEATURE_TYPE"_s, 0 ); // waypoints
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   auto context = std::make_unique<QgsProcessingContext>();
@@ -1341,16 +1347,16 @@ void TestQgsProcessingAlgsPt2::downloadGpsData()
   // invalid device
   QVERIFY( !ok );
 
-  QVERIFY( feedback.errors.value( 0 ).startsWith( QStringLiteral( "Unknown GPSBabel device \u201Cxxx\u201D. Valid devices are:" ) ) );
+  QVERIFY( feedback.errors.value( 0 ).startsWith( u"Unknown GPSBabel device \u201Cxxx\u201D. Valid devices are:"_s ) );
   feedback.errors.clear();
 
-  parameters.insert( QStringLiteral( "DEVICE" ), QStringLiteral( "Garmin serial" ) );
-  parameters.insert( QStringLiteral( "PORT" ), QStringLiteral( "not a port" ) );
+  parameters.insert( u"DEVICE"_s, u"Garmin serial"_s );
+  parameters.insert( u"PORT"_s, u"not a port"_s );
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   // invalid port
   QVERIFY( !ok );
-  QVERIFY( feedback.errors.value( 0 ).startsWith( QStringLiteral( "Unknown port \u201Cnot a port\u201D. Valid ports are:" ) ) );
+  QVERIFY( feedback.errors.value( 0 ).startsWith( u"Unknown port \u201Cnot a port\u201D. Valid ports are:"_s ) );
   feedback.errors.clear();
 }
 
@@ -1358,14 +1364,14 @@ void TestQgsProcessingAlgsPt2::uploadGpsData()
 {
   TestProcessingFeedback feedback;
 
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:downloadgpsdata" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:downloadgpsdata"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "DEVICE" ), QStringLiteral( "xxx" ) );
-  parameters.insert( QStringLiteral( "PORT" ), QStringLiteral( "usb:" ) );
-  parameters.insert( QStringLiteral( "FEATURE_TYPE" ), 0 ); // waypoints
-  parameters.insert( QStringLiteral( "INPUT" ), QStringLiteral( "%1/layers.gpx" ).arg( TEST_DATA_DIR ) );
+  parameters.insert( u"DEVICE"_s, u"xxx"_s );
+  parameters.insert( u"PORT"_s, u"usb:"_s );
+  parameters.insert( u"FEATURE_TYPE"_s, 0 ); // waypoints
+  parameters.insert( u"INPUT"_s, u"%1/layers.gpx"_s.arg( TEST_DATA_DIR ) );
 
   bool ok = false;
   auto context = std::make_unique<QgsProcessingContext>();
@@ -1375,22 +1381,22 @@ void TestQgsProcessingAlgsPt2::uploadGpsData()
   // invalid device
   QVERIFY( !ok );
 
-  QVERIFY( feedback.errors.value( 0 ).startsWith( QStringLiteral( "Unknown GPSBabel device \u201Cxxx\u201D. Valid devices are:" ) ) );
+  QVERIFY( feedback.errors.value( 0 ).startsWith( u"Unknown GPSBabel device \u201Cxxx\u201D. Valid devices are:"_s ) );
   feedback.errors.clear();
 
-  parameters.insert( QStringLiteral( "DEVICE" ), QStringLiteral( "Garmin serial" ) );
-  parameters.insert( QStringLiteral( "PORT" ), QStringLiteral( "not a port" ) );
+  parameters.insert( u"DEVICE"_s, u"Garmin serial"_s );
+  parameters.insert( u"PORT"_s, u"not a port"_s );
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   // invalid port
   QVERIFY( !ok );
-  QVERIFY( feedback.errors.value( 0 ).startsWith( QStringLiteral( "Unknown port \u201Cnot a port\u201D. Valid ports are:" ) ) );
+  QVERIFY( feedback.errors.value( 0 ).startsWith( u"Unknown port \u201Cnot a port\u201D. Valid ports are:"_s ) );
   feedback.errors.clear();
 }
 
 void TestQgsProcessingAlgsPt2::transferMainAnnotationLayer()
 {
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:transferannotationsfrommain" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:transferannotationsfrommain"_s ) );
   QVERIFY( alg != nullptr );
 
   QgsProject p;
@@ -1403,46 +1409,46 @@ void TestQgsProcessingAlgsPt2::transferMainAnnotationLayer()
   bool ok = false;
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "LAYER_NAME" ), QStringLiteral( "my annotations" ) );
+  parameters.insert( u"LAYER_NAME"_s, u"my annotations"_s );
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
   QCOMPARE( p.mainAnnotationLayer()->items().size(), 0 );
-  QgsAnnotationLayer *newLayer = qobject_cast<QgsAnnotationLayer *>( p.mapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
-  QCOMPARE( newLayer->name(), QStringLiteral( "my annotations" ) );
+  QgsAnnotationLayer *newLayer = qobject_cast<QgsAnnotationLayer *>( p.mapLayer( results.value( u"OUTPUT"_s ).toString() ) );
+  QCOMPARE( newLayer->name(), u"my annotations"_s );
   QCOMPARE( newLayer->items().size(), 1 );
 }
 
 void TestQgsProcessingAlgsPt2::exportMeshTimeSeries()
 {
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:meshexporttimeseries" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:meshexporttimeseries"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), "mesh layer" );
+  parameters.insert( u"INPUT"_s, "mesh layer" );
 
   QVariantList datasetGroup;
   datasetGroup << 1 << 2 << 3;
-  parameters.insert( QStringLiteral( "DATASET_GROUPS" ), datasetGroup );
+  parameters.insert( u"DATASET_GROUPS"_s, datasetGroup );
 
   QVariantMap datasetStartTime;
-  datasetStartTime[QStringLiteral( "type" )] = QStringLiteral( "dataset-time-step" );
+  datasetStartTime[u"type"_s] = u"dataset-time-step"_s;
   QVariantList datasetIndexStart;
   datasetIndexStart << 1 << 0;
-  datasetStartTime[QStringLiteral( "value" )] = datasetIndexStart;
-  parameters.insert( QStringLiteral( "STARTING_TIME" ), datasetStartTime );
+  datasetStartTime[u"value"_s] = datasetIndexStart;
+  parameters.insert( u"STARTING_TIME"_s, datasetStartTime );
 
   QVariantMap datasetEndTime;
-  datasetEndTime[QStringLiteral( "type" )] = QStringLiteral( "dataset-time-step" );
+  datasetEndTime[u"type"_s] = u"dataset-time-step"_s;
   QVariantList datasetIndexEnd;
   datasetIndexEnd << 1 << 1;
-  datasetEndTime[QStringLiteral( "value" )] = datasetIndexEnd;
-  parameters.insert( QStringLiteral( "FINISHING_TIME" ), datasetEndTime );
+  datasetEndTime[u"value"_s] = datasetIndexEnd;
+  parameters.insert( u"FINISHING_TIME"_s, datasetEndTime );
 
   const QString outputPath = QDir::tempPath() + "/test_mesh_ts.csv";
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputPath );
+  parameters.insert( u"OUTPUT"_s, outputPath );
 
-  QgsVectorLayer *layerPoints = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "points_for_ts" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *layerPoints = new QgsVectorLayer( u"Point"_s, u"points_for_ts"_s, u"memory"_s );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -1454,9 +1460,9 @@ void TestQgsProcessingAlgsPt2::exportMeshTimeSeries()
   QVERIFY( !ok );
 
   QStringList wktPoints;
-  wktPoints << QStringLiteral( "Point (1500 2200)" );
-  wktPoints << QStringLiteral( "Point (1500 1500)" );
-  wktPoints << QStringLiteral( "Point (2500 2100)" );
+  wktPoints << u"Point (1500 2200)"_s;
+  wktPoints << u"Point (1500 1500)"_s;
+  wktPoints << u"Point (2500 2100)"_s;
 
   QgsFeatureList flist;
   for ( const QString &wkt : wktPoints )
@@ -1468,7 +1474,7 @@ void TestQgsProcessingAlgsPt2::exportMeshTimeSeries()
   layerPoints->dataProvider()->addFeatures( flist );
   QgsProject::instance()->addMapLayer( layerPoints );
   QgsProject::instance()->addMapLayer( layerPoints );
-  parameters.insert( QStringLiteral( "INPUT_POINTS" ), layerPoints->name() );
+  parameters.insert( u"INPUT_POINTS"_s, layerPoints->name() );
 
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
@@ -1477,13 +1483,13 @@ void TestQgsProcessingAlgsPt2::exportMeshTimeSeries()
   QVERIFY( outputFile.open( QIODevice::ReadOnly ) );
   QTextStream textStream( &outputFile );
   QString header = textStream.readLine();
-  QCOMPARE( header, QStringLiteral( "fid,x,y,time,VertexScalarDataset,VertexVectorDataset,FaceScalarDataset" ) );
+  QCOMPARE( header, u"fid,x,y,time,VertexScalarDataset,VertexVectorDataset,FaceScalarDataset"_s );
 
   QStringList expectedLines;
-  expectedLines << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:00:00,1.50,1.92,1.00" )
-                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 01:00:00,2.50,3.33,2.00" )
-                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:00:00,2.50,2.97,2.00" )
-                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 01:00:00,3.50,4.36,3.00" );
+  expectedLines << u"1,1500.00,2200.00,1950-01-01 00:00:00,1.50,1.92,1.00"_s
+                << u"1,1500.00,2200.00,1950-01-01 01:00:00,2.50,3.33,2.00"_s
+                << u"3,2500.00,2100.00,1950-01-01 00:00:00,2.50,2.97,2.00"_s
+                << u"3,2500.00,2100.00,1950-01-01 01:00:00,3.50,4.36,3.00"_s;
 
   QString line = textStream.readLine();
   int i = 0;
@@ -1497,38 +1503,38 @@ void TestQgsProcessingAlgsPt2::exportMeshTimeSeries()
   QVERIFY( i == expectedLines.count() );
   outputFile.close();
 
-  parameters.insert( QStringLiteral( "TIME_STEP" ), 0.1 );
+  parameters.insert( u"TIME_STEP"_s, 0.1 );
 
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
   QVERIFY( outputFile.open( QIODevice::ReadOnly ) );
   header = textStream.readLine();
-  QCOMPARE( header, QStringLiteral( "fid,x,y,time,VertexScalarDataset,VertexVectorDataset,FaceScalarDataset" ) );
+  QCOMPARE( header, u"fid,x,y,time,VertexScalarDataset,VertexVectorDataset,FaceScalarDataset"_s );
 
   expectedLines.clear();
-  expectedLines << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:00:00,1.50,1.92,1.00" )
-                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:06:00,1.50,1.92,1.00" )
-                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:12:00,1.50,1.92,1.00" )
-                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:18:00,1.50,1.92,1.00" )
-                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:24:00,1.50,1.92,1.00" )
-                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:30:00,1.50,1.92,1.00" )
-                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:36:00,1.50,1.92,1.00" )
-                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:42:00,1.50,1.92,1.00" )
-                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:48:00,1.50,1.92,1.00" )
-                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 00:54:00,1.50,1.92,1.00" )
-                << QStringLiteral( "1,1500.00,2200.00,1950-01-01 01:00:00,2.50,3.33,2.00" )
-                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:00:00,2.50,2.97,2.00" )
-                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:06:00,2.50,2.97,2.00" )
-                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:12:00,2.50,2.97,2.00" )
-                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:18:00,2.50,2.97,2.00" )
-                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:24:00,2.50,2.97,2.00" )
-                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:30:00,2.50,2.97,2.00" )
-                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:36:00,2.50,2.97,2.00" )
-                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:42:00,2.50,2.97,2.00" )
-                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:48:00,2.50,2.97,2.00" )
-                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 00:54:00,2.50,2.97,2.00" )
-                << QStringLiteral( "3,2500.00,2100.00,1950-01-01 01:00:00,3.50,4.36,3.00" );
+  expectedLines << u"1,1500.00,2200.00,1950-01-01 00:00:00,1.50,1.92,1.00"_s
+                << u"1,1500.00,2200.00,1950-01-01 00:06:00,1.50,1.92,1.00"_s
+                << u"1,1500.00,2200.00,1950-01-01 00:12:00,1.50,1.92,1.00"_s
+                << u"1,1500.00,2200.00,1950-01-01 00:18:00,1.50,1.92,1.00"_s
+                << u"1,1500.00,2200.00,1950-01-01 00:24:00,1.50,1.92,1.00"_s
+                << u"1,1500.00,2200.00,1950-01-01 00:30:00,1.50,1.92,1.00"_s
+                << u"1,1500.00,2200.00,1950-01-01 00:36:00,1.50,1.92,1.00"_s
+                << u"1,1500.00,2200.00,1950-01-01 00:42:00,1.50,1.92,1.00"_s
+                << u"1,1500.00,2200.00,1950-01-01 00:48:00,1.50,1.92,1.00"_s
+                << u"1,1500.00,2200.00,1950-01-01 00:54:00,1.50,1.92,1.00"_s
+                << u"1,1500.00,2200.00,1950-01-01 01:00:00,2.50,3.33,2.00"_s
+                << u"3,2500.00,2100.00,1950-01-01 00:00:00,2.50,2.97,2.00"_s
+                << u"3,2500.00,2100.00,1950-01-01 00:06:00,2.50,2.97,2.00"_s
+                << u"3,2500.00,2100.00,1950-01-01 00:12:00,2.50,2.97,2.00"_s
+                << u"3,2500.00,2100.00,1950-01-01 00:18:00,2.50,2.97,2.00"_s
+                << u"3,2500.00,2100.00,1950-01-01 00:24:00,2.50,2.97,2.00"_s
+                << u"3,2500.00,2100.00,1950-01-01 00:30:00,2.50,2.97,2.00"_s
+                << u"3,2500.00,2100.00,1950-01-01 00:36:00,2.50,2.97,2.00"_s
+                << u"3,2500.00,2100.00,1950-01-01 00:42:00,2.50,2.97,2.00"_s
+                << u"3,2500.00,2100.00,1950-01-01 00:48:00,2.50,2.97,2.00"_s
+                << u"3,2500.00,2100.00,1950-01-01 00:54:00,2.50,2.97,2.00"_s
+                << u"3,2500.00,2100.00,1950-01-01 01:00:00,3.50,4.36,3.00"_s;
 
   line = textStream.readLine();
   i = 0;
@@ -1546,27 +1552,27 @@ void TestQgsProcessingAlgsPt2::exportMeshTimeSeries()
 void TestQgsProcessingAlgsPt2::extractLabels()
 {
   QgsProject project;
-  QgsVectorLayer *pointsLayer = new QgsVectorLayer( mPointLayerPath, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *pointsLayer = new QgsVectorLayer( mPointLayerPath, u"points"_s, u"ogr"_s );
   QVERIFY( mPointsLayer->isValid() );
   project.addMapLayer( pointsLayer );
 
   QgsTextFormat format = QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() );
   format.setSize( 10 );
   QgsPalLayerSettings settings;
-  settings.fieldName = QStringLiteral( "Class" );
+  settings.fieldName = u"Class"_s;
   settings.setFormat( format );
   pointsLayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
 
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:extractlabels" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:extractlabels"_s ) );
   QVERIFY( alg != nullptr );
 
-  QgsReferencedRectangle extent( QgsRectangle( -120, 20, -80, 50 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  QgsReferencedRectangle extent( QgsRectangle( -120, 20, -80, 50 ), QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "EXTENT" ), extent );
-  parameters.insert( QStringLiteral( "SCALE" ), 9000000.00 );
-  parameters.insert( QStringLiteral( "DPI" ), 96.00 );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"EXTENT"_s, extent );
+  parameters.insert( u"SCALE"_s, 9000000.00 );
+  parameters.insert( u"DPI"_s, 96.00 );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   auto context = std::make_unique<QgsProcessingContext>();
@@ -1577,26 +1583,26 @@ void TestQgsProcessingAlgsPt2::extractLabels()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QgsVectorLayer *resultLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QgsVectorLayer *resultLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) );
   QVERIFY( resultLayer );
   QCOMPARE( resultLayer->wkbType(), Qgis::WkbType::Point );
   QCOMPARE( resultLayer->featureCount(), 17 );
 
   QgsFeature feature = resultLayer->getFeature( 1 );
   QVariantMap attributes = feature.attributeMap();
-  QCOMPARE( attributes[QStringLiteral( "Layer" )], QStringLiteral( "points" ) );
-  QCOMPARE( attributes[QStringLiteral( "FeatureID" )], 1 );
-  QCOMPARE( attributes[QStringLiteral( "LabelText" )], QStringLiteral( "Biplane" ) );
-  QCOMPARE( attributes[QStringLiteral( "LabelRotation" )], 0.0 );
-  QCOMPARE( attributes[QStringLiteral( "Family" )], QStringLiteral( "QGIS Vera Sans" ) );
-  QCOMPARE( attributes[QStringLiteral( "Size" )], 9.75 );
-  QCOMPARE( attributes[QStringLiteral( "Italic" )], false );
-  QCOMPARE( attributes[QStringLiteral( "Bold" )], false );
-  QCOMPARE( attributes[QStringLiteral( "FontStyle" )], QStringLiteral( "Roman" ) );
-  QCOMPARE( attributes[QStringLiteral( "FontLetterSpacing" )], 0.0 );
-  QCOMPARE( attributes[QStringLiteral( "FontWordSpacing" )], 0.0 );
-  QCOMPARE( attributes[QStringLiteral( "MultiLineAlignment" )], QStringLiteral( "left" ) );
-  QCOMPARE( attributes[QStringLiteral( "MultiLineHeight" )], 1.0 );
+  QCOMPARE( attributes[u"Layer"_s], u"points"_s );
+  QCOMPARE( attributes[u"FeatureID"_s], 1 );
+  QCOMPARE( attributes[u"LabelText"_s], u"Biplane"_s );
+  QCOMPARE( attributes[u"LabelRotation"_s], 0.0 );
+  QCOMPARE( attributes[u"Family"_s], u"QGIS Vera Sans"_s );
+  QCOMPARE( attributes[u"Size"_s], 9.75 );
+  QCOMPARE( attributes[u"Italic"_s], false );
+  QCOMPARE( attributes[u"Bold"_s], false );
+  QCOMPARE( attributes[u"FontStyle"_s], u"Roman"_s );
+  QCOMPARE( attributes[u"FontLetterSpacing"_s], 0.0 );
+  QCOMPARE( attributes[u"FontWordSpacing"_s], 0.0 );
+  QCOMPARE( attributes[u"MultiLineAlignment"_s], u"left"_s );
+  QCOMPARE( attributes[u"MultiLineHeight"_s], 1.0 );
 }
 
 void TestQgsProcessingAlgsPt2::dxfExport()
@@ -1604,16 +1610,16 @@ void TestQgsProcessingAlgsPt2::dxfExport()
   QgsProject project;
   project.addMapLayer( mPolygonLayer );
 
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:dxfexport" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:dxfexport"_s ) );
   QVERIFY( alg != nullptr );
 
   QgsReferencedRectangle extent( QgsRectangle( -103.9, 25.0, -98.0, 29.8 ), mPolygonLayer->crs() );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "LAYERS" ), QStringList() << mPolygonLayer->id() );
-  parameters.insert( QStringLiteral( "EXTENT" ), extent );
-  parameters.insert( QStringLiteral( "SCALE" ), 1000.00 );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"LAYERS"_s, QStringList() << mPolygonLayer->id() );
+  parameters.insert( u"EXTENT"_s, extent );
+  parameters.insert( u"SCALE"_s, 1000.00 );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   auto context = std::make_unique<QgsProcessingContext>();
@@ -1624,7 +1630,7 @@ void TestQgsProcessingAlgsPt2::dxfExport()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  auto resultLayer = std::make_unique<QgsVectorLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "dxf" );
+  auto resultLayer = std::make_unique<QgsVectorLayer>( results.value( u"OUTPUT"_s ).toString(), "dxf" );
   QVERIFY( resultLayer->isValid() );
   QCOMPARE( resultLayer->featureCount(), 1L );
   QCOMPARE( resultLayer->wkbType(), Qgis::WkbType::LineString );
@@ -1632,21 +1638,21 @@ void TestQgsProcessingAlgsPt2::dxfExport()
 
 void TestQgsProcessingAlgsPt2::splitVectorLayer()
 {
-  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:4326&field=pk:int&field=col1:string"_s, u"vl"_s, u"memory"_s );
   QVERIFY( layer->isValid() );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 << QVariant() );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (0 0)" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"Point (0 0)"_s ) );
   layer->dataProvider()->addFeature( f );
-  f.setAttributes( QgsAttributes() << 2 << QLatin1String( "" ) );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (0 1)" ) ) );
+  f.setAttributes( QgsAttributes() << 2 << QString( "" ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"Point (0 1)"_s ) );
   layer->dataProvider()->addFeature( f );
-  f.setAttributes( QgsAttributes() << 3 << QStringLiteral( "value" ) );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (0 2)" ) ) );
+  f.setAttributes( QgsAttributes() << 3 << u"value"_s );
+  f.setGeometry( QgsGeometry::fromWkt( u"Point (0 2)"_s ) );
   layer->dataProvider()->addFeature( f );
 
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:splitvectorlayer" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:splitvectorlayer"_s ) );
   QVERIFY( alg != nullptr );
 
   QDir outputDir( QDir::tempPath() + "/split_vector/" );
@@ -1654,10 +1660,10 @@ void TestQgsProcessingAlgsPt2::splitVectorLayer()
     outputDir.removeRecursively();
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer.get() ) );
-  parameters.insert( QStringLiteral( "FIELD" ), QStringLiteral( "col1" ) );
-  parameters.insert( QStringLiteral( "FILE_TYPE" ), QStringLiteral( "gpkg" ) );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputDir.absolutePath() );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( layer.get() ) );
+  parameters.insert( u"FIELD"_s, u"col1"_s );
+  parameters.insert( u"FILE_TYPE"_s, u"gpkg"_s );
+  parameters.insert( u"OUTPUT"_s, outputDir.absolutePath() );
 
   bool ok = false;
   auto context = std::make_unique<QgsProcessingContext>();
@@ -1666,7 +1672,7 @@ void TestQgsProcessingAlgsPt2::splitVectorLayer()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QCOMPARE( results.value( QStringLiteral( "OUTPUT_LAYERS" ) ).toList().count(), 3 );
+  QCOMPARE( results.value( u"OUTPUT_LAYERS"_s ).toList().count(), 3 );
   QDir dataDir( outputDir );
   QStringList entries = dataDir.entryList( QStringList(), QDir::Files | QDir::NoDotAndDotDot );
   QCOMPARE( entries.count(), 3 );
@@ -1674,22 +1680,22 @@ void TestQgsProcessingAlgsPt2::splitVectorLayer()
 
 void TestQgsProcessingAlgsPt2::buffer()
 {
-  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:4326&field=pk:int&field=col1:string"_s, u"vl"_s, u"memory"_s );
   QVERIFY( layer->isValid() );
 
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:buffer" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:buffer"_s ) );
   QVERIFY( alg != nullptr );
 
   // buffering empty layer should produce an empty layer
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer.get() ) );
-  parameters.insert( QStringLiteral( "DISTANCE" ), 2.0 );
-  parameters.insert( QStringLiteral( "SEGMENTS" ), 5 );
-  parameters.insert( QStringLiteral( "END_CAP_STYLE" ), 0 );
-  parameters.insert( QStringLiteral( "JOIN_STYLE" ), 0 );
-  parameters.insert( QStringLiteral( "MITER_LIMIT" ), 0 );
-  parameters.insert( QStringLiteral( "DISSOLVE" ), false );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QStringLiteral( "memory:" ) );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( layer.get() ) );
+  parameters.insert( u"DISTANCE"_s, 2.0 );
+  parameters.insert( u"SEGMENTS"_s, 5 );
+  parameters.insert( u"END_CAP_STYLE"_s, 0 );
+  parameters.insert( u"JOIN_STYLE"_s, 0 );
+  parameters.insert( u"MITER_LIMIT"_s, 0 );
+  parameters.insert( u"DISSOLVE"_s, false );
+  parameters.insert( u"OUTPUT"_s, u"memory:"_s );
 
   bool ok = false;
   auto context = std::make_unique<QgsProcessingContext>();
@@ -1698,21 +1704,21 @@ void TestQgsProcessingAlgsPt2::buffer()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QVERIFY( !results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
-  QgsVectorLayer *bufferedLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QVERIFY( !results.value( u"OUTPUT"_s ).toString().isEmpty() );
+  QgsVectorLayer *bufferedLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) );
   QVERIFY( bufferedLayer->isValid() );
   QCOMPARE( bufferedLayer->wkbType(), Qgis::WkbType::MultiPolygon );
   QCOMPARE( bufferedLayer->featureCount(), layer->featureCount() );
 
   // buffering empty layer with dissolve should produce an empty layer
-  parameters.insert( QStringLiteral( "DISSOLVE" ), true );
+  parameters.insert( u"DISSOLVE"_s, true );
 
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QVERIFY( !results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
-  bufferedLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QVERIFY( !results.value( u"OUTPUT"_s ).toString().isEmpty() );
+  bufferedLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) );
   QVERIFY( bufferedLayer->isValid() );
   QCOMPARE( bufferedLayer->wkbType(), Qgis::WkbType::MultiPolygon );
   QCOMPARE( bufferedLayer->featureCount(), layer->featureCount() );
@@ -1721,39 +1727,39 @@ void TestQgsProcessingAlgsPt2::buffer()
 void TestQgsProcessingAlgsPt2::splitWithLines()
 {
   QgsFeature l1_1, l1_2, l2_1, l2_2, p1_1, p1_2, p2_1, p2_2;
-  auto lineLayer1 = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiLineString?crs=epsg:4326" ), QStringLiteral( "l1" ), QStringLiteral( "memory" ) );
+  auto lineLayer1 = std::make_unique<QgsVectorLayer>( u"MultiLineString?crs=epsg:4326"_s, u"l1"_s, u"memory"_s );
   QVERIFY( lineLayer1->isValid() );
   l1_1.setGeometry( QgsGeometry::fromWkt( "MultiLineString ((19 40, 26 40),(20 39, 25 39))" ) );
   l1_2.setGeometry( QgsGeometry::fromWkt( "MultiLineString ((19 35, 26 35))" ) );
   lineLayer1->dataProvider()->addFeature( l1_1 );
   lineLayer1->dataProvider()->addFeature( l1_2 );
-  auto lineLayer2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiLineString?crs=epsg:4326" ), QStringLiteral( "l2" ), QStringLiteral( "memory" ) );
+  auto lineLayer2 = std::make_unique<QgsVectorLayer>( u"MultiLineString?crs=epsg:4326"_s, u"l2"_s, u"memory"_s );
   QVERIFY( lineLayer2->isValid() );
   l2_1.setGeometry( QgsGeometry::fromWkt( "MultiLineString ((20 42, 20 34, 23 42))" ) );
   l2_2.setGeometry( QgsGeometry::fromWkt( "MultiLineString ((21 42, 21 34),(23 42, 23 34, 25 42))" ) );
   lineLayer2->dataProvider()->addFeature( l2_1 );
   lineLayer2->dataProvider()->addFeature( l2_2 );
-  auto polygonLayer1 = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiPolygon?crs=epsg:4326" ), QStringLiteral( "p1" ), QStringLiteral( "memory" ) );
+  auto polygonLayer1 = std::make_unique<QgsVectorLayer>( u"MultiPolygon?crs=epsg:4326"_s, u"p1"_s, u"memory"_s );
   QVERIFY( polygonLayer1->isValid() );
   p1_1.setGeometry( QgsGeometry::fromWkt( "MultiPolygon (((25 41, 25 38, 18 38, 18 41, 25 41),(19 39, 24 39, 24 40, 19 40, 19 39)))" ) );
   p1_2.setGeometry( QgsGeometry::fromWkt( "MultiPolygon (((18 37, 21 37, 21 35, 18 35, 18 37),(19.5 36.5, 19.5 35.5, 20.5 35.5, 20.5 36.5, 19.5 36.5)),((22 37, 25 37, 25 35, 22 35, 22 37),(24 36, 24 35.5, 24.5 35.5, 24.5 36, 24 36),(23.5 35.5, 23.5 36.5, 22.5 36.5, 22.5 35.5, 23.5 35.5)))" ) );
   polygonLayer1->dataProvider()->addFeature( p1_1 );
   polygonLayer1->dataProvider()->addFeature( p1_2 );
-  auto polygonLayer2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "MultiPolygon?crs=epsg:4326" ), QStringLiteral( "p2" ), QStringLiteral( "memory" ) );
+  auto polygonLayer2 = std::make_unique<QgsVectorLayer>( u"MultiPolygon?crs=epsg:4326"_s, u"p2"_s, u"memory"_s );
   QVERIFY( polygonLayer2->isValid() );
   p2_1.setGeometry( QgsGeometry::fromWkt( "MultiPolygon (((23 42, 20 34, 20 42, 23 42),(20.5 38.5, 21 38.5, 21.5 40.5, 20.5 40.5, 20.5 38.5)))" ) );
   p2_2.setGeometry( QgsGeometry::fromWkt( "MultiPolygon (((23 34, 23 42, 25 42, 23 34),(24 40.5, 23.5 40.5, 23.5 39.5, 24 40.5)),((19.5 34.5, 17.5 34.5, 17.5 42, 18.5 42, 19.5 34.5),(18.5 37.5, 18 37.5, 18.5 36.5, 18.5 37.5)))" ) );
   polygonLayer2->dataProvider()->addFeature( p2_1 );
   polygonLayer2->dataProvider()->addFeature( p2_2 );
 
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:splitwithlines" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:splitwithlines"_s ) );
   QVERIFY( alg != nullptr );
 
   // Split lineLayer1 with lineLayer2
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( lineLayer1.get() ) );
-  parameters.insert( QStringLiteral( "LINES" ), QVariant::fromValue( lineLayer2.get() ) );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QStringLiteral( "memory:" ) );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( lineLayer1.get() ) );
+  parameters.insert( u"LINES"_s, QVariant::fromValue( lineLayer2.get() ) );
+  parameters.insert( u"OUTPUT"_s, u"memory:"_s );
 
   bool ok = false;
   auto context = std::make_unique<QgsProcessingContext>();
@@ -1762,43 +1768,43 @@ void TestQgsProcessingAlgsPt2::splitWithLines()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QgsVectorLayer *splitLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QgsVectorLayer *splitLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) );
   QVERIFY( splitLayer->isValid() );
   QCOMPARE( splitLayer->wkbType(), Qgis::WkbType::MultiLineString );
   QCOMPARE( splitLayer->featureCount(), 17 );
 
   // Split polygonLayer1 with lineLayer2
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( polygonLayer1.get() ) );
-  parameters.insert( QStringLiteral( "LINES" ), QVariant::fromValue( lineLayer2.get() ) );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( polygonLayer1.get() ) );
+  parameters.insert( u"LINES"_s, QVariant::fromValue( lineLayer2.get() ) );
 
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  splitLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  splitLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) );
   QVERIFY( splitLayer->isValid() );
   QCOMPARE( splitLayer->wkbType(), Qgis::WkbType::MultiPolygon );
   QCOMPARE( splitLayer->featureCount(), 16 );
 
   // Split lineLayer1 with polygonLayer2
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( lineLayer1.get() ) );
-  parameters.insert( QStringLiteral( "LINES" ), QVariant::fromValue( polygonLayer2.get() ) );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( lineLayer1.get() ) );
+  parameters.insert( u"LINES"_s, QVariant::fromValue( polygonLayer2.get() ) );
 
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  splitLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  splitLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) );
   QVERIFY( splitLayer->isValid() );
   QCOMPARE( splitLayer->wkbType(), Qgis::WkbType::MultiLineString );
   QCOMPARE( splitLayer->featureCount(), 21 );
 
   // Split polygonLayer1 with polygonLayer2
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( polygonLayer1.get() ) );
-  parameters.insert( QStringLiteral( "LINES" ), QVariant::fromValue( polygonLayer2.get() ) );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( polygonLayer1.get() ) );
+  parameters.insert( u"LINES"_s, QVariant::fromValue( polygonLayer2.get() ) );
 
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  splitLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  splitLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) );
   QVERIFY( splitLayer->isValid() );
   QCOMPARE( splitLayer->wkbType(), Qgis::WkbType::MultiPolygon );
   QCOMPARE( splitLayer->featureCount(), 20 );
@@ -1819,15 +1825,15 @@ void TestQgsProcessingAlgsPt2::randomPointsInPolygonsFromField()
   QFETCH( int, expected );
 
   // Create a polygon memory layer
-  QgsVectorLayer polygonLayer { QStringLiteral( "Polygon?crs=epsg:4326" ), QStringLiteral( "polygons_points" ), QStringLiteral( "memory" ) };
+  QgsVectorLayer polygonLayer { u"Polygon?crs=epsg:4326"_s, u"polygons_points"_s, u"memory"_s };
   // Add an integer field num_points
   QList<QgsField> fields;
-  fields.append( QgsField( QStringLiteral( "num_points" ), QMetaType::Type::Int ) );
+  fields.append( QgsField( u"num_points"_s, QMetaType::Type::Int ) );
   polygonLayer.dataProvider()->addAttributes( fields );
   polygonLayer.updateFields();
   // Create a feature
   QgsFeature f;
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((0 0, 0 10, 10 10, 10 0, 0 0))" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"Polygon ((0 0, 0 10, 10 10, 10 0, 0 0))"_s ) );
   f.setAttributes( QgsAttributes() << num_points );
 
   // Add the feature to the layer
@@ -1838,11 +1844,11 @@ void TestQgsProcessingAlgsPt2::randomPointsInPolygonsFromField()
   // Run algorithm to generate random points in polygons from field num_points
   QVariantMap parameters;
 
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( &polygonLayer ) );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QStringLiteral( "memory:" ) );
-  parameters.insert( QStringLiteral( "POINTS_NUMBER" ), QgsProperty::fromExpression( QStringLiteral( "num_points" ) ) );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( &polygonLayer ) );
+  parameters.insert( u"OUTPUT"_s, u"memory:"_s );
+  parameters.insert( u"POINTS_NUMBER"_s, QgsProperty::fromExpression( u"num_points"_s ) );
 
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:randompointsinpolygons" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:randompointsinpolygons"_s ) );
   QVERIFY( alg != nullptr );
 
   bool ok = false;
@@ -1852,7 +1858,7 @@ void TestQgsProcessingAlgsPt2::randomPointsInPolygonsFromField()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QgsVectorLayer *resultLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QgsVectorLayer *resultLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) );
   QVERIFY( resultLayer );
   QCOMPARE( resultLayer->wkbType(), Qgis::WkbType::Point );
   QCOMPARE( resultLayer->featureCount(), expected );
@@ -1860,19 +1866,19 @@ void TestQgsProcessingAlgsPt2::randomPointsInPolygonsFromField()
 
 void TestQgsProcessingAlgsPt2::generateElevationProfileImage()
 {
-  auto lineLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineStringZ?crs=epsg:3857" ), QStringLiteral( "lines" ), QStringLiteral( "memory" ) );
+  auto lineLayer = std::make_unique<QgsVectorLayer>( u"LineStringZ?crs=epsg:3857"_s, u"lines"_s, u"memory"_s );
   QVERIFY( lineLayer->isValid() );
   QgsFeature feature;
   feature.setGeometry( QgsGeometry::fromWkt( "LineStringZ (0 0 0, 10 10 10)" ) );
   lineLayer->dataProvider()->addFeature( feature );
 
   QVariantMap properties;
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "255,0,0,255" ) );
-  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
-  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
+  properties.insert( u"color"_s, u"255,0,0,255"_s );
+  properties.insert( u"width"_s, u"1"_s );
+  properties.insert( u"capstyle"_s, u"flat"_s );
   dynamic_cast<QgsSingleSymbolRenderer *>( lineLayer->renderer() )->setSymbol( QgsLineSymbol::createSimple( properties ).release() );
 
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:generateelevationprofileimage" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:generateelevationprofileimage"_s ) );
   QVERIFY( alg != nullptr );
 
   QgsReferencedGeometry curve( QgsGeometry::fromWkt( "LineString(0 0, 10 10)" ), QgsCoordinateReferenceSystem( "EPSG:3857" ) );
@@ -1882,11 +1888,14 @@ void TestQgsProcessingAlgsPt2::generateElevationProfileImage()
     QFile::remove( outputImage );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "CURVE" ), QVariant::fromValue( curve ) );
-  parameters.insert( QStringLiteral( "MAP_LAYERS" ), QVariantList() << QVariant::fromValue( lineLayer.get() ) );
-  parameters.insert( QStringLiteral( "WIDTH" ), 500 );
-  parameters.insert( QStringLiteral( "HEIGHT" ), 350 );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputImage );
+  parameters.insert( u"CURVE"_s, QVariant::fromValue( curve ) );
+  parameters.insert( u"MAP_LAYERS"_s, QVariantList() << QVariant::fromValue( lineLayer.get() ) );
+  parameters.insert( u"WIDTH"_s, 500 );
+  parameters.insert( u"HEIGHT"_s, 350 );
+  parameters.insert( u"OUTPUT"_s, outputImage );
+  parameters.insert( u"TEXT_FONT_FAMILY"_s, QgsFontUtils::standardTestFontFamily() );
+  parameters.insert( u"TEXT_FONT_STYLE"_s, u"Bold"_s );
+  parameters.insert( u"TEXT_FONT_SIZE"_s, 12 );
 
   bool ok = false;
   auto context = std::make_unique<QgsProcessingContext>();
@@ -1900,23 +1909,23 @@ void TestQgsProcessingAlgsPt2::generateElevationProfileImage()
 
 void TestQgsProcessingAlgsPt2::copyMetadata()
 {
-  auto sourceLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  auto sourceLayer = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:4326&field=pk:int&field=col1:string"_s, u"input"_s, u"memory"_s );
   QVERIFY( sourceLayer->isValid() );
 
-  auto targetLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "target" ), QStringLiteral( "memory" ) );
+  auto targetLayer = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:4326&field=pk:int&field=col1:string"_s, u"target"_s, u"memory"_s );
   QVERIFY( targetLayer->isValid() );
 
   QgsLayerMetadata md;
-  md.setTitle( QStringLiteral( "Title" ) );
-  md.setAbstract( QStringLiteral( "Abstract" ) );
+  md.setTitle( u"Title"_s );
+  md.setAbstract( u"Abstract"_s );
   sourceLayer->setMetadata( md );
 
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:copylayermetadata" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:copylayermetadata"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "SOURCE" ), QVariant::fromValue( sourceLayer.get() ) );
-  parameters.insert( QStringLiteral( "TARGET" ), QVariant::fromValue( targetLayer.get() ) );
+  parameters.insert( u"SOURCE"_s, QVariant::fromValue( sourceLayer.get() ) );
+  parameters.insert( u"TARGET"_s, QVariant::fromValue( targetLayer.get() ) );
 
   bool ok = false;
   auto context = std::make_unique<QgsProcessingContext>();
@@ -1925,27 +1934,27 @@ void TestQgsProcessingAlgsPt2::copyMetadata()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QCOMPARE( results.value( QStringLiteral( "OUTPUT" ) ), targetLayer->id() );
+  QCOMPARE( results.value( u"OUTPUT"_s ), targetLayer->id() );
 
   QgsLayerMetadata targetMetadata = targetLayer->metadata();
-  QCOMPARE( targetMetadata.title(), QStringLiteral( "Title" ) );
-  QCOMPARE( targetMetadata.abstract(), QStringLiteral( "Abstract" ) );
+  QCOMPARE( targetMetadata.title(), u"Title"_s );
+  QCOMPARE( targetMetadata.abstract(), u"Abstract"_s );
 }
 
 void TestQgsProcessingAlgsPt2::applyMetadata()
 {
-  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:4326&field=pk:int&field=col1:string"_s, u"input"_s, u"memory"_s );
   QVERIFY( layer->isValid() );
 
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:setlayermetadata" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:setlayermetadata"_s ) );
   QVERIFY( alg != nullptr );
 
   const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   const QString metadataFileName = dataDir + "/simple_metadata.qmd";
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer.get() ) );
-  parameters.insert( QStringLiteral( "METADATA" ), metadataFileName );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( layer.get() ) );
+  parameters.insert( u"METADATA"_s, metadataFileName );
 
   bool ok = false;
   auto context = std::make_unique<QgsProcessingContext>();
@@ -1954,29 +1963,29 @@ void TestQgsProcessingAlgsPt2::applyMetadata()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QCOMPARE( results.value( QStringLiteral( "OUTPUT" ) ), layer->id() );
+  QCOMPARE( results.value( u"OUTPUT"_s ), layer->id() );
 
   QgsLayerMetadata targetMetadata = layer->metadata();
-  QCOMPARE( targetMetadata.title(), QStringLiteral( "Title" ) );
-  QCOMPARE( targetMetadata.abstract(), QStringLiteral( "Abstract" ) );
+  QCOMPARE( targetMetadata.title(), u"Title"_s );
+  QCOMPARE( targetMetadata.abstract(), u"Abstract"_s );
 }
 
 void TestQgsProcessingAlgsPt2::exportMetadata()
 {
-  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:4326&field=pk:int&field=col1:string"_s, u"input"_s, u"memory"_s );
   QVERIFY( layer->isValid() );
 
   QgsLayerMetadata md;
-  md.setTitle( QStringLiteral( "Title" ) );
-  md.setAbstract( QStringLiteral( "Abstract" ) );
+  md.setTitle( u"Title"_s );
+  md.setAbstract( u"Abstract"_s );
   layer->setMetadata( md );
 
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:exportlayermetadata" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:exportlayermetadata"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer.get() ) );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( layer.get() ) );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   auto context = std::make_unique<QgsProcessingContext>();
@@ -1988,8 +1997,8 @@ void TestQgsProcessingAlgsPt2::exportMetadata()
   int line, column;
   QString errorMessage;
 
-  QDomDocument doc( QStringLiteral( "qgis" ) );
-  QFile metadataFile( results.value( QStringLiteral( "OUTPUT" ) ).toString() );
+  QDomDocument doc( u"qgis"_s );
+  QFile metadataFile( results.value( u"OUTPUT"_s ).toString() );
   if ( metadataFile.open( QFile::ReadOnly ) )
   {
     ok = doc.setContent( &metadataFile, &errorMessage, &line, &column );
@@ -1997,7 +2006,7 @@ void TestQgsProcessingAlgsPt2::exportMetadata()
     metadataFile.close();
   }
 
-  const QDomElement root = doc.firstChildElement( QStringLiteral( "qgis" ) );
+  const QDomElement root = doc.firstChildElement( u"qgis"_s );
   QVERIFY( !root.isNull() );
 
   QgsLayerMetadata exportedMetadata;
@@ -2008,20 +2017,20 @@ void TestQgsProcessingAlgsPt2::exportMetadata()
 
 void TestQgsProcessingAlgsPt2::addHistoryMetadata()
 {
-  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:4326&field=pk:int&field=col1:string"_s, u"input"_s, u"memory"_s );
   QVERIFY( layer->isValid() );
 
   QgsLayerMetadata md;
-  md.setTitle( QStringLiteral( "Title" ) );
-  md.setAbstract( QStringLiteral( "Abstract" ) );
+  md.setTitle( u"Title"_s );
+  md.setAbstract( u"Abstract"_s );
   layer->setMetadata( md );
 
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:addhistorymetadata" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:addhistorymetadata"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer.get() ) );
-  parameters.insert( QStringLiteral( "HISTORY" ), QStringLiteral( "do something" ) );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( layer.get() ) );
+  parameters.insert( u"HISTORY"_s, u"do something"_s );
 
   bool ok = false;
   auto context = std::make_unique<QgsProcessingContext>();
@@ -2030,52 +2039,52 @@ void TestQgsProcessingAlgsPt2::addHistoryMetadata()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QCOMPARE( results.value( QStringLiteral( "OUTPUT" ) ), layer->id() );
+  QCOMPARE( results.value( u"OUTPUT"_s ), layer->id() );
 
   QStringList history = layer->metadata().history();
   QCOMPARE( history.count(), 1 );
-  QCOMPARE( history.at( 0 ), QStringLiteral( "do something" ) );
+  QCOMPARE( history.at( 0 ), u"do something"_s );
 
-  parameters[QStringLiteral( "HISTORY" )] = QStringLiteral( "do something else" );
+  parameters[u"HISTORY"_s] = u"do something else"_s;
 
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QCOMPARE( results.value( QStringLiteral( "OUTPUT" ) ), layer->id() );
+  QCOMPARE( results.value( u"OUTPUT"_s ), layer->id() );
 
   history = layer->metadata().history();
   QCOMPARE( history.count(), 2 );
-  QCOMPARE( history.at( 0 ), QStringLiteral( "do something" ) );
-  QCOMPARE( history.at( 1 ), QStringLiteral( "do something else" ) );
+  QCOMPARE( history.at( 0 ), u"do something"_s );
+  QCOMPARE( history.at( 1 ), u"do something else"_s );
 }
 
 void TestQgsProcessingAlgsPt2::updateMetadata()
 {
-  auto sourceLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  auto sourceLayer = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:4326&field=pk:int&field=col1:string"_s, u"input"_s, u"memory"_s );
   QVERIFY( sourceLayer->isValid() );
 
-  auto targetLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "target" ), QStringLiteral( "memory" ) );
+  auto targetLayer = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:4326&field=pk:int&field=col1:string"_s, u"target"_s, u"memory"_s );
   QVERIFY( targetLayer->isValid() );
 
   QgsLayerMetadata mdInput;
-  mdInput.setTitle( QStringLiteral( "New title" ) );
-  mdInput.setAbstract( QStringLiteral( "New abstract" ) );
-  mdInput.setLanguage( QStringLiteral( "Language" ) );
+  mdInput.setTitle( u"New title"_s );
+  mdInput.setAbstract( u"New abstract"_s );
+  mdInput.setLanguage( u"Language"_s );
   sourceLayer->setMetadata( mdInput );
 
   QgsLayerMetadata mdTarget;
-  mdTarget.setTitle( QStringLiteral( "Title" ) );
-  mdTarget.setAbstract( QStringLiteral( "Abstract" ) );
-  mdTarget.setType( QStringLiteral( "Type" ) );
+  mdTarget.setTitle( u"Title"_s );
+  mdTarget.setAbstract( u"Abstract"_s );
+  mdTarget.setType( u"Type"_s );
   targetLayer->setMetadata( mdTarget );
 
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:updatelayermetadata" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:updatelayermetadata"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "SOURCE" ), QVariant::fromValue( sourceLayer.get() ) );
-  parameters.insert( QStringLiteral( "TARGET" ), QVariant::fromValue( targetLayer.get() ) );
+  parameters.insert( u"SOURCE"_s, QVariant::fromValue( sourceLayer.get() ) );
+  parameters.insert( u"TARGET"_s, QVariant::fromValue( targetLayer.get() ) );
 
   bool ok = false;
   auto context = std::make_unique<QgsProcessingContext>();
@@ -2084,26 +2093,26 @@ void TestQgsProcessingAlgsPt2::updateMetadata()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QCOMPARE( results.value( QStringLiteral( "OUTPUT" ) ), targetLayer->id() );
+  QCOMPARE( results.value( u"OUTPUT"_s ), targetLayer->id() );
 
   QgsLayerMetadata targetMetadata = targetLayer->metadata();
-  QCOMPARE( targetMetadata.title(), QStringLiteral( "New title" ) );
-  QCOMPARE( targetMetadata.abstract(), QStringLiteral( "New abstract" ) );
-  QCOMPARE( targetMetadata.language(), QStringLiteral( "Language" ) );
-  QCOMPARE( targetMetadata.type(), QStringLiteral( "Type" ) );
+  QCOMPARE( targetMetadata.title(), u"New title"_s );
+  QCOMPARE( targetMetadata.abstract(), u"New abstract"_s );
+  QCOMPARE( targetMetadata.language(), u"Language"_s );
+  QCOMPARE( targetMetadata.type(), u"Type"_s );
 }
 
 void TestQgsProcessingAlgsPt2::setMetadataFields()
 {
-  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:4326&field=pk:int&field=col1:string"_s, u"input"_s, u"memory"_s );
   QVERIFY( layer->isValid() );
 
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:setmetadatafields" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:setmetadatafields"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer.get() ) );
-  parameters.insert( QStringLiteral( "TITLE" ), QStringLiteral( "Title" ) );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( layer.get() ) );
+  parameters.insert( u"TITLE"_s, u"Title"_s );
 
   bool ok = false;
   auto context = std::make_unique<QgsProcessingContext>();
@@ -2112,79 +2121,79 @@ void TestQgsProcessingAlgsPt2::setMetadataFields()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QCOMPARE( results.value( QStringLiteral( "OUTPUT" ) ), layer->id() );
-  QCOMPARE( layer->metadata().title(), QStringLiteral( "Title" ) );
+  QCOMPARE( results.value( u"OUTPUT"_s ), layer->id() );
+  QCOMPARE( layer->metadata().title(), u"Title"_s );
 
   // update existing field and set new
-  parameters[QStringLiteral( "TITLE" )] = QStringLiteral( "New title" );
-  parameters.insert( QStringLiteral( "ABSTRACT" ), QStringLiteral( "Abstract" ) );
-  parameters.insert( QStringLiteral( "FEES" ), QStringLiteral( "Enormous fee" ) );
-  parameters.insert( QStringLiteral( "CRS" ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  parameters[u"TITLE"_s] = u"New title"_s;
+  parameters.insert( u"ABSTRACT"_s, u"Abstract"_s );
+  parameters.insert( u"FEES"_s, u"Enormous fee"_s );
+  parameters.insert( u"CRS"_s, QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
 
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QCOMPARE( results.value( QStringLiteral( "OUTPUT" ) ), layer->id() );
-  QCOMPARE( layer->metadata().title(), QStringLiteral( "New title" ) );
-  QCOMPARE( layer->metadata().abstract(), QStringLiteral( "Abstract" ) );
-  QCOMPARE( layer->metadata().fees(), QStringLiteral( "Enormous fee" ) );
+  QCOMPARE( results.value( u"OUTPUT"_s ), layer->id() );
+  QCOMPARE( layer->metadata().title(), u"New title"_s );
+  QCOMPARE( layer->metadata().abstract(), u"Abstract"_s );
+  QCOMPARE( layer->metadata().fees(), u"Enormous fee"_s );
   QVERIFY( layer->metadata().crs().isValid() );
-  QCOMPARE( layer->metadata().crs().authid(), QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( layer->metadata().crs().authid(), u"EPSG:4326"_s );
 
   // ignore empty field
-  parameters[QStringLiteral( "TITLE" )] = QLatin1String( "" );
-  parameters.insert( QStringLiteral( "IGNORE_EMPTY" ), true );
+  parameters[u"TITLE"_s] = QString();
+  parameters.insert( u"IGNORE_EMPTY"_s, true );
 
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QCOMPARE( results.value( QStringLiteral( "OUTPUT" ) ), layer->id() );
-  QCOMPARE( layer->metadata().title(), QStringLiteral( "New title" ) );
-  QCOMPARE( layer->metadata().abstract(), QStringLiteral( "Abstract" ) );
-  QCOMPARE( layer->metadata().fees(), QStringLiteral( "Enormous fee" ) );
+  QCOMPARE( results.value( u"OUTPUT"_s ), layer->id() );
+  QCOMPARE( layer->metadata().title(), u"New title"_s );
+  QCOMPARE( layer->metadata().abstract(), u"Abstract"_s );
+  QCOMPARE( layer->metadata().fees(), u"Enormous fee"_s );
   QVERIFY( layer->metadata().crs().isValid() );
-  QCOMPARE( layer->metadata().crs().authid(), QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( layer->metadata().crs().authid(), u"EPSG:4326"_s );
 
-  parameters[QStringLiteral( "IGNORE_EMPTY" )] = false;
+  parameters[u"IGNORE_EMPTY"_s] = false;
 
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QCOMPARE( results.value( QStringLiteral( "OUTPUT" ) ), layer->id() );
-  QCOMPARE( layer->metadata().title(), QLatin1String( "" ) );
-  QCOMPARE( layer->metadata().abstract(), QStringLiteral( "Abstract" ) );
-  QCOMPARE( layer->metadata().fees(), QStringLiteral( "Enormous fee" ) );
+  QCOMPARE( results.value( u"OUTPUT"_s ), layer->id() );
+  QCOMPARE( layer->metadata().title(), QString() );
+  QCOMPARE( layer->metadata().abstract(), u"Abstract"_s );
+  QCOMPARE( layer->metadata().fees(), u"Enormous fee"_s );
   QVERIFY( layer->metadata().crs().isValid() );
-  QCOMPARE( layer->metadata().crs().authid(), QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( layer->metadata().crs().authid(), u"EPSG:4326"_s );
 }
 
 void TestQgsProcessingAlgsPt2::mergeVectors()
 {
-  auto baseLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=id:int(10)&field=test_precision:double(10,2)&field=test_length:string(8)" ), QStringLiteral( "base" ), QStringLiteral( "memory" ) );
+  auto baseLayer = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:4326&field=id:int(10)&field=test_precision:double(10,2)&field=test_length:string(8)"_s, u"base"_s, u"memory"_s );
   QVERIFY( baseLayer->isValid() );
 
   QgsFeature f;
-  f.setAttributes( QgsAttributes() << 1 << 1.25 << QStringLiteral( "01234567" ) );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (0 0)" ) ) );
+  f.setAttributes( QgsAttributes() << 1 << 1.25 << u"01234567"_s );
+  f.setGeometry( QgsGeometry::fromWkt( u"Point (0 0)"_s ) );
   baseLayer->dataProvider()->addFeature( f );
 
-  auto mergeLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=id:int(10)&field=test_precision:double(10,4)&field=test_length:string(10)" ), QStringLiteral( "to_merge" ), QStringLiteral( "memory" ) );
+  auto mergeLayer = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:4326&field=id:int(10)&field=test_precision:double(10,4)&field=test_length:string(10)"_s, u"to_merge"_s, u"memory"_s );
   QVERIFY( mergeLayer->isValid() );
 
-  f.setAttributes( QgsAttributes() << 1 << 1.2515 << QStringLiteral( "0123456789" ) );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (1 1)" ) ) );
+  f.setAttributes( QgsAttributes() << 1 << 1.2515 << u"0123456789"_s );
+  f.setGeometry( QgsGeometry::fromWkt( u"Point (1 1)"_s ) );
   mergeLayer->dataProvider()->addFeature( f );
 
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:mergevectorlayers" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:mergevectorlayers"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "LAYERS" ), QVariantList() << QVariant::fromValue( baseLayer.get() ) << QVariant::fromValue( mergeLayer.get() ) );
-  parameters.insert( QStringLiteral( "ADD_SOURCE_FIELDS" ), false );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"LAYERS"_s, QVariantList() << QVariant::fromValue( baseLayer.get() ) << QVariant::fromValue( mergeLayer.get() ) );
+  parameters.insert( u"ADD_SOURCE_FIELDS"_s, false );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   auto context = std::make_unique<QgsProcessingContext>();
@@ -2193,46 +2202,46 @@ void TestQgsProcessingAlgsPt2::mergeVectors()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QVERIFY( !results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
+  QVERIFY( !results.value( u"OUTPUT"_s ).toString().isEmpty() );
 
-  QgsVectorLayer *resultLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QgsVectorLayer *resultLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"OUTPUT"_s ).toString() ) );
   QVERIFY( resultLayer );
   QVERIFY( resultLayer->isValid() );
   QVERIFY( resultLayer->geometryType() == Qgis::GeometryType::Point );
   QCOMPARE( resultLayer->featureCount(), 2 );
   QCOMPARE( resultLayer->fields().count(), 3 );
-  QCOMPARE( resultLayer->fields().at( 0 ).name(), QStringLiteral( "id" ) );
+  QCOMPARE( resultLayer->fields().at( 0 ).name(), u"id"_s );
   QCOMPARE( resultLayer->fields().at( 0 ).length(), 10 );
   QCOMPARE( resultLayer->fields().at( 0 ).precision(), 0 );
-  QCOMPARE( resultLayer->fields().at( 1 ).name(), QStringLiteral( "test_precision" ) );
+  QCOMPARE( resultLayer->fields().at( 1 ).name(), u"test_precision"_s );
   QCOMPARE( resultLayer->fields().at( 1 ).length(), 10 );
   QCOMPARE( resultLayer->fields().at( 1 ).precision(), 4 );
-  QCOMPARE( resultLayer->fields().at( 2 ).name(), QStringLiteral( "test_length" ) );
+  QCOMPARE( resultLayer->fields().at( 2 ).name(), u"test_length"_s );
   QCOMPARE( resultLayer->fields().at( 2 ).length(), 10 );
   QCOMPARE( resultLayer->fields().at( 2 ).precision(), 0 );
 
   QgsFeatureIterator featIt = resultLayer->getFeatures();
   QgsFeature feat;
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "Point (0 0)" ), feat.geometry().asWkt() );
+  QCOMPARE( u"Point (0 0)"_s, feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toInt(), 1 );
   QCOMPARE( feat.attributes().at( 1 ).toDouble(), 1.2500 );
-  QCOMPARE( feat.attributes().at( 2 ).toString(), QStringLiteral( "01234567" ) );
+  QCOMPARE( feat.attributes().at( 2 ).toString(), u"01234567"_s );
 
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "Point (1 1)" ), feat.geometry().asWkt() );
+  QCOMPARE( u"Point (1 1)"_s, feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toInt(), 1 );
   QCOMPARE( feat.attributes().at( 1 ).toDouble(), 1.2515 );
-  QCOMPARE( feat.attributes().at( 2 ).toString(), QStringLiteral( "0123456789" ) );
+  QCOMPARE( feat.attributes().at( 2 ).toString(), u"0123456789"_s );
 }
 
 void TestQgsProcessingAlgsPt2::nativeAlgsRasterSize()
 {
-  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:32633" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:32633"_s, u"input"_s, u"memory"_s );
   QVERIFY( layer->isValid() );
 
   QgsFeature f;
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString(656000 4551184, 656184 4551000)" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"LineString(656000 4551184, 656184 4551000)"_s ) );
   layer->dataProvider()->addFeature( f );
 
   const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
@@ -2242,20 +2251,20 @@ void TestQgsProcessingAlgsPt2::nativeAlgsRasterSize()
   // WIDTH: 10
   // HEIGHT: 10
   // EXTENT: 656000,656184,4551000,4551184 [EPSG:32633]
-  auto gdalRasterLayer = std::make_unique<QgsRasterLayer>( dataDir + QStringLiteral( "/raster/gdal_rasterize.tif" ), "gdal_rasterize", "gdal" );
+  auto gdalRasterLayer = std::make_unique<QgsRasterLayer>( dataDir + u"/raster/gdal_rasterize.tif"_s, "gdal_rasterize", "gdal" );
 
   // create constant raster
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:createconstantrasterlayer" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:createconstantrasterlayer"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
   parameters.clear();
-  parameters.insert( QStringLiteral( "EXTENT" ), QStringLiteral( "656000,656184,4551000,4551184 [EPSG:32633]" ) );
-  parameters.insert( QStringLiteral( "NUMBER" ), 1 );
-  parameters.insert( QStringLiteral( "OUTPUT_TYPE" ), 0 );
-  parameters.insert( QStringLiteral( "PIXEL_SIZE" ), 10 );
-  parameters.insert( QStringLiteral( "TARGET_CRS" ), QgsCoordinateReferenceSystem( "EPSG:32633" ) );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"EXTENT"_s, u"656000,656184,4551000,4551184 [EPSG:32633]"_s );
+  parameters.insert( u"NUMBER"_s, 1 );
+  parameters.insert( u"OUTPUT_TYPE"_s, 0 );
+  parameters.insert( u"PIXEL_SIZE"_s, 10 );
+  parameters.insert( u"TARGET_CRS"_s, QgsCoordinateReferenceSystem( "EPSG:32633" ) );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   bool ok = false;
   auto context = std::make_unique<QgsProcessingContext>();
@@ -2264,47 +2273,47 @@ void TestQgsProcessingAlgsPt2::nativeAlgsRasterSize()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  auto constantRasterLayer = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "constant", "gdal" );
+  auto constantRasterLayer = std::make_unique<QgsRasterLayer>( results.value( u"OUTPUT"_s ).toString(), "constant", "gdal" );
 
   QCOMPARE( constantRasterLayer->extent(), gdalRasterLayer->extent() );
   QCOMPARE( constantRasterLayer->height(), gdalRasterLayer->height() );
   QCOMPARE( constantRasterLayer->width(), gdalRasterLayer->width() );
 
   // create random raster (it is enough to check only one alg here as they have same base class)
-  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:createrandomuniformrasterlayer" ) ) );
+  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( u"native:createrandomuniformrasterlayer"_s ) );
   QVERIFY( alg != nullptr );
 
   parameters.clear();
-  parameters.insert( QStringLiteral( "EXTENT" ), QStringLiteral( "656000,656184,4551000,4551184 [EPSG:32633]" ) );
-  parameters.insert( QStringLiteral( "OUTPUT_TYPE" ), 0 );
-  parameters.insert( QStringLiteral( "PIXEL_SIZE" ), 10 );
-  parameters.insert( QStringLiteral( "TARGET_CRS" ), QgsCoordinateReferenceSystem( "EPSG:32633" ) );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"EXTENT"_s, u"656000,656184,4551000,4551184 [EPSG:32633]"_s );
+  parameters.insert( u"OUTPUT_TYPE"_s, 0 );
+  parameters.insert( u"PIXEL_SIZE"_s, 10 );
+  parameters.insert( u"TARGET_CRS"_s, QgsCoordinateReferenceSystem( "EPSG:32633" ) );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  auto randomRasterLayer = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "random", "gdal" );
+  auto randomRasterLayer = std::make_unique<QgsRasterLayer>( results.value( u"OUTPUT"_s ).toString(), "random", "gdal" );
 
   QCOMPARE( randomRasterLayer->extent(), gdalRasterLayer->extent() );
   QCOMPARE( randomRasterLayer->height(), gdalRasterLayer->height() );
   QCOMPARE( randomRasterLayer->width(), gdalRasterLayer->width() );
 
   // line density
-  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:linedensity" ) ) );
+  alg.reset( QgsApplication::processingRegistry()->createAlgorithmById( u"native:linedensity"_s ) );
   QVERIFY( alg != nullptr );
 
   parameters.clear();
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer.get() ) );
-  parameters.insert( QStringLiteral( "PIXEL_SIZE" ), 10 );
-  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( layer.get() ) );
+  parameters.insert( u"PIXEL_SIZE"_s, 10 );
+  parameters.insert( u"OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  auto densityRasterLayer = std::make_unique<QgsRasterLayer>( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "density", "gdal" );
+  auto densityRasterLayer = std::make_unique<QgsRasterLayer>( results.value( u"OUTPUT"_s ).toString(), "density", "gdal" );
 
   QCOMPARE( densityRasterLayer->extent(), gdalRasterLayer->extent() );
   QCOMPARE( densityRasterLayer->height(), gdalRasterLayer->height() );
@@ -2313,15 +2322,15 @@ void TestQgsProcessingAlgsPt2::nativeAlgsRasterSize()
 
 void TestQgsProcessingAlgsPt2::defineProjection()
 {
-  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( u"Point"_s, u"input"_s, u"memory"_s );
   QVERIFY( layer->isValid() );
 
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:definecurrentprojection" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:definecurrentprojection"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer.get() ) );
-  parameters.insert( QStringLiteral( "CRS" ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( layer.get() ) );
+  parameters.insert( u"CRS"_s, QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
 
   bool ok = false;
   auto context = std::make_unique<QgsProcessingContext>();
@@ -2330,60 +2339,60 @@ void TestQgsProcessingAlgsPt2::defineProjection()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QCOMPARE( results.value( QStringLiteral( "OUTPUT" ) ), layer->id() );
+  QCOMPARE( results.value( u"OUTPUT"_s ), layer->id() );
   QVERIFY( layer->crs().isValid() );
-  QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:3857" ) );
+  QCOMPARE( layer->crs().authid(), u"EPSG:3857"_s );
 
   // check that .prj file is create and .qpj file is deleted
   const QTemporaryDir tmpPath;
   const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QFile::copy( dataDir + "/points.shp", tmpPath.filePath( QStringLiteral( "points.shp" ) ) );
-  QFile::copy( dataDir + "/points.shx", tmpPath.filePath( QStringLiteral( "points.shx" ) ) );
-  QFile::copy( dataDir + "/points.dbf", tmpPath.filePath( QStringLiteral( "points.dbf" ) ) );
-  QFile::copy( dataDir + "/points.qpj", tmpPath.filePath( QStringLiteral( "points.qpj" ) ) );
+  QFile::copy( dataDir + "/points.shp", tmpPath.filePath( u"points.shp"_s ) );
+  QFile::copy( dataDir + "/points.shx", tmpPath.filePath( u"points.shx"_s ) );
+  QFile::copy( dataDir + "/points.dbf", tmpPath.filePath( u"points.dbf"_s ) );
+  QFile::copy( dataDir + "/points.qpj", tmpPath.filePath( u"points.qpj"_s ) );
 
-  layer.reset( new QgsVectorLayer( tmpPath.filePath( QStringLiteral( "points.shp" ) ), QStringLiteral( "input" ), QStringLiteral( "ogr" ) ) );
+  layer = std::make_unique<QgsVectorLayer>( tmpPath.filePath( u"points.shp"_s ), u"input"_s, u"ogr"_s );
   QVERIFY( layer->isValid() );
   QVERIFY( !layer->crs().isValid() );
 
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer.get() ) );
+  parameters.insert( u"INPUT"_s, QVariant::fromValue( layer.get() ) );
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
-  QFile prjFile( tmpPath.filePath( QStringLiteral( "points.prj" ) ) );
+  QFile prjFile( tmpPath.filePath( u"points.prj"_s ) );
   QVERIFY( prjFile.exists() );
-  QFile qpjFile( tmpPath.filePath( QStringLiteral( "points.qpj" ) ) );
+  QFile qpjFile( tmpPath.filePath( u"points.qpj"_s ) );
   QVERIFY( !qpjFile.exists() );
 }
 
 void TestQgsProcessingAlgsPt2::checkValidity()
 {
-  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=epsg:4326&field=int_f:int" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( u"Polygon?crs=epsg:4326&field=int_f:int"_s, u"input"_s, u"memory"_s );
   QVERIFY( layer->isValid() );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POLYGON ((0 0, 2 2, 0 2, 2 0, 0 0))" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"POLYGON ((0 0, 2 2, 0 2, 2 0, 0 0))"_s ) );
   QVERIFY( f.isValid() );
   layer->dataProvider()->addFeature( f );
 
   f.setAttributes( QgsAttributes() << 2 );
-  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POLYGON((1.1 1.1, 1.1 2.1, 2.1 2.1, 2.1 1.1, 1.1 1.1))" ) ) );
+  f.setGeometry( QgsGeometry::fromWkt( u"POLYGON((1.1 1.1, 1.1 2.1, 2.1 2.1, 2.1 1.1, 1.1 1.1))"_s ) );
   QVERIFY( f.isValid() );
   layer->dataProvider()->addFeature( f );
   QCOMPARE( layer->featureCount(), 2 );
 
-  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:checkvalidity" ) ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( u"native:checkvalidity"_s ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT_LAYER" ), QVariant::fromValue( layer.get() ) );
-  parameters.insert( QStringLiteral( "VALID_OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "INVALID_OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
-  parameters.insert( QStringLiteral( "ERROR_OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INPUT_LAYER"_s, QVariant::fromValue( layer.get() ) );
+  parameters.insert( u"VALID_OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"INVALID_OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( u"ERROR_OUTPUT"_s, QgsProcessing::TEMPORARY_OUTPUT );
 
   // QGIS method
-  parameters.insert( QStringLiteral( "METHOD" ), 1 );
+  parameters.insert( u"METHOD"_s, 1 );
 
   bool ok = false;
   auto context = std::make_unique<QgsProcessingContext>();
@@ -2392,26 +2401,26 @@ void TestQgsProcessingAlgsPt2::checkValidity()
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  QgsVectorLayer *invalidLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "INVALID_OUTPUT" ) ).toString() ) );
-  QCOMPARE( invalidLayer->fields().at( invalidLayer->fields().size() - 1 ).name(), QStringLiteral( "_errors" ) );
+  QgsVectorLayer *invalidLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"INVALID_OUTPUT"_s ).toString() ) );
+  QCOMPARE( invalidLayer->fields().at( invalidLayer->fields().size() - 1 ).name(), u"_errors"_s );
   QCOMPARE( invalidLayer->featureCount(), 1 );
   QgsFeatureIterator it = invalidLayer->getFeatures();
   it.nextFeature( f );
-  QCOMPARE( f.attributes(), QgsAttributes() << 1 << QStringLiteral( "segments 0 and 2 of line 0 intersect at 1, 1" ) );
+  QCOMPARE( f.attributes(), QgsAttributes() << 1 << u"segments 0 and 2 of line 0 intersect at 1, 1"_s );
 
   // GEOS method
-  parameters.insert( QStringLiteral( "METHOD" ), 2 );
+  parameters.insert( u"METHOD"_s, 2 );
 
   ok = false;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  invalidLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "INVALID_OUTPUT" ) ).toString() ) );
-  QCOMPARE( invalidLayer->fields().at( invalidLayer->fields().size() - 1 ).name(), QStringLiteral( "_errors" ) );
+  invalidLayer = qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( u"INVALID_OUTPUT"_s ).toString() ) );
+  QCOMPARE( invalidLayer->fields().at( invalidLayer->fields().size() - 1 ).name(), u"_errors"_s );
   QCOMPARE( invalidLayer->featureCount(), 1 );
   it = invalidLayer->getFeatures();
   it.nextFeature( f );
-  QCOMPARE( f.attributes(), QgsAttributes() << 1 << QStringLiteral( "Self-intersection" ) );
+  QCOMPARE( f.attributes(), QgsAttributes() << 1 << u"Self-intersection"_s );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgsPt2 )

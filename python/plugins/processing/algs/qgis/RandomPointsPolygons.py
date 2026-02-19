@@ -152,8 +152,25 @@ class RandomPointsPolygons(QgisAlgorithm):
     def displayName(self):
         return self.tr("Random points inside polygons")
 
+    def shortDescription(self):
+        return self.tr(
+            "Creates a new point layer with random points inside the polygons of a given layer."
+        )
+
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm creates a new point layer with random points inside the polygons of a given layer."
+            "The number of points in each polygon can be defined as a fixed count or as a density value. "
+            "The count/density value could also be taken from an attribute or an expression specified "
+            "using the 'Data defined override' functionality, so it can be different for each polygon in the input layer."
+            "A minimum distance can be specified, to avoid points being too close to each other."
+        )
+
     def documentationFlags(self):
-        return Qgis.ProcessingAlgorithmDocumentationFlag.RegeneratesPrimaryKey
+        return Qgis.ProcessingAlgorithmDocumentationFlags(
+            Qgis.ProcessingAlgorithmDocumentationFlag.RegeneratesPrimaryKey
+            | Qgis.ProcessingAlgorithmDocumentationFlag.RespectsEllipsoid
+        )
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)

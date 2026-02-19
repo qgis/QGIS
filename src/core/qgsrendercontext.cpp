@@ -18,13 +18,17 @@
 
 #include "qgsrendercontext.h"
 
-#include "qgsmapsettings.h"
-#include "qgsfeaturefilterprovider.h"
-#include "qgslogger.h"
 #include "qgselevationmap.h"
-#include "qgsunittypes.h"
-#include "qgssymbollayer.h"
+#include "qgsfeaturefilterprovider.h"
 #include "qgsgeometrypaintdevice.h"
+#include "qgslogger.h"
+#include "qgsmapsettings.h"
+#include "qgssymbollayer.h"
+#include "qgsunittypes.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 #define POINTS_TO_MM 2.83464567
 #define INCH_TO_MM 25.4
@@ -42,6 +46,7 @@ QgsRenderContext::~QgsRenderContext() = default;
 
 QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   : QgsTemporalRangeObject( rh )
+    //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
   , mFlags( rh.mFlags )
   , mRasterizedRenderingPolicy( rh.mRasterizedRenderingPolicy )
   , mPainter( rh.mPainter )
@@ -69,6 +74,7 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mSelectionColor( rh.mSelectionColor )
   , mVectorSimplifyMethod( rh.mVectorSimplifyMethod )
   , mExpressionContext( rh.mExpressionContext )
+    //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
   , mGeometry( rh.mGeometry )
   , mFeatureFilterProvider( rh.mFeatureFilterProvider ? rh.mFeatureFilterProvider->clone() : nullptr )
   , mSegmentationTolerance( rh.mSegmentationTolerance )
@@ -96,11 +102,73 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mHasTransformContext( rh.mHasTransformContext )
 #endif
   , mElevationMap( rh.mElevationMap )
+    //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
 {
+}
+
+QgsRenderContext::QgsRenderContext( QgsRenderContext &&rh )
+  : QgsTemporalRangeObject( rh )
+  , mFlags( rh.mFlags )
+  , mRasterizedRenderingPolicy( rh.mRasterizedRenderingPolicy )
+  , mPainter( rh.mPainter )
+  , mPreviewRenderPainter( rh.mPreviewRenderPainter )
+  , mMaskPainter( std::move( rh.mMaskPainter ) )
+  , mMaskIdProvider( rh.mMaskIdProvider )
+  , mCurrentMaskId( rh.mCurrentMaskId )
+  , mIsGuiPreview( rh.mIsGuiPreview )
+  , mCoordTransform( std::move( rh.mCoordTransform ) )
+  , mDistanceArea( std::move( rh.mDistanceArea ) )
+  , mExtent( std::move( rh.mExtent ) )
+  , mOriginalMapExtent( std::move( rh.mOriginalMapExtent ) )
+  , mMapToPixel( std::move( rh.mMapToPixel ) )
+  , mRenderingStopped( rh.mRenderingStopped )
+  , mFeedback( rh.mFeedback )
+  , mScaleFactor( rh.mScaleFactor )
+  , mDpiTarget( rh.mDpiTarget )
+  , mRendererScale( rh.mRendererScale )
+  , mSymbologyReferenceScale( rh.mSymbologyReferenceScale )
+  , mLabelingEngine( rh.mLabelingEngine )
+  , mLabelSink( rh.mLabelSink )
+  , mSelectionColor( std::move( rh.mSelectionColor ) )
+  , mVectorSimplifyMethod( std::move( rh.mVectorSimplifyMethod ) )
+  , mExpressionContext( std::move( rh.mExpressionContext ) )
+  , mGeometry( std::move( rh.mGeometry ) )
+  , mFeatureFilterProvider( std::move( rh.mFeatureFilterProvider ) )
+  , mSegmentationTolerance( rh.mSegmentationTolerance )
+  , mSegmentationToleranceType( rh.mSegmentationToleranceType )
+  , mTransformContext( std::move( rh.mTransformContext ) )
+  , mPathResolver( std::move( rh.mPathResolver ) )
+  , mTextRenderFormat( rh.mTextRenderFormat )
+  , mRenderedFeatureHandlers( std::move( rh.mRenderedFeatureHandlers ) )
+  , mHasRenderedFeatureHandlers( rh.mHasRenderedFeatureHandlers )
+  , mCustomProperties( std::move( rh.mCustomProperties ) )
+  , mDisabledSymbolLayers( std::move( rh.mDisabledSymbolLayers ) )
+  , mClippingRegions( std::move( rh.mClippingRegions ) )
+  , mFeatureClipGeometry( std::move( rh.mFeatureClipGeometry ) )
+  , mTextureOrigin( std::move( rh.mTextureOrigin ) )
+  , mZRange( std::move( rh.mZRange ) )
+  , mSize( std::move( rh.mSize ) )
+  , mDevicePixelRatio( rh.mDevicePixelRatio )
+  , mImageFormat( rh.mImageFormat )
+  , mRendererUsage( rh.mRendererUsage )
+  , mFrameRate( rh.mFrameRate )
+  , mCurrentFrame( rh.mCurrentFrame )
+  , mSymbolLayerClippingGeometries( std::move( rh.mSymbolLayerClippingGeometries ) )
+  , mMaskRenderSettings( std::move( rh.mMaskRenderSettings ) )
+#ifdef QGISDEBUG
+  , mHasTransformContext( rh.mHasTransformContext )
+#endif
+  , mElevationMap( rh.mElevationMap )
+{
+
 }
 
 QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
 {
+  if ( &rh == this )
+    return *this;
+
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
   mFlags = rh.mFlags;
   mRasterizedRenderingPolicy = rh.mRasterizedRenderingPolicy;
   mPainter = rh.mPainter;
@@ -128,6 +196,7 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mGeometry = rh.mGeometry;
   mFeatureFilterProvider.reset( rh.mFeatureFilterProvider ? rh.mFeatureFilterProvider->clone() : nullptr );
   mSegmentationTolerance = rh.mSegmentationTolerance;
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
   mSegmentationToleranceType = rh.mSegmentationToleranceType;
   mDistanceArea = rh.mDistanceArea;
   mTransformContext = rh.mTransformContext;
@@ -155,6 +224,68 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mHasTransformContext = rh.mHasTransformContext;
 #endif
   mElevationMap = rh.elevationMap();
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
+  return *this;
+}
+
+QgsRenderContext &QgsRenderContext::operator=( QgsRenderContext &&rh )
+{
+  if ( &rh == this )
+    return *this;
+
+  mFlags = rh.mFlags;
+  mRasterizedRenderingPolicy = rh.mRasterizedRenderingPolicy;
+  mPainter = rh.mPainter;
+  mPreviewRenderPainter = rh.mPreviewRenderPainter;
+  mMaskPainter = std::move( rh.mMaskPainter );
+  mMaskIdProvider = rh.mMaskIdProvider;
+  mCurrentMaskId = rh.mCurrentMaskId;
+  mIsGuiPreview = rh.mIsGuiPreview;
+  mCoordTransform = std::move( rh.mCoordTransform );
+  mExtent = std::move( rh.mExtent );
+  mOriginalMapExtent = std::move( rh.mOriginalMapExtent );
+  mMapToPixel = std::move( rh.mMapToPixel );
+  mRenderingStopped = rh.mRenderingStopped;
+  mFeedback = rh.mFeedback;
+  mScaleFactor = rh.mScaleFactor;
+  mDpiTarget = rh.mDpiTarget;
+  mRendererScale = rh.mRendererScale;
+  mSymbologyReferenceScale = rh.mSymbologyReferenceScale;
+  mLabelingEngine = rh.mLabelingEngine;
+  mLabelSink = rh.mLabelSink;
+  mSelectionColor = rh.mSelectionColor;
+  mVectorSimplifyMethod = std::move( rh.mVectorSimplifyMethod );
+  mExpressionContext = std::move( rh.mExpressionContext );
+  mGeometry = rh.mGeometry;
+  mFeatureFilterProvider = std::move( rh.mFeatureFilterProvider );
+  mSegmentationTolerance = rh.mSegmentationTolerance;
+  mSegmentationToleranceType = rh.mSegmentationToleranceType;
+  mDistanceArea = std::move( rh.mDistanceArea );
+  mTransformContext = std::move( rh.mTransformContext );
+  mPathResolver = std::move( rh.mPathResolver );
+  mTextRenderFormat = rh.mTextRenderFormat;
+  mRenderedFeatureHandlers = std::move( rh.mRenderedFeatureHandlers );
+  mHasRenderedFeatureHandlers = rh.mHasRenderedFeatureHandlers;
+  mCustomProperties = std::move( rh.mCustomProperties );
+  mClippingRegions = std::move( rh.mClippingRegions );
+  mFeatureClipGeometry = std::move( rh.mFeatureClipGeometry );
+  mTextureOrigin = std::move( rh.mTextureOrigin );
+  mZRange = std::move( rh.mZRange );
+  mSize = std::move( rh.mSize );
+  mDevicePixelRatio = rh.mDevicePixelRatio;
+  mImageFormat = rh.mImageFormat;
+  setIsTemporal( rh.isTemporal() );
+  mRendererUsage = rh.mRendererUsage;
+  mFrameRate = rh.mFrameRate;
+  mCurrentFrame = rh.mCurrentFrame;
+  mSymbolLayerClippingGeometries = std::move( rh.mSymbolLayerClippingGeometries );
+  mMaskRenderSettings = std::move( rh.mMaskRenderSettings );
+  if ( isTemporal() )
+    setTemporalRange( rh.temporalRange() );
+#ifdef QGISDEBUG
+  mHasTransformContext = rh.mHasTransformContext;
+#endif
+  mElevationMap = rh.mElevationMap;
 
   return *this;
 }
@@ -199,7 +330,7 @@ QgsCoordinateTransformContext QgsRenderContext::transformContext() const
 {
 #ifdef QGISDEBUG
   if ( !mHasTransformContext )
-    QgsDebugMsgLevel( QStringLiteral( "No QgsCoordinateTransformContext context set for transform" ), 4 );
+    QgsDebugMsgLevel( u"No QgsCoordinateTransformContext context set for transform"_s, 4 );
 #endif
   return mTransformContext;
 }
@@ -314,7 +445,7 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
 
   const QStringList layerIds = mapSettings.layerIds( true );
   if ( !layerIds.empty() )
-    ctx.setCustomProperty( QStringLiteral( "visible_layer_ids" ), layerIds );
+    ctx.setCustomProperty( u"visible_layer_ids"_s, layerIds );
 
   return ctx;
 }
@@ -546,7 +677,7 @@ double QgsRenderContext::convertFromPainterUnits( double size, Qgis::RenderUnit 
     case Qgis::RenderUnit::MetersInMapUnits:
     {
       if ( mMapToPixel.isValid() )
-        size = 1 / convertMetersToMapUnits( size );
+        size = size / convertMetersToMapUnits( 1 );
       // Fall through to RenderMapUnits with size in meters converted to size in MapUnits
       [[fallthrough]];
     }
@@ -719,7 +850,7 @@ double QgsRenderContext::convertMetersToMapUnits( double meters ) const
         }
         catch ( const QgsCsException & )
         {
-          QgsDebugError( QStringLiteral( "QgsRenderContext::convertMetersToMapUnits(): failed to reproject pointCenter" ) );
+          QgsDebugError( u"QgsRenderContext::convertMetersToMapUnits(): failed to reproject pointCenter"_s );
           // what should we return;.. ?
           return meters;
         }

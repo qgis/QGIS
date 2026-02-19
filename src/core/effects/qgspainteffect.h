@@ -17,12 +17,17 @@
 #ifndef QGSPAINTEFFECT_H
 #define QGSPAINTEFFECT_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QPainter>
+
 #include <QDomDocument>
 #include <QDomElement>
+#include <QPainter>
 #include <QPicture>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsRenderContext;
 
@@ -123,6 +128,13 @@ class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
      * \returns clone of paint effect
      */
     virtual QgsPaintEffect *clone() const = 0 SIP_FACTORY;
+
+    /**
+     * Returns flags which specify how the paint effect behaves.
+     *
+     * \since QGIS 3.44
+     */
+    virtual Qgis::PaintEffectFlags flags() const;
 
     /**
      * Returns the properties describing the paint effect encoded in a
@@ -334,9 +346,12 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      */
     static QgsPaintEffect *create( const QVariantMap &map ) SIP_FACTORY;
 
-    QString type() const override { return QStringLiteral( "drawSource" ); }
+    Qgis::PaintEffectFlags flags() const override;
+    QString type() const override { return u"drawSource"_s; }
     QgsDrawSourceEffect *clone() const override SIP_FACTORY;
     QVariantMap properties() const override;
+
+    using QgsPaintEffect::readProperties;
     void readProperties( const QVariantMap &props ) override;
 
     /**

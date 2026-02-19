@@ -18,25 +18,26 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgselevationshadingrenderer.h"
+#include "qgsexpressioncontext.h"
+#include "qgsgeometry.h"
+#include "qgslabelingenginesettings.h"
+#include "qgsmapclippingregion.h"
+#include "qgsmaplayer.h"
+#include "qgsmaptopixel.h"
+#include "qgsmaskrendersettings.h"
+#include "qgsrectangle.h"
+#include "qgsscalecalculator.h"
+#include "qgsselectivemaskingsourceset.h"
+#include "qgstemporalrangeobject.h"
+#include "qgsvectorsimplifymethod.h"
+
 #include <QColor>
 #include <QImage>
 #include <QPointer>
 #include <QSize>
 #include <QStringList>
-
-#include "qgscoordinatereferencesystem.h"
-#include "qgslabelingenginesettings.h"
-#include "qgsmaptopixel.h"
-#include "qgsrectangle.h"
-#include "qgsscalecalculator.h"
-#include "qgsexpressioncontext.h"
-#include "qgsmaplayer.h"
-#include "qgsgeometry.h"
-#include "qgstemporalrangeobject.h"
-#include "qgsmapclippingregion.h"
-#include "qgsvectorsimplifymethod.h"
-#include "qgselevationshadingrenderer.h"
-#include "qgsmaskrendersettings.h"
 
 class QPainter;
 
@@ -44,6 +45,7 @@ class QgsCoordinateTransform;
 class QgsScaleCalculator;
 class QgsMapRendererJob;
 class QgsRenderedFeatureHandlerInterface;
+class QgsSelectiveMaskingSourceSet;
 
 /**
  * \class QgsLabelBlockingRegion
@@ -941,6 +943,24 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      */
     void setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy policy );
 
+    /**
+     * Returns a hash of all selective masking source sets defined for the map.
+     *
+     * The hash keys are the set IDs.
+     *
+     * \see setSelectiveMaskingSourceSets()
+     * \since QGIS 4.0
+     */
+    QHash< QString, QgsSelectiveMaskingSourceSet > selectiveMaskingSourceSets() const;
+
+    /**
+     * Sets a list of all selective masking source sets defined for the map.
+     *
+     * \see selectiveMaskingSourceSets()
+     * \since QGIS 4.0
+     */
+    void setSelectiveMaskingSourceSets( const QVector< QgsSelectiveMaskingSourceSet > &sets );
+
   protected:
 
     double mDpi = 96.0;
@@ -957,6 +977,9 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
 
     //! list of layers to be rendered (stored as weak pointers)
     QgsWeakMapLayerPointerList mLayers;
+    QStringList mLayerIds;
+    bool mHasGroupLayers = false;
+
     QMap<QString, QString> mLayerStyleOverrides;
     QString mCustomRenderFlags;
     QVariantMap mCustomRenderingFlags;
@@ -1008,6 +1031,8 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     long long mCurrentFrame = -1;
 
     QgsMaskRenderSettings mMaskRenderSettings;
+
+    QHash< QString, QgsSelectiveMaskingSourceSet > mSelectiveMaskingSourceSets;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;

@@ -330,7 +330,9 @@ class TestPyQgsProviderConnectionBase:
 
                 # Oracle DATE type contains date and time and so returns a QDateTime object
                 elif self.providerKey == "oracle":
-                    expected_date = QtCore.QDateTime(QtCore.QDate(2019, 7, 8))
+                    expected_date = QtCore.QDateTime(
+                        QtCore.QDate(2019, 7, 8), QtCore.QTime(0, 0, 0)
+                    )
 
                 self.assertEqual(
                     res,

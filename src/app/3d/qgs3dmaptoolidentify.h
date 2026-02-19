@@ -16,9 +16,10 @@
 #ifndef QGS3DMAPTOOLIDENTIFY_H
 #define QGS3DMAPTOOLIDENTIFY_H
 
+#include <memory>
+
 #include "qgs3dmaptool.h"
 
-#include <memory>
 #include <QDebug>
 #include <QPoint>
 

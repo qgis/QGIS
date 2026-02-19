@@ -14,19 +14,52 @@
  ***************************************************************************/
 
 #include "qgstextdocument.h"
+
 #include "qgis.h"
 #include "qgsstringutils.h"
 #include "qgstextblock.h"
-#include "qgstextfragment.h"
 #include "qgstextformat.h"
+#include "qgstextfragment.h"
 
-#include <QTextDocument>
+#include <QString>
 #include <QTextBlock>
+#include <QTextDocument>
 
+using namespace Qt::StringLiterals;
 
 QgsTextDocument::~QgsTextDocument() = default;
 
 QgsTextDocument::QgsTextDocument() = default;
+
+QgsTextDocument::QgsTextDocument( const QgsTextDocument &other )
+  : mBlocks( other.mBlocks )
+{
+
+}
+
+QgsTextDocument::QgsTextDocument( QgsTextDocument &&other )
+  : mBlocks( std::move( other.mBlocks ) )
+{
+
+}
+
+QgsTextDocument &QgsTextDocument::operator=( const QgsTextDocument &other )
+{
+  if ( &other == this )
+    return *this;
+
+  mBlocks = other.mBlocks;
+  return *this;
+}
+
+QgsTextDocument &QgsTextDocument::operator=( QgsTextDocument &&other )
+{
+  if ( &other == this )
+    return *this;
+
+  mBlocks = std::move( other.mBlocks );
+  return *this;
+}
 
 QgsTextDocument::QgsTextDocument( const QgsTextBlock &block )
 {
@@ -83,14 +116,14 @@ QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
     // as pixels, because that doesn't scale well with different dpi render targets! So let's instead use just instead treat the suffix as
     // optional, and ignore ANY unit suffix the user has put, and then replace it with "px" so that Qt's css parsing engine can process it
     // correctly...
-    const thread_local QRegularExpression sRxPixelsToPtFix( QStringLiteral( "(word-spacing|line-height|margin-top|margin-bottom|margin-left|margin-right):\\s*(-?\\d+(?:\\.\\d+)?)(?![%\\d])([a-zA-Z]*)" ) );
-    line.replace( sRxPixelsToPtFix, QStringLiteral( "\\1: \\2px" ) );
-    const thread_local QRegularExpression sRxMarginPixelsToPtFix( QStringLiteral( "margin:\\s*(-?\\d+(?:\\.\\d+)?)([a-zA-Z]*)\\s*(-?\\d+(?:\\.\\d+)?)([a-zA-Z]*)\\s*(-?\\d+(?:\\.\\d+)?)([a-zA-Z]*)\\s*(-?\\d+(?:\\.\\d+)?)([a-zA-Z]*)" ) );
-    line.replace( sRxMarginPixelsToPtFix, QStringLiteral( "margin: \\1px \\3px \\5px \\7px" ) );
+    const thread_local QRegularExpression sRxPixelsToPtFix( u"(word-spacing|line-height|margin-top|margin-bottom|margin-left|margin-right):\\s*(-?\\d+(?:\\.\\d+)?)(?![%\\d])([a-zA-Z]*)"_s );
+    line.replace( sRxPixelsToPtFix, u"\\1: \\2px"_s );
+    const thread_local QRegularExpression sRxMarginPixelsToPtFix( u"margin:\\s*(-?\\d+(?:\\.\\d+)?)([a-zA-Z]*)\\s*(-?\\d+(?:\\.\\d+)?)([a-zA-Z]*)\\s*(-?\\d+(?:\\.\\d+)?)([a-zA-Z]*)\\s*(-?\\d+(?:\\.\\d+)?)([a-zA-Z]*)"_s );
+    line.replace( sRxMarginPixelsToPtFix, u"margin: \\1px \\3px \\5px \\7px"_s );
 
     // undo default margins on p, h1-6 elements. We didn't use to respect these and can't change the rendering
     // of existing projects to suddenly start showing them...
-    line.prepend( QStringLiteral( "<style>p, h1, h2, h3, h4, h5, h6 { margin: 0pt; }</style>" ) );
+    line.prepend( u"<style>p, h1, h2, h3, h4, h5, h6 { margin: 0pt; }</style>"_s );
 
     sourceDoc.setHtml( line );
 
@@ -137,10 +170,10 @@ QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
         {
           // Search for line breaks in the fragment
           const QString fragmentText = fragment.text();
-          if ( fragmentText.contains( QStringLiteral( "\u2028" ) ) )
+          if ( fragmentText.contains( u"\u2028"_s ) )
           {
             // Split fragment text into lines
-            const QStringList splitLines = fragmentText.split( QStringLiteral( "\u2028" ), Qt::SplitBehaviorFlags::SkipEmptyParts );
+            const QStringList splitLines = fragmentText.split( u"\u2028"_s, Qt::SplitBehaviorFlags::SkipEmptyParts );
 
             for ( const QString &splitLine : std::as_const( splitLines ) )
             {
@@ -340,7 +373,7 @@ void QgsTextDocument::splitLines( const QString &wrapCharacter, int autoWrapLeng
     for ( const QgsTextFragment &fragment : block )
     {
       QStringList thisParts;
-      if ( !wrapCharacter.isEmpty() && wrapCharacter != QLatin1String( "\n" ) )
+      if ( !wrapCharacter.isEmpty() && wrapCharacter != "\n"_L1 )
       {
         //wrap on both the wrapchr and new line characters
         const QStringList lines = fragment.text().split( wrapCharacter );
@@ -388,6 +421,17 @@ void QgsTextDocument::splitLines( const QString &wrapCharacter, int autoWrapLeng
     }
     append( destinationBlock );
   }
+}
+
+QVector<QgsTextDocument> QgsTextDocument::splitBlocksToDocuments() const
+{
+  QVector<QgsTextDocument> res;
+  res.reserve( mBlocks.size() );
+  for ( const QgsTextBlock &block : mBlocks )
+  {
+    res.append( QgsTextDocument( block ) );
+  }
+  return res;
 }
 
 void QgsTextDocument::applyCapitalization( Qgis::Capitalization capitalization )

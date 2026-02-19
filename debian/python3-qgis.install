@@ -1,6 +1,9 @@
-usr/lib/python*/*-packages/qgis/_3d/__init__.py
-usr/lib/python*/*-packages/qgis/analysis/__init__.py
-usr/lib/python*/*-packages/qgis/core/__init__.py
-usr/lib/python*/*-packages/qgis/gui/__init__.py
-usr/lib/python*/*-packages/qgis/server/__init__.py
-usr/lib/python*/*-packages/qgis/*.so
+#!/bin/sh
+
+set -e
+
+cd debian/tmp
+find usr/share/qgis/python -name "*.so" -printf "%p\n%p#\n" |
+	sed -e "/#$/ { s,_\(.*\).so#,\1/__init__.py,; s,/3d_p/,/_3d/,; }"
+
+echo usr/share/qgis/python/qsci_apis/PyQGIS.api

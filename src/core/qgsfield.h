@@ -16,13 +16,16 @@
 #ifndef QGSFIELD_H
 #define QGSFIELD_H
 
+#include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
+
+#include <QSharedDataPointer>
 #include <QString>
 #include <QVariant>
 #include <QVector>
-#include <QSharedDataPointer>
-#include "qgis_core.h"
-#include "qgis_sip.h"
-#include "qgis.h"
+
+using namespace Qt::StringLiterals;
 
 typedef QList<int> QgsAttributeList SIP_SKIP;
 
@@ -568,7 +571,7 @@ class CORE_EXPORT QgsField
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsField: %1 (%2)>" ).arg( sipCpp->name() ).arg( sipCpp->typeName() );
+    QString str = u"<QgsField: %1 (%2)>"_s.arg( sipCpp->name() ).arg( sipCpp->typeName() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

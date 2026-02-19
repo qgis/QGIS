@@ -13,21 +13,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <memory>
-#include <QSvgRenderer>
-#include <QPainter>
-#include <QPixmap>
-
 #include "qgsmeshrenderer3daveragingwidget.h"
-#include "moc_qgsmeshrenderer3daveragingwidget.cpp"
+
+#include <memory>
 
 #include "qgis.h"
+#include "qgsapplication.h"
+#include "qgsmesh3daveraging.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshrenderersettings.h"
-#include "qgsmesh3daveraging.h"
-#include "qgsapplication.h"
 #include "qgsscreenhelper.h"
 
+#include <QPainter>
+#include <QPixmap>
+#include <QString>
+#include <QSvgRenderer>
+
+#include "moc_qgsmeshrenderer3daveragingwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshRenderer3DAveragingWidget::QgsMeshRenderer3DAveragingWidget( QWidget *parent )
   : QWidget( parent )
@@ -88,55 +92,55 @@ std::unique_ptr<QgsMesh3DAveragingMethod> QgsMeshRenderer3DAveragingWidget::aver
     case 0: // single level from top
     {
       const int verticalLevel = mSingleVerticalLayerIndexTopSpinBox->value();
-      averaging.reset( new QgsMeshMultiLevelsAveragingMethod( verticalLevel, true ) );
+      averaging = std::make_unique<QgsMeshMultiLevelsAveragingMethod>( verticalLevel, true );
       break;
     }
     case 1: // single level from bottom
     {
       const int verticalLevel = mSingleVerticalLayerIndexBottomSpinBox->value();
-      averaging.reset( new QgsMeshMultiLevelsAveragingMethod( verticalLevel, false ) );
+      averaging = std::make_unique<QgsMeshMultiLevelsAveragingMethod>( verticalLevel, false );
       break;
     }
     case 2: // multi level from top
     {
       const int startVerticalLevel = mMultiTopVerticalLayerStartIndexSpinBox->value();
       const int endVerticalLevel = mMultiTopVerticalLayerEndIndexSpinBox->value();
-      averaging.reset( new QgsMeshMultiLevelsAveragingMethod( startVerticalLevel, endVerticalLevel, true ) );
+      averaging = std::make_unique<QgsMeshMultiLevelsAveragingMethod>( startVerticalLevel, endVerticalLevel, true );
       break;
     }
     case 3: // multi level from bottom
     {
       const int startVerticalLevel = mMultiBottomVerticalLayerStartIndexSpinBox->value();
       const int endVerticalLevel = mMultiBottomVerticalLayerEndIndexSpinBox->value();
-      averaging.reset( new QgsMeshMultiLevelsAveragingMethod( startVerticalLevel, endVerticalLevel, false ) );
+      averaging = std::make_unique<QgsMeshMultiLevelsAveragingMethod>( startVerticalLevel, endVerticalLevel, false );
       break;
     }
     case 4: // sigma
     {
       const double startFraction = mSigmaStartFractionSpinBox->value();
       const double endFraction = mSigmaEndFractionSpinBox->value();
-      averaging.reset( new QgsMeshSigmaAveragingMethod( startFraction, endFraction ) );
+      averaging = std::make_unique<QgsMeshSigmaAveragingMethod>( startFraction, endFraction );
       break;
     }
     case 5: // depth (from surface)
     {
       const double startDepth = mDepthStartSpinBox->value();
       const double endDepth = mDepthEndSpinBox->value();
-      averaging.reset( new QgsMeshRelativeHeightAveragingMethod( startDepth, endDepth, true ) );
+      averaging = std::make_unique<QgsMeshRelativeHeightAveragingMethod>( startDepth, endDepth, true );
       break;
     }
     case 6: // height (from bed elevation)
     {
       const double startHeight = mHeightStartSpinBox->value();
       const double endHeight = mHeightEndSpinBox->value();
-      averaging.reset( new QgsMeshRelativeHeightAveragingMethod( startHeight, endHeight, false ) );
+      averaging = std::make_unique<QgsMeshRelativeHeightAveragingMethod>( startHeight, endHeight, false );
       break;
     }
     case 7: // elevation
     {
       const double startVerticalLevel = mElevationStartSpinBox->value();
       const double endVerticalLevel = mElevationEndSpinBox->value();
-      averaging.reset( new QgsMeshElevationAveragingMethod( startVerticalLevel, endVerticalLevel ) );
+      averaging = std::make_unique<QgsMeshElevationAveragingMethod>( startVerticalLevel, endVerticalLevel );
       break;
     }
   }
@@ -241,16 +245,16 @@ void QgsMeshRenderer3DAveragingWidget::onAveragingMethodChanged( int methodIndex
 
 void QgsMeshRenderer3DAveragingWidget::updateGraphics()
 {
-  setLabelSvg( mSingleTopPngLabel, QStringLiteral( "SingleTop.svg" ) );
+  setLabelSvg( mSingleTopPngLabel, u"SingleTop.svg"_s );
   mSingleTopGroup->adjustSize();
 
-  setLabelSvg( mSingleBottomPngLabel, QStringLiteral( "SingleBottom.svg" ) );
-  setLabelSvg( mMultiTopPngLabel, QStringLiteral( "MultiTop.svg" ) );
-  setLabelSvg( mMultiBottomPngLabel, QStringLiteral( "MultiBottom.svg" ) );
-  setLabelSvg( mSigmaPngLabel, QStringLiteral( "Sigma.svg" ) );
-  setLabelSvg( mDepthPngLabel, QStringLiteral( "Depth.svg" ) );
-  setLabelSvg( mHeightPngLabel, QStringLiteral( "Height.svg" ) );
-  setLabelSvg( mElevationPngLabel, QStringLiteral( "Elevation.svg" ) );
+  setLabelSvg( mSingleBottomPngLabel, u"SingleBottom.svg"_s );
+  setLabelSvg( mMultiTopPngLabel, u"MultiTop.svg"_s );
+  setLabelSvg( mMultiBottomPngLabel, u"MultiBottom.svg"_s );
+  setLabelSvg( mSigmaPngLabel, u"Sigma.svg"_s );
+  setLabelSvg( mDepthPngLabel, u"Depth.svg"_s );
+  setLabelSvg( mHeightPngLabel, u"Height.svg"_s );
+  setLabelSvg( mElevationPngLabel, u"Elevation.svg"_s );
 }
 
 void QgsMeshRenderer3DAveragingWidget::setLabelSvg( QLabel *imageLabel, const QString &imgName )
@@ -258,7 +262,7 @@ void QgsMeshRenderer3DAveragingWidget::setLabelSvg( QLabel *imageLabel, const QS
   const qreal dpi = mScreenHelper->screenDpi();
   const int desiredWidth = static_cast<int>( 100 * dpi / 25.4 );
 
-  QSvgRenderer renderer( QStringLiteral( ":/images/themes/default/mesh/%1" ).arg( imgName ) );
+  QSvgRenderer renderer( u":/images/themes/default/mesh/%1"_s.arg( imgName ) );
   if ( renderer.isValid() )
   {
     const QSize defaultSvgSize = renderer.defaultSize();

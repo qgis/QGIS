@@ -16,21 +16,26 @@
  ***************************************************************************/
 
 #include "qgsmeshterraingenerator.h"
-#include "moc_qgsmeshterraingenerator.cpp"
-#include "qgsmeshterraintileloader_p.h"
 
+#include "qgs3dmapsettings.h"
+#include "qgs3drendercontext.h"
 #include "qgsmesh3dentity_p.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
-#include "qgsterrainentity.h"
 #include "qgsmeshlayerutils.h"
-#include "qgs3dmapsettings.h"
-#include "qgs3drendercontext.h"
+#include "qgsmeshterraintileloader_p.h"
+#include "qgsterrainentity.h"
+
+#include "moc_qgsmeshterraingenerator.cpp"
 
 QgsMeshTerrainTileLoader::QgsMeshTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, const QgsTriangularMesh &triangularMesh, const QgsMesh3DSymbol *symbol )
   : QgsTerrainTileLoader( terrain, node )
   , mTriangularMesh( triangularMesh )
   , mSymbol( symbol->clone() )
+{
+}
+
+void QgsMeshTerrainTileLoader::start()
 {
   loadTexture();
 }

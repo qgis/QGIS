@@ -16,13 +16,18 @@
  ***************************************************************************/
 
 #include "qgsprocessingrasteroptionswidgetwrapper.h"
-#include "moc_qgsprocessingrasteroptionswidgetwrapper.cpp"
-#include "qgsrasterformatsaveoptionswidget.h"
-#include "qgsprocessingparameters.h"
+
 #include "qgsprocessingoutputs.h"
+#include "qgsprocessingparameters.h"
+#include "qgsrasterformatsaveoptionswidget.h"
 
 #include <QComboBox>
 #include <QLineEdit>
+#include <QString>
+
+#include "moc_qgsprocessingrasteroptionswidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 /// @cond private
 
@@ -33,7 +38,7 @@ QgsProcessingRasterOptionsWidgetWrapper::QgsProcessingRasterOptionsWidgetWrapper
 
 QString QgsProcessingRasterOptionsWidgetWrapper::parameterType() const
 {
-  return QStringLiteral( "rasteroptions" );
+  return u"rasteroptions"_s;
 }
 
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingRasterOptionsWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )
@@ -49,7 +54,7 @@ QWidget *QgsProcessingRasterOptionsWidgetWrapper::createWidget()
     {
       mOptionsWidget = new QgsRasterFormatSaveOptionsWidget();
       mOptionsWidget->setToolTip( parameterDefinition()->toolTip() );
-      connect( mOptionsWidget, &QgsRasterFormatSaveOptionsWidget::optionsChanged, this, [=] {
+      connect( mOptionsWidget, &QgsRasterFormatSaveOptionsWidget::optionsChanged, this, [this] {
         emit widgetValueHasChanged( this );
       } );
       return mOptionsWidget;
@@ -59,7 +64,7 @@ QWidget *QgsProcessingRasterOptionsWidgetWrapper::createWidget()
     {
       mLineEdit = new QLineEdit();
       mLineEdit->setToolTip( parameterDefinition()->toolTip() );
-      connect( mLineEdit, &QLineEdit::textChanged, this, [=] {
+      connect( mLineEdit, &QLineEdit::textChanged, this, [this] {
         emit widgetValueHasChanged( this );
       } );
       return mLineEdit;

@@ -17,14 +17,19 @@
 
 
 #include "qgsmodelgroupboxdefinitionwidget.h"
-#include "moc_qgsmodelgroupboxdefinitionwidget.cpp"
 
 #include "qgscolorbutton.h"
 #include "qgsgui.h"
-#include <QVBoxLayout>
-#include <QTextEdit>
+
 #include <QDialogButtonBox>
 #include <QLabel>
+#include <QString>
+#include <QTextEdit>
+#include <QVBoxLayout>
+
+#include "moc_qgsmodelgroupboxdefinitionwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsModelGroupBoxDefinitionDialog::QgsModelGroupBoxDefinitionDialog( const QgsProcessingModelGroupBox &box, QWidget *parent )
   : QDialog( parent )
@@ -60,7 +65,7 @@ QgsModelGroupBoxDefinitionDialog::QgsModelGroupBoxDefinitionDialog( const QgsPro
   commentLayout->addWidget( bbox );
   setLayout( commentLayout );
   setWindowTitle( tr( "Group Box Properties" ) );
-  setObjectName( QStringLiteral( "QgsModelGroupBoxDefinitionWidget" ) );
+  setObjectName( u"QgsModelGroupBoxDefinitionWidget"_s );
   QgsGui::enableAutoGeometryRestore( this );
 
   mCommentEdit->setFocus();

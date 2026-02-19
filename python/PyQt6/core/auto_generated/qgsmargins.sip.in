@@ -10,9 +10,10 @@
 
 
 
+
+
 class QgsMargins
 {
-
 %TypeHeaderCode
 #include "qgsmargins.h"
 %End

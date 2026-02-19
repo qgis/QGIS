@@ -30,7 +30,7 @@ ELSE(EXISTS PYQT6_VERSION_STR)
       FILE(READ ${_pyqt6_metadata} _pyqt6_metadata_contents)
       STRING(REGEX REPLACE ".*\nVersion: ([^\n]+).*$" "\\1" PYQT6_VERSION_STR ${_pyqt6_metadata_contents})
     ELSE(_pyqt6_metadata)
-      EXECUTE_PROCESS(COMMAND ${Python_EXECUTABLE} -c "from PyQt6.QtCore import PYQT_VERSION_STR; print(PYQT_VERSION_STR)" OUTPUT_VARIABLE PYQT6_VERSION_STR)
+      EXECUTE_PROCESS(COMMAND ${Python_EXECUTABLE} -c "from PyQt6.QtCore import PYQT_VERSION_STR; print(PYQT_VERSION_STR, end='')" OUTPUT_VARIABLE PYQT6_VERSION_STR)
     ENDIF(_pyqt6_metadata)
 
     IF(PYQT6_VERSION_STR)

@@ -15,17 +15,19 @@
 #ifndef QGSAPPLICATION_H
 #define QGSAPPLICATION_H
 
-#include "qgis_core.h"
-#include <QApplication>
-#include <QEvent>
-#include <QStringList>
-#include <QColor>
+#include "qgsconfig.h"
 
 #include <memory>
+
+#include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsconfig.h"
 #include "qgssettingsentryimpl.h"
 #include "qgstranslationcontext.h"
+
+#include <QApplication>
+#include <QColor>
+#include <QEvent>
+#include <QStringList>
 
 class QgsSettingsRegistryCore;
 class Qgs3DRendererRegistry;
@@ -55,6 +57,7 @@ class QgsClassificationMethodRegistry;
 class QgsMessageLog;
 class QgsProcessingRegistry;
 class QgsAnnotationRegistry;
+class QgsApplicationThemeRegistry;
 class QgsUserProfile;
 class QgsPageSizeRegistry;
 class QgsLayoutItemRegistry;
@@ -63,6 +66,7 @@ class QgsNetworkContentFetcherRegistry;
 class QgsValidityCheckRegistry;
 class QTranslator;
 class QgsCalloutRegistry;
+class QgsPlotRegistry;
 class QgsBookmarkManager;
 class QgsStyleModel;
 class QgsNumericFormatRegistry;
@@ -240,7 +244,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Set the active theme to the specified theme.
      * The theme name should be a single word e.g. 'default','classic'.
-     * The theme search path usually will be pkgDataPath + "/themes/" + themName + "/"
+     * The theme search path usually will be pkgDataPath + "/themes/" + themeName + "/"
      * but plugin writers etc can use themeName() as a basis for searching
      * for resources in their own datastores e.g. a Qt4 resource bundle.
      * \note A basic test will be carried out to ensure the theme search path
@@ -258,7 +262,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Set the active theme to the specified theme.
      * The theme name should be a single word e.g. 'default','classic'.
-     * The theme search path usually will be pkgDataPath + "/themes/" + themName + "/"
+     * The theme search path usually will be pkgDataPath + "/themes/" + themeName + "/"
      * but plugin writers etc can use this method as a basis for searching
      * for resources in their own datastores e.g. a Qt4 resource bundle.
      */
@@ -290,13 +294,6 @@ class CORE_EXPORT QgsApplication : public QApplication
      * but don't have commit access.
     */
     static QString contributorsFilePath();
-
-    /**
-     * Returns the path to the developers map file.
-     * The developers map was created by using leaflet framework,
-     * it shows the contributors.json file.
-    */
-    static QString developersMapFilePath();
 
     //! Returns the path to the sponsors file.
     static QString sponsorsFilePath();
@@ -872,6 +869,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsSensorRegistry *sensorRegistry() SIP_KEEPREFERENCE;
 
     /**
+     * Returns the application's plot registry, used for plot types.
+     * \since QGIS 4.0
+     */
+    static QgsPlotRegistry *plotRegistry() SIP_KEEPREFERENCE;
+
+    /**
      * Returns the application's message log.
      */
     static QgsMessageLog *messageLog();
@@ -905,6 +908,12 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \note not available in Python bindings
      */
     static QgsAnnotationRegistry *annotationRegistry() SIP_SKIP;
+
+    /**
+     * Returns the application's theme registry, used for styling the user interface.
+     * \since QGIS 4.0
+     */
+    static QgsApplicationThemeRegistry *applicationThemeRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the action scope registry.
@@ -1040,6 +1049,34 @@ class CORE_EXPORT QgsApplication : public QApplication
     static void setCustomVariable( const QString &name, const QVariant &value );
 
     /**
+     * Returns the list of projects and folders that have been temporarily determined as trusted by the user.
+     *
+     * \since QGIS 4.0
+     */
+    static QStringList temporarilyTrustedProjectsFolders();
+
+    /**
+     * Sets the list of projects and folders that have been temporarily determined as trusted by the user.
+     *
+     * \since QGIS 4.0
+     */
+    static void setTemporarilyTrustedProjectsFolders( const QStringList &trustedProjectsFolders );
+
+    /**
+     * Returns the list of projects and folders that have been temporarily determined as untrusted by the user.
+     *
+     * \since QGIS 4.0
+     */
+    static QStringList temporarilyUntrustedProjectsFolders();
+
+    /**
+     * Sets the list of projects and folders that have been temporarily determined as untrusted by the user.
+     *
+     * \since QGIS 4.0
+     */
+    static void setTemporarilyUntrustedProjectsFolders( const QStringList &untrustedProjectsFolders );
+
+    /**
      * Scales an icon size to compensate for display pixel density, making the icon
      * size hi-dpi friendly, whilst still resulting in pixel-perfect sizes for low-dpi
      * displays.
@@ -1137,6 +1174,12 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     void localeChanged();
 
+    /**
+     * Emitted when the application theme has changed.
+     *
+     * \since QGIS 4.0
+     */
+    void themeChanged();
 
   private:
 
@@ -1159,67 +1202,13 @@ class CORE_EXPORT QgsApplication : public QApplication
     std::unique_ptr<QTranslator> mQtTranslator;
     std::unique_ptr<QTranslator> mQtBaseTranslator;
 
-    QgsDataItemProviderRegistry *mDataItemProviderRegistry = nullptr;
+    std::unique_ptr<QgsDataItemProviderRegistry> mDataItemProviderRegistry;
     QgsAuthManager *mAuthManager = nullptr;
 
-    struct ApplicationMembers
-    {
-      std::unique_ptr<QgsSettingsRegistryCore > mSettingsRegistryCore;
-      std::unique_ptr<QgsCoordinateReferenceSystemRegistry > mCrsRegistry;
-      std::unique_ptr<Qgs3DRendererRegistry > m3DRendererRegistry;
-      std::unique_ptr<Qgs3DSymbolRegistry > m3DSymbolRegistry;
-      std::unique_ptr<QgsActionScopeRegistry > mActionScopeRegistry;
-      std::unique_ptr<QgsAnnotationRegistry > mAnnotationRegistry;
-      std::unique_ptr<QgsColorSchemeRegistry > mColorSchemeRegistry;
-      std::unique_ptr<QgsLocalizedDataPathRegistry > mLocalizedDataPathRegistry;
-      std::unique_ptr<QgsNumericFormatRegistry > mNumericFormatRegistry;
-      std::unique_ptr<QgsFieldFormatterRegistry > mFieldFormatterRegistry;
-      std::unique_ptr<QgsGpsConnectionRegistry > mGpsConnectionRegistry;
-      std::unique_ptr<QgsBabelFormatRegistry > mGpsBabelFormatRegistry;
-      std::unique_ptr<QgsNetworkContentFetcherRegistry > mNetworkContentFetcherRegistry;
-      std::unique_ptr<QgsScaleBarRendererRegistry > mScaleBarRendererRegistry;
-      std::unique_ptr<QgsLabelingEngineRuleRegistry > mLabelingEngineRuleRegistry;
-      std::unique_ptr<QgsValidityCheckRegistry > mValidityCheckRegistry;
-      std::unique_ptr<QgsMessageLog > mMessageLog;
-      std::unique_ptr<QgsPaintEffectRegistry > mPaintEffectRegistry;
-      std::unique_ptr<QgsPluginLayerRegistry > mPluginLayerRegistry;
-      std::unique_ptr<QgsClassificationMethodRegistry > mClassificationMethodRegistry;
-      std::unique_ptr<QgsProcessingRegistry > mProcessingRegistry;
-      std::unique_ptr<QgsConnectionRegistry > mConnectionRegistry;
-      std::unique_ptr<QgsProjectStorageRegistry > mProjectStorageRegistry;
-      std::unique_ptr<QgsLayerMetadataProviderRegistry > mLayerMetadataProviderRegistry;
-      std::unique_ptr<QgsExternalStorageRegistry > mExternalStorageRegistry;
-      std::unique_ptr<QgsProfileSourceRegistry > mProfileSourceRegistry;
-      std::unique_ptr<QgsPageSizeRegistry > mPageSizeRegistry;
-      std::unique_ptr<QgsRasterRendererRegistry > mRasterRendererRegistry;
-      std::unique_ptr<QgsRendererRegistry > mRendererRegistry;
-      std::unique_ptr<QgsPointCloudRendererRegistry > mPointCloudRendererRegistry;
-      std::unique_ptr<QgsTiledSceneRendererRegistry > mTiledSceneRendererRegistry;
-      std::unique_ptr<QgsSvgCache > mSvgCache;
-      std::unique_ptr<QgsImageCache > mImageCache;
-      std::unique_ptr<QgsSourceCache > mSourceCache;
-      std::unique_ptr<QgsSymbolLayerRegistry > mSymbolLayerRegistry;
-      std::unique_ptr<QgsCalloutRegistry > mCalloutRegistry;
-      std::unique_ptr<QgsTaskManager > mTaskManager;
-      std::unique_ptr<QgsLayoutItemRegistry > mLayoutItemRegistry;
-      std::unique_ptr<QgsAnnotationItemRegistry > mAnnotationItemRegistry;
-      std::unique_ptr<QgsSensorRegistry > mSensorRegistry;
-      std::unique_ptr<QgsBookmarkManager > mBookmarkManager;
-      std::unique_ptr<QgsTileDownloadManager > mTileDownloadManager;
-      std::unique_ptr<QgsStyleModel > mStyleModel;
-      std::unique_ptr<QgsRecentStyleHandler > mRecentStyleHandler;
-      std::unique_ptr<QgsDatabaseQueryLog > mQueryLogger;
-      std::unique_ptr<QgsFontManager > mFontManager;
-      QString mNullRepresentation;
-      QStringList mSvgPathCache;
-      bool mSvgPathCacheValid = false;
-
-      ApplicationMembers();
-      ~ApplicationMembers();
-    };
+    struct ApplicationMembers;
 
     // Applications members which belong to an instance of QgsApplication
-    ApplicationMembers *mApplicationMembers = nullptr;
+    std::unique_ptr<ApplicationMembers> mApplicationMembers;
     // ... but in case QgsApplication is never instantiated (eg with custom designer widgets), we fall back to static members
     static ApplicationMembers *sApplicationMembers;
 
@@ -1234,6 +1223,9 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \since QGIS 3.22
     */
     void installTranslators() SIP_SKIP;
+
+    QStringList mTemporarilyTrustedProjectFolders;
+    QStringList mTemporarilyUntrustedProjectFolders;
 
     friend class TestQgsApplication;
 };

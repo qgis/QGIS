@@ -14,17 +14,19 @@
  ***************************************************************************/
 
 #include "qgstextpreview.h"
-#include "moc_qgstextpreview.cpp"
-#include "qgstextrenderer.h"
+
 #include "qgsscreenhelper.h"
+#include "qgstextrenderer.h"
 
 #include <QPainter>
+
+#include "moc_qgstextpreview.cpp"
 
 QgsTextPreview::QgsTextPreview( QWidget *parent )
   : QLabel( parent )
 {
   mScreenHelper = new QgsScreenHelper( this );
-  connect( mScreenHelper, &QgsScreenHelper::screenDpiChanged, this, [=]( double dpi ) {
+  connect( mScreenHelper, &QgsScreenHelper::screenDpiChanged, this, [this]( double dpi ) {
     mContext.setScaleFactor( dpi / 25.4 );
     updateContext();
   } );

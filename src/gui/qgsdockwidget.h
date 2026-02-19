@@ -17,9 +17,10 @@
 #ifndef QGSDOCKWIDGET_H
 #define QGSDOCKWIDGET_H
 
-#include <QDockWidget>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QDockWidget>
 
 /**
  * \ingroup gui

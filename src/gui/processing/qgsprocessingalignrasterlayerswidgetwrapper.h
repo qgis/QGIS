@@ -18,12 +18,12 @@
 
 #define SIP_NO_FILE
 
-#include "qgsprocessingcontext.h"
-#include "qgsprocessingwidgetwrapper.h"
-#include "qgsprocessingmultipleselectiondialog.h"
-#include "qgsalignrasterdata.h"
-
 #include "ui_qgsprocessingalignrasterlayerdetailswidgetbase.h"
+
+#include "qgsalignrasterdata.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingmultipleselectiondialog.h"
+#include "qgsprocessingwidgetwrapper.h"
 
 class QLineEdit;
 class QToolButton;

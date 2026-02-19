@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsFieldDomainWidget : QWidget
 {
 %Docstring(signature="appended")
@@ -50,6 +52,20 @@ Returns ``True`` if the widget currently represents a valid field domain
 configuration.
 
 .. seealso:: :py:func:`validityChanged`
+%End
+
+    void setNameEditable( bool editable );
+%Docstring
+Sets if name of the field domain is editable.
+
+.. versionadded:: 4.0
+%End
+
+    void setPoliciesEditable( bool editable );
+%Docstring
+Sets if merge and split policies are editable.
+
+.. versionadded:: 4.0
 %End
 
   signals:
@@ -98,6 +114,20 @@ Creates a new field domain using the properties from the dialog.
 Caller takes ownership of the returned object.
 
 .. seealso:: :py:func:`setFieldDomain`
+%End
+
+    void setNameEditable( bool editable );
+%Docstring
+Sets if name of the field domain is editable
+
+.. versionadded:: 4.0
+%End
+
+    void setPoliciesEditable( bool editable );
+%Docstring
+Sets if merge and split policies are editable.
+
+.. versionadded:: 4.0
 %End
 
   public slots:

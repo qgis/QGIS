@@ -14,18 +14,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QPaintEngine>
-
 #include "qgis_core.h"
+#include "qgis_sip.h"
+
+#include <QPaintEngine>
 
 /**
  * \ingroup core
  * \brief Hack to workaround Qt #5114 by disabling PatternTransform.
  *
- * \note This is not required for builds based on Qt 6.3 or later, or Qt 5.15 builds
- * using KDE's maintained fork. On these versions the class has no effect.
+ * \deprecated QGIS 4.0. This class no longer does anything and will be removed in QGIS 5.0.
  */
-class CORE_EXPORT QgsPaintEngineHack : public QPaintEngine
+class CORE_DEPRECATED_EXPORT QgsPaintEngineHack : public QPaintEngine SIP_DEPRECATED
 {
   public:
     void fixFlags();

@@ -14,11 +14,17 @@
  ***************************************************************************/
 
 #include "qgsexpressionbuilderdialog.h"
-#include "moc_qgsexpressionbuilderdialog.cpp"
-#include "qgssettings.h"
-#include "qgsguiutils.h"
+
 #include "qgsgui.h"
+#include "qgsguiutils.h"
+#include "qgssettings.h"
+
 #include <QMessageBox>
+#include <QString>
+
+#include "moc_qgsexpressionbuilderdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, const QString &startText, QWidget *parent, const QString &key, const QgsExpressionContext &context )
   : QDialog( parent )
@@ -92,7 +98,7 @@ void QgsExpressionBuilderDialog::reject()
   if ( builder->expressionText() != mInitialText )
   {
     QgsSettings settings;
-    const bool askToDiscardEditedExpression = settings.value( QStringLiteral( "askToDiscardEditedExpression" ), true, QgsSettings::Gui ).toBool();
+    const bool askToDiscardEditedExpression = settings.value( u"askToDiscardEditedExpression"_s, true, QgsSettings::Gui ).toBool();
 
     if ( askToDiscardEditedExpression )
     {
@@ -105,7 +111,7 @@ void QgsExpressionBuilderDialog::reject()
 
       if ( confirmMessage.checkBox()->isChecked() )
       {
-        settings.setValue( QStringLiteral( "askToDiscardEditedExpression" ), false, QgsSettings::Gui );
+        settings.setValue( u"askToDiscardEditedExpression"_s, false, QgsSettings::Gui );
       }
 
       if ( res != QMessageBox::Yes )
@@ -139,7 +145,7 @@ void QgsExpressionBuilderDialog::setAllowEvalErrors( bool allowEvalErrors )
 
 void QgsExpressionBuilderDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/expression.html" ) );
+  QgsHelp::openHelp( u"working_with_vector/expression.html"_s );
 }
 
 void QgsExpressionBuilderDialog::syncOkButtonEnabledState()

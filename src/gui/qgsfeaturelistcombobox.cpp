@@ -14,16 +14,20 @@
  ***************************************************************************/
 #include "qgsfeaturelistcombobox.h"
 
-#include "qgsfeaturefiltermodel.h"
 #include "qgsanimatedicon.h"
+#include "qgsapplication.h"
+#include "qgsfeaturefiltermodel.h"
 #include "qgsfilterlineedit.h"
 #include "qgslogger.h"
-#include "qgsapplication.h"
-#include "moc_qgsfeaturelistcombobox.cpp"
 
 #include <QCompleter>
-#include <QLineEdit>
 #include <QKeyEvent>
+#include <QLineEdit>
+#include <QString>
+
+#include "moc_qgsfeaturelistcombobox.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFeatureListComboBox::QgsFeatureListComboBox( QWidget *parent )
   : QComboBox( parent )
@@ -315,7 +319,7 @@ QgsFeatureRequest QgsFeatureListComboBox::currentFeatureRequest() const
         filtersAttrs << QgsExpression::createFieldEqualityExpression( identifierFields.at( i ), values.at( i ) );
       }
     }
-    const QString expression = filtersAttrs.join( QLatin1String( " AND " ) );
+    const QString expression = filtersAttrs.join( " AND "_L1 );
     return request.setFilterExpression( expression );
   }
   return request;
@@ -349,4 +353,24 @@ QgsFeature QgsFeatureListComboBox::parentFormFeature() const
 void QgsFeatureListComboBox::setParentFormFeature( const QgsFeature &feature )
 {
   mModel->setParentFormFeature( feature );
+}
+
+QString QgsFeatureListComboBox::orderExpression() const
+{
+  return mModel->orderExpression();
+}
+
+void QgsFeatureListComboBox::setOrderExpression( const QString &orderExpression )
+{
+  mModel->setOrderExpression( orderExpression );
+}
+
+Qt::SortOrder QgsFeatureListComboBox::sortOrder() const
+{
+  return mModel->sortOrder();
+}
+
+void QgsFeatureListComboBox::setSortOrder( const Qt::SortOrder sortOrder )
+{
+  mModel->setSortOrder( sortOrder );
 }

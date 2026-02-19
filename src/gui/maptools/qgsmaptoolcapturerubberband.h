@@ -17,10 +17,12 @@
 #define QGSMAPTOOLCAPTURERUBBERBAND_H
 
 
+#include <memory>
+
 #include "qgsgeometryrubberband.h"
 
-
 class QgsMapToolCaptureRubberBand;
+class QgsRubberBand;
 
 
 #define SIP_NO_FILE
@@ -37,6 +39,9 @@ class GUI_EXPORT QgsMapToolCaptureRubberBand : public QgsGeometryRubberBand
   public:
     //! Constructor
     QgsMapToolCaptureRubberBand( QgsMapCanvas *mapCanvas, Qgis::GeometryType geomType = Qgis::GeometryType::Line );
+
+    //! Destructor
+    ~QgsMapToolCaptureRubberBand() override;
 
     /**
      * Returns the curve defined by the rubber band, or NULLPTR if no curve is defined.
@@ -71,7 +76,7 @@ class GUI_EXPORT QgsMapToolCaptureRubberBand : public QgsGeometryRubberBand
     void movePoint( int index, const QgsPoint &point );
 
     //! Returns the points count in the rubber band (except the first point if polygon)
-    int pointsCount();
+    int pointsCount() const;
 
     //! Returns the type of the curve (linear string or circular string)
     Qgis::WkbType stringType() const;
@@ -88,6 +93,27 @@ class GUI_EXPORT QgsMapToolCaptureRubberBand : public QgsGeometryRubberBand
     //! Removes the last point of the rrubber band
     void removeLastPoint();
 
+    /**
+     * Returns the weight at the specified control point index.
+     * Returns 1.0 if index is out of range.
+     * \since QGIS 4.0
+     */
+    double weight( int index ) const;
+
+    /**
+     * Sets the weight at the specified control point index.
+     * Weight must be positive (> 0).
+     * \returns true if successful.
+     * \since QGIS 4.0
+     */
+    bool setWeight( int index, double weight );
+
+    /**
+     * \returns all weights.
+     * \since QGIS 4.0
+     */
+    const QVector<double> &weights() const { return mWeights; }
+
   private:
     Qgis::WkbType mStringType = Qgis::WkbType::LineString;
 
@@ -96,9 +122,14 @@ class GUI_EXPORT QgsMapToolCaptureRubberBand : public QgsGeometryRubberBand
 
     QgsCurve *createLinearString();
     QgsCurve *createCircularString();
+    QgsCurve *createNurbsCurve();
 
     QgsPointSequence mPoints;
+    QVector<double> mWeights; //!< Weights for NURBS control points
     QgsPoint mFirstPolygonPoint;
+    std::unique_ptr<QgsRubberBand> mControlPolygonRubberBand;
+
+    void updateControlPolygon();
 };
 
 /// @endcond

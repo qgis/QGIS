@@ -1,7 +1,8 @@
 %Exception QgsCsException(SIP_Exception) /PyName=QgsCsException/
 {
 %TypeHeaderCode
-#include <qgsexception.h>
+#include "qgsexception.h"
+
 %End
 %RaiseCode
   SIP_BLOCK_THREADS
@@ -58,6 +59,32 @@
 %End
 };
 
+%If ( HAVE_SFCGAL_SIP )
+%Exception QgsSfcgalException(SIP_Exception) /PyName=QgsSfcgalException/
+{
+%TypeHeaderCode
+#include <qgsexception.h>
+%End
+%RaiseCode
+  SIP_BLOCK_THREADS
+  PyErr_SetString(sipException_QgsSfcgalException, sipExceptionRef.what().toUtf8().constData() );
+  SIP_UNBLOCK_THREADS
+%End
+};
+%End
+
+%Exception QgsInvalidArgumentException(SIP_Exception) /PyName=QgsInvalidArgumentException/
+{
+%TypeHeaderCode
+#include <qgsexception.h>
+%End
+%RaiseCode
+  SIP_BLOCK_THREADS
+  PyErr_SetString(sipException_QgsInvalidArgumentException, sipExceptionRef.what().toUtf8().constData() );
+  SIP_UNBLOCK_THREADS
+%End
+};
+
 // IMPORTANT -- QgsException MUST be last listed, or it will greedily prevent the more
 // specialized exceptions from being raised
 
@@ -75,4 +102,3 @@
 
 // IMPORTANT -- QgsException MUST be last listed, or it will greedily prevent the more
 // specialized exceptions from being raised
-

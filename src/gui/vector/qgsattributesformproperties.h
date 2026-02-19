@@ -20,34 +20,41 @@
 #define SIP_NO_FILE
 
 #include "ui_qgsattributesformproperties.h"
+
 #include "qgis_gui.h"
 #include "qgsaction.h"
 #include "qgsattributesformmodel.h"
 #include "qgsexpressioncontextgenerator.h"
+#include "qgsmessagebar.h"
 #include "qgspropertycollection.h"
 #include "qgssettingstree.h"
 #include "qgssettingstreenode.h"
-#include "qgsmessagebar.h"
 
-#include <QMimeData>
-#include <QPushButton>
-#include <QWidget>
-#include <QTreeView>
-#include <QSpinBox>
-#include <QDropEvent>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QHBoxLayout>
-#include <QFormLayout>
-#include <QPlainTextEdit>
 #include <QAction>
-#include <QMenu>
 #include <QClipboard>
+#include <QDropEvent>
+#include <QFileDialog>
+#include <QFormLayout>
+#include <QHBoxLayout>
+#include <QMenu>
+#include <QMessageBox>
+#include <QMimeData>
+#include <QPlainTextEdit>
+#include <QPushButton>
+#include <QSpinBox>
+#include <QString>
+#include <QTreeView>
+#include <QWidget>
+
+using namespace Qt::StringLiterals;
 
 class QgsAttributeFormContainerEdit;
 class QgsAttributeTypeDialog;
 class QgsAttributeWidgetEdit;
 class QgsAttributesFormBaseView;
+class QgsFieldConstraintIndicatorProvider;
+class QgsFieldDefaultValueIndicatorProvider;
+class QgsSourceFieldsProperties;
 
 /**
  * \brief Creates panels to configure attributes forms.
@@ -61,10 +68,16 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     Q_OBJECT
 
   public:
-    static inline QgsSettingsTreeNode *sTreeAttributesForm = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "attributes-form" ) );
+    static inline QgsSettingsTreeNode *sTreeAttributesForm = QgsSettingsTree::sTreeApp->createChildNode( u"attributes-form"_s );
     static const QgsSettingsEntryBool *settingShowAliases;
 
-    explicit QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent = nullptr );
+    /**
+     * The QgsAttributesFormProperties constructor.
+     * \param layer The vector layer being configured
+     * \param parent The parent QObject
+     * \param sourceFieldsProperties The source fields properties widget, an optional parameter used to generate preview forms (since QGIS 4.0)
+     */
+    explicit QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent = nullptr, QgsSourceFieldsProperties *sourceFieldsProperties = nullptr );
 
     void init();
 
@@ -141,6 +154,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
 
     void updateFilteredItems( const QString &filterText );
 
+    void previewForm();
+
   private:
     //! this will clean the right panel
     void clearAttributeTypeFrame();
@@ -172,10 +187,15 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void copyWidgetConfiguration();
     void pasteWidgetConfiguration();
 
-    QgsAttributesAvailableWidgetsModel *mAvailableWidgetsModel;
-    QgsAttributesFormLayoutModel *mFormLayoutModel;
-    QgsAttributesFormProxyModel *mAvailableWidgetsProxyModel;
-    QgsAttributesFormProxyModel *mFormLayoutProxyModel;
+    void setAvailableWidgetsIndicatorProvidersEnabled( bool enabled );
+    void setFormLayoutIndicatorProvidersEnabled( bool enabled );
+
+    void applyToLayer( QgsVectorLayer *layer );
+
+    QgsAttributesAvailableWidgetsModel *mAvailableWidgetsModel = nullptr;
+    QgsAttributesFormLayoutModel *mFormLayoutModel = nullptr;
+    QgsAttributesFormProxyModel *mAvailableWidgetsProxyModel = nullptr;
+    QgsAttributesFormProxyModel *mFormLayoutProxyModel = nullptr;
 
     QgsMessageBar *mMessageBar = nullptr;
 
@@ -190,119 +210,15 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     QAction *mActionCopyWidgetConfiguration = nullptr;
     QAction *mActionPasteWidgetConfiguration = nullptr;
 
+    //! Indicator providers for both views
+    QgsFieldConstraintIndicatorProvider *mConstraintIndicatorProviderAvailableWidgets = nullptr;
+    QgsFieldDefaultValueIndicatorProvider *mDefaultValueIndicatorProviderAvailableWidgets = nullptr;
+    QgsFieldConstraintIndicatorProvider *mConstraintIndicatorProviderFormLayout = nullptr;
+    QgsFieldDefaultValueIndicatorProvider *mDefaultValueIndicatorProviderFormLayout = nullptr;
+
+    QgsSourceFieldsProperties *mSourceFieldsProperties = nullptr;
+
     friend class TestQgsAttributesFormProperties;
-};
-
-
-/**
- * \brief Graphical representation for the attribute drag and drop editor.
- *
- * \warning Not part of stable API and may change in future QGIS releases.
- * \ingroup gui
- * \since QGIS 3.44
- */
-class GUI_EXPORT QgsAttributesFormBaseView : public QTreeView, protected QgsExpressionContextGenerator
-{
-    Q_OBJECT
-
-  public:
-    /**
-     * Constructor for QgsAttributesFormBaseView, with the given \a parent.
-     *
-     * The given \a layer is used to build an expression context with the layer scope.
-     */
-    explicit QgsAttributesFormBaseView( QgsVectorLayer *layer, QWidget *parent = nullptr );
-
-    /**
-     * Returns the source model index corresponding to the first selected row.
-     *
-     * \note The first selected row is the first one the user selected, and not necessarily the one closer to the header.
-     */
-    QModelIndex firstSelectedIndex() const;
-
-    // QgsExpressionContextGenerator interface
-    QgsExpressionContext createExpressionContext() const override;
-
-  public slots:
-    /**
-     * Selects the first item that matches a \a itemType and a \a itemId.
-     *
-     * Helps to keep in sync selection from both Attribute Widget view and Form Layout view.
-     */
-    void selectFirstMatchingItem( const QgsAttributesFormData::AttributesFormItemType &itemType, const QString &itemId );
-
-    /**
-     * Sets the filter text to the underlying proxy model.
-     *
-     * \param text Filter text to be used to filter source model items.
-     */
-    void setFilterText( const QString &text );
-
-  protected:
-    QgsVectorLayer *mLayer = nullptr;
-    QgsAttributesFormProxyModel *mModel = nullptr;
-};
-
-
-/**
- * \brief Graphical representation for the available widgets while configuring attributes forms.
- *
- * \warning Not part of stable API and may change in future QGIS releases.
- * \ingroup gui
- * \since QGIS 3.44
- */
-class GUI_EXPORT QgsAttributesAvailableWidgetsView : public QgsAttributesFormBaseView
-{
-    Q_OBJECT
-
-  public:
-    /**
-     * Constructor for QgsAttributesAvailableWidgetsView, with the given \a parent.
-     *
-     * The given \a layer is used to build an expression context with the layer scope.
-     */
-    explicit QgsAttributesAvailableWidgetsView( QgsVectorLayer *layer, QWidget *parent = nullptr );
-
-    //! Overridden setModel() from base class. Only QgsAttributesFormProxyModel is an acceptable model.
-    void setModel( QAbstractItemModel *model ) override;
-
-    //! Access the underlying QgsAttributesAvailableWidgetsModel source model
-    QgsAttributesAvailableWidgetsModel *availableWidgetsModel() const;
-};
-
-
-/**
- * \brief Graphical representation for the form layout while configuring attributes forms.
- *
- * \warning Not part of stable API and may change in future QGIS releases.
- * \ingroup gui
- * \since QGIS 3.44
- */
-class GUI_EXPORT QgsAttributesFormLayoutView : public QgsAttributesFormBaseView
-{
-    Q_OBJECT
-
-  public:
-    /**
-     * Constructor for QgsAttributesFormLayoutView, with the given \a parent.
-     *
-     * The given \a layer is used to build an expression context with the layer scope.
-     */
-    explicit QgsAttributesFormLayoutView( QgsVectorLayer *layer, QWidget *parent = nullptr );
-
-    //! Overridden setModel() from base class. Only QgsAttributesFormProxyModel is an acceptable model.
-    void setModel( QAbstractItemModel *model ) override;
-
-  protected:
-    // Drag and drop support (to handle internal moves)
-    void dragEnterEvent( QDragEnterEvent *event ) override;
-    void dragMoveEvent( QDragMoveEvent *event ) override;
-    void dropEvent( QDropEvent *event ) override;
-
-  private slots:
-    void onItemDoubleClicked( const QModelIndex &index );
-    void handleExternalDroppedItem( QModelIndex &index );
-    void handleInternalDroppedItem( QModelIndex &index );
 };
 
 #endif // QGSATTRIBUTESFORMPROPERTIES_H

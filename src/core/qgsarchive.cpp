@@ -17,10 +17,14 @@
  ***************************************************************************/
 
 #include "qgsarchive.h"
-#include "qgsziputils.h"
-#include "qgsmessagelog.h"
-#include "qgsauxiliarystorage.h"
 
+#include "qgsauxiliarystorage.h"
+#include "qgsmessagelog.h"
+#include "qgsziputils.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -28,6 +32,7 @@
 
 #include <QStandardPaths>
 #include <QUuid>
+#include <memory>
 
 QgsArchive::QgsArchive()
   : mDir( new QTemporaryDir() )
@@ -45,7 +50,7 @@ QgsArchive &QgsArchive::operator=( const QgsArchive &other )
   if ( this != &other )
   {
     mFiles = other.mFiles;
-    mDir.reset( new QTemporaryDir() );
+    mDir = std::make_unique<QTemporaryDir>( );
   }
 
   return *this;
@@ -58,19 +63,19 @@ QString QgsArchive::dir() const
 
 void QgsArchive::clear()
 {
-  mDir.reset( new QTemporaryDir() );
+  mDir = std::make_unique<QTemporaryDir>( );
   mFiles.clear();
 }
 
 bool QgsArchive::zip( const QString &filename )
 {
-  const QString tempPath( QDir::temp().absoluteFilePath( QStringLiteral( "qgis-project-XXXXXX.zip" ) ) );
+  const QString tempPath( QDir::temp().absoluteFilePath( u"qgis-project-XXXXXX.zip"_s ) );
 
   // zip content
   if ( ! QgsZipUtils::zip( tempPath, mFiles, true ) )
   {
     const QString err = QObject::tr( "Unable to zip content" );
-    QgsMessageLog::logMessage( err, QStringLiteral( "QgsArchive" ) );
+    QgsMessageLog::logMessage( err, u"QgsArchive"_s );
     return false;
   }
 
@@ -104,7 +109,7 @@ bool QgsArchive::zip( const QString &filename )
   if ( !QFile::rename( tempPath, target ) )
   {
     const QString err = QObject::tr( "Unable to save zip file '%1'" ).arg( target );
-    QgsMessageLog::logMessage( err, QStringLiteral( "QgsArchive" ) );
+    QgsMessageLog::logMessage( err, u"QgsArchive"_s );
     return false;
   }
 
@@ -150,7 +155,7 @@ QString QgsProjectArchive::projectFile() const
   for ( const QString &file : constFiles )
   {
     const QFileInfo fileInfo( file );
-    if ( fileInfo.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) == 0 )
+    if ( fileInfo.suffix().compare( "qgs"_L1, Qt::CaseInsensitive ) == 0 )
       return file;
   }
 

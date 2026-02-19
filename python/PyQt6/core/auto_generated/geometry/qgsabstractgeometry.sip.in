@@ -12,6 +12,7 @@
 
 
 
+
 typedef QVector< QgsPoint > QgsPointSequence;
 typedef QVector< QVector< QgsPoint > > QgsRingSequence;
 typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
@@ -45,6 +46,8 @@ Abstract base class for all geometries.
       sipType = sipType_QgsCircularString;
     else if ( qgsgeometry_cast<QgsCompoundCurve *>( sipCpp ) != nullptr )
       sipType = sipType_QgsCompoundCurve;
+    else if ( qgsgeometry_cast<QgsNurbsCurve *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsNurbsCurve;
     else if ( qgsgeometry_cast<QgsTriangle *>( sipCpp ) != nullptr )
       sipType = sipType_QgsTriangle;
     else if ( qgsgeometry_cast<QgsPolygon *>( sipCpp ) != nullptr )
@@ -567,6 +570,22 @@ Returns the planar, 2-dimensional area of the geometry.
 .. seealso:: :py:func:`length`
 
 .. seealso:: :py:func:`perimeter`
+
+.. seealso:: :py:func:`area`
+%End
+
+    virtual double area3D() const;
+%Docstring
+Returns the 3-dimensional surface area of the geometry.
+
+.. warning::
+
+   QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the area
+   returned by this method is calculated using strictly Cartesian mathematics.
+
+.. seealso:: :py:func:`area`
+
+.. versionadded:: 4.0
 %End
 
     virtual double segmentLength( QgsVertexId startVertex ) const = 0;
@@ -868,22 +887,22 @@ Example
 .. code-block:: python
 
        # print the WKT representation of each part in a multi-point geometry
-       geometry = QgsMultiPoint.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
+       geometry = QgsGeometry.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
        for part in geometry.parts():
            print(part.asWkt())
 
        # single part geometries only have one part - this loop will iterate once only
-       geometry = QgsLineString.fromWkt( 'LineString( 0 0, 10 10 )' )
+       geometry = QgsGeometry.fromWkt( 'LineString( 0 0, 10 10 )' )
        for part in geometry.parts():
            print(part.asWkt())
 
        # parts can be modified during the iteration
-       geometry = QgsMultiPoint.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
+       geometry = QgsGeometry.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
        for part in geometry.parts():
-           part.transform(ct)
+           part.transform(ct=QgsCoordinateTransform()) # Dummy transform
 
        # part iteration can also be combined with vertex iteration
-       geometry = QgsMultiPolygon.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
+       geometry = QgsGeometry.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
        for part in geometry.parts():
            for v in part.vertices():
                print(v.x(), v.y())
@@ -909,12 +928,12 @@ Example
 .. code-block:: python
 
        # print the x and y coordinate for each vertex in a LineString
-       geometry = QgsLineString.fromWkt( 'LineString( 0 0, 1 1, 2 2)' )
+       geometry = QgsGeometry.fromWkt( 'LineString( 0 0, 1 1, 2 2)' )
        for v in geometry.vertices():
            print(v.x(), v.y())
 
        # vertex iteration includes all parts and rings
-       geometry = QgsMultiPolygon.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
+       geometry = QgsGeometry.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
        for v in geometry.vertices():
            print(v.x(), v.y())
 

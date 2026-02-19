@@ -13,12 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgselevationoptions.h"
+
+#include "elevation/qgselevationprofilewidget.h"
+#include "qgsapplication.h"
+#include "qgssettings.h"
+
+#include <QDir>
+#include <QString>
+
 #include "moc_qgselevationoptions.cpp"
 
-#include "qgssettings.h"
-#include "qgsapplication.h"
-#include "elevation/qgselevationprofilewidget.h"
-#include <QDir>
+using namespace Qt::StringLiterals;
 
 //
 // QgsElevationOptionsWidget
@@ -41,7 +46,7 @@ QgsElevationOptionsWidget::QgsElevationOptionsWidget( QWidget *parent )
 
 QString QgsElevationOptionsWidget::helpKey() const
 {
-  return QStringLiteral( "introduction/qgis_configuration.html#elevation-options" );
+  return u"introduction/qgis_configuration.html#elevation-options"_s;
 }
 
 void QgsElevationOptionsWidget::apply()
@@ -55,13 +60,13 @@ void QgsElevationOptionsWidget::apply()
 // QgsElevationOptionsFactory
 //
 QgsElevationOptionsFactory::QgsElevationOptionsFactory()
-  : QgsOptionsWidgetFactory( tr( "Elevation" ), QIcon(), QStringLiteral( "elevation" ) )
+  : QgsOptionsWidgetFactory( tr( "Elevation" ), QIcon(), u"elevation"_s )
 {
 }
 
 QIcon QgsElevationOptionsFactory::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/elevationscale.svg" ) );
+  return QgsApplication::getThemeIcon( u"propertyicons/elevationscale.svg"_s );
 }
 
 QgsOptionsPageWidget *QgsElevationOptionsFactory::createWidget( QWidget *parent ) const
@@ -71,5 +76,5 @@ QgsOptionsPageWidget *QgsElevationOptionsFactory::createWidget( QWidget *parent 
 
 QString QgsElevationOptionsFactory::pagePositionHint() const
 {
-  return QStringLiteral( "mOptionsPageColors" );
+  return u"mOptionsPageColors"_s;
 }

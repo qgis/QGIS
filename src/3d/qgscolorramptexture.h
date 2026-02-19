@@ -20,18 +20,17 @@
 
 /// @cond PRIVATE
 
-#include <Qt3DRender/QEffect>
-#include <Qt3DRender/QGraphicsApiFilter>
-#include <Qt3DRender/QParameter>
-#include <Qt3DRender/QTexture>
+#include "qgscolorrampshader.h"
 
+#include <QByteArray>
 #include <QUrl>
 #include <QVector2D>
 #include <QVector3D>
 #include <QVector4D>
-#include <QByteArray>
-
-#include "qgscolorrampshader.h"
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QGraphicsApiFilter>
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QTexture>
 
 #define SIP_NO_FILE
 
@@ -43,12 +42,12 @@ class QgsColorRampTextureGenerator : public Qt3DRender::QTextureImageDataGenerat
   public:
     Qt3DRender::QTextureImageDataPtr operator()() override;
 
-    bool operator==( const Qt3DRender::QTextureImageDataGenerator &other ) const override;
+    qintptr id() const override
+    {
+      return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<QgsColorRampTextureGenerator>::id );
+    }
 
-    // marked as deprecated in 5.15, but undeprecated for Qt 6.0. TODO -- remove when we require 6.0
-    Q_NOWARN_DEPRECATED_PUSH
-    QT3D_FUNCTOR( QgsColorRampTextureGenerator )
-    Q_NOWARN_DEPRECATED_POP
+    bool operator==( const Qt3DRender::QTextureImageDataGenerator &other ) const override;
 
   private:
     QgsColorRampShader mColorRampShader;

@@ -17,12 +17,12 @@
 #ifndef QGSAUTHPKIPATHSEDIT_H
 #define QGSAUTHPKIPATHSEDIT_H
 
-#include <QWidget>
-#include "qgsauthmethodedit.h"
 #include "ui_qgsauthpkipathsedit.h"
 
 #include "qgsauthconfig.h"
+#include "qgsauthmethodedit.h"
 
+#include <QWidget>
 
 class QgsAuthPkiPathsEdit : public QgsAuthMethodEdit, private Ui::QgsAuthPkiPathsEdit
 {

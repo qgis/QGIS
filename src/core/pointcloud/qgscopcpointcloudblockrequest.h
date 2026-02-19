@@ -18,10 +18,10 @@
 #ifndef QGSCOPCPOINTCLOUDBLOCKREQUEST_H
 #define QGSCOPCPOINTCLOUDBLOCKREQUEST_H
 
-#include <QObject>
-
-#include "qgspointcloudblockrequest.h"
 #include "qgslazinfo.h"
+#include "qgspointcloudblockrequest.h"
+
+#include <QObject>
 
 #define SIP_NO_FILE
 
@@ -49,9 +49,10 @@ class CORE_EXPORT QgsCopcPointCloudBlockRequest : public QgsPointCloudBlockReque
     QgsCopcPointCloudBlockRequest( const QgsPointCloudNodeId &node, const QString &Uri,
                                    const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
                                    const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsRectangle &filterRect,
-                                   uint64_t blockOffset, int32_t blockSize, int pointCount, const QgsLazInfo &lazInfo );
+                                   uint64_t blockOffset, int32_t blockSize, int pointCount, const QgsLazInfo &lazInfo,
+                                   const QString &authcfg = QString() );
 
-    ~QgsCopcPointCloudBlockRequest() = default;
+    ~QgsCopcPointCloudBlockRequest() override = default;
   private:
     uint64_t mBlockOffset;
     int32_t mBlockSize;

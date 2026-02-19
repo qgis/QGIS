@@ -18,31 +18,36 @@
 #ifndef QGSMAPLAYER_H
 #define QGSMAPLAYER_H
 
+#include "qgis.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsdataprovider.h"
+#include "qgserror.h"
+#include "qgslayermetadata.h"
+#include "qgslogger.h"
+#include "qgsmaplayerdependency.h"
+#include "qgsmaplayerselectionproperties.h"
+#include "qgsmaplayerserverproperties.h"
+#include "qgsobjectcustomproperties.h"
+#include "qgsreadwritecontext.h"
+#include "qgsrectangle.h"
+
 #include <QDateTime>
 #include <QDomNode>
+#include <QIcon>
 #include <QImage>
 #include <QObject>
 #include <QPainter>
+#include <QSet>
+#include <QString>
 #include <QUndoStack>
 #include <QVariant>
-#include <QIcon>
-#include <QSet>
 
-#include "qgis_sip.h"
-#include "qgserror.h"
-#include "qgsobjectcustomproperties.h"
-#include "qgsrectangle.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsmaplayerdependency.h"
-#include "qgslayermetadata.h"
-#include "qgsmaplayerserverproperties.h"
-#include "qgsreadwritecontext.h"
-#include "qgsdataprovider.h"
-#include "qgis.h"
-#include "qgslogger.h"
+using namespace Qt::StringLiterals;
 
 class QgsAbstract3DRenderer;
+class QgsAbstractProfileSource;
 class QgsDataProvider;
 class QgsMapLayerLegend;
 class QgsMapLayerRenderer;
@@ -52,7 +57,8 @@ class QgsProviderMetadata;
 class QgsStyleEntityVisitorInterface;
 class QgsMapLayerTemporalProperties;
 class QgsMapLayerElevationProperties;
-class QgsMapLayerSelectionProperties;
+class QgsObjectEntityVisitorInterface;
+class QgsObjectVisitorContext;
 class QgsSldExportContext;
 
 class QDomDocument;
@@ -89,6 +95,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
     Q_PROPERTY( double opacity READ opacity WRITE setOpacity NOTIFY opacityChanged )
     Q_PROPERTY( QString mapTipTemplate READ mapTipTemplate WRITE setMapTipTemplate NOTIFY mapTipTemplateChanged )
     Q_PROPERTY( bool mapTipsEnabled READ mapTipsEnabled WRITE setMapTipsEnabled NOTIFY mapTipsEnabledChanged )
+    Q_PROPERTY( QgsMapLayerSelectionProperties *selectionProperties READ selectionProperties )
+    Q_PROPERTY( QgsMapLayer::LayerFlags flags READ flags WRITE setFlags NOTIFY flagsChanged )
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -186,6 +194,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
       Legend             = 1 << 15, //!< Legend settings \since QGIS 3.16
       Elevation          = 1 << 16, //!< Elevation settings \since QGIS 3.18
       Notes              = 1 << 17, //!< Layer user notes \since QGIS 3.20
+      AllVisualStyleCategories = Symbology | Symbology3D | Labeling | Diagrams, //!< All categories dealing with map canvas rendering
+      AllAttributeCategories = Fields | Forms | AttributeTable, //!< All categories dealing with attributes and attribute form
       AllStyleCategories = LayerConfiguration | Symbology | Symbology3D | Labeling | Fields | Forms | Actions |
                            MapTips | Diagrams | AttributeTable | Rendering | CustomProperties | GeometryOptions | Relations | Temporal | Legend | Elevation | Notes,
     };
@@ -574,7 +584,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     bool isValid() const;
 
-    // TODO QGIS 4.0: consider changing bool hidePassword to an enumeration: HIDE_CREDENTIALS / REDACT_CREDENTIALS
+    // TODO QGIS 5.0: consider changing bool hidePassword to an enumeration: HIDE_CREDENTIALS / REDACT_CREDENTIALS
     // to avoid the ambiguity of the double negation (hide = false)
 
     /**
@@ -758,7 +768,29 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual bool deleteStyleFromDatabase( const QString &styleId, QString &msgError SIP_OUT );
 
     /**
-     * Saves named and sld style of the layer to the style table in the db.
+     * Results of saving styles to database.
+     *
+     * \since QGIS 4.0
+     */
+    enum class SaveStyleResult SIP_ENUM_BASETYPE( IntFlag )
+    {
+      Success = 0, //!< Both QML and SLD formats were successfully written to the database.
+      QmlGenerationFailed = 1 << 0, //!< Generation of the QML failed, and was not written to the database.
+      SldGenerationFailed = 1 << 1,  //!< Generation of the SLD failed, and was not written to the database.
+      DatabaseWriteFailed = 1 << 2, //!< An error occurred when attempting to write to the database.
+    };
+    Q_ENUM( SaveStyleResult )
+
+    /**
+     * Results of saving styles to database.
+     *
+     * \since QGIS 4.0
+     */
+    Q_DECLARE_FLAGS( SaveStyleResults, SaveStyleResult )
+    Q_FLAG( SaveStyleResults )
+
+    /**
+     * Saves QML and SLD representations of the layer's style to a table in the database.
      * \param name Style name
      * \param description A description of the style
      * \param useAsDefault Set to TRUE if style should be used as the default style for the layer
@@ -766,20 +798,38 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param msgError will be set to a descriptive error message if any occurs
      * \param categories the style categories to be saved.
      *
-     *
      * \note Prior to QGIS 3.24, this method would show a message box warning when a
      * style with the same \a styleName already existed to confirm replacing the style with the user.
      * Since 3.24, calling this method will ALWAYS overwrite any existing style with the same name.
      * Use QgsProviderRegistry::styleExists() to test in advance if a style already exists and handle this appropriately
      * in your client code.
+     *
+     * \deprecated QGIS 4.0. Use saveStyleToDatabaseV2() instead.
      */
-    virtual void saveStyleToDatabase( const QString &name, const QString &description,
-                                      bool useAsDefault, const QString &uiFileContent,
-                                      QString &msgError SIP_OUT,
-                                      QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+    Q_DECL_DEPRECATED virtual void saveStyleToDatabase( const QString &name, const QString &description,
+        bool useAsDefault, const QString &uiFileContent,
+        QString &msgError SIP_OUT,
+        QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) SIP_DEPRECATED;
 
+    /**
+     * Saves QML and SLD representations of the layer's style to a table in the database.
+     * \param name Style name
+     * \param description A description of the style
+     * \param useAsDefault Set to TRUE if style should be used as the default style for the layer
+     * \param uiFileContent
+     * \param msgError will be set to a descriptive error message if any occurs
+     * \param categories the style categories to be saved.
+     *
+     * \returns flags representing whether QML or SLD storing was successful
+     *
+     * \since QGIS 4.0
+     */
+    QgsMapLayer::SaveStyleResults saveStyleToDatabaseV2( const QString &name, const QString &description,
+        bool useAsDefault, const QString &uiFileContent,
+        QString &msgError SIP_OUT,
+        QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
 
-    // TODO QGIS 4.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "a style WAS found but an error occurred loading it" vs "no style was found".
+    // TODO QGIS 5.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "a style WAS found but an error occurred loading it" vs "no style was found".
     // The first (style found, error occurred loading it) should trigger a user-facing warning, whereas the second (no style found) isn't reflective of an error at all.
 
     /**
@@ -815,7 +865,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
       Q_ASSERT( metaEnum.isValid() );
       if ( !metaEnum.isValid() )
       {
-        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+        QgsDebugError( u"Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration."_s );
       }
 
       T v;
@@ -871,7 +921,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
       }
       else
       {
-        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+        QgsDebugError( u"Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration."_s );
       }
     }
 
@@ -893,7 +943,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
       Q_ASSERT( metaEnum.isValid() );
       if ( !metaEnum.isValid() )
       {
-        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+        QgsDebugError( u"Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration."_s );
       }
 
       T v = defaultValue;
@@ -961,7 +1011,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
       }
       else
       {
-        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+        QgsDebugError( u"Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration."_s );
       }
     }
 #endif
@@ -1120,7 +1170,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QString saveNamedMetadata( const QString &uri, bool &resultFlag SIP_OUT );
 
-    // TODO QGIS 4.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "metadata WAS found but an error occurred loading it" vs "no metadata was found".
+    // TODO QGIS 5.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "metadata WAS found but an error occurred loading it" vs "no metadata was found".
     // The first (metadata found, error occurred loading it) should trigger a user-facing warning, whereas the second (no metadata found) isn't reflective of an error at all.
 
     /**
@@ -1138,7 +1188,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     virtual QString loadNamedMetadata( const QString &uri, bool &resultFlag SIP_OUT );
 
-    // TODO QGIS 4.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "metadata WAS found but an error occurred loading it" vs "no metadata was found".
+    // TODO QGIS 5.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "metadata WAS found but an error occurred loading it" vs "no metadata was found".
     // The first (metadata found, error occurred loading it) should trigger a user-facing warning, whereas the second (no metadata found) isn't reflective of an error at all.
 
     /**
@@ -1178,7 +1228,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     virtual QString styleURI() const;
 
-    // TODO QGIS 4.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "a style WAS found but an error occurred loading it" vs "no style was found".
+    // TODO QGIS 5.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "a style WAS found but an error occurred loading it" vs "no style was found".
     // The first (style found, error occurred loading it) should trigger a user-facing warning, whereas the second (no style found) isn't reflective of an error at all.
 
     /**
@@ -1192,7 +1242,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     virtual QString loadDefaultStyle( bool &resultFlag SIP_OUT );
 
-    // TODO QGIS 4.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "a style WAS found but an error occurred loading it" vs "no style was found".
+    // TODO QGIS 5.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "a style WAS found but an error occurred loading it" vs "no style was found".
     // The first (style found, error occurred loading it) should trigger a user-facing warning, whereas the second (no style found) isn't reflective of an error at all.
 
     /**
@@ -1351,7 +1401,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual QString loadSldStyle( const QString &uri, bool &resultFlag SIP_OUT );
 
     virtual bool readSld( const QDomNode &node, QString &errorMessage )
-    { Q_UNUSED( node ) errorMessage = QStringLiteral( "Layer type %1 not supported" ).arg( static_cast<int>( type() ) ); return false; }
+    { Q_UNUSED( node ) errorMessage = u"Layer type %1 not supported"_s.arg( static_cast<int>( type() ) ); return false; }
 
 
 
@@ -1742,6 +1792,17 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
     /**
+     * Accepts the specified object \a visitor, causing it to visit all relevant objects associated
+     * with the layer.
+     *
+     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+     * should be canceled.
+     *
+     * \since QGIS 4.0
+     */
+    virtual bool accept( QgsObjectEntityVisitorInterface *visitor, const QgsObjectVisitorContext &context ) const;
+
+    /**
      * Returns the layer's selection properties. This may be NULLPTR, depending on the layer type.
      *
      * \since QGIS 3.34
@@ -1761,6 +1822,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.18
      */
     virtual QgsMapLayerElevationProperties *elevationProperties() { return nullptr; }
+
+
+    /**
+     * Returns the layer's profile source if it has profile capabilities. This may be NULLPTR, depending on the layer type.
+     *
+     * \since QGIS 3.44
+     */
+    virtual QgsAbstractProfileSource *profileSource() { return nullptr; }
 
     /**
      * Returns path to the placeholder image or an empty string if a generated legend is shown
@@ -1914,7 +1983,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsMapLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+    QString str = u"<QgsMapLayer: '%1' (%2)>"_s.arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : u"Invalid"_s );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -2316,7 +2385,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Data provider key (name of the data provider)
     QString mProviderKey;
 
-    //TODO QGIS 4 - move to readXml as a new argument (breaks API)
+    //TODO QGIS 5 - move to readXml as a new argument (breaks API)
 
     //! Read flags. It's up to the subclass to respect these when restoring state from XML
     QgsMapLayer::ReadFlags mReadFlags = QgsMapLayer::ReadFlags();
@@ -2456,7 +2525,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QgsObjectCustomProperties mCustomProperties;
 
     //! Controller of legend items of this layer
-    QgsMapLayerLegend *mLegend = nullptr;
+    std::unique_ptr<QgsMapLayerLegend> mLegend;
 
     //! Manager of multiple styles available for a layer (may be NULLPTR)
     std::unique_ptr<QgsMapLayerStyleManager> mStyleManager;
@@ -2469,7 +2538,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QgsLayerMetadata mMetadata;
 
     //! Renderer for 3D views
-    QgsAbstract3DRenderer *m3DRenderer = nullptr;
+    std::unique_ptr<QgsAbstract3DRenderer> m3DRenderer;
 
     //! 3D Extent of the layer
     mutable QgsBox3D mExtent3D;

@@ -13,14 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsattributesforminitcode.h"
-#include "moc_qgsattributesforminitcode.cpp"
 #include "ui_qgsattributesforminitcode.h"
-#include "qgssettings.h"
+#include "qgsattributesforminitcode.h"
+
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgssettings.h"
 
 #include <QFileDialog>
+#include <QString>
+
+#include "moc_qgsattributesforminitcode.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAttributesFormInitCode::QgsAttributesFormInitCode()
 {
@@ -34,7 +39,7 @@ QgsAttributesFormInitCode::QgsAttributesFormInitCode()
   mInitCodeSourceComboBox->addItem( tr( "Load from the Environment" ), QVariant::fromValue( Qgis::AttributeFormPythonInitCodeSource::Environment ) );
 
   const QgsSettings settings;
-  mInitFileWidget->setDefaultRoot( settings.value( QStringLiteral( "style/lastInitFilePathDir" ), "." ).toString() );
+  mInitFileWidget->setDefaultRoot( settings.value( u"style/lastInitFilePathDir"_s, "." ).toString() );
   mInitFileWidget->setDialogTitle( tr( "Select Python File" ) );
   mInitFileWidget->setFilter( tr( "Python files (*.py *.PY)" ) );
 
@@ -89,5 +94,5 @@ void QgsAttributesFormInitCode::mInitCodeSourceComboBox_currentIndexChanged( int
 
 void QgsAttributesFormInitCode::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#enhance-your-form-with-custom-functions" ) );
+  QgsHelp::openHelp( u"working_with_vector/vector_properties.html#enhance-your-form-with-custom-functions"_s );
 }

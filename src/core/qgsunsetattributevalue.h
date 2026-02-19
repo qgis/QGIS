@@ -18,9 +18,13 @@
 #ifndef QGSUNSETATTRIBUTEVALUE_H
 #define QGSUNSETATTRIBUTEVALUE_H
 
+#include "qgis.h"
 #include "qgis_core.h"
+
 #include <QString>
 #include <QVariant>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core
@@ -59,9 +63,9 @@ class CORE_EXPORT QgsUnsetAttributeValue
     % MethodCode
     QString str;
     if ( !sipCpp->defaultValueClause().isEmpty() )
-      str = QStringLiteral( "<QgsUnsetAttributeValue: %1>" ).arg( sipCpp->defaultValueClause() );
+      str = u"<QgsUnsetAttributeValue: %1>"_s.arg( sipCpp->defaultValueClause() );
     else
-      str = QStringLiteral( "<QgsUnsetAttributeValue>" );
+      str = u"<QgsUnsetAttributeValue>"_s;
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -80,11 +84,28 @@ class CORE_EXPORT QgsUnsetAttributeValue
 
 Q_DECLARE_METATYPE( QgsUnsetAttributeValue )
 
+#ifndef SIP_RUN
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wattributes"
+#elif defined(_MSC_VER)
+__pragma( warning( push ) )
+__pragma( warning( disable: 4273 ) )
+#endif
+#endif
 
 inline bool CORE_EXPORT operator==( const QgsUnsetAttributeValue &value, const QString &other )
 {
   return other == value.defaultValueClause();
 }
+
+#ifndef SIP_RUN
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
+#pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+__pragma( warning( pop ) )
+#endif
+#endif
 
 inline bool operator!=( const QgsUnsetAttributeValue &value, const QString &other )
 {

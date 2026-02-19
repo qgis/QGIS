@@ -13,14 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsfixattributedialog.h"
-#include "moc_qgsfixattributedialog.cpp"
 
-#include "qgsattributeform.h"
-#include "qgsapplication.h"
 #include "qgisapp.h"
+#include "qgsapplication.h"
+#include "qgsattributeform.h"
 
 #include <QtWidgets/QPushButton>
 
+#include "moc_qgsfixattributedialog.cpp"
 
 QgsFixAttributeDialog::QgsFixAttributeDialog( QgsVectorLayer *vl, QgsFeatureList &features, QWidget *parent, const QgsAttributeEditorContext &context )
   : QDialog( parent )
@@ -65,10 +65,10 @@ void QgsFixAttributeDialog::init( QgsVectorLayer *layer, const QgsAttributeEdito
   {
     buttonBox->addButton( cancelAllBtn, QDialogButtonBox::ActionRole );
     buttonBox->addButton( cancelAllInvalidBtn, QDialogButtonBox::ActionRole );
-    connect( cancelAllBtn, &QAbstractButton::clicked, this, [=]() {
+    connect( cancelAllBtn, &QAbstractButton::clicked, this, [this]() {
       done( DiscardAll );
     } );
-    connect( cancelAllInvalidBtn, &QAbstractButton::clicked, this, [=]() {
+    connect( cancelAllInvalidBtn, &QAbstractButton::clicked, this, [this]() {
       done( PasteValid );
     } );
     buttonBox->button( QDialogButtonBox::Cancel )->setText( tr( "Skip" ) );
@@ -78,7 +78,7 @@ void QgsFixAttributeDialog::init( QgsVectorLayer *layer, const QgsAttributeEdito
     storeAllInvalidBtn->setText( tr( "Paste Anyway" ) );
   }
   buttonBox->addButton( storeAllInvalidBtn, QDialogButtonBox::ActionRole );
-  connect( storeAllInvalidBtn, &QAbstractButton::clicked, this, [=]() {
+  connect( storeAllInvalidBtn, &QAbstractButton::clicked, this, [this]() {
     done( PasteAll );
   } );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsFixAttributeDialog::reject );

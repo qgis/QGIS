@@ -14,16 +14,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
 #include "qgstopologicalmesh.h"
+
+#include "poly2tri.h"
+#include "qgis.h"
+#include "qgscircle.h"
+#include "qgsgeometryutils.h"
 #include "qgsmesheditor.h"
 #include "qgsmessagelog.h"
-#include "qgsgeometryutils.h"
-#include "qgscircle.h"
 
-#include <poly2tri.h>
-#include <QSet>
 #include <QQueue>
+#include <QSet>
 
 /*static*/ int QgsTopologicalMesh::vertexPositionInFace( const QgsMesh &mesh, int vertexIndex, int faceIndex )
 {
@@ -824,7 +825,7 @@ bool QgsTopologicalMesh::renumberVertices( QVector<int> &oldToNewIndex ) const
     nonThreadedVertex.insert( i );
   }
 
-  auto sortedNeighbor = [ = ]( QList<int> &neighbors, int index )
+  auto sortedNeighbor = [circulators]( QList<int> &neighbors, int index )
   {
     const QgsMeshVertexCirculator &circ = circulators.at( index );
 

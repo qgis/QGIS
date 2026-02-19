@@ -1,0 +1,130 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstacobject.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsStacObject
+{
+%Docstring(signature="appended")
+Abstract base class for storing STAC objects.
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgsstacobject.h"
+#include "qgsstacitem.h"
+#include "qgsstaccollection.h"
+#include "qgsstaccatalog.h"
+%End
+%ConvertToSubClassCode
+    if ( QgsStacItem *item = dynamic_cast< QgsStacItem * >( sipCpp ) )
+    {
+      sipType = sipType_QgsStacItem;
+    }
+    else if ( QgsStacCollection *item = dynamic_cast< QgsStacCollection * >( sipCpp ) )
+    {
+      sipType = sipType_QgsStacCollection;
+    }
+    else if ( QgsStacCatalog *item = dynamic_cast< QgsStacCatalog * >( sipCpp ) )
+    {
+      sipType = sipType_QgsStacCatalog;
+    }
+    else
+    {
+      sipType = NULL;
+    }
+%End
+  public:
+
+
+    QgsStacObject( const QString &id, const QString &version, const QVector< QgsStacLink > &links );
+%Docstring
+Constructor for valid objects
+%End
+
+    virtual ~QgsStacObject();
+
+    virtual Qgis::StacObjectType type() const = 0;
+%Docstring
+Returns the ``Type`` of the STAC object
+%End
+
+    virtual QString toHtml() const = 0;
+%Docstring
+Returns an HTML representation of the STAC object
+%End
+
+    QString stacVersion() const;
+%Docstring
+Returns the STAC version the object implements
+%End
+
+    void setStacVersion( const QString &stacVersion );
+%Docstring
+Sets the STAC version the object implements
+%End
+
+    QStringList stacExtensions() const;
+%Docstring
+Returns the list of extensions the STAC object implements
+%End
+
+    void setStacExtensions( const QStringList &stacExtensions );
+%Docstring
+Sets the list of ``stacExtensions`` the object implements
+%End
+
+    QString id() const;
+%Docstring
+Id of the STAC object
+%End
+
+    void setId( const QString &id );
+%Docstring
+Sets the ``id`` for the STAC object
+%End
+
+    QVector< QgsStacLink > links() const;
+%Docstring
+Returns the STAC links included in the object
+%End
+
+    void setLinks( const QVector< QgsStacLink > &links );
+%Docstring
+Sets the STAC links included in the object
+%End
+
+    QString url() const;
+%Docstring
+Return the url stored in the object's "self" link
+%End
+
+    QString rootUrl() const;
+%Docstring
+Return the url stored in the object's "root" link
+%End
+
+    QString parentUrl() const;
+%Docstring
+Return the url stored in the object's "parent" link
+%End
+
+
+  protected:
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstacobject.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

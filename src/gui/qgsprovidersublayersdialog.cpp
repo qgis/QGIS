@@ -14,21 +14,26 @@
  ***************************************************************************/
 
 #include "qgsprovidersublayersdialog.h"
-#include "moc_qgsprovidersublayersdialog.cpp"
-#include "qgssettings.h"
-#include "qgsprovidersublayermodel.h"
-#include "qgsproviderutils.h"
-#include "qgsprovidersublayertask.h"
-#include "qgsapplication.h"
-#include "qgstaskmanager.h"
-#include "qgsnative.h"
-#include "qgsgui.h"
 
-#include <QPushButton>
-#include <QFileInfo>
-#include <QDir>
+#include "qgsapplication.h"
+#include "qgsgui.h"
+#include "qgsnative.h"
+#include "qgsprovidersublayermodel.h"
+#include "qgsprovidersublayertask.h"
+#include "qgsproviderutils.h"
+#include "qgssettings.h"
+#include "qgstaskmanager.h"
+
 #include <QDesktopServices>
+#include <QDir>
+#include <QFileInfo>
+#include <QPushButton>
+#include <QString>
 #include <QUrl>
+
+#include "moc_qgsprovidersublayersdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProviderSublayerDialogModel::QgsProviderSublayerDialogModel( QObject *parent )
   : QgsProviderSublayerModel( parent )
@@ -127,14 +132,14 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
     setGroupName( fileName );
   }
 
-  setWindowTitle( fileName.isEmpty() ? tr( "Select Items to Add" ) : QStringLiteral( "%1 | %2" ).arg( tr( "Select Items to Add" ), fileName ) );
+  setWindowTitle( fileName.isEmpty() ? tr( "Select Items to Add" ) : u"%1 | %2"_s.arg( tr( "Select Items to Add" ), fileName ) );
 
-  mLblFilePath->setText( QStringLiteral( "<a href=\"%1\">%2</a>" )
+  mLblFilePath->setText( u"<a href=\"%1\">%2</a>"_s
                            .arg( QUrl::fromLocalFile( filePath ).toString(), QDir::toNativeSeparators( QFileInfo( filePath ).canonicalFilePath() ) ) );
   mLblFilePath->setVisible( !filePath.isEmpty() );
   mLblFilePath->setWordWrap( true );
   mLblFilePath->setTextInteractionFlags( Qt::TextBrowserInteraction );
-  connect( mLblFilePath, &QLabel::linkActivated, this, [=]( const QString &link ) {
+  connect( mLblFilePath, &QLabel::linkActivated, this, []( const QString &link ) {
     const QUrl url( link );
     const QFileInfo file( url.toLocalFile() );
     if ( file.exists() && !file.isDir() )
@@ -152,7 +157,7 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   mLayersTree->expandAll();
 
   const QgsSettings settings;
-  const bool addToGroup = settings.value( QStringLiteral( "/qgis/openSublayersInGroup" ), false ).toBool();
+  const bool addToGroup = settings.value( u"/qgis/openSublayersInGroup"_s, false ).toBool();
   mCbxAddToGroup->setChecked( addToGroup );
   mCbxAddToGroup->setVisible( !fileName.isEmpty() );
 
@@ -173,7 +178,7 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   {
     // initial details are incomplete, so fire up a task in the background to fully populate the model...
     mTask = new QgsProviderSublayerTask( uri, providerKey, true );
-    connect( mTask.data(), &QgsProviderSublayerTask::taskCompleted, this, [=] {
+    connect( mTask.data(), &QgsProviderSublayerTask::taskCompleted, this, [this, acceptableTypes] {
       QList<QgsProviderSublayerDetails> res = mTask->results();
       res.erase( std::remove_if( res.begin(), res.end(), [acceptableTypes]( const QgsProviderSublayerDetails &sublayer ) {
                    return !acceptableTypes.empty() && !acceptableTypes.contains( sublayer.type() );
@@ -190,12 +195,12 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   }
 
   connect( mBtnSelectAll, &QAbstractButton::pressed, this, &QgsProviderSublayersDialog::selectAll );
-  connect( mBtnDeselectAll, &QAbstractButton::pressed, this, [=] { mLayersTree->selectionModel()->clear(); } );
+  connect( mBtnDeselectAll, &QAbstractButton::pressed, this, [this] { mLayersTree->selectionModel()->clear(); } );
   connect( mLayersTree->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsProviderSublayersDialog::treeSelectionChanged );
   connect( mSearchLineEdit, &QgsFilterLineEdit::textChanged, mProxyModel, &QgsProviderSublayerProxyModel::setFilterString );
   connect( mCheckShowSystem, &QCheckBox::toggled, mProxyModel, &QgsProviderSublayerProxyModel::setIncludeSystemTables );
   connect( mCheckShowEmpty, &QCheckBox::toggled, mProxyModel, &QgsProviderSublayerProxyModel::setIncludeEmptyLayers );
-  connect( mLayersTree, &QTreeView::doubleClicked, this, [=]( const QModelIndex &index ) {
+  connect( mLayersTree, &QTreeView::doubleClicked, this, [this]( const QModelIndex &index ) {
     const QModelIndex left = mLayersTree->model()->index( index.row(), 0, index.parent() );
     if ( !( left.flags() & Qt::ItemIsSelectable ) )
       return;
@@ -205,7 +210,7 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
     accept();
   } );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
-  connect( mButtonBox, &QDialogButtonBox::accepted, this, [=] {
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, [this] {
     emit layersAdded( selectedLayers() );
     accept();
   } );
@@ -227,7 +232,7 @@ QgsProviderSublayersDialog::~QgsProviderSublayersDialog()
 {
   QgsSettings settings;
   settings.setValue( "/Windows/SubLayers/headerState", mLayersTree->header()->saveState() );
-  settings.setValue( QStringLiteral( "/qgis/openSublayersInGroup" ), mCbxAddToGroup->isChecked() );
+  settings.setValue( u"/qgis/openSublayersInGroup"_s, mCbxAddToGroup->isChecked() );
 
   if ( mTask )
     mTask->cancel();
@@ -267,7 +272,7 @@ void QgsProviderSublayersDialog::setGroupName( const QString &groupNameIn )
 {
   mGroupName = groupNameIn;
   const QgsSettings settings;
-  if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
+  if ( settings.value( u"qgis/formatLayerName"_s, false ).toBool() )
   {
     mGroupName = QgsMapLayer::formatLayerName( mGroupName );
   }

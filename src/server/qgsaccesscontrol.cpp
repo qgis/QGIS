@@ -16,10 +16,14 @@
  ***************************************************************************/
 
 #include "qgsaccesscontrol.h"
+
 #include "qgsfeaturerequest.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 void QgsAccessControl::resolveFilterFeatures( const QList<QgsMapLayer *> &layers )
 {
@@ -52,7 +56,7 @@ QString QgsAccessControl::resolveFilterFeatures( const QgsVectorLayer *layer ) c
   QString expression;
   if ( !expressions.isEmpty() )
   {
-    expression = QStringLiteral( "((" ).append( expressions.join( QLatin1String( ") AND (" ) ) ).append( "))" );
+    expression = u"(("_s.append( expressions.join( ") AND ("_L1 ) ).append( "))" );
   }
 
   return expression;
@@ -86,7 +90,7 @@ void QgsAccessControl::filterFeatures( const QgsVectorLayer *layer, QgsFeatureRe
 }
 
 //! Clone the object
-QgsFeatureFilterProvider *QgsAccessControl::clone() const
+QgsAccessControl *QgsAccessControl::clone() const
 {
   return new QgsAccessControl( *this );
 }
@@ -104,7 +108,7 @@ QString QgsAccessControl::extraSubsetString( const QgsVectorLayer *layer ) const
       sqls.append( sql );
     }
   }
-  return sqls.isEmpty() ? QString() : QStringLiteral( "((" ).append( sqls.join( QLatin1String( ") AND (" ) ) ).append( "))" );
+  return sqls.isEmpty() ? QString() : u"(("_s.append( sqls.join( ") AND ("_L1 ) ).append( "))" );
 }
 
 //! Returns the layer read right

@@ -15,8 +15,10 @@
 
 
 #include "qgslabelobstaclesettingswidget.h"
-#include "moc_qgslabelobstaclesettingswidget.cpp"
+
 #include "qgsexpressioncontextutils.h"
+
+#include "moc_qgslabelobstaclesettingswidget.cpp"
 
 QgsLabelObstacleSettingsWidget::QgsLabelObstacleSettingsWidget( QWidget *parent, QgsVectorLayer *vl )
   : QgsLabelSettingsWidgetBase( parent, vl )
@@ -28,11 +30,11 @@ QgsLabelObstacleSettingsWidget::QgsLabelObstacleSettingsWidget( QWidget *parent,
   mObstacleTypeComboBox->addItem( tr( "Over the Feature's Interior" ), static_cast<int>( QgsLabelObstacleSettings::ObstacleType::PolygonInterior ) );
   mObstacleTypeComboBox->addItem( tr( "Over the Feature's Boundary" ), static_cast<int>( QgsLabelObstacleSettings::ObstacleType::PolygonBoundary ) );
 
-  connect( mObstacleTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( mObstacleTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     if ( !mBlockSignals )
       emit changed();
   } );
-  connect( mObstacleFactorSlider, &QSlider::valueChanged, this, [=] {
+  connect( mObstacleFactorSlider, &QSlider::valueChanged, this, [this] {
     if ( !mBlockSignals )
       emit changed();
   } );

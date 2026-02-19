@@ -33,17 +33,21 @@
 #define SIP_NO_FILE
 
 
+#include <ctime>
+#include <iostream>
+#include <unordered_map>
+
 #include "qgis_core.h"
 #include "qgsgeometry.h"
 #include "qgsgeos.h"
 #include "qgssettingstree.h"
 
 #include <QList>
-#include <iostream>
-#include <ctime>
 #include <QMutex>
+#include <QString>
 #include <QStringList>
-#include <unordered_map>
+
+using namespace Qt::StringLiterals;
 
 class QgsSettingsEntryInteger;
 
@@ -86,7 +90,7 @@ namespace pal
       friend class Layer;
 
     public:
-      static inline QgsSettingsTreeNode *sTreePal = QgsSettingsTree::sTreeRendering->createChildNode( QStringLiteral( "pal" ) );
+      static inline QgsSettingsTreeNode *sTreePal = QgsSettingsTree::sTreeRendering->createChildNode( u"pal"_s );
 
       static const QgsSettingsEntryInteger *settingsRenderingLabelCandidatesLimitPoints;
       static const QgsSettingsEntryInteger *settingsRenderingLabelCandidatesLimitLines;
@@ -119,7 +123,7 @@ namespace pal
        */
       void removeLayer( Layer *layer );
 
-      //! Cancelation check callback function
+      //! Cancellation check callback function
       typedef bool ( *FnIsCanceled )( void *ctx );
 
       //! Register a function that returns whether this job has been canceled - PAL calls it during the computation
@@ -271,7 +275,7 @@ namespace pal
       void setRules( const QList< QgsAbstractLabelingEngineRule * > &rules );
 
       /**
-       * Returns the rules which the labeling solution must satisify.
+       * Returns the rules which the labeling solution must satisfy.
        *
        * \see setRules()
        * \since QGIS 3.40

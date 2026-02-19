@@ -40,7 +40,7 @@ class QgsMeshExtraDatasetStore: public QgsMeshDatasetSourceInterface
   public:
 
     //! Adds a dataset group, returns the index of the added dataset group
-    int addDatasetGroup( QgsMeshDatasetGroup *datasetGroup );
+    int addDatasetGroup( std::unique_ptr< QgsMeshDatasetGroup > datasetGroup );
 
     //! Removes the dataset group with the local \a index
     void removeDatasetGroup( int index );
@@ -73,6 +73,7 @@ class QgsMeshExtraDatasetStore: public QgsMeshDatasetSourceInterface
     //! Not implemented, always returns empty list
     QStringList extraDatasets() const override;
 
+    using QgsMeshDatasetSourceInterface::persistDatasetGroup;
     //! Not implemented, always returns true
     bool persistDatasetGroup( const QString &outputFilePath,
                               const QString &outputDriver,
@@ -136,10 +137,11 @@ class QgsMeshDatasetGroupStore: public QObject
     bool addPersistentDatasets( const QString &path );
 
     /**
-     * Adds a extra dataset \a group, take ownership, returns True if the group is effectivly added.
-     * If returns False, the ownership is not taken
+     * Adds a extra dataset \a group, take ownership, returns True if the group is effectively added.
+     *
+     * If returns False, the object will be immediately deleted.
      */
-    bool addDatasetGroup( QgsMeshDatasetGroup *group );
+    bool addDatasetGroup( std::unique_ptr< QgsMeshDatasetGroup > group );
 
     //! Saves on a file with \a filePath the dataset groups index with \a groupIndex with the specified \a driver
     bool saveDatasetGroup( QString filePath, int groupIndex, QString driver );

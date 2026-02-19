@@ -19,9 +19,11 @@
 #define QGSVECTORLAYERSAVEASDIALOG_H
 
 #include "ui_qgsvectorlayersaveasdialogbase.h"
-#include <QDialog>
-#include "qgsvectorfilewriter.h"
+
 #include "qgis_gui.h"
+#include "qgsvectorfilewriter.h"
+
+#include <QDialog>
 
 class QgsVectorLayer;
 
@@ -60,7 +62,7 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     /**
      * Construct a new QgsVectorLayerSaveAsDialog
      *
-     * \deprecated QGIS 3.14. Will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.14. Will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED QgsVectorLayerSaveAsDialog( long srsid, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() ) SIP_SKIP;
 

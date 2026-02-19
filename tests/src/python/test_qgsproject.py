@@ -44,6 +44,8 @@ from qgis.core import (
     QgsSettings,
     QgsUnitTypes,
     QgsVectorLayer,
+    QgsElevationProfile,
+    QgsSelectiveMaskingSourceSet,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -426,6 +428,62 @@ class TestQgsProject(QgisTestCase):
                 p2.scaleMethod(), Qgis.ScaleCalculationMethod.HorizontalTop
             )
 
+    def test_elevation_profile_manager(self):
+        p = QgsProject()
+        self.assertFalse(p.elevationProfileManager().profiles())
+        profile = QgsElevationProfile(p)
+        profile.setName("p1")
+        p.elevationProfileManager().addProfile(profile)
+        profile = QgsElevationProfile(p)
+        profile.setName("p2")
+        p.elevationProfileManager().addProfile(profile)
+        self.assertCountEqual(
+            [profile.name() for profile in p.elevationProfileManager().profiles()],
+            ["p1", "p2"],
+        )
+
+        with TemporaryDirectory() as d:
+            path = os.path.join(d, "elevation_profiles.qgs")
+            self.assertTrue(p.write(path))
+            # Verify
+            p2 = QgsProject()
+            self.assertTrue(p2.read(path))
+            self.assertCountEqual(
+                [profile.name() for profile in p2.elevationProfileManager().profiles()],
+                ["p1", "p2"],
+            )
+
+        p.clear()
+        self.assertFalse(p.elevationProfileManager().profiles())
+
+    def test_selective_masking_source_set_manager(self):
+        p = QgsProject()
+        self.assertFalse(p.selectiveMaskingSourceSetManager().sets())
+        source_set1 = QgsSelectiveMaskingSourceSet()
+        source_set1.setName("p1")
+        p.selectiveMaskingSourceSetManager().addSet(source_set1)
+        source_set2 = QgsSelectiveMaskingSourceSet()
+        source_set2.setName("p2")
+        p.selectiveMaskingSourceSetManager().addSet(source_set2)
+        self.assertCountEqual(
+            [s.name() for s in p.selectiveMaskingSourceSetManager().sets()],
+            ["p1", "p2"],
+        )
+
+        with TemporaryDirectory() as d:
+            path = os.path.join(d, "selective_masking_sets.qgs")
+            self.assertTrue(p.write(path))
+            # Verify
+            p2 = QgsProject()
+            self.assertTrue(p2.read(path))
+            self.assertCountEqual(
+                [s.name() for s in p2.selectiveMaskingSourceSetManager().sets()],
+                ["p1", "p2"],
+            )
+
+        p.clear()
+        self.assertFalse(p.selectiveMaskingSourceSetManager().sets())
+
     def testReadEntry(self):
         prj = QgsProject.instance()
         prj.read(os.path.join(TEST_DATA_DIR, "labeling/test-labeling.qgs"))
@@ -512,6 +570,27 @@ class TestQgsProject(QgisTestCase):
 
         QgsProject.instance().removeAllMapLayers()
 
+    def test_mapLayer(self):
+        """test retrieving map layers by ID"""
+        p = QgsProject()
+        self.assertIsNone(p.mapLayer("nope"))
+
+        l1 = createLayer("test")
+        self.assertIsNone(p.mapLayer(l1.id()))
+        p.addMapLayer(l1)
+        self.assertEqual(p.mapLayer(l1.id()), l1)
+
+        l2 = createLayer("test2")
+        self.assertIsNone(p.mapLayer(l2.id()))
+        p.addMapLayer(l2)
+        self.assertEqual(p.mapLayer(l1.id()), l1)
+        self.assertEqual(p.mapLayer(l2.id()), l2)
+
+        # ensure main annotation layer can be retrieved by id
+        self.assertEqual(
+            p.mapLayer(p.mainAnnotationLayer().id()), p.mainAnnotationLayer()
+        )
+
     def test_addMapLayerAlreadyAdded(self):
         """test that already added layers can't be readded to registry"""
         QgsProject.instance().removeAllMapLayers()
@@ -549,6 +628,9 @@ class TestQgsProject(QgisTestCase):
         layer_was_added_spy = QSignalSpy(QgsProject.instance().layerWasAdded)
         layers_added_spy = QSignalSpy(QgsProject.instance().layersAdded)
         legend_layers_added_spy = QSignalSpy(QgsProject.instance().legendLayersAdded)
+        layers_added_without_legend_spy = QSignalSpy(
+            QgsProject.instance().layersAddedWithoutLegend
+        )
 
         l1 = createLayer("test")
         QgsProject.instance().addMapLayer(l1)
@@ -558,12 +640,14 @@ class TestQgsProject(QgisTestCase):
         self.assertEqual(len(layer_was_added_spy), 1)
         self.assertEqual(len(layers_added_spy), 1)
         self.assertEqual(len(legend_layers_added_spy), 1)
+        self.assertEqual(len(layers_added_without_legend_spy), 0)
 
         # layer not added to legend
         QgsProject.instance().addMapLayer(createLayer("test2"), False)
         self.assertEqual(len(layer_was_added_spy), 2)
         self.assertEqual(len(layers_added_spy), 2)
         self.assertEqual(len(legend_layers_added_spy), 1)
+        self.assertEqual(len(layers_added_without_legend_spy), 1)
 
         # try readding a layer already in the registry
         QgsProject.instance().addMapLayer(l1)
@@ -571,6 +655,7 @@ class TestQgsProject(QgisTestCase):
         self.assertEqual(len(layer_was_added_spy), 2)
         self.assertEqual(len(layers_added_spy), 2)
         self.assertEqual(len(legend_layers_added_spy), 1)
+        self.assertEqual(len(layers_added_without_legend_spy), 1)
 
     def test_addMapLayers(self):
         """test adding multiple map layers to registry"""
@@ -1375,6 +1460,27 @@ class TestQgsProject(QgisTestCase):
             self.assertIn('source="./lines.shp"', content)
             self.assertIn('source="./points.shp"', content)
             self.assertIn('source="./landsat_4326.tif"', content)
+
+    def testTitle(self):
+        p = QgsProject()
+        title_changed_spy = QSignalSpy(p.titleChanged)
+        self.assertFalse(p.title())
+
+        p.setTitle("QGIS rocks!")
+        self.assertEqual(len(title_changed_spy), 1)
+        self.assertEqual(p.title(), "QGIS rocks!")
+
+        p.setTitle("QGIS rocks!")
+        self.assertEqual(len(title_changed_spy), 1)
+
+        project_metadata = p.metadata()
+        project_metadata.setTitle("QGIS rules!")
+        p.setMetadata(project_metadata)
+        self.assertEqual(len(title_changed_spy), 2)
+        self.assertEqual(p.title(), "QGIS rules!")
+
+        p.setMetadata(project_metadata)
+        self.assertEqual(len(title_changed_spy), 2)
 
     def testHomePath(self):
         p = QgsProject()

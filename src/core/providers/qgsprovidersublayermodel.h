@@ -18,15 +18,19 @@
 #ifndef QGSPROVIDERSUBLAYERMODEL_H
 #define QGSPROVIDERSUBLAYERMODEL_H
 
+#include <deque>
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsprovidersublayerdetails.h"
 
 #include <QAbstractItemModel>
-#include <QSortFilterProxyModel>
 #include <QIcon>
-#include <memory>
-#include <deque>
+#include <QSortFilterProxyModel>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 class QgsProviderSublayerModelNode;
@@ -159,7 +163,7 @@ class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
 #ifdef SIP_RUN
         SIP_PYOBJECT __repr__();
         % MethodCode
-        QString str = QStringLiteral( "<QgsProviderSublayerModel.NonLayerItem: %1 - %2>" ).arg( sipCpp->type(), sipCpp->name() );
+        QString str = u"<QgsProviderSublayerModel.NonLayerItem: %1 - %2>"_s.arg( sipCpp->type(), sipCpp->name() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
         % End
 #endif
@@ -323,7 +327,7 @@ class CORE_EXPORT QgsProviderSublayerModelGroup : public QgsProviderSublayerMode
 
     QgsProviderSublayerModelSublayerNode *findSublayer( const QgsProviderSublayerDetails &sublayer );
 
-    int childCount() const override final { return mChildren.size(); }
+    int childCount() const final { return mChildren.size(); }
     QVariant data( int role = Qt::DisplayRole, int column = 0 ) const override;
 
     void populateFromSublayers( const QList<QgsProviderSublayerDetails> &sublayers );
@@ -342,7 +346,7 @@ class CORE_EXPORT QgsProviderSublayerModelSublayerNode : public QgsProviderSubla
   public:
 
     QgsProviderSublayerModelSublayerNode( const QgsProviderSublayerDetails &sublayer );
-    int childCount() const override final { return 0; }
+    int childCount() const final { return 0; }
     QVariant data( int role = Qt::DisplayRole, int column = 0 ) const override;
     QgsProviderSublayerDetails sublayer() const { return mSublayer; }
 
@@ -356,7 +360,7 @@ class CORE_EXPORT QgsProviderSublayerModelNonLayerItemNode : public QgsProviderS
   public:
 
     QgsProviderSublayerModelNonLayerItemNode( const QgsProviderSublayerModel::NonLayerItem &item );
-    int childCount() const override final { return 0; }
+    int childCount() const final { return 0; }
     QVariant data( int role = Qt::DisplayRole, int column = 0 ) const override;
 
     QgsProviderSublayerModel::NonLayerItem item() const { return mItem; }

@@ -14,8 +14,10 @@
  ***************************************************************************/
 
 #include "qgscodeeditordockwidget.h"
-#include "moc_qgscodeeditordockwidget.cpp"
+
 #include "qgsdockablewidgethelper.h"
+
+#include "moc_qgscodeeditordockwidget.cpp"
 
 QgsCodeEditorDockWidget::QgsCodeEditorDockWidget( const QString &dockId, bool usePersistentWidget )
   : QWidget( nullptr )
@@ -38,7 +40,7 @@ QgsCodeEditorDockWidget::QgsCodeEditorDockWidget( const QString &dockId, bool us
 
   mDockToggleButton = mDockableWidgetHelper->createDockUndockToolButton();
   mDockToggleButton->setToolTip( tr( "Dock Code Editor" ) );
-  connect( mDockableWidgetHelper.get(), &QgsDockableWidgetHelper::closed, this, [=]() {
+  connect( mDockableWidgetHelper.get(), &QgsDockableWidgetHelper::closed, this, [this]() {
     close();
   } );
 

@@ -53,7 +53,7 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, const st
 {
     std::unique_ptr<PipelineManager> manager( new PipelineManager );
 
-    Stage& r = manager->makeReader( tile->inputFilenames[0], "");
+    Stage& r = makeReader(manager.get(), tile->inputFilenames[0]);
 
     Stage *last = &r;
 
@@ -112,7 +112,7 @@ void ToVector::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& p
 
             // for input file /x/y/z.las that goes to /tmp/hello.vpc,
             // individual output file will be called /tmp/hello/z.las
-            fs::path inputBasename = fs::path(f.filename).stem();
+            fs::path inputBasename = fileStem(f.filename);
             tile.outputFilename = (outputSubdir / inputBasename).string() + ".gpkg";
 
             tileOutputFiles.push_back(tile.outputFilename);

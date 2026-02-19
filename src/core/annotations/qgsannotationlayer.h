@@ -20,8 +20,12 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerrenderer.h"
 #include "qgsmaplayerref.h"
+#include "qgsmaplayerrenderer.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsAnnotationItem;
 class QgsAbstractAnnotationItemEditOperation;
@@ -83,7 +87,7 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsAnnotationLayer: '%1'>" ).arg( sipCpp->name() );
+    QString str = u"<QgsAnnotationLayer: '%1'>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -241,6 +245,7 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     QgsMapLayerRef mLinkedLayer;
 
     friend class QgsAnnotationLayerRenderer;
+    friend class QgsAnnotationLayerChunkLoader;
 
 };
 

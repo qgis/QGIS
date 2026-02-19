@@ -14,12 +14,17 @@
  ***************************************************************************/
 
 #include "qgsdashspacedialog.h"
-#include "moc_qgsdashspacedialog.cpp"
-#include "qgsdoublevalidator.h"
+
 #include "qgsapplication.h"
+#include "qgsdoublevalidator.h"
 
 #include <QDialogButtonBox>
 #include <QFile>
+#include <QString>
+
+#include "moc_qgsdashspacedialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDashSpaceWidget::QgsDashSpaceWidget( const QVector<qreal> &vectorPattern, QWidget *parent )
   : QgsPanelWidget( parent )
@@ -49,7 +54,7 @@ QgsDashSpaceWidget::QgsDashSpaceWidget( const QVector<qreal> &vectorPattern, QWi
   connect( mRemoveButton, &QPushButton::clicked, this, &QgsDashSpaceWidget::mRemoveButton_clicked );
   connect( mDashSpaceTreeWidget, &QTreeWidget::itemChanged, this, [this] { emit widgetChanged(); } );
 
-  connect( this, &QgsPanelWidget::widgetChanged, this, [=] {
+  connect( this, &QgsPanelWidget::widgetChanged, this, [this] {
     const QVector<qreal> pattern = dashDotVector();
     double total = 0;
     for ( qreal part : pattern )
@@ -65,8 +70,8 @@ void QgsDashSpaceWidget::mAddButton_clicked()
   //add new (default) item
   QTreeWidgetItem *entry = new QTreeWidgetItem();
   entry->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled );
-  entry->setText( 0, QStringLiteral( "5" ) );
-  entry->setText( 1, QStringLiteral( "2" ) );
+  entry->setText( 0, u"5"_s );
+  entry->setText( 1, u"2"_s );
   mDashSpaceTreeWidget->addTopLevelItem( entry );
   emit widgetChanged();
 }
@@ -101,8 +106,8 @@ QVector<qreal> QgsDashSpaceWidget::dashDotVector() const
 void QgsDashSpaceWidget::setUnit( Qgis::RenderUnit unit )
 {
   QTreeWidgetItem *headerItem = mDashSpaceTreeWidget->headerItem();
-  headerItem->setText( 0, QStringLiteral( "%1 (%2)" ).arg( tr( "Dash" ), QgsUnitTypes::toAbbreviatedString( unit ) ) );
-  headerItem->setText( 1, QStringLiteral( "%1 (%2)" ).arg( tr( "Space" ), QgsUnitTypes::toAbbreviatedString( unit ) ) );
+  headerItem->setText( 0, u"%1 (%2)"_s.arg( tr( "Dash" ), QgsUnitTypes::toAbbreviatedString( unit ) ) );
+  headerItem->setText( 1, u"%1 (%2)"_s.arg( tr( "Space" ), QgsUnitTypes::toAbbreviatedString( unit ) ) );
 }
 
 QgsDashSpaceDialog::QgsDashSpaceDialog( const QVector<qreal> &v, QWidget *parent, Qt::WindowFlags f )

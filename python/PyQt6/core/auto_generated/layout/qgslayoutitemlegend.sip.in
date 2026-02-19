@@ -59,7 +59,6 @@ Emitted to refresh the legend.
 };
 
 
-
 class QgsLayoutItemLegend : QgsLayoutItem
 {
 %Docstring(signature="appended")
@@ -70,6 +69,7 @@ A layout item subclass for map legends.
 #include "qgslayoutitemlegend.h"
 %End
   public:
+
 
     QgsLayoutItemLegend( QgsLayout *layout );
 %Docstring
@@ -127,20 +127,66 @@ Returns the legend model.
 %End
 
 
-    void setAutoUpdateModel( bool autoUpdate );
+ void setAutoUpdateModel( bool autoUpdate ) /Deprecated="Since 4.0. Use setSyncMode() instead."/;
 %Docstring
 Sets whether the legend content should auto update to reflect changes in
 the project's layer tree.
 
 .. seealso:: :py:func:`autoUpdateModel`
+
+.. deprecated:: 4.0
+
+   Use :py:func:`~QgsLayoutItemLegend.setSyncMode` instead.
 %End
 
-    bool autoUpdateModel() const;
+ bool autoUpdateModel() const /Deprecated="Since 4.0. Use syncMode() instead."/;
 %Docstring
 Returns whether the legend content should auto update to reflect changes
 in the project's layer tree.
 
 .. seealso:: :py:func:`setAutoUpdateModel`
+
+.. deprecated:: 4.0
+
+   Use :py:func:`~QgsLayoutItemLegend.syncMode` instead.
+%End
+
+    void setSyncMode( Qgis::LegendSyncMode mode );
+%Docstring
+Sets the legend's synchronization ``mode``.
+
+Depending on the ``mode``, this sets whether the legend content should
+auto update to reflect changes in the project's layer tree.
+
+.. seealso:: :py:func:`syncMode`
+
+.. versionadded:: 4.0
+%End
+
+    void resetManualLayers( Qgis::LegendSyncMode mode );
+%Docstring
+Resets the current legend manual configuration, including layer set and
+settings.
+
+The ``mode`` argument controls the layers to include after resetting.
+
+.. note::
+
+   This method has no effect if the legend's :py:func:`~QgsLayoutItemLegend.syncMode` is not :py:class:`Qgis`.LegendSyncMode.Manual.
+
+.. versionadded:: 4.0
+%End
+
+    Qgis::LegendSyncMode syncMode() const;
+%Docstring
+Returns the legend's synchronization mode.
+
+Depending on the mode, this reflects whether the legend content should
+auto update to reflect changes in the project's layer tree.
+
+.. seealso:: :py:func:`setSyncMode`
+
+.. versionadded:: 4.0
 %End
 
     void setLegendFilterByMapEnabled( bool enabled );

@@ -23,7 +23,10 @@
 #include "qgsmaptoolshapeabstract.h"
 #include "qgssettingstree.h"
 
+#include <QString>
 #include <QWidgetAction>
+
+using namespace Qt::StringLiterals;
 
 class QgsSpinBox;
 class QgsSettingsEntryString;
@@ -45,19 +48,39 @@ class APP_EXPORT QgsStreamDigitizingSettingsAction : public QWidgetAction
     QgsSpinBox *mStreamToleranceSpinBox = nullptr;
 };
 
+class QComboBox;
+class QLabel;
+
+class APP_EXPORT QgsNurbsDigitizingSettingsAction : public QWidgetAction
+{
+    Q_OBJECT
+
+  public:
+    QgsNurbsDigitizingSettingsAction( QWidget *parent = nullptr );
+    ~QgsNurbsDigitizingSettingsAction() override;
+
+  private slots:
+    void updateDegreeEnabled( int modeIndex );
+
+  private:
+    QComboBox *mNurbsModeComboBox = nullptr;
+    QgsSpinBox *mNurbsDegreeSpinBox = nullptr;
+    QLabel *mNurbsDegreeLabel = nullptr;
+};
+
 class APP_EXPORT QgsMapToolsDigitizingTechniqueManager : public QObject
 {
     Q_OBJECT
   public:
     static const QgsSettingsEntryEnumFlag<Qgis::CaptureTechnique> *settingsDigitizingTechnique;
 
-    static inline QgsSettingsTreeNode *sTreeShapeMapTools = QgsSettingsTree::sTreeDigitizing->createChildNode( QStringLiteral( "shape-map-tools" ) );
+    static inline QgsSettingsTreeNode *sTreeShapeMapTools = QgsSettingsTree::sTreeDigitizing->createChildNode( u"shape-map-tools"_s );
     static const QgsSettingsEntryString *settingMapToolShapeCurrent;
-    static inline QgsSettingsTreeNamedListNode *sTreeShapeMapToolsCategories = sTreeShapeMapTools->createNamedListNode( QStringLiteral( "categories" ) );
+    static inline QgsSettingsTreeNamedListNode *sTreeShapeMapToolsCategories = sTreeShapeMapTools->createNamedListNode( u"categories"_s );
     static const QgsSettingsEntryString *settingMapToolShapeDefaultForCategory;
 
     QgsMapToolsDigitizingTechniqueManager( QObject *parent );
-    ~QgsMapToolsDigitizingTechniqueManager();
+    ~QgsMapToolsDigitizingTechniqueManager() override;
     void setupToolBars();
     void setupCanvasTools();
 
@@ -83,6 +106,7 @@ class APP_EXPORT QgsMapToolsDigitizingTechniqueManager : public QObject
 
     QToolButton *mDigitizeModeToolButton = nullptr;
     QgsStreamDigitizingSettingsAction *mStreamDigitizingSettingsAction = nullptr;
+    QgsNurbsDigitizingSettingsAction *mNurbsDigitizingSettingsAction = nullptr;
 };
 
 #endif // QGSMAPTOOLSDIGITIZINGTECHNIQUEMANAGER_H

@@ -16,14 +16,16 @@
 #ifndef QGSSEARCHQUERYBUILDER_H
 #define QGSSEARCHQUERYBUILDER_H
 
+#include "ui_qgsquerybuilderbase.h"
+
 #include <map>
 #include <vector>
-#include <QStandardItemModel>
-#include <QModelIndex>
 
-#include "ui_qgsquerybuilderbase.h"
-#include "qgsguiutils.h"
 #include "qgis_gui.h"
+#include "qgsguiutils.h"
+
+#include <QModelIndex>
+#include <QStandardItemModel>
 
 class QgsField;
 class QgsVectorLayer;
@@ -32,7 +34,7 @@ class QgsVectorLayer;
  * \ingroup gui
  * \class QgsSearchQueryBuilder
  * \brief Query builder for search strings.
- * \deprecated QGIS 3.40. Will be removed in QGIS 4.
+ * \deprecated QGIS 3.40. Will be removed in QGIS 5.
  */
 class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBase
 {

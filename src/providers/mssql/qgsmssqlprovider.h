@@ -18,22 +18,21 @@
 #ifndef QGSMSSQLPROVIDER_H
 #define QGSMSSQLPROVIDER_H
 
-#include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsfields.h"
-#include "qgsprovidermetadata.h"
-#include "qgsmssqldatabase.h"
 #include "qgsdatasourceuri.h"
+#include "qgsfields.h"
 #include "qgsgeometry.h"
+#include "qgsmssqldatabase.h"
 #include "qgsmssqlgeometryparser.h"
+#include "qgsprovidermetadata.h"
+#include "qgsvectordataprovider.h"
 
-#include <QStringList>
 #include <QFile>
+#include <QStringList>
 #include <QVariantMap>
 #include <QtSql/QSqlDatabase>
-#include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
-
+#include <QtSql/QSqlQuery>
 
 class QgsFeature;
 class QgsField;
@@ -107,6 +106,7 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
 
     Qgis::ProviderStyleStorageCapabilities styleStorageCapabilities() const override;
 
+    using QgsVectorDataProvider::addFeatures;
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
 
     bool deleteFeatures( const QgsFeatureIds &id ) override;
@@ -131,6 +131,7 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
 
     QString defaultValueClause( int fieldId ) const override;
     QVariant defaultValue( int fieldId ) const override;
+    bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
 
     //! Convert time value
     static QVariant convertTimeValue( const QVariant &value );
@@ -161,7 +162,7 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
   protected:
     //! Loads fields from input file to member attributeFields
     void loadFields();
-    void loadMetadata();
+    void loadMetadataFromGeometryColumnsTable();
 
   private:
     bool execLogged( QSqlQuery &qry, const QString &sql, const QString &queryOrigin = QString() ) const;
@@ -200,7 +201,7 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
      */
     QList<int> mPrimaryKeyAttrs;
 
-    mutable long mSRId;
+    mutable long mSRId = -1;
     QString mGeometryColName;
     QString mGeometryColType;
 
@@ -212,18 +213,11 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
 
     mutable Qgis::WkbType mWkbType = Qgis::WkbType::Unknown;
 
+    QgsDataSourceUri mUri;
+
     // current layer name
     QString mSchemaName;
     QString mTableName;
-
-    // login
-    QString mUserName;
-    QString mPassword;
-
-    // server access
-    QString mService;
-    QString mDatabaseName;
-    QString mHost;
 
     // available tables
     QStringList mTables;
@@ -311,7 +305,7 @@ class QgsMssqlProviderMetadata final : public QgsProviderMetadata
       QString &createdLayerUri
     ) override;
     QgsMssqlProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
-    virtual QList<QgsDataItemProvider *> dataItemProviders() const override;
+    QList<QgsDataItemProvider *> dataItemProviders() const override;
     QgsTransaction *createTransaction( const QString &connString ) override;
 
     // Connections API

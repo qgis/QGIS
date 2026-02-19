@@ -21,7 +21,7 @@
 
 #include <QWidget>
 
-class Qgs2DPlot;
+class Qgs2DXyPlot;
 
 /**
  * \brief Contains generic settings for exporting elevation profiles to drawings.
@@ -35,12 +35,12 @@ class QgsElevationProfileExportSettingsWidget : public QWidget, private Ui::QgsE
     /**
      * Sets the initial plot settings to show in the widget.
      */
-    void setPlotSettings( const Qgs2DPlot &plot );
+    void setPlotSettings( const Qgs2DXyPlot &plot );
 
     /**
      * Updates plot settings based on the widget's state.
      */
-    void updatePlotSettings( Qgs2DPlot &plot );
+    void updatePlotSettings( Qgs2DXyPlot &plot );
 };
 
 #endif // QGSELEVATIONPROFILEEXPORTSETTINGSWIDGET_H

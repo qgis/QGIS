@@ -15,21 +15,22 @@
 #ifndef QGSFEATUREREQUEST_H
 #define QGSFEATUREREQUEST_H
 
-#include "qgis_core.h"
-#include "qgis_sip.h"
-#include <QFlags>
-#include <QList>
 #include <memory>
 
 #include "qgis.h"
-#include "qgsfeature.h"
-#include "qgsrectangle.h"
-#include "qgsexpression.h"
-#include "qgsexpressioncontext.h"
-#include "qgssimplifymethod.h"
-#include "qgscoordinatetransformcontext.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include "qgscoordinatetransformcontext.h"
+#include "qgsexpression.h"
+#include "qgsexpressioncontext.h"
+#include "qgsfeature.h"
+#include "qgsrectangle.h"
+#include "qgssimplifymethod.h"
+
+#include <QFlags>
+#include <QList>
 
 /**
  * \ingroup core
@@ -302,7 +303,9 @@ class CORE_EXPORT QgsFeatureRequest
     //! construct a request with a filter expression
     explicit QgsFeatureRequest( const QgsExpression &expr, const QgsExpressionContext &context = QgsExpressionContext() );
     QgsFeatureRequest( const QgsFeatureRequest &rh );
+    SIP_SKIP QgsFeatureRequest( QgsFeatureRequest &&rh );
     QgsFeatureRequest &operator=( const QgsFeatureRequest &rh );
+    QgsFeatureRequest &operator=( QgsFeatureRequest &&rh );
 
     /**
      * Compare two requests for equality, ignoring Expression Context, Transform Error Callback, Feedback and Invalid Geometry Callback
@@ -763,7 +766,7 @@ class CORE_EXPORT QgsFeatureRequest
      * when they are originally in \a sourceCrs.
      *
      * This method will return coordinateTransform() if it is set (ignoring \a sourceCrs), otherwise
-     * it will calculate an appriopriate transform from \a sourceCrs to destinationCrs().
+     * it will calculate an appropriate transform from \a sourceCrs to destinationCrs().
      *
      * \since QGIS 3.40
      */

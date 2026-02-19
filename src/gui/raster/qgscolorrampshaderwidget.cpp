@@ -15,31 +15,33 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrasterdataprovider.h"
-
 #include "qgscolorrampshaderwidget.h"
-#include "moc_qgscolorrampshaderwidget.cpp"
-#include "qgsrasterdataprovider.h"
-#include "qgstreewidgetitem.h"
-#include "qgssettings.h"
+
+#include "qgscolordialog.h"
 #include "qgscolorramp.h"
 #include "qgscolorrampbutton.h"
-#include "qgscolordialog.h"
-#include "qgsrasterrendererutils.h"
+#include "qgscolorramplegendnodewidget.h"
 #include "qgsfileutils.h"
 #include "qgsguiutils.h"
 #include "qgslocaleawarenumericlineeditdelegate.h"
-#include "qgscolorramplegendnodewidget.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterrendererutils.h"
+#include "qgssettings.h"
+#include "qgstreewidgetitem.h"
 
 #include <QCursor>
-#include <QPushButton>
-#include <QInputDialog>
 #include <QFileDialog>
+#include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
+#include <QPushButton>
+#include <QString>
 #include <QTextStream>
 #include <QTreeView>
 
+#include "moc_qgscolorrampshaderwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
   : QWidget( parent )
@@ -62,8 +64,8 @@ QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
   connect( mLegendSettingsButton, &QPushButton::clicked, this, &QgsColorRampShaderWidget::showLegendSettings );
 
   contextMenu = new QMenu( tr( "Options" ), this );
-  contextMenu->addAction( tr( "Change Color…" ), this, SLOT( changeColor() ) );
-  contextMenu->addAction( tr( "Change Opacity…" ), this, SLOT( changeOpacity() ) );
+  contextMenu->addAction( tr( "Change Color…" ), this, &QgsColorRampShaderWidget::changeColor );
+  contextMenu->addAction( tr( "Change Opacity…" ), this, &QgsColorRampShaderWidget::changeOpacity );
 
   mColormapTreeWidget->setItemDelegateForColumn( ColorColumn, new QgsColorSwatchDelegate( this ) );
   mValueDelegate = new QgsLocaleAwareNumericLineEditDelegate( Qgis::DataType::UnknownDataType, this );
@@ -73,9 +75,9 @@ QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
 
   mColormapTreeWidget->setContextMenuPolicy( Qt::CustomContextMenu );
   mColormapTreeWidget->setSelectionMode( QAbstractItemView::ExtendedSelection );
-  connect( mColormapTreeWidget, &QTreeView::customContextMenuRequested, this, [=]( QPoint ) { contextMenu->exec( QCursor::pos() ); } );
+  connect( mColormapTreeWidget, &QTreeView::customContextMenuRequested, this, [this]( QPoint ) { contextMenu->exec( QCursor::pos() ); } );
 
-  QString defaultPalette = settings.value( QStringLiteral( "Raster/defaultPalette" ), "" ).toString();
+  QString defaultPalette = settings.value( u"Raster/defaultPalette"_s, "" ).toString();
   btnColorRamp->setColorRampFromName( defaultPalette );
 
   mColorInterpolationComboBox->addItem( tr( "Discrete" ), QVariant::fromValue( Qgis::ShaderInterpolationMethod::Discrete ) );
@@ -100,7 +102,7 @@ QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsColorRampShaderWidget::applyColorRamp );
   connect( mNumberOfEntriesSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsColorRampShaderWidget::classify );
   connect( mClipCheckBox, &QAbstractButton::toggled, this, &QgsColorRampShaderWidget::widgetChanged );
-  connect( mLabelPrecisionSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [=]( int ) {
+  connect( mLabelPrecisionSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [this]( int ) {
     autoLabel();
 
     if ( !mBlockChanges )
@@ -258,7 +260,7 @@ void QgsColorRampShaderWidget::dumpClasses()
   {
     const auto labelData { mColormapTreeWidget->model()->itemData( mColormapTreeWidget->model()->index( row, LabelColumn ) ) };
     const auto valueData { mColormapTreeWidget->model()->itemData( mColormapTreeWidget->model()->index( row, ValueColumn ) ) };
-    QgsDebugMsgLevel( QStringLiteral( "Class %1 : %2 %3" ).arg( row ).arg( labelData[Qt::ItemDataRole::DisplayRole].toString(), valueData[Qt::ItemDataRole::DisplayRole].toString() ), 2 );
+    QgsDebugMsgLevel( u"Class %1 : %2 %3"_s.arg( row ).arg( labelData[Qt::ItemDataRole::DisplayRole].toString(), valueData[Qt::ItemDataRole::DisplayRole].toString() ), 2 );
   }
 }
 #endif
@@ -363,7 +365,7 @@ void QgsColorRampShaderWidget::applyColorRamp()
   {
     // Remember last used color ramp
     QgsSettings settings;
-    settings.setValue( QStringLiteral( "Raster/defaultPalette" ), btnColorRamp->colorRampName() );
+    settings.setValue( u"Raster/defaultPalette"_s, btnColorRamp->colorRampName() );
   }
 
   bool enableContinuous = ( ramp->count() > 0 );
@@ -469,7 +471,7 @@ void QgsColorRampShaderWidget::mLoadFromBandButton_clicked()
 void QgsColorRampShaderWidget::mLoadFromFileButton_clicked()
 {
   QgsSettings settings;
-  QString lastDir = settings.value( QStringLiteral( "lastColorMapDir" ), QDir::homePath() ).toString();
+  QString lastDir = settings.value( u"lastColorMapDir"_s, QDir::homePath() ).toString();
   const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Color Map from File" ), lastDir, tr( "Textfile (*.txt)" ) );
   if ( fileName.isEmpty() )
     return;
@@ -498,7 +500,7 @@ void QgsColorRampShaderWidget::mLoadFromFileButton_clicked()
   }
 
   QFileInfo fileInfo( fileName );
-  settings.setValue( QStringLiteral( "lastColorMapDir" ), fileInfo.absoluteDir().absolutePath() );
+  settings.setValue( u"lastColorMapDir"_s, fileInfo.absoluteDir().absolutePath() );
 
   loadMinimumMaximumFromTree();
   updateColorRamp();
@@ -508,12 +510,12 @@ void QgsColorRampShaderWidget::mLoadFromFileButton_clicked()
 void QgsColorRampShaderWidget::mExportToFileButton_clicked()
 {
   QgsSettings settings;
-  QString lastDir = settings.value( QStringLiteral( "lastColorMapDir" ), QDir::homePath() ).toString();
+  QString lastDir = settings.value( u"lastColorMapDir"_s, QDir::homePath() ).toString();
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Save Color Map as File" ), lastDir, tr( "Textfile (*.txt)" ) );
   if ( fileName.isEmpty() )
     return;
 
-  fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, QStringList() << QStringLiteral( "txt" ) );
+  fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, QStringList() << u"txt"_s );
 
   QList<QgsColorRampShader::ColorRampItem> colorRampItems;
   int topLevelItemCount = mColormapTreeWidget->topLevelItemCount();
@@ -538,7 +540,7 @@ void QgsColorRampShaderWidget::mExportToFileButton_clicked()
   }
 
   QFileInfo fileInfo( fileName );
-  settings.setValue( QStringLiteral( "lastColorMapDir" ), fileInfo.absoluteDir().absolutePath() );
+  settings.setValue( u"lastColorMapDir"_s, fileInfo.absoluteDir().absolutePath() );
 }
 
 void QgsColorRampShaderWidget::mUnitLineEdit_textEdited( const QString & )
@@ -616,7 +618,7 @@ void QgsColorRampShaderWidget::setFromShader( const QgsColorRampShader &colorRam
   else
   {
     QgsSettings settings;
-    QString defaultPalette = settings.value( QStringLiteral( "/Raster/defaultPalette" ), "Spectral" ).toString();
+    QString defaultPalette = settings.value( u"/Raster/defaultPalette"_s, "Spectral" ).toString();
     btnColorRamp->setColorRampFromName( defaultPalette );
   }
 
@@ -743,7 +745,7 @@ void QgsColorRampShaderWidget::resetClassifyButton()
 
 QString QgsColorRampShaderWidget::createLabel( QTreeWidgetItem *currentItem, int row, const QString unit )
 {
-  auto applyPrecision = [=]( const QString &value ) {
+  auto applyPrecision = [this]( const QString &value ) {
     double val { value.toDouble() };
     Qgis::DataType dataType { mRasterDataProvider ? mRasterDataProvider->dataType( mBand ) : Qgis::DataType::Float64 };
     switch ( dataType )
@@ -832,7 +834,7 @@ void QgsColorRampShaderWidget::changeColor()
     QgsCompoundColorWidget *colorWidget = new QgsCompoundColorWidget( panel, currentColor, QgsCompoundColorWidget::LayoutVertical );
     colorWidget->setPanelTitle( tr( "Select Color" ) );
     colorWidget->setAllowOpacity( true );
-    connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, [=]( const QColor &newColor ) {
+    connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, [this, itemList]( const QColor &newColor ) {
       for ( QTreeWidgetItem *item : std::as_const( itemList ) )
       {
         item->setData( ColorColumn, Qt::ItemDataRole::EditRole, newColor );
@@ -846,7 +848,7 @@ void QgsColorRampShaderWidget::changeColor()
   else
   {
     // modal dialog version... yuck
-    QColor newColor = QgsColorDialog::getColor( currentColor, this, QStringLiteral( "Change Color" ), true );
+    QColor newColor = QgsColorDialog::getColor( currentColor, this, u"Change Color"_s, true );
     if ( newColor.isValid() )
     {
       for ( QTreeWidgetItem *item : std::as_const( itemList ) )
@@ -897,7 +899,7 @@ void QgsColorRampShaderWidget::showLegendSettings()
     QgsColorRampLegendNodeWidget *legendPanel = new QgsColorRampLegendNodeWidget();
     legendPanel->setPanelTitle( tr( "Legend Settings" ) );
     legendPanel->setSettings( mLegendSettings );
-    connect( legendPanel, &QgsColorRampLegendNodeWidget::widgetChanged, this, [=] {
+    connect( legendPanel, &QgsColorRampLegendNodeWidget::widgetChanged, this, [this, legendPanel] {
       mLegendSettings = legendPanel->settings();
       emit widgetChanged();
     } );

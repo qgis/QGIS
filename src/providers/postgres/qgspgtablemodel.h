@@ -18,8 +18,8 @@
 #define QGSPGTABLEMODEL_H
 
 #include "qgsabstractdbtablemodel.h"
-#include "qgswkbtypes.h"
 #include "qgspostgresconn.h"
+#include "qgswkbtypes.h"
 
 class QIcon;
 
@@ -68,6 +68,15 @@ class QgsPgTableModel : public QgsAbstractDbTableModel
     QString layerURI( const QModelIndex &index, const QString &connInfo, bool useEstimatedMetadata );
 
     void setConnectionName( const QString &connName ) { mConnName = connName; }
+
+    /**
+     * Sets flags, tool tips and decorators to the schema, table and geometry column items.
+     *
+     * \param item                Item to be modified.
+     * \param tip                 Tool tip to be applied to the item.
+     * \param column              Column where the item is located in the current row.
+     */
+    void setItemStatus( QStandardItem *item, const QString &tip, int column );
 
   private:
     //! Number of tables in the model

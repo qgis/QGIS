@@ -20,8 +20,9 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include "qgis_gui.h"
 #include "ui_qgslayoutatlaswidgetbase.h"
+
+#include "qgis_gui.h"
 
 class QgsPrintLayout;
 class QgsLayoutAtlas;
@@ -48,6 +49,7 @@ class GUI_EXPORT QgsLayoutAtlasWidget : public QWidget, private Ui::QgsLayoutAtl
     void changeCoverageLayer( QgsMapLayer *layer );
     void mAtlasFilenamePatternEdit_editingFinished();
     void mAtlasFilenameExpressionButton_clicked();
+    void mAtlasLimitCoverageLayerRenderCheckBox_stateChanged( int state );
     void mAtlasHideCoverageCheckBox_stateChanged( int state );
     void mAtlasSingleFileCheckBox_stateChanged( int state );
     void mAtlasSortFeatureCheckBox_stateChanged( int state );

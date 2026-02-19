@@ -14,15 +14,21 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayermetadataresultsmodel.h"
-#include "moc_qgslayermetadataresultsmodel.cpp"
-#include "qgsfeedback.h"
+
 #include "qgsapplication.h"
-#include "qgslayermetadataproviderregistry.h"
-#include "qgslayermetadataformatter.h"
+#include "qgsfeedback.h"
 #include "qgsiconutils.h"
-#include "qgsproviderregistry.h"
+#include "qgslayermetadataformatter.h"
+#include "qgslayermetadataproviderregistry.h"
 #include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+
 #include <QIcon>
+#include <QString>
+
+#include "moc_qgslayermetadataresultsmodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerMetadataResultsModel::QgsLayerMetadataResultsModel( const QgsMetadataSearchContext &searchContext, QObject *parent )
   : QAbstractTableModel( parent )
@@ -98,7 +104,7 @@ QVariant QgsLayerMetadataResultsModel::data( const QModelIndex &index, int role 
           const QList<QgsLayerMetadataProviderResult> metadata = mResult.metadata();
           const QgsLayerMetadataProviderResult &md { metadata.at( index.row() ) };
           if ( md.layerType() == Qgis::LayerType::Raster )
-            return QgsApplication::getThemeIcon( QStringLiteral( "mIconRaster.svg" ) );
+            return QgsApplication::getThemeIcon( u"mIconRaster.svg"_s );
           return QgsIconUtils::iconForGeometryType( md.geometryType() == Qgis::GeometryType::Unknown ? Qgis::GeometryType::Null : md.geometryType() );
         }
         break;
@@ -173,7 +179,7 @@ void QgsLayerMetadataResultsModel::reloadAsync()
     auto thread = std::make_unique<QThread>();
     fetcher->moveToThread( thread.get() );
     // Forward signals to the model
-    connect( fetcher.get(), &QgsMetadataResultsFetcher::resultsReady, this, [=]( const QgsLayerMetadataSearchResults &results ) {
+    connect( fetcher.get(), &QgsMetadataResultsFetcher::resultsReady, this, [this]( const QgsLayerMetadataSearchResults &results ) {
       resultsReady( results );
     } );
     connect( thread.get(), &QThread::started, fetcher.get(), &QgsMetadataResultsFetcher::fetchMetadata );

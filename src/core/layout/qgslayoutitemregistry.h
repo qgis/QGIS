@@ -16,15 +16,19 @@
 #ifndef QGSLAYOUTITEMREGISTRY_H
 #define QGSLAYOUTITEMREGISTRY_H
 
+#include <functional>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsapplication.h"
+#include "qgslayoutitem.h"
 #include "qgspathresolver.h"
-#include <QGraphicsItem> //for QGraphicsItem::UserType
-#include <QIcon>
-#include <functional>
 
-#include "qgslayoutitem.h" // temporary
+#include <QGraphicsItem>
+#include <QIcon>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsLayout;
 class QgsLayoutView;
@@ -206,7 +210,7 @@ class CORE_EXPORT QgsLayoutMultiFrameAbstractMetadata
     /**
      * Returns an icon representing the layout multiframe type.
      */
-    virtual QIcon icon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ); }
+    virtual QIcon icon() const { return QgsApplication::getThemeIcon( u"/mActionAddBasicRectangle.svg"_s ); }
 
     /**
      * Returns a translated, user visible name for the layout multiframe class.
@@ -365,6 +369,8 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
 
       LayoutElevationProfile, //!< Elevation profile item \since QGIS 3.30
 
+      LayoutChart, //!< Chart item \since QGIS 4.0
+
       // WARNING!!!! SIP CASTING OF QgsLayoutItem and QgsLayoutMultiFrame DEPENDS on these
       // values, and must be updated if any additional types are added
 
@@ -429,6 +435,38 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
     bool addLayoutItemType( QgsLayoutItemAbstractMetadata *metadata SIP_TRANSFER );
 
     /**
+     * Unregisters a layout item type.
+     *
+     * \since QGIS 4.0
+     */
+    bool removeLayoutItemType( int typeId );
+
+    /**
+     * Unregisters a layout item type.
+     *
+     * The \a metadata object will be deleted and should not be used after this call.
+     *
+     * \since QGIS 4.0
+     */
+    bool removeLayoutItemType( QgsLayoutItemAbstractMetadata *metadata );
+
+    /**
+     * Unregisters a layout multiframe type.
+     *
+     * \since QGIS 4.0
+     */
+    bool removeLayoutMultiFrameType( int typeId );
+
+    /**
+     * Unregisters a layout multiframe type.
+     *
+     * The \a metadata object will be deleted and should not be used after this call.
+     *
+     * \since QGIS 4.0
+     */
+    bool removeLayoutMultiFrameType( QgsLayoutMultiFrameAbstractMetadata *metadata );
+
+    /**
      * Registers a new layout multiframe type. Takes ownership of the metadata instance.
      * \see addLayoutItemType()
      */
@@ -467,10 +505,26 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
     void typeAdded( int type, const QString &name );
 
     /**
+     * Emitted whenever an item type is removed from the registry with the specified
+     * \a type.
+     *
+     * \since QGIS 4.0
+     */
+    void typeRemoved( int type );
+
+    /**
      * Emitted whenever a new multiframe type is added to the registry, with the specified
      * \a type and visible \a name.
      */
     void multiFrameTypeAdded( int type, const QString &name );
+
+    /**
+     * Emitted whenever an multiframe type is removed from the registry with the specified
+     * \a type.
+     *
+     * \since QGIS 4.0
+     */
+    void multiFrameTypeRemoved( int type );
 
   private:
 #ifdef SIP_RUN

@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsUnsetAttributeValue
 {
 %Docstring(signature="appended")
@@ -56,6 +58,7 @@ Returns the original data provider's default value clause.
 
 
 bool operator==( const QgsUnsetAttributeValue &value, const QString &other );
+
 
 bool operator!=( const QgsUnsetAttributeValue &value, const QString &other );
 

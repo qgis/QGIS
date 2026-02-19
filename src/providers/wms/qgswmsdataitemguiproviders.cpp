@@ -14,22 +14,25 @@
  ***************************************************************************/
 
 #include "qgswmsdataitemguiproviders.h"
-#include "moc_qgswmsdataitemguiproviders.cpp"
-
-#include "qgswmsdataitems.h"
 
 #include "qgsapplication.h"
-#include "qgsnewhttpconnection.h"
-#include "qgswmsconnection.h"
-#include "qgsxyzconnectiondialog.h"
-#include "qgsxyzconnection.h"
-#include "qgsmanageconnectionsdialog.h"
-#include "qgswmssourceselect.h"
 #include "qgsdataitemguiproviderutils.h"
+#include "qgsmanageconnectionsdialog.h"
 #include "qgssettingsentryenumflag.h"
+#include "qgswmsconnection.h"
+#include "qgswmsdataitems.h"
+#include "qgswmsnewconnection.h"
+#include "qgswmssourceselect.h"
+#include "qgsxyzconnection.h"
+#include "qgsxyzconnectiondialog.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QString>
+
+#include "moc_qgswmsdataitemguiproviders.cpp"
+
+using namespace Qt::StringLiterals;
 
 static QWidget *_paramWidget( QgsDataItem *root )
 {
@@ -96,7 +99,7 @@ QWidget *QgsWmsDataItemGuiProvider::createParamWidget( QgsDataItem *root, QgsDat
 
 void QgsWmsDataItemGuiProvider::editConnection( QgsDataItem *item )
 {
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWms, QStringLiteral( "WMS" ), item->name(), QgsNewHttpConnection::FlagShowHttpSettings );
+  QgsWmsNewConnection nc( nullptr, item->name() );
 
   if ( nc.exec() )
   {
@@ -108,17 +111,19 @@ void QgsWmsDataItemGuiProvider::editConnection( QgsDataItem *item )
 void QgsWmsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 {
   const QString connectionName = item->name();
-  const QStringList connections = QgsOwsConnection::sTreeOwsConnections->items( { QStringLiteral( "wms" ) } );
+  const QStringList connections = QgsOwsConnection::sTreeOwsConnections->items( { u"wms"_s } );
 
   const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
 
-  const QStringList detailsParameters { QStringLiteral( "wms" ), connectionName };
-  const QStringList newDetailsParameters { QStringLiteral( "wms" ), newConnectionName };
+  const QStringList detailsParameters { u"wms"_s, connectionName };
+  const QStringList newDetailsParameters { u"wms"_s, newConnectionName };
 
   QgsOwsConnection::settingsUrl->setValue( QgsOwsConnection::settingsUrl->value( detailsParameters ), newDetailsParameters );
 
   QgsOwsConnection::settingsIgnoreAxisOrientation->setValue( QgsOwsConnection::settingsIgnoreAxisOrientation->value( detailsParameters ), newDetailsParameters );
   QgsOwsConnection::settingsInvertAxisOrientation->setValue( QgsOwsConnection::settingsInvertAxisOrientation->value( detailsParameters ), newDetailsParameters );
+  QgsOwsConnection::settingsDefaultImageFormat->setValue( QgsOwsConnection::settingsDefaultImageFormat->value( detailsParameters ), newDetailsParameters );
+  QgsOwsConnection::settingsWfsForceInitialGetFeature->setValue( QgsOwsConnection::settingsWfsForceInitialGetFeature->value( detailsParameters ), newDetailsParameters );
 
   QgsOwsConnection::settingsReportedLayerExtents->setValue( QgsOwsConnection::settingsReportedLayerExtents->value( detailsParameters ), newDetailsParameters );
   QgsOwsConnection::settingsIgnoreGetMapURI->setValue( QgsOwsConnection::settingsIgnoreGetMapURI->value( detailsParameters ), newDetailsParameters );
@@ -140,7 +145,7 @@ void QgsWmsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 
 void QgsWmsDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsNewHttpConnection nc( QgsApplication::instance()->activeWindow(), QgsNewHttpConnection::ConnectionWms, QStringLiteral( "WMS" ), QString(), QgsNewHttpConnection::FlagShowHttpSettings );
+  QgsWmsNewConnection nc( QgsApplication::instance()->activeWindow(), QString() );
 
   if ( nc.exec() )
   {

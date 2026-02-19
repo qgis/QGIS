@@ -18,11 +18,12 @@
 #define QGSAUTHCONFIG_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
+#include <QDomDocument>
+#include <QDomElement>
 #include <QHash>
 #include <QString>
-#include <QDomElement>
-#include <QDomDocument>
 
 #ifndef QT_NO_SSL
 #include <QSslCertificate>
@@ -329,58 +330,9 @@ class CORE_EXPORT QgsPkiConfigBundle
     QList<QSslCertificate> mCaChain;
 };
 
-
-
-#ifdef SIP_RUN
-% MappedType QList<QSslError::SslError>
-{
-  % TypeHeaderCode
-#include <QList>
-  % End
-
-  % ConvertFromTypeCode
-  // Create the list.
-  PyObject *l;
-
-  if ( ( l = PyList_New( sipCpp->size() ) ) == NULL )
-    return NULL;
-
-  // Set the list elements.
-  QList<QSslError::SslError>::iterator it = sipCpp->begin();
-  for ( int i = 0; it != sipCpp->end(); ++it, ++i )
-  {
-    PyObject *tobj;
-
-    if ( ( tobj = sipConvertFromEnum( *it, sipType_QSslError_SslError ) ) == NULL )
-    {
-      Py_DECREF( l );
-      return NULL;
-    }
-    PyList_SET_ITEM( l, i, tobj );
-  }
-
-  return l;
-  % End
-
-  % ConvertToTypeCode
-  // Check the type if that is all that is required.
-  if ( sipIsErr == NULL )
-    return PyList_Check( sipPy );
-
-  QList<QSslError::SslError> *qlist = new QList<QSslError::SslError>;
-
-  for ( int i = 0; i < PyList_GET_SIZE( sipPy ); ++i )
-  {
-    *qlist << ( QSslError::SslError )SIPLong_AsLong( PyList_GET_ITEM( sipPy, i ) );
-  }
-
-  *sipCppPtr = qlist;
-  return sipGetState( sipTransferObj );
-  % End
-};
+#ifdef SIP_RUN // should not be required, but mingw workflow needs it..
+SIP_INSERT_QLIST_ENUM_CONVERSION_CODE( QSslError::SslError, "<QSslError>" );
 #endif
-
-
 
 /**
  * \ingroup core

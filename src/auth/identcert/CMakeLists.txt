@@ -25,9 +25,6 @@ add_library(authmethod_identcert_a STATIC ${AUTH_IDENTCERT_SRCS} ${AUTH_IDENTCER
 
 target_include_directories(authmethod_identcert_a PUBLIC ${CMAKE_SOURCE_DIR}/src/auth/identcert/core)
 
-# require c++17
-target_compile_features(authmethod_identcert_a PRIVATE cxx_std_17)
-
 target_link_libraries(authmethod_identcert_a qgis_core)
 
 if (WITH_GUI)
@@ -48,9 +45,6 @@ if (FORCE_STATIC_LIBS)
 else()
   # dynamically loaded module
   add_library(authmethod_identcert MODULE ${AUTH_IDENTCERT_SRCS} ${AUTH_IDENTCERT_HDRS} ${AUTH_IDENTCERT_UIS_H})
-
-  # require c++17
-  target_compile_features(authmethod_identcert PRIVATE cxx_std_17)
 
   target_link_libraries(authmethod_identcert qgis_core)
 

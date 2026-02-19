@@ -17,6 +17,7 @@
 #define QGSLEGENDRENDERER_H
 
 #include "qgis_core.h"
+
 #include <QPointF>
 
 class QRectF;
@@ -60,6 +61,17 @@ class CORE_EXPORT QgsLegendRenderer
     QgsLegendRenderer &operator=( const QgsLegendRenderer &other ) = delete;
     QgsLegendRenderer( QgsLegendRenderer &&other );
 #endif
+
+    /**
+     * Sets the filter proxy \a model to use for filtering the legend model content
+     * during rendering.
+     *
+     * Ownership of \a proxy is transferred to the renderer.
+     *
+     * \see proxyModel()
+     * \since QGIS 4.0
+     */
+    void setProxyModel( QgsLayerTreeFilterProxyModel *model SIP_TRANSFER );
 
     /**
      * Returns the filter proxy model used for filtering the legend model content during
@@ -224,10 +236,7 @@ class CORE_EXPORT QgsLegendRenderer
     {
       public:
 
-        ColumnContext()
-          : left( 0 )
-          , right( 0 )
-        {}
+        ColumnContext() {}
 
         //! Left edge of column
         double left = 0;

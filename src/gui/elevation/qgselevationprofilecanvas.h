@@ -19,20 +19,21 @@
 #define QGSELEVATIONPROFILECANVAS_H
 
 #include "qgsconfig.h"
-#include "qgis_sip.h"
+
 #include "qgis_gui.h"
-#include "qgsplotcanvas.h"
-#include "qgsmaplayer.h"
+#include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsprofilepoint.h"
 #include "qgslinesymbol.h"
+#include "qgsmaplayer.h"
+#include "qgsplotcanvas.h"
+#include "qgsprofilepoint.h"
 
 class QgsElevationProfilePlotItem;
 class QgsElevationProfileCrossHairsItem;
 class QgsAbstractProfileResults;
 class QgsProfilePlotRenderer;
 class QgsCurve;
-class Qgs2DPlot;
+class Qgs2DXyPlot;
 class QgsProfileSnapContext;
 class QgsProfileIdentifyContext;
 class QgsProfileIdentifyResults;
@@ -115,6 +116,22 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     QList<QgsMapLayer *> layers() const;
 
     /**
+     * Sets the list of \a sources to include in the profile.
+     *
+     * \see sources()
+     */
+    void setSources( const QList<QgsAbstractProfileSource *> &sources );
+
+    /**
+     * Returns the list of sources included in the profile.
+     *
+     * It includes both layer profile sources and custom sources from the profile source registry.
+     *
+     * \see setSources()
+     */
+    QList<QgsAbstractProfileSource *> sources() const;
+
+    /**
      * Sets the \a crs associated with the canvas' map coordinates.
      *
      * \see crs()
@@ -192,12 +209,12 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      *
      * \note Not available in Python bindings
      */
-    const Qgs2DPlot &plot() const SIP_SKIP;
+    const Qgs2DXyPlot &plot() const SIP_SKIP;
 
     /**
      * Renders a portion of the profile using the specified render \a context.
      */
-    void render( QgsRenderContext &context, double width, double height, const Qgs2DPlot &plotSettings );
+    void render( QgsRenderContext &context, double width, double height, const Qgs2DXyPlot &plotSettings );
 
     /**
      * Identify results visible at the specified plot point.
@@ -238,6 +255,29 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      * \since QGIS 3.32
      */
     void setLockAxisScales( bool lock );
+
+    /**
+     * Returns the current ratio of horizontal (distance) to vertical (elevation) scale
+     * for the plot.
+     *
+     * \see setAxisScaleRatio()
+     * \since QGIS 4.0
+     */
+    double axisScaleRatio() const;
+
+    /**
+     * Sets the ratio of horizontal (distance) to vertical (elevation) scale for the plot.
+     *
+     * E.g. a \a scale of 3 indicates a ratio of 3:1 for distance vs elevation, whereas a scale
+     * of 0.3333 indicates a ratio of 1:3 for distance vs elevation.
+     *
+     * This will immediately update the visible plot area to match the specified scale.
+     *
+     * \see axisScaleRatio()
+     * \see setLockAxisScales()
+     * \since QGIS 4.0
+     */
+    void setAxisScaleRatio( double scale );
 
     /**
      * Returns the distance unit used by the canvas.
@@ -299,6 +339,13 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      */
     void canvasPointHovered( const QgsPointXY &point, const QgsProfilePoint &profilePoint );
 
+    /**
+     * Emitted when the plot scale is changed.
+     *
+     * \since QGIS 4.0
+     */
+    void scaleChanged();
+
   public slots:
 
     /**
@@ -327,6 +374,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     void startDeferredRegeneration();
     void startDeferredRedraw();
     void refineResults();
+    void setSourcesPrivate();
 
   private:
     void updateChartFromPalette();
@@ -340,12 +388,14 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     QgsScreenHelper *mScreenHelper = nullptr;
 
     bool mLockAxisScales = false;
+    double mLockedAxisScale = 1;
 
     QgsCoordinateReferenceSystem mCrs;
     QgsProject *mProject = nullptr;
     Qgis::DistanceUnit mDistanceUnit = Qgis::DistanceUnit::Unknown;
 
     QgsWeakMapLayerPointerList mLayers;
+    QList< QgsAbstractProfileSource * > mSources;
 
     QgsElevationProfilePlotItem *mPlotItem = nullptr;
     QgsElevationProfileCrossHairsItem *mCrossHairsItem = nullptr;

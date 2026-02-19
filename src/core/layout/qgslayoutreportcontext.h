@@ -20,8 +20,8 @@
 #include "qgsfeature.h"
 #include "qgslayout.h"
 
-#include <QtGlobal>
 #include <QPointer>
+#include <QtGlobal>
 
 /**
  * \ingroup core

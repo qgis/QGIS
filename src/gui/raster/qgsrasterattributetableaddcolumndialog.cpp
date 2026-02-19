@@ -14,12 +14,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrasterattributetableaddcolumndialog.h"
-#include "moc_qgsrasterattributetableaddcolumndialog.cpp"
-#include "qgsrasterattributetable.h"
+
 #include "qgsgui.h"
+#include "qgsrasterattributetable.h"
 
 #include <QPushButton>
 
+#include "moc_qgsrasterattributetableaddcolumndialog.cpp"
 
 QgsRasterAttributeTableAddColumnDialog::QgsRasterAttributeTableAddColumnDialog( QgsRasterAttributeTable *attributeTable, QWidget *parent )
   : QDialog( parent )
@@ -30,10 +31,10 @@ QgsRasterAttributeTableAddColumnDialog::QgsRasterAttributeTableAddColumnDialog( 
 
   setupUi( this );
 
-  connect( mName, &QLineEdit::textChanged, this, [=]( const QString & ) { updateDialog(); } );
-  connect( mStandardColumn, &QRadioButton::toggled, this, [=]( bool ) { updateDialog(); } );
-  connect( mColor, &QRadioButton::toggled, this, [=]( bool ) { updateDialog(); } );
-  connect( mUsage, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) { updateDialog(); } );
+  connect( mName, &QLineEdit::textChanged, this, [this]( const QString & ) { updateDialog(); } );
+  connect( mStandardColumn, &QRadioButton::toggled, this, [this]( bool ) { updateDialog(); } );
+  connect( mColor, &QRadioButton::toggled, this, [this]( bool ) { updateDialog(); } );
+  connect( mUsage, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) { updateDialog(); } );
 
   mDataType->addItem( QgsFields::iconForFieldType( QMetaType::Type::QString ), tr( "String" ), static_cast<int>( QMetaType::Type::QString ) );
   mDataType->addItem( QgsFields::iconForFieldType( QMetaType::Type::Int ), tr( "Integer" ), static_cast<int>( QMetaType::Type::Int ) );

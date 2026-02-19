@@ -14,15 +14,19 @@
  ***************************************************************************/
 
 #include "qgsvectorwarper.h"
-#include "moc_qgsvectorwarper.cpp"
+
+#include <memory>
+
 #include "qgsfeaturesink.h"
 #include "qgsfeedback.h"
 #include "qgsgcpgeometrytransformer.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
 
-#include <QObject>
 #include <QFileInfo>
+#include <QObject>
+
+#include "moc_qgsvectorwarper.cpp"
 
 QgsVectorWarper::QgsVectorWarper( QgsGcpTransformerInterface::TransformMethod method, const QList<QgsGcpPoint> &points, const QgsCoordinateReferenceSystem &destinationCrs )
   : mMethod( method )
@@ -101,7 +105,7 @@ QgsVectorWarperTask::QgsVectorWarperTask( QgsGcpTransformerInterface::TransformM
   if ( layer )
   {
     mTransformContext = layer->transformContext();
-    mSource.reset( new QgsVectorLayerFeatureSource( layer ) );
+    mSource = std::make_unique<QgsVectorLayerFeatureSource>( layer );
     mFeatureCount = layer->featureCount();
     mFields = layer->fields();
     mWkbType = layer->wkbType();
@@ -135,7 +139,7 @@ bool QgsVectorWarperTask::run()
 
   QgsVectorWarper warper( mMethod, mPoints, mDestinationCrs );
 
-  connect( mFeedback.get(), &QgsFeedback::processedCountChanged, this, [=]( long long count ) {
+  connect( mFeedback.get(), &QgsFeedback::processedCountChanged, this, [this]( long long count ) {
     const double newProgress = 100.0 * count / mFeatureCount;
     // avoid flooding with too many events
     if ( static_cast<int>( newProgress * 10 ) != static_cast<int>( mLastProgress * 10 ) )

@@ -3,7 +3,7 @@
     ---------------------
     begin                : July 2017
     copyright            : (C) 2017
-    email                : lbartoletti at tuxfamily dot org
+    email                : lituus at free dot fr
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshaperegularpolygonabstract.h"
-#include "moc_qgsmaptoolshaperegularpolygonabstract.cpp"
+
+#include "qgisapp.h"
 #include "qgsgeometryrubberband.h"
 #include "qgsgeometryutils.h"
 #include "qgsmapcanvas.h"
-#include "qgspoint.h"
-#include "qgisapp.h"
 #include "qgsmaptoolcapture.h"
+#include "qgspoint.h"
+
+#include "moc_qgsmaptoolshaperegularpolygonabstract.cpp"
 
 QgsMapToolShapeRegularPolygonAbstract::QgsMapToolShapeRegularPolygonAbstract( const QString &id, QgsMapToolCapture *parentTool )
   : QgsMapToolShapeAbstract( id, parentTool )

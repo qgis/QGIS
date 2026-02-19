@@ -19,17 +19,22 @@
 #ifndef QGSVECTORFILEWRITER_H
 #define QGSVECTORFILEWRITER_H
 
+#include <ogr_api.h>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractdatabaseproviderconnection.h"
-#include "qgsfields.h"
-#include "qgsfeedback.h"
-#include "qgsogrutils.h"
-#include "qgsrenderer.h"
-#include "qgsgeometryengine.h"
 #include "qgsfeaturesink.h"
+#include "qgsfeedback.h"
+#include "qgsfields.h"
+#include "qgsgeometryengine.h"
+#include "qgsogrutils.h"
 #include "qgsrendercontext.h"
-#include <ogr_api.h>
+#include "qgsrenderer.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsSymbolLayer;
 class QTextCodec;
@@ -128,7 +133,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     {
       public:
         BoolOption( const QString &docString, bool defaultValue )
-          : SetOption( docString, QStringList() << QStringLiteral( "YES" ) << QStringLiteral( "NO" ), defaultValue ? "YES" : "NO" )
+          : SetOption( docString, QStringList() << u"YES"_s << u"NO"_s, defaultValue ? "YES" : "NO" )
         {}
     };
 
@@ -501,7 +506,12 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         //! Scale of symbology
         double symbologyScale = 1.0;
 
-        //! If not empty, only features intersecting the extent will be saved
+        /**
+         * If not empty, only features intersecting the extent will be saved.
+         *
+         * The filter extent should be in the destination CRS (if transforming), or the layer's
+         * CRS if no valid transform is set.
+         */
         QgsRectangle filterExtent;
 
         /**
@@ -874,6 +884,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     Qgis::VectorFileWriterCapabilities capabilities() const;
 
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
+
+    using QgsFeatureSink::addFeatures;
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     QString lastError() const override;
 
@@ -887,7 +899,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      *
      * \since QGIS 3.44
      */
-    QMap<int, int> sourceFieldIndexToWriterFieldIndex() const { return mAttrIdxToOgrIdx; }
+    QMap<int, int> sourceFieldIndexToWriterFieldIndex() const { return mAttrIdxToProviderIdx; }
 
     //! Close opened shapefile for writing
     ~QgsVectorFileWriter() override;
@@ -989,8 +1001,12 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     //! Geometry type which is being used
     Qgis::WkbType mWkbType;
 
-    //! Map attribute indizes to OGR field indexes
-    QMap<int, int> mAttrIdxToOgrIdx;
+    //! Map attribute indices to OGR provider field indexes such as they are *after* the OGR provider has been created
+    // In particular for a GeoPackage file, a field with the FID column is always put in first position.
+    QMap<int, int> mAttrIdxToProviderIdx;
+
+    //! Map attribute indices to OGR layer field indexes such as they are on the current mLayer instance
+    QMap<int, int> mAttrIdxToOgrLayerIdx;
 
     Qgis::FeatureSymbologyExport mSymbologyExport = Qgis::FeatureSymbologyExport::NoSymbology;
 

@@ -14,10 +14,15 @@
  ***************************************************************************/
 
 #include "qgsmapcanvasutils.h"
+
+#include "qgsexpressioncontextutils.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgsvectorlayertemporalproperties.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 long QgsMapCanvasUtils::zoomToMatchingFeatures( QgsMapCanvas *canvas, QgsVectorLayer *layer, const QString &filter )
 {
@@ -77,7 +82,7 @@ QString QgsMapCanvasUtils::filterForLayer( QgsMapCanvas *canvas, QgsVectorLayer 
   if ( canvas->mapSettings().isTemporal() )
   {
     if ( !layer->temporalProperties()->isVisibleInTemporalRange( canvas->temporalRange() ) )
-      return QStringLiteral( "FALSE" );
+      return u"FALSE"_s;
 
     QgsVectorLayerTemporalContext temporalContext;
     temporalContext.setLayer( layer );

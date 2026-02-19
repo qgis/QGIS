@@ -13,12 +13,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgssourceselectprovider.h"
 #include "qgssourceselectproviderregistry.h"
-#include "moc_qgssourceselectproviderregistry.cpp"
-#include "qgsproviderguiregistry.h"
 
 #include <memory>
+
+#include "qgsproviderguiregistry.h"
+#include "qgssourceselectprovider.h"
+
+#include "moc_qgssourceselectproviderregistry.cpp"
 
 QgsSourceSelectProviderRegistry::QgsSourceSelectProviderRegistry() = default;
 

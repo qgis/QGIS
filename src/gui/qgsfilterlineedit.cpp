@@ -16,16 +16,21 @@
  ***************************************************************************/
 
 #include "qgsfilterlineedit.h"
-#include "moc_qgsfilterlineedit.cpp"
-#include "qgsapplication.h"
-#include "qgsanimatedicon.h"
+
 #include "qgis.h"
+#include "qgsanimatedicon.h"
+#include "qgsapplication.h"
 
 #include <QAction>
-#include <QToolButton>
-#include <QStyle>
 #include <QFocusEvent>
 #include <QPainter>
+#include <QString>
+#include <QStyle>
+#include <QToolButton>
+
+#include "moc_qgsfilterlineedit.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFilterLineEdit::QgsFilterLineEdit( QWidget *parent, const QString &nullValue )
   : QLineEdit( parent )
@@ -137,7 +142,7 @@ void QgsFilterLineEdit::onTextChanged( const QString &text )
 
   if ( isNull() )
   {
-    setStyleSheet( QStringLiteral( "QLineEdit { font: italic; color: gray; } %1" ).arg( mStyleSheet ) );
+    setStyleSheet( u"QLineEdit { font: italic; color: gray; } %1"_s.arg( mStyleSheet ) );
     emit valueChanged( QString() );
   }
   else
@@ -183,7 +188,7 @@ void QgsFilterLineEdit::setShowSpinner( bool showSpinner )
   if ( showSpinner )
   {
     if ( !mBusySpinnerAnimatedIcon )
-      mBusySpinnerAnimatedIcon = new QgsAnimatedIcon( QgsApplication::iconPath( QStringLiteral( "/mIconLoading.gif" ) ), this );
+      mBusySpinnerAnimatedIcon = new QgsAnimatedIcon( QgsApplication::iconPath( u"/mIconLoading.gif"_s ), this );
 
     mBusySpinnerAnimatedIcon->connectFrameChanged( this, &QgsFilterLineEdit::updateBusySpinner );
   }

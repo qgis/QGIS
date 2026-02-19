@@ -18,12 +18,15 @@
 #ifndef QGSMESHTIMESETTINGS_H
 #define QGSMESHTIMESETTINGS_H
 
+#include "qgis.h"
+#include "qgis_core.h"
+#include "qgsreadwritecontext.h"
+
 #include <QDateTime>
 #include <QDomDocument>
+#include <QString>
 
-#include "qgis_core.h"
-#include "qgis.h"
-#include "qgsreadwritecontext.h"
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core
@@ -71,8 +74,8 @@ class CORE_EXPORT QgsMeshTimeSettings
 
   private:
 
-    QString mRelativeTimeFormat = QStringLiteral( "d hh:mm:ss" );
-    QString mAbsoluteTimeFormat = QStringLiteral( "yyyy-MM-dd HH:mm:ss" );
+    QString mRelativeTimeFormat = u"d hh:mm:ss"_s;
+    QString mAbsoluteTimeFormat = u"yyyy-MM-dd HH:mm:ss"_s;
 };
 
 Q_DECLARE_METATYPE( QgsMeshTimeSettings );

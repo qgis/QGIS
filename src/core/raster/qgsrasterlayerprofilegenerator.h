@@ -17,14 +17,14 @@
 #ifndef QGSRASTERLAYERPROFILEGENERATOR_H
 #define QGSRASTERLAYERPROFILEGENERATOR_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractprofilesurfacegenerator.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgscurve.h"
-
-#include <memory>
 
 class QgsProfileRequest;
 class QgsRasterLayer;
@@ -48,6 +48,7 @@ class CORE_EXPORT QgsRasterLayerProfileResults : public QgsAbstractProfileSurfac
   public:
 
     QString type() const override;
+    using QgsAbstractProfileSurfaceResults::identify;
     QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
 
   private:
@@ -81,6 +82,7 @@ class CORE_EXPORT QgsRasterLayerProfileGenerator : public QgsAbstractProfileSurf
     bool generateProfile( const QgsProfileGenerationContext &context = QgsProfileGenerationContext() ) override;
     QgsAbstractProfileResults *takeResults() override;
     QgsFeedback *feedback() const override;
+    QString type() const override;
 
   private:
     QString mId;

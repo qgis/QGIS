@@ -98,7 +98,7 @@ class viewshed(GdalAlgorithm):
         )
 
         # backwards compatibility parameter
-        # TODO QGIS 4: remove parameter and related logic
+        # TODO QGIS 5: remove parameter and related logic
         options_param = QgsProcessingParameterString(
             self.OPTIONS,
             self.tr("Additional creation options"),
@@ -183,7 +183,7 @@ class viewshed(GdalAlgorithm):
             "-md",
             f"{self.parameterAsDouble(parameters, self.MAX_DISTANCE, context)}",
             "-f",
-            QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]),
+            self.outputFormat(parameters, self.OUTPUT, context),
         ]
 
         options = self.parameterAsString(parameters, self.CREATION_OPTIONS, context)

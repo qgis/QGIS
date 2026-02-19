@@ -15,15 +15,16 @@
 #ifndef QGSFRACTIONNUMERICFORMAT_H
 #define QGSFRACTIONNUMERICFORMAT_H
 
+#include <cmath>
+
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgsnumericformat.h"
-#include <cmath>
 
 /**
  * \ingroup core
- * \brief A numeric formater which returns a vulgar fractional representation of a decimal value (e.g. "1/2" instead of 0.5).
+ * \brief A numeric formatter which returns a vulgar fractional representation of a decimal value (e.g. "1/2" instead of 0.5).
  *
  * \since QGIS 3.14
  */

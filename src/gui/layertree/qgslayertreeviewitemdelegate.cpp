@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewitemdelegate.h"
-#include "moc_qgslayertreeviewitemdelegate.cpp"
 
 #include "qgslayertreemodel.h"
 #include "qgslayertreeview.h"
@@ -25,6 +24,8 @@
 #include <QMenu>
 #include <QPen>
 #include <QToolTip>
+
+#include "moc_qgslayertreeviewitemdelegate.cpp"
 
 /// @cond PRIVATE
 
@@ -205,12 +206,8 @@ void QgsLayerTreeViewItemDelegate::onClicked( const QModelIndex &index )
   if ( indicators.isEmpty() )
     return;
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  QStyleOptionViewItem opt( mLayerTreeView->viewOptions() );
-#else
   QStyleOptionViewItem opt;
   mLayerTreeView->initViewItemOption( &opt );
-#endif
   opt.rect = mLayerTreeView->visualRect( index );
   initStyleOption( &opt, index );
   _fixStyleOption( opt );

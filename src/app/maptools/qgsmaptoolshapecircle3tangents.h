@@ -4,7 +4,7 @@
     ---------------------
     begin                : July 2017
     copyright            : (C) 2017 by Loïc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    email                : lituus at free dot fr
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,9 +17,9 @@
 #ifndef QGSMAPTOOLSHAPECIRCLE3TANGENTS_H
 #define QGSMAPTOOLSHAPECIRCLE3TANGENTS_H
 
-#include "qgspointlocator.h"
 #include "qgsmaptoolshapecircleabstract.h"
 #include "qgsmaptoolshaperegistry.h"
+#include "qgspointlocator.h"
 
 class APP_EXPORT QgsMapToolShapeCircle3TangentsMetadata : public QgsMapToolShapeMetadata
 {

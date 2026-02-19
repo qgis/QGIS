@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsApplication : QApplication
 {
 %Docstring(signature="appended")
@@ -149,7 +151,7 @@ Sets the FileOpen event receiver
 %Docstring
 Set the active theme to the specified theme. The theme name should be a
 single word e.g. 'default','classic'. The theme search path usually will
-be pkgDataPath + "/themes/" + themName + "/" but plugin writers etc can
+be pkgDataPath + "/themes/" + themeName + "/" but plugin writers etc can
 use :py:func:`~QgsApplication.themeName` as a basis for searching for
 resources in their own datastores e.g. a Qt4 resource bundle.
 
@@ -171,7 +173,7 @@ Calculate the application pkg path
 %Docstring
 Set the active theme to the specified theme. The theme name should be a
 single word e.g. 'default','classic'. The theme search path usually will
-be pkgDataPath + "/themes/" + themName + "/" but plugin writers etc can
+be pkgDataPath + "/themes/" + themeName + "/" but plugin writers etc can
 use this method as a basis for searching for resources in their own
 datastores e.g. a Qt4 resource bundle.
 %End
@@ -212,12 +214,6 @@ Returns the path to the authors file.
 %Docstring
 Returns the path to the contributors file. Contributors are people who
 have submitted patches but don't have commit access.
-%End
-
-    static QString developersMapFilePath();
-%Docstring
-Returns the path to the developers map file. The developers map was
-created by using leaflet framework, it shows the contributors.json file.
 %End
 
     static QString sponsorsFilePath();
@@ -926,6 +922,13 @@ Returns the application's sensor registry, used for sensor types.
 .. versionadded:: 3.32
 %End
 
+    static QgsPlotRegistry *plotRegistry() /KeepReference/;
+%Docstring
+Returns the application's plot registry, used for plot types.
+
+.. versionadded:: 4.0
+%End
+
     static QgsMessageLog *messageLog();
 %Docstring
 Returns the application's message log.
@@ -961,6 +964,14 @@ Returns the application's page size registry, used for managing layout
 page sizes.
 %End
 
+
+    static QgsApplicationThemeRegistry *applicationThemeRegistry() /KeepReference/;
+%Docstring
+Returns the application's theme registry, used for styling the user
+interface.
+
+.. versionadded:: 4.0
+%End
 
     static QgsActionScopeRegistry *actionScopeRegistry() /KeepReference/;
 %Docstring
@@ -1108,6 +1119,38 @@ generated variables (like system name, user name etc.)
 Set a single custom expression variable.
 %End
 
+    static QStringList temporarilyTrustedProjectsFolders();
+%Docstring
+Returns the list of projects and folders that have been temporarily
+determined as trusted by the user.
+
+.. versionadded:: 4.0
+%End
+
+    static void setTemporarilyTrustedProjectsFolders( const QStringList &trustedProjectsFolders );
+%Docstring
+Sets the list of projects and folders that have been temporarily
+determined as trusted by the user.
+
+.. versionadded:: 4.0
+%End
+
+    static QStringList temporarilyUntrustedProjectsFolders();
+%Docstring
+Returns the list of projects and folders that have been temporarily
+determined as untrusted by the user.
+
+.. versionadded:: 4.0
+%End
+
+    static void setTemporarilyUntrustedProjectsFolders( const QStringList &untrustedProjectsFolders );
+%Docstring
+Sets the list of projects and folders that have been temporarily
+determined as untrusted by the user.
+
+.. versionadded:: 4.0
+%End
+
     static int scaleIconSize( int standardSize, bool applyDevicePixelRatio = false );
 %Docstring
 Scales an icon size to compensate for display pixel density, making the
@@ -1197,6 +1240,12 @@ Emitted when project locale has been changed.
 .. versionadded:: 3.22.2
 %End
 
+    void themeChanged();
+%Docstring
+Emitted when the application theme has changed.
+
+.. versionadded:: 4.0
+%End
 
 };
 

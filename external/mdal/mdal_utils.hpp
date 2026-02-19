@@ -129,7 +129,7 @@ namespace MDAL
   //! Splits by deliminer and skips empty parts
   std::vector<std::string> split( const std::string &str, const std::string &delimiter );
 
-  std::string join( const std::vector<std::string> parts, const std::string &delimiter );
+  std::string join( const std::vector<std::string> &parts, const std::string &delimiter );
 
   //! Right trim
   std::string rtrim(

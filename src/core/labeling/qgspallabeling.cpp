@@ -16,50 +16,54 @@
  ***************************************************************************/
 
 #include "qgspallabeling.h"
-#include "qgscolorutils.h"
-#include "qgstextlabelfeature.h"
-#include "qgsunittypes.h"
-#include "qgsexception.h"
-#include "qgsapplication.h"
-#include "qgsstyle.h"
-#include "qgstextrenderer.h"
-#include "qgsscaleutils.h"
 
 #include <cmath>
+#include <memory>
+
+#include "callouts/qgscallout.h"
+#include "callouts/qgscalloutsregistry.h"
+#include "qgsapplication.h"
+#include "qgscolorutils.h"
+#include "qgscurvepolygon.h"
+#include "qgsexception.h"
+#include "qgsexpression.h"
+#include "qgsfontmanager.h"
+#include "qgsfontutils.h"
+#include "qgsgeometry.h"
+#include "qgsgeometrycollection.h"
+#include "qgslabelingengine.h"
+#include "qgslogger.h"
+#include "qgsmaptopixelgeometrysimplifier.h"
+#include "qgsmeshlayer.h"
+#include "qgsmessagelog.h"
+#include "qgsmultisurface.h"
+#include "qgsproperty.h"
+#include "qgsrasterlayer.h"
+#include "qgsreferencedgeometry.h"
+#include "qgsscaleutils.h"
+#include "qgsstyle.h"
+#include "qgssymbollayerutils.h"
+#include "qgstextlabelfeature.h"
+#include "qgstextrenderer.h"
+#include "qgstextrendererutils.h"
+#include "qgsunittypes.h"
+#include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectortilebasiclabeling.h"
+#include "qgsvectortilelayer.h"
 
 #include <QApplication>
 #include <QByteArray>
-#include <QString>
 #include <QFontMetrics>
-#include <QTime>
+#include <QMimeData>
 #include <QPainter>
 #include <QScreen>
-#include <QWidget>
+#include <QString>
 #include <QTextBoundaryFinder>
+#include <QTime>
+#include <QWidget>
 
-#include "qgsfontutils.h"
-#include "qgsexpression.h"
-#include "qgslabelingengine.h"
-#include "qgstextrendererutils.h"
-#include "qgsmultisurface.h"
-#include "qgslogger.h"
-#include "qgsvectorlayer.h"
-#include "qgsgeometry.h"
-#include "qgsreferencedgeometry.h"
-#include "qgsproperty.h"
-#include "qgssymbollayerutils.h"
-#include "qgsmaptopixelgeometrysimplifier.h"
-#include "qgscurvepolygon.h"
-#include "qgsmessagelog.h"
-#include "qgsgeometrycollection.h"
-#include "callouts/qgscallout.h"
-#include "callouts/qgscalloutsregistry.h"
-#include "qgsvectortilelayer.h"
-#include "qgsvectortilebasiclabeling.h"
-#include "qgsfontmanager.h"
-#include "qgsvariantutils.h"
-#include "qgsmeshlayer.h"
-#include "qgsrasterlayer.h"
+using namespace Qt::StringLiterals;
 
 using namespace pal;
 
@@ -98,7 +102,7 @@ void QgsPalLayerSettings::initPropertyDefinitions()
   if ( !sPropertyDefinitions()->isEmpty() )
     return;
 
-  const QString origin = QStringLiteral( "labeling" );
+  const QString origin = u"labeling"_s;
 
   *sPropertyDefinitions() = QgsPropertiesDefinition
   {
@@ -120,7 +124,7 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { static_cast< int >( QgsPalLayerSettings::Property::FontTransp ), QgsPropertyDefinition( "FontTransp", QObject::tr( "Text transparency" ), QgsPropertyDefinition::Opacity, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::FontOpacity ), QgsPropertyDefinition( "FontOpacity", QObject::tr( "Text opacity" ), QgsPropertyDefinition::Opacity, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::FontStretchFactor ), QgsPropertyDefinition( "FontStretchFactor", QObject::tr( "Font stretch factor" ), QgsPropertyDefinition::IntegerPositiveGreaterZero, origin ) },
-    { static_cast< int >( QgsPalLayerSettings::Property::FontCase ), QgsPropertyDefinition( "FontCase", QgsPropertyDefinition::DataTypeString, QObject::tr( "Font case" ), QObject::tr( "string " ) + QStringLiteral( "[<b>NoChange</b>|<b>Upper</b>|<br><b>Lower</b>|<b>Title</b>|<b>Capitalize</b>|<b>SmallCaps</b>|<b>AllSmallCaps</b>]" ), origin ) },
+    { static_cast< int >( QgsPalLayerSettings::Property::FontCase ), QgsPropertyDefinition( "FontCase", QgsPropertyDefinition::DataTypeString, QObject::tr( "Font case" ), QObject::tr( "string " ) + u"[<b>NoChange</b>|<b>Upper</b>|<br><b>Lower</b>|<b>Title</b>|<b>Capitalize</b>|<b>SmallCaps</b>|<b>AllSmallCaps</b>]"_s, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::FontLetterSpacing ), QgsPropertyDefinition( "FontLetterSpacing", QObject::tr( "Letter spacing" ), QgsPropertyDefinition::Double, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::FontWordSpacing ), QgsPropertyDefinition( "FontWordSpacing", QObject::tr( "Word spacing" ), QgsPropertyDefinition::Double, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::FontBlendMode ), QgsPropertyDefinition( "FontBlendMode", QObject::tr( "Text blend mode" ), QgsPropertyDefinition::BlendMode, origin ) },
@@ -209,9 +213,10 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { static_cast< int >( QgsPalLayerSettings::Property::RepeatDistanceUnit ), QgsPropertyDefinition( "RepeatDistanceUnit", QObject::tr( "Repeat distance unit" ), QgsPropertyDefinition::RenderUnits, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::OverrunDistance ), QgsPropertyDefinition( "OverrunDistance", QObject::tr( "Overrun distance" ), QgsPropertyDefinition::DoublePositive, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::LineAnchorPercent ), QgsPropertyDefinition( "LineAnchorPercent", QObject::tr( "Line anchor percentage, as fraction from 0.0 to 1.0" ), QgsPropertyDefinition::Double0To1, origin ) },
-    { static_cast< int >( QgsPalLayerSettings::Property::LineAnchorClipping ), QgsPropertyDefinition( "LineAnchorClipping", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line anchor clipping mode" ), QObject::tr( "string " ) + QStringLiteral( "[<b>visible</b>|<b>entire</b>]" ), origin ) },
-    { static_cast< int >( QgsPalLayerSettings::Property::LineAnchorType ), QgsPropertyDefinition( "LineAnchorType", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line anchor type" ), QObject::tr( "string " ) + QStringLiteral( "[<b>hint</b>|<b>strict</b>]" ), origin ) },
-    { static_cast< int >( QgsPalLayerSettings::Property::LineAnchorTextPoint ), QgsPropertyDefinition( "LineAnchorTextPoint", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line anchor text point" ), QObject::tr( "string " ) + QStringLiteral( "[<b>follow</b>|<b>start</b>|<b>center</b>|<b>end</b>]" ), origin ) },
+    { static_cast< int >( QgsPalLayerSettings::Property::LineAnchorClipping ), QgsPropertyDefinition( "LineAnchorClipping", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line anchor clipping mode" ), QObject::tr( "string " ) + u"[<b>visible</b>|<b>entire</b>]"_s, origin ) },
+    { static_cast< int >( QgsPalLayerSettings::Property::LineAnchorType ), QgsPropertyDefinition( "LineAnchorType", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line anchor type" ), QObject::tr( "string " ) + u"[<b>hint</b>|<b>strict</b>]"_s, origin ) },
+    { static_cast< int >( QgsPalLayerSettings::Property::LineAnchorTextPoint ), QgsPropertyDefinition( "LineAnchorTextPoint", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line anchor text point" ), QObject::tr( "string " ) + u"[<b>follow</b>|<b>start</b>|<b>center</b>|<b>end</b>]"_s, origin ) },
+    { static_cast< int >( QgsPalLayerSettings::Property::CurvedLabelMode ), QgsPropertyDefinition( "CurvedLabelMode", QgsPropertyDefinition::DataTypeString, QObject::tr( "Curved label mode" ), QObject::tr( "string " ) + u"[<b>Default</b>|<b>CharactersAtVertices</b>|<b>StretchCharacterSpacingToFit</b>|<b>StretchWordSpacingToFit</b>]"_s, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::Priority ), QgsPropertyDefinition( "Priority", QgsPropertyDefinition::DataTypeNumeric, QObject::tr( "Label priority" ), QObject::tr( "double [0.0-10.0]" ), origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::IsObstacle ), QgsPropertyDefinition( "IsObstacle", QObject::tr( "Feature is a label obstacle" ), QgsPropertyDefinition::Boolean, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::ObstacleFactor ), QgsPropertyDefinition( "ObstacleFactor", QgsPropertyDefinition::DataTypeNumeric, QObject::tr( "Obstacle factor" ), QObject::tr( "double [0.0-10.0]" ), origin ) },
@@ -252,9 +257,12 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { static_cast< int >( QgsPalLayerSettings::Property::Show ), QgsPropertyDefinition( "Show", QObject::tr( "Show label" ), QgsPropertyDefinition::Boolean, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::AlwaysShow ), QgsPropertyDefinition( "AlwaysShow", QObject::tr( "Always show label" ), QgsPropertyDefinition::Boolean, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::CalloutDraw ), QgsPropertyDefinition( "CalloutDraw", QObject::tr( "Draw callout" ), QgsPropertyDefinition::Boolean, origin ) },
-    { static_cast< int >( QgsPalLayerSettings::Property::LabelAllParts ), QgsPropertyDefinition( "LabelAllParts", QObject::tr( "Label all parts" ), QgsPropertyDefinition::Boolean, origin ) },
+    { static_cast< int >( QgsPalLayerSettings::Property::LabelAllParts ), QgsPropertyDefinition( "LabelAllParts", QgsPropertyDefinition::DataTypeString,  QObject::tr( "Multipart geometry behavior" ), QObject::tr( "string " ) + "[<b>LargestPartOnly</b>|<b>LabelEveryPart</b>|<b>SplitLabelTextLinesOverParts</b>]", origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::AllowDegradedPlacement ), QgsPropertyDefinition( "AllowDegradedPlacement", QObject::tr( "Allow inferior fallback placements" ), QgsPropertyDefinition::Boolean, origin ) },
-    { static_cast< int >( QgsPalLayerSettings::Property::OverlapHandling ), QgsPropertyDefinition( "OverlapHandling", QgsPropertyDefinition::DataTypeString, QObject::tr( "Overlap handing" ), QObject::tr( "string " ) + "[<b>Prevent</b>|<b>AllowIfNeeded</b>|<b>AlwaysAllow</b>]", origin ) },
+    { static_cast< int >( QgsPalLayerSettings::Property::OverlapHandling ), QgsPropertyDefinition( "OverlapHandling", QgsPropertyDefinition::DataTypeString, QObject::tr( "Overlap handling" ), QObject::tr( "string " ) + "[<b>Prevent</b>|<b>AllowIfNeeded</b>|<b>AlwaysAllow</b>]", origin ) },
+
+    { static_cast< int >( QgsPalLayerSettings::Property::WhitespaceCollisionHandling ), QgsPropertyDefinition( "WhitespaceCollisionHandling", QgsPropertyDefinition::DataTypeString, QObject::tr( "Whitespace collision handling" ), QObject::tr( "string " ) + u"[<b>TreatWhitespaceAsCollision</b>|<b>IgnoreWhitespaceCollisions</b>]"_s, origin ) },
+
     { static_cast< int >( QgsPalLayerSettings::Property::MaximumDistance ), QgsPropertyDefinition( "MaximumDistance", QObject::tr( "Maximum distance" ), QgsPropertyDefinition::DoublePositive, origin ) },
 
     { static_cast< int >( QgsPalLayerSettings::Property::LabelMarginDistance ), QgsPropertyDefinition( "LabelMarginDistance", QObject::tr( "Minimum distance to other labels" ), QgsPropertyDefinition::DoublePositive, origin ) },
@@ -278,8 +286,7 @@ Q_NOWARN_DEPRECATED_POP
 
 Q_NOWARN_DEPRECATED_PUSH // because of deprecated members
 QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings &s )
-  : fieldIndex( 0 )
-  , mDataDefinedProperties( s.mDataDefinedProperties )
+  : mDataDefinedProperties( s.mDataDefinedProperties )
 {
   *this = s;
 }
@@ -345,7 +352,6 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   fontMaxPixelSize = s.fontMaxPixelSize;
   upsidedownLabels = s.upsidedownLabels;
 
-  labelPerPart = s.labelPerPart;
   zIndex = s.zIndex;
 
   mFormat = s.mFormat;
@@ -455,18 +461,18 @@ bool QgsPalLayerSettings::prepare( QgsRenderContext &context, QSet<QString> &att
 
   // rect for clipping
   QgsRectangle r1 = mapSettings.visibleExtent();
-  QgsDebugMsgLevel( QStringLiteral( "Visible extent: %1" ).arg( r1.toString() ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "mapSetting extentBuffer: %1" ).arg( mapSettings.extentBuffer() ), 2 );
+  QgsDebugMsgLevel( u"Visible extent: %1"_s.arg( r1.toString() ), 2 );
+  QgsDebugMsgLevel( u"mapSetting extentBuffer: %1"_s.arg( mapSettings.extentBuffer() ), 2 );
   r1.grow( mapSettings.extentBuffer() );
-  QgsDebugMsgLevel( QStringLiteral( "Grown visible extent: %1" ).arg( r1.toString() ), 2 );
+  QgsDebugMsgLevel( u"Grown visible extent: %1"_s.arg( r1.toString() ), 2 );
   extentGeom = QgsGeometry::fromRect( r1 );
-  QgsDebugMsgLevel( QStringLiteral( "Extent geom  %1" ).arg( extentGeom.asWkt() ), 2 );
+  QgsDebugMsgLevel( u"Extent geom  %1"_s.arg( extentGeom.asWkt() ), 2 );
 
   if ( !qgsDoubleNear( mapSettings.rotation(), 0.0 ) )
   {
     //PAL features are prerotated, so extent also needs to be unrotated
     extentGeom.rotate( -mapSettings.rotation(), mapSettings.visibleExtent().center() );
-    QgsDebugMsgLevel( QStringLiteral( "Rotated extent geom  %1" ).arg( extentGeom.asWkt() ), 2 );
+    QgsDebugMsgLevel( u"Rotated extent geom  %1"_s.arg( extentGeom.asWkt() ), 2 );
   }
 
   mFeatsSendingToPal = 0;
@@ -610,7 +616,7 @@ const QgsPropertiesDefinition &QgsPalLayerSettings::propertyDefinitions()
   return *sPropertyDefinitions();
 }
 
-QgsExpression *QgsPalLayerSettings::getLabelExpression()
+QgsExpression *QgsPalLayerSettings::getLabelExpression() const
 {
   if ( !expression )
   {
@@ -633,14 +639,14 @@ QString updateDataDefinedString( const QString &value )
 {
   // TODO: update or remove this when project settings for labeling are migrated to better XML layout
   QString newValue = value;
-  if ( !value.isEmpty() && !value.contains( QLatin1String( "~~" ) ) )
+  if ( !value.isEmpty() && !value.contains( "~~"_L1 ) )
   {
     QStringList values;
-    values << QStringLiteral( "1" ); // all old-style values are active if not empty
-    values << QStringLiteral( "0" );
+    values << u"1"_s; // all old-style values are active if not empty
+    values << u"0"_s;
     values << QString();
     values << value; // all old-style values are only field names
-    newValue = values.join( QLatin1String( "~~" ) );
+    newValue = values.join( "~~"_L1 );
   }
 
   return newValue;
@@ -656,11 +662,11 @@ void QgsPalLayerSettings::readOldDataDefinedProperty( QgsVectorLayer *layer, Qgs
 
   QString ddString = newPropertyField.toString();
 
-  if ( !ddString.isEmpty() && ddString != QLatin1String( "0~~0~~~~" ) )
+  if ( !ddString.isEmpty() && ddString != "0~~0~~~~"_L1 )
   {
     // TODO: update this when project settings for labeling are migrated to better XML layout
     QString newStyleString = updateDataDefinedString( ddString );
-    QStringList ddv = newStyleString.split( QStringLiteral( "~~" ) );
+    QStringList ddv = newStyleString.split( u"~~"_s );
 
     bool active = ddv.at( 0 ).toInt();
     if ( ddv.at( 1 ).toInt() )
@@ -700,15 +706,15 @@ void QgsPalLayerSettings::readOldDataDefinedPropertyMap( QgsVectorLayer *layer, 
       QDomElement e = parentElem->firstChildElement( i.value().name() );
       if ( !e.isNull() )
       {
-        bool active = e.attribute( QStringLiteral( "active" ) ).compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
-        bool isExpression = e.attribute( QStringLiteral( "useExpr" ) ).compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
+        bool active = e.attribute( u"active"_s ).compare( "true"_L1, Qt::CaseInsensitive ) == 0;
+        bool isExpression = e.attribute( u"useExpr"_s ).compare( "true"_L1, Qt::CaseInsensitive ) == 0;
         if ( isExpression )
         {
-          mDataDefinedProperties.setProperty( i.key(), QgsProperty::fromExpression( e.attribute( QStringLiteral( "expr" ) ), active ) );
+          mDataDefinedProperties.setProperty( i.key(), QgsProperty::fromExpression( e.attribute( u"expr"_s ), active ) );
         }
         else
         {
-          mDataDefinedProperties.setProperty( i.key(), QgsProperty::fromField( e.attribute( QStringLiteral( "field" ) ), active ) );
+          mDataDefinedProperties.setProperty( i.key(), QgsProperty::fromField( e.attribute( u"field"_s ), active ) );
         }
       }
     }
@@ -717,7 +723,7 @@ void QgsPalLayerSettings::readOldDataDefinedPropertyMap( QgsVectorLayer *layer, 
 
 void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
 {
-  if ( layer->customProperty( QStringLiteral( "labeling" ) ).toString() != QLatin1String( "pal" ) )
+  if ( layer->customProperty( u"labeling"_s ).toString() != "pal"_L1 )
   {
     if ( layer->geometryType() == Qgis::GeometryType::Point )
       placement = Qgis::LabelPlacement::OrderedPositionsAroundPoint;
@@ -732,103 +738,103 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
 
   // NOTE: set defaults for newly added properties, for backwards compatibility
 
-  drawLabels = layer->customProperty( QStringLiteral( "labeling/drawLabels" ), true ).toBool();
+  drawLabels = layer->customProperty( u"labeling/drawLabels"_s, true ).toBool();
 
   mFormat.readFromLayer( layer );
 
   // text style
-  fieldName = layer->customProperty( QStringLiteral( "labeling/fieldName" ) ).toString();
-  isExpression = layer->customProperty( QStringLiteral( "labeling/isExpression" ) ).toBool();
+  fieldName = layer->customProperty( u"labeling/fieldName"_s ).toString();
+  isExpression = layer->customProperty( u"labeling/isExpression"_s ).toBool();
   Q_NOWARN_DEPRECATED_PUSH
-  previewBkgrdColor = QColor( layer->customProperty( QStringLiteral( "labeling/previewBkgrdColor" ), QVariant( "#ffffff" ) ).toString() );
+  previewBkgrdColor = QColor( layer->customProperty( u"labeling/previewBkgrdColor"_s, QVariant( "#ffffff" ) ).toString() );
   Q_NOWARN_DEPRECATED_POP
-  QDomDocument doc( QStringLiteral( "substitutions" ) );
-  doc.setContent( layer->customProperty( QStringLiteral( "labeling/substitutions" ) ).toString() );
-  QDomElement replacementElem = doc.firstChildElement( QStringLiteral( "substitutions" ) );
+  QDomDocument doc( u"substitutions"_s );
+  doc.setContent( layer->customProperty( u"labeling/substitutions"_s ).toString() );
+  QDomElement replacementElem = doc.firstChildElement( u"substitutions"_s );
   substitutions.readXml( replacementElem );
-  useSubstitutions = layer->customProperty( QStringLiteral( "labeling/useSubstitutions" ) ).toBool();
+  useSubstitutions = layer->customProperty( u"labeling/useSubstitutions"_s ).toBool();
 
   // text formatting
-  wrapChar = layer->customProperty( QStringLiteral( "labeling/wrapChar" ) ).toString();
-  autoWrapLength = layer->customProperty( QStringLiteral( "labeling/autoWrapLength" ) ).toInt();
-  useMaxLineLengthForAutoWrap = layer->customProperty( QStringLiteral( "labeling/useMaxLineLengthForAutoWrap" ), QStringLiteral( "1" ) ).toBool();
+  wrapChar = layer->customProperty( u"labeling/wrapChar"_s ).toString();
+  autoWrapLength = layer->customProperty( u"labeling/autoWrapLength"_s ).toInt();
+  useMaxLineLengthForAutoWrap = layer->customProperty( u"labeling/useMaxLineLengthForAutoWrap"_s, u"1"_s ).toBool();
 
-  multilineAlign = static_cast< Qgis::LabelMultiLineAlignment >( layer->customProperty( QStringLiteral( "labeling/multilineAlign" ), QVariant( static_cast< int >( Qgis::LabelMultiLineAlignment::FollowPlacement ) ) ).toUInt() );
-  mLineSettings.setAddDirectionSymbol( layer->customProperty( QStringLiteral( "labeling/addDirectionSymbol" ) ).toBool() );
-  mLineSettings.setLeftDirectionSymbol( layer->customProperty( QStringLiteral( "labeling/leftDirectionSymbol" ), QVariant( "<" ) ).toString() );
-  mLineSettings.setRightDirectionSymbol( layer->customProperty( QStringLiteral( "labeling/rightDirectionSymbol" ), QVariant( ">" ) ).toString() );
-  mLineSettings.setReverseDirectionSymbol( layer->customProperty( QStringLiteral( "labeling/reverseDirectionSymbol" ) ).toBool() );
-  mLineSettings.setDirectionSymbolPlacement( static_cast< QgsLabelLineSettings::DirectionSymbolPlacement >( layer->customProperty( QStringLiteral( "labeling/placeDirectionSymbol" ), QVariant( static_cast< int >( QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight ) ) ).toUInt() ) );
-  formatNumbers = layer->customProperty( QStringLiteral( "labeling/formatNumbers" ) ).toBool();
-  decimals = layer->customProperty( QStringLiteral( "labeling/decimals" ) ).toInt();
-  plusSign = layer->customProperty( QStringLiteral( "labeling/plussign" ) ).toBool();
+  multilineAlign = static_cast< Qgis::LabelMultiLineAlignment >( layer->customProperty( u"labeling/multilineAlign"_s, QVariant( static_cast< int >( Qgis::LabelMultiLineAlignment::FollowPlacement ) ) ).toUInt() );
+  mLineSettings.setAddDirectionSymbol( layer->customProperty( u"labeling/addDirectionSymbol"_s ).toBool() );
+  mLineSettings.setLeftDirectionSymbol( layer->customProperty( u"labeling/leftDirectionSymbol"_s, QVariant( "<" ) ).toString() );
+  mLineSettings.setRightDirectionSymbol( layer->customProperty( u"labeling/rightDirectionSymbol"_s, QVariant( ">" ) ).toString() );
+  mLineSettings.setReverseDirectionSymbol( layer->customProperty( u"labeling/reverseDirectionSymbol"_s ).toBool() );
+  mLineSettings.setDirectionSymbolPlacement( static_cast< QgsLabelLineSettings::DirectionSymbolPlacement >( layer->customProperty( u"labeling/placeDirectionSymbol"_s, QVariant( static_cast< int >( QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight ) ) ).toUInt() ) );
+  formatNumbers = layer->customProperty( u"labeling/formatNumbers"_s ).toBool();
+  decimals = layer->customProperty( u"labeling/decimals"_s ).toInt();
+  plusSign = layer->customProperty( u"labeling/plussign"_s ).toBool();
 
   // placement
-  placement = static_cast< Qgis::LabelPlacement >( layer->customProperty( QStringLiteral( "labeling/placement" ) ).toInt() );
-  mLineSettings.setPlacementFlags( static_cast< Qgis::LabelLinePlacementFlags >( layer->customProperty( QStringLiteral( "labeling/placementFlags" ) ).toUInt() ) );
-  centroidWhole = layer->customProperty( QStringLiteral( "labeling/centroidWhole" ), QVariant( false ) ).toBool();
-  centroidInside = layer->customProperty( QStringLiteral( "labeling/centroidInside" ), QVariant( false ) ).toBool();
+  placement = static_cast< Qgis::LabelPlacement >( layer->customProperty( u"labeling/placement"_s ).toInt() );
+  mLineSettings.setPlacementFlags( static_cast< Qgis::LabelLinePlacementFlags >( layer->customProperty( u"labeling/placementFlags"_s ).toUInt() ) );
+  centroidWhole = layer->customProperty( u"labeling/centroidWhole"_s, QVariant( false ) ).toBool();
+  centroidInside = layer->customProperty( u"labeling/centroidInside"_s, QVariant( false ) ).toBool();
 
-  QVector<Qgis::LabelPredefinedPointPosition> predefinedPositionOrder = QgsLabelingUtils::decodePredefinedPositionOrder( layer->customProperty( QStringLiteral( "labeling/predefinedPositionOrder" ) ).toString() );
+  QVector<Qgis::LabelPredefinedPointPosition> predefinedPositionOrder = QgsLabelingUtils::decodePredefinedPositionOrder( layer->customProperty( u"labeling/predefinedPositionOrder"_s ).toString() );
   if ( predefinedPositionOrder.isEmpty() )
     predefinedPositionOrder = *DEFAULT_PLACEMENT_ORDER();
   mPointSettings.setPredefinedPositionOrder( predefinedPositionOrder );
 
-  fitInPolygonOnly = layer->customProperty( QStringLiteral( "labeling/fitInPolygonOnly" ), QVariant( false ) ).toBool();
-  dist = layer->customProperty( QStringLiteral( "labeling/dist" ) ).toDouble();
-  distUnits = layer->customProperty( QStringLiteral( "labeling/distInMapUnits" ) ).toBool() ? Qgis::RenderUnit::MapUnits : Qgis::RenderUnit::Millimeters;
-  if ( layer->customProperty( QStringLiteral( "labeling/distMapUnitScale" ) ).toString().isEmpty() )
+  fitInPolygonOnly = layer->customProperty( u"labeling/fitInPolygonOnly"_s, QVariant( false ) ).toBool();
+  dist = layer->customProperty( u"labeling/dist"_s ).toDouble();
+  distUnits = layer->customProperty( u"labeling/distInMapUnits"_s ).toBool() ? Qgis::RenderUnit::MapUnits : Qgis::RenderUnit::Millimeters;
+  if ( layer->customProperty( u"labeling/distMapUnitScale"_s ).toString().isEmpty() )
   {
     //fallback to older property
-    double oldMin = layer->customProperty( QStringLiteral( "labeling/distMapUnitMinScale" ), 0.0 ).toDouble();
+    double oldMin = layer->customProperty( u"labeling/distMapUnitMinScale"_s, 0.0 ).toDouble();
     distMapUnitScale.minScale = !qgsDoubleNear( oldMin, 0.0 ) ? 1.0 / oldMin : 0;
-    double oldMax = layer->customProperty( QStringLiteral( "labeling/distMapUnitMaxScale" ), 0.0 ).toDouble();
+    double oldMax = layer->customProperty( u"labeling/distMapUnitMaxScale"_s, 0.0 ).toDouble();
     distMapUnitScale.maxScale = !qgsDoubleNear( oldMax, 0.0 ) ? 1.0 / oldMax : 0;
   }
   else
   {
-    distMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( QStringLiteral( "labeling/distMapUnitScale" ) ).toString() );
+    distMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( u"labeling/distMapUnitScale"_s ).toString() );
   }
-  offsetType = static_cast< Qgis::LabelOffsetType >( layer->customProperty( QStringLiteral( "labeling/offsetType" ), QVariant( static_cast< int >( Qgis::LabelOffsetType::FromPoint ) ) ).toUInt() );
-  mPointSettings.setQuadrant( static_cast< Qgis::LabelQuadrantPosition >( layer->customProperty( QStringLiteral( "labeling/quadOffset" ), QVariant( static_cast< int >( Qgis::LabelQuadrantPosition::Over ) ) ).toUInt() ) );
-  xOffset = layer->customProperty( QStringLiteral( "labeling/xOffset" ), QVariant( 0.0 ) ).toDouble();
-  yOffset = layer->customProperty( QStringLiteral( "labeling/yOffset" ), QVariant( 0.0 ) ).toDouble();
-  if ( layer->customProperty( QStringLiteral( "labeling/labelOffsetInMapUnits" ), QVariant( true ) ).toBool() )
+  offsetType = static_cast< Qgis::LabelOffsetType >( layer->customProperty( u"labeling/offsetType"_s, QVariant( static_cast< int >( Qgis::LabelOffsetType::FromPoint ) ) ).toUInt() );
+  mPointSettings.setQuadrant( static_cast< Qgis::LabelQuadrantPosition >( layer->customProperty( u"labeling/quadOffset"_s, QVariant( static_cast< int >( Qgis::LabelQuadrantPosition::Over ) ) ).toUInt() ) );
+  xOffset = layer->customProperty( u"labeling/xOffset"_s, QVariant( 0.0 ) ).toDouble();
+  yOffset = layer->customProperty( u"labeling/yOffset"_s, QVariant( 0.0 ) ).toDouble();
+  if ( layer->customProperty( u"labeling/labelOffsetInMapUnits"_s, QVariant( true ) ).toBool() )
     offsetUnits = Qgis::RenderUnit::MapUnits;
   else
     offsetUnits = Qgis::RenderUnit::Millimeters;
 
-  if ( layer->customProperty( QStringLiteral( "labeling/labelOffsetMapUnitScale" ) ).toString().isEmpty() )
+  if ( layer->customProperty( u"labeling/labelOffsetMapUnitScale"_s ).toString().isEmpty() )
   {
     //fallback to older property
-    double oldMin = layer->customProperty( QStringLiteral( "labeling/labelOffsetMapUnitMinScale" ), 0.0 ).toDouble();
+    double oldMin = layer->customProperty( u"labeling/labelOffsetMapUnitMinScale"_s, 0.0 ).toDouble();
     labelOffsetMapUnitScale.minScale = !qgsDoubleNear( oldMin, 0.0 ) ? 1.0 / oldMin : 0;
-    double oldMax = layer->customProperty( QStringLiteral( "labeling/labelOffsetMapUnitMaxScale" ), 0.0 ).toDouble();
+    double oldMax = layer->customProperty( u"labeling/labelOffsetMapUnitMaxScale"_s, 0.0 ).toDouble();
     labelOffsetMapUnitScale.maxScale = !qgsDoubleNear( oldMax, 0 ) ? 1.0 / oldMax : 0;
   }
   else
   {
-    labelOffsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( QStringLiteral( "labeling/labelOffsetMapUnitScale" ) ).toString() );
+    labelOffsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( u"labeling/labelOffsetMapUnitScale"_s ).toString() );
   }
 
-  QVariant tempAngle = layer->customProperty( QStringLiteral( "labeling/angleOffset" ), QVariant() );
+  QVariant tempAngle = layer->customProperty( u"labeling/angleOffset"_s, QVariant() );
   if ( tempAngle.isValid() )
   {
-    double oldAngle = layer->customProperty( QStringLiteral( "labeling/angleOffset" ), QVariant( 0.0 ) ).toDouble();
+    double oldAngle = layer->customProperty( u"labeling/angleOffset"_s, QVariant( 0.0 ) ).toDouble();
     angleOffset = std::fmod( 360 - oldAngle, 360.0 );
   }
   else
   {
-    angleOffset = layer->customProperty( QStringLiteral( "labeling/rotationAngle" ), QVariant( 0.0 ) ).toDouble();
+    angleOffset = layer->customProperty( u"labeling/rotationAngle"_s, QVariant( 0.0 ) ).toDouble();
   }
 
-  preserveRotation = layer->customProperty( QStringLiteral( "labeling/preserveRotation" ), QVariant( true ) ).toBool();
-  mRotationUnit = layer->customEnumProperty( QStringLiteral( "labeling/rotationUnit" ), Qgis::AngleUnit::Degrees );
-  maxCurvedCharAngleIn = layer->customProperty( QStringLiteral( "labeling/maxCurvedCharAngleIn" ), QVariant( 25.0 ) ).toDouble();
-  maxCurvedCharAngleOut = layer->customProperty( QStringLiteral( "labeling/maxCurvedCharAngleOut" ), QVariant( -25.0 ) ).toDouble();
-  priority = layer->customProperty( QStringLiteral( "labeling/priority" ) ).toInt();
-  repeatDistance = layer->customProperty( QStringLiteral( "labeling/repeatDistance" ), 0.0 ).toDouble();
-  switch ( layer->customProperty( QStringLiteral( "labeling/repeatDistanceUnit" ), QVariant( 1 ) ).toUInt() )
+  preserveRotation = layer->customProperty( u"labeling/preserveRotation"_s, QVariant( true ) ).toBool();
+  mRotationUnit = layer->customEnumProperty( u"labeling/rotationUnit"_s, Qgis::AngleUnit::Degrees );
+  maxCurvedCharAngleIn = layer->customProperty( u"labeling/maxCurvedCharAngleIn"_s, QVariant( 25.0 ) ).toDouble();
+  maxCurvedCharAngleOut = layer->customProperty( u"labeling/maxCurvedCharAngleOut"_s, QVariant( -25.0 ) ).toDouble();
+  priority = layer->customProperty( u"labeling/priority"_s ).toInt();
+  repeatDistance = layer->customProperty( u"labeling/repeatDistance"_s, 0.0 ).toDouble();
+  switch ( layer->customProperty( u"labeling/repeatDistanceUnit"_s, QVariant( 1 ) ).toUInt() )
   {
     case 0:
       repeatDistanceUnit = Qgis::RenderUnit::Points;
@@ -843,25 +849,25 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
       repeatDistanceUnit = Qgis::RenderUnit::Percentage;
       break;
   }
-  if ( layer->customProperty( QStringLiteral( "labeling/repeatDistanceMapUnitScale" ) ).toString().isEmpty() )
+  if ( layer->customProperty( u"labeling/repeatDistanceMapUnitScale"_s ).toString().isEmpty() )
   {
     //fallback to older property
-    double oldMin = layer->customProperty( QStringLiteral( "labeling/repeatDistanceMapUnitMinScale" ), 0.0 ).toDouble();
+    double oldMin = layer->customProperty( u"labeling/repeatDistanceMapUnitMinScale"_s, 0.0 ).toDouble();
     repeatDistanceMapUnitScale.minScale = !qgsDoubleNear( oldMin, 0 ) ? 1.0 / oldMin : 0;
-    double oldMax = layer->customProperty( QStringLiteral( "labeling/repeatDistanceMapUnitMaxScale" ), 0.0 ).toDouble();
+    double oldMax = layer->customProperty( u"labeling/repeatDistanceMapUnitMaxScale"_s, 0.0 ).toDouble();
     repeatDistanceMapUnitScale.maxScale = !qgsDoubleNear( oldMax, 0 ) ? 1.0 / oldMax : 0;
   }
   else
   {
-    repeatDistanceMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( QStringLiteral( "labeling/repeatDistanceMapUnitScale" ) ).toString() );
+    repeatDistanceMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( u"labeling/repeatDistanceMapUnitScale"_s ).toString() );
   }
 
   // rendering
-  double scalemn = layer->customProperty( QStringLiteral( "labeling/scaleMin" ), QVariant( 0 ) ).toDouble();
-  double scalemx = layer->customProperty( QStringLiteral( "labeling/scaleMax" ), QVariant( 0 ) ).toDouble();
+  double scalemn = layer->customProperty( u"labeling/scaleMin"_s, QVariant( 0 ) ).toDouble();
+  double scalemx = layer->customProperty( u"labeling/scaleMax"_s, QVariant( 0 ) ).toDouble();
 
   // fix for scale visibility limits being keyed off of just its values in the past (<2.0)
-  QVariant scalevis = layer->customProperty( QStringLiteral( "labeling/scaleVisibility" ), QVariant() );
+  QVariant scalevis = layer->customProperty( u"labeling/scaleVisibility"_s, QVariant() );
   if ( scalevis.isValid() )
   {
     scaleVisibility = scalevis.toBool();
@@ -881,10 +887,10 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   }
 
 
-  fontLimitPixelSize = layer->customProperty( QStringLiteral( "labeling/fontLimitPixelSize" ), QVariant( false ) ).toBool();
-  fontMinPixelSize = layer->customProperty( QStringLiteral( "labeling/fontMinPixelSize" ), QVariant( 0 ) ).toInt();
-  fontMaxPixelSize = layer->customProperty( QStringLiteral( "labeling/fontMaxPixelSize" ), QVariant( 10000 ) ).toInt();
-  if ( layer->customProperty( QStringLiteral( "labeling/displayAll" ), QVariant( false ) ).toBool() )
+  fontLimitPixelSize = layer->customProperty( u"labeling/fontLimitPixelSize"_s, QVariant( false ) ).toBool();
+  fontMinPixelSize = layer->customProperty( u"labeling/fontMinPixelSize"_s, QVariant( 0 ) ).toInt();
+  fontMaxPixelSize = layer->customProperty( u"labeling/fontMaxPixelSize"_s, QVariant( 10000 ) ).toInt();
+  if ( layer->customProperty( u"labeling/displayAll"_s, QVariant( false ) ).toBool() )
   {
     mPlacementSettings.setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
     mPlacementSettings.setAllowDegradedPlacement( true );
@@ -894,24 +900,23 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
     mPlacementSettings.setOverlapHandling( Qgis::LabelOverlapHandling::PreventOverlap );
     mPlacementSettings.setAllowDegradedPlacement( false );
   }
-  upsidedownLabels = static_cast< Qgis::UpsideDownLabelHandling >( layer->customProperty( QStringLiteral( "labeling/upsidedownLabels" ), QVariant( static_cast< int >( Qgis::UpsideDownLabelHandling::FlipUpsideDownLabels ) ) ).toUInt() );
+  upsidedownLabels = static_cast< Qgis::UpsideDownLabelHandling >( layer->customProperty( u"labeling/upsidedownLabels"_s, QVariant( static_cast< int >( Qgis::UpsideDownLabelHandling::FlipUpsideDownLabels ) ) ).toUInt() );
 
-  labelPerPart = layer->customProperty( QStringLiteral( "labeling/labelPerPart" ) ).toBool();
-  mLineSettings.setMergeLines( layer->customProperty( QStringLiteral( "labeling/mergeLines" ) ).toBool() );
-  mThinningSettings.setMinimumFeatureSize( layer->customProperty( QStringLiteral( "labeling/minFeatureSize" ) ).toDouble() );
-  mThinningSettings.setLimitNumberLabelsEnabled( layer->customProperty( QStringLiteral( "labeling/limitNumLabels" ), QVariant( false ) ).toBool() );
-  mThinningSettings.setMaximumNumberLabels( layer->customProperty( QStringLiteral( "labeling/maxNumLabels" ), QVariant( 2000 ) ).toInt() );
-  mObstacleSettings.setIsObstacle( layer->customProperty( QStringLiteral( "labeling/obstacle" ), QVariant( true ) ).toBool() );
-  mObstacleSettings.setFactor( layer->customProperty( QStringLiteral( "labeling/obstacleFactor" ), QVariant( 1.0 ) ).toDouble() );
-  mObstacleSettings.setType( static_cast< QgsLabelObstacleSettings::ObstacleType >( layer->customProperty( QStringLiteral( "labeling/obstacleType" ), QVariant( static_cast< int >( QgsLabelObstacleSettings::ObstacleType::PolygonInterior ) ) ).toUInt() ) );
-  zIndex = layer->customProperty( QStringLiteral( "labeling/zIndex" ), QVariant( 0.0 ) ).toDouble();
+  mLineSettings.setMergeLines( layer->customProperty( u"labeling/mergeLines"_s ).toBool() );
+  mThinningSettings.setMinimumFeatureSize( layer->customProperty( u"labeling/minFeatureSize"_s ).toDouble() );
+  mThinningSettings.setLimitNumberLabelsEnabled( layer->customProperty( u"labeling/limitNumLabels"_s, QVariant( false ) ).toBool() );
+  mThinningSettings.setMaximumNumberLabels( layer->customProperty( u"labeling/maxNumLabels"_s, QVariant( 2000 ) ).toInt() );
+  mObstacleSettings.setIsObstacle( layer->customProperty( u"labeling/obstacle"_s, QVariant( true ) ).toBool() );
+  mObstacleSettings.setFactor( layer->customProperty( u"labeling/obstacleFactor"_s, QVariant( 1.0 ) ).toDouble() );
+  mObstacleSettings.setType( static_cast< QgsLabelObstacleSettings::ObstacleType >( layer->customProperty( u"labeling/obstacleType"_s, QVariant( static_cast< int >( QgsLabelObstacleSettings::ObstacleType::PolygonInterior ) ) ).toUInt() ) );
+  zIndex = layer->customProperty( u"labeling/zIndex"_s, QVariant( 0.0 ) ).toDouble();
 
   mDataDefinedProperties.clear();
-  if ( layer->customProperty( QStringLiteral( "labeling/ddProperties" ) ).isValid() )
+  if ( layer->customProperty( u"labeling/ddProperties"_s ).isValid() )
   {
-    QDomDocument doc( QStringLiteral( "dd" ) );
-    doc.setContent( layer->customProperty( QStringLiteral( "labeling/ddProperties" ) ).toString() );
-    QDomElement elem = doc.firstChildElement( QStringLiteral( "properties" ) );
+    QDomDocument doc( u"dd"_s );
+    doc.setContent( layer->customProperty( u"labeling/ddProperties"_s ).toString() );
+    QDomElement elem = doc.firstChildElement( u"properties"_s );
     mDataDefinedProperties.readXml( elem, *sPropertyDefinitions() );
   }
   else
@@ -922,27 +927,27 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   // upgrade older data defined settings
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::FontTransp ) )
   {
-    mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::FontOpacity, QgsProperty::fromExpression( QStringLiteral( "100 - (%1)" ).arg( mDataDefinedProperties.property( QgsPalLayerSettings::Property::FontTransp ).asExpression() ) ) );
+    mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::FontOpacity, QgsProperty::fromExpression( u"100 - (%1)"_s.arg( mDataDefinedProperties.property( QgsPalLayerSettings::Property::FontTransp ).asExpression() ) ) );
     mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::FontTransp, QgsProperty() );
   }
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::BufferTransp ) )
   {
-    mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::BufferOpacity, QgsProperty::fromExpression( QStringLiteral( "100 - (%1)" ).arg( mDataDefinedProperties.property( QgsPalLayerSettings::Property::BufferTransp ).asExpression() ) ) );
+    mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::BufferOpacity, QgsProperty::fromExpression( u"100 - (%1)"_s.arg( mDataDefinedProperties.property( QgsPalLayerSettings::Property::BufferTransp ).asExpression() ) ) );
     mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::BufferTransp, QgsProperty() );
   }
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::ShapeTransparency ) )
   {
-    mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::ShapeOpacity, QgsProperty::fromExpression( QStringLiteral( "100 - (%1)" ).arg( mDataDefinedProperties.property( QgsPalLayerSettings::Property::ShapeTransparency ).asExpression() ) ) );
+    mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::ShapeOpacity, QgsProperty::fromExpression( u"100 - (%1)"_s.arg( mDataDefinedProperties.property( QgsPalLayerSettings::Property::ShapeTransparency ).asExpression() ) ) );
     mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::ShapeTransparency, QgsProperty() );
   }
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::ShadowTransparency ) )
   {
-    mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::ShadowOpacity, QgsProperty::fromExpression( QStringLiteral( "100 - (%1)" ).arg( mDataDefinedProperties.property( QgsPalLayerSettings::Property::ShadowTransparency ).asExpression() ) ) );
+    mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::ShadowOpacity, QgsProperty::fromExpression( u"100 - (%1)"_s.arg( mDataDefinedProperties.property( QgsPalLayerSettings::Property::ShadowTransparency ).asExpression() ) ) );
     mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::ShadowTransparency, QgsProperty() );
   }
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::Rotation ) )
   {
-    mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromExpression( QStringLiteral( "360 - (%1)" ).arg( mDataDefinedProperties.property( QgsPalLayerSettings::Property::Rotation ).asExpression() ) ) );
+    mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromExpression( u"360 - (%1)"_s.arg( mDataDefinedProperties.property( QgsPalLayerSettings::Property::Rotation ).asExpression() ) ) );
     mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::Rotation, QgsProperty() );
   }
   // older 2.x projects had min/max scale flipped - so change them here.
@@ -961,111 +966,111 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
 void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   // text style
-  QDomElement textStyleElem = elem.firstChildElement( QStringLiteral( "text-style" ) );
-  fieldName = textStyleElem.attribute( QStringLiteral( "fieldName" ) );
-  isExpression = textStyleElem.attribute( QStringLiteral( "isExpression" ) ).toInt();
+  QDomElement textStyleElem = elem.firstChildElement( u"text-style"_s );
+  fieldName = textStyleElem.attribute( u"fieldName"_s );
+  isExpression = textStyleElem.attribute( u"isExpression"_s ).toInt();
 
   mFormat.readXml( elem, context );
   Q_NOWARN_DEPRECATED_PUSH
-  previewBkgrdColor = QColor( textStyleElem.attribute( QStringLiteral( "previewBkgrdColor" ), QStringLiteral( "#ffffff" ) ) );
+  previewBkgrdColor = QColor( textStyleElem.attribute( u"previewBkgrdColor"_s, u"#ffffff"_s ) );
   Q_NOWARN_DEPRECATED_POP
-  substitutions.readXml( textStyleElem.firstChildElement( QStringLiteral( "substitutions" ) ) );
-  useSubstitutions = textStyleElem.attribute( QStringLiteral( "useSubstitutions" ) ).toInt();
-  mLegendString = textStyleElem.attribute( QStringLiteral( "legendString" ), QObject::tr( "Aa" ) );
+  substitutions.readXml( textStyleElem.firstChildElement( u"substitutions"_s ) );
+  useSubstitutions = textStyleElem.attribute( u"useSubstitutions"_s ).toInt();
+  mLegendString = textStyleElem.attribute( u"legendString"_s, QObject::tr( "Aa" ) );
 
   // text formatting
-  QDomElement textFormatElem = elem.firstChildElement( QStringLiteral( "text-format" ) );
-  wrapChar = textFormatElem.attribute( QStringLiteral( "wrapChar" ) );
-  autoWrapLength = textFormatElem.attribute( QStringLiteral( "autoWrapLength" ), QStringLiteral( "0" ) ).toInt();
-  useMaxLineLengthForAutoWrap = textFormatElem.attribute( QStringLiteral( "useMaxLineLengthForAutoWrap" ), QStringLiteral( "1" ) ).toInt();
-  multilineAlign = static_cast< Qgis::LabelMultiLineAlignment >( textFormatElem.attribute( QStringLiteral( "multilineAlign" ), QString::number( static_cast< int >( Qgis::LabelMultiLineAlignment::FollowPlacement ) ) ).toUInt() );
-  mLineSettings.setAddDirectionSymbol( textFormatElem.attribute( QStringLiteral( "addDirectionSymbol" ) ).toInt() );
-  mLineSettings.setLeftDirectionSymbol( textFormatElem.attribute( QStringLiteral( "leftDirectionSymbol" ), QStringLiteral( "<" ) ) );
-  mLineSettings.setRightDirectionSymbol( textFormatElem.attribute( QStringLiteral( "rightDirectionSymbol" ), QStringLiteral( ">" ) ) );
-  mLineSettings.setReverseDirectionSymbol( textFormatElem.attribute( QStringLiteral( "reverseDirectionSymbol" ) ).toInt() );
-  mLineSettings.setDirectionSymbolPlacement( static_cast< QgsLabelLineSettings::DirectionSymbolPlacement >( textFormatElem.attribute( QStringLiteral( "placeDirectionSymbol" ), QString::number( static_cast< int >( QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight ) ) ).toUInt() ) );
-  formatNumbers = textFormatElem.attribute( QStringLiteral( "formatNumbers" ) ).toInt();
-  decimals = textFormatElem.attribute( QStringLiteral( "decimals" ) ).toInt();
-  plusSign = textFormatElem.attribute( QStringLiteral( "plussign" ) ).toInt();
+  QDomElement textFormatElem = elem.firstChildElement( u"text-format"_s );
+  wrapChar = textFormatElem.attribute( u"wrapChar"_s );
+  autoWrapLength = textFormatElem.attribute( u"autoWrapLength"_s, u"0"_s ).toInt();
+  useMaxLineLengthForAutoWrap = textFormatElem.attribute( u"useMaxLineLengthForAutoWrap"_s, u"1"_s ).toInt();
+  multilineAlign = static_cast< Qgis::LabelMultiLineAlignment >( textFormatElem.attribute( u"multilineAlign"_s, QString::number( static_cast< int >( Qgis::LabelMultiLineAlignment::FollowPlacement ) ) ).toUInt() );
+  mLineSettings.setAddDirectionSymbol( textFormatElem.attribute( u"addDirectionSymbol"_s ).toInt() );
+  mLineSettings.setLeftDirectionSymbol( textFormatElem.attribute( u"leftDirectionSymbol"_s, u"<"_s ) );
+  mLineSettings.setRightDirectionSymbol( textFormatElem.attribute( u"rightDirectionSymbol"_s, u">"_s ) );
+  mLineSettings.setReverseDirectionSymbol( textFormatElem.attribute( u"reverseDirectionSymbol"_s ).toInt() );
+  mLineSettings.setDirectionSymbolPlacement( static_cast< QgsLabelLineSettings::DirectionSymbolPlacement >( textFormatElem.attribute( u"placeDirectionSymbol"_s, QString::number( static_cast< int >( QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight ) ) ).toUInt() ) );
+  formatNumbers = textFormatElem.attribute( u"formatNumbers"_s ).toInt();
+  decimals = textFormatElem.attribute( u"decimals"_s ).toInt();
+  plusSign = textFormatElem.attribute( u"plussign"_s ).toInt();
 
   // placement
-  QDomElement placementElem = elem.firstChildElement( QStringLiteral( "placement" ) );
-  placement = static_cast< Qgis::LabelPlacement >( placementElem.attribute( QStringLiteral( "placement" ) ).toInt() );
-  mLineSettings.setPlacementFlags( static_cast< Qgis::LabelLinePlacementFlags >( placementElem.attribute( QStringLiteral( "placementFlags" ) ).toUInt() ) );
-  mPolygonPlacementFlags = static_cast< Qgis::LabelPolygonPlacementFlags >( placementElem.attribute( QStringLiteral( "polygonPlacementFlags" ), QString::number( static_cast< int >( Qgis::LabelPolygonPlacementFlag::AllowPlacementInsideOfPolygon ) ) ).toInt() );
+  QDomElement placementElem = elem.firstChildElement( u"placement"_s );
+  placement = static_cast< Qgis::LabelPlacement >( placementElem.attribute( u"placement"_s ).toInt() );
+  mLineSettings.setPlacementFlags( static_cast< Qgis::LabelLinePlacementFlags >( placementElem.attribute( u"placementFlags"_s ).toUInt() ) );
+  mPolygonPlacementFlags = static_cast< Qgis::LabelPolygonPlacementFlags >( placementElem.attribute( u"polygonPlacementFlags"_s, QString::number( static_cast< int >( Qgis::LabelPolygonPlacementFlag::AllowPlacementInsideOfPolygon ) ) ).toInt() );
 
-  centroidWhole = placementElem.attribute( QStringLiteral( "centroidWhole" ), QStringLiteral( "0" ) ).toInt();
-  centroidInside = placementElem.attribute( QStringLiteral( "centroidInside" ), QStringLiteral( "0" ) ).toInt();
+  centroidWhole = placementElem.attribute( u"centroidWhole"_s, u"0"_s ).toInt();
+  centroidInside = placementElem.attribute( u"centroidInside"_s, u"0"_s ).toInt();
 
-  QVector<Qgis::LabelPredefinedPointPosition>  predefinedPositionOrder = QgsLabelingUtils::decodePredefinedPositionOrder( placementElem.attribute( QStringLiteral( "predefinedPositionOrder" ) ) );
+  QVector<Qgis::LabelPredefinedPointPosition>  predefinedPositionOrder = QgsLabelingUtils::decodePredefinedPositionOrder( placementElem.attribute( u"predefinedPositionOrder"_s ) );
   if ( predefinedPositionOrder.isEmpty() )
     predefinedPositionOrder = *DEFAULT_PLACEMENT_ORDER();
   mPointSettings.setPredefinedPositionOrder( predefinedPositionOrder );
 
-  fitInPolygonOnly = placementElem.attribute( QStringLiteral( "fitInPolygonOnly" ), QStringLiteral( "0" ) ).toInt();
-  dist = placementElem.attribute( QStringLiteral( "dist" ) ).toDouble();
-  if ( !placementElem.hasAttribute( QStringLiteral( "distUnits" ) ) )
+  fitInPolygonOnly = placementElem.attribute( u"fitInPolygonOnly"_s, u"0"_s ).toInt();
+  dist = placementElem.attribute( u"dist"_s ).toDouble();
+  if ( !placementElem.hasAttribute( u"distUnits"_s ) )
   {
-    if ( placementElem.attribute( QStringLiteral( "distInMapUnits" ) ).toInt() )
+    if ( placementElem.attribute( u"distInMapUnits"_s ).toInt() )
       distUnits = Qgis::RenderUnit::MapUnits;
     else
       distUnits = Qgis::RenderUnit::Millimeters;
   }
   else
   {
-    distUnits = QgsUnitTypes::decodeRenderUnit( placementElem.attribute( QStringLiteral( "distUnits" ) ) );
+    distUnits = QgsUnitTypes::decodeRenderUnit( placementElem.attribute( u"distUnits"_s ) );
   }
-  if ( !placementElem.hasAttribute( QStringLiteral( "distMapUnitScale" ) ) )
+  if ( !placementElem.hasAttribute( u"distMapUnitScale"_s ) )
   {
     //fallback to older property
-    double oldMin = placementElem.attribute( QStringLiteral( "distMapUnitMinScale" ), QStringLiteral( "0" ) ).toDouble();
+    double oldMin = placementElem.attribute( u"distMapUnitMinScale"_s, u"0"_s ).toDouble();
     distMapUnitScale.minScale = !qgsDoubleNear( oldMin, 0 ) ? 1.0 / oldMin : 0;
-    double oldMax = placementElem.attribute( QStringLiteral( "distMapUnitMaxScale" ), QStringLiteral( "0" ) ).toDouble();
+    double oldMax = placementElem.attribute( u"distMapUnitMaxScale"_s, u"0"_s ).toDouble();
     distMapUnitScale.maxScale = !qgsDoubleNear( oldMax, 0 ) ? 1.0 / oldMax : 0;
   }
   else
   {
-    distMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( placementElem.attribute( QStringLiteral( "distMapUnitScale" ) ) );
+    distMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( placementElem.attribute( u"distMapUnitScale"_s ) );
   }
-  offsetType = static_cast< Qgis::LabelOffsetType >( placementElem.attribute( QStringLiteral( "offsetType" ), QString::number( static_cast< int >( Qgis::LabelOffsetType::FromPoint ) ) ).toUInt() );
-  mPointSettings.setQuadrant( static_cast< Qgis::LabelQuadrantPosition >( placementElem.attribute( QStringLiteral( "quadOffset" ), QString::number( static_cast< int >( Qgis::LabelQuadrantPosition::Over ) ) ).toUInt() ) );
-  xOffset = placementElem.attribute( QStringLiteral( "xOffset" ), QStringLiteral( "0" ) ).toDouble();
-  yOffset = placementElem.attribute( QStringLiteral( "yOffset" ), QStringLiteral( "0" ) ).toDouble();
-  if ( !placementElem.hasAttribute( QStringLiteral( "offsetUnits" ) ) )
+  offsetType = static_cast< Qgis::LabelOffsetType >( placementElem.attribute( u"offsetType"_s, QString::number( static_cast< int >( Qgis::LabelOffsetType::FromPoint ) ) ).toUInt() );
+  mPointSettings.setQuadrant( static_cast< Qgis::LabelQuadrantPosition >( placementElem.attribute( u"quadOffset"_s, QString::number( static_cast< int >( Qgis::LabelQuadrantPosition::Over ) ) ).toUInt() ) );
+  xOffset = placementElem.attribute( u"xOffset"_s, u"0"_s ).toDouble();
+  yOffset = placementElem.attribute( u"yOffset"_s, u"0"_s ).toDouble();
+  if ( !placementElem.hasAttribute( u"offsetUnits"_s ) )
   {
-    offsetUnits = placementElem.attribute( QStringLiteral( "labelOffsetInMapUnits" ), QStringLiteral( "1" ) ).toInt() ? Qgis::RenderUnit::MapUnits : Qgis::RenderUnit::Millimeters;
+    offsetUnits = placementElem.attribute( u"labelOffsetInMapUnits"_s, u"1"_s ).toInt() ? Qgis::RenderUnit::MapUnits : Qgis::RenderUnit::Millimeters;
   }
   else
   {
-    offsetUnits = QgsUnitTypes::decodeRenderUnit( placementElem.attribute( QStringLiteral( "offsetUnits" ) ) );
+    offsetUnits = QgsUnitTypes::decodeRenderUnit( placementElem.attribute( u"offsetUnits"_s ) );
   }
-  if ( !placementElem.hasAttribute( QStringLiteral( "labelOffsetMapUnitScale" ) ) )
+  if ( !placementElem.hasAttribute( u"labelOffsetMapUnitScale"_s ) )
   {
     //fallback to older property
-    double oldMin = placementElem.attribute( QStringLiteral( "labelOffsetMapUnitMinScale" ), QStringLiteral( "0" ) ).toDouble();
+    double oldMin = placementElem.attribute( u"labelOffsetMapUnitMinScale"_s, u"0"_s ).toDouble();
     labelOffsetMapUnitScale.minScale = !qgsDoubleNear( oldMin, 0.0 ) ? 1.0 / oldMin : 0;
-    double oldMax = placementElem.attribute( QStringLiteral( "labelOffsetMapUnitMaxScale" ), QStringLiteral( "0" ) ).toDouble();
+    double oldMax = placementElem.attribute( u"labelOffsetMapUnitMaxScale"_s, u"0"_s ).toDouble();
     labelOffsetMapUnitScale.maxScale = !qgsDoubleNear( oldMax, 0.0 ) ? 1.0 / oldMax : 0;
   }
   else
   {
-    labelOffsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( placementElem.attribute( QStringLiteral( "labelOffsetMapUnitScale" ) ) );
+    labelOffsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( placementElem.attribute( u"labelOffsetMapUnitScale"_s ) );
   }
 
-  if ( placementElem.hasAttribute( QStringLiteral( "angleOffset" ) ) )
+  if ( placementElem.hasAttribute( u"angleOffset"_s ) )
   {
-    double oldAngle = placementElem.attribute( QStringLiteral( "angleOffset" ), QStringLiteral( "0" ) ).toDouble();
+    double oldAngle = placementElem.attribute( u"angleOffset"_s, u"0"_s ).toDouble();
     angleOffset = std::fmod( 360 - oldAngle, 360.0 );
   }
   else
   {
-    angleOffset = placementElem.attribute( QStringLiteral( "rotationAngle" ), QStringLiteral( "0" ) ).toDouble();
+    angleOffset = placementElem.attribute( u"rotationAngle"_s, u"0"_s ).toDouble();
   }
 
-  preserveRotation = placementElem.attribute( QStringLiteral( "preserveRotation" ), QStringLiteral( "1" ) ).toInt();
+  preserveRotation = placementElem.attribute( u"preserveRotation"_s, u"1"_s ).toInt();
   {
-    QString rotationUnitString = placementElem.attribute( QStringLiteral( "rotationUnit" ), qgsEnumValueToKey( Qgis::AngleUnit::Degrees ) );
-    if ( rotationUnitString.startsWith( QLatin1String( "Angle" ) ) )
+    QString rotationUnitString = placementElem.attribute( u"rotationUnit"_s, qgsEnumValueToKey( Qgis::AngleUnit::Degrees ) );
+    if ( rotationUnitString.startsWith( "Angle"_L1 ) )
     {
       // compatibility with QGIS < 3.30
       rotationUnitString = rotationUnitString.mid( 5 );
@@ -1073,14 +1078,14 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
 
     mRotationUnit = qgsEnumKeyToValue( rotationUnitString, Qgis::AngleUnit::Degrees );
   }
-  maxCurvedCharAngleIn = placementElem.attribute( QStringLiteral( "maxCurvedCharAngleIn" ), QStringLiteral( "25" ) ).toDouble();
-  maxCurvedCharAngleOut = placementElem.attribute( QStringLiteral( "maxCurvedCharAngleOut" ), QStringLiteral( "-25" ) ).toDouble();
-  priority = placementElem.attribute( QStringLiteral( "priority" ) ).toInt();
-  repeatDistance = placementElem.attribute( QStringLiteral( "repeatDistance" ), QStringLiteral( "0" ) ).toDouble();
-  if ( !placementElem.hasAttribute( QStringLiteral( "repeatDistanceUnits" ) ) )
+  maxCurvedCharAngleIn = placementElem.attribute( u"maxCurvedCharAngleIn"_s, u"25"_s ).toDouble();
+  maxCurvedCharAngleOut = placementElem.attribute( u"maxCurvedCharAngleOut"_s, u"-25"_s ).toDouble();
+  priority = placementElem.attribute( u"priority"_s ).toInt();
+  repeatDistance = placementElem.attribute( u"repeatDistance"_s, u"0"_s ).toDouble();
+  if ( !placementElem.hasAttribute( u"repeatDistanceUnits"_s ) )
   {
     // upgrade old setting
-    switch ( placementElem.attribute( QStringLiteral( "repeatDistanceUnit" ), QString::number( 1 ) ).toUInt() )
+    switch ( placementElem.attribute( u"repeatDistanceUnit"_s, QString::number( 1 ) ).toUInt() )
     {
       case 0:
         repeatDistanceUnit = Qgis::RenderUnit::Points;
@@ -1098,76 +1103,77 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   }
   else
   {
-    repeatDistanceUnit = QgsUnitTypes::decodeRenderUnit( placementElem.attribute( QStringLiteral( "repeatDistanceUnits" ) ) );
+    repeatDistanceUnit = QgsUnitTypes::decodeRenderUnit( placementElem.attribute( u"repeatDistanceUnits"_s ) );
   }
-  if ( !placementElem.hasAttribute( QStringLiteral( "repeatDistanceMapUnitScale" ) ) )
+  if ( !placementElem.hasAttribute( u"repeatDistanceMapUnitScale"_s ) )
   {
     //fallback to older property
-    double oldMin = placementElem.attribute( QStringLiteral( "repeatDistanceMapUnitMinScale" ), QStringLiteral( "0" ) ).toDouble();
+    double oldMin = placementElem.attribute( u"repeatDistanceMapUnitMinScale"_s, u"0"_s ).toDouble();
     repeatDistanceMapUnitScale.minScale = !qgsDoubleNear( oldMin, 0.0 ) ? 1.0 / oldMin : 0;
-    double oldMax = placementElem.attribute( QStringLiteral( "repeatDistanceMapUnitMaxScale" ), QStringLiteral( "0" ) ).toDouble();
+    double oldMax = placementElem.attribute( u"repeatDistanceMapUnitMaxScale"_s, u"0"_s ).toDouble();
     repeatDistanceMapUnitScale.maxScale = !qgsDoubleNear( oldMax, 0.0 ) ? 1.0 / oldMax : 0;
   }
   else
   {
-    repeatDistanceMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( placementElem.attribute( QStringLiteral( "repeatDistanceMapUnitScale" ) ) );
+    repeatDistanceMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( placementElem.attribute( u"repeatDistanceMapUnitScale"_s ) );
   }
 
-  mLineSettings.setOverrunDistance( placementElem.attribute( QStringLiteral( "overrunDistance" ), QStringLiteral( "0" ) ).toDouble() );
-  mLineSettings.setOverrunDistanceUnit( QgsUnitTypes::decodeRenderUnit( placementElem.attribute( QStringLiteral( "overrunDistanceUnit" ) ) ) );
-  mLineSettings.setOverrunDistanceMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( placementElem.attribute( QStringLiteral( "overrunDistanceMapUnitScale" ) ) ) );
-  mLineSettings.setLineAnchorPercent( placementElem.attribute( QStringLiteral( "lineAnchorPercent" ), QStringLiteral( "0.5" ) ).toDouble() );
-  mLineSettings.setAnchorType( static_cast< QgsLabelLineSettings::AnchorType >( placementElem.attribute( QStringLiteral( "lineAnchorType" ), QStringLiteral( "0" ) ).toInt() ) );
-  mLineSettings.setAnchorClipping( static_cast< QgsLabelLineSettings::AnchorClipping >( placementElem.attribute( QStringLiteral( "lineAnchorClipping" ), QStringLiteral( "0" ) ).toInt() ) );
-  // when reading the anchor text point we default to center mode, to keep same result as for proejcts created in < 3.26
-  mLineSettings.setAnchorTextPoint( qgsEnumKeyToValue( placementElem.attribute( QStringLiteral( "lineAnchorTextPoint" ) ), QgsLabelLineSettings::AnchorTextPoint::CenterOfText ) );
+  mLineSettings.setOverrunDistance( placementElem.attribute( u"overrunDistance"_s, u"0"_s ).toDouble() );
+  mLineSettings.setOverrunDistanceUnit( QgsUnitTypes::decodeRenderUnit( placementElem.attribute( u"overrunDistanceUnit"_s ) ) );
+  mLineSettings.setOverrunDistanceMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( placementElem.attribute( u"overrunDistanceMapUnitScale"_s ) ) );
+  mLineSettings.setLineAnchorPercent( placementElem.attribute( u"lineAnchorPercent"_s, u"0.5"_s ).toDouble() );
+  mLineSettings.setAnchorType( static_cast< QgsLabelLineSettings::AnchorType >( placementElem.attribute( u"lineAnchorType"_s, u"0"_s ).toInt() ) );
+  mLineSettings.setAnchorClipping( static_cast< QgsLabelLineSettings::AnchorClipping >( placementElem.attribute( u"lineAnchorClipping"_s, u"0"_s ).toInt() ) );
+  // when reading the anchor text point we default to center mode, to keep same result as for projects created in < 3.26
+  mLineSettings.setAnchorTextPoint( qgsEnumKeyToValue( placementElem.attribute( u"lineAnchorTextPoint"_s ), QgsLabelLineSettings::AnchorTextPoint::CenterOfText ) );
+  mLineSettings.setCurvedLabelMode( qgsEnumKeyToValue( placementElem.attribute( u"curvedLabelMode"_s ), Qgis::CurvedLabelMode::Default ) );
 
-  mPointSettings.setMaximumDistance( placementElem.attribute( QStringLiteral( "maximumDistance" ), QStringLiteral( "0" ) ).toDouble() );
-  mPointSettings.setMaximumDistanceUnit( QgsUnitTypes::decodeRenderUnit( placementElem.attribute( QStringLiteral( "maximumDistanceUnit" ) ) ) );
-  mPointSettings.setMaximumDistanceMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( placementElem.attribute( QStringLiteral( "maximumDistanceMapUnitScale" ) ) ) );
+  mPointSettings.setMaximumDistance( placementElem.attribute( u"maximumDistance"_s, u"0"_s ).toDouble() );
+  mPointSettings.setMaximumDistanceUnit( QgsUnitTypes::decodeRenderUnit( placementElem.attribute( u"maximumDistanceUnit"_s ) ) );
+  mPointSettings.setMaximumDistanceMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( placementElem.attribute( u"maximumDistanceMapUnitScale"_s ) ) );
 
-  geometryGenerator = placementElem.attribute( QStringLiteral( "geometryGenerator" ) );
-  geometryGeneratorEnabled = placementElem.attribute( QStringLiteral( "geometryGeneratorEnabled" ) ).toInt();
+  geometryGenerator = placementElem.attribute( u"geometryGenerator"_s );
+  geometryGeneratorEnabled = placementElem.attribute( u"geometryGeneratorEnabled"_s ).toInt();
   {
-    QString geometryTypeKey = placementElem.attribute( QStringLiteral( "geometryGeneratorType" ) );
+    QString geometryTypeKey = placementElem.attribute( u"geometryGeneratorType"_s );
     // maintain compatibility with < 3.3.0
-    if ( geometryTypeKey.endsWith( QLatin1String( "Geometry" ) ) )
+    if ( geometryTypeKey.endsWith( "Geometry"_L1 ) )
       geometryTypeKey.chop( 8 );
 
     geometryGeneratorType = qgsEnumKeyToValue( geometryTypeKey, Qgis::GeometryType::Point );
   }
   {
-    QString layerTypeKey = placementElem.attribute( QStringLiteral( "layerType" ) );
+    QString layerTypeKey = placementElem.attribute( u"layerType"_s );
     // maintain compatibility with < 3.3.0
-    if ( layerTypeKey.endsWith( QLatin1String( "Geometry" ) ) )
+    if ( layerTypeKey.endsWith( "Geometry"_L1 ) )
       layerTypeKey.chop( 8 );
 
     layerType = qgsEnumKeyToValue( layerTypeKey, Qgis::GeometryType::Unknown );
   }
 
-  mPlacementSettings.setAllowDegradedPlacement( placementElem.attribute( QStringLiteral( "allowDegraded" ), QStringLiteral( "0" ) ).toInt() );
+  mPlacementSettings.setAllowDegradedPlacement( placementElem.attribute( u"allowDegraded"_s, u"0"_s ).toInt() );
 
   // rendering
-  QDomElement renderingElem = elem.firstChildElement( QStringLiteral( "rendering" ) );
+  QDomElement renderingElem = elem.firstChildElement( u"rendering"_s );
 
-  drawLabels = renderingElem.attribute( QStringLiteral( "drawLabels" ), QStringLiteral( "1" ) ).toInt();
+  drawLabels = renderingElem.attribute( u"drawLabels"_s, u"1"_s ).toInt();
 
-  maximumScale = renderingElem.attribute( QStringLiteral( "scaleMin" ), QStringLiteral( "0" ) ).toDouble();
-  minimumScale = renderingElem.attribute( QStringLiteral( "scaleMax" ), QStringLiteral( "0" ) ).toDouble();
-  scaleVisibility = renderingElem.attribute( QStringLiteral( "scaleVisibility" ) ).toInt();
+  maximumScale = renderingElem.attribute( u"scaleMin"_s, u"0"_s ).toDouble();
+  minimumScale = renderingElem.attribute( u"scaleMax"_s, u"0"_s ).toDouble();
+  scaleVisibility = renderingElem.attribute( u"scaleVisibility"_s ).toInt();
 
-  fontLimitPixelSize = renderingElem.attribute( QStringLiteral( "fontLimitPixelSize" ), QStringLiteral( "0" ) ).toInt();
-  fontMinPixelSize = renderingElem.attribute( QStringLiteral( "fontMinPixelSize" ), QStringLiteral( "0" ) ).toInt();
-  fontMaxPixelSize = renderingElem.attribute( QStringLiteral( "fontMaxPixelSize" ), QStringLiteral( "10000" ) ).toInt();
+  fontLimitPixelSize = renderingElem.attribute( u"fontLimitPixelSize"_s, u"0"_s ).toInt();
+  fontMinPixelSize = renderingElem.attribute( u"fontMinPixelSize"_s, u"0"_s ).toInt();
+  fontMaxPixelSize = renderingElem.attribute( u"fontMaxPixelSize"_s, u"10000"_s ).toInt();
 
-  if ( placementElem.hasAttribute( QStringLiteral( "overlapHandling" ) ) )
+  if ( placementElem.hasAttribute( u"overlapHandling"_s ) )
   {
-    mPlacementSettings.setOverlapHandling( qgsEnumKeyToValue( placementElem.attribute( QStringLiteral( "overlapHandling" ) ), Qgis::LabelOverlapHandling::PreventOverlap ) );
+    mPlacementSettings.setOverlapHandling( qgsEnumKeyToValue( placementElem.attribute( u"overlapHandling"_s ), Qgis::LabelOverlapHandling::PreventOverlap ) );
   }
   else
   {
     // legacy setting
-    if ( renderingElem.attribute( QStringLiteral( "displayAll" ), QStringLiteral( "0" ) ).toInt() )
+    if ( renderingElem.attribute( u"displayAll"_s, u"0"_s ).toInt() )
     {
       mPlacementSettings.setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
       mPlacementSettings.setAllowDegradedPlacement( true );
@@ -1179,32 +1185,50 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
     }
   }
 
-  mPlacementSettings.setPrioritization( qgsEnumKeyToValue( placementElem.attribute( QStringLiteral( "prioritization" ) ), Qgis::LabelPrioritization::PreferCloser ) );
+  mPlacementSettings.setPrioritization( qgsEnumKeyToValue( placementElem.attribute( u"prioritization"_s ), Qgis::LabelPrioritization::PreferCloser ) );
 
-  upsidedownLabels = static_cast< Qgis::UpsideDownLabelHandling >( renderingElem.attribute( QStringLiteral( "upsidedownLabels" ), QString::number( static_cast< int >( Qgis::UpsideDownLabelHandling::FlipUpsideDownLabels ) ) ).toUInt() );
+  upsidedownLabels = static_cast< Qgis::UpsideDownLabelHandling >( renderingElem.attribute( u"upsidedownLabels"_s, QString::number( static_cast< int >( Qgis::UpsideDownLabelHandling::FlipUpsideDownLabels ) ) ).toUInt() );
 
-  labelPerPart = renderingElem.attribute( QStringLiteral( "labelPerPart" ) ).toInt();
-  mLineSettings.setMergeLines( renderingElem.attribute( QStringLiteral( "mergeLines" ) ).toInt() );
-  mThinningSettings.setMinimumFeatureSize( renderingElem.attribute( QStringLiteral( "minFeatureSize" ) ).toDouble() );
-  mThinningSettings.setLimitNumberLabelsEnabled( renderingElem.attribute( QStringLiteral( "limitNumLabels" ), QStringLiteral( "0" ) ).toInt() );
-  mThinningSettings.setMaximumNumberLabels( renderingElem.attribute( QStringLiteral( "maxNumLabels" ), QStringLiteral( "2000" ) ).toInt() );
+  if ( placementElem.hasAttribute( u"multipartBehavior"_s ) )
+  {
+    mPlacementSettings.setMultiPartBehavior( qgsEnumKeyToValue( placementElem.attribute( u"multipartBehavior"_s ), Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly ) );
+  }
+  else
+  {
+    // legacy setting
+    if ( renderingElem.attribute( u"labelPerPart"_s, u"0"_s ).toInt() )
+    {
+      mPlacementSettings.setMultiPartBehavior( Qgis::MultiPartLabelingBehavior::LabelEveryPartWithEntireLabel );
+    }
+    else
+    {
+      mPlacementSettings.setMultiPartBehavior( Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly );
+    }
+  }
 
-  mThinningSettings.setLabelMarginDistance( placementElem.attribute( QStringLiteral( "labelMarginDistance" ), QStringLiteral( "0" ) ).toDouble() );
-  mThinningSettings.setLabelMarginDistanceUnit( QgsUnitTypes::decodeRenderUnit( placementElem.attribute( QStringLiteral( "labelMarginDistanceUnit" ) ) ) );
-  mThinningSettings.setLabelMarginDistanceMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( placementElem.attribute( QStringLiteral( "labelMarginDistanceMapUnitScale" ) ) ) );
+  mPlacementSettings.setWhitespaceCollisionHandling( qgsEnumKeyToValue( placementElem.attribute( u"whitespaceCollisions"_s ), Qgis::LabelWhitespaceCollisionHandling::TreatWhitespaceAsCollision ) );
 
-  mThinningSettings.setMinimumDistanceToDuplicate( placementElem.attribute( QStringLiteral( "minDistanceToDuplicates" ), QString::number( QgsLabelThinningSettings::DEFAULT_MINIMUM_DISTANCE_TO_DUPLICATE ) ).toDouble() );
-  mThinningSettings.setMinimumDistanceToDuplicateUnit( QgsUnitTypes::decodeRenderUnit( placementElem.attribute( QStringLiteral( "minDistanceToDuplicatesUnit" ) ) ) );
-  mThinningSettings.setMinimumDistanceToDuplicateMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( placementElem.attribute( QStringLiteral( "minDistanceToDuplicateMapUnitScale" ) ) ) );
-  mThinningSettings.setAllowDuplicateRemoval( placementElem.attribute( QStringLiteral( "allowDuplicateRemoval" ), QStringLiteral( "0" ) ).toInt() );
+  mLineSettings.setMergeLines( renderingElem.attribute( u"mergeLines"_s ).toInt() );
+  mThinningSettings.setMinimumFeatureSize( renderingElem.attribute( u"minFeatureSize"_s ).toDouble() );
+  mThinningSettings.setLimitNumberLabelsEnabled( renderingElem.attribute( u"limitNumLabels"_s, u"0"_s ).toInt() );
+  mThinningSettings.setMaximumNumberLabels( renderingElem.attribute( u"maxNumLabels"_s, u"2000"_s ).toInt() );
 
-  mObstacleSettings.setIsObstacle( renderingElem.attribute( QStringLiteral( "obstacle" ), QStringLiteral( "1" ) ).toInt() );
-  mObstacleSettings.setFactor( renderingElem.attribute( QStringLiteral( "obstacleFactor" ), QStringLiteral( "1" ) ).toDouble() );
-  mObstacleSettings.setType( static_cast< QgsLabelObstacleSettings::ObstacleType >( renderingElem.attribute( QStringLiteral( "obstacleType" ), QString::number( static_cast< int >( QgsLabelObstacleSettings::ObstacleType::PolygonInterior ) ) ).toUInt() ) );
-  zIndex = renderingElem.attribute( QStringLiteral( "zIndex" ), QStringLiteral( "0.0" ) ).toDouble();
-  mUnplacedVisibility = static_cast< Qgis::UnplacedLabelVisibility >( renderingElem.attribute( QStringLiteral( "unplacedVisibility" ), QString::number( static_cast< int >( Qgis::UnplacedLabelVisibility::FollowEngineSetting ) ) ).toInt() );
+  mThinningSettings.setLabelMarginDistance( placementElem.attribute( u"labelMarginDistance"_s, u"0"_s ).toDouble() );
+  mThinningSettings.setLabelMarginDistanceUnit( QgsUnitTypes::decodeRenderUnit( placementElem.attribute( u"labelMarginDistanceUnit"_s ) ) );
+  mThinningSettings.setLabelMarginDistanceMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( placementElem.attribute( u"labelMarginDistanceMapUnitScale"_s ) ) );
 
-  QDomElement ddElem = elem.firstChildElement( QStringLiteral( "dd_properties" ) );
+  mThinningSettings.setMinimumDistanceToDuplicate( placementElem.attribute( u"minDistanceToDuplicates"_s, QString::number( QgsLabelThinningSettings::DEFAULT_MINIMUM_DISTANCE_TO_DUPLICATE ) ).toDouble() );
+  mThinningSettings.setMinimumDistanceToDuplicateUnit( QgsUnitTypes::decodeRenderUnit( placementElem.attribute( u"minDistanceToDuplicatesUnit"_s ) ) );
+  mThinningSettings.setMinimumDistanceToDuplicateMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( placementElem.attribute( u"minDistanceToDuplicateMapUnitScale"_s ) ) );
+  mThinningSettings.setAllowDuplicateRemoval( placementElem.attribute( u"allowDuplicateRemoval"_s, u"0"_s ).toInt() );
+
+  mObstacleSettings.setIsObstacle( renderingElem.attribute( u"obstacle"_s, u"1"_s ).toInt() );
+  mObstacleSettings.setFactor( renderingElem.attribute( u"obstacleFactor"_s, u"1"_s ).toDouble() );
+  mObstacleSettings.setType( static_cast< QgsLabelObstacleSettings::ObstacleType >( renderingElem.attribute( u"obstacleType"_s, QString::number( static_cast< int >( QgsLabelObstacleSettings::ObstacleType::PolygonInterior ) ) ).toUInt() ) );
+  zIndex = renderingElem.attribute( u"zIndex"_s, u"0.0"_s ).toDouble();
+  mUnplacedVisibility = static_cast< Qgis::UnplacedLabelVisibility >( renderingElem.attribute( u"unplacedVisibility"_s, QString::number( static_cast< int >( Qgis::UnplacedLabelVisibility::FollowEngineSetting ) ) ).toInt() );
+
+  QDomElement ddElem = elem.firstChildElement( u"dd_properties"_s );
   if ( !ddElem.isNull() )
   {
     mDataDefinedProperties.readXml( ddElem, *sPropertyDefinitions() );
@@ -1213,33 +1237,33 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   {
     // upgrade 2.x style dd project
     mDataDefinedProperties.clear();
-    QDomElement ddElem = elem.firstChildElement( QStringLiteral( "data-defined" ) );
+    QDomElement ddElem = elem.firstChildElement( u"data-defined"_s );
     readOldDataDefinedPropertyMap( nullptr, &ddElem );
   }
   // upgrade older data defined settings
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::FontTransp ) )
   {
-    mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::FontOpacity, QgsProperty::fromExpression( QStringLiteral( "100 - (%1)" ).arg( mDataDefinedProperties.property( QgsPalLayerSettings::Property::FontTransp ).asExpression() ) ) );
+    mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::FontOpacity, QgsProperty::fromExpression( u"100 - (%1)"_s.arg( mDataDefinedProperties.property( QgsPalLayerSettings::Property::FontTransp ).asExpression() ) ) );
     mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::FontTransp, QgsProperty() );
   }
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::BufferTransp ) )
   {
-    mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::BufferOpacity, QgsProperty::fromExpression( QStringLiteral( "100 - (%1)" ).arg( mDataDefinedProperties.property( QgsPalLayerSettings::Property::BufferTransp ).asExpression() ) ) );
+    mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::BufferOpacity, QgsProperty::fromExpression( u"100 - (%1)"_s.arg( mDataDefinedProperties.property( QgsPalLayerSettings::Property::BufferTransp ).asExpression() ) ) );
     mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::BufferTransp, QgsProperty() );
   }
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::ShapeTransparency ) )
   {
-    mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::ShapeOpacity, QgsProperty::fromExpression( QStringLiteral( "100 - (%1)" ).arg( mDataDefinedProperties.property( QgsPalLayerSettings::Property::ShapeTransparency ).asExpression() ) ) );
+    mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::ShapeOpacity, QgsProperty::fromExpression( u"100 - (%1)"_s.arg( mDataDefinedProperties.property( QgsPalLayerSettings::Property::ShapeTransparency ).asExpression() ) ) );
     mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::ShapeTransparency, QgsProperty() );
   }
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::ShadowTransparency ) )
   {
-    mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::ShadowOpacity, QgsProperty::fromExpression( QStringLiteral( "100 - (%1)" ).arg( mDataDefinedProperties.property( QgsPalLayerSettings::Property::ShadowTransparency ).asExpression() ) ) );
+    mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::ShadowOpacity, QgsProperty::fromExpression( u"100 - (%1)"_s.arg( mDataDefinedProperties.property( QgsPalLayerSettings::Property::ShadowTransparency ).asExpression() ) ) );
     mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::ShadowTransparency, QgsProperty() );
   }
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::Rotation ) )
   {
-    mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromExpression( QStringLiteral( "360 - (%1)" ).arg( mDataDefinedProperties.property( QgsPalLayerSettings::Property::Rotation ).asExpression() ) ) );
+    mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromExpression( u"360 - (%1)"_s.arg( mDataDefinedProperties.property( QgsPalLayerSettings::Property::Rotation ).asExpression() ) ) );
     mDataDefinedProperties.setProperty( QgsPalLayerSettings::Property::Rotation, QgsProperty() );
   }
   // older 2.x projects had min/max scale flipped - so change them here.
@@ -1255,12 +1279,12 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   }
 
   // TODO - replace with registry when multiple callout styles exist
-  const QString calloutType = elem.attribute( QStringLiteral( "calloutType" ) );
+  const QString calloutType = elem.attribute( u"calloutType"_s );
   if ( calloutType.isEmpty() )
     mCallout.reset( QgsCalloutRegistry::defaultCallout() );
   else
   {
-    mCallout.reset( QgsApplication::calloutRegistry()->createCallout( calloutType, elem.firstChildElement( QStringLiteral( "callout" ) ), context ) );
+    mCallout.reset( QgsApplication::calloutRegistry()->createCallout( calloutType, elem.firstChildElement( u"callout"_s ), context ) );
     if ( !mCallout )
       mCallout.reset( QgsCalloutRegistry::defaultCallout() );
   }
@@ -1271,139 +1295,144 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   QDomElement textStyleElem = mFormat.writeXml( doc, context );
 
   // text style
-  textStyleElem.setAttribute( QStringLiteral( "fieldName" ), fieldName );
-  textStyleElem.setAttribute( QStringLiteral( "isExpression" ), isExpression );
-  QDomElement replacementElem = doc.createElement( QStringLiteral( "substitutions" ) );
+  textStyleElem.setAttribute( u"fieldName"_s, fieldName );
+  textStyleElem.setAttribute( u"isExpression"_s, isExpression );
+  QDomElement replacementElem = doc.createElement( u"substitutions"_s );
   substitutions.writeXml( replacementElem, doc );
   textStyleElem.appendChild( replacementElem );
-  textStyleElem.setAttribute( QStringLiteral( "useSubstitutions" ), useSubstitutions );
-  textStyleElem.setAttribute( QStringLiteral( "legendString" ), mLegendString );
+  textStyleElem.setAttribute( u"useSubstitutions"_s, useSubstitutions );
+  textStyleElem.setAttribute( u"legendString"_s, mLegendString );
 
   // text formatting
-  QDomElement textFormatElem = doc.createElement( QStringLiteral( "text-format" ) );
-  textFormatElem.setAttribute( QStringLiteral( "wrapChar" ), wrapChar );
-  textFormatElem.setAttribute( QStringLiteral( "autoWrapLength" ), autoWrapLength );
-  textFormatElem.setAttribute( QStringLiteral( "useMaxLineLengthForAutoWrap" ), useMaxLineLengthForAutoWrap );
-  textFormatElem.setAttribute( QStringLiteral( "multilineAlign" ), static_cast< unsigned int >( multilineAlign ) );
-  textFormatElem.setAttribute( QStringLiteral( "addDirectionSymbol" ), mLineSettings.addDirectionSymbol() );
-  textFormatElem.setAttribute( QStringLiteral( "leftDirectionSymbol" ), mLineSettings.leftDirectionSymbol() );
-  textFormatElem.setAttribute( QStringLiteral( "rightDirectionSymbol" ), mLineSettings.rightDirectionSymbol() );
-  textFormatElem.setAttribute( QStringLiteral( "reverseDirectionSymbol" ), mLineSettings.reverseDirectionSymbol() );
-  textFormatElem.setAttribute( QStringLiteral( "placeDirectionSymbol" ), static_cast< unsigned int >( mLineSettings.directionSymbolPlacement() ) );
-  textFormatElem.setAttribute( QStringLiteral( "formatNumbers" ), formatNumbers );
-  textFormatElem.setAttribute( QStringLiteral( "decimals" ), decimals );
-  textFormatElem.setAttribute( QStringLiteral( "plussign" ), plusSign );
+  QDomElement textFormatElem = doc.createElement( u"text-format"_s );
+  textFormatElem.setAttribute( u"wrapChar"_s, wrapChar );
+  textFormatElem.setAttribute( u"autoWrapLength"_s, autoWrapLength );
+  textFormatElem.setAttribute( u"useMaxLineLengthForAutoWrap"_s, useMaxLineLengthForAutoWrap );
+  textFormatElem.setAttribute( u"multilineAlign"_s, static_cast< unsigned int >( multilineAlign ) );
+  textFormatElem.setAttribute( u"addDirectionSymbol"_s, mLineSettings.addDirectionSymbol() );
+  textFormatElem.setAttribute( u"leftDirectionSymbol"_s, mLineSettings.leftDirectionSymbol() );
+  textFormatElem.setAttribute( u"rightDirectionSymbol"_s, mLineSettings.rightDirectionSymbol() );
+  textFormatElem.setAttribute( u"reverseDirectionSymbol"_s, mLineSettings.reverseDirectionSymbol() );
+  textFormatElem.setAttribute( u"placeDirectionSymbol"_s, static_cast< unsigned int >( mLineSettings.directionSymbolPlacement() ) );
+  textFormatElem.setAttribute( u"formatNumbers"_s, formatNumbers );
+  textFormatElem.setAttribute( u"decimals"_s, decimals );
+  textFormatElem.setAttribute( u"plussign"_s, plusSign );
 
   // placement
-  QDomElement placementElem = doc.createElement( QStringLiteral( "placement" ) );
-  placementElem.setAttribute( QStringLiteral( "placement" ), static_cast< int >( placement ) );
-  placementElem.setAttribute( QStringLiteral( "polygonPlacementFlags" ), static_cast< int >( mPolygonPlacementFlags ) );
-  placementElem.setAttribute( QStringLiteral( "placementFlags" ), static_cast< unsigned int >( mLineSettings.placementFlags() ) );
-  placementElem.setAttribute( QStringLiteral( "centroidWhole" ), centroidWhole );
-  placementElem.setAttribute( QStringLiteral( "centroidInside" ), centroidInside );
-  placementElem.setAttribute( QStringLiteral( "predefinedPositionOrder" ), QgsLabelingUtils::encodePredefinedPositionOrder( mPointSettings.predefinedPositionOrder() ) );
-  placementElem.setAttribute( QStringLiteral( "fitInPolygonOnly" ), fitInPolygonOnly );
-  placementElem.setAttribute( QStringLiteral( "dist" ), dist );
-  placementElem.setAttribute( QStringLiteral( "distUnits" ), QgsUnitTypes::encodeUnit( distUnits ) );
-  placementElem.setAttribute( QStringLiteral( "distMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( distMapUnitScale ) );
-  placementElem.setAttribute( QStringLiteral( "offsetType" ), static_cast< unsigned int >( offsetType ) );
-  placementElem.setAttribute( QStringLiteral( "quadOffset" ), static_cast< unsigned int >( mPointSettings.quadrant() ) );
-  placementElem.setAttribute( QStringLiteral( "xOffset" ), xOffset );
-  placementElem.setAttribute( QStringLiteral( "yOffset" ), yOffset );
-  placementElem.setAttribute( QStringLiteral( "offsetUnits" ), QgsUnitTypes::encodeUnit( offsetUnits ) );
-  placementElem.setAttribute( QStringLiteral( "labelOffsetMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( labelOffsetMapUnitScale ) );
-  placementElem.setAttribute( QStringLiteral( "rotationAngle" ), angleOffset );
-  placementElem.setAttribute( QStringLiteral( "preserveRotation" ), preserveRotation );
+  QDomElement placementElem = doc.createElement( u"placement"_s );
+  placementElem.setAttribute( u"placement"_s, static_cast< int >( placement ) );
+  placementElem.setAttribute( u"polygonPlacementFlags"_s, static_cast< int >( mPolygonPlacementFlags ) );
+  placementElem.setAttribute( u"placementFlags"_s, static_cast< unsigned int >( mLineSettings.placementFlags() ) );
+  placementElem.setAttribute( u"centroidWhole"_s, centroidWhole );
+  placementElem.setAttribute( u"centroidInside"_s, centroidInside );
+  placementElem.setAttribute( u"predefinedPositionOrder"_s, QgsLabelingUtils::encodePredefinedPositionOrder( mPointSettings.predefinedPositionOrder() ) );
+  placementElem.setAttribute( u"fitInPolygonOnly"_s, fitInPolygonOnly );
+  placementElem.setAttribute( u"dist"_s, dist );
+  placementElem.setAttribute( u"distUnits"_s, QgsUnitTypes::encodeUnit( distUnits ) );
+  placementElem.setAttribute( u"distMapUnitScale"_s, QgsSymbolLayerUtils::encodeMapUnitScale( distMapUnitScale ) );
+  placementElem.setAttribute( u"offsetType"_s, static_cast< unsigned int >( offsetType ) );
+  placementElem.setAttribute( u"quadOffset"_s, static_cast< unsigned int >( mPointSettings.quadrant() ) );
+  placementElem.setAttribute( u"xOffset"_s, xOffset );
+  placementElem.setAttribute( u"yOffset"_s, yOffset );
+  placementElem.setAttribute( u"offsetUnits"_s, QgsUnitTypes::encodeUnit( offsetUnits ) );
+  placementElem.setAttribute( u"labelOffsetMapUnitScale"_s, QgsSymbolLayerUtils::encodeMapUnitScale( labelOffsetMapUnitScale ) );
+  placementElem.setAttribute( u"rotationAngle"_s, angleOffset );
+  placementElem.setAttribute( u"preserveRotation"_s, preserveRotation );
   {
     // append Angle prefix to maintain compatibility with QGIS < 3.30
-    const QString rotationUnitString = QStringLiteral( "Angle" ) + qgsEnumValueToKey( mRotationUnit );
-    placementElem.setAttribute( QStringLiteral( "rotationUnit" ), rotationUnitString );
+    const QString rotationUnitString = u"Angle"_s + qgsEnumValueToKey( mRotationUnit );
+    placementElem.setAttribute( u"rotationUnit"_s, rotationUnitString );
   }
-  placementElem.setAttribute( QStringLiteral( "maxCurvedCharAngleIn" ), maxCurvedCharAngleIn );
-  placementElem.setAttribute( QStringLiteral( "maxCurvedCharAngleOut" ), maxCurvedCharAngleOut );
-  placementElem.setAttribute( QStringLiteral( "priority" ), priority );
-  placementElem.setAttribute( QStringLiteral( "repeatDistance" ), repeatDistance );
-  placementElem.setAttribute( QStringLiteral( "repeatDistanceUnits" ), QgsUnitTypes::encodeUnit( repeatDistanceUnit ) );
-  placementElem.setAttribute( QStringLiteral( "repeatDistanceMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( repeatDistanceMapUnitScale ) );
-  placementElem.setAttribute( QStringLiteral( "overrunDistance" ), mLineSettings.overrunDistance() );
-  placementElem.setAttribute( QStringLiteral( "overrunDistanceUnit" ), QgsUnitTypes::encodeUnit( mLineSettings.overrunDistanceUnit() ) );
-  placementElem.setAttribute( QStringLiteral( "overrunDistanceMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mLineSettings.overrunDistanceMapUnitScale() ) );
-  placementElem.setAttribute( QStringLiteral( "lineAnchorPercent" ), mLineSettings.lineAnchorPercent() );
-  placementElem.setAttribute( QStringLiteral( "lineAnchorType" ), static_cast< int >( mLineSettings.anchorType() ) );
-  placementElem.setAttribute( QStringLiteral( "lineAnchorClipping" ), static_cast< int >( mLineSettings.anchorClipping() ) );
-  placementElem.setAttribute( QStringLiteral( "lineAnchorTextPoint" ), qgsEnumValueToKey( mLineSettings.anchorTextPoint() ) );
+  placementElem.setAttribute( u"maxCurvedCharAngleIn"_s, maxCurvedCharAngleIn );
+  placementElem.setAttribute( u"maxCurvedCharAngleOut"_s, maxCurvedCharAngleOut );
+  placementElem.setAttribute( u"priority"_s, priority );
+  placementElem.setAttribute( u"repeatDistance"_s, repeatDistance );
+  placementElem.setAttribute( u"repeatDistanceUnits"_s, QgsUnitTypes::encodeUnit( repeatDistanceUnit ) );
+  placementElem.setAttribute( u"repeatDistanceMapUnitScale"_s, QgsSymbolLayerUtils::encodeMapUnitScale( repeatDistanceMapUnitScale ) );
+  placementElem.setAttribute( u"overrunDistance"_s, mLineSettings.overrunDistance() );
+  placementElem.setAttribute( u"overrunDistanceUnit"_s, QgsUnitTypes::encodeUnit( mLineSettings.overrunDistanceUnit() ) );
+  placementElem.setAttribute( u"overrunDistanceMapUnitScale"_s, QgsSymbolLayerUtils::encodeMapUnitScale( mLineSettings.overrunDistanceMapUnitScale() ) );
+  placementElem.setAttribute( u"lineAnchorPercent"_s, mLineSettings.lineAnchorPercent() );
+  placementElem.setAttribute( u"lineAnchorType"_s, static_cast< int >( mLineSettings.anchorType() ) );
+  placementElem.setAttribute( u"lineAnchorClipping"_s, static_cast< int >( mLineSettings.anchorClipping() ) );
+  placementElem.setAttribute( u"lineAnchorTextPoint"_s, qgsEnumValueToKey( mLineSettings.anchorTextPoint() ) );
+  if ( mLineSettings.curvedLabelMode() != Qgis::CurvedLabelMode::Default )
+  {
+    placementElem.setAttribute( u"curvedLabelMode"_s, qgsEnumValueToKey( mLineSettings.curvedLabelMode() ) );
+  }
 
-  placementElem.setAttribute( QStringLiteral( "maximumDistance" ), mPointSettings.maximumDistance() );
-  placementElem.setAttribute( QStringLiteral( "maximumDistanceUnit" ), QgsUnitTypes::encodeUnit( mPointSettings.maximumDistanceUnit() ) );
-  placementElem.setAttribute( QStringLiteral( "maximumDistanceMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mPointSettings.maximumDistanceMapUnitScale() ) );
+  placementElem.setAttribute( u"maximumDistance"_s, mPointSettings.maximumDistance() );
+  placementElem.setAttribute( u"maximumDistanceUnit"_s, QgsUnitTypes::encodeUnit( mPointSettings.maximumDistanceUnit() ) );
+  placementElem.setAttribute( u"maximumDistanceMapUnitScale"_s, QgsSymbolLayerUtils::encodeMapUnitScale( mPointSettings.maximumDistanceMapUnitScale() ) );
 
-  placementElem.setAttribute( QStringLiteral( "geometryGenerator" ), geometryGenerator );
-  placementElem.setAttribute( QStringLiteral( "geometryGeneratorEnabled" ), geometryGeneratorEnabled );
-  placementElem.setAttribute( QStringLiteral( "geometryGeneratorType" ), qgsEnumValueToKey( geometryGeneratorType ) + QStringLiteral( "Geometry" ) );
+  placementElem.setAttribute( u"geometryGenerator"_s, geometryGenerator );
+  placementElem.setAttribute( u"geometryGeneratorEnabled"_s, geometryGeneratorEnabled );
+  placementElem.setAttribute( u"geometryGeneratorType"_s, qgsEnumValueToKey( geometryGeneratorType ) + u"Geometry"_s );
 
-  placementElem.setAttribute( QStringLiteral( "layerType" ), qgsEnumValueToKey( layerType ) + QStringLiteral( "Geometry" ) );
+  placementElem.setAttribute( u"layerType"_s, qgsEnumValueToKey( layerType ) + u"Geometry"_s );
 
-  placementElem.setAttribute( QStringLiteral( "overlapHandling" ), qgsEnumValueToKey( mPlacementSettings.overlapHandling() ) );
-  placementElem.setAttribute( QStringLiteral( "prioritization" ), qgsEnumValueToKey( mPlacementSettings.prioritization() ) );
-  placementElem.setAttribute( QStringLiteral( "allowDegraded" ), mPlacementSettings.allowDegradedPlacement() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  placementElem.setAttribute( u"overlapHandling"_s, qgsEnumValueToKey( mPlacementSettings.overlapHandling() ) );
+  placementElem.setAttribute( u"prioritization"_s, qgsEnumValueToKey( mPlacementSettings.prioritization() ) );
+  placementElem.setAttribute( u"allowDegraded"_s, mPlacementSettings.allowDegradedPlacement() ? u"1"_s : u"0"_s );
 
   // rendering
-  QDomElement renderingElem = doc.createElement( QStringLiteral( "rendering" ) );
-  renderingElem.setAttribute( QStringLiteral( "drawLabels" ), drawLabels );
-  renderingElem.setAttribute( QStringLiteral( "scaleVisibility" ), scaleVisibility );
-  renderingElem.setAttribute( QStringLiteral( "scaleMin" ), maximumScale );
-  renderingElem.setAttribute( QStringLiteral( "scaleMax" ), minimumScale );
-  renderingElem.setAttribute( QStringLiteral( "fontLimitPixelSize" ), fontLimitPixelSize );
-  renderingElem.setAttribute( QStringLiteral( "fontMinPixelSize" ), fontMinPixelSize );
-  renderingElem.setAttribute( QStringLiteral( "fontMaxPixelSize" ), fontMaxPixelSize );
-  renderingElem.setAttribute( QStringLiteral( "upsidedownLabels" ), static_cast< unsigned int >( upsidedownLabels ) );
-
-  renderingElem.setAttribute( QStringLiteral( "labelPerPart" ), labelPerPart );
-  renderingElem.setAttribute( QStringLiteral( "mergeLines" ), mLineSettings.mergeLines() );
-  renderingElem.setAttribute( QStringLiteral( "minFeatureSize" ), mThinningSettings.minimumFeatureSize() );
-  renderingElem.setAttribute( QStringLiteral( "limitNumLabels" ), mThinningSettings.limitNumberOfLabelsEnabled() );
-  renderingElem.setAttribute( QStringLiteral( "maxNumLabels" ), mThinningSettings.maximumNumberLabels() );
+  QDomElement renderingElem = doc.createElement( u"rendering"_s );
+  renderingElem.setAttribute( u"drawLabels"_s, drawLabels );
+  renderingElem.setAttribute( u"scaleVisibility"_s, scaleVisibility );
+  renderingElem.setAttribute( u"scaleMin"_s, maximumScale );
+  renderingElem.setAttribute( u"scaleMax"_s, minimumScale );
+  renderingElem.setAttribute( u"fontLimitPixelSize"_s, fontLimitPixelSize );
+  renderingElem.setAttribute( u"fontMinPixelSize"_s, fontMinPixelSize );
+  renderingElem.setAttribute( u"fontMaxPixelSize"_s, fontMaxPixelSize );
+  renderingElem.setAttribute( u"upsidedownLabels"_s, static_cast< unsigned int >( upsidedownLabels ) );
+  placementElem.setAttribute( u"multipartBehavior"_s, qgsEnumValueToKey( mPlacementSettings.multiPartBehavior() ) );
+  if ( mPlacementSettings.whitespaceCollisionHandling() != Qgis::LabelWhitespaceCollisionHandling::TreatWhitespaceAsCollision )
+    placementElem.setAttribute( u"whitespaceCollisions"_s, qgsEnumValueToKey( mPlacementSettings.whitespaceCollisionHandling() ) );
+  renderingElem.setAttribute( u"mergeLines"_s, mLineSettings.mergeLines() );
+  renderingElem.setAttribute( u"minFeatureSize"_s, mThinningSettings.minimumFeatureSize() );
+  renderingElem.setAttribute( u"limitNumLabels"_s, mThinningSettings.limitNumberOfLabelsEnabled() );
+  renderingElem.setAttribute( u"maxNumLabels"_s, mThinningSettings.maximumNumberLabels() );
 
   if ( mThinningSettings.labelMarginDistance() > 0 )
   {
-    placementElem.setAttribute( QStringLiteral( "labelMarginDistance" ), mThinningSettings.labelMarginDistance() );
+    placementElem.setAttribute( u"labelMarginDistance"_s, mThinningSettings.labelMarginDistance() );
   }
   if ( mThinningSettings.labelMarginDistanceUnit() != Qgis::RenderUnit::Millimeters )
   {
-    placementElem.setAttribute( QStringLiteral( "labelMarginDistanceUnit" ), QgsUnitTypes::encodeUnit( mThinningSettings.labelMarginDistanceUnit() ) );
+    placementElem.setAttribute( u"labelMarginDistanceUnit"_s, QgsUnitTypes::encodeUnit( mThinningSettings.labelMarginDistanceUnit() ) );
   }
   if ( !mThinningSettings.labelMarginDistanceMapUnitScale().isNull() )
   {
-    placementElem.setAttribute( QStringLiteral( "labelMarginDistanceMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mThinningSettings.labelMarginDistanceMapUnitScale() ) );
+    placementElem.setAttribute( u"labelMarginDistanceMapUnitScale"_s, QgsSymbolLayerUtils::encodeMapUnitScale( mThinningSettings.labelMarginDistanceMapUnitScale() ) );
   }
 
   if ( mThinningSettings.minimumDistanceToDuplicate() != QgsLabelThinningSettings::DEFAULT_MINIMUM_DISTANCE_TO_DUPLICATE )
   {
-    placementElem.setAttribute( QStringLiteral( "minDistanceToDuplicates" ), mThinningSettings.minimumDistanceToDuplicate() );
+    placementElem.setAttribute( u"minDistanceToDuplicates"_s, mThinningSettings.minimumDistanceToDuplicate() );
   }
   if ( mThinningSettings.minimumDistanceToDuplicateUnit() != Qgis::RenderUnit::Millimeters )
   {
-    placementElem.setAttribute( QStringLiteral( "minDistanceToDuplicatesUnit" ), QgsUnitTypes::encodeUnit( mThinningSettings.minimumDistanceToDuplicateUnit() ) );
+    placementElem.setAttribute( u"minDistanceToDuplicatesUnit"_s, QgsUnitTypes::encodeUnit( mThinningSettings.minimumDistanceToDuplicateUnit() ) );
   }
   if ( !mThinningSettings.minimumDistanceToDuplicateMapUnitScale().isNull() )
   {
-    placementElem.setAttribute( QStringLiteral( "minDistanceToDuplicateMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mThinningSettings.minimumDistanceToDuplicateMapUnitScale() ) );
+    placementElem.setAttribute( u"minDistanceToDuplicateMapUnitScale"_s, QgsSymbolLayerUtils::encodeMapUnitScale( mThinningSettings.minimumDistanceToDuplicateMapUnitScale() ) );
   }
   if ( mThinningSettings.allowDuplicateRemoval() )
   {
-    placementElem.setAttribute( QStringLiteral( "allowDuplicateRemoval" ), QStringLiteral( "1" ) );
+    placementElem.setAttribute( u"allowDuplicateRemoval"_s, u"1"_s );
   }
 
-  renderingElem.setAttribute( QStringLiteral( "obstacle" ), mObstacleSettings.isObstacle() );
-  renderingElem.setAttribute( QStringLiteral( "obstacleFactor" ), mObstacleSettings.factor() );
-  renderingElem.setAttribute( QStringLiteral( "obstacleType" ), static_cast< unsigned int >( mObstacleSettings.type() ) );
-  renderingElem.setAttribute( QStringLiteral( "zIndex" ), zIndex );
-  renderingElem.setAttribute( QStringLiteral( "unplacedVisibility" ), static_cast< int >( mUnplacedVisibility ) );
+  renderingElem.setAttribute( u"obstacle"_s, mObstacleSettings.isObstacle() );
+  renderingElem.setAttribute( u"obstacleFactor"_s, mObstacleSettings.factor() );
+  renderingElem.setAttribute( u"obstacleType"_s, static_cast< unsigned int >( mObstacleSettings.type() ) );
+  renderingElem.setAttribute( u"zIndex"_s, zIndex );
+  renderingElem.setAttribute( u"unplacedVisibility"_s, static_cast< int >( mUnplacedVisibility ) );
 
-  QDomElement ddElem = doc.createElement( QStringLiteral( "dd_properties" ) );
+  QDomElement ddElem = doc.createElement( u"dd_properties"_s );
   mDataDefinedProperties.writeXml( ddElem, *sPropertyDefinitions() );
 
-  QDomElement elem = doc.createElement( QStringLiteral( "settings" ) );
+  QDomElement elem = doc.createElement( u"settings"_s );
   elem.appendChild( textStyleElem );
   elem.appendChild( textFormatElem );
   elem.appendChild( placementElem );
@@ -1412,7 +1441,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
 
   if ( mCallout )
   {
-    elem.setAttribute( QStringLiteral( "calloutType" ), mCallout->type() );
+    elem.setAttribute( u"calloutType"_s, mCallout->type() );
     mCallout->saveProperties( doc, elem, context );
   }
 
@@ -1548,7 +1577,7 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
   {
     // draw a label icon
 
-    QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ).paint( &painter, QRect(
+    QgsApplication::getThemeIcon( u"labelingSingle.svg"_s ).paint( &painter, QRect(
           rect.width() - iconWidth * 3, rect.height() - iconWidth * 3,
           iconWidth * 2, iconWidth * 2 ), Qt::AlignRight | Qt::AlignBottom );
   }
@@ -1600,7 +1629,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
   std::unique_ptr< QgsRenderContext > scopedRc;
   if ( !context )
   {
-    scopedRc.reset( new QgsRenderContext() );
+    scopedRc = std::make_unique<QgsRenderContext>( );
     if ( f )
       scopedRc->expressionContext().setFeature( *f );
   }
@@ -1720,7 +1749,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
 
   if ( wrapchr.isEmpty() )
   {
-    wrapchr = QStringLiteral( "\n" ); // default to new line delimiter
+    wrapchr = u"\n"_s; // default to new line delimiter
   }
 
   //consider the space needed for the direction symbol
@@ -1740,7 +1769,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
 
       case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolAbove:
       case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolBelow:
-        textCopy.prepend( dirSym + QStringLiteral( "\n" ) );
+        textCopy.prepend( dirSym + u"\n"_s );
         break;
     }
   }
@@ -1768,7 +1797,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
 
     case Qgis::TextOrientation::Vertical:
     {
-      double letterSpacing = mFormat.scaledFont( *context ).letterSpacing();
+      double letterSpacing = mFormat.scaledFont( *rc ).letterSpacing();
       double labelWidth = fm->maxWidth();
       w = labelWidth + ( lines - 1 ) * ( mFormat.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( labelWidth * multilineH ) : lineHeightPainterUnits );
 
@@ -1786,11 +1815,11 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
       double widthHorizontal = 0.0;
       for ( const QString &line : std::as_const( multiLineSplit ) )
       {
-        widthHorizontal = std::max( w, fm->horizontalAdvance( line ) );
+        widthHorizontal = std::max( widthHorizontal, fm->horizontalAdvance( line ) );
       }
 
       double widthVertical = 0.0;
-      double letterSpacing = mFormat.scaledFont( *context ).letterSpacing();
+      double letterSpacing = mFormat.scaledFont( *rc ).letterSpacing();
       double labelWidth = fm->maxWidth();
       widthVertical = labelWidth + ( lines - 1 ) * ( mFormat.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( labelWidth * multilineH ) : lineHeightPainterUnits );
 
@@ -1823,15 +1852,13 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
   }
 }
 
-void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF &fm, const QString &text, QgsRenderContext &context, const QgsTextFormat &format, QgsTextDocument *document, QgsTextDocumentMetrics *documentMetrics, QSizeF &size, QSizeF &rotatedSize, QRectF &outerBounds )
+void QgsPalLayerSettings::calculateLabelMetrics( const QFontMetricsF &fm, QgsRenderContext &context, const QgsTextFormat &format, QgsTextDocument &document, QgsTextDocumentMetrics &documentMetrics, QSizeF &size, QSizeF &rotatedSize, QRectF &outerBounds ) const
 {
   if ( !mCurFeat )
   {
     return;
   }
 
-  QString wrapchr = wrapChar;
-  int evalAutoWrapLength = autoWrapLength;
   Qgis::TextOrientation orientation = format.orientation();
 
   bool addDirSymb = mLineSettings.addDirectionSymbol();
@@ -1839,16 +1866,6 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF &fm, const QSt
   QString rightDirSymb = mLineSettings.rightDirectionSymbol();
   QgsLabelLineSettings::DirectionSymbolPlacement placeDirSymb = mLineSettings.directionSymbolPlacement();
   double multilineH = mFormat.lineHeight();
-
-  if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::MultiLineWrapChar ) )
-  {
-    wrapchr = dataDefinedValues.value( QgsPalLayerSettings::Property::MultiLineWrapChar ).toString();
-  }
-
-  if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::AutoWrapLength ) )
-  {
-    evalAutoWrapLength = dataDefinedValues.value( QgsPalLayerSettings::Property::AutoWrapLength, evalAutoWrapLength ).toInt();
-  }
 
   if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::TextOrientation ) )
   {
@@ -1883,11 +1900,6 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF &fm, const QSt
     }
   }
 
-  if ( wrapchr.isEmpty() )
-  {
-    wrapchr = QStringLiteral( "\n" ); // default to new line delimiter
-  }
-
   const double lineHeightPainterUnits = context.convertToPainterUnits( mFormat.lineHeight(), mFormat.lineHeightUnit() );
 
   //consider the space needed for the direction symbol
@@ -1920,49 +1932,30 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF &fm, const QSt
   double rw = 0.0;
   double rh = 0.0;
 
-  if ( document )
+  documentMetrics = QgsTextDocumentMetrics::calculateMetrics( document, format, context );
+  const QSizeF documentSize = documentMetrics.documentSize( Qgis::TextLayoutMode::Labeling, orientation != Qgis::TextOrientation::RotationBased ? orientation : Qgis::TextOrientation::Horizontal );
+  w = std::max( minimumSize.width(), documentSize.width() + maximumExtraSpaceAllowance.width() );
+  h = std::max( minimumSize.height(), documentSize.height() + maximumExtraSpaceAllowance.height() );
+
+  if ( orientation == Qgis::TextOrientation::RotationBased )
   {
-    document->splitLines( wrapchr, evalAutoWrapLength, useMaxLineLengthForAutoWrap );
-
-    *documentMetrics = QgsTextDocumentMetrics::calculateMetrics( *document, format, context );
-    const QSizeF size = documentMetrics->documentSize( Qgis::TextLayoutMode::Labeling, orientation != Qgis::TextOrientation::RotationBased ? orientation : Qgis::TextOrientation::Horizontal );
-    w = std::max( minimumSize.width(), size.width() + maximumExtraSpaceAllowance.width() );
-    h = std::max( minimumSize.height(), size.height() + maximumExtraSpaceAllowance.height() );
-
-    if ( orientation == Qgis::TextOrientation::RotationBased )
-    {
-      const QSizeF rotatedSize = documentMetrics->documentSize( Qgis::TextLayoutMode::Labeling, Qgis::TextOrientation::Vertical );
-      rh = std::max( minimumSize.width(), rotatedSize.width() + maximumExtraSpaceAllowance.width() );
-      rw = std::max( minimumSize.height(), rotatedSize.height() + maximumExtraSpaceAllowance.height() );
-    }
-  }
-  else
-  {
-    // this branch is ONLY hit if we are using curved labels without HTML formatting, as otherwise we're always using the document!
-    // so here we have certain assumptions which apply to curved labels only:
-    // - orientation is ignored
-    // - labels are single lines only
-    // - line direction symbol are (currently!) not supported (see https://github.com/qgis/QGIS/issues/14968 )
-
-    h = fm.height();
-    w = fm.horizontalAdvance( text );
+    const QSizeF rotatedSize = documentMetrics.documentSize( Qgis::TextLayoutMode::Labeling, Qgis::TextOrientation::Vertical );
+    rh = std::max( minimumSize.width(), rotatedSize.width() + maximumExtraSpaceAllowance.width() );
+    rw = std::max( minimumSize.height(), rotatedSize.height() + maximumExtraSpaceAllowance.height() );
   }
 
   const double uPP = xform->mapUnitsPerPixel();
   size = QSizeF( w * uPP, h * uPP );
   rotatedSize = QSizeF( rw * uPP, rh * uPP );
 
-  if ( documentMetrics )
-  {
-    // TODO -- does this need to account for maximumExtraSpaceAllowance / minimumSize ? Right now the size
-    // of line direction symbols will be ignored
-    const QRectF outerBoundsPixels = documentMetrics->outerBounds( Qgis::TextLayoutMode::Labeling, orientation );
+  // TODO -- does this need to account for maximumExtraSpaceAllowance / minimumSize ? Right now the size
+  // of line direction symbols will be ignored
+  const QRectF outerBoundsPixels = documentMetrics.outerBounds( Qgis::TextLayoutMode::Labeling, orientation );
 
-    outerBounds = QRectF( outerBoundsPixels.left() * uPP,
-                          outerBoundsPixels.top() * uPP,
-                          outerBoundsPixels.width() * uPP,
-                          outerBoundsPixels.height() * uPP );
-  }
+  outerBounds = QRectF( outerBoundsPixels.left() * uPP,
+                        outerBoundsPixels.top() * uPP,
+                        outerBoundsPixels.width() * uPP,
+                        outerBoundsPixels.height() * uPP );
 }
 
 void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext &context )
@@ -1970,61 +1963,19 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   registerFeatureWithDetails( f, context, QgsGeometry(), nullptr );
 }
 
-std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails( const QgsFeature &f, QgsRenderContext &context, QgsGeometry obstacleGeometry, const QgsSymbol *symbol )
+bool QgsPalLayerSettings::isLabelVisible( QgsRenderContext &context ) const
 {
-  QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
-  mCurFeat = &f;
-
-  // data defined is obstacle? calculate this first, to avoid wasting time working with obstacles we don't require
-  bool isObstacle = mObstacleSettings.isObstacle();
-  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::IsObstacle ) )
-    isObstacle = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Property::IsObstacle, context.expressionContext(), isObstacle ); // default to layer default
-
-  if ( !drawLabels )
-  {
-    if ( isObstacle )
-    {
-      return registerObstacleFeature( f, context, obstacleGeometry );
-    }
-    else
-    {
-      return nullptr;
-    }
-  }
-
-  QgsFeature feature = f;
-  if ( geometryGeneratorEnabled )
-  {
-    const QgsGeometry geometry = mGeometryGeneratorExpression.evaluate( &context.expressionContext() ).value<QgsGeometry>();
-    if ( mGeometryGeneratorExpression.hasEvalError() )
-      QgsMessageLog::logMessage( mGeometryGeneratorExpression.evalErrorString(), QObject::tr( "Labeling" ) );
-
-    if ( obstacleGeometry.isNull() )
-    {
-      // if an explicit obstacle geometry hasn't been set, we must always use the original feature geometry
-      // as the obstacle -- because we want to use the geometry which was used to render the symbology
-      // for the feature as the obstacle for other layers' labels, NOT the generated geometry which is used
-      // only to place labels for this layer.
-      obstacleGeometry = f.geometry();
-    }
-
-    feature.setGeometry( geometry );
-  }
-
-  // store data defined-derived values for later adding to label feature for use during rendering
-  dataDefinedValues.clear();
-
-  // data defined show label? defaults to show label if not set
+// data defined show label? defaults to show label if not set
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::Show ) )
   {
     context.expressionContext().setOriginalValueVariable( true );
     if ( !mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Property::Show, context.expressionContext(), true ) )
     {
-      return nullptr;
+      return false;
     }
   }
 
-  // data defined scale visibility?
+// data defined scale visibility?
   bool useScaleVisibility = scaleVisibility;
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::ScaleVisibility ) )
     useScaleVisibility = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Property::ScaleVisibility, context.expressionContext(), scaleVisibility );
@@ -2048,7 +1999,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     // maxScale is inclusive ( < --> no label )
     if ( !qgsDoubleNear( maxScale, 0.0 ) && QgsScaleUtils::lessThanMaximumScale( context.rendererScale(), maxScale ) )
     {
-      return nullptr;
+      return false;
     }
 
     // data defined min scale?
@@ -2068,10 +2019,16 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     // minScale is exclusive ( >= --> no label )
     if ( !qgsDoubleNear( minScale, 0.0 ) && QgsScaleUtils::equalToOrGreaterThanMinimumScale( context.rendererScale(), minScale ) )
     {
-      return nullptr;
+      return false;
     }
   }
 
+  return true;
+}
+
+QgsTextFormat QgsPalLayerSettings::evaluateTextFormat( QgsRenderContext &context, bool &labelIsHidden )
+{
+  labelIsHidden = false;
   QgsTextFormat evaluatedFormat = mFormat;
 
   QFont labelFont = evaluatedFormat.font();
@@ -2079,7 +2036,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
 
   // data defined font units?
   Qgis::RenderUnit fontunits = evaluatedFormat.sizeUnit();
-  exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Property::FontSizeUnit, context.expressionContext() );
+  const QVariant exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Property::FontSizeUnit, context.expressionContext() );
   if ( !QgsVariantUtils::isNull( exprVal ) )
   {
     QString units = exprVal.toString();
@@ -2101,14 +2058,16 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   }
   if ( fontSize <= 0.0 )
   {
-    return nullptr;
+    labelIsHidden = true;
+    return evaluatedFormat;
   }
 
   int fontPixelSize = QgsTextRenderer::sizeToPixel( fontSize, context, fontunits, evaluatedFormat.sizeMapUnitScale() );
   // don't try to show font sizes less than 1 pixel (Qt complains)
   if ( fontPixelSize < 1 )
   {
-    return nullptr;
+    labelIsHidden = true;
+    return evaluatedFormat;
   }
   labelFont.setPixelSize( fontPixelSize );
 
@@ -2124,7 +2083,8 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
 
       if ( fontMinPixel > labelFont.pixelSize() || labelFont.pixelSize() > fontMaxPixel )
       {
-        return nullptr;
+        labelIsHidden = true;
+        return evaluatedFormat;
       }
     }
   }
@@ -2134,7 +2094,58 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
 
   // calculate rest of font attributes and store any data defined values
   // this is done here for later use in making label backgrounds part of collision management (when implemented)
-  labelFont.setCapitalization( QFont::MixedCase ); // reset this - we don't use QFont's handling as it breaks with curved labels
+
+  // maintain API - capitalization may have been set in textFont
+  if ( evaluatedFormat.capitalization() == Qgis::Capitalization::MixedCase && mFormat.font().capitalization() != QFont::MixedCase )
+  {
+    evaluatedFormat.setCapitalization( static_cast< Qgis::Capitalization >( mFormat.font().capitalization() ) );
+  }
+  labelFont.setCapitalization( QFont::MixedCase ); // reset this - we don't use QFont's handling
+  // as above REQUIRED for maintaining API
+  evaluatedFormat.setCapitalization( evaluatedFormat.capitalization() );
+
+  // data defined font capitalization?
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::FontCase ) )
+  {
+    const QVariant exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Property::FontCase, context.expressionContext() );
+    if ( !QgsVariantUtils::isNull( exprVal ) )
+    {
+      QString fcase = exprVal.toString().trimmed();
+      QgsDebugMsgLevel( u"exprVal FontCase:%1"_s.arg( fcase ), 4 );
+
+      if ( !fcase.isEmpty() )
+      {
+        if ( fcase.compare( "NoChange"_L1, Qt::CaseInsensitive ) == 0 )
+        {
+          evaluatedFormat.setCapitalization( Qgis::Capitalization::MixedCase );
+        }
+        else if ( fcase.compare( "Upper"_L1, Qt::CaseInsensitive ) == 0 )
+        {
+          evaluatedFormat.setCapitalization( Qgis::Capitalization::AllUppercase );
+        }
+        else if ( fcase.compare( "Lower"_L1, Qt::CaseInsensitive ) == 0 )
+        {
+          evaluatedFormat.setCapitalization( Qgis::Capitalization::AllLowercase );
+        }
+        else if ( fcase.compare( "Capitalize"_L1, Qt::CaseInsensitive ) == 0 )
+        {
+          evaluatedFormat.setCapitalization( Qgis::Capitalization::ForceFirstLetterToCapital );
+        }
+        else if ( fcase.compare( "Title"_L1, Qt::CaseInsensitive ) == 0 )
+        {
+          evaluatedFormat.setCapitalization( Qgis::Capitalization::TitleCase );
+        }
+        else if ( fcase.compare( "SmallCaps"_L1, Qt::CaseInsensitive ) == 0 )
+        {
+          evaluatedFormat.setCapitalization( Qgis::Capitalization::SmallCaps );
+        }
+        else if ( fcase.compare( "AllSmallCaps"_L1, Qt::CaseInsensitive ) == 0 )
+        {
+          evaluatedFormat.setCapitalization( Qgis::Capitalization::AllSmallCaps );
+        }
+      }
+    }
+  }
 
   parseTextStyle( labelFont, fontunits, context );
   if ( mDataDefinedProperties.hasActiveProperties() )
@@ -2181,23 +2192,26 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   evaluatedFormat.setSize( labelFont.pixelSize() / symbologyReferenceScaleFactor );
   evaluatedFormat.setSizeUnit( Qgis::RenderUnit::Pixels );
 
-  QString labelText;
+  return evaluatedFormat;
+}
 
-  // Check to see if we are a expression string.
+bool QgsPalLayerSettings::evaluateLabelContent( const QgsFeature &feature, QgsRenderContext &context, bool allowMultipleLines, QString &labelText, QgsTextDocument &document, const QgsTextFormat &format ) const
+{
+  // Check to see if we are using an expression string.
   if ( isExpression )
   {
     QgsExpression *exp = getLabelExpression();
     if ( exp->hasParserError() )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Expression parser error:%1" ).arg( exp->parserErrorString() ), 4 );
-      return nullptr;
+      QgsDebugMsgLevel( u"Expression parser error:%1"_s.arg( exp->parserErrorString() ), 4 );
+      return false;
     }
 
     QVariant result = exp->evaluate( &context.expressionContext() ); // expression prepared in QgsPalLabeling::prepareLayer()
     if ( exp->hasEvalError() )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Expression parser eval error:%1" ).arg( exp->evalErrorString() ), 4 );
-      return nullptr;
+      QgsDebugMsgLevel( u"Expression parser eval error:%1"_s.arg( exp->evalErrorString() ), 4 );
+      return false;
     }
     labelText = QgsVariantUtils::isNull( result ) ? QString() : result.toString();
   }
@@ -2207,65 +2221,20 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     labelText = QgsVariantUtils::isNull( v ) ? QString() : v.toString();
   }
 
+  // TODO -- this is in the wrong place. We should be substituting the text only, ie after we have parsed
+  // any HTML tags to a text document.
+
   // apply text replacements
   if ( useSubstitutions )
   {
     labelText = substitutions.process( labelText );
   }
 
-  // apply capitalization
-  Qgis::Capitalization capitalization = evaluatedFormat.capitalization();
-  // maintain API - capitalization may have been set in textFont
-  if ( capitalization == Qgis::Capitalization::MixedCase && mFormat.font().capitalization() != QFont::MixedCase )
-  {
-    capitalization = static_cast< Qgis::Capitalization >( mFormat.font().capitalization() );
-  }
+  // TODO -- this is in the wrong place. We should be capitalizing the text only, ie after we have parsed
+  // any HTML tags to a text document.
+  labelText = QgsStringUtils::capitalize( labelText, format.capitalization() );
 
-  // data defined font capitalization?
-  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::FontCase ) )
-  {
-    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Property::FontCase, context.expressionContext() );
-    if ( !QgsVariantUtils::isNull( exprVal ) )
-    {
-      QString fcase = exprVal.toString().trimmed();
-      QgsDebugMsgLevel( QStringLiteral( "exprVal FontCase:%1" ).arg( fcase ), 4 );
-
-      if ( !fcase.isEmpty() )
-      {
-        if ( fcase.compare( QLatin1String( "NoChange" ), Qt::CaseInsensitive ) == 0 )
-        {
-          capitalization = Qgis::Capitalization::MixedCase;
-        }
-        else if ( fcase.compare( QLatin1String( "Upper" ), Qt::CaseInsensitive ) == 0 )
-        {
-          capitalization = Qgis::Capitalization::AllUppercase;
-        }
-        else if ( fcase.compare( QLatin1String( "Lower" ), Qt::CaseInsensitive ) == 0 )
-        {
-          capitalization = Qgis::Capitalization::AllLowercase;
-        }
-        else if ( fcase.compare( QLatin1String( "Capitalize" ), Qt::CaseInsensitive ) == 0 )
-        {
-          capitalization = Qgis::Capitalization::ForceFirstLetterToCapital;
-        }
-        else if ( fcase.compare( QLatin1String( "Title" ), Qt::CaseInsensitive ) == 0 )
-        {
-          capitalization = Qgis::Capitalization::TitleCase;
-        }
-#if defined(HAS_KDE_QT5_SMALL_CAPS_FIX) || QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
-        else if ( fcase.compare( QLatin1String( "SmallCaps" ), Qt::CaseInsensitive ) == 0 )
-        {
-          capitalization = Qgis::Capitalization::SmallCaps;
-        }
-        else if ( fcase.compare( QLatin1String( "AllSmallCaps" ), Qt::CaseInsensitive ) == 0 )
-        {
-          capitalization = Qgis::Capitalization::AllSmallCaps;
-        }
-#endif
-      }
-    }
-  }
-  labelText = QgsStringUtils::capitalize( labelText, capitalization );
+  // TODO -- this is in the wrong place. We should be formatting numbers AFTER converting HTML to documents
 
   // format number if label text is coercible to a number
   bool evalFormatNumbers = formatNumbers;
@@ -2298,29 +2267,166 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     }
   }
 
-  // NOTE: this should come AFTER any option that affects font metrics
-  const QFontMetricsF labelFontMetrics( labelFont );
-  QSizeF labelSize;
-  QSizeF rotatedSize;
+  document = QgsTextDocument::fromTextAndFormat( {labelText }, format );
 
+  QString wrapchr = wrapChar;
+  int evalAutoWrapLength = autoWrapLength;
+  if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::MultiLineWrapChar ) )
+  {
+    wrapchr = dataDefinedValues.value( QgsPalLayerSettings::Property::MultiLineWrapChar ).toString();
+  }
+  if ( dataDefinedValues.contains( QgsPalLayerSettings::Property::AutoWrapLength ) )
+  {
+    evalAutoWrapLength = dataDefinedValues.value( QgsPalLayerSettings::Property::AutoWrapLength, evalAutoWrapLength ).toInt();
+  }
+
+  if ( wrapchr.isEmpty() )
+  {
+    wrapchr = u"\n"_s; // default to new line delimiter
+  }
+
+  if ( allowMultipleLines )
+  {
+    document.splitLines( wrapchr, evalAutoWrapLength, useMaxLineLengthForAutoWrap );
+  }
+
+  return true;
+}
+
+QgsGeometry QgsPalLayerSettings::evaluateLabelGeometry( const QgsFeature &feature, QgsRenderContext &context, const QgsLabelLineSettings &lineSettings ) const
+{
+  QgsGeometry geom = feature.geometry();
+  if ( geom.isEmpty() )
+  {
+    return geom;
+  }
+
+  // simplify?
+  bool allowSimplify = true;
+  switch ( placement )
+  {
+    case Qgis::LabelPlacement::Curved:
+    case Qgis::LabelPlacement::PerimeterCurved:
+    {
+      switch ( lineSettings.curvedLabelMode() )
+      {
+        case Qgis::CurvedLabelMode::PlaceCharactersAtVertices:
+          // don't simplify -- this would remove vertices, making characters out of sync with remaining vertices
+          allowSimplify = false;
+          break;
+        case Qgis::CurvedLabelMode::Default:
+        case Qgis::CurvedLabelMode::StretchCharacterSpacingToFitLine:
+        case Qgis::CurvedLabelMode::StretchWordSpacingToFitLine:
+          break;
+      }
+      break;
+    }
+
+    case Qgis::LabelPlacement::AroundPoint:
+    case Qgis::LabelPlacement::OverPoint:
+    case Qgis::LabelPlacement::Line:
+    case Qgis::LabelPlacement::Horizontal:
+    case Qgis::LabelPlacement::Free:
+    case Qgis::LabelPlacement::OrderedPositionsAroundPoint:
+    case Qgis::LabelPlacement::OutsidePolygons:
+      break;
+  }
+
+  const QgsVectorSimplifyMethod &simplifyMethod = context.vectorSimplifyMethod();
+  std::unique_ptr<QgsGeometry> scopedClonedGeom;
+  if ( allowSimplify && simplifyMethod.simplifyHints() != Qgis::VectorRenderingSimplificationFlags( Qgis::VectorRenderingSimplificationFlag::NoSimplification ) && simplifyMethod.forceLocalOptimization() )
+  {
+    unsigned int simplifyHints = simplifyMethod.simplifyHints() | QgsMapToPixelSimplifier::SimplifyEnvelope;
+    const Qgis::VectorSimplificationAlgorithm simplifyAlgorithm = simplifyMethod.simplifyAlgorithm();
+    QgsMapToPixelSimplifier simplifier( simplifyHints, simplifyMethod.tolerance(), simplifyAlgorithm );
+    geom = simplifier.simplify( geom );
+  }
+
+  return geom;
+}
+
+std::vector<std::unique_ptr<QgsLabelFeature> > QgsPalLayerSettings::registerFeatureWithDetails( const QgsFeature &f, QgsRenderContext &context, QgsGeometry obstacleGeometry, const QgsSymbol *symbol )
+{
+  QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
+  mCurFeat = &f;
+
+  // data defined is obstacle? calculate this first, to avoid wasting time working with obstacles we don't require
+  bool isObstacle = mObstacleSettings.isObstacle();
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::IsObstacle ) )
+    isObstacle = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Property::IsObstacle, context.expressionContext(), isObstacle ); // default to layer default
+
+  std::vector<std::unique_ptr<QgsLabelFeature> > res;
+
+  // possibly an obstacle-only feature
+  if ( !drawLabels )
+  {
+    if ( isObstacle )
+    {
+      std::unique_ptr< QgsLabelFeature > obstacle = registerObstacleFeature( f, context, obstacleGeometry );
+      if ( obstacle )
+        res.emplace_back( std::move( obstacle ) );
+      return res;
+    }
+    else
+    {
+      return {};
+    }
+  }
+
+  if ( !isLabelVisible( context ) )
+    return {};
+
+  QgsFeature feature = f;
+  if ( geometryGeneratorEnabled )
+  {
+    const QgsGeometry geometry = mGeometryGeneratorExpression.evaluate( &context.expressionContext() ).value<QgsGeometry>();
+    if ( mGeometryGeneratorExpression.hasEvalError() )
+      QgsMessageLog::logMessage( mGeometryGeneratorExpression.evalErrorString(), QObject::tr( "Labeling" ) );
+
+    if ( obstacleGeometry.isNull() )
+    {
+      // if an explicit obstacle geometry hasn't been set, we must always use the original feature geometry
+      // as the obstacle -- because we want to use the geometry which was used to render the symbology
+      // for the feature as the obstacle for other layers' labels, NOT the generated geometry which is used
+      // only to place labels for this layer.
+      obstacleGeometry = f.geometry();
+    }
+
+    feature.setGeometry( geometry );
+  }
+
+  // store data defined-derived values for later adding to label feature for use during rendering
+  dataDefinedValues.clear();
+
+  // evaluate text format and font properties
+  bool labelIsHidden = false;
+  QgsTextFormat evaluatedFormat = evaluateTextFormat( context, labelIsHidden );
+  if ( labelIsHidden )
+    return {};
+
+  QgsLabelPlacementSettings placementSettings = mPlacementSettings;
+  placementSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
+
+  QString labelText;
   QgsTextDocument doc;
-  QgsTextDocumentMetrics documentMetrics;
-  QRectF outerBounds;
-
+  bool allowMultipleLines = true;
   switch ( placement )
   {
     case Qgis::LabelPlacement::PerimeterCurved:
     case Qgis::LabelPlacement::Curved:
     {
-      // avoid calculating document and metrics if we don't require them for curved labels
-      if ( evaluatedFormat.allowHtmlFormatting() && !labelText.isEmpty() )
+      switch ( placementSettings.multiPartBehavior() )
       {
-        doc = QgsTextDocument::fromHtml( QStringList() << labelText );
-        calculateLabelSize( labelFontMetrics, labelText, context, evaluatedFormat, &doc, &documentMetrics, labelSize, rotatedSize, outerBounds );
-      }
-      else
-      {
-        calculateLabelSize( labelFontMetrics, labelText, context, evaluatedFormat, nullptr, nullptr, labelSize, rotatedSize, outerBounds );
+        case Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly:
+        case Qgis::MultiPartLabelingBehavior::LabelEveryPartWithEntireLabel:
+          // for these curved placements we only support a single line of text
+          allowMultipleLines = false;
+          break;
+
+        case Qgis::MultiPartLabelingBehavior::SplitLabelTextLinesOverParts:
+          // this mode permits multiple lines, as we'll be splitting them over the geometry parts
+          allowMultipleLines = true;
+          break;
       }
       break;
     }
@@ -2333,12 +2439,110 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     case Qgis::LabelPlacement::OrderedPositionsAroundPoint:
     case Qgis::LabelPlacement::OutsidePolygons:
     {
-      // non-curved labels always require document and metrics
-      doc = QgsTextDocument::fromTextAndFormat( {labelText }, evaluatedFormat );
-      calculateLabelSize( labelFontMetrics, labelText, context, evaluatedFormat, &doc, &documentMetrics, labelSize, rotatedSize, outerBounds );
       break;
     }
   }
+  if ( !evaluateLabelContent( feature, context, allowMultipleLines, labelText, doc, evaluatedFormat ) )
+    return {};
+
+  // geometry
+  QgsLabelLineSettings lineSettings = mLineSettings;
+  lineSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
+
+  QgsLabelPointSettings pointSettings = mPointSettings;
+  pointSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
+
+  QgsGeometry geom = evaluateLabelGeometry( feature, context, lineSettings );
+  if ( geom.isEmpty() )
+    return {};
+
+
+  // data defined centroid whole or clipped?
+  bool wholeCentroid = centroidWhole;
+  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::CentroidWhole ) )
+  {
+    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Property::CentroidWhole, context.expressionContext() );
+    if ( !QgsVariantUtils::isNull( exprVal ) )
+    {
+      QString str = exprVal.toString().trimmed();
+      QgsDebugMsgLevel( u"exprVal CentroidWhole:%1"_s.arg( str ), 4 );
+
+      if ( !str.isEmpty() )
+      {
+        if ( str.compare( "Visible"_L1, Qt::CaseInsensitive ) == 0 )
+        {
+          wholeCentroid = false;
+        }
+        else if ( str.compare( "Whole"_L1, Qt::CaseInsensitive ) == 0 )
+        {
+          wholeCentroid = true;
+        }
+      }
+    }
+  }
+
+  // whether we're going to create a centroid for polygon
+  bool centroidPoly = ( ( placement == Qgis::LabelPlacement::AroundPoint
+                          || placement == Qgis::LabelPlacement::OverPoint )
+                        && geom.type() == Qgis::GeometryType::Polygon );
+
+  // CLIP the geometry if it is bigger than the extent
+  // don't clip if centroid is requested for whole feature
+  bool doClip = false;
+  if ( !centroidPoly || !wholeCentroid )
+  {
+    doClip = true;
+  }
+
+  if ( isObstacle || ( geom.type() == Qgis::GeometryType::Point && offsetType == Qgis::LabelOffsetType::FromSymbolBounds ) )
+  {
+    if ( !obstacleGeometry.isNull() && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, ct, doClip ? extentGeom : QgsGeometry(), lineSettings.mergeLines() ) )
+    {
+      obstacleGeometry = QgsGeometry( QgsPalLabeling::prepareGeometry( obstacleGeometry, context, ct, doClip ? extentGeom : QgsGeometry(), lineSettings.mergeLines() ) );
+    }
+  }
+
+  switch ( placementSettings.multiPartBehavior() )
+  {
+    case Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly:
+    case Qgis::MultiPartLabelingBehavior::LabelEveryPartWithEntireLabel:
+    {
+      std::unique_ptr< QgsTextLabelFeature > label = generateLabelFeature( context, feature, 0, geom, obstacleGeometry, doc, labelText, evaluatedFormat, symbol, lineSettings, pointSettings, placementSettings, isObstacle, doClip );
+      if ( label )
+        res.emplace_back( std::move( label ) );
+      break;
+    }
+
+    case Qgis::MultiPartLabelingBehavior::SplitLabelTextLinesOverParts:
+    {
+      const QVector< QgsGeometry > geometryParts = geom.asGeometryCollection();
+      const QVector< QgsTextDocument > documentParts = doc.splitBlocksToDocuments();
+      const std::size_t partCount = std::min( geometryParts.size(), documentParts.size() );
+      res.reserve( partCount );
+      for ( std::size_t i = 0; i < partCount; ++i )
+      {
+        std::unique_ptr< QgsTextLabelFeature > label = generateLabelFeature( context, feature, static_cast< int >( i ), geometryParts[i], obstacleGeometry, documentParts[i], labelText, evaluatedFormat, symbol, lineSettings, pointSettings, placementSettings, isObstacle, doClip );
+        if ( label )
+          res.emplace_back( std::move( label ) );
+      }
+
+      break;
+    }
+  }
+
+  return res;
+}
+
+std::unique_ptr< QgsTextLabelFeature> QgsPalLayerSettings::generateLabelFeature( QgsRenderContext &context, const QgsFeature &feature, int subPartId, QgsGeometry geom, const QgsGeometry &obstacleGeometry, QgsTextDocument doc, const QString &labelText, const QgsTextFormat &evaluatedFormat, const QgsSymbol *symbol, const QgsLabelLineSettings &lineSettings, const QgsLabelPointSettings &pointSettings, const QgsLabelPlacementSettings &placementSettings, bool isObstacle, bool doClip ) const
+{
+  QVariant exprVal;
+  QSizeF labelSize;
+  QSizeF rotatedSize;
+
+  QgsTextDocumentMetrics documentMetrics;
+  QRectF outerBounds;
+  QFontMetricsF labelFontMetrics( evaluatedFormat.font() );
+  calculateLabelMetrics( labelFontMetrics, context, evaluatedFormat, doc, documentMetrics, labelSize, rotatedSize, outerBounds );
 
   // maximum angle between curved label characters (hardcoded defaults used in QGIS <2.0)
   //
@@ -2380,67 +2584,12 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
       break;
   }
 
-  // data defined centroid whole or clipped?
-  bool wholeCentroid = centroidWhole;
-  if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::CentroidWhole ) )
-  {
-    exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Property::CentroidWhole, context.expressionContext() );
-    if ( !QgsVariantUtils::isNull( exprVal ) )
-    {
-      QString str = exprVal.toString().trimmed();
-      QgsDebugMsgLevel( QStringLiteral( "exprVal CentroidWhole:%1" ).arg( str ), 4 );
-
-      if ( !str.isEmpty() )
-      {
-        if ( str.compare( QLatin1String( "Visible" ), Qt::CaseInsensitive ) == 0 )
-        {
-          wholeCentroid = false;
-        }
-        else if ( str.compare( QLatin1String( "Whole" ), Qt::CaseInsensitive ) == 0 )
-        {
-          wholeCentroid = true;
-        }
-      }
-    }
-  }
-
-  QgsGeometry geom = feature.geometry();
-  if ( geom.isNull() )
-  {
-    return nullptr;
-  }
-
-  // simplify?
-  const QgsVectorSimplifyMethod &simplifyMethod = context.vectorSimplifyMethod();
-  std::unique_ptr<QgsGeometry> scopedClonedGeom;
-  if ( simplifyMethod.simplifyHints() != Qgis::VectorRenderingSimplificationFlags( Qgis::VectorRenderingSimplificationFlag::NoSimplification ) && simplifyMethod.forceLocalOptimization() )
-  {
-    unsigned int simplifyHints = simplifyMethod.simplifyHints() | QgsMapToPixelSimplifier::SimplifyEnvelope;
-    const Qgis::VectorSimplificationAlgorithm simplifyAlgorithm = simplifyMethod.simplifyAlgorithm();
-    QgsMapToPixelSimplifier simplifier( simplifyHints, simplifyMethod.tolerance(), simplifyAlgorithm );
-    geom = simplifier.simplify( geom );
-  }
-
   if ( !context.featureClipGeometry().isEmpty() )
   {
     const Qgis::GeometryType expectedType = geom.type();
     geom = geom.intersection( context.featureClipGeometry() );
     geom.convertGeometryCollectionToSubclass( expectedType );
   }
-
-  // whether we're going to create a centroid for polygon
-  bool centroidPoly = ( ( placement == Qgis::LabelPlacement::AroundPoint
-                          || placement == Qgis::LabelPlacement::OverPoint )
-                        && geom.type() == Qgis::GeometryType::Polygon );
-
-  // CLIP the geometry if it is bigger than the extent
-  // don't clip if centroid is requested for whole feature
-  bool doClip = false;
-  if ( !centroidPoly || !wholeCentroid )
-  {
-    doClip = true;
-  }
-
 
   Qgis::LabelPolygonPlacementFlags polygonPlacement = mPolygonPlacementFlags;
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::PolygonLabelOutside ) )
@@ -2451,18 +2600,18 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
       if ( dataDefinedOutside.userType() == QMetaType::Type::QString )
       {
         const QString value = dataDefinedOutside.toString().trimmed();
-        if ( value.compare( QLatin1String( "force" ), Qt::CaseInsensitive ) == 0 )
+        if ( value.compare( "force"_L1, Qt::CaseInsensitive ) == 0 )
         {
           // forced outside placement -- remove inside flag, add outside flag
           polygonPlacement &= ~static_cast< int >( Qgis::LabelPolygonPlacementFlag::AllowPlacementInsideOfPolygon );
           polygonPlacement |= Qgis::LabelPolygonPlacementFlag::AllowPlacementOutsideOfPolygon;
         }
-        else if ( value.compare( QLatin1String( "yes" ), Qt::CaseInsensitive ) == 0 )
+        else if ( value.compare( "yes"_L1, Qt::CaseInsensitive ) == 0 )
         {
           // permit outside placement
           polygonPlacement |= Qgis::LabelPolygonPlacementFlag::AllowPlacementOutsideOfPolygon;
         }
-        else if ( value.compare( QLatin1String( "no" ), Qt::CaseInsensitive ) == 0 )
+        else if ( value.compare( "no"_L1, Qt::CaseInsensitive ) == 0 )
         {
           // block outside placement
           polygonPlacement &= ~static_cast< int >( Qgis::LabelPolygonPlacementFlag::AllowPlacementOutsideOfPolygon );
@@ -2484,12 +2633,6 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     }
   }
 
-  QgsLabelLineSettings lineSettings = mLineSettings;
-  lineSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
-
-  QgsLabelPointSettings pointSettings = mPointSettings;
-  pointSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
-
   if ( geom.type() == Qgis::GeometryType::Line || placement == Qgis::LabelPlacement::Line || placement == Qgis::LabelPlacement::PerimeterCurved )
   {
     switch ( lineSettings.anchorClipping() )
@@ -2500,6 +2643,22 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
       case QgsLabelLineSettings::AnchorClipping::UseEntireLine:
         doClip = false;
         break;
+    }
+
+    if ( placement == Qgis::LabelPlacement::Curved || placement == Qgis::LabelPlacement::PerimeterCurved )
+    {
+      switch ( lineSettings.curvedLabelMode() )
+      {
+        case Qgis::CurvedLabelMode::PlaceCharactersAtVertices:
+          // don't clip geometries when in this mode, or vertices will get out-of-sync with their corresponding
+          // characters!
+          doClip = false;
+          break;
+        case Qgis::CurvedLabelMode::Default:
+        case Qgis::CurvedLabelMode::StretchCharacterSpacingToFitLine:
+        case Qgis::CurvedLabelMode::StretchWordSpacingToFitLine:
+          break;
+      }
     }
   }
 
@@ -2530,17 +2689,9 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     geom = QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? extentGeom : QgsGeometry(), lineSettings.mergeLines() );
 
     if ( geom.isEmpty() )
-      return nullptr;
+      return {};
   }
   geos_geom_clone = QgsGeos::asGeos( geom, 0, Qgis::GeosCreationFlag::SkipEmptyInteriorRings );
-
-  if ( isObstacle || ( geom.type() == Qgis::GeometryType::Point && offsetType == Qgis::LabelOffsetType::FromSymbolBounds ) )
-  {
-    if ( !obstacleGeometry.isNull() && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, ct, doClip ? extentGeom : QgsGeometry(), lineSettings.mergeLines() ) )
-    {
-      obstacleGeometry = QgsGeometry( QgsPalLabeling::prepareGeometry( obstacleGeometry, context, ct, doClip ? extentGeom : QgsGeometry(), lineSettings.mergeLines() ) );
-    }
-  }
 
   QgsLabelThinningSettings featureThinningSettings = mThinningSettings;
   featureThinningSettings.updateDataDefinedProperties( mDataDefinedProperties, context.expressionContext() );
@@ -2556,12 +2707,12 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     else
     {
       if ( !checkMinimumSizeMM( context, geom, featureThinningSettings.minimumFeatureSize() ) )
-        return nullptr;
+        return {};
     }
   }
 
   if ( !geos_geom_clone )
-    return nullptr; // invalid geometry
+    return {}; // invalid geometry
 
   // likelihood exists label will be registered with PAL and may be drawn
   // check if max number of features to label (already registered with PAL) has been reached
@@ -2570,11 +2721,11 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   {
     if ( !featureThinningSettings.maximumNumberLabels() )
     {
-      return nullptr;
+      return {};
     }
     if ( mFeatsRegPal >= featureThinningSettings.maximumNumberLabels() )
     {
-      return nullptr;
+      return {};
     }
 
     int divNum = static_cast< int >( ( static_cast< double >( mFeaturesToLabel ) / featureThinningSettings.maximumNumberLabels() ) + 0.5 ); // NOLINT
@@ -2583,7 +2734,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
       mFeatsSendingToPal += 1;
       if ( divNum &&  mFeatsSendingToPal % divNum )
       {
-        return nullptr;
+        return {};
       }
     }
   }
@@ -2808,11 +2959,11 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
           if ( !QgsVariantUtils::isNull( exprVal ) )
           {
             QString haliString = exprVal.toString();
-            if ( haliString.compare( QLatin1String( "Center" ), Qt::CaseInsensitive ) == 0 )
+            if ( haliString.compare( "Center"_L1, Qt::CaseInsensitive ) == 0 )
             {
               xdiff -= labelSize.width() / 2.0;
             }
-            else if ( haliString.compare( QLatin1String( "Right" ), Qt::CaseInsensitive ) == 0 )
+            else if ( haliString.compare( "Right"_L1, Qt::CaseInsensitive ) == 0 )
             {
               xdiff -= labelSize.width();
             }
@@ -2826,16 +2977,16 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
           if ( !QgsVariantUtils::isNull( exprVal ) )
           {
             QString valiString = exprVal.toString();
-            if ( valiString.compare( QLatin1String( "Bottom" ), Qt::CaseInsensitive ) != 0 )
+            if ( valiString.compare( "Bottom"_L1, Qt::CaseInsensitive ) != 0 )
             {
-              if ( valiString.compare( QLatin1String( "Top" ), Qt::CaseInsensitive ) == 0 )
+              if ( valiString.compare( "Top"_L1, Qt::CaseInsensitive ) == 0 )
               {
                 ydiff -= labelSize.height();
               }
               else
               {
                 double descentRatio = labelFontMetrics.descent() / labelFontMetrics.height();
-                if ( valiString.compare( QLatin1String( "Base" ), Qt::CaseInsensitive ) == 0 )
+                if ( valiString.compare( "Base"_L1, Qt::CaseInsensitive ) == 0 )
                 {
                   ydiff -= labelSize.height() * descentRatio;
                 }
@@ -2843,7 +2994,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
                 {
                   double capHeightRatio = ( labelFontMetrics.boundingRect( 'H' ).height() + 1 + labelFontMetrics.descent() ) / labelFontMetrics.height();
                   ydiff -= labelSize.height() * capHeightRatio;
-                  if ( valiString.compare( QLatin1String( "Half" ), Qt::CaseInsensitive ) == 0 )
+                  if ( valiString.compare( "Half"_L1, Qt::CaseInsensitive ) == 0 )
                   {
                     ydiff += labelSize.height() * ( capHeightRatio - descentRatio ) / 2.0;
                   }
@@ -2950,16 +3101,6 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   // users with options they likely don't need to see...
   const double overrunSmoothDist = context.convertToMapUnits( 1, Qgis::RenderUnit::Millimeters );
 
-  bool labelAll = labelPerPart && !hasDataDefinedPosition;
-  if ( !hasDataDefinedPosition )
-  {
-    if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::LabelAllParts ) )
-    {
-      context.expressionContext().setOriginalValueVariable( labelPerPart );
-      labelAll = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Property::LabelAllParts, context.expressionContext(), labelPerPart );
-    }
-  }
-
   // maximum distance
   double maximumDistanceEval = pointSettings.maximumDistance();
   if ( !qgsDoubleNear( maximumDistanceEval, 0.0 ) )
@@ -2968,7 +3109,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   }
 
   //  feature to the layer
-  auto labelFeature = std::make_unique< QgsTextLabelFeature>( feature.id(), std::move( geos_geom_clone ), labelSize );
+  auto labelFeature = std::make_unique< QgsTextLabelFeature>( feature.id(), std::move( geos_geom_clone ), labelSize, subPartId );
   labelFeature->setAnchorPosition( anchorPosition );
   labelFeature->setFeature( feature );
   labelFeature->setSymbol( symbol );
@@ -2995,9 +3136,11 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   labelFeature->setLineAnchorPercent( lineSettings.lineAnchorPercent() );
   labelFeature->setLineAnchorType( lineSettings.anchorType() );
   labelFeature->setLineAnchorTextPoint( lineSettings.anchorTextPoint() );
-  labelFeature->setLabelAllParts( labelAll );
+  labelFeature->setCurvedLabelMode( lineSettings.curvedLabelMode() );
+  labelFeature->setMultiPartBehavior( placementSettings.multiPartBehavior() );
   labelFeature->setOriginalFeatureCrs( context.coordinateTransform().sourceCrs() );
   labelFeature->setMinimumSize( minimumSize );
+  labelFeature->setWhitespaceCollisionHandling( placementSettings.whitespaceCollisionHandling() );
   if ( geom.type() == Qgis::GeometryType::Point && !obstacleGeometry.isNull() )
   {
     //register symbol size
@@ -3034,8 +3177,8 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   labelFeature->setVisualMargin( vm );
 
   // store the label's calculated font for later use during painting
-  QgsDebugMsgLevel( QStringLiteral( "PAL font stored definedFont: %1, Style: %2" ).arg( labelFont.toString(), labelFont.styleName() ), 4 );
-  labelFeature->setDefinedFont( labelFont );
+  QgsDebugMsgLevel( u"PAL font stored definedFont: %1, Style: %2"_s.arg( evaluatedFormat.font().toString(), evaluatedFormat.font().styleName() ), 4 );
+  labelFeature->setDefinedFont( evaluatedFormat.font() );
 
   labelFeature->setMaximumCharacterAngleInside( std::clamp( maxcharanglein, 20.0, 60.0 ) * M_PI / 180 );
   labelFeature->setMaximumCharacterAngleOutside( std::clamp( maxcharangleout, -95.0, -20.0 ) * M_PI / 180 );
@@ -3053,7 +3196,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
 
     case Qgis::LabelPlacement::Curved:
     case Qgis::LabelPlacement::PerimeterCurved:
-      labelFeature->setTextMetrics( QgsTextLabelFeature::calculateTextMetrics( xform, context, evaluatedFormat, labelFont, labelFontMetrics, labelFont.letterSpacing(), labelFont.wordSpacing(), labelText, evaluatedFormat.allowHtmlFormatting() ? &doc : nullptr, evaluatedFormat.allowHtmlFormatting() ? &documentMetrics : nullptr ) );
+      labelFeature->setTextMetrics( QgsTextLabelFeature::calculateTextMetrics( xform, context, evaluatedFormat, evaluatedFormat.font(), labelFontMetrics, evaluatedFormat.font().letterSpacing(), evaluatedFormat.font().wordSpacing(), doc, documentMetrics ) );
       break;
   }
 
@@ -3077,7 +3220,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       QString units = exprVal.toString().trimmed();
-      QgsDebugMsgLevel( QStringLiteral( "exprVal DistanceUnits:%1" ).arg( units ), 4 );
+      QgsDebugMsgLevel( u"exprVal DistanceUnits:%1"_s.arg( units ), 4 );
       if ( !units.isEmpty() )
       {
         bool ok = false;
@@ -3161,35 +3304,9 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
     }
   }
 
-  // data defined allow degraded placement
-  {
-    double allowDegradedPlacement = mPlacementSettings.allowDegradedPlacement();
-    if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::AllowDegradedPlacement ) )
-    {
-      context.expressionContext().setOriginalValueVariable( allowDegradedPlacement );
-      allowDegradedPlacement = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Property::AllowDegradedPlacement, context.expressionContext(), allowDegradedPlacement );
-    }
-    labelFeature->setAllowDegradedPlacement( allowDegradedPlacement );
-  }
-
-  // data defined overlap handling
-  {
-    Qgis::LabelOverlapHandling overlapHandling = mPlacementSettings.overlapHandling();
-    if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::OverlapHandling ) )
-    {
-      const QString handlingString = mDataDefinedProperties.valueAsString( QgsPalLayerSettings::Property::OverlapHandling, context.expressionContext() );
-      const QString cleanedString = handlingString.trimmed();
-      if ( cleanedString.compare( QLatin1String( "prevent" ), Qt::CaseInsensitive ) == 0 )
-        overlapHandling = Qgis::LabelOverlapHandling::PreventOverlap;
-      else if ( cleanedString.compare( QLatin1String( "allowifneeded" ), Qt::CaseInsensitive ) == 0 )
-        overlapHandling = Qgis::LabelOverlapHandling::AllowOverlapIfRequired;
-      else if ( cleanedString.compare( QLatin1String( "alwaysallow" ), Qt::CaseInsensitive ) == 0 )
-        overlapHandling = Qgis::LabelOverlapHandling::AllowOverlapAtNoCost;
-    }
-    labelFeature->setOverlapHandling( overlapHandling );
-  }
-
-  labelFeature->setPrioritization( mPlacementSettings.prioritization() );
+  labelFeature->setAllowDegradedPlacement( placementSettings.allowDegradedPlacement() );
+  labelFeature->setOverlapHandling( placementSettings.overlapHandling() );
+  labelFeature->setPrioritization( placementSettings.prioritization() );
 
   QgsLabelObstacleSettings os = mObstacleSettings;
   os.setIsObstacle( isObstacle );
@@ -3480,7 +3597,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont &labelFont,
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       QString family = exprVal.toString().trimmed();
-      QgsDebugMsgLevel( QStringLiteral( "exprVal Font family:%1" ).arg( family ), 4 );
+      QgsDebugMsgLevel( u"exprVal Font family:%1"_s.arg( family ), 4 );
 
       family = QgsApplication::fontManager()->processFontFamilyName( family );
       if ( labelFont.family() != family )
@@ -3503,7 +3620,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont &labelFont,
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       QString fontstyle = exprVal.toString().trimmed();
-      QgsDebugMsgLevel( QStringLiteral( "exprVal Font style:%1" ).arg( fontstyle ), 4 );
+      QgsDebugMsgLevel( u"exprVal Font style:%1"_s.arg( fontstyle ), 4 );
       ddFontStyle = fontstyle;
     }
   }
@@ -3538,7 +3655,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont &labelFont,
     newFont.setItalic( ddItalic );
   }
   else if ( !ddFontStyle.isEmpty()
-            && ddFontStyle.compare( QLatin1String( "Ignore" ), Qt::CaseInsensitive ) != 0 )
+            && ddFontStyle.compare( "Ignore"_L1, Qt::CaseInsensitive ) != 0 )
   {
     if ( !ddFontFamily.isEmpty() )
     {
@@ -3559,7 +3676,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont &labelFont,
   }
   else if ( !ddFontFamily.isEmpty() )
   {
-    if ( ddFontStyle.compare( QLatin1String( "Ignore" ), Qt::CaseInsensitive ) != 0 )
+    if ( ddFontStyle.compare( "Ignore"_L1, Qt::CaseInsensitive ) != 0 )
     {
       // just family is different, build font from database
       if ( !mFontDB )
@@ -3789,26 +3906,26 @@ void QgsPalLayerSettings::parseTextFormatting( QgsRenderContext &context )
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       QString str = exprVal.toString().trimmed();
-      QgsDebugMsgLevel( QStringLiteral( "exprVal MultiLineAlignment:%1" ).arg( str ), 4 );
+      QgsDebugMsgLevel( u"exprVal MultiLineAlignment:%1"_s.arg( str ), 4 );
 
       if ( !str.isEmpty() )
       {
         // "Left"
         Qgis::LabelMultiLineAlignment aligntype = Qgis::LabelMultiLineAlignment::Left;
 
-        if ( str.compare( QLatin1String( "Center" ), Qt::CaseInsensitive ) == 0 )
+        if ( str.compare( "Center"_L1, Qt::CaseInsensitive ) == 0 )
         {
           aligntype = Qgis::LabelMultiLineAlignment::Center;
         }
-        else if ( str.compare( QLatin1String( "Right" ), Qt::CaseInsensitive ) == 0 )
+        else if ( str.compare( "Right"_L1, Qt::CaseInsensitive ) == 0 )
         {
           aligntype = Qgis::LabelMultiLineAlignment::Right;
         }
-        else if ( str.compare( QLatin1String( "Follow" ), Qt::CaseInsensitive ) == 0 )
+        else if ( str.compare( "Follow"_L1, Qt::CaseInsensitive ) == 0 )
         {
           aligntype = Qgis::LabelMultiLineAlignment::FollowPlacement;
         }
-        else if ( str.compare( QLatin1String( "Justify" ), Qt::CaseInsensitive ) == 0 )
+        else if ( str.compare( "Justify"_L1, Qt::CaseInsensitive ) == 0 )
         {
           aligntype = Qgis::LabelMultiLineAlignment::Justify;
         }
@@ -3851,18 +3968,18 @@ void QgsPalLayerSettings::parseTextFormatting( QgsRenderContext &context )
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       QString str = exprVal.toString().trimmed();
-      QgsDebugMsgLevel( QStringLiteral( "exprVal DirSymbPlacement:%1" ).arg( str ), 4 );
+      QgsDebugMsgLevel( u"exprVal DirSymbPlacement:%1"_s.arg( str ), 4 );
 
       if ( !str.isEmpty() )
       {
         // "LeftRight"
         QgsLabelLineSettings::DirectionSymbolPlacement placetype = QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight;
 
-        if ( str.compare( QLatin1String( "Above" ), Qt::CaseInsensitive ) == 0 )
+        if ( str.compare( "Above"_L1, Qt::CaseInsensitive ) == 0 )
         {
           placetype = QgsLabelLineSettings::DirectionSymbolPlacement::SymbolAbove;
         }
-        else if ( str.compare( QLatin1String( "Below" ), Qt::CaseInsensitive ) == 0 )
+        else if ( str.compare( "Below"_L1, Qt::CaseInsensitive ) == 0 )
         {
           placetype = QgsLabelLineSettings::DirectionSymbolPlacement::SymbolBelow;
         }
@@ -3919,7 +4036,7 @@ void QgsPalLayerSettings::parseShapeBackground( QgsRenderContext &context )
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       QString skind = exprVal.toString().trimmed();
-      QgsDebugMsgLevel( QStringLiteral( "exprVal ShapeKind:%1" ).arg( skind ), 4 );
+      QgsDebugMsgLevel( u"exprVal ShapeKind:%1"_s.arg( skind ), 4 );
 
       if ( !skind.isEmpty() )
       {
@@ -3938,7 +4055,7 @@ void QgsPalLayerSettings::parseShapeBackground( QgsRenderContext &context )
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       QString svgfile = exprVal.toString().trimmed();
-      QgsDebugMsgLevel( QStringLiteral( "exprVal ShapeSVGFile:%1" ).arg( svgfile ), 4 );
+      QgsDebugMsgLevel( u"exprVal ShapeSVGFile:%1"_s.arg( svgfile ), 4 );
 
       // '' empty paths are allowed
       svgPath = QgsSymbolLayerUtils::svgSymbolNameToPath( svgfile, context.pathResolver() );
@@ -3954,7 +4071,7 @@ void QgsPalLayerSettings::parseShapeBackground( QgsRenderContext &context )
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       QString stype = exprVal.toString().trimmed();
-      QgsDebugMsgLevel( QStringLiteral( "exprVal ShapeSizeType:%1" ).arg( stype ), 4 );
+      QgsDebugMsgLevel( u"exprVal ShapeSizeType:%1"_s.arg( stype ), 4 );
 
       if ( !stype.isEmpty() )
       {
@@ -4025,7 +4142,7 @@ void QgsPalLayerSettings::parseShapeBackground( QgsRenderContext &context )
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       QString rotstr = exprVal.toString().trimmed();
-      QgsDebugMsgLevel( QStringLiteral( "exprVal ShapeRotationType:%1" ).arg( rotstr ), 4 );
+      QgsDebugMsgLevel( u"exprVal ShapeRotationType:%1"_s.arg( rotstr ), 4 );
 
       if ( !rotstr.isEmpty() )
       {
@@ -4128,7 +4245,7 @@ void QgsPalLayerSettings::parseDropShadow( QgsRenderContext &context )
     if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       QString str = exprVal.toString().trimmed();
-      QgsDebugMsgLevel( QStringLiteral( "exprVal ShadowUnder:%1" ).arg( str ), 4 );
+      QgsDebugMsgLevel( u"exprVal ShadowUnder:%1"_s.arg( str ), 4 );
 
       if ( !str.isEmpty() )
       {
@@ -4245,7 +4362,7 @@ bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry &geometry, Q
 QStringList QgsPalLabeling::splitToLines( const QString &text, const QString &wrapCharacter, const int autoWrapLength, const bool useMaxLineLengthWhenAutoWrapping )
 {
   QStringList multiLineSplit;
-  if ( !wrapCharacter.isEmpty() && wrapCharacter != QLatin1String( "\n" ) )
+  if ( !wrapCharacter.isEmpty() && wrapCharacter != "\n"_L1 )
   {
     //wrap on both the wrapchr and new line characters
     const QStringList lines = text.split( wrapCharacter );
@@ -4312,7 +4429,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
     catch ( QgsCsException &cse )
     {
       Q_UNUSED( cse )
-      QgsDebugMsgLevel( QStringLiteral( "Ignoring feature due to transformation exception" ), 4 );
+      QgsDebugMsgLevel( u"Ignoring feature due to transformation exception"_s, 4 );
       return QgsGeometry();
     }
     // geometry transforms may result in nan points, remove these
@@ -4341,7 +4458,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
     QgsPointXY center = context.mapExtent().center();
     if ( geom.rotate( m2p.mapRotation(), center ) != Qgis::GeometryOperationResult::Success )
     {
-      QgsDebugError( QStringLiteral( "Error rotating geometry" ).arg( geom.asWkt() ) );
+      QgsDebugError( u"Error rotating geometry"_s.arg( geom.asWkt() ) );
       return QgsGeometry();
     }
   }
@@ -4394,7 +4511,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
       QgsGeometry bufferGeom = geom.makeValid();
       if ( bufferGeom.isNull() )
       {
-        QgsDebugError( QStringLiteral( "Could not repair geometry: %1" ).arg( bufferGeom.lastError() ) );
+        QgsDebugError( u"Could not repair geometry: %1"_s.arg( bufferGeom.lastError() ) );
         return QgsGeometry();
       }
       geom = bufferGeom;
@@ -4966,4 +5083,48 @@ void QgsPalLabeling::dataDefinedDropShadow( QgsPalLayerSettings &tmpLyr,
     format.setShadow( shadow );
     tmpLyr.setFormat( format );
   }
+}
+
+QMimeData *QgsPalLayerSettings::toMimeData() const
+{
+  //set both the mime color data, and the text (format settings).
+
+  QMimeData *mimeData = new QMimeData;
+  mimeData->setColorData( QVariant( format().color() ) );
+
+  QgsReadWriteContext rwContext;
+  QDomDocument textDoc;
+  QDomElement textElem = writeXml( textDoc, rwContext );
+  textDoc.appendChild( textElem );
+  mimeData->setData( "application/qgis.labelsettings"_L1, textDoc.toString().toUtf8() );
+
+  return mimeData;
+}
+
+QgsPalLayerSettings QgsPalLayerSettings::fromMimeData( const QMimeData *data, bool *ok )
+{
+  if ( ok )
+    *ok = false;
+  QgsPalLayerSettings settings;
+  if ( !data || !data->hasFormat( "application/qgis.labelsettings"_L1 ) )
+    return settings;
+
+  QString text = QString::fromUtf8( data->data( "application/qgis.labelsettings"_L1 ) );
+  if ( !text.isEmpty() )
+  {
+    QDomDocument doc;
+    QDomElement elem;
+    QgsReadWriteContext rwContext;
+
+    if ( doc.setContent( text ) )
+    {
+      elem = doc.documentElement();
+
+      settings.readXml( elem, rwContext );
+      if ( ok )
+        *ok = true;
+      return settings;
+    }
+  }
+  return settings;
 }

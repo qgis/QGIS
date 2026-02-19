@@ -14,14 +14,18 @@
  ***************************************************************************/
 
 #include "qgsuniquevaluewidgetwrapper.h"
-#include "moc_qgsuniquevaluewidgetwrapper.cpp"
 
-#include "qgsvectorlayer.h"
-#include "qgsfilterlineedit.h"
 #include "qgsapplication.h"
+#include "qgsfilterlineedit.h"
+#include "qgsvectorlayer.h"
 
 #include <QCompleter>
 #include <QSettings>
+#include <QString>
+
+#include "moc_qgsuniquevaluewidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsUniqueValuesWidgetWrapper::QgsUniqueValuesWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
@@ -49,7 +53,7 @@ QVariant QgsUniqueValuesWidgetWrapper::value() const
 
 QWidget *QgsUniqueValuesWidgetWrapper::createWidget( QWidget *parent )
 {
-  if ( config( QStringLiteral( "Editable" ) ).toBool() )
+  if ( config( u"Editable"_s ).toBool() )
     return new QgsFilterLineEdit( parent );
   else
   {
@@ -96,7 +100,7 @@ void QgsUniqueValuesWidgetWrapper::initWidget( QWidget *editor )
     c->setCompletionMode( QCompleter::PopupCompletion );
     mLineEdit->setCompleter( c );
 
-    connect( mLineEdit, &QLineEdit::textChanged, this, [=]( const QString &value ) {
+    connect( mLineEdit, &QLineEdit::textChanged, this, [this]( const QString &value ) {
       Q_NOWARN_DEPRECATED_PUSH
       emit valueChanged( value );
       Q_NOWARN_DEPRECATED_POP

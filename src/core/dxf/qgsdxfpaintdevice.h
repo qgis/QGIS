@@ -22,9 +22,9 @@
 
 #include <memory>
 
-#include <QPaintDevice>
-
 #include "qgis_core.h"
+
+#include <QPaintDevice>
 
 class QgsDxfPaintEngine;
 class QgsDxfExport;

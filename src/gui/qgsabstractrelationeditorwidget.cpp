@@ -16,23 +16,27 @@
  ***************************************************************************/
 
 #include "qgsabstractrelationeditorwidget.h"
-#include "moc_qgsabstractrelationeditorwidget.cpp"
 
-#include "qgsfeatureiterator.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
 #include "qgsfeatureselectiondlg.h"
+#include "qgspolymorphicrelation.h"
+#include "qgsproject.h"
 #include "qgsrelation.h"
 #include "qgsrelationmanager.h"
-#include "qgspolymorphicrelation.h"
-#include "qgsvectorlayertools.h"
-#include "qgsproject.h"
 #include "qgstransactiongroup.h"
+#include "qgsvectorlayertools.h"
 #include "qgsvectorlayerutils.h"
 
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
+
+#include "moc_qgsabstractrelationeditorwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAbstractRelationEditorWidget::QgsAbstractRelationEditorWidget( const QVariantMap &config, QWidget *parent )
   : QWidget( parent )
@@ -48,7 +52,7 @@ void QgsAbstractRelationEditorWidget::setRelationFeature( const QgsRelation &rel
   mFeatureList.clear();
   mFeatureList.append( feature );
 
-  setObjectName( QStringLiteral( "referenced/" ) + mRelation.name() );
+  setObjectName( u"referenced/"_s + mRelation.name() );
 
   afterSetRelationFeature();
   updateUi();
@@ -84,7 +88,7 @@ void QgsAbstractRelationEditorWidget::setRelations( const QgsRelation &relation,
     }
   }
 
-  setObjectName( QStringLiteral( "referenced/" ) + mRelation.name() );
+  setObjectName( u"referenced/"_s + mRelation.name() );
 
   afterSetRelations();
   updateUi();
@@ -363,7 +367,7 @@ void QgsAbstractRelationEditorWidget::deleteFeatures( const QgsFeatureIds &fids 
     QString linkingFeaturesRequestExpression;
     if ( !deletedFeaturesPks.empty() )
     {
-      linkingFeaturesRequestExpression = QStringLiteral( "%1 IN (%2)" ).arg( QgsExpression::quotedColumnRef( mNmRelation.fieldPairs().first().first ), deletedFeaturesPks.join( ',' ) );
+      linkingFeaturesRequestExpression = u"%1 IN (%2)"_s.arg( QgsExpression::quotedColumnRef( mNmRelation.fieldPairs().first().first ), deletedFeaturesPks.join( ',' ) );
       linkingFeaturesRequest.setFilterExpression( linkingFeaturesRequestExpression );
 
       QgsFeatureIterator relatedLinkingFeatures = mNmRelation.referencingLayer()->getFeatures( linkingFeaturesRequest );
@@ -629,7 +633,7 @@ void QgsAbstractRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &fids 
       featureFilters.append( mRelation.getRelatedFeaturesRequest( editingFeature ).filterExpression()->expression() );
     }
 
-    const QString filter = QStringLiteral( "(%1) AND (%2)" ).arg( featureFilters.join( QLatin1String( " OR " ) ), filters.join( QLatin1String( " OR " ) ) );
+    const QString filter = u"(%1) AND (%2)"_s.arg( featureFilters.join( " OR "_L1 ), filters.join( " OR "_L1 ) );
 
     QgsFeatureIterator linkedIterator = mRelation.referencingLayer()->getFeatures( QgsFeatureRequest()
                                                                                      .setNoAttributes()
@@ -654,7 +658,7 @@ void QgsAbstractRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &fids 
       const int idx = mRelation.referencingLayer()->fields().lookupField( fieldPair.referencingField() );
       if ( idx < 0 )
       {
-        QgsDebugError( QStringLiteral( "referencing field %1 not found" ).arg( fieldPair.referencingField() ) );
+        QgsDebugError( u"referencing field %1 not found"_s.arg( fieldPair.referencingField() ) );
         return;
       }
       const QgsField fld = mRelation.referencingLayer()->fields().at( idx );

@@ -9,6 +9,7 @@
 
 
 
+
 class QgsSymbolButton : QToolButton
 {
 %Docstring(signature="appended")
@@ -181,6 +182,13 @@ Returns ``True`` if the current symbol is null.
 .. versionadded:: 3.26
 %End
 
+    bool fixedSizeConstraints() const;
+%Docstring
+Returns ``True`` if the widget adopts fixed size constraints.
+
+.. versionadded:: 4.0
+%End
+
   public slots:
 
     void setSymbol( QgsSymbol *symbol /Transfer/ );
@@ -269,6 +277,13 @@ Sets symbol to the button's default symbol, if set.
 .. seealso:: :py:func:`setToNull`
 
 .. versionadded:: 3.30
+%End
+
+    void setFixedSizeConstraints( bool fixedSizeConstraints );
+%Docstring
+Sets whether the widget adopts fixed size constraints.
+
+.. versionadded:: 4.0
 %End
 
   signals:

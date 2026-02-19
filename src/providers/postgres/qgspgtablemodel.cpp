@@ -16,14 +16,21 @@
  ***************************************************************************/
 
 #include "qgspgtablemodel.h"
-#include "moc_qgspgtablemodel.cpp"
-#include "qgslogger.h"
-#include "qgsapplication.h"
-#include "qgssettings.h"
-#include "qgsproject.h"
-#include "qgsiconutils.h"
-#include <QRegularExpression>
+
 #include <climits>
+
+#include "qgsapplication.h"
+#include "qgsiconutils.h"
+#include "qgslogger.h"
+#include "qgsproject.h"
+#include "qgssettings.h"
+
+#include <QRegularExpression>
+#include <QString>
+
+#include "moc_qgspgtablemodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPgTableModel::QgsPgTableModel( QObject *parent )
   : QgsAbstractDbTableModel( parent )
@@ -96,12 +103,12 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     }
 
     QString tip;
-    bool withTipButSelectable = false;
+    bool layerNeedsFeatureId = false;
     if ( !layerProperty.isRaster )
     {
       if ( wkbType == Qgis::WkbType::Unknown )
       {
-        tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Data Type" ) );
+        tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Spatial Type" ) );
       }
       else if ( wkbType != Qgis::WkbType::NoGeometry && srid == std::numeric_limits<int>::min() )
       {
@@ -110,7 +117,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
       else if ( !layerProperty.pkCols.isEmpty() )
       {
         tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature id" ) );
-        withTipButSelectable = true;
+        layerNeedsFeatureId = true;
       }
     }
 
@@ -118,7 +125,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     QStandardItem *typeItem = nullptr;
     if ( layerProperty.isRaster )
     {
-      typeItem = new QStandardItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconRasterLayer.svg" ) ), tr( "Raster" ) );
+      typeItem = new QStandardItem( QgsApplication::getThemeIcon( u"/mIconRasterLayer.svg"_s ), tr( "Raster" ) );
     }
     else
     {
@@ -138,10 +145,10 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     {
       // word wrap
       QString commentText { layerProperty.tableComment };
-      const thread_local QRegularExpression newLineRx( QStringLiteral( "^\n*" ) );
+      const thread_local QRegularExpression newLineRx( u"^\n*"_s );
       commentText.replace( newLineRx, QString() );
       commentItem->setText( commentText );
-      commentItem->setToolTip( QStringLiteral( "<span>%1</span>" ).arg( commentText.replace( '\n', QLatin1String( "<br/>" ) ) ) );
+      commentItem->setToolTip( u"<span>%1</span>"_s.arg( commentText.replace( '\n', "<br/>"_L1 ) ) );
       commentItem->setTextAlignment( Qt::AlignTop );
     }
     QStandardItem *geomItem = new QStandardItem( layerProperty.geometryColName );
@@ -160,11 +167,13 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
       pkItem->setFlags( pkItem->flags() | Qt::ItemIsEditable );
     }
     else
+    {
       pkItem->setFlags( pkItem->flags() & ~Qt::ItemIsEditable );
+    }
 
     pkItem->setData( layerProperty.pkCols, Qt::UserRole + 1 );
 
-    QStringList defPk( QgsSettings().value( QStringLiteral( "/PostgreSQL/connections/%1/keys/%2/%3" ).arg( mConnName, layerProperty.schemaName, layerProperty.tableName ), QStringList() ).toStringList() );
+    QStringList defPk( QgsSettings().value( u"/PostgreSQL/connections/%1/keys/%2/%3"_s.arg( mConnName, layerProperty.schemaName, layerProperty.tableName ), QStringList() ).toStringList() );
 
     if ( !layerProperty.pkCols.isEmpty() && defPk.isEmpty() )
     {
@@ -176,7 +185,16 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
 
     pkItem->setData( defPk, Qt::UserRole + 2 );
     if ( !defPk.isEmpty() )
+    {
       pkItem->setText( defPk.join( ',' ) );
+
+      // Reset the tip since we're pre-selecting fields in the Feature id combo box.
+      // Note we don't reset the tip if Geom type or SRID need some action from users.
+      if ( layerNeedsFeatureId )
+      {
+        tip = QString();
+      }
+    }
 
     QStandardItem *selItem = new QStandardItem( QString() );
     selItem->setFlags( selItem->flags() | Qt::ItemIsUserCheckable );
@@ -187,7 +205,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     checkPkUnicityItem->setFlags( checkPkUnicityItem->flags() | Qt::ItemIsUserCheckable );
 
     // Legacy: default value is determined by project option to trust layer's metadata
-    // TODO: remove this default from QGIS 4 and leave default value to false?
+    // TODO: remove this default from QGIS 5 and leave default value to false?
     // checkPkUnicity has only effect on views and materialized views, so we can safely disable it
     switch ( layerProperty.relKind )
     {
@@ -237,28 +255,10 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     childItemList << checkPkUnicityItem;
     childItemList << sqlItem;
 
-    const auto constChildItemList = childItemList;
-    for ( QStandardItem *item : constChildItemList )
+    for ( int column = 0; column < childItemList.count(); column++ )
     {
-      if ( tip.isEmpty() || withTipButSelectable )
-        item->setFlags( item->flags() | Qt::ItemIsSelectable );
-      else
-        item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
-
-      if ( item->toolTip().isEmpty() && tip.isEmpty() && item != checkPkUnicityItem && item != selItem )
-      {
-        item->setToolTip( QString() );
-      }
-      else
-      {
-        if ( item == schemaNameItem )
-          item->setData( QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) ), Qt::DecorationRole );
-
-        if ( item == schemaNameItem || item == tableItem || item == geomItem )
-        {
-          item->setToolTip( tip );
-        }
-      }
+      QStandardItem *item = childItemList.at( column );
+      setItemStatus( item, tip, column );
     }
 
     if ( !schemaItem )
@@ -282,6 +282,38 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     schemaItem->appendRow( childItemList );
 
     ++mTableCount;
+  }
+}
+
+void QgsPgTableModel::setItemStatus( QStandardItem *item, const QString &tip, int column )
+{
+  if ( tip.isEmpty() )
+  {
+    item->setFlags( item->flags() | Qt::ItemIsSelectable );
+
+    if ( column == DbtmSchema || column == DbtmTable || column == DbtmGeomCol )
+    {
+      item->setToolTip( QString() );
+
+      if ( column == DbtmSchema )
+      {
+        item->setData( QVariant(), Qt::DecorationRole );
+      }
+    }
+  }
+  else
+  {
+    item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
+
+    if ( column == DbtmSchema || column == DbtmTable || column == DbtmGeomCol )
+    {
+      item->setToolTip( tip );
+
+      if ( column == DbtmSchema )
+      {
+        item->setData( QgsApplication::getThemeIcon( u"/mIconWarning.svg"_s ), Qt::DecorationRole );
+      }
+    }
   }
 }
 
@@ -362,6 +394,7 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
   if ( !QStandardItemModel::setData( idx, value, role ) )
     return false;
 
+  // After changes in type, srid, or feature id columns, update other sibling columns
   if ( idx.column() == DbtmType || idx.column() == DbtmSrid || idx.column() == DbtmPkCol )
   {
     const Qgis::WkbType wkbType = static_cast<Qgis::WkbType>( idx.sibling( idx.row(), DbtmType ).data( Qt::UserRole + 2 ).toInt() );
@@ -369,7 +402,7 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
     QString tip;
     if ( wkbType == Qgis::WkbType::Unknown )
     {
-      tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Data Type" ) );
+      tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Spatial Type" ) );
     }
     else if ( wkbType != Qgis::WkbType::NoGeometry )
     {
@@ -386,35 +419,15 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
       const QSet<QString> s0( qgis::listToSet( idx.sibling( idx.row(), DbtmPkCol ).data( Qt::UserRole + 2 ).toStringList() ) );
       const QSet<QString> s1( qgis::listToSet( pkCols ) );
       if ( !s0.intersects( s1 ) )
+      {
         tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature id" ) );
+      }
     }
 
-    for ( int i = 0; i < columnCount(); i++ )
+    for ( int column = 0; column < columnCount(); column++ )
     {
-      QStandardItem *item = itemFromIndex( idx.sibling( idx.row(), i ) );
-      if ( tip.isEmpty() )
-      {
-        if ( i == DbtmSchema )
-        {
-          item->setData( QVariant(), Qt::DecorationRole );
-        }
-
-        item->setFlags( item->flags() | Qt::ItemIsSelectable );
-        item->setToolTip( QString() );
-      }
-      else
-      {
-        item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
-
-        if ( i == DbtmSchema )
-          item->setData( QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) ), Qt::DecorationRole );
-
-        if ( i == DbtmSchema || i == DbtmTable || i == DbtmGeomCol )
-        {
-          item->setFlags( item->flags() );
-          item->setToolTip( tip );
-        }
-      }
+      QStandardItem *item = itemFromIndex( idx.sibling( idx.row(), column ) );
+      setItemStatus( item, tip, column );
     }
   }
 
@@ -425,7 +438,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
 {
   if ( !index.isValid() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "invalid index" ), 2 );
+    QgsDebugMsgLevel( u"invalid index"_s, 2 );
     return QString();
   }
 
@@ -447,18 +460,18 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
       const QString schemaName = index.sibling( index.row(), DbtmSchema ).data( Qt::DisplayRole ).toString();
       const QString tableName = index.sibling( index.row(), DbtmTable ).data( Qt::DisplayRole ).toString();
       const QString geomColumnName = index.sibling( index.row(), DbtmGeomCol ).data( Qt::DisplayRole ).toString();
-      QString connString { QStringLiteral( "PG: %1 mode=2 %2schema='%3' column='%4' table='%5'" )
-                             .arg( connInfo, cols.isEmpty() ? QString() : QStringLiteral( "key='%1' " ).arg( cols.join( ',' ) ), schemaName, geomColumnName, tableName ) };
+      QString connString { u"PG: %1 mode=2 %2schema='%3' column='%4' table='%5'"_s
+                             .arg( connInfo, cols.isEmpty() ? QString() : u"key='%1' "_s.arg( cols.join( ',' ) ), schemaName, geomColumnName, tableName ) };
       const QString sql { index.sibling( index.row(), DbtmSql ).data( Qt::DisplayRole ).toString() };
       if ( !sql.isEmpty() )
       {
-        connString.append( QStringLiteral( " sql=%1" ).arg( sql ) );
+        connString.append( u" sql=%1"_s.arg( sql ) );
       }
       return connString;
     }
     else
     {
-      QgsDebugError( QStringLiteral( "unknown geometry type" ) );
+      QgsDebugError( u"unknown geometry type"_s );
       // no geometry type selected
       return QString();
     }
@@ -470,7 +483,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
   if ( !s0.isEmpty() && !s0.intersects( s1 ) )
   {
     // no valid primary candidate selected
-    QgsDebugError( QStringLiteral( "no pk candidate selected" ) );
+    QgsDebugError( u"no pk candidate selected"_s );
     return QString();
   }
 
@@ -488,7 +501,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
     ( void ) srid.toInt( &ok );
     if ( !ok )
     {
-      QgsDebugError( QStringLiteral( "srid not numeric" ) );
+      QgsDebugError( u"srid not numeric"_s );
       return QString();
     }
   }
@@ -506,15 +519,15 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
     cols << QgsPostgresConn::quotedIdentifier( col );
   }
 
-  QgsSettings().setValue( QStringLiteral( "/PostgreSQL/connections/%1/keys/%2/%3" ).arg( mConnName, schemaName, tableName ), QVariant( qgis::setToList( s1 ) ) );
+  QgsSettings().setValue( u"/PostgreSQL/connections/%1/keys/%2/%3"_s.arg( mConnName, schemaName, tableName ), QVariant( qgis::setToList( s1 ) ) );
 
   uri.setDataSource( schemaName, tableName, geomColumnName, sql, cols.join( ',' ) );
   uri.setUseEstimatedMetadata( useEstimatedMetadata );
   uri.setWkbType( wkbType );
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );
-  uri.setParam( QStringLiteral( "checkPrimaryKeyUnicity" ), checkPrimaryKeyUnicity ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  uri.setParam( u"checkPrimaryKeyUnicity"_s, checkPrimaryKeyUnicity ? u"1"_s : u"0"_s );
 
-  QgsDebugMsgLevel( QStringLiteral( "returning uri %1" ).arg( uri.uri( false ) ), 2 );
+  QgsDebugMsgLevel( u"returning uri %1"_s.arg( uri.uri( false ) ), 2 );
   return uri.uri( false );
 }

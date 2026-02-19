@@ -19,6 +19,7 @@
 #define QGSRESAMPLINGUTILS_H
 
 #include "qgis_gui.h"
+
 #include <QObject>
 
 class QgsRasterLayer;

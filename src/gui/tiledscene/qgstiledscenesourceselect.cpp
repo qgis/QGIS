@@ -16,17 +16,22 @@
  ***************************************************************************/
 
 #include "qgstiledscenesourceselect.h"
-#include "moc_qgstiledscenesourceselect.cpp"
-#include "qgstiledsceneconnection.h"
+
 #include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsmanageconnectionsdialog.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderutils.h"
-#include "qgsmanageconnectionsdialog.h"
+#include "qgstiledsceneconnection.h"
 #include "qgstiledsceneconnectiondialog.h"
-#include "qgshelp.h"
 
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
+
+#include "moc_qgstiledscenesourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -80,7 +85,7 @@ QgsTiledSceneSourceSelect::QgsTiledSceneSourceSelect( QWidget *parent, Qt::Windo
   mFileWidget->setFilter( QgsProviderRegistry::instance()->fileTiledSceneFilters() );
   mFileWidget->setStorageMode( QgsFileWidget::GetFile );
   mFileWidget->setOptions( QFileDialog::HideNameFilterDetails );
-  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [=]( const QString &path ) {
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [this]( const QString &path ) {
     emit enableButtons( !path.isEmpty() );
   } );
 }
@@ -158,7 +163,7 @@ void QgsTiledSceneSourceSelect::addButtonClicked()
     }
 
     QVariantMap parts;
-    parts.insert( QStringLiteral( "path" ), filePath );
+    parts.insert( u"path"_s, filePath );
     const QString uri = QgsProviderRegistry::instance()->encodeUri( providerKey, parts );
 
     emit addLayer( Qgis::LayerType::TiledScene, uri, QgsProviderUtils::suggestLayerNameFromFilePath( filePath ), providerKey );
@@ -222,7 +227,7 @@ void QgsTiledSceneSourceSelect::cmbConnections_currentTextChanged( const QString
 
 void QgsTiledSceneSourceSelect::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html"_s );
 }
 
 ///@endcond

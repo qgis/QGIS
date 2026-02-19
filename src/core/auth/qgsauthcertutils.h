@@ -18,14 +18,19 @@
 #ifndef QGSAUTHCERTUTILS_H
 #define QGSAUTHCERTUTILS_H
 
-#include <QFile>
+#include "qgsconfig.h"
+
+#include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QtCrypto>
+#include "qgsauthconfig.h"
+
+#include <QFile>
 #include <QSslCertificate>
 #include <QSslError>
 
-#include "qgsauthconfig.h"
-#include "qgis_core.h"
+#ifdef HAVE_AUTH
+#include <QtCrypto>
+#endif
 
 class QgsAuthConfigSslServer;
 
@@ -81,6 +86,7 @@ class CORE_EXPORT QgsAuthCertUtils
       ExtendedKeyUsage = 1
     };
 
+#ifdef HAVE_AUTH
 
     //! SSL Protocol name strings per enum
     static QString getSslProtocolName( QSsl::SslProtocol protocol );
@@ -302,6 +308,7 @@ class CORE_EXPORT QgsAuthCertUtils
      */
     static QString certificateUsageTypeString( QgsAuthCertUtils::CertUsageType usagetype ) SIP_SKIP;
 
+#ifndef QT_NO_SSL
     //! Try to determine the certificates usage types
     static QList<QgsAuthCertUtils::CertUsageType> certificateUsageTypes( const QSslCertificate &cert );
 
@@ -360,6 +367,8 @@ class CORE_EXPORT QgsAuthCertUtils
         const QString &hostName = QString(),
         bool trustRootCa = false ) ;
 
+#endif
+
     /**
      * \brief validatePKIBundle validate the PKI bundle by checking the certificate chain, the
      * expiration and effective dates, optionally trusts the root CA
@@ -375,6 +384,7 @@ class CORE_EXPORT QgsAuthCertUtils
     static void appendDirSegment_( QStringList &dirname, const QString &segment, QString value );
 
     static QSsl::EncodingFormat sniffEncoding( const QByteArray &payload );
+#endif
 };
 
 #endif // QGSAUTHCERTUTILS_H

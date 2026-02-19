@@ -16,31 +16,28 @@
  ***************************************************************************/
 
 #include "qgsmesh3dmaterial_p.h"
-#include "moc_qgsmesh3dmaterial_p.cpp"
 
+#include "qgs3dutils.h"
+#include "qgscolorramptexture.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshlayerutils.h"
+#include "qgstriangularmesh.h"
+
+#include <QByteArray>
+#include <QString>
+#include <QUrl>
+#include <QVector2D>
+#include <QVector3D>
+#include <QVector4D>
+#include <Qt3DCore/QBuffer>
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTexture>
 
-#include <QUrl>
-#include <QVector2D>
-#include <QVector3D>
-#include <QVector4D>
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QBuffer>
-#else
-#include <Qt3DCore/QBuffer>
-#endif
+#include "moc_qgsmesh3dmaterial_p.cpp"
 
-#include <QByteArray>
-
-#include "qgsmeshlayer.h"
-#include "qgs3dutils.h"
-#include "qgsmeshlayerutils.h"
-#include "qgstriangularmesh.h"
-
-#include "qgscolorramptexture.h"
+using namespace Qt::StringLiterals;
 
 class ArrowsTextureGenerator : public Qt3DRender::QTextureImageDataGenerator
 {
@@ -48,6 +45,11 @@ class ArrowsTextureGenerator : public Qt3DRender::QTextureImageDataGenerator
     ArrowsTextureGenerator( const QVector<QgsVector> &vectors, const QSize &size, bool fixedSize, double maxVectorLength )
       : mVectors( vectors ), mSize( size ), mFixedSize( fixedSize ), mMaxVectorLength( maxVectorLength )
     {}
+
+    qintptr id() const override
+    {
+      return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<ArrowsTextureGenerator>::id );
+    }
 
     Qt3DRender::QTextureImageDataPtr operator()() override
     {
@@ -87,7 +89,7 @@ class ArrowsTextureGenerator : public Qt3DRender::QTextureImageDataGenerator
 
     bool operator==( const Qt3DRender::QTextureImageDataGenerator &other ) const override
     {
-      const ArrowsTextureGenerator *otherFunctor = functor_cast<ArrowsTextureGenerator>( &other );
+      const ArrowsTextureGenerator *otherFunctor = dynamic_cast<const ArrowsTextureGenerator *>( &other );
       if ( !otherFunctor )
         return false;
 
@@ -99,13 +101,7 @@ class ArrowsTextureGenerator : public Qt3DRender::QTextureImageDataGenerator
     const QSize mSize;
     const bool mFixedSize;
     const double mMaxVectorLength;
-
-    // marked as deprecated in 5.15, but undeprecated for Qt 6.0. TODO -- remove when we require 6.0
-    Q_NOWARN_DEPRECATED_PUSH
-    QT3D_FUNCTOR( ArrowsTextureGenerator )
-    Q_NOWARN_DEPRECATED_POP
 };
-
 
 QgsMesh3DMaterial::QgsMesh3DMaterial( QgsMeshLayer *layer, const QgsDateTimeRange &timeRange, const QgsVector3D &origin, const QgsMesh3DSymbol *symbol, MagnitudeType magnitudeType )
   : mSymbol( symbol->clone() )
@@ -158,8 +154,8 @@ void QgsMesh3DMaterial::configure()
   mTechnique->graphicsApiFilter()->setMajorVersion( 3 );
   mTechnique->graphicsApiFilter()->setMinorVersion( 3 );
   Qt3DRender::QFilterKey *filterKey = new Qt3DRender::QFilterKey();
-  filterKey->setName( QStringLiteral( "renderingStyle" ) );
-  filterKey->setValue( QStringLiteral( "forward" ) );
+  filterKey->setName( u"renderingStyle"_s );
+  filterKey->setValue( u"forward"_s );
   mTechnique->addFilterKey( filterKey );
 
   Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass();
@@ -170,11 +166,11 @@ void QgsMesh3DMaterial::configure()
   renderPass->addRenderState( cullingFace );
 
   //Load shader programs
-  const QUrl urlVert( QStringLiteral( "qrc:/shaders/mesh/mesh.vert" ) );
+  const QUrl urlVert( u"qrc:/shaders/mesh/mesh.vert"_s );
   shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qt3DRender::QShaderProgram::loadSource( urlVert ) );
-  const QUrl urlGeom( QStringLiteral( "qrc:/shaders/mesh/mesh.geom" ) );
+  const QUrl urlGeom( u"qrc:/shaders/mesh/mesh.geom"_s );
   shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Geometry, Qt3DRender::QShaderProgram::loadSource( urlGeom ) );
-  const QUrl urlFrag( QStringLiteral( "qrc:/shaders/mesh/mesh.frag" ) );
+  const QUrl urlFrag( u"qrc:/shaders/mesh/mesh.frag"_s );
   shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Fragment, Qt3DRender::QShaderProgram::loadSource( urlFrag ) );
 
   renderPass->setShaderProgram( shaderProgram );
@@ -261,7 +257,7 @@ void QgsMesh3DMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeR
 
   Qt3DRender::QTexture2D *arrowTexture = new Qt3DRender::QTexture2D( this );
   Qt3DRender::QTextureImage *arrowTextureImage = new Qt3DRender::QTextureImage();
-  arrowTextureImage->setSource( QStringLiteral( "qrc:/textures/arrow.png" ) );
+  arrowTextureImage->setSource( u"qrc:/textures/arrow.png"_s );
   arrowTexture->addTextureImage( arrowTextureImage );
   arrowTexture->setMinificationFilter( Qt3DRender::QTexture2D::Nearest );
   arrowTexture->setMagnificationFilter( Qt3DRender::QTexture2D::Nearest );

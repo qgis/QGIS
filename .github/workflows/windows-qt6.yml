@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - name: 🐣 Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 2
 
@@ -33,7 +33,7 @@ jobs:
           choco uninstall cmake.install
 
       - name: 🐩 Install CMake and Ninja
-        uses: lukka/get-cmake@ea004816823209b8d1211e47b216185caee12cc5
+        uses: lukka/get-cmake@f176ccd3f28bda569c43aae4894f06b2435a3375
         with:
           cmakeVersion: 3.31.6
 
@@ -83,16 +83,15 @@ jobs:
                 -D WITH_DESKTOP=ON \
                 -D WITH_3D=ON \
                 -D WITH_BINDINGS=ON \
+                -D WITH_GEOGRAPHICLIB=OFF \
+                -D WITH_SFCGAL=ON \
                 -D ENABLE_TESTS=OFF \
-                -D BUILD_WITH_QT6=ON \
                 -D USE_CCACHE=ON \
-                -D ENABLE_UNITY_BUILDS=ON \
+                -D ENABLE_UNITY_BUILDS=OFF \
                 -D FLEX_EXECUTABLE="${SOURCE_DIR}/win_flex.exe" \
                 -D BISON_EXECUTABLE="${SOURCE_DIR}/win_bison.exe" \
-                -D SIP_BUILD_EXECUTABLE="${BUILD_DIR}\vcpkg_installed\x64-windows-release\tools\python3\Scripts\sip-build.exe" \
-                -D CMAKE_C_COMPILER_LAUNCHER=ccache \
-                -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
-                -D WITH_QTWEBKIT=OFF \
+                -D USE_CCACHE=ON \
+                -D WITH_QTWEBENGINE=OFF \
                 -D VCPKG_INSTALL_OPTIONS="--x-buildtrees-root=C:/src" \
                 -D NUGET_USERNAME=${{ github.actor }} \
                 -D NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}
@@ -117,14 +116,14 @@ jobs:
 
       - name: 📤 Upload sdk
 #        if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: qgis-sdk-x64-windows
           path: |
             sdk/vcpkg-export-*.zip
 
       - name: 📑 Upload dep build logs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: build-logs-x64-windows
@@ -132,7 +131,7 @@ jobs:
             C:/src/**/*.log
 
       - name: 📤 Upload bundle
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         id: artifact-win64-qt6
         with:
           name: qgis-windows-qt6

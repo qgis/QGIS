@@ -15,9 +15,9 @@
 #ifndef QGSLABELINGENGINERULE_H
 #define QGSLABELINGENGINERULE_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgsgeometry.h"
 
 class QgsRenderContext;

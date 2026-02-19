@@ -16,6 +16,7 @@
 """
 
 from .metaenum import metaEnumFromValue
+from enum import IntFlag, Flag
 from qgis.core import (
     QgsSettings,
     QgsSettingsTree,
@@ -50,30 +51,23 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
         :param description: argument specifies a description for the settings entry.
         """
 
-        # TODO QGIS 4: rename pluginName arg to parent and key to name
+        # TODO QGIS 5: rename pluginName arg to parent and key to name
 
         self.options = options
-        defaultValueStr = ""
-        self.__metaEnum = metaEnumFromValue(defaultValue)
-        if self.__metaEnum is None or not self.__metaEnum.isValid():
-            QgsLogger.debug(
-                f"Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '{self.key()}'"
+        self.__enum_class = defaultValue.__class__
+
+        if issubclass(self.__enum_class, (IntFlag, Flag)):
+            defaultValueStr = "|".join(
+                [e.name for e in self.__enum_class if defaultValue & e]
             )
         else:
-            if self.__metaEnum.isFlag():
-                defaultValueStr = self.__metaEnum.valueToKeys(defaultValue)
-            else:
-                defaultValueStr = self.__metaEnum.valueToKey(defaultValue)
-            self.__enumFlagClass = defaultValue.__class__
+            defaultValueStr = defaultValue.name
 
         if type(pluginName) is str:
             parent = QgsSettingsTree.createPluginTreeNode(pluginName)
         else:
             parent = pluginName
         super().__init__(key, parent, defaultValueStr, description, options)
-
-    def metaEnum(self):
-        return self.__metaEnum
 
     def typeId(self):
         """
@@ -87,14 +81,29 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
 
         :param dynamicKeyPart: argument specifies the dynamic part of the settings key.
         """
-        if self.__metaEnum.isFlag():
-            return QgsSettings().flagValue(
-                self.key(dynamicKeyPart), self.defaultValue()
-            )
+        v = QgsSettings().value(self.key(dynamicKeyPart), self.defaultValue())
+        if issubclass(self.__enum_class, (IntFlag, Flag)):
+            if isinstance(v, str):
+                flag_val = self.__enum_class(0)
+                for part in v.split("|"):
+                    try:
+                        flag_val |= getattr(self.__enum_class, part)
+                    except AttributeError:
+                        QgsLogger.debug(f"Invalid enum/flag key/s '{v}'.")
+                        return -1
+                return flag_val
+            elif isinstance(v, int):
+                return self.__enum_class(v)
         else:
-            return QgsSettings().enumValue(
-                self.key(dynamicKeyPart), self.defaultValue()
-            )
+            if isinstance(v, str):
+                try:
+                    flag_val = getattr(self.__enum_class, v)
+                except AttributeError:
+                    QgsLogger.debug(f"Invalid enum/flag key/s '{v}'.")
+                    return -1
+                return flag_val
+            elif isinstance(v, int):
+                return self.__enum_class(v)
 
     def valueWithDefaultOverride(self, defaultValueOverride, dynamicKeyPart=None):
         """
@@ -116,27 +125,25 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
         """
         Get settings default value.
         """
-
-        if self.__metaEnum is None or not self.__metaEnum.isValid():
-            QgsLogger.debug(
-                f"Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '{self.key()}'"
-            )
-            return -1
-
         defaultValueString = self.defaultValueAsVariant()
-        if self.__metaEnum.isFlag():
-            (defaultValue, ok) = self.__metaEnum.keysToValue(defaultValueString)
-        else:
-            (defaultValue, ok) = self.__metaEnum.keyToValue(defaultValueString)
-        if not ok:
-            QgsLogger.debug(
-                f"Invalid enum/flag key/s '{self.defaultValueAsVariant()}'."
-            )
-            return -1
 
-        # cast to the enum class
-        defaultValue = self.__enumFlagClass(defaultValue)
-        return defaultValue
+        if issubclass(self.__enum_class, (IntFlag, Flag)):
+            flag_val = self.__enum_class(0)
+            for part in defaultValueString.split("|"):
+                try:
+                    flag_val |= getattr(self.__enum_class, part)
+                except AttributeError:
+                    QgsLogger.debug(f"Invalid enum/flag key/s '{part}'.")
+                    return -1
+            return flag_val
+        else:
+            try:
+                return getattr(self.__enum_class, defaultValueString)
+            except AttributeError:
+                QgsLogger.debug(
+                    f"Invalid enum/flag key/s '{self.defaultValueAsVariant()}'."
+                )
+                return -1
 
     def setValue(self, value, dynamicKeyPart: (list, str) = None):
         """
@@ -145,23 +152,23 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
         :param value: the value to set for the setting.
         :param dynamicKeyPart: argument specifies the dynamic part of the settings key (a single one a string, or several as a list)
         """
-
-        if self.__metaEnum is None or not self.__metaEnum.isValid():
-            QgsLogger.debug(
-                f"Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '{self.key()}'"
-            )
-            return False
-
         if self.options & Qgis.SettingsOption.SaveEnumFlagAsInt:
-            enum_flag_key = int(value)
+            enum_flag_key = value.value
         else:
-            if self.__metaEnum.isFlag():
-                enum_flag_key = self.__metaEnum.valueToKeys(value)
+            if issubclass(self.__enum_class, (IntFlag, Flag)):
+                enum_flag_key = "|".join(
+                    [e.name for e in self.__enum_class if value & e]
+                )
             else:
-                enum_flag_key = self.__metaEnum.valueToKey(value)
-            if not enum_flag_key:
-                QgsLogger.debug(f"Invalid enum/flag value '{value}'.")
-                return False
+                if isinstance(value, int):
+                    try:
+                        enum_flag_key = [
+                            e.name for e in self.__enum_class if value == e.value
+                        ][0]
+                    except IndexError:
+                        return False
+                else:
+                    enum_flag_key = value.name
 
         if type(dynamicKeyPart) is str:
             dynamicKeyPart = [dynamicKeyPart]

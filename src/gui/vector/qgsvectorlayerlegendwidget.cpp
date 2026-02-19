@@ -14,15 +14,10 @@
  ***************************************************************************/
 
 #include "qgsvectorlayerlegendwidget.h"
-#include "moc_qgsvectorlayerlegendwidget.cpp"
-
-#include <QBoxLayout>
-#include <QStandardItemModel>
-#include <QTreeView>
-#include <QTreeWidget>
 
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsfilecontentsourcelineedit.h"
+#include "qgsfontbutton.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerlegend.h"
 #include "qgsrenderer.h"
@@ -30,11 +25,22 @@
 #include "qgssymbollayerutils.h"
 #include "qgstextformatwidget.h"
 #include "qgsvectorlayer.h"
-#include "qgsfontbutton.h"
+
+#include <QBoxLayout>
+#include <QStandardItemModel>
+#include <QString>
+#include <QTreeView>
+#include <QTreeWidget>
+
+#include "moc_qgsvectorlayerlegendwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVectorLayerLegendWidget::QgsVectorLayerLegendWidget( QWidget *parent )
   : QWidget( parent )
 {
+  mIncludeByDefaultInLayoutLegendsCheck = new QCheckBox( tr( "Include automatically in print layout legend items" ) );
+
   mLegendTreeView = new QTreeView;
   mLegendTreeView->setRootIsDecorated( false );
 
@@ -73,19 +79,25 @@ QgsVectorLayerLegendWidget::QgsVectorLayerLegendWidget( QWidget *parent )
 
   mPlaceholderImageLabel = new QLabel( tr( "Legend placeholder image" ) );
   mImageSourceLineEdit = new QgsImageSourceLineEdit();
-  mImageSourceLineEdit->setLastPathSettingsKey( QStringLiteral( "lastLegendPlaceholderDir" ) );
+  mImageSourceLineEdit->setLastPathSettingsKey( u"lastLegendPlaceholderDir"_s );
   if ( mLayer )
   {
     mImageSourceLineEdit->setSource( mLayer->legendPlaceholderImage() );
   }
 
-  QHBoxLayout *placeholderLayout = new QHBoxLayout;
-  placeholderLayout->addWidget( mPlaceholderImageLabel );
-  placeholderLayout->addWidget( mImageSourceLineEdit );
+  QGroupBox *generalGroupBox = new QGroupBox( tr( "General Settings" ) );
+
+  QGridLayout *generalLayout = new QGridLayout;
+  generalLayout->addWidget( mIncludeByDefaultInLayoutLegendsCheck, 0, 0, 1, 2 );
+  generalLayout->addWidget( mPlaceholderImageLabel, 1, 0 );
+  generalLayout->addWidget( mImageSourceLineEdit, 1, 1 );
+  generalLayout->setColumnStretch( 0, 1 );
+  generalLayout->setColumnStretch( 1, 2 );
+  generalGroupBox->setLayout( generalLayout );
 
   QVBoxLayout *layout = new QVBoxLayout;
   layout->setContentsMargins( 0, 0, 0, 0 );
-  layout->addLayout( placeholderLayout );
+  layout->addWidget( generalGroupBox );
   layout->addWidget( mLabelLegendGroupBox );
   layout->addWidget( mTextOnSymbolGroupBox );
 
@@ -115,19 +127,17 @@ void QgsVectorLayerLegendWidget::setLayer( QgsVectorLayer *layer )
 {
   mLayer = layer;
 
-  QgsDefaultVectorLayerLegend *legend = qobject_cast<QgsDefaultVectorLayerLegend *>( layer->legend() );
+  QgsDefaultVectorLayerLegend *legend = layer ? qobject_cast<QgsDefaultVectorLayerLegend *>( layer->legend() ) : nullptr;
   if ( !legend )
     return;
 
+  mIncludeByDefaultInLayoutLegendsCheck->setChecked( !legend->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) );
   mLabelLegendGroupBox->setChecked( legend->showLabelLegend() );
   populateLabelLegendTreeWidget();
   mTextOnSymbolGroupBox->setChecked( legend->textOnSymbolEnabled() );
   mTextOnSymbolFormatButton->setTextFormat( legend->textOnSymbolTextFormat() );
   populateLegendTreeView( legend->textOnSymbolContent() );
-  if ( mLayer )
-  {
-    mImageSourceLineEdit->setSource( mLayer->legendPlaceholderImage() );
-  }
+  mImageSourceLineEdit->setSource( mLayer->legendPlaceholderImage() );
 }
 
 void QgsVectorLayerLegendWidget::populateLabelLegendTreeWidget()
@@ -225,6 +235,8 @@ void QgsVectorLayerLegendWidget::applyToLayer()
   {
     applyLabelLegend();
   }
+
+  legend->setFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault, !mIncludeByDefaultInLayoutLegendsCheck->isChecked() );
 
   mLayer->setLegendPlaceholderImage( mImageSourceLineEdit->source() );
 

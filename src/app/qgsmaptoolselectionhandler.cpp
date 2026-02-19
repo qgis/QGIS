@@ -14,19 +14,23 @@
  ***************************************************************************/
 
 #include "qgsmaptoolselectionhandler.h"
-#include "moc_qgsmaptoolselectionhandler.cpp"
-
-#include <QBoxLayout>
-#include <QKeyEvent>
-#include <QLabel>
 
 #include "qgisapp.h"
 #include "qgsdoublespinbox.h"
+#include "qgsidentifymenu.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 #include "qgsrubberband.h"
 #include "qgssnapindicator.h"
-#include "qgsidentifymenu.h"
+
+#include <QBoxLayout>
+#include <QKeyEvent>
+#include <QLabel>
+#include <QString>
+
+#include "moc_qgsmaptoolselectionhandler.cpp"
+
+using namespace Qt::StringLiterals;
 
 /// @cond private
 
@@ -207,7 +211,7 @@ void QgsMapToolSelectionHandler::selectFeaturesMoveEvent( QgsMapMouseEvent *e )
       setSelectedGeometry( QgsGeometry::fromPointXY( toMapCoordinates( e->pos() ) ), e->modifiers() );
       mOnMouseMoveDelayTimer = std::make_unique<QTimer>();
       mOnMouseMoveDelayTimer->setSingleShot( true );
-      connect( mOnMouseMoveDelayTimer.get(), &QTimer::timeout, this, [=] {
+      connect( mOnMouseMoveDelayTimer.get(), &QTimer::timeout, this, [this, e] {
         if ( !mMoveLastCursorPos.isNull() )
         {
           setSelectedGeometry( QgsGeometry::fromPointXY( toMapCoordinates( mMoveLastCursorPos ) ), e->modifiers() );
@@ -289,7 +293,7 @@ void QgsMapToolSelectionHandler::selectPolygonPressEvent( QgsMapMouseEvent *e )
       }
       catch ( QgsCsException & )
       {
-        QgsDebugError( QStringLiteral( "Could not transform geometry to map CRS" ) );
+        QgsDebugError( u"Could not transform geometry to map CRS"_s );
       }
 
       setSelectedGeometry( geom, e->modifiers() );

@@ -13,16 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMouseEvent>
-#include <QEnterEvent>
-#include <QLocale>
-
 #include "qgsadvanceddigitizingfloater.h"
-#include "moc_qgsadvanceddigitizingfloater.cpp"
+
+#include "qgsapplication.h"
+#include "qgsfocuswatcher.h"
 #include "qgsmapcanvas.h"
 #include "qgssettings.h"
-#include "qgsfocuswatcher.h"
 #include "qgsunittypes.h"
+
+#include <QEnterEvent>
+#include <QLocale>
+#include <QMouseEvent>
+#include <QString>
+
+#include "moc_qgsadvanceddigitizingfloater.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAdvancedDigitizingFloater::QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QWidget( canvas->viewport() )
@@ -34,7 +40,7 @@ QgsAdvancedDigitizingFloater::QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas
   setAttribute( Qt::WA_TransparentForMouseEvents );
   adjustSize();
 
-  setActive( QgsSettings().value( QStringLiteral( "/Cad/Floater" ), false ).toBool() );
+  setActive( QgsSettings().value( u"/Cad/Floater"_s, false ).toBool() );
 
   hideIfDisabled();
 
@@ -51,6 +57,7 @@ QgsAdvancedDigitizingFloater::QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas
   mYLineEdit->installEventFilter( cadDockWidget );
   mZLineEdit->installEventFilter( cadDockWidget );
   mMLineEdit->installEventFilter( cadDockWidget );
+  mWeightLineEdit->installEventFilter( cadDockWidget );
 
   // Connect all cadDockWidget's signals to update the widget's display
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::cadEnabledChanged, this, &QgsAdvancedDigitizingFloater::hideIfDisabled );
@@ -61,9 +68,13 @@ QgsAdvancedDigitizingFloater::QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::valueMChanged, this, &QgsAdvancedDigitizingFloater::changeM );
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::valueAngleChanged, this, &QgsAdvancedDigitizingFloater::changeAngle );
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::valueBearingChanged, this, &QgsAdvancedDigitizingFloater::changeBearing );
+  connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::valueAreaChanged, this, &QgsAdvancedDigitizingFloater::changeArea );
+  connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::valueTotalLengthChanged, this, &QgsAdvancedDigitizingFloater::changeTotalLength );
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::valueCommonAngleSnappingChanged, this, &QgsAdvancedDigitizingFloater::changeCommonAngleSnapping );
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::commonAngleSnappingShowInFloaterChanged, this, &QgsAdvancedDigitizingFloater::enabledCommonAngleSnapping );
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::valueDistanceChanged, this, &QgsAdvancedDigitizingFloater::changeDistance );
+  connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::valueWeightChanged, this, &QgsAdvancedDigitizingFloater::changeWeight );
+  connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::enabledChangedWeight, this, &QgsAdvancedDigitizingFloater::enabledChangedWeight );
 
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::lockXChanged, this, &QgsAdvancedDigitizingFloater::changeLockX );
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::lockYChanged, this, &QgsAdvancedDigitizingFloater::changeLockY );
@@ -85,6 +96,7 @@ QgsAdvancedDigitizingFloater::QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::focusOnMRequested, this, &QgsAdvancedDigitizingFloater::focusOnM );
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::focusOnAngleRequested, this, &QgsAdvancedDigitizingFloater::focusOnAngle );
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::focusOnDistanceRequested, this, &QgsAdvancedDigitizingFloater::focusOnDistance );
+  connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::focusOnWeightRequested, this, &QgsAdvancedDigitizingFloater::focusOnWeight );
 
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::enabledChangedX, this, &QgsAdvancedDigitizingFloater::enabledChangedX );
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::enabledChangedY, this, &QgsAdvancedDigitizingFloater::enabledChangedY );
@@ -98,51 +110,51 @@ QgsAdvancedDigitizingFloater::QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::enabledChangedDistance, this, &QgsAdvancedDigitizingFloater::enabledChangedDistance );
 
   // Connect our line edits signals to update cadDockWidget's state (implementation copied from QgsAdvancedDigitizingDockWidget)
-  connect( mXLineEdit, &QLineEdit::returnPressed, cadDockWidget, [=]() { cadDockWidget->setX( mXLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::ReturnPressed ); } );
-  connect( mYLineEdit, &QLineEdit::returnPressed, cadDockWidget, [=]() { cadDockWidget->setY( mYLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::ReturnPressed ); } );
-  connect( mZLineEdit, &QLineEdit::returnPressed, cadDockWidget, [=]() { cadDockWidget->setZ( mZLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::ReturnPressed ); } );
-  connect( mMLineEdit, &QLineEdit::returnPressed, cadDockWidget, [=]() { cadDockWidget->setM( mMLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::ReturnPressed ); } );
-  connect( mAngleLineEdit, &QLineEdit::returnPressed, cadDockWidget, [=]() {
+  connect( mXLineEdit, &QLineEdit::returnPressed, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setX( mXLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::ReturnPressed ); } );
+  connect( mYLineEdit, &QLineEdit::returnPressed, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setY( mYLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::ReturnPressed ); } );
+  connect( mZLineEdit, &QLineEdit::returnPressed, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setZ( mZLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::ReturnPressed ); } );
+  connect( mMLineEdit, &QLineEdit::returnPressed, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setM( mMLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::ReturnPressed ); } );
+  connect( mAngleLineEdit, &QLineEdit::returnPressed, cadDockWidget, [this, cadDockWidget]() {
     cadDockWidget->setAngle( mAngleLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::ReturnPressed );
     const QString cleanedInputValue { QgsAdvancedDigitizingDockWidget::CadConstraint::removeSuffix( mAngleLineEdit->text(), Qgis::CadConstraintType::Angle ) };
     whileBlocking( mAngleLineEdit )->setText( cleanedInputValue );
   } );
-  connect( mDistanceLineEdit, &QLineEdit::returnPressed, cadDockWidget, [=]() {
+  connect( mDistanceLineEdit, &QLineEdit::returnPressed, cadDockWidget, [this, cadDockWidget]() {
     cadDockWidget->setDistance( mDistanceLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::ReturnPressed );
     const QString cleanedInputValue { QgsAdvancedDigitizingDockWidget::CadConstraint::removeSuffix( mDistanceLineEdit->text(), Qgis::CadConstraintType::Distance ) };
     whileBlocking( mDistanceLineEdit )->setText( cleanedInputValue );
   } );
 
-  connect( mXLineEdit, &QLineEdit::textEdited, cadDockWidget, [=]() { cadDockWidget->setX( mXLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
-  connect( mYLineEdit, &QLineEdit::textEdited, cadDockWidget, [=]() { cadDockWidget->setY( mYLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
-  connect( mZLineEdit, &QLineEdit::textEdited, cadDockWidget, [=]() { cadDockWidget->setZ( mZLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
-  connect( mMLineEdit, &QLineEdit::textEdited, cadDockWidget, [=]() { cadDockWidget->setM( mMLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
-  connect( mAngleLineEdit, &QLineEdit::textEdited, cadDockWidget, [=]() { cadDockWidget->setAngle( mAngleLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
-  connect( mDistanceLineEdit, &QLineEdit::textEdited, cadDockWidget, [=]() { cadDockWidget->setDistance( mDistanceLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
+  connect( mXLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setX( mXLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
+  connect( mYLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setY( mYLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
+  connect( mZLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setZ( mZLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
+  connect( mMLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setM( mMLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
+  connect( mAngleLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setAngle( mAngleLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
+  connect( mDistanceLineEdit, &QLineEdit::textEdited, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setDistance( mDistanceLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::TextEdited ); } );
 
   QgsFocusWatcher *xWatcher = new QgsFocusWatcher( mXLineEdit );
-  connect( xWatcher, &QgsFocusWatcher::focusOut, cadDockWidget, [=]() { cadDockWidget->setX( mXLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::FocusOut ); } );
+  connect( xWatcher, &QgsFocusWatcher::focusOut, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setX( mXLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::FocusOut ); } );
   QgsFocusWatcher *yWatcher = new QgsFocusWatcher( mYLineEdit );
-  connect( yWatcher, &QgsFocusWatcher::focusOut, cadDockWidget, [=]() { cadDockWidget->setY( mYLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::FocusOut ); } );
+  connect( yWatcher, &QgsFocusWatcher::focusOut, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setY( mYLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::FocusOut ); } );
   QgsFocusWatcher *zWatcher = new QgsFocusWatcher( mZLineEdit );
-  connect( zWatcher, &QgsFocusWatcher::focusOut, cadDockWidget, [=]() { cadDockWidget->setZ( mZLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::FocusOut ); } );
+  connect( zWatcher, &QgsFocusWatcher::focusOut, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setZ( mZLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::FocusOut ); } );
   QgsFocusWatcher *mWatcher = new QgsFocusWatcher( mYLineEdit );
-  connect( mWatcher, &QgsFocusWatcher::focusOut, cadDockWidget, [=]() { cadDockWidget->setM( mMLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::FocusOut ); } );
+  connect( mWatcher, &QgsFocusWatcher::focusOut, cadDockWidget, [this, cadDockWidget]() { cadDockWidget->setM( mMLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::FocusOut ); } );
   QgsFocusWatcher *angleWatcher = new QgsFocusWatcher( mAngleLineEdit );
-  connect( angleWatcher, &QgsFocusWatcher::focusOut, cadDockWidget, [=]() {
+  connect( angleWatcher, &QgsFocusWatcher::focusOut, cadDockWidget, [this, cadDockWidget]() {
     cadDockWidget->setAngle( mAngleLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::FocusOut );
     whileBlocking( mAngleLineEdit )->setText( mCadDockWidget->constraintAngle()->displayValue() );
   } );
-  connect( angleWatcher, &QgsFocusWatcher::focusIn, this, [=]() {
+  connect( angleWatcher, &QgsFocusWatcher::focusIn, this, [this]() {
     const QString cleanedInputValue { QgsAdvancedDigitizingDockWidget::CadConstraint::removeSuffix( mAngleLineEdit->text(), Qgis::CadConstraintType::Angle ) };
     whileBlocking( mAngleLineEdit )->setText( cleanedInputValue );
   } );
   QgsFocusWatcher *distanceWatcher = new QgsFocusWatcher( mDistanceLineEdit );
-  connect( distanceWatcher, &QgsFocusWatcher::focusOut, cadDockWidget, [=]() {
+  connect( distanceWatcher, &QgsFocusWatcher::focusOut, cadDockWidget, [this, cadDockWidget]() {
     cadDockWidget->setDistance( mDistanceLineEdit->text(), QgsAdvancedDigitizingDockWidget::WidgetSetMode::FocusOut );
     whileBlocking( mDistanceLineEdit )->setText( mCadDockWidget->constraintDistance()->displayValue() );
   } );
-  connect( distanceWatcher, &QgsFocusWatcher::focusIn, this, [=]() {
+  connect( distanceWatcher, &QgsFocusWatcher::focusIn, this, [this]() {
     const QString cleanedInputValue { QgsAdvancedDigitizingDockWidget::CadConstraint::removeSuffix( mDistanceLineEdit->text(), Qgis::CadConstraintType::Distance ) };
     whileBlocking( mDistanceLineEdit )->setText( cleanedInputValue );
   } );
@@ -156,13 +168,13 @@ bool QgsAdvancedDigitizingFloater::eventFilter( QObject *obj, QEvent *event )
     if ( event->type() == QEvent::MouseMove )
     {
       // We update the position when mouse moves
-      QMouseEvent *mouseEvent = dynamic_cast<QMouseEvent *>( event );
+      QMouseEvent *mouseEvent = qgis::down_cast<QMouseEvent *>( event );
       updatePos( mouseEvent->pos() );
     }
     else if ( event->type() == QEvent::Enter )
     {
       // We show the widget when mouse enters
-      QEnterEvent *enterEvent = dynamic_cast<QEnterEvent *>( event );
+      QEnterEvent *enterEvent = qgis::down_cast<QEnterEvent *>( event );
       updatePos( enterEvent->pos() );
       setVisible( true );
     }
@@ -180,24 +192,41 @@ bool QgsAdvancedDigitizingFloater::active()
   return mActive;
 }
 
-bool QgsAdvancedDigitizingFloater::itemVisibility( const FloaterItem &item ) const
+bool QgsAdvancedDigitizingFloater::itemVisibility( FloaterItem item ) const
 {
   return mItemsVisibility.testFlag( item );
 }
 
+Qgis::CadMeasurementDisplayType QgsAdvancedDigitizingFloater::itemMeasurementDisplayType( FloaterItem item ) const
+{
+  if ( !itemSupportsMeasurementType( item ) )
+  {
+    return Qgis::CadMeasurementDisplayType::Hidden;
+  }
+
+  const QMetaEnum enumData { QMetaEnum::fromType<QgsAdvancedDigitizingFloater::FloaterItem>() };
+  return QgsSettings().enumValue( u"/Cad/%1ShowInFloater"_s.arg( enumData.valueToKey( static_cast<int>( item ) ) ), Qgis::CadMeasurementDisplayType::Hidden );
+}
+
 void QgsAdvancedDigitizingFloater::setActive( bool active )
 {
-  QgsSettings().setValue( QStringLiteral( "/Cad/Floater" ), active );
+  QgsSettings().setValue( u"/Cad/Floater"_s, active );
 
   mActive = active;
 
   hideIfDisabled();
 }
 
-void QgsAdvancedDigitizingFloater::setItemVisibility( const QgsAdvancedDigitizingFloater::FloaterItem &item, bool visible )
+void QgsAdvancedDigitizingFloater::setItemVisibility( FloaterItem item, bool visible )
 {
+  if ( itemSupportsMeasurementType( item ) )
+  {
+    // use setItemMeasurementType instead
+    return;
+  }
+
   const QMetaEnum enumData { QMetaEnum::fromType<QgsAdvancedDigitizingFloater::FloaterItem>() };
-  QgsSettings().setValue( QStringLiteral( "/Cad/%1ShowInFloater" ).arg( enumData.valueToKey( static_cast<int>( item ) ) ), visible );
+  QgsSettings().setValue( u"/Cad/%1ShowInFloater"_s.arg( enumData.valueToKey( static_cast<int>( item ) ) ), visible );
   mItemsVisibility.setFlag( item, visible );
   switch ( item )
   {
@@ -225,7 +254,106 @@ void QgsAdvancedDigitizingFloater::setItemVisibility( const QgsAdvancedDigitizin
     case FloaterItem::Bearing:
       enabledChangedBearing( visible );
       break;
+    case FloaterItem::Weight:
+      enabledChangedWeight( visible );
+      break;
+    case FloaterItem::Area:
+    case FloaterItem::TotalLength:
+      break;
   }
+}
+
+void QgsAdvancedDigitizingFloater::setItemMeasurementType( FloaterItem item, Qgis::CadMeasurementDisplayType type )
+{
+  if ( !itemSupportsMeasurementType( item ) )
+  {
+    // use setItemVisibility instead
+    return;
+  }
+
+  const QMetaEnum enumData { QMetaEnum::fromType<QgsAdvancedDigitizingFloater::FloaterItem>() };
+  QgsSettings().setEnumValue( u"/Cad/%1ShowInFloater"_s.arg( enumData.valueToKey( static_cast<int>( item ) ) ), type );
+  switch ( type )
+  {
+    case Qgis::CadMeasurementDisplayType::Hidden:
+      mItemsVisibility.setFlag( item, false );
+      break;
+
+    case Qgis::CadMeasurementDisplayType::Cartesian:
+    case Qgis::CadMeasurementDisplayType::Ellipsoidal:
+      mItemsVisibility.setFlag( item, true );
+      break;
+  }
+
+  QPixmap pixmap;
+  const QColor iconColor = palette().color( QPalette::ColorRole::WindowText );
+  switch ( type )
+  {
+    case Qgis::CadMeasurementDisplayType::Hidden:
+      break;
+
+    case Qgis::CadMeasurementDisplayType::Cartesian:
+      pixmap = QgsApplication::getThemeIcon( u"mIconFloaterCartesian.svg"_s, iconColor, iconColor ).pixmap( QSize( 10, 10 ) );
+      break;
+    case Qgis::CadMeasurementDisplayType::Ellipsoidal:
+      pixmap = QgsApplication::getThemeIcon( u"mIconFloaterEllipsoid.svg"_s, iconColor, iconColor ).pixmap( QSize( 10, 10 ) );
+      break;
+  }
+
+  switch ( item )
+  {
+    case FloaterItem::XCoordinate:
+    case FloaterItem::YCoordinate:
+    case FloaterItem::MCoordinate:
+    case FloaterItem::ZCoordinate:
+    case FloaterItem::Angle:
+    case FloaterItem::Distance:
+    case FloaterItem::CommonAngleSnapping:
+    case FloaterItem::Bearing:
+    case FloaterItem::Weight:
+      break;
+
+    case FloaterItem::Area:
+    {
+      const bool show = itemVisibility( FloaterItem::Area );
+      mTotalAreaLineEdit->setVisible( show );
+      mAreaLabel->setVisible( show );
+      mAreaMeasurementTypeLabel->setVisible( show );
+      mAreaMeasurementTypeLabel->setPixmap( pixmap );
+      adjustSize();
+      break;
+    }
+    case FloaterItem::TotalLength:
+      const bool show = itemVisibility( FloaterItem::TotalLength );
+      mTotalLengthLineEdit->setVisible( show );
+      mTotalLengthLabel->setVisible( show );
+      mLengthMeasurementTypeLabel->setVisible( show );
+      mLengthMeasurementTypeLabel->setPixmap( pixmap );
+      adjustSize();
+      break;
+  }
+}
+
+bool QgsAdvancedDigitizingFloater::itemSupportsMeasurementType( FloaterItem item )
+{
+  switch ( item )
+  {
+    case FloaterItem::XCoordinate:
+    case FloaterItem::YCoordinate:
+    case FloaterItem::MCoordinate:
+    case FloaterItem::ZCoordinate:
+    case FloaterItem::Angle:
+    case FloaterItem::CommonAngleSnapping:
+    case FloaterItem::Distance:
+    case FloaterItem::Bearing:
+    case FloaterItem::Weight:
+      return false;
+
+    case FloaterItem::Area:
+    case FloaterItem::TotalLength:
+      return true;
+  }
+  BUILTIN_UNREACHABLE
 }
 
 void QgsAdvancedDigitizingFloater::updatePos( const QPoint &pos )
@@ -282,6 +410,16 @@ void QgsAdvancedDigitizingFloater::changeBearing( const QString &text )
   mBearingLineEdit->setText( text );
 }
 
+void QgsAdvancedDigitizingFloater::changeArea( const QString &text )
+{
+  mTotalAreaLineEdit->setText( text );
+}
+
+void QgsAdvancedDigitizingFloater::changeTotalLength( const QString &text )
+{
+  mTotalLengthLineEdit->setText( text );
+}
+
 void QgsAdvancedDigitizingFloater::changeLockX( bool locked )
 {
   if ( !locked )
@@ -291,8 +429,8 @@ void QgsAdvancedDigitizingFloater::changeLockX( bool locked )
   }
   else
   {
-    mXLineEdit->setStyleSheet( QStringLiteral( "font-weight: bold" ) );
-    mXLabel->setStyleSheet( QStringLiteral( "font-weight: bold" ) );
+    mXLineEdit->setStyleSheet( u"font-weight: bold"_s );
+    mXLabel->setStyleSheet( u"font-weight: bold"_s );
   }
 }
 
@@ -305,8 +443,8 @@ void QgsAdvancedDigitizingFloater::changeLockY( bool locked )
   }
   else
   {
-    mYLineEdit->setStyleSheet( QStringLiteral( "font-weight: bold" ) );
-    mYLabel->setStyleSheet( QStringLiteral( "font-weight: bold" ) );
+    mYLineEdit->setStyleSheet( u"font-weight: bold"_s );
+    mYLabel->setStyleSheet( u"font-weight: bold"_s );
   }
 }
 
@@ -319,8 +457,8 @@ void QgsAdvancedDigitizingFloater::changeLockZ( bool locked )
   }
   else
   {
-    mZLineEdit->setStyleSheet( QStringLiteral( "font-weight: bold" ) );
-    mZLabel->setStyleSheet( QStringLiteral( "font-weight: bold" ) );
+    mZLineEdit->setStyleSheet( u"font-weight: bold"_s );
+    mZLabel->setStyleSheet( u"font-weight: bold"_s );
   }
 }
 
@@ -333,8 +471,8 @@ void QgsAdvancedDigitizingFloater::changeLockM( bool locked )
   }
   else
   {
-    mMLineEdit->setStyleSheet( QStringLiteral( "font-weight: bold" ) );
-    mMLabel->setStyleSheet( QStringLiteral( "font-weight: bold" ) );
+    mMLineEdit->setStyleSheet( u"font-weight: bold"_s );
+    mMLabel->setStyleSheet( u"font-weight: bold"_s );
   }
 }
 
@@ -347,8 +485,8 @@ void QgsAdvancedDigitizingFloater::changeLockDistance( bool locked )
   }
   else
   {
-    mDistanceLineEdit->setStyleSheet( QStringLiteral( "font-weight: bold" ) );
-    mDistanceLabel->setStyleSheet( QStringLiteral( "font-weight: bold" ) );
+    mDistanceLineEdit->setStyleSheet( u"font-weight: bold"_s );
+    mDistanceLabel->setStyleSheet( u"font-weight: bold"_s );
   }
 }
 
@@ -361,8 +499,8 @@ void QgsAdvancedDigitizingFloater::changeLockAngle( bool locked )
   }
   else
   {
-    mAngleLineEdit->setStyleSheet( QStringLiteral( "font-weight: bold" ) );
-    mAngleLabel->setStyleSheet( QStringLiteral( "font-weight: bold" ) );
+    mAngleLineEdit->setStyleSheet( u"font-weight: bold"_s );
+    mAngleLabel->setStyleSheet( u"font-weight: bold"_s );
   }
 }
 
@@ -492,6 +630,15 @@ void QgsAdvancedDigitizingFloater::focusOnAngle()
   }
 }
 
+void QgsAdvancedDigitizingFloater::focusOnWeight()
+{
+  if ( mActive )
+  {
+    mWeightLineEdit->setFocus();
+    mWeightLineEdit->selectAll();
+  }
+}
+
 
 void QgsAdvancedDigitizingFloater::enabledChangedX( bool enabled )
 {
@@ -546,5 +693,19 @@ void QgsAdvancedDigitizingFloater::enabledChangedBearing( bool enabled )
 {
   mBearingLineEdit->setVisible( enabled && itemVisibility( FloaterItem::Bearing ) );
   mBearingLabel->setVisible( enabled && itemVisibility( FloaterItem::Bearing ) );
+  adjustSize();
+}
+
+void QgsAdvancedDigitizingFloater::changeWeight( const QString &text )
+{
+  mWeightLineEdit->setText( text );
+}
+
+void QgsAdvancedDigitizingFloater::enabledChangedWeight( bool enabled )
+{
+  // Always show weight when enabled, regardless of user preference
+  // This is because weight editing is a temporary mode (activated with W key)
+  mWeightLineEdit->setVisible( enabled );
+  mWeightLabel->setVisible( enabled );
   adjustSize();
 }

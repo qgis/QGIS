@@ -17,9 +17,14 @@
 #define QGSVECTORLAYERUTILS_H
 
 #include "qgis_core.h"
-#include "qgsgeometry.h"
-#include "qgsvectorlayerfeatureiterator.h"
 #include "qgsfeaturesink.h"
+#include "qgsgeometry.h"
+#include "qgsselectivemaskingsourceset.h"
+#include "qgsvectorlayerfeatureiterator.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsFeatureRenderer;
 class QgsSymbolLayer;
@@ -33,10 +38,10 @@ struct QgsMaskedLayer
   bool hasEffects = false;
 
   // masked symbol layers
-  QSet<QString> symbolLayerIds;
+  QSet<QString> symbolLayerIdsToMask;
 };
 
-//! masked layers where key is the layer id
+//! masked layers where key is the layer id of the layer that WILL be masked
 typedef QHash<QString, QgsMaskedLayer> QgsMaskedLayers;
 
 #endif
@@ -109,6 +114,16 @@ class CORE_EXPORT QgsVectorLayerUtils
         QgsAttributeMap mAttributes;
     };
 
+    /**
+     * Flags used with the fieldIsEditable() function
+     * \since QGIS 4.0
+     */
+    enum class FieldIsEditableFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      IgnoreLayerEditability = 1 << 0, //!< Ignores the vector layer's editable state
+    };
+    Q_DECLARE_FLAGS( FieldIsEditableFlags, FieldIsEditableFlag )
+
     // SIP does not like "using", use legacy typedef
     //! Alias for list of QgsFeatureData
     typedef QList<QgsVectorLayerUtils::QgsFeatureData> QgsFeaturesDataList;
@@ -134,6 +149,21 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \see getDoubleValues
      */
     static QList< QVariant > getValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, QgsFeedback *feedback = nullptr );
+
+    /**
+     * Fetches all unique values from a specified field name or expression. Null values or
+     * invalid expression results are skipped.
+     * \param layer vector layer to retrieve values from
+     * \param fieldOrExpression field name or an expression string evaluating to a double value
+     * \param ok will be set to FALSE if field or expression is invalid, otherwise TRUE
+     * \param selectedOnly set to TRUE to get values from selected features only
+     * \param limit Maximum number of unique values to return. Use -1 for no limit.
+     * \param feedback optional feedback object to allow cancellation
+     * \returns list of unique fetched values
+     * \see getValues
+     * \since QGIS 4.0
+     */
+    static QList< QVariant > uniqueValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok SIP_OUT, bool selectedOnly = false, int limit = -1, QgsFeedback *feedback = nullptr );
 
     /**
      * Fetches all double values from a specified field name or expression. Null values or
@@ -309,14 +339,18 @@ class CORE_EXPORT QgsVectorLayerUtils
     static QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() );
 
     /**
-     * Tests whether a field is editable for a particular \a feature.
+     * Tests whether a field is editable for a particular feature.
      *
-     * \returns TRUE if the field at index \a fieldIndex from \a layer
-     * is editable, FALSE if the field is read only.
+     * \param layer The vector layer
+     * \param fieldIndex The field index
+     * \param feature The feature
+     * \param flags Additional flags modifying the editability check behavior (since QGIS 4.0)
+     *
+     * \returns TRUE if the field is editable, FALSE if the field is read only.
      *
      * \since QGIS 3.10
      */
-    static bool fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature );
+    static bool fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature, QgsVectorLayerUtils::FieldIsEditableFlags flags = QgsVectorLayerUtils::FieldIsEditableFlags() );
 
     /**
      * Returns TRUE if the field at index \a fieldIndex from \a layer
@@ -341,22 +375,35 @@ class CORE_EXPORT QgsVectorLayerUtils
     static bool fieldEditabilityDependsOnFeature( const QgsVectorLayer *layer, int fieldIndex );
 
     /**
-      * Returns masks defined in labeling options of a layer.
+      * Returns all objects that will be masked by the labels for a given vector \a layer.
+      *
       * The returned type associates a labeling rule identifier to a set of layers that are masked given by their layer id,
       * and a set of masked symbol layers if associated to each masked layers.
+      *
+      * - Returned hash keys are the label rule ID, or an empty string for simple labeling
+      * - Returned values are hashes of the form:
+      * - The hash keys are the layer IDs for layers that will be masked.
+      * - The hash value is the set of symbol layers that will be masked in that key's layer.
+      *
       * \note Not available in Python bindings
       * \since QGIS 3.12
       */
-    static QHash<QString, QgsMaskedLayers> labelMasks( const QgsVectorLayer * ) SIP_SKIP;
+    static QHash<QString, QgsMaskedLayers> collectObjectsMaskedByLabelsFromLayer( const QgsVectorLayer *layer,
+        const QHash< QString, QgsSelectiveMaskingSourceSet > &selectiveMaskingSourceSets,
+        const QVector< QgsVectorLayer * > &allRenderedVectorLayers ) SIP_SKIP;
 
     /**
-     * Returns all masks that may be defined on symbol layers for a given vector layer.
-     * The hash key is a layer id.
-     * The hash value is the set of symbol layers masked in the key's layer.
+     * Returns all objects that will be masked by the symbol layers for a given vector \a layer.
+     *
+     * - The hash keys are the layer IDs for layers that will be masked.
+     * - The hash value is the set of symbol layers that will be masked in that key's layer.
+     *
      * \note Not available in Python bindings
      * \since QGIS 3.12
      */
-    static QgsMaskedLayers symbolLayerMasks( const QgsVectorLayer * ) SIP_SKIP;
+    static QgsMaskedLayers collectObjectsMaskedBySymbolLayersFromLayer( const QgsVectorLayer *layer,
+        const QHash< QString, QgsSelectiveMaskingSourceSet > &selectiveMaskingSourceSets,
+        const QVector< QgsVectorLayer * > &allRenderedVectorLayers ) SIP_SKIP;
 
     /**
      * Returns a descriptive string for a \a feature, suitable for displaying to the user.
@@ -452,6 +499,79 @@ class CORE_EXPORT QgsVectorLayerUtils
     static QString guessFriendlyIdentifierField( const QgsFields &fields );
 #endif
 
+
+#ifndef SIP_RUN
+    /**
+     * Converts field values from an iterator to an array of data.
+     *
+     * \param fields layer fields
+     * \param fieldName field name to source values from
+     * \param it feature iterator for features to include
+     * \param nullValue value to use when original field value is a null. Must be of the same data type as the source field.
+     *
+     * \warning Only numeric field types are supported.
+     *
+     * \since QGIS 4.0
+     */
+    static QByteArray fieldToDataArray( const QgsFields &fields, const QString &fieldName, QgsFeatureIterator &it, const QVariant &nullValue );
+#else
+
+    /**
+     * Converts field values from an iterator to an array of data.
+     *
+     * \param fields layer fields
+     * \param fieldName field name to source values from
+     * \param it feature iterator for features to include
+     * \param nullValue value to use when original field value is a null. Must be of the same data type as the source field.
+     *
+     * \warning Only numeric field types are supported.
+     *
+     * \throws KeyError if the field name is not found
+     * \throws TypeError if the field is of a non-supported type
+     *
+     * \since QGIS 4.0
+     */
+    static QByteArray fieldToDataArray( const QgsFields &fields, const QString &fieldName, QgsFeatureIterator &it, const QVariant &nullValue );
+    % MethodCode
+
+    const int fieldIndex = a0->lookupField( *a1 );
+    if ( fieldIndex == -1 )
+    {
+      PyErr_SetString( PyExc_KeyError, u"Field %1 does not exist."_s.arg( *a1 ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      const QgsField field = a0->at( fieldIndex );
+      switch ( field.type() )
+      {
+        case QMetaType::Type::Int:
+        case QMetaType::Type::UInt:
+        case QMetaType::Type::Long:
+        case QMetaType::Type::LongLong:
+        case QMetaType::Type::ULong:
+        case QMetaType::Type::ULongLong:
+        case QMetaType::Type::Float:
+        case QMetaType::Type::Double:
+        case QMetaType::Type::Short:
+        case QMetaType::Type::UShort:
+        {
+          Py_BEGIN_ALLOW_THREADS
+          sipRes = new QByteArray( QgsVectorLayerUtils::fieldToDataArray( *a0, *a1, *a2, *a3 ) );
+          Py_END_ALLOW_THREADS
+          break;
+        }
+
+        default:
+        {
+          PyErr_SetString( PyExc_TypeError, u"Field type (%1) cannot be converted to a data array."_s.arg( QMetaType::typeName( field.type() ) ).toUtf8().constData() );
+          sipIsErr = 1;
+        }
+      }
+    }
+    % End
+
+#endif
 };
 
 

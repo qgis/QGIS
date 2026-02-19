@@ -11,6 +11,7 @@
 
 
 
+
 class QgsCallout
 {
 %Docstring(signature="appended")
@@ -215,7 +216,7 @@ The default order is QgsCallout.OrderBelowIndividualLabels.
 %End
 
     class QgsCalloutContext
-{
+    {
 %Docstring(signature="appended")
 Contains additional contextual information about the context in which a
 callout is being rendered.
@@ -223,9 +224,6 @@ callout is being rendered.
 .. versionadded:: 3.10
 %End
 
-%TypeHeaderCode
-#include "qgscallout.h"
-%End
       public:
         bool allFeaturePartsLabeled;
 
@@ -293,7 +291,7 @@ information about how a callout is being rendered.
 
     bool enabled() const;
 %Docstring
-Returns ``True`` if the the callout is enabled.
+Returns ``True`` if the callout is enabled.
 
 .. seealso:: :py:func:`setEnabled`
 %End

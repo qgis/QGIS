@@ -13,20 +13,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qgsabstractmaterialsettings.h>
+#include "qgsabstractmaterialsettings.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsPropertiesDefinition QgsAbstractMaterialSettings::sPropertyDefinitions;
 
 void QgsAbstractMaterialSettings::readXml( const QDomElement &element, const QgsReadWriteContext & )
 {
-  const QDomElement elemDataDefinedProperties = element.firstChildElement( QStringLiteral( "data-defined-properties" ) );
+  const QDomElement elemDataDefinedProperties = element.firstChildElement( u"data-defined-properties"_s );
   if ( !elemDataDefinedProperties.isNull() )
     mDataDefinedProperties.readXml( elemDataDefinedProperties, propertyDefinitions() );
 }
 
 void QgsAbstractMaterialSettings::writeXml( QDomElement &element, const QgsReadWriteContext & ) const
 {
-  QDomElement elemDataDefinedProperties = element.ownerDocument().createElement( QStringLiteral( "data-defined-properties" ) );
+  QDomElement elemDataDefinedProperties = element.ownerDocument().createElement( u"data-defined-properties"_s );
   mDataDefinedProperties.writeXml( elemDataDefinedProperties, propertyDefinitions() );
   element.appendChild( elemDataDefinedProperties );
 }
@@ -51,11 +55,7 @@ QByteArray QgsAbstractMaterialSettings::dataDefinedVertexColorsAsByte( const Qgs
   return QByteArray();
 }
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-void QgsAbstractMaterialSettings::applyDataDefinedToGeometry( Qt3DRender::QGeometry *geometry, int vertexCount, const QByteArray &dataDefinedBytes ) const
-#else
 void QgsAbstractMaterialSettings::applyDataDefinedToGeometry( Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &dataDefinedBytes ) const
-#endif
 {
   Q_UNUSED( geometry )
   Q_UNUSED( vertexCount )
@@ -67,7 +67,7 @@ void QgsAbstractMaterialSettings::initPropertyDefinitions() const
   if ( !sPropertyDefinitions.isEmpty() )
     return;
 
-  const QString origin = QStringLiteral( "material3d" );
+  const QString origin = u"material3d"_s;
 
   sPropertyDefinitions = QgsPropertiesDefinition {
     { static_cast<int>( Property::Diffuse ), QgsPropertyDefinition( "diffuse", QObject::tr( "Diffuse" ), QgsPropertyDefinition::ColorNoAlpha, origin ) },

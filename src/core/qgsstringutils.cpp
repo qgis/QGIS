@@ -14,12 +14,60 @@
  ***************************************************************************/
 
 #include "qgsstringutils.h"
+
+#include <cstdlib>
+
 #include "qgslogger.h"
-#include <QVector>
+
+#include <QRegularExpression>
+#include <QString>
 #include <QStringList>
 #include <QTextBoundaryFinder>
-#include <QRegularExpression>
-#include <cstdlib> // for std::abs
+#include <QVector>
+
+using namespace Qt::StringLiterals;
+
+QHash<QString, QString> QgsStringUtils::UNACCENT_MAP = QgsStringUtils::createUnaccentMap();
+
+QString QgsStringUtils::unaccent( const QString &input )
+{
+  // Normalize input to NFC so that Unicode characters composed of base +
+  // combining marks are converted to their canonical composed form.
+  // This ensures lookups match the keys in UNACCENT_MAP, which are stored
+  // in NFC (e.g. "e" + U+0301 becomes "é", as PostgreSQL does it.).
+  const QString in = input.normalized( QString::NormalizationForm_C );
+  QString out;
+  out.reserve( in.size() );
+
+  qsizetype i = 0;
+  const qsizetype n = in.size();
+
+  while ( i < n )
+  {
+    const QChar c = in.at( i );
+    int len = 1;
+
+    // Detect surrogate pair (non-BMP)
+    if ( c.isHighSurrogate() && i + 1 < n )
+    {
+      const QChar c2 = in.at( i + 1 );
+      if ( c2.isLowSurrogate() )
+        len = 2;
+    }
+
+    const QString key = in.mid( i, len ).normalized( QString::NormalizationForm_C );
+
+    auto it = UNACCENT_MAP.constFind( key );
+    if ( it != UNACCENT_MAP.constEnd() )
+      out.append( it.value() );
+    else
+      out.append( key );
+
+    i += len;
+  }
+
+  return out;
+}
 
 QString QgsStringUtils::capitalize( const QString &string, Qgis::Capitalization capitalization )
 {
@@ -53,7 +101,7 @@ QString QgsStringUtils::capitalize( const QString &string, Qgis::Capitalization 
       {
         first = false;
         letterSplitter.setPosition( wordSplitter.position() );
-        letterSplitter.toNextBoundary();
+        ( void )letterSplitter.toNextBoundary();
         QString substr = string.mid( wordSplitter.position(), letterSplitter.position() - wordSplitter.position() );
         temp.replace( wordSplitter.position(), substr.length(), substr.toUpper() );
       }
@@ -71,7 +119,7 @@ QString QgsStringUtils::capitalize( const QString &string, Qgis::Capitalization 
       {
         smallWords = QObject::tr( "a|an|and|as|at|but|by|en|for|if|in|nor|of|on|or|per|s|the|to|vs.|vs|via" ).split( '|' );
         newPhraseSeparators = QObject::tr( ".|:" ).split( '|' );
-        splitWords = QRegularExpression( QStringLiteral( "\\b" ), QRegularExpression::UseUnicodePropertiesOption );
+        splitWords = QRegularExpression( u"\\b"_s, QRegularExpression::UseUnicodePropertiesOption );
       }
 
       const bool allSameCase = string.toLower() == string || string.toUpper() == string;
@@ -118,13 +166,13 @@ QString QgsStringUtils::ampersandEncode( const QString &string )
   {
     QChar ch = string.at( i );
     if ( ch.unicode() > 160 )
-      encoded += QStringLiteral( "&#%1;" ).arg( static_cast< int >( ch.unicode() ) );
+      encoded += u"&#%1;"_s.arg( static_cast< int >( ch.unicode() ) );
     else if ( ch.unicode() == 38 )
-      encoded += QLatin1String( "&amp;" );
+      encoded += "&amp;"_L1;
     else if ( ch.unicode() == 60 )
-      encoded += QLatin1String( "&lt;" );
+      encoded += "&lt;"_L1;
     else if ( ch.unicode() == 62 )
-      encoded += QLatin1String( "&gt;" );
+      encoded += "&gt;"_L1;
     else
       encoded += ch;
   }
@@ -502,10 +550,10 @@ double QgsStringUtils::fuzzyScore( const QString &candidate, const QString &sear
         score += FUZZY_SCORE_WORD_MATCH;
     }
 
-    // QgsLogger::debug( QStringLiteral( "TMP: %1 | %2 | %3 | %4 | %5" ).arg( candidateChar, searchChar, QString::number(score), QString::number(isCandidateCharWordEnd), QString::number(isSearchCharWordEnd) ) + QStringLiteral( __FILE__ ) );
+    // QgsLogger::debug( u"TMP: %1 | %2 | %3 | %4 | %5"_s.arg( candidateChar, searchChar, QString::number(score), QString::number(isCandidateCharWordEnd), QString::number(isSearchCharWordEnd) ) + QStringLiteral( __FILE__ ) );
   }
 
-  // QgsLogger::debug( QStringLiteral( "RES: %1 | %2" ).arg( QString::number(maxScore),  QString::number(score) ) + QStringLiteral( __FILE__ ) );
+  // QgsLogger::debug( u"RES: %1 | %2"_s.arg( QString::number(maxScore),  QString::number(score) ) + QStringLiteral( __FILE__ ) );
   // we didn't loop through all the search chars, it means, that they are not present in the current candidate
   if ( searchIdx < searchLength )
     score = 0;
@@ -520,9 +568,9 @@ QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
 
   // http://alanstorm.com/url_regex_explained
   // note - there's more robust implementations available
-  const thread_local QRegularExpression urlRegEx( QStringLiteral( "((?:(?:http|https|ftp|file)://[^\\s]+[^\\s,.]+)|(?:\\b(([\\w-]+://?|www[.])[^\\s()<>]+(?:\\([\\w\\d]+\\)|([^!\"#$%&'()*+,\\-./:;<=>?@[\\\\\\]^_`{|}~\\s]|/)))))" ) );
-  const thread_local QRegularExpression protoRegEx( QStringLiteral( "^(?:f|ht)tps?://|file://" ) );
-  const thread_local QRegularExpression emailRegEx( QStringLiteral( "([\\w._%+-]+@[\\w.-]+\\.[A-Za-z]+)" ) );
+  const thread_local QRegularExpression urlRegEx( u"((?:(?:http|https|ftp|file)://[^\\s]+[^\\s,.]+)|(?:\\b(([\\w-]+://?|www[.])[^\\s()<>]+(?:\\([\\w\\d]+\\)|([^!\"#$%&'()*+,\\-./:;<=>?@[\\\\\\]^_`{|}~\\s]|/)))))"_s );
+  const thread_local QRegularExpression protoRegEx( u"^(?:f|ht)tps?://|file://"_s );
+  const thread_local QRegularExpression emailRegEx( u"([\\w._%+-]+@[\\w.-]+\\.[A-Za-z]+)"_s );
 
   int offset = 0;
   bool found = false;
@@ -536,7 +584,7 @@ QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
     {
       protoUrl.prepend( "http://" );
     }
-    QString anchor = QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( protoUrl.toHtmlEscaped(), url.toHtmlEscaped() );
+    QString anchor = u"<a href=\"%1\">%2</a>"_s.arg( protoUrl.toHtmlEscaped(), url.toHtmlEscaped() );
     converted.replace( match.capturedStart( 1 ), url.length(), anchor );
     offset = match.capturedStart( 1 ) + anchor.length();
     match = urlRegEx.match( converted, offset );
@@ -548,7 +596,7 @@ QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
   {
     found = true;
     QString email = match.captured( 1 );
-    QString anchor = QStringLiteral( "<a href=\"mailto:%1\">%1</a>" ).arg( email.toHtmlEscaped() );
+    QString anchor = u"<a href=\"mailto:%1\">%1</a>"_s.arg( email.toHtmlEscaped() );
     converted.replace( match.capturedStart( 1 ), email.length(), anchor );
     offset = match.capturedStart( 1 ) + anchor.length();
     match = emailRegEx.match( converted, offset );
@@ -562,7 +610,7 @@ QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
 
 bool QgsStringUtils::isUrl( const QString &string )
 {
-  const thread_local QRegularExpression rxUrl( QStringLiteral( "^(http|https|ftp|file)://\\S+$" ) );
+  const thread_local QRegularExpression rxUrl( u"^(http|https|ftp|file)://\\S+$"_s );
   return rxUrl.match( string ).hasMatch();
 }
 
@@ -570,22 +618,22 @@ QString QgsStringUtils::htmlToMarkdown( const QString &html )
 {
   // Any changes in this function must be copied to qgscrashreport.cpp too
   QString converted = html;
-  converted.replace( QLatin1String( "<br>" ), QLatin1String( "\n" ) );
-  converted.replace( QLatin1String( "<b>" ), QLatin1String( "**" ) );
-  converted.replace( QLatin1String( "</b>" ), QLatin1String( "**" ) );
-  converted.replace( QLatin1String( "<pre>" ), QLatin1String( "\n```\n" ) );
-  converted.replace( QLatin1String( "</pre>" ), QLatin1String( "```\n" ) );
+  converted.replace( "<br>"_L1, "\n"_L1 );
+  converted.replace( "<b>"_L1, "**"_L1 );
+  converted.replace( "</b>"_L1, "**"_L1 );
+  converted.replace( "<pre>"_L1, "\n```\n"_L1 );
+  converted.replace( "</pre>"_L1, "```\n"_L1 );
 
-  const thread_local QRegularExpression hrefRegEx( QStringLiteral( "<a\\s+href\\s*=\\s*([^<>]*)\\s*>([^<>]*)</a>" ) );
+  const thread_local QRegularExpression hrefRegEx( u"<a\\s+href\\s*=\\s*([^<>]*)\\s*>([^<>]*)</a>"_s );
 
   int offset = 0;
   QRegularExpressionMatch match = hrefRegEx.match( converted );
   while ( match.hasMatch() )
   {
-    QString url = match.captured( 1 ).replace( QLatin1String( "\"" ), QString() );
+    QString url = match.captured( 1 ).replace( "\""_L1, QString() );
     url.replace( '\'', QString() );
     QString name = match.captured( 2 );
-    QString anchor = QStringLiteral( "[%1](%2)" ).arg( name, url );
+    QString anchor = u"[%1](%2)"_s.arg( name, url );
     converted.replace( match.capturedStart(), match.capturedLength(), anchor );
     offset = match.capturedStart() + anchor.length();
     match = hrefRegEx.match( converted, offset );
@@ -611,7 +659,7 @@ QString QgsStringUtils::wordWrap( const QString &string, const int length, const
   else
   {
     // \x{200B} is a ZERO-WIDTH SPACE, needed for worwrap to support a number of complex scripts (Indic, Arabic, etc.)
-    rx.setPattern( QStringLiteral( "[\\x{200B}\\s]" ) );
+    rx.setPattern( u"[\\x{200B}\\s]"_s );
     delimiterLength = 1;
   }
 
@@ -738,11 +786,7 @@ QString QgsStringUtils::truncateMiddleOfString( const QString &string, int maxLe
   if ( truncateFrom <= 0 )
     return QChar( 0x2026 );
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  return string.leftRef( truncateFrom ) + QString( QChar( 0x2026 ) ) + string.midRef( truncateFrom + charactersToTruncate + 1 );
-#else
   return QStringView( string ).first( truncateFrom ) + QString( QChar( 0x2026 ) ) + QStringView( string ).sliced( truncateFrom + charactersToTruncate + 1 );
-#endif
 }
 
 bool QgsStringUtils::containsByWord( const QString &candidate, const QString &words, Qt::CaseSensitivity sensitivity )
@@ -750,7 +794,7 @@ bool QgsStringUtils::containsByWord( const QString &candidate, const QString &wo
   if ( candidate.trimmed().isEmpty() )
     return false;
 
-  const thread_local QRegularExpression rxWhitespace( QStringLiteral( "\\s+" ) );
+  const thread_local QRegularExpression rxWhitespace( u"\\s+"_s );
   const QStringList parts = words.split( rxWhitespace, Qt::SkipEmptyParts );
   if ( parts.empty() )
     return false;
@@ -770,7 +814,7 @@ QgsStringReplacement::QgsStringReplacement( const QString &match, const QString 
 {
   if ( mWholeWordOnly )
   {
-    mRx.setPattern( QStringLiteral( "\\b%1\\b" ).arg( mMatch ) );
+    mRx.setPattern( u"\\b%1\\b"_s.arg( mMatch ) );
     mRx.setPatternOptions( mCaseSensitive ? QRegularExpression::NoPatternOption : QRegularExpression::CaseInsensitiveOption );
   }
 }
@@ -791,19 +835,19 @@ QString QgsStringReplacement::process( const QString &input ) const
 QgsStringMap QgsStringReplacement::properties() const
 {
   QgsStringMap map;
-  map.insert( QStringLiteral( "match" ), mMatch );
-  map.insert( QStringLiteral( "replace" ), mReplacement );
-  map.insert( QStringLiteral( "caseSensitive" ), mCaseSensitive ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  map.insert( QStringLiteral( "wholeWord" ), mWholeWordOnly ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  map.insert( u"match"_s, mMatch );
+  map.insert( u"replace"_s, mReplacement );
+  map.insert( u"caseSensitive"_s, mCaseSensitive ? u"1"_s : u"0"_s );
+  map.insert( u"wholeWord"_s, mWholeWordOnly ? u"1"_s : u"0"_s );
   return map;
 }
 
 QgsStringReplacement QgsStringReplacement::fromProperties( const QgsStringMap &properties )
 {
-  return QgsStringReplacement( properties.value( QStringLiteral( "match" ) ),
-                               properties.value( QStringLiteral( "replace" ) ),
-                               properties.value( QStringLiteral( "caseSensitive" ), QStringLiteral( "0" ) ) == QLatin1String( "1" ),
-                               properties.value( QStringLiteral( "wholeWord" ), QStringLiteral( "0" ) ) == QLatin1String( "1" ) );
+  return QgsStringReplacement( properties.value( u"match"_s ),
+                               properties.value( u"replace"_s ),
+                               properties.value( u"caseSensitive"_s, u"0"_s ) == "1"_L1,
+                               properties.value( u"wholeWord"_s, u"0"_s ) == "1"_L1 );
 }
 
 QString QgsStringReplacementCollection::process( const QString &input ) const
@@ -821,7 +865,7 @@ void QgsStringReplacementCollection::writeXml( QDomElement &elem, QDomDocument &
   for ( const QgsStringReplacement &r : mReplacements )
   {
     QgsStringMap props = r.properties();
-    QDomElement propEl = doc.createElement( QStringLiteral( "replacement" ) );
+    QDomElement propEl = doc.createElement( u"replacement"_s );
     QgsStringMap::const_iterator it = props.constBegin();
     for ( ; it != props.constEnd(); ++it )
     {
@@ -834,7 +878,7 @@ void QgsStringReplacementCollection::writeXml( QDomElement &elem, QDomDocument &
 void QgsStringReplacementCollection::readXml( const QDomElement &elem )
 {
   mReplacements.clear();
-  QDomNodeList nodelist = elem.elementsByTagName( QStringLiteral( "replacement" ) );
+  QDomNodeList nodelist = elem.elementsByTagName( u"replacement"_s );
   for ( int i = 0; i < nodelist.count(); i++ )
   {
     QDomElement replacementElem = nodelist.at( i ).toElement();

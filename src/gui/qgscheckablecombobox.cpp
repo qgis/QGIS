@@ -16,15 +16,19 @@
  ***************************************************************************/
 
 #include "qgscheckablecombobox.h"
-#include "moc_qgscheckablecombobox.cpp"
+
 #include "qgsapplication.h"
 
-#include <QEvent>
-#include <QMouseEvent>
-#include <QLineEdit>
-#include <QPoint>
 #include <QAbstractItemView>
+#include <QEvent>
+#include <QLineEdit>
+#include <QMouseEvent>
+#include <QPoint>
+#include <QString>
 
+#include "moc_qgscheckablecombobox.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCheckableItemModel::QgsCheckableItemModel( QObject *parent )
   : QStandardItemModel( 0, 1, parent )
@@ -78,7 +82,7 @@ void QgsCheckBoxDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
 QgsCheckableComboBox::QgsCheckableComboBox( QWidget *parent )
   : QComboBox( parent )
   , mModel( new QgsCheckableItemModel( this ) )
-  , mSeparator( QStringLiteral( ", " ) )
+  , mSeparator( u", "_s )
 {
   setModel( mModel );
   setItemDelegate( new QgsCheckBoxDelegate( this ) );
@@ -103,9 +107,9 @@ QgsCheckableComboBox::QgsCheckableComboBox( QWidget *parent )
   view()->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( view(), &QAbstractItemView::customContextMenuRequested, this, &QgsCheckableComboBox::showContextMenu );
 
-  connect( model(), &QStandardItemModel::rowsInserted, this, [=]( const QModelIndex &, int, int ) { updateDisplayText(); } );
-  connect( model(), &QStandardItemModel::rowsRemoved, this, [=]( const QModelIndex &, int, int ) { updateDisplayText(); } );
-  connect( model(), &QStandardItemModel::dataChanged, this, [=]( const QModelIndex &, const QModelIndex &, const QVector<int> & ) { updateDisplayText(); } );
+  connect( model(), &QStandardItemModel::rowsInserted, this, [this]( const QModelIndex &, int, int ) { updateDisplayText(); } );
+  connect( model(), &QStandardItemModel::rowsRemoved, this, [this]( const QModelIndex &, int, int ) { updateDisplayText(); } );
+  connect( model(), &QStandardItemModel::dataChanged, this, [this]( const QModelIndex &, const QModelIndex &, const QVector<int> & ) { updateDisplayText(); } );
 }
 
 QString QgsCheckableComboBox::separator() const

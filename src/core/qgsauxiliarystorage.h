@@ -19,15 +19,18 @@
 #define QGSAUXILIARYSTORAGE_H
 
 #include "qgis_core.h"
+#include "qgscallout.h"
 #include "qgsdatasourceuri.h"
-#include "qgspallabeling.h"
 #include "qgsdiagramrenderer.h"
-#include "qgsvectorlayerjoininfo.h"
+#include "qgspallabeling.h"
 #include "qgsproperty.h"
 #include "qgssqliteutils.h"
 #include "qgsvectorlayer.h"
-#include "qgscallout.h"
+#include "qgsvectorlayerjoininfo.h"
+
 #include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsProject;
 
@@ -80,7 +83,7 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsAuxiliaryLayer: '%1'>" ).arg( sipCpp->name() );
+    QString str = u"<QgsAuxiliaryLayer: '%1'>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

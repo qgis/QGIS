@@ -1,4 +1,4 @@
-"""QGIS Unit tests for QgsActionManager.
+"""QGIS Unit tests for QgsShortcutsManager.
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -10,7 +10,10 @@ __author__ = "Nyall Dawson"
 __date__ = "28/05/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
-from qgis.PyQt.QtCore import QCoreApplication
+import os
+from typing import List
+
+from qgis.PyQt.QtCore import QCoreApplication, QObject, QEvent
 from qgis.PyQt.QtWidgets import QAction, QShortcut, QWidget
 from qgis.core import QgsSettings
 from qgis.gui import QgsGui, QgsShortcutsManager
@@ -25,10 +28,14 @@ class TestQgsShortcutsManager(QgisTestCase):
         """Run before all tests"""
         super().setUpClass()
         QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsWFSProviderGUI.com")
-        QCoreApplication.setApplicationName("QGIS_TestPyQgsWFSProviderGUI")
+        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsShortcutsManager.com")
+        QCoreApplication.setApplicationName("QGIS_TestPyQgsShortcutsManager")
         QgsSettings().clear()
         start_app()
+
+    @staticmethod
+    def filter_common_actions(actions: list[QObject]) -> list[QObject]:
+        return [a for a in actions if a.property("commonAction") is None]
 
     def testInstance(self):
         """test retrieving global instance"""
@@ -38,9 +45,12 @@ class TestQgsShortcutsManager(QgisTestCase):
         action = QAction("test", None)
         QgsGui.shortcutsManager().registerAction(action)
         # check that the same instance is returned
-        self.assertEqual(QgsGui.shortcutsManager().listActions(), [action])
+        self.assertEqual(
+            self.filter_common_actions(QgsGui.shortcutsManager().listActions()),
+            [action],
+        )
         s2 = QgsShortcutsManager()
-        self.assertEqual(s2.listActions(), [])
+        self.assertEqual(self.filter_common_actions(s2.listActions()), [])
 
     def testConstructor(self):
         """test constructing managers"""
@@ -87,11 +97,15 @@ class TestQgsShortcutsManager(QgisTestCase):
         action2 = QAction("action2", None)
         action2.setShortcut("y")
         self.assertTrue(s.registerAction(action2, "B"))
-        self.assertCountEqual(s.listActions(), [action1, action2])
+        self.assertCountEqual(
+            self.filter_common_actions(s.listActions()), [action1, action2]
+        )
 
         # try re-registering an existing action - should fail, but leave action registered
         self.assertFalse(s.registerAction(action2, "B"))
-        self.assertCountEqual(s.listActions(), [action1, action2])
+        self.assertCountEqual(
+            self.filter_common_actions(s.listActions()), [action1, action2]
+        )
 
         # actions should have been set to default sequences
         self.assertEqual(action1.shortcut().toString(), "A")
@@ -161,27 +175,31 @@ class TestQgsShortcutsManager(QgisTestCase):
         # recursive
         s = QgsShortcutsManager()
         s.registerAllChildActions(w, True)
-        self.assertEqual(set(s.listActions()), {action1, action2})
+        self.assertEqual(
+            set(self.filter_common_actions(s.listActions())), {action1, action2}
+        )
         s.registerAllChildShortcuts(w, True)
         self.assertEqual(set(s.listShortcuts()), {shortcut1, shortcut2})
 
         # non recursive
         s = QgsShortcutsManager()
         s.registerAllChildActions(w, False)
-        self.assertEqual(set(s.listActions()), {action1})
+        self.assertEqual(set(self.filter_common_actions(s.listActions())), {action1})
         s.registerAllChildShortcuts(w, False)
         self.assertEqual(set(s.listShortcuts()), {shortcut1})
 
         # recursive
         s = QgsShortcutsManager()
         s.registerAllChildren(w, True)
-        self.assertEqual(set(s.listActions()), {action1, action2})
+        self.assertEqual(
+            set(self.filter_common_actions(s.listActions())), {action1, action2}
+        )
         self.assertEqual(set(s.listShortcuts()), {shortcut1, shortcut2})
 
         # non recursive
         s = QgsShortcutsManager()
         s.registerAllChildren(w, False)
-        self.assertEqual(set(s.listActions()), {action1})
+        self.assertEqual(set(self.filter_common_actions(s.listActions())), {action1})
         self.assertEqual(set(s.listShortcuts()), {shortcut1})
 
     def testUnregister(self):
@@ -213,13 +231,15 @@ class TestQgsShortcutsManager(QgisTestCase):
         s.registerAction(action1)
         s.registerAction(action2)
 
-        self.assertEqual(set(s.listActions()), {action1, action2})
+        self.assertEqual(
+            set(self.filter_common_actions(s.listActions())), {action1, action2}
+        )
         self.assertEqual(set(s.listShortcuts()), {shortcut1, shortcut2})
 
         self.assertTrue(s.unregisterAction(action1))
         self.assertTrue(s.unregisterShortcut(shortcut1))
 
-        self.assertEqual(set(s.listActions()), {action2})
+        self.assertEqual(set(self.filter_common_actions(s.listActions())), {action2})
         self.assertEqual(set(s.listShortcuts()), {shortcut2})
 
         self.assertTrue(s.unregisterAction(action2))
@@ -232,9 +252,9 @@ class TestQgsShortcutsManager(QgisTestCase):
 
         s = QgsShortcutsManager(None)
 
-        self.assertEqual(s.listActions(), [])
+        self.assertEqual(self.filter_common_actions(s.listActions()), [])
         self.assertEqual(s.listShortcuts(), [])
-        self.assertEqual(s.listAll(), [])
+        self.assertEqual(self.filter_common_actions(s.listAll()), [])
 
         shortcut1 = QShortcut(None)
         shortcut2 = QShortcut(None)
@@ -245,9 +265,14 @@ class TestQgsShortcutsManager(QgisTestCase):
         s.registerAction(action1)
         s.registerAction(action2)
 
-        self.assertEqual(set(s.listActions()), {action1, action2})
+        self.assertEqual(
+            set(self.filter_common_actions(s.listActions())), {action1, action2}
+        )
         self.assertEqual(set(s.listShortcuts()), {shortcut1, shortcut2})
-        self.assertEqual(set(s.listAll()), {action1, action2, shortcut1, shortcut2})
+        self.assertEqual(
+            set(self.filter_common_actions(s.listAll())),
+            {action1, action2, shortcut1, shortcut2},
+        )
 
     def testDefault(self):
         """test retrieving default sequences"""
@@ -462,7 +487,149 @@ class TestQgsShortcutsManager(QgisTestCase):
 
         self.assertEqual(action1.toolTip(), "<b>my tooltip</b>")
         self.assertEqual(action2.toolTip(), "<b>my multiline</b><p>tooltip</p>")
-        self.assertEqual(action3.toolTip(), "<b>my tooltip </b> (Ctrl+S)")
+        self.assertEqual(action3.toolTip(), "<b>my tooltip</b> (Ctrl+S)")
+
+    def test_common_actions(self):
+        s = QgsShortcutsManager(None)
+        reformat_code_action = [
+            a
+            for a in s.listActions()
+            if a.property("commonAction")
+            == QgsShortcutsManager.CommonAction.CodeReformat.value
+        ][0]
+        self.assertEqual(reformat_code_action.text(), "Reformat Code")
+        self.assertEqual(reformat_code_action.shortcut().toString(), "Ctrl+Alt+F")
+        self.assertEqual(
+            reformat_code_action.toolTip(), "<b>Reformat code</b> (Ctrl+Alt+F)"
+        )
+        toggle_code_comment_action = [
+            a
+            for a in s.listActions()
+            if a.property("commonAction")
+            == QgsShortcutsManager.CommonAction.CodeToggleComment.value
+        ][0]
+        self.assertEqual(toggle_code_comment_action.text(), "Toggle Comment")
+
+        # on Windows Ctrl+/ does not work, so we stick with original Ctrl+:
+        # see https://github.com/qgis/QGIS/issues/63429
+        toggle_comment_shortcut = "Ctrl+/"
+        if os.name == "nt":
+            toggle_comment_shortcut = "Ctrl+:"
+
+        self.assertEqual(
+            toggle_code_comment_action.shortcut().toString(), toggle_comment_shortcut
+        )
+        self.assertEqual(
+            toggle_code_comment_action.toolTip(),
+            f"<b>Toggle comment</b> ({toggle_comment_shortcut})",
+        )
+
+        self.assertEqual(
+            s.sequenceForCommonAction(
+                QgsShortcutsManager.CommonAction.CodeReformat
+            ).toString(),
+            "Ctrl+Alt+F",
+        )
+        self.assertEqual(
+            s.sequenceForCommonAction(
+                QgsShortcutsManager.CommonAction.CodeToggleComment
+            ).toString(),
+            toggle_comment_shortcut,
+        )
+
+        # link an action to a common action
+        my_reformat_action1 = QAction()
+        s.initializeCommonAction(
+            my_reformat_action1, QgsShortcutsManager.CommonAction.CodeReformat
+        )
+        my_reformat_action2 = QAction()
+        s.initializeCommonAction(
+            my_reformat_action2, QgsShortcutsManager.CommonAction.CodeReformat
+        )
+
+        # default properties should be set
+        self.assertEqual(my_reformat_action1.text(), "Reformat Code")
+        self.assertEqual(my_reformat_action1.shortcut().toString(), "Ctrl+Alt+F")
+        self.assertEqual(
+            my_reformat_action1.toolTip(), "<b>Reformat code</b> (Ctrl+Alt+F)"
+        )
+        self.assertEqual(my_reformat_action2.text(), "Reformat Code")
+        self.assertEqual(my_reformat_action2.shortcut().toString(), "Ctrl+Alt+F")
+        self.assertEqual(
+            my_reformat_action2.toolTip(), "<b>Reformat code</b> (Ctrl+Alt+F)"
+        )
+        my_toggle_comment_action = QAction()
+        s.initializeCommonAction(
+            my_toggle_comment_action, QgsShortcutsManager.CommonAction.CodeToggleComment
+        )
+        self.assertEqual(my_toggle_comment_action.text(), "Toggle Comment")
+        self.assertEqual(
+            my_toggle_comment_action.shortcut().toString(), toggle_comment_shortcut
+        )
+        self.assertEqual(
+            my_toggle_comment_action.toolTip(),
+            f"<b>Toggle comment</b> ({toggle_comment_shortcut})",
+        )
+
+        # change shortcut
+        s.setKeySequence(reformat_code_action, "B")
+        self.assertEqual(my_reformat_action1.shortcut().toString(), "B")
+        self.assertEqual(my_reformat_action1.toolTip(), "<b>Reformat code</b> (B)")
+        self.assertEqual(my_reformat_action2.shortcut().toString(), "B")
+        self.assertEqual(my_reformat_action2.toolTip(), "<b>Reformat code</b> (B)")
+        self.assertEqual(
+            my_toggle_comment_action.shortcut().toString(), toggle_comment_shortcut
+        )
+
+        self.assertEqual(
+            s.sequenceForCommonAction(
+                QgsShortcutsManager.CommonAction.CodeReformat
+            ).toString(),
+            "B",
+        )
+        self.assertEqual(
+            s.sequenceForCommonAction(
+                QgsShortcutsManager.CommonAction.CodeToggleComment
+            ).toString(),
+            toggle_comment_shortcut,
+        )
+
+        s.setKeySequence(toggle_code_comment_action, "C")
+        self.assertEqual(my_reformat_action1.shortcut().toString(), "B")
+        self.assertEqual(my_reformat_action1.toolTip(), "<b>Reformat code</b> (B)")
+        self.assertEqual(my_reformat_action2.shortcut().toString(), "B")
+        self.assertEqual(my_reformat_action2.toolTip(), "<b>Reformat code</b> (B)")
+        self.assertEqual(my_toggle_comment_action.shortcut().toString(), "C")
+        self.assertEqual(
+            my_toggle_comment_action.toolTip(), "<b>Toggle comment</b> (C)"
+        )
+
+        self.assertEqual(
+            s.sequenceForCommonAction(
+                QgsShortcutsManager.CommonAction.CodeReformat
+            ).toString(),
+            "B",
+        )
+        self.assertEqual(
+            s.sequenceForCommonAction(
+                QgsShortcutsManager.CommonAction.CodeToggleComment
+            ).toString(),
+            "C",
+        )
+
+        # delete local action
+        my_reformat_action2.deleteLater()
+        QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
+        my_reformat_action2 = None
+
+        # should be no crash
+        s.setKeySequence(reformat_code_action, "D")
+        self.assertEqual(my_reformat_action1.shortcut().toString(), "D")
+        self.assertEqual(my_reformat_action1.toolTip(), "<b>Reformat code</b> (D)")
+        self.assertEqual(my_toggle_comment_action.shortcut().toString(), "C")
+        self.assertEqual(
+            my_toggle_comment_action.toolTip(), "<b>Toggle comment</b> (C)"
+        )
 
 
 if __name__ == "__main__":

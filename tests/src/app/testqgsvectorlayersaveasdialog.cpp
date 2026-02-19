@@ -12,18 +12,22 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
+#include "ogr/qgsvectorlayersaveasdialog.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
+#include "qgseditorwidgetregistry.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
-#include "qgsvectordataprovider.h"
-#include "ogr/qgsvectorlayersaveasdialog.h"
-#include "qgseditorwidgetregistry.h"
-#include "qgsproject.h"
-#include "qgsmapcanvas.h"
 #include "qgsgui.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
+#include "qgstest.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup UnitTests
@@ -69,7 +73,7 @@ void TestQgsVectorLayerSaveAsDialog::cleanupTestCase()
 void TestQgsVectorLayerSaveAsDialog::testAttributesAsDisplayedValues()
 {
   //create a temporary layer
-  auto tempLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "none?field=code:int&field=regular:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto tempLayer = std::make_unique<QgsVectorLayer>( u"none?field=code:int&field=regular:string"_s, u"vl"_s, u"memory"_s );
   QVERIFY( tempLayer->isValid() );
 
   // Assign a custom CRS to the layer
@@ -78,15 +82,15 @@ void TestQgsVectorLayerSaveAsDialog::testAttributesAsDisplayedValues()
   tempLayer->setCrs( crs );
 
   // Set a widget
-  tempLayer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "ValueRelation" ), QVariantMap() ) );
+  tempLayer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( u"ValueRelation"_s, QVariantMap() ) );
 
   const QgsVectorLayerSaveAsDialog d( tempLayer.get() );
 
-  QPushButton *mDeselectAllAttributes = d.findChild<QPushButton *>( QStringLiteral( "mDeselectAllAttributes" ) );
+  QPushButton *mDeselectAllAttributes = d.findChild<QPushButton *>( u"mDeselectAllAttributes"_s );
   QTest::mouseClick( mDeselectAllAttributes, Qt::LeftButton );
 
-  QTableWidget *mAttributeTable = d.findChild<QTableWidget *>( QStringLiteral( "mAttributeTable" ) );
-  QCheckBox *mReplaceRawFieldValues = d.findChild<QCheckBox *>( QStringLiteral( "mReplaceRawFieldValues" ) );
+  QTableWidget *mAttributeTable = d.findChild<QTableWidget *>( u"mAttributeTable"_s );
+  QCheckBox *mReplaceRawFieldValues = d.findChild<QCheckBox *>( u"mReplaceRawFieldValues"_s );
 
   QCOMPARE( mAttributeTable->rowCount(), 2 );
   QCOMPARE( mAttributeTable->isColumnHidden( 3 ), false );

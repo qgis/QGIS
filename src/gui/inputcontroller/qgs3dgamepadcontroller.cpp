@@ -14,9 +14,13 @@
  ***************************************************************************/
 
 #include "qgs3dgamepadcontroller.h"
-#include "moc_qgs3dgamepadcontroller.cpp"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_QTGAMEPAD
+#include "moc_qgs3dgamepadcontroller.cpp"
 
 #include <QtGamepad/QGamepad>
 
@@ -62,7 +66,7 @@ QgsGamepad3DMapController *QgsGamepad3DMapController::clone() const
 
 QString QgsGamepad3DMapController::deviceId() const
 {
-  return QStringLiteral( "gamepad3d:%1" ).arg( mGamepadDeviceId );
+  return u"gamepad3d:%1"_s.arg( mGamepadDeviceId );
 }
 
 bool QgsGamepad3DMapController::isConnected() const

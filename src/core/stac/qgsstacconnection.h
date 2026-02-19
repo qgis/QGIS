@@ -18,16 +18,15 @@
 
 
 #include "qgis_core.h"
+#include "qgsabstractproviderconnection.h"
+#include "qgshttpheaders.h"
 #include "qgssettingstree.h"
 #include "qgssettingstreenode.h"
 
-///@cond PRIVATE
-#define SIP_NO_FILE
-
+#include <QString>
 #include <QStringList>
 
-#include "qgsabstractproviderconnection.h"
-#include "qgshttpheaders.h"
+using namespace Qt::StringLiterals;
 
 class QgsSettingsEntryString;
 class QgsSettingsEntryVariantMap;
@@ -36,7 +35,6 @@ class QgsSettingsEntryVariantMap;
  * \brief Represents connections to STAC catalogs.
  *
  * \ingroup core
- * \note Not available in Python bindings.
  *
  * \since QGIS 3.40
  */
@@ -48,7 +46,7 @@ class CORE_EXPORT QgsStacConnection : public QgsAbstractProviderConnection
 #ifndef SIP_RUN
 
     ///@cond PRIVATE
-    static inline QgsSettingsTreeNamedListNode *sTreeConnectionStac = QgsSettingsTree::sTreeConnections->createNamedListNode( QStringLiteral( "stac" ), Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
+    static inline QgsSettingsTreeNamedListNode *sTreeConnectionStac = QgsSettingsTree::sTreeConnections->createNamedListNode( u"stac"_s, Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
 
     static const QgsSettingsEntryString *settingsUrl;
     static const QgsSettingsEntryString *settingsAuthcfg;
@@ -105,7 +103,5 @@ class CORE_EXPORT QgsStacConnection : public QgsAbstractProviderConnection
     //! Saves name of the last used connection
     static void setSelectedConnection( const QString &connName );
 };
-
-///@endcond
 
 #endif // QGSSTACCONNECTION_H

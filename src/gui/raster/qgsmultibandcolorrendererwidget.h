@@ -18,9 +18,10 @@
 #ifndef QGSMULTIBANDCOLORRENDERERWIDGET_H
 #define QGSMULTIBANDCOLORRENDERERWIDGET_H
 
-#include "qgsrasterrendererwidget.h"
 #include "ui_qgsmultibandcolorrendererwidgetbase.h"
+
 #include "qgis_gui.h"
+#include "qgsrasterrendererwidget.h"
 
 class QgsContrastEnhancement;
 class QgsMultiBandColorRenderer;
@@ -86,7 +87,7 @@ class GUI_EXPORT QgsMultiBandColorRendererWidget : public QgsRasterRendererWidge
     //! Reads min/max values from contrast enhancement and fills values into the min/max line edits
     void setMinMaxValue( const QgsContrastEnhancement *ce, QLineEdit *minEdit, QLineEdit *maxEdit );
     QgsRasterMinMaxWidget *mMinMaxWidget = nullptr;
-    bool mDisableMinMaxWidgetRefresh;
+    bool mDisableMinMaxWidgetRefresh = false;
 
     void minMaxModified();
 };

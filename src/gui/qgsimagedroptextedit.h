@@ -30,10 +30,12 @@
 #ifndef QGSIMAGEDROPTEXTEDIT_H
 #define QGSIMAGEDROPTEXTEDIT_H
 
+#include <memory>
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
 #include <QTextEdit>
-#include <memory>
 
 #define SIP_NO_FILE
 

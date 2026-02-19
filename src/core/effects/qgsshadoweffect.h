@@ -17,11 +17,11 @@
 #ifndef QGSSHADOWEFFECT_H
 #define QGSSHADOWEFFECT_H
 
+#include "qgis.h"
 #include "qgis_core.h"
-#include "qgspainteffect.h"
 #include "qgis_sip.h"
 #include "qgsmapunitscale.h"
-#include "qgis.h"
+#include "qgspainteffect.h"
 
 #include <QPainter>
 
@@ -37,7 +37,10 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
 
     QgsShadowEffect();
 
+    Qgis::PaintEffectFlags flags() const override;
     QVariantMap properties() const override;
+
+    using QgsPaintEffect::readProperties;
     void readProperties( const QVariantMap &props ) override;
 
     /**

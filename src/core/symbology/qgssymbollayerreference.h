@@ -17,15 +17,19 @@
 #define QGSSYMBOLLAYERREFERENCE_H
 
 #include "qgis.h"
-#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
+
 #include <QList>
+#include <QString>
 #include <QVariant>
 #include <QVector>
 
+using namespace Qt::StringLiterals;
+
 class QgsVectorLayer;
 
-// TODO QGIS 4 : Remove class QgsSymbolLayerId
+// TODO QGIS 5 : Remove class QgsSymbolLayerId
 
 /**
  * We may need stable references to symbol layers, when pointers to symbol layers are not usable
@@ -110,7 +114,7 @@ class CORE_EXPORT QgsSymbolLayerId
     {
       pathString.append( QString::number( path ) );
     }
-    QString str = QStringLiteral( "<QgsSymbolLayerId: %1 (%2)>" ).arg( sipCpp->symbolKey(), pathString.join( ',' ) );
+    QString str = u"<QgsSymbolLayerId: %1 (%2)>"_s.arg( sipCpp->symbolKey(), pathString.join( ',' ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -189,7 +193,7 @@ class CORE_EXPORT QgsSymbolLayerReference
     {
       pathString.append( QString::number( path ) );
     }
-    QString str = QStringLiteral( "<QgsSymbolLayerReference: %1 - %2>" ).arg( sipCpp->layerId(), sipCpp->symbolLayerIdV2() );
+    QString str = u"<QgsSymbolLayerReference: %1 - %2>"_s.arg( sipCpp->layerId(), sipCpp->symbolLayerIdV2() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -197,7 +201,7 @@ class CORE_EXPORT QgsSymbolLayerReference
   private:
     QString mLayerId;
 
-    // TODO QGIS 4 : remove mDeprecatedSymbolLayerId
+    // TODO QGIS 5 : remove mDeprecatedSymbolLayerId
     QgsSymbolLayerId mDeprecatedSymbolLayerId;
 
     QString mSymbolLayerId;

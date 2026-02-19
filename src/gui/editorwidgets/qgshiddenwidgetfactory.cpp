@@ -15,11 +15,11 @@
 
 #include "qgshiddenwidgetfactory.h"
 
-#include "qgshiddenwidgetwrapper.h"
 #include "qgsdummyconfigdlg.h"
+#include "qgshiddenwidgetwrapper.h"
 
-QgsHiddenWidgetFactory::QgsHiddenWidgetFactory( const QString &name )
-  : QgsEditorWidgetFactory( name )
+QgsHiddenWidgetFactory::QgsHiddenWidgetFactory( const QString &name, const QIcon &icon )
+  : QgsEditorWidgetFactory( name, icon )
 {
 }
 

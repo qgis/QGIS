@@ -16,21 +16,22 @@
  ***************************************************************************/
 
 #include "qgsmapcanvasannotationitem.h"
-#include "moc_qgsmapcanvasannotationitem.cpp"
+
 #include "qgsannotation.h"
+#include "qgsannotationmanager.h"
+#include "qgsexception.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfillsymbol.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptool.h"
-#include "qgsvectorlayer.h"
-#include "qgsfeatureiterator.h"
-#include "qgsexception.h"
-#include "qgssymbollayerutils.h"
-#include "qgsproject.h"
-#include "qgsannotationmanager.h"
-#include "qgsfillsymbol.h"
 #include "qgsmarkersymbol.h"
+#include "qgsproject.h"
+#include "qgssymbollayerutils.h"
+#include "qgsvectorlayer.h"
 
 #include <QPainter>
 
+#include "moc_qgsmapcanvasannotationitem.cpp"
 
 QgsMapCanvasAnnotationItem::QgsMapCanvasAnnotationItem( QgsAnnotation *annotation, QgsMapCanvas *mapCanvas )
   : QgsMapCanvasItem( mapCanvas )
@@ -43,7 +44,7 @@ QgsMapCanvasAnnotationItem::QgsMapCanvasAnnotationItem( QgsAnnotation *annotatio
   connect( mAnnotation, &QgsAnnotation::appearanceChanged, this, [this] { update(); } );
   connect( mAnnotation, &QgsAnnotation::moved, this, [this] { updatePosition(); } );
   connect( mAnnotation, &QgsAnnotation::moved, this, &QgsMapCanvasAnnotationItem::setFeatureForMapPosition );
-  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, [=] { updatePosition(); } );
+  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, [this] { updatePosition(); } );
 
   connect( mAnnotation, &QgsAnnotation::appearanceChanged, this, &QgsMapCanvasAnnotationItem::updateBoundingRect );
 

@@ -2,7 +2,7 @@
   "name": "overlay_intersects",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Returns whether the current feature spatially intersects at least one feature from a target layer, or an array of expression-based results for the features in the target layer intersected by the current feature.<br><br>Read more on the underlying GEOS \"Intersects\" predicate, as described in PostGIS <a href='https://postgis.net/docs/ST_Intersects.html'>ST_Intersects</a> function.",
+  "description": "Returns whether the current feature spatially intersects at least one feature from a target layer, or returns an array of expression-based results for the features in the target layer intersected by the current feature.<br><br>Read more on the underlying GEOS \"Intersects\" predicate, as described in PostGIS <a href='https://postgis.net/docs/ST_Intersects.html'>ST_Intersects</a> function.",
   "arguments": [
     {
       "arg": "layer",
@@ -36,7 +36,7 @@
     },
     {
       "arg": "min_inscribed_circle_radius",
-      "description": "defines an optional exclusion filter (for polygons only): minimum radius in current feature units for the maximum inscribed circle of the intersection. If the intersection results in multiple polygons the intersection will be returned if at least one of the polygons has a radius for the maximum inscribed circle greater or equal to the value.<br>Read more on the underlying GEOS predicate, as described in PostGIS <a href='https://postgis.net/docs/ST_MaximumInscribedCircle.html'>ST_MaximumInscribedCircle</a> function.<br>This argument requires GEOS >= 3.9.",
+      "description": "defines an optional exclusion filter (for polygons only): minimum radius in current feature units for the maximum inscribed circle of the intersection. If the intersection results in multiple polygons the intersection will be returned if at least one of the polygons has a radius for the maximum inscribed circle greater or equal to the value.<br>Read more on the underlying GEOS predicate, as described in PostGIS <a href='https://postgis.net/docs/ST_MaximumInscribedCircle.html'>ST_MaximumInscribedCircle</a> function.",
       "optional": true
     },
     {

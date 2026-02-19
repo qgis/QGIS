@@ -171,6 +171,7 @@
 %Include auto_generated/qgsprevieweffect.sip
 %Include auto_generated/qgsprojectstorageguiprovider.sip
 %Include auto_generated/qgsprojectstorageguiregistry.sip
+%Include auto_generated/qgsprojecttrustdialog.sip
 %Include auto_generated/qgspropertyassistantwidget.sip
 %Include auto_generated/qgspropertyoverridebutton.sip
 %Include auto_generated/qgsproviderconnectioncombobox.sip
@@ -429,6 +430,7 @@
 %Include auto_generated/plot/qgsplottoolpan.sip
 %Include auto_generated/plot/qgsplottoolzoom.sip
 %Include auto_generated/plot/qgsplottransienttools.sip
+%Include auto_generated/plot/qgsplotwidget.sip
 %Include auto_generated/pointcloud/qgspointcloudclassifiedrendererwidget.sip
 %Include auto_generated/pointcloud/qgspointcloudrendererwidget.sip
 %Include auto_generated/pointcloud/qgspointcloudrendererpropertieswidget.sip

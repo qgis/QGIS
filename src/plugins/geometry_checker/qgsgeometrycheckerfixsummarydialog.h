@@ -17,9 +17,10 @@
 #ifndef QGS_GEOMETRY_CHECKER_FIX_SUMMARY_DIALOG_H
 #define QGS_GEOMETRY_CHECKER_FIX_SUMMARY_DIALOG_H
 
+#include "ui_qgsgeometrycheckerfixsummarydialog.h"
+
 #include <QDialog>
 #include <QSet>
-#include "ui_qgsgeometrycheckerfixsummarydialog.h"
 
 class QgisInterface;
 class QgsGeometryCheckError;

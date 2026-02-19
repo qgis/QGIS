@@ -14,25 +14,31 @@
  ***************************************************************************/
 
 #include "qgsprocessinghistorywidget.h"
-#include "moc_qgsprocessinghistorywidget.cpp"
-#include "qgshistorywidget.h"
-#include "qgsgui.h"
-#include "qgshistoryproviderregistry.h"
-#include "qgshelp.h"
-#include "qgsfileutils.h"
-#include "qgshistoryentry.h"
 
-#include <QVBoxLayout>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QTextStream>
+#include "qgsfileutils.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgshistoryentry.h"
+#include "qgshistoryproviderregistry.h"
+#include "qgshistorywidget.h"
+#include "qgsprocessinghistoryprovider.h"
+
 #include <QDialogButtonBox>
+#include <QFileDialog>
+#include <QMessageBox>
 #include <QPushButton>
+#include <QString>
+#include <QTextStream>
+#include <QVBoxLayout>
+
+#include "moc_qgsprocessinghistorywidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProcessingHistoryWidget::QgsProcessingHistoryWidget( QWidget *parent )
   : QgsPanelWidget( parent )
 {
-  mHistoryWidget = new QgsHistoryWidget( QStringLiteral( "processing" ) );
+  mHistoryWidget = new QgsHistoryWidget( u"processing"_s );
   QVBoxLayout *vl = new QVBoxLayout();
   vl->setContentsMargins( 0, 0, 0, 0 );
   vl->addWidget( mHistoryWidget );
@@ -43,13 +49,13 @@ void QgsProcessingHistoryWidget::clearHistory()
 {
   if ( QMessageBox::question( this, tr( "Clear History" ), tr( "Are you sure you want to clear the Processing history?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
   {
-    QgsGui::historyProviderRegistry()->clearHistory( Qgis::HistoryProviderBackend::LocalProfile, QStringLiteral( "processing" ) );
+    QgsGui::historyProviderRegistry()->clearHistory( Qgis::HistoryProviderBackend::LocalProfile, u"processing"_s );
   }
 }
 
 void QgsProcessingHistoryWidget::openHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "processing/history.html" ) );
+  QgsHelp::openHelp( u"processing/history.html"_s );
 }
 
 void QgsProcessingHistoryWidget::saveLog()
@@ -62,18 +68,18 @@ void QgsProcessingHistoryWidget::saveLog()
   if ( fileName.isEmpty() )
     return;
 
-  fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, { QStringLiteral( "log" ) } );
+  fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, { u"log"_s } );
 
-  const QList<QgsHistoryEntry> entries = QgsGui::historyProviderRegistry()->queryEntries( QDateTime(), QDateTime(), QStringLiteral( "processing" ) );
+  const QList<QgsHistoryEntry> entries = QgsGui::historyProviderRegistry()->queryEntries( QDateTime(), QDateTime(), u"processing"_s );
 
-  const QString logSeparator = QStringLiteral( "|~|" );
+  const QString logSeparator = u"|~|"_s;
   QFile logFile( fileName );
   if ( logFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     QTextStream logOut( &logFile );
     for ( const QgsHistoryEntry &entry : entries )
     {
-      logOut << QStringLiteral( "ALGORITHM%1%2%3%4\n" ).arg( logSeparator, entry.timestamp.toString( "yyyy-MM-dd HH:mm:ss" ), logSeparator, entry.entry.value( QStringLiteral( "python_command" ) ).toString() );
+      logOut << u"ALGORITHM%1%2%3%4\n"_s.arg( logSeparator, entry.timestamp.toString( "yyyy-MM-dd HH:mm:ss" ), logSeparator, entry.entry.value( u"python_command"_s ).toString() );
     }
   }
 }
@@ -86,12 +92,16 @@ void QgsProcessingHistoryWidget::saveLog()
 QgsProcessingHistoryDialog::QgsProcessingHistoryDialog( QWidget *parent )
   : QDialog( parent )
 {
-  setObjectName( QStringLiteral( "QgsProcessingHistoryDialog" ) );
+  setObjectName( u"QgsProcessingHistoryDialog"_s );
   QgsGui::instance()->enableAutoGeometryRestore( this );
 
   setWindowTitle( tr( "Processing History" ) );
 
   QVBoxLayout *vl = new QVBoxLayout();
+
+  mMessageBar = new QgsMessageBar();
+  vl->addWidget( mMessageBar );
+
   mWidget = new QgsProcessingHistoryWidget();
   vl->addWidget( mWidget, 1 );
 
@@ -108,7 +118,9 @@ QgsProcessingHistoryDialog::QgsProcessingHistoryDialog( QWidget *parent )
   connect( clearButton, &QPushButton::clicked, mWidget, &QgsProcessingHistoryWidget::clearHistory );
   connect( saveButton, &QPushButton::clicked, mWidget, &QgsProcessingHistoryWidget::saveLog );
   connect( mButtonBox->button( QDialogButtonBox::Help ), &QPushButton::clicked, mWidget, &QgsProcessingHistoryWidget::openHelp );
-  connect( mButtonBox->button( QDialogButtonBox::Close ), &QPushButton::clicked, mWidget, [=]() { close(); } );
+  connect( mButtonBox->button( QDialogButtonBox::Close ), &QPushButton::clicked, mWidget, [this]() { close(); } );
+  auto *provider = qgis::down_cast<QgsProcessingHistoryProvider *>( QgsGui::historyProviderRegistry()->providerById( u"processing"_s ) );
+  connect( provider, &QgsProcessingHistoryProvider::showMessage, mMessageBar, [this]( const QString &message ) { mMessageBar->pushMessage( message, Qgis::MessageLevel::Warning ); } );
 
   vl->addWidget( mButtonBox );
 

@@ -21,8 +21,8 @@
 #define SIP_NO_FILE
 
 #include "qgis_sip.h"
-#include "qgsprocessingalgorithm.h"
 #include "qgsapplication.h"
+#include "qgsprocessingalgorithm.h"
 #include "qgsvectorlayerfeatureiterator.h"
 
 ///@cond PRIVATE
@@ -44,6 +44,7 @@ class QgsCalculateVectorOverlapsAlgorithm : public QgsProcessingAlgorithm
     QString groupId() const override;
     QString shortHelpString() const override;
     QString shortDescription() const override;
+    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QgsCalculateVectorOverlapsAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

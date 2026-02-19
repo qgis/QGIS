@@ -16,13 +16,16 @@
 #ifndef QGSGENERICSPATIALINDEX_H
 #define QGSGENERICSPATIALINDEX_H
 
-#include "qgis_core.h"
-#include "qgsspatialindexutils.h"
-#include "qgslogger.h"
-
 #include <memory>
+
+#include "qgis_core.h"
+#include "qgslogger.h"
+#include "qgsspatialindexutils.h"
+
 #include <QMutex>
 #include <QString>
+
+using namespace Qt::StringLiterals;
 
 #define SIP_NO_FILE
 
@@ -77,16 +80,16 @@ class QgsGenericSpatialIndex
       catch ( Tools::Exception &e )
       {
         Q_UNUSED( e )
-        QgsDebugError( QStringLiteral( "Tools::Exception caught: " ).arg( e.what().c_str() ) );
+        QgsDebugError( u"Tools::Exception caught when inserting data to QgsGenericSpatialIndex: %1"_s.arg( e.what().c_str() ) );
       }
       catch ( const std::exception &e )
       {
         Q_UNUSED( e )
-        QgsDebugError( QStringLiteral( "std::exception caught: " ).arg( e.what() ) );
+        QgsDebugError( u"std::exception caught when inserting data to QgsGenericSpatialIndex: %1"_s.arg( e.what() ) );
       }
       catch ( ... )
       {
-        QgsDebugError( QStringLiteral( "unknown spatial index exception caught" ) );
+        QgsDebugError( u"unknown spatial index exception caught when inserting data to QgsGenericSpatialIndex"_s );
       }
 
       return false;
@@ -126,7 +129,25 @@ class QgsGenericSpatialIndex
       const SpatialIndex::Region r = QgsSpatialIndexUtils::rectangleToRegion( bounds );
 
       const QMutexLocker locker( &mMutex );
-      mRTree->intersectsWithQuery( r, visitor );
+      try
+      {
+        mRTree->intersectsWithQuery( r, visitor );
+      }
+      catch ( Tools::Exception &e )
+      {
+        Q_UNUSED( e )
+        QgsDebugError( u"Tools::Exception caught in QgsGenericSpatialIndex::intersects: %1"_s.arg( e.what().c_str() ) );
+      }
+      catch ( const std::exception &e )
+      {
+        Q_UNUSED( e )
+        QgsDebugError( u"std::exception caught in QgsGenericSpatialIndex::intersects: %1"_s.arg( e.what() ) );
+      }
+      catch ( ... )
+      {
+        QgsDebugError( u"unknown spatial index exception caught in QgsGenericSpatialIndex::intersects"_s );
+      }
+
       return true;
     }
 

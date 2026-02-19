@@ -9,7 +9,12 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 #include "qgsprojectionselectiontreewidget.h"
+
+#include <QString>
+
 #include "moc_qgsprojectionselectiontreewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //standard includes
 #include <sqlite3.h>
@@ -81,11 +86,11 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
   connect( lstRecent, &QTreeView::clicked, this, &QgsProjectionSelectionTreeWidget::lstRecentClicked );
   connect( lstCoordinateSystems->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsProjectionSelectionTreeWidget::lstCoordinateSystemsSelectionChanged );
   connect( lstRecent->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsProjectionSelectionTreeWidget::lstRecentSelectionChanged );
-  connect( cbxHideDeprecated, &QCheckBox::toggled, this, [=]( bool selected ) {
+  connect( cbxHideDeprecated, &QCheckBox::toggled, this, [this]( bool selected ) {
     mCrsModel->setFilterDeprecated( selected );
     mRecentCrsModel->setFilterDeprecated( selected );
   } );
-  connect( leSearch, &QgsFilterLineEdit::textChanged, this, [=]( const QString &filter ) {
+  connect( leSearch, &QgsFilterLineEdit::textChanged, this, [this]( const QString &filter ) {
     mCrsModel->setFilterString( filter );
     mRecentCrsModel->setFilterString( filter );
     if ( filter.length() >= 3 )
@@ -128,14 +133,14 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
 
   mCheckBoxNoProjection->setHidden( true );
   mCheckBoxNoProjection->setEnabled( false );
-  connect( mCheckBoxNoProjection, &QCheckBox::toggled, this, [=] {
+  connect( mCheckBoxNoProjection, &QCheckBox::toggled, this, [this] {
     if ( !mBlockSignals )
     {
       emit crsSelected();
       emit hasValidSelectionChanged( hasValidSelection() );
     }
   } );
-  connect( mCheckBoxNoProjection, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mCheckBoxNoProjection, &QCheckBox::toggled, this, [this]( bool checked ) {
     if ( mCheckBoxNoProjection->isEnabled() )
     {
       mFrameProjections->setDisabled( checked );
@@ -143,13 +148,13 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
   } );
 
   QgsSettings settings;
-  mSplitter->restoreState( settings.value( QStringLiteral( "Windows/ProjectionSelector/splitterState" ) ).toByteArray() );
+  mSplitter->restoreState( settings.value( u"Windows/ProjectionSelector/splitterState"_s ).toByteArray() );
 }
 
 QgsProjectionSelectionTreeWidget::~QgsProjectionSelectionTreeWidget()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/ProjectionSelector/splitterState" ), mSplitter->saveState() );
+  settings.setValue( u"Windows/ProjectionSelector/splitterState"_s, mSplitter->saveState() );
 
   // Push current projection to front, only if set
   const QgsCoordinateReferenceSystem selectedCrs = crs();
@@ -350,7 +355,7 @@ void QgsProjectionSelectionTreeWidget::lstCoordinateSystemsSelectionChanged( con
 {
   if ( selected.isEmpty() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "no current item" ), 4 );
+    QgsDebugMsgLevel( u"no current item"_s, 4 );
     return;
   }
 
@@ -380,14 +385,14 @@ void QgsProjectionSelectionTreeWidget::lstCoordinateSystemsSelectionChanged( con
       const QModelIndexList recentMatches = mRecentCrsModel->match( mRecentCrsModel->index( 0, 0 ), static_cast<int>( QgsRecentCoordinateReferenceSystemsModel::CustomRole::AuthId ), crsAuthId );
       if ( !recentMatches.isEmpty() )
       {
-        QgsDebugMsgLevel( QStringLiteral( "found srs %1 in recent" ).arg( crsAuthId ), 4 );
+        QgsDebugMsgLevel( u"found srs %1 in recent"_s.arg( crsAuthId ), 4 );
 
         lstRecent->selectionModel()->select( recentMatches.at( 0 ), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
         lstRecent->scrollTo( recentMatches.at( 0 ) );
       }
       else
       {
-        QgsDebugMsgLevel( QStringLiteral( "srs %1 not recent" ).arg( crsAuthId ), 4 );
+        QgsDebugMsgLevel( u"srs %1 not recent"_s.arg( crsAuthId ), 4 );
         lstRecent->clearSelection();
         lstCoordinateSystems->setFocus( Qt::OtherFocusReason );
       }
@@ -411,7 +416,7 @@ void QgsProjectionSelectionTreeWidget::lstCoordinateSystemsDoubleClicked( const 
 {
   if ( !index.isValid() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "no current item" ), 4 );
+    QgsDebugMsgLevel( u"no current item"_s, 4 );
     return;
   }
 
@@ -425,7 +430,7 @@ void QgsProjectionSelectionTreeWidget::lstRecentSelectionChanged( const QItemSel
 {
   if ( selected.isEmpty() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "no current item" ), 4 );
+    QgsDebugMsgLevel( u"no current item"_s, 4 );
     return;
   }
 
@@ -450,10 +455,10 @@ void QgsProjectionSelectionTreeWidget::lstRecentSelectionChanged( const QItemSel
 
 void QgsProjectionSelectionTreeWidget::lstRecentDoubleClicked( const QModelIndex &index )
 {
-  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
+  QgsDebugMsgLevel( u"Entered."_s, 4 );
   if ( !index.isValid() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "no current item" ), 4 );
+    QgsDebugMsgLevel( u"no current item"_s, 4 );
     return;
   }
 
@@ -483,7 +488,7 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
   mAreaCanvas->setPreviewRect( rect );
   if ( !rect.isNull() && !rect.isEmpty() )
   {
-    extentString = QStringLiteral( "%1, %2, %3, %4" )
+    extentString = u"%1, %2, %3, %4"_s
                      .arg( rect.xMinimum(), 0, 'f', 2 )
                      .arg( rect.yMinimum(), 0, 'f', 2 )
                      .arg( rect.xMaximum(), 0, 'f', 2 )
@@ -518,9 +523,9 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
     {
       QString id;
       if ( !ensemble.code().isEmpty() )
-        id = QStringLiteral( "<i>%1</i> (%2:%3)" ).arg( ensemble.name(), ensemble.authority(), ensemble.code() );
+        id = u"<i>%1</i> (%2:%3)"_s.arg( ensemble.name(), ensemble.authority(), ensemble.code() );
       else
-        id = QStringLiteral( "<i>%1</i>”" ).arg( ensemble.name() );
+        id = u"<i>%1</i>”"_s.arg( ensemble.name() );
       if ( ensemble.accuracy() > 0 )
       {
         properties << tr( "Based on %1, which has a limited accuracy of <b>at best %2 meters</b>." ).arg( id ).arg( ensemble.accuracy() );
@@ -538,11 +543,11 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
   const QgsProjOperation operation = currentCrs.operation();
   properties << tr( "Method: %1" ).arg( operation.description() );
 
-  const QString propertiesString = QStringLiteral( "<dt><b>%1</b></dt><dd><ul><li>%2</li></ul></dd>" ).arg( tr( "Properties" ), properties.join( QLatin1String( "</li><li>" ) ) );
+  const QString propertiesString = u"<dt><b>%1</b></dt><dd><ul><li>%2</li></ul></dd>"_s.arg( tr( "Properties" ), properties.join( "</li><li>"_L1 ) );
 
-  const QString extentHtml = QStringLiteral( "<dt><b>%1</b></dt><dd>%2</dd>" ).arg( tr( "Extent" ), extentString );
-  const QString wktString = QStringLiteral( "<dt><b>%1</b></dt><dd><code>%2</code></dd>" ).arg( tr( "WKT" ), currentCrs.toWkt( Qgis::CrsWktVariant::Preferred, true ).replace( '\n', QLatin1String( "<br>" ) ).replace( ' ', QLatin1String( "&nbsp;" ) ) );
-  const QString proj4String = QStringLiteral( "<dt><b>%1</b></dt><dd><code>%2</code></dd>" ).arg( tr( "Proj4" ), currentCrs.toProj() );
+  const QString extentHtml = u"<dt><b>%1</b></dt><dd>%2</dd>"_s.arg( tr( "Extent" ), extentString );
+  const QString wktString = u"<dt><b>%1</b></dt><dd><code>%2</code></dd>"_s.arg( tr( "WKT" ), currentCrs.toWkt( Qgis::CrsWktVariant::Preferred, true ).replace( '\n', "<br>"_L1 ).replace( ' ', "&nbsp;"_L1 ) );
+  const QString proj4String = u"<dt><b>%1</b></dt><dd><code>%2</code></dd>"_s.arg( tr( "Proj4" ), currentCrs.toProj() );
 
 #ifdef Q_OS_WIN
   const int smallerPointSize = std::max( font().pointSize() - 1, 8 ); // bit less on windows, due to poor rendering of small point sizes
@@ -556,7 +561,7 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
   {
     selectedName = currentIndex.data( static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::Name ) ).toString();
   }
-  teProjection->setText( QStringLiteral( "<div style=\"font-size: %1pt\"><h3>%2</h3><dl>" ).arg( smallerPointSize ).arg( selectedName ) + propertiesString + wktString + proj4String + extentHtml + QStringLiteral( "</dl></div>" ) );
+  teProjection->setText( u"<div style=\"font-size: %1pt\"><h3>%2</h3><dl>"_s.arg( smallerPointSize ).arg( selectedName ) + propertiesString + wktString + proj4String + extentHtml + u"</dl></div>"_s );
 }
 
 void QgsProjectionSelectionTreeWidget::clearRecentCrs()

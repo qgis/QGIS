@@ -216,7 +216,7 @@ void MDAL::Driver3Di::populateMesh2DElements( MDAL::Vertices &vertices, MDAL::Fa
 
     }
 
-    faces.push_back( face );
+    faces.emplace_back( std::move( face ) );
   }
 
   // Only now we have number of vertices, since we identified vertices that
@@ -273,7 +273,7 @@ void MDAL::Driver3Di::addBedElevation( MemoryMesh *mesh )
   dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
   group->datasets.push_back( dataset );
   group->setStatistics( MDAL::calculateStatistics( group ) );
-  mesh->datasetGroups.push_back( group );
+  mesh->datasetGroups.emplace_back( std::move( group ) );
 }
 
 std::string MDAL::Driver3Di::getCoordinateSystemVariableName()
@@ -377,7 +377,7 @@ void MDAL::Driver3Di::parseNetCDFVariableMetadata( int varid,
       }
       else
       {
-        name = standard_name;
+        name = std::move( standard_name );
       }
     }
   }
@@ -397,7 +397,7 @@ void MDAL::Driver3Di::parseNetCDFVariableMetadata( int varid,
     }
     else
     {
-      name = long_name;
+      name = std::move( long_name );
     }
   }
 }
@@ -553,14 +553,14 @@ MDAL::CF3DiDataset2D::CF3DiDataset2D( MDAL::DatasetGroup *parent,
                  fill_val_y,
                  ncid_x,
                  ncid_y,
-                 classification_x,
-                 classification_y,
+                 std::move( classification_x ),
+                 std::move( classification_y ),
                  timeLocation,
                  timesteps,
                  values,
                  ts,
-                 ncFile )
-  , mRequestedMeshFaceIds( mask )
+                 std::move( ncFile ) )
+  , mRequestedMeshFaceIds( std::move( mask ) )
 {
 }
 

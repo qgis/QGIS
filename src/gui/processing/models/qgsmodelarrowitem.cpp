@@ -13,16 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmodelarrowitem.h"
+
 #include <math.h>
 
-#include "qgsmodelarrowitem.h"
-#include "moc_qgsmodelarrowitem.cpp"
 #include "qgsapplication.h"
-#include "qgsmodelgraphicsscene.h"
 #include "qgsmodelcomponentgraphicitem.h"
-#include <QPainter>
+#include "qgsmodelgraphicitem.h"
+#include "qgsmodelgraphicsscene.h"
+
 #include <QApplication>
+#include <QPainter>
 #include <QPalette>
+
+#include "moc_qgsmodelarrowitem.cpp"
 
 ///@cond NOT_STABLE
 
@@ -49,9 +53,9 @@ QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Q
   updatePath();
 
   connect( mStartItem, &QgsModelComponentGraphicItem::updateArrowPaths, this, &QgsModelArrowItem::updatePath );
-  connect( mStartItem, &QgsModelComponentGraphicItem::repaintArrows, this, [=] { update(); } );
+  connect( mStartItem, &QgsModelComponentGraphicItem::repaintArrows, this, [this] { update(); } );
   connect( mEndItem, &QgsModelComponentGraphicItem::updateArrowPaths, this, &QgsModelArrowItem::updatePath );
-  connect( mEndItem, &QgsModelComponentGraphicItem::repaintArrows, this, [=] { update(); } );
+  connect( mEndItem, &QgsModelComponentGraphicItem::repaintArrows, this, [this] { update(); } );
 }
 
 QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, Marker startMarker, QgsModelComponentGraphicItem *endItem, Marker endMarker )
@@ -72,7 +76,7 @@ QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, M
 
 void QgsModelArrowItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
 {
-  QColor color = mColor;
+  QColor color = mStartItem->linkColor( mStartEdge, mStartIndex );
 
   if ( mStartItem->state() == QgsModelComponentGraphicItem::Selected || mEndItem->state() == QgsModelComponentGraphicItem::Selected )
     color.setAlpha( 220 );
@@ -81,22 +85,23 @@ void QgsModelArrowItem::paint( QPainter *painter, const QStyleOptionGraphicsItem
   else
     color.setAlpha( 80 );
 
+  //
   QPen p = pen();
   p.setColor( color );
-  p.setWidth( 1 );
+  p.setWidth( 0 );
   painter->setPen( p );
+
   painter->setBrush( color );
   painter->setRenderHint( QPainter::Antialiasing );
 
-
   switch ( mStartMarker )
   {
-    case Marker::Circle:
-      painter->drawEllipse( mStartPoint, 3.0, 3.0 );
-      break;
     case Marker::ArrowHead:
       drawArrowHead( painter, mStartPoint, path().pointAtPercent( 0.0 ) - path().pointAtPercent( 0.05 ) );
       break;
+
+    // start marker are no longer drawn
+    case Marker::Circle:
     case Marker::NoMarker:
       break;
   }
@@ -113,7 +118,26 @@ void QgsModelArrowItem::paint( QPainter *painter, const QStyleOptionGraphicsItem
       break;
   }
 
+  painter->setBrush( color );
+  painter->setRenderHint( QPainter::Antialiasing );
   painter->setBrush( Qt::NoBrush );
+
+  // Set the painter back to regular stroke thickness
+  p = pen();
+  QColor endColor = mEndItem->linkColor( mEndEdge, mEndIndex );
+  color.setAlpha( 255 );
+
+  QLinearGradient gradient;
+  QPointF startPoint = path().pointAtPercent( 0.3 );
+  QPointF endPoint = path().pointAtPercent( 0.7 );
+  gradient.setStart( startPoint );
+  gradient.setFinalStop( endPoint );
+  gradient.setColorAt( 0, color );
+  gradient.setColorAt( 1, endColor );
+
+  p.setBrush( QBrush( gradient ) );
+  p.setWidth( 2 );
+  painter->setPen( p );
   painter->drawPath( path() );
 }
 
@@ -217,6 +241,7 @@ void QgsModelArrowItem::updatePath()
   path.moveTo( controlPoints.at( 0 ) );
   path.cubicTo( controlPoints.at( 1 ), controlPoints.at( 2 ), controlPoints.at( 3 ) );
   setPath( path );
+  emit painterPathUpdated();
 }
 
 QPointF QgsModelArrowItem::bezierPointForCurve( const QPointF &point, Qt::Edge edge, bool incoming, bool hasSpecificDirectionalFlow ) const

@@ -11,6 +11,8 @@
 
 
 
+
+
 class QgsVectorLayerUtils
 {
 %Docstring(signature="appended")
@@ -23,15 +25,12 @@ Contains utility methods for working with :py:class:`QgsVectorLayers`.
   public:
 
     class QgsDuplicateFeatureContext
-{
+    {
 %Docstring(signature="appended")
 Contains mainly the QMap with :py:class:`QgsVectorLayer` and
 :py:class:`QgsFeatureIds` which list all the duplicated features.
 %End
 
-%TypeHeaderCode
-#include "qgsvectorlayerutils.h"
-%End
       public:
 
         QgsDuplicateFeatureContext();
@@ -50,7 +49,7 @@ Returns the duplicated features in the given layer
     };
 
     class QgsFeatureData
-{
+    {
 %Docstring(signature="appended")
 Encapsulate geometry and attributes for new features, to be passed to
 createFeatures.
@@ -60,9 +59,6 @@ createFeatures.
 .. versionadded:: 3.6
 %End
 
-%TypeHeaderCode
-#include "qgsvectorlayerutils.h"
-%End
       public:
 
         QgsFeatureData( const QgsGeometry &geometry = QgsGeometry(), const QgsAttributeMap &attributes = QgsAttributeMap() );
@@ -82,6 +78,13 @@ Returns attributes
 %End
 
     };
+
+    enum class FieldIsEditableFlag
+    {
+      IgnoreLayerEditability,
+    };
+    typedef QFlags<QgsVectorLayerUtils::FieldIsEditableFlag> FieldIsEditableFlags;
+
 
     typedef QList<QgsVectorLayerUtils::QgsFeatureData> QgsFeaturesDataList;
 
@@ -114,6 +117,29 @@ Fetches all values from a specified field name or expression.
 :return: list of fetched values
 
 .. seealso:: :py:func:`getDoubleValues`
+%End
+
+    static QList< QVariant > uniqueValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok /Out/, bool selectedOnly = false, int limit = -1, QgsFeedback *feedback = 0 );
+%Docstring
+Fetches all unique values from a specified field name or expression.
+Null values or invalid expression results are skipped.
+
+:param layer: vector layer to retrieve values from
+:param fieldOrExpression: field name or an expression string evaluating
+                          to a double value
+:param selectedOnly: set to ``True`` to get values from selected
+                     features only
+:param limit: Maximum number of unique values to return. Use -1 for no
+              limit.
+:param feedback: optional feedback object to allow cancellation
+
+:return: - list of unique fetched values
+         - ok: ``False`` if field or expression is invalid, otherwise
+           ``True``
+
+.. seealso:: :py:func:`getValues`
+
+.. versionadded:: 4.0
 %End
 
     static QList< double > getDoubleValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int *nullCount = 0, QgsFeedback *feedback = 0 );
@@ -308,12 +334,18 @@ compatibility logic.
 .. versionadded:: 3.4
 %End
 
-    static bool fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature );
+    static bool fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature, QgsVectorLayerUtils::FieldIsEditableFlags flags = QgsVectorLayerUtils::FieldIsEditableFlags() );
 %Docstring
-Tests whether a field is editable for a particular ``feature``.
+Tests whether a field is editable for a particular feature.
 
-:return: ``True`` if the field at index ``fieldIndex`` from ``layer`` is
-         editable, ``False`` if the field is read only.
+:param layer: The vector layer
+:param fieldIndex: The field index
+:param feature: The feature
+:param flags: Additional flags modifying the editability check behavior
+              (since QGIS 4.0)
+
+:return: ``True`` if the field is editable, ``False`` if the field is
+         read only.
 
 .. versionadded:: 3.10
 %End
@@ -420,6 +452,67 @@ first available.
 :return: field name
 
 .. versionadded:: 3.18
+%End
+
+
+
+    static QByteArray fieldToDataArray( const QgsFields &fields, const QString &fieldName, QgsFeatureIterator &it, const QVariant &nullValue );
+%Docstring
+Converts field values from an iterator to an array of data.
+
+:param fields: layer fields
+:param fieldName: field name to source values from
+:param it: feature iterator for features to include
+:param nullValue: value to use when original field value is a null. Must
+                  be of the same data type as the source field.
+
+.. warning::
+
+   Only numeric field types are supported.
+
+:raises KeyError: if the field name is not found
+
+:raises TypeError: if the field is of a non-supported type
+
+.. versionadded:: 4.0
+%End
+%MethodCode
+
+    const int fieldIndex = a0->lookupField( *a1 );
+    if ( fieldIndex == -1 )
+    {
+      PyErr_SetString( PyExc_KeyError, QStringLiteral( "Field %1 does not exist." ).arg( *a1 ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      const QgsField field = a0->at( fieldIndex );
+      switch ( field.type() )
+      {
+        case QMetaType::Type::Int:
+        case QMetaType::Type::UInt:
+        case QMetaType::Type::Long:
+        case QMetaType::Type::LongLong:
+        case QMetaType::Type::ULong:
+        case QMetaType::Type::ULongLong:
+        case QMetaType::Type::Float:
+        case QMetaType::Type::Double:
+        case QMetaType::Type::Short:
+        case QMetaType::Type::UShort:
+        {
+          Py_BEGIN_ALLOW_THREADS
+          sipRes = new QByteArray( QgsVectorLayerUtils::fieldToDataArray( *a0, *a1, *a2, *a3 ) );
+          Py_END_ALLOW_THREADS
+          break;
+        }
+
+        default:
+        {
+          PyErr_SetString( PyExc_TypeError, QStringLiteral( "Field type (%1) cannot be converted to a data array." ).arg( QMetaType::typeName( field.type() ) ).toUtf8().constData() );
+          sipIsErr = 1;
+        }
+      }
+    }
 %End
 
 };

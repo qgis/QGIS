@@ -12,9 +12,9 @@
 
 
 
+
 class QgsElevationControllerSettingsAction : QWidgetAction
 {
-
 %TypeHeaderCode
 #include "qgselevationcontrollerwidget.h"
 %End

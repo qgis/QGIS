@@ -1,19 +1,24 @@
-//    Copyright (C) 2022-2023 Jakub Melka
+// MIT License
 //
-//    This file is part of PDF4QT.
+// Copyright (c) 2018-2025 Jakub Melka and Contributors
 //
-//    PDF4QT is free software: you can redistribute it and/or modify
-//    it under the terms of the GNU Lesser General Public License as published by
-//    the Free Software Foundation, either version 3 of the License, or
-//    with the written consent of the copyright owner, any later version.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    PDF4QT is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU Lesser General Public License for more details.
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
 //
-//    You should have received a copy of the GNU Lesser General Public License
-//    along with PDF4QT.  If not, see <https://www.gnu.org/licenses/>.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
 #include "pdfcertificatestore.h"
 #include "pdfutils.h"
@@ -34,12 +39,14 @@
 #include <openssl/rsaerr.h>
 #include <openssl/ts.h>
 #include <openssl/tserr.h>
+#include <openssl/pem.h>
 
 #include <QDir>
 #include <QFileInfo>
 #include <QLockFile>
 #include <QDataStream>
 #include <QStandardPaths>
+#include <QDomDocument>
 
 #include "pdfdbgheap.h"
 
@@ -466,6 +473,70 @@ void PDFCertificateStore::createDirectoryForDefaultUserCertificatesStore()
     QFileInfo fileInfo(getDefaultCertificateStoreFileName());
     QString path = fileInfo.path();
     QDir().mkpath(path);
+}
+
+PDFCertificateEntries PDFCertificateStore::getAATLCertificates()
+{
+    PDFCertificateEntries result;
+
+    QFile aatlFile(":/aatl/SecuritySettings.xml");
+    if (aatlFile.open(QFile::ReadOnly))
+    {
+        QString errorMessage;
+        QDomDocument aatlDocument;
+        if (aatlDocument.setContent(&aatlFile, &errorMessage))
+        {
+            // Najdeme kořenový element
+            QDomElement root = aatlDocument.documentElement();
+
+            // Seek path "SecuritySettings/TrustedIdentities/Identity/Certificate"
+            QDomNodeList identities = root.firstChildElement("TrustedIdentities").elementsByTagName("Identity");
+
+            for (int i = 0; i < identities.count(); ++i)
+            {
+                QDomNode identityNode = identities.at(i);
+                QDomElement certificateElement = identityNode.firstChildElement("Certificate");
+
+                if (!certificateElement.isNull())
+                {
+                    QString text = certificateElement.text();
+                    QString pemFormattedText = QString("-----BEGIN CERTIFICATE-----\n%1\n-----END CERTIFICATE-----").arg(text);
+                    QByteArray certificateData = pemFormattedText.toLatin1();
+
+                    // Read PEM certificate to the OpenSSL X509
+                    BIO* bio = BIO_new_mem_buf(certificateData.constData(), certificateData.size());
+                    X509* cert = PEM_read_bio_X509(bio, nullptr, nullptr, nullptr);
+                    BIO_free(bio);
+
+                    if (!cert)
+                    {
+                        continue;
+                    }
+
+                    // Převést certifikát na DER
+                    int len = i2d_X509(cert, nullptr);
+                    QByteArray derData(len, 0);
+                    unsigned char *derPtr = reinterpret_cast<unsigned char*>(derData.data());
+                    i2d_X509(cert, &derPtr);
+
+                    X509_free(cert);
+
+                    std::optional<PDFCertificateInfo> info = PDFCertificateInfo::getCertificateInfo(derData);
+                    if (info)
+                    {
+                        PDFCertificateEntry entry;
+                        entry.type = PDFCertificateEntry::EntryType::AATL;
+                        entry.info = qMove(*info);
+                        result.emplace_back(qMove(entry));
+                    }
+                }
+            }
+        }
+
+        aatlFile.close();
+    }
+
+    return result;
 }
 
 }   // namespace pdf

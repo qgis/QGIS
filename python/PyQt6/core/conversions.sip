@@ -5,6 +5,7 @@ which are not wrapped by PyQt:
 - QVector< QVector< QVector<TYPE> > >
 - QList< QList<TYPE> >
 - QList<qint64>
+- QList< std::pair< double, double > >
 - QSet<int>
 - QSet<qint64>
 - QSet<TYPE>
@@ -16,7 +17,7 @@ which are not wrapped by PyQt:
 - QMultiMap<double, TYPE2>
 - QMultiMap<int, TYPE2>
 - QMap<qint64, TYPE>
-- QList< QPair< QString, QList<QString> > >
+- QMap< QPair< QString, QList<QString> > >
 - QVector<TYPE*>
 - QMap<qint64, QgsFeature*>
 - NULL QVariant which is missing in PyQt5 with sip.enableautoconversion
@@ -30,6 +31,7 @@ which are not wrapped by PyQt:
 {
 %TypeHeaderCode
 #include "qgis.h"
+
 %End
 
 %ConvertFromTypeCode
@@ -1242,23 +1244,62 @@ which are not wrapped by PyQt:
     %End
 };
 
+%If (MOVABLE_MAPPED_TYPE)
 template <TYPE>
-%MappedType std::unique_ptr< TYPE > /NoRelease,AllowNone,TypeHint="Optional[TYPE]",TypeHintValue="TYPE"/
+%MappedType std::unique_ptr<TYPE> /Movable,NoRelease,AllowNone,TypeHint="Optional[TYPE]",TypeHintValue="TYPE"/
+{
+%TypeHeaderCode
+#include <memory>
+#include <utility>      // For std::move().
+%End
+
+%ConvertFromTypeCode
+  const sipTypeDef *sip_type = sipFindType("TYPE*");
+  return sipConvertFromNewType(sipCpp->release(), sip_type, NULL);
+%End
+
+%ConvertToTypeCode
+  const sipTypeDef *sip_type = sipFindType("TYPE");
+
+  if (sipIsErr == NULL)
+    return sipCanConvertToType(sipPy, sip_type, 0);
+
+  if (sipPy == Py_None)
+    return 1;
+
+  int state;
+  TYPE *type_ = reinterpret_cast<TYPE *>(sipConvertToType(sipPy, sip_type, sipTransferObj, 0, &state, sipIsErr));
+
+  sipReleaseType(type_, sip_type, state);
+
+  if (*sipIsErr)
+    return 0;
+
+  *sipCppPtr = new std::unique_ptr<TYPE>(type_);
+  return sipGetState(sipTransferObj);
+%End
+};
+%End
+
+%If (!MOVABLE_MAPPED_TYPE)
+template <TYPE>
+%MappedType std::unique_ptr<TYPE> /NoRelease,AllowNone,TypeHint="Optional[TYPE]",TypeHintValue="TYPE"/
 {
 %TypeHeaderCode
 #include <memory>
 %End
 
 %ConvertFromTypeCode
-    const sipTypeDef *sip_type = sipFindType("TYPE*");
-    return sipConvertFromNewType(sipCpp->release(), sip_type, NULL);
+  const sipTypeDef *sip_type = sipFindType("TYPE*");
+  return sipConvertFromNewType(sipCpp->release(), sip_type, NULL);
 %End
 
 %ConvertToTypeCode
-    // only one way for now...
-    return 0;
+  // only one way for now...
+  return 0;
 %End
 };
+%End
 
 template <TYPE>
 %MappedType QVector< QVector<TYPE> >
@@ -3135,6 +3176,72 @@ template <TYPE>
   return sipGetState( sipTransferObj );
 %End
 };
+
+
+%MappedType QList< std::pair< double, double > >
+{
+%TypeHeaderCode
+#include <QList>
+#include <utility>
+%End
+
+%ConvertFromTypeCode
+//convert list of pairs to a python array of tuple
+  PyObject *l;
+
+  if ((l = PyList_New(sipCpp->size())) == NULL)
+    return NULL;
+
+  // Set the list elements.
+  auto it = sipCpp->constBegin();
+  for (int i = 0; it != sipCpp->constEnd(); ++it, ++i)
+  {
+    PyObject *obj = PyTuple_New( 2 );
+    if ( obj == NULL )
+    {
+      Py_DECREF( l );
+      return NULL;
+    }
+
+    PyObject *v1 = PyFloat_FromDouble( ( *it ).first );
+    PyTuple_SetItem( obj, 0, v1 );
+    PyObject *v2 = PyFloat_FromDouble( ( *it ).second );
+    PyTuple_SetItem( obj, 1, v2 );
+
+    PyList_SET_ITEM(l, i, obj);
+  }
+
+  return l;
+%End
+
+%ConvertToTypeCode
+  // Check the type if that is all that is required.
+  if (sipIsErr == NULL)
+  {
+    if (!PyList_Check(sipPy))
+      return 0;
+
+    return 1;
+  }
+
+  QList< std::pair < double, double > > *ql = new QList< std::pair< double, double > >;
+  ql->reserve( PyList_GET_SIZE(sipPy) );
+  for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
+  {
+    PyObject *sipFirst  = PyTuple_GetItem( PyList_GET_ITEM(sipPy, i), 0 );
+    double v1 = PyFloat_AsDouble(sipFirst);
+
+    PyObject *sipSecond = PyTuple_GetItem( PyList_GET_ITEM(sipPy, i), 1 );
+    double v2 = PyFloat_AsDouble(sipSecond);
+
+    ql->append( std::make_pair( v1, v2 ) );
+  }
+
+  *sipCppPtr = ql;
+  return sipGetState(sipTransferObj);
+%End
+};
+
 
 %If (VECTOR_MAPPED_TYPE)
 template <TYPE>

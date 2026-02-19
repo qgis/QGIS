@@ -28,12 +28,14 @@
  */
 
 #include "pointset.h"
-#include "util.h"
+
 #include "geomfunction.h"
-#include "qgsgeos.h"
-#include "qgsmessagelog.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeometryutils_base.h"
+#include "qgsgeos.h"
+#include "qgsmessagelog.h"
+#include "util.h"
+
 #include <qglobal.h>
 
 using namespace pal;
@@ -278,7 +280,7 @@ bool PointSet::containsPoint( double x, double y ) const
 
     return result;
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
@@ -292,7 +294,7 @@ bool PointSet::containsLabelCandidate( double x, double y, double width, double 
   return GeomFunction::containsCandidate( preparedGeom(), x, y, width, height, alpha );
 }
 
-QLinkedList<PointSet *> PointSet::splitPolygons( PointSet *inputShape, double labelWidth, double labelHeight )
+QVector<PointSet *> PointSet::splitPolygons( PointSet *inputShape, double labelWidth, double labelHeight )
 {
   int j;
 
@@ -307,9 +309,9 @@ QLinkedList<PointSet *> PointSet::splitPolygons( PointSet *inputShape, double la
 
   const double labelArea = labelWidth * labelHeight;
 
-  QLinkedList<PointSet *> inputShapes;
+  QVector<PointSet *> inputShapes;
   inputShapes.push_back( inputShape );
-  QLinkedList<PointSet *> outputShapes;
+  QVector<PointSet *> outputShapes;
 
   while ( !inputShapes.isEmpty() )
   {
@@ -617,7 +619,7 @@ void PointSet::offsetCurveByDistance( double distance )
     x = std::move( newX );
     y = std::move( newY );
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
@@ -907,7 +909,7 @@ double PointSet::minDistanceToPoint( double px, double py, double *rx, double *r
 
     return QgsGeometryUtilsBase::sqrDistance2D( px, py, nx, ny );
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
@@ -954,7 +956,7 @@ void PointSet::getCentroid( double &px, double &py, bool forceInside ) const
       }
     }
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
@@ -1023,7 +1025,7 @@ geos::unique_ptr PointSet::interpolatePoint( double distance ) const
     geos::unique_ptr res( GEOSInterpolate_r( QgsGeosContext::get(), thisGeos, distance ) );
     return res;
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     qWarning( "GEOS exception: %s", e.what() );
     return nullptr;
@@ -1041,7 +1043,7 @@ double PointSet::lineLocatePoint( const GEOSGeometry *point ) const
   {
     distance = GEOSProject_r( QgsGeosContext::get(), thisGeos, point );
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     qWarning( "GEOS exception: %s", e.what() );
     return -1;
@@ -1076,7 +1078,7 @@ double PointSet::length() const
     ( void )GEOSLength_r( geosctxt, mGeos, &mLength );
     return mLength;
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
@@ -1103,7 +1105,7 @@ double PointSet::area() const
     mArea = std::fabs( mArea );
     return mArea;
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
@@ -1137,7 +1139,7 @@ QString PointSet::toWkt() const
 
     return res;
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );

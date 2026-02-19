@@ -16,18 +16,23 @@
  ***************************************************************************/
 
 #include "qgslayoutmanualtablewidget.h"
-#include "moc_qgslayoutmanualtablewidget.cpp"
-#include "qgslayoutatlas.h"
-#include "qgslayout.h"
-#include "qgslayoutreportcontext.h"
-#include "qgsprintlayout.h"
-#include "qgslayoutframe.h"
-#include "qgslayoutitemwidget.h"
-#include "qgslayoutitemmanualtable.h"
-#include "qgslayouttablecolumn.h"
-#include "qgsguiutils.h"
-#include "qgslayouttablebackgroundcolorsdialog.h"
 
+#include "qgsguiutils.h"
+#include "qgslayout.h"
+#include "qgslayoutatlas.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutitemmanualtable.h"
+#include "qgslayoutitemwidget.h"
+#include "qgslayoutreportcontext.h"
+#include "qgslayouttablebackgroundcolorsdialog.h"
+#include "qgslayouttablecolumn.h"
+#include "qgsprintlayout.h"
+
+#include <QString>
+
+#include "moc_qgslayoutmanualtablewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QPointer<QgsTableEditorDialog> QgsLayoutManualTableWidget::sEditorDialog = nullptr;
 
@@ -83,11 +88,11 @@ QgsLayoutManualTableWidget::QgsLayoutManualTableWidget( QgsLayoutFrame *frame )
 
   mGridColorButton->setColorDialogTitle( tr( "Select Grid Color" ) );
   mGridColorButton->setAllowOpacity( true );
-  mGridColorButton->setContext( QStringLiteral( "composer" ) );
+  mGridColorButton->setContext( u"composer"_s );
   mGridColorButton->setDefaultColor( Qt::black );
   mBackgroundColorButton->setColorDialogTitle( tr( "Select Background Color" ) );
   mBackgroundColorButton->setAllowOpacity( true );
-  mBackgroundColorButton->setContext( QStringLiteral( "composer" ) );
+  mBackgroundColorButton->setContext( u"composer"_s );
   mBackgroundColorButton->setShowNoColor( true );
   mBackgroundColorButton->setNoColorString( tr( "No Background" ) );
 
@@ -127,11 +132,11 @@ QgsExpressionContext QgsLayoutManualTableWidget::createExpressionContext() const
     context = mTable->createExpressionContext();
 
   auto cellScope = std::make_unique<QgsExpressionContextScope>();
-  cellScope->setVariable( QStringLiteral( "row_number" ), 1, true );
-  cellScope->setVariable( QStringLiteral( "column_number" ), 1, true );
+  cellScope->setVariable( u"row_number"_s, 1, true );
+  cellScope->setVariable( u"column_number"_s, 1, true );
   context.appendScope( cellScope.release() );
 
-  context.setHighlightedVariables( { QStringLiteral( "row_number" ), QStringLiteral( "column_number" ) } );
+  context.setHighlightedVariables( { u"row_number"_s, u"column_number"_s } );
 
   return context;
 }
@@ -210,7 +215,7 @@ void QgsLayoutManualTableWidget::openTableDesigner( QgsLayoutFrame *frame, QWidg
   if ( parent )
     connect( parent, &QWidget::destroyed, sEditorDialog, &QMainWindow::close );
 
-  connect( sEditorDialog, &QgsTableEditorDialog::tableChanged, table, [=] {
+  connect( sEditorDialog, &QgsTableEditorDialog::tableChanged, table, [table] {
     table->beginCommand( tr( "Change Table Contents" ) );
     table->setTableContents( sEditorDialog->tableContents() );
 
@@ -249,7 +254,7 @@ void QgsLayoutManualTableWidget::openTableDesigner( QgsLayoutFrame *frame, QWidg
     table->endCommand();
   } );
 
-  connect( sEditorDialog, &QgsTableEditorDialog::includeHeaderChanged, table, [=]( bool included ) {
+  connect( sEditorDialog, &QgsTableEditorDialog::includeHeaderChanged, table, [table]( bool included ) {
     table->beginCommand( tr( "Change Table Header" ) );
     table->setIncludeTableHeader( included );
     table->endCommand();

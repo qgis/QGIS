@@ -17,14 +17,16 @@
 #define QGSPOINTCLOUD3DSYMBOL_H
 
 #include "qgis_3d.h"
-
-
 #include "qgsabstract3dsymbol.h"
 #include "qgscolorrampshader.h"
-#include "qgsmaterial.h"
-#include "qgspointcloudlayer.h"
 #include "qgscontrastenhancement.h"
+#include "qgsmaterial.h"
 #include "qgspointcloudclassifiedrenderer.h"
+#include "qgspointcloudlayer.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup qgis_3d
@@ -59,6 +61,7 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
     ~QgsPointCloud3DSymbol() override;
 
     QString type() const override { return "pointcloud"; }
+    QgsPointCloud3DSymbol *clone() const override = 0 SIP_FACTORY;
 
     /**
      * Returns a unique string identifier of the symbol type.
@@ -200,7 +203,7 @@ class _3D_EXPORT QgsSingleColorPointCloud3DSymbol : public QgsPointCloud3DSymbol
     QgsSingleColorPointCloud3DSymbol();
 
     QString symbolType() const override;
-    QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
+    QgsSingleColorPointCloud3DSymbol *clone() const override SIP_FACTORY;
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
@@ -239,7 +242,7 @@ class _3D_EXPORT QgsColorRampPointCloud3DSymbol : public QgsPointCloud3DSymbol
   public:
     QgsColorRampPointCloud3DSymbol();
 
-    QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
+    QgsColorRampPointCloud3DSymbol *clone() const override SIP_FACTORY;
     QString symbolType() const override;
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
@@ -319,7 +322,7 @@ class _3D_EXPORT QgsRgbPointCloud3DSymbol : public QgsPointCloud3DSymbol
     QgsRgbPointCloud3DSymbol &operator=( const QgsRgbPointCloud3DSymbol &other ) = delete;
 
     QString symbolType() const override;
-    QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
+    QgsRgbPointCloud3DSymbol *clone() const override SIP_FACTORY;
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
@@ -446,9 +449,9 @@ class _3D_EXPORT QgsRgbPointCloud3DSymbol : public QgsPointCloud3DSymbol
     QgsRgbPointCloud3DSymbol( const QgsRgbPointCloud3DSymbol &other );
 #endif
 
-    QString mRedAttribute = QStringLiteral( "Red" );
-    QString mGreenAttribute = QStringLiteral( "Green" );
-    QString mBlueAttribute = QStringLiteral( "Blue" );
+    QString mRedAttribute = u"Red"_s;
+    QString mGreenAttribute = u"Green"_s;
+    QString mBlueAttribute = u"Blue"_s;
 
     std::unique_ptr<QgsContrastEnhancement> mRedContrastEnhancement;
     std::unique_ptr<QgsContrastEnhancement> mGreenContrastEnhancement;
@@ -469,7 +472,7 @@ class _3D_EXPORT QgsClassificationPointCloud3DSymbol : public QgsPointCloud3DSym
   public:
     QgsClassificationPointCloud3DSymbol();
 
-    QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
+    QgsClassificationPointCloud3DSymbol *clone() const override SIP_FACTORY;
     QString symbolType() const override;
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;

@@ -16,8 +16,7 @@
 #ifndef QGSSTACASSET_H
 #define QGSSTACASSET_H
 
-#define SIP_NO_FILE
-
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgsmimedatautils.h"
 
@@ -26,10 +25,9 @@
 
 /**
  * \ingroup core
- * \brief Class for storing a STAC asset's data
+ * \brief Class for storing a STAC asset's data.
  *
- * \note Not available in python bindings
- * \since QGIS 3.40
+ * \since QGIS 3.44
  */
 class CORE_EXPORT QgsStacAsset
 {
@@ -44,7 +42,7 @@ class CORE_EXPORT QgsStacAsset
     //! Returns the URI to the asset object
     QString href() const;
 
-    //! Returns the the displayed title for clients and users.
+    //! Returns the displayed title for clients and users.
     QString title() const;
 
     /**
@@ -75,10 +73,27 @@ class CORE_EXPORT QgsStacAsset
     QString formatName() const;
 
     /**
-     * Returns a uri for the asset if it is a cloud optimized file like COG or COPC
+     * Returns a uri for the asset if it is a cloud optimized file like COG or COPC.
+     *
+     * \param authcfg Optional authentication configuration ID (since QGIS 4.0).
+     *
+     * If the optional @authcfg parameter is set the authentication configuration ID will be encoded in the returned URI.
+     *
      * \since QGIS 3.42
      */
-    QgsMimeDataUtils::Uri uri() const;
+    QgsMimeDataUtils::Uri uri( const QString &authcfg = QString() ) const;
+
+    /**
+     * Returns an HTML representation of the STAC Asset including its ID within its container
+     * \since QGIS 4.0
+     */
+    QString toHtml( const QString &assetId ) const;
+
+    /**
+     * Returns whether the asset can be downloaded.
+     * \since QGIS 4.0
+     */
+    bool isDownloadable() const;
 
   private:
     QString mHref;

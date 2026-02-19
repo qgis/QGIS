@@ -3,6 +3,7 @@ try:
     QgsProjectUtils.layersMatchingPath = staticmethod(QgsProjectUtils.layersMatchingPath)
     QgsProjectUtils.updateLayerPath = staticmethod(QgsProjectUtils.updateLayerPath)
     QgsProjectUtils.layerIsContainedInGroupLayer = staticmethod(QgsProjectUtils.layerIsContainedInGroupLayer)
+    QgsProjectUtils.checkUserTrust = staticmethod(QgsProjectUtils.checkUserTrust)
     QgsProjectUtils.__group__ = ['project']
 except (NameError, AttributeError):
     pass

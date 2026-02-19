@@ -1,0 +1,7 @@
+[ ca ]
+default_ca = CA_default
+
+[ CA_default ]
+# No extensions defined here
+
+[ empty_extensions ]

@@ -14,8 +14,11 @@
  ***************************************************************************/
 
 #include "qgstest.h"
+
 #include <QObject>
 #include <QString>
+
+using namespace Qt::StringLiterals;
 
 //qgis includes...
 #include "qgsapplication.h"
@@ -36,6 +39,7 @@
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
 #include "qgsvectortileloader.h"
+#include "qgsvectortilemvtdecoder.h"
 
 /**
  * \ingroup UnitTests
@@ -47,7 +51,7 @@ class TestQgsVectorTileLayer : public QgsTest
 
   public:
     TestQgsVectorTileLayer()
-      : QgsTest( QStringLiteral( "Vector Tile Layer Tests" ), QStringLiteral( "vector_tile" ) ) {}
+      : QgsTest( u"Vector Tile Layer Tests"_s, u"vector_tile"_s ) {}
 
   private:
     QString mDataDir;
@@ -81,6 +85,8 @@ class TestQgsVectorTileLayer : public QgsTest
 
     void test_styleMinZoomBeyondTileMaxZoom();
     void test_filterRuleAllLayers();
+
+    void test_longIntAttributes();
 };
 
 
@@ -149,7 +155,7 @@ void TestQgsVectorTileLayer::test_render()
 {
   mMapSettings->setExtent( mLayer->extent() );
   mMapSettings->setDestinationCrs( mLayer->crs() );
-  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "render_test_basic" ), QStringLiteral( "render_test_basic" ), *mMapSettings, 0, 15 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( u"render_test_basic"_s, u"render_test_basic"_s, *mMapSettings, 0, 15 );
 }
 
 void TestQgsVectorTileLayer::test_render_withClip()
@@ -163,7 +169,7 @@ void TestQgsVectorTileLayer::test_render_withClip()
 
   mMapSettings->setExtent( mLayer->extent() );
   mMapSettings->setDestinationCrs( mLayer->crs() );
-  const bool res = QGSRENDERMAPSETTINGSCHECK( QStringLiteral( "render_painterclip" ), QStringLiteral( "render_painterclip" ), *mMapSettings, 0, 15 );
+  const bool res = QGSRENDERMAPSETTINGSCHECK( u"render_painterclip"_s, u"render_painterclip"_s, *mMapSettings, 0, 15 );
   mMapSettings->setClippingRegions( QList<QgsMapClippingRegion>() );
   QVERIFY( res );
 }
@@ -171,15 +177,16 @@ void TestQgsVectorTileLayer::test_render_withClip()
 void TestQgsVectorTileLayer::test_labeling()
 {
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 200, 0, 200 ) );
 
   QgsPalLayerSettings labelSettings;
   labelSettings.drawLabels = true;
   labelSettings.fieldName = "name:en";
   labelSettings.placement = Qgis::LabelPlacement::OverPoint;
+  labelSettings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Show, QgsProperty::fromExpression( "\"name:en\" IN ('Canada', 'Mexico', 'Argentina', 'Russia', 'Italy', 'China', 'Australia')" ) );
   labelSettings.setFormat( format );
 
   QgsVectorTileBasicLabelingStyle st;
@@ -209,11 +216,11 @@ void TestQgsVectorTileLayer::test_labeling()
 
   mMapSettings->setExtent( mLayer->extent() );
   mMapSettings->setDestinationCrs( mLayer->crs() );
-  const bool res1 = QGSRENDERMAPSETTINGSCHECK( QStringLiteral( "render_test_labeling" ), QStringLiteral( "render_test_labeling" ), *mMapSettings, 0, 15 );
+  const bool res1 = QGSRENDERMAPSETTINGSCHECK( u"render_test_labeling"_s, u"render_test_labeling"_s, *mMapSettings, 0, 15 );
 
   // disable label rendering
   mLayer->setLabelsEnabled( false );
-  const bool res2 = QGSRENDERMAPSETTINGSCHECK( QStringLiteral( "render_test_labeling_disabled" ), QStringLiteral( "render_test_labeling_disabled" ), *mMapSettings, 0, 15 );
+  const bool res2 = QGSRENDERMAPSETTINGSCHECK( u"render_test_labeling_disabled"_s, u"render_test_labeling_disabled"_s, *mMapSettings, 0, 15 );
 
   mLayer->setRenderer( oldRenderer );
 
@@ -241,83 +248,86 @@ void TestQgsVectorTileLayer::testMbtilesProviderMetadata()
   QCOMPARE( vectorTileMetadata->priorityForUri( QString() ), 0 );
   QCOMPARE( vectorTileMetadata->validLayerTypesForUri( QString() ), {} );
 
-  QCOMPARE( vectorTileMetadata->priorityForUri( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/points.shp" ) ), 0 );
-  QVERIFY( vectorTileMetadata->validLayerTypesForUri( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/points.shp" ) ).isEmpty() );
-  QVERIFY( vectorTileMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/points.shp" ) ).isEmpty() );
+  QCOMPARE( vectorTileMetadata->priorityForUri( QStringLiteral( TEST_DATA_DIR ) + u"/points.shp"_s ), 0 );
+  QVERIFY( vectorTileMetadata->validLayerTypesForUri( QStringLiteral( TEST_DATA_DIR ) + u"/points.shp"_s ).isEmpty() );
+  QVERIFY( vectorTileMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + u"/points.shp"_s ).isEmpty() );
 
-  QCOMPARE( vectorTileMetadata->priorityForUri( QStringLiteral( "type=vtpk&url=%1/points.shp" ).arg( TEST_DATA_DIR ) ), 0 );
-  QVERIFY( vectorTileMetadata->validLayerTypesForUri( QStringLiteral( "type=vtpk&url=%1/points.shp" ).arg( TEST_DATA_DIR ) ).isEmpty() );
-  QVERIFY( vectorTileMetadata->querySublayers( QStringLiteral( "type=vtpk&url=%1/points.shp" ).arg( TEST_DATA_DIR ) ).isEmpty() );
+  QCOMPARE( vectorTileMetadata->priorityForUri( u"type=vtpk&url=%1/points.shp"_s.arg( TEST_DATA_DIR ) ), 0 );
+  QVERIFY( vectorTileMetadata->validLayerTypesForUri( u"type=vtpk&url=%1/points.shp"_s.arg( TEST_DATA_DIR ) ).isEmpty() );
+  QVERIFY( vectorTileMetadata->querySublayers( u"type=vtpk&url=%1/points.shp"_s.arg( TEST_DATA_DIR ) ).isEmpty() );
 
   // mbtile uris
-  QCOMPARE( vectorTileMetadata->priorityForUri( QStringLiteral( "%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) ), 100 );
-  QCOMPARE( vectorTileMetadata->validLayerTypesForUri( QStringLiteral( "%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) ), { Qgis::LayerType::VectorTile } );
+  QCOMPARE( vectorTileMetadata->priorityForUri( u"%1/vector_tile/mbtiles_vt.mbtiles"_s.arg( TEST_DATA_DIR ) ), 100 );
+  QCOMPARE( vectorTileMetadata->validLayerTypesForUri( u"%1/vector_tile/mbtiles_vt.mbtiles"_s.arg( TEST_DATA_DIR ) ), { Qgis::LayerType::VectorTile } );
 
-  QCOMPARE( vectorTileMetadata->priorityForUri( QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) ), 100 );
-  QCOMPARE( vectorTileMetadata->validLayerTypesForUri( QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) ), { Qgis::LayerType::VectorTile } );
+  QCOMPARE( vectorTileMetadata->priorityForUri( u"type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles"_s.arg( TEST_DATA_DIR ) ), 100 );
+  QCOMPARE( vectorTileMetadata->validLayerTypesForUri( u"type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles"_s.arg( TEST_DATA_DIR ) ), { Qgis::LayerType::VectorTile } );
 
   // query sublayers
-  QList<QgsProviderSublayerDetails> sublayers = vectorTileMetadata->querySublayers( QStringLiteral( "%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
+  QString localMbtilesPath = u"%1%2"_s.arg( QUrl::toPercentEncoding( TEST_DATA_DIR ), QUrl::toPercentEncoding( u"/vector_tile/mbtiles_vt.mbtiles"_s ) );
+  QList<QgsProviderSublayerDetails> sublayers = vectorTileMetadata->querySublayers( u"%1/vector_tile/mbtiles_vt.mbtiles"_s.arg( TEST_DATA_DIR ) );
   QCOMPARE( sublayers.size(), 1 );
-  QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "mbtilesvectortiles" ) );
-  QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "mbtiles_vt" ) );
-  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.at( 0 ).providerKey(), u"mbtilesvectortiles"_s );
+  QCOMPARE( sublayers.at( 0 ).name(), u"mbtiles_vt"_s );
+  QCOMPARE( sublayers.at( 0 ).uri(), u"type=mbtiles&url=%1"_s.arg( localMbtilesPath ) );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::VectorTile );
   QVERIFY( !sublayers.at( 0 ).skippedContainerScan() );
   QVERIFY( !QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers ) );
 
-  sublayers = vectorTileMetadata->querySublayers( QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
+  sublayers = vectorTileMetadata->querySublayers( u"type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles"_s.arg( TEST_DATA_DIR ) );
   QCOMPARE( sublayers.size(), 1 );
-  QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "mbtilesvectortiles" ) );
-  QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "mbtiles_vt" ) );
-  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.at( 0 ).providerKey(), u"mbtilesvectortiles"_s );
+  QCOMPARE( sublayers.at( 0 ).name(), u"mbtiles_vt"_s );
+  QCOMPARE( sublayers.at( 0 ).uri(), u"type=mbtiles&url=%1"_s.arg( localMbtilesPath ) );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::VectorTile );
   QVERIFY( !sublayers.at( 0 ).skippedContainerScan() );
 
   // fast scan flag
-  sublayers = vectorTileMetadata->querySublayers( QStringLiteral( "%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ), Qgis::SublayerQueryFlag::FastScan );
+  sublayers = vectorTileMetadata->querySublayers( u"%1/vector_tile/mbtiles_vt.mbtiles"_s.arg( TEST_DATA_DIR ), Qgis::SublayerQueryFlag::FastScan );
   QCOMPARE( sublayers.size(), 1 );
-  QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "mbtilesvectortiles" ) );
-  QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "mbtiles_vt" ) );
-  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.at( 0 ).providerKey(), u"mbtilesvectortiles"_s );
+  QCOMPARE( sublayers.at( 0 ).name(), u"mbtiles_vt"_s );
+  QCOMPARE( sublayers.at( 0 ).uri(), u"type=mbtiles&url=%1"_s.arg( localMbtilesPath ) );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::VectorTile );
   QVERIFY( sublayers.at( 0 ).skippedContainerScan() );
   QVERIFY( QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers ) );
 
-  sublayers = vectorTileMetadata->querySublayers( QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ), Qgis::SublayerQueryFlag::FastScan );
+  sublayers = vectorTileMetadata->querySublayers( u"type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles"_s.arg( TEST_DATA_DIR ), Qgis::SublayerQueryFlag::FastScan );
   QCOMPARE( sublayers.size(), 1 );
-  QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "mbtilesvectortiles" ) );
-  QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "mbtiles_vt" ) );
-  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.at( 0 ).providerKey(), u"mbtilesvectortiles"_s );
+  QCOMPARE( sublayers.at( 0 ).name(), u"mbtiles_vt"_s );
+  QCOMPARE( sublayers.at( 0 ).uri(), u"type=mbtiles&url=%1"_s.arg( localMbtilesPath ) );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::VectorTile );
   QVERIFY( sublayers.at( 0 ).skippedContainerScan() );
 
   // fast scan mode means that any mbtile file will be reported, including those with only raster tiles
   // (we are skipping a potentially expensive db open and format check)
-  sublayers = vectorTileMetadata->querySublayers( QStringLiteral( "%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ), Qgis::SublayerQueryFlag::FastScan );
+  QString localIsleOfManPath = u"%1%2"_s.arg( QUrl::toPercentEncoding( TEST_DATA_DIR ), QUrl::toPercentEncoding( u"/isle_of_man.mbtiles"_s ) );
+
+  sublayers = vectorTileMetadata->querySublayers( u"%1/isle_of_man.mbtiles"_s.arg( TEST_DATA_DIR ), Qgis::SublayerQueryFlag::FastScan );
   QCOMPARE( sublayers.size(), 1 );
-  QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "mbtilesvectortiles" ) );
-  QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "isle_of_man" ) );
-  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=mbtiles&url=%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.at( 0 ).providerKey(), u"mbtilesvectortiles"_s );
+  QCOMPARE( sublayers.at( 0 ).name(), u"isle_of_man"_s );
+  QCOMPARE( sublayers.at( 0 ).uri(), u"type=mbtiles&url=%1"_s.arg( localIsleOfManPath ) );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::VectorTile );
   QVERIFY( sublayers.at( 0 ).skippedContainerScan() );
 
   // test that mbtilesvectortiles provider is the preferred provider for vector tile mbtiles files
-  QList<QgsProviderRegistry::ProviderCandidateDetails> candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
+  QList<QgsProviderRegistry::ProviderCandidateDetails> candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( u"type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles"_s.arg( TEST_DATA_DIR ) );
   // wms provider also reports handling this url
-  int vtProviderIndex = candidates.at( 0 ).metadata()->key() == QLatin1String( "mbtilesvectortiles" ) ? 0 : 1;
+  int vtProviderIndex = candidates.at( 0 ).metadata()->key() == "mbtilesvectortiles"_L1 ? 0 : 1;
   QCOMPARE( candidates.size(), 2 );
-  QCOMPARE( candidates.at( vtProviderIndex ).metadata()->key(), QStringLiteral( "mbtilesvectortiles" ) );
+  QCOMPARE( candidates.at( vtProviderIndex ).metadata()->key(), u"mbtilesvectortiles"_s );
   QCOMPARE( candidates.at( vtProviderIndex ).layerTypes(), QList<Qgis::LayerType>() << Qgis::LayerType::VectorTile );
 
-  candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
+  candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( u"%1/vector_tile/mbtiles_vt.mbtiles"_s.arg( TEST_DATA_DIR ) );
   // wms provider also reports handling this url
   QCOMPARE( candidates.size(), 2 );
-  vtProviderIndex = candidates.at( 0 ).metadata()->key() == QLatin1String( "mbtilesvectortiles" ) ? 0 : 1;
-  QCOMPARE( candidates.at( vtProviderIndex ).metadata()->key(), QStringLiteral( "mbtilesvectortiles" ) );
+  vtProviderIndex = candidates.at( 0 ).metadata()->key() == "mbtilesvectortiles"_L1 ? 0 : 1;
+  QCOMPARE( candidates.at( vtProviderIndex ).metadata()->key(), u"mbtilesvectortiles"_s );
   QCOMPARE( candidates.at( vtProviderIndex ).layerTypes(), QList<Qgis::LayerType>() << Qgis::LayerType::VectorTile );
 
-  QCOMPARE( vectorTileMetadata->filters( Qgis::FileFilterType::VectorTile ), QStringLiteral( "Mbtiles Vector Tiles (*.mbtiles *.MBTILES)" ) );
+  QCOMPARE( vectorTileMetadata->filters( Qgis::FileFilterType::VectorTile ), u"Mbtiles Vector Tiles (*.mbtiles *.MBTILES)"_s );
   QCOMPARE( vectorTileMetadata->filters( Qgis::FileFilterType::PointCloud ), QString() );
 
   const QString registryPointCloudFilters = QgsProviderRegistry::instance()->fileVectorTileFilters();
@@ -327,33 +337,34 @@ void TestQgsVectorTileLayer::testMbtilesProviderMetadata()
 void TestQgsVectorTileLayer::test_relativePathsMbTiles()
 {
   QgsReadWriteContext contextRel;
-  contextRel.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/project.qgs" ) ) );
+  contextRel.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + u"/project.qgs"_s ) );
   const QgsReadWriteContext contextAbs;
+  QString localMbtilesPath = u"%1%2"_s.arg( QUrl::toPercentEncoding( TEST_DATA_DIR ), QUrl::toPercentEncoding( u"/vector_tile/mbtiles_vt.mbtiles"_s ) );
 
-  const QString srcMbtiles = QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR );
+  const QString srcMbtiles = u"type=mbtiles&url=%1"_s.arg( localMbtilesPath );
 
   auto layer = std::make_unique<QgsVectorTileLayer>( srcMbtiles );
   QVERIFY( layer->isValid() );
-  QCOMPARE( layer->providerType(), QStringLiteral( "mbtilesvectortiles" ) );
+  QCOMPARE( layer->providerType(), u"mbtilesvectortiles"_s );
 
   // encode source: converting absolute paths to relative
   const QString srcMbtilesRel = layer->encodedSource( srcMbtiles, contextRel );
-  QCOMPARE( srcMbtilesRel, QStringLiteral( "type=mbtiles&url=./vector_tile/mbtiles_vt.mbtiles" ) );
+  QCOMPARE( srcMbtilesRel, u"type=mbtiles&url=.%2Fvector_tile%2Fmbtiles_vt.mbtiles"_s );
 
   // encode source: keeping absolute paths
   QCOMPARE( layer->encodedSource( srcMbtiles, contextAbs ), srcMbtiles );
 
   // decode source: converting relative paths to absolute
-  QCOMPARE( layer->decodedSource( srcMbtilesRel, QStringLiteral( "mbtilesvectortiles" ), contextRel ), srcMbtiles );
+  QCOMPARE( layer->decodedSource( srcMbtilesRel, u"mbtilesvectortiles"_s, contextRel ), srcMbtiles );
 
   // decode source: keeping absolute paths
-  QCOMPARE( layer->decodedSource( srcMbtiles, QStringLiteral( "mbtilesvectortiles" ), contextAbs ), srcMbtiles );
+  QCOMPARE( layer->decodedSource( srcMbtiles, u"mbtilesvectortiles"_s, contextAbs ), srcMbtiles );
 }
 
 void TestQgsVectorTileLayer::test_absoluteRelativeUriMbTiles()
 {
   QgsReadWriteContext context;
-  context.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/project.qgs" ) ) );
+  context.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + u"/project.qgs"_s ) );
 
   QgsProviderMetadata *vectorTileMetadata = QgsProviderRegistry::instance()->providerMetadata( "mbtilesvectortiles" );
   QVERIFY( vectorTileMetadata );
@@ -374,11 +385,11 @@ void TestQgsVectorTileLayer::test_absoluteRelativeUriMbTiles()
 
 void TestQgsVectorTileLayer::test_mbtilesZoom16()
 {
-  const QString srcMbtiles = QStringLiteral( "type=mbtiles&url=%1/vector_tile/z16.mbtiles" ).arg( TEST_DATA_DIR );
+  const QString srcMbtiles = u"type=mbtiles&url=%1/vector_tile/z16.mbtiles"_s.arg( TEST_DATA_DIR );
 
   auto layer = std::make_unique<QgsVectorTileLayer>( srcMbtiles );
   QVERIFY( layer->isValid() );
-  QCOMPARE( layer->providerType(), QStringLiteral( "mbtilesvectortiles" ) );
+  QCOMPARE( layer->providerType(), u"mbtilesvectortiles"_s );
   QCOMPARE( layer->sourceMinZoom(), 16 );
   QCOMPARE( layer->sourceMaxZoom(), 16 );
 }
@@ -389,15 +400,15 @@ void TestQgsVectorTileLayer::test_relativePathsXyz()
   contextRel.setPathResolver( QgsPathResolver( "/home/qgis/project.qgs" ) );
   const QgsReadWriteContext contextAbs;
 
-  const QString srcXyzLocal = "type=xyz&url=file:///home/qgis/%7Bz%7D/%7Bx%7D/%7By%7D.pbf";
-  const QString srcXyzRemote = "type=xyz&url=http://www.example.com/%7Bz%7D/%7Bx%7D/%7By%7D.pbf";
+  const QString srcXyzLocal = "type=xyz&url=file%3A%2F%2F%2Fhome%2Fqgis%2F%7Bz%7D%2F%7Bx%7D%2F%7By%7D.pbf";
+  const QString srcXyzRemote = "type=xyz&url=http%3A%2F%2Fwww.example.com%2F%7Bz%7D%2F%7Bx%7D%2F%7By%7D.pbf";
 
   auto layer = std::make_unique<QgsVectorTileLayer>( srcXyzLocal );
-  QCOMPARE( layer->providerType(), QStringLiteral( "xyzvectortiles" ) );
+  QCOMPARE( layer->providerType(), u"xyzvectortiles"_s );
 
   // encode source: converting absolute paths to relative
   const QString srcXyzLocalRel = layer->encodedSource( srcXyzLocal, contextRel );
-  QCOMPARE( srcXyzLocalRel, QStringLiteral( "type=xyz&url=file:./%7Bz%7D/%7Bx%7D/%7By%7D.pbf" ) );
+  QCOMPARE( srcXyzLocalRel, u"type=xyz&url=file%3A.%2F%7Bz%7D%2F%7Bx%7D%2F%7By%7D.pbf"_s );
   QCOMPARE( layer->encodedSource( srcXyzRemote, contextRel ), srcXyzRemote );
 
   // encode source: keeping absolute paths
@@ -405,18 +416,18 @@ void TestQgsVectorTileLayer::test_relativePathsXyz()
   QCOMPARE( layer->encodedSource( srcXyzRemote, contextAbs ), srcXyzRemote );
 
   // decode source: converting relative paths to absolute
-  QCOMPARE( layer->decodedSource( srcXyzLocalRel, QStringLiteral( "xyzvectortiles" ), contextRel ), srcXyzLocal );
-  QCOMPARE( layer->decodedSource( srcXyzRemote, QStringLiteral( "xyzvectortilesx" ), contextRel ), srcXyzRemote );
+  QCOMPARE( layer->decodedSource( srcXyzLocalRel, u"xyzvectortiles"_s, contextRel ), srcXyzLocal );
+  QCOMPARE( layer->decodedSource( srcXyzRemote, u"xyzvectortilesx"_s, contextRel ), srcXyzRemote );
 
   // decode source: keeping absolute paths
-  QCOMPARE( layer->decodedSource( srcXyzLocal, QStringLiteral( "xyzvectortiles" ), contextAbs ), srcXyzLocal );
-  QCOMPARE( layer->decodedSource( srcXyzRemote, QStringLiteral( "xyzvectortiles" ), contextAbs ), srcXyzRemote );
+  QCOMPARE( layer->decodedSource( srcXyzLocal, u"xyzvectortiles"_s, contextAbs ), srcXyzLocal );
+  QCOMPARE( layer->decodedSource( srcXyzRemote, u"xyzvectortiles"_s, contextAbs ), srcXyzRemote );
 }
 
 void TestQgsVectorTileLayer::test_absoluteRelativeUriXyz()
 {
   QgsReadWriteContext context;
-  context.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/project.qgs" ) ) );
+  context.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + u"/project.qgs"_s ) );
 
   QgsProviderMetadata *vectorTileMetadata = QgsProviderRegistry::instance()->providerMetadata( "xyzvectortiles" );
   QVERIFY( vectorTileMetadata );
@@ -433,7 +444,8 @@ void TestQgsVectorTileLayer::test_absoluteRelativeUriXyz()
 
   QString absoluteUri = dsAbs.encodedUri();
   QString relativeUri = dsRel.encodedUri();
-  QCOMPARE( vectorTileMetadata->absoluteToRelativeUri( absoluteUri, context ), relativeUri );
+  QString absToRelUri = vectorTileMetadata->absoluteToRelativeUri( absoluteUri, context );
+  QCOMPARE( absToRelUri, relativeUri );
   QCOMPARE( vectorTileMetadata->relativeToAbsoluteUri( relativeUri, context ), absoluteUri );
 }
 
@@ -446,45 +458,45 @@ void TestQgsVectorTileLayer::testVtpkProviderMetadata()
   QCOMPARE( vectorTileMetadata->priorityForUri( QString() ), 0 );
   QCOMPARE( vectorTileMetadata->validLayerTypesForUri( QString() ), {} );
 
-  QCOMPARE( vectorTileMetadata->priorityForUri( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/points.shp" ) ), 0 );
-  QVERIFY( vectorTileMetadata->validLayerTypesForUri( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/points.shp" ) ).isEmpty() );
-  QVERIFY( vectorTileMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/points.shp" ) ).isEmpty() );
+  QCOMPARE( vectorTileMetadata->priorityForUri( QStringLiteral( TEST_DATA_DIR ) + u"/points.shp"_s ), 0 );
+  QVERIFY( vectorTileMetadata->validLayerTypesForUri( QStringLiteral( TEST_DATA_DIR ) + u"/points.shp"_s ).isEmpty() );
+  QVERIFY( vectorTileMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + u"/points.shp"_s ).isEmpty() );
 
-  QCOMPARE( vectorTileMetadata->priorityForUri( QStringLiteral( "type=vtpk&url=%1/points.shp" ).arg( TEST_DATA_DIR ) ), 0 );
-  QVERIFY( vectorTileMetadata->validLayerTypesForUri( QStringLiteral( "type=vtpk&url=%1/points.shp" ).arg( TEST_DATA_DIR ) ).isEmpty() );
-  QVERIFY( vectorTileMetadata->querySublayers( QStringLiteral( "type=vtpk&url=%1/points.shp" ).arg( TEST_DATA_DIR ) ).isEmpty() );
+  QCOMPARE( vectorTileMetadata->priorityForUri( u"type=vtpk&url=%1/points.shp"_s.arg( TEST_DATA_DIR ) ), 0 );
+  QVERIFY( vectorTileMetadata->validLayerTypesForUri( u"type=vtpk&url=%1/points.shp"_s.arg( TEST_DATA_DIR ) ).isEmpty() );
+  QVERIFY( vectorTileMetadata->querySublayers( u"type=vtpk&url=%1/points.shp"_s.arg( TEST_DATA_DIR ) ).isEmpty() );
 
   // vtpk uris
-  QCOMPARE( vectorTileMetadata->priorityForUri( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/testvtpk.vtpk" ) ), 100 );
-  QCOMPARE( vectorTileMetadata->validLayerTypesForUri( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/testvtpk.vtpk" ) ), { Qgis::LayerType::VectorTile } );
-  QList<QgsProviderSublayerDetails> sublayers = vectorTileMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/testvtpk.vtpk" ) );
-  QCOMPARE( sublayers.size(), 1 );
-  QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "vtpkvectortiles" ) );
-  QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "testvtpk" ) );
-  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=vtpk&url=%1/testvtpk.vtpk" ).arg( TEST_DATA_DIR ) );
-  QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::VectorTile );
+  QString localVtpkPath = u"%1%2"_s.arg( QUrl::toPercentEncoding( TEST_DATA_DIR ), QUrl::toPercentEncoding( u"/testvtpk.vtpk"_s ) );
 
-  QCOMPARE( vectorTileMetadata->priorityForUri( QStringLiteral( "type=vtpk&url=%1/testvtpk.vtpk" ).arg( TEST_DATA_DIR ) ), 100 );
-  QCOMPARE( vectorTileMetadata->validLayerTypesForUri( QStringLiteral( "type=vtpk&url=%1/testvtpk.vtpk" ).arg( TEST_DATA_DIR ) ), { Qgis::LayerType::VectorTile } );
-  sublayers = vectorTileMetadata->querySublayers( QStringLiteral( "type=vtpk&url=%1/testvtpk.vtpk" ).arg( TEST_DATA_DIR ) );
-  QCOMPARE( sublayers.size(), 1 );
-  QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "vtpkvectortiles" ) );
-  QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "testvtpk" ) );
-  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=vtpk&url=%1/testvtpk.vtpk" ).arg( TEST_DATA_DIR ) );
-  QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::VectorTile );
+  for ( auto uriStr : {
+          u"%1/%2"_s.arg( TEST_DATA_DIR ).arg( "testvtpk.vtpk" ), //
+          u"type=vtpk&url=%1"_s.arg( localVtpkPath ),             //
+          u"type=vtpk&url=%1"_s.arg( QStringLiteral( TEST_DATA_DIR ) + u"/testvtpk.vtpk"_s )
+        } )
+  {
+    QCOMPARE( vectorTileMetadata->priorityForUri( uriStr ), 100 );
+    QCOMPARE( vectorTileMetadata->validLayerTypesForUri( uriStr ), { Qgis::LayerType::VectorTile } );
+    QList<QgsProviderSublayerDetails> sublayers = vectorTileMetadata->querySublayers( uriStr );
+    QCOMPARE( sublayers.size(), 1 );
+    QCOMPARE( sublayers.at( 0 ).providerKey(), u"vtpkvectortiles"_s );
+    QCOMPARE( sublayers.at( 0 ).name(), u"testvtpk"_s );
+    QCOMPARE( sublayers.at( 0 ).uri(), u"type=vtpk&url=%1"_s.arg( localVtpkPath ) );
+    QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::VectorTile );
+  }
 
   // test that vtpk provider is the preferred provider for vtpk files
-  QList<QgsProviderRegistry::ProviderCandidateDetails> candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "type=vtpk&url=%1/testvtpk.vtpk" ).arg( TEST_DATA_DIR ) );
+  QList<QgsProviderRegistry::ProviderCandidateDetails> candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( u"type=vtpk&url=%1/testvtpk.vtpk"_s.arg( TEST_DATA_DIR ) );
   QCOMPARE( candidates.size(), 1 );
-  QCOMPARE( candidates.at( 0 ).metadata()->key(), QStringLiteral( "vtpkvectortiles" ) );
+  QCOMPARE( candidates.at( 0 ).metadata()->key(), u"vtpkvectortiles"_s );
   QCOMPARE( candidates.at( 0 ).layerTypes(), QList<Qgis::LayerType>() << Qgis::LayerType::VectorTile );
 
-  candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/testvtpk.vtpk" ) );
+  candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( TEST_DATA_DIR ) + u"/testvtpk.vtpk"_s );
   QCOMPARE( candidates.size(), 1 );
-  QCOMPARE( candidates.at( 0 ).metadata()->key(), QStringLiteral( "vtpkvectortiles" ) );
+  QCOMPARE( candidates.at( 0 ).metadata()->key(), u"vtpkvectortiles"_s );
   QCOMPARE( candidates.at( 0 ).layerTypes(), QList<Qgis::LayerType>() << Qgis::LayerType::VectorTile );
 
-  QCOMPARE( vectorTileMetadata->filters( Qgis::FileFilterType::VectorTile ), QStringLiteral( "VTPK Vector Tiles (*.vtpk *.VTPK)" ) );
+  QCOMPARE( vectorTileMetadata->filters( Qgis::FileFilterType::VectorTile ), u"VTPK Vector Tiles (*.vtpk *.VTPK)"_s );
   QCOMPARE( vectorTileMetadata->filters( Qgis::FileFilterType::PointCloud ), QString() );
 
   const QString registryPointCloudFilters = QgsProviderRegistry::instance()->fileVectorTileFilters();
@@ -494,33 +506,35 @@ void TestQgsVectorTileLayer::testVtpkProviderMetadata()
 void TestQgsVectorTileLayer::test_relativePathsVtpk()
 {
   QgsReadWriteContext contextRel;
-  contextRel.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/project.qgs" ) ) );
+  contextRel.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + u"/project.qgs"_s ) );
   const QgsReadWriteContext contextAbs;
 
-  const QString srcVtpk = QStringLiteral( "type=vtpk&url=%1/testvtpk.vtpk" ).arg( TEST_DATA_DIR );
+  QString localVtpkPath = u"%1%2"_s.arg( QUrl::toPercentEncoding( TEST_DATA_DIR ), QUrl::toPercentEncoding( u"/testvtpk.vtpk"_s ) );
+
+  const QString srcVtpk = u"type=vtpk&url=%1"_s.arg( localVtpkPath );
 
   auto layer = std::make_unique<QgsVectorTileLayer>( srcVtpk );
   QVERIFY( layer->isValid() );
-  QCOMPARE( layer->providerType(), QStringLiteral( "vtpkvectortiles" ) );
+  QCOMPARE( layer->providerType(), u"vtpkvectortiles"_s );
 
   // encode source: converting absolute paths to relative
   const QString srcVtpkRel = layer->encodedSource( srcVtpk, contextRel );
-  QCOMPARE( srcVtpkRel, QStringLiteral( "type=vtpk&url=./testvtpk.vtpk" ) );
+  QCOMPARE( srcVtpkRel, u"type=vtpk&url=.%2Ftestvtpk.vtpk"_s );
 
   // encode source: keeping absolute paths
   QCOMPARE( layer->encodedSource( srcVtpk, contextAbs ), srcVtpk );
 
   // decode source: converting relative paths to absolute
-  QCOMPARE( layer->decodedSource( srcVtpkRel, QStringLiteral( "vtpkvectortiles" ), contextRel ), srcVtpk );
+  QCOMPARE( layer->decodedSource( srcVtpkRel, u"vtpkvectortiles"_s, contextRel ), srcVtpk );
 
   // decode source: keeping absolute paths
-  QCOMPARE( layer->decodedSource( srcVtpk, QStringLiteral( "vtpkvectortiles" ), contextAbs ), srcVtpk );
+  QCOMPARE( layer->decodedSource( srcVtpk, u"vtpkvectortiles"_s, contextAbs ), srcVtpk );
 }
 
 void TestQgsVectorTileLayer::test_absoluteRelativeUriVtpk()
 {
   QgsReadWriteContext context;
-  context.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/project.qgs" ) ) );
+  context.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + u"/project.qgs"_s ) );
 
   QgsProviderMetadata *vectorTileMetadata = QgsProviderRegistry::instance()->providerMetadata( "vtpkvectortiles" );
   QVERIFY( vectorTileMetadata );
@@ -559,7 +573,7 @@ void TestQgsVectorTileLayer::test_polygonWithLineStyle()
   lineSymbolLayer->setWidth( lineStrokeWidth );
   QgsLineSymbol *lineSymbol = new QgsLineSymbol( QgsSymbolLayerList() << lineSymbolLayer );
 
-  QgsVectorTileBasicRendererStyle st( QStringLiteral( "Polygons" ), QString(), Qgis::GeometryType::Line );
+  QgsVectorTileBasicRendererStyle st( u"Polygons"_s, QString(), Qgis::GeometryType::Line );
   st.setSymbol( lineSymbol );
 
   QgsSimpleFillSymbolLayer *fillSymbolLayer = new QgsSimpleFillSymbolLayer;
@@ -567,7 +581,7 @@ void TestQgsVectorTileLayer::test_polygonWithLineStyle()
   fillSymbolLayer->setStrokeStyle( Qt::NoPen );
   QgsFillSymbol *fillSymbol = new QgsFillSymbol( QgsSymbolLayerList() << fillSymbolLayer );
 
-  QgsVectorTileBasicRendererStyle bgst( QStringLiteral( "background" ), QStringLiteral( "background" ), Qgis::GeometryType::Polygon );
+  QgsVectorTileBasicRendererStyle bgst( u"background"_s, u"background"_s, Qgis::GeometryType::Polygon );
   bgst.setSymbol( fillSymbol );
 
   QgsVectorTileBasicRenderer *rend = new QgsVectorTileBasicRenderer;
@@ -576,7 +590,7 @@ void TestQgsVectorTileLayer::test_polygonWithLineStyle()
 
   mMapSettings->setExtent( layer->extent() );
   mMapSettings->setDestinationCrs( layer->crs() );
-  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "render_test_polygon_with_line_style" ), QStringLiteral( "render_test_polygon_with_line_style" ), *mMapSettings, 0, 15 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( u"render_test_polygon_with_line_style"_s, u"render_test_polygon_with_line_style"_s, *mMapSettings, 0, 15 );
 }
 
 void TestQgsVectorTileLayer::test_polygonWithMarker()
@@ -597,7 +611,7 @@ void TestQgsVectorTileLayer::test_polygonWithMarker()
   markerSymbolLayer->setColor( markerColor );
   QgsMarkerSymbol *markerSymbol = new QgsMarkerSymbol( QgsSymbolLayerList() << markerSymbolLayer );
 
-  QgsVectorTileBasicRendererStyle st( QStringLiteral( "Polygons" ), QString(), Qgis::GeometryType::Point );
+  QgsVectorTileBasicRendererStyle st( u"Polygons"_s, QString(), Qgis::GeometryType::Point );
   st.setSymbol( markerSymbol );
 
   QgsSimpleFillSymbolLayer *fillSymbolLayer = new QgsSimpleFillSymbolLayer;
@@ -605,7 +619,7 @@ void TestQgsVectorTileLayer::test_polygonWithMarker()
   fillSymbolLayer->setStrokeStyle( Qt::NoPen );
   QgsFillSymbol *fillSymbol = new QgsFillSymbol( QgsSymbolLayerList() << fillSymbolLayer );
 
-  QgsVectorTileBasicRendererStyle bgst( QStringLiteral( "background" ), QStringLiteral( "background" ), Qgis::GeometryType::Polygon );
+  QgsVectorTileBasicRendererStyle bgst( u"background"_s, u"background"_s, Qgis::GeometryType::Polygon );
   bgst.setSymbol( fillSymbol );
 
   QgsVectorTileBasicRenderer *rend = new QgsVectorTileBasicRenderer;
@@ -614,7 +628,7 @@ void TestQgsVectorTileLayer::test_polygonWithMarker()
 
   mMapSettings->setExtent( layer->extent() );
   mMapSettings->setDestinationCrs( layer->crs() );
-  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "render_test_polygon_with_marker" ), QStringLiteral( "render_test_polygon_with_marker" ), *mMapSettings, 0, 15 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( u"render_test_polygon_with_marker"_s, u"render_test_polygon_with_marker"_s, *mMapSettings, 0, 15 );
 }
 
 void TestQgsVectorTileLayer::test_styleMinZoomBeyondTileMaxZoom()
@@ -637,7 +651,7 @@ void TestQgsVectorTileLayer::test_styleMinZoomBeyondTileMaxZoom()
   lineSymbolLayer->setWidth( lineStrokeWidth );
   QgsLineSymbol *lineSymbol = new QgsLineSymbol( QgsSymbolLayerList() << lineSymbolLayer );
 
-  QgsVectorTileBasicRendererStyle st( QStringLiteral( "Polygons" ), QString(), Qgis::GeometryType::Line );
+  QgsVectorTileBasicRendererStyle st( u"Polygons"_s, QString(), Qgis::GeometryType::Line );
   st.setSymbol( lineSymbol );
   st.setMinZoomLevel( 2 );
 
@@ -646,7 +660,7 @@ void TestQgsVectorTileLayer::test_styleMinZoomBeyondTileMaxZoom()
   fillSymbolLayer->setStrokeStyle( Qt::NoPen );
   QgsFillSymbol *fillSymbol = new QgsFillSymbol( QgsSymbolLayerList() << fillSymbolLayer );
 
-  QgsVectorTileBasicRendererStyle bgst( QStringLiteral( "background" ), QStringLiteral( "background" ), Qgis::GeometryType::Polygon );
+  QgsVectorTileBasicRendererStyle bgst( u"background"_s, u"background"_s, Qgis::GeometryType::Polygon );
   bgst.setSymbol( fillSymbol );
 
   QgsVectorTileBasicRenderer *rend = new QgsVectorTileBasicRenderer;
@@ -655,7 +669,7 @@ void TestQgsVectorTileLayer::test_styleMinZoomBeyondTileMaxZoom()
 
   mMapSettings->setExtent( QgsRectangle( -1180017, 4261973, 155871, 5474783 ) );
   mMapSettings->setDestinationCrs( layer->crs() );
-  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "render_test_style_min_zoom" ), QStringLiteral( "render_test_style_min_zoom" ), *mMapSettings, 0, 15 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( u"render_test_style_min_zoom"_s, u"render_test_style_min_zoom"_s, *mMapSettings, 0, 15 );
 }
 
 void TestQgsVectorTileLayer::test_filterRuleAllLayers()
@@ -677,8 +691,8 @@ void TestQgsVectorTileLayer::test_filterRuleAllLayers()
   lineSymbolLayer->setWidth( lineStrokeWidth );
   QgsLineSymbol *lineSymbol = new QgsLineSymbol( QgsSymbolLayerList() << lineSymbolLayer );
 
-  QgsVectorTileBasicRendererStyle st( QStringLiteral( "Lines" ), QString(), Qgis::GeometryType::Line );
-  st.setFilterExpression( QStringLiteral( "\"Name\"='Highway'" ) );
+  QgsVectorTileBasicRendererStyle st( u"Lines"_s, QString(), Qgis::GeometryType::Line );
+  st.setFilterExpression( u"\"Name\"='Highway'"_s );
   st.setSymbol( lineSymbol );
 
   QgsSimpleFillSymbolLayer *fillSymbolLayer = new QgsSimpleFillSymbolLayer;
@@ -686,7 +700,7 @@ void TestQgsVectorTileLayer::test_filterRuleAllLayers()
   fillSymbolLayer->setStrokeStyle( Qt::NoPen );
   QgsFillSymbol *fillSymbol = new QgsFillSymbol( QgsSymbolLayerList() << fillSymbolLayer );
 
-  QgsVectorTileBasicRendererStyle bgst( QStringLiteral( "background" ), QStringLiteral( "background" ), Qgis::GeometryType::Polygon );
+  QgsVectorTileBasicRendererStyle bgst( u"background"_s, u"background"_s, Qgis::GeometryType::Polygon );
   bgst.setSymbol( fillSymbol );
 
   QgsVectorTileBasicRenderer *rend = new QgsVectorTileBasicRenderer;
@@ -695,7 +709,36 @@ void TestQgsVectorTileLayer::test_filterRuleAllLayers()
 
   mMapSettings->setExtent( layer->extent() );
   mMapSettings->setDestinationCrs( layer->crs() );
-  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "render_test_filter_all_layers" ), QStringLiteral( "render_test_filter_all_layers" ), *mMapSettings, 0, 15 );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( u"render_test_filter_all_layers"_s, u"render_test_filter_all_layers"_s, *mMapSettings, 0, 15 );
+}
+
+void TestQgsVectorTileLayer::test_longIntAttributes()
+{
+  // test using a filter with field access for an "all layers" rule
+  QgsDataSourceUri ds;
+  ds.setParam( "type", "mbtiles" );
+  ds.setParam( "url", QString( "/%1/longint.mbtiles" ).arg( mDataDir ) );
+  auto layer = std::make_unique<QgsVectorTileLayer>( ds.encodedUri(), "Vector Tiles Test" );
+  QVERIFY( layer->isValid() );
+
+  const QgsVectorTileRawData tile0 = layer->getRawTile( QgsTileXYZ( 0, 0, 0 ) );
+  QgsVectorTileMVTDecoder decoder( QgsVectorTileMatrixSet::fromWebMercator() );
+  const bool resDecode0 = decoder.decode( tile0 );
+  QVERIFY( resDecode0 );
+  const QStringList fieldNamesLines = decoder.layerFieldNames( "lines" );
+  QCOMPARE( fieldNamesLines, QStringList() << "Name" << "Value" );
+
+  QgsFields fields;
+  fields.append( QgsField( "Value", QMetaType::Type::QString ) );
+  QMap<QString, QgsFields> perLayerFields;
+  perLayerFields["lines"] = fields;
+
+  QgsVectorTileFeatures features = decoder.layerFeatures( perLayerFields, QgsCoordinateTransform() );
+  QCOMPARE( features["lines"].count(), 1 );
+
+  QgsAttributes attrs = features["lines"][0].attributes();
+  QCOMPARE( attrs.count(), 1 );
+  QCOMPARE( attrs[0].toString(), "103097205262536" );
 }
 
 

@@ -20,6 +20,10 @@
 
 #include "qgsgeometrycheck.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup analysis
  * \brief A degenerate polygon check.
@@ -37,7 +41,7 @@ class ANALYSIS_EXPORT QgsGeometryDegeneratePolygonCheck : public QgsGeometryChec
     explicit QgsGeometryDegeneratePolygonCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
       : QgsGeometryCheck( context, configuration ) {}
 
-    void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
+    QgsGeometryCheck::Result collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
     void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
 
     QList<Qgis::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
@@ -49,7 +53,7 @@ class ANALYSIS_EXPORT QgsGeometryDegeneratePolygonCheck : public QgsGeometryChec
     static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() { return { Qgis::GeometryType::Polygon }; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
     static QString factoryDescription() { return tr( "Polygon with less than three nodes" ); }
-    static QString factoryId() { return QStringLiteral( "QgsGeometryDegeneratePolygonCheck" ); }
+    static QString factoryId() { return u"QgsGeometryDegeneratePolygonCheck"_s; }
     static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
 
   private:

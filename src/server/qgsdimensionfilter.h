@@ -20,8 +20,8 @@
 
 #define SIP_NO_FILE
 
-#include "qgsfeaturefilterprovider.h"
 #include "qgis_server.h"
+#include "qgsfeaturefilterprovider.h"
 
 #include <QHash>
 
@@ -40,6 +40,9 @@ class SERVER_EXPORT QgsDimensionFilter : public QgsFeatureFilterProvider
      */
     QgsDimensionFilter( const QHash<const QgsVectorLayer *, QStringList> dimensionFilter );
 
+    bool isFilterThreadSafe() const override { return false; }
+
+    using QgsFeatureFilterProvider::filterFeatures;
     void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const override;
     QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const override;
     QgsDimensionFilter *clone() const override;

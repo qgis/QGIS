@@ -11,20 +11,26 @@
  ***************************************************************************/
 
 #include "qgsdecorationnortharrowdialog.h"
-#include "moc_qgsdecorationnortharrowdialog.cpp"
+
+#include <cmath>
+
 #include "qgsdecorationnortharrow.h"
+#include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgsproject.h"
-#include "qgssymbollayerutils.h"
 #include "qgssvgcache.h"
 #include "qgssvgselectorwidget.h"
-#include "qgsgui.h"
+#include "qgssymbollayerutils.h"
 
-#include <QPainter>
-#include <cmath>
 #include <QDialogButtonBox>
+#include <QPainter>
 #include <QPushButton>
+#include <QString>
 #include <QSvgRenderer>
+
+#include "moc_qgsdecorationnortharrowdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow &deco, QWidget *parent )
   : QDialog( parent )
@@ -52,7 +58,7 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   spinAngle->setEnabled( !mDeco.mAutomatic );
   sliderRotation->setEnabled( !mDeco.mAutomatic );
 
-  connect( cboxAutomatic, &QAbstractButton::toggled, this, [=]( bool checked ) {
+  connect( cboxAutomatic, &QAbstractButton::toggled, this, [this]( bool checked ) {
     spinAngle->setEnabled( !checked );
     sliderRotation->setEnabled( !checked );
   } );
@@ -66,7 +72,7 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   cboPlacement->addItem( tr( "Bottom Left" ), QgsDecorationItem::BottomLeft );
   cboPlacement->addItem( tr( "Bottom Center" ), QgsDecorationItem::BottomCenter );
   cboPlacement->addItem( tr( "Bottom Right" ), QgsDecorationItem::BottomRight );
-  connect( cboPlacement, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( cboPlacement, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     spinHorizontal->setMinimum( cboPlacement->currentData() == QgsDecorationItem::TopCenter || cboPlacement->currentData() == QgsDecorationItem::BottomCenter ? -100 : 0 );
   } );
   cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );
@@ -87,7 +93,7 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
 
   mSvgPathLineEdit->setText( mDeco.mSvgPath );
   connect( mSvgPathLineEdit, &QLineEdit::textChanged, this, &QgsDecorationNorthArrowDialog::updateSvgPath );
-  connect( mSvgSelectorBtn, &QPushButton::clicked, this, [=] {
+  connect( mSvgSelectorBtn, &QPushButton::clicked, this, [this] {
     QgsSvgSelectorDialog svgDlg( this );
     svgDlg.setWindowTitle( tr( "Select SVG file" ) );
     svgDlg.svgSelector()->setSvgPath( mSvgPathLineEdit->text().trimmed() );
@@ -103,21 +109,21 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
 
   pbnChangeColor->setAllowOpacity( true );
   pbnChangeColor->setColor( mDeco.mColor );
-  pbnChangeColor->setContext( QStringLiteral( "gui" ) );
+  pbnChangeColor->setContext( u"gui"_s );
   pbnChangeColor->setColorDialogTitle( tr( "Select North Arrow Fill Color" ) );
   pbnChangeOutlineColor->setAllowOpacity( true );
   pbnChangeOutlineColor->setColor( mDeco.mOutlineColor );
-  pbnChangeOutlineColor->setContext( QStringLiteral( "gui" ) );
+  pbnChangeOutlineColor->setContext( u"gui"_s );
   pbnChangeOutlineColor->setColorDialogTitle( tr( "Select North Arrow Outline Color" ) );
-  connect( pbnChangeColor, &QgsColorButton::colorChanged, this, [=]( QColor ) { drawNorthArrow(); } );
-  connect( pbnChangeOutlineColor, &QgsColorButton::colorChanged, this, [=]( QColor ) { drawNorthArrow(); } );
+  connect( pbnChangeColor, &QgsColorButton::colorChanged, this, [this]( QColor ) { drawNorthArrow(); } );
+  connect( pbnChangeOutlineColor, &QgsColorButton::colorChanged, this, [this]( QColor ) { drawNorthArrow(); } );
 
   drawNorthArrow();
 }
 
 void QgsDecorationNorthArrowDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#northarrow-decoration" ) );
+  QgsHelp::openHelp( u"map_views/map_view.html#northarrow-decoration"_s );
 }
 
 void QgsDecorationNorthArrowDialog::buttonBox_accepted()
@@ -237,7 +243,7 @@ void QgsDecorationNorthArrowDialog::drawNorthArrow()
     myPainterPixmap.fill( Qt::transparent );
     QPainter myQPainter;
     myQPainter.begin( &myPainterPixmap );
-    const QFont myQFont( QStringLiteral( "time" ), 12, QFont::Bold );
+    const QFont myQFont( u"time"_s, 12, QFont::Bold );
     myQPainter.setFont( myQFont );
     myQPainter.setPen( Qt::red );
     myQPainter.drawText( 10, 20, tr( "Pixmap not found" ) );

@@ -922,8 +922,8 @@ class TestQgsVectorFileWriter(QgisTestCase):
         self.assertIn("ODS", [f.driverName for f in formats])
         self.assertIn("PGDUMP", [f.driverName for f in formats])
 
-        interlis_format = [f for f in formats if f.driverName == "Interlis 2"][0]
-        self.assertEqual(interlis_format.globs, ["*.xtf", "*.xml", "*.ili"])
+        pgdump_format = [f for f in formats if f.driverName == "PGDUMP"][0]
+        self.assertEqual(pgdump_format.globs, ["*.sql"])
 
         # alphabetical sorting
         formats2 = QgsVectorFileWriter.supportedFiltersAndFormats(
@@ -1017,8 +1017,6 @@ class TestQgsVectorFileWriter(QgisTestCase):
         self.assertEqual(formats[0], "gpkg")
         self.assertEqual(formats[1], "shp")
         self.assertIn("ods", formats)
-        self.assertIn("xtf", formats)
-        self.assertIn("ili", formats)
 
         for i in range(2, len(formats) - 1):
             self.assertLess(formats[i].lower(), formats[i + 1].lower())
@@ -2208,6 +2206,41 @@ class TestQgsVectorFileWriter(QgisTestCase):
                     source_fields.indexOf("FID"): layer_fields.lookupField("FID"),
                 },
             )
+
+    def test_write_gpkg_fid_not_first_writeAsVectorFormat(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            dest_file_name = (
+                Path(temp_dir)
+                / "test_write_gpkg_fid_not_first_writeAsVectorFormat.gpkg"
+            ).as_posix()
+
+            srcLayer = QgsVectorLayer(
+                "Point?crs=epsg:4326&field=FID_1:integer&field=FID_2:integer",
+                "NewLayer",
+                "Memory",
+            )
+            fet = QgsFeature()
+            fet.setAttributes([1, 100])
+            pr = srcLayer.dataProvider()
+            pr.addFeatures([fet])
+            opts = QgsVectorFileWriter.SaveVectorOptions()
+            opts.driverName = "GPKG"
+            opts.layerName = srcLayer.name()
+            opts.layerOptions = ["FID=FID_2"]
+            QgsVectorFileWriter.writeAsVectorFormatV3(
+                srcLayer,
+                dest_file_name,
+                QgsProject.instance().transformContext(),
+                opts,
+            )
+
+            layer = QgsVectorLayer(dest_file_name)
+            self.assertTrue(layer.isValid())
+            layer_fields = layer.fields()
+            self.assertEqual([f.name() for f in layer_fields], ["FID_2", "FID_1"])
+            features = [f for f in layer.getFeatures()]
+            self.assertEqual(features[0][0], 100)
+            self.assertEqual(features[0][1], 1)
 
     def test_write_shp_fid_first(self):
         with tempfile.TemporaryDirectory() as temp_dir:

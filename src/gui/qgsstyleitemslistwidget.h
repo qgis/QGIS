@@ -18,10 +18,11 @@
 
 #include "ui_qgsstyleitemslistwidgetbase.h"
 
-#include "qgsstylemodel.h"
-#include <QWidget>
-#include <QStyledItemDelegate>
 #include "qgis_gui.h"
+#include "qgsstylemodel.h"
+
+#include <QStyledItemDelegate>
+#include <QWidget>
 
 class QgsStyle;
 class QMenu;
@@ -200,7 +201,7 @@ class GUI_EXPORT QgsStyleItemsListWidget : public QWidget, private Ui::QgsStyleI
   private slots:
     void groupsCombo_currentIndexChanged( int index );
     void updateModelFilters();
-    void onSelectionChanged( const QModelIndex &index );
+    void onSelectionChanged( const QModelIndex &index, const QModelIndex &previous );
     void populateGroups();
     void openStyleManager();
 

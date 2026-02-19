@@ -17,26 +17,33 @@
 
 
 #include "qgstiledscenelayerrenderer.h"
+
+#include <memory>
+
+#include "qgsapplication.h"
+#include "qgscesiumutils.h"
 #include "qgscurve.h"
+#include "qgscurvepolygon.h"
+#include "qgsfeedback.h"
+#include "qgsgltfutils.h"
 #include "qgslogger.h"
+#include "qgsmapclippingutils.h"
 #include "qgsquantizedmeshtiles.h"
+#include "qgsrendercontext.h"
+#include "qgsruntimeprofiler.h"
+#include "qgstextrenderer.h"
+#include "qgsthreadingutils.h"
 #include "qgstiledsceneboundingvolume.h"
 #include "qgstiledscenelayer.h"
-#include "qgsfeedback.h"
-#include "qgsmapclippingutils.h"
-#include "qgsrendercontext.h"
+#include "qgstiledscenerenderer.h"
 #include "qgstiledscenerequest.h"
 #include "qgstiledscenetile.h"
-#include "qgstiledscenerenderer.h"
-#include "qgsgltfutils.h"
-#include "qgscesiumutils.h"
-#include "qgscurvepolygon.h"
-#include "qgstextrenderer.h"
-#include "qgsruntimeprofiler.h"
-#include "qgsapplication.h"
 
 #include <QMatrix4x4>
+#include <QString>
 #include <qglobal.h>
+
+using namespace Qt::StringLiterals;
 
 #define TINYGLTF_NO_STB_IMAGE         // we use QImage-based reading of images
 #define TINYGLTF_NO_STB_IMAGE_WRITE   // we don't need writing of images
@@ -59,6 +66,7 @@ QgsTiledSceneLayerRenderer::QgsTiledSceneLayerRenderer( QgsTiledSceneLayer *laye
   mRenderer.reset( layer->renderer()->clone() );
 
   mSceneCrs = layer->dataProvider()->sceneCrs();
+  mLayerCrs = layer->dataProvider()->crs();
 
   mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
   mLayerBoundingVolume = layer->dataProvider()->boundingVolume();
@@ -75,21 +83,23 @@ QgsTiledSceneLayerRenderer::~QgsTiledSceneLayerRenderer() = default;
 
 bool QgsTiledSceneLayerRenderer::render()
 {
+  QgsScopedThreadName threadName( u"render:%1"_s.arg( mLayerName ) );
+
   if ( !mIndex.isValid() )
     return false;
 
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( mEnableProfile )
   {
-    profile = std::make_unique< QgsScopedRuntimeProfile >( mLayerName, QStringLiteral( "rendering" ), layerId() );
+    profile = std::make_unique< QgsScopedRuntimeProfile >( mLayerName, u"rendering"_s, layerId() );
     if ( mPreparationTime > 0 )
-      QgsApplication::profiler()->record( QObject::tr( "Create renderer" ), mPreparationTime / 1000.0, QStringLiteral( "rendering" ) );
+      QgsApplication::profiler()->record( QObject::tr( "Create renderer" ), mPreparationTime / 1000.0, u"rendering"_s );
   }
 
   std::unique_ptr< QgsScopedRuntimeProfile > preparingProfile;
   if ( mEnableProfile )
   {
-    preparingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Preparing render" ), QStringLiteral( "rendering" ) );
+    preparingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Preparing render" ), u"rendering"_s );
   }
 
   QgsRenderContext *rc = renderContext();
@@ -119,7 +129,7 @@ bool QgsTiledSceneLayerRenderer::render()
   std::unique_ptr< QgsScopedRuntimeProfile > renderingProfile;
   if ( mEnableProfile )
   {
-    renderingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering" ), QStringLiteral( "rendering" ) );
+    renderingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering" ), u"rendering"_s );
   }
 
   const bool result = renderTiles( context );
@@ -151,23 +161,24 @@ QgsTiledSceneRequest QgsTiledSceneLayerRenderer::createBaseRequest()
 
   // calculate maximum screen error in METERS
   const double maximumErrorPixels = context->convertToPainterUnits( mRenderer->maximumScreenError(), mRenderer->maximumScreenErrorUnit() );
-  // calculate width in meters across the middle of the map
+  // calculate width in meters across one pixel in the middle of the map
   const double mapYCenter = 0.5 * ( mapExtent.yMinimum() + mapExtent.yMaximum() );
-  double mapWidthMeters = 0;
+  const double mapXCenter = 0.5 * ( mapExtent.xMinimum() + mapExtent.xMaximum() );
+  const double onePixelDistanceX = ( mapExtent.xMaximum() - mapExtent.xMinimum() ) / context->outputSize().width();
+  double mapMetersPerPixel = 0;
   try
   {
-    mapWidthMeters = context->distanceArea().measureLine(
-                       QgsPointXY( mapExtent.xMinimum(), mapYCenter ),
-                       QgsPointXY( mapExtent.xMaximum(), mapYCenter )
-                     );
+    mapMetersPerPixel = context->distanceArea().measureLine(
+                          QgsPointXY( mapXCenter, mapYCenter ),
+                          QgsPointXY( mapXCenter + onePixelDistanceX, mapYCenter )
+                        );
   }
   catch ( QgsCsException & )
   {
     // TODO report errors to user
-    QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+    QgsDebugError( u"An error occurred while calculating length"_s );
   }
 
-  const double mapMetersPerPixel = mapWidthMeters / context->outputSize().width();
   const double maximumErrorInMeters = maximumErrorPixels * mapMetersPerPixel;
 
   QgsTiledSceneRequest request;
@@ -375,14 +386,14 @@ void QgsTiledSceneLayerRenderer::renderTile( const QgsTiledSceneTile &tile, QgsT
     }
     catch ( QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "Error transforming bounding volume" ) );
+      QgsDebugError( u"Error transforming bounding volume"_s );
     }
   }
 }
 
 bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &tile, QgsTiledSceneRenderContext &context )
 {
-  const QString contentUri = tile.resources().value( QStringLiteral( "content" ) ).toString();
+  const QString contentUri = tile.resources().value( u"content"_s ).toString();
   if ( contentUri.isEmpty() )
     return false;
 
@@ -395,8 +406,8 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
   QgsVector3D centerOffset;
   mCurrentModelId++;
   // TODO: Somehow de-hardcode this switch?
-  const auto &format = tile.metadata().value( QStringLiteral( "contentFormat" ) ).value<QString>();
-  if ( format == QLatin1String( "quantizedmesh" ) )
+  const auto &format = tile.metadata().value( u"contentFormat"_s ).value<QString>();
+  if ( format == "quantizedmesh"_L1 )
   {
     try
     {
@@ -406,11 +417,11 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
     }
     catch ( QgsQuantizedMeshParsingException &ex )
     {
-      QgsDebugError( QStringLiteral( "Failed to parse tile from '%1'" ).arg( contentUri ) );
+      QgsDebugError( u"Failed to parse tile from '%1'"_s.arg( contentUri ) );
       return false;
     }
   }
-  else if ( format == QLatin1String( "cesiumtiles" ) )
+  else if ( format == "cesiumtiles"_L1 )
   {
     const QgsCesiumUtils::TileContents content = QgsCesiumUtils::extractGltfFromTileContent( tileContent );
     if ( content.gltf.isEmpty() )
@@ -427,15 +438,30 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
     {
       if ( !mErrors.contains( gltfErrors ) )
         mErrors.append( gltfErrors );
-      QgsDebugError( QStringLiteral( "Error raised reading %1: %2" )
+      QgsDebugError( u"Error raised reading %1: %2"_s
                      .arg( contentUri, gltfErrors ) );
     }
     if ( !gltfWarnings.isEmpty() )
     {
-      QgsDebugError( QStringLiteral( "Warnings raised reading %1: %2" )
+      QgsDebugError( u"Warnings raised reading %1: %2"_s
                      .arg( contentUri, gltfWarnings ) );
     }
     if ( !res ) return false;
+  }
+  else if ( format == "draco"_L1 )
+  {
+    QgsGltfUtils::I3SNodeContext i3sContext;
+    i3sContext.initFromTile( tile, mLayerCrs, mSceneCrs, context.renderContext().transformContext() );
+
+    QString errors;
+    if ( !QgsGltfUtils::loadDracoModel( tileContent, i3sContext, model, &errors ) )
+    {
+      if ( !mErrors.contains( errors ) )
+        mErrors.append( errors );
+      QgsDebugError( u"Error raised reading %1: %2"_s
+                     .arg( contentUri, errors ) );
+      return false;
+    }
   }
   else
     return false;
@@ -445,7 +471,7 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
     QgsGltfUtils::extractTileTranslation(
       model,
       static_cast<Qgis::Axis>( tile.metadata()
-                               .value( QStringLiteral( "gltfUpAxis" ),
+                               .value( u"gltfUpAxis"_s,
                                        static_cast<int>( Qgis::Axis::Y ) )
                                .toInt() ) );
 
@@ -457,7 +483,7 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
     const QString error = QObject::tr( "No scenes found in model" );
     mErrors.append( error );
     QgsDebugError(
-      QStringLiteral( "Error raised reading %1: %2" ).arg( contentUri, error ) );
+      u"Error raised reading %1: %2"_s.arg( contentUri, error ) );
   }
   else
   {
@@ -475,7 +501,7 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
           *gltfLocalTransform = parentTransform * *gltfLocalTransform;
         else
         {
-          gltfLocalTransform.reset( new QMatrix4x4( parentTransform ) );
+          gltfLocalTransform = std::make_unique<QMatrix4x4>( parentTransform );
         }
       }
 
@@ -588,7 +614,7 @@ void QgsTiledSceneLayerRenderer::renderTrianglePrimitive( const tinygltf::Model 
     &mSceneToMapTransform,
     tileTranslationEcef,
     gltfLocalTransform,
-    static_cast< Qgis::Axis >( tile.metadata().value( QStringLiteral( "gltfUpAxis" ), static_cast< int >( Qgis::Axis::Y ) ).toInt() ),
+    static_cast< Qgis::Axis >( tile.metadata().value( u"gltfUpAxis"_s, static_cast< int >( Qgis::Axis::Y ) ).toInt() ),
     x, y, z
   );
 
@@ -844,7 +870,7 @@ void QgsTiledSceneLayerRenderer::renderLinePrimitive( const tinygltf::Model &mod
     &mSceneToMapTransform,
     tileTranslationEcef,
     gltfLocalTransform,
-    static_cast< Qgis::Axis >( tile.metadata().value( QStringLiteral( "gltfUpAxis" ), static_cast< int >( Qgis::Axis::Y ) ).toInt() ),
+    static_cast< Qgis::Axis >( tile.metadata().value( u"gltfUpAxis"_s, static_cast< int >( Qgis::Axis::Y ) ).toInt() ),
     x, y, z
   );
 

@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsReportSectionLayout : QgsAbstractReportSection
 {
 %Docstring(signature="appended")

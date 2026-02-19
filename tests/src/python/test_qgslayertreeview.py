@@ -22,7 +22,11 @@ from qgis.core import (
     QgsMarkerSymbol,
     QgsMapLayerLegend,
 )
-from qgis.gui import QgsLayerTreeView, QgsLayerTreeViewDefaultActions
+from qgis.gui import (
+    QgsLayerTreeView,
+    QgsLayerTreeViewDefaultActions,
+    QgsLayerTreeProxyModel,
+)
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
@@ -635,6 +639,78 @@ class TestQgsLayerTreeView(QgisTestCase):
             self.project.layerTreeRoot().findLayer(self.layer2).itemVisibilityChecked()
         )
 
+    def testRemoveGroupPromoteChildren(self):
+        """Test remove group, promote children action"""
+
+        root = self.project.layerTreeRoot().clone()
+        self.assertEqual([c.name() for c in root], ["layer1", "layer2", "layer3"])
+
+        group = root.addGroup("group 1")
+        layer4 = QgsVectorLayer("Point?field=fldtxt:string", "layer4", "memory")
+        layer5 = QgsVectorLayer("Point?field=fldtxt:string", "layer5", "memory")
+        group.addLayer(layer4)
+        group.addLayer(layer5)
+        self.assertEqual(
+            [c.name() for c in root], ["layer1", "layer2", "layer3", "group 1"]
+        )
+
+        group2 = root.addGroup("group 2")
+        layer6 = QgsVectorLayer("Point?field=fldtxt:string", "layer6", "memory")
+        layer7 = QgsVectorLayer("Point?field=fldtxt:string", "layer7", "memory")
+        group2.addLayer(layer6)
+        group2.addLayer(layer7)
+
+        group3 = group2.addGroup("group 3")
+        layer8 = QgsVectorLayer("Point?field=fldtxt:string", "layer8", "memory")
+        group3.addLayer(layer8)
+
+        model = QgsLayerTreeModel(root)
+
+        view = QgsLayerTreeView()
+        view.setModel(model)
+
+        actions = QgsLayerTreeViewDefaultActions(view)
+
+        remove_group_promote_children_action = actions.actionRemoveGroupPromoteLayers(
+            view
+        )
+
+        self.assertEqual([c.name() for c in group2], ["layer6", "layer7", "group 3"])
+
+        view.setCurrentNode(group3)
+        remove_group_promote_children_action.trigger()
+
+        self.assertEqual([c.name() for c in group2], ["layer6", "layer7", "layer8"])
+
+        self.assertEqual(
+            [c.name() for c in root],
+            ["layer1", "layer2", "layer3", "group 1", "group 2"],
+        )
+        self.assertEqual([c.name() for c in group], ["layer4", "layer5"])
+
+        view.setCurrentNode(group)
+        remove_group_promote_children_action.trigger()
+
+        self.assertEqual(
+            [c.name() for c in root],
+            ["layer1", "layer2", "layer3", "layer4", "layer5", "group 2"],
+        )
+
+        # no crash
+        view.setCurrentNode(None)
+        remove_group_promote_children_action.trigger()
+        self.assertEqual(
+            [c.name() for c in root],
+            ["layer1", "layer2", "layer3", "layer4", "layer5", "group 2"],
+        )
+
+        view.setCurrentNode(root)
+        remove_group_promote_children_action.trigger()
+        self.assertEqual(
+            [c.name() for c in root],
+            ["layer1", "layer2", "layer3", "layer4", "layer5", "group 2"],
+        )
+
     def testProxyModel(self):
         """Test proxy model filtering and private layers"""
 
@@ -813,6 +889,24 @@ class TestQgsLayerTreeView(QgisTestCase):
         self.assertCountEqual(
             view.selectedLegendNodes(), [legend_nodes[0], legend_nodes[2]]
         )
+
+    def test_set_model_and_proxy(self):
+        root = QgsLayerTree()
+        model = QgsLayerTreeModel(root)
+        view = QgsLayerTreeView()
+
+        view.setModel(model)
+        self.assertEqual(view.layerTreeModel(), model)
+        # a proxy should have been auto-created
+        self.assertIsInstance(view.model(), QgsLayerTreeProxyModel)
+
+        # set an explicit proxy
+        root2 = QgsLayerTree()
+        model2 = QgsLayerTreeModel(root2)
+        my_proxy = QgsLayerTreeProxyModel(model2, None)
+        view.setModel(model2, my_proxy)
+        self.assertEqual(view.layerTreeModel(), model2)
+        self.assertEqual(view.model(), my_proxy)
 
 
 if __name__ == "__main__":

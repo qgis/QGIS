@@ -11,6 +11,7 @@
 
 
 
+
 class QgsLayerTreeNode : QObject
 {
 %Docstring(signature="appended")
@@ -65,6 +66,8 @@ Custom properties that have already been used within QGIS:
 .. seealso:: :py:class:`QgsLayerTreeLayer`
 
 .. seealso:: :py:class:`QgsLayerTreeGroup`
+
+.. seealso:: :py:class:`QgsLayerTreeCustomNode`
 %End
 
 %TypeHeaderCode
@@ -81,6 +84,8 @@ Custom properties that have already been used within QGIS:
         sipType = sipType_QgsLayerTree;
       else if ( QgsLayerTree::isGroup( node ) )
         sipType = sipType_QgsLayerTreeGroup;
+      else if ( QgsLayerTree::isCustomNode( node ) )
+        sipType = sipType_QgsLayerTreeCustomNode;
     }
     else
       sipType = 0;
@@ -90,7 +95,8 @@ Custom properties that have already been used within QGIS:
     enum NodeType
     {
       NodeGroup,
-      NodeLayer
+      NodeLayer,
+      NodeCustom
     };
 
     ~QgsLayerTreeNode();
@@ -99,6 +105,39 @@ Custom properties that have already been used within QGIS:
 %MethodCode
     QString str = QStringLiteral( "<QgsLayerTreeNode: %1>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    int __len__() const;
+%Docstring
+Returns the number of children contained in the node.
+
+.. versionadded:: 4.0
+%End
+%MethodCode
+    sipRes = sipCpp->children().count();
+%End
+
+    SIP_PYOBJECT __getitem__( int index ) /TypeHint="QgsLayerTreeNode"/;
+%Docstring
+Returns the child node at the specified ``index``.
+
+:raises IndexError: if no child with the specified ``index`` exists.
+
+.. versionadded:: 4.0
+%End
+%MethodCode
+    const QList< QgsLayerTreeNode * > children = sipCpp->children();
+    const int count = children.count();
+    if ( a0 < 0 || a0 >= count )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      QgsLayerTreeNode *child = children.at( a0 );
+      sipRes = sipConvertFromType( child, sipType_QgsLayerTreeNode, NULL );
+    }
 %End
 
     NodeType nodeType() const;

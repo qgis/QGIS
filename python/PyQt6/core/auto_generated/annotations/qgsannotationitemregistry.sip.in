@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsAnnotationItemAbstractMetadata
 {
 %Docstring(signature="appended")

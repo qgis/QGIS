@@ -18,16 +18,14 @@
 #ifndef QGSEPTPOINTCLOUDINDEX_H
 #define QGSEPTPOINTCLOUDINDEX_H
 
-#include <QString>
+#include "qgspointcloudindex.h"
+
+#include <QFile>
 #include <QHash>
+#include <QList>
+#include <QString>
 #include <QStringList>
 #include <QVector>
-#include <QList>
-#include <QFile>
-
-#include "qgspointcloudindex.h"
-#include "qgis_sip.h"
-#include "qgsvector3d.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -39,9 +37,9 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsAbstractPointCloudIndex
   public:
 
     explicit QgsEptPointCloudIndex();
-    ~QgsEptPointCloudIndex();
+    ~QgsEptPointCloudIndex() override;
 
-    void load( const QString &fileName ) override;
+    void load( const QString &urlString, const QString &authcfg = QString() ) override;
 
     std::unique_ptr<QgsPointCloudBlock> nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) override;
     QgsPointCloudBlockRequest *asyncNodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) override;

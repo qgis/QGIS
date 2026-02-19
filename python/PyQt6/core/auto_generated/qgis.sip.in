@@ -11,6 +11,8 @@
 
 
 
+
+
 %ModuleHeaderCode
 #include <qgis.h>
 %End
@@ -121,6 +123,14 @@ The development version
       NoLevel,
     };
 
+    enum class NetworkRequestFlag /BaseType=IntFlag/
+    {
+      DisableMessageLogging,
+    };
+
+    typedef QFlags<Qgis::NetworkRequestFlag> NetworkRequestFlags;
+
+
     enum class LayerType /BaseType=IntEnum/
       {
       Vector,
@@ -182,6 +192,7 @@ The development version
       MultiSurface,
       PolyhedralSurface,
       TIN,
+      NurbsCurve,
       NoGeometry,
       PointZ,
       LineStringZ,
@@ -198,6 +209,7 @@ The development version
       MultiSurfaceZ,
       PolyhedralSurfaceZ,
       TINZ,
+      NurbsCurveZ,
       PointM,
       LineStringM,
       PolygonM,
@@ -213,6 +225,7 @@ The development version
       MultiSurfaceM,
       PolyhedralSurfaceM,
       TINM,
+      NurbsCurveM,
       PointZM,
       LineStringZM,
       PolygonZM,
@@ -228,6 +241,7 @@ The development version
       PolyhedralSurfaceZM,
       TINZM,
       TriangleZM,
+      NurbsCurveZM,
       Point25D,
       LineString25D,
       Polygon25D,
@@ -270,6 +284,12 @@ The development version
       CircularString,
       Streaming,
       Shape,
+      NurbsCurve,
+    };
+
+    enum class NurbsMode /BaseType=IntEnum/
+    {
+      ControlPoints,
     };
 
     enum class VectorLayerTypeFlag /BaseType=IntFlag/
@@ -279,19 +299,29 @@ The development version
     typedef QFlags<Qgis::VectorLayerTypeFlag> VectorLayerTypeFlags;
 
 
-    enum class PythonEmbeddedMode /BaseType=IntEnum/
+    enum class EmbeddedScriptMode /BaseType=IntEnum/
       {
       Never,
       Ask,
       SessionOnly,
       Always,
       NotForThisSession,
+      NeverAsk,
     };
 
-    enum class PythonEmbeddedType /BaseType=IntEnum/
+    enum class EmbeddedScriptType /BaseType=IntEnum/
     {
       Macro,
       ExpressionFunction,
+      Action,
+      FormInitCode,
+    };
+
+    enum class ProjectTrustStatus /BaseType=IntEnum/
+    {
+      Undetermined,
+      Trusted,
+      Untrusted,
     };
 
     enum class DataProviderReadFlag /BaseType=IntFlag/
@@ -702,6 +732,12 @@ The development version
       AllowOverlapAtNoCost,
     };
 
+    enum class LabelWhitespaceCollisionHandling /BaseType=IntEnum/
+    {
+      TreatWhitespaceAsCollision,
+      IgnoreWhitespaceCollisions,
+    };
+
     enum class LabelPrioritization /BaseType=IntEnum/
     {
       PreferCloser,
@@ -721,6 +757,14 @@ The development version
       OutsidePolygons,
     };
 
+    enum class CurvedLabelMode /BaseType=IntEnum/
+    {
+      Default,
+      PlaceCharactersAtVertices,
+      StretchCharacterSpacingToFitLine,
+      StretchWordSpacingToFitLine,
+    };
+
     enum class LabelPredefinedPointPosition /BaseType=IntEnum/
       {
       TopLeft,
@@ -736,6 +780,13 @@ The development version
       BottomSlightlyRight,
       BottomRight,
       OverPoint,
+    };
+
+    enum class MultiPartLabelingBehavior /BaseType=IntEnum/
+    {
+      LabelLargestPartOnly,
+      LabelEveryPartWithEntireLabel,
+      SplitLabelTextLinesOverParts,
     };
 
     enum class LabelOffsetType /BaseType=IntEnum/
@@ -819,6 +870,7 @@ The development version
       ResolveGeometryType,
       CountFeatures,
       IncludeSystemTables,
+      OpenLayersToResolveDescriptions,
     };
     typedef QFlags<Qgis::SublayerQueryFlag> SublayerQueryFlags;
 
@@ -1233,6 +1285,13 @@ The development version
       Bevel,
     };
 
+    enum class JoinStyle3D /BaseType=IntEnum/
+    {
+      Round,
+      Flat,
+      CylindersAndSpheres,
+    };
+
     enum class GeosCreationFlag /BaseType=IntFlag/
     {
       RejectOnInvalidSubGeometry,
@@ -1617,6 +1676,14 @@ The development version
     typedef QFlags<Qgis::MapLayerRendererFlag> MapLayerRendererFlags;
 
 
+    enum class PaintEffectFlag /BaseType=IntFlag/
+    {
+      RequiresRasterization,
+    };
+
+    typedef QFlags<Qgis::PaintEffectFlag> PaintEffectFlags;
+
+
 
     enum class TextRenderFormat /BaseType=IntEnum/
       {
@@ -1629,7 +1696,7 @@ The development version
     {
       UseAllLabels,
       UsePartialCandidates,
-      // TODO QGIS 4.0: remove
+      // TODO QGIS 5.0: remove
       RenderOutlineLabels,
       DrawLabelRectOnly,
       DrawCandidates,
@@ -1696,6 +1763,17 @@ The development version
       SubScript,
     };
 
+    enum class CurvedTextFlag /BaseType=IntFlag/
+    {
+      TruncateStringWhenLineIsTooShort,
+      UseBaselinePlacement,
+      UprightCharactersOnly,
+      ExtendLineToFitText,
+    };
+
+    typedef QFlags<Qgis::CurvedTextFlag> CurvedTextFlags;
+
+
     enum class VectorSimplificationAlgorithm /BaseType=IntEnum/
       {
       Distance,
@@ -1723,10 +1801,17 @@ The development version
       GlowSpread,
     };
 
+    enum class SelectiveMaskSourceType /BaseType=IntEnum/
+    {
+      SymbolLayer,
+      Label,
+    };
+
     enum class VertexType /BaseType=IntEnum/
       {
       Segment,
       Curve,
+      ControlPoint,
     };
 
     enum class MarkerShape /BaseType=IntEnum/
@@ -1877,6 +1962,20 @@ The development version
       FirstAndLastLabels,
     };
 
+
+    enum class PlotAxisType
+    {
+      Interval,
+      Categorical,
+    };
+
+    enum class PieChartLabelType /BaseType=IntEnum/
+    {
+      NoLabels,
+      Categories,
+      Values,
+    };
+
     enum class DpiMode
     {
       All,
@@ -1984,7 +2083,8 @@ The development version
       Plugin,
       PointCloud,
       Annotation,
-      VectorTile
+      VectorTile,
+      TiledScene
     };
 
 
@@ -2024,6 +2124,7 @@ The development version
     {
       RegeneratesPrimaryKey,
       RegeneratesPrimaryKeyInSomeScenarios,
+      RespectsEllipsoid,
     };
 
     typedef QFlags<Qgis::ProcessingAlgorithmDocumentationFlag> ProcessingAlgorithmDocumentationFlags;
@@ -2247,6 +2348,12 @@ The development version
       MValue,
     };
 
+    enum class CadMeasurementDisplayType /BaseType=IntEnum/
+    {
+      Hidden,
+      Cartesian,
+      Ellipsoidal,
+    };
 
     enum class ProjectFlag /BaseType=IntFlag/
     {
@@ -2316,6 +2423,12 @@ The development version
     {
       IndividualFeatures,
       ContinuousSurface,
+    };
+
+    enum class PointCloudProfileType /BaseType=IntEnum/
+    {
+      IndividualPoints,
+      TriangulatedSurface,
     };
 
     enum class ProfileGeneratorFlag /BaseType=IntFlag/
@@ -2403,6 +2516,7 @@ The development version
       GPServer,
       GeocodeServer,
       Unknown,
+      SceneServer,
     };
 
     enum class RelationshipType /BaseType=IntEnum/
@@ -2489,6 +2603,14 @@ The development version
     typedef QFlags<Qgis::LayerTreeFilterFlag> LayerTreeFilterFlags;
 
 
+    enum class MapLayerLegendFlag /BaseType=IntFlag/
+    {
+      ExcludeByDefault,
+    };
+
+    typedef QFlags<Qgis::MapLayerLegendFlag> MapLayerLegendFlags;
+
+
     enum class LegendComponent /BaseType=IntEnum/
       {
       Undefined,
@@ -2498,6 +2620,13 @@ The development version
       Subgroup,
       Symbol,
       SymbolLabel,
+    };
+
+    enum class LegendSyncMode /BaseType=IntEnum/
+    {
+      AllProjectLayers,
+      VisibleLayers,
+      Manual,
     };
 
     enum class LegendJsonRenderFlag /BaseType=IntFlag/
@@ -2904,6 +3033,7 @@ The development version
       LosslessImageRendering,
       SynchronousLegendGraphics,
       AlwaysUseGlobalMasks,
+      LimitCoverageLayerRenderToCurrentFeature,
     };
 
     typedef QFlags<Qgis::LayoutRenderFlag> LayoutRenderFlags;
@@ -2950,6 +3080,105 @@ The development version
       CenteredSegment,
     };
 
+
+    enum class MapGridUnit /BaseType=IntEnum/
+      {
+      MapUnits,
+      Millimeters,
+      Centimeters,
+      DynamicPageSizeBased,
+    };
+
+    enum class MapGridStyle /BaseType=IntEnum/
+      {
+      Lines,
+      LineCrosses,
+      Markers,
+      FrameAndAnnotationsOnly
+    };
+
+    enum class MapGridComponentVisibility /BaseType=IntEnum/
+      {
+      ShowAll,
+      LatitudeOnly,
+      LongitudeOnly,
+      HideAll
+    };
+
+    enum class MapGridAnnotationPosition /BaseType=IntEnum/
+      {
+      InsideMapFrame,
+      OutsideMapFrame,
+    };
+
+    enum class MapGridAnnotationDirection /BaseType=IntEnum/
+      {
+      Horizontal,
+      Vertical,
+      VerticalDescending,
+      BoundaryDirection,
+      AboveTick,
+      OnTick,
+      UnderTick,
+    };
+
+    enum class MapGridAnnotationFormat /BaseType=IntEnum/
+      {
+      Decimal,
+      DegreeMinute,
+      DegreeMinuteSecond,
+      DecimalWithSuffix,
+      DegreeMinuteNoSuffix,
+      DegreeMinutePadded,
+      DegreeMinuteSecondNoSuffix,
+      DegreeMinuteSecondPadded,
+      CustomFormat
+    };
+
+    enum class MapGridBorderSide /BaseType=IntEnum/
+      {
+      Left,
+      Right,
+      Bottom,
+      Top,
+    };
+
+    enum class MapGridFrameStyle /BaseType=IntEnum/
+      {
+      NoFrame,
+      Zebra,
+      InteriorTicks,
+      ExteriorTicks,
+      InteriorExteriorTicks,
+      LineBorder,
+      LineBorderNautical,
+      ZebraNautical,
+    };
+
+    enum class MapGridTickLengthMode /BaseType=IntEnum/
+      {
+      OrthogonalTicks,
+      NormalizedTicks,
+    };
+
+
+    enum class MapGridFrameSideFlag /BaseType=IntFlag/
+    {
+      Left,
+      Right,
+      Top,
+      Bottom
+    };
+
+    typedef QFlags<Qgis::MapGridFrameSideFlag> MapGridFrameSideFlags;
+
+
+    enum class MapGridAnnotationType /BaseType=IntEnum/
+      {
+      Longitude,
+      Latitude
+    };
+
     enum class InputControllerType /BaseType=IntEnum/
     {
       Map2D,
@@ -2976,6 +3205,8 @@ The development version
       SetFieldComment,
       SetFieldAlias,
       SetTableComment,
+      EditFieldDomain,
+      DeleteFieldDomain,
     };
     typedef QFlags<Qgis::DatabaseProviderConnectionCapability2> DatabaseProviderConnectionCapabilities2;
 
@@ -3044,6 +3275,13 @@ The development version
       File,
       Dialog,
       Environment
+    };
+
+    enum class AttributeFormReuseLastValuePolicy /BaseType=IntEnum/
+    {
+      NotAllowed,
+      AllowedDefaultOn,
+      AllowedDefaultOff,
     };
 
     enum class ExpressionType
@@ -3338,6 +3576,10 @@ The development version
       ResizeRightUp,
       ResizeLeftDown,
       ResizeRightDown,
+      RotateTopLeft,
+      RotateTopRight,
+      RotateBottomLeft,
+      RotateBottomRight,
       SelectItem,
       NoAction
     };
@@ -3374,6 +3616,49 @@ The development version
       Adaptive,
       AreaError,
       ConstantDensity
+    };
+
+    enum class StacObjectType /BaseType=IntEnum/
+    {
+      Unknown,
+      Catalog,
+      Collection,
+      Item,
+    };
+
+    enum class RasterProcessingParameterCapability /BaseType=IntFlag/
+    {
+      WmsScale,
+      WmsDpi,
+    };
+
+    typedef QFlags<Qgis::RasterProcessingParameterCapability> RasterProcessingParameterCapabilities;
+
+
+    enum class DevToolsNodeRole
+    {
+      Status,
+      Id,
+      ElapsedTime,
+      MaximumTime,
+      Sort,
+    };
+
+    enum class ExtrusionFace /BaseType=IntFlag/
+    {
+      NoFace,
+      Walls,
+      Roof,
+      Floor
+    };
+
+    typedef QFlags<Qgis::ExtrusionFace> ExtrusionFaces;
+
+
+    enum class TriangulationAlgorithm /BaseType=IntFlag/
+    {
+      ConstrainedDelaunay,
+      Earcut
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -3450,6 +3735,50 @@ GEOS string version linked
 .. versionadded:: 3.20
 %End
 
+    static bool hasSfcgal();
+%Docstring
+Returns ``True`` if the QGIS build contains SFCGAL.
+
+.. versionadded:: 4.0
+%End
+
+    static int sfcgalVersionInt();
+%Docstring
+Returns the version of the SFCGAL library if QGIS is built with SFCGAL.
+Else throws an exception.
+
+:raises QgsNotSupportedException: on QGIS builds based without SFCGAL.
+
+.. versionadded:: 4.0
+%End
+
+    static bool hasGeographicLib();
+%Docstring
+Returns ``True`` if the QGIS build contains GeographicLib.
+
+.. versionadded:: 4.0
+%End
+
+    static int geographicLibVersion();
+%Docstring
+Returns the version of the GeographicLib library if QGIS is built with
+GeographicLib support.
+
+:raises QgsNotSupportedException: on QGIS builds based without
+                                  GeographicLib.
+
+.. versionadded:: 4.0
+%End
+
+ static bool hasQtWebkit();
+%Docstring
+Returns ``False``.
+
+.. deprecated:: 4.0
+
+   WebKit-Support was removed.
+%End
+
     static QString geoNone();
 %Docstring
 Constant that holds the string representation for "No ellipse/No CRS".
@@ -3471,7 +3800,7 @@ WKT string that represents a geographic coord system
 
 .. deprecated:: 3.44
 
-   Will be removed in QGIS 4.0.
+   Will be removed in QGIS 5.0.
 %End
 
  static QString geoProj4();
@@ -3480,11 +3809,13 @@ PROJ4 string that represents a geographic coord system.
 
 .. deprecated:: 3.44
 
-   Will be removed in QGIS 4.0.
+   Will be removed in QGIS 5.0.
 %End
 
 };
 
+
+QFlags<Qgis::NetworkRequestFlag> operator|(Qgis::NetworkRequestFlag f1, QFlags<Qgis::NetworkRequestFlag> f2);
 
 QFlags<Qgis::AnnotationItemFlag> operator|(Qgis::AnnotationItemFlag f1, QFlags<Qgis::AnnotationItemFlag> f2);
 
@@ -3584,6 +3915,8 @@ QFlags<Qgis::SymbolPreviewFlag> operator|(Qgis::SymbolPreviewFlag f1, QFlags<Qgi
 
 QFlags<Qgis::SymbolRenderHint> operator|(Qgis::SymbolRenderHint f1, QFlags<Qgis::SymbolRenderHint> f2);
 
+QFlags<Qgis::PaintEffectFlag> operator|(Qgis::PaintEffectFlag f1, QFlags<Qgis::PaintEffectFlag> f2);
+
 QFlags<Qgis::TextComponent> operator|(Qgis::TextComponent f1, QFlags<Qgis::TextComponent> f2);
 
 QFlags<Qgis::TextRendererFlag> operator|(Qgis::TextRendererFlag f1, QFlags<Qgis::TextRendererFlag> f2);
@@ -3628,6 +3961,8 @@ QFlags<Qgis::RasterInterfaceCapability> operator|(Qgis::RasterInterfaceCapabilit
 
 QFlags<Qgis::RasterProviderCapability> operator|(Qgis::RasterProviderCapability f1, QFlags<Qgis::RasterProviderCapability> f2);
 
+QFlags<Qgis::RasterProcessingParameterCapability> operator|(Qgis::RasterProcessingParameterCapability f1, QFlags<Qgis::RasterProcessingParameterCapability> f2);
+
 QFlags<Qgis::ProcessingProviderFlag> operator|(Qgis::ProcessingProviderFlag f1, QFlags<Qgis::ProcessingProviderFlag> f2);
 
 QFlags<Qgis::ProcessingAlgorithmFlag> operator|(Qgis::ProcessingAlgorithmFlag f1, QFlags<Qgis::ProcessingAlgorithmFlag> f2);
@@ -3651,6 +3986,14 @@ QFlags<Qgis::VectorProviderCapability> operator|(Qgis::VectorProviderCapability 
 QFlags<Qgis::MapCanvasFlag> operator|(Qgis::MapCanvasFlag f1, QFlags<Qgis::MapCanvasFlag> f2);
 
 QFlags<Qgis::LayoutRenderFlag> operator|(Qgis::LayoutRenderFlag f1, QFlags<Qgis::LayoutRenderFlag> f2);
+
+QFlags<Qgis::MapLayerLegendFlag> operator|(Qgis::MapLayerLegendFlag f1, QFlags<Qgis::MapLayerLegendFlag> f2);
+
+QFlags<Qgis::CurvedTextFlag> operator|(Qgis::CurvedTextFlag f1, QFlags<Qgis::CurvedTextFlag> f2);
+
+QFlags<Qgis::ExtrusionFace> operator|(Qgis::ExtrusionFace f1, QFlags<Qgis::ExtrusionFace> f2);
+
+QFlags<Qgis::MapGridFrameSideFlag> operator|(Qgis::MapGridFrameSideFlag f1, QFlags<Qgis::MapGridFrameSideFlag> f2);
 
 
 
@@ -3759,7 +4102,7 @@ for incorrect numbers of digits between thousand separators
 .. versionadded:: 3.4
 %End
 
-int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs );
+int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs, bool strictTypeCheck = false );
 %Docstring
 Compares two QVariant values.
 
@@ -3770,6 +4113,10 @@ various QVariant data types (such as strings, numeric values, dates and
 times)
 
 Invalid < NULL < Values
+
+Since QGIS 4.0 the ``strictTypeCheck`` argument can be used to specify
+that variants of different types should be compared using their userType
+ID only, and not attempt to check the actual variant value.
 
 .. seealso:: :py:func:`qgsVariantLessThan`
 
@@ -3816,13 +4163,9 @@ numeric values, dates and times)
 .. seealso:: :py:func:`qgsVariantCompare`
 %End
 
-
 bool operator> ( const QVariant &v1, const QVariant &v2 );
 
 bool operator< ( const QVariant &v1, const QVariant &v2 );
-
-
-
 
  QString qgsVsiPrefix( const QString &path ) /Deprecated="Since 3.44. Use QgsGdalUtils.vsiPrefixForPath() instead."/;
 %Docstring
@@ -3845,9 +4188,6 @@ empty string if the path is not associated with a vsi prefix.
 
 
 typedef unsigned long long qgssize;
-
-
-
 
 
 

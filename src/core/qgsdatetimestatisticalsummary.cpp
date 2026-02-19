@@ -14,14 +14,17 @@
  ***************************************************************************/
 
 #include "qgsdatetimestatisticalsummary.h"
+
+#include <limits>
+
 #include "qgsvariantutils.h"
-#include <QString>
+
 #include <QDateTime>
-#include <QStringList>
 #include <QObject>
+#include <QString>
+#include <QStringList>
 #include <QVariant>
 #include <QVariantList>
-#include <limits>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -142,11 +145,7 @@ QVariant QgsDateTimeStatisticalSummary::statistic( Qgis::DateTimeStatistic stat 
     case Qgis::DateTimeStatistic::Max:
       return mIsTimes ? QVariant( mMax.time() ) : QVariant( mMax );
     case Qgis::DateTimeStatistic::Range:
-#if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
-      return mIsTimes ? QVariant::fromValue( mMax.time() - mMin.time() ) : QVariant::fromValue( mMax - mMin );
-#else
       return mIsTimes ? QVariant::fromValue( mMax.time() - mMin.time() ) : QVariant::fromValue( QgsInterval( static_cast< double >( ( mMax - mMin ).count() ) / 1000.0 ) );
-#endif
     case Qgis::DateTimeStatistic::All:
       return 0;
   }
@@ -155,11 +154,7 @@ QVariant QgsDateTimeStatisticalSummary::statistic( Qgis::DateTimeStatistic stat 
 
 QgsInterval QgsDateTimeStatisticalSummary::range() const
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
-  return mMax - mMin;
-#else
   return QgsInterval( static_cast< double >( ( mMax - mMin ).count() ) / 1000.0 );
-#endif
 }
 
 QString QgsDateTimeStatisticalSummary::displayName( Qgis::DateTimeStatistic statistic )

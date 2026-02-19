@@ -16,12 +16,16 @@
  ***************************************************************************/
 
 #include "qgsgpxsourceselect.h"
-#include "moc_qgsgpxsourceselect.cpp"
-#include "qgsproviderregistry.h"
+
 #include "qgshelp.h"
+#include "qgsproviderregistry.h"
 
 #include <QMessageBox>
+#include <QString>
 
+#include "moc_qgsgpxsourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGpxSourceSelect::QgsGpxSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
@@ -30,9 +34,9 @@ QgsGpxSourceSelect::QgsGpxSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   setupButtons( buttonBox );
 
   mFileWidget->setDialogTitle( tr( "Open GPX Dataset" ) );
-  mFileWidget->setFilter( QStringLiteral( "%1 (*.gpx *.GPX)" ).arg( tr( "GPX files" ) ) );
+  mFileWidget->setFilter( u"%1 (*.gpx *.GPX)"_s.arg( tr( "GPX files" ) ) );
   mFileWidget->setStorageMode( QgsFileWidget::GetFile );
-  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [=]( const QString &path ) {
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [this]( const QString &path ) {
     mGpxPath = path;
     emit enableButtons( !mGpxPath.isEmpty() );
   } );
@@ -61,23 +65,23 @@ void QgsGpxSourceSelect::addButtonClicked()
   if ( cbGPXTracks->isChecked() )
   {
     Q_NOWARN_DEPRECATED_PUSH
-    emit addVectorLayer( mGpxPath + "?type=track", fileInfo.baseName() + ", tracks", QStringLiteral( "gpx" ) );
+    emit addVectorLayer( mGpxPath + "?type=track", fileInfo.baseName() + ", tracks", u"gpx"_s );
     Q_NOWARN_DEPRECATED_POP
-    emit addLayer( Qgis::LayerType::Vector, mGpxPath + "?type=track", fileInfo.baseName() + ", tracks", QStringLiteral( "gpx" ) );
+    emit addLayer( Qgis::LayerType::Vector, mGpxPath + "?type=track", fileInfo.baseName() + ", tracks", u"gpx"_s );
   }
   if ( cbGPXRoutes->isChecked() )
   {
     Q_NOWARN_DEPRECATED_PUSH
-    emit addVectorLayer( mGpxPath + "?type=route", fileInfo.baseName() + ", routes", QStringLiteral( "gpx" ) );
+    emit addVectorLayer( mGpxPath + "?type=route", fileInfo.baseName() + ", routes", u"gpx"_s );
     Q_NOWARN_DEPRECATED_POP
-    emit addLayer( Qgis::LayerType::Vector, mGpxPath + "?type=route", fileInfo.baseName() + ", routes", QStringLiteral( "gpx" ) );
+    emit addLayer( Qgis::LayerType::Vector, mGpxPath + "?type=route", fileInfo.baseName() + ", routes", u"gpx"_s );
   }
   if ( cbGPXWaypoints->isChecked() )
   {
     Q_NOWARN_DEPRECATED_PUSH
-    emit addVectorLayer( mGpxPath + "?type=waypoint", fileInfo.baseName() + ", waypoints", QStringLiteral( "gpx" ) );
+    emit addVectorLayer( mGpxPath + "?type=waypoint", fileInfo.baseName() + ", waypoints", u"gpx"_s );
     Q_NOWARN_DEPRECATED_POP
-    emit addLayer( Qgis::LayerType::Vector, mGpxPath + "?type=waypoint", fileInfo.baseName() + ", waypoints", QStringLiteral( "gpx" ) );
+    emit addLayer( Qgis::LayerType::Vector, mGpxPath + "?type=waypoint", fileInfo.baseName() + ", waypoints", u"gpx"_s );
   }
 }
 
@@ -94,5 +98,5 @@ void QgsGpxSourceSelect::enableRelevantControls()
 
 void QgsGpxSourceSelect::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#gps" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html#gps"_s );
 }

@@ -14,9 +14,13 @@
  ***************************************************************************/
 
 #include "qgsuserinputwidget.h"
-#include "moc_qgsuserinputwidget.cpp"
 
 #include <QFrame>
+#include <QString>
+
+#include "moc_qgsuserinputwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsUserInputWidget::QgsUserInputWidget( QWidget *parent )
   : QgsFloatingWidget( parent ? parent->window() : nullptr )
@@ -24,7 +28,7 @@ QgsUserInputWidget::QgsUserInputWidget( QWidget *parent )
   //TODO add title tr( "User Input Panel" )
 
   QFrame *f = new QFrame();
-  f->setObjectName( QStringLiteral( "mUserInputContainer" ) );
+  f->setObjectName( u"mUserInputContainer"_s );
 
   QPalette pal = palette();
   pal.setBrush( backgroundRole(), pal.window() );

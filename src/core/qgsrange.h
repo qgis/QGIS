@@ -18,12 +18,15 @@
 #ifndef QGSRANGE_H
 #define QGSRANGE_H
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 
 #include <QDate>
 #include <QDateTime>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \class QgsRange
@@ -292,10 +295,10 @@ class CORE_EXPORT QgsDoubleRange : public QgsRange< double >
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsDoubleRange: %1%2, %3%4>" ).arg( sipCpp->includeLower() ? QStringLiteral( "[" ) : QStringLiteral( "(" ) )
+    QString str = u"<QgsDoubleRange: %1%2, %3%4>"_s.arg( sipCpp->includeLower() ? u"["_s : u"("_s )
                   .arg( sipCpp->lower() )
                   .arg( sipCpp->upper() )
-                  .arg( sipCpp->includeUpper() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) );
+                  .arg( sipCpp->includeUpper() ? u"]"_s : u")"_s );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -388,10 +391,10 @@ class CORE_EXPORT QgsIntRange : public QgsRange< int >
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsIntRange: %1%2, %3%4>" ).arg( sipCpp->includeLower() ? QStringLiteral( "[" ) : QStringLiteral( "(" ) )
+    QString str = u"<QgsIntRange: %1%2, %3%4>"_s.arg( sipCpp->includeLower() ? u"["_s : u"("_s )
                   .arg( sipCpp->lower() )
                   .arg( sipCpp->upper() )
-                  .arg( sipCpp->includeUpper() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) );
+                  .arg( sipCpp->includeUpper() ? u"]"_s : u")"_s );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

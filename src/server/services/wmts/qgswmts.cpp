@@ -16,10 +16,14 @@
  ***************************************************************************/
 
 #include "qgsmodule.h"
-#include "qgswmtsutils.h"
 #include "qgswmtsgetcapabilities.h"
-#include "qgswmtsgettile.h"
 #include "qgswmtsgetfeatureinfo.h"
+#include "qgswmtsgettile.h"
+#include "qgswmtsutils.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 #define QSTR_COMPARE( str, lit ) \
   ( str.compare( QLatin1String( lit ), Qt::CaseInsensitive ) == 0 )
@@ -44,7 +48,7 @@ namespace QgsWmts
         : mServerIface( serverIface )
       {}
 
-      QString name() const override { return QStringLiteral( "WMTS" ); }
+      QString name() const override { return u"WMTS"_s; }
       QString version() const override { return implementationVersion(); }
 
       void executeRequest( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) override
@@ -64,7 +68,7 @@ namespace QgsWmts
         const QString req = params.value( QgsServerParameter::name( QgsServerParameter::REQUEST ) );
         if ( req.isEmpty() )
         {
-          throw QgsServiceException( QStringLiteral( "OperationNotSupported" ), QStringLiteral( "Please add or check the value of the REQUEST parameter" ), 501 );
+          throw QgsServiceException( u"OperationNotSupported"_s, u"Please add or check the value of the REQUEST parameter"_s, 501 );
         }
 
         if ( QSTR_COMPARE( req, "GetCapabilities" ) )
@@ -82,7 +86,7 @@ namespace QgsWmts
         else
         {
           // Operation not supported
-          throw QgsServiceException( QStringLiteral( "OperationNotSupported" ), QStringLiteral( "Request %1 is not supported" ).arg( req ), 501 );
+          throw QgsServiceException( u"OperationNotSupported"_s, u"Request %1 is not supported"_s.arg( req ), 501 );
         }
       }
 
@@ -104,7 +108,7 @@ class QgsWmtsModule : public QgsServiceModule
   public:
     void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface ) override
     {
-      QgsDebugMsgLevel( QStringLiteral( "WMTSModule::registerSelf called" ), 2 );
+      QgsDebugMsgLevel( u"WMTSModule::registerSelf called"_s, 2 );
       registry.registerService( new QgsWmts::Service( serverIface ) );
     }
 };

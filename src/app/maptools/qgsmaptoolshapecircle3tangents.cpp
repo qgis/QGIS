@@ -4,7 +4,7 @@
     ---------------------
     begin                : July 2017
     copyright            : (C) 2017 by Loïc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    email                : lituus at free dot fr
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,20 +15,26 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapecircle3tangents.h"
-#include "moc_qgsmaptoolshapecircle3tangents.cpp"
-#include "qgsgeometryrubberband.h"
-#include "qgsadvanceddigitizingdockwidget.h"
-#include "qgslinestring.h"
-#include "qgssnappingutils.h"
-#include "qgsmapcanvas.h"
-#include "qgspoint.h"
-#include "qgisapp.h"
-#include "qgsmapmouseevent.h"
-#include "qgsmessagebar.h"
-#include "qgsmaptoolcapture.h"
-#include "qgsapplication.h"
 
-const QString QgsMapToolShapeCircle3TangentsMetadata::TOOL_ID = QStringLiteral( "circle-from-3-tangents" );
+#include "qgisapp.h"
+#include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsapplication.h"
+#include "qgsgeometryrubberband.h"
+#include "qgslinestring.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmaptoolcapture.h"
+#include "qgsmessagebar.h"
+#include "qgspoint.h"
+#include "qgssnappingutils.h"
+
+#include <QString>
+
+#include "moc_qgsmaptoolshapecircle3tangents.cpp"
+
+using namespace Qt::StringLiterals;
+
+const QString QgsMapToolShapeCircle3TangentsMetadata::TOOL_ID = u"circle-from-3-tangents"_s;
 
 QString QgsMapToolShapeCircle3TangentsMetadata::id() const
 {
@@ -42,7 +48,7 @@ QString QgsMapToolShapeCircle3TangentsMetadata::name() const
 
 QIcon QgsMapToolShapeCircle3TangentsMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionCircle3Tangents.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mActionCircle3Tangents.svg"_s );
 }
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeCircle3TangentsMetadata::category() const
@@ -92,6 +98,9 @@ bool QgsMapToolShapeCircle3Tangents::cadCanvasReleaseEvent( QgsMapMouseEvent *e,
   }
   else if ( e->button() == Qt::RightButton )
   {
+    if ( mCircle.isEmpty() )
+      return false;
+
     if ( match.isValid() && ( mPoints.size() == 4 ) )
     {
       match.edgePoints( p1, p2 );
@@ -140,8 +149,13 @@ void QgsMapToolShapeCircle3Tangents::cadCanvasMoveEvent( QgsMapMouseEvent *e, Qg
     {
       const QgsPoint pos = getFirstPointOnParallels( mPoints.at( 0 ), mPoints.at( 1 ), mPosPoints.at( 0 ), mPoints.at( 2 ), mPoints.at( 3 ), mPosPoints.at( 1 ), QgsPoint( p1 ), QgsPoint( p2 ) );
       mCircle = QgsCircle::from3Tangents( mPoints.at( 0 ), mPoints.at( 1 ), mPoints.at( 2 ), mPoints.at( 3 ), QgsPoint( p1 ), QgsPoint( p2 ), 1E-8, pos );
-      mTempRubberBand->setGeometry( mCircle.toLineString() );
-      mTempRubberBand->show();
+      const QgsGeometry newGeometry( mCircle.toLineString() );
+      if ( !newGeometry.isEmpty() )
+      {
+        mTempRubberBand->setGeometry( newGeometry.constGet()->clone() );
+        setTransientGeometry( newGeometry );
+        mTempRubberBand->show();
+      }
     }
     else
     {

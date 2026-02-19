@@ -1077,7 +1077,29 @@ renders is permitted.
 .. versionadded:: 3.44
 %End
 
+    QHash< QString, QgsSelectiveMaskingSourceSet > selectiveMaskingSourceSets() const;
+%Docstring
+Returns a hash of all selective masking source sets defined for the map.
+
+The hash keys are the set IDs.
+
+.. seealso:: :py:func:`setSelectiveMaskingSourceSets`
+
+.. versionadded:: 4.0
+%End
+
+    void setSelectiveMaskingSourceSets( const QVector< QgsSelectiveMaskingSourceSet > &sets );
+%Docstring
+Sets a list of all selective masking source sets defined for the map.
+
+.. seealso:: :py:func:`selectiveMaskingSourceSets`
+
+.. versionadded:: 4.0
+%End
+
   protected:
+
+
 
 
 

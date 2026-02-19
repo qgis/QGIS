@@ -16,14 +16,19 @@
  ***************************************************************************/
 
 #include "qgsalgorithmreverselinedirection.h"
+
 #include "qgscurve.h"
 #include "qgsgeometrycollection.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
 QString QgsReverseLineDirectionAlgorithm ::name() const
 {
-  return QStringLiteral( "reverselinedirection" );
+  return u"reverselinedirection"_s;
 }
 
 QString QgsReverseLineDirectionAlgorithm ::displayName() const
@@ -43,7 +48,7 @@ QString QgsReverseLineDirectionAlgorithm ::group() const
 
 QString QgsReverseLineDirectionAlgorithm ::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsReverseLineDirectionAlgorithm ::outputName() const
@@ -105,9 +110,8 @@ QgsFeatureList QgsReverseLineDirectionAlgorithm ::processFeature( const QgsFeatu
     }
     else
     {
-      std::unique_ptr<QgsAbstractGeometry> dest( geom.constGet()->createEmptyWithSameType() );
-      const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( geom.constGet() );
-      QgsGeometryCollection *destCollection = qgsgeometry_cast<QgsGeometryCollection *>( dest.get() );
+      const QgsGeometryCollection *collection = qgis::down_cast<const QgsGeometryCollection *>( geom.constGet() );
+      std::unique_ptr<QgsGeometryCollection> destCollection( collection->createEmptyWithSameType() );
       destCollection->reserve( collection->numGeometries() );
       for ( int i = 0; i < collection->numGeometries(); ++i )
       {
@@ -123,7 +127,7 @@ QgsFeatureList QgsReverseLineDirectionAlgorithm ::processFeature( const QgsFeatu
           destCollection->addGeometry( reversed.release() );
         }
       }
-      const QgsGeometry outGeom( std::move( dest ) );
+      const QgsGeometry outGeom( std::move( destCollection ) );
       feature.setGeometry( outGeom );
     }
   }

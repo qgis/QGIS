@@ -13,6 +13,7 @@ __copyright__ = "Copyright 2018, Nyall Dawson"
 import math
 import os
 import struct
+import numpy as np
 
 from osgeo import gdal
 from qgis.PyQt.QtCore import QTemporaryDir
@@ -549,6 +550,93 @@ class PyQgsGdalProvider(QgisTestCase, RasterProviderTestCase):
         self.assertEqual(rl.dataProvider().displayBandName(1), "Band 1")
         # This was triggering another crash:
         self.assertEqual(rl.dataProvider().colorInterpretationName(1), "Undefined")
+
+    def testHistogramBinCountWithScale(self):
+        """Test issue GH #59461"""
+
+        # Create raster with 2x2 pixels, int type, values 0-10000, scale 0.001
+        tmp_dir = QTemporaryDir()
+        tmpfile = os.path.join(tmp_dir.path(), "testBinCountWithScale.tif")
+        ds = gdal.GetDriverByName("GTiff").Create(tmpfile, 2, 2, 1, gdal.GDT_Int32)
+        ds.SetGeoTransform([0, 1, 0, 0, 0, -1])
+        ds.SetProjection("EPSG:4326")
+        ds.WriteRaster(0, 0, 2, 2, struct.pack("i" * 4, 0, 5000, 10000, -10000))
+        # Set band scale
+        band = ds.GetRasterBand(1)
+        band.SetScale(0.001)
+        ds = None
+        rl = QgsRasterLayer(tmpfile, "test")
+        self.assertTrue(rl.isValid())
+        provider = rl.dataProvider()
+        # Data type is changed by QGIS because of the scale
+        self.assertEqual(provider.dataType(1), Qgis.DataType.Float32)
+        self.assertEqual(provider.bandScale(1), 0.001)
+
+        # Create histogram
+        hist = provider.histogram(1, 10000)
+        self.assertIsNotNone(hist)
+        self.assertEqual(hist.binCount, 10)
+
+    def test_GMF_PER_DATASET_mask_band(self):
+        """Test issue GH #64642 - rasters with a GMF_PER_DATASET mask band"""
+
+        # Create a temporary raster with a GMF_PER_DATASET mask band
+        temp_path = "/vsimem/test_mask_band.tif"
+        driver = gdal.GetDriverByName("GTiff")
+        dataset = driver.Create(temp_path, 2, 2, 1, gdal.GDT_Byte)
+        band = dataset.GetRasterBand(1)
+        np_data = np.array([[1, 2], [3, 4]], dtype=np.uint8)
+        band.WriteArray(np_data)
+        band.CreateMaskBand(gdal.GMF_PER_DATASET)
+        mask_band = band.GetMaskBand()
+        np_mask = np.array([[0, 255], [255, 0]], dtype=np.uint8)
+        mask_band.WriteArray(np_mask)
+        gdal_num_bands = dataset.RasterCount
+        dataset = None
+
+        # Load the raster via QGIS GDAL provider
+        layer = QgsRasterLayer(temp_path, "test_mask_band")
+        self.assertTrue(layer.isValid(), "Raster with mask band failed to load")
+        provider = layer.dataProvider()
+
+        # Test sample: values are returned despite the mask band
+        # becausethe mask band is seen by QGIS as an alpha band
+        val, res = provider.sample(QgsPointXY(0.5, -0.5), 1)
+        self.assertEqual(val, 1.0)
+        val, res = provider.sample(QgsPointXY(1.5, -0.5), 1)
+        self.assertEqual(val, 2.0)
+        val, res = provider.sample(QgsPointXY(0.5, -1.5), 1)
+        self.assertEqual(val, 3.0)
+        val, res = provider.sample(QgsPointXY(1.5, -1.5), 1)
+        self.assertEqual(val, 4.0)
+
+        # Test sample mask band (alpha)
+        val, res = provider.sample(QgsPointXY(0.5, -0.5), 2)
+        self.assertEqual(val, 0.0)
+        val, res = provider.sample(QgsPointXY(1.5, -0.5), 2)
+        self.assertEqual(val, 255.0)
+        val, res = provider.sample(QgsPointXY(0.5, -1.5), 2)
+        self.assertEqual(val, 255.0)
+        val, res = provider.sample(QgsPointXY(1.5, -1.5), 2)
+        self.assertEqual(val, 0.0)
+
+        # Query a block and ensure data is returned correctly
+        block = provider.block(2, provider.extent(), 2, 2)
+        self.assertIsNotNone(block)
+        self.assertEqual(block.width(), 2)
+        self.assertEqual(block.height(), 2)
+        self.assertEqual(block.value(0, 0), 0.0)
+        self.assertEqual(block.value(1, 0), 255.0)
+        self.assertEqual(block.value(0, 1), 255.0)
+        self.assertEqual(block.value(1, 1), 0.0)
+
+        # Get mask band color interpretation and ensure it's alpha
+        mask_band_ci = provider.colorInterpretation(2)
+        self.assertEqual(mask_band_ci, Qgis.RasterColorInterpretation.AlphaBand)
+
+        # Get band data type and ensure it's byte
+        band_type = provider.sourceDataType(2)
+        self.assertEqual(band_type, Qgis.DataType.Byte)
 
 
 if __name__ == "__main__":

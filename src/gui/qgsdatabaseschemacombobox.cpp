@@ -14,12 +14,18 @@
 ***************************************************************************/
 
 #include "qgsdatabaseschemacombobox.h"
-#include "moc_qgsdatabaseschemacombobox.cpp"
-#include "qgsdatabaseschemamodel.h"
+
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsapplication.h"
+#include "qgsdatabaseschemamodel.h"
+
 #include <QHBoxLayout>
+#include <QString>
 #include <QToolButton>
+
+#include "moc_qgsdatabaseschemacombobox.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDatabaseSchemaComboBox::QgsDatabaseSchemaComboBox( const QString &provider, const QString &connection, QWidget *parent )
   : QWidget( parent )
@@ -73,7 +79,7 @@ void QgsDatabaseSchemaComboBox::init()
   QToolButton *refreshButton = new QToolButton();
   refreshButton->setAutoRaise( true );
   refreshButton->setToolTip( tr( "Refresh schemas" ) );
-  refreshButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionRefresh.svg" ) ) );
+  refreshButton->setIcon( QgsApplication::getThemeIcon( u"mActionRefresh.svg"_s ) );
   l->addWidget( refreshButton );
   setLayout( l );
 

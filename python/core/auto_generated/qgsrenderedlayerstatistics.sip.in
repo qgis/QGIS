@@ -11,6 +11,7 @@
 
 
 
+
 class QgsRenderedLayerStatistics: QgsRenderedItemDetails
 {
 %Docstring(signature="appended")

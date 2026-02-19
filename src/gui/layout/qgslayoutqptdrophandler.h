@@ -37,6 +37,7 @@ class GUI_EXPORT QgsLayoutQptDropHandler : public QgsLayoutCustomDropHandler
     //! constructor
     QgsLayoutQptDropHandler( QObject *parent = nullptr );
 
+    using QgsLayoutCustomDropHandler::handleFileDrop;
     bool handleFileDrop( QgsLayoutDesignerInterface *iface, QPointF point, const QString &file ) override;
 };
 

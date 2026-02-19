@@ -12,6 +12,8 @@
 
 
 
+
+
 class QgsCodeInterpreter
 {
 %Docstring(signature="appended")
@@ -371,6 +373,7 @@ Convenience function to set the selection using linear indexes
 
     virtual void callTip();
 
+
     int wrapPosition( int line = -1 );
 %Docstring
 Returns the linear position of the start of the last wrapped part for
@@ -601,7 +604,10 @@ Returns ``True`` if a ``font`` is a fixed pitch font.
 
     virtual void contextMenuEvent( QContextMenuEvent *event );
 
+    virtual bool event( QEvent *event );
+
     virtual bool eventFilter( QObject *watched, QEvent *event );
+
 
     virtual void initializeLexer();
 %Docstring

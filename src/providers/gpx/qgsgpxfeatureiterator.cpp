@@ -14,17 +14,19 @@
  ***************************************************************************/
 #include "qgsgpxfeatureiterator.h"
 
-#include "qgsgpxprovider.h"
+#include <cstring>
+#include <limits>
 
 #include "qgsapplication.h"
-#include "qgsgeometry.h"
-#include "qgslogger.h"
 #include "qgsexception.h"
+#include "qgsgeometry.h"
 #include "qgsgeometryengine.h"
+#include "qgsgpxprovider.h"
+#include "qgslogger.h"
 
-#include <limits>
-#include <cstring>
+#include <QString>
 
+using namespace Qt::StringLiterals;
 
 QgsGPXFeatureIterator::QgsGPXFeatureIterator( QgsGPXFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsGPXFeatureSource>( source, ownSource, request )
@@ -322,7 +324,7 @@ bool QgsGPXFeatureIterator::readRoute( const QgsRoute &rte, QgsFeature &feature 
 
 bool QgsGPXFeatureIterator::readTrack( const QgsTrack &trk, QgsFeature &feature )
 {
-  //QgsDebugMsgLevel( QStringLiteral( "GPX feature track segments: %1" ).arg( trk.segments.size() ), 2 );
+  //QgsDebugMsgLevel( u"GPX feature track segments: %1"_s.arg( trk.segments.size() ), 2 );
 
   QgsGeometry *geometry = readTrackGeometry( trk );
 
@@ -526,7 +528,7 @@ QgsGeometry *QgsGPXFeatureIterator::readTrackGeometry( const QgsTrack &trk )
   unsigned char *geo = new unsigned char[size];
   if ( !geo )
   {
-    QgsDebugError( QStringLiteral( "Track too large!" ) );
+    QgsDebugError( u"Track too large!"_s );
     return nullptr;
   }
 

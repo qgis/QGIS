@@ -18,9 +18,10 @@
 #ifndef QGSSVGANNOTATION_H
 #define QGSSVGANNOTATION_H
 
-#include "qgsannotation.h"
-#include <QSvgRenderer>
 #include "qgis_core.h"
+#include "qgsannotation.h"
+
+#include <QSvgRenderer>
 
 /**
  * \class QgsSvgAnnotation

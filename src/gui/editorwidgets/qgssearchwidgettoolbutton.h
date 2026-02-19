@@ -16,10 +16,11 @@
 #ifndef QGSSEARCHWIDGETTOOLBUTTON_H
 #define QGSSEARCHWIDGETTOOLBUTTON_H
 
-#include "qgssearchwidgetwrapper.h"
-#include "qgis_sip.h"
-#include <QToolButton>
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgssearchwidgetwrapper.h"
+
+#include <QToolButton>
 
 #ifdef SIP_RUN
 //%ModuleHeaderCode

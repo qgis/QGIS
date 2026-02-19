@@ -15,27 +15,33 @@
  ***************************************************************************/
 
 #include "qgsprocessinghistoryprovider.h"
-#include "moc_qgsprocessinghistoryprovider.cpp"
-#include "qgsapplication.h"
-#include "qgsgui.h"
-#include "qgshistoryproviderregistry.h"
-#include "qgshistoryentry.h"
-#include "qgshistoryentrynode.h"
-#include "qgsprocessingregistry.h"
-#include "qgscodeeditorpython.h"
-#include "qgscodeeditorshell.h"
-#include "qgscodeeditorjson.h"
-#include "qgsjsonutils.h"
 
 #include <nlohmann/json.hpp>
-#include <QFile>
-#include <QTextStream>
-#include <QRegularExpression>
-#include <QRegularExpressionMatch>
+
+#include "qgsapplication.h"
+#include "qgscodeeditorjson.h"
+#include "qgscodeeditorpython.h"
+#include "qgscodeeditorshell.h"
+#include "qgsgui.h"
+#include "qgshistoryentry.h"
+#include "qgshistoryentrynode.h"
+#include "qgshistoryproviderregistry.h"
+#include "qgsjsonutils.h"
+#include "qgsprocessingregistry.h"
+
 #include <QAction>
+#include <QClipboard>
+#include <QFile>
 #include <QMenu>
 #include <QMimeData>
-#include <QClipboard>
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
+#include <QString>
+#include <QTextStream>
+
+#include "moc_qgsprocessinghistoryprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProcessingHistoryProvider::QgsProcessingHistoryProvider()
 {
@@ -43,7 +49,7 @@ QgsProcessingHistoryProvider::QgsProcessingHistoryProvider()
 
 QString QgsProcessingHistoryProvider::id() const
 {
-  return QStringLiteral( "processing" );
+  return u"processing"_s;
 }
 
 void QgsProcessingHistoryProvider::portOldLog()
@@ -60,21 +66,21 @@ void QgsProcessingHistoryProvider::portOldLog()
     while ( !in.atEnd() )
     {
       const QString line = in.readLine().trimmed();
-      QStringList parts = line.split( QStringLiteral( "|~|" ) );
+      QStringList parts = line.split( u"|~|"_s );
       if ( parts.size() <= 1 )
         parts = line.split( '|' );
 
-      if ( parts.size() == 3 && parts.at( 0 ).startsWith( QLatin1String( "ALGORITHM" ), Qt::CaseInsensitive ) )
+      if ( parts.size() == 3 && parts.at( 0 ).startsWith( "ALGORITHM"_L1, Qt::CaseInsensitive ) )
       {
         QVariantMap details;
-        details.insert( QStringLiteral( "python_command" ), parts.at( 2 ) );
+        details.insert( u"python_command"_s, parts.at( 2 ) );
 
-        const thread_local QRegularExpression algIdRegEx( QStringLiteral( "processing\\.run\\(\"(.*?)\"" ) );
+        const thread_local QRegularExpression algIdRegEx( u"processing\\.run\\(\"(.*?)\""_s );
         const QRegularExpressionMatch match = algIdRegEx.match( parts.at( 2 ) );
         if ( match.hasMatch() )
-          details.insert( QStringLiteral( "algorithm_id" ), match.captured( 1 ) );
+          details.insert( u"algorithm_id"_s, match.captured( 1 ) );
 
-        entries.append( QgsHistoryEntry( id(), QDateTime::fromString( parts.at( 1 ), QStringLiteral( "yyyy-MM-d hh:mm:ss" ) ), details ) );
+        entries.append( QgsHistoryEntry( id(), QDateTime::fromString( parts.at( 1 ), u"yyyy-MM-d hh:mm:ss"_s ), details ) );
       }
     }
 
@@ -95,11 +101,11 @@ class ProcessingHistoryBaseNode : public QgsHistoryEntryGroup
       , mProcessCommand( mEntry.entry.value( "process_command" ).toString() )
       , mProvider( provider )
     {
-      const QVariant parameters = mEntry.entry.value( QStringLiteral( "parameters" ) );
+      const QVariant parameters = mEntry.entry.value( u"parameters"_s );
       if ( parameters.userType() == QMetaType::Type::QVariantMap )
       {
         const QVariantMap parametersMap = parameters.toMap();
-        mInputs = parametersMap.value( QStringLiteral( "inputs" ) ).toMap();
+        mInputs = parametersMap.value( u"inputs"_s ).toMap();
       }
     }
 
@@ -108,15 +114,21 @@ class ProcessingHistoryBaseNode : public QgsHistoryEntryGroup
       if ( mPythonCommand.isEmpty() )
         return true;
 
+      if ( !QgsApplication::processingRegistry()->algorithmById( mAlgorithmId ) )
+      {
+        mProvider->emitShowMessage( QObject::tr( "Could not find algorithm '%1'. Check if corresponding algorithm provider is enabled." ).arg( mAlgorithmId ) );
+        return true;
+      }
+
       QString execAlgorithmDialogCommand = mPythonCommand;
-      execAlgorithmDialogCommand.replace( QLatin1String( "processing.run(" ), QLatin1String( "processing.execAlgorithmDialog(" ) );
+      execAlgorithmDialogCommand.replace( "processing.run("_L1, "processing.execAlgorithmDialog("_L1 );
 
       // adding to this list? Also update the BatchPanel.py imports!!
       const QStringList script = {
-        QStringLiteral( "import processing" ),
-        QStringLiteral( "from qgis.core import QgsProcessingOutputLayerDefinition, QgsProcessingFeatureSourceDefinition, QgsProperty, QgsCoordinateReferenceSystem, QgsFeatureRequest" ),
-        QStringLiteral( "from qgis.PyQt.QtCore import QDate, QTime, QDateTime" ),
-        QStringLiteral( "from qgis.PyQt.QtGui import QColor" ),
+        u"import processing"_s,
+        u"from qgis.core import QgsProcessingOutputLayerDefinition, QgsProcessingFeatureSourceDefinition, QgsProperty, QgsCoordinateReferenceSystem, QgsFeatureRequest"_s,
+        u"from qgis.PyQt.QtCore import QDate, QTime, QDateTime"_s,
+        u"from qgis.PyQt.QtGui import QColor"_s,
         execAlgorithmDialogCommand
       };
 
@@ -131,8 +143,8 @@ class ProcessingHistoryBaseNode : public QgsHistoryEntryGroup
         QAction *pythonAction = new QAction(
           QObject::tr( "Copy as Python Command" ), menu
         );
-        pythonAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconPythonFile.svg" ) ) );
-        QObject::connect( pythonAction, &QAction::triggered, menu, [=] {
+        pythonAction->setIcon( QgsApplication::getThemeIcon( u"mIconPythonFile.svg"_s ) );
+        QObject::connect( pythonAction, &QAction::triggered, menu, [this] {
           copyText( mPythonCommand );
         } );
         menu->addAction( pythonAction );
@@ -142,8 +154,8 @@ class ProcessingHistoryBaseNode : public QgsHistoryEntryGroup
         QAction *processAction = new QAction(
           QObject::tr( "Copy as qgis_process Command" ), menu
         );
-        processAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionTerminal.svg" ) ) );
-        QObject::connect( processAction, &QAction::triggered, menu, [=] {
+        processAction->setIcon( QgsApplication::getThemeIcon( u"mActionTerminal.svg"_s ) );
+        QObject::connect( processAction, &QAction::triggered, menu, [this] {
           copyText( mProcessCommand );
         } );
         menu->addAction( processAction );
@@ -153,8 +165,8 @@ class ProcessingHistoryBaseNode : public QgsHistoryEntryGroup
         QAction *inputsAction = new QAction(
           QObject::tr( "Copy as JSON" ), menu
         );
-        inputsAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditCopy.svg" ) ) );
-        QObject::connect( inputsAction, &QAction::triggered, menu, [=] {
+        inputsAction->setIcon( QgsApplication::getThemeIcon( u"mActionEditCopy.svg"_s ) );
+        QObject::connect( inputsAction, &QAction::triggered, menu, [this] {
           copyText( QString::fromStdString( QgsJsonUtils::jsonFromVariant( mInputs ).dump( 2 ) ) );
         } );
         menu->addAction( inputsAction );
@@ -170,7 +182,7 @@ class ProcessingHistoryBaseNode : public QgsHistoryEntryGroup
         QAction *createTestAction = new QAction(
           QObject::tr( "Create Test…" ), menu
         );
-        QObject::connect( createTestAction, &QAction::triggered, menu, [=] {
+        QObject::connect( createTestAction, &QAction::triggered, menu, [this] {
           mProvider->emitCreateTest( mPythonCommand );
         } );
         menu->addAction( createTestAction );
@@ -214,7 +226,7 @@ class ProcessingHistoryPythonCommandNode : public ProcessingHistoryBaseNode
           return display;
         }
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "mIconPythonFile.svg" ) );
+          return QgsApplication::getThemeIcon( u"mIconPythonFile.svg"_s );
 
         default:
           break;
@@ -233,7 +245,7 @@ class ProcessingHistoryPythonCommandNode : public ProcessingHistoryBaseNode
       codeEditor->setWrapMode( QsciScintilla::WrapMode::WrapWord );
 
 
-      const QString introText = QStringLiteral( "\"\"\"\n%1\n\"\"\"\n\n " ).arg( QObject::tr( "Double-click on the history item or paste the command below to re-run the algorithm" ) );
+      const QString introText = u"\"\"\"\n%1\n\"\"\"\n\n "_s.arg( QObject::tr( "Double-click on the history item or paste the command below to re-run the algorithm" ) );
       codeEditor->setText( introText + mPythonCommand );
 
       return codeEditor;
@@ -261,7 +273,7 @@ class ProcessingHistoryProcessCommandNode : public ProcessingHistoryBaseNode
           return display;
         }
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "mActionTerminal.svg" ) );
+          return QgsApplication::getThemeIcon( u"mActionTerminal.svg"_s );
 
         default:
           break;
@@ -310,7 +322,7 @@ class ProcessingHistoryJsonNode : public ProcessingHistoryBaseNode
           return display;
         }
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "mIconFieldJson.svg" ) );
+          return QgsApplication::getThemeIcon( u"mIconFieldJson.svg"_s );
 
         default:
           break;
@@ -344,7 +356,7 @@ class ProcessingHistoryRootNode : public ProcessingHistoryBaseNode
     ProcessingHistoryRootNode( const QgsHistoryEntry &entry, QgsProcessingHistoryProvider *provider )
       : ProcessingHistoryBaseNode( entry, provider )
     {
-      const QVariant parameters = mEntry.entry.value( QStringLiteral( "parameters" ) );
+      const QVariant parameters = mEntry.entry.value( u"parameters"_s );
       if ( parameters.type() == QVariant::Map )
       {
         mDescription = QgsProcessingUtils::variantToPythonLiteral( mInputs );
@@ -381,16 +393,16 @@ class ProcessingHistoryRootNode : public ProcessingHistoryBaseNode
       {
         case Qt::DisplayRole:
         {
-          const QString algName = mAlgorithmInformation.displayName;
+          const QString algName = mAlgorithmInformation.displayName.isEmpty() ? mAlgorithmId : mAlgorithmInformation.displayName;
           if ( !mDescription.isEmpty() )
-            return QStringLiteral( "[%1] %2 - %3" ).arg( mEntry.timestamp.toString( QStringLiteral( "yyyy-MM-dd hh:mm" ) ), algName, mDescription );
+            return u"[%1] %2 - %3"_s.arg( mEntry.timestamp.toString( u"yyyy-MM-dd hh:mm"_s ), algName, mDescription );
           else
-            return QStringLiteral( "[%1] %2" ).arg( mEntry.timestamp.toString( QStringLiteral( "yyyy-MM-dd hh:mm" ) ), algName );
+            return u"[%1] %2"_s.arg( mEntry.timestamp.toString( u"yyyy-MM-dd hh:mm"_s ), algName );
         }
 
         case Qt::DecorationRole:
         {
-          return mAlgorithmInformation.icon;
+          return mAlgorithmInformation.icon.isNull() ? QgsApplication::getThemeIcon( u"processingAlgorithm.svg"_s ) : mAlgorithmInformation.icon;
         }
 
         default:
@@ -401,7 +413,7 @@ class ProcessingHistoryRootNode : public ProcessingHistoryBaseNode
 
     QString html( const QgsHistoryWidgetContext & ) const override
     {
-      return mEntry.entry.value( QStringLiteral( "log" ) ).toString();
+      return mEntry.entry.value( u"log"_s ).toString();
     }
 
     QString mDescription;
@@ -425,8 +437,8 @@ void QgsProcessingHistoryProvider::updateNodeForEntry( QgsHistoryEntryNode *node
 
 QString QgsProcessingHistoryProvider::oldLogPath() const
 {
-  const QString userDir = QgsApplication::qgisSettingsDirPath() + QStringLiteral( "/processing" );
-  return userDir + QStringLiteral( "/processing.log" );
+  const QString userDir = QgsApplication::qgisSettingsDirPath() + u"/processing"_s;
+  return userDir + u"/processing.log"_s;
 }
 
 void QgsProcessingHistoryProvider::emitExecute( const QString &commands )
@@ -437,4 +449,9 @@ void QgsProcessingHistoryProvider::emitExecute( const QString &commands )
 void QgsProcessingHistoryProvider::emitCreateTest( const QString &command )
 {
   emit createTest( command );
+}
+
+void QgsProcessingHistoryProvider::emitShowMessage( const QString &message )
+{
+  emit showMessage( message );
 }

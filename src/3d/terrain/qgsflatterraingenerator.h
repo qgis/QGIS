@@ -17,9 +17,9 @@
 #define QGSFLATTERRAINGENERATOR_H
 
 #include "qgis_3d.h"
-
 #include "qgsterraingenerator.h"
 #include "qgsterraintileloader.h"
+
 #include <Qt3DExtras/QPlaneGeometry>
 
 #define SIP_NO_FILE
@@ -34,6 +34,8 @@ class FlatTerrainChunkLoader : public QgsTerrainTileLoader
   public:
     //! Construct the loader for a node
     FlatTerrainChunkLoader( QgsTerrainEntity *terrain, QgsChunkNode *mNode );
+
+    void start() override;
 
     Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 

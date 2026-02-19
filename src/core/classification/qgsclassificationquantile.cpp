@@ -15,7 +15,12 @@
 
 
 #include "qgsclassificationquantile.h"
+
 #include "qgsapplication.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsClassificationQuantile::QgsClassificationQuantile()
   : QgsClassificationMethod()
@@ -29,7 +34,7 @@ QString QgsClassificationQuantile::name() const
 
 QString QgsClassificationQuantile::id() const
 {
-  return QStringLiteral( "Quantile" );
+  return u"Quantile"_s;
 }
 
 std::unique_ptr<QgsClassificationMethod> QgsClassificationQuantile::clone() const

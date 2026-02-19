@@ -14,14 +14,16 @@
  ***************************************************************************/
 
 #include "qgslayout3dmapwidget.h"
-#include "moc_qgslayout3dmapwidget.cpp"
 
 #include "qgisapp.h"
 #include "qgs3dmapcanvas.h"
+#include "qgs3dmapcanvaswidget.h"
 #include "qgs3dmapsettings.h"
 #include "qgscameracontroller.h"
+
 #include <QMenu>
-#include "qgs3dmapcanvaswidget.h"
+
+#include "moc_qgslayout3dmapwidget.cpp"
 
 float _normalizedAngle( float x )
 {
@@ -67,13 +69,13 @@ QgsLayout3DMapWidget::QgsLayout3DMapWidget( QgsLayoutItem3DMap *map3D )
 
   mMenu3DCanvases = new QMenu( this );
   mCopySettingsButton->setMenu( mMenu3DCanvases );
-  _prepare3DViewsMenu( mMenu3DCanvases, this, [=]( Qgs3DMapCanvasWidget *widget ) {
+  _prepare3DViewsMenu( mMenu3DCanvases, this, [this]( Qgs3DMapCanvasWidget *widget ) {
     copy3DMapSettings( widget );
   } );
 
   mMenu3DCanvasesPose = new QMenu( this );
   mPoseFromViewButton->setMenu( mMenu3DCanvasesPose );
-  _prepare3DViewsMenu( mMenu3DCanvasesPose, this, [=]( Qgs3DMapCanvasWidget *widget ) { copyCameraPose( widget ); } );
+  _prepare3DViewsMenu( mMenu3DCanvasesPose, this, [this]( Qgs3DMapCanvasWidget *widget ) { copyCameraPose( widget ); } );
 
   QList<QgsDoubleSpinBox *> lst;
   lst << mCenterXSpinBox << mCenterYSpinBox << mCenterZSpinBox << mDistanceToCenterSpinBox << mPitchAngleSpinBox << mHeadingAngleSpinBox;

@@ -14,32 +14,30 @@
  ***************************************************************************/
 
 #include "qgsforwardrenderview.h"
-#include <Qt3DRender/QCamera>
-#include <Qt3DRender/QViewport>
-#include <Qt3DRender/QCameraSelector>
-#include <Qt3DRender/QLayerFilter>
-#include <Qt3DRender/QLayer>
-#include <Qt3DRender/QRenderTargetSelector>
-#include <Qt3DRender/QRenderTarget>
-#include <Qt3DRender/QTexture>
-#include <Qt3DRender/QClearBuffers>
-#include <Qt3DRender/QParameter>
-#include <Qt3DRender/QFrustumCulling>
-#include <Qt3DRender/QRenderStateSet>
-#include <Qt3DRender/QDepthTest>
-#include <Qt3DRender/QCullFace>
-#include <Qt3DRender/QPolygonOffset>
-#include <Qt3DRender/qsubtreeenabler.h>
-#include <Qt3DRender/QBlendEquation>
-#include <Qt3DRender/QColorMask>
-#include <Qt3DRender/QSortPolicy>
-#include <Qt3DRender/QNoDepthMask>
-#include <Qt3DRender/QBlendEquationArguments>
-#include <Qt3DRender/QClipPlane>
 
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 15, 0 )
+#include <Qt3DRender/QBlendEquation>
+#include <Qt3DRender/QBlendEquationArguments>
+#include <Qt3DRender/QCamera>
+#include <Qt3DRender/QCameraSelector>
+#include <Qt3DRender/QClearBuffers>
+#include <Qt3DRender/QClipPlane>
+#include <Qt3DRender/QColorMask>
+#include <Qt3DRender/QCullFace>
 #include <Qt3DRender/QDebugOverlay>
-#endif
+#include <Qt3DRender/QDepthTest>
+#include <Qt3DRender/QFrustumCulling>
+#include <Qt3DRender/QLayer>
+#include <Qt3DRender/QLayerFilter>
+#include <Qt3DRender/QNoDepthMask>
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QPolygonOffset>
+#include <Qt3DRender/QRenderStateSet>
+#include <Qt3DRender/QRenderTarget>
+#include <Qt3DRender/QRenderTargetSelector>
+#include <Qt3DRender/QSortPolicy>
+#include <Qt3DRender/QTexture>
+#include <Qt3DRender/QViewport>
+#include <Qt3DRender/qsubtreeenabler.h>
 
 QgsForwardRenderView::QgsForwardRenderView( const QString &viewName, Qt3DRender::QCamera *mainCamera )
   : QgsAbstractRenderView( viewName )
@@ -68,7 +66,7 @@ Qt3DRender::QRenderTarget *QgsForwardRenderView::buildTextures()
   mColorTexture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::ClampToEdge );
 
   mDepthTexture = new Qt3DRender::QTexture2D;
-  mDepthTexture->setFormat( Qt3DRender::QTexture2D::TextureFormat::DepthFormat );
+  mDepthTexture->setFormat( Qt3DRender::QAbstractTexture::D24S8 );
   mDepthTexture->setGenerateMipMaps( false );
   mDepthTexture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
   mDepthTexture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
@@ -77,7 +75,7 @@ Qt3DRender::QRenderTarget *QgsForwardRenderView::buildTextures()
 
   Qt3DRender::QRenderTarget *renderTarget = new Qt3DRender::QRenderTarget;
   Qt3DRender::QRenderTargetOutput *renderTargetDepthOutput = new Qt3DRender::QRenderTargetOutput;
-  renderTargetDepthOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Depth );
+  renderTargetDepthOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::DepthStencil );
   renderTargetDepthOutput->setTexture( mDepthTexture );
   renderTarget->addOutput( renderTargetDepthOutput );
 

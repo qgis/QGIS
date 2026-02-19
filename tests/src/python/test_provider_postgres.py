@@ -539,6 +539,58 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
 
         test_table(self.dbconn, "pt4d", "Point ZM (1 2 3 4)")
 
+    def testTinPolyhedralSurfaceExactIntersect(self):
+        """
+        Test for fix: intersect method for PolyhedralSurface and TIN types
+        See: https://github.com/qgis/QGIS/pull/64621
+        """
+
+        def test_intersect(table_name, geom_type):
+            vl = QgsVectorLayer(
+                f'{self.dbconn} srid=4326 table="qgis_test".{table_name} (geom) sql=',
+                f"test_{table_name}",
+                "postgres",
+            )
+            self.assertTrue(vl.isValid(), f"Layer {table_name} should be valid")
+
+            # Rectangle that intersects the geometry (within [0,0]-[1,1])
+            intersecting_rect = QgsRectangle(0.25, 0.25, 0.75, 0.75)
+
+            # Rectangle outside the geometry
+            non_intersecting_rect = QgsRectangle(5, 5, 6, 6)
+
+            # Test 1: ExactIntersect with intersecting rectangle
+            request = QgsFeatureRequest()
+            request.setFilterRect(intersecting_rect)
+            request.setFlags(QgsFeatureRequest.Flag.ExactIntersect)
+
+            features = list(vl.getFeatures(request))
+            self.assertEqual(
+                len(features),
+                1,
+                f"{geom_type}: Expected 1 feature with intersecting rect, got {len(features)}",
+            )
+
+            # Test 2: ExactIntersect with non-intersecting rectangle
+            request = QgsFeatureRequest()
+            request.setFilterRect(non_intersecting_rect)
+            request.setFlags(QgsFeatureRequest.Flag.ExactIntersect)
+
+            features = list(vl.getFeatures(request))
+            self.assertEqual(
+                len(features),
+                0,
+                f"{geom_type}: Expected 0 features with non-intersecting rect, got {len(features)}",
+            )
+
+        # Test TIN 2D and 3D
+        test_intersect("tin2d", "TIN 2D")
+        test_intersect("tin3d", "TIN 3D")
+
+        # Test PolyhedralSurface 2D and 3D
+        test_intersect("ps2d", "PolyhedralSurface 2D")
+        test_intersect("ps3d", "PolyhedralSurface 3D")
+
     def testMetadata(self):
         """Test that metadata is correctly acquired from provider"""
         metadata = self.vl.metadata()
@@ -3198,11 +3250,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
     def testFilterOnCustomBbox(self):
         extent = QgsRectangle(-68, 70, -67, 80)
         request = QgsFeatureRequest().setFilterRect(extent)
-        dbconn = "service=qgis_test"
-        uri = (
-            '%s srid=4326 key="pk" sslmode=disable table="qgis_test"."some_poly_data_shift_bbox" (geom)'
-            % (dbconn)
-        )
+        uri = f'{self.dbconn} srid=4326 key="pk" sslmode=disable table="qgis_test"."some_poly_data_shift_bbox" (geom)'
 
         def _test(vl, ids):
             values = {feat["pk"]: "x" for feat in vl.getFeatures(request)}

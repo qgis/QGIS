@@ -14,12 +14,17 @@
  ***************************************************************************/
 
 #include "qgsdatumtransformtablewidget.h"
-#include "moc_qgsdatumtransformtablewidget.cpp"
 
+#include "qgisapp.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatumtransformdialog.h"
-#include "qgisapp.h"
 #include "qgssettings.h"
+
+#include <QString>
+
+#include "moc_qgsdatumtransformtablewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDatumTransformTableModel::QgsDatumTransformTableModel( QObject *parent )
   : QAbstractTableModel( parent )
@@ -171,11 +176,11 @@ QgsDatumTransformTableWidget::QgsDatumTransformTableWidget( QWidget *parent )
   mTableView->setAlternatingRowColors( true );
 
   const QgsSettings settings;
-  mTableView->horizontalHeader()->restoreState( settings.value( QStringLiteral( "Windows/DatumTransformTable/headerState" ) ).toByteArray() );
+  mTableView->horizontalHeader()->restoreState( settings.value( u"Windows/DatumTransformTable/headerState"_s ).toByteArray() );
 
   connect( mAddButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::addDatumTransform );
   connect( mRemoveButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::removeDatumTransform );
-  connect( mEditButton, &QToolButton::clicked, this, [=] {
+  connect( mEditButton, &QToolButton::clicked, this, [this] {
     const QModelIndexList selectedIndexes = mTableView->selectionModel()->selectedIndexes();
     if ( selectedIndexes.count() > 0 )
     {
@@ -185,7 +190,7 @@ QgsDatumTransformTableWidget::QgsDatumTransformTableWidget( QWidget *parent )
 
   connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsDatumTransformTableWidget::selectionChanged );
 
-  connect( mTableView, &QTableView::doubleClicked, this, [=]( const QModelIndex &index ) {
+  connect( mTableView, &QTableView::doubleClicked, this, [this]( const QModelIndex &index ) {
     editDatumTransform( index );
   } );
   mEditButton->setEnabled( false );
@@ -194,7 +199,7 @@ QgsDatumTransformTableWidget::QgsDatumTransformTableWidget( QWidget *parent )
 QgsDatumTransformTableWidget::~QgsDatumTransformTableWidget()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/DatumTransformTable/headerState" ), mTableView->horizontalHeader()->saveState() );
+  settings.setValue( u"Windows/DatumTransformTable/headerState"_s, mTableView->horizontalHeader()->saveState() );
 }
 
 void QgsDatumTransformTableWidget::addDatumTransform()

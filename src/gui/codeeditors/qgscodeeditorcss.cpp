@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgscodeeditorcss.h"
-#include "moc_qgscodeeditorcss.cpp"
 
-#include <QWidget>
-#include <QString>
 #include <QFont>
+#include <QString>
+#include <QWidget>
 #include <Qsci/qscilexercss.h>
 
+#include "moc_qgscodeeditorcss.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCodeEditorCSS::QgsCodeEditorCSS( QWidget *parent )
   : QgsCodeEditor( parent, QString(), false, false, QgsCodeEditor::Flag::CodeFolding )
@@ -90,7 +92,7 @@ QString QgsQsciLexerCSS::description( int style ) const
 {
   // see https://www.riverbankcomputing.com/pipermail/qscintilla/2019-July/001415.html
   if ( style == QsciLexerCSS::Comment )
-    return QStringLiteral( "Comment" );
+    return u"Comment"_s;
 
   return QsciLexerCSS::description( style );
 }

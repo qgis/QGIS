@@ -12,6 +12,7 @@
 
 
 
+
 typedef QMap<QString, QString> QgsStringMap;
 typedef QMap<QString, QgsSymbol * > QgsSymbolMap;
 
@@ -1229,7 +1230,7 @@ Returns -1 if the ``renderer`` is not animated.
 .. versionadded:: 3.26
 %End
 
-    static QgsSymbol *restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height, bool *ok = 0 );
+    static std::unique_ptr< QgsSymbol > restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height, bool *ok = 0 );
 %Docstring
 Creates a new symbol with size restricted to min/max size if original
 size is out of min/max range

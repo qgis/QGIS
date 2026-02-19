@@ -46,91 +46,76 @@ Source5:        %{name}-server-README.fedora
 # Based on debian/qgis.xml but excluding already defined or proprietary types
 Source6:        %{name}-mime.xml
 
-# Compiling stuff
 BuildRequires:  bison
 BuildRequires:  clang
 BuildRequires:  cmake
-BuildRequires:  expat-devel
 BuildRequires:  flex
 BuildRequires:  desktop-file-utils
-
-# Geo stuff
-BuildRequires:  gdal-devel
-%if 0%{?fedora} >= 37
-BuildRequires:  python3-gdal
-%else
-BuildRequires:  gdal-python3
-%endif
-BuildRequires:  geos-devel
-BuildRequires:  gsl-devel
-BuildRequires:  libspatialite-devel
-BuildRequires:  PDAL
-BuildRequires:  PDAL-devel
-BuildRequires:  proj-devel
-BuildRequires:  spatialindex-devel
-BuildRequires:  grass-devel
-
-# Other stuff
-BuildRequires:  exiv2-devel
-BuildRequires:  gsl-devel
-BuildRequires:  laszip-devel
-BuildRequires:  libzip-devel
-BuildRequires:  libzstd-devel
-BuildRequires:  postgresql-devel
-BuildRequires:  sqlite-devel
 BuildRequires:  hdf5-devel
-BuildRequires:  netcdf-devel
-BuildRequires:  fcgi-devel
-BuildRequires:  protobuf-compiler
-BuildRequires:  protobuf-devel
-BuildRequires:  protobuf-lite-devel
-BuildRequires:  draco-devel
-
-# OpenCL
+BuildRequires:  laszip-devel
 BuildRequires:  opencl-headers
-BuildRequires:  ocl-icd-devel
-
-# Python stuff
-BuildRequires:  python3-devel
+BuildRequires:  PDAL
+BuildRequires:  protobuf-compiler
+BuildRequires:  python3-gdal
 BuildRequires:  python3-jinja2
 BuildRequires:  python3-OWSLib
 BuildRequires:  python3-psycopg2
 BuildRequires:  python3-pygments
+BuildRequires:  python3-pyqt6-devel
 BuildRequires:  python3-PyYAML
-BuildRequires:  python3-qscintilla-qt5
-BuildRequires:  python3-qscintilla-qt5-devel
-BuildRequires:  python3-qt5-devel
-BuildRequires:  sip6
+BuildRequires:  python3-qscintilla-qt6
+BuildRequires:  python3-qscintilla-qt6-devel
 BuildRequires:  PyQt-builder
+BuildRequires:  qca-qt6-ossl
+BuildRequires:  qscintilla-qt6-devel
+BuildRequires:  qt6-qttools-static
+BuildRequires:  qwt-qt6-devel
+BuildRequires:  sip6
 
-# Qca stuff
-BuildRequires:  qca-qt5-devel
-BuildRequires:  qca-qt5-ossl
-BuildRequires:  qscintilla-qt5-devel
+BuildRequires:  cmake(blend2d)
+BuildRequires:  cmake(draco)
+BuildRequires:  cmake(exiv2)
+BuildRequires:  cmake(gdal)
+BuildRequires:  cmake(geographiclib)
+BuildRequires:  cmake(geos)
+BuildRequires:  cmake(libzip)
+BuildRequires:  cmake(pdal)
+BuildRequires:  cmake(proj)
+BuildRequires:  cmake(qca-qt6)
+BuildRequires:  cmake(Qt63DCore)
+BuildRequires:  cmake(Qt6Core5Compat)
+BuildRequires:  cmake(Qt6CorePrivate)
+BuildRequires:  cmake(Qt6Keychain)
+BuildRequires:  cmake(Qt6Location)
+BuildRequires:  cmake(Qt6Multimedia)
+BuildRequires:  cmake(Qt6SerialPort)
+BuildRequires:  cmake(Qt6Svg)
+BuildRequires:  cmake(Qt6WebEngineWidgets)
 
-# Qt5 stuff
-BuildRequires:  qt5-qtlocation-devel
-BuildRequires:  qt5-qtmultimedia-devel
-BuildRequires:  qt5-qtsvg-devel
-BuildRequires:  qt5-qttools-static
-BuildRequires:  qt5-qtwebkit-devel
-BuildRequires:  qtkeychain-qt5-devel
-BuildRequires:  qt5-qtserialport-devel
-BuildRequires:  qt5-qt3d-devel
-BuildRequires:  qt5-qtbase-private-devel
+BuildRequires:  pkgconfig(expat)
+BuildRequires:  pkgconfig(fcgi)
+BuildRequires:  pkgconfig(freetype2)
+BuildRequires:  pkgconfig(grass)
+BuildRequires:  pkgconfig(gsl)
+BuildRequires:  pkgconfig(lcms2)
+BuildRequires:  pkgconfig(libjpeg)
+BuildRequires:  pkgconfig(libopenjp2)
+BuildRequires:  pkgconfig(libpq)
+BuildRequires:  pkgconfig(libzstd)
+BuildRequires:  pkgconfig(netcdf)
+BuildRequires:  pkgconfig(ocl-icd)
+BuildRequires:  pkgconfig(protobuf)
+BuildRequires:  pkgconfig(protobuf-lite)
+BuildRequires:  pkgconfig(python3)
+BuildRequires:  pkgconfig(spatialite)
+BuildRequires:  pkgconfig(sfcgal)
+BuildRequires:  pkgconfig(sqlite)
 
-# Qwt stuff
-BuildRequires:  qwt-qt5-devel
-
-# GDAL must be explicit. It is required by some raster tools
-# like Warp (Reproject) which relies on gdalwarp
 Requires:       gdal
-
-# Installation of QCA plugins must be explicit
-Requires:       qca-qt5-ossl
 Requires:       gpsbabel
 Requires:       PDAL
-Requires:       qt5-qtcharts
+Requires:       qca-qt6-ossl
+Requires:       qt6-qtcharts
 
 # We don't want to provide private Python extension libs
 %global __provides_exclude_from ^(%{python3_sitearch}|%{_libdir}/%{name}/plugins)/.*\.so(\.%{version})?$
@@ -171,21 +156,17 @@ Provides:       %{name}-python = %{combinedversion}-%{release}
 Provides:       %{name}-python%{?_isa} = %{combinedversion}-%{release}
 Summary:        Python integration and plug-ins for QGIS
 Requires:       %{name}%{?_isa} = %{combinedversion}-%{release}
-%if 0%{?fedora} >= 37
-Requires:       python3-gdal
-%else
-Requires:       gdal-python3
-%endif
 Requires:       gdal-python-tools
+Requires:       python3-gdal
 Requires:       python3-jinja2
 Requires:       python3-OWSLib
 Requires:       python3-packaging
 Requires:       python3-psycopg2
 Requires:       python3-pygments
+Requires:       python3-pyqt6
 Requires:       python3-PyYAML
-Requires:       python3-qscintilla-qt5
-Requires:       python3-qt5
-%{?_sip_api:Requires: python3-pyqt5-sip-api(%{_sip_api_major}) >= %{_sip_api}}
+Requires:       python3-qscintilla-qt6
+%{?_sip_api:Requires: python3-pyqt6-sip-api(%{_sip_api_major}) >= %{_sip_api}}
 
 %description -n python3-qgis
 Python integration and plug-ins for QGIS.
@@ -210,6 +191,12 @@ Please refer to %{name}-server-README.fedora for details!
 # Remove executable permissions from source code files
 find . \( -name "*.cpp" -o -name "*.h" \) -type f -perm /111 -execdir chmod -x {} \+
 
+# Move installation of libPdf4QtLibCore.so from /usr/usr/lib/ to /usr/lib64
+sed -i 's|PDF4QT_INSTALL_LIB_DIR usr/${PDF4QT_INSTALL_LIB_DIR_IMPL}|PDF4QT_INSTALL_LIB_DIR %{_libdir}|' external/PDF4QT/CMakeLists.txt
+
+# Move installation of pyproject.toml from /usr/lib64/python3.x/site-packages/ to /usr/lib64/python3.x/site-packages/qgis/
+sed -i 's|install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pyproject.toml DESTINATION "${QGIS_PYTHON_INSTALL_DIR}/")|install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pyproject.toml DESTINATION "${QGIS_PYTHON_DIR}/")|' python/CMakeLists.txt
+
 # Readme file for QGIS server configuration HTTPD and Nginx example
 install -pm0644 %{SOURCE1} .
 install -pm0644 %{SOURCE2} .
@@ -222,25 +209,19 @@ gzip ChangeLog
 %build
 %cmake \
       %{_cmake_skip_rpath} \
-      -D QGIS_LIB_SUBDIR=%{_lib} \
-      -D QGIS_MANUAL_SUBDIR=/share/man \
-      -D QGIS_CGIBIN_SUBDIR=%{_libexecdir}/%{name} \
-      -D WITH_BINDINGS:BOOL=TRUE \
-%if 0%{?fedora} >= 36
-      -D WITH_GRASS8:BOOL=TRUE \
-      -D GRASS_PREFIX8=%{grass_prefix} \
-%else
-      -D WITH_GRASS7:BOOL=TRUE \
-      -D GRASS_PREFIX7=%{grass_prefix} \
-%endif
-      -D WITH_CUSTOM_WIDGETS:BOOL=TRUE \
       -D BINDINGS_GLOBAL_INSTALL:BOOL=TRUE \
       -D ENABLE_TESTS:BOOL=FALSE \
-      -D WITH_EPT:BOOL=TRUE \
-      -D WITH_PDAL:BOOL=TRUE \
+      -D GRASS_PREFIX8=%{grass_prefix} \
+      -D QGIS_CGIBIN_SUBDIR=%{_libexecdir}/%{name} \
+      -D QGIS_LIB_SUBDIR=%{_lib} \
+      -D QGIS_MANUAL_SUBDIR=/share/man \
+      -D WITH_CUSTOM_WIDGETS:BOOL=TRUE \
+      -D WITH_GEOGRAPHICLIB=TRUE \
+      -D WITH_INTERNAL_SPATIALINDEX:BOOL=TRUE \
+      -D WITH_PDF4QT:BOOL=TRUE \
       -D WITH_QSPATIALITE:BOOL=TRUE \
       -D WITH_SERVER:BOOL=TRUE \
-      -D WITH_3D:BOOL=TRUE \
+      -D WITH_SFCGAL:BOOL=TRUE \
       -D USE_OPENCL:BOOL=TRUE \
       %{configure_with_sha} \
       .
@@ -279,8 +260,9 @@ rm -f %{buildroot}%{_datadir}/%{name}/doc/INSTALL*
 %{_libdir}/lib%{name}_core.so.*
 %{_libdir}/lib%{name}_gui.so.*
 %{_libdir}/lib%{name}_3d.so.*
+%{_libdir}/libPdf4QtLibCore.so*
 %{_libdir}/%{name}/
-%{?_qt5_plugindir}/sqldrivers/libqsqlspatialite.so
+%{?_qt6_plugindir}/sqldrivers/libqsqlspatialite.so
 %{_bindir}/%{name}
 %{_bindir}/%{name}_process
 %{_mandir}/man1/%{name}.1*
@@ -304,7 +286,7 @@ rm -f %{buildroot}%{_datadir}/%{name}/doc/INSTALL*
 %{_datadir}/%{name}/FindQGIS.cmake
 %{_includedir}/%{name}/
 %{_libdir}/lib%{name}*.so
-%{?_qt5_plugindir}/designer/libqgis_customwidgets.so*
+%{?_qt6_plugindir}/designer/libqgis_customwidgets.so*
 
 %files grass
 %{_libdir}/lib%{name}grass*.so.*
@@ -318,7 +300,7 @@ rm -f %{buildroot}%{_datadir}/%{name}/doc/INSTALL*
 %{_libdir}/libqgispython.so.*
 %{_datadir}/%{name}/python/
 %{python3_sitearch}/%{name}/
-%{python3_sitearch}/PyQt5/uic/widget-plugins/
+%{python3_sitearch}/PyQt6/uic/widget-plugins/
 %exclude %{python3_sitearch}/%{name}/server/
 %exclude %{python3_sitearch}/%{name}/_server.so
 

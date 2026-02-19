@@ -21,11 +21,13 @@
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgsfields.h"
+#include "qgsvector3d.h"
+
+#include <QSet>
 #include <QString>
 #include <QVector>
-#include <QSet>
 
-#include "qgsvector3d.h"
+using namespace Qt::StringLiterals;
 
 class QgsPointCloudAttributeCollection;
 
@@ -104,7 +106,7 @@ class CORE_EXPORT QgsPointCloudAttribute
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsPointCloudAttribute: %1 (%2)>" ).arg( sipCpp->name() ).arg( sipCpp->displayType() );
+    QString str = u"<QgsPointCloudAttribute: %1 (%2)>"_s.arg( sipCpp->name() ).arg( sipCpp->displayType() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
