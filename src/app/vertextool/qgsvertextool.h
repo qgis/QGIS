@@ -16,6 +16,7 @@
 #ifndef QGSVERTEXTOOL_H
 #define QGSVERTEXTOOL_H
 
+#include <cstdint>
 #include <memory>
 #include <vector>
 
@@ -412,7 +413,7 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     //! structure to keep information about a rubber band used for dragging of a NURBS curve \since QGIS 4.0
     struct NurbsBand
     {
-        const QgsNurbsCurve *nurbs = nullptr;        //!< NURBS curve pointer for identification
+        std::uintptr_t id;                           //!< NURBS curve identifier
         QObjectUniquePtr<QgsRubberBand> curveBand;   //!< Evaluated NURBS curve visualization
         QObjectUniquePtr<QgsRubberBand> controlBand; //!< Control polygon
         QVector<QgsPointXY> controlPoints;           //!< Control points in map coordinates
