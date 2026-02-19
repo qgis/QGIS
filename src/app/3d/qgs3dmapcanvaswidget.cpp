@@ -1534,7 +1534,7 @@ void Qgs3DMapCanvasWidget::updateProfileRubberBands( QgsElevationProfile *profil
   }
   else
   {
-    rubberBandGeom = curveGeom;
+    rubberBandGeom = QgsGeometry( curve->curveToLine() );
     geomType = Qgis::GeometryType::Line;
   }
 
