@@ -710,7 +710,10 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   {
     d->opacity = ( textStyleElem.attribute( u"textOpacity"_s ).toDouble() );
   }
-  d->textFont.setStretch( textStyleElem.attribute( u"stretchFactor"_s, u"100"_s ).toInt() );
+  if ( textStyleElem.hasAttribute( u"stretchFactor"_s ) )
+  {
+    d->textFont.setStretch( textStyleElem.attribute( u"stretchFactor"_s, u"100"_s ).toInt() );
+  }
   d->orientation = QgsTextRendererUtils::decodeTextOrientation( textStyleElem.attribute( u"textOrientation"_s ) );
   d->previewBackgroundColor = QgsColorUtils::colorFromString( textStyleElem.attribute( u"previewBkgrdColor"_s, QgsColorUtils::colorToString( Qt::white ) ) );
 
