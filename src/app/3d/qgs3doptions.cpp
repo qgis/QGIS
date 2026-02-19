@@ -18,7 +18,6 @@
 #include "qgis.h"
 #include "qgisapp.h"
 #include "qgs3dmapcanvas.h"
-#include "qgs3dmapcanvaswidget.h"
 #include "qgsapplication.h"
 #include "qgscameracontroller.h"
 #include "qgssettings.h"
@@ -87,14 +86,11 @@ void Qgs3DOptionsWidget::apply()
 
   settings.setValue( u"map3d/gpuMemoryLimit"_s, mGpuMemoryLimit->value(), QgsSettings::App );
 
-  auto axisInversion = mInvertVerticalAxisCombo->currentData().value<Qgis::VerticalAxisInversion>();
+  Qgis::VerticalAxisInversion axisInversion = mInvertVerticalAxisCombo->currentData().value<Qgis::VerticalAxisInversion>();
   settings.setEnumValue( u"map3d/axisInversion"_s, axisInversion, QgsSettings::App );
   // Apply axis inversion setting to existing map views
-  for ( auto view : QgisApp::instance()->get3DMapViews() )
+  for ( Qgs3DMapCanvas *canvas : QgisApp::instance()->mapCanvases3D() )
   {
-    Qgs3DMapCanvas *canvas = view->mapCanvas3D();
-    if ( !canvas )
-      continue;
     QgsCameraController *cameraController = canvas->cameraController();
     if ( !cameraController )
       continue;
