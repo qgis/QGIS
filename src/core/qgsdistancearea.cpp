@@ -1041,3 +1041,12 @@ double QgsDistanceArea::convertAreaMeasurement( double area, Qgis::AreaUnit toUn
                     .arg( QgsUnitTypes::toString( toUnits ) ), 3 );
   return result;
 }
+
+void QgsDistanceArea::ensureCoordinateTransformUpToDate() const
+{
+  if ( mCoordTransformDirty )
+  {
+    mCoordTransform = QgsCoordinateTransform( mSourceCrs, mDestinationCrs, mCoordTransformContext );
+    mCoordTransformDirty = false;
+  }
+}

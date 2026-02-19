@@ -384,7 +384,7 @@ class CORE_EXPORT QgsDistanceArea
     };
 
     //! used for transforming coordinates from source CRS to ellipsoid's coordinates
-    QgsCoordinateTransform mCoordTransform;
+    mutable QgsCoordinateTransform mCoordTransform;
 
     //! ellipsoid acronym (from table tbl_ellipsoids)
     QString mEllipsoid;
@@ -406,6 +406,7 @@ class CORE_EXPORT QgsDistanceArea
     double measureLine( const QgsCurve *curve ) const;
     double measurePolygon( const QgsCurve *curve ) const;
 
+    void ensureCoordinateTransformUpToDate() const;
 };
 
 #endif
