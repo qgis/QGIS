@@ -1878,7 +1878,7 @@ bool QgsPostgresRasterProvider::loadFields()
          && uniqueMap[tableoid][attnum]
          && defValMap[tableoid][attnum].isEmpty() )
     {
-      const QString seqName { mTableName + '_' + fieldName + QStringLiteral( "_seq" ) };
+      const QString seqName { mTableName + '_' + fieldName + QStringLiteral( " )eq" ) };
       const QString seqSql = QStringLiteral( "SELECT c.oid "
                                              "  FROM pg_class c "
                                              "  LEFT JOIN pg_namespace n "
@@ -2396,8 +2396,8 @@ QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, Qgis::
   const QgsRectangle extentExpanded { QgsRasterLayerUtils::alignRasterExtent( extent, QgsPointXY( mExtent.xMinimum(), mExtent.yMinimum() ), mScaleX, mScaleY ) };
 
   // Query the backend
-  const QString extentSql { extentExpanded.isNull() ? QString() : u"ST_GeomFromText( %1, %2 )"_s.arg( quotedValue( extentExpanded.asWktPolygon() ) ).arg( mCrs.postgisSrid() ) };
-  QString where { extentSql.isEmpty() ? QString() : u"WHERE %1 && %2"_s.arg( quotedIdentifier( mRasterColumn ), extentSql ) };
+  const QString extentSql { extentExpanded.isNull() ? QString() : QStringLiteral( "ST_GeomFromText( %1, %2 )" ).arg( quotedValue( extentExpanded.asWktPolygon() ) ).arg( mCrs.postgisSrid() ) };
+  QString where { extentSql.isEmpty() ? QString() : QStringLiteral( "WHERE %1 && %2" ).arg( quotedIdentifier( mRasterColumn ), extentSql ) };
 
   if ( !subsetString().isEmpty() )
   {
@@ -2407,8 +2407,8 @@ QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, Qgis::
   QString sql;
   if ( extentSql.isEmpty() )
   {
-    sql = u"SELECT ( ST_SummaryStatsAgg( %1, %2, TRUE, %3 )).* "
-          "FROM %4 %5"_s
+    sql = QStringLiteral( "SELECT ( ST_SummaryStatsAgg( %1, %2, TRUE, %3 )).* "
+                          "FROM %4 %5" )
             .arg( quotedIdentifier( mRasterColumn ) )
             .arg( bandNo )
             .arg( std::max<double>( 0, std::min<double>( 1, statsRatio ) ) )
@@ -2416,8 +2416,8 @@ QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, Qgis::
   }
   else
   {
-    sql = u"SELECT ( ST_SummaryStatsAgg( ST_Clip( %1, %2 ), %3, TRUE, %4 )).* "
-          "FROM %5 %6"_s
+    sql = QStringLiteral( "SELECT ( ST_SummaryStatsAgg( ST_Clip( %1, %2 ), %3, TRUE, %4 )).* "
+                          "FROM %5 %6" )
             .arg( quotedIdentifier( mRasterColumn ), extentSql )
             .arg( bandNo )
             .arg( std::max<double>( 0, std::min<double>( 1, statsRatio ) ) )
