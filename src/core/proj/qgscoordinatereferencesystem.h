@@ -1162,6 +1162,20 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 #endif
 
     /**
+     * Returns TRUE if the CRS is associated with the Earth.
+     *
+     * \since QGIS 4.0
+     */
+    bool isEarthCrs() const;
+
+    /**
+     * Returns TRUE if \a other crs is associated with the same celestial body.
+     *
+     * \since QGIS 4.0
+     */
+    bool isSameCelestialBody( const QgsCoordinateReferenceSystem &other ) const;
+
+    /**
      * Returns a list of recently used projections
      * \returns list of srsid for recently used projections
      *
