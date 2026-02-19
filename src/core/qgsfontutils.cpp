@@ -191,6 +191,11 @@ bool QgsFontUtils::updateFontViaStyle( QFont &f, const QString &fontstyle, bool 
   // is the font's style already the same as requested?
   if ( actualFontStyle == fontDB.styleString( f ) )
   {
+    if ( f.styleName().isEmpty() )
+    {
+      f.setStyleName( actualFontStyle );
+      return true;
+    }
     return false;
   }
 
