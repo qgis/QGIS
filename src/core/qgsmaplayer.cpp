@@ -3069,6 +3069,11 @@ QgsRectangle QgsMapLayer::wgs84Extent( bool forceRecalculate ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
+  if ( !crs().isEarthCrs() )
+  {
+    return QgsRectangle();
+  }
+
   QgsRectangle wgs84Extent;
 
   if ( ! forceRecalculate && ! mWgs84Extent.isNull() )
