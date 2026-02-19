@@ -110,14 +110,11 @@ void Qgs3DOptionsWidget::apply()
   Qgs3D::settingTextureFilterQuality->setValue( mTextureFilterQualityCombo->currentData().value< Qgis::TextureFilterQuality >() );
   Qgs3D::settingShadowQuality->setValue( mShadowQualityCombo->currentData().value< Qgis::ShadowQuality >() );
 
-  auto axisInversion = mInvertVerticalAxisCombo->currentData().value<Qgis::VerticalAxisInversion>();
+  Qgis::VerticalAxisInversion axisInversion = mInvertVerticalAxisCombo->currentData().value<Qgis::VerticalAxisInversion>();
   settings.setEnumValue( u"map3d/axisInversion"_s, axisInversion, QgsSettings::App );
   // Apply axis inversion setting to existing map views
-  for ( auto view : QgisApp::instance()->get3DMapViews() )
+  for ( Qgs3DMapCanvas *canvas : QgisApp::instance()->mapCanvases3D() )
   {
-    Qgs3DMapCanvas *canvas = view->mapCanvas3D();
-    if ( !canvas )
-      continue;
     QgsCameraController *cameraController = canvas->cameraController();
     if ( !cameraController )
       continue;
