@@ -806,8 +806,12 @@ QCheckBox::indicator
     height:0.8em;
 }
 
-QCheckBox::indicator:intermediary {
-    image: url(@theme_path/icons/qcheckbox-intermediary.svg);
+QCheckBox::indicator:indeterminate {
+    image: url(@theme_path/icons/qcheckbox-indeterminate.svg);
+}
+
+QCheckBox::indicator:indeterminate:disabled {
+    image: url(@theme_path/icons/qcheckbox-indeterminate-disabled.svg);
 }
 
 QCheckBox::indicator:unchecked {
@@ -1029,9 +1033,15 @@ QTreeView::indicator
     width:0.8em;
     height:0.8em;
 }
-QTreeView::indicator:intermediary {
-    image: url(@theme_path/icons/qcheckbox-intermediary.svg);
+
+QTreeView::indicator:indeterminate {
+    image: url(@theme_path/icons/qcheckbox-indeterminate.svg);
 }
+
+QTreeView::indicator:indeterminate:disabled {
+    image: url(@theme_path/icons/qcheckbox-indeterminate-disabled.svg);
+}
+
 QTreeView::indicator:checked {
     image: url(@theme_path/icons/qcheckbox-checked.svg);
 }
@@ -1091,9 +1101,15 @@ QTableView::indicator
     width:0.8em;
     height:0.8em;
 }
-QTableView::indicator:intermediary {
-    image: url(@theme_path/icons/qcheckbox-intermediary.svg);
+
+QTableView::indicator:indeterminate {
+    image: url(@theme_path/icons/qcheckbox-indeterminate.svg);
 }
+
+QTableView::indicator:indeterminate:disabled {
+    image: url(@theme_path/icons/qcheckbox-indeterminate-disabled.svg);
+}
+
 QTableView::indicator:checked {
     image: url(@theme_path/icons/qcheckbox-checked.svg) !important;
 }

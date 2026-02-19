@@ -813,9 +813,14 @@ QCheckBox::indicator {
     height:0.8em;
 }
 
-QCheckBox::indicator:intermediary {
+QCheckBox::indicator:indeterminate {
     background-color: @toggleoff;
-    image: url(@theme_path/icons/qcheckbox-intermediary.svg);
+    image: url(@theme_path/icons/qcheckbox-indeterminate.svg);
+}
+
+QCheckBox::indicator:indeterminate:disabled {
+    background-color: transparent;
+    image: url(@theme_path/icons/qcheckbox-indeterminate-disabled.svg);
 }
 
 QCheckBox::indicator:unchecked {
@@ -1064,10 +1069,17 @@ QTreeView::indicator:disabled {
     border-color: @itemdarkbackground;
     background-color: rgba(0, 0, 0, 0);
 }
-QTreeView::indicator:intermediary {
+
+QTreeView::indicator:indeterminate {
     background-color: @toggleoff;
-    image: url(@theme_path/icons/qcheckbox-intermediary.svg);
+    image: url(@theme_path/icons/qcheckbox-indeterminate.svg);
 }
+
+QTreeView::indicator:indeterminate:disabled {
+    background-color: transparent;
+    image: url(@theme_path/icons/qcheckbox-indeterminate-disabled.svg);
+}
+
 QTreeView::indicator:checked {
     background-color: @toggleon;
     image: url(@theme_path/icons/qcheckbox-checked.svg) !important;
@@ -1167,10 +1179,17 @@ QTableView::indicator:disabled {
     border-color: @itemdarkbackground;
     background-color: rgba(0, 0, 0, 0);
 }
-QTableView::indicator:intermediary {
+
+QTableView::indicator:indeterminate {
     background-color: @toggleoff;
-    image: url(@theme_path/icons/qcheckbox-intermediary.svg);
+    image: url(@theme_path/icons/qcheckbox-indeterminate.svg);
 }
+
+QTableView::indicator:indeterminate:disabled {
+    background-color: transparent;
+    image: url(@theme_path/icons/qcheckbox-indeterminate-disabled.svg);
+}
+
 QTableView::indicator:checked {
     background-color: @toggleon;
     image: url(@theme_path/icons/qcheckbox-checked.svg) !important;
