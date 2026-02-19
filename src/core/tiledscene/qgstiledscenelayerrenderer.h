@@ -84,15 +84,18 @@ class CORE_EXPORT QgsTiledSceneLayerRenderer : public QgsMapLayerRenderer
      */
     bool renderTileContent( const QgsTiledSceneTile &tile, QgsTiledSceneRenderContext &context );
 
-    void renderPrimitive(
-      const tinygltf::Model &model,
-      const tinygltf::Primitive &primitive,
-      const QgsTiledSceneTile &tile,
-      const QgsVector3D &tileTranslationEcef,
-      const QMatrix4x4 *gltfLocalTransform,
-      const QString &contentUri,
-      QgsTiledSceneRenderContext &context
-    );
+    void renderModel( tinygltf::Model &model,
+                      const QgsVector3D &centerOffset,
+                      const QgsTiledSceneTile &tile,
+                      QgsTiledSceneRenderContext &context );
+
+    void renderPrimitive( const tinygltf::Model &model,
+                          const tinygltf::Primitive &primitive,
+                          const QgsTiledSceneTile &tile,
+                          const QgsVector3D &tileTranslationEcef,
+                          const QMatrix4x4 *gltfLocalTransform,
+                          const QString &contentUri,
+                          QgsTiledSceneRenderContext &context );
 
     void renderTrianglePrimitive(
       const tinygltf::Model &model,
