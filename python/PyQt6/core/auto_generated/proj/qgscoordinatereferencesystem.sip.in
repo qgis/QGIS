@@ -1326,7 +1326,7 @@ Returns auth id of related geographic CRS
 %Docstring
 Returns ``True`` if the CRS is associated with the Earth.
 
-.. versionadded:: 4.0
+.. versionadded:: 4.2
 %End
 
     bool isSameCelestialBody( const QgsCoordinateReferenceSystem &other ) const;
@@ -1334,7 +1334,7 @@ Returns ``True`` if the CRS is associated with the Earth.
 Returns ``True`` if ``other`` crs is associated with the same celestial
 body.
 
-.. versionadded:: 4.0
+.. versionadded:: 4.2
 %End
 
  static QStringList recentProjections() /Deprecated="Since 3.10. Use QgsApplication.coordinateReferenceSystemRegistry()->recentCrs() instead."/;
