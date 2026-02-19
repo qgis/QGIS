@@ -170,11 +170,14 @@ bool QgsDistanceArea::setEllipsoid( const QString &ellipsoid )
 bool QgsDistanceArea::setEllipsoid( double semiMajor, double semiMinor )
 {
   mEllipsoid = u"PARAMETER:%1:%2"_s.arg( qgsDoubleToString( semiMajor ), qgsDoubleToString( semiMinor ) );
-  mSemiMajor = semiMajor;
-  mSemiMinor = semiMinor;
-  mInvFlattening = mSemiMajor / ( mSemiMajor - mSemiMinor );
 
-  computeAreaInit();
+  QgsEllipsoidUtils::EllipsoidParameters params;
+  params.semiMajor = semiMajor;
+  params.semiMinor = semiMinor;
+  params.inverseFlattening = semiMajor / ( semiMajor - semiMinor );
+  params.useCustomParameters = true;
+
+  setFromParams( params );
 
   return true;
 }
@@ -940,19 +943,12 @@ void QgsDistanceArea::setFromParams( const QgsEllipsoidUtils::EllipsoidParameter
 {
   mCoordTransformDirty = true;
 
-  if ( params.useCustomParameters )
-  {
-    setEllipsoid( params.semiMajor, params.semiMinor );
-    mDestinationCrs = params.crs;
-  }
-  else
-  {
-    mSemiMajor = params.semiMajor;
-    mSemiMinor = params.semiMinor;
-    mInvFlattening = params.inverseFlattening;
-    mDestinationCrs = params.crs;
-    computeAreaInit();
-  }
+  mSemiMajor = params.semiMajor;
+  mSemiMinor = params.semiMinor;
+  mInvFlattening = params.inverseFlattening;
+  mDestinationCrs = params.crs;
+
+  computeAreaInit();
 }
 
 double QgsDistanceArea::computePolygonArea( const QVector<QgsPointXY> &points ) const
