@@ -479,6 +479,8 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotC
 
   QgsNumericFormatContext numericContext;
 
+  constexpr int MAX_OBJECTS = 1000;
+
   // categories
   const QStringList categories = plotData.categories();
 
@@ -490,9 +492,10 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotC
     case Qgis::PlotAxisType::Interval:
       if ( labelIntervalY > 0 )
       {
-        for ( double currentY = firstYLabel; ; currentY += labelIntervalY )
+        int objectNumber = 0;
+        for ( double currentY = firstYLabel; ; currentY += labelIntervalY, ++objectNumber )
         {
-          const bool hasMoreLabels = currentY + labelIntervalY <= maxY && !qgsDoubleNear( currentY + labelIntervalY, maxY, yTolerance );
+          const bool hasMoreLabels = objectNumber + 1 < MAX_OBJECTS && ( currentY + labelIntervalY <= maxY && !qgsDoubleNear( currentY + labelIntervalY, maxY, yTolerance ) );
           plotScope->addVariable( QgsExpressionContextScope::StaticVariable( u"plot_axis_value"_s, currentY, true ) );
           QString text = yAxis->numericFormat()->formatDouble( currentY, numericContext );
           switch ( yAxis->labelSuffixPlacement() )
@@ -531,6 +534,8 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotC
       for ( int i = 0; i < categories.size(); i++ )
       {
         maxYAxisLabelWidth = std::max( maxYAxisLabelWidth, QgsTextRenderer::textWidth( context, yAxis->textFormat(), { categories.at( i ) } ) );
+        if ( i + 1 >= MAX_OBJECTS )
+          break;
       }
       break;
   }
@@ -552,8 +557,6 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotC
 
   const double xScale = ( chartAreaRight - chartAreaLeft ) / ( maxX - minX );
   const double yScale = ( chartAreaBottom - chartAreaTop ) / ( maxY - minY );
-
-  constexpr int MAX_OBJECTS = 1000;
 
   // grid lines
 
@@ -635,9 +638,9 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotC
     case Qgis::PlotAxisType::Interval:
     {
       plotScope->addVariable( QgsExpressionContextScope::StaticVariable( u"plot_axis"_s, u"x"_s, true ) );
-      int objectNumber = 0;
       if ( labelIntervalX > 0 )
       {
+        int objectNumber = 0;
         for ( double currentX = firstXLabel; ; currentX += labelIntervalX, ++objectNumber )
         {
           const bool hasMoreLabels = objectNumber + 1 < MAX_OBJECTS && ( currentX + labelIntervalX <= maxX || qgsDoubleNear( currentX + labelIntervalX, maxX, xTolerance ) );
@@ -687,6 +690,8 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotC
         plotScope->addVariable( QgsExpressionContextScope::StaticVariable( u"plot_axis_value"_s, categories.at( i ), true ) );
         QgsTextRenderer::drawText( QPointF( currentX + chartAreaLeft, mSize.height() - context.convertToPainterUnits( margins.bottom(), Qgis::RenderUnit::Millimeters ) ),
                                    0, Qgis::TextHorizontalAlignment::Center, { categories.at( i ) }, context, xAxis->textFormat() );
+        if ( i + 1 >= MAX_OBJECTS )
+          break;
       }
       break;
     }
@@ -698,9 +703,9 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotC
     case Qgis::PlotAxisType::Interval:
     {
       plotScope->addVariable( QgsExpressionContextScope::StaticVariable( u"plot_axis"_s, u"y"_s, true ) );
-      int objectNumber = 0;
       if ( labelIntervalY > 0 )
       {
+        int objectNumber = 0;
         for ( double currentY = firstYLabel; ; currentY += labelIntervalY, ++objectNumber )
         {
           const bool hasMoreLabels = objectNumber + 1 < MAX_OBJECTS && ( currentY + labelIntervalY <= maxY || qgsDoubleNear( currentY + labelIntervalY, maxY, yTolerance ) );
@@ -756,6 +761,9 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotC
                                      maxYAxisLabelWidth + context.convertToPainterUnits( margins.left(), Qgis::RenderUnit::Millimeters ),
                                      chartAreaBottom - currentY + height / 2 ),
                                    0, Qgis::TextHorizontalAlignment::Right, { categories.at( i ) }, context, yAxis->textFormat(), false );
+
+        if ( i + 1 >= MAX_OBJECTS )
+          break;
       }
       break;
     }
@@ -879,6 +887,8 @@ QRectF Qgs2DXyPlot::interiorPlotArea( QgsRenderContext &context, QgsPlotRenderCo
       for ( int i = 0; i < categories.size(); i++ )
       {
         maxXAxisLabelHeight = std::max( maxXAxisLabelHeight, QgsTextRenderer::textHeight( context, xAxis->textFormat(), { categories.at( i ) } ) );
+        if ( i + 1 >= MAX_LABELS )
+          break;
       }
       break;
   }
@@ -932,6 +942,8 @@ QRectF Qgs2DXyPlot::interiorPlotArea( QgsRenderContext &context, QgsPlotRenderCo
       for ( int i = 0; i < categories.size(); i++ )
       {
         maxYAxisLabelWidth = std::max( maxYAxisLabelWidth, QgsTextRenderer::textWidth( context, yAxis->textFormat(), { categories.at( i ) } ) );
+        if ( i + 1 >= MAX_LABELS )
+          break;
       }
       break;
   }

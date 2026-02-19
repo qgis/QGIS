@@ -112,6 +112,8 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
     }
     symbol->startRender( context );
 
+    chartScope->addVariable( QgsExpressionContextScope::StaticVariable( u"chart_series_name"_s, series->name(), true ) );
+
     const double barStartAdjustment = -( barsWidth / 2 ) + barWidth * seriesIndex;
     if ( const QgsXyPlotSeries *xySeries = dynamic_cast<const QgsXyPlotSeries *>( series ) )
     {
