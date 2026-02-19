@@ -69,13 +69,29 @@ Extracts GLTF binary data and other contents from the legacy b3dm
       QgsVector3D rtcCenter;
     };
 
-    static TileContents extractGltfFromTileContent( const QByteArray &tileContent );
+ static TileContents extractGltfFromTileContent( const QByteArray &tileContent ) /Deprecated="Since 4.2.  use extractTileContent() which can handle composite tiles as well."/;
 %Docstring
 Parses tile content. Returns empty byte array on error.
 
 .. note::
 
    cmpt, pnts, i3dm tile types are currently not supported
+
+.. deprecated:: 4.2
+
+   : use :py:func:`~QgsCesiumUtils.extractTileContent` which can handle composite tiles as well.
+%End
+
+    static QVector<TileContents> extractTileContent( const QByteArray &tileContent );
+%Docstring
+Parses tile content and returns a list of TileContents.
+
+For b3dm and glTF tiles, the returned list will contain a single entry.
+For cmpt (composite) tiles, the returned list will contain one entry per
+inner tile that could be successfully parsed. Returns an empty list on
+error or for unsupported tile types (pnts, i3dm).
+
+.. versionadded:: 4.2
 %End
 
 };
