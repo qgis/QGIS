@@ -22,6 +22,7 @@
 #include "qgis_sip.h"
 #include "qgsrange.h"
 #include "qgspointxy.h"
+#include "qgsrectangle.h"
 
 class QgsRasterLayer;
 
