@@ -16,10 +16,10 @@
 #include "qgs3doptions.h"
 
 #include "qgis.h"
+#include "qgisapp.h"
 #include "qgs3d.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapcanvaswidget.h"
-#include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgscameracontroller.h"
 #include "qgssettings.h"
@@ -75,6 +75,9 @@ Qgs3DOptionsWidget::Qgs3DOptionsWidget( QWidget *parent )
   const Qgis::VerticalAxisInversion axisInversion = settings.enumValue( u"map3d/axisInversion"_s, Qgis::VerticalAxisInversion::WhenDragging, QgsSettings::App );
   mInvertVerticalAxisCombo->setCurrentIndex( mInvertVerticalAxisCombo->findData( QVariant::fromValue( axisInversion ) ) );
 
+  const bool axisInversionTerrain = settings.value( u"map3d/axisInversionTerrain"_s, false, QgsSettings::App ).value<bool>();
+  mInvertVerticalAxisTerrainCombo->setCurrentIndex( axisInversionTerrain );
+
   const Qt3DRender::QCameraLens::ProjectionType defaultProjection = settings.enumValue( u"map3d/defaultProjection"_s, Qt3DRender::QCameraLens::PerspectiveProjection, QgsSettings::App );
   cboCameraProjectionType->setCurrentIndex( cboCameraProjectionType->findData( static_cast<int>( defaultProjection ) ) );
 
@@ -112,6 +115,11 @@ void Qgs3DOptionsWidget::apply()
 
   Qgis::VerticalAxisInversion axisInversion = mInvertVerticalAxisCombo->currentData().value<Qgis::VerticalAxisInversion>();
   settings.setEnumValue( u"map3d/axisInversion"_s, axisInversion, QgsSettings::App );
+
+  // Index 0 (false) is "No", index 1 (true) "Yes"
+  bool axisInversionTerrain = mInvertVerticalAxisTerrainCombo->currentIndex();
+  settings.setValue( u"map3d/axisInversionTerrain"_s, axisInversionTerrain, QgsSettings::App );
+
   // Apply axis inversion setting to existing map views
   for ( Qgs3DMapCanvas *canvas : QgisApp::instance()->mapCanvases3D() )
   {
@@ -119,6 +127,7 @@ void Qgs3DOptionsWidget::apply()
     if ( !cameraController )
       continue;
     cameraController->setVerticalAxisInversion( axisInversion );
+    cameraController->setVerticalAxisInversionTerrain( axisInversionTerrain );
   }
 }
 
