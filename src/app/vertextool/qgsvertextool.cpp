@@ -429,11 +429,13 @@ void QgsVertexTool::addDragNurbsBand( QgsVectorLayer *layer, const QgsNurbsCurve
   if ( !nurbs || nurbs->controlPoints().isEmpty() )
     return;
 
+  const std::uintptr_t nurbsId = reinterpret_cast<quintptr>( nurbs );
+
   // Check if a band already exists for this NURBS curve
   NurbsBand *existingBand = nullptr;
   for ( NurbsBand &band : mDragNurbsBands )
   {
-    if ( band.nurbs == nurbs )
+    if ( band.id == nurbsId )
     {
       existingBand = &band;
       break;
@@ -456,7 +458,7 @@ void QgsVertexTool::addDragNurbsBand( QgsVectorLayer *layer, const QgsNurbsCurve
     QVector<QgsPointXY> mapControlPoints = transformNurbsControlPointsToMap( layer, nurbs->controlPoints() );
 
     NurbsBand band;
-    band.nurbs = nurbs;
+    band.id = nurbsId;
     band.curveBand.reset( createRubberBand( Qgis::GeometryType::Line, true ) );
     band.controlBand.reset( createRubberBand( Qgis::GeometryType::Line, true ) );
     applyNurbsControlPolygonStyle( band.controlBand.data() );
