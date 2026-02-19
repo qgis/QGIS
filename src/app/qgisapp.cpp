@@ -13754,9 +13754,13 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
       }
     }
 
-    const Qgis::VerticalAxisInversion axisInversion = settings.enumValue( u"map3d/axisInversion"_s, Qgis::VerticalAxisInversion::WhenDragging, QgsSettings::App );
-    if ( canvasWidget->mapCanvas3D()->cameraController() )
-      canvasWidget->mapCanvas3D()->cameraController()->setVerticalAxisInversion( axisInversion );
+    if ( QgsCameraController *cameraController = canvasWidget->mapCanvas3D()->cameraController() )
+    {
+      const Qgis::VerticalAxisInversion axisInversion = settings.enumValue( u"map3d/axisInversion"_s, Qgis::VerticalAxisInversion::WhenDragging, QgsSettings::App );
+      const bool axisInversionTerrain = settings.value( u"map3d/axisInversionTerrain"_s, false, QgsSettings::App ).value<bool>();
+      cameraController->setVerticalAxisInversion( axisInversion );
+      cameraController->setVerticalAxisInversionTerrain( axisInversionTerrain );
+    }
 
     QDomImplementation DomImplementation;
     QDomDocumentType documentType = DomImplementation.createDocumentType(
