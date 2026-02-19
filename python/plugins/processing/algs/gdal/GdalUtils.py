@@ -691,20 +691,19 @@ class GdalUtils:
                  An additional returned value provides callers with more details on an eventual write error.
         """
         # Prepare data
-        uri = layer.publicSource()
         version = QgsWmsUtils.wmsVersion(layer)
-        source = QgsProviderRegistry.instance().decodeUri("wms", uri)
-        base_url = source.get("url", "")
+        source = QgsDataSourceUri()
+        source.setEncodedUri(layer.publicSource())
+
+        base_url = source.param("url")
         crs_obj = layer.crs()
         crs_string = GdalUtils.gdal_crs_string(crs_obj)
-        image_format = source.get("format", "")
+        image_format = source.param("format")
         service = {"SERVICE": "WMS"}
-        sublayers = source["layers"] if "layers" in source and source["layers"] else []
-        if isinstance(sublayers, str):
-            sublayers = [sublayers]  # If only one layer, it is given as string
-        styles = source["styles"] if "styles" in source and source["styles"] else []
-        if isinstance(styles, str):
-            styles = [styles]  # If only one style, it is given as string
+        sublayers = source.params("layers")
+        styles = [
+            style for style in source.params("styles") if style
+        ]  # Avoid empty strings
 
         # Set up XML doc
         def add_text_element(doc, base_element, element_name, element_text):
