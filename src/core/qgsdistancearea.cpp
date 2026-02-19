@@ -141,8 +141,6 @@ void QgsDistanceArea::setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS, 
 
 bool QgsDistanceArea::setEllipsoid( const QString &ellipsoid )
 {
-  mCoordTransformDirty = true;
-
   // Shortcut if ellipsoid is none.
   if ( ellipsoid == Qgis::geoNone() )
   {
@@ -948,6 +946,8 @@ void QgsDistanceArea::computeAreaInit() const
 
 void QgsDistanceArea::setFromParams( const QgsEllipsoidUtils::EllipsoidParameters &params )
 {
+  mCoordTransformDirty = true;
+
   if ( params.useCustomParameters )
   {
     setEllipsoid( params.semiMajor, params.semiMinor );
