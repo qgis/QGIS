@@ -169,3 +169,22 @@ int QgsRasterLayerUtils::renderedBandForElevationAndTemporalRange(
   }
   BUILTIN_UNREACHABLE;
 }
+
+
+QgsRectangle QgsRasterLayerUtils::alignRasterExtent( const QgsRectangle &extent, const QgsPointXY &origin, double pixelSizeX, double pixelSizeY )
+{
+  // Return original extent if pixel sizes are zero (to avoid division by zero) or if the extent is empty
+  if ( qgsDoubleNear( pixelSizeX, 0.0 ) || qgsDoubleNear( pixelSizeY, 0.0 ) || extent.isEmpty() )
+  {
+    return extent;
+  }
+
+  // Y pixel size may be negative to indicate inverted NS axis: use absolute value for calculations
+  const double absPixelSizeY { std::abs( pixelSizeY ) };
+  const double minX { origin.x() + std::floor( ( extent.xMinimum() - origin.x() ) / pixelSizeX ) *pixelSizeX };
+  const double minY { origin.y() + std::floor( ( extent.yMinimum() - origin.y() ) / absPixelSizeY ) *absPixelSizeY };
+  const double maxX { origin.x() + std::ceil( ( extent.xMaximum() - origin.x() ) / pixelSizeX ) *pixelSizeX };
+  const double maxY { origin.y() + std::ceil( ( extent.yMaximum() - origin.y() ) / absPixelSizeY ) *absPixelSizeY };
+  return QgsRectangle( minX, minY, maxX, maxY );
+
+}
