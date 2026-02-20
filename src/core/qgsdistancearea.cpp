@@ -378,7 +378,7 @@ double QgsDistanceArea::measureLine( const QVector<QgsPointXY> &points ) const
       return 0;
   }
 
-  QgsCoordinateTransform &sourceToEllipsoidTransform = sourceToEllipsoid();
+  QgsCoordinateTransform sourceToEllipsoidTransform = sourceToEllipsoid();
 
   if ( willUseEllipsoid() )
     p1 = sourceToEllipsoidTransform.transform( points[0] );
@@ -427,7 +427,7 @@ double QgsDistanceArea::measureLine( const QgsPointXY &p1, const QgsPointXY &p2 
   QgsDebugMsgLevel( u"Measuring from %1 to %2"_s.arg( p1.toString( 4 ), p2.toString( 4 ) ), 3 );
   if ( willUseEllipsoid() )
   {
-    QgsCoordinateTransform &sourceToEllipsoidTransform = sourceToEllipsoid();
+    QgsCoordinateTransform sourceToEllipsoidTransform = sourceToEllipsoid();
     QgsDebugMsgLevel( u"Ellipsoidal calculations is enabled, using ellipsoid %1"_s.arg( mEllipsoid ), 4 );
     QgsDebugMsgLevel( u"From proj4 : %1"_s.arg( sourceToEllipsoidTransform.sourceCrs().toProj() ), 4 );
     QgsDebugMsgLevel( u"To   proj4 : %1"_s.arg( sourceToEllipsoidTransform.destinationCrs().toProj() ), 4 );
@@ -451,7 +451,7 @@ double QgsDistanceArea::measureLine( const QgsPointXY &p1, const QgsPointXY &p2 
 
 double QgsDistanceArea::measureLineProjected( const QgsPointXY &p1, double distance, double azimuth, QgsPointXY *projectedPoint ) const
 {
-  QgsCoordinateTransform &sourceToEllipsoidTransform = sourceToEllipsoid();
+  QgsCoordinateTransform sourceToEllipsoidTransform = sourceToEllipsoid();
 
   double result = 0.0;
   QgsPointXY p2;
@@ -597,7 +597,7 @@ double QgsDistanceArea::latitudeGeodesicCrossesAntimeridian( const QgsPointXY &p
 
 QgsGeometry QgsDistanceArea::splitGeometryAtAntimeridian( const QgsGeometry &geometry ) const
 {
-  QgsCoordinateTransform &sourceToEllipsoidTransform = sourceToEllipsoid();
+  QgsCoordinateTransform sourceToEllipsoidTransform = sourceToEllipsoid();
 
   if ( QgsWkbTypes::geometryType( geometry.wkbType() ) != Qgis::GeometryType::Line )
     return geometry;
@@ -726,7 +726,7 @@ QgsGeometry QgsDistanceArea::splitGeometryAtAntimeridian( const QgsGeometry &geo
 
 QVector< QVector<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &p1, const QgsPointXY &p2, const double interval, const bool breakLine ) const
 {
-  QgsCoordinateTransform &sourceToEllipsoidTransform = sourceToEllipsoid();
+  QgsCoordinateTransform sourceToEllipsoidTransform = sourceToEllipsoid();
 
   if ( !willUseEllipsoid() )
   {
@@ -895,7 +895,7 @@ double QgsDistanceArea::bearing( const QgsPointXY &p1, const QgsPointXY &p2 ) co
 
   if ( willUseEllipsoid() )
   {
-    QgsCoordinateTransform &sourceToEllipsoidTransform = sourceToEllipsoid();
+    QgsCoordinateTransform sourceToEllipsoidTransform = sourceToEllipsoid();
     pp1 = sourceToEllipsoidTransform.transform( p1 );
     pp2 = sourceToEllipsoidTransform.transform( p2 );
 
@@ -1048,7 +1048,7 @@ double QgsDistanceArea::convertAreaMeasurement( double area, Qgis::AreaUnit toUn
   return result;
 }
 
-QgsCoordinateTransform &QgsDistanceArea::sourceToEllipsoid() const
+QgsCoordinateTransform QgsDistanceArea::sourceToEllipsoid() const
 {
   if ( mCoordTransformDirty )
   {
