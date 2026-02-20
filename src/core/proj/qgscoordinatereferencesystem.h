@@ -1173,6 +1173,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /**
      * Returns TRUE if \a other crs is associated with the same celestial body.
      *
+     * \see celestialBodyName()
      * \since QGIS 4.2
      */
     bool isSameCelestialBody( const QgsCoordinateReferenceSystem &other ) const;
