@@ -1326,6 +1326,10 @@ Returns auth id of related geographic CRS
 %Docstring
 Returns ``True`` if the CRS is associated with the Earth.
 
+.. seealso:: :py:func:`celestialBodyName`
+
+.. seealso:: :py:func:`isSameCelestialBody`
+
 .. versionadded:: 4.2
 %End
 
@@ -1333,6 +1337,8 @@ Returns ``True`` if the CRS is associated with the Earth.
 %Docstring
 Returns ``True`` if ``other`` crs is associated with the same celestial
 body.
+
+.. seealso:: :py:func:`celestialBodyName`
 
 .. versionadded:: 4.2
 %End
