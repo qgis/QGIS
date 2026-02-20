@@ -3074,6 +3074,10 @@ QgsRectangle QgsMapLayer::wgs84Extent( bool forceRecalculate ) const
     return QgsRectangle();
   }
 
+  // if this function is called without previous call to extent() it will return empty rectangle as both mExtent2D and mExtent3D are null
+  // to avoid this call extent here to force extent calculation
+  ( void ) extent();
+
   QgsRectangle wgs84Extent;
 
   if ( ! forceRecalculate && ! mWgs84Extent.isNull() )
