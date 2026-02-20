@@ -195,6 +195,35 @@ qt_enums = {}
 ambiguous_enums = defaultdict(set)
 
 
+def get_enum_name(_class: str, enum_name: str, value: str):
+    """
+    Returns enum string according to given class name, enum name and value
+    """
+
+    # make sure we CAN import enum!
+    try:
+        eval(f"{_class}.{enum_name}.{value}")
+        return enum_name
+
+    except AttributeError:
+        # let's see if we can find what the replacement should be automatically...
+        # print(f'Trying to find {_class}.{value}.')
+        actual = eval(f"{_class}.{value}")
+        # print(f'Trying to find aliases for {actual.__class__}.')
+        obj = globals()[_class]
+        if isinstance(obj, type):
+            for attr_name in dir(obj):
+                try:
+                    attr = getattr(obj, attr_name)
+                    if attr is actual.__class__:
+                        # print(f'Found alias {_class}.{attr_name}')
+                        return attr_name
+                except AttributeError:
+                    continue
+
+        return None
+
+
 def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
     """
     Parameters
@@ -554,8 +583,11 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
 
     if dry_run:
         for key, value in fix_qt_enums.items():
+            _class, enum_name, val = value
+            real_enum_name = get_enum_name(_class, enum_name, val)
+
             logging.warning(
-                f"{filename}:{key.line}:{key.utf8_byte_offset} - Enum error, add '{value[1]}' before '{value[2]}'"
+                f"{filename}:{key.line}:{key.utf8_byte_offset} - Enum error, add '{real_enum_name}' before '{val}'"
             )
 
         for key, value in member_renames.items():
@@ -744,37 +776,18 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
         if token.offset in fix_qt_enums:
             assert tokens[i + 1].src == "."
             _class, enum_name, value = fix_qt_enums[token.offset]
-            # make sure we CAN import enum!
-            try:
-                eval(f"{_class}.{enum_name}.{value}")
-                tokens[i + 2] = tokens[i + 2]._replace(
-                    src=f"{enum_name}.{tokens[i + 2].src}"
-                )
-            except AttributeError:
-                # let's see if we can find what the replacement should be automatically...
-                # print(f'Trying to find {_class}.{value}.')
-                actual = eval(f"{_class}.{value}")
-                # print(f'Trying to find aliases for {actual.__class__}.')
-                obj = globals()[_class]
-                recovered = False
-                if isinstance(obj, type):
-                    for attr_name in dir(obj):
-                        try:
-                            attr = getattr(obj, attr_name)
-                            if attr is actual.__class__:
-                                # print(f'Found alias {_class}.{attr_name}')
-                                recovered = True
-                                tokens[i + 2] = tokens[i + 2]._replace(
-                                    src=f"{attr_name}.{tokens[i + 2].src}"
-                                )
+            real_enum_name = get_enum_name(_class, enum_name, value)
 
-                        except AttributeError:
-                            continue
-                if not recovered:
-                    sys.stderr.write(
-                        f"{filename}:{token.line}:{token.utf8_byte_offset} ERROR: wanted to replace with {_class}.{enum_name}.{value}, but does not exist\n"
-                    )
+            if not real_enum_name:
+                sys.stderr.write(
+                    f"{filename}:{token.line}:{token.utf8_byte_offset} ERROR: wanted to replace with {_class}.{enum_name}.{value}, but does not exist\n"
+                )
                 continue
+
+            else:
+                tokens[i + 2] = tokens[i + 2]._replace(
+                    src=f"{real_enum_name}.{tokens[i + 2].src}"
+                )
 
         if token.offset in rename_qt_enums:
             assert tokens[i + 1].src == "."
