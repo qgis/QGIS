@@ -238,13 +238,13 @@ QString QgsDataSourceUri::removePassword( const QString &aUri, bool hide )
   QString safeName( aUri );
   if ( aUri.contains( QLatin1String( " password=" ) ) )
   {
-    if ( aUri.contains( " password='"_L1 ) )
+    if ( aUri.contains( QLatin1String( " password='" ) ) )
     {
-      regexp.setPattern( u" password='[^']*' "_s );
+      regexp.setPattern( QStringLiteral( " password='[^']*' " ) );
     }
     else
     {
-      regexp.setPattern( u" password=.* "_s );
+      regexp.setPattern( QStringLiteral( " password=.* " ) );
     }
 
     if ( hide )

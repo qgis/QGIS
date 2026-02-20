@@ -811,14 +811,14 @@ void TestQgsDataSourceUri::checkRemovePassword()
   const QString uri1 = QgsDataSourceUri::removePassword( QStringLiteral( "postgresql://user:password@127.0.0.1:5432?dbname=test" ), true );
   QCOMPARE( uri1, QStringLiteral( "postgresql://user:XXXXXXXX@127.0.0.1:5432?dbname=test" ) );
 
-  const QString uri2 = QgsDataSourceUri::removePassword( u"postgresql://user@127.0.0.1:5432?dbname=test"_s );
-  QCOMPARE( uri2, u"postgresql://user@127.0.0.1:5432?dbname=test"_s );
+  const QString uri2 = QgsDataSourceUri::removePassword( QStringLiteral( "postgresql://user@127.0.0.1:5432?dbname=test" ) );
+  QCOMPARE( uri2, QStringLiteral( "postgresql://user@127.0.0.1:5432?dbname=test" ) );
 
-  const QString uri3 = QgsDataSourceUri::removePassword( u"dbname='geodata' host=localhost port=5432 user='jgr' password='s Hertogenbosch 2023' srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)"_s );
-  QCOMPARE( uri3, u"dbname='geodata' host=localhost port=5432 user='jgr' srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)"_s );
+  const QString uri3 = QgsDataSourceUri::removePassword( QStringLiteral( "dbname='geodata' host=localhost port=5432 user='jgr' password='s Hertogenbosch 2023' srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)" ) );
+  QCOMPARE( uri3, QStringLiteral( "dbname='geodata' host=localhost port=5432 user='jgr' srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)" ) );
 
-  const QString uri4 = QgsDataSourceUri::removePassword( u"dbname='geodata' host=localhost port=5432 user='jgr' password='s Hertogenbosch 2023' srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)"_s, true );
-  QCOMPARE( uri4, u"dbname='geodata' host=localhost port=5432 user='jgr' password=XXXXXXXX srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)"_s );
+  const QString uri4 = QgsDataSourceUri::removePassword( QStringLiteral( "dbname='geodata' host=localhost port=5432 user='jgr' password='s Hertogenbosch 2023' srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)" ), true );
+  QCOMPARE( uri4, QStringLiteral( "dbname='geodata' host=localhost port=5432 user='jgr' password=XXXXXXXX srid=4326 table=\"Rocha\".\"pocos_gebox_005\" (rast)" ) );
 }
 
 void TestQgsDataSourceUri::checkUnicodeUri()
