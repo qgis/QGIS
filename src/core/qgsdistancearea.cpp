@@ -171,11 +171,7 @@ bool QgsDistanceArea::setEllipsoid( double semiMajor, double semiMinor )
 {
   mEllipsoid = u"PARAMETER:%1:%2"_s.arg( qgsDoubleToString( semiMajor ), qgsDoubleToString( semiMinor ) );
 
-  QgsEllipsoidUtils::EllipsoidParameters params;
-  params.semiMajor = semiMajor;
-  params.semiMinor = semiMinor;
-  params.inverseFlattening = semiMajor / ( semiMajor - semiMinor );
-  params.useCustomParameters = true;
+  QgsEllipsoidUtils::EllipsoidParameters params = QgsEllipsoidUtils::ellipsoidParameters( mEllipsoid );
 
   setFromParams( params );
 
