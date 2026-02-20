@@ -211,6 +211,35 @@ class TestQgsCoordinateReferenceSystem(QgisTestCase):
         )
         self.assertEqual(proj_json["$schema"], "xxx")
 
+    def test_isEarthCrs(self):
+
+        self.assertTrue(QgsCoordinateReferenceSystem("EPSG:4326").isEarthCrs())
+        self.assertTrue(QgsCoordinateReferenceSystem("EPSG:5514").isEarthCrs())
+
+        self.assertFalse(QgsCoordinateReferenceSystem("IAU_2015:30100").isEarthCrs())
+        self.assertFalse(QgsCoordinateReferenceSystem("IAU_2015:49902").isEarthCrs())
+        self.assertFalse(QgsCoordinateReferenceSystem().isEarthCrs())
+
+    def test_isSameCelestialBody(self):
+
+        self.assertTrue(
+            QgsCoordinateReferenceSystem("EPSG:4326").isSameCelestialBody(
+                QgsCoordinateReferenceSystem("EPSG:5514")
+            )
+        )
+
+        self.assertFalse(
+            QgsCoordinateReferenceSystem("EPSG:4326").isSameCelestialBody(
+                QgsCoordinateReferenceSystem()
+            )
+        )
+
+        self.assertFalse(
+            QgsCoordinateReferenceSystem("EPSG:4326").isSameCelestialBody(
+                QgsCoordinateReferenceSystem("IAU_2015:30100")
+            )
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
