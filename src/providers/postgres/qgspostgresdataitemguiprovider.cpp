@@ -935,29 +935,26 @@ void QgsPostgresDataItemGuiProvider::renameProject( QgsPGProjectItem *projectIte
     return;
   }
 
+  QgsProject *project = QgsProject::instance();
+
   QgsNewNameDialog dlg( tr( "project “%1”" ).arg( projectItem->name() ), projectItem->name(), QStringList(), QgsPostgresUtils::projectNamesInSchema( conn, projectItem->schemaName() ) );
   dlg.setWindowTitle( tr( "Rename Project" ) );
   if ( dlg.exec() != QDialog::Accepted || dlg.name() == projectItem->name() )
     return;
 
-  const QString newUri = projectItem->uriWithNewName( dlg.name() );
+  QgsPostgresProjectUri pgProjectUri;
+  pgProjectUri.connInfo = conn->uri();
+  pgProjectUri.schemaName = projectItem->schemaName();
+  pgProjectUri.projectName = projectItem->name();
 
-  // read the project, set title and new filename
-  QgsProject project;
-  project.read( projectItem->path() );
-  project.setTitle( dlg.name() );
-  project.setFileName( newUri );
-
-  // write project to the database
-  const bool success = project.write();
-  if ( !success )
+  // if project fileName is same as the selected project encoded uri, then update current project with new fileName
+  if ( project->fileName() == QgsPostgresProjectStorage::encodeUri( pgProjectUri ) )
   {
-    notify( tr( "Rename Project" ), tr( "Unable to rename project “%1” to “%2”" ).arg( projectItem->name(), dlg.name() ), context, Qgis::MessageLevel::Warning );
-    conn->unref();
-    return;
+    pgProjectUri.projectName = dlg.name();
+    project->setFileName( QgsPostgresProjectStorage::encodeUri( pgProjectUri ) );
   }
 
-  if ( !QgsPostgresUtils::deleteProjectFromSchema( conn, projectItem->name(), projectItem->schemaName() ) )
+  if ( !QgsPostgresUtils::renameProject( conn, projectItem->schemaName(), projectItem->name(), dlg.name() ) )
   {
     notify( tr( "Rename Project" ), tr( "Unable to rename project “%1” to “%2”" ).arg( projectItem->name(), dlg.name() ), context, Qgis::MessageLevel::Warning );
     conn->unref();
