@@ -1164,6 +1164,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /**
      * Returns TRUE if the CRS is associated with the Earth.
      *
+     * \see celestialBodyName()
+     * \see isSameCelestialBody()
      * \since QGIS 4.2
      */
     bool isEarthCrs() const;
