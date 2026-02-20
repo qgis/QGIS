@@ -22,9 +22,10 @@
 #include "qgis_gui.h"
 #include "qgspoint.h"
 
+#define SIP_NO_FILE
+
 class QgsNurbsCurve;
 
-#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

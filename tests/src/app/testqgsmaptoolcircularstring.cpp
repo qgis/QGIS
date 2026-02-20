@@ -45,6 +45,7 @@ class TestQgsMapToolCircularString : public QObject
     void testAddCircularStringRadiusWithDeletedVertex();
     void testAddCircularStringRadiusNotEnoughPoints();
     void testAddCircularStringAfterClassicDigitizing();
+    void testAddCircularStringLayerSingleSegment();
     void testTransientGeometrySignal();
 
   private:
@@ -52,8 +53,10 @@ class TestQgsMapToolCircularString : public QObject
 
     QgisApp *mQgisApp = nullptr;
     QgsMapToolCapture *mMapTool = nullptr;
+    QgsMapToolAddFeature *mCircularMapTool = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
     QgsVectorLayer *mLayer = nullptr;
+    QgsVectorLayer *mCircularLayer = nullptr;
 };
 
 TestQgsMapToolCircularString::TestQgsMapToolCircularString() = default;
@@ -73,7 +76,10 @@ void TestQgsMapToolCircularString::initTestCase()
   // make testing layers
   mLayer = new QgsVectorLayer( u"CompoundCurveZ?crs=EPSG:27700"_s, u"layer line Z"_s, u"memory"_s );
   QVERIFY( mLayer->isValid() );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayer );
+
+  mCircularLayer = new QgsVectorLayer( u"CircularStringZ?crs=EPSG:27700"_s, u"layer circular Z"_s, u"memory"_s );
+  QVERIFY( mCircularLayer->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayer << mCircularLayer );
 
   // set layers in canvas
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayer );
@@ -81,6 +87,8 @@ void TestQgsMapToolCircularString::initTestCase()
 
   mMapTool = new QgsMapToolAddFeature( mCanvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine );
   mMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::Shape );
+  mCircularMapTool = new QgsMapToolAddFeature( mCanvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine );
+  mCircularMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::CircularString );
   //  mCanvas->setMapTool( mMapTool );
 }
 
@@ -88,11 +96,13 @@ void TestQgsMapToolCircularString::cleanupTestCase()
 {
   QgsApplication::exitQgis();
   delete mMapTool;
+  delete mCircularMapTool;
 }
 
 void TestQgsMapToolCircularString::cleanup()
 {
   mMapTool->clean();
+  mCircularMapTool->clean();
 }
 
 void TestQgsMapToolCircularString::resetMapTool( QgsMapToolShapeMetadata *metadata )
@@ -241,6 +251,36 @@ void TestQgsMapToolCircularString::testAddCircularStringAfterClassicDigitizing()
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
+}
+
+void TestQgsMapToolCircularString::testAddCircularStringLayerSingleSegment()
+{
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 333 );
+
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mCircularLayer );
+  mCanvas->setCurrentLayer( mCircularLayer );
+
+  mCircularLayer->startEditing();
+  mCircularMapTool->setLayer( mCircularLayer );
+  mCircularMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::CircularString );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCircularMapTool );
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 0, 2, Qt::LeftButton );
+  utils.mouseClick( 0, 2, Qt::RightButton );
+  const QgsFeatureId newFid = utils.newFeatureId();
+
+  QCOMPARE( mCircularLayer->featureCount(), ( long ) 1 );
+  const QgsFeature f = mCircularLayer->getFeature( newFid );
+
+  const QString wkt = "CircularString Z (0 0 333, 1 1 333, 0 2 333)";
+  QCOMPARE( f.geometry().asWkt(), wkt );
+
+  mCircularLayer->rollBack();
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayer );
+  mCanvas->setCurrentLayer( mLayer );
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
 }
 

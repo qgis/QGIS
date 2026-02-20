@@ -23,6 +23,7 @@
 #include "qgsapplication.h"
 #include "qgsbezierdata.h"
 #include "qgsbeziermarker.h"
+#include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
 #include "qgsexception.h"
 #include "qgsfeatureiterator.h"
@@ -2126,6 +2127,26 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       if ( mode() == CaptureLine )
       {
+        if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() ) )
+        {
+          if ( QgsWkbTypes::flatType( vlayer->wkbType() ) == Qgis::WkbType::CircularString )
+          {
+            if ( const QgsCompoundCurve *compound = qgsgeometry_cast<const QgsCompoundCurve *>( captureCurve() ) )
+            {
+              // if there is only one segment the compound curve will be casted to circular string
+              // otherwise the user will see a warning on the message bar saying that a compound
+              // curve can't be added on a circular string layer
+              if ( compound->nCurves() == 1 )
+              {
+                if ( const QgsCircularString *circularPart = qgsgeometry_cast<const QgsCircularString *>( compound->curveAt( 0 ) ) )
+                {
+                  curveToAdd.reset( circularPart->clone() );
+                }
+              }
+            }
+          }
+        }
+
         g = QgsGeometry( curveToAdd->clone() );
         geometryCaptured( g );
         lineCaptured( curveToAdd.release() );
