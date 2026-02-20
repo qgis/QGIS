@@ -131,6 +131,11 @@ void QgsMeasureTool::updateSettings()
   mRubberBandPoints->setIconSize( 10 );
   mRubberBandPoints->setColor( QColor( myRed, myGreen, myBlue, 150 ) );
 
+  if ( !mCanvas->mapSettings().destinationCrs().isSameCelestialBody( mDestinationCrs ) )
+  {
+    restart();
+  }
+
   // Reproject the points to the new destination CoordinateReferenceSystem
   if ( mRubberBand->size() > 0 && mDestinationCrs != mCanvas->mapSettings().destinationCrs() && mCanvas->mapSettings().destinationCrs().isValid() )
   {
