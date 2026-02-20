@@ -1019,8 +1019,9 @@ void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEll
     // setting the ellipsoid to none prevents that as conversions do not make sense when change not only crs but also celestial body
     if ( adjustEllipsoid && !mCrs.isSameCelestialBody( crs ) )
     {
-      QSignalBlocker blocker( this );
+      mBlockEllipsoidChangedSignal = true;
       setEllipsoid( Qgis::geoNone() );
+      mBlockEllipsoidChangedSignal = false;
     }
 
     const QgsCoordinateReferenceSystem oldVerticalCrs = verticalCrs();
@@ -1069,7 +1070,9 @@ void QgsProject::setEllipsoid( const QString &ellipsoid )
 
   mProjectScope.reset();
   writeEntry( u"Measure"_s, u"/Ellipsoid"_s, ellipsoid );
-  emit ellipsoidChanged( ellipsoid );
+
+  if ( !mBlockEllipsoidChangedSignal )
+    emit ellipsoidChanged( ellipsoid );
 }
 
 QgsCoordinateReferenceSystem QgsProject::verticalCrs() const
