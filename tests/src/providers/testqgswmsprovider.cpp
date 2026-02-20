@@ -146,8 +146,8 @@ void TestQgsWmsProvider::legendGraphicsWithoutStyleWithDefault()
 void TestQgsWmsProvider::legendGraphicsWithoutStyleWithoutDefault()
 {
   QgsWmsProvider provider( u"http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=&format=image/jpg"_s, QgsDataProvider::ProviderOptions(), mCapabilities );
-  //two style, cannot guess default => use the WMS GetLegendGraphics
-  QCOMPARE( provider.getLegendGraphicUrl(), QString( "http://localhost:8380/mapserv?" ) );
+  // two styles, use the first one by default to avoid not showing any legend at all
+  QCOMPARE( provider.getLegendGraphicUrl(), QString( "http://www.example.com/yt.png?" ) );
 }
 
 void TestQgsWmsProvider::queryItemsWithNullValue()
