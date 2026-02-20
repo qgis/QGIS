@@ -1228,7 +1228,10 @@ void QgsMapToolCapture::undo( bool isAutoRepeat )
     const QgsCoordinateTransform ct = mCanvas->mapSettings().layerTransform( layer() );
     if ( ct.isValid() && !ct.isShortCircuited() )
     {
-      mCaptureCurve.removeCurve( mCaptureCurve.nCurves() - 1 );
+      const int previousCurveIndex = mCaptureCurve.nCurves() - 1;
+      const QgsCurve *curve = mCaptureCurve.curveAt( previousCurveIndex );
+      if ( curve && curve->numPoints() > 2 )
+        mCaptureCurve.removeCurve( previousCurveIndex );
     }
     if ( mCaptureCurve.numPoints() == 2 && mCaptureCurve.nCurves() == 1 )
     {

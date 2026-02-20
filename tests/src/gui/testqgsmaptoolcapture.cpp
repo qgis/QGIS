@@ -52,6 +52,8 @@ class TestQgsMapToolCapture : public QObject
     void testTransientGeometrySignalTracing();
     void testTransientGeometrySignalTracingPolygon();
     void testMeasures();
+    void testUndo();
+    void testUndoDifferentCrs();
 };
 
 void TestQgsMapToolCapture::initTestCase()
@@ -527,6 +529,94 @@ void TestQgsMapToolCapture::testMeasures()
   QCOMPARE( area, QString() );
   QCOMPARE( distance.left( 5 ), u"1.669"_s );
   QCOMPARE( distance.right( 2 ), u"km"_s );
+}
+
+void TestQgsMapToolCapture::testUndo()
+{
+  QgsProject::instance()->clear();
+  QgsMapCanvas canvas;
+  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  canvas.setFrameStyle( QFrame::NoFrame );
+  canvas.resize( 600, 600 );
+  canvas.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+  canvas.show(); // to make the canvas resize
+
+  QgsAdvancedDigitizingDockWidget cadDock( &canvas );
+  QgsMapToolCapture tool( &canvas, &cadDock, QgsMapToolCapture::CapturePolygon );
+  canvas.setMapTool( &tool );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( &tool );
+  tool.setCurrentCaptureTechnique( Qgis::CaptureTechnique::StraightSegments );
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 5, 5, Qt::LeftButton );
+  utils.mouseClick( 7, 7, Qt::LeftButton );
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 3 );
+  tool.undo();
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 2 );
+  tool.undo();
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 1 );
+  tool.undo();
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 1 );
+
+  tool.clean();
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 0 );
+
+  tool.setCurrentCaptureTechnique( Qgis::CaptureTechnique::CircularString );
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 5, 5, Qt::LeftButton );
+  utils.mouseClick( 7, 7, Qt::LeftButton );
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 3 );
+  tool.undo();
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 0 );
+  tool.undo();
+}
+
+void TestQgsMapToolCapture::testUndoDifferentCrs()
+{
+  QgsProject::instance()->clear();
+  QgsMapCanvas canvas;
+  canvas.setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  canvas.setFrameStyle( QFrame::NoFrame );
+  canvas.resize( 600, 600 );
+  canvas.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+  canvas.show(); // to make the canvas resize
+
+  // Create a layer with different CRS
+  QgsVectorLayer *layer = new QgsVectorLayer( u"LineString?crs=EPSG:3857"_s, u"test_layer"_s, u"memory"_s );
+  QVERIFY( layer->isValid() );
+  QgsProject::instance()->addMapLayers( { layer } );
+
+  canvas.setLayers( { layer } );
+  canvas.setCurrentLayer( layer );
+
+  QgsAdvancedDigitizingDockWidget cadDock( &canvas );
+  QgsMapToolCapture tool( &canvas, &cadDock, QgsMapToolCapture::CapturePolygon );
+  canvas.setMapTool( &tool );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( &tool );
+  tool.setCurrentCaptureTechnique( Qgis::CaptureTechnique::StraightSegments );
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 5, 5, Qt::LeftButton );
+  utils.mouseClick( 7, 7, Qt::LeftButton );
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 3 );
+  tool.undo();
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 2 );
+  tool.undo();
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 1 );
+  tool.undo();
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 1 );
+
+  tool.clean();
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 0 );
+
+  tool.setCurrentCaptureTechnique( Qgis::CaptureTechnique::CircularString );
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 5, 5, Qt::LeftButton );
+  utils.mouseClick( 7, 7, Qt::LeftButton );
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 3 );
+  tool.undo();
+  QCOMPARE( tool.mCaptureCurve.numPoints(), 0 );
+  tool.undo();
 }
 
 QGSTEST_MAIN( TestQgsMapToolCapture )
