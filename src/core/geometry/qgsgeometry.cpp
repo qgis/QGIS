@@ -1234,6 +1234,27 @@ Qgis::GeometryOperationResult QgsGeometry::rotate( double rotation, const QgsPoi
   return Qgis::GeometryOperationResult::Success;
 }
 
+static void removeDuplicateAdjacentPointsAt( QgsAbstractGeometry *geom, const QgsPointSequence &points )
+{
+  for ( const QgsPoint &pt : points )
+  {
+    QgsVertexId vertexId, prevVertexId, nextVertexId;
+    const QgsPoint closestPt = QgsGeometryUtils::closestVertex( *geom, pt, vertexId );
+    geom->adjacentVertices( vertexId, prevVertexId, nextVertexId );
+    const double dist = QgsGeometryUtils::sqrDistance2D( pt, closestPt );
+    if ( dist == 0 )
+    {
+      // make sure the geometry is snapped (z) to the topo point
+      ( void ) geom->moveVertex( vertexId, pt );
+      // remove adjacent vertices which are duplicates on the XY plane
+      if ( const QgsPoint v = geom->vertexAt( prevVertexId ); v.x() == pt.x() && v.y() == pt.y() )
+        ( void ) geom->deleteVertex( prevVertexId );
+      else if ( const QgsPoint v = geom->vertexAt( nextVertexId ); v.x() == pt.x() && v.y() == pt.y() )
+        ( void ) geom->deleteVertex( nextVertexId );
+    }
+  }
+}
+
 Qgis::GeometryOperationResult QgsGeometry::splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QVector<QgsPointXY> &topologyTestPoints, bool splitFeature )
 {
   QgsPointSequence split, topology;
@@ -1293,24 +1314,7 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry( const QgsPointSequence
       for ( int i = 0; i < newGeoms.size(); ++i )
       {
         QgsAbstractGeometry *geom = newGeoms[i].get();
-
-        for ( const QgsPoint &pt : std::as_const( addedTopologicalPoints ) )
-        {
-          QgsVertexId vertexId, prevVertexId, nextVertexId;
-          const QgsPoint closestPt = QgsGeometryUtils::closestVertex( *geom, pt, vertexId );
-          geom->adjacentVertices( vertexId, prevVertexId, nextVertexId );
-          const double dist = QgsGeometryUtils::sqrDistance2D( pt, closestPt );
-          if ( dist != 0 )
-            continue;
-
-          // make sure the geometry is snapped (z) to the topo point
-          ( void ) geom->moveVertex( vertexId, pt );
-          // remove adjacent vertices which are duplicates on the XY plane
-          if ( const QgsPoint v = geom->vertexAt( prevVertexId ); v.x() == pt.x() && v.y() == pt.y() )
-            ( void ) geom->deleteVertex( prevVertexId );
-          else if ( const QgsPoint v = geom->vertexAt( nextVertexId ); v.x() == pt.x() && v.y() == pt.y() )
-            ( void ) geom->deleteVertex( nextVertexId );
-        }
+        removeDuplicateAdjacentPointsAt( geom, addedTopologicalPoints );
       }
     }
     if ( splitFeature )
@@ -1398,25 +1402,7 @@ Qgis::GeometryOperationResult QgsGeometry::reshapeGeometry( const QgsLineString 
   std::unique_ptr< QgsAbstractGeometry > geom( geos.reshapeGeometry( reshapeLineString, &errorCode, &mLastError ) );
   if ( errorCode == QgsGeometryEngine::Success && geom )
   {
-    if ( !addedTopologicalPoints.isEmpty() )
-    {
-      for ( const QgsPoint &pt : std::as_const( addedTopologicalPoints ) )
-      {
-        QgsVertexId vertexId, prevVertexId, nextVertexId;
-        const QgsPoint closestPt = QgsGeometryUtils::closestVertex( *geom.get(), pt, vertexId );
-        geom->adjacentVertices( vertexId, prevVertexId, nextVertexId );
-        const double dist = QgsGeometryUtils::sqrDistance2D( pt, closestPt );
-        Q_ASSERT( dist == 0 );
-
-        // make sure the geometry is snapped (z) to the topo point
-        ( void ) geom->moveVertex( vertexId, pt );
-        // remove adjacent vertices which are duplicates on the XY plane
-        if ( const QgsPoint v = geom->vertexAt( prevVertexId ); v.x() == pt.x() && v.y() == pt.y() )
-          ( void ) geom->deleteVertex( prevVertexId );
-        else if ( const QgsPoint v = geom->vertexAt( nextVertexId ); v.x() == pt.x() && v.y() == pt.y() )
-          ( void ) geom->deleteVertex( nextVertexId );
-      }
-    }
+    removeDuplicateAdjacentPointsAt( geom.get(), addedTopologicalPoints );
     reset( std::move( geom ) );
     return Qgis::GeometryOperationResult::Success;
   }
