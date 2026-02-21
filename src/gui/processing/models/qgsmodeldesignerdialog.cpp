@@ -482,7 +482,7 @@ void QgsModelDesignerDialog::setModel( QgsProcessingModelAlgorithm *model )
   repaintModel( true );
   updateVariablesGui();
 
-  mView->centerOn( 0, 0 );
+  mView->centerOn( mScene->sceneRect().center() );
   setDirty( false );
 
   mIgnoreUndoStackChanges++;
