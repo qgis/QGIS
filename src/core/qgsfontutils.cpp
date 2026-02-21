@@ -68,10 +68,10 @@ bool QgsFontUtils::fontFamilyHasStyle( const QString &family, const QString &sty
 #endif
 
   // Deal with Qt6 Normal -> Regular style renaming
-  if ( style == "Normal" )
+  if ( modified == "Normal" )
     modified = "Regular";
-  else if ( style == QCoreApplication::translate( "QFontDatabase", qPrintable( u"Normal"_s ) ) )
-    modified = QCoreApplication::translate( "QFontDatabase", qPrintable( u"Regular"_s ) );
+  else if ( modified == QCoreApplication::translate( "QFontDatabase", "Normal" ) )
+    modified = QCoreApplication::translate( "QFontDatabase", "Regular" );
   if ( fontDB.styles( family ).contains( modified ) )
     return true;
 
