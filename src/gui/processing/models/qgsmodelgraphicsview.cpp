@@ -58,6 +58,14 @@ QgsModelGraphicsView::QgsModelGraphicsView( QWidget *parent )
   mMidMouseButtonPanTool = new QgsModelViewToolTemporaryMousePan( this );
   mSpaceZoomTool = new QgsModelViewToolTemporaryKeyZoom( this );
 
+  // Workaround for Qt default behaviour where during the scroll the visible scene rect
+  // The visible scene rect would be also updated on the axis that is not being scrolled. 
+  // With ScrollBarAlwaysOn, we ensure that the visible scene rect is stable during scroll.
+  // See https://github.com/qgis/QGIS/pull/64605#issuecomment-3771638032
+  setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
+  setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
+
+
   connect( horizontalScrollBar(), &QScrollBar::valueChanged, this, &QgsModelGraphicsView::friendlySetSceneRect );
   connect( verticalScrollBar(), &QScrollBar::valueChanged, this, &QgsModelGraphicsView::friendlySetSceneRect );
 
@@ -522,6 +530,13 @@ void QgsModelGraphicsView::friendlySetSceneRect()
   newSceneRect.setRight( std::max( modelSceneRect.right(), visibleRect.right() ) );
   newSceneRect.setTop( std::min( modelSceneRect.top(), visibleRect.top() ) );
   newSceneRect.setBottom( std::max( modelSceneRect.bottom(), visibleRect.bottom() ) );
+  
+  // Qt scrollbar range are dealt in integer, so we round it ourselves to avoid a small "jump"
+  newSceneRect.setLeft( std::floor( newSceneRect.left() ) );
+  newSceneRect.setTop( std::floor( newSceneRect.top() ) );
+  newSceneRect.setRight( std::ceil( newSceneRect.right() ) );
+  newSceneRect.setBottom( std::ceil( newSceneRect.bottom() ) );
+  
 
   // the above conversions may involve small rounding errors which stack up and could
   // result in unwanted small shifts of the visible scene area => only update the
