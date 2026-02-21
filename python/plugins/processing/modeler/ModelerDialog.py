@@ -94,12 +94,6 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.toolbar().setIconSize(iface.iconSize())
             self.setStyleSheet(iface.mainWindow().styleSheet())
 
-        scene = ModelerScene(self)
-        self.setModelScene(scene)
-
-        self.view().ensureVisible(0, 0, 10, 10)
-        self.view().scale(self.logicalDpiX() / 96, self.logicalDpiY() / 96)
-
         self.actionOpen().triggered.connect(self.openModel)
         self.actionSaveInProject().triggered.connect(self.saveInProject)
 
@@ -108,7 +102,7 @@ class ModelerDialog(QgsModelDesignerDialog):
             _model.setSourceFilePath(model.sourceFilePath())
             self.setModel(_model)
 
-        self.view().centerOn(0, 0)
+        self.view().centerOn(self.view().sceneRect().center())
 
         self.processing_context = createContext()
 
