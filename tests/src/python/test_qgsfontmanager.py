@@ -210,6 +210,115 @@ class TestQgsFontManager(QgisTestCase):
         self.assertTrue(t3.fontFound())
         self.assertEqual(t3.font().family(), "QGIS Vera Sans")
 
+    def test_normal_regular(self):
+        manager = QgsFontManager()
+        fonts = [
+            "Ubuntu-B.ttf",
+            "Ubuntu-BI.ttf",
+            "Ubuntu-C.ttf",
+            "Ubuntu-L.ttf",
+            "Ubuntu-LI.ttf",
+            "Ubuntu-M.ttf",
+            "Ubuntu-MI.ttf",
+            "Ubuntu-R.ttf",
+            "Ubuntu-RI.ttf",
+            "Ubuntu-Th.ttf",
+        ]
+        for font in fonts:
+            manager.downloadAndInstallFont(
+                QUrl.fromLocalFile(unitTestDataPath() + "/font/Ubuntu/" + font)
+            )
+
+        doc = QDomDocument()
+        doc.setContent("""<parent><text-style allowHtml="0" blendMode="0" capitalization="0" fontFamily="Ubuntu" fontItalic="0" fontKerning="1" fontLetterSpacing="0" fontSize="39" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSizeUnit="Point" fontStrikeout="0" fontUnderline="0" fontWeight="400" fontWordSpacing="0" forcedBold="0" forcedItalic="0" multilineHeight="1" multilineHeightUnit="Percentage" namedStyle="Normal" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" stretchFactor="100" tabStopDistance="6" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" tabStopDistanceUnit="Percentage" textColor="0,0,0,255,rgb:0,0,0,1" textOpacity="1" textOrientation="horizontal">
+          <families/>
+          <text-buffer bufferBlendMode="0" bufferColor="255,255,255,255,rgb:1,1,1,1" bufferDraw="0" bufferJoinStyle="128" bufferNoFill="1" bufferOpacity="1" bufferSize="1" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSizeUnits="MM"/>
+          <text-mask maskEnabled="0" maskJoinStyle="128" maskOpacity="1" maskSize="1.5" maskSize2="1.5" maskSizeMapUnitScale="3x:0,0,0,0,0,0" maskSizeUnits="MM" maskType="0" maskedSymbolLayers=""/>
+          <background shapeBlendMode="0" shapeBorderColor="128,128,128,255,rgb:0.5019608,0.5019608,0.5019608,1" shapeBorderWidth="0" shapeBorderWidthMapUnitScale="3x:0,0,0,0,0,0" shapeBorderWidthUnit="MM" shapeDraw="0" shapeFillColor="255,255,255,255,rgb:1,1,1,1" shapeJoinStyle="64" shapeOffsetMapUnitScale="3x:0,0,0,0,0,0" shapeOffsetUnit="MM" shapeOffsetX="0" shapeOffsetY="0" shapeOpacity="1" shapeRadiiMapUnitScale="3x:0,0,0,0,0,0" shapeRadiiUnit="MM" shapeRadiiX="0" shapeRadiiY="0" shapeRotation="0" shapeRotationType="0" shapeSVGFile="" shapeSizeMapUnitScale="3x:0,0,0,0,0,0" shapeSizeType="0" shapeSizeUnit="MM" shapeSizeX="0" shapeSizeY="0" shapeType="0">
+            <symbol alpha="1" clip_to_extent="1" force_rhr="0" frame_rate="10" is_animated="0" name="markerSymbol" type="marker">
+              <data_defined_properties>
+                <Option type="Map">
+                  <Option name="name" type="QString" value=""/>
+                  <Option name="properties"/>
+                  <Option name="type" type="QString" value="collection"/>
+                </Option>
+              </data_defined_properties>
+              <layer class="SimpleMarker" enabled="1" id="" locked="0" pass="0">
+                <Option type="Map">
+                  <Option name="angle" type="QString" value="0"/>
+                  <Option name="cap_style" type="QString" value="square"/>
+                  <Option name="color" type="QString" value="125,139,143,255,rgb:0.4901961,0.5450981,0.5607843,1"/>
+                  <Option name="horizontal_anchor_point" type="QString" value="1"/>
+                  <Option name="joinstyle" type="QString" value="bevel"/>
+                  <Option name="name" type="QString" value="circle"/>
+                  <Option name="offset" type="QString" value="0,0"/>
+                  <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
+                  <Option name="offset_unit" type="QString" value="MM"/>
+                  <Option name="outline_color" type="QString" value="35,35,35,255,rgb:0.1372549,0.1372549,0.1372549,1"/>
+                  <Option name="outline_style" type="QString" value="solid"/>
+                  <Option name="outline_width" type="QString" value="0"/>
+                  <Option name="outline_width_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
+                  <Option name="outline_width_unit" type="QString" value="MM"/>
+                  <Option name="scale_method" type="QString" value="diameter"/>
+                  <Option name="size" type="QString" value="2"/>
+                  <Option name="size_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
+                  <Option name="size_unit" type="QString" value="MM"/>
+                  <Option name="vertical_anchor_point" type="QString" value="1"/>
+                </Option>
+                <data_defined_properties>
+                  <Option type="Map">
+                    <Option name="name" type="QString" value=""/>
+                    <Option name="properties"/>
+                    <Option name="type" type="QString" value="collection"/>
+                  </Option>
+                </data_defined_properties>
+              </layer>
+            </symbol>
+            <symbol alpha="1" clip_to_extent="1" force_rhr="0" frame_rate="10" is_animated="0" name="fillSymbol" type="fill">
+              <data_defined_properties>
+                <Option type="Map">
+                  <Option name="name" type="QString" value=""/>
+                  <Option name="properties"/>
+                  <Option name="type" type="QString" value="collection"/>
+                </Option>
+              </data_defined_properties>
+              <layer class="SimpleFill" enabled="1" id="" locked="0" pass="0">
+                <Option type="Map">
+                  <Option name="border_width_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
+                  <Option name="color" type="QString" value="255,255,255,255,rgb:1,1,1,1"/>
+                  <Option name="joinstyle" type="QString" value="bevel"/>
+                  <Option name="offset" type="QString" value="0,0"/>
+                  <Option name="offset_map_unit_scale" type="QString" value="3x:0,0,0,0,0,0"/>
+                  <Option name="offset_unit" type="QString" value="MM"/>
+                  <Option name="outline_color" type="QString" value="128,128,128,255,rgb:0.5019608,0.5019608,0.5019608,1"/>
+                  <Option name="outline_style" type="QString" value="no"/>
+                  <Option name="outline_width" type="QString" value="0"/>
+                  <Option name="outline_width_unit" type="QString" value="MM"/>
+                  <Option name="style" type="QString" value="solid"/>
+                </Option>
+                <data_defined_properties>
+                  <Option type="Map">
+                    <Option name="name" type="QString" value=""/>
+                    <Option name="properties"/>
+                    <Option name="type" type="QString" value="collection"/>
+                  </Option>
+                </data_defined_properties>
+              </layer>
+            </symbol>
+          </background>
+          <shadow shadowBlendMode="6" shadowColor="0,0,0,255,rgb:0,0,0,1" shadowDraw="0" shadowOffsetAngle="135" shadowOffsetDist="1" shadowOffsetGlobal="1" shadowOffsetMapUnitScale="3x:0,0,0,0,0,0" shadowOffsetUnit="MM" shadowOpacity="0.69999999999999996" shadowRadius="1.5" shadowRadiusAlphaOnly="0" shadowRadiusMapUnitScale="3x:0,0,0,0,0,0" shadowRadiusUnit="MM" shadowScale="100" shadowUnder="0"/>
+          <dd_properties>
+            <Option type="Map">
+              <Option name="name" type="QString" value=""/>
+              <Option name="properties"/>
+              <Option name="type" type="QString" value="collection"/>
+            </Option>
+          </dd_properties>
+        </text-style></parent>""")
+        text_format = QgsTextFormat()
+        text_format.readXml(doc.documentElement(), QgsReadWriteContext())
+        self.assertEqual(text_format.toQFont().styleName(), "Normal")
+
     def test_install_font(self):
         manager = QgsFontManager()
         with tempfile.TemporaryDirectory() as user_font_dir:
