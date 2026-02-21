@@ -152,11 +152,7 @@ QgsAppGpsDigitizing::QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMa
   setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, [this] {
-    mEarthCrs = mCanvas->mapSettings().destinationCrs().isEarthCrs();
-    if ( mEarthCrs )
-      setEllipsoid( QgsProject::instance()->ellipsoid() );
-    else
-      mDistanceCalculator = QgsDistanceArea();
+    setEllipsoid( QgsProject::instance()->ellipsoid() );
   } );
 
   connect( mConnection, &QgsAppGpsConnection::connected, this, &QgsAppGpsDigitizing::gpsConnected );
