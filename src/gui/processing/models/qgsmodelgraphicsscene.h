@@ -304,7 +304,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     QgsProcessingModelResult mLastResult;
     QMap<QString, long long> mLastResultCount;
 
-    static constexpr int SCENE_COMPONENT_MARGIN = 50;
+    static constexpr int SCENE_COMPONENT_MARGIN = 500;
 
     QgsMessageBar *mMessageBar = nullptr;
 };
