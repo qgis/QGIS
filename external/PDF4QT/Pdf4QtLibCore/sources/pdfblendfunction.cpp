@@ -555,12 +555,33 @@ PDFGray PDFBlendFunction::nonseparable_rgb2gray(PDFRGB rgb)
 
 PDFRGB PDFBlendFunction::nonseparable_cmyk2rgb(PDFCMYK cmyk)
 {
-    return PDFRGB{ 1.0f - cmyk[0], 1.0f - cmyk[1], 1.0f - cmyk[2] };
+    const PDFColorComponent c = qBound<PDFColorComponent>(0.0f, cmyk[0], 1.0f);
+    const PDFColorComponent m = qBound<PDFColorComponent>(0.0f, cmyk[1], 1.0f);
+    const PDFColorComponent y = qBound<PDFColorComponent>(0.0f, cmyk[2], 1.0f);
+    const PDFColorComponent k = qBound<PDFColorComponent>(0.0f, cmyk[3], 1.0f);
+
+    return PDFRGB{ (1.0f - c) * (1.0f - k), (1.0f - m) * (1.0f - k), (1.0f - y) * (1.0f - k) };
 }
 
 PDFCMYK PDFBlendFunction::nonseparable_rgb2cmyk(PDFRGB rgb, PDFColorComponent K)
 {
-    return PDFCMYK{ 1.0f - rgb[0], 1.0f - rgb[1], 1.0f - rgb[2], K };
+    const PDFColorComponent r = qBound<PDFColorComponent>(0.0f, rgb[0], 1.0f);
+    const PDFColorComponent g = qBound<PDFColorComponent>(0.0f, rgb[1], 1.0f);
+    const PDFColorComponent b = qBound<PDFColorComponent>(0.0f, rgb[2], 1.0f);
+    const PDFColorComponent k = qBound<PDFColorComponent>(0.0f, K, 1.0f);
+
+    if (k >= 0.99999f)
+    {
+        return PDFCMYK{ 0.0f, 0.0f, 0.0f, 1.0f };
+    }
+
+    const PDFColorComponent denominator = 1.0f - k;
+    return PDFCMYK{
+        qBound<PDFColorComponent>(0.0f, 1.0f - r / denominator, 1.0f),
+        qBound<PDFColorComponent>(0.0f, 1.0f - g / denominator, 1.0f),
+        qBound<PDFColorComponent>(0.0f, 1.0f - b / denominator, 1.0f),
+        k
+    };
 }
 
 PDFColorComponent PDFBlendFunction::nonseparable_Lum(PDFRGB rgb)

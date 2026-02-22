@@ -85,6 +85,8 @@ static constexpr std::array S_DEFAULT_CJK_FONTS =
     PDF_Default_CJK_Font{ ECjkDefaultFontType::AdobeGB, true, "KaiTi" },
     PDF_Default_CJK_Font{ ECjkDefaultFontType::AdobeGB, true, "SimLi" },
     PDF_Default_CJK_Font{ ECjkDefaultFontType::AdobeGB, true, "SimLiU" },
+    PDF_Default_CJK_Font{ ECjkDefaultFontType::AdobeGB, true, "STSong-Light" },
+    PDF_Default_CJK_Font{ ECjkDefaultFontType::AdobeGB, true, "STSong-Light,Bold" },
 
     PDF_Default_CJK_Font{ ECjkDefaultFontType::AdobeCNS, true, "Ming" },
     PDF_Default_CJK_Font{ ECjkDefaultFontType::AdobeCNS, false, "Fangti" },
@@ -112,7 +114,7 @@ static constexpr std::array S_FONT_REPLACEMENTS
     PDF_Font_Replacement{"Utopia-Italic", "Georgia"},
     PDF_Font_Replacement{"Utopia-Semibold", "Georgia"},
     PDF_Font_Replacement{"Utopia-SemiboldItalic", "Georgia"},
-    PDF_Font_Replacement{"Utopia", "Georgia"},
+    PDF_Font_Replacement{"Utopia", "Georgia"}
 };
 
 /// Storage class for system fonts
@@ -185,6 +187,81 @@ QByteArray PDFSystemFontInfoStorage::loadFont(const CIDSystemInfo* cidSystemInfo
                                               PDFRenderErrorReporter* reporter) const
 {
     QString fontName;
+    QString standardFontSubstituteFileName;
+
+    // Standard font substitute
+    switch (standardFontType)
+    {
+        case StandardFontType::TimesRoman:
+            standardFontSubstituteFileName = "LiberationSerif-Regular.ttf";
+            break;
+
+        case StandardFontType::TimesRomanBold:
+            standardFontSubstituteFileName = "LiberationSerif-Bold.ttf";
+            break;
+
+        case StandardFontType::TimesRomanItalics:
+            standardFontSubstituteFileName = "LiberationSerif-Italic.ttf";
+            break;
+
+        case StandardFontType::TimesRomanBoldItalics:
+            standardFontSubstituteFileName = "LiberationSerif-BoldItalic.ttf";
+            break;
+
+        case StandardFontType::Helvetica:
+            standardFontSubstituteFileName = "LiberationSans-Regular.ttf";
+            break;
+
+        case StandardFontType::HelveticaBold:
+            standardFontSubstituteFileName = "LiberationSans-Bold.ttf";
+            break;
+
+        case StandardFontType::HelveticaOblique:
+            standardFontSubstituteFileName = "LiberationSans-Italic.ttf";
+            break;
+
+        case StandardFontType::HelveticaBoldOblique:
+            standardFontSubstituteFileName = "LiberationSans-BoldItalic.ttf";
+            break;
+
+        case StandardFontType::Courier:
+            standardFontSubstituteFileName = "LiberationMono-Regular.ttf";
+            break;
+
+        case StandardFontType::CourierBold:
+            standardFontSubstituteFileName = "LiberationMono-Bold.ttf";
+            break;
+
+        case StandardFontType::CourierOblique:
+            standardFontSubstituteFileName = "LiberationMono-Italic.ttf";
+            break;
+
+        case StandardFontType::CourierBoldOblique:
+            standardFontSubstituteFileName = "LiberationMono-BoldItalic.ttf";
+            break;
+
+        case StandardFontType::Symbol:
+        case StandardFontType::ZapfDingbats:
+            break;
+
+        default:
+            break;
+    }
+
+    if (!standardFontSubstituteFileName.isEmpty())
+    {
+        QFile file(QString(":/fonts/liberation-fonts-ttf/%1").arg(standardFontSubstituteFileName));
+        if (file.open(QFile::ReadOnly))
+        {
+            QByteArray data = file.readAll();
+            file.close();
+
+            if (!data.isEmpty())
+            {
+                return data;
+            }
+        }
+    }
 
     // Exact match font face name
     switch (standardFontType)
@@ -485,7 +562,7 @@ PDFSystemFontInfoStorage::PDFSystemFontInfoStorage()
 
     HDC hdc = GetDC(NULL);
 
-    CallbackInfo callbackInfo{ this, hdc};
+    CallbackInfo callbackInfo{ this, hdc, std::set<QString>() };
     EnumFontFamiliesEx(hdc, &logfont, &PDFSystemFontInfoStorage::enumerateFontProc, reinterpret_cast<LPARAM>(&callbackInfo), 0);
 
     ReleaseDC(NULL, hdc);
@@ -1186,11 +1263,9 @@ PDFRealizedFontPointer PDFRealizedFont::createRealizedFont(PDFFontPointer font, 
         else
         {
             StandardFontType standardFontType = StandardFontType::Invalid;
-            if (font->getFontType() == FontType::Type1 || font->getFontType() == FontType::MMType1)
+            if (const PDFSimpleFont* simpleFont = dynamic_cast<const PDFSimpleFont*>(font.get()))
             {
-                Q_ASSERT(dynamic_cast<const PDFType1Font*>(font.get()));
-                const PDFType1Font* type1Font = static_cast<const PDFType1Font*>(font.get());
-                standardFontType = type1Font->getStandardFontType();
+                standardFontType = simpleFont->getStandardFontType();
             }
 
             const PDFSystemFontInfoStorage* fontStorage = PDFSystemFontInfoStorage::getInstance();
@@ -1369,7 +1444,7 @@ PDFFontPointer PDFFont::createFont(const PDFObject& object, QByteArray fontId, c
     std::vector<PDFInteger> widths = fontLoader.readIntegerArrayFromDictionary(fontDictionary, "Widths");
 
     // Read standard font
-    constexpr const std::array<std::pair<const char*, StandardFontType>, 14> standardFonts = {
+    static constexpr std::array standardFonts = {
         std::pair<const char*, StandardFontType>{ "Times-Roman", StandardFontType::TimesRoman },
         std::pair<const char*, StandardFontType>{ "Times-Bold", StandardFontType::TimesRomanBold },
         std::pair<const char*, StandardFontType>{ "Times-Italic", StandardFontType::TimesRomanItalics },
@@ -1383,7 +1458,20 @@ PDFFontPointer PDFFont::createFont(const PDFObject& object, QByteArray fontId, c
         std::pair<const char*, StandardFontType>{ "Courier-Oblique", StandardFontType::CourierOblique },
         std::pair<const char*, StandardFontType>{ "Courier-BoldOblique", StandardFontType::CourierBoldOblique },
         std::pair<const char*, StandardFontType>{ "Symbol", StandardFontType::Symbol },
-        std::pair<const char*, StandardFontType>{ "ZapfDingbats", StandardFontType::ZapfDingbats }
+        std::pair<const char*, StandardFontType>{ "ZapfDingbats", StandardFontType::ZapfDingbats },
+
+        std::pair<const char*, StandardFontType>{ "TimesNewRomanPSMT", StandardFontType::TimesRoman },
+        std::pair<const char*, StandardFontType>{ "TimesNewRomanPS-BoldMT", StandardFontType::TimesRomanBold },
+        std::pair<const char*, StandardFontType>{ "TimesNewRomanPS-ItalicMT", StandardFontType::TimesRomanItalics },
+        std::pair<const char*, StandardFontType>{ "TimesNewRomanPS-BoldItalicMT", StandardFontType::TimesRomanBoldItalics },
+        std::pair<const char*, StandardFontType>{ "ArialMT", StandardFontType::Helvetica },
+        std::pair<const char*, StandardFontType>{ "Arial-BoldMT", StandardFontType::HelveticaBold },
+        std::pair<const char*, StandardFontType>{ "Arial-ItalicMT", StandardFontType::HelveticaOblique },
+        std::pair<const char*, StandardFontType>{ "Arial-BoldItalicMT", StandardFontType::HelveticaBoldOblique },
+        std::pair<const char*, StandardFontType>{ "CourierNewPSMT", StandardFontType::Courier },
+        std::pair<const char*, StandardFontType>{ "CourierNewPS-BoldMT", StandardFontType::CourierBold },
+        std::pair<const char*, StandardFontType>{ "CourierNewPS-ItalicMT", StandardFontType::CourierOblique },
+        std::pair<const char*, StandardFontType>{ "CourierNewPS-BoldItalicMT", StandardFontType::CourierBoldOblique },
     };
     const StandardFontType standardFont = fontLoader.readEnumByName(fontDictionary->get("BaseFont"), standardFonts.cbegin(), standardFonts.cend(), StandardFontType::Invalid);
 
@@ -1922,7 +2010,7 @@ PDFFontPointer PDFFont::createFont(const PDFObject& object, QByteArray fontId, c
             return PDFFontPointer(new PDFType1Font(fontType, qMove(fontId), qMove(cidSystemInfo), qMove(fontDescriptor), qMove(name), qMove(baseFont), firstChar, lastChar, qMove(widths), encoding, simpleFontEncodingTable, standardFont, glyphIndexArray));
 
         case FontType::TrueType:
-            return PDFFontPointer(new PDFTrueTypeFont(qMove(cidSystemInfo), qMove(fontId), qMove(fontDescriptor), qMove(name), qMove(baseFont), firstChar, lastChar, qMove(widths), encoding, simpleFontEncodingTable, glyphIndexArray));
+            return PDFFontPointer(new PDFTrueTypeFont(qMove(cidSystemInfo), qMove(fontId), qMove(fontDescriptor), qMove(name), qMove(baseFont), firstChar, lastChar, qMove(widths), encoding, simpleFontEncodingTable, standardFont, glyphIndexArray));
 
         default:
         {
@@ -1944,6 +2032,7 @@ PDFSimpleFont::PDFSimpleFont(CIDSystemInfo cidSystemInfo,
                              std::vector<PDFInteger> widths,
                              PDFEncoding::Encoding encodingType,
                              encoding::EncodingTable encoding,
+                             StandardFontType standardFontType,
                              GlyphIndices glyphIndices) :
     PDFFont(qMove(cidSystemInfo), qMove(fontId), qMove(fontDescriptor)),
     m_name(qMove(name)),
@@ -1953,7 +2042,8 @@ PDFSimpleFont::PDFSimpleFont(CIDSystemInfo cidSystemInfo,
     m_widths(qMove(widths)),
     m_encodingType(encodingType),
     m_encoding(encoding),
-    m_glyphIndices(glyphIndices)
+    m_glyphIndices(glyphIndices),
+    m_standardFontType(standardFontType)
 {
 
 }
@@ -2080,9 +2170,8 @@ PDFType1Font::PDFType1Font(FontType fontType,
                            encoding::EncodingTable encoding,
                            StandardFontType standardFontType,
                            GlyphIndices glyphIndices) :
-    PDFSimpleFont(qMove(cidSystemInfo), qMove(fontId), qMove(fontDescriptor), qMove(name), qMove(baseFont), firstChar, lastChar, qMove(widths), encodingType, encoding, glyphIndices),
-    m_fontType(fontType),
-    m_standardFontType(standardFontType)
+    PDFSimpleFont(qMove(cidSystemInfo), qMove(fontId), qMove(fontDescriptor), qMove(name), qMove(baseFont), firstChar, lastChar, qMove(widths), encodingType, encoding, standardFontType, glyphIndices),
+    m_fontType(fontType)
 {
 
 }

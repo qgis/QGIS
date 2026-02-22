@@ -51,14 +51,13 @@
 #pragma clang diagnostic ignored "-Wregister"
 #endif
 
-
-//#pragma warning(push)
-//#pragma warning(disable:5033)
+#pragma warning(push)
+#pragma warning(disable:5033)
 #ifndef CMS_NO_REGISTER_KEYWORD
 #define CMS_NO_REGISTER_KEYWORD
 #endif
 #include <lcms2.h>
-//#pragma warning(pop)
+#pragma warning(pop)
 
 #ifdef PDF4QT_COMPILER_CLANG
 #pragma clang diagnostic pop
@@ -251,6 +250,9 @@ std::vector<PDFDependentLibraryInfo> PDFDependentLibraryInfo::getLibraryInfo()
 {
     std::vector<PDFDependentLibraryInfo> result;
 
+#define INFO_EXPAND_AND_STRINGIFY(x) INFO_TO_STRING(x)
+#define INFO_TO_STRING(x) #x
+
     // Jakub Melka: iterate all used libraries, fill info...
 
     // Qt
@@ -261,16 +263,12 @@ std::vector<PDFDependentLibraryInfo> PDFDependentLibraryInfo::getLibraryInfo()
     qtInfo.url = tr("https://www.qt.io/");
     result.emplace_back(qMove(qtInfo));
 
-    // libjpeg
+    // libjpeg-turbo
     PDFDependentLibraryInfo libjpegInfo;
-    libjpegInfo.library = tr("libjpeg");
+    libjpegInfo.library = tr("libjpeg-turbo");
     libjpegInfo.license = tr("permissive + ack.");
-    libjpegInfo.url = tr("https://www.ijg.org/");
-#if defined(Q_OS_UNIX) || defined(__MINGW32__)
-    libjpegInfo.version = tr("%1").arg(JPEG_LIB_VERSION);
-#else
-    libjpegInfo.version = tr("%1.%2").arg(JPEG_LIB_VERSION_MAJOR).arg(JPEG_LIB_VERSION_MINOR);
-#endif
+    libjpegInfo.url = tr("https://libjpeg-turbo.org/");
+    libjpegInfo.version = INFO_EXPAND_AND_STRINGIFY(LIBJPEG_TURBO_VERSION);
     result.emplace_back(qMove(libjpegInfo));
 
     // FreeType

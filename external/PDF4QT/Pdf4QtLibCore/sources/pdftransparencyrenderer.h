@@ -106,7 +106,7 @@ public:
     static constexpr PDFPixelFormat removeSpotColors(PDFPixelFormat format) { return PDFPixelFormat(format.getProcessColorChannelCount(), 0, format.getFlags()); }
     static constexpr PDFPixelFormat removeShapeAndOpacity(PDFPixelFormat format) { return PDFPixelFormat(format.getProcessColorChannelCount(), format.getSpotColorChannelCount(), format.hasProcessColorsSubtractive() ? FLAG_PROCESS_COLORS_SUBTRACTIVE : 0); }
 
-    static constexpr uint32_t getAllColorsMask() { return 0xFFFF; }
+    static constexpr uint32_t getAllColorsMask() { return 0xFFFFFFFFu; }
 
     static constexpr PDFPixelFormat createFormat(uint8_t processColors, uint8_t spotColors, bool withShapeAndOpacity, bool processColorSubtractive, bool hasActiveColorMask)
     {
@@ -351,7 +351,7 @@ struct PDFInkMapping
 {
     inline bool isValid() const { return !mapping.empty(); }
     inline void reserve(size_t size) { mapping.reserve(size); }
-    inline void map(uint8_t source, uint8_t target) { mapping.emplace_back(Mapping{ source, target, Pass}); activeChannels |= 1 << target; }
+    inline void map(uint8_t source, uint8_t target) { mapping.emplace_back(Mapping{ source, target, Pass}); activeChannels |= (static_cast<uint32_t>(1u) << target); }
 
     enum Type
     {
@@ -457,84 +457,6 @@ private:
     size_t m_activeSpotColors = 0;
 };
 
-/// Painter path sampler. Returns shape value of pixel. This sampler
-/// uses MSAA with regular grid.
-class PDFPainterPathSampler
-{
-public:
-    /// Creates new painter path sampler, using given painter path,
-    /// sample count (in one direction) and default shape used, when painter path is empty.
-    /// Fill rectangle is used to precompute winding numbers for samples. Points outside
-    /// of fill rectangle are considered as outside and defaultShape is returned.
-    /// \param path Sampled path
-    /// \param samplesCount Samples count in one direction
-    /// \param defaultShape Default shape returned, if path is empty
-    /// \param fillRect Fill rectangle (sample point must be in this rectangle)
-    /// \param precise Use precise painter path computation
-    PDFPainterPathSampler(QPainterPath path,
-                          int samplesCount,
-                          PDFColorComponent defaultShape,
-                          QRect fillRect,
-                          bool precise);
-
-    /// Return sample value for a given pixel
-    PDFColorComponent sample(QPoint point) const;
-
-private:
-    struct ScanLineSample
-    {
-        inline constexpr ScanLineSample() = default;
-        inline constexpr ScanLineSample(PDFReal x, int windingNumber) :
-            x(x),
-            windingNumber(windingNumber)
-        {
-
-        }
-
-        bool operator<(const ScanLineSample& other) const { return x < other.x; }
-        bool operator<(PDFReal ordinate) const { return x < ordinate; }
-
-        PDFReal x = 0.0;
-        int windingNumber = 0;
-    };
-
-    struct ScanLineInfo
-    {
-        size_t indexStart = 0;
-        size_t indexEnd = 0;
-    };
-
-    /// Compute sample by using scan lines
-    PDFColorComponent sampleByScanLine(QPoint point) const;
-
-    /// Returns number of scan lines per pixel
-    size_t getScanLineCountPerPixel() const;
-
-    /// Creates scan lines using fill rectangle
-    void prepareScanLines();
-
-    /// Creates scan line for given y coordinate and
-    /// returns info about this scan line
-    /// \param y Vertical coordinate of the sample line
-    ScanLineInfo createScanLine(qreal y);
-
-    /// Creates scan line sample (if horizontal line of y coordinate
-    /// is intersecting boundary line segment p1-p2.
-    /// \param p1 First point of the oriented boundary line segment
-    /// \param p2 Second point of the oriented boundary line segment
-    /// \param y Vertical coordinate of the sample line
-    void createScanLineSample(const QPointF& p1, const QPointF& p2, qreal y);
-
-    PDFColorComponent m_defaultShape = 0.0;
-    int m_samplesCount = 0; ///< Samples count in one direction
-    QPainterPath m_path;
-    QPolygonF m_fillPolygon;
-    QRect m_fillRect;
-    std::vector<ScanLineSample> m_scanLineSamples;
-    std::vector<ScanLineInfo> m_scanLineInfo;
-    bool m_precise;
-};
-
 /// Represents draw buffer, into which is current graphics drawn
 class PDFDrawBuffer : public PDFFloatBitmap
 {
@@ -564,8 +486,8 @@ private:
 
 struct PDFTransparencyRendererSettings
 {
-    /// Sample count for MSAA antialiasing
-    int samplesCount = 16;
+    /// Tile size used for tile-based rendering.
+    QSize tileSize = QSize(256, 256);
 
     /// Threshold for turning on painter path
     /// multithreaded painting. When number of potential
@@ -582,12 +504,10 @@ struct PDFTransparencyRendererSettings
     {
         None               = 0x0000,
 
-        /// Use precise path sampler, which uses paths instead
-        /// of filling polygon.
+        /// Reserved for backward compatibility. Path sampler is no longer used.
         PrecisePathSampler          = 0x0001,
 
-        /// Use multithreading when painter paths are painted?
-        /// Multithreading is used to
+        /// Use multithreading when rasterized path/image/shading tiles are processed?
         MultithreadedPathSampler    = 0x0002,
 
         /// When using CMYK process color space, transfer spot
@@ -714,10 +634,14 @@ public:
 
 private:
 
+    struct PDFRasterMask;
+
     PDFReal getShapeStroking() const;
     PDFReal getOpacityStroking() const;
     PDFReal getShapeFilling() const;
     PDFReal getOpacityFilling() const;
+    QSize getEffectiveTileSize() const;
+    PDFRasterMask rasterizePathToMask(const QPainterPath& path, const QRect& rect, PDFColorComponent defaultValue) const;
 
     struct PDFTransparencySoftMaskImpl : public QSharedData
     {
@@ -780,6 +704,27 @@ private:
     {
         PDFColor mappedColor;
         uint32_t activeChannels = 0;
+    };
+
+    struct PDFRasterMask
+    {
+        QRect rect;
+        PDFColorComponent defaultValue = 0.0f;
+        std::vector<uint8_t> alphaCoverage; ///< 0..255 per pixel, row-major
+
+        bool isConstant() const { return alphaCoverage.empty(); }
+        PDFColorComponent sample(int x, int y) const
+        {
+            if (isConstant() || !rect.contains(x, y))
+            {
+                return defaultValue;
+            }
+
+            const int width = rect.width();
+            const int index = (y - rect.top()) * width + (x - rect.left());
+            Q_ASSERT(index >= 0 && index < int(alphaCoverage.size()));
+            return alphaCoverage[index] * (1.0f / 255.0f);
+        }
     };
 
     void invalidateCachedItems();
@@ -849,8 +794,8 @@ private:
     /// \param colorChannelStart Color channel start (draw buffer)
     /// \param colorChannelEnd Color channel end (draw buffer)
     /// \param fillColor Fill color
-    /// \param clipSampler Clipping sampler
-    /// \param pathSampler Path sampler
+    /// \param clipMask Clipping mask
+    /// \param pathMask Path mask
     void performPixelSampling(const PDFReal shape,
                               const PDFReal opacity,
                               const uint8_t shapeChannel,
@@ -860,8 +805,8 @@ private:
                               int x,
                               int y,
                               const PDFMappedColor& fillColor,
-                              const PDFPainterPathSampler& clipSampler,
-                              const PDFPainterPathSampler& pathSampler);
+                              const PDFRasterMask& clipMask,
+                              const PDFRasterMask& pathMask);
 
     /// Performs fragment fill from texture. Sampled pixel is painted
     /// into the draw buffer.
@@ -875,7 +820,7 @@ private:
     /// \param y Vertical coordinate of the fragment pixel
     /// \param worldToTextureMatrix World to texture matrix
     /// \param texture Texture
-    /// \param clipSampler Clipping sampler
+    /// \param clipMask Clipping mask
     void performFillFragmentFromTexture(const PDFReal shape,
                                         const PDFReal opacity,
                                         const uint8_t shapeChannel,
@@ -886,7 +831,7 @@ private:
                                         int y,
                                         const QTransform& worldToTextureMatrix,
                                         const PDFFloatBitmap& texture,
-                                        const PDFPainterPathSampler& clipSampler);
+                                        const PDFRasterMask& clipMask);
 
     /// Collapses spot colors to device colors
     /// \param data Bitmap with data

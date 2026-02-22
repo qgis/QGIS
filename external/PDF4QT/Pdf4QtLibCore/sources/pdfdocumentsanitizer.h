@@ -48,6 +48,7 @@ public:
         EmbeddedSearchIndex = 0x0010, ///< Remove embedded search index
         MarkupAnnotations   = 0x0020, ///< Remove markup annotations from all pages
         PageThumbnails      = 0x0040, ///< Remove page thumbnails
+        PageLabels          = 0x0080, ///< Remove page labels
         All                 = 0xFFFF, ///< All sanitization turned on
     };
     Q_DECLARE_FLAGS(SanitizationFlags, SanitizationFlag)
@@ -92,6 +93,7 @@ private:
     void performSanitizeEmbeddedSearchIndex();
     void performSanitizeMarkupAnnotations();
     void performSanitizePageThumbnails();
+    void performSanitizePageLabels();
 
     void removeAnnotations(const std::function<bool(const PDFAnnotation*)>& filter, QString message);
 
