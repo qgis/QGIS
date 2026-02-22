@@ -981,6 +981,11 @@ QAbstractItemView::item:selected, QListView::item:selected
     color: @textlight;
 }
 
+QAbstractItemView::item:selected:disabled, QListView::item:selected:disabled {
+    background-color: @itemdarkbackground;
+    color: @background;
+}
+
 QAbstractItemView:disabled, QListView:disabled
 {
     color: @itemdarkbackground;
@@ -993,7 +998,12 @@ QAbstractItemView::selected, QListView::selected {
     outline: none;
 }
 
+QAbstractItemView::indicator:selected, QListView::indicator:selected {
+    border: 1px solid @background;
+}
+
 QAbstractItemView::indicator:checked, QListView::indicator:checked {
+    border: 1px solid @background;
     background-color: @toggleon;
     image: url(@theme_path/icons/qcheckbox-checked.svg) !important;
 }
@@ -1012,6 +1022,10 @@ QAbstractItemView::indicator:unchecked:disabled, QListView::indicator:unchecked:
     image: none;
 }
 
+QAbstractItemView::indicator:selected:disabled, QListView::indicator:selected:disabled {
+    border: 1px solid @background;
+    background-color: @background;
+}
 
 /* ==================================================================================== */
 /* TREE VIEW                                                                            */
@@ -1085,7 +1099,9 @@ QTreeView::indicator:unchecked:disabled {
     background-color: rgba(0, 0, 0, 0);
     image: none;
 }
-
+QTreeView::indicator:selected:disabled {
+    background-color: @background;
+}
 
 QgsLayerTreeView::item,
 QTreeView#viewGraduated::item,

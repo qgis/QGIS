@@ -969,6 +969,11 @@ QAbstractItemView::selected, QListView::selected {
     outline: none;
 }
 
+QAbstractItemView::item:selected:disabled, QListView::item:selected:disabled {
+    background-color: @itemalternativebackground;
+    color: @background;
+}
+
 QAbstractItemView::indicator:checked, QListView::indicator:checked {
     image: url(@theme_path/icons/qcheckbox-checked.svg) !important;
 }
