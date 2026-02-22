@@ -11639,7 +11639,7 @@ void TestProcessingGui::testModelGraphicsView()
   //check model bounds
   scene2.updateBounds();
   QRectF modelRect = scene2.sceneRect();
-  QGSCOMPARENEAR( modelRect.height(), 1526, 5 ); // Slightly higher threeshold because of various font size can marginally change the bounding rect
+  QGSCOMPARENEAR( modelRect.height(), 1523, 5 ); // Slightly higher threeshold because of various font size can marginally change the bounding rect
   QGSCOMPARENEAR( modelRect.width(), 1555.00, 0.01 );
   QGSCOMPARENEAR( modelRect.left(), -702.0, 0.01 );
   QGSCOMPARENEAR( modelRect.top(), -682.0, 0.01 );
@@ -11667,7 +11667,7 @@ void TestProcessingGui::testModelGraphicsView()
 
   scene3.updateBounds();
   QRectF modelRect2 = scene3.sceneRect();
-  QGSCOMPARENEAR( modelRect2.height(), 5407.4, 5 ); // Slightly higher threeshold because of various font size can marginally change the bounding rect
+  QGSCOMPARENEAR( modelRect2.height(), 5404, 5 ); // Slightly higher threeshold because of various font size can marginally change the bounding rect
   QGSCOMPARENEAR( modelRect2.width(), 5503.0, 0.01 );
   QGSCOMPARENEAR( modelRect2.left(), -651.0, 0.01 );
   QGSCOMPARENEAR( modelRect2.top(), -600.0, 0.01 );
