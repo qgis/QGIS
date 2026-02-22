@@ -117,6 +117,11 @@ void PDFDocumentSanitizer::sanitize()
         performSanitizePageThumbnails();
     }
 
+    if (m_flags.testFlag(PageLabels))
+    {
+        performSanitizePageLabels();
+    }
+
     // Optimize - remove unused objects
     PDFOptimizer optimizer(PDFOptimizer::OptimizationFlags(PDFOptimizer::RemoveUnusedObjects | PDFOptimizer::ShrinkObjectStorage | PDFOptimizer::RemoveNullObjects), nullptr);
     optimizer.setStorage(m_storage);
@@ -291,6 +296,29 @@ void PDFDocumentSanitizer::performSanitizePageThumbnails()
         PDFDocument document = builder.build();
         m_storage = document.getStorage();
         Q_EMIT sanitizationProgress(tr("Page thumbnails removed: %1.").arg(pagesWithThumbnail.size()));
+    }
+}
+
+void PDFDocumentSanitizer::performSanitizePageLabels()
+{
+    PDFDocumentBuilder builder(m_storage, PDFVersion(2, 0));
+    PDFObject catalogObject = builder.getObjectByReference(builder.getCatalogReference());
+    const PDFDictionary* catalogDictionary = builder.getDictionaryFromObject(catalogObject);
+    const bool hasPageLabels = catalogDictionary && catalogDictionary->hasKey("PageLabels");
+
+    if (hasPageLabels)
+    {
+        PDFObjectFactory objectBuilder;
+        objectBuilder.beginDictionary();
+        objectBuilder.beginDictionaryItem("PageLabels");
+        objectBuilder << PDFObject();
+        objectBuilder.endDictionaryItem();
+        objectBuilder.endDictionary();
+
+        builder.mergeTo(builder.getCatalogReference(), objectBuilder.takeObject());
+        PDFDocument document = builder.build();
+        m_storage = document.getStorage();
+        Q_EMIT sanitizationProgress(tr("Page labels were removed."));
     }
 }
 

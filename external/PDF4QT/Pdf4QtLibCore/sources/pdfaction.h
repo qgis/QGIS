@@ -34,6 +34,7 @@
 #include <set>
 #include <variant>
 #include <functional>
+#include <limits>
 
 namespace pdf
 {
@@ -136,11 +137,11 @@ public:
 
 private:
     DestinationType m_destinationType = DestinationType::Invalid;
-    PDFReal m_left = 0.0;
-    PDFReal m_top = 0.0;
-    PDFReal m_right = 0.0;
-    PDFReal m_bottom = 0.0;
-    PDFReal m_zoom = 0.0;
+    PDFReal m_left = std::numeric_limits<PDFReal>::quiet_NaN();
+    PDFReal m_top = std::numeric_limits<PDFReal>::quiet_NaN();
+    PDFReal m_right = std::numeric_limits<PDFReal>::quiet_NaN();
+    PDFReal m_bottom = std::numeric_limits<PDFReal>::quiet_NaN();
+    PDFReal m_zoom = std::numeric_limits<PDFReal>::quiet_NaN();
     QByteArray m_name;
     PDFObjectReference m_pageReference;
     PDFInteger m_pageIndex = 0;

@@ -51,6 +51,15 @@ enum class PageLayout
     Custom              ///< Custom layout, multiple columns can be used, -1 as page index means page is omitted
 };
 
+class PDF4QTLIBCORESHARED_EXPORT PDFPageLayoutUtils
+{
+public:
+    PDFPageLayoutUtils() = delete;
+
+    static QString convertPageLayoutToString(PageLayout pageLayout);
+    static PageLayout convertStringToPageLayout(const QString& text, PageLayout defaultPageLayout);
+};
+
 /// Specifies, how the document should be displayed in the viewer application.
 enum class PageMode
 {
