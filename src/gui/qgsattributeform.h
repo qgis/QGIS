@@ -408,6 +408,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     struct WidgetInfo
     {
         QWidget *widget = nullptr;
+        bool expandingNeeded = false;
         QString labelText;
         QString toolTip;
         QString hint;
