@@ -1138,7 +1138,9 @@ QgsLayerTreeView::indicator:unchecked,
 QTreeView#viewGraduated::indicator:unchecked,
 QTreeView#viewCategories::indicator:unchecked,
 QTreeView#viewRules::indicator:unchecked,
-QTreeView#mSubDiagramsView::indicator:unchecked
+QTreeView#mSubDiagramsView::indicator:unchecked,
+QgsCustomLayerOrderWidget QListView::indicator:unchecked,
+QgsCustomLayerOrderWidget QListView::indicator:unchecked:disabled
 {
     border: none;
     background-color: transparent;
@@ -1149,11 +1151,24 @@ QgsLayerTreeView::indicator:checked,
 QTreeView#viewGraduated::indicator:checked, 
 QTreeView#viewCategories::indicator:checked, 
 QTreeView#viewRules::indicator:checked,
-QTreeView#mSubDiagramsView::indicator:checked
+QTreeView#mSubDiagramsView::indicator:checked,
+QgsCustomLayerOrderWidget QListView::indicator:checked,
+QgsCustomLayerOrderWidget QListView::indicator:indeterminate
 {
     border: none;
     background-color: transparent;
     image: url(@theme_path/icons/eye.svg);
+}
+
+QgsCustomLayerOrderWidget QListView::indicator:checked:disabled,
+QgsCustomLayerOrderWidget QListView::indicator:indeterminate:disabled
+{
+    image: url(@theme_path/icons/eye-disabled.svg);
+}
+
+QgsCustomLayerOrderWidget QListView::indicator:selected:disabled {
+    border: none;
+    background-color: transparent;
 }
 
 /* ==================================================================================== */

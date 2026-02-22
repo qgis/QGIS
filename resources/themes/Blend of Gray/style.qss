@@ -1068,9 +1068,15 @@ QTreeView#viewRules::indicator:unchecked
 QgsLayerTreeView::indicator:checked,
 QTreeView#viewGraduated::indicator:checked, 
 QTreeView#viewCategories::indicator:checked, 
-QTreeView#viewRules::indicator:checked 
+QTreeView#viewRules::indicator:checked,
+QgsCustomLayerOrderWidget QListView::indicator:indeterminate
 {
     image: url(@theme_path/icons/qcheckbox-checked.svg);
+}
+
+QgsCustomLayerOrderWidget QListView::indicator:checked:disabled,
+QgsCustomLayerOrderWidget QListView::indicator:indeterminate:disabled {
+    image: url(@theme_path/icons/qcheckbox-checked-disabled.svg);
 }
 
 /* ==================================================================================== */
