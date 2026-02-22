@@ -102,8 +102,6 @@ class ModelerDialog(QgsModelDesignerDialog):
             _model.setSourceFilePath(model.sourceFilePath())
             self.setModel(_model)
 
-        self.view().centerOn(self.view().sceneRect().center())
-
         self.processing_context = createContext()
 
         class ContextGenerator(QgsProcessingContextGenerator):

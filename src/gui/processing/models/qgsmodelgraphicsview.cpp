@@ -58,8 +58,7 @@ QgsModelGraphicsView::QgsModelGraphicsView( QWidget *parent )
   mMidMouseButtonPanTool = new QgsModelViewToolTemporaryMousePan( this );
   mSpaceZoomTool = new QgsModelViewToolTemporaryKeyZoom( this );
 
-  // Workaround for Qt default behavior where during the scroll the visible scene rect
-  // The visible scene rect would be also updated on the axis that is not being scrolled.
+  // Workaround for Qt default behavior where during the scroll the visible scene rect would be also updated on the axis that is not being scrolled.
   // With ScrollBarAlwaysOn, we ensure that the visible scene rect is stable during scroll.
   // See https://github.com/qgis/QGIS/pull/64605#issuecomment-3771638032
   setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
