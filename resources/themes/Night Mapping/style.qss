@@ -302,7 +302,7 @@ QToolButton::menu-button {
     border: 1px solid rgba(0,0,0,0);
     background:@itemdarkbackground;
 }
-QToolButton::hover, QToolButton::menu-button::hover
+QToolButton:hover, QToolButton::menu-button:hover
 {
     border-width: 1px;
     border-color: #1e1e1e;
@@ -672,7 +672,7 @@ QTabBar::tab:disabled {
     color: @itemdarkbackground;
 }
 
-QTabBar::tab:last, QTabBar::tab::only-one
+QTabBar::tab:last, QTabBar::tab:only-one
 {
     margin-right: 0;
 }
@@ -993,7 +993,7 @@ QAbstractItemView:disabled, QListView:disabled
     border-radius: 0px;
 }
 
-QAbstractItemView::selected, QListView::selected {
+QAbstractItemView:selected, QListView:selected {
     border: 0px;
     outline: none;
 }

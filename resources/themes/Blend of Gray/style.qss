@@ -672,7 +672,7 @@ QTabBar::tab:disabled {
     color: @itemalternativebackground
 }
 
-QTabBar::tab:last, QTabBar::tab::only-one
+QTabBar::tab:last, QTabBar::tab:only-one
 {
     margin-right: 0;
 }
@@ -964,7 +964,7 @@ QAbstractItemView:disabled, QListView:disabled
     border-radius: 0.15em;
 }
 
-QAbstractItemView::selected, QListView::selected {
+QAbstractItemView:selected, QListView:selected {
     border: 0px;
     outline: none;
 }
