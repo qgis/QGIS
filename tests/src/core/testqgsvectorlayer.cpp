@@ -565,17 +565,13 @@ void TestQgsVectorLayer::testSelectByIdsValidation()
   QgsFeatureIds testIds = { 1, 2, 99, 100, 3 };
   layer->selectByIds( testIds, Qgis::SelectBehavior::SetSelection, false );
   QCOMPARE( layer->selectedFeatureCount(), 5 );
-  QCOMPARE( layer->selectedFeatureIds().size(), 3 );
-  QVERIFY( layer->selectedFeatureIds().contains( 1 ) );
-  QVERIFY( layer->selectedFeatureIds().contains( 2 ) );
-  QVERIFY( layer->selectedFeatureIds().contains( 3 ) );
+  QCOMPARE( layer->selectedFeatureIds().size(), 5 );
+  QCOMPARE( layer->selectedFeatureIds(), testIds );
 
   layer->selectByIds( testIds, Qgis::SelectBehavior::SetSelection, true );
   QCOMPARE( layer->selectedFeatureCount(), 3 );
   QCOMPARE( layer->selectedFeatureIds().size(), 3 );
-  QVERIFY( layer->selectedFeatureIds().contains( 1 ) );
-  QVERIFY( layer->selectedFeatureIds().contains( 2 ) );
-  QVERIFY( layer->selectedFeatureIds().contains( 3 ) );
+  QCOMPARE( layer->selectedFeatureIds(), QgsFeatureIds() << 1 << 2 << 3 );
 
   testIds = { 99, 100, 200 };
   layer->selectByIds( testIds, Qgis::SelectBehavior::SetSelection, true );
@@ -586,18 +582,17 @@ void TestQgsVectorLayer::testSelectByIdsValidation()
   layer->selectByIds( testIds, Qgis::SelectBehavior::SetSelection, true );
   QCOMPARE( layer->selectedFeatureCount(), 5 );
   QCOMPARE( layer->selectedFeatureIds().size(), 5 );
+  QCOMPARE( layer->selectedFeatureIds(), testIds );
 
   testIds = { 1, 2 };
   layer->selectByIds( testIds, Qgis::SelectBehavior::SetSelection, true );
   QCOMPARE( layer->selectedFeatureCount(), 2 );
+  QCOMPARE( layer->selectedFeatureIds(), testIds );
 
   testIds = { 3, 99 };
   layer->selectByIds( testIds, Qgis::SelectBehavior::AddToSelection, true );
   QCOMPARE( layer->selectedFeatureCount(), 3 ); // Should have 1, 2, 3
-  QVERIFY( layer->selectedFeatureIds().contains( 1 ) );
-  QVERIFY( layer->selectedFeatureIds().contains( 2 ) );
-  QVERIFY( layer->selectedFeatureIds().contains( 3 ) );
-  QVERIFY( !layer->selectedFeatureIds().contains( 99 ) );
+  QCOMPARE( layer->selectedFeatureIds(), QgsFeatureIds() << 1 << 2 << 3 );
 }
 
 QGSTEST_MAIN( TestQgsVectorLayer )

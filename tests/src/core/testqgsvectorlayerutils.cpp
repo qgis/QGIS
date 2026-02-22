@@ -572,21 +572,12 @@ void TestQgsVectorLayerUtils::testFilterValidFeatureIds()
   testIds = { 1, 2, 3, 4, 5 };
   result = QgsVectorLayerUtils::filterValidFeatureIds( layer.get(), testIds );
   QCOMPARE( result.size(), 5 );
-  QVERIFY( result.contains( 1 ) );
-  QVERIFY( result.contains( 2 ) );
-  QVERIFY( result.contains( 3 ) );
-  QVERIFY( result.contains( 4 ) );
-  QVERIFY( result.contains( 5 ) );
+  QCOMPARE( result, testIds );
 
   testIds = { 1, 2, 99, 100, 3, 200 };
   result = QgsVectorLayerUtils::filterValidFeatureIds( layer.get(), testIds );
   QCOMPARE( result.size(), 3 );
-  QVERIFY( result.contains( 1 ) );
-  QVERIFY( result.contains( 2 ) );
-  QVERIFY( result.contains( 3 ) );
-  QVERIFY( !result.contains( 99 ) );
-  QVERIFY( !result.contains( 100 ) );
-  QVERIFY( !result.contains( 200 ) );
+  QCOMPARE( result, QgsFeatureIds() << 1 << 2 << 3 );
 
   testIds = { 99, 100, 200 };
   result = QgsVectorLayerUtils::filterValidFeatureIds( layer.get(), testIds );
@@ -595,10 +586,7 @@ void TestQgsVectorLayerUtils::testFilterValidFeatureIds()
   testIds = { -1, 1, 2, -5 };
   result = QgsVectorLayerUtils::filterValidFeatureIds( layer.get(), testIds );
   QCOMPARE( result.size(), 2 );
-  QVERIFY( result.contains( 1 ) );
-  QVERIFY( result.contains( 2 ) );
-  QVERIFY( !result.contains( -1 ) );
-  QVERIFY( !result.contains( -5 ) );
+  QCOMPARE( result, QgsFeatureIds() << 1 << 2 );
 }
 
 QGSTEST_MAIN( TestQgsVectorLayerUtils )
