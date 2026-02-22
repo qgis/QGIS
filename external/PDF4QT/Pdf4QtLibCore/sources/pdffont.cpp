@@ -535,9 +535,11 @@ QByteArray PDFSystemFontInfoStorage::loadFontImpl(const FontDescriptor* descript
         if (FcPatternGetString(match, FC_FILE, 0, &s) == FcResultMatch)
         {
             QFile f(QString::fromUtf8(reinterpret_cast<char*>(s)));
-            f.open(QIODevice::ReadOnly);
-            result = f.readAll();
-            f.close();
+            if ( f.open(QIODevice::ReadOnly) )
+            {
+                result = f.readAll();
+                f.close();
+            }
         }
     }
 
