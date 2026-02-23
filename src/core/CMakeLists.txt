@@ -146,6 +146,7 @@ set(QGIS_CORE_SRCS
   symbology/qgssymbolrendercontext.cpp
   symbology/qgsvectorfieldsymbollayer.cpp
   symbology/converters/qgssymbolconverter.cpp
+  symbology/converters/qgssymbolconverteresrirest.cpp
 
   simplify/effectivearea.cpp
 
@@ -2080,6 +2081,7 @@ set(QGIS_CORE_HDRS
   symbology/qgssymbolrendercontext.h
   symbology/qgsvectorfieldsymbollayer.h
   symbology/converters/qgssymbolconverter.h
+  symbology/converters/qgssymbolconverteresrirest.h
 
   textrenderer/qgsfontmanager.h
   textrenderer/qgstextbackgroundsettings.h
