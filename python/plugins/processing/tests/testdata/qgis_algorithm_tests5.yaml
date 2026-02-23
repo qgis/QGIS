@@ -562,7 +562,7 @@ tests:
         name: custom/network_validation.gml|layername=network_validation
         type: vector
       TOLERANCE: 5.0
-      TOLERANCE_NODE_NODE: 20.0
+      TOLERANCE_NODE_NODE: 30.0
     results:
       OUTPUT_INVALID_NODES:
         name: expected/network_validation_node_to_node_with_tolerance.gml

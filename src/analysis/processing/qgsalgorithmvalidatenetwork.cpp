@@ -355,6 +355,8 @@ QVariantMap QgsValidateNetworkAlgorithm::processAlgorithm( const QVariantMap &pa
 
     if ( checkNodeToNodeDistance )
     {
+      const std::vector< QgsVectorLayerDirector::VertexSourceInfo > &fidsFirstNode = director.sourcesForVertex( i );
+
       const QList<QgsSpatialIndexKDBushData> candidates = nodeIndex.intersects(
         QgsRectangle::fromCenterAndSize( pt, toleranceNodeToNode * 2, toleranceNodeToNode * 2 )
       );
@@ -389,6 +391,29 @@ QVariantMap QgsValidateNetworkAlgorithm::processAlgorithm( const QVariantMap &pa
         }
         if ( skip )
           continue;
+
+        const std::vector<QgsVectorLayerDirector::VertexSourceInfo> &fidsSecondNode = director.sourcesForVertex( data.id );
+
+        bool shareCommonFeature = false;
+        for ( const QgsVectorLayerDirector::VertexSourceInfo &info1 : fidsFirstNode )
+        {
+          for ( const QgsVectorLayerDirector::VertexSourceInfo &info2 : fidsSecondNode )
+          {
+            if ( info1 == info2 )
+            {
+              shareCommonFeature = true;
+              break;
+            }
+          }
+          if ( shareCommonFeature )
+            break;
+        }
+
+        if ( shareCommonFeature )
+        {
+          // if there is a common feature joining these nodes, then don't consider them as invalid
+          continue;
+        }
 
         const double distanceNodeToNode = pt.distance( data.point() );
         if ( distanceNodeToNode < toleranceNodeToNode && distanceNodeToNode < closestError.distance )
