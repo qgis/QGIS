@@ -383,16 +383,22 @@ void QgsBarChartPlotWidget::updateXAxisProperties()
 {
   const bool enable = mXAxisTypeCombo->currentData().value<Qgis::PlotAxisType>() == Qgis::PlotAxisType::Interval;
 
+  mLabelMinXAxis->setEnabled( enable );
   mSpinMinXAxis->setEnabled( enable );
   mDDBtnMinXAxis->setEnabled( enable );
+  mLabelMaxXAxis->setEnabled( enable );
   mSpinMaxXAxis->setEnabled( enable );
   mDDBtnMaxXAxis->setEnabled( enable );
 
+  mXAxisMajorIntervalLabel->setEnabled( enable );
   mXAxisMajorIntervalSpin->setEnabled( enable );
   mDDBtnXAxisMajorInterval->setEnabled( enable );
+  mXAxisMajorLinesLabel->setEnabled( enable );
   mXAxisMajorLinesSymbolButton->setEnabled( enable );
+  mXAxisMinorIntervalLabel->setEnabled( enable );
   mXAxisMinorIntervalSpin->setEnabled( enable );
   mDDBtnXAxisMinorInterval->setEnabled( enable );
+  mXAxisMinorLinesLabel->setEnabled( enable );
   mXAxisMinorLinesSymbolButton->setEnabled( enable );
 }
 
@@ -857,16 +863,22 @@ void QgsLineChartPlotWidget::updateXAxisProperties()
 {
   const bool enable = mXAxisTypeCombo->currentData().value<Qgis::PlotAxisType>() == Qgis::PlotAxisType::Interval;
 
+  mLabelMinXAxis->setEnabled( enable );
   mSpinMinXAxis->setEnabled( enable );
   mDDBtnMinXAxis->setEnabled( enable );
+  mLabelMaxXAxis->setEnabled( enable );
   mSpinMaxXAxis->setEnabled( enable );
   mDDBtnMaxXAxis->setEnabled( enable );
 
+  mXAxisMajorIntervalLabel->setEnabled( enable );
   mXAxisMajorIntervalSpin->setEnabled( enable );
   mDDBtnXAxisMajorInterval->setEnabled( enable );
+  mXAxisMajorLinesLabel->setEnabled( enable );
   mXAxisMajorLinesSymbolButton->setEnabled( enable );
+  mXAxisMinorIntervalLabel->setEnabled( enable );
   mXAxisMinorIntervalSpin->setEnabled( enable );
   mDDBtnXAxisMinorInterval->setEnabled( enable );
+  mXAxisMinorLinesLabel->setEnabled( enable );
   mXAxisMinorLinesSymbolButton->setEnabled( enable );
 }
 
