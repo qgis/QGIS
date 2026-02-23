@@ -1028,7 +1028,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
   mScreenHelper = new QgsScreenHelper( this );
 
-  setDockOptions( dockOptions() | QMainWindow::GroupedDragging );
+  setDockOptions( dockOptions() );
 
   QgsDockableWidgetHelper::sAddTabifiedDockWidgetFunction = []( Qt::DockWidgetArea dockArea, QDockWidget *dock, const QStringList &tabSiblings, bool raiseTab ) {
     QgisApp::instance()->addTabifiedDockWidget( dockArea, dock, tabSiblings, raiseTab );
