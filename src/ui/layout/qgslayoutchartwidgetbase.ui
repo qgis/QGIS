@@ -230,26 +230,14 @@
             </property>
            </widget>
           </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="featureFilteringGroupBox">
-         <property name="title">
-          <string>Feature Filtering</string>
-         </property>
-         <property name="collapsed" stdset="0">
-          <bool>false</bool>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout">
-          <item>
+          <item row="5" column="0" colspan="3">
            <widget class="QCheckBox" name="mFilterOnlyVisibleFeaturesCheckBox">
             <property name="text">
              <string>Use only features visible within a map</string>
             </property>
            </widget>
           </item>
-          <item>
+          <item row="6" column="0" colspan="3">
            <layout class="QHBoxLayout" name="linkedMapLayout">
             <item>
              <widget class="QLabel" name="mLinkedMapLabel">
@@ -266,7 +254,7 @@
             </item>
            </layout>
           </item>
-          <item>
+          <item row="7" column="0" colspan="3">
            <widget class="QCheckBox" name="mIntersectAtlasCheckBox">
             <property name="text">
              <string>Use only features intersecting atlas feature</string>
