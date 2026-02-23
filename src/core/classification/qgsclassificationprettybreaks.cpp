@@ -26,7 +26,6 @@ using namespace Qt::StringLiterals;
 QgsClassificationPrettyBreaks::QgsClassificationPrettyBreaks()
   : QgsClassificationMethod( SymmetricModeAvailable )
 {
-
 }
 
 QString QgsClassificationPrettyBreaks::name() const

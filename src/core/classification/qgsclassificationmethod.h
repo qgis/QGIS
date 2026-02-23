@@ -39,17 +39,16 @@ class QgsRendererRange;
 #include "qgsclassificationquantile.h"
 #include "qgsclassificationstandarddeviation.h"
 #include "qgsclassificationfixedinterval.h"
-% End
+  % End
 #endif
 
 
-
-/**
+  /**
  * \ingroup core
  * \brief Contains the information about a classification range.
  * \since QGIS 3.10
  */
-class CORE_EXPORT QgsClassificationRange
+  class CORE_EXPORT QgsClassificationRange
 {
   public:
     //! Constructor
@@ -59,13 +58,14 @@ class CORE_EXPORT QgsClassificationRange
       , mUpperBound( upperBound )
     {}
     //! Returns the lower bound
-    double lowerBound() const {return mLowerBound;}
+    double lowerBound() const { return mLowerBound; }
     //! Returns the upper bound
-    double upperBound() const {return mUpperBound;}
+    double upperBound() const { return mUpperBound; }
 
     //! Returns the lower bound
-    QString label() const {return mLabel;}
+    QString label() const { return mLabel; }
 
+    // clang-format off
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
@@ -74,12 +74,13 @@ class CORE_EXPORT QgsClassificationRange
     % End
 #endif
 
-  private:
+    private:
+    // clang-format on
+
     QString mLabel;
     double mLowerBound;
     double mUpperBound;
 };
-
 
 
 /**
@@ -90,7 +91,6 @@ class CORE_EXPORT QgsClassificationRange
  */
 class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsClassificationEqualInterval *>( sipCpp ) )
@@ -111,14 +111,13 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
 #endif
 
   public:
-
     //! Flags for the classification method
     enum MethodProperty SIP_ENUM_BASETYPE( IntFlag )
     {
-      NoFlag                 = 0,       //!< No flag
-      ValuesNotRequired      = 1 << 1,  //!< Deprecated since QGIS 3.12
-      SymmetricModeAvailable = 1 << 2,  //!< This allows using symmetric classification
-      IgnoresClassCount      = 1 << 3,  //!< The classification method does not compute classes based on a class count \since QGIS 3.26
+      NoFlag = 0,                      //!< No flag
+      ValuesNotRequired = 1 << 1,      //!< Deprecated since QGIS 3.12
+      SymmetricModeAvailable = 1 << 2, //!< This allows using symmetric classification
+      IgnoresClassCount = 1 << 3,      //!< The classification method does not compute classes based on a class count \since QGIS 3.26
     };
     Q_DECLARE_FLAGS( MethodProperties, MethodProperty )
 
@@ -153,7 +152,7 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
     virtual QString id() const = 0;
 
     //! The icon of the method
-    virtual QIcon icon() const {return QIcon();}
+    virtual QIcon icon() const { return QIcon(); }
 
     /**
      * Returns the classification flags.
@@ -169,43 +168,51 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
 
 
     //! Writes extra information about the method
-    virtual void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const {Q_UNUSED( element ); Q_UNUSED( context )}
+    virtual void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const
+    {
+      Q_UNUSED( element );
+      Q_UNUSED( context )
+    }
     //! Reads extra information to apply it to the method
-    virtual void readXml( const QDomElement &element, const QgsReadWriteContext &context ) {Q_UNUSED( element ); Q_UNUSED( context )}
+    virtual void readXml( const QDomElement &element, const QgsReadWriteContext &context )
+    {
+      Q_UNUSED( element );
+      Q_UNUSED( context )
+    }
 
     /**
      * Returns if the method requires values to calculate the classes
      * If not, bounds are sufficient
      */
-    virtual bool valuesRequired() const {return true;}
+    virtual bool valuesRequired() const { return true; }
 
 
     // *******************
     // non-virtual methods
 
     //! Code complexity as the exponent in Big O notation
-    int codeComplexity() const {return mCodeComplexity;}
+    int codeComplexity() const { return mCodeComplexity; }
 
     /**
      * Returns if the method supports symmetric calculation
      */
-    bool symmetricModeAvailable() const {return mFlags.testFlag( SymmetricModeAvailable );}
+    bool symmetricModeAvailable() const { return mFlags.testFlag( SymmetricModeAvailable ); }
 
     /**
      * Returns if the symmetric mode is enabled
      */
-    bool symmetricModeEnabled() const {return symmetricModeAvailable() && mSymmetricEnabled;}
+    bool symmetricModeEnabled() const { return symmetricModeAvailable() && mSymmetricEnabled; }
 
     /**
      * Returns the symmetry point for symmetric mode
      */
-    double symmetryPoint() const {return mSymmetryPoint;}
+    double symmetryPoint() const { return mSymmetryPoint; }
 
     /**
      * Returns if the symmetric mode is astride
      * if TRUE, it will remove the symmetry point break so that the 2 classes form only one
      */
-    bool symmetryAstride() const {return mSymmetryAstride;}
+    bool symmetryAstride() const { return mSymmetryAstride; }
 
     /**
      * Defines if the symmetric mode is enables and configures its parameters.
@@ -311,7 +318,7 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
      * Returns the list of parameters
      * \since QGIS 3.12
      */
-    QgsProcessingParameterDefinitions parameterDefinitions() const {return mParameters;}
+    QgsProcessingParameterDefinitions parameterDefinitions() const { return mParameters; }
 
     /**
      * Defines the values of the additional parameters
@@ -324,13 +331,12 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
      * One could use QgsProcessingParameters::parameterAsXxxx to retrieve the actual value of a parameter.
      * \since QGIS 3.12
      */
-    QVariantMap parameterValues() const {return mParameterValues;}
+    QVariantMap parameterValues() const { return mParameterValues; }
 
     static const int MAX_PRECISION;
     static const int MIN_PRECISION;
 
   protected:
-
     //! Copy the parameters (shall be used in clone implementation)
     void copyBase( QgsClassificationMethod *c ) const;
 
@@ -347,17 +353,15 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
     void addParameter( QgsProcessingParameterDefinition *definition SIP_TRANSFER );
 
   private:
-
     /**
      * Calculate the breaks, should be reimplemented, values might be an empty list if they are not required
      * If the symmetric mode is available, the implementation is responsible of applying the symmetry
      * The maximum value is expected to be added at the end of the list, but not the minimum
      */
-    virtual QList<double> calculateBreaks( double &minimum, double &maximum,
-                                           const QList<double> &values, int nclasses, QString &error ) = 0;
+    virtual QList<double> calculateBreaks( double &minimum, double &maximum, const QList<double> &values, int nclasses, QString &error ) = 0;
 
     //! This is called after calculating the breaks or restoring from XML, so it can rely on private variables
-    virtual QString valueToLabel( double value ) const {return formatNumber( value );}
+    virtual QString valueToLabel( double value ) const { return formatNumber( value ); }
 
     //! Create a list of ranges from a list of classes
     QList<QgsClassificationRange> breaksToClasses( const QList<double> &breaks ) const;
