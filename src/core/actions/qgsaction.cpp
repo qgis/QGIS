@@ -43,8 +43,8 @@ using namespace Qt::StringLiterals;
 
 bool QgsAction::runable() const
 {
-// clang analyzer is not happy because of the multiple duplicate return branches, but this is ok :)
-// NOLINTBEGIN(bugprone-branch-clone)
+  // clang analyzer is not happy because of the multiple duplicate return branches, but this is ok :)
+  // NOLINTBEGIN(bugprone-branch-clone)
   switch ( mType )
   {
     case Qgis::AttributeActionType::Generic:
@@ -54,13 +54,13 @@ bool QgsAction::runable() const
     case Qgis::AttributeActionType::SubmitUrlMultipart:
       return true;
 
-#if defined(Q_OS_WIN)
+#if defined( Q_OS_WIN )
     case Qgis::AttributeActionType::Windows:
       return true;
     case Qgis::AttributeActionType::Mac:
     case Qgis::AttributeActionType::Unix:
       return false;
-#elif defined(Q_OS_MAC)
+#elif defined( Q_OS_MAC )
     case Qgis::AttributeActionType::Mac:
       return true;
     case Qgis::AttributeActionType::Windows:
@@ -90,18 +90,17 @@ void QgsAction::run( QgsVectorLayer *layer, const QgsFeature &feature, const Qgs
 
 void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
 {
-
   // Show busy in case the form subit is slow
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  QUrl url{ expandedAction };
+  QUrl url { expandedAction };
 
   // Encode '+' (fully encoded doesn't encode it)
   const QString payload { url.query( QUrl::ComponentFormattingOption::FullyEncoded ).replace( QChar( '+' ), u"%2B"_s ) };
 
   // Remove query string from URL
-  const QUrlQuery queryString { url.query( ) };
-  url.setQuery( QString( ) );
+  const QUrlQuery queryString { url.query() };
+  url.setQuery( QString() );
 
   QNetworkRequest req { url };
 
@@ -135,9 +134,7 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
     for ( const QPair<QString, QString> &queryItem : std::as_const( queryItems ) )
     {
       QHttpPart part;
-      part.setHeader( QNetworkRequest::ContentDispositionHeader,
-                      u"form-data; name=\"%1\""_s
-                      .arg( QString( queryItem.first ).replace( '"', R"(\")"_L1 ) ) );
+      part.setHeader( QNetworkRequest::ContentDispositionHeader, u"form-data; name=\"%1\""_s.arg( QString( queryItem.first ).replace( '"', R"(\")"_L1 ) ) );
       part.setBody( queryItem.second.toUtf8() );
       multiPart->append( part );
     }
@@ -145,20 +142,16 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
     multiPart->setParent( reply );
   }
 
-  QObject::connect( reply, &QNetworkReply::finished, reply, [ reply ]
-  {
+  QObject::connect( reply, &QNetworkReply::finished, reply, [reply] {
     if ( reply->error() == QNetworkReply::NoError )
     {
-
       if ( QgsVariantUtils::isNull( reply->attribute( QNetworkRequest::RedirectionTargetAttribute ) ) )
       {
-
         const QByteArray replyData = reply->readAll();
 
         QString filename { "download.bin" };
-        if ( const std::string header = reply->header( QNetworkRequest::KnownHeaders::ContentDispositionHeader ).toString().toStdString(); ! header.empty() )
+        if ( const std::string header = reply->header( QNetworkRequest::KnownHeaders::ContentDispositionHeader ).toString().toStdString(); !header.empty() )
         {
-
           // Extract filename dealing with ill formed headers with unquoted file names
 
           std::string ascii;
@@ -167,7 +160,6 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
 
           if ( size_t pos = header.find( q1 ); pos != std::string::npos )
           {
-
             // Deal with ill formed headers with unquoted file names
             if ( header.find( R"(filename=")" ) != std::string::npos )
             {
@@ -219,7 +211,7 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
           // Prefer ascii over utf8
           if ( ascii.empty() )
           {
-            if ( ! utf8.empty( ) )
+            if ( !utf8.empty() )
             {
               filename = QString::fromStdString( utf8 );
             }
@@ -248,8 +240,8 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
         QTemporaryDir tempDir;
         tempDir.setAutoRemove( false );
         tempDir.path();
-        const QString tempFilePath{ tempDir.path() + QDir::separator() + filename };
-        QFile tempFile{ tempFilePath };
+        const QString tempFilePath { tempDir.path() + QDir::separator() + filename };
+        QFile tempFile { tempFilePath };
         if ( tempFile.open( QIODevice::WriteOnly ) )
         {
           tempFile.write( replyData );
@@ -271,9 +263,8 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
       QgsMessageLog::logMessage( reply->errorString(), u"Form Submit Action"_s, Qgis::MessageLevel::Critical );
     }
     reply->deleteLater();
-    QApplication::restoreOverrideCursor( );
+    QApplication::restoreOverrideCursor();
   } );
-
 }
 
 void QgsAction::setCommand( const QString &newCommand )
@@ -343,9 +334,9 @@ void QgsAction::readXml( const QDomNode &actionNode, const QgsReadWriteContext &
   if ( actionScopeNodes.isEmpty() )
   {
     mActionScopes
-        << u"Canvas"_s
-        << u"Field"_s
-        << u"Feature"_s;
+      << u"Canvas"_s
+      << u"Field"_s
+      << u"Feature"_s;
   }
   else
   {
@@ -461,5 +452,6 @@ QString QgsAction::html() const
    <b>Action:</b><br>
    <pre>%6</pre>
 </p>
-  )html" ).arg( mDescription, mShortTitle, typeText, actionScopes().values().join( ", "_L1 ), mCommand )};
+  )html" )
+             .arg( mDescription, mShortTitle, typeText, actionScopes().values().join( ", "_L1 ), mCommand ) };
 };

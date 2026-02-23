@@ -52,14 +52,14 @@ class CORE_EXPORT QgsActionScope
 #ifdef SIP_RUN
     % TypeCode
 #include <QHash>
-    % End
+      % End
 #endif
 
-    /**
+      /**
      * Creates a new invalid action scope.
      *
      */
-    explicit QgsActionScope();
+      explicit QgsActionScope();
 
     /**
      * Creates a new action scope.
@@ -152,6 +152,8 @@ class CORE_EXPORT QgsActionScope
      * Returns TRUE if this scope is valid.
      */
     bool isValid() const;
+
+    // clang-format off
 #ifdef SIP_RUN
     long __hash__();
     % MethodCode
@@ -160,6 +162,7 @@ class CORE_EXPORT QgsActionScope
 #endif
 
   private:
+    // clang-format on
     QString mId;
     QString mTitle;
     QString mDescription;

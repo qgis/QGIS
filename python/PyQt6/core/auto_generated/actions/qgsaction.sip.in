@@ -20,7 +20,6 @@ Utility class that encapsulates an action based on vector attributes.
 #include "qgsaction.h"
 %End
   public:
-
     QgsAction();
 
     QgsAction( Qgis::AttributeActionType type, const QString &description, const QString &command, bool capture = false );
@@ -190,7 +189,7 @@ Sets an expression context scope to use for running the action.
 Returns an expression context scope used for running the action.
 %End
 
-    QString html( ) const;
+    QString html() const;
 %Docstring
 Returns an HTML table with the basic information about this action.
 

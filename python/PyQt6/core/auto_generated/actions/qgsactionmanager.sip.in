@@ -12,7 +12,7 @@
 
 
 
-class QgsActionManager: QObject
+class QgsActionManager : QObject
 {
 %Docstring(signature="appended")
 Storage and management of actions associated with a layer.
