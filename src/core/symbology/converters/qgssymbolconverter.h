@@ -63,6 +63,25 @@ class CORE_EXPORT QgsAbstractSymbolConverter
     virtual Qgis::SymbolConverterCapabilities capabilities() const = 0;
 
     /**
+     * Returns the unique name for the converter.
+     *
+     * This should be an untranslated string identifying the converter.
+     *
+     * \see displayName()
+     */
+    virtual QString name() const = 0;
+
+    /**
+     * Returns a translated, user-friendly name for the converter's data format.
+     *
+     * E.g. "Styled Layer Descriptor (SLD)" for a converter which handles the SLD
+     * format.
+     *
+     * \see name()
+     */
+    virtual QString formatName() const = 0;
+
+    /**
      * Converts a \a symbol into a QVariant representation.
      *
      * The resulting QVariant may be a dictionary (QVariantMap), a JSON string,
