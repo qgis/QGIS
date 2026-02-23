@@ -21,6 +21,9 @@
 
 import os
 import zipfile
+from pathlib import Path
+
+from qgis.core import Qgis, QgsApplication, QgsMessageLog
 
 
 def unzip(file, targetDir, password=None):
@@ -39,5 +42,35 @@ def unzip(file, targetDir, password=None):
         os.makedirs(targetDir)
 
     zf = zipfile.ZipFile(file)
+    for name in zf.namelist():
+        # Skip directories - they will be created when necessary by os.makedirs
+        if name.endswith("/"):
+            continue
+
+        # create directory if doesn't exist
+        localDir = os.path.split(name)[0]
+        fullDir = os.path.normpath(os.path.join(targetDir, localDir))
+        if not os.path.exists(fullDir):
+            os.makedirs(fullDir)
+        # extract file
+        fullPath = os.path.normpath(os.path.join(targetDir, name))
+
+        # Check if the fullPath is within the target directory
+        if not is_within_directory(Path(targetDir), Path(fullPath)):
+            QgsMessageLog.logMessage(
+                f"Writing to a path outside the target plugin directory is not allowed: {fullPath}",
+                "Plugin Installer",
+                level=Qgis.Critical,
+            )
+            raise Exception(
+                "Writing to a path outside the target plugin directory is not allowed"
+            )
     zf.extractall(path=targetDir, pwd=password)
     zf.close()
+
+
+def is_within_directory(base_dir: Path, target_path: Path) -> bool:
+    base_dir = os.path.realpath(base_dir)
+    target_path = os.path.realpath(target_path)
+
+    return os.path.commonpath([base_dir]) == os.path.commonpath([base_dir, target_path])
