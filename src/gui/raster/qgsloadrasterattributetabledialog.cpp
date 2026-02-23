@@ -16,13 +16,17 @@
 #include "qgsloadrasterattributetabledialog.h"
 
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgsmessagebar.h"
 #include "qgsrasterattributetable.h"
 
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsloadrasterattributetabledialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLoadRasterAttributeTableDialog::QgsLoadRasterAttributeTableDialog( QgsRasterLayer *rasterLayer, QWidget *parent )
   : QDialog( parent )
@@ -32,6 +36,9 @@ QgsLoadRasterAttributeTableDialog::QgsLoadRasterAttributeTableDialog( QgsRasterL
 
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( u"working_with_raster/raster_properties.html#raster-attribute-tables"_s );
+  } );
 
   connect( mDbfPathWidget, &QgsFileWidget::fileChanged, this, [this]( const QString & ) {
     updateButtons();
@@ -39,7 +46,7 @@ QgsLoadRasterAttributeTableDialog::QgsLoadRasterAttributeTableDialog( QgsRasterL
 
   mRasterBand->setLayer( mRasterLayer );
 
-  mDbfPathWidget->setFilter( QStringLiteral( "VAT DBF Files (*.vat.dbf)" ) );
+  mDbfPathWidget->setFilter( u"VAT DBF Files (*.vat.dbf)"_s );
 
   updateButtons();
 
@@ -98,7 +105,7 @@ void QgsLoadRasterAttributeTableDialog::accept()
     {
       if ( !rat->isValid( &errorMessage ) )
       {
-        switch ( QMessageBox::warning( nullptr, tr( "Invalid Raster Attribute Table" ), tr( "The raster attribute table is not valid:\n%1\nLoad anyway?" ), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel ) )
+        switch ( QMessageBox::warning( nullptr, tr( "Invalid Raster Attribute Table" ), tr( "The raster attribute table is not valid:\n%1\nLoad anyway?" ).arg( errorMessage ), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel ) )
         {
           case QMessageBox::Cancel:
             return;

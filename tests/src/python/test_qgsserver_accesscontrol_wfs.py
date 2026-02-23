@@ -12,17 +12,16 @@ __author__ = "Stephane Brunner"
 __date__ = "28/08/2015"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
-from qgis.testing import unittest
 import os
 import urllib.error
-import urllib.request
 import urllib.parse
+import urllib.request
 
+from qgis.testing import unittest
 from test_qgsserver_accesscontrol import XML_NS, TestQgsServerAccessControl
 
 
 class TestQgsServerAccessControlWFS(TestQgsServerAccessControl):
-
     def test_wfs_getcapabilities(self):
         query_string = "&".join(
             [
@@ -134,12 +133,10 @@ class TestQgsServerAccessControlWFS(TestQgsServerAccessControl):
         The restricted access to 'Hello' is the expression `$id = 1`
         The field 'color' has restricted access
         """
-        data = """<?xml version="1.0" encoding="UTF-8"?>
-            <wfs:GetFeature {xml_ns}>
+        data = f"""<?xml version="1.0" encoding="UTF-8"?>
+            <wfs:GetFeature {XML_NS}>
             <wfs:Query typeName="Hello" srsName="EPSG:3857" xmlns:feature="http://www.qgis.org/gml">
-            </wfs:Query></wfs:GetFeature>""".format(
-            xml_ns=XML_NS
-        )
+            </wfs:Query></wfs:GetFeature>"""
 
         response, headers = self._post_fullaccess(data)
         # The feature with `pk = 1` is in the response with the field 'color'
@@ -182,15 +179,13 @@ class TestQgsServerAccessControlWFS(TestQgsServerAccessControl):
         The restricted access to 'Hello' is the expression `$id = 1`
         The field 'color' has restricted access
         """
-        data = """<?xml version="1.0" encoding="UTF-8"?>
-            <wfs:GetFeature {xml_ns}>
+        data = f"""<?xml version="1.0" encoding="UTF-8"?>
+            <wfs:GetFeature {XML_NS}>
             <wfs:Query typeName="Hello" srsName="EPSG:3857" xmlns:feature="http://www.qgis.org/gml">
             <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"><ogc:PropertyIsEqualTo>
             <ogc:PropertyName>pkuid</ogc:PropertyName>
             <ogc:Literal>1</ogc:Literal>
-            </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>""".format(
-            xml_ns=XML_NS
-        )
+            </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>"""
 
         response, headers = self._post_fullaccess(data)
         # The feature with `pk = 1` is in the response with the field 'color'
@@ -232,15 +227,13 @@ class TestQgsServerAccessControlWFS(TestQgsServerAccessControl):
         """Tests WFS GetFeature Request on 'Hello' with OGC Filter `pkuid = 2` and access control
         The restricted access to 'Hello' is the expression `$id = 1`
         """
-        data = """<?xml version="1.0" encoding="UTF-8"?>
-            <wfs:GetFeature {xml_ns}>
+        data = f"""<?xml version="1.0" encoding="UTF-8"?>
+            <wfs:GetFeature {XML_NS}>
             <wfs:Query typeName="Hello" srsName="EPSG:3857" xmlns:feature="http://www.qgis.org/gml">
             <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"><ogc:PropertyIsEqualTo>
             <ogc:PropertyName>pkuid</ogc:PropertyName>
             <ogc:Literal>2</ogc:Literal>
-            </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>""".format(
-            xml_ns=XML_NS
-        )
+            </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>"""
 
         response, headers = self._post_fullaccess(data)
         # The feature with `pk = 2` is in the response
@@ -270,12 +263,10 @@ class TestQgsServerAccessControlWFS(TestQgsServerAccessControl):
         """Tests WFS GetFeature Request on 'Hello_Filter' with access control
         The restricted access to 'Hello_Filter is the expression `pkuid = 6 or pkuid = 7`
         """
-        data = """<?xml version="1.0" encoding="UTF-8"?>
-            <wfs:GetFeature {xml_ns}>
+        data = f"""<?xml version="1.0" encoding="UTF-8"?>
+            <wfs:GetFeature {XML_NS}>
             <wfs:Query typeName="Hello_Filter" srsName="EPSG:3857" xmlns:feature="http://www.qgis.org/gml">
-            </wfs:Query></wfs:GetFeature>""".format(
-            xml_ns=XML_NS
-        )
+            </wfs:Query></wfs:GetFeature>"""
 
         response, headers = self._post_fullaccess(data)
         # The feature with `pk = 1` is in the response (no filter, no access control)
@@ -315,15 +306,13 @@ class TestQgsServerAccessControlWFS(TestQgsServerAccessControl):
         """Tests WFS GetFeature Request on 'Hello_Filter' with OGC Filter `pkuid = 1` and access control
         The restricted access to 'Hello_Filter is the expression `pkuid = 6 or pkuid = 7`
         """
-        data = """<?xml version="1.0" encoding="UTF-8"?>
-            <wfs:GetFeature {xml_ns}>
+        data = f"""<?xml version="1.0" encoding="UTF-8"?>
+            <wfs:GetFeature {XML_NS}>
             <wfs:Query typeName="Hello_Filter" srsName="EPSG:3857" xmlns:feature="http://www.qgis.org/gml">
             <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"><ogc:PropertyIsEqualTo>
             <ogc:PropertyName>pkuid</ogc:PropertyName>
             <ogc:Literal>1</ogc:Literal>
-            </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>""".format(
-            xml_ns=XML_NS
-        )
+            </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>"""
 
         response, headers = self._post_fullaccess(data)
         # The feature with `pk = 1` is in the response
@@ -353,15 +342,13 @@ class TestQgsServerAccessControlWFS(TestQgsServerAccessControl):
         """Tests WFS GetFeature Request on 'Hello_Filter' with OGC Filter `pkuid = 6` and access control
         The restricted access to 'Hello_Filter is the expression `pkuid = 6 or pkuid = 7`
         """
-        data = """<?xml version="1.0" encoding="UTF-8"?>
-            <wfs:GetFeature {xml_ns}>
+        data = f"""<?xml version="1.0" encoding="UTF-8"?>
+            <wfs:GetFeature {XML_NS}>
             <wfs:Query typeName="Hello_Filter" srsName="EPSG:3857" xmlns:feature="http://www.qgis.org/gml">
             <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"><ogc:PropertyIsEqualTo>
             <ogc:PropertyName>pkuid</ogc:PropertyName>
             <ogc:Literal>6</ogc:Literal>
-            </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>""".format(
-            xml_ns=XML_NS
-        )
+            </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>"""
 
         response, headers = self._post_fullaccess(data)
         # The feature with `pk = 6` is in the response
@@ -391,12 +378,10 @@ class TestQgsServerAccessControlWFS(TestQgsServerAccessControl):
         """Tests WFS GetFeature Request on 'Hello_OnOff' with access control
         The restricted access to 'Hello_OnOff is cannot be read
         """
-        data = """<?xml version="1.0" encoding="UTF-8"?>
-            <wfs:GetFeature {xml_ns}>
+        data = f"""<?xml version="1.0" encoding="UTF-8"?>
+            <wfs:GetFeature {XML_NS}>
             <wfs:Query typeName="Hello_OnOff" srsName="EPSG:3857" xmlns:feature="http://www.qgis.org/gml">
-            </wfs:Query></wfs:GetFeature>""".format(
-            xml_ns=XML_NS
-        )
+            </wfs:Query></wfs:GetFeature>"""
 
         response, headers = self._post_fullaccess(data)
         # Some qgs feature Hello_OnOff element
@@ -436,15 +421,13 @@ class TestQgsServerAccessControlWFS(TestQgsServerAccessControl):
         """Tests WFS GetFeature Request on 'Hello_OnOff' with OGC Filter `pkuid = 1` access control
         The restricted access to 'Hello_OnOff is cannot be read
         """
-        data = """<?xml version="1.0" encoding="UTF-8"?>
-            <wfs:GetFeature {xml_ns}>
+        data = f"""<?xml version="1.0" encoding="UTF-8"?>
+            <wfs:GetFeature {XML_NS}>
             <wfs:Query typeName="Hello_OnOff" srsName="EPSG:3857" xmlns:feature="http://www.qgis.org/gml">
             <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"><ogc:PropertyIsEqualTo>
             <ogc:PropertyName>pkuid</ogc:PropertyName>
             <ogc:Literal>1</ogc:Literal>
-            </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>""".format(
-            xml_ns=XML_NS
-        )
+            </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>"""
 
         response, headers = self._post_fullaccess(data)
         # Some qgs feature Hello_OnOff element
@@ -483,15 +466,13 @@ class TestQgsServerAccessControlWFS(TestQgsServerAccessControl):
     # # Subset String # #
 
     def test_wfs_getfeature_subsetstring(self):
-        data = """<?xml version="1.0" encoding="UTF-8"?>
-            <wfs:GetFeature {xml_ns}>
+        data = f"""<?xml version="1.0" encoding="UTF-8"?>
+            <wfs:GetFeature {XML_NS}>
             <wfs:Query typeName="Hello_SubsetString" srsName="EPSG:3857" xmlns:feature="http://www.qgis.org/gml">
             <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"><ogc:PropertyIsEqualTo>
             <ogc:PropertyName>pkuid</ogc:PropertyName>
             <ogc:Literal>1</ogc:Literal>
-            </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>""".format(
-            xml_ns=XML_NS
-        )
+            </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>"""
 
         response, headers = self._post_fullaccess(data)
         self.assertTrue(
@@ -512,15 +493,13 @@ class TestQgsServerAccessControlWFS(TestQgsServerAccessControl):
         )
 
     def test_wfs_getfeature_subsetstring2(self):
-        data = """<?xml version="1.0" encoding="UTF-8"?>
-            <wfs:GetFeature {xml_ns}>
+        data = f"""<?xml version="1.0" encoding="UTF-8"?>
+            <wfs:GetFeature {XML_NS}>
             <wfs:Query typeName="Hello_SubsetString" srsName="EPSG:3857" xmlns:feature="http://www.qgis.org/gml">
             <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"><ogc:PropertyIsEqualTo>
             <ogc:PropertyName>pkuid</ogc:PropertyName>
             <ogc:Literal>2</ogc:Literal>
-            </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>""".format(
-            xml_ns=XML_NS
-        )
+            </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>"""
 
         response, headers = self._post_fullaccess(data)
         self.assertTrue(
@@ -542,15 +521,13 @@ class TestQgsServerAccessControlWFS(TestQgsServerAccessControl):
         'Hello_Project_SubsetString' layer has a subsetString of "pkuid in (7,8)"
         This test checks for retrieving a feature which should be available in with/without access control
         """
-        data = """<?xml version="1.0" encoding="UTF-8"?>
-            <wfs:GetFeature {xml_ns}>
+        data = f"""<?xml version="1.0" encoding="UTF-8"?>
+            <wfs:GetFeature {XML_NS}>
             <wfs:Query typeName="Hello_Project_SubsetString" srsName="EPSG:3857" xmlns:feature="http://www.qgis.org/gml">
             <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"><ogc:PropertyIsEqualTo>
             <ogc:PropertyName>pkuid</ogc:PropertyName>
             <ogc:Literal>7</ogc:Literal>
-            </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>""".format(
-            xml_ns=XML_NS
-        )
+            </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>"""
 
         # should be one result
         response, headers = self._post_fullaccess(data)
@@ -576,15 +553,13 @@ class TestQgsServerAccessControlWFS(TestQgsServerAccessControl):
         'Hello_Project_SubsetString' layer has a subsetString of "pkuid in (7,8)"
         This test checks for a feature which should be filtered out by access controls
         """
-        data = """<?xml version="1.0" encoding="UTF-8"?>
-            <wfs:GetFeature {xml_ns}>
+        data = f"""<?xml version="1.0" encoding="UTF-8"?>
+            <wfs:GetFeature {XML_NS}>
             <wfs:Query typeName="Hello_Project_SubsetString" srsName="EPSG:3857" xmlns:feature="http://www.qgis.org/gml">
             <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"><ogc:PropertyIsEqualTo>
             <ogc:PropertyName>pkuid</ogc:PropertyName>
             <ogc:Literal>8</ogc:Literal>
-            </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>""".format(
-            xml_ns=XML_NS
-        )
+            </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>"""
 
         # should be one result
         response, headers = self._post_fullaccess(data)
@@ -608,15 +583,13 @@ class TestQgsServerAccessControlWFS(TestQgsServerAccessControl):
         This test checks for a features which should be filtered out by project subsetStrings.
         For example, pkuid 6 passes the access control checks, but should not be shown because of project layer subsetString
         """
-        data = """<?xml version="1.0" encoding="UTF-8"?>
-            <wfs:GetFeature {xml_ns}>
+        data = f"""<?xml version="1.0" encoding="UTF-8"?>
+            <wfs:GetFeature {XML_NS}>
             <wfs:Query typeName="Hello_Project_SubsetString" srsName="EPSG:3857" xmlns:feature="http://www.qgis.org/gml">
             <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"><ogc:PropertyIsEqualTo>
             <ogc:PropertyName>pkuid</ogc:PropertyName>
             <ogc:Literal>6</ogc:Literal>
-            </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>""".format(
-            xml_ns=XML_NS
-        )
+            </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>"""
 
         # should be no results, since pkuid 1 should be filtered out by project subsetString
         response, headers = self._post_fullaccess(data)

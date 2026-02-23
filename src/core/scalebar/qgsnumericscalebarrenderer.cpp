@@ -23,10 +23,13 @@
 
 #include <QList>
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QString QgsNumericScaleBarRenderer::id() const
 {
-  return QStringLiteral( "Numeric" );
+  return u"Numeric"_s;
 }
 
 QString QgsNumericScaleBarRenderer::visibleName() const

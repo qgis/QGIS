@@ -20,6 +20,10 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis_sip.h"
 #include "qgsgeometrycollection.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \class QgsMultiPoint
@@ -76,7 +80,7 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
     % MethodCode
     if ( !PySequence_Check( a0 ) )
     {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "A sequence of QgsPoint, QgsPointXY or array of floats is expected" ).toUtf8().constData() );
+      PyErr_SetString( PyExc_TypeError, u"A sequence of QgsPoint, QgsPointXY or array of floats is expected"_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -94,7 +98,7 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
         {
           qDeleteAll( pointList );
           pointList.clear();
-          PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid type at index %1." ).arg( i ) .toUtf8().constData() );
+          PyErr_SetString( PyExc_TypeError, u"Invalid type at index %1."_s.arg( i ) .toUtf8().constData() );
           sipIsErr = 1;
           break;
         }
@@ -107,7 +111,7 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
             qDeleteAll( pointList );
             pointList.clear();
             sipIsErr = 1;
-            PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid sequence size at index %1. Expected an array of 2-4 float values, got %2." ).arg( i ).arg( elementSize ).toUtf8().constData() );
+            PyErr_SetString( PyExc_TypeError, u"Invalid sequence size at index %1. Expected an array of 2-4 float values, got %2."_s.arg( i ).arg( elementSize ).toUtf8().constData() );
             Py_DECREF( value );
             break;
           }
@@ -120,7 +124,7 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
             {
               qDeleteAll( pointList );
               pointList.clear();
-              PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid type at index %1." ).arg( i ) .toUtf8().constData() );
+              PyErr_SetString( PyExc_TypeError, u"Invalid type at index %1."_s.arg( i ) .toUtf8().constData() );
               sipIsErr = 1;
               break;
             }
@@ -143,7 +147,7 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
               qDeleteAll( pointList );
               pointList.clear();
               Py_DECREF( value );
-              PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid type at index %1." ).arg( i ) .toUtf8().constData() );
+              PyErr_SetString( PyExc_TypeError, u"Invalid type at index %1."_s.arg( i ) .toUtf8().constData() );
               sipIsErr = 1;
               break;
             }
@@ -169,7 +173,7 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
                 qDeleteAll( pointList );
                 pointList.clear();
                 Py_DECREF( value );
-                PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid type at index %1." ).arg( i ) .toUtf8().constData() );
+                PyErr_SetString( PyExc_TypeError, u"Invalid type at index %1."_s.arg( i ) .toUtf8().constData() );
                 sipIsErr = 1;
                 break;
               }
@@ -195,7 +199,7 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
                 qDeleteAll( pointList );
                 pointList.clear();
                 Py_DECREF( value );
-                PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid type at index %1." ).arg( i ) .toUtf8().constData() );
+                PyErr_SetString( PyExc_TypeError, u"Invalid type at index %1."_s.arg( i ) .toUtf8().constData() );
                 sipIsErr = 1;
                 break;
               }
@@ -258,7 +262,7 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
             qDeleteAll( pointList );
             pointList.clear();
             // couldn't convert the sequence value to a QgsPoint or QgsPointXY
-            PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid type at index %1. Expected QgsPoint, QgsPointXY or array of floats." ).arg( i ) .toUtf8().constData() );
+            PyErr_SetString( PyExc_TypeError, u"Invalid type at index %1. Expected QgsPoint, QgsPointXY or array of floats."_s.arg( i ) .toUtf8().constData() );
             break;
           }
         }
@@ -386,8 +390,8 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
     % MethodCode
     QString wkt = sipCpp->asWkt();
     if ( wkt.length() > 1000 )
-      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
-    QString str = QStringLiteral( "<QgsMultiPoint: %1>" ).arg( wkt );
+      wkt = wkt.left( 1000 ) + u"..."_s;
+    QString str = u"<QgsMultiPoint: %1>"_s.arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#define SIP_NO_FILE
 
 #ifndef QGS_GEOMETRY_COVER_CHECK_H
 #define QGS_GEOMETRY_COVER_CHECK_H
@@ -21,6 +20,12 @@
 #include "qgsgeometrycheck.h"
 #include "qgsgeometrycheckerror.h"
 #include "qgsvectorlayer.h"
+
+#include <QString>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup analysis
@@ -71,7 +76,7 @@ class ANALYSIS_EXPORT QgsGeometryContainedCheck : public QgsGeometryCheck
     static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() { return { Qgis::GeometryType::Point, Qgis::GeometryType::Line, Qgis::GeometryType::Polygon }; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
     static QString factoryDescription() { return tr( "Within" ); }
-    static QString factoryId() { return QStringLiteral( "QgsGeometryContainedCheck" ); }
+    static QString factoryId() { return u"QgsGeometryContainedCheck"_s; }
     static QgsGeometryCheck::CheckType factoryCheckType() { return QgsGeometryCheck::FeatureCheck; }
 };
 

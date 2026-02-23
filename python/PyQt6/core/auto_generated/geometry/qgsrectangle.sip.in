@@ -13,6 +13,7 @@
 
 
 
+
 class QgsRectangle
 {
 %Docstring(signature="appended")
@@ -128,14 +129,14 @@ A null rectangle is also empty by definition.
 .. versionadded:: 3.34
 %End
 
- void setMinimal() /Deprecated="Since 3.34. Will be removed in QGIS 4.0. Use setNull()."/;
+ void setMinimal() /Deprecated="Since 3.34. Will be removed in QGIS 5.0. Use setNull()."/;
 %Docstring
 Set a rectangle so that min corner is at max and max corner is at min.
 It is NOT normalized.
 
 .. deprecated:: 3.34
 
-   Will be removed in QGIS 4.0. Use :py:func:`~QgsRectangle.setNull`.
+   Will be removed in QGIS 5.0. Use :py:func:`~QgsRectangle.setNull`.
 %End
 
     double xMaximum() const /HoldGIL/;
@@ -376,9 +377,8 @@ Returns a QRectF with same coordinates as the rectangle.
     QString toString( int precision = 16 ) const;
 %Docstring
 Returns a string representation of form xmin,ymin : xmax,ymax
-Coordinates will be truncated to the specified precision. If the
-specified precision is less than 0, a suitable minimum precision is
-used.
+Coordinates will be rounded to the specified precision. If the specified
+precision is less than 0, a suitable minimum precision is used.
 %End
 
     QString asPolygon() const;

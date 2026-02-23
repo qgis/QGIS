@@ -17,29 +17,27 @@ email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
 """
 
+from qgis.core import (
+    QgsTask,
+    QgsVectorLayer,
+    QgsVirtualLayerDefinition,
+    QgsVirtualLayerTask,
+    QgsWkbTypes,
+)
+from qgis.PyQt.QtCore import QElapsedTimer, QTemporaryFile
+
 from ..data_model import (
-    TableDataModel,
     BaseTableModel,
     SqlResultModelAsync,
     SqlResultModelTask,
+    TableDataModel,
 )
-
+from ..plugin import BaseError, DbError
 from .connector import VLayerRegistry, getQueryGeometryName
 from .plugin import LVectorTable
-from ..plugin import DbError, BaseError
-
-from qgis.PyQt.QtCore import QElapsedTimer, QTemporaryFile
-from qgis.core import (
-    QgsVectorLayer,
-    QgsWkbTypes,
-    QgsVirtualLayerDefinition,
-    QgsVirtualLayerTask,
-    QgsTask,
-)
 
 
 class LTableDataModel(TableDataModel):
-
     def __init__(self, table, parent=None):
         TableDataModel.__init__(self, table, parent)
 
@@ -73,7 +71,6 @@ class LTableDataModel(TableDataModel):
 
 
 class LSqlResultModelTask(SqlResultModelTask):
-
     def __init__(self, db, sql, parent):
         super().__init__(db, sql, parent)
 
@@ -106,7 +103,6 @@ class LSqlResultModelTask(SqlResultModelTask):
 
 
 class LSqlResultModelAsync(SqlResultModelAsync):
-
     def __init__(self, db, sql, parent=None):
         super().__init__()
 
@@ -123,7 +119,6 @@ class LSqlResultModelAsync(SqlResultModelAsync):
 
 
 class LSqlResultModel(BaseTableModel):
-
     def __init__(self, db, sql, parent=None, layer=None, path=None):
         t = QElapsedTimer()
         t.start()

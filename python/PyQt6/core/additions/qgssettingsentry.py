@@ -15,16 +15,18 @@
 ***************************************************************************
 """
 
-from .metaenum import metaEnumFromValue
-from enum import IntFlag, Flag
-from qgis.core import (
-    QgsSettings,
-    QgsSettingsTree,
-    QgsSettingsEntryBase,
-    QgsLogger,
-    Qgis,
-)
+from enum import Flag, IntFlag
+
 import qgis  # required to get base class of enums
+from qgis.core import (
+    Qgis,
+    QgsLogger,
+    QgsSettings,
+    QgsSettingsEntryBase,
+    QgsSettingsTree,
+)
+
+from .metaenum import metaEnumFromValue
 
 
 class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
@@ -51,7 +53,7 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
         :param description: argument specifies a description for the settings entry.
         """
 
-        # TODO QGIS 4: rename pluginName arg to parent and key to name
+        # TODO QGIS 5: rename pluginName arg to parent and key to name
 
         self.options = options
         self.__enum_class = defaultValue.__class__

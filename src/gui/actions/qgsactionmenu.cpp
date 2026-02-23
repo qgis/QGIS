@@ -23,7 +23,11 @@
 #include "qgsmaplayeractionregistry.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsactionmenu.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsActionMenu::QgsActionMenu( QgsVectorLayer *layer, const QgsFeature &feature, const QString &actionScope, QWidget *parent )
   : QMenu( parent )
@@ -146,7 +150,7 @@ void QgsActionMenu::triggerAction()
       context.setFeature( mFeature );
 
       QgsExpressionContextScope *actionScope = new QgsExpressionContextScope();
-      actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "action_scope" ), mActionScope, true ) );
+      actionScope->addVariable( QgsExpressionContextScope::StaticVariable( u"action_scope"_s, mActionScope, true ) );
       context << actionScope;
       act.run( context );
       break;

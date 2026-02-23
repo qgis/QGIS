@@ -23,9 +23,7 @@ import os.path
 import tempfile
 
 from qgis.core import QgsRasterLayer
-
 from qgis.testing import QgisTestCase
-
 
 testDataPath = os.path.join(os.path.dirname(__file__), "testdata")
 

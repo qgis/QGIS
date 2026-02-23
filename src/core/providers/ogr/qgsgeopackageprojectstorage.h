@@ -22,8 +22,13 @@
 #include "qgsdatasourceuri.h"
 #include "qgsprojectstorage.h"
 
-///@cond PRIVATE
+#include <QString>
+
 #define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
+
+///@cond PRIVATE
 
 //! Stores information parsed from postgres project URI
 typedef struct
@@ -41,7 +46,7 @@ class CORE_EXPORT QgsGeoPackageProjectStorage : public QgsProjectStorage
 
     // QgsProjectStorage interface
   public:
-    QString type() override { return QStringLiteral( "geopackage" ); }
+    QString type() override { return u"geopackage"_s; }
     bool isSupportedUri( const QString &uri ) const override;
     QStringList listProjects( const QString &uri ) override;
     bool readProject( const QString &uri, QIODevice *device, QgsReadWriteContext &context ) override;

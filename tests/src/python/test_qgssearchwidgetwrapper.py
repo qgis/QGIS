@@ -10,8 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "2016-05"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
-from qgis.PyQt.QtCore import QDate, QDateTime, QTime, QLocale
-from qgis.PyQt.QtWidgets import QWidget
+import unittest
+
 from qgis.core import QgsFeature, QgsProject, QgsRelation, QgsVectorLayer
 from qgis.gui import (
     QgsCheckboxSearchWidgetWrapper,
@@ -22,14 +22,14 @@ from qgis.gui import (
     QgsValueMapSearchWidgetWrapper,
     QgsValueRelationSearchWidgetWrapper,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QDate, QDateTime, QLocale, QTime
+from qgis.PyQt.QtWidgets import QWidget
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class PyQgsSearchWidgetWrapper(QgisTestCase):
-
     def testFlagToString(self):
         # test converting QgsSearchWidgetWrapper.FilterFlag to string
         tests = [
@@ -59,7 +59,6 @@ class PyQgsSearchWidgetWrapper(QgisTestCase):
 
 
 class PyQgsDefaultSearchWidgetWrapper(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         QLocale.setDefault(QLocale(QLocale.Language.English))
@@ -269,6 +268,11 @@ class PyQgsDefaultSearchWidgetWrapper(QgisTestCase):
             w.expression(),
             "\"fldint\" = '10000'",
         )
+        line_edit.setText("10,000,000")
+        self.assertEqual(
+            w.expression(),
+            "\"fldint\" = '10000000'",
+        )
 
         w = QgsDefaultSearchWidgetWrapper(layer, 1)
         w.initWidget(parent)
@@ -295,10 +299,14 @@ class PyQgsDefaultSearchWidgetWrapper(QgisTestCase):
             w.expression(),
             "\"flddouble\" = '10000.5'",
         )
+        line_edit.setText("10,000.5555555555")
+        self.assertEqual(
+            w.expression(),
+            "\"flddouble\" = '10000.5555555555'",
+        )
 
 
 class PyQgsValueMapSearchWidgetWrapper(QgisTestCase):
-
     def testCreateExpression(self):
         """Test creating an expression using the widget"""
         layer = QgsVectorLayer(
@@ -386,7 +394,6 @@ class PyQgsValueMapSearchWidgetWrapper(QgisTestCase):
 
 
 class PyQgsValueRelationSearchWidgetWrapper(QgisTestCase):
-
     def testCreateExpression(self):
         """Test creating an expression using the widget"""
         layer = QgsVectorLayer(
@@ -535,7 +542,6 @@ class PyQgsValueRelationSearchWidgetWrapper(QgisTestCase):
 
 
 class PyQgsCheckboxSearchWidgetWrapper(QgisTestCase):
-
     def testCreateExpression(self):
         """Test creating an expression using the widget"""
         layer = QgsVectorLayer(
@@ -639,7 +645,6 @@ class PyQgsCheckboxSearchWidgetWrapper(QgisTestCase):
 
 
 class PyQgsDateTimeSearchWidgetWrapper(QgisTestCase):
-
     def testCreateExpression(self):
         """Test creating an expression using the widget"""
         layer = QgsVectorLayer(
@@ -773,7 +778,6 @@ class PyQgsDateTimeSearchWidgetWrapper(QgisTestCase):
 
 
 class PyQgsRelationReferenceSearchWidgetWrapper(QgisTestCase):
-
     def testCreateExpression(self):
         """Test creating an expression using the widget"""
         layer = QgsVectorLayer(

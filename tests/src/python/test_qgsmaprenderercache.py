@@ -10,10 +10,9 @@ __author__ = "Nyall Dawson"
 __date__ = "1/02/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
+import unittest
 from time import sleep
 
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtGui import QImage
 from qgis.core import (
     QgsMapRendererCache,
     QgsMapToPixel,
@@ -21,14 +20,14 @@ from qgis.core import (
     QgsRectangle,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtGui import QImage
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsMapRendererCache(QgisTestCase):
-
     def testSetCacheImages(self):
         cache = QgsMapRendererCache()
         # not set image

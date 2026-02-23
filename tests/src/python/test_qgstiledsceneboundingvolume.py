@@ -16,17 +16,16 @@ import unittest
 
 from qgis.core import (
     Qgis,
-    QgsSphere,
-    QgsOrientedBox3D,
-    QgsTiledSceneBoundingVolume,
     QgsBox3d,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
     QgsCoordinateTransformContext,
     QgsMatrix4x4,
+    QgsOrientedBox3D,
+    QgsSphere,
+    QgsTiledSceneBoundingVolume,
 )
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -34,7 +33,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsTiledSceneBoundingVolume(QgisTestCase):
-
     def test_box(self):
         volume = QgsTiledSceneBoundingVolume(
             QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30])

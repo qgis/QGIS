@@ -20,19 +20,21 @@ __date__ = "July 2013"
 __copyright__ = "(C) 2013, Alexander Bruy"
 
 import math
+
 from qgis.core import (
     QgsFeatureSink,
     QgsGeometry,
     QgsPointXY,
-    QgsSpatialIndex,
-    QgsRectangle,
     QgsProcessing,
     QgsProcessingException,
-    QgsProcessingParameterFeatureSource,
-    QgsProcessingParameterDistance,
     QgsProcessingParameterBoolean,
+    QgsProcessingParameterDistance,
     QgsProcessingParameterFeatureSink,
+    QgsProcessingParameterFeatureSource,
+    QgsRectangle,
+    QgsSpatialIndex,
 )
+
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 

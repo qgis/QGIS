@@ -6,17 +6,17 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.PyQt.QtWidgets import QToolButton
-from qgis.gui import QgsExpressionPreviewWidget
-from qgis.core import QgsExpressionContext, QgsExpressionContextScope
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.core import QgsExpressionContext, QgsExpressionContextScope
+from qgis.gui import QgsExpressionPreviewWidget
+from qgis.PyQt.QtWidgets import QToolButton
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsExpressionPreviewWidget(QgisTestCase):
-
     def test_custom_mode(self):
         """
         Test using a custom preview generator with the widget

@@ -40,10 +40,13 @@
 #include "qgsterrainprovider.h"
 
 #include <QPalette>
+#include <QString>
 #include <QTimer>
 #include <QWheelEvent>
 
 #include "moc_qgselevationprofilecanvas.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 class QgsElevationProfilePlotItem : public Qgs2DXyPlot, public QgsPlotCanvasItem
@@ -153,7 +156,7 @@ class QgsElevationProfilePlotItem : public Qgs2DXyPlot, public QgsPlotCanvasItem
         case Qgis::DistanceUnit::MilesUSSurvey:
         case Qgis::DistanceUnit::Fathoms:
         case Qgis::DistanceUnit::MetersGermanLegal:
-          return QStringLiteral( " %1" ).arg( QgsUnitTypes::toAbbreviatedString( mDistanceUnit ) );
+          return u" %1"_s.arg( QgsUnitTypes::toAbbreviatedString( mDistanceUnit ) );
 
         case Qgis::DistanceUnit::Degrees:
           return QObject::tr( "°" );
@@ -820,8 +823,8 @@ void QgsElevationProfileCanvas::wheelZoom( QWheelEvent *event )
 {
   //get mouse wheel zoom behavior settings
   QgsSettings settings;
-  double zoomFactor = settings.value( QStringLiteral( "qgis/zoom_factor" ), 2 ).toDouble();
-  bool reverseZoom = settings.value( QStringLiteral( "qgis/reverse_wheel_zoom" ), false ).toBool();
+  double zoomFactor = settings.value( u"qgis/zoom_factor"_s, 2 ).toDouble();
+  bool reverseZoom = settings.value( u"qgis/reverse_wheel_zoom"_s, false ).toBool();
   bool zoomIn = reverseZoom ? event->angleDelta().y() < 0 : event->angleDelta().y() > 0;
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
@@ -1217,7 +1220,19 @@ QList<QgsMapLayer *> QgsElevationProfileCanvas::layers() const
 
 void QgsElevationProfileCanvas::setSources( const QList<QgsAbstractProfileSource *> &sources )
 {
-  mSources = sources;
+  mSources.clear();
+  mSources.reserve( sources.count() );
+  for ( QgsAbstractProfileSource *profileSource : sources )
+  {
+    if ( auto layer = dynamic_cast<QgsMapLayer *>( profileSource ) )
+    {
+      mSources << QgsWeakMapLayerPointer( layer );
+    }
+    else if ( QgsApplication::profileSourceRegistry()->findSourceById( profileSource->profileSourceId() ) )
+    {
+      mSources << profileSource;
+    }
+  }
 }
 
 QList<QgsAbstractProfileSource *> QgsElevationProfileCanvas::sources() const
@@ -1245,7 +1260,27 @@ QList<QgsAbstractProfileSource *> QgsElevationProfileCanvas::sources() const
     return sources;
   }
 
-  return mSources;
+  QList< QgsAbstractProfileSource * > sources;
+  sources.reserve( mSources.count() );
+  for ( const auto &source : mSources )
+  {
+    if ( const QgsWeakMapLayerPointer *weakLayerPointer = std::get_if< QgsWeakMapLayerPointer >( &source ) )
+    {
+      if ( QgsMapLayer *layer = weakLayerPointer->data() )
+      {
+        sources << layer->profileSource();
+      }
+    }
+    else if ( auto profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
+    {
+      if ( QgsApplication::profileSourceRegistry()->findSourceById( ( *profileSource )->profileSourceId() ) )
+      {
+        sources << *profileSource;
+      }
+    }
+  }
+
+  return sources;
 }
 
 void QgsElevationProfileCanvas::resizeEvent( QResizeEvent *event )
@@ -1460,7 +1495,7 @@ void QgsElevationProfileCanvas::render( QgsRenderContext &context, double width,
 
   // quick and nasty way to transfer settings from another plot class -- in future we probably want to improve this, but let's let the API settle first...
   QDomDocument doc;
-  QDomElement elem = doc.createElement( QStringLiteral( "plot" ) );
+  QDomElement elem = doc.createElement( u"plot"_s );
   QgsReadWriteContext rwContext;
   plotSettings.writeXml( elem, doc, rwContext );
   profilePlot.readXml( elem, rwContext );
@@ -1526,5 +1561,8 @@ void QgsElevationProfileCanvas::setSubsectionsSymbol( QgsLineSymbol *symbol )
 
 void QgsElevationProfileCanvas::setSourcesPrivate()
 {
-  mSources = QgsApplication::profileSourceRegistry()->profileSources();
+  mSources.clear();
+  mSources.reserve( QgsApplication::profileSourceRegistry()->profileSources().count() );
+  for ( QgsAbstractProfileSource *source : QgsApplication::profileSourceRegistry()->profileSources() )
+    mSources << source;
 }

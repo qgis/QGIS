@@ -20,9 +20,12 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
 #include <QWidget>
 
 #include "moc_qgssearchwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QList<QgsSearchWidgetWrapper::FilterFlag> QgsSearchWidgetWrapper::exclusiveFilterFlags()
 {
@@ -110,7 +113,7 @@ QString QgsSearchWidgetWrapper::createFieldIdentifier() const
   if ( mAggregate.isEmpty() )
     return field;
   else
-    return QStringLiteral( "relation_aggregate('%1','%2',%3)" ).arg( context().relation().id(), mAggregate, field );
+    return u"relation_aggregate('%1','%2',%3)"_s.arg( context().relation().id(), mAggregate, field );
 }
 
 void QgsSearchWidgetWrapper::setFeature( const QgsFeature &feature )
@@ -120,7 +123,7 @@ void QgsSearchWidgetWrapper::setFeature( const QgsFeature &feature )
 
 void QgsSearchWidgetWrapper::clearExpression()
 {
-  mExpression = QStringLiteral( "TRUE" );
+  mExpression = u"TRUE"_s;
 }
 
 QString QgsSearchWidgetWrapper::aggregate() const

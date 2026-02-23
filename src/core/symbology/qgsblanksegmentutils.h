@@ -16,12 +16,13 @@
 #ifndef QGSBLANKSEGMENTUTILS_H
 #define QGSBLANKSEGMENTUTILS_H
 
-#define SIP_NO_FILE
 
 #include "qgis.h"
 #include "qgis_core.h"
 
 #include <QPair>
+
+#define SIP_NO_FILE
 
 class QgsRenderContext;
 
@@ -38,6 +39,11 @@ class CORE_EXPORT QgsBlankSegmentUtils
 
     /**
      * Parse blank segments string representation \a strBlankSegments
+     *
+     * Blank segments format is expected to be in the form (((2.90402 7.36,11.8776 30.4499),()),((2 7))) with 3 levels
+     * of parenthesis like MultiPolygon to deal with multi parts and inner rings. Empty opening-closing parenthesis are allowed
+     * to define the lack of blank segments for some multi part or inner rings.
+     *
      * The blank segments are expected to be expressed in \a unit and converted in pixels regarding render context \a renderContext
      * \a error is populated with a descritive message if the string representation is not well formatted
      * Returns a list of start and end distance expressed in pixels for each part and rings

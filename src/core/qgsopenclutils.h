@@ -16,11 +16,15 @@
 #ifndef QGSOPENCLUTILS_H
 #define QGSOPENCLUTILS_H
 
-#define SIP_NO_FILE
 
 #define CL_HPP_ENABLE_EXCEPTIONS
 
+#include <QString>
 #include <QtGlobal>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 #ifdef Q_OS_MAC
 #define CL_HPP_MINIMUM_OPENCL_VERSION 120
@@ -70,7 +74,7 @@
  *    cl::Context ctx = QgsOpenClUtils::context();
  *    cl::CommandQueue queue( ctx );
  *    // Load the program from a standard location and build it
- *    cl::Program program = QgsOpenClUtils::buildProgram( ctx, QgsOpenClUtils::sourceFromBaseName( QStringLiteral ( "hillshade" ) ) );
+ *    cl::Program program = QgsOpenClUtils::buildProgram( ctx, QgsOpenClUtils::sourceFromBaseName( u"hillshade"_s ) );
  *    // Continue with the usual OpenCL buffer, kernel and execution
  *    ...
  * }

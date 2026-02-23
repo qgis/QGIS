@@ -16,7 +16,6 @@ from qgis.core import QgsRasterLayer, QgsRasterRange
 from qgis.gui import QgsMapCanvas, QgsRasterTransparencyWidget
 from qgis.testing import TestCase, unittest
 from qgis.testing.mocked import get_iface
-
 from utilities import unitTestDataPath
 
 

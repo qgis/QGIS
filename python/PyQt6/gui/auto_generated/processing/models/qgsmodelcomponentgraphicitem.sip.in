@@ -231,7 +231,7 @@ The default implementation does nothing.
 Emitted by the item to request a repaint of the parent model scene.
 %End
 
-    void aboutToChange( const QString &text, int id = 0 );
+    void aboutToChange( const QString &text, const QString &id = QString() );
 %Docstring
 Emitted when the definition of the associated component is about to be
 changed by the item.
@@ -427,6 +427,14 @@ Ownership of ``child`` is transferred to the item.
 %Docstring
 Sets the ``results`` obtained for this child algorithm for the last
 model execution through the dialog.
+%End
+
+    QgsProcessingModelChildAlgorithmResult results();
+%Docstring
+Returns the ``results`` for this child algorithm for the last model
+execution through the dialog.
+
+.. versionadded:: 4.0
 %End
 
   signals:
@@ -631,6 +639,13 @@ Ownership of ``output`` is transferred to the item.
 
     virtual bool canDeleteComponent();
 
+
+    void applyEdit( const QgsProcessingModelGroupBox &groupBox );
+%Docstring
+Applies edits to the item, using an updated ``groupBox`` definition.
+
+.. versionadded:: 4.0
+%End
 
   protected:
     virtual QColor fillColor( State state ) const;

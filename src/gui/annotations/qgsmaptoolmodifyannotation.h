@@ -20,10 +20,12 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsannotationitemnode.h"
-#include "qgsmaptooladvanceddigitizing.h"
+#include "qgsannotationmaptool.h"
 #include "qgspointxy.h"
 #include "qgsrectangle.h"
 #include "qobjectuniqueptr.h"
+
+#define SIP_NO_FILE
 
 class QgsRubberBand;
 class QgsRenderedAnnotationItemDetails;
@@ -32,7 +34,6 @@ class QgsAnnotationLayer;
 class QgsAnnotationItemNodesSpatialIndex;
 class QgsSnapIndicator;
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup gui
@@ -40,7 +41,7 @@ class QgsSnapIndicator;
  * \note Not available in Python bindings
  * \since QGIS 3.22
  */
-class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsMapToolAdvancedDigitizing
+class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsAnnotationMapTool
 {
     Q_OBJECT
 
@@ -49,7 +50,6 @@ class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsMapToolAdvancedDigitizin
      * Constructor for QgsMapToolModifyAnnotation
      */
     explicit QgsMapToolModifyAnnotation( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
-
     ~QgsMapToolModifyAnnotation() override;
 
     void deactivate() override;
@@ -86,9 +86,6 @@ class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsMapToolAdvancedDigitizin
     void createHoverBand();
     void createHoveredNodeBand();
     void createSelectedItemBand();
-    const QgsRenderedAnnotationItemDetails *findClosestItemToPoint( const QgsPointXY &mapPoint, const QList<const QgsRenderedAnnotationItemDetails *> &items, QgsRectangle &bounds );
-    QgsAnnotationLayer *annotationLayerFromId( const QString &layerId );
-    QgsAnnotationItem *annotationItemFromId( const QString &layerId, const QString &itemId );
 
     void setHoveredItemFromPoint( const QgsPointXY &mapPoint );
     void setHoveredItem( const QgsRenderedAnnotationItemDetails *item, const QgsRectangle &itemMapBounds );

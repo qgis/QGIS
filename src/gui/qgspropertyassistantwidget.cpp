@@ -33,7 +33,11 @@
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgspropertyassistantwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget *parent, const QgsPropertyDefinition &definition, const QgsProperty &initialState, const QgsVectorLayer *layer )
   : QgsPanelWidget( parent )
@@ -461,7 +465,7 @@ QgsPropertyColorAssistantWidget::QgsPropertyColorAssistantWidget( QWidget *paren
   mNullColorButton->setAllowOpacity( supportsAlpha );
   mNullColorButton->setShowNoColor( true );
   mNullColorButton->setColorDialogTitle( tr( "Color For Null Values" ) );
-  mNullColorButton->setContext( QStringLiteral( "symbology" ) );
+  mNullColorButton->setContext( u"symbology"_s );
   mNullColorButton->setNoColorString( tr( "Transparent" ) );
 
   if ( const QgsColorRampTransformer *colorTransform = dynamic_cast<const QgsColorRampTransformer *>( initialState.transformer() ) )
@@ -480,7 +484,7 @@ QgsPropertyColorAssistantWidget::QgsPropertyColorAssistantWidget( QWidget *paren
     std::unique_ptr<QgsColorRamp> colorRamp( QgsProject::instance()->styleSettings()->defaultColorRamp() );
     if ( !colorRamp )
     {
-      colorRamp.reset( QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Blues" ) ) );
+      colorRamp.reset( QgsStyle::defaultStyle()->colorRamp( u"Blues"_s ) );
     }
     if ( colorRamp )
       mColorRampButton->setColorRamp( colorRamp.get() );

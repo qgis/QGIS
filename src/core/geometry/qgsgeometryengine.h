@@ -21,7 +21,10 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgslinestring.h"
 #include "qgslogger.h"
 
+#include <QString>
 #include <QVector>
+
+using namespace Qt::StringLiterals;
 
 class QgsAbstractGeometry;
 
@@ -369,7 +372,7 @@ class CORE_EXPORT QgsGeometryEngine
     {
       if ( mLogErrors )
       {
-        QgsDebugError( QStringLiteral( "%1 notice: %2" ).arg( engineName, message ) );
+        QgsDebugError( u"%1 notice: %2"_s.arg( engineName, message ) );
         qWarning( "%s exception: %s", engineName.toLocal8Bit().constData(), message.toLocal8Bit().constData() );
       }
     }

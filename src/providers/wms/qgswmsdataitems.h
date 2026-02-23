@@ -22,6 +22,10 @@
 #include "qgslayeritem.h"
 #include "qgswmsprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsWmsCapabilitiesDownload;
 
 class QgsWMSConnectionItem : public QgsDataCollectionItem
@@ -169,7 +173,7 @@ class QgsWMTSRootItem : public QgsConnectionsRootItem
 class QgsWmsDataItemProvider : public QgsDataItemProvider
 {
   public:
-    QString name() override { return QStringLiteral( "WMS" ); }
+    QString name() override { return u"WMS"_s; }
     QString dataProviderKey() const override;
     Qgis::DataItemProviderCapabilities capabilities() const override { return Qgis::DataItemProviderCapability::NetworkSources; }
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;

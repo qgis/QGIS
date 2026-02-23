@@ -15,7 +15,13 @@
 
 #include "qgspointcloudexpressionnodeimpl.h"
 
+#include "qgspointcloudattribute.h"
+#include "qgspointcloudblock.h"
 #include "qgspointcloudexpression.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 const char *QgsPointCloudExpressionNodeBinaryOperator::BINARY_OPERATOR_TEXT[] =
 {
@@ -36,12 +42,12 @@ QgsPointCloudExpressionNode::NodeList::~NodeList()
   qDeleteAll( mList );
 }
 
-QgsPointCloudExpressionNode::NodeList *QgsPointCloudExpressionNode::NodeList::clone() const
+std::unique_ptr<QgsPointCloudExpressionNode::NodeList> QgsPointCloudExpressionNode::NodeList::clone() const
 {
-  NodeList *nl = new NodeList;
+  auto nl = std::make_unique<NodeList>();
   for ( QgsPointCloudExpressionNode *node : mList )
   {
-    nl->mList.append( node->clone() );
+    nl->append( node->clone() );
   }
   nl->mNameList = mNameList;
 
@@ -54,7 +60,7 @@ QString QgsPointCloudExpressionNode::NodeList::dump() const
   bool first = true;
   for ( QgsPointCloudExpressionNode *n : mList )
   {
-    if ( !first ) msg += QLatin1String( ", " );
+    if ( !first ) msg += ", "_L1;
     else first = false;
     msg += n->dump();
   }
@@ -91,10 +97,10 @@ bool QgsPointCloudExpressionNodeUnaryOperator::prepareNode( QgsPointCloudExpress
 
 QString QgsPointCloudExpressionNodeUnaryOperator::dump() const
 {
-  if ( dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOperand ) )
-    return QStringLiteral( "%1 ( %2 )" ).arg( UNARY_OPERATOR_TEXT[mOp], mOperand->dump() );
+  if ( dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOperand.get() ) )
+    return u"%1 ( %2 )"_s.arg( UNARY_OPERATOR_TEXT[mOp], mOperand->dump() );
   else
-    return QStringLiteral( "%1 %2" ).arg( UNARY_OPERATOR_TEXT[mOp], mOperand->dump() );
+    return u"%1 %2"_s.arg( UNARY_OPERATOR_TEXT[mOp], mOperand->dump() );
 }
 
 QSet<QString> QgsPointCloudExpressionNodeUnaryOperator::referencedAttributes() const
@@ -113,10 +119,10 @@ QList<const QgsPointCloudExpressionNode *> QgsPointCloudExpressionNodeUnaryOpera
   return lst;
 }
 
-QgsPointCloudExpressionNode *QgsPointCloudExpressionNodeUnaryOperator::clone() const
+std::unique_ptr<QgsPointCloudExpressionNode> QgsPointCloudExpressionNodeUnaryOperator::clone() const
 {
-  QgsPointCloudExpressionNodeUnaryOperator *copy = new QgsPointCloudExpressionNodeUnaryOperator( mOp, mOperand->clone() );
-  cloneTo( copy );
+  auto copy = std::make_unique<QgsPointCloudExpressionNodeUnaryOperator>( mOp, mOperand->clone() );
+  cloneTo( copy.get() );
   return copy;
 }
 
@@ -146,10 +152,10 @@ bool QgsPointCloudExpressionNodeUnaryOperator::convert( const QgsExpressionNodeU
 
 QString QgsPointCloudExpressionNodeUnaryOperator::toPdal() const
 {
-  if ( dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOperand ) )
-    return UNARY_OPERATOR_TEXT[mOp] == QLatin1String( "NOT" ) ? QStringLiteral( "!(%1)" ).arg( mOperand->toPdal() ) : QStringLiteral( "-(%1)" ).arg( mOperand->dump() );
+  if ( dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOperand.get() ) )
+    return UNARY_OPERATOR_TEXT[mOp] == "NOT"_L1 ? u"!(%1)"_s.arg( mOperand->toPdal() ) : u"-(%1)"_s.arg( mOperand->dump() );
   else
-    return UNARY_OPERATOR_TEXT[mOp] == QLatin1String( "NOT" ) ? QStringLiteral( "!%1" ).arg( mOperand->toPdal() ) : QStringLiteral( "-%1" ).arg( mOperand->dump() );
+    return UNARY_OPERATOR_TEXT[mOp] == "NOT"_L1 ? u"!%1"_s.arg( mOperand->toPdal() ) : u"-%1"_s.arg( mOperand->dump() );
 }
 
 //
@@ -307,23 +313,23 @@ bool QgsPointCloudExpressionNodeBinaryOperator::leftAssociative() const
 
 QString QgsPointCloudExpressionNodeBinaryOperator::dump() const
 {
-  QgsPointCloudExpressionNodeBinaryOperator *lOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpLeft );
-  QgsPointCloudExpressionNodeBinaryOperator *rOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpRight );
+  QgsPointCloudExpressionNodeBinaryOperator *lOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpLeft.get() );
+  QgsPointCloudExpressionNodeBinaryOperator *rOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpRight.get() );
 
   QString rdump( mOpRight->dump() );
 
   QString fmt;
   if ( leftAssociative() )
   {
-    fmt += lOp && ( lOp->precedence() < precedence() ) ? QStringLiteral( "(%1)" ) : QStringLiteral( "%1" );
-    fmt += QLatin1String( " %2 " );
-    fmt += rOp && ( rOp->precedence() <= precedence() ) ? QStringLiteral( "(%3)" ) : QStringLiteral( "%3" );
+    fmt += lOp && ( lOp->precedence() < precedence() ) ? u"(%1)"_s : u"%1"_s;
+    fmt += " %2 "_L1;
+    fmt += rOp && ( rOp->precedence() <= precedence() ) ? u"(%3)"_s : u"%3"_s;
   }
   else
   {
-    fmt += lOp && ( lOp->precedence() <= precedence() ) ? QStringLiteral( "(%1)" ) : QStringLiteral( "%1" );
-    fmt += QLatin1String( " %2 " );
-    fmt += rOp && ( rOp->precedence() < precedence() ) ? QStringLiteral( "(%3)" ) : QStringLiteral( "%3" );
+    fmt += lOp && ( lOp->precedence() <= precedence() ) ? u"(%1)"_s : u"%1"_s;
+    fmt += " %2 "_L1;
+    fmt += rOp && ( rOp->precedence() < precedence() ) ? u"(%3)"_s : u"%3"_s;
   }
 
   return fmt.arg( mOpLeft->dump(), BINARY_OPERATOR_TEXT[mOp], rdump );
@@ -345,10 +351,10 @@ QList<const QgsPointCloudExpressionNode *> QgsPointCloudExpressionNodeBinaryOper
   return lst;
 }
 
-QgsPointCloudExpressionNode *QgsPointCloudExpressionNodeBinaryOperator::clone() const
+std::unique_ptr<QgsPointCloudExpressionNode> QgsPointCloudExpressionNodeBinaryOperator::clone() const
 {
-  QgsPointCloudExpressionNodeBinaryOperator *copy = new QgsPointCloudExpressionNodeBinaryOperator( mOp, mOpLeft->clone(), mOpRight->clone() );
-  cloneTo( copy );
+  auto copy = std::make_unique<QgsPointCloudExpressionNodeBinaryOperator>( mOp, mOpLeft->clone(), mOpRight->clone() );
+  cloneTo( copy.get() );
   return copy;
 }
 
@@ -524,41 +530,41 @@ bool QgsPointCloudExpressionNodeBinaryOperator::convert( const QgsExpressionNode
 
 QString QgsPointCloudExpressionNodeBinaryOperator::toPdal() const
 {
-  QgsPointCloudExpressionNodeBinaryOperator *lOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpLeft );
-  QgsPointCloudExpressionNodeBinaryOperator *rOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpRight );
+  QgsPointCloudExpressionNodeBinaryOperator *lOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpLeft.get() );
+  QgsPointCloudExpressionNodeBinaryOperator *rOp = dynamic_cast<QgsPointCloudExpressionNodeBinaryOperator *>( mOpRight.get() );
 
   QString rdump( mOpRight->toPdal() );
 
   QString fmt;
   if ( leftAssociative() )
   {
-    fmt += lOp && ( lOp->precedence() < precedence() ) ? QStringLiteral( "(%1)" ) : QStringLiteral( "%1" );
-    fmt += QLatin1String( " %2 " );
-    fmt += rOp && ( rOp->precedence() <= precedence() ) ? QStringLiteral( "(%3)" ) : QStringLiteral( "%3" );
+    fmt += lOp && ( lOp->precedence() < precedence() ) ? u"(%1)"_s : u"%1"_s;
+    fmt += " %2 "_L1;
+    fmt += rOp && ( rOp->precedence() <= precedence() ) ? u"(%3)"_s : u"%3"_s;
   }
   else
   {
-    fmt += lOp && ( lOp->precedence() <= precedence() ) ? QStringLiteral( "(%1)" ) : QStringLiteral( "%1" );
-    fmt += QLatin1String( " %2 " );
-    fmt += rOp && ( rOp->precedence() < precedence() ) ? QStringLiteral( "(%3)" ) : QStringLiteral( "%3" );
+    fmt += lOp && ( lOp->precedence() <= precedence() ) ? u"(%1)"_s : u"%1"_s;
+    fmt += " %2 "_L1;
+    fmt += rOp && ( rOp->precedence() < precedence() ) ? u"(%3)"_s : u"%3"_s;
   }
 
   QString opText = BINARY_OPERATOR_TEXT[mOp];
-  if ( opText == QLatin1String( "AND" ) )
+  if ( opText == "AND"_L1 )
   {
-    opText = QStringLiteral( "&&" );
+    opText = u"&&"_s;
   }
-  else if ( opText == QLatin1String( "OR" ) )
+  else if ( opText == "OR"_L1 )
   {
-    opText = QStringLiteral( "||" );
+    opText = u"||"_s;
   }
-  else if ( opText == QLatin1String( "<>" ) )
+  else if ( opText == "<>"_L1 )
   {
-    opText = QStringLiteral( "!=" );
+    opText = u"!="_s;
   }
-  else if ( opText == QLatin1String( "=" ) )
+  else if ( opText == "="_L1 )
   {
-    opText = QStringLiteral( "==" );
+    opText = u"=="_s;
   }
   return fmt.arg( mOpLeft->toPdal(), opText, rdump );
 }
@@ -585,12 +591,6 @@ double QgsPointCloudExpressionNodeInOperator::evalNode( QgsPointCloudExpression 
   }
 
   return mNotIn ? 1. : 0.;
-}
-
-QgsPointCloudExpressionNodeInOperator::~QgsPointCloudExpressionNodeInOperator()
-{
-  delete mNode;
-  delete mList;
 }
 
 QgsPointCloudExpressionNode::NodeType QgsPointCloudExpressionNodeInOperator::nodeType() const
@@ -633,13 +633,13 @@ QList<const QgsPointCloudExpressionNode *> QgsPointCloudExpressionNodeInOperator
 
 QString QgsPointCloudExpressionNodeInOperator::dump() const
 {
-  return QStringLiteral( "%1 %2 IN (%3)" ).arg( mNode->dump(), mNotIn ? "NOT" : "", mList->dump() );
+  return u"%1 %2 IN (%3)"_s.arg( mNode->dump(), mNotIn ? "NOT" : "", mList->dump() );
 }
 
-QgsPointCloudExpressionNode *QgsPointCloudExpressionNodeInOperator::clone() const
+std::unique_ptr<QgsPointCloudExpressionNode>  QgsPointCloudExpressionNodeInOperator::clone() const
 {
-  QgsPointCloudExpressionNodeInOperator *copy = new QgsPointCloudExpressionNodeInOperator( mNode->clone(), mList->clone(), mNotIn );
-  cloneTo( copy );
+  auto copy = std::make_unique<QgsPointCloudExpressionNodeInOperator>( mNode->clone(), mList->clone(), mNotIn );
+  cloneTo( copy.get() );
   return copy;
 }
 
@@ -663,9 +663,9 @@ QString QgsPointCloudExpressionNodeInOperator::toPdal() const
   QStringList values;
   for ( QgsPointCloudExpressionNode *n : mList->list() )
   {
-    values << QStringLiteral( "(%1 %2 %3)" ).arg( mNode->toPdal(), mNotIn ? "!=" : "==", n->toPdal() );
+    values << u"(%1 %2 %3)"_s.arg( mNode->toPdal(), mNotIn ? "!=" : "==", n->toPdal() );
   }
-  return QStringLiteral( "(%1)" ).arg( values.join( mNotIn ? QStringLiteral( " && " ) : QStringLiteral( " || " ) ) );
+  return u"(%1)"_s.arg( values.join( mNotIn ? u" && "_s : u" || "_s ) );
 }
 
 //
@@ -711,10 +711,10 @@ QList<const QgsPointCloudExpressionNode *> QgsPointCloudExpressionNodeLiteral::n
   return lst;
 }
 
-QgsPointCloudExpressionNode *QgsPointCloudExpressionNodeLiteral::clone() const
+std::unique_ptr<QgsPointCloudExpressionNode> QgsPointCloudExpressionNodeLiteral::clone() const
 {
-  QgsPointCloudExpressionNodeLiteral *copy = new QgsPointCloudExpressionNodeLiteral( mValue );
-  cloneTo( copy );
+  auto copy = std::make_unique<QgsPointCloudExpressionNodeLiteral>( mValue );
+  cloneTo( copy.get() );
   return copy;
 }
 
@@ -747,11 +747,11 @@ double QgsPointCloudExpressionNodeAttributeRef::evalNode( QgsPointCloudExpressio
 
   double val = mAttribute->convertValueToDouble( data + offset );
 
-  if ( mAttribute->name().compare( QLatin1String( "X" ), Qt::CaseInsensitive ) == 0 )
+  if ( mAttribute->name().compare( 'X'_L1, Qt::CaseInsensitive ) == 0 )
     return val * mBlock->scale().x() + mBlock->offset().x();
-  if ( mAttribute->name().compare( QLatin1String( "Y" ), Qt::CaseInsensitive ) == 0 )
+  if ( mAttribute->name().compare( 'Y'_L1, Qt::CaseInsensitive ) == 0 )
     return val * mBlock->scale().y() + mBlock->offset().y();
-  if ( mAttribute->name().compare( QLatin1String( "Z" ), Qt::CaseInsensitive ) == 0 )
+  if ( mAttribute->name().compare( 'Z'_L1, Qt::CaseInsensitive ) == 0 )
     return val * mBlock->scale().z() + mBlock->offset().z();
 
   return val; // calculate the pointIndex's point respective attribute
@@ -793,10 +793,10 @@ QList<const QgsPointCloudExpressionNode *> QgsPointCloudExpressionNodeAttributeR
   return result;
 }
 
-QgsPointCloudExpressionNode *QgsPointCloudExpressionNodeAttributeRef::clone() const
+std::unique_ptr<QgsPointCloudExpressionNode> QgsPointCloudExpressionNodeAttributeRef::clone() const
 {
-  QgsPointCloudExpressionNodeAttributeRef *copy = new QgsPointCloudExpressionNodeAttributeRef( mName );
-  cloneTo( copy );
+  auto copy = std::make_unique<QgsPointCloudExpressionNodeAttributeRef>( mName );
+  cloneTo( copy.get() );
   return copy;
 }
 

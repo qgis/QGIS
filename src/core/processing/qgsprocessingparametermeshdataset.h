@@ -21,6 +21,10 @@
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingparametertype.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \brief A parameter for processing algorithms that need a list of mesh dataset groups.
  *
@@ -60,7 +64,7 @@ class CORE_EXPORT QgsProcessingParameterMeshDatasetGroups : public QgsProcessing
     bool fromVariantMap( const QVariantMap &map ) override;
 
     //! Returns the type name for the parameter class.
-    static QString typeName() { return QStringLiteral( "meshdatasetgroups" ); }
+    static QString typeName() { return u"meshdatasetgroups"_s; }
 
     //! Returns the name of the mesh layer parameter
     QString meshLayerParameterName() const;
@@ -112,12 +116,12 @@ class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetGroups : public QgsProces
 
     QString pythonImportString() const override
     {
-      return QStringLiteral( "from qgis.core import QgsProcessingParameterMeshDatasetGroups" );
+      return u"from qgis.core import QgsProcessingParameterMeshDatasetGroups"_s;
     }
 
     QString className() const override
     {
-      return QStringLiteral( "QgsProcessingParameterMeshDatasetGroups" );
+      return u"QgsProcessingParameterMeshDatasetGroups"_s;
     }
 
     QStringList acceptedPythonTypes() const override
@@ -183,7 +187,7 @@ class CORE_EXPORT QgsProcessingParameterMeshDatasetTime : public QgsProcessingPa
     bool fromVariantMap( const QVariantMap &map ) override;
 
     //! Returns the type name for the parameter class.
-    static QString typeName() { return QStringLiteral( "meshdatasettime" ); }
+    static QString typeName() { return u"meshdatasettime"_s; }
 
     //! Returns the name of the mesh layer parameter
     QString meshLayerParameterName() const;
@@ -257,12 +261,12 @@ class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetTime: public QgsProcessin
 
     QString pythonImportString() const override
     {
-      return QStringLiteral( "from qgis.core import QgsProcessingParameterMeshDatasetTime" );
+      return u"from qgis.core import QgsProcessingParameterMeshDatasetTime"_s;
     }
 
     QString className() const override
     {
-      return QStringLiteral( "QgsProcessingParameterMeshDatasetTime" );
+      return u"QgsProcessingParameterMeshDatasetTime"_s;
     }
 
     QStringList acceptedPythonTypes() const override

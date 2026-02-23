@@ -18,11 +18,15 @@
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
 
+#include <QString>
+
 #include "moc_qgsprocessingfavoritealgorithmmanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
-const QgsSettingsEntryStringList *QgsProcessingFavoriteAlgorithmManager::settingsFavoriteAlgorithms = new QgsSettingsEntryStringList( QStringLiteral( "favorite-algorithms" ), QgsSettingsTree::sTreeProcessing, QStringList(), QObject::tr( "Favorite Processing algorithms" ) );
+const QgsSettingsEntryStringList *QgsProcessingFavoriteAlgorithmManager::settingsFavoriteAlgorithms = new QgsSettingsEntryStringList( u"favorite-algorithms"_s, QgsSettingsTree::sTreeProcessing, QStringList(), QObject::tr( "Favorite Processing algorithms" ) );
 
 QgsProcessingFavoriteAlgorithmManager::QgsProcessingFavoriteAlgorithmManager( QObject *parent )
   : QObject( parent )

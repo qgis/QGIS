@@ -12,6 +12,7 @@
 
 
 
+
 class QgsStyleManagerDialog : QDialog
 {
 %Docstring(signature="appended")
@@ -171,11 +172,11 @@ Closes the dialog
 Opens the associated help
 %End
 
- void itemChanged( QStandardItem *item ) /Deprecated="Since 3.6. Has no effect and will be removed in QGIS 4.0."/;
+ void itemChanged( QStandardItem *item ) /Deprecated="Since 3.6. Has no effect and will be removed in QGIS 5.0."/;
 %Docstring
 .. deprecated:: 3.6
 
-   Has no effect and will be removed in QGIS 4.0.
+   Has no effect and will be removed in QGIS 5.0.
 %End
 
     void groupChanged( const QModelIndex & );
@@ -213,11 +214,11 @@ Toggles the interactive item tagging mode.
 Triggers the dialog for editing the selected smart group.
 %End
 
- void regrouped( QStandardItem * ) /Deprecated="Since 3.6. Has no effect and will be removed in QGIS 4.0."/;
+ void regrouped( QStandardItem * ) /Deprecated="Since 3.6. Has no effect and will be removed in QGIS 5.0."/;
 %Docstring
 .. deprecated:: 3.6
 
-   Has no effect and will be removed in QGIS 4.0.
+   Has no effect and will be removed in QGIS 5.0.
 %End
 
     void filterSymbols( const QString &filter );
@@ -275,13 +276,13 @@ Remove all tags from selected symbols
 %End
 
   protected:
- void populateTypes() /Deprecated="Since 3.6. Has no effect and will be removed in QGIS 4.0."/;
+ void populateTypes() /Deprecated="Since 3.6. Has no effect and will be removed in QGIS 5.0."/;
 %Docstring
 Populate combo box with known style items (symbols, color ramps).
 
 .. deprecated:: 3.6
 
-   Has no effect and will be removed in QGIS 4.0.
+   Has no effect and will be removed in QGIS 5.0.
 %End
 
     void populateGroups();
@@ -289,31 +290,31 @@ Populate combo box with known style items (symbols, color ramps).
 populate the groups
 %End
 
- void setSymbolsChecked( const QStringList & ) /Deprecated="Since 3.6. Has no effect and will be removed in QGIS 4.0."/;
+ void setSymbolsChecked( const QStringList & ) /Deprecated="Since 3.6. Has no effect and will be removed in QGIS 5.0."/;
 %Docstring
 .. deprecated:: 3.6
 
-   Has no effect and will be removed in QGIS 4.0.
+   Has no effect and will be removed in QGIS 5.0.
 %End
 
- void populateSymbols( const QStringList &symbolNames, bool checkable = false ) /Deprecated="Since 3.40. No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 4.0."/;
+ void populateSymbols( const QStringList &symbolNames, bool checkable = false ) /Deprecated="Since 3.40. No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 5.0."/;
 %Docstring
 Populates the list view with symbols of the current type with the given
 names.
 
 .. deprecated:: 3.40
 
-   No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 4.0.
+   No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 5.0.
 %End
 
- void populateColorRamps( const QStringList &colorRamps, bool checkable = false ) /Deprecated="Since 3.40. No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 4.0."/;
+ void populateColorRamps( const QStringList &colorRamps, bool checkable = false ) /Deprecated="Since 3.40. No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 5.0."/;
 %Docstring
 Populates the list view with color ramps of the current type with the
 given names.
 
 .. deprecated:: 3.40
 
-   No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 4.0.
+   No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 5.0.
 %End
 
     int currentItemType();
@@ -327,18 +328,18 @@ add a new symbol to style
     bool editSymbol();
     bool editColorRamp();
 
- bool removeSymbol() /Deprecated="Since 3.6. Has no effect and will be removed in QGIS 4.0."/;
+ bool removeSymbol() /Deprecated="Since 3.6. Has no effect and will be removed in QGIS 5.0."/;
 %Docstring
 .. deprecated:: 3.6
 
-   Has no effect and will be removed in QGIS 4.0.
+   Has no effect and will be removed in QGIS 5.0.
 %End
 
- bool removeColorRamp() /Deprecated="Since 3.6. Has no effect and will be removed in QGIS 4.0."/;
+ bool removeColorRamp() /Deprecated="Since 3.6. Has no effect and will be removed in QGIS 5.0."/;
 %Docstring
 .. deprecated:: 3.6
 
-   Has no effect and will be removed in QGIS 4.0.
+   Has no effect and will be removed in QGIS 5.0.
 %End
 
     void enableSymbolInputs( bool );

@@ -32,14 +32,15 @@
 #include <QList>
 #include <QQueue>
 
-class QgsAdvancedDigitizingCanvasItem;
 class QgsAdvancedDigitizingFloater;
+class QgsAdvancedDigitizingCanvasItem;
 class QgsAdvancedDigitizingTool;
 class QgsMapCanvas;
 class QgsMapTool;
 class QgsMapToolAdvancedDigitizing;
 class QgsMapMouseEvent;
 class QgsUserInputWidget;
+class QgsReferencedGeometry;
 
 /**
  * \ingroup gui
@@ -298,6 +299,12 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * \since QGIS 3.40
      */
     QgsAdvancedDigitizingTool *tool() const;
+
+    /**
+     * Returns the advanced digitizing floater.
+     * \since QGIS 4.0
+     */
+    QgsAdvancedDigitizingFloater *floater() const;
 
     /**
      * unlock all constraints
@@ -624,6 +631,22 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     double getLineM() const;
 
     /**
+    * Set the weight value for NURBS curves.
+    * \param value The weight value as a QString
+    * \param enabled Whether weight editing is enabled
+    * \note unstable API (will likely change)
+    * \since QGIS 4.0
+    */
+    void setWeight( const QString &value, bool enabled );
+
+    /**
+    * Returns the current weight value for NURBS curves.
+    * \note unstable API (will likely change)
+    * \since QGIS 4.0
+    */
+    QString weight() const;
+
+    /**
      * Returns the capacities
      * \since QGIS 3.26
      */
@@ -634,6 +657,19 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * \since QGIS 3.32
      */
     QString formatCommonAngleSnapping( double angle );
+
+  public slots:
+
+    /**
+     * Updates properties associated with the transient geometry from the active map tool.
+     *
+     * Transient geometry includes non-finalized changes, e.g. the current mouse hover state.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 4.0
+     */
+    void updateTransientGeometryProperties( const QgsReferencedGeometry &geometry ) SIP_SKIP;
 
   signals:
 
@@ -663,7 +699,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * when a constraint is toggled.
      *
      * \param point The last known digitizing point. Can be used to emulate a mouse event.
-     * \deprecated QGIS 3.22. No longer used, will be removed in QGIS 4.0. Use pointChangedV2() instead.
+     * \deprecated QGIS 3.22. No longer used, will be removed in QGIS 5.0. Use pointChangedV2() instead.
      */
     Q_DECL_DEPRECATED void pointChanged( const QgsPointXY &point ) SIP_DEPRECATED;
 
@@ -733,6 +769,30 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     * \since QGIS 3.32
     */
     void valueBearingChanged( const QString &value );
+
+    /**
+    * Emitted whenever the weight \a value changes for NURBS curves.
+    * Could be used by widgets that must reflect the current weight value.
+    * \note unstable API (will likely change)
+    * \since QGIS 4.0
+    */
+    void valueWeightChanged( const QString &value );
+
+    /**
+     * Emitted whenever the total summed area \a value changes.
+     * Could be used by widgets that must reflect the current advanced digitizing state.
+     * \note unstable API (will likely change)
+     * \since QGIS 4.0
+     */
+    void valueAreaChanged( const QString &value );
+
+    /**
+     * Emitted whenever the total length (or perimeter) \a value changes.
+     * Could be used by widgets that must reflect the current advanced digitizing state.
+     * \note unstable API (will likely change)
+     * \since QGIS 4.0
+     */
+    void valueTotalLengthChanged( const QString &value );
 
     /**
     * Emitted whenever the X parameter is \a locked.
@@ -917,6 +977,16 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void enabledChangedDistance( bool enabled );
 
     /**
+    * Emitted whenever the weight field is enabled or disabled for NURBS curves.
+    * Could be used by widgets that must reflect the current weight editing state.
+    *
+    * \param enabled Whether the weight parameter is enabled or not.
+    * \note unstable API (will likely change)
+    * \since QGIS 4.0
+    */
+    void enabledChangedWeight( bool enabled );
+
+    /**
     * Emitted whenever the X field should get the focus using the shortcuts (X).
     * Could be used by widgets to capture the focus when a field is being edited.
     * \note unstable API (will likely change)
@@ -963,6 +1033,14 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     * \since QGIS 3.8
     */
     void focusOnDistanceRequested();
+
+    /**
+    * Emitted whenever the weight field should get the focus using the shortcuts (W).
+    * Could be used by widgets to capture the focus when a field is being edited.
+    * \note unstable API (will likely change)
+    * \since QGIS 4.0
+    */
+    void focusOnWeightRequested();
 
     /**
     * Emitted whenever the snapping to common angle option changes, angle = 0 means that the functionality is disabled.
@@ -1121,6 +1199,10 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     std::unique_ptr<CadConstraint> mXyVertexConstraint;
     Qgis::BetweenLineConstraint mBetweenLineConstraint;
     double mCommonAngleConstraint; // if 0: do not snap to common angles
+
+    // Weight for NURBS curves (not a constraint, just a value)
+    QString mWeightValue;
+    bool mWeightEnabled = false;
 
     //! Flag that controls whether snapping to features has priority over common angle
     bool mSnappingPrioritizeFeatures = false;

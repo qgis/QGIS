@@ -27,10 +27,11 @@
 // version without notice, or even be removed.
 //
 
-#define SIP_NO_FILE
 
 #include "qgis_3d.h"
 #include "qgsmatrix4x4.h"
+
+#define SIP_NO_FILE
 
 #define TINYGLTF_NO_STB_IMAGE       // we use QImage-based reading of images
 #define TINYGLTF_NO_STB_IMAGE_WRITE // we don't need writing of images

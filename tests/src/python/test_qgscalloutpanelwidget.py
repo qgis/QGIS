@@ -6,18 +6,18 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.PyQt.QtWidgets import QComboBox
-from qgis.PyQt.QtTest import QSignalSpy
+import unittest
+
 from qgis.core import QgsBalloonCallout, QgsSimpleLineCallout
 from qgis.gui import QgsCalloutPanelWidget
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtWidgets import QComboBox
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsCalloutPanelWidget(QgisTestCase):
-
     def testWidget(self):
         widget = QgsCalloutPanelWidget()
 

@@ -19,7 +19,6 @@
 #include "qgscoordinatetransform.h"
 #include "qgsquantizedmeshdataprovider.h"
 #include "qgsrectangle.h"
-#include "qgsterrainentity.h"
 #include "qgsterraingenerator.h"
 #include "qgstiledsceneindex.h"
 #include "qgstiledscenelayer.h"
@@ -28,6 +27,9 @@
 #include <QPointer>
 
 #define SIP_NO_FILE
+
+class QgsTerrainEntity;
+
 
 /**
  * \ingroup qgis_3d

@@ -6,20 +6,20 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.PyQt.QtCore import QRect, QSize
-from qgis.PyQt.QtGui import QImage, QColor
+import unittest
+
 from qgis._3d import (
     QgsTextureAtlas,
     QgsTextureAtlasGenerator,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QRect, QSize
+from qgis.PyQt.QtGui import QColor, QImage
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsTextureAtlasGenerator(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "texture_atlas_generator"

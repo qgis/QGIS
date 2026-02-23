@@ -17,10 +17,15 @@
 #define QGSSTACDATAITEMGUIPROVIDER_H
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 #include "qgis_gui.h"
 #include "qgsdataitemguiprovider.h"
+
+#include <QString>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 class GUI_EXPORT QgsStacDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
@@ -28,7 +33,7 @@ class GUI_EXPORT QgsStacDataItemGuiProvider : public QObject, public QgsDataItem
   public:
     QgsStacDataItemGuiProvider() = default;
 
-    QString name() override { return QStringLiteral( "STAC" ); }
+    QString name() override { return u"STAC"_s; }
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 

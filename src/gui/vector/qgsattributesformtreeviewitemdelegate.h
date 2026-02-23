@@ -17,11 +17,12 @@
 #define QGSATTRIBUTESFORMTREEVIEWITEMDELEGATE_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 /// @cond PRIVATE
 
 #include "qgsproxystyle.h"
+
+#define SIP_NO_FILE
 
 class QgsAttributesFormTreeViewIndicator;
 class QgsAttributesFormBaseView;

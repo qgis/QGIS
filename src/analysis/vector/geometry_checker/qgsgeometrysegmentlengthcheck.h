@@ -13,12 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#define SIP_NO_FILE
 
 #ifndef QGS_GEOMETRY_SEGMENTLENGTH_CHECK_H
 #define QGS_GEOMETRY_SEGMENTLENGTH_CHECK_H
 
 #include "qgsgeometrycheck.h"
+
+#include <QString>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup analysis
@@ -40,7 +45,7 @@ class ANALYSIS_EXPORT QgsGeometrySegmentLengthCheck : public QgsGeometryCheck
     Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
     static QString factoryDescription() { return tr( "Minimal segment length" ); }
     QString description() const override { return factoryDescription(); }
-    static QString factoryId() { return QStringLiteral( "QgsGeometrySegmentLengthCheck" ); }
+    static QString factoryId() { return u"QgsGeometrySegmentLengthCheck"_s; }
     QString id() const override { return factoryId(); }
     QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
     static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;

@@ -18,11 +18,16 @@
 #ifndef QGSALGORITHMMEANCOORDINATES_H
 #define QGSALGORITHMMEANCOORDINATES_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsapplication.h"
 #include "qgsprocessingalgorithm.h"
+
+#include <QString>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -35,8 +40,8 @@ class QgsMeanCoordinatesAlgorithm : public QgsProcessingAlgorithm
   public:
     QgsMeanCoordinatesAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmMeanCoordinates.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmMeanCoordinates.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmMeanCoordinates.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmMeanCoordinates.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;

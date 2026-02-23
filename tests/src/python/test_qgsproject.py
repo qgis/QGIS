@@ -14,42 +14,42 @@ __copyright__ = "Copyright 2015, The QGIS Project"
 import codecs
 import os
 import re
+import unittest
 from io import BytesIO
 from shutil import copyfile
 from tempfile import TemporaryDirectory
 from zipfile import ZipFile
-from lxml import etree as et
 
+from lxml import etree as et
 from osgeo import ogr
-from qgis.PyQt import sip
-from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir
-from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     Qgis,
     QgsApplication,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransformContext,
     QgsDataProvider,
+    QgsElevationProfile,
     QgsExpressionContextUtils,
     QgsFeature,
     QgsGeometry,
-    QgsLayerNotesUtils,
     QgsLabelingEngineSettings,
+    QgsLayerNotesUtils,
     QgsMapLayer,
     QgsProject,
     QgsProjectColorScheme,
     QgsProjectDirtyBlocker,
     QgsRasterLayer,
+    QgsSelectiveMaskingSourceSet,
     QgsSettings,
     QgsUnitTypes,
     QgsVectorLayer,
-    QgsElevationProfile,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
-from utilities import unitTestDataPath, getTempfilePath
+from qgis.PyQt import sip
+from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
+from utilities import getTempfilePath, unitTestDataPath
 
 app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -60,7 +60,6 @@ def createLayer(name):
 
 
 class TestQgsProject(QgisTestCase):
-
     def __init__(self, methodName):
         """Run once on class initialization."""
         QgisTestCase.__init__(self, methodName)
@@ -454,6 +453,34 @@ class TestQgsProject(QgisTestCase):
 
         p.clear()
         self.assertFalse(p.elevationProfileManager().profiles())
+
+    def test_selective_masking_source_set_manager(self):
+        p = QgsProject()
+        self.assertFalse(p.selectiveMaskingSourceSetManager().sets())
+        source_set1 = QgsSelectiveMaskingSourceSet()
+        source_set1.setName("p1")
+        p.selectiveMaskingSourceSetManager().addSet(source_set1)
+        source_set2 = QgsSelectiveMaskingSourceSet()
+        source_set2.setName("p2")
+        p.selectiveMaskingSourceSetManager().addSet(source_set2)
+        self.assertCountEqual(
+            [s.name() for s in p.selectiveMaskingSourceSetManager().sets()],
+            ["p1", "p2"],
+        )
+
+        with TemporaryDirectory() as d:
+            path = os.path.join(d, "selective_masking_sets.qgs")
+            self.assertTrue(p.write(path))
+            # Verify
+            p2 = QgsProject()
+            self.assertTrue(p2.read(path))
+            self.assertCountEqual(
+                [s.name() for s in p2.selectiveMaskingSourceSetManager().sets()],
+                ["p1", "p2"],
+            )
+
+        p.clear()
+        self.assertFalse(p.selectiveMaskingSourceSetManager().sets())
 
     def testReadEntry(self):
         prj = QgsProject.instance()

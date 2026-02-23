@@ -15,7 +15,11 @@
 
 #include "qgs3dmodelsourcelineedit.h"
 
+#include <QString>
+
 #include "moc_qgs3dmodelsourcelineedit.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // Qgs3DModelSourceLineEdit
@@ -55,7 +59,7 @@ QString Qgs3DModelSourceLineEdit::extractFileTitle() const
 
 QString Qgs3DModelSourceLineEdit::defaultSettingsKey() const
 {
-  return QStringLiteral( "/UI/last3DModelDir" );
+  return u"/UI/last3DModelDir"_s;
 }
 
 ///@endcond

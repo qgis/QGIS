@@ -34,8 +34,11 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsmssqldataitemguiprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 void QgsMssqlDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
@@ -211,7 +214,7 @@ void QgsMssqlDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 {
   const QString connectionName = item->name();
   QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "/MSSQL/connections" ) );
+  settings.beginGroup( u"/MSSQL/connections"_s );
   const QStringList connections = settings.childGroups();
   settings.endGroup();
 
@@ -288,7 +291,7 @@ bool QgsMssqlDataItemGuiProvider::handleDrop( QgsMssqlConnectionItem *connection
     return false;
 
   const QgsMimeDataUtils::UriList sourceUris = QgsMimeDataUtils::decodeUriList( data );
-  if ( sourceUris.size() == 1 && sourceUris.at( 0 ).layerType == QLatin1String( "vector" ) )
+  if ( sourceUris.size() == 1 && sourceUris.at( 0 ).layerType == "vector"_L1 )
   {
     return handleDropUri( connectionItem, sourceUris.at( 0 ), toSchema, context );
   }
@@ -306,7 +309,7 @@ bool QgsMssqlDataItemGuiProvider::handleDrop( QgsMssqlConnectionItem *connection
 
   for ( const QgsMimeDataUtils::Uri &u : sourceUris )
   {
-    if ( u.layerType != QLatin1String( "vector" ) )
+    if ( u.layerType != "vector"_L1 )
     {
       importResults.append( tr( "%1: Not a vector layer!" ).arg( u.name ) );
       hasError = true; // only vectors can be imported
@@ -319,7 +322,7 @@ bool QgsMssqlDataItemGuiProvider::handleDrop( QgsMssqlConnectionItem *connection
 
     if ( srcLayer->isValid() )
     {
-      QString geomColumn { QStringLiteral( "geom" ) };
+      QString geomColumn { u"geom"_s };
       if ( !srcLayer->dataProvider()->geometryColumnName().isEmpty() )
       {
         geomColumn = srcLayer->dataProvider()->geometryColumnName();
@@ -334,7 +337,7 @@ bool QgsMssqlDataItemGuiProvider::handleDrop( QgsMssqlConnectionItem *connection
       QVariantMap providerOptions;
       const QString destUri = databaseConnection->createVectorLayerExporterDestinationUri( exporterOptions, providerOptions );
 
-      std::unique_ptr<QgsVectorLayerExporterTask> exportTask( QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, destUri, QStringLiteral( "mssql" ), srcLayer->crs(), providerOptions ) );
+      std::unique_ptr<QgsVectorLayerExporterTask> exportTask( QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, destUri, u"mssql"_s, srcLayer->crs(), providerOptions ) );
 
       // when export is successful:
       connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [connectionItemPointer]() {
@@ -355,7 +358,7 @@ bool QgsMssqlDataItemGuiProvider::handleDrop( QgsMssqlConnectionItem *connection
         {
           QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
           output->setTitle( tr( "Import to MS SQL Server database" ) );
-          output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
+          output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, Qgis::StringFormat::PlainText );
           output->showMessage();
         }
         if ( connectionItemPointer )
@@ -380,7 +383,7 @@ bool QgsMssqlDataItemGuiProvider::handleDrop( QgsMssqlConnectionItem *connection
   {
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
     output->setTitle( tr( "Import to MS SQL Server database" ) );
-    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QLatin1Char( '\n' ) ), QgsMessageOutput::MessageText );
+    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QLatin1Char( '\n' ) ), Qgis::StringFormat::PlainText );
     output->showMessage();
   }
 

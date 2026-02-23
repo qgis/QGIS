@@ -20,8 +20,11 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QPointer>
+#include <QString>
 
 #include "moc_qgsmeshvariablestrokewidthwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshVariableStrokeWidthWidget::QgsMeshVariableStrokeWidthWidget(
   const QgsInterpolatedLineWidth &variableStrokeWidth,
@@ -125,7 +128,7 @@ void QgsMeshVariableStrokeWidthButton::openWidget()
   {
     // Show the dialog version if not in a panel
     QDialog *dlg = new QDialog( this );
-    const QString key = QStringLiteral( "/UI/paneldialog/%1" ).arg( widget->panelTitle() );
+    const QString key = u"/UI/paneldialog/%1"_s.arg( widget->panelTitle() );
     QgsSettings settings;
     dlg->restoreGeometry( settings.value( key ).toByteArray() );
     dlg->setWindowTitle( widget->panelTitle() );

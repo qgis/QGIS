@@ -17,7 +17,6 @@
 #ifndef QGSANNOTATIONLAYERRENDERER_H
 #define QGSANNOTATIONLAYERRENDERER_H
 
-#define SIP_NO_FILE
 
 #include <memory>
 #include <tuple>
@@ -27,6 +26,8 @@
 #include "qgis_sip.h"
 #include "qgsannotationitem.h"
 #include "qgsmaplayerrenderer.h"
+
+#define SIP_NO_FILE
 
 class QgsAnnotationLayer;
 class QgsPaintEffect;

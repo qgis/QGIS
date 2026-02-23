@@ -35,7 +35,7 @@ namespace fs = std::filesystem;
 void HeightAboveGround::addArgs()
 {
     argOutput = &programArgs.add("output,o", "Output point cloud file", outputFile);
-    argOutputFormat = &programArgs.add("output-format", "Output format (las/laz/copc)", outputFormat);
+    argOutputFormatVpc = &programArgs.add("vpc-output-format", "Output format (las/laz/copc)", outputFormatVpc, "copc");
     argAlgorithm = &programArgs.add("algorithm", "Height Above Ground algorithm to use: nn (Nearest Neighbor) or delaunay (Delaunay).", algorithm, "nn");
     argReplaceZWithHeightAboveGround = &programArgs.add("replace-z", "Replace Z dimension with height above ground (true/false).", replaceZWithHeightAboveGround, true);
 
@@ -55,17 +55,20 @@ bool HeightAboveGround::checkArgs()
         return false;
     }
 
-    if (argOutputFormat->set())
+    if (argOutputFormatVpc->set())
     {
-        if (outputFormat != "las" && outputFormat != "laz" && outputFormat != "copc")
+        if (outputFormatVpc != "las" && outputFormatVpc != "laz" && outputFormatVpc != "copc")
         {
-            std::cerr << "unknown output format: " << outputFormat << std::endl;
+            std::cerr << "unknown output format: " << outputFormatVpc << std::endl;
             return false;
         }
     }
-    else
-        outputFormat = "las";  // uncompressed by default
 
+    if ( ends_with(outputFile, ".vpc") && outputFormatVpc == "copc" )
+    {
+        isStreaming = false;
+    }
+    
     if (!argAlgorithm->set())
     {
         std::cerr << "missing algorithm" << std::endl;
@@ -193,14 +196,7 @@ void HeightAboveGround::preparePipelines(std::vector<std::unique_ptr<PipelineMan
             ParallelJobInfo tile(ParallelJobInfo::FileBased, BOX2D(), filterExpression, filterBounds);
             tile.inputFilenames.push_back(f.filename);
 
-            // for input file /x/y/z.las that goes to /tmp/hello.vpc,
-            // individual output file will be called /tmp/hello/z.las
-            fs::path inputBasename = fileStem(f.filename);
-
-            if (!ends_with(outputFile, ".vpc"))
-                tile.outputFilename = (outputSubdir / inputBasename).string() + ".las";
-            else
-                tile.outputFilename = (outputSubdir / inputBasename).string() + "." + outputFormat;
+            tile.outputFilename = tileOutputFileName(outputFile, outputFormatVpc, outputSubdir, f.filename);
 
             tileOutputFiles.push_back(tile.outputFilename);
 

@@ -11,12 +11,11 @@ the Free Software Foundation; either version 2 of the License, or
 import os
 import unittest
 
-from qgis.PyQt.QtCore import Qt, QRectF, QUrl, QSize
+from qgis.core import QgsFontUtils, QgsWebEnginePage
+from qgis.PyQt.QtCore import QRectF, QSize, Qt, QUrl
 from qgis.PyQt.QtGui import QImage, QPainter
-from qgis.core import QgsWebEnginePage, QgsFontUtils
-from qgis.testing import start_app, QgisTestCase
 from qgis.PyQt.QtTest import QSignalSpy
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -25,7 +24,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestWebEnginePage(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "html"

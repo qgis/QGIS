@@ -18,13 +18,18 @@
 #ifndef QGSRANDOMRASTERALGORITHM_H
 #define QGSRANDOMRASTERALGORITHM_H
 
-#define SIP_NO_FILE
 
 #include <random>
 
 #include "qgis_sip.h"
 #include "qgsapplication.h"
 #include "qgsprocessingalgorithm.h"
+
+#include <QString>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -73,8 +78,8 @@ class QgsRandomUniformRasterAlgorithm : public QgsRandomRasterAlgorithmBase
 {
   public:
     QgsRandomUniformRasterAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRandomRaster.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRandomRaster.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmRandomRaster.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmRandomRaster.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -100,8 +105,8 @@ class QgsRandomBinomialRasterAlgorithm : public QgsRandomRasterAlgorithmBase
 {
   public:
     QgsRandomBinomialRasterAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmNormalRaster.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRandomNormalRaster.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmNormalRaster.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmRandomNormalRaster.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -124,8 +129,8 @@ class QgsRandomExponentialRasterAlgorithm : public QgsRandomRasterAlgorithmBase
 {
   public:
     QgsRandomExponentialRasterAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRandomExponentialRaster.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRandomExponentialRaster.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmRandomExponentialRaster.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmRandomExponentialRaster.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -149,8 +154,8 @@ class QgsRandomGammaRasterAlgorithm : public QgsRandomRasterAlgorithmBase
 {
   public:
     QgsRandomGammaRasterAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRandomGammaRaster.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRandomGammaRaster.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmRandomGammaRaster.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmRandomGammaRaster.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -173,8 +178,8 @@ class QgsRandomGeometricRasterAlgorithm : public QgsRandomRasterAlgorithmBase
 {
   public:
     QgsRandomGeometricRasterAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRandomExponentialRaster.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRandomExponentialRaster.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmRandomExponentialRaster.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmRandomExponentialRaster.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -198,8 +203,8 @@ class QgsRandomNegativeBinomialRasterAlgorithm : public QgsRandomRasterAlgorithm
 {
   public:
     QgsRandomNegativeBinomialRasterAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmNormalRaster.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmNormalRaster.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmNormalRaster.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmNormalRaster.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -222,8 +227,8 @@ class QgsRandomNormalRasterAlgorithm : public QgsRandomRasterAlgorithmBase
 {
   public:
     QgsRandomNormalRasterAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmNormalRaster.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmNormalRaster.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmNormalRaster.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmNormalRaster.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -246,8 +251,8 @@ class QgsRandomPoissonRasterAlgorithm : public QgsRandomRasterAlgorithmBase
 {
   public:
     QgsRandomPoissonRasterAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRandomPoissonRaster.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRandomPoissonRaster.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmRandomPoissonRaster.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmRandomPoissonRaster.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;

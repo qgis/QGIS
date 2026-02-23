@@ -30,9 +30,12 @@
 #include <QPicture>
 #include <QStandardItem>
 #include <QStandardItemModel>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgseffectstackpropertieswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -387,7 +390,7 @@ void QgsEffectStackPropertiesDialog::setPreviewPicture( const QPicture &picture 
 
 void QgsEffectStackPropertiesDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#draw-effects" ) );
+  QgsHelp::openHelp( u"working_with_vector/vector_properties.html#draw-effects"_s );
 }
 
 
@@ -409,7 +412,7 @@ QgsEffectStackCompactWidget::QgsEffectStackCompactWidget( QWidget *parent, QgsPa
   layout->addWidget( mEnabledCheckBox );
 
   mButton = new QToolButton( this );
-  mButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconPaintEffects.svg" ) ) );
+  mButton->setIcon( QgsApplication::getThemeIcon( u"mIconPaintEffects.svg"_s ) );
   mButton->setToolTip( tr( "Customize effects" ) );
   layout->addWidget( mButton );
 

@@ -22,41 +22,37 @@ The content of this file is based on
 
 import functools
 
-from qgis.PyQt.QtCore import Qt, QByteArray, QSize
+from qgis.core import Qgis, QgsApplication, QgsMapLayerType, QgsSettings
+from qgis.gui import QgsMessageBar
+from qgis.PyQt.QtCore import QByteArray, QSize, Qt
+from qgis.PyQt.QtGui import QIcon, QKeySequence
 from qgis.PyQt.QtWidgets import (
     QAction,
-    QMainWindow,
     QApplication,
-    QMenu,
-    QTabWidget,
-    QGridLayout,
-    QSpacerItem,
-    QSizePolicy,
     QDockWidget,
-    QStatusBar,
+    QGridLayout,
+    QMainWindow,
+    QMenu,
     QMenuBar,
-    QToolBar,
+    QSizePolicy,
+    QSpacerItem,
+    QStatusBar,
     QTabBar,
+    QTabWidget,
+    QToolBar,
 )
-from qgis.PyQt.QtGui import QIcon, QKeySequence
-
-from qgis.gui import QgsMessageBar
-from qgis.core import Qgis, QgsApplication, QgsSettings, QgsMapLayerType
 from qgis.utils import OverrideCursor
 
-from .info_viewer import InfoViewer
-from .table_viewer import TableViewer
-from .layer_preview import LayerPreview
-
-from .db_tree import DBTree
-
 from .db_plugins.plugin import BaseError
+from .db_tree import DBTree
 from .dlg_db_error import DlgDbError
 from .gui_utils import GuiUtils
+from .info_viewer import InfoViewer
+from .layer_preview import LayerPreview
+from .table_viewer import TableViewer
 
 
 class DBManager(QMainWindow):
-
     def __init__(self, iface, parent=None):
         QMainWindow.__init__(self, parent)
         self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)

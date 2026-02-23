@@ -27,10 +27,13 @@
 #include <QPushButton>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+#include <QString>
 #include <QUrl>
 #include <QUrlQuery>
 
 #include "moc_qgsnewarcgisrestconnection.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsNewArcGisRestConnectionDialog::QgsNewArcGisRestConnectionDialog( QWidget *parent, const QString &connectionName, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -44,7 +47,7 @@ QgsNewArcGisRestConnectionDialog::QgsNewArcGisRestConnectionDialog( QWidget *par
 
   setWindowTitle( tr( "Create a New arcgisfeatureserver Connection" ) );
 
-  txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( QStringLiteral( "[^\\/]+" ) ), txtName ) );
+  txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( u"[^\\/]+"_s ), txtName ) );
 
   if ( !connectionName.isEmpty() )
   {
@@ -182,5 +185,5 @@ void QgsNewArcGisRestConnectionDialog::accept()
 
 void QgsNewArcGisRestConnectionDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_ogc/index.html" ) );
+  QgsHelp::openHelp( u"working_with_ogc/index.html"_s );
 }

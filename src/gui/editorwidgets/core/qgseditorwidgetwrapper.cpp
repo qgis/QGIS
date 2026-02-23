@@ -22,9 +22,12 @@
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsvectorlayerutils.h"
 
+#include <QString>
 #include <QTableView>
 
 #include "moc_qgseditorwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsEditorWidgetWrapper::QgsEditorWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( vl, editor, parent )
@@ -121,14 +124,18 @@ void QgsEditorWidgetWrapper::updateConstraintWidgetStatus()
         break;
 
       case ConstraintResultFailHard:
-        widget()->setStyleSheet( QStringLiteral( "QWidget { background-color: rgba(255, 150, 0, 0.3); } QCalendarWidget QWidget#qt_calendar_calendarview, QCalendarWidget QWidget#qt_calendar_navigationbar QWidget { color: rgb(0, 0, 0); background-color: rgba(255, 150, 0, 1); }" ) );
+        widget()->setStyleSheet( u"QWidget { background-color: rgba(255, 150, 0, 0.3); } QCalendarWidget QWidget#qt_calendar_calendarview, QCalendarWidget QWidget#qt_calendar_navigationbar QWidget { color: rgb(0, 0, 0); background-color: rgba(255, 150, 0, 1); }"_s );
         break;
 
       case ConstraintResultFailSoft:
-        widget()->setStyleSheet( QStringLiteral( "QWidget { background-color: rgba(255, 200, 45, 0.3); } QCalendarWidget QWidget#qt_calendar_calendarview, QCalendarWidget QWidget#qt_calendar_navigationbar QWidget { color: rgb(0, 0, 0); background-color: rgba(255, 200, 45, 1); }" ) );
+        widget()->setStyleSheet( u"QWidget { background-color: rgba(255, 200, 45, 0.3); } QCalendarWidget QWidget#qt_calendar_calendarview, QCalendarWidget QWidget#qt_calendar_navigationbar QWidget { color: rgb(0, 0, 0); background-color: rgba(255, 200, 45, 1); }"_s );
         break;
     }
   }
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 9, 0 ) && QT_VERSION < QT_VERSION_CHECK( 6, 10, 0 )
+  widget()->style()->unpolish( widget() );
+  widget()->style()->polish( widget() );
+#endif
 }
 
 bool QgsEditorWidgetWrapper::setFormFeatureAttribute( const QString &attributeName, const QVariant &attributeValue )
@@ -138,7 +145,7 @@ bool QgsEditorWidgetWrapper::setFormFeatureAttribute( const QString &attributeNa
 
 void QgsEditorWidgetWrapper::updateValues( const QVariant &value, const QVariantList &additionalValues )
 {
-  // this method should be made pure virtual in QGIS 4
+  // this method should be made pure virtual in QGIS 5
   Q_UNUSED( additionalValues );
   Q_NOWARN_DEPRECATED_PUSH
   // avoid infinite recursive loop
@@ -201,11 +208,11 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsVectorLayer *layer, int 
       descriptions << tr( "Not NULL" );
       if ( !expression.isEmpty() )
       {
-        expressions << field.name() + QStringLiteral( " IS NOT NULL" );
+        expressions << field.name() + u" IS NOT NULL"_s;
       }
       else
       {
-        expressions << QStringLiteral( "IS NOT NULL" );
+        expressions << u"IS NOT NULL"_s;
       }
       toEmit = true;
     }
@@ -215,11 +222,11 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsVectorLayer *layer, int 
       descriptions << tr( "Unique" );
       if ( !expression.isEmpty() )
       {
-        expressions << field.name() + QStringLiteral( " IS UNIQUE" );
+        expressions << field.name() + u" IS UNIQUE"_s;
       }
       else
       {
-        expressions << QStringLiteral( "IS UNIQUE" );
+        expressions << u"IS UNIQUE"_s;
       }
       toEmit = true;
     }
@@ -236,7 +243,7 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsVectorLayer *layer, int 
       hardConstraintsOk = true;
       softConstraintsOk = false;
 
-      errors << QStringLiteral( "Invalid feature" );
+      errors << u"Invalid feature"_s;
 
       toEmit = true;
     }
@@ -245,16 +252,16 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsVectorLayer *layer, int 
   mValidConstraint = hardConstraintsOk && softConstraintsOk;
   mIsBlockingCommit = !hardConstraintsOk;
 
-  mConstraintFailureReason = errors.join( QLatin1String( ", " ) );
+  mConstraintFailureReason = errors.join( ", "_L1 );
 
   if ( toEmit )
   {
     const QString errStr = errors.isEmpty() ? tr( "Constraint checks passed" ) : mConstraintFailureReason;
 
-    const QString description = descriptions.join( QLatin1String( ", " ) );
+    const QString description = descriptions.join( ", "_L1 );
     QString expressionDesc;
     if ( expressions.size() > 1 )
-      expressionDesc = "( " + expressions.join( QLatin1String( " ) AND ( " ) ) + " )";
+      expressionDesc = "( " + expressions.join( " ) AND ( "_L1 ) + " )";
     else if ( !expressions.isEmpty() )
       expressionDesc = expressions.at( 0 );
 

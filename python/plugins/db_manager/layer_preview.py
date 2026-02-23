@@ -18,19 +18,17 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
+from qgis.core import Qgis, QgsProject, QgsSettings, QgsVectorLayer
+from qgis.gui import QgsMapCanvas, QgsMessageBar
 from qgis.PyQt.QtCore import Qt, QTimer
 from qgis.PyQt.QtGui import QColor, QCursor
 from qgis.PyQt.QtWidgets import QApplication
-
-from qgis.gui import QgsMapCanvas, QgsMessageBar
-from qgis.core import Qgis, QgsVectorLayer, QgsProject, QgsSettings
 from qgis.utils import OverrideCursor
 
 from .db_plugins.plugin import Table
 
 
 class LayerPreview(QgsMapCanvas):
-
     def __init__(self, parent=None):
         super().__init__(parent)
         self.parent = parent

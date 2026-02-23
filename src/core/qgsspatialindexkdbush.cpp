@@ -38,7 +38,13 @@ QgsSpatialIndexKDBush::QgsSpatialIndexKDBush( QgsFeatureIterator &fi, const std:
   : d( new QgsSpatialIndexKDBushPrivate( fi, callback, feedback ) )
 {
 }
+
 ///@endcond
+
+QgsSpatialIndexKDBush::QgsSpatialIndexKDBush()
+  : d( new QgsSpatialIndexKDBushPrivate() )
+{
+}
 
 QgsSpatialIndexKDBush::QgsSpatialIndexKDBush( const QgsSpatialIndexKDBush &other ): d( other.d )
 {
@@ -66,8 +72,21 @@ QgsSpatialIndexKDBush::~QgsSpatialIndexKDBush()
     delete d;
 }
 
+bool QgsSpatialIndexKDBush::addFeature( QgsFeatureId id, const QgsPointXY &point )
+{
+  return d->index->addFeature( id, point );
+}
+
+void QgsSpatialIndexKDBush::finalize()
+{
+  d->index->finalize();
+}
+
 QList<QgsSpatialIndexKDBushData> QgsSpatialIndexKDBush::within( const QgsPointXY &point, double radius ) const
 {
+  if ( !d->index->finalized )
+    return {};
+
   QList<QgsSpatialIndexKDBushData> result;
   d->index->within( point.x(), point.y(), radius, [&result]( const QgsSpatialIndexKDBushData & p ) { result << p; } );
   return result;
@@ -75,6 +94,9 @@ QList<QgsSpatialIndexKDBushData> QgsSpatialIndexKDBush::within( const QgsPointXY
 
 void QgsSpatialIndexKDBush::within( const QgsPointXY &point, double radius, const std::function<void( QgsSpatialIndexKDBushData )> &visitor )
 {
+  if ( !d->index->finalized )
+    return;
+
   d->index->within( point.x(), point.y(), radius, visitor );
 }
 
@@ -85,6 +107,9 @@ qgssize QgsSpatialIndexKDBush::size() const
 
 QList<QgsSpatialIndexKDBushData> QgsSpatialIndexKDBush::intersects( const QgsRectangle &rectangle ) const
 {
+  if ( !d->index->finalized )
+    return {};
+
   QList<QgsSpatialIndexKDBushData> result;
   d->index->range( rectangle.xMinimum(),
                    rectangle.yMinimum(),
@@ -95,6 +120,9 @@ QList<QgsSpatialIndexKDBushData> QgsSpatialIndexKDBush::intersects( const QgsRec
 
 void QgsSpatialIndexKDBush::intersects( const QgsRectangle &rectangle, const std::function<void( QgsSpatialIndexKDBushData )> &visitor ) const
 {
+  if ( !d->index->finalized )
+    return;
+
   d->index->range( rectangle.xMinimum(),
                    rectangle.yMinimum(),
                    rectangle.xMaximum(),

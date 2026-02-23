@@ -20,6 +20,10 @@
 #include "qgspainterswapper.h"
 #include "qgssymbollayerreference.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsMaskMarkerSymbolLayer::QgsMaskMarkerSymbolLayer()
 {
   mSymbol = QgsMarkerSymbol::createSimple( QVariantMap() );
@@ -49,9 +53,9 @@ QgsSymbolLayer *QgsMaskMarkerSymbolLayer::create( const QVariantMap &props )
 
   l->setSubSymbol( QgsMarkerSymbol::createSimple( props ).release() );
 
-  if ( props.contains( QStringLiteral( "mask_symbollayers" ) ) )
+  if ( props.contains( u"mask_symbollayers"_s ) )
   {
-    l->setMasks( stringToSymbolLayerReferenceList( props[QStringLiteral( "mask_symbollayers" )].toString() ) );
+    l->setMasks( stringToSymbolLayerReferenceList( props[u"mask_symbollayers"_s].toString() ) );
   }
   return l;
 }
@@ -61,8 +65,7 @@ QgsMaskMarkerSymbolLayer *QgsMaskMarkerSymbolLayer::clone() const
   QgsMaskMarkerSymbolLayer *l = static_cast<QgsMaskMarkerSymbolLayer *>( create( properties() ) );
   l->setSubSymbol( mSymbol->clone() );
   l->setMasks( mMaskedSymbolLayers );
-  copyDataDefinedProperties( l );
-  copyPaintEffect( l );
+  copyCommonProperties( l );
   return l;
 }
 
@@ -73,13 +76,13 @@ QgsSymbol *QgsMaskMarkerSymbolLayer::subSymbol()
 
 QString QgsMaskMarkerSymbolLayer::layerType() const
 {
-  return QStringLiteral( "MaskMarker" );
+  return u"MaskMarker"_s;
 }
 
 QVariantMap QgsMaskMarkerSymbolLayer::properties() const
 {
   QVariantMap props;
-  props[QStringLiteral( "mask_symbollayers" )] = symbolLayerReferenceListToString( masks() );
+  props[u"mask_symbollayers"_s] = symbolLayerReferenceListToString( masks() );
   return props;
 }
 
@@ -178,9 +181,6 @@ void QgsMaskMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
   }
 
   if ( !renderContext.maskPainter() )
-    return;
-
-  if ( mMaskedSymbolLayers.isEmpty() )
     return;
 
   // Otherwise switch to the mask painter before rendering

@@ -2,8 +2,8 @@
                          qgscircle.cpp
                          --------------
     begin                : March 2017
-    copyright            : (C) 2017 by Loîc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    copyright            : (C) 2017 by Loïc Bartoletti
+    email                : lituus at free dot fr
  ***************************************************************************/
 
 /***************************************************************************
@@ -23,6 +23,10 @@
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgstriangle.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsCircle::QgsCircle()
   : QgsEllipse( QgsPoint(), 0.0, 0.0, 0.0 )
@@ -454,9 +458,9 @@ QString QgsCircle::toString( int pointPrecision, int radiusPrecision, int azimut
 {
   QString rep;
   if ( isEmpty() )
-    rep = QStringLiteral( "Empty" );
+    rep = u"Empty"_s;
   else
-    rep = QStringLiteral( "Circle (Center: %1, Radius: %2, Azimuth: %3)" )
+    rep = u"Circle (Center: %1, Radius: %2, Azimuth: %3)"_s
           .arg( mCenter.asWkt( pointPrecision ), 0, 's' )
           .arg( qgsDoubleToString( mSemiMajorAxis, radiusPrecision ), 0, 'f' )
           .arg( qgsDoubleToString( mAzimuth, azimuthPrecision ), 0, 'f' );
@@ -477,7 +481,7 @@ QDomElement QgsCircle::asGml3( QDomDocument &doc, int precision, const QString &
   QgsPointSequence pts;
   pts << northQuadrant().at( 0 ) << northQuadrant().at( 1 ) << northQuadrant().at( 2 );
 
-  QDomElement elemCircle = doc.createElementNS( ns, QStringLiteral( "Circle" ) );
+  QDomElement elemCircle = doc.createElementNS( ns, u"Circle"_s );
 
   if ( isEmpty() )
     return elemCircle;

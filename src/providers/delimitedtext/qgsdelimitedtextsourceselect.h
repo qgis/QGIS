@@ -25,8 +25,11 @@
 #include "qgsproviderregistry.h"
 #include "qgstaskmanager.h"
 
+#include <QString>
 #include <QTextStream>
 #include <QThread>
+
+using namespace Qt::StringLiterals;
 
 class QButtonGroup;
 class QgisInterface;
@@ -41,7 +44,7 @@ class QgsDelimitedTextFileScanTask : public QgsTask
 
   public:
     QgsDelimitedTextFileScanTask( const QString &dataSource )
-      : QgsTask( QStringLiteral( "delimited text scan %1" ).arg( dataSource ) )
+      : QgsTask( u"delimited text scan %1"_s.arg( dataSource ) )
       , mDataSource( dataSource ) {
       };
 

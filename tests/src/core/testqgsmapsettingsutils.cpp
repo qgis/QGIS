@@ -22,6 +22,8 @@
 
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsMapSettingsUtils : public QObject
 {
     Q_OBJECT
@@ -79,7 +81,7 @@ void TestQgsMapSettingsUtils::containsAdvancedEffects()
 {
   QgsMapSettings mapSettings = mMapSettings;
 
-  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=col1:real" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( u"Point?field=col1:real"_s, u"layer"_s, u"memory"_s );
   layer->setBlendMode( QPainter::CompositionMode_Multiply );
 
   QList<QgsMapLayer *> layers;

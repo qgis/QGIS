@@ -24,7 +24,12 @@
 #include "qgis_sip.h"
 #include "qgslogger.h"
 
+#include <QString>
+
 #define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
+
 
 class QgsFeedback;
 
@@ -124,7 +129,7 @@ inline Vector3D *NormVecDecorator::getNormal( int n ) const
   }
   else
   {
-    QgsDebugError( QStringLiteral( "warning, null pointer" ) );
+    QgsDebugError( u"warning, null pointer"_s );
     return nullptr;
   }
 }

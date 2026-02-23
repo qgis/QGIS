@@ -33,8 +33,9 @@
 #include <QStringList>
 #include <QVector>
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 class QgsCoordinateReferenceSystem;
 

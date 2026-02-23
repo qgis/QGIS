@@ -28,6 +28,10 @@
 #include "qgsvectordataprovider.h"
 #include "qgswfscapabilities.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsRectangle;
 class QgsWFSSharedData;
 
@@ -101,7 +105,7 @@ class QgsWFSProvider final : public QgsVectorDataProvider
 
     Qgis::VectorProviderCapabilities capabilities() const override;
 
-    QString storageType() const override { return QStringLiteral( "OGC WFS (Web Feature Service)" ); }
+    QString storageType() const override { return u"OGC WFS (Web Feature Service)"_s; }
 
     /* new functions */
 

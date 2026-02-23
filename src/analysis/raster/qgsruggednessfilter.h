@@ -21,6 +21,10 @@
 #include "qgis_analysis.h"
 #include "qgsninecellfilter.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup analysis
  * \brief Calculates the ruggedness index based on a 3x3 moving window.
@@ -41,7 +45,7 @@ class ANALYSIS_EXPORT QgsRuggednessFilter : public QgsNineCellFilter
 
     const QString openClProgramBaseName() const override
     {
-      return QStringLiteral( "ruggedness" );
+      return u"ruggedness"_s;
     }
 #endif
 };

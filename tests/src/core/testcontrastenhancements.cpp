@@ -17,6 +17,9 @@
 #include <QApplication>
 #include <QDesktopServices>
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 //qgis includes...
 #include <qgsrasterlayer.h>
@@ -34,7 +37,7 @@ class TestContrastEnhancements : public QgsTest
     Q_OBJECT
   public:
     TestContrastEnhancements()
-      : QgsTest( QStringLiteral( "Raster Contrast Enhancement Tests" ) ) {}
+      : QgsTest( u"Raster Contrast Enhancement Tests"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

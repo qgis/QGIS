@@ -13,12 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#define SIP_NO_FILE
 
 #ifndef QGS_GEOMETRY_SLIVERPOLYGON_CHECK_H
 #define QGS_GEOMETRY_SLIVERPOLYGON_CHECK_H
 
 #include "qgsgeometryareacheck.h"
+
+#include <QString>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup analysis
@@ -38,7 +43,7 @@ class ANALYSIS_EXPORT QgsGeometrySliverPolygonCheck : public QgsGeometryAreaChec
 
   private:
     static QString factoryDescription() { return tr( "Sliver polygon" ); }
-    static QString factoryId() { return QStringLiteral( "QgsGeometrySliverPolygonCheck" ); }
+    static QString factoryId() { return u"QgsGeometrySliverPolygonCheck"_s; }
 
     bool checkThreshold( double layerToMapUnits, const QgsAbstractGeometry *geom, double &value ) const override;
 

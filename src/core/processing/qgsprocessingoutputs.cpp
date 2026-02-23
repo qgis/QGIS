@@ -20,7 +20,10 @@
 #include "qgsvariantutils.h"
 
 #include <QDir>
+#include <QString>
 #include <QUrl>
+
+using namespace Qt::StringLiterals;
 
 QgsProcessingOutputDefinition::QgsProcessingOutputDefinition( const QString &name, const QString &description )
   : mName( name )
@@ -105,7 +108,7 @@ QString QgsProcessingOutputHtml::valueAsFormattedString( const QVariant &value, 
   if ( value.userType() == QMetaType::Type::QString && !value.toString().isEmpty() )
   {
     ok = true;
-    return QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( value.toString() ).toString(), QDir::toNativeSeparators( value.toString() ) );
+    return u"<a href=\"%1\">%2</a>"_s.arg( QUrl::fromLocalFile( value.toString() ).toString(), QDir::toNativeSeparators( value.toString() ) );
   }
 
   return valueAsString( value, context, ok );
@@ -181,7 +184,7 @@ QString QgsProcessingOutputFolder::valueAsFormattedString( const QVariant &value
   if ( value.userType() == QMetaType::Type::QString && !value.toString().isEmpty() )
   {
     ok = true;
-    return QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( value.toString() ).toString(), QDir::toNativeSeparators( value.toString() ) );
+    return u"<a href=\"%1\">%2</a>"_s.arg( QUrl::fromLocalFile( value.toString() ).toString(), QDir::toNativeSeparators( value.toString() ) );
   }
 
   return valueAsString( value, context, ok );
@@ -201,7 +204,7 @@ QString QgsProcessingOutputFile::valueAsFormattedString( const QVariant &value, 
   if ( value.userType() == QMetaType::Type::QString && !value.toString().isEmpty() )
   {
     ok = true;
-    return QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( value.toString() ).toString(), QDir::toNativeSeparators( value.toString() ) );
+    return u"<a href=\"%1\">%2</a>"_s.arg( QUrl::fromLocalFile( value.toString() ).toString(), QDir::toNativeSeparators( value.toString() ) );
   }
 
   return valueAsString( value, context, ok );
@@ -250,14 +253,14 @@ QString QgsProcessingOutputMultipleLayers::valueAsString( const QVariant &value,
       {
         layerNames << v.toString();
       }
-      return layerNames.join( QLatin1String( ", " ) );
+      return layerNames.join( ", "_L1 );
     }
 
     case QMetaType::Type::QStringList:
     {
       ok = true;
       const QStringList list = value.toStringList();
-      return list.join( QLatin1String( ", " ) );
+      return list.join( ", "_L1 );
     }
 
     default:
@@ -312,14 +315,14 @@ QString QgsProcessingOutputVariant::valueAsString( const QVariant &value, QgsPro
       {
         names << v.toString();
       }
-      return names.join( QLatin1String( ", " ) );
+      return names.join( ", "_L1 );
     }
 
     case QMetaType::Type::QStringList:
     {
       ok = true;
       const QStringList list = value.toStringList();
-      return list.join( QLatin1String( ", " ) );
+      return list.join( ", "_L1 );
     }
 
     default:

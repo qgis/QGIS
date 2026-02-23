@@ -31,6 +31,10 @@
 #include "qgssettingsentryimpl.h"
 #include "qgsvectordataprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \brief A provider reading features from a ArcGIS Feature Service
  */
@@ -39,14 +43,14 @@ class QgsAfsProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-    static const inline QString AFS_PROVIDER_KEY = QStringLiteral( "arcgisfeatureserver" );
-    static const inline QString AFS_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS Feature Service data provider" );
+    static const inline QString AFS_PROVIDER_KEY = u"arcgisfeatureserver"_s;
+    static const inline QString AFS_PROVIDER_DESCRIPTION = u"ArcGIS Feature Service data provider"_s;
 
     QgsAfsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     /* Inherited from QgsVectorDataProvider */
     QgsAbstractFeatureSource *featureSource() const override;
-    QString storageType() const override { return QStringLiteral( "ArcGIS Feature Service" ); }
+    QString storageType() const override { return u"ArcGIS Feature Service"_s; }
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
     Qgis::WkbType wkbType() const override;
     long long featureCount() const override;

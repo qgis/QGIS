@@ -17,6 +17,10 @@
 
 #include "qgsmagneticmodel.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #ifdef WITH_GEOGRAPHICLIB
 #include <GeographicLib/MagneticModel.hpp>
 #else
@@ -28,7 +32,7 @@ QString QgsMagneticModel::defaultFilePath()
 #ifdef WITH_GEOGRAPHICLIB
   return QString::fromStdString( GeographicLib::MagneticModel::DefaultMagneticPath() );
 #else
-  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
+  throw QgsNotSupportedException( u"GeographicLib is not available on this system"_s );
 #endif
 }
 
@@ -37,7 +41,7 @@ QString QgsMagneticModel::defaultModelName()
 #ifdef WITH_GEOGRAPHICLIB
   return QString::fromStdString( GeographicLib::MagneticModel::DefaultMagneticName() );
 #else
-  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
+  throw QgsNotSupportedException( u"GeographicLib is not available on this system"_s );
 #endif
 }
 
@@ -82,9 +86,9 @@ QString QgsMagneticModel::description() const
     return QString();
 
   const QString desc = QString::fromStdString( mModel->Description() );
-  return desc == QLatin1String( "UNKNOWN" ) ? QString() : desc;
+  return desc == "UNKNOWN"_L1 ? QString() : desc;
 #else
-  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
+  throw QgsNotSupportedException( u"GeographicLib is not available on this system"_s );
 #endif
 }
 
@@ -95,12 +99,12 @@ QDateTime QgsMagneticModel::dateTime() const
     return QDateTime();
 
   const QString dt = QString::fromStdString( mModel->DateTime() );
-  if ( dt == QLatin1String( "UNKNOWN" ) )
+  if ( dt == "UNKNOWN"_L1 )
     return QDateTime();
 
   return QDateTime::fromString( dt, Qt::ISODate );
 #else
-  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
+  throw QgsNotSupportedException( u"GeographicLib is not available on this system"_s );
 #endif
 }
 
@@ -109,7 +113,7 @@ QString QgsMagneticModel::file() const
 #ifdef WITH_GEOGRAPHICLIB
   return mModel ? QString::fromStdString( mModel->MagneticFile() ) : QString();
 #else
-  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
+  throw QgsNotSupportedException( u"GeographicLib is not available on this system"_s );
 #endif
 }
 
@@ -118,7 +122,7 @@ QString QgsMagneticModel::directory() const
 #ifdef WITH_GEOGRAPHICLIB
   return mModel ? QString::fromStdString( mModel->MagneticModelDirectory() ) : QString();
 #else
-  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
+  throw QgsNotSupportedException( u"GeographicLib is not available on this system"_s );
 #endif
 }
 
@@ -127,7 +131,7 @@ QString QgsMagneticModel::name() const
 #ifdef WITH_GEOGRAPHICLIB
   return mModel ? QString::fromStdString( mModel->MagneticModelName() ) : QString();
 #else
-  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
+  throw QgsNotSupportedException( u"GeographicLib is not available on this system"_s );
 #endif
 }
 
@@ -136,7 +140,7 @@ double QgsMagneticModel::minimumHeight() const
 #ifdef WITH_GEOGRAPHICLIB
   return mModel ? mModel->MinHeight() : 0;
 #else
-  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
+  throw QgsNotSupportedException( u"GeographicLib is not available on this system"_s );
 #endif
 }
 
@@ -145,7 +149,7 @@ double QgsMagneticModel::maximumHeight() const
 #ifdef WITH_GEOGRAPHICLIB
   return mModel ? mModel->MaxHeight() : 0;
 #else
-  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
+  throw QgsNotSupportedException( u"GeographicLib is not available on this system"_s );
 #endif
 }
 
@@ -154,7 +158,7 @@ double QgsMagneticModel::minimumYear() const
 #ifdef WITH_GEOGRAPHICLIB
   return mModel ? mModel->MinTime() : 0;
 #else
-  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
+  throw QgsNotSupportedException( u"GeographicLib is not available on this system"_s );
 #endif
 }
 
@@ -163,7 +167,7 @@ double QgsMagneticModel::maximumYear() const
 #ifdef WITH_GEOGRAPHICLIB
   return mModel ? mModel->MaxTime() : 0;
 #else
-  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
+  throw QgsNotSupportedException( u"GeographicLib is not available on this system"_s );
 #endif
 }
 
@@ -172,7 +176,7 @@ int QgsMagneticModel::degree() const
 #ifdef WITH_GEOGRAPHICLIB
   return mModel ? mModel->Degree() : 0;
 #else
-  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
+  throw QgsNotSupportedException( u"GeographicLib is not available on this system"_s );
 #endif
 }
 
@@ -181,7 +185,7 @@ int QgsMagneticModel::order() const
 #ifdef WITH_GEOGRAPHICLIB
   return mModel ? mModel->Order() : 0;
 #else
-  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
+  throw QgsNotSupportedException( u"GeographicLib is not available on this system"_s );
 #endif
 }
 
@@ -207,7 +211,7 @@ bool QgsMagneticModel::declination( double years, double latitude, double longit
   ( void )latitude;
   ( void )longitude;
   ( void )height;
-  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
+  throw QgsNotSupportedException( u"GeographicLib is not available on this system"_s );
 #endif
 }
 
@@ -233,7 +237,7 @@ bool QgsMagneticModel::inclination( double years, double latitude, double longit
   ( void )latitude;
   ( void )longitude;
   ( void )height;
-  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
+  throw QgsNotSupportedException( u"GeographicLib is not available on this system"_s );
 #endif
 }
 
@@ -253,7 +257,7 @@ bool QgsMagneticModel::getComponents( double years, double latitude, double long
   ( void ) latitude;
   ( void ) longitude;
   ( void ) height;
-  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
+  throw QgsNotSupportedException( u"GeographicLib is not available on this system"_s );
 #endif
 }
 
@@ -276,7 +280,7 @@ bool QgsMagneticModel::getComponentsWithTimeDerivatives( double years, double la
   ( void ) latitude;
   ( void ) longitude;
   ( void ) height;
-  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
+  throw QgsNotSupportedException( u"GeographicLib is not available on this system"_s );
 #endif
 }
 
@@ -293,7 +297,7 @@ bool QgsMagneticModel::fieldComponents( double Bx, double By, double Bz, double 
   ( void ) Bx;
   ( void ) By;
   ( void ) Bz;
-  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
+  throw QgsNotSupportedException( u"GeographicLib is not available on this system"_s );
 #endif
 }
 
@@ -317,6 +321,6 @@ bool QgsMagneticModel::fieldComponentsWithTimeDerivatives( double Bx, double By,
   ( void ) Bxt;
   ( void ) Byt;
   ( void ) Bzt;
-  throw QgsNotSupportedException( QStringLiteral( "GeographicLib is not available on this system" ) );
+  throw QgsNotSupportedException( u"GeographicLib is not available on this system"_s );
 #endif
 }

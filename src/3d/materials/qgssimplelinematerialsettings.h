@@ -19,10 +19,10 @@
 
 #include "qgis_3d.h"
 #include "qgsabstractmaterialsettings.h"
-#include "qgsmaterial.h"
 
 #include <QColor>
 
+class QgsMaterial;
 class QDomElement;
 
 /**
@@ -75,11 +75,7 @@ class _3D_EXPORT QgsSimpleLineMaterialSettings : public QgsAbstractMaterialSetti
     QgsMaterial *toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const override SIP_FACTORY;
     void addParametersToEffect( Qt3DRender::QEffect *effect, const QgsMaterialContext &materialContext ) const override;
     QByteArray dataDefinedVertexColorsAsByte( const QgsExpressionContext &expressionContext ) const override;
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    void applyDataDefinedToGeometry( Qt3DRender::QGeometry *geometry, int vertexCount, const QByteArray &data ) const override;
-#else
     void applyDataDefinedToGeometry( Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &data ) const override;
-#endif
 #endif
 
     // TODO c++20 - replace with = default

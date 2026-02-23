@@ -18,11 +18,16 @@
 #ifndef QGSALGORITHMEXTRACTBYLOCATION_H
 #define QGSALGORITHMEXTRACTBYLOCATION_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsapplication.h"
 #include "qgsprocessingalgorithm.h"
+
+#include <QString>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -69,8 +74,8 @@ class QgsSelectByLocationAlgorithm : public QgsLocationBasedAlgorithm
   public:
     QgsSelectByLocationAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmSelectLocation.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmSelectLocation.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmSelectLocation.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmSelectLocation.svg"_s ); }
     QString name() const override;
     Qgis::ProcessingAlgorithmFlags flags() const override;
     QString displayName() const override;

@@ -20,6 +20,9 @@
 #include "qgsrenderer.h"
 
 #include <QHash>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsVectorLayer;
 class QgsStyle;
@@ -147,10 +150,10 @@ class CORE_EXPORT QgsRendererCategory
     SIP_PYOBJECT __repr__();
     % MethodCode
     const QString str = !sipCpp->value().isValid()
-                        ? QStringLiteral( "<QgsRendererCategory>" )
+                        ? u"<QgsRendererCategory>"_s
                         : sipCpp->label().isEmpty()
-                        ? QStringLiteral( "<QgsRendererCategory: %1>" ).arg( sipCpp->value().toString() )
-                        : QStringLiteral( "<QgsRendererCategory: %1 (%2)>" ).arg( sipCpp->value().toString(), sipCpp->label() );
+                        ? u"<QgsRendererCategory: %1>"_s.arg( sipCpp->value().toString() )
+                        : u"<QgsRendererCategory: %1 (%2)>"_s.arg( sipCpp->value().toString(), sipCpp->label() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -493,7 +496,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     void rebuildHash();
 
     /**
-     * \deprecated QGIS 3.40. No longer used, will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. No longer used, will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED QgsSymbol *skipRender() SIP_DEPRECATED;
 
@@ -503,7 +506,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
      */
     Q_DECL_DEPRECATED QgsSymbol *symbolForValue( const QVariant &value ) const SIP_DEPRECATED;
 
-    // TODO QGIS 4.0 - rename Python method to symbolForValue
+    // TODO QGIS 5.0 - rename Python method to symbolForValue
 
     /**
      * Returns the matching symbol corresponding to an attribute \a value.

@@ -112,7 +112,7 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
     bool deleteFeatures( const QgsFeatureIds &id ) override;
 
     bool addAttributes( const QList<QgsField> &attributes ) override;
-
+    bool renameAttributes( const QgsFieldNameMap &renamedAttributes ) override;
     bool deleteAttributes( const QgsAttributeIds &attributes ) override;
 
     bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
@@ -122,9 +122,6 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
     bool createSpatialIndex() override;
 
     bool createAttributeIndex( int field ) override;
-
-    //! Convert a QgsField to work with MSSQL
-    static bool convertField( QgsField &field );
 
     // Parse type name and num coordinates as stored in geometry_columns table and returns normalized (M, Z or ZM) type name
     static QString typeFromMetadata( const QString &typeName, int numCoords );
@@ -162,7 +159,7 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
   protected:
     //! Loads fields from input file to member attributeFields
     void loadFields();
-    void loadMetadata();
+    void loadMetadataFromGeometryColumnsTable();
 
   private:
     bool execLogged( QSqlQuery &qry, const QString &sql, const QString &queryOrigin = QString() ) const;
@@ -201,7 +198,7 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
      */
     QList<int> mPrimaryKeyAttrs;
 
-    mutable long mSRId;
+    mutable long mSRId = -1;
     QString mGeometryColName;
     QString mGeometryColType;
 
@@ -285,6 +282,7 @@ class QgsMssqlProviderMetadata final : public QgsProviderMetadata
     Q_OBJECT
   public:
     QgsMssqlProviderMetadata();
+    QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     QIcon icon() const override;
     QString getStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
     int listStyles( const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause ) override;
@@ -319,7 +317,7 @@ class QgsMssqlProviderMetadata final : public QgsProviderMetadata
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QList<Qgis::LayerType> supportedLayerTypes() const override;
-
+    bool urisReferToSame( const QString &uri1, const QString &uri2, Qgis::SourceHierarchyLevel level = Qgis::SourceHierarchyLevel::Object ) const override;
 
   private:
     bool execLogged( QSqlQuery &qry, const QString &sql, const QString &uri, const QString &queryOrigin = QString() ) const;

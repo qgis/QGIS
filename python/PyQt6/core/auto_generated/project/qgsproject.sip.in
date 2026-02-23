@@ -14,6 +14,7 @@
 
 
 
+
 class QgsProject : QObject, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsProjectTranslator
 {
 %Docstring(signature="appended")
@@ -715,7 +716,7 @@ Remove the given ``key`` from the specified ``scope``.
 
     QStringList entryList( const QString &scope, const QString &key ) const;
 %Docstring
-Returns a list of child keys with values which exist within the the
+Returns a list of child keys with values which exist within the
 specified ``scope`` and ``key``.
 
 This method does not return keys that contain other keys. See
@@ -730,7 +731,7 @@ keys.
     QStringList subkeyList( const QString &scope, const QString &key ) const;
 %Docstring
 Returns a list of child keys which contain other keys that exist within
-the the specified ``scope`` and ``key``.
+the specified ``scope`` and ``key``.
 
 This method only returns keys with keys, it will not return keys that
 contain only values. See :py:func:`~QgsProject.entryList` to retrieve
@@ -910,6 +911,15 @@ atlases and reports within the project.
 %Docstring
 Returns the project's elevation profile manager, which manages elevation
 profiles within the project.
+
+.. versionadded:: 4.0
+%End
+
+
+    QgsSelectiveMaskingSourceSetManager *selectiveMaskingSourceSetManager();
+%Docstring
+Returns the project's selective masking set manager, which manages
+storage of a set of selective masking source sets within the project.
 
 .. versionadded:: 4.0
 %End

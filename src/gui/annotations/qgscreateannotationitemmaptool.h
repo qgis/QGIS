@@ -20,6 +20,10 @@
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgssettingstree.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsAnnotationItem;
 class QgsAnnotationLayer;
 
@@ -100,7 +104,7 @@ class GUI_EXPORT QgsCreateAnnotationItemMapToolInterface
 {
   public:
 #ifndef SIP_RUN
-    static inline QgsSettingsTreeNode *sTreeAnnotationTools = QgsSettingsTree::sTreeGui->createChildNode( QStringLiteral( "annotation-items" ) );
+    static inline QgsSettingsTreeNode *sTreeAnnotationTools = QgsSettingsTree::sTreeGui->createChildNode( u"annotation-items"_s );
 #endif
 
     virtual ~QgsCreateAnnotationItemMapToolInterface() = default;

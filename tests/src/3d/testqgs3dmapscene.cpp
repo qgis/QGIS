@@ -19,6 +19,7 @@
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
+#include "qgscameracontroller.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgspointcloud3dsymbol.h"
@@ -28,6 +29,10 @@
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsSingleColorPointCloud3DSymbol;
 class TestQgs3DMapScene : public QgsTest
 {
@@ -35,7 +40,7 @@ class TestQgs3DMapScene : public QgsTest
 
   public:
     TestQgs3DMapScene()
-      : QgsTest( QStringLiteral( "3D Map Scene Tests" ), QStringLiteral( "3d" ) )
+      : QgsTest( u"3D Map Scene Tests"_s, u"3d"_s )
     {}
 
   private slots:
@@ -59,9 +64,9 @@ void TestQgs3DMapScene::initTestCase()
 
   mProject = std::make_unique<QgsProject>();
 
-  const QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.gpkg|layername=countries" );
+  const QString fileName = QgsApplication::pkgDataPath() + u"/resources/data/world_map.gpkg|layername=countries"_s;
 
-  mLayerCountries = new QgsVectorLayer( fileName, QStringLiteral( "world" ), QStringLiteral( "ogr" ) );
+  mLayerCountries = new QgsVectorLayer( fileName, u"world"_s, u"ogr"_s );
   QVERIFY( mLayerCountries->isValid() );
   const QString dataDir( TEST_DATA_DIR );
   mPointCloudLayer = new QgsPointCloudLayer( dataDir + "/point_clouds/ept/sunshine-coast-laz/ept.json", "test", "ept" );
@@ -70,7 +75,7 @@ void TestQgs3DMapScene::initTestCase()
   mProject->addMapLayer( mLayerCountries );
   mProject->addMapLayer( mPointCloudLayer );
 
-  mProject->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+  mProject->setCrs( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ) );
 }
 
 //runs after all tests

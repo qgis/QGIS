@@ -25,7 +25,10 @@
 
 #include <QFile>
 #include <QObject>
+#include <QString>
 #include <QUrlQuery>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup UnitTests
@@ -37,7 +40,7 @@ class TestQgsWmsProvider : public QgsTest
 
   public:
     TestQgsWmsProvider()
-      : QgsTest( QStringLiteral( "WMS Provider Tests" ), QStringLiteral( "wmsprovider" ) ) {}
+      : QgsTest( u"WMS Provider Tests"_s, u"wmsprovider"_s ) {}
 
   private slots:
 
@@ -92,6 +95,8 @@ class TestQgsWmsProvider : public QgsTest
 
     void testMaxTileSize();
 
+    void testWmstTemporalCapabilities();
+
   private:
     QgsWmsCapabilities *mCapabilities = nullptr;
 };
@@ -121,26 +126,26 @@ void TestQgsWmsProvider::cleanupTestCase()
 
 void TestQgsWmsProvider::legendGraphicsWithStyle()
 {
-  QgsWmsProvider provider( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg" ), QgsDataProvider::ProviderOptions(), mCapabilities );
+  QgsWmsProvider provider( u"http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg"_s, QgsDataProvider::ProviderOptions(), mCapabilities );
   QCOMPARE( provider.getLegendGraphicUrl(), QString( "http://www.example.com/fb.png?" ) );
 }
 
 void TestQgsWmsProvider::legendGraphicsWithSecondStyle()
 {
-  QgsWmsProvider provider( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=yt_style&format=image/jpg" ), QgsDataProvider::ProviderOptions(), mCapabilities );
+  QgsWmsProvider provider( u"http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=yt_style&format=image/jpg"_s, QgsDataProvider::ProviderOptions(), mCapabilities );
   QCOMPARE( provider.getLegendGraphicUrl(), QString( "http://www.example.com/yt.png?" ) );
 }
 
 void TestQgsWmsProvider::legendGraphicsWithoutStyleWithDefault()
 {
-  QgsWmsProvider provider( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=buildings&styles=&format=image/jpg" ), QgsDataProvider::ProviderOptions(), mCapabilities );
+  QgsWmsProvider provider( u"http://localhost:8380/mapserv?xxx&layers=buildings&styles=&format=image/jpg"_s, QgsDataProvider::ProviderOptions(), mCapabilities );
   //only one style, can guess default => use it
   QCOMPARE( provider.getLegendGraphicUrl(), QString( "http://www.example.com/buildings.png?" ) );
 }
 
 void TestQgsWmsProvider::legendGraphicsWithoutStyleWithoutDefault()
 {
-  QgsWmsProvider provider( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=&format=image/jpg" ), QgsDataProvider::ProviderOptions(), mCapabilities );
+  QgsWmsProvider provider( u"http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=&format=image/jpg"_s, QgsDataProvider::ProviderOptions(), mCapabilities );
   //two style, cannot guess default => use the WMS GetLegendGraphics
   QCOMPARE( provider.getLegendGraphicUrl(), QString( "http://localhost:8380/mapserv?" ) );
 }
@@ -173,10 +178,10 @@ void TestQgsWmsProvider::queryItemsWithPlusSign()
 
 void TestQgsWmsProvider::noCrsSpecified()
 {
-  QgsWmsProvider provider( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=&format=image/jpg" ), QgsDataProvider::ProviderOptions(), mCapabilities );
-  QCOMPARE( provider.crs().authid(), QStringLiteral( "EPSG:2056" ) );
-  QgsWmsProvider provider2( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=&format=image/jpg&crs=EPSG:4326" ), QgsDataProvider::ProviderOptions(), mCapabilities );
-  QCOMPARE( provider2.crs().authid(), QStringLiteral( "EPSG:4326" ) );
+  QgsWmsProvider provider( u"http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=&format=image/jpg"_s, QgsDataProvider::ProviderOptions(), mCapabilities );
+  QCOMPARE( provider.crs().authid(), u"EPSG:2056"_s );
+  QgsWmsProvider provider2( u"http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=&format=image/jpg&crs=EPSG:4326"_s, QgsDataProvider::ProviderOptions(), mCapabilities );
+  QCOMPARE( provider2.crs().authid(), u"EPSG:4326"_s );
 
   QFile file( QStringLiteral( TEST_DATA_DIR ) + "/provider/GetCapabilities2.xml" );
   QVERIFY( file.open( QIODevice::ReadOnly | QIODevice::Text ) );
@@ -186,10 +191,10 @@ void TestQgsWmsProvider::noCrsSpecified()
 
   QgsWmsCapabilities capabilities;
   QVERIFY( capabilities.parseResponse( content, config ) );
-  QgsWmsProvider provider3( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=&format=image/jpg&crs=EPSG:4326" ), QgsDataProvider::ProviderOptions(), &capabilities );
-  QCOMPARE( provider3.crs().authid(), QStringLiteral( "EPSG:4326" ) );
-  QgsWmsProvider provider4( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=&format=image/jpg" ), QgsDataProvider::ProviderOptions(), &capabilities );
-  QCOMPARE( provider4.crs().authid(), QStringLiteral( "EPSG:3857" ) );
+  QgsWmsProvider provider3( u"http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=&format=image/jpg&crs=EPSG:4326"_s, QgsDataProvider::ProviderOptions(), &capabilities );
+  QCOMPARE( provider3.crs().authid(), u"EPSG:4326"_s );
+  QgsWmsProvider provider4( u"http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=&format=image/jpg"_s, QgsDataProvider::ProviderOptions(), &capabilities );
+  QCOMPARE( provider4.crs().authid(), u"EPSG:3857"_s );
 }
 
 void TestQgsWmsProvider::testWmtsConstruction()
@@ -205,33 +210,33 @@ void TestQgsWmsProvider::testWmtsConstruction()
   {
     QgsWmsProvider provider( "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/jpg&layers=CountryGroup&styles=default&tileMatrixSet=standard&tilePixelRatio=0&url=http://localhost:8380/mapserv?xxx", QgsDataProvider::ProviderOptions(), &cap );
     QVERIFY( provider.mSettings.mTiled );
-    QCOMPARE( provider.mSettings.mTileMatrixSetId, QStringLiteral( "standard" ) );
-    QCOMPARE( provider.crs().authid(), QStringLiteral( "EPSG:4326" ) );
-    QCOMPARE( provider.mSettings.mImageMimeType, QStringLiteral( "image/jpg" ) );
+    QCOMPARE( provider.mSettings.mTileMatrixSetId, u"standard"_s );
+    QCOMPARE( provider.crs().authid(), u"EPSG:4326"_s );
+    QCOMPARE( provider.mSettings.mImageMimeType, u"image/jpg"_s );
   }
   // no crs or format specified, should use tile matrix crs
   {
     QgsWmsProvider provider( "contextualWMSLegend=0&dpiMode=7&featureCount=10&layers=CountryGroup&styles=default&tileMatrixSet=standard&tilePixelRatio=0&url=http://localhost:8380/mapserv?xxx", QgsDataProvider::ProviderOptions(), &cap );
     QVERIFY( provider.mSettings.mTiled );
-    QCOMPARE( provider.mSettings.mTileMatrixSetId, QStringLiteral( "standard" ) );
-    QCOMPARE( provider.crs().authid(), QStringLiteral( "EPSG:3857" ) );
-    QCOMPARE( provider.mSettings.mImageMimeType, QStringLiteral( "image/png" ) );
+    QCOMPARE( provider.mSettings.mTileMatrixSetId, u"standard"_s );
+    QCOMPARE( provider.crs().authid(), u"EPSG:3857"_s );
+    QCOMPARE( provider.mSettings.mImageMimeType, u"image/png"_s );
   }
   // no tileMatrixSet specified, should use first listed
   {
     QgsWmsProvider provider( "layers=CountryGroup&styles=default&tileDimensions=&url=http://localhost:8380/mapserv?xxx", QgsDataProvider::ProviderOptions(), &cap );
     QVERIFY( provider.mSettings.mTiled );
-    QCOMPARE( provider.mSettings.mTileMatrixSetId, QStringLiteral( "standard" ) );
-    QCOMPARE( provider.crs().authid(), QStringLiteral( "EPSG:3857" ) );
-    QCOMPARE( provider.mSettings.mImageMimeType, QStringLiteral( "image/png" ) );
+    QCOMPARE( provider.mSettings.mTileMatrixSetId, u"standard"_s );
+    QCOMPARE( provider.crs().authid(), u"EPSG:3857"_s );
+    QCOMPARE( provider.mSettings.mImageMimeType, u"image/png"_s );
   }
   // no tileMatrixSet specified, using type=wmts to request wmts
   {
     QgsWmsProvider provider( "layers=CountryGroup&styles=default&type=wmts&url=http://localhost:8380/mapserv?xxx", QgsDataProvider::ProviderOptions(), &cap );
     QVERIFY( provider.mSettings.mTiled );
-    QCOMPARE( provider.mSettings.mTileMatrixSetId, QStringLiteral( "standard" ) );
-    QCOMPARE( provider.crs().authid(), QStringLiteral( "EPSG:3857" ) );
-    QCOMPARE( provider.mSettings.mImageMimeType, QStringLiteral( "image/png" ) );
+    QCOMPARE( provider.mSettings.mTileMatrixSetId, u"standard"_s );
+    QCOMPARE( provider.crs().authid(), u"EPSG:3857"_s );
+    QCOMPARE( provider.mSettings.mImageMimeType, u"image/png"_s );
   }
 }
 
@@ -291,99 +296,99 @@ void TestQgsWmsProvider::testMbtilesProviderMetadata()
   QCOMPARE( wmsMetadata->priorityForUri( QString() ), 0 );
   QCOMPARE( wmsMetadata->validLayerTypesForUri( QString() ), {} );
   QVERIFY( wmsMetadata->querySublayers( QString() ).isEmpty() );
-  QVERIFY( wmsMetadata->querySublayers( QStringLiteral( "xxx" ) ).isEmpty() );
+  QVERIFY( wmsMetadata->querySublayers( u"xxx"_s ).isEmpty() );
 
-  QCOMPARE( wmsMetadata->priorityForUri( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/points.shp" ) ), 0 );
-  QVERIFY( wmsMetadata->validLayerTypesForUri( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/points.shp" ) ).isEmpty() );
-  QVERIFY( wmsMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/points.shp" ) ).isEmpty() );
+  QCOMPARE( wmsMetadata->priorityForUri( QStringLiteral( TEST_DATA_DIR ) + u"/points.shp"_s ), 0 );
+  QVERIFY( wmsMetadata->validLayerTypesForUri( QStringLiteral( TEST_DATA_DIR ) + u"/points.shp"_s ).isEmpty() );
+  QVERIFY( wmsMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + u"/points.shp"_s ).isEmpty() );
   QVERIFY( wmsMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) ).isEmpty() );
 
-  QCOMPARE( wmsMetadata->priorityForUri( QStringLiteral( "type=mbtiles&url=%1/points.shp" ).arg( TEST_DATA_DIR ) ), 0 );
-  QVERIFY( wmsMetadata->validLayerTypesForUri( QStringLiteral( "type=mbtiles&url=%1/points.shp" ).arg( TEST_DATA_DIR ) ).isEmpty() );
-  QVERIFY( wmsMetadata->querySublayers( QStringLiteral( "type=mbtiles&url=%1/points.shp" ).arg( TEST_DATA_DIR ) ).isEmpty() );
+  QCOMPARE( wmsMetadata->priorityForUri( u"type=mbtiles&url=%1/points.shp"_s.arg( TEST_DATA_DIR ) ), 0 );
+  QVERIFY( wmsMetadata->validLayerTypesForUri( u"type=mbtiles&url=%1/points.shp"_s.arg( TEST_DATA_DIR ) ).isEmpty() );
+  QVERIFY( wmsMetadata->querySublayers( u"type=mbtiles&url=%1/points.shp"_s.arg( TEST_DATA_DIR ) ).isEmpty() );
 
   // mbtile uris
-  QCOMPARE( wmsMetadata->priorityForUri( QStringLiteral( "%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) ), 100 );
-  QCOMPARE( wmsMetadata->validLayerTypesForUri( QStringLiteral( "%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) ), { Qgis::LayerType::Raster } );
+  QCOMPARE( wmsMetadata->priorityForUri( u"%1/isle_of_man.mbtiles"_s.arg( TEST_DATA_DIR ) ), 100 );
+  QCOMPARE( wmsMetadata->validLayerTypesForUri( u"%1/isle_of_man.mbtiles"_s.arg( TEST_DATA_DIR ) ), { Qgis::LayerType::Raster } );
 
-  QCOMPARE( wmsMetadata->priorityForUri( QStringLiteral( "type=mbtiles&url=%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) ), 100 );
-  QCOMPARE( wmsMetadata->validLayerTypesForUri( QStringLiteral( "type=mbtiles&url=%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) ), { Qgis::LayerType::Raster } );
+  QCOMPARE( wmsMetadata->priorityForUri( u"type=mbtiles&url=%1/isle_of_man.mbtiles"_s.arg( TEST_DATA_DIR ) ), 100 );
+  QCOMPARE( wmsMetadata->validLayerTypesForUri( u"type=mbtiles&url=%1/isle_of_man.mbtiles"_s.arg( TEST_DATA_DIR ) ), { Qgis::LayerType::Raster } );
 
   // query sublayers
-  QList<QgsProviderSublayerDetails> sublayers = wmsMetadata->querySublayers( QStringLiteral( "%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) );
+  QList<QgsProviderSublayerDetails> sublayers = wmsMetadata->querySublayers( u"%1/isle_of_man.mbtiles"_s.arg( TEST_DATA_DIR ) );
   QCOMPARE( sublayers.size(), 1 );
-  QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "wms" ) );
-  QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "isle_of_man" ) );
-  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "url=file://%1/isle_of_man.mbtiles&type=mbtiles" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.at( 0 ).providerKey(), u"wms"_s );
+  QCOMPARE( sublayers.at( 0 ).name(), u"isle_of_man"_s );
+  QCOMPARE( sublayers.at( 0 ).uri(), u"url=file://%1/isle_of_man.mbtiles&type=mbtiles"_s.arg( TEST_DATA_DIR ) );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
   QVERIFY( !sublayers.at( 0 ).skippedContainerScan() );
   QVERIFY( !QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers ) );
 
-  sublayers = wmsMetadata->querySublayers( QStringLiteral( "type=mbtiles&url=file://%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) );
+  sublayers = wmsMetadata->querySublayers( u"type=mbtiles&url=file://%1/isle_of_man.mbtiles"_s.arg( TEST_DATA_DIR ) );
   QCOMPARE( sublayers.size(), 1 );
-  QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "wms" ) );
-  QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "isle_of_man" ) );
-  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "url=file://%1/isle_of_man.mbtiles&type=mbtiles" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.at( 0 ).providerKey(), u"wms"_s );
+  QCOMPARE( sublayers.at( 0 ).name(), u"isle_of_man"_s );
+  QCOMPARE( sublayers.at( 0 ).uri(), u"url=file://%1/isle_of_man.mbtiles&type=mbtiles"_s.arg( TEST_DATA_DIR ) );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
   QVERIFY( !sublayers.at( 0 ).skippedContainerScan() );
 
   // WMS source
-  sublayers = wmsMetadata->querySublayers( QStringLiteral( "url=http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg" ) );
+  sublayers = wmsMetadata->querySublayers( u"url=http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg"_s );
   QCOMPARE( sublayers.size(), 1 );
-  QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "wms" ) );
-  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "url=http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg" ) );
+  QCOMPARE( sublayers.at( 0 ).providerKey(), u"wms"_s );
+  QCOMPARE( sublayers.at( 0 ).uri(), u"url=http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg"_s );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
   QVERIFY( !sublayers.at( 0 ).skippedContainerScan() );
 
   // fast scan flag
-  sublayers = wmsMetadata->querySublayers( QStringLiteral( "%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ), Qgis::SublayerQueryFlag::FastScan );
+  sublayers = wmsMetadata->querySublayers( u"%1/isle_of_man.mbtiles"_s.arg( TEST_DATA_DIR ), Qgis::SublayerQueryFlag::FastScan );
   QCOMPARE( sublayers.size(), 1 );
-  QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "wms" ) );
-  QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "isle_of_man" ) );
-  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "url=file://%1/isle_of_man.mbtiles&type=mbtiles" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.at( 0 ).providerKey(), u"wms"_s );
+  QCOMPARE( sublayers.at( 0 ).name(), u"isle_of_man"_s );
+  QCOMPARE( sublayers.at( 0 ).uri(), u"url=file://%1/isle_of_man.mbtiles&type=mbtiles"_s.arg( TEST_DATA_DIR ) );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
   QVERIFY( sublayers.at( 0 ).skippedContainerScan() );
   QVERIFY( QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers ) );
 
-  sublayers = wmsMetadata->querySublayers( QStringLiteral( "type=mbtiles&url=%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ), Qgis::SublayerQueryFlag::FastScan );
+  sublayers = wmsMetadata->querySublayers( u"type=mbtiles&url=%1/isle_of_man.mbtiles"_s.arg( TEST_DATA_DIR ), Qgis::SublayerQueryFlag::FastScan );
   QCOMPARE( sublayers.size(), 1 );
-  QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "wms" ) );
-  QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "isle_of_man" ) );
-  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "url=file://%1/isle_of_man.mbtiles&type=mbtiles" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.at( 0 ).providerKey(), u"wms"_s );
+  QCOMPARE( sublayers.at( 0 ).name(), u"isle_of_man"_s );
+  QCOMPARE( sublayers.at( 0 ).uri(), u"url=file://%1/isle_of_man.mbtiles&type=mbtiles"_s.arg( TEST_DATA_DIR ) );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
   QVERIFY( sublayers.at( 0 ).skippedContainerScan() );
 
   // WMS source
-  sublayers = wmsMetadata->querySublayers( QStringLiteral( "url=http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg" ), Qgis::SublayerQueryFlag::FastScan );
+  sublayers = wmsMetadata->querySublayers( u"url=http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg"_s, Qgis::SublayerQueryFlag::FastScan );
   QCOMPARE( sublayers.size(), 1 );
-  QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "wms" ) );
-  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "url=http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg" ) );
+  QCOMPARE( sublayers.at( 0 ).providerKey(), u"wms"_s );
+  QCOMPARE( sublayers.at( 0 ).uri(), u"url=http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=fb_style&format=image/jpg"_s );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
   QVERIFY( !sublayers.at( 0 ).skippedContainerScan() );
 
   // fast scan mode means that any mbtile file will be reported, including those with only vector tiles
   // (we are skipping a potentially expensive db open and format check)
-  sublayers = wmsMetadata->querySublayers( QStringLiteral( "%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ), Qgis::SublayerQueryFlag::FastScan );
+  sublayers = wmsMetadata->querySublayers( u"%1/vector_tile/mbtiles_vt.mbtiles"_s.arg( TEST_DATA_DIR ), Qgis::SublayerQueryFlag::FastScan );
   QCOMPARE( sublayers.size(), 1 );
-  QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "wms" ) );
-  QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "mbtiles_vt" ) );
-  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "url=file://%1/vector_tile/mbtiles_vt.mbtiles&type=mbtiles" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.at( 0 ).providerKey(), u"wms"_s );
+  QCOMPARE( sublayers.at( 0 ).name(), u"mbtiles_vt"_s );
+  QCOMPARE( sublayers.at( 0 ).uri(), u"url=file://%1/vector_tile/mbtiles_vt.mbtiles&type=mbtiles"_s.arg( TEST_DATA_DIR ) );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
   QVERIFY( sublayers.at( 0 ).skippedContainerScan() );
 
   // test that wms provider is the preferred provider for raster mbtiles files
-  QList<QgsProviderRegistry::ProviderCandidateDetails> candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "type=mbtiles&url=%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) );
+  QList<QgsProviderRegistry::ProviderCandidateDetails> candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( u"type=mbtiles&url=%1/isle_of_man.mbtiles"_s.arg( TEST_DATA_DIR ) );
   QCOMPARE( candidates.size(), 2 );
 
-  int candidateIndex = candidates.at( 0 ).metadata()->key() == QLatin1String( "wms" ) ? 0 : 1;
-  QCOMPARE( candidates.at( candidateIndex ).metadata()->key(), QStringLiteral( "wms" ) );
+  int candidateIndex = candidates.at( 0 ).metadata()->key() == "wms"_L1 ? 0 : 1;
+  QCOMPARE( candidates.at( candidateIndex ).metadata()->key(), u"wms"_s );
   QCOMPARE( candidates.at( candidateIndex ).layerTypes(), QList<Qgis::LayerType>() << Qgis::LayerType::Raster );
 
-  candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) );
+  candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( u"%1/isle_of_man.mbtiles"_s.arg( TEST_DATA_DIR ) );
   // mbtiles vector tile provider also reports handling this url
   QCOMPARE( candidates.size(), 2 );
-  candidateIndex = candidates.at( 0 ).metadata()->key() == QLatin1String( "wms" ) ? 0 : 1;
-  QCOMPARE( candidates.at( candidateIndex ).metadata()->key(), QStringLiteral( "wms" ) );
+  candidateIndex = candidates.at( 0 ).metadata()->key() == "wms"_L1 ? 0 : 1;
+  QCOMPARE( candidates.at( candidateIndex ).metadata()->key(), u"wms"_s );
   QCOMPARE( candidates.at( candidateIndex ).layerTypes(), QList<Qgis::LayerType>() << Qgis::LayerType::Raster );
 }
 
@@ -437,12 +442,12 @@ void TestQgsWmsProvider::providerUriUpdates()
 
 void TestQgsWmsProvider::providerUriLocalFile()
 {
-  QString uriString = QStringLiteral( "url=file:///my/local/tiles.mbtiles&type=mbtiles" );
-  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "wms" ), uriString );
+  QString uriString = u"url=file:///my/local/tiles.mbtiles&type=mbtiles"_s;
+  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( u"wms"_s, uriString );
   QVariantMap expectedParts { { QString( "type" ), QVariant( "mbtiles" ) }, { QString( "path" ), QVariant( "/my/local/tiles.mbtiles" ) }, { QString( "url" ), QVariant( "file:///my/local/tiles.mbtiles" ) } };
   QCOMPARE( parts, expectedParts );
 
-  QString encodedUri = QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "wms" ), parts );
+  QString encodedUri = QgsProviderRegistry::instance()->encodeUri( u"wms"_s, parts );
   QCOMPARE( encodedUri, uriString );
 
   QgsProviderMetadata *wmsMetadata = QgsProviderRegistry::instance()->providerMetadata( "wms" );
@@ -450,11 +455,11 @@ void TestQgsWmsProvider::providerUriLocalFile()
 
   // query sublayers
   QList<QgsProviderSublayerDetails> sublayers;
-  sublayers = wmsMetadata->querySublayers( QStringLiteral( "type=xyz&url=file:///my/xyz/directory/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0" ) );
+  sublayers = wmsMetadata->querySublayers( u"type=xyz&url=file:///my/xyz/directory/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0"_s );
   QCOMPARE( sublayers.size(), 1 );
-  QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "wms" ) );
+  QCOMPARE( sublayers.at( 0 ).providerKey(), u"wms"_s );
   QCOMPARE( sublayers.at( 0 ).name(), QString() );
-  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=xyz&url=file:///my/xyz/directory/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0" ) );
+  QCOMPARE( sublayers.at( 0 ).uri(), u"type=xyz&url=file:///my/xyz/directory/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0"_s );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::Raster );
   QVERIFY( !sublayers.at( 0 ).skippedContainerScan() );
   QVERIFY( !QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers ) );
@@ -463,7 +468,7 @@ void TestQgsWmsProvider::providerUriLocalFile()
 void TestQgsWmsProvider::absoluteRelativeUri()
 {
   QgsReadWriteContext context;
-  context.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/project.qgs" ) ) );
+  context.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + u"/project.qgs"_s ) );
 
   QgsProviderMetadata *wmsMetadata = QgsProviderRegistry::instance()->providerMetadata( "wms" );
   QVERIFY( wmsMetadata );
@@ -494,7 +499,7 @@ void TestQgsWmsProvider::absoluteRelativeUri()
 void TestQgsWmsProvider::testXyzIsBasemap()
 {
   // test that xyz tile layers are considered basemap layers
-  QgsRasterLayer layer( QStringLiteral( "type=xyz&url=file://tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0" ), QString(), QStringLiteral( "wms" ) );
+  QgsRasterLayer layer( u"type=xyz&url=file://tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0"_s, QString(), u"wms"_s );
   QCOMPARE( layer.properties(), Qgis::MapLayerProperties( Qgis::MapLayerProperty::IsBasemapLayer ) );
 }
 
@@ -503,12 +508,12 @@ void TestQgsWmsProvider::testOsmMetadata()
   // test that we auto-populate openstreetmap tile metadata
 
   // don't actually hit the osm server -- the url below uses "file" instead of "http"!
-  QgsWmsProvider provider( QStringLiteral( "type=xyz&url=file://tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0" ), QgsDataProvider::ProviderOptions(), mCapabilities );
-  QCOMPARE( provider.layerMetadata().identifier(), QStringLiteral( "OpenStreetMap tiles" ) );
-  QCOMPARE( provider.layerMetadata().title(), QStringLiteral( "OpenStreetMap tiles" ) );
+  QgsWmsProvider provider( u"type=xyz&url=file://tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0"_s, QgsDataProvider::ProviderOptions(), mCapabilities );
+  QCOMPARE( provider.layerMetadata().identifier(), u"OpenStreetMap tiles"_s );
+  QCOMPARE( provider.layerMetadata().title(), u"OpenStreetMap tiles"_s );
   QVERIFY( !provider.layerMetadata().abstract().isEmpty() );
-  QCOMPARE( provider.layerMetadata().licenses().at( 0 ), QStringLiteral( "Open Data Commons Open Database License (ODbL)" ) );
-  QCOMPARE( provider.layerMetadata().licenses().at( 1 ), QStringLiteral( "Creative Commons Attribution-ShareAlike (CC-BY-SA)" ) );
+  QCOMPARE( provider.layerMetadata().licenses().at( 0 ), u"Open Data Commons Open Database License (ODbL)"_s );
+  QCOMPARE( provider.layerMetadata().licenses().at( 1 ), u"Creative Commons Attribution-ShareAlike (CC-BY-SA)"_s );
   QVERIFY( provider.layerMetadata().rights().at( 0 ).startsWith( "Base map and data from OpenStreetMap and OpenStreetMap Foundation" ) );
 }
 
@@ -517,12 +522,12 @@ void TestQgsWmsProvider::testConvertToValue()
   QString dataDir( TEST_DATA_DIR );
 
   QgsXyzConnection xyzConn;
-  xyzConn.url = QUrl::fromLocalFile( dataDir + QStringLiteral( "/maptiler_terrain_rgb.png" ) ).toString();
+  xyzConn.url = QUrl::fromLocalFile( dataDir + u"/maptiler_terrain_rgb.png"_s ).toString();
   QgsRasterLayer layer( xyzConn.encodedUri(), "terrain", "wms" );
   QVERIFY( layer.isValid() );
   QVERIFY( layer.dataProvider()->dataType( 1 ) == Qgis::DataType::ARGB32 );
 
-  xyzConn.interpretation = QStringLiteral( "maptilerterrain" );
+  xyzConn.interpretation = u"maptilerterrain"_s;
   QgsRasterLayer layer2( xyzConn.encodedUri(), "terrain", "wms" );
   QVERIFY( layer2.isValid() );
   QVERIFY( layer2.dataProvider()->dataType( 1 ) == Qgis::DataType::Float32 );
@@ -542,7 +547,7 @@ void TestQgsWmsProvider::testTerrariumInterpretation()
 
   QgsXyzConnection xyzConn;
   xyzConn.interpretation = QgsWmsInterpretationConverterTerrariumRGB::interpretationKey();
-  xyzConn.url = QUrl::fromLocalFile( dataDir + QStringLiteral( "/terrarium_terrain_rgb.png" ) ).toString();
+  xyzConn.url = QUrl::fromLocalFile( dataDir + u"/terrarium_terrain_rgb.png"_s ).toString();
   QgsRasterLayer layer( xyzConn.encodedUri(), "terrain", "wms" );
   QVERIFY( layer.isValid() );
   QVERIFY( layer.dataProvider()->dataType( 1 ) == Qgis::DataType::Float32 );
@@ -569,8 +574,8 @@ void TestQgsWmsProvider::testResampling()
   QString dataDir( TEST_DATA_DIR );
 
   QgsXyzConnection xyzConn;
-  xyzConn.url = QUrl::fromLocalFile( dataDir + QStringLiteral( "/maptiler_terrain_rgb.png" ) ).toString();
-  xyzConn.interpretation = QStringLiteral( "maptilerterrain" );
+  xyzConn.url = QUrl::fromLocalFile( dataDir + u"/maptiler_terrain_rgb.png"_s ).toString();
+  xyzConn.interpretation = u"maptilerterrain"_s;
   QgsRasterLayer layer( xyzConn.encodedUri(), "terrain", "wms" );
   QVERIFY( layer.isValid() );
   QVERIFY( layer.dataProvider()->dataType( 1 ) == Qgis::DataType::Float32 );
@@ -597,24 +602,24 @@ void TestQgsWmsProvider::testParseWmstUriWithoutTemporalExtent()
 {
   // test fix for https://github.com/qgis/QGIS/issues/43158
   // we just check we don't crash
-  QgsWmsProvider provider( QStringLiteral( "allowTemporalUpdates=true&temporalSource=provider&type=wmst&layers=foostyles=bar&crs=EPSG:3857&format=image/png&url=file:///dummy" ), QgsDataProvider::ProviderOptions(), mCapabilities );
+  QgsWmsProvider provider( u"allowTemporalUpdates=true&temporalSource=provider&type=wmst&layers=foostyles=bar&crs=EPSG:3857&format=image/png&url=file:///dummy"_s, QgsDataProvider::ProviderOptions(), mCapabilities );
 }
 
 void TestQgsWmsProvider::testMaxTileSize()
 {
-  QgsWmsProvider provider( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=buildings&styles=&format=image/jpg" ), QgsDataProvider::ProviderOptions(), mCapabilities );
+  QgsWmsProvider provider( u"http://localhost:8380/mapserv?xxx&layers=buildings&styles=&format=image/jpg"_s, QgsDataProvider::ProviderOptions(), mCapabilities );
   const QSize maxTileSize = provider.maximumTileSize();
   QCOMPARE( maxTileSize.width(), 5000 );
   QCOMPARE( maxTileSize.height(), 5000 );
 
   // test that we can override the max tile size if the server advertises a larger size
-  QgsWmsProvider provider2( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=buildings&styles=&format=image/jpg&maxHeight=3000&maxWidth=3000" ), QgsDataProvider::ProviderOptions(), mCapabilities );
+  QgsWmsProvider provider2( u"http://localhost:8380/mapserv?xxx&layers=buildings&styles=&format=image/jpg&maxHeight=3000&maxWidth=3000"_s, QgsDataProvider::ProviderOptions(), mCapabilities );
   const QSize maxTileSize2 = provider2.maximumTileSize();
   QCOMPARE( maxTileSize2.width(), 3000 );
   QCOMPARE( maxTileSize2.height(), 3000 );
 
   // test that we cannot override the maximum advertised size
-  QgsWmsProvider provider3( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=buildings&styles=&format=image/jpg&maxHeight=6000&maxWidth=6000" ), QgsDataProvider::ProviderOptions(), mCapabilities );
+  QgsWmsProvider provider3( u"http://localhost:8380/mapserv?xxx&layers=buildings&styles=&format=image/jpg&maxHeight=6000&maxWidth=6000"_s, QgsDataProvider::ProviderOptions(), mCapabilities );
   const QSize maxTileSize3 = provider3.maximumTileSize();
   QCOMPARE( maxTileSize3.width(), 5000 );
   QCOMPARE( maxTileSize3.height(), 5000 );
@@ -623,23 +628,719 @@ void TestQgsWmsProvider::testMaxTileSize()
   QgsWmsCapabilities capabilities { *mCapabilities };
   capabilities.mCapabilities.service.maxHeight = 0;
   capabilities.mCapabilities.service.maxWidth = 0;
-  QgsWmsProvider provider4( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=buildings&styles=&format=image/jpg" ), QgsDataProvider::ProviderOptions(), &capabilities );
+  QgsWmsProvider provider4( u"http://localhost:8380/mapserv?xxx&layers=buildings&styles=&format=image/jpg"_s, QgsDataProvider::ProviderOptions(), &capabilities );
   const QSize maxTileSize4 = provider4.maximumTileSize();
   QCOMPARE( maxTileSize4.width(), QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH );
   QCOMPARE( maxTileSize4.height(), QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT );
 
   // test that we can override the default maximum tile size
-  QgsWmsProvider provider5( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=buildings&styles=&format=image/jpg&maxHeight=3000&maxWidth=3000" ), QgsDataProvider::ProviderOptions(), &capabilities );
+  QgsWmsProvider provider5( u"http://localhost:8380/mapserv?xxx&layers=buildings&styles=&format=image/jpg&maxHeight=3000&maxWidth=3000"_s, QgsDataProvider::ProviderOptions(), &capabilities );
   const QSize maxTileSize5 = provider5.maximumTileSize();
   QCOMPARE( maxTileSize5.width(), 3000 );
   QCOMPARE( maxTileSize5.height(), 3000 );
 
   // test that max tile size is set to mStepWidth/mStepHeight if max tile size is not set
-  QgsWmsProvider provider6( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=buildings&styles=&format=image/jpg&stepWidth=4000&stepHeight=4000" ), QgsDataProvider::ProviderOptions(), &capabilities );
+  QgsWmsProvider provider6( u"http://localhost:8380/mapserv?xxx&layers=buildings&styles=&format=image/jpg&stepWidth=4000&stepHeight=4000"_s, QgsDataProvider::ProviderOptions(), &capabilities );
   const QSize maxTileSize6 = provider6.maximumTileSize();
   QCOMPARE( maxTileSize6.width(), 4000 );
   QCOMPARE( maxTileSize6.height(), 4000 );
 }
 
+void TestQgsWmsProvider::testWmstTemporalCapabilities()
+{
+  // Load WMS-T capabilities with various time formats
+  QFile file( QStringLiteral( TEST_DATA_DIR ) + "/provider/GetCapabilitiesWmst.xml" );
+  QVERIFY( file.open( QIODevice::ReadOnly | QIODevice::Text ) );
+  const QByteArray content = file.readAll();
+  QVERIFY( content.size() > 0 );
+
+  const QgsWmsParserSettings config;
+  QgsWmsCapabilities capabilities;
+  QVERIFY( capabilities.parseResponse( content, config ) );
+
+  // Full timestamp with Z (yyyy-MM-ddThh:mm:ssZ) - discrete value
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_full_z&styles=&temporalSource=provider&timeDimensionExtent=2020-06-15T12:00:00Z&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T12:00:00Z", Qt::ISODateWithMs ), QDateTime::fromString( "2020-06-15T12:00:00Z", Qt::ISODateWithMs ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15T12%3A00%3A00Z" ) );
+  }
+
+  // Full timestamp with Z (yyyy-MM-ddThh:mm:ssZ) - interval notation
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_full_z&styles=&temporalSource=provider&timeDimensionExtent=2020-01-01T00:00:00Z/2020-12-31T23:59:59Z/P1D&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T12:00:00Z", Qt::ISODateWithMs ), QDateTime::fromString( "2020-06-15T12:00:00Z", Qt::ISODateWithMs ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15T12%3A00%3A00Z" ) );
+  }
+
+  // Full timestamp without Z (yyyy-MM-ddThh:mm:ss) - discrete value
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_full_noz&styles=&temporalSource=provider&timeDimensionExtent=2020-06-15T12:00:00&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T12:00:00Z", Qt::ISODate ), QDateTime::fromString( "2020-06-15T12:00:00Z", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15T12%3A00%3A00" ) );
+  }
+
+  // Full timestamp without Z (yyyy-MM-ddThh:mm:ss) - interval notation
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_full_noz&styles=&temporalSource=provider&timeDimensionExtent=2020-01-01T00:00:00/2020-12-31T23:59:59/P1D&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T12:00:00", Qt::ISODate ), QDateTime::fromString( "2020-06-15T12:00:00", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15T12%3A00%3A00" ) );
+  }
+
+  // Minute precision (yyyy-MM-ddThh:mm) - discrete value
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_minute&styles=&temporalSource=provider&timeDimensionExtent=2020-06-15T12:00&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T12:00:00Z", Qt::ISODate ), QDateTime::fromString( "2020-06-15T12:00:00Z", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15T12%3A00" ) );
+  }
+
+  // Minute precision (yyyy-MM-ddThh:mm) - interval notation
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_minute&styles=&temporalSource=provider&timeDimensionExtent=2020-01-01T00:00/2020-12-31T23:59/P1D&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T12:00:00", Qt::ISODate ), QDateTime::fromString( "2020-06-15T12:00:00", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15T12%3A00" ) );
+  }
+
+  // Hour precision (yyyy-MM-ddThh) - discrete value
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_hour&styles=&temporalSource=provider&timeDimensionExtent=2020-06-15T12&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T12:00:00Z", Qt::ISODate ), QDateTime::fromString( "2020-06-15T12:00:00Z", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15T12" ) );
+  }
+
+  // Hour precision (yyyy-MM-ddThh) - interval notation
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_hour&styles=&temporalSource=provider&timeDimensionExtent=2020-01-01T00/2020-12-31T23/PT1H&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T12:00:00", Qt::ISODate ), QDateTime::fromString( "2020-06-15T12:00:00", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15T12" ) );
+  }
+
+  // Day precision (yyyy-MM-dd) - discrete value
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_day&styles=&temporalSource=provider&timeDimensionExtent=2020-06-15&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T00:00:00Z", Qt::ISODate ), QDateTime::fromString( "2020-06-15T00:00:00Z", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15" ) );
+  }
+
+  // Day precision (yyyy-MM-dd) - interval notation
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_day&styles=&temporalSource=provider&timeDimensionExtent=2020-01-01/2020-12-31/P1D&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T00:00:00", Qt::ISODate ), QDateTime::fromString( "2020-06-15T00:00:00", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15" ) );
+  }
+
+  // Month precision (yyyy-MM) - discrete value
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_month&styles=&temporalSource=provider&timeDimensionExtent=2020-06&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-01T00:00:00Z", Qt::ISODate ), QDateTime::fromString( "2020-06-01T00:00:00Z", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06" ) );
+  }
+
+  // Month precision (yyyy-MM) - interval notation
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_month&styles=&temporalSource=provider&timeDimensionExtent=2020-01/2020-12/P1M&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-01T00:00:00", Qt::ISODate ), QDateTime::fromString( "2020-06-01T00:00:00", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06" ) );
+  }
+
+  // Year precision (yyyy) - discrete value
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_year&styles=&temporalSource=provider&timeDimensionExtent=2020&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-01-01T00:00:00Z", Qt::ISODate ), QDateTime::fromString( "2020-01-01T00:00:00Z", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020" ) );
+  }
+
+  // Year precision (yyyy) - interval notation
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_year&styles=&temporalSource=provider&timeDimensionExtent=1952/2025/P1Y&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-01-01T00:00:00", Qt::ISODate ), QDateTime::fromString( "2020-01-01T00:00:00", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020" ) );
+  }
+
+  // Mixed: interval + discrete values (years) - request within interval
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_mixed_year&styles=&temporalSource=provider&timeDimensionExtent=1990/2000/P1Y,2005,2010,2015/2020/P1Y,2022,2024&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2018-01-01T00:00:00", Qt::ISODate ), QDateTime::fromString( "2018-01-01T00:00:00", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2018" ) );
+  }
+
+  // Mixed: interval + discrete values (years) - request discrete value
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_mixed_year&styles=&temporalSource=provider&timeDimensionExtent=1990/2000/P1Y,2005,2010,2015/2020/P1Y,2022,2024&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2022-01-01T00:00:00", Qt::ISODate ), QDateTime::fromString( "2022-01-01T00:00:00", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2022" ) );
+  }
+
+  // Mixed: interval + discrete values (full datetime with Z)
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_mixed_full_z&styles=&temporalSource=provider&timeDimensionExtent=2020-01-01T00:00:00Z/2020-01-31T23:59:59Z/P1D,2020-03-15T12:00:00Z,2020-06-01T00:00:00Z/2020-06-30T23:59:59Z/P1D&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-03-15T12:00:00Z", Qt::ISODateWithMs ), QDateTime::fromString( "2020-03-15T12:00:00Z", Qt::ISODateWithMs ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-03-15T12%3A00%3A00Z" ) );
+  }
+
+  // Mixed: interval + discrete values (days)
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_mixed_day&styles=&temporalSource=provider&timeDimensionExtent=2020-01-01/2020-01-31/P1D,2020-03-15,2020-05-01,2020-06-01/2020-06-30/P1D,2020-12-25&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-12-25T00:00:00", Qt::ISODate ), QDateTime::fromString( "2020-12-25T00:00:00", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-12-25" ) );
+  }
+
+  // Multiple intervals only
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_multiple_intervals&styles=&temporalSource=provider&timeDimensionExtent=2020-01-01/2020-02-28/P1D,2020-04-01/2020-05-31/P1D,2020-07-01/2020-08-31/P1D&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-07-15T00:00:00", Qt::ISODate ), QDateTime::fromString( "2020-07-15T00:00:00", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-07-15" ) );
+  }
+
+  // Mixed: hours with interval and discrete
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_mixed_hour&styles=&temporalSource=provider&timeDimensionExtent=2020-01-01T00/2020-01-01T12/PT1H,2020-01-02T06,2020-01-03T00/2020-01-03T18/PT3H&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-01-02T06:00:00", Qt::ISODate ), QDateTime::fromString( "2020-01-02T06:00:00", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-01-02T06" ) );
+  }
+
+  // Mixed: months with gaps
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_mixed_month&styles=&temporalSource=provider&timeDimensionExtent=2019-01/2019-06/P1M,2019-09,2019-12,2020-01/2020-12/P1M&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2019-09-01T00:00:00", Qt::ISODate ), QDateTime::fromString( "2019-09-01T00:00:00", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2019-09" ) );
+  }
+
+  // Edge case: single discrete value
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_single_value&styles=&temporalSource=provider&timeDimensionExtent=2020-06-15T12:00:00Z&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T12:00:00Z", Qt::ISODateWithMs ), QDateTime::fromString( "2020-06-15T12:00:00Z", Qt::ISODateWithMs ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15T12%3A00%3A00Z" ) );
+  }
+
+  // Edge case: discrete values with spaces
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_discrete_spaces&styles=&temporalSource=provider&timeDimensionExtent=2018, 2019, 2020, 2021, 2022&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-01-01T00:00:00", Qt::ISODate ), QDateTime::fromString( "2020-01-01T00:00:00", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020" ) );
+  }
+
+  // 10-year period (decade) - discrete values
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_decade_discrete&styles=&temporalSource=provider&timeDimensionExtent=1980,1990,2000,2010,2020&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2010-01-01T00:00:00", Qt::ISODate ), QDateTime::fromString( "2010-01-01T00:00:00", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2010" ) );
+  }
+
+  // 10-year period (decade) - interval notation
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_decade_interval&styles=&temporalSource=provider&timeDimensionExtent=1950/2020/P10Y&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2000-01-01T00:00:00", Qt::ISODate ), QDateTime::fromString( "2000-01-01T00:00:00", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2000" ) );
+  }
+
+  // 10-year period (decade) - interval notation
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_decade_interval&styles=&temporalSource=provider&timeDimensionExtent=1950/2020/P10Y&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2000-01-01T00:00:00", Qt::ISODate ), QDateTime::fromString( "2000-01-01T00:00:00", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2000" ) );
+  }
+
+  // Test enableTime=true - TIME parameter should be included
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&enableTime=true&format=image/png&layers=time_day&styles=&temporalSource=provider&timeDimensionExtent=2020-06-15&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T00:00:00Z", Qt::ISODate ), QDateTime::fromString( "2020-06-15T00:00:00Z", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15" ) );
+  }
+
+  // Test default behavior (no enableTime parameter) - should include TIME
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_year&styles=&temporalSource=provider&timeDimensionExtent=2020&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-01-01T00:00:00Z", Qt::ISODate ), QDateTime::fromString( "2020-01-01T00:00:00Z", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020" ) );
+  }
+
+  // Test enableTime=false - TIME parameter should still be included as date
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&enableTime=false&format=image/png&layers=time_day&styles=&temporalSource=provider&timeDimensionExtent=2020-06-15&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T00:00:00Z", Qt::ISODate ), QDateTime::fromString( "2020-06-15T00:00:00Z", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15" ) );
+  }
+
+  // Test enableTime=false - TIME parameter should still be included as date
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&enableTime=false&format=image/png&layers=time_minute&styles=&temporalSource=provider&timeDimensionExtent=2020-06-15&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T00:00:00Z", Qt::ISODate ), QDateTime::fromString( "2020-06-15T00:00:00Z", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15" ) );
+  }
+
+  // Milliseconds with timezone offset (yyyy-MM-ddTHH:mm:ss.zzzt) - discrete value
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&enableTime=true&format=image/png&layers=time_ms_offset&styles=&temporalSource=provider&timeDimensionExtent=2020-06-15T12:30:45.123+02:00&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T12:30:45.123+02:00", Qt::ISODateWithMs ), QDateTime::fromString( "2020-06-15T12:30:45.123+02:00", Qt::ISODateWithMs ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15T12%3A30%3A45.123UTC%2B02%3A00" ) );
+  }
+
+  // Milliseconds with Z (yyyy-MM-ddTHH:mm:ss.zzzZ) - discrete value
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&enableTime=true&format=image/png&layers=time_ms_z&styles=&temporalSource=provider&timeDimensionExtent=2020-06-15T12:30:45.123Z&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T12:30:45.123Z", Qt::ISODateWithMs ), QDateTime::fromString( "2020-06-15T12:30:45.123Z", Qt::ISODateWithMs ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15T12%3A30%3A45.123Z" ) );
+  }
+
+  // Milliseconds without timezone (yyyy-MM-ddTHH:mm:ss.zzz) - discrete value
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&enableTime=true&format=image/png&layers=time_ms&styles=&temporalSource=provider&timeDimensionExtent=2020-06-15T12:30:45.123&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T12:30:45.123", Qt::ISODateWithMs ), QDateTime::fromString( "2020-06-15T12:30:45.123", Qt::ISODateWithMs ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15T12%3A30%3A45.123" ) );
+  }
+
+  // Seconds with timezone offset (yyyy-MM-ddTHH:mm:sst) - discrete value
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&enableTime=true&format=image/png&layers=time_sec_offset&styles=&temporalSource=provider&timeDimensionExtent=2020-06-15T12:30:45+02:00&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T12:30:45+02:00", Qt::ISODate ), QDateTime::fromString( "2020-06-15T12:30:45+02:00", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15T12%3A30%3A45UTC%2B02%3A00" ) );
+  }
+
+  // Minutes with timezone offset (yyyy-MM-ddTHH:mmt) - discrete value
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&enableTime=true&format=image/png&layers=time_min_offset&styles=&temporalSource=provider&timeDimensionExtent=2020-06-15T12:30+02:00&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T12:30+02:00", Qt::ISODate ), QDateTime::fromString( "2020-06-15T12:30+02:00", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15T12%3A30UTC%2B02%3A00" ) );
+  }
+
+  // Hours with timezone offset (yyyy-MM-ddTHHt) - discrete value
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&enableTime=true&format=image/png&layers=time_hour_offset&styles=&temporalSource=provider&timeDimensionExtent=2020-06-15T12+02:00&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T12+02:00", Qt::ISODate ), QDateTime::fromString( "2020-06-15T12+02:00", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15T12UTC%2B02%3A00" ) );
+  }
+
+  // Test enableTime=false with milliseconds - should fall back to date only
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&enableTime=false&format=image/png&layers=time_ms_disabled&styles=&temporalSource=provider&timeDimensionExtent=2020-06-15T12:30:45.123Z&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T12:30:45.123Z", Qt::ISODateWithMs ), QDateTime::fromString( "2020-06-15T12:30:45.123Z", Qt::ISODateWithMs ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15" ) );
+  }
+
+  // Test enableTime=false with timezone offset - should fall back to date only
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&enableTime=false&format=image/png&layers=time_offset_disabled&styles=&temporalSource=provider&timeDimensionExtent=2020-06-15T12:30:45+02:00&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T12:30:45+02:00", Qt::ISODate ), QDateTime::fromString( "2020-06-15T12:30:45+02:00", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15" ) );
+  }
+}
 QGSTEST_MAIN( TestQgsWmsProvider )
 #include "testqgswmsprovider.moc"

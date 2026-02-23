@@ -22,7 +22,11 @@
 #include "qgsmessageoutput.h"
 #include "qgsproject.h"
 
+#include <QString>
+
 #include "moc_qgsappcoordinateoperationhandlers.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsAppMissingRequiredGridHandler
@@ -138,7 +142,7 @@ void QgsAppMissingGridHandler::onMissingPreferredGrid( const QgsCoordinateRefere
           downloadMessage = tr( "This grid is available for download from <a href=\"%1\">%1</a>." ).arg( grid.url );
         }
       }
-      gridMessage += QStringLiteral( "<li>%1</li>" ).arg( m );
+      gridMessage += u"<li>%1</li>"_s.arg( m );
     }
   }
   if ( !gridMessage.isEmpty() )
@@ -189,7 +193,7 @@ void QgsAppMissingGridHandler::onCoordinateOperationCreationError( const QgsCoor
     // dlg has deleted on close
     QgsMessageOutput *dlg( QgsMessageOutput::createMessageOutput() );
     dlg->setTitle( tr( "No Transformations Available" ) );
-    dlg->setMessage( longMessage, QgsMessageOutput::MessageHtml );
+    dlg->setMessage( longMessage, Qgis::StringFormat::Html );
     dlg->showMessage();
   } );
 
@@ -224,7 +228,7 @@ void QgsAppMissingGridHandler::onMissingGridUsedByContextHandler( const QgsCoord
           downloadMessage = tr( "This grid is available for download from <a href=\"%1\">%1</a>." ).arg( grid.url );
         }
       }
-      gridMessage += QStringLiteral( "<li>%1</li>" ).arg( m );
+      gridMessage += u"<li>%1</li>"_s.arg( m );
     }
   }
   if ( !gridMessage.isEmpty() )
@@ -270,7 +274,7 @@ void QgsAppMissingGridHandler::onFallbackOperationOccurred( const QgsCoordinateR
     // dlg has deleted on close
     QgsMessageOutput *dlg( QgsMessageOutput::createMessageOutput() );
     dlg->setTitle( tr( "Ballpark Transform Occurred" ) );
-    dlg->setMessage( longMessage, QgsMessageOutput::MessageHtml );
+    dlg->setMessage( longMessage, Qgis::StringFormat::Html );
     dlg->showMessage();
   } );
 
@@ -293,7 +297,7 @@ void QgsAppMissingGridHandler::onDynamicToDynamicWarning( const QgsCoordinateRef
     // dlg has deleted on close
     QgsMessageOutput *dlg( QgsMessageOutput::createMessageOutput() );
     dlg->setTitle( tr( "Unsupported Transformation" ) );
-    dlg->setMessage( longMessage, QgsMessageOutput::MessageHtml );
+    dlg->setMessage( longMessage, Qgis::StringFormat::Html );
     dlg->showMessage();
   } );
 

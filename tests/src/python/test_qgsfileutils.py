@@ -14,15 +14,13 @@ import os
 import shutil
 import tempfile
 
-from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.core import Qgis, QgsFileUtils
+from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.testing import unittest
-
 from utilities import unitTestDataPath
 
 
 class TestQgsFileUtils(unittest.TestCase):
-
     def testExtensionsFromFilter(self):
         self.assertEqual(QgsFileUtils.extensionsFromFilter(""), [])
         self.assertEqual(QgsFileUtils.extensionsFromFilter("bad"), [])

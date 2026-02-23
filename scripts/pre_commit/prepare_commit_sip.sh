@@ -35,11 +35,8 @@ REV=$(git log -n1 --pretty=%H)
 
 FILES_CHANGED=0
 
-for root_dir in python python/PyQt6; do
-
-  if [[ $root_dir == "python/PyQt6" ]]; then
-    IS_QT6="-qt6"
-  fi
+ROOT_DIRS=("python/PyQt6")
+for root_dir in "${ROOT_DIRS[@]}"; do
 
   for f in $MODIFIED; do
     # if cpp header
@@ -60,7 +57,7 @@ for root_dir in python python/PyQt6; do
           FILES_CHANGED=$((FILES_CHANGED+1))
         fi
         cp $root_dir/"$sip_file" "$m"
-        "${TOPLEVEL}"/scripts/sipify.py $IS_QT6 -sip_output $m -python_output "$py_m" "$f"
+        "${TOPLEVEL}"/scripts/sipify.py -sip_output $m -python_output "$py_m" "$f"
         # only replace sip files if they have changed or are not staged for commit
         if ! cmp -s $root_dir/"$sip_file" "$m" || ! git ls-files --error-unmatch "$root_dir/$sip_file" > /dev/null 2>&1; then
           echo "$root_dir/$sip_file is not up to date or is not staged for commit"
@@ -68,6 +65,10 @@ for root_dir in python python/PyQt6; do
           FILES_CHANGED=$((FILES_CHANGED+1))
         fi
         rm "$m"
+
+        if ! [ -f "$py_m" ]; then
+          continue
+        fi
 
         if ! cmp -s "$py_out" "$py_m" || ! git ls-files --error-unmatch "$py_out" > /dev/null 2>&1; then
           echo "$py_out is not up to date or is not staged for commit"

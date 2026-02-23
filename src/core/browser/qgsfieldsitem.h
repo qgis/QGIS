@@ -23,6 +23,10 @@
 #include "qgsdataitem.h"
 #include "qgsfield.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief A browser item which contains a collection of field items.
@@ -60,7 +64,7 @@ class CORE_EXPORT QgsFieldsItem : public QgsDataItem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsFieldsItem: %1>" ).arg( sipCpp->path() );
+    QString str = u"<QgsFieldsItem: %1>"_s.arg( sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -90,6 +94,15 @@ class CORE_EXPORT QgsFieldsItem : public QgsDataItem
     QgsVectorLayer *layer() SIP_FACTORY;
 
     /**
+     * Returns the fields contained by the item.
+     *
+     * The fields are only populated after the item's children are created.
+     *
+     * \since QGIS 4.0
+     */
+    QgsFields fields() const;
+
+    /**
      * Returns the (possibly NULLPTR) properties of the table this fields belong to.
      * \since QGIS 3.16
      */
@@ -109,7 +122,7 @@ class CORE_EXPORT QgsFieldsItem : public QgsDataItem
     QString mConnectionUri;
     bool mCanRename = false;
     std::unique_ptr<QgsAbstractDatabaseProviderConnection::TableProperty> mTableProperty;
-
+    QgsFields mFields;
 };
 
 
@@ -138,7 +151,7 @@ class CORE_EXPORT QgsFieldItem : public QgsDataItem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsFieldItem: %1>" ).arg( sipCpp->name() );
+    QString str = u"<QgsFieldItem: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

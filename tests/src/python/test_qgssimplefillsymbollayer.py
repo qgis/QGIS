@@ -20,9 +20,8 @@ __date__ = "September 2020"
 __copyright__ = "(C) 2020, Nyall Dawson"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QDir, QPointF, QSize, Qt
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (
     QgsFeature,
     QgsFillSymbol,
@@ -37,9 +36,9 @@ from qgis.core import (
     QgsSymbolLayer,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QDir, QPointF, QSize, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -47,7 +46,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsSimpleFillSymbolLayer(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "symbol_simplefill"

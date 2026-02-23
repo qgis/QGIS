@@ -13,12 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#define SIP_NO_FILE
 
 #ifndef QGSGEOMETRYLINELAYERINTERSECTIONCHECK_H
 #define QGSGEOMETRYLINELAYERINTERSECTIONCHECK_H
 
 #include "qgsgeometrycheck.h"
+
+#include <QString>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup analysis
@@ -40,7 +45,7 @@ class ANALYSIS_EXPORT QgsGeometryLineLayerIntersectionCheck : public QgsGeometry
     Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
     static QString factoryDescription() { return tr( "Intersection" ); }
     QString description() const override { return factoryDescription(); }
-    static QString factoryId() { return QStringLiteral( "QgsGeometryLineLayerIntersectionCheck" ); }
+    static QString factoryId() { return u"QgsGeometryLineLayerIntersectionCheck"_s; }
     QString id() const override { return factoryId(); }
     QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
     static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;

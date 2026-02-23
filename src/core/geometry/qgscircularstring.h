@@ -22,7 +22,10 @@
 #include "qgis_sip.h"
 #include "qgscurve.h"
 
+#include <QString>
 #include <QVector>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core
@@ -273,6 +276,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, int *leftOf SIP_OUT = nullptr, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const override;
     bool pointAt( int node, QgsPoint &point, Qgis::VertexType &type ) const override;
     void sumUpArea( double &sum SIP_OUT ) const override;
+    void sumUpArea3D( double &sum SIP_OUT ) const override;
     bool hasCurvedSegments() const override;
     double vertexAngle( QgsVertexId vertex ) const override;
     double segmentLength( QgsVertexId startVertex ) const override;
@@ -336,8 +340,8 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     % MethodCode
     QString wkt = sipCpp->asWkt();
     if ( wkt.length() > 1000 )
-      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
-    QString str = QStringLiteral( "<QgsCircularString: %1>" ).arg( wkt );
+      wkt = wkt.left( 1000 ) + u"..."_s;
+    QString str = u"<QgsCircularString: %1>"_s.arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

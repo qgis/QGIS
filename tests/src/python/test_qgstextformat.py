@@ -10,30 +10,31 @@ __author__ = "Mathieu Pellerin"
 __date__ = "2024-10-20"
 __copyright__ = "Copyright 2024, The QGIS Project"
 
-from qgis.PyQt.QtCore import Qt, QPointF, QSizeF, QT_VERSION_STR
-from qgis.PyQt.QtGui import QFont, QColor, QPainter
+import unittest
+
+from qgis.core import (
+    Qgis,
+    QgsFontUtils,
+    QgsMapUnitScale,
+    QgsMarkerSymbol,
+    QgsPalLayerSettings,
+    QgsProperty,
+    QgsReadWriteContext,
+    QgsRenderContext,
+    QgsSymbolLayerReference,
+    QgsTextBackgroundSettings,
+    QgsTextBufferSettings,
+    QgsTextFormat,
+    QgsTextMaskSettings,
+    QgsTextShadowSettings,
+    QgsVectorLayer,
+)
+from qgis.PyQt.QtCore import QT_VERSION_STR, QPointF, QSizeF, Qt
+from qgis.PyQt.QtGui import QColor, QFont, QPainter
 from qgis.PyQt.QtXml import (
     QDomDocument,
 )
-from qgis.core import (
-    Qgis,
-    QgsMapUnitScale,
-    QgsTextFormat,
-    QgsProperty,
-    QgsPalLayerSettings,
-    QgsReadWriteContext,
-    QgsTextBufferSettings,
-    QgsTextMaskSettings,
-    QgsSymbolLayerReference,
-    QgsTextBackgroundSettings,
-    QgsMarkerSymbol,
-    QgsTextShadowSettings,
-    QgsRenderContext,
-    QgsFontUtils,
-    QgsVectorLayer,
-)
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 from utilities import getTestFont
 
 start_app()
@@ -46,7 +47,6 @@ def createEmptyLayer():
 
 
 class PyQgsTextFormat(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

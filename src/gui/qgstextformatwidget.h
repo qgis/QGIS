@@ -48,7 +48,7 @@ class QgsCharacterSelectorDialog;
  *
  */
 
-class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionContextGenerator, protected Ui::QgsTextFormatWidgetBase
+class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionContextGenerator, public Ui::QgsTextFormatWidgetBase
 {
     Q_OBJECT
     Q_PROPERTY( QgsTextFormat format READ format )
@@ -341,6 +341,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void updateCalloutFrameStatus();
     void updateDataDefinedAlignment();
     void overlapModeChanged();
+    void updateCurvedLabelDescription();
 };
 
 

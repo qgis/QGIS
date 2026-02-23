@@ -29,6 +29,8 @@
 #include <QLibrary>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class QgsProviderMetadata;
 class QgsVectorLayer;
 class QgsCoordinateReferenceSystem;
@@ -59,7 +61,7 @@ class CORE_EXPORT QgsProviderRegistry
 
   public:
 
-    // TODO QGIS 4 - either move to QgsAbstractDataSourceWidget or remove altogether
+    // TODO QGIS 5 - either move to QgsAbstractDataSourceWidget or remove altogether
 
     /**
      * Different ways a source select dialog can be used
@@ -160,7 +162,7 @@ class CORE_EXPORT QgsProviderRegistry
      */
     SIP_SKIP Qgis::VectorExportResult createEmptyLayer( const QString &providerKey, const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options, QString &createdLayerName );
 
-    // TODO QGIS 4.0: rename createOptions to creationOptions for consistency with GDAL
+    // TODO QGIS 5.0: rename createOptions to creationOptions for consistency with GDAL
 
     /**
      * Creates new instance of raster data provider
@@ -416,7 +418,7 @@ class CORE_EXPORT QgsProviderRegistry
 #ifdef SIP_RUN
         SIP_PYOBJECT __repr__();
         % MethodCode
-        QString str = QStringLiteral( "<QgsProviderRegistry.ProviderCandidateDetails: %1>" ).arg( sipCpp->metadata()->key() );
+        QString str = u"<QgsProviderRegistry.ProviderCandidateDetails: %1>"_s.arg( sipCpp->metadata()->key() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
         % End
 #endif
@@ -497,7 +499,7 @@ class CORE_EXPORT QgsProviderRegistry
 #ifdef SIP_RUN
         SIP_PYOBJECT __repr__();
         % MethodCode
-        QString str = QStringLiteral( "<QgsProviderRegistry.UnusableUriDetails: %1>" ).arg( sipCpp->warning );
+        QString str = u"<QgsProviderRegistry.UnusableUriDetails: %1>"_s.arg( sipCpp->warning );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
         % End
 #endif
@@ -598,7 +600,7 @@ class CORE_EXPORT QgsProviderRegistry
      * for URIs which are known to be sidecar files only, such as ".aux.xml" files or ".shp.xml" files,
      * or the "ept-build.json" files which sit alongside Entwine "ept.json" point cloud sources.
      *
-     * This method tests whether any of the registered providers return TRUE for the their
+     * This method tests whether any of the registered providers return TRUE for their
      * QgsProviderMetadata::uriIsBlocklisted() implementation for the specified URI.
      *
      * \since QGIS 3.18

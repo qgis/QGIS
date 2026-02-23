@@ -17,12 +17,13 @@
 #ifndef QGSAUTHMETHODMETADATA_H
 #define QGSAUTHMETHODMETADATA_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
 #include <QString>
+
+#define SIP_NO_FILE
 
 class QgsAuthMethod;
 
@@ -84,9 +85,9 @@ class CORE_EXPORT QgsAuthMethodMetadata
      * Class factory to return a pointer to a newly created QgsDataProvider object
      * \since QGIS 3.22
      */
-    virtual QgsAuthMethod *createAuthMethod() const SIP_FACTORY; // TODO QGIS 4 = 0
+    virtual QgsAuthMethod *createAuthMethod() const SIP_FACTORY; // TODO QGIS 5 = 0
 
-    //virtual QStringList supportedDataProviders() const; // TODO QGIS 4 = 0;
+    //virtual QStringList supportedDataProviders() const; // TODO QGIS 5 = 0;
 
   private:
 

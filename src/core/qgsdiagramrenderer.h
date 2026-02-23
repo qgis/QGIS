@@ -30,6 +30,9 @@
 #include <QList>
 #include <QPointF>
 #include <QSizeF>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsDiagramRenderer;
 class QgsFeature;
@@ -741,11 +744,11 @@ class CORE_EXPORT QgsDiagramRenderer
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( sipCpp->rendererName() == QLatin1String( "SingleCategory" ) )
+    if ( sipCpp->rendererName() == "SingleCategory"_L1 )
       sipType = sipType_QgsSingleCategoryDiagramRenderer;
-    else if ( sipCpp->rendererName() == QLatin1String( "LinearlyInterpolated" ) )
+    else if ( sipCpp->rendererName() == "LinearlyInterpolated"_L1 )
       sipType = sipType_QgsLinearlyInterpolatedDiagramRenderer;
-    else if ( sipCpp->rendererName() == QLatin1String( "Stacked" ) )
+    else if ( sipCpp->rendererName() == "Stacked"_L1 )
       sipType = sipType_QgsStackedDiagramRenderer;
     else
       sipType = NULL;

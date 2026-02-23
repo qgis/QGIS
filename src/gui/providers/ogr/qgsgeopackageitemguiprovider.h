@@ -22,9 +22,13 @@
 #include "qgsmimedatautils.h"
 
 #include <QObject>
+#include <QString>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 class QgsGeoPackageCollectionItem;
 class QgsGeoPackageRootItem;
@@ -36,7 +40,7 @@ class QgsGeoPackageItemGuiProvider : public QObject, public QgsDataItemGuiProvid
   public:
     QgsGeoPackageItemGuiProvider() = default;
 
-    QString name() override { return QStringLiteral( "geopackage_items" ); }
+    QString name() override { return u"geopackage_items"_s; }
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 

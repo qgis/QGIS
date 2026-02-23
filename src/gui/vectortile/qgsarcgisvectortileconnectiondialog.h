@@ -17,11 +17,12 @@
 #define QGSARCGISVECTORTILECONNECTIONDIALOG_H
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 #include "ui_qgsarcgisvectortileconnectiondialog.h"
 
 #include <QDialog>
+
+#define SIP_NO_FILE
 
 class QgsArcgisVectorTileConnectionDialog : public QDialog, public Ui::QgsArcgisVectorTileConnectionDialog
 {

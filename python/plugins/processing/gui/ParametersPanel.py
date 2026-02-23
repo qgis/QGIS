@@ -25,31 +25,30 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 from qgis.core import (
     Qgis,
+    QgsProcessingModelAlgorithm,
+    QgsProcessingOutputLayerDefinition,
     QgsProcessingParameterDefinition,
     QgsProcessingParameterExtent,
     QgsProject,
-    QgsProcessingModelAlgorithm,
-    QgsProcessingOutputLayerDefinition,
 )
 from qgis.gui import (
-    QgsProcessingContextGenerator,
-    QgsProcessingParameterWidgetContext,
-    QgsProcessingParametersWidget,
-    QgsGui,
-    QgsProcessingGui,
-    QgsProcessingParametersGenerator,
-    QgsProcessingHiddenWidgetWrapper,
     QgsAbstractProcessingParameterWidgetWrapper,
+    QgsGui,
+    QgsProcessingContextGenerator,
+    QgsProcessingGui,
+    QgsProcessingHiddenWidgetWrapper,
+    QgsProcessingParametersGenerator,
+    QgsProcessingParametersWidget,
+    QgsProcessingParameterWidgetContext,
 )
 from qgis.utils import iface
 
-from processing.gui.wrappers import WidgetWrapperFactory, WidgetWrapper
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
+from processing.gui.wrappers import WidgetWrapper, WidgetWrapperFactory
 from processing.tools.dataobjects import createContext
 
 
 class ParametersPanel(QgsProcessingParametersWidget):
-
     def __init__(self, parent, alg, in_place=False, active_layer=None):
         super().__init__(alg, parent)
         self.in_place = in_place
@@ -62,7 +61,6 @@ class ParametersPanel(QgsProcessingParametersWidget):
         self.processing_context = createContext()
 
         class ContextGenerator(QgsProcessingContextGenerator):
-
             def __init__(self, context):
                 super().__init__()
                 self.processing_context = context
@@ -133,7 +131,7 @@ class ParametersPanel(QgsProcessingParametersWidget):
                 # For compatibility with 3.x API, we need to check whether the wrapper is
                 # the deprecated WidgetWrapper class. If not, it's the newer
                 # QgsAbstractProcessingParameterWidgetWrapper class
-                # TODO QGIS 4.0 - remove
+                # TODO QGIS 5.0 - remove
                 is_python_wrapper = issubclass(wrapper.__class__, WidgetWrapper)
                 stretch = 0
                 if not is_python_wrapper:
@@ -239,7 +237,7 @@ class ParametersPanel(QgsProcessingParametersWidget):
                 # For compatibility with 3.x API, we need to check whether the wrapper is
                 # the deprecated WidgetWrapper class. If not, it's the newer
                 # QgsAbstractProcessingParameterWidgetWrapper class
-                # TODO QGIS 4.0 - remove
+                # TODO QGIS 5.0 - remove
                 if issubclass(wrapper.__class__, WidgetWrapper):
                     widget = wrapper.widget
                 else:

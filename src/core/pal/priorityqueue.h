@@ -30,11 +30,12 @@
 #ifndef PAL_PRIORITYQUEUE_H
 #define PAL_PRIORITYQUEUE_H
 
-#define SIP_NO_FILE
 
 
 #include <iostream>
 #include <memory>
+
+#define SIP_NO_FILE
 
 #define LEFT(x) (2*x+1)
 #define RIGHT(x) (2*x+2)

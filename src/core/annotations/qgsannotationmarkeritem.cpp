@@ -23,6 +23,10 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAnnotationMarkerItem::QgsAnnotationMarkerItem( const QgsPoint &point )
   : QgsAnnotationItem()
   , mPoint( point )
@@ -35,7 +39,7 @@ QgsAnnotationMarkerItem::~QgsAnnotationMarkerItem() = default;
 
 QString QgsAnnotationMarkerItem::type() const
 {
-  return QStringLiteral( "marker" );
+  return u"marker"_s;
 }
 
 void QgsAnnotationMarkerItem::render( QgsRenderContext &context, QgsFeedback * )
@@ -61,9 +65,9 @@ void QgsAnnotationMarkerItem::render( QgsRenderContext &context, QgsFeedback * )
 
 bool QgsAnnotationMarkerItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
-  element.setAttribute( QStringLiteral( "x" ), qgsDoubleToString( mPoint.x() ) );
-  element.setAttribute( QStringLiteral( "y" ), qgsDoubleToString( mPoint.y() ) );
-  element.appendChild( QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "markerSymbol" ), mSymbol.get(), document, context ) );
+  element.setAttribute( u"x"_s, qgsDoubleToString( mPoint.x() ) );
+  element.setAttribute( u"y"_s, qgsDoubleToString( mPoint.y() ) );
+  element.appendChild( QgsSymbolLayerUtils::saveSymbol( u"markerSymbol"_s, mSymbol.get(), document, context ) );
 
   writeCommonProperties( element, document, context );
 
@@ -106,6 +110,17 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationMarkerItem::applyEditV2( Qg
       return Qgis::AnnotationItemEditOperationResult::Success;
     }
 
+    case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:
+    {
+      QgsAnnotationItemEditOperationRotateItem *rotateOperation = qgis::down_cast< QgsAnnotationItemEditOperationRotateItem * >( operation );
+      if ( mSymbol )
+      {
+        mSymbol->setAngle( std::fmod( mSymbol->angle() + rotateOperation->angle(), 360.0 ) );
+        return Qgis::AnnotationItemEditOperationResult::Success;
+      }
+      break;
+    }
+
     case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
       break;
   }
@@ -129,6 +144,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationMarkerItem::transie
       return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( new QgsPoint( mPoint.x() + moveOperation->translationX(), mPoint.y() + moveOperation->translationY() ) ) );
     }
 
+    case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
     case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
       break;
@@ -143,11 +159,11 @@ QgsAnnotationMarkerItem *QgsAnnotationMarkerItem::create()
 
 bool QgsAnnotationMarkerItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  const double x = element.attribute( QStringLiteral( "x" ) ).toDouble();
-  const double y = element.attribute( QStringLiteral( "y" ) ).toDouble();
+  const double x = element.attribute( u"x"_s ).toDouble();
+  const double y = element.attribute( u"y"_s ).toDouble();
   mPoint = QgsPoint( x, y );
 
-  const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement symbolElem = element.firstChildElement( u"symbol"_s );
   if ( !symbolElem.isNull() )
     setSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, context ).release() );
 

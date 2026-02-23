@@ -11,15 +11,15 @@ __date__ = "13/04/2018"
 __copyright__ = "Copyright 2018, The QGIS Project"
 
 
-from qgis.core import QgsLineSegment2D, QgsPointXY
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.core import QgsLineSegment2D, QgsPointXY
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsLineSegment2D(QgisTestCase):
-
     def testConstruct(self):
         segment = QgsLineSegment2D(QgsPointXY(1, 2), QgsPointXY(3, 4))
         self.assertEqual(segment.start(), QgsPointXY(1, 2))

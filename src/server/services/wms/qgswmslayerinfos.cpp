@@ -30,6 +30,10 @@
 #include "qgsserverprojectutils.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsRectangle QgsWmsLayerInfos::transformExtent(
   const QgsRectangle &extent,
   const QgsCoordinateReferenceSystem &source,
@@ -97,7 +101,7 @@ bool setBoundingRect(
         }
         catch ( QgsCsException &cse )
         {
-          QgsMessageLog::logMessage( QStringLiteral( "Error transforming extent for layer %1: %2" ).arg( ml->name() ).arg( cse.what() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
+          QgsMessageLog::logMessage( u"Error transforming extent for layer %1: %2"_s.arg( ml->name() ).arg( cse.what() ), u"Server"_s, Qgis::MessageLevel::Warning );
           return false;
         }
       }
@@ -110,7 +114,7 @@ bool setBoundingRect(
     }
     catch ( const QgsCsException &cse )
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Error transforming extent for layer %1: %2" ).arg( ml->name() ).arg( cse.what() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
+      QgsMessageLog::logMessage( u"Error transforming extent for layer %1: %2"_s.arg( ml->name() ).arg( cse.what() ), u"Server"_s, Qgis::MessageLevel::Warning );
       return false;
     }
   }
@@ -127,7 +131,7 @@ bool setBoundingRect(
   }
   catch ( QgsCsException &cse )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Error transforming extent for layer %1: %2" ).arg( ml->name() ).arg( cse.what() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
+    QgsMessageLog::logMessage( u"Error transforming extent for layer %1: %2"_s.arg( ml->name() ).arg( cse.what() ), u"Server"_s, Qgis::MessageLevel::Warning );
     return false;
   }
 

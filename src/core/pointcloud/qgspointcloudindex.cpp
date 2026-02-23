@@ -22,7 +22,6 @@
 #include "qgslogger.h"
 #include "qgspointcloudeditingindex.h"
 #include "qgspointcloudstatistics.h"
-#include "qgstiledownloadmanager.h"
 
 #include <QDir>
 #include <QFile>
@@ -30,10 +29,12 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QString>
 #include <QTime>
 #include <QtDebug>
 #include <qglobal.h>
-#include <qstringliteral.h>
+
+using namespace Qt::StringLiterals;
 
 QgsPointCloudNodeId::QgsPointCloudNodeId()
   : mX( 0 )
@@ -63,7 +64,7 @@ QgsPointCloudNodeId QgsPointCloudNodeId::fromString( const QString &str )
 
 QString QgsPointCloudNodeId::toString() const
 {
-  return QStringLiteral( "%1-%2-%3-%4" ).arg( mD ).arg( mX ).arg( mY ).arg( mZ );
+  return u"%1-%2-%3-%4"_s.arg( mD ).arg( mX ).arg( mY ).arg( mZ );
 }
 
 int QgsPointCloudNodeId::d() const
@@ -314,7 +315,7 @@ void QgsAbstractPointCloudIndex::storeNodeDataToCacheStatic( QgsPointCloudBlock 
   const int cost = data->pointCount() * data->pointRecordSize();
 
   QMutexLocker l( &sBlockCacheMutex );
-  QgsDebugMsgLevel( QStringLiteral( "(%1/%2): Caching node %3 of %4" ).arg( sBlockCache.totalCost() ).arg( sBlockCache.maxCost() ).arg( key.node().toString() ).arg( key.uri() ), 4 );
+  QgsDebugMsgLevel( u"(%1/%2): Caching node %3 of %4"_s.arg( sBlockCache.totalCost() ).arg( sBlockCache.maxCost() ).arg( key.node().toString() ).arg( key.uri() ), 4 );
   sBlockCache.insert( key, data->clone(), cost );
 }
 
@@ -351,7 +352,7 @@ bool QgsPointCloudIndex::isValid() const
 
 QString QgsPointCloudIndex::error() const
 {
-  return mIndex ? mIndex->error() : QStringLiteral( "Index is NULL" );
+  return mIndex ? mIndex->error() : u"Index is NULL"_s;
 }
 
 Qgis::PointCloudAccessType QgsPointCloudIndex::accessType() const
@@ -473,6 +474,11 @@ int QgsPointCloudIndex::span() const
   return mIndex->span();
 }
 
+QString QgsPointCloudIndex::uri() const
+{
+  Q_ASSERT( mIndex );
+  return mIndex->uri();
+}
 
 bool QgsPointCloudIndex::setSubsetString( const QString &subset )
 {

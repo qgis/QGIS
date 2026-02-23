@@ -53,7 +53,8 @@ class GUI_EXPORT QgsAttributeEditorContext
       MultiEditMode,       //!< Multi edit mode, for editing fields of multiple features at once
       SearchMode,          //!< Form values are used for searching/filtering the layer
       AggregateSearchMode, //!< Form is in aggregate search mode, show each widget in this mode
-      IdentifyMode         //!< Identify the feature
+      IdentifyMode,        //!< Identify the feature
+      PreviewMode          //!< Preview mode, for previewing attribute configurations \since QGIS 4.0
     };
     Q_ENUM( Mode )
 
@@ -158,7 +159,7 @@ class GUI_EXPORT QgsAttributeEditorContext
      * \see vectorLayerTools()
      */
     inline void setVectorLayerTools( QgsVectorLayerTools *vlTools ) { mVectorLayerTools = vlTools; }
-    // TODO QGIS 4.0 - rename vlTools to tools
+    // TODO QGIS 5.0 - rename vlTools to tools
 
     /**
      * Returns the associated vector layer tools.

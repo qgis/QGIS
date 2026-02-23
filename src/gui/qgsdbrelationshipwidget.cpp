@@ -17,13 +17,17 @@
 
 #include "qgsdatabasetablemodel.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgsproviderregistry.h"
 
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QSortFilterProxyModel>
+#include <QString>
 
 #include "moc_qgsdbrelationshipwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsDbRelationWidget
@@ -126,9 +130,9 @@ void QgsDbRelationWidget::setRelationship( const QgsWeakRelation &relationship )
   mStrengthCombo->setCurrentIndex( mStrengthCombo->findData( QVariant::fromValue( mRelation.strength() ) ) );
 
   QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( mConnection->providerKey(), mRelation.referencedLayerSource() );
-  mLeftTableCombo->setCurrentText( parts.value( QStringLiteral( "layerName" ) ).toString() );
+  mLeftTableCombo->setCurrentText( parts.value( u"layerName"_s ).toString() );
   parts = QgsProviderRegistry::instance()->decodeUri( mConnection->providerKey(), mRelation.referencingLayerSource() );
-  mRightTableCombo->setCurrentText( parts.value( QStringLiteral( "layerName" ) ).toString() );
+  mRightTableCombo->setCurrentText( parts.value( u"layerName"_s ).toString() );
 
   mCardinalityCombo->setCurrentIndex( mCardinalityCombo->findData( QVariant::fromValue( mRelation.cardinality() ) ) );
   mLeftFieldsCombo->setCurrentText( mRelation.referencedLayerFields().value( 0 ) );
@@ -187,15 +191,18 @@ bool QgsDbRelationWidget::isValid() const
 QgsDbRelationDialog::QgsDbRelationDialog( QgsAbstractDatabaseProviderConnection *connection, QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
 {
-  setObjectName( QStringLiteral( "QgsDbRelationDialog" ) );
+  setObjectName( u"QgsDbRelationDialog"_s );
 
   QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsDbRelationWidget( connection );
   vLayout->addWidget( mWidget, 1 );
 
-  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+  mButtonBox = new QDialogButtonBox( QDialogButtonBox::StandardButton::Cancel | QDialogButtonBox::StandardButton::Help | QDialogButtonBox::StandardButton::Ok );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( u"working_with_vector/joins_relations.html#dataset-stored-relationships"_s );
+  } );
   vLayout->addWidget( mButtonBox );
 
   setLayout( vLayout );

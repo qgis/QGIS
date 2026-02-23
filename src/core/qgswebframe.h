@@ -16,18 +16,15 @@
 #ifndef QGSWEBFRAME_H
 #define QGSWEBFRAME_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
-
-#ifdef WITH_QTWEBKIT
-#include <QWebFrame>
-#else
 
 #include <QObject>
 #include <QPainter>
 #include <QUrl>
 #include <QVariant>
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup core
@@ -90,5 +87,4 @@ class CORE_EXPORT QWebFrame : public QObject
     void javaScriptWindowObjectCleared();
 /// @endcond
 };
-#endif
 #endif // QGSWEBFRAME_H

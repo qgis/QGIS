@@ -11,27 +11,28 @@ __date__ = "2021-05"
 __copyright__ = "Copyright 2021, The QGIS Project"
 
 
+import unittest
+
 from qgis.core import (
+    Qgis,
     QgsAnnotationLayer,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransformContext,
     QgsGroupLayer,
     QgsMapLayerType,
     QgsMapLayerUtils,
+    QgsNotSupportedException,
     QgsProject,
     QgsRasterLayer,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsMapLayerUtils(QgisTestCase):
-
     def testCombinedExtent(self):
         extent = QgsMapLayerUtils.combinedExtent(
             [], QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext()
@@ -132,6 +133,56 @@ class TestQgsMapLayerUtils(QgisTestCase):
         self.assertTrue(
             QgsMapLayerUtils.layerSourceMatchesPath(
                 rl, unitTestDataPath() + "/mixed_layers.gpkg"
+            )
+        )
+
+    def test_layerRefersToUri(self):
+        """
+        Test QgsMapLayerUtils.layerRefersToUri()
+        """
+        self.assertFalse(QgsMapLayerUtils.layerRefersToUri(None, ""))
+        self.assertFalse(QgsMapLayerUtils.layerRefersToUri(None, "aaaaa"))
+
+        # not supported
+        layer2 = QgsRasterLayer(unitTestDataPath() + "/landsat-f32-b1.tif", "l2")
+        with self.assertRaises(QgsNotSupportedException):
+            QgsMapLayerUtils.layerRefersToUri(layer2, "")
+
+        # shapefile
+        layer1 = QgsVectorLayer(unitTestDataPath() + "/points.shp", "l1")
+        self.assertFalse(QgsMapLayerUtils.layerRefersToUri(layer1, ""))
+        self.assertFalse(QgsMapLayerUtils.layerRefersToUri(layer1, "aaaaa"))
+        self.assertTrue(
+            QgsMapLayerUtils.layerRefersToUri(
+                layer1, unitTestDataPath() + "/points.shp"
+            )
+        )
+
+        # geopackage with layers
+        layer1 = QgsVectorLayer(
+            unitTestDataPath() + "/mixed_layers.gpkg|layername=lines", "l1"
+        )
+        self.assertFalse(QgsMapLayerUtils.layerRefersToUri(layer1, ""))
+        self.assertFalse(QgsMapLayerUtils.layerRefersToUri(layer1, "aaaaa"))
+        self.assertTrue(
+            QgsMapLayerUtils.layerRefersToUri(
+                layer1,
+                unitTestDataPath() + "/mixed_layers.gpkg|layername=points",
+                Qgis.SourceHierarchyLevel.Connection,
+            )
+        )
+        self.assertFalse(
+            QgsMapLayerUtils.layerRefersToUri(
+                layer1,
+                unitTestDataPath() + "/mixed_layers.gpkg|layername=points",
+                Qgis.SourceHierarchyLevel.Object,
+            )
+        )
+        self.assertTrue(
+            QgsMapLayerUtils.layerRefersToUri(
+                layer1,
+                unitTestDataPath() + "/mixed_layers.gpkg|layername=lines",
+                Qgis.SourceHierarchyLevel.Object,
             )
         )
 

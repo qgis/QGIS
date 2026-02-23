@@ -35,7 +35,10 @@
 #include <QList>
 #include <QMap>
 #include <QPair>
+#include <QString>
 #include <QVector>
+
+using namespace Qt::StringLiterals;
 
 class QgsMapToPixel;
 class QgsRasterRenderer;
@@ -170,7 +173,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsRasterLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+    QString str = u"<QgsRasterLayer: '%1' (%2)>"_s.arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : u"Invalid"_s );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -195,7 +198,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      * returned in \a retError.
      */
     static bool isValidRasterFileName( const QString &fileNameQString, QString &retError );
-    // TODO QGIS 4.0 - rename fileNameQString to fileName
+    // TODO QGIS 5.0 - rename fileNameQString to fileName
 
     static bool isValidRasterFileName( const QString &fileNameQString );
 

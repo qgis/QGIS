@@ -32,6 +32,10 @@
 #include "qgsrendercontext.h"
 #include "qgsrenderer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsSymbolLayer;
 class QTextCodec;
 class QgsFeatureIterator;
@@ -129,7 +133,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     {
       public:
         BoolOption( const QString &docString, bool defaultValue )
-          : SetOption( docString, QStringList() << QStringLiteral( "YES" ) << QStringLiteral( "NO" ), defaultValue ? "YES" : "NO" )
+          : SetOption( docString, QStringList() << u"YES"_s << u"NO"_s, defaultValue ? "YES" : "NO" )
         {}
     };
 
@@ -895,7 +899,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      *
      * \since QGIS 3.44
      */
-    QMap<int, int> sourceFieldIndexToWriterFieldIndex() const { return mAttrIdxToOgrIdx; }
+    QMap<int, int> sourceFieldIndexToWriterFieldIndex() const { return mAttrIdxToProviderIdx; }
 
     //! Close opened shapefile for writing
     ~QgsVectorFileWriter() override;
@@ -997,8 +1001,12 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     //! Geometry type which is being used
     Qgis::WkbType mWkbType;
 
-    //! Map attribute indizes to OGR field indexes
-    QMap<int, int> mAttrIdxToOgrIdx;
+    //! Map attribute indices to OGR provider field indexes such as they are *after* the OGR provider has been created
+    // In particular for a GeoPackage file, a field with the FID column is always put in first position.
+    QMap<int, int> mAttrIdxToProviderIdx;
+
+    //! Map attribute indices to OGR layer field indexes such as they are on the current mLayer instance
+    QMap<int, int> mAttrIdxToOgrLayerIdx;
 
     Qgis::FeatureSymbologyExport mSymbologyExport = Qgis::FeatureSymbologyExport::NoSymbology;
 

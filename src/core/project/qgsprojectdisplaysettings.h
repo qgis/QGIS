@@ -23,7 +23,10 @@
 #include "qgscoordinatereferencesystem.h"
 
 #include <QObject>
+#include <QString>
 #include <QVector>
+
+using namespace Qt::StringLiterals;
 
 class QDomElement;
 class QgsReadWriteContext;
@@ -224,7 +227,7 @@ class CORE_EXPORT QgsProjectDisplaySettings : public QObject
     std::unique_ptr< QgsGeographicCoordinateNumericFormat > mGeographicCoordinateFormat;
 
     Qgis::CoordinateDisplayType mCoordinateType = Qgis::CoordinateDisplayType::MapCrs;
-    QgsCoordinateReferenceSystem mCoordinateCustomCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+    QgsCoordinateReferenceSystem mCoordinateCustomCrs = QgsCoordinateReferenceSystem( u"EPSG:4326"_s );
     QgsCoordinateReferenceSystem mCoordinateCrs;
     Qgis::CoordinateOrder mCoordinateAxisOrder = Qgis::CoordinateOrder::Default;
 

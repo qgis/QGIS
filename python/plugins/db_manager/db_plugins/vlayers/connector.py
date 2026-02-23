@@ -17,26 +17,24 @@ email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
 """
 
-from qgis.PyQt.QtCore import QUrl, QTemporaryFile
+import sqlite3
+
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsDataSourceUri,
+    QgsMapLayerType,
+    QgsProject,
+    QgsVectorLayer,
+    QgsVirtualLayerDefinition,
+    QgsWkbTypes,
+)
+from qgis.PyQt.QtCore import QTemporaryFile, QUrl
 
 from ..connector import DBConnector
 from ..plugin import Table
 
-from qgis.core import (
-    QgsDataSourceUri,
-    QgsVirtualLayerDefinition,
-    QgsProject,
-    QgsMapLayerType,
-    QgsVectorLayer,
-    QgsCoordinateReferenceSystem,
-    QgsWkbTypes,
-)
-
-import sqlite3
-
 
 class sqlite3_connection:
-
     def __init__(self, sqlite_file):
         self.conn = sqlite3.connect(sqlite_file)
 
@@ -110,7 +108,6 @@ class VLayerRegistry:
 
 
 class VLayerConnector(DBConnector):
-
     def __init__(self, uri):
         super().__init__(uri)
 
@@ -119,7 +116,6 @@ class VLayerConnector(DBConnector):
     def _execute(self, cursor, sql):
         # This is only used to get list of fields
         class DummyCursor:
-
             def __init__(self, sql):
                 self.sql = sql
 
@@ -214,7 +210,6 @@ class VLayerConnector(DBConnector):
         lst = []
         for _, l in QgsProject.instance().mapLayers().items():
             if l.type() == QgsMapLayerType.VectorLayer:
-
                 if not l.isValid():
                     continue
 

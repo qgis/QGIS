@@ -20,15 +20,19 @@
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QString QgsPostgresLayerMetadataProvider::id() const
 {
-  return QStringLiteral( "postgres" );
+  return u"postgres"_s;
 }
 
 QgsLayerMetadataSearchResults QgsPostgresLayerMetadataProvider::search( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const
 {
   QgsLayerMetadataSearchResults results;
-  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) ) };
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( u"postgres"_s ) };
 
   if ( md && ( !feedback || !feedback->isCanceled() ) )
   {
@@ -40,7 +44,7 @@ QgsLayerMetadataSearchResults QgsPostgresLayerMetadataProvider::search( const Qg
         break;
       }
 
-      if ( conn->configuration().value( QStringLiteral( "metadataInDatabase" ), false ).toBool() )
+      if ( conn->configuration().value( u"metadataInDatabase"_s, false ).toBool() )
       {
         if ( const QgsAbstractDatabaseProviderConnection *dbConn = static_cast<const QgsAbstractDatabaseProviderConnection *>( conn ) )
         {

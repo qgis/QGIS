@@ -17,19 +17,13 @@ import glob
 import os
 import shutil
 import tempfile
+import unittest
 
-from qgis.PyQt.QtCore import (
-    QDate,
-    QDateTime,
-    Qt,
-    QTemporaryDir,
-    QTime,
-    QTimer,
-    QVariant,
-)
-from qgis.PyQt.QtGui import QColor, QPainter
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
+import geopandas as gpd
+import numpy as np
+import pandas as pd
+import shapely
+from featuresourcetestbase import FeatureSourceTestCase
 from qgis.core import (
     NULL,
     Qgis,
@@ -83,16 +77,20 @@ from qgis.core import (
     QgsWkbTypes,
 )
 from qgis.gui import QgsAttributeTableModel, QgsGui
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
-from featuresourcetestbase import FeatureSourceTestCase
+from qgis.PyQt.QtCore import (
+    QDate,
+    QDateTime,
+    Qt,
+    QTemporaryDir,
+    QTime,
+    QTimer,
+    QVariant,
+)
+from qgis.PyQt.QtGui import QColor, QPainter
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
-
-import geopandas as gpd
-import pandas as pd
-import shapely
-import numpy as np
 
 TEST_DATA_DIR = unitTestDataPath()
 
@@ -223,7 +221,6 @@ def dumpEditBuffer(layer):
 
 
 class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
-
     @classmethod
     def getSource(cls):
         vl = QgsVectorLayer(
@@ -2745,9 +2742,7 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         QgsProject.instance().setEllipsoid("WGS84")
         QgsProject.instance().setAreaUnits(QgsUnitTypes.AreaUnit.AreaSquareMeters)
 
-        idx = temp_layer.addExpressionField(
-            "$area", QgsField("area", QVariant.Double)
-        )  # NOQA
+        idx = temp_layer.addExpressionField("$area", QgsField("area", QVariant.Double))  # NOQA
 
         # check value
         f = next(temp_layer.getFeatures())
@@ -4187,7 +4182,6 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
 class TestQgsVectorLayerSourceAddedFeaturesInBuffer(
     QgisTestCase, FeatureSourceTestCase
 ):
-
     @classmethod
     def getSource(cls):
         vl = QgsVectorLayer(
@@ -4300,7 +4294,6 @@ class TestQgsVectorLayerSourceAddedFeaturesInBuffer(
 class TestQgsVectorLayerSourceChangedGeometriesInBuffer(
     QgisTestCase, FeatureSourceTestCase
 ):
-
     @classmethod
     def getSource(cls):
         vl = QgsVectorLayer(
@@ -4413,7 +4406,6 @@ class TestQgsVectorLayerSourceChangedGeometriesInBuffer(
 class TestQgsVectorLayerSourceChangedAttributesInBuffer(
     QgisTestCase, FeatureSourceTestCase
 ):
-
     @classmethod
     def getSource(cls):
         vl = QgsVectorLayer(
@@ -4594,7 +4586,6 @@ class TestQgsVectorLayerSourceChangedAttributesInBuffer(
 class TestQgsVectorLayerSourceChangedGeometriesAndAttributesInBuffer(
     QgisTestCase, FeatureSourceTestCase
 ):
-
     @classmethod
     def getSource(cls):
         vl = QgsVectorLayer(
@@ -4779,7 +4770,6 @@ class TestQgsVectorLayerSourceChangedGeometriesAndAttributesInBuffer(
 class TestQgsVectorLayerSourceDeletedFeaturesInBuffer(
     QgisTestCase, FeatureSourceTestCase
 ):
-
     @classmethod
     def getSource(cls):
         vl = QgsVectorLayer(
@@ -4978,7 +4968,6 @@ class TestQgsVectorLayerSourceDeletedFeaturesInBuffer(
 
 
 class TestQgsVectorLayerTransformContext(QgisTestCase):
-
     def setUp(self):
         """Prepare tc"""
         super().setUp()

@@ -23,7 +23,10 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QSettings>
+#include <QString>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 QgsUserProfile::QgsUserProfile( const QString &folder )
 {
@@ -79,7 +82,7 @@ const QString QgsUserProfile::alias() const
     return profileAlias;
   }
 
-  sqlite3_statement_unique_ptr preparedStatement = database.prepare( QStringLiteral( "SELECT value FROM tbl_config_variables WHERE variable = 'ALIAS'" ), result );
+  sqlite3_statement_unique_ptr preparedStatement = database.prepare( u"SELECT value FROM tbl_config_variables WHERE variable = 'ALIAS'"_s, result );
   if ( result == SQLITE_OK )
   {
     if ( preparedStatement.step() == SQLITE_ROW )
@@ -115,7 +118,7 @@ QgsError QgsUserProfile::setAlias( const QString &alias ) const
     return error;
   }
 
-  const QString sql = QStringLiteral( "INSERT OR REPLACE INTO tbl_config_variables VALUES ('ALIAS', %1);" ).arg(
+  const QString sql = u"INSERT OR REPLACE INTO tbl_config_variables VALUES ('ALIAS', %1);"_s.arg(
                         QgsSqliteUtils::quotedString( alias ) );
 
   sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );

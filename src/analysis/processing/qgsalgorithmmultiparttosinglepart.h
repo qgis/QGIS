@@ -18,11 +18,16 @@
 #ifndef QGSALGORITHMMULTIPARTTOSINGLEPART_H
 #define QGSALGORITHMMULTIPARTTOSINGLEPART_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsapplication.h"
 #include "qgsprocessingalgorithm.h"
+
+#include <QString>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -33,8 +38,8 @@ class QgsMultipartToSinglepartAlgorithm : public QgsProcessingFeatureBasedAlgori
 {
   public:
     QgsMultipartToSinglepartAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmMultiToSingle.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmMultiToSingle.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmMultiToSingle.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmMultiToSingle.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QString outputName() const override;

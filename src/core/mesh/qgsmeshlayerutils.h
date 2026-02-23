@@ -18,7 +18,6 @@
 #ifndef QGSMESHLAYERUTILS_H
 #define QGSMESHLAYERUTILS_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 #include "qgsmaptopixel.h"
@@ -28,6 +27,8 @@
 
 #include <QSize>
 #include <QVector>
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 
@@ -71,7 +72,7 @@ class CORE_EXPORT QgsMeshLayerUtils
      * \brief Returns N vector/scalar values from the index from the dataset
      *
      * See QgsMeshLayerUtils::datasetValuesCount() to determine maximum number of values to be requested
-     * See QgsMeshLayerUtils::datasetValuesType() to see the the type of values the function returns
+     * See QgsMeshLayerUtils::datasetValuesType() to see the type of values the function returns
      * See QgsMeshDatasetGroupMetadata::isVector() to check if the returned value is vector or scalar
      *
      * \since QGIS 3.12

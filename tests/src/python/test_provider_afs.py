@@ -13,7 +13,38 @@ __date__ = "2018-02-16"
 __copyright__ = "Copyright 2018, Nyall Dawson"
 
 import tempfile
+import unittest
 
+from providertestbase import ProviderTestCase
+from qgis.core import (
+    NULL,
+    Qgis,
+    QgsApplication,
+    QgsBox3d,
+    QgsCategorizedSymbolRenderer,
+    QgsColorRampTransformer,
+    QgsCoordinateReferenceSystem,
+    QgsFeature,
+    QgsFieldConstraints,
+    QgsFillSymbol,
+    QgsGeometry,
+    QgsGradientColorRamp,
+    QgsGraduatedSymbolRenderer,
+    QgsLayerMetadata,
+    QgsProviderRegistry,
+    QgsRectangle,
+    QgsRendererRange,
+    QgsSettings,
+    QgsSingleSymbolRenderer,
+    QgsSymbol,
+    QgsSymbolLayer,
+    QgsUnsetAttributeValue,
+    QgsVectorDataProvider,
+    QgsVectorDataProviderTemporalCapabilities,
+    QgsVectorLayer,
+    QgsVectorLayerUtils,
+    QgsWkbTypes,
+)
 from qgis.PyQt.QtCore import (
     QCoreApplication,
     QDate,
@@ -22,43 +53,10 @@ from qgis.PyQt.QtCore import (
     Qt,
     QTime,
 )
-from qgis.core import (
-    Qgis,
-    NULL,
-    QgsApplication,
-    QgsBox3d,
-    QgsCategorizedSymbolRenderer,
-    QgsCoordinateReferenceSystem,
-    QgsFeature,
-    QgsFieldConstraints,
-    QgsGeometry,
-    QgsLayerMetadata,
-    QgsProviderRegistry,
-    QgsRectangle,
-    QgsSettings,
-    QgsVectorDataProvider,
-    QgsVectorDataProviderTemporalCapabilities,
-    QgsVectorLayer,
-    QgsWkbTypes,
-    QgsGraduatedSymbolRenderer,
-    QgsSymbol,
-    QgsRendererRange,
-    QgsSingleSymbolRenderer,
-    QgsFillSymbol,
-    QgsSymbolLayer,
-    QgsColorRampTransformer,
-    QgsGradientColorRamp,
-    QgsUnsetAttributeValue,
-    QgsVectorLayerUtils,
-)
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
-from providertestbase import ProviderTestCase
+from qgis.testing import QgisTestCase, start_app
 
 
 class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
-
     def treat_date_as_datetime(self):
         return True
 

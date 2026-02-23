@@ -24,6 +24,10 @@
 #include "qgslocatorfilter.h"
 #include "qgsvectorlayerfeatureiterator.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
 {
     Q_OBJECT
@@ -31,10 +35,10 @@ class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
   public:
     QgsAllLayersFeaturesLocatorFilter( QObject *parent = nullptr );
     QgsAllLayersFeaturesLocatorFilter *clone() const override;
-    QString name() const override { return QStringLiteral( "allfeatures" ); }
+    QString name() const override { return u"allfeatures"_s; }
     QString displayName() const override { return tr( "Features in All Layers" ); }
     Priority priority() const override { return Medium; }
-    QString prefix() const override { return QStringLiteral( "af" ); }
+    QString prefix() const override { return u"af"_s; }
 
     QStringList prepare( const QString &string, const QgsLocatorContext &context ) override;
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;

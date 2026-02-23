@@ -18,13 +18,18 @@
 #include "qgsalgorithmpdalbuildvpc.h"
 
 #include "qgspointcloudlayer.h"
+#include "qgsprocessingfeedback.h"
 #include "qgsrunprocess.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
 QString QgsPdalBuildVpcAlgorithm::name() const
 {
-  return QStringLiteral( "virtualpointcloud" );
+  return u"virtualpointcloud"_s;
 }
 
 QString QgsPdalBuildVpcAlgorithm::displayName() const
@@ -39,7 +44,7 @@ QString QgsPdalBuildVpcAlgorithm::group() const
 
 QString QgsPdalBuildVpcAlgorithm::groupId() const
 {
-  return QStringLiteral( "pointclouddatamanagement" );
+  return u"pointclouddatamanagement"_s;
 }
 
 QStringList QgsPdalBuildVpcAlgorithm::tags() const
@@ -64,30 +69,35 @@ QgsPdalBuildVpcAlgorithm *QgsPdalBuildVpcAlgorithm::createInstance() const
 
 void QgsPdalBuildVpcAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::PointCloud ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "BOUNDARY" ), QObject::tr( "Calculate boundary polygons" ), false ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "STATISTICS" ), QObject::tr( "Calculate statistics" ), false ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "OVERVIEW" ), QObject::tr( "Build overview point cloud" ), false ) );
-  addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Virtual point cloud" ) ) );
+  addParameter( new QgsProcessingParameterMultipleLayers( u"LAYERS"_s, QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::PointCloud ) );
+  addParameter( new QgsProcessingParameterBoolean( u"BOUNDARY"_s, QObject::tr( "Calculate boundary polygons" ), false ) );
+  addParameter( new QgsProcessingParameterBoolean( u"STATISTICS"_s, QObject::tr( "Calculate statistics" ), false ) );
+  addParameter( new QgsProcessingParameterBoolean( u"OVERVIEW"_s, QObject::tr( "Build overview point cloud" ), false ) );
+
+  auto convertParam = std::make_unique<QgsProcessingParameterBoolean>( u"CONVERT_COPC"_s, QObject::tr( "Convert individual files to COPC format" ), false );
+  convertParam->setHelp( QObject::tr( "When enabled, all the individual files in the virtual point cloud will also be converted to COPC format to allow rendering of their points in QGIS.\nWhen disabled, the format of each individual file will be preserved. This is faster, however only the extent will be rendered for files using formats other than COPC and EPT." ) );
+  addParameter( convertParam.release() );
+
+  addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Virtual point cloud" ) ) );
 }
 
 QStringList QgsPdalBuildVpcAlgorithm::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
 
-  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"LAYERS"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( layers.empty() )
   {
     feedback->reportError( QObject::tr( "No layers selected" ), true );
   }
 
-  const QString outputName = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputName = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
   QString outputFileName( outputName );
 
   QFileInfo fi( outputFileName );
-  if ( fi.suffix() != QLatin1String( "vpc" ) )
+  if ( fi.suffix() != "vpc"_L1 )
   {
-    outputFileName = fi.path() + '/' + fi.completeBaseName() + QStringLiteral( ".vpc" );
+    outputFileName = fi.path() + '/' + fi.completeBaseName() + u".vpc"_s;
     if ( context.willLoadLayerOnCompletion( outputName ) )
     {
       QMap<QString, QgsProcessingContext::LayerDetails> layersToLoad = context.layersToLoadOnCompletion();
@@ -97,50 +107,113 @@ QStringList QgsPdalBuildVpcAlgorithm::createArgumentLists( const QVariantMap &pa
     }
   }
 
-  setOutputValue( QStringLiteral( "OUTPUT" ), outputFileName );
+  setOutputValue( u"OUTPUT"_s, outputFileName );
+
+  // if convert to COPC is true, we do two steps, first build VPC as temporary file and then translate it to VPC with COPC data files
+  if ( mConvertToCopc )
+  {
+    mTemporaryVpcFile = QgsProcessingUtils::generateTempFilename( u"temporary.vpc"_s, &context );
+  }
 
   QStringList args;
-  args.reserve( layers.count() + 5 );
+  args.reserve( 7 );
 
-  args << QStringLiteral( "build_vpc" )
-       << QStringLiteral( "--output=%1" ).arg( outputFileName );
+  args << u"build_vpc"_s;
 
-  if ( parameterAsBool( parameters, QStringLiteral( "BOUNDARY" ), context ) )
+  if ( mConvertToCopc )
+  {
+    args << u"--output=%1"_s.arg( mTemporaryVpcFile );
+    mConvertToCopcFile = outputFileName;
+  }
+  else
+  {
+    args << u"--output=%1"_s.arg( outputFileName );
+  }
+
+  if ( parameterAsBool( parameters, u"BOUNDARY"_s, context ) )
   {
     args << "--boundary";
   }
 
-  if ( parameterAsBool( parameters, QStringLiteral( "STATISTICS" ), context ) )
+  if ( parameterAsBool( parameters, u"STATISTICS"_s, context ) )
   {
     args << "--stats";
   }
 
-  if ( parameterAsBool( parameters, QStringLiteral( "OVERVIEW" ), context ) )
+  if ( parameterAsBool( parameters, u"OVERVIEW"_s, context ) )
   {
     args << "--overview";
   }
 
   applyThreadsParameter( args, context );
 
-  const QString fileName = QgsProcessingUtils::generateTempFilename( QStringLiteral( "inputFiles.txt" ), &context );
+  const QString fileName = QgsProcessingUtils::generateTempFilename( u"inputFiles.txt"_s, &context );
   QFile listFile( fileName );
   if ( !listFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     throw QgsProcessingException( QObject::tr( "Could not create input file list %1" ).arg( fileName ) );
   }
 
+  bool containsNonDisplayableFiles = false;
   QTextStream out( &listFile );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  out.setCodec( "UTF-8" );
-#endif
   for ( const QgsMapLayer *layer : std::as_const( layers ) )
   {
-    out << layer->source() << "\n";
+    const QString source = layer->source();
+    out << source << "\n";
+    if ( !mConvertToCopc && !source.endsWith( ".copc.laz"_L1, Qt::CaseInsensitive ) && !source.endsWith( "ept.json"_L1, Qt::CaseInsensitive ) )
+    {
+      containsNonDisplayableFiles = true;
+    }
   }
 
-  args << QStringLiteral( "--input-file-list=%1" ).arg( fileName );
+  args << u"--input-file-list=%1"_s.arg( fileName );
+
+  if ( containsNonDisplayableFiles )
+  {
+    feedback->pushWarning( QObject::tr( "The input layers contain LAZ or LAS files. The resulting VPC layer data will be not displayed in QGIS." ) );
+  }
 
   return args;
+}
+
+QVariantMap QgsPdalBuildVpcAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  mConvertToCopc = parameterAsBool( parameters, u"CONVERT_COPC"_s, context );
+
+  QgsProcessingMultiStepFeedback multiStepFeedback( mConvertToCopc ? 2 : 1, feedback );
+
+  const QStringList processArgs = createArgumentLists( parameters, context, &multiStepFeedback );
+
+  runWrenchProcess( processArgs, &multiStepFeedback );
+
+  if ( mConvertToCopc && !multiStepFeedback.isCanceled() )
+  {
+    multiStepFeedback.setCurrentStep( 1 );
+
+    QStringList args;
+    args.reserve( 5 );
+
+    args << u"translate"_s;
+    args << u"--vpc-output-format=copc"_s;
+    args << u"--input=%1"_s.arg( mTemporaryVpcFile );
+    args << u"--output=%1"_s.arg( mConvertToCopcFile );
+
+    applyThreadsParameter( args, context );
+
+    runWrenchProcess( args, &multiStepFeedback );
+  }
+
+  if ( !mTemporaryVpcFile.isEmpty() )
+  {
+    QFile::remove( mTemporaryVpcFile );
+  }
+
+  if ( multiStepFeedback.isCanceled() )
+  {
+    return QVariantMap();
+  }
+
+  return getOutputs( parameters, context );
 }
 
 ///@endcond

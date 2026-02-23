@@ -15,42 +15,27 @@
 
 #include "qgsrenderpassquad.h"
 
-#include <random>
-
-#include "moc_qgsrenderpassquad.cpp"
-
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QBuffer>
-#include <Qt3DRender/QGeometry>
-
-typedef Qt3DRender::QAttribute Qt3DQAttribute;
-typedef Qt3DRender::QBuffer Qt3DQBuffer;
-typedef Qt3DRender::QGeometry Qt3DQGeometry;
-#else
+#include <QUrl>
+#include <QVector3D>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QGeometry>
-
-typedef Qt3DCore::QAttribute Qt3DQAttribute;
-typedef Qt3DCore::QBuffer Qt3DQBuffer;
-typedef Qt3DCore::QGeometry Qt3DQGeometry;
-#endif
-
-#include <Qt3DRender/QGeometryRenderer>
-#include <Qt3DRender/QTechnique>
-#include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QDepthTest>
 #include <Qt3DRender/QEffect>
-#include <QUrl>
-#include <QVector3D>
+#include <Qt3DRender/QGeometryRenderer>
+#include <Qt3DRender/QGraphicsApiFilter>
+#include <Qt3DRender/QLayer>
+#include <Qt3DRender/QMaterial>
+#include <Qt3DRender/QTechnique>
+
+#include "moc_qgsrenderpassquad.cpp"
 
 QgsRenderPassQuad::QgsRenderPassQuad( Qt3DRender::QLayer *layer, QNode *parent )
   : Qt3DCore::QEntity() // Qt3D bug: if we set the parent in the super constructor
                         // the entity is not attached properly. We attach it at the constructor end.
 {
-  Qt3DQGeometry *geom = new Qt3DQGeometry( this );
-  Qt3DQAttribute *positionAttribute = new Qt3DQAttribute( this );
+  Qt3DCore::QGeometry *geom = new Qt3DCore::QGeometry( this );
+  Qt3DCore::QAttribute *positionAttribute = new Qt3DCore::QAttribute( this );
   const QVector<float> vert = { -1.0f, -1.0f, 0.0f, //
                                 1.0f, -1.0f, 0.0f,  //
                                 -1.0f, 1.0f, 0.0f,  //
@@ -59,14 +44,14 @@ QgsRenderPassQuad::QgsRenderPassQuad( Qt3DRender::QLayer *layer, QNode *parent )
                                 1.0f, 1.0f, 0.0f };
 
   const QByteArray vertexArr( ( const char * ) vert.constData(), vert.size() * sizeof( float ) );
-  Qt3DQBuffer *vertexBuffer = nullptr;
-  vertexBuffer = new Qt3DQBuffer( this );
+  Qt3DCore::QBuffer *vertexBuffer = nullptr;
+  vertexBuffer = new Qt3DCore::QBuffer( this );
   vertexBuffer->setData( vertexArr );
 
-  positionAttribute->setName( Qt3DQAttribute::defaultPositionAttributeName() );
-  positionAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+  positionAttribute->setName( Qt3DCore::QAttribute::defaultPositionAttributeName() );
+  positionAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
   positionAttribute->setVertexSize( 3 );
-  positionAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  positionAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   positionAttribute->setBuffer( vertexBuffer );
   positionAttribute->setByteOffset( 0 );
   positionAttribute->setByteStride( 3 * sizeof( float ) );

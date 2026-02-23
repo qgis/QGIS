@@ -11,7 +11,7 @@ QgsApplication.Sampler = QgsApplication.Cursor.Sampler
 QgsApplication.XDR = QgsApplication.endian_t.XDR
 QgsApplication.NDR = QgsApplication.endian_t.NDR
 try:
-    QgsApplication.__attribute_docs__ = {'customVariablesChanged': 'Emitted whenever a custom global variable changes.\n', 'nullRepresentationChanged': 'Emitted when the string representing the `NULL` value is changed.\n\n.. seealso:: :py:func:`setNullRepresentation`\n\n.. seealso:: :py:func:`nullRepresentation`\n', 'requestForTranslatableObjects': 'Emitted when project strings which require translation are being\ncollected for inclusion in a .ts file. In order to register translatable\nstrings, connect to this signal and register the strings within the\nspecified ``translationContext``.\n\n.. versionadded:: 3.4\n', 'localeChanged': 'Emitted when project locale has been changed.\n\n.. versionadded:: 3.22.2\n'}
+    QgsApplication.__attribute_docs__ = {'customVariablesChanged': 'Emitted whenever a custom global variable changes.\n', 'nullRepresentationChanged': 'Emitted when the string representing the `NULL` value is changed.\n\n.. seealso:: :py:func:`setNullRepresentation`\n\n.. seealso:: :py:func:`nullRepresentation`\n', 'requestForTranslatableObjects': 'Emitted when project strings which require translation are being\ncollected for inclusion in a .ts file. In order to register translatable\nstrings, connect to this signal and register the strings within the\nspecified ``translationContext``.\n\n.. versionadded:: 3.4\n', 'localeChanged': 'Emitted when project locale has been changed.\n\n.. versionadded:: 3.22.2\n', 'themeChanged': 'Emitted when the application theme has changed.\n\n.. versionadded:: 4.0\n'}
     QgsApplication.instance = staticmethod(QgsApplication.instance)
     QgsApplication.setFileOpenEventReceiver = staticmethod(QgsApplication.setFileOpenEventReceiver)
     QgsApplication.setThemeName = staticmethod(QgsApplication.setThemeName)
@@ -127,6 +127,7 @@ try:
     QgsApplication.authConfigurationStorageRegistry = staticmethod(QgsApplication.authConfigurationStorageRegistry)
     QgsApplication.processingRegistry = staticmethod(QgsApplication.processingRegistry)
     QgsApplication.pageSizeRegistry = staticmethod(QgsApplication.pageSizeRegistry)
+    QgsApplication.applicationThemeRegistry = staticmethod(QgsApplication.applicationThemeRegistry)
     QgsApplication.actionScopeRegistry = staticmethod(QgsApplication.actionScopeRegistry)
     QgsApplication.connectionRegistry = staticmethod(QgsApplication.connectionRegistry)
     QgsApplication.profiler = staticmethod(QgsApplication.profiler)

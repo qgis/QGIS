@@ -39,7 +39,7 @@ clear all cache information in here.
 
     virtual void requestCompleted( const QgsFeatureRequest &featureRequest, const QgsFeatureIds &fids );
 %Docstring
-Implement this method to update the the indices, in case you need
+Implement this method to update the indices, in case you need
 information contained by the request to properly index. (E.g. spatial
 index) Does nothing by default
 

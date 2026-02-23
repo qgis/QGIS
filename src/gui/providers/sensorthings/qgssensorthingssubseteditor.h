@@ -26,14 +26,15 @@
 #include <QPointer>
 #include <QVariantMap>
 
+#define SIP_NO_FILE
+
 class QgsVectorLayer;
 class QgsCodeEditor;
 class QgsFieldProxyModel;
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
-class QgsSensorThingsSubsetEditor : public QgsSubsetStringEditorInterface, protected Ui::QgsSensorThingsSubsetEditorBase
+class QgsSensorThingsSubsetEditor : public QgsSubsetStringEditorInterface, private Ui::QgsSensorThingsSubsetEditorBase
 {
     Q_OBJECT
 

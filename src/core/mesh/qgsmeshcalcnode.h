@@ -18,7 +18,6 @@
 #ifndef QGSMESHCALCNODE_H
 #define QGSMESHCALCNODE_H
 
-#define SIP_NO_FILE
 
 ///@cond PRIVATE
 
@@ -31,6 +30,8 @@
 #include <QMap>
 #include <QString>
 #include <QStringList>
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup core

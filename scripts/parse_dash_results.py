@@ -33,7 +33,6 @@ import urllib.parse
 import urllib.request
 
 import termcolor
-
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QImage, QPixmap, qAlpha, qBlue, qGreen, qRed, qRgb
 from PyQt5.QtWidgets import (
@@ -82,7 +81,6 @@ def imageFromPath(path):
 
 
 class SelectReferenceImageDialog(QDialog):
-
     def __init__(self, parent, test_name, images):
         super().__init__(parent)
 
@@ -114,7 +112,6 @@ class SelectReferenceImageDialog(QDialog):
 
 
 class ResultHandler(QDialog):
-
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Dash results")
@@ -256,12 +253,7 @@ class ResultHandler(QDialog):
             or not self.rendered_image.height() == self.control_image.height()
         ):
             print(
-                "Size mismatch - control image is {}x{}, rendered image is {}x{}".format(
-                    self.control_image.width(),
-                    self.control_image.height(),
-                    self.rendered_image.width(),
-                    self.rendered_image.height(),
-                )
+                f"Size mismatch - control image is {self.control_image.width()}x{self.control_image.height()}, rendered image is {self.rendered_image.width()}x{self.rendered_image.height()}"
             )
 
         max_width = min(self.rendered_image.width(), self.control_image.width())

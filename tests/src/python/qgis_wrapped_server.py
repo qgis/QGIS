@@ -130,7 +130,6 @@ import signal
 import ssl
 import sys
 import urllib.parse
-
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from socketserver import ThreadingMixIn
 
@@ -199,7 +198,6 @@ if QGIS_SERVER_HTTP_BASIC_AUTH:
     import base64
 
     class HTTPBasicFilter(QgsServerFilter):
-
         def requestReady(self):
             handler = self.serverInterface().requestHandler()
             auth = (
@@ -325,9 +323,9 @@ if QGIS_SERVER_OAUTH2_AUTH:
             # access_token and the refresh_token and set expiration for the
             # access_token to now + expires_in seconds.
             _tokens[token["access_token"]] = copy.copy(token)
-            _tokens[token["access_token"]][
-                "expiration"
-            ] = datetime.now().timestamp() + int(token["expires_in"])
+            _tokens[token["access_token"]]["expiration"] = (
+                datetime.now().timestamp() + int(token["expires_in"])
+            )
 
         def validate_bearer_token(self, token, scopes, request):
             """Check the token"""
@@ -430,7 +428,6 @@ if QGIS_SERVER_OAUTH2_AUTH:
 
 
 class Handler(BaseHTTPRequestHandler):
-
     def do_GET(self, post_body=None):
         # CGI vars:
         headers = {}

@@ -35,8 +35,9 @@
 #include <QStringList>
 #include <QVector>
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 class QMutex;
 
@@ -81,6 +82,10 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     QgsGdalProvider( const QString &uri, const QgsError &error );
 
     ~QgsGdalProvider() override;
+
+    bool hasReportsDuringClose() const override;
+
+    bool closeWithProgress( QgsFeedback *feedback ) override;
 
     /**
      * Gets the data source specification. This may be a path or a protocol
@@ -272,6 +277,9 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
 
     //! \brief Whether this raster has overviews / pyramids or not
     bool mHasPyramids = false;
+
+    //! Flag indicating if the dataset is in closing
+    bool mInClosing = false;
 
     /**
      * \brief Gdal data types used to represent data in in QGIS,

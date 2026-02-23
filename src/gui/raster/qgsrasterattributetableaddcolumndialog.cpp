@@ -16,11 +16,15 @@
 #include "qgsrasterattributetableaddcolumndialog.h"
 
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgsrasterattributetable.h"
 
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsrasterattributetableaddcolumndialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRasterAttributeTableAddColumnDialog::QgsRasterAttributeTableAddColumnDialog( QgsRasterAttributeTable *attributeTable, QWidget *parent )
   : QDialog( parent )
@@ -35,6 +39,9 @@ QgsRasterAttributeTableAddColumnDialog::QgsRasterAttributeTableAddColumnDialog( 
   connect( mStandardColumn, &QRadioButton::toggled, this, [this]( bool ) { updateDialog(); } );
   connect( mColor, &QRadioButton::toggled, this, [this]( bool ) { updateDialog(); } );
   connect( mUsage, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) { updateDialog(); } );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( u"working_with_raster/raster_properties.html#raster-attribute-tables"_s );
+  } );
 
   mDataType->addItem( QgsFields::iconForFieldType( QMetaType::Type::QString ), tr( "String" ), static_cast<int>( QMetaType::Type::QString ) );
   mDataType->addItem( QgsFields::iconForFieldType( QMetaType::Type::Int ), tr( "Integer" ), static_cast<int>( QMetaType::Type::Int ) );

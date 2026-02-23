@@ -16,7 +16,6 @@
 #ifndef QGSANNOTATIONREGISTRY_H
 #define QGSANNOTATIONREGISTRY_H
 
-#define SIP_NO_FILE
 
 #include <functional>
 
@@ -27,6 +26,10 @@
 #include "qgstextannotation.h"
 
 #include <QString>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -89,9 +92,9 @@ class CORE_EXPORT QgsAnnotationRegistry
      */
     QgsAnnotationRegistry()
     {
-      addAnnotationType( QgsAnnotationMetadata( QStringLiteral( "TextAnnotationItem" ), QgsTextAnnotation::create ) );
-      addAnnotationType( QgsAnnotationMetadata( QStringLiteral( "HtmlAnnotationItem" ), QgsHtmlAnnotation::create ) );
-      addAnnotationType( QgsAnnotationMetadata( QStringLiteral( "SVGAnnotationItem" ), QgsSvgAnnotation::create ) );
+      addAnnotationType( QgsAnnotationMetadata( u"TextAnnotationItem"_s, QgsTextAnnotation::create ) );
+      addAnnotationType( QgsAnnotationMetadata( u"HtmlAnnotationItem"_s, QgsHtmlAnnotation::create ) );
+      addAnnotationType( QgsAnnotationMetadata( u"SVGAnnotationItem"_s, QgsSvgAnnotation::create ) );
     }
 
     /**

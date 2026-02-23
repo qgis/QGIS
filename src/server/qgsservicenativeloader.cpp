@@ -26,6 +26,9 @@
 #include <QDebug>
 #include <QDir>
 #include <QLibrary>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 typedef void unloadHook_t( QgsServiceModule * );
 
@@ -89,7 +92,7 @@ QgsServiceModule *QgsServiceNativeLoader::loadNativeModule( const QString &locat
   }
 
   QLibrary lib( location );
-  //QgsDebugMsgLevel( QStringLiteral( "Loading native module %1" ).arg( location ), 2 );
+  //QgsDebugMsgLevel( u"Loading native module %1"_s.arg( location ), 2 );
   qDebug() << QString( "Loading native module %1" ).arg( location );
   if ( !lib.load() )
   {

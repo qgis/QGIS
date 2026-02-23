@@ -21,12 +21,13 @@
 #ifndef QOBJECTUNIQUEPTR_H
 #define QOBJECTUNIQUEPTR_H
 
-#define SIP_NO_FILE
 
 #include <QObject>
 #include <QPointer>
 #include <QtDebug>
 #include <qtypeinfo.h>
+
+#define SIP_NO_FILE
 
 class QVariant;
 

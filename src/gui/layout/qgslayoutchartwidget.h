@@ -19,12 +19,13 @@
 #define QGSLAYOUTCHARTWIDGET_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "ui_qgslayoutchartwidgetbase.h"
 
 #include "qgis_gui.h"
 #include "qgslayoutitemwidget.h"
+
+#define SIP_NO_FILE
 
 class QgsLayoutItemChart;
 
@@ -53,6 +54,8 @@ class GUI_EXPORT QgsLayoutChartWidget : public QgsLayoutItemBaseWidget, private 
 
     void mChartTypeComboBox_currentIndexChanged( int index );
     void mChartPropertiesButton_clicked();
+    void mFlipAxesCheckBox_stateChanged( int state );
+
     void mSortCheckBox_stateChanged( int state );
     void mSortDirectionButton_clicked();
 
@@ -62,9 +65,16 @@ class GUI_EXPORT QgsLayoutChartWidget : public QgsLayoutItemBaseWidget, private 
     void mRemoveSeriesPushButton_clicked();
     void mSeriesPropertiesButton_clicked();
 
+    void mLinkedMapComboBox_itemChanged( QgsLayoutItem *item );
+    void mFilterOnlyVisibleFeaturesCheckBox_stateChanged( int state );
+    void mIntersectAtlasCheckBox_stateChanged( int state );
+
   private:
     //! Sets the GUI elements to the values of mChartItem
     void setGuiElementValues();
+
+    //! Updates buttons state when selecting a layer or adding/removing series
+    void updateButtonsState();
 
     //! Adds a new item to the series list widget
     QListWidgetItem *addSeriesListItem( const QString &name );

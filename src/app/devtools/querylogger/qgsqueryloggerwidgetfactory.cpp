@@ -18,8 +18,12 @@
 #include "qgsapplication.h"
 #include "qgsqueryloggerpanelwidget.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsDatabaseQueryLoggerWidgetFactory::QgsDatabaseQueryLoggerWidgetFactory( QgsAppQueryLogger *logger )
-  : QgsDevToolWidgetFactory( QObject::tr( "Query Logger" ), QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/database.svg" ) ) )
+  : QgsDevToolWidgetFactory( QObject::tr( "Query Logger" ), QgsApplication::getThemeIcon( u"propertyicons/database.svg"_s ) )
   , mLogger( logger )
 {
 }

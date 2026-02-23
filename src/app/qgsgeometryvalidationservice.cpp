@@ -31,9 +31,12 @@ email                : matthias@opengis.ch
 #include "qgsvectorlayerfeaturepool.h"
 
 #include <QFutureWatcher>
-#include <QtConcurrent>
+#include <QString>
+#include <QtConcurrentMap>
 
 #include "moc_qgsgeometryvalidationservice.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGeometryValidationService::QgsGeometryValidationService( QgsProject *project )
   : mProject( project )
@@ -278,7 +281,7 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
       const QVariantMap checkConfiguration = layer->geometryOptions()->checkConfiguration( checkId );
       topologyChecks.append( factory->createGeometryCheck( checkInformation.context.get(), checkConfiguration ) );
 
-      if ( checkConfiguration.value( QStringLiteral( "allowedGapsEnabled" ) ).toBool() )
+      if ( checkConfiguration.value( u"allowedGapsEnabled"_s ).toBool() )
       {
         QgsVectorLayer *gapsLayer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( checkConfiguration.value( "allowedGapsLayer" ).toString() );
         if ( gapsLayer )

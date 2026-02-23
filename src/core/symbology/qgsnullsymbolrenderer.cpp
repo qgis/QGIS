@@ -20,9 +20,12 @@
 
 #include <QDomDocument>
 #include <QDomElement>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsNullSymbolRenderer::QgsNullSymbolRenderer()
-  : QgsFeatureRenderer( QStringLiteral( "nullSymbol" ) )
+  : QgsFeatureRenderer( u"nullSymbol"_s )
 {
 }
 
@@ -86,7 +89,7 @@ QSet<QString> QgsNullSymbolRenderer::usedAttributes( const QgsRenderContext & ) 
 
 QString QgsNullSymbolRenderer::dump() const
 {
-  return QStringLiteral( "NULL" );
+  return u"NULL"_s;
 }
 
 QgsFeatureRenderer *QgsNullSymbolRenderer::clone() const
@@ -113,7 +116,7 @@ QDomElement QgsNullSymbolRenderer::save( QDomDocument &doc, const QgsReadWriteCo
 {
   Q_UNUSED( context )
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
-  rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "nullSymbol" ) );
+  rendererElem.setAttribute( u"type"_s, u"nullSymbol"_s );
 
   saveRendererData( doc, rendererElem, context );
 

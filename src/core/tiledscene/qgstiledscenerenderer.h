@@ -22,6 +22,10 @@
 #include "qgis_sip.h"
 #include "qgsrendercontext.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsLayerTreeLayer;
 class QgsLayerTreeModelLegendNode;
 
@@ -122,9 +126,9 @@ class CORE_EXPORT QgsTiledSceneRenderer
     SIP_CONVERT_TO_SUBCLASS_CODE
 
     const QString type = sipCpp->type();
-    if ( type == QLatin1String( "texture" ) )
+    if ( type == "texture"_L1 )
       sipType = sipType_QgsTiledSceneTextureRenderer;
-    else if ( type == QLatin1String( "wireframe" ) )
+    else if ( type == "wireframe"_L1 )
       sipType = sipType_QgsTiledSceneWireframeRenderer;
     else
       sipType = 0;

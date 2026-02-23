@@ -22,6 +22,9 @@
 #include "qgspropertycollection.h"
 
 #include <QColor>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QDomElement;
 class QgsReadWriteContext;
@@ -29,17 +32,10 @@ class QgsLineMaterial;
 class QgsExpressionContext;
 
 #ifndef SIP_RUN
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-namespace Qt3DRender
-{
-  class QGeometry;
-}
-#else
 namespace Qt3DCore
 {
   class QGeometry;
 }
-#endif
 #endif //SIP_RUN
 
 /**
@@ -99,8 +95,25 @@ class _3D_EXPORT QgsMaterialContext
      */
     void setSelectionColor( const QColor &color ) { mSelectedColor = color; }
 
+    /**
+     * Returns TRUE if the material should represent a highlighted state.
+     *
+     * \see setIsHighlighted()
+     * \since QGIS 4.0
+     */
+    bool isHighlighted() const { return mIsHighlighted; }
+
+    /**
+     * Sets whether the material should represent a highlighted state.
+     *
+     * \see isHighlighted()
+     * \since QGIS 4.0
+     */
+    void setIsHighlighted( bool isHighlighted ) { mIsHighlighted = isHighlighted; }
+
   private:
     bool mIsSelected = false;
+    bool mIsHighlighted = false;
 
     QColor mSelectedColor;
 };
@@ -118,11 +131,11 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
 {
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( sipCpp->type() == QLatin1String( "gooch" ) )
+    if ( sipCpp->type() == "gooch"_L1 )
     {
       sipType = sipType_QgsGoochMaterialSettings;
     }
-    else if ( sipCpp->type() == QLatin1String( "phong" ) )
+    else if ( sipCpp->type() == "phong"_L1 )
     {
       sipType = sipType_QgsPhongMaterialSettings;
     }
@@ -227,11 +240,7 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
      * Applies the data defined bytes, \a dataDefinedBytes, on the \a geometry by filling a specific vertex buffer that will be used by the shader.
      * \since QGIS 3.18
      */
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    virtual void applyDataDefinedToGeometry( Qt3DRender::QGeometry *geometry, int vertexCount, const QByteArray &dataDefinedBytes ) const;
-#else
     virtual void applyDataDefinedToGeometry( Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &dataDefinedBytes ) const;
-#endif
 
     /**
      * Returns byte array corresponding to the data defined colors depending of the \a expressionContext,

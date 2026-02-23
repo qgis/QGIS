@@ -23,8 +23,11 @@ email                : marco dot hugentobler at hugis dot net
 
 #include <QDomDocument>
 #include <QPainter>
+#include <QString>
 
 #include "moc_qgstextannotation.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTextAnnotation::QgsTextAnnotation( QObject *parent )
   : QgsAnnotation( parent )
@@ -85,10 +88,10 @@ void QgsTextAnnotation::renderAnnotation( QgsRenderContext &context, QSizeF size
 
 void QgsTextAnnotation::writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  QDomElement annotationElem = doc.createElement( QStringLiteral( "TextAnnotationItem" ) );
+  QDomElement annotationElem = doc.createElement( u"TextAnnotationItem"_s );
   if ( mDocument )
   {
-    annotationElem.setAttribute( QStringLiteral( "document" ), mDocument->toHtml() );
+    annotationElem.setAttribute( u"document"_s, mDocument->toHtml() );
   }
   _writeXml( annotationElem, doc, context );
   elem.appendChild( annotationElem );
@@ -97,8 +100,8 @@ void QgsTextAnnotation::writeXml( QDomElement &elem, QDomDocument &doc, const Qg
 void QgsTextAnnotation::readXml( const QDomElement &itemElem, const QgsReadWriteContext &context )
 {
   mDocument = std::make_unique<QTextDocument>( );
-  mDocument->setHtml( itemElem.attribute( QStringLiteral( "document" ), QString() ) );
-  const QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
+  mDocument->setHtml( itemElem.attribute( u"document"_s, QString() ) );
+  const QDomElement annotationElem = itemElem.firstChildElement( u"AnnotationItem"_s );
   if ( !annotationElem.isNull() )
   {
     _readXml( annotationElem, context );

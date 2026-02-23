@@ -23,7 +23,6 @@
 
 #define SIP_NO_FILE
 
-
 /**
  * \ingroup core
  * \brief Handles update operations to a COPC file.

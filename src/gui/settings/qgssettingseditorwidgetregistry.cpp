@@ -22,6 +22,10 @@
 #include "qgssettingsentry.h"
 #include "qgssettingsenumflageditorwidgetwrapper.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #if defined( HAVE_QTSERIALPORT )
 #include <QSerialPort>
 #endif
@@ -31,6 +35,7 @@ QgsSettingsEditorWidgetRegistry::QgsSettingsEditorWidgetRegistry()
 {
   addWrapper( new QgsSettingsStringLineEditWrapper() );
   addWrapper( new QgsSettingsBoolCheckBoxWrapper() );
+  addWrapper( new QgsSettingsBoolGroupBoxWrapper() );
   addWrapper( new QgsSettingsIntegerSpinBoxWrapper() );
   addWrapper( new QgsSettingsDoubleSpinBoxWrapper() );
   addWrapper( new QgsSettingsColorButtonWrapper() );
@@ -94,7 +99,7 @@ QgsSettingsEditorWidgetWrapper *QgsSettingsEditorWidgetRegistry::createWrapper( 
   }
   else
   {
-    QgsDebugError( QStringLiteral( "Setting factory was not found for '%1', returning the default string factory" ).arg( id ) );
+    QgsDebugError( u"Setting factory was not found for '%1', returning the default string factory"_s.arg( id ) );
     return nullptr;
   }
 }

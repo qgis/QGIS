@@ -32,6 +32,8 @@
 #include <QStringList>
 #include <QVector>
 
+using namespace Qt::StringLiterals;
+
 extern "C"
 {
 #include <libpq-fe.h>
@@ -151,8 +153,8 @@ struct QgsPostgresLayerProperty
         sridString += QString::number( srid );
       }
 
-      return QStringLiteral( "%1.%2.%3 type=%4 srid=%5 pkCols=%6 sql=%7 nSpCols=%8" )
-        .arg( schemaName, tableName, geometryColName, typeString, sridString, pkCols.join( QLatin1Char( '|' ) ), sql )
+      return u"%1.%2.%3 type=%4 srid=%5 pkCols=%6 sql=%7 nSpCols=%8"_s
+        .arg( schemaName, tableName, geometryColName, typeString, sridString, pkCols.join( '|'_L1 ), sql )
         .arg( nSpCols );
     }
 #endif

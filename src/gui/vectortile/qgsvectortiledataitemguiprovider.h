@@ -17,15 +17,20 @@
 #define QGSVECTORTILEDATAITEMGUIPROVIDER_H
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 #include "qgsdataitemguiprovider.h"
+
+#include <QString>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 class QgsVectorTileDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
     Q_OBJECT
   public:
-    QString name() override { return QStringLiteral( "Vector Tiles" ); }
+    QString name() override { return u"Vector Tiles"_s; }
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 

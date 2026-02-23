@@ -21,6 +21,10 @@
 #include "qgis_app.h"
 #include "qgslocatorfilter.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class APP_EXPORT QgsGotoLocatorFilter : public QgsLocatorFilter
 {
     Q_OBJECT
@@ -28,10 +32,10 @@ class APP_EXPORT QgsGotoLocatorFilter : public QgsLocatorFilter
   public:
     QgsGotoLocatorFilter( QObject *parent = nullptr );
     QgsGotoLocatorFilter *clone() const override;
-    QString name() const override { return QStringLiteral( "goto" ); }
+    QString name() const override { return u"goto"_s; }
     QString displayName() const override { return tr( "Go to Coordinate" ); }
     Priority priority() const override { return Medium; }
-    QString prefix() const override { return QStringLiteral( "go" ); }
+    QString prefix() const override { return u"go"_s; }
     QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;

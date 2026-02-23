@@ -27,7 +27,6 @@
 // version without notice, or even be removed.
 //
 
-#define SIP_NO_FILE
 
 #include <memory>
 
@@ -36,6 +35,8 @@
 #include "qgscoordinatetransform.h"
 
 #include <QVector>
+
+#define SIP_NO_FILE
 
 class QMatrix4x4;
 class QImage;

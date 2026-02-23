@@ -124,9 +124,12 @@ set(QGIS_GUI_SRCS
   annotations/qgsannotationitemguiregistry.cpp
   annotations/qgsannotationitemwidget.cpp
   annotations/qgsannotationitemwidget_impl.cpp
+  annotations/qgsannotationmaptool.cpp
   annotations/qgscreateannotationitemmaptool.cpp
   annotations/qgscreateannotationitemmaptool_impl.cpp
   annotations/qgsmaptoolmodifyannotation.cpp
+  annotations/qgsmaptoolselectannotation.cpp
+  annotations/qgsmaptoolselectannotationmousehandles.cpp
 
   auth/qgsauthauthoritieseditor.cpp
   auth/qgsauthcertificateinfo.cpp
@@ -357,8 +360,13 @@ set(QGIS_GUI_SRCS
   maptools/qgsmaptoolcapture.cpp
   maptools/qgsmaptoolcapturelayergeometry.cpp
   maptools/qgsmaptoolcapturerubberband.cpp
-  maptools/qgsmaptooledit.cpp
   maptools/qgsmaptooldigitizefeature.cpp
+
+  maptools/qgsbezierdata.cpp
+  maptools/qgsbeziermarker.cpp
+
+  maptools/qgsmaptooledit.cpp
+  maptools/qgsmaptooleditblanksegments.cpp
   maptools/qgsmaptoolemitpoint.cpp
   maptools/qgsmaptoolextent.cpp
   maptools/qgsmaptoolidentify.cpp
@@ -403,6 +411,7 @@ set(QGIS_GUI_SRCS
   pointcloud/qgspointcloudattributebyramprendererwidget.cpp
   pointcloud/qgspointcloudclassifiedrendererwidget.cpp
   pointcloud/qgspointcloudextentrendererwidget.cpp
+  pointcloud/qgspointcloudlayerproperties.cpp
   pointcloud/qgspointcloudlayersaveasdialog.cpp
   pointcloud/qgspointcloudrendererwidget.cpp
   pointcloud/qgspointcloudrendererpropertieswidget.cpp
@@ -448,6 +457,8 @@ set(QGIS_GUI_SRCS
 
   processing/models/qgsmodelarrowitem.cpp
   processing/models/qgsmodelcomponentgraphicitem.cpp
+  processing/models/qgsmodeldesignerconfigdockwidget.cpp
+  processing/models/qgsmodeldesignerconfigwidget.cpp
   processing/models/qgsmodeldesignerdialog.cpp
   processing/models/qgsmodeldesignerinputstreewidget.cpp
   processing/models/qgsmodelgraphicitem.cpp
@@ -542,6 +553,7 @@ set(QGIS_GUI_SRCS
 
   tiledscene/qgstiledsceneconnectiondialog.cpp
   tiledscene/qgstiledscenedataitemguiprovider.cpp
+  tiledscene/qgstiledscenelayerproperties.cpp
   tiledscene/qgstiledsceneproviderguimetadata.cpp
   tiledscene/qgstiledscenerendererpropertieswidget.cpp
   tiledscene/qgstiledscenerendererwidget.cpp
@@ -1106,9 +1118,12 @@ set(QGIS_GUI_HDRS
   annotations/qgsannotationitemcommonpropertieswidget.h
   annotations/qgsannotationitemguiregistry.h
   annotations/qgsannotationitemwidget.h
+  annotations/qgsannotationmaptool.h
   annotations/qgscreateannotationitemmaptool.h
   annotations/qgscreateannotationitemmaptool_impl.h
   annotations/qgsmaptoolmodifyannotation.h
+  annotations/qgsmaptoolselectannotation.h
+  annotations/qgsmaptoolselectannotationmousehandles.h
 
   attributeformconfig/qgsattributeformcontaineredit.h
   attributeformconfig/qgsattributetypedialog.h
@@ -1368,8 +1383,11 @@ set(QGIS_GUI_HDRS
   maptools/qgsmaptoolcapture.h
   maptools/qgsmaptoolcapturelayergeometry.h
   maptools/qgsmaptoolcapturerubberband.h
+  maptools/qgsbezierdata.h
+  maptools/qgsbeziermarker.h
   maptools/qgsmaptooldigitizefeature.h
   maptools/qgsmaptooledit.h
+  maptools/qgsmaptooleditblanksegments.h
   maptools/qgsmaptoolemitpoint.h
   maptools/qgsmaptoolextent.h
   maptools/qgsmaptoolidentify.h
@@ -1414,6 +1432,7 @@ set(QGIS_GUI_HDRS
   pointcloud/qgspointcloudattributebyramprendererwidget.h
   pointcloud/qgspointcloudclassifiedrendererwidget.h
   pointcloud/qgspointcloudextentrendererwidget.h
+  pointcloud/qgspointcloudlayerproperties.h
   pointcloud/qgspointcloudlayersaveasdialog.h
   pointcloud/qgspointcloudrendererwidget.h
   pointcloud/qgspointcloudrendererpropertieswidget.h
@@ -1459,6 +1478,8 @@ set(QGIS_GUI_HDRS
 
   processing/models/qgsmodelarrowitem.h
   processing/models/qgsmodelcomponentgraphicitem.h
+  processing/models/qgsmodeldesignerconfigdockwidget.h
+  processing/models/qgsmodeldesignerconfigwidget.h
   processing/models/qgsmodeldesignerdialog.h
   processing/models/qgsmodeldesignerinputstreewidget.h
   processing/models/qgsmodelgraphicitem.h
@@ -1642,6 +1663,7 @@ set(QGIS_GUI_HDRS
 
   tiledscene/qgstiledsceneconnectiondialog.h
   tiledscene/qgstiledscenedataitemguiprovider.h
+  tiledscene/qgstiledscenelayerproperties.h
   tiledscene/qgstiledsceneproviderguimetadata.h
   tiledscene/qgstiledscenerendererpropertieswidget.h
   tiledscene/qgstiledscenerendererwidget.h
@@ -2003,12 +2025,10 @@ target_link_libraries(qgis_gui
   Qt::MultimediaWidgets
 )
 
-if (BUILD_WITH_QT6)
-  find_package(Qt6 COMPONENTS SvgWidgets REQUIRED)
-  target_link_libraries(qgis_gui
-    Qt6::SvgWidgets
-  )
-endif()
+find_package(Qt6 COMPONENTS SvgWidgets REQUIRED)
+target_link_libraries(qgis_gui
+  Qt6::SvgWidgets
+)
 
 if (WITH_QTWEBENGINE)
   find_package(${QT_VERSION_BASE} COMPONENTS WebEngineWidgets REQUIRED)

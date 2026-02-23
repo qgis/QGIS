@@ -19,15 +19,15 @@ __author__ = "Victor Olaya"
 __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
-from typing import Optional
-import os
-import time
-import sys
-import uuid
 import math
+import os
+import sys
+import time
+import uuid
+from typing import Optional
 
+from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingUtils
 from qgis.PyQt.QtCore import QDir
-from qgis.core import QgsApplication, QgsProcessingUtils, QgsProcessingContext
 
 numExported = 1
 
@@ -86,13 +86,13 @@ def tempHelpFolder():
 def escapeAndJoin(strList):
     """
     .. deprecated:: 3.0
-    Do not use, will be removed in QGIS 4.0
+    Do not use, will be removed in QGIS 5.0
     """
 
     from warnings import warn
 
     warn(
-        "processing.escapeAndJoin is deprecated and will be removed in QGIS 4.0",
+        "processing.escapeAndJoin is deprecated and will be removed in QGIS 5.0",
         DeprecationWarning,
     )
 

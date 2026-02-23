@@ -16,7 +16,6 @@
 #ifndef QGSCPLHTTPFETCHOVERRIDER_H
 #define QGSCPLHTTPFETCHOVERRIDER_H
 
-#define SIP_NO_FILE
 
 #include <cpl_http.h>
 #include <gdal.h>
@@ -26,6 +25,8 @@
 #include <QNetworkRequest>
 #include <QPointer>
 #include <QString>
+
+#define SIP_NO_FILE
 
 class QgsFeedback;
 

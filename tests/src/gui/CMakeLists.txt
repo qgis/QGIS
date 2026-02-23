@@ -24,6 +24,7 @@ set(TESTS
   testqgsadvanceddigitizingdockwidget.cpp
   testqgsadvanceddigitizingtoolsregistry.cpp
   testqgsannotationitemguiregistry.cpp
+  testqgsbezierdata.cpp
   testqgsmaptoolzoom.cpp
   testqgsmaptooledit.cpp
   testqgscategorizedrendererwidget.cpp
@@ -60,6 +61,7 @@ set(TESTS
   testqgsfiledownloader.cpp
   testqgslayoutgui.cpp
   testqgslayoutview.cpp
+  testqgsmaptooleditblanksegments.cpp
   testqgsvaluemapwidgetwrapper.cpp
   testqgsvaluemapconfigdlg.cpp
   testqgsvaluerelationwidgetwrapper.cpp

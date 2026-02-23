@@ -17,12 +17,16 @@
 
 #include "qgsfielddomain.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgsvariantutils.h"
 
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsfielddomainwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsAbstractFieldDomainWidget
@@ -85,6 +89,12 @@ void QgsFieldDomainWidget::setNameEditable( bool editable )
   mNameEdit->setEnabled( editable );
 }
 
+void QgsFieldDomainWidget::setPoliciesEditable( bool editable )
+{
+  mComboSplitPolicy->setEnabled( editable );
+  mComboMergePolicy->setEnabled( editable );
+}
+
 QgsFieldDomain *QgsRangeDomainWidget::createFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType ) const
 {
   return new QgsRangeFieldDomain( name, description, fieldType, mMinSpinBox->value(), mMinInclusiveCheckBox->isChecked(), mMaxSpinBox->value(), mMaxInclusiveCheckBox->isChecked() );
@@ -119,6 +129,11 @@ void QgsGlobDomainWidget::setFieldDomain( const QgsFieldDomain *domain )
 void QgsFieldDomainDialog::setNameEditable( bool editable )
 {
   mWidget->setNameEditable( editable );
+}
+
+void QgsFieldDomainDialog::setPoliciesEditable( bool editable )
+{
+  mWidget->setPoliciesEditable( editable );
 }
 
 QgsFieldDomain *QgsGlobDomainWidget::createFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType ) const
@@ -447,15 +462,18 @@ bool QgsFieldDomainWidget::isValid() const
 QgsFieldDomainDialog::QgsFieldDomainDialog( Qgis::FieldDomainType type, QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
 {
-  setObjectName( QStringLiteral( "QgsFieldDomainDialog" ) );
+  setObjectName( u"QgsFieldDomainDialog"_s );
 
   QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsFieldDomainWidget( type );
   vLayout->addWidget( mWidget, 1 );
 
-  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+  mButtonBox = new QDialogButtonBox( QDialogButtonBox::StandardButton::Cancel | QDialogButtonBox::StandardButton::Help | QDialogButtonBox::StandardButton::Ok );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( u"managing_data_source/supported_data.rst#field-domain"_s );
+  } );
   vLayout->addWidget( mButtonBox );
 
   setLayout( vLayout );

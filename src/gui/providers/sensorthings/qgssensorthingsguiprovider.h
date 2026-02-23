@@ -23,8 +23,9 @@
 #include "qgsprovidersourcewidgetprovider.h"
 #include "qgssourceselectprovider.h"
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 class QgsSensorThingsSourceSelectProvider : public QgsSourceSelectProvider
 {

@@ -10,8 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "2016-09"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
-from qgis.PyQt.QtCore import QPointF, QSizeF, Qt
-from qgis.PyQt.QtGui import QColor, QPainter
+import unittest
+
 from qgis.core import (
     QgsBlurEffect,
     QgsMapUnitScale,
@@ -26,16 +26,15 @@ from qgis.core import (
     QgsUnitTypes,
 )
 from qgis.gui import QgsTextFormatDialog, QgsTextFormatWidget
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QPointF, QSizeF, Qt
+from qgis.PyQt.QtGui import QColor, QPainter
+from qgis.testing import QgisTestCase, start_app
 from utilities import getTestFont
 
 start_app()
 
 
 class PyQgsTextFormatWidget(QgisTestCase):
-
     def createBufferSettings(self):
         s = QgsTextBufferSettings()
         s.setEnabled(True)

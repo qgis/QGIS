@@ -19,11 +19,15 @@
 
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsBoundaryAlgorithm::name() const
 {
-  return QStringLiteral( "boundary" );
+  return u"boundary"_s;
 }
 
 QString QgsBoundaryAlgorithm::displayName() const
@@ -43,7 +47,7 @@ QString QgsBoundaryAlgorithm::group() const
 
 QString QgsBoundaryAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsBoundaryAlgorithm::outputName() const

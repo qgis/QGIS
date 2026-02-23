@@ -20,8 +20,11 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgscolorrampshader.h"
 #include "qgspointcloudrenderer.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core
@@ -228,7 +231,7 @@ class CORE_EXPORT QgsPointCloudClassifiedRenderer : public QgsPointCloudRenderer
 
   private:
 
-    QString mAttribute = QStringLiteral( "Classification" );
+    QString mAttribute = u"Classification"_s;
 
     QgsPointCloudCategoryList mCategories;
 };

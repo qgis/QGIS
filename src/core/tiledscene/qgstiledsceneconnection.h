@@ -20,7 +20,12 @@
 #include "qgssettingstree.h"
 #include "qgssettingstreenode.h"
 
+#include <QString>
+
 #define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
+
 
 #include <QStringList>
 
@@ -47,7 +52,7 @@ class CORE_EXPORT QgsTiledSceneProviderConnection : public QgsAbstractProviderCo
 #ifndef SIP_RUN
 
     ///@cond PRIVATE
-    static inline QgsSettingsTreeNamedListNode *sTreeConnectionTiledScene = QgsSettingsTree::sTreeConnections->createNamedListNode( QStringLiteral( "tiled-scene" ), Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
+    static inline QgsSettingsTreeNamedListNode *sTreeConnectionTiledScene = QgsSettingsTree::sTreeConnections->createNamedListNode( u"tiled-scene"_s, Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
 
     static const QgsSettingsEntryString *settingsProvider;
     static const QgsSettingsEntryString *settingsUrl;

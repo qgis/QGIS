@@ -15,7 +15,6 @@
 #ifndef QGSDEVTOOLSMODELNODE_H
 #define QGSDEVTOOLSMODELNODE_H
 
-#define SIP_NO_FILE
 
 #include <deque>
 #include <memory>
@@ -26,6 +25,8 @@
 #include <QElapsedTimer>
 #include <QUrl>
 #include <QVariant>
+
+#define SIP_NO_FILE
 
 class QAction;
 class QgsDevToolsModelGroup;

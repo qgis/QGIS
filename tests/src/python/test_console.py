@@ -11,18 +11,17 @@ __date__ = "15.4.2016"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
 import os
+import unittest
 
 from console import console
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsSettings
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestConsole(QgisTestCase):
-
     def setUp(self):
         QgsSettings().setValue("pythonConsole/contextHelpOnFirstLaunch", False)
 

@@ -17,30 +17,17 @@
 
 #include "qgsmesh3dgeometry_p.h"
 
+#include "qgsmesh3dsymbol.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshlayerutils.h"
+#include "qgstriangularmesh.h"
+
 #include <QFutureWatcher>
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
 #include <QtConcurrentRun>
 
 #include "moc_qgsmesh3dgeometry_p.cpp"
-
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QBuffer>
-
-typedef Qt3DRender::QAttribute Qt3DQAttribute;
-typedef Qt3DRender::QBuffer Qt3DQBuffer;
-#else
-#include <Qt3DCore/QAttribute>
-#include <Qt3DCore/QBuffer>
-
-typedef Qt3DCore::QAttribute Qt3DQAttribute;
-typedef Qt3DCore::QBuffer Qt3DQBuffer;
-#endif
-
-
-#include "qgsmeshlayer.h"
-#include "qgstriangularmesh.h"
-#include "qgsmeshlayerutils.h"
-
 
 ///@cond PRIVATE
 
@@ -200,18 +187,14 @@ static QByteArray createDatasetIndexData( const QgsTriangularMesh &mesh, const Q
 }
 
 QgsMesh3DGeometry::QgsMesh3DGeometry( const QgsTriangularMesh &triangularMesh, const QgsVector3D &origin, const QgsRectangle &extent, double verticalScale, Qt3DCore::QNode *parent )
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  : Qt3DRender::QGeometry( parent )
-#else
   : Qt3DCore::QGeometry( parent )
-#endif
   , mOrigin( origin )
   , mExtent( extent )
   , mVertScale( verticalScale )
   , mTriangulaMesh( triangularMesh )
 {
-  mVertexBuffer = new Qt3DQBuffer( this );
-  mIndexBuffer = new Qt3DQBuffer( this );
+  mVertexBuffer = new Qt3DCore::QBuffer( this );
+  mIndexBuffer = new Qt3DCore::QBuffer( this );
 }
 
 QgsMeshDataset3DGeometry::QgsMeshDataset3DGeometry(
@@ -343,14 +326,14 @@ void QgsMesh3DGeometry::getData()
   mIndexBuffer->setData( indexData );
 }
 
-void QgsMesh3DGeometry::prepareVerticesPositionAttribute( Qt3DQBuffer *buffer, int stride, int offset )
+void QgsMesh3DGeometry::prepareVerticesPositionAttribute( Qt3DCore::QBuffer *buffer, int stride, int offset )
 {
-  mPositionAttribute = new Qt3DQAttribute( this );
+  mPositionAttribute = new Qt3DCore::QAttribute( this );
 
-  mPositionAttribute->setName( Qt3DQAttribute::defaultPositionAttributeName() );
-  mPositionAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+  mPositionAttribute->setName( Qt3DCore::QAttribute::defaultPositionAttributeName() );
+  mPositionAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
   mPositionAttribute->setVertexSize( 3 );
-  mPositionAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  mPositionAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   mPositionAttribute->setBuffer( buffer );
   mPositionAttribute->setByteStride( stride );
   mPositionAttribute->setByteOffset( offset * sizeof( float ) );
@@ -359,14 +342,14 @@ void QgsMesh3DGeometry::prepareVerticesPositionAttribute( Qt3DQBuffer *buffer, i
   addAttribute( mPositionAttribute );
 }
 
-void QgsMesh3DGeometry::prepareVerticesNormalAttribute( Qt3DQBuffer *buffer, int stride, int offset )
+void QgsMesh3DGeometry::prepareVerticesNormalAttribute( Qt3DCore::QBuffer *buffer, int stride, int offset )
 {
-  mNormalAttribute = new Qt3DQAttribute( this );
+  mNormalAttribute = new Qt3DCore::QAttribute( this );
 
-  mNormalAttribute->setName( Qt3DQAttribute::defaultNormalAttributeName() );
-  mNormalAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+  mNormalAttribute->setName( Qt3DCore::QAttribute::defaultNormalAttributeName() );
+  mNormalAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
   mNormalAttribute->setVertexSize( 3 );
-  mNormalAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  mNormalAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   mNormalAttribute->setBuffer( buffer );
   mNormalAttribute->setByteStride( stride );
   mNormalAttribute->setByteOffset( offset * sizeof( float ) );
@@ -375,14 +358,14 @@ void QgsMesh3DGeometry::prepareVerticesNormalAttribute( Qt3DQBuffer *buffer, int
   addAttribute( mNormalAttribute );
 }
 
-void QgsMeshDataset3DGeometry::prepareVerticesDatasetAttribute( Qt3DQBuffer *buffer, int stride, int offset )
+void QgsMeshDataset3DGeometry::prepareVerticesDatasetAttribute( Qt3DCore::QBuffer *buffer, int stride, int offset )
 {
-  mMagnitudeAttribute = new Qt3DQAttribute( this );
+  mMagnitudeAttribute = new Qt3DCore::QAttribute( this );
 
   mMagnitudeAttribute->setName( "scalarMagnitude" );
-  mMagnitudeAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+  mMagnitudeAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
   mMagnitudeAttribute->setVertexSize( 1 );
-  mMagnitudeAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  mMagnitudeAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   mMagnitudeAttribute->setBuffer( buffer );
   mMagnitudeAttribute->setByteStride( stride );
   mMagnitudeAttribute->setByteOffset( offset * sizeof( float ) );
@@ -396,11 +379,11 @@ QgsMeshLayer *QgsMeshDataset3DGeometry::meshLayer() const
   return qobject_cast<QgsMeshLayer *>( mLayerRef.layer.data() );
 }
 
-void QgsMesh3DGeometry::prepareIndexesAttribute( Qt3DQBuffer *buffer )
+void QgsMesh3DGeometry::prepareIndexesAttribute( Qt3DCore::QBuffer *buffer )
 {
-  mIndexAttribute = new Qt3DQAttribute( this );
-  mIndexAttribute->setAttributeType( Qt3DQAttribute::IndexAttribute );
-  mIndexAttribute->setVertexBaseType( Qt3DQAttribute::UnsignedInt );
+  mIndexAttribute = new Qt3DCore::QAttribute( this );
+  mIndexAttribute->setAttributeType( Qt3DCore::QAttribute::IndexAttribute );
+  mIndexAttribute->setVertexBaseType( Qt3DCore::QAttribute::UnsignedInt );
   mIndexAttribute->setBuffer( buffer );
 
   mIndexAttribute->setCount( 0 );

@@ -26,6 +26,9 @@
 
 #include <QDomDocument>
 #include <QRectF>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QString;
 class QRectF;
@@ -199,7 +202,7 @@ class CORE_EXPORT QgsRectangle
      * Set a rectangle so that min corner is at max
      * and max corner is at min. It is NOT normalized.
      *
-     * \deprecated QGIS 3.34. Will be removed in QGIS 4.0. Use setNull().
+     * \deprecated QGIS 3.34. Will be removed in QGIS 5.0. Use setNull().
      */
     Q_DECL_DEPRECATED void setMinimal() SIP_DEPRECATED
     {
@@ -592,7 +595,7 @@ class CORE_EXPORT QgsRectangle
 
     /**
      * Returns a string representation of form xmin,ymin : xmax,ymax
-     * Coordinates will be truncated to the specified precision.
+     * Coordinates will be rounded to the specified precision.
      * If the specified precision is less than 0, a suitable minimum precision is used.
      */
     Q_INVOKABLE QString toString( int precision = 16 ) const;
@@ -685,9 +688,9 @@ class CORE_EXPORT QgsRectangle
     % MethodCode
     QString str;
     if ( sipCpp->isNull() )
-      str = QStringLiteral( "<QgsRectangle()>" );
+      str = u"<QgsRectangle()>"_s;
     else
-      str = QStringLiteral( "<QgsRectangle: %1>" ).arg( sipCpp->asWktCoordinates() );
+      str = u"<QgsRectangle: %1>"_s.arg( sipCpp->asWktCoordinates() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

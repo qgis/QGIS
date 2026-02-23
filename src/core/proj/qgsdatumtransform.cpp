@@ -24,6 +24,10 @@
 #include "qgsprojutils.h"
 #include "qgssqliteutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QList<QgsDatumTransform::TransformDetails> QgsDatumTransform::operations( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, bool includeSuperseded )
 {
   QList< QgsDatumTransform::TransformDetails > res;
@@ -92,16 +96,16 @@ QList< QgsDatumTransform::TransformPair > QgsDatumTransform::datumTransformation
   }
 
   QList<int> directTransforms;
-  searchDatumTransform( QStringLiteral( "SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code=%1 AND target_crs_code=%2 ORDER BY deprecated ASC,preferred DESC" ).arg( srcAuthCode ).arg( destAuthCode ),
+  searchDatumTransform( u"SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code=%1 AND target_crs_code=%2 ORDER BY deprecated ASC,preferred DESC"_s.arg( srcAuthCode ).arg( destAuthCode ),
                         directTransforms );
   QList<int> reverseDirectTransforms;
-  searchDatumTransform( QStringLiteral( "SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code = %1 AND target_crs_code=%2 ORDER BY deprecated ASC,preferred DESC" ).arg( destAuthCode ).arg( srcAuthCode ),
+  searchDatumTransform( u"SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code = %1 AND target_crs_code=%2 ORDER BY deprecated ASC,preferred DESC"_s.arg( destAuthCode ).arg( srcAuthCode ),
                         reverseDirectTransforms );
   QList<int> srcToWgs84;
-  searchDatumTransform( QStringLiteral( "SELECT coord_op_code FROM tbl_datum_transform WHERE (source_crs_code=%1 AND target_crs_code=%2) OR (source_crs_code=%2 AND target_crs_code=%1) ORDER BY deprecated ASC,preferred DESC" ).arg( srcAuthCode ).arg( 4326 ),
+  searchDatumTransform( u"SELECT coord_op_code FROM tbl_datum_transform WHERE (source_crs_code=%1 AND target_crs_code=%2) OR (source_crs_code=%2 AND target_crs_code=%1) ORDER BY deprecated ASC,preferred DESC"_s.arg( srcAuthCode ).arg( 4326 ),
                         srcToWgs84 );
   QList<int> destToWgs84;
-  searchDatumTransform( QStringLiteral( "SELECT coord_op_code FROM tbl_datum_transform WHERE (source_crs_code=%1 AND target_crs_code=%2) OR (source_crs_code=%2 AND target_crs_code=%1) ORDER BY deprecated ASC,preferred DESC" ).arg( destAuthCode ).arg( 4326 ),
+  searchDatumTransform( u"SELECT coord_op_code FROM tbl_datum_transform WHERE (source_crs_code=%1 AND target_crs_code=%2) OR (source_crs_code=%2 AND target_crs_code=%1) ORDER BY deprecated ASC,preferred DESC"_s.arg( destAuthCode ).arg( 4326 ),
                         destToWgs84 );
 
   //add direct datum transformations
@@ -164,7 +168,7 @@ QString QgsDatumTransform::datumTransformToProj( int datumTransform )
   }
 
   sqlite3_statement_unique_ptr statement;
-  QString sql = QStringLiteral( "SELECT coord_op_method_code,p1,p2,p3,p4,p5,p6,p7 FROM tbl_datum_transform WHERE coord_op_code=%1" ).arg( datumTransform );
+  QString sql = u"SELECT coord_op_method_code,p1,p2,p3,p4,p5,p6,p7 FROM tbl_datum_transform WHERE coord_op_code=%1"_s.arg( datumTransform );
   int prepareRes;
   statement = database.prepare( sql, prepareRes );
   if ( prepareRes != SQLITE_OK )
@@ -182,7 +186,7 @@ QString QgsDatumTransform::datumTransformToProj( int datumTransform )
     }
     else if ( methodCode == 9603 || methodCode == 9606 || methodCode == 9607 )
     {
-      transformString += QLatin1String( "+towgs84=" );
+      transformString += "+towgs84="_L1;
       double p1 = statement.columnAsDouble( 1 );
       double p2 = statement.columnAsDouble( 2 );
       double p3 = statement.columnAsDouble( 3 );
@@ -192,11 +196,11 @@ QString QgsDatumTransform::datumTransformToProj( int datumTransform )
       double p7 = statement.columnAsDouble( 7 );
       if ( methodCode == 9603 ) //3 parameter transformation
       {
-        transformString += QStringLiteral( "%1,%2,%3" ).arg( QString::number( p1 ), QString::number( p2 ), QString::number( p3 ) );
+        transformString += u"%1,%2,%3"_s.arg( QString::number( p1 ), QString::number( p2 ), QString::number( p3 ) );
       }
       else //7 parameter transformation
       {
-        transformString += QStringLiteral( "%1,%2,%3,%4,%5,%6,%7" ).arg( QString::number( p1 ), QString::number( p2 ), QString::number( p3 ), QString::number( p4 ), QString::number( p5 ), QString::number( p6 ), QString::number( p7 ) );
+        transformString += u"%1,%2,%3,%4,%5,%6,%7"_s.arg( QString::number( p1 ), QString::number( p2 ), QString::number( p3 ), QString::number( p4 ), QString::number( p5 ), QString::number( p6 ), QString::number( p7 ) );
       }
     }
   }
@@ -214,7 +218,7 @@ int QgsDatumTransform::projStringToDatumTransformId( const QString &string )
   }
 
   sqlite3_statement_unique_ptr statement;
-  QString sql = QStringLiteral( "SELECT coord_op_method_code,p1,p2,p3,p4,p5,p6,p7,coord_op_code FROM tbl_datum_transform" );
+  QString sql = u"SELECT coord_op_method_code,p1,p2,p3,p4,p5,p6,p7,coord_op_code FROM tbl_datum_transform"_s;
   int prepareRes;
   statement = database.prepare( sql, prepareRes );
   if ( prepareRes != SQLITE_OK )
@@ -233,7 +237,7 @@ int QgsDatumTransform::projStringToDatumTransformId( const QString &string )
     }
     else if ( methodCode == 9603 || methodCode == 9606 || methodCode == 9607 )
     {
-      transformString += QLatin1String( "+towgs84=" );
+      transformString += "+towgs84="_L1;
       double p1 = statement.columnAsDouble( 1 );
       double p2 = statement.columnAsDouble( 2 );
       double p3 = statement.columnAsDouble( 3 );
@@ -243,11 +247,11 @@ int QgsDatumTransform::projStringToDatumTransformId( const QString &string )
       double p7 = statement.columnAsDouble( 7 );
       if ( methodCode == 9603 ) //3 parameter transformation
       {
-        transformString += QStringLiteral( "%1,%2,%3" ).arg( QString::number( p1 ), QString::number( p2 ), QString::number( p3 ) );
+        transformString += u"%1,%2,%3"_s.arg( QString::number( p1 ), QString::number( p2 ), QString::number( p3 ) );
       }
       else //7 parameter transformation
       {
-        transformString += QStringLiteral( "%1,%2,%3,%4,%5,%6,%7" ).arg( QString::number( p1 ), QString::number( p2 ), QString::number( p3 ), QString::number( p4 ), QString::number( p5 ), QString::number( p6 ), QString::number( p7 ) );
+        transformString += u"%1,%2,%3,%4,%5,%6,%7"_s.arg( QString::number( p1 ), QString::number( p2 ), QString::number( p3 ), QString::number( p4 ), QString::number( p5 ), QString::number( p6 ), QString::number( p7 ) );
       }
     }
 
@@ -272,7 +276,7 @@ QgsDatumTransform::TransformInfo QgsDatumTransform::datumTransformInfo( int datu
   }
 
   sqlite3_statement_unique_ptr statement;
-  QString sql = QStringLiteral( "SELECT epsg_nr,source_crs_code,target_crs_code,remarks,scope,preferred,deprecated FROM tbl_datum_transform WHERE coord_op_code=%1" ).arg( datumTransform );
+  QString sql = u"SELECT epsg_nr,source_crs_code,target_crs_code,remarks,scope,preferred,deprecated FROM tbl_datum_transform WHERE coord_op_code=%1"_s.arg( datumTransform );
   int prepareRes;
   statement = database.prepare( sql, prepareRes );
   if ( prepareRes != SQLITE_OK )
@@ -295,10 +299,10 @@ QgsDatumTransform::TransformInfo QgsDatumTransform::datumTransformInfo( int datu
   info.preferred = statement.columnAsInt64( 5 ) != 0;
   info.deprecated = statement.columnAsInt64( 6 ) != 0;
 
-  QgsCoordinateReferenceSystem srcCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:%1" ).arg( srcCrsId ) );
+  QgsCoordinateReferenceSystem srcCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( u"EPSG:%1"_s.arg( srcCrsId ) );
   info.sourceCrsDescription = srcCrs.description();
   info.sourceCrsAuthId = srcCrs.authid();
-  QgsCoordinateReferenceSystem destCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:%1" ).arg( destCrsId ) );
+  QgsCoordinateReferenceSystem destCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( u"EPSG:%1"_s.arg( destCrsId ) );
   info.destinationCrsDescription = destCrs.description();
   info.destinationCrsAuthId = destCrs.authid();
 

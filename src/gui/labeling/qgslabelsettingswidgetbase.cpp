@@ -23,7 +23,11 @@
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgspropertyoverridebutton.h"
 
+#include <QString>
+
 #include "moc_qgslabelsettingswidgetbase.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLabelSettingsWidgetBase::QgsLabelSettingsWidgetBase( QWidget *parent, QgsMapLayer *vl )
   : QgsPanelWidget( parent )
@@ -174,7 +178,7 @@ QgsLabelSettingsWidgetDialog::QgsLabelSettingsWidgetDialog( QgsLabelSettingsWidg
   vLayout->addWidget( mButtonBox );
   setLayout( vLayout );
 
-  setObjectName( QStringLiteral( "QgsLabelSettingsWidgetDialog" ) );
+  setObjectName( u"QgsLabelSettingsWidgetDialog"_s );
   QgsGui::enableAutoGeometryRestore( this );
 }
 

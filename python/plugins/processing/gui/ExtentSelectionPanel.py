@@ -22,30 +22,30 @@ __copyright__ = "(C) 2012, Victor Olaya"
 import os
 import warnings
 
-from qgis.PyQt import uic
-from qgis.PyQt.QtWidgets import (
-    QMenu,
-    QAction,
-    QDialog,
-    QVBoxLayout,
-    QDialogButtonBox,
-    QLabel,
-)
-from qgis.PyQt.QtGui import QCursor
-from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
-
-from qgis.gui import QgsMapLayerComboBox
-from qgis.utils import iface
 from qgis.core import (
     Qgis,
+    QgsMapLayerProxyModel,
     QgsProcessingParameterDefinition,
     QgsProcessingParameters,
     QgsProject,
     QgsReferencedRectangle,
-    QgsMapLayerProxyModel,
 )
-from processing.gui.RectangleMapTool import RectangleMapTool
+from qgis.gui import QgsMapLayerComboBox
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import QCoreApplication, pyqtSignal
+from qgis.PyQt.QtGui import QCursor
+from qgis.PyQt.QtWidgets import (
+    QAction,
+    QDialog,
+    QDialogButtonBox,
+    QLabel,
+    QMenu,
+    QVBoxLayout,
+)
+from qgis.utils import iface
+
 from processing.core.ProcessingConfig import ProcessingConfig
+from processing.gui.RectangleMapTool import RectangleMapTool
 from processing.tools.dataobjects import createContext
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
@@ -58,7 +58,6 @@ with warnings.catch_warnings():
 
 
 class LayerSelectionDialog(QDialog):
-
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle(self.tr("Select Extent"))
@@ -130,12 +129,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
             )
             if not rect.isNull():
                 try:
-                    s = "{},{},{},{}".format(
-                        rect.xMinimum(),
-                        rect.xMaximum(),
-                        rect.yMinimum(),
-                        rect.yMaximum(),
-                    )
+                    s = f"{rect.xMinimum()},{rect.xMaximum()},{rect.yMinimum()},{rect.yMaximum()}"
                     if crs.isValid():
                         s += " [" + crs.authid() + "]"
                         self.crs = crs

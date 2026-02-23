@@ -15,7 +15,11 @@
 
 #include "qgstexteditconfigdlg.h"
 
+#include <QString>
+
 #include "moc_qgstexteditconfigdlg.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTextEditConfigDlg::QgsTextEditConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )
@@ -30,14 +34,14 @@ QVariantMap QgsTextEditConfigDlg::config()
 {
   QVariantMap cfg;
 
-  cfg.insert( QStringLiteral( "IsMultiline" ), mIsMultiline->isChecked() );
-  cfg.insert( QStringLiteral( "UseHtml" ), mUseHtml->isChecked() );
+  cfg.insert( u"IsMultiline"_s, mIsMultiline->isChecked() );
+  cfg.insert( u"UseHtml"_s, mUseHtml->isChecked() );
 
   return cfg;
 }
 
 void QgsTextEditConfigDlg::setConfig( const QVariantMap &config )
 {
-  mIsMultiline->setChecked( config.value( QStringLiteral( "IsMultiline" ) ).toBool() );
-  mUseHtml->setChecked( config.value( QStringLiteral( "UseHtml" ) ).toBool() );
+  mIsMultiline->setChecked( config.value( u"IsMultiline"_s ).toBool() );
+  mUseHtml->setChecked( config.value( u"UseHtml"_s ).toBool() );
 }

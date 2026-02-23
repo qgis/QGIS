@@ -15,54 +15,41 @@
 
 #include "qgspoint3dsymbol_p.h"
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QBuffer>
-#include <Qt3DRender/QGeometry>
+#include "qgs3drendercontext.h"
+#include "qgs3dutils.h"
+#include "qgsapplication.h"
+#include "qgsbillboardgeometry.h"
+#include "qgsfeature3dhandler_p.h"
+#include "qgsgeotransform.h"
+#include "qgshighlightmaterial.h"
+#include "qgspoint3dbillboardmaterial.h"
+#include "qgspoint3dsymbol.h"
+#include "qgssourcecache.h"
+#include "qgsvectorlayer.h"
 
-typedef Qt3DRender::QAttribute Qt3DQAttribute;
-typedef Qt3DRender::QBuffer Qt3DQBuffer;
-typedef Qt3DRender::QGeometry Qt3DQGeometry;
-#else
+#include <QString>
+#include <QUrl>
+#include <QVector3D>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QGeometry>
-
-typedef Qt3DCore::QAttribute Qt3DQAttribute;
-typedef Qt3DCore::QBuffer Qt3DQBuffer;
-typedef Qt3DCore::QGeometry Qt3DQGeometry;
-#endif
-
-#include <Qt3DRender/QEffect>
-#include <Qt3DRender/QGraphicsApiFilter>
-#include <Qt3DRender/QParameter>
-#include <Qt3DRender/QTechnique>
-
-#include <Qt3DExtras/QCylinderGeometry>
 #include <Qt3DExtras/QConeGeometry>
 #include <Qt3DExtras/QCuboidGeometry>
+#include <Qt3DExtras/QCylinderGeometry>
+#include <Qt3DExtras/QExtrudedTextGeometry>
+#include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DExtras/QPlaneGeometry>
 #include <Qt3DExtras/QSphereGeometry>
 #include <Qt3DExtras/QTorusGeometry>
-#include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DRender/QSceneLoader>
-#include <Qt3DRender/QPaintedTextureImage>
-
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QMesh>
+#include <Qt3DRender/QPaintedTextureImage>
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QSceneLoader>
+#include <Qt3DRender/QTechnique>
 
-#include <Qt3DExtras/QExtrudedTextGeometry>
-
-#include <QUrl>
-#include <QVector3D>
-
-#include "qgspoint3dsymbol.h"
-#include "qgsapplication.h"
-#include "qgsgeotransform.h"
-#include "qgsvectorlayer.h"
-#include "qgs3dutils.h"
-#include "qgsbillboardgeometry.h"
-#include "qgspoint3dbillboardmaterial.h"
-#include "qgssourcecache.h"
+using namespace Qt::StringLiterals;
 
 /// @cond PRIVATE
 
@@ -77,14 +64,14 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
       : mSymbol( static_cast<QgsPoint3DSymbol *>( symbol->clone() ) )
       , mSelectedIds( selectedIds ) {}
 
-    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin ) override;
+    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent ) override;
     void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
   private:
     static QgsMaterial *material( const QgsPoint3DSymbol *symbol, const QgsMaterialContext &materialContext );
     static Qt3DRender::QGeometryRenderer *renderer( const QgsPoint3DSymbol *symbol, const QVector<QVector3D> &positions );
-    static Qt3DQGeometry *symbolGeometry( const QgsPoint3DSymbol *symbol );
+    static Qt3DCore::QGeometry *symbolGeometry( const QgsPoint3DSymbol *symbol );
 
     //! temporary data we will pass to the tessellator
     struct PointData
@@ -98,22 +85,19 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
     std::unique_ptr<QgsPoint3DSymbol> mSymbol;
     // inputs - generic
     QgsFeatureIds mSelectedIds;
-
-    //! origin (in the map coordinates) for output geometries (e.g. at the center of the chunk)
-    QgsVector3D mChunkOrigin;
-
     // outputs
     PointData outNormal;   //!< Features that are not selected
     PointData outSelected; //!< Features that are selected
 };
 
 
-bool QgsInstancedPoint3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin )
+bool QgsInstancedPoint3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent )
 {
   Q_UNUSED( context )
   Q_UNUSED( attributeNames )
 
-  mChunkOrigin = chunkOrigin;
+  mChunkOrigin = chunkExtent.center();
+  mChunkExtent = chunkExtent;
 
   return true;
 }
@@ -146,7 +130,7 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
   {
     case Qgis::Point3DShape::Cylinder:
     {
-      const float length = mSymbol->shapeProperty( QStringLiteral( "length" ) ).toFloat();
+      const float length = mSymbol->shapeProperty( u"length"_s ).toFloat();
       mZMin -= length * 0.5f;
       mZMax += length * 0.5f;
       break;
@@ -154,7 +138,7 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
 
     case Qgis::Point3DShape::Sphere:
     {
-      const float radius = mSymbol->shapeProperty( QStringLiteral( "radius" ) ).toFloat();
+      const float radius = mSymbol->shapeProperty( u"radius"_s ).toFloat();
       mZMin -= radius;
       mZMax += radius;
       break;
@@ -162,7 +146,7 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
 
     case Qgis::Point3DShape::Cone:
     {
-      const float length = mSymbol->shapeProperty( QStringLiteral( "length" ) ).toFloat();
+      const float length = mSymbol->shapeProperty( u"length"_s ).toFloat();
       mZMin -= length * 0.5f;
       mZMax += length * 0.5f;
       break;
@@ -170,7 +154,7 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
 
     case Qgis::Point3DShape::Cube:
     {
-      const float size = mSymbol->shapeProperty( QStringLiteral( "size" ) ).toFloat();
+      const float size = mSymbol->shapeProperty( u"size"_s ).toFloat();
       mZMin -= size * 0.5f;
       mZMax += size * 0.5f;
       break;
@@ -178,7 +162,7 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
 
     case Qgis::Point3DShape::Torus:
     {
-      const float radius = mSymbol->shapeProperty( QStringLiteral( "radius" ) ).toFloat();
+      const float radius = mSymbol->shapeProperty( u"radius"_s ).toFloat();
       mZMin -= radius;
       mZMax += radius;
       break;
@@ -188,7 +172,7 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
     {
       // worst case scenario -- even though planes are usually rotated so that they are flat,
       // let's account for possible overridden rotation
-      const float size = mSymbol->shapeProperty( QStringLiteral( "size" ) ).toFloat();
+      const float size = mSymbol->shapeProperty( u"size"_s ).toFloat();
       mZMin -= size * 0.5f;
       mZMax += size * 0.5f;
       break;
@@ -215,6 +199,7 @@ void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
   QgsMaterialContext materialContext;
   materialContext.setIsSelected( selected );
   materialContext.setSelectionColor( context.selectionColor() );
+  materialContext.setIsHighlighted( mHighlightingEnabled );
   QgsMaterial *mat = material( mSymbol.get(), materialContext );
 
   // add transform (our geometry has coordinates relative to mChunkOrigin)
@@ -235,24 +220,41 @@ void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
 
 QgsMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoint3DSymbol *symbol, const QgsMaterialContext &materialContext )
 {
-  Qt3DRender::QFilterKey *filterKey = new Qt3DRender::QFilterKey;
-  filterKey->setName( QStringLiteral( "renderingStyle" ) );
-  filterKey->setValue( "forward" );
+  std::unique_ptr<QgsMaterial> material;
 
-  Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram;
-  shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/instanced.vert" ) ) ) );
-  shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/phong.frag" ) ) ) );
+  if ( materialContext.isHighlighted() )
+  {
+    material = std::make_unique<QgsHighlightMaterial>( QgsMaterialSettingsRenderingTechnique::InstancedPoints );
+  }
+  else
+  {
+    Qt3DRender::QFilterKey *filterKey = new Qt3DRender::QFilterKey;
+    filterKey->setName( u"renderingStyle"_s );
+    filterKey->setValue( "forward" );
 
-  Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass;
-  renderPass->setShaderProgram( shaderProgram );
+    Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram;
+    shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/instanced.vert"_s ) ) );
+    shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/phong.frag"_s ) ) );
 
-  Qt3DRender::QTechnique *technique = new Qt3DRender::QTechnique;
-  technique->addFilterKey( filterKey );
-  technique->addRenderPass( renderPass );
-  technique->graphicsApiFilter()->setApi( Qt3DRender::QGraphicsApiFilter::OpenGL );
-  technique->graphicsApiFilter()->setProfile( Qt3DRender::QGraphicsApiFilter::CoreProfile );
-  technique->graphicsApiFilter()->setMajorVersion( 3 );
-  technique->graphicsApiFilter()->setMinorVersion( 2 );
+    Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass;
+    renderPass->setShaderProgram( shaderProgram );
+
+    Qt3DRender::QTechnique *technique = new Qt3DRender::QTechnique;
+    technique->addFilterKey( filterKey );
+    technique->addRenderPass( renderPass );
+    technique->graphicsApiFilter()->setApi( Qt3DRender::QGraphicsApiFilter::OpenGL );
+    technique->graphicsApiFilter()->setProfile( Qt3DRender::QGraphicsApiFilter::CoreProfile );
+    technique->graphicsApiFilter()->setMajorVersion( 3 );
+    technique->graphicsApiFilter()->setMinorVersion( 2 );
+
+    Qt3DRender::QEffect *effect = new Qt3DRender::QEffect;
+    effect->addTechnique( technique );
+
+    symbol->materialSettings()->addParametersToEffect( effect, materialContext );
+
+    material = std::make_unique<QgsMaterial>();
+    material->setEffect( effect );
+  }
 
   const QMatrix4x4 tempTransformMatrix = symbol->transform();
   // our built-in 3D geometries (e.g. cylinder, plane, ...) assume Y axis going "up",
@@ -274,24 +276,17 @@ QgsMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoint3DSymbol 
   );
 
   Qt3DRender::QParameter *paramInst = new Qt3DRender::QParameter;
-  paramInst->setName( QStringLiteral( "inst" ) );
+  paramInst->setName( u"inst"_s );
   paramInst->setValue( transformMatrix );
 
   Qt3DRender::QParameter *paramInstNormal = new Qt3DRender::QParameter;
-  paramInstNormal->setName( QStringLiteral( "instNormal" ) );
+  paramInstNormal->setName( u"instNormal"_s );
   paramInstNormal->setValue( normalMatrix4 );
 
-  Qt3DRender::QEffect *effect = new Qt3DRender::QEffect;
-  effect->addTechnique( technique );
-  effect->addParameter( paramInst );
-  effect->addParameter( paramInstNormal );
+  material->addParameter( paramInst );
+  material->addParameter( paramInstNormal );
 
-  symbol->materialSettings()->addParametersToEffect( effect, materialContext );
-
-  QgsMaterial *material = new QgsMaterial;
-  material->setEffect( effect );
-
-  return material;
+  return material.release();
 }
 
 Qt3DRender::QGeometryRenderer *QgsInstancedPoint3DSymbolHandler::renderer( const QgsPoint3DSymbol *symbol, const QVector<QVector3D> &positions )
@@ -302,13 +297,13 @@ Qt3DRender::QGeometryRenderer *QgsInstancedPoint3DSymbolHandler::renderer( const
   ba.resize( byteCount );
   memcpy( ba.data(), positions.constData(), byteCount );
 
-  Qt3DQBuffer *instanceBuffer = new Qt3DQBuffer();
+  Qt3DCore::QBuffer *instanceBuffer = new Qt3DCore::QBuffer();
   instanceBuffer->setData( ba );
 
-  Qt3DQAttribute *instanceDataAttribute = new Qt3DQAttribute;
-  instanceDataAttribute->setName( QStringLiteral( "pos" ) );
-  instanceDataAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
-  instanceDataAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+  Qt3DCore::QAttribute *instanceDataAttribute = new Qt3DCore::QAttribute;
+  instanceDataAttribute->setName( u"pos"_s );
+  instanceDataAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
+  instanceDataAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
   instanceDataAttribute->setVertexSize( 3 );
   instanceDataAttribute->setByteOffset( 0 );
   instanceDataAttribute->setDivisor( 1 );
@@ -316,7 +311,7 @@ Qt3DRender::QGeometryRenderer *QgsInstancedPoint3DSymbolHandler::renderer( const
   instanceDataAttribute->setCount( count );
   instanceDataAttribute->setByteStride( 3 * sizeof( float ) );
 
-  Qt3DQGeometry *geometry = symbolGeometry( symbol );
+  Qt3DCore::QGeometry *geometry = symbolGeometry( symbol );
   geometry->addAttribute( instanceDataAttribute );
   geometry->setBoundingVolumePositionAttribute( instanceDataAttribute );
 
@@ -327,14 +322,14 @@ Qt3DRender::QGeometryRenderer *QgsInstancedPoint3DSymbolHandler::renderer( const
   return renderer;
 }
 
-Qt3DQGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const QgsPoint3DSymbol *symbol )
+Qt3DCore::QGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const QgsPoint3DSymbol *symbol )
 {
   switch ( symbol->shape() )
   {
     case Qgis::Point3DShape::Cylinder:
     {
-      const float radius = symbol->shapeProperty( QStringLiteral( "radius" ) ).toFloat();
-      const float length = symbol->shapeProperty( QStringLiteral( "length" ) ).toFloat();
+      const float radius = symbol->shapeProperty( u"radius"_s ).toFloat();
+      const float length = symbol->shapeProperty( u"length"_s ).toFloat();
       Qt3DExtras::QCylinderGeometry *g = new Qt3DExtras::QCylinderGeometry;
       //g->setRings(2);  // how many vertices vertically
       //g->setSlices(8); // how many vertices on circumference
@@ -345,7 +340,7 @@ Qt3DQGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const QgsPoint3
 
     case Qgis::Point3DShape::Sphere:
     {
-      const float radius = symbol->shapeProperty( QStringLiteral( "radius" ) ).toFloat();
+      const float radius = symbol->shapeProperty( u"radius"_s ).toFloat();
       Qt3DExtras::QSphereGeometry *g = new Qt3DExtras::QSphereGeometry;
       g->setRadius( radius );
       return g;
@@ -353,9 +348,9 @@ Qt3DQGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const QgsPoint3
 
     case Qgis::Point3DShape::Cone:
     {
-      const float length = symbol->shapeProperty( QStringLiteral( "length" ) ).toFloat();
-      const float bottomRadius = symbol->shapeProperty( QStringLiteral( "bottomRadius" ) ).toFloat();
-      const float topRadius = symbol->shapeProperty( QStringLiteral( "topRadius" ) ).toFloat();
+      const float length = symbol->shapeProperty( u"length"_s ).toFloat();
+      const float bottomRadius = symbol->shapeProperty( u"bottomRadius"_s ).toFloat();
+      const float topRadius = symbol->shapeProperty( u"topRadius"_s ).toFloat();
 
       Qt3DExtras::QConeGeometry *g = new Qt3DExtras::QConeGeometry;
       g->setLength( length );
@@ -368,7 +363,7 @@ Qt3DQGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const QgsPoint3
 
     case Qgis::Point3DShape::Cube:
     {
-      const float size = symbol->shapeProperty( QStringLiteral( "size" ) ).toFloat();
+      const float size = symbol->shapeProperty( u"size"_s ).toFloat();
       Qt3DExtras::QCuboidGeometry *g = new Qt3DExtras::QCuboidGeometry;
       g->setXExtent( size );
       g->setYExtent( size );
@@ -378,8 +373,8 @@ Qt3DQGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const QgsPoint3
 
     case Qgis::Point3DShape::Torus:
     {
-      const float radius = symbol->shapeProperty( QStringLiteral( "radius" ) ).toFloat();
-      const float minorRadius = symbol->shapeProperty( QStringLiteral( "minorRadius" ) ).toFloat();
+      const float radius = symbol->shapeProperty( u"radius"_s ).toFloat();
+      const float minorRadius = symbol->shapeProperty( u"minorRadius"_s ).toFloat();
       Qt3DExtras::QTorusGeometry *g = new Qt3DExtras::QTorusGeometry;
       g->setRadius( radius );
       g->setMinorRadius( minorRadius );
@@ -388,7 +383,7 @@ Qt3DQGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const QgsPoint3
 
     case Qgis::Point3DShape::Plane:
     {
-      const float size = symbol->shapeProperty( QStringLiteral( "size" ) ).toFloat();
+      const float size = symbol->shapeProperty( u"size"_s ).toFloat();
       Qt3DExtras::QPlaneGeometry *g = new Qt3DExtras::QPlaneGeometry;
       g->setWidth( size );
       g->setHeight( size );
@@ -397,8 +392,8 @@ Qt3DQGeometry *QgsInstancedPoint3DSymbolHandler::symbolGeometry( const QgsPoint3
 
     case Qgis::Point3DShape::ExtrudedText:
     {
-      const float depth = symbol->shapeProperty( QStringLiteral( "depth" ) ).toFloat();
-      const QString text = symbol->shapeProperty( QStringLiteral( "text" ) ).toString();
+      const float depth = symbol->shapeProperty( u"depth"_s ).toFloat();
+      const QString text = symbol->shapeProperty( u"text"_s ).toString();
       Qt3DExtras::QExtrudedTextGeometry *g = new Qt3DExtras::QExtrudedTextGeometry;
       g->setDepth( depth );
       g->setText( text );
@@ -423,13 +418,13 @@ class QgsModelPoint3DSymbolHandler : public QgsFeature3DHandler
       : mSymbol( static_cast<QgsPoint3DSymbol *>( symbol->clone() ) )
       , mSelectedIds( selectedIds ) {}
 
-    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin ) override;
+    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent ) override;
     void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
   private:
     static void addSceneEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent );
-    static void addMeshEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent, bool are_selected );
+    static void addMeshEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent, bool areSelected, bool areHighlighted );
     static QgsGeoTransform *transform( QVector3D position, const QgsPoint3DSymbol *symbol, const QgsVector3D &chunkOrigin );
 
     //! temporary data we will pass to the tessellator
@@ -444,21 +439,18 @@ class QgsModelPoint3DSymbolHandler : public QgsFeature3DHandler
     std::unique_ptr<QgsPoint3DSymbol> mSymbol;
     // inputs - generic
     QgsFeatureIds mSelectedIds;
-
-    //! origin (in the map coordinates) for output geometries (e.g. at the center of the chunk)
-    QgsVector3D mChunkOrigin;
-
     // outputs
     PointData outNormal;   //!< Features that are not selected
     PointData outSelected; //!< Features that are selected
 };
 
-bool QgsModelPoint3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin )
+bool QgsModelPoint3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent )
 {
   Q_UNUSED( context )
   Q_UNUSED( attributeNames )
 
-  mChunkOrigin = chunkOrigin;
+  mChunkOrigin = chunkExtent.center();
+  mChunkExtent = chunkExtent;
 
   return true;
 }
@@ -497,15 +489,16 @@ void QgsModelPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
 
   if ( selected )
   {
-    addMeshEntities( context, out.positions, mChunkOrigin, mSymbol.get(), parent, true );
+    addMeshEntities( context, out.positions, mChunkOrigin, mSymbol.get(), parent, true, mHighlightingEnabled );
   }
   else
   {
     //  "overwriteMaterial" is a legacy setting indicating that non-embedded material should be used
-    if ( mSymbol->shapeProperty( QStringLiteral( "overwriteMaterial" ) ).toBool()
-         || ( mSymbol->materialSettings() && mSymbol->materialSettings()->type() != QLatin1String( "null" ) ) )
+    if ( mSymbol->shapeProperty( u"overwriteMaterial"_s ).toBool()
+         || ( mSymbol->materialSettings() && mSymbol->materialSettings()->type() != "null"_L1 )
+         || mHighlightingEnabled )
     {
-      addMeshEntities( context, out.positions, mChunkOrigin, mSymbol.get(), parent, false );
+      addMeshEntities( context, out.positions, mChunkOrigin, mSymbol.get(), parent, false, mHighlightingEnabled );
     }
     else
     {
@@ -518,7 +511,7 @@ void QgsModelPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
 void QgsModelPoint3DSymbolHandler::addSceneEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent )
 {
   Q_UNUSED( context );
-  const QString source = QgsApplication::sourceCache()->localFilePath( symbol->shapeProperty( QStringLiteral( "model" ) ).toString() );
+  const QString source = QgsApplication::sourceCache()->localFilePath( symbol->shapeProperty( u"model"_s ).toString() );
   // if the source is remote, the Qgs3DMapScene will take care of refreshing this 3D symbol when the source is fetched
   if ( !source.isEmpty() )
   {
@@ -541,23 +534,27 @@ void QgsModelPoint3DSymbolHandler::addSceneEntities( const Qgs3DRenderContext &c
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "File '%1' is not accessible!" ).arg( symbol->shapeProperty( QStringLiteral( "model" ) ).toString() ), 1 );
+    QgsDebugMsgLevel( u"File '%1' is not accessible!"_s.arg( symbol->shapeProperty( u"model"_s ).toString() ), 1 );
   }
 }
 
-void QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent, bool are_selected )
+void QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent, bool areSelected, bool areHighlighted )
 {
   if ( positions.empty() )
     return;
 
-  const QString source = QgsApplication::sourceCache()->localFilePath( symbol->shapeProperty( QStringLiteral( "model" ) ).toString() );
+  const QString source = QgsApplication::sourceCache()->localFilePath( symbol->shapeProperty( u"model"_s ).toString() );
   if ( !source.isEmpty() )
   {
     // build the default material
     QgsMaterialContext materialContext;
-    materialContext.setIsSelected( are_selected );
+    materialContext.setIsSelected( areSelected );
     materialContext.setSelectionColor( context.selectionColor() );
+    materialContext.setIsHighlighted( areHighlighted );
     QgsMaterial *mat = symbol->materialSettings()->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
+
+    if ( !mat )
+      return;
 
     const QUrl url = QUrl::fromLocalFile( source );
 
@@ -581,7 +578,7 @@ void QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DRenderContext &co
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "File '%1' is not accessible!" ).arg( symbol->shapeProperty( QStringLiteral( "model" ) ).toString() ), 1 );
+    QgsDebugMsgLevel( u"File '%1' is not accessible!"_s.arg( symbol->shapeProperty( u"model"_s ).toString() ), 1 );
   }
 }
 
@@ -605,7 +602,7 @@ class QgsPoint3DBillboardSymbolHandler : public QgsFeature3DHandler
       : mSymbol( static_cast<QgsPoint3DSymbol *>( symbol->clone() ) )
       , mSelectedIds( selectedIds ) {}
 
-    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin ) override;
+    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent ) override;
     void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
@@ -622,21 +619,18 @@ class QgsPoint3DBillboardSymbolHandler : public QgsFeature3DHandler
     std::unique_ptr<QgsPoint3DSymbol> mSymbol;
     // inputs - generic
     QgsFeatureIds mSelectedIds;
-
-    //! origin (in the map coordinates) for output geometries (e.g. at the center of the chunk)
-    QgsVector3D mChunkOrigin;
-
     // outputs
     PointData outNormal;   //!< Features that are not selected
     PointData outSelected; //!< Features that are selected
 };
 
-bool QgsPoint3DBillboardSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin )
+bool QgsPoint3DBillboardSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent )
 {
   Q_UNUSED( context )
   Q_UNUSED( attributeNames )
 
-  mChunkOrigin = chunkOrigin;
+  mChunkOrigin = chunkExtent.center();
+  mChunkExtent = chunkExtent;
 
   return true;
 }

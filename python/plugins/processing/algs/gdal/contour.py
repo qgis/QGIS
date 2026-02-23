@@ -21,19 +21,19 @@ __copyright__ = "(C) 2013, Alexander Bruy"
 
 import os
 
-from qgis.PyQt.QtGui import QIcon
-
 from qgis.core import (
     QgsProcessing,
     QgsProcessingException,
-    QgsProcessingParameterDefinition,
-    QgsProcessingParameterRasterLayer,
     QgsProcessingParameterBand,
-    QgsProcessingParameterString,
-    QgsProcessingParameterNumber,
     QgsProcessingParameterBoolean,
+    QgsProcessingParameterDefinition,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterString,
     QgsProcessingParameterVectorDestination,
 )
+from qgis.PyQt.QtGui import QIcon
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -142,7 +142,7 @@ class contour(GdalAlgorithm):
         )
         self.addParameter(extra_param)
 
-        # TODO: remove in QGIS 4
+        # TODO: remove in QGIS 5
         options_param = QgsProcessingParameterString(
             self.OPTIONS,
             self.tr("Additional creation options"),
@@ -231,7 +231,7 @@ class contour(GdalAlgorithm):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
             arguments.append(extra)
 
-        # TODO: remove in QGIS 4
+        # TODO: remove in QGIS 5
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             arguments.append(options)

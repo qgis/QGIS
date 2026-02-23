@@ -18,12 +18,13 @@
 #ifndef QGSCOORDINATEUTILS_H
 #define QGSCOORDINATEUTILS_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 
 #include <QObject>
 #include <QString>
+
+#define SIP_NO_FILE
 
 class QgsPointXY;
 class QgsCoordinateReferenceSystem;
@@ -54,7 +55,7 @@ class CORE_EXPORT QgsCoordinateUtils
      * pixels.
      *
      * \note  Since QGIS 3.6 a new \a project parameter is available. Using the method without this
-     *        a \a project parameter is deprecated and will be removed with QGIS 4.
+     *        a \a project parameter is deprecated and will be removed with QGIS 5.
      *        For backward compatibility, QgsProject.instance() will be used if the \a project
      *        parameter is not specified.
      */

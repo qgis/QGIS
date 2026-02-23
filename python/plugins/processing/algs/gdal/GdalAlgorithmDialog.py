@@ -19,20 +19,6 @@ __author__ = "Victor Olaya"
 __date__ = "May 2015"
 __copyright__ = "(C) 2015, Victor Olaya"
 
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
-    QPushButton,
-    QLabel,
-    QPlainTextEdit,
-    QLineEdit,
-    QComboBox,
-    QCheckBox,
-    QSizePolicy,
-    QDialogButtonBox,
-)
-
 from qgis.core import (
     QgsProcessingException,
     QgsProcessingFeedback,
@@ -40,22 +26,34 @@ from qgis.core import (
 )
 from qgis.gui import (
     QgsMessageBar,
-    QgsProjectionSelectionWidget,
     QgsProcessingAlgorithmDialogBase,
     QgsProcessingLayerOutputDestinationWidget,
+    QgsProjectionSelectionWidget,
+)
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtWidgets import (
+    QCheckBox,
+    QComboBox,
+    QDialogButtonBox,
+    QLabel,
+    QLineEdit,
+    QPlainTextEdit,
+    QPushButton,
+    QSizePolicy,
+    QVBoxLayout,
+    QWidget,
 )
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
-from processing.gui.ParametersPanel import ParametersPanel
 from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.gui.NumberInputPanel import NumberInputPanel
+from processing.gui.ParametersPanel import ParametersPanel
 from processing.gui.wrappers import WidgetWrapper
 from processing.tools.dataobjects import createContext
 
 
 class GdalAlgorithmDialog(AlgorithmDialog):
-
     def __init__(self, alg, parent=None):
         super().__init__(alg, parent=parent)
         self.mainWidget().parametersHaveChanged()
@@ -65,7 +63,6 @@ class GdalAlgorithmDialog(AlgorithmDialog):
 
 
 class GdalParametersPanel(ParametersPanel):
-
     def __init__(self, parent, alg):
         super().__init__(parent, alg)
 
@@ -95,7 +92,7 @@ class GdalParametersPanel(ParametersPanel):
             # For compatibility with 3.x API, we need to check whether the wrapper is
             # the deprecated WidgetWrapper class. If not, it's the newer
             # QgsAbstractProcessingParameterWidgetWrapper class
-            # TODO QGIS 4.0 - remove
+            # TODO QGIS 5.0 - remove
             if issubclass(wrapper.__class__, WidgetWrapper):
                 w = wrapper.widget
             else:

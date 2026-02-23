@@ -25,8 +25,11 @@ email                : sherman at mrcc.com
 #include "qgsrectangle.h"
 
 #include <QDataStream>
+#include <QString>
 
 #include "moc_qgsfeature.cpp"
+
+using namespace Qt::StringLiterals;
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -147,7 +150,7 @@ QVariantMap QgsFeature::attributeMap() const
   const int attributeSize = d->attributes.size();
   if ( fieldSize != attributeSize )
   {
-    QgsDebugError( QStringLiteral( "Attribute size (%1) does not match number of fields (%2)" ).arg( attributeSize ).arg( fieldSize ) );
+    QgsDebugError( u"Attribute size (%1) does not match number of fields (%2)"_s.arg( attributeSize ).arg( fieldSize ) );
     return QVariantMap();
   }
 

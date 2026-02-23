@@ -141,12 +141,16 @@ Contains settings for how a map layer will be labeled.
       PredefinedPositionOrder,
       LinePlacementOptions,
       OverrunDistance,
+
+      // TODO QGIS 5.0 - rename this
       LabelAllParts,
+
       PolygonLabelOutside,
       LineAnchorPercent,
       LineAnchorClipping,
       LineAnchorType,
       LineAnchorTextPoint,
+      CurvedLabelMode,
 
       // rendering
       ScaleVisibility,
@@ -164,6 +168,7 @@ Contains settings for how a map layer will be labeled.
 
       AllowDegradedPlacement,
       OverlapHandling,
+      WhitespaceCollisionHandling,
 
       LabelMarginDistance,
       RemoveDuplicateLabels,
@@ -237,10 +242,9 @@ Returns the labeling property definitions.
 
     bool isExpression;
 
-    QgsExpression *getLabelExpression();
+    QgsExpression *getLabelExpression() const;
 %Docstring
-Returns the :py:class:`QgsExpression` for this label settings. May be
-``None`` if isExpression is ``False``.
+Returns the :py:class:`QgsExpression` for this label settings.
 %End
 
  QColor previewBkgrdColor;
@@ -357,8 +361,6 @@ Set unit for rotation of labels.
 
     Qgis::UpsideDownLabelHandling upsidedownLabels;
 
-    bool labelPerPart;
-
     double zIndex;
 
     QString geometryGenerator;
@@ -383,7 +385,7 @@ legendString
 :return: the string to show in the legend and in the preview icon
 %End
 
- void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = 0, QgsRenderContext *context = 0, double *rotatedLabelX /Out/ = 0, double *rotatedLabelY /Out/ = 0 ) /Deprecated="Since 3.40. Will be removed from public API in QGIS 4.0."/;
+ void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = 0, QgsRenderContext *context = 0, double *rotatedLabelX /Out/ = 0, double *rotatedLabelY /Out/ = 0 ) /Deprecated="Since 3.40. Will be removed from public API in QGIS 5.0."/;
 %Docstring
 Calculates the space required to render the provided ``text`` in map
 units. Results will be written to ``labelX`` and ``labelY``.
@@ -399,7 +401,7 @@ render vertically oriented text will be written to ``rotatedLabelX`` and
 
 .. deprecated:: 3.40
 
-   Will be removed from public API in QGIS 4.0.
+   Will be removed from public API in QGIS 5.0.
 %End
 
     void registerFeature( const QgsFeature &f, QgsRenderContext &context );
@@ -662,8 +664,8 @@ If data can be parsed as a labeling settings, ``ok`` will be set to
     QgsPointXY ptOne;
     QgsGeometry extentGeom;
     int mFeaturesToLabel;
-    int mFeatsSendingToPal;
-    int mFeatsRegPal;
+    int mFeatsSendingToPal; // total features tested for sending into PAL (relative to maxNumLabels)
+    int mFeatsRegPal; // number of features registered in PAL, when using limitNumLabels
 
 };
 

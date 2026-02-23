@@ -20,18 +20,16 @@ __date__ = "January 2016"
 __copyright__ = "(C) 2016, Matthias Kuhn"
 
 
-import AlgorithmsTestBase
-
-import nose2
-import shutil
 import os
-
+import shutil
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+import AlgorithmsTestBase
+import nose2
+from qgis.testing import QgisTestCase, start_app
 
 
 class TestQgisAlgorithms5(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
-
     @classmethod
     def setUpClass(cls):
         start_app()

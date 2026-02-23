@@ -19,8 +19,8 @@ __author__ = "Nyall Dawson"
 __date__ = "February 2019"
 __copyright__ = "(C) 2019, Nyall Dawson"
 
+from qgis.core import QgsApplication, QgsProcessing, QgsProcessingAlgorithm
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import QgsProcessingAlgorithm, QgsProcessing, QgsApplication
 from qgis.utils import iface
 
 from processing.gui.ContextAction import ContextAction
@@ -28,7 +28,6 @@ from processing.script.ScriptEditorDialog import ScriptEditorDialog
 
 
 class ExportModelAsPythonScriptAction(ContextAction):
-
     def __init__(self):
         super().__init__()
         self.name = QCoreApplication.translate(

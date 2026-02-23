@@ -31,10 +31,13 @@
 #include "qgsterraintextureimage_p.h"
 #include "qgsterraintileentity_p.h"
 
+#include <QString>
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QGeometryRenderer>
 
 #include "moc_qgsterrainentity.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -172,7 +175,7 @@ void QgsTerrainEntity::onShowBoundingBoxesChanged()
 
 void QgsTerrainEntity::invalidateMapImages()
 {
-  QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Invalidate textures" ) );
+  QgsEventTracing::addEvent( QgsEventTracing::Instant, u"3D"_s, u"Invalidate textures"_s );
 
   // handle active nodes
 

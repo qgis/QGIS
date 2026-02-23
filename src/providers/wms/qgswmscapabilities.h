@@ -29,8 +29,11 @@
 #include <QMap>
 #include <QNetworkRequest>
 #include <QSet>
+#include <QString>
 #include <QStringList>
 #include <QVector>
+
+using namespace Qt::StringLiterals;
 
 class QNetworkReply;
 
@@ -384,7 +387,7 @@ struct QgsWmsLayerProperty
    */
     QString preferredAvailableCrs() const
     {
-      static QSet<QString> sSkipList { QStringLiteral( "EPSG:900913" ) };
+      static QSet<QString> sSkipList { u"EPSG:900913"_s };
       for ( const QString &candidate : crs )
       {
         if ( sSkipList.contains( candidate ) )
@@ -708,6 +711,14 @@ class QgsWmsSettings
     QgsWmstDimensionExtent parseTemporalExtent( const QString &extent );
 
     /**
+     * Parses a temporal format string from WMS-T dimension capabilities and returns
+     * the appropriate format string for formatting datetime values.
+     *
+     * \since QGIS 4.0
+     */
+    QString parseTemporalFormat( const QString &format ) const;
+
+    /**
      * Sets the dimension extent property
      *
      * \see timeDimensionExtent()
@@ -771,6 +782,9 @@ class QgsWmsSettings
     //! Temporal extent from dimension property in WMS-T
     QString mTemporalExtent;
 
+    //! Whether time dimension is enabled for the layer
+    QString mEnableTime = u"true"_s;
+
     //! Fixed temporal range for the data provider
     QgsDateTimeRange mFixedRange;
 
@@ -784,6 +798,8 @@ class QgsWmsSettings
 
     //! Stores WMS-T time dimension extent dates
     QgsWmstDimensionExtent mTimeDimensionExtent;
+
+    QString mTimeFormat;
 
     //! Stores WMS-T reference dimension extent dates
     QgsWmstDimensionExtent mReferenceTimeDimensionExtent;

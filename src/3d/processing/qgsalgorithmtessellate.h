@@ -18,10 +18,11 @@
 #ifndef QGSALGORITHMTESSELLATE_H
 #define QGSALGORITHMTESSELLATE_H
 
-#define SIP_NO_FILE
 
-#include "processing/qgsprocessingalgorithm.h"
 #include "qgis.h"
+#include "qgsprocessingalgorithm.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

@@ -16,12 +16,16 @@
 #include "qgscreaterasterattributetabledialog.h"
 
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgsmessagebar.h"
 #include "qgsrasterlayer.h"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgscreaterasterattributetabledialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCreateRasterAttributeTableDialog::QgsCreateRasterAttributeTableDialog( QgsRasterLayer *rasterLayer, QWidget *parent )
   : QDialog( parent )
@@ -68,7 +72,7 @@ QgsCreateRasterAttributeTableDialog::QgsCreateRasterAttributeTableDialog( QgsRas
 
   if ( !existingRatsInfo.isEmpty() )
   {
-    mCreateInfoLabel->setText( mCreateInfoLabel->text().append( QStringLiteral( "<br><ul><li>" ) + existingRatsInfo.join( QLatin1String( "</li><li>" ) ) ).append( QStringLiteral( "</ul>" ) ) );
+    mCreateInfoLabel->setText( mCreateInfoLabel->text().append( u"<br><ul><li>"_s + existingRatsInfo.join( "</li><li>"_L1 ) ).append( u"</ul>"_s ) );
     mCreateInfoLabel->adjustSize();
     mCreateInfoLabel->show();
   }
@@ -80,7 +84,7 @@ QgsCreateRasterAttributeTableDialog::QgsCreateRasterAttributeTableDialog( QgsRas
   }
   else
   {
-    mDbfPathWidget->setFilter( QStringLiteral( "VAT DBF Files (*.vat.dbf)" ) );
+    mDbfPathWidget->setFilter( u"VAT DBF Files (*.vat.dbf)"_s );
     if ( QFile::exists( mRasterLayer->dataProvider()->dataSourceUri() ) )
     {
       mDbfPathWidget->setFilePath( mRasterLayer->dataProvider()->dataSourceUri() + ".vat.dbf" );
@@ -89,6 +93,9 @@ QgsCreateRasterAttributeTableDialog::QgsCreateRasterAttributeTableDialog( QgsRas
 
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( u"working_with_raster/raster_properties.html#raster-attribute-tables"_s );
+  } );
 
   updateButtons();
 

@@ -20,8 +20,13 @@
 #include "qgssettingstree.h"
 #include "qgssettingstreenode.h"
 
-///@cond PRIVATE
+#include <QString>
+
 #define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
+
+///@cond PRIVATE
 
 #include <QStringList>
 
@@ -39,7 +44,7 @@ class CORE_EXPORT QgsVectorTileProviderConnection : public QgsAbstractProviderCo
 
 #ifndef SIP_RUN
 
-    static inline QgsSettingsTreeNamedListNode *sTreeConnectionVectorTile = QgsSettingsTree::sTreeConnections->createNamedListNode( QStringLiteral( "vector-tile" ), Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
+    static inline QgsSettingsTreeNamedListNode *sTreeConnectionVectorTile = QgsSettingsTree::sTreeConnections->createNamedListNode( u"vector-tile"_s, Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
 
     static const QgsSettingsEntryString *settingsUrl;
     static const QgsSettingsEntryInteger *settingsZmin;

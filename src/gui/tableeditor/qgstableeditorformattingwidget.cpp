@@ -21,8 +21,11 @@
 #include "qgsproperty.h"
 
 #include <QPointer>
+#include <QString>
 
 #include "moc_qgstableeditorformattingwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent )
   : QgsPanelWidget( parent )
@@ -234,11 +237,11 @@ QgsExpressionContext QgsTableEditorFormattingWidget::createExpressionContext() c
 
   QgsExpressionContextScope *cellScope = new QgsExpressionContextScope();
   // TODO -- could set real row/column numbers here, in certain circumstances...
-  cellScope->setVariable( QStringLiteral( "row_number" ), 0 );
-  cellScope->setVariable( QStringLiteral( "column_number" ), 0 );
+  cellScope->setVariable( u"row_number"_s, 0 );
+  cellScope->setVariable( u"column_number"_s, 0 );
   context.appendScope( cellScope );
 
-  context.setHighlightedVariables( QStringList() << QStringLiteral( "row_number" ) << QStringLiteral( "column_number" ) );
+  context.setHighlightedVariables( QStringList() << u"row_number"_s << u"column_number"_s );
   return context;
 }
 

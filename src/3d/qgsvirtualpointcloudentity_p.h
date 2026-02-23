@@ -16,7 +16,6 @@
 #ifndef QGSVIRTUALPOINTCLOUDENTITY_P_H
 #define QGSVIRTUALPOINTCLOUDENTITY_P_H
 
-#define SIP_NO_FILE
 ///@cond PRIVATE
 
 //
@@ -33,6 +32,8 @@
 #include "qgschunkedentity.h"
 #include "qgscoordinatetransform.h"
 #include "qgspointcloudlayerchunkloader_p.h"
+
+#define SIP_NO_FILE
 
 class QgsAABB;
 class QgsChunkBoundsEntity;
@@ -58,6 +59,9 @@ class QgsVirtualPointCloudEntity : public Qgs3DMapSceneEntity
   public:
     //! Constructs
     QgsVirtualPointCloudEntity( Qgs3DMapSettings *map, QgsPointCloudLayer *layer, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset, int pointBudget );
+
+    //! Destructs
+    ~QgsVirtualPointCloudEntity() override;
 
     //! This is called when the camera moves. It's responsible for loading new indexes and decides if subindex will be rendered as bbox or chunked entity.
     void handleSceneUpdate( const SceneContext &sceneContext ) override;

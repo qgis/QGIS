@@ -21,23 +21,22 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 import os
 
-from qgis.PyQt.QtGui import QIcon
-
 from qgis.core import (
-    QgsRasterFileWriter,
     QgsProcessing,
     QgsProcessingException,
-    QgsProcessingParameterDefinition,
-    QgsProcessingParameterMultipleLayers,
-    QgsProcessingParameterEnum,
-    QgsProcessingParameterString,
     QgsProcessingParameterBoolean,
+    QgsProcessingParameterDefinition,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterMultipleLayers,
     QgsProcessingParameterNumber,
     QgsProcessingParameterRasterDestination,
+    QgsProcessingParameterString,
+    QgsRasterFileWriter,
 )
+from qgis.PyQt.QtGui import QIcon
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
-
 from processing.tools.system import isWindows
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -120,7 +119,7 @@ class merge(GdalAlgorithm):
         self.addParameter(nodata_out_param)
 
         # backwards compatibility parameter
-        # TODO QGIS 4: remove parameter and related logic
+        # TODO QGIS 5: remove parameter and related logic
         options_param = QgsProcessingParameterString(
             self.OPTIONS,
             self.tr("Additional creation options"),

@@ -20,6 +20,10 @@
 #include "qgis_sip.h"
 #include "qgsvector3d.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief A simple 4x4 matrix implementation useful for transformation in 3D space.
@@ -88,7 +92,7 @@ class CORE_EXPORT QgsMatrix4x4
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsMatrix4x4(%1, %2, %3, %4, %5, %6, %7, %8, %9, %10, %11, %12, %13, %14, %15, %16)>" )
+    QString str = u"<QgsMatrix4x4(%1, %2, %3, %4, %5, %6, %7, %8, %9, %10, %11, %12, %13, %14, %15, %16)>"_s
                   .arg( sipCpp->data()[0] )
                   .arg( sipCpp->data()[4] )
                   .arg( sipCpp->data()[8] )

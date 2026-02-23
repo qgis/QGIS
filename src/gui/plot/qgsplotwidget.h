@@ -125,6 +125,8 @@ class GUI_EXPORT QgsBarChartPlotWidget : public QgsPlotWidget, private Ui::QgsBa
 
     std::unique_ptr< QgsNumericFormat > mXAxisNumericFormat;
     std::unique_ptr< QgsNumericFormat > mYAxisNumericFormat;
+
+    bool mFlipAxes = false;
 };
 
 
@@ -166,6 +168,8 @@ class GUI_EXPORT QgsLineChartPlotWidget : public QgsPlotWidget, private Ui::QgsL
 
     std::unique_ptr< QgsNumericFormat > mXAxisNumericFormat;
     std::unique_ptr< QgsNumericFormat > mYAxisNumericFormat;
+
+    bool mFlipAxes = false;
 };
 
 //

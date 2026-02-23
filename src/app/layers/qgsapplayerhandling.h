@@ -24,6 +24,9 @@
 #include "qgsvectorlayerref.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsMapLayer;
 class QgsProviderSublayerDetails;
@@ -72,7 +75,7 @@ class APP_EXPORT QgsAppLayerHandling
      * \note This may trigger a dialog asking users to select from available sublayers in the datasource,
      * depending on the contents of the datasource and the user's current QGIS settings.
      */
-    static QList<QgsVectorLayer *> addVectorLayer( const QString &uri, const QString &baseName, const QString &provider = QLatin1String( "ogr" ), bool addToLegend = true );
+    static QList<QgsVectorLayer *> addVectorLayer( const QString &uri, const QString &baseName, const QString &provider = "ogr"_L1, bool addToLegend = true );
 
     /**
      * Adds a list of vector layers from a list of layer \a uris supported by the OGR provider.
@@ -96,7 +99,7 @@ class APP_EXPORT QgsAppLayerHandling
      * \note This may trigger a dialog asking users to select from available sublayers in the datasource,
      * depending on the contents of the datasource and the user's current QGIS settings.
      */
-    static QList<QgsRasterLayer *> addRasterLayer( QString const &uri, const QString &baseName, const QString &provider = QLatin1String( "gdal" ), bool addToLegend = true );
+    static QList<QgsRasterLayer *> addRasterLayer( QString const &uri, const QString &baseName, const QString &provider = "gdal"_L1, bool addToLegend = true );
 
     /**
      * Adds a list of raster layers from a list of layer \a uris supported by the GDAL provider.
@@ -209,6 +212,27 @@ class APP_EXPORT QgsAppLayerHandling
      * \param categories style categories
      */
     static void onVectorLayerStyleLoaded( QgsVectorLayer *vl, const QgsMapLayer::StyleCategories categories );
+
+    /**
+     * Loads style for \a layer from selected source.
+     *
+     * \since QGIS 4.0
+     */
+    static void loadStyleFromFile( QgsMapLayer *layer );
+
+    /**
+     * Loads style for list of layers from selected file.
+     *
+     * \since QGIS 4.0
+     */
+    static void loadStyleFromFile( const QList<QgsMapLayer *> &layers );
+
+    /**
+     * Save qml style for the layer
+     *
+     * \since QGIS 4.0
+     */
+    static void saveStyleFile( QgsMapLayer *layer = nullptr );
 
   private:
     template<typename T> static QList<T *> addLayerPrivate( Qgis::LayerType type, const QString &uri, const QString &baseName, const QString &providerKey, bool guiWarnings = true, bool addToLegend = true );

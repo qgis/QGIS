@@ -27,6 +27,9 @@
 
 #include <QIcon>
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsLayerTreeLayer;
 class QgsLayerTreeModel;
@@ -314,7 +317,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsLayerTreeModelLegendNode: \"%1\">" ).arg( sipCpp->data( Qt::DisplayRole ).toString() );
+    QString str = u"<QgsLayerTreeModelLegendNode: \"%1\">"_s.arg( sipCpp->data( Qt::DisplayRole ).toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -549,7 +552,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsSymbolLegendNode: %1 \"%2\"" ).arg(
+    QString str = u"<QgsSymbolLegendNode: %1 \"%2\""_s.arg(
                     sipCpp->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString(),
                     sipCpp->data( Qt::DisplayRole ).toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
@@ -604,7 +607,7 @@ class CORE_EXPORT QgsSimpleLegendNode : public QgsLayerTreeModelLegendNode
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsSimpleLegendNode: \"%1\">" ).arg( sipCpp->data( Qt::DisplayRole ).toString() );
+    QString str = u"<QgsSimpleLegendNode: \"%1\">"_s.arg( sipCpp->data( Qt::DisplayRole ).toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -644,7 +647,7 @@ class CORE_EXPORT QgsImageLegendNode : public QgsLayerTreeModelLegendNode
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsImageLegendNode: \"%1\">" ).arg( sipCpp->data( Qt::DisplayRole ).toString() );
+    QString str = u"<QgsImageLegendNode: \"%1\">"_s.arg( sipCpp->data( Qt::DisplayRole ).toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -700,7 +703,7 @@ class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsRasterSymbolLegendNode: \"%1\">" ).arg( sipCpp->data( Qt::DisplayRole ).toString() );
+    QString str = u"<QgsRasterSymbolLegendNode: \"%1\">"_s.arg( sipCpp->data( Qt::DisplayRole ).toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -753,7 +756,7 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsWmsLegendNode: \"%1\">" ).arg( sipCpp->data( Qt::DisplayRole ).toString() );
+    QString str = u"<QgsWmsLegendNode: \"%1\">"_s.arg( sipCpp->data( Qt::DisplayRole ).toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -799,7 +802,7 @@ class CORE_EXPORT QgsDataDefinedSizeLegendNode : public QgsLayerTreeModelLegendN
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsDataDefinedSizeLegendNode: \"%1\">" ).arg( sipCpp->data( Qt::DisplayRole ).toString() );
+    QString str = u"<QgsDataDefinedSizeLegendNode: \"%1\">"_s.arg( sipCpp->data( Qt::DisplayRole ).toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -856,7 +859,7 @@ class CORE_EXPORT QgsVectorLabelLegendNode : public QgsLayerTreeModelLegendNode
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsVectorLabelLegendNode: \"%1\">" ).arg( sipCpp->data( Qt::DisplayRole ).toString() );
+    QString str = u"<QgsVectorLabelLegendNode: \"%1\">"_s.arg( sipCpp->data( Qt::DisplayRole ).toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

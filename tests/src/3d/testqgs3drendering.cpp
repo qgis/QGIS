@@ -16,6 +16,7 @@
 #include <memory>
 
 #include "qgs3d.h"
+#include "qgs3dhighlightfeaturehandler.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3drendercontext.h"
@@ -68,6 +69,10 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QSignalSpy>
+#include <QString>
+#include <Qt3DRender/QGeometryRenderer>
+
+using namespace Qt::StringLiterals;
 
 class TestQgs3DRendering : public QgsTest
 {
@@ -75,7 +80,7 @@ class TestQgs3DRendering : public QgsTest
 
   public:
     TestQgs3DRendering()
-      : QgsTest( QStringLiteral( "3D Rendering Tests" ), QStringLiteral( "3d" ) )
+      : QgsTest( u"3D Rendering Tests"_s, u"3d"_s )
     {}
 
   private slots:
@@ -120,6 +125,9 @@ class TestQgs3DRendering : public QgsTest
     void testDebugMap();
     void testAnnotationLayerBillboards();
     void testAnnotationLayerText();
+    void testExtrudedPolygonsHighlighting();
+    void testInstancedRenderingHighlighting();
+    void testModelPointRenderingHighlighting();
 
   private:
     QImage convertDepthImageToGrayscaleImage( const QImage &depthImage );
@@ -585,14 +593,6 @@ void TestQgs3DRendering::testPhongShading()
 
 void TestQgs3DRendering::testExtrudedPolygonsTexturedPhong()
 {
-  // In Qt 5, this test does not work on CI
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  if ( QgsTest::isCIRun() )
-  {
-    QSKIP( "fails on CI" );
-  }
-#endif
-
   QgsPhongTexturedMaterialSettings materialSettings;
   materialSettings.setAmbient( QColor( 26, 26, 26 ) );
   materialSettings.setSpecular( QColor( 10, 10, 10 ) );
@@ -643,9 +643,9 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefinedPhong()
   QgsProperty diffuseColor;
   QgsProperty ambientColor;
   QgsProperty specularColor;
-  diffuseColor.setExpressionString( QStringLiteral( "color_rgb( 120*(\"ogc_fid\"%3),125,0)" ) );
-  ambientColor.setExpressionString( QStringLiteral( "color_rgb( 120,(\"ogc_fid\"%2)*255,0)" ) );
-  specularColor.setExpressionString( QStringLiteral( "'yellow'" ) );
+  diffuseColor.setExpressionString( u"color_rgb( 120*(\"ogc_fid\"%3),125,0)"_s );
+  ambientColor.setExpressionString( u"color_rgb( 120,(\"ogc_fid\"%2)*255,0)"_s );
+  specularColor.setExpressionString( u"'yellow'"_s );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Diffuse, diffuseColor );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Ambient, ambientColor );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Specular, specularColor );
@@ -697,9 +697,9 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefinedPhongClipping()
   QgsProperty diffuseColor;
   QgsProperty ambientColor;
   QgsProperty specularColor;
-  diffuseColor.setExpressionString( QStringLiteral( "color_rgb( 120*(\"ogc_fid\"%3),125,0)" ) );
-  ambientColor.setExpressionString( QStringLiteral( "color_rgb( 120,(\"ogc_fid\"%2)*255,0)" ) );
-  specularColor.setExpressionString( QStringLiteral( "'yellow'" ) );
+  diffuseColor.setExpressionString( u"color_rgb( 120*(\"ogc_fid\"%3),125,0)"_s );
+  ambientColor.setExpressionString( u"color_rgb( 120,(\"ogc_fid\"%2)*255,0)"_s );
+  specularColor.setExpressionString( u"'yellow'"_s );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Diffuse, diffuseColor );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Ambient, ambientColor );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Specular, specularColor );
@@ -783,9 +783,9 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefinedGooch()
   QgsProperty diffuseColor;
   QgsProperty warmColor;
   QgsProperty coolColor;
-  diffuseColor.setExpressionString( QStringLiteral( "color_rgb( 120*(\"ogc_fid\"%3),125,0)" ) );
-  warmColor.setExpressionString( QStringLiteral( "color_rgb( 120,(\"ogc_fid\"%2)*255,0)" ) );
-  coolColor.setExpressionString( QStringLiteral( "'yellow'" ) );
+  diffuseColor.setExpressionString( u"color_rgb( 120*(\"ogc_fid\"%3),125,0)"_s );
+  warmColor.setExpressionString( u"color_rgb( 120,(\"ogc_fid\"%2)*255,0)"_s );
+  coolColor.setExpressionString( u"'yellow'"_s );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Diffuse, diffuseColor );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Warm, warmColor );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Cool, coolColor );
@@ -839,9 +839,9 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefinedGoochClipping()
   QgsProperty diffuseColor;
   QgsProperty warmColor;
   QgsProperty coolColor;
-  diffuseColor.setExpressionString( QStringLiteral( "color_rgb( 120*(\"ogc_fid\"%3),125,0)" ) );
-  warmColor.setExpressionString( QStringLiteral( "color_rgb( 120,(\"ogc_fid\"%2)*255,0)" ) );
-  coolColor.setExpressionString( QStringLiteral( "'yellow'" ) );
+  diffuseColor.setExpressionString( u"color_rgb( 120*(\"ogc_fid\"%3),125,0)"_s );
+  warmColor.setExpressionString( u"color_rgb( 120,(\"ogc_fid\"%2)*255,0)"_s );
+  coolColor.setExpressionString( u"'yellow'"_s );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Diffuse, diffuseColor );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Warm, warmColor );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Property::Cool, coolColor );
@@ -1272,7 +1272,7 @@ void TestQgs3DRendering::testLineRenderingDataDefinedColors()
   QgsSimpleLineMaterialSettings matSettings;
   matSettings.setAmbient( Qt::red );
   QgsPropertyCollection properties;
-  properties.setProperty( QgsSimpleLineMaterialSettings::Property::Ambient, QgsProperty::fromExpression( QStringLiteral( "case when \"category\" = 'blue' then '#2233cc' when \"category\" = 'green' then '#33ff55' end" ) ) );
+  properties.setProperty( QgsSimpleLineMaterialSettings::Property::Ambient, QgsProperty::fromExpression( u"case when \"category\" = 'blue' then '#2233cc' when \"category\" = 'green' then '#33ff55' end"_s ) );
   matSettings.setDataDefinedProperties( properties );
   lineSymbol->setMaterialSettings( matSettings.clone() );
   layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
@@ -1281,12 +1281,12 @@ void TestQgs3DRendering::testLineRenderingDataDefinedColors()
   pts << QgsPoint( 0, 0, 10 ) << QgsPoint( 0, 1000, 10 ) << QgsPoint( 1000, 1000, 10 ) << QgsPoint( 1000, 0, 10 );
   QgsFeature f1( layerLines->fields() );
   f1.setGeometry( QgsGeometry( new QgsLineString( pts ) ) );
-  f1.setAttributes( QgsAttributes( { QStringLiteral( "blue" ) } ) );
+  f1.setAttributes( QgsAttributes( { u"blue"_s } ) );
   pts.clear();
   pts << QgsPoint( 1000, 0, 500 ) << QgsPoint( 1000, 1000, 500 ) << QgsPoint( 0, 1000, 500 ) << QgsPoint( 0, 0, 500 );
   QgsFeature f2( layerLines->fields() );
   f2.setGeometry( QgsGeometry( new QgsLineString( pts ) ) );
-  f2.setAttributes( QgsAttributes( { QStringLiteral( "green" ) } ) );
+  f2.setAttributes( QgsAttributes( { u"green"_s } ) );
   QgsFeatureList flist;
   flist << f1 << f2;
   layerLines->dataProvider()->addFeatures( flist );
@@ -1677,7 +1677,7 @@ void TestQgs3DRendering::testAnimationExport()
   );
 
   QVERIFY( success );
-  QVERIFY( QFileInfo::exists( ( QDir( dir ).filePath( QStringLiteral( "test3danimation001.png" ) ) ) ) );
+  QVERIFY( QFileInfo::exists( ( QDir( dir ).filePath( u"test3danimation001.png"_s ) ) ) );
 }
 
 void TestQgs3DRendering::testInstancedRendering()
@@ -1705,7 +1705,7 @@ void TestQgs3DRendering::testInstancedRendering()
   QgsPoint3DSymbol *sphere3DSymbol = new QgsPoint3DSymbol();
   sphere3DSymbol->setShape( Qgis::Point3DShape::Sphere );
   QVariantMap vmSphere;
-  vmSphere[QStringLiteral( "radius" )] = 80.0f;
+  vmSphere[u"radius"_s] = 80.0f;
   sphere3DSymbol->setShapeProperties( vmSphere );
   QgsPhongMaterialSettings materialSettings;
   materialSettings.setAmbient( Qt::gray );
@@ -1752,8 +1752,8 @@ void TestQgs3DRendering::testInstancedRendering()
   QgsPoint3DSymbol *cylinder3DSymbol = new QgsPoint3DSymbol();
   cylinder3DSymbol->setShape( Qgis::Point3DShape::Cylinder );
   QVariantMap vmCylinder;
-  vmCylinder[QStringLiteral( "radius" )] = 20.0f;
-  vmCylinder[QStringLiteral( "length" )] = 300.0f;
+  vmCylinder[u"radius"_s] = 20.0f;
+  vmCylinder[u"length"_s] = 300.0f;
   cylinder3DSymbol->setShapeProperties( vmCylinder );
   cylinder3DSymbol->setMaterialSettings( materialSettings.clone() );
 
@@ -1805,7 +1805,7 @@ void TestQgs3DRendering::testModelPointRendering()
   QgsPoint3DSymbol *symbol = new QgsPoint3DSymbol();
   symbol->setShape( Qgis::Point3DShape::Model );
   QVariantMap vMap;
-  vMap[QStringLiteral( "model" )] = testDataPath( "/mesh/tree.obj" );
+  vMap[u"model"_s] = testDataPath( "/mesh/tree.obj" );
   symbol->setShapeProperties( vMap );
   QgsPhongMaterialSettings materialSettings;
   materialSettings.setAmbient( Qt::green );
@@ -2022,7 +2022,7 @@ void TestQgs3DRendering::testEpsg4978LineRendering()
 {
   QgsProject p;
 
-  QgsCoordinateReferenceSystem newCrs( QStringLiteral( "EPSG:4978" ) );
+  QgsCoordinateReferenceSystem newCrs( u"EPSG:4978"_s );
   p.setCrs( newCrs );
 
   QgsVectorLayer *layerLines = new QgsVectorLayer( testDataPath( "/3d/earth_size_sphere_4978.gpkg" ), "lines", "ogr" );
@@ -2477,21 +2477,6 @@ void TestQgs3DRendering::testDebugMap()
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
   QGSVERIFYIMAGECHECK( "debug_map_1", "debug_map_1", img, QString(), 100, QSize( 0, 0 ), 15 );
 
-#if ( QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 ) ) // shadows do not work for QT6 see: https://github.com/qgis/QGIS/issues/58184
-  // =========== activate debug shadow map
-  mapSettings.setDebugShadowMapSettings( true, Qt::Corner::TopLeftCorner, 0.5 );
-
-  // force QT3D backend/frontend synchronization
-  {
-    scene->cameraController()->setLookingAtPoint( QVector3D( 0, 0, 0 ), 2005, 40.0, -10.0 );
-    Qgs3DUtils::captureSceneImage( engine, scene );
-    scene->cameraController()->setLookingAtPoint( QVector3D( 0, 0, 0 ), 2000, 40.0, -10.0 );
-  }
-
-  img = Qgs3DUtils::captureSceneImage( engine, scene );
-  QGSVERIFYIMAGECHECK( "debug_map_2", "debug_map_2", img, QString(), 100, QSize( 0, 0 ), 15 );
-#endif
-
   delete scene;
   mapSettings.setLayers( {} );
 }
@@ -2582,20 +2567,20 @@ void TestQgs3DRendering::testAnnotationLayerText()
 
   auto annotationLayer = std::make_unique<QgsAnnotationLayer>( "test", QgsAnnotationLayer::LayerOptions( QgsCoordinateTransformContext() ) );
 
-  auto text1 = std::make_unique< QgsAnnotationPointTextItem >( QStringLiteral( "POINT" ), QgsPoint( 1000, 1000 ) );
+  auto text1 = std::make_unique< QgsAnnotationPointTextItem >( u"POINT"_s, QgsPoint( 1000, 1000 ) );
   annotationLayer->addItem( text1.release() );
 
-  const QgsGeometry curve = QgsGeometry::fromWkt( QStringLiteral( "Linestring( 1000 2000, 1500 2000 )" ) );
-  auto text2 = std::make_unique< QgsAnnotationLineTextItem >( QStringLiteral( "LINE" ), qgsgeometry_cast< const QgsLineString * >( curve.constGet() )->clone() );
+  const QgsGeometry curve = QgsGeometry::fromWkt( u"Linestring( 1000 2000, 1500 2000 )"_s );
+  auto text2 = std::make_unique< QgsAnnotationLineTextItem >( u"LINE"_s, qgsgeometry_cast< const QgsLineString * >( curve.constGet() )->clone() );
   annotationLayer->addItem( text2.release() );
 
-  auto text3 = std::make_unique< QgsAnnotationRectangleTextItem >( QStringLiteral( "RECT" ), QgsRectangle::fromCenterAndSize( QgsPointXY( 2000, 2000 ), 400, 200 ) );
+  auto text3 = std::make_unique< QgsAnnotationRectangleTextItem >( u"RECT"_s, QgsRectangle::fromCenterAndSize( QgsPointXY( 2000, 2000 ), 400, 200 ) );
   annotationLayer->addItem( text3.release() );
 
   auto renderer = std::make_unique< QgsAnnotationLayer3DRenderer >();
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ) );
   format.setSize( 48 );
   format.setSizeUnit( Qgis::RenderUnit::Points );
   format.setColor( QColor( 0, 0, 255 ) );
@@ -2641,6 +2626,189 @@ void TestQgs3DRendering::testAnnotationLayerText()
   delete map;
 
   QGSVERIFYIMAGECHECK( "annotation_text_rendering_2", "annotation_text_rendering_2", img2, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testExtrudedPolygonsHighlighting()
+{
+  const QgsRectangle fullExtent = mLayerDtm->extent();
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), map->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, -250, 0 ), 500, 45, 0 );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion", "polygon3d_extrusion", img, QString(), 40, QSize( 0, 0 ), 2 );
+
+  auto highlighter = std::make_unique<Qgs3DHighlightFeatureHandler>( scene );
+  QgsFeatureRequest req;
+  req.setFilterFids( { 105, 269, 388, 395, 397 } );
+  QgsFeature feature;
+  QgsFeatureIterator fit = mLayerBuildings->getFeatures( req );
+  while ( fit.nextFeature( feature ) )
+    highlighter->highlightFeature( feature, mLayerBuildings );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion_highlighting", "polygon3d_extrusion_highlighting", img, QString(), 40, QSize( 0, 0 ), 2 );
+
+  highlighter->clearHighlights();
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion", "polygon3d_extrusion", img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testInstancedRenderingHighlighting()
+{
+  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
+
+  auto layerPointsZ = std::make_unique<QgsVectorLayer>( "PointZ?crs=EPSG:27700", "points Z", "memory" );
+
+  QgsPoint *p1 = new QgsPoint( 1000, 1000, 50 );
+  QgsPoint *p2 = new QgsPoint( 1000, 2000, 100 );
+  QgsPoint *p3 = new QgsPoint( 2000, 2000, 200 );
+
+  QgsFeature f1( layerPointsZ->fields() );
+  QgsFeature f2( layerPointsZ->fields() );
+  QgsFeature f3( layerPointsZ->fields() );
+
+  f1.setGeometry( QgsGeometry( p1 ) );
+  f2.setGeometry( QgsGeometry( p2 ) );
+  f3.setGeometry( QgsGeometry( p3 ) );
+
+  QgsFeatureList featureList;
+  featureList << f1 << f2 << f3;
+  layerPointsZ->dataProvider()->addFeatures( featureList );
+
+  QgsPoint3DSymbol *sphere3DSymbol = new QgsPoint3DSymbol();
+  sphere3DSymbol->setShape( Qgis::Point3DShape::Sphere );
+  QVariantMap vmSphere;
+  vmSphere[u"radius"_s] = 80.0f;
+  sphere3DSymbol->setShapeProperties( vmSphere );
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::gray );
+  sphere3DSymbol->setMaterialSettings( materialSettings.clone() );
+
+  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( sphere3DSymbol ) );
+
+  Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
+  mapSettings->setCrs( mProject->crs() );
+  mapSettings->setExtent( fullExtent );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << layerPointsZ.get() );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( mapSettings->crs(), mapSettings->transformContext() );
+  mapSettings->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 0 );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage imgSphere = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "sphere_rendering", "sphere_rendering", imgSphere, QString(), 40, QSize( 0, 0 ), 2 );
+
+  auto highlighter = std::make_unique<Qgs3DHighlightFeatureHandler>( scene );
+  highlighter->highlightFeature( f1, layerPointsZ.get() );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  imgSphere = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "sphere_rendering_highlighting", "sphere_rendering_highlighting", imgSphere, QString(), 40, QSize( 0, 0 ), 2 );
+
+  highlighter->clearHighlights();
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  imgSphere = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "sphere_rendering", "sphere_rendering", imgSphere, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+
+void TestQgs3DRendering::testModelPointRenderingHighlighting()
+{
+  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
+
+  auto layerPointsZ = std::make_unique<QgsVectorLayer>( "PointZ?crs=EPSG:27700", "points Z", "memory" );
+
+  QgsPoint *p1 = new QgsPoint( 1000, 1000, 50 );
+  QgsPoint *p2 = new QgsPoint( 1000, 2000, 100 );
+  QgsPoint *p3 = new QgsPoint( 2000, 2000, 200 );
+
+  QgsFeature f1( layerPointsZ->fields() );
+  QgsFeature f2( layerPointsZ->fields() );
+  QgsFeature f3( layerPointsZ->fields() );
+
+  f1.setGeometry( QgsGeometry( p1 ) );
+  f2.setGeometry( QgsGeometry( p2 ) );
+  f3.setGeometry( QgsGeometry( p3 ) );
+
+  QgsFeatureList featureList;
+  featureList << f1 << f2 << f3;
+  layerPointsZ->dataProvider()->addFeatures( featureList );
+
+  QgsPoint3DSymbol *symbol = new QgsPoint3DSymbol();
+  symbol->setShape( Qgis::Point3DShape::Model );
+  QVariantMap vMap;
+  vMap[u"model"_s] = testDataPath( "/mesh/tree.obj" );
+  symbol->setShapeProperties( vMap );
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::green );
+  symbol->setMaterialSettings( materialSettings.clone() );
+  QMatrix4x4 id;
+  id.scale( 100.0f );
+  symbol->setTransform( id );
+
+  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( symbol ) );
+
+  Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
+  mapSettings->setCrs( mProject->crs() );
+  mapSettings->setExtent( fullExtent );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << layerPointsZ.get() );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( mapSettings->crs(), mapSettings->transformContext() );
+  mapSettings->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 60, 0 );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage imgModel = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "model_rendering", "model_rendering", imgModel, QString(), 80, QSize( 0, 0 ), 2 );
+
+  auto highlighter = std::make_unique<Qgs3DHighlightFeatureHandler>( scene );
+  highlighter->highlightFeature( f1, layerPointsZ.get() );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  imgModel = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "model_rendering_highlighting", "model_rendering_highlighting", imgModel, QString(), 80, QSize( 0, 0 ), 2 );
+
+  highlighter->clearHighlights();
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  imgModel = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "model_rendering", "model_rendering", imgModel, QString(), 80, QSize( 0, 0 ), 2 );
 }
 
 QGSTEST_MAIN( TestQgs3DRendering )

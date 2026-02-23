@@ -31,10 +31,13 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QScrollBar>
+#include <QString>
 #include <QTextStream>
 #include <QToolButton>
 
 #include "moc_qgsqueryloggerpanelwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsDatabaseQueryLoggerTreeView
@@ -186,7 +189,7 @@ QgsDatabaseQueryLoggerPanelWidget::QgsDatabaseQueryLoggerPanelWidget( QgsAppQuer
   connect( mFilterLineEdit, &QgsFilterLineEdit::textChanged, mTreeView, &QgsDatabaseQueryLoggerTreeView::setFilterString );
   connect( mActionClear, &QAction::triggered, mLogger, &QgsAppQueryLogger::clear );
   connect( mActionRecord, &QAction::toggled, this, []( bool enabled ) {
-    QgsSettings().setValue( QStringLiteral( "logDatabaseQueries" ), enabled, QgsSettings::App );
+    QgsSettings().setValue( u"logDatabaseQueries"_s, enabled, QgsSettings::App );
     QgsApplication::databaseQueryLog()->setEnabled( enabled );
   } );
   connect( mActionSaveLog, &QAction::triggered, this, [this]() {
@@ -213,11 +216,11 @@ QgsDatabaseQueryLoggerPanelWidget::QgsDatabaseQueryLoggerPanelWidget( QgsAppQuer
   } );
 
   QgsSettings settings;
-  mTreeView->header()->restoreState( settings.value( QStringLiteral( "UI/queryLogger/treeState" ), QByteArray(), QgsSettings::Gui ).toByteArray() );
+  mTreeView->header()->restoreState( settings.value( u"UI/queryLogger/treeState"_s, QByteArray(), QgsSettings::Gui ).toByteArray() );
 }
 
 QgsDatabaseQueryLoggerPanelWidget::~QgsDatabaseQueryLoggerPanelWidget()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "UI/queryLogger/treeState" ), mTreeView->header()->saveState(), QgsSettings::Gui );
+  settings.setValue( u"UI/queryLogger/treeState"_s, mTreeView->header()->saveState(), QgsSettings::Gui );
 }

@@ -50,8 +50,11 @@
 
 #include <QLocale>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsmaptooleditmeshframe.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsZValueWidget
@@ -124,7 +127,7 @@ QgsMeshEditForceByLineAction::QgsMeshEditForceByLineAction( QObject *parent )
 
   mCheckBoxNewVertex = new QCheckBox( tr( "Add new vertex on intersecting edges" ) );
 
-  bool newVertex = settings.value( QStringLiteral( "UI/Mesh/ForceByLineNewVertex" ) ).toBool();
+  bool newVertex = settings.value( u"UI/Mesh/ForceByLineNewVertex"_s ).toBool();
   mCheckBoxNewVertex->setChecked( newVertex );
 
   QLabel *labelInterpolation = new QLabel( tr( "Interpolate Z value from" ) );
@@ -132,14 +135,14 @@ QgsMeshEditForceByLineAction::QgsMeshEditForceByLineAction( QObject *parent )
   mComboInterpolateFrom->addItem( tr( "Mesh" ), Mesh );
   mComboInterpolateFrom->addItem( tr( "Forcing line" ), Lines );
 
-  int interpolateFromValue = settings.enumValue( QStringLiteral( "UI/Mesh/ForceByLineInterpolateFrom" ), Mesh );
+  int interpolateFromValue = settings.enumValue( u"UI/Mesh/ForceByLineInterpolateFrom"_s, Mesh );
   mComboInterpolateFrom->setCurrentIndex( interpolateFromValue );
 
   QLabel *labelTolerance = new QLabel( tr( "Tolerance" ) );
   mToleranceSpinBox = new QgsDoubleSpinBox();
 
   bool ok;
-  double toleranceValue = settings.value( QStringLiteral( "UI/Mesh/ForceByLineToleranceValue" ), 1.0 ).toDouble( &ok );
+  double toleranceValue = settings.value( u"UI/Mesh/ForceByLineToleranceValue"_s, 1.0 ).toDouble( &ok );
   if ( !ok )
     toleranceValue = 1.0;
   mToleranceSpinBox->setValue( toleranceValue );
@@ -155,7 +158,7 @@ QgsMeshEditForceByLineAction::QgsMeshEditForceByLineAction( QObject *parent )
     }
   );
 
-  Qgis::RenderUnit toleranceUnit = settings.enumValue( QStringLiteral( "UI/Mesh/ForceByLineToleranceUnit" ), Qgis::RenderUnit::MapUnits );
+  Qgis::RenderUnit toleranceUnit = settings.enumValue( u"UI/Mesh/ForceByLineToleranceUnit"_s, Qgis::RenderUnit::MapUnits );
   mUnitSelecionWidget->setUnit( toleranceUnit );
 
   gLayout->addWidget( mCheckBoxNewVertex, 1, 0, 1, 4 );
@@ -204,10 +207,10 @@ void QgsMeshEditForceByLineAction::updateSettings()
 {
   QgsSettings settings;
 
-  settings.setValue( QStringLiteral( "UI/Mesh/ForceByLineNewVertex" ), mCheckBoxNewVertex->isChecked() );
-  settings.setEnumValue( QStringLiteral( "UI/Mesh/ForceByLineInterpolateFrom" ), static_cast<IntepolationMode>( mComboInterpolateFrom->currentData().toInt() ) );
-  settings.setValue( QStringLiteral( "UI/Mesh/ForceByLineToleranceValue" ), mToleranceSpinBox->value() );
-  settings.setEnumValue( QStringLiteral( "UI/Mesh/ForceByLineToleranceUnit" ), mUnitSelecionWidget->unit() );
+  settings.setValue( u"UI/Mesh/ForceByLineNewVertex"_s, mCheckBoxNewVertex->isChecked() );
+  settings.setEnumValue( u"UI/Mesh/ForceByLineInterpolateFrom"_s, static_cast<IntepolationMode>( mComboInterpolateFrom->currentData().toInt() ) );
+  settings.setValue( u"UI/Mesh/ForceByLineToleranceValue"_s, mToleranceSpinBox->value() );
+  settings.setEnumValue( u"UI/Mesh/ForceByLineToleranceUnit"_s, mUnitSelecionWidget->unit() );
 }
 
 //
@@ -234,13 +237,13 @@ QgsMeshEditDigitizingAction::QgsMeshEditDigitizingAction( QObject *parent )
   mComboZValueType->addItem( tr( "Z Widget" ), ZWidget );
   mComboZValueType->setItemData( 3, tr( "Always use the value set in the Z value widget" ), Qt::ToolTipRole );
 
-  int interpolateFromValue = settings.enumValue( QStringLiteral( "UI/Mesh/zValueFrom" ), PreferMeshThenZWidget );
+  int interpolateFromValue = settings.enumValue( u"UI/Mesh/zValueFrom"_s, PreferMeshThenZWidget );
   mComboZValueType->setCurrentIndex( interpolateFromValue );
 
   mCheckBoxRefineNeighboringFaces = new QCheckBox( tr( "Refine neighboring faces when adding vertices" ) );
   mCheckBoxRefineNeighboringFaces->setToolTip( "Flip edges that do not fulfil delaunay rule on triangular faces that share at least one vertex with the face that new vertex was added to." );
 
-  bool refineNeighboringFaces = settings.value( QStringLiteral( "UI/Mesh/refineNeighboringFaces" ) ).toBool();
+  bool refineNeighboringFaces = settings.value( u"UI/Mesh/refineNeighboringFaces"_s ).toBool();
   mCheckBoxRefineNeighboringFaces->setChecked( refineNeighboringFaces );
 
   gLayout->addWidget( labelZValueType, 1, 0, 1, 1 );
@@ -258,8 +261,8 @@ void QgsMeshEditDigitizingAction::updateSettings()
 {
   QgsSettings settings;
 
-  settings.setEnumValue( QStringLiteral( "UI/Mesh/zValueFrom" ), static_cast<ZValueSource>( mComboZValueType->currentData().toInt() ) );
-  settings.setValue( QStringLiteral( "UI/Mesh/refineNeighboringFaces" ), mCheckBoxRefineNeighboringFaces->isChecked() );
+  settings.setEnumValue( u"UI/Mesh/zValueFrom"_s, static_cast<ZValueSource>( mComboZValueType->currentData().toInt() ) );
+  settings.setValue( u"UI/Mesh/refineNeighboringFaces"_s, mCheckBoxRefineNeighboringFaces->isChecked() );
 }
 
 QgsMeshEditDigitizingAction::ZValueSource QgsMeshEditDigitizingAction::zValueSourceType() const
@@ -285,44 +288,58 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
   , mSnapIndicator( new QgsSnapIndicator( canvas ) )
 {
-  mActionDigitizing = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeshDigitizing.svg" ) ), tr( "Digitize Mesh Elements" ), this );
+  mActionDigitizing = new QAction( QgsApplication::getThemeIcon( u"/mActionMeshDigitizing.svg"_s ), tr( "Digitize Mesh Elements" ), this );
+  mActionDigitizing->setObjectName( u"mActionDigitizing"_s );
   mActionDigitizing->setCheckable( true );
 
-  mActionSelectByPolygon = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeshSelectPolygon.svg" ) ), tr( "Select Mesh Elements by Polygon" ), this );
+  mActionSelectByPolygon = new QAction( QgsApplication::getThemeIcon( u"/mActionMeshSelectPolygon.svg"_s ), tr( "Select Mesh Elements by Polygon" ), this );
   mActionSelectByPolygon->setCheckable( true );
-  mActionSelectByPolygon->setObjectName( QStringLiteral( "ActionMeshSelectByPolygon" ) );
-  mActionSelectByExpression = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeshSelectExpression.svg" ) ), tr( "Select Mesh Elements by Expression" ), this );
-  mActionSelectByExpression->setObjectName( QStringLiteral( "ActionMeshSelectByExpression" ) );
+  mActionSelectByPolygon->setObjectName( u"ActionMeshSelectByPolygon"_s );
+  mActionSelectByExpression = new QAction( QgsApplication::getThemeIcon( u"/mActionMeshSelectExpression.svg"_s ), tr( "Select Mesh Elements by Expression" ), this );
+  mActionSelectByExpression->setObjectName( u"ActionMeshSelectByExpression"_s );
 
   mSelectionHandler = std::make_unique<QgsMapToolSelectionHandler>( canvas, QgsMapToolSelectionHandler::SelectPolygon );
 
-  mActionSelectIsolatedVertices = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeshSelectIsolatedVertices.svg" ) ), tr( "Select Isolated Vertices" ), this );
-  mActionSelectAllVertices = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeshSelectAll.svg" ) ), tr( "Select All Vertices" ), this );
+  mActionSelectIsolatedVertices = new QAction( QgsApplication::getThemeIcon( u"/mActionMeshSelectIsolatedVertices.svg"_s ), tr( "Select Isolated Vertices" ), this );
+  mActionSelectIsolatedVertices->setObjectName( u"mActionSelectIsolatedVertices"_s );
+  mActionSelectAllVertices = new QAction( QgsApplication::getThemeIcon( u"/mActionMeshSelectAll.svg"_s ), tr( "Select All Vertices" ), this );
+  mActionSelectAllVertices->setObjectName( u"mActionSelectAllVertices"_s );
 
   mSelectActions << mActionSelectByPolygon
                  << mActionSelectByExpression
                  << mActionSelectIsolatedVertices
                  << mActionSelectAllVertices;
 
-  mActionTransformCoordinates = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeshTransformByExpression.svg" ) ), tr( "Transform Vertices Coordinates" ), this );
+  mActionTransformCoordinates = new QAction( QgsApplication::getThemeIcon( u"/mActionMeshTransformByExpression.svg"_s ), tr( "Transform Vertices Coordinates" ), this );
+  mActionTransformCoordinates->setObjectName( u"mActionTransformCoordinates"_s );
   mActionTransformCoordinates->setCheckable( true );
 
-  mActionForceByLines = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeshEditForceByVectorLines.svg" ) ), tr( "Force by Selected Geometries" ), this );
+  mActionForceByLines = new QAction( QgsApplication::getThemeIcon( u"/mActionMeshEditForceByVectorLines.svg"_s ), tr( "Force by Selected Geometries" ), this );
+  mActionForceByLines->setObjectName( u"mActionForceByLines"_s );
   mActionForceByLines->setCheckable( true );
 
   mWidgetActionForceByLine = new QgsMeshEditForceByLineAction( this );
+  mWidgetActionForceByLine->setObjectName( u"mWidgetActionForceByLine"_s );
   mWidgetActionForceByLine->setMapCanvas( canvas );
 
   mWidgetActionDigitizing = new QgsMeshEditDigitizingAction( this );
+  mWidgetActionDigitizing->setObjectName( u"mWidgetActionDigitizing"_s );
 
-  mActionReindexMesh = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeshReindex.svg" ) ), tr( "Reindex Faces and Vertices" ), this );
+  mActionReindexMesh = new QAction( QgsApplication::getThemeIcon( u"/mActionMeshReindex.svg"_s ), tr( "Reindex Faces and Vertices" ), this );
+  mActionReindexMesh->setObjectName( u"mActionReindexMesh"_s );
 
   mActionRemoveVerticesFillingHole = new QAction( this );
+  mActionRemoveVerticesFillingHole->setObjectName( u"mActionRemoveVerticesFillingHole"_s );
   mActionDelaunayTriangulation = new QAction( tr( "Delaunay Triangulation with Selected Vertices" ), this );
+  mActionDelaunayTriangulation->setObjectName( u"mActionDelaunayTriangulation"_s );
   mActionFacesRefinement = new QAction( tr( "Refine Current Face" ), this );
+  mActionFacesRefinement->setObjectName( u"mActionFacesRefinement"_s );
   mActionRemoveVerticesWithoutFillingHole = new QAction( this );
+  mActionRemoveVerticesWithoutFillingHole->setObjectName( u"mActionRemoveVerticesWithoutFillingHole"_s );
   mActionRemoveFaces = new QAction( tr( "Remove Current Face" ), this );
+  mActionRemoveFaces->setObjectName( u"mActionRemoveFaces"_s );
   mActionSplitFaces = new QAction( tr( "Split Current Face" ), this );
+  mActionSplitFaces->setObjectName( u"mActionSplitFaces"_s );
 
   connect( mActionRemoveVerticesFillingHole, &QAction::triggered, this, [this] { removeSelectedVerticesFromMesh( true ); } );
   connect( mActionRemoveVerticesWithoutFillingHole, &QAction::triggered, this, [this] { removeSelectedVerticesFromMesh( false ); } );
@@ -338,7 +355,7 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   {
     connect( mSelectActions.at( i ), &QAction::triggered, this, [i] {
       QgsSettings settings;
-      settings.setValue( QStringLiteral( "UI/Mesh/defaultSelection" ), i );
+      settings.setValue( u"UI/Mesh/defaultSelection"_s, i );
     } );
   }
 
@@ -486,7 +503,7 @@ QAction *QgsMapToolEditMeshFrame::defaultSelectActions() const
 {
   const QgsSettings settings;
   bool ok = false;
-  int defaultIndex = settings.value( QStringLiteral( "UI/Mesh/defaultSelection" ) ).toInt( &ok );
+  int defaultIndex = settings.value( u"UI/Mesh/defaultSelection"_s ).toInt( &ok );
 
   if ( ok )
     return mSelectActions.at( defaultIndex );
@@ -814,7 +831,7 @@ void QgsMapToolEditMeshFrame::forceByLineBySelectedFeature( QgsMapMouseEvent *e 
     }
     catch ( QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "Could not transform geometry to layer CRS" ) );
+      QgsDebugError( u"Could not transform geometry to layer CRS"_s );
     }
     forceByLine( geom );
   }
@@ -1860,7 +1877,7 @@ void QgsMapToolEditMeshFrame::triggerTransformCoordinatesDockWidget( bool checke
   mTransformDockWidget = new QgsMeshTransformCoordinatesDockWidget( QgisApp::instance() );
   mTransformDockWidget->setToggleVisibilityAction( mActionTransformCoordinates );
   mTransformDockWidget->setWindowTitle( tr( "Transform Mesh Vertices" ) );
-  mTransformDockWidget->setObjectName( QStringLiteral( "TransformMeshVerticesDockWidget" ) );
+  mTransformDockWidget->setObjectName( u"TransformMeshVerticesDockWidget"_s );
   const QList<int> &inputVertices = mSelectedVertices.keys();
   mTransformDockWidget->setInput( mCurrentLayer, inputVertices );
 

@@ -30,8 +30,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsorganizetablecolumnsdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, const QgsAttributeTableConfig &config, QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
@@ -58,7 +61,7 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
       if ( columnConfig.type == QgsAttributeTableConfig::Action )
       {
         item = new QListWidgetItem( tr( "[Action Widget]" ), mFieldsList );
-        item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/action.svg" ) ) );
+        item->setIcon( QgsApplication::getThemeIcon( u"/propertyicons/action.svg"_s ) );
       }
       else
       {

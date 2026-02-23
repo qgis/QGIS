@@ -25,10 +25,13 @@
 
 #include <QList>
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QString QgsDoubleBoxScaleBarRenderer::id() const
 {
-  return QStringLiteral( "Double Box" );
+  return u"Double Box"_s;
 }
 
 QString QgsDoubleBoxScaleBarRenderer::visibleName() const

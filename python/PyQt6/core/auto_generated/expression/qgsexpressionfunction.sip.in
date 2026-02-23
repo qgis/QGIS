@@ -24,14 +24,11 @@ An abstract base class for defining :py:class:`QgsExpression` functions.
 
 
     class Parameter
-{
+    {
 %Docstring(signature="appended")
 Represents a single parameter passed to a function.
 %End
 
-%TypeHeaderCode
-#include "qgsexpressionfunction.h"
-%End
       public:
 
         Parameter( const QString &name,

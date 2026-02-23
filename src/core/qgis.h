@@ -27,7 +27,10 @@
 #include "qgis_sip.h"
 
 #include <QMetaEnum>
+#include <QString>
 #include <QTimeZone>
+
+using namespace Qt::StringLiterals;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -147,7 +150,6 @@ class CORE_EXPORT Qgis
     Q_DECLARE_FLAGS( AuthConfigurationStorageCapabilities, AuthConfigurationStorageCapability )
     Q_FLAG( AuthConfigurationStorageCapabilities )
 
-
     /**
      * \brief Level for messages
      * This will be used both for message log and message bar in application.
@@ -161,6 +163,18 @@ class CORE_EXPORT Qgis
       NoLevel = 4, //!< No level
     };
     Q_ENUM( MessageLevel )
+
+    /**
+     * \brief Format of log message
+     *
+     * \since QGIS 4.0. Prior to QGIS 4.0 this was available as QgsMessageOutput.MessageType
+     */
+    enum class StringFormat SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMessageOutput, MessageType ) : int
+      {
+      PlainText SIP_MONKEYPATCH_COMPAT_NAME( MessageText ), //!< Text message
+      Html SIP_MONKEYPATCH_COMPAT_NAME( MessageHtml ), //!< HTML message
+    };
+    Q_ENUM( StringFormat )
 
     /**
      * \brief Flags controlling behavior of network requests.
@@ -291,6 +305,7 @@ class CORE_EXPORT Qgis
       MultiSurface = 12, //!< MultiSurface
       PolyhedralSurface = 15, //!< PolyhedralSurface \since QGIS 3.40
       TIN = 16, //!< TIN \since QGIS 3.40
+      NurbsCurve = 21, //!< NurbsCurve \since QGIS 4.0
       NoGeometry = 100, //!< No geometry
       PointZ = 1001, //!< PointZ
       LineStringZ = 1002, //!< LineStringZ
@@ -307,6 +322,7 @@ class CORE_EXPORT Qgis
       MultiSurfaceZ = 1012, //!< MultiSurfaceZ
       PolyhedralSurfaceZ = 1015, //!< PolyhedralSurfaceZ
       TINZ = 1016, //!< TINZ
+      NurbsCurveZ = 1021, //!< NurbsCurveZ \since QGIS 4.0
       PointM = 2001, //!< PointM
       LineStringM = 2002, //!< LineStringM
       PolygonM = 2003, //!< PolygonM
@@ -322,6 +338,7 @@ class CORE_EXPORT Qgis
       MultiSurfaceM = 2012, //!< MultiSurfaceM
       PolyhedralSurfaceM = 2015, //!< PolyhedralSurfaceM
       TINM = 2016, //!< TINM
+      NurbsCurveM = 2021, //!< NurbsCurveM \since QGIS 4.0
       PointZM = 3001, //!< PointZM
       LineStringZM = 3002, //!< LineStringZM
       PolygonZM = 3003, //!< PolygonZM
@@ -337,6 +354,7 @@ class CORE_EXPORT Qgis
       PolyhedralSurfaceZM = 3015, //!< PolyhedralSurfaceM
       TINZM = 3016, //!< TINZM
       TriangleZM = 3017, //!< TriangleZM
+      NurbsCurveZM = 3021, //!< NurbsCurveZM \since QGIS 4.0
       Point25D = 0x80000001, //!< Point25D
       LineString25D, //!< LineString25D
       Polygon25D, //!< Polygon25D
@@ -399,8 +417,11 @@ class CORE_EXPORT Qgis
       CircularString, //!< Capture in circular strings
       Streaming, //!< Streaming points digitizing mode (points are automatically added as the mouse cursor moves).
       Shape, //!< Digitize shapes.
+      PolyBezier, //!< Digitizes poly-Bézier curves with anchors and tangent handles (curve passes through anchor points). \since QGIS 4.0
+      NurbsCurve, //!< Digitizes NURBS curves with control points (curve is attracted to but does not pass through control points). \since QGIS 4.0
     };
     Q_ENUM( CaptureTechnique )
+
 
     /**
      * Vector layer type flags.
@@ -486,7 +507,7 @@ class CORE_EXPORT Qgis
     Q_DECLARE_FLAGS( DataProviderReadFlags, DataProviderReadFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsDataProvider, ReadFlags )
     Q_FLAG( DataProviderReadFlags )
 
-    // TODO QGIS 4 -- remove NoCapabilities and rely on VectorProviderCapabilities() instead
+    // TODO QGIS 5 -- remove NoCapabilities and rely on VectorProviderCapabilities() instead
 
     /**
      * Vector data provider capabilities.
@@ -950,7 +971,7 @@ class CORE_EXPORT Qgis
     enum class BrowserItemCapability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDataItem, Capability ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
       NoCapabilities = 0, //!< Item has no capabilities
-      SetCrs = 1 << 0, //!< Can set CRS on layer or group of layers. deprecated since QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 4.0
+      SetCrs = 1 << 0, //!< Can set CRS on layer or group of layers. deprecated since QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 5.0
       Fertile = 1 << 1, //!< Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors.
       Fast = 1 << 2, //!< CreateChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QgsSettings
       Collapse = 1 << 3, //!< The collapse/expand status for this items children should be ignored in order to avoid undesired network connections (wms etc.)
@@ -1172,6 +1193,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( LabelOverlapHandling )
 
     /**
+     * Label whitespace collision handling.
+     *
+     * \since QGIS 4.0
+     */
+    enum class LabelWhitespaceCollisionHandling : int
+    {
+      TreatWhitespaceAsCollision, //!< Treat overlapping whitespace text in labels and whitespace overlapping obstacles as collisions
+      IgnoreWhitespaceCollisions, //!< Ignore overlapping whitespace text in labels and whitespace overlapping obstacles
+    };
+    Q_ENUM( LabelWhitespaceCollisionHandling )
+
+    /**
      * Label prioritization.
      *
      * \since QGIS 3.38
@@ -1205,6 +1238,20 @@ class CORE_EXPORT Qgis
     Q_ENUM( LabelPlacement )
 
     /**
+     * Modes which determine how curved labels are generated and placed.
+     *
+     * \since QGIS 4.0
+     */
+    enum class CurvedLabelMode : int
+    {
+      Default, //!< Default curved placement, characters are placed in an optimal position along the line. Glyphs are placed at regular character and word spacing.
+      PlaceCharactersAtVertices, //!< Each individual character from the label text is placed such that their left-baseline position is located at a corresponding vertex from the line geometry. If the line geometry does not contain sufficient vertices for the characters present in the label text then the excess characters will be ignored.
+      StretchCharacterSpacingToFitLine, //!< Increases (or decreases) the character spacing used for each label in order to fit the entire text over the actual length of the line geometry.
+      StretchWordSpacingToFitLine, //!< Increases (or decreases) the word spacing used for each label in order to fit the entire text over the actual length of the line geometry.
+    };
+    Q_ENUM( CurvedLabelMode )
+
+    /**
      * Positions for labels when using the Qgis::LabelPlacement::OrderedPositionsAroundPoint placement mode.
      *
      * \note Prior to QGIS 3.26 this was available as QgsPalLayerSettings::PredefinedPointPosition
@@ -1228,6 +1275,19 @@ class CORE_EXPORT Qgis
       OverPoint, //!< Label directly centered over point \since QGIS 3.38
     };
     Q_ENUM( LabelPredefinedPointPosition )
+
+    /**
+     * Behavior modifier for labeling features with multi-part geometries.
+     *
+     * \since QGIS 4.0
+     */
+    enum class MultiPartLabelingBehavior : int
+    {
+      LabelLargestPartOnly, //!< Place a label only on the largest part from the geometry
+      LabelEveryPartWithEntireLabel, //!< Place the (same) entire label over every part from the geometry
+      SplitLabelTextLinesOverParts, //!< Splits the label text over the parts of the geometry, such that each consecutive part is labeled with the corresponding text line from the label text
+    };
+    Q_ENUM( MultiPartLabelingBehavior )
 
     /**
      * Behavior modifier for label offset and distance, only applies in some
@@ -1381,6 +1441,19 @@ class CORE_EXPORT Qgis
      */
     Q_DECLARE_FLAGS( UriCleaningFlags, UriCleaningFlag )
     Q_FLAG( UriCleaningFlags )
+
+    /**
+     * Defines the structural levels within a data source hierarchy.
+     *
+     * \since QGIS 4.0
+     */
+    enum class SourceHierarchyLevel : int
+    {
+      Connection, //!< The top-level container, e.g. database connection, catalog (for remote services), or file (for file-based databases).
+      Group, //!< An intermediate logical grouping, e.g. a database schema or layer group.
+      Object, //!< Represents a specific data entity, e.g. a table, view, or layer.
+    };
+    Q_ENUM( SourceHierarchyLevel )
 
     /**
      * Flags which control how data providers will scan for sublayers in a dataset.
@@ -2841,7 +2914,7 @@ class CORE_EXPORT Qgis
     {
       UseAllLabels          = 1 << 1, //!< Whether to draw all labels even if there would be collisions
       UsePartialCandidates  = 1 << 2, //!< Whether to use also label candidates that are partially outside of the map view
-      // TODO QGIS 4.0: remove
+      // TODO QGIS 5.0: remove
       RenderOutlineLabels   = 1 << 3, //!< Whether to render labels as text or outlines. Deprecated and of QGIS 3.4.3 - use defaultTextRenderFormat() instead.
       DrawLabelRectOnly     = 1 << 4, //!< Whether to only draw the label rect and not the actual label text (used for unit tests)
       DrawCandidates        = 1 << 5, //!< Whether to draw rectangles of generated candidates (good for debugging)
@@ -3059,6 +3132,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( RenderSubcomponentProperty )
 
     /**
+     * Selective masking source types.
+     *
+     * \since QGIS 4.0
+     */
+    enum class SelectiveMaskSourceType : int
+    {
+      SymbolLayer, //!< A mask generated from a symbol layer
+      Label, //!< A mask generated from a labeling provider
+    };
+    Q_ENUM( SelectiveMaskSourceType )
+
+    /**
      * Types of vertex.
      * \since QGIS 3.22
      */
@@ -3066,6 +3151,7 @@ class CORE_EXPORT Qgis
       {
       Segment SIP_MONKEYPATCH_COMPAT_NAME( SegmentVertex ) = 1, //!< The actual start or end point of a segment
       Curve SIP_MONKEYPATCH_COMPAT_NAME( CurveVertex ) = 2, //!< An intermediate point on a segment defining the curvature of the segment
+      ControlPoint SIP_MONKEYPATCH_COMPAT_NAME( ControlPointVertex ) = 3, //!< A NURBS control point (does not lie on the curve) \since QGIS 4.0
     };
     Q_ENUM( VertexType )
 
@@ -4082,6 +4168,17 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( CadConstraintType )
 
+    /**
+     * Advanced digitizing measurement display types.
+     * \since QGIS 4.0
+     */
+    enum class CadMeasurementDisplayType : int
+    {
+      Hidden, //!< Hide measurement
+      Cartesian, //!< Use Cartesian measurements
+      Ellipsoidal, //!< Use Ellipsoidal measurements
+    };
+    Q_ENUM( CadMeasurementDisplayType )
 
     /**
      * Flags which control the behavior of QgsProjects.
@@ -4208,6 +4305,18 @@ class CORE_EXPORT Qgis
       ContinuousSurface, //!< The features should be treated as representing values on a continuous surface (eg contour lines)
     };
     Q_ENUM( VectorProfileType );
+
+    /**
+     * Types of elevation profiles to generate for point cloud sources.
+     *
+     * \since QGIS 4.0
+     */
+    enum class PointCloudProfileType : int
+    {
+      IndividualPoints, //!< Sample individual points from the point cloud
+      TriangulatedSurface, //!< Create a TIN from the point cloud using Delaunay triangulation
+    };
+    Q_ENUM( PointCloudProfileType );
 
     /**
      * Flags that control the way the QgsAbstractProfileGenerator operate.
@@ -4585,6 +4694,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( LegendComponent )
 
     /**
+     * Legend synchronization mode.
+     *
+     * \since QGIS 4.0
+     */
+    enum class LegendSyncMode : int
+    {
+      AllProjectLayers, //!< Synchronize to all project layers.
+      VisibleLayers, //!< Synchronize to map layers. The legend will include layers which are included in the linked map only.
+      Manual, //!< No automatic synchronization of legend layers. The legend will be manually populated.
+    };
+    Q_ENUM( LegendSyncMode )
+
+    /**
      * Legend JSON export flags.
      *
      * Flags to control JSON attributes when exporting a legend in JSON format.
@@ -4838,7 +4960,7 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( RasterIdentifyFormat )
 
-    // TODO QGIS 4 -- remove NoCapabilities and rely on RasterInterfaceCapabilities() instead
+    // TODO QGIS 5 -- remove NoCapabilities and rely on RasterInterfaceCapabilities() instead
     // remove deprecated members
     // Remove "Identify" member, and replace with combinations of IdentifyValue/IdentifyText/etc
 
@@ -4853,8 +4975,8 @@ class CORE_EXPORT Qgis
     {
       NoCapabilities = 0, //!< No capabilities
       Size = 1 << 1, //!< Original data source size (and thus resolution) is known, it is not always available, for example for WMS
-      Create = 1 << 2, //!< Create new datasets (Unused and deprecated -- will be removed in QGIS 4)
-      Remove = 1 << 3, //!< Delete datasets (Unused and deprecated -- will be removed in QGIS 4)
+      Create = 1 << 2, //!< Create new datasets (Unused and deprecated -- will be removed in QGIS 5)
+      Remove = 1 << 3, //!< Delete datasets (Unused and deprecated -- will be removed in QGIS 5)
       BuildPyramids = 1 << 4, //!< Supports building of pyramids (overviews) (Deprecated since QGIS 3.38 -- use RasterProviderCapability::BuildPyramids instead)
       Identify = 1 << 5, //!< At least one identify format supported
       IdentifyValue = 1 << 6, //!< Numerical values
@@ -4873,7 +4995,7 @@ class CORE_EXPORT Qgis
     Q_DECLARE_FLAGS( RasterInterfaceCapabilities, RasterInterfaceCapability )
     Q_FLAG( RasterInterfaceCapabilities )
 
-    // TODO QGIS 4 -- remove NoProviderCapabilities and rely on RasterProviderCapabilities() instead
+    // TODO QGIS 5 -- remove NoProviderCapabilities and rely on RasterProviderCapabilities() instead
 
     /**
      * Raster data provider capabilities.
@@ -5945,7 +6067,7 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( VsiHandlerType )
 
-    // TODO QGIS 4: make All include all values (we can't do this before 4.0, as we need to keep
+    // TODO QGIS 5: make All include all values (we can't do this before 4.0, as we need to keep
     // compatibility with code which expects all these statistics to give numeric results)
 
     /**
@@ -6403,7 +6525,7 @@ class CORE_EXPORT Qgis
      *  denominator. So it looses precision and, when a limit is inclusive, can lead to errors.
      *  To avoid that, use this factor instead of using <= or >=.
      *
-     * \deprecated QGIS 3.40. No longer used by QGIS and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. No longer used by QGIS and will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED static const double SCALE_PRECISION;
 
@@ -6529,11 +6651,11 @@ class CORE_EXPORT Qgis
     static int geographicLibVersion();
 
     /**
-     * Returns TRUE if the QGIS build contains QtWebkit.
+     * Returns FALSE.
      *
-     * \since QGIS 4.0
+     * \deprecated QGIS 4.0. WebKit-Support was removed.
      */
-    static bool hasQtWebkit();
+    Q_DECL_DEPRECATED static bool hasQtWebkit();
 
     /**
      * Constant that holds the string representation for "No ellipse/No CRS".
@@ -6542,7 +6664,7 @@ class CORE_EXPORT Qgis
      */
     static QString geoNone()
     {
-      return QStringLiteral( "NONE" );
+      return u"NONE"_s;
     }
 
     /**
@@ -6552,12 +6674,12 @@ class CORE_EXPORT Qgis
      */
     static QString geographicCrsAuthId()
     {
-      return QStringLiteral( "EPSG:4326" );
+      return u"EPSG:4326"_s;
     }
 
     /**
     * WKT string that represents a geographic coord system
-    * \deprecated QGIS 3.44. Will be removed in QGIS 4.0.
+    * \deprecated QGIS 3.44. Will be removed in QGIS 5.0.
     */
     Q_DECL_DEPRECATED static QString geoWkt()
     {
@@ -6568,11 +6690,11 @@ class CORE_EXPORT Qgis
 
     /**
      * PROJ4 string that represents a geographic coord system.
-     * \deprecated QGIS 3.44. Will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.44. Will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED static QString geoProj4()
     {
-      return QStringLiteral( "+proj=longlat +datum=WGS84 +no_defs" );
+      return u"+proj=longlat +datum=WGS84 +no_defs"_s;
     }
 
 };
@@ -6755,7 +6877,7 @@ inline QString qgsDoubleToString( double a, int precision = 17 )
     else
     {
       str = QString::number( a, 'f', precision );
-      if ( str.contains( QLatin1Char( '.' ) ) )
+      if ( str.contains( '.'_L1 ) )
       {
         // remove ending 0s
         int idx = str.length() - 1;
@@ -6774,9 +6896,9 @@ inline QString qgsDoubleToString( double a, int precision = 17 )
   }
   // avoid printing -0
   // see https://bugreports.qt.io/browse/QTBUG-71439
-  if ( str == QLatin1String( "-0" ) )
+  if ( str == "-0"_L1 )
   {
-    return QLatin1String( "0" );
+    return "0"_L1;
   }
   return str;
 }
@@ -7228,8 +7350,6 @@ CORE_EXPORT bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs );
  */
 CORE_EXPORT bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-
 /**
  * Compares two QVariant values and returns whether the first is greater than the second.
  *
@@ -7261,16 +7381,6 @@ inline bool operator< ( const QVariant &v1, const QVariant &v2 )
 {
   return qgsVariantCompare( v1, v2, true ) < 0;
 }
-#endif
-
-
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-
-/**
- * Compares two QVariantList values and returns whether the first is less than the second.
- */
-template<> CORE_EXPORT bool qMapLessThanKey<QVariantList>( const QVariantList &key1, const QVariantList &key2 ) SIP_SKIP;
-#endif
 
 /**
  * Returns a the vsi prefix which corresponds to a file \a path, or an empty
@@ -7332,21 +7442,21 @@ class ScopedIntIncrementor
 /**
  * Numeric ID for the EPSG:4326 geographic coordinate system.
  *
- * \deprecated QGIS 3.44. Will be removed in QGIS 4.0.
+ * \deprecated QGIS 3.44. Will be removed in QGIS 5.0.
  */
 Q_DECL_DEPRECATED const long GEOSRID = 4326;
 
 /**
  * Numeric ID for the EPSG:4326 geographic coordinate system in QGIS internal srs database.
  *
- * \deprecated QGIS 3.44. Will be removed in QGIS 4.0.
+ * \deprecated QGIS 3.44. Will be removed in QGIS 5.0.
  */
 Q_DECL_DEPRECATED const long GEOCRS_ID = 3452;
 
 /**
  * Numeric ID for the EPSG:4326 geographic coordinate system.
  *
- * \deprecated QGIS 3.44. Will be removed in QGIS 4.0.
+ * \deprecated QGIS 3.44. Will be removed in QGIS 5.0.
  */
 Q_DECL_DEPRECATED const long GEO_EPSG_CRS_ID = 4326;
 

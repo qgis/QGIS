@@ -22,6 +22,7 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsmodeldesignerdialog.h"
 #include "qgsprocessinggui.h"
 #include "qgsvectorlayer.h"
 
@@ -42,6 +43,7 @@ class QgsProcessingAlgorithm;
 class QgsProcessingAbstractParameterDefinitionWidget;
 class QgsMessageBar;
 class QgsBrowserGuiModel;
+class QgsModelGraphicsScene;
 
 /**
  * \class QgsProcessingContextGenerator
@@ -223,6 +225,47 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
      */
     void setActiveLayer( QgsMapLayer *layer );
 
+    /**
+     * Registers a Processing context \a generator class that will be used to retrieve
+     * a Processing context for the widget when required.
+     *
+     * The \a generator must exist for the lifetime of the widget, ownership is not transferred.
+     *
+     * \see processingContextGenerator()
+     *
+     * \since QGIS 4.0
+     */
+    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
+
+    /**
+     * Returns the Processing context generator class that will be used to retrieve
+     * a Processing context for the widget when required.
+     *
+     * \see registerProcessingContextGenerator()
+     * \since QGIS 4.0
+     */
+    QgsProcessingContextGenerator *processingContextGenerator();
+
+    /**
+     * Returns the associated model designer dialog, if applicable.
+     *
+     * \warning This method is not considered stable API
+     *
+     * \see setModelDesignerDialog()
+     * \since QGIS 4.0
+     */
+    QgsModelDesignerDialog *modelDesignerDialog() const;
+
+    /**
+     * Sets the associated model designer \a dialog, if applicable.
+     *
+     * \warning This method is not considered stable API
+     *
+     * \see modelDesignerDialog()
+     * \since QGIS 4.0
+     */
+    void setModelDesignerDialog( QgsModelDesignerDialog *dialog );
+
   private:
     QgsProcessingModelAlgorithm *mModel = nullptr;
 
@@ -237,6 +280,10 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
     QgsBrowserGuiModel *mBrowserModel = nullptr;
 
     QgsMapLayer *mActiveLayer = nullptr;
+
+    QgsProcessingContextGenerator *mProcessingContextGenerator = nullptr;
+
+    QgsModelDesignerDialog *mModelDialog = nullptr;
 };
 
 #ifndef SIP_RUN
@@ -347,7 +394,7 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
      */
     const QgsProcessingParameterDefinition *parameterDefinition() const;
 
-    // TODO QGIS 4.0 -- remove
+    // TODO QGIS 5.0 -- remove
 #ifdef SIP_RUN
     % Property( name = param, get = parameterDefinition )
 #endif
@@ -417,7 +464,7 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
 
   signals:
 
-    // TODO QGIS 4.0 - remove wrapper parameter - this is kept for compatibility with 3.x API,
+    // TODO QGIS 5.0 - remove wrapper parameter - this is kept for compatibility with 3.x API,
     // yet can easily be retrieved by checking the sender()
 
     /**

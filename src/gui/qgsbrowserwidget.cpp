@@ -40,10 +40,13 @@
 #include <QMenu>
 #include <QPlainTextDocumentLayout>
 #include <QSortFilterProxyModel>
+#include <QString>
 #include <QToolButton>
 #include <QTreeView>
 
 #include "moc_qgsbrowserwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 // browser layer properties dialog
 #include "qgsapplication.h"
@@ -148,7 +151,7 @@ void QgsBrowserWidget::showEvent( QShowEvent *e )
     mActionPropertiesWidget->setChecked( settings.value( settingsSection() + "/propertiesWidgetEnabled", false ).toBool() );
     mPropertiesWidget->setVisible( false ); // false until item is selected
 
-    mSplitter->restoreState( settings.value( QStringLiteral( "%1/splitterState" ).arg( settingsSection() ) ).toByteArray() );
+    mSplitter->restoreState( settings.value( u"%1/splitterState"_s.arg( settingsSection() ) ).toByteArray() );
   }
 
   QWidget::showEvent( e );
@@ -309,7 +312,7 @@ void QgsBrowserWidget::refreshModel( const QModelIndex &index )
     }
     else
     {
-      QgsDebugMsgLevel( QStringLiteral( "invalid item" ), 4 );
+      QgsDebugMsgLevel( u"invalid item"_s, 4 );
     }
 
     if ( item && ( item->capabilities2() & Qgis::BrowserItemCapability::Fertile ) )
@@ -365,7 +368,7 @@ void QgsBrowserWidget::addSelectedLayers()
     {
       QgsProjectItem *projectItem = qobject_cast<QgsProjectItem *>( item );
       if ( projectItem )
-        emit openFile( projectItem->path(), QStringLiteral( "project" ) );
+        emit openFile( projectItem->path(), u"project"_s );
 
       QApplication::restoreOverrideCursor();
       return;
@@ -553,5 +556,5 @@ void QgsBrowserWidget::setActiveIndex( const QModelIndex &index )
 void QgsBrowserWidget::splitterMoved()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "%1/splitterState" ).arg( settingsSection() ), mSplitter->saveState() );
+  settings.setValue( u"%1/splitterState"_s.arg( settingsSection() ), mSplitter->saveState() );
 }

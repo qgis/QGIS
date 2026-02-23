@@ -15,7 +15,11 @@
 
 #include "qgslistconfigdlg.h"
 
+#include <QString>
+
 #include "moc_qgslistconfigdlg.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsListConfigDlg::QgsListConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )
@@ -29,14 +33,14 @@ QVariantMap QgsListConfigDlg::config()
 {
   QVariantMap cfg;
 
-  cfg.insert( QStringLiteral( "EmptyIsNull" ), mEmptyisNull->isChecked() );
-  cfg.insert( QStringLiteral( "EmptyIsEmptyArray" ), mEmptyisEmptyArray->isChecked() );
+  cfg.insert( u"EmptyIsNull"_s, mEmptyisNull->isChecked() );
+  cfg.insert( u"EmptyIsEmptyArray"_s, mEmptyisEmptyArray->isChecked() );
 
   return cfg;
 }
 
 void QgsListConfigDlg::setConfig( const QVariantMap &config )
 {
-  mEmptyisNull->setChecked( config.value( QStringLiteral( "EmptyIsNull" ) ).toBool() );
-  mEmptyisEmptyArray->setChecked( config.value( QStringLiteral( "EmptyIsEmptyArray" ) ).toBool() );
+  mEmptyisNull->setChecked( config.value( u"EmptyIsNull"_s ).toBool() );
+  mEmptyisEmptyArray->setChecked( config.value( u"EmptyIsEmptyArray"_s ).toBool() );
 }

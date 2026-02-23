@@ -19,7 +19,6 @@
 #define QGSTRIANGULARMESH_H
 
 
-#define SIP_NO_FILE
 
 #include <memory>
 
@@ -34,6 +33,8 @@
 #include <QSet>
 #include <QVector>
 #include <QVector3D>
+
+#define SIP_NO_FILE
 
 class QgsRenderContext;
 class QgsRectangle;
@@ -50,7 +51,7 @@ class QgsRectangle;
  *
  * \since QGIS 3.2
  */
-class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
+class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 5
 {
   public:
 

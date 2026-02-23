@@ -18,6 +18,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 //qgis includes...
 #include "qgsapplication.h"
 #include "qgsproject.h"
@@ -36,7 +38,7 @@ class TestQgsRasterContourRenderer : public QgsTest
 
   public:
     TestQgsRasterContourRenderer()
-      : QgsTest( QStringLiteral( "Raster Contour Renderer Tests" ) ) {}
+      : QgsTest( u"Raster Contour Renderer Tests"_s ) {}
 
   private:
     QString mDataDir;
@@ -95,7 +97,7 @@ void TestQgsRasterContourRenderer::test_render()
 
   mLayer->setRenderer( renderer );
 
-  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "raster_contours" ), QStringLiteral( "raster_contours" ), *mMapSettings );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( u"raster_contours"_s, u"raster_contours"_s, *mMapSettings );
 }
 
 void TestQgsRasterContourRenderer::testRenderOpacity()
@@ -116,7 +118,7 @@ void TestQgsRasterContourRenderer::testRenderOpacity()
   mLayer->setRenderer( renderer );
   mLayer->setOpacity( 0.5 );
 
-  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "raster_contours_opacity" ), QStringLiteral( "raster_contours_opacity" ), *mMapSettings );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( u"raster_contours_opacity"_s, u"raster_contours_opacity"_s, *mMapSettings );
 }
 
 

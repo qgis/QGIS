@@ -35,6 +35,8 @@ email                : morb at ozemail dot com dot au
 #include <QString>
 #include <QVector>
 
+using namespace Qt::StringLiterals;
+
 #ifndef SIP_RUN
 #include <nlohmann/json_fwd.hpp>
 using namespace nlohmann;
@@ -124,7 +126,6 @@ struct QgsGeometryPrivate;
 class CORE_EXPORT QgsGeometryParameters
 {
   public:
-
     /**
      * Returns the grid size which will be used to snap vertices of a geometry.
      *
@@ -150,7 +151,6 @@ class CORE_EXPORT QgsGeometryParameters
     void setGridSize( double size ) { mGridSize = size; }
 
   private:
-
     double mGridSize = -1;
 };
 
@@ -181,7 +181,6 @@ class CORE_EXPORT QgsGeometry
     Q_PROPERTY( Qgis::GeometryType type READ type )
 
   public:
-
     QgsGeometry() SIP_HOLDGIL;
 
     //! Copy constructor will prompt a shallow copy of the geometry
@@ -237,7 +236,7 @@ class CORE_EXPORT QgsGeometry
      * Sets the underlying geometry store. Ownership of geometry is transferred.
      *
      * \note In QGIS 2.x this method was named setGeometry().
-     * \note This method is deprecated for usage in Python and will be removed from Python bindings with QGIS 4.
+     * \note This method is deprecated for usage in Python and will be removed from Python bindings with QGIS 5.
      *       Using this method will confuse Python's memory management and type information system.
      *       Better create a new QgsGeometry object instead.
      *
@@ -346,6 +345,23 @@ class CORE_EXPORT QgsGeometry
     static QgsGeometry collectGeometry( const QVector<QgsGeometry> &geometries );
 
     /**
+     * Collects all patches from a list of TIN or Triangle geometries into a single TIN geometry.
+     *
+     * This method iterates through the input \a geometries and extracts all triangle patches,
+     * combining them into a single QgsTriangulatedSurface. Input geometries can be either
+     * QgsTriangulatedSurface (TIN) or QgsTriangle objects. Other geometry types are ignored.
+     *
+     * The resulting TIN will preserve Z and M values if present in the first valid input geometry.
+     *
+     * \param geometries list of input geometries (should be TIN or Triangle types)
+     * \returns a QgsGeometry containing a QgsTriangulatedSurface with all collected patches,
+     *          or a null geometry if no valid TIN/Triangle geometries were found
+     *
+     * \since QGIS 4.0
+     */
+    static QgsGeometry collectTinPatches( const QVector<QgsGeometry> &geometries );
+
+    /**
      * Creates a wedge shaped buffer from a \a center point.
      *
      * The \a azimuth gives the angle (in degrees) for the middle of the wedge to point.
@@ -360,8 +376,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \since QGIS 3.2
      */
-    static QgsGeometry createWedgeBuffer( const QgsPoint &center, double azimuth, double angularWidth,
-                                          double outerRadius, double innerRadius = 0 );
+    static QgsGeometry createWedgeBuffer( const QgsPoint &center, double azimuth, double angularWidth, double outerRadius, double innerRadius = 0 );
 
     /**
      * Creates a wedge shaped buffer from a \a center point.
@@ -376,8 +391,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \since QGIS 3.40
      */
-    static QgsGeometry createWedgeBufferFromAngles( const QgsPoint &center, double startAngle, double endAngle,
-        double outerRadius, double innerRadius = 0 );
+    static QgsGeometry createWedgeBufferFromAngles( const QgsPoint &center, double startAngle, double endAngle, double outerRadius, double innerRadius = 0 );
 
     /**
      * Set the geometry, feeding in the buffer containing OGC Well-Known Binary and the buffer's length.
@@ -433,7 +447,7 @@ class CORE_EXPORT QgsGeometry
      * Compares the geometry with another geometry using GEOS.
      *
      * This method performs a slow, topological check, where geometries
-     * are considered equal if all of the their component edges overlap. E.g.
+     * are considered equal if all of their component edges overlap. E.g.
      * lines with the same vertex locations but opposite direction will be
      * considered equal by this method.
      *
@@ -488,8 +502,24 @@ class CORE_EXPORT QgsGeometry
      * celestial body).
      *
      * \see length()
+     * \see area3D()
      */
     double area() const;
+
+    /**
+     * Returns the 3-dimensional surface area of the geometry.
+     *
+     * \warning QgsGeometry objects are inherently Cartesian/planar geometries, and the area
+     * returned by this method is calculated using strictly Cartesian mathematics.
+     *
+     * \warning This method assumes the horizontal and vertical coordinates are in the same unit.
+     *
+     * \throws QgsInvalidArgumentException if the area cannot be calculated.
+     * \see area()
+     *
+     * \since QGIS 4.0
+     */
+    double area3D() const SIP_THROW( QgsInvalidArgumentException );
 
     /**
      * Returns the planar, 2-dimensional length of geometry.
@@ -517,7 +547,7 @@ class CORE_EXPORT QgsGeometry
 
 #ifndef SIP_RUN
 
-    // TODO QGIS 4: consider renaming vertices_begin, vertices_end, parts_begin, parts_end, etc
+    // TODO QGIS 5: consider renaming vertices_begin, vertices_end, parts_begin, parts_end, etc
     // to camelCase
 
     /**
@@ -849,15 +879,16 @@ class CORE_EXPORT QgsGeometry
     bool moveVertex( const QgsPoint &p, int atVertex );
 
     /**
-     * Deletes the vertex at the given position number and item
-     * (first number is index 0)
-     * \returns FALSE if atVertex does not correspond to a valid vertex
-     * on this geometry (including if this geometry is a Point),
-     * or if the number of remaining vertices in the linestring
-     * would be less than two.
-     * It is up to the caller to distinguish between
-     * these error conditions.  (Or maybe we add another method to this
-     * object to help make the distinction?)
+     * Deletes the vertex at the given position number and item (first number is index 0)
+     *
+     * For Point geometries, this clears the geometry.
+     * For MultiPoint geometries, this removes the point geometry at the specified index.
+     * For other geometry types, this removes the vertex at the specified index.
+     * If the removal of the vertex would result in an invalid geometry (e.g. a LineString with less than 2 vertices),
+     * the geometry is cleared instead.
+     *
+     * \returns FALSE if atVertex does not correspond to a valid vertex on this geometry or if the geometry is null,
+     * TRUE if the vertex was successfully deleted or the geometry was cleared.
      */
     bool deleteVertex( int atVertex );
 
@@ -941,7 +972,7 @@ class CORE_EXPORT QgsGeometry
      * \param points points describing part to add
      * \param geomType default geometry type to create if no existing geometry
      * \returns OperationResult a result code: success or reason of failure
-     * \deprecated QGIS 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
+     * \deprecated QGIS 3.38. Will be removed in QGIS 5.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
      */
     Q_DECL_DEPRECATED Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) SIP_PYNAME( addPointsXY ) SIP_DEPRECATED;
 
@@ -959,7 +990,7 @@ class CORE_EXPORT QgsGeometry
      * \param points points describing part to add
      * \param geomType default geometry type to create if no existing geometry
      * \returns OperationResult a result code: success or reason of failure
-     * \deprecated QGIS 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
+     * \deprecated QGIS 3.38. Will be removed in QGIS 5.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
      */
     Q_DECL_DEPRECATED Qgis::GeometryOperationResult addPart( const QgsPointSequence &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) SIP_PYNAME( addPoints ) SIP_DEPRECATED;
 
@@ -977,7 +1008,7 @@ class CORE_EXPORT QgsGeometry
      * \param part part to add (ownership is transferred)
      * \param geomType default geometry type to create if no existing geometry
      * \returns OperationResult a result code: success or reason of failure
-     * \deprecated QGIS 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
+     * \deprecated QGIS 3.38. Will be removed in QGIS 5.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
      */
     Q_DECL_DEPRECATED Qgis::GeometryOperationResult addPart( QgsAbstractGeometry *part SIP_TRANSFER, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) SIP_DEPRECATED;
 
@@ -1052,7 +1083,7 @@ class CORE_EXPORT QgsGeometry
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
      * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
      * \returns Qgis::GeometryOperationResult a result code: success or reason of failure
-     * \deprecated QGIS 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+     * \deprecated QGIS 3.12. Will be removed in QGIS 5.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
     Q_DECL_DEPRECATED Qgis::GeometryOperationResult splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QVector<QgsPointXY> &topologyTestPoints, bool splitFeature = true ) SIP_SKIP;
 
@@ -1082,8 +1113,8 @@ class CORE_EXPORT QgsGeometry
 
     /*
      This SIP code is to support overloaded methods of splitGeometry.
-     When the deprecated method is removed in QGIS 4.0 this code can be dropped
-     TODO QGIS 4 remove MethodCode
+     When the deprecated method is removed in QGIS 5.0 this code can be dropped
+     TODO QGIS 5 remove MethodCode
     */
 #ifdef SIP_RUN
 
@@ -1114,8 +1145,7 @@ class CORE_EXPORT QgsGeometry
       if ( PyList_Check( a0 ) && PyList_GET_SIZE( a0 ) )
       {
         PyObject *p0 = PyList_GetItem( a0, 0 );
-        if ( sipCanConvertToType( p0, sipType_QgsPointXY, SIP_NOT_NONE ) &&
-             sipCanConvertToType( a0, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) )
+        if ( sipCanConvertToType( p0, sipType_QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( a0, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) )
         {
           QVector<QgsGeometry> newGeometries;
           QVector<QgsPointXY> topologyTestPoints;
@@ -1137,8 +1167,7 @@ class CORE_EXPORT QgsGeometry
           sipReleaseType( splitLine, sipType_QVector_0100QgsPointXY, state );
         }
 
-        else if ( sipCanConvertToType( p0, sipType_QgsPoint, SIP_NOT_NONE ) &&
-                  sipCanConvertToType( a0, sipType_QVector_0100QgsPoint, SIP_NOT_NONE ) )
+        else if ( sipCanConvertToType( p0, sipType_QgsPoint, SIP_NOT_NONE ) && sipCanConvertToType( a0, sipType_QVector_0100QgsPoint, SIP_NOT_NONE ) )
         {
           QVector<QgsGeometry> newGeometries;
           QVector<QgsPoint> topologyTestPoints;
@@ -1162,30 +1191,30 @@ class CORE_EXPORT QgsGeometry
         else
         {
           sipIsErr = 1;
-          PyErr_SetString( PyExc_TypeError, QStringLiteral( "Could not convert first argument to a list of QgsPoint or QgsPointXY." ).toUtf8().constData() );
+          PyErr_SetString( PyExc_TypeError, u"Could not convert first argument to a list of QgsPoint or QgsPointXY."_s.toUtf8().constData() );
         }
       }
       else
       {
         sipIsErr = 1;
-        PyErr_SetString( PyExc_TypeError, QStringLiteral( "First argument is not a list of points or is empty." ).toUtf8().constData() );
+        PyErr_SetString( PyExc_TypeError, u"First argument is not a list of points or is empty."_s.toUtf8().constData() );
       }
     }
     % End
 #endif
 
     /**
-     * Splits this geometry according to a given curve.
-     * \param curve the curve that splits the geometry
-     * \param[out] newGeometries list of new geometries that have been created with the ``splitLine``. If the geometry is 3D, a linear interpolation of the z value is performed on the geometry at split points, see example.
-     * \param preserveCircular whether if circular strings are preserved after splitting
-     * \param topological TRUE if topological editing is enabled
-     * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
-     * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
-     * \returns OperationResult a result code: success or reason of failure
-     * \since QGIS 3.16
-     */
-    Qgis::GeometryOperationResult splitGeometry( const QgsCurve *curve,  QVector<QgsGeometry> &newGeometries SIP_OUT, bool preserveCircular, bool topological, QgsPointSequence &topologyTestPoints SIP_OUT, bool splitFeature = true );
+    * Splits this geometry according to a given curve.
+    * \param curve the curve that splits the geometry
+    * \param[out] newGeometries list of new geometries that have been created with the ``splitLine``. If the geometry is 3D, a linear interpolation of the z value is performed on the geometry at split points, see example.
+    * \param preserveCircular whether if circular strings are preserved after splitting
+    * \param topological TRUE if topological editing is enabled
+    * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+    * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
+    * \returns OperationResult a result code: success or reason of failure
+    * \since QGIS 3.16
+    */
+    Qgis::GeometryOperationResult splitGeometry( const QgsCurve *curve, QVector<QgsGeometry> &newGeometries SIP_OUT, bool preserveCircular, bool topological, QgsPointSequence &topologyTestPoints SIP_OUT, bool splitFeature = true );
 
     /**
      * Replaces a part of this geometry with another line
@@ -1385,11 +1414,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \since QGIS 3.24
      */
-    QgsGeometry applyDashPattern( const QVector< double > &pattern,
-                                  Qgis::DashPatternLineEndingRule startRule = Qgis::DashPatternLineEndingRule::NoRule,
-                                  Qgis::DashPatternLineEndingRule endRule = Qgis::DashPatternLineEndingRule::NoRule,
-                                  Qgis::DashPatternSizeAdjustment adjustment = Qgis::DashPatternSizeAdjustment::ScaleBothDashAndGap,
-                                  double patternOffset = 0 ) const;
+    QgsGeometry applyDashPattern( const QVector< double > &pattern, Qgis::DashPatternLineEndingRule startRule = Qgis::DashPatternLineEndingRule::NoRule, Qgis::DashPatternLineEndingRule endRule = Qgis::DashPatternLineEndingRule::NoRule, Qgis::DashPatternSizeAdjustment adjustment = Qgis::DashPatternSizeAdjustment::ScaleBothDashAndGap, double patternOffset = 0 ) const;
 
     /**
      * Returns a new geometry with all points or vertices snapped to the closest point of the grid.
@@ -1595,9 +1620,7 @@ class CORE_EXPORT QgsGeometry
      * \see buffer()
      * \see taperedBuffer()
      */
-    QgsGeometry singleSidedBuffer( double distance, int segments, Qgis::BufferSide side,
-                                   Qgis::JoinStyle joinStyle = Qgis::JoinStyle::Round,
-                                   double miterLimit = 2.0 ) const;
+    QgsGeometry singleSidedBuffer( double distance, int segments, Qgis::BufferSide side, Qgis::JoinStyle joinStyle = Qgis::JoinStyle::Round, double miterLimit = 2.0 ) const;
 
     /**
      * Calculates a variable width buffer ("tapered buffer") for a (multi)curve geometry.
@@ -2154,12 +2177,12 @@ class CORE_EXPORT QgsGeometry
     const Qgis::GeometryType type = sipCpp->type();
     if ( sipCpp->isNull() )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Cannot generate points inside a null geometry." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Cannot generate points inside a null geometry."_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     else if ( type != Qgis::GeometryType::Polygon )
     {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "Cannot generate points inside a %1 geometry. Only Polygon types are permitted." ).arg( QgsWkbTypes::displayString( sipCpp->wkbType() ) ).toUtf8().constData() );
+      PyErr_SetString( PyExc_TypeError, u"Cannot generate points inside a %1 geometry. Only Polygon types are permitted."_s.arg( QgsWkbTypes::displayString( sipCpp->wkbType() ) ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -2171,7 +2194,7 @@ class CORE_EXPORT QgsGeometry
 
 
 #endif
-///@endcond
+    ///@endcond
 
     /**
      * Returns the length of the QByteArray returned by asWkb()
@@ -2202,21 +2225,21 @@ class CORE_EXPORT QgsGeometry
     % MethodCode
     QString str;
     if ( sipCpp->isNull() )
-      str = QStringLiteral( "<QgsGeometry: null>" );
+      str = u"<QgsGeometry: null>"_s;
     else
     {
       QString wkt = sipCpp->asWkt();
       if ( wkt.length() > 1000 )
-        wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
-      str = QStringLiteral( "<QgsGeometry: %1>" ).arg( wkt );
+        wkt = wkt.left( 1000 ) + u"..."_s;
+      str = u"<QgsGeometry: %1>"_s.arg( wkt );
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
     /**
-     * Exports the geometry to a GeoJSON string.
-     */
+    * Exports the geometry to a GeoJSON string.
+    */
     QString asJson( int precision = 17 ) const;
 
     /**
@@ -2239,6 +2262,8 @@ class CORE_EXPORT QgsGeometry
      * - curved geometries will be segmented if \a type is non-curved.
      * - multi geometries will be converted to a list of single geometries
      * - single geometries will be upgraded to multi geometries
+     * - PolyhedralSurface/TIN will be converted to  multi polygon
+     * - multipolygon, polygon and triangle will be converted to TIN
      * - z or m values will be added or dropped as required.
      *
      * Since QGIS 3.24, the parameters \a defaultZ and \a defaultM control the dimension value added when promoting geometries
@@ -2253,6 +2278,10 @@ class CORE_EXPORT QgsGeometry
      * of geometries instead of the geometry family (point/line/polygon), and tries more exhaustively
      * to coerce geometries to the desired \a type. It also correctly maintains curves and z/m values
      * wherever appropriate.
+     *
+     * \note If an error occurs during conversion (e.g., attempting to convert a polygon with
+     * non-triangular vertices to a Triangle or TIN geometry), an empty vector will be returned and the
+     * error message can be retrieved by calling lastError() on the returned geometry.
      *
      * \since QGIS 3.14
      */
@@ -2300,7 +2329,7 @@ class CORE_EXPORT QgsGeometry
     % MethodCode
     if ( sipCpp->isNull() )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a point." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Null geometry cannot be converted to a point."_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -2308,7 +2337,7 @@ class CORE_EXPORT QgsGeometry
       const QgsAbstractGeometry *geom = sipCpp->constGet();
       if ( QgsWkbTypes::flatType( geom->simplifiedTypeRef()->wkbType() ) != Qgis::WkbType::Point )
       {
-        PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a point. Only Point types are permitted." ).arg( QgsWkbTypes::displayString( geom->wkbType() ) ).toUtf8().constData() );
+        PyErr_SetString( PyExc_TypeError, u"%1 geometry cannot be converted to a point. Only Point types are permitted."_s.arg( QgsWkbTypes::displayString( geom->wkbType() ) ).toUtf8().constData() );
         sipIsErr = 1;
       }
       else
@@ -2333,27 +2362,27 @@ class CORE_EXPORT QgsGeometry
 #else
 
     /**
-     * Returns the contents of the geometry as a polyline.
-     *
-     * Any z or m values present in the geometry will be discarded. If the geometry is a curved line type
-     * (such as a CircularString), it will be automatically segmentized.
-     *
-     * This method works only with single-line (or single-curve).
-     *
-     * \throws TypeError if the geometry is not a single-line type
-     * \throws ValueError if the geometry is null
-     */
+    * Returns the contents of the geometry as a polyline.
+    *
+    * Any z or m values present in the geometry will be discarded. If the geometry is a curved line type
+    * (such as a CircularString), it will be automatically segmentized.
+    *
+    * This method works only with single-line (or single-curve).
+    *
+    * \throws TypeError if the geometry is not a single-line type
+    * \throws ValueError if the geometry is null
+    */
     SIP_PYOBJECT asPolyline() const SIP_TYPEHINT( QgsPolylineXY );
     % MethodCode
     const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a polyline." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Null geometry cannot be converted to a polyline."_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     else if ( QgsWkbTypes::geometryType( type ) != Qgis::GeometryType::Line || QgsWkbTypes::isMultiType( type ) )
     {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a polyline. Only single line or curve types are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
+      PyErr_SetString( PyExc_TypeError, u"%1 geometry cannot be converted to a polyline. Only single line or curve types are permitted."_s.arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -2378,27 +2407,27 @@ class CORE_EXPORT QgsGeometry
 #else
 
     /**
-     * Returns the contents of the geometry as a polygon.
-     *
-     * Any z or m values present in the geometry will be discarded. If the geometry is a curved polygon type
-     * (such as a CurvePolygon), it will be automatically segmentized.
-     *
-     * This method works only with single-polygon (or single-curve polygon) geometry types.
-     *
-     * \throws TypeError if the geometry is not a single-polygon type
-     * \throws ValueError if the geometry is null
-     */
+    * Returns the contents of the geometry as a polygon.
+    *
+    * Any z or m values present in the geometry will be discarded. If the geometry is a curved polygon type
+    * (such as a CurvePolygon), it will be automatically segmentized.
+    *
+    * This method works only with single-polygon (or single-curve polygon) geometry types.
+    *
+    * \throws TypeError if the geometry is not a single-polygon type
+    * \throws ValueError if the geometry is null
+    */
     SIP_PYOBJECT asPolygon() const SIP_TYPEHINT( QgsPolygonXY );
     % MethodCode
     const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a polygon." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Null geometry cannot be converted to a polygon."_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     else if ( QgsWkbTypes::geometryType( type ) != Qgis::GeometryType::Polygon || QgsWkbTypes::isMultiType( type ) )
     {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a polygon. Only single polygon or curve polygon types are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
+      PyErr_SetString( PyExc_TypeError, u"%1 geometry cannot be converted to a polygon. Only single polygon or curve polygon types are permitted."_s.arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -2422,26 +2451,26 @@ class CORE_EXPORT QgsGeometry
 #else
 
     /**
-     * Returns the contents of the geometry as a multi-point.
-     *
-     * Any z or m values present in the geometry will be discarded.
-     *
-     * This method works only with multi-point geometry types.
-     *
-     * \throws TypeError if the geometry is not a multi-point type
-     * \throws ValueError if the geometry is null
-     */
+    * Returns the contents of the geometry as a multi-point.
+    *
+    * Any z or m values present in the geometry will be discarded.
+    *
+    * This method works only with multi-point geometry types.
+    *
+    * \throws TypeError if the geometry is not a multi-point type
+    * \throws ValueError if the geometry is null
+    */
     SIP_PYOBJECT asMultiPoint() const SIP_TYPEHINT( QgsMultiPointXY );
     % MethodCode
     const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a multipoint." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Null geometry cannot be converted to a multipoint."_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     else if ( QgsWkbTypes::geometryType( type ) != Qgis::GeometryType::Point || !QgsWkbTypes::isMultiType( type ) )
     {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a multipoint. Only multipoint types are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
+      PyErr_SetString( PyExc_TypeError, u"%1 geometry cannot be converted to a multipoint. Only multipoint types are permitted."_s.arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -2466,27 +2495,27 @@ class CORE_EXPORT QgsGeometry
 #else
 
     /**
-     * Returns the contents of the geometry as a multi-linestring.
-     *
-     * Any z or m values present in the geometry will be discarded. If the geometry is a curved line type
-     * (such as a MultiCurve), it will be automatically segmentized.
-     *
-     * This method works only with multi-linestring (or multi-curve) geometry types.
-     *
-     * \throws TypeError if the geometry is not a multi-linestring type
-     * \throws ValueError if the geometry is null
-     */
+    * Returns the contents of the geometry as a multi-linestring.
+    *
+    * Any z or m values present in the geometry will be discarded. If the geometry is a curved line type
+    * (such as a MultiCurve), it will be automatically segmentized.
+    *
+    * This method works only with multi-linestring (or multi-curve) geometry types.
+    *
+    * \throws TypeError if the geometry is not a multi-linestring type
+    * \throws ValueError if the geometry is null
+    */
     SIP_PYOBJECT asMultiPolyline() const SIP_TYPEHINT( QgsMultiPolylineXY );
     % MethodCode
     const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a multilinestring." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Null geometry cannot be converted to a multilinestring."_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     else if ( QgsWkbTypes::geometryType( type ) != Qgis::GeometryType::Line || !QgsWkbTypes::isMultiType( type ) )
     {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a multilinestring. Only multi linestring or curves are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
+      PyErr_SetString( PyExc_TypeError, u"%1 geometry cannot be converted to a multilinestring. Only multi linestring or curves are permitted."_s.arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -2511,27 +2540,27 @@ class CORE_EXPORT QgsGeometry
 #else
 
     /**
-     * Returns the contents of the geometry as a multi-polygon.
-     *
-     * Any z or m values present in the geometry will be discarded. If the geometry is a curved polygon type
-     * (such as a MultiSurface), it will be automatically segmentized.
-     *
-     * This method works only with multi-polygon (or multi-curve polygon) geometry types.
-     *
-     * \throws TypeError if the geometry is not a multi-polygon type
-     * \throws ValueError if the geometry is null
-     */
+    * Returns the contents of the geometry as a multi-polygon.
+    *
+    * Any z or m values present in the geometry will be discarded. If the geometry is a curved polygon type
+    * (such as a MultiSurface), it will be automatically segmentized.
+    *
+    * This method works only with multi-polygon (or multi-curve polygon) geometry types.
+    *
+    * \throws TypeError if the geometry is not a multi-polygon type
+    * \throws ValueError if the geometry is null
+    */
     SIP_PYOBJECT asMultiPolygon() const SIP_TYPEHINT( QgsMultiPolygonXY );
     % MethodCode
     const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a multipolygon." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Null geometry cannot be converted to a multipolygon."_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     else if ( QgsWkbTypes::geometryType( type ) != Qgis::GeometryType::Polygon || !QgsWkbTypes::isMultiType( type ) )
     {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a multipolygon. Only multi polygon or curves are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
+      PyErr_SetString( PyExc_TypeError, u"%1 geometry cannot be converted to a multipolygon. Only multi polygon or curves are permitted."_s.arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -2639,8 +2668,7 @@ class CORE_EXPORT QgsGeometry
      *          4 if the geometry is not intersected by one of the geometries present in the provided layers.
      * \deprecated QGIS 3.34
      */
-    Q_DECL_DEPRECATED int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
-        const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures SIP_PYARGREMOVE = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers, const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures SIP_PYARGREMOVE = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) ) SIP_DEPRECATED;
 
     /**
      * Modifies geometry to avoid intersections with the layers specified in project properties
@@ -2653,8 +2681,7 @@ class CORE_EXPORT QgsGeometry
      *          NothingHappened          if the geometry is not intersected by one of the geometries present in the provided layers.
      * \since QGIS 3.34
      */
-    Qgis::GeometryOperationResult avoidIntersectionsV2( const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
-        const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures SIP_PYARGREMOVE = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) );
+    Qgis::GeometryOperationResult avoidIntersectionsV2( const QList<QgsVectorLayer *> &avoidIntersectionsLayers, const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures SIP_PYARGREMOVE = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) );
 
     /**
      * Attempts to make an invalid geometry valid without losing vertices.
@@ -2768,7 +2795,7 @@ class CORE_EXPORT QgsGeometry
     {
       public:
         Error()
-          : mMessage( QStringLiteral( "none" ) )
+          : mMessage( u"none"_s )
         {}
 
         explicit Error( const QString &m )
@@ -2798,7 +2825,7 @@ class CORE_EXPORT QgsGeometry
 #ifdef SIP_RUN
         SIP_PYOBJECT __repr__();
         % MethodCode
-        QString str = QStringLiteral( "<QgsGeometry.Error: %1>" ).arg( sipCpp->what() );
+        QString str = u"<QgsGeometry.Error: %1>"_s.arg( sipCpp->what() );
         sipRes = PyUnicode_FromString( str.toUtf8().data() );
         % End
 #endif
@@ -2981,8 +3008,7 @@ class CORE_EXPORT QgsGeometry
      * \returns TRUE if polylines have the same number of points and all
      * points are equal within the specified tolerance
      */
-    static bool compare( const QgsPolylineXY &p1, const QgsPolylineXY &p2,
-                         double epsilon = 4 * std::numeric_limits<double>::epsilon() );
+    static bool compare( const QgsPolylineXY &p1, const QgsPolylineXY &p2, double epsilon = 4 * std::numeric_limits<double>::epsilon() );
 
     /**
      * Compares two polygons for equality within a specified tolerance.
@@ -2992,8 +3018,7 @@ class CORE_EXPORT QgsGeometry
      * \returns TRUE if polygons have the same number of rings, and each ring has the same
      * number of points and all points are equal within the specified tolerance
      */
-    static bool compare( const QgsPolygonXY &p1, const QgsPolygonXY &p2,
-                         double epsilon = 4 * std::numeric_limits<double>::epsilon() );
+    static bool compare( const QgsPolygonXY &p1, const QgsPolygonXY &p2, double epsilon = 4 * std::numeric_limits<double>::epsilon() );
 
     /**
      * Compares two multipolygons for equality within a specified tolerance.
@@ -3004,8 +3029,7 @@ class CORE_EXPORT QgsGeometry
      * of rings, and each ring has the same number of points and all points are equal within the specified
      * tolerance
      */
-    static bool compare( const QgsMultiPolygonXY &p1, const QgsMultiPolygonXY &p2,
-                         double epsilon = 4 * std::numeric_limits<double>::epsilon() );
+    static bool compare( const QgsMultiPolygonXY &p1, const QgsMultiPolygonXY &p2, double epsilon = 4 * std::numeric_limits<double>::epsilon() );
 #else
 
     /**
@@ -3034,18 +3058,14 @@ class CORE_EXPORT QgsGeometry
       int state1;
       int sipIsErr = 0;
 
-      if ( PyList_Check( a0 ) && PyList_Check( a1 ) &&
-           PyList_GET_SIZE( a0 ) && PyList_GET_SIZE( a1 ) )
+      if ( PyList_Check( a0 ) && PyList_Check( a1 ) && PyList_GET_SIZE( a0 ) && PyList_GET_SIZE( a1 ) )
       {
         PyObject *o0 = PyList_GetItem( a0, 0 );
         PyObject *o1 = PyList_GetItem( a1, 0 );
         if ( o0 && o1 )
         {
           // compare polyline - polyline
-          if ( sipCanConvertToType( o0, sipType_QgsPointXY, SIP_NOT_NONE ) &&
-               sipCanConvertToType( o1, sipType_QgsPointXY, SIP_NOT_NONE ) &&
-               sipCanConvertToType( a0, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) &&
-               sipCanConvertToType( a1, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) )
+          if ( sipCanConvertToType( o0, sipType_QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( o1, sipType_QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( a0, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( a1, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) )
           {
             QgsPolylineXY *p0;
             QgsPolylineXY *p1;
@@ -3058,18 +3078,14 @@ class CORE_EXPORT QgsGeometry
             sipReleaseType( p0, sipType_QVector_0100QgsPointXY, state0 );
             sipReleaseType( p1, sipType_QVector_0100QgsPointXY, state1 );
           }
-          else if ( PyList_Check( o0 ) && PyList_Check( o1 ) &&
-                    PyList_GET_SIZE( o0 ) && PyList_GET_SIZE( o1 ) )
+          else if ( PyList_Check( o0 ) && PyList_Check( o1 ) && PyList_GET_SIZE( o0 ) && PyList_GET_SIZE( o1 ) )
           {
             PyObject *oo0 = PyList_GetItem( o0, 0 );
             PyObject *oo1 = PyList_GetItem( o1, 0 );
             if ( oo0 && oo1 )
             {
               // compare polygon - polygon
-              if ( sipCanConvertToType( oo0, sipType_QgsPointXY, SIP_NOT_NONE ) &&
-                   sipCanConvertToType( oo1, sipType_QgsPointXY, SIP_NOT_NONE ) &&
-                   sipCanConvertToType( a0, sipType_QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) &&
-                   sipCanConvertToType( a1, sipType_QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) )
+              if ( sipCanConvertToType( oo0, sipType_QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( oo1, sipType_QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( a0, sipType_QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( a1, sipType_QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) )
               {
                 QgsPolygonXY *p0;
                 QgsPolygonXY *p1;
@@ -3082,18 +3098,14 @@ class CORE_EXPORT QgsGeometry
                 sipReleaseType( p0, sipType_QVector_0600QVector_0100QgsPointXY, state0 );
                 sipReleaseType( p1, sipType_QVector_0600QVector_0100QgsPointXY, state1 );
               }
-              else if ( PyList_Check( oo0 ) && PyList_Check( oo1 ) &&
-                        PyList_GET_SIZE( oo0 ) && PyList_GET_SIZE( oo1 ) )
+              else if ( PyList_Check( oo0 ) && PyList_Check( oo1 ) && PyList_GET_SIZE( oo0 ) && PyList_GET_SIZE( oo1 ) )
               {
                 PyObject *ooo0 = PyList_GetItem( oo0, 0 );
                 PyObject *ooo1 = PyList_GetItem( oo1, 0 );
                 if ( ooo0 && ooo1 )
                 {
                   // compare multipolygon - multipolygon
-                  if ( sipCanConvertToType( ooo0, sipType_QgsPointXY, SIP_NOT_NONE ) &&
-                       sipCanConvertToType( ooo1, sipType_QgsPointXY, SIP_NOT_NONE ) &&
-                       sipCanConvertToType( a0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) &&
-                       sipCanConvertToType( a1, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) )
+                  if ( sipCanConvertToType( ooo0, sipType_QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( ooo1, sipType_QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( a0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( a1, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) )
                   {
                     QgsMultiPolygonXY *p0;
                     QgsMultiPolygonXY *p1;
@@ -3131,8 +3143,7 @@ class CORE_EXPORT QgsGeometry
      * \param minimumDistance minimum segment length to apply smoothing to
      * \param maxAngle maximum angle at node (0-180) at which smoothing will be applied
      */
-    QgsGeometry smooth( unsigned int iterations = 1, double offset = 0.25,
-                        double minimumDistance = -1.0, double maxAngle = 180.0 ) const;
+    QgsGeometry smooth( unsigned int iterations = 1, double offset = 0.25, double minimumDistance = -1.0, double maxAngle = 180.0 ) const;
 
     /**
      * Creates and returns a new geometry engine representing the specified \a geometry using \a precision on a grid. The \a precision argument was added in 3.36.
@@ -3283,7 +3294,6 @@ class CORE_EXPORT QgsGeometry
 
 
   private:
-
     QgsGeometryPrivate *d; //implicitly shared data pointer
 
     //! Last error encountered
@@ -3321,8 +3331,7 @@ class CORE_EXPORT QgsGeometry
      * \param minimumDistance minimum segment length to apply smoothing to
      * \param maxAngle maximum angle at node (0-180) at which smoothing will be applied
     */
-    std::unique_ptr< QgsLineString > smoothLine( const QgsLineString &line, unsigned int iterations = 1, double offset = 0.25,
-        double minimumDistance = -1, double maxAngle = 180.0 ) const;
+    std::unique_ptr< QgsLineString > smoothLine( const QgsLineString &line, unsigned int iterations = 1, double offset = 0.25, double minimumDistance = -1, double maxAngle = 180.0 ) const;
 
     /**
      * Smooths a polygon using the Chaikin algorithm
@@ -3335,8 +3344,7 @@ class CORE_EXPORT QgsGeometry
      * \param minimumDistance minimum segment length to apply smoothing to
      * \param maxAngle maximum angle at node (0-180) at which smoothing will be applied
     */
-    std::unique_ptr< QgsPolygon > smoothPolygon( const QgsPolygon &polygon, unsigned int iterations = 1, double offset = 0.25,
-        double minimumDistance = -1, double maxAngle = 180.0 ) const;
+    std::unique_ptr< QgsPolygon > smoothPolygon( const QgsPolygon &polygon, unsigned int iterations = 1, double offset = 0.25, double minimumDistance = -1, double maxAngle = 180.0 ) const;
 
     QgsGeometry doChamferFillet( ChamferFilletOperationType op, int vertexIndex, double distance1, double distance2, int segments ) const;
 

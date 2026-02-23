@@ -24,6 +24,9 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestProjectionIssues : public QObject
 {
@@ -52,7 +55,7 @@ void TestProjectionIssues::initTestCase()
   const QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + '/' + "checker360by180.asc" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(), rasterFileInfo.completeBaseName() );
   // Set to WGS84
-  const QgsCoordinateReferenceSystem sourceCRS( QStringLiteral( "EPSG:4326" ) );
+  const QgsCoordinateReferenceSystem sourceCRS( u"EPSG:4326"_s );
   mRasterLayer->setCrs( sourceCRS, false );
 
   QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
@@ -74,7 +77,7 @@ void TestProjectionIssues::initTestCase()
   mMapCanvas->setLayers( canvasLayers );
 
   //reproject to SWEDREF 99 TM
-  const QgsCoordinateReferenceSystem destCRS( QStringLiteral( "EPSG:3006" ) );
+  const QgsCoordinateReferenceSystem destCRS( u"EPSG:3006"_s );
   mMapCanvas->setDestinationCrs( destCRS );
 }
 

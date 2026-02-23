@@ -19,6 +19,10 @@
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingparametertype.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief A parameter for "field mapping" configurations, which consist of a definition
@@ -44,7 +48,7 @@ class CORE_EXPORT QgsProcessingParameterFieldMapping : public QgsProcessingParam
     QStringList dependsOnOtherParameters() const override;
 
     //! Returns the type name for the parameter class.
-    static QString typeName() { return QStringLiteral( "fields_mapping" ); }
+    static QString typeName() { return u"fields_mapping"_s; }
 
     /**
      * Returns the name of the parent layer parameter, or an empty string if this is not set.
@@ -98,12 +102,12 @@ class CORE_EXPORT QgsProcessingParameterTypeFieldMapping : public QgsProcessingP
 
     QString pythonImportString() const override
     {
-      return QStringLiteral( "from qgis.core import QgsProcessingParameterFieldMapping" );
+      return u"from qgis.core import QgsProcessingParameterFieldMapping"_s;
     }
 
     QString className() const override
     {
-      return QStringLiteral( "QgsProcessingParameterFieldMapping" );
+      return u"QgsProcessingParameterFieldMapping"_s;
     }
 
     QStringList acceptedPythonTypes() const override
