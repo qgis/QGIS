@@ -774,6 +774,7 @@
 %Include auto_generated/symbology/qgssymbollayerutils.sip
 %Include auto_generated/symbology/qgssymbolrendercontext.sip
 %Include auto_generated/symbology/qgsvectorfieldsymbollayer.sip
+%Include auto_generated/symbology/converters/qgssymbolconverter.sip
 %Include auto_generated/textrenderer/qgsfontmanager.sip
 %Include auto_generated/textrenderer/qgstextbackgroundsettings.sip
 %Include auto_generated/textrenderer/qgstextblock.sip
