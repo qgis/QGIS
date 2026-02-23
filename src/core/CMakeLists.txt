@@ -145,6 +145,8 @@ set(QGIS_CORE_SRCS
   symbology/qgssymbol.cpp
   symbology/qgssymbolrendercontext.cpp
   symbology/qgsvectorfieldsymbollayer.cpp
+  symbology/converters/qgssymbolconverter.cpp
+
   simplify/effectivearea.cpp
 
   diagram/qgsdiagram.cpp
@@ -2077,6 +2079,7 @@ set(QGIS_CORE_HDRS
   symbology/qgssymbollayerutils.h
   symbology/qgssymbolrendercontext.h
   symbology/qgsvectorfieldsymbollayer.h
+  symbology/converters/qgssymbolconverter.h
 
   textrenderer/qgsfontmanager.h
   textrenderer/qgstextbackgroundsettings.h
@@ -2660,6 +2663,7 @@ target_include_directories(qgis_core PUBLIC
   sensor
   stac
   symbology
+  symbology/converters
   textrenderer
   tiledscene
   validity
