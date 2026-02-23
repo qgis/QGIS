@@ -19,7 +19,13 @@
 
 QgsAbstractSymbolConverter::~QgsAbstractSymbolConverter() = default;
 
-QgsSymbolConverterContext::QgsSymbolConverterContext()
+QgsSymbolConverterContext::QgsSymbolConverterContext( QgsReadWriteContext &rwContext )
+  : mRwContext( rwContext )
 {
 
+}
+
+QgsReadWriteContext &QgsSymbolConverterContext::readWriteContext()
+{
+  return mRwContext;
 }

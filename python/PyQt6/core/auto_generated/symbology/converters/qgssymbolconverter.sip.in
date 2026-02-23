@@ -24,8 +24,20 @@ conversion occurs.
 %End
   public:
 
-    QgsSymbolConverterContext();
+    QgsSymbolConverterContext( QgsReadWriteContext &rwContext );
+%Docstring
+Constructor for QgsSymbolConverterContext.
 
+The ``rwContext`` object must exist for the lifetime of this context.
+%End
+
+    QgsReadWriteContext &readWriteContext();
+%Docstring
+Returns the read-write context associated with the context.
+%End
+
+  private:
+    QgsSymbolConverterContext( const QgsSymbolConverterContext &other );
 };
 
 class QgsAbstractSymbolConverter
