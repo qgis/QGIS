@@ -49,6 +49,7 @@ MANDATORY DIRECTOR PROPERTY DECLARATION
     virtual QString name() const;
 
 
+
 };
 
 /************************************************************************
