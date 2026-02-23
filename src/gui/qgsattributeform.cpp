@@ -2118,10 +2118,35 @@ void QgsAttributeForm::init()
 
     const QgsFields fields = mLayer->fields();
 
+    // Collect non-first fields of composite foreign keys — these should be
+    // hidden since the RelationReference widget on the first field manages
+    // all composite key values internally
+    QSet<int> compositeHiddenFields;
+    const QList<QgsRelation> referencingRelations = QgsProject::instance()->relationManager()->referencingRelations( mLayer );
+    for ( const QgsRelation &rel : referencingRelations )
+    {
+      if ( rel.type() != Qgis::RelationshipType::Normal )
+        continue;
+
+      const QList<QgsRelation::FieldPair> fieldPairs = rel.fieldPairs();
+      if ( fieldPairs.size() > 1 )
+      {
+        for ( int i = 1; i < fieldPairs.size(); i++ )
+        {
+          const int idx = fields.lookupField( fieldPairs.at( i ).referencingField() );
+          if ( idx >= 0 )
+            compositeHiddenFields.insert( idx );
+        }
+      }
+    }
+
     for ( const QgsField &field : fields )
     {
       int idx = fields.lookupField( field.name() );
       if ( idx < 0 )
+        continue;
+
+      if ( compositeHiddenFields.contains( idx ) )
         continue;
 
       //show attribute alias if available
