@@ -3721,7 +3721,16 @@ bool QgsGdalProvider::writeNativeAttributeTable( QString *errorMessage ) //#spel
     if ( ! isEditable() )
     {
       QgsDebugMsgLevel( u"re-opening the dataset in read/write mode"_s, 2 );
-      setEditable( true );
+      if ( !setEditable( true ) )
+      {
+        if ( errorMessage )
+        {
+          *errorMessage = error().summary();
+          if ( errorMessage->isEmpty() )
+            *errorMessage = QObject::tr( "GDAL error reopening dataset in write mode, raster attribute table could not be saved." );
+        }
+        return false;
+      }
       wasReopenedReadWrite = true;
     }
 
@@ -3736,7 +3745,19 @@ bool QgsGdalProvider::writeNativeAttributeTable( QString *errorMessage ) //#spel
       GDALDestroyRasterAttributeTable( hRat );
       return false;
     }
+
     const QList<QgsRasterAttributeTable::Field> ratFields { rat->fields() };
+
+    if ( ratFields.isEmpty() )
+    {
+      if ( errorMessage )
+      {
+        *errorMessage = QObject::tr( "Raster attribute table has no columns and could not be saved." );
+      }
+      GDALDestroyRasterAttributeTable( hRat );
+      return false;
+    }
+
     QMap<int, GDALRATFieldType> typeMap;
 
     int colIdx { 0 };
@@ -4492,11 +4513,22 @@ bool QgsGdalProvider::setEditable( bool enabled )
     QThread::msleep( 100 );
   }
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,8,0)
+  // Check if this is a GTiff with COG layout because otherwise it won't open in update mode.
+  if ( mDriverName == "GTiff"_L1 && GDALGetMetadataItem( mGdalBaseDataset, "LAYOUT", "IMAGE_STRUCTURE" ) == "COG"_L1 && !dataSourceUri().contains( "IGNORE_COG_LAYOUT_BREAK=YES"_L1, Qt::CaseSensitivity::CaseInsensitive ) )
+  {
+    QString msg = u"Cannot reopen GDAL dataset %1 in update mode because it would possibly break COG layout,\nset the open option IGNORE_COG_LAYOUT_BREAK=YES to override."_s.arg( dataSourceUri() );
+    appendError( ERRMSG( msg ) );
+    return false;
+  }
+#endif
+
   closeDataset();
 
   mUpdate = enabled;
 
   // reopen the dataset
+
   mGdalBaseDataset = gdalOpen( dataSourceUri( true ), mUpdate ? GDAL_OF_UPDATE : GDAL_OF_READONLY );
   if ( !mGdalBaseDataset )
   {

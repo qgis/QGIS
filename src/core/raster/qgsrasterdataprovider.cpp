@@ -44,7 +44,7 @@ void QgsRasterDataProvider::setUseSourceNoDataValue( int bandNo, bool use )
 
   if ( mUseSrcNoDataValue.size() < bandNo )
   {
-    for ( int i = mUseSrcNoDataValue.size(); i < bandNo; i++ )
+    for ( qsizetype i = mUseSrcNoDataValue.size(); i < bandNo; i++ )
     {
       mUseSrcNoDataValue.append( false );
     }
@@ -1002,7 +1002,8 @@ QgsRasterDataProvider::VirtualRasterParameters QgsRasterDataProvider::decodeVirt
   }
   components.formula = query.queryItemValue( u"formula"_s );
 
-  for ( const auto &item : query.queryItems() )
+  const QList<std::pair<QString, QString> > &queryItems { query.queryItems() };
+  for ( const auto &item : std::as_const( queryItems ) )
   {
     if ( !( item.first.mid( item.first.indexOf( ':' ), -1 ) == ":uri"_L1 ) )
     {
