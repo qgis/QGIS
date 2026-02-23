@@ -78,10 +78,6 @@ repos:
     hooks:
     - id: clang-format
       types_or: [c++, c, c#]
-      exclude: |
-        (?x)^(
-            src/core/.*
-        )$
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.15.1
