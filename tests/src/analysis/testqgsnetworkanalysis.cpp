@@ -184,6 +184,26 @@ void TestQgsNetworkAnalysis::testBuild()
   QCOMPARE( graph->vertex( 2 ).outgoingEdges(), QList<int>() << 3 );
   QCOMPARE( graph->vertex( 2 ).incomingEdges(), QList<int>() << 2 );
 
+  // test sources for vertices
+  {
+    const std::vector< QgsVectorLayerDirector::VertexSourceInfo > &sources = director->sourcesForVertex( 0 );
+    QCOMPARE( sources.size(), 1 );
+    QCOMPARE( sources.at( 0 ).fid, 1 );
+    QCOMPARE( sources.at( 0 ).partId, 0 );
+  }
+  {
+    const std::vector< QgsVectorLayerDirector::VertexSourceInfo > &sources = director->sourcesForVertex( 1 );
+    QCOMPARE( sources.size(), 1 );
+    QCOMPARE( sources.at( 0 ).fid, 1 );
+    QCOMPARE( sources.at( 0 ).partId, 0 );
+  }
+  {
+    const std::vector< QgsVectorLayerDirector::VertexSourceInfo > &sources = director->sourcesForVertex( 2 );
+    QCOMPARE( sources.size(), 1 );
+    QCOMPARE( sources.at( 0 ).fid, 1 );
+    QCOMPARE( sources.at( 0 ).partId, 0 );
+  }
+
   builder = std::make_unique<QgsGraphBuilder>( network->sourceCrs(), true, 0 );
   director->makeGraph( builder.get(), QVector<QgsPointXY>() << QgsPointXY( 10, 0 ) << QgsPointXY( 10, 10 ), snapped );
   QCOMPARE( snapped, QVector<QgsPointXY>() << QgsPointXY( 10, 0 ) << QgsPointXY( 10, 10 ) );
@@ -281,6 +301,34 @@ void TestQgsNetworkAnalysis::testBuildTolerance()
   QCOMPARE( graph->edge( 5 ).toVertex(), 2 );
   QCOMPARE( graph->edge( 4 ).fromVertex(), 2 );
   QCOMPARE( graph->edge( 4 ).toVertex(), 3 );
+
+  // test sources for vertices
+  {
+    const std::vector< QgsVectorLayerDirector::VertexSourceInfo > &sources = director->sourcesForVertex( 0 );
+    QCOMPARE( sources.size(), 1 );
+    QCOMPARE( sources.at( 0 ).fid, 1 );
+    QCOMPARE( sources.at( 0 ).partId, 0 );
+  }
+  {
+    const std::vector< QgsVectorLayerDirector::VertexSourceInfo > &sources = director->sourcesForVertex( 1 );
+    QCOMPARE( sources.size(), 1 );
+    QCOMPARE( sources.at( 0 ).fid, 1 );
+    QCOMPARE( sources.at( 0 ).partId, 0 );
+  }
+  {
+    const std::vector< QgsVectorLayerDirector::VertexSourceInfo > &sources = director->sourcesForVertex( 2 );
+    QCOMPARE( sources.size(), 2 );
+    QCOMPARE( sources.at( 0 ).fid, 1 );
+    QCOMPARE( sources.at( 0 ).partId, 0 );
+    QCOMPARE( sources.at( 1 ).fid, 2 );
+    QCOMPARE( sources.at( 1 ).partId, 0 );
+  }
+  {
+    const std::vector< QgsVectorLayerDirector::VertexSourceInfo > &sources = director->sourcesForVertex( 3 );
+    QCOMPARE( sources.size(), 1 );
+    QCOMPARE( sources.at( 0 ).fid, 2 );
+    QCOMPARE( sources.at( 0 ).partId, 0 );
+  }
 }
 
 void TestQgsNetworkAnalysis::dijkkjkjkskkjsktra()

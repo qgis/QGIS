@@ -66,6 +66,40 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
 
     QString name() const override;
 
+#ifndef SIP_RUN
+    /**
+     * Represents information about a graph node's source vertex.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 4.0
+     */
+    struct VertexSourceInfo
+    {
+        /**
+       * Constructor for VertexSourceInfo.
+       */
+        VertexSourceInfo( QgsFeatureId fid, int partId )
+          : fid( fid )
+          , partId( partId )
+        {}
+
+        //! Source feature ID
+        QgsFeatureId fid = -1;
+        //! Source part number
+        int partId = 0;
+
+        bool operator==( const VertexSourceInfo &other ) const = default;
+    };
+
+    /**
+     * Returns the sources for the graph node vertex with specified index.
+     *
+     * \since QGIS 4.0
+     */
+    const std::vector< VertexSourceInfo > &sourcesForVertex( std::size_t vertexIndex ) const { return mVertexSources[vertexIndex]; }
+#endif
+
   private:
     QgsFeatureSource *mSource = nullptr;
     int mDirectionFieldId = -1;
@@ -73,6 +107,8 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
     QString mReverseDirectionValue;
     QString mBothDirectionValue;
     Direction mDefaultDirection = DirectionBoth;
+
+    mutable std::vector<std::vector<VertexSourceInfo>> mVertexSources;
 
     QgsAttributeList requiredAttributes() const;
     Direction directionForFeature( const QgsFeature &feature ) const;
