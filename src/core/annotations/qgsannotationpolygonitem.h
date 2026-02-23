@@ -33,7 +33,6 @@ class QgsCurvePolygon;
 class CORE_EXPORT QgsAnnotationPolygonItem : public QgsAnnotationItem
 {
   public:
-
     /**
      * Constructor for QgsAnnotationPolygonItem, with the specified \a polygon geometry.
      */
@@ -94,13 +93,11 @@ class CORE_EXPORT QgsAnnotationPolygonItem : public QgsAnnotationItem
     void setSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
 
   private:
-
     std::unique_ptr< QgsCurvePolygon > mPolygon;
     std::unique_ptr< QgsFillSymbol > mSymbol;
 
 #ifdef SIP_RUN
     QgsAnnotationPolygonItem( const QgsAnnotationPolygonItem &other );
 #endif
-
 };
 #endif // QGSANNOTATIONPOLYGONITEM_H

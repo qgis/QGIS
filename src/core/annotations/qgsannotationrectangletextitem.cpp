@@ -55,17 +55,14 @@ void QgsAnnotationRectangleTextItem::renderInBounds( QgsRenderContext &context, 
     painterBounds.left() + marginLeft,
     painterBounds.top() + marginTop,
     painterBounds.width() - marginLeft - marginRight,
-    painterBounds.height() - marginTop - marginBottom );
+    painterBounds.height() - marginTop - marginBottom
+  );
 
   const QString displayText = QgsExpression::replaceExpressionText( mText, &context.expressionContext(), &context.distanceArea() );
 
   const bool prevWorkaroundFlag = context.testFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering );
   context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering, true );
-  QgsTextRenderer::drawText( innerRect, 0,
-                             QgsTextRenderer::convertQtHAlignment( mAlignment ),
-                             mTextFormat.allowHtmlFormatting() ? QStringList{displayText }: displayText.split( '\n' ), context, mTextFormat, true,
-                             QgsTextRenderer::convertQtVAlignment( mAlignment ),
-                             Qgis::TextRendererFlag::WrapLines );
+  QgsTextRenderer::drawText( innerRect, 0, QgsTextRenderer::convertQtHAlignment( mAlignment ), mTextFormat.allowHtmlFormatting() ? QStringList { displayText } : displayText.split( '\n' ), context, mTextFormat, true, QgsTextRenderer::convertQtVAlignment( mAlignment ), Qgis::TextRendererFlag::WrapLines );
   context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering, prevWorkaroundFlag );
 }
 

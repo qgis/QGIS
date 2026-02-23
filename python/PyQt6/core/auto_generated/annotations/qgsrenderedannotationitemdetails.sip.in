@@ -23,7 +23,6 @@ Contains information about a rendered annotation item.
 #include "qgsrenderedannotationitemdetails.h"
 %End
   public:
-
     QgsRenderedAnnotationItemDetails( const QString &layerId, const QString &itemId );
 %Docstring
 Constructor for QgsRenderedAnnotationItemDetails.
@@ -31,11 +30,12 @@ Constructor for QgsRenderedAnnotationItemDetails.
 
     SIP_PYOBJECT __repr__();
 %MethodCode
-    QString str = QStringLiteral( "<QgsRenderedAnnotationItemDetails: %1 - %2>" ).arg( sipCpp->layerId(), sipCpp->itemId() );
+        QString str
+      = QStringLiteral( "<QgsRenderedAnnotationItemDetails: %1 - %2>" ).arg( sipCpp->layerId(), sipCpp->itemId() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    QString itemId() const;
+        QString itemId() const;
 %Docstring
 Returns the item ID of the associated annotation item.
 %End

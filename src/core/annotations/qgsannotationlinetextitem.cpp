@@ -35,7 +35,6 @@ QgsAnnotationLineTextItem::QgsAnnotationLineTextItem( const QString &text, QgsCu
   , mText( text )
   , mCurve( curve )
 {
-
 }
 
 Qgis::AnnotationItemFlags QgsAnnotationLineTextItem::flags() const
@@ -56,7 +55,7 @@ void QgsAnnotationLineTextItem::render( QgsRenderContext &context, QgsFeedback *
 {
   // TODO -- expose as an option!
   QgsGeometry smoothed( mCurve->clone() );
-  smoothed = smoothed.smooth( );
+  smoothed = smoothed.smooth();
 
   QPolygonF pts = smoothed.asQPolygonF();
 
@@ -74,11 +73,10 @@ void QgsAnnotationLineTextItem::render( QgsRenderContext &context, QgsFeedback *
   }
 
   // remove non-finite points, e.g. infinite or NaN points caused by reprojecting errors
-  pts.erase( std::remove_if( pts.begin(), pts.end(),
-                             []( const QPointF point )
-  {
-    return !std::isfinite( point.x() ) || !std::isfinite( point.y() );
-  } ), pts.end() );
+  pts.erase( std::remove_if( pts.begin(), pts.end(), []( const QPointF point ) {
+               return !std::isfinite( point.x() ) || !std::isfinite( point.y() );
+             } ),
+             pts.end() );
 
   QPointF *ptr = pts.data();
   for ( int i = 0; i < pts.size(); ++i, ++ptr )
@@ -247,7 +245,7 @@ bool QgsAnnotationLineTextItem::readXml( const QDomElement &element, const QgsRe
   if ( !ok )
     mOffsetFromLineUnit = Qgis::RenderUnit::Millimeters;
 
-  mOffsetFromLineScale =  QgsSymbolLayerUtils::decodeMapUnitScale( element.attribute( u"offsetFromLineScale"_s ) );
+  mOffsetFromLineScale = QgsSymbolLayerUtils::decodeMapUnitScale( element.attribute( u"offsetFromLineScale"_s ) );
 
   readCommonProperties( element, context );
 
@@ -265,7 +263,7 @@ QgsRectangle QgsAnnotationLineTextItem::boundingBox( QgsRenderContext &context )
 
   const double lineOffsetInMapUnits = std::fabs( context.convertToMapUnits( mOffsetFromLineDistance, mOffsetFromLineUnit, mOffsetFromLineScale ) );
 
-  const double heightInPixels = QgsTextRenderer::textHeight( context, mTextFormat, { displayText} );
+  const double heightInPixels = QgsTextRenderer::textHeight( context, mTextFormat, { displayText } );
 
   // text size has already been calculated using any symbology reference scale factor above -- we need
   // to temporarily remove the reference scale here or we'll be undoing the scaling

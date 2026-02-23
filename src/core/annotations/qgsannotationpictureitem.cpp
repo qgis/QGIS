@@ -64,9 +64,7 @@ void QgsAnnotationPictureItem::renderInBounds( QgsRenderContext &context, const 
         }
       }
 
-      const QPicture picture = QgsApplication::svgCache()->svgAsPicture( mPath, svgWidth, QColor(), QColor(), 1, context.scaleFactor(),
-                               context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::Default,
-                               aspectRatio );
+      const QPicture picture = QgsApplication::svgCache()->svgAsPicture( mPath, svgWidth, QColor(), QColor(), 1, context.scaleFactor(), context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::Default, aspectRatio );
       const double pictureWidth = picture.boundingRect().width();
       const double pictureHeight = picture.boundingRect().height();
 
@@ -81,17 +79,14 @@ void QgsAnnotationPictureItem::renderInBounds( QgsRenderContext &context, const 
         yOffset = ( painterBounds.height() - pictureHeight ) * 0.5;
       }
 
-      QgsPainting::drawPicture( context.painter(), QPointF( painterBounds.left() + pictureWidth / 2 + xOffset,
-                                painterBounds.top() + pictureHeight / 2 + yOffset ), picture );
+      QgsPainting::drawPicture( context.painter(), QPointF( painterBounds.left() + pictureWidth / 2 + xOffset, painterBounds.top() + pictureHeight / 2 + yOffset ), picture );
 
       break;
     }
 
     case Qgis::PictureFormat::Raster:
     {
-      const QImage im = QgsApplication::imageCache()->pathAsImage( mPath,
-                        QSize( static_cast< int >( std::round( painterBounds.width() ) ), static_cast< int >( std::round( painterBounds.height() ) ) ),
-                        lockAspectRatio, 1, fitsInCache );
+      const QImage im = QgsApplication::imageCache()->pathAsImage( mPath, QSize( static_cast< int >( std::round( painterBounds.width() ) ), static_cast< int >( std::round( painterBounds.height() ) ) ), lockAspectRatio, 1, fitsInCache );
       double xOffset = 0;
       if ( lockAspectRatio && static_cast< int >( painterBounds.width() ) > im.width() )
       {

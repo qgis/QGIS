@@ -32,7 +32,6 @@ QgsAnnotationMarkerItem::QgsAnnotationMarkerItem( const QgsPoint &point )
   , mPoint( point )
   , mSymbol( std::make_unique< QgsMarkerSymbol >() )
 {
-
 }
 
 QgsAnnotationMarkerItem::~QgsAnnotationMarkerItem() = default;
@@ -83,7 +82,7 @@ Qgis::AnnotationItemFlags QgsAnnotationMarkerItem::flags() const
 
 QList<QgsAnnotationItemNode> QgsAnnotationMarkerItem::nodesV2( const QgsAnnotationItemEditContext & ) const
 {
-  return { QgsAnnotationItemNode( QgsVertexId( 0, 0, 0 ), mPoint, Qgis::AnnotationItemNodeType::VertexHandle )};
+  return { QgsAnnotationItemNode( QgsVertexId( 0, 0, 0 ), mPoint, Qgis::AnnotationItemNodeType::VertexHandle ) };
 }
 
 Qgis::AnnotationItemEditOperationResult QgsAnnotationMarkerItem::applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext & )

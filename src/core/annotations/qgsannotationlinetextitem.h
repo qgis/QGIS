@@ -34,7 +34,6 @@ class QgsCurve;
 class CORE_EXPORT QgsAnnotationLineTextItem : public QgsAnnotationItem
 {
   public:
-
     /**
      * Constructor for QgsAnnotationLineTextItem, with the specified \a curve and \a text.
      */
@@ -157,7 +156,6 @@ class CORE_EXPORT QgsAnnotationLineTextItem : public QgsAnnotationItem
     const QgsMapUnitScale &offsetFromLineMapUnitScale() const { return mOffsetFromLineScale; }
 
   private:
-
     QString mText;
     std::unique_ptr< QgsCurve > mCurve;
     QgsTextFormat mTextFormat;
@@ -169,7 +167,6 @@ class CORE_EXPORT QgsAnnotationLineTextItem : public QgsAnnotationItem
 #ifdef SIP_RUN
     QgsAnnotationLineTextItem( const QgsAnnotationLineTextItem &other );
 #endif
-
 };
 
 #endif // QGSANNOTATIONLINETEXTITEM_H

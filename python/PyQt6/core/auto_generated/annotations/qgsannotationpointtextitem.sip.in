@@ -21,7 +21,6 @@ An annotation item which renders a text string at a point location.
 #include "qgsannotationpointtextitem.h"
 %End
   public:
-
     QgsAnnotationPointTextItem( const QString &text, QgsPointXY point );
 %Docstring
 Constructor for QgsAnnotationPointTextItem, containing the specified

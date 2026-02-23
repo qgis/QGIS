@@ -33,7 +33,6 @@ using namespace Qt::StringLiterals;
 class CORE_EXPORT QgsRenderedAnnotationItemDetails : public QgsRenderedItemDetails
 {
   public:
-
     /**
      * Constructor for QgsRenderedAnnotationItemDetails.
      */
@@ -42,20 +41,22 @@ class CORE_EXPORT QgsRenderedAnnotationItemDetails : public QgsRenderedItemDetai
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = u"<QgsRenderedAnnotationItemDetails: %1 - %2>"_s.arg( sipCpp->layerId(), sipCpp->itemId() );
+        QString str
+      = u"<QgsRenderedAnnotationItemDetails: %1 - %2>"_s.arg( sipCpp->layerId(), sipCpp->itemId() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    /**
+        /**
      * Returns the item ID of the associated annotation item.
      */
-    QString itemId() const { return mItemId; }
+        QString itemId() const
+    {
+      return mItemId;
+    }
 
   private:
-
     QString mItemId;
-
 };
 
 #endif // QGSRENDEREDANNOTATIONITEMDETAILS_H
