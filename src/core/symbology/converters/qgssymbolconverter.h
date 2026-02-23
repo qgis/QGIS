@@ -20,6 +20,7 @@
 
 #include "qgis.h"
 #include "qgis_core.h"
+#include "qgsreadwritecontext.h"
 
 class QgsSymbol;
 
@@ -34,8 +35,25 @@ class CORE_EXPORT QgsSymbolConverterContext
 {
   public:
 
-    QgsSymbolConverterContext();
+    /**
+     * Constructor for QgsSymbolConverterContext.
+     *
+     * The \a rwContext object must exist for the lifetime of this context.
+     */
+    QgsSymbolConverterContext( QgsReadWriteContext &rwContext );
 
+    /**
+     * Returns the read-write context associated with the context.
+     */
+    QgsReadWriteContext &readWriteContext();
+
+  private:
+
+#ifdef SIP_RUN
+    QgsSymbolConverterContext( const QgsSymbolConverterContext &other );
+#endif
+
+    QgsReadWriteContext &mRwContext;
 };
 
 /**

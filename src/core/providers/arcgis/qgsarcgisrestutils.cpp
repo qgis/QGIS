@@ -628,7 +628,8 @@ QgsCoordinateReferenceSystem QgsArcGisRestUtils::convertSpatialReference( const 
 
 std::unique_ptr< QgsSymbol > QgsArcGisRestUtils::convertSymbol( const QVariantMap &symbolData )
 {
-  QgsSymbolConverterContext context;
+  QgsReadWriteContext rwContext;
+  QgsSymbolConverterContext context( rwContext );
   return QgsSymbolConverterEsriRest().createSymbol( symbolData, context );
 }
 
