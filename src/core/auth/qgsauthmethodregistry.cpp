@@ -70,11 +70,9 @@ QgsAuthMethodRegistry *QgsAuthMethodRegistry::instance( const QString &pluginPat
  * very reason.  So there needs to be a convenient way to find an auth method
  * without accidentally adding a null meta data item to the metadata map.
 */
-static QgsAuthMethodMetadata *findMetadata_( QgsAuthMethodRegistry::AuthMethods const &metaData,
-    QString const &authMethodKey )
+static QgsAuthMethodMetadata *findMetadata_( QgsAuthMethodRegistry::AuthMethods const &metaData, QString const &authMethodKey )
 {
-  const QgsAuthMethodRegistry::AuthMethods::const_iterator i =
-    metaData.find( authMethodKey );
+  const QgsAuthMethodRegistry::AuthMethods::const_iterator i = metaData.find( authMethodKey );
 
   if ( i != metaData.end() )
   {
@@ -106,18 +104,18 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString &pluginPath )
 void QgsAuthMethodRegistry::init()
 {
 #ifdef HAVE_STATIC_PROVIDERS
-  mAuthMethods[ QgsAuthBasicMethod::AUTH_METHOD_KEY] = new QgsAuthBasicMethodMetadata();
-  mAuthMethods[ QgsAuthEsriTokenMethod::AUTH_METHOD_KEY] = new QgsAuthEsriTokenMethodMetadata();
-  mAuthMethods[ QgsAuthIdentCertMethod::AUTH_METHOD_KEY] = new QgsAuthIdentCertMethodMetadata();
+  mAuthMethods[QgsAuthBasicMethod::AUTH_METHOD_KEY] = new QgsAuthBasicMethodMetadata();
+  mAuthMethods[QgsAuthEsriTokenMethod::AUTH_METHOD_KEY] = new QgsAuthEsriTokenMethodMetadata();
+  mAuthMethods[QgsAuthIdentCertMethod::AUTH_METHOD_KEY] = new QgsAuthIdentCertMethodMetadata();
 #ifdef HAVE_OAUTH2_PLUGIN
-  mAuthMethods[ QgsAuthOAuth2Method::AUTH_METHOD_KEY] = new QgsAuthOAuth2MethodMetadata();
+  mAuthMethods[QgsAuthOAuth2Method::AUTH_METHOD_KEY] = new QgsAuthOAuth2MethodMetadata();
 #endif
-  mAuthMethods[ QgsAuthPkiPathsMethod::AUTH_METHOD_KEY] = new QgsAuthPkiPathsMethodMetadata();
-  mAuthMethods[ QgsAuthPkcs12Method::AUTH_METHOD_KEY] = new QgsAuthPkcs12MethodMetadata();
+  mAuthMethods[QgsAuthPkiPathsMethod::AUTH_METHOD_KEY] = new QgsAuthPkiPathsMethodMetadata();
+  mAuthMethods[QgsAuthPkcs12Method::AUTH_METHOD_KEY] = new QgsAuthPkcs12MethodMetadata();
 #else
-  typedef QgsAuthMethodMetadata *factory_function( );
+  typedef QgsAuthMethodMetadata *factory_function();
 
-#if defined(Q_OS_WIN) || defined(__CYGWIN__)
+#if defined( Q_OS_WIN ) || defined( __CYGWIN__ )
   mLibraryDirectory.setNameFilters( QStringList( "*authmethod_*.dll" ) );
 #else
   mLibraryDirectory.setNameFilters( QStringList( u"*authmethod_*.so"_s ) );
@@ -184,7 +182,7 @@ void QgsAuthMethodRegistry::init()
         libraryLoaded = true;
       }
     }
-    if ( ! libraryLoaded )
+    if ( !libraryLoaded )
     {
       QgsDebugMsgLevel( u"Checking %1: ...invalid (no authMethodMetadataFactory method)"_s.arg( myLib.fileName() ), 2 );
     }
@@ -325,5 +323,3 @@ QStringList QgsAuthMethodRegistry::authMethodList() const
   }
   return lst;
 }
-
-

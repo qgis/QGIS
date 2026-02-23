@@ -158,14 +158,13 @@ QList<QSslCertificate> QgsAuthCertUtils::casMerge( const QList<QSslCertificate> 
   const QList<QSslCertificate> c_bundle2( bundle2 );
   for ( const auto &cert : c_bundle2 )
   {
-    if ( ! shas.contains( shaHexForCert( cert ) ) )
+    if ( !shas.contains( shaHexForCert( cert ) ) )
     {
       result.append( cert );
     }
   }
   return result;
 }
-
 
 
 QSslCertificate QgsAuthCertUtils::certFromFile( const QString &certpath )
@@ -183,9 +182,7 @@ QSslCertificate QgsAuthCertUtils::certFromFile( const QString &certpath )
   return cert;
 }
 
-QSslKey QgsAuthCertUtils::keyFromFile( const QString &keypath,
-                                       const QString &keypass,
-                                       QString *algtype )
+QSslKey QgsAuthCertUtils::keyFromFile( const QString &keypath, const QString &keypass, QString *algtype )
 {
   // The approach here is to try all possible encodings and algorithms
   const QByteArray keydata( QgsAuthCertUtils::fileData( keypath ) );
@@ -193,8 +190,7 @@ QSslKey QgsAuthCertUtils::keyFromFile( const QString &keypath,
 
   const QSsl::EncodingFormat keyEncoding( sniffEncoding( keydata ) );
 
-  const std::vector<QSsl::KeyAlgorithm> algs
-  {
+  const std::vector<QSsl::KeyAlgorithm> algs {
     QSsl::KeyAlgorithm::Rsa,
     QSsl::KeyAlgorithm::Dsa,
     QSsl::KeyAlgorithm::Ec,
@@ -203,12 +199,8 @@ QSslKey QgsAuthCertUtils::keyFromFile( const QString &keypath,
 
   for ( const auto &alg : algs )
   {
-    clientkey = QSslKey( keydata,
-                         alg,
-                         keyEncoding,
-                         QSsl::PrivateKey,
-                         !keypass.isEmpty() ? keypass.toUtf8() : QByteArray() );
-    if ( ! clientkey.isNull() )
+    clientkey = QSslKey( keydata, alg, keyEncoding, QSsl::PrivateKey, !keypass.isEmpty() ? keypass.toUtf8() : QByteArray() );
+    if ( !clientkey.isNull() )
     {
       if ( algtype )
       {
@@ -253,7 +245,7 @@ QList<QSslCertificate> QgsAuthCertUtils::casRemoveSelfSigned( const QList<QSslCe
   QList<QSslCertificate> certs;
   for ( const auto &cert : caList )
   {
-    if ( ! cert.isSelfSigned( ) )
+    if ( !cert.isSelfSigned() )
     {
       certs.append( cert );
     }
@@ -261,10 +253,7 @@ QList<QSslCertificate> QgsAuthCertUtils::casRemoveSelfSigned( const QList<QSslCe
   return certs;
 }
 
-QStringList QgsAuthCertUtils::certKeyBundleToPem( const QString &certpath,
-    const QString &keypath,
-    const QString &keypass,
-    bool reencrypt )
+QStringList QgsAuthCertUtils::certKeyBundleToPem( const QString &certpath, const QString &keypath, const QString &keypass, bool reencrypt )
 {
   QString certpem;
   const QSslCertificate clientcert = QgsAuthCertUtils::certFromFile( certpath );
@@ -307,7 +296,7 @@ QByteArray QgsAuthCertUtils::pkcs8PrivateKey( QByteArray &pkcs8Der )
   //QgsDebugMsg ( u"pkcs8Der: %1"_s.arg( QString( pkcs8Der.toBase64() ) ) );
 
   QFileInfo asnDefsRsrc( QgsApplication::pkgDataPath() + u"/resources/pkcs8.asn"_s );
-  if ( ! asnDefsRsrc.exists() )
+  if ( !asnDefsRsrc.exists() )
   {
     QgsDebugError( u"ERROR, pkcs.asn resource file not found: %1"_s.arg( asnDefsRsrc.filePath() ) );
     return pkcs1;
@@ -436,9 +425,7 @@ PKCS1DONE:
 }
 #endif
 
-QStringList QgsAuthCertUtils::pkcs12BundleToPem( const QString &bundlepath,
-    const QString &bundlepass,
-    bool reencrypt )
+QStringList QgsAuthCertUtils::pkcs12BundleToPem( const QString &bundlepath, const QString &bundlepass, bool reencrypt )
 {
   QStringList empty;
   if ( !QCA::isSupported( "pkcs12" ) )
@@ -544,7 +531,7 @@ QList<QSslCertificate> QgsAuthCertUtils::pkcs12BundleCas( const QString &bundlep
   const QCA::CertificateChain chain( bundle.certificateChain() );
   for ( const auto &cert : chain )
   {
-    if ( cert.isCA( ) )
+    if ( cert.isCA() )
     {
       result.append( QSslCertificate::fromData( cert.toPEM().toLatin1() ) );
     }
@@ -615,35 +602,33 @@ QString QgsAuthCertUtils::getCaSourceName( QgsAuthCertUtils::CaCertSource source
 
 QString QgsAuthCertUtils::resolvedCertName( const QSslCertificate &cert, bool issuer )
 {
-  QString name( issuer ? SSL_ISSUER_INFO( cert, QSslCertificate::CommonName )
-                : SSL_SUBJECT_INFO( cert, QSslCertificate::CommonName ) );
+  QString name( issuer ? SSL_ISSUER_INFO( cert, QSslCertificate::CommonName ) : SSL_SUBJECT_INFO( cert, QSslCertificate::CommonName ) );
 
   if ( name.isEmpty() )
     name = issuer ? SSL_ISSUER_INFO( cert, QSslCertificate::OrganizationalUnitName )
-           : SSL_SUBJECT_INFO( cert, QSslCertificate::OrganizationalUnitName );
+                  : SSL_SUBJECT_INFO( cert, QSslCertificate::OrganizationalUnitName );
 
   if ( name.isEmpty() )
     name = issuer ? SSL_ISSUER_INFO( cert, QSslCertificate::Organization )
-           : SSL_SUBJECT_INFO( cert, QSslCertificate::Organization );
+                  : SSL_SUBJECT_INFO( cert, QSslCertificate::Organization );
 
   if ( name.isEmpty() )
     name = issuer ? SSL_ISSUER_INFO( cert, QSslCertificate::LocalityName )
-           : SSL_SUBJECT_INFO( cert, QSslCertificate::LocalityName );
+                  : SSL_SUBJECT_INFO( cert, QSslCertificate::LocalityName );
 
   if ( name.isEmpty() )
     name = issuer ? SSL_ISSUER_INFO( cert, QSslCertificate::StateOrProvinceName )
-           : SSL_SUBJECT_INFO( cert, QSslCertificate::StateOrProvinceName );
+                  : SSL_SUBJECT_INFO( cert, QSslCertificate::StateOrProvinceName );
 
   if ( name.isEmpty() )
     name = issuer ? SSL_ISSUER_INFO( cert, QSslCertificate::CountryName )
-           : SSL_SUBJECT_INFO( cert, QSslCertificate::CountryName );
+                  : SSL_SUBJECT_INFO( cert, QSslCertificate::CountryName );
 
   return name;
 }
 
 // private
-void QgsAuthCertUtils::appendDirSegment_( QStringList &dirname,
-    const QString &segment, QString value )
+void QgsAuthCertUtils::appendDirSegment_( QStringList &dirname, const QString &segment, QString value )
 {
   if ( !value.isEmpty() )
   {
@@ -653,14 +638,10 @@ void QgsAuthCertUtils::appendDirSegment_( QStringList &dirname,
 
 QSsl::EncodingFormat QgsAuthCertUtils::sniffEncoding( const QByteArray &payload )
 {
-  return payload.contains( QByteArrayLiteral( "-----BEGIN " ) ) ?
-         QSsl::Pem :
-         QSsl::Der;
+  return payload.contains( QByteArrayLiteral( "-----BEGIN " ) ) ? QSsl::Pem : QSsl::Der;
 }
 
-QString QgsAuthCertUtils::getCertDistinguishedName( const QSslCertificate &qcert,
-    const QCA::Certificate &acert,
-    bool issuer )
+QString QgsAuthCertUtils::getCertDistinguishedName( const QSslCertificate &qcert, const QCA::Certificate &acert, bool issuer )
 {
   if ( QgsApplication::authManager()->isDisabled() )
     return QString();
@@ -684,26 +665,26 @@ QString QgsAuthCertUtils::getCertDistinguishedName( const QSslCertificate &qcert
   //  C=US
   QStringList dirname;
   QgsAuthCertUtils::appendDirSegment_(
-    dirname, u"E"_s, issuer ? acert.issuerInfo().value( QCA::Email )
-    : acert.subjectInfo().value( QCA::Email ) );
+    dirname, u"E"_s, issuer ? acert.issuerInfo().value( QCA::Email ) : acert.subjectInfo().value( QCA::Email )
+  );
   QgsAuthCertUtils::appendDirSegment_(
-    dirname, u"CN"_s, issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::CommonName )
-    : SSL_SUBJECT_INFO( qcert, QSslCertificate::CommonName ) );
+    dirname, u"CN"_s, issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::CommonName ) : SSL_SUBJECT_INFO( qcert, QSslCertificate::CommonName )
+  );
   QgsAuthCertUtils::appendDirSegment_(
-    dirname, u"OU"_s, issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::OrganizationalUnitName )
-    : SSL_SUBJECT_INFO( qcert, QSslCertificate::OrganizationalUnitName ) );
+    dirname, u"OU"_s, issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::OrganizationalUnitName ) : SSL_SUBJECT_INFO( qcert, QSslCertificate::OrganizationalUnitName )
+  );
   QgsAuthCertUtils::appendDirSegment_(
-    dirname, u"O"_s, issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::Organization )
-    : SSL_SUBJECT_INFO( qcert, QSslCertificate::Organization ) );
+    dirname, u"O"_s, issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::Organization ) : SSL_SUBJECT_INFO( qcert, QSslCertificate::Organization )
+  );
   QgsAuthCertUtils::appendDirSegment_(
-    dirname, u"L"_s, issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::LocalityName )
-    : SSL_SUBJECT_INFO( qcert, QSslCertificate::LocalityName ) );
+    dirname, u"L"_s, issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::LocalityName ) : SSL_SUBJECT_INFO( qcert, QSslCertificate::LocalityName )
+  );
   QgsAuthCertUtils::appendDirSegment_(
-    dirname, u"ST"_s, issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::StateOrProvinceName )
-    : SSL_SUBJECT_INFO( qcert, QSslCertificate::StateOrProvinceName ) );
+    dirname, u"ST"_s, issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::StateOrProvinceName ) : SSL_SUBJECT_INFO( qcert, QSslCertificate::StateOrProvinceName )
+  );
   QgsAuthCertUtils::appendDirSegment_(
-    dirname, u"C"_s, issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::CountryName )
-    : SSL_SUBJECT_INFO( qcert, QSslCertificate::CountryName ) );
+    dirname, u"C"_s, issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::CountryName ) : SSL_SUBJECT_INFO( qcert, QSslCertificate::CountryName )
+  );
 
   return dirname.join( ','_L1 );
 }
@@ -967,9 +948,11 @@ QList<QgsAuthCertUtils::CertUsageType> QgsAuthCertUtils::certificateUsageTypes( 
 
   // ask QCA what it thinks about potential usages
   const QCA::CertificateCollection trustedCAs(
-    qtCertsToQcaCollection( QgsApplication::authManager()->trustedCaCertsCache() ) );
+    qtCertsToQcaCollection( QgsApplication::authManager()->trustedCaCertsCache() )
+  );
   const QCA::CertificateCollection untrustedCAs(
-    qtCertsToQcaCollection( QgsApplication::authManager()->untrustedCaCerts() ) );
+    qtCertsToQcaCollection( QgsApplication::authManager()->untrustedCaCerts() )
+  );
 
   QCA::Validity v_any;
   v_any = qcacert.validate( trustedCAs, untrustedCAs, QCA::UsageAny, QCA::ValidateAll );
@@ -1016,14 +999,12 @@ bool QgsAuthCertUtils::certificateIsIssuer( const QSslCertificate &cert )
 
 bool QgsAuthCertUtils::certificateIsAuthorityOrIssuer( const QSslCertificate &cert )
 {
-  return ( QgsAuthCertUtils::certificateIsAuthority( cert )
-           || QgsAuthCertUtils::certificateIsIssuer( cert ) );
+  return ( QgsAuthCertUtils::certificateIsAuthority( cert ) || QgsAuthCertUtils::certificateIsIssuer( cert ) );
 }
 
 bool QgsAuthCertUtils::certificateIsSslServer( const QSslCertificate &cert )
 {
-  return ( QgsAuthCertUtils::certificateUsageTypes( cert ).contains( QgsAuthCertUtils::TlsServerUsage )
-           || QgsAuthCertUtils::certificateUsageTypes( cert ).contains( QgsAuthCertUtils::TlsServerEvUsage ) );
+  return ( QgsAuthCertUtils::certificateUsageTypes( cert ).contains( QgsAuthCertUtils::TlsServerUsage ) || QgsAuthCertUtils::certificateUsageTypes( cert ).contains( QgsAuthCertUtils::TlsServerEvUsage ) );
 }
 
 #if 0
@@ -1210,54 +1191,30 @@ QString QgsAuthCertUtils::sslErrorEnumString( QSslError::SslError errenum )
 QList<QPair<QSslError::SslError, QString> > QgsAuthCertUtils::sslErrorEnumStrings()
 {
   QList<QPair<QSslError::SslError, QString> > errenums;
-  errenums << qMakePair( QSslError::UnableToGetIssuerCertificate,
-                         QgsAuthCertUtils::sslErrorEnumString( QSslError::UnableToGetIssuerCertificate ) );
-  errenums << qMakePair( QSslError::UnableToDecryptCertificateSignature,
-                         QgsAuthCertUtils::sslErrorEnumString( QSslError::UnableToDecryptCertificateSignature ) );
-  errenums << qMakePair( QSslError::UnableToDecodeIssuerPublicKey,
-                         QgsAuthCertUtils::sslErrorEnumString( QSslError::UnableToDecodeIssuerPublicKey ) );
-  errenums << qMakePair( QSslError::CertificateSignatureFailed,
-                         QgsAuthCertUtils::sslErrorEnumString( QSslError::CertificateSignatureFailed ) );
-  errenums << qMakePair( QSslError::CertificateNotYetValid,
-                         QgsAuthCertUtils::sslErrorEnumString( QSslError::CertificateNotYetValid ) );
-  errenums << qMakePair( QSslError::CertificateExpired,
-                         QgsAuthCertUtils::sslErrorEnumString( QSslError::CertificateExpired ) );
-  errenums << qMakePair( QSslError::InvalidNotBeforeField,
-                         QgsAuthCertUtils::sslErrorEnumString( QSslError::InvalidNotBeforeField ) );
-  errenums << qMakePair( QSslError::InvalidNotAfterField,
-                         QgsAuthCertUtils::sslErrorEnumString( QSslError::InvalidNotAfterField ) );
-  errenums << qMakePair( QSslError::SelfSignedCertificate,
-                         QgsAuthCertUtils::sslErrorEnumString( QSslError::SelfSignedCertificate ) );
-  errenums << qMakePair( QSslError::SelfSignedCertificateInChain,
-                         QgsAuthCertUtils::sslErrorEnumString( QSslError::SelfSignedCertificateInChain ) );
-  errenums << qMakePair( QSslError::UnableToGetLocalIssuerCertificate,
-                         QgsAuthCertUtils::sslErrorEnumString( QSslError::UnableToGetLocalIssuerCertificate ) );
-  errenums << qMakePair( QSslError::UnableToVerifyFirstCertificate,
-                         QgsAuthCertUtils::sslErrorEnumString( QSslError::UnableToVerifyFirstCertificate ) );
-  errenums << qMakePair( QSslError::CertificateRevoked,
-                         QgsAuthCertUtils::sslErrorEnumString( QSslError::CertificateRevoked ) );
-  errenums << qMakePair( QSslError::InvalidCaCertificate,
-                         QgsAuthCertUtils::sslErrorEnumString( QSslError::InvalidCaCertificate ) );
-  errenums << qMakePair( QSslError::PathLengthExceeded,
-                         QgsAuthCertUtils::sslErrorEnumString( QSslError::PathLengthExceeded ) );
-  errenums << qMakePair( QSslError::InvalidPurpose,
-                         QgsAuthCertUtils::sslErrorEnumString( QSslError::InvalidPurpose ) );
-  errenums << qMakePair( QSslError::CertificateUntrusted,
-                         QgsAuthCertUtils::sslErrorEnumString( QSslError::CertificateUntrusted ) );
-  errenums << qMakePair( QSslError::CertificateRejected,
-                         QgsAuthCertUtils::sslErrorEnumString( QSslError::CertificateRejected ) );
-  errenums << qMakePair( QSslError::SubjectIssuerMismatch,
-                         QgsAuthCertUtils::sslErrorEnumString( QSslError::SubjectIssuerMismatch ) );
-  errenums << qMakePair( QSslError::AuthorityIssuerSerialNumberMismatch,
-                         QgsAuthCertUtils::sslErrorEnumString( QSslError::AuthorityIssuerSerialNumberMismatch ) );
-  errenums << qMakePair( QSslError::NoPeerCertificate,
-                         QgsAuthCertUtils::sslErrorEnumString( QSslError::NoPeerCertificate ) );
-  errenums << qMakePair( QSslError::HostNameMismatch,
-                         QgsAuthCertUtils::sslErrorEnumString( QSslError::HostNameMismatch ) );
-  errenums << qMakePair( QSslError::UnspecifiedError,
-                         QgsAuthCertUtils::sslErrorEnumString( QSslError::UnspecifiedError ) );
-  errenums << qMakePair( QSslError::CertificateBlacklisted,
-                         QgsAuthCertUtils::sslErrorEnumString( QSslError::CertificateBlacklisted ) );
+  errenums << qMakePair( QSslError::UnableToGetIssuerCertificate, QgsAuthCertUtils::sslErrorEnumString( QSslError::UnableToGetIssuerCertificate ) );
+  errenums << qMakePair( QSslError::UnableToDecryptCertificateSignature, QgsAuthCertUtils::sslErrorEnumString( QSslError::UnableToDecryptCertificateSignature ) );
+  errenums << qMakePair( QSslError::UnableToDecodeIssuerPublicKey, QgsAuthCertUtils::sslErrorEnumString( QSslError::UnableToDecodeIssuerPublicKey ) );
+  errenums << qMakePair( QSslError::CertificateSignatureFailed, QgsAuthCertUtils::sslErrorEnumString( QSslError::CertificateSignatureFailed ) );
+  errenums << qMakePair( QSslError::CertificateNotYetValid, QgsAuthCertUtils::sslErrorEnumString( QSslError::CertificateNotYetValid ) );
+  errenums << qMakePair( QSslError::CertificateExpired, QgsAuthCertUtils::sslErrorEnumString( QSslError::CertificateExpired ) );
+  errenums << qMakePair( QSslError::InvalidNotBeforeField, QgsAuthCertUtils::sslErrorEnumString( QSslError::InvalidNotBeforeField ) );
+  errenums << qMakePair( QSslError::InvalidNotAfterField, QgsAuthCertUtils::sslErrorEnumString( QSslError::InvalidNotAfterField ) );
+  errenums << qMakePair( QSslError::SelfSignedCertificate, QgsAuthCertUtils::sslErrorEnumString( QSslError::SelfSignedCertificate ) );
+  errenums << qMakePair( QSslError::SelfSignedCertificateInChain, QgsAuthCertUtils::sslErrorEnumString( QSslError::SelfSignedCertificateInChain ) );
+  errenums << qMakePair( QSslError::UnableToGetLocalIssuerCertificate, QgsAuthCertUtils::sslErrorEnumString( QSslError::UnableToGetLocalIssuerCertificate ) );
+  errenums << qMakePair( QSslError::UnableToVerifyFirstCertificate, QgsAuthCertUtils::sslErrorEnumString( QSslError::UnableToVerifyFirstCertificate ) );
+  errenums << qMakePair( QSslError::CertificateRevoked, QgsAuthCertUtils::sslErrorEnumString( QSslError::CertificateRevoked ) );
+  errenums << qMakePair( QSslError::InvalidCaCertificate, QgsAuthCertUtils::sslErrorEnumString( QSslError::InvalidCaCertificate ) );
+  errenums << qMakePair( QSslError::PathLengthExceeded, QgsAuthCertUtils::sslErrorEnumString( QSslError::PathLengthExceeded ) );
+  errenums << qMakePair( QSslError::InvalidPurpose, QgsAuthCertUtils::sslErrorEnumString( QSslError::InvalidPurpose ) );
+  errenums << qMakePair( QSslError::CertificateUntrusted, QgsAuthCertUtils::sslErrorEnumString( QSslError::CertificateUntrusted ) );
+  errenums << qMakePair( QSslError::CertificateRejected, QgsAuthCertUtils::sslErrorEnumString( QSslError::CertificateRejected ) );
+  errenums << qMakePair( QSslError::SubjectIssuerMismatch, QgsAuthCertUtils::sslErrorEnumString( QSslError::SubjectIssuerMismatch ) );
+  errenums << qMakePair( QSslError::AuthorityIssuerSerialNumberMismatch, QgsAuthCertUtils::sslErrorEnumString( QSslError::AuthorityIssuerSerialNumberMismatch ) );
+  errenums << qMakePair( QSslError::NoPeerCertificate, QgsAuthCertUtils::sslErrorEnumString( QSslError::NoPeerCertificate ) );
+  errenums << qMakePair( QSslError::HostNameMismatch, QgsAuthCertUtils::sslErrorEnumString( QSslError::HostNameMismatch ) );
+  errenums << qMakePair( QSslError::UnspecifiedError, QgsAuthCertUtils::sslErrorEnumString( QSslError::UnspecifiedError ) );
+  errenums << qMakePair( QSslError::CertificateBlacklisted, QgsAuthCertUtils::sslErrorEnumString( QSslError::CertificateBlacklisted ) );
   return errenums;
 }
 
@@ -1298,9 +1255,7 @@ bool QgsAuthCertUtils::certIsViable( const QSslCertificate &cert )
   return !cert.isNull() && QgsAuthCertUtils::certViabilityErrors( cert ).isEmpty();
 }
 
-QList<QSslError> QgsAuthCertUtils::validateCertChain( const QList<QSslCertificate> &certificateChain,
-    const QString &hostName,
-    bool trustRootCa )
+QList<QSslError> QgsAuthCertUtils::validateCertChain( const QList<QSslCertificate> &certificateChain, const QString &hostName, bool trustRootCa )
 {
   QList<QSslError> sslErrors;
   QList<QSslCertificate> trustedChain;
@@ -1310,13 +1265,13 @@ QList<QSslError> QgsAuthCertUtils::validateCertChain( const QList<QSslCertificat
     bool untrusted = false;
     for ( const auto &untrustedCert : QgsApplication::authManager()->untrustedCaCerts() )
     {
-      if ( cert.digest( ) == untrustedCert.digest( ) )
+      if ( cert.digest() == untrustedCert.digest() )
       {
         untrusted = true;
         break;
       }
     }
-    if ( ! untrusted )
+    if ( !untrusted )
     {
       trustedChain << cert;
     }
@@ -1365,7 +1320,7 @@ QStringList QgsAuthCertUtils::validatePKIBundle( QgsPkiBundle &bundle, bool useI
   if ( useIntermediates )
   {
     QList<QSslCertificate> certsList( bundle.caChain() );
-    certsList.insert( 0, bundle.clientCert( ) );
+    certsList.insert( 0, bundle.clientCert() );
     sslErrors = QgsAuthCertUtils::validateCertChain( certsList, QString(), trustRootCa );
   }
   else
@@ -1382,13 +1337,13 @@ QStringList QgsAuthCertUtils::validatePKIBundle( QgsPkiBundle &bundle, bool useI
   }
   // Now check the key with QCA!
   const QCA::PrivateKey pvtKey( QCA::PrivateKey::fromPEM( bundle.clientKey().toPem() ) );
-  const QCA::PublicKey pubKey( QCA::PublicKey::fromPEM( bundle.clientCert().publicKey().toPem( ) ) );
-  bool keyValid( ! pvtKey.isNull() );
-  if ( keyValid && !( pubKey.toRSA().isNull( ) || pvtKey.toRSA().isNull( ) ) )
+  const QCA::PublicKey pubKey( QCA::PublicKey::fromPEM( bundle.clientCert().publicKey().toPem() ) );
+  bool keyValid( !pvtKey.isNull() );
+  if ( keyValid && !( pubKey.toRSA().isNull() || pvtKey.toRSA().isNull() ) )
   {
     keyValid = pubKey.toRSA().n() == pvtKey.toRSA().n();
   }
-  else if ( keyValid && !( pubKey.toDSA().isNull( ) || pvtKey.toDSA().isNull( ) ) )
+  else if ( keyValid && !( pubKey.toDSA().isNull() || pvtKey.toDSA().isNull() ) )
   {
     keyValid = pubKey == QCA::DSAPublicKey( pvtKey.toDSA() );
   }
@@ -1396,7 +1351,7 @@ QStringList QgsAuthCertUtils::validatePKIBundle( QgsPkiBundle &bundle, bool useI
   {
     QgsDebugError( u"Key is not DSA, RSA: validation is not supported by QCA"_s );
   }
-  if ( ! keyValid )
+  if ( !keyValid )
   {
     errors << QObject::tr( "Private key does not match client certificate public key." );
   }

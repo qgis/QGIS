@@ -52,17 +52,12 @@ QgsAuthMethodConfig::QgsAuthMethodConfig( const QString &method, int version )
 
 bool QgsAuthMethodConfig::operator==( const QgsAuthMethodConfig &other ) const
 {
-  return ( other.id() == id()
-           && other.name() == name()
-           && other.uri() == uri()
-           && other.method() == method()
-           && other.version() == version()
-           && other.configMap() == configMap() );
+  return ( other.id() == id() && other.name() == name() && other.uri() == uri() && other.method() == method() && other.version() == version() && other.configMap() == configMap() );
 }
 
 bool QgsAuthMethodConfig::operator!=( const QgsAuthMethodConfig &other ) const
 {
-  return  !( *this == other );
+  return !( *this == other );
 }
 
 bool QgsAuthMethodConfig::isValid( bool validateid ) const
@@ -70,10 +65,10 @@ bool QgsAuthMethodConfig::isValid( bool validateid ) const
   const bool idvalid = validateid ? !mId.isEmpty() : true;
 
   return (
-           idvalid
-           && !mName.isEmpty()
-           && !mMethod.isEmpty()
-         );
+    idvalid
+    && !mName.isEmpty()
+    && !mMethod.isEmpty()
+  );
 }
 
 const QString QgsAuthMethodConfig::configString() const
@@ -152,7 +147,8 @@ bool QgsAuthMethodConfig::uriToResource( const QString &accessurl, QString *reso
     if ( url.isValid() )
     {
       res = u"%1://%2:%3%4"_s.arg( url.scheme(), url.host() )
-            .arg( url.port() ).arg( withpath ? url.path() : QString() );
+              .arg( url.port() )
+              .arg( withpath ? url.path() : QString() );
     }
   }
   *resource = res;
@@ -210,9 +206,7 @@ bool QgsAuthMethodConfig::readXml( const QDomElement &element )
 // QgsPkiBundle
 //////////////////////////////////////////////////////
 
-QgsPkiBundle::QgsPkiBundle( const QSslCertificate &clientCert,
-                            const QSslKey &clientKey,
-                            const QList<QSslCertificate> &caChain )
+QgsPkiBundle::QgsPkiBundle( const QSslCertificate &clientCert, const QSslKey &clientKey, const QList<QSslCertificate> &caChain )
   : mCert( QSslCertificate() )
   , mCertKey( QSslKey() )
   , mCaChain( caChain )
@@ -221,17 +215,12 @@ QgsPkiBundle::QgsPkiBundle( const QSslCertificate &clientCert,
   setClientKey( clientKey );
 }
 
-const QgsPkiBundle QgsPkiBundle::fromPemPaths( const QString &certPath,
-    const QString &keyPath,
-    const QString &keyPass,
-    const QList<QSslCertificate> &caChain )
+const QgsPkiBundle QgsPkiBundle::fromPemPaths( const QString &certPath, const QString &keyPath, const QString &keyPass, const QList<QSslCertificate> &caChain )
 {
   QgsPkiBundle pkibundle;
   if ( !certPath.isEmpty() && !keyPath.isEmpty()
-       && ( certPath.endsWith( ".pem"_L1, Qt::CaseInsensitive )
-            || certPath.endsWith( ".der"_L1, Qt::CaseInsensitive ) )
-       && QFile::exists( certPath ) && QFile::exists( keyPath )
-     )
+       && ( certPath.endsWith( ".pem"_L1, Qt::CaseInsensitive ) || certPath.endsWith( ".der"_L1, Qt::CaseInsensitive ) )
+       && QFile::exists( certPath ) && QFile::exists( keyPath ) )
   {
     // client cert
     const bool pem = certPath.endsWith( ".pem"_L1, Qt::CaseInsensitive );
@@ -249,14 +238,12 @@ const QgsPkiBundle QgsPkiBundle::fromPemPaths( const QString &certPath,
   return pkibundle;
 }
 
-const QgsPkiBundle QgsPkiBundle::fromPkcs12Paths( const QString &bundlepath,
-    const QString &bundlepass )
+const QgsPkiBundle QgsPkiBundle::fromPkcs12Paths( const QString &bundlepath, const QString &bundlepass )
 {
   QgsPkiBundle pkibundle;
   if ( QCA::isSupported( "pkcs12" )
        && !bundlepath.isEmpty()
-       && ( bundlepath.endsWith( ".p12"_L1, Qt::CaseInsensitive )
-            || bundlepath.endsWith( ".pfx"_L1, Qt::CaseInsensitive ) )
+       && ( bundlepath.endsWith( ".p12"_L1, Qt::CaseInsensitive ) || bundlepath.endsWith( ".pfx"_L1, Qt::CaseInsensitive ) )
        && QFile::exists( bundlepath ) )
   {
     QCA::SecureArray passarray;
@@ -290,7 +277,6 @@ const QgsPkiBundle QgsPkiBundle::fromPkcs12Paths( const QString &bundlepath,
         }
         pkibundle.setCaChain( ca_chain );
       }
-
     }
   }
   return pkibundle;
@@ -338,10 +324,7 @@ void QgsPkiBundle::setClientKey( const QSslKey &certkey )
 // QgsPkiConfigBundle
 //////////////////////////////////////////////////////
 
-QgsPkiConfigBundle::QgsPkiConfigBundle( const QgsAuthMethodConfig &config,
-                                        const QSslCertificate &cert,
-                                        const QSslKey &certkey,
-                                        const QList<QSslCertificate> &cachain )
+QgsPkiConfigBundle::QgsPkiConfigBundle( const QgsAuthMethodConfig &config, const QSslCertificate &cert, const QSslKey &certkey, const QList<QSslCertificate> &cachain )
   : mConfig( config )
   , mCert( cert )
   , mCertKey( certkey )
@@ -386,8 +369,7 @@ const QList<QSslError> QgsAuthConfigSslServer::sslIgnoredErrors() const
 
 const QString QgsAuthConfigSslServer::configString() const
 {
-  QStringList configlist
-  {
+  QStringList configlist {
     QString::number( mVersion ),
     QString::number( mQtVersion ),
     encodeSslProtocol( mSslProtocol )

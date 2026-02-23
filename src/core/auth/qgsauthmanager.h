@@ -72,7 +72,6 @@ class CORE_EXPORT QgsAuthManager : public QObject
     Q_OBJECT
 
   public:
-
     static const QgsSettingsEntryBool *settingsGenerateRandomPasswordForPasswordHelper SIP_SKIP;
     static const QgsSettingsEntryBool *settingsUsingGeneratedRandomPassword SIP_SKIP;
 
@@ -94,7 +93,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \see QgsApplication::qgisAuthDatabaseFilePath
      * \deprecated QGIS 3.36. Use setup() or ensureInitialized() instead.
      */
-    Q_DECL_DEPRECATED bool init( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED bool init( const QString &pluginPath = QString(), const QString &authDatabasePath = QString() ) SIP_DEPRECATED;
 
     /**
      * Sets up the authentication manager configuration.
@@ -106,7 +105,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \param authDatabasePath the authentication DB URI (or just the file path for SQLite)
      * \see ensureInitialized()
      */
-    void setup( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() );
+    void setup( const QString &pluginPath = QString(), const QString &authDatabasePath = QString() );
 
     /**
      * Performs lazy initialization of the authentication framework, if it has
@@ -377,7 +376,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     static bool hasConfigId( const QString &txt );
 
     //! Returns the regular expression for authcfg=.{7} key/value token for authentication ids
-    QString configIdRegex() const { return AUTH_CFG_REGEX;}
+    QString configIdRegex() const { return AUTH_CFG_REGEX; }
 
     //! Gets list of authentication ids from database
     QStringList configIds() const;
@@ -461,8 +460,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \param dataprovider Provider key filter, offering logic branching in authentication method
      * \returns Whether operation succeeded
      */
-    bool updateNetworkRequest( QNetworkRequest &request SIP_INOUT, const QString &authcfg,
-                               const QString &dataprovider = QString() );
+    bool updateNetworkRequest( QNetworkRequest &request SIP_INOUT, const QString &authcfg, const QString &dataprovider = QString() );
 
     /**
      * Provider call to update a QNetworkReply with an authentication config (used to skip known SSL errors, etc.)
@@ -471,8 +469,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \param dataprovider Provider key filter, offering logic branching in authentication method
      * \returns Whether operation succeeded
      */
-    bool updateNetworkReply( QNetworkReply *reply, const QString &authcfg,
-                             const QString &dataprovider = QString() );
+    bool updateNetworkReply( QNetworkReply *reply, const QString &authcfg, const QString &dataprovider = QString() );
 
     /**
      * Provider call to update a QgsDataSourceUri with an authentication config
@@ -481,8 +478,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \param dataprovider Provider key filter, offering logic branching in authentication method
      * \returns Whether operation succeeded
      */
-    bool updateDataSourceUriItems( QStringList &connectionItems SIP_INOUT, const QString &authcfg,
-                                   const QString &dataprovider = QString() );
+    bool updateDataSourceUriItems( QStringList &connectionItems SIP_INOUT, const QString &authcfg, const QString &dataprovider = QString() );
 
     /**
      * Provider call to update a QNetworkProxy with an authentication config
@@ -491,8 +487,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \param dataprovider Provider key filter, offering logic branching in authentication method
      * \returns Whether operation succeeded
      */
-    bool updateNetworkProxy( QNetworkProxy &proxy SIP_INOUT, const QString &authcfg,
-                             const QString &dataprovider = QString() );
+    bool updateNetworkProxy( QNetworkProxy &proxy SIP_INOUT, const QString &authcfg, const QString &dataprovider = QString() );
 
     ////////////////// Generic settings ///////////////////////
 
@@ -920,7 +915,6 @@ class CORE_EXPORT QgsAuthManager : public QObject
     void tryToStartDbErase();
 
   protected:
-
     /**
      * Enforce singleton pattern
      * \note To set up the manager instance and initialize everything use QgsAuthManager::instance()->init()
@@ -937,7 +931,6 @@ class CORE_EXPORT QgsAuthManager : public QObject
 #endif
 
   private:
-
     /**
      * Generates a random, securely seeded password.
      */
@@ -1038,7 +1031,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     QString mAuthDisabledMessage;
     std::unique_ptr<QTimer> mScheduledDbEraseTimer;
     bool mScheduledDbErase = false;
-    int mScheduledDbEraseRequestWait = 3 ; // in seconds
+    int mScheduledDbEraseRequestWait = 3; // in seconds
     bool mScheduledDbEraseRequestEmitted = false;
     int mScheduledDbEraseRequestCount = 0;
 
@@ -1087,7 +1080,6 @@ class CORE_EXPORT QgsAuthManager : public QObject
     mutable QMap<QThread *, QMetaObject::Connection> mConnectedThreads;
 
     friend class QgsApplication;
-
 };
 
 #endif // QGSAUTHMANAGER_H
