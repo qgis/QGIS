@@ -56,6 +56,26 @@ Mapbox GL styles.
 Returns the capabilities of the converter.
 %End
 
+    virtual QString name() const = 0;
+%Docstring
+Returns the unique name for the converter.
+
+This should be an untranslated string identifying the converter.
+
+.. seealso:: :py:func:`displayName`
+%End
+
+    virtual QString formatName() const = 0;
+%Docstring
+Returns a translated, user-friendly name for the converter's data
+format.
+
+E.g. "Styled Layer Descriptor (SLD)" for a converter which handles the
+SLD format.
+
+.. seealso:: :py:func:`name`
+%End
+
     virtual QVariant toVariant( const QgsSymbol *symbol, QgsSymbolConverterContext &context ) const = 0;
 %Docstring
 Converts a ``symbol`` into a QVariant representation.
