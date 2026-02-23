@@ -38,7 +38,7 @@ class CORE_EXPORT QgsSymbolConverterEsriRest : public QgsAbstractSymbolConverter
     Qgis::SymbolConverterCapabilities capabilities() const override;
     QString name() const override;
     QString formatName() const override;
-    QVariant toVariant( const QgsSymbol *symbol, QgsSymbolConverterContext &context ) const override;
+    QVariant toVariant( const QgsSymbol *symbol, QgsSymbolConverterContext &context ) const override SIP_THROW( QgsNotSupportedException );
     std::unique_ptr< QgsSymbol > createSymbol( const QVariant &variant, QgsSymbolConverterContext &context ) const override;
 
     /**

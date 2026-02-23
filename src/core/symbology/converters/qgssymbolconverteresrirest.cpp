@@ -43,7 +43,7 @@ QString QgsSymbolConverterEsriRest::formatName() const
 
 QVariant QgsSymbolConverterEsriRest::toVariant( const QgsSymbol *, QgsSymbolConverterContext & ) const
 {
-  return QVariant();
+  throw QgsNotSupportedException( u"This symbol converter does not support serialization of symbols"_s );
 }
 
 std::unique_ptr< QgsSymbol > QgsSymbolConverterEsriRest::createSymbol( const QVariant &variant, QgsSymbolConverterContext & ) const
