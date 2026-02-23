@@ -51,17 +51,16 @@
 #pragma clang diagnostic ignored "-Wregister"
 #endif
 
-#ifdef _MSC_VER
+#ifdef Q_OS_WIN
 #pragma warning(push)
 #pragma warning(disable:5033)
 #endif
-
 #ifndef CMS_NO_REGISTER_KEYWORD
 #define CMS_NO_REGISTER_KEYWORD
 #endif
 #include <lcms2.h>
 
-#ifdef _MSC_VER
+#ifdef Q_OS_WIN
 #pragma warning(pop)
 #endif
 
