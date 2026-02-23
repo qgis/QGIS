@@ -87,6 +87,7 @@ QString QgsValidateNetworkAlgorithm::shortHelpString() const
                       "3. Checking node-to-segment separation: This check identifies nodes that are closer to a line "
                       "segment (e.g. a graph edge) than the specified tolerance distance, without being connected to it. In the case "
                       "that a node violates this condition with multiple other edges, only the closest violation will be reported.\n\n"
+                      "Topology checks (node-to-node and node-to-segment) can optionally be restricted to only evaluate nodes that are topological dead-ends (connected to only one other distinct node). This is useful for specifically targeting dangles or undershoots.\n\n"
                       "Two layers are output by this algorithm:\n"
                       "1. An output containing features from the original network layer which failed the direction validation checks.\n"
                       "2. An output representing the problematic node locations with a 'error' field explaining the error. This is "
@@ -117,6 +118,10 @@ void QgsValidateNetworkAlgorithm::initAlgorithm( const QVariantMap & )
                                                     "Nodes closer to a segment than this distance "
                                                     "will be flagged. Leave empty to disable this check." ) );
   addParameter( separationNodeSegmentParam.release() );
+
+  auto endpointsOnlyParam = std::make_unique<QgsProcessingParameterBoolean>( u"ENDPOINTS_ONLY"_s, QObject::tr( "Only check for errors at end points" ), false );
+  endpointsOnlyParam->setHelp( QObject::tr( "If checked, topology checks (node-to-node and node-to-segment) will only be evaluated for nodes that are topological dead-ends (connected to only one other distinct node)." ) );
+  addParameter( endpointsOnlyParam.release() );
 
   auto directionField = std::make_unique<QgsProcessingParameterField>( u"DIRECTION_FIELD"_s, QObject::tr( "Direction field" ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Any, false, true );
   directionField->setHelp( QObject::tr( "The attribute field specifying the direction of traffic flow for each segment." ) );
@@ -164,6 +169,8 @@ QVariantMap QgsValidateNetworkAlgorithm::processAlgorithm( const QVariantMap &pa
   const QString backwardValue = parameterAsString( parameters, u"VALUE_BACKWARD"_s, context );
   const QString bothValue = parameterAsString( parameters, u"VALUE_BOTH"_s, context );
   const double tolerance = parameterAsDouble( parameters, u"TOLERANCE"_s, context );
+
+  const bool checkEndpointsOnly = parameterAsBoolean( parameters, u"ENDPOINTS_ONLY"_s, context );
 
   double toleranceNodeToNode = 0;
   bool checkNodeToNodeDistance = false;
@@ -353,7 +360,28 @@ QVariantMap QgsValidateNetworkAlgorithm::processAlgorithm( const QVariantMap &pa
     const QgsGraphVertex &v = graph->vertex( i );
     const QgsPointXY &pt = v.point();
 
-    if ( checkNodeToNodeDistance )
+    // whether we need to perform validation on this node
+    bool evaluateNode = true;
+
+    if ( checkEndpointsOnly )
+    {
+      // count unique neighbors to handle bidirectional segments (A->B and B->A) counting as one connection
+      QSet<int> adjacentNodeIndices;
+      for ( int edgeId : v.outgoingEdges() )
+      {
+        adjacentNodeIndices.insert( graph->edge( edgeId ).toVertex() );
+      }
+      for ( int edgeId : v.incomingEdges() )
+      {
+        adjacentNodeIndices.insert( graph->edge( edgeId ).fromVertex() );
+      }
+      if ( adjacentNodeIndices.count() != 1 )
+      {
+        evaluateNode = false;
+      }
+    }
+
+    if ( evaluateNode && checkNodeToNodeDistance )
     {
       const std::vector< QgsVectorLayerDirector::VertexSourceInfo > &fidsFirstNode = director.sourcesForVertex( i );
 
@@ -446,7 +474,7 @@ QVariantMap QgsValidateNetworkAlgorithm::processAlgorithm( const QVariantMap &pa
       }
     }
 
-    if ( checkNodeToSegmentDistance )
+    if ( evaluateNode && checkNodeToSegmentDistance )
     {
       // only keep the closest violation
       NodeError closestError;
