@@ -1537,6 +1537,22 @@ QgsSymbol.RenderHints = Qgis.SymbolRenderHints
 Qgis.SymbolRenderHints.baseClass = Qgis
 SymbolRenderHints = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.SymbolConverterCapability.ReadSymbol.__doc__ = "Allows reading symbols from variants"
+Qgis.SymbolConverterCapability.WriteSymbol.__doc__ = "Allows writing symbols to variants"
+Qgis.SymbolConverterCapability.__doc__ = """Symbol converter capabilities.
+
+.. versionadded:: 4.2
+
+* ``ReadSymbol``: Allows reading symbols from variants
+* ``WriteSymbol``: Allows writing symbols to variants
+
+"""
+# --
+Qgis.SymbolConverterCapability.baseClass = Qgis
+Qgis.SymbolConverterCapabilities = lambda flags=0: Qgis.SymbolConverterCapability(flags)
+Qgis.SymbolConverterCapabilities.baseClass = Qgis
+SymbolConverterCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.SymbolRotationMode.RespectMapRotation.__doc__ = "Entity is rotated along with the map"
 Qgis.SymbolRotationMode.IgnoreMapRotation.__doc__ = "Entity ignores map rotation"
 Qgis.SymbolRotationMode.__doc__ = """Modes for handling how symbol and text entity rotation is handled when maps are rotated.

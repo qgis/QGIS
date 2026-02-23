@@ -804,6 +804,27 @@ int QgisEvent = QEvent::User + 1;
     Q_FLAG( SymbolRenderHints )
 
     /**
+     * Symbol converter capabilities.
+     *
+     * \since QGIS 4.2
+     */
+    enum class SymbolConverterCapability : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      ReadSymbol = 1 << 0, //!< Allows reading symbols from variants
+      WriteSymbol = 1 << 1, //!< Allows writing symbols to variants
+    };
+
+    Q_ENUM( SymbolConverterCapability )
+
+    /**
+     * Symbol converter capabilities.
+     *
+     * \since QGIS 4.2
+     */
+    Q_DECLARE_FLAGS( SymbolConverterCapabilities, SymbolConverterCapability )
+    Q_FLAG( SymbolConverterCapabilities )
+
+    /**
      * \brief Modes for handling how symbol and text entity rotation is handled when maps are rotated.
      *
      * \since QGIS 3.32
@@ -6824,6 +6845,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerLegendFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::CurvedTextFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ExtrusionFaces )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapGridFrameSideFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolConverterCapabilities )
 Q_DECLARE_METATYPE( Qgis::LayoutRenderFlags )
 Q_DECLARE_METATYPE( QTimeZone )
 

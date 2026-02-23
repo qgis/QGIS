@@ -33,6 +33,11 @@ Mapbox GL styles.
   public:
     virtual ~QgsAbstractSymbolConverter();
 
+    virtual Qgis::SymbolConverterCapabilities capabilities() const = 0;
+%Docstring
+Returns the capabilities of the converter.
+%End
+
     virtual QVariant toVariant( const QgsSymbol *symbol ) const = 0;
 %Docstring
 Converts a ``symbol`` into a QVariant representation.

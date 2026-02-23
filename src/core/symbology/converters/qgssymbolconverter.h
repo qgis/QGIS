@@ -18,6 +18,7 @@
 #ifndef QGSSYMBOLCONVERTER_H
 #define QGSSYMBOLCONVERTER_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 
 class QgsSymbol;
@@ -40,6 +41,11 @@ class CORE_EXPORT QgsAbstractSymbolConverter
 
   public:
     virtual ~QgsAbstractSymbolConverter();
+
+    /**
+     * Returns the capabilities of the converter.
+     */
+    virtual Qgis::SymbolConverterCapabilities capabilities() const = 0;
 
     /**
      * Converts a \a symbol into a QVariant representation.
