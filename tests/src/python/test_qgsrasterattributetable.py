@@ -24,6 +24,7 @@ from qgis.core import (
     QgsPalettedRasterRenderer,
     QgsPresetSchemeColorRamp,
     QgsProject,
+    QgsProviderRegistry,
     QgsRasterAttributeTable,
     QgsRasterLayer,
     QgsSingleBandPseudoColorRenderer,
@@ -1593,6 +1594,92 @@ class TestQgsRasterAttributeTable(QgisTestCase):
                 ],
             ],
         )
+
+    @unittest.skipIf(
+        int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 8, 0),
+        "GDAL 3.8.0 required",
+    )
+    def test_COG_layout(self):
+        # Create a 2x2 cog raster using GDAL
+        tif_path = os.path.join(self.temp_path, "cog_layout.tif")
+        driver = gdal.GetDriverByName("COG")
+        dataset = driver.Create(tif_path, 2, 2, 1, gdal.GDT_Byte)
+        # Set CRS and geotransform to avoid warnings when opening the raster in QGIS
+        dataset.SetGeoTransform((0, 1, 0, 0, 0, -1))
+        srs = osr.SpatialReference()
+        srs.ImportFromEPSG(4326)
+        dataset.SetProjection(srs.ExportToWkt())
+        dataset.GetRasterBand(1).Fill(0)
+        dataset.GetRasterBand(1).FlushCache()
+        dataset.FlushCache()
+        dataset = None
+
+        raster = QgsRasterLayer(tif_path)
+        self.assertTrue(raster.isValid())
+
+        def _make_rat():
+            # Create a RAT for the COG raster
+            rat = QgsRasterAttributeTable()
+            self.assertTrue(
+                rat.appendField(
+                    QgsRasterAttributeTable.Field(
+                        "Value",
+                        Qgis.RasterAttributeTableFieldUsage.MinMax,
+                        QVariant.Int,
+                    )
+                )
+            )
+            self.assertTrue(
+                rat.appendField(
+                    QgsRasterAttributeTable.Field(
+                        "Class",
+                        Qgis.RasterAttributeTableFieldUsage.Name,
+                        QVariant.String,
+                    )
+                )
+            )
+
+            # Add some rows to the RAT
+            self.assertTrue(rat.appendRow([0, "Zero"]))
+            self.assertTrue(rat.appendRow([1, "One"]))
+            return rat
+
+        # Associate the RAT with the raster layer
+        raster.dataProvider().setAttributeTable(1, _make_rat())
+
+        # Try and fail to write the raster layer to disk
+        ret, error = raster.dataProvider().writeNativeAttributeTable()  # spellok
+        self.assertFalse(ret)
+        self.assertIn(
+            "set the open option IGNORE_COG_LAYOUT_BREAK=YES to override", error
+        )
+
+        # Same test but with the open option set
+        parts = QgsProviderRegistry.instance().decodeUri(
+            "gdal", raster.dataProvider().dataSourceUri()
+        )
+        parts["openOptions"] = ["IGNORE_COG_LAYOUT_BREAK=YES"]
+        uri = QgsProviderRegistry.instance().encodeUri("gdal", parts)
+        raster = QgsRasterLayer(uri)
+
+        self.assertTrue(raster.isValid())
+        raster.dataProvider().setAttributeTable(1, _make_rat())
+
+        ret, error = raster.dataProvider().writeNativeAttributeTable()  # spellok
+        self.assertTrue(ret)
+
+        # Reopen the raster and check the RAT is there and correct
+        raster = QgsRasterLayer(uri)
+        self.assertTrue(raster.isValid())
+        rat = raster.dataProvider().attributeTable(1)
+        self.assertEqual(len(rat.data()), 2)
+        fields = rat.fields()
+        self.assertEqual(fields[0].name, "Value")
+        self.assertEqual(fields[0].usage, Qgis.RasterAttributeTableFieldUsage.MinMax)
+        self.assertEqual(fields[0].type, QVariant.Int)
+        self.assertEqual(fields[1].name, "Class")
+        self.assertEqual(fields[1].usage, Qgis.RasterAttributeTableFieldUsage.Name)
+        self.assertEqual(fields[1].type, QVariant.String)
 
 
 if __name__ == "__main__":
