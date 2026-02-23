@@ -9868,6 +9868,8 @@ class PDFXFALayoutEngine : public xfa::XFA_AbstractVisitor
 {
     // XFA_AbstractVisitor interface
 public:
+    using xfa::XFA_AbstractVisitor::visit;
+
     virtual void visit(const xfa::XFA_template* node) override;
     virtual void visit(const xfa::XFA_pageArea* node) override;
     virtual void visit(const xfa::XFA_pageSet* node) override;
