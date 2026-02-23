@@ -10,6 +10,24 @@
 
 
 
+class QgsSymbolConverterContext
+{
+%Docstring(signature="appended")
+Represents the context in which a :py:class:`QgsSymbolConverter`
+conversion occurs.
+
+.. versionadded:: 4.2
+%End
+
+%TypeHeaderCode
+#include "qgssymbolconverter.h"
+%End
+  public:
+
+    QgsSymbolConverterContext();
+
+};
+
 class QgsAbstractSymbolConverter
 {
 %Docstring(signature="appended")
@@ -38,7 +56,7 @@ Mapbox GL styles.
 Returns the capabilities of the converter.
 %End
 
-    virtual QVariant toVariant( const QgsSymbol *symbol ) const = 0;
+    virtual QVariant toVariant( const QgsSymbol *symbol, QgsSymbolConverterContext &context ) const = 0;
 %Docstring
 Converts a ``symbol`` into a QVariant representation.
 
@@ -50,11 +68,12 @@ Returns an invalid variant if the ``symbol`` could not be converted, or
 if serialization of symbols is not supported for this converter.
 %End
 
-    virtual std::unique_ptr< QgsSymbol > createSymbol( const QVariant &variant ) const = 0;
+    virtual std::unique_ptr< QgsSymbol > createSymbol( const QVariant &variant, QgsSymbolConverterContext &context ) const = 0;
 %Docstring
 Creates a new :py:class:`QgsSymbol` from a QVariant representation.
 
 :param variant: The QVariant containing the serialized symbol data.
+:param context: conversion context
 
 :return: A new :py:class:`QgsSymbol` instance representing the data in
          the variant. The caller takes ownership of the returned object.

@@ -24,6 +24,21 @@
 class QgsSymbol;
 
 /**
+ * \class QgsSymbolConverterContext
+ * \ingroup core
+ * \brief Represents the context in which a QgsSymbolConverter conversion occurs.
+ *
+ * \since QGIS 4.2
+ */
+class CORE_EXPORT QgsSymbolConverterContext
+{
+  public:
+
+    QgsSymbolConverterContext();
+
+};
+
+/**
  * \class QgsAbstractSymbolConverter
  * \ingroup core
  * \brief An abstract base class for converting between QgsSymbol objects and QVariant representations.
@@ -58,18 +73,20 @@ class CORE_EXPORT QgsAbstractSymbolConverter
      * or if serialization of symbols is not supported for this
      * converter.
      */
-    virtual QVariant toVariant( const QgsSymbol *symbol ) const = 0;
+    virtual QVariant toVariant( const QgsSymbol *symbol, QgsSymbolConverterContext &context ) const = 0;
 
     /**
      * Creates a new QgsSymbol from a QVariant representation.
      *
      * \param variant The QVariant containing the serialized symbol data.
+     * \param context conversion context
+     *
      * \returns A new QgsSymbol instance representing the data in the variant.
      * The caller takes ownership of the returned object. Returns NULLPTR if the
      * variant cannot be converted or parsed, or if the converter does not support
      * deserialization of symbols.
      */
-    virtual std::unique_ptr< QgsSymbol > createSymbol( const QVariant &variant ) const = 0;
+    virtual std::unique_ptr< QgsSymbol > createSymbol( const QVariant &variant, QgsSymbolConverterContext &context ) const = 0;
 
 };
 
