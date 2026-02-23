@@ -34,7 +34,6 @@ class CORE_EXPORT QgsConnectionsRootItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsConnectionsRootItem, with the specified \a parent item.
      *
@@ -53,12 +52,11 @@ class CORE_EXPORT QgsConnectionsRootItem : public QgsDataCollectionItem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = u"<QgsConnectionsRootItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
+        QString str
+      = u"<QgsConnectionsRootItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 };
 
 #endif // QGSCONNECTIONSITEM_H
-
-

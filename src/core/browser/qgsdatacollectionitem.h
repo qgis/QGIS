@@ -35,7 +35,6 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsDataCollectionItem, with the specified \a parent item.
      *
@@ -54,12 +53,16 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = u"<QgsDataCollectionItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
+        QString str
+      = u"<QgsDataCollectionItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    void addChild( QgsDataItem *item SIP_TRANSFER ) { mChildren.append( item ); }
+      void addChild( QgsDataItem *item SIP_TRANSFER )
+    {
+      mChildren.append( item );
+    }
 
     /**
      * Returns the standard browser directory icon.
@@ -80,7 +83,6 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
     QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
 
   protected:
-
     /**
      * Shared open directory icon.
      *
@@ -100,10 +102,7 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
      * \since QGIS 3.4
      */
     static QIcon homeDirIcon( const QColor &fillColor = QColor(), const QColor &strokeColor = QColor() );
-
 };
 
 
 #endif // QGSDATAITEM_H
-
-

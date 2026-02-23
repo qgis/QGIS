@@ -41,8 +41,7 @@ using namespace Qt::StringLiterals;
 // QgsProviderSublayerItem
 //
 
-QgsProviderSublayerItem::QgsProviderSublayerItem( QgsDataItem *parent, const QString &name,
-    const QgsProviderSublayerDetails &details, const QString &filePath )
+QgsProviderSublayerItem::QgsProviderSublayerItem( QgsDataItem *parent, const QString &name, const QgsProviderSublayerDetails &details, const QString &filePath )
   : QgsLayerItem( parent, name, filePath.isEmpty() ? details.uri() : filePath, details.uri(), layerTypeFromSublayer( details ), details.providerKey() )
   , mDetails( details )
 {
@@ -61,19 +60,13 @@ QVector<QgsDataItem *> QgsProviderSublayerItem::createChildren()
     // sqlite gets special handling because it delegates to the dedicated spatialite provider
     if ( mDetails.driverName() == "SQLite"_L1 )
     {
-      children.push_back( new QgsFieldsItem( this,
-                                             path() + u"/columns/ "_s,
-                                             QStringLiteral( R"(dbname="%1")" ).arg( parent()->path().replace( '"', R"(\")"_L1 ) ),
-                                             u"spatialite"_s, QString(), name() ) );
+      children.push_back( new QgsFieldsItem( this, path() + u"/columns/ "_s, QStringLiteral( R"(dbname="%1")" ).arg( parent()->path().replace( '"', R"(\")"_L1 ) ), u"spatialite"_s, QString(), name() ) );
     }
     else if ( mDetails.providerKey() == "ogr"_L1 )
     {
       // otherwise we use the default OGR database connection approach, which is the generic way to handle this
       // for all OGR layer types
-      children.push_back( new QgsFieldsItem( this,
-                                             path() + u"/columns/ "_s,
-                                             path(),
-                                             u"ogr"_s, QString(), name() ) );
+      children.push_back( new QgsFieldsItem( this, path() + u"/columns/ "_s, path(), u"ogr"_s, QString(), name() ) );
 
       std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( databaseConnection() );
       if ( conn && ( conn->capabilities() & QgsAbstractDatabaseProviderConnection::Capability::RetrieveRelationships ) )
@@ -425,7 +418,7 @@ bool QgsFileDataCollectionItem::canAddVectorLayers() const
   }
 
   // DO NOT UNDER *****ANY***** CIRCUMSTANCES OPEN DATASETS HERE!!!!
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 4, 0 )
   const bool isSingleTableDriver = !GDALGetMetadataItem( hDriver, GDAL_DCAP_MULTIPLE_VECTOR_LAYERS, nullptr );
 #else
   const QFileInfo pathInfo( path() );
@@ -466,7 +459,7 @@ QgsAbstractDatabaseProviderConnection *QgsFileDataCollectionItem::databaseConnec
   GDALDriverH hDriver = GDALIdentifyDriverEx( path().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr );
   CPLPopErrorHandler();
 
-  if ( ! hDriver )
+  if ( !hDriver )
   {
     QgsDebugMsgLevel( u"GDALIdentifyDriverEx error # %1 : %2 on %3"_s.arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ).arg( path() ), 2 );
     return nullptr;
@@ -488,7 +481,7 @@ QgsAbstractDatabaseProviderConnection *QgsFileDataCollectionItem::databaseConnec
     if ( QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( u"spatialite"_s ) )
     {
       QgsDataSourceUri uri;
-      uri.setDatabase( path( ) );
+      uri.setDatabase( path() );
       conn = static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( uri.uri(), {} ) );
     }
   }
@@ -614,8 +607,7 @@ QgsDataItem *QgsFileBasedDataItemProvider::createDataItemForPathPrivate( const Q
     return nullptr;
   }
   // GDAL 3.1 Shapefile driver directly handles .shp.zip files
-  else if ( path.endsWith( ".shp.zip"_L1, Qt::CaseInsensitive ) &&
-            GDALIdentifyDriverEx( path.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr ) )
+  else if ( path.endsWith( ".shp.zip"_L1, Qt::CaseInsensitive ) && GDALIdentifyDriverEx( path.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr ) )
   {
     suffix = u"shp.zip"_s;
   }
@@ -627,10 +619,7 @@ QgsDataItem *QgsFileBasedDataItemProvider::createDataItemForPathPrivate( const Q
   QgsSettings settings;
 
   // should we fast scan only?
-  if ( ( settings.value( u"qgis/scanItemsInBrowser2"_s,
-                         "extension" ).toString() == "extension"_L1 ) ||
-       ( parentItem && settings.value( u"qgis/scanItemsFastScanUris"_s,
-                                       QStringList() ).toStringList().contains( parentItem->path() ) ) )
+  if ( ( settings.value( u"qgis/scanItemsInBrowser2"_s, "extension" ).toString() == "extension"_L1 ) || ( parentItem && settings.value( u"qgis/scanItemsFastScanUris"_s, QStringList() ).toStringList().contains( parentItem->path() ) ) )
   {
     queryFlags |= Qgis::SublayerQueryFlag::FastScan;
   }
@@ -665,9 +654,7 @@ QgsDataItem *QgsFileBasedDataItemProvider::createDataItemForPathPrivate( const Q
   }
 
   if ( sublayers.size() == 1
-       && ( ( ( queryFlags & Qgis::SublayerQueryFlag::FastScan ) && !QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, QgsProviderUtils::SublayerCompletenessFlag::IgnoreUnknownFeatureCount | QgsProviderUtils::SublayerCompletenessFlag::IgnoreUnknownGeometryType ) )
-            || ( !( queryFlags & Qgis::SublayerQueryFlag::FastScan ) && !QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, QgsProviderUtils::SublayerCompletenessFlag::IgnoreUnknownFeatureCount ) ) )
-     )
+       && ( ( ( queryFlags & Qgis::SublayerQueryFlag::FastScan ) && !QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, QgsProviderUtils::SublayerCompletenessFlag::IgnoreUnknownFeatureCount | QgsProviderUtils::SublayerCompletenessFlag::IgnoreUnknownGeometryType ) ) || ( !( queryFlags & Qgis::SublayerQueryFlag::FastScan ) && !QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, QgsProviderUtils::SublayerCompletenessFlag::IgnoreUnknownFeatureCount ) ) ) )
   {
     QgsProviderSublayerItem *item = new QgsProviderSublayerItem( parentItem, name, sublayers.at( 0 ), path );
     item->setCapabilities( item->capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );

@@ -34,11 +34,12 @@ Constructor
 
     SIP_PYOBJECT __repr__();
 %MethodCode
-    QString str = QStringLiteral( "<QgsZipItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+        QString str
+      = QStringLiteral( "<QgsZipItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    virtual QVector<QgsDataItem *> createChildren();
+        virtual QVector<QgsDataItem *> createChildren();
 
     QStringList getZipFileList();
 
@@ -71,9 +72,6 @@ Creates a new data item from the specified path.
     static QIcon iconZip();
 
 };
-
-
-
 
 
 /************************************************************************

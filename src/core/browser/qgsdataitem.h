@@ -79,7 +79,6 @@ class CORE_EXPORT QgsDataItem : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsDataItem, with the specified \a parent item.
      *
@@ -98,15 +97,16 @@ class CORE_EXPORT QgsDataItem : public QObject
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = u"<QgsDataItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
+        QString str
+      = u"<QgsDataItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    /**
+      /**
      * Returns whether this item has children.
      */
-    bool hasChildren() const;
+      bool hasChildren() const;
 
     /**
      * Returns TRUE if the data item is a collection of layers
@@ -646,19 +646,16 @@ class CORE_EXPORT QgsErrorItem : public QgsDataItem
 {
     Q_OBJECT
   public:
-
     QgsErrorItem( QgsDataItem *parent, const QString &error, const QString &path );
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = u"<QgsErrorItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
+        QString str
+      = u"<QgsErrorItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
-
 };
 
 #endif // QGSDATAITEM_H
-
-

@@ -22,11 +22,7 @@ Contains a collection of field domain items.
 #include "qgsfielddomainsitem.h"
 %End
   public:
-
-    QgsFieldDomainsItem( QgsDataItem *parent /TransferThis/,
-                         const QString &path,
-                         const QString &connectionUri,
-                         const QString &providerKey );
+    QgsFieldDomainsItem( QgsDataItem *parent /TransferThis/, const QString &path, const QString &connectionUri, const QString &providerKey );
 %Docstring
 Constructor for QgsFieldDomainsItem, with the specified ``parent`` item.
 
@@ -44,11 +40,12 @@ this item.
 
     SIP_PYOBJECT __repr__();
 %MethodCode
-    QString str = QStringLiteral( "<QgsFieldDomainsItem: %1>" ).arg( sipCpp->path() );
+        QString str
+      = QStringLiteral( "<QgsFieldDomainsItem: %1>" ).arg( sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    virtual QVector<QgsDataItem *> createChildren();
+        virtual QVector<QgsDataItem *> createChildren();
 
 
     virtual QIcon icon();
@@ -74,9 +71,7 @@ A browser item representing a field domain.
 #include "qgsfielddomainsitem.h"
 %End
   public:
-
-    QgsFieldDomainItem( QgsDataItem *parent /TransferThis/,
-                        QgsFieldDomain *domain /Transfer/ );
+    QgsFieldDomainItem( QgsDataItem *parent /TransferThis/, QgsFieldDomain *domain /Transfer/ );
 %Docstring
 Constructor for QgsFieldDomainItem, with the specified ``parent`` item
 and ``domain``.
@@ -92,11 +87,12 @@ Ownership of ``domain`` is transferred to the item.
 
     SIP_PYOBJECT __repr__();
 %MethodCode
-    QString str = QStringLiteral( "<QgsFieldDomainItem: %1>" ).arg( sipCpp->name() );
+        QString str
+      = QStringLiteral( "<QgsFieldDomainItem: %1>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    virtual QIcon icon();
+        virtual QIcon icon();
 
 
     const QgsFieldDomain *fieldDomain();
@@ -112,8 +108,6 @@ Returns the connection URI.
 %End
 
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

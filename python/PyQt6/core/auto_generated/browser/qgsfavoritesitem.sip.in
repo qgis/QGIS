@@ -20,7 +20,6 @@ A browser item which contains various Favorites directories.
 #include "qgsfavoritesitem.h"
 %End
   public:
-
     QgsFavoritesItem( QgsDataItem *parent, const QString &name, const QString &path = QString() );
 %Docstring
 Constructor for QgsFavoritesItem. Accepts a path argument specifying the
@@ -29,11 +28,12 @@ file path associated with the item.
 
     SIP_PYOBJECT __repr__();
 %MethodCode
-    QString str = QStringLiteral( "<QgsFavoritesItem: \"%1\">" ).arg( sipCpp->name() );
+        QString str
+      = QStringLiteral( "<QgsFavoritesItem: \"%1\">" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    virtual QVector<QgsDataItem *> createChildren();
+        virtual QVector<QgsDataItem *> createChildren();
 
 
     void addDirectory( const QString &directory, const QString &name = QString() );
@@ -67,8 +67,6 @@ Icon for favorites group
 
 
 };
-
-
 
 
 /************************************************************************

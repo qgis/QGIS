@@ -51,9 +51,7 @@ QgsZipItem::QgsZipItem( QgsDataItem *parent, const QString &name, const QString 
   init();
 }
 
-QgsZipItem::QgsZipItem( QgsDataItem *parent, const QString &name,
-                        const QString &filePath, const QString &path,
-                        const QString &providerKey )
+QgsZipItem::QgsZipItem( QgsDataItem *parent, const QString &name, const QString &filePath, const QString &path, const QString &providerKey )
   : QgsDataCollectionItem( parent, name, path, providerKey )
   , mFilePath( filePath )
 {
@@ -69,8 +67,7 @@ void QgsZipItem::init()
   setCapabilities( capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );
 
   static std::once_flag initialized;
-  std::call_once( initialized, []
-  {
+  std::call_once( initialized, [] {
     sProviderNames << u"files"_s;
   } );
 }
@@ -191,8 +188,7 @@ QgsDataItem *QgsZipItem::itemFromPath( QgsDataItem *parent, const QString &fileP
   // could also accept all files smaller than a certain size and add options for file count and/or size
 
   // first get list of files inside .zip or .tar files
-  if ( path.endsWith( ".zip"_L1, Qt::CaseInsensitive ) ||
-       path.endsWith( ".tar"_L1, Qt::CaseInsensitive ) )
+  if ( path.endsWith( ".zip"_L1, Qt::CaseInsensitive ) || path.endsWith( ".tar"_L1, Qt::CaseInsensitive ) )
   {
     zipFileList = zipItem->getZipFileList();
   }
@@ -220,7 +216,7 @@ QgsDataItem *QgsZipItem::itemFromPath( QgsDataItem *parent, const QString &fileP
 
 QStringList QgsZipItem::getZipFileList()
 {
-  if ( ! mZipFileList.isEmpty() )
+  if ( !mZipFileList.isEmpty() )
     return mZipFileList;
 
   QString tmpPath;
@@ -257,5 +253,3 @@ QStringList QgsZipItem::getZipFileList()
 
   return mZipFileList;
 }
-
-

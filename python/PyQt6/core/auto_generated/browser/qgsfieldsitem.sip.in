@@ -26,13 +26,7 @@ schema and the table name.
 #include "qgsfieldsitem.h"
 %End
   public:
-
-    QgsFieldsItem( QgsDataItem *parent /TransferThis/,
-                   const QString &path,
-                   const QString &connectionUri,
-                   const QString &providerKey,
-                   const QString &schema,
-                   const QString &tableName );
+    QgsFieldsItem( QgsDataItem *parent /TransferThis/, const QString &path, const QString &connectionUri, const QString &providerKey, const QString &schema, const QString &tableName );
 %Docstring
 Constructor for QgsFieldsItem, with the specified ``parent`` item.
 
@@ -51,11 +45,12 @@ layer and field information from the ``connectionUri``.
 
     SIP_PYOBJECT __repr__();
 %MethodCode
-    QString str = QStringLiteral( "<QgsFieldsItem: %1>" ).arg( sipCpp->path() );
+        QString str
+      = QStringLiteral( "<QgsFieldsItem: %1>" ).arg( sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    virtual QVector<QgsDataItem *> createChildren();
+        virtual QVector<QgsDataItem *> createChildren();
 
 
     virtual QIcon icon();
@@ -125,9 +120,7 @@ parent :py:class:`QgsFieldsItem` object.
 #include "qgsfieldsitem.h"
 %End
   public:
-
-    QgsFieldItem( QgsDataItem *parent /TransferThis/,
-                  const QgsField &field );
+    QgsFieldItem( QgsDataItem *parent /TransferThis/, const QgsField &field );
 %Docstring
 Constructor for QgsFieldItem, with the specified ``parent`` item and
 ``field``.
@@ -141,11 +134,12 @@ Constructor for QgsFieldItem, with the specified ``parent`` item and
 
     SIP_PYOBJECT __repr__();
 %MethodCode
-    QString str = QStringLiteral( "<QgsFieldItem: %1>" ).arg( sipCpp->name() );
+        QString str
+      = QStringLiteral( "<QgsFieldItem: %1>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    virtual QIcon icon();
+        virtual QIcon icon();
 
 
     QgsField field() const;
@@ -159,8 +153,6 @@ Returns the field definition.
 
 
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

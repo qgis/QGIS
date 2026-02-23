@@ -22,7 +22,6 @@ A browser item that represents a database schema item.
 #include "qgsdatabaseschemaitem.h"
 %End
   public:
-
     QgsDatabaseSchemaItem( QgsDataItem *parent /TransferThis/, const QString &name, const QString &path = QString(), const QString &providerKey = QString() );
 %Docstring
 Constructor for QgsDatabaseSchemaItem, with the specified ``parent``
@@ -44,16 +43,14 @@ the :py:class:`QgsDataItemProvider` that created this item.
 
     SIP_PYOBJECT __repr__();
 %MethodCode
-    QString str = QStringLiteral( "<QgsDatabaseSchemaItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+        QString str
+      = QStringLiteral( "<QgsDatabaseSchemaItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    virtual QgsAbstractDatabaseProviderConnection *databaseConnection() const;
-
+      virtual QgsAbstractDatabaseProviderConnection *databaseConnection() const;
 
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

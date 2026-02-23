@@ -49,12 +49,13 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = u"<QgsZipItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
+        QString str
+      = u"<QgsZipItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    QVector<QgsDataItem *> createChildren() override;
+        QVector<QgsDataItem *> createChildren() override;
     QStringList getZipFileList();
 
     bool hasDragEnabled() const override;
@@ -87,7 +88,4 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
 };
 
 
-
 #endif // QGSZIPITEM_H
-
-

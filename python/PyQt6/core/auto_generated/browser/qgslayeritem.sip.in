@@ -21,7 +21,6 @@ the providers.
 #include "qgslayeritem.h"
 %End
   public:
-
     QgsLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, Qgis::BrowserLayerType layerType, const QString &providerKey );
 %Docstring
 Constructor for QgsLayerItem.
@@ -29,12 +28,13 @@ Constructor for QgsLayerItem.
 
     SIP_PYOBJECT __repr__();
 %MethodCode
-    QString str = QStringLiteral( "<QgsLayerItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+        QString str
+      = QStringLiteral( "<QgsLayerItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
 
-    virtual bool equal( const QgsDataItem *other );
+      virtual bool equal( const QgsDataItem *other );
 
 
     virtual bool hasDragEnabled() const;
@@ -101,7 +101,6 @@ Delete this layer item Use
   protected:
 
   public:
-
     static QIcon iconForWkbType( Qgis::WkbType type );
 %Docstring
 Returns the icon for a vector layer whose geometry type is provided.
@@ -150,8 +149,6 @@ Set layer's ``metadata``.
 %End
 
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *
