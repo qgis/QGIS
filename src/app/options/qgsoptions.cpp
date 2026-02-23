@@ -1073,7 +1073,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   const QStringList language18nList( i18nList() );
   for ( const auto &l : language18nList )
   {
-    QString displayName = l.startsWith( "sc"_L1 ) ? u"sardu"_s : QLocale( l ).nativeLanguageName();
+    QString displayName = QLocale( l ).nativeLanguageName();
     cboTranslation->addItem( QIcon( QString( ":/images/flags/%1.svg" ).arg( l ) ), displayName, l );
   }
 
