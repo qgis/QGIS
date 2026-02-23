@@ -4,3 +4,7 @@ try:
     QgsAbstractSymbolConverter.__group__ = ['symbology', 'converters']
 except (NameError, AttributeError):
     pass
+try:
+    QgsSymbolConverterContext.__group__ = ['symbology', 'converters']
+except (NameError, AttributeError):
+    pass

@@ -18,3 +18,8 @@
 #include "qgssymbolconverter.h"
 
 QgsAbstractSymbolConverter::~QgsAbstractSymbolConverter() = default;
+
+QgsSymbolConverterContext::QgsSymbolConverterContext()
+{
+
+}
