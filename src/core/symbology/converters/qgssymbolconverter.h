@@ -91,8 +91,11 @@ class CORE_EXPORT QgsAbstractSymbolConverter
      * Returns an invalid variant if the \a symbol could not be converted,
      * or if serialization of symbols is not supported for this
      * converter.
+     *
+     * \throws QgsNotSupportedException if the converter does not support
+     * serialization of symbols.
      */
-    virtual QVariant toVariant( const QgsSymbol *symbol, QgsSymbolConverterContext &context ) const = 0;
+    virtual QVariant toVariant( const QgsSymbol *symbol, QgsSymbolConverterContext &context ) const = 0 SIP_THROW( QgsNotSupportedException );
 
     /**
      * Creates a new QgsSymbol from a QVariant representation.
@@ -102,10 +105,12 @@ class CORE_EXPORT QgsAbstractSymbolConverter
      *
      * \returns A new QgsSymbol instance representing the data in the variant.
      * The caller takes ownership of the returned object. Returns NULLPTR if the
-     * variant cannot be converted or parsed, or if the converter does not support
+     * variant cannot be converted or parsed.
+     *
+     * \throws QgsNotSupportedException if the converter does not support
      * deserialization of symbols.
      */
-    virtual std::unique_ptr< QgsSymbol > createSymbol( const QVariant &variant, QgsSymbolConverterContext &context ) const = 0;
+    virtual std::unique_ptr< QgsSymbol > createSymbol( const QVariant &variant, QgsSymbolConverterContext &context ) const = 0 SIP_THROW( QgsNotSupportedException );
 
 };
 

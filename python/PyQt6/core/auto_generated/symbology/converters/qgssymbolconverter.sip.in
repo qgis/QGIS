@@ -86,6 +86,9 @@ depending on the concrete implementation (e.g., SLD vs. Mapbox GL).
 
 Returns an invalid variant if the ``symbol`` could not be converted, or
 if serialization of symbols is not supported for this converter.
+
+:raises QgsNotSupportedException: if the converter does not support
+                                  serialization of symbols.
 %End
 
     virtual std::unique_ptr< QgsSymbol > createSymbol( const QVariant &variant, QgsSymbolConverterContext &context ) const = 0;
@@ -97,9 +100,10 @@ Creates a new :py:class:`QgsSymbol` from a QVariant representation.
 
 :return: A new :py:class:`QgsSymbol` instance representing the data in
          the variant. The caller takes ownership of the returned object.
-         Returns ``None`` if the variant cannot be converted or parsed,
-         or if the converter does not support deserialization of
-         symbols.
+         Returns ``None`` if the variant cannot be converted or parsed.
+
+:raises QgsNotSupportedException: if the converter does not support
+                                  deserialization of symbols.
 %End
 
 };
