@@ -660,6 +660,54 @@ tests:
           fields:
             fid: skip
 
+  - algorithm: native:validatenetwork
+    name: Network validation, considering all nodes
+    params:
+      ENDPOINTS_ONLY: false
+      INPUT:
+        name: custom/network_validation2.gml|layername=network_validation2
+        type: vector
+      TOLERANCE: 0.0
+      TOLERANCE_NODE_NODE: 1.0
+      TOLERANCE_NODE_SEGMENT: 1.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT_INVALID_NODES:
+        name: expected/network_validation_all_nodes.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            fid: skip
+
+  - algorithm: native:validatenetwork
+    name: Network validation, consider endpoints only
+    params:
+      ENDPOINTS_ONLY: true
+      INPUT:
+        name: custom/network_validation2.gml|layername=network_validation2
+        type: vector
+      TOLERANCE: 0.0
+      TOLERANCE_NODE_NODE: 1.0
+      TOLERANCE_NODE_SEGMENT: 1.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT_INVALID_NODES:
+        name: expected/network_validation_endpoints_only.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            fid: skip
+
   - algorithm: native:forcecw
     name: Force clockwise polys
     params:
