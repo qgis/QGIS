@@ -704,9 +704,6 @@ endif()
 
 set(CMAKE_AUTOMOC ON)
 
-# build our version of astyle
-set (WITH_ASTYLE FALSE CACHE BOOL "Deprecated. Should be OFF. If you plan to contribute you should reindent with scripts/prepare_commit.sh (using 'our' astyle)")
-
 # QML
 set(QML_IMPORT_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" CACHE PATH "QML directory for QML autocomplete")
 
@@ -1267,10 +1264,6 @@ if (WITH_CORE)
   endif()
 
   install(FILES cmake/FindQGIS.cmake DESTINATION ${QGIS_DATA_DIR})
-endif()
-
-if (WITH_ASTYLE)
-  add_subdirectory(external/astyle)
 endif()
 
 if (ENABLE_TESTS)

@@ -18,11 +18,6 @@ TOPLEVEL=$(git rev-parse --show-toplevel)
 
 set -e
 
-if ! type -p "${TOPLEVEL}"/scripts/astyle.sh >/dev/null; then
-  echo astyle.sh not found
-  exit 1
-fi
-
 # capture files passed by pre-commit
 MODIFIED="$@"
 
