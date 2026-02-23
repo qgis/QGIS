@@ -20,13 +20,13 @@
 #define SIP_NO_FILE
 
 /**
- * \class QgsQmlSymbolConverter
+ * \class QgsSymbolConverterQml
  * \ingroup core
  * \brief A symbol converter for converting QgsSymbol objects to and from QGIS's native QML XML format.
  *
  * \since QGIS 4.2
  */
-class CORE_EXPORT QgsQmlSymbolConverter : public QgsAbstractSymbolConverter
+class CORE_EXPORT QgsSymbolConverterQml : public QgsAbstractSymbolConverter
 {
   public:
 

@@ -27,22 +27,22 @@
 
 using namespace Qt::StringLiterals;
 
-Qgis::SymbolConverterCapabilities QgsQmlSymbolConverter::capabilities() const
+Qgis::SymbolConverterCapabilities QgsSymbolConverterQml::capabilities() const
 {
   return Qgis::SymbolConverterCapability::ReadSymbol | Qgis::SymbolConverterCapability::WriteSymbol;
 }
 
-QString QgsQmlSymbolConverter::name() const
+QString QgsSymbolConverterQml::name() const
 {
   return u"qml"_s;
 }
 
-QString QgsQmlSymbolConverter::formatName() const
+QString QgsSymbolConverterQml::formatName() const
 {
   return QObject::tr( "QGIS QML Style" );
 }
 
-QVariant QgsQmlSymbolConverter::toVariant( const QgsSymbol *symbol, QgsSymbolConverterContext &context ) const
+QVariant QgsSymbolConverterQml::toVariant( const QgsSymbol *symbol, QgsSymbolConverterContext &context ) const
 {
   if ( !symbol )
     return QVariant();
@@ -60,7 +60,7 @@ QVariant QgsQmlSymbolConverter::toVariant( const QgsSymbol *symbol, QgsSymbolCon
   return doc.toString();
 }
 
-std::unique_ptr< QgsSymbol > QgsQmlSymbolConverter::createSymbol( const QVariant &variant, QgsSymbolConverterContext &context ) const
+std::unique_ptr< QgsSymbol > QgsSymbolConverterQml::createSymbol( const QVariant &variant, QgsSymbolConverterContext &context ) const
 {
   const QString xmlString = variant.toString();
   if ( xmlString.isEmpty() )
