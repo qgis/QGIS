@@ -43,7 +43,6 @@ class QgsAttributes;
 class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
 {
   public:
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( sipCpp->diagramName() == "Pie"_L1 )
@@ -98,7 +97,6 @@ class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
     virtual double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &interpolationSettings ) const = 0;
 
   protected:
-
     QgsDiagram() = default;
     QgsDiagram( const QgsDiagram &other );
 
@@ -149,7 +147,7 @@ class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
 
   private:
     QMap<QString, QgsExpression *> mExpressions;
-    QgsDiagram &operator= ( const QgsDiagram & ) = delete;
+    QgsDiagram &operator=( const QgsDiagram & ) = delete;
 };
 
 #endif // QGSDIAGRAM_H

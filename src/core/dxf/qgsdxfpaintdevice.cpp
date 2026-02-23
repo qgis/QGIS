@@ -27,7 +27,6 @@ QgsDxfPaintDevice::QgsDxfPaintDevice( QgsDxfExport *dxf )
 
 QgsDxfPaintDevice::~QgsDxfPaintDevice()
 {
-
 }
 
 QPaintEngine *QgsDxfPaintDevice::paintEngine() const
@@ -61,7 +60,7 @@ int QgsDxfPaintDevice::metric( PaintDeviceMetric metric ) const
       return 1;
     case QPaintDevice::PdmDevicePixelRatioScaled:
       return 1;
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 8, 0))
+#if ( QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 ) )
     case PdmDevicePixelRatioF_EncodedA:
       return 1;
     case PdmDevicePixelRatioF_EncodedB:
@@ -111,5 +110,3 @@ void QgsDxfPaintDevice::setShift( QPointF shift )
     mPaintEngine->setShift( shift );
   }
 }
-
-

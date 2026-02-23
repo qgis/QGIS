@@ -202,9 +202,7 @@ void QgsDxfPaintEngine::drawLines( const QLineF *lines, int lineCount )
 
   for ( int i = 0; i < lineCount; ++i )
   {
-    mDxf->writeLine( toDxfCoordinates( lines[i].p1() ),
-                     toDxfCoordinates( lines[i].p2() ),
-                     mLayer, u"CONTINUOUS"_s, penColor(), currentWidth() );
+    mDxf->writeLine( toDxfCoordinates( lines[i].p1() ), toDxfCoordinates( lines[i].p2() ), mLayer, u"CONTINUOUS"_s, penColor(), currentWidth() );
   }
 }
 
@@ -231,7 +229,7 @@ QPointF QgsDxfPaintEngine::bezierPoint( const QList<QPointF> &controlPolygon, do
   double x = 0;
   double y = 0;
   const int cPolySize = controlPolygon.size();
-  double bPoly  = 0;
+  double bPoly = 0;
 
   QList<QPointF>::const_iterator it = controlPolygon.constBegin();
   int i = 0;
@@ -283,14 +281,14 @@ double QgsDxfPaintEngine::power( double a, int b )
 
 int QgsDxfPaintEngine::faculty( int n )
 {
-  if ( n < 0 )//Is faculty also defined for negative integers?
+  if ( n < 0 ) //Is faculty also defined for negative integers?
     return 0;
 
   int i;
   int result = n;
 
   if ( n == 0 || n == 1 )
-    return 1;  //faculty of 0 is 1!
+    return 1; //faculty of 0 is 1!
 
   for ( i = n - 1; i >= 2; i-- )
     result *= i;
