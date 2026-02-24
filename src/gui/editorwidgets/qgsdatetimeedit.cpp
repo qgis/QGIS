@@ -210,10 +210,12 @@ void QgsDateTimeEdit::focusInEvent( QFocusEvent *event )
     QAbstractSpinBox::focusInEvent( event );
 
     displayCurrentDate();
+    setSelectedSection( sectionAt( 0 ) );
   }
   else
   {
     QDateTimeEdit::focusInEvent( event );
+    setSelectedSection( sectionAt( 0 ) );
   }
 }
 
