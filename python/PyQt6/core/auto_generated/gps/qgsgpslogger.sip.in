@@ -231,8 +231,6 @@ changed.
 Adds a track vertex at the current GPS location.
 %End
 
-  protected:
-
 };
 
 

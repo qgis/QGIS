@@ -267,9 +267,6 @@ class CORE_EXPORT QgsGpsLogger : public QObject
      */
     void addTrackVertex();
 
-  protected:
-    QgsDistanceArea mDistanceCalculator;
-
   private slots:
 
     void switchAcquisition();
@@ -278,6 +275,8 @@ class CORE_EXPORT QgsGpsLogger : public QObject
   private:
 
     QPointer< QgsGpsConnection > mConnection;
+
+    QgsDistanceArea mDistanceCalculator;
 
     QgsCoordinateTransformContext mTransformContext;
 
