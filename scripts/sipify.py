@@ -668,6 +668,14 @@ def read_line():
     new_line = CONTEXT.input_lines[CONTEXT.line_idx]
     CONTEXT.line_idx += 1
 
+    # Join lines where SIP_HOLDGIL or SIP_RELEASEGIL is on its own line
+    # (can happen with clang-format's BeforeComma constructor initializer style)
+    if CONTEXT.line_idx < CONTEXT.line_count and re.match(
+        r"^\s*SIP_(HOLDGIL|RELEASEGIL)\s*$", CONTEXT.input_lines[CONTEXT.line_idx]
+    ):
+        new_line = new_line + " " + CONTEXT.input_lines[CONTEXT.line_idx].strip()
+        CONTEXT.line_idx += 1
+
     if CONTEXT.debug:
         print(
             f"LIN:{CONTEXT.line_idx} DEPTH:{len(CONTEXT.access)} ACC:{CONTEXT.access[-1]} "
