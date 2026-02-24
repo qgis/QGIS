@@ -618,6 +618,7 @@ int main( int argc, char *argv[] )
   // save the image to disk and then exit
   QString mySnapshotFileName;
   QString configLocalStorageLocation;
+  bool preventSettingsMigration = false;
   QString profileName;
   int mySnapshotWidth = 800;
   int mySnapshotHeight = 600;
@@ -741,6 +742,9 @@ int main( int argc, char *argv[] )
         else if ( i + 1 < argc && ( arg == "--profiles-path"_L1 || arg == "-S"_L1 ) )
         {
           configLocalStorageLocation = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+          // If an explicit profiles-path was specified, we don't do ANY settings migration logic.
+          // We'll instead leave that up to the system administrator to do.
+          preventSettingsMigration = true;
         }
         else if ( i + 1 < argc && ( arg == "--snapshot"_L1 || arg == "-s"_L1 ) )
         {
@@ -1063,11 +1067,17 @@ int main( int argc, char *argv[] )
     if ( getenv( "QGIS_CUSTOM_CONFIG_PATH" ) )
     {
       configLocalStorageLocation = getenv( "QGIS_CUSTOM_CONFIG_PATH" );
+      // If an explicit QGIS_CUSTOM_CONFIG_PATH was specified, we don't do ANY settings migration logic.
+      // We'll instead leave that up to the system administrator to do.
+      preventSettingsMigration = true;
     }
     else if ( globalSettings.contains( u"core/profilesPath"_s ) )
     {
       configLocalStorageLocation = globalSettings.value( u"core/profilesPath"_s, "" ).toString();
       QgsDebugMsgLevel( u"Loading profiles path from global config at %1"_s.arg( configLocalStorageLocation ), 1 );
+      // If an explicit profilesPath was specified, we don't do ANY settings migration logic.
+      // We'll instead leave that up to the system administrator to do.
+      preventSettingsMigration = true;
     }
 
     // If it is still empty at this point we get it from the standard location.
@@ -1094,9 +1104,12 @@ int main( int argc, char *argv[] )
     QgsApplication::setTranslation( QLocale().name() );
   }
 
-  // before doing any profile management, sync the available SET of profiles to an existing QGIS3 set.
-  // This doesn't actually COPY any profiles, just makes them available for selection on QGIS 4
-  copyProfileNamesFromQgis3( configLocalStorageLocation );
+  if ( !preventSettingsMigration )
+  {
+    // before doing any profile management, sync the available SET of profiles to an existing QGIS3 set.
+    // This doesn't actually COPY any profiles, just makes them available for selection on QGIS 4
+    copyProfileNamesFromQgis3( configLocalStorageLocation );
+  }
 
   QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( configLocalStorageLocation );
   QgsUserProfileManager manager( rootProfileFolder );
@@ -1243,7 +1256,7 @@ int main( int argc, char *argv[] )
   const QDir qgisConfigRootPath = QDir( configLocalStorageLocation );
   const QDir qgis3ProfilePath = QDir( QDir::cleanPath( qgisConfigRootPath.filePath( u"../QGIS3/profiles/%1"_s.arg( profileName ) ) ) );
   const QDir qgis4ProfilePath = QDir( QDir::cleanPath( qgisConfigRootPath.filePath( u"../QGIS4/profiles/%1"_s.arg( profileName ) ) ) );
-  if ( qgis3ProfilePath.exists() )
+  if ( !preventSettingsMigration && qgis3ProfilePath.exists() )
   {
     QgsDebugMsgLevel( u"Considering migration from %1 to %2"_s.arg( qgis3ProfilePath.path(), qgis4ProfilePath.path() ), 2 );
     QgsSettings migSettings;
