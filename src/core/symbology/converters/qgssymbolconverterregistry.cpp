@@ -20,6 +20,7 @@
 #include "qgssymbolconverter.h"
 #include "qgssymbolconverteresrirest.h"
 #include "qgssymbolconverterqml.h"
+#include "qgssymbolconvertersld.h"
 
 QgsSymbolConverterRegistry::QgsSymbolConverterRegistry( QObject *parent )
   : QObject( parent )
@@ -33,6 +34,7 @@ QgsSymbolConverterRegistry::~QgsSymbolConverterRegistry()
 void QgsSymbolConverterRegistry::populate()
 {
   addConverter( new QgsSymbolConverterQml() );
+  addConverter( new QgsSymbolConverterSld() );
   addConverter( new QgsSymbolConverterEsriRest() );
 }
 
