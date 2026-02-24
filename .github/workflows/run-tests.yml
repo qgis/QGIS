@@ -81,7 +81,7 @@ jobs:
             with-sfcgal: ON
             with-compile-commands: OFF
             with-model-test: OFF
-            with-internal-spatialindex: OFF
+            with-internal-spatialindex: ON
             with-pg-test: OFF
             with-mssql-test: OFF
             with-hana-test: OFF
