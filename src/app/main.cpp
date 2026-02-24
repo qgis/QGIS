@@ -265,6 +265,16 @@ void copyProfileNamesFromQgis3( const QString &configLocalStorageLocation )
       continue;
     }
   }
+
+  const QString qgis3ProfilesIniPath = QDir::cleanPath( qgisConfigRootPath.filePath( u"../QGIS3/profiles/profiles.ini"_s ) );
+  const QString qgis4ProfilesIniPath = QDir::cleanPath( qgisConfigRootPath.filePath( u"../QGIS4/profiles/profiles.ini"_s ) );
+  if ( QFile::exists( qgis3ProfilesIniPath ) && !QFile::exists( qgis4ProfilesIniPath ) )
+  {
+    if ( !QFile::copy( qgis3ProfilesIniPath, qgis4ProfilesIniPath ) )
+    {
+      QgsDebugError( u"Could not copy profiles.ini from %1 to %2, skipping"_s.arg( qgis3ProfilesIniPath, qgis4ProfilesIniPath ) );
+    }
+  }
 }
 
 static void dumpBacktrace( unsigned int depth )
