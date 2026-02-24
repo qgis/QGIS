@@ -156,6 +156,13 @@ bool QgsPointCloudLayerRenderer::render()
     mElapsedTimer.start();
   }
 
+  QgsElevationShadingRenderer elevationShadingRenderer = mRenderer->elevationShadingRenderer();
+  if ( elevationShadingRenderer.isActive() )
+  {
+    auto elevationMap = std::make_unique<QgsElevationMap>( renderContext()->deviceOutputSize(), renderContext()->devicePixelRatio() );
+    renderContext()->setElevationMap( elevationMap.release() );
+  }
+
   mRenderer->startRender( context );
 
   mAttributes.push_back( QgsPointCloudAttribute( u"X"_s, QgsPointCloudAttribute::Int32 ) );
@@ -264,6 +271,14 @@ bool QgsPointCloudLayerRenderer::render()
       }
       mSubIndexExtentRenderer->stopRender( context );
     }
+  }
+
+  QImage *img = dynamic_cast< QImage * >( painter->device() );
+  if ( img )
+  {
+    const QgsElevationMap *elevationMap = renderContext()->elevationMap();
+    if ( elevationMap )
+      mRenderer->elevationShadingRenderer().renderShading( *elevationMap, *img, *renderContext() );
   }
 
   mRenderer->stopRender( context );
