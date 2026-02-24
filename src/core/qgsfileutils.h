@@ -248,6 +248,16 @@ class CORE_EXPORT QgsFileUtils
      */
     static bool copyDirectory( const QString &source, const QString &destination );
 
+    /**
+     * Replaces all occurrences of a given string in a file.
+     *
+     * Returns TRUE if the replacement was successful and the file updated.
+     *
+     * Replacement is case-sensitive.
+     *
+     * \since QGIS 4.0
+     */
+    static bool replaceTextInFile( const QString &path, const QString &searchString, const QString &replacement );
 };
 
 #endif // QGSFILEUTILS_H

@@ -687,3 +687,34 @@ bool QgsFileUtils::copyDirectory( const QString &source, const QString &destinat
   }
   return copiedAll;
 }
+
+bool QgsFileUtils::replaceTextInFile( const QString &path, const QString &searchString, const QString &replacement )
+{
+  QFile file( path );
+  if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+  {
+    QgsDebugError( u"Could not open file for reading: %1"_s.arg( file.errorString() ) );
+    return false;
+  }
+
+  QTextStream in( &file );
+  const QString originalFileContent = in.readAll();
+  file.close();
+
+  QString fileContent = originalFileContent;
+  fileContent.replace( searchString, replacement );
+  if ( fileContent == originalFileContent )
+    return true;
+
+  if ( !file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
+  {
+    QgsDebugError( u"Could not open file for writing: %1"_s.arg( file.errorString() ) );
+    return false;
+  }
+
+  QTextStream out( &file );
+  out << fileContent;
+  file.close();
+
+  return true;
+}
