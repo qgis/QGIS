@@ -79,6 +79,22 @@ class CORE_EXPORT QgsSymbolConverterContext
      */
     void pushWarning( const QString &warning ) { mWarnings << warning; }
 
+    /**
+     * Returns the symbol type hint, or Qgis::SymbolType::Hybrid if unknown.
+     *
+     * \see setTypeHint()
+     */
+    Qgis::SymbolType typeHint() const { return mTypeHint; }
+
+    /**
+     * Sets the symbol type \a hint.
+     *
+     * Set to Qgis::SymbolType::Hybrid if unknown.
+     *
+     * \see typeHint()
+     */
+    void setTypeHint( Qgis::SymbolType hint ) { mTypeHint = hint; }
+
   private:
 
 #ifdef SIP_RUN
@@ -88,6 +104,7 @@ class CORE_EXPORT QgsSymbolConverterContext
     QgsReadWriteContext &mRwContext;
     QStringList mErrors;
     QStringList mWarnings;
+    Qgis::SymbolType mTypeHint = Qgis::SymbolType::Hybrid;
 };
 
 /**
