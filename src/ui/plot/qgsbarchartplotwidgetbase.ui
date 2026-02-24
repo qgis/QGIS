@@ -47,7 +47,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-468</y>
+        <y>0</y>
         <width>548</width>
         <height>1215</height>
        </rect>
@@ -420,21 +420,21 @@
            </widget>
           </item>
           <item row="2" column="0">
-           <widget class="QLabel" name="label_6">
+           <widget class="QLabel" name="mLabelXAxisMajorInterval">
             <property name="text">
              <string>Major interval</string>
             </property>
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QLabel" name="label">
+           <widget class="QLabel" name="mXAxisLabelSuffixLabel">
             <property name="text">
              <string>Axis label suffix</string>
             </property>
            </widget>
           </item>
           <item row="1" column="2" colspan="2">
-           <widget class="QLineEdit" name="mXAxisLabelSuffix"/>
+           <widget class="QLineEdit" name="mXAxisLabelSuffixEdit"/>
           </item>
          </layout>
         </widget>
@@ -809,7 +809,7 @@
   <tabstop>mRemoveSymbolPushButton</tabstop>
   <tabstop>mSymbolsList</tabstop>
   <tabstop>mXAxisTypeCombo</tabstop>
-  <tabstop>mXAxisLabelSuffix</tabstop>
+  <tabstop>mXAxisLabelSuffixEdit</tabstop>
   <tabstop>mXAxisMajorIntervalSpin</tabstop>
   <tabstop>mDDBtnXAxisMajorInterval</tabstop>
   <tabstop>mXAxisMajorLinesSymbolButton</tabstop>
