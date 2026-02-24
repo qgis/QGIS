@@ -48,7 +48,7 @@ QVariant QgsSymbolConverterQml::toVariant( const QgsSymbol *symbol, QgsSymbolCon
     return QVariant();
 
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgis_qml_symbol"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType( u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
   QDomDocument doc( documentType );
 
   QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( u"symbol"_s, symbol, doc, context.readWriteContext() );
