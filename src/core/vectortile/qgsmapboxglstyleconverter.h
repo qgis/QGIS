@@ -837,6 +837,8 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
 
     QList< QgsMapBoxGlStyleAbstractSource * > mSources;
     QList< QgsMapBoxGlStyleRasterSubLayer> mRasterSubLayers;
+
+    friend class QgsSymbolConverterMapBoxGl;
 };
 
 #endif // QGSMAPBOXGLSTYLECONVERTER_H

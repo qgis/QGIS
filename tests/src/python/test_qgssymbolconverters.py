@@ -173,6 +173,92 @@ class TestQgsSymbolConverters(QgisTestCase):
         self.assertIsNone(converter.createSymbol(None, context))
         self.assertIsNone(converter.createSymbol("", context))
 
+    def test_mapboxgl_create_line_symbol(self):
+        """
+        Test parsing a MapBox GL line layer into a QgsLineSymbol.
+
+        This tests the converter class logic only -- the bulk of the actual conversion
+        tests are in test_qgsmapboxglconverter.py
+        """
+        converter = QgsApplication.symbolConverterRegistry().converter("mapboxgl")
+        self.assertIsNotNone(converter)
+        rw_context = QgsReadWriteContext()
+        context = QgsSymbolConverterContext(rw_context)
+
+        json_layer = {
+            "id": "test-line",
+            "type": "line",
+            "paint": {"line-color": "#ff0000", "line-width": 3, "line-opacity": 0.5},
+        }
+
+        restored_symbol = converter.createSymbol(json_layer, context)
+        self.assertIsInstance(restored_symbol, QgsLineSymbol)
+
+        self.assertEqual(restored_symbol.color(), QColor(255, 0, 0, 255))
+        self.assertAlmostEqual(restored_symbol.opacity(), 0.5, places=2)
+
+    def test_mapboxgl_create_fill_symbol(self):
+        """
+        Test parsing a MapBox GL fill layer into a QgsFillSymbol.
+
+        This tests the converter class logic only -- the bulk of the actual conversion
+        tests are in test_qgsmapboxglconverter.py
+        """
+        converter = QgsApplication.symbolConverterRegistry().converter("mapboxgl")
+        self.assertIsNotNone(converter)
+        rw_context = QgsReadWriteContext()
+        context = QgsSymbolConverterContext(rw_context)
+
+        json_layer = {
+            "id": "test-fill",
+            "type": "fill",
+            "paint": {"fill-color": "#00ff00", "fill-outline-color": "#0000ff"},
+        }
+
+        restored_symbol = converter.createSymbol(json_layer, context)
+        self.assertIsInstance(restored_symbol, QgsFillSymbol)
+
+        fill_layer = restored_symbol.symbolLayer(0)
+        self.assertEqual(fill_layer.fillColor(), QColor(0, 255, 0))
+        self.assertEqual(fill_layer.strokeColor(), QColor(0, 0, 255))
+
+    def test_mapboxgl_create_circle_symbol(self):
+        """
+        Test parsing a MapBox GL circle layer into a QgsMarkerSymbol.
+
+        This tests the converter class logic only -- the bulk of the actual conversion
+        tests are in test_qgsmapboxglconverter.py
+        """
+        converter = QgsApplication.symbolConverterRegistry().converter("mapboxgl")
+        self.assertIsNotNone(converter)
+        rw_context = QgsReadWriteContext()
+        context = QgsSymbolConverterContext(rw_context)
+
+        json_layer = {
+            "id": "test-circle",
+            "type": "circle",
+            "paint": {"circle-color": "#0000ff", "circle-radius": 5},
+        }
+
+        restored_symbol = converter.createSymbol(json_layer, context)
+        self.assertIsInstance(restored_symbol, QgsMarkerSymbol)
+        self.assertEqual(restored_symbol.color(), QColor(0, 0, 255))
+
+    def test_mapboxgl_create_symbol_invalid(self):
+        """
+        Test parsing a invalid MapBox variant.
+        """
+        converter = QgsApplication.symbolConverterRegistry().converter("mapboxgl")
+        self.assertIsNotNone(converter)
+        rw_context = QgsReadWriteContext()
+        context = QgsSymbolConverterContext(rw_context)
+
+        self.assertIsNone(converter.createSymbol(None, context))
+        self.assertIsNone(converter.createSymbol("", context))
+
+        # missing type property
+        self.assertIsNone(converter.createSymbol({"id": "broken"}, context))
+
 
 if __name__ == "__main__":
     unittest.main()

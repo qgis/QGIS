@@ -147,6 +147,7 @@ set(QGIS_CORE_SRCS
   symbology/qgsvectorfieldsymbollayer.cpp
   symbology/converters/qgssymbolconverter.cpp
   symbology/converters/qgssymbolconverteresrirest.cpp
+  symbology/converters/qgssymbolconvertermapboxgl.cpp
   symbology/converters/qgssymbolconverterogrstyle.cpp
   symbology/converters/qgssymbolconverterqml.cpp
   symbology/converters/qgssymbolconverterregistry.cpp
@@ -2088,6 +2089,7 @@ set(QGIS_CORE_HDRS
   symbology/qgsvectorfieldsymbollayer.h
   symbology/converters/qgssymbolconverter.h
   symbology/converters/qgssymbolconverteresrirest.h
+  symbology/converters/qgssymbolconvertermapboxgl.h
   symbology/converters/qgssymbolconverterogrstyle.h
   symbology/converters/qgssymbolconverterqml.h
   symbology/converters/qgssymbolconverterregistry.h

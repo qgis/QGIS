@@ -19,6 +19,7 @@
 
 #include "qgssymbolconverter.h"
 #include "qgssymbolconverteresrirest.h"
+#include "qgssymbolconvertermapboxgl.h"
 #include "qgssymbolconverterogrstyle.h"
 #include "qgssymbolconverterqml.h"
 #include "qgssymbolconvertersld.h"
@@ -36,6 +37,7 @@ void QgsSymbolConverterRegistry::populate()
 {
   addConverter( new QgsSymbolConverterQml() );
   addConverter( new QgsSymbolConverterSld() );
+  addConverter( new QgsSymbolConverterMapBoxGl() );
   addConverter( new QgsSymbolConverterOgrStyle() );
   addConverter( new QgsSymbolConverterEsriRest() );
 }
