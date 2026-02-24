@@ -4515,11 +4515,16 @@ bool QgsGdalProvider::setEditable( bool enabled )
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,8,0)
   // Check if this is a GTiff with COG layout because otherwise it won't open in update mode.
-  if ( mDriverName == "GTiff"_L1 && GDALGetMetadataItem( mGdalBaseDataset, "LAYOUT", "IMAGE_STRUCTURE" ) == "COG"_L1 && !dataSourceUri().contains( "IGNORE_COG_LAYOUT_BREAK=YES"_L1, Qt::CaseSensitivity::CaseInsensitive ) )
+  if ( mDriverName == "GTiff"_L1 )
   {
-    QString msg = u"Cannot reopen GDAL dataset %1 in update mode because it would possibly break COG layout,\nset the open option IGNORE_COG_LAYOUT_BREAK=YES to override."_s.arg( dataSourceUri() );
-    appendError( ERRMSG( msg ) );
-    return false;
+    const char *layout = GDALGetMetadataItem( mGdalBaseDataset, "LAYOUT", "IMAGE_STRUCTURE" );
+    if ( layout && EQUAL( layout, "COG" ) &&
+         !dataSourceUri().contains( "IGNORE_COG_LAYOUT_BREAK=YES"_L1, Qt::CaseSensitivity::CaseInsensitive ) )
+    {
+      QString msg = u"Cannot reopen GDAL dataset %1 in update mode because it would possibly break COG layout,\nset the open option IGNORE_COG_LAYOUT_BREAK=YES to override."_s.arg( dataSourceUri() );
+      appendError( ERRMSG( msg ) );
+      return false;
+    }
   }
 #endif
 
