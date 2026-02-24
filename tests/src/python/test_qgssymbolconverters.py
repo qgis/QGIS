@@ -45,6 +45,50 @@ class TestQgsSymbolConverters(QgisTestCase):
         self.assertIsInstance(restored_symbol, QgsMarkerSymbol)
         self.assertEqual(restored_symbol.color(), QColor(255, 30, 10))
 
+    def test_sld_converter(self):
+        """
+        Test SLD symbol conversion.
+
+        This tests the converter class logic only -- the bulk of the SLD conversion
+        tests live elsewhere
+        """
+        converter = QgsApplication.symbolConverterRegistry().converter("sld")
+        self.assertIsNotNone(converter)
+        rw_context = QgsReadWriteContext()
+        context = QgsSymbolConverterContext(rw_context)
+
+        symbol = QgsMarkerSymbol.createSimple({"color": "255,30,10", "size": "4"})
+        variant = converter.toVariant(symbol, context)
+
+        self.assertEqual(variant[:28], "<Rule>\n <se:PointSymbolizer>")
+        self.assertIn("<se:PointSymbolizer", variant)
+
+        context.setTypeHint(Qgis.SymbolType.Marker)
+        restored_symbol = converter.createSymbol(variant, context)
+        self.assertIsInstance(restored_symbol, QgsMarkerSymbol)
+        self.assertEqual(restored_symbol.color(), QColor(255, 30, 10))
+
+        # try with a full xml document
+        xml = """<?xml version="1.0" encoding="UTF-8"?>
+        <StyledLayerDescriptor xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" xmlns:se="http://www.opengis.net/se">
+        <UserStyle>
+        <se:FeatureTypeStyle>
+        <se:Rule>
+        <se:PointSymbolizer>
+        <se:Graphic><se:Mark><se:WellKnownName>circle</se:WellKnownName>\
+        <se:Fill>
+        <se:SvgParameter name="fill">#ff1e0a</se:SvgParameter></se:Fill>
+        <se:Stroke>
+        <se:SvgParameter name="stroke">#232323</se:SvgParameter>
+        <se:SvgParameter name="stroke-width">0.5</se:SvgParameter>
+        </se:Stroke></se:Mark>
+        <se:Size>14</se:Size>
+        </se:Graphic></se:PointSymbolizer>
+        </se:Rule></se:FeatureTypeStyle></UserStyle></StyledLayerDescriptor>"""
+        restored_symbol = converter.createSymbol(variant, context)
+        self.assertIsInstance(restored_symbol, QgsMarkerSymbol)
+        self.assertEqual(restored_symbol.color(), QColor(255, 30, 10))
+
     def test_esri_rest_converter(self):
         """
         Test Esri REST JSON symbol conversion.
