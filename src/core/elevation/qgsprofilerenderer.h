@@ -58,17 +58,14 @@ class QgsProfilePoint;
  */
 class CORE_EXPORT QgsProfilePlotRenderer : public QObject
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProfilePlotRenderer, using the provided list of profile \a sources to generate the
      * results.
      */
-    QgsProfilePlotRenderer( const QList< QgsAbstractProfileSource * > &sources,
-                            const QgsProfileRequest &request );
+    QgsProfilePlotRenderer( const QList< QgsAbstractProfileSource * > &sources, const QgsProfileRequest &request );
 
     /**
      * Constructor for QgsProfilePlotRenderer, using the provided list of profile \a generators to generate the
@@ -78,8 +75,7 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
      *
      * \since QGIS 3.32
      */
-    QgsProfilePlotRenderer( std::vector<std::unique_ptr<QgsAbstractProfileGenerator> > generators,
-                            const QgsProfileRequest &request ) SIP_SKIP;
+    QgsProfilePlotRenderer( std::vector<std::unique_ptr<QgsAbstractProfileGenerator> > generators, const QgsProfileRequest &request ) SIP_SKIP;
 
     ~QgsProfilePlotRenderer() override;
 
@@ -250,17 +246,16 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
     void onGeneratingFinished();
 
   private:
-
     static QTransform computeRenderTransform( double width, double height, double distanceMin, double distanceMax, double zMin, double zMax );
 
     struct ProfileJob
     {
-      QgsAbstractProfileGenerator *generator = nullptr;
-      QgsProfileGenerationContext context;
-      std::unique_ptr< QgsAbstractProfileResults > results;
-      std::unique_ptr< QgsAbstractProfileResults > invalidatedResults;
-      bool complete = false;
-      QMutex mutex;
+        QgsAbstractProfileGenerator *generator = nullptr;
+        QgsProfileGenerationContext context;
+        std::unique_ptr< QgsAbstractProfileResults > results;
+        std::unique_ptr< QgsAbstractProfileResults > invalidatedResults;
+        bool complete = false;
+        QMutex mutex;
     };
 
     static void generateProfileStatic( std::unique_ptr< ProfileJob > &job );
@@ -275,10 +270,14 @@ class CORE_EXPORT QgsProfilePlotRenderer : public QObject
     QFuture<void> mFuture;
     QFutureWatcher<void> mFutureWatcher;
 
-    enum { Idle, Generating } mStatus = Idle;
+    enum
+    {
+      Idle,
+      Generating
+    } mStatus
+      = Idle;
 
     std::unique_ptr<QgsLineSymbol> mSubsectionsSymbol;
-
 };
 
 #endif // QGSPROFILERENDERER_H

@@ -34,7 +34,6 @@ using namespace Qt::StringLiterals;
 class CORE_EXPORT QgsProfilePoint
 {
   public:
-
     /**
      * Constructor for an empty point.
      */
@@ -43,10 +42,11 @@ class CORE_EXPORT QgsProfilePoint
     /**
      * Create a point at the specified distance and elevation coordinates
      */
-    QgsProfilePoint( double distance, double elevation ) SIP_HOLDGIL
-  : mDistance( distance )
-    , mElevation( elevation )
-    , mIsEmpty( false )
+    QgsProfilePoint( double distance, double elevation )
+    SIP_HOLDGIL
+      : mDistance( distance )
+      , mElevation( elevation )
+      , mIsEmpty( false )
     {}
 
     /**
@@ -76,20 +76,14 @@ class CORE_EXPORT QgsProfilePoint
      *
      * \see setDistance()
      */
-    double distance() const SIP_HOLDGIL
-    {
-      return mDistance;
-    }
+    double distance() const SIP_HOLDGIL { return mDistance; }
 
     /**
      * Returns the elevation of the point.
      *
      * \see setElevation()
      */
-    double elevation() const SIP_HOLDGIL
-    {
-      return mElevation;
-    }
+    double elevation() const SIP_HOLDGIL { return mElevation; }
 
     /**
      * Returns TRUE if the point is empty.
@@ -104,7 +98,7 @@ class CORE_EXPORT QgsProfilePoint
         return true;
       if ( isEmpty() && !other.isEmpty() )
         return false;
-      if ( ! isEmpty() && other.isEmpty() )
+      if ( !isEmpty() && other.isEmpty() )
         return false;
 
       bool equal = true;
@@ -120,7 +114,7 @@ class CORE_EXPORT QgsProfilePoint
         return false;
       if ( isEmpty() && !other.isEmpty() )
         return true;
-      if ( ! isEmpty() && other.isEmpty() )
+      if ( !isEmpty() && other.isEmpty() )
         return true;
 
       bool equal = true;
@@ -130,12 +124,13 @@ class CORE_EXPORT QgsProfilePoint
       return !equal;
     }
 
+    // clang-format off
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
     const QString str = sipCpp->isEmpty()
-                        ? u"<QgsProfilePoint: EMPTY>"_s
-                        : u"<QgsProfilePoint: %1, %2>"_s.arg( sipCpp->distance() ).arg( sipCpp->elevation() );
+                          ? u"<QgsProfilePoint: EMPTY>"_s
+                          : u"<QgsProfilePoint: %1, %2>"_s.arg( sipCpp->distance() ).arg( sipCpp->elevation() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 
@@ -159,15 +154,14 @@ class CORE_EXPORT QgsProfilePoint
       QString msg = QString( "Bad index: %1" ).arg( a0 );
       PyErr_SetString( PyExc_IndexError, msg.toLatin1().constData() );
     }
-    % End
-
+  % End
 #endif
+// clang-format on
 
-  private:
-
-    double mDistance = 0;
-    double mElevation = 0;
-    bool mIsEmpty = true;
+    private:
+      double mDistance = 0;
+      double mElevation = 0;
+      bool mIsEmpty = true;
 };
 
 #endif // QGSPROFILEPOINT_H

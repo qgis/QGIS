@@ -23,7 +23,6 @@ Represents an elevation profile attached to a project.
 %End
   public:
 
-
     explicit QgsElevationProfile( QgsProject *project );
 %Docstring
 Constructor for QgsElevationProfile.

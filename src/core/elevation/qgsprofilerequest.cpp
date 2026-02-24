@@ -21,9 +21,7 @@
 
 QgsProfileRequest::QgsProfileRequest( QgsCurve *curve )
   : mCurve( curve )
-{
-
-}
+{}
 
 QgsProfileRequest::~QgsProfileRequest() = default;
 
@@ -35,9 +33,7 @@ QgsProfileRequest::QgsProfileRequest( const QgsProfileRequest &other )
   , mStepDistance( other.mStepDistance )
   , mTerrainProvider( other.mTerrainProvider ? other.mTerrainProvider->clone() : nullptr )
   , mExpressionContext( other.mExpressionContext )
-{
-
-}
+{}
 
 QgsProfileRequest &QgsProfileRequest::operator=( const QgsProfileRequest &other )
 {
@@ -56,14 +52,10 @@ QgsProfileRequest &QgsProfileRequest::operator=( const QgsProfileRequest &other 
 
 bool QgsProfileRequest::operator==( const QgsProfileRequest &other ) const
 {
-  if ( !qgsDoubleNear( mTolerance, other.mTolerance )
-       || !qgsDoubleNear( mStepDistance, other.mStepDistance )
-       || mCrs != other.mCrs
-       || !( mTransformContext == other.mTransformContext ) )
+  if ( !qgsDoubleNear( mTolerance, other.mTolerance ) || !qgsDoubleNear( mStepDistance, other.mStepDistance ) || mCrs != other.mCrs || !( mTransformContext == other.mTransformContext ) )
     return false;
 
-  if ( ( !mCurve && other.mCurve )
-       || ( mCurve && !other.mCurve ) )
+  if ( ( !mCurve && other.mCurve ) || ( mCurve && !other.mCurve ) )
   {
     return false;
   }
@@ -73,8 +65,7 @@ bool QgsProfileRequest::operator==( const QgsProfileRequest &other ) const
       return false;
   }
 
-  if ( ( mTerrainProvider && !other.mTerrainProvider )
-       || ( !mTerrainProvider && other.mTerrainProvider ) )
+  if ( ( mTerrainProvider && !other.mTerrainProvider ) || ( !mTerrainProvider && other.mTerrainProvider ) )
   {
     return false;
   }
@@ -87,10 +78,7 @@ bool QgsProfileRequest::operator==( const QgsProfileRequest &other ) const
   return true;
 }
 
-bool QgsProfileRequest::operator!=( const QgsProfileRequest &other ) const
-{
-  return !( *this == other );
-}
+bool QgsProfileRequest::operator!=( const QgsProfileRequest &other ) const { return !( *this == other ); }
 
 QgsProfileRequest &QgsProfileRequest::setProfileCurve( QgsCurve *curve )
 {
@@ -98,10 +86,7 @@ QgsProfileRequest &QgsProfileRequest::setProfileCurve( QgsCurve *curve )
   return *this;
 }
 
-QgsCurve *QgsProfileRequest::profileCurve() const
-{
-  return mCurve.get();
-}
+QgsCurve *QgsProfileRequest::profileCurve() const { return mCurve.get(); }
 
 QgsProfileRequest &QgsProfileRequest::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
@@ -109,15 +94,9 @@ QgsProfileRequest &QgsProfileRequest::setCrs( const QgsCoordinateReferenceSystem
   return *this;
 }
 
-QgsCoordinateReferenceSystem QgsProfileRequest::crs() const
-{
-  return mCrs;
-}
+QgsCoordinateReferenceSystem QgsProfileRequest::crs() const { return mCrs; }
 
-QgsCoordinateTransformContext QgsProfileRequest::transformContext() const
-{
-  return mTransformContext;
-}
+QgsCoordinateTransformContext QgsProfileRequest::transformContext() const { return mTransformContext; }
 
 QgsProfileRequest &QgsProfileRequest::setTransformContext( const QgsCoordinateTransformContext &context )
 {
@@ -137,10 +116,7 @@ QgsProfileRequest &QgsProfileRequest::setTerrainProvider( QgsAbstractTerrainProv
   return *this;
 }
 
-QgsAbstractTerrainProvider *QgsProfileRequest::terrainProvider() const
-{
-  return mTerrainProvider.get();
-}
+QgsAbstractTerrainProvider *QgsProfileRequest::terrainProvider() const { return mTerrainProvider.get(); }
 
 QgsProfileRequest &QgsProfileRequest::setStepDistance( double distance )
 {
@@ -153,4 +129,3 @@ QgsProfileRequest &QgsProfileRequest::setExpressionContext( const QgsExpressionC
   mExpressionContext = context;
   return *this;
 }
-

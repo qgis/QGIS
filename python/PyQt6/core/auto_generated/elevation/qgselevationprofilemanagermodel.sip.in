@@ -25,7 +25,6 @@ profile manager.
 %End
   public:
 
-
     enum class CustomRole /BaseType=IntEnum/
     {
       ElevationProfile,
@@ -50,7 +49,6 @@ Returns the model index corresponding to a ``profile``.
 
 .. seealso:: :py:func:`profileFromIndex`
 %End
-
 };
 
 
@@ -67,12 +65,10 @@ QSortFilterProxyModel subclass for
 #include "qgselevationprofilemanagermodel.h"
 %End
   public:
-
     explicit QgsElevationProfileManagerProxyModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsElevationProfileManagerProxyModel.
 %End
-
 };
 
 /************************************************************************
