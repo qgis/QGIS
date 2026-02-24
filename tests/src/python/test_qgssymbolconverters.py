@@ -12,6 +12,8 @@ import unittest
 from qgis.core import (
     Qgis,
     QgsApplication,
+    QgsFillSymbol,
+    QgsLineSymbol,
     QgsMarkerSymbol,
     QgsNotSupportedException,
     QgsReadWriteContext,
@@ -44,6 +46,10 @@ class TestQgsSymbolConverters(QgisTestCase):
         restored_symbol = converter.createSymbol(variant, context)
         self.assertIsInstance(restored_symbol, QgsMarkerSymbol)
         self.assertEqual(restored_symbol.color(), QColor(255, 30, 10))
+
+        # invalid variants
+        self.assertIsNone(converter.createSymbol(None, context))
+        self.assertIsNone(converter.createSymbol("", context))
 
     def test_sld_converter(self):
         """
@@ -89,6 +95,10 @@ class TestQgsSymbolConverters(QgisTestCase):
         self.assertIsInstance(restored_symbol, QgsMarkerSymbol)
         self.assertEqual(restored_symbol.color(), QColor(255, 30, 10))
 
+        # invalid variants
+        self.assertIsNone(converter.createSymbol(None, context))
+        self.assertIsNone(converter.createSymbol("", context))
+
     def test_esri_rest_converter(self):
         """
         Test Esri REST JSON symbol conversion.
@@ -131,6 +141,37 @@ class TestQgsSymbolConverters(QgisTestCase):
         self.assertEqual(restored_marker.type(), Qgis.SymbolType.Marker)
         self.assertEqual(restored_marker.color(), QColor(76, 115, 10, 200))
         self.assertEqual(restored_marker.size(), 8.0)
+
+        # invalid variants
+        self.assertIsNone(converter.createSymbol(None, context))
+        self.assertIsNone(converter.createSymbol("", context))
+
+    def test_ogr_converter(self):
+        """
+        Test OGR Style String converter.
+
+        This tests the converter class logic only -- the bulk of the actual conversion
+        tests are in testqgsogrutils.cpp
+        """
+        converter = QgsApplication.symbolConverterRegistry().converter("ogr")
+        self.assertIsNotNone(converter)
+        rw_context = QgsReadWriteContext()
+        context = QgsSymbolConverterContext(rw_context)
+
+        # line symbol
+        context.setTypeHint(Qgis.SymbolType.Line)
+        ogr_style = "PEN(c:#0000ff,w:1.5mm)"
+
+        restored_symbol = converter.createSymbol(ogr_style, context)
+
+        self.assertIsNotNone(restored_symbol)
+        self.assertIsInstance(restored_symbol, QgsLineSymbol)
+
+        self.assertEqual(restored_symbol.color().name().lower(), "#0000ff")
+
+        # invalid variants
+        self.assertIsNone(converter.createSymbol(None, context))
+        self.assertIsNone(converter.createSymbol("", context))
 
 
 if __name__ == "__main__":
