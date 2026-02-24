@@ -647,6 +647,22 @@ Returns the overview switching scale
 .. versionadded:: 4.0
 %End
 
+    QgsElevationShadingRenderer elevationShadingRenderer();
+%Docstring
+Returns the shading renderer used to render shading on the layer.
+
+.. versionadded:: 4.2
+%End
+
+    void setElevationShadingRenderer( const QgsElevationShadingRenderer &renderer );
+%Docstring
+Sets the shading ``renderer`` used to render shading on the layer.
+
+.. seealso:: :py:func:`elevationShadingRenderer`
+
+.. versionadded:: 4.2
+%End
+
   protected:
 
     static void pointXY( QgsPointCloudRenderContext &context, const char *ptr, int i, double &x, double &y );
