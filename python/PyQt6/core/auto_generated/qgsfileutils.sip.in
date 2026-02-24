@@ -247,6 +247,16 @@ were copied.
 .. versionadded:: 4.0
 %End
 
+    static bool replaceTextInFile( const QString &path, const QString &searchString, const QString &replacement );
+%Docstring
+Replaces all occurrences of a given string in a file.
+
+Returns ``True`` if the replacement was successful and the file updated.
+
+Replacement is case-sensitive.
+
+.. versionadded:: 4.0
+%End
 };
 
 /************************************************************************

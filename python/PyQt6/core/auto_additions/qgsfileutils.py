@@ -16,5 +16,6 @@ try:
     QgsFileUtils.splitPathToComponents = staticmethod(QgsFileUtils.splitPathToComponents)
     QgsFileUtils.uniquePath = staticmethod(QgsFileUtils.uniquePath)
     QgsFileUtils.copyDirectory = staticmethod(QgsFileUtils.copyDirectory)
+    QgsFileUtils.replaceTextInFile = staticmethod(QgsFileUtils.replaceTextInFile)
 except (NameError, AttributeError):
     pass
