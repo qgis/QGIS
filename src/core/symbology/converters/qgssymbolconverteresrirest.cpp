@@ -17,6 +17,7 @@
 
 #include "qgsfillsymbol.h"
 #include "qgsfillsymbollayer.h"
+#include "qgsjsonutils.h"
 #include "qgslinesymbol.h"
 #include "qgslinesymbollayer.h"
 #include "qgsmarkersymbol.h"
@@ -48,7 +49,21 @@ QVariant QgsSymbolConverterEsriRest::toVariant( const QgsSymbol *, QgsSymbolConv
 
 std::unique_ptr< QgsSymbol > QgsSymbolConverterEsriRest::createSymbol( const QVariant &variant, QgsSymbolConverterContext & ) const
 {
-  const QVariantMap symbolData = variant.toMap();
+  QVariantMap symbolData;
+  if ( variant.type() == QVariant::Map )
+  {
+    symbolData = variant.toMap();
+  }
+  else if ( variant.type() == QVariant::String )
+  {
+    const QVariant v = QgsJsonUtils::parseJson( variant.toString() );
+    if ( v.type() == QVariant::Map )
+    {
+      symbolData = v.toMap();
+    }
+  }
+  if ( symbolData.isEmpty() )
+    return nullptr;
 
   const QString type = symbolData.value( u"type"_s ).toString();
   if ( type == "esriSMS"_L1 )
