@@ -6,6 +6,7 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
+import json
 import unittest
 
 from qgis.core import (
@@ -48,7 +49,8 @@ class TestQgsSymbolConverters(QgisTestCase):
         """
         Test Esri REST JSON symbol conversion.
 
-        Note that the bulk of these tests are in testqgsarcgisrestutils.cpp
+        This tests the converter class logic only -- the bulk of the actual conversion
+        tests are in testqgsarcgisrestutils.cpp
         """
         converter = QgsApplication.symbolConverterRegistry().converter("esri_rest")
         self.assertIsNotNone(converter)
@@ -72,6 +74,14 @@ class TestQgsSymbolConverters(QgisTestCase):
         }
 
         restored_marker = converter.createSymbol(esri_json, context)
+
+        self.assertIsNotNone(restored_marker)
+        self.assertEqual(restored_marker.type(), Qgis.SymbolType.Marker)
+        self.assertEqual(restored_marker.color(), QColor(76, 115, 10, 200))
+        self.assertEqual(restored_marker.size(), 8.0)
+
+        # should also support JSON string values:
+        restored_marker = converter.createSymbol(json.dumps(esri_json), context)
 
         self.assertIsNotNone(restored_marker)
         self.assertEqual(restored_marker.type(), Qgis.SymbolType.Marker)
