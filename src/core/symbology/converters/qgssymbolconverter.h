@@ -47,6 +47,38 @@ class CORE_EXPORT QgsSymbolConverterContext
      */
     QgsReadWriteContext &readWriteContext();
 
+    /**
+     * Returns a list of errors which occurred during the conversion.
+     *
+     * \see pushError()
+     * \see warnings()
+     */
+    QStringList errors() const { return mErrors; }
+
+    /**
+     * Pushes a \a error message generated during the conversion.
+     *
+     * \see errors()
+     * \see pushWarning()
+     */
+    void pushError( const QString &error ) { mErrors << error; }
+
+    /**
+     * Returns a list of warnings which occurred during the conversion.
+     *
+     * \see pushWarning()
+     * \see errors()
+     */
+    QStringList warnings() const { return mWarnings; }
+
+    /**
+     * Pushes a \a warning message generated during the conversion.
+     *
+     * \see warnings()
+     * \see pushError()
+     */
+    void pushWarning( const QString &warning ) { mWarnings << warning; }
+
   private:
 
 #ifdef SIP_RUN
@@ -54,6 +86,8 @@ class CORE_EXPORT QgsSymbolConverterContext
 #endif
 
     QgsReadWriteContext &mRwContext;
+    QStringList mErrors;
+    QStringList mWarnings;
 };
 
 /**

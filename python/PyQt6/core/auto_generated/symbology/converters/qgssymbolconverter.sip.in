@@ -36,6 +36,42 @@ The ``rwContext`` object must exist for the lifetime of this context.
 Returns the read-write context associated with the context.
 %End
 
+    QStringList errors() const;
+%Docstring
+Returns a list of errors which occurred during the conversion.
+
+.. seealso:: :py:func:`pushError`
+
+.. seealso:: :py:func:`warnings`
+%End
+
+    void pushError( const QString &error );
+%Docstring
+Pushes a ``error`` message generated during the conversion.
+
+.. seealso:: :py:func:`errors`
+
+.. seealso:: :py:func:`pushWarning`
+%End
+
+    QStringList warnings() const;
+%Docstring
+Returns a list of warnings which occurred during the conversion.
+
+.. seealso:: :py:func:`pushWarning`
+
+.. seealso:: :py:func:`errors`
+%End
+
+    void pushWarning( const QString &warning );
+%Docstring
+Pushes a ``warning`` message generated during the conversion.
+
+.. seealso:: :py:func:`warnings`
+
+.. seealso:: :py:func:`pushError`
+%End
+
   private:
     QgsSymbolConverterContext( const QgsSymbolConverterContext &other );
 };
