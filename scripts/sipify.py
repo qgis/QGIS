@@ -2029,7 +2029,7 @@ def try_process_q_enum_q_flag():
 def try_skip_misc_q_macros():
     # Skip Q_OBJECT, Q_PROPERTY, Q_ENUM, etc.
     if re.match(
-        r"^\s*Q_(OBJECT|ENUMS|ENUM|FLAG|PROPERTY|DECLARE_METATYPE|DECLARE_TYPEINFO|NOWARN_DEPRECATED_(PUSH|POP))\b.*?$",
+        r"^\s*Q_(OBJECT|ENUMS|ENUM|FLAG|PROPERTY|DECLARE_METATYPE|DECLARE_TYPEINFO|DECLARE_TR_FUNCTIONS|NOWARN_DEPRECATED_(PUSH|POP))\b.*?$",
         CONTEXT.current_line,
     ):
         return True
