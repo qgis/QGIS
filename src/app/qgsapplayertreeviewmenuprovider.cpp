@@ -907,29 +907,6 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         {
           menu->addAction( tr( "Paste Style" ), QgisApp::instance(), &QgisApp::applyStyleToGroup );
         }
-
-        const QList<QgsLayerTreeLayer *> selectedLayerNodes = mView->selectedLayerNodes();
-        QList<QgsMapLayer *> layers;
-        layers.reserve( selectedLayerNodes.size() );
-
-        for ( QgsLayerTreeLayer *l : selectedLayerNodes )
-        {
-          QgsMapLayer *layer = QgsLayerTree::toLayer( l )->layer();
-          layers.push_back( layer );
-        }
-
-        bool allLayersSameType = false;
-        if ( !layers.empty() )
-        {
-          allLayersSameType = std::all_of( layers.begin() + 1, layers.end(), [firstType = layers.at( 0 )->type()]( QgsMapLayer *layer ) { return layer->type() == firstType; } );
-        }
-
-        if ( allLayersSameType )
-        {
-          QgisApp *app = QgisApp::instance();
-
-          menu->addAction( tr( "Load Style…" ), app, [layers] { QgsAppLayerHandling::loadStyleFromFile( layers ); } );
-        }
       }
 
       // Actions for layer notes
@@ -956,6 +933,24 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       if ( layer && QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() && mView->selectedLayerNodes().count() == 1 )
         menu->addAction( tr( "&Properties…" ), QgisApp::instance(), &QgisApp::layerProperties );
+    }
+
+    // Special Load Style action for groups and for multi selection
+    if ( ( QgsLayerTree::isGroup( node ) || QgsLayerTree::isLayer( node ) ) && mView->selectedLayerNodes().count() != 1 )
+    {
+      const QList<QgsMapLayer *> layers = mView->selectedLayersRecursive();
+      bool allLayersSameType = false;
+      if ( !layers.empty() )
+      {
+        allLayersSameType = std::all_of( layers.begin() + 1, layers.end(), [firstType = layers.at( 0 )->type()]( QgsMapLayer *layer ) { return layer->type() == firstType; } );
+      }
+
+      if ( allLayersSameType )
+      {
+        QgisApp *app = QgisApp::instance();
+
+        menu->addAction( tr( "Load Style…" ), app, [layers] { QgsAppLayerHandling::loadStyleFromFile( layers ); } );
+      }
     }
   }
   else if ( QgsLayerTreeModelLegendNode *node = mView->index2legendNode( idx ) )
