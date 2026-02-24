@@ -271,7 +271,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   QgsGeometry g = QgsGeometry::fromQPolygonF( mainCanvasPoly );
   // close polygon
   mainCanvasPoly << mainCanvasPoly.at( 0 );
-  if ( QgsProject::instance()->crs() != QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) )
+
+  if ( QgsProject::instance()->crs().isEarthCrs() && QgsProject::instance()->crs() != QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) )
   {
     // reproject extent
     QgsCoordinateTransform ct( QgsProject::instance()->crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsProject::instance() );
