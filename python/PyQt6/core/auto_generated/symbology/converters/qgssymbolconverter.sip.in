@@ -72,6 +72,23 @@ Pushes a ``warning`` message generated during the conversion.
 .. seealso:: :py:func:`pushError`
 %End
 
+    Qgis::SymbolType typeHint() const;
+%Docstring
+Returns the symbol type hint, or :py:class:`Qgis`.SymbolType.Hybrid if
+unknown.
+
+.. seealso:: :py:func:`setTypeHint`
+%End
+
+    void setTypeHint( Qgis::SymbolType hint );
+%Docstring
+Sets the symbol type ``hint``.
+
+Set to :py:class:`Qgis`.SymbolType.Hybrid if unknown.
+
+.. seealso:: :py:func:`typeHint`
+%End
+
   private:
     QgsSymbolConverterContext( const QgsSymbolConverterContext &other );
 };
