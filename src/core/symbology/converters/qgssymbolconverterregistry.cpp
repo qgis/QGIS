@@ -30,7 +30,7 @@ QgsSymbolConverterRegistry::~QgsSymbolConverterRegistry()
   qDeleteAll( mConverters );
 }
 
-void QgsSymbolConverterRegistry::addDefaultConverters()
+void QgsSymbolConverterRegistry::populate()
 {
   addConverter( new QgsSymbolConverterQml() );
   addConverter( new QgsSymbolConverterEsriRest() );

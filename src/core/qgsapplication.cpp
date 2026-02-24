@@ -2944,6 +2944,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   {
     profiler->start( tr( "Setup symbol converter registry" ) );
     mSymbolConverterRegistry = std::make_unique<QgsSymbolConverterRegistry>();
+    mSymbolConverterRegistry->populate();
     profiler->end();
   }
   {

@@ -57,7 +57,7 @@ class CORE_EXPORT QgsSymbolConverterRegistry : public QObject
      * Adds the default symbol converters to the registry.
      * \note Not available through Python bindings.
      */
-    void addDefaultConverters() SIP_SKIP;
+    void populate() SIP_SKIP;
 
     /**
      * Adds a \a converter to the registry.
