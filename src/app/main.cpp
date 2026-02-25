@@ -242,7 +242,7 @@ void copyProfileNamesFromQgis3( const QString &configLocalStorageLocation )
 
   QgsDebugMsgLevel( u"Syncing profile list from %1 to %2"_s.arg( qgis3ProfilesRootPath.path(), qgis4ProfilesRootPath.path() ), 2 );
   const QStringList qgis3Profiles = QDir( qgis3ProfilesRootPath ).entryList( QDir::Dirs | QDir::NoDotAndDotDot );
-  if ( qgis4ProfilesRootPath.exists() )
+  if ( !qgis4ProfilesRootPath.exists() )
   {
     if ( !qgis4ProfilesRootPath.mkpath( "." ) )
     {
