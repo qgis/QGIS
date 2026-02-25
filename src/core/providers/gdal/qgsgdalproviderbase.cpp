@@ -453,7 +453,7 @@ QVariantMap QgsGdalProviderBase::decodeGdalUri( const QString &uri )
   if ( path.indexOf( ':' ) != -1 )
   {
     QStringList parts = path.split( ':' );
-    if ( parts[0].toLower() == QLatin1String( "gpkg" ) )
+    if ( parts[0].compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0 )
     {
       parts.removeFirst();
       // Handle windows paths - which has an extra colon - and unix paths
@@ -462,7 +462,23 @@ QVariantMap QgsGdalProviderBase::decodeGdalUri( const QString &uri )
         layerName = parts[parts.length() - 1];
         parts.removeLast();
       }
-      path  = parts.join( ':' );
+      path = parts.join( ':' );
+    }
+    else if ( parts[0].compare( QLatin1String( "openfilegdb" ), Qt::CaseInsensitive ) == 0 )
+    {
+      parts.removeFirst();
+      // Handle windows paths - which has an extra colon - and unix paths
+      if ( ( parts[0].length() > 1 && parts.count() > 1 ) || parts.count() > 2 )
+      {
+        layerName = parts[parts.length() - 1];
+        parts.removeLast();
+      }
+      // remove quotes around path
+      if ( parts.size() == 1 && parts[0].length() > 2 && parts[0].at( 0 ) == '"' && parts[0].right( 1 ) == '"' )
+      {
+        parts[0] = parts[0].mid( 1, parts[0].length() - 2 );
+      }
+      path = parts.join( ':' );
     }
   }
 
@@ -536,6 +552,8 @@ QString QgsGdalProviderBase::encodeGdalUri( const QVariantMap &parts )
 
   if ( !layerName.isEmpty() && uri.endsWith( QLatin1String( "gpkg" ) ) )
     uri = QStringLiteral( "GPKG:%1:%2" ).arg( uri, layerName );
+  else if ( !layerName.isEmpty() && uri.endsWith( QLatin1String( "gdb" ) ) )
+    uri = QStringLiteral( "OpenFileGDB:\"%1\":%2" ).arg( uri, layerName );
   else if ( !layerName.isEmpty() )
     uri = uri + QStringLiteral( "|%1" ).arg( layerName );
 
