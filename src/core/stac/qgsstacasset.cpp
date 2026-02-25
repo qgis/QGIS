@@ -15,8 +15,6 @@
 
 #include "qgsstacasset.h"
 
-#include "qgsgdalprovider.h"
-
 #include <QString>
 #include <QUrl>
 
@@ -62,7 +60,13 @@ QStringList QgsStacAsset::roles() const
 
 bool QgsStacAsset::isCloudOptimized() const
 {
-  return !formatName().isEmpty();
+  const QString format = formatName();
+  return format == "COG"_L1 ||
+         format == "COPC"_L1 ||
+         format == "EPT"_L1 ||
+         format == "Zarr"_L1 ||
+         format == "Parquet"_L1 ||
+         format == "TileDB"_L1;
 }
 
 QString QgsStacAsset::formatName() const
@@ -186,7 +190,7 @@ bool QgsStacAsset::isDownloadable() const
    * - succeed but download an HTML directory listing response, or
    * - something else that does not meet the user's needs.
    */
-  if ( ( formatName() == "Zarr"_L1 ) || ( formatName() == "TileDB"_L1 ) )
+  if ( formatName() == "Zarr"_L1 || formatName() == "TileDB"_L1 )
   {
     return false;
   }
