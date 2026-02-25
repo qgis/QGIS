@@ -736,9 +736,10 @@ class CORE_EXPORT QgsPointCloudRenderer
     /**
      * Returns the shading renderer used to render shading on the layer.
      *
+     * \see setElevationShadingRenderer()
      * \since QGIS 4.2
      */
-    QgsElevationShadingRenderer elevationShadingRenderer();
+    QgsElevationShadingRenderer elevationShadingRenderer() const;
 
     /**
      * Sets the shading \a renderer used to render shading on the layer.

@@ -647,9 +647,11 @@ Returns the overview switching scale
 .. versionadded:: 4.0
 %End
 
-    QgsElevationShadingRenderer elevationShadingRenderer();
+    QgsElevationShadingRenderer elevationShadingRenderer() const;
 %Docstring
 Returns the shading renderer used to render shading on the layer.
+
+.. seealso:: :py:func:`setElevationShadingRenderer`
 
 .. versionadded:: 4.2
 %End
