@@ -22,10 +22,11 @@
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsellipsoidutils.h"
 
 class QString;
+class QgsCoordinateReferenceSystem;
 class QgsRectangle;
-
 /**
  * \ingroup core
  * \brief Calculates scale for a given combination of canvas size, map extent,
@@ -90,6 +91,14 @@ class CORE_EXPORT QgsScaleCalculator
     Qgis::DistanceUnit mapUnits() const;
 
     /**
+     * Set ellipsoid parameters from \a crs.
+     *
+     * \since QGIS 4.2
+     */
+    void setEllipsoidFromMapCrs( const QgsCoordinateReferenceSystem &crs );
+
+
+    /**
      * Calculate the scale denominator.
      *
      * \param mapExtent QgsRectangle containing the current map extent. Units are specified by mapUnits().
@@ -152,6 +161,9 @@ class CORE_EXPORT QgsScaleCalculator
 
     //! map unit member
     Qgis::DistanceUnit mMapUnits = Qgis::DistanceUnit::Unknown;
+
+    //! ellipsoid parameters for the ellipsoid associated with the scale calculator, default is ellipsoid associated with WGS-84
+    QgsEllipsoidUtils::EllipsoidParameters mEllipsoidParameters = QgsEllipsoidUtils::ellipsoidParameters( Qgis::geographicCrsAuthId() );
 };
 
 #endif // #ifndef QGSSCALECALCULATOR_H

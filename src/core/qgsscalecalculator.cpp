@@ -20,6 +20,8 @@
 
 #include <cmath>
 
+#include "qgscoordinatereferencesystem.h"
+#include "qgsellipsoidutils.h"
 #include "qgslogger.h"
 #include "qgsrectangle.h"
 #include "qgsunittypes.h"
@@ -59,6 +61,16 @@ Qgis::DistanceUnit QgsScaleCalculator::mapUnits() const
   QgsDebugMsgLevel( u"Map units returned as %1"_s.arg( qgsEnumValueToKey( mMapUnits ) ), 4 );
   return mMapUnits;
 }
+
+void QgsScaleCalculator::setEllipsoidFromMapCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  const QString ellipsoidAcronym = crs.ellipsoidAcronym().isEmpty()
+                                   ? QgsCoordinateReferenceSystem( Qgis::geographicCrsAuthId() ).ellipsoidAcronym() :
+                                   crs.ellipsoidAcronym();
+  mEllipsoidParameters = QgsEllipsoidUtils::ellipsoidParameters( ellipsoidAcronym );
+}
+
+
 
 double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, double canvasWidth )  const
 {
