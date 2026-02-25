@@ -246,8 +246,8 @@ double QgsScaleCalculator::calculateGeographicDistanceAtLatitude( double lat, do
   static const double RADS = ( 4.0 * std::atan( 1.0 ) ) / 180.0;
   const double a = std::pow( std::cos( lat * RADS ), 2 );
   const double c = 2.0 * std::atan2( std::sqrt( a ), std::sqrt( 1.0 - a ) );
-  // The eccentricity, derived from sqrt(1.0 - b*b/(a*a))
-  const double E = std::sqrt( 1.0 - ( mEllipsoidParameters.semiMinor * mEllipsoidParameters.semiMinor ) / ( mEllipsoidParameters.semiMajor * mEllipsoidParameters.semiMajor ) );
+  // The eccentricity, derived from sqrt( (a*a-b*b)/(a*a))
+  const double E = std::sqrt( ( mEllipsoidParameters.semiMajor * mEllipsoidParameters.semiMajor - mEllipsoidParameters.semiMinor * mEllipsoidParameters.semiMinor ) / ( mEllipsoidParameters.semiMajor * mEllipsoidParameters.semiMajor ) );
   const double radius = mEllipsoidParameters.semiMajor * ( 1.0 - E * E ) /
                         std::pow( 1.0 - E * E * std::sin( lat * RADS ) * std::sin( lat * RADS ), 1.5 );
   const double meters = ( longitude2 - longitude1 ) / 180.0 * radius * c;
