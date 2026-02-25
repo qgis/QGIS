@@ -412,7 +412,7 @@ QString QgsWmsProvider::getLegendGraphicUrl() const
         {
           url = pickLegend( *s );
         }
-        else
+        else if ( !l.style.empty() )
         {
           // If no default style was found, use the first one
           url = pickLegend( l.style[0] );
