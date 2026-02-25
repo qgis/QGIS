@@ -273,12 +273,15 @@ bool QgsPointCloudLayerRenderer::render()
     }
   }
 
-  QImage *img = dynamic_cast< QImage * >( painter->device() );
-  if ( img )
+  if ( elevationShadingRenderer.isActive() )
   {
-    const QgsElevationMap *elevationMap = renderContext()->elevationMap();
-    if ( elevationMap )
-      mRenderer->elevationShadingRenderer().renderShading( *elevationMap, *img, *renderContext() );
+    QImage *img = dynamic_cast< QImage * >( painter->device() );
+    if ( img )
+    {
+      const QgsElevationMap *elevationMap = renderContext()->elevationMap();
+      if ( elevationMap )
+        mRenderer->elevationShadingRenderer().renderShading( *elevationMap, *img, *renderContext() );
+    }
   }
 
   mRenderer->stopRender( context );
