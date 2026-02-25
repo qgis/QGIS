@@ -406,9 +406,7 @@ QString QgsWmsProvider::getLegendGraphicUrl() const
       }
       else
       {
-        // QGIS wants the default style, but GetCapabilities doesn't give us a
-        // way to know what is the default style. So we look for the onlineResource
-        // only if there is a single style available or if there is a style called "default".
+        // Look for a default style
         const QgsWmsStyleProperty *s = searchStyle( l.style, u"default"_s );
         if ( s )
         {
