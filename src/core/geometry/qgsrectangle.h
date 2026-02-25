@@ -595,7 +595,7 @@ class CORE_EXPORT QgsRectangle
 
     /**
      * Returns a string representation of form xmin,ymin : xmax,ymax
-     * Coordinates will be truncated to the specified precision.
+     * Coordinates will be rounded to the specified precision.
      * If the specified precision is less than 0, a suitable minimum precision is used.
      */
     Q_INVOKABLE QString toString( int precision = 16 ) const;

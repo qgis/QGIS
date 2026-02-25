@@ -25,6 +25,7 @@
 
 #include "pdfpagecontenteditorprocessor.h"
 
+#include <QHash>
 #include <QPaintDevice>
 
 namespace pdf
@@ -111,6 +112,7 @@ private:
     QByteArray m_outputContent;
     PDFPageContentProcessorState m_currentState;
     PDFFontPointer m_textFont;
+    QHash<QByteArray, PDFFontPointer> m_fontOverrides;
     QStringList m_errors;
 };
 

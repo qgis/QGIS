@@ -47,6 +47,7 @@ QgsLayoutChartWidget::QgsLayoutChartWidget( QgsLayoutItemChart *chartItem )
 
   connect( mChartTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutChartWidget::mChartTypeComboBox_currentIndexChanged );
   connect( mChartPropertiesButton, &QPushButton::clicked, this, &QgsLayoutChartWidget::mChartPropertiesButton_clicked );
+  connect( mFlipAxesCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutChartWidget::mFlipAxesCheckBox_stateChanged );
 
   connect( mLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsLayoutChartWidget::changeLayer );
   connect( mLayerComboBox, &QgsMapLayerComboBox::layerChanged, mSortExpressionWidget, &QgsFieldExpressionWidget::setLayer );
@@ -68,6 +69,7 @@ QgsLayoutChartWidget::QgsLayoutChartWidget( QgsLayoutItemChart *chartItem )
   connect( mIntersectAtlasCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutChartWidget::mIntersectAtlasCheckBox_stateChanged );
 
   setGuiElementValues();
+  updateButtonsState();
 
   connect( mChartItem, &QgsLayoutObject::changed, this, &QgsLayoutChartWidget::setGuiElementValues );
 }
@@ -108,6 +110,18 @@ void QgsLayoutChartWidget::setGuiElementValues()
     whileBlocking( mChartTypeComboBox )->setCurrentIndex( mChartTypeComboBox->findData( mChartItem->plot()->type() ) );
     whileBlocking( mLayerComboBox )->setLayer( mChartItem->sourceLayer() );
 
+    Qgs2DXyPlot *plot2DXy = dynamic_cast<Qgs2DXyPlot *>( mChartItem->plot() );
+    if ( plot2DXy )
+    {
+      mFlipAxesCheckBox->setEnabled( true );
+      whileBlocking( mFlipAxesCheckBox )->setChecked( plot2DXy->flipAxes() );
+    }
+    else
+    {
+      mFlipAxesCheckBox->setEnabled( false );
+      whileBlocking( mFlipAxesCheckBox )->setChecked( false );
+    }
+
     whileBlocking( mSortCheckBox )->setCheckState( mChartItem->sortFeatures() ? Qt::Checked : Qt::Unchecked );
 
     whileBlocking( mSortDirectionButton )->setEnabled( mChartItem->sortFeatures() );
@@ -122,6 +136,15 @@ void QgsLayoutChartWidget::setGuiElementValues()
     for ( const QgsLayoutItemChart::SeriesDetails &series : seriesList )
     {
       addSeriesListItem( series.name() );
+    }
+
+    if ( !seriesList.isEmpty() )
+    {
+      mSeriesListWidget->setCurrentRow( 0 );
+    }
+    else
+    {
+      mSeriesPropertiesButton->setEnabled( false );
     }
 
     whileBlocking( mFilterOnlyVisibleFeaturesCheckBox )->setChecked( mChartItem->filterOnlyVisibleFeatures() );
@@ -172,6 +195,13 @@ void QgsLayoutChartWidget::mChartTypeComboBox_currentIndexChanged( int )
       newPlot2DXy->yAxis().setGridIntervalMinor( oldPlot2DXy->yAxis().gridIntervalMinor() );
       newPlot2DXy->yAxis().setLabelInterval( oldPlot2DXy->yAxis().labelInterval() );
     }
+    mFlipAxesCheckBox->setEnabled( true );
+    mFlipAxesCheckBox->setChecked( newPlot2DXy->flipAxes() );
+  }
+  else
+  {
+    mFlipAxesCheckBox->setEnabled( false );
+    mFlipAxesCheckBox->setChecked( false );
   }
 
   mChartItem->beginCommand( tr( "Change Chart Type" ) );
@@ -220,6 +250,25 @@ void QgsLayoutChartWidget::mChartPropertiesButton_clicked()
   openPanel( widget );
 }
 
+void QgsLayoutChartWidget::mFlipAxesCheckBox_stateChanged( int state )
+{
+  if ( !mChartItem )
+  {
+    return;
+  }
+
+  Qgs2DXyPlot *plot2DXy = dynamic_cast<Qgs2DXyPlot *>( mChartItem->plot() );
+  if ( !plot2DXy )
+  {
+    return;
+  }
+
+  mChartItem->beginCommand( tr( "Modify Chart" ) );
+  plot2DXy->setFlipAxes( state == Qt::Checked );
+  mChartItem->endCommand();
+  mChartItem->update();
+}
+
 void QgsLayoutChartWidget::changeLayer( QgsMapLayer *layer )
 {
   if ( !mChartItem )
@@ -237,6 +286,7 @@ void QgsLayoutChartWidget::changeLayer( QgsMapLayer *layer )
   mChartItem->setSourceLayer( vl );
   mChartItem->update();
   mChartItem->endCommand();
+  updateButtonsState();
 }
 
 void QgsLayoutChartWidget::changeSortExpression( const QString &expression, bool )
@@ -343,6 +393,7 @@ void QgsLayoutChartWidget::mAddSeriesPushButton_clicked()
 
   mSeriesListWidget->setCurrentRow( mSeriesListWidget->count() - 1 );
   mSeriesListWidget_currentItemChanged( mSeriesListWidget->currentItem(), nullptr );
+  updateButtonsState();
 }
 
 void QgsLayoutChartWidget::mRemoveSeriesPushButton_clicked()
@@ -368,6 +419,7 @@ void QgsLayoutChartWidget::mRemoveSeriesPushButton_clicked()
   mChartItem->setSeriesList( seriesList );
   mChartItem->endCommand();
   mChartItem->update();
+  updateButtonsState();
 }
 
 void QgsLayoutChartWidget::mSeriesPropertiesButton_clicked()
@@ -456,4 +508,17 @@ void QgsLayoutChartWidget::mIntersectAtlasCheckBox_stateChanged( int state )
   mChartItem->setFilterToAtlasFeature( filterToAtlas );
   mChartItem->endCommand();
   mChartItem->update();
+}
+
+void QgsLayoutChartWidget::updateButtonsState()
+{
+  if ( !mChartItem )
+  {
+    return;
+  }
+
+  const bool enable = qobject_cast<QgsVectorLayer *>( mLayerComboBox->currentLayer() ) != nullptr;
+  mSortCheckBox->setEnabled( enable );
+  mAddSeriesPushButton->setEnabled( enable );
+  mRemoveSeriesPushButton->setEnabled( mSeriesListWidget->count() > 0 );
 }

@@ -23,6 +23,7 @@
 #include "qgsapplication.h"
 #include "qgsbezierdata.h"
 #include "qgsbeziermarker.h"
+#include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
 #include "qgsexception.h"
 #include "qgsfeatureiterator.h"
@@ -686,16 +687,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       else if ( mBezierDragAnchorIndex >= 0 )
       {
         // Creating new anchor: update both handles symmetrically
-        const QgsPoint &anchor = mBezierData->anchor( mBezierDragAnchorIndex );
-        const int leftHandleIdx = mBezierDragAnchorIndex * 2;
-        const int rightHandleIdx = mBezierDragAnchorIndex * 2 + 1;
-
-        // Right handle follows mouse
-        mBezierData->moveHandle( rightHandleIdx, mapPoint );
-
-        // Left handle goes opposite direction: anchor - (mouse - anchor) = 2*anchor - mouse
-        const QgsPoint leftHandle( anchor.x() * 2 - mapPoint.x(), anchor.y() * 2 - mapPoint.y() );
-        mBezierData->moveHandle( leftHandleIdx, leftHandle );
+        mBezierData->calculateSymmetricHandles( mBezierDragAnchorIndex, mapPoint );
       }
 
       // Update visualization
@@ -2126,6 +2118,26 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       if ( mode() == CaptureLine )
       {
+        if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() ) )
+        {
+          if ( QgsWkbTypes::flatType( vlayer->wkbType() ) == Qgis::WkbType::CircularString )
+          {
+            if ( const QgsCompoundCurve *compound = qgsgeometry_cast<const QgsCompoundCurve *>( captureCurve() ) )
+            {
+              // if there is only one segment the compound curve will be casted to circular string
+              // otherwise the user will see a warning on the message bar saying that a compound
+              // curve can't be added on a circular string layer
+              if ( compound->nCurves() == 1 )
+              {
+                if ( const QgsCircularString *circularPart = qgsgeometry_cast<const QgsCircularString *>( compound->curveAt( 0 ) ) )
+                {
+                  curveToAdd.reset( circularPart->clone() );
+                }
+              }
+            }
+          }
+        }
+
         g = QgsGeometry( curveToAdd->clone() );
         geometryCaptured( g );
         lineCaptured( curveToAdd.release() );

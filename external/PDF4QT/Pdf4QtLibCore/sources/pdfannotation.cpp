@@ -1144,6 +1144,27 @@ bool PDFAnnotation::isTypeEditable(AnnotationType type)
     return false;
 }
 
+bool PDFAnnotation::isExternalLinkAnnotation(const PDFAnnotation* annotation)
+{
+    if (!annotation || annotation->getType() != AnnotationType::Link)
+    {
+        return false;
+    }
+
+    const auto* linkAnnotation = dynamic_cast<const PDFLinkAnnotation*>(annotation);
+    if (!linkAnnotation)
+    {
+        return false;
+    }
+
+    auto isURIAction = [](const PDFAction* action)
+    {
+        return action && action->getType() == ActionType::URI;
+    };
+
+    return isURIAction(linkAnnotation->getAction()) || isURIAction(linkAnnotation->getURIAction());
+}
+
 QPen PDFAnnotation::getPen() const
 {
     QColor strokeColor = getStrokeColor();

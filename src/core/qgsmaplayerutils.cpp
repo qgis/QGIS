@@ -131,6 +131,25 @@ bool QgsMapLayerUtils::layerSourceMatchesPath( const QgsMapLayer *layer, const Q
   return parts.value( u"path"_s ).toString() == path;
 }
 
+bool QgsMapLayerUtils::layerRefersToUri( const QgsMapLayer *layer, const QString &uri, Qgis::SourceHierarchyLevel level )
+{
+  if ( !layer )
+    return false;
+
+  const QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( layer->providerType() );
+  if ( !metadata )
+  {
+    throw QgsNotSupportedException( u"Could not retrieve metadata for %1 provider"_s.arg( layer->providerType() ) );
+  }
+
+  if ( !metadata->capabilities().testFlag( QgsProviderMetadata::ProviderMetadataCapability::UrisReferToSame ) )
+  {
+    throw QgsNotSupportedException( u"%1 provider does not support UrisReferToSame capability"_s.arg( layer->providerType() ) );
+  }
+
+  return metadata->urisReferToSame( layer->source(), uri, level );
+}
+
 bool QgsMapLayerUtils::updateLayerSourcePath( QgsMapLayer *layer, const QString &newPath )
 {
   if ( !layer || newPath.isEmpty() )

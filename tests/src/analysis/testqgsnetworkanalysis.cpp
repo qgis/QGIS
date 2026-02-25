@@ -184,6 +184,26 @@ void TestQgsNetworkAnalysis::testBuild()
   QCOMPARE( graph->vertex( 2 ).outgoingEdges(), QList<int>() << 3 );
   QCOMPARE( graph->vertex( 2 ).incomingEdges(), QList<int>() << 2 );
 
+  // test sources for vertices
+  {
+    const std::vector< QgsVectorLayerDirector::VertexSourceInfo > &sources = director->sourcesForVertex( 0 );
+    QCOMPARE( sources.size(), 1 );
+    QCOMPARE( sources.at( 0 ).fid, 1 );
+    QCOMPARE( sources.at( 0 ).partId, 0 );
+  }
+  {
+    const std::vector< QgsVectorLayerDirector::VertexSourceInfo > &sources = director->sourcesForVertex( 1 );
+    QCOMPARE( sources.size(), 1 );
+    QCOMPARE( sources.at( 0 ).fid, 1 );
+    QCOMPARE( sources.at( 0 ).partId, 0 );
+  }
+  {
+    const std::vector< QgsVectorLayerDirector::VertexSourceInfo > &sources = director->sourcesForVertex( 2 );
+    QCOMPARE( sources.size(), 1 );
+    QCOMPARE( sources.at( 0 ).fid, 1 );
+    QCOMPARE( sources.at( 0 ).partId, 0 );
+  }
+
   builder = std::make_unique<QgsGraphBuilder>( network->sourceCrs(), true, 0 );
   director->makeGraph( builder.get(), QVector<QgsPointXY>() << QgsPointXY( 10, 0 ) << QgsPointXY( 10, 10 ), snapped );
   QCOMPARE( snapped, QVector<QgsPointXY>() << QgsPointXY( 10, 0 ) << QgsPointXY( 10, 10 ) );
@@ -195,7 +215,7 @@ void TestQgsNetworkAnalysis::testBuild()
   builder = std::make_unique<QgsGraphBuilder>( network->sourceCrs(), true, 0 );
   director->makeGraph( builder.get(), QVector<QgsPointXY>() << QgsPointXY( 0.2, 0.1 ) << QgsPointXY( 10.1, 9 ), snapped );
   QCOMPARE( snapped, QVector<QgsPointXY>() << QgsPointXY( 0.2, 0.0 ) << QgsPointXY( 10.0, 9 ) );
-  graph.reset( builder->takeGraph() );
+  graph = builder->takeGraph();
   QCOMPARE( graph->vertexCount(), 5 );
   QCOMPARE( graph->edgeCount(), 8 );
 }
@@ -254,7 +274,7 @@ void TestQgsNetworkAnalysis::testBuildTolerance()
 
   builder = std::make_unique<QgsGraphBuilder>( network->sourceCrs(), true, tolerance );
   director->makeGraph( builder.get(), QVector<QgsPointXY>(), snapped );
-  graph.reset( builder->takeGraph() );
+  graph = builder->takeGraph();
   QCOMPARE( graph->vertexCount(), 4 );
   QCOMPARE( graph->edgeCount(), 6 );
   QCOMPARE( graph->vertex( 0 ).point(), QgsPointXY( 0, 0 ) );
@@ -281,6 +301,34 @@ void TestQgsNetworkAnalysis::testBuildTolerance()
   QCOMPARE( graph->edge( 5 ).toVertex(), 2 );
   QCOMPARE( graph->edge( 4 ).fromVertex(), 2 );
   QCOMPARE( graph->edge( 4 ).toVertex(), 3 );
+
+  // test sources for vertices
+  {
+    const std::vector< QgsVectorLayerDirector::VertexSourceInfo > &sources = director->sourcesForVertex( 0 );
+    QCOMPARE( sources.size(), 1 );
+    QCOMPARE( sources.at( 0 ).fid, 1 );
+    QCOMPARE( sources.at( 0 ).partId, 0 );
+  }
+  {
+    const std::vector< QgsVectorLayerDirector::VertexSourceInfo > &sources = director->sourcesForVertex( 1 );
+    QCOMPARE( sources.size(), 1 );
+    QCOMPARE( sources.at( 0 ).fid, 1 );
+    QCOMPARE( sources.at( 0 ).partId, 0 );
+  }
+  {
+    const std::vector< QgsVectorLayerDirector::VertexSourceInfo > &sources = director->sourcesForVertex( 2 );
+    QCOMPARE( sources.size(), 2 );
+    QCOMPARE( sources.at( 0 ).fid, 1 );
+    QCOMPARE( sources.at( 0 ).partId, 0 );
+    QCOMPARE( sources.at( 1 ).fid, 2 );
+    QCOMPARE( sources.at( 1 ).partId, 0 );
+  }
+  {
+    const std::vector< QgsVectorLayerDirector::VertexSourceInfo > &sources = director->sourcesForVertex( 3 );
+    QCOMPARE( sources.size(), 1 );
+    QCOMPARE( sources.at( 0 ).fid, 2 );
+    QCOMPARE( sources.at( 0 ).partId, 0 );
+  }
 }
 
 void TestQgsNetworkAnalysis::dijkkjkjkskkjsktra()
@@ -384,7 +432,7 @@ void TestQgsNetworkAnalysis::dijkkjkjkskkjsktra()
   director->addStrategy( strategy.release() );
   builder = std::make_unique<QgsGraphBuilder>( network->sourceCrs(), true, 0 );
   director->makeGraph( builder.get(), QVector<QgsPointXY>(), snapped );
-  graph.reset( builder->takeGraph() );
+  graph = builder->takeGraph();
   startVertexIdx = graph->findVertex( QgsPointXY( 0, 0 ) );
   QVERIFY( startVertexIdx != -1 );
   resultTree.clear();
@@ -426,7 +474,7 @@ void TestQgsNetworkAnalysis::dijkkjkjkskkjsktra()
   director->addStrategy( strategy.release() );
   builder = std::make_unique<QgsGraphBuilder>( network->sourceCrs(), true, 0 );
   director->makeGraph( builder.get(), QVector<QgsPointXY>(), snapped );
-  graph.reset( builder->takeGraph() );
+  graph = builder->takeGraph();
   startVertexIdx = graph->findVertex( QgsPointXY( 10, 10 ) );
   QVERIFY( startVertexIdx != -1 );
   resultTree.clear();
@@ -663,7 +711,7 @@ void TestQgsNetworkAnalysis::testCurvedGeometries()
   builder = std::make_unique<QgsGraphBuilder>( network->sourceCrs(), true, 0 );
   director->makeGraph( builder.get(), QVector<QgsPointXY>() << QgsPointXY( 0.2, 0.1 ) << QgsPointXY( 10.1, 9 ), snapped );
   QCOMPARE( snapped, QVector<QgsPointXY>() << QgsPointXY( 0.2, 0.0 ) << QgsPointXY( 10.0, 9 ) );
-  graph.reset( builder->takeGraph() );
+  graph = builder->takeGraph();
   QCOMPARE( graph->vertexCount(), 5 );
   QCOMPARE( graph->edgeCount(), 8 );
 
@@ -680,7 +728,7 @@ void TestQgsNetworkAnalysis::testCurvedGeometries()
   snapped.clear();
   director->makeGraph( builder.get(), QVector<QgsPointXY>() << QgsPointXY( 0, 0 ) << QgsPointXY( 5, 0 ) << QgsPointXY( 10, 0 ), snapped );
   QCOMPARE( snapped, QVector<QgsPointXY>() << QgsPointXY( 0, 0 ) << QgsPointXY( 5, 0 ) << QgsPointXY( 10, 0 ) );
-  graph.reset( builder->takeGraph() );
+  graph = builder->takeGraph();
   // CircularString should be segmentized, creating multiple vertices
   QVERIFY( graph->vertexCount() > 3 );
   QVERIFY( graph->edgeCount() > 4 );
@@ -712,7 +760,7 @@ void TestQgsNetworkAnalysis::testCurvedGeometries()
   snapped.clear();
   director->makeGraph( builder.get(), QVector<QgsPointXY>() << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 0 ), snapped );
   QCOMPARE( snapped, QVector<QgsPointXY>() << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 0 ) );
-  graph.reset( builder->takeGraph() );
+  graph = builder->takeGraph();
   // CircularString should be segmentized, creating multiple vertices
   QVERIFY( graph->vertexCount() > 3 );
   QVERIFY( graph->edgeCount() > 4 );
@@ -764,7 +812,7 @@ void TestQgsNetworkAnalysis::testCurvedGeometries()
   snapped.clear();
   director->makeGraph( builder.get(), QVector<QgsPointXY>() << QgsPointXY( 0, 0 ) << QgsPointXY( 5, 0 ) << QgsPointXY( 10, 0 ), snapped );
   QCOMPARE( snapped, QVector<QgsPointXY>() << QgsPointXY( 0, 0 ) << QgsPointXY( 5, 0 ) << QgsPointXY( 10, 0 ) );
-  graph.reset( builder->takeGraph() );
+  graph = builder->takeGraph();
   // CircularStrings should be segmentized, creating multiple vertices
   QVERIFY( graph->vertexCount() > 6 );
   QVERIFY( graph->edgeCount() > 4 );

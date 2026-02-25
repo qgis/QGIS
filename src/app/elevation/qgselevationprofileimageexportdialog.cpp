@@ -19,9 +19,14 @@
 
 #include "qgselevationprofileexportsettingswidget.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgsplot.h"
 
+#include <QString>
+
 #include "moc_qgselevationprofileimageexportdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsElevationProfileImageExportDialog::QgsElevationProfileImageExportDialog( QWidget *parent )
   : QDialog( parent )
@@ -31,6 +36,10 @@ QgsElevationProfileImageExportDialog::QgsElevationProfileImageExportDialog( QWid
   mProfileSettingsWidget = new QgsElevationProfileExportSettingsWidget();
   scrollAreaLayout->addWidget( mProfileSettingsWidget );
   scrollAreaLayout->addStretch( 1 );
+
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( u"map_views/elevation_profile.html#export-elevation-profile"_s );
+  } );
 
   QgsGui::enableAutoGeometryRestore( this );
 }

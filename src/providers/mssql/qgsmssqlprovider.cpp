@@ -1362,6 +1362,56 @@ bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
   return true;
 }
 
+bool QgsMssqlProvider::renameAttributes( const QgsFieldNameMap &renamedAttributes )
+{
+  if ( mIsQuery )
+    return false;
+
+  if ( renamedAttributes.isEmpty() )
+    return true;
+
+  QSqlQuery query = createQuery();
+  query.setForwardOnly( true );
+
+  QgsFieldNameMap::const_iterator renameIt = renamedAttributes.constBegin();
+  QString sql = u"BEGIN TRANSACTION; BEGIN TRY\n"_s;
+
+  for ( ; renameIt != renamedAttributes.constEnd(); ++renameIt )
+  {
+    int fieldIndex = renameIt.key();
+    if ( fieldIndex < 0 || fieldIndex >= mAttributeFields.count() )
+    {
+      pushError( tr( "Invalid attribute index: %1" ).arg( fieldIndex ) );
+      return false;
+    }
+    if ( mAttributeFields.indexFromName( renameIt.value() ) >= 0 )
+    {
+      //field name already in use
+      pushError( tr( "Error renaming field %1: name '%2' already exists" ).arg( fieldIndex ).arg( renameIt.value() ) );
+      return false;
+    }
+
+    sql += u"EXECUTE sp_rename '%1.%2.%3', %4, 'COLUMN';\n"_s
+             .arg( QgsMssqlUtils::quotedIdentifier( mSchemaName ), QgsMssqlUtils::quotedIdentifier( mTableName ), QgsMssqlUtils::quotedIdentifier( mAttributeFields.at( fieldIndex ).name() ), QgsMssqlUtils::quotedValue( renameIt.value() ) );
+  }
+
+  sql += "COMMIT TRANSACTION;\nEND TRY\nBEGIN CATCH\nROLLBACK TRANSACTION;\nEND CATCH;"_L1;
+  if ( !LoggedExec( query, sql ) )
+  {
+    QgsDebugError( u"SQL:%1\n  Error:%2"_s.arg( query.lastQuery(), query.lastError().text() ) );
+    return false;
+  }
+
+  query.finish();
+
+  loadFields();
+
+  if ( mTransaction )
+    mTransaction->dirtyLastSavePoint();
+
+  return true;
+}
+
 bool QgsMssqlProvider::deleteAttributes( const QgsAttributeIds &attributes )
 {
   if ( mIsQuery )
@@ -1734,7 +1784,7 @@ Qgis::VectorProviderCapabilities QgsMssqlProvider::capabilities() const
   const bool hasGeom = !mGeometryColName.isEmpty();
   if ( !mIsQuery )
   {
-    cap |= Qgis::VectorProviderCapability::CreateAttributeIndex | Qgis::VectorProviderCapability::AddFeatures | Qgis::VectorProviderCapability::AddAttributes | Qgis::VectorProviderCapability::TransactionSupport;
+    cap |= Qgis::VectorProviderCapability::CreateAttributeIndex | Qgis::VectorProviderCapability::AddFeatures | Qgis::VectorProviderCapability::AddAttributes | Qgis::VectorProviderCapability::RenameAttributes | Qgis::VectorProviderCapability::TransactionSupport;
     if ( hasGeom )
     {
       cap |= Qgis::VectorProviderCapability::CreateSpatialIndex;
@@ -2723,6 +2773,11 @@ QgsMssqlProviderMetadata::QgsMssqlProviderMetadata()
 {
 }
 
+QgsProviderMetadata::ProviderMetadataCapabilities QgsMssqlProviderMetadata::capabilities() const
+{
+  return QgsProviderMetadata::ProviderMetadataCapability::UrisReferToSame;
+}
+
 QIcon QgsMssqlProviderMetadata::icon() const
 {
   return QgsApplication::getThemeIcon( u"mIconMssql.svg"_s );
@@ -2917,6 +2972,28 @@ QString QgsMssqlProviderMetadata::encodeUri( const QVariantMap &parts ) const
 QList<Qgis::LayerType> QgsMssqlProviderMetadata::supportedLayerTypes() const
 {
   return { Qgis::LayerType::Vector };
+}
+
+bool QgsMssqlProviderMetadata::urisReferToSame( const QString &uri1, const QString &uri2, Qgis::SourceHierarchyLevel level ) const
+{
+  const QVariantMap parts1 = decodeUri( uri1 );
+  const QVariantMap parts2 = decodeUri( uri2 );
+
+  const bool sameConnection = parts1.value( u"host"_s ) == parts2.value( u"host"_s )
+                              && parts1.value( u"dbname"_s ) == parts2.value( u"dbname"_s )
+                              && parts1.value( u"service"_s ) == parts2.value( u"service"_s );
+  const bool sameSchema = parts1.value( u"schema"_s ) == parts2.value( u"schema"_s );
+  const bool sameTable = parts1.value( u"table"_s ) == parts2.value( u"table"_s );
+  switch ( level )
+  {
+    case Qgis::SourceHierarchyLevel::Connection:
+      return sameConnection;
+    case Qgis::SourceHierarchyLevel::Group:
+      return sameConnection && sameSchema;
+    case Qgis::SourceHierarchyLevel::Object:
+      return sameConnection && sameSchema && sameTable;
+  }
+  return false;
 }
 
 QString QgsMssqlProvider::typeFromMetadata( const QString &typeName, int numCoords )

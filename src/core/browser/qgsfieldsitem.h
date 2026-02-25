@@ -94,6 +94,15 @@ class CORE_EXPORT QgsFieldsItem : public QgsDataItem
     QgsVectorLayer *layer() SIP_FACTORY;
 
     /**
+     * Returns the fields contained by the item.
+     *
+     * The fields are only populated after the item's children are created.
+     *
+     * \since QGIS 4.0
+     */
+    QgsFields fields() const;
+
+    /**
      * Returns the (possibly NULLPTR) properties of the table this fields belong to.
      * \since QGIS 3.16
      */
@@ -113,7 +122,7 @@ class CORE_EXPORT QgsFieldsItem : public QgsDataItem
     QString mConnectionUri;
     bool mCanRename = false;
     std::unique_ptr<QgsAbstractDatabaseProviderConnection::TableProperty> mTableProperty;
-
+    QgsFields mFields;
 };
 
 

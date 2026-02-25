@@ -22,9 +22,9 @@
 #include "qgis_gui.h"
 #include "qgspoint.h"
 
-class QgsNurbsCurve;
-
 #define SIP_NO_FILE
+
+class QgsNurbsCurve;
 
 ///@cond PRIVATE
 
@@ -161,10 +161,70 @@ class GUI_EXPORT QgsBezierData
 
     /**
      * Converts the Poly-Bézier data to a QgsNurbsCurve.
-     * The resulting curve is a piecewise cubic Bézier represented as NURBS.
-     * \returns new QgsNurbsCurve. Returns nullptr if less than 2 anchors.
+     * The resulting curve is a piecewise Bézier of \a degree represented as NURBS.
+     * \param degree The degree of the Bézier segments (defaults to 3 for cubic).
+     * \returns new QgsNurbsCurve. Returns nullptr if less than 2 anchors or degree < 1.
      */
-    std::unique_ptr<QgsNurbsCurve> asNurbsCurve() const;
+    std::unique_ptr<QgsNurbsCurve> asNurbsCurve( int degree = 3 ) const;
+
+    /**
+     * Creates QgsBezierData from a poly-Bézier NURBS curve control points.
+     *
+     * Converts NURBS control point layout (anchor, handle, ..., handle, anchor, ...)
+     * to QgsBezierData structure (anchors with left/right handles).
+     *
+     * \param controlPoints Control points from a poly-Bézier NURBS curve
+     *                      (must have d*k+1 points where k is the number of segments and d is the degree)
+     * \param degree The degree of the Bézier segments (defaults to 3 for cubic).
+     * \returns QgsBezierData with anchors and handles extracted
+     * \since QGIS 4.0
+     */
+    static QgsBezierData fromPolyBezierControlPoints( const QVector<QgsPoint> &controlPoints, int degree = 3 );
+
+    /**
+     * Creates QgsBezierData from a poly-Bézier NURBS curve control points.
+     *
+     * Overload that accepts 2D points.
+     *
+     * \param controlPoints Control points from a poly-Bézier NURBS curve
+     *                      (must have d*k+1 points where k is the number of segments and d is the degree)
+     * \param degree The degree of the Bézier segments (defaults to 3 for cubic).
+     * \returns QgsBezierData with anchors and handles extracted
+     * \since QGIS 4.0
+     */
+    static QgsBezierData fromPolyBezierControlPoints( const QVector<QgsPointXY> &controlPoints, int degree = 3 );
+
+    /**
+     * Calculates and updates the symmetric handle positions when dragging a Poly-Bézier anchor.
+     *
+     * \param controlPoints The list of control points to update.
+     * \param anchorIndex The index of the anchor being dragged.
+     * \param mousePosition The position of the mouse cursor (defining the direction/length of handles relative to anchor).
+     * \since QGIS 4.0
+     */
+    static void calculateSymmetricHandles( QVector<QgsPoint> &controlPoints, int anchorIndex, const QgsPoint &mousePosition );
+
+    /**
+     * Calculates and updates the symmetric handle positions for a single anchor.
+     *
+     * \param anchor The anchor point (center).
+     * \param mousePosition The new position for the handle that follows the mouse.
+     * \param handleFollow The handle that will be moved to \a mousePosition.
+     * \param handleOpposite The handle that will be moved to the symmetric opposite position.
+     * \since QGIS 4.0
+     */
+    static void calculateSymmetricHandles( const QgsPoint &anchor, const QgsPoint &mousePosition, QgsPoint *handleFollow, QgsPoint *handleOpposite );
+
+    /**
+     * Updates the handles of the anchor at \a anchorIndex symmetrically.
+     * The right handle will follow \a mousePosition, and the left handle will
+     * be placed in the opposite direction.
+     *
+     * \param anchorIndex The index of the anchor to update.
+     * \param mousePosition The new position for the right handle.
+     * \since QGIS 4.0
+     */
+    void calculateSymmetricHandles( int anchorIndex, const QgsPoint &mousePosition );
 
     //! Clears all data
     void clear();

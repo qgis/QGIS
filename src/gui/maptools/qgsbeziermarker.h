@@ -26,11 +26,12 @@
 
 #include <QObject>
 
+#define SIP_NO_FILE
+
 class QgsMapCanvas;
 class QgsRubberBand;
 class QgsVertexMarker;
 
-#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

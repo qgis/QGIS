@@ -5095,6 +5095,160 @@ class PyQgsOGRProvider(QgisTestCase):
             features = {f.id(): f.attributes() for f in vl2.getFeatures()}
             self.assertEqual(features, {1: [1, "b"], 2: [2, "d"]})
 
+    def test_urisReferToSameWithVsi(self):
+        """
+        Test provider metadata urisReferToSame
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata("ogr")
+
+        uri1_parts = {
+            "path": "some_db.zip",
+            "vsiPrefix": "/vsizip/",
+            "vsiSuffix": "/shapefile.gpkg",
+            "layerName": "table1",
+        }
+        uri2_parts = {
+            "path": "some_db.zip",
+            "vsiPrefix": "/vsizip/",
+            "vsiSuffix": "/shapefile.gpkg",
+            "layerName": "table2",
+        }
+
+        uri1 = metadata.encodeUri(uri1_parts)
+        uri2 = metadata.encodeUri(uri2_parts)
+
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Object)
+        )
+
+        uri2_parts["path"] = "some_db2.zip"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+
+        uri2_parts["path"] = "some_db.rar"
+        uri2_parts["vsiPrefix"] = "/vsirar/"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+
+        uri2_parts["path"] = "some_db.zip"
+        uri2_parts["vsiPrefix"] = "/vsizip/"
+        uri2_parts["layerName"] = "table1"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Object)
+        )
+
+    def test_urisReferToSame(self):
+        """
+        Test provider metadata urisReferToSame
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata("ogr")
+
+        uri1_parts = {
+            "path": "some_db.gpkg",
+            "layerName": "table1",
+        }
+        uri2_parts = {
+            "path": "some_db.gpkg",
+            "layerName": "table2",
+        }
+
+        uri1 = metadata.encodeUri(uri1_parts)
+        uri2 = metadata.encodeUri(uri2_parts)
+
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Object)
+        )
+
+        uri2_parts["path"] = "some_db2.gpkg"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+
+        uri2_parts["path"] = "some_db.gpkg"
+        uri2_parts["layerName"] = "table1"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Object)
+        )
+
+    def test_urisReferToSameDatabase(self):
+        """
+        Test provider metadata urisReferToSame with database sources
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata("ogr")
+
+        uri1 = "MySQL:westholland,user=root,password=psv9570,port=3306|layername=table1"
+        uri2 = "MySQL:westholland,user=root,password=psv9570,port=3306|layername=table2"
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Object)
+        )
+
+        uri2 = (
+            "MySQL:westholland2,user=root,password=psv9570,port=3306|layername=table2"
+        )
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+
+        uri2 = "MySQL:westholland,user=root,password=psv9570,port=3306|layername=table1"
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Object)
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

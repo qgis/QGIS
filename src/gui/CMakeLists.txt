@@ -411,6 +411,7 @@ set(QGIS_GUI_SRCS
   pointcloud/qgspointcloudattributebyramprendererwidget.cpp
   pointcloud/qgspointcloudclassifiedrendererwidget.cpp
   pointcloud/qgspointcloudextentrendererwidget.cpp
+  pointcloud/qgspointcloudlayerproperties.cpp
   pointcloud/qgspointcloudlayersaveasdialog.cpp
   pointcloud/qgspointcloudrendererwidget.cpp
   pointcloud/qgspointcloudrendererpropertieswidget.cpp
@@ -552,6 +553,7 @@ set(QGIS_GUI_SRCS
 
   tiledscene/qgstiledsceneconnectiondialog.cpp
   tiledscene/qgstiledscenedataitemguiprovider.cpp
+  tiledscene/qgstiledscenelayerproperties.cpp
   tiledscene/qgstiledsceneproviderguimetadata.cpp
   tiledscene/qgstiledscenerendererpropertieswidget.cpp
   tiledscene/qgstiledscenerendererwidget.cpp
@@ -1430,6 +1432,7 @@ set(QGIS_GUI_HDRS
   pointcloud/qgspointcloudattributebyramprendererwidget.h
   pointcloud/qgspointcloudclassifiedrendererwidget.h
   pointcloud/qgspointcloudextentrendererwidget.h
+  pointcloud/qgspointcloudlayerproperties.h
   pointcloud/qgspointcloudlayersaveasdialog.h
   pointcloud/qgspointcloudrendererwidget.h
   pointcloud/qgspointcloudrendererpropertieswidget.h
@@ -1660,6 +1663,7 @@ set(QGIS_GUI_HDRS
 
   tiledscene/qgstiledsceneconnectiondialog.h
   tiledscene/qgstiledscenedataitemguiprovider.h
+  tiledscene/qgstiledscenelayerproperties.h
   tiledscene/qgstiledsceneproviderguimetadata.h
   tiledscene/qgstiledscenerendererpropertieswidget.h
   tiledscene/qgstiledscenerendererwidget.h

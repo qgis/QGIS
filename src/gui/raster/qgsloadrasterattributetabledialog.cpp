@@ -16,6 +16,7 @@
 #include "qgsloadrasterattributetabledialog.h"
 
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgsmessagebar.h"
 #include "qgsrasterattributetable.h"
 
@@ -35,6 +36,9 @@ QgsLoadRasterAttributeTableDialog::QgsLoadRasterAttributeTableDialog( QgsRasterL
 
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( u"working_with_raster/raster_properties.html#raster-attribute-tables"_s );
+  } );
 
   connect( mDbfPathWidget, &QgsFileWidget::fileChanged, this, [this]( const QString & ) {
     updateButtons();

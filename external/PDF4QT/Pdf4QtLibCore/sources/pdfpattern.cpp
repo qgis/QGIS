@@ -3557,29 +3557,31 @@ PDFTensorPatches PDFCoonsPatchShading::createPatches(QTransform userSpaceToDevic
 
     auto createTensorPatch = [&]
     {
-        // Jakub Melka: please see following pictures, in PDF 1.7 specification, figures 4.22 and 4.24.
-        // We copy the control points to the tensor patch in the appropriate order.
-        //
-        //              P_13               P_23                               V_5                 V_6
-        //             /                       \                             /                       \
-        //        P_03/                         \ P_33                   V_4/                         \ V_7
-        //          |-----------------------------|                       |-----------------------------|
-        //        / |                             |\                    / | C_2                    C_3  |\
-        //       /  |                             | \                  /  |                             | \
-        //    P_02  |                             |  P_32            V_3  |                             |  V_8
-        //          |        P_12     P_22        |                       |                             |
-        //          |                             |                       |                             |
-        //          |                             |                       |                             |
-        //          |                             |                       |                             |
-        //          |        P_11     P_21        |                       |                             |
-        //          |                             |                       |                             |
-        //    P_01  |                             |  P_31           V_2   |                             |  V_9
-        //       \  |                             | /                  \  |                             | /
-        //        \ |                             |/                    \ | C_1                    C_4  |/
-        //          |-----------------------------|                       |-----------------------------|
-        //      P_00  \                         / P_30                V_1   \                         / V_10
-        //             \                       /                             \                       /
-        //             P_10                 P_20                             V_12                 V_11
+        /*
+         * Jakub Melka: please see following pictures, in PDF 1.7 specification, figures 4.22 and 4.24.
+         * We copy the control points to the tensor patch in the appropriate order.
+         *
+         *              P_13               P_23                               V_5                 V_6
+         *             /                       \                             /                       \
+         *        P_03/                         \ P_33                   V_4/                         \ V_7
+         *          |-----------------------------|                       |-----------------------------|
+         *        / |                             |\                    / | C_2                    C_3  |\
+         *       /  |                             | \                  /  |                             | \
+         *    P_02  |                             |  P_32            V_3  |                             |  V_8
+         *          |        P_12     P_22        |                       |                             |
+         *          |                             |                       |                             |
+         *          |                             |                       |                             |
+         *          |                             |                       |                             |
+         *          |        P_11     P_21        |                       |                             |
+         *          |                             |                       |                             |
+         *    P_01  |                             |  P_31           V_2   |                             |  V_9
+         *       \  |                             | /                  \  |                             | /
+         *        \ |                             |/                    \ | C_1                    C_4  |/
+         *          |-----------------------------|                       |-----------------------------|
+         *      P_00  \                         / P_30                V_1   \                         / V_10
+         *             \                       /                             \                       /
+         *             P_10                 P_20                             V_12                 V_11
+         */
 
         PDFTensorPatch::PointMatrix P;
         PDFTensorPatch::Colors tensorColors;

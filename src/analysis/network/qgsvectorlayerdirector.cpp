@@ -325,11 +325,14 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
     }
   }
 
+  mVertexSources.resize( graphVertices.size() );
+
   fit = mSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( requiredAttributes() ) );
   while ( fit.nextFeature( feature ) )
   {
     if ( feedback && feedback->isCanceled() )
       return;
+    const QgsFeatureId fid = feature.id();
 
     Direction direction = directionForFeature( feature );
 
@@ -345,8 +348,10 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
       mpl.push_back( feature.geometry().asPolyline() );
     }
 
+    int partId = -1;
     for ( const QgsPolylineXY &line : std::as_const( mpl ) )
     {
+      partId++;
       QgsPointXY pt1, pt2;
 
       bool isFirstPoint = true;
@@ -356,6 +361,13 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
         int pPt2idx = findPointWithinTolerance( pt2 );
         Q_ASSERT_X( pPt2idx >= 0, "QgsVectorLayerDirector::makeGraph", "encountered a vertex which was not present in graph" );
         pt2 = graphVertices.at( pPt2idx );
+
+        std::vector<VertexSourceInfo> &sourceList = mVertexSources[pPt2idx];
+        VertexSourceInfo info { fid, partId };
+        if ( std::find( sourceList.begin(), sourceList.end(), info ) == sourceList.end() )
+        {
+          sourceList.push_back( info );
+        }
 
         if ( !isFirstPoint )
         {

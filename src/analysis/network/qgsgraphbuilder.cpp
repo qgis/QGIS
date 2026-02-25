@@ -13,14 +13,8 @@
 *                                                                          *
 ***************************************************************************/
 
-/**
- * \file qgsgraphbuilder.cpp
- * \brief implementation of the QgsGraphBuilder
- */
-
 #include "qgsgraphbuilder.h"
 
-#include "qgsgeometry.h"
 #include "qgsgraph.h"
 
 QgsGraphBuilder::QgsGraphBuilder( const QgsCoordinateReferenceSystem &crs, bool otfEnabled, double topologyTolerance, const QString &ellipsoidID )
@@ -31,9 +25,9 @@ QgsGraphBuilder::QgsGraphBuilder( const QgsCoordinateReferenceSystem &crs, bool 
 
 QgsGraphBuilder::~QgsGraphBuilder() = default;
 
-void QgsGraphBuilder::addVertex( int, const QgsPointXY &pt )
+int QgsGraphBuilder::addVertex( int, const QgsPointXY &pt )
 {
-  mGraph->addVertex( pt );
+  return mGraph->addVertex( pt );
 }
 
 void QgsGraphBuilder::addEdge( int pt1id, const QgsPointXY &, int pt2id, const QgsPointXY &, const QVector<QVariant> &prop )
@@ -46,9 +40,9 @@ QgsGraph QgsGraphBuilder::graph() const
   return *mGraph;
 }
 
-QgsGraph *QgsGraphBuilder::takeGraph()
+std::unique_ptr< QgsGraph > QgsGraphBuilder::takeGraph()
 {
-  QgsGraph *res = mGraph.release();
+  std::unique_ptr< QgsGraph > res = std::move( mGraph );
 
   // create a new graph in case this builder is used for additional work
   mGraph = std::make_unique<QgsGraph>();

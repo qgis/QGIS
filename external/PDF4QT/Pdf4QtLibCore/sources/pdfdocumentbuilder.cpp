@@ -33,6 +33,8 @@
 #include <QPainter>
 #include <QPdfWriter>
 
+#include <cmath>
+
 #include "pdfdbgheap.h"
 
 namespace pdf
@@ -149,6 +151,53 @@ PDFObjectFactory& PDFObjectFactory::operator<<(const PDFDestination& destination
         }
 
         *this << WrapName(type);
+
+        auto appendNumberOrNull = [this](PDFReal value)
+        {
+            if (std::isfinite(value))
+            {
+                *this << value;
+            }
+            else
+            {
+                *this << PDFObject();
+            }
+        };
+
+        switch (destination.getDestinationType())
+        {
+            case DestinationType::XYZ:
+                appendNumberOrNull(destination.getLeft());
+                appendNumberOrNull(destination.getTop());
+                appendNumberOrNull(destination.getZoom());
+                break;
+
+            case DestinationType::FitH:
+                appendNumberOrNull(destination.getTop());
+                break;
+
+            case DestinationType::FitV:
+                appendNumberOrNull(destination.getLeft());
+                break;
+
+            case DestinationType::FitR:
+                appendNumberOrNull(destination.getLeft());
+                appendNumberOrNull(destination.getBottom());
+                appendNumberOrNull(destination.getRight());
+                appendNumberOrNull(destination.getTop());
+                break;
+
+            case DestinationType::FitBH:
+                appendNumberOrNull(destination.getTop());
+                break;
+
+            case DestinationType::FitBV:
+                appendNumberOrNull(destination.getLeft());
+                break;
+
+            default:
+                break;
+        }
 
         endArray();
     }
@@ -1557,6 +1606,45 @@ void PDFDocumentBuilder::setDocumentInfo(PDFObjectReference infoReference)
     objectFactory.endDictionaryItem();
     objectFactory.endDictionary();
     m_storage.updateTrailerDictionary(objectFactory.takeObject());
+}
+
+void PDFDocumentBuilder::setCatalogMetadata(QByteArray metadataXML)
+{
+    const PDFInteger metadataLength = metadataXML.size();
+
+    PDFObjectReference metadataReference;
+    const PDFObject& catalogObject = getObjectByReference(getCatalogReference());
+    if (const PDFDictionary* catalogDictionary = getDictionaryFromObject(catalogObject))
+    {
+        const PDFObject& metadataObject = catalogDictionary->get("Metadata");
+        if (metadataObject.isReference())
+        {
+            metadataReference = metadataObject.getReference();
+        }
+    }
+
+    PDFDictionary metadataDictionary;
+    metadataDictionary.addEntry(PDFInplaceOrMemoryString("Type"), PDFObject::createName("Metadata"));
+    metadataDictionary.addEntry(PDFInplaceOrMemoryString("Subtype"), PDFObject::createName("XML"));
+    metadataDictionary.addEntry(PDFInplaceOrMemoryString("Length"), PDFObject::createInteger(metadataLength));
+
+    PDFObject metadataStream = PDFObject::createStream(std::make_shared<PDFStream>(qMove(metadataDictionary), qMove(metadataXML)));
+    if (metadataReference.isValid())
+    {
+        setObject(metadataReference, qMove(metadataStream));
+    }
+    else
+    {
+        metadataReference = addObject(qMove(metadataStream));
+    }
+
+    PDFObjectFactory objectBuilder;
+    objectBuilder.beginDictionary();
+    objectBuilder.beginDictionaryItem("Metadata");
+    objectBuilder << metadataReference;
+    objectBuilder.endDictionaryItem();
+    objectBuilder.endDictionary();
+    mergeTo(getCatalogReference(), objectBuilder.takeObject());
 }
 
 QRectF PDFDocumentBuilder::getPolygonsBoundingRect(const Polygons& polygons) const

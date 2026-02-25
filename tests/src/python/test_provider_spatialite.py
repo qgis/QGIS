@@ -2484,6 +2484,55 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
         layer = QgsVectorLayer(uri.uri(), "subset layer", "spatialite")
         self.assertFalse(layer.isValid())
 
+    def test_urisReferToSame(self):
+        """
+        Test provider metadata urisReferToSame
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata("spatialite")
+
+        uri1_parts = {
+            "path": "some_db.sql",
+            "layerName": "table1",
+        }
+        uri2_parts = {
+            "path": "some_db.sql",
+            "layerName": "table2",
+        }
+
+        uri1 = metadata.encodeUri(uri1_parts)
+        uri2 = metadata.encodeUri(uri2_parts)
+
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Object)
+        )
+
+        uri2_parts["path"] = "some_db2.sql"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+        uri2_parts["path"] = "some_db.sql"
+        uri2_parts["layerName"] = "table1"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Object)
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

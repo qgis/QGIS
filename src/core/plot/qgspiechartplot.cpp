@@ -135,6 +135,8 @@ void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
       randomRamp->setTotalColorCount( categories.size() );
     }
 
+    chartScope->addVariable( QgsExpressionContextScope::StaticVariable( u"chart_series_name"_s, series->name(), true ) );
+
     if ( const QgsXyPlotSeries *xySeries = dynamic_cast<const QgsXyPlotSeries *>( series ) )
     {
       const QList<std::pair<double, double>> data = xySeries->data();

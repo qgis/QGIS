@@ -377,9 +377,8 @@ Returns a QRectF with same coordinates as the rectangle.
     QString toString( int precision = 16 ) const;
 %Docstring
 Returns a string representation of form xmin,ymin : xmax,ymax
-Coordinates will be truncated to the specified precision. If the
-specified precision is less than 0, a suitable minimum precision is
-used.
+Coordinates will be rounded to the specified precision. If the specified
+precision is less than 0, a suitable minimum precision is used.
 %End
 
     QString asPolygon() const;

@@ -8,7 +8,7 @@
     "registries": [
       {
         "kind": "git",
-        "baseline": "7aaf1fda3fd1d86e6230b9a6d5ef686f353aa061",
+        "baseline": "a3f181f299a54a0d67e6e60cac746ea265adfb29",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "arrow",
@@ -187,6 +187,10 @@
         "py-qscintilla",
         "py-rasterio",
         "py-requests",
+        {
+          "name": "py-scipy",
+          "platform": "!windows"
+        },
         "py-shapely",
         "py-six",
         "py-urllib3",

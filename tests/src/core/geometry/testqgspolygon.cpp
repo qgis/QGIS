@@ -267,8 +267,8 @@ void TestQgsPolygon::equality()
   QVERIFY( !( pl1 != pl2 ) );
 
   QgsLineString ls;
-  QVERIFY( pl1 != ls );
-  QVERIFY( !( pl1 == ls ) );
+  QVERIFY( *static_cast< QgsAbstractGeometry * >( &pl1 ) != ls );
+  QVERIFY( !( *static_cast< QgsAbstractGeometry * >( &pl1 ) == ls ) );
 }
 
 void TestQgsPolygon::clone()

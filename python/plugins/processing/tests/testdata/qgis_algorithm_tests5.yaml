@@ -562,7 +562,7 @@ tests:
         name: custom/network_validation.gml|layername=network_validation
         type: vector
       TOLERANCE: 5.0
-      TOLERANCE_NODE_NODE: 20.0
+      TOLERANCE_NODE_NODE: 30.0
     results:
       OUTPUT_INVALID_NODES:
         name: expected/network_validation_node_to_node_with_tolerance.gml
@@ -660,6 +660,54 @@ tests:
           fields:
             fid: skip
 
+  - algorithm: native:validatenetwork
+    name: Network validation, considering all nodes
+    params:
+      ENDPOINTS_ONLY: false
+      INPUT:
+        name: custom/network_validation2.gml|layername=network_validation2
+        type: vector
+      TOLERANCE: 0.0
+      TOLERANCE_NODE_NODE: 1.0
+      TOLERANCE_NODE_SEGMENT: 1.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT_INVALID_NODES:
+        name: expected/network_validation_all_nodes.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            fid: skip
+
+  - algorithm: native:validatenetwork
+    name: Network validation, consider endpoints only
+    params:
+      ENDPOINTS_ONLY: true
+      INPUT:
+        name: custom/network_validation2.gml|layername=network_validation2
+        type: vector
+      TOLERANCE: 0.0
+      TOLERANCE_NODE_NODE: 1.0
+      TOLERANCE_NODE_SEGMENT: 1.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT_INVALID_NODES:
+        name: expected/network_validation_endpoints_only.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            fid: skip
+
   - algorithm: native:forcecw
     name: Force clockwise polys
     params:
@@ -702,4 +750,21 @@ tests:
     results:
       OUTPUT:
         name: expected/force_ccw_multipolys.gml
+        type: vector
+
+  - algorithm: native:geometrybyexpression
+    name: Geometry by expression (using @layer_name)
+    params:
+      EXPRESSION: "scale(\n  geometry:=$geometry, \n  x_scale:=0.5, \n  y_scale:=0.5,\
+        \ \n  center:=centroid(\n    aggregate(layer:=@layer_name, aggregate:='collect',\
+        \ expression:=@geometry)\n  )\n)"
+      INPUT:
+        name: polys.gml|layername=polys2
+        type: vector
+      OUTPUT_GEOMETRY: 0
+      WITH_M: false
+      WITH_Z: false
+    results:
+      OUTPUT:
+        name: expected/geometry_by_expression_layerref.gml
         type: vector

@@ -1456,9 +1456,25 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
           QAction *renameFieldAction = new QAction( tr( "Rename Field…" ), menu );
           const QString itemName { item->name() };
 
-          connect( renameFieldAction, &QAction::triggered, fieldsItem, [md, fieldsItem, itemName, context] {
+          connect( renameFieldAction, &QAction::triggered, fieldsItem, [md, fieldsItem, itemName, providerKey, context] {
+            if ( !QgsProjectUtils::layersMatchingUri( QgsProject::instance(), providerKey, fieldsItem->connectionUri() ).isEmpty() )
+            {
+              if ( context.messageBar() )
+              {
+                context.messageBar()->pushCritical( tr( "Rename Field" ), tr( "This table is open in the current QGIS project and cannot be modified" ) );
+              }
+              return;
+            }
+
+            const QgsFields existingFields = fieldsItem->fields();
+            QStringList existingFieldNames = existingFields.names();
+            existingFieldNames.removeAll( itemName );
+
             // Confirmation dialog
-            QgsNewNameDialog dlg( tr( "field “%1”" ).arg( itemName ), itemName );
+            QgsNewNameDialog dlg( tr( "field “%1”" ).arg( itemName ), itemName, {}, existingFieldNames );
+            dlg.setOverwriteEnabled( false );
+            dlg.setConflictingNameWarning( tr( "A field with this name already exists." ) );
+
             dlg.setWindowTitle( tr( "Rename Field" ) );
             if ( dlg.exec() != QDialog::Accepted || dlg.name() == itemName )
               return;
@@ -1538,7 +1554,16 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
           const bool supportsCascade { conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteFieldCascade ) };
           const QString itemName { item->name() };
 
-          connect( deleteFieldAction, &QAction::triggered, fieldsItem, [md, fieldsItem, itemName, context, supportsCascade] {
+          connect( deleteFieldAction, &QAction::triggered, fieldsItem, [md, fieldsItem, itemName, providerKey, context, supportsCascade] {
+            if ( !QgsProjectUtils::layersMatchingUri( QgsProject::instance(), providerKey, fieldsItem->connectionUri() ).isEmpty() )
+            {
+              if ( context.messageBar() )
+              {
+                context.messageBar()->pushCritical( tr( "Delete Field" ), tr( "This table is open in the current QGIS project and cannot be modified" ) );
+              }
+              return;
+            }
+
             // Confirmation dialog
             QString message { tr( "Delete '%1' permanently?" ).arg( itemName ) };
             if ( fieldsItem->tableProperty() && fieldsItem->tableProperty()->primaryKeyColumns().contains( itemName ) )
@@ -1886,8 +1911,28 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 
           std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
 
-          QgsNewNameDialog dlg( tr( "Table %1.%2" ).arg( schema, tableName ), tableName );
+          QStringList existingTableNames;
+          try
+          {
+            const QList<QgsAbstractDatabaseProviderConnection::TableProperty> existingTables = conn2->tables( schema );
+            existingTableNames.reserve( existingTables.size() );
+            for ( const QgsAbstractDatabaseProviderConnection::TableProperty &table : existingTables )
+            {
+              if ( table.tableName() != tableName )
+              {
+                existingTableNames.append( table.tableName() );
+              }
+            }
+          }
+          catch ( QgsProviderConnectionException &ex )
+          {
+            ( void ) ex;
+          }
+
+          QgsNewNameDialog dlg( tr( "Table %1.%2" ).arg( schema, tableName ), tableName, {}, existingTableNames );
           dlg.setWindowTitle( tr( "Rename Table" ) );
+          dlg.setOverwriteEnabled( false );
+          dlg.setConflictingNameWarning( tr( "A table with this name already exists." ) );
           if ( dlg.exec() != QDialog::Accepted || dlg.name() == tableName )
             return;
 
@@ -1970,10 +2015,37 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 
         if ( dlg->exec() == QDialog::Accepted )
         {
+          std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
+          const QString targetSchema = dlg->selectedSchema();
+          QStringList existingTableNamesInTargetSchema;
+          try
+          {
+            const QList<QgsAbstractDatabaseProviderConnection::TableProperty> existingTablesInTargetSchema = conn->tables( targetSchema );
+            existingTableNamesInTargetSchema.reserve( existingTablesInTargetSchema.size() );
+            for ( const QgsAbstractDatabaseProviderConnection::TableProperty &table : existingTablesInTargetSchema )
+            {
+              existingTableNamesInTargetSchema.append( table.tableName() );
+            }
+          }
+          catch ( QgsProviderConnectionException &ex )
+          {
+            ( void ) ex;
+          }
+          conn.reset();
+
           if ( selectedItems.count() == 1 )
           {
+            const QString tableName = item->name();
+            if ( existingTableNamesInTargetSchema.contains( tableName ) )
+            {
+              if ( context.messageBar() )
+              {
+                context.messageBar()->pushCritical( QString(), tr( "Cannot move %1 to %2: a table with the same name already exists in the schema" ).arg( tableName, targetSchema ) );
+              }
+              return;
+            }
             std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn3( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
-            bool success = moveTableToSchema( std::move( conn3 ), item->parent()->name(), item->name(), dlg->selectedSchema(), context, true );
+            bool success = moveTableToSchema( std::move( conn3 ), item->parent()->name(), tableName, targetSchema, context, true );
             if ( !success )
               return;
 
@@ -1984,16 +2056,43 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
             if ( !item->parent() || !qobject_cast<QgsDataCollectionItem *>( item->parent()->parent() ) )
               return;
 
-            QgsDataItemGuiProviderUtils::refreshChildWithName( item->parent()->parent(), dlg->selectedSchema() );
+            QgsDataItemGuiProviderUtils::refreshChildWithName( item->parent()->parent(), targetSchema );
           }
           else
           {
             int numberImported = 0;
             QSet<QString> schemasToRefresh;
+
+            QStringList nameClashes;
+            for ( const QgsDataItem *selectedItem : selectedItems )
+            {
+              const QString tableName = selectedItem->name();
+              if ( existingTableNamesInTargetSchema.contains( tableName ) )
+              {
+                nameClashes.append( tableName );
+              }
+            }
+            if ( !nameClashes.isEmpty() )
+            {
+              if ( context.messageBar() )
+              {
+                if ( nameClashes.size() == 1 )
+                {
+                  context.messageBar()->pushCritical( QString(), tr( "Cannot move %1 to %2: a table with the same name already exists in the schema" ).arg( nameClashes.at( 0 ), targetSchema ) );
+                }
+                else
+                {
+                  const QString names = nameClashes.join( tr( ", " ) );
+                  context.messageBar()->pushCritical( QString(), tr( "Cannot move %1 to %2: tables with the same names already exists in the schema" ).arg( names, targetSchema ) );
+                }
+              }
+              return;
+            }
+
             for ( const QgsDataItem *selectedItem : selectedItems )
             {
               std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn3( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
-              bool success = moveTableToSchema( std::move( conn3 ), selectedItem->parent()->name(), selectedItem->name(), dlg->selectedSchema(), context, false );
+              bool success = moveTableToSchema( std::move( conn3 ), selectedItem->parent()->name(), selectedItem->name(), targetSchema, context, false );
 
               if ( success )
               {
@@ -2012,14 +2111,14 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
               return;
 
             // add target schema to schemas to refresh
-            schemasToRefresh.insert( dlg->selectedSchema() );
+            schemasToRefresh.insert( targetSchema );
 
             for ( const QString &schema : schemasToRefresh )
             {
               QgsDataItemGuiProviderUtils::refreshChildWithName( dbItem, schema );
             }
 
-            notify( tr( "Move Tables" ), tr( "%1 tables moved to schema %2" ).arg( numberImported ).arg( dlg->selectedSchema() ), context, Qgis::MessageLevel::Success );
+            notify( tr( "Move Tables" ), tr( "%1 tables moved to schema %2" ).arg( numberImported ).arg( targetSchema ), context, Qgis::MessageLevel::Success );
           }
         }
       } );

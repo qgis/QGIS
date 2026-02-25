@@ -640,28 +640,35 @@ void QgsVectorLayer::selectByExpression( const QString &expression, Qgis::Select
   selectByIds( newSelection );
 }
 
-void QgsVectorLayer::selectByIds( const QgsFeatureIds &ids, Qgis::SelectBehavior behavior )
+void QgsVectorLayer::selectByIds( const QgsFeatureIds &ids, Qgis::SelectBehavior behavior, bool validateIds )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  // Opt-in validation: filter invalid IDs if requested
+  QgsFeatureIds idsToSelect = ids;
+  if ( validateIds )
+  {
+    idsToSelect = QgsVectorLayerUtils::filterValidFeatureIds( this, ids );
+  }
 
   QgsFeatureIds newSelection;
 
   switch ( behavior )
   {
     case Qgis::SelectBehavior::SetSelection:
-      newSelection = ids;
+      newSelection = idsToSelect;
       break;
 
     case Qgis::SelectBehavior::AddToSelection:
-      newSelection = mSelectedFeatureIds + ids;
+      newSelection = mSelectedFeatureIds + idsToSelect;
       break;
 
     case Qgis::SelectBehavior::RemoveFromSelection:
-      newSelection = mSelectedFeatureIds - ids;
+      newSelection = mSelectedFeatureIds - idsToSelect;
       break;
 
     case Qgis::SelectBehavior::IntersectSelection:
-      newSelection = mSelectedFeatureIds.intersect( ids );
+      newSelection = mSelectedFeatureIds.intersect( idsToSelect );
       break;
   }
 

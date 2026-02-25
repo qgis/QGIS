@@ -964,8 +964,9 @@ void QgsExpression::buildVariableHelp()
   // plots and charts
   sVariableHelpTexts()->insert( u"plot_axis"_s, QCoreApplication::translate( "plot_axis", "The associated plot axis, e.g. 'x' or 'y'." ) );
   sVariableHelpTexts()->insert( u"plot_axis_value"_s, QCoreApplication::translate( "plot_axis_value", "The current value for the plot axis grid line." ) );
-  sVariableHelpTexts()->insert( u"chart_category"_s, QCoreApplication::translate( "plot_axis", "The chart item category, e.g. 'fruit' or 'june'." ) );
-  sVariableHelpTexts()->insert( u"chart_value"_s, QCoreApplication::translate( "plot_axis_value", "The chart item value." ) );
+  sVariableHelpTexts()->insert( u"chart_category"_s, QCoreApplication::translate( "chart_category", "The chart item category, e.g. 'fruit' or 'june'." ) );
+  sVariableHelpTexts()->insert( u"chart_value"_s, QCoreApplication::translate( "chart_value", "The chart item value." ) );
+  sVariableHelpTexts()->insert( u"chart_series_name"_s, QCoreApplication::translate( "chart_series_name", "The chart item's series name, e.g. 'Series 1'." ) );
 }
 
 bool QgsExpression::addVariableHelpText( const QString name, const QString &description )

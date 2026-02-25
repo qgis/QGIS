@@ -17,12 +17,16 @@
 
 #include "qgisapp.h"
 #include "qgs3dmapcanvaswidget.h"
+#include "qgshelp.h"
 #include "qgsmapviewsmanager.h"
 #include "qgsnewnamedialog.h"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgs3dviewsmanagerdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 Qgs3DViewsManagerDialog::Qgs3DViewsManagerDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
@@ -36,6 +40,9 @@ Qgs3DViewsManagerDialog::Qgs3DViewsManagerDialog( QWidget *parent, Qt::WindowFla
   m3DViewsListView->setSelectionMode( QAbstractItemView::SingleSelection );
 
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( u"map_views/3d_map_view.html"_s );
+  } );
 
   connect( mShowButton, &QToolButton::clicked, this, &Qgs3DViewsManagerDialog::showClicked );
   connect( mDuplicateButton, &QToolButton::clicked, this, &Qgs3DViewsManagerDialog::duplicateClicked );

@@ -21,6 +21,7 @@
 #include "qgselevationprofilemanager.h"
 #include "qgselevationprofilemanagermodel.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgsnewnamedialog.h"
 #include "qgsproject.h"
 
@@ -31,9 +32,12 @@
 #include <QInputDialog>
 #include <QListWidgetItem>
 #include <QMessageBox>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgselevationprofilemanagerdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsElevationProfileManagerDialog::QgsElevationProfileManagerDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
@@ -54,6 +58,9 @@ QgsElevationProfileManagerDialog::QgsElevationProfileManagerDialog( QWidget *par
   connect( mSearchLineEdit, &QgsFilterLineEdit::textChanged, mProxyModel, &QgsElevationProfileManagerProxyModel::setFilterString );
 
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( u"map_views/elevation_profile.html"_s );
+  } );
   connect( mProfileListView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsElevationProfileManagerDialog::toggleButtons );
   connect( mProfileListView, &QListView::doubleClicked, this, &QgsElevationProfileManagerDialog::itemDoubleClicked );
 

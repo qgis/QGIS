@@ -54,6 +54,8 @@ class GUI_EXPORT QgsLayoutChartWidget : public QgsLayoutItemBaseWidget, private 
 
     void mChartTypeComboBox_currentIndexChanged( int index );
     void mChartPropertiesButton_clicked();
+    void mFlipAxesCheckBox_stateChanged( int state );
+
     void mSortCheckBox_stateChanged( int state );
     void mSortDirectionButton_clicked();
 
@@ -70,6 +72,9 @@ class GUI_EXPORT QgsLayoutChartWidget : public QgsLayoutItemBaseWidget, private 
   private:
     //! Sets the GUI elements to the values of mChartItem
     void setGuiElementValues();
+
+    //! Updates buttons state when selecting a layer or adding/removing series
+    void updateButtonsState();
 
     //! Adds a new item to the series list widget
     QListWidgetItem *addSeriesListItem( const QString &name );
