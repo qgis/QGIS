@@ -179,6 +179,11 @@ void QgsProcessingFieldMapPanelWidget::registerExpressionContextGenerator( const
   mFieldsView->registerExpressionContextGenerator( generator );
 }
 
+void QgsProcessingFieldMapPanelWidget::setProcessingModeType( Qgis::ProcessingMode type )
+{
+  mType = type;
+}
+
 void QgsProcessingFieldMapPanelWidget::loadFieldsFromLayer()
 {
   if ( mLayer )
@@ -206,6 +211,11 @@ void QgsProcessingFieldMapPanelWidget::loadLayerFields()
 {
   if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerCombo->currentLayer() ) )
   {
+    if ( mType == Qgis::ProcessingMode::Modeler )
+    {
+      // in modeler context the source fields are not determined by the parent layer
+      mFieldsView->setSourceFields( vl->fields() );
+    }
     mFieldsView->setDestinationFields( vl->fields() );
   }
 }
@@ -299,6 +309,7 @@ QWidget *QgsProcessingFieldMapWidgetWrapper::createWidget()
   mPanel = new QgsProcessingFieldMapPanelWidget( nullptr );
   mPanel->setToolTip( parameterDefinition()->toolTip() );
   mPanel->registerExpressionContextGenerator( this );
+  mPanel->setProcessingModeType( type() );
 
   connect( mPanel, &QgsProcessingFieldMapPanelWidget::changed, this, [this] {
     emit widgetValueHasChanged( this );
