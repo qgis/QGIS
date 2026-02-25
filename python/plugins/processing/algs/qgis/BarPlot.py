@@ -22,6 +22,7 @@ __copyright__ = "(C) 2013, Victor Olaya"
 import warnings
 
 from qgis.core import (
+    NULL,
     QgsFeatureRequest,
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
@@ -157,7 +158,7 @@ class BarPlot(QgisAlgorithm):
         values = vector.values(source, valuefieldname)
 
         x_var = vector.load_field(
-            source, namefieldname, nullstring="<NULL>", nonestring="<NULL>"
+            source, namefieldname, replacements={NULL: "<NULL>", None: "<NULL>"}
         )
 
         data = [go.Bar(x=x_var, y=values[valuefieldname])]

@@ -22,6 +22,7 @@ __copyright__ = "(C) 2017, Matteo Ghetta"
 import warnings
 
 from qgis.core import (
+    NULL,
     QgsProcessingException,
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
@@ -170,7 +171,7 @@ class BoxPlot(QgisAlgorithm):
         values = vector.values(source, valuefieldname)
 
         x_var = vector.load_field(
-            source, namefieldname, nullstring="<NULL>", nonestring="<NULL>"
+            source, namefieldname, replacements={NULL: "<NULL>", None: "<NULL>"}
         )
 
         msdIndex = self.parameterAsEnum(parameters, self.MSD, context)

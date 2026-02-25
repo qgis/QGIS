@@ -22,6 +22,7 @@ __copyright__ = "(C) 2013, Victor Olaya"
 import warnings
 
 from qgis.core import (
+    NULL,
     QgsProcessingException,
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
@@ -129,7 +130,7 @@ class PolarPlot(QgisAlgorithm):
 
         values = vector.values(source, valuefieldname)[valuefieldname]
         names = vector.load_field(
-            source, namefieldname, nullstring="<NULL>", nonestring="<NULL>"
+            source, namefieldname, replacements={NULL: "<NULL>", None: "<NULL>"}
         )
 
         # Sum up values by category
