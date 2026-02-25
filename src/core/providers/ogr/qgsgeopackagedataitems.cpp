@@ -194,7 +194,7 @@ QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
     {
       auto domainsItem = std::make_unique< QgsFieldDomainsItem >( this, mPath + "/domains", path, u"ogr"_s );
       // force this item to appear last by setting a maximum string value for the sort key
-      domainsItem->setSortKey( QString( QChar( 0x10FFFF ) ) );
+      domainsItem->setSortKey( QString( QChar( 0xFFFF ) ) );
       children.append( domainsItem.release() );
     }
   }
