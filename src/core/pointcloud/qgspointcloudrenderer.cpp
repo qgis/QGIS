@@ -401,7 +401,7 @@ QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer,
   return selectedPoints;
 }
 
-QgsElevationShadingRenderer QgsPointCloudRenderer::elevationShadingRenderer()
+QgsElevationShadingRenderer QgsPointCloudRenderer::elevationShadingRenderer() const
 {
   return mElevationShadingRenderer;
 }
