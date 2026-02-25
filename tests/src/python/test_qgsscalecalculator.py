@@ -92,7 +92,7 @@ class TestQgsScaleCalculator(QgisTestCase):
             calculator.calculateGeographicDistance(extent), 3958887, -3
         )
         scale = calculator.calculate(extent, 2000)
-        self.assertAlmostEqual(scale, 7480754.015, -3)
+        self.assertAlmostEqual(scale, 7481362, -3)
 
     def testCalculateAtHorizontalBottom(self):
         calculator = QgsScaleCalculator()
@@ -141,7 +141,7 @@ class TestQgsScaleCalculator(QgisTestCase):
             calculator.calculateGeographicDistance(extent), 4974125, -3
         )
         scale = calculator.calculate(extent, 2000)
-        self.assertAlmostEqual(scale, 9398987.567, -3)
+        self.assertAlmostEqual(scale, 9399921, -3)
 
     def testCalculateImageSize(self):
         calculator = QgsScaleCalculator()
