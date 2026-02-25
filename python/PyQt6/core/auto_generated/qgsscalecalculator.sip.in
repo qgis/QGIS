@@ -82,13 +82,19 @@ Returns current map units.
 .. seealso:: :py:func:`setMapUnits`
 %End
 
-    void setEllipsoidFromMapCrs( const QgsCoordinateReferenceSystem &crs );
+    void setMapCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
-Set ellipsoid parameters from ``crs``.
+Set the crs.
 
 .. versionadded:: 4.2
 %End
 
+    QgsCoordinateReferenceSystem mapCrs() const;
+%Docstring
+Returns current crs.
+
+.. versionadded:: 4.2
+%End
 
     double calculate( const QgsRectangle &mapExtent, double canvasWidth ) const;
 %Docstring

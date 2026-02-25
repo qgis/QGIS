@@ -20,7 +20,6 @@
 
 #include <cmath>
 
-#include "qgscoordinatereferencesystem.h"
 #include "qgsellipsoidutils.h"
 #include "qgslogger.h"
 #include "qgsrectangle.h"
@@ -34,10 +33,7 @@ using namespace Qt::StringLiterals;
 QgsScaleCalculator::QgsScaleCalculator( double dpi, Qgis::DistanceUnit mapUnits )
   : mDpi( dpi )
   , mMapUnits( mapUnits )
-{
-  // default ellipsoid is associated with WGS-84
-  mEllipsoidParameters = QgsEllipsoidUtils::ellipsoidParameters( QgsCoordinateReferenceSystem( Qgis::geographicCrsAuthId() ).ellipsoidAcronym() );
-}
+{}
 
 void QgsScaleCalculator::setMethod( Qgis::ScaleCalculationMethod method )
 {
@@ -65,14 +61,10 @@ Qgis::DistanceUnit QgsScaleCalculator::mapUnits() const
   return mMapUnits;
 }
 
-void QgsScaleCalculator::setEllipsoidFromMapCrs( const QgsCoordinateReferenceSystem &crs )
+void QgsScaleCalculator::setMapCrs( const QgsCoordinateReferenceSystem &crs )
 {
-  const QString ellipsoidAcronym = crs.ellipsoidAcronym().isEmpty()
-                                   ? QgsCoordinateReferenceSystem( Qgis::geographicCrsAuthId() ).ellipsoidAcronym() :
-                                   crs.ellipsoidAcronym();
-  mEllipsoidParameters = QgsEllipsoidUtils::ellipsoidParameters( ellipsoidAcronym );
+  mCrs = crs;
 }
-
 
 
 double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, double canvasWidth )  const

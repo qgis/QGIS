@@ -22,7 +22,7 @@
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsellipsoidutils.h"
+#include "qgscoordinatereferencesystem.h"
 
 class QString;
 class QgsCoordinateReferenceSystem;
@@ -91,12 +91,18 @@ class CORE_EXPORT QgsScaleCalculator
     Qgis::DistanceUnit mapUnits() const;
 
     /**
-     * Set ellipsoid parameters from \a crs.
+     * Set the crs.
      *
      * \since QGIS 4.2
      */
-    void setEllipsoidFromMapCrs( const QgsCoordinateReferenceSystem &crs );
+    void setMapCrs( const QgsCoordinateReferenceSystem &crs );
 
+    /**
+     * Returns current crs.
+     *
+     * \since QGIS 4.2
+     */
+    QgsCoordinateReferenceSystem mapCrs() const { return mCrs; }
 
     /**
      * Calculate the scale denominator.
@@ -162,8 +168,8 @@ class CORE_EXPORT QgsScaleCalculator
     //! map unit member
     Qgis::DistanceUnit mMapUnits = Qgis::DistanceUnit::Unknown;
 
-    //! ellipsoid parameters for the ellipsoid associated with the scale calculator
-    QgsEllipsoidUtils::EllipsoidParameters mEllipsoidParameters;
+    //! crs associated with the scale calculator
+    QgsCoordinateReferenceSystem mCrs;
 };
 
 #endif // #ifndef QGSSCALECALCULATOR_H
