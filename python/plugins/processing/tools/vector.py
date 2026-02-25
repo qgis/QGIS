@@ -42,17 +42,19 @@ def resolveFieldIndex(source, attr):
         return index
 
 
-def load_field(source, fieldname, nullstring=None, nonestring=None):
+def load_field(source, fieldname, replacements={}):
     """Returns the values in the source attribute table for a given field.
 
-    :param source: The feature source (``QgsProcessingFeatureSource`` object)
+    :param source: The feature source
     :param fieldname: Name of the field to load
-    :param nullstring: Optional string replacement for ``NULL`` values; defaults to None
-    :param nonestring: Optional string replacement for ``None`` values; defaults to None
+    :param replacements: Optional dictionary of values to replace
     :return: List of values
 
     Unlike the ``vector.values`` method, this function does not assume that
     fields are numeric.
+
+    Use the ``replacements`` parameter to replace ``NULL``/``None`` values, if
+    necessary (e.g. ``{NULL: "<NULL>"}``).
     """
 
     values = []
@@ -65,10 +67,8 @@ def load_field(source, fieldname, nullstring=None, nonestring=None):
 
     for feature in source.getFeatures(request):
         value = feature[fieldname]
-        if value == NULL and nullstring is not None:
-            values.append(nullstring)
-        elif value is None and nonestring is not None:
-            values.append(nonestring)
+        if value in replacements.keys():
+            values.append(replacements[value])
         else:
             values.append(value)
     return values
