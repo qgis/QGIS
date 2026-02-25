@@ -162,8 +162,8 @@ class CORE_EXPORT QgsScaleCalculator
     //! map unit member
     Qgis::DistanceUnit mMapUnits = Qgis::DistanceUnit::Unknown;
 
-    //! ellipsoid parameters for the ellipsoid associated with the scale calculator, default is ellipsoid associated with WGS-84
-    QgsEllipsoidUtils::EllipsoidParameters mEllipsoidParameters = QgsEllipsoidUtils::ellipsoidParameters( Qgis::geographicCrsAuthId() );
+    //! ellipsoid parameters for the ellipsoid associated with the scale calculator
+    QgsEllipsoidUtils::EllipsoidParameters mEllipsoidParameters;
 };
 
 #endif // #ifndef QGSSCALECALCULATOR_H

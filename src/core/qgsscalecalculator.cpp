@@ -34,7 +34,10 @@ using namespace Qt::StringLiterals;
 QgsScaleCalculator::QgsScaleCalculator( double dpi, Qgis::DistanceUnit mapUnits )
   : mDpi( dpi )
   , mMapUnits( mapUnits )
-{}
+{
+  // default ellipsoid is associated with WGS-84
+  mEllipsoidParameters = QgsEllipsoidUtils::ellipsoidParameters( QgsCoordinateReferenceSystem( Qgis::geographicCrsAuthId() ).ellipsoidAcronym() );
+}
 
 void QgsScaleCalculator::setMethod( Qgis::ScaleCalculationMethod method )
 {
