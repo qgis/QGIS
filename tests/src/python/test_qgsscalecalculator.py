@@ -13,7 +13,12 @@ __copyright__ = "Copyright 2021, The QGIS Project"
 
 import unittest
 
-from qgis.core import Qgis, QgsRectangle, QgsScaleCalculator
+from qgis.core import (
+    Qgis,
+    QgsCoordinateReferenceSystem,
+    QgsRectangle,
+    QgsScaleCalculator,
+)
 from qgis.testing import QgisTestCase, start_app
 
 start_app()
@@ -153,6 +158,41 @@ class TestQgsScaleCalculator(QgisTestCase):
         image_size = calculator.calculateImageSize(extent, 65000)
         self.assertAlmostEqual(image_size.width(), 1066.001, 3)
         self.assertAlmostEqual(image_size.height(), 339.983, 3)
+
+    def testDifferentCrs(self):
+
+        # base extent 1 degree wide, centered on the equator
+        extent = QgsRectangle(0.0, -0.5, 1.0, 0.5)
+
+        # test with no crs set, should default to approximation of the WGS84 ellipsoid
+        calculator = QgsScaleCalculator()
+        calculator.setMapUnits(Qgis.DistanceUnit.Degrees)
+        calculator.setMethod(Qgis.ScaleCalculationMethod.HorizontalMiddle)
+        calculator.setDpi(96)
+
+        self.assertAlmostEqual(
+            calculator.calculateGeographicDistance(extent), 110585, 0
+        )
+
+        # with ESPG:4326 use exactly the WGS84 ellipsoid, which should give a slightly different result then previous
+        calculator = QgsScaleCalculator()
+        calculator.setMapCrs(QgsCoordinateReferenceSystem("EPSG:4326"))
+        calculator.setMapUnits(Qgis.DistanceUnit.Degrees)
+        calculator.setMethod(Qgis.ScaleCalculationMethod.HorizontalMiddle)
+        calculator.setDpi(96)
+
+        self.assertAlmostEqual(
+            calculator.calculateGeographicDistance(extent), 110574, 0
+        )
+
+        # with Moon CRS the ellipsoid is much smaller, so the distance should be much smaller too
+        calculator = QgsScaleCalculator()
+        calculator.setMapCrs(QgsCoordinateReferenceSystem("IAU_2015:30100"))
+        calculator.setMapUnits(Qgis.DistanceUnit.Degrees)
+        calculator.setMethod(Qgis.ScaleCalculationMethod.HorizontalMiddle)
+        calculator.setDpi(96)
+
+        self.assertAlmostEqual(calculator.calculateGeographicDistance(extent), 30323, 0)
 
 
 if __name__ == "__main__":
