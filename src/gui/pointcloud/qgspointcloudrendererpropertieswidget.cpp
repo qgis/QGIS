@@ -128,6 +128,18 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
     }
     emitWidgetChanged();
   } );
+  connect( mShadingGroupBox, &QGroupBox::toggled, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mDirectionalLightWidget, &QgsDirectionalLightWidget::directionChanged, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+
+  mEdlDistanceSpinBox->setClearValue( 0.5 );
+  mEdlStrengthSpinBox->setClearValue( 1000 );
+  connect( mEdlStrengthSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mEdlDistanceSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mEdlDistanceUnit, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+
+  mHillshadingZFactorSpinBox->setClearValue( 1.0 );
+  connect( mHillshadingZFactorSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mHillshadingMultidirCheckBox, &QCheckBox::toggled, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
   mMaxErrorUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
   mMaxErrorSpinBox->setClearValue( 0.3 );
