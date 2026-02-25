@@ -145,13 +145,13 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
       {
         mZoomOutOptions->addItem( tr( "Show Overview Only" ), QVariant::fromValue( Qgis::PointCloudZoomOutRenderBehavior::RenderOverview ) );
         mZoomOutOptions->addItem( tr( "Show Extents Over Overview" ), QVariant::fromValue( Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) );
-
-        for ( auto it = mOverviewSwitchingScaleMap.constBegin(); it != mOverviewSwitchingScaleMap.constEnd(); ++it )
-        {
-          mOverviewSwitchingScale->addItem( it.value(), it.key() );
-        }
-        setOverviewSwitchingScale( 1.0 );
       }
+
+      for ( auto it = mOverviewSwitchingScaleMap.constBegin(); it != mOverviewSwitchingScaleMap.constEnd(); ++it )
+      {
+        mOverviewSwitchingScale->addItem( it.value(), it.key() );
+      }
+      setOverviewSwitchingScale( 1.0 );
     }
     else
     {
