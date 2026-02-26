@@ -25,7 +25,6 @@ export is available on the current system.
 #include "qgsvideoexporter.h"
 %End
   public:
-
     static bool isAvailable();
 %Docstring
 Returns ``True`` if the video export functionality is available on the
