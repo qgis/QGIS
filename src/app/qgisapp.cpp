@@ -499,6 +499,7 @@ using namespace Qt::StringLiterals;
 #include "qgsmaptoolshaperegistry.h"
 #include "qgsmaptoolshapecircularstringradius.h"
 #include "qgsmaptoolshapecircle2points.h"
+#include "qgsmaptoolshapecircle2pointsradius.h"
 #include "qgsmaptoolshapecircle3points.h"
 #include "qgsmaptoolshapecircle3tangents.h"
 #include "qgsmaptoolshapecircle2tangentspoint.h"
@@ -1227,6 +1228,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
   QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeCircularStringRadiusMetadata() );
   QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeCircle2PointsMetadata() );
+  QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeCircle2PointsRadiusMetadata() );
   QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeCircle3PointsMetadata() );
   QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeCircle3TangentsMetadata() );
   QgsGui::mapToolShapeRegistry()->addMapTool( new QgsMapToolShapeCircle2TangentsPointMetadata() );
