@@ -31,48 +31,49 @@
 
 using namespace Qt::StringLiterals;
 
-#define ROOF_EXPRESSION \
-  "translate(" \
-  "  @geometry," \
+#define ROOF_EXPRESSION                                                     \
+  "translate("                                                              \
+  "  @geometry,"                                                            \
   "  cos( radians( eval( @qgis_25d_angle ) ) ) * eval( @qgis_25d_height )," \
-  "  sin( radians( eval( @qgis_25d_angle ) ) ) * eval( @qgis_25d_height )" \
+  "  sin( radians( eval( @qgis_25d_angle ) ) ) * eval( @qgis_25d_height )"  \
   ")"
 
-#define WALL_EXPRESSION \
-  "order_parts( "\
-  "  extrude(" \
-  "    segments_to_lines( @geometry )," \
-  "    cos( radians( eval( @qgis_25d_angle ) ) ) * eval( @qgis_25d_height )," \
-  "    sin( radians( eval( @qgis_25d_angle ) ) ) * eval( @qgis_25d_height )" \
-  "  )," \
-  "  'distance(  @geometry,  translate(    @map_extent_center,    1000 * @map_extent_width * cos( radians( @qgis_25d_angle + 180 ) ),    1000 * @map_extent_width * sin( radians( @qgis_25d_angle + 180 ) )  ))'," \
-  "  False" \
+#define WALL_EXPRESSION                                                                                                                                                                               \
+  "order_parts( "                                                                                                                                                                                     \
+  "  extrude("                                                                                                                                                                                        \
+  "    segments_to_lines( @geometry ),"                                                                                                                                                               \
+  "    cos( radians( eval( @qgis_25d_angle ) ) ) * eval( @qgis_25d_height ),"                                                                                                                         \
+  "    sin( radians( eval( @qgis_25d_angle ) ) ) * eval( @qgis_25d_height )"                                                                                                                          \
+  "  ),"                                                                                                                                                                                              \
+  "  'distance(  @geometry,  translate(    @map_extent_center,    1000 * @map_extent_width * cos( radians( @qgis_25d_angle + 180 ) ),    1000 * @map_extent_width * sin( radians( @qgis_25d_angle + " \
+  "180 ) )  ))',"                                                                                                                                                                                     \
+  "  False"                                                                                                                                                                                           \
   ")"
 
-#define ORDER_BY_EXPRESSION \
-  "distance(" \
-  "  @geometry," \
-  "  translate(" \
-  "    @map_extent_center," \
+#define ORDER_BY_EXPRESSION                                                 \
+  "distance("                                                               \
+  "  @geometry,"                                                            \
+  "  translate("                                                            \
+  "    @map_extent_center,"                                                 \
   "    1000 * @map_extent_width * cos( radians( @qgis_25d_angle + 180 ) )," \
-  "    1000 * @map_extent_width * sin( radians( @qgis_25d_angle + 180 ) )" \
-  "  )" \
+  "    1000 * @map_extent_width * sin( radians( @qgis_25d_angle + 180 ) )"  \
+  "  )"                                                                     \
   ")"
 
-#define WALL_SHADING_EXPRESSION \
-  "set_color_part( " \
-  "  @symbol_color," \
-  " 'value'," \
-  "  40 + 19 * abs( $pi - azimuth( " \
+#define WALL_SHADING_EXPRESSION                                    \
+  "set_color_part( "                                               \
+  "  @symbol_color,"                                               \
+  " 'value',"                                                      \
+  "  40 + 19 * abs( $pi - azimuth( "                               \
   "    point_n( geometry_n(@geometry, @geometry_part_num) , 1 ), " \
-  "    point_n( geometry_n(@geometry, @geometry_part_num) , 2 )" \
-  "  ) ) " \
+  "    point_n( geometry_n(@geometry, @geometry_part_num) , 2 )"   \
+  "  ) ) "                                                         \
   ")"
 
 Qgs25DRenderer::Qgs25DRenderer()
   : QgsFeatureRenderer( u"25dRenderer"_s )
 {
-  mSymbol = std::make_unique<QgsFillSymbol>( );
+  mSymbol = std::make_unique<QgsFillSymbol>();
 
   mSymbol->deleteSymbolLayer( 0 ); // We never asked for the default layer
 
@@ -112,9 +113,7 @@ Qgs25DRenderer::Qgs25DRenderer()
   setShadowColor( QColor( 17, 17, 17 ) );
 
   QgsFeatureRequest::OrderBy orderBy;
-  orderBy << QgsFeatureRequest::OrderByClause(
-            ORDER_BY_EXPRESSION,
-            false );
+  orderBy << QgsFeatureRequest::OrderByClause( ORDER_BY_EXPRESSION, false );
 
   setOrderBy( orderBy );
   setOrderByEnabled( true );
@@ -171,10 +170,7 @@ void Qgs25DRenderer::stopRender( QgsRenderContext &context )
   mSymbol->stopRender( context );
 }
 
-QSet<QString> Qgs25DRenderer::usedAttributes( const QgsRenderContext &context ) const
-{
-  return mSymbol->usedAttributes( context );
-}
+QSet<QString> Qgs25DRenderer::usedAttributes( const QgsRenderContext &context ) const { return mSymbol->usedAttributes( context ); }
 
 QgsFeatureRenderer *Qgs25DRenderer::clone() const
 {
@@ -208,15 +204,9 @@ bool Qgs25DRenderer::accept( QgsStyleEntityVisitorInterface *visitor ) const
   return true;
 }
 
-QgsFillSymbolLayer *Qgs25DRenderer::roofLayer() const
-{
-  return static_cast<QgsFillSymbolLayer *>( mSymbol->symbolLayer( 2 )->subSymbol()->symbolLayer( 0 ) );
-}
+QgsFillSymbolLayer *Qgs25DRenderer::roofLayer() const { return static_cast<QgsFillSymbolLayer *>( mSymbol->symbolLayer( 2 )->subSymbol()->symbolLayer( 0 ) ); }
 
-QgsFillSymbolLayer *Qgs25DRenderer::wallLayer() const
-{
-  return static_cast<QgsFillSymbolLayer *>( mSymbol->symbolLayer( 1 )->subSymbol()->symbolLayer( 0 ) );
-}
+QgsFillSymbolLayer *Qgs25DRenderer::wallLayer() const { return static_cast<QgsFillSymbolLayer *>( mSymbol->symbolLayer( 1 )->subSymbol()->symbolLayer( 0 ) ); }
 
 QgsOuterGlowEffect *Qgs25DRenderer::glowEffect() const
 {
@@ -224,40 +214,19 @@ QgsOuterGlowEffect *Qgs25DRenderer::glowEffect() const
   return static_cast<QgsOuterGlowEffect *>( stack->effect( 0 ) );
 }
 
-bool Qgs25DRenderer::shadowEnabled() const
-{
-  return glowEffect()->enabled();
-}
+bool Qgs25DRenderer::shadowEnabled() const { return glowEffect()->enabled(); }
 
-void Qgs25DRenderer::setShadowEnabled( bool value ) const
-{
-  glowEffect()->setEnabled( value );
-}
+void Qgs25DRenderer::setShadowEnabled( bool value ) const { glowEffect()->setEnabled( value ); }
 
-QColor Qgs25DRenderer::shadowColor() const
-{
-  return glowEffect()->color();
-}
+QColor Qgs25DRenderer::shadowColor() const { return glowEffect()->color(); }
 
-void Qgs25DRenderer::setShadowColor( const QColor &shadowColor ) const
-{
-  glowEffect()->setColor( shadowColor );
-}
+void Qgs25DRenderer::setShadowColor( const QColor &shadowColor ) const { glowEffect()->setColor( shadowColor ); }
 
-double Qgs25DRenderer::shadowSpread() const
-{
-  return glowEffect()->spread();
-}
+double Qgs25DRenderer::shadowSpread() const { return glowEffect()->spread(); }
 
-void Qgs25DRenderer::setShadowSpread( double spread ) const
-{
-  glowEffect()->setSpread( spread );
-}
+void Qgs25DRenderer::setShadowSpread( double spread ) const { glowEffect()->setSpread( spread ); }
 
-QColor Qgs25DRenderer::wallColor() const
-{
-  return wallLayer()->fillColor();
-}
+QColor Qgs25DRenderer::wallColor() const { return wallLayer()->fillColor(); }
 
 void Qgs25DRenderer::setWallColor( const QColor &wallColor ) const
 {
@@ -265,20 +234,11 @@ void Qgs25DRenderer::setWallColor( const QColor &wallColor ) const
   wallLayer()->setStrokeColor( wallColor );
 }
 
-void Qgs25DRenderer::setWallShadingEnabled( bool enabled ) const
-{
-  wallLayer()->dataDefinedProperties().property( QgsSymbolLayer::Property::FillColor ).setActive( enabled );
-}
+void Qgs25DRenderer::setWallShadingEnabled( bool enabled ) const { wallLayer()->dataDefinedProperties().property( QgsSymbolLayer::Property::FillColor ).setActive( enabled ); }
 
-bool Qgs25DRenderer::wallShadingEnabled() const
-{
-  return wallLayer()->dataDefinedProperties().property( QgsSymbolLayer::Property::FillColor ).isActive();
-}
+bool Qgs25DRenderer::wallShadingEnabled() const { return wallLayer()->dataDefinedProperties().property( QgsSymbolLayer::Property::FillColor ).isActive(); }
 
-QColor Qgs25DRenderer::roofColor() const
-{
-  return roofLayer()->fillColor();
-}
+QColor Qgs25DRenderer::roofColor() const { return roofLayer()->fillColor(); }
 
 void Qgs25DRenderer::setRoofColor( const QColor &roofColor ) const
 {
@@ -299,4 +259,3 @@ Qgs25DRenderer *Qgs25DRenderer::convertFromRenderer( QgsFeatureRenderer *rendere
     return res.release();
   }
 }
-

@@ -35,9 +35,7 @@ using namespace Qt::StringLiterals;
 
 QgsMergedFeatureRenderer::QgsMergedFeatureRenderer( QgsFeatureRenderer *subRenderer )
   : QgsMergedFeatureRenderer( u"mergedFeatureRenderer"_s, subRenderer )
-{
-
-}
+{}
 
 QgsMergedFeatureRenderer::QgsMergedFeatureRenderer( const QString &type, QgsFeatureRenderer *subRenderer )
   : QgsFeatureRenderer( type )
@@ -48,15 +46,9 @@ QgsMergedFeatureRenderer::QgsMergedFeatureRenderer( const QString &type, QgsFeat
   }
 }
 
-void QgsMergedFeatureRenderer::setEmbeddedRenderer( QgsFeatureRenderer *subRenderer )
-{
-  mSubRenderer.reset( subRenderer );
-}
+void QgsMergedFeatureRenderer::setEmbeddedRenderer( QgsFeatureRenderer *subRenderer ) { mSubRenderer.reset( subRenderer ); }
 
-const QgsFeatureRenderer *QgsMergedFeatureRenderer::embeddedRenderer() const
-{
-  return mSubRenderer.get();
-}
+const QgsFeatureRenderer *QgsMergedFeatureRenderer::embeddedRenderer() const { return mSubRenderer.get(); }
 
 void QgsMergedFeatureRenderer::setLegendSymbolItem( const QString &key, QgsSymbol *symbol )
 {
@@ -228,7 +220,7 @@ bool QgsMergedFeatureRenderer::renderFeature( const QgsFeature &feature, QgsRend
     return false;
   }
 
-  if ( ! mSymbolCategories.contains( catId ) )
+  if ( !mSymbolCategories.contains( catId ) )
   {
     CombinedFeature cFeat;
     // store the first feature
@@ -238,7 +230,7 @@ bool QgsMergedFeatureRenderer::renderFeature( const QgsFeature &feature, QgsRend
   }
 
   // update the geometry
-  CombinedFeature &cFeat = mFeaturesCategories[ mSymbolCategories[catId] ];
+  CombinedFeature &cFeat = mFeaturesCategories[mSymbolCategories[catId]];
   if ( !feature.hasGeometry() )
   {
     return false;
@@ -249,8 +241,7 @@ bool QgsMergedFeatureRenderer::renderFeature( const QgsFeature &feature, QgsRend
   if ( context.vectorSimplifyMethod().forceLocalOptimization() )
   {
     const int simplifyHints = context.vectorSimplifyMethod().simplifyHints();
-    const QgsMapToPixelSimplifier simplifier( simplifyHints, context.vectorSimplifyMethod().tolerance(),
-        context.vectorSimplifyMethod().simplifyAlgorithm() );
+    const QgsMapToPixelSimplifier simplifier( simplifyHints, context.vectorSimplifyMethod().tolerance(), context.vectorSimplifyMethod().simplifyAlgorithm() );
 
     QgsGeometry simplified( simplifier.simplify( geom ) );
     if ( !simplified.isEmpty() )
@@ -269,7 +260,7 @@ bool QgsMergedFeatureRenderer::renderFeature( const QgsFeature &feature, QgsRend
   {
     case QgsMergedFeatureRenderer::MergeAndInvert:
       // fix the polygon if it is not valid
-      if ( ! geom.isGeosValid() )
+      if ( !geom.isGeosValid() )
       {
         geom = geom.buffer( 0, 0 );
       }
@@ -313,7 +304,7 @@ void QgsMergedFeatureRenderer::stopRender( QgsRenderContext &context )
 
   for ( const CombinedFeature &cit : std::as_const( mFeaturesCategories ) )
   {
-    finalMulti.resize( 0 ); //preserve capacity - don't use clear!
+    finalMulti.resize( 0 );        //preserve capacity - don't use clear!
     QgsFeature feat = cit.feature; // just a copy, so that we do not accumulate geometries again
 
     switch ( mOperation )
@@ -559,10 +550,7 @@ QSet<QString> QgsMergedFeatureRenderer::usedAttributes( const QgsRenderContext &
   return mSubRenderer->usedAttributes( context );
 }
 
-bool QgsMergedFeatureRenderer::filterNeedsGeometry() const
-{
-  return mSubRenderer ? mSubRenderer->filterNeedsGeometry() : false;
-}
+bool QgsMergedFeatureRenderer::filterNeedsGeometry() const { return mSubRenderer ? mSubRenderer->filterNeedsGeometry() : false; }
 
 QgsLegendSymbolList QgsMergedFeatureRenderer::legendSymbolItems() const
 {
@@ -589,10 +577,7 @@ QgsMergedFeatureRenderer *QgsMergedFeatureRenderer::convertFromRenderer( const Q
     return dynamic_cast<QgsMergedFeatureRenderer *>( renderer->clone() );
   }
 
-  if ( renderer->type() == "singleSymbol"_L1 ||
-       renderer->type() == "categorizedSymbol"_L1 ||
-       renderer->type() == "graduatedSymbol"_L1 ||
-       renderer->type() == "RuleRenderer"_L1 )
+  if ( renderer->type() == "singleSymbol"_L1 || renderer->type() == "categorizedSymbol"_L1 || renderer->type() == "graduatedSymbol"_L1 || renderer->type() == "RuleRenderer"_L1 )
   {
     auto res = std::make_unique< QgsMergedFeatureRenderer >( renderer->clone() );
     renderer->copyRendererData( res.get() );
@@ -606,4 +591,3 @@ QgsMergedFeatureRenderer *QgsMergedFeatureRenderer::convertFromRenderer( const Q
   }
   return nullptr;
 }
-

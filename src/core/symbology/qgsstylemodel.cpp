@@ -44,28 +44,15 @@ QgsAbstractStyleEntityIconGenerator *QgsStyleModel::sIconGenerator = nullptr;
 
 QgsAbstractStyleEntityIconGenerator::QgsAbstractStyleEntityIconGenerator( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
-void QgsAbstractStyleEntityIconGenerator::setIconSizes( const QList<QSize> &sizes )
-{
-  mIconSizes = sizes;
-}
+void QgsAbstractStyleEntityIconGenerator::setIconSizes( const QList<QSize> &sizes ) { mIconSizes = sizes; }
 
-QList<QSize> QgsAbstractStyleEntityIconGenerator::iconSizes() const
-{
-  return mIconSizes;
-}
+QList<QSize> QgsAbstractStyleEntityIconGenerator::iconSizes() const { return mIconSizes; }
 
-void QgsAbstractStyleEntityIconGenerator::setTargetScreenProperties( const QSet<QgsScreenProperties> &properties )
-{
-  mTargetScreenProperties = properties;
-}
+void QgsAbstractStyleEntityIconGenerator::setTargetScreenProperties( const QSet<QgsScreenProperties> &properties ) { mTargetScreenProperties = properties; }
 
-QSet<QgsScreenProperties> QgsAbstractStyleEntityIconGenerator::targetScreenProperties() const
-{
-  return mTargetScreenProperties;
-}
+QSet<QgsScreenProperties> QgsAbstractStyleEntityIconGenerator::targetScreenProperties() const { return mTargetScreenProperties; }
 
 
 //
@@ -138,7 +125,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
       break;
 
     default:
-      name = mEntityNames[ entityType ].value( index.row() - offsetForEntity( entityType ) );
+      name = mEntityNames[entityType].value( index.row() - offsetForEntity( entityType ) );
       break;
   }
 
@@ -156,8 +143,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
 
           if ( role == Qt::ToolTipRole )
           {
-            QString tooltip = u"<h3>%1</h3><p><i>%2</i>"_s.arg( name,
-                              tags.count() > 0 ? tags.join( ", "_L1 ) : tr( "Not tagged" ) );
+            QString tooltip = u"<h3>%1</h3><p><i>%2</i>"_s.arg( name, tags.count() > 0 ? tags.join( ", "_L1 ) : tr( "Not tagged" ) );
 
             // generate tooltips for the largest device pixel ratio for all attached screens
             QgsScreenProperties maxDevicePixelRatioScreen;
@@ -274,7 +260,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
             case QgsStyle::SymbolEntity:
             {
               // use cached icon if possible
-              QIcon icon = mIconCache[ entityType ].value( name );
+              QIcon icon = mIconCache[entityType].value( name );
               if ( !icon.isNull() )
                 return icon;
 
@@ -288,18 +274,19 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
 
                   for ( const QSize &s : mAdditionalSizes )
                   {
-                    icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), s, static_cast< int >( s.width() * ICON_PADDING_FACTOR ), nullptr, false, mExpressionContext.get(), nullptr, *it ) );
+                    icon.addPixmap(
+                      QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), s, static_cast< int >( s.width() * ICON_PADDING_FACTOR ), nullptr, false, mExpressionContext.get(), nullptr, *it )
+                    );
                   }
                 }
-
               }
-              mIconCache[ entityType ].insert( name, icon );
+              mIconCache[entityType].insert( name, icon );
               return icon;
             }
             case QgsStyle::ColorrampEntity:
             {
               // use cached icon if possible
-              QIcon icon = mIconCache[ entityType ].value( name );
+              QIcon icon = mIconCache[entityType].value( name );
               if ( !icon.isNull() )
                 return icon;
 
@@ -312,16 +299,15 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
                 {
                   icon.addPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( ramp.get(), s, static_cast< int >( s.width() * ICON_PADDING_FACTOR ) ) );
                 }
-
               }
-              mIconCache[ entityType ].insert( name, icon );
+              mIconCache[entityType].insert( name, icon );
               return icon;
             }
 
             case QgsStyle::TextFormatEntity:
             {
               // use cached icon if possible
-              QIcon icon = mIconCache[ entityType ].value( name );
+              QIcon icon = mIconCache[entityType].value( name );
               if ( !icon.isNull() )
                 return icon;
 
@@ -332,17 +318,17 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
                   icon.addPixmap( QgsTextFormat::textFormatPreviewPixmap( format, QSize( 24, 24 ), QString(), 1, *it ) );
                 for ( const QSize &s : mAdditionalSizes )
                 {
-                  icon.addPixmap( QgsTextFormat::textFormatPreviewPixmap( format, s, QString(),  static_cast< int >( s.width() * ICON_PADDING_FACTOR ), *it ) );
+                  icon.addPixmap( QgsTextFormat::textFormatPreviewPixmap( format, s, QString(), static_cast< int >( s.width() * ICON_PADDING_FACTOR ), *it ) );
                 }
               }
-              mIconCache[ entityType ].insert( name, icon );
+              mIconCache[entityType].insert( name, icon );
               return icon;
             }
 
             case QgsStyle::LabelSettingsEntity:
             {
               // use cached icon if possible
-              QIcon icon = mIconCache[ entityType ].value( name );
+              QIcon icon = mIconCache[entityType].value( name );
               if ( !icon.isNull() )
                 return icon;
 
@@ -350,20 +336,20 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               for ( auto it = mTargetScreenProperties.constBegin(); it != mTargetScreenProperties.constEnd(); ++it )
               {
                 if ( mAdditionalSizes.isEmpty() )
-                  icon.addPixmap( QgsPalLayerSettings::labelSettingsPreviewPixmap( settings, QSize( 24, 24 ), QString(),  1, *it ) );
+                  icon.addPixmap( QgsPalLayerSettings::labelSettingsPreviewPixmap( settings, QSize( 24, 24 ), QString(), 1, *it ) );
                 for ( const QSize &s : mAdditionalSizes )
                 {
-                  icon.addPixmap( QgsPalLayerSettings::labelSettingsPreviewPixmap( settings, s, QString(),  static_cast< int >( s.width() * ICON_PADDING_FACTOR ), *it ) );
+                  icon.addPixmap( QgsPalLayerSettings::labelSettingsPreviewPixmap( settings, s, QString(), static_cast< int >( s.width() * ICON_PADDING_FACTOR ), *it ) );
                 }
               }
-              mIconCache[ entityType ].insert( name, icon );
+              mIconCache[entityType].insert( name, icon );
               return icon;
             }
 
             case QgsStyle::LegendPatchShapeEntity:
             {
               // use cached icon if possible
-              QIcon icon = mIconCache[ entityType ].value( name );
+              QIcon icon = mIconCache[entityType].value( name );
               if ( !icon.isNull() )
                 return icon;
 
@@ -384,7 +370,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
                   }
                 }
               }
-              mIconCache[ entityType ].insert( name, icon );
+              mIconCache[entityType].insert( name, icon );
               return icon;
             }
 
@@ -394,7 +380,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               // TODO - render proper thumbnails
 
               // use cached icon if possible
-              QIcon icon = mIconCache[ entityType ].value( name );
+              QIcon icon = mIconCache[entityType].value( name );
               if ( !icon.isNull() )
                 return icon;
 
@@ -411,7 +397,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               {
                 icon.addFile( QgsApplication::defaultThemePath() + QDir::separator() + u"3d.svg"_s, s );
               }
-              mIconCache[ entityType ].insert( name, icon );
+              mIconCache[entityType].insert( name, icon );
               return icon;
             }
 
@@ -522,8 +508,8 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
     default:
       return QVariant();
   }
-#ifndef _MSC_VER // avoid warning
-  return QVariant();  // avoid warning
+#ifndef _MSC_VER     // avoid warning
+  return QVariant(); // avoid warning
 #endif
 }
 
@@ -545,7 +531,7 @@ bool QgsStyleModel::setData( const QModelIndex &index, const QVariant &value, in
           return false;
 
         default:
-          name = mEntityNames[ entityType ].value( index.row() - offsetForEntity( entityType ) );
+          name = mEntityNames[entityType].value( index.row() - offsetForEntity( entityType ) );
           break;
       }
 
@@ -576,10 +562,7 @@ Qt::ItemFlags QgsStyleModel::flags( const QModelIndex &index ) const
   }
 }
 
-QVariant QgsStyleModel::headerData( int section, Qt::Orientation orientation, int role ) const
-{
-  return headerDataStatic( section, orientation, role );
-}
+QVariant QgsStyleModel::headerData( int section, Qt::Orientation orientation, int role ) const { return headerDataStatic( section, orientation, role ); }
 
 QVariant QgsStyleModel::headerDataStatic( int section, Qt::Orientation orientation, int role )
 {
@@ -635,16 +618,13 @@ int QgsStyleModel::rowCount( const QModelIndex &parent ) const
   {
     int count = 0;
     for ( QgsStyle::StyleEntity type : ENTITIES )
-      count += mEntityNames[ type ].size();
+      count += mEntityNames[type].size();
     return count;
   }
   return 0;
 }
 
-int QgsStyleModel::columnCount( const QModelIndex & ) const
-{
-  return 2;
-}
+int QgsStyleModel::columnCount( const QModelIndex & ) const { return 2; }
 
 void QgsStyleModel::addDesiredIconSize( QSize size )
 {
@@ -680,7 +660,7 @@ void QgsStyleModel::setIconGenerator( QgsAbstractStyleEntityIconGenerator *gener
 
 void QgsStyleModel::onEntityAdded( QgsStyle::StyleEntity type, const QString &name )
 {
-  mIconCache[ type ].remove( name );
+  mIconCache[type].remove( name );
   const QStringList newSymbolNames = mStyle->allNames( type );
 
   // find index of newly added symbol
@@ -690,14 +670,14 @@ void QgsStyleModel::onEntityAdded( QgsStyle::StyleEntity type, const QString &na
 
   const int offset = offsetForEntity( type );
   beginInsertRows( QModelIndex(), newNameIndex + offset, newNameIndex + offset );
-  mEntityNames[ type ] = newSymbolNames;
+  mEntityNames[type] = newSymbolNames;
   endInsertRows();
 }
 
 void QgsStyleModel::onEntityRemoved( QgsStyle::StyleEntity type, const QString &name )
 {
-  mIconCache[ type ].remove( name );
-  const QStringList oldSymbolNames = mEntityNames[ type ];
+  mIconCache[type].remove( name );
+  const QStringList oldSymbolNames = mEntityNames[type];
   const QStringList newSymbolNames = mStyle->allNames( type );
 
   // find index of removed symbol
@@ -707,30 +687,30 @@ void QgsStyleModel::onEntityRemoved( QgsStyle::StyleEntity type, const QString &
 
   const int offset = offsetForEntity( type );
   beginRemoveRows( QModelIndex(), oldNameIndex + offset, oldNameIndex + offset );
-  mEntityNames[ type ] = newSymbolNames;
+  mEntityNames[type] = newSymbolNames;
   endRemoveRows();
 }
 
 void QgsStyleModel::onEntityChanged( QgsStyle::StyleEntity type, const QString &name )
 {
-  mIconCache[ type ].remove( name );
+  mIconCache[type].remove( name );
 
   const int offset = offsetForEntity( type );
-  QModelIndex i = index( offset + mEntityNames[ type ].indexOf( name ), Tags );
+  QModelIndex i = index( offset + mEntityNames[type].indexOf( name ), Tags );
   emit dataChanged( i, i, QVector< int >() << Qt::DecorationRole );
 }
 
 void QgsStyleModel::onFavoriteChanged( QgsStyle::StyleEntity type, const QString &name, bool )
 {
   const int offset = offsetForEntity( type );
-  QModelIndex i = index( offset + mEntityNames[ type ].indexOf( name ), Name );
+  QModelIndex i = index( offset + mEntityNames[type].indexOf( name ), Name );
   emit dataChanged( i, i, QVector< int >() << static_cast< int >( CustomRole::IsFavorite ) );
 }
 
 void QgsStyleModel::onEntityRename( QgsStyle::StyleEntity type, const QString &oldName, const QString &newName )
 {
-  mIconCache[ type ].remove( oldName );
-  const QStringList oldSymbolNames = mEntityNames[ type ];
+  mIconCache[type].remove( oldName );
+  const QStringList oldSymbolNames = mEntityNames[type];
   const QStringList newSymbolNames = mStyle->allNames( type );
 
   // find index of removed symbol
@@ -745,13 +725,13 @@ void QgsStyleModel::onEntityRename( QgsStyle::StyleEntity type, const QString &o
 
   if ( newNameIndex == oldNameIndex )
   {
-    mEntityNames[ type ] = newSymbolNames;
+    mEntityNames[type] = newSymbolNames;
     return;
   }
 
   const int offset = offsetForEntity( type );
   beginMoveRows( QModelIndex(), oldNameIndex + offset, oldNameIndex + offset, QModelIndex(), ( newNameIndex > oldNameIndex ? newNameIndex + 1 : newNameIndex ) + offset );
-  mEntityNames[ type ] = newSymbolNames;
+  mEntityNames[type] = newSymbolNames;
   endMoveRows();
 }
 
@@ -773,9 +753,9 @@ void QgsStyleModel::onTagsChanged( int entity, const QString &name, const QStrin
 
 void QgsStyleModel::rebuildSymbolIcons()
 {
-  mIconCache[ QgsStyle::SymbolEntity ].clear();
+  mIconCache[QgsStyle::SymbolEntity].clear();
   mExpressionContext.reset();
-  const int lastRow = mEntityNames[ QgsStyle::SymbolEntity ].count() - 1;
+  const int lastRow = mEntityNames[QgsStyle::SymbolEntity].count() - 1;
   if ( lastRow >= 0 )
   {
     emit dataChanged( index( 0, 0 ), index( lastRow, 0 ), QVector<int>() << Qt::DecorationRole );
@@ -790,7 +770,7 @@ void QgsStyleModel::iconGenerated( QgsStyle::StyleEntity type, const QString &na
   {
     case QgsStyle::Symbol3DEntity:
       mPending3dSymbolIcons.remove( name );
-      mIconCache[ QgsStyle::Symbol3DEntity ].insert( name, icon );
+      mIconCache[QgsStyle::Symbol3DEntity].insert( name, icon );
       emit dataChanged( index( row, 0 ), index( row, 0 ) );
       break;
 
@@ -810,7 +790,7 @@ QgsStyle::StyleEntity QgsStyleModel::entityTypeFromRow( int row ) const
   int maxRowForEntity = 0;
   for ( QgsStyle::StyleEntity type : ENTITIES )
   {
-    maxRowForEntity += mEntityNames[ type ].size();
+    maxRowForEntity += mEntityNames[type].size();
     if ( row < maxRowForEntity )
       return type;
   }
@@ -828,7 +808,7 @@ int QgsStyleModel::offsetForEntity( QgsStyle::StyleEntity entity ) const
     if ( type == entity )
       return offset;
 
-    offset += mEntityNames[ type ].size();
+    offset += mEntityNames[type].size();
   }
   return 0;
 }
@@ -849,14 +829,13 @@ QgsStyleProxyModel::QgsStyleProxyModel( QgsStyle *style, QObject *parent )
 void QgsStyleProxyModel::initialize()
 {
   setSortCaseSensitivity( Qt::CaseInsensitive );
-//  setSortLocaleAware( true );
+  //  setSortLocaleAware( true );
   setDynamicSortFilter( true );
   sort( 0 );
 
   if ( mStyle )
   {
-    connect( mStyle, &QgsStyle::entityTagsChanged, this, [this]
-    {
+    connect( mStyle, &QgsStyle::entityTagsChanged, this, [this] {
       // update tagged symbols if filtering by tag
       if ( mTagId >= 0 )
         setTagId( mTagId );
@@ -864,8 +843,7 @@ void QgsStyleProxyModel::initialize()
         setSmartGroupId( mSmartGroupId );
     } );
 
-    connect( mStyle, &QgsStyle::entityRenamed, this, [this]( QgsStyle::StyleEntity entity, const QString &, const QString & )
-    {
+    connect( mStyle, &QgsStyle::entityRenamed, this, [this]( QgsStyle::StyleEntity entity, const QString &, const QString & ) {
       switch ( entity )
       {
         case QgsStyle::SmartgroupEntity:
@@ -901,7 +879,7 @@ QgsStyleProxyModel::QgsStyleProxyModel( QgsCombinedStyleModel *model, QObject *p
 
 bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
-  if ( mFilterString.isEmpty()  && !mEntityFilterEnabled && !mSymbolTypeFilterEnabled && mTagId < 0 && mSmartGroupId < 0 && !mFavoritesOnly && mTagFilter.isEmpty() )
+  if ( mFilterString.isEmpty() && !mEntityFilterEnabled && !mSymbolTypeFilterEnabled && mTagId < 0 && mSmartGroupId < 0 && !mFavoritesOnly && mTagFilter.isEmpty() )
     return true;
 
   const QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
@@ -1011,10 +989,7 @@ void QgsStyleProxyModel::setFilterString( const QString &filter )
 }
 
 
-bool QgsStyleProxyModel::favoritesOnly() const
-{
-  return mFavoritesOnly;
-}
+bool QgsStyleProxyModel::favoritesOnly() const { return mFavoritesOnly; }
 
 void QgsStyleProxyModel::setFavoritesOnly( bool favoritesOnly )
 {
@@ -1038,10 +1013,7 @@ void QgsStyleProxyModel::addTargetScreenProperties( const QgsScreenProperties &p
     mCombinedModel->addTargetScreenProperties( properties );
 }
 
-bool QgsStyleProxyModel::symbolTypeFilterEnabled() const
-{
-  return mSymbolTypeFilterEnabled;
-}
+bool QgsStyleProxyModel::symbolTypeFilterEnabled() const { return mSymbolTypeFilterEnabled; }
 
 void QgsStyleProxyModel::setSymbolTypeFilterEnabled( bool enabled )
 {
@@ -1049,10 +1021,7 @@ void QgsStyleProxyModel::setSymbolTypeFilterEnabled( bool enabled )
   invalidateFilter();
 }
 
-Qgis::GeometryType QgsStyleProxyModel::layerType() const
-{
-  return mLayerType;
-}
+Qgis::GeometryType QgsStyleProxyModel::layerType() const { return mLayerType; }
 
 void QgsStyleProxyModel::setLayerType( Qgis::GeometryType type )
 {
@@ -1076,10 +1045,7 @@ void QgsStyleProxyModel::setTagId( int id )
   invalidateFilter();
 }
 
-int QgsStyleProxyModel::tagId() const
-{
-  return mTagId;
-}
+int QgsStyleProxyModel::tagId() const { return mTagId; }
 
 void QgsStyleProxyModel::setTagString( const QString &tag )
 {
@@ -1088,10 +1054,7 @@ void QgsStyleProxyModel::setTagString( const QString &tag )
   invalidateFilter();
 }
 
-QString QgsStyleProxyModel::tagString() const
-{
-  return mTagFilter;
-}
+QString QgsStyleProxyModel::tagString() const { return mTagFilter; }
 
 void QgsStyleProxyModel::setSmartGroupId( int id )
 {
@@ -1110,15 +1073,9 @@ void QgsStyleProxyModel::setSmartGroupId( int id )
   invalidateFilter();
 }
 
-int QgsStyleProxyModel::smartGroupId() const
-{
-  return mSmartGroupId;
-}
+int QgsStyleProxyModel::smartGroupId() const { return mSmartGroupId; }
 
-Qgis::SymbolType QgsStyleProxyModel::symbolType() const
-{
-  return mSymbolType;
-}
+Qgis::SymbolType QgsStyleProxyModel::symbolType() const { return mSymbolType; }
 
 void QgsStyleProxyModel::setSymbolType( const Qgis::SymbolType symbolType )
 {
@@ -1126,10 +1083,7 @@ void QgsStyleProxyModel::setSymbolType( const Qgis::SymbolType symbolType )
   invalidateFilter();
 }
 
-bool QgsStyleProxyModel::entityFilterEnabled() const
-{
-  return mEntityFilterEnabled;
-}
+bool QgsStyleProxyModel::entityFilterEnabled() const { return mEntityFilterEnabled; }
 
 void QgsStyleProxyModel::setEntityFilterEnabled( bool entityFilterEnabled )
 {
@@ -1137,10 +1091,7 @@ void QgsStyleProxyModel::setEntityFilterEnabled( bool entityFilterEnabled )
   invalidateFilter();
 }
 
-QgsStyle::StyleEntity QgsStyleProxyModel::entityFilter() const
-{
-  return mEntityFilters.empty() ? QgsStyle::SymbolEntity : mEntityFilters.at( 0 );
-}
+QgsStyle::StyleEntity QgsStyleProxyModel::entityFilter() const { return mEntityFilters.empty() ? QgsStyle::SymbolEntity : mEntityFilters.at( 0 ); }
 
 void QgsStyleProxyModel::setEntityFilter( const QgsStyle::StyleEntity entityFilter )
 {

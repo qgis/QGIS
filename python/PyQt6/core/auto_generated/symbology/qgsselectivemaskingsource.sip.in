@@ -23,7 +23,6 @@ or label rule).
 #include "qgsselectivemaskingsource.h"
 %End
   public:
-
     QgsSelectiveMaskSource();
 %Docstring
 Constructor for an invalid QgsSelectiveMaskSource.
@@ -86,29 +85,20 @@ Sets the symbol layer or label rule ``id``.
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    if ( !sipCpp->isValid() )
-    {
-      sipRes = PyUnicode_FromString( "<QgsSelectiveMaskSource: invalid>" );
-    }
+%MethodCode if ( !sipCpp->isValid() ) { sipRes = PyUnicode_FromString( "<QgsSelectiveMaskSource: invalid>" ); }
     else if ( sipCpp->sourceId().isEmpty() )
     {
-      const QString str = QStringLiteral( "<QgsSelectiveMaskSource: %1 (%2)>" ).arg(
-                            sipCpp->layerId(),
-                            qgsEnumValueToKey( sipCpp->sourceType() ) );
+      const QString str = QStringLiteral( "<QgsSelectiveMaskSource: %1 (%2)>" ).arg( sipCpp->layerId(), qgsEnumValueToKey( sipCpp->sourceType() ) );
       sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     }
     else
     {
-      const QString str = QStringLiteral( "<QgsSelectiveMaskSource: %1 - %2 (%3)>" ).arg(
-                            sipCpp->layerId(),
-                            sipCpp->sourceId(),
-                            qgsEnumValueToKey( sipCpp->sourceType() ) );
+      const QString str = QStringLiteral( "<QgsSelectiveMaskSource: %1 - %2 (%3)>" ).arg( sipCpp->layerId(), sipCpp->sourceId(), qgsEnumValueToKey( sipCpp->sourceType() ) );
       sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     }
 %End
 
-    bool operator==( const QgsSelectiveMaskSource &other ) const;
+      bool operator==( const QgsSelectiveMaskSource &other ) const;
     bool operator!=( const QgsSelectiveMaskSource &other ) const;
 
 };

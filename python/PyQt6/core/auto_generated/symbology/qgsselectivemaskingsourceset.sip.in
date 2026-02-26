@@ -24,7 +24,6 @@ Represents a named set of selective masking sources
 #include "qgsselectivemaskingsourceset.h"
 %End
   public:
-
     QgsSelectiveMaskingSourceSet();
 %Docstring
 Constructor for an empty (invalid) QgsSelectiveMaskingSourceSet.
@@ -105,15 +104,14 @@ Sets the set's state from a DOM ``element``.
 %End
 
     QgsSelectiveMaskSource &operator[]( int index ) /Factory/;
-%MethodCode
-    Py_ssize_t idx = sipConvertFromSequenceIndex( a0, sipCpp->size() );
+%MethodCode SIP_SSIZE_T idx = sipConvertFromSequenceIndex( a0, sipCpp->size() );
     if ( idx < 0 )
       sipIsErr = 1;
     else
       sipRes = new QgsSelectiveMaskSource( sipCpp->operator[]( idx ) );
 %End
 
-    int size() const;
+      int size() const;
 %Docstring
 Returns the number of sources in the set.
 %End
@@ -124,31 +122,28 @@ Returns ``True`` if the set is empty.
 %End
 
     Py_ssize_t __len__() const;
-%MethodCode
-    sipRes = sipCpp->size();
+%MethodCode sipRes = sipCpp->size();
 %End
 
-    SIP_PYOBJECT __repr__();
-%MethodCode
-    if ( !sipCpp->isValid() )
-    {
-      sipRes = PyUnicode_FromString( "<QgsSelectiveMaskingSourceSet: invalid>" );
-    }
+        SIP_PYOBJECT __repr__();
+%MethodCode if ( !sipCpp->isValid() ) { sipRes = PyUnicode_FromString( "<QgsSelectiveMaskingSourceSet: invalid>" ); }
     else if ( !sipCpp->name().isEmpty() )
     {
-      const QString str = QStringLiteral( "<QgsSelectiveMaskingSourceSet: %1 (%2)>" ).arg(
-                            sipCpp->id(),
-                            sipCpp->name() );
+      const QString str = QStringLiteral( "<QgsSelectiveMaskingSourceSet: %1 (%2)>" ).arg( sipCpp->id(), sipCpp->name() );
       sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     }
     else
     {
-      const QString str = QStringLiteral( "<QgsSelectiveMaskingSourceSet: %1>" ).arg(
-                            sipCpp->id() );
+      const QString str = QStringLiteral( "<QgsSelectiveMaskingSourceSet: %1>" ).arg( sipCpp->id() );
       sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     }
 %End
 
+    private : bool mIsValid
+    = false;
+    QString mId;
+    QString mName;
+    QVector< QgsSelectiveMaskSource > mSources;
 };
 
 

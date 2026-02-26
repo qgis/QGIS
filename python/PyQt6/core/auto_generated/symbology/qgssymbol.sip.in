@@ -23,7 +23,6 @@ Contains settings relating to symbol animation.
 #include "qgssymbol.h"
 %End
   public:
-
     void setIsAnimated( bool animated );
 %Docstring
 Sets whether the symbol is animated.
@@ -76,7 +75,6 @@ around the symbol.
 #include "qgssymbol.h"
 %End
   public:
-
     QgsSymbolBufferSettings();
     ~QgsSymbolBufferSettings();
 
@@ -218,14 +216,21 @@ Abstract base class for all rendered symbols.
 %ConvertToSubClassCode
     switch ( sipCpp->type() )
     {
-      case Qgis::SymbolType::Marker: sipType = sipType_QgsMarkerSymbol; break;
-      case Qgis::SymbolType::Line: sipType = sipType_QgsLineSymbol; break;
-      case Qgis::SymbolType::Fill: sipType = sipType_QgsFillSymbol; break;
-      default: sipType = 0; break;
+      case Qgis::SymbolType::Marker:
+        sipType = sipType_QgsMarkerSymbol;
+        break;
+      case Qgis::SymbolType::Line:
+        sipType = sipType_QgsLineSymbol;
+        break;
+      case Qgis::SymbolType::Fill:
+        sipType = sipType_QgsFillSymbol;
+        break;
+      default:
+        sipType = 0;
+        break;
     }
 %End
   public:
-
     static QString symbolTypeToString( Qgis::SymbolType type );
 %Docstring
 Returns a translated string version of the specified symbol ``type``.
@@ -292,8 +297,7 @@ Returns the symbol layer at the specified index.
 
 .. seealso:: :py:func:`symbolLayerCount`
 %End
-%MethodCode
-    const int count = sipCpp->symbolLayerCount();
+%MethodCode const int count = sipCpp->symbolLayerCount();
     if ( a0 < 0 || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
@@ -321,17 +325,15 @@ Returns the total number of symbol layers contained in the symbol.
 %Docstring
 Returns the number of symbol layers contained in the symbol.
 %End
-%MethodCode
-    sipRes = sipCpp->symbolLayerCount();
+%MethodCode sipRes = sipCpp->symbolLayerCount();
 %End
 
-    //! Ensures that bool(obj) returns ``True`` (otherwise __len__() would be used)
-    int __bool__() const;
-%MethodCode
-    sipRes = true;
+      //! Ensures that bool(obj) returns ``True`` (otherwise __len__() would be used)
+      int __bool__() const;
+%MethodCode sipRes = true;
 %End
 
-    SIP_PYOBJECT __getitem__( int index ) /TypeHint="QgsSymbolLayer"/;
+        SIP_PYOBJECT
 %Docstring
 Returns the symbol layer at the specified ``index``.
 
@@ -343,8 +345,8 @@ in the symbol.
 
 .. versionadded:: 3.10
 %End
-%MethodCode
-    const int count = sipCpp->symbolLayerCount();
+      __getitem__( int index ) /TypeHint="QgsSymbolLayer"/;
+%MethodCode const int count = sipCpp->symbolLayerCount();
     if ( a0 < -count || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
@@ -360,7 +362,7 @@ in the symbol.
     }
 %End
 
-    void __delitem__( int index );
+      void
 %Docstring
 Deletes the layer at the specified ``index``.
 
@@ -372,8 +374,8 @@ in the symbol.
 
 .. versionadded:: 3.10
 %End
-%MethodCode
-    const int count = sipCpp->symbolLayerCount();
+      __delitem__( int index );
+%MethodCode const int count = sipCpp->symbolLayerCount();
     if ( a0 >= 0 && a0 < count )
       sipCpp->deleteSymbolLayer( a0 );
     else if ( a0 < 0 && a0 >= -count )
@@ -385,7 +387,7 @@ in the symbol.
     }
 %End
 
-    bool insertSymbolLayer( int index, QgsSymbolLayer *layer /Transfer/ );
+      bool insertSymbolLayer( int index, QgsSymbolLayer *layer /Transfer/ );
 %Docstring
 Inserts a symbol ``layer`` to specified ``index``. Ownership of
 ``layer`` is transferred to the symbol.
@@ -479,8 +481,10 @@ unlocked symbol layer.
 .. seealso:: :py:func:`setColor`
 %End
 
-    void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = 0, bool selected = false, const QgsExpressionContext *expressionContext = 0,
-                          const QgsLegendPatchShape *patchShape = 0, const QgsScreenProperties &screen = QgsScreenProperties() );
+    void drawPreviewIcon(
+      QPainter *painter, QSize size, QgsRenderContext *customContext = 0, bool selected = false, const QgsExpressionContext *expressionContext = 0,
+      const QgsLegendPatchShape *patchShape = 0, const QgsScreenProperties &screen = QgsScreenProperties()
+    );
 %Docstring
 Draws an icon of the symbol that occupies an area given by ``size``
 using the specified ``painter``.
@@ -531,7 +535,10 @@ the preview icon exactly matches the settings from that context.
 .. seealso:: :py:func:`drawPreviewIcon`
 %End
 
-    QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = 0, Qgis::SymbolPreviewFlags flags = Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols, const QgsScreenProperties &screen = QgsScreenProperties() ) /PyName=bigSymbolPreviewImageV2/;
+    QImage bigSymbolPreviewImage(
+      QgsExpressionContext *expressionContext = 0, Qgis::SymbolPreviewFlags flags = Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols,
+      const QgsScreenProperties &screen = QgsScreenProperties()
+    ) /PyName=bigSymbolPreviewImageV2/;
 %Docstring
 Returns a large (roughly 100x100 pixel) preview image for the symbol.
 
@@ -548,7 +555,7 @@ Returns a large (roughly 100x100 pixel) preview image for the symbol.
 .. seealso:: :py:func:`drawPreviewIcon`
 %End
 
- QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = 0, int flags = static_cast< int >( Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols ) ) /Deprecated="Since 3.40. Use bigSymbolPreviewImageV2() instead."/;
+ QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = 0, int flags = static_cast< int >( Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols ) );
 %Docstring
 .. deprecated:: 3.40
 
@@ -890,7 +897,10 @@ Sets the vector ``layer`` associated with the symbol.
    Will be removed in QGIS 5.0.
 %End
 
-    void renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false, Qgis::VertexMarkerType currentVertexMarkerType = Qgis::VertexMarkerType::SemiTransparentCircle, double currentVertexMarkerSize = 0.0 );
+    void renderFeature(
+      const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false,
+      Qgis::VertexMarkerType currentVertexMarkerType = Qgis::VertexMarkerType::SemiTransparentCircle, double currentVertexMarkerSize = 0.0
+    );
 %Docstring
 Render a feature. Before calling this the
 :py:func:`~QgsSymbol.startRender` method should be called to initialize
@@ -985,7 +995,6 @@ Sets the ``unit`` used for the extent buffer.
 %End
 
   protected:
-
     QgsSymbol( Qgis::SymbolType type, const QgsSymbolLayerList &layers /Transfer/ ); // can't be instantiated
 
     static QPointF _getPoint( QgsRenderContext &context, const QgsPoint &point );
@@ -1033,7 +1042,9 @@ Copies common properties from an ``other`` symbol to this symbol.
 .. versionadded:: 3.40
 %End
 
-    void renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext &context, Qgis::GeometryType geometryType = Qgis::GeometryType::Unknown, const QPolygonF *points = 0, const QVector<QPolygonF> *rings = 0 );
+    void renderUsingLayer(
+      QgsSymbolLayer *layer, QgsSymbolRenderContext &context, Qgis::GeometryType geometryType = Qgis::GeometryType::Unknown, const QPolygonF *points = 0, const QVector<QPolygonF> *rings = 0
+    );
 %Docstring
 Renders a context using a particular symbol layer without passing in a
 geometry. This is used as fallback, if the symbol being rendered is not

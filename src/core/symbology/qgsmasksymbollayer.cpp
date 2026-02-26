@@ -24,10 +24,7 @@
 
 using namespace Qt::StringLiterals;
 
-QgsMaskMarkerSymbolLayer::QgsMaskMarkerSymbolLayer()
-{
-  mSymbol = QgsMarkerSymbol::createSimple( QVariantMap() );
-}
+QgsMaskMarkerSymbolLayer::QgsMaskMarkerSymbolLayer() { mSymbol = QgsMarkerSymbol::createSimple( QVariantMap() ); }
 
 QgsMaskMarkerSymbolLayer::~QgsMaskMarkerSymbolLayer() = default;
 
@@ -69,15 +66,9 @@ QgsMaskMarkerSymbolLayer *QgsMaskMarkerSymbolLayer::clone() const
   return l;
 }
 
-QgsSymbol *QgsMaskMarkerSymbolLayer::subSymbol()
-{
-  return mSymbol.get();
-}
+QgsSymbol *QgsMaskMarkerSymbolLayer::subSymbol() { return mSymbol.get(); }
 
-QString QgsMaskMarkerSymbolLayer::layerType() const
-{
-  return u"MaskMarker"_s;
-}
+QString QgsMaskMarkerSymbolLayer::layerType() const { return u"MaskMarker"_s; }
 
 QVariantMap QgsMaskMarkerSymbolLayer::properties() const
 {
@@ -125,36 +116,17 @@ void QgsMaskMarkerSymbolLayer::stopRender( QgsSymbolRenderContext &context )
   }
 }
 
-void QgsMaskMarkerSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize size )
-{
-  QgsMarkerSymbolLayer::drawPreviewIcon( context, size );
-}
+void QgsMaskMarkerSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) { QgsMarkerSymbolLayer::drawPreviewIcon( context, size ); }
 
-QList<QgsSymbolLayerReference> QgsMaskMarkerSymbolLayer::masks() const
-{
-  return mMaskedSymbolLayers;
-}
+QList<QgsSymbolLayerReference> QgsMaskMarkerSymbolLayer::masks() const { return mMaskedSymbolLayers; }
 
-void QgsMaskMarkerSymbolLayer::setMasks( const QList<QgsSymbolLayerReference> &maskedLayers )
-{
-  mMaskedSymbolLayers = maskedLayers;
-}
+void QgsMaskMarkerSymbolLayer::setMasks( const QList<QgsSymbolLayerReference> &maskedLayers ) { mMaskedSymbolLayers = maskedLayers; }
 
-void QgsMaskMarkerSymbolLayer::clearMasks()
-{
-  mMaskedSymbolLayers.clear();
-}
+void QgsMaskMarkerSymbolLayer::clearMasks() { mMaskedSymbolLayers.clear(); }
 
-QRectF QgsMaskMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &context )
-{
-  return mSymbol->bounds( point, context.renderContext() );
-}
+QRectF QgsMaskMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &context ) { return mSymbol->bounds( point, context.renderContext() ); }
 
-bool QgsMaskMarkerSymbolLayer::usesMapUnits() const
-{
-  return mSizeUnit == Qgis::RenderUnit::MapUnits || mSizeUnit == Qgis::RenderUnit::MetersInMapUnits
-         || ( mSymbol && mSymbol->usesMapUnits() );
-}
+bool QgsMaskMarkerSymbolLayer::usesMapUnits() const { return mSizeUnit == Qgis::RenderUnit::MapUnits || mSizeUnit == Qgis::RenderUnit::MetersInMapUnits || ( mSymbol && mSymbol->usesMapUnits() ); }
 
 void QgsMaskMarkerSymbolLayer::setOutputUnit( Qgis::RenderUnit unit )
 {
@@ -163,10 +135,7 @@ void QgsMaskMarkerSymbolLayer::setOutputUnit( Qgis::RenderUnit unit )
     mSymbol->setOutputUnit( unit );
 }
 
-QColor QgsMaskMarkerSymbolLayer::color() const
-{
-  return QColor();
-}
+QColor QgsMaskMarkerSymbolLayer::color() const { return QColor(); }
 
 void QgsMaskMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &context )
 {

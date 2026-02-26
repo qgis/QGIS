@@ -87,7 +87,7 @@ Returns the symbol layer index path inside the symbol
     SIP_PYOBJECT __repr__();
 %MethodCode
 
-    QStringList pathString;
+        QStringList pathString;
     for ( int path : sipCpp->symbolLayerIndexPath() )
     {
       pathString.append( QString::number( path ) );
@@ -96,6 +96,10 @@ Returns the symbol layer index path inside the symbol
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
+    private :
+    QString mSymbolKey;
+
+    QVector<int> mIndexPath;
 };
 
 class QgsSymbolLayerReference
@@ -110,7 +114,6 @@ Type used to refer to a specific symbol layer in a symbol of a layer.
 #include "qgssymbollayerreference.h"
 %End
   public:
-
     QgsSymbolLayerReference();
 
  QgsSymbolLayerReference( const QString &layerId, const QgsSymbolLayerId &symbolLayer ) /Deprecated="Since 3.30. "/;
@@ -159,7 +162,7 @@ The symbol layer's id
     SIP_PYOBJECT __repr__();
 %MethodCode
 
-    QStringList pathString;
+        QStringList pathString;
     for ( int path : sipCpp->symbolLayerId().symbolLayerIndexPath() )
     {
       pathString.append( QString::number( path ) );
@@ -168,6 +171,11 @@ The symbol layer's id
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
+    private : QString mLayerId;
+
+    QgsSymbolLayerId mDeprecatedSymbolLayerId;
+
+    QString mSymbolLayerId;
 };
 
 uint qHash( const QgsSymbolLayerId &id );

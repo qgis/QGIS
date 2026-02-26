@@ -23,7 +23,6 @@ layers.
 #include "qgsfeaturerenderergenerator.h"
 %End
   public:
-
     virtual ~QgsFeatureRendererGenerator();
 
     virtual QString id() const = 0;

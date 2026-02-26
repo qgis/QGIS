@@ -27,8 +27,7 @@ QList<QList<QgsBlankSegmentUtils::BlankSegments>> QgsBlankSegmentUtils::parseBla
   QList<QList<BlankSegments>> blankSegments;
   constexpr char internalError[] = "Internal error while processing blank segments";
 
-  auto appendLevel = [&blankSegments, &internalError]( int level ) -> void
-  {
+  auto appendLevel = [&blankSegments, &internalError]( int level ) -> void {
     if ( level == 0 )
     {
       blankSegments.append( QList<BlankSegments>() );
@@ -49,8 +48,7 @@ QList<QList<QgsBlankSegmentUtils::BlankSegments>> QgsBlankSegmentUtils::parseBla
       throw std::runtime_error( internalError ); // should not happen
   };
 
-  auto addNumber = [&blankSegments, &internalError, &currentNumber]( const QChar & c ) -> void
-  {
+  auto addNumber = [&blankSegments, &internalError, &currentNumber]( const QChar &c ) -> void {
     if ( blankSegments.isEmpty() || blankSegments.back().isEmpty() || blankSegments.back().back().isEmpty() )
     {
       throw std::runtime_error( internalError ); // should not happen
@@ -121,13 +119,11 @@ QList<QList<QgsBlankSegmentUtils::BlankSegments>> QgsBlankSegmentUtils::parseBla
           blankSegments.back().back().pop_back();
         }
         level--;
-
       }
       else if ( c == ',' )
       {
-        if ( ( level == 0 && blankSegments.count() == 0 )
-             || ( level == 1 && !blankSegments.isEmpty() && blankSegments.back().count() == 0 )
-             || ( level == 2 && !blankSegments.isEmpty() && !blankSegments.back().isEmpty() &&  blankSegments.back().back().count() == 0 ) )
+        if ( ( level == 0 && blankSegments.count() == 0 ) || ( level == 1 && !blankSegments.isEmpty() && blankSegments.back().count() == 0 )
+             || ( level == 2 && !blankSegments.isEmpty() && !blankSegments.back().isEmpty() && blankSegments.back().back().count() == 0 ) )
           throw std::runtime_error( "No elements, Not expecting ','" );
 
         appendLevel( level );
@@ -154,12 +150,9 @@ QList<QList<QgsBlankSegmentUtils::BlankSegments>> QgsBlankSegmentUtils::parseBla
   }
 
   // convert in pixels
-  std::for_each( blankSegments.begin(), blankSegments.end(), [&renderContext, &unit]( QList<BlankSegments> &rings )
-  {
-    std::for_each( rings.begin(), rings.end(), [&renderContext, &unit]( BlankSegments & blankSegments )
-    {
-      std::for_each( blankSegments.begin(), blankSegments.end(), [&renderContext, &unit]( QPair<double, double> &blankSegment )
-      {
+  std::for_each( blankSegments.begin(), blankSegments.end(), [&renderContext, &unit]( QList<BlankSegments> &rings ) {
+    std::for_each( rings.begin(), rings.end(), [&renderContext, &unit]( BlankSegments &blankSegments ) {
+      std::for_each( blankSegments.begin(), blankSegments.end(), [&renderContext, &unit]( QPair<double, double> &blankSegment ) {
         blankSegment.first = renderContext.convertToPainterUnits( blankSegment.first, unit );
         blankSegment.second = renderContext.convertToPainterUnits( blankSegment.second, unit );
       } );

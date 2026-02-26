@@ -18,7 +18,6 @@ A feature renderer which renders all features with the same symbol.
 #include "qgssinglesymbolrenderer.h"
 %End
   public:
-
     QgsSingleSymbolRenderer( QgsSymbol *symbol /Transfer/ );
 %Docstring
 Constructor for QgsSingleSymbolRenderer.

@@ -46,10 +46,7 @@ void QgsPointDistanceRenderer::toSld( QDomDocument &doc, QDomElement &element, c
   toSld( doc, element, context );
 }
 
-bool QgsPointDistanceRenderer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
-{
-  return mRenderer->toSld( doc, element, context );
-}
+bool QgsPointDistanceRenderer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const { return mRenderer->toSld( doc, element, context ); }
 
 bool QgsPointDistanceRenderer::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
 {
@@ -132,13 +129,12 @@ bool QgsPointDistanceRenderer::renderFeature( const QgsFeature &feature, QgsRend
         }
       }
 
-      const int groupIdx = mGroupIndex[ minDistFeatureId ];
+      const int groupIdx = mGroupIndex[minDistFeatureId];
       ClusteredGroup &group = mClusteredGroups[groupIdx];
 
       // calculate new centroid of group
       const QgsPointXY oldCenter = mGroupLocations.value( minDistFeatureId );
-      mGroupLocations[ minDistFeatureId ] = QgsPointXY( ( oldCenter.x() * group.size() + point->x() ) / ( group.size() + 1.0 ),
-                                            ( oldCenter.y() * group.size() + point->y() ) / ( group.size() + 1.0 ) );
+      mGroupLocations[minDistFeatureId] = QgsPointXY( ( oldCenter.x() * group.size() + point->x() ) / ( group.size() + 1.0 ), ( oldCenter.y() * group.size() + point->y() ) / ( group.size() + 1.0 ) );
 
       // add to a group
       group << GroupedFeature( pointFeature, symbol->clone(), selected, label );
@@ -168,15 +164,9 @@ void QgsPointDistanceRenderer::drawGroup( const ClusteredGroup &group, QgsRender
   drawGroup( pt, context, group );
 }
 
-void QgsPointDistanceRenderer::setEmbeddedRenderer( QgsFeatureRenderer *r )
-{
-  mRenderer.reset( r );
-}
+void QgsPointDistanceRenderer::setEmbeddedRenderer( QgsFeatureRenderer *r ) { mRenderer.reset( r ); }
 
-const QgsFeatureRenderer *QgsPointDistanceRenderer::embeddedRenderer() const
-{
-  return mRenderer.get();
-}
+const QgsFeatureRenderer *QgsPointDistanceRenderer::embeddedRenderer() const { return mRenderer.get(); }
 
 void QgsPointDistanceRenderer::setLegendSymbolItem( const QString &key, QgsSymbol *symbol )
 {
@@ -241,10 +231,7 @@ QSet<QString> QgsPointDistanceRenderer::usedAttributes( const QgsRenderContext &
   return attributeList;
 }
 
-bool QgsPointDistanceRenderer::filterNeedsGeometry() const
-{
-  return mRenderer ? mRenderer->filterNeedsGeometry() : false;
-}
+bool QgsPointDistanceRenderer::filterNeedsGeometry() const { return mRenderer ? mRenderer->filterNeedsGeometry() : false; }
 
 QgsFeatureRenderer::Capabilities QgsPointDistanceRenderer::capabilities()
 {
@@ -384,10 +371,7 @@ QgsLegendSymbolList QgsPointDistanceRenderer::legendSymbolItems() const
   return QgsLegendSymbolList();
 }
 
-QgsRectangle QgsPointDistanceRenderer::searchRect( const QgsPoint *p, double distance ) const
-{
-  return QgsRectangle( p->x() - distance, p->y() - distance, p->x() + distance, p->y() + distance );
-}
+QgsRectangle QgsPointDistanceRenderer::searchRect( const QgsPoint *p, double distance ) const { return QgsRectangle( p->x() - distance, p->y() - distance, p->x() + distance, p->y() + distance ); }
 
 void QgsPointDistanceRenderer::printGroupInfo() const
 {

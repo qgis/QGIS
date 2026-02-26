@@ -102,7 +102,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
      * \see units()
      * \since QGIS 3.22
      */
-    void setUnits( Qgis::RenderUnit units ) { mUnits = units;}
+    void setUnits( Qgis::RenderUnit units ) { mUnits = units; }
 
     QgsSymbol *subSymbol() override { return mSymbol; }
 

@@ -20,8 +20,10 @@ Encapsulates the context in which a symbol is being rendered.
 %End
   public:
 
-
-    QgsSymbolRenderContext( QgsRenderContext &c, Qgis::RenderUnit u, qreal opacity = 1.0, bool selected = false, Qgis::SymbolRenderHints renderHints = Qgis::SymbolRenderHints(), const QgsFeature *f = 0, const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
+    QgsSymbolRenderContext(
+      QgsRenderContext &c, Qgis::RenderUnit u, qreal opacity = 1.0, bool selected = false, Qgis::SymbolRenderHints renderHints = Qgis::SymbolRenderHints(), const QgsFeature *f = 0,
+      const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale()
+    );
 %Docstring
 Constructor for QgsSymbolRenderContext
 
@@ -262,7 +264,6 @@ icons.
   private:
     QgsSymbolRenderContext( const QgsSymbolRenderContext &rh );
 };
-
 
 
 /************************************************************************

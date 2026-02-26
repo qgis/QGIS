@@ -35,7 +35,6 @@ using namespace Qt::StringLiterals;
 class CORE_EXPORT QgsSelectiveMaskSource
 {
   public:
-
     /**
      * Constructor for an invalid QgsSelectiveMaskSource.
      */
@@ -99,30 +98,22 @@ class CORE_EXPORT QgsSelectiveMaskSource
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    if ( !sipCpp->isValid() )
-    {
-      sipRes = PyUnicode_FromString( "<QgsSelectiveMaskSource: invalid>" );
-    }
+    % MethodCode if ( !sipCpp->isValid() ) { sipRes = PyUnicode_FromString( "<QgsSelectiveMaskSource: invalid>" ); }
     else if ( sipCpp->sourceId().isEmpty() )
     {
-      const QString str = u"<QgsSelectiveMaskSource: %1 (%2)>"_s.arg(
-                            sipCpp->layerId(),
-                            qgsEnumValueToKey( sipCpp->sourceType() ) );
+      const QString str = u"<QgsSelectiveMaskSource: %1 (%2)>"_s.arg( sipCpp->layerId(), qgsEnumValueToKey( sipCpp->sourceType() ) );
       sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     }
     else
     {
-      const QString str = u"<QgsSelectiveMaskSource: %1 - %2 (%3)>"_s.arg(
-                            sipCpp->layerId(),
-                            sipCpp->sourceId(),
-                            qgsEnumValueToKey( sipCpp->sourceType() ) );
+      const QString str = u"<QgsSelectiveMaskSource: %1 - %2 (%3)>"_s.arg( sipCpp->layerId(), sipCpp->sourceId(), qgsEnumValueToKey( sipCpp->sourceType() ) );
       sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     }
     % End
 #endif
 
-    bool operator==( const QgsSelectiveMaskSource &other ) const = default;
+      bool operator==( const QgsSelectiveMaskSource &other ) const
+      = default;
     bool operator!=( const QgsSelectiveMaskSource &other ) const = default;
 
   private:

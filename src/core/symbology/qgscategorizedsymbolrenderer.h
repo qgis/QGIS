@@ -38,7 +38,6 @@ class QgsColorRamp;
 class CORE_EXPORT QgsRendererCategory
 {
   public:
-
     QgsRendererCategory() = default;
 
     /**
@@ -148,18 +147,14 @@ class CORE_EXPORT QgsRendererCategory
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    const QString str = !sipCpp->value().isValid()
-                        ? u"<QgsRendererCategory>"_s
-                        : sipCpp->label().isEmpty()
-                        ? u"<QgsRendererCategory: %1>"_s.arg( sipCpp->value().toString() )
-                        : u"<QgsRendererCategory: %1 (%2)>"_s.arg( sipCpp->value().toString(), sipCpp->label() );
+    % MethodCode const QString str = !sipCpp->value().isValid()  ? u"<QgsRendererCategory>"_s
+                                     : sipCpp->label().isEmpty() ? u"<QgsRendererCategory: %1>"_s.arg( sipCpp->value().toString() )
+                                                                 : u"<QgsRendererCategory: %1 (%2)>"_s.arg( sipCpp->value().toString(), sipCpp->label() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-    % End
+  % End
 #endif
 
-  protected:
-    friend class QgsCategorizedSymbolRendererWidget;
+    protected : friend class QgsCategorizedSymbolRendererWidget;
 
     QVariant mValue;
     std::unique_ptr<QgsSymbol> mSymbol;
@@ -178,7 +173,6 @@ typedef QList<QgsRendererCategory> QgsCategoryList;
 class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 {
   public:
-
     /**
      * Constructor for QgsCategorizedSymbolRenderer.
      *
@@ -448,8 +442,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
      *
      * \since QGIS 3.4
      */
-    int matchToSymbols( QgsStyle *style, Qgis::SymbolType type,
-                        QVariantList &unmatchedCategories SIP_OUT, QStringList &unmatchedSymbols SIP_OUT, bool caseSensitive = true, bool useTolerantMatch = false );
+    int matchToSymbols( QgsStyle *style, Qgis::SymbolType type, QVariantList &unmatchedCategories SIP_OUT, QStringList &unmatchedSymbols SIP_OUT, bool caseSensitive = true, bool useTolerantMatch = false );
 
 
     /**
@@ -534,7 +527,6 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
     //! Returns list of legend symbol items from individual categories
     QgsLegendSymbolList baseLegendSymbolItems() const;
-
 };
 
 #endif // QGSCATEGORIZEDSYMBOLRENDERER_H

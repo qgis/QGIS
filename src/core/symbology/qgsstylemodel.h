@@ -47,7 +47,6 @@ class CORE_EXPORT QgsAbstractStyleEntityIconGenerator : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAbstractStyleEntityIconGenerator, with the specified \a parent
      * object.
@@ -105,10 +104,8 @@ class CORE_EXPORT QgsAbstractStyleEntityIconGenerator : public QObject
     void iconGenerated( QgsStyle::StyleEntity type, const QString &name, const QIcon &icon );
 
   private:
-
     QList< QSize > mIconSizes;
     QSet< QgsScreenProperties > mTargetScreenProperties;
-
 };
 
 #endif
@@ -128,17 +125,16 @@ class CORE_EXPORT QgsAbstractStyleEntityIconGenerator : public QObject
  *
  * \since QGIS 3.4
  */
-class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
+class CORE_EXPORT QgsStyleModel : public QAbstractItemModel
 {
     Q_OBJECT
 
   public:
-
     //! Model columns
     enum Column
     {
       Name = 0, //!< Name column
-      Tags, //!< Tags column
+      Tags,     //!< Tags column
     };
 
     // *INDENT-OFF*
@@ -151,16 +147,16 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
      */
     enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsStyleModel, Role ) : int
     {
-      Type SIP_MONKEYPATCH_COMPAT_NAME(TypeRole) = Qt::UserRole + 1, //!< Style entity type, see QgsStyle::StyleEntity
-      Tag SIP_MONKEYPATCH_COMPAT_NAME(TagRole), //!< String list of tags
-      EntityName, //!< Entity name \since QGIS 3.26
-      SymbolType SIP_MONKEYPATCH_COMPAT_NAME(SymbolTypeRole), //!< Symbol type (for symbol or legend patch shape entities)
-      IsFavorite SIP_MONKEYPATCH_COMPAT_NAME(IsFavoriteRole), //!< Whether entity is flagged as a favorite
-      LayerType SIP_MONKEYPATCH_COMPAT_NAME(LayerTypeRole), //!< Layer type (for label settings entities)
-      CompatibleGeometryTypes SIP_MONKEYPATCH_COMPAT_NAME(CompatibleGeometryTypesRole), //!< Compatible layer geometry types (for 3D symbols)
-      StyleName, //!< Name of associated QgsStyle (QgsStyle::name()) \since QGIS 3.26
-      StyleFileName, //!< File name of associated QgsStyle (QgsStyle::fileName()) \since QGIS 3.26
-      IsTitle SIP_MONKEYPATCH_COMPAT_NAME(IsTitleRole), //!< True if the index corresponds to a title item \since QGIS 3.26
+      Type SIP_MONKEYPATCH_COMPAT_NAME( TypeRole ) = Qt::UserRole + 1,                    //!< Style entity type, see QgsStyle::StyleEntity
+      Tag SIP_MONKEYPATCH_COMPAT_NAME( TagRole ),                                         //!< String list of tags
+      EntityName,                                                                         //!< Entity name \since QGIS 3.26
+      SymbolType SIP_MONKEYPATCH_COMPAT_NAME( SymbolTypeRole ),                           //!< Symbol type (for symbol or legend patch shape entities)
+      IsFavorite SIP_MONKEYPATCH_COMPAT_NAME( IsFavoriteRole ),                           //!< Whether entity is flagged as a favorite
+      LayerType SIP_MONKEYPATCH_COMPAT_NAME( LayerTypeRole ),                             //!< Layer type (for label settings entities)
+      CompatibleGeometryTypes SIP_MONKEYPATCH_COMPAT_NAME( CompatibleGeometryTypesRole ), //!< Compatible layer geometry types (for 3D symbols)
+      StyleName,                                                                          //!< Name of associated QgsStyle (QgsStyle::name()) \since QGIS 3.26
+      StyleFileName,                                                                      //!< File name of associated QgsStyle (QgsStyle::fileName()) \since QGIS 3.26
+      IsTitle SIP_MONKEYPATCH_COMPAT_NAME( IsTitleRole ),                                 //!< True if the index corresponds to a title item \since QGIS 3.26
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
@@ -182,10 +178,8 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
     QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation,
-                         int role = Qt::DisplayRole ) const override;
-    QModelIndex index( int row, int column,
-                       const QModelIndex &parent = QModelIndex() ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
     QModelIndex parent( const QModelIndex &index ) const override;
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -230,7 +224,6 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
     void iconGenerated( QgsStyle::StyleEntity type, const QString &name, const QIcon &icon );
 
   private:
-
     void initStyleModel();
 
     QgsStyle *mStyle = nullptr;
@@ -250,8 +243,7 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
     QgsStyle::StyleEntity entityTypeFromRow( int row ) const;
 
     int offsetForEntity( QgsStyle::StyleEntity entity ) const;
-    static QVariant headerDataStatic( int section, Qt::Orientation orientation,
-                                      int role = Qt::DisplayRole );
+    static QVariant headerDataStatic( int section, Qt::Orientation orientation, int role = Qt::DisplayRole );
 
     friend class QgsCombinedStyleModel;
 };
@@ -266,12 +258,11 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
  *
  * \since QGIS 3.4
  */
-class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
+class CORE_EXPORT QgsStyleProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsStyleProxyModel, for the specified \a style and \a parent object.
      *
@@ -521,7 +512,6 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     void setFilterString( const QString &filter );
 
   private:
-
     void initialize();
 
     QgsStyleModel *mModel = nullptr;
@@ -547,7 +537,6 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     Qgis::SymbolType mSymbolType = Qgis::SymbolType::Marker;
 
     Qgis::GeometryType mLayerType = Qgis::GeometryType::Unknown;
-
 };
 
 #endif //QGSSTYLEMODEL_H

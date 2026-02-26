@@ -24,7 +24,6 @@ the symbols to subclasses.
 #include "qgsmarkersymbollayer.h"
 %End
   public:
-
     static QList< Qgis::MarkerShape > availableShapes();
 %Docstring
 Returns a list of all available shape types.
@@ -40,10 +39,9 @@ Returns ``True`` if a symbol shape has a fill.
          only
 %End
 
-    QgsSimpleMarkerSymbolLayerBase( Qgis::MarkerShape shape = Qgis::MarkerShape::Circle,
-                                    double size = DEFAULT_SIMPLEMARKER_SIZE,
-                                    double angle = DEFAULT_SIMPLEMARKER_ANGLE,
-                                    Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+    QgsSimpleMarkerSymbolLayerBase(
+      Qgis::MarkerShape shape = Qgis::MarkerShape::Circle, double size = DEFAULT_SIMPLEMARKER_SIZE, double angle = DEFAULT_SIMPLEMARKER_ANGLE, Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD
+    );
 %Docstring
 Constructor for QgsSimpleMarkerSymbolLayerBase.
 
@@ -106,7 +104,6 @@ Encodes a shape to its string representation.
 
 
   protected:
-
     bool prepareMarkerShape( Qgis::MarkerShape shape );
 %Docstring
 Prepares the layer for drawing the specified shape (QPolygonF version)
@@ -183,14 +180,10 @@ fill color and a stroke.
 #include "qgsmarkersymbollayer.h"
 %End
   public:
-
-    QgsSimpleMarkerSymbolLayer( Qgis::MarkerShape shape = Qgis::MarkerShape::Circle,
-                                double size = DEFAULT_SIMPLEMARKER_SIZE,
-                                double angle = DEFAULT_SIMPLEMARKER_ANGLE,
-                                Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
-                                const QColor &color = DEFAULT_SIMPLEMARKER_COLOR,
-                                const QColor &strokeColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR,
-                                Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEMARKER_JOINSTYLE );
+    QgsSimpleMarkerSymbolLayer(
+      Qgis::MarkerShape shape = Qgis::MarkerShape::Circle, double size = DEFAULT_SIMPLEMARKER_SIZE, double angle = DEFAULT_SIMPLEMARKER_ANGLE, Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
+      const QColor &color = DEFAULT_SIMPLEMARKER_COLOR, const QColor &strokeColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR, Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEMARKER_JOINSTYLE
+    );
 %Docstring
 Constructor for QgsSimpleMarkerSymbolLayer.
 
@@ -452,7 +445,6 @@ Returns the map scale for the width of the marker's stroke.
 %End
 
   protected:
-
     void drawMarker( QPainter *p, QgsSymbolRenderContext &context );
 %Docstring
 Draws the marker shape in the specified painter.
@@ -494,11 +486,9 @@ advanced styling of the interior and stroke of the shape.
 #include "qgsmarkersymbollayer.h"
 %End
   public:
-
-    QgsFilledMarkerSymbolLayer( Qgis::MarkerShape shape = Qgis::MarkerShape::Circle,
-                                double size = DEFAULT_SIMPLEMARKER_SIZE,
-                                double angle = DEFAULT_SIMPLEMARKER_ANGLE,
-                                Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+    QgsFilledMarkerSymbolLayer(
+      Qgis::MarkerShape shape = Qgis::MarkerShape::Circle, double size = DEFAULT_SIMPLEMARKER_SIZE, double angle = DEFAULT_SIMPLEMARKER_ANGLE, Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD
+    );
 %Docstring
 Constructor for QgsFilledMarkerSymbolLayer.
 
@@ -571,10 +561,7 @@ A marker symbol layer which renders an SVG graphic.
 #include "qgsmarkersymbollayer.h"
 %End
   public:
-    QgsSvgMarkerSymbolLayer( const QString &path,
-                             double size = DEFAULT_SVGMARKER_SIZE,
-                             double angle = DEFAULT_SVGMARKER_ANGLE,
-                             Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+    QgsSvgMarkerSymbolLayer( const QString &path, double size = DEFAULT_SVGMARKER_SIZE, double angle = DEFAULT_SVGMARKER_ANGLE, Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 %Docstring
 Constructs SVG marker symbol layer with picture from given absolute path
 to a SVG file
@@ -763,7 +750,6 @@ Returns the units for the stroke width.
 
 
   protected:
-
     double calculateAspectRatio( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedAspectRatio ) const;
 %Docstring
 Calculates the marker aspect ratio between width and height.
@@ -794,10 +780,7 @@ Raster marker symbol layer class.
 #include "qgsmarkersymbollayer.h"
 %End
   public:
-    QgsRasterMarkerSymbolLayer( const QString &path = QString(),
-                                double size = DEFAULT_SVGMARKER_SIZE,
-                                double angle = DEFAULT_SVGMARKER_ANGLE,
-                                Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+    QgsRasterMarkerSymbolLayer( const QString &path = QString(), double size = DEFAULT_SVGMARKER_SIZE, double angle = DEFAULT_SVGMARKER_ANGLE, Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 %Docstring
 Constructs raster marker symbol layer with picture from given absolute
 path to a raster image file
@@ -966,7 +949,6 @@ be preserved in rendering
 
 
   protected:
-
     void setCommonProperties( const QVariantMap &properties );
 %Docstring
 Sets common class properties from a ``properties`` map.
@@ -999,12 +981,10 @@ A marker symbol layer which displays characters rendered using a font.
 #include "qgsmarkersymbollayer.h"
 %End
   public:
-
-    QgsFontMarkerSymbolLayer( const QString &fontFamily = DEFAULT_FONTMARKER_FONT,
-                              QString chr = DEFAULT_FONTMARKER_CHR,
-                              double pointSize = DEFAULT_FONTMARKER_SIZE,
-                              const QColor &color = DEFAULT_FONTMARKER_COLOR,
-                              double angle = DEFAULT_FONTMARKER_ANGLE );
+    QgsFontMarkerSymbolLayer(
+      const QString &fontFamily = DEFAULT_FONTMARKER_FONT, QString chr = DEFAULT_FONTMARKER_CHR, double pointSize = DEFAULT_FONTMARKER_SIZE, const QColor &color = DEFAULT_FONTMARKER_COLOR,
+      double angle = DEFAULT_FONTMARKER_ANGLE
+    );
 %Docstring
 Constructs a font marker symbol layer.
 %End
@@ -1223,10 +1203,7 @@ animations or map exports.
 #include "qgsmarkersymbollayer.h"
 %End
   public:
-
-    QgsAnimatedMarkerSymbolLayer( const QString &path = QString(),
-                                  double size = DEFAULT_RASTERMARKER_SIZE,
-                                  double angle = DEFAULT_RASTERMARKER_ANGLE );
+    QgsAnimatedMarkerSymbolLayer( const QString &path = QString(), double size = DEFAULT_RASTERMARKER_SIZE, double angle = DEFAULT_RASTERMARKER_ANGLE );
 %Docstring
 Constructor for animated marker symbol layer using the specified source
 image ``path``.
@@ -1269,8 +1246,6 @@ Returns the marker frame rate in frame per second.
   protected:
 
 };
-
-
 
 
 /************************************************************************

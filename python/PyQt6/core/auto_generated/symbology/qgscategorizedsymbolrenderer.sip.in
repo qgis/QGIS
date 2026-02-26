@@ -21,7 +21,6 @@ Represents an individual category (class) from a
 #include "qgscategorizedsymbolrenderer.h"
 %End
   public:
-
     QgsRendererCategory();
 
     QgsRendererCategory( const QVariant &value, QgsSymbol *symbol /Transfer/, const QString &label, bool render = true, const QString &uuid = QString() );
@@ -147,17 +146,19 @@ document and ``element``.
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    const QString str = !sipCpp->value().isValid()
-                        ? QStringLiteral( "<QgsRendererCategory>" )
-                        : sipCpp->label().isEmpty()
-                        ? QStringLiteral( "<QgsRendererCategory: %1>" ).arg( sipCpp->value().toString() )
-                        : QStringLiteral( "<QgsRendererCategory: %1 (%2)>" ).arg( sipCpp->value().toString(), sipCpp->label() );
+%MethodCode const QString str = !sipCpp->value().isValid()  ? QStringLiteral( "<QgsRendererCategory>" )
+                                     : sipCpp->label().isEmpty() ? QStringLiteral( "<QgsRendererCategory: %1>" ).arg( sipCpp->value().toString() )
+                                                                 : QStringLiteral( "<QgsRendererCategory: %1 (%2)>" ).arg( sipCpp->value().toString(), sipCpp->label() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-  protected:
+    protected : friend class QgsCategorizedSymbolRendererWidget;
 
+    QVariant mValue;
+    std::unique_ptr<QgsSymbol> mSymbol;
+    QString mLabel;
+    bool mRender;
+    QString mUuid;
 };
 
 typedef QList<QgsRendererCategory> QgsCategoryList;
@@ -173,7 +174,6 @@ categories.
 #include "qgscategorizedsymbolrenderer.h"
 %End
   public:
-
     QgsCategorizedSymbolRenderer( const QString &attrName = QString(), const QgsCategoryList &categories = QgsCategoryList() );
 %Docstring
 Constructor for QgsCategorizedSymbolRenderer.
@@ -468,8 +468,7 @@ size for marker symbols. Will return ``None`` if the functionality is
 disabled.
 %End
 
-    int matchToSymbols( QgsStyle *style, Qgis::SymbolType type,
-                        QVariantList &unmatchedCategories /Out/, QStringList &unmatchedSymbols /Out/, bool caseSensitive = true, bool useTolerantMatch = false );
+    int matchToSymbols( QgsStyle *style, Qgis::SymbolType type, QVariantList &unmatchedCategories /Out/, QStringList &unmatchedSymbols /Out/, bool caseSensitive = true, bool useTolerantMatch = false );
 %Docstring
 Replaces category symbols with the symbols from a ``style`` that have a
 matching name and symbol ``type``.

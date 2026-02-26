@@ -26,7 +26,6 @@ Stores metadata about one renderer class.
 #include "qgsrendererregistry.h"
 %End
   public:
-
     enum LayerType /BaseType=IntEnum/
     {
       PointLayer,
@@ -130,8 +129,15 @@ and its widget.
 #include "qgsrendererregistry.h"
 %End
   public:
+                 mCreateFunc( pfCreate ),
+                 mWidgetFunc( pfWidget ),
+                 mCreateFromSldFunc( 0 ),
+                 mLayerTypes( layerTypes );
 
-
+                 mCreateFunc( pfCreate ),
+                 mWidgetFunc( pfWidget ),
+                 mCreateFromSldFunc( pfCreateFromSld ),
+                 mLayerTypes( layerTypes );
 
     virtual QgsFeatureRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) /Factory/;
     virtual QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
@@ -162,7 +168,6 @@ rather accessed through :py:func:`QgsApplication.rendererRegistry()`.
 #include "qgsrendererregistry.h"
 %End
   public:
-
     QgsRendererRegistry();
     ~QgsRendererRegistry();
 

@@ -21,7 +21,6 @@ Selected features will also be drawn with a default symbol.
 #include "qgsnullsymbolrenderer.h"
 %End
   public:
-
     QgsNullSymbolRenderer();
     ~QgsNullSymbolRenderer();
 

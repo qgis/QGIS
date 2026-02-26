@@ -27,14 +27,9 @@ using namespace Qt::StringLiterals;
 
 QgsSelectiveMaskingSourceSet::QgsSelectiveMaskingSourceSet()
   : mId( QUuid::createUuid().toString() )
-{
+{}
 
-}
-
-QVector<QgsSelectiveMaskSource> QgsSelectiveMaskingSourceSet::sources() const
-{
-  return mSources;
-}
+QVector<QgsSelectiveMaskSource> QgsSelectiveMaskingSourceSet::sources() const { return mSources; }
 
 void QgsSelectiveMaskingSourceSet::setSources( const QVector<QgsSelectiveMaskSource> &sources )
 {
@@ -42,10 +37,7 @@ void QgsSelectiveMaskingSourceSet::setSources( const QVector<QgsSelectiveMaskSou
   mIsValid = true;
 }
 
-void QgsSelectiveMaskingSourceSet::append( const QgsSelectiveMaskSource &source )
-{
-  mSources.append( source );
-}
+void QgsSelectiveMaskingSourceSet::append( const QgsSelectiveMaskSource &source ) { mSources.append( source ); }
 
 QDomElement QgsSelectiveMaskingSourceSet::writeXml( QDomDocument &document, const QgsReadWriteContext & ) const
 {
@@ -91,17 +83,8 @@ bool QgsSelectiveMaskingSourceSet::readXml( const QDomElement &element, const QD
   return true;
 }
 
-QgsSelectiveMaskSource &QgsSelectiveMaskingSourceSet::operator[]( int index )
-{
-  return mSources[index];
-}
+QgsSelectiveMaskSource &QgsSelectiveMaskingSourceSet::operator[]( int index ) { return mSources[index]; }
 
-int QgsSelectiveMaskingSourceSet::size() const
-{
-  return mSources.size();
-}
+int QgsSelectiveMaskingSourceSet::size() const { return mSources.size(); }
 
-bool QgsSelectiveMaskingSourceSet::isEmpty() const
-{
-  return mSources.empty();
-}
+bool QgsSelectiveMaskingSourceSet::isEmpty() const { return mSources.empty(); }

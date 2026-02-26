@@ -33,7 +33,6 @@ formats and others.
 #include "qgsstyle.h"
 %End
   public:
-
     enum class SymbolTableColumn /BaseType=IntEnum/
     {
       Id,
@@ -287,8 +286,7 @@ Adds a new tag and returns the tag's id
 %End
 
 
-    int addSmartgroup( const QString &name, const QString &op, const QStringList &matchTag, const QStringList &noMatchTag,
-                       const QStringList &matchName, const QStringList &noMatchName );
+    int addSmartgroup( const QString &name, const QString &op, const QStringList &matchTag, const QStringList &noMatchTag, const QStringList &matchName, const QStringList &noMatchName );
 %Docstring
 Adds a new smartgroup to the database and returns the id.
 
@@ -816,7 +814,7 @@ specified ``context``.
 .. versionadded:: 3.20
 %End
 
-    static QgsTextFormat defaultTextFormatForProject( QgsProject *project,  QgsStyle::TextFormatContext context = QgsStyle::TextFormatContext::Labeling );
+    static QgsTextFormat defaultTextFormatForProject( QgsProject *project, QgsStyle::TextFormatContext context = QgsStyle::TextFormatContext::Labeling );
 %Docstring
 Returns the default text format to use for new text based objects for
 the specified ``project``, in the specified ``context``.
@@ -1360,7 +1358,6 @@ database.
 %Docstring
 Returns the type of style entity.
 %End
-
 };
 
 class QgsStyleSymbolEntity : QgsStyleEntityInterface
@@ -1375,7 +1372,6 @@ A symbol entity for :py:class:`QgsStyle` databases.
 #include "qgsstyle.h"
 %End
   public:
-
     QgsStyleSymbolEntity( QgsSymbol *symbol );
 %Docstring
 Constructor for QgsStyleSymbolEntity, with the specified ``symbol``.
@@ -1405,7 +1401,6 @@ A color ramp entity for :py:class:`QgsStyle` databases.
 #include "qgsstyle.h"
 %End
   public:
-
     QgsStyleColorRampEntity( QgsColorRamp *ramp );
 %Docstring
 Constructor for QgsStyleColorRampEntity, with the specified color
@@ -1436,7 +1431,6 @@ A text format entity for :py:class:`QgsStyle` databases.
 #include "qgsstyle.h"
 %End
   public:
-
     QgsStyleTextFormatEntity( const QgsTextFormat &format );
 %Docstring
 Constructor for QgsStyleTextFormatEntity, with the specified text
@@ -1465,7 +1459,6 @@ A label settings entity for :py:class:`QgsStyle` databases.
 #include "qgsstyle.h"
 %End
   public:
-
     QgsStyleLabelSettingsEntity( const QgsPalLayerSettings &settings );
 %Docstring
 Constructor for QgsStyleLabelSettingsEntity, with the specified label
@@ -1495,7 +1488,6 @@ A legend patch shape entity for :py:class:`QgsStyle` databases.
 #include "qgsstyle.h"
 %End
   public:
-
     QgsStyleLegendPatchShapeEntity( const QgsLegendPatchShape &shape );
 %Docstring
 Constructor for QgsStyleLegendPatchShapeEntity, with the specified
@@ -1525,7 +1517,6 @@ A 3d symbol entity for :py:class:`QgsStyle` databases.
 #include "qgsstyle.h"
 %End
   public:
-
     QgsStyleSymbol3DEntity( const QgsAbstract3DSymbol *symbol );
 %Docstring
 Constructor for QgsStyleSymbol3DEntity, with the specified ``symbol``.

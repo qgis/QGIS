@@ -40,7 +40,6 @@ typedef QList<QgsSymbolLayer *> QgsSymbolLayerList;
 class CORE_EXPORT QgsSymbolAnimationSettings
 {
   public:
-
     /**
      * Sets whether the symbol is animated.
      *
@@ -78,10 +77,8 @@ class CORE_EXPORT QgsSymbolAnimationSettings
     double frameRate() const { return mFrameRate; }
 
   private:
-
     bool mIsAnimated = false;
     double mFrameRate = 10;
-
 };
 
 
@@ -96,7 +93,6 @@ class CORE_EXPORT QgsSymbolAnimationSettings
 class CORE_EXPORT QgsSymbolBufferSettings
 {
   public:
-
     QgsSymbolBufferSettings();
     ~QgsSymbolBufferSettings();
 
@@ -229,15 +225,22 @@ class CORE_EXPORT QgsSymbolBufferSettings
  */
 class CORE_EXPORT QgsSymbol
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     switch ( sipCpp->type() )
     {
-      case Qgis::SymbolType::Marker: sipType = sipType_QgsMarkerSymbol; break;
-      case Qgis::SymbolType::Line: sipType = sipType_QgsLineSymbol; break;
-      case Qgis::SymbolType::Fill: sipType = sipType_QgsFillSymbol; break;
-      default: sipType = 0; break;
+      case Qgis::SymbolType::Marker:
+        sipType = sipType_QgsMarkerSymbol;
+        break;
+      case Qgis::SymbolType::Line:
+        sipType = sipType_QgsLineSymbol;
+        break;
+      case Qgis::SymbolType::Fill:
+        sipType = sipType_QgsFillSymbol;
+        break;
+      default:
+        sipType = 0;
+        break;
     }
     SIP_END
 #endif
@@ -245,7 +248,6 @@ class CORE_EXPORT QgsSymbol
     friend class QgsFeatureRenderer;
 
   public:
-
     /**
      * Returns a translated string version of the specified symbol \a type.
      *
@@ -269,7 +271,7 @@ class CORE_EXPORT QgsSymbol
     enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSymbol, Property ) : int
     {
       Opacity SIP_MONKEYPATCH_COMPAT_NAME( PropertyOpacity ), //!< Opacity
-      ExtentBuffer, //!< Extent buffer \since QGIS 3.42
+      ExtentBuffer,                                           //!< Extent buffer \since QGIS 3.42
     };
     // *INDENT-ON*
 
@@ -330,8 +332,7 @@ class CORE_EXPORT QgsSymbol
      * \see symbolLayerCount
      */
     SIP_PYOBJECT symbolLayer( int layer ) SIP_TYPEHINT( QgsSymbolLayer );
-    % MethodCode
-    const int count = sipCpp->symbolLayerCount();
+    % MethodCode const int count = sipCpp->symbolLayerCount();
     if ( a0 < 0 || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
@@ -358,17 +359,15 @@ class CORE_EXPORT QgsSymbol
      * Returns the number of symbol layers contained in the symbol.
      */
     int __len__() const;
-    % MethodCode
-    sipRes = sipCpp->symbolLayerCount();
+    % MethodCode sipRes = sipCpp->symbolLayerCount();
     % End
 
-    //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
-    int __bool__() const;
-    % MethodCode
-    sipRes = true;
+      //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
+      int __bool__() const;
+    % MethodCode sipRes = true;
     % End
 
-    /**
+        /**
     * Returns the symbol layer at the specified ``index``.
     *
     * Indexes can be less than 0, in which case they correspond to layers from the end of the symbol. E.g. an index of -1
@@ -378,9 +377,9 @@ class CORE_EXPORT QgsSymbol
     *
     * \since QGIS 3.10
     */
-    SIP_PYOBJECT __getitem__( int index ) SIP_TYPEHINT( QgsSymbolLayer );
-    % MethodCode
-    const int count = sipCpp->symbolLayerCount();
+        SIP_PYOBJECT
+      __getitem__( int index ) SIP_TYPEHINT( QgsSymbolLayer );
+    % MethodCode const int count = sipCpp->symbolLayerCount();
     if ( a0 < -count || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
@@ -396,7 +395,7 @@ class CORE_EXPORT QgsSymbol
     }
     % End
 
-    /**
+      /**
      * Deletes the layer at the specified ``index``.
      *
      * Indexes can be less than 0, in which case they correspond to layers from the end of the symbol. E.g. an index of -1
@@ -406,9 +405,9 @@ class CORE_EXPORT QgsSymbol
      *
      * \since QGIS 3.10
      */
-    void __delitem__( int index );
-    % MethodCode
-    const int count = sipCpp->symbolLayerCount();
+      void
+      __delitem__( int index );
+    % MethodCode const int count = sipCpp->symbolLayerCount();
     if ( a0 >= 0 && a0 < count )
       sipCpp->deleteSymbolLayer( a0 );
     else if ( a0 < 0 && a0 >= -count )
@@ -421,14 +420,14 @@ class CORE_EXPORT QgsSymbol
     % End
 #endif
 
-    /**
+      /**
      * Inserts a symbol \a layer to specified \a index.
      * Ownership of \a layer is transferred to the symbol.
      * \param index The index at which the layer should be added
      * \param layer The symbol layer to add
      * \returns TRUE if the layer is added, FALSE if the index or the layer is bad
      */
-    bool insertSymbolLayer( int index, QgsSymbolLayer *layer SIP_TRANSFER );
+      bool insertSymbolLayer( int index, QgsSymbolLayer *layer SIP_TRANSFER );
 
     /**
      * Appends a symbol \a layer at the end of the current symbol layer list.
@@ -517,8 +516,10 @@ class CORE_EXPORT QgsSymbol
      * \see exportImage()
      * \see asImage()
      */
-    void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = nullptr, bool selected = false, const QgsExpressionContext *expressionContext = nullptr,
-                          const QgsLegendPatchShape *patchShape = nullptr, const QgsScreenProperties &screen = QgsScreenProperties() );
+    void drawPreviewIcon(
+      QPainter *painter, QSize size, QgsRenderContext *customContext = nullptr, bool selected = false, const QgsExpressionContext *expressionContext = nullptr,
+      const QgsLegendPatchShape *patchShape = nullptr, const QgsScreenProperties &screen = QgsScreenProperties()
+    );
 
     /**
      * Export the symbol as an image format, to the specified \a path and with the given \a size.
@@ -553,12 +554,16 @@ class CORE_EXPORT QgsSymbol
      * \see asImage()
      * \see drawPreviewIcon()
      */
-    QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = nullptr, Qgis::SymbolPreviewFlags flags = Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols, const QgsScreenProperties &screen = QgsScreenProperties() ) SIP_PYNAME( bigSymbolPreviewImageV2 );
+    QImage bigSymbolPreviewImage(
+      QgsExpressionContext *expressionContext = nullptr, Qgis::SymbolPreviewFlags flags = Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols,
+      const QgsScreenProperties &screen = QgsScreenProperties()
+    ) SIP_PYNAME( bigSymbolPreviewImageV2 );
 
     /**
      * \deprecated QGIS 3.40. Use bigSymbolPreviewImageV2() instead.
      */
-    Q_DECL_DEPRECATED QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = nullptr, int flags = static_cast< int >( Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols ) ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = nullptr, int flags = static_cast< int >( Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols ) )
+      SIP_DEPRECATED;
 
     /**
      * Returns a string dump of the symbol's properties.
@@ -861,7 +866,10 @@ class CORE_EXPORT QgsSymbol
      * Render a feature. Before calling this the startRender() method should be called to initialize
      * the rendering process. After rendering all features stopRender() must be called.
      */
-    void renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false, Qgis::VertexMarkerType currentVertexMarkerType = Qgis::VertexMarkerType::SemiTransparentCircle, double currentVertexMarkerSize = 0.0 ) SIP_THROW( QgsCsException );
+    void renderFeature(
+      const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false,
+      Qgis::VertexMarkerType currentVertexMarkerType = Qgis::VertexMarkerType::SemiTransparentCircle, double currentVertexMarkerSize = 0.0
+    ) SIP_THROW( QgsCsException );
 
     /**
      * Returns the symbol render context. Only valid between startRender and stopRender calls.
@@ -934,7 +942,6 @@ class CORE_EXPORT QgsSymbol
     void setExtentBufferSizeUnit( Qgis::RenderUnit unit ) { mExtentBufferSizeUnit = unit; }
 
   protected:
-
     /**
      * Constructor for a QgsSymbol of the specified \a type.
      *
@@ -955,7 +962,6 @@ class CORE_EXPORT QgsSymbol
         double z = 0.0;
         context.coordinateTransform().transformInPlace( x, y, z );
         pt = QPointF( x, y );
-
       }
       else
         pt = point.toQPointF();
@@ -1011,7 +1017,9 @@ class CORE_EXPORT QgsSymbol
      * Since QGIS 3.22, the optional \a geometryType, \a points and \a rings arguments can specify the original
      * geometry type, points and rings in which are being rendered by the parent symbol.
      */
-    void renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext &context, Qgis::GeometryType geometryType = Qgis::GeometryType::Unknown, const QPolygonF *points = nullptr, const QVector<QPolygonF> *rings = nullptr );
+    void renderUsingLayer(
+      QgsSymbolLayer *layer, QgsSymbolRenderContext &context, Qgis::GeometryType geometryType = Qgis::GeometryType::Unknown, const QPolygonF *points = nullptr, const QVector<QPolygonF> *rings = nullptr
+    );
 
     /**
      * Render editing vertex marker at specified point
@@ -1092,7 +1100,6 @@ class CORE_EXPORT QgsSymbol
     static QPolygonF _getPolygonRing3d( QgsRenderContext &context, const QgsCurve &curve, bool clipToExtent, bool isExteriorRing = false, bool correctRingOrientation = false );
 
     Q_DISABLE_COPY( QgsSymbol )
-
 };
 
 #endif

@@ -89,10 +89,7 @@ QSet<QString> QgsEmbeddedSymbolRenderer::usedAttributes( const QgsRenderContext 
   return attributes;
 }
 
-bool QgsEmbeddedSymbolRenderer::usesEmbeddedSymbols() const
-{
-  return true;
-}
+bool QgsEmbeddedSymbolRenderer::usesEmbeddedSymbols() const { return true; }
 
 QgsEmbeddedSymbolRenderer *QgsEmbeddedSymbolRenderer::clone() const
 {
@@ -101,10 +98,7 @@ QgsEmbeddedSymbolRenderer *QgsEmbeddedSymbolRenderer::clone() const
   return r;
 }
 
-QgsFeatureRenderer::Capabilities QgsEmbeddedSymbolRenderer::capabilities()
-{
-  return SymbolLevels;
-}
+QgsFeatureRenderer::Capabilities QgsEmbeddedSymbolRenderer::capabilities() { return SymbolLevels; }
 
 QgsFeatureRenderer *QgsEmbeddedSymbolRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
@@ -162,10 +156,7 @@ QgsSymbolList QgsEmbeddedSymbolRenderer::symbols( QgsRenderContext &context ) co
   return lst;
 }
 
-QgsSymbol *QgsEmbeddedSymbolRenderer::defaultSymbol() const
-{
-  return mDefaultSymbol.get();
-}
+QgsSymbol *QgsEmbeddedSymbolRenderer::defaultSymbol() const { return mDefaultSymbol.get(); }
 
 void QgsEmbeddedSymbolRenderer::setDefaultSymbol( QgsSymbol *symbol )
 {

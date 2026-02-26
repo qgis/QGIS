@@ -40,10 +40,7 @@ QgsHeatmapRenderer::QgsHeatmapRenderer()
   mLegendSettings.setMaximumLabel( QObject::tr( "Maximum" ) );
 }
 
-QgsHeatmapRenderer::~QgsHeatmapRenderer()
-{
-  delete mGradientRamp;
-}
+QgsHeatmapRenderer::~QgsHeatmapRenderer() { delete mGradientRamp; }
 
 void QgsHeatmapRenderer::initializeValues( QgsRenderContext &context )
 {
@@ -182,7 +179,7 @@ bool QgsHeatmapRenderer::renderFeature( const QgsFeature &feature, QgsRenderCont
         {
           mCalculatedMaxValue = value;
         }
-        mValues[ index ] = value;
+        mValues[index] = value;
       }
     }
   }
@@ -206,25 +203,13 @@ double QgsHeatmapRenderer::uniformKernel( const double distance, const int bandw
   return 1.0;
 }
 
-double QgsHeatmapRenderer::quarticKernel( const double distance, const int bandwidth ) const
-{
-  return std::pow( 1. - std::pow( distance / static_cast< double >( bandwidth ), 2 ), 2 );
-}
+double QgsHeatmapRenderer::quarticKernel( const double distance, const int bandwidth ) const { return std::pow( 1. - std::pow( distance / static_cast< double >( bandwidth ), 2 ), 2 ); }
 
-double QgsHeatmapRenderer::triweightKernel( const double distance, const int bandwidth ) const
-{
-  return std::pow( 1. - std::pow( distance / static_cast< double >( bandwidth ), 2 ), 3 );
-}
+double QgsHeatmapRenderer::triweightKernel( const double distance, const int bandwidth ) const { return std::pow( 1. - std::pow( distance / static_cast< double >( bandwidth ), 2 ), 3 ); }
 
-double QgsHeatmapRenderer::epanechnikovKernel( const double distance, const int bandwidth ) const
-{
-  return ( 1. - std::pow( distance / static_cast< double >( bandwidth ), 2 ) );
-}
+double QgsHeatmapRenderer::epanechnikovKernel( const double distance, const int bandwidth ) const { return ( 1. - std::pow( distance / static_cast< double >( bandwidth ), 2 ) ); }
 
-double QgsHeatmapRenderer::triangularKernel( const double distance, const int bandwidth ) const
-{
-  return ( 1. - ( distance / static_cast< double >( bandwidth ) ) );
-}
+double QgsHeatmapRenderer::triangularKernel( const double distance, const int bandwidth ) const { return ( 1. - ( distance / static_cast< double >( bandwidth ) ) ); }
 
 void QgsHeatmapRenderer::stopRender( QgsRenderContext &context )
 {
@@ -241,9 +226,7 @@ void QgsHeatmapRenderer::renderImage( QgsRenderContext &context )
     return;
   }
 
-  QImage image( context.painter()->device()->width() / mRenderQuality,
-                context.painter()->device()->height() / mRenderQuality,
-                QImage::Format_ARGB32 );
+  QImage image( context.painter()->device()->width() / mRenderQuality, context.painter()->device()->height() / mRenderQuality, QImage::Format_ARGB32 );
   image.fill( Qt::transparent );
 
   const double scaleMax = mExplicitMax > 0 ? mExplicitMax : mCalculatedMaxValue;
@@ -272,8 +255,7 @@ void QgsHeatmapRenderer::renderImage( QgsRenderContext &context )
 
   if ( mRenderQuality > 1 )
   {
-    const QImage resized = image.scaled( context.painter()->device()->width(),
-                                         context.painter()->device()->height() );
+    const QImage resized = image.scaled( context.painter()->device()->width(), context.painter()->device()->height() );
     context.painter()->drawImage( 0, 0, resized );
   }
   else
@@ -282,10 +264,7 @@ void QgsHeatmapRenderer::renderImage( QgsRenderContext &context )
   }
 }
 
-QString QgsHeatmapRenderer::dump() const
-{
-  return u"[HEATMAP]"_s;
-}
+QString QgsHeatmapRenderer::dump() const { return u"[HEATMAP]"_s; }
 
 QgsHeatmapRenderer *QgsHeatmapRenderer::clone() const
 {
@@ -370,10 +349,7 @@ QgsSymbol *QgsHeatmapRenderer::symbolForFeature( const QgsFeature &feature, QgsR
   return nullptr;
 }
 
-QgsSymbolList QgsHeatmapRenderer::symbols( QgsRenderContext & ) const
-{
-  return QgsSymbolList();
-}
+QgsSymbolList QgsHeatmapRenderer::symbols( QgsRenderContext & ) const { return QgsSymbolList(); }
 
 QSet<QString> QgsHeatmapRenderer::usedAttributes( const QgsRenderContext & ) const
 {
@@ -419,14 +395,7 @@ bool QgsHeatmapRenderer::accept( QgsStyleEntityVisitorInterface *visitor ) const
 
 QList<QgsLayerTreeModelLegendNode *> QgsHeatmapRenderer::createLegendNodes( QgsLayerTreeLayer *nodeLayer ) const
 {
-  return
-  {
-    new QgsColorRampLegendNode( nodeLayer,
-                                mGradientRamp->clone(),
-                                mLegendSettings,
-                                0,
-                                1 )
-  };
+  return { new QgsColorRampLegendNode( nodeLayer, mGradientRamp->clone(), mLegendSettings, 0, 1 ) };
 }
 
 void QgsHeatmapRenderer::setColorRamp( QgsColorRamp *ramp )
@@ -435,7 +404,4 @@ void QgsHeatmapRenderer::setColorRamp( QgsColorRamp *ramp )
   mGradientRamp = ramp;
 }
 
-void QgsHeatmapRenderer::setLegendSettings( const QgsColorRampLegendNodeSettings &settings )
-{
-  mLegendSettings = settings;
-}
+void QgsHeatmapRenderer::setLegendSettings( const QgsColorRampLegendNodeSettings &settings ) { mLegendSettings = settings; }

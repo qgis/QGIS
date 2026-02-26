@@ -302,10 +302,20 @@ class CORE_EXPORT QgsLinearReferencingSymbolLayer : public QgsLineSymbolLayer
     const QgsMapUnitScale &averageAngleMapUnitScale() const { return mAverageAngleLengthMapUnitScale; }
 
   private:
-    void renderPolylineInterval( const QgsLineString *line, QgsSymbolRenderContext &context, double skipMultiples, const QPointF &labelOffsetPainterUnits, double averageAngleLengthPainterUnits, bool showMarker );
-    void renderPolylineVertex( const QgsLineString *line, QgsSymbolRenderContext &context, double skipMultiples, const QPointF &labelOffsetPainterUnits, double averageAngleLengthPainterUnits, bool showMarker );
-    void renderGeometryPart( QgsSymbolRenderContext &context, const QgsAbstractGeometry *geometry, double labelOffsetPainterUnitsX, double labelOffsetPainterUnitsY, double skipMultiples, double averageAngleDistancePainterUnits, bool showMarker );
-    void renderLineString( QgsSymbolRenderContext &context, const QgsLineString *line, double labelOffsetPainterUnitsX, double labelOffsetPainterUnitsY, double skipMultiples, double averageAngleDistancePainterUnits, bool showMarker );
+    void renderPolylineInterval(
+      const QgsLineString *line, QgsSymbolRenderContext &context, double skipMultiples, const QPointF &labelOffsetPainterUnits, double averageAngleLengthPainterUnits, bool showMarker
+    );
+    void renderPolylineVertex(
+      const QgsLineString *line, QgsSymbolRenderContext &context, double skipMultiples, const QPointF &labelOffsetPainterUnits, double averageAngleLengthPainterUnits, bool showMarker
+    );
+    void renderGeometryPart(
+      QgsSymbolRenderContext &context, const QgsAbstractGeometry *geometry, double labelOffsetPainterUnitsX, double labelOffsetPainterUnitsY, double skipMultiples,
+      double averageAngleDistancePainterUnits, bool showMarker
+    );
+    void renderLineString(
+      QgsSymbolRenderContext &context, const QgsLineString *line, double labelOffsetPainterUnitsX, double labelOffsetPainterUnitsY, double skipMultiples, double averageAngleDistancePainterUnits,
+      bool showMarker
+    );
 
     static QPointF pointToPainter( QgsSymbolRenderContext &context, double x, double y, double z );
 
@@ -316,7 +326,7 @@ class CORE_EXPORT QgsLinearReferencingSymbolLayer : public QgsLineSymbolLayer
     double mSkipMultiplesOf = 0;
     bool mRotateLabels = true;
 
-    QPointF mLabelOffset{ 1, 0 };
+    QPointF mLabelOffset { 1, 0 };
     Qgis::RenderUnit mLabelOffsetUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mLabelOffsetMapUnitScale;
 
@@ -331,7 +341,6 @@ class CORE_EXPORT QgsLinearReferencingSymbolLayer : public QgsLineSymbolLayer
     QgsMapUnitScale mAverageAngleLengthMapUnitScale;
 
     QString mLabelProviderId;
-
 };
 
 #endif // QGSLINEARREFERENCINGSYMBOLLAYER_H

@@ -34,7 +34,6 @@ class QgsExpressionContextScope;
 class CORE_EXPORT QgsSymbolRenderContext
 {
   public:
-
     //TODO QGIS 5.0 - remove mapUnitScale and renderunit
 
     /**
@@ -48,7 +47,10 @@ class CORE_EXPORT QgsSymbolRenderContext
      * \param fields
      * \param mapUnitScale
      */
-    QgsSymbolRenderContext( QgsRenderContext &c, Qgis::RenderUnit u, qreal opacity = 1.0, bool selected = false, Qgis::SymbolRenderHints renderHints = Qgis::SymbolRenderHints(), const QgsFeature *f = nullptr, const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
+    QgsSymbolRenderContext(
+      QgsRenderContext &c, Qgis::RenderUnit u, qreal opacity = 1.0, bool selected = false, Qgis::SymbolRenderHints renderHints = Qgis::SymbolRenderHints(), const QgsFeature *f = nullptr,
+      const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale()
+    );
 
     ~QgsSymbolRenderContext();
 
@@ -243,7 +245,6 @@ class CORE_EXPORT QgsSymbolRenderContext
     void setPatchShape( const QgsLegendPatchShape &shape );
 
   private:
-
 #ifdef SIP_RUN
     QgsSymbolRenderContext( const QgsSymbolRenderContext &rh ) SIP_FORCE;
 #endif
@@ -265,4 +266,3 @@ class CORE_EXPORT QgsSymbolRenderContext
 
 
 #endif // QGSSYMBOLRENDERCONTEXT_H
-

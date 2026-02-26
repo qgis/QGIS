@@ -19,7 +19,6 @@ features into different ranges.
 #include "qgsgraduatedsymbolrenderer.h"
 %End
   public:
-
     QgsGraduatedSymbolRenderer( const QString &attrName = QString(), const QgsRangeList &ranges = QgsRangeList() );
 
     ~QgsGraduatedSymbolRenderer();
@@ -179,7 +178,7 @@ Returns if we want to classify symmetric around a given value
    Use :py:func:`~QgsGraduatedSymbolRenderer.classficationMethod` instead.
 %End
 
-  void setUseSymmetricMode( bool useSymmetricMode ) /Deprecated="Since 3.10. Use classficationMethod() instead."/;
+ void setUseSymmetricMode( bool useSymmetricMode ) /Deprecated="Since 3.10. Use classficationMethod() instead."/;
 %Docstring
 Set if we want to classify symmetric around a given value
 
@@ -335,17 +334,11 @@ interval
 %End
 
 
- static QgsGraduatedSymbolRenderer *createRenderer( QgsVectorLayer *vlayer,
-        const QString &attrName,
-        int classes,
-        Mode mode,
-        QgsSymbol *symbol /Transfer/,
-        QgsColorRamp *ramp /Transfer/,
-        const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat(),
-        bool useSymmetricMode = false,
-        double symmetryPoint = 0.0,
-        const QStringList &listForCboPrettyBreaks = QStringList(),
-        bool astride = false ) /Deprecated="Since 3.10. "/;
+ static QgsGraduatedSymbolRenderer *createRenderer(
+      QgsVectorLayer *vlayer, const QString &attrName, int classes, Mode mode, QgsSymbol *symbol /Transfer/, QgsColorRamp *ramp /Transfer/,
+      const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat(), bool useSymmetricMode = false, double symmetryPoint = 0.0,
+      const QStringList &listForCboPrettyBreaks = QStringList(), bool astride = false
+    ) /Deprecated="Since 3.10. "/;
 %Docstring
 Creates a new graduated renderer.
 

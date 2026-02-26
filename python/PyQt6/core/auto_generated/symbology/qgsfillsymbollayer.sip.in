@@ -22,13 +22,10 @@ Renders polygons using a single fill and stroke color.
 #include "qgsfillsymbollayer.h"
 %End
   public:
-    QgsSimpleFillSymbolLayer( const QColor &color = DEFAULT_SIMPLEFILL_COLOR,
-                              Qt::BrushStyle style = DEFAULT_SIMPLEFILL_STYLE,
-                              const QColor &strokeColor = DEFAULT_SIMPLEFILL_BORDERCOLOR,
-                              Qt::PenStyle strokeStyle = DEFAULT_SIMPLEFILL_BORDERSTYLE,
-                              double strokeWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH,
-                              Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEFILL_JOINSTYLE
-                            );
+    QgsSimpleFillSymbolLayer(
+      const QColor &color = DEFAULT_SIMPLEFILL_COLOR, Qt::BrushStyle style = DEFAULT_SIMPLEFILL_STYLE, const QColor &strokeColor = DEFAULT_SIMPLEFILL_BORDERCOLOR,
+      Qt::PenStyle strokeStyle = DEFAULT_SIMPLEFILL_BORDERSTYLE, double strokeWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH, Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEFILL_JOINSTYLE
+    );
 
     ~QgsSimpleFillSymbolLayer();
 
@@ -189,7 +186,7 @@ Returns the map unit scale for the fill's offset.
 
     virtual Qt::BrushStyle dxfBrushStyle() const;
 
-    virtual QImage toTiledPatternImage( ) const;
+    virtual QImage toTiledPatternImage() const;
 
 
   protected:
@@ -208,14 +205,11 @@ A fill symbol layer which draws a smooth color gradient over a polygon.
 #include "qgsfillsymbollayer.h"
 %End
   public:
-
-    QgsGradientFillSymbolLayer( const QColor &color = DEFAULT_SIMPLEFILL_COLOR,
-                                const QColor &color2 = Qt::white,
-                                Qgis::GradientColorSource gradientColorType = Qgis::GradientColorSource::SimpleTwoColor,
-                                Qgis::GradientType gradientType = Qgis::GradientType::Linear,
-                                Qgis::SymbolCoordinateReference coordinateMode = Qgis::SymbolCoordinateReference::Feature,
-                                Qgis::GradientSpread gradientSpread = Qgis::GradientSpread::Pad
-                              );
+    QgsGradientFillSymbolLayer(
+      const QColor &color = DEFAULT_SIMPLEFILL_COLOR, const QColor &color2 = Qt::white, Qgis::GradientColorSource gradientColorType = Qgis::GradientColorSource::SimpleTwoColor,
+      Qgis::GradientType gradientType = Qgis::GradientType::Linear, Qgis::SymbolCoordinateReference coordinateMode = Qgis::SymbolCoordinateReference::Feature,
+      Qgis::GradientSpread gradientSpread = Qgis::GradientSpread::Pad
+    );
 %Docstring
 Constructor for QgsGradientFillSymbolLayer.
 %End
@@ -505,10 +499,10 @@ symbol to the inside.
 #include "qgsfillsymbollayer.h"
 %End
   public:
-
-    QgsShapeburstFillSymbolLayer( const QColor &color = DEFAULT_SIMPLEFILL_COLOR, const QColor &color2 = Qt::white,
-                                  Qgis::GradientColorSource colorType = Qgis::GradientColorSource::SimpleTwoColor,
-                                  int blurRadius = 0, bool useWholeShape = true, double maxDistance = 5 );
+    QgsShapeburstFillSymbolLayer(
+      const QColor &color = DEFAULT_SIMPLEFILL_COLOR, const QColor &color2 = Qt::white, Qgis::GradientColorSource colorType = Qgis::GradientColorSource::SimpleTwoColor, int blurRadius = 0,
+      bool useWholeShape = true, double maxDistance = 5
+    );
 %Docstring
 Constructor for QgsShapeburstFillSymbolLayer.
 %End
@@ -826,7 +820,7 @@ Returns the units used for the offset of the shapeburst fill.
     QgsShapeburstFillSymbolLayer( const QgsShapeburstFillSymbolLayer &other );
 };
 
-class QgsImageFillSymbolLayer: QgsFillSymbolLayer /Abstract/
+class QgsImageFillSymbolLayer : QgsFillSymbolLayer /Abstract/
 {
 %Docstring(signature="appended")
 Base class for fill symbol layers which fill polygons with a repeated
@@ -837,7 +831,6 @@ image.
 #include "qgsfillsymbollayer.h"
 %End
   public:
-
     QgsImageFillSymbolLayer();
     ~QgsImageFillSymbolLayer();
 
@@ -939,7 +932,7 @@ render context's texture origin.
     QgsImageFillSymbolLayer( const QgsImageFillSymbolLayer &other );
 };
 
-class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
+class QgsRasterFillSymbolLayer : QgsImageFillSymbolLayer
 {
 %Docstring(signature="appended")
 A fill symbol layer which fills polygons with a repeated raster image.
@@ -949,7 +942,6 @@ A fill symbol layer which fills polygons with a repeated raster image.
 #include "qgsfillsymbollayer.h"
 %End
   public:
-
     QgsRasterFillSymbolLayer( const QString &imageFilePath = QString() );
 %Docstring
 Constructor for QgsRasterFillSymbolLayer, using a raster fill from the
@@ -1324,14 +1316,14 @@ Returns the map unit scale for the image's width and height.
 %End
 
   protected:
-
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context );
 
     virtual bool applyBrushTransformFromContext( QgsSymbolRenderContext *context = 0 ) const;
 
+
 };
 
-class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
+class QgsSVGFillSymbolLayer : QgsImageFillSymbolLayer
 {
 %Docstring(signature="appended")
 A fill symbol layer which fills polygons with a repeated SVG file.
@@ -1341,7 +1333,6 @@ A fill symbol layer which fills polygons with a repeated SVG file.
 #include "qgsfillsymbollayer.h"
 %End
   public:
-
     QgsSVGFillSymbolLayer( const QString &svgFilePath, double width = 20, double rotation = 0.0 );
 %Docstring
 Constructor for QgsSVGFillSymbolLayer, using the SVG picture at the
@@ -1644,13 +1635,12 @@ Sets the dynamic SVG parameters
 %End
 
   protected:
-
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context );
 
 
 };
 
-class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
+class QgsLinePatternFillSymbolLayer : QgsImageFillSymbolLayer
 {
 %Docstring(signature="appended")
 A symbol fill consisting of repeated parallel lines.
@@ -1691,7 +1681,7 @@ caller takes ownership of the returned object.
 
     virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
-    virtual QImage toTiledPatternImage( ) const;
+    virtual QImage toTiledPatternImage() const;
 
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
 
@@ -1945,7 +1935,6 @@ the edges of shapes.
 
 
   protected:
-
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context );
 
 
@@ -1953,7 +1942,7 @@ the edges of shapes.
     QgsLinePatternFillSymbolLayer( const QgsLinePatternFillSymbolLayer &other );
 };
 
-class QgsPointPatternFillSymbolLayer: QgsImageFillSymbolLayer
+class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
 {
 %Docstring(signature="appended")
 A fill symbol layer which fills polygon shapes with repeating marker
@@ -1997,7 +1986,7 @@ Caller takes ownership of the returned symbol layer.
 
     virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
-    virtual QImage toTiledPatternImage( ) const;
+    virtual QImage toTiledPatternImage() const;
 
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
 
@@ -2671,7 +2660,6 @@ polygons.
 #include "qgsfillsymbollayer.h"
 %End
   public:
-
     QgsRandomMarkerFillSymbolLayer( int pointCount = 10, Qgis::PointCountMethod method = Qgis::PointCountMethod::Absolute, double densityArea = 250.0, unsigned long seed = 0 );
 %Docstring
 Constructor for QgsRandomMarkerFillSymbolLayer, with the specified
@@ -3002,7 +2990,6 @@ boundary only.
 
 
   protected:
-
 
 
   private:

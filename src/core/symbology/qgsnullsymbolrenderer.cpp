@@ -26,20 +26,13 @@ using namespace Qt::StringLiterals;
 
 QgsNullSymbolRenderer::QgsNullSymbolRenderer()
   : QgsFeatureRenderer( u"nullSymbol"_s )
-{
-}
+{}
 
 QgsNullSymbolRenderer::~QgsNullSymbolRenderer() = default;
 
-QgsSymbol *QgsNullSymbolRenderer::symbolForFeature( const QgsFeature &, QgsRenderContext & ) const
-{
-  return nullptr;
-}
+QgsSymbol *QgsNullSymbolRenderer::symbolForFeature( const QgsFeature &, QgsRenderContext & ) const { return nullptr; }
 
-QgsSymbol *QgsNullSymbolRenderer::originalSymbolForFeature( const QgsFeature &, QgsRenderContext & ) const
-{
-  return nullptr;
-}
+QgsSymbol *QgsNullSymbolRenderer::originalSymbolForFeature( const QgsFeature &, QgsRenderContext & ) const { return nullptr; }
 
 bool QgsNullSymbolRenderer::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
 {
@@ -49,9 +42,7 @@ bool QgsNullSymbolRenderer::renderFeature( const QgsFeature &feature, QgsRenderC
     return true;
   }
 
-  if ( !feature.hasGeometry() ||
-       feature.geometry().type() == Qgis::GeometryType::Null ||
-       feature.geometry().type() == Qgis::GeometryType::Unknown )
+  if ( !feature.hasGeometry() || feature.geometry().type() == Qgis::GeometryType::Null || feature.geometry().type() == Qgis::GeometryType::Unknown )
     return true;
 
   if ( !mSymbol )
@@ -82,15 +73,9 @@ bool QgsNullSymbolRenderer::willRenderFeature( const QgsFeature &, QgsRenderCont
   return true;
 }
 
-QSet<QString> QgsNullSymbolRenderer::usedAttributes( const QgsRenderContext & ) const
-{
-  return QSet<QString>();
-}
+QSet<QString> QgsNullSymbolRenderer::usedAttributes( const QgsRenderContext & ) const { return QSet<QString>(); }
 
-QString QgsNullSymbolRenderer::dump() const
-{
-  return u"NULL"_s;
-}
+QString QgsNullSymbolRenderer::dump() const { return u"NULL"_s; }
 
 QgsFeatureRenderer *QgsNullSymbolRenderer::clone() const
 {
@@ -99,10 +84,7 @@ QgsFeatureRenderer *QgsNullSymbolRenderer::clone() const
   return r;
 }
 
-QgsSymbolList QgsNullSymbolRenderer::symbols( QgsRenderContext & ) const
-{
-  return QgsSymbolList();
-}
+QgsSymbolList QgsNullSymbolRenderer::symbols( QgsRenderContext & ) const { return QgsSymbolList(); }
 
 QgsFeatureRenderer *QgsNullSymbolRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {

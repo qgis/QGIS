@@ -44,15 +44,15 @@ E.g:
 #include "qgssvgcache.h"
 %End
   public:
-
     QgsSvgCache( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSvgCache.
 %End
 
-    QImage svgAsImage( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                       double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio = 0, bool blocking = false,
-                       const QMap<QString, QString> &parameters = QMap<QString, QString>() );
+    QImage svgAsImage(
+      const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth, double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio = 0, bool blocking = false,
+      const QMap<QString, QString> &parameters = QMap<QString, QString>()
+    );
 %Docstring
 Returns an SVG drawing as a QImage.
 
@@ -75,9 +75,10 @@ Returns an SVG drawing as a QImage.
    application) or crashes will result. Only for use in external scripts or QGIS server.
 %End
 
-    QPicture svgAsPicture( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor, bool forceVectorOutput = false, double fixedAspectRatio = 0, bool blocking = false,
-                           const QMap<QString, QString> &parameters = QMap<QString, QString>() );
+    QPicture svgAsPicture(
+      const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth, double widthScaleFactor, bool forceVectorOutput = false, double fixedAspectRatio = 0,
+      bool blocking = false, const QMap<QString, QString> &parameters = QMap<QString, QString>()
+    );
 %Docstring
 Returns an SVG drawing as a QPicture.
 
@@ -107,8 +108,10 @@ Returns an SVG drawing as a QPicture.
    application) or crashes will result. Only for use in external scripts or QGIS server.
 %End
 
-    QSizeF svgViewboxSize( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false, const QMap<QString, QString> &parameters = QMap<QString, QString>() );
+    QSizeF svgViewboxSize(
+      const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth, double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false,
+      const QMap<QString, QString> &parameters = QMap<QString, QString>()
+    );
 %Docstring
 Calculates the viewbox size of a (possibly cached) SVG file.
 
@@ -132,8 +135,9 @@ Calculates the viewbox size of a (possibly cached) SVG file.
    application) or crashes will result. Only for use in external scripts or QGIS server.
 %End
 
-    void containsParams( const QString &path, bool &hasFillParam, QColor &defaultFillColor, bool &hasStrokeParam, QColor &defaultStrokeColor, bool &hasStrokeWidthParam,
-                         double &defaultStrokeWidth, bool blocking = false ) const;
+    void containsParams(
+      const QString &path, bool &hasFillParam, QColor &defaultFillColor, bool &hasStrokeParam, QColor &defaultStrokeColor, bool &hasStrokeWidthParam, double &defaultStrokeWidth, bool blocking = false
+    ) const;
 %Docstring
 Tests if an SVG file contains parameters for fill, stroke color, stroke
 width. If yes, possible default values are returned. If there are
@@ -144,12 +148,11 @@ GUI based applications (like the main QGIS application) or crashes will
 result. Only for use in external scripts or QGIS server.
 %End
 
-    void containsParams( const QString &path, bool &hasFillParam, bool &hasDefaultFillParam, QColor &defaultFillColor,
-                         bool &hasFillOpacityParam, bool &hasDefaultFillOpacity, double &defaultFillOpacity,
-                         bool &hasStrokeParam, bool &hasDefaultStrokeColor, QColor &defaultStrokeColor,
-                         bool &hasStrokeWidthParam, bool &hasDefaultStrokeWidth, double &defaultStrokeWidth,
-                         bool &hasStrokeOpacityParam, bool &hasDefaultStrokeOpacity, double &defaultStrokeOpacity,
-                         bool blocking = false ) const /PyName=containsParamsV3/;
+    void containsParams(
+      const QString &path, bool &hasFillParam, bool &hasDefaultFillParam, QColor &defaultFillColor, bool &hasFillOpacityParam, bool &hasDefaultFillOpacity, double &defaultFillOpacity,
+      bool &hasStrokeParam, bool &hasDefaultStrokeColor, QColor &defaultStrokeColor, bool &hasStrokeWidthParam, bool &hasDefaultStrokeWidth, double &defaultStrokeWidth, bool &hasStrokeOpacityParam,
+      bool &hasDefaultStrokeOpacity, double &defaultStrokeOpacity, bool blocking = false
+    ) const /PyName=containsParamsV3/;
 %Docstring
 Tests if an SVG file contains parameters for fill, stroke color, stroke
 width. If yes, possible default values are returned. If there are
@@ -216,8 +219,10 @@ loaded in the same thread to ensure provided the remote content.
    or crashes will result. Only for use in external scripts or QGIS server.
 %End
 
-    QByteArray svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false, const QMap<QString, QString> &parameters = QMap<QString, QString>() );
+    QByteArray svgContent(
+      const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth, double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false,
+      const QMap<QString, QString> &parameters = QMap<QString, QString>()
+    );
 %Docstring
 Gets the SVG content corresponding to the given ``path``.
 
@@ -242,7 +247,7 @@ image.
 
   signals:
 
- void statusChanged( const QString  &statusQString ) /Deprecated="Since 3.6. No longer emitted."/;
+ void statusChanged( const QString &statusQString ) /Deprecated="Since 3.6. No longer emitted."/;
 %Docstring
 Emit a signal to be caught by qgisapp and display a msg on status bar.
 
@@ -260,7 +265,6 @@ Emitted when the cache has finished retrieving an SVG file from a remote
 %End
 
   protected:
-
     virtual bool checkReply( QNetworkReply *reply, const QString &path ) const;
 
 

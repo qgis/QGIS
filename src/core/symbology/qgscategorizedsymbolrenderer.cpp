@@ -68,8 +68,7 @@ QgsRendererCategory::QgsRendererCategory( const QgsRendererCategory &cat )
   , mLabel( cat.mLabel )
   , mRender( cat.mRender )
   , mUuid( cat.mUuid )
-{
-}
+{}
 
 QgsRendererCategory &QgsRendererCategory::operator=( QgsRendererCategory cat )
 {
@@ -86,62 +85,36 @@ QgsRendererCategory &QgsRendererCategory::operator=( QgsRendererCategory cat )
 
 QgsRendererCategory::~QgsRendererCategory() = default;
 
-QString QgsRendererCategory::uuid() const
-{
-  return mUuid;
-}
+QString QgsRendererCategory::uuid() const { return mUuid; }
 
-QVariant QgsRendererCategory::value() const
-{
-  return mValue;
-}
+QVariant QgsRendererCategory::value() const { return mValue; }
 
-QgsSymbol *QgsRendererCategory::symbol() const
-{
-  return mSymbol.get();
-}
+QgsSymbol *QgsRendererCategory::symbol() const { return mSymbol.get(); }
 
-QString QgsRendererCategory::label() const
-{
-  return mLabel;
-}
+QString QgsRendererCategory::label() const { return mLabel; }
 
-bool QgsRendererCategory::renderState() const
-{
-  return mRender;
-}
+bool QgsRendererCategory::renderState() const { return mRender; }
 
-void QgsRendererCategory::setValue( const QVariant &value )
-{
-  mValue = value;
-}
+void QgsRendererCategory::setValue( const QVariant &value ) { mValue = value; }
 
 void QgsRendererCategory::setSymbol( QgsSymbol *s )
 {
-  if ( mSymbol.get() != s ) mSymbol.reset( s );
+  if ( mSymbol.get() != s )
+    mSymbol.reset( s );
 }
 
-void QgsRendererCategory::setLabel( const QString &label )
-{
-  mLabel = label;
-}
+void QgsRendererCategory::setLabel( const QString &label ) { mLabel = label; }
 
-void QgsRendererCategory::setRenderState( bool render )
-{
-  mRender = render;
-}
+void QgsRendererCategory::setRenderState( bool render ) { mRender = render; }
 
-QString QgsRendererCategory::dump() const
-{
-  return u"%1::%2::%3:%4\n"_s.arg( mValue.toString(), mLabel, mSymbol->dump() ).arg( mRender );
-}
+QString QgsRendererCategory::dump() const { return u"%1::%2::%3:%4\n"_s.arg( mValue.toString(), mLabel, mSymbol->dump() ).arg( mRender ); }
 
 void QgsRendererCategory::toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const
 {
   if ( !mSymbol.get() || props.value( u"attribute"_s, QString() ).toString().isEmpty() )
     return;
 
-  QString attrName = props[ u"attribute"_s].toString();
+  QString attrName = props[u"attribute"_s].toString();
 
   QgsSldExportContext context;
   context.setExtraProperties( props );
@@ -166,9 +139,7 @@ bool QgsRendererCategory::toSld( QDomDocument &doc, QDomElement &element, const 
   }
   else if ( attrExpression.isField() )
   {
-    attrName = QgsExpression::quotedColumnRef(
-                 qgis::down_cast<const QgsExpressionNodeColumnRef *>( attrExpression.rootNode() )->name()
-               );
+    attrName = QgsExpression::quotedColumnRef( qgis::down_cast<const QgsExpressionNodeColumnRef *>( attrExpression.rootNode() )->name() );
   }
 
   QDomElement ruleElem = doc.createElement( u"se:Rule"_s );
@@ -201,8 +172,7 @@ bool QgsRendererCategory::toSld( QDomDocument &doc, QDomElement &element, const 
       {
         valuesList << QgsExpression::quotedValue( v );
       }
-      filterFunc = u"%1 IN (%2)"_s.arg( attrName,
-                                        valuesList.join( ',' ) );
+      filterFunc = u"%1 IN (%2)"_s.arg( attrName, valuesList.join( ',' ) );
     }
   }
   else if ( QgsVariantUtils::isNull( mValue ) || mValue.toString().isEmpty() )
@@ -293,10 +263,7 @@ void QgsCategorizedSymbolRenderer::rebuildHash()
   }
 }
 
-QgsSymbol *QgsCategorizedSymbolRenderer::skipRender()
-{
-  return nullptr;
-}
+QgsSymbol *QgsCategorizedSymbolRenderer::skipRender() { return nullptr; }
 
 QgsSymbol *QgsCategorizedSymbolRenderer::symbolForValue( const QVariant &value ) const
 {
@@ -328,10 +295,7 @@ QgsSymbol *QgsCategorizedSymbolRenderer::symbolForValue( const QVariant &value, 
   return *it;
 }
 
-QgsSymbol *QgsCategorizedSymbolRenderer::symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
-{
-  return originalSymbolForFeature( feature, context );
-}
+QgsSymbol *QgsCategorizedSymbolRenderer::symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const { return originalSymbolForFeature( feature, context ); }
 
 QVariant QgsCategorizedSymbolRenderer::valueForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
@@ -447,25 +411,17 @@ bool QgsCategorizedSymbolRenderer::deleteCategory( int catIndex )
   return true;
 }
 
-void QgsCategorizedSymbolRenderer::deleteAllCategories()
-{
-  mCategories.clear();
-}
+void QgsCategorizedSymbolRenderer::deleteAllCategories() { mCategories.clear(); }
 
 void QgsCategorizedSymbolRenderer::moveCategory( int from, int to )
 {
-  if ( from < 0 || from >= mCategories.size() || to < 0 || to >= mCategories.size() ) return;
+  if ( from < 0 || from >= mCategories.size() || to < 0 || to >= mCategories.size() )
+    return;
   mCategories.move( from, to );
 }
 
-bool valueLessThan( const QgsRendererCategory &c1, const QgsRendererCategory &c2 )
-{
-  return qgsVariantLessThan( c1.value(), c2.value() );
-}
-bool valueGreaterThan( const QgsRendererCategory &c1, const QgsRendererCategory &c2 )
-{
-  return qgsVariantGreaterThan( c1.value(), c2.value() );
-}
+bool valueLessThan( const QgsRendererCategory &c1, const QgsRendererCategory &c2 ) { return qgsVariantLessThan( c1.value(), c2.value() ); }
+bool valueGreaterThan( const QgsRendererCategory &c1, const QgsRendererCategory &c2 ) { return qgsVariantGreaterThan( c1.value(), c2.value() ); }
 
 void QgsCategorizedSymbolRenderer::sortByValue( Qt::SortOrder order )
 {
@@ -479,15 +435,9 @@ void QgsCategorizedSymbolRenderer::sortByValue( Qt::SortOrder order )
   }
 }
 
-bool labelLessThan( const QgsRendererCategory &c1, const QgsRendererCategory &c2 )
-{
-  return QString::localeAwareCompare( c1.label(), c2.label() ) < 0;
-}
+bool labelLessThan( const QgsRendererCategory &c1, const QgsRendererCategory &c2 ) { return QString::localeAwareCompare( c1.label(), c2.label() ) < 0; }
 
-bool labelGreaterThan( const QgsRendererCategory &c1, const QgsRendererCategory &c2 )
-{
-  return QString::localeAwareCompare( c1.label(), c2.label() ) > 0;
-}
+bool labelGreaterThan( const QgsRendererCategory &c1, const QgsRendererCategory &c2 ) { return QString::localeAwareCompare( c1.label(), c2.label() ) > 0; }
 
 void QgsCategorizedSymbolRenderer::sortByLabel( Qt::SortOrder order )
 {
@@ -608,7 +558,7 @@ bool QgsCategorizedSymbolRenderer::toSld( QDomDocument &doc, QDomElement &elemen
 {
   const QVariantMap oldProps = context.extraProperties();
   QVariantMap newProps = oldProps;
-  newProps[ u"attribute"_s] = mAttrName;
+  newProps[u"attribute"_s] = mAttrName;
   context.setExtraProperties( newProps );
 
   // create a Rule for each range
@@ -766,8 +716,7 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
   QgsCategoryList cats;
 
   // Value from string (long, ulong, double and string)
-  const auto valueFromString = []( const QString & value, const QString & valueType ) -> QVariant
-  {
+  const auto valueFromString = []( const QString &value, const QString &valueType ) -> QVariant {
     if ( valueType == "double"_L1 )
     {
       bool ok;
@@ -820,7 +769,7 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
       QVariant value;
       if ( catElem.hasAttribute( u"value"_s ) )
       {
-        value = valueFromString( catElem.attribute( u"value"_s ), catElem.attribute( u"type"_s, QString() ) ) ;
+        value = valueFromString( catElem.attribute( u"value"_s ), catElem.attribute( u"type"_s, QString() ) );
       }
       else
       {
@@ -903,15 +852,11 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
   {
     for ( const QgsRendererCategory &cat : r->mCategories )
     {
-      convertSymbolSizeScale( cat.symbol(),
-                              QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( u"scalemethod"_s ) ),
-                              sizeScaleElem.attribute( u"field"_s ) );
+      convertSymbolSizeScale( cat.symbol(), QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( u"scalemethod"_s ) ), sizeScaleElem.attribute( u"field"_s ) );
     }
     if ( r->mSourceSymbol && r->mSourceSymbol->type() == Qgis::SymbolType::Marker )
     {
-      convertSymbolSizeScale( r->mSourceSymbol.get(),
-                              QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( u"scalemethod"_s ) ),
-                              sizeScaleElem.attribute( u"field"_s ) );
+      convertSymbolSizeScale( r->mSourceSymbol.get(), QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( u"scalemethod"_s ) ), sizeScaleElem.attribute( u"field"_s ) );
     }
   }
 
@@ -934,8 +879,7 @@ QDomElement QgsCategorizedSymbolRenderer::save( QDomDocument &doc, const QgsRead
 
   // String for type
   // We just need string, bool, and three numeric types: double, ulong and long for unsigned, signed and float/double
-  const auto stringForType = []( const QMetaType::Type type ) -> QString
-  {
+  const auto stringForType = []( const QMetaType::Type type ) -> QString {
     if ( type == QMetaType::Type::QChar || type == QMetaType::Type::Int || type == QMetaType::Type::LongLong )
     {
       return u"long"_s;
@@ -946,7 +890,7 @@ QDomElement QgsCategorizedSymbolRenderer::save( QDomDocument &doc, const QgsRead
     }
     else if ( type == QMetaType::Type::Double )
     {
-      return u"double"_s ;
+      return u"double"_s;
     }
     else if ( type == QMetaType::Type::Bool )
     {
@@ -1056,10 +1000,7 @@ QgsLegendSymbolList QgsCategorizedSymbolRenderer::baseLegendSymbolItems() const
   return lst;
 }
 
-QString QgsCategorizedSymbolRenderer::displayString( const QVariant &v, int precision )
-{
-  return QgsVariantUtils::displayString( v, precision );
-}
+QString QgsCategorizedSymbolRenderer::displayString( const QVariant &v, int precision ) { return QgsVariantUtils::displayString( v, precision ); }
 
 QgsLegendSymbolList QgsCategorizedSymbolRenderer::legendSymbolItems() const
 {
@@ -1202,35 +1143,17 @@ QString QgsCategorizedSymbolRenderer::legendKeyToExpression( const QString &key,
   }
 }
 
-QgsSymbol *QgsCategorizedSymbolRenderer::sourceSymbol()
-{
-  return mSourceSymbol.get();
-}
+QgsSymbol *QgsCategorizedSymbolRenderer::sourceSymbol() { return mSourceSymbol.get(); }
 
-const QgsSymbol *QgsCategorizedSymbolRenderer::sourceSymbol() const
-{
-  return mSourceSymbol.get();
-}
+const QgsSymbol *QgsCategorizedSymbolRenderer::sourceSymbol() const { return mSourceSymbol.get(); }
 
-void QgsCategorizedSymbolRenderer::setSourceSymbol( QgsSymbol *sym )
-{
-  mSourceSymbol.reset( sym );
-}
+void QgsCategorizedSymbolRenderer::setSourceSymbol( QgsSymbol *sym ) { mSourceSymbol.reset( sym ); }
 
-QgsColorRamp *QgsCategorizedSymbolRenderer::sourceColorRamp()
-{
-  return mSourceColorRamp.get();
-}
+QgsColorRamp *QgsCategorizedSymbolRenderer::sourceColorRamp() { return mSourceColorRamp.get(); }
 
-const QgsColorRamp *QgsCategorizedSymbolRenderer::sourceColorRamp() const
-{
-  return mSourceColorRamp.get();
-}
+const QgsColorRamp *QgsCategorizedSymbolRenderer::sourceColorRamp() const { return mSourceColorRamp.get(); }
 
-void QgsCategorizedSymbolRenderer::setSourceColorRamp( QgsColorRamp *ramp )
-{
-  mSourceColorRamp.reset( ramp );
-}
+void QgsCategorizedSymbolRenderer::setSourceColorRamp( QgsColorRamp *ramp ) { mSourceColorRamp.reset( ramp ); }
 
 void QgsCategorizedSymbolRenderer::updateColorRamp( QgsColorRamp *ramp )
 {
@@ -1267,10 +1190,7 @@ void QgsCategorizedSymbolRenderer::updateSymbols( QgsSymbol *sym )
   setSourceSymbol( sym->clone() );
 }
 
-bool QgsCategorizedSymbolRenderer::legendSymbolItemsCheckable() const
-{
-  return true;
-}
+bool QgsCategorizedSymbolRenderer::legendSymbolItemsCheckable() const { return true; }
 
 bool QgsCategorizedSymbolRenderer::legendSymbolItemChecked( const QString &key )
 {
@@ -1476,17 +1396,13 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::convertFromRenderer(
   return r.release();
 }
 
-void QgsCategorizedSymbolRenderer::setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings )
-{
-  mDataDefinedSizeLegend.reset( settings );
-}
+void QgsCategorizedSymbolRenderer::setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings ) { mDataDefinedSizeLegend.reset( settings ); }
 
-QgsDataDefinedSizeLegend *QgsCategorizedSymbolRenderer::dataDefinedSizeLegend() const
-{
-  return mDataDefinedSizeLegend.get();
-}
+QgsDataDefinedSizeLegend *QgsCategorizedSymbolRenderer::dataDefinedSizeLegend() const { return mDataDefinedSizeLegend.get(); }
 
-int QgsCategorizedSymbolRenderer::matchToSymbols( QgsStyle *style, Qgis::SymbolType type, QVariantList &unmatchedCategories, QStringList &unmatchedSymbols, const bool caseSensitive, const bool useTolerantMatch )
+int QgsCategorizedSymbolRenderer::matchToSymbols(
+  QgsStyle *style, Qgis::SymbolType type, QVariantList &unmatchedCategories, QStringList &unmatchedSymbols, const bool caseSensitive, const bool useTolerantMatch
+)
 {
   if ( !style )
     return 0;
@@ -1573,7 +1489,7 @@ QgsCategoryList QgsCategorizedSymbolRenderer::createCategories( const QList<QVar
           const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
           categoryName = formatter->representValue( layer, fieldIdx, setup.config(), QVariant(), value );
         }
-        cats.append( QgsRendererCategory( value, newSymbol,  categoryName, true ) );
+        cats.append( QgsRendererCategory( value, newSymbol, categoryName, true ) );
       }
     }
   }

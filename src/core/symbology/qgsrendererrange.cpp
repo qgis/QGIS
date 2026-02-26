@@ -72,70 +72,36 @@ QgsRendererRange &QgsRendererRange::operator=( QgsRendererRange range )
 
 bool QgsRendererRange::operator<( const QgsRendererRange &other ) const
 {
-  return
-    lowerValue() < other.lowerValue() ||
-    ( qgsDoubleNear( lowerValue(), other.lowerValue() ) && upperValue() < other.upperValue() );
+  return lowerValue() < other.lowerValue() || ( qgsDoubleNear( lowerValue(), other.lowerValue() ) && upperValue() < other.upperValue() );
 }
 
-QString QgsRendererRange::uuid() const
-{
-  return mUuid;
-}
+QString QgsRendererRange::uuid() const { return mUuid; }
 
-double QgsRendererRange::lowerValue() const
-{
-  return mLowerValue;
-}
+double QgsRendererRange::lowerValue() const { return mLowerValue; }
 
-double QgsRendererRange::upperValue() const
-{
-  return mUpperValue;
-}
+double QgsRendererRange::upperValue() const { return mUpperValue; }
 
-QgsSymbol *QgsRendererRange::symbol() const
-{
-  return mSymbol.get();
-}
+QgsSymbol *QgsRendererRange::symbol() const { return mSymbol.get(); }
 
-QString QgsRendererRange::label() const
-{
-  return mLabel;
-}
+QString QgsRendererRange::label() const { return mLabel; }
 
 void QgsRendererRange::setSymbol( QgsSymbol *s )
 {
-  if ( mSymbol.get() != s ) mSymbol.reset( s );
+  if ( mSymbol.get() != s )
+    mSymbol.reset( s );
 }
 
-void QgsRendererRange::setLabel( const QString &label )
-{
-  mLabel = label;
-}
+void QgsRendererRange::setLabel( const QString &label ) { mLabel = label; }
 
-void QgsRendererRange::setUpperValue( double upperValue )
-{
-  mUpperValue = upperValue;
-}
+void QgsRendererRange::setUpperValue( double upperValue ) { mUpperValue = upperValue; }
 
-void QgsRendererRange::setLowerValue( double lowerValue )
-{
-  mLowerValue = lowerValue;
-}
+void QgsRendererRange::setLowerValue( double lowerValue ) { mLowerValue = lowerValue; }
 
-bool QgsRendererRange::renderState() const
-{
-  return mRender;
-}
+bool QgsRendererRange::renderState() const { return mRender; }
 
-void QgsRendererRange::setRenderState( bool render )
-{
-  mRender = render;
-}
+void QgsRendererRange::setRenderState( bool render ) { mRender = render; }
 
-QString QgsRendererRange::dump() const
-{
-  return u"%1 - %2::%3::%4\n"_s.arg( mLowerValue ).arg( mUpperValue ).arg( mLabel, mSymbol ? mSymbol->dump() : u"(no symbol)"_s );
-}
+QString QgsRendererRange::dump() const { return u"%1 - %2::%3::%4\n"_s.arg( mLowerValue ).arg( mUpperValue ).arg( mLabel, mSymbol ? mSymbol->dump() : u"(no symbol)"_s ); }
 
 void QgsRendererRange::toSld( QDomDocument &doc, QDomElement &element, QVariantMap props, bool firstRange ) const
 {
@@ -165,11 +131,7 @@ bool QgsRendererRange::toSld( QDomDocument &doc, QDomElement &element, const QSt
   ruleElem.appendChild( descrElem );
 
   // create the ogc:Filter for the range
-  QString filterFunc = u"\"%1\" %2 %3 AND \"%1\" <= %4"_s
-                       .arg( attrName.replace( '\"', "\"\""_L1 ),
-                             firstRange ? u">="_s : u">"_s,
-                             qgsDoubleToString( mLowerValue ),
-                             qgsDoubleToString( mUpperValue ) );
+  QString filterFunc = u"\"%1\" %2 %3 AND \"%1\" <= %4"_s.arg( attrName.replace( '\"', "\"\""_L1 ), firstRange ? u">="_s : u">"_s, qgsDoubleToString( mLowerValue ), qgsDoubleToString( mUpperValue ) );
   QgsSymbolLayerUtils::createFunctionElement( doc, ruleElem, filterFunc, context );
 
   mSymbol->toSld( doc, ruleElem, context );
@@ -194,8 +156,7 @@ QgsRendererRangeLabelFormat::QgsRendererRangeLabelFormat()
   : mFormat( u"%1 - %2"_s )
   , mReTrailingZeroes( "[.,]?0*$" )
   , mReNegativeZero( "^\\-0(?:[.,]0*)?$" )
-{
-}
+{}
 
 QgsRendererRangeLabelFormat::QgsRendererRangeLabelFormat( const QString &format, int precision, bool trimTrailingZeroes )
   : mReTrailingZeroes( "[.,]?0*$" )
@@ -209,16 +170,10 @@ QgsRendererRangeLabelFormat::QgsRendererRangeLabelFormat( const QString &format,
 
 bool QgsRendererRangeLabelFormat::operator==( const QgsRendererRangeLabelFormat &other ) const
 {
-  return
-    format() == other.format() &&
-    precision() == other.precision() &&
-    trimTrailingZeroes() == other.trimTrailingZeroes();
+  return format() == other.format() && precision() == other.precision() && trimTrailingZeroes() == other.trimTrailingZeroes();
 }
 
-bool QgsRendererRangeLabelFormat::operator!=( const QgsRendererRangeLabelFormat &other ) const
-{
-  return !( *this == other );
-}
+bool QgsRendererRangeLabelFormat::operator!=( const QgsRendererRangeLabelFormat &other ) const { return !( *this == other ); }
 
 void QgsRendererRangeLabelFormat::setPrecision( int precision )
 {
@@ -235,10 +190,7 @@ void QgsRendererRangeLabelFormat::setPrecision( int precision )
   }
 }
 
-QString QgsRendererRangeLabelFormat::labelForRange( const QgsRendererRange &range ) const
-{
-  return labelForRange( range.lowerValue(), range.upperValue() );
-}
+QString QgsRendererRangeLabelFormat::labelForRange( const QgsRendererRange &range ) const { return labelForRange( range.lowerValue(), range.upperValue() ); }
 
 QString QgsRendererRangeLabelFormat::formatNumber( double value ) const
 {
@@ -273,11 +225,7 @@ QString QgsRendererRangeLabelFormat::labelForRange( double lower, double upper )
 
 void QgsRendererRangeLabelFormat::setFromDomElement( QDomElement &element )
 {
-  mFormat = element.attribute( u"format"_s,
-                               element.attribute( u"prefix"_s, u" "_s ) + "%1" +
-                               element.attribute( u"separator"_s, u" - "_s ) + "%2" +
-                               element.attribute( u"suffix"_s, u" "_s )
-                             );
+  mFormat = element.attribute( u"format"_s, element.attribute( u"prefix"_s, u" "_s ) + "%1" + element.attribute( u"separator"_s, u" - "_s ) + "%2" + element.attribute( u"suffix"_s, u" "_s ) );
   setPrecision( element.attribute( u"decimalplaces"_s, u"4"_s ).toInt() );
   mTrimTrailingZeroes = element.attribute( u"trimtrailingzeroes"_s, u"false"_s ) == "true"_L1;
 }
@@ -288,4 +236,3 @@ void QgsRendererRangeLabelFormat::saveToDomElement( QDomElement &element )
   element.setAttribute( u"decimalplaces"_s, mPrecision );
   element.setAttribute( u"trimtrailingzeroes"_s, mTrimTrailingZeroes ? u"true"_s : u"false"_s );
 }
-

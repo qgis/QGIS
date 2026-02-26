@@ -25,10 +25,11 @@ legend.
 #include "qgslegendsymbolitem.h"
 %End
   public:
-
     QgsLegendSymbolItem();
 
-    QgsLegendSymbolItem( QgsSymbol *symbol, const QString &label, const QString &ruleKey, bool checkable = false, int scaleMinDenom = -1, int scaleMaxDenom = -1, int level = 0, const QString &parentRuleKey = QString() );
+    QgsLegendSymbolItem(
+      QgsSymbol *symbol, const QString &label, const QString &ruleKey, bool checkable = false, int scaleMinDenom = -1, int scaleMaxDenom = -1, int level = 0, const QString &parentRuleKey = QString()
+    );
 %Docstring
 Construct item. Does not take ownership of symbol (makes internal clone)
 %End

@@ -51,7 +51,9 @@ using namespace Qt::StringLiterals;
 // QgsSvgCacheEntry
 //
 
-QgsSvgCacheEntry::QgsSvgCacheEntry( const QString &path, double size, double strokeWidth, double widthScaleFactor, const QColor &fill, const QColor &stroke, double fixedAspectRatio, const QMap<QString, QString> &parameters )
+QgsSvgCacheEntry::QgsSvgCacheEntry(
+  const QString &path, double size, double strokeWidth, double widthScaleFactor, const QColor &fill, const QColor &stroke, double fixedAspectRatio, const QMap<QString, QString> &parameters
+)
   : QgsAbstractContentCacheEntry( path )
   , size( size )
   , strokeWidth( strokeWidth )
@@ -60,22 +62,14 @@ QgsSvgCacheEntry::QgsSvgCacheEntry( const QString &path, double size, double str
   , fill( fill )
   , stroke( stroke )
   , parameters( parameters )
-{
-}
+{}
 
 bool QgsSvgCacheEntry::isEqual( const QgsAbstractContentCacheEntry *other ) const
 {
   const QgsSvgCacheEntry *otherSvg = dynamic_cast< const QgsSvgCacheEntry * >( other );
   // cheapest checks first!
-  if ( !otherSvg
-       || !qgsDoubleNear( otherSvg->fixedAspectRatio, fixedAspectRatio )
-       || !qgsDoubleNear( otherSvg->size, size )
-       || !qgsDoubleNear( otherSvg->strokeWidth, strokeWidth )
-       || !qgsDoubleNear( otherSvg->widthScaleFactor, widthScaleFactor )
-       || otherSvg->fill != fill
-       || otherSvg->stroke != stroke
-       || otherSvg->path != path
-       || otherSvg->parameters != parameters )
+  if ( !otherSvg || !qgsDoubleNear( otherSvg->fixedAspectRatio, fixedAspectRatio ) || !qgsDoubleNear( otherSvg->size, size ) || !qgsDoubleNear( otherSvg->strokeWidth, strokeWidth )
+       || !qgsDoubleNear( otherSvg->widthScaleFactor, widthScaleFactor ) || otherSvg->fill != fill || otherSvg->stroke != stroke || otherSvg->path != path || otherSvg->parameters != parameters )
     return false;
 
   return true;
@@ -95,10 +89,7 @@ int QgsSvgCacheEntry::dataSize() const
   return size;
 }
 
-void QgsSvgCacheEntry::dump() const
-{
-  QgsDebugMsgLevel( u"path: %1, size %2, width scale factor %3"_s.arg( path ).arg( size ).arg( widthScaleFactor ), 4 );
-}
+void QgsSvgCacheEntry::dump() const { QgsDebugMsgLevel( u"path: %1, size %2, width scale factor %3"_s.arg( path ).arg( size ).arg( widthScaleFactor ), 4 ); }
 ///@endcond
 
 
@@ -129,8 +120,10 @@ QgsSvgCache::QgsSvgCache( QObject *parent )
   connect( this, &QgsAbstractContentCacheBase::remoteContentFetched, this, &QgsSvgCache::remoteSvgFetched );
 }
 
-QImage QgsSvgCache::svgAsImage( const QString &file, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio, bool blocking, const QMap<QString, QString> &parameters )
+QImage QgsSvgCache::svgAsImage(
+  const QString &file, double size, const QColor &fill, const QColor &stroke, double strokeWidth, double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio, bool blocking,
+  const QMap<QString, QString> &parameters
+)
 {
   const QMutexLocker locker( &mMutex );
 
@@ -189,8 +182,10 @@ QImage QgsSvgCache::svgAsImage( const QString &file, double size, const QColor &
   return result;
 }
 
-QPicture QgsSvgCache::svgAsPicture( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                    double widthScaleFactor, bool forceVectorOutput, double fixedAspectRatio, bool blocking, const QMap<QString, QString> &parameters )
+QPicture QgsSvgCache::svgAsPicture(
+  const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth, double widthScaleFactor, bool forceVectorOutput, double fixedAspectRatio, bool blocking,
+  const QMap<QString, QString> &parameters
+)
 {
   const QMutexLocker locker( &mMutex );
 
@@ -213,8 +208,10 @@ QPicture QgsSvgCache::svgAsPicture( const QString &path, double size, const QCol
   return p;
 }
 
-QByteArray QgsSvgCache::svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                    double widthScaleFactor, double fixedAspectRatio, bool blocking, const QMap<QString, QString> &parameters, bool *isMissingImage )
+QByteArray QgsSvgCache::svgContent(
+  const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth, double widthScaleFactor, double fixedAspectRatio, bool blocking,
+  const QMap<QString, QString> &parameters, bool *isMissingImage
+)
 {
   const QMutexLocker locker( &mMutex );
 
@@ -223,8 +220,9 @@ QByteArray QgsSvgCache::svgContent( const QString &path, double size, const QCol
   return currentEntry->svgContent;
 }
 
-QSizeF QgsSvgCache::svgViewboxSize( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                    double widthScaleFactor, double fixedAspectRatio, bool blocking, const QMap<QString, QString> &parameters )
+QSizeF QgsSvgCache::svgViewboxSize(
+  const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth, double widthScaleFactor, double fixedAspectRatio, bool blocking, const QMap<QString, QString> &parameters
+)
 {
   const QMutexLocker locker( &mMutex );
 
@@ -232,8 +230,9 @@ QSizeF QgsSvgCache::svgViewboxSize( const QString &path, double size, const QCol
   return currentEntry->viewboxSize;
 }
 
-void QgsSvgCache::containsParams( const QString &path, bool &hasFillParam, QColor &defaultFillColor, bool &hasStrokeParam, QColor &defaultStrokeColor,
-                                  bool &hasStrokeWidthParam, double &defaultStrokeWidth, bool blocking ) const
+void QgsSvgCache::containsParams(
+  const QString &path, bool &hasFillParam, QColor &defaultFillColor, bool &hasStrokeParam, QColor &defaultStrokeColor, bool &hasStrokeWidthParam, double &defaultStrokeWidth, bool blocking
+) const
 {
   bool hasDefaultFillColor = false;
   bool hasFillOpacityParam = false;
@@ -245,21 +244,17 @@ void QgsSvgCache::containsParams( const QString &path, bool &hasFillParam, QColo
   bool hasDefaultStrokeOpacity = false;
   double defaultStrokeOpacity = 1.0;
 
-  containsParams( path, hasFillParam, hasDefaultFillColor, defaultFillColor,
-                  hasFillOpacityParam, hasDefaultFillOpacity, defaultFillOpacity,
-                  hasStrokeParam, hasDefaultStrokeColor, defaultStrokeColor,
-                  hasStrokeWidthParam, hasDefaultStrokeWidth, defaultStrokeWidth,
-                  hasStrokeOpacityParam, hasDefaultStrokeOpacity, defaultStrokeOpacity,
-                  blocking );
+  containsParams(
+    path, hasFillParam, hasDefaultFillColor, defaultFillColor, hasFillOpacityParam, hasDefaultFillOpacity, defaultFillOpacity, hasStrokeParam, hasDefaultStrokeColor, defaultStrokeColor,
+    hasStrokeWidthParam, hasDefaultStrokeWidth, defaultStrokeWidth, hasStrokeOpacityParam, hasDefaultStrokeOpacity, defaultStrokeOpacity, blocking
+  );
 }
 
-void QgsSvgCache::containsParams( const QString &path,
-                                  bool &hasFillParam, bool &hasDefaultFillParam, QColor &defaultFillColor,
-                                  bool &hasFillOpacityParam, bool &hasDefaultFillOpacity, double &defaultFillOpacity,
-                                  bool &hasStrokeParam, bool &hasDefaultStrokeColor, QColor &defaultStrokeColor,
-                                  bool &hasStrokeWidthParam, bool &hasDefaultStrokeWidth, double &defaultStrokeWidth,
-                                  bool &hasStrokeOpacityParam, bool &hasDefaultStrokeOpacity, double &defaultStrokeOpacity,
-                                  bool blocking ) const
+void QgsSvgCache::containsParams(
+  const QString &path, bool &hasFillParam, bool &hasDefaultFillParam, QColor &defaultFillColor, bool &hasFillOpacityParam, bool &hasDefaultFillOpacity, double &defaultFillOpacity,
+  bool &hasStrokeParam, bool &hasDefaultStrokeColor, QColor &defaultStrokeColor, bool &hasStrokeWidthParam, bool &hasDefaultStrokeWidth, double &defaultStrokeWidth, bool &hasStrokeOpacityParam,
+  bool &hasDefaultStrokeOpacity, double &defaultStrokeOpacity, bool blocking
+) const
 {
   hasFillParam = false;
   hasFillOpacityParam = false;
@@ -285,11 +280,10 @@ void QgsSvgCache::containsParams( const QString &path,
   }
 
   const QDomElement docElem = svgDoc.documentElement();
-  containsElemParams( docElem, hasFillParam, hasDefaultFillParam, defaultFillColor,
-                      hasFillOpacityParam, hasDefaultFillOpacity, defaultFillOpacity,
-                      hasStrokeParam, hasDefaultStrokeColor, defaultStrokeColor,
-                      hasStrokeWidthParam, hasDefaultStrokeWidth, defaultStrokeWidth,
-                      hasStrokeOpacityParam, hasDefaultStrokeOpacity, defaultStrokeOpacity );
+  containsElemParams(
+    docElem, hasFillParam, hasDefaultFillParam, defaultFillColor, hasFillOpacityParam, hasDefaultFillOpacity, defaultFillOpacity, hasStrokeParam, hasDefaultStrokeColor, defaultStrokeColor,
+    hasStrokeWidthParam, hasDefaultStrokeWidth, defaultStrokeWidth, hasStrokeOpacityParam, hasDefaultStrokeOpacity, defaultStrokeOpacity
+  );
 }
 
 void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry *entry, bool blocking )
@@ -299,7 +293,7 @@ void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry *entry, bool blocki
     return;
   }
 
-  const QByteArray content = getContent( entry->path, mMissingSvg, mFetchingSvg, blocking ) ;
+  const QByteArray content = getContent( entry->path, mMissingSvg, mFetchingSvg, blocking );
   entry->isMissingImage = content == mMissingSvg;
   QDomDocument svgDoc;
   if ( !svgDoc.setContent( content ) )
@@ -405,18 +399,14 @@ double QgsSvgCache::calcSizeScaleFactor( QgsSvgCacheEntry *entry, const QDomElem
 }
 
 
-QByteArray QgsSvgCache::getImageData( const QString &path, bool blocking ) const
-{
-  return getContent( path, mMissingSvg, mFetchingSvg, blocking );
-};
+QByteArray QgsSvgCache::getImageData( const QString &path, bool blocking ) const { return getContent( path, mMissingSvg, mFetchingSvg, blocking ); };
 
 bool QgsSvgCache::checkReply( QNetworkReply *reply, const QString &path ) const
 {
   // we accept both real SVG mime types AND plain text types - because some sites
   // (notably github) serve up svgs as raw text
   const QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
-  if ( !contentType.startsWith( "image/svg+xml"_L1, Qt::CaseInsensitive )
-       && !contentType.startsWith( "text/plain"_L1, Qt::CaseInsensitive ) )
+  if ( !contentType.startsWith( "image/svg+xml"_L1, Qt::CaseInsensitive ) && !contentType.startsWith( "text/plain"_L1, Qt::CaseInsensitive ) )
   {
     QgsMessageLog::logMessage( tr( "Unexpected MIME type %1 received for %2" ).arg( contentType, path ), tr( "SVG" ) );
     return false;
@@ -503,8 +493,10 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput 
   mTotalSize += entry->picture->size();
 }
 
-QgsSvgCacheEntry *QgsSvgCache::cacheEntry( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-    double widthScaleFactor, double fixedAspectRatio, const QMap<QString, QString> &parameters, bool blocking, bool *isMissingImage )
+QgsSvgCacheEntry *QgsSvgCache::cacheEntry(
+  const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth, double widthScaleFactor, double fixedAspectRatio, const QMap<QString, QString> &parameters,
+  bool blocking, bool *isMissingImage
+)
 {
   QgsSvgCacheEntry *currentEntry = findExistingEntry( new QgsSvgCacheEntry( path, size, strokeWidth, widthScaleFactor, fill, stroke, fixedAspectRatio, parameters ) );
 
@@ -643,11 +635,11 @@ void QgsSvgCache::replaceElemParams( QDomElement &elem, const QColor &fill, cons
   }
 }
 
-void QgsSvgCache::containsElemParams( const QDomElement &elem, bool &hasFillParam, bool &hasDefaultFill, QColor &defaultFill,
-                                      bool &hasFillOpacityParam, bool &hasDefaultFillOpacity, double &defaultFillOpacity,
-                                      bool &hasStrokeParam, bool &hasDefaultStroke, QColor &defaultStroke,
-                                      bool &hasStrokeWidthParam, bool &hasDefaultStrokeWidth, double &defaultStrokeWidth,
-                                      bool &hasStrokeOpacityParam, bool &hasDefaultStrokeOpacity, double &defaultStrokeOpacity ) const
+void QgsSvgCache::containsElemParams(
+  const QDomElement &elem, bool &hasFillParam, bool &hasDefaultFill, QColor &defaultFill, bool &hasFillOpacityParam, bool &hasDefaultFillOpacity, double &defaultFillOpacity, bool &hasStrokeParam,
+  bool &hasDefaultStroke, QColor &defaultStroke, bool &hasStrokeWidthParam, bool &hasDefaultStrokeWidth, double &defaultStrokeWidth, bool &hasStrokeOpacityParam, bool &hasDefaultStrokeOpacity,
+  double &defaultStrokeOpacity
+) const
 {
   if ( elem.isNull() )
   {
@@ -807,11 +799,10 @@ void QgsSvgCache::containsElemParams( const QDomElement &elem, bool &hasFillPara
   for ( int i = 0; i < nChildren; ++i )
   {
     const QDomElement childElem = childList.at( i ).toElement();
-    containsElemParams( childElem, hasFillParam, hasDefaultFill, defaultFill,
-                        hasFillOpacityParam, hasDefaultFillOpacity, defaultFillOpacity,
-                        hasStrokeParam, hasDefaultStroke, defaultStroke,
-                        hasStrokeWidthParam, hasDefaultStrokeWidth, defaultStrokeWidth,
-                        hasStrokeOpacityParam, hasDefaultStrokeOpacity, defaultStrokeOpacity );
+    containsElemParams(
+      childElem, hasFillParam, hasDefaultFill, defaultFill, hasFillOpacityParam, hasDefaultFillOpacity, defaultFillOpacity, hasStrokeParam, hasDefaultStroke, defaultStroke, hasStrokeWidthParam,
+      hasDefaultStrokeWidth, defaultStrokeWidth, hasStrokeOpacityParam, hasDefaultStrokeOpacity, defaultStrokeOpacity
+    );
   }
 }
 

@@ -36,7 +36,6 @@ class QgsMarkerSymbol;
 class CORE_EXPORT QgsMapInfoSymbolConversionContext
 {
   public:
-
     /**
      * Pushes a \a warning message generated during the conversion.
      */
@@ -53,9 +52,7 @@ class CORE_EXPORT QgsMapInfoSymbolConversionContext
     void clearWarnings() { mWarnings.clear(); }
 
   private:
-
     QStringList mWarnings;
-
 };
 
 /**
@@ -67,13 +64,13 @@ class CORE_EXPORT QgsMapInfoSymbolConversionContext
 class CORE_EXPORT QgsMapInfoSymbolConverter
 {
   public:
-
     /**
      * Converts the MapInfo line symbol with the specified \a identifier to a QgsLineSymbol.
      *
      * The caller takes ownership of the returned symbol.
      */
-    static QgsLineSymbol *convertLineSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, double size, Qgis::RenderUnit sizeUnit, bool interleaved = false ) SIP_FACTORY;
+    static QgsLineSymbol *convertLineSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, double size, Qgis::RenderUnit sizeUnit, bool interleaved = false )
+      SIP_FACTORY;
 
     /**
      * Converts the MapInfo fill symbol with the specified \a identifier to a QgsFillSymbol.
@@ -90,7 +87,6 @@ class CORE_EXPORT QgsMapInfoSymbolConverter
      * The caller takes ownership of the returned symbol.
      */
     static QgsMarkerSymbol *convertMarkerSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &color, double size, Qgis::RenderUnit sizeUnit ) SIP_FACTORY;
-
 };
 
 #endif // QGSMAPINFOSYMBOLCONVERTER_H

@@ -54,7 +54,7 @@ QgsSymbolLayer *QgsEllipseSymbolLayer::create( const QVariantMap &properties )
   QgsEllipseSymbolLayer *layer = new QgsEllipseSymbolLayer();
   if ( properties.contains( u"symbol_name"_s ) )
   {
-    layer->setShape( decodeShape( properties[ u"symbol_name"_s].toString() ) );
+    layer->setShape( decodeShape( properties[u"symbol_name"_s].toString() ) );
   }
   if ( properties.contains( u"size"_s ) )
   {
@@ -163,11 +163,11 @@ QgsSymbolLayer *QgsEllipseSymbolLayer::create( const QVariantMap &properties )
   }
   if ( properties.contains( u"horizontal_anchor_point"_s ) )
   {
-    layer->setHorizontalAnchorPoint( static_cast< Qgis::HorizontalAnchorPoint >( properties[ u"horizontal_anchor_point"_s].toInt() ) );
+    layer->setHorizontalAnchorPoint( static_cast< Qgis::HorizontalAnchorPoint >( properties[u"horizontal_anchor_point"_s].toInt() ) );
   }
   if ( properties.contains( u"vertical_anchor_point"_s ) )
   {
-    layer->setVerticalAnchorPoint( static_cast< Qgis::VerticalAnchorPoint >( properties[ u"vertical_anchor_point"_s].toInt() ) );
+    layer->setVerticalAnchorPoint( static_cast< Qgis::VerticalAnchorPoint >( properties[u"vertical_anchor_point"_s].toInt() ) );
   }
 
   //data defined properties
@@ -256,7 +256,8 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
   }
 
   QgsEllipseSymbolLayer::Shape shape = mShape;
-  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Width ) || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Height ) || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Name ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Width ) || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Height )
+       || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Name ) )
   {
     context.setOriginalValueVariable( encodeShape( shape ) );
     const QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::Property::Name, context.renderContext().expressionContext() );
@@ -301,19 +302,14 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
 }
 
 
-void QgsEllipseSymbolLayer::calculateOffsetAndRotation( QgsSymbolRenderContext &context,
-    double scaledWidth,
-    double scaledHeight,
-    bool &hasDataDefinedRotation,
-    QPointF &offset,
-    double &angle ) const
+void QgsEllipseSymbolLayer::calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledWidth, double scaledHeight, bool &hasDataDefinedRotation, QPointF &offset, double &angle ) const
 {
   double offsetX = 0;
   double offsetY = 0;
   markerOffset( context, scaledWidth, scaledHeight, mSymbolWidthUnit, mSymbolHeightUnit, offsetX, offsetY, mSymbolWidthMapUnitScale, mSymbolHeightMapUnitScale );
   offset = QPointF( offsetX, offsetY );
 
-//priority for rotation: 1. data defined symbol level, 2. symbol layer rotation (mAngle)
+  //priority for rotation: 1. data defined symbol level, 2. symbol layer rotation (mAngle)
   const bool ok = true;
   angle = mAngle + mLineAngle;
   bool usingDataDefinedRotation = false;
@@ -348,15 +344,9 @@ void QgsEllipseSymbolLayer::calculateOffsetAndRotation( QgsSymbolRenderContext &
     offset = _rotatedOffset( offset, angle );
 }
 
-QString QgsEllipseSymbolLayer::layerType() const
-{
-  return u"EllipseMarker"_s;
-}
+QString QgsEllipseSymbolLayer::layerType() const { return u"EllipseMarker"_s; }
 
-Qgis::SymbolLayerFlags QgsEllipseSymbolLayer::flags() const
-{
-  return QgsMarkerSymbolLayer::flags() | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature;
-}
+Qgis::SymbolLayerFlags QgsEllipseSymbolLayer::flags() const { return QgsMarkerSymbolLayer::flags() | Qgis::SymbolLayerFlag::CanCalculateMaskGeometryPerFeature; }
 
 void QgsEllipseSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
@@ -374,7 +364,7 @@ void QgsEllipseSymbolLayer::startRender( QgsSymbolRenderContext &context )
 
   QColor selBrushColor = context.renderContext().selectionColor();
   QColor selPenColor = selBrushColor == mColor ? selBrushColor : mStrokeColor;
-  if ( context.opacity() < 1  && !SELECTION_IS_OPAQUE )
+  if ( context.opacity() < 1 && !SELECTION_IS_OPAQUE )
   {
     selBrushColor.setAlphaF( context.opacity() );
     selPenColor.setAlphaF( context.opacity() );
@@ -385,9 +375,7 @@ void QgsEllipseSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mSelPen.setWidthF( context.renderContext().convertToPainterUnits( mStrokeWidth, mStrokeWidthUnit, mStrokeWidthMapUnitScale ) );
 }
 
-void QgsEllipseSymbolLayer::stopRender( QgsSymbolRenderContext & )
-{
-}
+void QgsEllipseSymbolLayer::stopRender( QgsSymbolRenderContext & ) {}
 
 QgsEllipseSymbolLayer *QgsEllipseSymbolLayer::clone() const
 {
@@ -464,7 +452,7 @@ bool QgsEllipseSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &elem
   const QgsProperty ddRotation = mDataDefinedProperties.property( QgsSymbolLayer::Property::Angle );
 
   QString angleFunc = props.value( u"angle"_s, QString() ).toString();
-  if ( angleFunc.isEmpty() )  // symbol has no angle set
+  if ( angleFunc.isEmpty() ) // symbol has no angle set
   {
     if ( ddRotation && ddRotation.isActive() )
     {
@@ -839,9 +827,8 @@ Qgis::RenderUnit QgsEllipseSymbolLayer::outputUnit() const
 
 bool QgsEllipseSymbolLayer::usesMapUnits() const
 {
-  return mSymbolWidthUnit == Qgis::RenderUnit::MapUnits || mSymbolWidthUnit == Qgis::RenderUnit::MetersInMapUnits
-         || mSymbolHeightUnit == Qgis::RenderUnit::MapUnits || mSymbolHeightUnit == Qgis::RenderUnit::MetersInMapUnits
-         || mStrokeWidthUnit == Qgis::RenderUnit::MapUnits || mStrokeWidthUnit == Qgis::RenderUnit::MetersInMapUnits
+  return mSymbolWidthUnit == Qgis::RenderUnit::MapUnits || mSymbolWidthUnit == Qgis::RenderUnit::MetersInMapUnits || mSymbolHeightUnit == Qgis::RenderUnit::MapUnits
+         || mSymbolHeightUnit == Qgis::RenderUnit::MetersInMapUnits || mStrokeWidthUnit == Qgis::RenderUnit::MapUnits || mStrokeWidthUnit == Qgis::RenderUnit::MetersInMapUnits
          || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits;
 }
 
@@ -855,9 +842,7 @@ void QgsEllipseSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
 
 QgsMapUnitScale QgsEllipseSymbolLayer::mapUnitScale() const
 {
-  if ( QgsMarkerSymbolLayer::mapUnitScale() == mSymbolWidthMapUnitScale &&
-       mSymbolWidthMapUnitScale == mSymbolHeightMapUnitScale &&
-       mSymbolHeightMapUnitScale == mStrokeWidthMapUnitScale )
+  if ( QgsMarkerSymbolLayer::mapUnitScale() == mSymbolWidthMapUnitScale && mSymbolWidthMapUnitScale == mSymbolHeightMapUnitScale && mSymbolHeightMapUnitScale == mStrokeWidthMapUnitScale )
   {
     return mSymbolWidthMapUnitScale;
   }
@@ -914,14 +899,10 @@ QRectF QgsEllipseSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &con
   //antialiasing, add 1 pixel
   penWidth += 1;
 
-  QRectF symbolBounds = transform.mapRect( QRectF( -size.width() / 2.0,
-                        -size.height() / 2.0,
-                        size.width(),
-                        size.height() ) );
+  QRectF symbolBounds = transform.mapRect( QRectF( -size.width() / 2.0, -size.height() / 2.0, size.width(), size.height() ) );
 
   //extend bounds by pen width / 2.0
-  symbolBounds.adjust( -penWidth / 2.0, -penWidth / 2.0,
-                       penWidth / 2.0, penWidth / 2.0 );
+  symbolBounds.adjust( -penWidth / 2.0, -penWidth / 2.0, penWidth / 2.0, penWidth / 2.0 );
 
   return symbolBounds;
 }
@@ -1055,9 +1036,7 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFact
     case Rectangle:
     {
       QgsPointSequence p;
-      p << QgsPoint( t.map( QPointF( -halfWidth, -halfHeight ) ) )
-        << QgsPoint( t.map( QPointF( halfWidth, -halfHeight ) ) )
-        << QgsPoint( t.map( QPointF( halfWidth, halfHeight ) ) )
+      p << QgsPoint( t.map( QPointF( -halfWidth, -halfHeight ) ) ) << QgsPoint( t.map( QPointF( halfWidth, -halfHeight ) ) ) << QgsPoint( t.map( QPointF( halfWidth, halfHeight ) ) )
         << QgsPoint( t.map( QPointF( -halfWidth, halfHeight ) ) );
       p << p[0];
 
@@ -1071,14 +1050,8 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFact
     {
       if ( mPen.style() != Qt::NoPen )
       {
-        e.writePolyline( QgsPointSequence()
-                         << QgsPoint( t.map( QPointF( -halfWidth, 0 ) ) )
-                         << QgsPoint( t.map( QPointF( halfWidth, 0 ) ) ),
-                         layerName, u"CONTINUOUS"_s, oc, strokeWidth );
-        e.writePolyline( QgsPointSequence()
-                         << QgsPoint( t.map( QPointF( 0, halfHeight ) ) )
-                         << QgsPoint( t.map( QPointF( 0, -halfHeight ) ) ),
-                         layerName, u"CONTINUOUS"_s, oc, strokeWidth );
+        e.writePolyline( QgsPointSequence() << QgsPoint( t.map( QPointF( -halfWidth, 0 ) ) ) << QgsPoint( t.map( QPointF( halfWidth, 0 ) ) ), layerName, u"CONTINUOUS"_s, oc, strokeWidth );
+        e.writePolyline( QgsPointSequence() << QgsPoint( t.map( QPointF( 0, halfHeight ) ) ) << QgsPoint( t.map( QPointF( 0, -halfHeight ) ) ), layerName, u"CONTINUOUS"_s, oc, strokeWidth );
         return true;
       }
       break;
@@ -1087,9 +1060,7 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFact
     case Triangle:
     {
       QgsPointSequence p;
-      p << QgsPoint( t.map( QPointF( -halfWidth, -halfHeight ) ) )
-        << QgsPoint( t.map( QPointF( halfWidth, -halfHeight ) ) )
-        << QgsPoint( t.map( QPointF( 0, halfHeight ) ) );
+      p << QgsPoint( t.map( QPointF( -halfWidth, -halfHeight ) ) ) << QgsPoint( t.map( QPointF( halfWidth, -halfHeight ) ) ) << QgsPoint( t.map( QPointF( 0, halfHeight ) ) );
       p << p[0];
       if ( mBrush.style() != Qt::NoBrush )
         e.writePolygon( QgsRingSequence() << p, layerName, u"SOLID"_s, fc );
@@ -1153,7 +1124,8 @@ QgsEllipseSymbolLayer::Shape QgsEllipseSymbolLayer::decodeShape( const QString &
   else if ( cleaned == "octagon"_L1 )
     return Octagon;
   else if ( cleaned == "star"_L1 )
-    return Star;  if ( ok )
+    return Star;
+  if ( ok )
     *ok = false;
   return Circle;
 }
@@ -1201,21 +1173,7 @@ QString QgsEllipseSymbolLayer::encodeShape( QgsEllipseSymbolLayer::Shape shape )
 QList<QgsEllipseSymbolLayer::Shape> QgsEllipseSymbolLayer::availableShapes()
 {
   QList< Shape > shapes;
-  shapes << Circle
-         << Rectangle
-         << Diamond
-         << Cross
-         << Arrow
-         << HalfArc
-         << Triangle
-         << LeftHalfTriangle
-         << RightHalfTriangle
-         << SemiCircle
-         << ThirdCircle
-         << QuarterCircle
-         << Pentagon
-         << Hexagon
-         << Octagon
-         << Star;
+  shapes << Circle << Rectangle << Diamond << Cross << Arrow << HalfArc << Triangle << LeftHalfTriangle << RightHalfTriangle << SemiCircle << ThirdCircle << QuarterCircle << Pentagon << Hexagon
+         << Octagon << Star;
   return shapes;
 }

@@ -57,10 +57,7 @@ Qgis::FeatureRendererFlags QgsSingleSymbolRenderer::flags() const
 
 QgsSingleSymbolRenderer::~QgsSingleSymbolRenderer() = default;
 
-QgsSymbol *QgsSingleSymbolRenderer::symbolForFeature( const QgsFeature &, QgsRenderContext & ) const
-{
-  return mSymbol.get();
-}
+QgsSymbol *QgsSingleSymbolRenderer::symbolForFeature( const QgsFeature &, QgsRenderContext & ) const { return mSymbol.get(); }
 
 QgsSymbol *QgsSingleSymbolRenderer::originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
@@ -107,10 +104,7 @@ bool QgsSingleSymbolRenderer::accept( QgsStyleEntityVisitorInterface *visitor ) 
   return true;
 }
 
-QgsSymbol *QgsSingleSymbolRenderer::symbol() const
-{
-  return mSymbol.get();
-}
+QgsSymbol *QgsSingleSymbolRenderer::symbol() const { return mSymbol.get(); }
 
 void QgsSingleSymbolRenderer::setSymbol( QgsSymbol *s )
 {
@@ -118,10 +112,7 @@ void QgsSingleSymbolRenderer::setSymbol( QgsSymbol *s )
   mSymbol.reset( s );
 }
 
-QString QgsSingleSymbolRenderer::dump() const
-{
-  return mSymbol ? u"SINGLE: %1"_s.arg( mSymbol->dump() ) : QString();
-}
+QString QgsSingleSymbolRenderer::dump() const { return mSymbol ? u"SINGLE: %1"_s.arg( mSymbol->dump() ) : QString(); }
 
 QgsSingleSymbolRenderer *QgsSingleSymbolRenderer::clone() const
 {
@@ -194,9 +185,7 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::create( QDomElement &element, const
   const QDomElement sizeScaleElem = element.firstChildElement( u"sizescale"_s );
   if ( !sizeScaleElem.isNull() && !sizeScaleElem.attribute( u"field"_s ).isEmpty() )
   {
-    convertSymbolSizeScale( r->mSymbol.get(),
-                            QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( u"scalemethod"_s ) ),
-                            sizeScaleElem.attribute( u"field"_s ) );
+    convertSymbolSizeScale( r->mSymbol.get(), QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( u"scalemethod"_s ) ), sizeScaleElem.attribute( u"field"_s ) );
   }
 
   const QDomElement ddsLegendSizeElem = element.firstChildElement( u"data-defined-size-legend"_s );
@@ -409,12 +398,6 @@ QgsSingleSymbolRenderer *QgsSingleSymbolRenderer::convertFromRenderer( const Qgs
   return r;
 }
 
-void QgsSingleSymbolRenderer::setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings )
-{
-  mDataDefinedSizeLegend.reset( settings );
-}
+void QgsSingleSymbolRenderer::setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings ) { mDataDefinedSizeLegend.reset( settings ); }
 
-QgsDataDefinedSizeLegend *QgsSingleSymbolRenderer::dataDefinedSizeLegend() const
-{
-  return mDataDefinedSizeLegend.get();
-}
+QgsDataDefinedSizeLegend *QgsSingleSymbolRenderer::dataDefinedSizeLegend() const { return mDataDefinedSizeLegend.get(); }
