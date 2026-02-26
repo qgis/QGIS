@@ -224,10 +224,12 @@ class TestQgsFontManager(QgisTestCase):
             "Ubuntu-RI.ttf",
             "Ubuntu-Th.ttf",
         ]
+        spy_installed = QSignalSpy(manager.fontDownloaded)
         for font in fonts:
             manager.downloadAndInstallFont(
                 QUrl.fromLocalFile(unitTestDataPath() + "/font/Ubuntu/" + font)
             )
+            spy_installed.wait()
 
         doc = QDomDocument()
         doc.setContent("""<parent><text-style allowHtml="0" blendMode="0" capitalization="0" fontFamily="Ubuntu" fontItalic="0" fontKerning="1" fontLetterSpacing="0" fontSize="39" fontSizeMapUnitScale="3x:0,0,0,0,0,0" fontSizeUnit="Point" fontStrikeout="0" fontUnderline="0" fontWeight="400" fontWordSpacing="0" forcedBold="0" forcedItalic="0" multilineHeight="1" multilineHeightUnit="Percentage" namedStyle="Normal" previewBkgrdColor="255,255,255,255,rgb:1,1,1,1" stretchFactor="100" tabStopDistance="6" tabStopDistanceMapUnitScale="3x:0,0,0,0,0,0" tabStopDistanceUnit="Percentage" textColor="0,0,0,255,rgb:0,0,0,1" textOpacity="1" textOrientation="horizontal">
