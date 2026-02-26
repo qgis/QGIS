@@ -144,7 +144,7 @@
            <widget class="QComboBox" name="mMethodCombox"/>
           </item>
           <item row="2" column="0">
-           <widget class="QStackedWidget" name="mStackShading">
+           <widget class="QgsStackedWidget" name="mStackShading">
             <property name="currentIndex">
              <number>1</number>
             </property>
@@ -526,6 +526,12 @@ Select Earlier to switch at a smaller scale (zoomed out) or Later to switch at a
    <class>QgsDirectionalLightWidget</class>
    <extends>QWidget</extends>
    <header>qgsdirectionallightwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsStackedWidget</class>
+   <extends>QStackedWidget</extends>
+   <header>qgsstackedwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
