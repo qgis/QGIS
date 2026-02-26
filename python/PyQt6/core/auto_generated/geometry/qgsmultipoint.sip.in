@@ -10,7 +10,7 @@
 
 
 
-class QgsMultiPoint: QgsGeometryCollection
+class QgsMultiPoint : QgsGeometryCollection
 {
 %Docstring(signature="appended")
 Multi point geometry collection.
@@ -20,8 +20,7 @@ Multi point geometry collection.
 #include "qgsmultipoint.h"
 %End
   public:
-
-    QgsMultiPoint() /HoldGIL/;
+    QgsMultiPoint();
 %Docstring
 Constructor for an empty multipoint geometry.
 %End

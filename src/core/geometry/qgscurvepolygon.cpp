@@ -38,15 +38,9 @@
 
 using namespace Qt::StringLiterals;
 
-QgsCurvePolygon::QgsCurvePolygon()
-{
-  mWkbType = Qgis::WkbType::CurvePolygon;
-}
+QgsCurvePolygon::QgsCurvePolygon() { mWkbType = Qgis::WkbType::CurvePolygon; }
 
-QgsCurvePolygon::~QgsCurvePolygon()
-{
-  clear();
-}
+QgsCurvePolygon::~QgsCurvePolygon() { clear(); }
 
 QgsCurvePolygon *QgsCurvePolygon::createEmptyWithSameType() const
 {
@@ -55,15 +49,9 @@ QgsCurvePolygon *QgsCurvePolygon::createEmptyWithSameType() const
   return result.release();
 }
 
-QString QgsCurvePolygon::geometryType() const
-{
-  return u"CurvePolygon"_s;
-}
+QString QgsCurvePolygon::geometryType() const { return u"CurvePolygon"_s; }
 
-int QgsCurvePolygon::dimension() const
-{
-  return 2;
-}
+int QgsCurvePolygon::dimension() const { return 2; }
 
 QgsCurvePolygon::QgsCurvePolygon( const QgsCurvePolygon &p )
   : QgsSurface( p )
@@ -104,10 +92,7 @@ QgsCurvePolygon &QgsCurvePolygon::operator=( const QgsCurvePolygon &p )
   return *this;
 }
 
-QgsCurvePolygon *QgsCurvePolygon::clone() const
-{
-  return new QgsCurvePolygon( *this );
-}
+QgsCurvePolygon *QgsCurvePolygon::clone() const { return new QgsCurvePolygon( *this ); }
 
 void QgsCurvePolygon::clear()
 {
@@ -144,21 +129,21 @@ bool QgsCurvePolygon::fromWkb( QgsConstWkbPtr &wkbPtr )
     Qgis::WkbType flatCurveType = QgsWkbTypes::flatType( curveType );
     if ( flatCurveType == Qgis::WkbType::LineString )
     {
-      currentCurve = std::make_unique<QgsLineString>( );
+      currentCurve = std::make_unique<QgsLineString>();
     }
     else if ( flatCurveType == Qgis::WkbType::CircularString )
     {
-      currentCurve = std::make_unique<QgsCircularString>( );
+      currentCurve = std::make_unique<QgsCircularString>();
     }
     else if ( flatCurveType == Qgis::WkbType::CompoundCurve )
     {
-      currentCurve = std::make_unique<QgsCompoundCurve>( );
+      currentCurve = std::make_unique<QgsCompoundCurve>();
     }
     else
     {
       return false;
     }
-    currentCurve->fromWkb( wkbPtr );  // also updates wkbPtr
+    currentCurve->fromWkb( wkbPtr ); // also updates wkbPtr
     if ( i == 0 )
     {
       mExteriorRing = std::move( currentCurve );
@@ -185,8 +170,7 @@ bool QgsCurvePolygon::fromWkt( const QString &wkt )
 
   QString secondWithoutParentheses = parts.second;
   secondWithoutParentheses = secondWithoutParentheses.remove( '(' ).remove( ')' ).simplified().remove( ' ' );
-  if ( ( parts.second.compare( "EMPTY"_L1, Qt::CaseInsensitive ) == 0 ) ||
-       secondWithoutParentheses.isEmpty() )
+  if ( ( parts.second.compare( "EMPTY"_L1, Qt::CaseInsensitive ) == 0 ) || secondWithoutParentheses.isEmpty() )
     return true;
 
   QString defaultChildWkbType = u"LineString%1%2"_s.arg( is3D() ? u"Z"_s : QString(), isMeasure() ? u"M"_s : QString() );
@@ -364,8 +348,7 @@ QDomElement QgsCurvePolygon::asGml3( QDomDocument &doc, int precision, const QSt
   if ( isEmpty() )
     return elemCurvePolygon;
 
-  const auto exportRing = [&doc, precision, &ns, axisOrder]( const QgsCurve * ring )
-  {
+  const auto exportRing = [&doc, precision, &ns, axisOrder]( const QgsCurve *ring ) {
     QDomElement ringElem = ring->asGml3( doc, precision, ns, axisOrder );
     if ( ringElem.tagName() == "LineString"_L1 )
     {
@@ -401,7 +384,7 @@ QDomElement QgsCurvePolygon::asGml3( QDomDocument &doc, int precision, const QSt
 
 json QgsCurvePolygon::asJsonObject( int precision ) const
 {
-  json coordinates( json::array( ) );
+  json coordinates( json::array() );
   if ( auto *lExteriorRing = exteriorRing() )
   {
     std::unique_ptr< QgsLineString > exteriorLineString( lExteriorRing->curveToLine() );
@@ -418,11 +401,7 @@ json QgsCurvePolygon::asJsonObject( int precision ) const
       coordinates.push_back( QgsGeometryUtils::pointsToJson( interiorPts, precision ) );
     }
   }
-  return
-  {
-    {  "type", "Polygon"  },
-    { "coordinates", coordinates }
-  };
+  return { { "type", "Polygon" }, { "coordinates", coordinates } };
 }
 
 QString QgsCurvePolygon::asKml( int precision ) const
@@ -458,10 +437,7 @@ void QgsCurvePolygon::normalize()
   }
 
   // sort rings
-  std::sort( mInteriorRings.begin(), mInteriorRings.end(), []( const QgsCurve * a, const QgsCurve * b )
-  {
-    return a->compareTo( b ) > 0;
-  } );
+  std::sort( mInteriorRings.begin(), mInteriorRings.end(), []( const QgsCurve *a, const QgsCurve *b ) { return a->compareTo( b ) > 0; } );
 
   // normalize ring orientation
   forceRHR();
@@ -619,7 +595,6 @@ QgsCurvePolygon *QgsCurvePolygon::snappedToGrid( double hSpacing, double vSpacin
   }
 
   return polygon.release();
-
 }
 
 QgsCurvePolygon *QgsCurvePolygon::simplifyByDistance( double tolerance ) const
@@ -656,8 +631,7 @@ QgsCurvePolygon *QgsCurvePolygon::simplifyByDistance( double tolerance ) const
 bool QgsCurvePolygon::removeDuplicateNodes( double epsilon, bool useZValues )
 {
   bool result = false;
-  auto cleanRing = [epsilon, useZValues ]( QgsCurve * ring )->bool
-  {
+  auto cleanRing = [epsilon, useZValues]( QgsCurve *ring ) -> bool {
     if ( ring->numPoints() <= 4 )
       return false;
 
@@ -679,7 +653,8 @@ bool QgsCurvePolygon::removeDuplicateNodes( double epsilon, bool useZValues )
   }
   for ( QgsCurve *ring : std::as_const( mInteriorRings ) )
   {
-    if ( cleanRing( ring ) ) result = true;
+    if ( cleanRing( ring ) )
+      result = true;
   }
   return result;
 }
@@ -892,10 +867,7 @@ void QgsCurvePolygon::removeInvalidRings()
   mInteriorRings = validRings;
 }
 
-void QgsCurvePolygon::forceRHR()
-{
-  forceClockwise();
-}
+void QgsCurvePolygon::forceRHR() { forceClockwise(); }
 
 void QgsCurvePolygon::forceClockwise()
 {
@@ -1109,7 +1081,7 @@ double QgsCurvePolygon::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,
   QVector<QgsCurve *> segmentList;
   segmentList.append( mExteriorRing.get() );
   segmentList.append( mInteriorRings );
-  return QgsGeometryUtils::closestSegmentFromComponents( segmentList, QgsGeometryUtils::Ring, pt, segmentPt,  vertexAfter, leftOf, epsilon );
+  return QgsGeometryUtils::closestSegmentFromComponents( segmentList, QgsGeometryUtils::Ring, pt, segmentPt, vertexAfter, leftOf, epsilon );
 }
 
 bool QgsCurvePolygon::nextVertex( QgsVertexId &vId, QgsPoint &vertex ) const
@@ -1143,7 +1115,7 @@ bool QgsCurvePolygon::nextVertex( QgsVertexId &vId, QgsPoint &vertex ) const
     {
       return false;
     }
-    ring = mInteriorRings[ vId.ring - 1 ];
+    ring = mInteriorRings[vId.ring - 1];
     return ring->nextVertex( vId, vertex );
   }
 }
@@ -1313,10 +1285,7 @@ bool QgsCurvePolygon::hasCurvedSegments() const
   return false;
 }
 
-QgsAbstractGeometry *QgsCurvePolygon::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
-{
-  return toPolygon( tolerance, toleranceType );
-}
+QgsAbstractGeometry *QgsCurvePolygon::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const { return toPolygon( tolerance, toleranceType ); }
 
 double QgsCurvePolygon::vertexAngle( QgsVertexId vertex ) const
 {
@@ -1330,25 +1299,13 @@ double QgsCurvePolygon::vertexAngle( QgsVertexId vertex ) const
   return ring->vertexAngle( vertex );
 }
 
-int QgsCurvePolygon::vertexCount( int /*part*/, int ring ) const
-{
-  return ring == 0 ? mExteriorRing->vertexCount() : mInteriorRings[ring - 1]->vertexCount();
-}
+int QgsCurvePolygon::vertexCount( int /*part*/, int ring ) const { return ring == 0 ? mExteriorRing->vertexCount() : mInteriorRings[ring - 1]->vertexCount(); }
 
-int QgsCurvePolygon::ringCount( int ) const
-{
-  return ( nullptr != mExteriorRing ) + mInteriorRings.size();
-}
+int QgsCurvePolygon::ringCount( int ) const { return ( nullptr != mExteriorRing ) + mInteriorRings.size(); }
 
-int QgsCurvePolygon::partCount() const
-{
-  return ringCount() > 0 ? 1 : 0;
-}
+int QgsCurvePolygon::partCount() const { return ringCount() > 0 ? 1 : 0; }
 
-QgsPoint QgsCurvePolygon::vertexAt( QgsVertexId id ) const
-{
-  return id.ring == 0 ? mExteriorRing->vertexAt( id ) : mInteriorRings[id.ring - 1]->vertexAt( id );
-}
+QgsPoint QgsCurvePolygon::vertexAt( QgsVertexId id ) const { return id.ring == 0 ? mExteriorRing->vertexAt( id ) : mInteriorRings[id.ring - 1]->vertexAt( id ); }
 
 double QgsCurvePolygon::segmentLength( QgsVertexId startVertex ) const
 {
@@ -1438,10 +1395,7 @@ void QgsCurvePolygon::swapXy()
   clearCache();
 }
 
-QgsCurvePolygon *QgsCurvePolygon::toCurveType() const
-{
-  return clone();
-}
+QgsCurvePolygon *QgsCurvePolygon::toCurveType() const { return clone(); }
 
 bool QgsCurvePolygon::transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback )
 {
@@ -1472,7 +1426,7 @@ bool QgsCurvePolygon::transform( QgsAbstractGeometryTransformer *transformer, Qg
   return res;
 }
 
-void QgsCurvePolygon::filterVertices( const std::function<bool ( const QgsPoint & )> &filter )
+void QgsCurvePolygon::filterVertices( const std::function<bool( const QgsPoint & )> &filter )
 {
   if ( mExteriorRing )
     mExteriorRing->filterVertices( filter );
@@ -1496,10 +1450,7 @@ void QgsCurvePolygon::transformVertices( const std::function<QgsPoint( const Qgs
   clearCache();
 }
 
-int QgsCurvePolygon::childCount() const
-{
-  return 1 + mInteriorRings.count();
-}
+int QgsCurvePolygon::childCount() const { return 1 + mInteriorRings.count(); }
 
 QgsAbstractGeometry *QgsCurvePolygon::childGeometry( int index ) const
 {

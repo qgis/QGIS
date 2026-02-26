@@ -31,14 +31,14 @@ class QgsPolygon;
  * \class QgsMultiPolygon
  * \brief Multi polygon geometry collection.
  */
-class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
+class CORE_EXPORT QgsMultiPolygon : public QgsMultiSurface
 {
   public:
-
     /**
      * Constructor for an empty multipolygon geometry.
      */
-    QgsMultiPolygon() SIP_HOLDGIL;
+    QgsMultiPolygon()
+    SIP_HOLDGIL;
 
     /**
      * Constructor for a multipolygon containing the specified \a polygons.

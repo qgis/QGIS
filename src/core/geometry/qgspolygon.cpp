@@ -27,10 +27,7 @@
 
 using namespace Qt::StringLiterals;
 
-QgsPolygon::QgsPolygon()
-{
-  mWkbType = Qgis::WkbType::Polygon;
-}
+QgsPolygon::QgsPolygon() { mWkbType = Qgis::WkbType::Polygon; }
 
 ///@cond DOXYGEN_SHUTTUP
 QgsPolygon::QgsPolygon( QgsLineString *exterior, const QList<QgsLineString *> &rings )
@@ -44,10 +41,7 @@ QgsPolygon::QgsPolygon( QgsLineString *exterior, const QList<QgsLineString *> &r
 }
 ///@endcond
 
-QString QgsPolygon::geometryType() const
-{
-  return u"Polygon"_s;
-}
+QString QgsPolygon::geometryType() const { return u"Polygon"_s; }
 
 QgsPolygon *QgsPolygon::createEmptyWithSameType() const
 {
@@ -56,10 +50,7 @@ QgsPolygon *QgsPolygon::createEmptyWithSameType() const
   return result.release();
 }
 
-QgsPolygon *QgsPolygon::clone() const
-{
-  return new QgsPolygon( *this );
-}
+QgsPolygon *QgsPolygon::clone() const { return new QgsPolygon( *this ); }
 
 void QgsPolygon::clear()
 {
@@ -214,7 +205,7 @@ QString QgsPolygon::asWkt( int precision ) const
       if ( !curve->isEmpty() )
       {
         QString childWkt;
-        if ( ! qgsgeometry_cast< const QgsLineString *>( curve ) )
+        if ( !qgsgeometry_cast< const QgsLineString *>( curve ) )
         {
           std::unique_ptr<QgsLineString> line( curve->curveToLine() );
           childWkt = line->asWkt( precision );
@@ -349,8 +340,7 @@ double QgsPolygon::pointDistanceToBoundary( double x, double y ) const
       double bX = ring->xAt( j );
       double bY = ring->yAt( j );
 
-      if ( ( ( aY > y ) != ( bY > y ) ) &&
-           ( x < ( bX - aX ) * ( y - aY ) / ( bY - aY ) + aX ) )
+      if ( ( ( aY > y ) != ( bY > y ) ) && ( x < ( bX - aX ) * ( y - aY ) / ( bY - aY ) + aX ) )
         inside = !inside;
 
       minimumDistance = std::min( minimumDistance, QgsGeometryUtilsBase::sqrDistToLine( x, y, aX, aY, bX, bY, minDistX, minDistY, 4 * std::numeric_limits<double>::epsilon() ) );
@@ -360,10 +350,7 @@ double QgsPolygon::pointDistanceToBoundary( double x, double y ) const
   return ( inside ? 1 : -1 ) * std::sqrt( minimumDistance );
 }
 
-QgsPolygon *QgsPolygon::surfaceToPolygon() const
-{
-  return clone();
-}
+QgsPolygon *QgsPolygon::surfaceToPolygon() const { return clone(); }
 
 QgsCurvePolygon *QgsPolygon::toCurveType() const
 {

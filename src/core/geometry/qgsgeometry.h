@@ -181,7 +181,8 @@ class CORE_EXPORT QgsGeometry
     Q_PROPERTY( Qgis::GeometryType type READ type )
 
   public:
-    QgsGeometry() SIP_HOLDGIL;
+    QgsGeometry()
+    SIP_HOLDGIL;
 
     //! Copy constructor will prompt a shallow copy of the geometry
     QgsGeometry( const QgsGeometry & );

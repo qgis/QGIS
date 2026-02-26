@@ -37,7 +37,7 @@ class QgsPolygon;
  * \class QgsCurvePolygon
  * \brief Curve polygon geometry type.
  */
-class CORE_EXPORT QgsCurvePolygon: public QgsSurface
+class CORE_EXPORT QgsCurvePolygon : public QgsSurface
 {
   public:
     QgsCurvePolygon();
@@ -79,20 +79,17 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
       for ( int i = 0; i < mInteriorRings.count(); ++i )
       {
-        if ( ( !mInteriorRings.at( i ) && otherPolygon->mInteriorRings.at( i ) ) ||
-             ( mInteriorRings.at( i ) && !otherPolygon->mInteriorRings.at( i ) ) )
+        if ( ( !mInteriorRings.at( i ) && otherPolygon->mInteriorRings.at( i ) ) || ( mInteriorRings.at( i ) && !otherPolygon->mInteriorRings.at( i ) ) )
           return false;
 
         if ( useDistance )
         {
-          if ( mInteriorRings.at( i ) && otherPolygon->mInteriorRings.at( i ) &&
-               !( *mInteriorRings.at( i ) ).fuzzyDistanceEqual( *otherPolygon->mInteriorRings.at( i ), epsilon ) )
+          if ( mInteriorRings.at( i ) && otherPolygon->mInteriorRings.at( i ) && !( *mInteriorRings.at( i ) ).fuzzyDistanceEqual( *otherPolygon->mInteriorRings.at( i ), epsilon ) )
             return false;
         }
         else
         {
-          if ( mInteriorRings.at( i ) && otherPolygon->mInteriorRings.at( i ) &&
-               !( *mInteriorRings.at( i ) ).fuzzyEqual( *otherPolygon->mInteriorRings.at( i ), epsilon ) )
+          if ( mInteriorRings.at( i ) && otherPolygon->mInteriorRings.at( i ) && !( *mInteriorRings.at( i ) ).fuzzyEqual( *otherPolygon->mInteriorRings.at( i ), epsilon ) )
             return false;
         }
       }
@@ -101,7 +98,8 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     }
 #endif
   public:
-    bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override SIP_HOLDGIL
+    bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override
+    SIP_HOLDGIL
     {
       return fuzzyHelper( other, epsilon, false );
     }

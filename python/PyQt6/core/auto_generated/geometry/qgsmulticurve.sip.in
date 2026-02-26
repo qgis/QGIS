@@ -10,7 +10,7 @@
 
 
 
-class QgsMultiCurve: QgsGeometryCollection
+class QgsMultiCurve : QgsGeometryCollection
 {
 %Docstring(signature="appended")
 Multi curve geometry collection.
@@ -32,8 +32,7 @@ Returns the curve with the specified ``index``.
 
 .. versionadded:: 3.16
 %End
-%MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
+%MethodCode if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -45,8 +44,7 @@ Returns the curve with the specified ``index``.
 %End
 
 
-    virtual QString geometryType() const /HoldGIL/;
-
+    virtual QString geometryType() const;
     virtual QgsMultiCurve *clone() const /Factory/;
 
     virtual void clear();

@@ -12,7 +12,7 @@
 
 
 
-class QgsPolygon: QgsCurvePolygon
+class QgsPolygon : QgsCurvePolygon
 {
 %Docstring(signature="appended")
 Polygon geometry type.
@@ -22,9 +22,7 @@ Polygon geometry type.
 #include "qgspolygon.h"
 %End
   public:
-
-
-    QgsPolygon() /HoldGIL/;
+    QgsPolygon();
 %Docstring
 Constructor for an empty polygon geometry.
 %End

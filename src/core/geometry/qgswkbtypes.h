@@ -49,7 +49,8 @@ class CORE_EXPORT QgsWkbTypes
      * \see curveType()
      * \see flatType()
      */
-    static Qgis::WkbType singleType( Qgis::WkbType type ) SIP_HOLDGIL
+    static Qgis::WkbType singleType( Qgis::WkbType type )
+    SIP_HOLDGIL
     {
       switch ( type )
       {

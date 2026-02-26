@@ -64,8 +64,7 @@ algorithm for B-spline basis function evaluation.
 
 :raises ValueError: if t is not in range [0, 1]
 %End
-%MethodCode
-    if ( a0 < 0.0 || a0 > 1.0 )
+%MethodCode if ( a0 < 0.0 || a0 > 1.0 )
     {
       PyErr_SetString( PyExc_ValueError, "Parameter t must be in range [0, 1]" );
       sipIsErr = 1;
@@ -76,7 +75,7 @@ algorithm for B-spline basis function evaluation.
     }
 %End
 
-    bool isBezier() const /HoldGIL/;
+    bool isBezier() const;
 %Docstring
 Returns ``True`` if this curve represents a Bézier curve. A Bézier curve
 is a special case of NURBS with uniform weights and specific knot

@@ -79,8 +79,7 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
      * \throws ValueError if t is not in range [0, 1]
      */
     SIP_PYOBJECT evaluate( double t ) const SIP_TYPEHINT( QgsPoint );
-    % MethodCode
-    if ( a0 < 0.0 || a0 > 1.0 )
+    % MethodCode if ( a0 < 0.0 || a0 > 1.0 )
     {
       PyErr_SetString( PyExc_ValueError, "Parameter t must be in range [0, 1]" );
       sipIsErr = 1;
@@ -96,7 +95,8 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
      * Returns TRUE if this curve represents a Bézier curve.
      * A Bézier curve is a special case of NURBS with uniform weights and specific knot vector.
      */
-    bool isBezier() const SIP_HOLDGIL;
+    bool isBezier() const
+    SIP_HOLDGIL;
 
     /**
      * Returns TRUE if this curve represents a B-spline (non-rational NURBS).

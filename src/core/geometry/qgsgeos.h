@@ -30,7 +30,7 @@ class QgsPolygon;
 class QgsGeometry;
 class QgsGeometryCollection;
 
-#if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
+#if !defined( USE_THREAD_LOCAL ) || defined( Q_OS_WIN )
 #include <QThreadStorage>
 #endif
 
@@ -45,7 +45,6 @@ class QgsGeometryCollection;
 class CORE_EXPORT QgsGeosContext
 {
   public:
-
     QgsGeosContext();
     ~QgsGeosContext();
 
@@ -62,7 +61,7 @@ class CORE_EXPORT QgsGeosContext
      * for every thread.
      */
 
-#if defined(USE_THREAD_LOCAL) && !defined(Q_OS_WIN)
+#if defined( USE_THREAD_LOCAL ) && !defined( Q_OS_WIN )
     static thread_local QgsGeosContext sGeosContext;
 #else
     static QThreadStorage< QgsGeosContext * > sGeosContext;
@@ -82,30 +81,29 @@ namespace geos
    */
   struct GeosDeleter
   {
-
-    /**
+      /**
      * Destroys the GEOS geometry \a geom, using the static QGIS
      * geos context.
      */
-    void CORE_EXPORT operator()( GEOSGeometry *geom ) const;
+      void CORE_EXPORT operator()( GEOSGeometry *geom ) const;
 
-    /**
+      /**
      * Destroys the GEOS prepared geometry \a geom, using the static QGIS
      * geos context.
      */
-    void CORE_EXPORT operator()( const GEOSPreparedGeometry *geom ) const;
+      void CORE_EXPORT operator()( const GEOSPreparedGeometry *geom ) const;
 
-    /**
+      /**
      * Destroys the GEOS buffer params \a params, using the static QGIS
      * geos context.
      */
-    void CORE_EXPORT operator()( GEOSBufferParams *params ) const;
+      void CORE_EXPORT operator()( GEOSBufferParams *params ) const;
 
-    /**
+      /**
      * Destroys the GEOS coordinate sequence \a sequence, using the static QGIS
      * geos context.
      */
-    void CORE_EXPORT operator()( GEOSCoordSequence *sequence ) const;
+      void CORE_EXPORT operator()( GEOSCoordSequence *sequence ) const;
   };
 
   /**
@@ -128,7 +126,7 @@ namespace geos
    */
   using coord_sequence_unique_ptr = std::unique_ptr< GEOSCoordSequence, GeosDeleter>;
 
-}
+} //namespace geos
 #endif
 
 /**
@@ -137,10 +135,9 @@ namespace geos
  *
  * \note Available in Python bindings since QGIS 3.42
  */
-class CORE_EXPORT QgsGeos: public QgsGeometryEngine
+class CORE_EXPORT QgsGeos : public QgsGeometryEngine
 {
   public:
-
     /**
      * GEOS geometry engine constructor
      * \param geometry The geometry
@@ -173,7 +170,9 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.9 or earlier when the \a method is not Qgis::MakeValidMethod::Linework or the \a keepCollapsed option is set.
      * \since QGIS 3.20
      */
-    std::unique_ptr< QgsAbstractGeometry > makeValid( Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework, bool keepCollapsed = false, QString *errorMsg = nullptr ) const SIP_THROW( QgsNotSupportedException );
+    std::unique_ptr< QgsAbstractGeometry > makeValid( Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework, bool keepCollapsed = false, QString *errorMsg = nullptr ) const SIP_THROW(
+      QgsNotSupportedException
+    );
 
     /**
      * Adds a new island polygon to a multipolygon feature
@@ -235,7 +234,9 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \note Not available in Python bindings
      * \since QGIS 3.42
      */
-    SIP_SKIP static geos::unique_ptr buffer( const GEOSGeometry *geometry, double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = nullptr );
+    SIP_SKIP static geos::unique_ptr buffer(
+      const GEOSGeometry *geometry, double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = nullptr
+    );
 
     QgsAbstractGeometry *simplify( double tolerance, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *interpolate( double distance, QString *errorMsg = nullptr ) const override;
@@ -385,11 +386,9 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     bool isEmpty( QString *errorMsg = nullptr ) const override;
     bool isSimple( QString *errorMsg = nullptr ) const override;
 
-    EngineOperationResult splitGeometry( const QgsLineString &splitLine,
-                                         QVector<QgsGeometry> &newGeometries,
-                                         bool topological,
-                                         QgsPointSequence &topologyTestPoints,
-                                         QString *errorMsg = nullptr, bool skipIntersectionCheck = false ) const override;
+    EngineOperationResult splitGeometry(
+      const QgsLineString &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QgsPointSequence &topologyTestPoints, QString *errorMsg = nullptr, bool skipIntersectionCheck = false
+    ) const override;
 
     /**
      * Directly calculates the offset curve for a GEOS geometry object and returns a GEOS geometry result.
@@ -412,9 +411,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param errorMsg will be set to descriptive error string if the operation fails
      * \returns buffered geometry, or NULLPTR if buffer could not be calculated
      */
-    std::unique_ptr< QgsAbstractGeometry > singleSidedBuffer( double distance, int segments, Qgis::BufferSide side,
-        Qgis::JoinStyle joinStyle, double miterLimit,
-        QString *errorMsg SIP_OUT = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > singleSidedBuffer( double distance, int segments, Qgis::BufferSide side, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg SIP_OUT = nullptr ) const;
 
     /**
      * Returns the maximum inscribed circle.
@@ -478,7 +475,9 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * \since QGIS 3.20
      */
-    std::unique_ptr< QgsAbstractGeometry > largestEmptyCircle( double tolerance, const QgsAbstractGeometry *boundary = nullptr, QString *errorMsg SIP_OUT = nullptr ) const SIP_THROW( QgsNotSupportedException );
+    std::unique_ptr< QgsAbstractGeometry > largestEmptyCircle( double tolerance, const QgsAbstractGeometry *boundary = nullptr, QString *errorMsg SIP_OUT = nullptr ) const SIP_THROW(
+      QgsNotSupportedException
+    );
 
     /**
      * Returns a linestring geometry which represents the minimum diameter of the geometry.
@@ -874,7 +873,6 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     SIP_SKIP static QgsPoint coordSeqPoint( const GEOSCoordSequence *cs, int i, bool hasZ, bool hasM );
 
   private:
-
 #ifdef SIP_RUN
     QgsGeos( const QgsGeos & );
 #endif
@@ -954,8 +952,7 @@ class QgsGeosException : public std::runtime_error
   public:
     explicit QgsGeosException( const QString &message )
       : std::runtime_error( message.toUtf8().constData() )
-    {
-    }
+    {}
 };
 
 #endif

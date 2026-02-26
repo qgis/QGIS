@@ -40,10 +40,7 @@
 
 using namespace Qt::StringLiterals;
 
-QgsPolyhedralSurface::QgsPolyhedralSurface()
-{
-  mWkbType = Qgis::WkbType::PolyhedralSurface;
-}
+QgsPolyhedralSurface::QgsPolyhedralSurface() { mWkbType = Qgis::WkbType::PolyhedralSurface; }
 
 QgsPolyhedralSurface::QgsPolyhedralSurface( const QgsMultiPolygon *multiPolygon )
 {
@@ -61,10 +58,7 @@ QgsPolyhedralSurface::QgsPolyhedralSurface( const QgsMultiPolygon *multiPolygon 
   setZMTypeFromSubGeometry( multiPolygon->polygonN( 0 ), Qgis::WkbType::PolyhedralSurface );
 }
 
-QgsPolyhedralSurface::~QgsPolyhedralSurface()
-{
-  QgsPolyhedralSurface::clear();
-}
+QgsPolyhedralSurface::~QgsPolyhedralSurface() { QgsPolyhedralSurface::clear(); }
 
 QgsPolyhedralSurface *QgsPolyhedralSurface::createEmptyWithSameType() const
 {
@@ -73,15 +67,9 @@ QgsPolyhedralSurface *QgsPolyhedralSurface::createEmptyWithSameType() const
   return result.release();
 }
 
-QString QgsPolyhedralSurface::geometryType() const
-{
-  return u"PolyhedralSurface"_s;
-}
+QString QgsPolyhedralSurface::geometryType() const { return u"PolyhedralSurface"_s; }
 
-int QgsPolyhedralSurface::dimension() const
-{
-  return 2;
-}
+int QgsPolyhedralSurface::dimension() const { return 2; }
 
 QgsPolyhedralSurface::QgsPolyhedralSurface( const QgsPolyhedralSurface &p )
   : QgsSurface( p )
@@ -116,10 +104,7 @@ QgsPolyhedralSurface &QgsPolyhedralSurface::operator=( const QgsPolyhedralSurfac
   return *this;
 }
 
-QgsPolyhedralSurface *QgsPolyhedralSurface::clone() const
-{
-  return new QgsPolyhedralSurface( *this );
-}
+QgsPolyhedralSurface *QgsPolyhedralSurface::clone() const { return new QgsPolyhedralSurface( *this ); }
 
 void QgsPolyhedralSurface::clear()
 {
@@ -156,13 +141,13 @@ bool QgsPolyhedralSurface::fromWkb( QgsConstWkbPtr &wkbPtr )
     Qgis::WkbType flatPolygonType = QgsWkbTypes::flatType( polygonType );
     if ( flatPolygonType == Qgis::WkbType::Polygon )
     {
-      currentPatch = std::make_unique<QgsPolygon>( );
+      currentPatch = std::make_unique<QgsPolygon>();
     }
     else
     {
       return false;
     }
-    currentPatch->fromWkb( wkbPtr );  // also updates wkbPtr
+    currentPatch->fromWkb( wkbPtr ); // also updates wkbPtr
     mPatches.append( currentPatch.release() );
   }
 
@@ -182,8 +167,7 @@ bool QgsPolyhedralSurface::fromWkt( const QString &wkt )
 
   QString secondWithoutParentheses = parts.second;
   secondWithoutParentheses = secondWithoutParentheses.remove( '(' ).remove( ')' ).simplified().remove( ' ' );
-  if ( ( parts.second.compare( "EMPTY"_L1, Qt::CaseInsensitive ) == 0 ) ||
-       secondWithoutParentheses.isEmpty() )
+  if ( ( parts.second.compare( "EMPTY"_L1, Qt::CaseInsensitive ) == 0 ) || secondWithoutParentheses.isEmpty() )
     return true;
 
   QString defaultChildWkbType = u"Polygon%1%2"_s.arg( is3D() ? u"Z"_s : QString(), isMeasure() ? u"M"_s : QString() );
@@ -342,10 +326,7 @@ void QgsPolyhedralSurface::normalize()
       }
 
       // sort rings
-      std::sort( interiorRings.begin(), interiorRings.end(), []( const QgsCurve * a, const QgsCurve * b )
-      {
-        return a->compareTo( b ) > 0;
-      } );
+      std::sort( interiorRings.begin(), interiorRings.end(), []( const QgsCurve *a, const QgsCurve *b ) { return a->compareTo( b ) > 0; } );
 
       patch->removeInteriorRings();
       for ( QgsCurve *curve : interiorRings )
@@ -651,15 +632,12 @@ int QgsPolyhedralSurface::vertexNumberFromVertexId( QgsVertexId id ) const
   return -1; // should not happen
 }
 
-bool QgsPolyhedralSurface::isEmpty() const
-{
-  return mPatches.isEmpty();
-}
+bool QgsPolyhedralSurface::isEmpty() const { return mPatches.isEmpty(); }
 
 double QgsPolyhedralSurface::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt, QgsVertexId &vertexAfter, int *leftOf, double epsilon ) const
 {
   QVector<QgsPolygon *> segmentList = mPatches;
-  return QgsGeometryUtils::closestSegmentFromComponents( segmentList, QgsGeometryUtils::Part, pt, segmentPt,  vertexAfter, leftOf, epsilon );
+  return QgsGeometryUtils::closestSegmentFromComponents( segmentList, QgsGeometryUtils::Part, pt, segmentPt, vertexAfter, leftOf, epsilon );
 }
 
 bool QgsPolyhedralSurface::nextVertex( QgsVertexId &vId, QgsPoint &vertex ) const
@@ -763,10 +741,7 @@ bool QgsPolyhedralSurface::deleteVertex( QgsVertexId vId )
   return success;
 }
 
-bool QgsPolyhedralSurface::hasCurvedSegments() const
-{
-  return false;
-}
+bool QgsPolyhedralSurface::hasCurvedSegments() const { return false; }
 
 QgsAbstractGeometry *QgsPolyhedralSurface::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
 {
@@ -812,10 +787,7 @@ int QgsPolyhedralSurface::ringCount( int part ) const
   return mPatches[part]->ringCount();
 }
 
-int QgsPolyhedralSurface::partCount() const
-{
-  return mPatches.size();
-}
+int QgsPolyhedralSurface::partCount() const { return mPatches.size(); }
 
 QgsPoint QgsPolyhedralSurface::vertexAt( QgsVertexId id ) const
 {
@@ -954,7 +926,7 @@ QgsMultiPolygon *QgsPolyhedralSurface::toMultiPolygon() const
   return multiPolygon.release();
 }
 
-void QgsPolyhedralSurface::filterVertices( const std::function<bool ( const QgsPoint & )> &filter )
+void QgsPolyhedralSurface::filterVertices( const std::function<bool( const QgsPoint & )> &filter )
 {
   for ( QgsPolygon *patch : std::as_const( mPatches ) )
   {
@@ -974,15 +946,9 @@ void QgsPolyhedralSurface::transformVertices( const std::function<QgsPoint( cons
   clearCache();
 }
 
-int QgsPolyhedralSurface::childCount() const
-{
-  return mPatches.count();
-}
+int QgsPolyhedralSurface::childCount() const { return mPatches.count(); }
 
-QgsAbstractGeometry *QgsPolyhedralSurface::childGeometry( int index ) const
-{
-  return mPatches.at( index );
-}
+QgsAbstractGeometry *QgsPolyhedralSurface::childGeometry( int index ) const { return mPatches.at( index ); }
 
 int QgsPolyhedralSurface::compareToSameClass( const QgsAbstractGeometry *other ) const
 {

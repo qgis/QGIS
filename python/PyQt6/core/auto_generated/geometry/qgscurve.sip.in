@@ -11,7 +11,7 @@
 
 
 
-class QgsCurve: QgsAbstractGeometry /Abstract/
+class QgsCurve : QgsAbstractGeometry /Abstract/
 {
 %Docstring(signature="appended")
 Abstract base class for curved geometry type.
@@ -21,7 +21,6 @@ Abstract base class for curved geometry type.
 #include "qgscurve.h"
 %End
   public:
-
     QgsCurve();
 
     virtual bool equals( const QgsCurve &other ) const = 0;
@@ -51,7 +50,7 @@ Returns the end point of the curve.
 .. seealso:: :py:func:`startPoint`
 %End
 
-    virtual bool isClosed() const /HoldGIL/;
+    virtual bool isClosed() const;
 %Docstring
 Returns ``True`` if the curve is closed.
 

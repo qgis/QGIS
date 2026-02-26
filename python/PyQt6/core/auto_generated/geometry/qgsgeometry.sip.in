@@ -105,7 +105,7 @@ as the point, line, polygon, curve or other geometry subclasses.
     static const QMetaObject staticMetaObject;
 
   public:
-    QgsGeometry() /HoldGIL/;
+    QgsGeometry();
 
     QgsGeometry( const QgsGeometry & );
 %Docstring

@@ -32,14 +32,14 @@ using namespace Qt::StringLiterals;
  * \class QgsCircularString
  * \brief Circular string geometry type.
  */
-class CORE_EXPORT QgsCircularString: public QgsCurve
+class CORE_EXPORT QgsCircularString : public QgsCurve
 {
   public:
-
     /**
      * Constructs an empty circular string.
      */
-    QgsCircularString() SIP_HOLDGIL;
+    QgsCircularString()
+    SIP_HOLDGIL;
 
     /**
      * Constructs a circular string with a single

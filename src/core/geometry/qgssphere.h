@@ -44,13 +44,12 @@ class QgsVector3D;
  */
 class CORE_EXPORT QgsSphere
 {
-
   public:
-
     /**
      * Constructor for an invalid QgsSphere.
      */
-    QgsSphere() SIP_HOLDGIL = default;
+    QgsSphere()
+    SIP_HOLDGIL = default;
 
     /**
      * Constructor for QgsSphere with the specified center (\a x, \a y, \a z) and \a radius.

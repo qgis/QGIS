@@ -27,14 +27,14 @@ class QgsSurface;
  * \class QgsMultiSurface
  * \brief Multi surface geometry collection.
  */
-class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
+class CORE_EXPORT QgsMultiSurface : public QgsGeometryCollection
 {
   public:
-
     /**
      * Constructor for an empty multisurface geometry.
      */
-    QgsMultiSurface() SIP_HOLDGIL;
+    QgsMultiSurface()
+    SIP_HOLDGIL;
 
 #ifndef SIP_RUN
 

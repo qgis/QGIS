@@ -32,10 +32,9 @@ class QgsLineString;
  * \class QgsCurve
  * \brief Abstract base class for curved geometry type.
  */
-class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
+class CORE_EXPORT QgsCurve : public QgsAbstractGeometry SIP_ABSTRACT
 {
   public:
-
     QgsCurve() = default;
 
     /**
@@ -65,7 +64,8 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
      *
      * \see isClosed2D()
      */
-    virtual bool isClosed() const SIP_HOLDGIL;
+    virtual bool isClosed() const
+    SIP_HOLDGIL;
 
     /**
      * Returns true if the curve is closed.

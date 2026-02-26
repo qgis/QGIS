@@ -28,8 +28,7 @@ quadrilateral (which does not self-intersect).
 #include "qgsquadrilateral.h"
 %End
   public:
-
-    QgsQuadrilateral() /HoldGIL/;
+    QgsQuadrilateral();
 %Docstring
 Constructor for an empty quadrilateral geometry.
 %End

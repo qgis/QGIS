@@ -82,18 +82,10 @@ QgsOrientedBox3D::QgsOrientedBox3D( const QgsVector3D &center, const QgsVector3D
 
 QgsOrientedBox3D QgsOrientedBox3D::fromBox3D( const QgsBox3D &box )
 {
-  return QgsOrientedBox3D( box.center(), QList< QgsVector3D >
-  {
-    QgsVector3D( box.width() * 0.5, 0, 0 ),
-    QgsVector3D( 0, box.height() * 0.5, 0 ),
-    QgsVector3D( 0, 0, box.depth() * 0.5 )
-  } );
+  return QgsOrientedBox3D( box.center(), QList< QgsVector3D > { QgsVector3D( box.width() * 0.5, 0, 0 ), QgsVector3D( 0, box.height() * 0.5, 0 ), QgsVector3D( 0, 0, box.depth() * 0.5 ) } );
 }
 
-bool QgsOrientedBox3D::isNull() const
-{
-  return std::isnan( mCenter[0] ) || std::isnan( mCenter[1] ) || std::isnan( mCenter[2] );
-}
+bool QgsOrientedBox3D::isNull() const { return std::isnan( mCenter[0] ) || std::isnan( mCenter[1] ) || std::isnan( mCenter[2] ); }
 
 QList< double > QgsOrientedBox3D::halfAxesList() const
 {
@@ -108,8 +100,7 @@ QList< double > QgsOrientedBox3D::halfAxesList() const
 
 QgsBox3D QgsOrientedBox3D::extent() const
 {
-  const double extent[3]
-  {
+  const double extent[3] {
     std::fabs( mHalfAxes[0] ) + std::fabs( mHalfAxes[3] ) + std::fabs( mHalfAxes[6] ),
     std::fabs( mHalfAxes[1] ) + std::fabs( mHalfAxes[4] ) + std::fabs( mHalfAxes[7] ),
     std::fabs( mHalfAxes[2] ) + std::fabs( mHalfAxes[5] ) + std::fabs( mHalfAxes[8] ),
@@ -175,12 +166,18 @@ QgsBox3D QgsOrientedBox3D::reprojectedExtent( const QgsCoordinateTransform &ct )
   QgsVector3D v0 = c[0], v1 = c[0];
   for ( const QgsVector3D &v : std::as_const( c ) )
   {
-    if ( v.x() < v0.x() ) v0.setX( v.x() );
-    if ( v.y() < v0.y() ) v0.setY( v.y() );
-    if ( v.z() < v0.z() ) v0.setZ( v.z() );
-    if ( v.x() > v1.x() ) v1.setX( v.x() );
-    if ( v.y() > v1.y() ) v1.setY( v.y() );
-    if ( v.z() > v1.z() ) v1.setZ( v.z() );
+    if ( v.x() < v0.x() )
+      v0.setX( v.x() );
+    if ( v.y() < v0.y() )
+      v0.setY( v.y() );
+    if ( v.z() < v0.z() )
+      v0.setZ( v.z() );
+    if ( v.x() > v1.x() )
+      v1.setX( v.x() );
+    if ( v.y() > v1.y() )
+      v1.setY( v.y() );
+    if ( v.z() > v1.z() )
+      v1.setZ( v.z() );
   }
   return QgsBox3D( v0.x(), v0.y(), v0.z(), v1.x(), v1.y(), v1.z() );
 }
@@ -188,10 +185,7 @@ QgsBox3D QgsOrientedBox3D::reprojectedExtent( const QgsCoordinateTransform &ct )
 QgsOrientedBox3D QgsOrientedBox3D::transformed( const QgsMatrix4x4 &transform ) const
 {
   const double *ptr = transform.constData();
-  const QgsMatrix4x4 mm( ptr[0], ptr[4], ptr[8], 0,
-                         ptr[1], ptr[5], ptr[9], 0,
-                         ptr[2], ptr[6], ptr[10], 0,
-                         0, 0, 0, 1 );
+  const QgsMatrix4x4 mm( ptr[0], ptr[4], ptr[8], 0, ptr[1], ptr[5], ptr[9], 0, ptr[2], ptr[6], ptr[10], 0, 0, 0, 0, 1 );
 
   const QgsVector3D trCenter = transform.map( QgsVector3D( mCenter[0], mCenter[1], mCenter[2] ) );
 
@@ -199,10 +193,9 @@ QgsOrientedBox3D QgsOrientedBox3D::transformed( const QgsMatrix4x4 &transform ) 
   const QgsVector3D col2 = mm.map( QgsVector3D( mHalfAxes[3], mHalfAxes[4], mHalfAxes[5] ) );
   const QgsVector3D col3 = mm.map( QgsVector3D( mHalfAxes[6], mHalfAxes[7], mHalfAxes[8] ) );
 
-  return QgsOrientedBox3D( QList<double>() << trCenter.x() << trCenter.y() << trCenter.z(),
-                           QList<double>() << col1.x() << col1.y() << col1.z()
-                           << col2.x() << col2.y() << col2.z()
-                           << col3.x() << col3.y() << col3.z() );
+  return QgsOrientedBox3D(
+    QList<double>() << trCenter.x() << trCenter.y() << trCenter.z(), QList<double>() << col1.x() << col1.y() << col1.z() << col2.x() << col2.y() << col2.z() << col3.x() << col3.y() << col3.z()
+  );
 }
 
 bool QgsOrientedBox3D::intersects( const QgsOrientedBox3D &other ) const
@@ -211,19 +204,10 @@ bool QgsOrientedBox3D::intersects( const QgsOrientedBox3D &other ) const
   // based off section 5 in OBBTree: A Hierarchical Structure for Rapid Interference Detection (1996)
 
   const QgsVector3D thisCenter = center();
-  const QgsVector3D thisHalfAxis[3]
-  {
-    { mHalfAxes[0], mHalfAxes[1], mHalfAxes[2] },
-    { mHalfAxes[3], mHalfAxes[4], mHalfAxes[5] },
-    { mHalfAxes[6], mHalfAxes[7], mHalfAxes[8] }
-  };
+  const QgsVector3D thisHalfAxis[3] { { mHalfAxes[0], mHalfAxes[1], mHalfAxes[2] }, { mHalfAxes[3], mHalfAxes[4], mHalfAxes[5] }, { mHalfAxes[6], mHalfAxes[7], mHalfAxes[8] } };
   const QgsVector3D otherCenter = other.center();
-  const QgsVector3D otherHalfAxis[3]
-  {
-    { other.mHalfAxes[0], other.mHalfAxes[1], other.mHalfAxes[2] },
-    { other.mHalfAxes[3], other.mHalfAxes[4], other.mHalfAxes[5] },
-    { other.mHalfAxes[6], other.mHalfAxes[7], other.mHalfAxes[8] }
-  };
+  const QgsVector3D otherHalfAxis
+    [3] { { other.mHalfAxes[0], other.mHalfAxes[1], other.mHalfAxes[2] }, { other.mHalfAxes[3], other.mHalfAxes[4], other.mHalfAxes[5] }, { other.mHalfAxes[6], other.mHalfAxes[7], other.mHalfAxes[8] } };
 
   for ( int a = 0; a < 3; ++a )
   {
@@ -238,8 +222,10 @@ bool QgsOrientedBox3D::intersects( const QgsOrientedBox3D &other ) const
       lAxis.normalize();
 
       const double tl = std::abs( QgsVector3D::dotProduct( lAxis, otherCenter ) - QgsVector3D::dotProduct( lAxis, thisCenter ) );
-      const double ra = std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[0] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[1] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[2] ) );
-      const double rb = std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[0] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[1] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[2] ) );
+      const double ra = std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[0] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[1] ) )
+                        + std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[2] ) );
+      const double rb = std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[0] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[1] ) )
+                        + std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[2] ) );
       const double penetration = ( ra + rb ) - tl;
       if ( penetration <= 0 )
         return false;
@@ -252,8 +238,10 @@ bool QgsOrientedBox3D::intersects( const QgsOrientedBox3D &other ) const
     lAxis.normalize();
 
     const double tl = std::abs( QgsVector3D::dotProduct( lAxis, otherCenter ) - QgsVector3D::dotProduct( lAxis, thisCenter ) );
-    const double ra = std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[0] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[1] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[2] ) );
-    const double rb = std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[0] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[1] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[2] ) );
+    const double ra = std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[0] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[1] ) )
+                      + std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[2] ) );
+    const double rb = std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[0] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[1] ) )
+                      + std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[2] ) );
     const double penetration = ( ra + rb ) - tl;
     if ( penetration <= 0 )
       return false;
@@ -265,8 +253,10 @@ bool QgsOrientedBox3D::intersects( const QgsOrientedBox3D &other ) const
     lAxis.normalize();
 
     const double tl = std::abs( QgsVector3D::dotProduct( lAxis, otherCenter ) - QgsVector3D::dotProduct( lAxis, thisCenter ) );
-    const double ra = std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[0] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[1] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[2] ) );
-    const double rb = std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[0] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[1] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[2] ) );
+    const double ra = std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[0] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[1] ) )
+                      + std::abs( QgsVector3D::dotProduct( lAxis, thisHalfAxis[2] ) );
+    const double rb = std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[0] ) ) + std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[1] ) )
+                      + std::abs( QgsVector3D::dotProduct( lAxis, otherHalfAxis[2] ) );
     const double penetration = ( ra + rb ) - tl;
     if ( penetration <= 0 )
       return false;

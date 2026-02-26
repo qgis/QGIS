@@ -42,7 +42,6 @@ class QgsFeedback;
 class QgsInternalGeometryEngine
 {
   public:
-
     /**
      * The caller is responsible that the geometry is available and unchanged
      * for the whole lifetime of this object.
@@ -189,8 +188,9 @@ class QgsInternalGeometryEngine
      *
      * \since QGIS 3.10
      */
-    QVector< QgsPointXY > randomPointsInPolygon( int count,
-        const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed = 0, QgsFeedback *feedback = nullptr, int maxTriesPerPoint = 0 );
+    QVector< QgsPointXY > randomPointsInPolygon(
+      int count, const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed = 0, QgsFeedback *feedback = nullptr, int maxTriesPerPoint = 0
+    );
 
     /**
      * Attempts to convert a non-curved geometry into a curved geometry type (e.g.
@@ -338,11 +338,11 @@ class QgsInternalGeometryEngine
      *
      * \since QGIS 3.24
      */
-    QgsGeometry applyDashPattern( const QVector< double > &pattern,
-                                  Qgis::DashPatternLineEndingRule startRule = Qgis::DashPatternLineEndingRule::NoRule,
-                                  Qgis::DashPatternLineEndingRule endRule = Qgis::DashPatternLineEndingRule::NoRule,
-                                  Qgis::DashPatternSizeAdjustment adjustment = Qgis::DashPatternSizeAdjustment::ScaleBothDashAndGap,
-                                  double patternOffset = 0 ) const;
+    QgsGeometry applyDashPattern(
+      const QVector< double > &pattern, Qgis::DashPatternLineEndingRule startRule = Qgis::DashPatternLineEndingRule::NoRule,
+      Qgis::DashPatternLineEndingRule endRule = Qgis::DashPatternLineEndingRule::NoRule, Qgis::DashPatternSizeAdjustment adjustment = Qgis::DashPatternSizeAdjustment::ScaleBothDashAndGap,
+      double patternOffset = 0
+    ) const;
 
   private:
     const QgsAbstractGeometry *mGeometry = nullptr;
@@ -359,7 +359,6 @@ class QgsInternalGeometryEngine
 class CORE_EXPORT QgsRay2D
 {
   public:
-
     /**
      * Constructor for a ray starting at the given \a origin and extending an infinite distance
      * in the specified \a direction.
@@ -379,7 +378,6 @@ class CORE_EXPORT QgsRay2D
     bool intersects( const QgsLineSegment2D &segment, QgsPointXY &intersectPoint ) const;
 
   private:
-
     QgsPointXY origin;
     QgsVector direction;
 };
@@ -400,7 +398,6 @@ class CORE_EXPORT QgsRay2D
 class CORE_EXPORT QgsLineSegmentDistanceComparer
 {
   public:
-
     /**
      * Constructor for QgsLineSegmentDistanceComparer, comparing points
      * to the specified \a origin point.
@@ -419,9 +416,7 @@ class CORE_EXPORT QgsLineSegmentDistanceComparer
     bool operator()( QgsLineSegment2D ab, QgsLineSegment2D cd ) const;
 
   private:
-
     QgsPointXY mOrigin;
-
 };
 
 
@@ -443,9 +438,7 @@ class CORE_EXPORT QgsClockwiseAngleComparer
     bool operator()( const QgsPointXY &a, const QgsPointXY &b ) const;
 
   private:
-
     QgsPointXY mVertex;
-
 };
 
 ///@endcond PRIVATE

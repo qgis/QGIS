@@ -28,10 +28,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 using namespace Qt::StringLiterals;
 
-QgsMultiLineString::QgsMultiLineString()
-{
-  mWkbType = Qgis::WkbType::MultiLineString;
-}
+QgsMultiLineString::QgsMultiLineString() { mWkbType = Qgis::WkbType::MultiLineString; }
 
 QgsMultiLineString::QgsMultiLineString( const QList<QgsLineString> &linestrings )
 {
@@ -61,20 +58,11 @@ QgsMultiLineString::QgsMultiLineString( const QList<QgsLineString *> &linestring
   setZMTypeFromSubGeometry( linestrings.at( 0 ), Qgis::WkbType::MultiLineString );
 }
 
-QgsLineString *QgsMultiLineString::lineStringN( int index )
-{
-  return qgsgeometry_cast< QgsLineString * >( geometryN( index ) );
-}
+QgsLineString *QgsMultiLineString::lineStringN( int index ) { return qgsgeometry_cast< QgsLineString * >( geometryN( index ) ); }
 
-const QgsLineString *QgsMultiLineString::lineStringN( int index ) const
-{
-  return qgsgeometry_cast< const QgsLineString * >( geometryN( index ) );
-}
+const QgsLineString *QgsMultiLineString::lineStringN( int index ) const { return qgsgeometry_cast< const QgsLineString * >( geometryN( index ) ); }
 
-QString QgsMultiLineString::geometryType() const
-{
-  return u"MultiLineString"_s;
-}
+QString QgsMultiLineString::geometryType() const { return u"MultiLineString"_s; }
 
 QgsMultiLineString *QgsMultiLineString::createEmptyWithSameType() const
 {
@@ -83,10 +71,7 @@ QgsMultiLineString *QgsMultiLineString::createEmptyWithSameType() const
   return result.release();
 }
 
-QgsMultiLineString *QgsMultiLineString::clone() const
-{
-  return new QgsMultiLineString( *this );
-}
+QgsMultiLineString *QgsMultiLineString::clone() const { return new QgsMultiLineString( *this ); }
 
 void QgsMultiLineString::clear()
 {
@@ -94,10 +79,7 @@ void QgsMultiLineString::clear()
   mWkbType = Qgis::WkbType::MultiLineString;
 }
 
-bool QgsMultiLineString::fromWkt( const QString &wkt )
-{
-  return fromCollectionWkt( wkt, {Qgis::WkbType::LineString }, u"LineString"_s );
-}
+bool QgsMultiLineString::fromWkt( const QString &wkt ) { return fromCollectionWkt( wkt, { Qgis::WkbType::LineString }, u"LineString"_s ); }
 
 QDomElement QgsMultiLineString::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
@@ -141,7 +123,7 @@ QDomElement QgsMultiLineString::asGml3( QDomDocument &doc, int precision, const 
 
 json QgsMultiLineString::asJsonObject( int precision ) const
 {
-  json coordinates( json::array( ) );
+  json coordinates( json::array() );
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     if ( qgsgeometry_cast<const QgsCurve *>( geom ) )
@@ -152,11 +134,7 @@ json QgsMultiLineString::asJsonObject( int precision ) const
       coordinates.push_back( QgsGeometryUtils::pointsToJson( pts, precision ) );
     }
   }
-  return
-  {
-    { "type",  "MultiLineString" },
-    { "coordinates", coordinates }
-  };
+  return { { "type", "MultiLineString" }, { "coordinates", coordinates } };
 }
 
 bool QgsMultiLineString::addGeometry( QgsAbstractGeometry *g )
@@ -248,10 +226,7 @@ QgsMultiCurve *QgsMultiLineString::toCurveType() const
   return multiCurve;
 }
 
-bool QgsMultiLineString::wktOmitChildType() const
-{
-  return true;
-}
+bool QgsMultiLineString::wktOmitChildType() const { return true; }
 
 QgsMultiLineString *QgsMultiLineString::measuredLine( double start, double end ) const
 {
@@ -263,17 +238,17 @@ QgsMultiLineString *QgsMultiLineString::measuredLine( double start, double end )
   }
 
   /* Calculate the total length of the line */
-  const double length{this->length()};
-  const double range{end - start};
-  double lengthSoFar{0.0};
+  const double length { this->length() };
+  const double range { end - start };
+  double lengthSoFar { 0.0 };
 
   result->reserve( numGeometries() );
   for ( int i = 0; i < numGeometries(); i++ )
   {
-    const double subLength{geometryN( i )->length()};
+    const double subLength { geometryN( i )->length() };
 
-    const double subStart{ ( start + range *lengthSoFar / length ) };
-    const double subEnd{ ( start + range * ( lengthSoFar + subLength ) / length ) };
+    const double subStart { ( start + range * lengthSoFar / length ) };
+    const double subEnd { ( start + range * ( lengthSoFar + subLength ) / length ) };
 
     std::unique_ptr< QgsLineString > measuredLine = qgsgeometry_cast<const QgsLineString *>( geometryN( i ) )->measuredLine( subStart, subEnd );
     result->addGeometry( measuredLine.release() );

@@ -79,6 +79,7 @@ typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
  */
 class CORE_EXPORT QgsAbstractGeometry
 {
+    // clang-format off
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -158,6 +159,8 @@ class CORE_EXPORT QgsAbstractGeometry
       YX
     };
     Q_ENUM( QgsAbstractGeometry::AxisOrder )
+
+    // clang-format on
 
     QgsAbstractGeometry() = default;
     virtual ~QgsAbstractGeometry() = default;
@@ -243,7 +246,8 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see geometryType
      * \see wktTypeStr
      */
-    inline Qgis::WkbType wkbType() const SIP_HOLDGIL { return mWkbType; }
+    inline Qgis::WkbType wkbType() const
+    SIP_HOLDGIL { return mWkbType; }
 
     /**
      * Returns the WKT type string of the geometry.

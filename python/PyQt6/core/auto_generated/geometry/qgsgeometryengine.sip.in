@@ -15,7 +15,7 @@
 #include <qgsgeos.h>
 %End
 
-class QgsGeometryEngine
+  class QgsGeometryEngine
 {
 %Docstring(signature="appended")
 A geometry engine is a low-level representation of a
@@ -145,7 +145,7 @@ Calculate the combination of this and ``geometries``.
                    combination results (since QGIS 3.28)
 %End
 
-    virtual QgsAbstractGeometry *combine( const QVector< QgsGeometry > &geometries, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 /Factory/;
+    virtual QgsAbstractGeometry *combine( const QVector< QgsGeometry > &geometries, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0
 %Docstring
 Calculate the combination of this and ``geometries``.
 
@@ -154,6 +154,7 @@ Calculate the combination of this and ``geometries``.
 :param parameters: can be used to specify parameters which control the
                    combination results (since QGIS 3.28)
 %End
+      /Factory/;
 
     virtual QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 /Factory/;
 %Docstring
@@ -292,10 +293,9 @@ Checks if this is equal to ``geom``. If both are Null geometries,
 Determines whether the geometry is simple (according to OGC definition).
 %End
 
-    virtual QgsGeometryEngine::EngineOperationResult splitGeometry( const QgsLineString &splitLine,
-        QVector<QgsGeometry > &newGeometries /Out/,
-        bool topological,
-        QgsPointSequence &topologyTestPoints, QString *errorMsg = 0, bool skipIntersectionCheck = false ) const;
+    virtual QgsGeometryEngine::EngineOperationResult splitGeometry(
+      const QgsLineString &splitLine, QVector<QgsGeometry > &newGeometries /Out/, bool topological, QgsPointSequence &topologyTestPoints, QString *errorMsg = 0, bool skipIntersectionCheck = false
+    ) const;
 %Docstring
 Splits this geometry according to a given line.
 

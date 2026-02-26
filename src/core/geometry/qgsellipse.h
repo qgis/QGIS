@@ -39,13 +39,12 @@ using namespace Qt::StringLiterals;
  */
 class CORE_EXPORT QgsEllipse
 {
-
   public:
-
     /**
      * Constructor for QgsEllipse.
      */
-    QgsEllipse() SIP_HOLDGIL = default;
+    QgsEllipse()
+    SIP_HOLDGIL = default;
 
     virtual ~QgsEllipse() = default;
 

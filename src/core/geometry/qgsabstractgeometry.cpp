@@ -28,10 +28,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "moc_qgsabstractgeometry.cpp"
 
-QgsAbstractGeometry::QgsAbstractGeometry( const QgsAbstractGeometry &geom )
-{
-  mWkbType = geom.mWkbType;
-}
+QgsAbstractGeometry::QgsAbstractGeometry( const QgsAbstractGeometry &geom ) { mWkbType = geom.mWkbType; }
 
 QgsAbstractGeometry &QgsAbstractGeometry::operator=( const QgsAbstractGeometry &geom )
 {
@@ -84,14 +81,12 @@ void QgsAbstractGeometry::setZMTypeFromSubGeometry( const QgsAbstractGeometry *s
   }
 
   //special handling for 25d types:
-  if ( baseGeomType == Qgis::WkbType::LineString &&
-       ( subgeom->wkbType() == Qgis::WkbType::Point25D || subgeom->wkbType() == Qgis::WkbType::LineString25D ) )
+  if ( baseGeomType == Qgis::WkbType::LineString && ( subgeom->wkbType() == Qgis::WkbType::Point25D || subgeom->wkbType() == Qgis::WkbType::LineString25D ) )
   {
     mWkbType = Qgis::WkbType::LineString25D;
     return;
   }
-  else if ( baseGeomType == Qgis::WkbType::Polygon &&
-            ( subgeom->wkbType() == Qgis::WkbType::Point25D || subgeom->wkbType() == Qgis::WkbType::LineString25D ) )
+  else if ( baseGeomType == Qgis::WkbType::Polygon && ( subgeom->wkbType() == Qgis::WkbType::Point25D || subgeom->wkbType() == Qgis::WkbType::LineString25D ) )
   {
     mWkbType = Qgis::WkbType::Polygon25D;
     return;
@@ -118,15 +113,9 @@ void QgsAbstractGeometry::setZMTypeFromSubGeometry( const QgsAbstractGeometry *s
   }
 }
 
-QgsRectangle QgsAbstractGeometry::boundingBox() const
-{
-  return boundingBox3D().toRectangle();
-}
+QgsRectangle QgsAbstractGeometry::boundingBox() const { return boundingBox3D().toRectangle(); }
 
-QgsRectangle QgsAbstractGeometry::calculateBoundingBox() const
-{
-  return calculateBoundingBox3D().toRectangle();
-}
+QgsRectangle QgsAbstractGeometry::calculateBoundingBox() const { return calculateBoundingBox3D().toRectangle(); }
 
 QgsBox3D QgsAbstractGeometry::calculateBoundingBox3D() const
 {
@@ -177,9 +166,7 @@ QgsBox3D QgsAbstractGeometry::calculateBoundingBox3D() const
   return QgsBox3D( xmin, ymin, zmin, xmax, ymax, zmax );
 }
 
-void QgsAbstractGeometry::clearCache() const
-{
-}
+void QgsAbstractGeometry::clearCache() const {}
 
 int QgsAbstractGeometry::nCoordinates() const
 {
@@ -197,25 +184,13 @@ int QgsAbstractGeometry::nCoordinates() const
   return nCoords;
 }
 
-double QgsAbstractGeometry::length() const
-{
-  return 0.0;
-}
+double QgsAbstractGeometry::length() const { return 0.0; }
 
-double QgsAbstractGeometry::perimeter() const
-{
-  return 0.0;
-}
+double QgsAbstractGeometry::perimeter() const { return 0.0; }
 
-double QgsAbstractGeometry::area() const
-{
-  return 0.0;
-}
+double QgsAbstractGeometry::area() const { return 0.0; }
 
-double QgsAbstractGeometry::area3D() const
-{
-  return 0.0;
-}
+double QgsAbstractGeometry::area3D() const { return 0.0; }
 
 QString QgsAbstractGeometry::wktTypeStr() const
 {
@@ -232,14 +207,12 @@ QString QgsAbstractGeometry::wktTypeStr() const
   return wkt;
 }
 
-QString QgsAbstractGeometry::asJson( int precision )
-{
-  return QString::fromStdString( asJsonObject( precision ).dump() );
-}
+QString QgsAbstractGeometry::asJson( int precision ) { return QString::fromStdString( asJsonObject( precision ).dump() ); }
 
 json QgsAbstractGeometry::asJsonObject( int precision ) const
 {
-  Q_UNUSED( precision ) return nullptr;
+  Q_UNUSED( precision )
+  return nullptr;
 }
 
 QgsPoint QgsAbstractGeometry::centroid() const
@@ -328,12 +301,9 @@ bool QgsAbstractGeometry::convertTo( Qgis::WkbType type )
   return true;
 }
 
-const QgsAbstractGeometry *QgsAbstractGeometry::simplifiedTypeRef() const
-{
-  return this;
-}
+const QgsAbstractGeometry *QgsAbstractGeometry::simplifiedTypeRef() const { return this; }
 
-void QgsAbstractGeometry::filterVertices( const std::function<bool ( const QgsPoint & )> & )
+void QgsAbstractGeometry::filterVertices( const std::function<bool( const QgsPoint & )> & )
 {
   // Ideally this would be pure virtual, but SIP has issues with that
 }
@@ -349,15 +319,9 @@ QgsAbstractGeometry::part_iterator QgsAbstractGeometry::parts_end()
   return part_iterator( this, collection ? collection->partCount() : 1 );
 }
 
-QgsGeometryPartIterator QgsAbstractGeometry::parts()
-{
-  return QgsGeometryPartIterator( this );
-}
+QgsGeometryPartIterator QgsAbstractGeometry::parts() { return QgsGeometryPartIterator( this ); }
 
-QgsGeometryConstPartIterator QgsAbstractGeometry::parts() const
-{
-  return QgsGeometryConstPartIterator( this );
-}
+QgsGeometryConstPartIterator QgsAbstractGeometry::parts() const { return QgsGeometryConstPartIterator( this ); }
 
 QgsAbstractGeometry::const_part_iterator QgsAbstractGeometry::const_parts_end() const
 {
@@ -365,10 +329,7 @@ QgsAbstractGeometry::const_part_iterator QgsAbstractGeometry::const_parts_end() 
   return const_part_iterator( this, collection ? collection->partCount() : 1 );
 }
 
-QgsVertexIterator QgsAbstractGeometry::vertices() const
-{
-  return QgsVertexIterator( this );
-}
+QgsVertexIterator QgsAbstractGeometry::vertices() const { return QgsVertexIterator( this ); }
 
 int QgsAbstractGeometry::sortIndex() const
 {
@@ -408,10 +369,7 @@ int QgsAbstractGeometry::sortIndex() const
   return 13;
 }
 
-bool QgsAbstractGeometry::hasChildGeometries() const
-{
-  return QgsWkbTypes::isMultiType( wkbType() ) || dimension() == 2;
-}
+bool QgsAbstractGeometry::hasChildGeometries() const { return QgsWkbTypes::isMultiType( wkbType() ) || dimension() == 2; }
 
 QgsPoint QgsAbstractGeometry::childPoint( int index ) const
 {
@@ -426,20 +384,11 @@ bool QgsAbstractGeometry::isEmpty() const
   return !nextVertex( vId, vertex );
 }
 
-bool QgsAbstractGeometry::hasCurvedSegments() const
-{
-  return false;
-}
+bool QgsAbstractGeometry::hasCurvedSegments() const { return false; }
 
-bool QgsAbstractGeometry::boundingBoxIntersects( const QgsRectangle &rectangle ) const
-{
-  return boundingBox().intersects( rectangle );
-}
+bool QgsAbstractGeometry::boundingBoxIntersects( const QgsRectangle &rectangle ) const { return boundingBox().intersects( rectangle ); }
 
-bool QgsAbstractGeometry::boundingBoxIntersects( const QgsBox3D &box3d ) const
-{
-  return boundingBox3D().intersects( box3d );
-}
+bool QgsAbstractGeometry::boundingBoxIntersects( const QgsBox3D &box3d ) const { return boundingBox3D().intersects( box3d ); }
 
 QgsAbstractGeometry *QgsAbstractGeometry::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
 {
@@ -456,15 +405,15 @@ QgsAbstractGeometry::vertex_iterator::vertex_iterator( const QgsAbstractGeometry
   levels[0].g = g;
   levels[0].index = index;
 
-  digDown();  // go to the leaf level of the first vertex
+  digDown(); // go to the leaf level of the first vertex
 }
 
 QgsAbstractGeometry::vertex_iterator &QgsAbstractGeometry::vertex_iterator::operator++()
 {
   if ( depth == 0 && levels[0].index >= levels[0].g->childCount() )
-    return *this;  // end of geometry - nowhere else to go
+    return *this; // end of geometry - nowhere else to go
 
-  Q_ASSERT( !levels[depth].g->hasChildGeometries() );  // we should be at a leaf level
+  Q_ASSERT( !levels[depth].g->hasChildGeometries() ); // we should be at a leaf level
 
   ++levels[depth].index;
 
@@ -475,7 +424,7 @@ QgsAbstractGeometry::vertex_iterator &QgsAbstractGeometry::vertex_iterator::oper
     ++levels[depth].index;
   }
 
-  digDown();  // go to the leaf level again
+  digDown(); // go to the leaf level again
 
   return *this;
 }
@@ -539,13 +488,13 @@ bool QgsAbstractGeometry::vertex_iterator::operator==( const QgsAbstractGeometry
 void QgsAbstractGeometry::vertex_iterator::digDown()
 {
   if ( levels[depth].g->hasChildGeometries() && levels[depth].index >= levels[depth].g->childCount() )
-    return;  // first check we are not already at the end
+    return; // first check we are not already at the end
 
   // while not "final" depth for the geom: go one level down.
   while ( levels[depth].g->hasChildGeometries() )
   {
     ++depth;
-    Q_ASSERT( depth < 3 );  // that's capacity of the levels array
+    Q_ASSERT( depth < 3 ); // that's capacity of the levels array
     levels[depth].index = 0;
     levels[depth].g = levels[depth - 1].g->childGeometry( levels[depth - 1].index );
   }
@@ -560,8 +509,7 @@ QgsPoint QgsVertexIterator::next()
 QgsAbstractGeometry::part_iterator::part_iterator( QgsAbstractGeometry *g, int index )
   : mIndex( index )
   , mGeometry( g )
-{
-}
+{}
 
 QgsAbstractGeometry::part_iterator &QgsAbstractGeometry::part_iterator::operator++()
 {
@@ -597,15 +545,9 @@ QgsAbstractGeometry *QgsAbstractGeometry::part_iterator::operator*() const
   return collection->geometryN( mIndex );
 }
 
-int QgsAbstractGeometry::part_iterator::partNumber() const
-{
-  return mIndex;
-}
+int QgsAbstractGeometry::part_iterator::partNumber() const { return mIndex; }
 
-bool QgsAbstractGeometry::part_iterator::operator==( QgsAbstractGeometry::part_iterator other ) const
-{
-  return mGeometry == other.mGeometry && mIndex == other.mIndex;
-}
+bool QgsAbstractGeometry::part_iterator::operator==( QgsAbstractGeometry::part_iterator other ) const { return mGeometry == other.mGeometry && mIndex == other.mIndex; }
 
 QgsAbstractGeometry *QgsGeometryPartIterator::next()
 {
@@ -614,12 +556,10 @@ QgsAbstractGeometry *QgsGeometryPartIterator::next()
 }
 
 
-
 QgsAbstractGeometry::const_part_iterator::const_part_iterator( const QgsAbstractGeometry *g, int index )
   : mIndex( index )
   , mGeometry( g )
-{
-}
+{}
 
 QgsAbstractGeometry::const_part_iterator &QgsAbstractGeometry::const_part_iterator::operator++()
 {
@@ -655,15 +595,9 @@ const QgsAbstractGeometry *QgsAbstractGeometry::const_part_iterator::operator*()
   return collection->geometryN( mIndex );
 }
 
-int QgsAbstractGeometry::const_part_iterator::partNumber() const
-{
-  return mIndex;
-}
+int QgsAbstractGeometry::const_part_iterator::partNumber() const { return mIndex; }
 
-bool QgsAbstractGeometry::const_part_iterator::operator==( QgsAbstractGeometry::const_part_iterator other ) const
-{
-  return mGeometry == other.mGeometry && mIndex == other.mIndex;
-}
+bool QgsAbstractGeometry::const_part_iterator::operator==( QgsAbstractGeometry::const_part_iterator other ) const { return mGeometry == other.mGeometry && mIndex == other.mIndex; }
 
 const QgsAbstractGeometry *QgsGeometryConstPartIterator::next()
 {
@@ -671,7 +605,4 @@ const QgsAbstractGeometry *QgsGeometryConstPartIterator::next()
   return *n;
 }
 
-bool QgsAbstractGeometry::vertex_iterator::Level::operator==( const QgsAbstractGeometry::vertex_iterator::Level &other ) const
-{
-  return g == other.g && index == other.index;
-}
+bool QgsAbstractGeometry::vertex_iterator::Level::operator==( const QgsAbstractGeometry::vertex_iterator::Level &other ) const { return g == other.g && index == other.index; }

@@ -39,21 +39,21 @@
 class CORE_EXPORT QgsRegularPolygon
 {
   public:
-
     /**
      * A regular polygon can be constructed inscribed in a circle or circumscribed about a circle.
      *
      */
     enum ConstructionOption
     {
-      InscribedCircle, //!< Inscribed in a circle (the radius is the distance between the center and vertices)
+      InscribedCircle,    //!< Inscribed in a circle (the radius is the distance between the center and vertices)
       CircumscribedCircle //!< Circumscribed about a circle (the radius is the distance from the center to the midpoints of the sides)
     };
 
     /**
      * Constructor for QgsRegularPolygon.
      */
-    QgsRegularPolygon() SIP_HOLDGIL = default;
+    QgsRegularPolygon()
+    SIP_HOLDGIL = default;
 
     /**
      * Constructs a regular polygon by \a center and parameters for the first vertex. An empty regular polygon is returned if \a numberSides < 3 or \a ConstructionOption isn't valid.

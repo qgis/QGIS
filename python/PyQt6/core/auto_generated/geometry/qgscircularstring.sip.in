@@ -11,7 +11,7 @@
 
 
 
-class QgsCircularString: QgsCurve
+class QgsCircularString : QgsCurve
 {
 %Docstring(signature="appended")
 Circular string geometry type.
@@ -21,8 +21,7 @@ Circular string geometry type.
 #include "qgscircularstring.h"
 %End
   public:
-
-    QgsCircularString() /HoldGIL/;
+    QgsCircularString();
 %Docstring
 Constructs an empty circular string.
 %End

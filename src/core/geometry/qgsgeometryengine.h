@@ -31,10 +31,10 @@ class QgsAbstractGeometry;
 #ifdef SIP_RUN
 % ModuleHeaderCode
 #include <qgsgeos.h>
-% End
+  % End
 #endif
 
-/**
+  /**
  * \ingroup core
  * \class QgsGeometryEngine
  * \brief A geometry engine is a low-level representation of a QgsAbstractGeometry object, optimised for use with external
@@ -73,16 +73,15 @@ class QgsAbstractGeometry;
  * QgsGeometryEngine operations are backed by the GEOS library (https://trac.osgeo.org/geos/).
  *
  */
-class CORE_EXPORT QgsGeometryEngine
+  class CORE_EXPORT QgsGeometryEngine
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast< QgsGeos * >( sipCpp ) != NULL )
       sipType = sipType_QgsGeos;
     else
       sipType = NULL;
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -93,13 +92,13 @@ class CORE_EXPORT QgsGeometryEngine
      */
     enum EngineOperationResult
     {
-      Success = 0, //!< Operation succeeded
+      Success = 0,            //!< Operation succeeded
       NothingHappened = 1000, //!< Nothing happened, without any error
-      MethodNotImplemented, //!< Method not implemented in geometry engine
-      EngineError, //!< Error occurred in the geometry engine
-      NodedGeometryError, //!< Error occurred while creating a noded geometry
-      InvalidBaseGeometry, //!< The geometry on which the operation occurs is not valid
-      InvalidInput, //!< The input is not valid
+      MethodNotImplemented,   //!< Method not implemented in geometry engine
+      EngineError,            //!< Error occurred in the geometry engine
+      NodedGeometryError,     //!< Error occurred while creating a noded geometry
+      InvalidBaseGeometry,    //!< The geometry on which the operation occurs is not valid
+      InvalidInput,           //!< The input is not valid
       /* split */
       SplitCannotSplitPoint, //!< Points cannot be split
     };
@@ -173,7 +172,8 @@ class CORE_EXPORT QgsGeometryEngine
      * \param parameters can be used to specify parameters which control the combination results (since QGIS 3.28)
      *
      */
-    virtual QgsAbstractGeometry *combine( const QVector< QgsGeometry > &geometries, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *combine( const QVector< QgsGeometry > &geometries, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0
+      SIP_FACTORY;
 
     /**
      * Calculate the symmetric difference of this and \a geom.
@@ -328,10 +328,9 @@ class CORE_EXPORT QgsGeometryEngine
      * test has already been performed by the caller!
      * \returns 0 in case of success, 1 if geometry has not been split, error else
     */
-    virtual QgsGeometryEngine::EngineOperationResult splitGeometry( const QgsLineString &splitLine,
-        QVector<QgsGeometry > &newGeometries SIP_OUT,
-        bool topological,
-        QgsPointSequence &topologyTestPoints, QString *errorMsg = nullptr, bool skipIntersectionCheck = false ) const
+    virtual QgsGeometryEngine::EngineOperationResult splitGeometry(
+      const QgsLineString &splitLine, QVector<QgsGeometry > &newGeometries SIP_OUT, bool topological, QgsPointSequence &topologyTestPoints, QString *errorMsg = nullptr, bool skipIntersectionCheck = false
+    ) const
     {
       Q_UNUSED( splitLine )
       Q_UNUSED( newGeometries )

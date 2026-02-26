@@ -31,7 +31,7 @@ using namespace Qt::StringLiterals;
  * \class QgsCompoundCurve
  * \brief Compound curve geometry type.
  */
-class CORE_EXPORT QgsCompoundCurve: public QgsCurve
+class CORE_EXPORT QgsCompoundCurve : public QgsCurve
 {
   public:
     QgsCompoundCurve();
@@ -61,7 +61,6 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
           {
             return false;
           }
-
         }
         else
         {
@@ -69,7 +68,6 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
           {
             return false;
           }
-
         }
       }
 
@@ -77,7 +75,8 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     }
 #endif
   public:
-    bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override SIP_HOLDGIL
+    bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override
+    SIP_HOLDGIL
     {
       return fuzzyHelper( other, epsilon, false );
     }

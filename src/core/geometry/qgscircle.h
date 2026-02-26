@@ -53,7 +53,8 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \param radius The radius of the circle.
      * \param azimuth Angle in degrees started from the North to the first quadrant.
      */
-    QgsCircle( const QgsPoint &center, double radius, double azimuth = 0 ) SIP_HOLDGIL;
+    QgsCircle( const QgsPoint &center, double radius, double azimuth = 0 )
+    SIP_HOLDGIL;
 
     /**
      * Constructs a circle by 2 points on the circle.

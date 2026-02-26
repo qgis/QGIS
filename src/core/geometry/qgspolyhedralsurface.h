@@ -37,7 +37,7 @@ using namespace Qt::StringLiterals;
  *
  * \since QGIS 3.40
  */
-class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
+class CORE_EXPORT QgsPolyhedralSurface : public QgsSurface
 {
   public:
     QgsPolyhedralSurface();
@@ -68,20 +68,17 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
 
       for ( int i = 0; i < mPatches.count(); ++i )
       {
-        if ( ( !mPatches.at( i ) && otherPolygon->mPatches.at( i ) ) ||
-             ( mPatches.at( i ) && !otherPolygon->mPatches.at( i ) ) )
+        if ( ( !mPatches.at( i ) && otherPolygon->mPatches.at( i ) ) || ( mPatches.at( i ) && !otherPolygon->mPatches.at( i ) ) )
           return false;
 
         if ( useDistance )
         {
-          if ( mPatches.at( i ) && otherPolygon->mPatches.at( i ) &&
-               !( *mPatches.at( i ) ).fuzzyDistanceEqual( *otherPolygon->mPatches.at( i ), epsilon ) )
+          if ( mPatches.at( i ) && otherPolygon->mPatches.at( i ) && !( *mPatches.at( i ) ).fuzzyDistanceEqual( *otherPolygon->mPatches.at( i ), epsilon ) )
             return false;
         }
         else
         {
-          if ( mPatches.at( i ) && otherPolygon->mPatches.at( i ) &&
-               !( *mPatches.at( i ) ).fuzzyEqual( *otherPolygon->mPatches.at( i ), epsilon ) )
+          if ( mPatches.at( i ) && otherPolygon->mPatches.at( i ) && !( *mPatches.at( i ) ).fuzzyEqual( *otherPolygon->mPatches.at( i ), epsilon ) )
             return false;
         }
       }
@@ -91,7 +88,8 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
 #endif
 
   public:
-    bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override SIP_HOLDGIL
+    bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override
+    SIP_HOLDGIL
     {
       return fuzzyHelper( other, epsilon, false );
     }

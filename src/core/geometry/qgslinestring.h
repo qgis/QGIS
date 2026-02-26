@@ -44,15 +44,14 @@ class QgsBox3D;
  * \class QgsLineString
  * \brief Line string geometry type, with support for z-dimension and m-values.
  */
-class CORE_EXPORT QgsLineString: public QgsCurve
+class CORE_EXPORT QgsLineString : public QgsCurve
 {
-
   public:
-
     /**
      * Constructor for an empty linestring geometry.
      */
-    QgsLineString() SIP_HOLDGIL;
+    QgsLineString()
+    SIP_HOLDGIL;
 #ifndef SIP_RUN
 
     /**

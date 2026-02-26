@@ -29,8 +29,7 @@ using namespace Qt::StringLiterals;
 
 QgsSfcgalGeometry::QgsSfcgalGeometry()
   : mIsPrimitive( false )
-{
-}
+{}
 
 QgsSfcgalGeometry::QgsSfcgalGeometry( const QgsAbstractGeometry *qgsGeom )
   : mIsPrimitive( false )
@@ -54,9 +53,9 @@ QgsSfcgalGeometry::QgsSfcgalGeometry( const QgsAbstractGeometry &qgsGeom )
 }
 
 QgsSfcgalGeometry::QgsSfcgalGeometry( sfcgal::shared_geom sfcgalGeom )
-  : mSfcgalGeom( sfcgalGeom ), mIsPrimitive( false )
-{
-}
+  : mSfcgalGeom( sfcgalGeom )
+  , mIsPrimitive( false )
+{}
 
 QgsSfcgalGeometry::QgsSfcgalGeometry( sfcgal::shared_prim sfcgalPrim, sfcgal::primitiveType type )
   : mIsPrimitive( true )
@@ -178,10 +177,7 @@ QString QgsSfcgalGeometry::geometryType() const
   return out;
 }
 
-std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::clone() const
-{
-  return std::make_unique<QgsSfcgalGeometry>( *this );
-}
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::clone() const { return std::make_unique<QgsSfcgalGeometry>( *this ); }
 
 std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::fromWkb( const QgsConstWkbPtr &wkbPtr )
 {
@@ -250,7 +246,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::boundary() const
 bool QgsSfcgalGeometry::operator==( const QgsSfcgalGeometry &other ) const
 {
 #if SFCGAL_VERSION_NUM < SFCGAL_MAKE_VERSION( 2, 1, 0 )
-  ( void )other;
+  ( void ) other;
   throw QgsNotSupportedException( QObject::tr( "This operation requires a QGIS build based on SFCGAL 2.1 or later" ) );
 #else
   QString errorMsg;
@@ -274,10 +270,7 @@ bool QgsSfcgalGeometry::operator==( const QgsSfcgalGeometry &other ) const
 #endif
 }
 
-bool QgsSfcgalGeometry::operator!=( const QgsSfcgalGeometry &other ) const
-{
-  return !( *this == other );
-}
+bool QgsSfcgalGeometry::operator!=( const QgsSfcgalGeometry &other ) const { return !( *this == other ); }
 
 bool QgsSfcgalGeometry::fuzzyEqual( const QgsSfcgalGeometry &other, double epsilon ) const
 {
@@ -433,9 +426,7 @@ bool QgsSfcgalGeometry::isValid() const
   return valid;
 }
 
-void QgsSfcgalGeometry::clearCache() const
-{
-}
+void QgsSfcgalGeometry::clearCache() const {}
 
 bool QgsSfcgalGeometry::isSimple() const
 {
@@ -990,10 +981,7 @@ void QgsSfcgalGeometry::primitiveSetParameter( const QString &name, const QVaria
 
 
 #if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
-void QgsSfcgalGeometry::setPrimitiveTranslate( const QgsVector3D &translation )
-{
-  mPrimTransform.translate( mPrimTransform.column( 3 ).toVector3D() + translation.toVector3D() );
-}
+void QgsSfcgalGeometry::setPrimitiveTranslate( const QgsVector3D &translation ) { mPrimTransform.translate( mPrimTransform.column( 3 ).toVector3D() + translation.toVector3D() ); }
 
 void QgsSfcgalGeometry::setPrimitiveScale( const QgsVector3D &scaleFactor, const QgsPoint &center )
 {

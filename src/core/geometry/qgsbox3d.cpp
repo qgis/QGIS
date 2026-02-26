@@ -71,35 +71,17 @@ QgsBox3D::QgsBox3D( const QgsVector3D &corner1, const QgsVector3D &corner2, bool
   }
 }
 
-void QgsBox3D::setXMinimum( double x )
-{
-  mBounds2d.setXMinimum( x );
-}
+void QgsBox3D::setXMinimum( double x ) { mBounds2d.setXMinimum( x ); }
 
-void QgsBox3D::setXMaximum( double x )
-{
-  mBounds2d.setXMaximum( x );
-}
+void QgsBox3D::setXMaximum( double x ) { mBounds2d.setXMaximum( x ); }
 
-void QgsBox3D::setYMinimum( double y )
-{
-  mBounds2d.setYMinimum( y );
-}
+void QgsBox3D::setYMinimum( double y ) { mBounds2d.setYMinimum( y ); }
 
-void QgsBox3D::setYMaximum( double y )
-{
-  mBounds2d.setYMaximum( y );
-}
+void QgsBox3D::setYMaximum( double y ) { mBounds2d.setYMaximum( y ); }
 
-void QgsBox3D::setZMinimum( double z )
-{
-  mZmin = z;
-}
+void QgsBox3D::setZMinimum( double z ) { mZmin = z; }
 
-void QgsBox3D::setZMaximum( double z )
-{
-  mZmax = z;
-}
+void QgsBox3D::setZMaximum( double z ) { mZmax = z; }
 
 /**
  * Set a rectangle so that min corner is at max
@@ -121,31 +103,19 @@ void QgsBox3D::normalize()
   }
 }
 
-QgsVector3D QgsBox3D::center() const
-{
-  return QgsVector3D( 0.5 * ( mBounds2d.xMinimum() + mBounds2d.xMaximum() ),
-                      0.5 * ( mBounds2d.yMinimum() + mBounds2d.yMaximum() ),
-                      0.5 * ( mZmin + mZmax ) );
-}
+QgsVector3D QgsBox3D::center() const { return QgsVector3D( 0.5 * ( mBounds2d.xMinimum() + mBounds2d.xMaximum() ), 0.5 * ( mBounds2d.yMinimum() + mBounds2d.yMaximum() ), 0.5 * ( mZmin + mZmax ) ); }
 
 QgsBox3D QgsBox3D::intersect( const QgsBox3D &other ) const
 {
   const QgsRectangle intersect2d = mBounds2d.intersect( other.mBounds2d );
   const double zMin = std::max( mZmin, other.mZmin );
   const double zMax = std::min( mZmax, other.mZmax );
-  return QgsBox3D( intersect2d.xMinimum(), intersect2d.yMinimum(), zMin,
-                   intersect2d.xMaximum(), intersect2d.yMaximum(), zMax );
+  return QgsBox3D( intersect2d.xMinimum(), intersect2d.yMinimum(), zMin, intersect2d.xMaximum(), intersect2d.yMaximum(), zMax );
 }
 
-bool QgsBox3D::is2d() const
-{
-  return qgsDoubleNear( mZmin, mZmax ) || ( mZmin > mZmax ) || std::isnan( mZmin ) || std::isnan( mZmax ) ;
-}
+bool QgsBox3D::is2d() const { return qgsDoubleNear( mZmin, mZmax ) || ( mZmin > mZmax ) || std::isnan( mZmin ) || std::isnan( mZmax ); }
 
-bool QgsBox3D::is3D() const
-{
-  return !is2d() && !isNull();
-}
+bool QgsBox3D::is3D() const { return !is2d() && !isNull(); }
 
 bool QgsBox3D::intersects( const QgsBox3D &other ) const
 {
@@ -266,12 +236,7 @@ double QgsBox3D::distanceTo( const QgsVector3D &point ) const
   }
 }
 
-bool QgsBox3D::operator==( const QgsBox3D &other ) const
-{
-  return mBounds2d == other.mBounds2d &&
-         qgsDoubleNear( mZmin, other.mZmin ) &&
-         qgsDoubleNear( mZmax, other.mZmax );
-}
+bool QgsBox3D::operator==( const QgsBox3D &other ) const { return mBounds2d == other.mBounds2d && qgsDoubleNear( mZmin, other.mZmin ) && qgsDoubleNear( mZmax, other.mZmax ); }
 
 void QgsBox3D::scale( double scaleFactor, const QgsPoint &center )
 {
@@ -323,10 +288,7 @@ bool QgsBox3D::isNull() const
            && mBounds2d.xMaximum() == -std::numeric_limits<double>::max() && mBounds2d.yMaximum() == -std::numeric_limits<double>::max() && mZmax == -std::numeric_limits<double>::max() );
 }
 
-bool QgsBox3D::isEmpty() const
-{
-  return mZmax < mZmin  || qgsDoubleNear( mZmax, mZmin ) || mBounds2d.isEmpty();
-}
+bool QgsBox3D::isEmpty() const { return mZmax < mZmin || qgsDoubleNear( mZmax, mZmin ) || mBounds2d.isEmpty(); }
 
 QString QgsBox3D::toString( int precision ) const
 {
@@ -349,13 +311,12 @@ QString QgsBox3D::toString( int precision ) const
   else if ( isEmpty() )
     rep = u"Empty"_s;
   else
-    rep = u"%1,%2,%3 : %4,%5,%6"_s
-          .arg( mBounds2d.xMinimum(), 0, 'f', precision )
-          .arg( mBounds2d.yMinimum(), 0, 'f', precision )
-          .arg( mZmin, 0, 'f', precision )
-          .arg( mBounds2d.xMaximum(), 0, 'f', precision )
-          .arg( mBounds2d.yMaximum(), 0, 'f', precision )
-          .arg( mZmax, 0, 'f', precision );
+    rep = u"%1,%2,%3 : %4,%5,%6"_s.arg( mBounds2d.xMinimum(), 0, 'f', precision )
+            .arg( mBounds2d.yMinimum(), 0, 'f', precision )
+            .arg( mZmin, 0, 'f', precision )
+            .arg( mBounds2d.xMaximum(), 0, 'f', precision )
+            .arg( mBounds2d.yMaximum(), 0, 'f', precision )
+            .arg( mZmax, 0, 'f', precision );
 
   QgsDebugMsgLevel( u"Extents : %1"_s.arg( rep ), 4 );
 
@@ -364,36 +325,26 @@ QString QgsBox3D::toString( int precision ) const
 
 QVector<QgsVector3D> QgsBox3D::corners() const
 {
-  return
-  {
-    QgsVector3D( mBounds2d.xMinimum(), mBounds2d.yMinimum(), mZmin ),
-    QgsVector3D( mBounds2d.xMinimum(), mBounds2d.yMaximum(), mZmin ),
-    QgsVector3D( mBounds2d.xMaximum(), mBounds2d.yMinimum(), mZmin ),
-    QgsVector3D( mBounds2d.xMaximum(), mBounds2d.yMaximum(), mZmin ),
+  return { QgsVector3D( mBounds2d.xMinimum(), mBounds2d.yMinimum(), mZmin ), QgsVector3D( mBounds2d.xMinimum(), mBounds2d.yMaximum(), mZmin ),
+           QgsVector3D( mBounds2d.xMaximum(), mBounds2d.yMinimum(), mZmin ), QgsVector3D( mBounds2d.xMaximum(), mBounds2d.yMaximum(), mZmin ),
 
-    QgsVector3D( mBounds2d.xMinimum(), mBounds2d.yMinimum(), mZmax ),
-    QgsVector3D( mBounds2d.xMinimum(), mBounds2d.yMaximum(), mZmax ),
-    QgsVector3D( mBounds2d.xMaximum(), mBounds2d.yMinimum(), mZmax ),
-    QgsVector3D( mBounds2d.xMaximum(), mBounds2d.yMaximum(), mZmax )
-  };
+           QgsVector3D( mBounds2d.xMinimum(), mBounds2d.yMinimum(), mZmax ), QgsVector3D( mBounds2d.xMinimum(), mBounds2d.yMaximum(), mZmax ),
+           QgsVector3D( mBounds2d.xMaximum(), mBounds2d.yMinimum(), mZmax ), QgsVector3D( mBounds2d.xMaximum(), mBounds2d.yMaximum(), mZmax ) };
 }
 
 QgsBox3D QgsBox3D::operator-( const QgsVector3D &v ) const
 {
-  return QgsBox3D( mBounds2d.xMinimum() - v.x(), mBounds2d.yMinimum() - v.y(), mZmin - v.z(),
-                   mBounds2d.xMaximum() - v.x(), mBounds2d.yMaximum() - v.y(), mZmax - v.z() );
+  return QgsBox3D( mBounds2d.xMinimum() - v.x(), mBounds2d.yMinimum() - v.y(), mZmin - v.z(), mBounds2d.xMaximum() - v.x(), mBounds2d.yMaximum() - v.y(), mZmax - v.z() );
 }
 
 QgsBox3D QgsBox3D::operator+( const QgsVector3D &v ) const
 {
-  return QgsBox3D( mBounds2d.xMinimum() + v.x(), mBounds2d.yMinimum() + v.y(), mZmin + v.z(),
-                   mBounds2d.xMaximum() + v.x(), mBounds2d.yMaximum() + v.y(), mZmax + v.z() );
+  return QgsBox3D( mBounds2d.xMinimum() + v.x(), mBounds2d.yMinimum() + v.y(), mZmin + v.z(), mBounds2d.xMaximum() + v.x(), mBounds2d.yMaximum() + v.y(), mZmax + v.z() );
 }
 
 QgsBox3D &QgsBox3D::operator-=( const QgsVector3D &v )
 {
-  mBounds2d.set( mBounds2d.xMinimum() - v.x(), mBounds2d.yMinimum() - v.y(),
-                 mBounds2d.xMaximum() - v.x(), mBounds2d.yMaximum() - v.y() );
+  mBounds2d.set( mBounds2d.xMinimum() - v.x(), mBounds2d.yMinimum() - v.y(), mBounds2d.xMaximum() - v.x(), mBounds2d.yMaximum() - v.y() );
   mZmin -= v.z();
   mZmax -= v.z();
   return *this;
@@ -401,8 +352,7 @@ QgsBox3D &QgsBox3D::operator-=( const QgsVector3D &v )
 
 QgsBox3D &QgsBox3D::operator+=( const QgsVector3D &v )
 {
-  mBounds2d.set( mBounds2d.xMinimum() + v.x(), mBounds2d.yMinimum() + v.y(),
-                 mBounds2d.xMaximum() + v.x(), mBounds2d.yMaximum() + v.y() );
+  mBounds2d.set( mBounds2d.xMinimum() + v.x(), mBounds2d.yMinimum() + v.y(), mBounds2d.xMaximum() + v.x(), mBounds2d.yMaximum() + v.y() );
   mZmin += v.z();
   mZmax += v.z();
   return *this;

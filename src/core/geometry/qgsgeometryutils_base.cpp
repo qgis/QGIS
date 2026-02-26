@@ -104,13 +104,13 @@ void QgsGeometryUtilsBase::perpendicularOffsetPointAlongSegment( double x1, doub
   const double pX = x1 - x2;
   const double pY = y1 - y2;
   double normalX = -pY;
-  double normalY = pX;  //#spellok
-  const double normalLength = sqrt( ( normalX * normalX ) + ( normalY * normalY ) );  //#spellok
+  double normalY = pX;                                                               //#spellok
+  const double normalLength = sqrt( ( normalX * normalX ) + ( normalY * normalY ) ); //#spellok
   normalX /= normalLength;
-  normalY /= normalLength;  //#spellok
+  normalY /= normalLength; //#spellok
 
   *x = mX + offset * normalX;
-  *y = mY + offset * normalY;  //#spellok
+  *y = mY + offset * normalY; //#spellok
 }
 
 double QgsGeometryUtilsBase::ccwAngle( double dy, double dx )
@@ -211,9 +211,9 @@ void QgsGeometryUtilsBase::circleCenterRadius( double x1, double y1, double x2, 
 
 double QgsGeometryUtilsBase::circleLength( double x1, double y1, double x2, double y2, double x3, double y3 )
 {
-  double centerX{0.0};
-  double centerY{0.0};
-  double radius{0.0};
+  double centerX { 0.0 };
+  double centerY { 0.0 };
+  double radius { 0.0 };
   circleCenterRadius( x1, y1, x2, y2, x3, y3, radius, centerX, centerY );
   double length = M_PI / 180.0 * radius * sweepAngle( centerX, centerY, x1, y1, x2, y2, x3, y3 );
   if ( length < 0 )
@@ -223,9 +223,7 @@ double QgsGeometryUtilsBase::circleLength( double x1, double y1, double x2, doub
   return length;
 }
 
-double QgsGeometryUtilsBase::calculateArcLength( double centerX, double centerY, double radius,
-    double x1, double y1, double x2, double y2,
-    double x3, double y3, int fromVertex, int toVertex )
+double QgsGeometryUtilsBase::calculateArcLength( double centerX, double centerY, double radius, double x1, double y1, double x2, double y2, double x3, double y3, int fromVertex, int toVertex )
 {
   if ( fromVertex == toVertex )
     return 0.0;
@@ -305,7 +303,7 @@ double QgsGeometryUtilsBase::sweepAngle( double centerX, double centerY, double 
     }
     else
     {
-      return ( - ( p1Angle + ( 360 - p3Angle ) ) );
+      return ( -( p1Angle + ( 360 - p3Angle ) ) );
     }
   }
   else
@@ -432,9 +430,12 @@ int QgsGeometryUtilsBase::closestSideOfRectangle( double right, double bottom, d
   }
 }
 
-void QgsGeometryUtilsBase::perpendicularCenterSegment( double pointx, double pointy, double segmentPoint1x, double segmentPoint1y, double segmentPoint2x, double segmentPoint2y, double &perpendicularSegmentPoint1x, double &perpendicularSegmentPoint1y, double &perpendicularSegmentPoint2x, double &perpendicularSegmentPoint2y, double desiredSegmentLength )
+void QgsGeometryUtilsBase::perpendicularCenterSegment(
+  double pointx, double pointy, double segmentPoint1x, double segmentPoint1y, double segmentPoint2x, double segmentPoint2y, double &perpendicularSegmentPoint1x, double &perpendicularSegmentPoint1y,
+  double &perpendicularSegmentPoint2x, double &perpendicularSegmentPoint2y, double desiredSegmentLength
+)
 {
-  QgsVector segmentVector =  QgsVector( segmentPoint2x - segmentPoint1x, segmentPoint2y - segmentPoint1y );
+  QgsVector segmentVector = QgsVector( segmentPoint2x - segmentPoint1x, segmentPoint2y - segmentPoint1y );
   QgsVector perpendicularVector = segmentVector.perpVector();
   if ( desiredSegmentLength != 0 )
   {
@@ -503,21 +504,19 @@ double QgsGeometryUtilsBase::averageAngle( double a1, double a2 )
   return normalizedAngle( resultAngle );
 }
 
-double QgsGeometryUtilsBase::skewLinesDistance( const QgsVector3D &P1, const QgsVector3D &P12,
-    const QgsVector3D &P2, const QgsVector3D &P22 )
+double QgsGeometryUtilsBase::skewLinesDistance( const QgsVector3D &P1, const QgsVector3D &P12, const QgsVector3D &P2, const QgsVector3D &P22 )
 {
   const QgsVector3D u1 = P12 - P1;
   const QgsVector3D u2 = P22 - P2;
   QgsVector3D u3 = QgsVector3D::crossProduct( u1, u2 );
-  if ( u3.length() == 0 ) return 1;
+  if ( u3.length() == 0 )
+    return 1;
   u3.normalize();
   const QgsVector3D dir = P1 - P2;
   return std::fabs( ( QgsVector3D::dotProduct( dir, u3 ) ) ); // u3 is already normalized
 }
 
-bool QgsGeometryUtilsBase::skewLinesProjection( const QgsVector3D &P1, const QgsVector3D &P12,
-    const QgsVector3D &P2, const QgsVector3D &P22,
-    QgsVector3D &X1, double epsilon )
+bool QgsGeometryUtilsBase::skewLinesProjection( const QgsVector3D &P1, const QgsVector3D &P12, const QgsVector3D &P2, const QgsVector3D &P22, QgsVector3D &X1, double epsilon )
 {
   const QgsVector3D d = P2 - P1;
   QgsVector3D u1 = P12 - P1;
@@ -526,9 +525,7 @@ bool QgsGeometryUtilsBase::skewLinesProjection( const QgsVector3D &P1, const Qgs
   u2.normalize();
   const QgsVector3D u3 = QgsVector3D::crossProduct( u1, u2 );
 
-  if ( std::fabs( u3.x() ) <= epsilon &&
-       std::fabs( u3.y() ) <= epsilon &&
-       std::fabs( u3.z() ) <= epsilon )
+  if ( std::fabs( u3.x() ) <= epsilon && std::fabs( u3.y() ) <= epsilon && std::fabs( u3.z() ) <= epsilon )
   {
     // The rays are almost parallel.
     return false;
@@ -584,12 +581,12 @@ bool QgsGeometryUtilsBase::intersectionPointOfLinesByBearing( double x1, double 
   return lineIntersection( x1, y1, v1, x2, y2, v2, intersectionX, intersectionY );
 }
 
-static bool equals( double p1x, double p1y, double p2x, double p2y, double epsilon = 1e-8 )
-{
-  return qgsDoubleNear( p1x, p2x, epsilon ) && qgsDoubleNear( p1y, p2y, epsilon );
-}
+static bool equals( double p1x, double p1y, double p2x, double p2y, double epsilon = 1e-8 ) { return qgsDoubleNear( p1x, p2x, epsilon ) && qgsDoubleNear( p1y, p2y, epsilon ); }
 
-bool QgsGeometryUtilsBase::segmentIntersection( double p1x, double p1y, double p2x, double p2y, double q1x, double q1y, double q2x, double q2y, double &intersectionPointX, double &intersectionPointY, bool &isIntersection, double tolerance, bool acceptImproperIntersection )
+bool QgsGeometryUtilsBase::segmentIntersection(
+  double p1x, double p1y, double p2x, double p2y, double q1x, double q1y, double q2x, double q2y, double &intersectionPointX, double &intersectionPointY, bool &isIntersection, double tolerance,
+  bool acceptImproperIntersection
+)
 {
   isIntersection = false;
   intersectionPointX = intersectionPointY = std::numeric_limits<double>::quiet_NaN();
@@ -643,35 +640,24 @@ bool QgsGeometryUtilsBase::segmentIntersection( double p1x, double p1y, double p
     }
   }
 
-  const double lambdav = QgsVector( intersectionPointX - p1x, intersectionPointY - p1y ) *  v;
+  const double lambdav = QgsVector( intersectionPointX - p1x, intersectionPointY - p1y ) * v;
   if ( lambdav < 0. + tolerance || lambdav > vl - tolerance )
     return false;
 
   const double lambdaw = QgsVector( intersectionPointX - q1x, intersectionPointY - q1y ) * w;
   return !( lambdaw < 0. + tolerance || lambdaw >= wl - tolerance );
-
 }
 
 
-bool QgsGeometryUtilsBase::linesIntersection3D( const QgsVector3D &La1, const QgsVector3D &La2,
-    const QgsVector3D &Lb1, const QgsVector3D &Lb2,
-    QgsVector3D &intersection )
+bool QgsGeometryUtilsBase::linesIntersection3D( const QgsVector3D &La1, const QgsVector3D &La2, const QgsVector3D &Lb1, const QgsVector3D &Lb2, QgsVector3D &intersection )
 {
-
   // if all Vector are on the same plane (have the same Z), use the 2D intersection
   // else return a false result
   if ( qgsDoubleNear( La1.z(), La2.z() ) && qgsDoubleNear( La1.z(), Lb1.z() ) && qgsDoubleNear( La1.z(), Lb2.z() ) )
   {
     double ptInterX = 0.0, ptInterY = 0.0;
     bool isIntersection = false;
-    segmentIntersection( La1.x(), La1.y(),
-                         La2.x(), La2.y(),
-                         Lb1.x(), Lb1.y(),
-                         Lb2.x(), Lb2.y(),
-                         ptInterX, ptInterY,
-                         isIntersection,
-                         1e-8,
-                         true );
+    segmentIntersection( La1.x(), La1.y(), La2.x(), La2.y(), Lb1.x(), Lb1.y(), Lb2.x(), Lb2.y(), ptInterX, ptInterY, isIntersection, 1e-8, true );
     intersection.set( ptInterX, ptInterY, La1.z() );
     return true;
   }
@@ -722,10 +708,7 @@ bool QgsGeometryUtilsBase::linesIntersection3D( const QgsVector3D &La1, const Qg
   return true;
 }
 
-double QgsGeometryUtilsBase::triangleArea( double aX, double aY, double bX, double bY, double cX, double cY )
-{
-  return 0.5 * std::abs( ( aX - cX ) * ( bY - aY ) - ( aX - bX ) * ( cY - aY ) );
-}
+double QgsGeometryUtilsBase::triangleArea( double aX, double aY, double bX, double bY, double cX, double cY ) { return 0.5 * std::abs( ( aX - cX ) * ( bY - aY ) - ( aX - bX ) * ( cY - aY ) ); }
 
 double QgsGeometryUtilsBase::pointFractionAlongLine( double x1, double y1, double x2, double y2, double px, double py )
 {
@@ -738,8 +721,9 @@ double QgsGeometryUtilsBase::pointFractionAlongLine( double x1, double y1, doubl
   return std::sqrt( ( dxp * dxp ) + ( dyp * dyp ) ) / std::sqrt( ( dxl * dxl ) + ( dyl * dyl ) );
 }
 
-void QgsGeometryUtilsBase::weightedPointInTriangle( const double aX, const double aY, const double bX, const double bY, const double cX, const double cY,
-    double weightB, double weightC, double &pointX, double &pointY )
+void QgsGeometryUtilsBase::weightedPointInTriangle(
+  const double aX, const double aY, const double bX, const double bY, const double cX, const double cY, double weightB, double weightC, double &pointX, double &pointY
+)
 {
   // if point will be outside of the triangle, invert weights
   if ( weightB + weightC > 1 )
@@ -780,8 +764,7 @@ double QgsGeometryUtilsBase::azimuth( double x1, double y1, double x2, double y2
   return ( std::atan2( dx, dy ) * 180.0 / M_PI );
 }
 
-bool QgsGeometryUtilsBase::angleBisector( double aX, double aY, double bX, double bY, double cX, double cY, double dX, double dY,
-    double &pointX, double &pointY, double &angle )
+bool QgsGeometryUtilsBase::angleBisector( double aX, double aY, double bX, double bY, double cX, double cY, double dX, double dY, double &pointX, double &pointY, double &angle )
 {
   angle = ( azimuth( aX, aY, bX, bY ) + azimuth( cX, cY, dX, dY ) ) / 2.0;
 
@@ -816,8 +799,7 @@ void QgsGeometryUtilsBase::project( double aX, double aY, double aZ, double dist
   resultZ = aZ + dz;
 }
 
-bool QgsGeometryUtilsBase::bisector( double aX, double aY, double bX, double bY, double cX, double cY,
-                                     double &pointX, double &pointY )
+bool QgsGeometryUtilsBase::bisector( double aX, double aY, double bX, double bY, double cX, double cY, double &pointX, double &pointY )
 {
   const double angle = ( azimuth( aX, aY, bX, bY ) + azimuth( aX, aY, cX, cY ) ) / 2.0;
 
@@ -830,16 +812,15 @@ bool QgsGeometryUtilsBase::bisector( double aX, double aY, double bX, double bY,
 }
 
 
-double QgsGeometryUtilsBase::maximumFilletRadius( const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
-    const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY,
-    double epsilon )
+double QgsGeometryUtilsBase::maximumFilletRadius(
+  const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY, const double segment2StartX, const double segment2StartY, const double segment2EndX,
+  const double segment2EndY, double epsilon
+)
 {
   double intersectionX, intersectionY;
   bool isIntersection;
-  QgsGeometryUtilsBase::segmentIntersection(
-    segment1StartX, segment1StartY, segment1EndX, segment1EndY,
-    segment2StartX, segment2StartY, segment2EndX, segment2EndY,
-    intersectionX, intersectionY, isIntersection, epsilon, true );
+  QgsGeometryUtilsBase::
+    segmentIntersection( segment1StartX, segment1StartY, segment1EndX, segment1EndY, segment2StartX, segment2StartY, segment2EndX, segment2EndY, intersectionX, intersectionY, isIntersection, epsilon, true );
 
   if ( !isIntersection )
   {
@@ -856,11 +837,7 @@ double QgsGeometryUtilsBase::maximumFilletRadius( const double segment1StartX, c
   const double dir2X = dist2ToStart > epsilon ? segment2StartX : segment2EndX;
   const double dir2Y = dist2ToStart > epsilon ? segment2StartY : segment2EndY;
 
-  const double angle = QgsGeometryUtilsBase::angleBetweenThreePoints(
-                         dir1X, dir1Y,
-                         intersectionX, intersectionY,
-                         dir2X, dir2Y
-                       );
+  const double angle = QgsGeometryUtilsBase::angleBetweenThreePoints( dir1X, dir1Y, intersectionX, intersectionY, dir2X, dir2Y );
 
   if ( std::abs( angle ) < epsilon || std::abs( angle - M_PI ) < epsilon )
   {
@@ -914,15 +891,10 @@ double QgsGeometryUtilsBase::maximumFilletRadius( const double segment1StartX, c
 }
 
 bool QgsGeometryUtilsBase::createFillet(
-  const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
-  const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY,
-  const double radius,
-  double *filletPointsX, double *filletPointsY,
-  double *trim1StartX, double *trim1StartY,
-  double *trim1EndX, double *trim1EndY,
-  double *trim2StartX, double *trim2StartY,
-  double *trim2EndX, double *trim2EndY,
-  const double epsilon )
+  const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY, const double segment2StartX, const double segment2StartY, const double segment2EndX,
+  const double segment2EndY, const double radius, double *filletPointsX, double *filletPointsY, double *trim1StartX, double *trim1StartY, double *trim1EndX, double *trim1EndY, double *trim2StartX,
+  double *trim2StartY, double *trim2EndX, double *trim2EndY, const double epsilon
+)
 {
   if ( radius <= 0 )
     throw QgsInvalidArgumentException( "Radius must be greater than 0." );
@@ -930,10 +902,8 @@ bool QgsGeometryUtilsBase::createFillet(
   // Find intersection point between segments (or their infinite line extensions)
   double intersectionX, intersectionY;
   bool isIntersection;
-  QgsGeometryUtilsBase::segmentIntersection(
-    segment1StartX, segment1StartY, segment1EndX, segment1EndY,
-    segment2StartX, segment2StartY, segment2EndX, segment2EndY,
-    intersectionX, intersectionY, isIntersection, epsilon, true );
+  QgsGeometryUtilsBase::
+    segmentIntersection( segment1StartX, segment1StartY, segment1EndX, segment1EndY, segment2StartX, segment2StartY, segment2EndX, segment2EndY, intersectionX, intersectionY, isIntersection, epsilon, true );
 
   if ( !isIntersection )
   {
@@ -954,11 +924,7 @@ bool QgsGeometryUtilsBase::createFillet(
   const double dir2Y = dist2ToStart > epsilon ? segment2StartY : segment2EndY;
 
   // Calculate the angle between the two rays
-  const double angle = QgsGeometryUtilsBase::angleBetweenThreePoints(
-                         dir1X, dir1Y,
-                         intersectionX, intersectionY,
-                         dir2X, dir2Y
-                       );
+  const double angle = QgsGeometryUtilsBase::angleBetweenThreePoints( dir1X, dir1Y, intersectionX, intersectionY, dir2X, dir2Y );
 
   // Validate angle - must be meaningful for fillet creation
   if ( std::abs( angle ) < epsilon || std::abs( angle - M_PI ) < epsilon )
@@ -1007,16 +973,8 @@ bool QgsGeometryUtilsBase::createFillet(
 
   // Calculate tangent points along the rays
   double T1x, T1y, T2x, T2y;
-  QgsGeometryUtilsBase::pointOnLineWithDistance(
-    intersectionX, intersectionY,
-    dir1X, dir1Y,
-    distanceToTangent, T1x, T1y
-  );
-  QgsGeometryUtilsBase::pointOnLineWithDistance(
-    intersectionX, intersectionY,
-    dir2X, dir2Y,
-    distanceToTangent, T2x, T2y
-  );
+  QgsGeometryUtilsBase::pointOnLineWithDistance( intersectionX, intersectionY, dir1X, dir1Y, distanceToTangent, T1x, T1y );
+  QgsGeometryUtilsBase::pointOnLineWithDistance( intersectionX, intersectionY, dir2X, dir2Y, distanceToTangent, T2x, T2y );
 
   // Calculate circle center using angle bisector geometry
   const QgsVector v1( dir1X - intersectionX, dir1Y - intersectionY );
@@ -1082,16 +1040,10 @@ bool QgsGeometryUtilsBase::createFillet(
 }
 
 bool QgsGeometryUtilsBase::createChamfer(
-  const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
-  const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY,
-  double distance1, double distance2,
-  double &chamferStartX, double &chamferStartY,
-  double &chamferEndX, double &chamferEndY,
-  double *trim1StartX, double *trim1StartY,
-  double *trim1EndX, double *trim1EndY,
-  double *trim2StartX, double *trim2StartY,
-  double *trim2EndX, double *trim2EndY,
-  const double epsilon )
+  const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY, const double segment2StartX, const double segment2StartY, const double segment2EndX,
+  const double segment2EndY, double distance1, double distance2, double &chamferStartX, double &chamferStartY, double &chamferEndX, double &chamferEndY, double *trim1StartX, double *trim1StartY,
+  double *trim1EndX, double *trim1EndY, double *trim2StartX, double *trim2StartY, double *trim2EndX, double *trim2EndY, const double epsilon
+)
 {
   // Apply symmetric distance if distance2 is negative
   if ( distance2 <= 0 )
@@ -1104,10 +1056,8 @@ bool QgsGeometryUtilsBase::createChamfer(
   // Find intersection point between segments (or their infinite line extensions)
   double intersectionX, intersectionY;
   bool isIntersection;
-  QgsGeometryUtilsBase::segmentIntersection(
-    segment1StartX, segment1StartY, segment1EndX, segment1EndY,
-    segment2StartX, segment2StartY, segment2EndX, segment2EndY,
-    intersectionX, intersectionY, isIntersection, epsilon, true );
+  QgsGeometryUtilsBase::
+    segmentIntersection( segment1StartX, segment1StartY, segment1EndX, segment1EndY, segment2StartX, segment2StartY, segment2EndX, segment2EndY, intersectionX, intersectionY, isIntersection, epsilon, true );
 
   if ( !isIntersection )
   {
@@ -1129,37 +1079,21 @@ bool QgsGeometryUtilsBase::createChamfer(
   double T1x, T1y;
   if ( dist1ToStart > epsilon )
   {
-    QgsGeometryUtilsBase::pointOnLineWithDistance(
-      intersectionX, intersectionY,
-      segment1StartX, segment1StartY,
-      distance1, T1x, T1y
-    );
+    QgsGeometryUtilsBase::pointOnLineWithDistance( intersectionX, intersectionY, segment1StartX, segment1StartY, distance1, T1x, T1y );
   }
   else
   {
-    QgsGeometryUtilsBase::pointOnLineWithDistance(
-      intersectionX, intersectionY,
-      segment1EndX, segment1EndY,
-      distance1, T1x, T1y
-    );
+    QgsGeometryUtilsBase::pointOnLineWithDistance( intersectionX, intersectionY, segment1EndX, segment1EndY, distance1, T1x, T1y );
   }
 
   double T2x, T2y;
   if ( dist2ToStart > epsilon )
   {
-    QgsGeometryUtilsBase::pointOnLineWithDistance(
-      intersectionX, intersectionY,
-      segment2StartX, segment2StartY,
-      distance2, T2x, T2y
-    );
+    QgsGeometryUtilsBase::pointOnLineWithDistance( intersectionX, intersectionY, segment2StartX, segment2StartY, distance2, T2x, T2y );
   }
   else
   {
-    QgsGeometryUtilsBase::pointOnLineWithDistance(
-      intersectionX, intersectionY,
-      segment2EndX, segment2EndY,
-      distance2, T2x, T2y
-    );
+    QgsGeometryUtilsBase::pointOnLineWithDistance( intersectionX, intersectionY, segment2EndX, segment2EndY, distance2, T2x, T2y );
   }
 
   // Clamp distances to available segment length if necessary
@@ -1170,19 +1104,11 @@ bool QgsGeometryUtilsBase::createChamfer(
   {
     if ( dist1ToStart > epsilon )
     {
-      QgsGeometryUtilsBase::pointOnLineWithDistance(
-        intersectionX, intersectionY,
-        segment1StartX, segment1StartY,
-        distToSeg1Target, T1x, T1y
-      );
+      QgsGeometryUtilsBase::pointOnLineWithDistance( intersectionX, intersectionY, segment1StartX, segment1StartY, distToSeg1Target, T1x, T1y );
     }
     else
     {
-      QgsGeometryUtilsBase::pointOnLineWithDistance(
-        intersectionX, intersectionY,
-        segment1EndX, segment1EndY,
-        distToSeg1Target, T1x, T1y
-      );
+      QgsGeometryUtilsBase::pointOnLineWithDistance( intersectionX, intersectionY, segment1EndX, segment1EndY, distToSeg1Target, T1x, T1y );
     }
   }
 
@@ -1190,19 +1116,11 @@ bool QgsGeometryUtilsBase::createChamfer(
   {
     if ( dist2ToStart > epsilon )
     {
-      QgsGeometryUtilsBase::pointOnLineWithDistance(
-        intersectionX, intersectionY,
-        segment2StartX, segment2StartY,
-        distToSeg2Target, T2x, T2y
-      );
+      QgsGeometryUtilsBase::pointOnLineWithDistance( intersectionX, intersectionY, segment2StartX, segment2StartY, distToSeg2Target, T2x, T2y );
     }
     else
     {
-      QgsGeometryUtilsBase::pointOnLineWithDistance(
-        intersectionX, intersectionY,
-        segment2EndX, segment2EndY,
-        distToSeg2Target, T2x, T2y
-      );
+      QgsGeometryUtilsBase::pointOnLineWithDistance( intersectionX, intersectionY, segment2EndX, segment2EndY, distToSeg2Target, T2x, T2y );
     }
   }
 
@@ -1216,26 +1134,34 @@ bool QgsGeometryUtilsBase::createChamfer(
   {
     if ( dist1ToStart > epsilon )
     {
-      *trim1StartX = segment1StartX; *trim1StartY = segment1StartY;
-      *trim1EndX = T1x; *trim1EndY = T1y;
+      *trim1StartX = segment1StartX;
+      *trim1StartY = segment1StartY;
+      *trim1EndX = T1x;
+      *trim1EndY = T1y;
     }
     else
     {
-      *trim1StartX = segment1EndX; *trim1StartY = segment1EndY;
-      *trim1EndX = T1x; *trim1EndY = T1y;
+      *trim1StartX = segment1EndX;
+      *trim1StartY = segment1EndY;
+      *trim1EndX = T1x;
+      *trim1EndY = T1y;
     }
   }
   if ( trim2StartX )
   {
     if ( dist2ToStart > epsilon )
     {
-      *trim2StartX = segment2StartX; *trim2StartY = segment2StartY;
-      *trim2EndX = T2x; *trim2EndY = T2y;
+      *trim2StartX = segment2StartX;
+      *trim2StartY = segment2StartY;
+      *trim2EndX = T2x;
+      *trim2EndY = T2y;
     }
     else
     {
-      *trim2StartX = segment2EndX; *trim2StartY = segment2EndY;
-      *trim2EndX = T2x; *trim2EndY = T2y;
+      *trim2StartX = segment2EndX;
+      *trim2StartY = segment2EndY;
+      *trim2EndX = T2x;
+      *trim2EndY = T2y;
     }
   }
 

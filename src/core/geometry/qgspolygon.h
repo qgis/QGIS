@@ -33,15 +33,14 @@ class QgsLineString;
  * \class QgsPolygon
  * \brief Polygon geometry type.
  */
-class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
+class CORE_EXPORT QgsPolygon : public QgsCurvePolygon
 {
   public:
-
-
     /**
      * Constructor for an empty polygon geometry.
      */
-    QgsPolygon() SIP_HOLDGIL;
+    QgsPolygon()
+    SIP_HOLDGIL;
 
     /**
      * Constructor for QgsPolygon, with the specified \a exterior ring and interior \a rings.

@@ -29,14 +29,14 @@ using namespace Qt::StringLiterals;
  * \class QgsMultiPoint
  * \brief Multi point geometry collection.
  */
-class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
+class CORE_EXPORT QgsMultiPoint : public QgsGeometryCollection
 {
   public:
-
     /**
      * Constructor for an empty multipoint geometry.
      */
-    QgsMultiPoint() SIP_HOLDGIL;
+    QgsMultiPoint()
+    SIP_HOLDGIL;
 
 #ifndef SIP_RUN
 

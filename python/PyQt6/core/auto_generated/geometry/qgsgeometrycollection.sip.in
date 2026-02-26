@@ -11,7 +11,7 @@
 
 
 
-class QgsGeometryCollection: QgsAbstractGeometry
+class QgsGeometryCollection : QgsAbstractGeometry
 {
 %Docstring(signature="appended")
 Geometry collection.
@@ -21,9 +21,7 @@ Geometry collection.
 #include "qgsgeometrycollection.h"
 %End
   public:
-
-
-    QgsGeometryCollection() /HoldGIL/;
+    QgsGeometryCollection();
 %Docstring
 Constructor for an empty geometry collection.
 %End

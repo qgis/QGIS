@@ -101,7 +101,7 @@ etc.)
                             operation
 %End
 
-    QString geometryType() const  /HoldGIL/;
+    QString geometryType() const;
 %Docstring
 Returns type of the geometry as a OGC string in CamelCase
 

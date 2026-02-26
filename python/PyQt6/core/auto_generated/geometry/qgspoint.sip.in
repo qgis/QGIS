@@ -12,7 +12,7 @@
 
 
 
-class QgsPoint: QgsAbstractGeometry
+class QgsPoint : QgsAbstractGeometry
 {
 %Docstring(signature="appended")
 Point geometry type, with support for z-dimension and m-values.
@@ -38,8 +38,10 @@ documentation for examples of situations where it is appropriate to use
     static const QMetaObject staticMetaObject;
 
   public:
-
-    QgsPoint( SIP_PYOBJECT x /TypeHint="Optional[Union[QgsPoint, QPointF, float]]"/ = Py_None, SIP_PYOBJECT y /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT z /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT m /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT wkbType /TypeHint="Optional[int]"/ = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, Qgis::WkbType wkbType = Qgis::WkbType::Unknown )];
+    QgsPoint(
+      SIP_PYOBJECT x /TypeHint="Optional[Union[QgsPoint, QPointF, float]]"/ = Py_None, SIP_PYOBJECT y /TypeHint="Optional[float]"/ = Py_None,
+      SIP_PYOBJECT z /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT m /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT wkbType /TypeHint="Optional[int]"/ = Py_None
+    )[( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, Qgis::WkbType wkbType = Qgis::WkbType::Unknown )];
 %Docstring
 Construct a point with the provided initial coordinate values.
 
@@ -67,8 +69,7 @@ type will be set based on the following rules:
        pt.z() # nan
        pt.wkbType() # 1001 (QgsWkbTypes.PointZ)
 %End
-%MethodCode
-    if ( sipCanConvertToType( a0, sipType_QgsPointXY, SIP_NOT_NONE ) && a1 == Py_None && a2 == Py_None && a3 == Py_None && a4 == Py_None )
+%MethodCode if ( sipCanConvertToType( a0, sipType_QgsPointXY, SIP_NOT_NONE ) && a1 == Py_None && a2 == Py_None && a3 == Py_None && a4 == Py_None )
     {
       int state;
       sipIsErr = 0;
@@ -92,11 +93,8 @@ type will be set based on the following rules:
       }
       sipReleaseType( p, sipType_QPointF, state );
     }
-    else if (
-      ( a0 == Py_None || PyFloat_AsDouble( a0 ) != -1.0 || !PyErr_Occurred() ) &&
-      ( a1 == Py_None || PyFloat_AsDouble( a1 ) != -1.0 || !PyErr_Occurred() ) &&
-      ( a2 == Py_None || PyFloat_AsDouble( a2 ) != -1.0 || !PyErr_Occurred() ) &&
-      ( a3 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) )
+    else if ( ( a0 == Py_None || PyFloat_AsDouble( a0 ) != -1.0 || !PyErr_Occurred() ) && ( a1 == Py_None || PyFloat_AsDouble( a1 ) != -1.0 || !PyErr_Occurred() )
+              && ( a2 == Py_None || PyFloat_AsDouble( a2 ) != -1.0 || !PyErr_Occurred() ) && ( a3 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) )
     {
       double x = a0 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a0 );
       double y = a1 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a1 );

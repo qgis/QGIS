@@ -14,7 +14,7 @@
 
 
 
-class QgsLineString: QgsCurve
+class QgsLineString : QgsCurve
 {
 %Docstring(signature="appended")
 Line string geometry type, with support for z-dimension and m-values.
@@ -24,8 +24,7 @@ Line string geometry type, with support for z-dimension and m-values.
 #include "qgslinestring.h"
 %End
   public:
-
-    QgsLineString() /HoldGIL/;
+    QgsLineString();
 %Docstring
 Constructor for an empty linestring geometry.
 %End

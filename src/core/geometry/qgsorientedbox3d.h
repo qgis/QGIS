@@ -47,7 +47,6 @@ class QgsMatrix4x4;
 class CORE_EXPORT QgsOrientedBox3D
 {
   public:
-
     /**
      * Constructor for a null oriented box.
      */
@@ -74,7 +73,8 @@ class CORE_EXPORT QgsOrientedBox3D
      */
     static QgsOrientedBox3D fromBox3D( const QgsBox3D &box );
 
-    bool operator==( const QgsOrientedBox3D &other ) const SIP_HOLDGIL
+    bool operator==( const QgsOrientedBox3D &other ) const
+    SIP_HOLDGIL
     {
       return qgsDoubleNear( mCenter[0], other.mCenter[0] )
              && qgsDoubleNear( mCenter[1], other.mCenter[1] )

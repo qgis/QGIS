@@ -34,7 +34,6 @@ struct QgsVertexId;
 class CORE_EXPORT QgsNurbsUtils
 {
   public:
-
     /**
      * Returns TRUE if the \a geom contains a NURBS curve (recursively).
      */
@@ -55,10 +54,7 @@ class CORE_EXPORT QgsNurbsUtils
      * \returns the NURBS curve containing the vertex, or NULLPTR if the vertex is not part of a NURBS curve
      * \note Not available in Python bindings
      */
-    static const QgsNurbsCurve *findNurbsCurveForVertex(
-      const QgsAbstractGeometry *geom,
-      const QgsVertexId &vid,
-      int &localIndex ) SIP_SKIP;
+    static const QgsNurbsCurve *findNurbsCurveForVertex( const QgsAbstractGeometry *geom, const QgsVertexId &vid, int &localIndex ) SIP_SKIP;
 
     /**
      * Finds the NURBS curve containing the vertex identified by \a vid.
@@ -68,10 +64,7 @@ class CORE_EXPORT QgsNurbsUtils
      * \param localIndex will be set to the control point index within the found NURBS curve
      * \returns the NURBS curve containing the vertex, or NULLPTR if the vertex is not part of a NURBS curve
      */
-    static QgsNurbsCurve *findNurbsCurveForVertex(
-      QgsAbstractGeometry *geom,
-      const QgsVertexId &vid,
-      int &localIndex SIP_OUT );
+    static QgsNurbsCurve *findNurbsCurveForVertex( QgsAbstractGeometry *geom, const QgsVertexId &vid, int &localIndex SIP_OUT );
 };
 
 #endif // QGSNURBSUTILS_H

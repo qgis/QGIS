@@ -34,10 +34,7 @@ bool QgsCurve::operator==( const QgsAbstractGeometry &other ) const
   return equals( *otherCurve );
 }
 
-bool QgsCurve::operator!=( const QgsAbstractGeometry &other ) const
-{
-  return !operator==( other );
-}
+bool QgsCurve::operator!=( const QgsAbstractGeometry &other ) const { return !operator==( other ); }
 
 bool QgsCurve::isClosed2D() const
 {
@@ -48,8 +45,7 @@ bool QgsCurve::isClosed2D() const
   const QgsPoint start = startPoint();
   const QgsPoint end = endPoint();
 
-  return qgsDoubleNear( start.x(), end.x() ) &&
-         qgsDoubleNear( start.y(), end.y() );
+  return qgsDoubleNear( start.x(), end.x() ) && qgsDoubleNear( start.y(), end.y() );
 }
 bool QgsCurve::isClosed() const
 {
@@ -63,10 +59,7 @@ bool QgsCurve::isClosed() const
   return closed;
 }
 
-bool QgsCurve::isRing() const
-{
-  return ( isClosed() && numPoints() >= 4 );
-}
+bool QgsCurve::isRing() const { return ( isClosed() && numPoints() >= 4 ); }
 
 QPainterPath QgsCurve::asQPainterPath() const
 {
@@ -173,10 +166,7 @@ QString QgsCurve::asKml( int precision ) const
   return kml;
 }
 
-QgsCurve *QgsCurve::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
-{
-  return curveToLine( tolerance, toleranceType );
-}
+QgsCurve *QgsCurve::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const { return curveToLine( tolerance, toleranceType ); }
 
 int QgsCurve::vertexCount( int part, int ring ) const
 {
@@ -191,10 +181,7 @@ int QgsCurve::ringCount( int part ) const
   return numPoints() > 0 ? 1 : 0;
 }
 
-int QgsCurve::partCount() const
-{
-  return numPoints() > 0 ? 1 : 0;
-}
+int QgsCurve::partCount() const { return numPoints() > 0 ? 1 : 0; }
 
 QgsPoint QgsCurve::vertexAt( QgsVertexId id ) const
 {
@@ -204,10 +191,7 @@ QgsPoint QgsCurve::vertexAt( QgsVertexId id ) const
   return v;
 }
 
-QgsCurve *QgsCurve::toCurveType() const
-{
-  return clone();
-}
+QgsCurve *QgsCurve::toCurveType() const { return clone(); }
 
 void QgsCurve::normalize()
 {
@@ -270,10 +254,7 @@ QPolygonF QgsCurve::asQPolygonF() const
   return segmentized->asQPolygonF();
 }
 
-double QgsCurve::straightDistance2d() const
-{
-  return startPoint().distance( endPoint() );
-}
+double QgsCurve::straightDistance2d() const { return startPoint().distance( endPoint() ); }
 
 double QgsCurve::sinuosity() const
 {
@@ -301,10 +282,7 @@ void QgsCurve::clearCache() const
   QgsAbstractGeometry::clearCache();
 }
 
-int QgsCurve::childCount() const
-{
-  return numPoints();
-}
+int QgsCurve::childCount() const { return numPoints(); }
 
 QgsPoint QgsCurve::childPoint( int index ) const
 {
@@ -316,9 +294,10 @@ QgsPoint QgsCurve::childPoint( int index ) const
   return point;
 }
 
-bool QgsCurve::snapToGridPrivate( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
-                                  const QVector<double> &srcX, const QVector<double> &srcY, const QVector<double> &srcZ, const QVector<double> &srcM,
-                                  QVector<double> &outX, QVector<double> &outY, QVector<double> &outZ, QVector<double> &outM, bool removeRedundantPoints ) const
+bool QgsCurve::snapToGridPrivate(
+  double hSpacing, double vSpacing, double dSpacing, double mSpacing, const QVector<double> &srcX, const QVector<double> &srcY, const QVector<double> &srcZ, const QVector<double> &srcM,
+  QVector<double> &outX, QVector<double> &outY, QVector<double> &outZ, QVector<double> &outM, bool removeRedundantPoints
+) const
 {
   const int length = numPoints();
   if ( length < 2 )
@@ -368,9 +347,7 @@ bool QgsCurve::snapToGridPrivate( double hSpacing, double vSpacing, double dSpac
     }
     else
     {
-      const bool isPointEqual = qgsDoubleNear( roundedX, previousX )
-                                && qgsDoubleNear( roundedY, previousY )
-                                && ( !hasZ || dSpacing <= 0 || qgsDoubleNear( roundedZ, previousZ ) )
+      const bool isPointEqual = qgsDoubleNear( roundedX, previousX ) && qgsDoubleNear( roundedY, previousY ) && ( !hasZ || dSpacing <= 0 || qgsDoubleNear( roundedZ, previousZ ) )
                                 && ( !hasM || mSpacing <= 0 || qgsDoubleNear( roundedM, previousM ) );
       if ( isPointEqual )
         continue;
@@ -379,16 +356,12 @@ bool QgsCurve::snapToGridPrivate( double hSpacing, double vSpacing, double dSpac
       bool previousPointRedundant = false;
       if ( removeRedundantPoints && outSize > 1 && !hasZ && !hasM )
       {
-        previousPointRedundant = QgsGeometryUtilsBase::leftOfLine( outX.at( outSize - 1 ),
-                                 outY.at( outSize - 1 ),
-                                 outX.at( outSize - 2 ),
-                                 outY.at( outSize - 2 ),
-                                 roundedX, roundedY ) == 0;
+        previousPointRedundant = QgsGeometryUtilsBase::leftOfLine( outX.at( outSize - 1 ), outY.at( outSize - 1 ), outX.at( outSize - 2 ), outY.at( outSize - 2 ), roundedX, roundedY ) == 0;
       }
       if ( previousPointRedundant )
       {
-        outX[ outSize - 1 ] = roundedX;
-        outY[ outSize - 1 ] = roundedY;
+        outX[outSize - 1] = roundedX;
+        outY[outSize - 1] = roundedY;
       }
       else
       {
@@ -411,17 +384,13 @@ bool QgsCurve::snapToGridPrivate( double hSpacing, double vSpacing, double dSpac
   if ( removeRedundantPoints && isClosed() && outSize > 4 && !hasZ && !hasM )
   {
     // maybe first/last vertex is redundant, let's try to remove that too
-    const bool firstVertexIsRedundant = QgsGeometryUtilsBase::leftOfLine( outX.at( 0 ),
-                                        outY.at( 0 ),
-                                        outX.at( outSize - 2 ),
-                                        outY.at( outSize - 2 ),
-                                        outX.at( 1 ), outY.at( 1 ) ) == 0;
+    const bool firstVertexIsRedundant = QgsGeometryUtilsBase::leftOfLine( outX.at( 0 ), outY.at( 0 ), outX.at( outSize - 2 ), outY.at( outSize - 2 ), outX.at( 1 ), outY.at( 1 ) ) == 0;
     if ( firstVertexIsRedundant )
     {
       outX.removeAt( 0 );
       outY.removeAt( 0 );
-      outX[ outSize - 2 ] = outX.at( 0 );
-      outY[ outSize - 2 ] = outY.at( 0 );
+      outX[outSize - 2] = outX.at( 0 );
+      outY[outSize - 2] = outY.at( 0 );
     }
   }
 

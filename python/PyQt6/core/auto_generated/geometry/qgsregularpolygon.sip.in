@@ -25,14 +25,13 @@ sides/vertices, a radius and the first vertex.
 #include "qgsregularpolygon.h"
 %End
   public:
-
     enum ConstructionOption /BaseType=IntEnum/
     {
       InscribedCircle,
       CircumscribedCircle
     };
 
-    QgsRegularPolygon() /HoldGIL/;
+    QgsRegularPolygon();
 %Docstring
 Constructor for QgsRegularPolygon.
 %End

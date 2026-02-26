@@ -31,14 +31,14 @@ class QgsLineString;
  * \class QgsMultiLineString
  * \brief Multi line string geometry collection.
  */
-class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
+class CORE_EXPORT QgsMultiLineString : public QgsMultiCurve
 {
   public:
-
     /**
      * Constructor for an empty multilinestring geometry.
      */
-    QgsMultiLineString() SIP_HOLDGIL;
+    QgsMultiLineString()
+    SIP_HOLDGIL;
 
     /**
      * Constructor for a multilinestring containing the specified \a linestrings.

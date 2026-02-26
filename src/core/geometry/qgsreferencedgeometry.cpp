@@ -28,52 +28,28 @@ QgsReferencedRectangle::QgsReferencedRectangle( const QgsRectangle &rect, const 
   , QgsReferencedGeometryBase( crs )
 {}
 
-bool QgsReferencedRectangle::operator==( const QgsReferencedRectangle &other ) const
-{
-  return QgsRectangle::operator==( other ) && crs() == other.crs();
-}
+bool QgsReferencedRectangle::operator==( const QgsReferencedRectangle &other ) const { return QgsRectangle::operator==( other ) && crs() == other.crs(); }
 
-bool QgsReferencedRectangle::operator!=( const QgsReferencedRectangle &other ) const
-{
-  return !( *this == other );
-}
+bool QgsReferencedRectangle::operator!=( const QgsReferencedRectangle &other ) const { return !( *this == other ); }
 
 QgsReferencedPointXY::QgsReferencedPointXY( const QgsPointXY &point, const QgsCoordinateReferenceSystem &crs )
   : QgsPointXY( point )
   , QgsReferencedGeometryBase( crs )
 {}
 
-bool QgsReferencedPointXY::operator==( const QgsReferencedPointXY &other )
-{
-  return QgsPointXY::operator==( other ) && crs() == other.crs();
-}
+bool QgsReferencedPointXY::operator==( const QgsReferencedPointXY &other ) { return QgsPointXY::operator==( other ) && crs() == other.crs(); }
 
-bool QgsReferencedPointXY::operator!=( const QgsReferencedPointXY &other )
-{
-  return !( *this == other );
-}
+bool QgsReferencedPointXY::operator!=( const QgsReferencedPointXY &other ) { return !( *this == other ); }
 
 QgsReferencedGeometry::QgsReferencedGeometry( const QgsGeometry &geom, const QgsCoordinateReferenceSystem &crs )
   : QgsGeometry( geom )
   , QgsReferencedGeometryBase( crs )
 {}
 
-bool QgsReferencedGeometry::operator==( const QgsReferencedGeometry &other ) const
-{
-  return ( ( this->isNull() && other.isNull() ) || this->equals( other ) ) && crs() == other.crs();
-}
+bool QgsReferencedGeometry::operator==( const QgsReferencedGeometry &other ) const { return ( ( this->isNull() && other.isNull() ) || this->equals( other ) ) && crs() == other.crs(); }
 
-bool QgsReferencedGeometry::operator!=( const QgsReferencedGeometry &other ) const
-{
-  return !( *this == other );
-}
+bool QgsReferencedGeometry::operator!=( const QgsReferencedGeometry &other ) const { return !( *this == other ); }
 
-QgsReferencedGeometry QgsReferencedGeometry::fromReferencedPointXY( const QgsReferencedPointXY &point )
-{
-  return QgsReferencedGeometry( QgsGeometry::fromPointXY( point ), point.crs() );
-}
+QgsReferencedGeometry QgsReferencedGeometry::fromReferencedPointXY( const QgsReferencedPointXY &point ) { return QgsReferencedGeometry( QgsGeometry::fromPointXY( point ), point.crs() ); }
 
-QgsReferencedGeometry QgsReferencedGeometry::fromReferencedRect( const QgsReferencedRectangle &rectangle )
-{
-  return QgsReferencedGeometry( QgsGeometry::fromRect( rectangle ), rectangle.crs() );
-}
+QgsReferencedGeometry QgsReferencedGeometry::fromReferencedRect( const QgsReferencedRectangle &rectangle ) { return QgsReferencedGeometry( QgsGeometry::fromRect( rectangle ), rectangle.crs() ); }

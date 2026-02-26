@@ -19,8 +19,4 @@
 
 #include "qgsgeometryutils.h"
 
-int QgsLineSegment2D::pointLeftOfLine( const QgsPointXY &point ) const
-{
-  return QgsGeometryUtilsBase::leftOfLine( point.x(), point.y(), mStart.x(), mStart.y(), mEnd.x(), mEnd.y() );
-}
-
+int QgsLineSegment2D::pointLeftOfLine( const QgsPointXY &point ) const { return QgsGeometryUtilsBase::leftOfLine( point.x(), point.y(), mStart.x(), mStart.y(), mEnd.x(), mEnd.y() ); }

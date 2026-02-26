@@ -27,29 +27,15 @@ QgsSphere::QgsSphere( double x, double y, double z, double radius )
   , mCenterY( y )
   , mCenterZ( z )
   , mRadius( radius )
-{
+{}
 
-}
+bool QgsSphere::isNull() const { return std::isnan( mCenterX ) || std::isnan( mCenterY ) || std::isnan( mCenterZ ); }
 
-bool QgsSphere::isNull() const
-{
-  return std::isnan( mCenterX ) || std::isnan( mCenterY ) || std::isnan( mCenterZ );
-}
+bool QgsSphere::isEmpty() const { return qgsDoubleNear( mRadius, 0 ); }
 
-bool QgsSphere::isEmpty() const
-{
-  return qgsDoubleNear( mRadius, 0 );
-}
+QgsPoint QgsSphere::center() const { return QgsPoint( mCenterX, mCenterY, mCenterZ ); }
 
-QgsPoint QgsSphere::center() const
-{
-  return QgsPoint( mCenterX, mCenterY, mCenterZ );
-}
-
-QgsVector3D QgsSphere::centerVector() const
-{
-  return QgsVector3D( mCenterX, mCenterY, mCenterZ );
-}
+QgsVector3D QgsSphere::centerVector() const { return QgsVector3D( mCenterX, mCenterY, mCenterZ ); }
 
 void QgsSphere::setCenter( const QgsPoint &center )
 {
@@ -58,15 +44,9 @@ void QgsSphere::setCenter( const QgsPoint &center )
   mCenterZ = center.z();
 }
 
-double QgsSphere::volume() const
-{
-  return 4.0 / 3.0 * M_PI * std::pow( mRadius, 3 );
-}
+double QgsSphere::volume() const { return 4.0 / 3.0 * M_PI * std::pow( mRadius, 3 ); }
 
-double QgsSphere::surfaceArea() const
-{
-  return 4.0 * M_PI * std::pow( mRadius, 2 );
-}
+double QgsSphere::surfaceArea() const { return 4.0 * M_PI * std::pow( mRadius, 2 ); }
 
 QgsCircle QgsSphere::toCircle() const
 {
@@ -81,7 +61,5 @@ QgsBox3D QgsSphere::boundingBox() const
   if ( isNull() )
     return QgsBox3D();
 
-  return QgsBox3D( mCenterX - mRadius, mCenterY - mRadius, mCenterZ - mRadius,
-                   mCenterX + mRadius, mCenterY + mRadius, mCenterZ + mRadius );
+  return QgsBox3D( mCenterX - mRadius, mCenterY - mRadius, mCenterZ - mRadius, mCenterX + mRadius, mCenterY + mRadius, mCenterZ + mRadius );
 }
-

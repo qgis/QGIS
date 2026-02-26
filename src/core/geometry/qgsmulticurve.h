@@ -29,7 +29,7 @@ using namespace Qt::StringLiterals;
  * \class QgsMultiCurve
  * \brief Multi curve geometry collection.
  */
-class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
+class CORE_EXPORT QgsMultiCurve : public QgsGeometryCollection
 {
   public:
     QgsMultiCurve();
@@ -53,8 +53,7 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
      * \since QGIS 3.16
      */
     SIP_PYOBJECT curveN( int index ) SIP_TYPEHINT( QgsCurve );
-    % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
+    % MethodCode if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -78,7 +77,8 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
     const QgsCurve *curveN( int index ) const;
 #endif
 
-    QString geometryType() const override SIP_HOLDGIL;
+    QString geometryType() const override
+    SIP_HOLDGIL;
     QgsMultiCurve *clone() const override SIP_FACTORY;
     void clear() override;
     QgsMultiCurve *toCurveType() const override SIP_FACTORY;

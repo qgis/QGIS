@@ -38,7 +38,7 @@ class QgsTriangle;
  *
  * \since QGIS 3.40
  */
-class CORE_EXPORT QgsTriangulatedSurface: public QgsPolyhedralSurface
+class CORE_EXPORT QgsTriangulatedSurface : public QgsPolyhedralSurface
 {
   public:
     QgsTriangulatedSurface();
@@ -62,20 +62,17 @@ class CORE_EXPORT QgsTriangulatedSurface: public QgsPolyhedralSurface
 
       for ( int i = 0; i < mPatches.count(); ++i )
       {
-        if ( ( !mPatches.at( i ) && otherTriangulatedSurface->mPatches.at( i ) ) ||
-             ( mPatches.at( i ) && !otherTriangulatedSurface->mPatches.at( i ) ) )
+        if ( ( !mPatches.at( i ) && otherTriangulatedSurface->mPatches.at( i ) ) || ( mPatches.at( i ) && !otherTriangulatedSurface->mPatches.at( i ) ) )
           return false;
 
         if ( useDistance )
         {
-          if ( mPatches.at( i ) && otherTriangulatedSurface->mPatches.at( i ) &&
-               !( *mPatches.at( i ) ).fuzzyDistanceEqual( *otherTriangulatedSurface->mPatches.at( i ), epsilon ) )
+          if ( mPatches.at( i ) && otherTriangulatedSurface->mPatches.at( i ) && !( *mPatches.at( i ) ).fuzzyDistanceEqual( *otherTriangulatedSurface->mPatches.at( i ), epsilon ) )
             return false;
         }
         else
         {
-          if ( mPatches.at( i ) && otherTriangulatedSurface->mPatches.at( i ) &&
-               !( *mPatches.at( i ) ).fuzzyEqual( *otherTriangulatedSurface->mPatches.at( i ), epsilon ) )
+          if ( mPatches.at( i ) && otherTriangulatedSurface->mPatches.at( i ) && !( *mPatches.at( i ) ).fuzzyEqual( *otherTriangulatedSurface->mPatches.at( i ), epsilon ) )
             return false;
         }
       }
@@ -85,7 +82,8 @@ class CORE_EXPORT QgsTriangulatedSurface: public QgsPolyhedralSurface
 #endif
 
   public:
-    bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override SIP_HOLDGIL
+    bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override
+    SIP_HOLDGIL
     {
       return fuzzyHelper( other, epsilon, false );
     }
