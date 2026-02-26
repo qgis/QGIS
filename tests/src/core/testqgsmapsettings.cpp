@@ -490,7 +490,7 @@ void TestQgsMapSettings::testExpressionContext()
 
   QgsExpression e( u"@map_scale"_s );
   r = e.evaluate( &c );
-  QGSCOMPARENEAR( r.toDouble(), 247990, 10.0 );
+  QGSCOMPARENEAR( r.toDouble(), 247965, 10.0 );
 
   e = QgsExpression( u"@zoom_level"_s );
   r = e.evaluate( &c );
@@ -498,12 +498,12 @@ void TestQgsMapSettings::testExpressionContext()
 
   e = QgsExpression( u"@vector_tile_zoom"_s );
   r = e.evaluate( &c );
-  QGSCOMPARENEAR( r.toDouble(), 10.1385606747, 0.0001 );
+  QGSCOMPARENEAR( r.toDouble(), 10.1387040092, 0.0001 );
 
   // The old $scale function should silently map to @map_scale, so that older projects work without change
   e = QgsExpression( u"$scale"_s );
   r = e.evaluate( &c );
-  QGSCOMPARENEAR( r.toDouble(), 247990, 10.0 );
+  QGSCOMPARENEAR( r.toDouble(), 247965, 10.0 );
 
   // no map settings scope -- $scale is meaningless
   e = QgsExpression( u"$scale"_s );

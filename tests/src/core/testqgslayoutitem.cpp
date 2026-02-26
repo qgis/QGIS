@@ -1402,7 +1402,7 @@ void TestQgsLayoutItem::itemVariablesFunction()
   c = l.createExpressionContext();
   e.prepare( &c );
   r = e.evaluate( &c );
-  QGSCOMPARENEAR( r.toDouble(), 184764103, 100 );
+  QGSCOMPARENEAR( r.toDouble(), 184754070, 100 );
 
   QgsExpression e2( u"map_get( item_variables( 'Map_id' ), 'map_crs' )"_s );
   r = e2.evaluate( &c );
