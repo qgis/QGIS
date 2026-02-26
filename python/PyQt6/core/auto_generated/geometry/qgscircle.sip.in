@@ -31,15 +31,7 @@ default, the semi-major axis is oriented to the north (0 degrees).
   public:
     QgsCircle();
 
-    QgsCircle( const QgsPoint &center, double radius, double azimuth = 0 );
-%Docstring
-Constructs a circle by defining all the members.
-
-:param center: The center of the circle.
-:param radius: The radius of the circle.
-:param azimuth: Angle in degrees started from the North to the first
-                quadrant.
-%End
+    QgsCircle( const QgsPoint &center, double radius, double azimuth = 0 ) /HoldGIL/;
 
     static QgsCircle from2Points( const QgsPoint &pt1, const QgsPoint &pt2 ) /HoldGIL/;
 %Docstring
