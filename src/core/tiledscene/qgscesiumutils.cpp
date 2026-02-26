@@ -201,6 +201,69 @@ QgsCesiumUtils::B3DMContents QgsCesiumUtils::extractGltfFromB3dm( const QByteArr
   return res;
 }
 
+static QVector<QgsCesiumUtils::TileContents> extractGltfFromCmpt( const QByteArray &tileContent, int depth = 0 )
+{
+  struct cmptHeader
+  {
+    unsigned char magic[4];
+    quint32 version;
+    quint32 byteLength;
+    quint32 tilesLength;
+  };
+
+  QVector<QgsCesiumUtils::TileContents> result;
+
+  if ( depth > 10 )
+  {
+    // avoid infinite recursion with badly formed tiles
+    QgsDebugError( u"cmpt recursion depth exceeded"_s );
+    return result;
+  }
+
+  if ( tileContent.size() < static_cast<int>( sizeof( cmptHeader ) ) )
+    return result;
+
+  cmptHeader hdr;
+  memcpy( &hdr, tileContent.constData(), sizeof( cmptHeader ) );
+
+  if ( hdr.version != 1 )
+  {
+    QgsDebugError( u"Unsupported cmpt version %1"_s.arg( hdr.version ) );
+    return result;
+  }
+
+  if ( static_cast<quint32>( tileContent.size() ) < hdr.byteLength )
+    return result;
+
+  int offset = static_cast<int>( sizeof( cmptHeader ) );
+  for ( quint32 i = 0; i < hdr.tilesLength; ++i )
+  {
+    // all inner tiles have the following header: magic (4 bytes), version (uint32), byteLength (uint32)
+    const quint32 innerByteLength = *reinterpret_cast<const quint32 *>( tileContent.constData() + offset + 8 );
+
+    if ( innerByteLength < 12 || offset + static_cast<int>( innerByteLength ) > static_cast<int>( hdr.byteLength ) )
+    {
+      QgsDebugError( u"cmpt with bad inner tile (at index %1)"_s.arg( i ) );
+      break;
+    }
+
+    const QByteArray innerTile = tileContent.mid( offset, innerByteLength );
+
+    if ( innerTile.startsWith( QByteArray( "cmpt" ) ) )
+    {
+      result.append( extractGltfFromCmpt( innerTile, depth + 1 ) );
+    }
+    else
+    {
+      result.append( QgsCesiumUtils::extractTileContent( innerTile ) );
+    }
+
+    offset += innerByteLength;
+  }
+
+  return result;
+}
+
 QgsCesiumUtils::TileContents QgsCesiumUtils::extractGltfFromTileContent( const QByteArray &tileContent )
 {
   TileContents res;
@@ -219,7 +282,36 @@ QgsCesiumUtils::TileContents QgsCesiumUtils::extractGltfFromTileContent( const Q
   else
   {
     // unsupported tile content type
-    // TODO: we could extract "b3dm" data from a composite tile ("cmpt")
     return res;
   }
+}
+
+QVector<QgsCesiumUtils::TileContents> QgsCesiumUtils::extractTileContent( const QByteArray &tileContent )
+{
+  QVector<TileContents> result;
+  if ( tileContent.startsWith( QByteArray( "b3dm" ) ) )
+  {
+    const B3DMContents b3dmContents = QgsCesiumUtils::extractGltfFromB3dm( tileContent );
+    TileContents contents;
+    contents.gltf = b3dmContents.gltf;
+    contents.rtcCenter = b3dmContents.rtcCenter;
+    result.append( contents );
+  }
+  else if ( tileContent.startsWith( QByteArray( "glTF" ) ) )
+  {
+    TileContents contents;
+    contents.gltf = tileContent;
+    result.append( contents );
+  }
+  else if ( tileContent.startsWith( QByteArray( "cmpt" ) ) )
+  {
+    result = extractGltfFromCmpt( tileContent );
+  }
+  else
+  {
+    QgsDebugError( u"extractGltfFromTileContent: unknown tile format, size=%1, magic=%2"_s
+                   .arg( tileContent.size() )
+                   .arg( QString::fromLatin1( tileContent.left( 4 ) ) ) );
+  }
+  return result;
 }
