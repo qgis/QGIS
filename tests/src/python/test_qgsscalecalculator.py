@@ -176,7 +176,9 @@ class TestQgsScaleCalculator(QgisTestCase):
 
         # with ESPG:4326 use exactly the WGS84 ellipsoid, which should give a slightly different result then previous
         calculator = QgsScaleCalculator()
-        calculator.setMapCrs(QgsCoordinateReferenceSystem("EPSG:4326"))
+        calculator.setEllipsoid(
+            QgsCoordinateReferenceSystem("EPSG:4326").ellipsoidAcronym()
+        )
         calculator.setMapUnits(Qgis.DistanceUnit.Degrees)
         calculator.setMethod(Qgis.ScaleCalculationMethod.HorizontalMiddle)
         calculator.setDpi(96)
@@ -187,7 +189,9 @@ class TestQgsScaleCalculator(QgisTestCase):
 
         # with Moon CRS the ellipsoid is much smaller, so the distance should be much smaller too
         calculator = QgsScaleCalculator()
-        calculator.setMapCrs(QgsCoordinateReferenceSystem("IAU_2015:30100"))
+        calculator.setEllipsoid(
+            QgsCoordinateReferenceSystem("IAU_2015:30100").ellipsoidAcronym()
+        )
         calculator.setMapUnits(Qgis.DistanceUnit.Degrees)
         calculator.setMethod(Qgis.ScaleCalculationMethod.HorizontalMiddle)
         calculator.setDpi(96)
