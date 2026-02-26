@@ -24,8 +24,10 @@ jobs:
         include:
           - os: windows-2022
             triplet: x64-windows-release
+            arch: amd64
           - os: windows-11-arm
             triplet: arm64-windows-release
+            arch: arm64
     name: build (windows)
     runs-on: ${{ matrix.os }}
 
@@ -48,6 +50,8 @@ jobs:
 
       - name: 🧽 Developer Command Prompt for Microsoft Visual C++
         uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 #v1
+        with:
+          arch: ${{ matrix.arch }}
 
       - name: 🎡 Setup vcpkg
         uses: ./.github/actions/setup-vcpkg
