@@ -19,9 +19,10 @@
 
 using namespace Qt::StringLiterals;
 
-QgsBabelGpsDeviceFormat::QgsBabelGpsDeviceFormat( const QString &waypointDownloadCommand, const QString &waypointUploadCommand,
-    const QString &routeDownloadCommand, const QString &routeUploadCommand,
-    const QString &trackDownloadCommand, const QString &trackUploadCommand )
+QgsBabelGpsDeviceFormat::QgsBabelGpsDeviceFormat(
+  const QString &waypointDownloadCommand, const QString &waypointUploadCommand, const QString &routeDownloadCommand, const QString &routeUploadCommand, const QString &trackDownloadCommand,
+  const QString &trackUploadCommand
+)
 {
   const thread_local QRegularExpression whiteSpaceRx( u"\\s"_s );
 
@@ -63,10 +64,7 @@ QgsBabelGpsDeviceFormat::QgsBabelGpsDeviceFormat( const QString &waypointDownloa
   }
 }
 
-QStringList QgsBabelGpsDeviceFormat::importCommand( const QString &babel,
-    Qgis::GpsFeatureType type,
-    const QString &in,
-    const QString &out, Qgis::BabelCommandFlags flags ) const
+QStringList QgsBabelGpsDeviceFormat::importCommand( const QString &babel, Qgis::GpsFeatureType type, const QString &in, const QString &out, Qgis::BabelCommandFlags flags ) const
 {
   QStringList original;
 
@@ -101,10 +99,7 @@ QStringList QgsBabelGpsDeviceFormat::importCommand( const QString &babel,
   return copy;
 }
 
-QStringList QgsBabelGpsDeviceFormat::exportCommand( const QString &babel,
-    Qgis::GpsFeatureType type,
-    const QString &in,
-    const QString &out, Qgis::BabelCommandFlags flags ) const
+QStringList QgsBabelGpsDeviceFormat::exportCommand( const QString &babel, Qgis::GpsFeatureType type, const QString &in, const QString &out, Qgis::BabelCommandFlags flags ) const
 {
   QStringList original;
   switch ( type )
@@ -137,6 +132,3 @@ QStringList QgsBabelGpsDeviceFormat::exportCommand( const QString &babel,
   }
   return copy;
 }
-
-
-

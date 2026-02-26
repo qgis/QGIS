@@ -34,7 +34,6 @@
 class CORE_EXPORT QgsGpsInformation
 {
   public:
-
     /**
      * Latitude in decimal degrees, using the WGS84 datum. A positive value indicates the Northern Hemisphere, and
      * a negative value indicates the Southern Hemisphere.
@@ -247,13 +246,11 @@ class CORE_EXPORT QgsGpsInformation
     QVariant componentValue( Qgis::GpsInformationComponent component ) const;
 
   private:
-
     QMap< Qgis::GnssConstellation, Qgis::GpsFixStatus > mConstellationFixStatus;
     Qgis::GpsNavigationStatus mNavigationStatus = Qgis::GpsNavigationStatus::NotValid;
 
     friend class QgsNmeaConnection;
     friend class QgsQtLocationConnection;
-
 };
 
 Q_DECLARE_METATYPE( QgsGpsInformation )

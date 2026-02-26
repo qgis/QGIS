@@ -17,7 +17,7 @@
 #include "qgsgpsconnection.h"
 %End
 
-class QgsGpsConnection : QObject
+  class QgsGpsConnection : QObject
 {
 %Docstring(signature="appended")
 Abstract base class for connections to a GPS device.
@@ -36,57 +36,6 @@ Abstract base class for connections to a GPS device.
     else
       sipType = NULL;
 %End
-  public:
-
-    enum Status /BaseType=IntEnum/
-    {
-      NotConnected,
-      Connected,
-      DataReceived,
-      GPSDataReceived
-    };
-
-
-    QgsGpsConnection( QIODevice *dev /Transfer/ );
-%Docstring
-Constructor
-
-:param dev: input device for the connection (e.g. serial device). The
-            class takes ownership of the object
-%End
-    ~QgsGpsConnection();
-    bool connect();
-%Docstring
-Opens connection to device
-%End
-    bool close();
-%Docstring
-Closes connection to device
-%End
-
-    void setSource( QIODevice *source /Transfer/ );
-%Docstring
-Sets the GPS source. The class takes ownership of the device class
-%End
-
-    Status status() const;
-%Docstring
-Returns the status. Possible state are not connected, connected, data
-received
-%End
-
-    QgsGpsInformation currentGPSInformation() const;
-%Docstring
-Returns the current gps information (lat, lon, etc.)
-%End
-
-    QgsPoint lastValidLocation() const;
-%Docstring
-Returns the last valid location obtained by the device.
-
-.. versionadded:: 3.30
-%End
-
   signals:
 
     void stateChanged( const QgsGpsInformation &info );

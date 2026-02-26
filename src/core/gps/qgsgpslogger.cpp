@@ -41,9 +41,11 @@ const QgsSettingsEntryInteger *QgsGpsLogger::settingsTimeStampFormat = new QgsSe
 const QgsSettingsEntryInteger *QgsGpsLogger::settingsLeapSecondsCorrection = new QgsSettingsEntryInteger( u"leapSecondsCorrection"_s, QgsSettingsTree::sTreeGps, 18 );
 const QgsSettingsEntryInteger *QgsGpsLogger::settingsAcquisitionInterval = new QgsSettingsEntryInteger( u"acquisitionInterval"_s, QgsSettingsTree::sTreeGps, 0 );
 
-const QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponent> *QgsGpsLogger::settingsGpsMValueComponent = new QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponent>( u"m-value-attribute"_s, QgsSettingsTree::sTreeGps, Qgis::GpsInformationComponent::Timestamp, u"Which GPS attribute should be stored in geometry m values"_s ) SIP_SKIP;
+const QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponent> *QgsGpsLogger::settingsGpsMValueComponent = new QgsSettingsEntryEnumFlag<
+  Qgis::GpsInformationComponent>( u"m-value-attribute"_s, QgsSettingsTree::sTreeGps, Qgis::GpsInformationComponent::Timestamp, u"Which GPS attribute should be stored in geometry m values"_s ) SIP_SKIP;
 
-const QgsSettingsEntryBool *QgsGpsLogger::settingsGpsStoreAttributeInMValues = new QgsSettingsEntryBool( u"store-attribute-in-m-values"_s, QgsSettingsTree::sTreeGps, false, u"Whether GPS attributes should be stored in geometry m values"_s ) SIP_SKIP;
+const QgsSettingsEntryBool *QgsGpsLogger::settingsGpsStoreAttributeInMValues
+  = new QgsSettingsEntryBool( u"store-attribute-in-m-values"_s, QgsSettingsTree::sTreeGps, false, u"Whether GPS attributes should be stored in geometry m values"_s ) SIP_SKIP;
 
 QgsGpsLogger::QgsGpsLogger( QgsGpsConnection *connection, QObject *parent )
   : QObject( parent )
@@ -59,19 +61,12 @@ QgsGpsLogger::QgsGpsLogger( QgsGpsConnection *connection, QObject *parent )
 
   updateGpsSettings();
 
-  connect( mAcquisitionTimer.get(), &QTimer::timeout,
-           this, &QgsGpsLogger::switchAcquisition );
+  connect( mAcquisitionTimer.get(), &QTimer::timeout, this, &QgsGpsLogger::switchAcquisition );
 }
 
-QgsGpsLogger::~QgsGpsLogger()
-{
+QgsGpsLogger::~QgsGpsLogger() {}
 
-}
-
-QgsGpsConnection *QgsGpsLogger::connection()
-{
-  return mConnection;
-}
+QgsGpsConnection *QgsGpsLogger::connection() { return mConnection; }
 
 void QgsGpsLogger::setConnection( QgsGpsConnection *connection )
 {
@@ -101,20 +96,11 @@ void QgsGpsLogger::setTransformContext( const QgsCoordinateTransformContext &con
   emit distanceAreaChanged();
 }
 
-QgsCoordinateTransformContext QgsGpsLogger::transformContext() const
-{
-  return mTransformContext;
-}
+QgsCoordinateTransformContext QgsGpsLogger::transformContext() const { return mTransformContext; }
 
-const QgsDistanceArea &QgsGpsLogger::distanceArea() const
-{
-  return mDistanceCalculator;
-}
+const QgsDistanceArea &QgsGpsLogger::distanceArea() const { return mDistanceCalculator; }
 
-QVector<QgsPoint> QgsGpsLogger::currentTrack() const
-{
-  return mCaptureListWgs84;
-}
+QVector<QgsPoint> QgsGpsLogger::currentTrack() const { return mCaptureListWgs84; }
 
 QgsGeometry QgsGpsLogger::currentGeometry( Qgis::WkbType type, QString &error ) const
 {
@@ -192,20 +178,11 @@ QgsGeometry QgsGpsLogger::currentGeometry( Qgis::WkbType type, QString &error ) 
   return QgsGeometry();
 }
 
-QgsPointXY QgsGpsLogger::lastPosition() const
-{
-  return mLastGpsPositionWgs84;
-}
+QgsPointXY QgsGpsLogger::lastPosition() const { return mLastGpsPositionWgs84; }
 
-double QgsGpsLogger::lastElevation() const
-{
-  return mLastElevation;
-}
+double QgsGpsLogger::lastElevation() const { return mLastElevation; }
 
-double QgsGpsLogger::lastMValue() const
-{
-  return mLastMValue;
-}
+double QgsGpsLogger::lastMValue() const { return mLastMValue; }
 
 void QgsGpsLogger::resetTrack()
 {
@@ -293,7 +270,7 @@ double QgsGpsLogger::trackDistanceFromStart() const
 
   try
   {
-    return mDistanceCalculator.measureLine( { QgsPointXY( mCaptureListWgs84.constFirst() ), QgsPointXY( mCaptureListWgs84.constLast() )} );
+    return mDistanceCalculator.measureLine( { QgsPointXY( mCaptureListWgs84.constFirst() ), QgsPointXY( mCaptureListWgs84.constLast() ) } );
   }
   catch ( QgsCsException & )
   {
@@ -435,7 +412,6 @@ void QgsGpsLogger::gpsStateChanged( const QgsGpsInformation &info )
   {
     // do not update position if update is disabled by timer or distance is under threshold
     newLocationWgs84 = mLastGpsPositionWgs84;
-
   }
   if ( validFlag && mAcquisitionEnabled )
   {
@@ -483,15 +459,9 @@ void QgsGpsLogger::addTrackVertex()
   }
 }
 
-bool QgsGpsLogger::automaticallyAddTrackVertices() const
-{
-  return mAutomaticallyAddTrackVertices;
-}
+bool QgsGpsLogger::automaticallyAddTrackVertices() const { return mAutomaticallyAddTrackVertices; }
 
-void QgsGpsLogger::setAutomaticallyAddTrackVertices( bool enabled )
-{
-  mAutomaticallyAddTrackVertices = enabled;
-}
+void QgsGpsLogger::setAutomaticallyAddTrackVertices( bool enabled ) { mAutomaticallyAddTrackVertices = enabled; }
 
 QDateTime QgsGpsLogger::lastTimestamp() const
 {
@@ -540,7 +510,4 @@ QDateTime QgsGpsLogger::lastTimestamp() const
   return time;
 }
 
-QDateTime QgsGpsLogger::trackStartTime() const
-{
-  return mTrackStartTime;
-}
+QDateTime QgsGpsLogger::trackStartTime() const { return mTrackStartTime; }

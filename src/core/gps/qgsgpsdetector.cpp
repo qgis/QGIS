@@ -30,7 +30,7 @@
 
 using namespace Qt::StringLiterals;
 
-#if defined(QT_POSITIONING_LIB)
+#if defined( QT_POSITIONING_LIB )
 #include "qgsqtlocationconnection.h"
 #endif
 
@@ -42,9 +42,12 @@ using namespace Qt::StringLiterals;
 #include <QSerialPortInfo>
 #include <QSerialPort>
 
-const QgsSettingsEntryEnumFlag<QSerialPort::FlowControl> *QgsGpsDetector::settingsGpsFlowControl = new QgsSettingsEntryEnumFlag<QSerialPort::FlowControl>( u"flow-control"_s, QgsSettingsTree::sTreeGps, QSerialPort::NoFlowControl );
-const QgsSettingsEntryEnumFlag<QSerialPort::StopBits> *QgsGpsDetector::settingsGpsStopBits = new QgsSettingsEntryEnumFlag<QSerialPort::StopBits>( u"stop-bits"_s, QgsSettingsTree::sTreeGps, QSerialPort::OneStop );
-const QgsSettingsEntryEnumFlag<QSerialPort::DataBits> *QgsGpsDetector::settingsGpsDataBits = new QgsSettingsEntryEnumFlag<QSerialPort::DataBits>( u"data-bits"_s, QgsSettingsTree::sTreeGps, QSerialPort::Data8 );
+const QgsSettingsEntryEnumFlag<QSerialPort::FlowControl> *QgsGpsDetector::settingsGpsFlowControl
+  = new QgsSettingsEntryEnumFlag<QSerialPort::FlowControl>( u"flow-control"_s, QgsSettingsTree::sTreeGps, QSerialPort::NoFlowControl );
+const QgsSettingsEntryEnumFlag<QSerialPort::StopBits> *QgsGpsDetector::settingsGpsStopBits
+  = new QgsSettingsEntryEnumFlag<QSerialPort::StopBits>( u"stop-bits"_s, QgsSettingsTree::sTreeGps, QSerialPort::OneStop );
+const QgsSettingsEntryEnumFlag<QSerialPort::DataBits> *QgsGpsDetector::settingsGpsDataBits
+  = new QgsSettingsEntryEnumFlag<QSerialPort::DataBits>( u"data-bits"_s, QgsSettingsTree::sTreeGps, QSerialPort::Data8 );
 const QgsSettingsEntryEnumFlag<QSerialPort::Parity> *QgsGpsDetector::settingsGpsParity = new QgsSettingsEntryEnumFlag<QSerialPort::Parity>( u"parity"_s, QgsSettingsTree::sTreeGps, QSerialPort::NoParity );
 #endif
 
@@ -53,7 +56,7 @@ QList< QPair<QString, QString> > QgsGpsDetector::availablePorts()
   QList< QPair<QString, QString> > devs;
 
   // try local QtLocation first
-#if defined(QT_POSITIONING_LIB)
+#if defined( QT_POSITIONING_LIB )
   devs << QPair<QString, QString>( u"internalGPS"_s, tr( "internal GPS" ) );
 #endif
 
@@ -75,7 +78,7 @@ QgsGpsDetector::QgsGpsDetector( const QString &portName, bool useUnsafeSignals )
   : mUseUnsafeSignals( useUnsafeSignals )
 {
 #if defined( HAVE_QTSERIALPORT )
-  mBaudList << QSerialPort::Baud4800 << QSerialPort::Baud9600 << QSerialPort::Baud38400 << QSerialPort::Baud57600 << QSerialPort::Baud115200;  //add 57600 for SXBlueII GPS unit
+  mBaudList << QSerialPort::Baud4800 << QSerialPort::Baud9600 << QSerialPort::Baud38400 << QSerialPort::Baud57600 << QSerialPort::Baud115200; //add 57600 for SXBlueII GPS unit
 #endif
 
   if ( portName.isEmpty() )
@@ -94,10 +97,7 @@ QgsGpsDetector::QgsGpsDetector( const QString &portName, bool useUnsafeSignals )
   connect( mTimeoutTimer, &QTimer::timeout, this, &QgsGpsDetector::connectionTimeout );
 }
 
-QgsGpsDetector::~QgsGpsDetector()
-{
-  QgsDebugMsgLevel( u"Destroying GPS detector"_s, 2 );
-}
+QgsGpsDetector::~QgsGpsDetector() { QgsDebugMsgLevel( u"Destroying GPS detector"_s, 2 ); }
 
 QgsGpsConnection *QgsGpsDetector::takeConnection()
 {
@@ -176,7 +176,7 @@ void QgsGpsDetector::advance()
     }
     else if ( mPortList.at( mPortIndex ).first.contains( "internalGPS"_L1 ) )
     {
-#if defined(QT_POSITIONING_LIB)
+#if defined( QT_POSITIONING_LIB )
       QgsDebugMsgLevel( u"Connecting to QtLocation service device"_s, 2 );
       mConn = std::make_unique< QgsQtLocationConnection >();
 #else
@@ -186,17 +186,17 @@ void QgsGpsDetector::advance()
     }
     else
     {
-#if defined(HAVE_QTSERIALPORT)
+#if defined( HAVE_QTSERIALPORT )
       auto serial = std::make_unique< QSerialPort >( mPortList.at( mPortIndex ).first );
 
-      serial->setBaudRate( mBaudList[ mBaudIndex ] );
+      serial->setBaudRate( mBaudList[mBaudIndex] );
 
       serial->setFlowControl( QgsGpsDetector::settingsGpsFlowControl->value() );
       serial->setParity( QgsGpsDetector::settingsGpsParity->value() );
       serial->setDataBits( QgsGpsDetector::settingsGpsDataBits->value() );
       serial->setStopBits( QgsGpsDetector::settingsGpsStopBits->value() );
 
-      QgsDebugMsgLevel( u"Connecting to serial GPS device %1 (@ %2)"_s.arg( mPortList.at( mPortIndex ).first ).arg( mBaudList[ mBaudIndex ] ), 2 );
+      QgsDebugMsgLevel( u"Connecting to serial GPS device %1 (@ %2)"_s.arg( mPortList.at( mPortIndex ).first ).arg( mBaudList[mBaudIndex] ), 2 );
 
       if ( serial->open( QIODevice::ReadOnly ) )
       {

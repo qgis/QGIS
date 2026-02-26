@@ -32,10 +32,7 @@ QgsVectorLayerGpsLogger::QgsVectorLayerGpsLogger( QgsGpsConnection *connection, 
   connect( this, &QgsGpsLogger::stateChanged, this, &QgsVectorLayerGpsLogger::gpsStateChanged );
 }
 
-QgsVectorLayerGpsLogger::~QgsVectorLayerGpsLogger()
-{
-  endCurrentTrack();
-}
+QgsVectorLayerGpsLogger::~QgsVectorLayerGpsLogger() { endCurrentTrack(); }
 
 void QgsVectorLayerGpsLogger::setPointsLayer( QgsVectorLayer *layer )
 {
@@ -57,28 +54,19 @@ void QgsVectorLayerGpsLogger::setTracksLayer( QgsVectorLayer *layer )
   }
 }
 
-QgsVectorLayer *QgsVectorLayerGpsLogger::pointsLayer()
-{
-  return mPointsLayer;
-}
+QgsVectorLayer *QgsVectorLayerGpsLogger::pointsLayer() { return mPointsLayer; }
 
-QgsVectorLayer *QgsVectorLayerGpsLogger::tracksLayer()
-{
-  return mTracksLayer;
-}
+QgsVectorLayer *QgsVectorLayerGpsLogger::tracksLayer() { return mTracksLayer; }
 
 void QgsVectorLayerGpsLogger::setDestinationField( Qgis::GpsInformationComponent component, const QString &field )
 {
   if ( field.isEmpty() )
     mDestinationFields.remove( component );
   else
-    mDestinationFields[ component ] = field;
+    mDestinationFields[component] = field;
 }
 
-QString QgsVectorLayerGpsLogger::destinationField( Qgis::GpsInformationComponent component ) const
-{
-  return mDestinationFields.value( component );
-}
+QString QgsVectorLayerGpsLogger::destinationField( Qgis::GpsInformationComponent component ) const { return mDestinationFields.value( component ); }
 
 void QgsVectorLayerGpsLogger::setTransformContext( const QgsCoordinateTransformContext &context )
 {
@@ -314,4 +302,3 @@ QVariant QgsVectorLayerGpsLogger::timestamp( QgsVectorLayer *vlayer, int idx, co
   }
   return value;
 }
-

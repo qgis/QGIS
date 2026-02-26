@@ -25,7 +25,6 @@ Detects connected GPS device ports.
 %End
   public:
 
-
     QgsGpsDetector( const QString &portName = QString(), bool useUnsafeSignals = true );
 %Docstring
 Constructor for QgsGpsDetector.
