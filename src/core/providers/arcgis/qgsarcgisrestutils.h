@@ -139,7 +139,7 @@ class CORE_EXPORT QgsArcGisRestUtils
      *
      * \returns converted geometry
      */
-    static QgsAbstractGeometry *convertGeometry( const QVariantMap &geometry, const QString &esriGeometryType, bool hasM, bool hasZ, QgsCoordinateReferenceSystem *crs SIP_OUT = nullptr ) SIP_FACTORY;
+    static std::unique_ptr< QgsAbstractGeometry > convertGeometry( const QVariantMap &geometry, const QString &esriGeometryType, bool hasM, bool hasZ, QgsCoordinateReferenceSystem *crs SIP_OUT = nullptr );
 
     /**
      * Converts a spatial reference JSON definition to a QgsCoordinateReferenceSystem value.
@@ -151,21 +151,21 @@ class CORE_EXPORT QgsArcGisRestUtils
      *
      * Caller takes ownership of the returned symbol.
      */
-    static QgsSymbol *convertSymbol( const QVariantMap &definition ) SIP_FACTORY;
+    static std::unique_ptr< QgsSymbol > convertSymbol( const QVariantMap &definition );
 
     /**
      * Converts renderer JSON \a data to an equivalent QgsFeatureRenderer.
      *
      * Caller takes ownership of the returned renderer.
      */
-    static QgsFeatureRenderer *convertRenderer( const QVariantMap &rendererData ) SIP_FACTORY;
+    static std::unique_ptr< QgsFeatureRenderer > convertRenderer( const QVariantMap &rendererData );
 
     /**
      * Converts labeling JSON \a data to an equivalent QGIS vector labeling.
      *
      * Caller takes ownership of the returned object.
      */
-    static QgsAbstractVectorLayerLabeling *convertLabeling( const QVariantList &data ) SIP_FACTORY;
+    static std::unique_ptr< QgsAbstractVectorLayerLabeling > convertLabeling( const QVariantList &data );
 
     /**
      * Converts an ESRI labeling expression to a QGIS expression string.

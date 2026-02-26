@@ -476,7 +476,7 @@ std::unique_ptr< QgsPolygon > QgsArcGisRestUtils::convertEnvelope( const QVarian
   return poly;
 }
 
-QgsAbstractGeometry *QgsArcGisRestUtils::convertGeometry( const QVariantMap &geometryData, const QString &esriGeometryType, bool readM, bool readZ, QgsCoordinateReferenceSystem *crs )
+std::unique_ptr< QgsAbstractGeometry > QgsArcGisRestUtils::convertGeometry( const QVariantMap &geometryData, const QString &esriGeometryType, bool readM, bool readZ, QgsCoordinateReferenceSystem *crs )
 {
   Qgis::WkbType pointType = QgsWkbTypes::zmType( Qgis::WkbType::Point, readZ, readM );
   if ( crs )
@@ -488,15 +488,15 @@ QgsAbstractGeometry *QgsArcGisRestUtils::convertGeometry( const QVariantMap &geo
   if ( esriGeometryType == "esriGeometryNull"_L1 )
     return nullptr;
   else if ( esriGeometryType == "esriGeometryPoint"_L1 )
-    return convertGeometryPoint( geometryData, pointType ).release();
+    return convertGeometryPoint( geometryData, pointType );
   else if ( esriGeometryType == "esriGeometryMultipoint"_L1 )
-    return convertMultiPoint( geometryData, pointType ).release();
+    return convertMultiPoint( geometryData, pointType );
   else if ( esriGeometryType == "esriGeometryPolyline"_L1 )
-    return convertGeometryPolyline( geometryData, pointType ).release();
+    return convertGeometryPolyline( geometryData, pointType );
   else if ( esriGeometryType == "esriGeometryPolygon"_L1 )
-    return convertGeometryPolygon( geometryData, pointType ).release();
+    return convertGeometryPolygon( geometryData, pointType );
   else if ( esriGeometryType == "esriGeometryEnvelope"_L1 )
-    return convertEnvelope( geometryData ).release();
+    return convertEnvelope( geometryData );
   // Unsupported (either by qgis, or format unspecified by the specification)
   //  esriGeometryCircularArc
   //  esriGeometryEllipticArc
@@ -549,36 +549,36 @@ QgsCoordinateReferenceSystem QgsArcGisRestUtils::convertSpatialReference( const 
   return crs;
 }
 
-QgsSymbol *QgsArcGisRestUtils::convertSymbol( const QVariantMap &symbolData )
+std::unique_ptr< QgsSymbol > QgsArcGisRestUtils::convertSymbol( const QVariantMap &symbolData )
 {
   const QString type = symbolData.value( u"type"_s ).toString();
   if ( type == "esriSMS"_L1 )
   {
     // marker symbol
-    return parseEsriMarkerSymbolJson( symbolData ).release();
+    return parseEsriMarkerSymbolJson( symbolData );
   }
   else if ( type == "esriSLS"_L1 )
   {
     // line symbol
-    return parseEsriLineSymbolJson( symbolData ).release();
+    return parseEsriLineSymbolJson( symbolData );
   }
   else if ( type == "esriSFS"_L1 )
   {
     // fill symbol
-    return parseEsriFillSymbolJson( symbolData ).release();
+    return parseEsriFillSymbolJson( symbolData );
   }
   else if ( type == "esriPFS"_L1 )
   {
-    return parseEsriPictureFillSymbolJson( symbolData ).release();
+    return parseEsriPictureFillSymbolJson( symbolData );
   }
   else if ( type == "esriPMS"_L1 )
   {
     // picture marker
-    return parseEsriPictureMarkerSymbolJson( symbolData ).release();
+    return parseEsriPictureMarkerSymbolJson( symbolData );
   }
   else if ( type == "esriTS"_L1 )
   {
-    return parseEsriTextMarkerSymbolJson( symbolData ).release();
+    return parseEsriTextMarkerSymbolJson( symbolData );
   }
   return nullptr;
 }
@@ -839,7 +839,7 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriTextMarkerSymbolJs
   return symbol;
 }
 
-QgsAbstractVectorLayerLabeling *QgsArcGisRestUtils::convertLabeling( const QVariantList &labelingData )
+std::unique_ptr<QgsAbstractVectorLayerLabeling > QgsArcGisRestUtils::convertLabeling( const QVariantList &labelingData )
 {
   if ( labelingData.empty() )
     return nullptr;
@@ -971,10 +971,10 @@ QgsAbstractVectorLayerLabeling *QgsArcGisRestUtils::convertLabeling( const QVari
     root->appendChild( child );
   }
 
-  return new QgsRuleBasedLabeling( root );
+  return std::make_unique< QgsRuleBasedLabeling >( root );
 }
 
-QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rendererData )
+std::unique_ptr< QgsFeatureRenderer > QgsArcGisRestUtils::convertRenderer( const QVariantMap &rendererData )
 {
   const QString type = rendererData.value( u"type"_s ).toString();
   if ( type == "simple"_L1 )
@@ -982,7 +982,7 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
     const QVariantMap symbolProps = rendererData.value( u"symbol"_s ).toMap();
     std::unique_ptr< QgsSymbol > symbol( convertSymbol( symbolProps ) );
     if ( symbol )
-      return new QgsSingleSymbolRenderer( symbol.release() );
+      return std::make_unique< QgsSingleSymbolRenderer >( symbol.release() );
     else
       return nullptr;
   }
@@ -1032,7 +1032,7 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
     if ( categoryList.empty() )
       return nullptr;
 
-    return new QgsCategorizedSymbolRenderer( attribute, categoryList );
+    return std::make_unique< QgsCategorizedSymbolRenderer >( attribute, categoryList );
   }
   else if ( type == "classBreaks"_L1 )
   {
@@ -1112,9 +1112,7 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
           symbol->symbolLayer( layer )->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, colorProperty );
         }
 
-        auto singleSymbolRenderer = std::make_unique< QgsSingleSymbolRenderer >( symbol.release() );
-
-        return singleSymbolRenderer.release();
+        return  std::make_unique< QgsSingleSymbolRenderer >( symbol.release() );
       }
       else
       {
@@ -1186,7 +1184,7 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
       graduatedRenderer->addClass( range );
     }
 
-    return graduatedRenderer.release();
+    return graduatedRenderer;
   }
   else if ( type == "heatmap"_L1 )
   {
