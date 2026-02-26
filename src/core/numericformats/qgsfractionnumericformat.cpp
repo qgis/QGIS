@@ -32,46 +32,33 @@ using namespace Qt::StringLiterals;
 
 struct formatter : std::numpunct<wchar_t>
 {
-  formatter( QChar thousands, bool showThousands, QChar decimal )
-    : mThousands( thousands.unicode() )
-    , mDecimal( decimal.unicode() )
-    , mShowThousands( showThousands )
-  {}
-  wchar_t do_decimal_point() const override { return mDecimal; }
-  wchar_t do_thousands_sep() const override { return mThousands; }
-  std::string do_grouping() const override { return mShowThousands ? "\3" : "\0"; }
+    formatter( QChar thousands, bool showThousands, QChar decimal )
+      : mThousands( thousands.unicode() )
+      , mDecimal( decimal.unicode() )
+      , mShowThousands( showThousands )
+    {}
+    wchar_t do_decimal_point() const override { return mDecimal; }
+    wchar_t do_thousands_sep() const override { return mThousands; }
+    std::string do_grouping() const override { return mShowThousands ? "\3" : "\0"; }
 
-  wchar_t mThousands;
-  wchar_t mDecimal;
-  bool mShowThousands = true;
+    wchar_t mThousands;
+    wchar_t mDecimal;
+    bool mShowThousands = true;
 };
 ///@endcond
 
-QgsFractionNumericFormat::QgsFractionNumericFormat()
-{
-}
+QgsFractionNumericFormat::QgsFractionNumericFormat() {}
 
-QString QgsFractionNumericFormat::id() const
-{
-  return u"fraction"_s;
-}
+QString QgsFractionNumericFormat::id() const { return u"fraction"_s; }
 
-QString QgsFractionNumericFormat::visibleName() const
-{
-  return QObject::tr( "Fraction" );
-}
+QString QgsFractionNumericFormat::visibleName() const { return QObject::tr( "Fraction" ); }
 
-int QgsFractionNumericFormat::sortKey()
-{
-  return 100;
-}
+int QgsFractionNumericFormat::sortKey() { return 100; }
 
 QString QgsFractionNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const
 {
   std::basic_stringstream<wchar_t> os;
-  os.imbue( std::locale( os.getloc(), new formatter( mThousandsSeparator.isNull() ? context.thousandsSeparator() : mThousandsSeparator,
-                         mShowThousandsSeparator,
-                         context.decimalSeparator() ) ) );
+  os.imbue( std::locale( os.getloc(), new formatter( mThousandsSeparator.isNull() ? context.thousandsSeparator() : mThousandsSeparator, mShowThousandsSeparator, context.decimalSeparator() ) ) );
 
   unsigned long long num;
   unsigned long long den;
@@ -84,23 +71,23 @@ QString QgsFractionNumericFormat::formatDouble( double value, const QgsNumericFo
   if ( success )
   {
     if ( mUseDedicatedUnicode && num == 1 && den == 2 )
-      res = QChar( 0xBD );  //½
+      res = QChar( 0xBD ); //½
     else if ( mUseDedicatedUnicode && num == 1 && den == 3 )
-      res = QChar( 0x2153 );  //⅓
+      res = QChar( 0x2153 ); //⅓
     else if ( mUseDedicatedUnicode && num == 2 && den == 3 )
-      res = QChar( 0x2154 );  //⅔
+      res = QChar( 0x2154 ); //⅔
     else if ( mUseDedicatedUnicode && num == 1 && den == 4 )
-      res = QChar( 0xBC );  //¼
+      res = QChar( 0xBC ); //¼
     else if ( mUseDedicatedUnicode && num == 3 && den == 4 )
-      res = QChar( 0xBE );  //¾
+      res = QChar( 0xBE ); //¾
     else if ( mUseDedicatedUnicode && num == 1 && den == 5 )
-      res = QChar( 0x2155 );  //⅕
+      res = QChar( 0x2155 ); //⅕
     else if ( mUseDedicatedUnicode && num == 2 && den == 5 )
-      res = QChar( 0x2156 );  //⅖
+      res = QChar( 0x2156 ); //⅖
     else if ( mUseDedicatedUnicode && num == 3 && den == 5 )
-      res = QChar( 0x2157 );  //⅗
+      res = QChar( 0x2157 ); //⅗
     else if ( mUseDedicatedUnicode && num == 4 && den == 5 )
-      res = QChar( 0x2158 );  //⅘
+      res = QChar( 0x2158 ); //⅘
     else if ( mUseDedicatedUnicode && num == 1 && den == 6 )
       res = QChar( 0x2159 ); //⅙
     else if ( mUseDedicatedUnicode && num == 5 && den == 6 )
@@ -120,9 +107,12 @@ QString QgsFractionNumericFormat::formatDouble( double value, const QgsNumericFo
     else if ( mUseDedicatedUnicode && num == 1 && den == 10 )
       res = QChar( 0x2152 ); //⅒
     else if ( mUseUnicodeSuperSubscript )
-      res = num == 0 ? QString() : u"%1%2%3"_s.arg( toUnicodeSuperscript( QString::number( num ) ),
-            QChar( 0x002F ), // "SOLIDUS" character
-            toUnicodeSubscript( QString::number( den ) ) );
+      res = num == 0 ? QString()
+                     : u"%1%2%3"_s.arg(
+                         toUnicodeSuperscript( QString::number( num ) ),
+                         QChar( 0x002F ), // "SOLIDUS" character
+                         toUnicodeSubscript( QString::number( den ) )
+                       );
     else
       res = num == 0 ? QString() : u"%2/%3"_s.arg( num ).arg( den );
     if ( fixed )
@@ -153,10 +143,7 @@ QString QgsFractionNumericFormat::formatDouble( double value, const QgsNumericFo
   return res;
 }
 
-QgsNumericFormat *QgsFractionNumericFormat::clone() const
-{
-  return new QgsFractionNumericFormat( *this );
-}
+QgsNumericFormat *QgsFractionNumericFormat::clone() const { return new QgsFractionNumericFormat( *this ); }
 
 QgsNumericFormat *QgsFractionNumericFormat::create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const
 {
@@ -176,30 +163,15 @@ QVariantMap QgsFractionNumericFormat::configuration( const QgsReadWriteContext &
   return res;
 }
 
-double QgsFractionNumericFormat::suggestSampleValue() const
-{
-  return 1234.75;
-}
+double QgsFractionNumericFormat::suggestSampleValue() const { return 1234.75; }
 
-bool QgsFractionNumericFormat::useDedicatedUnicodeCharacters() const
-{
-  return mUseDedicatedUnicode;
-}
+bool QgsFractionNumericFormat::useDedicatedUnicodeCharacters() const { return mUseDedicatedUnicode; }
 
-void QgsFractionNumericFormat::setUseDedicatedUnicodeCharacters( bool enabled )
-{
-  mUseDedicatedUnicode = enabled;
-}
+void QgsFractionNumericFormat::setUseDedicatedUnicodeCharacters( bool enabled ) { mUseDedicatedUnicode = enabled; }
 
-bool QgsFractionNumericFormat::useUnicodeSuperSubscript() const
-{
-  return mUseUnicodeSuperSubscript;
-}
+bool QgsFractionNumericFormat::useUnicodeSuperSubscript() const { return mUseUnicodeSuperSubscript; }
 
-void QgsFractionNumericFormat::setUseUnicodeSuperSubscript( bool enabled )
-{
-  mUseUnicodeSuperSubscript = enabled;
-}
+void QgsFractionNumericFormat::setUseUnicodeSuperSubscript( bool enabled ) { mUseUnicodeSuperSubscript = enabled; }
 
 void QgsFractionNumericFormat::setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext & )
 {
@@ -210,35 +182,17 @@ void QgsFractionNumericFormat::setConfiguration( const QVariantMap &configuratio
   mUseUnicodeSuperSubscript = configuration.value( u"use_unicode_supersubscript"_s, true ).toBool();
 }
 
-bool QgsFractionNumericFormat::showThousandsSeparator() const
-{
-  return mShowThousandsSeparator;
-}
+bool QgsFractionNumericFormat::showThousandsSeparator() const { return mShowThousandsSeparator; }
 
-void QgsFractionNumericFormat::setShowThousandsSeparator( bool showThousandsSeparator )
-{
-  mShowThousandsSeparator = showThousandsSeparator;
-}
+void QgsFractionNumericFormat::setShowThousandsSeparator( bool showThousandsSeparator ) { mShowThousandsSeparator = showThousandsSeparator; }
 
-bool QgsFractionNumericFormat::showPlusSign() const
-{
-  return mShowPlusSign;
-}
+bool QgsFractionNumericFormat::showPlusSign() const { return mShowPlusSign; }
 
-void QgsFractionNumericFormat::setShowPlusSign( bool showPlusSign )
-{
-  mShowPlusSign = showPlusSign;
-}
+void QgsFractionNumericFormat::setShowPlusSign( bool showPlusSign ) { mShowPlusSign = showPlusSign; }
 
-QChar QgsFractionNumericFormat::thousandsSeparator() const
-{
-  return mThousandsSeparator;
-}
+QChar QgsFractionNumericFormat::thousandsSeparator() const { return mThousandsSeparator; }
 
-void QgsFractionNumericFormat::setThousandsSeparator( QChar character )
-{
-  mThousandsSeparator = character;
-}
+void QgsFractionNumericFormat::setThousandsSeparator( QChar character ) { mThousandsSeparator = character; }
 
 QString QgsFractionNumericFormat::toUnicodeSuperscript( const QString &input )
 {
@@ -247,25 +201,25 @@ QString QgsFractionNumericFormat::toUnicodeSuperscript( const QString &input )
   {
     const QChar c = input.at( i );
     if ( c == '0' )
-      res[i] =  QChar( 0x2070 ); //⁰
+      res[i] = QChar( 0x2070 ); //⁰
     else if ( c == '1' )
-      res[i] =  QChar( 0x00B9 ); //¹
+      res[i] = QChar( 0x00B9 ); //¹
     else if ( c == '2' )
-      res[i] =  QChar( 0x00B2 ); //²
+      res[i] = QChar( 0x00B2 ); //²
     else if ( c == '3' )
-      res[i] =  QChar( 0x00B3 ); //³
+      res[i] = QChar( 0x00B3 ); //³
     else if ( c == '4' )
-      res[i] =  QChar( 0x2074 ); //⁴
+      res[i] = QChar( 0x2074 ); //⁴
     else if ( c == '5' )
-      res[i] =  QChar( 0x2075 ); //⁵
+      res[i] = QChar( 0x2075 ); //⁵
     else if ( c == '6' )
-      res[i] =  QChar( 0x2076 ); //⁶
+      res[i] = QChar( 0x2076 ); //⁶
     else if ( c == '7' )
-      res[i] =  QChar( 0x2077 ); //⁷
+      res[i] = QChar( 0x2077 ); //⁷
     else if ( c == '8' )
-      res[i] =  QChar( 0x2078 ); //⁸
+      res[i] = QChar( 0x2078 ); //⁸
     else if ( c == '9' )
-      res[i] =  QChar( 0x2079 ); //⁹
+      res[i] = QChar( 0x2079 ); //⁹
   }
   return res;
 }
@@ -277,25 +231,25 @@ QString QgsFractionNumericFormat::toUnicodeSubscript( const QString &input )
   {
     const QChar c = input.at( i );
     if ( c == '0' )
-      res[i] =  QChar( 0x2080 ); //₀
+      res[i] = QChar( 0x2080 ); //₀
     else if ( c == '1' )
-      res[i] =  QChar( 0x2081 ); //₁
+      res[i] = QChar( 0x2081 ); //₁
     else if ( c == '2' )
-      res[i] =  QChar( 0x2082 ); //₂
+      res[i] = QChar( 0x2082 ); //₂
     else if ( c == '3' )
-      res[i] =  QChar( 0x2083 ); //₃
+      res[i] = QChar( 0x2083 ); //₃
     else if ( c == '4' )
-      res[i] =  QChar( 0x2084 ); //₄
+      res[i] = QChar( 0x2084 ); //₄
     else if ( c == '5' )
-      res[i] =  QChar( 0x2085 ); //₅
+      res[i] = QChar( 0x2085 ); //₅
     else if ( c == '6' )
-      res[i] =  QChar( 0x2086 ); //₆
+      res[i] = QChar( 0x2086 ); //₆
     else if ( c == '7' )
-      res[i] =  QChar( 0x2087 ); //₇
+      res[i] = QChar( 0x2087 ); //₇
     else if ( c == '8' )
-      res[i] =  QChar( 0x2088 ); //₈
+      res[i] = QChar( 0x2088 ); //₈
     else if ( c == '9' )
-      res[i] =  QChar( 0x2089 ); //₉
+      res[i] = QChar( 0x2089 ); //₉
   }
   return res;
 }

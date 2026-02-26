@@ -41,25 +41,13 @@ QgsNumericFormatContext::QgsNumericFormatContext()
   mExponential = l.exponential().at( 0 );
 }
 
-QgsExpressionContext QgsNumericFormatContext::expressionContext() const
-{
-  return mExpressionContext;
-}
+QgsExpressionContext QgsNumericFormatContext::expressionContext() const { return mExpressionContext; }
 
-void QgsNumericFormatContext::setExpressionContext( const QgsExpressionContext &context )
-{
-  mExpressionContext = context;
-}
+void QgsNumericFormatContext::setExpressionContext( const QgsExpressionContext &context ) { mExpressionContext = context; }
 
-int QgsNumericFormat::sortKey()
-{
-  return DEFAULT_SORT_KEY;
-}
+int QgsNumericFormat::sortKey() { return DEFAULT_SORT_KEY; }
 
-double QgsNumericFormat::suggestSampleValue() const
-{
-  return 1234.56789123456;
-}
+double QgsNumericFormat::suggestSampleValue() const { return 1234.56789123456; }
 
 void QgsNumericFormat::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
@@ -69,12 +57,6 @@ void QgsNumericFormat::writeXml( QDomElement &element, QDomDocument &document, c
   element.setAttribute( u"id"_s, id() );
 }
 
-bool QgsNumericFormat::operator==( const QgsNumericFormat &other ) const
-{
-  return id() == other.id() && configuration( QgsReadWriteContext() ) == other.configuration( QgsReadWriteContext() );
-}
+bool QgsNumericFormat::operator==( const QgsNumericFormat &other ) const { return id() == other.id() && configuration( QgsReadWriteContext() ) == other.configuration( QgsReadWriteContext() ); }
 
-bool QgsNumericFormat::operator!=( const QgsNumericFormat &other ) const
-{
-  return !operator==( other );
-}
+bool QgsNumericFormat::operator!=( const QgsNumericFormat &other ) const { return !operator==( other ); }

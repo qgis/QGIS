@@ -21,25 +21,13 @@
 
 using namespace Qt::StringLiterals;
 
-QgsExpressionBasedNumericFormat::QgsExpressionBasedNumericFormat()
-{
-  setExpression( u"@value"_s );
-}
+QgsExpressionBasedNumericFormat::QgsExpressionBasedNumericFormat() { setExpression( u"@value"_s ); }
 
-QString QgsExpressionBasedNumericFormat::id() const
-{
-  return u"expression"_s;
-}
+QString QgsExpressionBasedNumericFormat::id() const { return u"expression"_s; }
 
-QString QgsExpressionBasedNumericFormat::visibleName() const
-{
-  return QObject::tr( "Custom Expression" );
-}
+QString QgsExpressionBasedNumericFormat::visibleName() const { return QObject::tr( "Custom Expression" ); }
 
-int QgsExpressionBasedNumericFormat::sortKey()
-{
-  return 1;
-}
+int QgsExpressionBasedNumericFormat::sortKey() { return 1; }
 
 QString QgsExpressionBasedNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const
 {
@@ -49,10 +37,7 @@ QString QgsExpressionBasedNumericFormat::formatDouble( double value, const QgsNu
   return mExpression.evaluate( &expContext ).toString();
 }
 
-QgsNumericFormat *QgsExpressionBasedNumericFormat::clone() const
-{
-  return new QgsExpressionBasedNumericFormat( *this );
-}
+QgsNumericFormat *QgsExpressionBasedNumericFormat::clone() const { return new QgsExpressionBasedNumericFormat( *this ); }
 
 QgsNumericFormat *QgsExpressionBasedNumericFormat::create( const QVariantMap &configuration, const QgsReadWriteContext & ) const
 {
@@ -68,7 +53,4 @@ QVariantMap QgsExpressionBasedNumericFormat::configuration( const QgsReadWriteCo
   return res;
 }
 
-void QgsExpressionBasedNumericFormat::setExpression( const QString &expression )
-{
-  mExpression = QgsExpression( expression );
-}
+void QgsExpressionBasedNumericFormat::setExpression( const QString &expression ) { mExpression = QgsExpression( expression ); }

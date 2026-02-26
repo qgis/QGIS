@@ -24,7 +24,6 @@ from :py:func:`QgsApplication.numericFormatRegistry()`.
 #include "qgsnumericformatregistry.h"
 %End
   public:
-
     explicit QgsNumericFormatRegistry();
 %Docstring
 You should not normally need to create your own numeric format registry.

@@ -22,35 +22,17 @@
 
 using namespace Qt::StringLiterals;
 
-QgsScientificNumericFormat::QgsScientificNumericFormat()
-{
-  mUseScientific = true;
-}
+QgsScientificNumericFormat::QgsScientificNumericFormat() { mUseScientific = true; }
 
-QString QgsScientificNumericFormat::id() const
-{
-  return u"scientific"_s;
-}
+QString QgsScientificNumericFormat::id() const { return u"scientific"_s; }
 
-QString QgsScientificNumericFormat::visibleName() const
-{
-  return QObject::tr( "Scientific" );
-}
+QString QgsScientificNumericFormat::visibleName() const { return QObject::tr( "Scientific" ); }
 
-int QgsScientificNumericFormat::sortKey()
-{
-  return DEFAULT_SORT_KEY;
-}
+int QgsScientificNumericFormat::sortKey() { return DEFAULT_SORT_KEY; }
 
-QString QgsScientificNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const
-{
-  return QgsBasicNumericFormat::formatDouble( value, context );
-}
+QString QgsScientificNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const { return QgsBasicNumericFormat::formatDouble( value, context ); }
 
-QgsNumericFormat *QgsScientificNumericFormat::clone() const
-{
-  return new QgsScientificNumericFormat( *this );
-}
+QgsNumericFormat *QgsScientificNumericFormat::clone() const { return new QgsScientificNumericFormat( *this ); }
 
 QgsNumericFormat *QgsScientificNumericFormat::create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const
 {
@@ -66,7 +48,4 @@ QVariantMap QgsScientificNumericFormat::configuration( const QgsReadWriteContext
   return res;
 }
 
-void QgsScientificNumericFormat::setNumberDecimalPlaces( int numberDecimalPlaces )
-{
-  QgsBasicNumericFormat::setNumberDecimalPlaces( std::max( numberDecimalPlaces, 1 ) );
-}
+void QgsScientificNumericFormat::setNumberDecimalPlaces( int numberDecimalPlaces ) { QgsBasicNumericFormat::setNumberDecimalPlaces( std::max( numberDecimalPlaces, 1 ) ); }
