@@ -19,102 +19,44 @@
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 
-QList<QgsLayerMetadataProviderResult> QgsLayerMetadataSearchResults::metadata() const
-{
-  return mMetadata;
-}
+QList<QgsLayerMetadataProviderResult> QgsLayerMetadataSearchResults::metadata() const { return mMetadata; }
 
-void QgsLayerMetadataSearchResults::addMetadata( const QgsLayerMetadataProviderResult &metadata )
-{
-  mMetadata.push_back( metadata );
-}
+void QgsLayerMetadataSearchResults::addMetadata( const QgsLayerMetadataProviderResult &metadata ) { mMetadata.push_back( metadata ); }
 
 
-QStringList QgsLayerMetadataSearchResults::errors() const
-{
-  return mErrors;
-}
+QStringList QgsLayerMetadataSearchResults::errors() const { return mErrors; }
 
-void QgsLayerMetadataSearchResults::addError( const QString &error )
-{
-  mErrors.push_back( error );
-}
+void QgsLayerMetadataSearchResults::addError( const QString &error ) { mErrors.push_back( error ); }
 
 
 QgsLayerMetadataProviderResult::QgsLayerMetadataProviderResult( const QgsLayerMetadata &metadata )
   : QgsLayerMetadata( metadata )
-{
+{}
 
-}
+const QgsPolygon &QgsLayerMetadataProviderResult::geographicExtent() const { return mGeographicExtent; }
 
-const QgsPolygon &QgsLayerMetadataProviderResult::geographicExtent() const
-{
-  return mGeographicExtent;
-}
+void QgsLayerMetadataProviderResult::setGeographicExtent( const QgsPolygon &geographicExtent ) { mGeographicExtent = geographicExtent; }
 
-void QgsLayerMetadataProviderResult::setGeographicExtent( const QgsPolygon &geographicExtent )
-{
-  mGeographicExtent = geographicExtent;
-}
+Qgis::GeometryType QgsLayerMetadataProviderResult::geometryType() const { return mGeometryType; }
 
-Qgis::GeometryType QgsLayerMetadataProviderResult::geometryType() const
-{
-  return mGeometryType;
-}
+void QgsLayerMetadataProviderResult::setGeometryType( Qgis::GeometryType geometryType ) { mGeometryType = geometryType; }
 
-void QgsLayerMetadataProviderResult::setGeometryType( Qgis::GeometryType geometryType )
-{
-  mGeometryType = geometryType;
-}
+const QString &QgsLayerMetadataProviderResult::authid() const { return mAuthid; }
 
-const QString &QgsLayerMetadataProviderResult::authid() const
-{
-  return mAuthid;
-}
+void QgsLayerMetadataProviderResult::setAuthid( const QString &authid ) { mAuthid = authid; }
 
-void QgsLayerMetadataProviderResult::setAuthid( const QString &authid )
-{
-  mAuthid = authid;
-}
+const QString &QgsLayerMetadataProviderResult::uri() const { return mUri; }
 
-const QString &QgsLayerMetadataProviderResult::uri() const
-{
-  return mUri;
-}
+void QgsLayerMetadataProviderResult::setUri( const QString &newUri ) { mUri = newUri; }
 
-void QgsLayerMetadataProviderResult::setUri( const QString &newUri )
-{
-  mUri = newUri;
-}
+const QString &QgsLayerMetadataProviderResult::dataProviderName() const { return mDataProviderName; }
 
-const QString &QgsLayerMetadataProviderResult::dataProviderName() const
-{
-  return mDataProviderName;
-}
+void QgsLayerMetadataProviderResult::setDataProviderName( const QString &dataProviderName ) { mDataProviderName = dataProviderName; }
 
-void QgsLayerMetadataProviderResult::setDataProviderName( const QString &dataProviderName )
-{
-  mDataProviderName = dataProviderName;
-}
+Qgis::LayerType QgsLayerMetadataProviderResult::layerType() const { return mLayerType; }
 
-Qgis::LayerType QgsLayerMetadataProviderResult::layerType() const
-{
-  return mLayerType;
-}
+void QgsLayerMetadataProviderResult::setLayerType( Qgis::LayerType layerType ) { mLayerType = layerType; }
 
-void QgsLayerMetadataProviderResult::setLayerType( Qgis::LayerType layerType )
-{
-  mLayerType = layerType;
-}
+const QString &QgsLayerMetadataProviderResult::standardUri() const { return mStandardUri; }
 
-const QString &QgsLayerMetadataProviderResult::standardUri() const
-{
-  return mStandardUri;
-}
-
-void QgsLayerMetadataProviderResult::setStandardUri( const QString &standardUri )
-{
-  mStandardUri = standardUri;
-}
-
-
+void QgsLayerMetadataProviderResult::setStandardUri( const QString &standardUri ) { mStandardUri = standardUri; }

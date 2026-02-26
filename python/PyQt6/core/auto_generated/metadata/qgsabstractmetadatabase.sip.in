@@ -59,52 +59,53 @@ against the native QGIS metadata schema can be performed using
 
     struct Address
     {
-
-      Address( const QString &type = QString(), const QString &address = QString(), const QString &city = QString(), const QString &administrativeArea = QString(), const QString &postalCode = QString(), const QString &country = QString() );
+        Address(
+          const QString &type = QString(), const QString &address = QString(), const QString &city = QString(), const QString &administrativeArea = QString(), const QString &postalCode = QString(),
+          const QString &country = QString()
+        );
 %Docstring
 Constructor for Address.
 %End
 
-      QString type;
+        QString type;
 
-      QString address;
+        QString address;
 
-      QString city;
+        QString city;
 
-      QString administrativeArea;
+        QString administrativeArea;
 
-      QString postalCode;
+        QString postalCode;
 
-      QString country;
+        QString country;
 
-      bool operator==( const QgsAbstractMetadataBase::Address &other ) const;
+        bool operator==( const QgsAbstractMetadataBase::Address &other ) const;
     };
 
     struct Contact
     {
-
-      Contact( const QString &name = QString() );
+        Contact( const QString &name = QString() );
 %Docstring
 Constructor for Contact.
 %End
 
-      QString name;
+        QString name;
 
-      QString organization;
+        QString organization;
 
-      QString position;
+        QString position;
 
-      QList< QgsAbstractMetadataBase::Address > addresses;
+        QList< QgsAbstractMetadataBase::Address > addresses;
 
-      QString voice;
+        QString voice;
 
-      QString fax;
+        QString fax;
 
-      QString email;
+        QString email;
 
-      QString role;
+        QString role;
 
-      bool operator==( const QgsAbstractMetadataBase::Contact &other ) const;
+        bool operator==( const QgsAbstractMetadataBase::Contact &other ) const;
     };
 
     typedef QList< QgsAbstractMetadataBase::Contact > ContactList;
@@ -112,27 +113,26 @@ Constructor for Contact.
 
     struct Link
     {
-
-      Link( const QString &name = QString(), const QString &type = QString(), const QString &url = QString() );
+        Link( const QString &name = QString(), const QString &type = QString(), const QString &url = QString() );
 %Docstring
 Constructor for Link.
 %End
 
-      QString name;
+        QString name;
 
-      QString type;
+        QString type;
 
-      QString description;
+        QString description;
 
-      QString url;
+        QString url;
 
-      QString format;
+        QString format;
 
-      QString mimeType;
+        QString mimeType;
 
-      QString size;
+        QString size;
 
-      bool operator==( const QgsAbstractMetadataBase::Link &other ) const;
+        bool operator==( const QgsAbstractMetadataBase::Link &other ) const;
     };
 
     typedef QList< QgsAbstractMetadataBase::Link > LinkList;
@@ -487,7 +487,6 @@ Registers metadata translation strings.
 %End
 
   protected:
-
     QgsAbstractMetadataBase();
 %Docstring
 Constructor for QgsAbstractMetadataBase.
@@ -515,7 +514,6 @@ test equality of base class members.
 
 .. versionadded:: 3.2
 %End
-
 };
 
 

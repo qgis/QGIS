@@ -34,12 +34,10 @@ class QDomDocument;
 class CORE_EXPORT QgsMetadataUtils
 {
   public:
-
     /**
      * Converts ESRI layer metadata to QgsLayerMetadata.
      */
     static QgsLayerMetadata convertFromEsri( const QDomDocument &document );
-
 };
 
 #endif // QGSMETADATAUTILS_H
