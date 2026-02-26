@@ -18,17 +18,16 @@
 #
 ###############################################################################
 
-from configparser import ConfigParser
 import getpass
 import os
 import shutil
 import xml.etree.ElementTree as etree
 import xmlrpc.client
 import zipfile
-
-from paver.easy import call_task, cmdopts, error, info, options, path, sh, task, Bunch
+from configparser import ConfigParser
 
 from owslib.csw import CatalogueServiceWeb  # spellok
+from paver.easy import Bunch, call_task, cmdopts, error, info, options, path, sh, task
 
 PLUGIN_NAME = "MetaSearch"
 BASEDIR = os.path.abspath(os.path.dirname(__file__))

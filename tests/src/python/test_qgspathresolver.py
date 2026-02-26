@@ -13,6 +13,7 @@ __copyright__ = "Copyright 2019, The QGIS Project"
 import gc
 import os
 import tempfile
+import unittest
 
 from qgis.core import (
     QgsApplication,
@@ -20,9 +21,7 @@ from qgis.core import (
     QgsProject,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -31,7 +30,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsPathResolver(QgisTestCase):
-
     def testCustomPreprocessor(self):
         self.assertEqual(QgsPathResolver().readPath("aaaaa"), "aaaaa")
         with self.assertRaises(KeyError):

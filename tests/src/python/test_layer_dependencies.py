@@ -12,9 +12,8 @@ __copyright__ = "Copyright 2016, The QGIS Project"
 
 import os
 import tempfile
+import unittest
 
-from qgis.PyQt.QtCore import QPoint, QSize
-from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     Qgis,
     QgsFeature,
@@ -29,8 +28,9 @@ from qgis.core import (
     QgsSnappingUtils,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QPoint, QSize
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from qgis.utils import spatialite_connect
 
 # Convenience instances in case you may need them
@@ -38,7 +38,6 @@ start_app()
 
 
 class TestLayerDependencies(QgisTestCase):
-
     def setUp(self):
         """Run before each test."""
         # create a temp SpatiaLite db with a trigger

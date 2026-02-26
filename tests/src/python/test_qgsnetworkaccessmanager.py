@@ -14,17 +14,16 @@ import http.server
 import os
 import socketserver
 import threading
+import unittest
 from functools import partial
 
-from qgis.PyQt.QtCore import QUrl
-from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
-from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsNetworkAccessManager,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QUrl
+from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -32,7 +31,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsNetworkAccessManager(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

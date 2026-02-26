@@ -19,76 +19,73 @@ __author__ = "Victor Olaya"
 __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
-import shutil
 import os
-import sys
-from typing import List
+import shutil
 from functools import partial
 
 from qgis.core import (
     QgsApplication,
-    QgsProcessingUtils,
-    QgsProcessingModelAlgorithm,
-    QgsProcessingAlgorithm,
+    QgsDataItem,
     QgsDataItemProvider,
     QgsDataProvider,
-    QgsDataItem,
     QgsMapLayerType,
     QgsMimeDataUtils,
+    QgsProcessingAlgorithm,
+    QgsProcessingModelAlgorithm,
+    QgsProcessingUtils,
     QgsSettings,
 )
 from qgis.gui import (
+    QgsCustomDropHandler,
     QgsGui,
     QgsOptionsWidgetFactory,
-    QgsCustomDropHandler,
     QgsProcessingHistoryDialog,
 )
+from qgis.PyQt import sip
 from qgis.PyQt.QtCore import (
-    QObject,
-    Qt,
-    QItemSelectionModel,
     QCoreApplication,
     QDir,
     QFileInfo,
-    pyqtSlot,
     QMetaObject,
+    QObject,
+    Qt,
+    pyqtSlot,
 )
-from qgis.PyQt.QtWidgets import QWidget, QMenu, QAction
-from qgis.PyQt.QtGui import QIcon, QKeySequence
+from qgis.PyQt.QtGui import QKeySequence
+from qgis.PyQt.QtWidgets import QAction, QMenu, QWidget
 from qgis.utils import iface
 
 from processing.core.Processing import Processing
-from processing.gui.ProcessingToolbox import ProcessingToolbox
-from processing.gui.ConfigDialog import ConfigOptionsPage
-from processing.gui.ResultsDock import ResultsDock
-from processing.gui.MessageDialog import MessageDialog
-from processing.gui.MessageBarProgress import MessageBarProgress
+from processing.gui import TestTools
+from processing.gui.AlgorithmDialog import AlgorithmDialog
+from processing.gui.AlgorithmExecutor import execute, execute_in_place
 from processing.gui.AlgorithmLocatorFilter import (
     AlgorithmLocatorFilter,
     InPlaceAlgorithmLocatorFilter,
 )
-from processing.gui.Postprocessing import handleAlgorithmResults
-from processing.gui.AlgorithmExecutor import execute, execute_in_place
-from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
-from processing.gui import TestTools
-from processing.modeler.ModelerDialog import ModelerDialog
-from processing.tools.system import tempHelpFolder
-from processing.tools import dataobjects
+from processing.gui.ConfigDialog import ConfigOptionsPage
 from processing.gui.menus import (
-    removeMenus,
-    initializeMenus,
-    createMenus,
     createButtons,
+    createMenus,
+    initializeMenus,
     removeButtons,
+    removeMenus,
 )
-from processing.core.ProcessingResults import resultsList
+from processing.gui.MessageBarProgress import MessageBarProgress
+from processing.gui.MessageDialog import MessageDialog
+from processing.gui.Postprocessing import handleAlgorithmResults
+from processing.gui.ProcessingToolbox import ProcessingToolbox
+from processing.gui.ResultsDock import ResultsDock
+from processing.modeler.ModelConfigWidgets import ModelConfigWidgetFactory
+from processing.modeler.ModelerDialog import ModelerDialog
+from processing.tools import dataobjects
+from processing.tools.system import tempHelpFolder
 
 pluginPath = os.path.dirname(__file__)
 
 
 class ProcessingOptionsFactory(QgsOptionsWidgetFactory):
-
     def __init__(self):
         super(QgsOptionsWidgetFactory, self).__init__()
 
@@ -100,7 +97,6 @@ class ProcessingOptionsFactory(QgsOptionsWidgetFactory):
 
 
 class ProcessingDropHandler(QgsCustomDropHandler):
-
     def handleFileDrop(self, file):
         if not file.lower().endswith(".model3"):
             return False
@@ -129,7 +125,6 @@ class ProcessingDropHandler(QgsCustomDropHandler):
 
 
 class ProcessingModelItem(QgsDataItem):
-
     def __init__(self, parent, name, path):
         super().__init__(QgsDataItem.Type.Custom, parent, name, path)
         self.setState(QgsDataItem.State.Populated)  # no children
@@ -172,7 +167,6 @@ class ProcessingModelItem(QgsDataItem):
 
 
 class ProcessingDataItemProvider(QgsDataItemProvider):
-
     def __init__(self):
         super().__init__()
 
@@ -193,11 +187,11 @@ class ProcessingDataItemProvider(QgsDataItemProvider):
 
 
 class ProcessingPlugin(QObject):
-
     def __init__(self, iface):
         super().__init__()
         self.iface = iface
         self.options_factory = None
+        self.model_config_widget_factory = None
         self.drop_handler = None
         self.item_provider = None
         self.locator_filter = None
@@ -228,6 +222,10 @@ class ProcessingPlugin(QObject):
         self.options_factory = ProcessingOptionsFactory()
         self.options_factory.setTitle(self.tr("Processing"))
         iface.registerOptionsWidgetFactory(self.options_factory)
+        self.model_config_widget_factory = ModelConfigWidgetFactory()
+        QgsGui.processingGuiRegistry().registerModelConfigWidgetFactory(
+            self.model_config_widget_factory
+        )
         self.drop_handler = ProcessingDropHandler()
         iface.registerCustomDropHandler(self.drop_handler)
         self.item_provider = ProcessingDataItemProvider()
@@ -561,6 +559,15 @@ class ProcessingPlugin(QObject):
         self.iface.unregisterMainWindowAction(self.resultsAction)
 
         self.iface.unregisterOptionsWidgetFactory(self.options_factory)
+
+        if self.model_config_widget_factory and not sip.isdeleted(
+            self.model_config_widget_factory
+        ):
+            QgsGui.processingGuiRegistry().unregisterModelConfigWidgetFactory(
+                self.model_config_widget_factory
+            )
+            self.model_config_widget_factory = None
+
         self.iface.deregisterLocatorFilter(self.locator_filter)
         self.iface.deregisterLocatorFilter(self.edit_features_locator_filter)
         self.iface.unregisterCustomDropHandler(self.drop_handler)

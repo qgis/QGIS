@@ -24,9 +24,12 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
 #include <QUuid>
 
 #include "moc_qgstransaction.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTransaction *QgsTransaction::create( const QString &connString, const QString &providerKey )
 {

@@ -18,9 +18,12 @@
 #include "qgsmessagelog.h"
 #include "qgswfsconstants.h"
 
+#include <QString>
 #include <QUrlQuery>
 
 #include "moc_qgswfsgetfeature.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsWFSGetFeature::QgsWFSGetFeature( QgsWFSDataSourceURI &uri )
   : QgsWfsRequest( uri )

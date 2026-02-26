@@ -28,7 +28,11 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolmovelabel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolLabel( canvas, cadDock )

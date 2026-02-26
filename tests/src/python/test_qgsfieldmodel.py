@@ -10,7 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "14/11/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
-from qgis.PyQt.QtCore import QModelIndex, Qt, QVariant
+import unittest
+
 from qgis.core import (
     QgsEditorWidgetSetup,
     QgsField,
@@ -22,8 +23,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerJoinInfo,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QModelIndex, Qt, QVariant
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -46,7 +47,6 @@ def create_model():
 
 
 class TestQgsFieldModel(QgisTestCase):
-
     def testGettersSetters(self):
         """test model getters/setters"""
         l = create_layer()

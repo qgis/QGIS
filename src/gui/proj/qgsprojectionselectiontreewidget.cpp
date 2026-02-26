@@ -10,7 +10,11 @@
  ***************************************************************************/
 #include "qgsprojectionselectiontreewidget.h"
 
+#include <QString>
+
 #include "moc_qgsprojectionselectiontreewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //standard includes
 #include <sqlite3.h>

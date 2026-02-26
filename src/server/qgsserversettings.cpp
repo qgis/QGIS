@@ -23,8 +23,11 @@
 
 #include <QDir>
 #include <QSettings>
+#include <QString>
 
 #include "moc_qgsserversettings.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsServerSettings::QgsServerSettings()
 {

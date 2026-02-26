@@ -28,6 +28,8 @@
 #include <Qt3DRender/QRenderPassFilter>
 #include <Qt3DRender/QTechnique>
 
+#define SIP_NO_FILE
+
 ///@cond PRIVATE
 
 //
@@ -39,7 +41,6 @@
 // version without notice, or even be removed.
 //
 
-#define SIP_NO_FILE
 
 class QgsMeshLayer;
 

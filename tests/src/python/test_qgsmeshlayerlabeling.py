@@ -11,30 +11,29 @@ __date__ = "2024-01"
 __copyright__ = "Copyright 2024, The QGIS Project"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QDir, QMimeData, QPointF, QSize, QSizeF, Qt
-from qgis.PyQt.QtXml import QDomDocument, QDomElement
-from qgis.PyQt.QtGui import QColor, QImage, QPolygonF, QPainter
 from qgis.core import (
     QgsAbstractMeshLayerLabeling,
     QgsCoordinateReferenceSystem,
     QgsFontUtils,
     QgsMapSettings,
     QgsMeshLayer,
-    QgsPalLayerSettings,
     QgsMeshLayerSimpleLabeling,
-    QgsTextFormat,
+    QgsPalLayerSettings,
     QgsProperty,
+    QgsTextFormat,
 )
-import unittest
+from qgis.PyQt.QtCore import QDir, QMimeData, QPointF, QSize, QSizeF, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter, QPolygonF
+from qgis.PyQt.QtXml import QDomDocument, QDomElement
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
-from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
 class TestQgsMeshLayerLabeling(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "mesh_labeling"

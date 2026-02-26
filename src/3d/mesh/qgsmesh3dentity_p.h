@@ -18,12 +18,15 @@
 #ifndef QGSMESH3DENTITY_H
 #define QGSMESH3DENTITY_H
 
-#include "mesh/qgsmesh3dgeometry_p.h"
 #include "qgs3drendercontext.h"
+#include "qgsmaplayerref.h"
 #include "qgsmesh3dsymbol.h"
 #include "qgsterraintileentity_p.h"
+#include "qgstriangularmesh.h"
 
 #include <Qt3DCore/QEntity>
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 
@@ -36,7 +39,6 @@
 // version without notice, or even be removed.
 //
 
-#define SIP_NO_FILE
 
 class Qgs3DMapSettings;
 class QgsMesh3DSymbol;

@@ -37,6 +37,9 @@
 
 #include <QDomElement>
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsPropertiesDefinition QgsDiagramLayerSettings::sPropertyDefinitions;
 

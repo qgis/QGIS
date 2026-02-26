@@ -18,27 +18,25 @@ __copyright__ = "Copyright 2021, The QGIS Project"
 
 import os
 import time
+import unittest
 
 import psycopg2
-from qgis.PyQt.QtCore import (
-    QDir,
-    QTemporaryFile,
-)
 from qgis.core import (
     QgsFeatureRequest,
     QgsProject,
     QgsSettingsTree,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import (
+    QDir,
+    QTemporaryFile,
+)
+from qgis.testing import QgisTestCase, start_app
 
 QGISAPP = start_app()
 
 
 class TestPyQgsPostgresProviderLatency(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

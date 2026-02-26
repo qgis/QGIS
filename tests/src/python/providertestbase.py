@@ -10,8 +10,7 @@ __author__ = "Matthias Kuhn"
 __date__ = "2015-04-27"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
-from qgis.PyQt.QtCore import QDate, QDateTime, Qt, QTime, QVariant
-from qgis.PyQt.QtTest import QSignalSpy
+from featuresourcetestbase import FeatureSourceTestCase
 from qgis.core import (
     NULL,
     QgsAbstractFeatureIterator,
@@ -28,13 +27,13 @@ from qgis.core import (
     QgsGeometry,
     QgsRectangle,
     QgsTestUtils,
+    QgsUnsetAttributeValue,
     QgsVectorDataProvider,
     QgsVectorLayerFeatureSource,
     QgsVectorLayerUtils,
-    QgsUnsetAttributeValue,
 )
-
-from featuresourcetestbase import FeatureSourceTestCase
+from qgis.PyQt.QtCore import QDate, QDateTime, Qt, QTime, QVariant
+from qgis.PyQt.QtTest import QSignalSpy
 
 
 class ProviderTestCase(FeatureSourceTestCase):
@@ -222,10 +221,8 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.source.setSubsetString(None)
 
         expected = {2, 3, 4}
-        assert (
-            set(expected) == result
-        ), "Expected {} and got {} when testing subset string {}".format(
-            set(expected), result, subset
+        assert set(expected) == result, (
+            f"Expected {set(expected)} and got {result} when testing subset string {subset}"
         )
         self.assertTrue(all_valid)
 
@@ -237,10 +234,8 @@ class ProviderTestCase(FeatureSourceTestCase):
         all_valid = all(f.isValid() for f in self.source.getFeatures(request))
         self.source.setSubsetString(None)
         expected = {2}
-        assert (
-            set(expected) == result
-        ), "Expected {} and got {} when testing subset string {}".format(
-            set(expected), result, subset
+        assert set(expected) == result, (
+            f"Expected {set(expected)} and got {result} when testing subset string {subset}"
         )
         self.assertTrue(all_valid)
 
@@ -253,10 +248,8 @@ class ProviderTestCase(FeatureSourceTestCase):
         }
         self.source.setSubsetString(None)
         expected = {2, 4}
-        assert (
-            set(expected) == result
-        ), "Expected {} and got {} when testing subset string {}".format(
-            set(expected), result, subset
+        assert set(expected) == result, (
+            f"Expected {set(expected)} and got {result} when testing subset string {subset}"
         )
 
         # Subset string AND expression
@@ -266,10 +259,8 @@ class ProviderTestCase(FeatureSourceTestCase):
         all_valid = all(f.isValid() for f in self.source.getFeatures(request))
         self.source.setSubsetString(None)
         expected = {2, 4}
-        assert (
-            set(expected) == result
-        ), "Expected {} and got {} when testing subset string {}".format(
-            set(expected), result, subset
+        assert set(expected) == result, (
+            f"Expected {set(expected)} and got {result} when testing subset string {subset}"
         )
         self.assertTrue(all_valid)
 
@@ -282,10 +273,8 @@ class ProviderTestCase(FeatureSourceTestCase):
             all_valid = all(f.isValid() for f in self.source.getFeatures(request))
             self.source.setSubsetString(None)
             expected = {ids[4]}
-            assert (
-                set(expected) == result
-            ), "Expected {} and got {} when testing subset string {}".format(
-                set(expected), result, subset
+            assert set(expected) == result, (
+                f"Expected {set(expected)} and got {result} when testing subset string {subset}"
             )
             self.assertTrue(all_valid)
 
@@ -296,10 +285,8 @@ class ProviderTestCase(FeatureSourceTestCase):
             all_valid = all(f.isValid() for f in self.source.getFeatures(request))
             self.source.setSubsetString(None)
             expected = {ids[2], ids[4]}
-            assert (
-                set(expected) == result
-            ), "Expected {} and got {} when testing subset string {}".format(
-                set(expected), result, subset
+            assert set(expected) == result, (
+                f"Expected {set(expected)} and got {result} when testing subset string {subset}"
             )
             self.assertTrue(all_valid)
 

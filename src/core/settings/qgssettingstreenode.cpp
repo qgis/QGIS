@@ -21,8 +21,11 @@
 #include "qgssettingsproxy.h"
 
 #include <QDir>
+#include <QString>
 
 #include "moc_qgssettingstreenode.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSettingsTreeNode::~QgsSettingsTreeNode()
 {

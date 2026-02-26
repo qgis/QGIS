@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsFieldDomain
 {
 %Docstring(signature="appended")

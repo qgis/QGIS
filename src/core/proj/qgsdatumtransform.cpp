@@ -24,6 +24,10 @@
 #include "qgsprojutils.h"
 #include "qgssqliteutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QList<QgsDatumTransform::TransformDetails> QgsDatumTransform::operations( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, bool includeSuperseded )
 {
   QList< QgsDatumTransform::TransformDetails > res;

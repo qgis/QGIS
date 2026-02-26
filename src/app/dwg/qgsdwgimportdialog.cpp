@@ -49,8 +49,11 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsdwgimportdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )

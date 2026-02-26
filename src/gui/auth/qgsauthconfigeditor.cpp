@@ -27,8 +27,11 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QSqlTableModel>
+#include <QString>
 
 #include "moc_qgsauthconfigeditor.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, bool relayMessages )
   : QWidget( parent )

@@ -11,6 +11,7 @@
 
 
 
+
 class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
 {
 %Docstring(signature="appended")

@@ -11,10 +11,10 @@ __date__ = "23/11/2021"
 __copyright__ = "Copyright 2021, The QGIS Project"
 
 import sys
+import unittest
 
 from qgis.gui import QgsGui
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 # Convenience instances in case you may need them
 # to find the srs.db
@@ -22,7 +22,6 @@ start_app()
 
 
 class TestQgsProviderGuiRegistry(QgisTestCase):
-
     def testProviderList(self):
         """
         Test provider list

@@ -26,6 +26,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsRuleBased3DRendererMetadata::QgsRuleBased3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( u"rulebased"_s )
 {
@@ -263,12 +267,12 @@ void QgsRuleBased3DRenderer::Rule::createHandlers( QgsVectorLayer *layer, QgsRul
 }
 
 
-void QgsRuleBased3DRenderer::Rule::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin, QgsRuleBased3DRenderer::RuleToHandlerMap &handlers ) const
+void QgsRuleBased3DRenderer::Rule::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent, QgsRuleBased3DRenderer::RuleToHandlerMap &handlers ) const
 {
   if ( mSymbol )
   {
     QgsFeature3DHandler *handler = handlers[this];
-    if ( !handler->prepare( context, attributeNames, chunkOrigin ) )
+    if ( !handler->prepare( context, attributeNames, chunkExtent ) )
     {
       handlers.remove( this );
       delete handler;
@@ -284,11 +288,11 @@ void QgsRuleBased3DRenderer::Rule::prepare( const Qgs3DRenderContext &context, Q
   // call recursively
   for ( Rule *rule : std::as_const( mChildren ) )
   {
-    rule->prepare( context, attributeNames, chunkOrigin, handlers );
+    rule->prepare( context, attributeNames, chunkExtent, handlers );
   }
 }
 
-QgsRuleBased3DRenderer::Rule::RegisterResult QgsRuleBased3DRenderer::Rule::registerFeature( QgsFeature &feature, Qgs3DRenderContext &context, QgsRuleBased3DRenderer::RuleToHandlerMap &handlers ) const
+QgsRuleBased3DRenderer::Rule::RegisterResult QgsRuleBased3DRenderer::Rule::registerFeature( const QgsFeature &feature, Qgs3DRenderContext &context, const QgsRuleBased3DRenderer::RuleToHandlerMap &handlers ) const
 {
   if ( !isFilterOK( feature, context ) )
     return Filtered;
@@ -337,7 +341,7 @@ QgsRuleBased3DRenderer::Rule::RegisterResult QgsRuleBased3DRenderer::Rule::regis
 }
 
 
-bool QgsRuleBased3DRenderer::Rule::isFilterOK( QgsFeature &f, Qgs3DRenderContext &context ) const
+bool QgsRuleBased3DRenderer::Rule::isFilterOK( const QgsFeature &f, Qgs3DRenderContext &context ) const
 {
   if ( !mFilter || mElseRule )
     return true;

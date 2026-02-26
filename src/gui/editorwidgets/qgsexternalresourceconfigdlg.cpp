@@ -30,8 +30,11 @@
 
 #include <QComboBox>
 #include <QFileDialog>
+#include <QString>
 
 #include "moc_qgsexternalresourceconfigdlg.cpp"
+
+using namespace Qt::StringLiterals;
 
 class QgsExternalResourceWidgetWrapper;
 

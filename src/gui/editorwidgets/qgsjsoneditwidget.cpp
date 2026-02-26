@@ -21,10 +21,13 @@
 #include <QJsonArray>
 #include <QLabel>
 #include <QPushButton>
+#include <QString>
 #include <QToolTip>
 #include <QUrl>
 
 #include "moc_qgsjsoneditwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsJsonEditWidget::QgsJsonEditWidget( QWidget *parent )
   : QWidget( parent )

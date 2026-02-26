@@ -36,6 +36,9 @@
 
 #include <QDomDocument>
 #include <QDomElement>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsSingleSymbolRenderer::QgsSingleSymbolRenderer( QgsSymbol *symbol )
   : QgsFeatureRenderer( u"singleSymbol"_s )

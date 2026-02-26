@@ -20,6 +20,7 @@ __date__ = "November 2017"
 __copyright__ = "(C) 2017, Médéric Ribreux"
 
 from qgis.core import QgsProcessingParameterString
+
 from grassprovider.grass_utils import GrassUtils
 
 

@@ -13,7 +13,6 @@ __copyright__ = "Copyright 2012, The QGIS Project"
 import os
 import tempfile
 
-
 (myFileHandle, myFilename) = tempfile.mkstemp()
 os.environ["QGIS_DEBUG"] = "2"
 os.environ["QGIS_LOG_FILE"] = myFilename
@@ -28,7 +27,6 @@ from qgis.testing import unittest
 
 
 class TestQgsLogger(unittest.TestCase):
-
     def testLogger(self):
         try:
             myFile = os.fdopen(myFileHandle, "w")
@@ -48,9 +46,8 @@ class TestQgsLogger(unittest.TestCase):
                 "This is a warning\n",
                 "This is critical\n",
             ]
-            myMessage = "Expected:\n---\n{}\n---\nGot:\n---\n{}\n---\n".format(
-                myExpectedText,
-                myText,
+            myMessage = (
+                f"Expected:\n---\n{myExpectedText}\n---\nGot:\n---\n{myText}\n---\n"
             )
             self.assertEqual(myText, myExpectedText, myMessage)
         finally:

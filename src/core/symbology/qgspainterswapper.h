@@ -19,10 +19,11 @@
 
 #include "qgis_core.h"
 
+#define SIP_NO_FILE
+
 class QgsRenderContext;
 class QPainter;
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup core

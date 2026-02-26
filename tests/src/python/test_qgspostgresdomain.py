@@ -11,16 +11,15 @@ __date__ = "10/02/2018"
 __copyright__ = "Copyright 2018, The QGIS Project"
 
 import os
+import unittest
 
 from qgis.core import QgsProject, QgsVectorLayer
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsPostgresDomain(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """

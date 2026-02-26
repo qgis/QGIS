@@ -26,9 +26,12 @@
 #include "qgssettings.h"
 
 #include <QFont>
+#include <QString>
 #include <QStyle>
 
 #include "moc_qgisappstylesheet.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgisAppStyleSheet::QgisAppStyleSheet( QObject *parent )
   : QObject( parent )

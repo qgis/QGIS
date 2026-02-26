@@ -57,7 +57,10 @@
 #include "qgsvectorlayer.h"
 
 #include <QObject>
+#include <QString>
 #include <QUuid>
+
+using namespace Qt::StringLiterals;
 
 QgsPropertiesDefinition QgsCompositionConverter::sPropertyDefinitions;
 
@@ -1328,11 +1331,13 @@ bool QgsCompositionConverter::readLegendXml( QgsLayoutItemLegend *layoutItem, co
     std::unique_ptr< QgsLayerTree > tree( QgsLayerTree::readXml( layerTreeElem, context ) );
     if ( project )
       tree->resolveReferences( project, true );
+    layoutItem->setSyncMode( Qgis::LegendSyncMode::Manual );
     layoutItem->setCustomLayerTree( tree.release() );
   }
   else
   {
     layoutItem->setCustomLayerTree( nullptr );
+    layoutItem->setSyncMode( Qgis::LegendSyncMode::AllProjectLayers );
   }
 
   return true;

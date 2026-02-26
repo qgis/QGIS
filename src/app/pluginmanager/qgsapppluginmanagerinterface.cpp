@@ -19,7 +19,11 @@
 #include "qgslogger.h"
 #include "qgspluginmanager.h"
 
+#include <QString>
+
 #include "moc_qgsapppluginmanagerinterface.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAppPluginManagerInterface::QgsAppPluginManagerInterface( QgsPluginManager *pluginManager )
   : mPluginManager( pluginManager )

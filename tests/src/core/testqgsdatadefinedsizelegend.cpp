@@ -18,6 +18,10 @@
 #include "qgsmarkersymbol.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 static QgsRenderContext _createRenderContext( double mupp, double dpi, double scale )
 {
   QgsRenderContext context;

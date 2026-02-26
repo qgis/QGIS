@@ -17,6 +17,7 @@
 
 #include "qgs3dutils.h"
 
+#include <QString>
 #include <Qt3DRender/QAbstractTexture>
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QParameter>
@@ -26,6 +27,8 @@
 #include <Qt3DRender/QTexture>
 
 #include "moc_qgsmetalroughmaterial.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent )

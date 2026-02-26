@@ -10,24 +10,23 @@ __author__ = "Nyall Dawson"
 __date__ = "27/06/2023"
 __copyright__ = "Copyright 2023, The QGIS Project"
 
-from qgis.PyQt.QtGui import QPainter
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgis,
-    QgsTiledSceneLayer,
-    QgsReadWriteContext,
     QgsLayerNotesUtils,
     QgsMapLayer,
-    QgsTiledSceneDataProvider,
     QgsProviderRegistry,
+    QgsReadWriteContext,
+    QgsTiledSceneDataProvider,
+    QgsTiledSceneLayer,
 )
+from qgis.PyQt.QtGui import QPainter
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import start_app, unittest
 
 start_app()
 
 
 class TestQgsTiledSceneLayer(unittest.TestCase):
-
     def test_data_provider(self):
         """
         Test data provider creation

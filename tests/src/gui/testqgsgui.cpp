@@ -16,6 +16,10 @@
 #include "qgsguiutils.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsGui : public QObject
 {
     Q_OBJECT

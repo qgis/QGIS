@@ -26,9 +26,12 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QObject>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsserverparameters.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsServerParameterDefinition

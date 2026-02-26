@@ -20,6 +20,14 @@
 
 #define SIP_NO_FILE
 
+namespace Qt3DRender
+{
+  class QCamera;
+  class QParameter;
+  class QTexture2D;
+} //namespace Qt3DRender
+
+
 /**
  * \ingroup qgis_3d
  * \brief An entity that is responsible for producing an ambient occlusion factor map.

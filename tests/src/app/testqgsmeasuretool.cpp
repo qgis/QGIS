@@ -21,6 +21,10 @@
 #include "qgsrubberband.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup UnitTests
  * This is a unit test for the measure tool

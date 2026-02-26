@@ -16,6 +16,10 @@
 
 #include "qgsfallbacknumericformat.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QString QgsFallbackNumericFormat::id() const
 {
   return u"default"_s;

@@ -33,7 +33,11 @@
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgspropertyassistantwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget *parent, const QgsPropertyDefinition &definition, const QgsProperty &initialState, const QgsVectorLayer *layer )
   : QgsPanelWidget( parent )

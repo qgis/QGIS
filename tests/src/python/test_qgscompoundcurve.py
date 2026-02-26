@@ -26,7 +26,6 @@ start_app()
 
 
 class TestQgsCompoundCurve(QgisTestCase):
-
     def testFuzzyComparisons(self):
 
         ######

@@ -24,7 +24,10 @@
 #include <QAction>
 #include <QApplication>
 #include <QDialog>
+#include <QString>
 #include <QVBoxLayout>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsQueryResultWidget : public QObject
 {

@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsReadWriteContext
 {
 %Docstring(signature="appended")
@@ -142,6 +144,21 @@ Sets data coordinate transform context to ``transformContext``
 .. seealso:: :py:func:`transformContext`
 
 .. versionadded:: 3.8
+%End
+
+    const QString currentLayerId() const;
+%Docstring
+Returns the currently used layer id as string.
+
+.. versionadded:: 4.0
+%End
+
+    void setCurrentLayerId( const QString &layerId );
+%Docstring
+Sets the current layer id. So functions are able to emit the layer that
+is currently relevant.
+
+.. versionadded:: 4.0
 %End
 
 };

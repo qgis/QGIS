@@ -25,6 +25,9 @@
 
 #include <QList>
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QString QgsDoubleBoxScaleBarRenderer::id() const
 {

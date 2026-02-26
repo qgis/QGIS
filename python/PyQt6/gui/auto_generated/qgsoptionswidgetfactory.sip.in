@@ -78,7 +78,6 @@ options dialogs. This can be used to provide a custom implementation of
 
 class QgsOptionsWidgetFactory : QObject
 {
-
 %TypeHeaderCode
 #include "qgsoptionswidgetfactory.h"
 %End

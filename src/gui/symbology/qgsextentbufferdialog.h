@@ -15,7 +15,6 @@
 #ifndef QGSEXTENTBUFFERDIALOG_H
 #define QGSEXTENTBUFFERDIALOG_H
 
-#define SIP_NO_FILE
 
 #include "ui_qgsextentbufferdialogbase.h"
 
@@ -25,6 +24,8 @@
 #include "qgssymbolwidgetcontext.h"
 
 #include <QDialog>
+
+#define SIP_NO_FILE
 
 class QgsVectorLayer;
 

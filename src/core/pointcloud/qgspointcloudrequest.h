@@ -20,6 +20,8 @@
 
 #include "qgis.h"
 #include "qgis_core.h"
+#include "qgspointcloudattribute.h"
+#include "qgsrectangle.h"
 
 #include <QByteArray>
 #include <QPair>
@@ -27,10 +29,6 @@
 #include <QVector>
 
 #define SIP_NO_FILE
-
-#include "qgspointcloudattribute.h"
-
-#include "qgsrectangle.h"
 
 /**
  * \ingroup core

@@ -25,15 +25,16 @@
 
 #include "moc_qgsnetworkcontentfetchertask.cpp"
 
-QgsNetworkContentFetcherTask::QgsNetworkContentFetcherTask( const QUrl &url, const QString &authcfg, QgsTask::Flags flags, const QString &description )
-  : QgsNetworkContentFetcherTask( QNetworkRequest( url ), authcfg, flags, description )
+QgsNetworkContentFetcherTask::QgsNetworkContentFetcherTask( const QUrl &url, const QString &authcfg, QgsTask::Flags flags, const QString &description, const QgsHttpHeaders &headers )
+  : QgsNetworkContentFetcherTask( QNetworkRequest( url ), authcfg, flags, description, headers )
 {
 }
 
-QgsNetworkContentFetcherTask::QgsNetworkContentFetcherTask( const QNetworkRequest &request, const QString &authcfg, QgsTask::Flags flags, const QString &description )
+QgsNetworkContentFetcherTask::QgsNetworkContentFetcherTask( const QNetworkRequest &request, const QString &authcfg, QgsTask::Flags flags, const QString &description, const QgsHttpHeaders &headers )
   : QgsTask( description.isEmpty() ? tr( "Fetching %1" ).arg( request.url().toString() ) : description, flags )
   , mRequest( request )
   , mAuthcfg( authcfg )
+  , mHeaders( headers )
 {
 }
 
@@ -73,7 +74,11 @@ bool QgsNetworkContentFetcherTask::run()
     emit errorOccurred( code, errorMsg );
   } );
 
-  mFetcher->fetchContent( mRequest, mAuthcfg );
+  // Apply custom headers to the request
+  QNetworkRequest request = mRequest;
+  mHeaders.updateNetworkRequest( request );
+
+  mFetcher->fetchContent( request, mAuthcfg );
   loop.exec();
   if ( !isCanceled() )
     setProgress( 100 );

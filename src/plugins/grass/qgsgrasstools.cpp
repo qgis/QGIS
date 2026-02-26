@@ -32,8 +32,11 @@
 #include <QMessageBox>
 #include <QPainter>
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgsgrasstools.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // For experimental model view alternative ui by Tim

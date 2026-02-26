@@ -26,6 +26,9 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgssurface.h"
 
 #include <QJsonObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsMultiSurface::QgsMultiSurface()
 {

@@ -19,11 +19,12 @@
 
 #define SIP_NO_CREATION
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 
 #include <QString>
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup core
@@ -139,8 +140,6 @@ class CORE_EXPORT QgsSettingsException : public QgsException
 
 };
 
-
-#ifdef WITH_SFCGAL
 /**
  * \class QgsSfcgalException
  * \ingroup core
@@ -157,7 +156,6 @@ class CORE_EXPORT QgsSfcgalException : public QgsException
     QgsSfcgalException( const QString &message ) : QgsException( message ) {}
 
 };
-#endif
 
 /**
  * \class QgsInvalidArgumentException

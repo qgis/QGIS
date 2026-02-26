@@ -23,6 +23,9 @@
 
 #include <QList>
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QString QgsNumericScaleBarRenderer::id() const
 {

@@ -33,7 +33,11 @@ email                : tim@linfiniti.com
 #include "qgssvgcache.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
 #include "moc_qgsdecorationnortharrow.cpp"
+
+using namespace Qt::StringLiterals;
 
 // qt includes
 #include <QPainter>

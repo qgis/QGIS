@@ -47,9 +47,12 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QRegularExpression>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgscoordinatereferencesystem.cpp"
+
+using namespace Qt::StringLiterals;
 
 //gdal and ogr includes (needed for == operator)
 #include <ogr_srs_api.h>
@@ -1696,8 +1699,6 @@ void QgsCoordinateReferenceSystem::updateDefinition()
   if ( !d->mIsValid )
     return;
 
-  // clang tidy false positive
-  // NOLINTBEGIN(bugprone-branch-clone)
   if ( d->mSrsId >= Qgis::USER_CRS_START_ID )
   {
     // user CRS, so update to new definition
@@ -1707,7 +1708,6 @@ void QgsCoordinateReferenceSystem::updateDefinition()
   {
     // nothing to do -- only user CRS definitions can be changed
   }
-  // NOLINTEND(bugprone-branch-clone)
 }
 
 void QgsCoordinateReferenceSystem::setProjString( const QString &proj4String )

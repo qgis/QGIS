@@ -21,7 +21,11 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 
+#include <QString>
+
 #include "moc_qgsauthapiheadermethod.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_GUI
 #include "qgsauthapiheaderedit.h"

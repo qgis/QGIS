@@ -19,7 +19,11 @@
 #include "qgsgui.h"
 #include "qgsrelationwidgetregistry.h"
 
+#include <QString>
+
 #include "moc_qgsattributewidgetedit.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( const QgsAttributesFormData::AttributeFormItemData &itemData, QWidget *parent )
   : QgsCollapsibleGroupBox( parent )

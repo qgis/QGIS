@@ -24,8 +24,11 @@
 #include "qgssettings.h"
 
 #include <QHBoxLayout>
+#include <QString>
 
 #include "moc_qgsdefaultsearchwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDefaultSearchWidgetWrapper::QgsDefaultSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
@@ -76,7 +79,7 @@ void QgsDefaultSearchWidgetWrapper::setExpression( const QString &expression )
       const double doubleValue = QgsDoubleValidator::toDouble( exp, &ok );
       if ( ok )
       {
-        exp = QString::number( doubleValue );
+        exp = QString::number( doubleValue, 'f', QLocale::FloatingPointShortest );
       }
     }
     str = u"%1 %2 '%3'"_s

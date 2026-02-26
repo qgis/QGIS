@@ -10,11 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "05/07/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
-from qgis.PyQt import sip
-from qgis.PyQt.QtCore import QByteArray, QMimeData, QRectF
-from qgis.PyQt.QtGui import QTransform
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtWidgets import QApplication
+import unittest
+
 from qgis.core import (
     QgsLayout,
     QgsLayoutAligner,
@@ -29,14 +26,17 @@ from qgis.core import (
     QgsUnitTypes,
 )
 from qgis.gui import QgsLayoutView
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt import sip
+from qgis.PyQt.QtCore import QByteArray, QMimeData, QRectF
+from qgis.PyQt.QtGui import QTransform
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtWidgets import QApplication
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsLayoutView(QgisTestCase):
-
     def testScaleSafe(self):
         """test scaleSafe method"""
 

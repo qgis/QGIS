@@ -29,8 +29,11 @@
 
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsauthserverseditor.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthServersEditor::QgsAuthServersEditor( QWidget *parent )
   : QWidget( parent )

@@ -38,10 +38,13 @@
 
 #include <QApplication>
 #include <QFile>
+#include <QString>
 #include <QStringList>
 #include <QThread>
 
 #include "moc_qgspostgresconn.cpp"
+
+using namespace Qt::StringLiterals;
 
 // for htonl
 #ifdef Q_OS_WIN

@@ -16,12 +16,13 @@
 #ifndef QGSSETTINGSPROXY_H
 #define QGSSETTINGSPROXY_H
 
-#define SIP_NO_FILE
 
 #include <optional>
 
 #include "qgis_core.h"
 #include "qgssettings.h"
+
+#define SIP_NO_FILE
 
 /**
  * \class QgsSettingsProxy

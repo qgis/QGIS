@@ -44,8 +44,11 @@
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsnewgeopackagelayerdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define DEFAULT_OGR_FID_COLUMN_TITLE "fid" // default value from OGR
 

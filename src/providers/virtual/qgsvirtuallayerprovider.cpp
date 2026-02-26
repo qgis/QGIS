@@ -14,29 +14,33 @@ email                : hugo dot mercier at oslandia dot com
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsvirtuallayerprovider.h"
+
+#include <stdexcept>
+
+#include "qgsapplication.h"
+#include "qgslogger.h"
+#include "qgsproject.h"
+#include "qgsvectorlayer.h"
+#include "qgsvirtuallayerdefinition.h"
+#include "qgsvirtuallayerfeatureiterator.h"
+#include "qgsvirtuallayerqueryparser.h"
+#include "qgsvirtuallayersqlitemodule.h"
+
+#include <QString>
+#include <QUrl>
+#include <QUrlQuery>
+
+#include "moc_qgsvirtuallayerprovider.cpp"
+
+using namespace Qt::StringLiterals;
+
 extern "C"
 {
 #include <sqlite3.h>
 #include <spatialite.h>
 }
 
-#include <stdexcept>
-
-#include "qgsvirtuallayerprovider.h"
-#include "moc_qgsvirtuallayerprovider.cpp"
-#include "qgsvirtuallayerdefinition.h"
-#include "qgsvirtuallayerfeatureiterator.h"
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
-#include "qgslogger.h"
-
-#include "qgsvirtuallayerprovider.h"
-#include "qgsvirtuallayersqlitemodule.h"
-#include "qgsvirtuallayerqueryparser.h"
-#include "qgsapplication.h"
-
-#include <QUrl>
-#include <QUrlQuery>
 
 const QString QgsVirtualLayerProvider::VIRTUAL_LAYER_KEY = u"virtual"_s;
 const QString QgsVirtualLayerProvider::VIRTUAL_LAYER_DESCRIPTION = u"Virtual layer data provider"_s;
@@ -125,6 +129,11 @@ bool QgsVirtualLayerProvider::loadSourceLayers()
       if ( l->type() != Qgis::LayerType::Vector )
       {
         PROVIDER_ERROR( QString( "Layer %1 is not a vector layer" ).arg( layer.reference() ) );
+        return false;
+      }
+      if ( !l->isValid() )
+      {
+        PROVIDER_ERROR( QString( "Layer %1 is invalid" ).arg( layer.reference() ) );
         return false;
       }
       // add the layer to the list

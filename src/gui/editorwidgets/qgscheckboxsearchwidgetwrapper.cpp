@@ -21,8 +21,11 @@
 
 #include <QCheckBox>
 #include <QSettings>
+#include <QString>
 
 #include "moc_qgscheckboxsearchwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCheckboxSearchWidgetWrapper::QgsCheckboxSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )

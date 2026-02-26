@@ -22,6 +22,9 @@
 #include "qgssymbollayerutils.h"
 
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 const QString QgsStackedBarDiagram::DIAGRAM_NAME_STACKED_BAR = u"Stacked"_s;
 

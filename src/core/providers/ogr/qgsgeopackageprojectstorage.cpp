@@ -15,6 +15,10 @@
 
 #include "qgsgeopackageprojectstorage.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 #include <sqlite3.h>

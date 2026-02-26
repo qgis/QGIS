@@ -22,6 +22,9 @@
 #include "qgsvectorlayer.h"
 
 #include <QCoreApplication>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsMapToolEdit : public QObject
 {

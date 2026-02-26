@@ -24,8 +24,11 @@
 #include <QActionGroup>
 #include <QInputDialog>
 #include <QMenu>
+#include <QString>
 
 #include "moc_qgsmaplayerstyleguiutils.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapLayerStyleGuiUtils *QgsMapLayerStyleGuiUtils::instance()
 {

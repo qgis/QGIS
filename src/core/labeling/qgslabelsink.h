@@ -18,10 +18,11 @@
 #ifndef QGSLABELSINK_H
 #define QGSLABELSINK_H
 
-#define SIP_NO_FILE
 
 #include "qgsrulebasedlabeling.h"
 #include "qgsvectorlayerlabelprovider.h"
+
+#define SIP_NO_FILE
 
 class QgsPalLayerSettings;
 class QgsRuleBasedLabeling;

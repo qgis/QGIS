@@ -33,6 +33,8 @@
 #include <QRegularExpression>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 #ifdef HAVE_EPT
 #include "qgseptproviderguimetadata.h"
 #endif

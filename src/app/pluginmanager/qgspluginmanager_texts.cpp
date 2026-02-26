@@ -1,6 +1,9 @@
 #include "qgspluginmanager.h"
 
 #include <QCoreApplication>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 // QMap<QString, QString> QgsPluginManager::mTabDescriptions;
 

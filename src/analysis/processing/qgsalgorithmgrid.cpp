@@ -24,6 +24,10 @@
 #include "qgsvectorlayer.h"
 #include "qgswkbtypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsGridAlgorithm::name() const

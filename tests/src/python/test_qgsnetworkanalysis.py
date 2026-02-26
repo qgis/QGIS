@@ -9,14 +9,13 @@ the Free Software Foundation; either version 2 of the License, or
 import unittest
 
 from qgis.analysis import (
-    QgsVectorLayerDirector,
-    QgsNetworkDistanceStrategy,
-    QgsGraphBuilder,
     QgsGraphAnalyzer,
+    QgsGraphBuilder,
+    QgsNetworkDistanceStrategy,
+    QgsVectorLayerDirector,
 )
-from qgis.core import QgsVectorLayer, QgsPointXY
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.core import QgsPointXY, QgsVectorLayer
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -24,7 +23,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsNetworkAnalysis(QgisTestCase):
-
     def test_analysis(self):
         network_layer = QgsVectorLayer(
             self.get_test_data_path("roads.gml").as_posix(), "lines"

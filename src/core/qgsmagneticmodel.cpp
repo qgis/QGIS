@@ -17,6 +17,10 @@
 
 #include "qgsmagneticmodel.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #ifdef WITH_GEOGRAPHICLIB
 #include <GeographicLib/MagneticModel.hpp>
 #else

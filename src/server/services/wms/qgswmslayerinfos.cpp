@@ -30,6 +30,10 @@
 #include "qgsserverprojectutils.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsRectangle QgsWmsLayerInfos::transformExtent(
   const QgsRectangle &extent,
   const QgsCoordinateReferenceSystem &source,

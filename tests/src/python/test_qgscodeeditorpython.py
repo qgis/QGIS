@@ -11,20 +11,20 @@ __date__ = "31/03/2023"
 __copyright__ = "Copyright 2023, The QGIS Project"
 
 
-from qgis.PyQt.QtCore import QCoreApplication, Qt
-from qgis.PyQt.QtTest import QTest
+import os
+import unittest
+
 from qgis.core import QgsSettings
 from qgis.gui import QgsCodeEditorPython
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QCoreApplication, Qt
+from qgis.PyQt.QtTest import QTest
+from qgis.testing import QgisTestCase, start_app
 
 COMPLETIONS_PAIRS = {"(": ")", "[": "]", "{": "}", "'": "'", '"': '"'}
 COMPLETIONS_SINGLE_CHARACTERS = ["`", "*"]
 
 
 class TestQgsCodeEditorPython(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -46,7 +46,6 @@ class TestQgsCodeEditorPython(QgisTestCase):
         test_string = "Hello World"
 
         for opening, closing in COMPLETIONS_PAIRS.items():
-
             editor.setText(test_string)
 
             # Select the whole text
@@ -57,7 +56,6 @@ class TestQgsCodeEditorPython(QgisTestCase):
             self.assertEqual(editor.text(), opening + test_string + closing)
 
         for character in COMPLETIONS_SINGLE_CHARACTERS:
-
             editor.setText(test_string)
 
             # Type the character
@@ -69,7 +67,6 @@ class TestQgsCodeEditorPython(QgisTestCase):
         editor.setText(test_string)
         editor.selectAll()
         for opening, closing in COMPLETIONS_PAIRS.items():
-
             text = editor.text()
             # Select the whole text
             QTest.keyClicks(editor, opening)
@@ -105,7 +102,6 @@ class TestQgsCodeEditorPython(QgisTestCase):
         editor = QgsCodeEditorPython()
 
         for opening, closing in COMPLETIONS_PAIRS.items():
-
             # Type the opening character, should insert both characters
             QTest.keyClicks(editor, opening)
             self.assertEqual(editor.text(), opening + closing)
@@ -182,25 +178,38 @@ class TestQgsCodeEditorPython(QgisTestCase):
 
         # Check single line comment
         editor.setText("#Hello World")
-        QTest.keyClick(editor, "/", Qt.KeyboardModifier.ControlModifier)
+        if os.name == "nt":
+            QTest.keyClick(editor, ":", Qt.KeyboardModifier.ControlModifier)
+        else:
+            QTest.keyClick(editor, "/", Qt.KeyboardModifier.ControlModifier)
         self.assertEqual(editor.text(), "Hello World")
-        QTest.keyClick(editor, "/", Qt.KeyboardModifier.ControlModifier)
+        if os.name == "nt":
+            QTest.keyClick(editor, ":", Qt.KeyboardModifier.ControlModifier)
+        else:
+            QTest.keyClick(editor, "/", Qt.KeyboardModifier.ControlModifier)
         self.assertEqual(editor.text(), "# Hello World")
 
         # Check multiline comment
         editor.setText("Hello\nQGIS\nWorld")
         editor.setSelection(0, 0, 1, 4)
-        QTest.keyClick(editor, "/", Qt.KeyboardModifier.ControlModifier)
+
+        # on Windows Ctrl+/ does not work, so we stick with original Ctrl+:
+        # see https://github.com/qgis/QGIS/issues/63429
+        toggle_comment_key = "/"
+        if os.name == "nt":
+            toggle_comment_key = ":"
+
+        QTest.keyClick(editor, toggle_comment_key, Qt.KeyboardModifier.ControlModifier)
         self.assertEqual(editor.text(), "# Hello\n# QGIS\nWorld")
-        QTest.keyClick(editor, "/", Qt.KeyboardModifier.ControlModifier)
+        QTest.keyClick(editor, toggle_comment_key, Qt.KeyboardModifier.ControlModifier)
         self.assertEqual(editor.text(), "Hello\nQGIS\nWorld")
 
         # Check multiline comment with already commented lines
         editor.setText("Hello\n# QGIS\nWorld")
         editor.setSelection(0, 0, 2, 4)
-        QTest.keyClick(editor, "/", Qt.KeyboardModifier.ControlModifier)
+        QTest.keyClick(editor, toggle_comment_key, Qt.KeyboardModifier.ControlModifier)
         self.assertEqual(editor.text(), "# Hello\n# # QGIS\n# World")
-        QTest.keyClick(editor, "/", Qt.KeyboardModifier.ControlModifier)
+        QTest.keyClick(editor, toggle_comment_key, Qt.KeyboardModifier.ControlModifier)
         self.assertEqual(editor.text(), "Hello\n# QGIS\nWorld")
 
 

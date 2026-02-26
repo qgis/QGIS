@@ -23,8 +23,11 @@
 
 #include <QDomDocument>
 #include <QDomElement>
+#include <QString>
 
 #include "moc_qgssvgannotation.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSvgAnnotation::QgsSvgAnnotation( QObject *parent )
   : QgsAnnotation( parent )

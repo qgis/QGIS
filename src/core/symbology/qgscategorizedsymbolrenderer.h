@@ -20,6 +20,9 @@
 #include "qgsrenderer.h"
 
 #include <QHash>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsVectorLayer;
 class QgsStyle;

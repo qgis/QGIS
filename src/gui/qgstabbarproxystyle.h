@@ -15,6 +15,7 @@
 #ifndef QGSTABBARPROXYSTYLE_H
 #define QGSTABBARPROXYSTYLE_H
 
+#include "qgis_gui.h"
 #include "qgsattributeeditorelement.h"
 #include "qgsproxystyle.h"
 
@@ -25,8 +26,6 @@
 #include <QTabBar>
 
 #define SIP_NO_FILE
-
-#include "qgis_gui.h"
 
 ///@cond private
 

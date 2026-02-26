@@ -50,7 +50,7 @@ class QgsOWSSourceWidget;
  * The user can then connect and add
  * layers from the WCS server to the map canvas.
  */
-class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protected Ui::QgsOWSSourceSelectBase
+class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, public Ui::QgsOWSSourceSelectBase
 {
     Q_OBJECT
 

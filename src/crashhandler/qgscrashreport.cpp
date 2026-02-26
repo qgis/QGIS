@@ -22,6 +22,7 @@
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
 #include <QStandardPaths>
+#include <QString>
 #include <QSysInfo>
 #include <QTextStream>
 #include <QUuid>

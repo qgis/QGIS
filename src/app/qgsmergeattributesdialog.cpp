@@ -34,8 +34,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QComboBox>
+#include <QString>
 
 #include "moc_qgsmergeattributesdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QList<Qgis::Statistic> QgsMergeAttributesDialog::DISPLAY_STATS = QList<Qgis::Statistic>() << Qgis::Statistic::Count
                                                                                                 << Qgis::Statistic::Sum

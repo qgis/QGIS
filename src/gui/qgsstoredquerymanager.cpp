@@ -19,8 +19,11 @@
 #include "qgssettingsentryimpl.h"
 
 #include <QCryptographicHash>
+#include <QString>
 
 #include "moc_qgsstoredquerymanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 const QgsSettingsEntryString *QgsStoredQueryManager::settingQueryName = new QgsSettingsEntryString( u"name"_s, sTreeStoredQueries );

@@ -23,36 +23,35 @@ import os
 import re
 
 from qgis.core import (
+    QgsApplication,
     QgsMapLayer,
-    QgsSettings,
-    QgsProcessingParameterFolderDestination,
-    QgsProcessingParameterRasterLayer,
-    QgsProcessingParameterFeatureSource,
-    QgsProcessingParameterVectorLayer,
-    QgsProcessingParameterMultipleLayers,
-    QgsProcessingParameterMapLayer,
     QgsProcessingParameterBoolean,
     QgsProcessingParameterEnum,
-    QgsProject,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterFolderDestination,
+    QgsProcessingParameterMapLayer,
     QgsProcessingParameterMatrix,
-    QgsApplication,
-)
-from qgis.PyQt.QtWidgets import (
-    QWidget,
-    QPushButton,
-    QLineEdit,
-    QHBoxLayout,
-    QSizePolicy,
-    QFileDialog,
-    QMenu,
+    QgsProcessingParameterMultipleLayers,
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterVectorLayer,
+    QgsProject,
+    QgsSettings,
 )
 from qgis.PyQt.QtGui import QAction
+from qgis.PyQt.QtWidgets import (
+    QFileDialog,
+    QHBoxLayout,
+    QLineEdit,
+    QMenu,
+    QPushButton,
+    QSizePolicy,
+    QWidget,
+)
 
 from processing.gui.AutofillDialog import AutofillDialog
 
 
 class BatchOutputSelectionPanel(QWidget):
-
     def __init__(self, output, alg, row, col, panel):
         super().__init__(None)
         self.alg = alg

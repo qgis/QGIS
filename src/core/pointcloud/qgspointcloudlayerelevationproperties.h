@@ -19,10 +19,12 @@
 #ifndef QGSPOINTCLOUDLAYERELEVATIONPROPERTIES_H
 #define QGSPOINTCLOUDLAYERELEVATIONPROPERTIES_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
 #include "qgsmaplayerelevationproperties.h"
-#include "qgsunittypes.h"
 
 /**
  * \class QgsPointCloudLayerElevationProperties
@@ -207,7 +209,117 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
      */
     void setRespectLayerColors( bool enabled );
 
+    /**
+     * Sets the profile \a type used when generating elevation profile plots.
+     *
+     * \see type()
+     * \since QGIS 4.0
+     */
+    void setType( Qgis::PointCloudProfileType type ) { mType = type; }
+
+    /**
+     * Returns the profile type used when generating elevation profile plots.
+     *
+     * \see setType()
+     * \since QGIS 4.0
+     */
+    Qgis::PointCloudProfileType type() const { return mType; }
+
+    /**
+     * Returns the symbol used to render lines for the layer in elevation profile plots.
+     *
+     * \note This setting is only used when type() is Qgis::PointCloudProfileType::TriangulatedSurface.
+     *
+     * \see setProfileLineSymbol()
+     * \since QGIS 4.0
+     */
+    QgsLineSymbol *profileLineSymbol() const;
+
+    /**
+     * Sets the line \a symbol used to render lines for the layer in elevation profile plots.
+     *
+     * Ownership of \a symbol is transferred to the plot.
+     *
+     * \note This setting is only used when type() is Qgis::PointCloudProfileType::TriangulatedSurface.
+     *
+     * \see profileLineSymbol()
+     * \since QGIS 4.0
+     */
+    void setProfileLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the symbol used to render polygons for the layer in elevation profile plots.
+     *
+     * \note This setting is only used when type() is Qgis::PointCloudProfileType::TriangulatedSurface.
+     *
+     * \see setProfileFillSymbol()
+     * \since QGIS 4.0
+     */
+    QgsFillSymbol *profileFillSymbol() const;
+
+    /**
+     * Sets the fill \a symbol used to render polygons for the layer in elevation profile plots.
+     *
+     * Ownership of \a symbol is transferred to the plot.
+     *
+     * \note This setting is only used when type() is Qgis::PointCloudProfileType::TriangulatedSurface.
+     *
+     * \see profileFillSymbol()
+     * \since QGIS 4.0
+     */
+    void setProfileFillSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the symbology option used to render the point cloud profile in elevation profile plots.
+     *
+     * \note This setting is only used when type() is Qgis::PointCloudProfileType::TriangulatedSurface.
+     *
+     * \see setProfileSymbology()
+     * \since QGIS 4.0
+     */
+    Qgis::ProfileSurfaceSymbology profileSymbology() const { return mSymbology; }
+
+    /**
+     * Sets the \a symbology option used to render the point cloud profile in elevation profile plots.
+     *
+     * \note This setting is only used when type() is Qgis::PointCloudProfileType::TriangulatedSurface.
+     *
+     * \see setProfileSymbology()
+     * \since QGIS 4.0
+     */
+    void setProfileSymbology( Qgis::ProfileSurfaceSymbology symbology );
+
+    /**
+     * Returns the elevation limit, which is used when profileSymbology() is
+     * Qgis::ProfileSurfaceSymbology::FillBelow or Qgis::ProfileSurfaceSymbology::FillAbove
+     * to limit the fill to a specific elevation range.
+     *
+     * By default this is NaN, which indicates that there is no elevation limit.
+     *
+     * \note This setting is only used when type() is Qgis::PointCloudProfileType::TriangulatedSurface.
+     *
+     * \see setElevationLimit()
+     * \since QGIS 4.0
+     */
+    double elevationLimit() const;
+
+    /**
+     * Sets the elevation \a limit, which is used when profileSymbology() is
+     * Qgis::ProfileSurfaceSymbology::FillBelow or Qgis::ProfileSurfaceSymbology::FillAbove
+     * to limit the fill to a specific elevation range.
+     *
+     * Set to NaN to indicate that there is no elevation limit.
+     *
+     * \note This setting is only used when type() is Qgis::PointCloudProfileType::TriangulatedSurface.
+     *
+     * \see elevationLimit()
+     * \since QGIS 4.0
+     */
+    void setElevationLimit( double limit );
+
   private:
+    void setDefaultProfileLineSymbol( const QColor &color );
+    void setDefaultProfileFillSymbol( const QColor &color );
 
     double mMaximumScreenError = 0.3;
     Qgis::RenderUnit mMaximumScreenErrorUnit = Qgis::RenderUnit::Millimeters;
@@ -215,9 +327,14 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
     double mPointSize = 0.6;
     Qgis::RenderUnit mPointSizeUnit = Qgis::RenderUnit::Millimeters;
     Qgis::PointCloudSymbol mPointSymbol = Qgis::PointCloudSymbol::Square;
+    std::unique_ptr< QgsLineSymbol > mProfileLineSymbol;
+    std::unique_ptr< QgsFillSymbol > mProfileFillSymbol;
+    Qgis::ProfileSurfaceSymbology mSymbology = Qgis::ProfileSurfaceSymbology::Line;
+    double mElevationLimit = std::numeric_limits<double>::quiet_NaN();
     QColor mPointColor;
     bool mRespectLayerColors = true;
     bool mApplyOpacityByDistanceEffect = false;
+    Qgis::PointCloudProfileType mType = Qgis::PointCloudProfileType::IndividualPoints;
 };
 
 #endif // QGSPOINTCLOUDLAYERELEVATIONPROPERTIES_H

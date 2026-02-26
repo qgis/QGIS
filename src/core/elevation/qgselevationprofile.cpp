@@ -20,7 +20,11 @@
 #include "qgsproject.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
 #include "moc_qgselevationprofile.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsElevationProfile::QgsElevationProfile( QgsProject *project )
   : mProject( project )
@@ -100,8 +104,6 @@ bool QgsElevationProfile::readXml( const QDomElement &element, const QDomDocumen
   {
     const QDomElement curveElem = curveNodeList.at( 0 ).toElement();
     const QgsGeometry curve = QgsGeometry::fromWkt( curveElem.text() );
-    // clang-tidy false positive
-    // NOLINTBEGIN(bugprone-branch-clone)
     if ( const QgsCurve *curveGeom = qgsgeometry_cast< const QgsCurve * >( curve.constGet() ) )
     {
       mProfileCurve.reset( curveGeom->clone() );
@@ -110,7 +112,6 @@ bool QgsElevationProfile::readXml( const QDomElement &element, const QDomDocumen
     {
       mProfileCurve.reset();
     }
-    // NOLINTEND(bugprone-branch-clone)
   }
 
   mTolerance = element.attribute( u"tolerance"_s ).toDouble();

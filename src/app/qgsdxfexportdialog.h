@@ -33,6 +33,9 @@
 #include <QList>
 #include <QPair>
 #include <QSet>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsLayerTreeGroup;
 class QgsLayerTreeNode;

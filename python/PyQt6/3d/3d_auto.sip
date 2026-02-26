@@ -6,6 +6,7 @@
 %Include auto_generated/qgs3dmaptool.sip
 %Include auto_generated/qgs3dtypes.sip
 %Include auto_generated/qgs3dmapcanvas.sip
+%Include auto_generated/qgscrosssection.sip
 %Include auto_generated/qgsabstractvectorlayer3drenderer.sip
 %Include auto_generated/qgsannotationlayer3drenderer.sip
 %Include auto_generated/qgscameracontroller.sip

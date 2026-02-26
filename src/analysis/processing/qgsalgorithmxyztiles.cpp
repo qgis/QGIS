@@ -24,6 +24,9 @@
 #include "qgsprovidermetadata.h"
 
 #include <QBuffer>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

@@ -30,8 +30,11 @@
 
 #include <QLocale>
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgscoordinateutils.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond NOT_STABLE_API
 

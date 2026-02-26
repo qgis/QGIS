@@ -13,7 +13,6 @@ __copyright__ = "Copyright 2020, The QGIS Project"
 
 import os
 
-from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
 from qgis.core import (
     Qgis,
     QgsAbstractDatabaseProviderConnection,
@@ -21,15 +20,14 @@ from qgis.core import (
     QgsProviderConnectionException,
     QgsProviderRegistry,
 )
+from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
 from qgis.testing import unittest
-
 from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
 
 
 class TestPyQgsProviderConnectionOracle(
     unittest.TestCase, TestPyQgsProviderConnectionBase
 ):
-
     # Provider test cases must define the string URI for the test
     uri = ""
     # Provider test cases must define the provider name (e.g. "postgres" or "ogr")
@@ -48,7 +46,7 @@ class TestPyQgsProviderConnectionOracle(
     # need to override this because tables with geometries need to be uppercase
     myNewTable = "MYNEWTABLE"
     myVeryNewTable = "MYVERYNEWTABLE"
-    myUtf8Table = "MYUTF8\U0001F604TABLE"
+    myUtf8Table = "MYUTF8\U0001f604TABLE"
     geometryColumnName = "GEOM"
 
     # Provider test cases can define a schema and table name for SQL query layers test
@@ -90,7 +88,6 @@ class TestPyQgsProviderConnectionOracle(
         conn = md.createConnection(cls.dbconn, {})
 
         for table_name in (cls.myNewTable, cls.myVeryNewTable):
-
             try:
                 conn.dropVectorTable("QGIS", table_name)
             except QgsProviderConnectionException:

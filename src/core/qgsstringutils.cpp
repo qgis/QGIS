@@ -20,9 +20,12 @@
 #include "qgslogger.h"
 
 #include <QRegularExpression>
+#include <QString>
 #include <QStringList>
 #include <QTextBoundaryFinder>
 #include <QVector>
+
+using namespace Qt::StringLiterals;
 
 QHash<QString, QString> QgsStringUtils::UNACCENT_MAP = QgsStringUtils::createUnaccentMap();
 

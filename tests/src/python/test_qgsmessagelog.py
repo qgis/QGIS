@@ -10,16 +10,16 @@ __author__ = "Nyall Dawson"
 __date__ = "18/06/2018"
 __copyright__ = "Copyright 2018, The QGIS Project"
 
-from qgis.PyQt.QtTest import QSignalSpy
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsApplication,
     QgsMessageLog,
     QgsMessageLogNotifyBlocker,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 app = start_app()
@@ -27,17 +27,19 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsMessageLog(QgisTestCase):
-
     def testSignals(self):
         app_log = QgsApplication.messageLog()
 
         # signals should be emitted by application log
-        app_spy = QSignalSpy(app_log.messageReceived)
+        app_spy = QSignalSpy(app_log.messageReceivedWithFormat)
         app_spy_received = QSignalSpy(app_log.messageReceived[bool])
 
         QgsMessageLog.logMessage("test", "tag", Qgis.MessageLevel.Info, notifyUser=True)
         self.assertEqual(len(app_spy), 1)
-        self.assertEqual(app_spy[-1], ["test", "tag", Qgis.MessageLevel.Info])
+        self.assertEqual(
+            app_spy[-1],
+            ["test", "tag", Qgis.MessageLevel.Info, Qgis.StringFormat.PlainText],
+        )
         # info message, so messageReceived(bool) should not be emitted
         self.assertEqual(len(app_spy_received), 0)
 
@@ -45,7 +47,10 @@ class TestQgsMessageLog(QgisTestCase):
             "test", "tag", Qgis.MessageLevel.Warning, notifyUser=True
         )
         self.assertEqual(len(app_spy), 2)
-        self.assertEqual(app_spy[-1], ["test", "tag", Qgis.MessageLevel.Warning])
+        self.assertEqual(
+            app_spy[-1],
+            ["test", "tag", Qgis.MessageLevel.Warning, Qgis.StringFormat.PlainText],
+        )
         # warning message, so messageReceived(bool) should be emitted
         self.assertEqual(len(app_spy_received), 1)
 
@@ -59,14 +64,17 @@ class TestQgsMessageLog(QgisTestCase):
     def testBlocker(self):
         app_log = QgsApplication.messageLog()
 
-        spy = QSignalSpy(app_log.messageReceived)
+        spy = QSignalSpy(app_log.messageReceivedWithFormat)
         spy_received = QSignalSpy(app_log.messageReceived[bool])
 
         QgsMessageLog.logMessage(
             "test", "tag", Qgis.MessageLevel.Warning, notifyUser=True
         )
         self.assertEqual(len(spy), 1)
-        self.assertEqual(spy[-1], ["test", "tag", Qgis.MessageLevel.Warning])
+        self.assertEqual(
+            spy[-1],
+            ["test", "tag", Qgis.MessageLevel.Warning, Qgis.StringFormat.PlainText],
+        )
         self.assertEqual(len(spy_received), 1)
 
         # block notifications

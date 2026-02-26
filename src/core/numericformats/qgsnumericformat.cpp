@@ -20,8 +20,11 @@
 #include "qgsxmlutils.h"
 
 #include <QLocale>
+#include <QString>
 
 #include "moc_qgsnumericformat.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsNumericFormatContext::QgsNumericFormatContext()
 {

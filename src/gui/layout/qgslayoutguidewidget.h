@@ -18,7 +18,6 @@
 #define QGSLAYOUTGUIDEWIDGET_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "ui_qgslayoutguidewidgetbase.h"
 
@@ -26,6 +25,8 @@
 #include "qgspanelwidget.h"
 
 #include <QStyledItemDelegate>
+
+#define SIP_NO_FILE
 
 class QgsLayoutView;
 class QgsLayout;

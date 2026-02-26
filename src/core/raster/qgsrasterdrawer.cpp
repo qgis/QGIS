@@ -28,6 +28,9 @@
 #include <QImage>
 #include <QPainter>
 #include <QPdfWriter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator *iterator, double dpiTarget )
   : mIterator( iterator )

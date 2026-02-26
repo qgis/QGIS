@@ -26,9 +26,12 @@
 #include "qgssettings.h"
 
 #include <QPushButton>
+#include <QString>
 #include <QValidator>
 
 #include "moc_qgsmapcoordsdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, QgsGeorefDataPoint *georefDataPoint, QgsCoordinateReferenceSystem &rasterCrs, QWidget *parent )
   : QDialog( parent, Qt::Dialog )

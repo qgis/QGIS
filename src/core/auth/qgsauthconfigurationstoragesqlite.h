@@ -18,13 +18,14 @@
 
 ///@cond PRIVATE
 
-#define SIP_NO_FILE
 
 #include "qgsauthconfigurationstoragedb.h"
 
 #include <QObject>
 #include <QRecursiveMutex>
 #include <QSqlDatabase>
+
+#define SIP_NO_FILE
 
 /**
  * This class is not part of the API: is is just a thin convenience wrapper

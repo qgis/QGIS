@@ -18,10 +18,11 @@
 #ifndef QGSALGORITHMJOINBYLOCATIONSUMMARY_H
 #define QGSALGORITHMJOINBYLOCATIONSUMMARY_H
 
-#define SIP_NO_FILE
 
 #include "qgis.h"
 #include "qgsprocessingalgorithm.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

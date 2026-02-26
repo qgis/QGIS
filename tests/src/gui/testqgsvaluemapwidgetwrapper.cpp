@@ -23,6 +23,10 @@
 #include "qgstest.h"
 #include "qgsvaluemapfieldformatter.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsValueMapWidgetWrapper : public QObject
 {
     Q_OBJECT

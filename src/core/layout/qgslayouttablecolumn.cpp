@@ -21,6 +21,10 @@
 
 #include "qgis.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsLayoutTableColumn::QgsLayoutTableColumn( const QString &heading )
   : mHeading( heading )
 {}

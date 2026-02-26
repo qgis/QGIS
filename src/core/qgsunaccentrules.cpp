@@ -32,6 +32,8 @@
 #include <QHash>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 QHash<QString, QString> QgsStringUtils::createUnaccentMap()
 {
   QHash<QString, QString> map;

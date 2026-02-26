@@ -20,10 +20,13 @@
 #include "qgssettings.h"
 
 #include <QApplication>
+#include <QString>
 #include <QThread>
 #include <QUrlQuery>
 
 #include "moc_qgsnetworklogger.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsNetworkLogger::QgsNetworkLogger( QgsNetworkAccessManager *manager, QObject *parent )
   : QAbstractItemModel( parent )

@@ -26,16 +26,13 @@ backends and registered in :py:class:`QgsProjectStorageRegistry`.
   public:
 
     class Metadata
-{
+    {
 %Docstring(signature="appended")
 Metadata associated with a project.
 
 .. versionadded:: 3.2
 %End
 
-%TypeHeaderCode
-#include "qgsprojectstorage.h"
-%End
       public:
         QString name;
         QDateTime lastModified;

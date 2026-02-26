@@ -24,8 +24,11 @@
 #include "qgsproviderregistry.h"
 
 #include <QIcon>
+#include <QString>
 
 #include "moc_qgslayermetadataresultsmodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerMetadataResultsModel::QgsLayerMetadataResultsModel( const QgsMetadataSearchContext &searchContext, QObject *parent )
   : QAbstractTableModel( parent )

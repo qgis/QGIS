@@ -35,12 +35,14 @@
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QRegExp>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgsgrassnewmapset.cpp"
+
+using namespace Qt::StringLiterals;
 
 extern "C"
 {

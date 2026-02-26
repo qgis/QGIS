@@ -40,7 +40,11 @@
 #include "qgssettings.h"
 #include "qgsvariantutils.h"
 
+#include <QString>
+
 #include "moc_qgshanaconnection.cpp"
+
+using namespace Qt::StringLiterals;
 
 using namespace NS_ODBC;
 

@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsFavoritesItem : QgsDataCollectionItem
 {
 %Docstring(signature="appended")

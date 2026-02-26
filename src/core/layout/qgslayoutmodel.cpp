@@ -30,8 +30,11 @@
 #include <QIcon>
 #include <QMimeData>
 #include <QSettings>
+#include <QString>
 
 #include "moc_qgslayoutmodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutModel::QgsLayoutModel( QgsLayout *layout, QObject *parent )
   : QAbstractItemModel( parent )

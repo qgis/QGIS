@@ -11,12 +11,13 @@ __date__ = "12/07/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
 
+import unittest
+
 from qgis.core import NULL
 from qgis.gui import QgsTreeWidgetItem, QgsTreeWidgetItemObject
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QTreeWidget
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 try:
     from qgis.PyQt.QtTest import QSignalSpy
@@ -29,7 +30,6 @@ start_app()
 
 
 class TestQgsTreeWidgetItem(QgisTestCase):
-
     def testGettersSetters(self):
         """test getters and setters"""
         i = QgsTreeWidgetItem()
@@ -123,7 +123,6 @@ class TestQgsTreeWidgetItem(QgisTestCase):
 
 
 class TestQgsTreeWidgetItemObject(QgisTestCase):
-
     @unittest.skipIf(not use_signal_spy, "No QSignalSpy available")
     def testItemEdited(self):
         """test that itemEdited signal is correctly emitted"""

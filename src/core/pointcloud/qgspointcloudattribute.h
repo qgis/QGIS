@@ -27,6 +27,8 @@
 #include <QString>
 #include <QVector>
 
+using namespace Qt::StringLiterals;
+
 class QgsPointCloudAttributeCollection;
 
 /**

@@ -16,7 +16,11 @@
 
 #include "qgsvectortileconnection.h"
 
+#include <QString>
+
 #include "moc_qgsvectortiledataitems.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

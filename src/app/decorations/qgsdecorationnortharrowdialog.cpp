@@ -25,9 +25,12 @@
 #include <QDialogButtonBox>
 #include <QPainter>
 #include <QPushButton>
+#include <QString>
 #include <QSvgRenderer>
 
 #include "moc_qgsdecorationnortharrowdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow &deco, QWidget *parent )
   : QDialog( parent )

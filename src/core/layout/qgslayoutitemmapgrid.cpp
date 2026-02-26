@@ -47,9 +47,12 @@
 
 #include <QPainter>
 #include <QPen>
+#include <QString>
 #include <QVector2D>
 
 #include "moc_qgslayoutitemmapgrid.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define MAX_GRID_LINES 1000 //maximum number of horizontal or vertical grid lines to draw
 
@@ -326,6 +329,11 @@ bool QgsLayoutItemMapGrid::writeXml( QDomElement &elem, QDomDocument &doc, const
   mapGridElem.setAttribute( u"minimumIntervalWidth"_s, QString::number( mMinimumIntervalWidth ) );
   mapGridElem.setAttribute( u"maximumIntervalWidth"_s, QString::number( mMaximumIntervalWidth ) );
 
+  if ( mHAlign != Qgis::TextHorizontalAlignment::Center )
+  {
+    mapGridElem.setAttribute( u"halign"_s, qgsEnumValueToKey( mHAlign ) );
+  }
+
   const bool ok = QgsLayoutItemMapItem::writeXml( mapGridElem, doc, context );
   elem.appendChild( mapGridElem );
   return ok;
@@ -445,6 +453,8 @@ bool QgsLayoutItemMapGrid::readXml( const QDomElement &itemElem, const QDomDocum
   mGridUnit = ( gridUnitInt <= static_cast< int >( Qgis::MapGridUnit::DynamicPageSizeBased ) ) ? static_cast< Qgis::MapGridUnit >( gridUnitInt ) : Qgis::MapGridUnit::MapUnits;
   mMinimumIntervalWidth = itemElem.attribute( u"minimumIntervalWidth"_s, u"50"_s ).toDouble();
   mMaximumIntervalWidth = itemElem.attribute( u"maximumIntervalWidth"_s, u"100"_s ).toDouble();
+
+  mHAlign = qgsEnumKeyToValue( itemElem.attribute( u"halign"_s ), Qgis::TextHorizontalAlignment::Center );
 
   refreshDataDefinedProperties();
   return ok;
@@ -1162,18 +1172,18 @@ void QgsLayoutItemMapGrid::drawGridFrameTicks( QPainter *p, GridExtension *exten
       QVector2D pB;
       if ( mGridFrameStyle == Qgis::MapGridFrameStyle::InteriorTicks )
       {
-        pA = annot.position + fA * vector;
-        pB = annot.position + fB * vector;
+        pA = annot.position + static_cast< float >( fA ) * vector;
+        pB = annot.position + static_cast< float >( fB ) * vector;
       }
       else if ( mGridFrameStyle == Qgis::MapGridFrameStyle::ExteriorTicks )
       {
-        pA = annot.position - fA * vector;
-        pB = annot.position - fB * vector;
+        pA = annot.position - static_cast< float >( fA ) * vector;
+        pB = annot.position - static_cast< float >( fB ) * vector;
       }
       else // InteriorExteriorTicks
       {
-        pA = annot.position - fB * vector;
-        pB = annot.position + ( fB - 2.0 * mEvaluatedGridFrameMargin ) * vector;
+        pA = annot.position - static_cast< float >( fB ) * vector;
+        pB = annot.position + static_cast< float >( fB - 2.0 * mEvaluatedGridFrameMargin ) * vector;
       }
       p->drawLine( QLineF( pA.toPointF(), pB.toPointF() ) );
 
@@ -1405,7 +1415,6 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
   }
   const double textHeightMM = textHeightPainterUnits * painterUnitsToMM;
 
-
   const Qgis::MapGridAnnotationPosition anotPos = annotationPosition( frameBorder );
   const Qgis::MapGridAnnotationDirection anotDir = annotationDirection( frameBorder );
 
@@ -1437,12 +1446,12 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
     distanceToFrameMM /= QVector2D::dotProduct( vector, normalVector );
   }
 
-  const QVector2D annotationPositionMM = annot.position + static_cast< float >( distanceToFrameMM ) * vector;
+  QPointF annotationPositionMM = ( annot.position + static_cast< float >( distanceToFrameMM ) * vector ).toPointF();
 
   const bool outside = ( anotPos == Qgis::MapGridAnnotationPosition::OutsideMapFrame );
 
   QPointF anchorMM;
-  int rotation = 0;
+  double rotation = 0;
 
   if (
     anotDir == Qgis::MapGridAnnotationDirection::AboveTick ||
@@ -1526,9 +1535,9 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
   // extents isn't computed accurately
   if ( extension && anotPos == Qgis::MapGridAnnotationPosition::OutsideMapFrame )
   {
-    extension->UpdateBorder( frameBorder, -distanceToFrameMM + textWidthMM );
+    extension->UpdateBorder( frameBorder, -distanceToFrameMM + std::max( textHeightMM, textWidthMM ) );
     // We also add a general margin, can be useful for labels near corners
-    extension->UpdateAll( textWidthMM / 2.0 );
+    extension->UpdateAll( std::max( textHeightMM, textWidthMM ) / 2.0 );
   }
 
   if ( extension || !context.painter() )
@@ -1555,10 +1564,149 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
        ( facingRight && annot.position.y() > mMap->rect().height() - mRotatedAnnotationsMarginToCorner ) ) )
     return;
 
-  context.painter()->translate( QPointF( annotationPositionMM .x(), annotationPositionMM .y() ) / painterUnitsToMM );
+  // adjust to account for text alignment -- for left/right borders the alignment
+  // affects multiline text ONLY, but for top/bottom it also controls the
+  // annotation placement with respect to the corresponding grid line
+  Qgis::TextHorizontalAlignment textAlignment = mHAlign;
+  QPointF textPos( 0, 0 );
+  switch ( annot.border )
+  {
+    case Qgis::MapGridBorderSide::Left:
+    case Qgis::MapGridBorderSide::Right:
+    {
+      switch ( anotDir )
+      {
+        case Qgis::MapGridAnnotationDirection::Horizontal:
+        case Qgis::MapGridAnnotationDirection::AboveTick:
+        case Qgis::MapGridAnnotationDirection::OnTick:
+        case Qgis::MapGridAnnotationDirection::UnderTick:
+          switch ( mHAlign )
+          {
+            case Qgis::TextHorizontalAlignment::Left:
+            case Qgis::TextHorizontalAlignment::Justify:
+              break;
+            case Qgis::TextHorizontalAlignment::Center:
+              textPos.setX( textWidthMM / ( 2 * painterUnitsToMM ) );
+              break;
+            case Qgis::TextHorizontalAlignment::Right:
+              textPos.setX( textWidthMM / painterUnitsToMM );
+              break;
+          }
+          break;
+
+        case Qgis::MapGridAnnotationDirection::BoundaryDirection:
+          textPos.setX( textWidthMM / ( 2 * painterUnitsToMM ) );
+          switch ( mHAlign )
+          {
+            case Qgis::TextHorizontalAlignment::Left:
+            case Qgis::TextHorizontalAlignment::Justify:
+              textAlignment = Qgis::TextHorizontalAlignment::Right;
+              break;
+            case Qgis::TextHorizontalAlignment::Center:
+              break;
+            case Qgis::TextHorizontalAlignment::Right:
+              textAlignment = Qgis::TextHorizontalAlignment::Left;
+              break;
+          }
+          break;
+
+        case Qgis::MapGridAnnotationDirection::Vertical:
+        case Qgis::MapGridAnnotationDirection::VerticalDescending:
+          switch ( mHAlign )
+          {
+            case Qgis::TextHorizontalAlignment::Left:
+            case Qgis::TextHorizontalAlignment::Justify:
+              textAlignment = Qgis::TextHorizontalAlignment::Right;
+              textPos.setX( textWidthMM / ( 2 * painterUnitsToMM ) );
+              break;
+            case Qgis::TextHorizontalAlignment::Center:
+              textPos.setX( textWidthMM / ( 2 * painterUnitsToMM ) );
+              break;
+            case Qgis::TextHorizontalAlignment::Right:
+              textAlignment = Qgis::TextHorizontalAlignment::Left;
+              textPos.setX( textWidthMM / ( 2 * painterUnitsToMM ) );
+              break;
+          }
+          break;
+      }
+      break;
+    }
+
+    case Qgis::MapGridBorderSide::Bottom:
+    case Qgis::MapGridBorderSide::Top:
+    {
+      switch ( anotDir )
+      {
+        case Qgis::MapGridAnnotationDirection::Horizontal:
+        {
+          textPos.setX( textWidthMM / ( 2 * painterUnitsToMM ) );
+          switch ( mHAlign )
+          {
+            case Qgis::TextHorizontalAlignment::Left:
+            case Qgis::TextHorizontalAlignment::Justify:
+              textAlignment = Qgis::TextHorizontalAlignment::Right;
+              break;
+            case Qgis::TextHorizontalAlignment::Center:
+              break;
+            case Qgis::TextHorizontalAlignment::Right:
+              textAlignment = Qgis::TextHorizontalAlignment::Left;
+              break;
+          }
+          break;
+        }
+        case Qgis::MapGridAnnotationDirection::Vertical:
+        case Qgis::MapGridAnnotationDirection::VerticalDescending:
+        {
+          switch ( mHAlign )
+          {
+            case Qgis::TextHorizontalAlignment::Left:
+            case Qgis::TextHorizontalAlignment::Justify:
+              textAlignment = Qgis::TextHorizontalAlignment::Left;
+              break;
+            case Qgis::TextHorizontalAlignment::Center:
+              textPos.setX( textWidthMM / ( 2 * painterUnitsToMM ) );
+              break;
+            case Qgis::TextHorizontalAlignment::Right:
+              textPos.setX( textWidthMM / painterUnitsToMM );
+              textAlignment = Qgis::TextHorizontalAlignment::Right;
+              break;
+          }
+          break;
+        }
+
+        case Qgis::MapGridAnnotationDirection::BoundaryDirection:
+        case Qgis::MapGridAnnotationDirection::AboveTick:
+        case Qgis::MapGridAnnotationDirection::OnTick:
+        case Qgis::MapGridAnnotationDirection::UnderTick:
+        {
+          textPos.setX( textWidthMM / ( 2 * painterUnitsToMM ) );
+          switch ( mHAlign )
+          {
+            case Qgis::TextHorizontalAlignment::Left:
+            case Qgis::TextHorizontalAlignment::Justify:
+              textAlignment = Qgis::TextHorizontalAlignment::Right;
+              break;
+            case Qgis::TextHorizontalAlignment::Center:
+              break;
+            case Qgis::TextHorizontalAlignment::Right:
+              textAlignment = Qgis::TextHorizontalAlignment::Left;
+              break;
+          }
+          break;
+        }
+      }
+
+      break;
+    }
+  }
+
+  context.painter()->translate( QPointF( annotationPositionMM.x(), annotationPositionMM.y() ) / painterUnitsToMM );
   context.painter()->rotate( rotation );
   context.painter()->translate( -anchorMM / painterUnitsToMM );
-  QgsTextRenderer::drawDocument( QPointF( 0, 0 ), mAnnotationFormat, doc, documentMetrics, context, Qgis::TextHorizontalAlignment::Left, 0, Qgis::TextLayoutMode::Point );
+
+  QgsTextRenderer::drawDocument( textPos, mAnnotationFormat, doc, documentMetrics, context,
+                                 textAlignment,
+                                 0, Qgis::TextLayoutMode::Point );
 }
 
 QString QgsLayoutItemMapGrid::gridAnnotationString( const double value, Qgis::MapGridAnnotationType coord, QgsExpressionContext &expressionContext, bool isGeographic ) const
@@ -2087,8 +2235,6 @@ void QgsLayoutItemMapGrid::refreshDataDefinedProperties()
 
   mEvaluatedEnabled = mDataDefinedProperties.valueAsBool( QgsLayoutObject::DataDefinedProperty::MapGridEnabled, context, enabled() );
 
-  // suppress false positive clang tidy warning
-  // NOLINTBEGIN(bugprone-branch-clone)
   if ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::MapGridDrawAnnotation ) )
   {
     mDrawAnnotationProperty.reset( new QgsProperty( mDataDefinedProperties.property( QgsLayoutObject::DataDefinedProperty::MapGridDrawAnnotation ) ) );
@@ -2098,7 +2244,6 @@ void QgsLayoutItemMapGrid::refreshDataDefinedProperties()
   {
     mDrawAnnotationProperty.reset();
   }
-  // NOLINTEND(bugprone-branch-clone)
 
   switch ( mGridUnit )
   {
@@ -2607,6 +2752,16 @@ void QgsLayoutItemMapGrid::setFramePenSize( const double width )
 {
   mGridFramePenThickness = width;
   refreshDataDefinedProperties();
+}
+
+Qgis::TextHorizontalAlignment QgsLayoutItemMapGrid::horizontalAlignment() const
+{
+  return mHAlign;
+}
+
+void QgsLayoutItemMapGrid::setHorizontalAlignment( Qgis::TextHorizontalAlignment alignment )
+{
+  mHAlign = alignment;
 }
 
 void QgsLayoutItemMapGrid::setAnnotationDirection( const Qgis::MapGridAnnotationDirection direction )

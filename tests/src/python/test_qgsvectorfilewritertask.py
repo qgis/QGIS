@@ -11,8 +11,8 @@ __date__ = "12/02/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QCoreApplication, QDir
 from qgis.core import (
     QgsApplication,
     QgsFeature,
@@ -22,8 +22,8 @@ from qgis.core import (
     QgsVectorFileWriterTask,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QCoreApplication, QDir
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -33,7 +33,6 @@ def create_temp_filename(base_file):
 
 
 class TestQgsVectorFileWriterTask(QgisTestCase):
-
     def setUp(self):
         self.new_filename = ""
         self.new_layer = ""

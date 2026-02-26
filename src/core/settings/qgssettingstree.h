@@ -18,6 +18,10 @@
 
 #include "qgssettingstreenode.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \class QgsSettingsTree
@@ -68,6 +72,7 @@ class CORE_EXPORT QgsSettingsTree
     static inline QgsSettingsTreeNode *sTreeWindowState = sTreeGui->createChildNode( u"window-state"_s );
     static inline QgsSettingsTreeNode *sTreeAuthentication = treeRoot()->createChildNode( u"authentication"_s );
     static inline QgsSettingsTreeNode *sTreeDatabase = treeRoot()->createChildNode( u"database"_s );
+    static inline QgsSettingsTreeNode *sTree3DMap = treeRoot()->createChildNode( u"3dmap"_s );
 
 #endif
 

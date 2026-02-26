@@ -25,6 +25,8 @@
 
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 //
 // Output definitions
 //

@@ -26,8 +26,11 @@
 
 #include <QDialogButtonBox>
 #include <QDomElement>
+#include <QString>
 
 #include "moc_qgsmeshlabelingwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshLabelingWidget::QgsMeshLabelingWidget( QgsMeshLayer *layer, QgsMapCanvas *canvas, QWidget *parent, QgsMessageBar *messageBar )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

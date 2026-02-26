@@ -13,12 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#define SIP_NO_FILE
 
 #ifndef QGS_GEOMETRY_TYPE_CHECK_H
 #define QGS_GEOMETRY_TYPE_CHECK_H
 
 #include "qgssinglegeometrycheck.h"
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup analysis

@@ -16,11 +16,10 @@ import json
 import os
 import shutil
 import tempfile
+import unittest
 
 from osgeo import gdal, ogr
-
-from qgis.PyQt.QtCore import QCoreApplication, QDateTime, QMetaType, Qt, QVariant
-from qgis.PyQt.QtTest import QSignalSpy
+from providertestbase import ProviderTestCase
 from qgis.core import (
     NULL,
     QgsApplication,
@@ -34,10 +33,9 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
-from providertestbase import ProviderTestCase
+from qgis.PyQt.QtCore import QCoreApplication, QDateTime, QMetaType, Qt, QVariant
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 
 
 def sanitize(endpoint, query_params):
@@ -189,7 +187,6 @@ def create_landing_page_api_collection(
 
 
 class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -1287,7 +1284,7 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
             ),
             (
                 "boolfield2 = false",
-                "filter=(boolfield2%20%3D%20FALSE)&filter-lang=cql2-text" "",
+                "filter=(boolfield2%20%3D%20FALSE)&filter-lang=cql2-text",
             ),
             (
                 "NOT(intfield = 0)",

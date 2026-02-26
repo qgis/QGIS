@@ -11,6 +11,7 @@
 
 
 
+
 class QgsLayerTreeModel : QAbstractItemModel
 {
 %Docstring(signature="appended")
@@ -506,6 +507,7 @@ filtering rules
     void legendInvalidateMapBasedData();
 
   protected:
+
 
 
 

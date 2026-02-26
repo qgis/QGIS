@@ -15,6 +15,9 @@
 #include "qgsbabelgpsdevice.h"
 
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsBabelGpsDeviceFormat::QgsBabelGpsDeviceFormat( const QString &waypointDownloadCommand, const QString &waypointUploadCommand,
     const QString &routeDownloadCommand, const QString &routeUploadCommand,

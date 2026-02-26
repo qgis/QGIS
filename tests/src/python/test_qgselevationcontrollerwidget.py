@@ -6,18 +6,18 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtTest import QSignalSpy
+import unittest
+
 from qgis.core import QgsDoubleRange, QgsProject
 from qgis.gui import QgsElevationControllerWidget
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsElevationControllerWidget(QgisTestCase):
-
     def testRange(self):
         w = QgsElevationControllerWidget()
         spy = QSignalSpy(w.rangeChanged)

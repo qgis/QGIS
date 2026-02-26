@@ -28,6 +28,10 @@
 #include "qgsvectordataprovider.h"
 #include "qgswfsdatasourceuri.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsOapifSharedData;
 
 class QgsOapifProvider final : public QgsVectorDataProvider

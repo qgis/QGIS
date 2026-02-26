@@ -22,6 +22,9 @@
 #include <QObject>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsPostgresProvider : public QObject
 {

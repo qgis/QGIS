@@ -22,13 +22,14 @@
 
 #include <QObject>
 
+#define SIP_NO_FILE
+
 class QgsRasterLayer;
 class QComboBox;
 class QDoubleSpinBox;
 class QCheckBox;
 
 /// @cond PRIVATE
-#define SIP_NO_FILE
 
 /**
  * Utility class shared by QgsRasterLayerProperties and

@@ -25,7 +25,6 @@ import warnings
 from qgis.PyQt import uic
 from qgis.PyQt.QtGui import QDesktopServices
 from qgis.PyQt.QtWidgets import QDockWidget
-
 from qgis.utils import iface
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
@@ -35,7 +34,6 @@ with warnings.catch_warnings():
 
 
 class MessageDialog(BASE, WIDGET):
-
     def __init__(self):
         super().__init__(None)
         self.setupUi(self)

@@ -24,11 +24,14 @@
 #include "qgswkbtypes.h"
 
 #include <QRegularExpression>
+#include <QString>
 #include <QStringList>
 #include <QUrl>
 #include <QUrlQuery>
 
 #include "moc_qgsdatasourceuri.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define HIDING_TOKEN u"XXXXXXXX"_s
 
@@ -240,7 +243,14 @@ QString QgsDataSourceUri::removePassword( const QString &aUri, bool hide )
   QString safeName( aUri );
   if ( aUri.contains( " password="_L1 ) )
   {
-    regexp.setPattern( u" password=.* "_s );
+    if ( aUri.contains( " password='"_L1 ) )
+    {
+      regexp.setPattern( u" password='[^']*' "_s );
+    }
+    else
+    {
+      regexp.setPattern( u" password=.* "_s );
+    }
 
     if ( hide )
     {

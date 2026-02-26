@@ -22,7 +22,7 @@ except (NameError, AttributeError):
     pass
 try:
     QgsAbstractProfileGenerator.__virtual_methods__ = ['flags']
-    QgsAbstractProfileGenerator.__abstract_methods__ = ['sourceId', 'generateProfile', 'feedback', 'takeResults']
+    QgsAbstractProfileGenerator.__abstract_methods__ = ['sourceId', 'generateProfile', 'feedback', 'takeResults', 'type']
     QgsAbstractProfileGenerator.__group__ = ['elevation']
 except (NameError, AttributeError):
     pass

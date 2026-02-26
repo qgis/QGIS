@@ -10,6 +10,7 @@
 
 
 
+
 class QgsLayoutTableColumn
 {
 %Docstring(signature="appended")

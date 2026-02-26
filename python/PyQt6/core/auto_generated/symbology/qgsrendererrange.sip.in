@@ -12,6 +12,7 @@
 
 
 
+
 class QgsRendererRange
 {
 %Docstring(signature="appended")

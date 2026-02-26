@@ -32,7 +32,11 @@
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgslayoutattributetablewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *frame )
   : QgsLayoutItemBaseWidget( nullptr, frame ? qobject_cast<QgsLayoutItemAttributeTable *>( frame->multiFrame() ) : nullptr )

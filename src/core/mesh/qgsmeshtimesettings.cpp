@@ -17,6 +17,10 @@
 
 #include "qgsmeshtimesettings.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsMeshTimeSettings::QgsMeshTimeSettings() = default;
 
 

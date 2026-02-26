@@ -19,7 +19,11 @@
 
 #include "qgslayertreeutils.h"
 
+#include <QString>
+
 #include "moc_qgslayertreecustomnode.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerTreeCustomNode::QgsLayerTreeCustomNode( const QString &nodeId, const QString &nodeName, bool checked )
   : QgsLayerTreeNode( NodeCustom, checked )

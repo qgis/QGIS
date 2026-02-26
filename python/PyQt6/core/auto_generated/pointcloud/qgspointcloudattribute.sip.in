@@ -11,6 +11,7 @@
 
 
 
+
 class QgsPointCloudAttribute
 {
 %Docstring(signature="appended")

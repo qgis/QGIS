@@ -17,17 +17,17 @@
    <item>
     <widget class="QgsMessageBar" name="mMessageBar">
      <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::Shape::StyledPanel</enum>
      </property>
      <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
+      <enum>QFrame::Shadow::Raised</enum>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Masked symbol layers</string>
+      <string>&lt;b&gt;Masked symbol layers&lt;/b&gt;</string>
      </property>
     </widget>
    </item>
@@ -37,7 +37,7 @@
    <item>
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Masking symbol layers</string>
+      <string>&lt;b&gt;Mask sources&lt;/b&gt;</string>
      </property>
     </widget>
    </item>

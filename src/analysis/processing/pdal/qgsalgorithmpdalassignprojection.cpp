@@ -20,6 +20,10 @@
 #include "qgspointcloudlayer.h"
 #include "qgsrunprocess.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsPdalAssignProjectionAlgorithm::name() const
@@ -66,6 +70,9 @@ void QgsPdalAssignProjectionAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterPointCloudLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterCrs( u"CRS"_s, QObject::tr( "Desired CRS" ), u"EPSG:4326"_s ) );
+
+  createVpcOutputFormatParameter();
+
   addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Output layer" ) ) );
 }
 
@@ -86,6 +93,7 @@ QStringList QgsPdalAssignProjectionAlgorithm::createArgumentLists( const QVarian
 
   QStringList args = { u"translate"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--assign-crs=%1"_s.arg( crs.authid() ) };
 
+  applyVpcOutputFormatParameter( outputFile, args, parameters, context, feedback );
   applyThreadsParameter( args, context );
   return args;
 }

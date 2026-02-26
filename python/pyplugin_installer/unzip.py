@@ -19,8 +19,8 @@
  ***************************************************************************/
 """
 
-import zipfile
 import os
+import zipfile
 
 
 def unzip(file, targetDir, password=None):
@@ -39,25 +39,5 @@ def unzip(file, targetDir, password=None):
         os.makedirs(targetDir)
 
     zf = zipfile.ZipFile(file)
-    for name in zf.namelist():
-        # Skip directories - they will be created when necessary by os.makedirs
-        if name.endswith("/"):
-            continue
-
-        # Read the source file before creating any output,
-        # so no directories are created if user doesn't know the password
-        memberContent = zf.read(name, password)
-
-        # create directory if doesn't exist
-        localDir = os.path.split(name)[0]
-        fullDir = os.path.normpath(os.path.join(targetDir, localDir))
-        if not os.path.exists(fullDir):
-            os.makedirs(fullDir)
-        # extract file
-        fullPath = os.path.normpath(os.path.join(targetDir, name))
-        outfile = open(fullPath, "wb")
-        outfile.write(memberContent)
-        outfile.flush()
-        outfile.close()
-
+    zf.extractall(path=targetDir, pwd=password)
     zf.close()

@@ -20,6 +20,9 @@
 #include "qgsmessagelog.h"
 
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 using namespace nlohmann;
 

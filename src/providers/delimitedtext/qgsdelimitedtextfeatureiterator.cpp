@@ -27,9 +27,12 @@
 #include "qgsproject.h"
 #include "qgsspatialindex.h"
 
+#include <QString>
 #include <QTextStream>
 #include <QUrlQuery>
 #include <QtAlgorithms>
+
+using namespace Qt::StringLiterals;
 
 QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTextFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsDelimitedTextFeatureSource>( source, ownSource, request )

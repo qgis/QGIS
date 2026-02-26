@@ -19,28 +19,30 @@ __author__ = "Victor Olaya"
 __date__ = "November 2016"
 __copyright__ = "(C) 2016, Victor Olaya"
 
-import os
 import math
-from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.algs.gdal.GdalUtils import GdalUtils
+import os
+
+from qgis.analysis import QgsRasterCalculator, QgsRasterCalculatorEntry
 from qgis.core import (
+    QgsCoordinateTransform,
+    QgsMapLayer,
     QgsProcessing,
     QgsProcessingAlgorithm,
     QgsProcessingException,
-    QgsProcessingUtils,
+    QgsProcessingOutputRasterLayer,
     QgsProcessingParameterCrs,
+    QgsProcessingParameterExtent,
     QgsProcessingParameterMultipleLayers,
     QgsProcessingParameterNumber,
-    QgsProcessingParameterExtent,
     QgsProcessingParameterRasterDestination,
     QgsProcessingParameterRasterLayer,
-    QgsProcessingOutputRasterLayer,
     QgsProcessingParameterString,
-    QgsCoordinateTransform,
-    QgsMapLayer,
+    QgsProcessingUtils,
 )
 from qgis.PyQt.QtCore import QObject
-from qgis.analysis import QgsRasterCalculator, QgsRasterCalculatorEntry
+
+from processing.algs.gdal.GdalUtils import GdalUtils
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class RasterCalculator(QgisAlgorithm):
@@ -62,7 +64,6 @@ class RasterCalculator(QgisAlgorithm):
 
     def initAlgorithm(self, config=None):
         class ParameterRasterCalculatorExpression(QgsProcessingParameterString):
-
             def __init__(self, name="", description="", multiLine=False):
                 super().__init__(name, description, multiLine=multiLine)
                 self.setMetadata(
@@ -291,7 +292,6 @@ class RasterCalculator(QgisAlgorithm):
             # to a layer
             varDescription = None
             for varName in expContextAlgInputsScope.variableNames():
-
                 layerInContext = expContextAlgInputsScope.variable(varName)
 
                 if not isinstance(layerInContext, str) and not isinstance(

@@ -3,7 +3,6 @@
 import argparse
 import json
 import sys
-
 from urllib.error import URLError
 from urllib.request import (  # using urllib since it is a standard module (vs. requests)
     urlopen,

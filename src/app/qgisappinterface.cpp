@@ -51,6 +51,8 @@
 
 #include "moc_qgisappinterface.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgisAppInterface::QgisAppInterface( QgisApp *_qgis )
   : qgis( _qgis )
   , pluginManagerIface( _qgis->pluginManager() )

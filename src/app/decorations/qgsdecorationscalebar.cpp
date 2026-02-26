@@ -53,6 +53,8 @@ email                : sbr00pwb@users.sourceforge.net
 
 #include "moc_qgsdecorationscalebar.cpp"
 
+using namespace Qt::StringLiterals;
+
 //non qt includes
 #include <cmath>
 

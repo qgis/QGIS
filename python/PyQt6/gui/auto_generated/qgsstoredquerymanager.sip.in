@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsStoredQueryManager : QObject
 {
 %Docstring(signature="appended")
@@ -70,16 +72,13 @@ Returns the query definition with matching ``name``, from the specified
 %End
 
     class QueryDetails
-{
+    {
 %Docstring(signature="appended")
 Contains details about a stored query.
 
 .. versionadded:: 3.44
 %End
 
-%TypeHeaderCode
-#include "qgsstoredquerymanager.h"
-%End
       public:
         QString name;
 

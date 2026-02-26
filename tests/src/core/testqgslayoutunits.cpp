@@ -23,6 +23,10 @@
 #include "qgstest.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsLayoutUnits : public QgsTest
 {
     Q_OBJECT

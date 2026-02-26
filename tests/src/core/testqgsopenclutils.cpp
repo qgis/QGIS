@@ -23,6 +23,8 @@
 #include <QString>
 #include <QTemporaryFile>
 
+using namespace Qt::StringLiterals;
+
 //header for class being tested
 #include <qgsopenclutils.h>
 #include <qgshillshaderenderer.h>
@@ -167,7 +169,7 @@ void TestQgsOpenClUtils::testProgramSource()
 {
   QgsOpenClUtils::setSourcePath( QDir::tempPath() );
   QTemporaryFile tmpFile( QDir::tempPath() + "/XXXXXX.cl" );
-  tmpFile.open();
+  QVERIFY( tmpFile.open() );
   tmpFile.write( QByteArray::fromStdString( source() ) );
   tmpFile.flush();
   const QString baseName = tmpFile.fileName().replace( ".cl", "" ).replace( QDir::tempPath(), "" );

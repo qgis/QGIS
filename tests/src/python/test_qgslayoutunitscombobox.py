@@ -10,18 +10,18 @@ __author__ = "Nyall Dawson"
 __date__ = "18/07/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtWidgets import QDoubleSpinBox
+import unittest
+
 from qgis.core import QgsLayoutMeasurementConverter, QgsUnitTypes
 from qgis.gui import QgsLayoutUnitsComboBox
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtWidgets import QDoubleSpinBox
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsLayoutUnitsComboBox(QgisTestCase):
-
     def testGettersSetters(self):
         """test widget getters/setters"""
         w = QgsLayoutUnitsComboBox()

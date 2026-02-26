@@ -13,10 +13,10 @@ __date__ = "10/07/2023"
 __copyright__ = "Copyright 2023, The QGIS Project"
 
 import math
-from qgis.core import QgsCesiumUtils
 import unittest
-from qgis.testing import start_app, QgisTestCase
 
+from qgis.core import QgsCesiumUtils
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -24,7 +24,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsCesiumUtils(QgisTestCase):
-
     def test_parse_region(self):
         self.assertTrue(QgsCesiumUtils.parseRegion([]).isNull())
         # invalid length (needs 6 elements)

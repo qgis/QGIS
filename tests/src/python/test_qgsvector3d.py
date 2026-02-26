@@ -19,15 +19,15 @@ __author__ = "Jean Felder"
 __date__ = "December 2025"
 __copyright__ = "(C) 2025, Jean Felder"
 
-from qgis.core import QgsVector3D
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.core import QgsVector3D
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsVector3D(QgisTestCase):
-
     def testCtor(self):
         vector = QgsVector3D()
         self.assertEqual(vector.x(), 0.0)

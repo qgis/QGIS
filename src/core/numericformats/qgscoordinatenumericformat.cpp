@@ -23,7 +23,11 @@
 #include "qgis.h"
 #include "qgscoordinateformatter.h"
 
+#include <QString>
+
 #include "moc_qgscoordinatenumericformat.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 namespace QgsGeographicCoordinateNumericFormat_ns

@@ -22,7 +22,11 @@
 #include "qgssensormanager.h"
 #include "qgssensortablewidget.h"
 
+#include <QString>
+
 #include "moc_qgsprojectsensorsettingswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProjectSensorSettingsWidget::QgsProjectSensorSettingsWidget( QWidget *parent )
   : QgsOptionsPageWidget( parent )

@@ -15,12 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsproviderregistry.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterfilewriter.h"
 #include "qgsreclassifyutils.h"
 #include "qgstest.h"
 
+#include <QString>
 #include <QTemporaryDir>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsReclassifyUtils : public QgsTest
 {
@@ -230,7 +234,10 @@ void TestQgsReclassifyUtils::testReclassify()
   QVERIFY( dp2->isValid() );
 
   // reclassify
-  QgsReclassifyUtils::reclassify( classes, dp.get(), 1, extent, nCols, nRows, dp2.get(), destNoDataValue, useNoDataForMissing );
+  QgsReclassifyUtils::reclassify( classes, dp.get(), 1, extent, nCols, nRows, std::move( dp2 ), destNoDataValue, useNoDataForMissing );
+
+  dp2.reset( dynamic_cast<QgsRasterDataProvider *>( QgsProviderRegistry::instance()->createProvider( u"gdal"_s, filename ) ) );
+  QVERIFY( dp2 );
 
   // read back in values
   block.reset( dp2->block( 1, extent, nCols, nRows ) );

@@ -23,6 +23,10 @@
 #include "qgscontrastenhancement.h"
 #include "qgspointcloudrenderer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #ifndef SIP_RUN
 
 /**

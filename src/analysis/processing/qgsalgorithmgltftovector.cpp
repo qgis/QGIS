@@ -28,6 +28,9 @@
 #include "qgsvector3d.h"
 
 #include <QMatrix4x4>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 #define TINYGLTF_NO_STB_IMAGE       // we use QImage-based reading of images
 #define TINYGLTF_NO_STB_IMAGE_WRITE // we don't need writing of images

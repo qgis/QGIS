@@ -20,6 +20,10 @@
 #include "qgis_app.h"
 #include "qgssettingstree.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsDevToolWidgetFactory;
 class QgsDevToolWidget;
 class QgsDocumentationPanelWidget;

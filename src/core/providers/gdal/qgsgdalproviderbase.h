@@ -23,12 +23,13 @@
 
 #include <QList>
 
+#define SIP_NO_FILE
+
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>
 #include "qgis_sip.h"
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 /**
  * \brief Base class for GDAL and WCS providers.

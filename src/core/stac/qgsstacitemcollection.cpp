@@ -15,6 +15,10 @@
 
 #include "qgsstacitemcollection.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsStacItemCollection::QgsStacItemCollection( const QVector< QgsStacItem * > &items, const QVector< QgsStacLink > &links, int numberMatched )
   : mItems( items )
   , mLinks( links )

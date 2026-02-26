@@ -21,8 +21,11 @@
 #include "qgsvaluerelationfieldformatter.h"
 
 #include <QScreen>
+#include <QString>
 
 #include "moc_qgstextwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTextWidgetWrapper::QgsTextWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( layer, editor, parent )

@@ -26,10 +26,13 @@
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
 
+#include <QString>
 #include <QTimeZone>
 #include <QTimer>
 
 #include "moc_qgsgpslogger.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryDouble *QgsGpsLogger::settingsDistanceThreshold = new QgsSettingsEntryDouble( u"distanceThreshold"_s, QgsSettingsTree::sTreeGps, 0 );
 const QgsSettingsEntryBool *QgsGpsLogger::settingsApplyLeapSeconds = new QgsSettingsEntryBool( u"applyLeapSeconds"_s, QgsSettingsTree::sTreeGps, true );

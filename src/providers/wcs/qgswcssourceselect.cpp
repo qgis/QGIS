@@ -27,9 +27,12 @@
 #include "qgswcscapabilities.h"
 #include "qgswcsprovider.h"
 
+#include <QString>
 #include <QWidget>
 
 #include "moc_qgswcssourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsOWSSourceSelect( u"WCS"_s, parent, fl, widgetMode )

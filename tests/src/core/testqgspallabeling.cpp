@@ -26,6 +26,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsPalLabeling : public QgsTest
 {
     Q_OBJECT

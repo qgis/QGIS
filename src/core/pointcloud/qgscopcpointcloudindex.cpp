@@ -43,8 +43,11 @@
 #include <QJsonObject>
 #include <QMutexLocker>
 #include <QQueue>
+#include <QString>
 #include <QtDebug>
 #include <qnamespace.h>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

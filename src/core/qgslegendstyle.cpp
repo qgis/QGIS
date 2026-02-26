@@ -29,6 +29,8 @@
 #include <QMap>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 QgsLegendStyle::QgsLegendStyle()
 {
 }

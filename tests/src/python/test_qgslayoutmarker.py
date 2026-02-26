@@ -10,8 +10,8 @@ __author__ = "(C) 2020 by Nyall Dawson"
 __date__ = "05/04/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
-from qgis.PyQt.QtCore import QRectF, Qt
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
+
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsLayout,
@@ -26,9 +26,9 @@ from qgis.core import (
     QgsRectangle,
     QgsUnitTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QRectF, Qt
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
 
@@ -37,7 +37,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsLayoutMarker(QgisTestCase, LayoutItemTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "layout_marker"

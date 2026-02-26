@@ -31,9 +31,12 @@ email                : matthias@opengis.ch
 #include "qgsvectorlayerfeaturepool.h"
 
 #include <QFutureWatcher>
-#include <QtConcurrent>
+#include <QString>
+#include <QtConcurrentMap>
 
 #include "moc_qgsgeometryvalidationservice.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGeometryValidationService::QgsGeometryValidationService( QgsProject *project )
   : mProject( project )

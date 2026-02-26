@@ -24,11 +24,15 @@
 #include "qgsmaplayerlistutils_p.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgsproject.h"
+#include "qgsthreadingutils.h"
 
+#include <QString>
 #include <QtConcurrentMap>
 #include <QtConcurrentRun>
 
 #include "moc_qgsmaprendererparalleljob.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapRendererParallelJob::QgsMapRendererParallelJob( const QgsMapSettings &settings )
   : QgsMapRendererQImageJob( settings )
@@ -429,6 +433,7 @@ void QgsMapRendererParallelJob::renderLabelsStatic( QgsMapRendererParallelJob *s
     // draw the labels!
     try
     {
+      QgsScopedThreadName threadName( u"labeling"_s );
       drawLabeling( job.context, self->mLabelingEngineV2.get(), &painter );
     }
     catch ( QgsException &e )

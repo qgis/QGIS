@@ -23,9 +23,12 @@
 #include <QCheckBox>
 #include <QListView>
 #include <QMimeData>
+#include <QString>
 #include <QVBoxLayout>
 
 #include "moc_qgscustomlayerorderwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCustomLayerOrderWidget::QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridge *bridge, QWidget *parent )
   : QWidget( parent )

@@ -19,15 +19,14 @@ from qgis.core import (
     Qgis,
     QgsAbstractDatabaseProviderConnection,
     QgsCoordinateReferenceSystem,
+    QgsDataSourceUri,
     QgsFields,
     QgsProviderConnectionException,
     QgsProviderRegistry,
     QgsVectorLayer,
     QgsWkbTypes,
-    QgsDataSourceUri,
 )
 from qgis.testing import unittest
-
 from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
 from utilities import unitTestDataPath
 
@@ -37,7 +36,6 @@ TEST_DATA_DIR = unitTestDataPath()
 class TestPyQgsProviderConnectionSpatialite(
     unittest.TestCase, TestPyQgsProviderConnectionBase
 ):
-
     # Provider test cases must define the string URI for the test
     uri = ""
     # Provider test cases must define the provider name (e.g. "postgres" or "ogr")

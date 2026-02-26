@@ -26,7 +26,10 @@
 #include <QDebug>
 #include <QImage>
 #include <QPainter>
+#include <QString>
 #include <QTime>
+
+using namespace Qt::StringLiterals;
 
 QgsRasterChecker::QgsRasterChecker()
 {

@@ -18,9 +18,9 @@
 
 #include <memory>
 
+#include "qgsabstract3dsymbol.h"
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
-#include "qgsvectorlayer3drenderer.h"
 
 class QComboBox;
 class QCheckBox;

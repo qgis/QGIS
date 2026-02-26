@@ -14,22 +14,21 @@ __copyright__ = "Copyright 2025, Nyall Dawson"
 
 import unittest
 
-from qgis.PyQt.QtCore import QCoreApplication, QUrl, QSize
 from qgis.core import (
     Qgis,
     QgsCoordinateReferenceSystem,
-    QgsSettings,
-    QgsRasterLayer,
-    QgsMapSettings,
-    QgsRectangle,
     QgsMapRendererSequentialJob,
+    QgsMapSettings,
+    QgsRasterLayer,
+    QgsRectangle,
+    QgsSettings,
 )
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QCoreApplication, QSize, QUrl
+from qgis.testing import QgisTestCase, start_app
 from raster_provider_test_base import RasterProviderTestCase
 
 
 class TestPyQgsXyzProvider(QgisTestCase, RasterProviderTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "xyz"

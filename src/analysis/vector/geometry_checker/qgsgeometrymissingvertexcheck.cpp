@@ -24,7 +24,11 @@
 #include "qgsgeometryutils.h"
 #include "qgsmultipolygon.h"
 
+#include <QString>
+
 #include "moc_qgsgeometrymissingvertexcheck.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGeometryMissingVertexCheck::QgsGeometryMissingVertexCheck( const QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfiguration )
   : QgsGeometryCheck( context, geometryCheckConfiguration )

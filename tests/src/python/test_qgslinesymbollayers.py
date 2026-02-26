@@ -10,7 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "2017-01"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsFeature,
@@ -20,9 +21,8 @@ from qgis.core import (
     QgsRenderContext,
     QgsSimpleLineSymbolLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -30,7 +30,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsLineSymbolLayers(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "symbol_layer"

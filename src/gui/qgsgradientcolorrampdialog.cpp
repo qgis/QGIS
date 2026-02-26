@@ -24,10 +24,13 @@
 #include <QHeaderView>
 #include <QInputDialog>
 #include <QPainter>
+#include <QString>
 #include <QTableWidget>
 #include <QTextEdit>
 
 #include "moc_qgsgradientcolorrampdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 // QWT Charting widget
 #include <qwt_global.h>

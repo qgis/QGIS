@@ -31,11 +31,14 @@
 #include <QPixmap>
 #include <QQuaternion>
 #include <QRect>
+#include <QString>
 #include <QTime>
 #include <QUuid>
 #include <QVector2D>
 #include <QVector3D>
 #include <QVector4D>
+
+using namespace Qt::StringLiterals;
 
 QString QgsVariantUtils::typeToDisplayString( QMetaType::Type type, QMetaType::Type subType )
 {
@@ -585,9 +588,7 @@ QVariant::Type QgsVariantUtils::metaTypeToVariantType( QMetaType::Type metaType 
       return QVariant::Type::UInt;
 
     case QMetaType::Float:
-#if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
     case QMetaType::Float16:
-#endif
       return QVariant::Type::Double;
 
     // no mapping possible:

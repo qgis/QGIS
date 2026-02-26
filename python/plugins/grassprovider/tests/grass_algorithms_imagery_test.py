@@ -19,19 +19,17 @@ __author__ = "Médéric Ribreux"
 __date__ = "May 2016"
 __copyright__ = "(C) 2016, Médéric Ribreux"
 
-import AlgorithmsTestBase
-
-import nose2
 import shutil
 
-from qgis.core import QgsApplication
-from qgis.testing import QgisTestCase, start_app
+import AlgorithmsTestBase
+import nose2
 from grassprovider.grass_provider import GrassProvider
 from grassprovider.grass_utils import GrassUtils
+from qgis.core import QgsApplication
+from qgis.testing import QgisTestCase, start_app
 
 
 class TestGrassAlgorithmsImageryTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
-
     @classmethod
     def setUpClass(cls):
         start_app()

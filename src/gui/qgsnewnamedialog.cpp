@@ -24,8 +24,11 @@
 #include <QPushButton>
 #include <QRegularExpressionValidator>
 #include <QSizePolicy>
+#include <QString>
 
 #include "moc_qgsnewnamedialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsNewNameDialog::QgsNewNameDialog( const QString &source, const QString &initial, const QStringList &extensions, const QStringList &existing, Qt::CaseSensitivity cs, QWidget *parent, Qt::WindowFlags flags )
   : QgsDialog( parent, flags, QDialogButtonBox::Ok | QDialogButtonBox::Cancel )

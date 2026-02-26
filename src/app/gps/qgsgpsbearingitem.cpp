@@ -26,8 +26,11 @@
 
 #include <QObject>
 #include <QPainter>
+#include <QString>
 
 #include "moc_qgsgpsbearingitem.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGpsBearingItem::QgsGpsBearingItem( QgsMapCanvas *mapCanvas )
   : QgsMapCanvasLineSymbolItem( mapCanvas )

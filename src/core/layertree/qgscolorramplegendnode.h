@@ -105,6 +105,34 @@ class CORE_EXPORT QgsColorRampLegendNode : public QgsLayerTreeModelLegendNode
      */
     void setSettings( const QgsColorRampLegendNodeSettings &settings );
 
+    /**
+     * Sets the node's minimum value.
+     *
+     * \since QGIS 4.0
+     */
+    void setMinimum( double minimum ) { mMinimumValue = minimum; };
+
+    /**
+     * Sets the node's maximum value.
+     *
+     * \since QGIS 4.0
+     */
+    void setMaximum( double maximum ) { mMaximumValue = maximum; };
+
+    /**
+     * Returns the node's minimum value.
+     *
+     * \since QGIS 4.0
+     */
+    double minimum() const { return mMinimumValue; };
+
+    /**
+     * Returns the node's maximum value.
+     *
+     * \since QGIS 4.0
+     */
+    double maximum() const { return mMaximumValue; };
+
   private:
     void init( QgsLayerTreeLayer *nodeLayer );
 

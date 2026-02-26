@@ -10,28 +10,28 @@ __author__ = "(C) 2016 by Paul Blottiere"
 __date__ = "14/03/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
-from qgis.PyQt.QtCore import QPointF, QRectF
-from qgis.PyQt.QtGui import QImage, QPainter, QPolygonF
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
+
 from qgis.core import (
+    Qgis,
     QgsFillSymbol,
+    QgsGeometryGeneratorSymbolLayer,
     QgsLayout,
     QgsLayoutItem,
+    QgsLayoutItemMap,
     QgsLayoutItemPolygon,
     QgsLayoutItemRegistry,
     QgsLayoutItemRenderContext,
     QgsLayoutUtils,
     QgsProject,
     QgsReadWriteContext,
-    QgsLayoutItemMap,
     QgsRectangle,
-    Qgis,
-    QgsGeometryGeneratorSymbolLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QPointF, QRectF
+from qgis.PyQt.QtGui import QImage, QPainter, QPolygonF
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
 
@@ -40,7 +40,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsLayoutPolygon(QgisTestCase, LayoutItemTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "composer_polygon"

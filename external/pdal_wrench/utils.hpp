@@ -14,7 +14,9 @@
 
 #include <pdal/PipelineManager.hpp>
 #include <mutex>
+#include <filesystem>
 
+namespace fs = std::filesystem;
 using namespace pdal;
 
 // tiling scheme containing tileCountX x tileCountY square tiles of tileSize x tileSize,
@@ -275,3 +277,7 @@ pdal::Stage &makeWriter(pdal::PipelineManager *manager, const std::string &outpu
  */
 void buildOutput(std::string outputFile, std::vector<std::string> &tileOutputFiles);
 
+/**
+ * Generate tile output file name based on outputFile and outputFormat.
+ */
+std::string tileOutputFileName(const std::string &outputFile, const std::string &outputFormat, const fs::path &outputSubdir, const std::string &tileFilename);

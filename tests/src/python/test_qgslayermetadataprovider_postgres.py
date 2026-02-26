@@ -1,4 +1,4 @@
-""""Test for postgres layer metadata provider
+""" "Test for postgres layer metadata provider
 
 .. note:: This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,14 +15,12 @@ import os
 
 from qgis.core import QgsProviderRegistry, QgsVectorLayer
 from qgis.testing import unittest
-
 from qgslayermetadataprovidertestbase import LayerMetadataProviderTestBase
 
 
 class TestPostgresLayerMetadataProvider(
     unittest.TestCase, LayerMetadataProviderTestBase
 ):
-
     def getMetadataProviderId(self) -> str:
 
         return "postgres"

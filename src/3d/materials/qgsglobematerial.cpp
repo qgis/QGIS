@@ -15,6 +15,7 @@
 
 #include "qgsglobematerial.h"
 
+#include <QString>
 #include <QUrl>
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QGraphicsApiFilter>

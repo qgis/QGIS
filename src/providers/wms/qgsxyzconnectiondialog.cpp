@@ -21,8 +21,11 @@
 #include "qgsxyzsourcewidget.h"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsxyzconnectiondialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsXyzConnectionDialog::QgsXyzConnectionDialog( QWidget *parent )
   : QDialog( parent )

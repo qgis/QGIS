@@ -47,14 +47,7 @@ if [ -z "$FILES_TO_CHECK" ]; then
 fi
 
 for f in $FILES_TO_CHECK; do
-  m=$f.code_fixup
-  python "${TOPLEVEL}/scripts/pre_commit/prepare_commit_code_fixup.py" "$f" > "$m"
-  if diff -u "$m" "$f" >/dev/null; then
-    # no difference found
-    rm "$m"
-  else
-    mv "$m" "$f"
-  fi
+  python "${TOPLEVEL}/scripts/pre_commit/prepare_commit_code_fixup.py" "$f"
 done
 
 exit 0

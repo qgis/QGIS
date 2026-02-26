@@ -11,6 +11,7 @@ try:
     QgsWkbTypes.isSingleType = staticmethod(QgsWkbTypes.isSingleType)
     QgsWkbTypes.isMultiType = staticmethod(QgsWkbTypes.isMultiType)
     QgsWkbTypes.isCurvedType = staticmethod(QgsWkbTypes.isCurvedType)
+    QgsWkbTypes.isNurbsType = staticmethod(QgsWkbTypes.isNurbsType)
     QgsWkbTypes.wkbDimensions = staticmethod(QgsWkbTypes.wkbDimensions)
     QgsWkbTypes.coordDimensions = staticmethod(QgsWkbTypes.coordDimensions)
     QgsWkbTypes.geometryType = staticmethod(QgsWkbTypes.geometryType)

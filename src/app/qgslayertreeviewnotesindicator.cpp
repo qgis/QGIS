@@ -24,7 +24,11 @@
 #include "qgslayertreeview.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgslayertreeviewnotesindicator.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerTreeViewNotesIndicatorProvider::QgsLayerTreeViewNotesIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )

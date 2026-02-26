@@ -23,6 +23,9 @@
 #include "qgszonalstatistics.h"
 
 #include <QDir>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup UnitTests

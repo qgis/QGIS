@@ -17,6 +17,10 @@
 #include "qgsapplication.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //header for class being tested
 #include "qgsexpression.h"
 #include "qgsvectorlayer.h"

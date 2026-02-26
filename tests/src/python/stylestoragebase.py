@@ -1,4 +1,4 @@
-""""Base test for provider style DB storage
+""" "Base test for provider style DB storage
 
 .. note:: This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -11,8 +11,8 @@ __author__ = "elpaso@itopen.it"
 __date__ = "2022-11-07"
 __copyright__ = "Copyright 2022, ItOpen"
 
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
-from qgis.PyQt.QtGui import QColor
+import unittest
+
 from qgis.core import (
     QgsAbstractDatabaseProviderConnection,
     QgsCoordinateReferenceSystem,
@@ -23,12 +23,12 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QCoreApplication, QVariant
+from qgis.PyQt.QtGui import QColor
+from qgis.testing import QgisTestCase, start_app
 
 
 class StyleStorageTestCaseBase(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -42,7 +42,6 @@ class StyleStorageTestCaseBase(QgisTestCase):
 
 
 class StyleStorageTestBase:
-
     def layerUri(self, conn, schema_name, table_name):
         """Providers may override if they need more complex URI generation than
         what tableUri() offers"""
@@ -75,7 +74,6 @@ class StyleStorageTestBase:
             and capabilities
             & QgsAbstractDatabaseProviderConnection.Capability.DropSchema
         ):
-
             schema = self.schemaName()
             # Start clean
             if schema in conn.schemas():

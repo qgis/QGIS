@@ -21,8 +21,11 @@
 #include "qgsproperty.h"
 
 #include <QPointer>
+#include <QString>
 
 #include "moc_qgstableeditorformattingwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent )
   : QgsPanelWidget( parent )

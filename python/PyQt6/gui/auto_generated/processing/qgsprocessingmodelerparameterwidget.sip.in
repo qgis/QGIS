@@ -179,6 +179,16 @@ Sets the current source ``type`` for the parameter.
 .. versionadded:: 3.24
 %End
 
+  signals:
+
+    void changed();
+%Docstring
+Emitted whenever the definition of the parameter is changed in the
+widget.
+
+.. versionadded:: 4.0
+%End
+
 };
 
 

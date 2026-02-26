@@ -25,7 +25,11 @@
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshvirtualdatasetgroup.h"
 
+#include <QString>
+
 #include "moc_qgsmeshdatasetgroupstore.cpp"
+
+using namespace Qt::StringLiterals;
 
 QList<int> QgsMeshDatasetGroupStore::datasetGroupIndexes() const
 {

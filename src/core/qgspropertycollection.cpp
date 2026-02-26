@@ -18,6 +18,10 @@
 #include "qgsproperty.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //
 // QgsAbstractPropertyCollection
 //

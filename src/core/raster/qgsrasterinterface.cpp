@@ -26,10 +26,13 @@
 #include "qgsrectangle.h"
 
 #include <QByteArray>
+#include <QString>
 #include <QStringList>
 #include <QTime>
 
 #include "moc_qgsrasterinterface.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRasterInterface::QgsRasterInterface( QgsRasterInterface *input )
   : mInput( input )

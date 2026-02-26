@@ -20,19 +20,20 @@ __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
 import random
+from collections import defaultdict
 
 from qgis.core import (
+    QgsFeatureRequest,
     QgsFeatureSink,
     QgsProcessingException,
-    QgsProcessingParameterFeatureSource,
+    QgsProcessingFeatureSource,
     QgsProcessingParameterEnum,
+    QgsProcessingParameterFeatureSink,
+    QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
     QgsProcessingParameterNumber,
-    QgsProcessingParameterFeatureSink,
-    QgsProcessingFeatureSource,
-    QgsFeatureRequest,
 )
-from collections import defaultdict
+
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 

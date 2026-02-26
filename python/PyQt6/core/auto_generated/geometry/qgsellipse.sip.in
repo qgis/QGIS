@@ -10,6 +10,7 @@
 
 
 
+
 class QgsEllipse
 {
 %Docstring(signature="appended")

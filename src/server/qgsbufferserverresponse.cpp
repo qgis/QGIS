@@ -21,6 +21,10 @@
 
 #include "qgsmessagelog.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //
 // QgsBufferServerResponse
 //

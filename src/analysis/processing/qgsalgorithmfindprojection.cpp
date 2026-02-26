@@ -19,6 +19,10 @@
 
 #include "qgsgeometryengine.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsFindProjectionAlgorithm::name() const

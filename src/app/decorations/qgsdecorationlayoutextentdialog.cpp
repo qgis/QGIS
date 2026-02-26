@@ -30,7 +30,11 @@
 #include "qgssymbolselectordialog.h"
 #include "qgstextformatwidget.h"
 
+#include <QString>
+
 #include "moc_qgsdecorationlayoutextentdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDecorationLayoutExtentDialog::QgsDecorationLayoutExtentDialog( QgsDecorationLayoutExtent &deco, QWidget *parent )
   : QDialog( parent )

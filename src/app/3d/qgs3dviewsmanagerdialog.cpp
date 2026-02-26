@@ -17,13 +17,16 @@
 
 #include "qgisapp.h"
 #include "qgs3dmapcanvaswidget.h"
-#include "qgsdockablewidgethelper.h"
+#include "qgshelp.h"
 #include "qgsmapviewsmanager.h"
 #include "qgsnewnamedialog.h"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgs3dviewsmanagerdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 Qgs3DViewsManagerDialog::Qgs3DViewsManagerDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
@@ -37,6 +40,9 @@ Qgs3DViewsManagerDialog::Qgs3DViewsManagerDialog( QWidget *parent, Qt::WindowFla
   m3DViewsListView->setSelectionMode( QAbstractItemView::SingleSelection );
 
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( u"map_views/3d_map_view.html"_s );
+  } );
 
   connect( mShowButton, &QToolButton::clicked, this, &Qgs3DViewsManagerDialog::showClicked );
   connect( mDuplicateButton, &QToolButton::clicked, this, &Qgs3DViewsManagerDialog::duplicateClicked );
@@ -172,7 +178,7 @@ QString Qgs3DViewsManagerDialog::askUserForATitle( QString oldTitle, QString act
   dlg.setHintString( tr( "Enter a unique 3D map view title" ) );
   dlg.setOverwriteEnabled( false );
   dlg.setAllowEmptyName( false );
-  dlg.setConflictingNameWarning( tr( "Title already exists!" ) );
+  dlg.setConflictingNameWarning( tr( "A 3D map view with this title already exists." ) );
 
   if ( dlg.exec() != QDialog::Accepted )
     return QString();

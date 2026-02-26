@@ -6,16 +6,16 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.core import QgsPointCloudLayer, QgsProviderRegistry, Qgis, QgsProject
-import unittest
 import tempfile
-from qgis.testing import start_app, QgisTestCase
+import unittest
+
+from qgis.core import Qgis, QgsPointCloudLayer, QgsProject, QgsProviderRegistry
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsPointCloudLayer(QgisTestCase):
-
     @unittest.skipIf(
         "ept" not in QgsProviderRegistry.instance().providerList(),
         "EPT provider not available",

@@ -25,7 +25,11 @@
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgslayertreemapcanvasbridge.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge( QgsLayerTree *root, QgsMapCanvas *canvas, QObject *parent )
   : QObject( parent )

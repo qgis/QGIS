@@ -25,6 +25,10 @@
 #include "qgsstyle.h"
 #include "qgsvector3d.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsPointCloudBlock;
 class QgsLayerTreeLayer;
 class QgsLayerTreeModelLegendNode;
@@ -712,6 +716,23 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     Qgis::PointCloudZoomOutRenderBehavior zoomOutBehavior() const { return mZoomOutBehavior; }
 
+    /**
+      * Sets the overview switching scale
+      *
+      * Point clouds whose extents intersect the map extent are considered visible.
+      * When zoomed out beyond the overview switching scale (render extent exceeds average
+      * point cloud dimensions by the scale factor), and overview zoom-out behavior is enabled,
+      * the overview is rendered instead of an individual point cloud.
+      * \since QGIS 4.0
+      */
+    void setOverviewSwitchingScale( const double value );
+
+    /**
+      * Returns the overview switching scale
+      * \since QGIS 4.0
+      */
+    double overviewSwitchingScale() const { return mOverviewSwitchingScale; }
+
   protected:
 
     /**
@@ -855,6 +876,7 @@ class CORE_EXPORT QgsPointCloudRenderer
     QgsTextFormat mLabelTextFormat;
 
     Qgis::PointCloudZoomOutRenderBehavior mZoomOutBehavior = Qgis::PointCloudZoomOutRenderBehavior::RenderExtents;
+    double mOverviewSwitchingScale = 1.0;
 };
 
 #endif // QGSPOINTCLOUDRENDERER_H

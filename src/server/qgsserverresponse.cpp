@@ -22,6 +22,10 @@
 #include "qgsmessagelog.h"
 #include "qgsserverexception.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 void QgsServerResponse::write( const QString &data )
 {
   QIODevice *iodev = io();

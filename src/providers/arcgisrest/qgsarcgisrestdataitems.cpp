@@ -21,7 +21,11 @@
 #include "qgsowsconnection.h"
 #include "qgssettingsentryimpl.h"
 
+#include <QString>
+
 #include "moc_qgsarcgisrestdataitems.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_GUI
 #include "qgsarcgisrestsourceselect.h"

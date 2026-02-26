@@ -21,12 +21,8 @@ __copyright__ = "(C) 2018, Luigi Pirelli"
 
 import os
 import random
+import unittest
 
-from qgis.PyQt.QtCore import (
-    QFileInfo,
-)
-from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     QgsColorRampShader,
     QgsContrastEnhancement,
@@ -40,9 +36,12 @@ from qgis.core import (
     QgsSingleBandGrayRenderer,
     QgsSingleBandPseudoColorRenderer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import (
+    QFileInfo,
+)
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -91,7 +90,7 @@ class TestQgsRasterRendererCreateSld(QgisTestCase):
         for index in range(10):
             items.append(
                 QgsColorRampShader.ColorRampItem(
-                    index, QColor("#{0:02d}{0:02d}{0:02d}".format(index)), f"{index}"
+                    index, QColor(f"#{index:02d}{index:02d}{index:02d}"), f"{index}"
                 )
             )
         colorRampShaderFcn.setColorRampItemList(items)
@@ -119,7 +118,7 @@ class TestQgsRasterRendererCreateSld(QgisTestCase):
             self.assertEqual(colorMapEntry.attribute("label"), f"{index}")
             self.assertEqual(colorMapEntry.attribute("opacity"), "")
             self.assertEqual(
-                colorMapEntry.attribute("color"), "#{0:02d}{0:02d}{0:02d}".format(index)
+                colorMapEntry.attribute("color"), f"#{index:02d}{index:02d}{index:02d}"
             )
 
     def testSingleBandPseudoColorRenderer_Discrete(self):
@@ -142,7 +141,7 @@ class TestQgsRasterRendererCreateSld(QgisTestCase):
         for index in range(10):
             items.append(
                 QgsColorRampShader.ColorRampItem(
-                    index, QColor("#{0:02d}{0:02d}{0:02d}".format(index)), f"{index}"
+                    index, QColor(f"#{index:02d}{index:02d}{index:02d}"), f"{index}"
                 )
             )
         colorRampShaderFcn.setColorRampItemList(items)
@@ -170,7 +169,7 @@ class TestQgsRasterRendererCreateSld(QgisTestCase):
             self.assertEqual(colorMapEntry.attribute("label"), f"{index}")
             self.assertEqual(colorMapEntry.attribute("opacity"), "")
             self.assertEqual(
-                colorMapEntry.attribute("color"), "#{0:02d}{0:02d}{0:02d}".format(index)
+                colorMapEntry.attribute("color"), f"#{index:02d}{index:02d}{index:02d}"
             )
 
     def testSingleBandPseudoColorRenderer_Exact(self):
@@ -193,7 +192,7 @@ class TestQgsRasterRendererCreateSld(QgisTestCase):
         for index in range(10):
             items.append(
                 QgsColorRampShader.ColorRampItem(
-                    index, QColor("#{0:02d}{0:02d}{0:02d}".format(index)), f"{index}"
+                    index, QColor(f"#{index:02d}{index:02d}{index:02d}"), f"{index}"
                 )
             )
         colorRampShaderFcn.setColorRampItemList(items)
@@ -222,7 +221,7 @@ class TestQgsRasterRendererCreateSld(QgisTestCase):
             self.assertEqual(colorMapEntry.attribute("label"), f"{index}")
             self.assertEqual(colorMapEntry.attribute("opacity"), "")
             self.assertEqual(
-                colorMapEntry.attribute("color"), "#{0:02d}{0:02d}{0:02d}".format(index)
+                colorMapEntry.attribute("color"), f"#{index:02d}{index:02d}{index:02d}"
             )
 
         # add check that is set ColoMap extended="true" if colormap is bigger that 255 entries
@@ -257,7 +256,7 @@ class TestQgsRasterRendererCreateSld(QgisTestCase):
         # classesString = '122 0 0 0 255 122\n123 1 1 1 255 123\n124 2 2 2 255 124\n125 3 3 3 255 125\n126 4 4 4 255 126\n127 5 5 5 255 127\n128 6 6 6 255 128\n129 7 7 7 255 129\n130 8 8 8 255 130'
         classesString = ""
         for index in range(10):
-            classesString += "{0} {0} {0} {0} 255 {0}\n".format(index)
+            classesString += f"{index} {index} {index} {index} 255 {index}\n"
         classes = QgsPalettedRasterRenderer.classDataFromString(classesString)
 
         rasterRenderer = QgsPalettedRasterRenderer(
@@ -282,7 +281,7 @@ class TestQgsRasterRendererCreateSld(QgisTestCase):
             self.assertEqual(colorMapEntry.attribute("label"), f"{index}")
             self.assertEqual(colorMapEntry.attribute("opacity"), "")
             self.assertEqual(
-                colorMapEntry.attribute("color"), "#{0:02d}{0:02d}{0:02d}".format(index)
+                colorMapEntry.attribute("color"), f"#{index:02d}{index:02d}{index:02d}"
             )
 
         # add check that is set ColoMap extended="true" if colormap is bigger that 255 entries
@@ -487,7 +486,6 @@ class TestQgsRasterRendererCreateSld(QgisTestCase):
 
     def testRasterRenderer(self):
         class fakerenderer(QgsRasterRenderer):
-
             def __init__(self, interface):
                 QgsRasterRenderer.__init__(self, interface, "")
 

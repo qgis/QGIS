@@ -20,6 +20,9 @@
 
 #include <QDomDocument>
 #include <QDomElement>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsNullSymbolRenderer::QgsNullSymbolRenderer()
   : QgsFeatureRenderer( u"nullSymbol"_s )

@@ -25,8 +25,11 @@
 #include <QLocale>
 #include <QMessageBox>
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgscustomprojectionoptions.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCustomProjectionOptionsWidget::QgsCustomProjectionOptionsWidget( QWidget *parent )
   : QgsOptionsPageWidget( parent )

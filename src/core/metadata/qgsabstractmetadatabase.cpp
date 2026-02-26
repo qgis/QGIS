@@ -20,6 +20,10 @@
 #include "qgsmaplayer.h"
 #include "qgstranslationcontext.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QString QgsAbstractMetadataBase::identifier() const
 {
   return mIdentifier;

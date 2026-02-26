@@ -31,9 +31,12 @@
 #include <QFileInfo>
 #include <QMenu>
 #include <QPushButton>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsdatasourceselectdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDataSourceSelectWidget::QgsDataSourceSelectWidget(
   QgsBrowserGuiModel *browserModel,

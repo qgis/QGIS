@@ -18,13 +18,14 @@
 #include "qgis_gui.h"
 #include "qgslabelinggui.h"
 
+#define SIP_NO_FILE
+
 class QgsRasterLayer;
 class QgsAbstractRasterLayerLabeling;
 class QgsRasterBandComboBox;
 class QgsNumericFormat;
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 /**
  * \class QgsRasterLabelSettingsWidget

@@ -20,6 +20,10 @@
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QString QgsPostgresLayerMetadataProvider::id() const
 {
   return u"postgres"_s;

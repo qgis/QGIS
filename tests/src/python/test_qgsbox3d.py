@@ -12,13 +12,11 @@ __copyright__ = "Copyright 2017, The QGIS Project"
 
 import sys
 
-
 from qgis.core import QgsBox3d, QgsPoint, QgsRectangle, QgsVector3D
 from qgis.testing import unittest
 
 
 class TestQgsBox3d(unittest.TestCase):
-
     def testCtor(self):
         box = QgsBox3d(5.0, 6.0, 7.0, 10.0, 11.0, 12.0)
 

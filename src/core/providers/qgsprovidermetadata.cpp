@@ -24,7 +24,11 @@
 #include "qgsmaplayer.h"
 #include "qgsprovidersublayerdetails.h"
 
+#include <QString>
+
 #include "moc_qgsprovidermetadata.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProviderMetadata::QgsProviderMetadata( QString const &key,
     QString const &description,
@@ -207,6 +211,11 @@ QString QgsProviderMetadata::cleanUri( const QString &uri, Qgis::UriCleaningFlag
   else if ( flags.testFlag( Qgis::UriCleaningFlag::RedactCredentials ) )
     return QgsDataSourceUri::removePassword( uri, true );
   return uri;
+}
+
+bool QgsProviderMetadata::urisReferToSame( const QString &, const QString &, Qgis::SourceHierarchyLevel ) const
+{
+  return false;
 }
 
 Qgis::VectorExportResult QgsProviderMetadata::createEmptyLayer( const QString &, const QgsFields &,

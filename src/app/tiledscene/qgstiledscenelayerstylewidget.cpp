@@ -21,7 +21,11 @@
 #include "qgstiledscenelayer.h"
 #include "qgstiledscenerendererpropertieswidget.h"
 
+#include <QString>
+
 #include "moc_qgstiledscenelayerstylewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTiledSceneRendererWidgetFactory::QgsTiledSceneRendererWidgetFactory( QObject *parent )
   : QObject( parent )

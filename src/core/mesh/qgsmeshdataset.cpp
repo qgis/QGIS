@@ -23,6 +23,9 @@
 
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsMeshDatasetIndex::QgsMeshDatasetIndex( int group, int dataset )
   : mGroupIndex( group ), mDatasetIndex( dataset )

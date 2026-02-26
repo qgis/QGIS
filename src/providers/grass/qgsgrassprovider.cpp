@@ -48,6 +48,8 @@
 
 #include "moc_qgsgrassprovider.cpp"
 
+using namespace Qt::StringLiterals;
+
 #ifdef _MSC_VER
 // enable grass prototypes
 #define __STDC__ 1

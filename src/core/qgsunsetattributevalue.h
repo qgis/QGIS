@@ -24,6 +24,8 @@
 #include <QString>
 #include <QVariant>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief Represents a default, "not-specified" value for a feature attribute.

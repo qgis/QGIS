@@ -19,6 +19,10 @@
 
 #include "qgsvariantutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsGeometryByExpressionAlgorithm::name() const
@@ -127,17 +131,19 @@ bool QgsGeometryByExpressionAlgorithm::prepareAlgorithm( const QVariantMap &para
     return false;
   }
 
-  mExpressionContext = createExpressionContext( parameters, context );
-  mExpression.prepare( &mExpressionContext );
-
   return true;
 }
 
-QgsFeatureList QgsGeometryByExpressionAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &, QgsProcessingFeedback * )
+QgsFeatureList QgsGeometryByExpressionAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  if ( !mExpressionPrepared )
+  {
+    mExpression.prepare( &context.expressionContext() );
+    mExpressionPrepared = true;
+  }
+
   QgsFeature feature = f;
-  mExpressionContext.setFeature( feature );
-  const QVariant value = mExpression.evaluate( &mExpressionContext );
+  const QVariant value = mExpression.evaluate( &context.expressionContext() );
 
   if ( mExpression.hasEvalError() )
   {

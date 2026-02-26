@@ -17,6 +17,10 @@
 
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 void QgsVectorLayer3DTilingSettings::writeXml( QDomElement &elem ) const
 {
   QDomDocument doc = elem.ownerDocument();
@@ -24,6 +28,7 @@ void QgsVectorLayer3DTilingSettings::writeXml( QDomElement &elem ) const
   QDomElement elemTiling = doc.createElement( u"vector-layer-3d-tiling"_s );
   elemTiling.setAttribute( u"zoom-levels-count"_s, mZoomLevelsCount );
   elemTiling.setAttribute( u"show-bounding-boxes"_s, mShowBoundingBoxes ? u"1"_s : u"0"_s );
+  elemTiling.setAttribute( u"max-chunk-features"_s, mMaxChunkFeatures );
   elem.appendChild( elemTiling );
 }
 
@@ -34,6 +39,7 @@ void QgsVectorLayer3DTilingSettings::readXml( const QDomElement &elem )
   {
     mZoomLevelsCount = elemTiling.attribute( u"zoom-levels-count"_s ).toInt();
     mShowBoundingBoxes = elemTiling.attribute( u"show-bounding-boxes"_s ).toInt();
+    mMaxChunkFeatures = elemTiling.attribute( u"max-chunk-features"_s, QString::number( mMaxChunkFeatures ) ).toInt();
   }
 }
 

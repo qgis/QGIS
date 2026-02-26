@@ -24,12 +24,13 @@
 #include <QPointer>
 #include <QUrl>
 
+#define SIP_NO_FILE
+
 class QgsFeedback;
 class QgsHttpExternalStorageStoreTask;
 class QgsFetchedContent;
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 /**
  * \brief External storage implementation using the protocol WebDAV.
@@ -140,6 +141,8 @@ class QgsHttpExternalStorageStoreTask : public QgsTask
   public:
 
     QgsHttpExternalStorageStoreTask( const QUrl &url, const QString &filePath, const QString &authCfg );
+
+    ~QgsHttpExternalStorageStoreTask() override;
 
     bool run() override;
 

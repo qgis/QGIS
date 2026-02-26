@@ -24,8 +24,11 @@
 #include "qgswmsserviceexception.h"
 
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgswmsparameters.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString EXTERNAL_LAYER_PREFIX = u"EXTERNAL_WMS:"_s;
 

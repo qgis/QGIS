@@ -23,8 +23,11 @@
 #include "qgsunittypes.h"
 
 #include <QGraphicsLineItem>
+#include <QString>
 
 #include "moc_qgslayoutguidecollection.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsLayoutGuide

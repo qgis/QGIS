@@ -23,6 +23,9 @@
 #include "qgsvectorlayer.h"
 
 #include <QLocale>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

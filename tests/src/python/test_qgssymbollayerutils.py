@@ -11,15 +11,14 @@ __date__ = "2016-09"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
 import math
+import unittest
 
-from qgis.PyQt.QtCore import QDir, QMimeData, QPointF, QSize, QSizeF, Qt, QRectF
-from qgis.PyQt.QtXml import QDomDocument, QDomElement
-from qgis.PyQt.QtGui import QColor, QImage, QPolygonF
 from qgis.core import (
     Qgis,
     QgsAnimatedMarkerSymbolLayer,
     QgsArrowSymbolLayer,
     QgsFillSymbol,
+    QgsGeometry,
     QgsGradientColorRamp,
     QgsLinePatternFillSymbolLayer,
     QgsMapUnitScale,
@@ -27,6 +26,7 @@ from qgis.core import (
     QgsMarkerSymbol,
     QgsProperty,
     QgsReadWriteContext,
+    QgsRenderContext,
     QgsShapeburstFillSymbolLayer,
     QgsSimpleFillSymbolLayer,
     QgsSimpleLineSymbolLayer,
@@ -36,17 +36,16 @@ from qgis.core import (
     QgsSymbolLayerUtils,
     QgsUnitTypes,
     QgsVectorLayer,
-    QgsRenderContext,
-    QgsGeometry,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QDir, QMimeData, QPointF, QRectF, QSize, QSizeF, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPolygonF
+from qgis.PyQt.QtXml import QDomDocument, QDomElement
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class PyQgsSymbolLayerUtils(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "symbol_layer_utils"

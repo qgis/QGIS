@@ -18,15 +18,15 @@ email                : jef at norbit dot de
  ***************************************************************************/
 """
 
-from qgis.PyQt.QtCore import QVariant, QDate, QTime, QDateTime, QByteArray
-from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery, QSqlField
+from qgis.PyQt.QtCore import QByteArray, QDate, QDateTime, QTime, QVariant
+from qgis.PyQt.QtSql import QSqlDatabase, QSqlField, QSqlQuery
 
 paramstyle = "qmark"
 threadsafety = 1
 apilevel = "2.0"
 
-import time
 import datetime
+import time
 
 
 def Date(year, month, day):
@@ -54,19 +54,16 @@ def TimestampFromTicks(ticks):
 
 
 class ConnectionError(Exception):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
 
 class ExecError(Exception):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
 
 class QtSqlDBCursor:
-
     def __init__(self, conn):
         self.qry = QSqlQuery(conn)
         self.description = None

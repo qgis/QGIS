@@ -16,6 +16,10 @@
 
 #include "qgsfields.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsFields QgsTriangulation::triangulationFields()
 {
   QgsFields fields;

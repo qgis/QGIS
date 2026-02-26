@@ -27,6 +27,8 @@
 #include <QRegularExpression>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class QImage;
 
 #define DUMP_BASE64_IMAGES 0

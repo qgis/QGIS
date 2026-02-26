@@ -24,9 +24,12 @@
 #include "qgssettings.h"
 
 #include <QMessageBox>
+#include <QString>
 #include <QVector>
 
 #include "moc_qgsmaplayerloadstyledialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWidget *parent )
   : QDialog( parent )
@@ -353,4 +356,10 @@ void QgsMapLayerLoadStyleDialog::updateLoadButtonState()
 void QgsMapLayerLoadStyleDialog::showHelp()
 {
   QgsHelp::openHelp( u"introduction/general_tools.html#save-and-share-layer-properties"_s );
+}
+
+void QgsMapLayerLoadStyleDialog::allowLoadingOnlyFromFiles()
+{
+  mStyleTypeComboBox->setEnabled( false );
+  mStyleTypeComboBox->setCurrentIndex( 0 );
 }

@@ -17,6 +17,10 @@
 
 #include "qgsalgorithmstdbscanclustering.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsStDbscanClusteringAlgorithm::name() const

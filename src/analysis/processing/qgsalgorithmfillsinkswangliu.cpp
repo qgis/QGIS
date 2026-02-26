@@ -19,7 +19,10 @@
 
 #include "qgsrasterfilewriter.h"
 
+#include <QString>
 #include <queue>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

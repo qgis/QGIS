@@ -18,11 +18,12 @@
 #ifndef QGSALGORITHMSEGMENTIZE_H
 #define QGSALGORITHMSEGMENTIZE_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsmaptopixelgeometrysimplifier.h"
 #include "qgsprocessingalgorithm.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

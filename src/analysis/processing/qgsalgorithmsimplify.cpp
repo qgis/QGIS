@@ -21,6 +21,10 @@
 
 #include "qgsmaptopixelgeometrysimplifier.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QgsSimplifyAlgorithm::~QgsSimplifyAlgorithm() = default;

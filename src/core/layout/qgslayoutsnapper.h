@@ -23,6 +23,9 @@
 #include "qgslayoutserializableobject.h"
 
 #include <QPen>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsLayout;
 class QgsReadWriteContext;

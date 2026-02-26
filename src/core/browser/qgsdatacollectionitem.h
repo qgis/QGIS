@@ -21,6 +21,10 @@
 #include "qgis_sip.h"
 #include "qgsdataitem.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief A browser item for collections of data.

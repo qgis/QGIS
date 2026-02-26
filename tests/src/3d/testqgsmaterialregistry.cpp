@@ -22,6 +22,9 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 //dummy material for testing
 class DummyMaterialSettings : public QgsAbstractMaterialSettings

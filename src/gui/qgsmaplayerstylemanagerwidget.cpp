@@ -21,7 +21,11 @@
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmeshlayerproperties.h"
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudlayerproperties.h"
 #include "qgsrasterlayerproperties.h"
+#include "qgstiledscenelayer.h"
+#include "qgstiledscenelayerproperties.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerproperties.h"
 #include "qgsvectortilelayer.h"
@@ -31,10 +35,13 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QString>
 #include <QToolBar>
 #include <QVBoxLayout>
 
 #include "moc_qgsmaplayerstylemanagerwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -197,10 +204,16 @@ void QgsMapLayerStyleManagerWidget::saveAsDefault()
       QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( mLayer ), mMapCanvas, mMapLayerConfigWidgetContext.messageBar() ).saveStyleAsDefault();
       break;
 
-    // Not available for these
     case Qgis::LayerType::PointCloud:
-    case Qgis::LayerType::Annotation:
+      QgsPointCloudLayerProperties( qobject_cast<QgsPointCloudLayer *>( mLayer ), mMapCanvas, mMapLayerConfigWidgetContext.messageBar() ).saveStyleAsDefault();
+      break;
+
     case Qgis::LayerType::TiledScene:
+      QgsTiledSceneLayerProperties( qobject_cast<QgsTiledSceneLayer *>( mLayer ), mMapCanvas, mMapLayerConfigWidgetContext.messageBar() ).saveStyleAsDefault();
+      break;
+
+    // Not available for these
+    case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Group:
       break;
@@ -230,10 +243,16 @@ void QgsMapLayerStyleManagerWidget::loadDefault()
       QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( mLayer ), mMapCanvas, mMapLayerConfigWidgetContext.messageBar() ).loadDefaultStyle();
       break;
 
-    // Not available for these
     case Qgis::LayerType::PointCloud:
-    case Qgis::LayerType::Annotation:
+      QgsPointCloudLayerProperties( qobject_cast<QgsPointCloudLayer *>( mLayer ), mMapCanvas, mMapLayerConfigWidgetContext.messageBar() ).loadDefaultStyle();
+      break;
+
     case Qgis::LayerType::TiledScene:
+      QgsTiledSceneLayerProperties( qobject_cast<QgsTiledSceneLayer *>( mLayer ), mMapCanvas, mMapLayerConfigWidgetContext.messageBar() ).loadDefaultStyle();
+      break;
+
+    // Not available for these
+    case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Group:
       break;
@@ -263,10 +282,16 @@ void QgsMapLayerStyleManagerWidget::saveStyle()
       QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( mLayer ), mMapCanvas, mMapLayerConfigWidgetContext.messageBar() ).saveStyleToFile();
       break;
 
-    // Not available for these
     case Qgis::LayerType::PointCloud:
-    case Qgis::LayerType::Annotation:
+      QgsPointCloudLayerProperties( qobject_cast<QgsPointCloudLayer *>( mLayer ), mMapCanvas, mMapLayerConfigWidgetContext.messageBar() ).saveStyleToFile();
+      break;
+
     case Qgis::LayerType::TiledScene:
+      QgsTiledSceneLayerProperties( qobject_cast<QgsTiledSceneLayer *>( mLayer ), mMapCanvas, mMapLayerConfigWidgetContext.messageBar() ).saveStyleToFile();
+      break;
+
+    // Not available for these
+    case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Group:
       break;
@@ -296,10 +321,16 @@ void QgsMapLayerStyleManagerWidget::loadStyle()
       QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( mLayer ), mMapCanvas, mMapLayerConfigWidgetContext.messageBar() ).loadStyle();
       break;
 
-    // Not available for these
     case Qgis::LayerType::PointCloud:
-    case Qgis::LayerType::Annotation:
+      QgsPointCloudLayerProperties( qobject_cast<QgsPointCloudLayer *>( mLayer ), mMapCanvas, mMapLayerConfigWidgetContext.messageBar() ).loadStyleFromFile();
+      break;
+
     case Qgis::LayerType::TiledScene:
+      QgsTiledSceneLayerProperties( qobject_cast<QgsTiledSceneLayer *>( mLayer ), mMapCanvas, mMapLayerConfigWidgetContext.messageBar() ).loadStyleFromFile();
+      break;
+
+    // Not available for these
+    case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Group:
       break;

@@ -10,8 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "16/01/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
-from qgis.PyQt.QtCore import QDateTime, QSize
-from qgis.PyQt.QtGui import QImage, QPainter, QPainterPath
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsCoordinateReferenceSystem,
@@ -28,11 +28,12 @@ from qgis.core import (
     QgsRenderContext,
     QgsRenderedFeatureHandlerInterface,
     QgsUnitTypes,
-    QgsVectorSimplifyMethod,
     QgsVectorLayer,
+    QgsVectorSimplifyMethod,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QDateTime, QSize
+from qgis.PyQt.QtGui import QImage, QPainter, QPainterPath
+from qgis.testing import QgisTestCase, start_app
 
 # Convenience instances in case you may need them
 # to find the srs.db
@@ -40,13 +41,11 @@ start_app()
 
 
 class TestFeatureHandler(QgsRenderedFeatureHandlerInterface):
-
     def handleRenderedFeature(self, feature, geometry, context):
         pass
 
 
 class TestQgsRenderContext(QgisTestCase):
-
     def testGettersSetters(self):
         """
         Basic getter/setter tests

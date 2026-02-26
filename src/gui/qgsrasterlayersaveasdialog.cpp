@@ -38,8 +38,11 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgsrasterlayersaveasdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLayer, QgsRasterDataProvider *sourceProvider, const QgsRectangle &currentExtent, const QgsCoordinateReferenceSystem &layerCrs, const QgsCoordinateReferenceSystem &currentCrs, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
@@ -350,6 +353,15 @@ void QgsRasterLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( const QStr
   {
     mLayerName->setText( QString() );
   }
+
+  const bool isCOG = ( outputFormat() == "COG"_L1 );
+  if ( isCOG )
+  {
+    mPyramidsGroupBox->setChecked( true );
+  }
+  mPyramidResolutionsLabel->setVisible( !isCOG );
+  mPyramidResolutionsLineEdit->setVisible( !isCOG );
+  mPyramidsOptionsWidget->tuneForFormat( outputFormat() );
 }
 
 int QgsRasterLayerSaveAsDialog::nColumns() const

@@ -19,6 +19,10 @@
 
 #include "qgis_sip.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 // forward declaration
 namespace SpatialIndex SIP_SKIP
 {

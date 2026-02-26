@@ -21,10 +21,10 @@ __copyright__ = "(C) 201, Victor Olaya"
 
 import os
 import shutil
-from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
-from qgis.PyQt.QtCore import QFileInfo, QCoreApplication, QDir
 
-from qgis.core import QgsApplication, QgsSettings, QgsProcessingModelAlgorithm
+from qgis.core import QgsApplication, QgsProcessingModelAlgorithm, QgsSettings
+from qgis.PyQt.QtCore import QCoreApplication, QDir, QFileInfo
+from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
 
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.modeler.ModelerUtils import ModelerUtils
@@ -33,7 +33,6 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
 class AddModelFromFileAction(ToolboxAction):
-
     def __init__(self):
         self.name = QCoreApplication.translate(
             "AddModelFromFileAction", "Add Model to Toolbox…"

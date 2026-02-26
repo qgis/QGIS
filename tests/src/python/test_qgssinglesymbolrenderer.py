@@ -24,7 +24,6 @@ __copyright__ = "(C) 2015, Matthias Kuhn"
 
 import os
 
-from qgis.PyQt.QtCore import QSize
 from qgis.core import (
     QgsFeatureRequest,
     QgsFillSymbol,
@@ -34,10 +33,10 @@ from qgis.core import (
     QgsSingleSymbolRenderer,
     QgsVectorLayer,
 )
-from qgis.testing import unittest, QgisTestCase
+from qgis.PyQt.QtCore import QSize
+from qgis.testing import QgisTestCase, unittest
 from qgis.testing.mocked import get_iface
-
-from utilities import unitTestDataPath, start_app
+from utilities import start_app, unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
 
@@ -45,7 +44,6 @@ start_app()
 
 
 class TestQgsSingleSymbolRenderer(QgisTestCase):
-
     def setUp(self):
         self.iface = get_iface()
         myShpFile = os.path.join(TEST_DATA_DIR, "polys_overlapping.shp")

@@ -16,14 +16,18 @@
 #ifndef QGSSENSORTHINGSCONNECTION_H
 #define QGSSENSORTHINGSCONNECTION_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 #include "qgsabstractproviderconnection.h"
 #include "qgshttpheaders.h"
 #include "qgssettingstree.h"
 
+#include <QString>
 #include <QStringList>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 class QgsSettingsEntryBool;
 class QgsSettingsEntryDouble;

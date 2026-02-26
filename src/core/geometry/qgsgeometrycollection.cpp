@@ -31,6 +31,10 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspoint.h"
 #include "qgswkbptr.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsGeometryCollection::QgsGeometryCollection()
 {
   mWkbType = Qgis::WkbType::GeometryCollection;
@@ -699,6 +703,17 @@ double QgsGeometryCollection::area() const
     area += ( *geomIt )->area();
   }
   return area;
+}
+
+double QgsGeometryCollection::area3D() const
+{
+  double area3D = 0.0;
+  QVector< QgsAbstractGeometry * >::const_iterator geomIt = mGeometries.constBegin();
+  for ( ; geomIt != mGeometries.constEnd(); ++geomIt )
+  {
+    area3D += ( *geomIt )->area3D();
+  }
+  return area3D;
 }
 
 double QgsGeometryCollection::perimeter() const

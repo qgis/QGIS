@@ -24,8 +24,11 @@
 #include "qgsvectordataprovider.h"
 
 #include <QDomElement>
+#include <QString>
 
 #include "moc_qgsvectorlayerjoinbuffer.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVectorLayerJoinBuffer::QgsVectorLayerJoinBuffer( QgsVectorLayer *layer )
   : mLayer( layer )

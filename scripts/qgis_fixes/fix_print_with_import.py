@@ -1,5 +1,4 @@
 import re
-
 from lib2to3.fixer_util import Leaf, Node, find_indentation, syms
 
 from libfuturize.fixes.fix_print_with_import import (
@@ -8,7 +7,6 @@ from libfuturize.fixes.fix_print_with_import import (
 
 
 class FixPrintWithImport(FixPrintWithImportOrig):
-
     def transform(self, node, results):
         if "fix_print_with_import" in node.prefix:
             return node

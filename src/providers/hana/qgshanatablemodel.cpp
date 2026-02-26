@@ -22,7 +22,11 @@
 #include "qgshanasettings.h"
 #include "qgslogger.h"
 
+#include <QString>
+
 #include "moc_qgshanatablemodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsHanaTableModel::QgsHanaTableModel( QObject *parent )
   : QgsAbstractDbTableModel( parent )

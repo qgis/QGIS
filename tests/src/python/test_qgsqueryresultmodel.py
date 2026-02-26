@@ -12,7 +12,9 @@ __date__ = "24/12/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
 import os
+import unittest
 
+from qgis.core import NULL, QgsProviderRegistry, QgsQueryResultModel
 from qgis.PyQt.QtCore import (
     QCoreApplication,
     QModelIndex,
@@ -22,13 +24,10 @@ from qgis.PyQt.QtCore import (
 )
 from qgis.PyQt.QtTest import QAbstractItemModelTester
 from qgis.PyQt.QtWidgets import QDialog, QLabel, QListView, QVBoxLayout
-from qgis.core import QgsProviderRegistry, QgsQueryResultModel, NULL
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 
 class TestPyQgsQgsQueryResultModel(QgisTestCase):
-
     NUM_RECORDS = 100050
 
     @classmethod
@@ -161,9 +160,7 @@ class TestPyQgsQgsQueryResultModel(QgisTestCase):
         v.setModel(model)
 
         def _set_row_count(idx, first, last):
-            lbl.setText(
-                f"Rows {model.rowCount(model.index(-1, -1))} fetched"
-            )  # noqa: F821
+            lbl.setText(f"Rows {model.rowCount(model.index(-1, -1))} fetched")  # noqa: F821
 
         model.rowsInserted.connect(_set_row_count)
 

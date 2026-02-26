@@ -25,9 +25,12 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QSpinBox>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsauthsslconfigwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 static const QString configFoundText_() { return QObject::tr( "Configuration loaded from database" ); }
 static const QString configNotFoundText_() { return QObject::tr( "Configuration not found in database" ); }

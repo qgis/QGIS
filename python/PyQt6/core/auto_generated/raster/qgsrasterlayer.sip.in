@@ -10,6 +10,7 @@
 
 
 
+
 typedef QList < QPair< QString, QColor > > QgsLegendColorList;
 
 class QgsRasterLayer : QgsMapLayer, QgsAbstractProfileSource

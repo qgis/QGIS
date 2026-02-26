@@ -15,7 +15,10 @@
 
 #include "qgsstaccollection.h"
 
+#include <QString>
 #include <QTextDocument>
+
+using namespace Qt::StringLiterals;
 
 QgsStacCollection::QgsStacCollection( const QString &id,
                                       const QString &version,

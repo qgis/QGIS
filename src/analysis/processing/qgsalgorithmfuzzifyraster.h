@@ -18,11 +18,16 @@
 #ifndef QGSFUZZIFYRASTERALGORITHM_H
 #define QGSFUZZIFYRASTERALGORITHM_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsapplication.h"
 #include "qgsprocessingalgorithm.h"
+
+#include <QString>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -72,6 +77,7 @@ class QgsFuzzifyRasterAlgorithmBase : public QgsProcessingAlgorithm
 
     Qgis::DataType mDataType = Qgis::DataType::Float32;
     const double mNoDataValue = -9999;
+    double mMaxProgressDuringBlockWriting = 100;
 };
 
 

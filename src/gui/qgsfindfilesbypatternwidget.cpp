@@ -21,8 +21,11 @@
 #include <QDialogButtonBox>
 #include <QDir>
 #include <QDirIterator>
+#include <QString>
 
 #include "moc_qgsfindfilesbypatternwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFindFilesByPatternWidget::QgsFindFilesByPatternWidget( QWidget *parent )
   : QWidget( parent )

@@ -29,8 +29,11 @@
 #include <QMetaType>
 #include <QRecursiveMutex>
 #include <QSet>
+#include <QString>
 #include <QStringList>
 #include <QVariant>
+
+using namespace Qt::StringLiterals;
 
 class QgsFeature;
 class QgsGeometry;

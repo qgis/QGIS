@@ -35,9 +35,12 @@
 #include <QMessageBox>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+#include <QString>
 #include <QSvgRenderer>
 
 #include "moc_qgsgrassmodule.cpp"
+
+using namespace Qt::StringLiterals;
 
 extern "C"
 {

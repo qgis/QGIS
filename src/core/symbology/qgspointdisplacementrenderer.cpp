@@ -30,6 +30,9 @@
 #include "qgsunittypes.h"
 
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsPointDisplacementRenderer::QgsPointDisplacementRenderer( const QString &labelAttributeName )
   : QgsPointDistanceRenderer( u"pointDisplacement"_s, labelAttributeName )

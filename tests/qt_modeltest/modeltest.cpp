@@ -28,7 +28,10 @@
 #include <QAbstractItemModel>
 #include <QDebug>
 #include <QSize>
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 /*!
     Connect to all of the models signals.  Whenever anything happens

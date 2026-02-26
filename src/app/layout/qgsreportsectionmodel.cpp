@@ -19,7 +19,11 @@
 
 #include "qgsguiutils.h"
 
+#include <QString>
+
 #include "moc_qgsreportsectionmodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"

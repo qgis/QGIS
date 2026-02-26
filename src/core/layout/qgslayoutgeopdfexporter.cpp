@@ -31,6 +31,9 @@
 #include <QDomElement>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 class QgsGeospatialPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface

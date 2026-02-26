@@ -38,6 +38,8 @@ class QgsAnnotationItemPropertiesWidget : public QgsMapLayerConfigWidget, public
     void setMapLayerConfigWidgetContext( const QgsMapLayerConfigWidgetContext &context ) override;
     void setDockMode( bool dockMode ) final;
 
+    void setLabelMessage( const QString &message );
+
   public slots:
     void apply() override;
     void focusDefaultWidget() override;
@@ -50,6 +52,7 @@ class QgsAnnotationItemPropertiesWidget : public QgsMapLayerConfigWidget, public
   private:
     void setItemId( const QString &itemId );
 
+    QLabel *mLabel = nullptr;
     QPointer<QgsAnnotationLayer> mLayer;
     QPointer<QgsAnnotationItemBaseWidget> mItemWidget;
     QWidget *mPageNoItem = nullptr;

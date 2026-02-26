@@ -17,6 +17,7 @@
 
 #include "qgis.h"
 #include "qgsexception.h"
+#include "qgslogger.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 
@@ -26,6 +27,9 @@
 #include <QObject>
 #include <QRegularExpression>
 #include <QSet>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 #ifdef Q_OS_UNIX
 // For getrlimit()
@@ -638,4 +642,79 @@ QString QgsFileUtils::uniquePath( const QString &path )
     uniquePath = pathPattern.arg( i );
   }
   return uniquePath;
+}
+
+bool QgsFileUtils::copyDirectory( const QString &source, const QString &destination )
+{
+  QDir sourceDir( source );
+  if ( !sourceDir.exists() )
+  {
+    QgsDebugError( u"Cannot copy %1 to %2, source directory does not exist"_s.arg( source, destination ) );
+    return false;
+  }
+
+  QDir destDir( destination );
+  if ( !destDir.exists() )
+  {
+    if ( !destDir.mkdir( destination ) )
+    {
+      QgsDebugError( u"Cannot copy %1 to %2, could not make target directory"_s.arg( source, destination ) );
+      return false;
+    }
+  }
+
+  bool copiedAll = true;
+  const QStringList files = sourceDir.entryList( QDir::Files );
+  for ( const QString &file : files )
+  {
+    const QString srcFileName = sourceDir.filePath( file );
+    const QString destFileName = destDir.filePath( file );
+    if ( !QFile::copy( srcFileName, destFileName ) )
+    {
+      QgsDebugError( u"Cannot copy %1 to %2"_s.arg( srcFileName, destFileName ) );
+      copiedAll = false;
+    }
+  }
+  const QStringList dirs = sourceDir.entryList( QDir::AllDirs | QDir::NoDotAndDotDot );
+  for ( const QString &dir : dirs )
+  {
+    const QString srcDirName = sourceDir.filePath( dir );
+    const QString destDirName = destDir.filePath( dir );
+    if ( !copyDirectory( srcDirName, destDirName ) )
+    {
+      copiedAll = false;
+    }
+  }
+  return copiedAll;
+}
+
+bool QgsFileUtils::replaceTextInFile( const QString &path, const QString &searchString, const QString &replacement )
+{
+  QFile file( path );
+  if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+  {
+    QgsDebugError( u"Could not open file for reading: %1"_s.arg( file.errorString() ) );
+    return false;
+  }
+
+  QTextStream in( &file );
+  const QString originalFileContent = in.readAll();
+  file.close();
+
+  QString fileContent = originalFileContent;
+  fileContent.replace( searchString, replacement );
+  if ( fileContent == originalFileContent )
+    return true;
+
+  if ( !file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
+  {
+    QgsDebugError( u"Could not open file for writing: %1"_s.arg( file.errorString() ) );
+    return false;
+  }
+
+  QTextStream out( &file );
+  out << fileContent;
+  file.close();
+
+  return true;
 }

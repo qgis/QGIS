@@ -16,7 +16,6 @@ from qgis.testing import unittest
 
 
 class TestTestRunner(unittest.TestCase):
-
     def test_fails(self):
         self.assertTrue(False)
 

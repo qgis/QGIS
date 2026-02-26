@@ -10,17 +10,16 @@ __author__ = "Nyall Dawson"
 __date__ = "27/06/2023"
 __copyright__ = "Copyright 2023, The QGIS Project"
 
-from qgis.PyQt.QtCore import QSize
 from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsMapSettings,
     QgsRectangle,
     QgsTiledSceneLayer,
     QgsTiledSceneTextureRenderer,
     QgsTiledSceneWireframeRenderer,
-    QgsCoordinateReferenceSystem,
-    QgsMapSettings,
 )
-from qgis.testing import start_app, QgisTestCase, unittest
-
+from qgis.PyQt.QtCore import QSize
+from qgis.testing import QgisTestCase, start_app, unittest
 from utilities import unitTestDataPath
 
 start_app()

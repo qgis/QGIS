@@ -11,15 +11,15 @@ __date__ = "12.8.2015"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
 
-from qgis.core import QgsEditError, QgsFeature, QgsVectorLayer, edit
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.core import QgsEditError, QgsFeature, QgsVectorLayer, edit
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestSyntacticSugar(QgisTestCase):
-
     def testEdit(self):
         """Test `with edit(layer):` code"""
 

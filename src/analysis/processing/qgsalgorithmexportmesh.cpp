@@ -28,7 +28,10 @@
 #include "qgsprocessingparametermeshdataset.h"
 #include "qgsrasterfilewriter.h"
 
+#include <QString>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -880,6 +883,9 @@ QVariantMap QgsMeshRasterizeAlgorithm::processAlgorithm( const QVariantMap &para
   );
   rasterDataProvider->setEditable( true );
 
+  const bool hasReportsDuringClose = rasterDataProvider->hasReportsDuringClose();
+  const double maxProgressDuringBlockWriting = hasReportsDuringClose ? 50.0 : 100.0;
+
   for ( int i = 0; i < mDataPerGroup.count(); ++i )
   {
     const DataGroup &dataGroup = mDataPerGroup.at( i );
@@ -913,14 +919,25 @@ QVariantMap QgsMeshRasterizeAlgorithm::processAlgorithm( const QVariantMap &para
     {
       if ( feedback->isCanceled() )
         return QVariantMap();
-      feedback->setProgress( 100 * i / mDataPerGroup.count() );
+      feedback->setProgress( maxProgressDuringBlockWriting * i / mDataPerGroup.count() );
     }
   }
 
   rasterDataProvider->setEditable( false );
 
   if ( feedback )
-    feedback->setProgress( 100 );
+    feedback->setProgress( maxProgressDuringBlockWriting );
+
+  if ( feedback && hasReportsDuringClose )
+  {
+    std::unique_ptr<QgsFeedback> scaledFeedback( QgsFeedback::createScaledFeedback( feedback, maxProgressDuringBlockWriting, 100.0 ) );
+    if ( !rasterDataProvider->closeWithProgress( scaledFeedback.get() ) )
+    {
+      if ( feedback->isCanceled() )
+        return {};
+      throw QgsProcessingException( QObject::tr( "Could not write raster dataset" ) );
+    }
+  }
 
   QVariantMap ret;
   ret[u"OUTPUT"_s] = fileName;

@@ -19,9 +19,9 @@ __author__ = "Médéric Ribreux"
 __date__ = "December 2015"
 __copyright__ = "(C) 2015, Médéric Ribreux"
 
-from .v_net import incorporatePoints, variableOutput
-
 from qgis.PyQt.QtCore import QCoreApplication
+
+from .v_net import incorporatePoints, variableOutput
 
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):

@@ -21,19 +21,17 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 import inspect
 
-from qgis.core import QgsProcessingAlgorithm, QgsMessageLog
-from qgis.utils import iface
+from qgis.core import QgsMessageLog, QgsProcessingAlgorithm
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QMessageBox
+from qgis.utils import iface
 
 from processing.gui.ContextAction import ContextAction
-
-from processing.script.ScriptEditorDialog import ScriptEditorDialog
 from processing.script import ScriptUtils
+from processing.script.ScriptEditorDialog import ScriptEditorDialog
 
 
 class EditScriptAction(ContextAction):
-
     def __init__(self):
         super().__init__()
         self.name = QCoreApplication.translate("EditScriptAction", "Edit Script…")

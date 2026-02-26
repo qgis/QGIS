@@ -24,9 +24,12 @@
 #include "qgsmarkersymbol.h"
 #include "qgssymbol.h"
 
+#include <QString>
 #include <QStyleOptionGraphicsItem>
 
 #include "moc_qgslayoutitemnodeitem.cpp"
+
+using namespace Qt::StringLiterals;
 
 void QgsLayoutNodesItem::setNodes( const QPolygonF &nodes )
 {

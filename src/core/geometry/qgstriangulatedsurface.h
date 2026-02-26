@@ -22,6 +22,10 @@
 #include "qgis_sip.h"
 #include "qgspolyhedralsurface.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsTriangle;
 
 

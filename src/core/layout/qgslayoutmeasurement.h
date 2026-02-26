@@ -22,6 +22,10 @@
 #include "qgis_core.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \class QgsLayoutMeasurement

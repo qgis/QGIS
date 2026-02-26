@@ -1,52 +1,57 @@
-{ lib
-, stdenv
+{
+  lib,
+  stdenv,
 
-, fetchFromGitHub
-, makeWrapper
-, replaceVars
-, wrapGAppsHook3
-, wrapQtAppsHook
+  fetchFromGitHub,
+  lndir,
+  makeWrapper,
+  replaceVars,
+  wrapGAppsHook3,
+  wrapQtAppsHook,
 
-, withGrass
-, withServer
+  withGrass,
+  withServer,
 
-, bison
-, cmake
-, draco
-, exiv2
-, fcgi
-, flex
-, geos
-, grass
-, gsl
-, hdf5
-, libspatialindex
-, libspatialite
-, libzip
-, netcdf
-, ninja
-, openssl
-, pdal
-, libpq
-, proj
-, protobuf
-, python3
-, qca
-, qscintilla
-, qt3d
-, qt5compat
-, qtbase
-, qtkeychain
-, qtlocation
-, qtmultimedia
-, qtsensors
-, qtserialport
-, qttools
-, qtwebengine
-, qwt
-, sqlite
-, txt2tags
-, zstd
+  darwin,
+  bison,
+  cmake,
+  draco,
+  exiv2,
+  fcgi,
+  flex,
+  geos,
+  grass,
+  gsl,
+  hdf5,
+  libtasn1,
+  libspatialindex,
+  libspatialite,
+  libzip,
+  netcdf,
+  ninja,
+  openssl,
+  pdal,
+  libpq,
+  proj,
+  protobuf,
+  python3,
+  qca,
+  qscintilla,
+  qt3d,
+  qt5compat,
+  qtbase,
+  qtkeychain,
+  qtlocation,
+  qtmultimedia,
+  qtsensors,
+  qtserialport,
+  qtsvg,
+  qttools,
+  qtwebengine,
+  qwt,
+  sqlite,
+  txt2tags,
+  zstd,
 }:
 
 let
@@ -64,39 +69,39 @@ let
     };
   });
 
-  qgisSourceFiles =
-    lib.fileset.difference
-      (lib.fileset.gitTracked ../.)
-      (lib.fileset.unions [
-        # excluded files
-        ./.
-        ../flake.nix
-        ../flake.lock
-        ../.docker
-        ../.github
-        ../.ci
-        ../debian
-        ../editors
-        ../ms-windows
-        ../rpm
-        ../vcpkg
-      ]);
+  qgisSourceFiles = lib.fileset.difference (lib.fileset.gitTracked ../.) (
+    lib.fileset.unions [
+      # excluded files
+      ./.
+      ../flake.nix
+      ../flake.lock
+      ../.docker
+      ../.github
+      ../.ci
+      ../debian
+      ../editors
+      ../ms-windows
+      ../rpm
+      ../vcpkg
+    ]
+  );
 
   # Version parsing taken from
   # https://github.com/qgis/QGIS/blob/1f0328cff6a8b4cf8a4f8d44a4304b9d9706aa72/rpm/buildrpms.sh#L118
   cmakeListsFile = lib.readFile ../CMakeLists.txt;
-  extractVersion = pattern:
+  extractVersion =
+    pattern:
     let
       matches = lib.match ".*[sS][eE][tT]\\(${pattern}[[:space:]]+\"([0-9]+)\".*" cmakeListsFile;
     in
-      if matches != null then lib.head matches else "0";
+    if matches != null then lib.head matches else "0";
   qgisVersion =
     let
       major = extractVersion "CPACK_PACKAGE_VERSION_MAJOR";
       minor = extractVersion "CPACK_PACKAGE_VERSION_MINOR";
       patch = extractVersion "CPACK_PACKAGE_VERSION_PATCH";
     in
-      "${major}.${minor}.${patch}";
+    "${major}.${minor}.${patch}";
 
   py = python3.override {
     self = py;
@@ -132,10 +137,10 @@ in
 
 # Print the list of included source files
 # lib.fileset.trace qgisSourceFiles
-stdenv.mkDerivation
-{
+stdenv.mkDerivation {
   pname = "qgis-unwrapped";
   version = qgisVersion;
+  outputs = [ "out" ] ++ lib.optional (!stdenv.hostPlatform.isDarwin) "man";
   src = lib.fileset.toSource {
     root = ../.;
     fileset = qgisSourceFiles;
@@ -150,6 +155,10 @@ stdenv.mkDerivation
     cmake
     flex
     ninja
+  ]
+  ++ lib.optionals stdenv.hostPlatform.isDarwin [
+    darwin.autoSignDarwinBinariesHook
+    lndir
   ];
 
   buildInputs = [
@@ -184,13 +193,21 @@ stdenv.mkDerivation
     sqlite
     txt2tags
     zstd
-  ] ++ lib.optional withGrass grass
+  ]
+  ++ lib.optional withGrass grass
+  ++ lib.optionals stdenv.hostPlatform.isDarwin [
+    libtasn1
+    qtsvg
+  ]
   ++ pythonBuildInputs;
 
   patches = [
     (replaceVars ./set-pyqt6-package-dirs.patch {
       pyQt6PackageDir = "${py.pkgs.pyqt6}/${py.pkgs.python.sitePackages}";
       qsciPackageDir = "${py.pkgs.qscintilla-qt6}/${py.pkgs.python.sitePackages}";
+    })
+    (replaceVars ./spatialite-path.patch {
+      spatialiteLib = "${libspatialite}/lib/mod_spatialite${stdenv.hostPlatform.extensions.sharedLibrary}";
     })
   ];
 
@@ -205,7 +222,13 @@ stdenv.mkDerivation
     "-DWITH_PDAL=True"
     "-DENABLE_TESTS=False"
     "-DQT_PLUGINS_DIR=${qtbase}/${qtbase.qtPluginPrefix}"
-  ] ++ lib.optional withServer [
+  ]
+  ++ lib.optionals stdenv.hostPlatform.isDarwin [
+    "-DQGIS_MACAPP_BUNDLE=0"
+    "-DSQLITE3_INCLUDE_DIR=${sqlite.dev}/include"
+    "-DUSE_OPENCL=OFF"
+  ]
+  ++ lib.optional withServer [
     "-DWITH_SERVER=True"
     "-DQGIS_CGIBIN_SUBDIR=${placeholder "out"}/lib/cgi-bin"
   ]
@@ -222,17 +245,121 @@ stdenv.mkDerivation
   ];
 
   dontWrapGApps = true; # wrapper params passed below
+  dontWrapQtApps = stdenv.hostPlatform.isDarwin;
 
   # GRASS has to be available on the command line even though we baked in the
   # path at build time using GRASS_PREFIX. Using wrapGAppsHook also prevents
   # file dialogs from crashing the program on non-NixOS.
-  postFixup = lib.optionalString withGrass ''
-    for program in $out/bin/*; do
-      wrapProgram $program \
-        "''${gappsWrapperArgs[@]}" \
-        --prefix PATH : ${lib.makeBinPath [ grass ]}
-    done
-  '';
+  postFixup =
+    lib.optionalString (withGrass && stdenv.hostPlatform.isLinux) ''
+      for program in $out/bin/*; do
+        wrapProgram $program \
+          "''${gappsWrapperArgs[@]}" \
+          --prefix PATH : ${lib.makeBinPath [ grass ]}
+      done
+    ''
+    + lib.optionalString stdenv.hostPlatform.isDarwin ''
+            mkdir -p $out/Applications/QGIS.app $out/bin
+            mv $out/Contents $out/Applications/QGIS.app/
+            ln -s $out/Applications/QGIS.app/Contents/MacOS/qgis $out/bin/qgis
+
+            SHORT_VERSION=$(echo "${qgisVersion}" | cut -d. -f1,2)
+            BUNDLE="$out/Applications/QGIS.app"
+            FRAMEWORKS="$BUNDLE/Contents/Frameworks"
+
+            for lib in "$FRAMEWORKS"/libqgis*.dylib "$FRAMEWORKS"/libqgispython*.dylib; do
+              [[ -f "$lib" && ! -L "$lib" ]] || continue
+              libname=$(basename "$lib")
+              install_name_tool -id "$FRAMEWORKS/$libname" "$lib" 2>/dev/null || true
+            done
+
+            fix_binary() {
+              local f="$1"
+              [[ -f "$f" ]] || return 0
+              file "$f" | grep -q "Mach-O" || return 0  # spellok
+
+              install_name_tool \
+                -change "$out/lib/libqgis_core.${qgisVersion}.dylib" "$FRAMEWORKS/libqgis_core.${qgisVersion}.dylib" \
+                -change "$out/lib/libqgis_gui.${qgisVersion}.dylib" "$FRAMEWORKS/libqgis_gui.${qgisVersion}.dylib" \
+                -change "$out/lib/libqgis_analysis.${qgisVersion}.dylib" "$FRAMEWORKS/libqgis_analysis.${qgisVersion}.dylib" \
+                -change "$out/lib/libqgis_3d.${qgisVersion}.dylib" "$FRAMEWORKS/libqgis_3d.${qgisVersion}.dylib" \
+                -change "$out/lib/libqgis_native.${qgisVersion}.dylib" "$FRAMEWORKS/libqgis_native.${qgisVersion}.dylib" \
+                -change "$out/lib/libqgis_app.${qgisVersion}.dylib" "$FRAMEWORKS/libqgis_app.${qgisVersion}.dylib" \
+                -change "$out/lib/libqgispython.${qgisVersion}.dylib" "$FRAMEWORKS/libqgispython.${qgisVersion}.dylib" \
+                -change "qwt.framework/Versions/6/qwt" "${qwt}/lib/qwt.framework/Versions/6/qwt" \
+                -change "@loader_path/../lib/libqscintilla2_qt6.dylib" "${qscintilla}/lib/libqscintilla2_qt6.dylib" \
+                -change "@loader_path/../lib/libqt6keychain.dylib" "${qtkeychain}/lib/libqt6keychain.dylib" \
+                -change "@loader_path/../lib/libqwt.dylib" "${qwt}/lib/libqwt.dylib" \
+                -change "@loader_path/../../Frameworks/qca-qt6.framework/qca-qt6" "${qca}/lib/qca-qt6.framework/qca-qt6" \
+                -change "@loader_path/../../../qca-qt6.framework/qca-qt6" "${qca}/lib/qca-qt6.framework/qca-qt6" \
+                -change "@loader_path/../../../../MacOS/lib/libqscintilla2_qt6.dylib" "${qscintilla}/lib/libqscintilla2_qt6.dylib" \
+                -change "@loader_path/../../../../MacOS/lib/libqt6keychain.dylib" "${qtkeychain}/lib/libqt6keychain.dylib" \
+                -change "@loader_path/../../../../MacOS/lib/libqwt.dylib" "${qwt}/lib/libqwt.dylib" \
+                -change "@executable_path/lib/libqwt.dylib" "${qwt}/lib/libqwt.dylib" \
+                -change "@executable_path/lib/libqscintilla2_qt6.dylib" "${qscintilla}/lib/libqscintilla2_qt6.dylib" \
+                -change "@executable_path/lib/libqt6keychain.dylib" "${qtkeychain}/lib/libqt6keychain.dylib" \
+                -change "@executable_path/../Frameworks/qca-qt6.framework/qca-qt6" "${qca}/lib/qca-qt6.framework/qca-qt6" \
+                -change "@loader_path/../../../qgis_core.framework/qgis_core" "$FRAMEWORKS/qgis_core.framework/Versions/$SHORT_VERSION/qgis_core" \
+                -change "@loader_path/../../../qgis_gui.framework/qgis_gui" "$FRAMEWORKS/qgis_gui.framework/Versions/$SHORT_VERSION/qgis_gui" \
+                -change "@loader_path/../../../qgis_analysis.framework/qgis_analysis" "$FRAMEWORKS/qgis_analysis.framework/Versions/$SHORT_VERSION/qgis_analysis" \
+                -change "@loader_path/../../../qgis_3d.framework/qgis_3d" "$FRAMEWORKS/qgis_3d.framework/Versions/$SHORT_VERSION/qgis_3d" \
+                -change "@loader_path/../../../qgis_native.framework/qgis_native" "$FRAMEWORKS/qgis_native.framework/Versions/$SHORT_VERSION/qgis_native" \
+                "$f" 2>/dev/null || true
+            }
+
+            fix_binary "$BUNDLE/Contents/MacOS/qgis"
+            for bin in "$BUNDLE/Contents/MacOS"/*; do fix_binary "$bin"; done
+            for lib in "$FRAMEWORKS"/*.dylib; do fix_binary "$lib"; done
+            if [[ -d "$BUNDLE/Contents/MacOS/lib" ]]; then
+              for lib in "$BUNDLE/Contents/MacOS/lib"/*.dylib; do fix_binary "$lib"; done
+            fi
+            for fw in qgis_core qgis_gui qgis_analysis qgis_3d qgis_native; do
+              fix_binary "$FRAMEWORKS/$fw.framework/Versions/$SHORT_VERSION/$fw"
+              [[ -f "$FRAMEWORKS/$fw.framework/$fw" && ! -L "$FRAMEWORKS/$fw.framework/$fw" ]] && \
+                fix_binary "$FRAMEWORKS/$fw.framework/$fw"
+            done
+            for plugin in "$BUNDLE/Contents/PlugIns/qgis"/*.so; do fix_binary "$plugin"; done
+
+            # Fix Python binding .so files in Frameworks/qgis
+            for pyso in "$BUNDLE/Contents/Frameworks/qgis"/*.so; do fix_binary "$pyso"; done
+
+            ${lib.optionalString withGrass ''
+              fix_binary "$FRAMEWORKS/qgisgrass8.framework/Versions/$SHORT_VERSION/qgisgrass8"
+              install_name_tool \
+                -change "@loader_path/../../../qgisgrass8.framework/qgisgrass8" "$FRAMEWORKS/qgisgrass8.framework/Versions/$SHORT_VERSION/qgisgrass8" \
+                "$BUNDLE/Contents/MacOS/QGIS" 2>/dev/null || true
+              for lib in "$BUNDLE/Contents/MacOS/lib"/*.dylib; do
+                install_name_tool \
+                  -change "@loader_path/../../../qgisgrass8.framework/qgisgrass8" "$FRAMEWORKS/qgisgrass8.framework/Versions/$SHORT_VERSION/qgisgrass8" \
+                  "$lib" 2>/dev/null || true
+              done
+            ''}
+
+            ${lib.optionalString withServer ''
+              fix_binary "$BUNDLE/Contents/MacOS/lib/libqgis_server.${qgisVersion}.dylib"
+            ''}
+
+            QGIS_PYTHON="$BUNDLE/Contents/Resources/python"
+            if [[ -d "$QGIS_PYTHON" ]]; then
+              for pkg in ${
+                lib.concatMapStringsSep " " (p: "${p}/${py.pkgs.python.sitePackages}") (
+                  py.pkgs.requiredPythonModules pythonBuildInputs
+                )
+              }; do
+                [[ -d "$pkg" ]] && lndir -silent "$pkg" "$QGIS_PYTHON"
+              done
+              find "$QGIS_PYTHON" -type l ! -exec test -e {} \; -delete
+            fi
+
+            mkdir -p "$BUNDLE/Contents/PlugIns"
+            lndir -silent "${qtbase}/${qtbase.qtPluginPrefix}" "$BUNDLE/Contents/PlugIns"
+            lndir -silent "${qtsvg}/${qtbase.qtPluginPrefix}" "$BUNDLE/Contents/PlugIns"
+
+            cat > "$BUNDLE/Contents/Resources/qt.conf" << 'EOF'
+      [Paths]
+      Plugins = PlugIns
+      EOF
+    '';
 
   passthru = {
     inherit pythonBuildInputs;
@@ -244,7 +371,7 @@ stdenv.mkDerivation
     homepage = "https://www.qgis.org";
     license = licenses.gpl2Plus;
     maintainers = with maintainers; teams.geospatial.members;
-    platforms = with platforms; linux;
+    platforms = with platforms; unix;
     mainProgram = "qgis";
   };
 }

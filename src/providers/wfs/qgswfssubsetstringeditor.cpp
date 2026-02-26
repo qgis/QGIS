@@ -21,7 +21,11 @@
 #include "qgswfsshareddata.h"
 #include "qgswfsutils.h"
 
+#include <QString>
+
 #include "moc_qgswfssubsetstringeditor.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSubsetStringEditorInterface *QgsWfsSubsetStringEditor::create( QgsVectorLayer *layer, QgsWFSProvider *provider, QWidget *parent, Qt::WindowFlags fl )
 {

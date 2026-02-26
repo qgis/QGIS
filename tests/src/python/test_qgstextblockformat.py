@@ -9,23 +9,22 @@ the Free Software Foundation; either version 2 of the License, or
 """
 
 import math
+import unittest
 
-from qgis.PyQt.QtGui import QBrush, QColor
 from qgis.core import (
     Qgis,
     QgsFontUtils,
+    QgsMargins,
     QgsRenderContext,
     QgsTextBlockFormat,
-    QgsMargins,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtGui import QBrush, QColor
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsTextBlockFormat(QgisTestCase):
-
     def setUp(self):
         QgsFontUtils.loadStandardTestFonts(["Bold", "Oblique"])
 

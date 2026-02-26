@@ -20,6 +20,10 @@
 #include "qgsalgorithmzonalstatistics_private.h"
 #include "qgszonalstatistics.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsZonalStatisticsFeatureBasedAlgorithm::name() const

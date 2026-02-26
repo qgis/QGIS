@@ -24,8 +24,11 @@
 #include "qgsproject.h"
 
 #include <QDomElement>
+#include <QString>
 
 #include "moc_qgsprojectdisplaysettings.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProjectDisplaySettings::QgsProjectDisplaySettings( QObject *parent )
   : QObject( parent )

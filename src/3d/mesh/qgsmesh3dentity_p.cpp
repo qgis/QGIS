@@ -19,6 +19,7 @@
 
 #include "qgs3drendercontext.h"
 #include "qgsgeotransform.h"
+#include "qgsmesh3dgeometry_p.h"
 #include "qgsmesh3dmaterial_p.h"
 #include "qgsmeshlayer.h"
 

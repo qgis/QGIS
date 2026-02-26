@@ -11,21 +11,12 @@ __date__ = "19/03/2023"
 __copyright__ = "Copyright 2023, The QGIS Project"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QEvent,
-    QLocale,
-    QTemporaryDir,
-    QIODevice,
-    QBuffer,
-)
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgis,
-    QgsApplication,
     QgsAbstractSensor,
+    QgsApplication,
     QgsExpression,
     QgsExpressionContext,
     QgsExpressionContextUtils,
@@ -33,9 +24,17 @@ from qgis.core import (
     QgsProject,
     QgsSensorManager,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import (
+    QBuffer,
+    QCoreApplication,
+    QEvent,
+    QIODevice,
+    QLocale,
+    QTemporaryDir,
+)
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -43,7 +42,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestSensor(QgsIODeviceSensor):
-
     buffer = None
 
     def __init__(self):
@@ -66,7 +64,6 @@ class TestSensor(QgsIODeviceSensor):
 
 
 class TestQgsSensorManager(QgisTestCase):
-
     manager = None
     sensor = None
 

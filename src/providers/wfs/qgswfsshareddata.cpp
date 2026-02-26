@@ -23,9 +23,12 @@
 #include "qgswfsfeaturedownloaderimpl.h"
 #include "qgswfsprovider.h"
 
+#include <QString>
 #include <QUrlQuery>
 
 #include "moc_qgswfsshareddata.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsWFSSharedData::QgsWFSSharedData( const QString &uri )
   : QgsBackgroundCachedSharedData( uri, "wfs", tr( "WFS" ) )

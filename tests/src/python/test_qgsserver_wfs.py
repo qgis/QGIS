@@ -26,7 +26,6 @@ import urllib.parse
 import urllib.request
 
 import osgeo.gdal  # NOQA
-
 from lxml import etree as et
 from qgis.core import (
     QgsCoordinateReferenceSystem,
@@ -35,24 +34,24 @@ from qgis.core import (
     QgsExpression,
     QgsFeature,
     QgsFeatureRequest,
-    QgsGeometry,
-    QgsProject,
-    QgsVectorLayer,
-    QgsMemoryProviderUtils,
-    QgsWkbTypes,
-    QgsVectorDataProvider,
-    QgsFields,
     QgsField,
+    QgsFields,
+    QgsGeometry,
+    QgsMemoryProviderUtils,
+    QgsProject,
+    QgsVectorDataProvider,
+    QgsVectorLayer,
+    QgsWkbTypes,
 )
+from qgis.PyQt.QtCore import QUrl, QVariant
 from qgis.server import (
-    QgsServerRequest,
-    QgsServer,
-    QgsBufferServerResponse,
     QgsBufferServerRequest,
+    QgsBufferServerResponse,
+    QgsServer,
+    QgsServerRequest,
 )
 from qgis.testing import unittest
 from test_qgsserver import QgsServerTestBase
-from qgis.PyQt.QtCore import QVariant, QUrl
 from test_qgsserver_accesscontrol import XML_NS
 
 # Strip path and content length because path may vary
@@ -79,8 +78,8 @@ class TestQgsServerWFS(QgsServerTestBase):
         project = self.testdata_path + project_file
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = "?MAP={}&SERVICE=WFS&REQUEST={}".format(
-            urllib.parse.quote(project), request
+        query_string = (
+            f"?MAP={urllib.parse.quote(project)}&SERVICE=WFS&REQUEST={request}"
         )
         if version:
             query_string += f"&VERSION={version}"
@@ -138,9 +137,7 @@ class TestQgsServerWFS(QgsServerTestBase):
         project = self.testdata_path + "test_project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = "?MAP={}&SERVICE=WFS&VERSION=1.0.0&REQUEST={}".format(
-            urllib.parse.quote(project), request
-        )
+        query_string = f"?MAP={urllib.parse.quote(project)}&SERVICE=WFS&VERSION=1.0.0&REQUEST={request}"
         header, body = self._execute_request(query_string)
 
         if requestid == "hits":
@@ -1021,7 +1018,7 @@ class TestQgsServerWFS(QgsServerTestBase):
                 % (self.testdata_path + "test_project_wms_grouped_layers.qgs")
             )
             if value is not None:
-                xml_value = "<qgs:{0}>{1}</qgs:{0}>".format(field, value).encode("utf8")
+                xml_value = f"<qgs:{field}>{value}</qgs:{field}>".encode()
                 self.assertTrue(xml_value in body, f"{xml_value} not found in body")
             else:
                 xml_value = f"<qgs:{field}>".encode()
@@ -1387,9 +1384,7 @@ class TestQgsServerWFS(QgsServerTestBase):
             )
             req = (
                 query_string
-                + "&REQUEST=GetFeature&VERSION={version}&TYPENAME=as_symbols&SRSNAME={srsName}&BBOX={bbox},{srsName}".format(
-                    version=version, srsName=srsName, bbox=bbox_text
-                )
+                + f"&REQUEST=GetFeature&VERSION={version}&TYPENAME=as_symbols&SRSNAME={srsName}&BBOX={bbox_text},{srsName}"
             )
             header, body = self._execute_request(req)
             self.assertTrue(

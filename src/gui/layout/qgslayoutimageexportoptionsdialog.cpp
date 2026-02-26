@@ -26,8 +26,11 @@
 #include <QPushButton>
 #include <QSlider>
 #include <QSpinBox>
+#include <QString>
 
 #include "moc_qgslayoutimageexportoptionsdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutImageExportOptionsDialog::QgsLayoutImageExportOptionsDialog( QWidget *parent, const QString &fileExtension, Qt::WindowFlags flags )
   : QDialog( parent, flags )

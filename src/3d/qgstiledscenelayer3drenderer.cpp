@@ -21,6 +21,10 @@
 #include "qgstiledscenelayer.h"
 #include "qgstiledscenelayerelevationproperties.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsTiledSceneLayer3DRendererMetadata::QgsTiledSceneLayer3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( u"tiledscene"_s )
 {

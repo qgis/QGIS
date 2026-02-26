@@ -30,13 +30,14 @@
 #ifndef PAL_GEOM_FUNCTION
 #define PAL_GEOM_FUNCTION
 
-#define SIP_NO_FILE
 
 
 #include <cmath>
 
 #include "qgis_core.h"
 #include "qgsgeos.h"
+
+#define SIP_NO_FILE
 
 namespace pal
 {

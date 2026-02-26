@@ -19,9 +19,12 @@
 #include "qgslogger.h"
 
 #include <QSet>
+#include <QString>
 #include <QThreadStorage>
 
 #include "moc_qgsruntimeprofiler.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRuntimeProfiler *QgsRuntimeProfiler::sMainProfiler = nullptr;
 

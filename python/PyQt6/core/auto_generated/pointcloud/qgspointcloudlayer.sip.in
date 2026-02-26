@@ -13,6 +13,7 @@
 
 
 
+
 class QgsPointCloudLayer : QgsMapLayer, QgsAbstractProfileSource
 {
 %Docstring(signature="appended")
@@ -294,6 +295,31 @@ otherwise the index is fetched from the data provider.
 .. versionadded:: 3.42
 %End
 
+    QVector<QgsPointCloudSubIndex> subIndexes() const;
+%Docstring
+Returns point cloud indexes associated with the layer (only if the layer
+has a virtual point cloud data provider). If the layer is editable,
+:py:class:`QgsPointCloudEditingIndexes` are returned, otherwise the
+indexes are fetched from the data provider.
+
+.. versionadded:: 4.0
+%End
+
+    bool isVpc() const;
+%Docstring
+Returns whether the layer has a virtual point cloud data provider or
+not.
+
+.. versionadded:: 4.0
+%End
+
+    QgsPointCloudIndex overview() const;
+%Docstring
+Returns the overview point cloud index associated with the layer (only
+if the layer has a virtual point cloud data provider).
+
+.. versionadded:: 4.0
+%End
 
   signals:
 
@@ -318,7 +344,7 @@ Emitted when statistics calculation state has changed
 .. versionadded:: 3.26
 %End
 
-    void chunkAttributeValuesChanged( const QgsPointCloudNodeId &n );
+    void chunkAttributeValuesChanged( const QgsPointCloudNodeId &n, const int position );
 %Docstring
 Emitted when a node gets some attribute values of some points changed
 

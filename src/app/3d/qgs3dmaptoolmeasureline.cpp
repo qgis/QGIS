@@ -22,6 +22,7 @@
 #include "qgs3dmeasuredialog.h"
 #include "qgs3dutils.h"
 #include "qgsabstractterrainsettings.h"
+#include "qgscameracontroller.h"
 #include "qgsframegraph.h"
 #include "qgsmaplayer.h"
 #include "qgspoint.h"
@@ -30,8 +31,11 @@
 #include "qgswindow3dengine.h"
 
 #include <QKeyEvent>
+#include <QString>
 
 #include "moc_qgs3dmaptoolmeasureline.cpp"
+
+using namespace Qt::StringLiterals;
 
 Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
   : Qgs3DMapTool( canvas )

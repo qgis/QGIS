@@ -26,16 +26,14 @@ __copyright__ = "(C) 2016, David Marteau"
 """
 import os
 
-from qgis.PyQt.QtCore import QBuffer, QIODevice
 from qgis.core import QgsApplication
+from qgis.PyQt.QtCore import QBuffer, QIODevice
 from qgis.server import QgsServer, QgsServerResponse, QgsService
 from qgis.testing import unittest
-
 from utilities import unitTestDataPath
 
 
 class Response(QgsServerResponse):
-
     def __init__(self):
         QgsServerResponse.__init__(self)
         self._buffer = QBuffer()
@@ -55,7 +53,6 @@ class Response(QgsServerResponse):
 
 
 class MyService(QgsService):
-
     def __init__(self, name, version, response):
         QgsService.__init__(self)
         self._response = response

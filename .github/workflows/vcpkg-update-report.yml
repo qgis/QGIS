@@ -23,7 +23,7 @@ jobs:
         with:
           vcpkg-manifest-dir: vcpkg
           triplet: x64-linux
-          features: auth,3d,bindings,gui,opencl,quick,server,exiv2,pdal,qtpositioning
+          features: 3d,auth,bindings,exiv2,gui,opencl,oracle,pdal,proj-data,qtpositioning,quick,recommended-features,server,sfcgal
 
       - name: Schedule report comment
         uses: ./.github/actions/post_sticky_comment

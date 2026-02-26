@@ -29,9 +29,12 @@
 #include "qgsrelationmanager.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgseditformconfig.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsEditFormConfig::QgsEditFormConfig()
   : d( new QgsEditFormConfigPrivate() )

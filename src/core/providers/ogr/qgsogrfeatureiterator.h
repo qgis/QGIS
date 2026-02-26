@@ -26,8 +26,9 @@
 #include "qgsogrconnpool.h"
 #include "qgsogrutils.h"
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 class QgsOgrFeatureIterator;
 class QgsOgrProvider;

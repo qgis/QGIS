@@ -24,6 +24,9 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmulticurve.h"
 
 #include <QJsonObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsMultiLineString::QgsMultiLineString()
 {

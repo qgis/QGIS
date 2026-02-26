@@ -22,11 +22,12 @@ __copyright__ = "(C) 2012, Victor Olaya"
 from qgis.core import (
     QgsProcessingException,
     QgsProcessingParameterDefinition,
-    QgsProcessingParameterFeatureSource,
     QgsProcessingParameterEnum,
+    QgsProcessingParameterFeatureSource,
     QgsProcessingParameterString,
     QgsProcessingParameterVectorDestination,
 )
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 

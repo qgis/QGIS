@@ -20,9 +20,12 @@
 #include "qgssettings.h"
 
 #include <QDesktopServices>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsideoptions.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsIdeOptionsWidget

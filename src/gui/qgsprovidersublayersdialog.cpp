@@ -28,9 +28,12 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QPushButton>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsprovidersublayersdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProviderSublayerDialogModel::QgsProviderSublayerDialogModel( QObject *parent )
   : QgsProviderSublayerModel( parent )

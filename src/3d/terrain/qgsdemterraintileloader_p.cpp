@@ -29,10 +29,13 @@
 #include "qgsterraintileentity_p.h"
 
 #include <QMutexLocker>
+#include <QString>
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QGeometryRenderer>
 
 #include "moc_qgsdemterraintileloader_p.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -147,7 +150,7 @@ void QgsDemTerrainTileLoader::onHeightMapReady( int jobId, const QByteArray &hei
 
 #include "qgsrasterlayer.h"
 #include "qgsrasterprojector.h"
-#include <QtConcurrent/QtConcurrentRun>
+#include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <memory>
 #include "qgsterraindownloader.h"

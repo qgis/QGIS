@@ -26,8 +26,11 @@
 #include "qgsmessagebar.h"
 
 #include <QSettings>
+#include <QString>
 
 #include "moc_qgstexteditwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTextEditWrapper::QgsTextEditWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )

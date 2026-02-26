@@ -552,15 +552,12 @@ sources
 %End
 
     class VariableDefinition
-{
+    {
 %Docstring(signature="appended")
 Definition of a expression context variable available during model
 execution.
 %End
 
-%TypeHeaderCode
-#include "qgsprocessingmodelalgorithm.h"
-%End
       public:
 
         VariableDefinition( const QVariant &value = QVariant(), const QgsProcessingModelChildParameterSource &source = QgsProcessingModelChildParameterSource::fromStaticValue( QVariant() ), const QString &description = QString() );

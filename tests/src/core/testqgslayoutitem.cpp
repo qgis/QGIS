@@ -38,7 +38,10 @@
 #include <QImage>
 #include <QObject>
 #include <QPainter>
+#include <QString>
 #include <QtTest/QSignalSpy>
+
+using namespace Qt::StringLiterals;
 
 //simple item for testing, since some methods in QgsLayoutItem are pure virtual
 class TestItem : public QgsLayoutItem

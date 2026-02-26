@@ -21,10 +21,11 @@ __copyright__ = "(C) 2017, Sandro Santilli"
 
 import os
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
 from qgis.core import QgsDataSourceUri
-from qgis.utils import iface
 from qgis.PyQt.QtCore import QObject
+from qgis.testing import QgisTestCase, start_app
+from qgis.utils import iface
 
 start_app()
 
@@ -32,7 +33,6 @@ from db_manager.db_plugins.postgis.connector import PostGisDBConnector
 
 
 class TestDBManagerPostgisConnector(QgisTestCase):
-
     # def setUpClass():
 
     def _getUser(self, connector):

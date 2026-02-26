@@ -11,8 +11,8 @@ __date__ = "13/01/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.core import (
     Qgis,
     QgsCoordinateTransformContext,
@@ -24,14 +24,13 @@ from qgis.core import (
     QgsVectorFileWriter,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QTemporaryDir
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsVectorLayerEditBufferGroup(QgisTestCase):
-
     def tearDown(self):
         """Run after each test."""
         QgsProject.instance().removeAllMapLayers()

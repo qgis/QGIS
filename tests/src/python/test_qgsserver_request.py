@@ -25,12 +25,10 @@ from qgis.server import (
     QgsFcgiServerRequest,
     QgsServerRequest,
 )
-
 from test_qgsserver import QgsServerTestBase
 
 
 class QgsServerRequestTest(QgsServerTestBase):
-
     @staticmethod
     def _set_env(env={}):
         for k in (

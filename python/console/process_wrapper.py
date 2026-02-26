@@ -17,18 +17,17 @@
 
 import locale
 import os
-import subprocess
 import signal
+import subprocess
 import sys
 import time
-from queue import Queue, Empty
+from queue import Empty, Queue
 from threading import Thread
 
 from qgis.PyQt.QtCore import QObject, pyqtSignal
 
 
 class ProcessWrapper(QObject):
-
     finished = pyqtSignal(int)
 
     def __init__(self, command, interactive=True, parent=None):

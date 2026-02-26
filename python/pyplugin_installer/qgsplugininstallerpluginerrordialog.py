@@ -23,11 +23,10 @@
  ***************************************************************************/
 """
 
-from qgis.PyQt.QtWidgets import QDialog
-
 from pathlib import Path
 
 from qgis.PyQt import uic
+from qgis.PyQt.QtWidgets import QDialog
 
 Ui_QgsPluginInstallerPluginErrorDialogBase, _ = uic.loadUiType(
     Path(__file__).parent / "qgsplugininstallerpluginerrorbase.ui"

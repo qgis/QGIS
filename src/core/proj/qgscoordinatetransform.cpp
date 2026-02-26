@@ -28,6 +28,10 @@
 #include "qgsrectangle.h"
 #include "qgsvector3d.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //qt includes
 #include <QDomNode>
 #include <QDomElement>

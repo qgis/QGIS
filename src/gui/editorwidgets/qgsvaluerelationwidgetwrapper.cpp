@@ -33,11 +33,14 @@
 #include <QLineEdit>
 #include <QMenu>
 #include <QStandardItemModel>
+#include <QString>
 #include <QStringListModel>
 #include <QTimer>
 #include <QVBoxLayout>
 
 #include "moc_qgsvaluerelationwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 using namespace nlohmann;
 

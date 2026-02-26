@@ -26,6 +26,8 @@
 
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 struct formatter : std::numpunct<wchar_t>

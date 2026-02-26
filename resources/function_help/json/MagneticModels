@@ -1,0 +1,5 @@
+{
+  "name": "MagneticModels",
+  "type": "group",
+  "description": "This group contains functions that calculate values based on magnetic models."
+}

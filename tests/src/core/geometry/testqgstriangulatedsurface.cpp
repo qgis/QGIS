@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsgeometry.h"
 #include "qgslinestring.h"
 #include "qgspolygon.h"
 #include "qgssurface.h"
@@ -24,6 +25,8 @@
 #include <QPainter>
 #include <QString>
 #include <qtestcase.h>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsTriangulatedSurface : public QObject
 {
@@ -39,6 +42,7 @@ class TestQgsTriangulatedSurface : public QObject
     void testRemovePatch();
     void testPatches();
     void testAreaPerimeter();
+    void testArea3D();
     void testInsertVertex();
     void testMoveVertex();
     void testDeleteVertex();
@@ -57,6 +61,8 @@ class TestQgsTriangulatedSurface : public QObject
     void testWKT();
     void testExport();
     void testCast();
+    void testCoerceToTypeErrorMessage();
+    void testGeometryEditUtilsAddPart();
 };
 
 void TestQgsTriangulatedSurface::testConstructor()
@@ -76,6 +82,7 @@ void TestQgsTriangulatedSurface::testConstructor()
   QCOMPARE( surface.dimension(), 2 );
   QVERIFY( !surface.hasCurvedSegments() );
   QCOMPARE( surface.area(), 0.0 );
+  QCOMPARE( surface.area3D(), 0.0 );
   QCOMPARE( surface.perimeter(), 0.0 );
   QVERIFY( !surface.patchN( 0 ) );
 }
@@ -360,8 +367,24 @@ void TestQgsTriangulatedSurface::testAreaPerimeter()
   QgsTriangle *triangle = new QgsTriangle( QgsPoint( 1, 1 ), QgsPoint( 1, 6 ), QgsPoint( 6, 6 ) );
   surface.addPatch( triangle );
 
-  QGSCOMPARENEAR( surface.area(), 12.5, 0.01 ); // area is not implemented
+  QGSCOMPARENEAR( surface.area(), 12.5, 0.01 );
+  QGSCOMPARENEAR( surface.area3D(), 12.5, 0.01 );
   QGSCOMPARENEAR( surface.perimeter(), 17.07, 0.01 );
+}
+
+void TestQgsTriangulatedSurface::testArea3D()
+{
+  QgsTriangulatedSurface surface;
+  surface.fromWkt(
+    u"TIN Z ("
+    "((0 0 0, 10 0 0, 5 5 2, 0 0 0)),"
+    "((10 0 0, 10 10 1, 5 5 2, 10 0 0)),"
+    "((10 10 1, 0 10 0, 5 5 2, 10 10 1)),"
+    "((0 10 0, 0 0 0, 5 5 2, 0 10 0))"_s
+  );
+
+  QCOMPARE( surface.numPatches(), 4 );
+  QGSCOMPARENEAR( surface.area3D(), 106.29209, 1e-5 );
 }
 
 void TestQgsTriangulatedSurface::testInsertVertex()
@@ -1105,6 +1128,74 @@ void TestQgsTriangulatedSurface::testCast()
 
   QVERIFY( !pCast2.fromWkt( u"TINZ((0 0 0, 0 1 1, 1 0 2, 2 0 2, 0 0 0))"_s ) );
   QVERIFY( !pCast2.fromWkt( u"TINZ((111111))"_s ) );
+}
+
+void TestQgsTriangulatedSurface::testCoerceToTypeErrorMessage()
+{
+  // Test Phase 1: coerceToType should return error message when polygon has too many vertices for TIN
+
+  // Create a polygon with 4 vertices (5 points including closing) - too many for a triangle
+  QgsPolygon polygon;
+  QgsLineString *exteriorRing = new QgsLineString();
+  exteriorRing->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 1 ) << QgsPoint( 0, 0 ) );
+  polygon.setExteriorRing( exteriorRing );
+  QgsGeometry geom( polygon.clone() );
+
+  QVector<QgsGeometry> result = geom.coerceToType( Qgis::WkbType::TIN, 0, 0, true );
+
+  // Should fail with empty result
+  QVERIFY( result.isEmpty() );
+
+  // Test with a valid triangle (3 vertices = 4 points including closing)
+  QgsPolygon trianglePolygon;
+  QgsLineString *triangleRing = new QgsLineString();
+  triangleRing->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 0.5, 1 ) << QgsPoint( 0, 0 ) );
+  trianglePolygon.setExteriorRing( triangleRing );
+  QgsGeometry triangleGeom( trianglePolygon.clone() );
+
+  result = triangleGeom.coerceToType( Qgis::WkbType::TIN, 0, 0, true );
+
+  // Should succeed
+  QVERIFY( !result.isEmpty() );
+}
+
+void TestQgsTriangulatedSurface::testGeometryEditUtilsAddPart()
+{
+  // Test Phase 2: QgsGeometry::addPartV2 for TIN
+
+  // Create an empty TIN geometry
+  QgsGeometry tinGeom( std::make_unique<QgsTriangulatedSurface>() );
+  QCOMPARE( qgsgeometry_cast<const QgsTriangulatedSurface *>( tinGeom.constGet() )->numPatches(), 0 );
+
+  // Add a triangle
+  QgsTriangle triangle1( QgsPoint( 0, 0 ), QgsPoint( 1, 0 ), QgsPoint( 0.5, 1 ) );
+  Qgis::GeometryOperationResult result = tinGeom.addPartV2( triangle1.clone(), Qgis::WkbType::TIN );
+  QCOMPARE( result, Qgis::GeometryOperationResult::Success );
+  QCOMPARE( qgsgeometry_cast<const QgsTriangulatedSurface *>( tinGeom.constGet() )->numPatches(), 1 );
+
+  // Add another triangle
+  QgsTriangle triangle2( QgsPoint( 1, 0 ), QgsPoint( 2, 0 ), QgsPoint( 1.5, 1 ) );
+  result = tinGeom.addPartV2( triangle2.clone(), Qgis::WkbType::TIN );
+  QCOMPARE( result, Qgis::GeometryOperationResult::Success );
+  QCOMPARE( qgsgeometry_cast<const QgsTriangulatedSurface *>( tinGeom.constGet() )->numPatches(), 2 );
+
+  // Try to add a polygon that is a valid triangle (3 vertices)
+  QgsPolygon validPolygon;
+  QgsLineString *ring = new QgsLineString();
+  ring->setPoints( QgsPointSequence() << QgsPoint( 2, 0 ) << QgsPoint( 3, 0 ) << QgsPoint( 2.5, 1 ) << QgsPoint( 2, 0 ) );
+  validPolygon.setExteriorRing( ring );
+  result = tinGeom.addPartV2( validPolygon.clone(), Qgis::WkbType::TIN );
+  QCOMPARE( result, Qgis::GeometryOperationResult::Success );
+  QCOMPARE( qgsgeometry_cast<const QgsTriangulatedSurface *>( tinGeom.constGet() )->numPatches(), 3 );
+
+  // Try to add a polygon that is NOT a triangle (4 vertices) - should fail
+  QgsPolygon invalidPolygon;
+  ring = new QgsLineString();
+  ring->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 1 ) << QgsPoint( 0, 0 ) );
+  invalidPolygon.setExteriorRing( ring );
+  result = tinGeom.addPartV2( invalidPolygon.clone(), Qgis::WkbType::TIN );
+  QCOMPARE( result, Qgis::GeometryOperationResult::InvalidInputGeometryType );
+  QCOMPARE( qgsgeometry_cast<const QgsTriangulatedSurface *>( tinGeom.constGet() )->numPatches(), 3 ); // unchanged
 }
 
 

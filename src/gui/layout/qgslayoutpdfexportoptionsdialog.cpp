@@ -29,8 +29,11 @@
 #include <QCheckBox>
 #include <QMenu>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgslayoutpdfexportoptionsdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *parent, bool allowGeospatialPdfExport, const QString &geospatialPdfReason, const QStringList &geospatialPdfLayerOrder, Qt::WindowFlags flags )
   : QDialog( parent, flags )

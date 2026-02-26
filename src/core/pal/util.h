@@ -30,14 +30,14 @@
 #ifndef PAL_UTIL_H
 #define PAL_UTIL_H
 
-#define SIP_NO_FILE
 
 
 #include <memory>
 #include <vector>
 
-#include <QLinkedList>
-#include <QList>
+#include <QVector>
+
+#define SIP_NO_FILE
 
 typedef struct GEOSGeom_t GEOSGeometry;
 
@@ -90,8 +90,7 @@ namespace pal
   class Util
   {
     public:
-
-      static QLinkedList<const GEOSGeometry *> *unmulti( const GEOSGeometry *the_geom );
+      static std::optional<QVector<const GEOSGeometry *>> unmulti( const GEOSGeometry *the_geom );
   };
 
 

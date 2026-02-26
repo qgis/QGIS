@@ -20,9 +20,8 @@ __date__ = "January 2016"
 __copyright__ = "(C) 2016, Nyall Dawson"
 
 
-from qgis.PyQt.QtCore import QDir, QSize, Qt, QPointF
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsArrowSymbolLayer,
@@ -52,15 +51,16 @@ from qgis.core import (
     QgsSimpleMarkerSymbolLayer,
     QgsSimpleMarkerSymbolLayerBase,
     QgsSymbol,
+    QgsSymbolBufferSettings,
     QgsSymbolLayer,
     QgsSymbolLayerUtils,
     QgsUnitTypes,
     QgsWkbTypes,
-    QgsSymbolBufferSettings,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QDir, QPointF, QSize, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -68,7 +68,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsSymbol(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "symbol"
@@ -366,9 +365,9 @@ class TestQgsSymbol(QgisTestCase):
             def get_geom():
                 if "geom" not in test:
                     geom = QgsGeometry.fromWkt(test["wkt"])
-                    assert (
-                        geom and not geom.isNull()
-                    ), f"Could not create geometry {test['wkt']}"
+                    assert geom and not geom.isNull(), (
+                        f"Could not create geometry {test['wkt']}"
+                    )
                 else:
                     geom = test["geom"]
                 return geom
@@ -1164,7 +1163,6 @@ class TestQgsSymbol(QgisTestCase):
 
 
 class TestQgsMarkerSymbol(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "symbol"
@@ -1943,7 +1941,6 @@ class TestQgsMarkerSymbol(QgisTestCase):
 
 
 class TestQgsLineSymbol(QgisTestCase):
-
     def testWidth(self):
         # test width and setWidth
         ms = QgsMapSettings()
@@ -2003,7 +2000,6 @@ class TestQgsLineSymbol(QgisTestCase):
 
 
 class TestQgsFillSymbol(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "symbol"

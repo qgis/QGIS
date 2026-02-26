@@ -70,6 +70,7 @@
 #include <QPainter>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+#include <QString>
 #include <QStringBuilder>
 #include <QTextCodec>
 #include <QThread>
@@ -78,6 +79,8 @@
 #include <QUrlQuery>
 
 #include "moc_qgswmsprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef QGISDEBUG
 #include <QFile>
@@ -1314,7 +1317,8 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
 {
   QgsDateTimeRange range = temporalCapabilities()->requestedTemporalRange();
 
-  QString format { u"yyyy-MM-ddThh:mm:ssZ"_s };
+  QString format = mSettings.mTimeFormat;
+
   bool dateOnly = false;
 
   QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( u"wms"_s );
@@ -1337,12 +1341,6 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
 
       range = QgsDateTimeRange( start, end );
     }
-  }
-
-  if ( !uri.value( u"enableTime"_s, true ).toBool() )
-  {
-    format = u"yyyy-MM-dd"_s;
-    dateOnly = true;
   }
 
   if ( range.begin().isValid() && range.end().isValid() )
@@ -1372,16 +1370,26 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
       }
     }
 
-    if ( range.begin() == range.end() )
-      setQueryItem( query, u"TIME"_s, range.begin().toString( format ) );
-    else
+    QString extent = range.begin().toString( format );
+    if ( range.begin() != range.end() )
     {
-      QString extent = range.begin().toString( format );
       extent.append( "/" );
       extent.append( range.end().toString( format ) );
-
-      setQueryItem( query, u"TIME"_s, extent );
     }
+
+    // Validate the format
+    if ( !QDateTime::fromString( extent, format ).isValid() )
+    {
+      QgsMessageLog::logMessage(
+        u"Could not determine temporal format for WMTS time dimension. QDateTime.fromString('%1', '%2').isValid() is false"_s
+          .arg( extent, format ),
+        QObject::tr( "WMS" ),
+        Qgis::MessageLevel::Warning
+      );
+      return;
+    }
+
+    setQueryItem( query, u"TIME"_s, extent );
   }
 
   // If the data provider has bi-temporal properties and they are enabled
@@ -2688,9 +2696,16 @@ QString QgsWmsProvider::htmlMetadata() const
     // Layer properties
     if ( n < mCaps.mLayersSupported.size() )
     {
-      metadata += u"<tr><th class=\"strong\" id=\"otherlayers\">"_s % tr( "Other Layers" ) % u"</th></tr>"_s;
+      static const int MAX_OTHERLAYERS_COUNT = 10;
+      QString description = tr( "Other Layers" );
+      if ( mCaps.mLayersSupported.size() > MAX_OTHERLAYERS_COUNT )
+      {
+        description += tr( " (only the first %1 are listed)" ).arg( MAX_OTHERLAYERS_COUNT );
+      }
 
-      for ( int i = 0; i < mCaps.mLayersSupported.size(); i++ )
+      metadata += u"<tr><th class=\"strong\" id=\"otherlayers\">"_s % description % u"</th></tr>"_s;
+
+      for ( int i = 0; i < std::min( static_cast<int>( mCaps.mLayersSupported.size() ), MAX_OTHERLAYERS_COUNT ); i++ )
       {
         if ( !mSettings.mActiveSubLayers.contains( mCaps.mLayersSupported[i].name ) )
         {
@@ -3972,7 +3987,7 @@ void QgsWmsProvider::showMessageBox( const QString &title, const QString &text )
 {
   QgsMessageOutput *message = QgsMessageOutput::createMessageOutput();
   message->setTitle( title );
-  message->setMessage( text, QgsMessageOutput::MessageText );
+  message->setMessage( text, Qgis::StringFormat::PlainText );
   message->showMessage();
 }
 

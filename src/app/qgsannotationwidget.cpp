@@ -31,8 +31,11 @@
 #include "qgssymbolselectordialog.h"
 
 #include <QColorDialog>
+#include <QString>
 
 #include "moc_qgsannotationwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryBool *QgsAnnotationWidget::settingLiveUpdate = new QgsSettingsEntryBool( u"live-update"_s, QgsSettingsTree::sTreeAnnotations, false, QObject::tr( "Whether the annotations are dynamically updated while they are edited" ) );
 

@@ -13,10 +13,10 @@ __copyright__ = "Copyright 2022, The QGIS Project"
 import os
 import shutil
 import tempfile
+import unittest
 
 from qgis.core import QgsProviderSqlQueryBuilder
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 app = start_app()
@@ -24,7 +24,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsProviderSqlQueryBuilder(QgisTestCase):
-
     def test_quoted_identifier(self):
         builder = QgsProviderSqlQueryBuilder()
         self.assertEqual(builder.quoteIdentifier("a"), '"a"')

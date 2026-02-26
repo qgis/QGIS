@@ -16,6 +16,7 @@
 #include "qgsversionmigration.h"
 
 #include "qgsapplication.h"
+#include "qgsfileutils.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsreadwritecontext.h"
@@ -31,17 +32,25 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QString>
 #include <QTextStream>
 #include <qsettings.h>
 
+using namespace Qt::StringLiterals;
+
 std::unique_ptr<QgsVersionMigration> QgsVersionMigration::canMigrate( int fromVersion, int toVersion )
 {
-  if ( fromVersion == 20000 && toVersion >= 29900 )
+  if ( fromVersion == 30000 && toVersion >= 39900 )
   {
-    return std::make_unique<Qgs2To3Migration>();
+    return std::make_unique<Qgs3To4Migration>();
   }
   return nullptr;
 }
+
+#if 0
+//
+// Qgs2To3Migration
+//
 
 QgsError Qgs2To3Migration::runMigration()
 {
@@ -346,4 +355,45 @@ QPair<QString, QString> Qgs2To3Migration::transformKey( QString fullOldKey, QStr
 QString Qgs2To3Migration::migrationFilePath()
 {
   return QgsApplication::resolvePkgPath() + "/resources/2to3migration.txt";
+}
+
+#endif
+
+
+//
+// Qgs3To4Migration
+//
+
+QgsError Qgs3To4Migration::runMigration( const QString &oldProfilePath, const QString &newProfilePath )
+{
+  QgsDebugMsgLevel( u"Performing migration from 3.x -> 4.x"_s, 2 );
+  QgsDebugMsgLevel( u"Copying 3.x profile from %1 to %2"_s.arg( oldProfilePath, newProfilePath ), 2 );
+
+  // files created by default (by QgsApplication startup), we want to overwrite these
+  QDir newProfileDir( newProfilePath );
+  newProfileDir.remove( u"bookmarks.xml"_s );
+  newProfileDir.remove( u"qgis.db"_s );
+  newProfileDir.remove( u"symbology-style.db"_s );
+
+  QgsError errors;
+  QgsFileUtils::copyDirectory( oldProfilePath, newProfilePath );
+
+  newProfileDir.remove( u"QGIS/QGIS4.ini"_s );
+  newProfileDir.rename( u"QGIS/QGIS3.ini"_s, u"QGIS/QGIS4.ini"_s );
+
+  // do a one-time search and replace for the old profiles path in the ini file to the new path
+  QgsFileUtils::replaceTextInFile( newProfileDir.filePath( u"QGIS/QGIS4.ini"_s ), oldProfilePath, newProfilePath );
+
+  QgsSettings newSettings;
+  newSettings.setValue( u"migration/migrated_from_3"_s, true );
+
+  return errors;
+}
+
+bool Qgs3To4Migration::requiresMigration()
+{
+  const QgsSettings settings;
+  const bool alreadyMigrated = settings.value( u"migration/migrated_from_3"_s, false ).toBool();
+  QgsDebugMsgLevel( u"already migrated? %1"_s.arg( alreadyMigrated ? "Y" : "N" ), 2 );
+  return !alreadyMigrated;
 }

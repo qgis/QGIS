@@ -29,7 +29,11 @@
 #include "qgsstackeddiagramproperties.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsdiagramwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDiagramWidget::QgsDiagramWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

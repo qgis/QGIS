@@ -22,6 +22,10 @@
 #include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsPaintEffect *QgsBlurEffect::create( const QVariantMap &map )
 {
   QgsBlurEffect *newEffect = new QgsBlurEffect();

@@ -25,8 +25,11 @@
 #include <QAbstractItemModel>
 #include <QFont>
 #include <QIcon>
+#include <QString>
 #include <QTimer>
 #include <QUuid>
+
+using namespace Qt::StringLiterals;
 
 class QgsLayerTreeNode;
 class QgsLayerTreeGroup;
@@ -540,6 +543,8 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     QPointer< QgsMapHitTestTask > mHitTestTask;
 
     QMap<QString, QSet<QString>> mHitTestResults;
+
+    QMap<QString, QPair<double, double>> mHitTestResultsRendererUpdatedCanvas;
 
     std::unique_ptr< QgsLayerTreeFilterSettings > mFilterSettings;
 

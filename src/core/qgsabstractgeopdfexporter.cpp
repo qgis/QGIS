@@ -29,9 +29,12 @@
 #include <QDomElement>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QString>
 #include <QTextStream>
 #include <QTimeZone>
 #include <QUuid>
+
+using namespace Qt::StringLiterals;
 
 bool QgsAbstractGeospatialPdfExporter::geospatialPDFCreationAvailable()
 {

@@ -23,7 +23,10 @@
 #include "qgsmaplayerconfigwidgetfactory.h"
 
 #include <QAbstractItemModel>
+#include <QString>
 #include <QStyledItemDelegate>
+
+using namespace Qt::StringLiterals;
 
 class QgsRasterLayer;
 

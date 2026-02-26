@@ -16,11 +16,12 @@ import re
 import shutil
 import sys
 import tempfile
+import unittest
 
 import osgeo.gdal
 import osgeo.ogr
 from osgeo import gdal
-from qgis.PyQt.QtCore import QVariant
+from providertestbase import ProviderTestCase
 from qgis.core import (
     Qgis,
     QgsApplication,
@@ -37,10 +38,8 @@ from qgis.core import (
     QgsVectorLayerExporter,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
-from providertestbase import ProviderTestCase
+from qgis.PyQt.QtCore import QVariant
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -52,7 +51,6 @@ def GDAL_COMPUTE_VERSION(maj, min, rev):
 
 
 class ErrorReceiver:
-
     def __init__(self):
         self.msg = None
 
@@ -61,7 +59,6 @@ class ErrorReceiver:
 
 
 class TestPyQgsShapefileProvider(QgisTestCase, ProviderTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -1224,7 +1221,6 @@ class TestPyQgsShapefileProvider(QgisTestCase, ProviderTestCase):
             ),
         ]
         for ogr_type, wkt, qgis_type, expected_wkt in tests:
-
             filename = "testPromoteToMulti"
             tmpfile = os.path.join(self.basetestpath, filename)
             ds = osgeo.ogr.GetDriverByName("ESRI Shapefile").CreateDataSource(tmpfile)

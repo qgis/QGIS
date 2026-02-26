@@ -33,11 +33,14 @@
 #include "qgswfsutils.h"
 
 #include <QDir>
+#include <QString>
 #include <QTimer>
 #include <QTransform>
 #include <QUrlQuery>
 
 #include "moc_qgswfsfeaturedownloaderimpl.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsWFSFeatureDownloaderImpl::QgsWFSFeatureDownloaderImpl( QgsWFSSharedData *shared, QgsFeatureDownloader *downloader, bool requestMadeFromMainThread )
   : QgsWfsRequest( shared->mURI )

@@ -16,12 +16,13 @@
 #ifndef QGSPROCESSINGAGGREGATEWIDGETWRAPPER_H
 #define QGSPROCESSINGAGGREGATEWIDGETWRAPPER_H
 
-#define SIP_NO_FILE
 
 #include "ui_qgsprocessingaggregatemappingpanelbase.h"
 
 #include "qgsprocessingparameterdefinitionwidget.h"
 #include "qgsprocessingwidgetwrapper.h"
+
+#define SIP_NO_FILE
 
 class QLineEdit;
 class QToolButton;

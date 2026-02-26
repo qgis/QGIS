@@ -24,6 +24,7 @@
 #include <QUndoCommand>
 
 #define SIP_NO_FILE
+
 ///@cond PRIVATE
 
 /**

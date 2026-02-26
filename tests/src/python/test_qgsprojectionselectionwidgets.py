@@ -10,29 +10,29 @@ __author__ = "Nyall Dawson"
 __date__ = "12/11/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtWidgets import QComboBox
+import unittest
+
 from qgis.core import (
     QgsApplication,
-    QgsSettings,
     QgsCoordinateReferenceSystem,
     QgsProject,
+    QgsSettings,
 )
 from qgis.gui import (
+    QgsCoordinateReferenceSystemProxyModel,
     QgsProjectionSelectionDialog,
     QgsProjectionSelectionTreeWidget,
     QgsProjectionSelectionWidget,
-    QgsCoordinateReferenceSystemProxyModel,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtWidgets import QComboBox
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsProjectionSelectionWidgets(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

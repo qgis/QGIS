@@ -24,7 +24,11 @@
 #include "qgssymbolselectordialog.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsfieldconditionalformatwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsFieldConditionalFormatWidget

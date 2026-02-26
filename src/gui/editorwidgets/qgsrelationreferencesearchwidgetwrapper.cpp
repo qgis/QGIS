@@ -24,9 +24,12 @@
 #include "qgsvaluerelationwidgetfactory.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
 #include <QStringListModel>
 
 #include "moc_qgsrelationreferencesearchwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRelationReferenceSearchWidgetWrapper::QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QgsMapCanvas *canvas, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )

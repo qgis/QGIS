@@ -20,6 +20,10 @@
 #include "qgscesiumutils.h"
 #include "qgsgltfutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #define TINYGLTF_IMPLEMENTATION
 #define TINYGLTF_NO_STB_IMAGE       // we use QImage-based reading of images
 #define TINYGLTF_NO_STB_IMAGE_WRITE // we don't need writing of images

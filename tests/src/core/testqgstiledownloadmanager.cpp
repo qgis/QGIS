@@ -25,8 +25,11 @@
 #include <QAbstractNetworkCache>
 #include <QCoreApplication>
 #include <QSignalSpy>
+#include <QString>
 #include <QTest>
 #include <QTimer>
+
+using namespace Qt::StringLiterals;
 
 const QString url_1 = "https://www.qwant.com/maps/tiles/ozbasemap/0/0/0.pbf";
 const QString url_2 = "https://www.qwant.com/maps/tiles/ozbasemap/1/0/0.pbf";

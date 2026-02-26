@@ -18,10 +18,10 @@
 #ifndef QGSSERVERPLUGINS_H
 #define QGSSERVERPLUGINS_H
 
-#define SIP_NO_FILE
-
 
 #include "qgsserverinterface.h"
+
+#define SIP_NO_FILE
 
 // This is needed by SIP otherwise it doesn't find QgsPythonUtils header
 class QgsPythonUtils;

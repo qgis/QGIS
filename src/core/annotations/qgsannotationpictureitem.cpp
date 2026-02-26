@@ -27,6 +27,9 @@
 #include "qgssymbollayerutils.h"
 
 #include <QFileInfo>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsAnnotationPictureItem::QgsAnnotationPictureItem( Qgis::PictureFormat format, const QString &path, const QgsRectangle &bounds )
   : QgsAnnotationRectItem( bounds )

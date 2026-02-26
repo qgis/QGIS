@@ -11,25 +11,25 @@ __date__ = "20/08/2012"
 __copyright__ = "Copyright 2012, The QGIS Project"
 
 
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
     QgsCoordinateTransformContext,
-    QgsProject,
-    QgsRectangle,
-    QgsPointXY,
-    QgsProjUtils,
     QgsCsException,
+    QgsPointXY,
+    QgsProject,
+    QgsProjUtils,
+    QgsRectangle,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsCoordinateTransform(QgisTestCase):
-
     def testTransformBoundingBox(self):
         """Test that we can transform a rectangular bbox from utm56s to LonLat"""
         myExtent = QgsRectangle(242270, 6043737, 246330, 6045897)
@@ -47,9 +47,8 @@ class TestQgsCoordinateTransform(QgisTestCase):
             150.1964384662953194,
             -35.6971885216629090,
         ]
-        myMessage = "Expected:\n{}\nGot:\n{}\n".format(
-            myExpectedExtent,
-            myProjectedExtent.toString(),
+        myMessage = (
+            f"Expected:\n{myExpectedExtent}\nGot:\n{myProjectedExtent.toString()}\n"
         )
 
         self.assertAlmostEqual(

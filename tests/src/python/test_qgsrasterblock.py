@@ -13,13 +13,12 @@ __author__ = "Till Frankenbach"
 __date__ = "24/07/2024"
 __copyright__ = "Copyright 2024, The QGIS Project"
 
-import numpy
-
-from qgis.core import Qgis, QgsRasterLayer, QgsRasterBlock
 import unittest
-from qgis.testing import start_app, QgisTestCase
-from qgis.PyQt.QtCore import QTemporaryDir
 
+import numpy
+from qgis.core import Qgis, QgsRasterBlock, QgsRasterLayer
+from qgis.PyQt.QtCore import QTemporaryDir
+from qgis.testing import QgisTestCase, start_app
 from test_qgsrasterattributetable import createTestRasters
 
 # Convenience instances in case you may need them
@@ -28,7 +27,6 @@ start_app()
 
 
 class TestQgsRasterBlock(QgisTestCase):
-
     def setUp(self):
         self.temp_dir = QTemporaryDir()
         self.temp_path = self.temp_dir.path()

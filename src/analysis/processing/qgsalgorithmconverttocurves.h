@@ -18,11 +18,12 @@
 #ifndef QGSALGORITHMCONVERTTOCURVES_H
 #define QGSALGORITHMCONVERTTOCURVES_H
 
-#define SIP_NO_FILE
 
 #include "qgis.h"
 #include "qgsmaptopixelgeometrysimplifier.h"
 #include "qgsprocessingalgorithm.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

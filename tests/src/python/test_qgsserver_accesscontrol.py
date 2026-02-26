@@ -25,7 +25,6 @@ from qgis.server import (
     QgsBufferServerResponse,
     QgsServerRequest,
 )
-
 from test_qgsserver import QgsServerTestBase
 from utilities import unitTestDataPath
 
@@ -126,7 +125,6 @@ class RestrictedAccessControl(QgsAccessControlFilter):
 
 
 class TestQgsServerAccessControl(QgsServerTestBase):
-
     @classmethod
     def _execute_request(cls, qs, requestMethod=QgsServerRequest.GetMethod, data=None):
         if data is not None:
@@ -303,15 +301,13 @@ class TestQgsServerAccessControl(QgsServerTestBase):
     def _test_colors(self, colors):
         for id, color in list(colors.items()):
             response, headers = self._post_fullaccess(
-                """<?xml version="1.0" encoding="UTF-8"?>
-                <wfs:GetFeature {xml_ns}>
+                f"""<?xml version="1.0" encoding="UTF-8"?>
+                <wfs:GetFeature {XML_NS}>
                 <wfs:Query typeName="db_point" srsName="EPSG:3857" xmlns:feature="http://www.qgis.org/gml">
                 <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"><ogc:PropertyIsEqualTo>
                 <ogc:PropertyName>gid</ogc:PropertyName>
                 <ogc:Literal>{id}</ogc:Literal>
-                </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>""".format(
-                    id=id, xml_ns=XML_NS
-                )
+                </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>"""
             )
             self.assertTrue(
                 str(response).find(f"<qgs:color>{color}</qgs:color>") != -1,

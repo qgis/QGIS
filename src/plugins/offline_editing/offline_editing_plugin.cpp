@@ -27,8 +27,11 @@
 #include "qgsproject.h"
 
 #include <QAction>
+#include <QString>
 
 #include "moc_offline_editing_plugin.cpp"
+
+using namespace Qt::StringLiterals;
 
 static const QString sName = QObject::tr( "OfflineEditing" );
 static const QString sDescription = QObject::tr( "Allow offline editing and synchronizing with database" );

@@ -31,6 +31,9 @@
 #include <QJsonObject>
 #include <QPainter>
 #include <QPainterPath>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsCompoundCurve::QgsCompoundCurve()
 {
@@ -1228,6 +1231,23 @@ void QgsCompoundCurve::sumUpArea( double &sum ) const
   }
   mHasCachedSummedUpArea = true;
   sum += mSummedUpArea;
+}
+
+void QgsCompoundCurve::sumUpArea3D( double &sum ) const
+{
+  if ( mHasCachedSummedUpArea3D )
+  {
+    sum += mSummedUpArea3D;
+    return;
+  }
+
+  mSummedUpArea3D = 0;
+  for ( const QgsCurve *curve : mCurves )
+  {
+    curve->sumUpArea3D( mSummedUpArea3D );
+  }
+  mHasCachedSummedUpArea3D = true;
+  sum += mSummedUpArea3D;
 }
 
 void QgsCompoundCurve::close()

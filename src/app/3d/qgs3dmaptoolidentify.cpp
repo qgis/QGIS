@@ -30,8 +30,11 @@
 #include "qgsvector3d.h"
 
 #include <QScreen>
+#include <QString>
 
 #include "moc_qgs3dmaptoolidentify.cpp"
+
+using namespace Qt::StringLiterals;
 
 Qgs3DMapToolIdentify::Qgs3DMapToolIdentify( Qgs3DMapCanvas *canvas )
   : Qgs3DMapTool( canvas )

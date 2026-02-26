@@ -12,17 +12,10 @@ __copyright__ = "Copyright 2016, The QGIS Project"
 
 import os
 import tempfile
+import unittest
 
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QDate,
-    QDateTime,
-    QLocale,
-    Qt,
-    QTime,
-    QVariant,
-)
 from qgis.core import (
+    NULL,
     QgsApplication,
     QgsCheckBoxFieldFormatter,
     QgsDateTimeFieldFormatter,
@@ -39,12 +32,18 @@ from qgis.core import (
     QgsValueRelationFieldFormatter,
     QgsVectorFileWriter,
     QgsVectorLayer,
-    NULL,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QDate,
+    QDateTime,
+    QLocale,
+    Qt,
+    QTime,
+    QVariant,
+)
+from qgis.testing import QgisTestCase, start_app
 from qgis.utils import spatialite_connect
-
 from utilities import writeShape
 
 start_app()
@@ -152,7 +151,6 @@ class TestQgsValueMapFieldFormatter(QgisTestCase):
 
 
 class TestQgsValueRelationFieldFormatter(QgisTestCase):
-
     def test_representValue(self):
         first_layer = QgsVectorLayer(
             "none?field=foreign_key:integer", "first_layer", "memory"
@@ -348,7 +346,6 @@ class TestQgsValueRelationFieldFormatter(QgisTestCase):
 
 
 class TestQgsRelationReferenceFieldFormatter(QgisTestCase):
-
     def test_representValue(self):
         first_layer = QgsVectorLayer(
             "none?field=foreign_key:integer", "first_layer", "memory"
@@ -459,7 +456,6 @@ class TestQgsRelationReferenceFieldFormatter(QgisTestCase):
 
 
 class TestQgsRangeFieldFormatter(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -700,7 +696,6 @@ class TestQgsRangeFieldFormatter(QgisTestCase):
 
 
 class TestQgsCheckBoxFieldFormatter(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -811,7 +806,6 @@ class TestQgsCheckBoxFieldFormatter(QgisTestCase):
 
 
 class TestQgsFallbackFieldFormatter(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -1159,7 +1153,6 @@ class TestQgsFallbackFieldFormatter(QgisTestCase):
 
 
 class TestQgsDateTimeFieldFormatter(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

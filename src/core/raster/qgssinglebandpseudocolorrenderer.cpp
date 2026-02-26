@@ -28,6 +28,9 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QImage>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsSingleBandPseudoColorRenderer::QgsSingleBandPseudoColorRenderer( QgsRasterInterface *input, int band, QgsRasterShader *shader )
   : QgsRasterRenderer( input, u"singlebandpseudocolor"_s )

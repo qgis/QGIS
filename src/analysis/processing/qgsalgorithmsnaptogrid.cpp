@@ -17,6 +17,10 @@
 
 #include "qgsalgorithmsnaptogrid.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsSnapToGridAlgorithm::name() const

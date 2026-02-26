@@ -17,7 +17,6 @@
 #ifndef QGSAUTHMETHODREGISTRY_H
 #define QGSAUTHMETHODREGISTRY_H
 
-#define SIP_NO_FILE
 
 #include <memory>
 
@@ -28,6 +27,8 @@
 #include <QLibrary>
 #include <QMap>
 #include <QString>
+
+#define SIP_NO_FILE
 
 class QgsAuthMethod;
 class QgsAuthMethodMetadata;

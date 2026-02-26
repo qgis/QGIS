@@ -17,6 +17,10 @@
 
 #include "qgsalgorithmextractbyattribute.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsExtractByAttributeAlgorithm::name() const

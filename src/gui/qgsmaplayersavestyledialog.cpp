@@ -25,8 +25,11 @@
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsmaplayersavestyledialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapLayerSaveStyleDialog::QgsMapLayerSaveStyleDialog( QgsMapLayer *layer, QWidget *parent )
   : QDialog( parent )

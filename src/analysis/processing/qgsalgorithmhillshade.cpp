@@ -20,6 +20,10 @@
 #include "qgshillshadefilter.h"
 #include "qgsrasterfilewriter.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsHillshadeAlgorithm::name() const

@@ -19,40 +19,39 @@ email                : brush.tyler@gmail.com
 """
 
 from functools import partial
-from qgis.PyQt.QtCore import (
-    Qt,
-    QObject,
-    qDebug,
-    QByteArray,
-    QMimeData,
-    QDataStream,
-    QIODevice,
-    QFileInfo,
-    QAbstractItemModel,
-    QModelIndex,
-    pyqtSignal,
-)
-from qgis.PyQt.QtWidgets import QApplication, QMessageBox
-from qgis.PyQt.QtGui import QIcon
-
-from .db_plugins import supportedDbTypes, createDbPlugin
-from .db_plugins.plugin import BaseError, Table, Database
-from .dlg_db_error import DlgDbError
-from .gui_utils import GuiUtils
 
 from qgis.core import (
+    QgsAbstractDatabaseProviderConnection,
     QgsApplication,
     QgsDataSourceUri,
-    QgsVectorLayer,
-    QgsRasterLayer,
+    QgsMessageLog,
     QgsMimeDataUtils,
     QgsProviderConnectionException,
     QgsProviderRegistry,
-    QgsAbstractDatabaseProviderConnection,
-    QgsMessageLog,
+    QgsRasterLayer,
+    QgsVectorLayer,
 )
-
+from qgis.PyQt.QtCore import (
+    QAbstractItemModel,
+    QByteArray,
+    QDataStream,
+    QFileInfo,
+    QIODevice,
+    QMimeData,
+    QModelIndex,
+    QObject,
+    Qt,
+    pyqtSignal,
+    qDebug,
+)
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QApplication, QMessageBox
 from qgis.utils import OverrideCursor
+
+from .db_plugins import createDbPlugin, supportedDbTypes
+from .db_plugins.plugin import BaseError, Database, Table
+from .dlg_db_error import DlgDbError
+from .gui_utils import GuiUtils
 
 try:
     from qgis.core import QgsVectorLayerExporter  # NOQA
@@ -133,7 +132,6 @@ class TreeItem(QObject):
 
 
 class PluginItem(TreeItem):
-
     def __init__(self, dbplugin, parent=None):
         TreeItem.__init__(self, dbplugin, parent)
 
@@ -161,7 +159,6 @@ class PluginItem(TreeItem):
 
 
 class ConnectionItem(TreeItem):
-
     def __init__(self, connection, parent=None):
         TreeItem.__init__(self, connection, parent)
         connection.changed.connect(self.itemChanged)
@@ -219,7 +216,6 @@ class ConnectionItem(TreeItem):
 
 
 class SchemaItem(TreeItem):
-
     def __init__(self, schema, parent):
         TreeItem.__init__(self, schema, parent)
         schema.changed.connect(self.itemChanged)
@@ -249,7 +245,6 @@ class SchemaItem(TreeItem):
 
 
 class TableItem(TreeItem):
-
     def __init__(self, table, parent):
         TreeItem.__init__(self, table, parent)
         table.changed.connect(self.itemChanged)

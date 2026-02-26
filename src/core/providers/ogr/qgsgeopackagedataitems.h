@@ -25,8 +25,9 @@
 
 #include <QStringList>
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 
 /**

@@ -10,6 +10,7 @@
 
 
 
+
 class QgsSettingsTreeNode
 {
 %Docstring(signature="appended")

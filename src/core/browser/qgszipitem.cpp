@@ -28,8 +28,11 @@
 #include "qgssettings.h"
 
 #include <QFileInfo>
+#include <QString>
 
 #include "moc_qgszipitem.cpp"
+
+using namespace Qt::StringLiterals;
 
 QIcon QgsZipItem::iconZip()
 {

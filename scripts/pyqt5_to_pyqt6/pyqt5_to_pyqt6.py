@@ -47,7 +47,6 @@ import logging
 import os
 import re
 import sys
-
 from collections import defaultdict
 from collections.abc import Sequence
 from enum import Enum
@@ -90,7 +89,6 @@ try:
     import qgis.analysis as qgis_analysis  # noqa: F403
     import qgis.core as qgis_core  # noqa: F403
     import qgis.gui as qgis_gui  # noqa: F403
-
     from qgis._3d import *  # noqa: F403
     from qgis.analysis import *  # noqa: F403
     from qgis.core import *  # noqa: F403
@@ -193,6 +191,35 @@ import_warnings = {
 # { (class, enum_value) : enum_name }
 qt_enums = {}
 ambiguous_enums = defaultdict(set)
+
+
+def get_enum_name(_class: str, enum_name: str, value: str):
+    """
+    Returns enum string according to given class name, enum name and value
+    """
+
+    # make sure we CAN import enum!
+    try:
+        eval(f"{_class}.{enum_name}.{value}")
+        return enum_name
+
+    except AttributeError:
+        # let's see if we can find what the replacement should be automatically...
+        # print(f'Trying to find {_class}.{value}.')
+        actual = eval(f"{_class}.{value}")
+        # print(f'Trying to find aliases for {actual.__class__}.')
+        obj = globals()[_class]
+        if isinstance(obj, type):
+            for attr_name in dir(obj):
+                try:
+                    attr = getattr(obj, attr_name)
+                    if attr is actual.__class__:
+                        # print(f'Found alias {_class}.{attr_name}')
+                        return attr_name
+                except AttributeError:
+                    continue
+
+        return None
 
 
 def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
@@ -377,13 +404,19 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
                     assert tokens[start_index].src == "QVariant"
                     assert tokens[start_index + 1].src == "."
                     assert tokens[start_index + 2].src == "Type"
-                    assert tokens[start_index + 3].src == "."
-
-                    tokens[start_index + 2] = tokens[start_index + 2]._replace(src="")
-                    tokens[start_index + 3] = tokens[start_index + 3]._replace(src="")
+                    # We may hit a return type annotation "-> QVariant.Type:"
+                    # which is OK. So only add the update if we detect "QVariant.Type."
+                    if tokens[start_index + 3].src == ".":
+                        tokens[start_index + 2] = tokens[start_index + 2]._replace(
+                            src=""
+                        )
+                        tokens[start_index + 3] = tokens[start_index + 3]._replace(
+                            src=""
+                        )
 
                 custom_updates[Offset(node.lineno, node.col_offset)] = (
-                    _replace_qvariant_type
+                    _replace_qvariant_type,
+                    "QVariant.Type.XXX doesn't exist, it should be QVariant.XXX",
                 )
             if object_types.get(_node.value.id) in ("QFontMetrics", "QFontMetricsF"):
                 if _node.attr == "width":
@@ -515,7 +548,7 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
                         for e in ambiguous_enums[(node.value.id, node.attr)]
                     ]
                     sys.stderr.write(
-                        f'{filename}:{node.lineno}:{node.col_offset} WARNING: ambiguous enum, cannot fix: {node.value.id}.{node.attr}. Could be: {", ".join(possible_values)}\n'
+                        f"{filename}:{node.lineno}:{node.col_offset} WARNING: ambiguous enum, cannot fix: {node.value.id}.{node.attr}. Could be: {', '.join(possible_values)}\n"
                     )
             elif (
                 isinstance(node, ast.Attribute)
@@ -539,7 +572,7 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
             elif (
                 isinstance(node, ast.ImportFrom)
                 and node.module
-                and node.module.startswith("PyQt5.")
+                and (node.module.startswith("PyQt5.") or node.module == "PyQt5")
             ):
                 fix_pyqt_import.append(Offset(node.lineno, node.col_offset))
 
@@ -554,8 +587,11 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
 
     if dry_run:
         for key, value in fix_qt_enums.items():
+            _class, enum_name, val = value
+            real_enum_name = get_enum_name(_class, enum_name, val)
+
             logging.warning(
-                f"{filename}:{key.line}:{key.utf8_byte_offset} - Enum error, add '{value[1]}' before '{value[2]}'"
+                f"{filename}:{key.line}:{key.utf8_byte_offset} - Enum error, add '{real_enum_name}' before '{val}'"
             )
 
         for key, value in member_renames.items():
@@ -612,6 +648,9 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
 
     tokens = src_to_tokens(contents)
     for i, token in reversed_enumerate(tokens):
+        if token.name == "DEDENT":
+            continue
+
         if token.offset in import_offsets:
             end_import_offset = Offset(*import_offsets[token.offset][-2:])
             del import_offsets[token.offset]
@@ -689,7 +728,9 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
 
                 imports_to_add = extra_imports.get(module, set()) - current_imports
                 if imports_to_add:
-                    additional_import_string = ", ".join(sorted(imports_to_add))
+                    additional_import_string = ", ".join(
+                        sorted(imports_to_add, key=str.casefold)
+                    )
                     if tokens[token_index - 1].src == ")":
                         token_index -= 1
                         while tokens[token_index].src.strip() in ("", ",", ")"):
@@ -738,37 +779,18 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
         if token.offset in fix_qt_enums:
             assert tokens[i + 1].src == "."
             _class, enum_name, value = fix_qt_enums[token.offset]
-            # make sure we CAN import enum!
-            try:
-                eval(f"{_class}.{enum_name}.{value}")
-                tokens[i + 2] = tokens[i + 2]._replace(
-                    src=f"{enum_name}.{tokens[i + 2].src}"
-                )
-            except AttributeError:
-                # let's see if we can find what the replacement should be automatically...
-                # print(f'Trying to find {_class}.{value}.')
-                actual = eval(f"{_class}.{value}")
-                # print(f'Trying to find aliases for {actual.__class__}.')
-                obj = globals()[_class]
-                recovered = False
-                if isinstance(obj, type):
-                    for attr_name in dir(obj):
-                        try:
-                            attr = getattr(obj, attr_name)
-                            if attr is actual.__class__:
-                                # print(f'Found alias {_class}.{attr_name}')
-                                recovered = True
-                                tokens[i + 2] = tokens[i + 2]._replace(
-                                    src=f"{attr_name}.{tokens[i + 2].src}"
-                                )
+            real_enum_name = get_enum_name(_class, enum_name, value)
 
-                        except AttributeError:
-                            continue
-                if not recovered:
-                    sys.stderr.write(
-                        f"{filename}:{token.line}:{token.utf8_byte_offset} ERROR: wanted to replace with {_class}.{enum_name}.{value}, but does not exist\n"
-                    )
+            if not real_enum_name:
+                sys.stderr.write(
+                    f"{filename}:{token.line}:{token.utf8_byte_offset} ERROR: wanted to replace with {_class}.{enum_name}.{value}, but does not exist\n"
+                )
                 continue
+
+            else:
+                tokens[i + 2] = tokens[i + 2]._replace(
+                    src=f"{real_enum_name}.{tokens[i + 2].src}"
+                )
 
         if token.offset in rename_qt_enums:
             assert tokens[i + 1].src == "."
@@ -799,7 +821,6 @@ def get_class_enums(item):
     matched_classes = {item}.union(all_subclasses(item))
 
     for key, value in item.__dict__.items():
-
         if key == "baseClass":
             continue
 

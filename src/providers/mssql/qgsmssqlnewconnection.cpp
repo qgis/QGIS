@@ -30,8 +30,11 @@
 #include <QRegularExpressionValidator>
 #include <QSqlDatabase>
 #include <QSqlError>
+#include <QString>
 
 #include "moc_qgsmssqlnewconnection.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )

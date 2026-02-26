@@ -133,6 +133,15 @@ propagated further.
 .. versionadded:: 3.22
 %End
 
+    virtual bool shortcutEvent( QKeyEvent *e );
+%Docstring
+Shortcut events coming from the application for overriding. The default
+implementation does nothing. Returns whether the event was handled by
+the tool and should not be propagated further.
+
+.. versionadded:: 4.0
+%End
+
     void setAction( QAction *action );
 %Docstring
 Use this to associate a QAction to this maptool. Then when the

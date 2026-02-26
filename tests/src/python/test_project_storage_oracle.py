@@ -12,16 +12,15 @@ __date__ = "2022-04-19"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QUrl, QUrlQuery
-from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
 from qgis.core import (
     QgsDataSourceUri,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QUrl, QUrlQuery
+from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
+from qgis.testing import QgisTestCase, start_app
 from test_project_storage_base import TestPyQgsProjectStorageBase
 from utilities import unitTestDataPath
 
@@ -30,7 +29,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsProjectStorageOracle(QgisTestCase, TestPyQgsProjectStorageBase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

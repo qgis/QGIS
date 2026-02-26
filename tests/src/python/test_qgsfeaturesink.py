@@ -10,7 +10,8 @@ __author__ = "(C) 2017 by Nyall Dawson"
 __date__ = "26/04/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
-from qgis.PyQt.QtCore import QVariant
+import unittest
+
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsExpressionContext,
@@ -29,8 +30,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QVariant
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -61,7 +62,6 @@ def createLayerWithFivePoints():
 
 
 class TestQgsFeatureSink(QgisTestCase):
-
     def testFromIterator(self):
         """
         Test adding features from an iterator

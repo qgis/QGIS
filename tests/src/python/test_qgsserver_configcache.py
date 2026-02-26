@@ -19,12 +19,10 @@ from time import time
 from qgis.core import QgsApplication
 from qgis.server import QgsConfigCache, QgsServerSettings
 from qgis.testing import unittest
-
 from utilities import unitTestDataPath
 
 
 class TestQgsServerConfigCache(unittest.TestCase):
-
     @classmethod
     def setUpClass(self):
         """Run before all tests"""

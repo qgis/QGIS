@@ -24,11 +24,12 @@
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
 
+#define SIP_NO_FILE
+
 class QPushButton;
 class QgsOgrDbTableModel;
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 /**
  * The QgsOgrDbSourceSelect class is a generic class for DB based OGR

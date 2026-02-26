@@ -27,9 +27,8 @@
 class QgsTextureRect
 {
   public:
-    QgsTextureRect( const rectpack2D::rect_xywh &rect, int id, const QImage &image = QImage() )
+    QgsTextureRect( const rectpack2D::rect_xywh &rect, const QImage &image = QImage() )
       : rect( rect )
-      , id( id )
       , image( image )
     {
     }
@@ -50,7 +49,6 @@ class QgsTextureRect
     }
 
     rectpack2D::rect_xywh rect;
-    int id = 0;
     QImage image;
 };
 
@@ -127,10 +125,9 @@ QgsTextureAtlas QgsTextureAtlasGenerator::createFromRects( const QVector<QRect> 
 {
   std::vector< QgsTextureRect > rects;
   rects.reserve( rectangles.size() );
-  int index = 0;
   for ( const QRect &rect : rectangles )
   {
-    rects.emplace_back( QgsTextureRect( rectpack2D::rect_xywh( 0, 0, rect.width(), rect.height() ), index++ ) );
+    rects.emplace_back( QgsTextureRect( rectpack2D::rect_xywh( 0, 0, rect.width(), rect.height() ) ) );
   }
   return generateAtlas( std::move( rects ), maxSide );
 }
@@ -139,10 +136,9 @@ QgsTextureAtlas QgsTextureAtlasGenerator::createFromImages( const QVector<QImage
 {
   std::vector< QgsTextureRect > rects;
   rects.reserve( images.size() );
-  int index = 0;
   for ( const QImage &image : images )
   {
-    rects.emplace_back( QgsTextureRect( rectpack2D::rect_xywh( 0, 0, image.width(), image.height() ), index++, image ) );
+    rects.emplace_back( QgsTextureRect( rectpack2D::rect_xywh( 0, 0, image.width(), image.height() ), image ) );
   }
   return generateAtlas( std::move( rects ), maxSide );
 }
@@ -181,12 +177,6 @@ QgsTextureAtlas QgsTextureAtlasGenerator::generateAtlas( std::vector< QgsTexture
 
   if ( !result )
     return QgsTextureAtlas();
-
-  // rectpack2D::find_best_packing will have rearranged rects. Sort it back to the original order
-  // so that we can retrieve the results by their original indices.
-  std::sort( rects.begin(), rects.end(), []( const QgsTextureRect &a, const QgsTextureRect &b ) {
-    return a.id < b.id;
-  } );
 
   QgsTextureAtlas res;
   res.mRects = std::move( rects );

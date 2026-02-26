@@ -22,7 +22,10 @@
 #include "qgstextformat.h"
 
 #include <QColor>
+#include <QString>
 #include <QVariant>
+
+using namespace Qt::StringLiterals;
 
 class QgsNumericFormat;
 class QgsReadWriteContext;

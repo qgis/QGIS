@@ -34,9 +34,12 @@
 #include "qgsvectorlayer.h"
 
 #include <QDebug>
+#include <QString>
 #include <qlogging.h>
 
 #include "moc_topolTest.cpp"
+
+using namespace Qt::StringLiterals;
 
 static bool _canExportToGeos( const QgsGeometry &geom )
 {
@@ -487,29 +490,25 @@ ErrorList topolTest::checkGaps( QgsVectorLayer *layer1, QgsVectorLayer *layer2, 
     }
   }
 
-  GEOSGeometry **geomArray = new GEOSGeometry *[geomList.size()];
-  for ( int i = 0; i < geomList.size(); ++i )
-  {
-    //qDebug() << "filling geometry array-" << i;
-    geomArray[i] = geomList.at( i );
-  }
-
-  qDebug() << "creating geometry collection-";
-
   if ( geomList.isEmpty() )
   {
-    //qDebug() << "geometry list is empty!";
-    delete[] geomArray;
     return errorList;
   }
 
-  GEOSGeometry *collection = nullptr;
-  collection = GEOSGeom_createCollection_r( geosctxt, GEOS_MULTIPOLYGON, geomArray, geomList.size() );
+  GEOSGeometry *collection = GEOSGeom_createCollection_r( geosctxt, GEOS_MULTIPOLYGON, geomList.data(), geomList.size() );
 
+  if ( !collection )
+  {
+    // Clean up geometries if collection creation failed
+    for ( GEOSGeometry *geom : geomList )
+    {
+      GEOSGeom_destroy_r( geosctxt, geom );
+    }
+    return errorList;
+  }
 
-  qDebug() << "performing cascaded union..might take time..-";
-  GEOSGeometry *unionGeom = GEOSUnionCascaded_r( geosctxt, collection );
-  //delete[] geomArray;
+  GEOSGeometry *unionGeom = GEOSUnaryUnion_r( geosctxt, collection );
+  GEOSGeom_destroy_r( geosctxt, collection );
 
   const QgsGeometry test = QgsGeos::geometryFromGeos( unionGeom );
 
@@ -1228,10 +1227,7 @@ void topolTest::fillFeatureMap( QgsVectorLayer *layer, const QgsRectangle &exten
   }
   else
   {
-    fit = layer->getFeatures( QgsFeatureRequest()
-                                .setFilterRect( extent )
-                                .setFlags( Qgis::FeatureRequestFlag::ExactIntersect )
-                                .setNoAttributes() );
+    fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( extent ).setFlags( Qgis::FeatureRequestFlag::ExactIntersect ).setNoAttributes() );
   }
 
   QgsFeature f;
@@ -1254,10 +1250,7 @@ void topolTest::fillFeatureList( QgsVectorLayer *layer, const QgsRectangle &exte
   }
   else
   {
-    fit = layer->getFeatures( QgsFeatureRequest()
-                                .setFilterRect( extent )
-                                .setFlags( Qgis::FeatureRequestFlag::ExactIntersect )
-                                .setNoAttributes() );
+    fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( extent ).setFlags( Qgis::FeatureRequestFlag::ExactIntersect ).setNoAttributes() );
   }
 
   QgsFeature f;
@@ -1282,10 +1275,7 @@ QgsSpatialIndex *topolTest::createIndex( QgsVectorLayer *layer, const QgsRectang
   }
   else
   {
-    fit = layer->getFeatures( QgsFeatureRequest()
-                                .setFilterRect( extent )
-                                .setFlags( Qgis::FeatureRequestFlag::ExactIntersect )
-                                .setNoAttributes() );
+    fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( extent ).setFlags( Qgis::FeatureRequestFlag::ExactIntersect ).setNoAttributes() );
   }
 
 

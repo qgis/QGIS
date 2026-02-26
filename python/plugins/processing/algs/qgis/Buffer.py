@@ -19,7 +19,7 @@ __author__ = "Victor Olaya"
 __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
-from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsFeatureRequest, QgsFeatureSink
+from qgis.core import Qgis, QgsFeature, QgsFeatureRequest, QgsFeatureSink, QgsGeometry
 
 
 def buffering(
@@ -84,7 +84,6 @@ def buffering(
         outFeat.setAttributes(attrs)
         sink.addFeature(outFeat, QgsFeatureSink.Flag.FastInsert)
     else:
-
         features = source.getFeatures()
 
         # Without dissolve

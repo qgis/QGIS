@@ -35,10 +35,13 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 #include <QTextStream>
 #include <QTreeView>
 
 #include "moc_qgscolorrampshaderwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
   : QWidget( parent )

@@ -30,6 +30,8 @@
 #include <QTextStream>
 #include <QtTest/QSignalSpy>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup UnitTests
  * Unit tests for QgsAuthManager

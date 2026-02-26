@@ -12,11 +12,8 @@ __copyright__ = "Copyright 2022, The QGIS Project"
 
 import os.path
 import tempfile
+import unittest
 
-from qgis.PyQt.QtCore import QCoreApplication, QUrl
-from qgis.PyQt.QtGui import QFont
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     QgsApplication,
     QgsFontManager,
@@ -24,16 +21,17 @@ from qgis.core import (
     QgsSettings,
     QgsTextFormat,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QCoreApplication, QUrl
+from qgis.PyQt.QtGui import QFont
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import getTestFont, unitTestDataPath
 
 start_app()
 
 
 class TestQgsFontManager(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsMultiCurve: QgsGeometryCollection
 {
 %Docstring(signature="appended")

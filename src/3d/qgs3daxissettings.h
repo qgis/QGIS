@@ -16,15 +16,16 @@
 #ifndef QGS3DAXISSETTINGS_H
 #define QGS3DAXISSETTINGS_H
 
-#include "qgs3daxisrenderview.h"
+#include "qgis_3d.h"
 
 #include <QMap>
 #include <QString>
 
+#define SIP_NO_FILE
+
 class QgsReadWriteContext;
 class QDomElement;
 
-#define SIP_NO_FILE
 
 /**
  * \brief Contains the configuration of a 3d axis.

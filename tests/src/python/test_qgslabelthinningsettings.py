@@ -11,15 +11,15 @@ __date__ = "2019-12-07"
 __copyright__ = "Copyright 2019, The QGIS Project"
 
 
-from qgis.core import QgsLabelThinningSettings, QgsPalLayerSettings
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.core import QgsLabelThinningSettings, QgsPalLayerSettings
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsLabelThinningSettings(QgisTestCase):
-
     def test_thinning_settings(self):
         """
         Test thinning settings

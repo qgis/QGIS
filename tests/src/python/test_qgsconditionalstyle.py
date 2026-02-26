@@ -10,9 +10,8 @@ __author__ = "Nathan.Woodrow"
 __date__ = "2015-08-11"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
-from qgis.PyQt.QtCore import QVariant
-from qgis.PyQt.QtGui import QColor, QFont
-from qgis.PyQt.QtTest import QSignalSpy
+import unittest
+
 from qgis.core import (
     QgsConditionalLayerStyles,
     QgsConditionalStyle,
@@ -22,9 +21,10 @@ from qgis.core import (
     QgsFields,
     QgsMarkerSymbol,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtGui import QColor, QFont
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 #
@@ -33,7 +33,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsConditionalStyle(QgisTestCase):
-
     def new_context(self):
         feature = QgsFeature()
         fields = QgsFields()

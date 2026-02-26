@@ -20,10 +20,13 @@
 
 #include <QEventLoop>
 #include <QObject>
+#include <QString>
 #include <QTemporaryDir>
 #include <QTemporaryFile>
 #include <QTimer>
 #include <QUrl>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsFileDownloader : public QObject
 {

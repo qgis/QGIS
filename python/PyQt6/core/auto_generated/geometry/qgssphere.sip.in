@@ -11,6 +11,8 @@
 
 
 
+
+
 class QgsSphere
 {
 %Docstring(signature="appended")

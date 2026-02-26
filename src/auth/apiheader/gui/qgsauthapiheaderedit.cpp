@@ -19,7 +19,11 @@
 
 #include "qgslogger.h"
 
+#include <QString>
+
 #include "moc_qgsauthapiheaderedit.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthApiHeaderEdit::QgsAuthApiHeaderEdit( QWidget *parent )
   : QgsAuthMethodEdit( parent )

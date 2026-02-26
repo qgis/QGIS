@@ -17,7 +17,6 @@ from qgis.testing import unittest
 
 
 class TestPyQgsDBManagerSQLWindow(unittest.TestCase):
-
     def test_check_comment_parsing(self):
         """Test we can parse the comment in a SQL query."""
         # No comment

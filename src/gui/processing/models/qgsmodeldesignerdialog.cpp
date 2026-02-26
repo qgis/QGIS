@@ -26,6 +26,8 @@
 #include "qgsmessagelog.h"
 #include "qgsmessageviewer.h"
 #include "qgsmodelcomponentgraphicitem.h"
+#include "qgsmodeldesignerconfigdockwidget.h"
+#include "qgsmodeldesignerconfigwidget.h"
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelundocommand.h"
 #include "qgsmodelviewtoolpan.h"
@@ -38,6 +40,7 @@
 #include "qgsprocessingmultipleselectiondialog.h"
 #include "qgsprocessingparametertype.h"
 #include "qgsprocessingregistry.h"
+#include "qgsprocessingwidgetwrapper.h"
 #include "qgsproject.h"
 #include "qgsscreenhelper.h"
 #include "qgssettings.h"
@@ -50,6 +53,7 @@
 #include <QPdfWriter>
 #include <QPushButton>
 #include <QShortcut>
+#include <QString>
 #include <QSvgGenerator>
 #include <QTextStream>
 #include <QToolButton>
@@ -57,6 +61,8 @@
 #include <QUrl>
 
 #include "moc_qgsmodeldesignerdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond NOT_STABLE
 
@@ -114,9 +120,18 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
     repaintModel();
   } );
 
-  mPropertiesDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable );
-  mInputsDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable );
-  mAlgorithmsDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable );
+  mConfigWidgetDock = new QgsDockWidget( this );
+  mConfigWidgetDock->setWindowTitle( tr( "Configuration" ) );
+  mConfigWidgetDock->setObjectName( u"ModelConfigDock"_s );
+
+  mConfigWidget = new QgsModelDesignerConfigDockWidget();
+  mConfigWidgetDock->setWidget( mConfigWidget );
+  mConfigWidgetDock->setFeatures( QDockWidget::NoDockWidgetFeatures );
+  addDockWidget( Qt::RightDockWidgetArea, mConfigWidgetDock );
+
+  mPropertiesDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
+  mInputsDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
+  mAlgorithmsDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
   mVariablesDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
 
   mToolboxTree->header()->setVisible( false );
@@ -167,6 +182,8 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
     QgsSettings().setValue( u"/Processing/Modeler/enableSnapToGrid"_s, enabled );
   } );
   mView->snapper()->setSnapToGrid( mActionSnappingEnabled->isChecked() );
+
+  connect( mView, &QgsModelGraphicsView::itemFocused, this, &QgsModelDesignerDialog::onItemFocused );
 
   connect( mActionSelectAll, &QAction::triggered, this, [this] {
     mScene->selectAll();
@@ -289,7 +306,7 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   connect( mNameEdit, &QLineEdit::textChanged, this, [this]( const QString &name ) {
     if ( mModel )
     {
-      beginUndoCommand( tr( "Change Model Name" ), NameChanged );
+      beginUndoCommand( tr( "Change Model Name" ), QString(), QgsModelUndoCommand::CommandOperation::NameChanged );
       mModel->setName( name );
       endUndoCommand();
       updateWindowTitle();
@@ -298,7 +315,7 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   connect( mGroupEdit, &QLineEdit::textChanged, this, [this]( const QString &group ) {
     if ( mModel )
     {
-      beginUndoCommand( tr( "Change Model Group" ), GroupChanged );
+      beginUndoCommand( tr( "Change Model Group" ), QString(), QgsModelUndoCommand::CommandOperation::GroupChanged );
       mModel->setGroup( group );
       endUndoCommand();
       updateWindowTitle();
@@ -316,6 +333,9 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
 
   mActionShowComments->setChecked( settings.value( u"/Processing/Modeler/ShowComments"_s, true ).toBool() );
   connect( mActionShowComments, &QAction::toggled, this, &QgsModelDesignerDialog::toggleComments );
+
+  mActionShowFeatureCount->setChecked( settings.value( u"/Processing/Modeler/ShowFeatureCount"_s, true ).toBool() );
+  connect( mActionShowFeatureCount, &QAction::toggled, this, &QgsModelDesignerDialog::toggleFeatureCount );
 
   mPanTool = new QgsModelViewToolPan( mView );
   mPanTool->setAction( mActionPan );
@@ -412,7 +432,7 @@ void QgsModelDesignerDialog::closeEvent( QCloseEvent *event )
     event->ignore();
 }
 
-void QgsModelDesignerDialog::beginUndoCommand( const QString &text, int id )
+void QgsModelDesignerDialog::beginUndoCommand( const QString &text, const QString &id, QgsModelUndoCommand::CommandOperation operation )
 {
   if ( mBlockUndoCommands || !mUndoStack )
     return;
@@ -420,7 +440,14 @@ void QgsModelDesignerDialog::beginUndoCommand( const QString &text, int id )
   if ( mActiveCommand )
     endUndoCommand();
 
-  mActiveCommand = std::make_unique<QgsModelUndoCommand>( mModel.get(), text, id );
+  if ( !id.isEmpty() )
+  {
+    mActiveCommand = std::make_unique<QgsModelUndoCommand>( mModel.get(), text, id );
+  }
+  else
+  {
+    mActiveCommand = std::make_unique<QgsModelUndoCommand>( mModel.get(), text, operation );
+  }
 }
 
 void QgsModelDesignerDialog::endUndoCommand()
@@ -488,9 +515,14 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
 
   mScene = scene;
   mScene->setParent( this );
-  mScene->setLastRunResult( mLastResult );
+  mScene->setLastRunResult( mLastResult, mLayerStore );
   mScene->setModel( mModel.get() );
   mScene->setMessageBar( mMessageBar );
+
+  QgsSettings settings;
+  const bool showFeatureCount = settings.value( u"/Processing/Modeler/ShowFeatureCount"_s, true ).toBool();
+  if ( !showFeatureCount )
+    mScene->setFlag( QgsModelGraphicsScene::FlagHideFeatureCount );
 
   mView->setModelScene( mScene );
 
@@ -503,7 +535,7 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
 
     repaintModel();
   } );
-  connect( mScene, &QgsModelGraphicsScene::componentAboutToChange, this, [this]( const QString &description, int id ) { beginUndoCommand( description, id ); } );
+  connect( mScene, &QgsModelGraphicsScene::componentAboutToChange, this, [this]( const QString &description, const QString &id ) { beginUndoCommand( description, id ); } );
   connect( mScene, &QgsModelGraphicsScene::componentChanged, this, [this] { endUndoCommand(); } );
   connect( mScene, &QgsModelGraphicsScene::runFromChild, this, &QgsModelDesignerDialog::runFromChild );
   connect( mScene, &QgsModelGraphicsScene::runSelected, this, &QgsModelDesignerDialog::runSelectedSteps );
@@ -514,12 +546,22 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
     oldScene->deleteLater();
 }
 
+QgsModelGraphicsScene *QgsModelDesignerDialog::modelScene()
+{
+  return mScene;
+}
+
 void QgsModelDesignerDialog::activate()
 {
   show();
   raise();
   setWindowState( windowState() & ~Qt::WindowMinimized );
   activateWindow();
+}
+
+void QgsModelDesignerDialog::registerProcessingContextGenerator( QgsProcessingContextGenerator *generator )
+{
+  mProcessingContextGenerator = generator;
 }
 
 void QgsModelDesignerDialog::updateVariablesGui()
@@ -591,7 +633,7 @@ void QgsModelDesignerDialog::setLastRunResult( const QgsProcessingModelResult &r
 {
   mLastResult.mergeWith( result );
   if ( mScene )
-    mScene->setLastRunResult( mLastResult );
+    mScene->setLastRunResult( mLastResult, mLayerStore );
 }
 
 void QgsModelDesignerDialog::setModelName( const QString &name )
@@ -791,6 +833,13 @@ void QgsModelDesignerDialog::exportAsPython()
 void QgsModelDesignerDialog::toggleComments( bool show )
 {
   QgsSettings().setValue( u"/Processing/Modeler/ShowComments"_s, show );
+
+  repaintModel( true );
+}
+
+void QgsModelDesignerDialog::toggleFeatureCount( bool show )
+{
+  QgsSettings().setValue( u"/Processing/Modeler/ShowFeatureCount"_s, show );
 
   repaintModel( true );
 }
@@ -1098,14 +1147,12 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
 
   connect( dialog.get(), &QgsProcessingAlgorithmDialogBase::algorithmFinished, this, [this, &dialog]( bool, const QVariantMap & ) {
     QgsProcessingContext *context = dialog->processingContext();
-
-    setLastRunResult( context->modelResult() );
-
-    mModel->setDesignerParameterValues( dialog->createProcessingParameters( QgsProcessingParametersGenerator::Flag::SkipDefaultValueParameters ) );
-
     // take child output layers
     mLayerStore.temporaryLayerStore()->removeAllMapLayers();
     mLayerStore.takeResultsFrom( *context );
+
+    mModel->setDesignerParameterValues( dialog->createProcessingParameters( QgsProcessingParametersGenerator::Flag::SkipDefaultValueParameters ) );
+    setLastRunResult( context->modelResult() );
   } );
 
   dialog->exec();
@@ -1207,6 +1254,23 @@ void QgsModelDesignerDialog::showChildAlgorithmLog( const QString &childId )
   m.exec();
 }
 
+void QgsModelDesignerDialog::onItemFocused( QgsModelComponentGraphicItem *item )
+{
+  QgsProcessingParameterWidgetContext widgetContext = createWidgetContext();
+  widgetContext.registerProcessingContextGenerator( mProcessingContextGenerator );
+  widgetContext.setModelDesignerDialog( this );
+  QgsProcessingContext *context = mProcessingContextGenerator->processingContext();
+
+  if ( !item || !item->component() )
+  {
+    mConfigWidget->showComponentConfig( nullptr, *context, widgetContext );
+  }
+  else
+  {
+    mConfigWidget->showComponentConfig( item->component(), *context, widgetContext );
+  }
+}
+
 void QgsModelDesignerDialog::validate()
 {
   QStringList issues;
@@ -1229,7 +1293,7 @@ void QgsModelDesignerDialog::validate()
       }
       longMessage += "</ul>"_L1;
 
-      dialog->setMessage( longMessage, QgsMessageOutput::MessageHtml );
+      dialog->setMessage( longMessage, Qgis::StringFormat::Html );
       dialog->showMessage();
     } );
     messageWidget->layout()->addWidget( detailsButton );

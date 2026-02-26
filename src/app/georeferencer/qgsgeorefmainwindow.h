@@ -24,6 +24,9 @@
 #include "qgssettingstree.h"
 
 #include <QPointer>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QAction;
 class QActionGroup;

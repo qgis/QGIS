@@ -22,6 +22,9 @@
 
 #include <QObject>
 #include <QPolygonF>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsGeometryImport : public QObject
 {

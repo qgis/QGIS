@@ -13,13 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#define SIP_NO_FILE
 
 #ifndef QGS_GEOMETRY_SELFINTERSECTION_CHECK_H
 #define QGS_GEOMETRY_SELFINTERSECTION_CHECK_H
 
 #include "qgsgeometryutils.h"
 #include "qgssinglegeometrycheck.h"
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup analysis

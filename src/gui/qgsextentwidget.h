@@ -22,7 +22,6 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgscollapsiblegroupbox.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmaptool.h"
 #include "qgsmaptoolextent.h"
@@ -270,6 +269,8 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
 
     QgsRectangle mOriginalExtent;
     QgsCoordinateReferenceSystem mOriginalCrs;
+
+    QgsRectangle mOutputExtent;
 
     QMenu *mMenu = nullptr;
 

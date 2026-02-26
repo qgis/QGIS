@@ -19,6 +19,9 @@
 #include "qgssymbollayerutils.h"
 
 #include <QDomDocument>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsShadowSettings::QgsShadowSettings( const QgsShadowSettings &other )
   : mRenderShadows( other.mRenderShadows )

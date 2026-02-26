@@ -4,7 +4,7 @@
     ---------------------
     begin                : July 2017
     copyright            : (C) 2017 by Loïc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    email                : lituus at free dot fr
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,7 +24,11 @@
 #include "qgsmaptoolcapture.h"
 #include "qgspoint.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolshaperectangleextent.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsMapToolShapeRectangleExtentMetadata::TOOL_ID = u"rectangle-from-extent"_s;
 
@@ -98,7 +102,12 @@ void QgsMapToolShapeRectangleExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e, Qg
         const double angle = mPoints.at( 0 ).azimuth( point );
 
         mRectangle = QgsQuadrilateral::rectangleFromExtent( mPoints.at( 0 ), mPoints.at( 0 ).project( dist, angle ) );
-        mTempRubberBand->setGeometry( mRectangle.toPolygon() );
+        const QgsGeometry newGeometry( mRectangle.toPolygon() );
+        if ( !newGeometry.isEmpty() )
+        {
+          mTempRubberBand->setGeometry( newGeometry.constGet()->clone() );
+          setTransientGeometry( newGeometry );
+        }
       }
       break;
       default:

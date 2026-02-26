@@ -1,7 +1,0 @@
-from qgis_sip_project import QgisProject, QgisBindings
-
-class Qgis3DBindings(QgisBindings):
-    name = "3d"
-
-class Qgis3DProject(QgisProject):
-    bindings_factories = [Qgis3DBindings]

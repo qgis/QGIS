@@ -25,6 +25,9 @@
 #include "qgsvectorlayerlabeling.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsLabelPropertyDialog : public QObject
 {

@@ -20,9 +20,12 @@
 #include "qgssettingsentry.h"
 
 #include <QDialog>
+#include <QString>
 #include <QWidget>
 
 #include "moc_qgssettingseditorwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSettingsEditorWidgetWrapper *QgsSettingsEditorWidgetWrapper::fromWidget( const QWidget *widget )
 {

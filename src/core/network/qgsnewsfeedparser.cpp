@@ -22,15 +22,19 @@
 #include "qgsnetworkcontentfetcher.h"
 #include "qgsnetworkcontentfetchertask.h"
 #include "qgssetrequestinitiator_p.h"
+#include "qgssettings.h"
 #include "qgssettingsentryimpl.h"
 
 #include <QDateTime>
 #include <QDir>
 #include <QFile>
 #include <QRegularExpression>
+#include <QString>
 #include <QUrlQuery>
 
 #include "moc_qgsnewsfeedparser.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryInteger64 *QgsNewsFeedParser::settingsFeedLastFetchTime = new QgsSettingsEntryInteger64( u"last-fetch-time"_s, sTreeNewsFeed, 0, u"Feed last fetch time"_s, Qgis::SettingsOptions(), 0 );
 const QgsSettingsEntryString *QgsNewsFeedParser::settingsFeedLanguage = new QgsSettingsEntryString( u"lang"_s, sTreeNewsFeed, QString(), u"Feed language"_s );
@@ -54,6 +58,9 @@ QgsNewsFeedParser::QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcf
   , mAuthCfg( authcfg )
   , mFeedKey( keyForFeed( mBaseUrl ) )
 {
+  // Synchronize enabled/disabled state
+  mEnabled = !QgsSettings().value( u"%1/disabled"_s.arg( mFeedKey ), false, QgsSettings::Core ).toBool();
+
   // first thing we do is populate with existing entries
   readStoredEntries();
 
@@ -99,6 +106,19 @@ QgsNewsFeedParser::QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcf
   {
     mFeedUrl.setQuery( query ); // doesn't work for local file urls
   }
+}
+
+void QgsNewsFeedParser::setEnabled( bool enabled )
+{
+  if ( mEnabled == enabled )
+  {
+    return;
+  }
+
+  mEnabled = enabled;
+  emit enabledChanged();
+
+  QgsSettings().setValue( u"%1/disabled"_s.arg( mFeedKey ), !mEnabled, QgsSettings::Core );
 }
 
 QList<QgsNewsFeedParser::Entry> QgsNewsFeedParser::entries() const
@@ -163,6 +183,11 @@ QString QgsNewsFeedParser::authcfg() const
 
 void QgsNewsFeedParser::fetch()
 {
+  if ( mIsFetching )
+  {
+    return;
+  }
+
   QNetworkRequest req( mFeedUrl );
   QgsSetRequestInitiatorClass( req, u"QgsNewsFeedParser"_s );
 
@@ -173,6 +198,9 @@ void QgsNewsFeedParser::fetch()
   task->setDescription( tr( "Fetching News Feed" ) );
   connect( task, &QgsNetworkContentFetcherTask::fetched, this, [this, task]
   {
+    mIsFetching = false;
+    emit isFetchingChanged();
+
     QNetworkReply *reply = task->reply();
     if ( !reply )
     {
@@ -189,6 +217,9 @@ void QgsNewsFeedParser::fetch()
     // queue up the handling
     QMetaObject::invokeMethod( this, "onFetch", Qt::QueuedConnection, Q_ARG( QString, task->contentAsString() ) );
   } );
+
+  mIsFetching = true;
+  emit isFetchingChanged();
 
   QgsApplication::taskManager()->addTask( task );
 }

@@ -16,6 +16,10 @@
 #include "qgstest.h"
 #include "qobjectuniqueptr.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQObjectUniquePtr : public QObject
 {
     Q_OBJECT

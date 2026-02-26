@@ -24,8 +24,11 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QSettings>
+#include <QString>
 
 #include "moc_qgssettings.cpp"
+
+using namespace Qt::StringLiterals;
 
 Q_GLOBAL_STATIC( QString, sGlobalSettingsPath )
 

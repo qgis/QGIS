@@ -50,8 +50,11 @@
 
 #include <QLocale>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsmaptooleditmeshframe.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsZValueWidget
@@ -286,6 +289,7 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   , mSnapIndicator( new QgsSnapIndicator( canvas ) )
 {
   mActionDigitizing = new QAction( QgsApplication::getThemeIcon( u"/mActionMeshDigitizing.svg"_s ), tr( "Digitize Mesh Elements" ), this );
+  mActionDigitizing->setObjectName( u"mActionDigitizing"_s );
   mActionDigitizing->setCheckable( true );
 
   mActionSelectByPolygon = new QAction( QgsApplication::getThemeIcon( u"/mActionMeshSelectPolygon.svg"_s ), tr( "Select Mesh Elements by Polygon" ), this );
@@ -297,7 +301,9 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   mSelectionHandler = std::make_unique<QgsMapToolSelectionHandler>( canvas, QgsMapToolSelectionHandler::SelectPolygon );
 
   mActionSelectIsolatedVertices = new QAction( QgsApplication::getThemeIcon( u"/mActionMeshSelectIsolatedVertices.svg"_s ), tr( "Select Isolated Vertices" ), this );
+  mActionSelectIsolatedVertices->setObjectName( u"mActionSelectIsolatedVertices"_s );
   mActionSelectAllVertices = new QAction( QgsApplication::getThemeIcon( u"/mActionMeshSelectAll.svg"_s ), tr( "Select All Vertices" ), this );
+  mActionSelectAllVertices->setObjectName( u"mActionSelectAllVertices"_s );
 
   mSelectActions << mActionSelectByPolygon
                  << mActionSelectByExpression
@@ -305,24 +311,35 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
                  << mActionSelectAllVertices;
 
   mActionTransformCoordinates = new QAction( QgsApplication::getThemeIcon( u"/mActionMeshTransformByExpression.svg"_s ), tr( "Transform Vertices Coordinates" ), this );
+  mActionTransformCoordinates->setObjectName( u"mActionTransformCoordinates"_s );
   mActionTransformCoordinates->setCheckable( true );
 
   mActionForceByLines = new QAction( QgsApplication::getThemeIcon( u"/mActionMeshEditForceByVectorLines.svg"_s ), tr( "Force by Selected Geometries" ), this );
+  mActionForceByLines->setObjectName( u"mActionForceByLines"_s );
   mActionForceByLines->setCheckable( true );
 
   mWidgetActionForceByLine = new QgsMeshEditForceByLineAction( this );
+  mWidgetActionForceByLine->setObjectName( u"mWidgetActionForceByLine"_s );
   mWidgetActionForceByLine->setMapCanvas( canvas );
 
   mWidgetActionDigitizing = new QgsMeshEditDigitizingAction( this );
+  mWidgetActionDigitizing->setObjectName( u"mWidgetActionDigitizing"_s );
 
   mActionReindexMesh = new QAction( QgsApplication::getThemeIcon( u"/mActionMeshReindex.svg"_s ), tr( "Reindex Faces and Vertices" ), this );
+  mActionReindexMesh->setObjectName( u"mActionReindexMesh"_s );
 
   mActionRemoveVerticesFillingHole = new QAction( this );
+  mActionRemoveVerticesFillingHole->setObjectName( u"mActionRemoveVerticesFillingHole"_s );
   mActionDelaunayTriangulation = new QAction( tr( "Delaunay Triangulation with Selected Vertices" ), this );
+  mActionDelaunayTriangulation->setObjectName( u"mActionDelaunayTriangulation"_s );
   mActionFacesRefinement = new QAction( tr( "Refine Current Face" ), this );
+  mActionFacesRefinement->setObjectName( u"mActionFacesRefinement"_s );
   mActionRemoveVerticesWithoutFillingHole = new QAction( this );
+  mActionRemoveVerticesWithoutFillingHole->setObjectName( u"mActionRemoveVerticesWithoutFillingHole"_s );
   mActionRemoveFaces = new QAction( tr( "Remove Current Face" ), this );
+  mActionRemoveFaces->setObjectName( u"mActionRemoveFaces"_s );
   mActionSplitFaces = new QAction( tr( "Split Current Face" ), this );
+  mActionSplitFaces->setObjectName( u"mActionSplitFaces"_s );
 
   connect( mActionRemoveVerticesFillingHole, &QAction::triggered, this, [this] { removeSelectedVerticesFromMesh( true ); } );
   connect( mActionRemoveVerticesWithoutFillingHole, &QAction::triggered, this, [this] { removeSelectedVerticesFromMesh( false ); } );

@@ -21,6 +21,10 @@
 #include "qgis_sip.h"
 #include "qgsdatacollectionitem.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief A browser item that represents a database schema item.

@@ -10,11 +10,15 @@ __author__ = "Nyall Dawson"
 __date__ = "6/01/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
+
 from qgis.core import (
     QgsBasicNumericFormat,
     QgsBearingNumericFormat,
     QgsCurrencyNumericFormat,
+    QgsExpressionBasedNumericFormat,
+    QgsExpressionContext,
+    QgsExpressionContextScope,
     QgsFallbackNumericFormat,
     QgsFractionNumericFormat,
     QgsGeographicCoordinateNumericFormat,
@@ -24,18 +28,14 @@ from qgis.core import (
     QgsPercentageNumericFormat,
     QgsReadWriteContext,
     QgsScientificNumericFormat,
-    QgsExpressionBasedNumericFormat,
-    QgsExpressionContextScope,
-    QgsExpressionContext,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestFormat(QgsNumericFormat):
-
     def id(self):
         return "test"
 
@@ -56,7 +56,6 @@ class TestFormat(QgsNumericFormat):
 
 
 class TestQgsNumericFormat(QgisTestCase):
-
     def testFallbackFormat(self):
         """test fallback formatter"""
         f = QgsFallbackNumericFormat()

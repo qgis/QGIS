@@ -19,31 +19,30 @@ email                : brush.tyler@gmail.com
 """
 
 # this will disable the dbplugin if the connector raise an ImportError
-from .connector import GPKGDBConnector
-
-from qgis.PyQt.QtCore import Qt, QFileInfo, QCoreApplication
-from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QApplication, QAction, QFileDialog
 from qgis.core import (
     Qgis,
     QgsApplication,
     QgsDataSourceUri,
-    QgsSettings,
     QgsProviderRegistry,
+    QgsSettings,
 )
 from qgis.gui import QgsMessageBar
+from qgis.PyQt.QtCore import QCoreApplication, QFileInfo, Qt
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QAction, QApplication, QFileDialog
 
 from ..plugin import (
-    DBPlugin,
     Database,
-    Table,
-    VectorTable,
+    DBPlugin,
+    InvalidDataException,
     RasterTable,
+    Table,
     TableField,
     TableIndex,
     TableTrigger,
-    InvalidDataException,
+    VectorTable,
 )
+from .connector import GPKGDBConnector
 
 
 def classFactory():
@@ -51,7 +50,6 @@ def classFactory():
 
 
 class GPKGDBPlugin(DBPlugin):
-
     @classmethod
     def icon(self):
         return QgsApplication.getThemeIcon("/mGeoPackage.svg")
@@ -119,7 +117,6 @@ class GPKGDBPlugin(DBPlugin):
 
 
 class GPKGDatabase(Database):
-
     def __init__(self, connection, uri):
         Database.__init__(self, connection, uri)
 
@@ -211,7 +208,6 @@ class GPKGDatabase(Database):
 
 
 class GPKGTable(Table):
-
     def __init__(self, row, db, schema=None):
         """Constructs a GPKGTable
 
@@ -267,7 +263,6 @@ class GPKGTable(Table):
 
 
 class GPKGVectorTable(GPKGTable, VectorTable):
-
     def __init__(self, row, db, schema=None):
         GPKGTable.__init__(self, row[:-5], db, schema)
         VectorTable.__init__(self, db, schema)
@@ -324,7 +319,6 @@ class GPKGVectorTable(GPKGTable, VectorTable):
 
 
 class GPKGRasterTable(GPKGTable, RasterTable):
-
     def __init__(self, row, db, schema=None):
         GPKGTable.__init__(self, row[:-3], db, schema)
         RasterTable.__init__(self, db, schema)
@@ -344,7 +338,7 @@ class GPKGRasterTable(GPKGTable, RasterTable):
         return uri
 
     def toMapLayer(self, geometryType=None, crs=None):
-        from qgis.core import QgsRasterLayer, QgsContrastEnhancement
+        from qgis.core import QgsContrastEnhancement, QgsRasterLayer
 
         # QGIS has no provider to load rasters, let's use GDAL
         uri = self.gpkgGdalUri()
@@ -357,7 +351,6 @@ class GPKGRasterTable(GPKGTable, RasterTable):
 
 
 class GPKGTableField(TableField):
-
     def __init__(self, row, table):
         TableField.__init__(self, table)
         (
@@ -372,14 +365,12 @@ class GPKGTableField(TableField):
 
 
 class GPKGTableIndex(TableIndex):
-
     def __init__(self, row, table):
         TableIndex.__init__(self, table)
         self.num, self.name, self.isUnique, self.columns = row
 
 
 class GPKGTableTrigger(TableTrigger):
-
     def __init__(self, row, table):
         TableTrigger.__init__(self, table)
         self.name, self.function = row

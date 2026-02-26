@@ -30,10 +30,13 @@
 #include <QImageReader>
 #include <QJsonParseError>
 #include <QRegularExpression>
+#include <QString>
 #include <QUrl>
 #include <QUrlQuery>
 
 #include "moc_qgsarcgisrestquery.cpp"
+
+using namespace Qt::StringLiterals;
 
 QVariantMap QgsArcGisRestQueryUtils::getServiceInfo( const QString &baseurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, const QString &urlPrefix )
 {

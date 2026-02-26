@@ -19,14 +19,14 @@ __author__ = "Médéric Ribreux"
 __date__ = "February 2016"
 __copyright__ = "(C) 2016, Médéric Ribreux"
 
+import os
 import shutil
-from qgis.core import QgsProcessingParameterString
-from processing.tools.system import isWindows, mkdir, getTempFilename
-from grassprovider.grass_utils import GrassUtils
 
+from processing.tools.system import getTempFilename, isWindows, mkdir
+from qgis.core import QgsProcessingParameterString
 from qgis.PyQt.QtCore import QCoreApplication
 
-import os
+from grassprovider.grass_utils import GrassUtils
 
 # for MS-Windows users who have MBCS chars in their name:
 if os.name == "nt":

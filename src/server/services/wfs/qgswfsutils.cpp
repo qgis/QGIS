@@ -27,6 +27,10 @@
 #include "qgsserverprojectutils.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 namespace QgsWfs
 {
   QString implementationVersion()

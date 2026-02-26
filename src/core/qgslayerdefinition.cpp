@@ -37,7 +37,10 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QString>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage, Qgis::LayerTreeInsertionMethod insertMethod, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint )
 {

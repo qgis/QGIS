@@ -29,6 +29,8 @@
 #include <QLibrary>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class QgsProviderMetadata;
 class QgsVectorLayer;
 class QgsCoordinateReferenceSystem;

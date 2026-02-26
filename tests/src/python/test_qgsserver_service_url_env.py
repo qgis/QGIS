@@ -11,17 +11,17 @@ import os
 # Deterministic XML
 os.environ["QT_HASH_SEED"] = "1"
 
+import unittest
+
 from qgis.core import QgsFontUtils
 from qgis.server import QgsServer
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsServerServiceUrlEnv(QgisTestCase):
-
     def setUp(self):
         """Create the server instance"""
         self.fontFamily = QgsFontUtils.standardTestFontFamily()

@@ -33,8 +33,11 @@
 #include <QMouseEvent>
 #include <QPointer>
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgspropertyoverridebutton.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPropertyOverrideButton::QgsPropertyOverrideButton( QWidget *parent, const QgsVectorLayer *layer )
   : QToolButton( parent )

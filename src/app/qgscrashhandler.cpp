@@ -26,8 +26,11 @@
 #include <QDir>
 #include <QProcess>
 #include <QStandardPaths>
+#include <QString>
 #include <QTextStream>
 #include <QUuid>
+
+using namespace Qt::StringLiterals;
 
 QString QgsCrashHandler::sPythonCrashLogFile;
 

@@ -13,10 +13,8 @@ __date__ = "2/12/2015"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QLocale, QSize, Qt, QTemporaryDir, QVariant
-from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     QgsCategorizedSymbolRenderer,
     QgsEditorWidgetSetup,
@@ -36,6 +34,7 @@ from qgis.core import (
     QgsRectangle,
     QgsRenderContext,
     QgsRendererCategory,
+    QgsRuleBasedRenderer,
     QgsSimpleMarkerSymbolLayer,
     QgsSingleSymbolRenderer,
     QgsStyle,
@@ -43,11 +42,11 @@ from qgis.core import (
     QgsSymbolLayer,
     QgsSymbolLayerReference,
     QgsVectorLayer,
-    QgsRuleBasedRenderer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QLocale, QSize, Qt, QTemporaryDir, QVariant
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -73,7 +72,6 @@ def createFillSymbol():
 
 
 class TestQgsCategorizedSymbolRenderer(QgisTestCase):
-
     def testFilter(self):
         """Test filter creation"""
         renderer = QgsCategorizedSymbolRenderer()

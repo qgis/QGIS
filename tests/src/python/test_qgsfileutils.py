@@ -14,15 +14,13 @@ import os
 import shutil
 import tempfile
 
-from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.core import Qgis, QgsFileUtils
+from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.testing import unittest
-
 from utilities import unitTestDataPath
 
 
 class TestQgsFileUtils(unittest.TestCase):
-
     def testExtensionsFromFilter(self):
         self.assertEqual(QgsFileUtils.extensionsFromFilter(""), [])
         self.assertEqual(QgsFileUtils.extensionsFromFilter("bad"), [])
@@ -582,6 +580,39 @@ class TestQgsFileUtils(unittest.TestCase):
             QgsFileUtils.uniquePath(os.path.join(temp_path, "test")),
             os.path.join(temp_path, "test_2"),
         )
+
+    def test_replace_text_in_file(self):
+        """
+        Test QgsFileUtils.replaceTextInFile
+        """
+
+        file_content = "this is my test file\nwith some tests"
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = os.path.join(temp_dir, "test_file.txt")
+            with open(path, "w") as f:
+                f.write(file_content)
+
+            # file does not exist
+            self.assertFalse(QgsFileUtils.replaceTextInFile(path + "xxx", "abc", "def"))
+
+            # string not present, should return True still
+            self.assertTrue(QgsFileUtils.replaceTextInFile(path, "abc", "def"))
+
+            with open(path) as f:
+                new_content = f.read()
+            self.assertEqual(new_content, file_content)
+
+            # string which IS present
+            self.assertTrue(QgsFileUtils.replaceTextInFile(path, "test", "TeSt"))
+            with open(path) as f:
+                new_content = f.read()
+            self.assertEqual(new_content, "this is my TeSt file\nwith some TeSts")
+
+            # search should be case-sensitive
+            self.assertTrue(QgsFileUtils.replaceTextInFile(path, "FILE", "xxx"))
+            with open(path) as f:
+                new_content = f.read()
+            self.assertEqual(new_content, "this is my TeSt file\nwith some TeSts")
 
 
 if __name__ == "__main__":

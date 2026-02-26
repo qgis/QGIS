@@ -17,6 +17,10 @@
 
 #include "qgsalgorithmclimb.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsClimbAlgorithm::name() const

@@ -19,7 +19,10 @@
 #include "qgis.h"
 #include "qgis_core.h"
 
+#include <QString>
 #include <QtGlobal>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core

@@ -590,11 +590,14 @@ components which sit outside the plot area).
 .. seealso:: :py:func:`size`
 %End
 
-    virtual QRectF interiorPlotArea( QgsRenderContext &context, QgsPlotRenderContext &plotContext ) const;
+    virtual QRectF interiorPlotArea( QgsRenderContext &context, QgsPlotRenderContext &plotContext, const QgsPlotData &plotData = QgsPlotData() ) const;
 %Docstring
 Returns the area of the plot which corresponds to the actual plot
 content (excluding all titles and other components which sit outside the
 plot area).
+
+The optional ``plotData`` argument can be passed on to support
+calculation of label sizes when an axis' type is categorical.
 %End
 
     const QgsMargins &margins() const;
@@ -662,7 +665,7 @@ Constructor for Qgs2DXyPlot.
 Renders the plot.
 %End
 
-    virtual QRectF interiorPlotArea( QgsRenderContext &context, QgsPlotRenderContext &plotContext ) const;
+    virtual QRectF interiorPlotArea( QgsRenderContext &context, QgsPlotRenderContext &plotContext, const QgsPlotData &plotData = QgsPlotData() ) const;
 
 %Docstring
 Returns the area of the plot which corresponds to the actual plot
@@ -781,6 +784,16 @@ Sets the ``symbol`` used to render the border of the chart.
 Ownership of ``symbol`` is transferred to the plot.
 
 .. seealso:: :py:func:`chartBorderSymbol`
+%End
+
+    bool flipAxes() const;
+%Docstring
+Returns whether the X and Y axes are flipped.
+%End
+
+    void setFlipAxes( bool flipAxes );
+%Docstring
+Sets whether the X and Y axes are flipped.
 %End
 
   protected:

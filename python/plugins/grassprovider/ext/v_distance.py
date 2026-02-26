@@ -20,7 +20,6 @@ __date__ = "February 2016"
 __copyright__ = "(C) 2016, Médéric Ribreux"
 
 from qgis.core import QgsProcessingParameterDefinition
-
 from qgis.PyQt.QtCore import QCoreApplication
 
 

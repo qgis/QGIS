@@ -36,8 +36,11 @@
 #include "qgslayoutitemtexttable.h"
 
 #include <QPainter>
+#include <QString>
 
 #include "moc_qgslayoutitemregistry.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutItemRegistry::QgsLayoutItemRegistry( QObject *parent )
   : QObject( parent )

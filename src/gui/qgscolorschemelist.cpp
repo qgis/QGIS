@@ -28,8 +28,11 @@
 #include <QMessageBox>
 #include <QMimeData>
 #include <QPainter>
+#include <QString>
 
 #include "moc_qgscolorschemelist.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"

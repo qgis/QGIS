@@ -39,10 +39,13 @@
 #include <QSplitter>
 #include <QStackedWidget>
 #include <QStandardItem>
+#include <QString>
 #include <QTimer>
 #include <QTreeView>
 
 #include "moc_qgsoptionsdialogbase.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsOptionsDialogBase::QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent, Qt::WindowFlags fl, QgsSettings *settings )
   : QDialog( parent, fl )

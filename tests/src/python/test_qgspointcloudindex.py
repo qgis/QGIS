@@ -15,22 +15,21 @@
 ***************************************************************************
 """
 
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsPointCloudLayer,
     QgsPointCloudNodeId,
     QgsProviderRegistry,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsPointCloudIndex(QgisTestCase):
-
     @unittest.skipIf(
         "ept" not in QgsProviderRegistry.instance().providerList(),
         "EPT provider not available",

@@ -26,9 +26,12 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QStandardItemModel>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgsprocessingaggregatewidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 /// @cond private
 
@@ -240,6 +243,8 @@ QgsProcessingAggregateParameterDefinitionWidget::QgsProcessingAggregateParameter
     mParentLayerComboBox->addItem( initialParent, initialParent );
     mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
   }
+
+  connect( mParentLayerComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
 
   vlayout->addWidget( mParentLayerComboBox );
   setLayout( vlayout );

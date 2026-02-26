@@ -23,8 +23,11 @@
 #include <QMessageBox>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+#include <QString>
 
 #include "moc_qgscrsdefinitionwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCrsDefinitionWidget::QgsCrsDefinitionWidget( QWidget *parent )
   : QWidget( parent )

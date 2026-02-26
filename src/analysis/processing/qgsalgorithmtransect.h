@@ -3,7 +3,7 @@
                          -------------------------
     begin                : October 2017
     copyright            : (C) 2017 by Loïc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    email                : lituus at free dot fr
  ***************************************************************************/
 
 /***************************************************************************
@@ -18,10 +18,11 @@
 #ifndef QGSALGORITHMTRANSECT_H
 #define QGSALGORITHMTRANSECT_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsalgorithmtransectbase.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

@@ -131,6 +131,14 @@ Sums up the area of the curve by iterating over the vertices (shoelace
 formula).
 %End
 
+    virtual void sumUpArea3D( double &sum /Out/ ) const = 0;
+%Docstring
+Sums up the 3d area of the curve by iterating over the vertices
+(shoelace formula).
+
+.. versionadded:: 4.0
+%End
+
     virtual QgsCoordinateSequence coordinateSequence() const;
 
     virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex /Out/ ) const;

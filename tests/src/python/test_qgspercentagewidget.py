@@ -6,16 +6,16 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.gui import QgsPercentageWidget
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.gui import QgsPercentageWidget
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsPercentageWidget(QgisTestCase):
-
     def testGettersSetters(self):
         """test widget getters/setters"""
         w = QgsPercentageWidget()

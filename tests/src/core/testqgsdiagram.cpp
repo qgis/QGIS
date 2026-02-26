@@ -23,6 +23,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 //qgis includes...
 // #include <qgisapp.h>
 #include "diagram/qgspiediagram.h"

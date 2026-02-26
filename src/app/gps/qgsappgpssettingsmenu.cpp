@@ -31,8 +31,11 @@
 #include <QFileDialog>
 #include <QGridLayout>
 #include <QRadioButton>
+#include <QString>
 
 #include "moc_qgsappgpssettingsmenu.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGpsMapRotationAction::QgsGpsMapRotationAction( QWidget *parent )
   : QWidgetAction( parent )

@@ -17,7 +17,11 @@
 #include "ui_qgsauthbasicedit.h"
 #include "qgsauthbasicedit.h"
 
+#include <QString>
+
 #include "moc_qgsauthbasicedit.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthBasicEdit::QgsAuthBasicEdit( QWidget *parent )
   : QgsAuthMethodEdit( parent )

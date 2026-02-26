@@ -17,7 +17,11 @@
 
 #include "qgsvtpkvectortilesourcewidget.h"
 
+#include <QString>
+
 #include "moc_qgsvtpkvectortilesourcewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

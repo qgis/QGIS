@@ -16,11 +16,15 @@
 #ifndef QGSOPENCLUTILS_H
 #define QGSOPENCLUTILS_H
 
-#define SIP_NO_FILE
 
 #define CL_HPP_ENABLE_EXCEPTIONS
 
+#include <QString>
 #include <QtGlobal>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 #ifdef Q_OS_MAC
 #define CL_HPP_MINIMUM_OPENCL_VERSION 120

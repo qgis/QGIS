@@ -17,11 +17,16 @@
 
 #include "qgsactionlocatorfilter.h"
 
+#include "qgsstringutils.h"
+
 #include <QAction>
 #include <QMenu>
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgsactionlocatorfilter.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsActionLocatorFilter::QgsActionLocatorFilter( const QList<QWidget *> &parentObjectsForActions, QObject *parent )
   : QgsLocatorFilter( parent )
@@ -108,7 +113,7 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
     result.displayString = searchText;
     result.setUserData( QVariant::fromValue( action ) );
     result.icon = action->icon();
-    result.score = fuzzyScore( result.displayString, string );
+    result.score = fuzzyScore( QgsStringUtils::unaccent( result.displayString ), QgsStringUtils::unaccent( string ) );
 
     if ( result.score > 0 )
     {

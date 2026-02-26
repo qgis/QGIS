@@ -20,25 +20,22 @@ __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
 import os
-import re
-from typing import Dict
-
-from qgis.PyQt.QtCore import QUrl, QCoreApplication
 
 from qgis.core import (
     QgsApplication,
-    QgsVectorFileWriter,
-    QgsProcessingFeatureSourceDefinition,
+    QgsDataSourceUri,
     QgsProcessingAlgorithm,
     QgsProcessingContext,
+    QgsProcessingFeatureSourceDefinition,
     QgsProcessingFeedback,
     QgsProviderRegistry,
-    QgsDataSourceUri,
     QgsRasterFileWriter,
+    QgsVectorFileWriter,
 )
+from qgis.PyQt.QtCore import QCoreApplication
 
 from processing.algs.gdal.GdalAlgorithmDialog import GdalAlgorithmDialog
-from processing.algs.gdal.GdalUtils import GdalUtils, GdalConnectionDetails
+from processing.algs.gdal.GdalUtils import GdalConnectionDetails, GdalUtils
 
 pluginPath = os.path.normpath(
     os.path.join(os.path.split(os.path.dirname(__file__))[0], os.pardir)
@@ -46,7 +43,6 @@ pluginPath = os.path.normpath(
 
 
 class GdalAlgorithm(QgsProcessingAlgorithm):
-
     def __init__(self):
         super().__init__()
         self.output_values = {}

@@ -22,7 +22,11 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
 
+#include <QString>
+
 #include "moc_qgsvectorlayertools.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVectorLayerTools::QgsVectorLayerTools()
   : QObject( nullptr )
@@ -33,6 +37,7 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
   bool res = false;
   if ( !layer || !layer->isEditable() )
   {
+    request = QgsFeatureRequest();
     return false;
   }
 

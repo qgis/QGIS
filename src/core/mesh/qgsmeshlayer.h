@@ -30,6 +30,10 @@
 #include "qgsmeshsimplificationsettings.h"
 #include "qgsmeshtimesettings.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsMapLayerRenderer;
 struct QgsMeshLayerRendererCache;
 class QgsSymbol;
@@ -1004,6 +1008,16 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
      * \since QGIS 3.42
      */
     bool datasetsPathUnique( const QString &path );
+
+    /**
+     * Returns the list of extra dataset URIs associated with this layer
+     *
+     * \since QGIS 4.0
+     */
+    QStringList extraDatasetUris() const { return mExtraDatasetUri; }
+
+    using QgsMapLayer::loadNamedStyle;
+    QString loadNamedStyle( const QString &uri, bool &resultFlag SIP_OUT, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories, Qgis::LoadStyleFlags flags = Qgis::LoadStyleFlags() ) override;
 
   public slots:
 

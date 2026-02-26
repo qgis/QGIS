@@ -29,7 +29,10 @@
 #include "qgsthreadingutils.h"
 
 #include <QPolygonF>
+#include <QString>
 #include <QThread>
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsRasterLayerProfileResults
@@ -88,6 +91,11 @@ QgsRasterLayerProfileGenerator::QgsRasterLayerProfileGenerator( QgsRasterLayer *
 QString QgsRasterLayerProfileGenerator::sourceId() const
 {
   return mId;
+}
+
+QString QgsRasterLayerProfileGenerator::type() const
+{
+  return u"raster"_s;
 }
 
 Qgis::ProfileGeneratorFlags QgsRasterLayerProfileGenerator::flags() const

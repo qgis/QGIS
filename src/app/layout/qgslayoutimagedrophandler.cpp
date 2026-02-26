@@ -23,8 +23,11 @@
 #include <QFileInfo>
 #include <QImageReader>
 #include <QMimeData>
+#include <QString>
 
 #include "moc_qgslayoutimagedrophandler.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutImageDropHandler::QgsLayoutImageDropHandler( QObject *parent )
   : QgsLayoutCustomDropHandler( parent )

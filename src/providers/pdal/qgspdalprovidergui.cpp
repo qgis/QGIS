@@ -17,6 +17,10 @@
 #include "qgspdalprovider.h"
 #include "qgsproviderguimetadata.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsPdalProviderGuiMetadata : public QgsProviderGuiMetadata
 {
   public:

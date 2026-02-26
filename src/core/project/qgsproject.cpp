@@ -19,6 +19,8 @@
 
 #include <algorithm>
 
+#include "qgsaction.h"
+#include "qgsactionmanager.h"
 #include "qgsannotationlayer.h"
 #include "qgsannotationmanager.h"
 #include "qgsapplication.h"
@@ -67,6 +69,7 @@
 #include "qgsrelationmanager.h"
 #include "qgsrunnableprovidercreator.h"
 #include "qgsruntimeprofiler.h"
+#include "qgsselectivemaskingsourcesetmanager.h"
 #include "qgssensormanager.h"
 #include "qgssettingsregistrycore.h"
 #include "qgssnappingconfig.h"
@@ -88,6 +91,7 @@
 #include <QObject>
 #include <QRegularExpression>
 #include <QStandardPaths>
+#include <QString>
 #include <QTemporaryFile>
 #include <QTextStream>
 #include <QThreadPool>
@@ -95,6 +99,8 @@
 #include <QUuid>
 
 #include "moc_qgsproject.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef _MSC_VER
 #include <sys/utime.h>
@@ -368,6 +374,7 @@ QgsProject::QgsProject( QObject *parent, Qgis::ProjectCapabilities capabilities 
   , mAnnotationManager( new QgsAnnotationManager( this ) )
   , mLayoutManager( new QgsLayoutManager( this ) )
   , mElevationProfileManager( new QgsElevationProfileManager( this ) )
+  , mSelectiveMaskingSourceSetManager( new QgsSelectiveMaskingSourceSetManager( this ) )
   , m3DViewsManager( new QgsMapViewsManager( this ) )
   , mBookmarkManager( QgsBookmarkManager::createProjectBasedManager( this ) )
   , mSensorManager( new QgsSensorManager( this ) )
@@ -659,10 +666,12 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
         {
           QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
 
-          //register aliases and widget settings
+          //register general (like alias) and widget specific field settings (like value map descriptions)
           const QgsFields fields = vlayer->fields();
           for ( const QgsField &field : fields )
           {
+            //general
+            //alias
             QString fieldName;
             if ( field.alias().isEmpty() )
               fieldName = field.name();
@@ -671,10 +680,19 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
 
             translationContext->registerTranslation( u"project:layers:%1:fieldaliases"_s.arg( vlayer->id() ), fieldName );
 
+            //constraint description
+            if ( !field.constraints().constraintDescription().isEmpty() )
+              translationContext->registerTranslation( u"project:layers:%1:constraintdescriptions"_s.arg( vlayer->id() ), field.constraints().constraintDescription() );
+
+            //widget specific
+            //value relation
             if ( field.editorWidgetSetup().type() == "ValueRelation"_L1 )
             {
               translationContext->registerTranslation( u"project:layers:%1:fields:%2:valuerelationvalue"_s.arg( vlayer->id(), field.name() ), field.editorWidgetSetup().config().value( u"Value"_s ).toString() );
+              translationContext->registerTranslation( u"project:layers:%1:fields:%2:valuerelationdescription"_s.arg( vlayer->id(), field.name() ), field.editorWidgetSetup().config().value( u"Description"_s ).toString() );
             }
+
+            //value map
             if ( field.editorWidgetSetup().type() == "ValueMap"_L1 )
             {
               if ( field.editorWidgetSetup().config().value( u"map"_s ).canConvert<QList<QVariant>>() )
@@ -691,6 +709,22 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
 
           //register formcontainers
           registerTranslatableContainers( translationContext, vlayer->editFormConfig().invisibleRootContainer(), vlayer->id() );
+
+          //actions
+          for ( const QgsAction &action : vlayer->actions()->actions() )
+          {
+            translationContext->registerTranslation( u"project:layers:%1:actiondescriptions"_s.arg( vlayer->id() ), action.name() );
+            translationContext->registerTranslation( u"project:layers:%1:actionshorttitles"_s.arg( vlayer->id() ), action.shortTitle() );
+          }
+
+          //legend
+          if ( vlayer->renderer() )
+          {
+            for ( const QgsLegendSymbolItem &item : vlayer->renderer()->legendSymbolItems() )
+            {
+              translationContext->registerTranslation( u"project:layers:%1:legendsymbollabels"_s.arg( vlayer->id() ), item.label() );
+            }
+          }
           break;
         }
 
@@ -710,8 +744,8 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
     }
   }
 
-  //register layergroups
-  const QList<QgsLayerTreeGroup *> groupLayers = mRootGroup->findGroups();
+  //register layergroups and subgroups
+  const QList<QgsLayerTreeGroup *> groupLayers = mRootGroup->findGroups( true );
   for ( const QgsLayerTreeGroup *groupLayer : groupLayers )
   {
     translationContext->registerTranslation( u"project:layergroups"_s, groupLayer->name() );
@@ -1244,6 +1278,7 @@ void QgsProject::clear()
   mAnnotationManager->clear();
   mLayoutManager->clear();
   mElevationProfileManager->clear();
+  mSelectiveMaskingSourceSetManager->clear();
   m3DViewsManager->clear();
   mBookmarkManager->clear();
   mSensorManager->clear();
@@ -1800,7 +1835,7 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
       context.setProjectTranslator( this );
       context.setTransformContext( transformContext() );
       QString layerId = element.namedItem( u"id"_s ).toElement().text();
-
+      context.setCurrentLayerId( layerId );
       if ( !addLayer( element, brokenNodes, context, flags, loadedProviders.take( layerId ) ) )
       {
         returnStatus = false;
@@ -2569,6 +2604,11 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
     mElevationProfileManager->resolveReferences( this );
   }
 
+  {
+    profile.switchTask( tr( "Loading selective masking source sets" ) );
+    mSelectiveMaskingSourceSetManager->readXml( doc->documentElement(), *doc, context );
+  }
+
   if ( !( flags & Qgis::ProjectReadFlag::DontLoad3DViews ) )
   {
     profile.switchTask( tr( "Loading 3D Views" ) );
@@ -3136,6 +3176,7 @@ bool QgsProject::readLayer( const QDomNode &layerNode )
   context.setPathResolver( pathResolver() );
   context.setProjectTranslator( this );
   context.setTransformContext( transformContext() );
+  context.setCurrentLayerId( layerNode.toElement().firstChildElement( u"id"_s ).text() );
   QList<QDomNode> brokenNodes;
   if ( addLayer( layerNode.toElement(), brokenNodes, context ) )
   {
@@ -3502,6 +3543,11 @@ bool QgsProject::writeProjectFile( const QString &filename )
   {
     const QDomElement elevationProfileElem = mElevationProfileManager->writeXml( *doc, context );
     qgisNode.appendChild( elevationProfileElem );
+  }
+
+  {
+    const QDomElement selectiveMaskingSourceSetElem = mSelectiveMaskingSourceSetManager->writeXml( *doc, context );
+    qgisNode.appendChild( selectiveMaskingSourceSetElem );
   }
 
   {
@@ -4046,6 +4092,7 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
     embeddedContext.setPathResolver( QgsPathResolver( projectFilePath ) );
   embeddedContext.setProjectTranslator( this );
   embeddedContext.setTransformContext( transformContext() );
+  embeddedContext.setCurrentLayerId( layerId );
 
   const QDomElement projectLayersElem = sProjectDocument.documentElement().firstChildElement( u"projectlayers"_s );
   if ( projectLayersElem.isNull() )
@@ -4344,6 +4391,20 @@ QgsElevationProfileManager *QgsProject::elevationProfileManager()
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mElevationProfileManager.get();
+}
+
+const QgsSelectiveMaskingSourceSetManager *QgsProject::selectiveMaskingSourceSetManager() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mSelectiveMaskingSourceSetManager.get();
+}
+
+QgsSelectiveMaskingSourceSetManager *QgsProject::selectiveMaskingSourceSetManager()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mSelectiveMaskingSourceSetManager.get();
 }
 
 const QgsMapViewsManager *QgsProject::viewsManager() const

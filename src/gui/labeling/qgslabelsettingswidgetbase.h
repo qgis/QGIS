@@ -35,7 +35,7 @@ class QgsPropertyOverrideButton;
  * \brief Base class for widgets which allow customization of label engine properties, such as label placement settings.
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLabelSettingsWidgetBase : public QgsPanelWidget, protected QgsExpressionContextGenerator
+class GUI_EXPORT QgsLabelSettingsWidgetBase : public QgsPanelWidget, public QgsExpressionContextGenerator
 {
     Q_OBJECT
 

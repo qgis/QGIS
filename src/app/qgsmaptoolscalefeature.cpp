@@ -38,8 +38,11 @@
 #include <QKeyEvent>
 #include <QLabel>
 #include <QSettings>
+#include <QString>
 
 #include "moc_qgsmaptoolscalefeature.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsScaleMagnetWidget::QgsScaleMagnetWidget( const QString &label, QWidget *parent )
   : QWidget( parent )

@@ -19,8 +19,11 @@
 
 #include <QHBoxLayout>
 #include <QStackedWidget>
+#include <QString>
 
 #include "moc_qgsattributeformwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAttributeFormWidget::QgsAttributeFormWidget( QgsWidgetWrapper *widget, QgsAttributeForm *form )
   : QWidget( form )

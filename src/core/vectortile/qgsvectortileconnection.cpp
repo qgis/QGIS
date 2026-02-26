@@ -20,6 +20,9 @@
 #include "qgssettingsentryimpl.h"
 
 #include <QFileInfo>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

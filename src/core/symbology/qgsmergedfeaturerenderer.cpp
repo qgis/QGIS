@@ -29,6 +29,9 @@
 
 #include <QDomDocument>
 #include <QDomElement>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsMergedFeatureRenderer::QgsMergedFeatureRenderer( QgsFeatureRenderer *subRenderer )
   : QgsMergedFeatureRenderer( u"mergedFeatureRenderer"_s, subRenderer )

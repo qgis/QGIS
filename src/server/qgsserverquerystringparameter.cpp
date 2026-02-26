@@ -21,7 +21,11 @@
 #include "qgsserverexception.h"
 #include "qgsserverrequest.h"
 
+#include <QString>
+
 #include "moc_qgsserverquerystringparameter.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsServerQueryStringParameter::QgsServerQueryStringParameter( const QString name, bool required, QgsServerQueryStringParameter::Type type, const QString &description, const QVariant &defaultValue )
   : mName( name ), mRequired( required ), mType( type ), mDescription( description ), mDefaultValue( defaultValue )

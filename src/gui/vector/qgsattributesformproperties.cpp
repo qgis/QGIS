@@ -18,6 +18,8 @@
 #include "qgsactionmanager.h"
 #include "qgsaddtaborgroup.h"
 #include "qgsapplication.h"
+#include "qgsattributedialog.h"
+#include "qgsattributeeditorcontext.h"
 #include "qgsattributeformcontaineredit.h"
 #include "qgsattributesforminitcode.h"
 #include "qgsattributesformtreeviewindicatorprovider.h"
@@ -29,10 +31,17 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsfieldcombobox.h"
 #include "qgsgui.h"
+#include "qgsmemoryproviderutils.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssourcefieldsproperties.h"
+#include "qgsvectorlayerutils.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
+
 #include "moc_qgsattributesformproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -40,9 +49,10 @@
 
 const QgsSettingsEntryBool *QgsAttributesFormProperties::settingShowAliases = new QgsSettingsEntryBool( u"show-aliases"_s, sTreeAttributesForm, false, u"Whether to show aliases (true) or names (false) in both the Available Widgets and the Form Layout panels."_s );
 
-QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )
+QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent, QgsSourceFieldsProperties *sourceFieldsProperties )
   : QWidget( parent )
   , mLayer( layer )
+  , mSourceFieldsProperties( sourceFieldsProperties )
 {
   if ( !layer )
     return;
@@ -141,6 +151,15 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   // Assign initial size to splitter widgets. By doing so, we can
   // show an eventual horizontal scrollbar in the right-hand side panel
   splitter->setSizes( { widget->minimumSizeHint().width(), 600 } );
+
+  if ( mSourceFieldsProperties )
+  {
+    connect( mFormPreviewButton, &QAbstractButton::clicked, this, &QgsAttributesFormProperties::previewForm );
+  }
+  else
+  {
+    mFormPreviewButton->setVisible( false );
+  }
 }
 
 void QgsAttributesFormProperties::init()
@@ -795,9 +814,14 @@ void QgsAttributesFormProperties::store()
 void QgsAttributesFormProperties::apply()
 {
   mBlockUpdates++;
-  store();
+  applyToLayer( mLayer );
+  mBlockUpdates--;
+}
 
-  QgsEditFormConfig editFormConfig = mLayer->editFormConfig();
+void QgsAttributesFormProperties::applyToLayer( QgsVectorLayer *layer )
+{
+  store();
+  QgsEditFormConfig editFormConfig = layer->editFormConfig();
 
   const QModelIndex fieldContainer = mAvailableWidgetsModel->fieldContainer();
   QModelIndex index;
@@ -808,7 +832,7 @@ void QgsAttributesFormProperties::apply()
     const QgsAttributesFormData::FieldConfig cfg = index.data( QgsAttributesFormModel::ItemFieldConfigRole ).value<QgsAttributesFormData::FieldConfig>();
 
     const QString fieldName = index.data( QgsAttributesFormModel::ItemNameRole ).toString();
-    const int idx = mLayer->fields().indexOf( fieldName );
+    const int idx = layer->fields().indexOf( fieldName );
 
     //continue in case field does not exist anymore
     if ( idx < 0 )
@@ -823,41 +847,41 @@ void QgsAttributesFormProperties::apply()
       editFormConfig.setDataDefinedFieldProperties( fieldName, cfg.mDataDefinedProperties );
     }
 
-    mLayer->setEditorWidgetSetup( idx, QgsEditorWidgetSetup( cfg.mEditorWidgetType, cfg.mEditorWidgetConfig ) );
+    layer->setEditorWidgetSetup( idx, QgsEditorWidgetSetup( cfg.mEditorWidgetType, cfg.mEditorWidgetConfig ) );
 
     const QgsFieldConstraints constraints = cfg.mFieldConstraints;
-    mLayer->setConstraintExpression( idx, constraints.constraintExpression(), constraints.constraintDescription() );
+    layer->setConstraintExpression( idx, constraints.constraintExpression(), constraints.constraintDescription() );
     if ( constraints.constraints() & QgsFieldConstraints::ConstraintNotNull )
     {
-      mLayer->setFieldConstraint( idx, QgsFieldConstraints::ConstraintNotNull, constraints.constraintStrength( QgsFieldConstraints::ConstraintNotNull ) );
+      layer->setFieldConstraint( idx, QgsFieldConstraints::ConstraintNotNull, constraints.constraintStrength( QgsFieldConstraints::ConstraintNotNull ) );
     }
     else
     {
-      mLayer->removeFieldConstraint( idx, QgsFieldConstraints::ConstraintNotNull );
+      layer->removeFieldConstraint( idx, QgsFieldConstraints::ConstraintNotNull );
     }
     if ( constraints.constraints() & QgsFieldConstraints::ConstraintUnique )
     {
-      mLayer->setFieldConstraint( idx, QgsFieldConstraints::ConstraintUnique, constraints.constraintStrength( QgsFieldConstraints::ConstraintUnique ) );
+      layer->setFieldConstraint( idx, QgsFieldConstraints::ConstraintUnique, constraints.constraintStrength( QgsFieldConstraints::ConstraintUnique ) );
     }
     else
     {
-      mLayer->removeFieldConstraint( idx, QgsFieldConstraints::ConstraintUnique );
+      layer->removeFieldConstraint( idx, QgsFieldConstraints::ConstraintUnique );
     }
     if ( constraints.constraints() & QgsFieldConstraints::ConstraintExpression )
     {
-      mLayer->setFieldConstraint( idx, QgsFieldConstraints::ConstraintExpression, constraints.constraintStrength( QgsFieldConstraints::ConstraintExpression ) );
+      layer->setFieldConstraint( idx, QgsFieldConstraints::ConstraintExpression, constraints.constraintStrength( QgsFieldConstraints::ConstraintExpression ) );
     }
     else
     {
-      mLayer->removeFieldConstraint( idx, QgsFieldConstraints::ConstraintExpression );
+      layer->removeFieldConstraint( idx, QgsFieldConstraints::ConstraintExpression );
     }
 
-    mLayer->setFieldAlias( idx, cfg.mAlias );
-    mLayer->setFieldSplitPolicy( idx, cfg.mSplitPolicy );
-    mLayer->setFieldDuplicatePolicy( idx, cfg.mDuplicatePolicy );
-    mLayer->setFieldMergePolicy( idx, cfg.mMergePolicy );
+    layer->setFieldAlias( idx, cfg.mAlias );
+    layer->setFieldSplitPolicy( idx, cfg.mSplitPolicy );
+    layer->setFieldDuplicatePolicy( idx, cfg.mDuplicatePolicy );
+    layer->setFieldMergePolicy( idx, cfg.mMergePolicy );
 
-    mLayer->setDefaultValueDefinition( idx, QgsDefaultValue( cfg.mDefaultValueExpression, cfg.mApplyDefaultValueOnUpdate ) );
+    layer->setDefaultValueDefinition( idx, QgsDefaultValue( cfg.mDefaultValueExpression, cfg.mApplyDefaultValueOnUpdate ) );
   }
 
   // // tabs and groups
@@ -907,10 +931,8 @@ void QgsAttributesFormProperties::apply()
     }
   }
 
-  mLayer->setEditFormConfig( editFormConfig );
-  mBlockUpdates--;
+  layer->setEditFormConfig( editFormConfig );
 }
-
 
 void QgsAttributesFormProperties::updatedFields()
 {
@@ -1123,6 +1145,7 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
 
   if ( doc.setContent( mimeData->data( u"application/x-qgsattributetabledesignerelementclipboard"_s ) ) )
   {
+    QgsReadWriteContext context;
     QDomElement docElem = doc.documentElement();
     if ( docElem.tagName() != "FormWidgetClipboard"_L1 )
       return;
@@ -1147,28 +1170,6 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
         {
           const QDomElement optionsElem = configElement.childNodes().at( 0 ).toElement();
           QVariantMap optionsMap = QgsXmlUtils::readVariant( optionsElem ).toMap();
-          QgsReadWriteContext context;
-          // translate widget configuration strings
-          if ( widgetType == "ValueRelation"_L1 )
-          {
-            optionsMap[u"Value"_s] = context.projectTranslator()->translate( u"project:layers:%1:fields:%2:valuerelationvalue"_s.arg( mLayer->id(), fieldName ), optionsMap[u"Value"_s].toString() );
-          }
-          if ( widgetType == "ValueMap"_L1 )
-          {
-            if ( optionsMap[u"map"_s].canConvert<QList<QVariant>>() )
-            {
-              QList<QVariant> translatedValueList;
-              const QList<QVariant> valueList = optionsMap[u"map"_s].toList();
-              for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
-              {
-                QMap<QString, QVariant> translatedValueMap;
-                QString translatedKey = context.projectTranslator()->translate( u"project:layers:%1:fields:%2:valuemapdescriptions"_s.arg( mLayer->id(), fieldName ), valueList[i].toMap().constBegin().key() );
-                translatedValueMap.insert( translatedKey, valueList[i].toMap().constBegin().value() );
-                translatedValueList.append( translatedValueMap );
-              }
-              optionsMap.insert( u"map"_s, translatedValueList );
-            }
-          }
           config.mEditorWidgetType = widgetType;
           config.mEditorWidgetConfig = optionsMap;
         }
@@ -1360,4 +1361,47 @@ void QgsAttributesFormProperties::setFormLayoutIndicatorProvidersEnabled( bool e
     disconnect( mFormLayoutModel, &QgsAttributesFormModel::fieldConfigDataChanged, mConstraintIndicatorProviderFormLayout, &QgsFieldConstraintIndicatorProvider::updateItemIndicator );
     mConstraintIndicatorProviderFormLayout->setEnabled( enabled );
   }
+}
+
+void QgsAttributesFormProperties::previewForm()
+{
+  if ( !mSourceFieldsProperties )
+  {
+    return;
+  }
+
+  auto projectDirtyBlocker = std::make_unique<QgsProjectDirtyBlocker>( QgsProject::instance() );
+
+
+  QgsFields fields;
+  QList<QPair<QgsField, QString>> expressionFields;
+
+  for ( int i = 0; i < mLayer->fields().size(); i++ )
+  {
+    if ( mLayer->fields().fieldOrigin( i ) == Qgis::FieldOrigin::Expression )
+    {
+      expressionFields << qMakePair( mLayer->fields().at( i ), mLayer->expressionField( i ) );
+    }
+    else
+    {
+      fields.append( mLayer->fields().at( i ) );
+    }
+  }
+
+  std::unique_ptr<QgsVectorLayer> vlayer;
+  vlayer.reset( QgsMemoryProviderUtils::createMemoryLayer( "preview"_L1, fields, mLayer->wkbType(), mLayer->crs() ) );
+  for ( const QPair<QgsField, QString> &expressionField : std::as_const( expressionFields ) )
+  {
+    vlayer->addExpressionField( expressionField.second, expressionField.first );
+  }
+
+  mSourceFieldsProperties->applyToLayer( vlayer.get() );
+  applyToLayer( vlayer.get() );
+
+  QgsFeature feature = QgsVectorLayerUtils::createFeature( vlayer.get() );
+  QgsAttributeDialog form( vlayer.get(), &feature, false, this, true );
+  form.setMode( QgsAttributeEditorContext::PreviewMode );
+  form.exec();
+
+  projectDirtyBlocker.reset();
 }

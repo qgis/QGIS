@@ -18,6 +18,10 @@
 #include "qgsexpressionnodeimpl.h"
 #include "qgssqlexpressioncompiler.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsOracleExpressionCompiler::QgsOracleExpressionCompiler( QgsOracleFeatureSource *source, bool ignoreStaticNodes )
   : QgsSqlExpressionCompiler( source->mFields, Flags(), ignoreStaticNodes )
 {

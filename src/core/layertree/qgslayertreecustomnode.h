@@ -23,6 +23,9 @@
 #include "qgslayertreenode.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core

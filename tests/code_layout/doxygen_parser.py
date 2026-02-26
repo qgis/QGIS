@@ -198,13 +198,13 @@ class DoxygenParser:
 
                         if len(unacceptable_undocumented_insensitive) > 0:
                             self.undocumented_members[class_name] = {}
-                            self.undocumented_members[class_name][
-                                "documented"
-                            ] = documented
+                            self.undocumented_members[class_name]["documented"] = (
+                                documented
+                            )
                             self.undocumented_members[class_name]["members"] = members
-                            self.undocumented_members[class_name][
-                                "missing_members"
-                            ] = unacceptable_undocumented
+                            self.undocumented_members[class_name]["missing_members"] = (
+                                unacceptable_undocumented
+                            )
 
                         if len(noncompliant) > 0:
                             self.noncompliant_members[class_name] = noncompliant
@@ -681,10 +681,10 @@ class DoxygenParser:
             return False
 
         if doxy_deprecated and not has_description:
-            assert (
-                has_description
-            ), "Error: Missing description for deprecated method {}".format(
-                member_elem.find("definition").text
+            assert has_description, (
+                "Error: Missing description for deprecated method {}".format(
+                    member_elem.find("definition").text
+                )
             )
 
         # only functions for now, but in future this should also apply for enums and variables
@@ -692,10 +692,10 @@ class DoxygenParser:
             assert decl_deprecated, "Error: Missing Q_DECL_DEPRECATED for {}".format(
                 member_elem.find("definition").text
             )
-            assert (
-                doxy_deprecated
-            ), "Error: Missing Doxygen deprecated tag for {}".format(
-                member_elem.find("definition").text
+            assert doxy_deprecated, (
+                "Error: Missing Doxygen deprecated tag for {}".format(
+                    member_elem.find("definition").text
+                )
             )
 
         return True

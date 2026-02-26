@@ -528,7 +528,7 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
       "name": ""
     },
     "title": "QGIS TestProject",
-    "version": ""
+    "version": "1.0.0"
   },
   "openapi": "3.0.1",
   "paths": {

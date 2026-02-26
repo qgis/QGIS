@@ -1,0 +1,13 @@
+# Assume Python 3.9
+target-version = "py39"
+
+[lint]
+select = [
+  "I",   # isort
+  "UP",  # pyupgrade
+]
+
+ignore = [
+  "UP030", # format-literals. TODO: Desirable, but many current violations
+  "UP031", # printf-string-formatting. TODO: Desirable, but many current violations
+]

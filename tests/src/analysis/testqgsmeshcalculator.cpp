@@ -25,6 +25,10 @@ Email                : zilolv at gmail dot com
 #include "qgsproject.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 Q_DECLARE_METATYPE( QgsMeshCalcNode::Operator )
 
 class TestQgsMeshCalculator : public QgsTest

@@ -11,15 +11,15 @@ __date__ = "09/11/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
 
-from qgis.core import QgsProcessingBatchFeedback, QgsProcessingFeedback
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.core import QgsProcessingBatchFeedback, QgsProcessingFeedback
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsProcessingBatch(QgisTestCase):
-
     def testFeedback(self):
         """
         Test QgsProcessingBatchFeedback

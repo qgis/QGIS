@@ -19,7 +19,6 @@
 #define QGSLAYOUTTABLEBACKGROUNDCOLORSDIALOG_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "ui_qgslayouttablebackgroundstyles.h"
 
@@ -27,6 +26,8 @@
 #include "qgslayouttable.h"
 
 #include <QDialog>
+
+#define SIP_NO_FILE
 
 class QCheckBox;
 class QgsColorButton;

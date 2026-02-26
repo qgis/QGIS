@@ -26,12 +26,15 @@
 #include <QByteArray>
 #include <QMap>
 #include <QSet>
+#include <QString>
 #include <QTime>
 #include <QUrl>
 #include <QUrlQuery>
 #include <QVariant>
 
 #include "moc_qgsrasterdataprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define ERR(message) QgsError(message, "Raster provider")
 
@@ -1061,5 +1064,16 @@ QString QgsRasterDataProvider::encodeVirtualRasterProviderUri( const VirtualRast
   uri.setQuery( query );
   return QString( QUrl::toPercentEncoding( uri.toEncoded() ) );
 }
+
+bool QgsRasterDataProvider::hasReportsDuringClose() const
+{
+  return false;
+}
+
+bool QgsRasterDataProvider::closeWithProgress( QgsFeedback * /* feedback */ )
+{
+  return false;
+}
+
 
 #undef ERR

@@ -10,18 +10,18 @@ __author__ = "Samweli Mwakisambwe"
 __date__ = "6/3/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
-from qgis.PyQt.QtCore import QDate, QDateTime, QTime
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
+
 from qgis.core import (
     QgsDateTimeRange,
     QgsProjectTimeSettings,
     QgsReadWriteContext,
     QgsUnitTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 app = start_app()
@@ -29,7 +29,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsProjectTimeSettings(QgisTestCase):
-
     def testTemporalRange(self):
         p = QgsProjectTimeSettings()
         self.assertTrue(p.temporalRange().isInfinite())

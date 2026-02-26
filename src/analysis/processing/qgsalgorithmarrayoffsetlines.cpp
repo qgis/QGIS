@@ -17,6 +17,10 @@
 
 #include "qgsalgorithmarrayoffsetlines.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsCreateArrayOffsetLinesAlgorithm::name() const

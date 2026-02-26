@@ -21,7 +21,10 @@
 #include "qgsmultipolygon.h"
 #include "qgsmultisurface.h"
 
+#include <QString>
 #include <queue>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

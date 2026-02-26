@@ -390,6 +390,26 @@ label text should be placed at the
 .. versionadded:: 3.26
 %End
 
+    Qgis::CurvedLabelMode curvedLabelMode() const;
+%Docstring
+Returns the mode which determine how curved labels are generated and
+placed.
+
+.. seealso:: :py:func:`setCurvedLabelMode`
+
+.. versionadded:: 4.0
+%End
+
+    void setCurvedLabelMode( Qgis::CurvedLabelMode mode );
+%Docstring
+Sets the ``mode`` which determine how curved labels are generated and
+placed.
+
+.. seealso:: :py:func:`curvedLabelMode`
+
+.. versionadded:: 4.0
+%End
+
 };
 
 /************************************************************************

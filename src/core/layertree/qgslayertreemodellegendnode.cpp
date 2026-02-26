@@ -44,8 +44,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QBuffer>
+#include <QString>
 
 #include "moc_qgslayertreemodellegendnode.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerTreeModelLegendNode::QgsLayerTreeModelLegendNode( QgsLayerTreeLayer *nodeL, QObject *parent )
   : QObject( parent )

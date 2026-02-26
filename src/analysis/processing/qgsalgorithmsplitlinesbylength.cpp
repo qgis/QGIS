@@ -23,6 +23,10 @@
 #include "qgsgeometrycollection.h"
 #include "qgslinestring.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsSplitLinesByLengthAlgorithm::name() const

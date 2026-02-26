@@ -21,7 +21,11 @@
 #include "qgstiledscenelayerelevationproperties.h"
 #include "qgstiledscenerendererpropertieswidget.h"
 
+#include <QString>
+
 #include "moc_qgstiledsceneelevationpropertieswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTiledSceneElevationPropertiesWidget::QgsTiledSceneElevationPropertiesWidget( QgsTiledSceneLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

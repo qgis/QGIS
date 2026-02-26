@@ -38,7 +38,7 @@ class GUI_EXPORT QgsMapToolEditBlankSegments;
  * \class QgsSymbolLayerWidget
  * \brief Abstract base class for widgets used to configure QgsSymbolLayer classes.
  */
-class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionContextGenerator
+class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, public QgsExpressionContextGenerator
 {
     Q_OBJECT
 

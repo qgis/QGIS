@@ -20,7 +20,11 @@
 #include "qgsdatumtransformdialog.h"
 #include "qgssettings.h"
 
+#include <QString>
+
 #include "moc_qgsdatumtransformtablewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDatumTransformTableModel::QgsDatumTransformTableModel( QObject *parent )
   : QAbstractTableModel( parent )

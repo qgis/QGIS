@@ -17,11 +17,10 @@ import stat
 import sys
 import tempfile
 
-
 try:
     from urllib2 import HTTPError, URLError, urlopen
 except ImportError:
-    from urllib.request import urlopen, HTTPError, URLError
+    from urllib.request import HTTPError, URLError, urlopen
 
 import hashlib
 import subprocess
@@ -60,7 +59,7 @@ def assertHashesForFile(theHashes, theFilename):
 def assertHashForFile(theHash, theFilename):
     """Assert that a files has matches its expected hash"""
     myHash = hashForFile(theFilename)
-    myMessage = "Unexpected hash" "\nGot: %s" "\nExpected: %s" % (myHash, theHash)
+    myMessage = f"Unexpected hash\nGot: {myHash}\nExpected: {theHash}"
     assert myHash == theHash, myMessage
 
 
@@ -116,9 +115,9 @@ def writeShape(theMemoryLayer, theFileName):
         myLayerOptions,
         mySkipAttributesFlag,
     )
-    assert (
-        myResult == QgsVectorFileWriter.WriterError.NoError
-    ), f"Writing shape failed, Error {myResult} ({myErrorMessage})"
+    assert myResult == QgsVectorFileWriter.WriterError.NoError, (
+        f"Writing shape failed, Error {myResult} ({myErrorMessage})"
+    )
 
     return myFileName
 
@@ -229,21 +228,9 @@ def mapSettingsString(ms):
 
     s = "MapSettings...\n"
     s += f"  layers(): {[layer.name() for layer in ms.layers()]}\n"
-    s += "  backgroundColor(): rgba {},{},{},{}\n".format(
-        ms.backgroundColor().red(),
-        ms.backgroundColor().green(),
-        ms.backgroundColor().blue(),
-        ms.backgroundColor().alpha(),
-    )
-    s += "  selectionColor(): rgba {},{},{},{}\n".format(
-        ms.selectionColor().red(),
-        ms.selectionColor().green(),
-        ms.selectionColor().blue(),
-        ms.selectionColor().alpha(),
-    )
-    s += "  outputSize(): {} x {}\n".format(
-        ms.outputSize().width(), ms.outputSize().height()
-    )
+    s += f"  backgroundColor(): rgba {ms.backgroundColor().red()},{ms.backgroundColor().green()},{ms.backgroundColor().blue()},{ms.backgroundColor().alpha()}\n"
+    s += f"  selectionColor(): rgba {ms.selectionColor().red()},{ms.selectionColor().green()},{ms.selectionColor().blue()},{ms.selectionColor().alpha()}\n"
+    s += f"  outputSize(): {ms.outputSize().width()} x {ms.outputSize().height()}\n"
     s += f"  outputDpi(): {ms.outputDpi()}\n"
     s += f"  mapUnits(): {ms.mapUnits()}\n"
     s += f"  scale(): {ms.scale()}\n"
@@ -254,21 +241,11 @@ def mapSettingsString(ms):
     )
     s += "  fullExtent():\n    {}\n".format(full_ext.replace(" : ", "\n    "))
     s += f"  destinationCrs(): {ms.destinationCrs().authid()}\n"
-    s += "  flag.Antialiasing: {}\n".format(
-        ms.testFlag(QgsMapSettings.Flag.Antialiasing)
-    )
-    s += "  flag.UseAdvancedEffects: {}\n".format(
-        ms.testFlag(QgsMapSettings.Flag.UseAdvancedEffects)
-    )
-    s += "  flag.ForceVectorOutput: {}\n".format(
-        ms.testFlag(QgsMapSettings.Flag.ForceVectorOutput)
-    )
-    s += "  flag.DrawLabeling: {}\n".format(
-        ms.testFlag(QgsMapSettings.Flag.DrawLabeling)
-    )
-    s += "  flag.DrawEditingInfo: {}\n".format(
-        ms.testFlag(QgsMapSettings.Flag.DrawEditingInfo)
-    )
+    s += f"  flag.Antialiasing: {ms.testFlag(QgsMapSettings.Flag.Antialiasing)}\n"
+    s += f"  flag.UseAdvancedEffects: {ms.testFlag(QgsMapSettings.Flag.UseAdvancedEffects)}\n"
+    s += f"  flag.ForceVectorOutput: {ms.testFlag(QgsMapSettings.Flag.ForceVectorOutput)}\n"
+    s += f"  flag.DrawLabeling: {ms.testFlag(QgsMapSettings.Flag.DrawLabeling)}\n"
+    s += f"  flag.DrawEditingInfo: {ms.testFlag(QgsMapSettings.Flag.DrawEditingInfo)}\n"
     s += f"  outputImageFormat(): {ms.outputImageFormat()}\n"
     return s
 
@@ -324,7 +301,7 @@ def openInBrowserTab(url):
         webbrowser.open_new_tab(url)
     else:
         # some Linux OS pause execution on webbrowser open, so background it
-        cmd = "import webbrowser;" 'webbrowser.open_new_tab("{}")'.format(url)
+        cmd = f'import webbrowser;webbrowser.open_new_tab("{url}")'
         subprocess.Popen(
             [sys.executable, "-c", cmd],
             stdout=subprocess.PIPE,

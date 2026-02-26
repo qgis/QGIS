@@ -206,6 +206,21 @@ class CORE_EXPORT QgsProcessingMultiStepFeedback : public QgsProcessingFeedback
      */
     void setCurrentStep( int step );
 
+    /**
+     * Sets the relative \a weights for each step.
+     *
+     * The \a weights list size must match the number of steps
+     * defined in the constructor. Weights are normalized internally,
+     * so they do not need to sum to 1.0 or 100.0.
+     *
+     * If this is not called, all steps are assumed to have equal weight.
+     *
+     * \warning step weights must be set in advance before the feedback is used to report any progress
+     *
+     * \since QGIS 4.0
+     */
+    void setStepWeights( const QList<double> &weights );
+
     void setProgressText( const QString &text ) override;
     void reportError( const QString &error, bool fatalError = false ) override;
     void pushWarning( const QString &warning ) override;
@@ -225,6 +240,8 @@ class CORE_EXPORT QgsProcessingMultiStepFeedback : public QgsProcessingFeedback
 
     int mChildSteps = 0;
     int mCurrentStep = 0;
+    QList< double > mStepWeights;
+    double mCurrentStepBaseProgress = 0.0;
     QgsProcessingFeedback *mFeedback = nullptr;
 
 };

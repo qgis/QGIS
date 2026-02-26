@@ -17,6 +17,10 @@
 
 #include "qgsalgorithmsmooth.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsSmoothAlgorithm::name() const

@@ -21,10 +21,13 @@
 #include "qgssymbollayerutils.h"
 
 #include <QDomDocument>
+#include <QString>
 #include <Qt3DCore/QEntity>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DRender/QPointLight>
+
+using namespace Qt::StringLiterals;
 
 Qgis::LightSourceType QgsPointLightSettings::type() const
 {

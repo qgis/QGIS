@@ -28,6 +28,9 @@
 
 #include <QDomDocument>
 #include <QDomElement>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsInvertedPolygonRenderer::QgsInvertedPolygonRenderer( QgsFeatureRenderer *subRenderer )
   : QgsMergedFeatureRenderer( u"invertedPolygonRenderer"_s, subRenderer )

@@ -39,10 +39,13 @@
 #include <QList>
 #include <QRegularExpression>
 #include <QSettings>
+#include <QString>
 #include <QStringList>
 #include <QUrl>
 
 #include "moc_qgsactionmanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsActionManager::QgsActionManager( QgsVectorLayer *layer )
   : mLayer( layer )
@@ -256,7 +259,7 @@ bool QgsActionManager::writeXml( QDomNode &layer_node ) const
   return true;
 }
 
-bool QgsActionManager::readXml( const QDomNode &layer_node )
+bool QgsActionManager::readXml( const QDomNode &layer_node, const QgsReadWriteContext &context )
 {
   clearActions();
 
@@ -268,7 +271,7 @@ bool QgsActionManager::readXml( const QDomNode &layer_node )
     for ( int i = 0; i < actionsettings.size(); ++i )
     {
       QgsAction action;
-      action.readXml( actionsettings.item( i ) );
+      action.readXml( actionsettings.item( i ), context );
       addAction( action );
     }
 

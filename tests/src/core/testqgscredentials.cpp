@@ -17,7 +17,9 @@
 
 #include <QObject>
 #include <QString>
-#include <QtConcurrent>
+#include <QtConcurrentMap>
+
+using namespace Qt::StringLiterals;
 
 class TestCredentials : public QgsCredentials
 {

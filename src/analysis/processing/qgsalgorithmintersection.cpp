@@ -19,6 +19,10 @@
 #include "qgsgeometryengine.h"
 #include "qgsoverlayutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 

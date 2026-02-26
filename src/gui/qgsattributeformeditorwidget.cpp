@@ -29,8 +29,11 @@
 #include <QLabel>
 #include <QLayout>
 #include <QStackedWidget>
+#include <QString>
 
 #include "moc_qgsattributeformeditorwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapper *editorWidget, const QString &widgetType, QgsAttributeForm *form )
   : QgsAttributeFormWidget( editorWidget, form )

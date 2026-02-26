@@ -37,6 +37,9 @@
 
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsProcessingAlgorithm::~QgsProcessingAlgorithm()
 {
@@ -822,7 +825,13 @@ QString QgsProcessingAlgorithm::parameterAsOutputRasterFormat( const QVariantMap
   QString outputFormat = parameterAsOutputFormat( parameters, name, context );
   if ( outputFormat.isEmpty() )
   {
-    QString outputFile = parameterAsOutputLayer( parameters, name, context );
+    const QgsProcessingParameterDefinition *definition = parameterDefinition( name );
+    QVariant val;
+    if ( definition )
+    {
+      val = parameters.value( definition->name() );
+    }
+    QString outputFile = QgsProcessingParameters::parameterAsOutputLayer( definition, val, context, /* testOnly = */ true );
     if ( !outputFile.isEmpty() )
     {
       const QFileInfo fi( outputFile );

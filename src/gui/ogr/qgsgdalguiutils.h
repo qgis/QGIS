@@ -22,10 +22,11 @@
 
 #include <QString>
 
+#define SIP_NO_FILE
+
 class QWidget;
 class QgsGdalOption;
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup gui

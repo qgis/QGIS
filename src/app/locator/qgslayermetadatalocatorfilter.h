@@ -19,6 +19,10 @@
 #include "qgis_app.h"
 #include "qgslocatorfilter.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class APP_EXPORT QgsLayerMetadataLocatorFilter : public QgsLocatorFilter
 {
     Q_OBJECT

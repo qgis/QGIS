@@ -19,8 +19,11 @@
 #include "qgslogger.h"
 
 #include <QDebug>
+#include <QString>
 
 #include "moc_qgsspatialitetransaction.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

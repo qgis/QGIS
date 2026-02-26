@@ -27,8 +27,11 @@
 #include "qgsvectortileutils.h"
 
 #include <QMenu>
+#include <QString>
 
 #include "moc_qgsvectortilebasiclabelingwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

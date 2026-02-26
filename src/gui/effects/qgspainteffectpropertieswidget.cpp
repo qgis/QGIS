@@ -26,8 +26,11 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QStandardItem>
+#include <QString>
 
 #include "moc_qgspainteffectpropertieswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 static bool _initWidgetFunction( const QString &name, QgsPaintEffectWidgetFunc f )
 {

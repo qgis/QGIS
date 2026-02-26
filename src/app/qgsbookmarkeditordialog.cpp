@@ -28,7 +28,11 @@
 #include "qgsproject.h"
 #include "qgsprojectionselectiondialog.h"
 
+#include <QString>
+
 #include "moc_qgsbookmarkeditordialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsBookmarkEditorDialog::QgsBookmarkEditorDialog( const QgsBookmark &bookmark, bool inProject, QWidget *parent, QgsMapCanvas *mapCanvas )
   : QDialog( parent )

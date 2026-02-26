@@ -23,7 +23,11 @@
 #include "qgslogger.h"
 #include "qgsrasterdataprovider.h"
 
+#include <QString>
+
 #include "moc_qgsrasterprojector.cpp"
+
+using namespace Qt::StringLiterals;
 
 Q_NOWARN_DEPRECATED_PUSH // because of deprecated members
 QgsRasterProjector::QgsRasterProjector()

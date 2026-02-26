@@ -22,16 +22,17 @@ __copyright__ = "(C) 2015, Luigi Pirelli"
 import html
 import pathlib
 
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (
     QgsProcessing,
     QgsProcessingException,
-    QgsProcessingParameterMultipleLayers,
-    QgsProcessingParameterBoolean,
-    QgsProcessingParameterVectorDestination,
     QgsProcessingOutputString,
+    QgsProcessingParameterBoolean,
+    QgsProcessingParameterMultipleLayers,
     QgsProcessingParameters,
+    QgsProcessingParameterVectorDestination,
 )
+from qgis.PyQt.QtCore import QCoreApplication
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -83,7 +84,6 @@ class Datasources2Vrt(GdalAlgorithm):
         )
 
         class ParameterVectorVrtDestination(QgsProcessingParameterVectorDestination):
-
             def __init__(self, name, description):
                 super().__init__(name, description)
 

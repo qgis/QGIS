@@ -15,6 +15,9 @@ Email                : sherman at mrcc dot com
 #include "qgstest.h"
 
 #include <QPixmap>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 #define CPL_SUPRESS_CPLUSPLUS //#spellok
 #include <gdal.h>

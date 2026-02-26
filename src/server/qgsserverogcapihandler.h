@@ -23,6 +23,9 @@
 #include "qgsserverquerystringparameter.h"
 
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 #ifndef SIP_RUN
 using namespace nlohmann;

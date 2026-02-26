@@ -41,8 +41,11 @@
 #include <QFontDatabase>
 #include <QMap>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsmeshcalculatordialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer, QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )

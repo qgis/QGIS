@@ -24,6 +24,9 @@
 
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 // QgsPointCloudAttributeStatistics
 

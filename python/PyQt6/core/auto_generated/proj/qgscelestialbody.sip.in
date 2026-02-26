@@ -9,6 +9,7 @@
 
 
 
+
 class QgsCelestialBody
 {
 %Docstring(signature="appended")

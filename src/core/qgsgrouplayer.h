@@ -24,6 +24,10 @@
 #include "qgsmaplayerref.h"
 #include "qgsmaplayerrenderer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsGroupLayerDataProvider;
 class QgsPaintEffect;
 

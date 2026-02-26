@@ -39,9 +39,12 @@
 #include <QMenu>
 #include <QMimeData>
 #include <QScrollBar>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgsprocessingalgorithmdialogbase.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond NOT_STABLE
 

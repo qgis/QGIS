@@ -11,9 +11,10 @@ __date__ = "10.12.2018"
 __copyright__ = "Copyright 2018, The QGIS Project"
 
 
-from qgis.processing import alg
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.processing import alg
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -124,7 +125,6 @@ def cleanup():
 
 
 class AlgNoInputs(QgisTestCase):
-
     def setUp(self):
         cleanup()
 
@@ -133,7 +133,6 @@ class AlgNoInputs(QgisTestCase):
 
 
 class AlgNoOutputsButSinkInstead(QgisTestCase):
-
     def setUp(self):
         cleanup()
 
@@ -185,7 +184,6 @@ class AlgInstanceTests(QgisTestCase):
 
 
 class AlgHelpTests(QgisTestCase):
-
     def test_has_help_from_help_decorator(self):
         cleanup()
         define_new()
@@ -215,7 +213,6 @@ class AlgHelpTests(QgisTestCase):
 
 
 class TestAlg(QgisTestCase):
-
     def setUp(self):
         cleanup()
         define_new()

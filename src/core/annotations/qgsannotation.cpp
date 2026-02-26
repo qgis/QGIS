@@ -29,8 +29,11 @@
 
 #include <QPainter>
 #include <QPen>
+#include <QString>
 
 #include "moc_qgsannotation.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAnnotation::QgsAnnotation( QObject *parent )
   : QObject( parent )

@@ -10,13 +10,12 @@ __author__ = "Nyall Dawson"
 __date__ = "17/08/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
-from qgis.PyQt.QtGui import QColor
 from qgis.core import QgsColorRampShader, QgsGradientColorRamp, QgsGradientStop
+from qgis.PyQt.QtGui import QColor
 from qgis.testing import unittest
 
 
 class TestQgsRasterColorRampShader(unittest.TestCase):
-
     def testNan(self):
         shader = QgsColorRampShader()
 

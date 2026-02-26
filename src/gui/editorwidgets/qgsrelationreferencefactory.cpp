@@ -53,20 +53,35 @@ QHash<const char *, int> QgsRelationReferenceFactory::supportedWidgetTypes()
 
 unsigned int QgsRelationReferenceFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
-  int normalRelationsCount = 0;
+  bool isFirstFieldInRelation = false;
   const QList<QgsRelation> relations = vl->referencingRelations( fieldIdx );
   for ( const QgsRelation &rel : relations )
   {
     switch ( rel.type() )
     {
       case Qgis::RelationshipType::Normal:
-        normalRelationsCount++;
+      {
+        // For composite foreign keys, only the first referencing field should
+        // get a RelationReference widget. The other fields are managed by the
+        // widget internally and should not show a separate RelationReference
+        // widget (see https://github.com/qgis/QGIS/issues/32048).
+        const QList<QgsRelation::FieldPair> fieldPairs = rel.fieldPairs();
+        if ( !fieldPairs.isEmpty() )
+        {
+          const int firstReferencingFieldIdx = vl->fields().lookupField( fieldPairs.at( 0 ).referencingField() );
+          if ( firstReferencingFieldIdx == fieldIdx )
+          {
+            isFirstFieldInRelation = true;
+          }
+        }
         break;
+      }
 
       case Qgis::RelationshipType::Generated:
         break;
     }
   }
   // generated relations should not be used for relation reference widget
-  return normalRelationsCount > 0 ? 21 /*A bit stronger than the range widget*/ : 5;
+  // For composite foreign keys, only the first field gets the RelationReference widget
+  return isFirstFieldInRelation ? 21 /*A bit stronger than the range widget*/ : 5;
 }

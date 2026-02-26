@@ -26,7 +26,11 @@
 #include "qgssettingsentryimpl.h"
 #include "qgsstatusbar.h"
 
+#include <QString>
+
 #include "moc_qgsappgpsconnection.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAppGpsConnection::QgsAppGpsConnection( QObject *parent )
   : QObject( parent )

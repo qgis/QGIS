@@ -20,6 +20,10 @@
 #include "qgsannotationlayerchunkloader_p.h"
 #include "qgsstyle.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //
 // QgsAnnotationLayer3DRendererMetadata
 //

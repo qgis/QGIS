@@ -8,6 +8,9 @@
 
 
 
+
+
+
 class QgsPointCloud3DSymbol : QgsAbstract3DSymbol /Abstract/
 {
 %Docstring(signature="appended")

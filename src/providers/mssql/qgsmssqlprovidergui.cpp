@@ -20,6 +20,10 @@
 #include "qgsproviderguimetadata.h"
 #include "qgssourceselectprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //! Provider for msssql raster source select
 class QgsMssqlSourceSelectProvider : public QgsSourceSelectProvider
 {

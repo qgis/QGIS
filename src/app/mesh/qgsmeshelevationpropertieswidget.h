@@ -21,7 +21,10 @@
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
 
+#include <QString>
 #include <QStyledItemDelegate>
+
+using namespace Qt::StringLiterals;
 
 class QgsMeshLayer;
 

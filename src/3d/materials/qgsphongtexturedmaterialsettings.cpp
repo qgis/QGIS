@@ -17,18 +17,22 @@
 
 #include "qgsapplication.h"
 #include "qgscolorutils.h"
+#include "qgshighlightmaterial.h"
 #include "qgsimagecache.h"
 #include "qgsimagetexture.h"
 #include "qgsphongmaterialsettings.h"
 #include "qgsphongtexturedmaterial.h"
 
 #include <QMap>
+#include <QString>
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QPaintedTextureImage>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QTexture>
+
+using namespace Qt::StringLiterals;
 
 QString QgsPhongTexturedMaterialSettings::type() const
 {
@@ -114,6 +118,11 @@ QgsMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterialSettingsRe
     case QgsMaterialSettingsRenderingTechnique::TrianglesFromModel:
     case QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined:
     {
+      if ( context.isHighlighted() )
+      {
+        return new QgsHighlightMaterial( technique );
+      }
+
       bool fitsInCache = false;
       const QImage textureSourceImage = QgsApplication::imageCache()->pathAsImage( mDiffuseTexturePath, QSize(), true, 1.0, fitsInCache );
       ( void ) fitsInCache;

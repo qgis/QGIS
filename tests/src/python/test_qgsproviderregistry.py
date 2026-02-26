@@ -10,6 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "16/03/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsMapLayerType,
@@ -18,9 +20,7 @@ from qgis.core import (
     QgsProviderSublayerDetails,
     QgsProviderUtils,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -45,7 +45,6 @@ class TestProviderMetadata(QgsProviderMetadata):
 
 
 class TestProviderTiledSceneMetadata(QgsProviderMetadata):
-
     def __init__(self, key):
         super().__init__(key, key)
 
@@ -55,7 +54,6 @@ class TestProviderTiledSceneMetadata(QgsProviderMetadata):
 
 
 class TestQgsProviderRegistry(QgisTestCase):
-
     def testProviderList(self):
         """
         Test provider list

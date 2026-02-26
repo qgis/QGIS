@@ -22,6 +22,10 @@
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsdataitem.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief Contains a collection of field domain items.

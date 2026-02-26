@@ -21,9 +21,12 @@
 #include <QDir>
 #include <QImage>
 #include <QMatrix4x4>
+#include <QString>
 #include <QVector3D>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
+
+using namespace Qt::StringLiterals;
 
 void Qgs3DExportObject::setupPositionCoordinates( const QVector<float> &positionsBuffer, const QMatrix4x4 &transform )
 {

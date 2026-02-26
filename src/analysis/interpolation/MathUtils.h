@@ -21,10 +21,11 @@
 
 #include "qgis_analysis.h"
 
+#define SIP_NO_FILE
+
 class QgsPoint;
 class Vector3D;
 
-#define SIP_NO_FILE
 
 namespace MathUtils
 {

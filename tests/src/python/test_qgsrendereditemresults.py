@@ -13,18 +13,17 @@ __date__ = "03/09/2021"
 __copyright__ = "Copyright 2021, The QGIS Project"
 
 import math
+import unittest
 
 from qgis.core import (
     QgsRectangle,
     QgsRenderContext,
     QgsRenderedAnnotationItemDetails,
-    QgsRenderedLayerStatistics,
     QgsRenderedItemDetails,
     QgsRenderedItemResults,
+    QgsRenderedLayerStatistics,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -32,7 +31,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsRenderedItemResults(QgisTestCase):
-
     def test_basic(self):
         details = QgsRenderedItemDetails("layer_id")
         self.assertEqual(details.layerId(), "layer_id")

@@ -17,6 +17,7 @@
 
 #include "qgsmesh3dgeometry_p.h"
 
+#include "qgsmesh3dsymbol.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerutils.h"
 #include "qgstriangularmesh.h"

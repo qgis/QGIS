@@ -26,6 +26,9 @@
 #include <QObject>
 #include <QPointF>
 #include <QSizeF>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsLayoutFrame;
 class QgsLayoutItem;

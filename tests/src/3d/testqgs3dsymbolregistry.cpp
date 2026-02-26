@@ -15,12 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgis.h"
 #include "qgs3d.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgsabstract3dsymbol.h"
 #include "qgstest.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 //dummy symbol for testing
 class Dummy3DSymbol : public QgsAbstract3DSymbol

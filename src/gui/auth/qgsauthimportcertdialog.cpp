@@ -27,9 +27,12 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QPushButton>
+#include <QString>
 #include <QtCrypto>
 
 #include "moc_qgsauthimportcertdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthImportCertDialog::QgsAuthImportCertDialog( QWidget *parent, QgsAuthImportCertDialog::CertFilter filter, QgsAuthImportCertDialog::CertInput input )
   : QDialog( parent )

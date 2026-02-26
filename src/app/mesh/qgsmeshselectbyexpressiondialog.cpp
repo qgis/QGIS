@@ -21,8 +21,11 @@
 #include "qgshelp.h"
 
 #include <QAction>
+#include <QString>
 
 #include "moc_qgsmeshselectbyexpressiondialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshSelectByExpressionDialog::QgsMeshSelectByExpressionDialog( QWidget *parent )
   : QDialog( parent )

@@ -19,7 +19,7 @@ __author__ = "Médéric Ribreux"
 __date__ = "March 2016"
 __copyright__ = "(C) 2016, Médéric Ribreux"
 
-from .i import regroupRasters, importSigFile
+from .i import importSigFile, regroupRasters
 
 
 def processCommand(alg, parameters, context, feedback):

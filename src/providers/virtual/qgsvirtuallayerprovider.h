@@ -25,6 +25,10 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsvirtuallayerdefinition.h"
 #include "qgsvirtuallayersqlitehelper.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsVirtualLayerFeatureIterator;
 
 class QgsVirtualLayerProvider final : public QgsVectorDataProvider

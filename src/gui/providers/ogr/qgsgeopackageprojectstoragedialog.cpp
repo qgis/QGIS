@@ -14,7 +14,11 @@
  ***************************************************************************/
 #include "qgsgeopackageprojectstoragedialog.h"
 
+#include <QString>
+
 #include "moc_qgsgeopackageprojectstoragedialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

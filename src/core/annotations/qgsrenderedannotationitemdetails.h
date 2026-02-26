@@ -21,6 +21,10 @@
 #include "qgis_sip.h"
 #include "qgsrendereditemdetails.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief Contains information about a rendered annotation item.

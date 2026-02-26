@@ -27,6 +27,10 @@
 #include "qgstextrenderer.h"
 #include "qgsvectorlayerplotdatagatherer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsPieChartPlot::QgsPieChartPlot()
 {
   setFillSymbolAt( 0, QgsPlotDefaultSettings::pieChartFillSymbol() );
@@ -130,6 +134,8 @@ void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
       //this allows the ramp to pregenerate a set of visually distinctive colors
       randomRamp->setTotalColorCount( categories.size() );
     }
+
+    chartScope->addVariable( QgsExpressionContextScope::StaticVariable( u"chart_series_name"_s, series->name(), true ) );
 
     if ( const QgsXyPlotSeries *xySeries = dynamic_cast<const QgsXyPlotSeries *>( series ) )
     {

@@ -11,15 +11,15 @@ __date__ = "30/12/2021"
 __copyright__ = "Copyright 2021, The QGIS Project"
 
 
-from qgis.core import Qgis, QgsRectangle, QgsScaleCalculator
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.core import Qgis, QgsRectangle, QgsScaleCalculator
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsScaleCalculator(QgisTestCase):
-
     def testCalculate(self):
         calculator = QgsScaleCalculator()
         # should default to horizontal center

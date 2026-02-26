@@ -23,6 +23,10 @@
 
 #include "qgis.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 namespace QgsBasicNumericFormat_ns
 {
   struct formatter : std::numpunct<wchar_t>

@@ -48,6 +48,9 @@
 #include <QElapsedTimer>
 #include <QNetworkDiskCache>
 #include <QSettings>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 // TODO: remove, it's only needed by a single debug message
 #include <fcgi_stdio.h>

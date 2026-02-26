@@ -166,9 +166,12 @@ The action scopes define where an action will be available. Action
 scopes may offer additional variables like the clicked coordinate.
 %End
 
-    void readXml( const QDomNode &actionNode );
+    void readXml( const QDomNode &actionNode, const QgsReadWriteContext &context = QgsReadWriteContext() );
 %Docstring
 Reads an XML definition from actionNode into this object.
+
+:param actionNode: the action's xml node
+:param context: The readwrite context (Since QGIS 4.0)
 %End
 
     void writeXml( QDomNode &actionsNode ) const;

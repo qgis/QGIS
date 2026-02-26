@@ -26,9 +26,12 @@
 
 #include <QByteArray>
 #include <QFileInfo>
+#include <QString>
 #include <QtConcurrentRun>
 
 #include "moc_qgsgrassimport.cpp"
+
+using namespace Qt::StringLiterals;
 
 extern "C"
 {

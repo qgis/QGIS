@@ -18,9 +18,10 @@
 #ifndef QGSALGORITHMGPSBABELTOOLS_H
 #define QGSALGORITHMGPSBABELTOOLS_H
 
-#define SIP_NO_FILE
 
 #include <QtGlobal>
+
+#define SIP_NO_FILE
 
 #if QT_CONFIG( process )
 

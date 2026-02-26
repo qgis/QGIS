@@ -43,6 +43,8 @@
 
 #include "moc_qgsdecorationitem.cpp"
 
+using namespace Qt::StringLiterals;
+
 //non qt includes
 #include <cmath>
 

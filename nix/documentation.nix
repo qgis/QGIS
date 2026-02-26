@@ -1,34 +1,34 @@
-{ lib
-, stdenv
+{
+  lib,
+  stdenv,
 
-, qgisMinorVersion
+  qgisMinorVersion,
 
-, cmake
-, doxygen
-, ninja
-, python3
-, qtbase
-, qttools
+  cmake,
+  doxygen,
+  ninja,
+  python3,
+  qtbase,
+  qttools,
 }:
 
 let
-  qgisSourceFiles =
-    lib.fileset.difference
-      (lib.fileset.gitTracked ../.)
-      (lib.fileset.unions [
-        # excluded files
-        ./.
-        ../flake.nix
-        ../flake.lock
-        ../.docker
-        ../.github
-        ../.ci
-        ../debian
-        ../editors
-        ../ms-windows
-        ../rpm
-        ../vcpkg
-      ]);
+  qgisSourceFiles = lib.fileset.difference (lib.fileset.gitTracked ../.) (
+    lib.fileset.unions [
+      # excluded files
+      ./.
+      ../flake.nix
+      ../flake.lock
+      ../.docker
+      ../.github
+      ../.ci
+      ../debian
+      ../editors
+      ../ms-windows
+      ../rpm
+      ../vcpkg
+    ]
+  );
 
   qgisSource = lib.fileset.toSource {
     root = ../.;

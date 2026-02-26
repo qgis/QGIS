@@ -26,6 +26,8 @@
 #include <QStringList>
 #include <QTime>
 
+using namespace Qt::StringLiterals;
+
 //qgis includes...
 #include "qgsrasterchecker.h"
 #include "qgsrasterdataprovider.h"

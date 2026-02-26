@@ -12,19 +12,19 @@ __author__ = "(C) 2023 by Martin Dobias"
 __date__ = "18/07/2023"
 __copyright__ = "Copyright 2023, The QGIS Project"
 
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsMatrix4x4,
     QgsVector3D,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsMatrix4x4(QgisTestCase):
-
     def test_basic(self):
 
         m0 = QgsMatrix4x4()

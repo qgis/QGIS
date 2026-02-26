@@ -16,7 +16,6 @@
 #ifndef QGSMAPTOOLEDITBLANKSEGMENTS_H
 #define QGSMAPTOOLEDITBLANKSEGMENTS_H
 
-#define SIP_NO_FILE
 
 #include "qgsfeatureid.h"
 #include "qgslinesymbollayer.h"
@@ -25,6 +24,8 @@
 #include "qgsrubberband.h"
 #include "qgssymbol.h"
 #include "qobjectuniqueptr.h"
+
+#define SIP_NO_FILE
 
 class QgsMapToolBlankSegmentRubberBand;
 class QgsVectorLayer;
@@ -81,7 +82,7 @@ class GUI_EXPORT QgsMapToolEditBlankSegmentsBase : public QgsMapTool
     /**
      * compute and return current blank segment start and end distance
      */
-    QPair<double, double> getStartEndDistance() const;
+    QPair<double, double> startEndDistance() const;
 
     /**
      * Update feature attribute based on current edited blank segments
@@ -105,7 +106,7 @@ class GUI_EXPORT QgsMapToolEditBlankSegmentsBase : public QgsMapTool
      * no existing blank segments for instance). \a distance will be set to the distance between
      * \a point and the returned blank segment
      */
-    int getClosestBlankSegmentIndex( const QPointF &point, double &distance ) const;
+    int closestBlankSegmentIndex( const QPointF &point, double &distance ) const;
 
     /**
      * Returns rendered point closest to \a point
@@ -115,7 +116,7 @@ class GUI_EXPORT QgsMapToolEditBlankSegmentsBase : public QgsMapTool
      * \param ringIndex will be set to the geometry ring index of the returned point
      * \param pointIndex will be set to the rendered points index of the returned point
      */
-    QPointF getClosestPoint( const QPointF &point, double &distance, int &partIndex, int &ringIndex, int &pointIndex ) const;
+    QPointF closestPoint( const QPointF &point, double &distance, int &partIndex, int &ringIndex, int &pointIndex ) const;
 
     /**
      * Update start and end rubber band (anchor points used to resize the blank segment rubber band)
@@ -138,21 +139,21 @@ class GUI_EXPORT QgsMapToolEditBlankSegmentsBase : public QgsMapTool
      * \brief Rubber band used to draw blank segments on edition
      * \since QGIS 4.0
      */
-    class BlankSegmentRubberBand;
+    class QgsBlankSegmentRubberBand;
 
     /**
      * Map tool state
      */
     enum State
     {
-      SELECT_FEATURE,                     //!< User needs to select a feature
-      FEATURE_SELECTED,                   //!< User has selected a feature
-      BLANK_SEGMENT_SELECTED,             //!< User has selected a blank segment
-      BLANK_SEGMENT_MODIFICATION_STARTED, //!< User has started to drag start/end of an existing blank segment
-      BLANK_SEGMENT_CREATION_STARTED      //!< User has started to create a new blank segment
+      SelectFeature,                   //!< User needs to select a feature
+      FeatureSelected,                 //!< User has selected a feature
+      BlankSegmentSelected,            //!< User has selected a blank segment
+      BlankSegmentModificationStarted, //!< User has started to drag start/end of an existing blank segment
+      BlankSegmentCreationStarted      //!< User has started to create a new blank segment
     };
 
-    std::vector<QObjectUniquePtr<BlankSegmentRubberBand>> mBlankSegments;
+    std::vector<QObjectUniquePtr<QgsBlankSegmentRubberBand>> mBlankSegments;
     QgsVectorLayer *mLayer = nullptr;
     std::unique_ptr<QgsSymbol> mSymbol;
     const QString mSymbolLayerId;
@@ -161,13 +162,13 @@ class GUI_EXPORT QgsMapToolEditBlankSegmentsBase : public QgsMapTool
     int mBlankSegmentsFieldIndex = -1;
     QgsFeatureId mCurrentFeatureId = FID_NULL;
     QgsRectangle mExtent;
-    State mState = State::SELECT_FEATURE;
+    State mState = State::SelectFeature;
     int mCurrentBlankSegmentIndex = -1;
     int mHoveredBlankSegmentIndex = -1;
 
     // currently edited blank segment, start point is the fixed point and end point is the currently
     // modified one
-    QObjectUniquePtr<BlankSegmentRubberBand> mEditedBlankSegment;
+    QObjectUniquePtr<QgsBlankSegmentRubberBand> mEditedBlankSegment;
     QObjectUniquePtr<QgsRubberBand> mStartRubberBand;
     QObjectUniquePtr<QgsRubberBand> mEndRubberBand;
 

@@ -34,8 +34,11 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsdxfexportdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 const int LAYER_COL = 0;
 const int OUTPUT_LAYER_ATTRIBUTE_COL = 1;

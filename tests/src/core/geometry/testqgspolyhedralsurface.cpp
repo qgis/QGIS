@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsgeometry.h"
 #include "qgslinestring.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
@@ -25,6 +26,8 @@
 #include <QObject>
 #include <QPainter>
 #include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsPolyhedralSurface : public QObject
 {
@@ -40,6 +43,7 @@ class TestQgsPolyhedralSurface : public QObject
     void testRemovePatch();
     void test3DPatches();
     void testAreaPerimeter();
+    void testArea3D();
     void testInsertVertex();
     void testMoveVertex();
     void testDeleteVertex();
@@ -62,6 +66,8 @@ class TestQgsPolyhedralSurface : public QObject
     void testExport();
     void testCast();
     void testIsValid();
+    void testGeometryEditUtilsAddPart();
+    void testGeometryEditUtilsAddRing();
 };
 
 void TestQgsPolyhedralSurface::testConstructor()
@@ -81,6 +87,7 @@ void TestQgsPolyhedralSurface::testConstructor()
   QCOMPARE( polySurfaceEmpty.dimension(), 2 );
   QVERIFY( !polySurfaceEmpty.hasCurvedSegments() );
   QCOMPARE( polySurfaceEmpty.area(), 0.0 );
+  QCOMPARE( polySurfaceEmpty.area3D(), 0.0 );
   QCOMPARE( polySurfaceEmpty.perimeter(), 0.0 );
   QVERIFY( !polySurfaceEmpty.patchN( 0 ) );
 
@@ -88,7 +95,7 @@ void TestQgsPolyhedralSurface::testConstructor()
   auto multiPolygon = std::make_unique<QgsMultiPolygon>();
   QgsPolygon part;
   QgsLineString ring;
-  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 5, 50, 1, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 6, 61, 3, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 9, 71, 4, 15 ) << QgsPoint( Qgis::WkbType::PointZM, 5, 71, 4, 6 ) );
+  ring.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 0, 0 ) << QgsPoint( Qgis::WkbType::PointZM, 50, 0, 0, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 13, 5, 0, 10 ) << QgsPoint( Qgis::WkbType::PointZM, 0, 7, 0, 15 ) );
   part.setExteriorRing( ring.clone() );
   multiPolygon->addGeometry( part.clone() );
   QgsPolyhedralSurface polySurface( multiPolygon.get() );
@@ -105,8 +112,9 @@ void TestQgsPolyhedralSurface::testConstructor()
   QCOMPARE( polySurface.geometryType(), QString( "PolyhedralSurface" ) );
   QCOMPARE( polySurface.dimension(), 2 );
   QVERIFY( !polySurface.hasCurvedSegments() );
-  QGSCOMPARENEAR( polySurface.area(), 30.5, 0.01 );
-  QGSCOMPARENEAR( polySurface.perimeter(), 46.49, 0.01 );
+  QGSCOMPARENEAR( polySurface.area(), 170.5, 0.1 );
+  QGSCOMPARENEAR( polySurface.area3D(), 170.5, 0.1 );
+  QGSCOMPARENEAR( polySurface.perimeter(), 107.489255, 1e-6 );
   QVERIFY( polySurface.patchN( 0 ) );
   QCOMPARE( polySurface.numPatches(), multiPolygon->numGeometries() );
 }
@@ -430,8 +438,25 @@ void TestQgsPolyhedralSurface::testAreaPerimeter()
   patch->setExteriorRing( patchExterior );
   polySurface.addPatch( patch );
 
-  QGSCOMPARENEAR( polySurface.area(), 25.0, 0.01 ); // area is not implemented
+  QGSCOMPARENEAR( polySurface.area(), 25.0, 0.01 );
+  QGSCOMPARENEAR( polySurface.area3D(), 25.0, 0.01 );
   QGSCOMPARENEAR( polySurface.perimeter(), 20.0, 0.01 );
+}
+
+void TestQgsPolyhedralSurface::testArea3D()
+{
+  QgsPolyhedralSurface polySurface;
+  polySurface.fromWkt(
+    u"POLYHEDRALSURFACE Z ("
+    "((0 0 0, 10 0 0, 10 10 0, 0 10 0, 0 0 0)),"
+    "((0 0 10, 0 10 10, 10 10 10, 10 0 10, 0 0 10)),"
+    "((0 0 0, 0 10 0, 0 10 10, 0 0 10, 0 0 0)),"
+    "((10 0 0, 10 0 10, 10 10 10, 10 10 0, 10 0 0)),"
+    "((0 0 0, 0 0 10, 10 0 10, 10 0 0, 0 0 0)),"
+    "((0 10 0, 10 10 0, 10 10 10, 0 10 10, 0 10 0)))"_s
+  );
+
+  QCOMPARE( polySurface.area3D(), 600.0 );
 }
 
 void TestQgsPolyhedralSurface::testInsertVertex()
@@ -1580,6 +1605,76 @@ void TestQgsPolyhedralSurface::testIsValid()
   isValid = polySurface2.isValid( error );
   QCOMPARE( error, "Polygon 0 is invalid: Too few points in geometry component" );
   QVERIFY( !isValid );
+}
+
+void TestQgsPolyhedralSurface::testGeometryEditUtilsAddPart()
+{
+  // Test Phase 2: QgsGeometry::addPartV2 for PolyhedralSurface
+
+  // Create an empty PolyhedralSurface geometry
+  QgsGeometry polySurfaceGeom( std::make_unique<QgsPolyhedralSurface>() );
+  QCOMPARE( qgsgeometry_cast<const QgsPolyhedralSurface *>( polySurfaceGeom.constGet() )->numPatches(), 0 );
+
+  // Add a polygon
+  QgsPolygon polygon1;
+  QgsLineString *ring1 = new QgsLineString();
+  ring1->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 1 ) << QgsPoint( 0, 0 ) );
+  polygon1.setExteriorRing( ring1 );
+
+  Qgis::GeometryOperationResult result = polySurfaceGeom.addPartV2( polygon1.clone(), Qgis::WkbType::PolyhedralSurface );
+  QCOMPARE( result, Qgis::GeometryOperationResult::Success );
+  QCOMPARE( qgsgeometry_cast<const QgsPolyhedralSurface *>( polySurfaceGeom.constGet() )->numPatches(), 1 );
+
+  // Add another polygon
+  QgsPolygon polygon2;
+  QgsLineString *ring2 = new QgsLineString();
+  ring2->setPoints( QgsPointSequence() << QgsPoint( 2, 0 ) << QgsPoint( 3, 0 ) << QgsPoint( 3, 1 ) << QgsPoint( 2, 1 ) << QgsPoint( 2, 0 ) );
+  polygon2.setExteriorRing( ring2 );
+
+  result = polySurfaceGeom.addPartV2( polygon2.clone(), Qgis::WkbType::PolyhedralSurface );
+  QCOMPARE( result, Qgis::GeometryOperationResult::Success );
+  QCOMPARE( qgsgeometry_cast<const QgsPolyhedralSurface *>( polySurfaceGeom.constGet() )->numPatches(), 2 );
+
+  // Add a closed curve (should be converted to polygon)
+  QgsLineString curve;
+  curve.setPoints( QgsPointSequence() << QgsPoint( 4, 0 ) << QgsPoint( 5, 0 ) << QgsPoint( 5, 1 ) << QgsPoint( 4, 1 ) << QgsPoint( 4, 0 ) );
+
+  result = polySurfaceGeom.addPartV2( curve.clone(), Qgis::WkbType::PolyhedralSurface );
+  QCOMPARE( result, Qgis::GeometryOperationResult::Success );
+  QCOMPARE( qgsgeometry_cast<const QgsPolyhedralSurface *>( polySurfaceGeom.constGet() )->numPatches(), 3 );
+}
+
+void TestQgsPolyhedralSurface::testGeometryEditUtilsAddRing()
+{
+  // Test Phase 3: QgsGeometry::addRing for PolyhedralSurface
+
+  // Create a PolyhedralSurface with one patch
+  QgsPolyhedralSurface polySurface;
+  QgsPolygon *patch = new QgsPolygon();
+  QgsLineString *exteriorRing = new QgsLineString();
+  exteriorRing->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 10, 0 ) << QgsPoint( 10, 10 ) << QgsPoint( 0, 10 ) << QgsPoint( 0, 0 ) );
+  patch->setExteriorRing( exteriorRing );
+  polySurface.addPatch( patch );
+
+  QgsGeometry polySurfaceGeom( polySurface.clone() );
+  QCOMPARE( qgsgeometry_cast<const QgsPolyhedralSurface *>( polySurfaceGeom.constGet() )->numPatches(), 1 );
+  QCOMPARE( qgsgeometry_cast<const QgsPolyhedralSurface *>( polySurfaceGeom.constGet() )->patchN( 0 )->numInteriorRings(), 0 );
+
+  // Add a ring inside the patch
+  QgsLineString *innerRing = new QgsLineString();
+  innerRing->setPoints( QgsPointSequence() << QgsPoint( 2, 2 ) << QgsPoint( 8, 2 ) << QgsPoint( 8, 8 ) << QgsPoint( 2, 8 ) << QgsPoint( 2, 2 ) );
+
+  Qgis::GeometryOperationResult result = polySurfaceGeom.addRing( innerRing );
+  QCOMPARE( result, Qgis::GeometryOperationResult::Success );
+  QCOMPARE( qgsgeometry_cast<const QgsPolyhedralSurface *>( polySurfaceGeom.constGet() )->patchN( 0 )->numInteriorRings(), 1 );
+
+  // Try to add a ring outside all patches - should fail
+  QgsLineString *outerRing = new QgsLineString();
+  outerRing->setPoints( QgsPointSequence() << QgsPoint( 20, 20 ) << QgsPoint( 30, 20 ) << QgsPoint( 30, 30 ) << QgsPoint( 20, 30 ) << QgsPoint( 20, 20 ) );
+
+  result = polySurfaceGeom.addRing( outerRing );
+  QCOMPARE( result, Qgis::GeometryOperationResult::AddRingNotInExistingFeature );
+  QCOMPARE( qgsgeometry_cast<const QgsPolyhedralSurface *>( polySurfaceGeom.constGet() )->patchN( 0 )->numInteriorRings(), 1 ); // unchanged
 }
 
 

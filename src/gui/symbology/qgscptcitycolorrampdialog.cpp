@@ -27,10 +27,13 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QSortFilterProxyModel>
+#include <QString>
 #include <QTextEdit>
 #include <QTime>
 
 #include "moc_qgscptcitycolorrampdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 /////////
 

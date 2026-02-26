@@ -10,14 +10,14 @@ __author__ = "Nyall Dawson"
 __date__ = "2019-05-25"
 __copyright__ = "Copyright 2019, The QGIS Project"
 
+import unittest
+
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsDatumTransform,
     QgsProjUtils,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -25,7 +25,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsDatumTransform(QgisTestCase):
-
     def testOperations(self):
         ops = QgsDatumTransform.operations(
             QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem()

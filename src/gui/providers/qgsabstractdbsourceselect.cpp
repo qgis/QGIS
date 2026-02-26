@@ -23,8 +23,11 @@
 #include <QItemDelegate>
 #include <QMenu>
 #include <QSortFilterProxyModel>
+#include <QString>
 
 #include "moc_qgsabstractdbsourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryBool *QgsAbstractDbSourceSelect::settingSearchColumnAll = new QgsSettingsEntryBool( u"%1/searchColumnAll"_s, QgsSettingsTree::sTreeWindowState );
 const QgsSettingsEntryInteger *QgsAbstractDbSourceSelect::settingSearchColumn = new QgsSettingsEntryInteger( u"%1/searchColumn"_s, QgsSettingsTree::sTreeWindowState, -1 );

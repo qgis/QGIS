@@ -26,9 +26,12 @@
 #include <QComboBox>
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgsrelationaddpolymorphicdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRelationAddPolymorphicDialog::QgsRelationAddPolymorphicDialog( bool isEditDialog, QWidget *parent )
   : QDialog( parent )

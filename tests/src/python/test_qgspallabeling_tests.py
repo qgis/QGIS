@@ -16,8 +16,6 @@ __copyright__ = "Copyright 2013, The QGIS Project"
 
 import os
 
-from qgis.PyQt.QtCore import QPointF, QSizeF, Qt
-from qgis.PyQt.QtGui import QFont
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsExpressionContext,
@@ -28,13 +26,13 @@ from qgis.core import (
     QgsTextBackgroundSettings,
     QgsUnitTypes,
 )
-
+from qgis.PyQt.QtCore import QPointF, QSizeF, Qt
+from qgis.PyQt.QtGui import QFont
 from utilities import svgSymbolsPath
 
 
 # noinspection PyPep8Naming
 class TestPointBase:
-
     def __init__(self):
         """Dummy assignments, intended to be overridden in subclasses"""
         self.lyr = QgsPalLayerSettings()
@@ -239,7 +237,6 @@ class TestPointBase:
 
 
 class TestLineBase:
-
     def __init__(self):
         """Dummy assignments, intended to be overridden in subclasses"""
         self.lyr = QgsPalLayerSettings()

@@ -10,8 +10,8 @@ __author__ = "(C) 2017 by Nyall Dawson"
 __date__ = "23/10/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
-from qgis.PyQt.QtCore import QDate, QDateTime, QFileInfo
-from qgis.PyQt.QtTest import QSignalSpy
+import unittest
+
 from qgis.core import (
     QgsLayoutItemLabel,
     QgsLayoutItemPage,
@@ -20,9 +20,9 @@ from qgis.core import (
     QgsProject,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QDate, QDateTime, QFileInfo
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from test_qgslayoutitem import LayoutItemTestCase
 from utilities import unitTestDataPath
 
@@ -30,7 +30,6 @@ start_app()
 
 
 class TestQgsLayoutItemLabel(QgisTestCase, LayoutItemTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

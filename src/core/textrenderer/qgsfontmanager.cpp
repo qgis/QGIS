@@ -28,10 +28,13 @@
 #include <QFontDatabase>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+#include <QString>
 #include <QTemporaryDir>
 #include <QTemporaryFile>
 
 #include "moc_qgsfontmanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryStringList *QgsFontManager::settingsFontFamilyReplacements = new QgsSettingsEntryStringList( u"fontFamilyReplacements"_s, QgsSettingsTree::sTreeFonts, QStringList(), u"Automatic font family replacements"_s );
 

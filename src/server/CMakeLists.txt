@@ -100,7 +100,12 @@ if (USE_PRECOMPILED_HEADERS)
   target_precompile_headers(qgis_server PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/core/qgis.h>)
 endif()
 
-set_target_properties(qgis_server PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
+# fcgi's stdio hacks fail in unity builds on msvc (see https://cdash.orfeo-toolbox.org/viewBuildError.php?buildid=37453)
+# Example:
+# …\include\__msvc_filebuf.hpp(86): error C2664: 'wint_t fgetwc(FILE *)': cannot convert argument 1 from 'FCGI_FILE *' to 'FILE *'
+if(NOT MSVC)
+  set_target_properties(qgis_server PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
+endif(NOT MSVC)
 
 target_include_directories(qgis_server SYSTEM PUBLIC
   ${CMAKE_SOURCE_DIR}/external/inja

@@ -22,6 +22,10 @@
 #include "qgsvectorlayerchunkloader_p.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsVectorLayer3DRendererMetadata::QgsVectorLayer3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( u"vector"_s )
 {

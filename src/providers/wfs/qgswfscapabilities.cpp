@@ -19,6 +19,10 @@
 #include "qgsogcutils.h"
 #include "qgswfsutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsWfsCapabilities::QgsWfsCapabilities()
 {
   clear();

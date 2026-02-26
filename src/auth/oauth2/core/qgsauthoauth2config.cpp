@@ -22,8 +22,11 @@
 #include "qgsvariantutils.h"
 
 #include <QDir>
+#include <QString>
 
 #include "moc_qgsauthoauth2config.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthOAuth2Config::QgsAuthOAuth2Config( QObject *parent )
   : QObject( parent )

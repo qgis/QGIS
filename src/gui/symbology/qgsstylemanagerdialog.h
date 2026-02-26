@@ -27,6 +27,9 @@
 #include <QDialog>
 #include <QMenu>
 #include <QStandardItem>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsStyle;
 class QgsTemporaryCursorOverride;

@@ -19,6 +19,10 @@
 
 #include "qgsproviderregistry.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 bool QgsWmsUtils::isWmsLayer( QgsMapLayer *layer )
 {
   if ( !layer || layer->providerType() != "wms"_L1 )

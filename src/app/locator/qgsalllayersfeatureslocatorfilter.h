@@ -24,6 +24,10 @@
 #include "qgslocatorfilter.h"
 #include "qgsvectorlayerfeatureiterator.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
 {
     Q_OBJECT

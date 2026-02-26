@@ -21,7 +21,11 @@
 #include "qgssettingstree.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
+
 #include "moc_qgsgeometryoptions.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryString *QgsGeometryOptions::settingsGeometryValidationDefaultChecks = new QgsSettingsEntryString( u"default_checks"_s, QgsSettingsTree::sTreeGeometryValidation, QString() );
 

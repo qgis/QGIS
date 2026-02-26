@@ -31,6 +31,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgspointcloudclassifiedrenderer.h"
 #include "qgspointcloudextentrenderer.h"
+#include "qgspointcloudrgbrenderer.h"
 #include "qgspointcloudsubindex.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidersublayerdetails.h"
@@ -39,8 +40,11 @@
 #include "qgsthreadingutils.h"
 
 #include <QIcon>
+#include <QString>
 
 #include "moc_qgsvirtualpointcloudprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -74,6 +78,10 @@ QgsPointCloudDataProvider::Capabilities QgsVirtualPointCloudProvider::capabiliti
   QgsPointCloudDataProvider::Capabilities c;
   c.setFlag( QgsPointCloudDataProvider::Capability::ContainSubIndexes );
   c.setFlag( QgsPointCloudDataProvider::Capability::CreateRenderer );
+  if ( mAllEditableFiles && mAllLocalFiles )
+  {
+    c.setFlag( QgsPointCloudDataProvider::Capability::ChangeAttributeValues );
+  }
   return c;
 }
 
@@ -179,6 +187,7 @@ void QgsVirtualPointCloudProvider::parseFile()
       appendError( QgsErrorMessage( u"Could not download file: %1"_s.arg( reply.errorString() ) ) );
       return;
     }
+    mAllLocalFiles = false;
   }
   else
   {
@@ -247,6 +256,11 @@ void QgsVirtualPointCloudProvider::parseFile()
       uri = QString::fromStdString( f["assets"]["data"]["href"] );
     }
 
+    if ( uri.startsWith( "http"_L1 ) )
+    {
+      mAllLocalFiles = false;
+    }
+
     // look for vpc overview reference
     if ( !mOverview && f["assets"].contains( "overview" ) && f["assets"]["overview"].contains( "href" ) )
     {
@@ -269,7 +283,13 @@ void QgsVirtualPointCloudProvider::parseFile()
     if ( !uri.endsWith( u"ept.json"_s, Qt::CaseSensitivity::CaseInsensitive ) &&
          !uri.endsWith( u"copc.laz"_s, Qt::CaseSensitivity::CaseInsensitive ) )
     {
+      mContainsUnsupportedFiles = true;
       QgsDebugError( u"Unsupported point cloud uri: %1"_s.arg( uri ) );
+    }
+
+    if ( !uri.endsWith( u"copc.laz"_s, Qt::CaseSensitivity::CaseInsensitive ) )
+    {
+      mAllEditableFiles = false;
     }
 
     if ( f["properties"].contains( "pc:count" ) )
@@ -403,6 +423,21 @@ void QgsVirtualPointCloudProvider::parseFile()
       for ( auto &schemaItem : f["properties"]["pc:schemas"] )
       {
         attributeNames.insert( QString::fromStdString( schemaItem["name"] ) );
+      }
+    }
+
+    if ( f["properties"].contains( "pc:statistics" ) )
+    {
+      nlohmann::json pcStats = f["properties"]["pc:statistics"];
+
+      for ( auto pcStat : pcStats )
+      {
+        if ( pcStat["name"] == "Red" )
+          mRedMax = std::max( mRedMax, pcStat[ "maximum" ].get<double>() );
+        if ( pcStat["name"] == "Green" )
+          mGreenMax = std::max( mRedMax, pcStat[ "maximum" ].get<double>() );
+        if ( pcStat["name"] == "Blue" )
+          mBlueMax = std::max( mRedMax, pcStat[ "maximum" ].get<double>() );
       }
     }
 
@@ -566,6 +601,35 @@ bool QgsVirtualPointCloudProvider::setSubsetString( const QString &subset, bool 
 QgsPointCloudRenderer *QgsVirtualPointCloudProvider::createRenderer( const QVariantMap &configuration ) const
 {
   Q_UNUSED( configuration )
+
+  if ( mRedMax != std::numeric_limits<double>::lowest() && mGreenMax != std::numeric_limits<double>::lowest() && mBlueMax != std::numeric_limits<double>::lowest() )
+  {
+    auto renderer = std::make_unique< QgsPointCloudRgbRenderer >();
+    const int maxValue = std::max( mBlueMax, std::max( mRedMax, mGreenMax ) );
+
+    if ( maxValue == 0 )
+    {
+      renderer.reset();
+    }
+    else
+    {
+      const int rangeGuess = maxValue > 255 ? 65535 : 255;
+
+      if ( rangeGuess > 255 )
+      {
+        QgsContrastEnhancement contrast( Qgis::DataType::UnknownDataType );
+        contrast.setMinimumValue( 0 );
+        contrast.setMaximumValue( rangeGuess );
+        contrast.setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum );
+        renderer->setRedContrastEnhancement( new QgsContrastEnhancement( contrast ) );
+        renderer->setGreenContrastEnhancement( new QgsContrastEnhancement( contrast ) );
+        renderer->setBlueContrastEnhancement( new QgsContrastEnhancement( contrast ) );
+      }
+    }
+
+    if ( renderer )
+      return renderer.release();
+  }
 
   if ( mAttributes.indexOf( "Classification"_L1 ) >= 0 )
   {

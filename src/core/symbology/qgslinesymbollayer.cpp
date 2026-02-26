@@ -47,6 +47,9 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsSimpleLineSymbolLayer::QgsSimpleLineSymbolLayer( const QColor &color, double width, Qt::PenStyle penStyle )
   : mPenStyle( penStyle )
@@ -578,8 +581,7 @@ QgsSimpleLineSymbolLayer *QgsSimpleLineSymbolLayer::clone() const
   l->setAlignDashPattern( mAlignDashPattern );
   l->setTweakDashPatternOnCorners( mPatternCartographicTweakOnSharpCorners );
 
-  copyDataDefinedProperties( l );
-  copyPaintEffect( l );
+  copyCommonProperties( l );
   return l;
 }
 
@@ -730,18 +732,14 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
 
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::CustomDash ) )
   {
+    const QString customDashString = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::CustomDash, context.renderContext().expressionContext(), QgsSymbolLayerUtils::encodeRealVector( mCustomDashVector ) );
+    const QStringList dashList = customDashString.split( ';' );
     QVector<qreal> dashVector;
-    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::Property::CustomDash, context.renderContext().expressionContext() );
-    if ( !QgsVariantUtils::isNull( exprVal ) )
+    for ( const QString &dash : dashList )
     {
-      QStringList dashList = exprVal.toString().split( ';' );
-      QStringList::const_iterator dashIt = dashList.constBegin();
-      for ( ; dashIt != dashList.constEnd(); ++dashIt )
-      {
-        dashVector.push_back( context.renderContext().convertToPainterUnits( dashIt->toDouble(), mCustomDashPatternUnit, mCustomDashPatternMapUnitScale ) / dashWidthDiv );
-      }
-      pen.setDashPattern( dashVector );
+      dashVector.push_back( context.renderContext().convertToPainterUnits( dash.toDouble(), mCustomDashPatternUnit, mCustomDashPatternMapUnitScale ) / dashWidthDiv );
     }
+    pen.setDashPattern( dashVector );
   }
   else if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeWidth ) && mUseCustomDashPattern )
   {
@@ -769,27 +767,24 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenStyle( mPenStyle ) );
-    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::Property::StrokeStyle, context.renderContext().expressionContext() );
-    if ( !QgsVariantUtils::isNull( exprVal ) )
-      pen.setStyle( QgsSymbolLayerUtils::decodePenStyle( exprVal.toString() ) );
+    const QString lineStyleString = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::StrokeStyle, context.renderContext().expressionContext(), QgsSymbolLayerUtils::encodePenStyle( mPenStyle ) );
+    pen.setStyle( QgsSymbolLayerUtils::decodePenStyle( lineStyleString ) );
   }
 
   //join style
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::JoinStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle ) );
-    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::Property::JoinStyle, context.renderContext().expressionContext() );
-    if ( !QgsVariantUtils::isNull( exprVal ) )
-      pen.setJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( exprVal.toString() ) );
+    const QString joinStyleString = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::JoinStyle, context.renderContext().expressionContext(), QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle ) );
+    pen.setJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( joinStyleString ) );
   }
 
   //cap style
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::CapStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle ) );
-    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::Property::CapStyle, context.renderContext().expressionContext() );
-    if ( !QgsVariantUtils::isNull( exprVal ) )
-      pen.setCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( exprVal.toString() ) );
+    const QString capStyleString = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::CapStyle, context.renderContext().expressionContext(), QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle ) );
+    pen.setCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( capStyleString ) );
   }
 }
 
@@ -1560,8 +1555,7 @@ void QgsTemplatedLineSymbolLayerBase::copyTemplateSymbolProperties( QgsTemplated
   destLayer->setRingFilter( mRingFilter );
   destLayer->setPlaceOnEveryPart( mPlaceOnEveryPart );
 
-  copyDataDefinedProperties( destLayer );
-  copyPaintEffect( destLayer );
+  copyCommonProperties( destLayer );
 }
 
 void QgsTemplatedLineSymbolLayerBase::setCommonProperties( QgsTemplatedLineSymbolLayerBase *destLayer, const QVariantMap &properties )
@@ -3505,8 +3499,7 @@ QgsRasterLineSymbolLayer *QgsRasterLineSymbolLayer::clone() const
   res->setOffsetMapUnitScale( mOffsetMapUnitScale );
   res->setOffset( mOffset );
   res->setOpacity( mOpacity );
-  copyDataDefinedProperties( res.get() );
-  copyPaintEffect( res.get() );
+  copyCommonProperties( res.get() );
   return res.release();
 }
 
@@ -3772,8 +3765,7 @@ QgsLineburstSymbolLayer *QgsLineburstSymbolLayer::clone() const
   res->setGradientColorType( mGradientColorType );
   if ( mGradientRamp )
     res->setColorRamp( mGradientRamp->clone() );
-  copyDataDefinedProperties( res.get() );
-  copyPaintEffect( res.get() );
+  copyCommonProperties( res.get() );
   return res.release();
 }
 
@@ -4147,8 +4139,7 @@ QVariantMap QgsFilledLineSymbolLayer::properties() const
 QgsFilledLineSymbolLayer *QgsFilledLineSymbolLayer::clone() const
 {
   std::unique_ptr< QgsFilledLineSymbolLayer > res( qgis::down_cast< QgsFilledLineSymbolLayer * >( QgsFilledLineSymbolLayer::create( properties() ) ) );
-  copyPaintEffect( res.get() );
-  copyDataDefinedProperties( res.get() );
+  copyCommonProperties( res.get() );
   res->setSubSymbol( mFill->clone() );
   return res.release();
 }

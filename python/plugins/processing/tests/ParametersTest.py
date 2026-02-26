@@ -21,15 +21,15 @@ __copyright__ = "(C) 2021, René-Luc DHONT"
 
 import os
 import shutil
+import unittest
 
 from qgis.core import (
-    QgsProcessingParameterDefinition,
-    QgsProcessingParameterNumber,
-    QgsProcessingParameterFile,
     QgsProcessing,
+    QgsProcessingParameterDefinition,
+    QgsProcessingParameterFile,
+    QgsProcessingParameterNumber,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 from processing.core.parameters import getParameterFromString
 
@@ -39,7 +39,6 @@ start_app()
 
 
 class ParametersTest(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         cls.cleanup_paths = []

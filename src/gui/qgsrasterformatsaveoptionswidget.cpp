@@ -29,9 +29,12 @@
 #include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
 #include <QTextEdit>
 
 #include "moc_qgsrasterformatsaveoptionswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QMap<QString, QStringList> QgsRasterFormatSaveOptionsWidget::sBuiltinProfiles;
 

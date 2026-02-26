@@ -26,6 +26,8 @@
 #include <QPair>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 static double ceil_with_tolerance( double value )
 {
   if ( std::fabs( value - std::round( value ) ) < 1e-6 )

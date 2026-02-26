@@ -18,6 +18,7 @@
 #include <limits>
 
 #include <QRegularExpression>
+#include <QString>
 
 using namespace Qt::StringLiterals;
 

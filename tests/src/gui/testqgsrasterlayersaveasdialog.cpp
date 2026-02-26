@@ -23,7 +23,10 @@
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
 #include <QTemporaryFile>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsRasterLayerSaveAsDialog : public QObject
 {

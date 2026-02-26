@@ -23,7 +23,11 @@
 #include "qgsrasterlayerelevationproperties.h"
 #include "qgsterrainprovider.h"
 
+#include <QString>
+
 #include "moc_qgsprojectelevationsettingswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProjectElevationSettingsWidget::QgsProjectElevationSettingsWidget( QWidget *parent )
   : QgsOptionsPageWidget( parent )

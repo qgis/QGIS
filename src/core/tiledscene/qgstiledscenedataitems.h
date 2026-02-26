@@ -19,8 +19,9 @@
 #include "qgsdataitemprovider.h"
 #include "qgslayeritem.h"
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 //! Root item for tiled scene connections
 class CORE_EXPORT QgsTiledSceneRootItem : public QgsConnectionsRootItem

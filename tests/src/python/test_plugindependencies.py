@@ -13,13 +13,12 @@ __copyright__ = "Copyright 2018, GISCE-TI S.L."
 
 import json
 import os
+import unittest
 import uuid
 
 from pyplugin_installer.plugindependencies import find_dependencies
 from qgis.PyQt.QtCore import QCoreApplication
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 TESTDATA_PATH = unitTestDataPath()

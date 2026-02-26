@@ -1,4 +1,4 @@
-""""Test QgsLegendRenderer JSON export
+""" "Test QgsLegendRenderer JSON export
 
 .. note:: This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -14,6 +14,7 @@ __date__ = "2020-04-29"
 __copyright__ = "Copyright 2020, ItOpen"
 
 import os
+import unittest
 
 from qgis.core import (
     QgsLegendModel,
@@ -22,9 +23,7 @@ from qgis.core import (
     QgsProject,
     QgsRenderContext,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 QGISAPP = start_app()
@@ -32,7 +31,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsLegendRenderer(QgisTestCase):
-
     def test_json_export(self):
 
         project = QgsProject()

@@ -25,6 +25,8 @@
 #include <QColor>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class QgsSettingsEntryBase;
 
 

@@ -10,7 +10,7 @@
 
 
 
-class QgsLabelSettingsWidgetBase : QgsPanelWidget, protected QgsExpressionContextGenerator
+class QgsLabelSettingsWidgetBase : QgsPanelWidget, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")
 Base class for widgets which allow customization of label engine

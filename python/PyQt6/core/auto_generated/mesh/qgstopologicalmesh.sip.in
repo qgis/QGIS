@@ -33,7 +33,7 @@ A topological face must:
     typedef QVector<int> FaceNeighbors;
 
     class TopologicalFaces
-{
+    {
 %Docstring(signature="appended")
 Contains independent faces and topological information about these
 faces.
@@ -43,9 +43,6 @@ This class supports unique shared vertices between faces.
 .. versionadded:: 3.22
 %End
 
-%TypeHeaderCode
-#include "qgstopologicalmesh.h"
-%End
       public:
 
 
@@ -64,7 +61,7 @@ Returns a face linked to the vertices with index ``vertexIndex``
 
 
     class Changes
-{
+    {
 %Docstring(signature="appended")
 Contains topological differences between two states of a topological
 mesh, only accessible from the QgsTopologicalMesh class.
@@ -72,9 +69,6 @@ mesh, only accessible from the QgsTopologicalMesh class.
 .. versionadded:: 3.22
 %End
 
-%TypeHeaderCode
-#include "qgstopologicalmesh.h"
-%End
       public:
 
 

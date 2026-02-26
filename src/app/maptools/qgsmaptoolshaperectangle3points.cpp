@@ -4,7 +4,7 @@
    ---------------------
    begin                : September 2017
    copyright            : (C) 2017 by Loïc Bartoletti
-   email                : lbartoletti at tuxfamily dot org
+   email                : lituus at free dot fr
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -26,7 +26,11 @@
 #include "qgsmaptoolcapture.h"
 #include "qgspoint.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolshaperectangle3points.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsMapToolShapeRectangle3PointsMetadata::TOOL_ID_DISTANCE = u"rectangle-from-3-points-distance"_s;
 const QString QgsMapToolShapeRectangle3PointsMetadata::TOOL_ID_PROJECTED = u"rectangle-from-3-points-projected"_s;
@@ -165,7 +169,12 @@ void QgsMapToolShapeRectangle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e, Q
             mRectangle = QgsQuadrilateral::rectangleFrom3Points( mPoints.at( 0 ), mPoints.at( 1 ), point, QgsQuadrilateral::Projected );
             break;
         }
-        mTempRubberBand->setGeometry( mRectangle.toPolygon() );
+        const QgsGeometry newGeometry( mRectangle.toPolygon() );
+        if ( !newGeometry.isEmpty() )
+        {
+          mTempRubberBand->setGeometry( newGeometry.constGet()->clone() );
+          setTransientGeometry( newGeometry );
+        }
       }
       break;
       default:

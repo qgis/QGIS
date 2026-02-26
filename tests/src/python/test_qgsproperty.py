@@ -10,13 +10,12 @@ __author__ = "Nyall Dawson"
 __date__ = "11.04.2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
-from qgis.PyQt.QtCore import QDate
 from qgis.core import QgsProperty
+from qgis.PyQt.QtCore import QDate
 from qgis.testing import unittest
 
 
 class TestQgsProperty(unittest.TestCase):
-
     def test_bool_operator(self):
         property = QgsProperty()
         self.assertFalse(property)

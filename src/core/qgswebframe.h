@@ -16,7 +16,6 @@
 #ifndef QGSWEBFRAME_H
 #define QGSWEBFRAME_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 
@@ -24,6 +23,8 @@
 #include <QPainter>
 #include <QUrl>
 #include <QVariant>
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup core

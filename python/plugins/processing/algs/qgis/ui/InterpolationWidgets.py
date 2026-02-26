@@ -22,33 +22,32 @@ __copyright__ = "(C) 2016, Alexander Bruy"
 import os
 from typing import Optional, Union
 
-from qgis.PyQt import uic
-from qgis.PyQt.QtCore import pyqtSignal
-from qgis.PyQt.QtWidgets import QTreeWidgetItem, QComboBox
+from qgis.analysis import QgsInterpolator
 from qgis.core import (
     Qgis,
     QgsApplication,
-    QgsWkbTypes,
+    QgsCoordinateReferenceSystem,
+    QgsFieldProxyModel,
+    QgsProcessingParameterDefinition,
+    QgsProcessingParameterNumber,
+    QgsProcessingUtils,
     QgsRectangle,
     QgsReferencedRectangle,
-    QgsCoordinateReferenceSystem,
-    QgsProcessingUtils,
-    QgsProcessingParameterNumber,
-    QgsProcessingParameterDefinition,
-    QgsFieldProxyModel,
     QgsVectorLayer,
+    QgsWkbTypes,
 )
 from qgis.gui import QgsDoubleSpinBox
-from qgis.analysis import QgsInterpolator
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import pyqtSignal
+from qgis.PyQt.QtWidgets import QComboBox, QTreeWidgetItem
 
-from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD
+from processing.gui.wrappers import DIALOG_STANDARD, WidgetWrapper
 from processing.tools import dataobjects
 
 pluginPath = os.path.dirname(__file__)
 
 
 class ParameterInterpolationData(QgsProcessingParameterDefinition):
-
     def __init__(self, name="", description=""):
         super().__init__(name, description)
         self.setMetadata(
@@ -216,14 +215,11 @@ class InterpolationDataWidget(BASE, WIDGET):
                 else:
                     inputType = QgsInterpolator.SourceType.BreakLines
 
-                layers += "{}::~::{:d}::~::{:d}::~::{:d}::|::".format(
-                    layer.source(), interpolationSource, fieldIndex, inputType
-                )
+                layers += f"{layer.source()}::~::{interpolationSource:d}::~::{fieldIndex:d}::~::{inputType:d}::|::"
         return layers[: -len("::|::")]
 
 
 class InterpolationDataWidgetWrapper(WidgetWrapper):
-
     def createWidget(self):
         widget = InterpolationDataWidget()
         widget.hasChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
@@ -237,7 +233,6 @@ class InterpolationDataWidgetWrapper(WidgetWrapper):
 
 
 class ParameterPixelSize(QgsProcessingParameterNumber):
-
     def __init__(
         self,
         name="",
@@ -284,7 +279,6 @@ WIDGET, BASE = uic.loadUiType(os.path.join(pluginPath, "RasterResolutionWidget.u
 
 
 class PixelSizeWidget(BASE, WIDGET):
-
     def __init__(self):
         super().__init__(None)
         self.setupUi(self)
@@ -402,7 +396,6 @@ class PixelSizeWidget(BASE, WIDGET):
 
 
 class PixelSizeWidgetWrapper(WidgetWrapper):
-
     def __init__(self, param, dialog, row=0, col=0, **kwargs):
         super().__init__(param, dialog, row, col, **kwargs)
         self.context = dataobjects.createContext()

@@ -20,23 +20,23 @@
 
 #define SIP_NO_FILE
 
-namespace Qt3DRender
-{
-  class QRenderSettings;
-  class QLayer;
-  class QSubtreeEnabler;
-  class QTexture2D;
-  class QCamera;
-  class QCameraSelector;
-  class QLayerFilter;
-  class QRenderTargetSelector;
-  class QRenderTarget;
-} //namespace Qt3DRender
-
 namespace Qt3DCore
 {
   class QEntity;
 } //namespace Qt3DCore
+
+namespace Qt3DRender
+{
+  class QCamera;
+  class QCameraSelector;
+  class QLayer;
+  class QLayerFilter;
+  class QRenderSettings;
+  class QRenderTarget;
+  class QRenderTargetSelector;
+  class QSubtreeEnabler;
+  class QTexture2D;
+} //namespace Qt3DRender
 
 class QgsAmbientOcclusionRenderEntity;
 class QgsAmbientOcclusionBlurEntity;

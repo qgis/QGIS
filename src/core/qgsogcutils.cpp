@@ -36,8 +36,11 @@
 #include <QColor>
 #include <QObject>
 #include <QRegularExpression>
+#include <QString>
 #include <QStringList>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 #ifndef Q_OS_WIN
 #include <netinet/in.h>

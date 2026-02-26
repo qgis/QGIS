@@ -13,6 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsfeature.h"
+#include "qgsgeometry.h"
+#include "qgsgrass.h"
+#include "qgsgrassdatafile.h"
+#include "qgsrectangle.h"
+#include "qgsspatialindex.h"
+
+#include <QByteArray>
+#include <QDataStream>
+#include <QFile>
+#include <QIODevice>
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 extern "C"
 {
 #include <assert.h>
@@ -20,7 +35,6 @@ extern "C"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #ifdef WIN32
 #include <fcntl.h>
 #include <io.h>
@@ -30,19 +44,6 @@ extern "C"
 #include <grass/dbmi.h>
 #include <grass/vector.h>
 }
-
-#include <QByteArray>
-#include <QDataStream>
-#include <QFile>
-#include <QIODevice>
-
-#include "qgsfeature.h"
-#include "qgsgeometry.h"
-#include "qgsrectangle.h"
-#include "qgsrasterblock.h"
-#include "qgsspatialindex.h"
-#include "qgsgrass.h"
-#include "qgsgrassdatafile.h"
 
 static struct line_pnts *gLine = Vect_new_line_struct();
 
@@ -140,7 +141,10 @@ int main( int argc, char **argv )
   QDataStream stdinStream( &stdinFile );
 
   QFile stdoutFile;
-  stdoutFile.open( stdout, QIODevice::WriteOnly | QIODevice::Unbuffered );
+  if ( !stdoutFile.open( stdout, QIODevice::WriteOnly | QIODevice::Unbuffered ) )
+  {
+    G_fatal_error( "Could not open stdout for write" );
+  }
   QDataStream stdoutStream( &stdoutFile );
 
   // global finalName, tmpName are used by checkStream()

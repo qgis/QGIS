@@ -18,11 +18,14 @@
 #include "qgstest.h"
 #include "qgstexturematerial.h"
 
+#include <QString>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QGeometry>
 #include <Qt3DRender/QGeometryRenderer>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup UnitTests

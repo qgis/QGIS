@@ -30,8 +30,11 @@
 
 #include <QClipboard>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgstableeditordialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   : QMainWindow( parent )

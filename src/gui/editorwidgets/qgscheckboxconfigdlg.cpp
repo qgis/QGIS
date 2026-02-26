@@ -18,7 +18,11 @@
 #include "qgscheckboxfieldformatter.h"
 #include "qgscheckboxwidgetwrapper.h"
 
+#include <QString>
+
 #include "moc_qgscheckboxconfigdlg.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCheckBoxConfigDlg::QgsCheckBoxConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )

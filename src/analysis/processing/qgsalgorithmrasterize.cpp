@@ -35,7 +35,10 @@
 #include "qgsprovidermetadata.h"
 #include "qgsrasterfilewriter.h"
 
-#include <QtConcurrent>
+#include <QString>
+#include <QtConcurrentRun>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -247,8 +250,8 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
   }
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
-  const bool closeReportsProgress = GDALDatasetGetCloseReportsProgress( hOutputDataset.get() );
-  const double maxProgressDuringBlockWriting = closeReportsProgress ? 50.0 : 100.0;
+  const bool hasReportsDuringClose = GDALDatasetGetCloseReportsProgress( hOutputDataset.get() );
+  const double maxProgressDuringBlockWriting = hasReportsDuringClose ? 50.0 : 100.0;
 #else
   constexpr double maxProgressDuringBlockWriting = 100.0;
 #endif
@@ -367,7 +370,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
   }
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
-  if ( closeReportsProgress )
+  if ( hasReportsDuringClose )
   {
     QgsGdalProgressAdapter progress( feedback, maxProgressDuringBlockWriting );
     if ( GDALDatasetRunCloseWithoutDestroyingEx(

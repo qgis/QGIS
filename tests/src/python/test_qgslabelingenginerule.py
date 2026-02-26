@@ -8,31 +8,29 @@ the Free Software Foundation; either version 2 of the License, or
 
 import os
 import tempfile
-
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
 
 from qgis.core import (
     Qgis,
-    QgsLabelingEngineRuleRegistry,
     QgsAbstractLabelingEngineRule,
+    QgsLabelingEngineRuleAvoidLabelOverlapWithFeature,
+    QgsLabelingEngineRuleMaximumDistanceLabelToFeature,
     QgsLabelingEngineRuleMinimumDistanceLabelToFeature,
     QgsLabelingEngineRuleMinimumDistanceLabelToLabel,
-    QgsLabelingEngineRuleMaximumDistanceLabelToFeature,
-    QgsLabelingEngineRuleAvoidLabelOverlapWithFeature,
-    QgsProject,
-    QgsVectorLayer,
-    QgsMapUnitScale,
-    QgsReadWriteContext,
+    QgsLabelingEngineRuleRegistry,
     QgsLabelingEngineSettings,
+    QgsMapUnitScale,
+    QgsProject,
+    QgsReadWriteContext,
+    QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestRule(QgsAbstractLabelingEngineRule):
-
     def id(self):
         return "test"
 
@@ -56,7 +54,6 @@ class TestRule(QgsAbstractLabelingEngineRule):
 
 
 class TestQgsLabelingEngineRule(QgisTestCase):
-
     def testRegistry(self):
         registry = QgsLabelingEngineRuleRegistry()
         self.assertTrue(registry.ruleIds())

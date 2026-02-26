@@ -12,8 +12,6 @@ __copyright__ = "Copyright 2020, The QGIS Project"
 
 import os
 
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
-from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsField,
@@ -22,8 +20,9 @@ from qgis.core import (
     QgsWkbTypes,
 )
 from qgis.gui import QgsDatabaseTableComboBox
+from qgis.PyQt.QtCore import QCoreApplication, QVariant
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import unittest
-
 from utilities import start_app, unitTestDataPath
 
 start_app()
@@ -32,7 +31,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsDatabaseTableComboBox(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

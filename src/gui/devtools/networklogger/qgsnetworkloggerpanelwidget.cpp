@@ -30,10 +30,13 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QScrollBar>
+#include <QString>
 #include <QTextStream>
 #include <QToolButton>
 
 #include "moc_qgsnetworkloggerpanelwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsNetworkLoggerTreeView

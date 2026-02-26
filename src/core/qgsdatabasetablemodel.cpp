@@ -20,8 +20,11 @@
 #include "qgsproviderregistry.h"
 
 #include <QIcon>
+#include <QString>
 
 #include "moc_qgsdatabasetablemodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDatabaseTableModel::QgsDatabaseTableModel( const QString &provider, const QString &connection, const QString &schema, QObject *parent )
   : QAbstractItemModel( parent )

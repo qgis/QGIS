@@ -28,7 +28,11 @@
 #include "qgsprovidermetadata.h"
 #include "qgsreadwritelocker.h"
 
+#include <QString>
+
 #include "moc_qgsauthoauth2method.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_GUI
 #include "qgsauthoauth2edit.h"

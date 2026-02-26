@@ -19,6 +19,9 @@ email                : matthias@opengis.ch
 #include "qgis_sip.h"
 
 #include <QSet>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 // feature id (currently 64 bit)
 

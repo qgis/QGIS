@@ -15,6 +15,7 @@
 
 
 
+
 class QgsMeshDriverMetadata
 {
 %Docstring(signature="appended")
@@ -152,6 +153,7 @@ to be able to later load the associated shared library object.
       LayerTypesForUri,
       QuerySublayers,
       CreateDatabase,
+      UrisReferToSame,
     };
     typedef QFlags<QgsProviderMetadata::ProviderMetadataCapability> ProviderMetadataCapabilities;
 
@@ -608,6 +610,27 @@ Cleans a layer ``uri``, e.g. to remove or hide sensitive information
 from the URI.
 
 .. versionadded:: 3.42
+%End
+
+    virtual bool urisReferToSame( const QString &uri1, const QString &uri2, Qgis::SourceHierarchyLevel level = Qgis::SourceHierarchyLevel::Object ) const;
+%Docstring
+Returns ``True`` if the URI ``uri1`` and ``uri2`` point to the same
+resource at the specified hierarchy ``level``.
+
+This method parses the underlying connection parameters of ``uri1`` and
+``uri2`` to check if they share the same scope defined by ``level``.
+
+.. note::
+
+   This method is only valid for URIs from the same data provider.
+
+.. warning::
+
+   Not all providers implement this functionality. Check whether :py:func:`~QgsProviderMetadata.capabilities` returns the
+   ProviderMetadataCapability.UrisReferToSame to determine whether a specific provider metadata object
+   supports this method.
+
+.. versionadded:: 4.0
 %End
 
     virtual QList< QgsDataItemProvider * > dataItemProviders() const /Factory/;

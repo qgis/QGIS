@@ -23,6 +23,10 @@
 #include "qgsprintlayout.h"
 #include "qgsprocessingoutputs.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsLayoutToPdfAlgorithm::name() const

@@ -29,6 +29,9 @@
 #include <QItemDelegate>
 #include <QSortFilterProxyModel>
 #include <QStandardItemModel>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsProjectionSelectionDialog;
 class QgsWfsGetCapabilitiesRequest;

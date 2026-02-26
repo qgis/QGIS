@@ -28,9 +28,12 @@
 #include "topolTest.h"
 
 #include <QDebug>
+#include <QString>
 #include <QTableWidgetItem>
 
 #include "moc_rulesDialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterface *qgisIface, QWidget *parent )
   : QDialog( parent ), Ui::rulesDialog()

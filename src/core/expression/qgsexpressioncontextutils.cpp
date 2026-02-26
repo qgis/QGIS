@@ -43,6 +43,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectortileutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsExpressionContextScope *QgsExpressionContextUtils::globalScope()
 {
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Global" ) );
@@ -415,7 +419,7 @@ QList<QgsExpressionContextScope *> QgsExpressionContextUtils::globalProjectLayer
   QList<QgsExpressionContextScope *> scopes;
   scopes << globalScope();
 
-  QgsProject *project = QgsProject::instance();  // TODO: use project associated with layer skip-keyword-check
+  QgsProject *project = layer && layer->project() ? layer->project() : QgsProject::instance(); // skip-keyword-check
   if ( project )
     scopes << projectScope( project );
 

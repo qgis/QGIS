@@ -16,7 +16,6 @@
 #ifndef QGSPROCESSINGVECTORTILEWRITERLAYERSWIDGETWRAPPER_H
 #define QGSPROCESSINGVECTORTILEWRITERLAYERSWIDGETWRAPPER_H
 
-#define SIP_NO_FILE
 
 #include "ui_qgsprocessingvectortilewriterlayerdetailswidgetbase.h"
 
@@ -24,6 +23,8 @@
 #include "qgsprocessingmultipleselectiondialog.h"
 #include "qgsprocessingwidgetwrapper.h"
 #include "qgsvectortilewriter.h"
+
+#define SIP_NO_FILE
 
 class QLineEdit;
 class QToolButton;

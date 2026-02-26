@@ -35,12 +35,14 @@
 #include <QNetworkRequest>
 #include <QPixmap>
 #include <QPushButton>
-#include <QRegExp>
 #include <QScreen>
+#include <QString>
 #include <QTextDocument>
 #include <QToolButton>
 #include <QTreeWidgetItem>
 #include <QTreeWidgetItemIterator>
+
+using namespace Qt::StringLiterals;
 
 #if defined( HAVE_QTPRINTER )
 #include <QPrinter>

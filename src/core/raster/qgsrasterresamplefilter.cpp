@@ -21,6 +21,10 @@
 #include "qgsrasterresampler.h"
 #include "qgsrastertransparency.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //resamplers
 #include "qgsbilinearrasterresampler.h"
 #include "qgscubicrasterresampler.h"

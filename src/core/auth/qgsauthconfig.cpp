@@ -23,8 +23,11 @@
 #include <QCryptographicHash>
 #include <QFile>
 #include <QObject>
+#include <QString>
 #include <QUrl>
 #include <QtCrypto>
+
+using namespace Qt::StringLiterals;
 
 //////////////////////////////////////////////
 // QgsAuthMethodConfig

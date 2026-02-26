@@ -17,13 +17,14 @@
 #define QGSVECTORTILECONNECTIONDIALOG_H
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 #include "ui_qgsvectortileconnectiondialog.h"
 
 #include "qgssettingsentryenumflag.h"
 
 #include <QDialog>
+
+#define SIP_NO_FILE
 
 class QgsVectorTileConnectionDialog : public QDialog, public Ui::QgsVectorTileConnectionDialog
 {

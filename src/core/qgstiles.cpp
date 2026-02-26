@@ -20,6 +20,10 @@
 #include "qgsrendercontext.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsTileMatrix QgsTileMatrix::fromWebMercator( int zoomLevel )
 {
   constexpr double z0xMin = -20037508.3427892;

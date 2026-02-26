@@ -18,7 +18,11 @@
 #include "qgsprocessingcontext.h"
 #include "qgsproject.h"
 
+#include <QString>
+
 #include "moc_qgsprocessingtininputlayerswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 /// @cond PRIVATE
 

@@ -66,7 +66,7 @@ specified in metadata by the client, tile writer also writes "name",
     QgsVectorTileWriter();
 
     class Layer
-{
+    {
 %Docstring(signature="appended")
 Configuration of a single input vector layer to be included in the
 output.
@@ -74,9 +74,6 @@ output.
 .. versionadded:: 3.14
 %End
 
-%TypeHeaderCode
-#include "qgsvectortilewriter.h"
-%End
       public:
         explicit Layer( QgsVectorLayer *layer );
 %Docstring

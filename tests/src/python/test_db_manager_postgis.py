@@ -17,11 +17,10 @@ import stat
 import subprocess
 import tempfile
 import time
+import unittest
 from shutil import rmtree
 
 from plugins.db_manager.db_plugins import createDbPlugin, supportedDbTypes
-from qgis.PyQt.QtCore import QCoreApplication, QFile
-from qgis.PyQt.QtNetwork import QSslCertificate
 from qgis.core import (
     QgsApplication,
     QgsAuthMethodConfig,
@@ -29,9 +28,9 @@ from qgis.core import (
     QgsProviderRegistry,
     QgsSettings,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QCoreApplication, QFile
+from qgis.PyQt.QtNetwork import QSslCertificate
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 QGIS_POSTGRES_SERVER_PORT = os.environ.get("QGIS_POSTGRES_SERVER_PORT", "55432")
@@ -75,7 +74,6 @@ TEST_CONNECTION_NAME = "test_connection"
 
 
 class TestPyQgsDBManagerPostgis(QgisTestCase):
-
     @classmethod
     def setUpAuth(cls):
         """Run before all tests and set up authentication"""

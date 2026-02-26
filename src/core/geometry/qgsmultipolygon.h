@@ -20,6 +20,10 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis_sip.h"
 #include "qgsmultisurface.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsPolygon;
 
 /**

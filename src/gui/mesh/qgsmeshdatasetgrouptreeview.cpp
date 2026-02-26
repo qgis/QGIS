@@ -29,8 +29,11 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QMouseEvent>
+#include <QString>
 
 #include "moc_qgsmeshdatasetgrouptreeview.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshDatasetGroupTreeModel::QgsMeshDatasetGroupTreeModel( QObject *parent )
   : QAbstractItemModel( parent )

@@ -26,7 +26,11 @@
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolpinlabels.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapToolPinLabels::QgsMapToolPinLabels( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolLabel( canvas, cadDock )

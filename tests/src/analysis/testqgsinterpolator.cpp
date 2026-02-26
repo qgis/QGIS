@@ -19,6 +19,10 @@ Email                : nyall dot dawson at gmail dot com
 #include "qgstininterpolator.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsInterpolator : public QgsTest
 {
     Q_OBJECT

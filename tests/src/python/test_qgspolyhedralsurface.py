@@ -26,7 +26,6 @@ start_app()
 
 
 class TestQgsPolyhedralSurface(QgisTestCase):
-
     def test_constructor(self):
         surface = QgsPolyhedralSurface()
         self.assertTrue(surface.isEmpty())
@@ -246,6 +245,16 @@ class TestQgsPolyhedralSurface(QgisTestCase):
             surface[2]
         with self.assertRaises(IndexError):
             surface[-3]
+
+    def test_area_3d(self):
+        poly_surface = QgsPolyhedralSurface()
+        poly_surface.fromWkt(
+            "POLYHEDRALSURFACE Z "
+            "(((0 0 1,0 1 1,1 1 1,0 0 1)),"
+            "((10 10 0,10 15 0,15 15 0,10 10 0)))"
+        )
+        self.assertTrue(poly_surface.numPatches(), 2)
+        self.assertEqual(poly_surface.area3D(), 13.0)
 
 
 if __name__ == "__main__":

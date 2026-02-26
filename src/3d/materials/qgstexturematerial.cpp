@@ -15,6 +15,7 @@
 
 #include "qgstexturematerial.h"
 
+#include <QString>
 #include <QUrl>
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QGraphicsApiFilter>
@@ -25,6 +26,8 @@
 #include <Qt3DRender/QTexture>
 
 #include "moc_qgstexturematerial.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 QgsTextureMaterial::QgsTextureMaterial( QNode *parent )

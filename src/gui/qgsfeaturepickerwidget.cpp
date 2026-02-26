@@ -20,9 +20,12 @@
 
 #include <QHBoxLayout>
 #include <QKeyEvent>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgsfeaturepickerwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFeaturePickerWidget::QgsFeaturePickerWidget( QWidget *parent )
   : QWidget( parent )

@@ -22,7 +22,11 @@
 #include "qgsmeshlayer3drenderer.h"
 #include "qgstriangularmesh.h"
 
+#include <QString>
+
 #include "moc_qgsmesh3dsymbolwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMesh3DSymbolWidget::QgsMesh3DSymbolWidget( QgsMeshLayer *meshLayer, QWidget *parent )
   : QWidget( parent )

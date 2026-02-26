@@ -52,6 +52,12 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     //! Settings entry digitizing stream tolerance
     static const QgsSettingsEntryInteger *settingsDigitizingStreamTolerance;
 
+    /**
+     * Settings entry digitizing NURBS curve degree
+     * \since QGIS 4.0
+     */
+    static const QgsSettingsEntryInteger *settingsDigitizingNurbsDegree;
+
     //! Settings entry digitizing line width
     static const QgsSettingsEntryInteger *settingsDigitizingLineWidth;
 
@@ -148,6 +154,12 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     //! Settings entry digitizing tracing max feature count
     static const QgsSettingsEntryInteger *settingsDigitizingTracingMaxFeatureCount;
 
+    //! Settings entry digitizing status bar area display
+    static const QgsSettingsEntryEnumFlag< Qgis::CadMeasurementDisplayType > *settingsDigitizingStatusBarAreaDisplay;
+
+    //! Settings entry digitizing status bar perimeter/total length display
+    static const QgsSettingsEntryEnumFlag< Qgis::CadMeasurementDisplayType > *settingsDigitizingStatusBarTotalLengthDisplay;
+
     //! Settings entry path to GPSBabel executable.
     static const QgsSettingsEntryString *settingsGpsBabelPath;
 
@@ -170,9 +182,6 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
 
     //! Settings entry network cache directory
     static const QgsSettingsEntryInteger64 *settingsNetworkCacheSize;
-
-    //! Settings entry autosize columns by default when opening attribute table
-    static const QgsSettingsEntryBool *settingsAutosizeAttributeTable;
 
     //! Settings entry for behavior handling embedded scripts within projects
     static const QgsSettingsEntryEnumFlag<Qgis::EmbeddedScriptMode> *settingsCodeExecutionBehaviorUndeterminedProjects;

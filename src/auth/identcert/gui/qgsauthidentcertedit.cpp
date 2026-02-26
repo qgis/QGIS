@@ -22,7 +22,11 @@
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
 
+#include <QString>
+
 #include "moc_qgsauthidentcertedit.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthIdentCertEdit::QgsAuthIdentCertEdit( QWidget *parent )
   : QgsAuthMethodEdit( parent )

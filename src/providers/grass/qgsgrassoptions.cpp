@@ -21,8 +21,11 @@
 #include "qgsrasterprojector.h"
 
 #include <QFileDialog>
+#include <QString>
 
 #include "moc_qgsgrassoptions.cpp"
+
+using namespace Qt::StringLiterals;
 
 extern "C"
 {

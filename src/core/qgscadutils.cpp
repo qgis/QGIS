@@ -23,6 +23,9 @@
 #include "qgssnappingutils.h"
 
 #include <QQueue>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 // tolerances for soft constraints (last values, and common angles)
 // for angles, both tolerance in pixels and degrees are used for better performance

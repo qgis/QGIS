@@ -22,7 +22,10 @@
 #include "qgsdatacollectionitem.h"
 
 #include <QDateTime>
+#include <QString>
 #include <QTreeWidget>
+
+using namespace Qt::StringLiterals;
 
 class QFileSystemWatcher;
 class QMouseEvent;

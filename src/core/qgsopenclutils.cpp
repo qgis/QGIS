@@ -22,9 +22,12 @@
 #include <QDebug>
 #include <QFile>
 #include <QLibrary>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgsopenclutils.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef Q_OS_WIN
 #if defined(UNICODE) && !defined(_UNICODE)
@@ -336,10 +339,10 @@ QString QgsOpenClUtils::preferredDevice()
 QString QgsOpenClUtils::deviceId( const cl::Device device )
 {
   return u"%1|%2|%3|%4"_s
-         .arg( deviceInfo( QgsOpenClUtils::Info::Name, device ) )
-         .arg( deviceInfo( QgsOpenClUtils::Info::Vendor, device ) )
-         .arg( deviceInfo( QgsOpenClUtils::Info::Version, device ) )
-         .arg( deviceInfo( QgsOpenClUtils::Info::Type, device ) );
+         .arg( deviceInfo( QgsOpenClUtils::Info::Name, device ),
+               deviceInfo( QgsOpenClUtils::Info::Vendor, device ),
+               deviceInfo( QgsOpenClUtils::Info::Version, device ),
+               deviceInfo( QgsOpenClUtils::Info::Type, device ) );
 }
 
 #if defined(_MSC_VER)
@@ -724,8 +727,7 @@ cl::Program QgsOpenClUtils::buildProgram( const QString &source, QgsOpenClUtils:
     if ( ok && version < 2.0f )
     {
       program.build( u"-cl-std=CL%1 -I\"%2\""_s
-                     .arg( QgsOpenClUtils::activePlatformVersion( ) )
-                     .arg( sourcePath() ).toStdString().c_str() );
+                     .arg( QgsOpenClUtils::activePlatformVersion( ), sourcePath() ).toStdString().c_str() );
     }
     else
     {

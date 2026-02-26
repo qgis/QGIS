@@ -35,8 +35,11 @@
 #include <QDomElement>
 #include <QImage>
 #include <QRegularExpression>
+#include <QString>
 #include <QTextStream>
 #include <QVector>
+
+using namespace Qt::StringLiterals;
 
 const int QgsPalettedRasterRenderer::MAX_FLOAT_CLASSES = 65536;
 

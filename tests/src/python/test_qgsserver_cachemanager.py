@@ -19,10 +19,10 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
+from qgis.core import QgsProject
 from qgis.PyQt.QtCore import QBuffer, QByteArray, QIODevice, QSize
 from qgis.PyQt.QtGui import QImage
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.core import QgsProject
 from qgis.server import (
     QgsBufferServerRequest,
     QgsBufferServerResponse,
@@ -30,7 +30,6 @@ from qgis.server import (
     QgsServerRequest,
 )
 from qgis.testing import unittest
-
 from test_qgsserver import QgsServerTestBase
 
 
@@ -159,7 +158,6 @@ class PyServerCache(QgsServerCacheFilter):
 
 
 class TestQgsServerCacheManager(QgsServerTestBase):
-
     @classmethod
     def _handle_request(cls, qs, requestMethod=QgsServerRequest.GetMethod, data=None):
         if data is not None:

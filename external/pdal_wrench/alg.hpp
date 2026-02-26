@@ -116,12 +116,12 @@ struct Translate : public Alg
     std::string assignCrs;
     std::string transformCrs;
     std::string transformCoordOp;
-    std::string outputFormat;  // las / laz / copc
+    std::string outputFormatVpc;  // las / laz / copc
     std::string transformMatrix; // 4x4 matrix as 16 space-separated values
 
     // args - initialized in addArgs()
     pdal::Arg* argOutput = nullptr;
-    pdal::Arg* argOutputFormat = nullptr;
+    pdal::Arg* argOutputFormatVpc = nullptr;
 
     std::vector<std::string> tileOutputFiles;
 
@@ -187,11 +187,11 @@ struct Clip : public Alg
     // parameters from the user
     std::string outputFile;
     std::string polygonFile;
-    std::string outputFormat;  // las / laz / copc
+    std::string outputFormatVpc;  // las / laz / copc
 
     // args - initialized in addArgs()
     pdal::Arg* argOutput = nullptr;
-    pdal::Arg* argOutputFormat = nullptr;
+    pdal::Arg* argOutputFormatVpc = nullptr;
     pdal::Arg* argPolygon = nullptr;
 
     std::vector<std::string> tileOutputFiles;
@@ -235,14 +235,14 @@ struct Thin : public Alg
     std::string mode;  // "every-nth" or "sample"
     int stepEveryN;  // keep every N-th point
     double stepSample;  // cell size for Poisson sampling
-    std::string outputFormat;  // las / laz / copc
+    std::string outputFormatVpc;  // las / laz / copc
 
     // args - initialized in addArgs()
     pdal::Arg* argOutput = nullptr;
     pdal::Arg* argMode = nullptr;
     pdal::Arg* argStepEveryN = nullptr;
     pdal::Arg* argStepSample = nullptr;
-    pdal::Arg* argOutputFormat = nullptr;
+    pdal::Arg* argOutputFormatVpc = nullptr;
 
     std::vector<std::string> tileOutputFiles;
 
@@ -342,7 +342,7 @@ struct ClassifyGround : public Alg
 
     // parameters from the user
     std::string outputFile;
-    std::string outputFormat;  // las / laz / copc
+    std::string outputFormatVpc;  // las / laz / copc
 
     double cellSize = 1.0;
     double scalar = 1.25;
@@ -352,7 +352,7 @@ struct ClassifyGround : public Alg
 
     // args - initialized in addArgs()
     pdal::Arg* argOutput = nullptr;
-    pdal::Arg* argOutputFormat = nullptr;
+    pdal::Arg* argOutputFormatVpc = nullptr;
     pdal::Arg* argCellSize = nullptr;
 
     pdal::Arg* argScalar = nullptr;
@@ -379,7 +379,7 @@ struct FilterNoise: public Alg
     
     // parameters from the user
     std::string outputFile;
-    std::string outputFormat;  // las / laz / copc
+    std::string outputFormatVpc;  // las / laz / copc
     std::string algorithm = "statistical"; // "statistical" or "radius"
     bool removeNoisePoints = false;
 
@@ -393,7 +393,7 @@ struct FilterNoise: public Alg
 
     // args - initialized in addArgs()
     pdal::Arg* argOutput = nullptr;
-    pdal::Arg* argOutputFormat = nullptr;
+    pdal::Arg* argOutputFormatVpc = nullptr;
     pdal::Arg* argAlgorithm = nullptr;
     pdal::Arg* argRemoveNoisePoints = nullptr;
     pdal::Arg* argRadiusMinK = nullptr;
@@ -415,7 +415,7 @@ struct HeightAboveGround : public Alg
     
     // parameters from the user
     std::string outputFile;
-    std::string outputFormat;  // las / laz / copc / vpc
+    std::string outputFormatVpc;  // las / laz / copc
     bool replaceZWithHeightAboveGround = true;
     std::string algorithm = "nn";
 
@@ -428,7 +428,7 @@ struct HeightAboveGround : public Alg
     
     // args - initialized in addArgs()
     pdal::Arg* argOutput = nullptr;
-    pdal::Arg* argOutputFormat = nullptr;
+    pdal::Arg* argOutputFormatVpc = nullptr;
     pdal::Arg* argReplaceZWithHeightAboveGround = nullptr;
     pdal::Arg* argAlgorithm = nullptr;
 
@@ -440,6 +440,34 @@ struct HeightAboveGround : public Alg
     pdal::Arg* argDelaunayCount = nullptr;
 
     std::vector<std::string> tileOutputFiles;
+
+    // impl
+    virtual void addArgs() override;
+    virtual bool checkArgs() override;
+    virtual void preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
+    virtual void finalize(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
+};
+
+struct ComparePointClouds : public Alg
+{   
+    ComparePointClouds() { isStreaming = false; }
+
+    // parameters from the user
+    std::string outputFile;
+
+    std::string comparedInputFile;
+    double subsamplingCellSize;  // cell size for Poisson sampling
+    double normalRadius = 2.0;
+    double cylRadius = 2.0;
+    double cylHalflen = 5.0;
+    double regError = 0.0;
+    std::string cylOrientation = "up";
+
+    // args - initialized in addArgs()
+    pdal::Arg* argOutput = nullptr;
+    pdal::Arg* argOutputFormat = nullptr;
+    pdal::Arg* argComparedInputFile = nullptr;
+    pdal::Arg* argOrientation = nullptr;
 
     // impl
     virtual void addArgs() override;

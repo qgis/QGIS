@@ -12,8 +12,6 @@ __copyright__ = "Copyright 2020, The QGIS Project"
 
 import unittest
 
-from qgis.PyQt.QtCore import QPointF
-from qgis.PyQt.QtGui import QColor, QImage, QPainter, QPolygonF
 from qgis.core import (
     QgsColorRampShader,
     QgsFeature,
@@ -28,13 +26,14 @@ from qgis.core import (
     QgsStyle,
     QgsSymbolLayer,
 )
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QPointF
+from qgis.PyQt.QtGui import QColor, QImage, QPainter, QPolygonF
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsInterpolatedLineSymbolLayers(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "symbol_interpolatedline"

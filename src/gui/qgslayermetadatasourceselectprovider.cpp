@@ -18,6 +18,10 @@
 #include "qgsapplication.h"
 #include "qgslayermetadatasearchwidget.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsLayerMetadataSourceSelectProvider::QgsLayerMetadataSourceSelectProvider()
   : QgsSourceSelectProvider()
 {

@@ -19,10 +19,9 @@
 
 #include "ui_qgsmeasurebase.h"
 
-#include "qgs3dmaptoolmeasureline.h"
-#include "qgsunittypes.h"
+#include <QDialog>
 
-#include <QCloseEvent>
+class Qgs3DMapToolMeasureLine;
 
 class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 {

@@ -42,6 +42,10 @@
 #include "qgsvtpkvectortiledataprovider.h"
 #include "qgsxyzvectortiledataprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #ifdef HAVE_EPT
 #include "providers/ept/qgseptprovider.h"
 #endif

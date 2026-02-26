@@ -14,27 +14,25 @@ import glob
 import os
 import shutil
 import tempfile
+import unittest
 from tempfile import TemporaryDirectory
-
-from qgis.PyQt import sip
-from qgis.PyQt.QtCore import QTemporaryDir
-from qgis.PyQt.QtXml import QDomDocument
-from qgis.PyQt.QtTest import QSignalSpy
 
 from qgis.core import (
     Qgis,
-    QgsMapLayer,
+    QgsCoordinateReferenceSystem,
     QgsLayerMetadata,
     QgsLayerNotesUtils,
+    QgsMapLayer,
     QgsProject,
     QgsRasterLayer,
     QgsReadWriteContext,
     QgsVectorLayer,
-    QgsCoordinateReferenceSystem,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt import sip
+from qgis.PyQt.QtCore import QTemporaryDir
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -43,7 +41,6 @@ start_app()
 
 
 class TestQgsMapLayer(QgisTestCase):
-
     def testUniqueId(self):
         """
         Test that layers created quickly with same name get a unique ID

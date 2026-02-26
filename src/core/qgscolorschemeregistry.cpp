@@ -25,6 +25,9 @@
 #include <QDir>
 #include <QFileInfoList>
 #include <QMutex>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsColorSchemeRegistry::~QgsColorSchemeRegistry()
 {

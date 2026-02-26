@@ -8,7 +8,7 @@
 
 
 
-class QgsCalloutWidget : QWidget, protected QgsExpressionContextGenerator
+class QgsCalloutWidget : QWidget, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")
 Base class for widgets which allow control over the properties of

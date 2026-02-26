@@ -31,12 +31,14 @@
 # where "foo"_L1 would be better, and other auto code-cleaning operations,
 # such as use of auto with std::make_unique
 
+# It also automatically sorts includes in files
+
 import re
 import sys
+from functools import cmp_to_key
+from pathlib import Path
 
-lines = [l[0:-1] if l[-1] == "\n" else l for l in open(sys.argv[1]).readlines()]
-
-# Double quoted strings that only include ASCII characters
+# Double-quoted strings that only include ASCII characters
 ascii_string_literal = r"""(R?"(?:(?:\\['"\\nrt])|[\x00-\x21\x23-\x5B\x5D-\x7F])+?")"""
 
 # Single quoted ASCII character
@@ -47,20 +49,18 @@ simple_expr = (
     r"""([a-zA-Z0-9_:<>]+(?:\.(?:[a-zA-Z0-9_]+\([^\(\)]*\)|[a-zA-Z0-9_]+))?)"""
 )
 
-pattern_qsl = re.compile(
-    r'^(.*?)(?:QStringLiteral\s*\(\s*("(?:(?:\\.|[^"\\])*)")\s*\))(.*)$'
-)
+pattern_qsl = re.compile(r'^(.*?)QStringLiteral\s*\(\s*("(?:\\.|[^"\\])*")\s*\)(.*)$')
 
-pattern_qlatin1char = re.compile(rf"^(.*?)(?:QLatin1Char*\(\s*('.'|'\\'')\s*\))(.*)$")
+pattern_qlatin1char = re.compile(rf"^(.*?)QLatin1Char*\(\s*('.'|'\\'')\s*\)(.*)$")
 
 pattern_qlatin1string = re.compile(
-    rf"^(.*?)(?:QLatin1String\s*\(\s*{ascii_string_literal}\s*\))(.*)$"
+    rf"^(.*?)QLatin1String\s*\(\s*{ascii_string_literal}\s*\)(.*)$"
 )
 
 u_str_s = rf"""u{ascii_string_literal}_s"""
 
 # Find lines like "    foo += QStringLiteral( "bla" );  // optional comment"
-pattern_plus_equal = re.compile(rf"^([ ]*)([^ ]+) \+= {u_str_s};([ ]*//.*)?$")
+pattern_plus_equal = re.compile(rf"^( *)([^ ]+) \+= {u_str_s};( *//.*)?$")
 
 # Find patterns like "...QString( tr( "foo" ) )..."
 pattern_qstring_tr = re.compile(
@@ -72,14 +72,14 @@ pattern_equalequal_qsl = re.compile(
     r"(.*)(==|!=) ?" + u_str_s + r"( \)| \|\|| &&| }|;| \?| ,)(.*)"
 )
 
-# Find patterns like "...startsWith( QStringLiteral( "foo" ) )..."
+# Find patterns like '...startsWith( QStringLiteral( "foo" ) )...'
 pattern_startswith_qsl = re.compile(
     rf"(.*)\.(startsWith|endsWith|indexOf|lastIndexOf|compare)\( {u_str_s} ?\)(.*)"
 )
 
 # Matches strings with a _L1 suffix that contain at least one non-ASCII character
 pattern_wrong_L1 = re.compile(
-    r"""^(.*?)(R?"(?:(?:\\['"\\nrt])|[\x00-\x21\x23-\x5B\x5D-\x7F])*[^\x00-\x7F](?:(?:\\['"\\nrt])|[\x00-\x21\x23-\x5B\x5D-\x7F])*")_L1(.*)$"""
+    r"""^(.*?)(R?"(?:\\['"\\nrt]|[\x00-\x21\x23-\x5B\x5D-\x7F])*[^\x00-\x7F](?:\\['"\\nrt]|[\x00-\x21\x23-\x5B\x5D-\x7F])*")_L1(.*)$"""
 )
 
 # .replace( 'a' or simple_expr or u_str_s, QStringLiteral( "foo" ) )
@@ -93,9 +93,7 @@ replace_str_qsl = re.compile(
 # replace_simple_expr_qsl = re.compile(r"""(.*)\.replace\( {simple_expr}, {u_str_s} \)(.*)""".format(simple_expr=simple_expr, u_str_s=u_str_s))
 
 # .replace( QStringLiteral( "foo" ), QStringLiteral( "foo" ) )
-replace_qsl_qsl = re.compile(
-    r"""(.*)\.replace\( ?{u_str_s}, ?{u_str_s} ?\)(.*)""".format(u_str_s=u_str_s)
-)
+replace_qsl_qsl = re.compile(rf"""(.*)\.replace\( ?{u_str_s}, ?{u_str_s} ?\)(.*)""")
 
 # .replace( QStringLiteral( "foo" ), something
 replace_qsl_something = re.compile(rf"""(.*)\.replace\( ?{u_str_s}, ?(.+)""")
@@ -111,19 +109,89 @@ qlatin1str_single_char = re.compile(
     r"""(.*)(.startsWith\(|.endsWith\(|.indexOf\(|.lastIndexOf\(|.compare\(|\+=) ?("[^"]") ?_L1(.*)"""
 )
 
+# regex to detect if the processed line contains _s or _L1 literals
+pattern_has_qt_literal = re.compile(r'u"(?:\\.|[^"\\])*"_s|"(?:\\.|[^"\\])*"_L1')
+
 make_unique_shared = re.compile(
     r"""^(\s*)std::(?:unique|shared)_ptr<\s*(.*?)\s*>(\s*.*?\s*=\s*std::make_(?:unique|shared)<\s*(.*?)\s*>.*)$"""
 )
 make_unique_shared2 = re.compile(
-    r"""^(\s*)std::(?:unique|shared)_ptr<\s*(.*?)\s*>(?:\s*(.*?)\s*\()\s*(std::make_(?:unique|shared)<\s*(.*?)\s*>.*?)\s*\)\s*;$"""
+    r"""^(\s*)std::(?:unique|shared)_ptr<\s*(.*?)\s*>\s*(.*?)\s*\(\s*(std::make_(?:unique|shared)<\s*(.*?)\s*>.*?)\s*\)\s*;$"""
 )
 make_unique3 = re.compile(
-    r"""^(\s*)std::unique_ptr<\s*(.*?)\s*>(?:\s*(.*?)\s*\()\s*new\s*(.*?)\s*(\(.*\s*\))\s*\)\s*;"""
+    r"""^(\s*)std::unique_ptr<\s*(.*?)\s*>\s*(.*?)\s*\(\s*new\s*(.*?)\s*(\(.*\s*\))\s*\)\s*;"""
 )
+
+SIP_NO_FILE_DEFINE = "#define SIP_NO_FILE"
+
+NON_STANDARD_NAMED_QGIS_HEADERS = (
+    "gpsdata.h",
+    "fromencodedcomponenthelper.h",
+    "wkbptr.h",
+    "characterwidget.h",
+    "RTree.h",
+    "info.h",
+    "gmath.h",
+    "feature.h",
+    "labelposition.h",
+    "pal.h",
+    "layer.h",
+    "poly2tri.h",
+    "kdbush.hpp",
+    "vector_tile.pb.h",
+    "delaunator.hpp",
+    "o0requestparameter.h",
+    "o0globals.h",
+    "o2.h",
+    "ParametricLine.h",
+    "Vector3D.h",
+    "TriDecorator.h",
+    "MathUtils.h",
+    "TriangleInterpolator.h",
+    "CloughTocherInterpolator.h",
+    "HalfEdge.h",
+    "modeltest.h",
+    "libdxfrw.h",
+    "dockModel.h",
+    "o2replyserver.h",
+    "LinTriangleInterpolator.h",
+    "testqgsmaptoolutils.h",
+    "tiny_gltf.h",
+    "pointset.h",
+    "testgeometryutils.h",
+    "testqgsmaptoolutils.h",
+    "problem.h",
+    "meshoptimizer.h",
+    "costcalculator.h",
+    "geomfunction.h",
+    "priorityqueue.h",
+    "rulesDialog.h",
+    "offline_editing_progress_dialog.h",
+    "o0settingsstore.h",
+    "NormVecDecorator.h",
+    "libdwgr.h",
+    "topolTest.h",
+    "topolError.h",
+    "offline_editing_plugin_gui.h",
+    "drw_interface.h",
+    "nanoarrow/nanoarrow.hpp",
+    "pointset.h",
+    "util.h",
+    "internalexception.h",
+    "palrtree.h",
+    "inja/inja.hpp",
+    "qsql_ocispatial.h",
+    "qobjectuniqueptr.h",
+)
+
+SPATIALITE_HEADERS = ("spatialite.h", "spatialite/gaiageo.h")
+
+SPECIAL_CASE_FIRST_INCLUDES = ("Python.h",)
+SPECIAL_CASE_LAST_INCLUDES = ("fcgi_stdio.h",)
 
 
 def qlatin1char_or_string(x):
-    """x is a double quoted string"""
+    """x is a double-quoted string"""
     if len(x) == 3 and x[1] == "'":
         return "'\\''_L1"
     elif len(x) == 3:
@@ -223,9 +291,10 @@ def fix_allows_to(line: str) -> str:
     )
 
 
-i = 0
-while i < len(lines):
-    line = lines[i]
+def apply_line_fixups(line: str) -> str:
+    """
+    Applies fixups which work on a single line only.
+    """
 
     while True:
         m = pattern_qsl.match(line)
@@ -401,5 +470,269 @@ while i < len(lines):
 
     line = fix_allows_to(line)
 
-    print(line)
-    i += 1
+    return line
+
+
+def sort_standard_includes(includes: list[str]) -> list[str]:
+    """
+    Sorts non-qgis includes
+    """
+
+    def compare(item1, item2):
+        # spatialite headers must be last
+        if item1 in SPATIALITE_HEADERS and not item2 in SPATIALITE_HEADERS:
+            return 1
+        elif item2 in SPATIALITE_HEADERS and not item1 in SPATIALITE_HEADERS:
+            return -1
+        elif item1 < item2:
+            return -1
+        elif item1 > item2:
+            return 1
+        else:
+            return 0
+
+    return sorted(includes, key=cmp_to_key(compare))
+
+
+def sort_includes(includes: list[str], input_file_stem: str) -> list[str]:
+    """
+    Sorts a list of include lines and returns the reordered list.
+    """
+    matching_header = None
+    moc_header = None
+    qgs_config_include = None
+    ui_includes = []
+    std_includes = []
+    qt_includes = []
+    qgis_includes = []
+    special_case_first_includes = []
+    special_case_last_includes = []
+    sorted_output = []
+
+    for include in includes:
+        header_match = re.match(r'^\s*#include [<"](.*)[">]', include)
+        assert header_match
+
+        header = header_match.group(1)
+        if header == f"{input_file_stem}.h":
+            matching_header = header
+        elif header == f"moc_{input_file_stem}.cpp":
+            moc_header = header
+        elif header == "qgsconfig.h":
+            qgs_config_include = header
+        elif header in SPECIAL_CASE_FIRST_INCLUDES:
+            special_case_first_includes.append(header)
+        elif header in SPECIAL_CASE_LAST_INCLUDES:
+            special_case_last_includes.append(header)
+        elif (
+            re.match(r"^(?:.*/)?qgi?s.*\.h", header, re.IGNORECASE)
+            or header in NON_STANDARD_NAMED_QGIS_HEADERS
+            or header.startswith("pal/")
+            or header.startswith("lazperf/")
+        ):
+            qgis_includes.append(header)
+        elif re.match(r"^ui_.*\.h", header, re.IGNORECASE):
+            ui_includes.append(header)
+        elif re.match(r"^Q", header, re.IGNORECASE):
+            qt_includes.append(header)
+        else:
+            std_includes.append(header)
+
+    qt_includes = sorted(qt_includes)
+    qgis_includes = sorted(qgis_includes)
+    ui_includes = sorted(ui_includes)
+    std_includes = sort_standard_includes(std_includes)
+    special_case_first_includes = sorted(special_case_first_includes)
+    special_case_last_includes = sorted(special_case_last_includes)
+
+    if special_case_first_includes:
+        for header in special_case_first_includes:
+            sorted_output.append(f"#include <{header}>")
+        sorted_output.append("")
+
+    if qgs_config_include:
+        # this header MUST come first, as it defines macros which may
+        # impact on how other headers behave
+        sorted_output.append(f'#include "{qgs_config_include}"')
+    if ui_includes:
+        for header in ui_includes:
+            sorted_output.append(f'#include "{header}"')
+    if matching_header:
+        sorted_output.append(f'#include "{matching_header}"')
+
+    if qgs_config_include or matching_header or ui_includes:
+        sorted_output.append("")
+
+    if std_includes:
+        for header in std_includes:
+            sorted_output.append(f"#include <{header}>")
+        sorted_output.append("")
+
+    if qgis_includes:
+        for header in qgis_includes:
+            sorted_output.append(f'#include "{header}"')
+        sorted_output.append("")
+
+    if qt_includes:
+        for header in qt_includes:
+            sorted_output.append(f"#include <{header}>")
+        sorted_output.append("")
+
+    if moc_header:
+        # moc include should come last -- this may rely on other includes
+        # to resolve forward declared classes
+        sorted_output.append(f'#include "{moc_header}"')
+        sorted_output.append("")
+
+    if special_case_last_includes:
+        for header in special_case_last_includes:
+            sorted_output.append(f"#include <{header}>")
+        sorted_output.append("")
+
+    while sorted_output:
+        last_line = sorted_output[-1]
+        if not last_line.strip():
+            sorted_output.pop()
+        else:
+            break
+
+    return sorted_output
+
+
+def process_file(filename: str):
+    input_file = Path(filename)
+    if not input_file.exists():
+        print(f"Error: File {filename} not found.")
+        sys.exit(1)
+
+    input_file_stem = input_file.stem
+
+    with open(input_file) as file_in:
+        lines = [l[:-1] if l[-1] == "\n" else l for l in file_in.readlines()]
+
+    needs_sip_no_file = any(l.strip() == SIP_NO_FILE_DEFINE for l in lines)
+    if needs_sip_no_file:
+        lines = [l for l in lines if l.strip() != SIP_NO_FILE_DEFINE]
+
+    fixed_lines = [apply_line_fixups(line) for line in lines]
+
+    # check for usage of Qt String Literals (_s or _L1)
+    uses_qt_literals = False
+    for line in fixed_lines:
+        if pattern_has_qt_literal.search(line):
+            uses_qt_literals = True
+            break
+
+    # sort includes
+    final_output = []
+
+    # scan till first include is found
+    while fixed_lines:
+        line = fixed_lines[0]
+        if re.match(r"\s*#include", line):
+            break
+        final_output.append(line)
+        fixed_lines.pop(0)
+
+    # collect all includes
+    # we only consider consecutive includes for now, e.g. we don't handle
+    # includes inside #if blocks
+    include_lines = []
+    while fixed_lines:
+        line = fixed_lines[0]
+        if not line.strip():
+            # skip empty lines in the include block for now
+            fixed_lines.pop(0)
+            continue
+
+        if re.match(r"^\s*#include.*", line):
+            fixed_lines.pop(0)
+            include_lines.append(line)
+            continue
+
+        # stop at first non-include line (that isn't empty)
+        # TODO: handle headers in conditional #if blocks
+        break
+
+    # if we detected literal usage, force QString header to be included
+    # otherwise we get fragile behavior -- a unity build may be successful
+    # locally, but fail elsewhere
+    if uses_qt_literals:
+        # We append it here; duplication is handled by set() later
+        include_lines.append("#include <QString>")
+
+    # dedupe includes
+    if include_lines:
+        include_lines = list(set(include_lines))
+        sorted_includes = sort_includes(include_lines, input_file_stem)
+        final_output.extend(sorted_includes)
+    elif needs_sip_no_file:
+        line_no = len(final_output) - 1
+        for line_no, line in enumerate(final_output):
+            if line.startswith("class") or line.startswith("namespace"):
+                break
+        # if no includes, put SIP_NO_FILE define here
+        if not final_output[line_no - 2] and not final_output[line_no - 1]:
+            del final_output[line_no - 1]
+            line_no -= 1
+        final_output.insert(line_no, SIP_NO_FILE_DEFINE)
+        final_output.insert(line_no + 1, "")
+        if final_output[line_no - 1].strip():
+            print(final_output[line_no - 1].strip())
+            final_output.insert(line_no, "")
+
+        needs_sip_no_file = False
+
+    # if we detected QString literal usage, ensure the using namespace directive exists
+    if uses_qt_literals:
+        already_has_namespace_using = any(
+            "using namespace Qt::StringLiterals" in l for l in fixed_lines
+        )
+
+        if not already_has_namespace_using:
+            if final_output[-1]:
+                final_output.append("")
+            final_output.append("using namespace Qt::StringLiterals;")
+            final_output.append("")
+
+    if needs_sip_no_file:
+        if final_output[-1]:
+            final_output.append("")
+        final_output.append(SIP_NO_FILE_DEFINE)
+        final_output.append("")
+
+    # add remaining lines, if non-empty
+    has_more_lines = False
+    for l in fixed_lines:
+        if l.strip():
+            has_more_lines = True
+            break
+
+    # ensure proper spacing after includes
+    if has_more_lines and final_output and final_output[-1].startswith("#include"):
+        # force SINGLE empty line after last include unless in extern block
+        include_empty_line = True
+        while fixed_lines:
+            first_line = fixed_lines[0]
+            if not first_line.strip():
+                fixed_lines.pop(0)
+            elif first_line == "}":
+                include_empty_line = False
+                break
+            else:
+                break
+        if include_empty_line:
+            final_output.append("")
+
+    final_output.extend(fixed_lines)
+
+    with open(input_file, "w") as file:
+        file.write("\n".join(final_output) + "\n")
+
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Usage: python3 code_fixup.py <filename>")
+        sys.exit(1)
+
+    process_file(sys.argv[1])

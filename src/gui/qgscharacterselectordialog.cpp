@@ -18,7 +18,11 @@
 
 #include "characterwidget.h"
 
+#include <QString>
+
 #include "moc_qgscharacterselectordialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCharacterSelectorDialog::QgsCharacterSelectorDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )

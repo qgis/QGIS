@@ -19,6 +19,9 @@
 #include "qgsvariantutils.h"
 
 #include <QSettings>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QString QgsKeyValueFieldFormatter::id() const
 {

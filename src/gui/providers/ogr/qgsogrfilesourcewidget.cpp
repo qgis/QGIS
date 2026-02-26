@@ -17,7 +17,11 @@
 
 #include "qgsogrfilesourcewidget.h"
 
+#include <QString>
+
 #include "moc_qgsogrfilesourcewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

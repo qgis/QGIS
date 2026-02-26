@@ -14,6 +14,7 @@
 
 
 
+
 class QgsImageFetcher : QObject
 {
 %Docstring(signature="appended")
@@ -84,6 +85,9 @@ QGIS 3.16 creation flags are specified within the ``flags`` value.
 %End
 
     virtual QgsRasterDataProvider *clone() const = 0;
+
+
+
 
 
     virtual Qgis::RasterProviderCapabilities providerCapabilities() const;

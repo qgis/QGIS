@@ -28,9 +28,10 @@
 
 #include <QColor>
 
+#define SIP_NO_FILE
+
 class Qgs3DMapSettings;
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup qgis_3d

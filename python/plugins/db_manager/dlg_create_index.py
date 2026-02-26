@@ -22,19 +22,17 @@ The content of this file is based on
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QApplication
+from qgis.PyQt.QtWidgets import QApplication, QDialog, QMessageBox
 from qgis.utils import OverrideCursor
 
-from .db_plugins.plugin import DbError
+from .db_plugins.plugin import DbError, TableIndex
 from .dlg_db_error import DlgDbError
-from .db_plugins.plugin import TableIndex
 from .gui_utils import GuiUtils
 
 Ui_Dialog, _ = uic.loadUiType(GuiUtils.get_ui_file_path("DlgCreateIndex.ui"))
 
 
 class DlgCreateIndex(QDialog, Ui_Dialog):
-
     def __init__(self, parent=None, table=None, db=None):
         QDialog.__init__(self, parent)
         self.table = table

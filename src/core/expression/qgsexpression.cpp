@@ -32,6 +32,9 @@
 #include "qgsvariantutils.h"
 
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 // from parser
 extern QgsExpressionNode *parseExpression( const QString &str, QString &parserErrorMsg, QList<QgsExpression::ParserError> &parserErrors );
@@ -961,8 +964,9 @@ void QgsExpression::buildVariableHelp()
   // plots and charts
   sVariableHelpTexts()->insert( u"plot_axis"_s, QCoreApplication::translate( "plot_axis", "The associated plot axis, e.g. 'x' or 'y'." ) );
   sVariableHelpTexts()->insert( u"plot_axis_value"_s, QCoreApplication::translate( "plot_axis_value", "The current value for the plot axis grid line." ) );
-  sVariableHelpTexts()->insert( u"chart_category"_s, QCoreApplication::translate( "plot_axis", "The chart item category, e.g. 'fruit' or 'june'." ) );
-  sVariableHelpTexts()->insert( u"chart_value"_s, QCoreApplication::translate( "plot_axis_value", "The chart item value." ) );
+  sVariableHelpTexts()->insert( u"chart_category"_s, QCoreApplication::translate( "chart_category", "The chart item category, e.g. 'fruit' or 'june'." ) );
+  sVariableHelpTexts()->insert( u"chart_value"_s, QCoreApplication::translate( "chart_value", "The chart item value." ) );
+  sVariableHelpTexts()->insert( u"chart_series_name"_s, QCoreApplication::translate( "chart_series_name", "The chart item's series name, e.g. 'Series 1'." ) );
 }
 
 bool QgsExpression::addVariableHelpText( const QString name, const QString &description )
@@ -1023,6 +1027,7 @@ QString QgsExpression::group( const QString &name )
     sGroups()->insert( u"Rasters"_s, tr( "Rasters" ) );
     sGroups()->insert( u"Record and Attributes"_s, tr( "Record and Attributes" ) );
     sGroups()->insert( u"String"_s, tr( "String" ) );
+    sGroups()->insert( u"MagneticModels"_s, tr( "Magnetic Models" ) );
     sGroups()->insert( u"Variables"_s, tr( "Variables" ) );
     sGroups()->insert( u"Recent (%1)"_s, tr( "Recent (%1)" ) );
     sGroups()->insert( u"UserGroup"_s, tr( "User expressions" ) );

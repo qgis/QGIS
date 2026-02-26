@@ -20,7 +20,6 @@ start_app()
 
 
 class TestQgsMultiPolygon(QgisTestCase):
-
     def test_constructor(self):
         p = QgsMultiPolygon([])
         self.assertTrue(p.isEmpty())

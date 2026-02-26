@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#define SIP_NO_FILE
 
 #ifndef QGS_GEOMETRY_GAP_CHECK_H
 #define QGS_GEOMETRY_GAP_CHECK_H
@@ -21,6 +20,8 @@
 #include "qgsfeatureid.h"
 #include "qgsgeometrycheck.h"
 #include "qgsgeometrycheckerror.h"
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup analysis

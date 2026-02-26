@@ -23,8 +23,9 @@
 #include "qgspointclouddataprovider.h"
 #include "qgsprovidermetadata.h"
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 class QgsEptPointCloudIndex;
 

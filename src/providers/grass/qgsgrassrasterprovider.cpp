@@ -38,8 +38,11 @@
 #include <QImage>
 #include <QMessageBox>
 #include <QSettings>
+#include <QString>
 
 #include "moc_qgsgrassrasterprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define ERR( message ) QGS_ERROR_MESSAGE( message, "GRASS provider" )
 #define QGS_ERROR( message ) QgsError( message, "GRASS provider" )

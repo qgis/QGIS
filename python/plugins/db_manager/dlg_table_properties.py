@@ -22,24 +22,21 @@ The content of this file is based on
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, pyqtSignal
-from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QApplication
-
+from qgis.PyQt.QtWidgets import QApplication, QDialog, QMessageBox
 from qgis.utils import OverrideCursor
 
 from .db_plugins.data_model import (
-    TableFieldsModel,
     TableConstraintsModel,
+    TableFieldsModel,
     TableIndexesModel,
 )
 from .db_plugins.plugin import BaseError, DbError
-from .dlg_db_error import DlgDbError
-
-from .dlg_field_properties import DlgFieldProperties
 from .dlg_add_geometry_column import DlgAddGeometryColumn
 from .dlg_create_constraint import DlgCreateConstraint
 from .dlg_create_index import DlgCreateIndex
+from .dlg_db_error import DlgDbError
+from .dlg_field_properties import DlgFieldProperties
 from .gui_utils import GuiUtils
-
 
 Ui_Dialog, _ = uic.loadUiType(GuiUtils.get_ui_file_path("DlgTableProperties.ui"))
 

@@ -24,8 +24,11 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QSqlError>
+#include <QString>
 #include <QUrl>
 #include <QUrlQuery>
+
+using namespace Qt::StringLiterals;
 
 #define ORIGINATOR_CLASS u"QgsOracleProjectStorage"_s
 #define QUERY_ORIGIN QString( QString( __FILE__ ).mid( sOracleConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")" )

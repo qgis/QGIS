@@ -18,7 +18,6 @@
 #define QGSSOURCEFIELDSPROPERTIES_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "ui_qgssourcefieldsproperties.h"
 
@@ -40,6 +39,8 @@
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QWidget>
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup gui
@@ -113,6 +114,10 @@ class GUI_EXPORT QgsSourceFieldsProperties : public QWidget, private Ui_QgsSourc
 
     void attributesListCellChanged( int row, int column );
     void attributesListCellPressed( int row, int column );
+
+    void applyToLayer( QgsVectorLayer *layer );
+
+    friend class QgsAttributesFormProperties;
 };
 
 #endif // QGSSOURCEFIELDSPROPERTIES_H

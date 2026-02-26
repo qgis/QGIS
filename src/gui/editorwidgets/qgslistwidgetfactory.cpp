@@ -22,7 +22,10 @@
 #include "qgsvectorlayer.h"
 
 #include <QSettings>
+#include <QString>
 #include <QVariant>
+
+using namespace Qt::StringLiterals;
 
 QgsListWidgetFactory::QgsListWidgetFactory( const QString &name, const QIcon &icon )
   : QgsEditorWidgetFactory( name, icon )

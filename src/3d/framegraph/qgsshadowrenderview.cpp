@@ -15,9 +15,6 @@
 
 #include "qgsshadowrenderview.h"
 
-#include "qgsdirectionallightsettings.h"
-#include "qgsshadowsettings.h"
-
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QCameraSelector>
 #include <Qt3DRender/QClearBuffers>

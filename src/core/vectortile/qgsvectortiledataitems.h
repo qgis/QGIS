@@ -19,8 +19,9 @@
 #include "qgsdataitemprovider.h"
 #include "qgslayeritem.h"
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 //! Root item for XYZ tile layers
 class CORE_EXPORT QgsVectorTileRootItem : public QgsConnectionsRootItem

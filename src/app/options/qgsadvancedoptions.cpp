@@ -20,7 +20,11 @@
 #include "qgssettingstreewidget.h"
 #include "qgssettingstreewidgetold.h"
 
+#include <QString>
+
 #include "moc_qgsadvancedoptions.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsAdvancedSettingsWidget

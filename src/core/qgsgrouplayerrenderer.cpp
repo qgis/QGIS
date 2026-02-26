@@ -25,6 +25,10 @@
 #include "qgspainteffect.h"
 #include "qgsrendercontext.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsGroupLayerRenderer::QgsGroupLayerRenderer( QgsGroupLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
   , mFeedback( std::make_unique< QgsFeedback >() )

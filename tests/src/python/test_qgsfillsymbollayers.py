@@ -11,7 +11,6 @@ __date__ = "2017-01"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
 
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (
     QgsFeature,
     QgsFillSymbol,
@@ -20,11 +19,11 @@ from qgis.core import (
     QgsRenderContext,
     QgsSimpleLineSymbolLayer,
 )
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.testing import QgisTestCase, unittest
 
 
 class TestQgsFillSymbolLayers(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "symbol_layer"

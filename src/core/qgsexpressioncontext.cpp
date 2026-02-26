@@ -20,6 +20,10 @@
 #include "qgsmaplayerstore.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 const QString QgsExpressionContext::EXPR_FIELDS( u"_fields_"_s );
 const QString QgsExpressionContext::EXPR_ORIGINAL_VALUE( u"value"_s );
 const QString QgsExpressionContext::EXPR_SYMBOL_COLOR( u"symbol_color"_s );

@@ -46,6 +46,10 @@
 #include "qgssettingsentryimpl.h"
 #include "util.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR<10 )
 #include "qgsmessagelog.h"
 #endif

@@ -31,6 +31,8 @@
 #include <QSignalSpy>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup UnitTests
  * This is a unit test for STAC

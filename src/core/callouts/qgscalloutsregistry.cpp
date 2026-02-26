@@ -19,6 +19,10 @@
 #include "qgscallout.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //
 // QgsCalloutAbstractMetadata
 //

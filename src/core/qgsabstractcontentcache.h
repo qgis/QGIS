@@ -36,7 +36,10 @@
 #include <QObject>
 #include <QRecursiveMutex>
 #include <QSet>
+#include <QString>
 #include <QUrl>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \class QgsAbstractContentCacheEntry

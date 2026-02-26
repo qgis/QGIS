@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsDatabaseSchemaItem : QgsDataCollectionItem
 {
 %Docstring(signature="appended")

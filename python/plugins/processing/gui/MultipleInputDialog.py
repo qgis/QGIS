@@ -24,22 +24,22 @@ import warnings
 from pathlib import Path
 
 from qgis.core import (
-    QgsSettings,
     QgsProcessing,
-    QgsVectorFileWriter,
-    QgsProviderRegistry,
     QgsProcessingModelChildParameterSource,
+    QgsProviderRegistry,
+    QgsSettings,
+    QgsVectorFileWriter,
 )
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt, QByteArray, QCoreApplication
+from qgis.PyQt.QtCore import QByteArray, QCoreApplication, Qt
+from qgis.PyQt.QtGui import QStandardItem, QStandardItemModel
 from qgis.PyQt.QtWidgets import (
-    QDialog,
     QAbstractItemView,
-    QPushButton,
+    QDialog,
     QDialogButtonBox,
     QFileDialog,
+    QPushButton,
 )
-from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 with warnings.catch_warnings():
@@ -50,7 +50,6 @@ with warnings.catch_warnings():
 
 
 class MultipleInputDialog(BASE, WIDGET):
-
     def __init__(self, options, selectedoptions=None, datatype=None):
         super().__init__(None)
         self.setupUi(self)

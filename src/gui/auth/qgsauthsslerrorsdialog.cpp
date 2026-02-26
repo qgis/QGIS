@@ -29,10 +29,13 @@
 #include <QDialogButtonBox>
 #include <QFont>
 #include <QPushButton>
+#include <QString>
 #include <QStyle>
 #include <QToolButton>
 
 #include "moc_qgsauthsslerrorsdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply, const QList<QSslError> &sslErrors, QWidget *parent, const QString &digest, const QString &hostport )
   : QDialog( parent )

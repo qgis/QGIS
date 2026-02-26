@@ -1,4 +1,4 @@
-""""Style storage tests for GPKG
+""" "Style storage tests for GPKG
 
 .. note:: This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -13,15 +13,13 @@ __copyright__ = "Copyright 2022, ItOpen"
 
 import os
 
-from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.core import QgsProviderRegistry
+from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.testing import unittest
-
 from stylestoragebase import StyleStorageTestBase
 
 
 class StyleStorageTest(unittest.TestCase, StyleStorageTestBase):
-
     # Provider test cases must define the provider name (e.g. "postgres" or "ogr")
     providerKey = "ogr"
 

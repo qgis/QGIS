@@ -28,7 +28,10 @@
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
 #include <qtestcase.h>
+
+using namespace Qt::StringLiterals;
 
 // #include <QThread>
 

@@ -23,6 +23,10 @@
 #include "qgssettings.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsLayoutGridSettings::QgsLayoutGridSettings( QgsLayout *layout )
   : mGridResolution( QgsLayoutMeasurement( 10 ) )
   , mLayout( layout )

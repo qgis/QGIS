@@ -28,7 +28,10 @@
 #include "qgsserverprojectutils.h"
 #include "qgswcsutils.h"
 
+#include <QString>
 #include <QTemporaryFile>
+
+using namespace Qt::StringLiterals;
 
 namespace QgsWcs
 {

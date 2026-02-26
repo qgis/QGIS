@@ -11,25 +11,24 @@ __date__ = "08/10/2025"
 __copyright__ = "Copyright 2025, The QGIS Project"
 
 
-from qgis.PyQt.QtWidgets import (
-    QVBoxLayout,
-    QHBoxLayout,
-    QLineEdit,
-    QFrame,
-    QLabel,
-    QComboBox,
-    QToolButton,
-)
 import unittest
 
 from qgis.gui import QgsCollapsibleGroupBox
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtWidgets import (
+    QComboBox,
+    QFrame,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QToolButton,
+    QVBoxLayout,
+)
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsCollapsibleGroupBox(QgisTestCase):
-
     def testExpandCollapse(self):
         """Test expanding/collapsing"""
         w = QgsCollapsibleGroupBox()

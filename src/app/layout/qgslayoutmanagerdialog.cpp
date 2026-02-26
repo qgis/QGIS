@@ -40,9 +40,12 @@
 #include <QInputDialog>
 #include <QListWidgetItem>
 #include <QMessageBox>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgslayoutmanagerdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )

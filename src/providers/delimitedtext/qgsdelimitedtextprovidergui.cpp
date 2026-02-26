@@ -21,6 +21,10 @@
 #include "qgsproviderguimetadata.h"
 #include "qgssourceselectprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //! Provider for delimited text source select
 class QgsDelimitedTextSourceSelectProvider : public QgsSourceSelectProvider
 {

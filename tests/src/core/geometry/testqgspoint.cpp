@@ -24,6 +24,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsPoint : public QObject
 {
     Q_OBJECT
@@ -78,6 +80,7 @@ class TestQgsPoint : public QObject
     void toFromWkt();
     void exportImport();
     void cast();
+    void toFromVector();
 };
 
 void TestQgsPoint::constructorv2()
@@ -369,9 +372,17 @@ void TestQgsPoint::equality()
 
   QVERIFY( QgsPoint( Qgis::WkbType::Point, 2 / 3.0, 1 / 3.0 ) != QgsPoint( Qgis::WkbType::PointZ, 2 / 3.0, 1 / 3.0 ) );
 
+  /*
+   * gcc12 throws an "ambiguous overload" error when there are
+   * multiple possible choices due to inheritance.  Downcast pt1 to
+   * reduce the search space.  This problem does not occur in actual
+   * code -- only in tests.  Accept a workaround because the point is
+   * to test the code, not verify that the compiler is pedantically
+   * correct.
+   */
   QgsLineString ls;
-  QVERIFY( pt1 != ls );
-  QVERIFY( !( pt1 == ls ) );
+  QVERIFY( *static_cast< QgsAbstractGeometry * >( &pt1 ) != ls );
+  QVERIFY( !( *static_cast< QgsAbstractGeometry * >( &pt1 ) == ls ) );
 }
 
 void TestQgsPoint::operators()
@@ -749,6 +760,7 @@ void TestQgsPoint::measures()
   QCOMPARE( pt.length(), 0.0 );
   QCOMPARE( pt.perimeter(), 0.0 );
   QCOMPARE( pt.area(), 0.0 );
+  QCOMPARE( pt.area3D(), 0.0 );
   QCOMPARE( pt.centroid(), pt );
   QVERIFY( !pt.hasCurvedSegments() );
 
@@ -1240,6 +1252,88 @@ void TestQgsPoint::cast()
 
   mc2.fromWkt( u"PointZM(1 2 3 4)"_s );
   QVERIFY( QgsPoint::cast( &mc2 ) );
+}
+
+// compares 3D vector/point and handles nan values
+template<typename ANY_3D>
+bool isEqual3D( const ANY_3D &pt1, const ANY_3D &pt2 )
+{
+  bool ret = true;
+  ret = pt1.x() == pt2.x() || ( std::isnan( pt1.x() ) && std::isnan( pt2.x() ) );
+  ret = ret && ( pt1.y() == pt2.y() || ( std::isnan( pt1.y() ) && std::isnan( pt2.y() ) ) );
+  ret = ret && ( pt1.z() == pt2.z() || ( std::isnan( pt1.z() ) && std::isnan( pt2.z() ) ) );
+
+  return ret;
+}
+
+// compares 4D vector and handles nan values
+bool isEqual4D( const QVector4D &pt1, const QVector4D &pt2 )
+{
+  bool ret = true;
+  ret = isEqual3D( pt1, pt2 );
+  ret = ret && ( pt1.w() == pt2.w() || ( std::isnan( pt1.w() ) && std::isnan( pt2.w() ) ) );
+
+  return ret;
+}
+
+void TestQgsPoint::toFromVector()
+{
+  {
+    QgsPoint pt;
+    QVERIFY( pt.fromWkt( u"Point(1 2)"_s ) );
+    QCOMPARE( pt.asWkt( 0 ), u"Point (1 2)"_s );
+    QVERIFY( isEqual3D( pt.toVector3D(), QVector3D( 1.0, 2.0, std::numeric_limits<float>::quiet_NaN() ) ) );
+    QVERIFY( isEqual4D( pt.toVector4D(), QVector4D( 1.0, 2.0, std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::quiet_NaN() ) ) );
+    QVERIFY( isEqual3D( pt.toQgsVector3D(), QgsVector3D( 1.0, 2.0, std::numeric_limits<double>::quiet_NaN() ) ) );
+  }
+  {
+    QVector3D vect( 1.0, 2.0, std::numeric_limits<float>::quiet_NaN() );
+    QgsPoint pt( vect );
+    QCOMPARE( pt.asWkt( 0 ), u"Point (1 2)"_s );
+    QVERIFY( isEqual3D( pt.toVector3D(), vect ) );
+    QVERIFY( isEqual4D( pt.toVector4D(), QVector4D( 1.0, 2.0, std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::quiet_NaN() ) ) );
+    QVERIFY( isEqual3D( pt.toQgsVector3D(), QgsVector3D( 1.0, 2.0, std::numeric_limits<float>::quiet_NaN() ) ) );
+  }
+  {
+    QVector3D vect( 1.0, 2.0, 3.0 );
+    QgsPoint pt( vect );
+    QCOMPARE( pt.asWkt( 0 ), u"Point Z (1 2 3)"_s );
+    QVERIFY( isEqual3D( pt.toVector3D(), vect ) );
+    QVERIFY( isEqual4D( pt.toVector4D(), QVector4D( 1.0, 2.0, 3.0, std::numeric_limits<float>::quiet_NaN() ) ) );
+    QVERIFY( isEqual3D( pt.toQgsVector3D(), QgsVector3D( 1.0, 2.0, 3.0 ) ) );
+  }
+  {
+    QVector3D vect( 1.0, 2.0, 3.0 );
+    QgsPoint pt( vect, 4.0 );
+    QCOMPARE( pt.asWkt( 0 ), u"Point ZM (1 2 3 4)"_s );
+    QVERIFY( isEqual3D( pt.toVector3D(), vect ) );
+    QVERIFY( isEqual4D( pt.toVector4D(), QVector4D( 1.0, 2.0, 3.0, 4.0 ) ) );
+    QVERIFY( isEqual3D( pt.toQgsVector3D(), QgsVector3D( 1.0, 2.0, 3.0 ) ) );
+  }
+  {
+    QVector4D vect( 1.0, 2.0, 3.0, 4.0 );
+    QgsPoint pt( vect );
+    QCOMPARE( pt.asWkt( 0 ), u"Point ZM (1 2 3 4)"_s );
+    QVERIFY( isEqual3D( pt.toVector3D(), QVector3D( 1.0, 2.0, 3.0 ) ) );
+    QVERIFY( isEqual4D( pt.toVector4D(), vect ) );
+    QVERIFY( isEqual3D( pt.toQgsVector3D(), QgsVector3D( 1.0, 2.0, 3.0 ) ) );
+  }
+  {
+    QgsVector3D vect( 1.0, 2.0, std::numeric_limits<float>::quiet_NaN() );
+    QgsPoint pt( vect );
+    QCOMPARE( pt.asWkt( 0 ), u"Point (1 2)"_s );
+    QVERIFY( isEqual3D( pt.toVector3D(), QVector3D( 1.0, 2.0, std::numeric_limits<float>::quiet_NaN() ) ) );
+    QVERIFY( isEqual4D( pt.toVector4D(), QVector4D( 1.0, 2.0, std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::quiet_NaN() ) ) );
+    QVERIFY( isEqual3D( pt.toQgsVector3D(), vect ) );
+  }
+  {
+    QgsVector3D vect( 1.0, 2.0, 3.0 );
+    QgsPoint pt( vect, 4.0 );
+    QCOMPARE( pt.asWkt( 0 ), u"Point ZM (1 2 3 4)"_s );
+    QVERIFY( isEqual3D( pt.toVector3D(), QVector3D( 1.0, 2.0, 3.0 ) ) );
+    QVERIFY( isEqual4D( pt.toVector4D(), QVector4D( 1.0, 2.0, 3.0, 4.0 ) ) );
+    QVERIFY( isEqual3D( pt.toQgsVector3D(), vect ) );
+  }
 }
 
 QGSTEST_MAIN( TestQgsPoint )

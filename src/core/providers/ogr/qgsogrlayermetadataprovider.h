@@ -16,8 +16,9 @@
 #ifndef QGSOGRLAYERMETADATAPROVIDER_H
 #define QGSOGRLAYERMETADATAPROVIDER_H
 
-#define SIP_NO_FILE
 #include "qgsabstractlayermetadataprovider.h"
+
+#define SIP_NO_FILE
 
 class QgsOgrLayerMetadataProvider : public QgsAbstractLayerMetadataProvider
 {

@@ -17,13 +17,14 @@
 #define QGSMAPLAYERLOADSTYLEDIALOG_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "ui_qgsvectorlayerloadstyledialog.h"
 
 #include "qgis_gui.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayerproperties.h"
+
+#define SIP_NO_FILE
 
 class QgsMapLayerStyleCategoriesModel;
 
@@ -81,6 +82,13 @@ class GUI_EXPORT QgsMapLayerLoadStyleDialog : public QDialog, private Ui::QgsVec
      * Returns the ID of the selected database stored style.
      */
     QString selectedStyleId();
+
+    /**
+     * Do not allow loading styles from databases, only from files.
+     * Sets the dialog accordingly, disable style type selection combo box and set it to file.
+     *
+     */
+    void allowLoadingOnlyFromFiles();
 
   public slots:
     void accept() override;

@@ -28,7 +28,10 @@
 #include <QFontDatabase>
 #include <QFontInfo>
 #include <QMimeData>
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 bool QgsFontUtils::fontMatchOnSystem( const QFont &f )
 {

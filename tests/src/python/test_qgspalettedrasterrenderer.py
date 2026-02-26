@@ -10,12 +10,10 @@ the Free Software Foundation; either version 2 of the License, or
 """
 
 import os
+import unittest
 
 import numpy as np
 from osgeo import gdal
-from qgis.PyQt.QtCore import QFileInfo, QTemporaryDir
-from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgis,
     QgsColorRampShader,
@@ -25,9 +23,10 @@ from qgis.core import (
     QgsPalettedRasterRenderer,
     QgsRasterLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QFileInfo, QTemporaryDir
+from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -36,7 +35,6 @@ start_app()
 
 
 class TestQgsPalettedRasterRenderer(QgisTestCase):
-
     def testPaletted(self):
         """test paletted raster renderer with raster with color table"""
         path = os.path.join(unitTestDataPath("raster"), "with_color_table.tif")

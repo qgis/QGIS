@@ -11,26 +11,26 @@ __date__ = "2022-07"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
 import os
+import unittest
 
 from osgeo import ogr, osr
 from processing.core.Processing import Processing
 from processing.gui.AlgorithmExecutor import execute
-from qgis.PyQt.QtCore import QCoreApplication, QTemporaryDir
 from qgis.analysis import QgsNativeAlgorithms
 from qgis.core import (
     QgsApplication,
+    QgsCoordinateReferenceSystem,
     QgsProcessingContext,
     QgsProcessingFeedback,
     QgsProject,
+    QgsRectangle,
+    QgsReferencedRectangle,
     QgsRelation,
     QgsSettings,
     QgsVectorLayer,
-    QgsReferencedRectangle,
-    QgsCoordinateReferenceSystem,
-    QgsRectangle,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QCoreApplication, QTemporaryDir
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -53,7 +53,6 @@ class ConsoleFeedBack(QgsProcessingFeedback):
 
 
 class TestPackageLayers(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

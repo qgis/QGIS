@@ -21,6 +21,10 @@
 #include "qgslabelingengineruleregistry.h"
 #include "qgsproject.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsLabelingEngineSettings::QgsLabelingEngineSettings()
 {
 }

@@ -88,6 +88,8 @@ bool QgsMapToolReshape::supportsTechnique( Qgis::CaptureTechnique technique ) co
       return true;
 
     case Qgis::CaptureTechnique::Shape:
+    case Qgis::CaptureTechnique::PolyBezier:
+    case Qgis::CaptureTechnique::NurbsCurve:
       return false;
   }
   return false;

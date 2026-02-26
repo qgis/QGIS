@@ -24,16 +24,16 @@ import warnings
 from qgis.core import (
     NULL,
     QgsFeatureRequest,
+    QgsProcessingException,
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
-    QgsProcessingException,
     QgsProcessingParameterFileDestination,
     QgsProcessingParameterString,
 )
+from qgis.PyQt.QtCore import QCoreApplication
+
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
-
-from qgis.PyQt.QtCore import QCoreApplication
 
 
 class BarPlot(QgisAlgorithm):

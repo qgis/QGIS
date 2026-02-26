@@ -10,13 +10,12 @@ __author__ = "Nyall Dawson"
 __date__ = "07/05/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
-from qgis.PyQt.QtCore import QDate, QDateTime, QTime
 from qgis.core import NULL, QgsDateTimeStatisticalSummary, QgsInterval
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime
 from qgis.testing import unittest
 
 
 class PyQgsDateTimeStatisticalSummary(unittest.TestCase):
-
     def testStats(self):
         # we test twice, once with values added as a list and once using values
         # added one-at-a-time

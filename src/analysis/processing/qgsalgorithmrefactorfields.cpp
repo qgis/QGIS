@@ -19,6 +19,10 @@
 
 #include "qgsprocessingparameterfieldmap.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsRefactorFieldsAlgorithm::name() const
@@ -168,6 +172,7 @@ QgsFeatureList QgsRefactorFieldsAlgorithm::processFeature( const QgsFeature &fea
       if ( it->isValid() )
         it->prepare( &mExpressionContext );
     }
+    mExpressionsPrepared = true;
   }
 
   QgsAttributes attributes;

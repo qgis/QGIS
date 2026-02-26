@@ -18,6 +18,8 @@
 
 #include "qgsabstractrenderview.h"
 
+#define SIP_NO_FILE
+
 namespace Qt3DRender
 {
   class QCamera;
@@ -33,7 +35,6 @@ namespace Qt3DCore
   class QEntity;
 } //namespace Qt3DCore
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup qgis_3d

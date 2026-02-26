@@ -17,7 +17,11 @@
 #include "qgsvectorfieldsymbollayer.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsvectorfieldsymbollayerwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )

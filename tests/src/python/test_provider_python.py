@@ -24,7 +24,10 @@ __author__ = "Matthias Kuhn"
 __date__ = "2015-04-23"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
-from qgis.PyQt.QtCore import QDate, QDateTime, QTime, QVariant
+import unittest
+
+from provider_python import PyProvider
+from providertestbase import ProviderTestCase
 from qgis.core import (
     NULL,
     QgsFeature,
@@ -41,11 +44,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
-from provider_python import PyProvider
-from providertestbase import ProviderTestCase
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime, QVariant
+from qgis.testing import QgisTestCase, start_app
 from utilities import compareWkt, unitTestDataPath
 
 start_app()
@@ -53,7 +53,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsPythonProvider(QgisTestCase, ProviderTestCase):
-
     @classmethod
     def createLayer(cls):
         vl = QgsVectorLayer(

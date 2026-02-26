@@ -26,7 +26,11 @@
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolrotatelabel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapToolRotateLabel::QgsMapToolRotateLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolLabel( canvas, cadDock )

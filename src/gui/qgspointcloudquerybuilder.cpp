@@ -27,9 +27,12 @@
 #include <QListView>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgspointcloudquerybuilder.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPointCloudQueryBuilder::QgsPointCloudQueryBuilder( QgsPointCloudLayer *layer, QWidget *parent, Qt::WindowFlags fl )
   : QgsSubsetStringEditorInterface( parent, fl )

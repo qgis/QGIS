@@ -19,6 +19,10 @@
 
 #include "qgsgraphanalyzer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsShortestPathPointToPointAlgorithm::name() const

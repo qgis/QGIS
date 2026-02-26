@@ -23,8 +23,11 @@
 #include "qgsvectortileutils.h"
 
 #include <QEventLoop>
+#include <QString>
 
 #include "moc_qgsvectortileloader.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVectorTileLoader::QgsVectorTileLoader( const QgsVectorTileDataProvider *provider, const QgsTileMatrixSet &tileMatrixSet, const QgsTileRange &range, int zoomLevel, const QPointF &viewCenter, QgsFeedback *feedback, Qgis::RendererUsage usage )
   : mEventLoop( new QEventLoop )

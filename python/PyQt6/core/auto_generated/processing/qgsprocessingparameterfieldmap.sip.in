@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsProcessingParameterFieldMapping : QgsProcessingParameterDefinition
 {
 %Docstring(signature="appended")

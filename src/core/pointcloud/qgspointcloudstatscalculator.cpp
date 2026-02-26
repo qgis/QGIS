@@ -27,9 +27,12 @@
 #include "qgspointcloudstatistics.h"
 
 #include <QQueue>
-#include <QtConcurrent/QtConcurrentMap>
+#include <QString>
+#include <QtConcurrentMap>
 
 #include "moc_qgspointcloudstatscalculator.cpp"
+
+using namespace Qt::StringLiterals;
 
 struct StatsProcessor
 {

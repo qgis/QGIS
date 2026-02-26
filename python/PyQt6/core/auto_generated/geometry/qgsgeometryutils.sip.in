@@ -15,6 +15,11 @@ class QgsGeometryUtils
 {
 %Docstring(signature="appended")
 Contains various geometry utility functions.
+
+.. note::
+
+   This class is primarily intended to wrap the low-level mathematical implementations found in :py:class:`QgsGeometryUtilsBase`,
+   exposing them using QGIS geometry classes and providing Python bindings.
 %End
 
 %TypeHeaderCode
@@ -214,6 +219,30 @@ Any z or m values present in the points will also be linearly
 interpolated in the output.
 
 .. versionadded:: 3.4
+%End
+
+    static QgsPoint interpolatePointOnCubicBezier( const QgsPoint &p0, const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, double t ) /HoldGIL/;
+%Docstring
+Evaluates a point on a cubic Bézier curve defined by four control
+points.
+
+:param p0: start point (the curve passes through this point)
+:param p1: first control point
+:param p2: second control point
+:param p3: end point (the curve passes through this point)
+:param t: parameter value between 0 and 1
+
+:return: the point on the Bézier curve at parameter ``t``
+
+Any Z or M values present in the input points will also be interpolated.
+
+The cubic Bézier formula is:
+
+.. code-block:: text
+
+     B(t) = (1-t)³P₀ + 3(1-t)²tP₁ + 3(1-t)t²P₂ + t³P₃
+
+.. versionadded:: 4.0
 %End
 
     static bool segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, QgsPoint &result /Out/, double radius, const QgsPoint &mousePos ) /HoldGIL/;
@@ -1107,6 +1136,33 @@ and is retrieved from the first 3D point amongst ``p1`` and ``p2``.
          - intersection: Output parameter, the intersection point
 %End
 
+    static bool intersectionPointOfLinesByBearing( const QgsPoint &pt1, double bearing1, const QgsPoint &pt2, double bearing2, QgsPoint &intersection /Out/ ) /HoldGIL/;
+%Docstring
+Calculates the intersection point of two lines defined by point and
+bearing.
+
+Each line is defined by a point and a bearing (azimuth). The bearing is
+measured clockwise from north in radians.
+
+:param pt1: point on the first line
+:param bearing1: bearing from the first point in radians (clockwise from
+                 north)
+:param pt2: point on the second line
+:param bearing2: bearing from the second point in radians (clockwise
+                 from north)
+
+:return: - ``True`` if an intersection was found, ``False`` if lines are
+           parallel
+         - intersection: the intersection point.
+
+.. seealso:: :py:func:`lineIntersection`
+
+.. seealso:: :py:func:`QgsGeometryUtilsBase.intersectionPointOfLinesByBearing`
+
+.. versionadded:: 4.0
+%End
+
+
     static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint /Out/, bool &isIntersection /Out/, double tolerance = 1e-8, bool acceptImproperIntersection = false ) /HoldGIL/;
 %Docstring
 Compute the intersection between two segments
@@ -1390,6 +1446,53 @@ present) is ignored.
 :return: true if the points are collinear, false otherwise.
 
 .. versionadded:: 4.0
+%End
+
+
+    static bool checkWeaklyFor3DPlane( const QgsAbstractGeometry *geom, QgsPoint &pt1 /Out/, QgsPoint &pt2 /Out/, QgsPoint &pt3 /Out/, double epsilon = DBL_EPSILON );
+%Docstring
+Checks if a 3D geometry has a plane defined by at least 3 non-collinear
+points. If successful, the points are returned in ptA, ptB, and ptC.
+
+:param geom: The input 3D geometry.
+:param epsilon: The tolerance used to account for floating-point
+                inaccuracies.
+
+:return: - true if a plane is found, false otherwise.
+         - pt1: The first point found, if a plane exists.
+         - pt2: The second point found, if a plane exists.
+         - pt3: The third point found, if a plane exists.
+
+.. note::
+
+   This function does not handle geometry collections.
+
+.. note::
+
+   This function stops as soon as three suitable non-collinear points are
+   found; it does not perform an exhaustive verification of all geometry
+   vertices.
+
+.. note::
+
+   For polygon geometries, only the exterior ring is inspected when
+   searching for candidate points.
+
+.. versionadded:: 4.0
+%End
+
+    static double interpolateZ( const QgsPoint &a, const QgsPoint &b, const QgsPoint &c, double x, double y );
+%Docstring
+Interpolates the Z value at the given (x, y) location within the
+triangle defined by points a, b, and c.
+
+:param a: First vertex of the triangle.
+:param b: Second vertex of the triangle.
+:param c: Third vertex of the triangle.
+:param x: X coordinate of the point to interpolate.
+:param y: Y coordinate of the point to interpolate.
+
+:return: The interpolated Z value at the specified (x, y) location.
 %End
 
 };

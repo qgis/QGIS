@@ -22,7 +22,12 @@
 #include "qgssensorthingsshareddata.h"
 #include "qgsvectordataprovider.h"
 
+#include <QString>
+
 #define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 /**

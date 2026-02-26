@@ -22,13 +22,17 @@
 #include "qgsstaccatalog.h"
 #include "qgsstacitem.h"
 
+#include <QString>
 #include <QUrl>
+
+#define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
 
 class QgsStacController;
 class QgsStacCollection;
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 
 /**

@@ -10,12 +10,12 @@ __author__ = "Nyall Dawson"
 __date__ = "2021-04-29"
 __copyright__ = "Copyright 2021, The QGIS Project"
 
+import unittest
+
+from qgis.core import Qgis, QgsMetadataUtils
 from qgis.PyQt.QtCore import QDateTime
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.core import Qgis, QgsMetadataUtils
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -23,7 +23,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsMetadataUtils(QgisTestCase):
-
     def testConvertEsri(self):
         """
         Test ESRI metadata conversion

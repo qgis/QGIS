@@ -16,13 +16,14 @@
 #ifndef QGSGDALUTILS_H
 #define QGSGDALUTILS_H
 
-#define SIP_NO_FILE
 
 #include <gdal.h>
 
 #include "qgis_core.h"
 #include "qgsfeedback.h"
 #include "qgsogrutils.h"
+
+#define SIP_NO_FILE
 
 class QgsRasterBlock;
 

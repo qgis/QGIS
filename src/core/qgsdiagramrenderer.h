@@ -30,6 +30,9 @@
 #include <QList>
 #include <QPointF>
 #include <QSizeF>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsDiagramRenderer;
 class QgsFeature;

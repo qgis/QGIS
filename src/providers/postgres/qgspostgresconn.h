@@ -32,6 +32,8 @@
 #include <QStringList>
 #include <QVector>
 
+using namespace Qt::StringLiterals;
+
 extern "C"
 {
 #include <libpq-fe.h>

@@ -12,16 +12,15 @@ __copyright__ = "Copyright 2018, The QGIS Project"
 
 import http.server
 import os
+import shutil
 import socketserver
 import threading
 import time
-import shutil
-
-from qgis.PyQt.QtCore import QCoreApplication, QSize
-from qgis.core import QgsApplication
 import unittest
-from qgis.testing import start_app, QgisTestCase
 
+from qgis.core import QgsApplication
+from qgis.PyQt.QtCore import QCoreApplication, QSize
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -29,14 +28,12 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class SlowHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
-
     def do_GET(self):
         time.sleep(1)
         return http.server.SimpleHTTPRequestHandler.do_GET(self)
 
 
 class TestQgsImageCache(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "image_cache"

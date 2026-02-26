@@ -1,4 +1,4 @@
-""""Base test for layer metadata models
+""" "Base test for layer metadata models
 
 .. note:: This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,8 +15,6 @@ import os
 import unittest
 
 from osgeo import ogr
-from qgis.PyQt.QtCore import QCoreApplication, Qt, QTemporaryDir, QVariant
-from qgis.PyQt.QtTest import QAbstractItemModelTester
 from qgis.core import (
     QgsBox3d,
     QgsCoordinateReferenceSystem,
@@ -36,6 +34,8 @@ from qgis.gui import (
     QgsLayerMetadataResultsModel,
     QgsLayerMetadataResultsProxyModel,
 )
+from qgis.PyQt.QtCore import QCoreApplication, Qt, QTemporaryDir, QVariant
+from qgis.PyQt.QtTest import QAbstractItemModelTester
 from qgis.testing import TestCase, start_app
 
 QGIS_APP = start_app()

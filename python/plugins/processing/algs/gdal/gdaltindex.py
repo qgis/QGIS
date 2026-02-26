@@ -21,21 +21,21 @@ __copyright__ = "(C) 2015, Pedro Venancio"
 
 import os
 
-from qgis.PyQt.QtGui import QIcon
-
 from qgis.core import (
     QgsMapLayer,
     QgsProcessing,
     QgsProcessingAlgorithm,
     QgsProcessingException,
-    QgsProcessingParameterCrs,
-    QgsProcessingParameterEnum,
-    QgsProcessingParameterString,
     QgsProcessingParameterBoolean,
+    QgsProcessingParameterCrs,
     QgsProcessingParameterDefinition,
+    QgsProcessingParameterEnum,
     QgsProcessingParameterMultipleLayers,
+    QgsProcessingParameterString,
     QgsProcessingParameterVectorDestination,
 )
+from qgis.PyQt.QtGui import QIcon
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 

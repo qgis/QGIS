@@ -18,13 +18,14 @@
 #ifndef QGSALGORITHMEXPORTMESH_H
 #define QGSALGORITHMEXPORTMESH_H
 
-#define SIP_NO_FILE
 
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshdataset.h"
 #include "qgsmeshrenderersettings.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgstriangularmesh.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

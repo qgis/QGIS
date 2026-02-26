@@ -25,8 +25,11 @@
 #include <QAbstractItemView>
 #include <QLineEdit>
 #include <QLocale>
+#include <QString>
 
 #include "moc_qgsscalecombobox.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsScaleComboBox::QgsScaleComboBox( QWidget *parent )
   : QComboBox( parent )

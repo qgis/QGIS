@@ -20,6 +20,10 @@
 #include "qgsexpressionnodeimpl.h"
 #include "qgsvariantutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsSqlExpressionCompiler::QgsSqlExpressionCompiler( const QgsFields &fields, Flags flags, bool ignoreStaticNodes )
   : mFields( fields )
   , mFlags( flags )

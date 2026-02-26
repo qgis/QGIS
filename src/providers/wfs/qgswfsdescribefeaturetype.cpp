@@ -15,9 +15,12 @@
 
 #include "qgswfsdescribefeaturetype.h"
 
+#include <QString>
 #include <QUrlQuery>
 
 #include "moc_qgswfsdescribefeaturetype.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsWFSDescribeFeatureType::QgsWFSDescribeFeatureType( QgsWFSDataSourceURI &uri )
   : QgsWfsRequest( uri )

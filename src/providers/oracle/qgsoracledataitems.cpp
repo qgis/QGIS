@@ -33,8 +33,11 @@
 #include <QProgressDialog>
 #include <QSqlError>
 #include <QStatusBar>
+#include <QString>
 
 #include "moc_qgsoracledataitems.cpp"
+
+using namespace Qt::StringLiterals;
 
 bool deleteLayer( const QString &uri, QString &errCause )
 {
@@ -393,7 +396,7 @@ bool QgsOracleConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction 
         {
           QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
           output->setTitle( tr( "Import to Oracle database" ) );
-          output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
+          output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, Qgis::StringFormat::PlainText );
           output->showMessage();
         }
         if ( state() == Qgis::BrowserItemState::Populated )
@@ -415,7 +418,7 @@ bool QgsOracleConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction 
   {
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
     output->setTitle( tr( "Import to Oracle database" ) );
-    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( '\n' ), QgsMessageOutput::MessageText );
+    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( '\n' ), Qgis::StringFormat::PlainText );
     output->showMessage();
   }
 

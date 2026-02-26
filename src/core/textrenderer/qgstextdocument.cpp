@@ -21,8 +21,11 @@
 #include "qgstextformat.h"
 #include "qgstextfragment.h"
 
+#include <QString>
 #include <QTextBlock>
 #include <QTextDocument>
+
+using namespace Qt::StringLiterals;
 
 QgsTextDocument::~QgsTextDocument() = default;
 
@@ -418,6 +421,17 @@ void QgsTextDocument::splitLines( const QString &wrapCharacter, int autoWrapLeng
     }
     append( destinationBlock );
   }
+}
+
+QVector<QgsTextDocument> QgsTextDocument::splitBlocksToDocuments() const
+{
+  QVector<QgsTextDocument> res;
+  res.reserve( mBlocks.size() );
+  for ( const QgsTextBlock &block : mBlocks )
+  {
+    res.append( QgsTextDocument( block ) );
+  }
+  return res;
 }
 
 void QgsTextDocument::applyCapitalization( Qgis::Capitalization capitalization )

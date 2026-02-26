@@ -10,23 +10,23 @@ __author__ = "Nyall Dawson"
 __date__ = "09/11/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
+
 from qgis.core import (
     Qgis,
+    QgsDoubleRange,
     QgsFillSymbol,
     QgsLineSymbol,
     QgsMeshLayerElevationProperties,
     QgsReadWriteContext,
-    QgsDoubleRange,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsMeshLayerElevationProperties(QgisTestCase):
-
     def testBasic(self):
         props = QgsMeshLayerElevationProperties(None)
         self.assertEqual(props.mode(), Qgis.MeshElevationMode.FromVertices)

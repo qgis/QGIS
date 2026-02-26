@@ -18,6 +18,10 @@
 #include "qgsgui.h"
 #include "qgsvectordataprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup gui
  * \brief Widget auto conf plugin that guesses what widget type to use in function of what the widgets support.

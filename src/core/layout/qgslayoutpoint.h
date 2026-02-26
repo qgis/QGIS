@@ -24,6 +24,9 @@
 #include "qgis_core.h"
 
 #include <QPointF>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core

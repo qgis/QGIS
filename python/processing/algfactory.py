@@ -22,53 +22,10 @@ __copyright__ = "(C) 2018, Nathan Woodrow"
 from collections import OrderedDict
 from functools import partial
 
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtGui import QIcon
 from qgis.core import (
-    QgsProcessingParameterDefinition,
+    QgsApplication,
+    QgsMessageLog,
     QgsProcessingAlgorithm,
-    QgsProcessingParameterString,
-    QgsProcessingParameterAuthConfig,
-    QgsProcessingParameterNumber,
-    QgsProcessingParameterDistance,
-    QgsProcessingParameterDuration,
-    QgsProcessingParameterFeatureSource,
-    QgsProcessingParameterFeatureSink,
-    QgsProcessingParameterFileDestination,
-    QgsProcessingParameterFolderDestination,
-    QgsProcessingParameterRasterDestination,
-    QgsProcessingParameterVectorDestination,
-    QgsProcessingParameterPointCloudDestination,
-    QgsProcessingParameterBand,
-    QgsProcessingParameterBoolean,
-    QgsProcessingParameterCrs,
-    QgsProcessingParameterEnum,
-    QgsProcessingParameterExpression,
-    QgsProcessingParameterExtent,
-    QgsProcessingParameterField,
-    QgsProcessingParameterFile,
-    QgsProcessingParameterMapLayer,
-    QgsProcessingParameterMatrix,
-    QgsProcessingParameterMultipleLayers,
-    QgsProcessingParameterPoint,
-    QgsProcessingParameterGeometry,
-    QgsProcessingParameterRange,
-    QgsProcessingParameterRasterLayer,
-    QgsProcessingParameterVectorLayer,
-    QgsProcessingParameterMeshLayer,
-    QgsProcessingParameterColor,
-    QgsProcessingParameterScale,
-    QgsProcessingParameterLayout,
-    QgsProcessingParameterLayoutItem,
-    QgsProcessingParameterDateTime,
-    QgsProcessingParameterMapTheme,
-    QgsProcessingParameterProviderConnection,
-    QgsProcessingParameterDatabaseSchema,
-    QgsProcessingParameterDatabaseTable,
-    QgsProcessingParameterCoordinateOperation,
-    QgsProcessingParameterPointCloudLayer,
-    QgsProcessingParameterAnnotationLayer,
-    QgsProcessingOutputString,
     QgsProcessingOutputBoolean,
     QgsProcessingOutputFile,
     QgsProcessingOutputFolder,
@@ -77,12 +34,55 @@ from qgis.core import (
     QgsProcessingOutputMapLayer,
     QgsProcessingOutputMultipleLayers,
     QgsProcessingOutputNumber,
-    QgsProcessingOutputRasterLayer,
-    QgsProcessingOutputVectorLayer,
     QgsProcessingOutputPointCloudLayer,
-    QgsMessageLog,
-    QgsApplication,
+    QgsProcessingOutputRasterLayer,
+    QgsProcessingOutputString,
+    QgsProcessingOutputVectorLayer,
+    QgsProcessingParameterAnnotationLayer,
+    QgsProcessingParameterAuthConfig,
+    QgsProcessingParameterBand,
+    QgsProcessingParameterBoolean,
+    QgsProcessingParameterColor,
+    QgsProcessingParameterCoordinateOperation,
+    QgsProcessingParameterCrs,
+    QgsProcessingParameterDatabaseSchema,
+    QgsProcessingParameterDatabaseTable,
+    QgsProcessingParameterDateTime,
+    QgsProcessingParameterDefinition,
+    QgsProcessingParameterDistance,
+    QgsProcessingParameterDuration,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterExpression,
+    QgsProcessingParameterExtent,
+    QgsProcessingParameterFeatureSink,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterField,
+    QgsProcessingParameterFile,
+    QgsProcessingParameterFileDestination,
+    QgsProcessingParameterFolderDestination,
+    QgsProcessingParameterGeometry,
+    QgsProcessingParameterLayout,
+    QgsProcessingParameterLayoutItem,
+    QgsProcessingParameterMapLayer,
+    QgsProcessingParameterMapTheme,
+    QgsProcessingParameterMatrix,
+    QgsProcessingParameterMeshLayer,
+    QgsProcessingParameterMultipleLayers,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterPoint,
+    QgsProcessingParameterPointCloudDestination,
+    QgsProcessingParameterPointCloudLayer,
+    QgsProcessingParameterProviderConnection,
+    QgsProcessingParameterRange,
+    QgsProcessingParameterRasterDestination,
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterScale,
+    QgsProcessingParameterString,
+    QgsProcessingParameterVectorDestination,
+    QgsProcessingParameterVectorLayer,
 )
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtGui import QIcon
 
 
 def _log(*args, **kw):
@@ -211,8 +211,8 @@ class AlgWrapper(QgsProcessingAlgorithm):
             parentname = self._get_parent_id(parent)
             if parentname == name:
                 raise ProcessingAlgFactoryException(
-                    "{} can't depend on itself. "
-                    "We know QGIS is smart but it's not that smart".format(name)
+                    f"{name} can't depend on itself. "
+                    "We know QGIS is smart but it's not that smart"
                 )
             if parentname not in self._inputs and parentname not in self._outputs:
                 raise ProcessingAlgFactoryException(

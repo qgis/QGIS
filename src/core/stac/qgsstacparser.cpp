@@ -23,6 +23,10 @@
 #include "qgsstacitem.h"
 #include "qgsstacitemcollection.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 void QgsStacParser::setData( const QByteArray &data )
 {
   mError = QString();

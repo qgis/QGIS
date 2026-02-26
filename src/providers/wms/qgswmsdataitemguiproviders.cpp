@@ -28,8 +28,11 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgswmsdataitemguiproviders.cpp"
+
+using namespace Qt::StringLiterals;
 
 static QWidget *_paramWidget( QgsDataItem *root )
 {

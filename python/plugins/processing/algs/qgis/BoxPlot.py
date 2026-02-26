@@ -24,17 +24,16 @@ import warnings
 from qgis.core import (
     NULL,
     QgsProcessingException,
+    QgsProcessingParameterEnum,
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
-    QgsProcessingParameterEnum,
     QgsProcessingParameterFileDestination,
-    QgsFeatureRequest,
     QgsProcessingParameterString,
 )
+from qgis.PyQt.QtCore import QCoreApplication
+
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
-
-from qgis.PyQt.QtCore import QCoreApplication
 
 
 class BoxPlot(QgisAlgorithm):

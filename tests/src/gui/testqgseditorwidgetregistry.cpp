@@ -19,6 +19,10 @@
 #include "qgsrelationmanager.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsEditorWidgetRegistry : public QObject
 {
     Q_OBJECT

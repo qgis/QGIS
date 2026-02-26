@@ -20,6 +20,10 @@
 #include "qgis_gui.h"
 #include "qgssettingstree.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup gui
  * \brief A manager for stored SQL queries.

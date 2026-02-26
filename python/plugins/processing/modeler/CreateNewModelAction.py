@@ -21,9 +21,8 @@ __copyright__ = "(C) 2012, Victor Olaya"
 
 import os
 
-from qgis.PyQt.QtCore import QCoreApplication
-
 from qgis.core import QgsApplication
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.utils import iface
 
 from processing.gui.ToolboxAction import ToolboxAction
@@ -33,7 +32,6 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
 class CreateNewModelAction(ToolboxAction):
-
     def __init__(self):
         self.name = QCoreApplication.translate(
             "CreateNewModelAction", "Create New Model…"

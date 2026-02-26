@@ -17,6 +17,10 @@
 
 #include "qgsalgorithmconvexhull.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsConvexHullAlgorithm::name() const

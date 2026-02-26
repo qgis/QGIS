@@ -31,10 +31,13 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QScrollBar>
+#include <QString>
 #include <QTextStream>
 #include <QToolButton>
 
 #include "moc_qgsqueryloggerpanelwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsDatabaseQueryLoggerTreeView

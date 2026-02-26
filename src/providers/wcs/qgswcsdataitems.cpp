@@ -18,7 +18,11 @@
 #include "qgslogger.h"
 #include "qgsowsconnection.h"
 
+#include <QString>
+
 #include "moc_qgswcsdataitems.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_GUI
 #include "qgswcssourceselect.h"

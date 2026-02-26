@@ -55,8 +55,6 @@ QWidget *QgsAppWindowManager::openStandardDialog( QgsWindowManagerInterface::Sta
 
 QWidget *QgsAppWindowManager::openApplicationDialog( QgsAppWindowManager::ApplicationDialog dialog )
 {
-  // clang-tidy false positive
-  // NOLINTBEGIN(bugprone-branch-clone)
   switch ( dialog )
   {
     case ApplicationDialog::LayoutManager:
@@ -98,6 +96,5 @@ QWidget *QgsAppWindowManager::openApplicationDialog( QgsAppWindowManager::Applic
       return mElevationProfileManagerDialog;
     }
   }
-  // NOLINTEND(bugprone-branch-clone)
   return nullptr;
 }

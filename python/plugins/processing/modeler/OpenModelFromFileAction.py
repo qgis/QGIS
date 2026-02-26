@@ -20,11 +20,12 @@ __date__ = "February 2018"
 __copyright__ = "(C) 2018, Nyall Dawson"
 
 import os
-from qgis.PyQt.QtWidgets import QFileDialog
-from qgis.PyQt.QtCore import QFileInfo, QCoreApplication, QDir
 
 from qgis.core import QgsApplication, QgsSettings
+from qgis.PyQt.QtCore import QCoreApplication, QDir, QFileInfo
+from qgis.PyQt.QtWidgets import QFileDialog
 from qgis.utils import iface
+
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.modeler.ModelerDialog import ModelerDialog
 
@@ -32,7 +33,6 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
 class OpenModelFromFileAction(ToolboxAction):
-
     def __init__(self):
         self.name = QCoreApplication.translate(
             "OpenModelFromFileAction", "Open Existing Model…"

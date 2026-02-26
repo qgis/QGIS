@@ -23,7 +23,11 @@
 #include "qgswmsconnection.h"
 #include "qgsxyzconnection.h"
 
+#include <QString>
+
 #include "moc_qgswmsdataitems.cpp"
+
+using namespace Qt::StringLiterals;
 
 // ---------------------------------------------------------------------------
 QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem *parent, QString name, QString path, QString uri )

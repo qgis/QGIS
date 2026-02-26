@@ -18,7 +18,11 @@
 
 #include "qgsgdalprovider.h"
 
+#include <QString>
+
 #include "moc_qgsgdalprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -92,7 +96,7 @@ const int MAX_CACHE_SIZE = 50;
 
 struct QgsGdalProgress
 {
-  QgsRasterBlockFeedback *feedback = nullptr;
+  QgsFeedback *feedback = nullptr;
 };
 //
 // global callback function
@@ -105,7 +109,7 @@ int CPL_STDCALL progressCallback( double dfComplete,
 
   QgsGdalProgress *prog = static_cast<QgsGdalProgress *>( pProgressArg );
 
-  if ( QgsRasterBlockFeedback *feedback = prog->feedback )
+  if ( QgsFeedback *feedback = prog->feedback )
   {
     feedback->setProgress( dfComplete * 100 );
 
@@ -114,6 +118,23 @@ int CPL_STDCALL progressCallback( double dfComplete,
   }
 
   return true;
+}
+
+static GDALDataType toQgisSupportedGdalDataType( GDALDataType eDT )
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
+  if ( eDT == GDT_Int64 || eDT == GDT_UInt64 )
+  {
+    eDT = GDT_Float64;
+  }
+#endif
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,11,0)
+  if ( eDT == GDT_Float16 )
+  {
+    eDT = GDT_Float32;
+  }
+#endif
+  return eDT;
 }
 
 QgsGdalProvider::QgsGdalProvider( const QString &uri, const QgsError &error )
@@ -462,6 +483,31 @@ QgsGdalProvider::~QgsGdalProvider()
 }
 
 
+bool QgsGdalProvider::hasReportsDuringClose() const
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,13,0)
+  if ( !mValid )
+    return false;
+  return GDALDatasetGetCloseReportsProgress( mGdalDataset );
+#else
+  return false;
+#endif
+}
+
+bool QgsGdalProvider::closeWithProgress( [[maybe_unused]] QgsFeedback *feedback )
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,13,0)
+  if ( !mValid || mInClosing )
+    return false;
+  mInClosing = true;
+  QgsGdalProgress progress;
+  progress.feedback = feedback;
+  return GDALDatasetRunCloseWithoutDestroyingEx( mGdalDataset, progressCallback, &progress ) == CE_None;
+#else
+  return false;
+#endif
+}
+
 void QgsGdalProvider::closeDataset()
 {
   if ( !mValid )
@@ -484,6 +530,8 @@ void QgsGdalProvider::closeDataset()
 
 void QgsGdalProvider::reloadProviderData()
 {
+  if ( mInClosing )
+    return;
   QMutexLocker locker( mpMutex );
   invalidateNetworkCache();
   closeDataset();
@@ -494,6 +542,9 @@ void QgsGdalProvider::reloadProviderData()
 
 void QgsGdalProvider::loadMetadata()
 {
+  if ( mInClosing )
+    return;
+
   // Set default, may be overridden by stored metadata
   mLayerMetadata.setCrs( crs() );
 
@@ -502,7 +553,7 @@ void QgsGdalProvider::loadMetadata()
     // read ESRI FileGeodatabase/Personal Geodatabase layer metadata
     // (This branch is only possible on GDAL 3.7+, in earlier releases there was
     // no raster OpenFileGDB driver)
-    if ( char **GDALmetadata = GDALGetMetadata( mGdalDataset, "xml:documentation" ) )
+    if ( CSLConstList GDALmetadata = GDALGetMetadata( mGdalDataset, "xml:documentation" ) )
     {
       const QString metadata( GDALmetadata[0] );
       if ( !metadata.isEmpty() )
@@ -519,6 +570,9 @@ void QgsGdalProvider::loadMetadata()
 
 QString QgsGdalProvider::htmlMetadata() const
 {
+  if ( mInClosing )
+    return QString();
+
   QMutexLocker locker( mpMutex );
   if ( !const_cast< QgsGdalProvider * >( this )->initIfNeeded() )
     return QString();
@@ -563,7 +617,7 @@ QString QgsGdalProvider::htmlMetadata() const
   for ( int i = 1; i <= GDALGetRasterCount( dsForMetadata ); ++i )
   {
     GDALRasterBandH gdalBand = GDALGetRasterBand( dsForMetadata, i );
-    char **GDALmetadata = GDALGetMetadata( gdalBand, nullptr );
+    CSLConstList GDALmetadata = GDALGetMetadata( gdalBand, nullptr );
     myMetadata += startOfLine + tr( "Band %1" ).arg( i ) + fieldSeparator;
     if ( GDALmetadata )
     {
@@ -594,7 +648,7 @@ QString QgsGdalProvider::htmlMetadata() const
     myMetadata += tr( "Mask band (exposed as alpha band)" ) + u"<br />\n"_s;
   }
 
-  char **GDALmetadata = GDALGetMetadata( dsForMetadata, nullptr );
+  CSLConstList GDALmetadata = GDALGetMetadata( dsForMetadata, nullptr );
   if ( GDALmetadata )
   {
     QStringList metadata = QgsOgrUtils::cStringListToQStringList( GDALmetadata );
@@ -651,6 +705,9 @@ QString QgsGdalProvider::htmlMetadata() const
 
 QString QgsGdalProvider::bandDescription( int bandNumber )
 {
+  if ( mInClosing )
+    return QString();
+
   QMutexLocker locker( mpMutex );
   if ( !initIfNeeded() )
     return QString();
@@ -661,7 +718,7 @@ QString QgsGdalProvider::bandDescription( int bandNumber )
 
   if ( GDALGetRasterCount( mGdalDataset ) > 0 )
   {
-    GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, bandNumber );
+    GDALRasterBandH gdalBand = getBand( bandNumber );
     if ( gdalBand )
     {
       const QString description { GDALGetMetadataItem( gdalBand, "DESCRIPTION", nullptr ) };
@@ -681,6 +738,8 @@ QString QgsGdalProvider::bandDescription( int bandNumber )
 QgsRasterBlock *QgsGdalProvider::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   auto block = std::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
+  if ( mInClosing )
+    return block.release();
   if ( !initIfNeeded() )
     return block.release();
   if ( sourceHasNoDataValue( bandNo ) && useSourceNoDataValue( bandNo ) )
@@ -721,6 +780,8 @@ QgsRasterBlock *QgsGdalProvider::block( int bandNo, const QgsRectangle &extent, 
 
 bool QgsGdalProvider::readBlock( int bandNo, int xBlock, int yBlock, void *data )
 {
+  if ( mInClosing )
+    return false;
   QMutexLocker locker( mpMutex );
   if ( !initIfNeeded() )
     return false;
@@ -752,6 +813,9 @@ bool QgsGdalProvider::canDoResampling(
   int bufferWidthPix,
   int bufferHeightPix )
 {
+  if ( mInClosing )
+    return false;
+
   QMutexLocker locker( mpMutex );
   if ( !initIfNeeded() )
     return false;
@@ -855,6 +919,9 @@ static GDALRIOResampleAlg getGDALResamplingAlg( Qgis::RasterResamplingMethod met
 
 bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int bufferWidthPix, int bufferHeightPix, void *data, QgsRasterBlockFeedback *feedback )
 {
+  if ( mInClosing )
+    return false;
+
   QMutexLocker locker( mpMutex );
   if ( !initIfNeeded() )
     return false;
@@ -1262,6 +1329,9 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
  */
 QList<QgsColorRampShader::ColorRampItem> QgsGdalProvider::colorTable( int bandNumber )const
 {
+  if ( mInClosing )
+    return QList<QgsColorRampShader::ColorRampItem>();
+
   QMutexLocker locker( mpMutex );
   if ( !const_cast<QgsGdalProvider *>( this )->initIfNeeded() )
     return QList<QgsColorRampShader::ColorRampItem>();
@@ -1296,13 +1366,16 @@ int QgsGdalProvider::ySize() const { return mHeight; }
 
 QString QgsGdalProvider::generateBandName( int bandNumber ) const
 {
+  if ( mInClosing )
+    return QString();
+
   QMutexLocker locker( mpMutex );
   if ( !const_cast<QgsGdalProvider *>( this )->initIfNeeded() )
     return QString();
 
   if ( mDriverName == "netCDF"_L1 || mDriverName == "GTiff"_L1 )
   {
-    char **GDALmetadata = GDALGetMetadata( mGdalDataset, nullptr );
+    CSLConstList GDALmetadata = GDALGetMetadata( mGdalDataset, nullptr );
     if ( GDALmetadata )
     {
       QStringList metadata = QgsOgrUtils::cStringListToQStringList( GDALmetadata );
@@ -1327,7 +1400,7 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
       if ( !dimExtraValues.isEmpty() )
       {
         QStringList bandNameValues;
-        GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, bandNumber );
+        GDALRasterBandH gdalBand = getBand( bandNumber );
         GDALmetadata = GDALGetMetadata( gdalBand, nullptr );
         if ( GDALmetadata )
         {
@@ -1380,6 +1453,9 @@ QgsLayerMetadata QgsGdalProvider::layerMetadata() const
 
 QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, Qgis::RasterIdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
+  if ( mInClosing )
+    return QgsRasterIdentifyResult( ERR( tr( "Cannot read data" ) ) );
+
   QMutexLocker locker( mpMutex );
   if ( !initIfNeeded() )
     return QgsRasterIdentifyResult( ERR( tr( "Cannot read data" ) ) );
@@ -1493,6 +1569,9 @@ double QgsGdalProvider::sample( const QgsPointXY &point, int band, bool *ok, con
   if ( ok )
     *ok = false;
 
+  if ( mInClosing )
+    return std::numeric_limits<double>::quiet_NaN();
+
   QMutexLocker locker( mpMutex );
   if ( !initIfNeeded() )
     return std::numeric_limits<double>::quiet_NaN();
@@ -1503,7 +1582,7 @@ double QgsGdalProvider::sample( const QgsPointXY &point, int band, bool *ok, con
     return std::numeric_limits<double>::quiet_NaN();
   }
 
-  GDALRasterBandH hBand = GDALGetRasterBand( mGdalDataset, band );
+  GDALRasterBandH hBand = getBand( band );
   if ( !hBand )
     return std::numeric_limits<double>::quiet_NaN();
 
@@ -1575,7 +1654,7 @@ double QgsGdalProvider::sample( const QgsPointXY &point, int band, bool *ok, con
     {
       float tempVal{0};
       err = GDALRasterIO( hBand, GF_Read, col, row, 1, 1,
-                          &tempVal, 1, 1, dataType, 0, 0 );
+                          &tempVal, 1, 1, GDT_Float32, 0, 0 );
       value = static_cast<double>( tempVal );
       break;
     }
@@ -1657,6 +1736,9 @@ double QgsGdalProvider::sample( const QgsPointXY &point, int band, bool *ok, con
 
 Qgis::RasterInterfaceCapabilities QgsGdalProvider::capabilities() const
 {
+  if ( mInClosing )
+    return Qgis::RasterInterfaceCapabilities();
+
   QMutexLocker locker( mpMutex );
   if ( !const_cast<QgsGdalProvider *>( this )->initIfNeeded() )
     return Qgis::RasterInterfaceCapabilities();
@@ -1675,6 +1757,9 @@ Qgis::RasterInterfaceCapabilities QgsGdalProvider::capabilities() const
 
 Qgis::DataType QgsGdalProvider::sourceDataType( int bandNo ) const
 {
+  if ( mInClosing )
+    return dataTypeFromGdal( GDT_Byte );
+
   QMutexLocker locker( mpMutex );
   if ( !const_cast<QgsGdalProvider *>( this )->initIfNeeded() )
     return dataTypeFromGdal( GDT_Byte );
@@ -1682,7 +1767,7 @@ Qgis::DataType QgsGdalProvider::sourceDataType( int bandNo ) const
   if ( mMaskBandExposedAsAlpha && bandNo == GDALGetRasterCount( mGdalDataset ) + 1 )
     return dataTypeFromGdal( GDT_Byte );
 
-  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
+  GDALRasterBandH myGdalBand = getBand( bandNo );
   GDALDataType myGdalDataType = GDALGetRasterDataType( myGdalBand );
   Qgis::DataType myDataType = dataTypeFromGdal( myGdalDataType );
 
@@ -1732,6 +1817,9 @@ Qgis::DataType QgsGdalProvider::dataType( int bandNo ) const
 
 double QgsGdalProvider::bandScale( int bandNo ) const
 {
+  if ( mInClosing )
+    return 1.0;
+
   QMutexLocker locker( mpMutex );
   if ( !const_cast<QgsGdalProvider *>( this )->initIfNeeded() )
     return 1.0;
@@ -1749,6 +1837,9 @@ double QgsGdalProvider::bandScale( int bandNo ) const
 
 double QgsGdalProvider::bandOffset( int bandNo ) const
 {
+  if ( mInClosing )
+    return 0.0;
+
   QMutexLocker locker( mpMutex );
   if ( !const_cast<QgsGdalProvider *>( this )->initIfNeeded() )
     return 0.0;
@@ -1776,13 +1867,16 @@ int QgsGdalProvider::bandCount() const
 
 Qgis::RasterColorInterpretation QgsGdalProvider::colorInterpretation( int bandNo ) const
 {
+  if ( mInClosing )
+    return colorInterpretationFromGdal( GCI_Undefined );
+
   QMutexLocker locker( mpMutex );
   if ( !const_cast<QgsGdalProvider *>( this )->initIfNeeded() )
     return colorInterpretationFromGdal( GCI_Undefined );
 
   if ( mMaskBandExposedAsAlpha && bandNo == GDALGetRasterCount( mGdalDataset ) + 1 )
     return colorInterpretationFromGdal( GCI_AlphaBand );
-  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
+  GDALRasterBandH myGdalBand = getBand( bandNo );
   return colorInterpretationFromGdal( GDALGetRasterColorInterpretation( myGdalBand ) );
 }
 
@@ -1845,7 +1939,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH
 
   QList<QgsProviderSublayerDetails> res;
 
-  char **metadata = GDALGetMetadata( dataset, "SUBDATASETS" );
+  CSLConstList metadata = GDALGetMetadata( dataset, "SUBDATASETS" );
 
   QVariantMap uriParts = decodeGdalUri( baseUri );
   const QString datasetPath = uriParts.value( u"path"_s ).toString();
@@ -1947,6 +2041,9 @@ bool QgsGdalProvider::hasHistogram( int bandNo,
                                     int sampleSize,
                                     bool includeOutOfRange )
 {
+  if ( mInClosing )
+    return false;
+
   QMutexLocker locker( mpMutex );
   if ( !initIfNeeded() )
     return false;
@@ -2035,6 +2132,9 @@ QgsRasterHistogram QgsGdalProvider::histogram( int bandNo,
     int sampleSize,
     bool includeOutOfRange, QgsRasterBlockFeedback *feedback )
 {
+  if ( mInClosing )
+    return QgsRasterHistogram();
+
   QMutexLocker locker( mpMutex );
   if ( !initIfNeeded() )
     return QgsRasterHistogram();
@@ -2195,6 +2295,9 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> &rasterPyr
                                         const QString &resamplingMethod, Qgis::RasterPyramidFormat format,
                                         const QStringList &configOptions, QgsRasterBlockFeedback *feedback )
 {
+  if ( mInClosing )
+    return QString();
+
   QMutexLocker locker( mpMutex );
 
   //TODO: Consider making rasterPyramidList modifiable by this method to indicate if the pyramid exists after build attempt
@@ -2341,7 +2444,12 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> &rasterPyr
                                   0, nullptr,
                                   progressCallback, &myProg ); //this is the arg for the gdal progress callback
 
-    if ( ( feedback && feedback->isCanceled() ) || myError == CE_Failure || CPLGetLastErrorNo() == CPLE_NotSupported )
+    if ( ( feedback && feedback->isCanceled() ) ||
+         myError == CE_Failure ||
+         ( CPLGetLastErrorNo() == CPLE_NotSupported &&
+           // GDAL 3.12.0 wrongly sets a SPARSE_OK option internally
+           // which causes a harmless warning to be emitted
+           !( format == Qgis::RasterPyramidFormat::Erdas && strstr( CPLGetLastErrorMsg(), "SPARSE_OK" ) != nullptr ) ) )
     {
       QgsDebugError( u"Building pyramids failed using resampling method [%1]"_s.arg( method ) );
       //something bad happenend
@@ -2488,6 +2596,9 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList()
 
 QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList( const QList<int> &list )
 {
+  if ( mInClosing )
+    return  QList<QgsRasterPyramid>();
+
   QList< int > overviewList = list;
   QMutexLocker locker( mpMutex );
 
@@ -3042,6 +3153,9 @@ bool QgsGdalProvider::hasStatistics( int bandNo,
                                      const QgsRectangle &boundingBox,
                                      int sampleSize )
 {
+  if ( mInClosing )
+    return false;
+
   QMutexLocker locker( mpMutex );
   if ( !initIfNeeded() )
     return false;
@@ -3125,6 +3239,9 @@ bool QgsGdalProvider::hasStatistics( int bandNo,
 
 QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, Qgis::RasterBandStatistics stats, const QgsRectangle &boundingBox, int sampleSize, QgsRasterBlockFeedback *feedback )
 {
+  if ( mInClosing )
+    return QgsRasterBandStats();
+
   QMutexLocker locker( mpMutex );
   if ( !initIfNeeded() )
     return QgsRasterBandStats();
@@ -3345,6 +3462,9 @@ static void sanitizeVRTFile( QString const &fileName )
 }
 bool QgsGdalProvider::initIfNeeded()
 {
+  if ( mInClosing )
+    return false;
+
   if ( mHasInit )
     return mValid;
 
@@ -3440,6 +3560,8 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
         // Fields
         QgsFields ratFields;
         QStringList lowerNames;
+        // map QGIS field name to GDAL field index
+        QMap<QString, int> fieldIndices;
         QList<Qgis::RasterAttributeTableFieldUsage> usages;
         for ( int columnNumber = 0; columnNumber < GDALRATGetColumnCount( hRat ); ++columnNumber )
         {
@@ -3462,7 +3584,24 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
               type = QMetaType::Type::QString;
               break;
             }
-
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,12,0)
+            case GFT_Boolean:
+            {
+              type = QMetaType::Type::Bool;
+              break;
+            }
+            case GFT_DateTime:
+            {
+              type = QMetaType::Type::QDateTime;
+              break;
+            }
+            case GFT_WKBGeometry:
+            {
+              // TODO: This could be handled to zoom/pan to the area but the implementation is beyound the scope of a bugfix
+              QgsDebugError( u"Unhandled RAT type %1"_s.arg( GDALRATGetTypeOfCol( hRat, columnNumber ) ) );
+              continue;
+            }
+#endif
             default:
             {
               QgsDebugError( u"Unhandled RAT type %1"_s.arg( GDALRATGetTypeOfCol( hRat, columnNumber ) ) );
@@ -3472,6 +3611,7 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
           const QString name { GDALRATGetNameOfCol( hRat, columnNumber ) };
           lowerNames.append( name.toLower() );
           ratFields.append( QgsField( name, type ) );
+          fieldIndices[name] = columnNumber;
           usages.append( usage );
         }
 
@@ -3486,28 +3626,30 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
         {
           QVariantList rowData;
           const auto cFields { rat->fields() };
-          int colIdx { 0 };
           for ( const auto &field : std::as_const( cFields ) )
           {
-            switch ( field.type )
+            if ( fieldIndices.contains( field.name ) )
             {
-              case QMetaType::Type::Int:
-              case QMetaType::Type::UInt:
-              case QMetaType::Type::LongLong:
-              case QMetaType::Type::ULongLong:
+              const int gdalFieldIdx = fieldIndices[ field.name ];
+              switch ( field.type )
               {
-                rowData.push_back( GDALRATGetValueAsInt( hRat, rowIdx, colIdx ) );
-                break;
+                case QMetaType::Type::Int:
+                case QMetaType::Type::UInt:
+                case QMetaType::Type::LongLong:
+                case QMetaType::Type::ULongLong:
+                {
+                  rowData.push_back( GDALRATGetValueAsInt( hRat, rowIdx, gdalFieldIdx ) );
+                  break;
+                }
+                case QMetaType::Type::Double:
+                {
+                  rowData.push_back( GDALRATGetValueAsDouble( hRat, rowIdx, gdalFieldIdx ) );
+                  break;
+                }
+                default:
+                  rowData.push_back( GDALRATGetValueAsString( hRat, rowIdx, gdalFieldIdx ) );
               }
-              case QMetaType::Type::Double:
-              {
-                rowData.push_back( GDALRATGetValueAsDouble( hRat, rowIdx, colIdx ) );
-                break;
-              }
-              default:
-                rowData.push_back( GDALRATGetValueAsString( hRat, rowIdx, colIdx ) );
             }
-            colIdx++;
           }
           rat->appendRow( rowData );
         }
@@ -3562,6 +3704,9 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
 
 bool QgsGdalProvider::writeNativeAttributeTable( QString *errorMessage ) //#spellok
 {
+  if ( mInClosing )
+    return false;
+
   bool success { false };
   bool wasReopenedReadWrite { false };
   for ( int band = 1; band <= bandCount(); band++ )
@@ -3682,6 +3827,9 @@ bool QgsGdalProvider::writeNativeAttributeTable( QString *errorMessage ) //#spel
 
 void QgsGdalProvider::initBaseDataset()
 {
+  if ( mInClosing )
+    return;
+
   mDriverName = GDALGetDriverShortName( GDALGetDatasetDriver( mGdalBaseDataset ) );
   mHasInit = true;
   mValid = true;
@@ -3899,6 +4047,8 @@ void QgsGdalProvider::initBaseDataset()
     GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, i );
     GDALDataType myGdalDataType = GDALGetRasterDataType( myGdalBand );
 
+    myGdalDataType = toQgisSupportedGdalDataType( myGdalDataType );
+
     int isValid = false;
     double myNoDataValue = GDALGetRasterNoDataValue( myGdalBand, &isValid );
     // We check that the double value we just got is representable in the
@@ -4009,13 +4159,6 @@ void QgsGdalProvider::initBaseDataset()
       }
     }
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
-    if ( myGdalDataType == GDT_Int64 || myGdalDataType == GDT_UInt64 )
-    {
-      myGdalDataType = GDT_Float64;
-    }
-#endif
-
     mGdalDataType.append( myGdalDataType );
     //mInternalNoDataValue.append( myInternalNoDataValue );
   }
@@ -4048,6 +4191,11 @@ QgsGdalProvider *QgsGdalProviderMetadata::createRasterDataProvider(
     QgsError error( "Cannot load GDAL driver " + format, u"GDAL provider"_s );
     return new QgsGdalProvider( uri, error );
   }
+  if ( !GDALGetMetadataItem( driver, GDAL_DCAP_CREATE, nullptr ) )
+  {
+    QgsError error( "GDAL driver " + format + " does not implement the Create interface", u"GDAL provider"_s );
+    return new QgsGdalProvider( uri, error );
+  }
 
   QgsDebugMsgLevel( "creation options: " + creationOptions.join( " " ), 2 );
 
@@ -4072,6 +4220,9 @@ QgsGdalProvider *QgsGdalProviderMetadata::createRasterDataProvider(
 
 bool QgsGdalProvider::write( const void *data, int band, int width, int height, int xOffset, int yOffset )
 {
+  if ( mInClosing )
+    return false;
+
   QMutexLocker locker( mpMutex );
   if ( !initIfNeeded() )
     return false;
@@ -4086,10 +4237,8 @@ bool QgsGdalProvider::write( const void *data, int band, int width, int height, 
     return false;
   }
   GDALDataType gdalDataType = GDALGetRasterDataType( rasterBand );
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
-  if ( gdalDataType == GDT_Int64 || gdalDataType == GDT_UInt64 )
-    gdalDataType = GDT_Float64;
-#endif
+
+  gdalDataType = toQgisSupportedGdalDataType( gdalDataType );
 
   if ( gdalRasterIO( rasterBand, GF_Write, xOffset, yOffset, width, height, const_cast< void * >( data ), width, height, gdalDataType, 0, 0 ) == CE_None )
   {
@@ -4104,6 +4253,9 @@ bool QgsGdalProvider::write( const void *data, int band, int width, int height, 
 
 bool QgsGdalProvider::setNoDataValue( int bandNo, double noDataValue )
 {
+  if ( mInClosing )
+    return false;
+
   QMutexLocker locker( mpMutex );
   if ( !initIfNeeded() )
     return false;
@@ -4318,6 +4470,9 @@ bool QgsGdalProvider::isEditable() const
 
 bool QgsGdalProvider::setEditable( bool enabled )
 {
+  if ( mInClosing )
+    return false;
+
   QMutexLocker locker( mpMutex );
   if ( !initIfNeeded() )
     return false;
@@ -4358,6 +4513,9 @@ bool QgsGdalProvider::setEditable( bool enabled )
 
 GDALRasterBandH QgsGdalProvider::getBand( int bandNo ) const
 {
+  if ( mInClosing )
+    return nullptr;
+
   QMutexLocker locker( mpMutex );
   if ( !const_cast<QgsGdalProvider *>( this )->initIfNeeded() )
     return nullptr;

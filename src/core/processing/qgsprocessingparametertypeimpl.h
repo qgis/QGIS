@@ -23,8 +23,12 @@
 #include "qgsprocessingparametertype.h"
 
 #include <QCoreApplication>
+#include <QString>
 
 #define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
+
 
 /**
  * \brief A raster layer parameter for processing algorithms.

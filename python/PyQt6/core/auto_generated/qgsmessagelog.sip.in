@@ -34,7 +34,7 @@ accessed through :py:func:`QgsApplication.messageLog()`.
 
 
     static void logMessage( const QString &message, const QString &tag = QString(), Qgis::MessageLevel level = Qgis::MessageLevel::Warning, bool notifyUser = true,
-                            const char *file = __builtin_FILE(), const char *function = __builtin_FUNCTION(), int line = __builtin_LINE() );
+                            const char *file = __builtin_FILE(), const char *function = __builtin_FUNCTION(), int line = __builtin_LINE(), Qgis::StringFormat format = Qgis::StringFormat::PlainText );
 %Docstring
 Adds a ``message`` to the log instance (and creates it if necessary).
 
@@ -42,11 +42,25 @@ If ``notifyUser`` is ``True``, then the message should be brought to the
 user's attention by various UI hints. If it is ``False``, the message
 should appear in logs silently. Note that log viewer implementations may
 only respect notification hints for certain message levels.
+
+The ``format`` parameter specifies the message format (since QGIS 4.0).
 %End
 
   signals:
 
-    void messageReceived( const QString &message, const QString &tag, Qgis::MessageLevel level );
+ void messageReceived( const QString &message, const QString &tag, Qgis::MessageLevel level ) /Deprecated="Since 4.0. Use messageReceivedWithFormat() instead."/;
+%Docstring
+Emitted whenever the log receives a ``message``.
+
+This signal is emitted for all messages received by the log, regardless
+of the ``notifyUser`` flag's value for the message.
+
+.. deprecated:: 4.0
+
+   Use :py:func:`~QgsMessageLog.messageReceivedWithFormat` instead.
+%End
+
+    void messageReceivedWithFormat( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::StringFormat );
 %Docstring
 Emitted whenever the log receives a ``message``.
 
@@ -147,6 +161,18 @@ Logs a message to stderr.
 :param message: the message to format
 :param tag: the tag of the message
 :param level: the log level of the message
+%End
+
+    virtual void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::StringFormat format );
+%Docstring
+Logs a message to stderr.
+
+:param message: the message to format
+:param tag: the tag of the message
+:param level: the log level of the message
+:param format: the format of the message (currently ignored)
+
+.. versionadded:: 4.0
 %End
 };
 

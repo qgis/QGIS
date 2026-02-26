@@ -20,9 +20,12 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QString>
 #include <QVBoxLayout>
 
 #include "moc_qgspanelwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPanelWidget::QgsPanelWidget( QWidget *parent )
   : QWidget( parent )

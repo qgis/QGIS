@@ -28,11 +28,12 @@ class QgsFeatureIterator;
 class QgsSingleSymbolRenderer;
 class QgsMapClippingRegion;
 
-#define SIP_NO_FILE
 
 #include <QElapsedTimer>
 #include <QList>
 #include <QPainter>
+
+#define SIP_NO_FILE
 
 typedef QList<int> QgsAttributeList;
 

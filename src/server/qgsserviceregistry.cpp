@@ -26,6 +26,10 @@
 #include "qgsserverapi.h"
 #include "qgsservice.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 namespace
 {
 

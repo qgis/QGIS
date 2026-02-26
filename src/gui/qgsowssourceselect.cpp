@@ -49,10 +49,13 @@
 #include <QPicture>
 #include <QRadioButton>
 #include <QRegularExpression>
+#include <QString>
 #include <QUrl>
 #include <QValidator>
 
 #include "moc_qgsowssourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
@@ -128,9 +131,10 @@ void QgsOWSSourceSelect::prepareExtent()
   if ( !canvas )
     return;
   QgsCoordinateReferenceSystem destinationCrs = canvas->mapSettings().destinationCrs();
-  mSpatialExtentBox->setCurrentExtent( destinationCrs.bounds(), destinationCrs );
+  mSpatialExtentBox->setCurrentExtent( canvas->extent(), destinationCrs );
   mSpatialExtentBox->setOutputExtentFromCurrent();
   mSpatialExtentBox->setMapCanvas( canvas );
+  mSpatialExtentBox->setChecked( false );
 }
 
 void QgsOWSSourceSelect::refresh()

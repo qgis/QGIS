@@ -16,16 +16,18 @@ __date__ = "28/06/2019"
 import os
 import subprocess
 import tempfile
+import unittest
 
-from qgis.PyQt.QtCore import QRectF, QSize, Qt, QUuid, QCoreApplication
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (
     Qgis,
+    QgsCategorizedSymbolRenderer,
     QgsCoordinateReferenceSystem,
+    QgsFontUtils,
     QgsLayout,
     QgsLayoutExporter,
     QgsLayoutItemMap,
     QgsLayoutItemPage,
+    QgsLayoutRenderContext,
     QgsLayoutSize,
     QgsLineSymbol,
     QgsMapRendererCache,
@@ -45,6 +47,9 @@ from qgis.core import (
     QgsProperty,
     QgsRectangle,
     QgsRenderContext,
+    QgsSelectiveMaskingSourceSet,
+    QgsSelectiveMaskSource,
+    QgsSettings,
     QgsSingleSymbolRenderer,
     QgsSvgMarkerSymbolLayer,
     QgsSymbolLayerId,
@@ -52,13 +57,10 @@ from qgis.core import (
     QgsSymbolLayerUtils,
     QgsUnitTypes,
     QgsWkbTypes,
-    QgsFontUtils,
-    QgsSettings,
-    QgsLayoutRenderContext,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QCoreApplication, QRectF, QSize, Qt, QUuid
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.testing import QgisTestCase, start_app
 from utilities import getTempfilePath, getTestFont, unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -84,7 +86,6 @@ def renderMapToImageWithTime(mapsettings, parallel=False, cache=None):
 
 
 class TestSelectiveMasking(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "selective_masking"
@@ -957,11 +958,13 @@ class TestSelectiveMasking(QgisTestCase):
             ("as_big_preview", lambda: p.bigSymbolPreviewImage().save(tmp)),
             (
                 "sl_preview",
-                lambda: QgsSymbolLayerUtils.symbolLayerPreviewIcon(
-                    mask_layer, QgsUnitTypes.RenderUnit.RenderPixels, QSize(64, 64)
-                )
-                .pixmap(QSize(64, 64))
-                .save(tmp),
+                lambda: (
+                    QgsSymbolLayerUtils.symbolLayerPreviewIcon(
+                        mask_layer, QgsUnitTypes.RenderUnit.RenderPixels, QSize(64, 64)
+                    )
+                    .pixmap(QSize(64, 64))
+                    .save(tmp)
+                ),
             ),
         ]:
             with tempfile.TemporaryDirectory() as temp_dir:
@@ -1817,6 +1820,66 @@ class TestSelectiveMasking(QgisTestCase):
         self.check_layout_export(
             "layout_export_markerline_masked", 0, [self.polys_layer, self.lines_layer]
         )
+
+    def test_selective_masking_source_set_symbol_masking(self):
+        """
+        Test selective masking where a symbol layer is masked by a set containing a SymbolLayer source.
+        """
+        source = QgsSelectiveMaskSource(
+            self.points_layer.id(), Qgis.SelectiveMaskSourceType.SymbolLayer, ""
+        )
+
+        mask_layer = QgsMaskMarkerSymbolLayer()
+        mask_layer.setSubSymbol(QgsMarkerSymbol.createSimple({"size": "10"}))
+        cats = self.points_layer.renderer().categories()
+        cats[0].symbol().appendSymbolLayer(mask_layer.clone())
+        mask_layer.setSubSymbol(QgsMarkerSymbol.createSimple({"size": "15"}))
+        cats[1].symbol().appendSymbolLayer(mask_layer.clone())
+        mask_layer.setSubSymbol(QgsMarkerSymbol.createSimple({"size": "20"}))
+        cats[2].symbol().appendSymbolLayer(mask_layer.clone())
+        self.points_layer.setRenderer(
+            QgsCategorizedSymbolRenderer(
+                self.points_layer.renderer().classAttribute(), cats
+            )
+        )
+        mask_set = QgsSelectiveMaskingSourceSet()
+        mask_set.setName("point_mask_set")
+        mask_set.setSources([source])
+
+        sl = self.lines_layer.renderer().symbol().symbolLayer(0)
+        sl.setSelectiveMaskingSourceSetId(mask_set.id())
+
+        self.map_settings.setLayers([self.points_layer, self.lines_layer])
+        self.map_settings.setSelectiveMaskingSourceSets([mask_set])
+
+        self.check_renderings(self.map_settings, "selective_masking_set_sl")
+
+    def test_selective_masking_source_set_label_masking(self):
+        """
+        Test selective masking where a symbol layer is masked by a set containing a Label source.
+        """
+        source = QgsSelectiveMaskSource(
+            self.polys_layer.id(), Qgis.SelectiveMaskSourceType.Label, ""
+        )
+
+        label_settings = self.polys_layer.labeling().settings()
+        fmt = label_settings.format()
+        fmt.mask().setEnabled(True)
+        fmt.mask().setSize(6.0)
+        label_settings.setFormat(fmt)
+        self.polys_layer.labeling().setSettings(label_settings)
+
+        mask_set = QgsSelectiveMaskingSourceSet()
+        mask_set.setName("label_mask_set")
+        mask_set.setSources([source])
+
+        sl = self.lines_layer.renderer().symbol().symbolLayer(0)
+        sl.setSelectiveMaskingSourceSetId(mask_set.id())
+
+        self.map_settings.setLayers([self.lines_layer, self.polys_layer])
+        self.map_settings.setSelectiveMaskingSourceSets([mask_set])
+
+        self.check_renderings(self.map_settings, "selective_masking_set_label")
 
 
 if __name__ == "__main__":

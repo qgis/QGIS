@@ -97,6 +97,26 @@ void QgsProcessingParameterWidgetContext::setActiveLayer( QgsMapLayer *activeLay
   mActiveLayer = activeLayer;
 }
 
+void QgsProcessingParameterWidgetContext::registerProcessingContextGenerator( QgsProcessingContextGenerator *generator )
+{
+  mProcessingContextGenerator = generator;
+}
+
+QgsProcessingContextGenerator *QgsProcessingParameterWidgetContext::processingContextGenerator()
+{
+  return mProcessingContextGenerator;
+}
+
+QgsModelDesignerDialog *QgsProcessingParameterWidgetContext::modelDesignerDialog() const
+{
+  return mModelDialog;
+}
+
+void QgsProcessingParameterWidgetContext::setModelDesignerDialog( QgsModelDesignerDialog *dialog )
+{
+  mModelDialog = dialog;
+}
+
 QgsProcessingModelAlgorithm *QgsProcessingParameterWidgetContext::model() const
 {
   return mModel;

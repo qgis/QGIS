@@ -12,9 +12,11 @@ __date__ = "2018-05-29"
 __copyright__ = "Copyright 2018, GISCE-TI S.L."
 
 from configparser import NoOptionError, NoSectionError
-from .version_compare import compareVersions
+
+from qgis.utils import get_plugin_deps, metadataParser, updateAvailablePlugins
+
 from . import installer as plugin_installer
-from qgis.utils import updateAvailablePlugins, metadataParser, get_plugin_deps
+from .version_compare import compareVersions
 
 
 def __plugin_name_map(plugin_data_values):
@@ -51,9 +53,9 @@ def find_dependencies(
     if installed_plugins is None:
         metadata_parser = metadataParser()
         installed_plugins = {
-            metadata_parser[k]
-            .get("general", "name"): metadata_parser[k]
-            .get("general", "version")
+            metadata_parser[k].get("general", "name"): metadata_parser[k].get(
+                "general", "version"
+            )
             for k, v in metadata_parser.items()
         }
 

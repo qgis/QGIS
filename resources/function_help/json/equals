@@ -1,0 +1,30 @@
+{
+  "name": "equals",
+  "type": "function",
+  "groups": ["GeometryGroup"],
+  "description": "Tests whether two geometries are equal. Note that the order of their vertices matters. Returns TRUE if geometry1 is exactly equal to geometry2.",
+  "arguments": [{
+    "arg": "geometry1",
+    "description": "a geometry"
+  }, {
+    "arg": "geometry2",
+    "description": "a geometry"
+  }],
+  "examples": [{
+    "expression": "equals( geom_from_wkt( 'POINT( 0 0 )' ), geom_from_wkt( 'POINT( 0 0 )' ) )",
+    "returns": "TRUE"
+  }, {
+    "expression": "equals( geom_from_wkt( 'POINT( 0 0 )' ), geom_from_wkt( 'MULTIPOINT( ( 0 0 ) )' ) )",
+    "returns": "FALSE"
+  }, {
+    "expression": "equals( geom_from_wkt( 'LINESTRING( 0 0, 1 1 )' ), geom_from_wkt( 'LINESTRING( 0 0, 1 1 )' ) )",
+    "returns": "TRUE"
+  }, {
+    "expression": "equals( geom_from_wkt( 'LINESTRING( 0 0, 1 1 )' ), geom_from_wkt( 'LINESTRING( 1 1, 0 0 )' ) )",
+    "returns": "FALSE"
+  }, {
+    "expression": "equals( geom_from_wkt( 'POLYGON(( 0 0, 0 1, 1 1, 0 0 ))' ), geom_from_wkt( 'POLYGON(( 0 0, 1 1, 0 1, 0 0 ))' ) )",
+    "returns": "FALSE"
+  }],
+  "tags": ["tests", "equal", "equals", "exactly"]
+}

@@ -13,16 +13,14 @@ __date__ = "31.8.2021"
 __copyright__ = "Copyright 2021, The QGIS Project"
 
 import os
+import unittest
 
 from qgis import utils
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 
 class TestPythonUtils(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

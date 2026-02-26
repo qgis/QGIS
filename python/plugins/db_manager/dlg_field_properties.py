@@ -29,7 +29,6 @@ Ui_Dialog, _ = uic.loadUiType(GuiUtils.get_ui_file_path("DlgFieldProperties.ui")
 
 
 class DlgFieldProperties(QDialog, Ui_Dialog):
-
     def __init__(self, parent=None, fld=None, table=None, db=None):
         QDialog.__init__(self, parent)
         self.fld = fld

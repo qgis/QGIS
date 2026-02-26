@@ -874,6 +874,22 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      */
     QColor frameFillColor2() const { return mGridFrameFillColor2; }
 
+    /**
+     * Returns the horizontal alignment for annotation text.
+     *
+     * \see setHorizontalAlignment()
+     * \since QGIS 4.0
+     */
+    Qgis::TextHorizontalAlignment horizontalAlignment() const;
+
+    /**
+     * Sets the horizontal \a alignment for annotation text.
+     *
+     * \see horizontalAlignment()
+     * \since QGIS 4.0
+     */
+    void setHorizontalAlignment( Qgis::TextHorizontalAlignment alignment );
+
     QgsExpressionContext createExpressionContext() const override;
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
     void refresh() override;
@@ -983,6 +999,8 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     int mGridAnnotationPrecision = 3;
     //! True if coordinate values should be drawn
     bool mShowGridAnnotation = false;
+
+    Qgis::TextHorizontalAlignment mHAlign = Qgis::TextHorizontalAlignment::Center;
 
     //! Annotation display mode for left map side
     Qgis::MapGridComponentVisibility mLeftGridAnnotationDisplay = Qgis::MapGridComponentVisibility::ShowAll;

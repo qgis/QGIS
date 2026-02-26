@@ -44,10 +44,13 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QPainter>
+#include <QString>
 #include <QSvgRenderer>
 #include <QUrl>
 
 #include "moc_qgslayoutitempicture.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutItemPicture::QgsLayoutItemPicture( QgsLayout *layout )
   : QgsLayoutItem( layout )

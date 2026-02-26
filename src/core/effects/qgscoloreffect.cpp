@@ -23,6 +23,10 @@
 #include "qgsimageoperation.h"
 #include "qgsrendercontext.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsPaintEffect *QgsColorEffect::create( const QVariantMap &map )
 {
   QgsColorEffect *newEffect = new QgsColorEffect();

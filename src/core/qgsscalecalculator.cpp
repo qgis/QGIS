@@ -25,6 +25,9 @@
 #include "qgsunittypes.h"
 
 #include <QSizeF>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsScaleCalculator::QgsScaleCalculator( double dpi, Qgis::DistanceUnit mapUnits )
   : mDpi( dpi )

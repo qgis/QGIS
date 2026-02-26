@@ -141,12 +141,16 @@ Contains settings for how a map layer will be labeled.
       PredefinedPositionOrder,
       LinePlacementOptions,
       OverrunDistance,
+
+      // TODO QGIS 5.0 - rename this
       LabelAllParts,
+
       PolygonLabelOutside,
       LineAnchorPercent,
       LineAnchorClipping,
       LineAnchorType,
       LineAnchorTextPoint,
+      CurvedLabelMode,
 
       // rendering
       ScaleVisibility,
@@ -164,6 +168,7 @@ Contains settings for how a map layer will be labeled.
 
       AllowDegradedPlacement,
       OverlapHandling,
+      WhitespaceCollisionHandling,
 
       LabelMarginDistance,
       RemoveDuplicateLabels,
@@ -237,10 +242,9 @@ Returns the labeling property definitions.
 
     bool isExpression;
 
-    QgsExpression *getLabelExpression();
+    QgsExpression *getLabelExpression() const;
 %Docstring
-Returns the :py:class:`QgsExpression` for this label settings. May be
-``None`` if isExpression is ``False``.
+Returns the :py:class:`QgsExpression` for this label settings.
 %End
 
  QColor previewBkgrdColor;
@@ -356,8 +360,6 @@ Set unit for rotation of labels.
     int fontMaxPixelSize;
 
     Qgis::UpsideDownLabelHandling upsidedownLabels;
-
-    bool labelPerPart;
 
     double zIndex;
 
@@ -662,8 +664,8 @@ If data can be parsed as a labeling settings, ``ok`` will be set to
     QgsPointXY ptOne;
     QgsGeometry extentGeom;
     int mFeaturesToLabel;
-    int mFeatsSendingToPal;
-    int mFeatsRegPal;
+    int mFeatsSendingToPal; // total features tested for sending into PAL (relative to maxNumLabels)
+    int mFeatsRegPal; // number of features registered in PAL, when using limitNumLabels
 
 };
 

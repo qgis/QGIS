@@ -15,7 +15,6 @@ from qgis.testing import unittest
 
 
 class TestQgsSQLStatementCustomFunctions(unittest.TestCase):
-
     def checkNominal(self, statement, expected_dump=None):
         exp = QgsSQLStatement(statement)
         self.assertEqual(exp.hasParserError(), False)

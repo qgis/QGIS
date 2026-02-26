@@ -20,7 +20,6 @@
 
 class QgsMeshLayer;
 
-#define SIP_NO_FILE
 
 #include <limits>
 #include <memory>
@@ -33,6 +32,8 @@ class QgsMeshLayer;
 #include "qgsmeshtracerenderer.h"
 #include "qgsrasterinterface.h"
 #include "qgstriangularmesh.h"
+
+#define SIP_NO_FILE
 
 class QgsRenderContext;
 class QgsMeshLayerLabelProvider;

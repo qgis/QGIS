@@ -21,8 +21,11 @@
 #include "qgsstacitem.h"
 
 #include <QDesktopServices>
+#include <QString>
 
 #include "moc_qgsstacobjectdetailsdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

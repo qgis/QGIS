@@ -14,29 +14,28 @@ import hashlib
 import shutil
 import sys
 import tempfile
+import unittest
 from urllib.parse import quote
 
+from qgis.core import Qgis, QgsDataItemProviderRegistry, QgsOwsConnection, QgsSettings
+from qgis.gui import QgsGui
 from qgis.PyQt.QtCore import QCoreApplication, QEventLoop, Qt, QUrl
 from qgis.PyQt.QtTest import QTest
-from qgis.core import QgsSettings, QgsOwsConnection, QgsDataItemProviderRegistry, Qgis
-from qgis.gui import QgsGui
 from qgis.PyQt.QtWidgets import (
     QApplication,
-    QComboBox,
     QButtonGroup,
+    QComboBox,
     QDialogButtonBox,
     QLineEdit,
     QPushButton,
     QTextEdit,
     QWidget,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 from test_provider_wfs_gui import find_window
 
 
 class TestPyQgsWMSProviderGUI(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

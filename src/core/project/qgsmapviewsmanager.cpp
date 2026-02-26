@@ -17,7 +17,11 @@
 
 #include "qgsproject.h"
 
+#include <QString>
+
 #include "moc_qgsmapviewsmanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapViewsManager::QgsMapViewsManager( QgsProject *project )
   : QObject( project )

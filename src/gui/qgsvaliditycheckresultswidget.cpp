@@ -23,8 +23,11 @@
 #include <QDialogButtonBox>
 #include <QProgressDialog>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsvaliditycheckresultswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsValidityCheckResultsModel

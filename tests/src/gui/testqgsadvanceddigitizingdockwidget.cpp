@@ -22,7 +22,10 @@
 #include <QCoreApplication>
 #include <QLocale>
 #include <QSignalSpy>
+#include <QString>
 #include <QTest>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsAdvancedDigitizingDockWidget : public QObject
 {

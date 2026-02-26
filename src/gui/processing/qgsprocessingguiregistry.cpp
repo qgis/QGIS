@@ -19,6 +19,10 @@
 
 #include "qgis.h"
 #include "qgslogger.h"
+#include "qgsmodelcomponentgraphicitem.h"
+#include "qgsmodeldesignerconfigwidget.h"
+#include "qgsmodelgraphicsscene.h"
+#include "qgsmodelgroupboxdefinitionwidget.h"
 #include "qgsprocessingaggregatewidgetwrapper.h"
 #include "qgsprocessingalgorithmconfigurationwidget.h"
 #include "qgsprocessingalignrasterlayerswidgetwrapper.h"
@@ -26,11 +30,18 @@
 #include "qgsprocessingdxflayerswidgetwrapper.h"
 #include "qgsprocessingfieldmapwidgetwrapper.h"
 #include "qgsprocessingmeshdatasetwidget.h"
+#include "qgsprocessingmodelgroupbox.h"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingrasteroptionswidgetwrapper.h"
 #include "qgsprocessingtininputlayerswidget.h"
 #include "qgsprocessingvectortilewriterlayerswidgetwrapper.h"
 #include "qgsprocessingwidgetwrapperimpl.h"
+
+#include <QString>
+
+#include "moc_qgsprocessingguiregistry.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
 {
@@ -91,6 +102,10 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingPointCloudAttributeWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingVectorTileDestinationWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingRasterOptionsWidgetWrapper() );
+
+
+  mModelConfigWidgetFactory = std::make_unique< QgsProcessingGuiInternalModelConfigWidgetFactory >();
+  registerModelConfigWidgetFactory( mModelConfigWidgetFactory.get() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()
@@ -101,6 +116,9 @@ QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()
   const QMap<QString, QgsProcessingParameterWidgetFactoryInterface *> paramFactories = mParameterWidgetFactories;
   for ( auto it = paramFactories.constBegin(); it != paramFactories.constEnd(); ++it )
     removeParameterWidgetFactory( it.value() );
+
+  unregisterModelConfigWidgetFactory( mModelConfigWidgetFactory.get() );
+  mModelConfigWidgetFactory.reset();
 }
 
 void QgsProcessingGuiRegistry::addAlgorithmConfigurationWidgetFactory( QgsProcessingAlgorithmConfigurationWidgetFactory *factory )
@@ -154,6 +172,16 @@ void QgsProcessingGuiRegistry::removeParameterWidgetFactory( QgsProcessingParame
   delete factory;
 }
 
+void QgsProcessingGuiRegistry::registerModelConfigWidgetFactory( QgsProcessingModelConfigWidgetFactory *factory )
+{
+  mModelConfigWidgetFactories << factory;
+}
+
+void QgsProcessingGuiRegistry::unregisterModelConfigWidgetFactory( QgsProcessingModelConfigWidgetFactory *factory )
+{
+  mModelConfigWidgetFactories.removeAll( factory );
+}
+
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingGuiRegistry::createParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )
 {
   if ( !parameter )
@@ -193,3 +221,55 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingGuiRegistry::create
 
   return it.value()->createParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
+
+QgsProcessingModelConfigWidget *QgsProcessingGuiRegistry::createModelConfigWidgetForComponent( QgsProcessingModelComponent *component, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext ) const
+{
+  for ( auto it = mModelConfigWidgetFactories.constBegin(); it != mModelConfigWidgetFactories.constEnd(); ++it )
+  {
+    // factory may have been deleted without deregistering, don't crash!
+    if ( !it->data() )
+      continue;
+
+    if ( it->data()->supportsComponent( component ) )
+    {
+      if ( QgsProcessingModelConfigWidget *widget = it->data()->createWidget( component, context, widgetContext ) )
+        return widget;
+    }
+  }
+  return nullptr;
+}
+
+/// @cond PRIVATE
+bool QgsProcessingGuiInternalModelConfigWidgetFactory::supportsComponent( QgsProcessingModelComponent *component ) const
+{
+  if ( dynamic_cast< QgsProcessingModelGroupBox * >( component ) )
+    return true;
+
+  return false;
+}
+
+QgsProcessingModelConfigWidget *QgsProcessingGuiInternalModelConfigWidgetFactory::createWidget( QgsProcessingModelComponent *component, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext ) const
+{
+  ( void ) context;
+
+  if ( QgsProcessingModelGroupBox *groupBox = dynamic_cast< QgsProcessingModelGroupBox * >( component ) )
+  {
+    QgsModelDesignerDialog *dialog = widgetContext.modelDesignerDialog();
+    const QString boxUuid = groupBox->uuid();
+
+    auto widget = new QgsModelGroupBoxDefinitionPanelWidget( *groupBox );
+    connect( widget, &QgsModelGroupBoxDefinitionPanelWidget::widgetChanged, this, [dialog, boxUuid, widget] {
+      QgsModelGraphicsScene *modelScene = dialog->modelScene();
+      QgsModelGroupBoxGraphicItem *graphicItem = dynamic_cast< QgsModelGroupBoxGraphicItem * >( modelScene->groupBoxItem( boxUuid ) );
+      if ( !graphicItem )
+        return; // should not happen
+
+      graphicItem->applyEdit( widget->groupBox() );
+    } );
+
+    return widget;
+  }
+
+  return nullptr;
+}
+/// @endcond PRIVATE

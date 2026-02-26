@@ -17,7 +17,11 @@
 
 #include "qgsexpressioncontext.h"
 
+#include <QString>
+
 #include "moc_qgsactionscoperegistry.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsActionScopeRegistry::QgsActionScopeRegistry( QObject *parent )
   : QObject( parent )

@@ -30,6 +30,9 @@
 #include "qgsterrainprovider.h"
 
 #include <QDomElement>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 Qgs3DTerrainRegistry::Qgs3DTerrainRegistry()
 {

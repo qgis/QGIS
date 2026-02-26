@@ -31,6 +31,7 @@ QGraphicsScene subclass representing the model designer.
     {
       GroupBox,
       ArrowLink,
+      ArrowDecoration,
       ModelComponent,
       MouseHandles,
       RubberBand,
@@ -42,6 +43,7 @@ QGraphicsScene subclass representing the model designer.
     {
       FlagHideControls,
       FlagHideComments,
+      FlagHideFeatureCount,
     };
     typedef QFlags<QgsModelGraphicsScene::Flag> Flags;
 
@@ -120,9 +122,17 @@ Returns the graphic item corresponding to the specified child algorithm
     QgsModelComponentGraphicItem *parameterItem( const QString &name );
 %Docstring
 Returns the :py:class:`QgsModelComponentGraphicItem` corresponding to
-the specified child algorithm
+the specified parameter name
 
 .. versionadded:: 3.44
+%End
+
+    QgsModelComponentGraphicItem *outputItem( const QString &childId, const QString &childOutputName );
+%Docstring
+Returns the :py:class:`QgsModelComponentGraphicItem` corresponding to
+the specified child algorithm output
+
+.. versionadded:: 4.0
 %End
 
     void selectAll();
@@ -144,7 +154,7 @@ update.
 Clears any selected items and sets ``item`` as the current selection.
 %End
 
-    void setLastRunResult( const QgsProcessingModelResult &result );
+    void setLastRunResult( const QgsProcessingModelResult &result, QgsProcessingContext &context );
 %Docstring
 Sets the ``result`` of the last run of the model through the designer
 window.
@@ -194,7 +204,7 @@ the model, with an additional margin arounds items.
 Emitted when a change in the model requires a full rebuild of the scene.
 %End
 
-    void componentAboutToChange( const QString &text, int id = 0 );
+    void componentAboutToChange( const QString &text, const QString &id = QString() );
 %Docstring
 Emitted whenever a component of the model is about to be changed.
 

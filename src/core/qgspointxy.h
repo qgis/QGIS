@@ -30,6 +30,8 @@
 #include <QString>
 #include <qglobal.h>
 
+using namespace Qt::StringLiterals;
+
 class QgsPoint;
 
 /**

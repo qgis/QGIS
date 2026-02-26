@@ -19,7 +19,12 @@
 ///@cond PRIVATE
 #include "qgsgdalclouddataitems.h"
 
+#include <QString>
+
 #define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
+
 
 #include "qgsdataitemguiprovider.h"
 #include "qgsgdalutils.h"

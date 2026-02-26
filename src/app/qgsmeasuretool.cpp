@@ -27,8 +27,11 @@
 #include "qgssnapindicator.h"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsmeasuretool.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeasureTool::QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea )
   : QgsMapTool( canvas )

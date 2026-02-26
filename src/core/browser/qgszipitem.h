@@ -22,6 +22,10 @@
 #include "qgis_sip.h"
 #include "qgsdatacollectionitem.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief A browser item for zip (archive) files.

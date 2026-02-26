@@ -11,11 +11,9 @@ __date__ = "2016-09"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
 import os
+import unittest
 from typing import Optional
 
-from qgis.PyQt.QtSvg import QSvgGenerator
-from qgis.PyQt.QtCore import QT_VERSION_STR, QDir, QPointF, QRectF, QSize, QSizeF, Qt
-from qgis.PyQt.QtGui import QBrush, QColor, QImage, QPainter, QPen, QPolygonF
 from qgis.core import (
     Qgis,
     QgsBlurEffect,
@@ -36,16 +34,16 @@ from qgis.core import (
     QgsTextShadowSettings,
     QgsUnitTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QT_VERSION_STR, QDir, QPointF, QRectF, QSize, QSizeF, Qt
+from qgis.PyQt.QtGui import QBrush, QColor, QImage, QPainter, QPen, QPolygonF
+from qgis.PyQt.QtSvg import QSvgGenerator
+from qgis.testing import QgisTestCase, start_app
 from utilities import getTestFont, svgSymbolsPath, unitTestDataPath
 
 start_app()
 
 
 class PyQgsTextRenderer(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -159,7 +157,6 @@ class PyQgsTextRenderer(QgisTestCase):
             Qgis.TextRenderFormat.AlwaysOutlines,
             Qgis.TextRenderFormat.PreferText,
         ):
-
             context.setTextRenderFormat(render_format)
             painter.begin(image)
             painter.setRenderHint(QPainter.RenderHint.Antialiasing)

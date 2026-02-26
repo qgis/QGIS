@@ -28,8 +28,11 @@
 #include <QFileInfo>
 #include <QGraphicsScene>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsformannotationdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )

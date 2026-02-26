@@ -18,6 +18,10 @@
 #include "qgsjsoneditconfigdlg.h"
 #include "qgsjsoneditwrapper.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsJsonEditWidgetFactory::QgsJsonEditWidgetFactory( const QString &name, const QIcon &icon )
   : QgsEditorWidgetFactory( name, icon )
 {

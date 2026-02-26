@@ -24,14 +24,11 @@ map layers and layer styles.
   public:
 
     class MapThemeLayerRecord
-{
+    {
 %Docstring(signature="appended")
 Individual record of a visible layer in a map theme record.
 %End
 
-%TypeHeaderCode
-#include "qgsmapthemecollection.h"
-%End
       public:
         MapThemeLayerRecord( QgsMapLayer *l = 0 );
 %Docstring
@@ -66,14 +63,11 @@ Sets the map layer for this record
     };
 
     class MapThemeRecord
-{
+    {
 %Docstring(signature="appended")
 Individual map theme record of visible layers and styles.
 %End
 
-%TypeHeaderCode
-#include "qgsmapthemecollection.h"
-%End
       public:
 
         bool operator==( const QgsMapThemeCollection::MapThemeRecord &other ) const;

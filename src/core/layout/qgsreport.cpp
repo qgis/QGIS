@@ -18,7 +18,11 @@
 
 #include "qgslayout.h"
 
+#include <QString>
+
 #include "moc_qgsreport.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond NOT_STABLE
 

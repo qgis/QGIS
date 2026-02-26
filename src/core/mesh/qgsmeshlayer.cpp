@@ -48,10 +48,13 @@
 #include "qgsthreadingutils.h"
 #include "qgstriangularmesh.h"
 
+#include <QString>
 #include <QUrl>
 #include <QUuid>
 
 #include "moc_qgsmeshlayer.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
@@ -1894,7 +1897,7 @@ bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
     QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Legend" ) );
 
     const QDomElement legendElem = node.firstChildElement( u"legend"_s );
-    if ( QgsMapLayerLegend *l = legend(); !legendElem.isNull() )
+    if ( QgsMapLayerLegend *l = legend(); l && !legendElem.isNull() )
     {
       l->readXml( legendElem, context );
     }
@@ -2370,4 +2373,12 @@ bool QgsMeshLayer::datasetsPathUnique( const QString &path )
     return false;
 
   return !mExtraDatasetUri.contains( path );
+}
+
+QString QgsMeshLayer::loadNamedStyle( const QString &uri, bool &resultFlag, QgsMapLayer::StyleCategories categories, Qgis::LoadStyleFlags flags )
+{
+  QString result = QgsMapLayer::loadNamedStyle( uri, resultFlag, categories, flags );
+  emit rendererChanged();
+  emitStyleChanged();
+  return result;
 }

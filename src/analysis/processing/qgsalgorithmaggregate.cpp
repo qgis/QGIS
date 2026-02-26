@@ -20,6 +20,10 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsprocessingparameteraggregate.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsAggregateAlgorithm::name() const
@@ -53,7 +57,7 @@ Qgis::ProcessingAlgorithmDocumentationFlags QgsAggregateAlgorithm::documentation
 
 QStringList QgsAggregateAlgorithm::tags() const
 {
-  return QObject::tr( "attributes,sum,mean,collect,dissolve,statistics" ).split( ',' );
+  return QObject::tr( "attributes,sum,mean,collect,dissolve,statistics,merge" ).split( ',' );
 }
 
 QString QgsAggregateAlgorithm::group() const

@@ -47,6 +47,7 @@ class CORE_EXPORT QgsProjectStoredObjectManagerModelBase : public QAbstractListM
     enum class CustomRole : int
     {
       Object = Qt::UserRole + 1, //!< Object
+      IsEmptyObject, //!< TRUE if row represents the empty object \since QGIS 4.0
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*

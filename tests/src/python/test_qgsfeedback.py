@@ -10,13 +10,12 @@ __author__ = "Nyall Dawson"
 __date__ = "12/02/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
-from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import QgsFeedback
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import unittest
 
 
 class TestQgsFeedback(unittest.TestCase):
-
     def testCancel(self):
         f = QgsFeedback()
         self.assertFalse(f.isCanceled())
@@ -48,6 +47,26 @@ class TestQgsFeedback(unittest.TestCase):
         self.assertEqual(f.processedCount(), 25)
         self.assertEqual(len(processed_spy), 1)
         self.assertEqual(processed_spy[0][0], 25)
+
+    def testScaledFeedback(self):
+        f = QgsFeedback()
+        minScaled = 10
+        maxScaled = 90
+        scaledFeedback = QgsFeedback.createScaledFeedback(f, minScaled, maxScaled)
+
+        scaledFeedback.setProgress(-1)
+
+        scaledFeedback.setProgress(0)
+        self.assertEqual(f.progress(), minScaled)
+
+        scaledFeedback.setProgress(50)
+        self.assertEqual(f.progress(), minScaled + (maxScaled - minScaled) * 50.0 / 100)
+
+        scaledFeedback.setProgress(100)
+        self.assertEqual(f.progress(), maxScaled)
+
+        scaledFeedback.cancel()
+        self.assertTrue(f.isCanceled())
 
 
 if __name__ == "__main__":

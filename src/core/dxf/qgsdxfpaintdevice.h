@@ -18,13 +18,14 @@
 #ifndef QGSDXFPAINTDEVICE_H
 #define QGSDXFPAINTDEVICE_H
 
-#define SIP_NO_FILE
 
 #include <memory>
 
 #include "qgis_core.h"
 
 #include <QPaintDevice>
+
+#define SIP_NO_FILE
 
 class QgsDxfPaintEngine;
 class QgsDxfExport;

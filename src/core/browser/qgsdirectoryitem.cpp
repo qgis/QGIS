@@ -31,9 +31,12 @@
 #include <QFileSystemWatcher>
 #include <QMenu>
 #include <QMouseEvent>
+#include <QString>
 #include <QTimer>
 
 #include "moc_qgsdirectoryitem.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsDirectoryItem

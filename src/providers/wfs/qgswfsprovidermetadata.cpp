@@ -39,10 +39,13 @@
 #include <QFile>
 #include <QIcon>
 #include <QMessageBox>
+#include <QString>
 #include <QTimer>
 #include <QUrl>
 
 #include "moc_qgswfsprovidermetadata.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDataProvider *QgsWfsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {

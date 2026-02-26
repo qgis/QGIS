@@ -17,12 +17,13 @@
 #define QGSWEBVIEW_H
 
 
-#define SIP_NO_FILE
 
 #include "qgswebpage.h"
 
 #include <QTextBrowser>
 #include <QWidget>
+
+#define SIP_NO_FILE
 
 class QPrinter;
 

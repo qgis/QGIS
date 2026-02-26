@@ -19,8 +19,9 @@
 #include "qgsdataitemprovider.h"
 #include "qgsgdalutils.h"
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 //! Root item for GDAL cloud connections
 class CORE_EXPORT QgsGdalCloudRootItem : public QgsConnectionsRootItem

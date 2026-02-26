@@ -27,8 +27,11 @@
 #include <QGestureEvent>
 #include <QKeyEvent>
 #include <QMenu>
+#include <QString>
 
 #include "moc_qgsplotcanvas.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPlotCanvas::QgsPlotCanvas( QWidget *parent )
   : QGraphicsView( parent )

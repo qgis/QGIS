@@ -12,15 +12,14 @@ __date__ = "07/03/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
 import os
-
-from qgis.PyQt.QtCore import QCoreApplication, QModelIndex, Qt
-from qgis.core import QgsDatabaseSchemaModel, QgsProviderRegistry
 import unittest
-from qgis.testing import start_app, QgisTestCase
+
+from qgis.core import QgsDatabaseSchemaModel, QgsProviderRegistry
+from qgis.PyQt.QtCore import QCoreApplication, QModelIndex, Qt
+from qgis.testing import QgisTestCase, start_app
 
 
 class TestPyQgsDatabaseSchemaModel(QgisTestCase):
-
     # Provider test cases must define the string URI for the test
     uri = ""
     # Provider test cases must define the provider name (e.g. "postgres" or "ogr")

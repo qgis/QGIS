@@ -19,7 +19,10 @@
 #include "qgis.h"
 #include "qgis_core.h"
 
+#include <QString>
 #include <QVector3D>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core

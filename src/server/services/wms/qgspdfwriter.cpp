@@ -22,6 +22,10 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmodule.h"
 #include "qgswmsrenderer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 namespace QgsWms
 {
   void writeAsPdf( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, QgsServerResponse &response )

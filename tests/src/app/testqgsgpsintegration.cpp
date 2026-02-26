@@ -27,7 +27,10 @@
 #include "qgsvectorlayer.h"
 
 #include <QSignalSpy>
+#include <QString>
 #include <QTimeZone>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup UnitTests

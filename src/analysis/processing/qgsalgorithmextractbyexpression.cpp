@@ -17,6 +17,10 @@
 
 #include "qgsalgorithmextractbyexpression.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsExtractByExpressionAlgorithm::name() const

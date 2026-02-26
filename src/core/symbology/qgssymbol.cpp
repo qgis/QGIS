@@ -61,7 +61,10 @@
 #include <QPainter>
 #include <QPicture>
 #include <QSize>
+#include <QString>
 #include <QSvgGenerator>
+
+using namespace Qt::StringLiterals;
 
 QgsPropertiesDefinition QgsSymbol::sPropertyDefinitions;
 
@@ -1446,6 +1449,7 @@ QgsSymbolLayerList QgsSymbol::cloneLayers() const
     layer->setRenderingPass( ( *it )->renderingPass() );
     layer->setEnabled( ( *it )->enabled() );
     layer->setId( ( *it )->id() );
+    layer->setSelectiveMaskingSourceSetId( ( *it )->selectiveMaskingSourceSetId() );
     layer->setUserFlags( ( *it )->userFlags() );
     lst.append( layer );
   }

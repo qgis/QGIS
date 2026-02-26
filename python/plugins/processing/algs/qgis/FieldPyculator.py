@@ -21,21 +21,22 @@ __copyright__ = "(C) 2012, Victor Olaya & NextGIS"
 
 import sys
 
-from qgis.PyQt.QtCore import QMetaType
 from qgis.core import (
     Qgis,
-    QgsProcessingException,
+    QgsFeatureSink,
     QgsField,
     QgsFields,
-    QgsFeatureSink,
     QgsProcessing,
-    QgsProcessingParameterFeatureSource,
-    QgsProcessingParameterString,
+    QgsProcessingException,
     QgsProcessingParameterEnum,
-    QgsProcessingParameterNumber,
     QgsProcessingParameterFeatureSink,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterString,
     QgsVariantUtils,
 )
+from qgis.PyQt.QtCore import QMetaType
+
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 

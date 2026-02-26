@@ -22,7 +22,6 @@ __copyright__ = "(C) 2013, Victor Olaya  and Alexander Bruy"
 import struct
 
 from osgeo import gdal
-
 from qgis.core import QgsProcessingException
 
 gdal.UseExceptions()

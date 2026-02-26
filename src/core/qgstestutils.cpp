@@ -19,7 +19,10 @@
 #include "qgsvectordataprovider.h"
 
 #include <QCryptographicHash>
+#include <QString>
 #include <QtConcurrentMap>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 ///

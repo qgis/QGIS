@@ -27,6 +27,9 @@
 #include "qgstextshadowsettings.h"
 
 #include <QSharedDataPointer>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QMimeData;
 class QgsTextSettingsPrivate;

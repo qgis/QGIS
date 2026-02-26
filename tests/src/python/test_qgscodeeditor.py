@@ -11,21 +11,19 @@ __date__ = "03/10/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
 import sys
+import unittest
 
-from qgis.PyQt.QtCore import QT_VERSION_STR, QCoreApplication
-from qgis.PyQt.QtGui import QColor, QFontDatabase
 from qgis.core import QgsApplication, QgsSettings
 from qgis.gui import QgsCodeEditor, QgsCodeEditorColorScheme
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QT_VERSION_STR, QCoreApplication
+from qgis.PyQt.QtGui import QColor, QFontDatabase
+from qgis.testing import QgisTestCase, start_app
 from utilities import getTestFont
 
 start_app()
 
 
 class TestQgsCodeEditor(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

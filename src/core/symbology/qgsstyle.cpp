@@ -47,9 +47,12 @@
 #include <QDomNodeList>
 #include <QFile>
 #include <QFileInfo>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgsstyle.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define STYLE_CURRENT_VERSION  "2"
 
@@ -1059,9 +1062,6 @@ bool QgsStyle::saveLabelSettings( const QString &name, const QgsPalLayerSettings
 
   QByteArray xmlArray;
   QTextStream stream( &xmlArray );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  stream.setCodec( "UTF-8" );
-#endif
   settingsElem.save( stream, 4 );
   QString query = qgs_sqlite3_mprintf( "INSERT INTO labelsettings VALUES (NULL, '%q', '%q', %d);",
                                        name.toUtf8().constData(), xmlArray.constData(), ( favorite ? 1 : 0 ) );
@@ -1130,9 +1130,6 @@ bool QgsStyle::saveLegendPatchShape( const QString &name, const QgsLegendPatchSh
 
   QByteArray xmlArray;
   QTextStream stream( &xmlArray );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  stream.setCodec( "UTF-8" );
-#endif
   shapeElem.save( stream, 4 );
   QString query = qgs_sqlite3_mprintf( "INSERT INTO legendpatchshapes VALUES (NULL, '%q', '%q', %d);",
                                        name.toUtf8().constData(), xmlArray.constData(), ( favorite ? 1 : 0 ) );
@@ -1271,9 +1268,6 @@ bool QgsStyle::saveSymbol3D( const QString &name, QgsAbstract3DSymbol *symbol, b
 
   QByteArray xmlArray;
   QTextStream stream( &xmlArray );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  stream.setCodec( "UTF-8" );
-#endif
   elem.save( stream, 4 );
   QString query = qgs_sqlite3_mprintf( "INSERT INTO symbol3d VALUES (NULL, '%q', '%q', %d);",
                                        name.toUtf8().constData(), xmlArray.constData(), ( favorite ? 1 : 0 ) );
@@ -2346,9 +2340,6 @@ int QgsStyle::addSmartgroup( const QString &name, const QString &op, const QStri
 
   QByteArray xmlArray;
   QTextStream stream( &xmlArray );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  stream.setCodec( "UTF-8" );
-#endif
   smartEl.save( stream, 4 );
   QString query = qgs_sqlite3_mprintf( "INSERT INTO smartgroup VALUES (NULL, '%q', '%q')",
                                        name.toUtf8().constData(), xmlArray.constData() );
@@ -2734,9 +2725,6 @@ bool QgsStyle::exportXml( const QString &filename )
   }
 
   QTextStream ts( &f );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  ts.setCodec( "UTF-8" );
-#endif
   doc.save( ts, 2 );
   f.close();
 
@@ -3123,9 +3111,6 @@ bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )
   QDomElement symEl;
   QByteArray xmlArray;
   QTextStream stream( &xmlArray );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  stream.setCodec( "UTF-8" );
-#endif
 
   QString query;
 

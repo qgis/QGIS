@@ -10,17 +10,17 @@ __author__ = "Nyall Dawson"
 __date__ = "11/11/2018"
 __copyright__ = "Copyright 2018, The QGIS Project"
 
-from qgis.PyQt.QtCore import QByteArray
+import unittest
+
 from qgis.core import NULL, QgsFeature, QgsGeometry, QgsPointXY, QgsVectorLayer
 from qgis.gui import QgsGui
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QByteArray
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsBinaryWidget(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

@@ -25,9 +25,10 @@
 
 #include <QReadWriteLock>
 
+#define SIP_NO_FILE
+
 class QgsFeedback;
 
-#define SIP_NO_FILE
 ///@cond PRIVATE
 
 /**

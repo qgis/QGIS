@@ -23,9 +23,12 @@
 #include "qgsweakrelation.h"
 
 #include <QObject>
+#include <QString>
 #include <QVariant>
 
 #include "moc_qgsabstractdatabaseproviderconnection.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAbstractDatabaseProviderConnection::QgsAbstractDatabaseProviderConnection( const QString &name ):
   QgsAbstractProviderConnection( name )

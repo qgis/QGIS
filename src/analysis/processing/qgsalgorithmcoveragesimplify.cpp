@@ -21,6 +21,10 @@
 #include "qgsgeometrycollection.h"
 #include "qgsgeos.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsCoverageSimplifyAlgorithm::name() const

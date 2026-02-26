@@ -31,8 +31,11 @@
 
 #include <QAction>
 #include <QMenu>
+#include <QString>
 
 #include "moc_qgsrasterlayertemporalpropertieswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRasterLayerTemporalPropertiesWidget::QgsRasterLayerTemporalPropertiesWidget( QWidget *parent, QgsRasterLayer *layer )
   : QWidget( parent )

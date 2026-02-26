@@ -11,10 +11,9 @@ __date__ = "22.3.2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
 import os
+import unittest
 from tempfile import TemporaryDirectory
 
-from qgis.PyQt.QtCore import QCoreApplication, QDir, QEvent
-from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsCoordinateTransformContext,
     QgsGroupLayer,
@@ -25,9 +24,9 @@ from qgis.core import (
     QgsProject,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QCoreApplication, QDir, QEvent
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 app = start_app()
@@ -35,7 +34,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsLayerTree(QgisTestCase):
-
     def __init__(self, methodName):
         """Run once on class initialization."""
         QgisTestCase.__init__(self, methodName)

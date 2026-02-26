@@ -10,6 +10,7 @@
 
 
 
+
 class QgsLayerTreeModelLegendNode : QObject
 {
 %Docstring(signature="appended")

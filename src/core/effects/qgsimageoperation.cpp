@@ -24,7 +24,10 @@
 
 #include <QColor>
 #include <QPainter>
+#include <QString>
 #include <QtConcurrentMap>
+
+using namespace Qt::StringLiterals;
 
 //determined via trial-and-error. Could possibly be optimised, or varied
 //depending on the image size.

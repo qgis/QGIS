@@ -28,6 +28,9 @@
 #include <QMatrix4x4>
 #include <QQuaternion>
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 #define TINYGLTF_IMPLEMENTATION       // should be defined just in one CPP file
 

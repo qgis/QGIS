@@ -24,7 +24,10 @@
 #include "qgsprocessingregistry.h"
 #include "qgstest.h"
 
+#include <QString>
 #include <QThread>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsProcessingPdalAlgs : public QgsTest
 {
@@ -46,6 +49,7 @@ class TestQgsProcessingPdalAlgs : public QgsTest
     void buildVpc();
     void clip();
     void convertFormat();
+    void convertFormatVpcOutputFormat();
     void density();
     void exportRaster();
     void exportRasterTin();
@@ -57,6 +61,18 @@ class TestQgsProcessingPdalAlgs : public QgsTest
     void thinByDecimate();
     void thinByRadius();
     void tile();
+    void heightAboveGroundTriangulation();
+    void heightAboveGroundNearestNeighbour();
+    void classifyGround();
+    void filterNoiseStatistical();
+    void filterNoiseRadius();
+    void transformCoordinates();
+//only add test case if PDAL version is 2.10 or higher - can be removed when PDAL 2.10 is minimum requirement
+#ifdef HAVE_PDAL_QGIS
+#if PDAL_VERSION_MAJOR_INT > 2 || ( PDAL_VERSION_MAJOR_INT == 2 && PDAL_VERSION_MINOR_INT >= 10 )
+    void compare();
+#endif
+#endif
 
     void useIndexCopcFile();
 
@@ -64,6 +80,8 @@ class TestQgsProcessingPdalAlgs : public QgsTest
     void updateFileListArg( QStringList &args, const QString &fileName );
 
     QString mPointCloudLayerPath;
+    QString mVpcPointCloudLayerPath;
+    const QString mDataDir = QString( TEST_DATA_DIR ); //defined in CmakeLists.txt
 };
 
 void TestQgsProcessingPdalAlgs::initTestCase()
@@ -78,11 +96,13 @@ void TestQgsProcessingPdalAlgs::initTestCase()
 
   QgsApplication::processingRegistry()->addProvider( new QgsPdalAlgorithms( QgsApplication::processingRegistry() ) );
 
-  const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-
-  const QString pointCloudFileName = dataDir + "/point_clouds/copc/rgb.copc.laz";
+  const QString pointCloudFileName = mDataDir + "/point_clouds/copc/rgb.copc.laz";
   const QFileInfo pointCloudFileInfo( pointCloudFileName );
   mPointCloudLayerPath = pointCloudFileInfo.filePath();
+
+  const QString vpcPointCloudFileName = mDataDir + "/point_clouds/virtual/sunshine-coast/combined-with-overview.vpc";
+  const QFileInfo vpcPointCloudFileInfo( vpcPointCloudFileName );
+  mVpcPointCloudLayerPath = vpcPointCloudFileInfo.filePath();
 }
 
 void TestQgsProcessingPdalAlgs::cleanupTestCase()
@@ -187,6 +207,89 @@ void TestQgsProcessingPdalAlgs::convertFormat()
 
   QVERIFY( ok );
   QVERIFY( QFileInfo::exists( outputPointCloud ) );
+}
+
+void TestQgsProcessingPdalAlgs::convertFormatVpcOutputFormat()
+{
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:convertformat"_s ) ) );
+
+  auto context = std::make_unique<QgsProcessingContext>();
+  context->setProject( QgsProject::instance() );
+  context->setMaximumThreads( 0 );
+
+  QgsProcessingFeedback feedback;
+
+  // case 1 - convert to LAS
+  QString outputVpc = QDir::tempPath() + "/converted_las_output.vpc";
+
+  // Get converted data VPC subfolder
+  QFileInfo fileInfo( outputVpc );
+  QString parentDir = fileInfo.absolutePath();
+  QString stem = fileInfo.baseName();
+  QString vpcDataSubfolder = parentDir + "/" + stem;
+
+  QString vpcOutputFormat = u"LAS"_s;
+
+  QVariantMap parameters;
+  parameters.insert( u"INPUT"_s, mVpcPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputVpc );
+  parameters.insert( u"VPC_OUTPUT_FORMAT"_s, vpcOutputFormat );
+
+  QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << u"translate"_s << u"--input=%1"_s.arg( mVpcPointCloudLayerPath ) << u"--output=%1"_s.arg( outputVpc ) << u"--vpc-output-format=%1"_s.arg( vpcOutputFormat.toLower() ) );
+
+  bool ok = false;
+  alg->run( parameters, *context, &feedback, &ok );
+
+  QVERIFY( ok );
+  QVERIFY( QFileInfo::exists( outputVpc ) );
+
+  // files in subdirectory
+  QDir dir( vpcDataSubfolder );
+  QStringList resultSubfolderFiles = dir.entryList( QDir::Files );
+
+  QCOMPARE( resultSubfolderFiles.size(), 4 );
+
+  for ( const QString &file : resultSubfolderFiles )
+  {
+    QVERIFY( file.endsWith( ".las" ) );
+  }
+
+  // case 2 - convert to COPC.LAZ
+  outputVpc = QDir::tempPath() + "/converted_copc_laz_output.vpc";
+
+  // Get converted data VPC subfolder
+  fileInfo = QFileInfo( outputVpc );
+  parentDir = fileInfo.absolutePath();
+  stem = fileInfo.baseName();
+  vpcDataSubfolder = parentDir + "/" + stem;
+
+  vpcOutputFormat = u"COPC"_s;
+
+  parameters.clear();
+  parameters.insert( u"INPUT"_s, mVpcPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputVpc );
+  parameters.insert( u"VPC_OUTPUT_FORMAT"_s, vpcOutputFormat );
+
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << u"translate"_s << u"--input=%1"_s.arg( mVpcPointCloudLayerPath ) << u"--output=%1"_s.arg( outputVpc ) << u"--vpc-output-format=%1"_s.arg( vpcOutputFormat.toLower() ) );
+
+  ok = false;
+  alg->run( parameters, *context, &feedback, &ok );
+
+  QVERIFY( ok );
+  QVERIFY( QFileInfo::exists( outputVpc ) );
+
+  // files in subdirectory
+  dir = QDir( vpcDataSubfolder );
+  resultSubfolderFiles = dir.entryList( QDir::Files );
+
+  QCOMPARE( resultSubfolderFiles.size(), 4 );
+
+  for ( const QString &file : resultSubfolderFiles )
+  {
+    QVERIFY( file.endsWith( ".copc.laz" ) );
+  }
 }
 
 void TestQgsProcessingPdalAlgs::reproject()
@@ -902,6 +1005,237 @@ void TestQgsProcessingPdalAlgs::useIndexCopcFile()
   QCOMPARE( args, QStringList() << u"to_vector"_s << u"--input=%1"_s.arg( copcIndexFileName ) << u"--output=%1"_s.arg( outputFile ) );
   QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
 }
+
+void TestQgsProcessingPdalAlgs::heightAboveGroundTriangulation()
+{
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:heightabovegroundtriangulation"_s ) ) );
+
+  auto context = std::make_unique<QgsProcessingContext>();
+  context->setProject( QgsProject::instance() );
+  context->setMaximumThreads( 0 );
+
+  QgsProcessingFeedback feedback;
+
+  const QString outputPointCloud = QDir::tempPath() + "/heightabovegroundtriangulation.laz";
+
+  QVariantMap parameters;
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
+
+  QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << u"height_above_ground"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--algorithm=delaunay"_s << u"--replace-z=true"_s << u"--delaunay-count=10"_s );
+  QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
+}
+
+void TestQgsProcessingPdalAlgs::heightAboveGroundNearestNeighbour()
+{
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:heightabovegroundbynearestneighbor"_s ) ) );
+
+  auto context = std::make_unique<QgsProcessingContext>();
+  context->setProject( QgsProject::instance() );
+  context->setMaximumThreads( 0 );
+
+  QgsProcessingFeedback feedback;
+
+  const QString outputPointCloud = QDir::tempPath() + "/heightabovegroundnn.laz";
+
+  QVariantMap parameters;
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
+  parameters.insert( u"REPLACE_Z"_s, false );
+
+  QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << u"height_above_ground"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--algorithm=nn"_s << u"--replace-z=false"_s << u"--nn-count=1"_s << u"--nn-max-distance=0"_s );
+  QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
+}
+
+void TestQgsProcessingPdalAlgs::classifyGround()
+{
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:classifyground"_s ) ) );
+
+  auto context = std::make_unique<QgsProcessingContext>();
+  context->setProject( QgsProject::instance() );
+  context->setMaximumThreads( 0 );
+
+  QgsProcessingFeedback feedback;
+
+  const QString outputPointCloud = QDir::tempPath() + "/classifyground.laz";
+
+  double cellSize = 1.5;
+  double scalar = 1.3;
+  double slope = 0.2;
+  double threshold = 0.55;
+  double windowSize = 20;
+
+  QVariantMap parameters;
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
+  parameters.insert( u"CELL_SIZE"_s, cellSize );
+  parameters.insert( u"SCALAR"_s, scalar );
+  parameters.insert( u"SLOPE"_s, slope );
+  parameters.insert( u"THRESHOLD"_s, threshold );
+  parameters.insert( u"WINDOW_SIZE"_s, windowSize );
+
+  QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << u"classify_ground"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--cell-size=%1"_s.arg( cellSize ) << u"--scalar=%1"_s.arg( scalar ) << u"--slope=%1"_s.arg( slope ) << u"--threshold=%1"_s.arg( threshold ) << u"--window-size=%1"_s.arg( windowSize ) );
+  QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
+}
+
+void TestQgsProcessingPdalAlgs::filterNoiseStatistical()
+{
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:filternoisestatistical"_s ) ) );
+
+  auto context = std::make_unique<QgsProcessingContext>();
+  context->setProject( QgsProject::instance() );
+  context->setMaximumThreads( 0 );
+
+  QgsProcessingFeedback feedback;
+
+  const QString outputPointCloud = QDir::tempPath() + "/filternoisestatistical.laz";
+
+  double meanK = 10;
+  double multiplier = 3.0;
+
+  QVariantMap parameters;
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
+  parameters.insert( u"REMOVE_NOISE_POINTS"_s, true );
+  parameters.insert( u"MEAN_K"_s, meanK );
+  parameters.insert( u"MULTIPLIER"_s, multiplier );
+
+
+  QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << u"filter_noise"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--algorithm=statistical"_s << u"--remove-noise-points=true"_s << u"--statistical-mean-k=%1"_s.arg( meanK ) << u"--statistical-multiplier=%1"_s.arg( multiplier ) );
+  QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
+}
+
+void TestQgsProcessingPdalAlgs::filterNoiseRadius()
+{
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:filternoiseradius"_s ) ) );
+
+  auto context = std::make_unique<QgsProcessingContext>();
+  context->setProject( QgsProject::instance() );
+  context->setMaximumThreads( 0 );
+
+  QgsProcessingFeedback feedback;
+
+  const QString outputPointCloud = QDir::tempPath() + "/filternoiseradius.laz";
+
+  double minK = 2.5;
+  double radius = 1.5;
+
+  QVariantMap parameters;
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
+  parameters.insert( u"REMOVE_NOISE_POINTS"_s, false );
+  parameters.insert( u"MIN_K"_s, minK );
+  parameters.insert( u"RADIUS"_s, radius );
+
+  QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << u"filter_noise"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--algorithm=radius"_s << u"--remove-noise-points=false"_s << u"--radius-min-k=%1"_s.arg( minK ) << u"--radius-radius=%1"_s.arg( radius ) );
+  QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
+}
+
+void TestQgsProcessingPdalAlgs::transformCoordinates()
+{
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:transformpointcloud"_s ) ) );
+
+  auto context = std::make_unique<QgsProcessingContext>();
+  context->setProject( QgsProject::instance() );
+  context->setMaximumThreads( 0 );
+
+  QgsProcessingFeedback feedback;
+
+  const QString outputPointCloud = QDir::tempPath() + "/transformcoordinates.laz";
+
+  double translateX = 10.0;
+  double translateY = 20.0;
+  double translateZ = 30.0;
+
+  QVariantMap parameters;
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
+  parameters.insert( u"TRANSLATE_X"_s, translateX );
+  parameters.insert( u"TRANSLATE_Y"_s, translateY );
+  parameters.insert( u"TRANSLATE_Z"_s, translateZ );
+
+  QString transformMatrix = u"1 0 0 %1 0 1 0 %2 0 0 1 %3 0 0 0 1"_s.arg( translateX ).arg( translateY ).arg( translateZ );
+
+  QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << u"translate"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--transform-matrix=%1"_s.arg( transformMatrix ) );
+  QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
+
+  double scaleX = 2.0;
+  double scaleY = 3.0;
+  double scaleZ = 4.0;
+
+  parameters.clear();
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
+  parameters.insert( u"SCALE_X"_s, scaleX );
+  parameters.insert( u"SCALE_Y"_s, scaleY );
+  parameters.insert( u"SCALE_Z"_s, scaleZ );
+
+  transformMatrix = u"%1 0 0 0 0 %2 0 0 0 0 %3 0 0 0 0 1"_s.arg( scaleX ).arg( scaleY ).arg( scaleZ );
+
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << u"translate"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--transform-matrix=%1"_s.arg( transformMatrix ) );
+  QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
+}
+
+//only add test case if PDAL version is 2.10 or higher - can be removed when PDAL 2.10 is minimum requirement
+#ifdef HAVE_PDAL_QGIS
+#if PDAL_VERSION_MAJOR_INT > 2 || ( PDAL_VERSION_MAJOR_INT == 2 && PDAL_VERSION_MINOR_INT >= 10 )
+void TestQgsProcessingPdalAlgs::compare()
+{
+  const QString inputPointCloudFileName = mDataDir + "/point_clouds/copc/autzen-bmx-2010.copc.laz";
+  const QFileInfo inputPointCloudFileInfo( inputPointCloudFileName );
+  const QString inputPointCloud = inputPointCloudFileInfo.filePath();
+
+  const QString inputComparePointCloudFileName = mDataDir + "/point_clouds/copc/autzen-bmx-2023.copc.laz";
+  const QFileInfo inputComparePointCloudFileInfo( inputComparePointCloudFileName );
+  const QString inputComparePointCloud = inputComparePointCloudFileInfo.filePath();
+
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:compare"_s ) ) );
+
+  auto context = std::make_unique<QgsProcessingContext>();
+  context->setProject( QgsProject::instance() );
+  context->setMaximumThreads( 0 );
+
+  QgsProcessingFeedback feedback;
+
+  const QString outputPointCloud = QDir::tempPath() + "/compare_point_cloud.copc.laz";
+
+  double subsamplingCellSize = 2.5;
+  double normalRadius = 2.0;
+  double cylRadius = 3.0;
+  double cylHalflen = 6.0;
+  double regError = 0.1;
+  QString cylOrientation = u"up"_s;
+
+  QVariantMap parameters;
+  parameters.insert( u"INPUT"_s, inputPointCloud );
+  parameters.insert( u"INPUT-COMPARE"_s, inputComparePointCloud );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
+  parameters.insert( u"SUBSAMPLING-CELL-SIZE"_s, subsamplingCellSize );
+  parameters.insert( u"NORMAL-RADIUS"_s, normalRadius );
+  parameters.insert( u"CYL-RADIUS"_s, cylRadius );
+  parameters.insert( u"CYL-HALFLEN"_s, cylHalflen );
+  parameters.insert( u"REG-ERROR"_s, regError );
+  parameters.insert( u"CYL-ORIENTATION"_s, cylOrientation );
+
+
+  QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << u"compare"_s << u"--input=%1"_s.arg( inputPointCloud ) << u"--input-compare=%1"_s.arg( inputComparePointCloud ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--subsampling-cell-size=%1"_s.arg( subsamplingCellSize ) << u"--normal-radius=%1"_s.arg( normalRadius ) << u"--cyl-radius=%1"_s.arg( cylRadius ) << u"--cyl-halflen=%1"_s.arg( cylHalflen ) << u"--reg-error=%1"_s.arg( regError ) << u"--cyl-orientation=%1"_s.arg( cylOrientation ) );
+
+  bool ok;
+  alg->run( parameters, *context, &feedback, &ok );
+
+  QVERIFY( ok );
+  QVERIFY( QFileInfo::exists( outputPointCloud ) );
+}
+#endif
+#endif
 
 QGSTEST_MAIN( TestQgsProcessingPdalAlgs )
 #include "testqgsprocessingpdalalgs.moc"

@@ -92,6 +92,7 @@
 #include <QScreen>
 #include <QShortcut>
 #include <QSlider>
+#include <QString>
 #include <QTreeView>
 #include <QUndoView>
 #include <QUrl>
@@ -99,6 +100,8 @@
 #include <QWindow>
 
 #include "moc_qgslayoutdesignerdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 #if defined( HAVE_QTPRINTER )
 #include <QPageSetupDialog>
@@ -4061,7 +4064,7 @@ void QgsLayoutDesignerDialog::showWmsPrintingWarning()
   {
     QgsMessageViewer *m = new QgsMessageViewer( this );
     m->setWindowTitle( tr( "Project Contains WMS Layers" ) );
-    m->setMessage( tr( "Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed" ), QgsMessageOutput::MessageText );
+    m->setMessage( tr( "Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed" ), Qgis::StringFormat::PlainText );
     m->setCheckBoxText( tr( "Don't show this message again" ) );
     m->setCheckBoxState( Qt::Unchecked );
     m->setCheckBoxVisible( true );
@@ -4104,7 +4107,7 @@ void QgsLayoutDesignerDialog::showRasterizationWarning()
 
   QgsMessageViewer m( this, QgsGuiUtils::ModalDialogFlags, false );
   m.setWindowTitle( tr( "Composition Effects" ) );
-  m.setMessage( tr( "Advanced composition effects such as blend modes or vector layer transparency are enabled in this layout, which cannot be printed as vectors. Printing as a raster is recommended." ), QgsMessageOutput::MessageText );
+  m.setMessage( tr( "Advanced composition effects such as blend modes or vector layer transparency are enabled in this layout, which cannot be printed as vectors. Printing as a raster is recommended." ), Qgis::StringFormat::PlainText );
   m.setCheckBoxText( tr( "Print as raster" ) );
   m.setCheckBoxState( Qt::Checked );
   m.setCheckBoxVisible( true );
@@ -4123,7 +4126,7 @@ void QgsLayoutDesignerDialog::showForceVectorWarning()
 
   QgsMessageViewer m( this, QgsGuiUtils::ModalDialogFlags, false );
   m.setWindowTitle( tr( "Force Vector" ) );
-  m.setMessage( tr( "This layout has the \"Always export as vectors\" option enabled, but the layout contains effects such as blend modes or vector layer transparency, which cannot be printed as vectors. The generated file will differ from the layout contents." ), QgsMessageOutput::MessageText );
+  m.setMessage( tr( "This layout has the \"Always export as vectors\" option enabled, but the layout contains effects such as blend modes or vector layer transparency, which cannot be printed as vectors. The generated file will differ from the layout contents." ), Qgis::StringFormat::PlainText );
   m.setCheckBoxText( tr( "Never show this message again" ) );
   m.setCheckBoxState( Qt::Unchecked );
   m.setCheckBoxVisible( true );

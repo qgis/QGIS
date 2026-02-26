@@ -22,8 +22,11 @@
 
 #include <QStandardItem>
 #include <QStandardItemModel>
+#include <QString>
 
 #include "moc_qgsstylegroupselectiondialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsStyleGroupSelectionDialog::QgsStyleGroupSelectionDialog( QgsStyle *style, QWidget *parent )
   : QDialog( parent )

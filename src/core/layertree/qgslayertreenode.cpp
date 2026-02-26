@@ -20,9 +20,12 @@
 #include "qgslayertreeutils.h"
 
 #include <QDomElement>
+#include <QString>
 #include <QStringList>
 
 #include "moc_qgslayertreenode.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerTreeNode::QgsLayerTreeNode( QgsLayerTreeNode::NodeType t, bool checked )
   : mNodeType( t )

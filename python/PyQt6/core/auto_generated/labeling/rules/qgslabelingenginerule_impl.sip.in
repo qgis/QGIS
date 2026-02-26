@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsAbstractLabelingEngineRuleDistanceFromFeature : QgsAbstractLabelingEngineRule
 {
 %Docstring(signature="appended")

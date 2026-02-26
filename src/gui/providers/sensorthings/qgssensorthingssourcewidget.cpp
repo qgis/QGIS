@@ -17,7 +17,11 @@
 
 #include "qgssensorthingssourcewidget.h"
 
+#include <QString>
+
 #include "moc_qgssensorthingssourcewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

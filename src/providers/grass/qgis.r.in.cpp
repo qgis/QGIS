@@ -85,7 +85,10 @@ int main( int argc, char **argv )
   QDataStream stdinStream( &stdinFile );
 
   QFile stdoutFile;
-  stdoutFile.open( stdout, QIODevice::WriteOnly | QIODevice::Unbuffered );
+  if ( !stdoutFile.open( stdout, QIODevice::WriteOnly | QIODevice::Unbuffered ) )
+  {
+    G_fatal_error( "Could not open stdout for write" );
+  }
   QDataStream stdoutStream( &stdoutFile );
 
   qint32 proj, zone;

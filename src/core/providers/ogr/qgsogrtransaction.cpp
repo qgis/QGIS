@@ -17,7 +17,11 @@
 
 #include "qgsogrtransaction.h"
 
+#include <QString>
+
 #include "moc_qgsogrtransaction.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

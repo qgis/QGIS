@@ -23,6 +23,9 @@
 #include "qgssymbollayerutils.h"
 
 #include <QPicture>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsPaintEffect::QgsPaintEffect( const QgsPaintEffect &other )
   : mEnabled( other.enabled() )

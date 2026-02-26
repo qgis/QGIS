@@ -356,3 +356,31 @@ void buildOutput(std::string outputFile, std::vector<std::string> &tileOutputFil
         removeFiles(tileOutputFiles, true);
     }
 }
+
+std::string tileOutputFileName(const std::string &outputFile, const std::string &outputFormat, const fs::path &outputSubdir, const std::string &tileFilename)
+{
+    assert(outputFormat == "las" || outputFormat == "laz" || outputFormat == "copc");
+
+    const fs::path inputBasename = fileStem(tileFilename);
+
+    // construct full output file name for the tile without extension
+    const std::string fullFileNameWithoutExt = (outputSubdir / inputBasename).string();
+
+    // output is not a VPC, it will be merged later into a single file,
+    // use las to avoid zipping the file, it will be removed after merging
+    if (!ends_with(outputFile, ".vpc"))
+    {
+        return fullFileNameWithoutExt + ".las";
+    }
+
+    // output is VPC, use specified output format
+    std::string ext = outputFormat;
+
+    // change extension for copc, user inputed copc as format, but copc.laz is needed as extension
+    if (outputFormat == "copc")
+    {
+        ext = "copc.laz";
+    }
+
+    return fullFileNameWithoutExt + "." + ext;
+}

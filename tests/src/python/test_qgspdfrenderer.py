@@ -11,11 +11,10 @@ the Free Software Foundation; either version 2 of the License, or
 import os
 import unittest
 
-from qgis.PyQt.QtCore import Qt, QRectF
-from qgis.PyQt.QtGui import QImage, QPainter
 from qgis.core import QgsPdfRenderer
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QRectF, Qt
+from qgis.PyQt.QtGui import QImage, QPainter
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -24,7 +23,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsPdfRenderer(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "pdf"

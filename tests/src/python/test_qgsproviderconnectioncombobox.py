@@ -14,12 +14,11 @@ import os
 import shutil
 import tempfile
 
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import QgsProviderRegistry, QgsVectorLayer
 from qgis.gui import QgsProviderConnectionComboBox
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import unittest
-
 from utilities import start_app, unitTestDataPath
 
 start_app()
@@ -28,7 +27,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsProviderConnectionComboBox(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

@@ -20,6 +20,10 @@
 #include "qgsrastercalculator.h"
 #include "qgsrasterfilewriter.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 Qgis::ProcessingAlgorithmFlags QgsRasterCalculatorAlgorithm::flags() const

@@ -30,9 +30,12 @@
 #include <QProgressDialog>
 #include <QSet>
 #include <QSettings>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsgmlschema.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifndef NS_SEPARATOR_DEFINED
 #define NS_SEPARATOR_DEFINED

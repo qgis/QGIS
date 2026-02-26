@@ -50,7 +50,6 @@ import re
 import signal
 import sys
 import traceback
-
 from shlex import quote
 
 from pexpect import run
@@ -136,9 +135,7 @@ if iface is None:
     print("=" * 60)
 
     print(
-        "QGIS Test Runner - {} bytes returned and finished with exit code: {}".format(
-            len(out), 0 if ok else 1
-        )
+        f"QGIS Test Runner - {len(out)} bytes returned and finished with exit code: {0 if ok else 1}"
     )
     sys.exit(0 if ok else 1)
 

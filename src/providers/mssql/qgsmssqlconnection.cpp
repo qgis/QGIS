@@ -30,6 +30,9 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 bool QgsMssqlConnection::geometryColumnsOnly( const QString &name )
 {

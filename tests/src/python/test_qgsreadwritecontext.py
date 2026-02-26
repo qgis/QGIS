@@ -16,7 +16,6 @@ from qgis.testing import unittest
 
 
 class TestQgsReadWriteContext(unittest.TestCase):
-
     def testEnterCategory(self):
         context = QgsReadWriteContext()
         context.pushMessage("msg0", Qgis.MessageLevel.Critical)

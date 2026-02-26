@@ -27,6 +27,9 @@
 
 #include <QIcon>
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsLayerTreeLayer;
 class QgsLayerTreeModel;

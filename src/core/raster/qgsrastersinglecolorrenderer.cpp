@@ -22,6 +22,9 @@
 
 #include <QDomDocument>
 #include <QDomElement>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsRasterSingleColorRenderer::QgsRasterSingleColorRenderer( QgsRasterInterface *input, int band, const QColor &color )
   : QgsRasterRenderer( input, u"singlecolor"_s )

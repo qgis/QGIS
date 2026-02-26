@@ -37,7 +37,10 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QSet>
+#include <QString>
 #include <QUuid>
+
+using namespace Qt::StringLiterals;
 
 QgsRuleBasedRenderer::Rule::Rule( QgsSymbol *symbol, int scaleMinDenom, int scaleMaxDenom, const QString &filterExp, const QString &label, const QString &description, bool elseRule )
   : mSymbol( symbol )
@@ -785,7 +788,7 @@ void QgsRuleBasedRenderer::Rule::stopRender( QgsRenderContext &context )
   mSymbolNormZLevels.clear();
 }
 
-QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::create( QDomElement &ruleElem, QgsSymbolMap &symbolMap, bool reuseId )
+QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::create( QDomElement &ruleElem, QgsSymbolMap &symbolMap, bool reuseId, const QgsReadWriteContext &context )
 {
   QString symbolIdx = ruleElem.attribute( u"symbol"_s );
   QgsSymbol *symbol = nullptr;
@@ -802,10 +805,12 @@ QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::create( QDomElement &rul
   }
 
   QString filterExp = ruleElem.attribute( u"filter"_s );
-  QString label = ruleElem.attribute( u"label"_s );
+  QString label = context.projectTranslator()->translate( u"project:layers:%1:legendsymbollabels"_s.arg( context.currentLayerId() ), ruleElem.attribute( u"label"_s ) );
+  QgsDebugMsgLevel( "context" + u"project:layers:%1:legendsymbollabels"_s.arg( context.currentLayerId() ) + " source " + ruleElem.attribute( u"label"_s ), 3 );
   QString description = ruleElem.attribute( u"description"_s );
   int scaleMinDenom = ruleElem.attribute( u"scalemindenom"_s, u"0"_s ).toInt();
   int scaleMaxDenom = ruleElem.attribute( u"scalemaxdenom"_s, u"0"_s ).toInt();
+
   QString ruleKey;
   if ( reuseId )
     ruleKey = ruleElem.attribute( u"key"_s );
@@ -821,7 +826,7 @@ QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::create( QDomElement &rul
   QDomElement childRuleElem = ruleElem.firstChildElement( u"rule"_s );
   while ( !childRuleElem.isNull() )
   {
-    Rule *childRule = create( childRuleElem, symbolMap );
+    Rule *childRule = create( childRuleElem, symbolMap, true, context );
     if ( childRule )
     {
       rule->appendChild( childRule );
@@ -1312,7 +1317,7 @@ QgsFeatureRenderer *QgsRuleBasedRenderer::create( QDomElement &element, const Qg
 
   QDomElement rulesElem = element.firstChildElement( u"rules"_s );
 
-  Rule *root = Rule::create( rulesElem, symbolMap );
+  Rule *root = Rule::create( rulesElem, symbolMap, true, context );
   if ( !root )
     return nullptr;
 

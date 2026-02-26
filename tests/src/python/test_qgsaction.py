@@ -13,9 +13,9 @@ __date__ = "24/11/2021"
 __copyright__ = "Copyright 2021, The QGIS Project"
 
 import os
+import unittest
 from functools import partial
 
-from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.core import (
     QgsAction,
     QgsApplication,
@@ -23,14 +23,13 @@ from qgis.core import (
     QgsNetworkAccessManager,
     QgsNetworkRequestParameters,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QTemporaryDir
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsAction(QgisTestCase):
-
     def setUp(self):
         self.body = None
 

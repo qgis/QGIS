@@ -11,20 +11,20 @@ __date__ = "25/07/2014"
 __copyright__ = "Copyright 2014, The QGIS Project"
 
 
+import unittest
+
 from qgis.core import (
     QgsApplication,
     QgsColorScheme,
     QgsColorSchemeRegistry,
     QgsRecentColorScheme,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsColorSchemeRegistry(QgisTestCase):
-
     def testCreateInstance(self):
         """Test creating global color scheme registry instance"""
         registry = QgsApplication.colorSchemeRegistry()
@@ -85,7 +85,6 @@ class TestQgsColorSchemeRegistry(QgisTestCase):
         """
 
         class TestColorScheme(QgsColorScheme):
-
             def schemeName(self):
                 return "TestScheme"
 

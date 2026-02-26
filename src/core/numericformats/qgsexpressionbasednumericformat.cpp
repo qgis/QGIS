@@ -17,6 +17,10 @@
 
 #include "qgis.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsExpressionBasedNumericFormat::QgsExpressionBasedNumericFormat()
 {
   setExpression( u"@value"_s );

@@ -20,7 +20,6 @@ start_app()
 
 
 class TestQgsTriangulatedSurface(QgisTestCase):
-
     def test_constructor(self):
         surface = QgsTriangulatedSurface()
         self.assertTrue(surface.isEmpty())

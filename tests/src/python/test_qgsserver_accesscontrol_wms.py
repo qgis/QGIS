@@ -25,7 +25,6 @@ from qgis.server import (
     QgsBufferServerResponse,
 )
 from qgis.testing import unittest
-
 from test_qgsserver_accesscontrol import TestQgsServerAccessControl
 from utilities import unitTestDataPath
 
@@ -1258,7 +1257,6 @@ class TestQgsServerAccessControlWMS(TestQgsServerAccessControl):
         """Test access control security issue GH 32475"""
 
         class Filter(QgsAccessControlFilter):
-
             def layerFilterSubsetString(self, layer):
                 handler = iface.requestHandler()
                 if handler.parameter("LAYER_PERM") == "yes":

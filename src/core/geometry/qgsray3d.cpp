@@ -65,7 +65,7 @@ double QgsRay3D::angleToPoint( const QVector3D &point ) const
   return qRadiansToDegrees( std::atan2( v2.length(), v1.length() ) );
 }
 
-QVector3D QgsRay3D::point( float t ) const
+QVector3D QgsRay3D::point( float distance ) const
 {
-  return mOrigin + t * mDirection;
+  return mOrigin + distance * mDirection;
 }

@@ -28,6 +28,10 @@
 #include "qgsstyle.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsGeometryGeneratorSymbolLayer::~QgsGeometryGeneratorSymbolLayer() = default;
 
 QgsSymbolLayer *QgsGeometryGeneratorSymbolLayer::create( const QVariantMap &properties )
@@ -202,8 +206,7 @@ QgsSymbolLayer *QgsGeometryGeneratorSymbolLayer::clone() const
   clone->setSymbolType( mSymbolType );
   clone->setUnits( mUnits );
 
-  copyDataDefinedProperties( clone );
-  copyPaintEffect( clone );
+  copyCommonProperties( clone );
 
   return clone;
 }

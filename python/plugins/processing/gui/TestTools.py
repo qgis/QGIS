@@ -15,44 +15,40 @@
 ***************************************************************************
 """
 
-from typing import Tuple
-
+import ast
+import hashlib
 import os
 import posixpath
 import re
-import yaml
-import hashlib
-import ast
 
+import yaml
+from numpy import nan_to_num
 from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
-
-from numpy import nan_to_num
-
 from qgis.core import (
     QgsApplication,
     QgsProcessing,
-    QgsProcessingParameterDefinition,
+    QgsProcessingParameterBand,
     QgsProcessingParameterBoolean,
-    QgsProcessingParameterNumber,
+    QgsProcessingParameterDefinition,
     QgsProcessingParameterDistance,
     QgsProcessingParameterDuration,
-    QgsProcessingParameterFile,
-    QgsProcessingParameterBand,
-    QgsProcessingParameterString,
-    QgsProcessingParameterVectorLayer,
-    QgsProcessingParameterFeatureSource,
-    QgsProcessingParameterRasterLayer,
-    QgsProcessingParameterMultipleLayers,
-    QgsProcessingParameterRasterDestination,
-    QgsProcessingParameterFeatureSink,
-    QgsProcessingParameterVectorDestination,
-    QgsProcessingParameterFileDestination,
     QgsProcessingParameterEnum,
+    QgsProcessingParameterFeatureSink,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterFile,
+    QgsProcessingParameterFileDestination,
+    QgsProcessingParameterMultipleLayers,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterRasterDestination,
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterString,
+    QgsProcessingParameterVectorDestination,
+    QgsProcessingParameterVectorLayer,
     QgsProperty,
 )
 from qgis.PyQt.QtCore import QCoreApplication, QMetaObject
-from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QMessageBox
+from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QTextEdit, QVBoxLayout
 
 gdal.UseExceptions()
 
@@ -328,16 +324,16 @@ def createTest(text):
             schema, filepath = extractSchemaPath(token)
             results[out.name()] = {"type": "vector", "name": filepath}
             if not schema:
-                results[out.name()][
-                    "location"
-                ] = "[The expected result data is not in the testdata directory. Please write it to processing/tests/testdata/expected. Prefer gml files.]"
+                results[out.name()]["location"] = (
+                    "[The expected result data is not in the testdata directory. Please write it to processing/tests/testdata/expected. Prefer gml files.]"
+                )
         elif isinstance(out, QgsProcessingParameterFileDestination):
             schema, filepath = extractSchemaPath(token)
             results[out.name()] = {"type": "file", "name": filepath}
             if not schema:
-                results[out.name()][
-                    "location"
-                ] = "[The expected result file is not in the testdata directory. Please redirect the output to processing/tests/testdata/expected.]"
+                results[out.name()]["location"] = (
+                    "[The expected result file is not in the testdata directory. Please redirect the output to processing/tests/testdata/expected.]"
+                )
 
     definition["results"] = results
     dlg = ShowTestDialog(yaml.dump([definition], default_flow_style=False))
@@ -349,7 +345,6 @@ def tr(string):
 
 
 class ShowTestDialog(QDialog):
-
     def __init__(self, s):
         QDialog.__init__(self)
         self.setModal(True)

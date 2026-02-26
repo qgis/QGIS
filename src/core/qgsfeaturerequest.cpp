@@ -20,7 +20,10 @@
 #include "qgsgeometry.h"
 #include "qgsgeometryengine.h"
 
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 //constants
 const QString QgsFeatureRequest::ALL_ATTRIBUTES = u"#!allattributes!#"_s;

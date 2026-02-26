@@ -23,9 +23,12 @@
 #include <QApplication>
 #include <QIODevice>
 #include <QRegularExpression>
+#include <QString>
 #include <QStringList>
 
 #include "moc_qgsnmeaconnection.cpp"
+
+using namespace Qt::StringLiterals;
 
 //from libnmea
 #include "parse.h"

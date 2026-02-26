@@ -17,7 +17,11 @@
 
 #include "qgsgdalguiprovider.h"
 
+#include <QString>
+
 #include "moc_qgsgdalguiprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

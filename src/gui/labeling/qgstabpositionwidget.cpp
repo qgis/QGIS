@@ -20,8 +20,11 @@
 #include "qgsunittypes.h"
 
 #include <QDialogButtonBox>
+#include <QString>
 
 #include "moc_qgstabpositionwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTabPositionWidget::QgsTabPositionWidget( QWidget *parent )
   : QgsPanelWidget( parent )

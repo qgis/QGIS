@@ -22,8 +22,11 @@
 #include <QIODevice>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QString>
 #include <QUrl>
 #include <QUrlQuery>
+
+using namespace Qt::StringLiterals;
 
 static bool _parseMetadataDocument( const QJsonDocument &doc, QgsProjectStorage::Metadata &metadata )
 {
@@ -102,7 +105,17 @@ bool QgsPostgresProjectStorage::readProject( const QString &uri, QIODevice *devi
   }
 
   bool ok = false;
-  QString sql( u"SELECT content FROM %1.qgis_projects WHERE name = %2"_s.arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ), QgsPostgresConn::quotedValue( projectUri.projectName ) ) );
+  QString sql;
+
+  if ( projectUri.isVersion )
+  {
+    sql = u"SELECT content FROM %1.qgis_projects_versions WHERE name = %2 AND date_saved = %3"_s.arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ), QgsPostgresConn::quotedValue( projectUri.projectName ), QgsPostgresConn::quotedValue( projectUri.dateSaved ) );
+  }
+  else
+  {
+    sql = u"SELECT content FROM %1.qgis_projects WHERE name = %2"_s.arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ), QgsPostgresConn::quotedValue( projectUri.projectName ) );
+  }
+
   QgsPostgresResult result( conn->PQexec( sql ) );
   if ( result.PQresultStatus() == PGRES_TUPLES_OK )
   {
@@ -168,13 +181,33 @@ bool QgsPostgresProjectStorage::writeProject( const QString &uri, QIODevice *dev
   sql += QString::fromLatin1( content.toHex() );
   sql += "') ON CONFLICT (name) DO UPDATE SET content = EXCLUDED.content, metadata = EXCLUDED.metadata;";
 
+  const QString errCause = QObject::tr( "Unable to insert or update project (project=%1) in the destination table on the database. Maybe this is due to table permissions (user=%2). Please contact your database admin." ).arg( projectUri.projectName, projectUri.connInfo.username() );
+
   QgsPostgresResult res( conn->PQexec( sql ) );
   if ( res.PQresultStatus() != PGRES_COMMAND_OK )
   {
-    QString errCause = QObject::tr( "Unable to insert or update project (project=%1) in the destination table on the database. Maybe this is due to table permissions (user=%2). Please contact your database admin." ).arg( projectUri.projectName, projectUri.connInfo.username() );
     context.pushMessage( errCause, Qgis::MessageLevel::Critical );
     QgsPostgresConnPool::instance()->releaseConnection( conn );
     return false;
+  }
+
+  // if project was loaded from older version (isVersion is True and dateSaved is not empty), it is necessary to update comment qgis_projects in from the older version
+  // the comment is stored only in PG DB and project does not have access to it
+  if ( projectUri.isVersion && !projectUri.dateSaved.isEmpty() )
+  {
+    const QString sqlSetComment = u"UPDATE %1.qgis_projects SET comment = (SELECT comment FROM %1.qgis_projects_versions WHERE name = %2 AND date_saved = %3 ) WHERE name = %2"_s.arg(
+      QgsPostgresConn::quotedIdentifier( projectUri.schemaName ),
+      QgsPostgresConn::quotedValue( projectUri.projectName ),
+      QgsPostgresConn::quotedValue( projectUri.dateSaved )
+    );
+
+    QgsPostgresResult resComment( conn->PQexec( sqlSetComment ) );
+    if ( resComment.PQresultStatus() != PGRES_COMMAND_OK )
+    {
+      context.pushMessage( errCause, Qgis::MessageLevel::Critical );
+      QgsPostgresConnPool::instance()->releaseConnection( conn );
+      return false;
+    }
   }
 
   QgsPostgresConnPool::instance()->releaseConnection( conn );
@@ -261,6 +294,12 @@ QString QgsPostgresProjectStorage::encodeUri( const QgsPostgresProjectUri &postU
   if ( !postUri.projectName.isEmpty() )
     urlQuery.addQueryItem( "project", postUri.projectName );
 
+  if ( postUri.isVersion )
+  {
+    urlQuery.addQueryItem( "isVersion", "true" );
+    urlQuery.addQueryItem( "dateSaved", QVariant( postUri.dateSaved ).toString() );
+  }
+
   u.setQuery( urlQuery );
 
   return QString::fromUtf8( u.toEncoded() );
@@ -290,5 +329,12 @@ QgsPostgresProjectUri QgsPostgresProjectStorage::decodeUri( const QString &uri )
 
   postUri.schemaName = urlQuery.queryItemValue( "schema" );
   postUri.projectName = urlQuery.queryItemValue( "project" );
+
+  if ( urlQuery.hasQueryItem( "isVersion" ) )
+    postUri.isVersion = QVariant( urlQuery.queryItemValue( "isVersion" ) ).toBool();
+
+  if ( urlQuery.hasQueryItem( "dateSaved" ) )
+    postUri.dateSaved = urlQuery.queryItemValue( "dateSaved" );
+
   return postUri;
 }

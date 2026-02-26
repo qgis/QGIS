@@ -19,8 +19,11 @@
 
 #include <QPushButton>
 #include <QStandardItemModel>
+#include <QString>
 
 #include "moc_qgsexpressionaddfunctionfiledialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsExpressionAddFunctionFileDialog::QgsExpressionAddFunctionFileDialog( bool enableProjectFunctions, QWidget *parent )
   : QDialog( parent )

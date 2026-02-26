@@ -34,6 +34,8 @@
 
 #include "moc_qgsrectangle.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsRectangle QgsRectangle::fromWkt( const QString &wkt )
 {
   const QgsGeometry geom = QgsGeometry::fromWkt( wkt );

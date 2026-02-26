@@ -17,6 +17,10 @@
 
 #include "qgsalgorithmextendlines.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsExtendLinesAlgorithm::name() const

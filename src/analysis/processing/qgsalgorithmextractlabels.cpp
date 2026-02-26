@@ -33,6 +33,9 @@
 #include "qgsvectorlayer.h"
 
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

@@ -25,6 +25,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsMultiSurface : public QObject
 {
     Q_OBJECT

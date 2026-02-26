@@ -18,8 +18,13 @@
 #include "qgssettingslocatorfilter.h"
 
 #include "qgisapp.h"
+#include "qgsstringutils.h"
+
+#include <QString>
 
 #include "moc_qgssettingslocatorfilter.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSettingsLocatorFilter::QgsSettingsLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )
@@ -70,7 +75,7 @@ void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLoc
       continue;
     }
 
-    result.score = fuzzyScore( result.displayString, string );
+    result.score = fuzzyScore( QgsStringUtils::unaccent( result.displayString ), QgsStringUtils::unaccent( string ) );
 
     if ( result.score > 0 )
       emit resultFetched( result );

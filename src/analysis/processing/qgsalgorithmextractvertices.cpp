@@ -20,6 +20,10 @@
 #include "qgsabstractgeometry.h"
 #include "qgsgeometryutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsExtractVerticesAlgorithm::name() const

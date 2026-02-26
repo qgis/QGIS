@@ -16,8 +16,10 @@
 """
 
 import typing as _typing
-from .qgstaskwrapper import QgsTaskWrapper
+
 from qgis._core import QgsTask
+
+from .qgstaskwrapper import QgsTaskWrapper
 
 
 @staticmethod
@@ -27,7 +29,7 @@ def _fromFunction(
     *args,
     on_finished: _typing.Optional[_typing.Callable] = None,
     flags=QgsTask.Flag.AllFlags,
-    **kwargs
+    **kwargs,
 ) -> QgsTask:
     """
     Creates a new QgsTask task from a python function.

@@ -22,8 +22,11 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsgrassselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 extern "C"
 {

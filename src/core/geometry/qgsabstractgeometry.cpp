@@ -212,6 +212,11 @@ double QgsAbstractGeometry::area() const
   return 0.0;
 }
 
+double QgsAbstractGeometry::area3D() const
+{
+  return 0.0;
+}
+
 QString QgsAbstractGeometry::wktTypeStr() const
 {
   QString wkt = geometryType();

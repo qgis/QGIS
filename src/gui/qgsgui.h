@@ -25,7 +25,10 @@
 #include "qgis_sip.h"
 #include "qgssettingstree.h"
 
+#include <QString>
 #include <QWidget>
+
+using namespace Qt::StringLiterals;
 
 class QgsSettingsRegistryGui;
 class QgsEditorWidgetRegistry;

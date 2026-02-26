@@ -26,6 +26,10 @@
 #include "qgsguiutils.h"
 #include "qgssettingstree.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsAuthSettingsWidget;
 class QgsSettingsEntryBool;
 

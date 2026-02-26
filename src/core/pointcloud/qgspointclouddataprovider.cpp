@@ -20,7 +20,6 @@
 #include <mutex>
 
 #include "qgis.h"
-#include "qgscopcpointcloudindex.h"
 #include "qgsgeometry.h"
 #include "qgsgeos.h"
 #include "qgspointcloudindex.h"
@@ -29,10 +28,13 @@
 #include "qgsthreadingutils.h"
 
 #include <QDebug>
-#include <QtConcurrent/QtConcurrentMap>
+#include <QString>
+#include <QtConcurrentMap>
 #include <QtMath>
 
 #include "moc_qgspointclouddataprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPointCloudDataProvider::QgsPointCloudDataProvider(
   const QString &uri,

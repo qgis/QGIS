@@ -35,7 +35,10 @@
 #include "qgsvectortileutils.h"
 
 #include <QElapsedTimer>
+#include <QString>
 #include <QThread>
+
+using namespace Qt::StringLiterals;
 
 QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )

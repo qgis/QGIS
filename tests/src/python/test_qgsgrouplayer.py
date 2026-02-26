@@ -11,10 +11,9 @@ __date__ = "22/11/2021"
 __copyright__ = "Copyright 2021, The QGIS Project"
 
 import os
+import unittest
 from tempfile import TemporaryDirectory
 
-from qgis.PyQt.QtCore import QCoreApplication, QDir, QEvent, QSize
-from qgis.PyQt.QtGui import QColor, QPainter
 from qgis.core import (
     QgsColorEffect,
     QgsCoordinateTransformContext,
@@ -31,9 +30,9 @@ from qgis.core import (
     QgsRasterLayer,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QCoreApplication, QDir, QEvent, QSize
+from qgis.PyQt.QtGui import QColor, QPainter
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -42,7 +41,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsGroupLayer(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "group_layer"

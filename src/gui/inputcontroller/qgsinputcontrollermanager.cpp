@@ -21,8 +21,11 @@
 
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+#include <QString>
 
 #include "moc_qgsinputcontrollermanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_QTGAMEPAD
 #include "qgs2dgamepadcontroller.h"

@@ -18,7 +18,6 @@
 #ifndef QGSTILEDOWNLOADMANAGER_H
 #define QGSTILEDOWNLOADMANAGER_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 
@@ -27,6 +26,8 @@
 #include <QNetworkReply>
 #include <QThread>
 #include <QTimer>
+
+#define SIP_NO_FILE
 
 class QgsTileDownloadManager;
 class QgsRangeRequestCache;

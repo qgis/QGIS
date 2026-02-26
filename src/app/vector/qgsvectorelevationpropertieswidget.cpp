@@ -25,7 +25,11 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerelevationproperties.h"
 
+#include <QString>
+
 #include "moc_qgsvectorelevationpropertieswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

@@ -25,10 +25,11 @@
 #include "qgsmodelviewtool.h"
 #include "qgsmodelviewtoollink.h"
 
+#define SIP_NO_FILE
+
 class QgsModelViewMouseHandles;
 class QGraphicsItem;
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup gui

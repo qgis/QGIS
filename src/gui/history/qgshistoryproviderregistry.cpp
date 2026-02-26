@@ -29,8 +29,11 @@
 #include "qgsxmlutils.h"
 
 #include <QFile>
+#include <QString>
 
 #include "moc_qgshistoryproviderregistry.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsHistoryProviderRegistry::QgsHistoryProviderRegistry( QObject *parent, bool useMemoryDatabase )
   : QObject( parent )

@@ -12,16 +12,14 @@ __copyright__ = "Copyright 2017, The QGIS Project"
 
 import unittest
 
-from qgis.PyQt.QtWidgets import QDoubleSpinBox
-
 from qgis.gui import QgsRatioLockButton
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtWidgets import QDoubleSpinBox
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsRatioLockButton(QgisTestCase):
-
     def testLinkedWidgets(self):
         """test linking spin boxes to combobox"""
         w = QgsRatioLockButton()

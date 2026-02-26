@@ -22,7 +22,10 @@
 #include "qgsvectorlayer.h"
 
 #include <QCollator>
+#include <QString>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

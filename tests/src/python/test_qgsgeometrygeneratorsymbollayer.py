@@ -20,9 +20,8 @@ __date__ = "December 2015"
 __copyright__ = "(C) 2015, Matthias Kuhn"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QPointF, QSize
-from qgis.PyQt.QtGui import QColor, QImage, QPainter, QPolygonF
 from qgis.core import (
     Qgis,
     QgsArrowSymbolLayer,
@@ -50,10 +49,10 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerUtils,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QPointF, QSize
+from qgis.PyQt.QtGui import QColor, QImage, QPainter, QPolygonF
+from qgis.testing import QgisTestCase, start_app
 from qgis.testing.mocked import get_iface
-
 from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
@@ -63,7 +62,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsGeometryGeneratorSymbolLayerV2(QgisTestCase):
-
     def setUp(self):
         self.iface = get_iface()
 

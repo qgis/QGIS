@@ -20,7 +20,6 @@ import osgeo.gdal  # NOQA
 from qgis.core import QgsMessageLog
 from qgis.server import QgsServer, QgsService
 from qgis.testing import unittest
-
 from test_qgsserver import QgsServerTestBase
 from utilities import unitTestDataPath
 
@@ -30,7 +29,6 @@ RE_ATTRIBUTES = rb"[^>\s]+=[^>\s]+"
 
 
 class TestQgsServerPlugins(QgsServerTestBase):
-
     def setUp(self):
         """Create the server instance"""
         self.testdata_path = unitTestDataPath("qgis_server") + "/"
@@ -56,7 +54,6 @@ class TestQgsServerPlugins(QgsServerTestBase):
             return
 
         class SimpleHelloFilter(QgsServerFilter):
-
             def requestReady(self):
                 QgsMessageLog.logMessage("SimpleHelloFilter.requestReady")
 
@@ -90,7 +87,6 @@ class TestQgsServerPlugins(QgsServerTestBase):
 
         # Register some more filters
         class Filter1(QgsServerFilter):
-
             def responseComplete(self):
                 request = self.serverInterface().requestHandler()
                 params = request.parameterMap()
@@ -98,7 +94,6 @@ class TestQgsServerPlugins(QgsServerTestBase):
                     request.appendBody(b"Hello from Filter1!")
 
         class Filter2(QgsServerFilter):
-
             def responseComplete(self):
                 request = self.serverInterface().requestHandler()
                 params = request.parameterMap()
@@ -234,7 +229,6 @@ class TestQgsServerPlugins(QgsServerTestBase):
             return
 
         class FilterBroken(QgsServerFilter):
-
             def responseComplete(self):
                 raise Exception("There was something very wrong!")
 
@@ -256,7 +250,6 @@ class TestQgsServerPlugins(QgsServerTestBase):
             return
 
         class Filter1(QgsServerFilter):
-
             def responseComplete(self):
                 handler = self.serverInterface().requestHandler()
                 self.url = handler.url()
@@ -283,7 +276,6 @@ class TestQgsServerPlugins(QgsServerTestBase):
 
         # create a service for streaming data
         class StreamedService(QgsService):
-
             def __init__(self):
                 super().__init__()
                 self._response = b"Should never appear"
@@ -302,7 +294,6 @@ class TestQgsServerPlugins(QgsServerTestBase):
                 response.flush()
 
         class Filter1(QgsServerFilter):
-
             def onRequestReady(self):
                 request = self.serverInterface().requestHandler()
                 return self.propagate

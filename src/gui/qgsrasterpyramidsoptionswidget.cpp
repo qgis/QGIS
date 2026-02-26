@@ -28,9 +28,12 @@
 #include <QMouseEvent>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+#include <QString>
 #include <QTextEdit>
 
 #include "moc_qgsrasterpyramidsoptionswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRasterPyramidsOptionsWidget::QgsRasterPyramidsOptionsWidget( QWidget *parent, const QString &provider )
   : QWidget( parent )
@@ -157,6 +160,18 @@ void QgsRasterPyramidsOptionsWidget::apply()
   mySettings.setValue( prefix + "overviewList", tmpStr.trimmed() );
 
   mSaveOptionsWidget->apply();
+}
+
+void QgsRasterPyramidsOptionsWidget::tuneForFormat( const QString &driverName )
+{
+  const bool visible = ( driverName != "COG"_L1 );
+  labelOverviewFormat->setVisible( visible );
+  cbxPyramidsFormat->setVisible( visible );
+  labelLevels->setVisible( visible );
+  for ( auto it = mOverviewCheckBoxes.constBegin(); it != mOverviewCheckBoxes.constEnd(); ++it )
+    it.value()->setVisible( visible );
+  cbxPyramidsLevelsCustom->setVisible( visible );
+  lePyramidsLevels->setVisible( visible );
 }
 
 void QgsRasterPyramidsOptionsWidget::checkAllLevels( bool checked )

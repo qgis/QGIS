@@ -23,7 +23,10 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsvirtuallayersqlitehelper.h"
 
 #include <QRegularExpression>
+#include <QString>
 #include <QtDebug>
+
+using namespace Qt::StringLiterals;
 
 namespace QgsVirtualLayerQueryParser
 {

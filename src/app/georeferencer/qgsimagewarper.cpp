@@ -29,8 +29,11 @@
 #include "qgsogrutils.h"
 
 #include <QFile>
+#include <QString>
 
 #include "moc_qgsimagewarper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsImageWarper::QgsImageWarper()
 {

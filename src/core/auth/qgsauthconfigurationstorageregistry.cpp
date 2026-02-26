@@ -22,8 +22,11 @@
 #include "qgsthreadingutils.h"
 
 #include <QMutexLocker>
+#include <QString>
 
 #include "moc_qgsauthconfigurationstorageregistry.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthConfigurationStorageRegistry::QgsAuthConfigurationStorageRegistry()
 {

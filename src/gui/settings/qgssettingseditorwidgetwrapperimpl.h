@@ -26,6 +26,7 @@
 #include <QColor>
 #include <QComboBox>
 #include <QDoubleSpinBox>
+#include <QGroupBox>
 #include <QLineEdit>
 #include <QSpinBox>
 #include <QTableWidget>
@@ -234,6 +235,40 @@ class GUI_EXPORT QgsSettingsBoolCheckBoxWrapper : public QgsSettingsEditorWidget
 
 /**
  * \ingroup gui
+ * \brief A factory for editors of boolean settings with a group box.
+ *
+ * \since QGIS 4.0
+ */
+class GUI_EXPORT QgsSettingsBoolGroupBoxWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool, QGroupBox, bool>
+{
+    Q_OBJECT
+  public:
+    //! Constructor of the factory
+    QgsSettingsBoolGroupBoxWrapper( QObject *parent = nullptr )
+      : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool, QGroupBox, bool>( parent ) {}
+
+    //! Constructor of the wrapper for a given \a setting and its widget \a editor
+    QgsSettingsBoolGroupBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() )
+      : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool, QGroupBox, bool>( editor ) { configureEditor( editor, setting, dynamicKeyPartList ); }
+
+    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsBoolGroupBoxWrapper( parent ); }
+
+    QString id() const override;
+
+    bool setSettingFromWidget() const override;
+
+    bool valueFromWidget() const override;
+
+    bool setWidgetValue( const bool &value ) const override;
+
+    void enableAutomaticUpdatePrivate() override;
+
+  protected:
+    void configureEditorPrivateImplementation() override;
+};
+
+/**
+ * \ingroup gui
  * \brief A factory for editors for integer settings with a spin box.
  *
  * \since QGIS 3.32
@@ -354,6 +389,7 @@ class GUI_EXPORT QgsSettingsColorButtonWrapper : public QgsSettingsEditorWidgetW
 #if defined( _MSC_VER )
 #ifndef SIP_RUN
 template class GUI_EXPORT QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool, QCheckBox, bool>;
+template class GUI_EXPORT QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool, QGroupBox, bool>;
 template class GUI_EXPORT QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor, QgsColorButton, QColor>;
 template class GUI_EXPORT QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryDouble, QDoubleSpinBox, double>;
 template class GUI_EXPORT QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryInteger, QSpinBox, int>;

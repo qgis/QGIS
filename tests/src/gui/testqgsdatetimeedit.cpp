@@ -19,7 +19,10 @@
 #include "qgsdatetimefieldformatter.h"
 #include "qgstest.h"
 
+#include <QString>
 #include <qdatetime.h>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsDateTimeEdit : public QObject
 {

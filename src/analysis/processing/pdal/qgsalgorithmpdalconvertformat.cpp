@@ -20,6 +20,10 @@
 #include "qgspointcloudlayer.h"
 #include "qgsrunprocess.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsPdalConvertFormatAlgorithm::name() const
@@ -65,6 +69,9 @@ QgsPdalConvertFormatAlgorithm *QgsPdalConvertFormatAlgorithm::createInstance() c
 void QgsPdalConvertFormatAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterPointCloudLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
+
+  createVpcOutputFormatParameter();
+
   addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Converted" ) ) );
 }
 
@@ -83,6 +90,7 @@ QStringList QgsPdalConvertFormatAlgorithm::createArgumentLists( const QVariantMa
 
   QStringList args = { u"translate"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ) };
 
+  applyVpcOutputFormatParameter( outputFile, args, parameters, context, feedback );
   applyThreadsParameter( args, context );
   return args;
 }

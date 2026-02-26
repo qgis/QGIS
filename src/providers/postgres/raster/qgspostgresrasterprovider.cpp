@@ -25,12 +25,16 @@
 #include "qgspostgresprovidermetadatautils.h"
 #include "qgspostgresutils.h"
 #include "qgsraster.h"
+#include "qgsrasterlayerutils.h"
 #include "qgsrectangle.h"
 #include "qgsstringutils.h"
 
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgspostgresrasterprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsPostgresRasterProvider::PG_RASTER_PROVIDER_KEY = u"postgresraster"_s;
 const QString QgsPostgresRasterProvider::PG_RASTER_PROVIDER_DESCRIPTION = u"Postgres raster provider"_s;
@@ -2321,7 +2325,17 @@ QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, Qgis::
   }
 
   QString tableToQuery { mQuery };
-  const double pixelsRatio { static_cast<double>( sampleSize ) / ( mWidth * mHeight ) };
+
+  qlonglong queryWidth { mWidth };
+  qlonglong queryHeight { mHeight };
+
+  if ( !extent.isNull() )
+  {
+    queryWidth = std::ceil( extent.width() / mScaleX );
+    queryHeight = std::ceil( extent.height() / std::abs( mScaleY ) );
+  }
+
+  const double pixelsRatio { sampleSize / static_cast<double>( queryWidth * queryHeight ) };
   double statsRatio { pixelsRatio };
 
   // Decide if overviews can be used here
@@ -2344,22 +2358,40 @@ QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, Qgis::
     }
   }
 
+  // Make sure the extent is aligned to the grid created by the raster, otherwise we might end up with wrong statistics for small rasters or small areas
+  const QgsRectangle extentExpanded { QgsRasterLayerUtils::alignRasterExtent( extent, QgsPointXY( mExtent.xMinimum(), mExtent.yMinimum() ), mScaleX, mScaleY ) };
+
   // Query the backend
-  QString where { extent.isEmpty() ? QString() : u"WHERE %1 && ST_GeomFromText( %2, %3 )"_s.arg( quotedIdentifier( mRasterColumn ) ).arg( quotedValue( extent.asWktPolygon() ) ).arg( mCrs.postgisSrid() ) };
+  const QString extentSql { extentExpanded.isNull() ? QString() : u"ST_GeomFromText( %1, %2 )"_s.arg( quotedValue( extentExpanded.asWktPolygon() ) ).arg( mCrs.postgisSrid() ) };
+  QString where { extentSql.isEmpty() ? QString() : u"WHERE %1 && %2"_s.arg( quotedIdentifier( mRasterColumn ), extentSql ) };
 
   if ( !subsetString().isEmpty() )
   {
     where.append( where.isEmpty() ? u"WHERE %1"_s.arg( subsetString() ) : u" AND %1"_s.arg( subsetString() ) );
   }
 
-  const QString sql = QStringLiteral( "SELECT (ST_SummaryStatsAgg( %1, %2, TRUE, %3 )).* "
-                                      "FROM %4 %5" )
-                        .arg( quotedIdentifier( mRasterColumn ) )
-                        .arg( bandNo )
-                        .arg( std::max<double>( 0, std::min<double>( 1, statsRatio ) ) )
-                        .arg( tableToQuery, where );
+  QString sql;
+  if ( extentSql.isEmpty() )
+  {
+    sql = u"SELECT ( ST_SummaryStatsAgg( %1, %2, TRUE, %3 )).* "
+          "FROM %4 %5"_s
+            .arg( quotedIdentifier( mRasterColumn ) )
+            .arg( bandNo )
+            .arg( std::max<double>( 0, std::min<double>( 1, statsRatio ) ) )
+            .arg( tableToQuery, where );
+  }
+  else
+  {
+    sql = u"SELECT ( ST_SummaryStatsAgg( ST_Clip( %1, %2 ), %3, TRUE, %4 )).* "
+          "FROM %5 %6"_s
+            .arg( quotedIdentifier( mRasterColumn ), extentSql )
+            .arg( bandNo )
+            .arg( std::max<double>( 0, std::min<double>( 1, statsRatio ) ) )
+            .arg( tableToQuery, where );
+  }
 
   QgsPostgresResult result( connectionRO()->PQexec( sql ) );
+
 
   if ( PGRES_TUPLES_OK == result.PQresultStatus() && result.PQntuples() == 1 )
   {

@@ -16,10 +16,12 @@ __date__ = "2019-11-21"
 __copyright__ = "Copyright 2019, The QGIS Project"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QByteArray, QDate, QDateTime, QTime, QVariant
+from providertestbase import ProviderTestCase
 from qgis.core import (
     NULL,
+    Qgis,
     QgsCoordinateReferenceSystem,
     QgsDataProvider,
     QgsDataSourceUri,
@@ -37,10 +39,8 @@ from qgis.core import (
     QgsVectorLayerExporter,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
-from providertestbase import ProviderTestCase
+from qgis.PyQt.QtCore import QByteArray, QDate, QDateTime, QTime, QVariant
+from qgis.testing import QgisTestCase, start_app
 from test_hana_utils import QgsHanaProviderUtils
 from utilities import unitTestDataPath
 
@@ -998,6 +998,89 @@ class TestPyQgsHanaProvider(QgisTestCase, ProviderTestCase):
             "sslHostNameInCertificate='hostname.domain.com' sslKeyStore='mykey.pem' "
             "sslTrustStore='server_root.crt' sslValidateCertificate='false' type='MultiPolygon' "
             'table="public"."gis" (geom)',
+        )
+
+    def test_urisReferToSame(self):
+        """
+        Test provider metadata urisReferToSame
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata("hana")
+
+        uri1_parts = {
+            "host": "MY_HOST",
+            "dbname": "MY_DB",
+            "port": "2222",
+            "schema": "schema1",
+            "table": "table1",
+        }
+        uri2_parts = {
+            "host": "MY_HOST",
+            "dbname": "MY_DB",
+            "port": "2222",
+            "schema": "schema2",
+            "table": "table2",
+        }
+
+        uri1 = metadata.encodeUri(uri1_parts)
+        uri2 = metadata.encodeUri(uri2_parts)
+
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Object)
+        )
+
+        uri2_parts["host"] = "MY_HOST2"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        uri2_parts["host"] = "MY_HOST"
+        uri2_parts["dbname"] = "MY_DB2"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        uri2_parts["dbname"] = "MY_DB"
+        uri2_parts["port"] = "3333"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+
+        uri2_parts["port"] = "2222"
+        uri2_parts["dsn"] = "xxxx"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+
+        del uri2_parts["dsn"]
+        uri2_parts["schema"] = "schema1"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Object)
+        )
+        uri2_parts["table"] = "table1"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Object)
         )
 
 

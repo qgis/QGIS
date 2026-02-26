@@ -10,17 +10,17 @@ __author__ = "Nyall Dawson"
 __date__ = "28/3/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
+import unittest
+
+from qgis.core import QgsSingleItemModel
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor
-from qgis.core import QgsSingleItemModel
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 app = start_app()
 
 
 class TestQgsSingleItemModel(QgisTestCase):
-
     def testModel(self):
         model = QgsSingleItemModel(
             None,

@@ -33,8 +33,11 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QResizeEvent>
+#include <QString>
 
 #include "moc_qgsmapoverviewcanvas.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget *parent, QgsMapCanvas *mapCanvas )
   : QWidget( parent )

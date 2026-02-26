@@ -23,9 +23,12 @@
 #include <QDialogButtonBox>
 #include <QItemDelegate>
 #include <QSpinBox>
+#include <QString>
 #include <QTableWidgetItem>
 
 #include "moc_qgssymbollevelsdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 ////////////////
 

@@ -22,9 +22,12 @@
 #include "qgsproviderregistry.h"
 #include "qgsvectordataprovider.h"
 
+#include <QString>
 #include <QTextCodec>
 
 #include "moc_qgsoapifsingleitemrequest.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsOapifSingleItemRequest::QgsOapifSingleItemRequest( const QgsDataSourceUri &baseUri, const QString &url )
   : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ) ), mUrl( url )

@@ -34,15 +34,14 @@ import difflib
 import email
 import re
 import tempfile
+import unittest
 import urllib.error
 import urllib.parse
 import urllib.request
-
 from io import StringIO
 from shutil import copytree
 
 import osgeo.gdal  # NOQA
-
 from qgis.core import (
     QgsFontUtils,
     QgsMultiRenderChecker,
@@ -56,8 +55,7 @@ from qgis.server import (
     QgsServerParameterDefinition,
     QgsServerRequest,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -424,9 +422,9 @@ class QgsServerTestBase(QgisTestCase):
         request = QgsBufferServerRequest(qs, requestMethod, {}, data)
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
-        assert (
-            response.statusCode() == status_code
-        ), f"{response.statusCode()} != {status_code}"
+        assert response.statusCode() == status_code, (
+            f"{response.statusCode()} != {status_code}"
+        )
 
     def _assertRed(self, color: QColor):
         self.assertEqual(color.red(), 255)
@@ -455,7 +453,6 @@ class QgsServerTestBase(QgisTestCase):
 
 
 class TestQgsServerTestBase(QgisTestCase):
-
     def test_assert_xml_equal(self):
         engine = QgsServerTestBase()
 
@@ -740,7 +737,6 @@ class TestQgsServer(QgsServerTestBase):
 
 
 class TestQgsServerParameter(QgisTestCase):
-
     def test_filter(self):
         # empty filter
         param = QgsServerParameterDefinition()

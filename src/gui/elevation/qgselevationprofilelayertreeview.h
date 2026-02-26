@@ -29,7 +29,6 @@
 
 #define SIP_NO_FILE
 
-
 class QgsLayerTree;
 class QgsElevationProfileLayerTreeModel;
 class QgsElevationProfileLayerTreeProxyModel;

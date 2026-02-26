@@ -51,10 +51,13 @@
 #include <QMenu>
 #include <QPlainTextDocumentLayout>
 #include <QSortFilterProxyModel>
+#include <QString>
 #include <QToolButton>
 #include <QTreeView>
 
 #include "moc_qgsbrowserdockwidget_p.cpp"
+
+using namespace Qt::StringLiterals;
 
 /// @cond PRIVATE
 

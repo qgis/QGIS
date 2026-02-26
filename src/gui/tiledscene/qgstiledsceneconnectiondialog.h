@@ -17,11 +17,12 @@
 #define QGSTILEDSCENECONNECTIONDIALOG_H
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 #include "ui_qgstiledsceneconnectiondialog.h"
 
 #include <QDialog>
+
+#define SIP_NO_FILE
 
 class QgsTiledSceneConnectionDialog : public QDialog, public Ui::QgsTiledSceneConnectionDialog
 {

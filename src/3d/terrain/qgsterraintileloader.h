@@ -27,12 +27,13 @@
 // version without notice, or even be removed.
 //
 
-#define SIP_NO_FILE
 
 #include "qgschunkloader.h"
 #include "qgsrectangle.h"
 
 #include <QImage>
+
+#define SIP_NO_FILE
 
 class QgsPhongMaterialSettings;
 class QgsTerrainEntity;

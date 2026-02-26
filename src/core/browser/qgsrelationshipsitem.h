@@ -22,6 +22,10 @@
 #include "qgsdataitem.h"
 #include "qgsweakrelation.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief Contains a collection of relationship items.

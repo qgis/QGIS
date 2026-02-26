@@ -3,7 +3,7 @@ name = "qgis"
 version = "@COMPLETE_VERSION@"
 description = "QGIS Python bindings (PyQGIS)"
 authors = [{ name = "QGIS Development Team" }]
-license = { text = "GPL-2.0-or-later" }
+license = "GPL-2.0-or-later"
 requires-python = ">=@MIN_PYTHON_VERSION@"
 dependencies = []
 

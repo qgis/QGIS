@@ -10,7 +10,6 @@ __author__ = "Nyall Dawson"
 __date__ = "2017-05-25"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
-from qgis.PyQt.QtCore import QDate, QDateTime, Qt, QTime
 from qgis.core import (
     NULL,
     QgsCoordinateReferenceSystem,
@@ -22,7 +21,7 @@ from qgis.core import (
     QgsRectangle,
     QgsWkbTypes,
 )
-
+from qgis.PyQt.QtCore import QDate, QDateTime, Qt, QTime
 from utilities import compareWkt
 
 
@@ -249,10 +248,8 @@ class FeatureSourceTestCase:
 
         for pk, geom in list(expected_geometries.items()):
             if geom:
-                assert compareWkt(
-                    geom, geometries[pk]
-                ), "Geometry {} mismatch Expected:\n{}\nGot:\n{}\n".format(
-                    pk, geom, geometries[pk]
+                assert compareWkt(geom, geometries[pk]), (
+                    f"Geometry {pk} mismatch Expected:\n{geom}\nGot:\n{geometries[pk]}\n"
                 )
             else:
                 self.assertFalse(geometries[pk], f"Expected null geometry for {pk}")
@@ -267,10 +264,8 @@ class FeatureSourceTestCase:
             )
         )
         result = {f["pk"] for f in source.getFeatures(request)}
-        assert (
-            set(expected) == result
-        ), 'Expected {} and got {} when testing expression "{}"'.format(
-            set(expected), result, expression
+        assert set(expected) == result, (
+            f'Expected {set(expected)} and got {result} when testing expression "{expression}"'
         )
         self.assertTrue(all(f.isValid() for f in source.getFeatures(request)))
 
@@ -286,10 +281,8 @@ class FeatureSourceTestCase:
                 )
             )
         }
-        assert (
-            set(expected) == result
-        ), 'Expected {} and got {} when testing expression "{}" using empty attribute subset'.format(
-            set(expected), result, expression
+        assert set(expected) == result, (
+            f'Expected {set(expected)} and got {result} when testing expression "{expression}" using empty attribute subset'
         )
 
         # test that results match QgsFeatureRequest.acceptFeature
@@ -718,10 +711,8 @@ class FeatureSourceTestCase:
 
             result = [feature.id()]
             expected = [id]
-            assert (
-                result == expected
-            ), "Expected {} and got {} when testing for feature ID filter".format(
-                expected, result
+            assert result == expected, (
+                f"Expected {expected} and got {result} when testing for feature ID filter"
             )
 
             # test that results match QgsFeatureRequest.acceptFeature
@@ -749,9 +740,9 @@ class FeatureSourceTestCase:
         result = {f.id() for f in self.source.getFeatures(request)}
         all_valid = all(f.isValid() for f in self.source.getFeatures(request))
         expected = {fids[0], fids[2]}
-        assert (
-            result == expected
-        ), f"Expected {expected} and got {result} when testing for feature IDs filter"
+        assert result == expected, (
+            f"Expected {expected} and got {result} when testing for feature IDs filter"
+        )
         self.assertTrue(all_valid)
 
         # test that results match QgsFeatureRequest.acceptFeature
@@ -765,9 +756,9 @@ class FeatureSourceTestCase:
             )
         }
         expected = {fids[1], fids[3], fids[4]}
-        assert (
-            result == expected
-        ), f"Expected {expected} and got {result} when testing for feature IDs filter"
+        assert result == expected, (
+            f"Expected {expected} and got {result} when testing for feature IDs filter"
+        )
 
         # sources should ignore non-existent fids
         result = {
@@ -779,18 +770,18 @@ class FeatureSourceTestCase:
             )
         }
         expected = {fids[1], fids[3], fids[4]}
-        assert (
-            result == expected
-        ), f"Expected {expected} and got {result} when testing for feature IDs filter"
+        assert result == expected, (
+            f"Expected {expected} and got {result} when testing for feature IDs filter"
+        )
 
         result = {
             f.id()
             for f in self.source.getFeatures(QgsFeatureRequest().setFilterFids([]))
         }
         expected = set()
-        assert (
-            result == expected
-        ), f"Expected {expected} and got {result} when testing for feature IDs filter"
+        assert result == expected, (
+            f"Expected {expected} and got {result} when testing for feature IDs filter"
+        )
 
         # Rewind mid-way
         request = QgsFeatureRequest().setFilterFids([fids[1], fids[3], fids[4]])
@@ -890,10 +881,8 @@ class FeatureSourceTestCase:
         result = {f["pk"] for f in self.source.getFeatures(request)}
         all_valid = all(f.isValid() for f in self.source.getFeatures(request))
         expected = [4]
-        assert (
-            set(expected) == result
-        ), "Expected {} and got {} when testing for combination of filterRect and expression".format(
-            set(expected), result
+        assert set(expected) == result, (
+            f"Expected {set(expected)} and got {result} when testing for combination of filterRect and expression"
         )
         self.assertTrue(all_valid)
 
@@ -904,10 +893,8 @@ class FeatureSourceTestCase:
         result = {f["pk"] for f in self.source.getFeatures(request)}
         all_valid = all(f.isValid() for f in self.source.getFeatures(request))
         expected = [4]
-        assert (
-            set(expected) == result
-        ), "Expected {} and got {} when testing for combination of filterRect and expression".format(
-            set(expected), result
+        assert set(expected) == result, (
+            f"Expected {set(expected)} and got {result} when testing for combination of filterRect and expression"
         )
         self.assertTrue(all_valid)
 
@@ -1104,10 +1091,8 @@ class FeatureSourceTestCase:
         result = {f["pk"] for f in self.source.getFeatures(request)}
         all_valid = all(f.isValid() for f in self.source.getFeatures(request))
         expected = [4]
-        assert (
-            set(expected) == result
-        ), "Expected {} and got {} when testing for combination of filterRect and expression".format(
-            set(expected), result
+        assert set(expected) == result, (
+            f"Expected {set(expected)} and got {result} when testing for combination of filterRect and expression"
         )
         self.assertTrue(all_valid)
 
@@ -1118,10 +1103,8 @@ class FeatureSourceTestCase:
         result = {f["pk"] for f in self.source.getFeatures(request)}
         all_valid = all(f.isValid() for f in self.source.getFeatures(request))
         expected = [4]
-        assert (
-            set(expected) == result
-        ), "Expected {} and got {} when testing for combination of filterRect and expression".format(
-            set(expected), result
+        assert set(expected) == result, (
+            f"Expected {set(expected)} and got {result} when testing for combination of filterRect and expression"
         )
         self.assertTrue(all_valid)
 
@@ -1243,16 +1226,16 @@ class FeatureSourceTestCase:
         assert not it.nextFeature(feature), "Expected no feature after limit, got one"
         it.rewind()
         features = [f["pk"] for f in it]
-        assert (
-            len(features) == 2
-        ), f"Expected two features after rewind, got {len(features)} instead"
+        assert len(features) == 2, (
+            f"Expected two features after rewind, got {len(features)} instead"
+        )
         it.rewind()
         assert it.nextFeature(feature), "Expected feature after rewind, got none"
         it.rewind()
         features = [f["pk"] for f in it]
-        assert (
-            len(features) == 2
-        ), f"Expected two features after rewind, got {len(features)} instead"
+        assert len(features) == 2, (
+            f"Expected two features after rewind, got {len(features)} instead"
+        )
         # test with expression, both with and without compilation
         try:
             self.disableCompiler()
@@ -1265,9 +1248,7 @@ class FeatureSourceTestCase:
         assert set(features) == {
             1,
             5,
-        }, "Expected [1,5] for expression and feature limit, Got {} instead".format(
-            features
-        )
+        }, f"Expected [1,5] for expression and feature limit, Got {features} instead"
         try:
             self.enableCompiler()
         except AttributeError:
@@ -1279,9 +1260,7 @@ class FeatureSourceTestCase:
         assert set(features) == {
             1,
             5,
-        }, "Expected [1,5] for expression and feature limit, Got {} instead".format(
-            features
-        )
+        }, f"Expected [1,5] for expression and feature limit, Got {features} instead"
         # limit to more features than exist
         it = self.source.getFeatures(
             QgsFeatureRequest().setLimit(3).setFilterExpression("cnt <= 100")
@@ -1290,18 +1269,14 @@ class FeatureSourceTestCase:
         assert set(features) == {
             1,
             5,
-        }, "Expected [1,5] for expression and feature limit, Got {} instead".format(
-            features
-        )
+        }, f"Expected [1,5] for expression and feature limit, Got {features} instead"
         # limit to less features than possible
         it = self.source.getFeatures(
             QgsFeatureRequest().setLimit(1).setFilterExpression("cnt <= 100")
         )
         features = [f["pk"] for f in it]
-        assert (
-            1 in features or 5 in features
-        ), "Expected either 1 or 5 for expression and feature limit, Got {} instead".format(
-            features
+        assert 1 in features or 5 in features, (
+            f"Expected either 1 or 5 for expression and feature limit, Got {features} instead"
         )
 
     def testClosedIterators(self):
@@ -1456,9 +1431,7 @@ class FeatureSourceTestCase:
                     self.assertEqual(
                         f[other_field],
                         NULL,
-                        'Value for field "{}" was present when it should not have been fetched by request'.format(
-                            other_field
-                        ),
+                        f'Value for field "{other_field}" was present when it should not have been fetched by request',
                     )
 
     def testGetFeaturesNoGeometry(self):

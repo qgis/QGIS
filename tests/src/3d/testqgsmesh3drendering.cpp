@@ -20,6 +20,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3drendercontext.h"
 #include "qgs3dutils.h"
+#include "qgscameracontroller.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmeshlayer.h"
@@ -32,6 +33,9 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsMesh3DRendering : public QgsTest
 {

@@ -23,6 +23,9 @@ email                : marco.hugentobler at sourcepole dot com
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsMultiPoint::QgsMultiPoint()
 {

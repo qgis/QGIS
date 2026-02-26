@@ -22,8 +22,11 @@
 #include "qgslayoutreportcontext.h"
 
 #include <QPainter>
+#include <QString>
 
 #include "moc_qgslayoutobject.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPropertiesDefinition QgsLayoutObject::sPropertyDefinitions;
 

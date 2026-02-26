@@ -38,11 +38,14 @@
 #include <QFileDialog>
 #include <QHBoxLayout>
 #include <QMenu>
+#include <QString>
 #include <QToolButton>
 #include <QUrl>
 #include <QVBoxLayout>
 
 #include "moc_qgsprocessingmaplayercombobox.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

@@ -38,6 +38,9 @@
 #include "qgsvectortilelayerproperties.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class DummySourceWidget : public QgsProviderSourceWidget
 {

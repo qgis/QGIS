@@ -11,20 +11,19 @@ __date__ = "07/10/2013"
 __copyright__ = "Copyright 2013, The QGIS Project"
 
 import os
+import unittest
 
 from qgis.core import (
     QgsAttributeEditorElement,
     QgsFeature,
+    QgsFieldConstraints,
     QgsGeometry,
     QgsPointXY,
     QgsProject,
     QgsRelation,
     QgsVectorLayer,
-    QgsFieldConstraints,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -81,7 +80,6 @@ def formatAttributes(attrs):
 
 
 class TestQgsRelation(QgisTestCase):
-
     def setUp(self):
         self.referencedLayer = createReferencedLayer()
         self.referencingLayer = createReferencingLayer()

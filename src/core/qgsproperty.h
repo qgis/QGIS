@@ -28,6 +28,8 @@
 #include <QStringList>
 #include <QVariant>
 
+using namespace Qt::StringLiterals;
+
 class QgsPropertyTransformer;
 class QgsPropertyPrivate;
 

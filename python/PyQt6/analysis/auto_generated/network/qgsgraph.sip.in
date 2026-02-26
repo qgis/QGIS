@@ -111,13 +111,17 @@ Mathematical graph representation.
 
     int addVertex( const QgsPointXY &pt );
 %Docstring
-Add a vertex to the graph
+Add a vertex to the graph.
+
+:return: the index of the newly added vertex.
 %End
 
     int addEdge( int fromVertexIdx, int toVertexIdx, const QVector<QVariant> &strategies );
 %Docstring
 Add an edge to the graph, going from the ``fromVertexIdx`` to
 ``toVertexIdx``.
+
+:return: the index of the newly added edge.
 %End
 
     int vertexCount() const;

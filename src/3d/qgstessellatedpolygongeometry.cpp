@@ -15,11 +15,8 @@
 
 #include "qgstessellatedpolygongeometry.h"
 
-#include "qgsmessagelog.h"
-#include "qgspolygon.h"
 #include "qgstessellator.h"
 
-#include <QMatrix4x4>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 
@@ -33,6 +30,7 @@ QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( bool _withNormals,
   , mAddTextureCoords( _addTextureCoords )
 {
   mVertexBuffer = new Qt3DCore::QBuffer( this );
+  mIndexBuffer = new Qt3DCore::QBuffer( this );
 
   QgsTessellator tmpTess;
   tmpTess.setAddNormals( mWithNormals );
@@ -48,6 +46,13 @@ QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( bool _withNormals,
   mPositionAttribute->setByteStride( stride );
   mPositionAttribute->setByteOffset( 0 );
   addAttribute( mPositionAttribute );
+
+  mIndexAttribute = new Qt3DCore::QAttribute( this );
+  mIndexAttribute->setName( "indexBuffer" );
+  mIndexAttribute->setAttributeType( Qt3DCore::QAttribute::IndexAttribute );
+  mIndexAttribute->setVertexBaseType( Qt3DCore::QAttribute::UnsignedInt );
+  mIndexAttribute->setBuffer( mIndexBuffer );
+  addAttribute( mIndexAttribute );
 
   if ( mWithNormals )
   {
@@ -75,7 +80,7 @@ QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( bool _withNormals,
   }
 }
 
-void QgsTessellatedPolygonGeometry::setData( const QByteArray &vertexBufferData, int vertexCount, const QVector<QgsFeatureId> &triangleIndexFids, const QVector<uint> &triangleIndexStartingIndices )
+void QgsTessellatedPolygonGeometry::setVertexBufferData( const QByteArray &vertexBufferData, int vertexCount, const QVector<QgsFeatureId> &triangleIndexFids, const QVector<uint> &triangleIndexStartingIndices )
 {
   mTriangleIndexStartingIndices = triangleIndexStartingIndices;
   mTriangleIndexFids = triangleIndexFids;
@@ -86,6 +91,12 @@ void QgsTessellatedPolygonGeometry::setData( const QByteArray &vertexBufferData,
     mNormalAttribute->setCount( vertexCount );
   if ( mTextureCoordsAttribute )
     mTextureCoordsAttribute->setCount( vertexCount );
+}
+
+void QgsTessellatedPolygonGeometry::setIndexBufferData( const QByteArray &indexBufferData, size_t indexCount )
+{
+  mIndexBuffer->setData( indexBufferData );
+  mIndexAttribute->setCount( indexCount );
 }
 
 // run binary search on a sorted array, return index i where data[i] <= v < data[i+1]

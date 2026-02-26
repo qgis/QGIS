@@ -7,16 +7,15 @@ the Free Software Foundation; either version 2 of the License, or
 """
 
 import math
+import unittest
 
 from qgis.core import QgsScaleBarRenderer
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsScaleBarRenderers(QgisTestCase):
-
     def test_context(self):
         context = QgsScaleBarRenderer.ScaleBarContext()
         context.segmentWidth = 5

@@ -21,7 +21,11 @@
 #include "qgsproviderregistry.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
 #include "moc_qgslayertreelayer.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerTreeLayer::QgsLayerTreeLayer( QgsMapLayer *layer )
   : QgsLayerTreeNode( NodeLayer, true )

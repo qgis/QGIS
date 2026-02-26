@@ -20,6 +20,10 @@
 #include "qgsvirtuallayerprovider.h"
 #include "qgsvirtuallayersourceselect.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //! Provider for virtual layers source select
 class QgsVirtualSourceSelectProvider : public QgsSourceSelectProvider
 {

@@ -1,0 +1,61 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsnurbsutils.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsNurbsUtils
+{
+%Docstring(signature="appended")
+Utility functions for working with NURBS curves.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsnurbsutils.h"
+%End
+  public:
+
+    static bool containsNurbsCurve( const QgsAbstractGeometry *geom );
+%Docstring
+Returns ``True`` if the ``geom`` contains a NURBS curve (recursively).
+%End
+
+    static const QgsNurbsCurve *extractNurbsCurve( const QgsAbstractGeometry *geom );
+%Docstring
+Extracts the first NURBS curve found in the ``geom`` (recursively).
+Returns ``None`` if no NURBS curve is found.
+%End
+
+
+    static QgsNurbsCurve *findNurbsCurveForVertex(
+      QgsAbstractGeometry *geom,
+      const QgsVertexId &vid,
+      int &localIndex /Out/ );
+%Docstring
+Finds the NURBS curve containing the vertex identified by ``vid``.
+
+:param geom: the geometry to search in
+:param vid: the vertex identifier to search for
+
+:return: - the NURBS curve containing the vertex, or ``None`` if the
+           vertex is not part of a NURBS curve
+         - localIndex: the control point index within the found NURBS
+           curve
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsnurbsutils.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

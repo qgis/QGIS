@@ -11,6 +11,8 @@ __date__ = "20/01/2011"
 __copyright__ = "Copyright 2012, The QGIS Project"
 
 
+import unittest
+
 from qgis.core import (
     QgsFeature,
     QgsGeometry,
@@ -18,14 +20,12 @@ from qgis.core import (
     QgsRectangle,
     QgsSpatialIndex,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsSpatialIndex(QgisTestCase):
-
     def testIndex(self):
         idx = QgsSpatialIndex()
         fid = 0

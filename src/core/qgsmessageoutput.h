@@ -17,6 +17,7 @@
 #ifndef QGSMESSAGEOUTPUT_H
 #define QGSMESSAGEOUTPUT_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
@@ -44,13 +45,10 @@ class CORE_EXPORT QgsMessageOutput
 {
   public:
 
-    //! message can be in plain text or in html format
-    enum MessageType { MessageText, MessageHtml };
-
     virtual ~QgsMessageOutput() = default;
 
     //! Sets message, it won't be displayed until
-    virtual void setMessage( const QString &message, MessageType msgType ) = 0;
+    virtual void setMessage( const QString &message, Qgis::StringFormat format ) = 0;
 
     //! message to be appended to the current text
     virtual void appendMessage( const QString &message ) = 0;
@@ -64,7 +62,7 @@ class CORE_EXPORT QgsMessageOutput
     /**
      * Display the blocking message to the user.
      */
-    static void showMessage( const QString &title, const QString &message, MessageType msgType );
+    static void showMessage( const QString &title, const QString &message, Qgis::StringFormat format );
 
     // TODO: implementation where Python class could be passed
 
@@ -102,7 +100,7 @@ class CORE_EXPORT QgsMessageOutputConsole : public QObject, public QgsMessageOut
 
     QgsMessageOutputConsole() = default;
 
-    void setMessage( const QString &message, MessageType msgType ) override;
+    void setMessage( const QString &message, Qgis::StringFormat format ) override;
 
     void appendMessage( const QString &message ) override;
 
@@ -124,7 +122,7 @@ class CORE_EXPORT QgsMessageOutputConsole : public QObject, public QgsMessageOut
     //! stores current title
     QString mTitle;
 
-    MessageType mMsgType = MessageText;
+    Qgis::StringFormat mFormat = Qgis::StringFormat::PlainText;
 };
 
 #endif

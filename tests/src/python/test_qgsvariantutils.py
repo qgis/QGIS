@@ -14,14 +14,12 @@ __date__ = "11/10/224"
 __copyright__ = "Copyright 2024, The QGIS Project"
 
 
-from qgis.PyQt.QtCore import QDate, QDateTime, QLocale, QTime, QVariant, QMetaType
 from qgis.core import QgsVariantUtils
-
+from qgis.PyQt.QtCore import QDate, QDateTime, QLocale, QMetaType, QTime, QVariant
 from qgis.testing import unittest
 
 
 class TestQgsVariantUtils(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

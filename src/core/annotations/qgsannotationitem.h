@@ -23,6 +23,10 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgeometry.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsFeedback;
 class QgsMarkerSymbol;
 class QgsLineSymbol;

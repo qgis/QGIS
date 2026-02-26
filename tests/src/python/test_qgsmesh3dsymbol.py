@@ -6,16 +6,16 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
+import unittest
+
+from qgis._3d import (
+    Qgs3DTypes,
+    QgsMesh3DSymbol,
+)
+from qgis.core import Qgis, QgsAbstract3DSymbol, QgsProperty
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor
-from qgis.core import Qgis, QgsProperty, QgsAbstract3DSymbol
-from qgis._3d import (
-    QgsMesh3DSymbol,
-    Qgs3DTypes,
-)
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -23,7 +23,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsQgsMesh3DSymbol(QgisTestCase):
-
     def test_getters_and_setters(self):
         symbol = QgsMesh3DSymbol()
 

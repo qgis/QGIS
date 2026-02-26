@@ -22,6 +22,10 @@
 #include "qgsdistancearea.h"
 #include "qgsspatialindex.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsShortestLineAlgorithm::name() const

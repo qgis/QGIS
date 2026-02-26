@@ -18,7 +18,6 @@
 #include "qgs3dsymbolregistry.h"
 #include "qgs3dsymbolwidget.h"
 #include "qgsabstract3dsymbol.h"
-#include "qgsabstractmaterialsettings.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"
@@ -35,6 +34,9 @@ QgsSymbol3DWidget::QgsSymbol3DWidget( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
   , mLayer( layer )
 {
+  // If layer is null, the widget cannot be created.
+  Q_ASSERT( mLayer );
+
   widgetUnsupported = new QLabel( tr( "Sorry, this symbol is not supported." ), this );
 
   widgetStack = new QStackedWidget( this );
@@ -66,6 +68,9 @@ std::unique_ptr<QgsAbstract3DSymbol> QgsSymbol3DWidget::symbol()
 
 void QgsSymbol3DWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer *vlayer )
 {
+  // If layer is null, the widget cannot be updated.
+  Q_ASSERT( vlayer );
+
   mLayer = vlayer;
   mStyleWidget->setLayerType( mLayer->geometryType() );
 

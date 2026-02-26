@@ -23,6 +23,10 @@
 #include "qgsstyleentityvisitor.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond NOT_STABLE
 
 QgsAbstractReportSection::QgsAbstractReportSection( QgsAbstractReportSection *parent )

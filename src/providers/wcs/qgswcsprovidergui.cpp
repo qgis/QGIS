@@ -24,6 +24,10 @@
 #include "qgswcsprovider.h"
 #include "qgswcssourceselect.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //! Provider for WCS layers source select
 class QgsWcsSourceSelectProvider : public QgsSourceSelectProvider
 {

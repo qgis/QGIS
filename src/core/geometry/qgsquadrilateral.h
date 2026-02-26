@@ -24,6 +24,10 @@
 #include "qgspoint.h"
 #include "qgspolygon.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \class QgsQuadrilateral

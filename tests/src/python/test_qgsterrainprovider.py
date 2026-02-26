@@ -12,8 +12,8 @@ __copyright__ = "Copyright 2022, The QGIS Project"
 
 import math
 import os
+import unittest
 
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsFlatTerrainProvider,
@@ -24,16 +24,14 @@ from qgis.core import (
     QgsRasterLayer,
     QgsReadWriteContext,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsTerrainProviders(QgisTestCase):
-
     def testFlatProvider(self):
         """
         Test QgsFlatTerrainProvider

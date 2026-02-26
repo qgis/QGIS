@@ -22,11 +22,14 @@
 #include <QSqlDriver>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QString>
 #include <QThread>
 #include <QUrlQuery>
 #include <qurl.h>
 
 #include "moc_qgsauthconfigurationstoragedb.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthConfigurationStorageDb::QgsAuthConfigurationStorageDb( const QMap<QString, QVariant> &settings )
   : QgsAuthConfigurationStorage( settings )

@@ -12,22 +12,20 @@ from pathlib import Path
 
 import osgeo.gdal  # NOQA
 from osgeo import gdal, ogr
-from qgis.PyQt.QtCore import QMetaType
-
 from qgis.core import (
     Qgis,
-    QgsVectorLayerExporter,
+    QgsCoordinateReferenceSystem,
     QgsFeature,
+    QgsField,
     QgsGeometry,
     QgsPointXY,
-    QgsVectorLayer,
-    QgsCoordinateReferenceSystem,
-    QgsReferencedRectangle,
     QgsRectangle,
-    QgsField,
+    QgsReferencedRectangle,
+    QgsVectorLayer,
+    QgsVectorLayerExporter,
 )
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QMetaType
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -39,7 +37,6 @@ def GDAL_COMPUTE_VERSION(maj, min, rev):
 
 
 class TestQgsVectorLayerExporter(QgisTestCase):
-
     def test_selected_features_only(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             dest_file_name = Path(temp_dir) / "test_export.gpkg"

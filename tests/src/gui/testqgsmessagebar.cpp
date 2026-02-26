@@ -20,6 +20,10 @@
 #include "qgsmessagebaritem.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsMessageBar : public QObject
 {
     Q_OBJECT

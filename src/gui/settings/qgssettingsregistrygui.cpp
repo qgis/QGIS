@@ -20,6 +20,10 @@
 #include "qgssettingsregistrycore.h"
 #include "qgsstylemanagerdialog.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 const QgsSettingsEntryBool *QgsSettingsRegistryGui::settingsRespectScreenDPI = new QgsSettingsEntryBool( u"respect-screen-dpi"_s, QgsSettingsTree::sTreeGui, false );
 
 QgsSettingsRegistryGui::QgsSettingsRegistryGui()

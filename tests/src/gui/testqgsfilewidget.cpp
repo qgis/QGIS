@@ -24,6 +24,10 @@
 #include "qgsmimedatautils.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsFileWidget : public QObject
 {
     Q_OBJECT

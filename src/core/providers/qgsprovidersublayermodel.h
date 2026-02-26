@@ -28,6 +28,9 @@
 #include <QAbstractItemModel>
 #include <QIcon>
 #include <QSortFilterProxyModel>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 class QgsProviderSublayerModelNode;

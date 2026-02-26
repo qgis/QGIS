@@ -24,6 +24,9 @@
 
 #include <QAuthenticator>
 #include <QDesktopServices>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 void QgsAppAuthRequestHandler::handleAuthRequest( QNetworkReply *reply, QAuthenticator *auth )
 {

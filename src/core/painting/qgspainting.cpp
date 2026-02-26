@@ -17,7 +17,10 @@
 
 #include "qgslogger.h"
 
+#include <QString>
 #include <QTransform>
+
+using namespace Qt::StringLiterals;
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 Q_GUI_EXPORT extern int qt_defaultDpiY();

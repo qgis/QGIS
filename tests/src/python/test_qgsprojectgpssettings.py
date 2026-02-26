@@ -11,10 +11,8 @@ __date__ = "03/11/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     QgsProject,
     QgsProjectGpsSettings,
@@ -22,9 +20,10 @@ from qgis.core import (
     QgsSettings,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 app = start_app()
@@ -32,7 +31,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsProjectGpsSettings(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

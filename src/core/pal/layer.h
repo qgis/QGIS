@@ -30,7 +30,6 @@
 #ifndef PAL_LAYER_H_
 #define PAL_LAYER_H_
 
-#define SIP_NO_FILE
 
 
 #include <fstream>
@@ -42,8 +41,9 @@
 #include "qgslabelobstaclesettings.h"
 
 #include <QHash>
-#include <QLinkedList>
 #include <QMutex>
+
+#define SIP_NO_FILE
 
 class QgsLabelFeature;
 
@@ -338,7 +338,7 @@ namespace pal
       Qgis::UpsideDownLabelHandling mUpsidedownLabels = Qgis::UpsideDownLabelHandling::FlipUpsideDownLabels;
 
       //! Lookup table of label features (owned by the label feature provider that created them)
-      QHash< QgsFeatureId, QgsLabelFeature *> mHashtable;
+      QHash< QPair< QgsFeatureId, int >, QgsLabelFeature *> mHashtable;
 
       QHash< QString, QVector<FeaturePart *> > mConnectedHashtable;
       QHash< QgsFeatureId, int > mConnectedFeaturesIds;

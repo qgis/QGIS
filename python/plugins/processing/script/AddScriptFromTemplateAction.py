@@ -22,16 +22,13 @@ __copyright__ = "(C) 2018, Matteo Ghetta"
 import os
 
 from qgis.PyQt.QtCore import QCoreApplication
-
 from qgis.utils import iface
 
 from processing.gui.ToolboxAction import ToolboxAction
-
 from processing.script.ScriptEditorDialog import ScriptEditorDialog
 
 
 class AddScriptFromTemplateAction(ToolboxAction):
-
     def __init__(self):
         self.name = QCoreApplication.translate(
             "AddScriptFromTemplate", "Create New Script from Template…"

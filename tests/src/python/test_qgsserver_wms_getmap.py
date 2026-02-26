@@ -24,30 +24,28 @@ import urllib.parse
 import urllib.request
 
 import osgeo.gdal  # NOQA
-
 from lxml import etree as et
 from qgis.core import (
     Qgis,
-    QgsFeature,
-    QgsGeometry,
-    QgsProject,
-    QgsVectorLayer,
-    QgsVectorLayerTemporalProperties,
     QgsDateTimeRange,
-    QgsTextFormat,
-    QgsPalLayerSettings,
-    QgsRasterLayer,
-    QgsVectorLayerSimpleLabeling,
+    QgsFeature,
     QgsFontUtils,
+    QgsGeometry,
+    QgsPalLayerSettings,
+    QgsProject,
+    QgsRasterLayer,
+    QgsTextFormat,
+    QgsVectorLayer,
+    QgsVectorLayerSimpleLabeling,
+    QgsVectorLayerTemporalProperties,
 )
+from qgis.PyQt.QtCore import QDate, QDateTime, Qt, QTime
+from qgis.PyQt.QtGui import QColor, QImage
 from qgis.server import (
-    QgsServer,
     QgsBufferServerRequest,
     QgsBufferServerResponse,
+    QgsServer,
 )
-
-from qgis.PyQt.QtCore import QDate, QDateTime, QTime, Qt
-from qgis.PyQt.QtGui import QColor, QImage
 from qgis.testing import unittest
 from test_qgsserver import QgsServerTestBase
 from utilities import unitTestDataPath
@@ -1467,7 +1465,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         self._img_diff_error(r, h, "WMS_GetMap_Filter_OGC")
 
         # empty filter
-        filter = '(<ogc:Filter xmlns="http://www.opengis.net/ogc">' "</ogc:Filter>)"
+        filter = '(<ogc:Filter xmlns="http://www.opengis.net/ogc"></ogc:Filter>)'
         qs = "?" + "&".join(
             [
                 "%s=%s" % i

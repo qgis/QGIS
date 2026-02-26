@@ -17,14 +17,14 @@
 #define QGSSTACSEARCHPARAMETERSDIALOG_H
 
 ///@cond PRIVATE
+#include "ui_qgsstacsearchparametersdialog.h"
+
 #include "qgsrange.h"
 #include "qgsstaccollectionlist.h"
 
-#define SIP_NO_FILE
-
-#include "ui_qgsstacsearchparametersdialog.h"
-
 #include <QDialog>
+
+#define SIP_NO_FILE
 
 class QgsMapCanvas;
 class QStandardItemModel;

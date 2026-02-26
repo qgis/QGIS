@@ -19,6 +19,10 @@
 
 #include "qgsgeometrycollection.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsConcaveHullByFeatureAlgorithm::name() const
@@ -114,7 +118,7 @@ QgsFeatureList QgsConcaveHullByFeatureAlgorithm::processFeature( const QgsFeatur
     else
     {
       outputGeometry = f.geometry().concaveHull( mPercentage, mAllowHoles );
-      if ( outputGeometry.isNull() )
+      if ( outputGeometry.isNull() && !outputGeometry.lastError().isEmpty() )
         feedback->reportError( outputGeometry.lastError() );
       f.setGeometry( outputGeometry );
     }

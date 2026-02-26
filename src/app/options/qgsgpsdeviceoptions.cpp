@@ -21,8 +21,11 @@
 #include "qgssettingsregistrycore.h"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsgpsdeviceoptions.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsGpsDeviceOptionsWidget

@@ -11,15 +11,8 @@ __date__ = "28/11/2015"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QTimer
-from qgis.PyQt.QtWidgets import (
-    QDialog,
-    QDialogButtonBox,
-    QMessageBox,
-    QTableView,
-    QToolButton,
-)
 from qgis.core import (
     QgsFeature,
     QgsFeatureRequest,
@@ -37,14 +30,20 @@ from qgis.gui import (
     QgsMapCanvas,
     QgsRelationWidgetWrapper,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QTimer
+from qgis.PyQt.QtWidgets import (
+    QDialog,
+    QDialogButtonBox,
+    QMessageBox,
+    QTableView,
+    QToolButton,
+)
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsRelationEditWidget(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """
@@ -237,9 +236,7 @@ class TestQgsRelationEditWidget(QgisTestCase):
         """
         Check if an existing feature can be linked
         """
-        wrapper = self.createWrapper(
-            self.vl_authors, "\"name\"='Douglas Adams'"
-        )  # NOQA
+        wrapper = self.createWrapper(self.vl_authors, "\"name\"='Douglas Adams'")  # NOQA
 
         f = QgsFeature(self.vl_books.fields())
         f.setAttributes(
@@ -424,7 +421,6 @@ class TestQgsRelationEditWidget(QgisTestCase):
 
         # Mock vector layer tool to just set default value on created feature
         class DummyVlTools(QgsVectorLayerTools):
-
             def addFeature(
                 self,
                 layer,

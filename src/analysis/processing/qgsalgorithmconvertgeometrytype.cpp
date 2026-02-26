@@ -17,6 +17,10 @@
 
 #include "qgsalgorithmconvertgeometrytype.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsConvertGeometryTypeAlgorithm::name() const

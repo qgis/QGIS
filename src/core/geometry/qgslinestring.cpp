@@ -31,11 +31,15 @@
 #include "qgsgeometryutils.h"
 #include "qgsgeometryutils_base.h"
 #include "qgslinesegment.h"
+#include "qgsvector3d.h"
 #include "qgswkbptr.h"
 
 #include <QDomDocument>
 #include <QJsonObject>
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -179,69 +183,59 @@ QgsLineString::QgsLineString( const QgsLineSegment2D &segment )
   mY[1] = segment.endY();
 }
 
-static double cubicInterpolate( double a, double b,
-                                double A, double B, double C, double D )
-{
-  return A * b * b * b + 3 * B * b * b * a + 3 * C * b * a * a + D * a * a * a;
-}
-
 std::unique_ptr< QgsLineString > QgsLineString::fromBezierCurve( const QgsPoint &start, const QgsPoint &controlPoint1, const QgsPoint &controlPoint2, const QgsPoint &end, int segments )
 {
   if ( segments == 0 )
     return std::make_unique< QgsLineString >();
 
-  QVector<double> x;
-  x.resize( segments + 1 );
-  QVector<double> y;
-  y.resize( segments + 1 );
+  QVector<double> x( segments + 1 );
+  QVector<double> y( segments + 1 );
   QVector<double> z;
-  double *zData = nullptr;
-  if ( start.is3D() && end.is3D() && controlPoint1.is3D() && controlPoint2.is3D() )
+  QVector<double> m;
+
+  const bool hasZ = start.is3D() && controlPoint1.is3D() && controlPoint2.is3D() && end.is3D();
+  if ( hasZ )
   {
     z.resize( segments + 1 );
-    zData = z.data();
   }
-  QVector<double> m;
-  double *mData = nullptr;
-  if ( start.isMeasure() && end.isMeasure() && controlPoint1.isMeasure() && controlPoint2.isMeasure() )
+
+  const bool hasM = start.isMeasure() && controlPoint1.isMeasure() && controlPoint2.isMeasure() && end.isMeasure();
+  if ( hasM )
   {
     m.resize( segments + 1 );
-    mData = m.data();
   }
 
   double *xData = x.data();
   double *yData = y.data();
-  const double step = 1.0 / segments;
-  double a = 0;
-  double b = 1.0;
-  for ( int i = 0; i < segments; i++, a += step, b -= step )
-  {
-    if ( i == 0 )
-    {
-      *xData++ = start.x();
-      *yData++ = start.y();
-      if ( zData )
-        *zData++ = start.z();
-      if ( mData )
-        *mData++ = start.m();
-    }
-    else
-    {
-      *xData++ = cubicInterpolate( a, b, start.x(), controlPoint1.x(), controlPoint2.x(), end.x() );
-      *yData++ = cubicInterpolate( a, b, start.y(), controlPoint1.y(), controlPoint2.y(), end.y() );
-      if ( zData )
-        *zData++ = cubicInterpolate( a, b, start.z(), controlPoint1.z(), controlPoint2.z(), end.z() );
-      if ( mData )
-        *mData++ = cubicInterpolate( a, b, start.m(), controlPoint1.m(), controlPoint2.m(), end.m() );
-    }
-  }
+  double *zData = z.data(); // will be nullptr if !hasZ
+  double *mData = m.data(); // will be nullptr if !hasM
 
-  *xData = end.x();
-  *yData = end.y();
-  if ( zData )
-    *zData = end.z();
-  if ( mData )
-    *mData = end.m();
+  const double step = 1.0 / segments;
+
+  for ( int i = 0; i <= segments; ++i )
+  {
+    const double t = i * step;
+
+    double ix, iy; // interpolated x, y
+    double iz = std::numeric_limits<double>::quiet_NaN();
+    double im = std::numeric_limits<double>::quiet_NaN();
+
+    QgsGeometryUtilsBase::interpolatePointOnCubicBezier(
+      start.x(), start.y(), start.z(), start.m(),
+      controlPoint1.x(), controlPoint1.y(), controlPoint1.z(), controlPoint1.m(),
+      controlPoint2.x(), controlPoint2.y(), controlPoint2.z(), controlPoint2.m(),
+      end.x(), end.y(), end.z(), end.m(),
+      t, hasZ, hasM,
+      ix, iy, iz, im
+    );
+
+    *xData++ = ix;
+    *yData++ = iy;
+    if ( hasZ )
+      *zData++ = iz;
+    if ( hasM )
+      *mData++ = im;
+  }
 
   return std::make_unique< QgsLineString >( x, y, z, m );
 }
@@ -2291,6 +2285,90 @@ void QgsLineString::sumUpArea( double &sum ) const
 
   mHasCachedSummedUpArea = true;
   sum += mSummedUpArea;
+}
+
+void QgsLineString::sumUpArea3D( double &sum ) const
+{
+  if ( mHasCachedSummedUpArea3D )
+  {
+    sum += mSummedUpArea3D;
+    return;
+  }
+
+  // No Z component. Fallback to the 2D version
+  if ( mZ.isEmpty() )
+  {
+    double area2D = 0;
+    sumUpArea( area2D );
+    mSummedUpArea3D = area2D;
+    mHasCachedSummedUpArea3D = true;
+    sum += mSummedUpArea3D;
+    return;
+  }
+
+  mSummedUpArea3D = 0;
+
+  // Look for a reference unit normal
+  QgsPoint ptA;
+  QgsPoint ptB;
+  QgsPoint ptC;
+  if ( !QgsGeometryUtils::checkWeaklyFor3DPlane( this, ptA, ptB, ptC ) )
+  {
+    mHasCachedSummedUpArea3D = true;
+    return;
+  }
+
+  QgsVector3D vAB = QgsVector3D( ptB.x() - ptA.x(), ptB.y() - ptA.y(), ptB.z() - ptA.z() );
+  QgsVector3D vAC = QgsVector3D( ptC.x() - ptA.x(), ptC.y() - ptA.y(), ptC.z() - ptA.z() );
+  QgsVector3D planeNormal = QgsVector3D::crossProduct( vAB, vAC );
+
+  // Ensure a Consistent orientation: prioritize Z+, then Y+, then X+
+  if ( !qgsDoubleNear( planeNormal.z(), 0.0 ) )
+  {
+    if ( planeNormal.z() < 0 )
+    {
+      planeNormal = -planeNormal;
+    }
+  }
+  else if ( !qgsDoubleNear( planeNormal.y(), 0.0 ) )
+  {
+    if ( planeNormal.y() < 0 )
+      planeNormal = -planeNormal;
+  }
+  else
+  {
+    if ( planeNormal.x() < 0 )
+      planeNormal = - planeNormal;
+  }
+  planeNormal.normalize();
+
+  const double *x = mX.constData();
+  const double *y = mY.constData();
+  const double *z = mZ.constData();
+
+  double prevX = *x++;
+  double prevY = *y++;
+  double prevZ = *z++;
+
+  double normalX = 0.0;
+  double normalY = 0.0;  // #spellok - Y component of normal vector
+  double normalZ = 0.0;
+
+  for ( unsigned int i = 1; i < mX.size(); ++i )
+  {
+    normalX += prevY * ( *z - prevZ ) - prevZ * ( *y - prevY );
+    normalY += prevZ * ( *x - prevX ) - prevX * ( *z - prevZ );  // #spellok
+    normalZ += prevX * ( *y - prevY ) - prevY * ( *x - prevX );
+
+    prevX = *x++;
+    prevY = *y++;
+    prevZ = *z++;
+  }
+
+  mSummedUpArea3D = 0.5 * ( normalX * planeNormal.x() + normalY * planeNormal.y() + normalZ * planeNormal.z() );  // #spellok
+
+  mHasCachedSummedUpArea3D = true;
+  sum += mSummedUpArea3D;
 }
 
 void QgsLineString::importVerticesFromWkb( const QgsConstWkbPtr &wkb )

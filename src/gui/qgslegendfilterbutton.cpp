@@ -21,8 +21,11 @@
 
 #include <QAction>
 #include <QMenu>
+#include <QString>
 
 #include "moc_qgslegendfilterbutton.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLegendFilterButton::QgsLegendFilterButton( QWidget *parent )
   : QToolButton( parent )

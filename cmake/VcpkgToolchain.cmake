@@ -29,6 +29,9 @@ endif()
 if(WITH_SFCGAL)
   list(APPEND VCPKG_MANIFEST_FEATURES "sfcgal")
 endif()
+if(WITH_PROJ_DATA)
+  list(APPEND VCPKG_MANIFEST_FEATURES "proj-data")
+endif()
 # We cannot detect the EMSCRIPTEN variable yet, as we didn't load the toolchain file at this point.
 # So we use the target triplet to determine if we are building for wasm.
 if(VCPKG_TARGET_TRIPLET MATCHES "^wasm32-")

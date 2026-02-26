@@ -25,8 +25,11 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgstransformsettingsdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryString *QgsTransformSettingsDialog::settingLastDestinationFolder = new QgsSettingsEntryString( u"last-destination-folder"_s, QgsGeoreferencerMainWindow::sTreeGeoreferencer, QString(), QObject::tr( "Last used folder for georeferencer destination files" ) );
 

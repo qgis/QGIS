@@ -25,8 +25,11 @@
 #include "qgssettings.h"
 
 #include <QLocale>
+#include <QString>
 
 #include "moc_qgsgcplistmodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGCPListModel::QgsGCPListModel( QObject *parent )
   : QAbstractTableModel( parent )

@@ -18,10 +18,11 @@
 #ifndef QGSALGORITHMPDALASSIGNPROJECTION_H
 #define QGSALGORITHMPDALASSIGNPROJECTION_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgspdalalgorithmbase.h"
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

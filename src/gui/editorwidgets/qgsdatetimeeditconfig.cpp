@@ -19,7 +19,11 @@
 #include "qgsdatetimefieldformatter.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsdatetimeeditconfig.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )

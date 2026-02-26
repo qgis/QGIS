@@ -12,12 +12,12 @@ __date__ = "2019-11-21"
 __copyright__ = "Copyright 2019, The QGIS Project"
 
 from datetime import datetime, timedelta
+
 from hdbcli import dbapi
 from qgis.core import QgsDataSourceUri, QgsVectorLayer
 
 
 class QgsHanaProviderUtils:
-
     @staticmethod
     def createConnection(uri):
         ds_uri = QgsDataSourceUri(uri)
@@ -205,7 +205,7 @@ class QgsHanaProviderUtils:
             cursor = conn.cursor()
             assert cursor
             sql = f"""SELECT SCHEMA_NAME FROM SYS.SCHEMAS WHERE SCHEMA_NAME
-                      LIKE '{schema_prefix.replace('_', '__')}__%' ESCAPE '_' AND
+                      LIKE '{schema_prefix.replace("_", "__")}__%' ESCAPE '_' AND
                       LOCALTOUTC(CREATE_TIME) < ?"""
             cursor.execute(sql, datetime.now() - timedelta(days=1))
             rows = cursor.fetchall()

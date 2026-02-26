@@ -53,6 +53,12 @@ void QgsServerLogger::logMessage( const QString &message, const QString &tag, Qg
   }
 }
 
+void QgsServerLogger::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::StringFormat format )
+{
+  ( void ) format;
+  logMessage( message, tag, level );
+}
+
 void QgsServerLogger::setLogLevel( const Qgis::MessageLevel level )
 {
   mLogLevel = level;

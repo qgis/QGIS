@@ -6,23 +6,22 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.PyQt.QtCore import QRect, QSize, QPoint
-from qgis.PyQt.QtGui import QImage, QColor
-from qgis.core import QgsTextFormat
+import unittest
+
 from qgis._3d import (
     QgsFontTextureAtlas,
     QgsFontTextureAtlasGenerator,
 )
-import unittest
+from qgis.core import QgsTextFormat
+from qgis.PyQt.QtCore import QPoint, QRect, QSize
+from qgis.PyQt.QtGui import QColor, QImage
+from qgis.testing import QgisTestCase, start_app
 from utilities import getTestFont
-
-from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
 
 class TestQgsFontTextureAtlasGenerator(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "texture_atlas_generator"

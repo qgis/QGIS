@@ -28,6 +28,9 @@
 
 #include <QSqlField>
 #include <QSqlRecord>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 // read from QSettings and used in the provider connection
 const QStringList CONFIGURATION_PARAMETERS {

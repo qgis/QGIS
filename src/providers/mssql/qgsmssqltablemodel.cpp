@@ -23,7 +23,11 @@
 #include "qgsmssqlconnection.h"
 #include "qgsmssqlutils.h"
 
+#include <QString>
+
 #include "moc_qgsmssqltablemodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMssqlTableModel::QgsMssqlTableModel( QObject *parent )
   : QgsAbstractDbTableModel( parent )

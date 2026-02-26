@@ -56,6 +56,13 @@ given python ``command``.
 .. versionadded:: 3.32
 %End
 
+    void showMessage( const QString &message );
+%Docstring
+Emitted when the provider needs to display a ``message``.
+
+.. versionadded:: 4.0
+%End
+
 };
 
 /************************************************************************

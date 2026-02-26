@@ -15,8 +15,6 @@
 
 #include "qgsterraintextureimage_p.h"
 
-#include "qgsterraintexturegenerator_p.h"
-
 #include <Qt3DRender/QTextureImageDataGenerator>
 
 #include "moc_qgsterraintextureimage_p.cpp"

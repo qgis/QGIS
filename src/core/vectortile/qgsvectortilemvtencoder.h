@@ -16,12 +16,13 @@
 #ifndef QGSVECTORTILEMVTENCODER_H
 #define QGSVECTORTILEMVTENCODER_H
 
-#define SIP_NO_FILE
 
 #include "qgscoordinatetransform.h"
 #include "qgstiles.h"
 #include "qgsvectortilerenderer.h"
 #include "vector_tile.pb.h"
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup core

@@ -4,7 +4,7 @@
    ---------------------
    begin                : September 2017
    copyright            : (C) 2017 by Loïc Bartoletti
-   email                : lbartoletti at tuxfamily dot org
+   email                : lituus at free dot fr
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *

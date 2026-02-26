@@ -25,6 +25,9 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QPointer>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -36,6 +39,8 @@ QgsHttpExternalStorageStoreTask::QgsHttpExternalStorageStoreTask( const QUrl &ur
   , mFeedback( std::make_unique<QgsFeedback>( this ) )
 {
 }
+
+QgsHttpExternalStorageStoreTask::~QgsHttpExternalStorageStoreTask() = default;
 
 bool QgsHttpExternalStorageStoreTask::run()
 {

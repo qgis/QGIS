@@ -17,11 +17,12 @@
 #define QGSSENSORTHINGSCONNECTIONDIALOG_H
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 #include "ui_qgssensorthingsconnectiondialog.h"
 
 #include <QDialog>
+
+#define SIP_NO_FILE
 
 struct QgsSensorThingsConnection;
 

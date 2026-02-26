@@ -25,6 +25,10 @@
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAbstractVectorLayerLabeling *QgsAbstractVectorLayerLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QString type = element.attribute( u"type"_s );
@@ -585,10 +589,17 @@ bool QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
   {
     const QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, u"group"_s, u"yes"_s );
     textSymbolizerElement.appendChild( vo );
-    if ( settings.labelPerPart )
+    switch ( settings.placementSettings().multiPartBehavior() )
     {
-      const QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, u"labelAllGroup"_s, u"true"_s );
-      textSymbolizerElement.appendChild( vo );
+      case Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly:
+      case Qgis::MultiPartLabelingBehavior::SplitLabelTextLinesOverParts:
+        break;
+      case Qgis::MultiPartLabelingBehavior::LabelEveryPartWithEntireLabel:
+      {
+        const QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, u"labelAllGroup"_s, u"true"_s );
+        textSymbolizerElement.appendChild( vo );
+        break;
+      }
     }
   }
   // background symbol resize handling

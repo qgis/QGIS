@@ -26,6 +26,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectortilelayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 Qgis::LayerType QgsMapLayerFactory::typeFromString( const QString &string, bool &ok )
 {
   ok = true;

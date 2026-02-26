@@ -21,9 +21,12 @@
 #include "qgssettings.h"
 
 #include <QPushButton>
+#include <QString>
 #include <QTableWidgetItem>
 
 #include "moc_qgssublayersdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 //! @cond
 class SubLayerItem : public QTreeWidgetItem

@@ -15,10 +15,7 @@
 
 #include "qgsskyboxentity.h"
 
-#include "qgsimagecache.h"
-#include "qgsimagetexture.h"
-#include "qgsproject.h"
-
+#include <QString>
 #include <QUrl>
 #include <Qt3DCore/QEntity>
 #include <Qt3DExtras/QCuboidMesh>
@@ -36,6 +33,8 @@
 #include <Qt3DRender/QTextureImage>
 
 #include "moc_qgsskyboxentity.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSkyboxEntity::QgsSkyboxEntity( QNode *parent )
   : Qt3DCore::QEntity( parent )

@@ -21,7 +21,11 @@
 #include "qgsrasterlabelsettingswidget.h"
 #include "qgsrasterlayer.h"
 
+#include <QString>
+
 #include "moc_qgsrasterlabelingwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRasterLabelingWidget::QgsRasterLabelingWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent, QgsMessageBar *messageBar )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

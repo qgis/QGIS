@@ -22,24 +22,22 @@ __copyright__ = "(C) 2016, Nyall Dawson"
 import os
 from collections import OrderedDict
 
-from qgis.PyQt.QtGui import QIcon
-
+from qgis.analysis import QgsKernelDensityEstimation
 from qgis.core import (
     QgsApplication,
     QgsFeatureRequest,
-    QgsRasterFileWriter,
     QgsProcessing,
     QgsProcessingException,
-    QgsProcessingParameterFeatureSource,
-    QgsProcessingParameterNumber,
-    QgsProcessingParameterDistance,
-    QgsProcessingParameterField,
-    QgsProcessingParameterEnum,
     QgsProcessingParameterDefinition,
+    QgsProcessingParameterDistance,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterField,
+    QgsProcessingParameterNumber,
     QgsProcessingParameterRasterDestination,
+    QgsRasterFileWriter,
 )
-
-from qgis.analysis import QgsKernelDensityEstimation
+from qgis.PyQt.QtGui import QIcon
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -154,7 +152,6 @@ class Heatmap(QgisAlgorithm):
         self.addParameter(radius_field_param)
 
         class ParameterHeatmapPixelSize(QgsProcessingParameterNumber):
-
             def __init__(
                 self,
                 name="",

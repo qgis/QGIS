@@ -19,10 +19,13 @@
 #include "qgsprocessingmodelalgorithm.h"
 
 #include <QDialogButtonBox>
+#include <QString>
 #include <QTreeWidgetItem>
 #include <QVBoxLayout>
 
 #include "moc_qgsprocessinghelpeditorwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond NOT_STABLE
 

@@ -13,20 +13,20 @@ __date__ = "15.5.2018"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
 
+import unittest
+
 from qgis.core import (
     Qgis,
     QgsMapLayer,
     QgsTolerance,
     metaEnumFromValue,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestCoreAdditions(QgisTestCase):
-
     def testMetaEnum(self):
         me = metaEnumFromValue(Qgis.MapToolUnit.Pixels)
         self.assertIsNotNone(me)

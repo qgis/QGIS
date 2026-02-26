@@ -24,7 +24,11 @@
 #include "qgsmessagebar.h"
 #include "qgssettings.h"
 
+#include <QString>
+
 #include "moc_qgsattributedialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent, bool showDialogButtons, const QgsAttributeEditorContext &context )
   : QDialog( parent )

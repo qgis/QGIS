@@ -62,6 +62,17 @@ Returns the terrain texture resolution
 Returns the scale of the exported model
 %End
 
+    bool terrainExportEnabled() const;
+%Docstring
+Returns whether terrain export is enabled. It terrain export is
+disabled, the terrain resolution and terrain texture resolution
+parameters have no effect.
+
+.. seealso:: :py:func:`setTerrainExportEnabled`
+
+.. versionadded:: 4.0
+%End
+
     void setSceneName( const QString &sceneName );
 %Docstring
 Sets the scene name
@@ -93,6 +104,15 @@ Sets the terrain texture resolution
     void setScale( float scale );
 %Docstring
 Sets the scale of exported model
+%End
+
+    void setTerrainExportEnabled( bool enabled );
+%Docstring
+Sets whether terrain export is enabled.
+
+.. seealso:: :py:func:`terrainExportEnabled`
+
+.. versionadded:: 4.0
 %End
 
 };

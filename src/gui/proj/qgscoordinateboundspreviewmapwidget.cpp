@@ -16,7 +16,11 @@
 #include "qgsvectorlayer.h"
 #include "qgsvertexmarker.h"
 
+#include <QString>
+
 #include "moc_qgscoordinateboundspreviewmapwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCoordinateBoundsPreviewMapWidget::QgsCoordinateBoundsPreviewMapWidget( QWidget *parent )
   : QgsMapCanvas( parent )

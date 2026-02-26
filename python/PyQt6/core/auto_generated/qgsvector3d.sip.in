@@ -9,6 +9,7 @@
 
 
 
+
 class QgsVector3D
 {
 %Docstring(signature="appended")

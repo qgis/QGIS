@@ -20,6 +20,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsFields : public QObject
 {
     Q_OBJECT

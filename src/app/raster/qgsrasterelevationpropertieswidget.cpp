@@ -28,8 +28,11 @@
 
 #include <QAction>
 #include <QMenu>
+#include <QString>
 
 #include "moc_qgsrasterelevationpropertieswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRasterElevationPropertiesWidget::QgsRasterElevationPropertiesWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

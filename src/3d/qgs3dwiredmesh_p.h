@@ -31,9 +31,10 @@
 #include <Qt3DCore/QBuffer>
 #include <Qt3DRender/QGeometryRenderer>
 
+#define SIP_NO_FILE
+
 class QgsAABB;
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup qgis_3d

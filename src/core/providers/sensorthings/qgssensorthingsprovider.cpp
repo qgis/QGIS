@@ -32,8 +32,11 @@
 
 #include <QIcon>
 #include <QNetworkRequest>
+#include <QString>
 
 #include "moc_qgssensorthingsprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

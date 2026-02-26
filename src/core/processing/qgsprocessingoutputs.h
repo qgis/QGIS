@@ -22,6 +22,9 @@
 #include "qgis_core.h"
 
 #include <QColor>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsProcessingContext;
 

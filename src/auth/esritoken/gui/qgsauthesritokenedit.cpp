@@ -17,7 +17,11 @@
 #include "ui_qgsauthesritokenedit.h"
 #include "qgsauthesritokenedit.h"
 
+#include <QString>
+
 #include "moc_qgsauthesritokenedit.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthEsriTokenEdit::QgsAuthEsriTokenEdit( QWidget *parent )
   : QgsAuthMethodEdit( parent )

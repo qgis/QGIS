@@ -10,10 +10,10 @@ __author__ = "Nyall Dawson"
 __date__ = "28/3/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
-from qgis.PyQt.QtCore import QDir, QSizeF, Qt
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
+
 from qgis.core import (
+    Qgis,
     Qgs2DXyPlot,
     QgsBarChartPlot,
     QgsBasicNumericFormat,
@@ -21,6 +21,7 @@ from qgis.core import (
     QgsFontUtils,
     QgsLineChartPlot,
     QgsLineSymbol,
+    QgsMarkerSymbol,
     QgsPalLayerSettings,
     QgsPieChartPlot,
     QgsPlot,
@@ -28,22 +29,21 @@ from qgis.core import (
     QgsPlotRenderContext,
     QgsPresetSchemeColorRamp,
     QgsProperty,
-    QgsMarkerSymbol,
     QgsReadWriteContext,
     QgsRenderContext,
     QgsSymbolLayer,
     QgsTextFormat,
     QgsXyPlotSeries,
-    Qgis,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QDir, QSizeF, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 
 app = start_app()
 
 
 class TestQgsPlot(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "plot"

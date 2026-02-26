@@ -329,6 +329,13 @@ Use this function to add extra logic to your forms.</string>
          </item>
         </layout>
        </item>
+       <item row="2" column="0">
+        <widget class="QPushButton" name="mFormPreviewButton">
+         <property name="text">
+          <string>Preview Attributes Form</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QgsScrollArea" name="scrollArea_2">

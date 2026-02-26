@@ -112,6 +112,22 @@ QgsAbstractAnnotationItemEditOperation::Type QgsAnnotationItemEditOperationTrans
 
 
 //
+// QgsAnnotationItemEditOperationRotateItem
+//
+
+QgsAnnotationItemEditOperationRotateItem::QgsAnnotationItemEditOperationRotateItem( const QString &itemId, double angle )
+  : QgsAbstractAnnotationItemEditOperation( itemId )
+  , mAngle( angle )
+{
+}
+
+QgsAbstractAnnotationItemEditOperation::Type QgsAnnotationItemEditOperationRotateItem::type() const
+{
+  return Type::RotateItem;
+}
+
+
+//
 // QgsAnnotationItemEditOperationAddNode
 //
 

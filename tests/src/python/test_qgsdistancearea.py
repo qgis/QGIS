@@ -11,9 +11,9 @@ __date__ = "19/01/2014"
 __copyright__ = "Copyright 2014, The QGIS Project"
 
 import math
+import unittest
 from pprint import pprint
 
-from qgis.PyQt.QtCore import QLocale
 from qgis.core import (
     Qgis,
     QgsCoordinateReferenceSystem,
@@ -23,8 +23,8 @@ from qgis.core import (
     QgsProject,
     QgsUnitTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QLocale
+from qgis.testing import QgisTestCase, start_app
 
 # Convenience instances in case you may need them
 # not used in this test
@@ -33,7 +33,6 @@ start_app()
 
 
 class TestQgsDistanceArea(QgisTestCase):
-
     def testCrs(self):
         # test setting/getting the source CRS
         da = QgsDistanceArea()
@@ -505,7 +504,7 @@ class TestQgsDistanceArea(QgisTestCase):
             self.assertEqual(
                 point_meter_result.toString(7), point_berlin_5665_project.toString(7)
             )
-        print("\n12 points " "above over" " and on the Equator")
+        print("\n12 points above over and on the Equator")
         point_wsg84 = QgsPointXY(25.7844, 71.1725)
         point_wsg84_project = QgsPointXY(25.78442775215388, 71.17249999999795)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(
@@ -832,9 +831,7 @@ class TestQgsDistanceArea(QgisTestCase):
         self.assertEqual(
             point_meter_result.toString(7), point_wsg84_project.toString(7)
         )
-        print(
-            "\n12 points " "down under" " and 1 point that should be considered invalid"
-        )
+        print("\n12 points down under and 1 point that should be considered invalid")
         point_wsg84 = QgsPointXY(-78.509722, -0.218611)
         point_wsg84_project = QgsPointXY(-78.50971301678221, -0.218610999999997)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(

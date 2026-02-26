@@ -11,8 +11,8 @@ __date__ = "02/11/2020"
 __copyright__ = "Copyright 2020, The QGIS Project"
 
 import tempfile
+import unittest
 
-from qgis.PyQt.QtCore import QCoreApplication, QUrl
 from qgis.core import (
     QgsCoordinateTransformContext,
     QgsGeocoderContext,
@@ -20,14 +20,13 @@ from qgis.core import (
     QgsRectangle,
     QgsSettings,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QCoreApplication, QUrl
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsGeocoderLocatorFilter(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

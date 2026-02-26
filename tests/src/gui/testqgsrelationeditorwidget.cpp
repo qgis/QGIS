@@ -26,7 +26,10 @@
 #include "qgstest.h"
 #include "qgstrackedvectorlayertools.h"
 
+#include <QString>
 #include <QTreeWidgetItem>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsRelationEditorWidget : public QObject
 {

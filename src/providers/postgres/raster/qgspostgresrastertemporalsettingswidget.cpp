@@ -20,7 +20,11 @@
 #include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
 
+#include <QString>
+
 #include "moc_qgspostgresrastertemporalsettingswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPostgresRasterTemporalSettingsWidget::QgsPostgresRasterTemporalSettingsWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

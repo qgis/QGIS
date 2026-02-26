@@ -10,9 +10,10 @@ __author__ = "Matthias Kuhn"
 __date__ = "2015-04-23"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
+import unittest
 from urllib.parse import parse_qs
 
-from qgis.PyQt.QtCore import QByteArray, QDate, QDateTime, QTime, QVariant
+from providertestbase import ProviderTestCase
 from qgis.core import (
     NULL,
     Qgis,
@@ -34,10 +35,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
-from providertestbase import ProviderTestCase
+from qgis.PyQt.QtCore import QByteArray, QDate, QDateTime, QTime, QVariant
+from qgis.testing import QgisTestCase, start_app
 from utilities import compareWkt, unitTestDataPath
 
 start_app()
@@ -45,7 +44,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsMemoryProvider(QgisTestCase, ProviderTestCase):
-
     @classmethod
     def createLayer(cls):
         vl = QgsVectorLayer(
@@ -596,7 +594,7 @@ class TestPyQgsMemoryProvider(QgisTestCase, ProviderTestCase):
     def testFromUriWithEncodedField(self):
         """Test we can construct the mem provider from a uri when a field name is encoded"""
         layer = QgsVectorLayer(
-            ("Point?crs=epsg:4326&field=name:string(20)&" "field=test%2Ffield:integer"),
+            ("Point?crs=epsg:4326&field=name:string(20)&field=test%2Ffield:integer"),
             "test",
             "memory",
         )

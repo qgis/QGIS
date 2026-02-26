@@ -29,6 +29,9 @@
 #include <QMimeData>
 #include <QObject>
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsLayoutModel : public QgsTest
 {

@@ -26,8 +26,11 @@
 #include <QDialogButtonBox>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsappdbutils.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsQueryHistoryDialog

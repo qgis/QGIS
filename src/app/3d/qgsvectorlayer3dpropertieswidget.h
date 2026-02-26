@@ -33,6 +33,8 @@ class QgsVectorLayer3DPropertiesWidget : public QWidget, private Ui::QgsVectorLa
     void load( QgsAbstractVectorLayer3DRenderer *renderer );
     //! Applies configuration from GUI to the given renderer
     void apply( QgsAbstractVectorLayer3DRenderer *renderer );
+    //! Resets GUI to default values (when there is no renderer)
+    void reset();
 
   signals:
     //! Emitted whenever any parameter gets changed

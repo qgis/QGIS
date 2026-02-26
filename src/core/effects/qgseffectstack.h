@@ -21,6 +21,10 @@
 #include "qgis_sip.h"
 #include "qgspainteffect.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \class QgsEffectStack

@@ -24,12 +24,13 @@
 #include <QByteArray>
 #include <QImage>
 
+#define SIP_NO_FILE
+
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
 class QgsRasterLayer;
 class QgsCoordinateTransformContext;
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup qgis_3d

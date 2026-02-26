@@ -54,9 +54,12 @@
 #include "qgsvectorlayerlabeling.h"
 
 #include <QRegularExpression>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsarcgisrestutils.cpp"
+
+using namespace Qt::StringLiterals;
 
 QMetaType::Type QgsArcGisRestUtils::convertFieldType( const QString &esriFieldType )
 {

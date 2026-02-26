@@ -18,7 +18,11 @@
 #include "qgsextentwidget.h"
 #include "qgsmaplayer.h"
 
+#include <QString>
+
 #include "moc_qgsextentgroupbox.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsExtentGroupBox::QgsExtentGroupBox( QWidget *parent )
   : QgsCollapsibleGroupBox( parent )

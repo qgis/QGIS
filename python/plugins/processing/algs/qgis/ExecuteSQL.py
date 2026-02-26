@@ -21,29 +21,28 @@ __copyright__ = "(C) 2016, Hugo Mercier"
 
 from qgis.core import (
     Qgis,
-    QgsVirtualLayerDefinition,
-    QgsVectorLayer,
-    QgsWkbTypes,
-    QgsProcessingAlgorithm,
-    QgsProcessingParameterMultipleLayers,
-    QgsProcessingParameterDefinition,
     QgsExpression,
-    QgsProcessingUtils,
-    QgsProcessingParameterString,
-    QgsProcessingParameterEnum,
-    QgsProcessingParameterCrs,
-    QgsProcessingParameterFeatureSink,
     QgsFeatureSink,
+    QgsProcessingAlgorithm,
     QgsProcessingException,
-    QgsVectorFileWriter,
+    QgsProcessingParameterCrs,
+    QgsProcessingParameterDefinition,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterFeatureSink,
+    QgsProcessingParameterMultipleLayers,
+    QgsProcessingParameterString,
+    QgsProcessingUtils,
     QgsProject,
+    QgsVectorFileWriter,
+    QgsVectorLayer,
+    QgsVirtualLayerDefinition,
+    QgsWkbTypes,
 )
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class ParameterExecuteSql(QgsProcessingParameterDefinition):
-
     def __init__(self, name="", description=""):
         super().__init__(name, description)
         self.setMetadata(
@@ -177,7 +176,6 @@ class ExecuteSQL(QgisAlgorithm):
 
         df = QgsVirtualLayerDefinition()
         for layerIdx, layer in enumerate(layers):
-
             # Issue https://github.com/qgis/QGIS/issues/24041
             # When using this algorithm from the graphic modeler, it may try to
             # access (thanks the QgsVirtualLayerProvider) to memory layer that

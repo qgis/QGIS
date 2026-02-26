@@ -8,22 +8,21 @@ the Free Software Foundation; either version 2 of the License, or
 
 import unittest
 
-from qgis.PyQt.QtCore import QDate, QTime, QDateTime
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     Qgis,
+    QgsDateTimeRange,
     QgsInterval,
     QgsRasterLayerTemporalProperties,
     QgsReadWriteContext,
-    QgsDateTimeRange,
 )
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsRasterLayerTemporalProperties(QgisTestCase):
-
     def test_basic_fixed_range(self):
         """
         Basic tests for the class using the FixedTemporalRange mode

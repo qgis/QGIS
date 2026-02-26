@@ -21,20 +21,22 @@ import shutil
 # Deterministic XML
 os.environ["QT_HASH_SEED"] = "1"
 
+from contextlib import contextmanager
 from urllib import parse
 
 from qgis.core import (
     Qgis,
+    QgsApplication,
     QgsFeature,
     QgsFeatureRequest,
     QgsGeometry,
     QgsProject,
     QgsVectorLayer,
     QgsVectorLayerServerProperties,
-    QgsApplication,
 )
 from qgis.PyQt import QtCore
 from qgis.server import (
+    QgsAccessControlFilter,
     QgsBufferServerRequest,
     QgsBufferServerResponse,
     QgsServer,
@@ -46,12 +48,10 @@ from qgis.server import (
     QgsServerOgcApiHandler,
     QgsServerQueryStringParameter,
     QgsServiceRegistry,
-    QgsAccessControlFilter,
 )
 from qgis.testing import unittest
 from test_qgsserver import QgsServerTestBase
 from utilities import unitTestDataPath
-from contextlib import contextmanager
 
 
 class QgsServerAPIUtilsTest(QgsServerTestBase):
@@ -199,7 +199,6 @@ class QgsServerAPIUtilsTest(QgsServerTestBase):
 
 
 class API(QgsServerApi):
-
     def __init__(self, iface, version="1.0"):
         super().__init__(iface)
         self._version = version
@@ -250,9 +249,7 @@ class QgsServerAPITestBase(QgsServerTestBase):
             self.assertEqual(
                 actual_lines[i],
                 expected_lines[i],
-                "File: {}\nLine: {}\nActual  : {}\nExpected: {}".format(
-                    reference_file, i, actual_lines[i], expected_lines[i]
-                ),
+                f"File: {reference_file}\nLine: {i}\nActual  : {actual_lines[i]}\nExpected: {expected_lines[i]}",
             )
 
     def normalize_json(self, content):
@@ -1054,9 +1051,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         # Test with a different CRS
         encoded_crs = parse.quote("http://www.opengis.net/def/crs/EPSG/0/3857", safe="")
         request = QgsBufferServerRequest(
-            "http://server.qgis.org/wfs3/collections/testlayer%20èé/items?bbox=913191,5606014,913234,5606029&bbox-crs={}".format(
-                encoded_crs
-            )
+            f"http://server.qgis.org/wfs3/collections/testlayer%20èé/items?bbox=913191,5606014,913234,5606029&bbox-crs={encoded_crs}"
         )
         self.compareApi(
             request, project, "test_wfs3_collections_items_testlayer_èé_bbox_3857.json"
@@ -2662,7 +2657,6 @@ class QgsServerAPITest(QgsServerAPITestBase):
 
 
 class Handler1(QgsServerOgcApiHandler):
-
     def path(self):
         return QtCore.QRegularExpression("/handlerone")
 
@@ -2699,7 +2693,6 @@ class Handler1(QgsServerOgcApiHandler):
 
 
 class Handler2(QgsServerOgcApiHandler):
-
     def path(self):
         return QtCore.QRegularExpression(r"/handlertwo/(?P<code1>\d{2})/(\d{3})")
 
@@ -2792,7 +2785,6 @@ class Handler3(QgsServerOgcApiHandler):
 
 
 class Handler4(QgsServerOgcApiHandler):
-
     def path(self):
         return QtCore.QRegularExpression("/(?P<tilemapid>[^/]+)")
 
@@ -2822,7 +2814,6 @@ class Handler4(QgsServerOgcApiHandler):
 
 
 class HandlerException(QgsServerOgcApiHandler):
-
     def __init__(self):
         super().__init__()
         self.__exception = None

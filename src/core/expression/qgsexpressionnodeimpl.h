@@ -20,6 +20,10 @@
 #include "qgsexpressionnode.h"
 #include "qgsinterval.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief A unary node is either negative as in boolean (not) or as in numbers (minus).

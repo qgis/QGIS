@@ -85,6 +85,7 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
     void setAsPopulated();
 
   private:
+    void setChildAncestorDepthRecursive( QgsDataItem *child, int depth );
     QString mConnectionUri;
     QString mService;
     QString mHost;

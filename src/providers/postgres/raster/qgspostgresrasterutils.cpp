@@ -19,6 +19,10 @@
 
 #include "qgsmessagelog.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QVariantMap QgsPostgresRasterUtils::parseWkb( const QByteArray &wkb, int bandNo )
 {
   QVariantMap result;

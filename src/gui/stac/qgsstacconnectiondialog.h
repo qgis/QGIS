@@ -17,11 +17,12 @@
 #define QGSSTACCONNECTIONDIALOG_H
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
 #include "ui_qgsstacconnectiondialog.h"
 
 #include <QDialog>
+
+#define SIP_NO_FILE
 
 class QgsStacConnectionDialog : public QDialog, public Ui::QgsStacConnectionDialog
 {

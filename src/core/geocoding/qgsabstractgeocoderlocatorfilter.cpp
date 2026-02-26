@@ -18,7 +18,11 @@
 #include "qgsgeocoder.h"
 #include "qgsgeocodercontext.h"
 
+#include <QString>
+
 #include "moc_qgsabstractgeocoderlocatorfilter.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAbstractGeocoderLocatorFilter::QgsAbstractGeocoderLocatorFilter( const QString &name, const QString &displayName, const QString &prefix, QgsGeocoderInterface *geocoder, const QgsRectangle &boundingBox )
   : mName( name )

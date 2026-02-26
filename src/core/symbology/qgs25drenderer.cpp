@@ -27,6 +27,10 @@
 #include "qgsstyleentityvisitor.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #define ROOF_EXPRESSION \
   "translate(" \
   "  @geometry," \

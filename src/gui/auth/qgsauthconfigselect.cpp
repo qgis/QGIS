@@ -28,9 +28,12 @@
 #include <QHash>
 #include <QMessageBox>
 #include <QRegularExpression>
+#include <QString>
 #include <QTimer>
 
 #include "moc_qgsauthconfigselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget *parent, const QString &dataprovider )
   : QWidget( parent )

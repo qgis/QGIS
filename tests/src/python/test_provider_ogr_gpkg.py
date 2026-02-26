@@ -13,35 +13,24 @@ __author__ = "Even Rouault"
 __date__ = "2016-04-21"
 __copyright__ = "Copyright 2016, Even Rouault"
 
+import math
 import os
 import re
 import shutil
 import sys
 import tempfile
 import time
-import math
+import unittest
 from sqlite3 import OperationalError
 
 from osgeo import gdal, ogr
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QDate,
-    QDateTime,
-    QFileInfo,
-    Qt,
-    QTemporaryDir,
-    QTime,
-    QVariant,
-)
-from qgis.PyQt.QtXml import QDomDocument
+from providertestbase import ProviderTestCase
 from qgis.core import (
     NULL,
     Qgis,
     QgsCoordinateReferenceSystem,
     QgsDataProvider,
     QgsFeature,
-    QgsRelation,
-    QgsRelationContext,
     QgsFeatureRequest,
     QgsFeatureSink,
     QgsField,
@@ -54,17 +43,27 @@ from qgis.core import (
     QgsProviderMetadata,
     QgsProviderRegistry,
     QgsRectangle,
+    QgsRelation,
+    QgsRelationContext,
     QgsSettings,
     QgsVectorDataProvider,
     QgsVectorLayer,
     QgsVectorLayerExporter,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QDate,
+    QDateTime,
+    QFileInfo,
+    Qt,
+    QTemporaryDir,
+    QTime,
+    QVariant,
+)
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from qgis.utils import spatialite_connect
-
-from providertestbase import ProviderTestCase
 from utilities import compareWkt, unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -80,7 +79,6 @@ def GDAL_COMPUTE_VERSION(maj, min, rev):
 
 
 class TestPyQgsOGRProviderGpkgConformance(QgisTestCase, ProviderTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -299,7 +297,6 @@ class TestPyQgsOGRProviderGpkgConformance(QgisTestCase, ProviderTestCase):
 
 
 class ErrorReceiver:
-
     def __init__(self):
         self.msg = None
 
@@ -328,7 +325,6 @@ def count_opened_filedescriptors(filename_to_test):
 
 
 class TestPyQgsOGRProviderGpkg(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

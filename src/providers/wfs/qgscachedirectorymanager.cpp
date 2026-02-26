@@ -19,7 +19,11 @@
 #include "qgslogger.h"
 #include "qgssettings.h"
 
+#include <QString>
+
 #include "moc_qgscachedirectorymanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 // 1 minute
 #define KEEP_ALIVE_DELAY ( 60 * 1000 )

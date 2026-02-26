@@ -26,8 +26,11 @@
 #include "qgsannotationrectangletextitem.h"
 
 #include <QDomElement>
+#include <QString>
 
 #include "moc_qgsannotationitemregistry.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAnnotationItemRegistry::QgsAnnotationItemRegistry( QObject *parent )
   : QObject( parent )

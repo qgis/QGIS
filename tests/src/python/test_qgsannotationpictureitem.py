@@ -8,23 +8,25 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from qgis.PyQt.QtCore import QSize, QSizeF
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
+
 from qgis.core import (
     Qgis,
+    QgsAnnotationItemEditContext,
     QgsAnnotationItemEditOperationAddNode,
     QgsAnnotationItemEditOperationDeleteNode,
     QgsAnnotationItemEditOperationMoveNode,
     QgsAnnotationItemEditOperationTranslateItem,
-    QgsAnnotationItemEditContext,
     QgsAnnotationItemNode,
     QgsAnnotationPictureItem,
+    QgsBalloonCallout,
+    QgsCallout,
     QgsCircularString,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
     QgsCurvePolygon,
     QgsFillSymbol,
+    QgsGeometry,
     QgsLineString,
     QgsMapSettings,
     QgsPoint,
@@ -34,15 +36,13 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsRectangle,
     QgsRenderContext,
-    QgsVertexId,
-    QgsCallout,
-    QgsBalloonCallout,
-    QgsGeometry,
     QgsSimpleLineCallout,
+    QgsVertexId,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QSize, QSizeF
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
@@ -50,7 +50,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsAnnotationPictureItem(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "annotation_layer"

@@ -25,8 +25,11 @@
 
 #include <QButtonGroup>
 #include <QFileDialog>
+#include <QString>
 
 #include "moc_qgslayoutpolylinewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutPolylineWidget::QgsLayoutPolylineWidget( QgsLayoutItemPolyline *polyline )
   : QgsLayoutItemBaseWidget( nullptr, polyline )

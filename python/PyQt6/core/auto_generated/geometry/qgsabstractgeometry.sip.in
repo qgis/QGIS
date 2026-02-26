@@ -46,6 +46,8 @@ Abstract base class for all geometries.
       sipType = sipType_QgsCircularString;
     else if ( qgsgeometry_cast<QgsCompoundCurve *>( sipCpp ) != nullptr )
       sipType = sipType_QgsCompoundCurve;
+    else if ( qgsgeometry_cast<QgsNurbsCurve *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsNurbsCurve;
     else if ( qgsgeometry_cast<QgsTriangle *>( sipCpp ) != nullptr )
       sipType = sipType_QgsTriangle;
     else if ( qgsgeometry_cast<QgsPolygon *>( sipCpp ) != nullptr )
@@ -568,6 +570,22 @@ Returns the planar, 2-dimensional area of the geometry.
 .. seealso:: :py:func:`length`
 
 .. seealso:: :py:func:`perimeter`
+
+.. seealso:: :py:func:`area`
+%End
+
+    virtual double area3D() const;
+%Docstring
+Returns the 3-dimensional surface area of the geometry.
+
+.. warning::
+
+   QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the area
+   returned by this method is calculated using strictly Cartesian mathematics.
+
+.. seealso:: :py:func:`area`
+
+.. versionadded:: 4.0
 %End
 
     virtual double segmentLength( QgsVertexId startVertex ) const = 0;

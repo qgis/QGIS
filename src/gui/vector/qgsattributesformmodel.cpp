@@ -29,8 +29,11 @@
 #include "qgsgui.h"
 
 #include <QMimeData>
+#include <QString>
 
 #include "moc_qgsattributesformmodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAttributesFormData::FieldConfig::FieldConfig( QgsVectorLayer *layer, int idx )
 {

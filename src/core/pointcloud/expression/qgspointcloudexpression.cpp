@@ -16,7 +16,6 @@
 #include "qgspointcloudexpression.h"
 
 #include "qgsexpression.h"
-#include "qgspointcloudattribute.h"
 #include "qgspointcloudexpression_p.h"
 #include "qgspointcloudexpressionnodeimpl.h"
 
@@ -44,7 +43,7 @@ void QgsPointCloudExpression::setExpression( const QString &subset )
   QgsExpression expression( subset );
   if ( expression.hasParserError() )
   {
-    d->mRootNode = nullptr;
+    d->mRootNode.reset();
     d->mParserErrorString = expression.parserErrorString();
     d->mParserErrors = expression.parserErrors();
   }
@@ -99,7 +98,7 @@ QString QgsPointCloudExpression::expression() const
 
 bool QgsPointCloudExpression::isValid() const
 {
-  return d->mRootNode;
+  return d->mRootNode.get();
 }
 
 bool QgsPointCloudExpression::hasParserError() const
@@ -189,7 +188,7 @@ QString QgsPointCloudExpression::dump() const
 
 const QgsPointCloudExpressionNode *QgsPointCloudExpression::rootNode() const
 {
-  return d->mRootNode;
+  return d->mRootNode.get();
 }
 
 QList<const QgsPointCloudExpressionNode *> QgsPointCloudExpression::nodes() const

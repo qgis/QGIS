@@ -117,6 +117,8 @@
 
 #include "moc_qgsvectorlayer.cpp"
 
+using namespace Qt::StringLiterals;
+
 const QgsSettingsEntryDouble *QgsVectorLayer::settingsSimplifyDrawingTol = new QgsSettingsEntryDouble( u"simplifyDrawingTol"_s, QgsSettingsTree::sTreeQgis, Qgis::DEFAULT_MAPTOPIXEL_THRESHOLD );
 const QgsSettingsEntryBool *QgsVectorLayer::settingsSimplifyLocal = new QgsSettingsEntryBool( u"simplifyLocal"_s, QgsSettingsTree::sTreeQgis, true );
 const QgsSettingsEntryDouble *QgsVectorLayer::settingsSimplifyMaxScale = new QgsSettingsEntryDouble( u"simplifyMaxScale"_s, QgsSettingsTree::sTreeQgis, 1.0 );
@@ -638,28 +640,35 @@ void QgsVectorLayer::selectByExpression( const QString &expression, Qgis::Select
   selectByIds( newSelection );
 }
 
-void QgsVectorLayer::selectByIds( const QgsFeatureIds &ids, Qgis::SelectBehavior behavior )
+void QgsVectorLayer::selectByIds( const QgsFeatureIds &ids, Qgis::SelectBehavior behavior, bool validateIds )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  // Opt-in validation: filter invalid IDs if requested
+  QgsFeatureIds idsToSelect = ids;
+  if ( validateIds )
+  {
+    idsToSelect = QgsVectorLayerUtils::filterValidFeatureIds( this, ids );
+  }
 
   QgsFeatureIds newSelection;
 
   switch ( behavior )
   {
     case Qgis::SelectBehavior::SetSelection:
-      newSelection = ids;
+      newSelection = idsToSelect;
       break;
 
     case Qgis::SelectBehavior::AddToSelection:
-      newSelection = mSelectedFeatureIds + ids;
+      newSelection = mSelectedFeatureIds + idsToSelect;
       break;
 
     case Qgis::SelectBehavior::RemoveFromSelection:
-      newSelection = mSelectedFeatureIds - ids;
+      newSelection = mSelectedFeatureIds - idsToSelect;
       break;
 
     case Qgis::SelectBehavior::IntersectSelection:
-      newSelection = mSelectedFeatureIds.intersect( ids );
+      newSelection = mSelectedFeatureIds.intersect( idsToSelect );
       break;
   }
 
@@ -2599,7 +2608,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
 
   // process the attribute actions
   if ( categories.testFlag( Actions ) )
-    mActions->readXml( layerNode );
+    mActions->readXml( layerNode, context );
 
   if ( categories.testFlag( Fields ) )
   {
@@ -2754,7 +2763,8 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
 
         QString field = constraintElem.attribute( u"field"_s, QString() );
         QString exp = constraintElem.attribute( u"exp"_s, QString() );
-        QString desc = constraintElem.attribute( u"desc"_s, QString() );
+        QString desc = context.projectTranslator()->translate( u"project:layers:%1:constraintdescriptions"_s.arg( layerNode.namedItem( u"id"_s ).toElement().text() ), constraintElem.attribute( u"desc"_s, QString() ) );
+        QgsDebugMsgLevel( "context" + u"project:layers:%1:constraintdescriptions"_s.arg( layerNode.namedItem( u"id"_s ).toElement().text() ) + " source " + constraintElem.attribute( u"desc"_s, QString() ), 3 );
         if ( field.isEmpty() || exp.isEmpty() )
           continue;
 
@@ -2793,6 +2803,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
         if ( widgetType == "ValueRelation"_L1 )
         {
           optionsMap[ u"Value"_s ] = context.projectTranslator()->translate( u"project:layers:%1:fields:%2:valuerelationvalue"_s.arg( layerNode.namedItem( u"id"_s ).toElement().text(), fieldName ), optionsMap[ u"Value"_s ].toString() );
+          optionsMap[ u"Description"_s ] = context.projectTranslator()->translate( u"project:layers:%1:fields:%2:valuerelationdescription"_s.arg( layerNode.namedItem( u"id"_s ).toElement().text(), fieldName ),  optionsMap[ u"Description"_s ].toString() );
         }
         if ( widgetType == "ValueMap"_L1 )
         {
@@ -6017,7 +6028,7 @@ QString QgsVectorLayer::htmlMetadata() const
     }
 
     // geom column name
-    if ( const QgsVectorDataProvider *provider = dataProvider(); !provider->geometryColumnName().isEmpty() )
+    if ( const QgsVectorDataProvider *provider = dataProvider(); provider && !provider->geometryColumnName().isEmpty() )
     {
       myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Geometry column" ) + u"</td><td>"_s + provider->geometryColumnName() + u"</td></tr>\n"_s;
     }

@@ -11,10 +11,10 @@ __date__ = "09/07/2013"
 __copyright__ = "Copyright 2013, The QGIS Project"
 
 import os
+import unittest
 
 from qgis.core import QgsPointXY, QgsVectorLayer
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 from qgis.utils import spatialite_connect
 
 # Convenience instances in case you may need them
@@ -26,7 +26,6 @@ def die(error_message):
 
 
 class TestQgsSpatialiteProvider(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

@@ -23,6 +23,8 @@
 #include <QCursor>
 #include <QPointer>
 
+#define SIP_NO_FILE
+
 class QMouseEvent;
 class QWheelEvent;
 class QKeyEvent;
@@ -31,7 +33,6 @@ class QgsModelViewMouseEvent;
 class QgsModelComponentGraphicItem;
 class QgsModelGraphicsScene;
 
-#define SIP_NO_FILE
 
 /**
  * \ingroup gui

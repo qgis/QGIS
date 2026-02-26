@@ -24,9 +24,12 @@
 #include <QFont>
 #include <QModelIndex>
 #include <QPainter>
+#include <QString>
 #include <QStyleOptionViewItem>
 
 #include "moc_qgspluginitemdelegate.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPluginItemDelegate::QgsPluginItemDelegate( QObject *parent )
   : QStyledItemDelegate( parent ) {}

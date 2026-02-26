@@ -46,8 +46,11 @@
 #include <QPair>
 #include <QPointer>
 #include <QSet>
+#include <QString>
 
 #include "moc_qgsmeshlayerrenderer.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   QgsMeshLayer *layer,

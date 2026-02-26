@@ -22,8 +22,11 @@
 
 #include <QDir>
 #include <QFileInfo>
+#include <QString>
 #include <QUrl>
 #include <QUuid>
+
+using namespace Qt::StringLiterals;
 
 #if defined(Q_OS_WIN)
 #include <QRegularExpression>

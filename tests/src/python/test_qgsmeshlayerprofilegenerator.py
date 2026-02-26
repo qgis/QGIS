@@ -11,6 +11,7 @@ __date__ = "18/03/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
 import os
+import unittest
 
 from qgis.core import (
     Qgis,
@@ -22,16 +23,13 @@ from qgis.core import (
     QgsProfileRequest,
     QgsProfileSnapContext,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
 
 
 class TestQgsMeshLayerProfileGenerator(QgisTestCase):
-
     def testGeneration(self):
         ml = QgsMeshLayer(
             os.path.join(unitTestDataPath(), "3d", "elev_mesh.2dm"), "mdal", "mdal"

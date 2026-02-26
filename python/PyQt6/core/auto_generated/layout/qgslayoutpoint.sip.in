@@ -11,6 +11,7 @@
 
 
 
+
 class QgsLayoutPoint
 {
 %Docstring(signature="appended")

@@ -23,7 +23,10 @@
 #include "qgscoordinatereferencesystem.h"
 
 #include <QObject>
+#include <QString>
 #include <QVector>
+
+using namespace Qt::StringLiterals;
 
 class QDomElement;
 class QgsReadWriteContext;

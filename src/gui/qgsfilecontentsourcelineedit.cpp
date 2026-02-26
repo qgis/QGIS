@@ -27,10 +27,13 @@
 #include <QLineEdit>
 #include <QMenu>
 #include <QMovie>
+#include <QString>
 #include <QToolButton>
 #include <QUrl>
 
 #include "moc_qgsfilecontentsourcelineedit.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsAbstractFileContentSourceLineEdit

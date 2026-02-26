@@ -19,6 +19,7 @@
 
 #include "qgis_core.h"
 #include "qgslayoutitem.h"
+#include "qgslayoutitemmap.h"
 #include "qgsplot.h"
 #include "qgsvectorlayerplotdatagatherer.h"
 #include "qgsvectorlayerref.h"
@@ -235,6 +236,56 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
     QList<QgsLayoutItemChart::SeriesDetails> seriesList() const { return mSeriesList; }
 
     /**
+     * Sets a layout \a map to use to limit the series' use of features. This setting only has
+     * an effect if setFilterOnlyVisibleFeatures is set to TRUE. Changing the map forces
+     * the chart to refetch features from its vector layer.
+     * \see map()
+     * \see filterOnlyVisibleFeatures
+     */
+    void setMap( QgsLayoutItemMap *map );
+
+    /**
+     * Returns the layout \a map to use to limit the series' use of features. This setting only has
+     * an effect if setFilterOnlyVisibleFeatures is set to TRUE.
+     * \see setMap()
+     * \see setFilterOnlyVisibleFeatures()
+     */
+    QgsLayoutItemMap *map() const { return mMap; }
+
+    /**
+     * Sets the series to only use features which are visible in a map item. Changing
+     * this setting forces the chart to refetch features from its vector layer.
+     *
+     * \see filterOnlyVisibleFeatures()
+     * \see setMap()
+     */
+    void setFilterOnlyVisibleFeatures( bool visibleOnly );
+
+    /**
+     * Returns TRUE if the series are set to use only features visible on a corresponding
+     * map item.
+     *
+     * \see map()
+     * \see setFilterOnlyVisibleFeatures()
+     */
+    bool filterOnlyVisibleFeatures() const { return mFilterOnlyVisibleFeatures; }
+
+    /**
+     * Sets series to only use features which intersect the current atlas feature.
+     *
+     * \see filterToAtlasFeature()
+     */
+    void setFilterToAtlasFeature( bool filterToAtlas );
+
+    /**
+     * Returns TRUE if the series are set to only show features which intersect the current
+     * atlas feature.
+     *
+     * \see setFilterToAtlasFeature()
+     */
+    bool filterToAtlasFeature() const { return mFilterToAtlasIntersection; }
+
+    /**
      * Returns a new chart item for the specified \a layout.
      *
      * The caller takes responsibility for deleting the returned object.
@@ -242,6 +293,7 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
     static QgsLayoutItemChart *create( QgsLayout *layout ) SIP_FACTORY;
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
+    void finalizeRestoreFromXml() override;
 
   public slots:
 
@@ -274,6 +326,12 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
     QString mSortExpression;
 
     QList<QgsLayoutItemChart::SeriesDetails> mSeriesList;
+
+    QPointer< QgsLayoutItemMap > mMap = nullptr;
+    QString mMapUuid;
+
+    bool mFilterOnlyVisibleFeatures = false;
+    bool mFilterToAtlasIntersection = false;
 
     bool mNeedsGathering = false;
     bool mIsGathering = false;

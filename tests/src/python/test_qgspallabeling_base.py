@@ -16,10 +16,9 @@ __copyright__ = "Copyright 2013, The QGIS Project"
 
 import os
 import sys
+import unittest
 from collections.abc import Callable
 
-from qgis.PyQt.QtCore import QSize, Qt, qDebug
-from qgis.PyQt.QtGui import QColor, QFont
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
@@ -39,9 +38,9 @@ from qgis.core import (
     QgsVectorTileLayer,
     QgsWkbTypes,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QSize, Qt, qDebug
+from qgis.PyQt.QtGui import QColor, QFont
+from qgis.testing import QgisTestCase, start_app
 from utilities import (
     getTestFont,
     loadTestFonts,
@@ -56,7 +55,6 @@ FONTSLOADED = loadTestFonts()
 
 # noinspection PyPep8Naming,PyShadowingNames
 class TestQgsPalLabeling(QgisTestCase):
-
     _PalDataDir = os.path.join(unitTestDataPath(), "labeling")
     _TestFont = getTestFont()  # Roman at 12 pt
     """:type: QFont"""
@@ -266,7 +264,6 @@ class TestQgsPalLabeling(QgisTestCase):
 
 
 class TestPALConfig(TestQgsPalLabeling):
-
     @classmethod
     def setUpClass(cls):
         TestQgsPalLabeling.setUpClass()

@@ -24,7 +24,10 @@
 #include <QComboBox>
 #include <QLineEdit>
 #include <QObject>
+#include <QString>
 #include <QtTest/QSignalSpy>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsScaleComboBox : public QObject
 {

@@ -10,8 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "28/3/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
-from qgis.PyQt.QtCore import QEvent, QPoint, QPointF, Qt
-from qgis.PyQt.QtGui import QKeyEvent, QMouseEvent, QWheelEvent
+import unittest
+
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsLineString,
@@ -20,14 +20,14 @@ from qgis.core import (
     QgsProject,
 )
 from qgis.gui import QgsElevationProfileCanvas, QgsPlotMouseEvent, QgsPlotTool
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QEvent, QPoint, QPointF, Qt
+from qgis.PyQt.QtGui import QKeyEvent, QMouseEvent, QWheelEvent
+from qgis.testing import QgisTestCase, start_app
 
 app = start_app()
 
 
 class TestTool(QgsPlotTool):
-
     def __init__(self, canvas):
         super().__init__(canvas, "Test")
         self.events = []
@@ -84,7 +84,6 @@ class TestTool(QgsPlotTool):
 
 
 class TestQgsElevationProfileCanvas(QgisTestCase):
-
     def testGettersSetters(self):
         canvas = QgsElevationProfileCanvas()
         canvas.setCrs(QgsCoordinateReferenceSystem("EPSG:3111"))

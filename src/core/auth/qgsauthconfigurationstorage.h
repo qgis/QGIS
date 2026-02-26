@@ -27,6 +27,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  *  Abstract class that defines the interface for all authentication configuration storage implementations.

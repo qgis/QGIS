@@ -212,7 +212,9 @@ bool QgsWebEnginePage::render( QPainter *painter, const QRectF &painterRect )
 
   // generate file name for temporary intermediate PDF file
   QTemporaryFile f;
-  f.open();
+  if ( !f.open() )
+    return false;
+
   f.close();
 
   const QPageLayout layout = QPageLayout( QPageSize( pageSize, QPageSize::Inch ),

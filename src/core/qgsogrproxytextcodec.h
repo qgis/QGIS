@@ -16,11 +16,12 @@
 #ifndef QGSOGRPROXYTEXTCODEC_H
 #define QGSOGRPROXYTEXTCODEC_H
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 
 #include <QTextCodec>
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup core

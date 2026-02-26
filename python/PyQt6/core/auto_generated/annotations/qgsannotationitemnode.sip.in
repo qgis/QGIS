@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsAnnotationItemNode
 {
 %Docstring(signature="appended")

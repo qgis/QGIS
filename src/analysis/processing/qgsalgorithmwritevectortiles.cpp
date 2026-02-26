@@ -19,7 +19,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectortilewriter.h"
 
+#include <QString>
 #include <QUrl>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

@@ -30,9 +30,12 @@
 #include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
 #include <queue>
 
 #include "moc_qgstracer.cpp"
+
+using namespace Qt::StringLiterals;
 
 typedef std::pair<int, double> DijkstraQueueItem; // first = vertex index, second = distance
 

@@ -23,6 +23,10 @@
 #include "qgssqlexpressioncompiler.h"
 #include "qgssqliteutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsSQLiteExpressionCompiler::QgsSQLiteExpressionCompiler( const QgsFields &fields, bool ignoreStaticNodes )
   : QgsSqlExpressionCompiler( fields, QgsSqlExpressionCompiler::LikeIsCaseInsensitive | QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger, ignoreStaticNodes )
 {

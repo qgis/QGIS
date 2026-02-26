@@ -58,6 +58,8 @@ of this model.
 
     virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
 
+    virtual QHash<int, QByteArray> roleNames() const;
+
 
 };
 

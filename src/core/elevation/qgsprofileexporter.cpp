@@ -25,9 +25,12 @@
 #include "qgsvectorlayer.h"
 
 #include <QFileInfo>
+#include <QString>
 #include <QThread>
 
 #include "moc_qgsprofileexporter.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProfileExporter::QgsProfileExporter( const QList<QgsAbstractProfileSource *> &sources, const QgsProfileRequest &request, Qgis::ProfileExportType type )
   : mType( type )

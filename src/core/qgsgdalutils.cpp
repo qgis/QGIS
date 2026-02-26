@@ -22,6 +22,10 @@
 #include "qgsrasterblock.h"
 #include "qgssettings.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include "gdal.h"
 #include "gdalwarper.h"
@@ -497,7 +501,7 @@ QString QgsGdalUtils::helpCreationOptionsFormat( const QString &format )
   if ( myGdalDriver )
   {
     // first report details and help page
-    char **GDALmetadata = GDALGetMetadata( myGdalDriver, nullptr );
+    CSLConstList GDALmetadata = GDALGetMetadata( myGdalDriver, nullptr );
     message += "Format Details:\n"_L1;
     message += u"  Extension: %1\n"_s.arg( CSLFetchNameValue( GDALmetadata, GDAL_DMD_EXTENSION ) );
     message += u"  Short Name: %1"_s.arg( GDALGetDriverShortName( myGdalDriver ) );

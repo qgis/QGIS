@@ -26,8 +26,11 @@
 #include "qgssettings.h"
 
 #include <QSpinBox>
+#include <QString>
 
 #include "moc_qgsactivelayerfeatureslocatorfilter.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsActiveLayerFeaturesLocatorFilter::QgsActiveLayerFeaturesLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )

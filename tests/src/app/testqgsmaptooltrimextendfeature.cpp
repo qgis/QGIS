@@ -34,6 +34,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsMapToolTrimExtendFeature : public QObject
 {
     Q_OBJECT

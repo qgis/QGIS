@@ -24,7 +24,10 @@
 #include "qgssettings.h"
 #include "qgsvaliditycheckcontext.h"
 
+#include <QString>
 #include <QUrl>
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsLayoutScaleBarValidityCheck

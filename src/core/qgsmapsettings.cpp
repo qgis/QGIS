@@ -30,6 +30,10 @@
 #include "qgsunittypes.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsMapSettings::QgsMapSettings()
   : mDpi( QgsPainting::qtDefaultDpiX() ) // DPI that will be used by default for QImage instances
   , mSize( QSize( 0, 0 ) )
@@ -980,6 +984,21 @@ void QgsMapSettings::setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPoli
       mFlags.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, true );
       mFlags.setFlag( Qgis::MapSettingsFlag::UseAdvancedEffects, false );
       break;
+  }
+}
+
+QHash<QString, QgsSelectiveMaskingSourceSet> QgsMapSettings::selectiveMaskingSourceSets() const
+{
+  return mSelectiveMaskingSourceSets;
+}
+
+void QgsMapSettings::setSelectiveMaskingSourceSets( const QVector<QgsSelectiveMaskingSourceSet> &sets )
+{
+  mSelectiveMaskingSourceSets.clear();
+  mSelectiveMaskingSourceSets.reserve( sets.size() );
+  for ( const QgsSelectiveMaskingSourceSet &set : sets )
+  {
+    mSelectiveMaskingSourceSets.insert( set.id(), set );
   }
 }
 

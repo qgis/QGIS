@@ -10,6 +10,7 @@
 
 
 
+
 class QgsTextFormat
 {
 %Docstring(signature="appended")
@@ -565,16 +566,13 @@ The units are specified using
 %End
 
     class Tab
-{
+    {
 %Docstring(signature="appended")
 Defines a tab position for a text format.
 
 .. versionadded:: 3.42
 %End
 
-%TypeHeaderCode
-#include "qgstextformat.h"
-%End
       public:
 
         explicit Tab( double position );

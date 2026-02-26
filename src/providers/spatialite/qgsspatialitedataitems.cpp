@@ -18,7 +18,11 @@
 #include "qgsspatialiteconnection.h"
 #include "qgsspatialiteprovider.h"
 
+#include <QString>
+
 #include "moc_qgsspatialitedataitems.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_GUI
 #include "qgsspatialitesourceselect.h"

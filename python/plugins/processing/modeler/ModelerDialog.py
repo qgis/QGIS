@@ -24,36 +24,36 @@ import re
 import sys
 from pathlib import Path
 
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QDir,
-    QRectF,
-    QPoint,
-    QPointF,
-    pyqtSignal,
-    QUrl,
-    QFileInfo,
-)
-from qgis.PyQt.QtWidgets import QMessageBox, QFileDialog
 from qgis.core import (
     Qgis,
     QgsApplication,
-    QgsProcessing,
-    QgsProject,
-    QgsProcessingModelParameter,
-    QgsProcessingModelAlgorithm,
-    QgsSettings,
-    QgsProcessingContext,
     QgsFileUtils,
+    QgsProcessing,
+    QgsProcessingContext,
+    QgsProcessingModelAlgorithm,
+    QgsProcessingModelParameter,
+    QgsProject,
+    QgsSettings,
 )
 from qgis.gui import (
-    QgsProcessingParameterDefinitionDialog,
-    QgsProcessingParameterWidgetContext,
-    QgsModelGraphicsScene,
     QgsModelDesignerDialog,
+    QgsModelGraphicsScene,
     QgsProcessingContextGenerator,
+    QgsProcessingParameterDefinitionDialog,
     QgsProcessingParametersGenerator,
+    QgsProcessingParameterWidgetContext,
 )
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QDir,
+    QFileInfo,
+    QPoint,
+    QPointF,
+    QRectF,
+    QUrl,
+    pyqtSignal,
+)
+from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
 from qgis.utils import iface
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
@@ -71,7 +71,6 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
 class ModelerDialog(QgsModelDesignerDialog):
-
     update_model = pyqtSignal()
 
     dlgs = []
@@ -114,7 +113,6 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.processing_context = createContext()
 
         class ContextGenerator(QgsProcessingContextGenerator):
-
             def __init__(self, context):
                 super().__init__()
                 self.processing_context = context
@@ -123,6 +121,7 @@ class ModelerDialog(QgsModelDesignerDialog):
                 return self.processing_context
 
         self.context_generator = ContextGenerator(self.processing_context)
+        self.registerProcessingContextGenerator(self.context_generator)
 
     def createExecutionDialog(self):
         dlg = AlgorithmDialog(self.model().create(), parent=self)
@@ -257,7 +256,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         scene.createItems(self.model(), context)
         scene.updateBounds()
 
-    def create_widget_context(self):
+    def createWidgetContext(self):
         """
         Returns a new widget context for use in the model editor
         """
@@ -294,12 +293,12 @@ class ModelerDialog(QgsModelDesignerDialog):
         if ModelerParameterDefinitionDialog.use_legacy_dialog(paramType=paramType):
             dlg = ModelerParameterDefinitionDialog(self.model(), paramType)
             if dlg.exec():
-                new_param = dlg.param
+                new_param = dlg.create_parameter()
                 comment = dlg.comments()
         else:
             # yay, use new API!
             context = createContext()
-            widget_context = self.create_widget_context()
+            widget_context = self.createWidgetContext()
             dlg = QgsProcessingParameterDefinitionDialog(
                 type=paramType,
                 context=context,

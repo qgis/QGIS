@@ -21,26 +21,25 @@ __copyright__ = "(C) 2016, Alexander Bruy"
 
 import os
 
-from qgis.PyQt.QtGui import QIcon, QColor
-
 from qgis.analysis import QgsRelief
 from qgis.core import (
-    QgsProcessingParameterDefinition,
-    QgsProcessingParameterRasterLayer,
-    QgsProcessingParameterNumber,
-    QgsProcessingParameterBoolean,
-    QgsProcessingParameterRasterDestination,
-    QgsProcessingParameterFileDestination,
-    QgsRasterFileWriter,
     QgsProcessingException,
+    QgsProcessingParameterBoolean,
+    QgsProcessingParameterDefinition,
+    QgsProcessingParameterFileDestination,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterRasterDestination,
+    QgsProcessingParameterRasterLayer,
+    QgsRasterFileWriter,
 )
+from qgis.PyQt.QtGui import QColor, QIcon
+
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class ParameterReliefColors(QgsProcessingParameterDefinition):
-
     def __init__(self, name="", description="", parent=None, optional=True):
         super().__init__(name, description, None, optional)
         self.parent = parent

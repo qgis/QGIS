@@ -15,8 +15,6 @@
 
 #include "qgsrenderpassquad.h"
 
-#include <random>
-
 #include <QUrl>
 #include <QVector3D>
 #include <Qt3DCore/QAttribute>
@@ -26,6 +24,8 @@
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QGraphicsApiFilter>
+#include <Qt3DRender/QLayer>
+#include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QTechnique>
 
 #include "moc_qgsrenderpassquad.cpp"

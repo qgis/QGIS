@@ -18,12 +18,13 @@
 #ifndef QGSALGORITHMSPLITFEATURESBYATTRIBUTECHARACTER_H
 #define QGSALGORITHMSPLITFEATURESBYATTRIBUTECHARACTER_H
 
-#define SIP_NO_FILE
 
 #include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
 
 #include <QRegularExpression>
+
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 

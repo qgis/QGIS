@@ -20,6 +20,10 @@
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QString QgsOgrLayerMetadataProvider::id() const
 {
   return u"ogr"_s;

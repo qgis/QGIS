@@ -13,18 +13,18 @@ __copyright__ = "Copyright 2019, The QGIS Project"
 import os
 import shutil
 import tempfile
+import unittest
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
-from qgis.PyQt.QtCore import QDir
 from qgis.core import (
     QgsApplication,
     QgsPathResolver,
     QgsProject,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QDir
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 

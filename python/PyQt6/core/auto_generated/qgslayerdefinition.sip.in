@@ -128,15 +128,12 @@ and joins
 %End
 
     class DependencySorter
-{
+    {
 %Docstring(signature="appended")
 Handles sorting of dependencies stored in a XML project or layer
 definition file.
 %End
 
-%TypeHeaderCode
-#include "qgslayerdefinition.h"
-%End
       public:
 
         explicit DependencySorter( const QDomDocument &doc );

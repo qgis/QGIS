@@ -25,8 +25,11 @@
 #include "qgswindowmanagerinterface.h"
 
 #include <QScrollBar>
+#include <QString>
 
 #include "moc_qgsstyleitemslistwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsReadOnlyStyleModel

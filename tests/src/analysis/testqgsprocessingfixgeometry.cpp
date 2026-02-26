@@ -20,6 +20,10 @@
 #include "qgsvectorlayer.h"
 #include "qgswkbtypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsProcessingFixGeometry : public QgsTest
 {
     Q_OBJECT

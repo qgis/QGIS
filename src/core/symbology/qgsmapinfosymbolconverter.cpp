@@ -24,6 +24,10 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgssymbol.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //
 // QgsMapInfoSymbolConversionContext
 //

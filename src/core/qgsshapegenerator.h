@@ -18,10 +18,11 @@
 #ifndef QGSSHAPEGENERATOR_H
 #define QGSSHAPEGENERATOR_H
 
-#define SIP_NO_FILE
 #include "qgis_core.h"
 
 #include <QPolygonF>
+
+#define SIP_NO_FILE
 
 class QgsPointXY;
 class QPainterPath;

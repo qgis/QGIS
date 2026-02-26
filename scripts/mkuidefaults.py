@@ -45,7 +45,6 @@ s = QSettings(sys.argv[1], QSettings.Format.IniFormat)
 ba = bytes(s.value("/UI/geometry"))
 
 with open("src/app/ui_defaults.h", "w") as f:
-
     f.write(
         "#ifndef UI_DEFAULTS_H\n#define UI_DEFAULTS_H\n"
         + "\nstatic const unsigned char defaultUIgeometry[] =\n{\n"

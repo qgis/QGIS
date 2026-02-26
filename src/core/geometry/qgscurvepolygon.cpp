@@ -34,6 +34,9 @@
 #include <QJsonObject>
 #include <QPainter>
 #include <QPainterPath>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsCurvePolygon::QgsCurvePolygon()
 {
@@ -490,6 +493,35 @@ double QgsCurvePolygon::area() const
     }
   }
   return totalArea;
+}
+
+double QgsCurvePolygon::area3D() const
+{
+  if ( !mExteriorRing )
+  {
+    return 0.0;
+  }
+
+  double totalArea3D = 0.0;
+
+  if ( mExteriorRing->isRing() )
+  {
+    double area3D = 0.0;
+    mExteriorRing->sumUpArea3D( area3D );
+    totalArea3D += std::abs( area3D );
+  }
+
+  for ( const QgsCurve *ring : mInteriorRings )
+  {
+    double area3D = 0.0;
+    if ( ring->isRing() )
+    {
+      ring->sumUpArea3D( area3D );
+      totalArea3D -= std::abs( area3D );
+    }
+  }
+
+  return totalArea3D;
 }
 
 double QgsCurvePolygon::perimeter() const

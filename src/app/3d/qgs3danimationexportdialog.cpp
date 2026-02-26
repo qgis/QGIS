@@ -23,9 +23,12 @@
 
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+#include <QString>
 #include <QtGlobal>
 
 #include "moc_qgs3danimationexportdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 Qgs3DAnimationExportDialog::Qgs3DAnimationExportDialog()
   : QDialog( nullptr )

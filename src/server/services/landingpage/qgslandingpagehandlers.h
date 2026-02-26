@@ -23,6 +23,10 @@
 #include "qgsserverrequest.h"
 #include "qgsserversettings.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsFeatureRequest;
 class QgsServerOgcApi;
 class QgsFeature;

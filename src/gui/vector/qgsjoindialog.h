@@ -19,11 +19,12 @@
 #define QgsJoinDIALOG_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 #include "ui_qgsjoindialogbase.h"
 
 #include "qgis_gui.h"
+
+#define SIP_NO_FILE
 
 class QgsVectorLayer;
 class QgsVectorLayerJoinInfo;

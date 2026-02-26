@@ -20,7 +20,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgsapplication.h"
-#include "qgsmultirenderchecker.h"
+#include "qgscameracontroller.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloudattributebyramprenderer.h"
@@ -33,6 +33,10 @@
 #include "qgsproject.h"
 #include "qgsstyle.h"
 #include "qgstest.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsPointCloud3DRendering : public QgsTest
 {

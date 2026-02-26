@@ -30,7 +30,6 @@
 #ifndef PAL_PROBLEM_H
 #define PAL_PROBLEM_H
 
-#define SIP_NO_FILE
 
 
 #include <list>
@@ -42,6 +41,8 @@
 #include "qgsrendercontext.h"
 
 #include <QList>
+
+#define SIP_NO_FILE
 
 namespace pal
 {

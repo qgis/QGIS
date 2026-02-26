@@ -15,11 +15,13 @@ import re
 import shutil
 import sys
 import tempfile
+import unittest
 from datetime import datetime
 
 from osgeo import ogr
-from qgis.PyQt.QtCore import QByteArray, QVariant
+from providertestbase import ProviderTestCase
 from qgis.core import (
+    NULL,
     Qgis,
     QgsBox3D,
     QgsDataSourceUri,
@@ -40,14 +42,11 @@ from qgis.core import (
     QgsVectorLayerExporter,
     QgsVectorLayerUtils,
     QgsWkbTypes,
-    NULL,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QByteArray, QVariant
+from qgis.testing import QgisTestCase, start_app
 from qgis.utils import spatialite_connect
-
-from providertestbase import ProviderTestCase
-from utilities import unitTestDataPath, compareWkt
+from utilities import compareWkt, unitTestDataPath
 
 # Pass no_exit=True: for some reason this crashes sometimes on exit on Travis
 start_app(True)
@@ -70,7 +69,6 @@ def count_opened_filedescriptors(filename_to_test):
 
 
 class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -78,9 +76,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
         print(" ### Setup Spatialite Provider Test Class")
         # setup provider for base tests
         cls.vl = QgsVectorLayer(
-            "dbname='{}/provider/spatialite.db' table=\"somedata\" (geom) sql=".format(
-                TEST_DATA_DIR
-            ),
+            f"dbname='{TEST_DATA_DIR}/provider/spatialite.db' table=\"somedata\" (geom) sql=",
             "test",
             "spatialite",
         )
@@ -88,9 +84,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
         cls.source = cls.vl.dataProvider()
 
         cls.vl_poly = QgsVectorLayer(
-            "dbname='{}/provider/spatialite.db' table=\"somepolydata\" (geom) sql=".format(
-                TEST_DATA_DIR
-            ),
+            f"dbname='{TEST_DATA_DIR}/provider/spatialite.db' table=\"somepolydata\" (geom) sql=",
             "test",
             "spatialite",
         )
@@ -386,9 +380,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
         """Returns the layer for attribute change CHECK constraint violation"""
 
         vl = QgsVectorLayer(
-            "dbname='{}' table=\"check_constraint\" (geometry) sql=".format(
-                self.dbname
-            ),
+            f"dbname='{self.dbname}' table=\"check_constraint\" (geometry) sql=",
             "check_constraint",
             "spatialite",
         )
@@ -398,9 +390,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
         """Returns the layer for UNIQUE and NOT NULL constraints detection"""
 
         vl = QgsVectorLayer(
-            "dbname='{}' table=\"unique_not_null_constraints\" (geometry) sql=".format(
-                self.dbname
-            ),
+            f"dbname='{self.dbname}' table=\"unique_not_null_constraints\" (geometry) sql=",
             "unique_not_null_constraints",
             "spatialite",
         )
@@ -1585,9 +1575,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
 
         for i in range(11, 21):
             sql = 'INSERT INTO "test pk" (id, name, geometry) '
-            sql += "VALUES ({id}, 'name {id}', GeomFromText('POINT({id} {id})', 4326))".format(
-                id=i
-            )
+            sql += f"VALUES ({i}, 'name {i}', GeomFromText('POINT({i} {i})', 4326))"
             cur.execute(sql)
 
         def _make_table(table_name):
@@ -1602,9 +1590,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
 
             for i in range(11, 21):
                 sql = f'INSERT INTO "{table_name}" (name, geom) '
-                sql += "VALUES ('name {id}', GeomFromText('POINT({id} {id})', 4326))".format(
-                    id=i
-                )
+                sql += f"VALUES ('name {i}', GeomFromText('POINT({i} {i})', 4326))"
                 cur.execute(sql)
 
         _make_table("somedata")
@@ -1625,7 +1611,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
                 self.assertEqual(vl.getFeature(i - offset)["name"], f"name {i}")
                 self.assertEqual(f.id(), i - offset)
                 self.assertEqual(f["name"], f"name {i}")
-                self.assertEqual(f.geometry().asWkt(), "Point ({id} {id})".format(id=i))
+                self.assertEqual(f.geometry().asWkt(), f"Point ({i} {i})")
                 i += 1
 
         vl_pk = QgsVectorLayer(
@@ -2331,9 +2317,7 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
         con = spatialite_connect(self.dbname, isolation_level=None)
         cur = con.cursor()
         cur.execute("BEGIN")
-        sql = (
-            sql
-        ) = """CREATE TABLE table54622 (
+        sql = sql = """CREATE TABLE table54622 (
             _id INTEGER PRIMARY KEY AUTOINCREMENT)"""
         cur.execute(sql)
         sql = "SELECT AddGeometryColumn('table54622', 'geometry', 25832, 'MULTIPOLYGON', 'XY', 0)"
@@ -2401,6 +2385,153 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
         self.assertTrue(layer3D.isValid())
         self.assertEqual(layer3D.extent(), QgsRectangle(-2, 3, 7, 12))
         self.assertEqual(layer3D.extent3D(), QgsBox3D(-2, 3, 2, 7, 12, 11))
+
+    def test_view_fields(self):
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            tmpfile = os.path.join(temp_dir, "test_view_fields.db")
+
+            ds = ogr.GetDriverByName("SQLite").CreateDataSource(
+                tmpfile, options=["SPATIALITE=YES"]
+            )
+            lyr = ds.CreateLayer("lyr1", geom_type=ogr.wkbPoint)
+            field1 = ogr.FieldDefn("id1", ogr.OFTInteger)
+            lyr.CreateField(field1)
+            field2 = ogr.FieldDefn("name1", ogr.OFTString)
+            lyr.CreateField(field2)
+            f = ogr.Feature(lyr.GetLayerDefn())
+            f.SetGeometry(ogr.CreateGeometryFromWkt("POINT(0 1)"))
+            f.SetField("id1", 1)
+            f.SetField("name1", "name1")
+            lyr.CreateFeature(f)
+
+            lyr = ds.CreateLayer("lyr2", geom_type=ogr.wkbPoint)
+            field1 = ogr.FieldDefn("id2", ogr.OFTInteger)
+            lyr.CreateField(field1)
+            field2 = ogr.FieldDefn("name2", ogr.OFTString)
+            lyr.CreateField(field2)
+            f = ogr.Feature(lyr.GetLayerDefn())
+            f.SetGeometry(ogr.CreateGeometryFromWkt("POINT(1 0)"))
+            f.SetField("id2", 1)
+            f.SetField("name2", "name2")
+            lyr.CreateFeature(f)
+
+            sql = "CREATE VIEW test_view_fields AS SELECT lyr1.GEOMETRY AS geom, lyr1.ROWID AS gid, lyr1.id1, lyr2.name2 FROM lyr1 JOIN lyr2 ON id1=id2"
+            ds.ExecuteSQL(sql)
+
+            sql = "INSERT INTO views_geometry_columns (view_name, view_geometry, view_rowid, f_table_name, f_geometry_column, read_only) VALUES ('test_view_fields', 'geom', 'rowid', 'lyr1', 'geometry', 1)"
+            ds.ExecuteSQL(sql)
+
+            ds.ExecuteSQL(
+                "INSERT INTO views_geometry_columns_auth (view_name, view_geometry, hidden) VALUES ('test_view_fields', 'geom', 0)"
+            )
+            ds.ExecuteSQL(
+                "SELECT UpdateLayerStatistics('test_view_fields')", dialect="SQLITE"
+            )
+
+            # Corrupt the metadata
+            ds.ExecuteSQL(
+                "DELETE FROM views_geometry_columns_field_infos WHERE view_name = 'test_view_fields'"
+            )
+            ds.ExecuteSQL(
+                """INSERT INTO views_geometry_columns_field_infos
+            (view_name, view_geometry, ordinal, column_name, null_values,
+        integer_values,
+            double_values, text_values, blob_values, max_size, integer_min,
+        integer_max,
+            double_min, double_max) VALUES
+            ('test_view_fields', 'geom', 0, 'id1', 0, 1, 0, 0, 0, NULL, 1, 1,
+        NULL, NULL),
+            ('test_view_fields', 'geom', 1, 'name1', 0, 0, 0, 1, 0, NULL, NULL,
+        NULL, NULL, NULL),
+            ('test_view_fields', 'geom', 2, 'id2', 0, 1, 0, 0, 0, NULL, NULL,
+        NULL, NULL, NULL),
+            ('test_view_fields', 'geom', 3, 'name2', 0, 0, 0, 1, 0, NULL, NULL,
+        NULL, NULL, NULL)
+            """
+            )
+
+            ds = None
+
+            # Create a vector layer on the view and check that the fields are correctly retrieved
+            uri = QgsDataSourceUri()
+            uri.setDatabase(tmpfile)
+            uri.setDataSource("", "test_view_fields", "geom", "", "gid")
+            vl = QgsVectorLayer(
+                uri.uri(),
+                "test_view_fields",
+                "spatialite",
+            )
+
+            self.assertTrue(vl.isValid())
+            field_names = vl.fields().names()
+            self.assertIn("id1", field_names)
+            self.assertNotIn("id2", field_names)
+            self.assertIn("name2", field_names)
+            self.assertNotIn("name1", field_names)
+
+    def test_invalid_subset_string(self):
+        """Check that constructing a vector layer with the incorrect subset
+        string will result in an invalid layer.
+        Related to GH #64282.
+        """
+        testPath = f"dbname={self.dbname} table='test_filter' (geometry) key='id'"
+        table_name = "test_filter"
+        subset_string = f"SELECT * FROM {table_name} WHERE name REGEXP '^i';"
+        # unvalid subset string should result in an invalid layer
+        uri = QgsDataSourceUri(f"dbname={self.dbname}")
+        uri.setDataSource("", table_name, "geometry", subset_string, "")
+        layer = QgsVectorLayer(uri.uri(), "subset layer", "spatialite")
+        self.assertFalse(layer.isValid())
+
+    def test_urisReferToSame(self):
+        """
+        Test provider metadata urisReferToSame
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata("spatialite")
+
+        uri1_parts = {
+            "path": "some_db.sql",
+            "layerName": "table1",
+        }
+        uri2_parts = {
+            "path": "some_db.sql",
+            "layerName": "table2",
+        }
+
+        uri1 = metadata.encodeUri(uri1_parts)
+        uri2 = metadata.encodeUri(uri2_parts)
+
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Object)
+        )
+
+        uri2_parts["path"] = "some_db2.sql"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertFalse(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+        uri2_parts["path"] = "some_db.sql"
+        uri2_parts["layerName"] = "table1"
+        uri2 = metadata.encodeUri(uri2_parts)
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Connection)
+        )
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Group)
+        )
+        self.assertTrue(
+            metadata.urisReferToSame(uri1, uri2, Qgis.SourceHierarchyLevel.Object)
+        )
 
 
 if __name__ == "__main__":

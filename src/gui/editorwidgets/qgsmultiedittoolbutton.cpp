@@ -19,8 +19,11 @@
 #include "qgsguiutils.h"
 
 #include <QMenu>
+#include <QString>
 
 #include "moc_qgsmultiedittoolbutton.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMultiEditToolButton::QgsMultiEditToolButton( QWidget *parent )
   : QToolButton( parent )

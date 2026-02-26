@@ -21,6 +21,10 @@
 #include "qgscolorutils.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 bool QgsMeshRendererMeshSettings::isEnabled() const
 {
   return mEnabled;

@@ -26,7 +26,11 @@
 #include "qgsrasterlayertemporalproperties.h"
 #include "qgstemporalutils.h"
 
+#include <QString>
+
 #include "moc_qgswmstsettingswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsWmstSettingsWidget::QgsWmstSettingsWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

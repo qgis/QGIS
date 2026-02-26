@@ -26,6 +26,10 @@
 #include "qgssymbollayer.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #define POINTS_TO_MM 2.83464567
 #define INCH_TO_MM 25.4
 

@@ -15,6 +15,10 @@
 
 #include "qgsogrexpressioncompiler.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 #include "qgsexpressionnodeimpl.h"

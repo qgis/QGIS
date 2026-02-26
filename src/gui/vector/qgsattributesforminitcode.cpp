@@ -21,8 +21,11 @@
 #include "qgssettings.h"
 
 #include <QFileDialog>
+#include <QString>
 
 #include "moc_qgsattributesforminitcode.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAttributesFormInitCode::QgsAttributesFormInitCode()
 {

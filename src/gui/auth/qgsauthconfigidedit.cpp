@@ -22,8 +22,11 @@
 #include "qgsauthmanager.h"
 
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgsauthconfigidedit.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthConfigIdEdit::QgsAuthConfigIdEdit( QWidget *parent, const QString &authcfg, bool allowEmpty )
   : QWidget( parent )

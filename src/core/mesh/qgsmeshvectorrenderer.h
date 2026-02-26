@@ -19,7 +19,6 @@
 #define QGSMESHVECTORRENDERER_H
 
 
-#define SIP_NO_FILE
 
 #include "qgis_core.h"
 #include "qgsmeshdataprovider.h"
@@ -29,6 +28,8 @@
 
 #include <QSize>
 #include <QVector>
+
+#define SIP_NO_FILE
 
 class QgsRenderContext;
 class QgsInterpolatedLineColor;

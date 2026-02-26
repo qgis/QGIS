@@ -32,7 +32,10 @@
 
 #include <QDomDocument>
 #include <QFile>
+#include <QString>
 #include <QTemporaryFile>
+
+using namespace Qt::StringLiterals;
 
 typedef QgsRuleBasedRenderer::Rule RRule;
 

@@ -27,6 +27,10 @@
 #include "qgsunittypes.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsTextBufferSettings::QgsTextBufferSettings()
 {
   d = new QgsTextBufferSettingsPrivate();

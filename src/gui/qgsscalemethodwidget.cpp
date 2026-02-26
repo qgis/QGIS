@@ -22,8 +22,11 @@
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QString>
 
 #include "moc_qgsscalemethodwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsScaleMethodWidget::QgsScaleMethodWidget( QWidget *parent )
   : QWidget( parent )

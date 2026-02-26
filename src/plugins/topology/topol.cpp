@@ -21,6 +21,10 @@
 #include "qgsguiutils.h"
 #include "qgsmaplayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 // Qt Related Includes
 #include <QAction>
 #include <QToolBar>

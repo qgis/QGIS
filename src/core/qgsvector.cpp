@@ -19,6 +19,10 @@
 #include "qgis.h"
 #include "qgsexception.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsVector QgsVector::rotateBy( double rot ) const
 {
   const double angle = std::atan2( mY, mX ) + rot;

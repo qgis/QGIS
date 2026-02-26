@@ -14,6 +14,7 @@ import os
 import random
 import string
 import tempfile
+import unittest
 from shutil import rmtree
 
 from qgis.core import (
@@ -22,8 +23,7 @@ from qgis.core import (
     QgsNetworkAccessManager,
     QgsSettings,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 __author__ = "Alessandro Pasotti"
 __date__ = "27/09/2017"
@@ -37,7 +37,6 @@ qgis_app = start_app()
 
 
 class TestAuthManager(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests:

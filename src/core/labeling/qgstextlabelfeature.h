@@ -15,7 +15,6 @@
 #ifndef QGSTEXTLABELFEATURE_H
 #define QGSTEXTLABELFEATURE_H
 
-#define SIP_NO_FILE
 
 #include <optional>
 
@@ -24,6 +23,8 @@
 #include "qgstextdocument.h"
 #include "qgstextdocumentmetrics.h"
 #include "qgstextmetrics.h"
+
+#define SIP_NO_FILE
 
 class QgsTextCharacterFormat;
 
@@ -37,7 +38,7 @@ class CORE_EXPORT QgsTextLabelFeature : public QgsLabelFeature
 {
   public:
     //! Construct text label feature
-    QgsTextLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size );
+    QgsTextLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size, int subPartId = 0 );
 
     //! Clean up
     ~QgsTextLabelFeature() override;
@@ -100,7 +101,7 @@ class CORE_EXPORT QgsTextLabelFeature : public QgsLabelFeature
      * \since QGIS 3.20
      */
     static QgsPrecalculatedTextMetrics calculateTextMetrics( const QgsMapToPixel *xform, const QgsRenderContext &context, const QgsTextFormat &format, const QFont &baseFont, const QFontMetricsF &fontMetrics, double letterSpacing,
-        double wordSpacing, const QString &text = QString(), QgsTextDocument *document = nullptr, QgsTextDocumentMetrics *metrics = nullptr );
+        double wordSpacing, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics );
 
     /**
      * Returns the document for the label.

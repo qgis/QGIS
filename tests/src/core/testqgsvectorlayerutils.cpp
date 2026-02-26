@@ -14,13 +14,19 @@
  ***************************************************************************/
 #include <memory>
 
+#include "qgsfillsymbol.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgssymbollayer.h"
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
 
 #include <QMetaType>
+#include <QString>
 #include <QThread>
 #include <QtGlobal>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup UnitTests
@@ -42,6 +48,9 @@ class TestQgsVectorLayerUtils : public QObject
     void testGetFeatureSource();
     void testGetValues();
     void testUniqueValues();
+    void testObjectsMaskedBySymbolLayers();
+    void testObjectsMaskedByLabels();
+    void testFilterValidFeatureIds();
 
   private:
     QString mTestDataDir;
@@ -391,6 +400,193 @@ void TestQgsVectorLayerUtils::testUniqueValues()
     pointsLayer->deselect( selectedFeatures );
     QCOMPARE( pointsLayer->selectedFeatureCount(), 0 );
   }
+}
+
+void TestQgsVectorLayerUtils::testObjectsMaskedBySymbolLayers()
+{
+  // the 'masking' layer is the one "casting" the mask (e.g., the points hiding the roads)
+  auto maskingLayer = std::make_unique<QgsVectorLayer>( u"Point?field=f:int"_s, u"Masking Layer"_s, u"memory"_s );
+  // the 'masked' layer is the one being hidden (e.g., the roads)
+  auto maskedLayer = std::make_unique<QgsVectorLayer>( u"Polygon?field=f:int"_s, u"Masked Layer"_s, u"memory"_s );
+
+  QVERIFY( maskingLayer->isValid() );
+  QVERIFY( maskedLayer->isValid() );
+
+  // we need to attach a symbol layer to the *masked* layer that points to a selective masking set
+  QgsSingleSymbolRenderer *maskedRenderer = new QgsSingleSymbolRenderer( new QgsFillSymbol() );
+  maskedLayer->setRenderer( maskedRenderer );
+
+  QgsSymbolLayer *maskedSymbolLayer = maskedRenderer->symbol()->symbolLayer( 0 );
+  const QString maskedSymbolLayerId = maskedSymbolLayer->id();
+  const QString setId = u"Set1"_s;
+
+  // assign this set ID to the symbol layer we want masked
+  maskedSymbolLayer->setSelectiveMaskingSourceSetId( setId );
+
+  QgsSelectiveMaskingSourceSet set;
+  set.setId( setId );
+  set.setName( u"Test Set"_s );
+
+  QHash<QString, QgsSelectiveMaskingSourceSet> sets;
+  QVector<QgsVectorLayer *> allLayers = { maskedLayer.get() };
+
+  // test first with no masking configured
+  QgsMaskedLayers result = QgsVectorLayerUtils::collectObjectsMaskedBySymbolLayersFromLayer(
+    maskingLayer.get(),
+    sets,
+    allLayers
+  );
+  QVERIFY( result.isEmpty() );
+
+  // configure the set so that maskingLayer is a mask source
+  QgsSelectiveMaskSource symbolSource( maskingLayer->id(), Qgis::SelectiveMaskSourceType::SymbolLayer, u"source_1"_s );
+  set.setSources( { symbolSource } );
+  sets.insert( setId, set );
+
+  result = QgsVectorLayerUtils::collectObjectsMaskedBySymbolLayersFromLayer(
+    maskingLayer.get(),
+    sets,
+    allLayers
+  );
+
+  QVERIFY( !result.isEmpty() );
+  QVERIFY( result.contains( maskedLayer->id() ) );
+  QVERIFY( result[maskedLayer->id()].symbolLayerIdsToMask.contains( maskedSymbolLayerId ) );
+  QVERIFY( !result[maskedLayer->id()].hasEffects );
+
+  QgsSelectiveMaskSource wrongLayerSource( u"wrong_layer_id"_s, Qgis::SelectiveMaskSourceType::SymbolLayer, u"source_1"_s );
+  set.setSources( { wrongLayerSource } );
+  sets[setId] = set;
+
+  result = QgsVectorLayerUtils::collectObjectsMaskedBySymbolLayersFromLayer( maskingLayer.get(), sets, allLayers );
+  QVERIFY( result.isEmpty() );
+
+  // mismatching source type (Label instead of SymbolLayer)
+  QgsSelectiveMaskSource labelSource( maskingLayer->id(), Qgis::SelectiveMaskSourceType::Label, u"rule_1"_s );
+  set.setSources( { labelSource } );
+  sets[setId] = set;
+
+  result = QgsVectorLayerUtils::collectObjectsMaskedBySymbolLayersFromLayer( maskingLayer.get(), sets, allLayers );
+  QVERIFY( result.isEmpty() );
+}
+
+void TestQgsVectorLayerUtils::testObjectsMaskedByLabels()
+{
+  // the 'masking' layer is the one "casting" the mask (e.g., the points hiding the roads)
+  auto maskingLayer = std::make_unique<QgsVectorLayer>( u"Point?field=f:int"_s, u"Masking Layer"_s, u"memory"_s );
+  // the 'masked' layer is the one being hidden (e.g., the roads)
+  auto maskedLayer = std::make_unique<QgsVectorLayer>( u"Polygon?field=f:int"_s, u"Masked Layer"_s, u"memory"_s );
+
+  QVERIFY( maskingLayer->isValid() );
+  QVERIFY( maskedLayer->isValid() );
+
+  // we need to attach a symbol layer to the *masked* layer that points to a selective masking set
+  QgsSingleSymbolRenderer *maskedRenderer = new QgsSingleSymbolRenderer( new QgsFillSymbol() );
+  maskedLayer->setRenderer( maskedRenderer );
+
+  QgsSymbolLayer *maskedSymbolLayer = maskedRenderer->symbol()->symbolLayer( 0 );
+  const QString maskedSymbolLayerId = maskedSymbolLayer->id();
+  const QString setId = u"Set1"_s;
+
+  // assign this set ID to the symbol layer we want masked
+  maskedSymbolLayer->setSelectiveMaskingSourceSetId( setId );
+
+  QgsSelectiveMaskingSourceSet set;
+  set.setId( setId );
+  set.setName( u"Test Set"_s );
+
+  QHash<QString, QgsSelectiveMaskingSourceSet> sets;
+  QVector<QgsVectorLayer *> allLayers = { maskedLayer.get() };
+
+  // test first with no masking configured
+  QHash<QString, QgsMaskedLayers> labelResult = QgsVectorLayerUtils::collectObjectsMaskedByLabelsFromLayer(
+    maskingLayer.get(),
+    sets,
+    allLayers
+  );
+  QVERIFY( labelResult.isEmpty() );
+
+  const QString labelRuleId = u"RuleA"_s;
+  // configure the set so that maskingLayer is a mask source via its labels
+  QgsSelectiveMaskSource labelSource( maskingLayer->id(), Qgis::SelectiveMaskSourceType::Label, labelRuleId );
+  set.setSources( { labelSource } );
+  sets[setId] = set;
+
+  labelResult = QgsVectorLayerUtils::collectObjectsMaskedByLabelsFromLayer(
+    maskingLayer.get(),
+    sets,
+    allLayers
+  );
+
+  QVERIFY( !labelResult.isEmpty() );
+  QVERIFY( labelResult.contains( labelRuleId ) );
+
+  QgsMaskedLayers ruleLayers = labelResult[labelRuleId];
+  QVERIFY( ruleLayers.contains( maskedLayer->id() ) );
+  QVERIFY( ruleLayers[maskedLayer->id()].symbolLayerIdsToMask.contains( maskedSymbolLayerId ) );
+  QVERIFY( !ruleLayers[maskedLayer->id()].hasEffects );
+
+  // mismatching layer ID
+  QgsSelectiveMaskSource wrongLayerSource( u"wrong_layer_id"_s, Qgis::SelectiveMaskSourceType::Label, labelRuleId );
+  set.setSources( { wrongLayerSource } );
+  sets[setId] = set;
+
+  labelResult = QgsVectorLayerUtils::collectObjectsMaskedByLabelsFromLayer( maskingLayer.get(), sets, allLayers );
+  QVERIFY( labelResult.isEmpty() );
+
+  // mismatching source type (SymbolLayer instead of Label)
+  QgsSelectiveMaskSource symbolSource( maskingLayer->id(), Qgis::SelectiveMaskSourceType::SymbolLayer, u"source_1"_s );
+  set.setSources( { symbolSource } );
+  sets[setId] = set;
+
+  labelResult = QgsVectorLayerUtils::collectObjectsMaskedByLabelsFromLayer( maskingLayer.get(), sets, allLayers );
+  QVERIFY( labelResult.isEmpty() );
+}
+
+void TestQgsVectorLayerUtils::testFilterValidFeatureIds()
+{
+  auto layer = std::make_unique<QgsVectorLayer>( u"Point?field=id:integer"_s, u"test"_s, u"memory"_s );
+  QVERIFY( layer->isValid() );
+
+  QgsFeature f1( layer->fields() );
+  f1.setAttribute( 0, 1 );
+  QgsFeature f2( layer->fields() );
+  f2.setAttribute( 0, 2 );
+  QgsFeature f3( layer->fields() );
+  f3.setAttribute( 0, 3 );
+  QgsFeature f4( layer->fields() );
+  f4.setAttribute( 0, 4 );
+  QgsFeature f5( layer->fields() );
+  f5.setAttribute( 0, 5 );
+
+  layer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 << f5 );
+  QCOMPARE( layer->featureCount(), 5L );
+
+  QgsFeatureIds testIds = { 1, 2, 3 };
+  QgsFeatureIds result = QgsVectorLayerUtils::filterValidFeatureIds( nullptr, testIds );
+  QVERIFY( result.isEmpty() );
+
+  result = QgsVectorLayerUtils::filterValidFeatureIds( layer.get(), QgsFeatureIds() );
+  QVERIFY( result.isEmpty() );
+
+  testIds = { 1, 2, 3, 4, 5 };
+  result = QgsVectorLayerUtils::filterValidFeatureIds( layer.get(), testIds );
+  QCOMPARE( result.size(), 5 );
+  QCOMPARE( result, testIds );
+
+  testIds = { 1, 2, 99, 100, 3, 200 };
+  result = QgsVectorLayerUtils::filterValidFeatureIds( layer.get(), testIds );
+  QCOMPARE( result.size(), 3 );
+  QCOMPARE( result, QgsFeatureIds() << 1 << 2 << 3 );
+
+  testIds = { 99, 100, 200 };
+  result = QgsVectorLayerUtils::filterValidFeatureIds( layer.get(), testIds );
+  QVERIFY( result.isEmpty() );
+
+  testIds = { -1, 1, 2, -5 };
+  result = QgsVectorLayerUtils::filterValidFeatureIds( layer.get(), testIds );
+  QCOMPARE( result.size(), 2 );
+  QCOMPARE( result, QgsFeatureIds() << 1 << 2 );
 }
 
 QGSTEST_MAIN( TestQgsVectorLayerUtils )

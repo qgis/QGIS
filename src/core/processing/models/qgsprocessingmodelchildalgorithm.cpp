@@ -21,6 +21,10 @@
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsprocessingregistry.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond NOT_STABLE
 
 QgsProcessingModelChildAlgorithm::QgsProcessingModelChildAlgorithm( const QString &algorithmId )

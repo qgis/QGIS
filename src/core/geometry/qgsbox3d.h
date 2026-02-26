@@ -22,7 +22,10 @@
 #include "qgspoint.h"
 #include "qgsrectangle.h"
 
+#include <QString>
 #include <QVector3D>
+
+using namespace Qt::StringLiterals;
 
 class QgsVector3D;
 

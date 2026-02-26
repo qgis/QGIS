@@ -18,8 +18,11 @@
 #include "qgsapplication.h"
 
 #include <QMenu>
+#include <QString>
 
 #include "moc_qgssearchwidgettoolbutton.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSearchWidgetToolButton::QgsSearchWidgetToolButton( QWidget *parent )
   : QToolButton( parent )

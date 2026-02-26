@@ -30,9 +30,10 @@
 #ifndef INTERNAL_EXCEPTION_H
 #define INTERNAL_EXCEPTION_H
 
-#define SIP_NO_FILE
 
 #include <exception>
+
+#define SIP_NO_FILE
 
 namespace pal
 {

@@ -39,6 +39,8 @@
 #include "qgsfilewidget.h"
 #include "qgsgeometrywidget.h"
 #include "qgsgui.h"
+#include "qgshighlightablelineedit.h"
+#include "qgsiconutils.h"
 #include "qgslayoutcombobox.h"
 #include "qgslayoutitemcombobox.h"
 #include "qgslayoutitemlabel.h"
@@ -49,6 +51,7 @@
 #include "qgsmeshlayertemporalproperties.h"
 #include "qgsmessagebar.h"
 #include "qgsmodelcomponentgraphicitem.h"
+#include "qgsmodelgraphicitem.h"
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelgraphicsview.h"
 #include "qgsmodelundocommand.h"
@@ -109,7 +112,10 @@
 #include <QSignalSpy>
 #include <QStackedWidget>
 #include <QStandardItemModel>
+#include <QString>
 #include <QToolButton>
+
+using namespace Qt::StringLiterals;
 
 class TestParamDefinition : public QgsProcessingParameterDefinition
 {
@@ -470,6 +476,32 @@ void TestProcessingGui::testModelUndo()
   QCOMPARE( model.designerParameterValues(), params );
   command.redo();
   QCOMPARE( model.designerParameterValues(), params );
+
+  // merge logic
+  QgsModelUndoCommand command1( &model, u"c1"_s );
+  QgsModelUndoCommand command2( &model, u"c2"_s );
+  // not compatible, no operation or id string
+  QVERIFY( !command1.mergeWith( &command2 ) );
+  QVERIFY( !command2.mergeWith( &command1 ) );
+
+  QgsModelUndoCommand command3( &model, u"c1"_s, QgsModelUndoCommand::CommandOperation::GroupChanged );
+  QgsModelUndoCommand command4( &model, u"c2"_s, QgsModelUndoCommand::CommandOperation::NameChanged );
+  QgsModelUndoCommand command5( &model, u"c3"_s, QgsModelUndoCommand::CommandOperation::NameChanged );
+  // not compatible, different operation
+  QVERIFY( !command3.mergeWith( &command4 ) );
+  QVERIFY( !command4.mergeWith( &command3 ) );
+  // compatible, same operation
+  QVERIFY( command4.mergeWith( &command5 ) );
+
+  QgsModelUndoCommand command6( &model, u"c1"_s, u"id1"_s );
+  QgsModelUndoCommand command7( &model, u"c2"_s, u"id2"_s );
+  QgsModelUndoCommand command8( &model, u"c3"_s, u"id2"_s );
+  // not compatible, different id string
+  QVERIFY( !command6.mergeWith( &command7 ) );
+  QVERIFY( !command6.mergeWith( &command8 ) );
+  QVERIFY( !command7.mergeWith( &command6 ) );
+  // compatible, same id string
+  QVERIFY( command7.mergeWith( &command8 ) );
 }
 
 void TestProcessingGui::testSetGetConfig()
@@ -565,8 +597,7 @@ void TestProcessingGui::testWrapperFactoryRegistry()
   TestParamDefinition customParam( u"custom"_s, u"custom"_s );
   wrapper = guiRegistry.createParameterWidgetWrapper( &customParam, Qgis::ProcessingMode::Standard );
   QVERIFY( !wrapper );
-  customParam.setMetadata( { { u"widget_wrapper"_s, QVariantMap( { { u"widget_type"_s, u"str"_s } } ) }
-  } );
+  customParam.setMetadata( { { u"widget_wrapper"_s, QVariantMap( { { u"widget_type"_s, u"str"_s } } ) } } );
   wrapper = guiRegistry.createParameterWidgetWrapper( &customParam, Qgis::ProcessingMode::Standard );
   QVERIFY( wrapper );
   QCOMPARE( wrapper->parameterDefinition()->type(), u"custom"_s );
@@ -1241,8 +1272,7 @@ void TestProcessingGui::testStringWrapper()
   // with value hints
   //
   param = QgsProcessingParameterString( u"string"_s, u"string"_s, QVariant() );
-  param.setMetadata( { { u"widget_wrapper"_s, QVariantMap( { { u"value_hints"_s, QStringList() << "value 1" << "value 2" << "value 3" } } ) }
-  } );
+  param.setMetadata( { { u"widget_wrapper"_s, QVariantMap( { { u"value_hints"_s, QStringList() << "value 1" << "value 2" << "value 3" } } ) } } );
 
   QgsProcessingStringWidgetWrapper wrapperHints( &param );
 
@@ -1280,8 +1310,7 @@ void TestProcessingGui::testStringWrapper()
 
   // with value hints, optional param
   param = QgsProcessingParameterString( u"string"_s, u"string"_s, QVariant(), false, true );
-  param.setMetadata( { { u"widget_wrapper"_s, QVariantMap( { { u"value_hints"_s, QStringList() << "value 1" << "value 2" << "value 3" } } ) }
-  } );
+  param.setMetadata( { { u"widget_wrapper"_s, QVariantMap( { { u"value_hints"_s, QStringList() << "value 1" << "value 2" << "value 3" } } ) } } );
 
   QgsProcessingStringWidgetWrapper wrapperHintsOptional( &param );
 
@@ -4164,6 +4193,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   auto param = std::make_unique<QgsProcessingParameterMultipleLayers>( QString(), QString(), Qgis::ProcessingSourceType::Raster );
   QVariantList selectedOptions;
   auto dlg = std::make_unique<QgsProcessingMultipleInputPanelWidget>( param.get(), selectedOptions, QList<QgsProcessingModelChildParameterSource>() );
+  dlg->setProject( QgsProject::instance() );
   QVERIFY( dlg->selectedOptions().isEmpty() );
   QCOMPARE( dlg->mModel->rowCount(), 0 );
 
@@ -4204,6 +4234,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), u"raster [EPSG:4326]"_s );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), raster->id() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( raster ) );
   QCOMPARE( dlg->selectedOptions().size(), 1 );
   QCOMPARE( dlg->selectedOptions().at( 0 ).toString(), raster->id() );
   // existing value using layer source should also match to project layer
@@ -4211,6 +4242,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), u"raster [EPSG:4326]"_s );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), raster->source() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( raster ) );
   QCOMPARE( dlg->selectedOptions().size(), 1 );
   QCOMPARE( dlg->selectedOptions().at( 0 ).toString(), raster->source() );
   // existing value using full layer path not matching a project layer should work
@@ -4219,6 +4251,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->rowCount(), 2 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), u"raster [EPSG:4326]"_s );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), raster->source() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( raster ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ) ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ), Qt::UserRole ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) );
   QCOMPARE( dlg->selectedOptions().size(), 2 );
@@ -4231,8 +4264,10 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->rowCount(), 2 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) );
+  QVERIFY( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>().isNull() );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ) ).toString(), u"raster [EPSG:4326]"_s );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ), Qt::UserRole ).toString(), raster->source() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( raster ) );
   QCOMPARE( dlg->selectedOptions().size(), 2 );
   QCOMPARE( dlg->selectedOptions().at( 0 ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) );
   QCOMPARE( dlg->selectedOptions().at( 1 ).toString(), raster->source() );
@@ -4244,6 +4279,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->rowCount(), 1 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), u"mesh"_s );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), mesh->id() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( mesh ) );
 
   // plugin
   param = std::make_unique<QgsProcessingParameterMultipleLayers>( QString(), QString(), Qgis::ProcessingSourceType::Plugin );
@@ -4252,6 +4288,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->rowCount(), 1 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), u"plugin"_s );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), plugin->id() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( plugin ) );
 
 #ifdef HAVE_EPT
   // point cloud
@@ -4261,6 +4298,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->rowCount(), 1 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), u"pointcloud [EPSG:28356]"_s );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), pointCloud->id() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( pointCloud ) );
 #endif
 
   // annotation
@@ -4270,8 +4308,10 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->rowCount(), 2 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), u"secondary annotations"_s );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), annotationLayer->id() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( annotationLayer ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ) ).toString(), u"Annotations"_s );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ), Qt::UserRole ).toString(), u"main"_s );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( QgsProject::instance()->mainAnnotationLayer() ) );
 
   // vector points
   param = std::make_unique<QgsProcessingParameterMultipleLayers>( QString(), QString(), Qgis::ProcessingSourceType::VectorPoint );
@@ -4280,6 +4320,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->rowCount(), 1 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), u"point [EPSG:4326]"_s );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), point->id() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( point ) );
 
   // vector lines
   param = std::make_unique<QgsProcessingParameterMultipleLayers>( QString(), QString(), Qgis::ProcessingSourceType::VectorLine );
@@ -4288,6 +4329,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->rowCount(), 1 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), u"line [EPSG:4326]"_s );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), line->id() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( line ) );
 
   // vector polygons
   param = std::make_unique<QgsProcessingParameterMultipleLayers>( QString(), QString(), Qgis::ProcessingSourceType::VectorPolygon );
@@ -4296,6 +4338,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->rowCount(), 1 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), u"polygon [EPSG:4326]"_s );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), polygon->id() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( polygon ) );
 
   // vector any geometry type
   param = std::make_unique<QgsProcessingParameterMultipleLayers>( QString(), QString(), Qgis::ProcessingSourceType::VectorAnyGeometry );
@@ -4304,10 +4347,13 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->rowCount(), 3 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), u"line [EPSG:4326]"_s );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), line->id() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( line ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ) ).toString(), u"point [EPSG:4326]"_s );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ), Qt::UserRole ).toString(), point->id() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( point ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 2, 0 ) ).toString(), u"polygon [EPSG:4326]"_s );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 2, 0 ), Qt::UserRole ).toString(), polygon->id() );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 2, 0 ), Qt::DecorationRole ).value<QIcon>(), QgsIconUtils::iconForLayer( polygon ) );
 
   // vector any type
   param = std::make_unique<QgsProcessingParameterMultipleLayers>( QString(), QString(), Qgis::ProcessingSourceType::Vector );
@@ -9280,9 +9326,11 @@ void TestProcessingGui::testOutputDefinitionWidget()
   QVERIFY( !panel.outputIsSkipped() );
   QCOMPARE( skipSpy.count(), 0 );
   QCOMPARE( changedSpy.count(), 0 );
+  QVERIFY( panel.leText->actions().contains( panel.mActionTemporaryOutputIcon ) );
   panel.setValue( QgsProcessing::TEMPORARY_OUTPUT );
   QCOMPARE( skipSpy.count(), 0 );
   QCOMPARE( changedSpy.count(), 0 );
+  QVERIFY( panel.leText->actions().contains( panel.mActionTemporaryOutputIcon ) );
 
   QgsProcessingOutputLayerDefinition def;
   def.sink.setStaticValue( QgsProcessing::TEMPORARY_OUTPUT );
@@ -9311,6 +9359,7 @@ void TestProcessingGui::testOutputDefinitionWidget()
   panel.setValue( def );
   QCOMPARE( skipSpy.count(), 0 );
   QCOMPARE( changedSpy.count(), 0 );
+  QVERIFY( panel.leText->actions().contains( panel.mActionTemporaryOutputIcon ) );
   v = panel.value();
   QCOMPARE( v.userType(), qMetaTypeId<QgsProcessingOutputLayerDefinition>() );
   QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().createOptions.value( u"fileEncoding"_s ).toString(), u"utf8"_s );
@@ -9319,6 +9368,7 @@ void TestProcessingGui::testOutputDefinitionWidget()
   panel.setValue( u"ogr:dbname='/me/a.gpkg' table=\"d\" (geom) sql=''"_s );
   QCOMPARE( skipSpy.count(), 0 );
   QCOMPARE( changedSpy.count(), 1 );
+  QVERIFY( !panel.leText->actions().contains( panel.mActionTemporaryOutputIcon ) );
   v = panel.value();
   QCOMPARE( v.userType(), qMetaTypeId<QgsProcessingOutputLayerDefinition>() );
   QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().createOptions.value( u"fileEncoding"_s ).toString(), u"utf8"_s );
@@ -9327,6 +9377,7 @@ void TestProcessingGui::testOutputDefinitionWidget()
   panel.setValue( u"ogr:dbname='/me/a.gpkg' table=\"d\" (geom) sql=''"_s );
   QCOMPARE( skipSpy.count(), 0 );
   QCOMPARE( changedSpy.count(), 1 );
+  QVERIFY( !panel.leText->actions().contains( panel.mActionTemporaryOutputIcon ) );
 
   panel.setValue( u"postgis:dbname='oraclesux' host=10.1.1.221 port=5432 user='qgis' password='qgis' table=\"stufff\".\"output\" (the_geom) sql="_s );
   v = panel.value();
@@ -9336,6 +9387,7 @@ void TestProcessingGui::testOutputDefinitionWidget()
   QVERIFY( !panel.outputIsSkipped() );
   QCOMPARE( skipSpy.count(), 0 );
   QCOMPARE( changedSpy.count(), 2 );
+  QVERIFY( !panel.leText->actions().contains( panel.mActionTemporaryOutputIcon ) );
   panel.setValue( u"postgis:dbname='oraclesux' host=10.1.1.221 port=5432 user='qgis' password='qgis' table=\"stufff\".\"output\" (the_geom) sql="_s );
   QCOMPARE( skipSpy.count(), 0 );
   QCOMPARE( changedSpy.count(), 2 );
@@ -9348,12 +9400,15 @@ void TestProcessingGui::testOutputDefinitionWidget()
   QVERIFY( !panel.outputIsSkipped() );
   QCOMPARE( skipSpy.count(), 0 );
   QCOMPARE( changedSpy.count(), 3 );
+  QVERIFY( !panel.leText->actions().contains( panel.mActionTemporaryOutputIcon ) );
   panel.setValue( u"/home/me/test.shp"_s );
   QCOMPARE( skipSpy.count(), 0 );
   QCOMPARE( changedSpy.count(), 3 );
+  QVERIFY( !panel.leText->actions().contains( panel.mActionTemporaryOutputIcon ) );
   panel.setValue( u"/home/me/test2.shp"_s );
   QCOMPARE( skipSpy.count(), 0 );
   QCOMPARE( changedSpy.count(), 4 );
+  QVERIFY( !panel.leText->actions().contains( panel.mActionTemporaryOutputIcon ) );
 
   QgsSettings settings;
   settings.setValue( u"/Processing/Configuration/OUTPUTS_FOLDER"_s, TEST_DATA_DIR );
@@ -9362,6 +9417,28 @@ void TestProcessingGui::testOutputDefinitionWidget()
   QCOMPARE( v.userType(), qMetaTypeId<QgsProcessingOutputLayerDefinition>() );
   QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().createOptions.value( u"fileEncoding"_s ).toString(), u"utf8"_s );
   QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QString( TEST_DATA_DIR + u"/test.shp"_s ) );
+  QVERIFY( !panel.leText->actions().contains( panel.mActionTemporaryOutputIcon ) );
+
+  // set value that will specify layer name and check that it is TEMPORARY_OUTPUT but with destinationName set correctly
+  QString layerName = u"new layer"_s;
+  panel.setValue( layerName );
+  v = panel.value();
+  QCOMPARE( changedSpy.count(), 6 );
+  QCOMPARE( v.userType(), qMetaTypeId<QgsProcessingOutputLayerDefinition>() );
+  QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().destinationName, layerName );
+  QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
+  QVERIFY( panel.leText->actions().contains( panel.mActionTemporaryOutputIcon ) );
+
+  QgsProcessingOutputLayerDefinition paramDef = QgsProcessingOutputLayerDefinition( QgsProcessing::TEMPORARY_OUTPUT );
+  QString destName = u"new layer name"_s;
+  paramDef.destinationName = destName;
+
+  panel.setValue( paramDef );
+  v = panel.value();
+  QCOMPARE( changedSpy.count(), 7 );
+  QCOMPARE( v.userType(), qMetaTypeId<QgsProcessingOutputLayerDefinition>() );
+  QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().destinationName, destName );
+  QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
 
   // optional, test skipping
   sink.setFlags( sink.flags() | Qgis::ProcessingParameterFlag::Optional );
@@ -10175,12 +10252,18 @@ void TestProcessingGui::testSinkWrapper()
         QCOMPARE( spy.count(), 2 );
         QCOMPARE( wrapper.widgetValue().value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), u"/aa.shp"_s );
         QCOMPARE( static_cast<QgsProcessingLayerOutputDestinationWidget *>( wrapper.wrappedWidget() )->value().value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), u"/aa.shp"_s );
+        // test that setting value that only is layer name works
+        QString layerName = u"new name"_s;
+        wrapper.setWidgetValue( layerName, context );
+        QCOMPARE( spy.count(), 3 );
+        QCOMPARE( wrapper.widgetValue().value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
+        QCOMPARE( wrapper.widgetValue().value<QgsProcessingOutputLayerDefinition>().destinationName, layerName );
         break;
     }
 
     // check signal
     static_cast<QgsProcessingLayerOutputDestinationWidget *>( wrapper.wrappedWidget() )->setValue( u"/cc.shp"_s );
-    QCOMPARE( spy.count(), 3 );
+    QCOMPARE( spy.count(), 4 );
     QCOMPARE( wrapper.widgetValue().value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), u"/cc.shp"_s );
     delete w;
 
@@ -10553,8 +10636,7 @@ void TestProcessingGui::testAlignRasterLayersWrapper()
 void TestProcessingGui::testRasterOptionsWrapper()
 {
   QgsProcessingParameterString param( u"string"_s, u"string"_s );
-  param.setMetadata( { { u"widget_wrapper"_s, QVariantMap( { { u"widget_type"_s, u"rasteroptions"_s } } ) }
-  } );
+  param.setMetadata( { { u"widget_wrapper"_s, QVariantMap( { { u"widget_type"_s, u"rasteroptions"_s } } ) } } );
 
   QgsProcessingContext context;
   QgsProcessingRasterOptionsWidgetWrapper wrapper( &param );
@@ -11496,6 +11578,64 @@ void TestProcessingGui::testModelGraphicsView()
   // should not exist
   QVERIFY( !layerCommentItem );
 
+
+  // adding a layer and running the model to get feature count
+  QgsVectorLayer *layer = new QgsVectorLayer( "Point", "v1", "memory" );
+  QgsFeature f( 10001 );
+  f.setGeometry( QgsGeometry( new QgsPoint( 1, 2 ) ) );
+  layer->dataProvider()->addFeatures( QgsFeatureList() << f );
+
+  QgsProject p;
+  p.addMapLayer( layer );
+
+  // run
+  QgsProcessingContext context2;
+  context2.setLogLevel( Qgis::ProcessingLogLevel::ModelDebug );
+  context2.setProject( &p );
+  QgsProcessingFeedback feedback;
+  QVariantMap params;
+  params.insert( u"LAYER"_s, layer->id() );
+
+  // start with no initial state
+  bool ok = false;
+  model1.run( params, context2, &feedback, &ok );
+  QVERIFY( ok );
+
+  // Set last result then recreate items
+  scene2.setLastRunResult( context2.modelResult(), context2 );
+
+  scene2.createItems( &model1, context2 );
+  QList<QGraphicsItem *> items2 = scene2.items();
+  QgsModelDesignerFeatureCountGraphicItem *layerItemFeatureCount = nullptr;
+  for ( QGraphicsItem *item : items2 )
+  {
+    if ( QgsModelDesignerFeatureCountGraphicItem *featureCount = dynamic_cast<QgsModelDesignerFeatureCountGraphicItem *>( item ) )
+    {
+      layerItemFeatureCount = featureCount;
+      QCOMPARE( featureCount->toPlainText(), "[1]" );
+      break;
+    }
+  }
+  QVERIFY( layerItemFeatureCount );
+
+  // hiding feature count decoration
+  scene2.setFlags( QgsModelGraphicsScene::FlagHideFeatureCount );
+  scene2.clear();
+  scene2.createItems( &model1, context2 );
+  QList<QGraphicsItem *> items3 = scene2.items();
+  layerItemFeatureCount = nullptr;
+  for ( QGraphicsItem *item : items3 )
+  {
+    if ( QgsModelDesignerFeatureCountGraphicItem *featureCount = dynamic_cast<QgsModelDesignerFeatureCountGraphicItem *>( item ) )
+    {
+      layerItemFeatureCount = featureCount;
+      break;
+    }
+  }
+  // should not exist
+  QVERIFY( !layerItemFeatureCount );
+
+
   //check model bounds
   scene2.updateBounds();
   QRectF modelRect = scene2.sceneRect();
@@ -11576,7 +11716,7 @@ void TestProcessingGui::testModelGraphicsView()
   }
   QVERIFY( outputItem );
   QCOMPARE( dynamic_cast<QgsProcessingModelOutput *>( outputItem->component() )->childOutputName(), u"my_output"_s );
-
+  QCOMPARE( scene.outputItem( u"buffer"_s, u"my_output"_s ), outputItem );
 
   layerCommentItem = nullptr;
   QgsModelCommentGraphicItem *algCommentItem = nullptr;

@@ -18,13 +18,12 @@
 
 
 #include "qgis_sip.h"
+#include "qgspropertycollection.h"
 
 #include <QDomDocument>
 #include <QDomElement>
 
 #define SIP_NO_FILE
-
-#include "qgspropertycollection.h"
 
 class QgsPrintLayout;
 class QgsLayoutItem;

@@ -28,12 +28,15 @@
 //
 
 #include "qgis.h"
-#include "qgsaabb.h"
 #include "qgsbox3d.h"
 
+#include <QString>
 #include <QTime>
 
 #define SIP_NO_FILE
+
+using namespace Qt::StringLiterals;
+
 
 namespace Qt3DCore
 {

@@ -31,6 +31,7 @@
 #include <QMessageBox>
 #include <QPdfWriter>
 #include <QShortcut>
+#include <QString>
 #include <QTextCharFormat>
 #include <QTextCursor>
 #include <QTextDocument>
@@ -40,6 +41,8 @@
 #include <QTextTableFormat>
 
 #include "moc_qgsconfigureshortcutsdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget *parent, QgsShortcutsManager *manager )
   : QDialog( parent )

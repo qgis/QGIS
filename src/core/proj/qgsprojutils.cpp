@@ -29,6 +29,8 @@
 #include <QSet>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 #if defined(USE_THREAD_LOCAL) && !defined(Q_OS_WIN)
 thread_local QgsProjContext QgsProjContext::sProjContext;
 #else

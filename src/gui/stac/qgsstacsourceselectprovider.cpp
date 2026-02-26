@@ -18,6 +18,10 @@
 #include "qgsapplication.h"
 #include "qgsstacsourceselect.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsStacSourceSelectProvider::QgsStacSourceSelectProvider()
   : QgsSourceSelectProvider()
 {

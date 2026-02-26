@@ -43,6 +43,8 @@ feedback object of all layers.
 Construct a feedback object
 %End
 
+    ~QgsFeedback();
+
     bool isCanceled() const /HoldGIL/;
 %Docstring
 Tells whether the operation has been canceled already
@@ -94,6 +96,21 @@ Sets the current processed objects count for the feedback object. The
 .. seealso:: :py:func:`processedCountChanged`
 
 .. versionadded:: 3.24
+%End
+
+    static std::unique_ptr<QgsFeedback> createScaledFeedback(
+      QgsFeedback *parentFeedback, double startPercentage, double endPercentage );
+%Docstring
+Returns a feedback object whose [0, 100] progression range will be
+mapped to ``parentFeedback`` [``startPercentage``, ``endPercentage``].
+
+Cancellation on the returned feedback causes cancellation of the parent
+feedback.
+
+``parentFeedback`` must be kept alive while the returned feedback is
+used.
+
+.. versionadded:: 4.0
 %End
 
   public slots:

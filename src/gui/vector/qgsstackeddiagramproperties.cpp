@@ -30,8 +30,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QMimeData>
+#include <QString>
 
 #include "moc_qgsstackeddiagramproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsStackedDiagramProperties::QgsStackedDiagramProperties( QgsVectorLayer *layer, QWidget *parent, QgsMapCanvas *canvas )
   : QgsPanelWidget( parent )

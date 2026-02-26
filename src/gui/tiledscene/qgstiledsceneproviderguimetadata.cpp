@@ -20,6 +20,10 @@
 #include "qgstiledscenedataitemguiprovider.h"
 #include "qgstiledscenesourceselect.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 class QgsTiledSceneSourceSelectProvider : public QgsSourceSelectProvider

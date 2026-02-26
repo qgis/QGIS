@@ -15,10 +15,11 @@
 #ifndef QGSNETWORKLOGGERWIDGETFACTORY_H
 #define QGSNETWORKLOGGERWIDGETFACTORY_H
 
-#define SIP_NO_FILE
 
 #include "qgis_gui.h"
 #include "qgsdevtoolwidgetfactory.h"
+
+#define SIP_NO_FILE
 
 class QgsNetworkLogger;
 

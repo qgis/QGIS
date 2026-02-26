@@ -20,6 +20,10 @@
 #include "qgis.h"
 #include "qgsprocessing.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsVectorizeAlgorithmBase::group() const
@@ -73,16 +77,8 @@ QVariantMap QgsVectorizeAlgorithmBase::processAlgorithm( const QVariantMap &para
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
-
-  const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-
   QgsRasterIterator iter( mInterface.get() );
   iter.startRasterRead( mBand, mNbCellsXProvider, mNbCellsYProvider, mExtent );
-
-  const int nbBlocksWidth = static_cast<int>( std::ceil( 1.0 * mNbCellsXProvider / maxWidth ) );
-  const int nbBlocksHeight = static_cast<int>( std::ceil( 1.0 * mNbCellsYProvider / maxHeight ) );
-  const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
 
   int iterLeft = 0;
   int iterTop = 0;
@@ -94,7 +90,7 @@ QVariantMap QgsVectorizeAlgorithmBase::processAlgorithm( const QVariantMap &para
   while ( iter.readNextRasterPart( mBand, iterCols, iterRows, rasterBlock, iterLeft, iterTop, &blockExtent ) )
   {
     if ( feedback )
-      feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+      feedback->setProgress( 100 * iter.progress( mBand ) );
     if ( feedback && feedback->isCanceled() )
       break;
 

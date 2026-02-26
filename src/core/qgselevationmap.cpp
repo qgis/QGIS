@@ -22,6 +22,9 @@
 #include "qgsrasterblock.h"
 
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 static const int ELEVATION_OFFSET = 7900;
 static const int ELEVATION_SCALE = 1000;

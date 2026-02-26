@@ -10,18 +10,18 @@ __author__ = "Alexander Bruy"
 __date__ = "2024-02"
 __copyright__ = "Copyright 2024, The QGIS Project"
 
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtTest import QSignalSpy
+import unittest
+
 from qgis.core import QgsSettings
 from qgis.gui import QgsGui, QgsProcessingFavoriteAlgorithmManager
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtTest import QSignalSpy
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsProcessingFavoriteAlgorithmManager(QgisTestCase):
-
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

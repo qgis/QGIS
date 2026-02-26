@@ -20,7 +20,10 @@
 
 #include <QMap>
 #include <QObject>
+#include <QString>
 #include <QVariant>
+
+using namespace Qt::StringLiterals;
 
 class QgsVectorLayer;
 class QgsField;

@@ -21,8 +21,9 @@
 #include "qgis_sip.h"
 #include "qgstransaction.h"
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 class QgsOracleConn;
 

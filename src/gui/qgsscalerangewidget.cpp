@@ -21,7 +21,11 @@
 #include "qgsprojectviewsettings.h"
 #include "qgsscalewidget.h"
 
+#include <QString>
+
 #include "moc_qgsscalerangewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
   : QWidget( parent )

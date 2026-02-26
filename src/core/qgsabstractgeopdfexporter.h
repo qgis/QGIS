@@ -30,7 +30,6 @@
 
 #define SIP_NO_FILE
 
-
 class QgsGeospatialPdfRenderedFeatureHandler;
 
 /**

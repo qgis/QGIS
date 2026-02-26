@@ -37,10 +37,13 @@
 #include <QGraphicsProxyWidget>
 #include <QPainter>
 #include <QSettings>
+#include <QString>
 #include <QUiLoader>
 #include <QWidget>
 
 #include "moc_qgsformannotation.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFormAnnotation::QgsFormAnnotation( QObject *parent )
   : QgsAnnotation( parent )

@@ -22,6 +22,10 @@
 #include "qgis_sip.h"
 #include "qgscurvepolygon.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsLineString;
 
 /**

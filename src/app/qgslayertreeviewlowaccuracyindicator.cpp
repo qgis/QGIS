@@ -20,7 +20,11 @@
 #include "qgsgui.h"
 #include "qgssettings.h"
 
+#include <QString>
+
 #include "moc_qgslayertreeviewlowaccuracyindicator.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerTreeViewLowAccuracyIndicatorProvider::QgsLayerTreeViewLowAccuracyIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )

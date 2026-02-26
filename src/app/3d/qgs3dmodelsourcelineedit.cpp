@@ -15,6 +15,8 @@
 
 #include "qgs3dmodelsourcelineedit.h"
 
+#include <QString>
+
 #include "moc_qgs3dmodelsourcelineedit.cpp"
 
 using namespace Qt::StringLiterals;

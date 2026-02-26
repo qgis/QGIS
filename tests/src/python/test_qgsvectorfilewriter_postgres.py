@@ -11,16 +11,15 @@ __date__ = "22/03/2021"
 __copyright__ = "Copyright 2021, The QGIS Project"
 
 import os
+import unittest
 
-from qgis.PyQt.QtCore import QDir, QVariant
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsVectorFileWriter,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
-
+from qgis.PyQt.QtCore import QDir, QVariant
+from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -28,7 +27,6 @@ start_app()
 
 
 class TestQgsVectorFileWriterPG(QgisTestCase):
-
     def testWriteWithBoolField(self):
 
         # init connection string

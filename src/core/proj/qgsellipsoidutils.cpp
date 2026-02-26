@@ -29,6 +29,9 @@
 #include "qgsruntimeprofiler.h"
 
 #include <QCollator>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 Q_GLOBAL_STATIC( QReadWriteLock, sEllipsoidCacheLock )
 typedef QHash< QString, QgsEllipsoidUtils::EllipsoidParameters > EllipsoidParamCache;

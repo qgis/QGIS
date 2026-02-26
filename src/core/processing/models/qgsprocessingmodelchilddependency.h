@@ -21,6 +21,10 @@
 #include "qgis.h"
 #include "qgis_core.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond NOT_STABLE
 
 /**

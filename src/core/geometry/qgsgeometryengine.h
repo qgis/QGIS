@@ -21,7 +21,10 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgslinestring.h"
 #include "qgslogger.h"
 
+#include <QString>
 #include <QVector>
+
+using namespace Qt::StringLiterals;
 
 class QgsAbstractGeometry;
 

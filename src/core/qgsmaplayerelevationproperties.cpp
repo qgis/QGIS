@@ -19,7 +19,11 @@
 
 #include <mutex>
 
+#include <QString>
+
 #include "moc_qgsmaplayerelevationproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPropertiesDefinition QgsMapLayerElevationProperties::sPropertyDefinitions;
 

@@ -19,12 +19,12 @@
 #ifndef QGSFILTERRESPONSEDECORATOR_H
 #define QGSFILTERRESPONSEDECORATOR_H
 
-#define SIP_NO_FILE
-
 
 #include "qgsserverexception.h"
 #include "qgsserverfilter.h"
 #include "qgsserverresponse.h"
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup server

@@ -10,8 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "30/07/2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
 
-from qgis.PyQt.QtCore import Qt, QTemporaryDir
-from qgis.PyQt.QtWidgets import QListView, QListWidget
+import unittest
+
 from qgis.core import (
     QgsExpressionContext,
     QgsExpressionContextScope,
@@ -21,8 +21,9 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.gui import QgsExpressionBuilderWidget
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import Qt, QTemporaryDir
+from qgis.PyQt.QtWidgets import QListView, QListWidget
+from qgis.testing import QgisTestCase, start_app
 from qgis.user import default_expression_template, expressionspath
 
 start_app()
@@ -69,7 +70,6 @@ def createReferencedLayer():
 
 
 class TestQgsExpressionBuilderWidget(QgisTestCase):
-
     def setUp(self):
         self.referencedLayer = createReferencedLayer()
         self.referencingLayer = createReferencingLayer()

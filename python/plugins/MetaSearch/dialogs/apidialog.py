@@ -24,8 +24,9 @@
 
 import json
 
+from qgis.gui import QgsCodeEditorHTML, QgsCodeEditorJson
 from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout
-from qgis.gui import QgsCodeEditorJson, QgsCodeEditorHTML
+
 from MetaSearch.util import get_ui_class, prettify_xml
 
 BASE_CLASS = get_ui_class("apidialog.ui")

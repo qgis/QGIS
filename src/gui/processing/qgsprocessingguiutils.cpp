@@ -22,6 +22,10 @@
 #include "qgslayertreeregistrybridge.h"
 #include "qgslayertreeview.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 void QgsProcessingGuiUtils::configureResultLayerTreeLayer( QgsLayerTreeLayer *layerTreeLayer )
 {
   const QgsMapLayer *layer = layerTreeLayer->layer();

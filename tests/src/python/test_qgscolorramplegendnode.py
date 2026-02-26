@@ -10,9 +10,8 @@ __author__ = "Nyall Dawson"
 __date__ = "2015-08"
 __copyright__ = "Copyright 2015, The QGIS Project"
 
-from qgis.PyQt.QtCore import QSize, QSizeF, Qt
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
-from qgis.PyQt.QtXml import QDomDocument
+import unittest
+
 from qgis.core import (
     QgsBasicNumericFormat,
     QgsBearingNumericFormat,
@@ -31,8 +30,10 @@ from qgis.core import (
     QgsTextFormat,
     QgsVectorLayer,
 )
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.PyQt.QtCore import QSize, QSizeF, Qt
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
@@ -51,7 +52,6 @@ class TestColorRampLegend(QgsColorRampLegendNode):
 
 
 class TestQgsColorRampLegendNode(QgisTestCase):
-
     @classmethod
     def control_path_prefix(cls):
         return "color_ramp_legend_node"

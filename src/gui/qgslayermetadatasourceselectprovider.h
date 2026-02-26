@@ -21,7 +21,6 @@
 
 #define SIP_NO_FILE
 
-
 /**
  * \ingroup gui
  * \brief Source select provider for layer metadata.

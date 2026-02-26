@@ -24,9 +24,12 @@
 
 #include <QHBoxLayout>
 #include <QListWidgetItem>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgsprocessingrastercalculatorexpressionlineedit.cpp"
+
+using namespace Qt::StringLiterals;
 
 /// @cond PRIVATE
 

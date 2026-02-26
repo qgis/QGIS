@@ -45,8 +45,11 @@
 #include "qgsvectorlayertemporalproperties.h"
 
 #include <QPicture>
+#include <QString>
 #include <QThread>
 #include <QTimer>
+
+using namespace Qt::StringLiterals;
 
 QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )

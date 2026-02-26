@@ -10,14 +10,12 @@ __author__ = "Nyall Dawson"
 __date__ = "29/02/2024"
 __copyright__ = "Copyright 2024, The QGIS Project"
 
-from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.core import QgsRasterTransparency
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import TestCase, unittest
 
 
 class TestQgsRasterTransparency(TestCase):
-
     def test_transparency_single_repr(self):
         self.assertEqual(
             repr(QgsRasterTransparency.TransparentSingleValuePixel(1, 10, 0.3)),

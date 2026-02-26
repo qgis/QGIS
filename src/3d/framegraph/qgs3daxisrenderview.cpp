@@ -19,20 +19,13 @@
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapsettings.h"
 #include "qgscameracontroller.h"
-#include "qgsframegraph.h"
 #include "qgsmapsettings.h"
 
-#include <QScreen>
-#include <QVector2D>
-#include <QVector3D>
-#include <Qt3DCore/QBuffer>
-#include <Qt3DCore/QEntity>
-#include <Qt3DExtras/QText2DEntity>
 #include <Qt3DRender/QCamera>
-#include <Qt3DRender/QGeometryRenderer>
+#include <Qt3DRender/QCameraSelector>
+#include <Qt3DRender/QClearBuffers>
 #include <Qt3DRender/QLayer>
-#include <Qt3DRender/QPickEvent>
-#include <Qt3DRender/QScreenRayCaster>
+#include <Qt3DRender/QLayerFilter>
 #include <Qt3DRender/QSortPolicy>
 #include <Qt3DRender/QViewport>
 #include <Qt3DRender/qsubtreeenabler.h>

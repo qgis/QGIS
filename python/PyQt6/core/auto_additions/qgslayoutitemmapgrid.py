@@ -10,3 +10,8 @@ try:
     QgsLayoutItemMapGridStack.__group__ = ['layout']
 except (NameError, AttributeError):
     pass
+try:
+    QgsLayoutItemMapGrid.GridLine.__doc__ = """Helper that represents a grid line, for drawing the line itself an the
+anotations on the frame."""
+except (NameError, AttributeError):
+    pass

@@ -63,7 +63,10 @@
 #include <QFileInfo>
 #include <QList>
 #include <QObject>
+#include <QString>
 #include <QtTest/QSignalSpy>
+
+using namespace Qt::StringLiterals;
 
 class DummyAlgorithm : public QgsProcessingAlgorithm
 {
@@ -256,6 +259,15 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       parameters.insert( u"raster2"_s, u"test.bmp"_s );
       QgsProcessingContext context;
       QCOMPARE( parameterAsOutputRasterFormat( parameters, u"raster2"_s, context ), u"BMP"_s );
+
+      // test that parameterAsOutputRasterFormat() does not cause a temporary
+      // output to be loaded
+      QgsProject p;
+      QgsProcessingOutputLayerDefinition fs( QgsProcessing::TEMPORARY_OUTPUT );
+      fs.destinationProject = &p;
+      parameters.insert( u"raster2"_s, QVariant::fromValue( fs ) );
+      QCOMPARE( parameterAsOutputRasterFormat( parameters, u"raster2"_s, context ), u"GTiff"_s );
+      QCOMPARE( context.layersToLoadOnCompletion().size(), 0 );
     }
 
     void runOutputChecks()
@@ -8507,6 +8519,15 @@ void TestQgsProcessing::parameterRasterOut()
   QVERIFY( def->createFileFilter().contains( u"*.tif"_s ) );
   QVERIFY( !def->createFileFilter().contains( u"*.2dm"_s ) );
   QVERIFY( def->createFileFilter().contains( u"*.*"_s ) );
+
+  const QStringList filters = def->createFileFilter().split( u";;"_s );
+  const QList<QPair<QString, QString>> formatAndExtensions = def->supportedOutputRasterLayerFormatAndExtensions();
+  QCOMPARE( filters.size(), formatAndExtensions.size() + 1 ); // filters have one more entry for all files
+  for ( qsizetype i = 0; i < formatAndExtensions.size(); ++i )
+  {
+    QVERIFY( filters[i].contains( formatAndExtensions[i].first.toUpper() ) );
+    QVERIFY( filters[i].contains( formatAndExtensions[i].second ) );
+  }
 
   QVariantMap params;
   params.insert( "non_optional", "test.tif" );

@@ -23,6 +23,9 @@
 #include "qgsvariantutils.h"
 
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 // from parser
 extern QgsSQLStatement::Node *parse( const QString &str, QString &parserErrorMsg, bool allowFragments );

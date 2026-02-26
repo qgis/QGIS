@@ -20,9 +20,12 @@
 #include "qgssettings.h"
 #include "qgssettingsregistrycore.h"
 
+#include <QString>
 #include <QThread>
 
 #include "moc_qgsrenderingoptions.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsRenderingOptionsWidget

@@ -21,8 +21,9 @@
 
 #include <QDialog>
 
-///@cond PRIVATE
 #define SIP_NO_FILE
+
+///@cond PRIVATE
 
 class QgsGeoPackageProjectStorageDialog : public QDialog, private Ui::QgsGeoPackageProjectStorageDialog
 {

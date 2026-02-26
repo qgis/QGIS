@@ -29,7 +29,11 @@
 #include "qgssettings.h"
 #include "qgsstatusbar.h"
 
+#include <QString>
+
 #include "moc_qgsgpsinformationwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 // QWT Charting widget
 

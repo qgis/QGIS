@@ -19,8 +19,11 @@
 #include "qgssettings.h"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgserrordialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsErrorDialog::QgsErrorDialog( const QgsError &error, const QString &title, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )

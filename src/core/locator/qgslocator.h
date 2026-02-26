@@ -31,6 +31,9 @@
 #include <QFutureWatcher>
 #include <QMap>
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsSettingsEntryBool;
 class QgsSettingsEntryString;

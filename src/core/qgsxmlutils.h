@@ -26,6 +26,9 @@ class QgsBox3D;
 
 #include <QDomElement>
 #include <QMetaEnum>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core

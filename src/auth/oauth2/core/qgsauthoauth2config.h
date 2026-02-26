@@ -20,7 +20,10 @@
 #include "qgis.h"
 
 #include <QObject>
+#include <QString>
 #include <QVariantMap>
+
+using namespace Qt::StringLiterals;
 
 /**
  * The QgsAuthOAuth2Config class stores the configuration for OAuth2 authentication plugin

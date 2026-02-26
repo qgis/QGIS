@@ -27,6 +27,24 @@ class QgsRecentProjectItemsModel : public QAbstractListModel
     Q_OBJECT
 
   public:
+    /**
+     * Custom model roles.
+     *
+     * \since QGIS 4.0
+     */
+    enum class CustomRole : int
+    {
+      TitleRole = Qt::UserRole + 1,
+      PathRole,
+      NativePathRole,
+      ExistsRole,
+      CrsRole,
+      PinnedRole,
+      AnonymisedNativePathRole,
+      PreviewImagePathRole,
+    };
+    Q_ENUM( CustomRole )
+
     struct RecentProjectData
     {
         bool operator==( const RecentProjectData &other ) const { return other.path == this->path; }
@@ -34,7 +52,7 @@ class QgsRecentProjectItemsModel : public QAbstractListModel
         QString title;
         QString previewImagePath;
         QString crs;
-        mutable bool pin = false;
+        mutable bool pinned = false;
         mutable bool checkedExists = false;
         mutable bool exists = false;
     };
@@ -46,12 +64,25 @@ class QgsRecentProjectItemsModel : public QAbstractListModel
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    QHash<int, QByteArray> roleNames() const override;
 
-    void pinProject( const QModelIndex &index );
-    void unpinProject( const QModelIndex &index );
-    void removeProject( const QModelIndex &index );
-    void recheckProject( const QModelIndex &index );
-    void clear( bool clearPinned = false );
+    Q_INVOKABLE void clear( bool clearPinned = false );
+
+    Q_INVOKABLE void openProject( int row );
+
+    Q_INVOKABLE void pinProject( int row );
+
+    Q_INVOKABLE void unpinProject( int row );
+
+    Q_INVOKABLE void removeProject( int row );
+
+    Q_INVOKABLE void recheckProject( int row );
+
+  signals:
+    void projectRemoved( int row );
+    void projectPinned( int row );
+    void projectUnpinned( int row );
+    void projectsCleared( bool clearPinned );
 
   private:
     QList<RecentProjectData> mRecentProjects;

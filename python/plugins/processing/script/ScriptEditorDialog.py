@@ -19,28 +19,27 @@ __author__ = "Alexander Bruy"
 __date__ = "December 2012"
 __copyright__ = "(C) 2012, Alexander Bruy"
 
-import os
 import codecs
 import inspect
+import os
 import traceback
 import warnings
 
-from qgis.PyQt import uic, sip
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtGui import QPalette
-from qgis.PyQt.QtWidgets import QMessageBox, QFileDialog, QVBoxLayout
-
-from qgis.gui import QgsGui, QgsErrorDialog, QgsCodeEditorWidget, QgsShortcutsManager
 from qgis.core import (
     QgsApplication,
-    QgsFileUtils,
-    QgsSettings,
     QgsError,
+    QgsFileUtils,
     QgsProcessingAlgorithm,
     QgsProcessingFeatureBasedAlgorithm,
+    QgsSettings,
 )
-from qgis.utils import iface, OverrideCursor
+from qgis.gui import QgsCodeEditorWidget, QgsErrorDialog, QgsGui, QgsShortcutsManager
 from qgis.processing import alg as algfactory
+from qgis.PyQt import sip, uic
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QPalette
+from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox, QVBoxLayout
+from qgis.utils import OverrideCursor, iface
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.script import ScriptUtils

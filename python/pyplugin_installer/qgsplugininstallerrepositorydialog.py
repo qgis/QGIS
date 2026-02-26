@@ -25,10 +25,10 @@
 
 from pathlib import Path
 
-from qgis.PyQt import uic
 from qgis.gui import QgsAuthConfigSelect
-from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QVBoxLayout
+from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QVBoxLayout
 
 Ui_QgsPluginInstallerRepositoryDetailsDialogBase, _ = uic.loadUiType(
     Path(__file__).parent / "qgsplugininstallerrepositorybase.ui"

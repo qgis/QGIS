@@ -19,34 +19,31 @@ __author__ = "Alexander Bruy"
 __date__ = "January 2025"
 __copyright__ = "(C) 2025, Alexander Bruy"
 
-import os
 import math
+import os
 import tempfile
+import unittest
 
+from qgis.analysis import (
+    QgsGridFileWriter,
+    QgsIDWInterpolator,
+    QgsInterpolator,
+    QgsTinInterpolator,
+)
 from qgis.core import (
     Qgis,
     QgsCoordinateTransformContext,
-    QgsVectorLayer,
     QgsRasterChecker,
+    QgsVectorLayer,
 )
-from qgis.analysis import (
-    QgsInterpolator,
-    QgsIDWInterpolator,
-    QgsTinInterpolator,
-    QgsGridFileWriter,
-)
-
-import unittest
 from qgis.testing import QgisTestCase
-
-from utilities import unitTestDataPath, start_app
+from utilities import start_app, unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
 start_app()
 
 
 class TestInterpolation(QgisTestCase):
-
     def __init__(self, methodName):
         QgisTestCase.__init__(self, methodName)
         self.report = "<h1>Python Raster Analysis Interpolation Tests</h1>\n"

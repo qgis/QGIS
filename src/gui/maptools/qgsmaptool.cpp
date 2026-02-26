@@ -24,8 +24,11 @@
 
 #include <QAbstractButton>
 #include <QAction>
+#include <QString>
 
 #include "moc_qgsmaptool.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapTool::QgsMapTool( QgsMapCanvas *canvas )
   : QObject( canvas )
@@ -215,6 +218,12 @@ bool QgsMapTool::gestureEvent( QGestureEvent *e )
 }
 
 bool QgsMapTool::canvasToolTipEvent( QHelpEvent *e )
+{
+  Q_UNUSED( e )
+  return false;
+}
+
+bool QgsMapTool::shortcutEvent( QKeyEvent *e )
 {
   Q_UNUSED( e )
   return false;

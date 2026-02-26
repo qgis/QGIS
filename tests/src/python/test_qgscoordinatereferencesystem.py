@@ -13,16 +13,15 @@ __date__ = "06/04/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
 import json
+import unittest
 
 from qgis.core import Qgis, QgsCoordinateReferenceSystem
-import unittest
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase, start_app
 
 start_app()
 
 
 class TestQgsCoordinateReferenceSystem(QgisTestCase):
-
     def test_axis_order(self):
         """
         Test QgsCoordinateReferenceSystem.axisOrdering() (including the Python MethodCode associated with this)

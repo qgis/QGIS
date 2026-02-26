@@ -16,7 +16,6 @@
 #define QGSMASKINGWIDGET_H
 
 // We don't want to expose this in the public API
-#define SIP_NO_FILE
 
 /// @cond PRIVATE
 
@@ -28,6 +27,8 @@
 #include "qgsstyleentityvisitor.h"
 
 #include <QPointer>
+
+#define SIP_NO_FILE
 
 class QgsMessageBarItem;
 
@@ -59,7 +60,7 @@ class GUI_EXPORT QgsMaskingWidget : public QgsPanelWidget, private Ui::QgsMaskin
     void onSelectionChanged();
 
   private:
-    QgsVectorLayer *mLayer = nullptr;
+    QPointer< QgsVectorLayer > mLayer;
     //! Populate the mask source and target widgets
     void populate();
 
@@ -79,7 +80,7 @@ class GUI_EXPORT QgsMaskingWidget : public QgsPanelWidget, private Ui::QgsMaskin
 class SymbolLayerVisitor : public QgsStyleEntityVisitorInterface
 {
   public:
-    typedef std::function<void( const QgsSymbolLayer *, const QString & )> SymbolLayerCallback;
+    typedef std::function<void( const QgsSymbolLayer * )> SymbolLayerCallback;
 
     //! constructor
     SymbolLayerVisitor( SymbolLayerCallback callback );

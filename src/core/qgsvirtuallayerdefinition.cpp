@@ -19,9 +19,12 @@ email                : hugo dot mercier at oslandia dot com
 #include "fromencodedcomponenthelper.h"
 
 #include <QRegularExpression>
+#include <QString>
 #include <QStringList>
 #include <QUrl>
 #include <QUrlQuery>
+
+using namespace Qt::StringLiterals;
 
 QgsVirtualLayerDefinition::QgsVirtualLayerDefinition( const QString &filePath )
   : mFilePath( filePath )

@@ -19,9 +19,12 @@
 #include "qgsapplication.h"
 #include "qgssettings.h"
 
+#include <QString>
 #include <Qt3DRender/QCamera>
 
 #include "moc_qgs3doptions.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // Qgs3DOptionsWidget

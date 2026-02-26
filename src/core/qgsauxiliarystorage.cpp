@@ -28,8 +28,11 @@
 #include "qgsvectorlayerlabeling.h"
 
 #include <QFile>
+#include <QString>
 
 #include "moc_qgsauxiliarystorage.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define AS_JOINFIELD u"ASPK"_s
 #define AS_EXTENSION u"qgd"_s

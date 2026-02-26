@@ -15,16 +15,18 @@
 ***************************************************************************
 """
 
-from .metaenum import metaEnumFromValue
-from enum import IntFlag, Flag
-from qgis.core import (
-    QgsSettings,
-    QgsSettingsTree,
-    QgsSettingsEntryBase,
-    QgsLogger,
-    Qgis,
-)
+from enum import Flag, IntFlag
+
 import qgis  # required to get base class of enums
+from qgis.core import (
+    Qgis,
+    QgsLogger,
+    QgsSettings,
+    QgsSettingsEntryBase,
+    QgsSettingsTree,
+)
+
+from .metaenum import metaEnumFromValue
 
 
 class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):

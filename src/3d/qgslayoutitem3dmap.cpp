@@ -26,7 +26,11 @@
 #include "qgslayoutrendercontext.h"
 #include "qgsoffscreen3dengine.h"
 
+#include <QString>
+
 #include "moc_qgslayoutitem3dmap.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutItem3DMap::QgsLayoutItem3DMap( QgsLayout *layout )
   : QgsLayoutItem( layout )

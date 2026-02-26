@@ -27,7 +27,10 @@
 #include "qgsvectorlayer.h"
 
 #include <QRegularExpression>
+#include <QString>
 #include <QTextCodec>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

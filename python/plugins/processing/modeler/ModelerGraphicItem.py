@@ -19,29 +19,29 @@ __author__ = "Victor Olaya"
 __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
-from qgis.PyQt.QtCore import QCoreApplication
-
 from qgis.core import (
-    QgsProcessingParameterDefinition,
-    QgsProcessingModelOutput,
-    QgsProcessingModelAlgorithm,
-    QgsProject,
     Qgis,
+    QgsProcessingModelAlgorithm,
+    QgsProcessingModelOutput,
+    QgsProcessingParameterDefinition,
+    QgsProject,
 )
 from qgis.gui import (
-    QgsProcessingParameterDefinitionDialog,
-    QgsProcessingParameterWidgetContext,
-    QgsModelParameterGraphicItem,
     QgsModelChildAlgorithmGraphicItem,
     QgsModelOutputGraphicItem,
+    QgsModelParameterGraphicItem,
     QgsProcessingContextGenerator,
+    QgsProcessingParameterDefinitionDialog,
+    QgsProcessingParameterWidgetContext,
 )
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.utils import iface
+
 from processing.modeler.ModelerParameterDefinitionDialog import (
     ModelerParameterDefinitionDialog,
 )
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.tools.dataobjects import createContext
-from qgis.utils import iface
 
 
 class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
@@ -58,7 +58,6 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
         self.processing_context = createContext()
 
         class ContextGenerator(QgsProcessingContextGenerator):
-
             def __init__(self, context):
                 super().__init__()
                 self.processing_context = context
@@ -99,9 +98,13 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
             if edit_comment:
                 dlg.switchToCommentTab()
             if dlg.exec():
-                new_param = dlg.param
+                new_param = dlg.create_parameter()
                 comment = dlg.comments()
                 comment_color = dlg.commentColor()
+                self.apply_new_param(
+                    new_param, old_description, old_name, comment, comment_color
+                )
+
         else:
             # yay, use new API!
             context = createContext()
@@ -128,33 +131,43 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
                 safeName = QgsProcessingModelAlgorithm.safeName(new_param.description())
                 new_param.setName(safeName.lower())
 
-        if new_param is not None:
-            self.aboutToChange.emit(self.tr("Edit {}").format(new_param.description()))
-            self.model().removeModelParameter(self.component().parameterName())
+                self.apply_new_param(
+                    new_param, old_description, old_name, comment, comment_color
+                )
 
-            if new_param.description() != old_description:
-                # only update name if user has changed the description -- we don't force this, as it may cause
-                # unwanted name updates which could potentially break the model's API
-                name = new_param.name()
+    def apply_new_param(
+        self, new_param, old_description, old_name, comment, comment_color
+    ):
+        undo_command_id = f"param:{self.component().parameterName()}"
+        self.aboutToChange.emit(
+            self.tr("Edit {}").format(new_param.description()), undo_command_id
+        )
+        self.model().removeModelParameter(self.component().parameterName())
 
-                base_name = name
-                i = 2
-                while self.model().parameterDefinition(name):
-                    name = base_name + str(i)
-                    i += 1
+        if new_param.description() != old_description:
+            # only update name if user has changed the description -- we don't force this, as it may cause
+            # unwanted name updates which could potentially break the model's API
+            name = new_param.name()
 
-                new_param.setName(name)
+            base_name = name
+            i = 2
+            while self.model().parameterDefinition(name):
+                name = base_name + str(i)
+                i += 1
 
-                self.model().changeParameterName(old_name, new_param.name())
+            new_param.setName(name)
 
-            self.component().setParameterName(new_param.name())
-            self.component().setDescription(new_param.name())
-            self.component().comment().setDescription(comment)
-            self.component().comment().setColor(comment_color)
-            self.model().addModelParameter(new_param, self.component())
-            self.setLabel(new_param.description())
-            self.requestModelRepaint.emit()
-            self.changed.emit()
+            self.model().changeParameterName(old_name, new_param.name())
+
+        self.component().setParameterName(new_param.name())
+        self.component().setDescription(new_param.name())
+        self.component().comment().setDescription(comment)
+        self.component().comment().setColor(comment_color)
+        self.model().addModelParameter(new_param, self.component())
+        self.setLabel(new_param.description())
+        self.requestModelRepaint.emit()
+        self.changed.emit()
+        return new_param.name()
 
     def editComponent(self):
         self.edit()
@@ -188,32 +201,41 @@ class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
             dlg.switchToCommentTab()
         if dlg.exec():
             alg = dlg.createAlgorithm()
-            alg.setChildId(self.component().childId())
-            alg.copyNonDefinitionPropertiesFromModel(self.model())
-            if alg.toVariant() == self.component().toVariant():
-                # nothing changed, treat as cancel was pressed
-                return
+            self.apply_new_alg(alg)
 
-            self.aboutToChange.emit(self.tr("Edit {}").format(alg.description()))
-            self.model().setChildAlgorithm(alg)
-            self.requestModelRepaint.emit()
-            self.changed.emit()
+    def apply_new_alg(self, alg):
+        alg.setChildId(self.component().childId())
+        alg.copyNonDefinitionPropertiesFromModel(self.model())
+        if alg.toVariant() == self.component().toVariant():
+            # nothing changed, treat as cancel was pressed
+            return
 
-            res, errors = self.model().validateChildAlgorithm(alg.childId())
-            if not res:
-                self.scene().showWarning(
-                    QCoreApplication.translate(
-                        "ModelerGraphicItem", "Algorithm “{}” is invalid"
-                    ).format(alg.description()),
-                    self.tr("Algorithm is Invalid"),
-                    QCoreApplication.translate(
-                        "ModelerGraphicItem",
-                        "<p>The “{}” algorithm is invalid, because:</p><ul><li>{}</li></ul>",
-                    ).format(alg.description(), "</li><li>".join(errors)),
-                    level=Qgis.MessageLevel.Warning,
-                )
-            else:
-                self.scene().messageBar().clearWidgets()
+        # TODO -- ideally we'd include the changed parameter name in the
+        # command ID, so that we get more granular undo/redo (i.e. per
+        # parameter change, not per child algorithm change)
+        undo_command_id = f"alg:{self.component().childId()}"
+        self.aboutToChange.emit(
+            self.tr("Edit {}").format(alg.description()), undo_command_id
+        )
+        self.model().setChildAlgorithm(alg)
+        self.requestModelRepaint.emit()
+        self.changed.emit()
+
+        res, errors = self.model().validateChildAlgorithm(alg.childId())
+        if not res:
+            self.scene().showWarning(
+                QCoreApplication.translate(
+                    "ModelerGraphicItem", "Algorithm “{}” is invalid"
+                ).format(alg.description()),
+                self.tr("Algorithm is Invalid"),
+                QCoreApplication.translate(
+                    "ModelerGraphicItem",
+                    "<p>The “{}” algorithm is invalid, because:</p><ul><li>{}</li></ul>",
+                ).format(alg.description(), "</li><li>".join(errors)),
+                level=Qgis.MessageLevel.Warning,
+            )
+        else:
+            self.scene().messageBar().clearWidgets()
 
     def editComponent(self):
         self.edit()
@@ -247,34 +269,52 @@ class ModelerOutputGraphicItem(QgsModelOutputGraphicItem):
             dlg.switchToCommentTab()
 
         if dlg.exec():
-            model_outputs = child_alg.modelOutputs()
-
-            model_output = QgsProcessingModelOutput(
-                model_outputs[self.component().name()]
-            )
-            del model_outputs[self.component().name()]
-
-            model_output.setName(dlg.param.description())
-            model_output.setDescription(dlg.param.description())
-            model_output.setDefaultValue(dlg.param.defaultValue())
-            model_output.setMandatory(
-                not (
-                    dlg.param.flags()
+            new_param = dlg.create_parameter()
+            self.apply_new_output(
+                name=new_param.description(),
+                description=new_param.description(),
+                default=new_param.defaultValue(),
+                mandatory=not (
+                    new_param.flags()
                     & QgsProcessingParameterDefinition.Flag.FlagOptional
-                )
-            )
-            model_output.comment().setDescription(dlg.comments())
-            model_output.comment().setColor(dlg.commentColor())
-            model_outputs[model_output.name()] = model_output
-            child_alg.setModelOutputs(model_outputs)
-
-            self.aboutToChange.emit(
-                self.tr("Edit {}").format(model_output.description())
+                ),
+                comments=dlg.comments(),
+                comment_color=dlg.commentColor(),
+                child_alg=child_alg,
             )
 
-            self.model().updateDestinationParameters()
-            self.requestModelRepaint.emit()
-            self.changed.emit()
+    def apply_new_output(
+        self,
+        name: str,
+        description: str,
+        default,
+        mandatory: bool,
+        comments: str,
+        comment_color,
+        child_alg,
+    ):
+        model_outputs = child_alg.modelOutputs()
+
+        model_output = QgsProcessingModelOutput(model_outputs[self.component().name()])
+        del model_outputs[self.component().name()]
+
+        model_output.setName(name)
+        model_output.setDescription(description)
+        model_output.setDefaultValue(default)
+        model_output.setMandatory(mandatory)
+        model_output.comment().setDescription(comments)
+        model_output.comment().setColor(comment_color)
+        model_outputs[model_output.name()] = model_output
+        child_alg.setModelOutputs(model_outputs)
+
+        undo_command_id = f"output:{name}"
+        self.aboutToChange.emit(
+            self.tr("Edit {}").format(model_output.description()), undo_command_id
+        )
+
+        self.model().updateDestinationParameters()
+        self.requestModelRepaint.emit()
+        self.changed.emit()
 
     def editComponent(self):
         self.edit()
