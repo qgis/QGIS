@@ -2,7 +2,6 @@
 try:
     QgsDateTimeFieldFormatter.defaultFormat = staticmethod(QgsDateTimeFieldFormatter.defaultFormat)
     QgsDateTimeFieldFormatter.defaultDisplayFormat = staticmethod(QgsDateTimeFieldFormatter.defaultDisplayFormat)
-    QgsDateTimeFieldFormatter.applyLocaleChange = staticmethod(QgsDateTimeFieldFormatter.applyLocaleChange)
     QgsDateTimeFieldFormatter.__overridden_methods__ = ['id', 'representValue']
     QgsDateTimeFieldFormatter.__group__ = ['fieldformatter']
 except (NameError, AttributeError):
