@@ -87,7 +87,12 @@ void QgsModelGraphicsScene::updateBounds()
 
   if ( bounds.isValid() )
   {
+    // Add a margin and ensure bounds are roundded to integer-like values
     bounds.adjust( -SCENE_COMPONENT_MARGIN, -SCENE_COMPONENT_MARGIN, SCENE_COMPONENT_MARGIN, SCENE_COMPONENT_MARGIN );
+    bounds.setLeft( std::floor( bounds.left() ) );
+    bounds.setTop( std::floor( bounds.top() ) );
+    bounds.setRight( std::ceil( bounds.right() ) );
+    bounds.setBottom( std::ceil( bounds.bottom() ) );
   }
 
   setSceneRect( bounds );

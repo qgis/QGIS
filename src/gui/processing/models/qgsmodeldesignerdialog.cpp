@@ -482,7 +482,6 @@ void QgsModelDesignerDialog::setModel( QgsProcessingModelAlgorithm *model )
   repaintModel( true );
   updateVariablesGui();
 
-  mView->centerOn( 0, 0 );
   setDirty( false );
 
   mIgnoreUndoStackChanges++;
@@ -490,6 +489,10 @@ void QgsModelDesignerDialog::setModel( QgsProcessingModelAlgorithm *model )
   mIgnoreUndoStackChanges--;
 
   updateWindowTitle();
+
+  // Delay zoom to the full model to ensure the scene has been properly set
+  // and that the itemsBoundingRect returns the correct value.
+  QMetaObject::invokeMethod( this, &QgsModelDesignerDialog::zoomFull, Qt::QueuedConnection );
 }
 
 void QgsModelDesignerDialog::loadModel( const QString &path )
