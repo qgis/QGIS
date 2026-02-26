@@ -33,10 +33,7 @@ QgsAbstractReportSection::QgsAbstractReportSection( QgsAbstractReportSection *pa
   : mParent( parent )
 {}
 
-QgsAbstractReportSection::~QgsAbstractReportSection()
-{
-  qDeleteAll( mChildren );
-}
+QgsAbstractReportSection::~QgsAbstractReportSection() { qDeleteAll( mChildren ); }
 
 QgsProject *QgsAbstractReportSection::project()
 {
@@ -56,8 +53,7 @@ QgsProject *QgsAbstractReportSection::project()
 
 void QgsAbstractReportSection::setContext( const QgsReportSectionContext &context )
 {
-  auto setReportContext = [&context]( QgsLayout * layout )
-  {
+  auto setReportContext = [&context]( QgsLayout *layout ) {
     if ( context.currentLayer )
     {
       layout->reportContext().blockSignals( true );
@@ -160,7 +156,7 @@ bool QgsAbstractReportSection::readXml( const QDomElement &element, const QDomDo
     {
       appendChild( section.get() );
       section->readXml( currentSectionElem, doc, context );
-      ( void )section.release(); //ownership was transferred already
+      ( void ) section.release(); //ownership was transferred already
     }
   }
 
@@ -229,10 +225,7 @@ QString QgsAbstractReportSection::filePath( const QString &baseFilePath, const Q
   return base;
 }
 
-QgsLayout *QgsAbstractReportSection::layout()
-{
-  return mCurrentLayout;
-}
+QgsLayout *QgsAbstractReportSection::layout() { return mCurrentLayout; }
 
 bool QgsAbstractReportSection::beginRender()
 {
@@ -325,8 +318,7 @@ bool QgsAbstractReportSection::next()
         mCurrentLayout = body;
         return true;
       }
-    }
-    while ( bodiesAvailable );
+    } while ( bodiesAvailable );
 
     // all children and bodies have spent their content, so move to the footer
     mNextSection = Footer;
@@ -379,25 +371,13 @@ void QgsAbstractReportSection::reset()
   }
 }
 
-bool QgsAbstractReportSection::prepareHeader()
-{
-  return true;
-}
+bool QgsAbstractReportSection::prepareHeader() { return true; }
 
-bool QgsAbstractReportSection::prepareFooter()
-{
-  return true;
-}
+bool QgsAbstractReportSection::prepareFooter() { return true; }
 
-void QgsAbstractReportSection::setHeader( QgsLayout *header )
-{
-  mHeader.reset( header );
-}
+void QgsAbstractReportSection::setHeader( QgsLayout *header ) { mHeader.reset( header ); }
 
-void QgsAbstractReportSection::setFooter( QgsLayout *footer )
-{
-  mFooter.reset( footer );
-}
+void QgsAbstractReportSection::setFooter( QgsLayout *footer ) { mFooter.reset( footer ); }
 
 int QgsAbstractReportSection::row() const
 {
@@ -407,10 +387,7 @@ int QgsAbstractReportSection::row() const
   return 0;
 }
 
-QgsAbstractReportSection *QgsAbstractReportSection::childSection( int index )
-{
-  return mChildren.value( index );
-}
+QgsAbstractReportSection *QgsAbstractReportSection::childSection( int index ) { return mChildren.value( index ); }
 
 void QgsAbstractReportSection::appendChild( QgsAbstractReportSection *section )
 {
@@ -464,15 +441,8 @@ void QgsAbstractReportSection::copyCommonProperties( QgsAbstractReportSection *d
   }
 }
 
-bool QgsAbstractReportSection::writePropertiesToElement( QDomElement &, QDomDocument &, const QgsReadWriteContext & ) const
-{
-  return true;
-}
+bool QgsAbstractReportSection::writePropertiesToElement( QDomElement &, QDomDocument &, const QgsReadWriteContext & ) const { return true; }
 
-bool QgsAbstractReportSection::readPropertiesFromElement( const QDomElement &, const QDomDocument &, const QgsReadWriteContext & )
-{
-  return true;
-}
+bool QgsAbstractReportSection::readPropertiesFromElement( const QDomElement &, const QDomDocument &, const QgsReadWriteContext & ) { return true; }
 
 ///@endcond
-

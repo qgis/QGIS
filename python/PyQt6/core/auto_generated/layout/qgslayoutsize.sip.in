@@ -35,7 +35,6 @@ Measurement units are stored alongside the size.
 #include "qgslayoutsize.h"
 %End
   public:
-
     QgsLayoutSize( double width, double height, Qgis::LayoutUnit units = Qgis::LayoutUnit::Millimeters );
 %Docstring
 Constructor for QgsLayoutSize.
@@ -160,11 +159,16 @@ Decodes a size from a ``string``.
     QgsLayoutSize operator/=( double v );
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    QString str = QStringLiteral( "<QgsLayoutSize: %1 x %2 %3 >" ).arg( sipCpp->width() ).arg( sipCpp->height() ).arg( QgsUnitTypes::toAbbreviatedString( sipCpp->units() ) );
+%MethodCode QString str = QStringLiteral( "<QgsLayoutSize: %1 x %2 %3 >" ).arg( sipCpp->width() ).arg( sipCpp->height() ).arg( QgsUnitTypes::toAbbreviatedString( sipCpp->units() ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
+    private :
+
+    double mWidth
+    = 0.0;
+    double mHeight;
+    Qgis::LayoutUnit mUnits;
 };
 
 /************************************************************************

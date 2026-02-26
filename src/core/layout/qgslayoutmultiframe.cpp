@@ -38,10 +38,7 @@ QgsLayoutMultiFrame::QgsLayoutMultiFrame( QgsLayout *layout )
   connect( mLayout->pageCollection(), &QgsLayoutPageCollection::changed, this, &QgsLayoutMultiFrame::handlePageChange );
 }
 
-QgsLayoutMultiFrame::~QgsLayoutMultiFrame()
-{
-  deleteFrames();
-}
+QgsLayoutMultiFrame::~QgsLayoutMultiFrame() { deleteFrames(); }
 
 QSizeF QgsLayoutMultiFrame::fixedFrameSize( const int frameIndex ) const
 {
@@ -55,10 +52,7 @@ QSizeF QgsLayoutMultiFrame::minFrameSize( const int frameIndex ) const
   return QSizeF( 0, 0 );
 }
 
-double QgsLayoutMultiFrame::findNearbyPageBreak( double yPos )
-{
-  return yPos;
-}
+double QgsLayoutMultiFrame::findNearbyPageBreak( double yPos ) { return yPos; }
 
 void QgsLayoutMultiFrame::addFrame( QgsLayoutFrame *frame, bool recalcFrameSizes )
 {
@@ -68,10 +62,7 @@ void QgsLayoutMultiFrame::addFrame( QgsLayoutFrame *frame, bool recalcFrameSizes
   mFrameItems.push_back( frame );
   frame->mMultiFrame = this;
   connect( frame, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutMultiFrame::recalculateFrameSizes );
-  connect( frame, &QgsLayoutFrame::destroyed, this, [this, frame ]
-  {
-    handleFrameRemoval( frame );
-  } );
+  connect( frame, &QgsLayoutFrame::destroyed, this, [this, frame] { handleFrameRemoval( frame ); } );
   if ( mLayout && !frame->scene() )
   {
     mLayout->addLayoutItem( frame );
@@ -95,10 +86,7 @@ void QgsLayoutMultiFrame::setResizeMode( ResizeMode mode )
   }
 }
 
-QList<QgsLayoutFrame *> QgsLayoutMultiFrame::frames() const
-{
-  return mFrameItems;
-}
+QList<QgsLayoutFrame *> QgsLayoutMultiFrame::frames() const { return mFrameItems; }
 
 void QgsLayoutMultiFrame::recalculateFrameSizes()
 {
@@ -173,7 +161,7 @@ void QgsLayoutMultiFrame::recalculateFrameSizes()
       else
       {
         //add new pages if required
-        for ( int p = mLayout->pageCollection()->pageCount() - 1 ; p < page; ++p )
+        for ( int p = mLayout->pageCollection()->pageCount() - 1; p < page; ++p )
         {
           mLayout->pageCollection()->extendByNewPage();
         }
@@ -192,7 +180,7 @@ void QgsLayoutMultiFrame::recalculateFrameSizes()
         }
         case ExtendToNextPage:
         {
-          frameHeight = ( currentY + currentPageHeight ) > totalHeight ?  totalHeight - currentY : currentPageHeight;
+          frameHeight = ( currentY + currentPageHeight ) > totalHeight ? totalHeight - currentY : currentPageHeight;
           break;
         }
 
@@ -207,9 +195,7 @@ void QgsLayoutMultiFrame::recalculateFrameSizes()
       }
 
       //create new frame
-      QgsLayoutFrame *newFrame = createNewFrame( currentItem,
-                                 QPointF( currentItem->pos().x(), newFrameY ),
-                                 QSizeF( currentItem->rect().width(), frameHeight ) );
+      QgsLayoutFrame *newFrame = createNewFrame( currentItem, QPointF( currentItem->pos().x(), newFrameY ), QSizeF( currentItem->rect().width(), frameHeight ) );
 
       if ( mResizeMode == RepeatOnEveryPage )
       {
@@ -246,10 +232,7 @@ void QgsLayoutMultiFrame::recalculateFrameRects()
   }
 }
 
-void QgsLayoutMultiFrame::refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty )
-{
-
-}
+void QgsLayoutMultiFrame::refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty ) {}
 
 QgsLayoutFrame *QgsLayoutMultiFrame::createNewFrame( QgsLayoutFrame *currentFrame, QPointF pos, QSizeF size )
 {
@@ -277,15 +260,9 @@ QgsLayoutFrame *QgsLayoutMultiFrame::createNewFrame( QgsLayoutFrame *currentFram
   return newFrame;
 }
 
-QString QgsLayoutMultiFrame::displayName() const
-{
-  return tr( "<Multiframe>" );
-}
+QString QgsLayoutMultiFrame::displayName() const { return tr( "<Multiframe>" ); }
 
-QgsAbstractLayoutUndoCommand *QgsLayoutMultiFrame::createCommand( const QString &text, int id, QUndoCommand *parent )
-{
-  return new QgsLayoutMultiFrameUndoCommand( this, text, id, parent );
-}
+QgsAbstractLayoutUndoCommand *QgsLayoutMultiFrame::createCommand( const QString &text, int id, QUndoCommand *parent ) { return new QgsLayoutMultiFrameUndoCommand( this, text, id, parent ); }
 
 QgsExpressionContext QgsLayoutMultiFrame::createExpressionContext() const
 {
@@ -411,9 +388,7 @@ void QgsLayoutMultiFrame::handlePageChange()
       //copy last frame to current page
       auto newFrame = std::make_unique< QgsLayoutFrame >( mLayout, this );
 
-      newFrame->attemptSetSceneRect( QRectF( lastFrame->pos().x(),
-                                             mLayout->pageCollection()->page( i )->pos().y() + lastFrame->pagePos().y(),
-                                             lastFrame->rect().width(), lastFrame->rect().height() ) );
+      newFrame->attemptSetSceneRect( QRectF( lastFrame->pos().x(), mLayout->pageCollection()->page( i )->pos().y() + lastFrame->pagePos().y(), lastFrame->rect().width(), lastFrame->rect().height() ) );
       lastFrame = newFrame.get();
       addFrame( newFrame.release(), false );
     }
@@ -488,10 +463,7 @@ QgsLayoutFrame *QgsLayoutMultiFrame::frame( int i ) const
   return mFrameItems.at( i );
 }
 
-int QgsLayoutMultiFrame::frameIndex( QgsLayoutFrame *frame ) const
-{
-  return mFrameItems.indexOf( frame );
-}
+int QgsLayoutMultiFrame::frameIndex( QgsLayoutFrame *frame ) const { return mFrameItems.indexOf( frame ); }
 
 bool QgsLayoutMultiFrame::writeXml( QDomElement &parentElement, QDomDocument &doc, const QgsReadWriteContext &context, bool includeFrames ) const
 {
@@ -577,14 +549,6 @@ bool QgsLayoutMultiFrame::readXml( const QDomElement &element, const QDomDocumen
   return result;
 }
 
-bool QgsLayoutMultiFrame::writePropertiesToElement( QDomElement &, QDomDocument &, const QgsReadWriteContext & ) const
-{
-  return true;
-}
+bool QgsLayoutMultiFrame::writePropertiesToElement( QDomElement &, QDomDocument &, const QgsReadWriteContext & ) const { return true; }
 
-bool QgsLayoutMultiFrame::readPropertiesFromElement( const QDomElement &, const QDomDocument &, const QgsReadWriteContext & )
-{
-
-  return true;
-}
-
+bool QgsLayoutMultiFrame::readPropertiesFromElement( const QDomElement &, const QDomDocument &, const QgsReadWriteContext & ) { return true; }

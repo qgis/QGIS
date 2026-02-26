@@ -62,10 +62,7 @@ void QgsLayoutPageCollection::setPageStyleSymbol( QgsFillSymbol *symbol )
   }
 }
 
-const QgsFillSymbol *QgsLayoutPageCollection::pageStyleSymbol() const
-{
-  return mPageStyleSymbol.get();
-}
+const QgsFillSymbol *QgsLayoutPageCollection::pageStyleSymbol() const { return mPageStyleSymbol.get(); }
 
 void QgsLayoutPageCollection::beginPageSizeChange()
 {
@@ -162,8 +159,7 @@ bool QgsLayoutPageCollection::hasUniformPageSizes() const
       size = pageSize;
     else
     {
-      if ( !qgsDoubleNear( pageSize.width(), size.width(), 0.01 )
-           || !qgsDoubleNear( pageSize.height(), size.height(), 0.01 ) )
+      if ( !qgsDoubleNear( pageSize.width(), size.width(), 0.01 ) || !qgsDoubleNear( pageSize.height(), size.height(), 0.01 ) )
         return false;
     }
   }
@@ -288,15 +284,9 @@ QPointF QgsLayoutPageCollection::positionOnPage( QPointF position ) const
   return QPointF( position.x(), y );
 }
 
-double QgsLayoutPageCollection::spaceBetweenPages() const
-{
-  return mLayout->convertToLayoutUnits( QgsLayoutMeasurement( 10 ) );
-}
+double QgsLayoutPageCollection::spaceBetweenPages() const { return mLayout->convertToLayoutUnits( QgsLayoutMeasurement( 10 ) ); }
 
-double QgsLayoutPageCollection::pageShadowWidth() const
-{
-  return spaceBetweenPages() / 2;
-}
+double QgsLayoutPageCollection::pageShadowWidth() const { return spaceBetweenPages() / 2; }
 
 void QgsLayoutPageCollection::resizeToContents( const QgsMargins &margins, Qgis::LayoutUnit marginUnits )
 {
@@ -441,15 +431,9 @@ bool QgsLayoutPageCollection::readXml( const QDomElement &e, const QDomDocument 
   return true;
 }
 
-QgsLayoutGuideCollection &QgsLayoutPageCollection::guides()
-{
-  return *mGuideCollection;
-}
+QgsLayoutGuideCollection &QgsLayoutPageCollection::guides() { return *mGuideCollection; }
 
-const QgsLayoutGuideCollection &QgsLayoutPageCollection::guides() const
-{
-  return *mGuideCollection;
-}
+const QgsLayoutGuideCollection &QgsLayoutPageCollection::guides() const { return *mGuideCollection; }
 
 void QgsLayoutPageCollection::applyPropertiesToAllOtherPages( int sourcePage )
 {
@@ -486,35 +470,17 @@ void QgsLayoutPageCollection::redraw()
   }
 }
 
-QgsLayout *QgsLayoutPageCollection::layout()
-{
-  return mLayout;
-}
+QgsLayout *QgsLayoutPageCollection::layout() { return mLayout; }
 
-QList<QgsLayoutItemPage *> QgsLayoutPageCollection::pages()
-{
-  return mPages;
-}
+QList<QgsLayoutItemPage *> QgsLayoutPageCollection::pages() { return mPages; }
 
-int QgsLayoutPageCollection::pageCount() const
-{
-  return mPages.count();
-}
+int QgsLayoutPageCollection::pageCount() const { return mPages.count(); }
 
-QgsLayoutItemPage *QgsLayoutPageCollection::page( int pageNumber )
-{
-  return mPages.value( pageNumber );
-}
+QgsLayoutItemPage *QgsLayoutPageCollection::page( int pageNumber ) { return mPages.value( pageNumber ); }
 
-const QgsLayoutItemPage *QgsLayoutPageCollection::page( int pageNumber ) const
-{
-  return mPages.value( pageNumber );
-}
+const QgsLayoutItemPage *QgsLayoutPageCollection::page( int pageNumber ) const { return mPages.value( pageNumber ); }
 
-int QgsLayoutPageCollection::pageNumber( QgsLayoutItemPage *page ) const
-{
-  return mPages.indexOf( page );
-}
+int QgsLayoutPageCollection::pageNumber( QgsLayoutItemPage *page ) const { return mPages.indexOf( page ); }
 
 QList<QgsLayoutItemPage *> QgsLayoutPageCollection::visiblePages( const QRectF &region ) const
 {
@@ -659,7 +625,7 @@ void QgsLayoutPageCollection::insertPage( QgsLayoutItemPage *page, int beforePag
   }
 
   endPageSizeChange();
-  if ( ! mBlockUndoCommands )
+  if ( !mBlockUndoCommands )
   {
     mLayout->undoStack()->endCommand();
     mLayout->undoStack()->endMacro();
@@ -693,7 +659,7 @@ void QgsLayoutPageCollection::deletePage( int pageNumber )
   }
 
   endPageSizeChange();
-  if ( ! mBlockUndoCommands )
+  if ( !mBlockUndoCommands )
   {
     mLayout->undoStack()->endCommand();
     mLayout->undoStack()->endMacro();
@@ -744,7 +710,7 @@ void QgsLayoutPageCollection::clear()
     mLayout->undoStack()->beginMacro( tr( "Remove Pages" ) );
     mLayout->undoStack()->beginCommand( this, tr( "Remove Pages" ) );
   }
-  for ( int i = mPages.count() - 1;  i >= 0; --i )
+  for ( int i = mPages.count() - 1; i >= 0; --i )
   {
     emit pageAboutToBeRemoved( i );
     mPages.takeAt( i )->deleteLater();
@@ -772,4 +738,3 @@ void QgsLayoutPageCollection::createDefaultPageStyleSymbol()
   properties.insert( u"joinstyle"_s, u"miter"_s );
   mPageStyleSymbol = QgsFillSymbol::createSimple( properties );
 }
-

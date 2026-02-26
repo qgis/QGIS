@@ -26,7 +26,6 @@ Conversion to or from pixel units utilizes a specified dots per inch
 #include "qgslayoutmeasurementconverter.h"
 %End
   public:
-
     QgsLayoutMeasurementConverter();
 
     void setDpi( const double dpi );

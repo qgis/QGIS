@@ -20,7 +20,6 @@ A named page size for layouts.
 #include "qgspagesizeregistry.h"
 %End
   public:
-
     QgsPageSize();
 
     QgsPageSize( const QString &name, const QgsLayoutSize &size, const QString &displayName = QString() );
@@ -57,7 +56,6 @@ rather accessed through :py:func:`QgsApplication.pageSizeRegistry()`.
 #include "qgspagesizeregistry.h"
 %End
   public:
-
     QgsPageSizeRegistry();
 %Docstring
 Creates a registry and populates it with known sizes

@@ -42,11 +42,9 @@ using namespace Qt::StringLiterals;
  */
 class CORE_EXPORT QgsReport : public QObject, public QgsAbstractReportSection, public QgsMasterLayoutInterface
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsReport, associated with the specified
      * \a project.
@@ -77,10 +75,8 @@ class CORE_EXPORT QgsReport : public QObject, public QgsAbstractReportSection, p
     void nameChanged( const QString &name );
 
   private:
-
     QgsProject *mProject = nullptr;
     QString mName;
-
 };
 
 ///@endcond

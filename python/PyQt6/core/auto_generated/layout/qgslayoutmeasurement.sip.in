@@ -24,7 +24,6 @@ a variety of different measurement units.
 #include "qgslayoutmeasurement.h"
 %End
   public:
-
     explicit QgsLayoutMeasurement( double length, Qgis::LayoutUnit units = Qgis::LayoutUnit::Millimeters );
 %Docstring
 Constructor for QgsLayoutMeasurement.
@@ -96,11 +95,15 @@ Decodes a measurement from a ``string``.
     QgsLayoutMeasurement operator/=( double v );
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    QString str = QStringLiteral( "<QgsLayoutMeasurement: %1 %2 >" ).arg( sipCpp->length() ).arg( QgsUnitTypes::toAbbreviatedString( sipCpp->units() ) );
+%MethodCode QString str = QStringLiteral( "<QgsLayoutMeasurement: %1 %2 >" ).arg( sipCpp->length() ).arg( QgsUnitTypes::toAbbreviatedString( sipCpp->units() ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
+    private :
+
+    double mLength
+    = 0.0;
+    Qgis::LayoutUnit mUnits;
 };
 
 /************************************************************************

@@ -32,10 +32,7 @@ QgsLayoutItemGroup::QgsLayoutItemGroup( QgsLayout *layout )
   : QgsLayoutItem( layout )
 {}
 
-QgsLayoutItemGroup::~QgsLayoutItemGroup()
-{
-  QgsLayoutItemGroup::cleanup();
-}
+QgsLayoutItemGroup::~QgsLayoutItemGroup() { QgsLayoutItemGroup::cleanup(); }
 
 void QgsLayoutItemGroup::cleanup()
 {
@@ -58,10 +55,7 @@ void QgsLayoutItemGroup::cleanup()
   QgsLayoutItem::cleanup();
 }
 
-int QgsLayoutItemGroup::type() const
-{
-  return QgsLayoutItemRegistry::LayoutGroup;
-}
+int QgsLayoutItemGroup::type() const { return QgsLayoutItemRegistry::LayoutGroup; }
 
 QString QgsLayoutItemGroup::displayName() const
 {
@@ -73,10 +67,7 @@ QString QgsLayoutItemGroup::displayName() const
   return tr( "<Group>" );
 }
 
-QgsLayoutItemGroup *QgsLayoutItemGroup::create( QgsLayout *layout )
-{
-  return new QgsLayoutItemGroup( layout );
-}
+QgsLayoutItemGroup *QgsLayoutItemGroup::create( QgsLayout *layout ) { return new QgsLayoutItemGroup( layout ); }
 
 void QgsLayoutItemGroup::addItem( QgsLayoutItem *item )
 {
@@ -285,14 +276,9 @@ void QgsLayoutItemGroup::finalizeRestoreFromXml()
   updateBoundingRect();
 }
 
-QgsLayoutItem::ExportLayerBehavior QgsLayoutItemGroup::exportLayerBehavior() const
-{
-  return MustPlaceInOwnLayer;
-}
+QgsLayoutItem::ExportLayerBehavior QgsLayoutItemGroup::exportLayerBehavior() const { return MustPlaceInOwnLayer; }
 
-void QgsLayoutItemGroup::paint( QPainter *, const QStyleOptionGraphicsItem *, QWidget * )
-{
-}
+void QgsLayoutItemGroup::paint( QPainter *, const QStyleOptionGraphicsItem *, QWidget * ) {}
 
 void QgsLayoutItemGroup::draw( QgsLayoutItemRenderContext & )
 {
@@ -302,7 +288,6 @@ void QgsLayoutItemGroup::draw( QgsLayoutItemRenderContext & )
 
 void QgsLayoutItemGroup::updateBoundingRect()
 {
-
   if ( mItems.isEmpty() )
   {
     setRect( QRectF() );
@@ -350,7 +335,4 @@ void QgsLayoutItemGroup::updateBoundingRect()
   mRectWithFrame = QRectF( bleedShift, groupRectWithFrame.size() );
 }
 
-QRectF QgsLayoutItemGroup::rectWithFrame() const
-{
-  return mRectWithFrame;
-}
+QRectF QgsLayoutItemGroup::rectWithFrame() const { return mRectWithFrame; }

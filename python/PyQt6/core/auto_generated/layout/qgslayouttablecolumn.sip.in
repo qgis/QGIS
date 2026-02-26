@@ -27,7 +27,6 @@ methods only have an effect for
 #include "qgslayouttablecolumn.h"
 %End
   public:
-
     QgsLayoutTableColumn( const QString &heading = QString() );
 %Docstring
 Constructor for QgsLayoutTableColumn.
@@ -244,14 +243,24 @@ Creates a duplicate column which is a deep copy of this column.
 
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    QString str;
+%MethodCode QString str;
     if ( sipCpp->heading() != sipCpp->attribute() && !sipCpp->heading().isEmpty() )
       str = QStringLiteral( "<QgsLayoutTableColumn: %1 (\"%2\")>" ).arg( sipCpp->attribute(), sipCpp->heading() );
     else
       str = QStringLiteral( "<QgsLayoutTableColumn: %1>" ).arg( sipCpp->attribute() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
+
+    private :
+
+    QString mHeading;
+    QString mAttribute;
+    int mSortByRank;
+    Qt::SortOrder mSortOrder;
+    double mWidth;
+    QColor mBackgroundColor;
+    Qt::AlignmentFlag mHAlignment;
+    Qt::AlignmentFlag mVAlignment;
 
 };
 /************************************************************************

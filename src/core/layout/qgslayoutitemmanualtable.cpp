@@ -41,29 +41,15 @@ QgsLayoutItemManualTable::QgsLayoutItemManualTable( QgsLayout *layout )
   refreshAttributes();
 }
 
-QgsLayoutItemManualTable::~QgsLayoutItemManualTable()
-{
-}
+QgsLayoutItemManualTable::~QgsLayoutItemManualTable() {}
 
-int QgsLayoutItemManualTable::type() const
-{
-  return QgsLayoutItemRegistry::LayoutManualTable;
-}
+int QgsLayoutItemManualTable::type() const { return QgsLayoutItemRegistry::LayoutManualTable; }
 
-QIcon QgsLayoutItemManualTable::icon() const
-{
-  return QgsApplication::getThemeIcon( u"/mLayoutItemTable.svg"_s );
-}
+QIcon QgsLayoutItemManualTable::icon() const { return QgsApplication::getThemeIcon( u"/mLayoutItemTable.svg"_s ); }
 
-QgsLayoutItemManualTable *QgsLayoutItemManualTable::create( QgsLayout *layout )
-{
-  return new QgsLayoutItemManualTable( layout );
-}
+QgsLayoutItemManualTable *QgsLayoutItemManualTable::create( QgsLayout *layout ) { return new QgsLayoutItemManualTable( layout ); }
 
-QString QgsLayoutItemManualTable::displayName() const
-{
-  return tr( "<Table frame>" );
-}
+QString QgsLayoutItemManualTable::displayName() const { return tr( "<Table frame>" ); }
 
 bool QgsLayoutItemManualTable::getTableContents( QgsLayoutTableContents &contents )
 {
@@ -114,11 +100,11 @@ QgsConditionalStyle QgsLayoutItemManualTable::conditionalCellStyle( int row, int
   if ( row < 0 || row >= mContents.size() )
     return QgsConditionalStyle();
 
-  const QgsTableRow &rowContents = mContents[ row ];
+  const QgsTableRow &rowContents = mContents[row];
   if ( column < 0 || column > rowContents.size() )
     return QgsConditionalStyle();
 
-  const QgsTableCell &c = rowContents[ column ];
+  const QgsTableCell &c = rowContents[column];
   QgsConditionalStyle res;
   if ( c.foregroundColor().isValid() )
     res.setTextColor( c.foregroundColor() );
@@ -136,10 +122,7 @@ void QgsLayoutItemManualTable::setTableContents( const QgsTableContents &content
   refreshAttributes();
 }
 
-QgsTableContents QgsLayoutItemManualTable::tableContents() const
-{
-  return mContents;
-}
+QgsTableContents QgsLayoutItemManualTable::tableContents() const { return mContents; }
 
 void QgsLayoutItemManualTable::setRowHeights( const QList<double> &heights )
 {
@@ -156,10 +139,7 @@ void QgsLayoutItemManualTable::setColumnWidths( const QList<double> &widths )
   refreshAttributes();
 }
 
-bool QgsLayoutItemManualTable::includeTableHeader() const
-{
-  return mIncludeHeader;
-}
+bool QgsLayoutItemManualTable::includeTableHeader() const { return mIncludeHeader; }
 
 void QgsLayoutItemManualTable::setIncludeTableHeader( bool included )
 {
@@ -173,10 +153,7 @@ void QgsLayoutItemManualTable::setIncludeTableHeader( bool included )
   refreshAttributes();
 }
 
-QgsLayoutTableColumns &QgsLayoutItemManualTable::headers()
-{
-  return mHeaders;
-}
+QgsLayoutTableColumns &QgsLayoutItemManualTable::headers() { return mHeaders; }
 
 void QgsLayoutItemManualTable::setHeaders( const QgsLayoutTableColumns &headers )
 {
@@ -327,7 +304,7 @@ bool QgsLayoutItemManualTable::calculateMaxRowHeights()
 
 QgsTextFormat QgsLayoutItemManualTable::textFormatForHeader( int column ) const
 {
-//  if ( mHeaders.value( column ).)
+  //  if ( mHeaders.value( column ).)
   return QgsLayoutTable::textFormatForHeader( column );
 }
 
@@ -376,11 +353,11 @@ void QgsLayoutItemManualTable::refreshColumns()
   if ( !mContents.empty() )
   {
     int colIndex = 0;
-    const QgsTableRow &firstRow = mContents[ 0 ];
+    const QgsTableRow &firstRow = mContents[0];
     columns.reserve( firstRow.size() );
     for ( const QgsTableCell &cell : firstRow )
     {
-      ( void )cell;
+      ( void ) cell;
       QgsLayoutTableColumn newCol( mHeaders.value( colIndex ).heading() );
       newCol.setWidth( mColumnWidths.value( colIndex ) );
       columns << newCol;

@@ -22,7 +22,6 @@ feature.
 #include "qgslayoutitemmap.h"
 %End
   public:
-
     QgsLayoutItemMapAtlasClippingSettings( QgsLayoutItemMap *map /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLayoutItemMapAtlasClippingSettings, with the
@@ -180,7 +179,6 @@ item.
 #include "qgslayoutitemmap.h"
 %End
   public:
-
     QgsLayoutItemMapItemClipPathSettings( QgsLayoutItemMap *map /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLayoutItemMapItemClipPathSettings, with the specified
@@ -333,7 +331,6 @@ Layout graphical items for displaying a map.
 #include "qgslayoutitemmap.h"
 %End
   public:
-
 
     enum AtlasScalingMode /BaseType=IntEnum/
     {
@@ -1070,7 +1067,6 @@ only display features within the specified z range.
 
 
   protected:
-
     virtual void draw( QgsLayoutItemRenderContext &context );
 
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;

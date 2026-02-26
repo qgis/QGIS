@@ -48,7 +48,6 @@ class QgsLayoutMultiFrame;
 class CORE_EXPORT QgsLayoutItemAbstractMetadata
 {
   public:
-
     /**
      * Constructor for QgsLayoutItemAbstractMetadata with the specified class \a type
      * and \a visibleName.
@@ -115,7 +114,6 @@ class CORE_EXPORT QgsLayoutItemAbstractMetadata
     }
 
   private:
-
     int mType = -1;
     QString mVisibleName;
     QString mVisibleNamePlural;
@@ -137,16 +135,13 @@ typedef std::function<void( QVariantMap &, const QgsPathResolver &, bool )> QgsL
 class CORE_EXPORT QgsLayoutItemMetadata : public QgsLayoutItemAbstractMetadata
 {
   public:
-
     /**
      * Constructor for QgsLayoutItemMetadata with the specified class \a type
      * and \a visibleName, and function pointers for the various item creation functions.
      *
      * The \a visiblePluralName argument is used to specify a plural variant of the item type.
      */
-    QgsLayoutItemMetadata( int type, const QString &visibleName, const QString &visiblePluralName,
-                           const QgsLayoutItemCreateFunc &pfCreate,
-                           const QgsLayoutItemPathResolverFunc &pfPathResolver = nullptr )
+    QgsLayoutItemMetadata( int type, const QString &visibleName, const QString &visiblePluralName, const QgsLayoutItemCreateFunc &pfCreate, const QgsLayoutItemPathResolverFunc &pfPathResolver = nullptr )
       : QgsLayoutItemAbstractMetadata( type, visibleName, visiblePluralName )
       , mCreateFunc( pfCreate )
       , mPathResolverFunc( pfPathResolver )
@@ -173,7 +168,6 @@ class CORE_EXPORT QgsLayoutItemMetadata : public QgsLayoutItemAbstractMetadata
   protected:
     QgsLayoutItemCreateFunc mCreateFunc = nullptr;
     QgsLayoutItemPathResolverFunc mPathResolverFunc = nullptr;
-
 };
 
 #endif
@@ -190,7 +184,6 @@ class CORE_EXPORT QgsLayoutItemMetadata : public QgsLayoutItemAbstractMetadata
 class CORE_EXPORT QgsLayoutMultiFrameAbstractMetadata
 {
   public:
-
     /**
      * Constructor for QgsLayoutMultiFrameAbstractMetadata with the specified class \a type
      * and \a visibleName.
@@ -252,7 +245,6 @@ class CORE_EXPORT QgsLayoutMultiFrameAbstractMetadata
     }
 
   private:
-
     int mType = -1;
     QString mVisibleName;
 };
@@ -273,14 +265,11 @@ typedef std::function<void( QVariantMap &, const QgsPathResolver &, bool )> QgsL
 class CORE_EXPORT QgsLayoutMultiFrameMetadata : public QgsLayoutMultiFrameAbstractMetadata
 {
   public:
-
     /**
      * Constructor for QgsLayoutMultiFrameMetadata with the specified class \a type
      * and \a visibleName, and function pointers for the various item creation functions.
      */
-    QgsLayoutMultiFrameMetadata( int type, const QString &visibleName,
-                                 const QgsLayoutMultiFrameCreateFunc &pfCreate,
-                                 const QgsLayoutMultiFramePathResolverFunc &pfPathResolver = nullptr )
+    QgsLayoutMultiFrameMetadata( int type, const QString &visibleName, const QgsLayoutMultiFrameCreateFunc &pfCreate, const QgsLayoutMultiFramePathResolverFunc &pfPathResolver = nullptr )
       : QgsLayoutMultiFrameAbstractMetadata( type, visibleName )
       , mCreateFunc( pfCreate )
       , mPathResolverFunc( pfPathResolver )
@@ -307,7 +296,6 @@ class CORE_EXPORT QgsLayoutMultiFrameMetadata : public QgsLayoutMultiFrameAbstra
   protected:
     QgsLayoutMultiFrameCreateFunc mCreateFunc = nullptr;
     QgsLayoutMultiFramePathResolverFunc mPathResolverFunc = nullptr;
-
 };
 
 #endif
@@ -330,42 +318,41 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
     Q_OBJECT
 
   public:
-
     //! Item types
     enum ItemType
     {
       LayoutItem = QGraphicsItem::UserType + 100, //!< Base class for items
-      LayoutGroup, //!< Grouped item
+      LayoutGroup,                                //!< Grouped item
 
       // known item types
 
       // WARNING!!!! SIP CASTING OF QgsLayoutItem and QgsLayoutMultiFrame DEPENDS on these
       // values, and must be updated if any additional types are added
 
-      LayoutPage, //!< Page items
-      LayoutMap, //!< Map item
-      LayoutPicture, //!< Picture item
-      LayoutLabel, //!< Label item
-      LayoutLegend, //!< Legend item
-      LayoutShape, //!< Shape item
-      LayoutPolygon, //!< Polygon shape item
+      LayoutPage,     //!< Page items
+      LayoutMap,      //!< Map item
+      LayoutPicture,  //!< Picture item
+      LayoutLabel,    //!< Label item
+      LayoutLegend,   //!< Legend item
+      LayoutShape,    //!< Shape item
+      LayoutPolygon,  //!< Polygon shape item
       LayoutPolyline, //!< Polyline shape item
       LayoutScaleBar, //!< Scale bar item
-      LayoutFrame, //!< Frame item, part of a QgsLayoutMultiFrame object
+      LayoutFrame,    //!< Frame item, part of a QgsLayoutMultiFrame object
 
       // known multi-frame types
 
       // WARNING!!!! SIP CASTING OF QgsLayoutItem and QgsLayoutMultiFrame DEPENDS on these
       // values, and must be updated if any additional types are added
 
-      LayoutHtml, //!< Html multiframe item
+      LayoutHtml,           //!< Html multiframe item
       LayoutAttributeTable, //!< Attribute table
-      LayoutTextTable, //!< Preset text table
+      LayoutTextTable,      //!< Preset text table
 
-      Layout3DMap,  //!< 3D map item
+      Layout3DMap, //!< 3D map item
 
-      LayoutManualTable,  //!< Manual (fixed) table
-      LayoutMarker, //!< Marker item
+      LayoutManualTable, //!< Manual (fixed) table
+      LayoutMarker,      //!< Marker item
 
       LayoutElevationProfile, //!< Elevation profile item \since QGIS 3.30
 
@@ -533,7 +520,6 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
 
     QMap<int, QgsLayoutItemAbstractMetadata *> mMetadata;
     QMap<int, QgsLayoutMultiFrameAbstractMetadata *> mMultiFrameMetadata;
-
 };
 
 #if 0
@@ -568,6 +554,3 @@ class TestLayoutItem : public QgsLayoutItem
 #endif
 
 #endif //QGSLAYOUTITEMREGISTRY_H
-
-
-

@@ -25,7 +25,6 @@ drawn and the order they are drawn in.
 #include "qgslayoutitemmapgrid.h"
 %End
   public:
-
     QgsLayoutItemMapGridStack( QgsLayoutItemMap *map );
 %Docstring
 Constructor for QgsLayoutItemMapGridStack, attached to the specified
@@ -139,7 +138,6 @@ An individual grid which is drawn above the map content in a
 #include "qgslayoutitemmapgrid.h"
 %End
   public:
-
     QgsLayoutItemMapGrid( const QString &name, QgsLayoutItemMap *map );
 %Docstring
 Constructor for QgsLayoutItemMapGrid.
@@ -433,7 +431,23 @@ styles. Ownership of ``symbol`` is transferred to the grid.
 .. seealso:: :py:func:`setStyle`
 %End
 
-    QgsLineSymbol *lineSymbol();
+    const QgsLineSymbol *lineSymbol() const;
+%Docstring
+Returns the line symbol used for drawing grid lines. This is only used
+for grids with QgsLayoutItemMapGrid.Solid or QgsLayoutItemMapGrid.Cross
+styles.
+
+.. seealso:: :py:func:`setLineSymbol`
+
+.. seealso:: :py:func:`markerSymbol`
+
+.. seealso:: :py:func:`style`
+
+.. note::
+
+   not available in Python bindings
+%End
+    QgsLineSymbol *
 %Docstring
 Returns the line symbol used for drawing grid lines. This is only used
 for grids with QgsLayoutItemMapGrid.Solid or QgsLayoutItemMapGrid.Cross
@@ -445,6 +459,7 @@ styles.
 
 .. seealso:: :py:func:`style`
 %End
+      lineSymbol();
 
     void setMarkerSymbol( QgsMarkerSymbol *symbol /Transfer/ );
 %Docstring
@@ -459,7 +474,22 @@ used for grids with a QgsLayoutItemMapGrid.Markers style. Ownership of
 .. seealso:: :py:func:`setStyle`
 %End
 
-    QgsMarkerSymbol *markerSymbol();
+    const QgsMarkerSymbol *markerSymbol() const;
+%Docstring
+Returns the marker symbol used for drawing grid points. This is only
+used for grids with a QgsLayoutItemMapGrid.Markers style.
+
+.. seealso:: :py:func:`setMarkerSymbol`
+
+.. seealso:: :py:func:`lineSymbol`
+
+.. seealso:: :py:func:`style`
+
+.. note::
+
+   not available in Python bindings
+%End
+    QgsMarkerSymbol *
 %Docstring
 Returns the marker symbol used for drawing grid points. This is only
 used for grids with a QgsLayoutItemMapGrid.Markers style.
@@ -470,6 +500,7 @@ used for grids with a QgsLayoutItemMapGrid.Markers style.
 
 .. seealso:: :py:func:`style`
 %End
+      markerSymbol();
 
 
     void setAnnotationEnabled( const bool enabled );

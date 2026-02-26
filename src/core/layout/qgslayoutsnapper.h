@@ -36,11 +36,9 @@ class QgsReadWriteContext;
  * \brief Manages snapping grids and preset snap lines in a layout, and handles
  * snapping points to the nearest grid coordinate/snap line when possible.
  */
-class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
+class CORE_EXPORT QgsLayoutSnapper : public QgsLayoutSerializableObject
 {
-
   public:
-
     /**
      * Constructor for QgsLayoutSnapper, attached to the specified \a layout.
      */
@@ -113,9 +111,10 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
 
      * \see snapRect()
      */
-    QPointF snapPoint( QPointF point, double scaleFactor, bool &snapped SIP_OUT, QGraphicsLineItem *horizontalSnapLine = nullptr,
-                       QGraphicsLineItem *verticalSnapLine = nullptr,
-                       const QList< QgsLayoutItem * > *ignoreItems = nullptr ) const;
+    QPointF snapPoint(
+      QPointF point, double scaleFactor, bool &snapped SIP_OUT, QGraphicsLineItem *horizontalSnapLine = nullptr, QGraphicsLineItem *verticalSnapLine = nullptr,
+      const QList< QgsLayoutItem * > *ignoreItems = nullptr
+    ) const;
 
     /**
      * Snaps a layout coordinate \a rect. If \a rect was snapped, \a snapped will be set to TRUE.
@@ -136,9 +135,10 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
      *
      * \see snapPoint()
      */
-    QRectF snapRect( const QRectF &rect, double scaleFactor, bool &snapped SIP_OUT, QGraphicsLineItem *horizontalSnapLine = nullptr,
-                     QGraphicsLineItem *verticalSnapLine = nullptr,
-                     const QList< QgsLayoutItem * > *ignoreItems = nullptr ) const;
+    QRectF snapRect(
+      const QRectF &rect, double scaleFactor, bool &snapped SIP_OUT, QGraphicsLineItem *horizontalSnapLine = nullptr, QGraphicsLineItem *verticalSnapLine = nullptr,
+      const QList< QgsLayoutItem * > *ignoreItems = nullptr
+    ) const;
 
     /**
      * Snaps a layout coordinate \a point to the grid. If \a point
@@ -223,8 +223,7 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
      *
      * \see snapPointsToItems()
      */
-    double snapPointToItems( double original, Qt::Orientation orientation, double scaleFactor, const QList< QgsLayoutItem * > &ignoreItems, bool &snapped SIP_OUT,
-                             QGraphicsLineItem *snapLine = nullptr ) const;
+    double snapPointToItems( double original, Qt::Orientation orientation, double scaleFactor, const QList< QgsLayoutItem * > &ignoreItems, bool &snapped SIP_OUT, QGraphicsLineItem *snapLine = nullptr ) const;
 
     /**
      * Snaps a set of \a points to the item bounds. If the points
@@ -241,8 +240,9 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
      *
      * \see snapPointToItems()
      */
-    double snapPointsToItems( const QList< double > &points, Qt::Orientation orientation, double scaleFactor, const QList< QgsLayoutItem * > &ignoreItems, bool &snapped SIP_OUT,
-                              QGraphicsLineItem *snapLine = nullptr ) const;
+    double snapPointsToItems(
+      const QList< double > &points, Qt::Orientation orientation, double scaleFactor, const QList< QgsLayoutItem * > &ignoreItems, bool &snapped SIP_OUT, QGraphicsLineItem *snapLine = nullptr
+    ) const;
 
     /**
      * Stores the snapper's state in a DOM element. The \a parentElement should refer to the parent layout's DOM element.
@@ -257,7 +257,6 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
     bool readXml( const QDomElement &gridElement, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
   private:
-
     // Used for 'collapsing' undo commands
     enum UndoCommand
     {
@@ -274,7 +273,6 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
     bool mSnapToItems = true;
 
     friend class QgsLayoutSnapperUndoCommand;
-
 };
 
 #endif //QGSLAYOUTSNAPPER_H

@@ -48,24 +48,13 @@ QgsLayoutItemPolygon::QgsLayoutItemPolygon( const QPolygonF &polygon, QgsLayout 
 
 QgsLayoutItemPolygon::~QgsLayoutItemPolygon() = default;
 
-QgsLayoutItemPolygon *QgsLayoutItemPolygon::create( QgsLayout *layout )
-{
-  return new QgsLayoutItemPolygon( layout );
-}
+QgsLayoutItemPolygon *QgsLayoutItemPolygon::create( QgsLayout *layout ) { return new QgsLayoutItemPolygon( layout ); }
 
-int QgsLayoutItemPolygon::type() const
-{
-  return QgsLayoutItemRegistry::LayoutPolygon;
-}
+int QgsLayoutItemPolygon::type() const { return QgsLayoutItemRegistry::LayoutPolygon; }
 
-QIcon QgsLayoutItemPolygon::icon() const
-{
-  return QgsApplication::getThemeIcon( u"/mLayoutItemPolygon.svg"_s );
-}
+QIcon QgsLayoutItemPolygon::icon() const { return QgsApplication::getThemeIcon( u"/mLayoutItemPolygon.svg"_s ); }
 
-bool QgsLayoutItemPolygon::_addNode( const int indexPoint,
-                                     QPointF newPoint,
-                                     const double radius )
+bool QgsLayoutItemPolygon::_addNode( const int indexPoint, QPointF newPoint, const double radius )
 {
   Q_UNUSED( radius )
   mPolygon.insert( indexPoint + 1, newPoint );
@@ -154,10 +143,7 @@ bool QgsLayoutItemPolygon::isValid() const
   return false;
 }
 
-QgsFillSymbol *QgsLayoutItemPolygon::symbol()
-{
-  return mPolygonStyleSymbol.get();
-}
+QgsFillSymbol *QgsLayoutItemPolygon::symbol() { return mPolygonStyleSymbol.get(); }
 
 void QgsLayoutItemPolygon::_draw( QgsLayoutItemRenderContext &context, const QStyleOptionGraphicsItem * )
 {
@@ -175,15 +161,11 @@ void QgsLayoutItemPolygon::_draw( QgsLayoutItemRenderContext &context, const QSt
   polygonPath.addPolygon( mPolygon );
 
   mPolygonStyleSymbol->startRender( renderContext );
-  mPolygonStyleSymbol->renderPolygon( polygonPath.toFillPolygon( t ), &rings,
-                                      nullptr, renderContext );
+  mPolygonStyleSymbol->renderPolygon( polygonPath.toFillPolygon( t ), &rings, nullptr, renderContext );
   mPolygonStyleSymbol->stopRender( renderContext );
 }
 
-void QgsLayoutItemPolygon::_readXmlStyle( const QDomElement &elmt, const QgsReadWriteContext &context )
-{
-  mPolygonStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( elmt, context );
-}
+void QgsLayoutItemPolygon::_readXmlStyle( const QDomElement &elmt, const QgsReadWriteContext &context ) { mPolygonStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( elmt, context ); }
 
 void QgsLayoutItemPolygon::setSymbol( QgsFillSymbol *symbol )
 {
@@ -193,10 +175,7 @@ void QgsLayoutItemPolygon::setSymbol( QgsFillSymbol *symbol )
 
 void QgsLayoutItemPolygon::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt, const QgsReadWriteContext &context ) const
 {
-  const QDomElement pe = QgsSymbolLayerUtils::saveSymbol( QString(),
-                         mPolygonStyleSymbol.get(),
-                         doc,
-                         context );
+  const QDomElement pe = QgsSymbolLayerUtils::saveSymbol( QString(), mPolygonStyleSymbol.get(), doc, context );
   elmt.appendChild( pe );
 }
 
@@ -214,4 +193,3 @@ bool QgsLayoutItemPolygon::_removeNode( const int index )
 
   return true;
 }
-

@@ -19,7 +19,6 @@ layout.
 #include "qgslayoutreportcontext.h"
 %End
   public:
-
     QgsLayoutReportContext( QgsLayout *layout /TransferThis/ );
 %Docstring
 Constructor for QgsLayoutReportContext.
@@ -114,9 +113,6 @@ new feature or vector layer for the context.
 %End
 
 };
-
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

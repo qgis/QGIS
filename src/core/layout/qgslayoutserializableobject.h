@@ -34,7 +34,6 @@ class QgsAbstractLayoutUndoCommand;
 class CORE_EXPORT QgsLayoutSerializableObject : public QgsLayoutUndoObjectInterface
 {
   public:
-
     /**
      * Returns the object type as a string.
      *
@@ -62,9 +61,7 @@ class CORE_EXPORT QgsLayoutSerializableObject : public QgsLayoutUndoObjectInterf
     QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = nullptr ) override SIP_FACTORY;
 
   private:
-
     friend class QgsLayoutSerializableObjectUndoCommand;
-
 };
 
 #endif // QGSLAYOUTSERIALIZABLEOBJECT_H

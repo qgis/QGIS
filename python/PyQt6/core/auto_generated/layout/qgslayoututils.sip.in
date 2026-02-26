@@ -20,7 +20,6 @@ Utilities for layouts.
 #include "qgslayoututils.h"
 %End
   public:
-
     static void rotate( double angle, double &x, double &y );
 %Docstring
 Rotates a point / vector around the origin.
@@ -194,7 +193,10 @@ If ``color`` is specified, text will be rendered in that color. If not
 specified, the current painter pen color will be used instead.
 %End
 
-    static void drawText( QPainter *painter, const QRectF &rectangle, const QString &text, const QFont &font, const QColor &color = QColor(), Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap );
+    static void drawText(
+      QPainter *painter, const QRectF &rectangle, const QString &text, const QFont &font, const QColor &color = QColor(), Qt::AlignmentFlag halignment = Qt::AlignLeft,
+      Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap
+    );
 %Docstring
 Draws ``text`` on a ``painter`` within a ``rectangle``, taking care of
 layout specific issues (calculation to pixel, scaling of font and

@@ -25,24 +25,13 @@
 
 QgsLayoutItemTextTable::QgsLayoutItemTextTable( QgsLayout *layout )
   : QgsLayoutTable( layout )
-{
+{}
 
-}
+int QgsLayoutItemTextTable::type() const { return QgsLayoutItemRegistry::LayoutTextTable; }
 
-int QgsLayoutItemTextTable::type() const
-{
-  return QgsLayoutItemRegistry::LayoutTextTable;
-}
+QString QgsLayoutItemTextTable::displayName() const { return tr( "<Text table frame>" ); }
 
-QString QgsLayoutItemTextTable::displayName() const
-{
-  return tr( "<Text table frame>" );
-}
-
-QgsLayoutItemTextTable *QgsLayoutItemTextTable::create( QgsLayout *layout )
-{
-  return new QgsLayoutItemTextTable( layout );
-}
+QgsLayoutItemTextTable *QgsLayoutItemTextTable::create( QgsLayout *layout ) { return new QgsLayoutItemTextTable( layout ); }
 
 void QgsLayoutItemTextTable::addRow( const QStringList &row )
 {

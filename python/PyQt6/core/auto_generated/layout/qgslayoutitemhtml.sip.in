@@ -10,7 +10,7 @@
 
 
 
-class QgsLayoutItemHtml: QgsLayoutMultiFrame
+class QgsLayoutItemHtml : QgsLayoutMultiFrame
 {
 %Docstring(signature="appended")
 A layout multiframe subclass for HTML content.
@@ -20,7 +20,6 @@ A layout multiframe subclass for HTML content.
 #include "qgslayoutitemhtml.h"
 %End
   public:
-
     enum ContentMode /BaseType=IntEnum/
     {
       Url,
@@ -263,7 +262,6 @@ Recalculates the frame sizes for the current viewport dimensions
 
 
   protected:
-
     virtual bool writePropertiesToElement( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     virtual bool readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context );

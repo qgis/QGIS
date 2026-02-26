@@ -26,16 +26,15 @@ Handles rendering and exports of layouts to various formats.
 
 
 
-
     struct PageExportDetails
     {
-      QString directory;
+        QString directory;
 
-      QString baseName;
+        QString baseName;
 
-      QString extension;
+        QString extension;
 
-      int page;
+        int page;
     };
 
     QgsLayoutExporter( QgsLayout *layout );
@@ -130,28 +129,27 @@ into available memory.
 
     struct ImageExportSettings
     {
-      ImageExportSettings();
+        ImageExportSettings();
 
-      double dpi;
+        double dpi;
 
-      QSize imageSize;
+        QSize imageSize;
 
-      bool cropToContents;
+        bool cropToContents;
 
-      QgsMargins cropMargins;
+        QgsMargins cropMargins;
 
-      QList< int > pages;
+        QList< int > pages;
 
-      bool generateWorldFile;
+        bool generateWorldFile;
 
-      bool exportMetadata;
+        bool exportMetadata;
 
-      Qgis::LayoutRenderFlags flags;
+        Qgis::LayoutRenderFlags flags;
 
-      QVector<qreal> predefinedMapScales;
+        QVector<qreal> predefinedMapScales;
 
-      int quality;
-
+        int quality;
     };
 
     ExportResult exportToImage( const QString &filePath, const QgsLayoutExporter::ImageExportSettings &settings );
@@ -170,9 +168,10 @@ filename for the export which encountered the error.
 %End
 
 
-    static ExportResult exportToImage( QgsAbstractLayoutIterator *iterator, const QString &baseFilePath,
-                                       const QString &extension, const QgsLayoutExporter::ImageExportSettings &settings,
-                                       QString &error /Out/, QgsFeedback *feedback = 0 );
+    static ExportResult exportToImage(
+      QgsAbstractLayoutIterator *iterator, const QString &baseFilePath, const QString &extension, const QgsLayoutExporter::ImageExportSettings &settings, QString &error /Out/,
+      QgsFeedback *feedback = 0
+    );
 %Docstring
 Exports a layout ``iterator`` to raster images, with the specified
 export ``settings``.
@@ -188,37 +187,37 @@ set to the error description.
 
     struct PdfExportSettings
     {
-      PdfExportSettings();
+        PdfExportSettings();
 
-      double dpi;
+        double dpi;
 
-      bool rasterizeWholeImage;
+        bool rasterizeWholeImage;
 
-      bool forceVectorOutput;
+        bool forceVectorOutput;
 
-      bool appendGeoreference;
+        bool appendGeoreference;
 
-      bool exportMetadata;
+        bool exportMetadata;
 
-      Qgis::LayoutRenderFlags flags;
+        Qgis::LayoutRenderFlags flags;
 
-      Qgis::TextRenderFormat textRenderFormat;
+        Qgis::TextRenderFormat textRenderFormat;
 
-      bool simplifyGeometries;
+        bool simplifyGeometries;
 
-      bool writeGeoPdf;
+        bool writeGeoPdf;
 
-      bool exportLayersAsSeperateFiles;
+        bool exportLayersAsSeperateFiles;
 
-      bool useIso32000ExtensionFormatGeoreferencing;
+        bool useIso32000ExtensionFormatGeoreferencing;
 
-      bool useOgcBestPracticeFormatGeoreferencing;
+        bool useOgcBestPracticeFormatGeoreferencing;
 
-      bool includeGeoPdfFeatures;
+        bool includeGeoPdfFeatures;
 
-      QStringList exportThemes;
+        QStringList exportThemes;
 
-      QVector<qreal> predefinedMapScales;
+        QVector<qreal> predefinedMapScales;
     };
 
     ExportResult exportToPdf( const QString &filePath, const QgsLayoutExporter::PdfExportSettings &settings );
@@ -230,9 +229,9 @@ Returns a result code indicating whether the export was successful or an
 error was encountered.
 %End
 
-    static ExportResult exportToPdf( QgsAbstractLayoutIterator *iterator, const QString &fileName,
-                                     const QgsLayoutExporter::PdfExportSettings &settings,
-                                     QString &error /Out/, QgsFeedback *feedback = 0 );
+    static ExportResult exportToPdf(
+      QgsAbstractLayoutIterator *iterator, const QString &fileName, const QgsLayoutExporter::PdfExportSettings &settings, QString &error /Out/, QgsFeedback *feedback = 0
+    );
 %Docstring
 Exports a layout ``iterator`` to a single PDF file, with the specified
 export ``settings``.
@@ -247,9 +246,9 @@ set to the error description.
 .. seealso:: :py:func:`exportToPdfs`
 %End
 
-    static ExportResult exportToPdfs( QgsAbstractLayoutIterator *iterator, const QString &baseFilePath,
-                                      const QgsLayoutExporter::PdfExportSettings &settings,
-                                      QString &error /Out/, QgsFeedback *feedback = 0 );
+    static ExportResult exportToPdfs(
+      QgsAbstractLayoutIterator *iterator, const QString &baseFilePath, const QgsLayoutExporter::PdfExportSettings &settings, QString &error /Out/, QgsFeedback *feedback = 0
+    );
 %Docstring
 Exports a layout ``iterator`` to multiple PDF files, with the specified
 export ``settings``.
@@ -267,16 +266,15 @@ set to the error description.
 
     struct PrintExportSettings
     {
-      PrintExportSettings();
+        PrintExportSettings();
 
-      double dpi;
+        double dpi;
 
-      bool rasterizeWholeImage;
+        bool rasterizeWholeImage;
 
-      Qgis::LayoutRenderFlags flags;
+        Qgis::LayoutRenderFlags flags;
 
-      QVector<qreal> predefinedMapScales;
-
+        QVector<qreal> predefinedMapScales;
     };
 
 %If (HAVE_QTPRINTER)
@@ -290,9 +288,7 @@ Returns a result code indicating whether the export was successful or an
 error was encountered.
 %End
 
-    static ExportResult print( QgsAbstractLayoutIterator *iterator, QPrinter &printer,
-                               const QgsLayoutExporter::PrintExportSettings &settings,
-                               QString &error /Out/, QgsFeedback *feedback = 0 );
+    static ExportResult print( QgsAbstractLayoutIterator *iterator, QPrinter &printer, const QgsLayoutExporter::PrintExportSettings &settings, QString &error /Out/, QgsFeedback *feedback = 0 );
 %Docstring
 Exports a layout ``iterator`` to a ``printer``, with the specified
 export ``settings``.
@@ -306,29 +302,29 @@ set to the error description.
 
     struct SvgExportSettings
     {
-      SvgExportSettings();
+        SvgExportSettings();
 
-      double dpi;
+        double dpi;
 
-      bool forceVectorOutput;
+        bool forceVectorOutput;
 
-      bool cropToContents;
+        bool cropToContents;
 
-      QgsMargins cropMargins;
+        QgsMargins cropMargins;
 
-      bool exportAsLayers;
+        bool exportAsLayers;
 
-      bool exportLabelsToSeparateLayers;
+        bool exportLabelsToSeparateLayers;
 
-      bool exportMetadata;
+        bool exportMetadata;
 
-      Qgis::LayoutRenderFlags flags;
+        Qgis::LayoutRenderFlags flags;
 
-      Qgis::TextRenderFormat textRenderFormat;
+        Qgis::TextRenderFormat textRenderFormat;
 
-      bool simplifyGeometries;
+        bool simplifyGeometries;
 
-      QVector<qreal> predefinedMapScales;
+        QVector<qreal> predefinedMapScales;
     };
 
     ExportResult exportToSvg( const QString &filePath, const QgsLayoutExporter::SvgExportSettings &settings );
@@ -340,9 +336,9 @@ Returns a result code indicating whether the export was successful or an
 error was encountered.
 %End
 
-    static ExportResult exportToSvg( QgsAbstractLayoutIterator *iterator, const QString &baseFilePath,
-                                     const QgsLayoutExporter::SvgExportSettings &settings,
-                                     QString &error /Out/, QgsFeedback *feedback = 0 );
+    static ExportResult exportToSvg(
+      QgsAbstractLayoutIterator *iterator, const QString &baseFilePath, const QgsLayoutExporter::SvgExportSettings &settings, QString &error /Out/, QgsFeedback *feedback = 0
+    );
 %Docstring
 Exports a layout ``iterator`` to SVG files, with the specified export
 ``settings``.
@@ -380,8 +376,7 @@ Ownership of the results remains with the layout exporter.
 %End
 
 
-    bool georeferenceOutput( const QString &file, QgsLayoutItemMap *referenceMap = 0,
-                             const QRectF &exportRegion = QRectF(), double dpi = -1 ) const;
+    bool georeferenceOutput( const QString &file, QgsLayoutItemMap *referenceMap = 0, const QRectF &exportRegion = QRectF(), double dpi = -1 ) const;
 %Docstring
 Georeferences a ``file`` (image of PDF) exported from the layout.
 
@@ -442,7 +437,6 @@ items from being exported as vector artwork.
 %End
 
   protected:
-
     virtual QString generateFileName( const PageExportDetails &details ) const;
 %Docstring
 Generates the file name for a page during export.
@@ -451,9 +445,6 @@ Subclasses can override this method to customize page file naming.
 %End
 
 };
-
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

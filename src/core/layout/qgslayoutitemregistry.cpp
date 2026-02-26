@@ -44,8 +44,7 @@ using namespace Qt::StringLiterals;
 
 QgsLayoutItemRegistry::QgsLayoutItemRegistry( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
 QgsLayoutItemRegistry::~QgsLayoutItemRegistry()
 {
@@ -76,8 +75,7 @@ bool QgsLayoutItemRegistry::populate()
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutLabel, QObject::tr( "Label" ), QObject::tr( "Labels" ), QgsLayoutItemLabel::create ) );
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutLegend, QObject::tr( "Legend" ), QObject::tr( "Legends" ), QgsLayoutItemLegend::create ) );
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutScaleBar, QObject::tr( "Scalebar" ), QObject::tr( "Scalebars" ), QgsLayoutItemScaleBar::create ) );
-  addLayoutItemType( new QgsLayoutItemMetadata( LayoutShape, QObject::tr( "Shape" ), QObject::tr( "Shapes" ), []( QgsLayout * layout )
-  {
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutShape, QObject::tr( "Shape" ), QObject::tr( "Shapes" ), []( QgsLayout *layout ) {
     QgsLayoutItemShape *shape = new QgsLayoutItemShape( layout );
     shape->setShapeType( QgsLayoutItemShape::Rectangle );
     return shape;
@@ -97,15 +95,9 @@ bool QgsLayoutItemRegistry::populate()
   return true;
 }
 
-QgsLayoutItemAbstractMetadata *QgsLayoutItemRegistry::itemMetadata( int type ) const
-{
-  return mMetadata.value( type );
-}
+QgsLayoutItemAbstractMetadata *QgsLayoutItemRegistry::itemMetadata( int type ) const { return mMetadata.value( type ); }
 
-QgsLayoutMultiFrameAbstractMetadata *QgsLayoutItemRegistry::multiFrameMetadata( int type ) const
-{
-  return mMultiFrameMetadata.value( type );
-}
+QgsLayoutMultiFrameAbstractMetadata *QgsLayoutItemRegistry::multiFrameMetadata( int type ) const { return mMultiFrameMetadata.value( type ); }
 
 bool QgsLayoutItemRegistry::addLayoutItemType( QgsLayoutItemAbstractMetadata *metadata )
 {
@@ -126,10 +118,7 @@ bool QgsLayoutItemRegistry::removeLayoutItemType( int typeId )
   return true;
 }
 
-bool QgsLayoutItemRegistry::removeLayoutItemType( QgsLayoutItemAbstractMetadata *metadata )
-{
-  return removeLayoutItemType( metadata->type() );
-}
+bool QgsLayoutItemRegistry::removeLayoutItemType( QgsLayoutItemAbstractMetadata *metadata ) { return removeLayoutItemType( metadata->type() ); }
 
 bool QgsLayoutItemRegistry::addLayoutMultiFrameType( QgsLayoutMultiFrameAbstractMetadata *metadata )
 {
@@ -150,10 +139,7 @@ bool QgsLayoutItemRegistry::removeLayoutMultiFrameType( int typeId )
   return true;
 }
 
-bool QgsLayoutItemRegistry::removeLayoutMultiFrameType( QgsLayoutMultiFrameAbstractMetadata *metadata )
-{
-  return removeLayoutMultiFrameType( metadata->type() );
-}
+bool QgsLayoutItemRegistry::removeLayoutMultiFrameType( QgsLayoutMultiFrameAbstractMetadata *metadata ) { return removeLayoutMultiFrameType( metadata->type() ); }
 
 QgsLayoutItem *QgsLayoutItemRegistry::createItem( int type, QgsLayout *layout ) const
 {

@@ -40,14 +40,13 @@ using namespace Qt::StringLiterals;
 class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
 {
   public:
-
     /**
      * Visibility modes for header and footer sections
      */
     enum SectionVisibility
     {
-      IncludeWhenFeaturesFound,      //!< The section will be included when features are found
-      AlwaysInclude                  //!< The section will always be included
+      IncludeWhenFeaturesFound, //!< The section will be included when features are found
+      AlwaysInclude             //!< The section will always be included
     };
 
     /**
@@ -166,12 +165,10 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
     void reloadSettings() override;
 
   protected:
-
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
   private:
-
     QgsVectorLayerRef mCoverageLayer;
     QString mField;
     bool mSortAscending = true;
@@ -192,7 +189,6 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
 
     QgsFeature getNextFeature();
     void updateChildContexts( const QgsFeature &feature );
-
 };
 
 

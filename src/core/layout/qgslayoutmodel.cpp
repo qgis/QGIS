@@ -39,9 +39,7 @@ using namespace Qt::StringLiterals;
 QgsLayoutModel::QgsLayoutModel( QgsLayout *layout, QObject *parent )
   : QAbstractItemModel( parent )
   , mLayout( layout )
-{
-
-}
+{}
 
 QgsLayoutItem *QgsLayoutModel::itemFromIndex( const QModelIndex &index ) const
 {
@@ -55,8 +53,7 @@ QgsLayoutItem *QgsLayoutModel::itemFromIndex( const QModelIndex &index ) const
   return item;
 }
 
-QModelIndex QgsLayoutModel::index( int row, int column,
-                                   const QModelIndex &parent ) const
+QModelIndex QgsLayoutModel::index( int row, int column, const QModelIndex &parent ) const
 {
   if ( column < 0 || column >= columnCount() )
   {
@@ -175,7 +172,7 @@ QVariant QgsLayoutModel::data( const QModelIndex &index, int role ) const
     case Qt::UserRole:
       //store item uuid in userrole so we can later get the QModelIndex for a specific item
       return item->uuid();
-    case Qt::UserRole+1:
+    case Qt::UserRole + 1:
       //user role stores reference in column object
       return QVariant::fromValue( qobject_cast<QObject *>( item ) );
 
@@ -267,13 +264,9 @@ QVariant QgsLayoutModel::headerData( int section, Qt::Orientation orientation, i
     default:
       return QAbstractItemModel::headerData( section, orientation, role );
   }
-
 }
 
-Qt::DropActions QgsLayoutModel::supportedDropActions() const
-{
-  return Qt::MoveAction;
-}
+Qt::DropActions QgsLayoutModel::supportedDropActions() const { return Qt::MoveAction; }
 
 QStringList QgsLayoutModel::mimeTypes() const
 {
@@ -307,13 +300,9 @@ QMimeData *QgsLayoutModel::mimeData( const QModelIndexList &indexes ) const
   return mimeData;
 }
 
-bool zOrderDescending( QgsLayoutItem *item1, QgsLayoutItem *item2 )
-{
-  return item1->zValue() > item2->zValue();
-}
+bool zOrderDescending( QgsLayoutItem *item1, QgsLayoutItem *item2 ) { return item1->zValue() > item2->zValue(); }
 
-bool QgsLayoutModel::dropMimeData( const QMimeData *data,
-                                   Qt::DropAction action, int row, int column, const QModelIndex &parent )
+bool QgsLayoutModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
   if ( column != ItemId && column != -1 )
   {
@@ -442,10 +431,7 @@ void QgsLayoutModel::clear()
   endResetModel();
 }
 
-int QgsLayoutModel::zOrderListSize() const
-{
-  return mItemZList.size();
-}
+int QgsLayoutModel::zOrderListSize() const { return mItemZList.size(); }
 
 void QgsLayoutModel::rebuildZList()
 {
@@ -488,7 +474,6 @@ void QgsLayoutModel::rebuildSceneItemList()
     if ( sceneListPos == row )
     {
       //already in list in correct position, nothing to do
-
     }
     else if ( sceneListPos != -1 )
     {
@@ -672,7 +657,7 @@ bool QgsLayoutModel::reorderItemUp( QgsLayoutItem *item )
 
   //move item in z list
   QMutableListIterator<QgsLayoutItem *> it( mItemZList );
-  if ( ! it.findNext( item ) )
+  if ( !it.findNext( item ) )
   {
     //can't find item in z list, nothing to do
     return false;
@@ -722,7 +707,7 @@ bool QgsLayoutModel::reorderItemDown( QgsLayoutItem *item )
 
   //move item in z list
   QMutableListIterator<QgsLayoutItem *> it( mItemZList );
-  if ( ! it.findNext( item ) )
+  if ( !it.findNext( item ) )
   {
     //can't find item in z list, nothing to do
     return false;
@@ -870,10 +855,7 @@ QgsLayoutItem *QgsLayoutModel::findItemBelow( QgsLayoutItem *item ) const
   return nullptr;
 }
 
-QList<QgsLayoutItem *> &QgsLayoutModel::zOrderList()
-{
-  return mItemZList;
-}
+QList<QgsLayoutItem *> &QgsLayoutModel::zOrderList() { return mItemZList; }
 
 ///@endcond
 
@@ -881,7 +863,7 @@ Qt::ItemFlags QgsLayoutModel::flags( const QModelIndex &index ) const
 {
   Qt::ItemFlags flags = QAbstractItemModel::flags( index );
 
-  if ( ! index.isValid() )
+  if ( !index.isValid() )
   {
     return flags | Qt::ItemIsDropEnabled;
   }
@@ -999,10 +981,7 @@ void QgsLayoutProxyModel::setAllowEmptyItem( bool allowEmpty )
   invalidateFilter();
 }
 
-bool QgsLayoutProxyModel::allowEmptyItem() const
-{
-  return mAllowEmpty;
-}
+bool QgsLayoutProxyModel::allowEmptyItem() const { return mAllowEmpty; }
 
 void QgsLayoutProxyModel::setItemFlags( QgsLayoutItem::Flags flags )
 {
@@ -1010,10 +989,7 @@ void QgsLayoutProxyModel::setItemFlags( QgsLayoutItem::Flags flags )
   invalidateFilter();
 }
 
-QgsLayoutItem::Flags QgsLayoutProxyModel::itemFlags() const
-{
-  return mItemFlags;
-}
+QgsLayoutItem::Flags QgsLayoutProxyModel::itemFlags() const { return mItemFlags; }
 
 void QgsLayoutProxyModel::setFilterType( QgsLayoutItemRegistry::ItemType filter )
 {

@@ -63,10 +63,7 @@ QgsPageSizeRegistry::QgsPageSizeRegistry()
   add( QgsPageSize( u"1024x768"_s, QgsLayoutSize( 768, 1024, Qgis::LayoutUnit::Pixels ), QObject::tr( "1024×768 (4:3)" ) ) );
 }
 
-void QgsPageSizeRegistry::add( const QgsPageSize &size )
-{
-  mPageSizes.append( size );
-}
+void QgsPageSizeRegistry::add( const QgsPageSize &size ) { mPageSizes.append( size ); }
 
 QList<QgsPageSize> QgsPageSizeRegistry::entries() const
 {
@@ -130,28 +127,18 @@ bool QgsPageSizeRegistry::decodePageSize( const QString &pageSizeName, QgsPageSi
 
 QgsPageSize::QgsPageSize()
   : size( QgsLayoutSize( 0.0, 0.0 ) )
-{
-}
+{}
 
 QgsPageSize::QgsPageSize( const QString &pageName, const QgsLayoutSize &pageSize, const QString &displayName )
   : name( pageName )
   , size( pageSize )
   , displayName( displayName )
-{
-}
+{}
 
 QgsPageSize::QgsPageSize( const QgsLayoutSize &pageSize )
-  :  size( pageSize )
-{
+  : size( pageSize )
+{}
 
-}
+bool QgsPageSize::operator==( const QgsPageSize &other ) const { return ( name == other.name && size == other.size ); }
 
-bool QgsPageSize::operator==( const QgsPageSize &other ) const
-{
-  return ( name == other.name && size == other.size );
-}
-
-bool QgsPageSize::operator!=( const QgsPageSize &other ) const
-{
-  return ( ! operator==( other ) );
-}
+bool QgsPageSize::operator!=( const QgsPageSize &other ) const { return ( !operator==( other ) ); }

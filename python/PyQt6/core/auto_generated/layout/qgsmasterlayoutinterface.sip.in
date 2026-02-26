@@ -14,7 +14,7 @@
 #include "qgsreport.h"
 %End
 
-class QgsMasterLayoutInterface
+  class QgsMasterLayoutInterface
 {
 %Docstring(signature="appended")
 Interface for master layout type objects, such as print layouts and
@@ -31,7 +31,7 @@ reports.
         sipType = sipType_QgsPrintLayout;
         *sipCppRet = static_cast<QgsPrintLayout *>( sipCpp );
         break;
-      case  QgsMasterLayoutInterface::Report:
+      case QgsMasterLayoutInterface::Report:
         *sipCppRet = static_cast<QgsReport *>( sipCpp );
         sipType = sipType_QgsReport;
         break;
@@ -115,11 +115,7 @@ or ``False`` if visiting should be canceled.
 
 .. versionadded:: 3.10
 %End
-
 };
-
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

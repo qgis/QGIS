@@ -37,14 +37,12 @@ class QgsReadWriteContext;
  */
 class CORE_EXPORT QgsLayoutGridSettings : public QgsLayoutSerializableObject
 {
-
   public:
-
     //! Style for drawing the page/snapping grid
     enum Style
     {
-      StyleLines, //!< Solid lines
-      StyleDots, //!< Dots
+      StyleLines,  //!< Solid lines
+      StyleDots,   //!< Dots
       StyleCrosses //!< Crosses
     };
 
@@ -68,7 +66,7 @@ class CORE_EXPORT QgsLayoutGridSettings : public QgsLayoutSerializableObject
      * \see setResolution()
      * \see offset()
      */
-    QgsLayoutMeasurement resolution() const { return mGridResolution;}
+    QgsLayoutMeasurement resolution() const { return mGridResolution; }
 
     /**
      * Sets the \a offset of the page/snap grid.
@@ -130,7 +128,6 @@ class CORE_EXPORT QgsLayoutGridSettings : public QgsLayoutSerializableObject
     bool readXml( const QDomElement &gridElement, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
   private:
-
     // Used for 'collapsing' undo commands
     enum UndoCommand
     {
@@ -143,7 +140,6 @@ class CORE_EXPORT QgsLayoutGridSettings : public QgsLayoutSerializableObject
     QPen mGridPen;
     Style mGridStyle = StyleLines;
     QgsLayout *mLayout = nullptr;
-
 };
 
 #endif //QGSLAYOUTGRIDSETTINGS_H

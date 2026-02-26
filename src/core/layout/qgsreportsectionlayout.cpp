@@ -28,10 +28,7 @@ QgsReportSectionLayout::QgsReportSectionLayout( QgsAbstractReportSection *parent
   : QgsAbstractReportSection( parent )
 {}
 
-QIcon QgsReportSectionLayout::icon() const
-{
-  return QgsApplication::getThemeIcon( u"/mIconLayout.svg"_s );
-}
+QIcon QgsReportSectionLayout::icon() const { return QgsApplication::getThemeIcon( u"/mIconLayout.svg"_s ); }
 
 QgsReportSectionLayout *QgsReportSectionLayout::clone() const
 {
@@ -105,4 +102,3 @@ bool QgsReportSectionLayout::readPropertiesFromElement( const QDomElement &eleme
 }
 
 ///@endcond
-

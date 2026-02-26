@@ -39,7 +39,6 @@ using namespace Qt::StringLiterals;
 class CORE_EXPORT QgsLayoutTableColumn
 {
   public:
-
     /**
      * Constructor for QgsLayoutTableColumn.
      * \param heading column heading
@@ -190,33 +189,27 @@ class CORE_EXPORT QgsLayoutTableColumn
      * \returns a new QgsLayoutTableColumn with same properties as this column.
      * \deprecated QGIS 3.14. Use a copy instead.
      */
-    Q_DECL_DEPRECATED QgsLayoutTableColumn *clone() SIP_DEPRECATED SIP_FACTORY {return new QgsLayoutTableColumn( *this );}
+    Q_DECL_DEPRECATED QgsLayoutTableColumn *clone() SIP_DEPRECATED SIP_FACTORY { return new QgsLayoutTableColumn( *this ); }
 
     bool operator==( const QgsLayoutTableColumn &other ) const
     {
-      return mHeading == other.mHeading
-             && mAttribute == other.mAttribute
-             && mSortByRank == other.mSortByRank
-             && mSortOrder == other.mSortOrder
-             && mWidth == other.mWidth
-             && mHAlignment == other.mHAlignment
-             && mVAlignment == other.mVAlignment;
+      return mHeading == other.mHeading && mAttribute == other.mAttribute && mSortByRank == other.mSortByRank && mSortOrder == other.mSortOrder && mWidth == other.mWidth
+             && mHAlignment == other.mHAlignment && mVAlignment == other.mVAlignment;
     }
 
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    QString str;
+    % MethodCode QString str;
     if ( sipCpp->heading() != sipCpp->attribute() && !sipCpp->heading().isEmpty() )
       str = u"<QgsLayoutTableColumn: %1 (\"%2\")>"_s.arg( sipCpp->attribute(), sipCpp->heading() );
     else
       str = u"<QgsLayoutTableColumn: %1>"_s.arg( sipCpp->attribute() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-    % End
+  % End
 #endif
 
-  private:
+    private :
 
     QString mHeading;
     QString mAttribute;
@@ -228,6 +221,5 @@ class CORE_EXPORT QgsLayoutTableColumn
     Qt::AlignmentFlag mVAlignment = Qt::AlignVCenter;
 
     friend class QgsCompositionConverter;
-
 };
 #endif //QGSLAYOUTTABLECOLUMN_H

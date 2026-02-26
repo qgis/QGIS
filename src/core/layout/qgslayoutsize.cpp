@@ -39,29 +39,17 @@ QgsLayoutSize::QgsLayoutSize( const QSizeF size, const Qgis::LayoutUnit units )
   : mWidth( size.width() )
   , mHeight( size.height() )
   , mUnits( units )
-{
-}
+{}
 
 QgsLayoutSize::QgsLayoutSize( const Qgis::LayoutUnit units )
   : mUnits( units )
-{
+{}
 
-}
+bool QgsLayoutSize::isEmpty() const { return qgsDoubleNear( mWidth, 0 ) && qgsDoubleNear( mHeight, 0 ); }
 
-bool QgsLayoutSize::isEmpty() const
-{
-  return qgsDoubleNear( mWidth, 0 ) && qgsDoubleNear( mHeight, 0 );
-}
+QSizeF QgsLayoutSize::toQSizeF() const { return QSizeF( mWidth, mHeight ); }
 
-QSizeF QgsLayoutSize::toQSizeF() const
-{
-  return QSizeF( mWidth, mHeight );
-}
-
-QString QgsLayoutSize::encodeSize() const
-{
-  return u"%1,%2,%3"_s.arg( mWidth ).arg( mHeight ).arg( QgsUnitTypes::encodeUnit( mUnits ) );
-}
+QString QgsLayoutSize::encodeSize() const { return u"%1,%2,%3"_s.arg( mWidth ).arg( mHeight ).arg( QgsUnitTypes::encodeUnit( mUnits ) ); }
 
 QgsLayoutSize QgsLayoutSize::decodeSize( const QString &string )
 {
@@ -79,20 +67,11 @@ QgsLayoutSize QgsLayoutSize::decodeSize( const QString &string )
   return QgsLayoutSize( width, height, QgsUnitTypes::decodeLayoutUnit( parts[2] ) );
 }
 
-bool QgsLayoutSize::operator==( const QgsLayoutSize &other ) const
-{
-  return other.units() == mUnits && qgsDoubleNear( other.width(), mWidth ) && qgsDoubleNear( other.height(), mHeight );
-}
+bool QgsLayoutSize::operator==( const QgsLayoutSize &other ) const { return other.units() == mUnits && qgsDoubleNear( other.width(), mWidth ) && qgsDoubleNear( other.height(), mHeight ); }
 
-bool QgsLayoutSize::operator!=( const QgsLayoutSize &other ) const
-{
-  return ( ! operator==( other ) );
-}
+bool QgsLayoutSize::operator!=( const QgsLayoutSize &other ) const { return ( !operator==( other ) ); }
 
-QgsLayoutSize QgsLayoutSize::operator*( const double v ) const
-{
-  return QgsLayoutSize( mWidth * v, mHeight * v, mUnits );
-}
+QgsLayoutSize QgsLayoutSize::operator*( const double v ) const { return QgsLayoutSize( mWidth * v, mHeight * v, mUnits ); }
 
 QgsLayoutSize QgsLayoutSize::operator*=( const double v )
 {
@@ -100,10 +79,7 @@ QgsLayoutSize QgsLayoutSize::operator*=( const double v )
   return *this;
 }
 
-QgsLayoutSize QgsLayoutSize::operator/( const double v ) const
-{
-  return QgsLayoutSize( mWidth / v, mHeight / v, mUnits );
-}
+QgsLayoutSize QgsLayoutSize::operator/( const double v ) const { return QgsLayoutSize( mWidth / v, mHeight / v, mUnits ); }
 
 QgsLayoutSize QgsLayoutSize::operator/=( const double v )
 {

@@ -21,7 +21,6 @@ layout grids.
 #include "qgslayoutgridsettings.h"
 %End
   public:
-
     enum Style /BaseType=IntEnum/
     {
       StyleLines,

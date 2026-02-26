@@ -47,8 +47,7 @@ QgsLayoutItemShape::QgsLayoutItemShape( QgsLayout *layout )
   mShapeStyleSymbol = QgsFillSymbol::createSimple( properties );
   refreshSymbol( false );
 
-  connect( this, &QgsLayoutItemShape::sizePositionChanged, this, [this]
-  {
+  connect( this, &QgsLayoutItemShape::sizePositionChanged, this, [this] {
     updateBoundingRect();
     update();
     emit clipPathChanged();
@@ -57,15 +56,9 @@ QgsLayoutItemShape::QgsLayoutItemShape( QgsLayout *layout )
 
 QgsLayoutItemShape::~QgsLayoutItemShape() = default;
 
-QgsLayoutItemShape *QgsLayoutItemShape::create( QgsLayout *layout )
-{
-  return new QgsLayoutItemShape( layout );
-}
+QgsLayoutItemShape *QgsLayoutItemShape::create( QgsLayout *layout ) { return new QgsLayoutItemShape( layout ); }
 
-int QgsLayoutItemShape::type() const
-{
-  return QgsLayoutItemRegistry::LayoutShape;
-}
+int QgsLayoutItemShape::type() const { return QgsLayoutItemRegistry::LayoutShape; }
 
 QIcon QgsLayoutItemShape::icon() const
 {
@@ -178,15 +171,9 @@ QgsGeometry QgsLayoutItemShape::clipPath() const
   return QgsGeometry::fromQPolygonF( shapePolygon );
 }
 
-QRectF QgsLayoutItemShape::boundingRect() const
-{
-  return mCurrentRectangle;
-}
+QRectF QgsLayoutItemShape::boundingRect() const { return mCurrentRectangle; }
 
-double QgsLayoutItemShape::estimatedFrameBleed() const
-{
-  return mMaxSymbolBleed;
-}
+double QgsLayoutItemShape::estimatedFrameBleed() const { return mMaxSymbolBleed; }
 
 bool QgsLayoutItemShape::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {

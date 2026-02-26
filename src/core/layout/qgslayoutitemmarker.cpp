@@ -43,8 +43,7 @@ QgsLayoutItemMarker::QgsLayoutItemMarker( QgsLayout *layout )
   mShapeStyleSymbol = QgsMarkerSymbol::createSimple( properties );
   refreshSymbol();
 
-  connect( this, &QgsLayoutItemMarker::sizePositionChanged, this, [this]
-  {
+  connect( this, &QgsLayoutItemMarker::sizePositionChanged, this, [this] {
     updateBoundingRect();
     update();
   } );
@@ -54,20 +53,11 @@ QgsLayoutItemMarker::QgsLayoutItemMarker( QgsLayout *layout )
 
 QgsLayoutItemMarker::~QgsLayoutItemMarker() = default;
 
-QgsLayoutItemMarker *QgsLayoutItemMarker::create( QgsLayout *layout )
-{
-  return new QgsLayoutItemMarker( layout );
-}
+QgsLayoutItemMarker *QgsLayoutItemMarker::create( QgsLayout *layout ) { return new QgsLayoutItemMarker( layout ); }
 
-int QgsLayoutItemMarker::type() const
-{
-  return QgsLayoutItemRegistry::LayoutMarker;
-}
+int QgsLayoutItemMarker::type() const { return QgsLayoutItemRegistry::LayoutMarker; }
 
-QIcon QgsLayoutItemMarker::icon() const
-{
-  return QgsApplication::getThemeIcon( u"/mLayoutItemMarker.svg"_s );
-}
+QIcon QgsLayoutItemMarker::icon() const { return QgsApplication::getThemeIcon( u"/mLayoutItemMarker.svg"_s ); }
 
 void QgsLayoutItemMarker::refreshSymbol()
 {
@@ -80,11 +70,10 @@ void QgsLayoutItemMarker::refreshSymbol()
     sym->startRender( rc );
     QRectF bounds = sym->bounds( QPointF( 0, 0 ), rc );
     sym->stopRender( rc );
-    mPoint = QPointF( -bounds.left() * 25.4 / lLayout->renderContext().dpi(),
-                      -bounds.top() * 25.4 / lLayout->renderContext().dpi() );
+    mPoint = QPointF( -bounds.left() * 25.4 / lLayout->renderContext().dpi(), -bounds.top() * 25.4 / lLayout->renderContext().dpi() );
     bounds.translate( mPoint );
 
-    const QgsLayoutSize newSizeMm = QgsLayoutSize( bounds.size()  * 25.4 / lLayout->renderContext().dpi(), Qgis::LayoutUnit::Millimeters );
+    const QgsLayoutSize newSizeMm = QgsLayoutSize( bounds.size() * 25.4 / lLayout->renderContext().dpi(), Qgis::LayoutUnit::Millimeters );
     mFixedSize = mLayout->renderContext().measurementConverter().convert( newSizeMm, sizeWithUnits().units() );
 
     attemptResize( mFixedSize );
@@ -124,52 +113,23 @@ void QgsLayoutItemMarker::setSymbol( QgsMarkerSymbol *symbol )
   refreshSymbol();
 }
 
-QgsMarkerSymbol *QgsLayoutItemMarker::symbol()
-{
-  return mShapeStyleSymbol.get();
-}
+QgsMarkerSymbol *QgsLayoutItemMarker::symbol() { return mShapeStyleSymbol.get(); }
 
-void QgsLayoutItemMarker::setLinkedMap( QgsLayoutItemMap *map )
-{
-  mNorthArrowHandler->setLinkedMap( map );
-}
+void QgsLayoutItemMarker::setLinkedMap( QgsLayoutItemMap *map ) { mNorthArrowHandler->setLinkedMap( map ); }
 
-QgsLayoutItemMap *QgsLayoutItemMarker::linkedMap() const
-{
-  return mNorthArrowHandler->linkedMap();
-}
+QgsLayoutItemMap *QgsLayoutItemMarker::linkedMap() const { return mNorthArrowHandler->linkedMap(); }
 
-QgsLayoutNorthArrowHandler::NorthMode QgsLayoutItemMarker::northMode() const
-{
-  return mNorthArrowHandler->northMode();
+QgsLayoutNorthArrowHandler::NorthMode QgsLayoutItemMarker::northMode() const { return mNorthArrowHandler->northMode(); }
 
-}
+void QgsLayoutItemMarker::setNorthMode( QgsLayoutNorthArrowHandler::NorthMode mode ) { mNorthArrowHandler->setNorthMode( mode ); }
 
-void QgsLayoutItemMarker::setNorthMode( QgsLayoutNorthArrowHandler::NorthMode mode )
-{
-  mNorthArrowHandler->setNorthMode( mode );
+double QgsLayoutItemMarker::northOffset() const { return mNorthArrowHandler->northOffset(); }
 
-}
+void QgsLayoutItemMarker::setNorthOffset( double offset ) { mNorthArrowHandler->setNorthOffset( offset ); }
 
-double QgsLayoutItemMarker::northOffset() const
-{
-  return mNorthArrowHandler->northOffset();
-}
+QRectF QgsLayoutItemMarker::boundingRect() const { return mCurrentRectangle; }
 
-void QgsLayoutItemMarker::setNorthOffset( double offset )
-{
-  mNorthArrowHandler->setNorthOffset( offset );
-}
-
-QRectF QgsLayoutItemMarker::boundingRect() const
-{
-  return mCurrentRectangle;
-}
-
-QgsLayoutSize QgsLayoutItemMarker::fixedSize() const
-{
-  return mFixedSize;
-}
+QgsLayoutSize QgsLayoutItemMarker::fixedSize() const { return mFixedSize; }
 
 bool QgsLayoutItemMarker::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {

@@ -35,7 +35,6 @@
 class CORE_EXPORT QgsReportSectionContext
 {
   public:
-
     //! Current feature
     QgsFeature feature;
 
@@ -55,7 +54,6 @@ class CORE_EXPORT QgsReportSectionContext
  */
 class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast< QgsReportSectionFieldGroup * >( sipCpp ) )
@@ -64,7 +62,7 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
       sipType = sipType_QgsReportSectionLayout;
     else
       sipType = NULL;
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -149,7 +147,11 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
      *
      * \a ok will be set to FALSE if no bodies remain for this section.
      */
-    virtual QgsLayout *nextBody( bool &ok SIP_OUT ) { ok = false; return nullptr; }
+    virtual QgsLayout *nextBody( bool &ok SIP_OUT )
+    {
+      ok = false;
+      return nullptr;
+    }
 
     /**
      * Returns TRUE if the header for the section is enabled.
@@ -317,15 +319,14 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
   protected:
-
     //! Report sub-sections
     enum SubSection
     {
-      Header, //!< Header for section
-      Body, //!< Body of section
+      Header,   //!< Header for section
+      Body,     //!< Body of section
       Children, //!< Child sections
-      Footer, //!< Footer for section
-      End, //!< End of section (i.e. past all available content)
+      Footer,   //!< Footer for section
+      End,      //!< End of section (i.e. past all available content)
     };
 
     /**
@@ -354,7 +355,6 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
     virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
 
   private:
-
     QgsAbstractReportSection *mParent = nullptr;
 
     int mSectionNumber = 0;

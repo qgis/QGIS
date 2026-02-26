@@ -25,7 +25,6 @@ overviews are drawn and the order they are drawn in.
 #include "qgslayoutitemmapoverview.h"
 %End
   public:
-
     QgsLayoutItemMapOverviewStack( QgsLayoutItemMap *map );
 %Docstring
 Constructor for QgsLayoutItemMapOverviewStack, attached to the specified
@@ -115,7 +114,6 @@ required.
 
 .. versionadded:: 3.6
 %End
-
 };
 
 class QgsLayoutItemMapOverview : QgsLayoutItemMapItem
@@ -132,7 +130,6 @@ An individual overview which is drawn above the map content in a
 #include "qgslayoutitemmapoverview.h"
 %End
   public:
-
     QgsLayoutItemMapOverview( const QString &name, QgsLayoutItemMap *map );
 %Docstring
 Constructor for QgsLayoutItemMapOverview.
@@ -182,12 +179,23 @@ Returns the fill symbol used for drawing the overview extent.
 .. seealso:: :py:func:`setFrameSymbol`
 %End
 
-    QPainter::CompositionMode blendMode() const;
+    const QgsFillSymbol *frameSymbol() const;
+%Docstring
+Returns the fill symbol used for drawing the overview extent.
+
+.. seealso:: :py:func:`setFrameSymbol`
+
+.. note::
+
+   not available in Python bindings
+%End
+    QPainter::CompositionMode
 %Docstring
 Retrieves the blending mode used for drawing the overview.
 
 .. seealso:: :py:func:`setBlendMode`
 %End
+      blendMode() const;
 
     void setBlendMode( QPainter::CompositionMode mode );
 %Docstring

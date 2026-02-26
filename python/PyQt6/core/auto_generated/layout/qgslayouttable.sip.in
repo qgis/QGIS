@@ -21,7 +21,6 @@ typedef QVector<QgsLayoutTableColumn> QgsLayoutTableColumns;
 typedef QVector<QgsLayoutTableColumn> QgsLayoutTableSortColumns;
 
 
-
 class QgsLayoutTableStyle
 {
 %Docstring(signature="appended")
@@ -32,7 +31,6 @@ Styling option for a layout table cell.
 #include "qgslayouttable.h"
 %End
   public:
-
     QgsLayoutTableStyle();
 
     bool enabled;
@@ -58,10 +56,9 @@ Reads the style's properties from XML.
 
 .. seealso:: :py:func:`writeXml`
 %End
-
 };
 
-class QgsLayoutTable: QgsLayoutMultiFrame
+class QgsLayoutTable : QgsLayoutMultiFrame
 {
 %Docstring(signature="appended")
 Displays a table in the print layout, and allows the table to span over
@@ -72,7 +69,6 @@ multiple frames.
 #include "qgslayouttable.h"
 %End
   public:
-
     enum HeaderHAlignment /BaseType=IntEnum/
     {
       FollowColumn,

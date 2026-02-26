@@ -35,7 +35,6 @@ Measurement units are stored alongside the position.
 #include "qgslayoutpoint.h"
 %End
   public:
-
     QgsLayoutPoint( double x, double y, Qgis::LayoutUnit units = Qgis::LayoutUnit::Millimeters );
 %Docstring
 Constructor for QgsLayoutPoint.
@@ -157,11 +156,16 @@ Decodes a point from a ``string``.
     QgsLayoutPoint operator/=( double v );
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    QString str = QStringLiteral( "<QgsLayoutPoint: %1, %2 %3 >" ).arg( sipCpp->x() ).arg( sipCpp->y() ).arg( QgsUnitTypes::toAbbreviatedString( sipCpp->units() ) );
+%MethodCode QString str = QStringLiteral( "<QgsLayoutPoint: %1, %2 %3 >" ).arg( sipCpp->x() ).arg( sipCpp->y() ).arg( QgsUnitTypes::toAbbreviatedString( sipCpp->units() ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
+    private :
+
+    double mX
+    = 0.0;
+    double mY;
+    Qgis::LayoutUnit mUnits;
 };
 
 /************************************************************************

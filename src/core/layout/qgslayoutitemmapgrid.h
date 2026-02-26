@@ -46,7 +46,6 @@ class QgsLineSymbol;
 class CORE_EXPORT QgsLayoutItemMapGridStack : public QgsLayoutItemMapItemStack
 {
   public:
-
     /**
      * Constructor for QgsLayoutItemMapGridStack, attached to the specified \a map.
      */
@@ -138,11 +137,9 @@ class CORE_EXPORT QgsLayoutItemMapGridStack : public QgsLayoutItemMapItemStack
  */
 class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutItemMapGrid.
      * \param name friendly display name for grid
@@ -391,7 +388,8 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \see style()
      * \note not available in Python bindings
      */
-    const QgsLineSymbol *lineSymbol() const; SIP_SKIP
+    const QgsLineSymbol *lineSymbol() const;
+    SIP_SKIP
 
     /**
      * Returns the line symbol used for drawing grid lines. This is only used for grids with
@@ -400,7 +398,8 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \see markerSymbol()
      * \see style()
      */
-    QgsLineSymbol *lineSymbol();
+    QgsLineSymbol *
+      lineSymbol();
 
     /**
      * Sets the marker \a symbol used for drawing grid points. This is only used for grids with a
@@ -420,7 +419,8 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \see style()
      * \note not available in Python bindings
      */
-    const QgsMarkerSymbol *markerSymbol() const; SIP_SKIP
+    const QgsMarkerSymbol *markerSymbol() const;
+    SIP_SKIP
 
     /**
      * Returns the marker symbol used for drawing grid points. This is only used for grids with a
@@ -429,7 +429,8 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \see lineSymbol()
      * \see style()
      */
-    QgsMarkerSymbol *markerSymbol();
+    QgsMarkerSymbol *
+      markerSymbol();
 
     //
     // ANNOTATIONS
@@ -840,7 +841,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \see frameFillColor1()
      * \see frameFillColor2()
      */
-    QColor framePenColor() const {return mGridFramePenColor;}
+    QColor framePenColor() const { return mGridFramePenColor; }
 
     /**
      * Sets the first fill \a color used for the grid frame.
@@ -911,57 +912,56 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     void crsChanged();
 
   private:
-
     QgsLayoutItemMapGrid() = delete;
 
     struct GridExtension
     {
-      GridExtension() = default;
-      double top = 0.0;
-      double right = 0.0;
-      double bottom = 0.0;
-      double left = 0.0;
+        GridExtension() = default;
+        double top = 0.0;
+        double right = 0.0;
+        double bottom = 0.0;
+        double left = 0.0;
 
-      /**
+        /**
        * Updates the specified border of the extension
        */
-      void UpdateBorder( Qgis::MapGridBorderSide border, double value )
-      {
-        switch ( border )
+        void UpdateBorder( Qgis::MapGridBorderSide border, double value )
         {
-          case Qgis::MapGridBorderSide::Left:
-            left = std::max( left, value );
-            break;
-          case Qgis::MapGridBorderSide::Right:
-            right = std::max( right, value );
-            break;
-          case Qgis::MapGridBorderSide::Top:
-            top = std::max( top, value );
-            break;
-          case Qgis::MapGridBorderSide::Bottom:
-            bottom = std::max( bottom, value );
-            break;
+          switch ( border )
+          {
+            case Qgis::MapGridBorderSide::Left:
+              left = std::max( left, value );
+              break;
+            case Qgis::MapGridBorderSide::Right:
+              right = std::max( right, value );
+              break;
+            case Qgis::MapGridBorderSide::Top:
+              top = std::max( top, value );
+              break;
+            case Qgis::MapGridBorderSide::Bottom:
+              bottom = std::max( bottom, value );
+              break;
+          }
         }
-      }
 
-      /**
+        /**
        * Updates all borders of the extension
        */
-      void UpdateAll( double value )
-      {
-        left = std::max( left, value );
-        right = std::max( right, value );
-        top = std::max( top, value );
-        bottom = std::max( bottom, value );
-      }
+        void UpdateAll( double value )
+        {
+          left = std::max( left, value );
+          right = std::max( right, value );
+          top = std::max( top, value );
+          bottom = std::max( bottom, value );
+        }
     };
 
     struct GridLineAnnotation
     {
-      Qgis::MapGridBorderSide border = Qgis::MapGridBorderSide::Left; // border on which the annotation is
-      QVector2D position; // position on the frame
-      QVector2D vector; // vector towards map center
-      double angle = 0; // the (acute) angle formed between the vector and the border
+        Qgis::MapGridBorderSide border = Qgis::MapGridBorderSide::Left; // border on which the annotation is
+        QVector2D position;                                             // position on the frame
+        QVector2D vector;                                               // vector towards map center
+        double angle = 0;                                               // the (acute) angle formed between the vector and the border
     };
 
     /**
@@ -970,11 +970,11 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      */
     struct GridLine
     {
-      QPolygonF line; // the actual line, can be straight with two points or curved if transformed
-      double coordinate; // the coordinate value
-      Qgis::MapGridAnnotationType coordinateType; // whether it's a latitude or longitude line
-      GridLineAnnotation startAnnotation; // the annotation on the start point
-      GridLineAnnotation endAnnotation; // the annotation on the end point
+        QPolygonF line;                             // the actual line, can be straight with two points or curved if transformed
+        double coordinate;                          // the coordinate value
+        Qgis::MapGridAnnotationType coordinateType; // whether it's a latitude or longitude line
+        GridLineAnnotation startAnnotation;         // the annotation on the start point
+        GridLineAnnotation endAnnotation;           // the annotation on the end point
     };
     mutable QList< GridLine > mGridLines;
 
@@ -1203,7 +1203,6 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
 
     // Needs access to evaluated properties to compute frame bleed
     friend class QgsLayoutItemMap;
-
 };
 
 

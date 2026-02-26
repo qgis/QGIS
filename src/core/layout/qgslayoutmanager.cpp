@@ -41,30 +41,15 @@ QgsLayoutManager::QgsLayoutManager( QgsProject *project )
   connect( this, &QgsProjectStoredObjectManagerBase::objectAboutToBeRemoved, this, &QgsLayoutManager::layoutAboutToBeRemoved );
 }
 
-QgsLayoutManager::~QgsLayoutManager()
-{
-  clearObjects();
-}
+QgsLayoutManager::~QgsLayoutManager() { clearObjects(); }
 
-bool QgsLayoutManager::addLayout( QgsMasterLayoutInterface *layout )
-{
-  return addObject( layout );
-}
+bool QgsLayoutManager::addLayout( QgsMasterLayoutInterface *layout ) { return addObject( layout ); }
 
-bool QgsLayoutManager::removeLayout( QgsMasterLayoutInterface *layout )
-{
-  return removeObject( layout );
-}
+bool QgsLayoutManager::removeLayout( QgsMasterLayoutInterface *layout ) { return removeObject( layout ); }
 
-void QgsLayoutManager::clear()
-{
-  clearObjects();
-}
+void QgsLayoutManager::clear() { clearObjects(); }
 
-QList<QgsMasterLayoutInterface *> QgsLayoutManager::layouts() const
-{
-  return mObjects;
-}
+QList<QgsMasterLayoutInterface *> QgsLayoutManager::layouts() const { return mObjects; }
 
 QList<QgsPrintLayout *> QgsLayoutManager::printLayouts() const
 {
@@ -80,10 +65,7 @@ QList<QgsPrintLayout *> QgsLayoutManager::printLayouts() const
   return result;
 }
 
-QgsMasterLayoutInterface *QgsLayoutManager::layoutByName( const QString &name ) const
-{
-  return objectByName( name );
-}
+QgsMasterLayoutInterface *QgsLayoutManager::layoutByName( const QString &name ) const { return objectByName( name ); }
 
 bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &doc )
 {
@@ -139,8 +121,7 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
             l->setName( u"%1 %2"_s.arg( originalName ).arg( id ) );
             id++;
           }
-        }
-        while ( isDuplicateName );
+        } while ( isDuplicateName );
 
         bool added = addLayout( l.release() );
         result = added && result;
@@ -288,16 +269,10 @@ void QgsLayoutManager::setupObjectConnections( QgsMasterLayoutInterface *layout 
   // ugly, but unavoidable for interfaces...
   if ( QgsPrintLayout *l = dynamic_cast< QgsPrintLayout * >( layout ) )
   {
-    connect( l, &QgsPrintLayout::nameChanged, this, [this, l]( const QString & newName )
-    {
-      emit layoutRenamed( l, newName );
-    } );
+    connect( l, &QgsPrintLayout::nameChanged, this, [this, l]( const QString &newName ) { emit layoutRenamed( l, newName ); } );
   }
   else if ( QgsReport *r = dynamic_cast< QgsReport * >( layout ) )
   {
-    connect( r, &QgsReport::nameChanged, this, [this, r]( const QString & newName )
-    {
-      emit layoutRenamed( r, newName );
-    } );
+    connect( r, &QgsReport::nameChanged, this, [this, r]( const QString &newName ) { emit layoutRenamed( r, newName ); } );
   }
 }

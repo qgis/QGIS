@@ -33,9 +33,7 @@ QgsLayoutItemUndoCommand::QgsLayoutItemUndoCommand( QgsLayoutItem *item, const Q
   , mItemUuid( item->uuid() )
   , mLayout( item->layout() )
   , mItemType( item->type() )
-{
-
-}
+{}
 
 bool QgsLayoutItemUndoCommand::mergeWith( const QUndoCommand *command )
 {
@@ -94,15 +92,9 @@ QgsLayoutItem *QgsLayoutItemUndoCommand::recreateItem( int itemType, QgsLayout *
   return item;
 }
 
-QString QgsLayoutItemUndoCommand::itemUuid() const
-{
-  return mItemUuid;
-}
+QString QgsLayoutItemUndoCommand::itemUuid() const { return mItemUuid; }
 
-QgsLayout *QgsLayoutItemUndoCommand::layout() const
-{
-  return mLayout;
-}
+QgsLayout *QgsLayoutItemUndoCommand::layout() const { return mLayout; }
 
 
 //
@@ -115,10 +107,7 @@ QgsLayoutItemDeleteUndoCommand::QgsLayoutItemDeleteUndoCommand( QgsLayoutItem *i
   saveBeforeState();
 }
 
-bool QgsLayoutItemDeleteUndoCommand::mergeWith( const QUndoCommand * )
-{
-  return false;
-}
+bool QgsLayoutItemDeleteUndoCommand::mergeWith( const QUndoCommand * ) { return false; }
 
 void QgsLayoutItemDeleteUndoCommand::redo()
 {
@@ -143,15 +132,9 @@ QgsLayoutItemAddItemCommand::QgsLayoutItemAddItemCommand( QgsLayoutItem *item, c
   saveAfterState();
 }
 
-bool QgsLayoutItemAddItemCommand::containsChange() const
-{
-  return true;
-}
+bool QgsLayoutItemAddItemCommand::containsChange() const { return true; }
 
-bool QgsLayoutItemAddItemCommand::mergeWith( const QUndoCommand * )
-{
-  return false;
-}
+bool QgsLayoutItemAddItemCommand::mergeWith( const QUndoCommand * ) { return false; }
 
 void QgsLayoutItemAddItemCommand::undo()
 {

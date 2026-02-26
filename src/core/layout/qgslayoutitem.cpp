@@ -46,9 +46,7 @@ using namespace Qt::StringLiterals;
 QgsLayoutItemRenderContext::QgsLayoutItemRenderContext( QgsRenderContext &context, double viewScaleFactor )
   : mRenderContext( context )
   , mViewScaleFactor( viewScaleFactor )
-{
-}
-
+{}
 
 
 QgsLayoutItem::QgsLayoutItem( QgsLayout *layout, bool manageZValue )
@@ -86,10 +84,7 @@ QgsLayoutItem::QgsLayoutItem( QgsLayout *layout, bool manageZValue )
   }
 }
 
-QgsLayoutItem::~QgsLayoutItem()
-{
-  QgsLayoutItem::cleanup();
-}
+QgsLayoutItem::~QgsLayoutItem() { QgsLayoutItem::cleanup(); }
 
 void QgsLayoutItem::cleanup()
 {
@@ -116,20 +111,11 @@ QString QgsLayoutItem::displayName() const
   return tr( "<item>" );
 }
 
-int QgsLayoutItem::type() const
-{
-  return QgsLayoutItemRegistry::LayoutItem;
-}
+int QgsLayoutItem::type() const { return QgsLayoutItemRegistry::LayoutItem; }
 
-QIcon QgsLayoutItem::icon() const
-{
-  return QgsApplication::getThemeIcon( u"/mLayoutItem.svg"_s );
-}
+QIcon QgsLayoutItem::icon() const { return QgsApplication::getThemeIcon( u"/mLayoutItem.svg"_s ); }
 
-QgsLayoutItem::Flags QgsLayoutItem::itemFlags() const
-{
-  return QgsLayoutItem::Flags();
-}
+QgsLayoutItem::Flags QgsLayoutItem::itemFlags() const { return QgsLayoutItem::Flags(); }
 
 void QgsLayoutItem::setId( const QString &id )
 {
@@ -222,10 +208,7 @@ void QgsLayoutItem::setLocked( const bool locked )
   emit lockChanged();
 }
 
-bool QgsLayoutItem::isGroupMember() const
-{
-  return !mParentGroupUuid.isEmpty() && mLayout && static_cast< bool >( mLayout->itemByUuid( mParentGroupUuid ) );
-}
+bool QgsLayoutItem::isGroupMember() const { return !mParentGroupUuid.isEmpty() && mLayout && static_cast< bool >( mLayout->itemByUuid( mParentGroupUuid ) ); }
 
 QgsLayoutItemGroup *QgsLayoutItem::parentGroup() const
 {
@@ -244,25 +227,13 @@ void QgsLayoutItem::setParentGroup( QgsLayoutItemGroup *group )
   setFlag( QGraphicsItem::ItemIsSelectable, !static_cast< bool>( group ) ); //item in groups cannot be selected
 }
 
-QgsLayoutItem::ExportLayerBehavior QgsLayoutItem::exportLayerBehavior() const
-{
-  return CanGroupWithAnyOtherItem;
-}
+QgsLayoutItem::ExportLayerBehavior QgsLayoutItem::exportLayerBehavior() const { return CanGroupWithAnyOtherItem; }
 
-int QgsLayoutItem::numberExportLayers() const
-{
-  return 0;
-}
+int QgsLayoutItem::numberExportLayers() const { return 0; }
 
-void QgsLayoutItem::startLayeredExport()
-{
+void QgsLayoutItem::startLayeredExport() {}
 
-}
-
-void QgsLayoutItem::stopLayeredExport()
-{
-
-}
+void QgsLayoutItem::stopLayeredExport() {}
 
 bool QgsLayoutItem::nextExportPart()
 {
@@ -277,10 +248,7 @@ bool QgsLayoutItem::nextExportPart()
   Q_NOWARN_DEPRECATED_POP
 }
 
-QgsLayoutItem::ExportLayerDetail QgsLayoutItem::exportLayerDetails() const
-{
-  return QgsLayoutItem::ExportLayerDetail();
-}
+QgsLayoutItem::ExportLayerDetail QgsLayoutItem::exportLayerDetails() const { return QgsLayoutItem::ExportLayerDetail(); }
 
 void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget * )
 {
@@ -357,8 +325,7 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
       const double cacheScale = destinationDpi / mItemCacheDpi;
       painter->scale( cacheScale / context.scaleFactor(), cacheScale / context.scaleFactor() );
       painter->setCompositionMode( blendMode );
-      painter->drawImage( boundingRect().x() * context.scaleFactor() / cacheScale,
-                          boundingRect().y() * context.scaleFactor() / cacheScale, mItemCachedImage );
+      painter->drawImage( boundingRect().x() * context.scaleFactor() / cacheScale, boundingRect().y() * context.scaleFactor() / cacheScale, mItemCachedImage );
       return;
     }
     else
@@ -393,8 +360,7 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
       // scale painter from mm to dots
       painter->scale( 1.0 / context.scaleFactor(), 1.0 / context.scaleFactor() );
       painter->setCompositionMode( blendMode );
-      painter->drawImage( boundingRect().x() * context.scaleFactor(),
-                          boundingRect().y() * context.scaleFactor(), image );
+      painter->drawImage( boundingRect().x() * context.scaleFactor(), boundingRect().y() * context.scaleFactor(), image );
 
       if ( previewRender )
       {
@@ -600,10 +566,7 @@ void QgsLayoutItem::setScenePos( const QPointF destinationPos )
     setPos( pos() + ( destinationPos - scenePos() ) );
 }
 
-bool QgsLayoutItem::shouldBlockUndoCommands() const
-{
-  return !mLayout || mLayout != scene() || mBlockUndoCommands;
-}
+bool QgsLayoutItem::shouldBlockUndoCommands() const { return !mLayout || mLayout != scene() || mBlockUndoCommands; }
 
 bool QgsLayoutItem::shouldDrawItem() const
 {
@@ -620,10 +583,7 @@ bool QgsLayoutItem::shouldDrawItem() const
   return !mEvaluatedExcludeFromExports;
 }
 
-double QgsLayoutItem::itemRotation() const
-{
-  return mItemRotation;
-}
+double QgsLayoutItem::itemRotation() const { return mItemRotation; }
 
 bool QgsLayoutItem::writeXml( QDomElement &parentElement, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
@@ -839,14 +799,9 @@ bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc
   return result;
 }
 
-void QgsLayoutItem::finalizeRestoreFromXml()
-{
-}
+void QgsLayoutItem::finalizeRestoreFromXml() {}
 
-QgsAbstractLayoutUndoCommand *QgsLayoutItem::createCommand( const QString &text, int id, QUndoCommand *parent )
-{
-  return new QgsLayoutItemUndoCommand( this, text, id, parent );
-}
+QgsAbstractLayoutUndoCommand *QgsLayoutItem::createCommand( const QString &text, int id, QUndoCommand *parent ) { return new QgsLayoutItemUndoCommand( this, text, id, parent ); }
 
 void QgsLayoutItem::setFrameEnabled( bool drawFrame )
 {
@@ -930,10 +885,7 @@ void QgsLayoutItem::setItemOpacity( double opacity )
     invalidateCache();
 }
 
-bool QgsLayoutItem::excludeFromExports() const
-{
-  return mExcludeFromExports;
-}
+bool QgsLayoutItem::excludeFromExports() const { return mExcludeFromExports; }
 
 void QgsLayoutItem::setExcludeFromExports( bool exclude )
 {
@@ -941,16 +893,9 @@ void QgsLayoutItem::setExcludeFromExports( bool exclude )
   refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty::ExcludeFromExports );
 }
 
-bool QgsLayoutItem::containsAdvancedEffects() const
-{
-  return itemFlags() & Flag::FlagOverridesPaint ? false : mEvaluatedOpacity < 1.0;
-}
+bool QgsLayoutItem::containsAdvancedEffects() const { return itemFlags() & Flag::FlagOverridesPaint ? false : mEvaluatedOpacity < 1.0; }
 
-bool QgsLayoutItem::requiresRasterization() const
-{
-  return ( itemFlags() & Flag::FlagOverridesPaint && itemOpacity() < 1.0 ) ||
-         blendMode() != QPainter::CompositionMode_SourceOver;
-}
+bool QgsLayoutItem::requiresRasterization() const { return ( itemFlags() & Flag::FlagOverridesPaint && itemOpacity() < 1.0 ) || blendMode() != QPainter::CompositionMode_SourceOver; }
 
 double QgsLayoutItem::estimatedFrameBleed() const
 {
@@ -968,20 +913,11 @@ QRectF QgsLayoutItem::rectWithFrame() const
   return rect().adjusted( -frameBleed, -frameBleed, frameBleed, frameBleed );
 }
 
-void QgsLayoutItem::moveContent( double, double )
-{
+void QgsLayoutItem::moveContent( double, double ) {}
 
-}
+void QgsLayoutItem::setMoveContentPreviewOffset( double, double ) {}
 
-void QgsLayoutItem::setMoveContentPreviewOffset( double, double )
-{
-
-}
-
-void QgsLayoutItem::zoomContent( double, QPointF )
-{
-
-}
+void QgsLayoutItem::zoomContent( double, QPointF ) {}
 
 void QgsLayoutItem::beginCommand( const QString &commandText, UndoCommand command )
 {
@@ -1054,10 +990,8 @@ QgsLayoutSize QgsLayoutItem::applyDataDefinedSize( const QgsLayoutSize &size )
     return size;
   }
 
-  if ( !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::PresetPaperSize ) &&
-       !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ItemWidth ) &&
-       !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ItemHeight ) &&
-       !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::PaperOrientation ) )
+  if ( !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::PresetPaperSize ) && !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ItemWidth )
+       && !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ItemHeight ) && !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::PaperOrientation ) )
     return size;
 
 
@@ -1114,13 +1048,11 @@ void QgsLayoutItem::refreshDataDefinedProperty( const QgsLayoutObject::DataDefin
   //update data defined properties and update item to match
 
   //evaluate width and height first, since they may affect position if non-top-left reference point set
-  if ( property == QgsLayoutObject::DataDefinedProperty::ItemWidth || property == QgsLayoutObject::DataDefinedProperty::ItemHeight ||
-       property == QgsLayoutObject::DataDefinedProperty::AllProperties )
+  if ( property == QgsLayoutObject::DataDefinedProperty::ItemWidth || property == QgsLayoutObject::DataDefinedProperty::ItemHeight || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     refreshItemSize();
   }
-  if ( property == QgsLayoutObject::DataDefinedProperty::PositionX || property == QgsLayoutObject::DataDefinedProperty::PositionY ||
-       property == QgsLayoutObject::DataDefinedProperty::AllProperties )
+  if ( property == QgsLayoutObject::DataDefinedProperty::PositionX || property == QgsLayoutObject::DataDefinedProperty::PositionY || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     refreshItemPosition();
   }
@@ -1161,8 +1093,7 @@ void QgsLayoutItem::setItemRotation( double angle, const bool adjustPosition )
     angle = std::fmod( angle, 360.0 );
   }
 
-  const QPointF point = adjustPosition ? positionAtReferencePoint( QgsLayoutItem::Middle )
-                        : pos();
+  const QPointF point = adjustPosition ? positionAtReferencePoint( QgsLayoutItem::Middle ) : pos();
   const double rotationRequired = angle - rotation();
   rotateItem( rotationRequired, point );
 
@@ -1186,10 +1117,7 @@ void QgsLayoutItem::rotateItem( const double angle, const QPointF transformOrigi
   refreshItemRotation( &itemTransformOrigin );
 }
 
-bool QgsLayoutItem::isRefreshing() const
-{
-  return false;
-}
+bool QgsLayoutItem::isRefreshing() const { return false; }
 
 QgsExpressionContext QgsLayoutItem::createExpressionContext() const
 {
@@ -1204,10 +1132,7 @@ bool QgsLayoutItem::accept( QgsStyleEntityVisitorInterface *visitor ) const
   return true;
 }
 
-QgsGeometry QgsLayoutItem::clipPath() const
-{
-  return QgsGeometry();
-}
+QgsGeometry QgsLayoutItem::clipPath() const { return QgsGeometry(); }
 
 void QgsLayoutItem::refresh()
 {
@@ -1227,10 +1152,7 @@ void QgsLayoutItem::invalidateCache()
   }
 }
 
-void QgsLayoutItem::redraw()
-{
-  update();
-}
+void QgsLayoutItem::redraw() { update(); }
 
 void QgsLayoutItem::drawDebugRect( QPainter *painter )
 {
@@ -1308,20 +1230,11 @@ void QgsLayoutItem::setMinimumSize( const QgsLayoutSize &size )
   refreshItemSize();
 }
 
-QSizeF QgsLayoutItem::applyItemSizeConstraint( const QSizeF targetSize )
-{
-  return targetSize;
-}
+QSizeF QgsLayoutItem::applyItemSizeConstraint( const QSizeF targetSize ) { return targetSize; }
 
-void QgsLayoutItem::refreshItemSize()
-{
-  attemptResize( mItemSize );
-}
+void QgsLayoutItem::refreshItemSize() { attemptResize( mItemSize ); }
 
-void QgsLayoutItem::refreshItemPosition()
-{
-  attemptMove( mItemPosition );
-}
+void QgsLayoutItem::refreshItemPosition() { attemptMove( mItemPosition ); }
 
 QPointF QgsLayoutItem::itemPositionAtReferencePoint( const ReferencePoint reference, const QSizeF size ) const
 {
@@ -1370,22 +1283,14 @@ QgsLayoutPoint QgsLayoutItem::topLeftToReferencePoint( const QgsLayoutPoint &poi
   return mLayout->convertFromLayoutUnits( refPoint, point.units() );
 }
 
-bool QgsLayoutItem::writePropertiesToElement( QDomElement &, QDomDocument &, const QgsReadWriteContext & ) const
-{
-  return true;
-}
+bool QgsLayoutItem::writePropertiesToElement( QDomElement &, QDomDocument &, const QgsReadWriteContext & ) const { return true; }
 
-bool QgsLayoutItem::readPropertiesFromElement( const QDomElement &, const QDomDocument &, const QgsReadWriteContext & )
-{
-
-  return true;
-}
+bool QgsLayoutItem::readPropertiesFromElement( const QDomElement &, const QDomDocument &, const QgsReadWriteContext & ) { return true; }
 
 void QgsLayoutItem::initConnectionsToLayout()
 {
   if ( !mLayout )
     return;
-
 }
 
 void QgsLayoutItem::preparePainter( QPainter *painter )
@@ -1409,10 +1314,7 @@ bool QgsLayoutItem::shouldDrawAntialiased() const
   return mLayout->renderContext().testFlag( Qgis::LayoutRenderFlag::Antialiasing ) && !mLayout->renderContext().testFlag( Qgis::LayoutRenderFlag::Debug );
 }
 
-bool QgsLayoutItem::shouldDrawDebugRect() const
-{
-  return mLayout && mLayout->renderContext().testFlag( Qgis::LayoutRenderFlag::Debug );
-}
+bool QgsLayoutItem::shouldDrawDebugRect() const { return mLayout && mLayout->renderContext().testFlag( Qgis::LayoutRenderFlag::Debug ); }
 
 QSizeF QgsLayoutItem::applyMinimumSize( const QSizeF targetSize )
 {
@@ -1536,10 +1438,7 @@ void QgsLayoutItem::refreshFrame( bool updateItem )
   }
 }
 
-QColor QgsLayoutItem::backgroundColor( bool useDataDefined ) const
-{
-  return useDataDefined ? brush().color() : mBackgroundColor;
-}
+QColor QgsLayoutItem::backgroundColor( bool useDataDefined ) const { return useDataDefined ? brush().color() : mBackgroundColor; }
 
 
 void QgsLayoutItem::refreshBackgroundColor( bool updateItem )
@@ -1586,4 +1485,3 @@ void QgsLayoutItem::refreshBlendMode()
 
   update();
 }
-

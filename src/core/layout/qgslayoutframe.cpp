@@ -31,37 +31,24 @@ QgsLayoutFrame::QgsLayoutFrame( QgsLayout *layout, QgsLayoutMultiFrame *multiFra
   , mMultiFrame( multiFrame )
   , mMultiFrameUuid( multiFrame ? multiFrame->uuid() : QString() )
 {
-
   //default to no background
   setBackgroundEnabled( false );
 
   if ( multiFrame )
   {
     //repaint frame when multiframe content changes
-    connect( multiFrame, &QgsLayoutMultiFrame::contentsChanged, this, [this]
-    {
-      update();
-    } );
+    connect( multiFrame, &QgsLayoutMultiFrame::contentsChanged, this, [this] { update(); } );
 
     //force recalculation of rect, so that multiframe specified sizes can be applied
     refreshItemSize();
   }
 }
 
-QgsLayoutFrame::~QgsLayoutFrame()
-{
-  QgsLayoutFrame::cleanup();
-}
+QgsLayoutFrame::~QgsLayoutFrame() { QgsLayoutFrame::cleanup(); }
 
-QgsLayoutFrame *QgsLayoutFrame::create( QgsLayout *layout )
-{
-  return new QgsLayoutFrame( layout, nullptr );
-}
+QgsLayoutFrame *QgsLayoutFrame::create( QgsLayout *layout ) { return new QgsLayoutFrame( layout, nullptr ); }
 
-QgsLayoutMultiFrame *QgsLayoutFrame::multiFrame() const
-{
-  return mMultiFrame;
-}
+QgsLayoutMultiFrame *QgsLayoutFrame::multiFrame() const { return mMultiFrame; }
 
 QgsLayoutSize QgsLayoutFrame::minimumSize() const
 {
@@ -85,10 +72,7 @@ QgsLayoutSize QgsLayoutFrame::fixedSize() const
   return QgsLayoutSize( mMultiFrame->fixedFrameSize( frameIndex ), Qgis::LayoutUnit::Millimeters );
 }
 
-int QgsLayoutFrame::type() const
-{
-  return QgsLayoutItemRegistry::LayoutFrame;
-}
+int QgsLayoutFrame::type() const { return QgsLayoutItemRegistry::LayoutFrame; }
 
 QIcon QgsLayoutFrame::icon() const
 {
@@ -98,10 +82,7 @@ QIcon QgsLayoutFrame::icon() const
     return QIcon();
 }
 
-void QgsLayoutFrame::setHidePageIfEmpty( const bool hidePageIfEmpty )
-{
-  mHidePageIfEmpty = hidePageIfEmpty;
-}
+void QgsLayoutFrame::setHidePageIfEmpty( const bool hidePageIfEmpty ) { mHidePageIfEmpty = hidePageIfEmpty; }
 
 void QgsLayoutFrame::setHideBackgroundIfEmpty( const bool hideBackgroundIfEmpty )
 {
@@ -129,7 +110,6 @@ bool QgsLayoutFrame::isEmpty() const
   }
 
   return false;
-
 }
 
 QgsExpressionContext QgsLayoutFrame::createExpressionContext() const
@@ -146,10 +126,7 @@ QgsExpressionContext QgsLayoutFrame::createExpressionContext() const
   return context;
 }
 
-QgsLayoutItem::ExportLayerBehavior QgsLayoutFrame::exportLayerBehavior() const
-{
-  return CanGroupWithItemsOfSameType;
-}
+QgsLayoutItem::ExportLayerBehavior QgsLayoutFrame::exportLayerBehavior() const { return CanGroupWithItemsOfSameType; }
 
 QString QgsLayoutFrame::displayName() const
 {
@@ -226,7 +203,7 @@ bool QgsLayoutFrame::readPropertiesFromElement( const QDomElement &itemElem, con
   mHideBackgroundIfEmpty = itemElem.attribute( u"hideBackgroundIfEmpty"_s, u"0"_s ).toInt();
 
   mMultiFrameUuid = itemElem.attribute( u"multiFrame"_s );
-  if ( mMultiFrameUuid.isEmpty( ) )
+  if ( mMultiFrameUuid.isEmpty() )
   {
     mMultiFrameUuid = itemElem.attribute( u"multiFrameTemplateUuid"_s );
   }

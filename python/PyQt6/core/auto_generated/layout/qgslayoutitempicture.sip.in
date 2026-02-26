@@ -10,7 +10,7 @@
 
 
 
-class QgsLayoutItemPicture: QgsLayoutItem
+class QgsLayoutItemPicture : QgsLayoutItem
 {
 %Docstring(signature="appended")
 A layout item subclass that displays SVG files or raster format images
@@ -21,7 +21,6 @@ A layout item subclass that displays SVG files or raster format images
 #include "qgslayoutitempicture.h"
 %End
   public:
-
     enum ResizeMode /BaseType=IntEnum/
     {
       Zoom,
@@ -357,7 +356,6 @@ Emitted on picture rotation change
 %End
 
   protected:
-
     virtual void draw( QgsLayoutItemRenderContext &context );
 
     virtual QSizeF applyItemSizeConstraint( QSizeF targetSize );

@@ -61,20 +61,11 @@ QgsLayoutItemScaleBar::QgsLayoutItemScaleBar( QgsLayout *layout )
   applyDefaultSize();
 }
 
-int QgsLayoutItemScaleBar::type() const
-{
-  return QgsLayoutItemRegistry::LayoutScaleBar;
-}
+int QgsLayoutItemScaleBar::type() const { return QgsLayoutItemRegistry::LayoutScaleBar; }
 
-QIcon QgsLayoutItemScaleBar::icon() const
-{
-  return QgsApplication::getThemeIcon( u"/mLayoutItemScaleBar.svg"_s );
-}
+QIcon QgsLayoutItemScaleBar::icon() const { return QgsApplication::getThemeIcon( u"/mLayoutItemScaleBar.svg"_s ); }
 
-QgsLayoutItemScaleBar *QgsLayoutItemScaleBar::create( QgsLayout *layout )
-{
-  return new QgsLayoutItemScaleBar( layout );
-}
+QgsLayoutItemScaleBar *QgsLayoutItemScaleBar::create( QgsLayout *layout ) { return new QgsLayoutItemScaleBar( layout ); }
 
 QgsLayoutSize QgsLayoutItemScaleBar::minimumSize() const
 {
@@ -111,9 +102,8 @@ void QgsLayoutItemScaleBar::draw( QgsLayoutItemRenderContext &context )
       painter->setPen( QColor( 200, 0, 0, 255 ) );
       QTextDocument td;
       td.setTextWidth( thisPaintRect.width() );
-      td.setHtml( u"<span style=\"color: rgb(200,0,0);\"><b>%1</b><br>%2</span>"_s.arg(
-                    tr( "Invalid scale!" ),
-                    tr( "The scale bar cannot be rendered due to invalid settings or an incompatible linked map extent." ) ) );
+      td.setHtml( u"<span style=\"color: rgb(200,0,0);\"><b>%1</b><br>%2</span>"_s
+                    .arg( tr( "Invalid scale!" ), tr( "The scale bar cannot be rendered due to invalid settings or an incompatible linked map extent." ) ) );
       painter->setClipRect( thisPaintRect );
       QAbstractTextDocumentLayout::PaintContext ctx;
       td.documentLayout()->draw( painter, ctx );
@@ -218,10 +208,7 @@ void QgsLayoutItemScaleBar::setMaximumBarWidth( double maxWidth )
   resizeToMinimumWidth();
 }
 
-QgsTextFormat QgsLayoutItemScaleBar::textFormat() const
-{
-  return mSettings.textFormat();
-}
+QgsTextFormat QgsLayoutItemScaleBar::textFormat() const { return mSettings.textFormat(); }
 
 void QgsLayoutItemScaleBar::setTextFormat( const QgsTextFormat &format )
 {
@@ -230,55 +217,25 @@ void QgsLayoutItemScaleBar::setTextFormat( const QgsTextFormat &format )
   emit changed();
 }
 
-QgsLineSymbol *QgsLayoutItemScaleBar::lineSymbol() const
-{
-  return mSettings.lineSymbol();
-}
+QgsLineSymbol *QgsLayoutItemScaleBar::lineSymbol() const { return mSettings.lineSymbol(); }
 
-void QgsLayoutItemScaleBar::setLineSymbol( QgsLineSymbol *symbol )
-{
-  mSettings.setLineSymbol( symbol );
-}
+void QgsLayoutItemScaleBar::setLineSymbol( QgsLineSymbol *symbol ) { mSettings.setLineSymbol( symbol ); }
 
-QgsLineSymbol *QgsLayoutItemScaleBar::divisionLineSymbol() const
-{
-  return mSettings.divisionLineSymbol();
-}
+QgsLineSymbol *QgsLayoutItemScaleBar::divisionLineSymbol() const { return mSettings.divisionLineSymbol(); }
 
-void QgsLayoutItemScaleBar::setDivisionLineSymbol( QgsLineSymbol *symbol )
-{
-  mSettings.setDivisionLineSymbol( symbol );
-}
+void QgsLayoutItemScaleBar::setDivisionLineSymbol( QgsLineSymbol *symbol ) { mSettings.setDivisionLineSymbol( symbol ); }
 
-QgsLineSymbol *QgsLayoutItemScaleBar::subdivisionLineSymbol() const
-{
-  return mSettings.subdivisionLineSymbol();
-}
+QgsLineSymbol *QgsLayoutItemScaleBar::subdivisionLineSymbol() const { return mSettings.subdivisionLineSymbol(); }
 
-void QgsLayoutItemScaleBar::setSubdivisionLineSymbol( QgsLineSymbol *symbol )
-{
-  mSettings.setSubdivisionLineSymbol( symbol );
-}
+void QgsLayoutItemScaleBar::setSubdivisionLineSymbol( QgsLineSymbol *symbol ) { mSettings.setSubdivisionLineSymbol( symbol ); }
 
-QgsFillSymbol *QgsLayoutItemScaleBar::fillSymbol() const
-{
-  return mSettings.fillSymbol();
-}
+QgsFillSymbol *QgsLayoutItemScaleBar::fillSymbol() const { return mSettings.fillSymbol(); }
 
-void QgsLayoutItemScaleBar::setFillSymbol( QgsFillSymbol *symbol )
-{
-  mSettings.setFillSymbol( symbol );
-}
+void QgsLayoutItemScaleBar::setFillSymbol( QgsFillSymbol *symbol ) { mSettings.setFillSymbol( symbol ); }
 
-QgsFillSymbol *QgsLayoutItemScaleBar::alternateFillSymbol() const
-{
-  return mSettings.alternateFillSymbol();
-}
+QgsFillSymbol *QgsLayoutItemScaleBar::alternateFillSymbol() const { return mSettings.alternateFillSymbol(); }
 
-void QgsLayoutItemScaleBar::setAlternateFillSymbol( QgsFillSymbol *symbol )
-{
-  mSettings.setAlternateFillSymbol( symbol );
-}
+void QgsLayoutItemScaleBar::setAlternateFillSymbol( QgsFillSymbol *symbol ) { mSettings.setAlternateFillSymbol( symbol ); }
 
 void QgsLayoutItemScaleBar::setNumberOfSegmentsLeft( int nSegmentsLeft )
 {
@@ -332,10 +289,7 @@ void QgsLayoutItemScaleBar::disconnectCurrentMap()
   mMap = nullptr;
 }
 
-Qgis::ScaleCalculationMethod QgsLayoutItemScaleBar::method() const
-{
-  return mMethod;
-}
+Qgis::ScaleCalculationMethod QgsLayoutItemScaleBar::method() const { return mMethod; }
 
 void QgsLayoutItemScaleBar::setMethod( Qgis::ScaleCalculationMethod method )
 {
@@ -492,7 +446,7 @@ void QgsLayoutItemScaleBar::refreshDataDefinedProperty( const QgsLayoutObject::D
     forceUpdate = true;
   }
 
-  if ( property ==  QgsLayoutObject::DataDefinedProperty::ScalebarLeftSegments || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
+  if ( property == QgsLayoutObject::DataDefinedProperty::ScalebarLeftSegments || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     refreshNumberOfSegmentsLeft( &context );
     forceUpdate = true;
@@ -677,8 +631,7 @@ double QgsLayoutItemScaleBar::mapWidth() const
     {
       try
       {
-        double measure = da.measureLine( QgsPointXY( mapExtent.xMinimum(), y ),
-                                         QgsPointXY( mapExtent.xMaximum(), y ) );
+        double measure = da.measureLine( QgsPointXY( mapExtent.xMinimum(), y ), QgsPointXY( mapExtent.xMaximum(), y ) );
         if ( std::isnan( measure ) )
         {
           // TODO report errors to user
@@ -815,10 +768,7 @@ void QgsLayoutItemScaleBar::applyDefaultSettings()
   emit changed();
 }
 
-bool QgsLayoutItemScaleBar::applyDefaultRendererSettings( QgsScaleBarRenderer *renderer )
-{
-  return renderer->applyDefaultSettings( mSettings );
-}
+bool QgsLayoutItemScaleBar::applyDefaultRendererSettings( QgsScaleBarRenderer *renderer ) { return renderer->applyDefaultSettings( mSettings ); }
 
 Qgis::DistanceUnit QgsLayoutItemScaleBar::guessUnits() const
 {
@@ -966,20 +916,11 @@ QString QgsLayoutItemScaleBar::style() const
   }
 }
 
-const QgsNumericFormat *QgsLayoutItemScaleBar::numericFormat() const
-{
-  return mSettings.numericFormat();
-}
+const QgsNumericFormat *QgsLayoutItemScaleBar::numericFormat() const { return mSettings.numericFormat(); }
 
-void QgsLayoutItemScaleBar::setNumericFormat( QgsNumericFormat *format )
-{
-  mSettings.setNumericFormat( format );
-}
+void QgsLayoutItemScaleBar::setNumericFormat( QgsNumericFormat *format ) { mSettings.setNumericFormat( format ); }
 
-QFont QgsLayoutItemScaleBar::font() const
-{
-  return mSettings.textFormat().font();
-}
+QFont QgsLayoutItemScaleBar::font() const { return mSettings.textFormat().font(); }
 
 void QgsLayoutItemScaleBar::setFont( const QFont &font )
 {
@@ -1164,42 +1105,27 @@ bool QgsLayoutItemScaleBar::writePropertiesToElement( QDomElement &composerScale
   composerScaleBarElem.setAttribute( u"alignment"_s, QString::number( static_cast< int >( mSettings.alignment() ) ) );
 
   QDomElement lineSymbol = doc.createElement( u"lineSymbol"_s );
-  const QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QString(),
-                                 mSettings.lineSymbol(),
-                                 doc,
-                                 rwContext );
+  const QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QString(), mSettings.lineSymbol(), doc, rwContext );
   lineSymbol.appendChild( symbolElem );
   composerScaleBarElem.appendChild( lineSymbol );
 
   QDomElement divisionSymbol = doc.createElement( u"divisionLineSymbol"_s );
-  const QDomElement divisionSymbolElem = QgsSymbolLayerUtils::saveSymbol( QString(),
-                                         mSettings.divisionLineSymbol(),
-                                         doc,
-                                         rwContext );
+  const QDomElement divisionSymbolElem = QgsSymbolLayerUtils::saveSymbol( QString(), mSettings.divisionLineSymbol(), doc, rwContext );
   divisionSymbol.appendChild( divisionSymbolElem );
   composerScaleBarElem.appendChild( divisionSymbol );
 
   QDomElement subdivisionSymbol = doc.createElement( u"subdivisionLineSymbol"_s );
-  const QDomElement subdivisionSymbolElem = QgsSymbolLayerUtils::saveSymbol( QString(),
-      mSettings.subdivisionLineSymbol(),
-      doc,
-      rwContext );
+  const QDomElement subdivisionSymbolElem = QgsSymbolLayerUtils::saveSymbol( QString(), mSettings.subdivisionLineSymbol(), doc, rwContext );
   subdivisionSymbol.appendChild( subdivisionSymbolElem );
   composerScaleBarElem.appendChild( subdivisionSymbol );
 
   QDomElement fillSymbol1Elem = doc.createElement( u"fillSymbol1"_s );
-  const QDomElement symbol1Elem = QgsSymbolLayerUtils::saveSymbol( QString(),
-                                  mSettings.fillSymbol(),
-                                  doc,
-                                  rwContext );
+  const QDomElement symbol1Elem = QgsSymbolLayerUtils::saveSymbol( QString(), mSettings.fillSymbol(), doc, rwContext );
   fillSymbol1Elem.appendChild( symbol1Elem );
   composerScaleBarElem.appendChild( fillSymbol1Elem );
 
   QDomElement fillSymbol2Elem = doc.createElement( u"fillSymbol2"_s );
-  const QDomElement symbol2Elem = QgsSymbolLayerUtils::saveSymbol( QString(),
-                                  mSettings.alternateFillSymbol(),
-                                  doc,
-                                  rwContext );
+  const QDomElement symbol2Elem = QgsSymbolLayerUtils::saveSymbol( QString(), mSettings.alternateFillSymbol(), doc, rwContext );
   fillSymbol2Elem.appendChild( symbol2Elem );
   composerScaleBarElem.appendChild( fillSymbol2Elem );
 
@@ -1449,7 +1375,6 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
 
     fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
     mSettings.setAlternateFillSymbol( fillSymbol.release() );
-
   }
 
   //font color
@@ -1546,7 +1471,4 @@ bool QgsLayoutItemScaleBar::accept( QgsStyleEntityVisitorInterface *visitor ) co
   return true;
 }
 
-QgsLayoutItem::ExportLayerBehavior QgsLayoutItemScaleBar::exportLayerBehavior() const
-{
-  return CanGroupWithItemsOfSameType;
-}
+QgsLayoutItem::ExportLayerBehavior QgsLayoutItemScaleBar::exportLayerBehavior() const { return CanGroupWithItemsOfSameType; }

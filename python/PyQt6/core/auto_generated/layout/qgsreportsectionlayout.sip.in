@@ -26,7 +26,6 @@ A report section consisting of a single :py:class:`QgsLayout` body.
 #include "qgsreportsectionlayout.h"
 %End
   public:
-
     QgsReportSectionLayout( QgsAbstractReportSection *parentSection = 0 );
 %Docstring
 Constructor for QgsReportSectionLayout, attached to the specified
@@ -94,7 +93,6 @@ Sets whether the body for the section is ``enabled``.
 
 
   protected:
-
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
     virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );

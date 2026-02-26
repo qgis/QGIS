@@ -33,9 +33,7 @@ QgsLayoutMultiFrameUndoCommand::QgsLayoutMultiFrameUndoCommand( QgsLayoutMultiFr
   , mFrameUuid( frame->uuid() )
   , mLayout( frame->layout() )
   , mItemType( frame->type() )
-{
-
-}
+{}
 
 bool QgsLayoutMultiFrameUndoCommand::mergeWith( const QUndoCommand *command )
 {
@@ -88,15 +86,9 @@ QgsLayoutMultiFrame *QgsLayoutMultiFrameUndoCommand::recreateItem( int itemType,
   return item;
 }
 
-QString QgsLayoutMultiFrameUndoCommand::multiFrameUuid() const
-{
-  return mFrameUuid;
-}
+QString QgsLayoutMultiFrameUndoCommand::multiFrameUuid() const { return mFrameUuid; }
 
-QgsLayout *QgsLayoutMultiFrameUndoCommand::layout() const
-{
-  return mLayout;
-}
+QgsLayout *QgsLayoutMultiFrameUndoCommand::layout() const { return mLayout; }
 
 
 //
@@ -109,10 +101,7 @@ QgsLayoutMultiFrameDeleteUndoCommand::QgsLayoutMultiFrameDeleteUndoCommand( QgsL
   saveBeforeState();
 }
 
-bool QgsLayoutMultiFrameDeleteUndoCommand::mergeWith( const QUndoCommand * )
-{
-  return false;
-}
+bool QgsLayoutMultiFrameDeleteUndoCommand::mergeWith( const QUndoCommand * ) { return false; }
 
 void QgsLayoutMultiFrameDeleteUndoCommand::redo()
 {
@@ -138,15 +127,9 @@ QgsLayoutMultiFrameAddItemCommand::QgsLayoutMultiFrameAddItemCommand( QgsLayoutM
   saveAfterState();
 }
 
-bool QgsLayoutMultiFrameAddItemCommand::containsChange() const
-{
-  return true;
-}
+bool QgsLayoutMultiFrameAddItemCommand::containsChange() const { return true; }
 
-bool QgsLayoutMultiFrameAddItemCommand::mergeWith( const QUndoCommand * )
-{
-  return false;
-}
+bool QgsLayoutMultiFrameAddItemCommand::mergeWith( const QUndoCommand * ) { return false; }
 
 void QgsLayoutMultiFrameAddItemCommand::undo()
 {

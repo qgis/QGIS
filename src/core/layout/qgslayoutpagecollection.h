@@ -43,11 +43,9 @@ class QgsMargins;
  */
 class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSerializableObject
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutItemPage, with the specified parent \a layout.
      */
@@ -423,7 +421,6 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
     void pageAboutToBeRemoved( int pageNumber );
 
   private:
-
     QgsLayout *mLayout = nullptr;
 
     std::unique_ptr< QgsLayoutGuideCollection > mGuideCollection;

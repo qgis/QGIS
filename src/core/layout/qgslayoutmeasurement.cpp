@@ -28,13 +28,9 @@ using namespace Qt::StringLiterals;
 QgsLayoutMeasurement::QgsLayoutMeasurement( const double length, const Qgis::LayoutUnit units )
   : mLength( length )
   , mUnits( units )
-{
-}
+{}
 
-QString QgsLayoutMeasurement::encodeMeasurement() const
-{
-  return u"%1,%2"_s.arg( mLength ).arg( QgsUnitTypes::encodeUnit( mUnits ) );
-}
+QString QgsLayoutMeasurement::encodeMeasurement() const { return u"%1,%2"_s.arg( mLength ).arg( QgsUnitTypes::encodeUnit( mUnits ) ); }
 
 QgsLayoutMeasurement QgsLayoutMeasurement::decodeMeasurement( const QString &string )
 {
@@ -46,20 +42,11 @@ QgsLayoutMeasurement QgsLayoutMeasurement::decodeMeasurement( const QString &str
   return QgsLayoutMeasurement( parts[0].toDouble(), QgsUnitTypes::decodeLayoutUnit( parts[1] ) );
 }
 
-bool QgsLayoutMeasurement::operator==( const QgsLayoutMeasurement other ) const
-{
-  return other.units() == mUnits && qgsDoubleNear( other.length(), mLength );
-}
+bool QgsLayoutMeasurement::operator==( const QgsLayoutMeasurement other ) const { return other.units() == mUnits && qgsDoubleNear( other.length(), mLength ); }
 
-bool QgsLayoutMeasurement::operator!=( const QgsLayoutMeasurement other ) const
-{
-  return ( ! operator==( other ) );
-}
+bool QgsLayoutMeasurement::operator!=( const QgsLayoutMeasurement other ) const { return ( !operator==( other ) ); }
 
-QgsLayoutMeasurement QgsLayoutMeasurement::operator+( const double v ) const
-{
-  return QgsLayoutMeasurement( mLength + v, mUnits );
-}
+QgsLayoutMeasurement QgsLayoutMeasurement::operator+( const double v ) const { return QgsLayoutMeasurement( mLength + v, mUnits ); }
 
 QgsLayoutMeasurement QgsLayoutMeasurement::operator+=( const double v )
 {
@@ -67,10 +54,7 @@ QgsLayoutMeasurement QgsLayoutMeasurement::operator+=( const double v )
   return *this;
 }
 
-QgsLayoutMeasurement QgsLayoutMeasurement::operator-( const double v ) const
-{
-  return QgsLayoutMeasurement( mLength - v, mUnits );
-}
+QgsLayoutMeasurement QgsLayoutMeasurement::operator-( const double v ) const { return QgsLayoutMeasurement( mLength - v, mUnits ); }
 
 QgsLayoutMeasurement QgsLayoutMeasurement::operator-=( const double v )
 {
@@ -78,10 +62,7 @@ QgsLayoutMeasurement QgsLayoutMeasurement::operator-=( const double v )
   return *this;
 }
 
-QgsLayoutMeasurement QgsLayoutMeasurement::operator*( const double v ) const
-{
-  return QgsLayoutMeasurement( mLength * v, mUnits );
-}
+QgsLayoutMeasurement QgsLayoutMeasurement::operator*( const double v ) const { return QgsLayoutMeasurement( mLength * v, mUnits ); }
 
 QgsLayoutMeasurement QgsLayoutMeasurement::operator*=( const double v )
 {
@@ -89,10 +70,7 @@ QgsLayoutMeasurement QgsLayoutMeasurement::operator*=( const double v )
   return *this;
 }
 
-QgsLayoutMeasurement QgsLayoutMeasurement::operator/( const double v ) const
-{
-  return QgsLayoutMeasurement( mLength / v, mUnits );
-}
+QgsLayoutMeasurement QgsLayoutMeasurement::operator/( const double v ) const { return QgsLayoutMeasurement( mLength / v, mUnits ); }
 
 QgsLayoutMeasurement QgsLayoutMeasurement::operator/=( const double v )
 {

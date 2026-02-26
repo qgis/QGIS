@@ -31,10 +31,7 @@ QgsReport::QgsReport( QgsProject *project )
   , mProject( project )
 {}
 
-QIcon QgsReport::icon() const
-{
-  return QgsApplication::getThemeIcon( u"mIconReport.svg"_s );
-}
+QIcon QgsReport::icon() const { return QgsApplication::getThemeIcon( u"mIconReport.svg"_s ); }
 
 QgsReport *QgsReport::clone() const
 {
@@ -68,19 +65,10 @@ bool QgsReport::readLayoutXml( const QDomElement &layoutElement, const QDomDocum
   return true;
 }
 
-void QgsReport::updateSettings()
-{
-  reloadSettings();
-}
+void QgsReport::updateSettings() { reloadSettings(); }
 
-bool QgsReport::layoutAccept( QgsStyleEntityVisitorInterface *visitor ) const
-{
-  return accept( visitor );
-}
+bool QgsReport::layoutAccept( QgsStyleEntityVisitorInterface *visitor ) const { return accept( visitor ); }
 
-QgsMasterLayoutInterface::Type QgsReport::layoutType() const
-{
-  return QgsMasterLayoutInterface::Report;
-}
+QgsMasterLayoutInterface::Type QgsReport::layoutType() const { return QgsMasterLayoutInterface::Report; }
 
 ///@endcond

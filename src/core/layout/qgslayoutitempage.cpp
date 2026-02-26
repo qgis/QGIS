@@ -44,8 +44,7 @@ QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
   setFlag( QGraphicsItem::ItemIsMovable, false );
   setZValue( QgsLayout::ZPage );
 
-  connect( this, &QgsLayoutItem::sizePositionChanged, this, [this]
-  {
+  connect( this, &QgsLayoutItem::sizePositionChanged, this, [this] {
     prepareGeometryChange();
     mBoundingRect = QRectF();
   } );
@@ -62,25 +61,13 @@ QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
 
 QgsLayoutItemPage::~QgsLayoutItemPage() = default;
 
-QgsLayoutItemPage *QgsLayoutItemPage::create( QgsLayout *layout )
-{
-  return new QgsLayoutItemPage( layout );
-}
+QgsLayoutItemPage *QgsLayoutItemPage::create( QgsLayout *layout ) { return new QgsLayoutItemPage( layout ); }
 
-int QgsLayoutItemPage::type() const
-{
-  return QgsLayoutItemRegistry::LayoutPage;
-}
+int QgsLayoutItemPage::type() const { return QgsLayoutItemRegistry::LayoutPage; }
 
-QString QgsLayoutItemPage::displayName() const
-{
-  return QObject::tr( "Page" );
-}
+QString QgsLayoutItemPage::displayName() const { return QObject::tr( "Page" ); }
 
-void QgsLayoutItemPage::setPageSize( const QgsLayoutSize &size )
-{
-  attemptResize( size );
-}
+void QgsLayoutItemPage::setPageSize( const QgsLayoutSize &size ) { attemptResize( size ); }
 
 bool QgsLayoutItemPage::setPageSize( const QString &size, Orientation orientation )
 {
@@ -114,7 +101,7 @@ bool QgsLayoutItemPage::setPageSize( const QString &size, Orientation orientatio
 QPageLayout QgsLayoutItemPage::pageLayout() const
 {
   QPageLayout pageLayout;
-  pageLayout.setMargins( {0, 0, 0, 0} );
+  pageLayout.setMargins( { 0, 0, 0, 0 } );
   pageLayout.setMode( QPageLayout::FullPageMode );
   const QSizeF size = layout()->renderContext().measurementConverter().convert( pageSize(), Qgis::LayoutUnit::Millimeters ).toQSizeF();
 
@@ -132,10 +119,7 @@ QPageLayout QgsLayoutItemPage::pageLayout() const
   return pageLayout;
 }
 
-QgsLayoutSize QgsLayoutItemPage::pageSize() const
-{
-  return sizeWithUnits();
-}
+QgsLayoutSize QgsLayoutItemPage::pageSize() const { return sizeWithUnits(); }
 
 QgsLayoutItemPage::Orientation QgsLayoutItemPage::orientation() const
 {
@@ -203,12 +187,10 @@ void QgsLayoutItemPage::createDefaultPageStyleSymbol()
 }
 
 
-
 ///@cond PRIVATE
-class QgsLayoutItemPageUndoCommand: public QgsLayoutItemUndoCommand
+class QgsLayoutItemPageUndoCommand : public QgsLayoutItemUndoCommand
 {
   public:
-
     QgsLayoutItemPageUndoCommand( QgsLayoutItemPage *page, const QString &text, int id = 0, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr )
       : QgsLayoutItemUndoCommand( page, text, id, parent )
     {}
@@ -220,7 +202,6 @@ class QgsLayoutItemPageUndoCommand: public QgsLayoutItemUndoCommand
     }
 
   protected:
-
     QgsLayoutItem *recreateItem( int, QgsLayout *layout ) override
     {
       QgsLayoutItemPage *page = new QgsLayoutItemPage( layout );
@@ -230,15 +211,9 @@ class QgsLayoutItemPageUndoCommand: public QgsLayoutItemUndoCommand
 };
 ///@endcond
 
-QgsAbstractLayoutUndoCommand *QgsLayoutItemPage::createCommand( const QString &text, int id, QUndoCommand *parent )
-{
-  return new QgsLayoutItemPageUndoCommand( this, text, id, parent );
-}
+QgsAbstractLayoutUndoCommand *QgsLayoutItemPage::createCommand( const QString &text, int id, QUndoCommand *parent ) { return new QgsLayoutItemPageUndoCommand( this, text, id, parent ); }
 
-QgsLayoutItem::ExportLayerBehavior QgsLayoutItemPage::exportLayerBehavior() const
-{
-  return CanGroupWithItemsOfSameType;
-}
+QgsLayoutItem::ExportLayerBehavior QgsLayoutItemPage::exportLayerBehavior() const { return CanGroupWithItemsOfSameType; }
 
 bool QgsLayoutItemPage::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
@@ -280,8 +255,9 @@ void QgsLayoutItemPage::draw( QgsLayoutItemRenderContext &context )
     //shadow
     painter->setBrush( QBrush( QColor( 150, 150, 150 ) ) );
     painter->setPen( Qt::NoPen );
-    painter->drawRect( pageRect.translated( std::min( scale * mLayout->pageCollection()->pageShadowWidth(), mMaximumShadowWidth ),
-                                            std::min( scale * mLayout->pageCollection()->pageShadowWidth(), mMaximumShadowWidth ) ) );
+    painter->drawRect(
+      pageRect.translated( std::min( scale * mLayout->pageCollection()->pageShadowWidth(), mMaximumShadowWidth ), std::min( scale * mLayout->pageCollection()->pageShadowWidth(), mMaximumShadowWidth ) )
+    );
 
     //page area
     painter->setBrush( QColor( 215, 215, 215 ) );
@@ -309,8 +285,7 @@ void QgsLayoutItemPage::draw( QgsLayoutItemRenderContext &context )
     }
 
     // round up
-    const QPolygonF pagePolygon = QPolygonF( QRectF( maxBleedPixels, maxBleedPixels,
-                                  std::ceil( rect().width() * scale ) - 2 * maxBleedPixels, std::ceil( rect().height() * scale ) - 2 * maxBleedPixels ) );
+    const QPolygonF pagePolygon = QPolygonF( QRectF( maxBleedPixels, maxBleedPixels, std::ceil( rect().width() * scale ) - 2 * maxBleedPixels, std::ceil( rect().height() * scale ) - 2 * maxBleedPixels ) );
     const QVector<QPolygonF> rings; //empty list
 
     symbol->renderPolygon( pagePolygon, &rings, nullptr, context.renderContext() );
@@ -318,11 +293,9 @@ void QgsLayoutItemPage::draw( QgsLayoutItemRenderContext &context )
   }
 }
 
-void QgsLayoutItemPage::drawFrame( QgsRenderContext & )
-{}
+void QgsLayoutItemPage::drawFrame( QgsRenderContext & ) {}
 
-void QgsLayoutItemPage::drawBackground( QgsRenderContext & )
-{}
+void QgsLayoutItemPage::drawBackground( QgsRenderContext & ) {}
 
 bool QgsLayoutItemPage::writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {

@@ -50,10 +50,7 @@ using namespace Qt::StringLiterals;
 class QgsLayoutItemElevationProfilePlot : public Qgs2DXyPlot
 {
   public:
-
-    QgsLayoutItemElevationProfilePlot()
-    {
-    }
+    QgsLayoutItemElevationProfilePlot() {}
 
     void setRenderer( QgsProfilePlotRenderer *renderer )
     {
@@ -77,9 +74,7 @@ class QgsLayoutItemElevationProfilePlot : public Qgs2DXyPlot
     double xScale = 1;
 
   private:
-
     QgsProfilePlotRenderer *mRenderer = nullptr;
-
 };
 ///@endcond PRIVATE
 
@@ -98,10 +93,7 @@ QgsLayoutItemElevationProfile::QgsLayoutItemElevationProfile( QgsLayout *layout 
     connect( mLayout, &QgsLayout::refreshed, this, &QgsLayoutItemElevationProfile::invalidateCache );
   }
 
-  connect( this, &QgsLayoutItem::sizePositionChanged, this, [this]
-  {
-    invalidateCache();
-  } );
+  connect( this, &QgsLayoutItem::sizePositionChanged, this, [this] { invalidateCache(); } );
 
   //default to no background
   setBackgroundEnabled( false );
@@ -123,20 +115,11 @@ QgsLayoutItemElevationProfile::~QgsLayoutItemElevationProfile()
   }
 }
 
-QgsLayoutItemElevationProfile *QgsLayoutItemElevationProfile::create( QgsLayout *layout )
-{
-  return new QgsLayoutItemElevationProfile( layout );
-}
+QgsLayoutItemElevationProfile *QgsLayoutItemElevationProfile::create( QgsLayout *layout ) { return new QgsLayoutItemElevationProfile( layout ); }
 
-int QgsLayoutItemElevationProfile::type() const
-{
-  return QgsLayoutItemRegistry::LayoutElevationProfile;
-}
+int QgsLayoutItemElevationProfile::type() const { return QgsLayoutItemRegistry::LayoutElevationProfile; }
 
-QIcon QgsLayoutItemElevationProfile::icon() const
-{
-  return QgsApplication::getThemeIcon( u"mLayoutItemElevationProfile.svg"_s );
-}
+QIcon QgsLayoutItemElevationProfile::icon() const { return QgsApplication::getThemeIcon( u"mLayoutItemElevationProfile.svg"_s ); }
 
 void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedProperty property )
 {
@@ -463,35 +446,17 @@ void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedPrope
   QgsLayoutItem::refreshDataDefinedProperty( property );
 }
 
-QgsLayoutItem::Flags QgsLayoutItemElevationProfile::itemFlags() const
-{
-  return QgsLayoutItem::FlagOverridesPaint | QgsLayoutItem::FlagDisableSceneCaching;
-}
+QgsLayoutItem::Flags QgsLayoutItemElevationProfile::itemFlags() const { return QgsLayoutItem::FlagOverridesPaint | QgsLayoutItem::FlagDisableSceneCaching; }
 
-bool QgsLayoutItemElevationProfile::requiresRasterization() const
-{
-  return blendMode() != QPainter::CompositionMode_SourceOver;
-}
+bool QgsLayoutItemElevationProfile::requiresRasterization() const { return blendMode() != QPainter::CompositionMode_SourceOver; }
 
-bool QgsLayoutItemElevationProfile::containsAdvancedEffects() const
-{
-  return mEvaluatedOpacity < 1.0;
-}
+bool QgsLayoutItemElevationProfile::containsAdvancedEffects() const { return mEvaluatedOpacity < 1.0; }
 
-Qgs2DXyPlot *QgsLayoutItemElevationProfile::plot()
-{
-  return mPlot.get();
-}
+Qgs2DXyPlot *QgsLayoutItemElevationProfile::plot() { return mPlot.get(); }
 
-const Qgs2DXyPlot *QgsLayoutItemElevationProfile::plot() const
-{
-  return mPlot.get();
-}
+const Qgs2DXyPlot *QgsLayoutItemElevationProfile::plot() const { return mPlot.get(); }
 
-QList<QgsMapLayer *> QgsLayoutItemElevationProfile::layers() const
-{
-  return _qgis_listRefToRaw( mLayers );
-}
+QList<QgsMapLayer *> QgsLayoutItemElevationProfile::layers() const { return _qgis_listRefToRaw( mLayers ); }
 
 void QgsLayoutItemElevationProfile::setLayers( const QList<QgsMapLayer *> &layers )
 {
@@ -577,10 +542,7 @@ void QgsLayoutItemElevationProfile::setProfileCurve( QgsCurve *curve )
   invalidateCache();
 }
 
-QgsCurve *QgsLayoutItemElevationProfile::profileCurve() const
-{
-  return mCurve.get();
-}
+QgsCurve *QgsLayoutItemElevationProfile::profileCurve() const { return mCurve.get(); }
 
 void QgsLayoutItemElevationProfile::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
@@ -591,10 +553,7 @@ void QgsLayoutItemElevationProfile::setCrs( const QgsCoordinateReferenceSystem &
   invalidateCache();
 }
 
-QgsCoordinateReferenceSystem QgsLayoutItemElevationProfile::crs() const
-{
-  return mCrs;
-}
+QgsCoordinateReferenceSystem QgsLayoutItemElevationProfile::crs() const { return mCrs; }
 
 void QgsLayoutItemElevationProfile::setTolerance( double tolerance )
 {
@@ -605,15 +564,9 @@ void QgsLayoutItemElevationProfile::setTolerance( double tolerance )
   invalidateCache();
 }
 
-double QgsLayoutItemElevationProfile::tolerance() const
-{
-  return mTolerance;
-}
+double QgsLayoutItemElevationProfile::tolerance() const { return mTolerance; }
 
-void QgsLayoutItemElevationProfile::setAtlasDriven( bool enabled )
-{
-  mAtlasDriven = enabled;
-}
+void QgsLayoutItemElevationProfile::setAtlasDriven( bool enabled ) { mAtlasDriven = enabled; }
 
 QgsProfileRequest QgsLayoutItemElevationProfile::profileRequest() const
 {
@@ -672,11 +625,9 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
 
       if (
         ( mRenderJob && mCacheInvalidated && !mDrawingPreview ) // current job was invalidated - start a new one
-        ||
-        ( !mRenderJob && !mDrawingPreview ) // this is the profiles's very first paint - trigger a cache update
+        || ( !mRenderJob && !mDrawingPreview )                  // this is the profiles's very first paint - trigger a cache update
       )
       {
-
         mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter );
         mBackgroundUpdateTimer->start( 1 );
       }
@@ -729,8 +680,7 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
     if ( !qgsDoubleNear( layoutSize.width(), 0.0 ) && !qgsDoubleNear( layoutSize.height(), 0.0 ) )
     {
       const bool forceVector = mLayout && mLayout->renderContext().rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::ForceVector;
-      if ( ( containsAdvancedEffects() || ( blendModeForRender() != QPainter::CompositionMode_SourceOver ) )
-           && !forceVector )
+      if ( ( containsAdvancedEffects() || ( blendModeForRender() != QPainter::CompositionMode_SourceOver ) ) && !forceVector )
       {
         // rasterize
         double destinationDpi = QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter ) * 25.4;
@@ -806,7 +756,7 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
         QgsScopedQPainterState painterState( painter );
         QgsScopedQPainterState stagedPainterState( painter );
         double dotsPerMM = paintDevice->logicalDpiX() / 25.4;
-        layoutSize *= dotsPerMM; // output size will be in dots (pixels)
+        layoutSize *= dotsPerMM;                        // output size will be in dots (pixels)
         painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
 
         const double mapUnitsPerPixel = static_cast<double>( mPlot->xMaximum() - mPlot->xMinimum() ) * mPlot->xScale / layoutSize.width();
@@ -879,9 +829,7 @@ void QgsLayoutItemElevationProfile::invalidateCache()
   update();
 }
 
-void QgsLayoutItemElevationProfile::draw( QgsLayoutItemRenderContext & )
-{
-}
+void QgsLayoutItemElevationProfile::draw( QgsLayoutItemRenderContext & ) {}
 
 bool QgsLayoutItemElevationProfile::writePropertiesToElement( QDomElement &layoutProfileElem, QDomDocument &doc, const QgsReadWriteContext &rwContext ) const
 {
@@ -904,7 +852,7 @@ bool QgsLayoutItemElevationProfile::writePropertiesToElement( QDomElement &layou
   if ( mCurve )
   {
     QDomElement curveElem = doc.createElement( u"curve"_s );
-    curveElem.appendChild( doc.createTextNode( mCurve->asWkt( ) ) );
+    curveElem.appendChild( doc.createTextNode( mCurve->asWkt() ) );
     layoutProfileElem.appendChild( curveElem );
   }
 
@@ -1021,7 +969,7 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
         const QString sourceId = sourceElement.attribute( u"id"_s );
         if ( QgsAbstractProfileSource *profileSource = QgsApplication::profileSourceRegistry()->findSourceById( sourceId ) )
         {
-          mSources << profileSource ;
+          mSources << profileSource;
         }
       }
       else if ( sourceElement.tagName() == "profileLayerSource"_L1 )
@@ -1061,8 +1009,7 @@ void QgsLayoutItemElevationProfile::recreateCachedImageInBackground()
     QgsProfilePlotRenderer *oldJob = mRenderJob.release();
     QPainter *oldPainter = mPainter.release();
     QImage *oldImage = mCacheRenderingImage.release();
-    connect( oldJob, &QgsProfilePlotRenderer::generationFinished, this, [oldPainter, oldJob, oldImage]
-    {
+    connect( oldJob, &QgsProfilePlotRenderer::generationFinished, this, [oldPainter, oldJob, oldImage] {
       oldJob->deleteLater();
       delete oldPainter;
       delete oldImage;
@@ -1141,8 +1088,7 @@ void QgsLayoutItemElevationProfile::profileGenerationFinished()
 
   mPlot->xScale = QgsUnitTypes::fromUnitToUnitFactor( mDistanceUnit, mCrs.mapUnits() );
 
-  const double mapUnitsPerPixel = static_cast< double >( mPlot->xMaximum() - mPlot->xMinimum() ) * mPlot->xScale /
-                                  mCacheRenderingImage->size().width();
+  const double mapUnitsPerPixel = static_cast< double >( mPlot->xMaximum() - mPlot->xMinimum() ) * mPlot->xScale / mCacheRenderingImage->size().width();
   rc.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
 
   // size must be in pixels, not layout units
@@ -1162,10 +1108,7 @@ void QgsLayoutItemElevationProfile::profileGenerationFinished()
   emit previewRefreshed();
 }
 
-Qgis::DistanceUnit QgsLayoutItemElevationProfile::distanceUnit() const
-{
-  return mDistanceUnit;
-}
+Qgis::DistanceUnit QgsLayoutItemElevationProfile::distanceUnit() const { return mDistanceUnit; }
 
 void QgsLayoutItemElevationProfile::setDistanceUnit( Qgis::DistanceUnit unit )
 {
@@ -1234,10 +1177,7 @@ void QgsLayoutItemElevationProfile::setDistanceUnit( Qgis::DistanceUnit unit )
   }
 }
 
-void QgsLayoutItemElevationProfile::setSubsectionsSymbol( QgsLineSymbol *symbol )
-{
-  mSubsectionsSymbol.reset( symbol );
-}
+void QgsLayoutItemElevationProfile::setSubsectionsSymbol( QgsLineSymbol *symbol ) { mSubsectionsSymbol.reset( symbol ); }
 
 void QgsLayoutItemElevationProfile::setSourcesPrivate()
 {
