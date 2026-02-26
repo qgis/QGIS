@@ -120,6 +120,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      */
     Qgis::WkbType wkbType() const SIP_THROW( QgsSfcgalException );
 
+    // clang-format off
     /**
      * Returns type of the geometry as a OGC string in CamelCase
      * \return type of the geometry as a OGC string in CamelCase
@@ -129,7 +130,6 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \throws QgsNotSupportedException when working with primitive and SFCGAL is less than 2.3.
      * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    // clang-format off
     QString geometryType() const SIP_THROW( QgsNotSupportedException, QgsSfcgalException ) SIP_HOLDGIL;
     // clang-format on
 

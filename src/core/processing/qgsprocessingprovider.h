@@ -47,11 +47,11 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     QgsProcessingProvider( const QgsProcessingProvider &other ) = delete;
     QgsProcessingProvider &operator=( const QgsProcessingProvider &other ) = delete;
 
+    // clang-format off
     /**
      * Returns an icon for the provider.
      * \see svgIconPath()
      */
-    // clang-format off
     virtual QIcon icon() const SIP_HOLDGIL;
     // clang-format on
 

@@ -58,10 +58,6 @@ Returns tile coordinates in a formatted string
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private : int mColumn
-    = -1;
-    int mRow;
-    int mZoomLevel;
 };
 
 

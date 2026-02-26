@@ -72,7 +72,10 @@ class CORE_EXPORT QgsReadWriteContext
       % End
 #endif
 
-        private : QString mMessage;
+        // clang-format off
+        private:
+        // clang-format on
+        QString mMessage;
         Qgis::MessageLevel mLevel;
         QStringList mCategories;
     };

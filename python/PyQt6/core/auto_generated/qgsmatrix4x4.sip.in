@@ -49,6 +49,9 @@ Initializes matrix by setting all values in row-major order
     bool operator!=( const QgsMatrix4x4 &other ) const;
 
     QList< double > dataList() const /PyName=data,HoldGIL/;
+%Docstring
+Returns matrix data (in column-major order)
+%End
 
     void translate( const QgsVector3D &vector );
 %Docstring

@@ -284,8 +284,11 @@ class CORE_EXPORT QgsCodedFieldDomain : public QgsFieldDomain
   % End
 #endif
 
-    private : QList< QgsCodedValue>
-                mValues;
+    // clang-format off
+    private:
+    // clang-format on
+    QList< QgsCodedValue>
+      mValues;
 
 #ifdef SIP_RUN
     QgsCodedFieldDomain( const QgsCodedFieldDomain & );
@@ -412,7 +415,10 @@ class CORE_EXPORT QgsRangeFieldDomain : public QgsFieldDomain
   % End
 #endif
 
-    private : QVariant mMin;
+    // clang-format off
+    private:
+    // clang-format on
+    QVariant mMin;
     QVariant mMax;
     bool mMinIsInclusive = false;
     bool mMaxIsInclusive = false;
@@ -486,7 +492,10 @@ class CORE_EXPORT QgsGlobFieldDomain : public QgsFieldDomain
   % End
 #endif
 
-    private : QString mGlob;
+    // clang-format off
+    private:
+    // clang-format on
+    QString mGlob;
 
 #ifdef SIP_RUN
     QgsGlobFieldDomain( const QgsGlobFieldDomain & );

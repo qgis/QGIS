@@ -561,7 +561,9 @@ class CORE_EXPORT QgsProperty
   % End
 #endif
 
-    private :
+    // clang-format off
+    private:
+    // clang-format on
 
     mutable QExplicitlySharedDataPointer<QgsPropertyPrivate>
       d;

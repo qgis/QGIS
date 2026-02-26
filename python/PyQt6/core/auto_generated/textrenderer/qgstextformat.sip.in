@@ -599,10 +599,6 @@ Returns the tab position.
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-        private :
-
-        double mPosition
-        = 0;
     };
 
     QList< QgsTextFormat::Tab > tabPositions() const;

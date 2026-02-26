@@ -113,7 +113,9 @@ class CORE_EXPORT QgsSymbolLayerId
   % End
 #endif
 
-    private :
+    // clang-format off
+    private:
+    // clang-format on
     //! Symbol unique identifier (legend key)
     QString mSymbolKey;
 
@@ -188,7 +190,10 @@ class CORE_EXPORT QgsSymbolLayerReference
   % End
 #endif
 
-    private : QString mLayerId;
+    // clang-format off
+    private:
+    // clang-format on
+    QString mLayerId;
 
     // TODO QGIS 5 : remove mDeprecatedSymbolLayerId
     QgsSymbolLayerId mDeprecatedSymbolLayerId;

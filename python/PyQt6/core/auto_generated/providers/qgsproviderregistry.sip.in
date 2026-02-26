@@ -423,10 +423,6 @@ the target using this candidate provider.
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-        private : QgsProviderMetadata *mMetadata
-        = 0;
-
-        QList< Qgis::LayerType > mLayerTypes;
     };
 
     QList< QgsProviderRegistry::ProviderCandidateDetails > preferredProvidersForUri( const QString &uri ) const;

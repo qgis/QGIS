@@ -319,17 +319,6 @@ Write vector conditional style specific state from layer Dom node.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private :
-
-    bool mValid
-    = false;
-    QString mName;
-    QString mRule;
-    std::unique_ptr<QgsSymbol> mSymbol;
-    QFont mFont;
-    QColor mBackColor;
-    QColor mTextColor;
-    QPixmap mIcon;
 };
 
 /************************************************************************

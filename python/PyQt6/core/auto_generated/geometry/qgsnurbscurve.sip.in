@@ -76,6 +76,11 @@ algorithm for B-spline basis function evaluation.
 %End
 
     bool isBezier() const /HoldGIL/;
+%Docstring
+Returns ``True`` if this curve represents a Bézier curve. A Bézier curve
+is a special case of NURBS with uniform weights and specific knot
+vector.
+%End
 
     bool isBSpline() const /HoldGIL/;
 %Docstring

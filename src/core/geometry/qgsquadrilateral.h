@@ -40,10 +40,10 @@ using namespace Qt::StringLiterals;
 class CORE_EXPORT QgsQuadrilateral
 {
   public:
+    // clang-format off
     /**
      * Constructor for an empty quadrilateral geometry.
      */
-    // clang-format off
     QgsQuadrilateral() SIP_HOLDGIL;
     // clang-format on
 

@@ -473,7 +473,9 @@ class CORE_EXPORT QgsWeakRelation
   % End
 #endif
 
-    private :
+    // clang-format off
+    private:
+    // clang-format on
 
     QgsVectorLayerRef mReferencingLayer;
     QgsVectorLayerRef mReferencedLayer;

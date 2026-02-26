@@ -89,6 +89,7 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static double distToInfiniteLine( const QgsPoint &point, const QgsPoint &linePoint1, const QgsPoint &linePoint2, double epsilon = 1e-7 );
 
+    // clang-format off
     /**
      * \brief Compute the intersection of a line and a circle.
      * If the intersection has two solutions (points),
@@ -100,7 +101,6 @@ class CORE_EXPORT QgsGeometryUtils
      * \param intersection the initial point and the returned intersection point
      * \return TRUE if an intersection has been found
      */
-    // clang-format off
     static bool lineCircleIntersection( const QgsPointXY &center, double radius, const QgsPointXY &linePoint1, const QgsPointXY &linePoint2, QgsPointXY &intersection SIP_INOUT ) SIP_HOLDGIL;
     // clang-format on
 

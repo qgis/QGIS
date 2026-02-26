@@ -224,19 +224,6 @@ Sets the ``properties`` for the cell.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private :
-
-    QVariant mContent;
-    QColor mBackgroundColor;
-    QColor mForegroundColor;
-    QgsTextFormat mTextFormat;
-    std::unique_ptr< QgsNumericFormat > mFormat;
-
-    Qt::Alignment mHAlign;
-    Qt::Alignment mVAlign;
-
-    int mRowSpan;
-    int mColumnSpan;
 };
 
 typedef QVector<QgsTableCell> QgsTableRow;

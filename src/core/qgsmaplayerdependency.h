@@ -77,7 +77,10 @@ class CORE_EXPORT QgsMapLayerDependency
     % MethodCode sipRes = qHash( *sipCpp );
   % End
 #endif
-    private : Type mType;
+    // clang-format off
+    private:
+    // clang-format on
+    Type mType;
     Origin mOrigin;
     QString mLayerId;
 };

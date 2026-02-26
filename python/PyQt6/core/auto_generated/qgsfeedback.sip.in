@@ -46,6 +46,9 @@ Construct a feedback object
     ~QgsFeedback();
 
     bool isCanceled() const /HoldGIL/;
+%Docstring
+Tells whether the operation has been canceled already
+%End
 
     void setProgress( double progress );
 %Docstring

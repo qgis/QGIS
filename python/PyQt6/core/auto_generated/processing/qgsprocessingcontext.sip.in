@@ -46,6 +46,11 @@ Copies all settings which are safe for use across different threads from
 %End
 
     QgsProcessingContext::Flags flags() const /HoldGIL/;
+%Docstring
+Returns any flags set in the context.
+
+.. seealso:: :py:func:`setFlags`
+%End
 
     void setFlags( QgsProcessingContext::Flags flags ) /HoldGIL/;
 %Docstring

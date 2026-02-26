@@ -102,6 +102,19 @@ etc.)
 %End
 
     QString geometryType() const  /HoldGIL/;
+%Docstring
+Returns type of the geometry as a OGC string in CamelCase
+
+:return: type of the geometry as a OGC string in CamelCase
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: when working with primitive and SFCGAL
+                                  is less than 2.3.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
 
     std::unique_ptr<QgsSfcgalGeometry> clone() const;
 %Docstring

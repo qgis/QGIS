@@ -189,7 +189,9 @@ class CORE_EXPORT QgsLayoutSize
   % End
 #endif
 
-    private :
+    // clang-format off
+    private:
+    // clang-format on
 
     double mWidth
     = 0.0;

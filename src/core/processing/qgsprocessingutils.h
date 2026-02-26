@@ -301,11 +301,11 @@ class CORE_EXPORT QgsProcessingUtils
      */
     static QgsCoordinateReferenceSystem variantToCrs( const QVariant &value, QgsProcessingContext &context, const QVariant &fallbackValue = QVariant() );
 
+    // clang-format off
     /**
      * Normalizes a layer \a source string for safe comparison across different
      * operating system environments.
      */
-    // clang-format off
     static QString normalizeLayerSource( const QString &source ) SIP_HOLDGIL;
     // clang-format on
 

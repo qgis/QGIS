@@ -160,7 +160,7 @@ Returns the hit test results, for layers with UpdatedCanvas renderers
     }
 %End
 
-    protected :
+    protected:
 
     virtual bool run();
 

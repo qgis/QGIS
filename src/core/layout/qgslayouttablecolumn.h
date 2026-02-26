@@ -209,7 +209,9 @@ class CORE_EXPORT QgsLayoutTableColumn
   % End
 #endif
 
-    private :
+    // clang-format off
+    private:
+    // clang-format on
 
     QString mHeading;
     QString mAttribute;

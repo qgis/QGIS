@@ -69,7 +69,10 @@ class CORE_EXPORT QgsTileXYZ
   % End
 #endif
 
-    private : int mColumn
+    // clang-format off
+    private:
+    // clang-format on
+    int mColumn
     = -1;
     int mRow = -1;
     int mZoomLevel = -1;

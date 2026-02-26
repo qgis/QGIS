@@ -32,10 +32,10 @@ class QgsAbstractGeometry;
  */
 struct CORE_EXPORT QgsVertexId
 {
+    // clang-format off
     /**
    * Constructor for QgsVertexId.
    */
-    // clang-format off
     explicit QgsVertexId( int _part = -1, int _ring = -1, int _vertex = -1, Qgis::VertexType _type = Qgis::VertexType::Segment ) SIP_HOLDGIL
       // clang-format on
 : part( _part )

@@ -32,10 +32,10 @@ using namespace Qt::StringLiterals;
 class CORE_EXPORT QgsMultiPoint : public QgsGeometryCollection
 {
   public:
+    // clang-format off
     /**
      * Constructor for an empty multipoint geometry.
      */
-    // clang-format off
     QgsMultiPoint() SIP_HOLDGIL;
     // clang-format on
 

@@ -150,13 +150,12 @@ Returns the number of named nodes in the complete key
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    protected :
+    protected:
     void registerChildNode( QgsSettingsTreeNode *node );
 %Docstring
 Registers a child nodes
 %End
 
-    Qgis::SettingsTreeNodeType mType;
 
   private:
     QgsSettingsTreeNode();

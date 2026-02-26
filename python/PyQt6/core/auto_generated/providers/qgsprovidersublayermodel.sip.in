@@ -146,13 +146,6 @@ Sets the item's ``icon``.
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-        private :
-
-        QString mType;
-        QString mName;
-        QString mDescription;
-        QString mUri;
-        QIcon mIcon;
     };
 
     QgsProviderSublayerModel( QObject *parent /TransferThis/ = 0 );

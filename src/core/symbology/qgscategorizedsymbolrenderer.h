@@ -154,7 +154,10 @@ class CORE_EXPORT QgsRendererCategory
   % End
 #endif
 
-    protected : friend class QgsCategorizedSymbolRendererWidget;
+    // clang-format off
+    protected:
+    // clang-format on
+    friend class QgsCategorizedSymbolRendererWidget;
 
     QVariant mValue;
     std::unique_ptr<QgsSymbol> mSymbol;

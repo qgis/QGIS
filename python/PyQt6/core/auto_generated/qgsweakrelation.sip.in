@@ -495,26 +495,6 @@ projects
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private :
-
-    QgsVectorLayerRef mReferencingLayer;
-    QgsVectorLayerRef mReferencedLayer;
-    QgsVectorLayerRef mMappingTable;
-
-    QString mRelationId;
-    QString mRelationName;
-    Qgis::RelationshipStrength mStrength;
-
-    QStringList mReferencingLayerFields;
-    QStringList mMappingReferencingLayerFields;
-    QStringList mReferencedLayerFields;
-    QStringList mMappingReferencedLayerFields;
-
-    Qgis::RelationshipCardinality mCardinality;
-    QString mForwardPathLabel;
-    QString mBackwardPathLabel;
-    QString mRelatedTableType;
-
 };
 
 /************************************************************************

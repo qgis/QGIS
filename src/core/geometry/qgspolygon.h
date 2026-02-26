@@ -36,10 +36,10 @@ class QgsLineString;
 class CORE_EXPORT QgsPolygon : public QgsCurvePolygon
 {
   public:
+    // clang-format off
     /**
      * Constructor for an empty polygon geometry.
      */
-    // clang-format off
     QgsPolygon() SIP_HOLDGIL;
     // clang-format on
 

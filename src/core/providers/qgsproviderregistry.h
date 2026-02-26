@@ -413,7 +413,10 @@ class CORE_EXPORT QgsProviderRegistry
       % End
 #endif
 
-        private : QgsProviderMetadata *mMetadata
+        // clang-format off
+        private:
+        // clang-format on
+        QgsProviderMetadata *mMetadata
         = nullptr;
 
         QList< Qgis::LayerType > mLayerTypes;

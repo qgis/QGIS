@@ -21,6 +21,9 @@ Multi point geometry collection.
 %End
   public:
     QgsMultiPoint() /HoldGIL/;
+%Docstring
+Constructor for an empty multipoint geometry.
+%End
 
 
     QgsMultiPoint( SIP_PYOBJECT points /TypeHint="Sequence[Union[QgsPoint, QgsPointXY, Sequence[float]]]"/ ) /HoldGIL/ [( const QVector<QgsPoint> &points )];

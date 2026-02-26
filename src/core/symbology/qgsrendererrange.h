@@ -201,7 +201,10 @@ class CORE_EXPORT QgsRendererRange
   % End
 #endif
 
-    protected : friend class QgsGraduatedSymbolRendererWidget;
+    // clang-format off
+    protected:
+    // clang-format on
+    friend class QgsGraduatedSymbolRendererWidget;
 
     double mLowerValue = 0, mUpperValue = 0;
     std::unique_ptr<QgsSymbol> mSymbol;

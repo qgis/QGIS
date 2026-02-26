@@ -139,11 +139,6 @@ Returns ``True`` if the set is empty.
     }
 %End
 
-    private : bool mIsValid
-    = false;
-    QString mId;
-    QString mName;
-    QVector< QgsSelectiveMaskSource > mSources;
 };
 
 

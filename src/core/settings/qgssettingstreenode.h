@@ -143,7 +143,9 @@ class CORE_EXPORT QgsSettingsTreeNode
   % End
 #endif
 
-    protected :
+    // clang-format off
+    protected:
+    // clang-format on
     //! Registers a child nodes
     void registerChildNode( QgsSettingsTreeNode *node );
 

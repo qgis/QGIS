@@ -65,12 +65,12 @@ class CORE_EXPORT QgsRasterBlock
     // TODO: consider if use isValid() at all, isEmpty() should be sufficient
     // and works also if block is valid but empty - difference between valid and empty?
 
+    // clang-format off
     /**
      * \brief Returns TRUE if the block is valid (correctly filled with data).
      *  An empty block may still be valid (if zero size block was requested).
      *  If the block is not valid, error may be retrieved by error() method.
      */
-    // clang-format off
     bool isValid() const SIP_HOLDGIL { return mValid; }
     // clang-format on
 

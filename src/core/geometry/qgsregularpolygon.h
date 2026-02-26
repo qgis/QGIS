@@ -49,10 +49,10 @@ class CORE_EXPORT QgsRegularPolygon
       CircumscribedCircle //!< Circumscribed about a circle (the radius is the distance from the center to the midpoints of the sides)
     };
 
+    // clang-format off
     /**
      * Constructor for QgsRegularPolygon.
      */
-    // clang-format off
     QgsRegularPolygon() SIP_HOLDGIL = default;
     // clang-format on
 

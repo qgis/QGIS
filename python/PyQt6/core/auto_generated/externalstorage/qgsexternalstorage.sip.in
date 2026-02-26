@@ -37,6 +37,28 @@ any user-visible display of the external storage name.
 %End
 
     QgsExternalStorageStoredContent *store( const QString &filePath, const QString &url, const QString &authCfg = QString(), Qgis::ActionStart storingMode = Qgis::ActionStart::Deferred ) const /Factory/;
+%Docstring
+Stores file ``filePath`` to the ``url`` for this project external
+storage. Storing process is run in background. Returns a
+:py:class:`QgsExternalStorageStoredContent` to follow the status of the
+stored resource.
+
+``storingMode`` defines if the download will start immediately or shall
+be manually triggered calling
+:py:func:`QgsExternalStorageStoredContent.store()`. User should use
+:py:class:`Qgis`.ActionStart.Deferred if he needs to connect the
+:py:func:`~QgsExternalStorage.stored` signal.
+
+After using this method, user wait for
+:py:func:`QgsExternalStorageStoredContent.stored()`,
+:py:func:`QgsExternalStorageStoredContent.errorOccurred()` or
+:py:func:`QgsExternalStorageStoredContent.canceled()` signals.
+
+It's possible to give ``authCfg`` authentication configuration id in
+case its needed.
+
+Caller takes ownership of the returned symbol.
+%End
 
     QgsExternalStorageFetchedContent *fetch( const QString &url, const QString &authCfg = QString(), Qgis::ActionStart fetchingMode = Qgis::ActionStart::Deferred ) const /Factory/;
 %Docstring

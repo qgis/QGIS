@@ -35,6 +35,9 @@ also:
   public:
 
     QgsFields() /HoldGIL/;
+%Docstring
+Constructor for an empty field container
+%End
 
     QgsFields( const QgsFields &other ) /HoldGIL/;
 

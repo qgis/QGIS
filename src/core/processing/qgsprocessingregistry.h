@@ -98,10 +98,10 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
      */
     bool removeProvider( const QString &providerId );
 
+    // clang-format off
     /**
      * Returns a matching provider by provider ID.
      */
-    // clang-format off
     QgsProcessingProvider *providerById( const QString &id ) const SIP_HOLDGIL;
     // clang-format on
 

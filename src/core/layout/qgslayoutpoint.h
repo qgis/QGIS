@@ -183,7 +183,9 @@ class CORE_EXPORT QgsLayoutPoint
   % End
 #endif
 
-    private :
+    // clang-format off
+    private:
+    // clang-format on
 
     double mX
     = 0.0;

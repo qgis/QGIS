@@ -64,13 +64,13 @@ class CORE_EXPORT QgsRectangle
     //! Constructor for a null rectangle
     QgsRectangle() = default; // optimised constructor for null rectangle - no need to call normalize here
 
+    // clang-format off
     /**
      * Constructs a QgsRectangle from a set of x and y minimum and maximum coordinates.
      *
      * The rectangle will be normalized after creation. Since QGIS 3.20, if \a normalize is FALSE then
      * the normalization step will not be applied automatically.
      */
-    // clang-format off
     explicit QgsRectangle( double xMin, double yMin = 0, double xMax = 0, double yMax = 0, bool normalize = true ) SIP_HOLDGIL
       // clang-format on
   : mXmin( xMin )

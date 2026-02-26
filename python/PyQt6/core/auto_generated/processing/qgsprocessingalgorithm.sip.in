@@ -71,6 +71,19 @@ could not be created, e.g. if there is an issue with the subclass'
 %End
 
     virtual QString name() const = 0 /HoldGIL/;
+%Docstring
+Returns the algorithm name, used for identifying the algorithm. This
+string should be fixed for the algorithm, and must not be localised. The
+name should be unique within each provider. Names should contain
+lowercase alphanumeric characters only and no spaces or other formatting
+characters.
+
+.. seealso:: :py:func:`displayName`
+
+.. seealso:: :py:func:`group`
+
+.. seealso:: :py:func:`tags`
+%End
 
     QString id() const /HoldGIL/;
 %Docstring

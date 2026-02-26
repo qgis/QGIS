@@ -164,7 +164,9 @@ class CORE_EXPORT QgsProviderSublayerModel : public QAbstractItemModel
       % End
 #endif
 
-        private :
+        // clang-format off
+        private:
+        // clang-format on
 
         QString mType;
         QString mName;

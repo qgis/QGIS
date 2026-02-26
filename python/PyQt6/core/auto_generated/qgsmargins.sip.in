@@ -131,11 +131,6 @@ if the string could not be interpreted as margins.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private : double mLeft
-    = 0.0;
-    double mTop;
-    double mRight;
-    double mBottom;
 };
 
 

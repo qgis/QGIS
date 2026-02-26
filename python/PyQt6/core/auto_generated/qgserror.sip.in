@@ -128,12 +128,6 @@ messageList return the list of current error messages
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private :
-    QList<QgsErrorMessage>
-%Docstring
-List of messages
-%End
-      mMessageList;
 };
 
 /************************************************************************

@@ -61,14 +61,6 @@ Authority code, e.g. "8447" (for EPSG:8447).
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private :
-
-    QString mName;
-    QString mScope;
-    QString mRemarks;
-    QString mAuthority;
-    QString mCode;
-
 };
 
 class QgsDatumEnsemble
@@ -145,18 +137,6 @@ Contains a list of members of the ensemble.
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
-
-    private :
-
-    bool mValid
-    = false;
-    QString mName;
-    double mAccuracy;
-    QString mAuthority;
-    QString mCode;
-    QString mScope;
-    QString mRemarks;
-    QList< QgsDatumEnsembleMember > mMembers;
 
 };
 

@@ -34,10 +34,10 @@ class QgsLineString;
 class CORE_EXPORT QgsMultiLineString : public QgsMultiCurve
 {
   public:
+    // clang-format off
     /**
      * Constructor for an empty multilinestring geometry.
      */
-    // clang-format off
     QgsMultiLineString() SIP_HOLDGIL;
     // clang-format on
 

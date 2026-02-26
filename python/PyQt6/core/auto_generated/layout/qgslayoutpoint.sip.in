@@ -160,12 +160,6 @@ Decodes a point from a ``string``.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private :
-
-    double mX
-    = 0.0;
-    double mY;
-    Qgis::LayoutUnit mUnits;
 };
 
 /************************************************************************

@@ -28,6 +28,9 @@ Represents a simple 3-dimensional sphere.
 %End
   public:
     QgsSphere() /HoldGIL/;
+%Docstring
+Constructor for an invalid QgsSphere.
+%End
 
     QgsSphere( double x, double y, double z, double radius ) /HoldGIL/;
 %Docstring

@@ -174,12 +174,12 @@ class CORE_EXPORT QgsBox3D
       }
     }
 
+    // clang-format off
     /**
      * Sets the minimum \a x value.
      * \see xMinimum()
      * \see setXMaximum()
      */
-    // clang-format off
     void setXMinimum( double x ) SIP_HOLDGIL;
     // clang-format on
 

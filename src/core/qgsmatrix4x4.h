@@ -66,8 +66,8 @@ class CORE_EXPORT QgsMatrix4x4
     const double *constData() const SIP_SKIP { return *m; }
     //! Returns pointer to the matrix data (stored in column-major order)
     double *data() SIP_SKIP { return *m; }
-    //! Returns matrix data (in column-major order)
     // clang-format off
+    //! Returns matrix data (in column-major order)
     QList< double > dataList() const SIP_PYNAME( data ) SIP_HOLDGIL;
     // clang-format on
 

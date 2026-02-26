@@ -60,13 +60,6 @@ Authority name, e.g. EPSG.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private :
-
-    bool mValid
-    = false;
-    QString mName;
-    QString mAuthority;
-
 };
 
 /************************************************************************

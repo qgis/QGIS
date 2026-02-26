@@ -103,23 +103,6 @@ Partial derivative ∂y/∂ϕ of coordinate (λ,ϕ).
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private :
-
-    bool mIsValid
-    = false;
-    double mMeridionalScale;
-    double mParallelScale;
-    double mArealScale;
-    double mAngularDistortion;
-    double mMeridianParallelAngle;
-    double mMeridianConvergence;
-    double mTissotSemimajor;
-    double mTissotSemiminor;
-    double mDxDlam;
-    double mDxDphi;
-    double mDyDlam;
-    double mDyDphi;
-
 };
 
 /************************************************************************

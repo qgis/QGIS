@@ -28,6 +28,9 @@ Constructor for an empty point.
 %End
 
     QgsProfilePoint( double distance, double elevation ) /HoldGIL/;
+%Docstring
+Create a point at the specified distance and elevation coordinates
+%End
       : mDistance( distance );
 
     void setDistance( double distance ) /HoldGIL/;

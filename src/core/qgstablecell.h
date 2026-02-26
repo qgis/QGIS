@@ -221,7 +221,9 @@ class CORE_EXPORT QgsTableCell
   % End
 #endif
 
-    private :
+    // clang-format off
+    private:
+    // clang-format on
 
     QVariant mContent;
     QColor mBackgroundColor;

@@ -75,10 +75,10 @@ class CORE_EXPORT QgsFields
 
 #endif
 
+    // clang-format off
     /**
      * Constructor for an empty field container
      */
-    // clang-format off
     QgsFields() SIP_HOLDGIL;
     // clang-format on
 

@@ -49,8 +49,8 @@ class CORE_EXPORT QgsVector3D
       , mZ( v.z() )
     {}
 
-    //! Returns TRUE if all three coordinates are zero
     // clang-format off
+    //! Returns TRUE if all three coordinates are zero
     bool isNull() const SIP_HOLDGIL { return mX == 0 && mY == 0 && mZ == 0; }
     // clang-format on
 

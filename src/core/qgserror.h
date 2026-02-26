@@ -140,7 +140,9 @@ class CORE_EXPORT QgsError
   % End
 #endif
 
-    private :
+    // clang-format off
+    private:
+    // clang-format on
     //! List of messages
     QList<QgsErrorMessage>
       mMessageList;

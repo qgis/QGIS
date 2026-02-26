@@ -32,6 +32,9 @@ sides/vertices, a radius and the first vertex.
     };
 
     QgsRegularPolygon() /HoldGIL/;
+%Docstring
+Constructor for QgsRegularPolygon.
+%End
 
     QgsRegularPolygon( const QgsPoint &center, double radius, double azimuth, unsigned int numberSides, ConstructionOption circle ) /HoldGIL/;
 %Docstring

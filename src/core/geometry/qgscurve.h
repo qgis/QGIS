@@ -59,12 +59,12 @@ class CORE_EXPORT QgsCurve : public QgsAbstractGeometry SIP_ABSTRACT
      */
     virtual QgsPoint endPoint() const = 0;
 
+    // clang-format off
     /**
      * Returns TRUE if the curve is closed.
      *
      * \see isClosed2D()
      */
-    // clang-format off
     virtual bool isClosed() const SIP_HOLDGIL;
     // clang-format on
 

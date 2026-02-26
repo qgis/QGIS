@@ -271,7 +271,9 @@ class CORE_EXPORT QgsMapHitTestTask : public QgsTask
   % End
 #endif
 
-    protected :
+    // clang-format off
+    protected:
+    // clang-format on
 
     bool run() override;
 

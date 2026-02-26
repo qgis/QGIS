@@ -89,7 +89,9 @@ class CORE_EXPORT QgsProjectionFactors
   % End
 #endif
 
-    private :
+    // clang-format off
+    private:
+    // clang-format on
 
     bool mIsValid
     = false;

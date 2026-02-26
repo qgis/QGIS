@@ -99,11 +99,6 @@ Decodes a measurement from a ``string``.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private :
-
-    double mLength
-    = 0.0;
-    Qgis::LayoutUnit mUnits;
 };
 
 /************************************************************************

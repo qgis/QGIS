@@ -73,7 +73,9 @@ class CORE_EXPORT QgsDatumEnsembleMember
   % End
 #endif
 
-    private :
+    // clang-format off
+    private:
+    // clang-format on
 
     QString mName;
     QString mScope;
@@ -155,7 +157,9 @@ class CORE_EXPORT QgsDatumEnsemble
   % End
 #endif
 
-    private :
+    // clang-format off
+    private:
+    // clang-format on
 
     bool mValid
     = false;

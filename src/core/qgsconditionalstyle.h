@@ -339,7 +339,9 @@ class CORE_EXPORT QgsConditionalStyle
   % End
 #endif
 
-    private :
+    // clang-format off
+    private:
+    // clang-format on
 
     bool mValid
     = false;

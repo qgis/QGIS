@@ -40,10 +40,10 @@ using namespace Qt::StringLiterals;
 class CORE_EXPORT QgsEllipse
 {
   public:
+    // clang-format off
     /**
      * Constructor for QgsEllipse.
      */
-    // clang-format off
     QgsEllipse() SIP_HOLDGIL = default;
     // clang-format on
 

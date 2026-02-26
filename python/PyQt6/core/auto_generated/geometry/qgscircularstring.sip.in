@@ -22,6 +22,9 @@ Circular string geometry type.
 %End
   public:
     QgsCircularString() /HoldGIL/;
+%Docstring
+Constructs an empty circular string.
+%End
 
     QgsCircularString( const QgsPoint &p1,
                        const QgsPoint &p2,

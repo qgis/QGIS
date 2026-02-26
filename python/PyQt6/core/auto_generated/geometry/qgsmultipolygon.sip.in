@@ -22,6 +22,9 @@ Multi polygon geometry collection.
 %End
   public:
     QgsMultiPolygon() /HoldGIL/;
+%Docstring
+Constructor for an empty multipolygon geometry.
+%End
 
     QgsMultiPolygon( const QList< QgsPolygon > &polygons ) /HoldGIL/;
 %Docstring

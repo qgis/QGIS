@@ -22,6 +22,9 @@ Multi line string geometry collection.
 %End
   public:
     QgsMultiLineString() /HoldGIL/;
+%Docstring
+Constructor for an empty multilinestring geometry.
+%End
 
     QgsMultiLineString( const QList< QgsLineString > &linestrings ) /HoldGIL/;
 %Docstring

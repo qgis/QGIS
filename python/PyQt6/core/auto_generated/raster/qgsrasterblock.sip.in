@@ -49,6 +49,12 @@ Reset block
 
 
     bool isValid() const /HoldGIL/;
+%Docstring
+Returns ``True`` if the block is valid (correctly filled with data). An
+empty block may still be valid (if zero size block was requested). If
+the block is not valid, error may be retrieved by
+:py:func:`~QgsRasterBlock.error` method.
+%End
 
     void setValid( bool valid ) /HoldGIL/;
 %Docstring

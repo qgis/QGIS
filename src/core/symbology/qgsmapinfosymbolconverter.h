@@ -64,12 +64,12 @@ class CORE_EXPORT QgsMapInfoSymbolConversionContext
 class CORE_EXPORT QgsMapInfoSymbolConverter
 {
   public:
+    // clang-format off
     /**
      * Converts the MapInfo line symbol with the specified \a identifier to a QgsLineSymbol.
      *
      * The caller takes ownership of the returned symbol.
      */
-    // clang-format off
     static QgsLineSymbol *convertLineSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, double size, Qgis::RenderUnit sizeUnit, bool interleaved = false ) SIP_FACTORY;
     // clang-format on
 

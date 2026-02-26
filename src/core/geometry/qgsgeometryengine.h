@@ -164,6 +164,7 @@ class QgsAbstractGeometry;
      */
     virtual QgsAbstractGeometry *combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 SIP_FACTORY;
 
+    // clang-format off
     /**
      * Calculate the combination of this and \a geometries.
      *
@@ -172,7 +173,6 @@ class QgsAbstractGeometry;
      * \param parameters can be used to specify parameters which control the combination results (since QGIS 3.28)
      *
      */
-    // clang-format off
     virtual QgsAbstractGeometry *combine( const QVector< QgsGeometry > &geometries, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 SIP_FACTORY;
     // clang-format on
 

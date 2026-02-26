@@ -34,10 +34,10 @@ class QgsPolygon;
 class CORE_EXPORT QgsMultiPolygon : public QgsMultiSurface
 {
   public:
+    // clang-format off
     /**
      * Constructor for an empty multipolygon geometry.
      */
-    // clang-format off
     QgsMultiPolygon() SIP_HOLDGIL;
     // clang-format on
 

@@ -273,9 +273,7 @@ Sets the enumeration as :py:class:`QgsCodedValue` ``values``.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private : QList< QgsCodedValue>
-                mValues;
-
+    private:
     QgsCodedFieldDomain( const QgsCodedFieldDomain & );
 };
 
@@ -413,11 +411,7 @@ Sets whether the maximum value is ``inclusive``.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private : QVariant mMin;
-    QVariant mMax;
-    bool mMinIsInclusive;
-    bool mMaxIsInclusive;
-
+    private:
     QgsRangeFieldDomain( const QgsRangeFieldDomain & );
 };
 
@@ -490,8 +484,7 @@ Globs are matching expression like ``*[a-z][0-1]?``
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private : QString mGlob;
-
+    private:
     QgsGlobFieldDomain( const QgsGlobFieldDomain & );
 };
 

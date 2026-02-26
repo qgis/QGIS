@@ -163,12 +163,6 @@ Decodes a size from a ``string``.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private :
-
-    double mWidth
-    = 0.0;
-    double mHeight;
-    Qgis::LayoutUnit mUnits;
 };
 
 /************************************************************************

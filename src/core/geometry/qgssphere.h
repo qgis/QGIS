@@ -45,10 +45,10 @@ class QgsVector3D;
 class CORE_EXPORT QgsSphere
 {
   public:
+    // clang-format off
     /**
      * Constructor for an invalid QgsSphere.
      */
-    // clang-format off
     QgsSphere() SIP_HOLDGIL = default;
     // clang-format on
 

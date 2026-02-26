@@ -251,17 +251,6 @@ Creates a duplicate column which is a deep copy of this column.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private :
-
-    QString mHeading;
-    QString mAttribute;
-    int mSortByRank;
-    Qt::SortOrder mSortOrder;
-    double mWidth;
-    QColor mBackgroundColor;
-    Qt::AlignmentFlag mHAlignment;
-    Qt::AlignmentFlag mVAlignment;
-
 };
 /************************************************************************
  * This file has been generated automatically from                      *

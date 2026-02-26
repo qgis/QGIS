@@ -527,7 +527,9 @@ class CORE_EXPORT QgsTextFormat
       % End
 #endif
 
-        private :
+        // clang-format off
+        private:
+        // clang-format on
 
         double mPosition
         = 0;

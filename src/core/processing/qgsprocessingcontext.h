@@ -87,11 +87,11 @@ class CORE_EXPORT QgsProcessingContext
       mModelResult = other.mModelResult;
     }
 
+    // clang-format off
     /**
      * Returns any flags set in the context.
      * \see setFlags()
      */
-    // clang-format off
     QgsProcessingContext::Flags flags() const SIP_HOLDGIL { return mFlags; }
     // clang-format on
 

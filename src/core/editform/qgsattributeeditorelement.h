@@ -118,12 +118,12 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
 
     virtual ~QgsAttributeEditorElement() = default;
 
+    // clang-format off
     /**
      * Constructs the editor element from the given element
      *
      * \since QGIS 3.18
      */
-    // clang-format off
     static QgsAttributeEditorElement *create( const QDomElement &element, const QString &layerId, const QgsFields &fields, const QgsReadWriteContext &context, QgsAttributeEditorElement *parent = nullptr ) SIP_FACTORY;
     // clang-format on
 

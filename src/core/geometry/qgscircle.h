@@ -47,13 +47,13 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
   public:
     QgsCircle();
 
+    // clang-format off
     /**
      * Constructs a circle by defining all the members.
      * \param center The center of the circle.
      * \param radius The radius of the circle.
      * \param azimuth Angle in degrees started from the North to the first quadrant.
      */
-    // clang-format off
     QgsCircle( const QgsPoint &center, double radius, double azimuth = 0 ) SIP_HOLDGIL;
     // clang-format on
 

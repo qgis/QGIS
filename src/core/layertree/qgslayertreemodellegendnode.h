@@ -564,7 +564,10 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
   % End
 #endif
 
-    private : void updateLabel();
+    // clang-format off
+    private:
+    // clang-format on
+    void updateLabel();
 
   private:
     QgsLegendSymbolItem mItem;
@@ -613,7 +616,10 @@ class CORE_EXPORT QgsSimpleLegendNode : public QgsLayerTreeModelLegendNode
   % End
 #endif
 
-    private : QString mLabel;
+    // clang-format off
+    private:
+    // clang-format on
+    QString mLabel;
     QString mId;
     QIcon mIcon;
     QString mKey;
@@ -650,7 +656,10 @@ class CORE_EXPORT QgsImageLegendNode : public QgsLayerTreeModelLegendNode
   % End
 #endif
 
-    private : QImage mImage;
+    // clang-format off
+    private:
+    // clang-format on
+    QImage mImage;
 };
 
 /**
@@ -705,7 +714,10 @@ class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
   % End
 #endif
 
-    private : QColor mColor;
+    // clang-format off
+    private:
+    // clang-format on
+    QColor mColor;
     QString mLabel;
     bool mCheckable = false;
     QString mRuleKey;
@@ -799,7 +811,10 @@ class CORE_EXPORT QgsDataDefinedSizeLegendNode : public QgsLayerTreeModelLegendN
   % End
 #endif
 
-    private : void cacheImage() const;
+    // clang-format off
+    private:
+    // clang-format on
+    void cacheImage() const;
     std::unique_ptr<QgsDataDefinedSizeLegend> mSettings;
     mutable QImage mImage;
 };
@@ -853,7 +868,10 @@ class CORE_EXPORT QgsVectorLabelLegendNode : public QgsLayerTreeModelLegendNode
   % End
 #endif
 
-    private : QgsPalLayerSettings mLabelSettings;
+    // clang-format off
+    private:
+    // clang-format on
+    QgsPalLayerSettings mLabelSettings;
     QSizeF drawSymbol( const QgsLegendSettings &settings, const QgsRenderContext &renderContext, double xOffset = 0.0, double yOffset = 0.0 ) const;
     void textWidthHeight( double &width, double &height, QgsRenderContext &ctx, const QgsTextFormat &textFormat, const QStringList &textLines ) const;
 };

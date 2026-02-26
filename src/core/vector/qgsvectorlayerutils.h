@@ -238,6 +238,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      */
     static QgsFeatureList createFeatures( const QgsVectorLayer *layer, const QgsFeaturesDataList &featuresData, QgsExpressionContext *context = nullptr );
 
+    // clang-format off
     /**
      * Duplicates a feature and it's children (one level deep). It calls CreateFeature, so
      * default values and constraints (e.g., unique constraints) will automatically be handled.
@@ -247,7 +248,6 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \a depth the current depth, not exposed in Python
      * \a referencedLayersBranch the current branch of layers across the relations, not exposed in Python, taken by copy not reference, used to avoid infinite loop
      */
-    // clang-format off
     static QgsFeature duplicateFeature( QgsVectorLayer *layer, const QgsFeature &feature, QgsProject *project, QgsDuplicateFeatureContext &duplicateFeatureContext SIP_OUT, const int maxDepth = 0, int depth SIP_PYARGREMOVE = 0, QList<QgsVectorLayer *> referencedLayersBranch SIP_PYARGREMOVE = QList<QgsVectorLayer *>() );
     // clang-format on
 

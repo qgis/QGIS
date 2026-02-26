@@ -209,7 +209,9 @@ class CORE_EXPORT QgsLabelingEngineRuleMinimumDistanceLabelToFeature : public Qg
   % End
 #endif
 
-    private :
+    // clang-format off
+    private:
+    // clang-format on
 #ifdef SIP_RUN
     QgsLabelingEngineRuleMinimumDistanceLabelToFeature( const QgsLabelingEngineRuleMinimumDistanceLabelToFeature & );
 #endif
@@ -239,7 +241,9 @@ class CORE_EXPORT QgsLabelingEngineRuleMaximumDistanceLabelToFeature : public Qg
   % End
 #endif
 
-    private :
+    // clang-format off
+    private:
+    // clang-format on
 #ifdef SIP_RUN
     QgsLabelingEngineRuleMaximumDistanceLabelToFeature( const QgsLabelingEngineRuleMaximumDistanceLabelToFeature & );
 #endif

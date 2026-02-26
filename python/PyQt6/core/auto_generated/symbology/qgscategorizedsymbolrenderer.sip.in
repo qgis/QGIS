@@ -152,13 +152,8 @@ document and ``element``.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    protected : friend class QgsCategorizedSymbolRendererWidget;
+    protected:
 
-    QVariant mValue;
-    std::unique_ptr<QgsSymbol> mSymbol;
-    QString mLabel;
-    bool mRender;
-    QString mUuid;
 };
 
 typedef QList<QgsRendererCategory> QgsCategoryList;

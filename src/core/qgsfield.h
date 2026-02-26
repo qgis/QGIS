@@ -70,6 +70,7 @@ class CORE_EXPORT QgsField
     Q_PROPERTY( bool isReadOnly READ isReadOnly WRITE setReadOnly )
 
   public:
+    // clang-format off
     /**
      * Constructor. Constructs a new QgsField object.
      * \param name Field name
@@ -85,11 +86,7 @@ class CORE_EXPORT QgsField
      *                all the elements don't need to have the same type, leave
      *                this to QVariant::Invalid.
      */
-    QgsField(
-      const QString &name = QString(), QMetaType::Type type = QMetaType::Type::UnknownType, const QString &typeName = QString(), int len = 0, int prec = 0, const QString &comment = QString(),
-      QMetaType::Type subType = QMetaType::Type::UnknownType
-      // clang-format off
-    ) SIP_HOLDGIL;
+    QgsField( const QString &name = QString(), QMetaType::Type type = QMetaType::Type::UnknownType, const QString &typeName = QString(), int len = 0, int prec = 0, const QString &comment = QString(), QMetaType::Type subType = QMetaType::Type::UnknownType ) SIP_HOLDGIL;
     // clang-format on
 
 

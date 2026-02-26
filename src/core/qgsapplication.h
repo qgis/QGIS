@@ -84,6 +84,7 @@ class QgsSensorRegistry;
 class QgsProfileSourceRegistry;
 class QgsLabelingEngineRuleRegistry;
 
+// clang-format off
 /**
  * \ingroup core
  * \brief Extends QApplication to provide access to QGIS specific resources such
@@ -99,7 +100,6 @@ class QgsLabelingEngineRuleRegistry;
  * so that platform-conditional code is minimized and paths are easier
  * to change due to centralization.
  */
-// clang-format off
 class CORE_EXPORT QgsApplication : public QApplication
 {
 // clang-format on
@@ -420,11 +420,11 @@ class CORE_EXPORT QgsApplication : public QApplication
                             const QColor &fillColor = QColor(),
                             const QColor &strokeColor = QColor());
 
+  // clang-format off
   /**
    * \brief The Cursor enum defines constants for QGIS custom
    * cursors.
    */
-  // clang-format off
   enum Cursor
   {
     ZoomIn, //!< Zoom in
@@ -590,8 +590,8 @@ class CORE_EXPORT QgsApplication : public QApplication
   //! Gets application icon
   static QString appIconPath();
 
-  //! Constants for endian-ness
   // clang-format off
+  //! Constants for endian-ness
   enum endian_t
   {
     XDR = 0, // network, or big-endian, byte order

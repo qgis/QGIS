@@ -20,6 +20,9 @@ Multi surface geometry collection.
 %End
   public:
     QgsMultiSurface() /HoldGIL/;
+%Docstring
+Constructor for an empty multisurface geometry.
+%End
 
 
     SIP_PYOBJECT surfaceN( int index ) /TypeHint="QgsSurface"/;

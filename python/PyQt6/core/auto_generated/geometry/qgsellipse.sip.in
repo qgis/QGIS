@@ -29,6 +29,9 @@ larger, it will be swapped and the azimuth will increase by 90 degrees.
 %End
   public:
     QgsEllipse() /HoldGIL/;
+%Docstring
+Constructor for QgsEllipse.
+%End
 
     virtual ~QgsEllipse();
 

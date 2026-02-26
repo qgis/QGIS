@@ -166,7 +166,10 @@ class CORE_EXPORT QgsMargins
   % End
 #endif
 
-    private : double mLeft
+    // clang-format off
+    private:
+    // clang-format on
+    double mLeft
     = 0.0;
     double mTop = 0.0;
     double mRight = 0.0;

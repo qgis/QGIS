@@ -91,11 +91,11 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
     % End
 #endif
 
+    // clang-format off
     /**
      * Returns TRUE if this curve represents a Bézier curve.
      * A Bézier curve is a special case of NURBS with uniform weights and specific knot vector.
      */
-    // clang-format off
     bool isBezier() const SIP_HOLDGIL;
     // clang-format on
 

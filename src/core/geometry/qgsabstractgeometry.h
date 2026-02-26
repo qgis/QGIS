@@ -241,12 +241,12 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual QString geometryType() const = 0;
 
+    // clang-format off
     /**
      * Returns the WKB type of the geometry.
      * \see geometryType
      * \see wktTypeStr
      */
-    // clang-format off
     inline Qgis::WkbType wkbType() const SIP_HOLDGIL { return mWkbType; }
     // clang-format on
 

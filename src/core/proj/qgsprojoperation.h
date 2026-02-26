@@ -69,7 +69,9 @@ class CORE_EXPORT QgsProjOperation
   % End
 #endif
 
-    private :
+    // clang-format off
+    private:
+    // clang-format on
 
     bool mValid
     = false;

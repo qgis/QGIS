@@ -35,10 +35,25 @@ name, type length, and if applicable, precision.
     static const QMetaObject staticMetaObject;
 
   public:
-    QgsField(
-      const QString &name = QString(), QMetaType::Type type = QMetaType::Type::UnknownType, const QString &typeName = QString(), int len = 0, int prec = 0, const QString &comment = QString(),
-      QMetaType::Type subType = QMetaType::Type::UnknownType
-    ) /HoldGIL/;
+    QgsField( const QString &name = QString(), QMetaType::Type type = QMetaType::Type::UnknownType, const QString &typeName = QString(), int len = 0, int prec = 0, const QString &comment = QString(), QMetaType::Type subType = QMetaType::Type::UnknownType ) /HoldGIL/;
+%Docstring
+Constructor. Constructs a new QgsField object.
+
+:param name: Field name
+:param type: Field variant type, currently supported: String / Int /
+             Double
+:param typeName: Field type (e.g., char, varchar, text, int, serial,
+                 double). Field types are usually unique to the source
+                 and are stored exactly as returned from the data store.
+:param len: Field length
+:param prec: Field precision. Usually decimal places but may also be
+             used in conjunction with other fields types (e.g., variable
+             character fields)
+:param comment: Comment for the field
+:param subType: If the field is a collection, its element's type. When
+                all the elements don't need to have the same type, leave
+                this to QVariant.Invalid.
+%End
 
 
  QgsField( const QString &name,

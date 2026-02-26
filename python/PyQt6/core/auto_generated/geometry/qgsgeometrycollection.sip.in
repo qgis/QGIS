@@ -22,6 +22,9 @@ Geometry collection.
 %End
   public:
     QgsGeometryCollection() /HoldGIL/;
+%Docstring
+Constructor for an empty geometry collection.
+%End
 
     QgsGeometryCollection( const QgsGeometryCollection &c );
     ~QgsGeometryCollection();

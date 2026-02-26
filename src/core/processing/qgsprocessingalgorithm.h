@@ -113,6 +113,7 @@ class QgsPointCloudLayer;
      */
     QgsProcessingAlgorithm *create( const QVariantMap &configuration = QVariantMap() ) const SIP_THROW( QgsProcessingException ) SIP_TRANSFERBACK;
 
+    // clang-format off
     /**
      * Returns the algorithm name, used for identifying the algorithm. This string
      * should be fixed for the algorithm, and must not be localised. The name should
@@ -122,7 +123,6 @@ class QgsPointCloudLayer;
      * \see group()
      * \see tags()
     */
-    // clang-format off
     virtual QString name() const = 0 SIP_HOLDGIL;
     // clang-format on
 

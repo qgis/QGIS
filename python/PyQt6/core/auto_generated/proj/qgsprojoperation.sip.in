@@ -56,14 +56,6 @@ Additional details.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private :
-
-    bool mValid
-    = false;
-    QString mId;
-    QString mDescription;
-    QString mDetails;
-
 };
 
 /************************************************************************

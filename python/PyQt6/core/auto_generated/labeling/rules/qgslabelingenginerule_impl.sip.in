@@ -193,7 +193,7 @@ features from a different layer.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private :
+    private:
     QgsLabelingEngineRuleMinimumDistanceLabelToFeature( const QgsLabelingEngineRuleMinimumDistanceLabelToFeature & );
 };
 
@@ -227,7 +227,7 @@ features from a different layer.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private :
+    private:
     QgsLabelingEngineRuleMaximumDistanceLabelToFeature( const QgsLabelingEngineRuleMaximumDistanceLabelToFeature & );
 };
 

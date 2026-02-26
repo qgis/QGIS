@@ -70,7 +70,9 @@ class CORE_EXPORT QgsCelestialBody
   % End
 #endif
 
-    private :
+    // clang-format off
+    private:
+    // clang-format on
 
     bool mValid
     = false;

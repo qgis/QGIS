@@ -35,10 +35,10 @@ class QgsPoint;
 class CORE_EXPORT QgsGeometryCollection : public QgsAbstractGeometry
 {
   public:
+    // clang-format off
     /**
      * Constructor for an empty geometry collection.
      */
-    // clang-format off
     QgsGeometryCollection() SIP_HOLDGIL;
     // clang-format on
 

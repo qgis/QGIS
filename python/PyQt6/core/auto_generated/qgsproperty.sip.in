@@ -626,16 +626,6 @@ non-performance critical code.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private :
-
-    mutable QExplicitlySharedDataPointer<QgsPropertyPrivate>
-      d;
-
-    QVariant propertyValue( const QgsExpressionContext &context, const QVariant &defaultValue = QVariant(), bool *ok = 0 ) const;
-%Docstring
-Calculates the current value of the property, before any transformations
-or conversions are applied.
-%End
 };
 
 

@@ -165,7 +165,10 @@ class CORE_EXPORT QgsSelectiveMaskingSourceSet
   % End
 #endif
 
-    private : bool mIsValid
+    // clang-format off
+    private:
+    // clang-format on
+    bool mIsValid
     = false;
     QString mId;
     QString mName;

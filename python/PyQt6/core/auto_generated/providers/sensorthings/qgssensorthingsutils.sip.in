@@ -357,14 +357,6 @@ expansion.
     }
 %End
 
-    private :
-
-    Qgis::SensorThingsEntity mChildEntity
-    = Qgis::SensorThingsEntity::Invalid;
-    QString mOrderBy;
-    Qt::SortOrder mSortOrder;
-    int mLimit;
-    QString mFilter;
 };
 
 /************************************************************************

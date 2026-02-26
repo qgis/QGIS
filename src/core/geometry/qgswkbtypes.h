@@ -42,6 +42,7 @@ class CORE_EXPORT QgsWkbTypes
 {
     Q_GADGET
   public:
+    // clang-format off
     /**
      * Returns the single type for a WKB type. For example, for MultiPolygon WKB types the single type would be Polygon.
      * \see isSingleType()
@@ -49,7 +50,6 @@ class CORE_EXPORT QgsWkbTypes
      * \see curveType()
      * \see flatType()
      */
-    // clang-format off
     static Qgis::WkbType singleType( Qgis::WkbType type ) SIP_HOLDGIL
       // clang-format on
     {

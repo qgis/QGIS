@@ -349,7 +349,9 @@ class CORE_EXPORT QgsSensorThingsExpansionDefinition
   % End
 #endif
 
-    private :
+    // clang-format off
+    private:
+    // clang-format on
 
     Qgis::SensorThingsEntity mChildEntity
     = Qgis::SensorThingsEntity::Invalid;

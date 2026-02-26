@@ -96,10 +96,6 @@ Returns the symbol layer index path inside the symbol
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private :
-    QString mSymbolKey;
-
-    QVector<int> mIndexPath;
 };
 
 class QgsSymbolLayerReference
@@ -171,11 +167,6 @@ The symbol layer's id
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private : QString mLayerId;
-
-    QgsSymbolLayerId mDeprecatedSymbolLayerId;
-
-    QString mSymbolLayerId;
 };
 
 uint qHash( const QgsSymbolLayerId &id );

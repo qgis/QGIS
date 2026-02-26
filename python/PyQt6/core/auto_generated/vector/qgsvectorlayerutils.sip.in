@@ -240,6 +240,18 @@ into the layer.
 %End
 
     static QgsFeature duplicateFeature( QgsVectorLayer *layer, const QgsFeature &feature, QgsProject *project, QgsDuplicateFeatureContext &duplicateFeatureContext /Out/, const int maxDepth = 0 );
+%Docstring
+Duplicates a feature and it's children (one level deep). It calls
+CreateFeature, so default values and constraints (e.g., unique
+constraints) will automatically be handled. The duplicated feature will
+be automatically inserted into the layer. ``duplicateFeatureContext``
+stores all the layers and the featureids of the duplicated features
+(incl. children) ``maxDepth`` the maximum depth to duplicate children in
+relations, 0 is unlimited depth (in any case, limited to 100) ``depth``
+the current depth, not exposed in Python ``referencedLayersBranch`` the
+current branch of layers across the relations, not exposed in Python,
+taken by copy not reference, used to avoid infinite loop
+%End
 
 
 

@@ -47,10 +47,10 @@ class QgsBox3D;
 class CORE_EXPORT QgsLineString : public QgsCurve
 {
   public:
+    // clang-format off
     /**
      * Constructor for an empty linestring geometry.
      */
-    // clang-format off
     QgsLineString() SIP_HOLDGIL;
     // clang-format on
 #ifndef SIP_RUN

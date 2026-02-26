@@ -88,6 +88,9 @@ provider does not exist in the registry).
 %End
 
     QgsProcessingProvider *providerById( const QString &id ) const /HoldGIL/;
+%Docstring
+Returns a matching provider by provider ID.
+%End
 
     QList< const QgsProcessingAlgorithm *> algorithms() const;
 %Docstring

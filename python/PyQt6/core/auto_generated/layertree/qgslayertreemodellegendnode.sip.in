@@ -512,8 +512,6 @@ The caller takes ownership of the returned object.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private : void updateLabel();
-
 };
 
 
@@ -547,10 +545,6 @@ Constructor for QgsSimpleLegendNode.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private : QString mLabel;
-    QString mId;
-    QIcon mIcon;
-    QString mKey;
 };
 
 
@@ -588,7 +582,6 @@ Constructor for QgsImageLegendNode.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private : QImage mImage;
 };
 
 class QgsRasterSymbolLegendNode : QgsLayerTreeModelLegendNode
@@ -652,11 +645,6 @@ enabling/disabling it.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private : QColor mColor;
-    QString mLabel;
-    bool mCheckable;
-    QString mRuleKey;
-    QString mParentRuleKey;
 };
 
 
@@ -743,9 +731,6 @@ definition of the node's appearance
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private : void cacheImage() const;
-    std::unique_ptr<QgsDataDefinedSizeLegend> mSettings;
-    mutable QImage mImage;
 };
 
 class QgsVectorLabelLegendNode : QgsLayerTreeModelLegendNode
@@ -808,9 +793,6 @@ exportSymbolToJson
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    private : QgsPalLayerSettings mLabelSettings;
-    QSizeF drawSymbol( const QgsLegendSettings &settings, const QgsRenderContext &renderContext, double xOffset = 0.0, double yOffset = 0.0 ) const;
-    void textWidthHeight( double &width, double &height, QgsRenderContext &ctx, const QgsTextFormat &textFormat, const QStringList &textLines ) const;
 };
 
 

@@ -35,10 +35,10 @@ using namespace Qt::StringLiterals;
 class CORE_EXPORT QgsCircularString : public QgsCurve
 {
   public:
+    // clang-format off
     /**
      * Constructs an empty circular string.
      */
-    // clang-format off
     QgsCircularString() SIP_HOLDGIL;
     // clang-format on
 

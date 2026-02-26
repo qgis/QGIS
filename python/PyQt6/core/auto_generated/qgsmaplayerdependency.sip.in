@@ -66,9 +66,6 @@ Returns the ID of the layer this dependency depends on
     Py_hash_t __hash__() const;
 %MethodCode sipRes = qHash( *sipCpp );
 %End
-    private : Type mType;
-    Origin mOrigin;
-    QString mLayerId;
 };
 
 

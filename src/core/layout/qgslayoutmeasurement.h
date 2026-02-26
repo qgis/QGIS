@@ -130,7 +130,9 @@ class CORE_EXPORT QgsLayoutMeasurement
   % End
 #endif
 
-    private :
+    // clang-format off
+    private:
+    // clang-format on
 
     double mLength
     = 0.0;
