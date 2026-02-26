@@ -50,7 +50,7 @@
 
 using namespace Qt::StringLiterals;
 
-#if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR<10 )
+#if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 10 )
 #include "qgsmessagelog.h"
 #endif
 #include <cfloat>
@@ -225,7 +225,7 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
       // Holes of the feature are obstacles
       for ( int i = 0; i < featurePart->getNumSelfObstacles(); i++ )
       {
-        FeaturePart *selfObstacle =  featurePart->getSelfObstacle( i );
+        FeaturePart *selfObstacle = featurePart->getSelfObstacle( i );
         obstacles.insert( selfObstacle, selfObstacle->boundingBox() );
         allObstacleParts.emplace_back( selfObstacle );
 
@@ -244,28 +244,33 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
       // purge candidates that violate known constraints, eg
       // - they are outside the bbox
       // - they violate a labeling rule
-      candidates.erase( std::remove_if( candidates.begin(), candidates.end(), [&mapBoundaryPrepared, &labelContext, this]( std::unique_ptr< LabelPosition > &candidate )
-      {
-        if ( showPartialLabels() )
-        {
-          if ( !candidate->intersects( mapBoundaryPrepared.get() ) )
-            return true;
-        }
-        else
-        {
-          if ( !candidate->within( mapBoundaryPrepared.get() ) )
-            return true;
-        }
+      candidates.erase(
+        std::remove_if(
+          candidates.begin(), candidates.end(),
+          [&mapBoundaryPrepared, &labelContext, this]( std::unique_ptr< LabelPosition > &candidate ) {
+            if ( showPartialLabels() )
+            {
+              if ( !candidate->intersects( mapBoundaryPrepared.get() ) )
+                return true;
+            }
+            else
+            {
+              if ( !candidate->within( mapBoundaryPrepared.get() ) )
+                return true;
+            }
 
-        for ( QgsAbstractLabelingEngineRule *rule : std::as_const( mRules ) )
-        {
-          if ( rule->candidateIsIllegal( candidate.get(), labelContext ) )
-          {
-            return true;
+            for ( QgsAbstractLabelingEngineRule *rule : std::as_const( mRules ) )
+            {
+              if ( rule->candidateIsIllegal( candidate.get(), labelContext ) )
+              {
+                return true;
+              }
+            }
+            return false;
           }
-        }
-        return false;
-      } ), candidates.end() );
+        ),
+        candidates.end()
+      );
 
       if ( isCanceled() )
         break;
@@ -400,8 +405,7 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
       if ( isCanceled() )
         break; // do not continue searching
 
-      allCandidatesFirstRound.intersects( obstaclePart->boundingBox(), [obstaclePart, this]( const LabelPosition * candidatePosition ) -> bool
-      {
+      allCandidatesFirstRound.intersects( obstaclePart->boundingBox(), [obstaclePart, this]( const LabelPosition *candidatePosition ) -> bool {
         // test whether we should ignore this obstacle for the candidate. We do this if:
         // 1. it's not a hole, and the obstacle belongs to the same label feature as the candidate (e.g.,
         // features aren't obstacles for their own labels)
@@ -472,8 +476,7 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
       if ( isCanceled() )
         return nullptr;
 
-      auto pruneHardConflicts = [&]
-      {
+      auto pruneHardConflicts = [&] {
         switch ( mPlacementVersion )
         {
           case Qgis::LabelPlacementEngineVersion::Version1:
@@ -485,16 +488,21 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
             // their inactive cost
 
             // note, we start this at the SECOND candidate (you'll see why after this loop)
-            feat->candidates.erase( std::remove_if( feat->candidates.begin() + 1, feat->candidates.end(), [ & ]( std::unique_ptr< LabelPosition > &candidate )
-            {
-              if ( candidate->hasHardObstacleConflict() )
-              {
-                return true;
-              }
-              return false;
-            } ), feat->candidates.end() );
+            feat->candidates.erase(
+              std::remove_if(
+                feat->candidates.begin() + 1, feat->candidates.end(),
+                [&]( std::unique_ptr< LabelPosition > &candidate ) {
+                  if ( candidate->hasHardObstacleConflict() )
+                  {
+                    return true;
+                  }
+                  return false;
+                }
+              ),
+              feat->candidates.end()
+            );
 
-            if ( feat->candidates.size() == 1 && feat->candidates[ 0 ]->hasHardObstacleConflict() )
+            if ( feat->candidates.size() == 1 && feat->candidates[0]->hasHardObstacleConflict() )
             {
               switch ( feat->feature->feature()->overlapHandling() )
               {
@@ -619,15 +627,13 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
 
         // lookup for overlapping candidate
         const QgsRectangle searchBounds = lp->boundingBoxForCandidateConflicts( this );
-        prob->allCandidatesIndex().intersects( searchBounds, [&lp, this]( const LabelPosition * lp2 )->bool
-        {
+        prob->allCandidatesIndex().intersects( searchBounds, [&lp, this]( const LabelPosition *lp2 ) -> bool {
           if ( candidatesAreConflicting( lp.get(), lp2 ) )
           {
             lp->incrementNumOverlaps();
           }
 
           return true;
-
         } );
 
         nbOverlaps += lp->getNumOverlaps();
@@ -731,35 +737,17 @@ void Pal::setPopmusicR( int r )
     mPopmusicR = r;
 }
 
-void Pal::setEjChainDeg( int degree )
-{
-  this->mEjChainDeg = degree;
-}
+void Pal::setEjChainDeg( int degree ) { this->mEjChainDeg = degree; }
 
-void Pal::setTenure( int tenure )
-{
-  this->mTenure = tenure;
-}
+void Pal::setTenure( int tenure ) { this->mTenure = tenure; }
 
-void Pal::setCandListSize( double fact )
-{
-  this->mCandListSize = fact;
-}
+void Pal::setCandListSize( double fact ) { this->mCandListSize = fact; }
 
-void Pal::setShowPartialLabels( bool show )
-{
-  this->mShowPartialLabels = show;
-}
+void Pal::setShowPartialLabels( bool show ) { this->mShowPartialLabels = show; }
 
-Qgis::LabelPlacementEngineVersion Pal::placementVersion() const
-{
-  return mPlacementVersion;
-}
+Qgis::LabelPlacementEngineVersion Pal::placementVersion() const { return mPlacementVersion; }
 
-void Pal::setPlacementVersion( Qgis::LabelPlacementEngineVersion placementVersion )
-{
-  mPlacementVersion = placementVersion;
-}
+void Pal::setPlacementVersion( Qgis::LabelPlacementEngineVersion placementVersion ) { mPlacementVersion = placementVersion; }
 
 bool Pal::candidatesAreConflicting( const LabelPosition *lp1, const LabelPosition *lp2 ) const
 {
@@ -777,17 +765,14 @@ bool Pal::candidatesAreConflicting( const LabelPosition *lp1, const LabelPositio
 
   bool res = false;
 
-  const double labelMarginDistance = std::max(
-                                       lp1->getFeaturePart()->feature()->thinningSettings().labelMarginDistance(),
-                                       lp2->getFeaturePart()->feature()->thinningSettings().labelMarginDistance()
-                                     );
+  const double labelMarginDistance = std::max( lp1->getFeaturePart()->feature()->thinningSettings().labelMarginDistance(), lp2->getFeaturePart()->feature()->thinningSettings().labelMarginDistance() );
 
   if ( labelMarginDistance > 0 )
   {
     GEOSContextHandle_t geosctxt = QgsGeosContext::get();
     try
     {
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
       if ( GEOSPreparedDistanceWithin_r( geosctxt, lp1->preparedMultiPartGeom(), lp2->multiPartGeom(), labelMarginDistance ) )
       {
         res = true;
@@ -820,22 +805,10 @@ bool Pal::candidatesAreConflicting( const LabelPosition *lp1, const LabelPositio
   return res;
 }
 
-void Pal::setRules( const QList<QgsAbstractLabelingEngineRule *> &rules )
-{
-  mRules = rules;
-}
+void Pal::setRules( const QList<QgsAbstractLabelingEngineRule *> &rules ) { mRules = rules; }
 
-int Pal::getMinIt() const
-{
-  return mTabuMaxIt;
-}
+int Pal::getMinIt() const { return mTabuMaxIt; }
 
-int Pal::getMaxIt() const
-{
-  return mTabuMinIt;
-}
+int Pal::getMaxIt() const { return mTabuMinIt; }
 
-bool Pal::showPartialLabels() const
-{
-  return mShowPartialLabels;
-}
+bool Pal::showPartialLabels() const { return mShowPartialLabels; }

@@ -90,8 +90,7 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
   y[3] = y1 + dy2;
 
   // upside down ? (curved labels are always correct)
-  if ( !feature->layer()->isCurved() &&
-       this->alpha > M_PI_2 && this->alpha <= 3 * M_PI_2 )
+  if ( !feature->layer()->isCurved() && this->alpha > M_PI_2 && this->alpha <= 3 * M_PI_2 )
   {
     if ( feature->onlyShowUprightLabels() )
     {
@@ -232,15 +231,14 @@ bool LabelPosition::isInConflict( const LabelPosition *lp ) const
   // this method considers the label's outer bounds
 
   if ( this->probFeat == lp->probFeat ) // bugfix #1
-    return false; // always overlapping itself !
+    return false;                       // always overlapping itself !
 
-  const double minDuplicateSeparation = std::max( getFeaturePart()->feature()->thinningSettings().noRepeatDistance(),
-                                        lp->getFeaturePart()->feature()->thinningSettings().noRepeatDistance() );
+  const double minDuplicateSeparation = std::max( getFeaturePart()->feature()->thinningSettings().noRepeatDistance(), lp->getFeaturePart()->feature()->thinningSettings().noRepeatDistance() );
   const bool noDuplicateDistanceApplies = minDuplicateSeparation > 0 && getFeaturePart()->feature()->labelText() == lp->getFeaturePart()->feature()->labelText();
 
   // if either this label doesn't cause collisions, or the other one doesn't, then we don't conflict!
-  const bool allowOverlapAtNoCost = this->feature->feature()->overlapHandling() == Qgis::LabelOverlapHandling::AllowOverlapAtNoCost ||
-                                    lp->feature->feature()->overlapHandling() == Qgis::LabelOverlapHandling::AllowOverlapAtNoCost;
+  const bool allowOverlapAtNoCost = this->feature->feature()->overlapHandling() == Qgis::LabelOverlapHandling::AllowOverlapAtNoCost
+                                    || lp->feature->feature()->overlapHandling() == Qgis::LabelOverlapHandling::AllowOverlapAtNoCost;
 
   // early exit shortcut
   if ( !noDuplicateDistanceApplies && allowOverlapAtNoCost )
@@ -291,9 +289,8 @@ bool LabelPosition::isInConflict( const LabelPosition *lp ) const
       {
         try
         {
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
-          if ( GEOSPreparedDistanceWithin_r( geosctxt, lp->preparedOuterBoundsGeom() ? lp->preparedOuterBoundsGeom() : lp->preparedGeom(),
-                                             mOuterBoundsGeos ? mOuterBoundsGeos.get() : mGeos, minDuplicateSeparation ) )
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
+          if ( GEOSPreparedDistanceWithin_r( geosctxt, lp->preparedOuterBoundsGeom() ? lp->preparedOuterBoundsGeom() : lp->preparedGeom(), mOuterBoundsGeos ? mOuterBoundsGeos.get() : mGeos, minDuplicateSeparation ) )
           {
             return true;
           }
@@ -308,14 +305,13 @@ bool LabelPosition::isInConflict( const LabelPosition *lp ) const
       }
       else
       {
-
         if ( !mOuterBoundsGeos && !mGeos )
           createGeosGeom();
 
         try
         {
-          const bool result = ( GEOSPreparedIntersects_r( geosctxt, lp->preparedOuterBoundsGeom() ? lp->preparedOuterBoundsGeom() : lp->preparedGeom(),
-                                mOuterBoundsGeos ? mOuterBoundsGeos.get() : mGeos ) == 1 );
+          const bool result
+            = ( GEOSPreparedIntersects_r( geosctxt, lp->preparedOuterBoundsGeom() ? lp->preparedOuterBoundsGeom() : lp->preparedGeom(), mOuterBoundsGeos ? mOuterBoundsGeos.get() : mGeos ) == 1 );
           return result;
         }
         catch ( QgsGeosException &e )
@@ -326,7 +322,6 @@ bool LabelPosition::isInConflict( const LabelPosition *lp ) const
         }
       }
       return false;
-
     }
   }
 
@@ -343,19 +338,17 @@ bool LabelPosition::isInConflictMultiPart( const LabelPosition *lp ) const
 
   GEOSContextHandle_t geosctxt = QgsGeosContext::get();
 
-  const bool noRepeatDistanceApplies = ( getFeaturePart()->feature()->thinningSettings().noRepeatDistance() > 0
-                                         || lp->getFeaturePart()->feature()->thinningSettings().noRepeatDistance() > 0 )
+  const bool noRepeatDistanceApplies = ( getFeaturePart()->feature()->thinningSettings().noRepeatDistance() > 0 || lp->getFeaturePart()->feature()->thinningSettings().noRepeatDistance() > 0 )
                                        && getFeaturePart()->feature()->labelText() == lp->getFeaturePart()->feature()->labelText();
 
   // test for duplicate labels too close together
   if ( noRepeatDistanceApplies )
   {
-    const double minSeparation = std::max( getFeaturePart()->feature()->thinningSettings().noRepeatDistance(),
-                                           lp->getFeaturePart()->feature()->thinningSettings().noRepeatDistance() );
+    const double minSeparation = std::max( getFeaturePart()->feature()->thinningSettings().noRepeatDistance(), lp->getFeaturePart()->feature()->thinningSettings().noRepeatDistance() );
 
     try
     {
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
       if ( GEOSPreparedDistanceWithin_r( geosctxt, preparedMultiPartGeom(), lp->multiPartGeom(), minSeparation ) )
       {
         return true;
@@ -425,7 +418,7 @@ void LabelPosition::createOuterBoundsGeom()
   mOuterBoundsY[4] = mOuterBoundsY[0];
 
   GEOSCoordSequence *coord = nullptr;
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
   // use optimised method if we don't have to force close an open ring
   coord = GEOSCoordSeq_copyFromArrays_r( geosctxt, mOuterBoundsX.data(), mOuterBoundsY.data(), nullptr, nullptr, 5 );
 #else
@@ -456,38 +449,23 @@ int LabelPosition::partCount() const
     return 1;
 }
 
-int LabelPosition::getId() const
-{
-  return id;
-}
+int LabelPosition::getId() const { return id; }
 
-double LabelPosition::getX( int i ) const
-{
-  return ( i >= 0 && i < 4 ? x[i] : -1 );
-}
+double LabelPosition::getX( int i ) const { return ( i >= 0 && i < 4 ? x[i] : -1 ); }
 
-double LabelPosition::getY( int i ) const
-{
-  return ( i >= 0 && i < 4 ? y[i] : -1 );
-}
+double LabelPosition::getY( int i ) const { return ( i >= 0 && i < 4 ? y[i] : -1 ); }
 
-double LabelPosition::getAlpha() const
-{
-  return alpha;
-}
+double LabelPosition::getAlpha() const { return alpha; }
 
 void LabelPosition::validateCost()
 {
   if ( mCost >= 1 )
   {
-    mCost -= int ( mCost ); // label cost up to 1
+    mCost -= int( mCost ); // label cost up to 1
   }
 }
 
-FeaturePart *LabelPosition::getFeaturePart() const
-{
-  return feature;
-}
+FeaturePart *LabelPosition::getFeaturePart() const { return feature; }
 
 void LabelPosition::getBoundingBox( double amin[2], double amax[2] ) const
 {
@@ -606,15 +584,9 @@ void LabelPosition::setHasHardObstacleConflict( bool conflicts )
     mNextPart->setHasHardObstacleConflict( conflicts );
 }
 
-void LabelPosition::removeFromIndex( PalRtree<LabelPosition> &index, Pal *pal )
-{
-  index.remove( this, boundingBoxForCandidateConflicts( pal ) );
-}
+void LabelPosition::removeFromIndex( PalRtree<LabelPosition> &index, Pal *pal ) { index.remove( this, boundingBoxForCandidateConflicts( pal ) ); }
 
-void LabelPosition::insertIntoIndex( PalRtree<LabelPosition> &index, Pal *pal )
-{
-  index.insert( this, boundingBoxForCandidateConflicts( pal ) );
-}
+void LabelPosition::insertIntoIndex( PalRtree<LabelPosition> &index, Pal *pal ) { index.insert( this, boundingBoxForCandidateConflicts( pal ) ); }
 
 const GEOSGeometry *LabelPosition::multiPartGeom() const
 {
@@ -639,14 +611,14 @@ void LabelPosition::createMultiPartGeosGeom() const
   }
 
   const std::size_t partCount = geometries.size();
-  GEOSGeometry **geomarr = new GEOSGeometry*[ partCount ];
+  GEOSGeometry **geomarr = new GEOSGeometry *[partCount];
   for ( std::size_t i = 0; i < partCount; ++i )
   {
-    geomarr[i ] = GEOSGeom_clone_r( geosctxt, geometries[i] );
+    geomarr[i] = GEOSGeom_clone_r( geosctxt, geometries[i] );
   }
 
   mMultipartGeos = GEOSGeom_createCollection_r( geosctxt, GEOS_MULTIPOLYGON, geomarr, partCount );
-  delete [] geomarr;
+  delete[] geomarr;
 }
 
 const GEOSPreparedGeometry *LabelPosition::preparedMultiPartGeom() const
@@ -661,10 +633,7 @@ const GEOSPreparedGeometry *LabelPosition::preparedMultiPartGeom() const
   return mMultipartPreparedGeos;
 }
 
-const GEOSPreparedGeometry *LabelPosition::preparedOuterBoundsGeom() const
-{
-  return mPreparedOuterBoundsGeos;
-}
+const GEOSPreparedGeometry *LabelPosition::preparedOuterBoundsGeom() const { return mPreparedOuterBoundsGeos; }
 
 double LabelPosition::getDistanceToPoint( double xp, double yp, bool useOuterBounds ) const
 {
@@ -743,7 +712,7 @@ double LabelPosition::getDistanceToPoint( double xp, double yp, bool useOuterBou
           }
           else
           {
-            ( void )GEOSCoordSeq_getXY_r( geosctxt, nearestCoord.get(), 0, &nx, &ny );
+            ( void ) GEOSCoordSeq_getXY_r( geosctxt, nearestCoord.get(), 0, &nx, &ny );
             distance = QgsGeometryUtilsBase::sqrDistance2D( xp, yp, nx, ny );
           }
         }

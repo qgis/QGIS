@@ -31,7 +31,6 @@
 #define PAL_H
 
 
-
 #include <ctime>
 #include <iostream>
 #include <unordered_map>
@@ -68,11 +67,11 @@ namespace pal
   //! Search method to use
   enum SearchMethod
   {
-    CHAIN = 0, //!< Is the worst but fastest method
+    CHAIN = 0,               //!< Is the worst but fastest method
     POPMUSIC_TABU_CHAIN = 1, //!< Is the best but slowest
-    POPMUSIC_TABU = 2, //!< Is a little bit better than CHAIN but slower
-    POPMUSIC_CHAIN = 3, //!< Is slower and best than TABU, worse and faster than TABU_CHAIN
-    FALP = 4 //!< Only initial solution
+    POPMUSIC_TABU = 2,       //!< Is a little bit better than CHAIN but slower
+    POPMUSIC_CHAIN = 3,      //!< Is slower and best than TABU, worse and faster than TABU_CHAIN
+    FALP = 4                 //!< Only initial solution
   };
 
   /**
@@ -284,7 +283,6 @@ namespace pal
       QList< QgsAbstractLabelingEngineRule * > rules() const { return mRules; }
 
     private:
-
       std::vector< std::pair< QgsAbstractLabelProvider *, std::unique_ptr< Layer > > > mLayers;
 
       QList< QgsAbstractLabelingEngineRule * > mRules;
@@ -373,7 +371,6 @@ namespace pal
        * \see getMinIt()
        */
       int getMaxIt() const;
-
   };
 
 } // end namespace pal

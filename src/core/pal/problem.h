@@ -31,7 +31,6 @@
 #define PAL_PROBLEM_H
 
 
-
 #include <list>
 #include <memory>
 #include <vector>
@@ -60,10 +59,10 @@ namespace pal
 
   struct Chain
   {
-    int degree;
-    double delta;
-    std::vector< int > feat;
-    std::vector< int > label;
+      int degree;
+      double delta;
+      std::vector< int > feat;
+      std::vector< int > label;
   };
 
   /**
@@ -77,7 +76,6 @@ namespace pal
       friend class Pal;
 
     public:
-
       /**
        * Constructor for Problem.
        *
@@ -111,7 +109,7 @@ namespace pal
       /**
        * Returns the candidate corresponding to the specified \a feature and \a candidate index.
        */
-      LabelPosition *featureCandidate( int feature, int candidate ) const { return mLabelPositions[ mFirstCandidateIndexForFeature[feature] + candidate ].get(); }
+      LabelPosition *featureCandidate( int feature, int candidate ) const { return mLabelPositions[mFirstCandidateIndexForFeature[feature] + candidate].get(); }
 
       /**
        * Gets called AFTER extractProblem.
@@ -148,10 +146,7 @@ namespace pal
        *
        * Ownership of positions added to this list is transferred to the problem.
        */
-      std::vector< std::unique_ptr< LabelPosition > > *positionsWithNoCandidates()
-      {
-        return &mPositionsWithNoCandidates;
-      }
+      std::vector< std::unique_ptr< LabelPosition > > *positionsWithNoCandidates() { return &mPositionsWithNoCandidates; }
 
       /**
        * Returns the index containing all label candidates.
@@ -159,7 +154,6 @@ namespace pal
       PalRtree< LabelPosition > &allCandidatesIndex() { return mAllCandidatesIndex; }
 
     private:
-
       /**
        * Returns TRUE if a labelling candidate \a lp1 conflicts with \a lp2.
        */
@@ -198,7 +192,7 @@ namespace pal
       /**
        * Map extent (xmin, ymin, xmax, ymax)
        */
-      double mMapExtentBounds[4] = {0, 0, 0, 0};
+      double mMapExtentBounds[4] = { 0, 0, 0, 0 };
 
       std::vector< std::unique_ptr< LabelPosition > > mLabelPositions;
 
@@ -217,14 +211,10 @@ namespace pal
       class Sol
       {
         public:
-
           //! Placeholder list for active labels. Will contain label id for active labels, or -1 for empty positions in list
           std::vector< int > activeLabelIds;
 
-          void init( std::size_t featureCount )
-          {
-            activeLabelIds.resize( featureCount, -1 );
-          }
+          void init( std::size_t featureCount ) { activeLabelIds.resize( featureCount, -1 ); }
       };
 
       Sol mSol;
@@ -239,6 +229,6 @@ namespace pal
       void ignoreLabel( const LabelPosition *lp, pal::PriorityQueue &list, PalRtree<LabelPosition> &candidatesIndex );
   };
 
-} // namespace
+} //namespace pal
 
 #endif

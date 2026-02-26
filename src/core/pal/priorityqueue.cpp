@@ -36,15 +36,9 @@
 
 using namespace pal;
 
-bool smaller( double l, double r )
-{
-  return l > r;
-}
+bool smaller( double l, double r ) { return l > r; }
 
-bool bigger( double l, double r )
-{
-  return l < r;
-}
+bool bigger( double l, double r ) { return l < r; }
 
 // O (size log size)
 PriorityQueue::PriorityQueue( int n, int maxId, bool min )
@@ -67,14 +61,9 @@ PriorityQueue::PriorityQueue( int n, int maxId, bool min )
     greater = bigger;
 }
 
-PriorityQueue::~PriorityQueue()
-{
-}
+PriorityQueue::~PriorityQueue() {}
 
-int PriorityQueue::getSize() const
-{
-  return size;
-}
+int PriorityQueue::getSize() const { return size; }
 
 // O(log size)
 int PriorityQueue::getBest()
@@ -101,15 +90,9 @@ int PriorityQueue::getBest()
 }
 
 
-bool PriorityQueue::isIn( int key ) const
-{
-  return key <= maxId && pos[key] >= 0;
-}
+bool PriorityQueue::isIn( int key ) const { return key <= maxId && pos[key] >= 0; }
 
-int PriorityQueue::getId( int key ) const
-{
-  return key <= maxId ? pos[key] : -1;
-}
+int PriorityQueue::getId( int key ) const { return key <= maxId ? pos[key] : -1; }
 
 void PriorityQueue::insert( int key, double p )
 {
@@ -142,7 +125,7 @@ void PriorityQueue::remove( int key )
     pos[key] = -1;
 
     heap[i] = heap[size];
-    p[i]    = p[size];
+    p[i] = p[size];
 
     downheap( i );
   }
@@ -153,13 +136,13 @@ void PriorityQueue::sort()
 {
   int i;
   int pi = 2;
-  while ( size > pi ) pi *= 2;
+  while ( size > pi )
+    pi *= 2;
 
   i = pi / 2 - 2;
 
   for ( i = size - 1; i >= 0; i-- )
     downheap( i );
-
 }
 
 
@@ -192,10 +175,10 @@ void PriorityQueue::upheap( int key )
         tmpP = p[i];
 
         heap[i] = heap[i2];
-        p[i]    = p[i2];
+        p[i] = p[i2];
 
         heap[i2] = tmpT;
-        p[i2]    = tmpP;
+        p[i2] = tmpP;
 
         i = i2;
       }
@@ -235,10 +218,10 @@ void PriorityQueue::downheap( int id )
       tmpP = p[id];
 
       heap[id] = heap[min_child];
-      p[id]    = p[min_child];
+      p[id] = p[min_child];
 
       heap[min_child] = tmpT;
-      p[min_child]    = tmpP;
+      p[min_child] = tmpP;
 
       id = min_child;
     }
@@ -249,7 +232,6 @@ void PriorityQueue::downheap( int id )
 
 void PriorityQueue::setPriority( int key, double new_p )
 {
-
   if ( key < 0 || key > maxId )
     return;
 
@@ -270,7 +252,6 @@ void PriorityQueue::setPriority( int key, double new_p )
 
 void PriorityQueue::decreaseKey( int key )
 {
-
   if ( key < 0 || key > maxId )
     return;
 
@@ -298,7 +279,6 @@ void PriorityQueue::print()
     fprintf( stderr, "id: %7d  ->  key: %7d -> id: %7d   p: %7f\n", i, heap[i], pos[heap[i]], p[i] );
   }
   fprintf( stderr, "\n" );
-
 }
 
 

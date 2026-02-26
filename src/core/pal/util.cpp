@@ -78,6 +78,3 @@ std::optional<QVector<const GEOSGeometry *>> pal::Util::unmulti( const GEOSGeome
 
   return final_queue;
 }
-
-
-

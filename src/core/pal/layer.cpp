@@ -134,8 +134,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
     auto fpart = std::make_unique<FeaturePart>( lf, geom );
 
     // ignore invalid geometries
-    if ( ( type == GEOS_LINESTRING && fpart->nbPoints < 2 ) ||
-         ( type == GEOS_POLYGON && fpart->nbPoints < 3 ) )
+    if ( ( type == GEOS_LINESTRING && fpart->nbPoints < 2 ) || ( type == GEOS_POLYGON && fpart->nbPoints < 3 ) )
     {
       continue;
     }
@@ -234,8 +233,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
       auto fpart = std::make_unique<FeaturePart>( lf, geom.get() );
 
       // ignore invalid geometries
-      if ( ( type == GEOS_LINESTRING && fpart->nbPoints < 2 ) ||
-           ( type == GEOS_POLYGON && fpart->nbPoints < 3 ) )
+      if ( ( type == GEOS_LINESTRING && fpart->nbPoints < 2 ) || ( type == GEOS_POLYGON && fpart->nbPoints < 3 ) )
       {
         continue;
       }
@@ -277,7 +275,7 @@ void Layer::addFeaturePart( std::unique_ptr<FeaturePart> fpart, const QString &l
   // add to hashtable with equally named feature parts
   if ( mMergeLines && !labelText.isEmpty() )
   {
-    mConnectedHashtable[ labelText ].append( fpart.get() );
+    mConnectedHashtable[labelText].append( fpart.get() );
   }
 
   // add to list of layer's feature parts
@@ -317,10 +315,7 @@ void Layer::joinConnectedFeatures()
 
     // need to start with biggest parts first, to avoid merging in side branches before we've
     // merged the whole of the longest parts of the joined network
-    std::sort( partsToMerge.begin(), partsToMerge.end(), []( FeaturePart * a, FeaturePart * b )
-    {
-      return a->length() > b->length();
-    } );
+    std::sort( partsToMerge.begin(), partsToMerge.end(), []( FeaturePart *a, FeaturePart *b ) { return a->length() > b->length(); } );
 
     // go one-by-one part, try to merge
     while ( partsToMerge.count() > 1 )
@@ -360,20 +355,22 @@ void Layer::joinConnectedFeatures()
   mConnectedHashtable.clear();
 
   // Expunge feature parts that are smaller than the minimum size required
-  mFeatureParts.erase( std::remove_if( mFeatureParts.begin(), mFeatureParts.end(), []( const std::unique_ptr< FeaturePart > &part )
-  {
-    if ( part->feature()->minimumSize() != 0.0 && part->length() < part->feature()->minimumSize() )
-    {
-      return true;
-    }
-    return false;
-  } ), mFeatureParts.end() );
+  mFeatureParts.erase(
+    std::remove_if(
+      mFeatureParts.begin(), mFeatureParts.end(),
+      []( const std::unique_ptr< FeaturePart > &part ) {
+        if ( part->feature()->minimumSize() != 0.0 && part->length() < part->feature()->minimumSize() )
+        {
+          return true;
+        }
+        return false;
+      }
+    ),
+    mFeatureParts.end()
+  );
 }
 
-int Layer::connectedFeatureId( QgsFeatureId featureId ) const
-{
-  return mConnectedFeaturesIds.value( featureId, -1 );
-}
+int Layer::connectedFeatureId( QgsFeatureId featureId ) const { return mConnectedFeaturesIds.value( featureId, -1 ); }
 
 void Layer::chopFeaturesAtRepeatDistance()
 {
