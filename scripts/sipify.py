@@ -668,6 +668,13 @@ def read_line():
     new_line = CONTEXT.input_lines[CONTEXT.line_idx]
     CONTEXT.line_idx += 1
 
+    # Skip clang-format on/off directives entirely
+    while re.match(r"^\s*//\s*clang-format\s+(on|off)\s*$", new_line):
+        if CONTEXT.line_idx >= CONTEXT.line_count:
+            break
+        new_line = CONTEXT.input_lines[CONTEXT.line_idx]
+        CONTEXT.line_idx += 1
+
     # Join lines where SIP_HOLDGIL or SIP_RELEASEGIL is on its own line
     # (can happen with clang-format's BeforeComma constructor initializer style)
     if CONTEXT.line_idx < CONTEXT.line_count and re.match(
@@ -675,6 +682,143 @@ def read_line():
     ):
         new_line = new_line + " " + CONTEXT.input_lines[CONTEXT.line_idx].strip()
         CONTEXT.line_idx += 1
+
+    # Join continuation lines where clang-format placed SIP annotations on the next line
+    # This handles SIP_DEPRECATED, SIP_KEEPREFERENCE, SIP_SKIP, SIP_THROW(...), etc.
+    # Only join annotations that can legitimately follow a method/constructor closing paren.
+    # Do NOT join if:
+    # - the current line is a comment closer or empty (the SIP annotation starts a new declaration)
+    # - the current line already ends with ; (the declaration is complete; the SIP annotation
+    #   on the next line is a modifier for a DIFFERENT declaration, e.g. SIP_SKIP on a move ctor)
+    while (
+        CONTEXT.line_idx < CONTEXT.line_count
+        and not re.search(r"\*/\s*$", new_line)
+        and not re.match(r"^\s*$", new_line)
+        and not re.search(r";\s*$", new_line)
+        and re.match(
+            r"^\s*SIP_(DEPRECATED|KEEPREFERENCE|SKIP|TRANSFER|TRANSFERBACK|FACTORY"
+            r"|PYNAME\(|PYARGREMOVE|PYARGRENAME\(|CONSTRAINED"
+            r"|THROW\(|TRANSFERTHIS|VIRTUALERRORHANDLER\("
+            r"|HOLDGIL|RELEASEGIL|FORCE|MONKEYPATCH\(|GEOM_SETTER)\b",
+            CONTEXT.input_lines[CONTEXT.line_idx],
+        )
+    ):
+        next_line = CONTEXT.input_lines[CONTEXT.line_idx].strip()
+        new_line = new_line + " " + next_line
+        CONTEXT.line_idx += 1
+
+    # Join continuation lines where clang-format placed "= 0;" on its own line
+    # (pure virtual declarations split across lines)
+    if CONTEXT.line_idx < CONTEXT.line_count and re.match(
+        r"^\s*=\s*0\s*;", CONTEXT.input_lines[CONTEXT.line_idx]
+    ):
+        new_line = (
+            new_line.rstrip() + " " + CONTEXT.input_lines[CONTEXT.line_idx].strip()
+        )
+        CONTEXT.line_idx += 1
+
+    # Join continuation lines with SIP_PYNAME(...) split across multiple lines
+    # e.g., SIP_PYNAME(\n  name\n)
+    if re.search(r"SIP_PYNAME\(\s*$", new_line):
+        while CONTEXT.line_idx < CONTEXT.line_count:
+            next_line = CONTEXT.input_lines[CONTEXT.line_idx].strip()
+            CONTEXT.line_idx += 1
+            new_line = new_line.rstrip() + " " + next_line
+            if ")" in next_line:
+                break
+
+    # Join continuation lines with SIP_THROW(...) split across multiple lines
+    # e.g., SIP_THROW(\n  ExceptionType\n);
+    if re.search(r"SIP_THROW\(\s*$", new_line):
+        while CONTEXT.line_idx < CONTEXT.line_count:
+            next_line = CONTEXT.input_lines[CONTEXT.line_idx].strip()
+            CONTEXT.line_idx += 1
+            new_line = new_line.rstrip() + " " + next_line
+            if ")" in next_line:
+                break
+
+    # Join continuation lines with SIP_MONKEYPATCH_COMPAT_NAME(...) split across multiple lines
+    # e.g., EnumValue SIP_MONKEYPATCH_COMPAT_NAME(\n  OldName\n), //!< description
+    if re.search(r"SIP_MONKEYPATCH_COMPAT_NAME\(\s*$", new_line):
+        while CONTEXT.line_idx < CONTEXT.line_count:
+            next_line = CONTEXT.input_lines[CONTEXT.line_idx].strip()
+            CONTEXT.line_idx += 1
+            new_line = new_line.rstrip() + " " + next_line
+            if ")" in next_line:
+                break
+
+    # Join enum value continuation lines where clang-format split the value assignment
+    # e.g., "EnumValue SIP_MONKEYPATCH_COMPAT_NAME( ... )\n      = 1 << 0, //!< description"
+    # Also handles: "EnumValue\n      = value, //!< description"
+    # and "), //!< description" (enum value ending with paren from previous line)
+    if (
+        CONTEXT.line_idx < CONTEXT.line_count
+        and re.match(r"^\s*=\s*", CONTEXT.input_lines[CONTEXT.line_idx])
+        and not re.search(r"[=;{}]\s*$", new_line)
+    ):
+        next_stripped = CONTEXT.input_lines[CONTEXT.line_idx].strip()
+        new_line = new_line.rstrip() + " " + next_stripped
+        CONTEXT.line_idx += 1
+
+    # Join lines where clang-format split the return type from the method name
+    # e.g., "static QgsSettingsRegistryCore *\n  settingsRegistryCore() SIP_KEEPREFERENCE;"
+    # or: "static QString\n  reportStyleSheet(...);"
+    # The current line ends with * or & and the next line starts with a method name + (
+    # OR the current line looks like a return type (no parens/braces/semicolons/colons) and
+    # the next line starts with a method name + (
+    if (
+        CONTEXT.line_idx < CONTEXT.line_count
+        and re.match(r"^\s*~?\w+\s*\(", CONTEXT.input_lines[CONTEXT.line_idx])
+        and (
+            re.search(r"[*&]\s*$", new_line)
+            or (
+                re.match(
+                    r"^\s*(?:(?:static|const|virtual|inline|Q_DECL_DEPRECATED|explicit|unsigned|long)\s+)*\w[\w:]*(?:<[^>]*>)?\s*$",
+                    new_line,
+                )
+                and not re.search(r"[;{}()=]", new_line)
+                and not re.search(
+                    r"(?<![:])[:](?![:])", new_line
+                )  # exclude single ":" but allow "::"
+                and not re.match(r"^\s*Q_NOWARN_DEPRECATED", new_line)
+                and not re.match(
+                    r"^\s*(?:public|protected|private|signals|slots|Q_OBJECT|Q_GADGET|Q_PROPERTY|Q_ENUM|Q_FLAG|Q_DECLARE|Q_SIGNALS|Q_SLOTS|SIP_|signals|emit)\b",
+                    new_line,
+                )
+            )
+        )
+    ):
+        next_stripped = CONTEXT.input_lines[CONTEXT.line_idx].strip()
+        # Normalize pointer/reference spacing: "Type * methodName" or "Type & methodName"
+        # should become "Type *methodName" or "Type &methodName" to match pattern1 expectations
+        if re.search(r"[*&]\s*$", new_line):
+            new_line = new_line.rstrip() + next_stripped
+        else:
+            new_line = new_line.rstrip() + " " + next_stripped
+        CONTEXT.line_idx += 1
+
+    # Join multi-line class/struct declarations where clang-format split the
+    # inheritance list across multiple lines, e.g.:
+    #   class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
+    #                                      public QgsFeatureSink,
+    #                                      public QgsFeatureSource
+    # Condition: line starts with class/struct (optionally with template prefix)
+    # and ends with a comma (indicating inheritance list continuation)
+    if re.match(
+        r"^\s*(?:template\s*<[^>]*>\s*)?(?:class|struct)\b", new_line
+    ) and re.search(r",\s*$", new_line):
+        while CONTEXT.line_idx < CONTEXT.line_count and re.search(r",\s*$", new_line):
+            next_line = CONTEXT.input_lines[CONTEXT.line_idx].strip()
+            CONTEXT.line_idx += 1
+            new_line = new_line.rstrip() + " " + next_line
+        # Join one more line (the last base class that doesn't end with comma)
+        if CONTEXT.line_idx < CONTEXT.line_count and not re.search(
+            r"[{;]\s*$", new_line
+        ):
+            next_line = CONTEXT.input_lines[CONTEXT.line_idx].strip()
+            if re.match(r"(?:public|protected|private)\s+\w", next_line):
+                CONTEXT.line_idx += 1
+                new_line = new_line.rstrip() + " " + next_line
 
     if CONTEXT.debug:
         print(
@@ -1100,6 +1244,20 @@ def validate_docstring(docstring: str):
 def detect_and_remove_following_body_or_initializerlist():
     signature = ""
 
+    # Strip inline initializer list from the current line before pattern matching.
+    # clang-format may place ": BaseClass(args)" on the same line as the closing paren,
+    # e.g.: "Constructor(params) SIP_THROW(...) SIP_TRANSFER : BaseClass(args)"
+    # We need to strip the ": BaseClass(args)" part so pattern1 can match properly.
+    inline_init_stripped = False
+    inline_init_match = re.search(
+        r"(\)(?:\s+(?:const|SIP_\w+(?:\([^)]*\))?))*)\s+(:\s+\w.*)$",
+        CONTEXT.current_line,
+    )
+    if inline_init_match and not re.search(r"\{", CONTEXT.current_line):
+        dbg_info(f"stripping inline initializer list: {inline_init_match.group(2)}")
+        CONTEXT.current_line = CONTEXT.current_line[: inline_init_match.end(1)]
+        inline_init_stripped = True
+
     # Complex regex pattern to match various C++ function declarations and definitions
     pattern1 = r'^(\s*)?((?:(?:explicit|static|const|unsigned|virtual)\s+)*)(([(?:long )\w:]+(<.*?>)?\s+[*&]?)?(~?\w+|(\w+::)?operator.{1,2})\s*\(([\w=()\/ ,&*<>."-]|::)*\)( +(?:const|SIP_[\w_]+?))*)\s*((\s*[:,]\s+\w+\(.*\))*\s*\{.*\}\s*(?:SIP_[\w_]+)?;?|(?!;))(\s*\/\/.*)?$'
     pattern2 = r"SIP_SKIP\s*(?!;)\s*(\/\/.*)?$"
@@ -1109,6 +1267,7 @@ def detect_and_remove_following_body_or_initializerlist():
         re.match(pattern1, CONTEXT.current_line)
         or re.search(pattern2, CONTEXT.current_line)
         or re.match(pattern3, CONTEXT.current_line)
+        or inline_init_stripped
     ):
         dbg_info(
             "remove constructor definition, function bodies, member initializing list (1)"
@@ -1305,8 +1464,20 @@ def remove_following_body_or_initializerlist():
             line = read_line()
 
     # Member initializing list
+    # Standard formatting: ": member(x)" or ", member(x)" at line start
     while re.match(r"^\s*[:,]\s+([\w<>]|::)+\(.*?\)", line):
         dbg_info("member initializing list")
+        line = read_line()
+
+    # clang-format BeforeComma style: "member(x)," or "member(x)" without leading : or ,
+    # These appear when the colon is on the same line as the constructor signature
+    # Note: do NOT match lines ending with ";" — those are declarations, not init list entries
+    while (
+        re.match(r"^\s+([\w<>]|::)+\(.*?\)\s*,?\s*$", line)
+        and not re.match(r"^\s*\{", line)
+        and not re.search(r";\s*$", line)
+    ):
+        dbg_info("member initializing list (BeforeComma style)")
         line = read_line()
 
     # Body
@@ -1808,29 +1979,37 @@ def process_using():
 
 def try_skip_sip_directives():
     # Do not process SIP code %XXXCode
-    if CONTEXT.sip_run and re.match(
-        r"^ *[/]*% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$",
+    sip_directive_match = CONTEXT.sip_run and re.match(
+        r"^ *[/]*% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)\s*(.*)?$",
         CONTEXT.current_line,
-    ):
-        CONTEXT.current_line = (
-            f"%{re.match(r'^ *[/]*% *(.*)$', CONTEXT.current_line).group(1)}"
-        )
+    )
+    if sip_directive_match:
+        directive_name = sip_directive_match.group(1)
+        trailing_content = (sip_directive_match.group(2) or "").strip()
+        CONTEXT.current_line = f"%{directive_name}"
         CONTEXT.reset_method_state()
         dbg_info("do not process SIP code")
         while not re.match(r"^ *[/]*% *End", CONTEXT.current_line):
             write_output("COD", CONTEXT.current_line + "\n")
-            CONTEXT.current_line = read_line()
+            if trailing_content:
+                CONTEXT.current_line = trailing_content
+                trailing_content = None
+            else:
+                CONTEXT.current_line = read_line()
             CONTEXT.current_line = re.sub(
                 r"SIP_SSIZE_T", "Py_ssize_t", CONTEXT.current_line
             )
             CONTEXT.current_line = re.sub(
                 r"SIPLong_AsLong", "PyLong_AsLong", CONTEXT.current_line
             )
-            CONTEXT.current_line = re.sub(
-                r"^ *[/]*% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$",
-                r"%\1\2",
+            # Handle nested SIP directives, splitting trailing content to next line
+            nested_match = re.match(
+                r"^ *[/]*% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)\s*(.*)?$",
                 CONTEXT.current_line,
             )
+            if nested_match:
+                CONTEXT.current_line = f"%{nested_match.group(1)}"
+                trailing_content = (nested_match.group(2) or "").strip() or None
             CONTEXT.current_line = re.sub(
                 r"^\s*SIP_END(.*)$", r"%End\1", CONTEXT.current_line
             )
@@ -2107,7 +2286,7 @@ def process_class_decl():
     # class declaration started
     # https://regex101.com/r/KMQdF5/1 (older versions: https://regex101.com/r/6FWntP/16)
     class_pattern = re.compile(
-        r"""^(\s*(?P<kind>class|struct))\s+([A-Z0-9_]+_EXPORT\s+)?(Q_DECL_DEPRECATED\s+)?(?P<classname>\w+)(?P<domain>\s*:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *(, *(\w|::)+ *)*>)?(::\w+(<(\w|::)+(, *(\w|::)+)*>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *(, *(\w|::)+)*>)?(::\w+(<\w+(, *(\w|::)+)?>)?)*)*)?(?P<annot>\s*/?/?\s*SIP_\w+)?\s*?(//.*|(?!;))$"""
+        r"""^(\s*(?:template\s*<[^>]*>\s*)?(?P<kind>class|struct))\s+([A-Z0-9_]+_EXPORT\s+)?(Q_DECL_DEPRECATED\s+)?(?P<classname>\w+)(?P<domain>\s*:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *(, *(\w|::)+ *)*>)?(::\w+(<(\w|::)+(, *(\w|::)+)*>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *(, *(\w|::)+)*>)?(::\w+(<\w+(, *(\w|::)+)?>)?)*)*)?(?P<annot>\s*/?/?\s*SIP_\w+)?\s*?(//.*|(?!;))$"""
     )
     class_pattern_match = class_pattern.match(CONTEXT.current_line)
 
@@ -2147,6 +2326,7 @@ def process_class_decl():
             re.search(r"\b[A-Z0-9_]+_EXPORT\b", CONTEXT.current_line)
             or len(CONTEXT.classname) != 1
             or re.search(r"^\s*template\s*<", CONTEXT.input_lines[CONTEXT.line_idx - 2])
+            or re.search(r"^\s*template\s*<", CONTEXT.current_line)
         ):
             CONTEXT.exported[-1] += 1
 
