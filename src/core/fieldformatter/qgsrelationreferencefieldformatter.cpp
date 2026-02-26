@@ -27,15 +27,9 @@
 
 using namespace Qt::StringLiterals;
 
-QgsRelationReferenceFieldFormatter::QgsRelationReferenceFieldFormatter()
-{
-  setFlags( flags() | QgsFieldFormatter::CanProvideAvailableValues );
-}
+QgsRelationReferenceFieldFormatter::QgsRelationReferenceFieldFormatter() { setFlags( flags() | QgsFieldFormatter::CanProvideAvailableValues ); }
 
-QString QgsRelationReferenceFieldFormatter::id() const
-{
-  return u"RelationReference"_s;
-}
+QString QgsRelationReferenceFieldFormatter::id() const { return u"RelationReference"_s; }
 
 QString QgsRelationReferenceFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
@@ -82,7 +76,7 @@ QString QgsRelationReferenceFieldFormatter::representValue( QgsVectorLayer *laye
   // Attributes from the referencing layer
   QgsAttributes attrs = QgsAttributes( layer->fields().count() );
   // Set the value on the foreign key field of the referencing record
-  attrs[ referencingFieldIdx ] = value;
+  attrs[referencingFieldIdx] = value;
 
   const QgsFeatureRequest request = relation.getReferencedFeatureRequest( attrs );
   QgsFeature feature;
@@ -143,7 +137,9 @@ QVariant QgsRelationReferenceFieldFormatter::createCache( QgsVectorLayer *layer,
   const int referencedFieldIdx = referencedLayer->fields().lookupField( relation.fieldPairs().at( 0 ).second );
   if ( referencedFieldIdx == -1 )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Layer %1, field %2: Invalid referenced field (%3) configured in relation %4" ).arg( layer->name(), fieldName, relation.fieldPairs().at( 0 ).second, relation.name() ) );
+    QgsMessageLog::logMessage(
+      QObject::tr( "Layer %1, field %2: Invalid referenced field (%3) configured in relation %4" ).arg( layer->name(), fieldName, relation.fieldPairs().at( 0 ).second, relation.name() )
+    );
     return QVariant();
   }
 
@@ -188,13 +184,10 @@ QList<QgsVectorLayerRef> QgsRelationReferenceFieldFormatter::layerDependencies( 
     return {};
   }
 
-  const QList<QgsVectorLayerRef> result {{
-      QgsVectorLayerRef(
-        config.value( u"ReferencedLayerId"_s ).toString(),
-        config.value( u"ReferencedLayerName"_s ).toString(),
-        config.value( u"ReferencedLayerDataSource"_s ).toString(),
-        config.value( u"ReferencedLayerProviderKey"_s ).toString() )
-    }};
+  const QList<QgsVectorLayerRef> result { { QgsVectorLayerRef(
+    config.value( u"ReferencedLayerId"_s ).toString(), config.value( u"ReferencedLayerName"_s ).toString(), config.value( u"ReferencedLayerDataSource"_s ).toString(),
+    config.value( u"ReferencedLayerProviderKey"_s ).toString()
+  ) } };
   return result;
 }
 
@@ -206,7 +199,7 @@ QVariantList QgsRelationReferenceFieldFormatter::availableValues( const QVariant
     const QgsVectorLayer *referencedLayer = lProject->relationManager()->relation( config[u"Relation"_s].toString() ).referencedLayer();
     if ( referencedLayer )
     {
-      const int fieldIndex =  lProject->relationManager()->relation( config[u"Relation"_s].toString() ).referencedFields().first();
+      const int fieldIndex = lProject->relationManager()->relation( config[u"Relation"_s].toString() ).referencedFields().first();
       values = qgis::setToList( referencedLayer->uniqueValues( fieldIndex, countLimit ) );
     }
   }

@@ -25,7 +25,7 @@ configuration.
     static const QString DATETIME_FORMAT;
     static const QString QT_ISO_FORMAT;
     static const QString DISPLAY_FOR_ISO_FORMAT;
-    static QString DATE_DISPLAY_FORMAT; //! Date display format is localized by applyLocaleChange \see applyLocaleChange \since QGIS 3.30
+    static QString DATE_DISPLAY_FORMAT;     //! Date display format is localized by applyLocaleChange \see applyLocaleChange \since QGIS 3.30
     static QString DATETIME_DISPLAY_FORMAT; //! Date time display format is localized by applyLocaleChange \see applyLocaleChange \since QGIS 3.30
 
     QgsDateTimeFieldFormatter();
@@ -88,6 +88,13 @@ expected to be one of
    Use the method with a QMetaType.Type argument instead.
 %End
 
+    static void applyLocaleChange();
+%Docstring
+Adjusts the date time display formats according to locale. Before QGIS
+3.30, the date time formats was adjusted.
+
+.. versionadded:: 3.22.2
+%End
 };
 
 /************************************************************************

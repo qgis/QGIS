@@ -33,7 +33,6 @@
 class CORE_EXPORT QgsKeyValueFieldFormatter : public QgsFieldFormatter
 {
   public:
-
     QgsKeyValueFieldFormatter() = default;
     QString id() const override;
     QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;

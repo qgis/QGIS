@@ -24,15 +24,9 @@ using namespace Qt::StringLiterals;
 
 const QString QgsValueMapFieldFormatter::NULL_VALUE = u"{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}"_s;
 
-QgsValueMapFieldFormatter::QgsValueMapFieldFormatter()
-{
-  setFlags( flags() | QgsFieldFormatter::CanProvideAvailableValues );
-}
+QgsValueMapFieldFormatter::QgsValueMapFieldFormatter() { setFlags( flags() | QgsFieldFormatter::CanProvideAvailableValues ); }
 
-QString QgsValueMapFieldFormatter::id() const
-{
-  return u"ValueMap"_s;
-}
+QString QgsValueMapFieldFormatter::id() const { return u"ValueMap"_s; }
 
 QString QgsValueMapFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {

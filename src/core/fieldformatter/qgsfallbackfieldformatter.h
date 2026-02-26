@@ -29,7 +29,6 @@
 class CORE_EXPORT QgsFallbackFieldFormatter : public QgsFieldFormatter
 {
   public:
-
     QgsFallbackFieldFormatter() = default;
     QString id() const override;
 };

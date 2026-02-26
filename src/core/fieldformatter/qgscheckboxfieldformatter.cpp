@@ -25,10 +25,7 @@
 
 using namespace Qt::StringLiterals;
 
-QString QgsCheckBoxFieldFormatter::id() const
-{
-  return u"CheckBox"_s;
-}
+QString QgsCheckBoxFieldFormatter::id() const { return u"CheckBox"_s; }
 
 QString QgsCheckBoxFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
@@ -55,7 +52,7 @@ QString QgsCheckBoxFieldFormatter::representValue( QgsVectorLayer *layer, int fi
   const QMetaType::Type fieldType = layer->fields().at( fieldIndex ).type();
   if ( fieldType == QMetaType::Type::Bool )
   {
-    if ( ! isNull )
+    if ( !isNull )
     {
       boolValue = value.toBool();
       textValue = boolValue ? QObject::tr( "true" ) : QObject::tr( "false" );
@@ -71,11 +68,11 @@ QString QgsCheckBoxFieldFormatter::representValue( QgsVectorLayer *layer, int fi
     else
     {
       textValue = value.toString();
-      if ( config.contains( u"CheckedState"_s ) && textValue == config[ u"CheckedState"_s ].toString() )
+      if ( config.contains( u"CheckedState"_s ) && textValue == config[u"CheckedState"_s].toString() )
       {
         boolValue = true;
       }
-      else if ( config.contains( u"UncheckedState"_s ) && textValue == config[ u"UncheckedState"_s ].toString() )
+      else if ( config.contains( u"UncheckedState"_s ) && textValue == config[u"UncheckedState"_s].toString() )
       {
         boolValue = false;
       }

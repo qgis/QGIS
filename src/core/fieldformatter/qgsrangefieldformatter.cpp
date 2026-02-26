@@ -27,10 +27,7 @@
 
 using namespace Qt::StringLiterals;
 
-QString QgsRangeFieldFormatter::id() const
-{
-  return u"Range"_s;
-}
+QString QgsRangeFieldFormatter::id() const { return u"Range"_s; }
 
 QString QgsRangeFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
@@ -46,15 +43,13 @@ QString QgsRangeFieldFormatter::representValue( QgsVectorLayer *layer, int field
 
   const QgsField field = layer->fields().at( fieldIndex );
 
-  if ( field.type() == QMetaType::Type::Double &&
-       config.contains( u"Precision"_s ) &&
-       value.isValid( ) )
+  if ( field.type() == QMetaType::Type::Double && config.contains( u"Precision"_s ) && value.isValid() )
   {
     bool ok;
     const double val( value.toDouble( &ok ) );
     if ( ok )
     {
-      const int precision( config[ u"Precision"_s ].toInt( &ok ) );
+      const int precision( config[u"Precision"_s].toInt( &ok ) );
       if ( ok )
       {
         // TODO: make the format configurable!
@@ -62,24 +57,22 @@ QString QgsRangeFieldFormatter::representValue( QgsVectorLayer *layer, int field
       }
     }
   }
-  else if ( ( field.type() == QMetaType::Type::Int ) &&
-            value.isValid( ) )
+  else if ( ( field.type() == QMetaType::Type::Int ) && value.isValid() )
   {
     bool ok;
     const double val( value.toInt( &ok ) );
     if ( ok )
     {
-      result =  QLocale().toString( val, 'f', 0 );
+      result = QLocale().toString( val, 'f', 0 );
     }
   }
-  else if ( ( field.type() == QMetaType::Type::LongLong ) &&
-            value.isValid( ) )
+  else if ( ( field.type() == QMetaType::Type::LongLong ) && value.isValid() )
   {
     bool ok;
     const double val( value.toLongLong( &ok ) );
     if ( ok )
     {
-      result =  QLocale().toString( val, 'f', 0 );
+      result = QLocale().toString( val, 'f', 0 );
     }
   }
   else

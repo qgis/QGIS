@@ -15,7 +15,4 @@
  ***************************************************************************/
 #include "qgsfallbackfieldformatter.h"
 
-QString QgsFallbackFieldFormatter::id() const
-{
-  return QString();
-}
+QString QgsFallbackFieldFormatter::id() const { return QString(); }
