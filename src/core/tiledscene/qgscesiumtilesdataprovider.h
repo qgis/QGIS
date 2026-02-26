@@ -32,16 +32,12 @@ class QgsCesiumTilesDataProviderSharedData;
 
 ///@cond PRIVATE
 
-class CORE_EXPORT QgsCesiumTilesDataProvider final: public QgsTiledSceneDataProvider
+class CORE_EXPORT QgsCesiumTilesDataProvider final : public QgsTiledSceneDataProvider
 {
     Q_OBJECT
   public:
-
-
     //! Constructor for QgsCesiumTilesDataProvider
-    QgsCesiumTilesDataProvider( const QString &uri,
-                                const QgsDataProvider::ProviderOptions &providerOptions,
-                                Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
+    QgsCesiumTilesDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
     QgsCesiumTilesDataProvider( const QgsCesiumTilesDataProvider &other );
     QgsCesiumTilesDataProvider &operator=( const QgsCesiumTilesDataProvider &other ) = delete;
 
@@ -62,7 +58,6 @@ class CORE_EXPORT QgsCesiumTilesDataProvider final: public QgsTiledSceneDataProv
     QgsDoubleRange zRange() const final;
 
   private:
-
     bool init();
 
     bool mIsValid = false;
@@ -70,10 +65,9 @@ class CORE_EXPORT QgsCesiumTilesDataProvider final: public QgsTiledSceneDataProv
     QString mAuthCfg;
     QgsHttpHeaders mHeaders;
 
-    std::shared_ptr<QgsCesiumTilesDataProviderSharedData> mShared;  //!< Mutable data shared between provider instances
+    std::shared_ptr<QgsCesiumTilesDataProviderSharedData> mShared; //!< Mutable data shared between provider instances
 
     Qgis::DataProviderFlags mProviderFlags = Qgis::DataProviderFlag::FastExtent2D;
-
 };
 
 
@@ -94,10 +88,8 @@ class QgsCesiumTilesProviderMetadata : public QgsProviderMetadata
     QString filters( Qgis::FileFilterType type ) override;
     ProviderCapabilities providerCapabilities() const override;
     QList< Qgis::LayerType > supportedLayerTypes() const override;
-
 };
 
 ///@endcond
 
 #endif // QGSCESIUMTILESDATAPROVIDER_H
-

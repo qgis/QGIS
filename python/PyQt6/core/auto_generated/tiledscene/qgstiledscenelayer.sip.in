@@ -24,26 +24,23 @@ Represents a map layer supporting display of tiled scene objects.
 #include "qgstiledscenelayer.h"
 %End
   public:
-
     struct LayerOptions
     {
-
-      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext( ) );
+        explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() );
 %Docstring
 Constructor for LayerOptions with optional ``transformContext``.
 %End
 
-      QgsCoordinateTransformContext transformContext;
+        QgsCoordinateTransformContext transformContext;
 
-      bool loadDefaultStyle;
+        bool loadDefaultStyle;
 
-      bool skipCrsValidation;
+        bool skipCrsValidation;
     };
 
-    explicit QgsTiledSceneLayer( const QString &uri = QString(),
-                                 const QString &baseName = QString(),
-                                 const QString &provider = QString(),
-                                 const QgsTiledSceneLayer::LayerOptions &options = QgsTiledSceneLayer::LayerOptions() );
+    explicit QgsTiledSceneLayer(
+      const QString &uri = QString(), const QString &baseName = QString(), const QString &provider = QString(), const QgsTiledSceneLayer::LayerOptions &options = QgsTiledSceneLayer::LayerOptions()
+    );
 %Docstring
 Constructor for QgsTiledSceneLayer.
 %End
@@ -52,12 +49,11 @@ Constructor for QgsTiledSceneLayer.
 
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    QString str = QStringLiteral( "<QgsTiledSceneLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+%MethodCode QString str = QStringLiteral( "<QgsTiledSceneLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    virtual QgsTiledSceneLayer *clone() const /Factory/;
+      virtual QgsTiledSceneLayer *clone() const /Factory/;
 
     virtual QgsRectangle extent() const;
 
@@ -67,11 +63,11 @@ Constructor for QgsTiledSceneLayer.
 
     virtual bool writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
-     virtual bool readSymbology( const QDomNode &node, QString &errorMessage,
-                        QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
+    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
+
     bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) final;
-     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
-                         StyleCategories categories = AllStyleCategories ) const;
+    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const;
+
     bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const final;
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
 

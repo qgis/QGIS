@@ -21,9 +21,7 @@
 
 QgsTiledSceneNode::QgsTiledSceneNode( QgsTiledSceneTile *tile )
   : mTile( tile )
-{
-
-}
+{}
 
 QgsTiledSceneNode::~QgsTiledSceneNode()
 {
@@ -31,10 +29,7 @@ QgsTiledSceneNode::~QgsTiledSceneNode()
   mChildren.clear();
 }
 
-QgsTiledSceneTile *QgsTiledSceneNode::tile()
-{
-  return mTile.get();
-}
+QgsTiledSceneTile *QgsTiledSceneNode::tile() { return mTile.get(); }
 
 void QgsTiledSceneNode::addChild( QgsTiledSceneNode *child )
 {

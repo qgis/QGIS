@@ -36,10 +36,7 @@
 
 using namespace Qt::StringLiterals;
 
-QgsTiledSceneLayer::QgsTiledSceneLayer( const QString &uri,
-                                        const QString &baseName,
-                                        const QString &provider,
-                                        const QgsTiledSceneLayer::LayerOptions &options )
+QgsTiledSceneLayer::QgsTiledSceneLayer( const QString &uri, const QString &baseName, const QString &provider, const QgsTiledSceneLayer::LayerOptions &options )
   : QgsMapLayer( Qgis::LayerType::TiledScene, baseName, uri )
   , mElevationProperties( new QgsTiledSceneLayerElevationProperties( this ) )
   , mLayerOptions( options )
@@ -230,7 +227,7 @@ bool QgsTiledSceneLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
   mapLayerNode.setAttribute( u"type"_s, QgsMapLayerFactory::typeToString( Qgis::LayerType::TiledScene ) );
 
   {
-    QDomElement provider  = doc.createElement( u"provider"_s );
+    QDomElement provider = doc.createElement( u"provider"_s );
     const QDomText providerText = doc.createTextNode( providerType() );
     provider.appendChild( providerText );
     layerNode.appendChild( provider );
@@ -321,8 +318,7 @@ bool QgsTiledSceneLayer::readStyle( const QDomNode &node, QString &, QgsReadWrit
   return result;
 }
 
-bool QgsTiledSceneLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
-    const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
+bool QgsTiledSceneLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -331,7 +327,7 @@ bool QgsTiledSceneLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
   QDomElement elem = node.toElement();
   writeCommonStyle( elem, doc, context, categories );
 
-  ( void )writeStyle( node, doc, errorMessage, context, categories );
+  ( void ) writeStyle( node, doc, errorMessage, context, categories );
 
   return true;
 }
@@ -351,7 +347,7 @@ bool QgsTiledSceneLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString 
   if ( categories.testFlag( Symbology ) )
   {
     // add the blend mode field
-    QDomElement blendModeElem  = doc.createElement( u"blendMode"_s );
+    QDomElement blendModeElem = doc.createElement( u"blendMode"_s );
     const QDomText blendModeText = doc.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
     blendModeElem.appendChild( blendModeText );
     node.appendChild( blendModeElem );
@@ -387,8 +383,7 @@ void QgsTiledSceneLayer::setTransformContext( const QgsCoordinateTransformContex
   invalidateWgs84Extent();
 }
 
-void QgsTiledSceneLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
-    const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
+void QgsTiledSceneLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -507,7 +502,7 @@ QString QgsTiledSceneLayer::htmlMetadata() const
 
   // identification section
   myMetadata += u"<h1>"_s + tr( "Identification" ) + u"</h1>\n<hr>\n"_s;
-  myMetadata += htmlFormatter.identificationSectionHtml( );
+  myMetadata += htmlFormatter.identificationSectionHtml();
   myMetadata += "<br><br>\n"_L1;
 
   // extent section
@@ -517,22 +512,22 @@ QString QgsTiledSceneLayer::htmlMetadata() const
 
   // Start the Access section
   myMetadata += u"<h1>"_s + tr( "Access" ) + u"</h1>\n<hr>\n"_s;
-  myMetadata += htmlFormatter.accessSectionHtml( );
+  myMetadata += htmlFormatter.accessSectionHtml();
   myMetadata += "<br><br>\n"_L1;
 
   // Start the contacts section
   myMetadata += u"<h1>"_s + tr( "Contacts" ) + u"</h1>\n<hr>\n"_s;
-  myMetadata += htmlFormatter.contactsSectionHtml( );
+  myMetadata += htmlFormatter.contactsSectionHtml();
   myMetadata += "<br><br>\n"_L1;
 
   // Start the links section
   myMetadata += u"<h1>"_s + tr( "Links" ) + u"</h1>\n<hr>\n"_s;
-  myMetadata += htmlFormatter.linksSectionHtml( );
+  myMetadata += htmlFormatter.linksSectionHtml();
   myMetadata += "<br><br>\n"_L1;
 
   // Start the history section
   myMetadata += u"<h1>"_s + tr( "History" ) + u"</h1>\n<hr>\n"_s;
-  myMetadata += htmlFormatter.historySectionHtml( );
+  myMetadata += htmlFormatter.historySectionHtml();
   myMetadata += "<br><br>\n"_L1;
 
   myMetadata += customPropertyHtmlMetadata();
@@ -541,7 +536,4 @@ QString QgsTiledSceneLayer::htmlMetadata() const
   return myMetadata;
 }
 
-bool QgsTiledSceneLayer::isReadOnly() const
-{
-  return true;
-}
+bool QgsTiledSceneLayer::isReadOnly() const { return true; }

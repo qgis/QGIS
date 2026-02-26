@@ -22,7 +22,6 @@ Tiled scene data request.
 #include "qgstiledscenerequest.h"
 %End
   public:
-
     QgsTiledSceneRequest();
 
     void setFlags( Qgis::TiledSceneRequestFlags flags );

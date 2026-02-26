@@ -43,7 +43,6 @@ class QgsTiledSceneRequest;
 class CORE_EXPORT QgsAbstractTiledSceneIndex
 {
   public:
-
     QgsAbstractTiledSceneIndex();
     virtual ~QgsAbstractTiledSceneIndex();
 
@@ -110,7 +109,6 @@ class CORE_EXPORT QgsAbstractTiledSceneIndex
     virtual bool fetchHierarchy( long long id, QgsFeedback *feedback = nullptr ) = 0;
 
   protected:
-
     /**
      * Fetches index content for the specified \a uri.
      *
@@ -122,12 +120,10 @@ class CORE_EXPORT QgsAbstractTiledSceneIndex
     virtual QByteArray fetchContent( const QString &uri, QgsFeedback *feedback = nullptr ) = 0;
 
   private:
-
     // we have to use a mutex to protect a QCache, not a read/write lock
     // see https://bugreports.qt.io/browse/QTBUG-19794
     mutable QMutex mCacheMutex;
     QCache< QString, QByteArray > mContentCache;
-
 };
 #endif
 
@@ -146,7 +142,6 @@ class CORE_EXPORT QgsAbstractTiledSceneIndex
 class CORE_EXPORT QgsTiledSceneIndex
 {
   public:
-
     /**
      * Constructor for QgsTiledSceneIndex.
      *
@@ -228,7 +223,6 @@ class CORE_EXPORT QgsTiledSceneIndex
     QByteArray retrieveContent( const QString &uri, QgsFeedback *feedback = nullptr );
 
   private:
-
     std::shared_ptr<QgsAbstractTiledSceneIndex> mIndex;
 };
 

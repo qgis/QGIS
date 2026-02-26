@@ -20,13 +20,6 @@
 QgsTiledSceneRequest::QgsTiledSceneRequest() = default;
 
 
+void QgsTiledSceneRequest::setFeedback( QgsFeedback *feedback ) { mFeedback = feedback; }
 
-void QgsTiledSceneRequest::setFeedback( QgsFeedback *feedback )
-{
-  mFeedback = feedback;
-}
-
-QgsFeedback *QgsTiledSceneRequest::feedback() const
-{
-  return mFeedback;
-}
+QgsFeedback *QgsTiledSceneRequest::feedback() const { return mFeedback; }

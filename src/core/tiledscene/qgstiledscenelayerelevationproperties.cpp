@@ -27,13 +27,9 @@ using namespace Qt::StringLiterals;
 
 QgsTiledSceneLayerElevationProperties::QgsTiledSceneLayerElevationProperties( QObject *parent )
   : QgsMapLayerElevationProperties( parent )
-{
-}
+{}
 
-bool QgsTiledSceneLayerElevationProperties::hasElevation() const
-{
-  return true;
-}
+bool QgsTiledSceneLayerElevationProperties::hasElevation() const { return true; }
 
 QDomElement QgsTiledSceneLayerElevationProperties::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context )
 {
@@ -89,9 +85,9 @@ QList<double> QgsTiledSceneLayerElevationProperties::significantZValues( QgsMapL
 {
   const QgsDoubleRange range = calculateZRange( layer );
   if ( !range.isInfinite() && range.lower() != range.upper() )
-    return {range.lower(), range.upper() };
+    return { range.lower(), range.upper() };
   else if ( !range.isInfinite() )
-    return {range.lower() };
+    return { range.lower() };
   else
     return {};
 }

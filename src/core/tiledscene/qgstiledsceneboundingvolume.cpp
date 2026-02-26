@@ -26,13 +26,9 @@
 
 QgsTiledSceneBoundingVolume::QgsTiledSceneBoundingVolume( const QgsOrientedBox3D &box )
   : mBox( box )
-{
-}
+{}
 
-void QgsTiledSceneBoundingVolume::transform( const QgsMatrix4x4 &transform )
-{
-  mBox = mBox.transformed( transform );
-}
+void QgsTiledSceneBoundingVolume::transform( const QgsMatrix4x4 &transform ) { mBox = mBox.transformed( transform ); }
 
 QgsBox3D QgsTiledSceneBoundingVolume::bounds( const QgsCoordinateTransform &transform, Qgis::TransformDirection direction ) const
 {
@@ -94,8 +90,4 @@ QgsAbstractGeometry *QgsTiledSceneBoundingVolume::as2DGeometry( const QgsCoordin
   return geosMp.convexHull();
 }
 
-bool QgsTiledSceneBoundingVolume::intersects( const QgsOrientedBox3D &box ) const
-{
-  return mBox.intersects( box );
-}
-
+bool QgsTiledSceneBoundingVolume::intersects( const QgsOrientedBox3D &box ) const { return mBox.intersects( box ); }

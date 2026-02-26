@@ -24,10 +24,7 @@
 // QgsAbstractTiledSceneIndex
 //
 
-QgsAbstractTiledSceneIndex::QgsAbstractTiledSceneIndex()
-{
-  mContentCache.setMaxCost( 10000 );
-}
+QgsAbstractTiledSceneIndex::QgsAbstractTiledSceneIndex() { mContentCache.setMaxCost( 10000 ); }
 
 QgsAbstractTiledSceneIndex::~QgsAbstractTiledSceneIndex() = default;
 
@@ -55,23 +52,17 @@ QByteArray QgsAbstractTiledSceneIndex::retrieveContent( const QString &uri, QgsF
 
 QgsTiledSceneIndex::QgsTiledSceneIndex( QgsAbstractTiledSceneIndex *index )
   : mIndex( index )
-{
-
-}
+{}
 
 QgsTiledSceneIndex::~QgsTiledSceneIndex() = default;
 
 QgsTiledSceneIndex::QgsTiledSceneIndex( const QgsTiledSceneIndex &other )
   : mIndex( other.mIndex )
-{
-
-}
+{}
 
 QgsTiledSceneIndex::QgsTiledSceneIndex( QgsTiledSceneIndex &&other )
   : mIndex( std::move( other.mIndex ) )
-{
-
-}
+{}
 
 QgsTiledSceneIndex &QgsTiledSceneIndex::operator=( const QgsTiledSceneIndex &other )
 {
@@ -91,10 +82,7 @@ QgsTiledSceneIndex &QgsTiledSceneIndex::operator=( QgsTiledSceneIndex &&other )
   return *this;
 }
 
-bool QgsTiledSceneIndex::isValid() const
-{
-  return static_cast< bool >( mIndex.get() );
-}
+bool QgsTiledSceneIndex::isValid() const { return static_cast< bool >( mIndex.get() ); }
 
 QgsTiledSceneTile QgsTiledSceneIndex::rootTile() const
 {
@@ -159,4 +147,3 @@ QByteArray QgsTiledSceneIndex::retrieveContent( const QString &uri, QgsFeedback 
 
   return mIndex->retrieveContent( uri, feedback );
 }
-

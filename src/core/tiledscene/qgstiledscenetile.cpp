@@ -21,16 +21,12 @@
 
 QgsTiledSceneTile::QgsTiledSceneTile()
   : mBoundingVolume( QgsTiledSceneBoundingVolume( QgsOrientedBox3D() ) )
-{
-
-}
+{}
 
 QgsTiledSceneTile::QgsTiledSceneTile( long long id )
   : mId( id )
   , mBoundingVolume( QgsTiledSceneBoundingVolume( QgsOrientedBox3D() ) )
-{
-
-}
+{}
 
 QgsTiledSceneTile::~QgsTiledSceneTile() = default;
 
@@ -62,20 +58,11 @@ QgsTiledSceneTile &QgsTiledSceneTile::operator=( const QgsTiledSceneTile &other 
   return *this;
 }
 
-void QgsTiledSceneTile::setRefinementProcess( Qgis::TileRefinementProcess process )
-{
-  mRefinementProcess = process;
-}
+void QgsTiledSceneTile::setRefinementProcess( Qgis::TileRefinementProcess process ) { mRefinementProcess = process; }
 
-void QgsTiledSceneTile::setBoundingVolume( const QgsTiledSceneBoundingVolume &volume )
-{
-  mBoundingVolume = volume;
-}
+void QgsTiledSceneTile::setBoundingVolume( const QgsTiledSceneBoundingVolume &volume ) { mBoundingVolume = volume; }
 
-const QgsTiledSceneBoundingVolume &QgsTiledSceneTile::boundingVolume() const
-{
-  return mBoundingVolume;
-}
+const QgsTiledSceneBoundingVolume &QgsTiledSceneTile::boundingVolume() const { return mBoundingVolume; }
 
 void QgsTiledSceneTile::setTransform( const QgsMatrix4x4 &transform )
 {
@@ -85,37 +72,16 @@ void QgsTiledSceneTile::setTransform( const QgsMatrix4x4 &transform )
     mTransform = std::make_unique< QgsMatrix4x4 >( transform );
 }
 
-QVariantMap QgsTiledSceneTile::resources() const
-{
-  return mResources;
-}
+QVariantMap QgsTiledSceneTile::resources() const { return mResources; }
 
-void QgsTiledSceneTile::setResources( const QVariantMap &resources )
-{
-  mResources = resources;
-}
+void QgsTiledSceneTile::setResources( const QVariantMap &resources ) { mResources = resources; }
 
-void QgsTiledSceneTile::setGeometricError( double error )
-{
-  mGeometricError = error;
-}
+void QgsTiledSceneTile::setGeometricError( double error ) { mGeometricError = error; }
 
-QUrl QgsTiledSceneTile::baseUrl() const
-{
-  return mBaseUrl;
-}
+QUrl QgsTiledSceneTile::baseUrl() const { return mBaseUrl; }
 
-void QgsTiledSceneTile::setBaseUrl( const QUrl &baseUrl )
-{
-  mBaseUrl = baseUrl;
-}
+void QgsTiledSceneTile::setBaseUrl( const QUrl &baseUrl ) { mBaseUrl = baseUrl; }
 
-QVariantMap QgsTiledSceneTile::metadata() const
-{
-  return mMetadata;
-}
+QVariantMap QgsTiledSceneTile::metadata() const { return mMetadata; }
 
-void QgsTiledSceneTile::setMetadata( const QVariantMap &metadata )
-{
-  mMetadata = metadata;
-}
+void QgsTiledSceneTile::setMetadata( const QVariantMap &metadata ) { mMetadata = metadata; }

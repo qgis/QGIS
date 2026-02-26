@@ -32,11 +32,9 @@
  */
 class CORE_EXPORT QgsTiledSceneLayerElevationProperties : public QgsMapLayerElevationProperties
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsTiledSceneLayerElevationProperties, with the specified \a parent object.
      */
@@ -49,7 +47,6 @@ class CORE_EXPORT QgsTiledSceneLayerElevationProperties : public QgsMapLayerElev
     QString htmlSummary() const override;
     QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const override;
     QList< double > significantZValues( QgsMapLayer *layer ) const override;
-
 };
 
 #endif // QGSTILEDSCENELAYERELEVATIONPROPERTIES_H

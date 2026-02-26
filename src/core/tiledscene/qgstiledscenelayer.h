@@ -41,29 +41,27 @@ class CORE_EXPORT QgsTiledSceneLayer : public QgsMapLayer
     Q_OBJECT
 
   public:
-
     /**
      * Setting options for loading tiled scene layers.
      */
     struct LayerOptions
     {
-
-      /**
+        /**
        * Constructor for LayerOptions with optional \a transformContext.
        */
-      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext( ) )
-        : transformContext( transformContext )
-      {}
+        explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() )
+          : transformContext( transformContext )
+        {}
 
-      /**
+        /**
        * Coordinate transform context
        */
-      QgsCoordinateTransformContext transformContext;
+        QgsCoordinateTransformContext transformContext;
 
-      //! Set to TRUE if the default layer style should be loaded
-      bool loadDefaultStyle = true;
+        //! Set to TRUE if the default layer style should be loaded
+        bool loadDefaultStyle = true;
 
-      /**
+        /**
        * Controls whether the layer is allowed to have an invalid/unknown CRS.
        *
        * If TRUE, then no validation will be performed on the layer's CRS and the layer
@@ -74,16 +72,15 @@ class CORE_EXPORT QgsTiledSceneLayer : public QgsMapLayer
        * which may cause a blocking, user-facing dialog asking users to manually select the correct CRS for the
        * layer.
        */
-      bool skipCrsValidation = false;
+        bool skipCrsValidation = false;
     };
 
     /**
      * Constructor for QgsTiledSceneLayer.
      */
-    explicit QgsTiledSceneLayer( const QString &uri = QString(),
-                                 const QString &baseName = QString(),
-                                 const QString &provider = QString(),
-                                 const QgsTiledSceneLayer::LayerOptions &options = QgsTiledSceneLayer::LayerOptions() );
+    explicit QgsTiledSceneLayer(
+      const QString &uri = QString(), const QString &baseName = QString(), const QString &provider = QString(), const QgsTiledSceneLayer::LayerOptions &options = QgsTiledSceneLayer::LayerOptions()
+    );
 
     ~QgsTiledSceneLayer() override;
 
@@ -92,23 +89,20 @@ class CORE_EXPORT QgsTiledSceneLayer : public QgsMapLayer
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    QString str = u"<QgsTiledSceneLayer: '%1' (%2)>"_s.arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : u"Invalid"_s );
+    % MethodCode QString str = u"<QgsTiledSceneLayer: '%1' (%2)>"_s.arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : u"Invalid"_s );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    QgsTiledSceneLayer *clone() const override SIP_FACTORY;
+      QgsTiledSceneLayer *clone() const override SIP_FACTORY;
     QgsRectangle extent() const override;
     QgsTiledSceneDataProvider *dataProvider() override;
     const QgsTiledSceneDataProvider *dataProvider() const override SIP_SKIP;
     bool readXml( const QDomNode &layerNode, QgsReadWriteContext &context ) override;
     bool writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
-    bool readSymbology( const QDomNode &node, QString &errorMessage,
-                        QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) override;
+    bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) override;
     bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) final;
-    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
-                         StyleCategories categories = AllStyleCategories ) const override;
+    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const override;
     bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const final;
     void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
     QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const override;
@@ -148,7 +142,6 @@ class CORE_EXPORT QgsTiledSceneLayer : public QgsMapLayer
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags ) override;
 
   private:
-
     bool isReadOnly() const override;
 
 #ifdef SIP_RUN
