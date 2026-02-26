@@ -37,8 +37,9 @@ class CORE_EXPORT QgsMultiLineString : public QgsMultiCurve
     /**
      * Constructor for an empty multilinestring geometry.
      */
-    QgsMultiLineString()
-    SIP_HOLDGIL;
+    // clang-format off
+    QgsMultiLineString() SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Constructor for a multilinestring containing the specified \a linestrings.

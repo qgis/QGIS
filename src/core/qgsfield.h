@@ -88,8 +88,9 @@ class CORE_EXPORT QgsField
     QgsField(
       const QString &name = QString(), QMetaType::Type type = QMetaType::Type::UnknownType, const QString &typeName = QString(), int len = 0, int prec = 0, const QString &comment = QString(),
       QMetaType::Type subType = QMetaType::Type::UnknownType
-    )
-    SIP_HOLDGIL;
+      // clang-format off
+    ) SIP_HOLDGIL;
+    // clang-format on
 
 
     /**

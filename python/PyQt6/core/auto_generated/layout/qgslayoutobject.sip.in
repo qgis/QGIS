@@ -113,6 +113,242 @@ A base class for objects which belong to a layout.
     else
       sipType = NULL;
 %End
+  public:
+
+
+    enum class DataDefinedProperty /BaseType=IntEnum/
+    {
+      NoProperty,
+      AllProperties,
+      TestProperty,
+      //composer page properties
+      PresetPaperSize,
+      PaperWidth,
+      PaperHeight,
+      NumPages,
+      PaperOrientation,
+      //general composer item properties
+      PageNumber,
+      PositionX,
+      PositionY,
+      ItemWidth,
+      ItemHeight,
+      ItemRotation,
+      Transparency,
+      Opacity,
+      BlendMode,
+      ExcludeFromExports,
+      FrameColor,
+      BackgroundColor,
+      MarginLeft,
+      MarginTop,
+      MarginRight,
+      MarginBottom,
+      //composer map
+      MapRotation,
+      MapScale,
+      MapXMin,
+      MapYMin,
+      MapXMax,
+      MapYMax,
+      MapAtlasMargin,
+      MapLayers,
+      MapStylePreset,
+      MapLabelMargin,
+      MapGridEnabled,
+      MapGridIntervalX,
+      MapGridIntervalY,
+      MapGridOffsetX,
+      MapGridOffsetY,
+      MapGridFrameSize,
+      MapGridFrameMargin,
+      MapGridLabelDistance,
+      MapGridCrossSize,
+      MapGridFrameLineThickness,
+      MapGridAnnotationDisplayLeft,
+      MapGridAnnotationDisplayRight,
+      MapGridAnnotationDisplayTop,
+      MapGridAnnotationDisplayBottom,
+      MapGridFrameDivisionsLeft,
+      MapGridFrameDivisionsRight,
+      MapGridFrameDivisionsTop,
+      MapGridFrameDivisionsBottom,
+      MapGridDrawAnnotation,
+      MapCrs,
+      StartDateTime,
+      EndDateTime,
+      MapZRangeLower,
+      MapZRangeUpper,
+      //composer picture
+      PictureSource,
+      PictureSvgBackgroundColor,
+      PictureSvgStrokeColor,
+      PictureSvgStrokeWidth,
+      //html item
+      SourceUrl,
+      //legend item
+      LegendTitle,
+      LegendColumnCount,
+      LegendAutoWrapWidth,
+      //scalebar item
+      ScalebarLeftSegments,
+      ScalebarRightSegments,
+      ScalebarSegmentWidth,
+      ScalebarMinimumWidth,
+      ScalebarMaximumWidth,
+      ScalebarHeight,
+      ScalebarRightSegmentSubdivisions,
+      ScalebarSubdivisionHeight,
+      ScalebarFillColor,
+      ScalebarFillColor2,
+      ScalebarLineColor,
+      ScalebarLineWidth,
+      //table item
+      AttributeTableSourceLayer,
+      ElevationProfileTolerance,
+      ElevationProfileDistanceMajorInterval,
+      ElevationProfileDistanceMinorInterval,
+      ElevationProfileDistanceLabelInterval,
+      ElevationProfileElevationMajorInterval,
+      ElevationProfileElevationMinorInterval,
+      ElevationProfileElevationLabelInterval,
+      ElevationProfileMinimumDistance,
+      ElevationProfileMaximumDistance,
+      ElevationProfileMinimumElevation,
+      ElevationProfileMaximumElevation,
+    };
+
+
+    enum PropertyValueType /BaseType=IntEnum/
+    {
+      EvaluatedValue,
+      OriginalValue
+    };
+
+    static const QgsPropertiesDefinition &propertyDefinitions();
+%Docstring
+Returns the layout object property definitions.
+%End
+
+    static bool propertyAssociatesWithParentMultiframe( DataDefinedProperty property );
+%Docstring
+Returns ``True`` if the specified ``property`` key is normally
+associated with the parent :py:class:`QgsLayoutMultiFrame` object
+instead of a child :py:class:`QgsLayoutFrame` object.
+
+While some properties like QgsLayoutObject.DataDefinedProperty.PositionX
+and QgsLayoutObject.DataDefinedProperty.ItemWidth are typically
+associated with a direct :py:class:`QgsLayoutItem` subclass (including
+:py:class:`QgsLayoutFrame` objects), other properties are instead
+associated with a :py:class:`QgsLayoutMultiFrame` object (such as
+:py:class:`QgsLayoutObject`.DataDefinedProperty.SourceUrl or
+:py:class:`QgsLayoutObject`.DataDefinedProperty.AttributeTableSourceLayer).
+
+.. versionadded:: 3.18.1
+%End
+
+    explicit QgsLayoutObject( QgsLayout *layout );
+%Docstring
+Constructor for QgsLayoutObject, with the specified parent ``layout``.
+
+.. note::
+
+   While ownership of a QgsLayoutObject is not passed to the layout,
+   classes which are derived from QgsLayoutObject (such as QgsLayoutItem)
+   may transfer their ownership to a layout upon construction.
+%End
+
+
+    QgsLayout *layout();
+%Docstring
+Returns the layout the object is attached to.
+%End
+
+    QgsPropertyCollection &dataDefinedProperties();
+%Docstring
+Returns a reference to the object's property collection, used for data
+defined overrides.
+
+.. seealso:: :py:func:`setDataDefinedProperties`
+%End
+
+
+    void setDataDefinedProperties( const QgsPropertyCollection &collection );
+%Docstring
+Sets the objects's property collection, used for data defined overrides.
+
+:param collection: property collection. Existing properties will be
+                   replaced.
+
+.. seealso:: :py:func:`dataDefinedProperties`
+
+.. seealso:: DataDefinedProperty
+%End
+
+
+    void setCustomProperty( const QString &key, const QVariant &value );
+%Docstring
+Set a custom property for the object.
+
+:param key: property key. If a property with the same key already exists
+            it will be overwritten.
+:param value: property value
+
+.. seealso:: :py:func:`customProperty`
+
+.. seealso:: :py:func:`removeCustomProperty`
+
+.. seealso:: :py:func:`customProperties`
+%End
+
+    QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
+%Docstring
+Read a custom property from the object.
+
+:param key: property key
+:param defaultValue: default value to return if property with matching
+                     key does not exist
+
+:return: value of matching property
+
+.. seealso:: :py:func:`setCustomProperty`
+
+.. seealso:: :py:func:`removeCustomProperty`
+
+.. seealso:: :py:func:`customProperties`
+%End
+
+    void removeCustomProperty( const QString &key );
+%Docstring
+Remove a custom property from the object.
+
+:param key: property key
+
+.. seealso:: :py:func:`setCustomProperty`
+
+.. seealso:: :py:func:`customProperty`
+
+.. seealso:: :py:func:`customProperties`
+%End
+
+    QStringList customProperties() const;
+%Docstring
+Returns list of keys stored in custom properties for the object.
+
+.. seealso:: :py:func:`setCustomProperty`
+
+.. seealso:: :py:func:`customProperty`
+
+.. seealso:: :py:func:`removeCustomProperty`
+%End
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
+%Docstring
+Creates an expression context relating to the objects' current state.
+The context includes scopes for global, project and layout properties.
+%End
+
   public slots:
 
     virtual void refresh();

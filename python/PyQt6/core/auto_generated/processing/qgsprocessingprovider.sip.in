@@ -31,12 +31,7 @@ Constructor for QgsProcessingProvider.
     ~QgsProcessingProvider();
 
 
-    virtual QIcon icon() const;
-%Docstring
-Returns an icon for the provider.
-
-.. seealso:: :py:func:`svgIconPath`
-%End
+    virtual QIcon icon() const /HoldGIL/;
 
     virtual QString svgIconPath() const /HoldGIL/;
 %Docstring

@@ -27,10 +27,7 @@ Represents a simple 3-dimensional sphere.
 #include "qgssphere.h"
 %End
   public:
-    QgsSphere();
-%Docstring
-Constructor for an invalid QgsSphere.
-%End
+    QgsSphere() /HoldGIL/;
 
     QgsSphere( double x, double y, double z, double radius ) /HoldGIL/;
 %Docstring

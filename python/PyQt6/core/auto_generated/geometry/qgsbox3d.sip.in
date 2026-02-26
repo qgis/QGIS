@@ -126,14 +126,7 @@ Sets the box from a set of (x,y,z) minimum and maximum coordinates.
 .. versionadded:: 3.40
 %End
 
-    void setXMinimum( double x );
-%Docstring
-Sets the minimum ``x`` value.
-
-.. seealso:: :py:func:`xMinimum`
-
-.. seealso:: :py:func:`setXMaximum`
-%End
+    void setXMinimum( double x ) /HoldGIL/;
 
     void setXMaximum( double x ) /HoldGIL/;
 %Docstring

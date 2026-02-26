@@ -50,12 +50,7 @@ Returns the end point of the curve.
 .. seealso:: :py:func:`startPoint`
 %End
 
-    virtual bool isClosed() const;
-%Docstring
-Returns ``True`` if the curve is closed.
-
-.. seealso:: :py:func:`isClosed2D`
-%End
+    virtual bool isClosed() const /HoldGIL/;
 
     virtual bool isClosed2D() const /HoldGIL/;
 %Docstring

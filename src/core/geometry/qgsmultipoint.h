@@ -35,8 +35,9 @@ class CORE_EXPORT QgsMultiPoint : public QgsGeometryCollection
     /**
      * Constructor for an empty multipoint geometry.
      */
-    QgsMultiPoint()
-    SIP_HOLDGIL;
+    // clang-format off
+    QgsMultiPoint() SIP_HOLDGIL;
+    // clang-format on
 
 #ifndef SIP_RUN
 

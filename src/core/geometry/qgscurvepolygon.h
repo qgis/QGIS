@@ -98,8 +98,9 @@ class CORE_EXPORT QgsCurvePolygon : public QgsSurface
     }
 #endif
   public:
-    bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override
-    SIP_HOLDGIL
+    // clang-format off
+    bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override SIP_HOLDGIL
+      // clang-format on
     {
       return fuzzyHelper( other, epsilon, false );
     }

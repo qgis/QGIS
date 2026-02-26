@@ -22,10 +22,7 @@ Polygon geometry type.
 #include "qgspolygon.h"
 %End
   public:
-    QgsPolygon();
-%Docstring
-Constructor for an empty polygon geometry.
-%End
+    QgsPolygon() /HoldGIL/;
 
     QgsPolygon( QgsLineString *exterior /Transfer/, const QList< QgsLineString * > &rings /Transfer/ = QList< QgsLineString * >() ) /HoldGIL/;
 %Docstring

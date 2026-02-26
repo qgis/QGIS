@@ -44,7 +44,13 @@ class QgsTransaction;
   SIP_END
 #endif
 
-  Q_OBJECT public : QgsVectorLayerEditPassthrough( QgsVectorLayer *layer );
+  // clang-format off
+  Q_OBJECT
+
+  public:
+    // clang-format on
+
+    QgsVectorLayerEditPassthrough( QgsVectorLayer *layer );
     bool isModified() const override;
     bool addFeature( QgsFeature &f ) override;
     bool addFeatures( QgsFeatureList &features ) override;

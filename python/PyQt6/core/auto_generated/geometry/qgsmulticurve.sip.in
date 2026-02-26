@@ -44,7 +44,8 @@ Returns the curve with the specified ``index``.
 %End
 
 
-    virtual QString geometryType() const;
+    virtual QString geometryType() const /HoldGIL/;
+
     virtual QgsMultiCurve *clone() const /Factory/;
 
     virtual void clear();

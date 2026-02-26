@@ -42,8 +42,9 @@ class CORE_EXPORT QgsProfilePoint
     /**
      * Create a point at the specified distance and elevation coordinates
      */
-    QgsProfilePoint( double distance, double elevation )
-    SIP_HOLDGIL
+    // clang-format off
+    QgsProfilePoint( double distance, double elevation ) SIP_HOLDGIL
+      // clang-format on
       : mDistance( distance )
       , mElevation( elevation )
       , mIsEmpty( false )

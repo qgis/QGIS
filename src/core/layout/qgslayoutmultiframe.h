@@ -91,14 +91,16 @@ class CORE_EXPORT QgsLayoutMultiFrame : public QgsLayoutObject, public QgsLayout
   SIP_END
 #endif
 
+  // clang-format off
   Q_OBJECT
 
-    public :
+  public:
 
     /**
      * Specifies the behavior for creating new frames to fit the multiframe's content
      */
-    enum ResizeMode {
+    enum ResizeMode
+    {
       UseExistingFrames = 0, //!< Don't automatically create new frames, just use existing frames
       ExtendToNextPage,      //!< Creates new full page frames on the following page(s) until the entire multiframe content is visible
       RepeatOnEveryPage,     //!< Repeats the same frame on every page
@@ -109,6 +111,7 @@ class CORE_EXPORT QgsLayoutMultiFrame : public QgsLayoutObject, public QgsLayout
     //! Multiframe item undo commands, used for collapsing undo commands
     enum UndoCommand
     {
+      // clang-format on
       UndoHtmlBreakDistance,     //!< HTML page break distance
       UndoHtmlSource,            //!< HTML source
       UndoHtmlStylesheet,        //!< HTML stylesheet

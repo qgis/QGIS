@@ -305,8 +305,9 @@ class CORE_EXPORT QgsProcessingUtils
      * Normalizes a layer \a source string for safe comparison across different
      * operating system environments.
      */
-    static QString normalizeLayerSource( const QString &source )
-    SIP_HOLDGIL;
+    // clang-format off
+    static QString normalizeLayerSource( const QString &source ) SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Returns a string representation of the source for a \a layer. The returned

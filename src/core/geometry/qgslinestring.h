@@ -50,8 +50,9 @@ class CORE_EXPORT QgsLineString : public QgsCurve
     /**
      * Constructor for an empty linestring geometry.
      */
-    QgsLineString()
-    SIP_HOLDGIL;
+    // clang-format off
+    QgsLineString() SIP_HOLDGIL;
+    // clang-format on
 #ifndef SIP_RUN
 
     /**

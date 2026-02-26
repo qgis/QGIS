@@ -5,7 +5,8 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsRasterInterface.__virtual_methods__ = ['histogram', 'hasHistogram']
+    QgsRasterInterface.__virtual_methods__ = ['capabilities', 'sourceDataType', 'extent', 'xBlockSize', 'yBlockSize', 'xSize', 'ySize', 'generateBandName', 'colorInterpretationName', 'setInput', 'input', 'on', 'setOn', 'sourceInput', 'histogram', 'hasHistogram', 'cumulativeCut', 'writeXml', 'readXml']
+    QgsRasterInterface.__abstract_methods__ = ['clone', 'dataType', 'bandCount', 'block']
     QgsRasterInterface.__group__ = ['raster']
 except (NameError, AttributeError):
     pass

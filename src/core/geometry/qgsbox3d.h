@@ -179,8 +179,9 @@ class CORE_EXPORT QgsBox3D
      * \see xMinimum()
      * \see setXMaximum()
      */
-    void setXMinimum( double x )
-    SIP_HOLDGIL;
+    // clang-format off
+    void setXMinimum( double x ) SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Sets the maximum \a x value.

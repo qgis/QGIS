@@ -43,8 +43,9 @@ class CORE_EXPORT QgsQuadrilateral
     /**
      * Constructor for an empty quadrilateral geometry.
      */
-    QgsQuadrilateral()
-    SIP_HOLDGIL;
+    // clang-format off
+    QgsQuadrilateral() SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Construct a QgsQuadrilateral from four QgsPoint.

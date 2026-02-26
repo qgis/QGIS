@@ -67,8 +67,9 @@ class CORE_EXPORT QgsMatrix4x4
     //! Returns pointer to the matrix data (stored in column-major order)
     double *data() SIP_SKIP { return *m; }
     //! Returns matrix data (in column-major order)
-    QList< double > dataList() const SIP_PYNAME( data )
-    SIP_HOLDGIL;
+    // clang-format off
+    QList< double > dataList() const SIP_PYNAME( data ) SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Multiplies this matrix by another that translates coordinates by the components of a \a vector.

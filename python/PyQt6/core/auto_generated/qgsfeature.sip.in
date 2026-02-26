@@ -35,7 +35,9 @@ geometry and a list of field/values attributes.
     static const QMetaObject staticMetaObject;
 
   public:
-    SIP_PYOBJECT __iter__();
+    // clang-format off
+    SIP_PYOBJECT __iter__() /HoldGIL/;
+    // clang-format on
 %MethodCode
     QgsAttributes attributes = sipCpp->attributes();
     PyObject *attrs = sipConvertFromType( &attributes, sipType_QgsAttributes, Py_None );

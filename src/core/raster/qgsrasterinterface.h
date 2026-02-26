@@ -202,9 +202,11 @@ class CORE_EXPORT QgsRasterInterface
   SIP_END
 #endif
 
+  // clang-format off
   Q_DECLARE_TR_FUNCTIONS( QgsRasterInterface )
 
-    public :
+  public:
+    // clang-format on
 
     QgsRasterInterface( QgsRasterInterface *input = nullptr );
 

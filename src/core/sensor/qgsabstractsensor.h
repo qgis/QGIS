@@ -69,9 +69,11 @@ class CORE_EXPORT QgsAbstractSensor : public QObject
   SIP_END
 #endif
 
+  // clang-format off
   Q_OBJECT
 
-    public :
+  public:
+    // clang-format on
 
     /**
      * Contains details of a sensor data capture

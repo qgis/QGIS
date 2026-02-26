@@ -51,8 +51,9 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * Returns an icon for the provider.
      * \see svgIconPath()
      */
-    virtual QIcon icon() const
-    SIP_HOLDGIL;
+    // clang-format off
+    virtual QIcon icon() const SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Returns a path to an SVG version of the provider's icon.

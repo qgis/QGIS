@@ -49,8 +49,9 @@ class CORE_EXPORT QgsWkbTypes
      * \see curveType()
      * \see flatType()
      */
-    static Qgis::WkbType singleType( Qgis::WkbType type )
-    SIP_HOLDGIL
+    // clang-format off
+    static Qgis::WkbType singleType( Qgis::WkbType type ) SIP_HOLDGIL
+      // clang-format on
     {
       switch ( type )
       {

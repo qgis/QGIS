@@ -38,8 +38,9 @@ class CORE_EXPORT QgsGeometryCollection : public QgsAbstractGeometry
     /**
      * Constructor for an empty geometry collection.
      */
-    QgsGeometryCollection()
-    SIP_HOLDGIL;
+    // clang-format off
+    QgsGeometryCollection() SIP_HOLDGIL;
+    // clang-format on
 
     QgsGeometryCollection( const QgsGeometryCollection &c );
     QgsGeometryCollection &operator=( const QgsGeometryCollection &c );

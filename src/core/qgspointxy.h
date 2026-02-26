@@ -68,8 +68,9 @@ class CORE_EXPORT QgsPointXY
   public:
     QgsPointXY() = default;
 
-    QgsPointXY( const QgsPointXY &p )
-    SIP_HOLDGIL;
+    // clang-format off
+    QgsPointXY( const QgsPointXY &p ) SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Create a point from x,y coordinates

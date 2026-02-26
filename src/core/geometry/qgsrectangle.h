@@ -70,8 +70,9 @@ class CORE_EXPORT QgsRectangle
      * The rectangle will be normalized after creation. Since QGIS 3.20, if \a normalize is FALSE then
      * the normalization step will not be applied automatically.
      */
-    explicit QgsRectangle( double xMin, double yMin = 0, double xMax = 0, double yMax = 0, bool normalize = true )
-    SIP_HOLDGIL
+    // clang-format off
+    explicit QgsRectangle( double xMin, double yMin = 0, double xMax = 0, double yMax = 0, bool normalize = true ) SIP_HOLDGIL
+      // clang-format on
   : mXmin( xMin )
     , mYmin( yMin )
     , mXmax( xMax )

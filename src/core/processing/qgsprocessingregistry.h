@@ -101,8 +101,9 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
     /**
      * Returns a matching provider by provider ID.
      */
-    QgsProcessingProvider *providerById( const QString &id ) const
-    SIP_HOLDGIL;
+    // clang-format off
+    QgsProcessingProvider *providerById( const QString &id ) const SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Returns a list of all available algorithms from registered providers.

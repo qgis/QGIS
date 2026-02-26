@@ -46,11 +46,14 @@ using namespace Qt::StringLiterals;
  */
 class CORE_EXPORT QgsDefaultValue
 {
+    // clang-format off
   Q_GADGET SIP_SKIP
 
-  Q_PROPERTY( QString expression READ expression WRITE setExpression ) Q_PROPERTY( bool applyOnUpdate READ applyOnUpdate WRITE setApplyOnUpdate )
+  Q_PROPERTY( QString expression READ expression WRITE setExpression )
+  Q_PROPERTY( bool applyOnUpdate READ applyOnUpdate WRITE setApplyOnUpdate )
 
-    public :
+  public:
+    // clang-format on
 
     /**
      * Create a new default value with the given \a expression and \a applyOnUpdate flag.

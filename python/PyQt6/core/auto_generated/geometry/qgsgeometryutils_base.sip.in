@@ -26,17 +26,7 @@ Convenience functions for geometry utils.
 #include "qgsgeometryutils_base.h"
 %End
   public:
-    static double sqrDistance3D( double x1, double y1, double z1, double x2, double y2, double z2 );
-%Docstring
-Returns the squared 3D distance between (``x1``, ``y1``, ``z1``) and
-(``x2``, ``y2``, ``z2``).
-
-.. warning::
-
-   No check is done if z contains NaN value. This is the caller's responsibility.
-
-.. versionadded:: 3.36
-%End
+    static double sqrDistance3D( double x1, double y1, double z1, double x2, double y2, double z2 ) /HoldGIL/;
 
     static double distance3D( double x1, double y1, double z1, double x2, double y2, double z2 ) /HoldGIL/;
 %Docstring

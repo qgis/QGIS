@@ -52,8 +52,9 @@ class CORE_EXPORT QgsRegularPolygon
     /**
      * Constructor for QgsRegularPolygon.
      */
-    QgsRegularPolygon()
-    SIP_HOLDGIL = default;
+    // clang-format off
+    QgsRegularPolygon() SIP_HOLDGIL = default;
+    // clang-format on
 
     /**
      * Constructs a regular polygon by \a center and parameters for the first vertex. An empty regular polygon is returned if \a numberSides < 3 or \a ConstructionOption isn't valid.

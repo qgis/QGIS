@@ -21,10 +21,7 @@ Multi polygon geometry collection.
 #include "qgsmultipolygon.h"
 %End
   public:
-    QgsMultiPolygon();
-%Docstring
-Constructor for an empty multipolygon geometry.
-%End
+    QgsMultiPolygon() /HoldGIL/;
 
     QgsMultiPolygon( const QList< QgsPolygon > &polygons ) /HoldGIL/;
 %Docstring

@@ -39,8 +39,9 @@ class CORE_EXPORT QgsPolygon : public QgsCurvePolygon
     /**
      * Constructor for an empty polygon geometry.
      */
-    QgsPolygon()
-    SIP_HOLDGIL;
+    // clang-format off
+    QgsPolygon() SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Constructor for QgsPolygon, with the specified \a exterior ring and interior \a rings.

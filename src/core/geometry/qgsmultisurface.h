@@ -33,8 +33,9 @@ class CORE_EXPORT QgsMultiSurface : public QgsGeometryCollection
     /**
      * Constructor for an empty multisurface geometry.
      */
-    QgsMultiSurface()
-    SIP_HOLDGIL;
+    // clang-format off
+    QgsMultiSurface() SIP_HOLDGIL;
+    // clang-format on
 
 #ifndef SIP_RUN
 

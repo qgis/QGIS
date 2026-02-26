@@ -50,8 +50,9 @@ class CORE_EXPORT QgsVector3D
     {}
 
     //! Returns TRUE if all three coordinates are zero
-    bool isNull() const
-    SIP_HOLDGIL { return mX == 0 && mY == 0 && mZ == 0; }
+    // clang-format off
+    bool isNull() const SIP_HOLDGIL { return mX == 0 && mY == 0 && mZ == 0; }
+    // clang-format on
 
     //! Returns X coordinate
     double x() const SIP_HOLDGIL { return mX; }

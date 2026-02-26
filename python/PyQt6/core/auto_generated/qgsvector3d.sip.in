@@ -36,10 +36,7 @@ Constructs a vector from given coordinates
 Constructs a vector from single-precision QVector3D
 %End
 
-    bool isNull() const;
-%Docstring
-Returns ``True`` if all three coordinates are zero
-%End
+    bool isNull() const /HoldGIL/;
 
     double x() const /HoldGIL/;
 %Docstring

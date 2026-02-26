@@ -35,8 +35,9 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
     /**
      * Constructor for an empty triangle geometry.
      */
-    QgsTriangle()
-    SIP_HOLDGIL;
+    // clang-format off
+    QgsTriangle() SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Construct a QgsTriangle from three QgsPoint.

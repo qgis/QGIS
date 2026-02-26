@@ -73,8 +73,9 @@ class CORE_EXPORT QgsOrientedBox3D
      */
     static QgsOrientedBox3D fromBox3D( const QgsBox3D &box );
 
-    bool operator==( const QgsOrientedBox3D &other ) const
-    SIP_HOLDGIL
+    // clang-format off
+    bool operator==( const QgsOrientedBox3D &other ) const SIP_HOLDGIL
+      // clang-format on
     {
       return qgsDoubleNear( mCenter[0], other.mCenter[0] )
              && qgsDoubleNear( mCenter[1], other.mCenter[1] )

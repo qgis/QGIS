@@ -57,9 +57,11 @@ class CORE_EXPORT QgsSettingsTreeNode
   SIP_END
 #endif
 
+  // clang-format off
   Q_GADGET
 
-    public :
+  public:
+    // clang-format on
 
     virtual ~QgsSettingsTreeNode();
 

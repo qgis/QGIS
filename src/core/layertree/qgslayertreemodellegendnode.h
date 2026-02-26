@@ -74,9 +74,10 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
   SIP_END
 #endif
 
+  // clang-format off
   Q_OBJECT
 
-    public :
+  public:
 
     // *INDENT-OFF*
 
@@ -86,13 +87,15 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      * \note Prior to QGIS 3.36 this was available as QgsLayerTreeModelLegendNode::LegendNodeRoles
      * \since QGIS 3.36
      */
-    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayerTreeModelLegendNode, LegendNodeRoles ) : int {
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayerTreeModelLegendNode, LegendNodeRoles ) : int
+    {
       RuleKey SIP_MONKEYPATCH_COMPAT_NAME( RuleKeyRole ) = Qt::UserRole,      //!< Rule key of the node (QString)
       ParentRuleKey SIP_MONKEYPATCH_COMPAT_NAME( ParentRuleKeyRole ),         //!< Rule key of the parent legend node - for legends with tree hierarchy (QString). Added in 2.8
       NodeType SIP_MONKEYPATCH_COMPAT_NAME( NodeTypeRole ),                   //!< Type of node. Added in 3.16
       IsDataDefinedSize SIP_MONKEYPATCH_COMPAT_NAME( IsDataDefinedSizeRole ), //!< Set when a node is related to data defined size (title or separated legend items). Added in 3.38
     };
     Q_ENUM( CustomRole )
+    // clang-format on
     // *INDENT-ON*
 
     //! Types of legend nodes

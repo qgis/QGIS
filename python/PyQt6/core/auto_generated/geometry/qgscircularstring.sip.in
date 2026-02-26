@@ -21,10 +21,7 @@ Circular string geometry type.
 #include "qgscircularstring.h"
 %End
   public:
-    QgsCircularString();
-%Docstring
-Constructs an empty circular string.
-%End
+    QgsCircularString() /HoldGIL/;
 
     QgsCircularString( const QgsPoint &p1,
                        const QgsPoint &p2,

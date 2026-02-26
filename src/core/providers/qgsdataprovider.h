@@ -66,9 +66,11 @@ class CORE_EXPORT QgsDataProvider : public QObject
     }
   SIP_END
 #endif
+
+  // clang-format off
   Q_OBJECT
 
-    public :
+  public:
 
     /**
      * Properties are used to pass custom configuration options into data providers.
@@ -77,10 +79,12 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * In addition to these default properties, providers can add their custom properties
      * starting from CustomData.
      */
-    enum ProviderProperty {
+    enum ProviderProperty
+    {
       EvaluateDefaultValues, //!< Evaluate default values on provider side when calling QgsVectorDataProvider::defaultValue( int index ) rather than on commit.
       CustomData = 3000 //!< Custom properties for 3rd party providers or very provider-specific properties which are not expected to be of interest for other providers can be added starting from this value up.
     };
+    // clang-format on
 
     /**
      * Setting options for creating vector data providers.

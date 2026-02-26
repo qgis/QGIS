@@ -43,8 +43,9 @@ class CORE_EXPORT QgsEllipse
     /**
      * Constructor for QgsEllipse.
      */
-    QgsEllipse()
-    SIP_HOLDGIL = default;
+    // clang-format off
+    QgsEllipse() SIP_HOLDGIL = default;
+    // clang-format on
 
     virtual ~QgsEllipse() = default;
 

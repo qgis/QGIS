@@ -64,8 +64,9 @@ class CORE_EXPORT QgsCurve : public QgsAbstractGeometry SIP_ABSTRACT
      *
      * \see isClosed2D()
      */
-    virtual bool isClosed() const
-    SIP_HOLDGIL;
+    // clang-format off
+    virtual bool isClosed() const SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Returns true if the curve is closed.

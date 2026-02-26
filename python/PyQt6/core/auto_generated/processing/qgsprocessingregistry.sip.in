@@ -87,10 +87,7 @@ provider does not exist in the registry).
 .. seealso:: :py:func:`addProvider`
 %End
 
-    QgsProcessingProvider *providerById( const QString &id ) const;
-%Docstring
-Returns a matching provider by provider ID.
-%End
+    QgsProcessingProvider *providerById( const QString &id ) const /HoldGIL/;
 
     QList< const QgsProcessingAlgorithm *> algorithms() const;
 %Docstring

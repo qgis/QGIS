@@ -37,8 +37,9 @@ class CORE_EXPORT QgsMultiPolygon : public QgsMultiSurface
     /**
      * Constructor for an empty multipolygon geometry.
      */
-    QgsMultiPolygon()
-    SIP_HOLDGIL;
+    // clang-format off
+    QgsMultiPolygon() SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Constructor for a multipolygon containing the specified \a polygons.

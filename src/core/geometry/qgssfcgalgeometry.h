@@ -129,8 +129,9 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \throws QgsNotSupportedException when working with primitive and SFCGAL is less than 2.3.
      * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    QString geometryType() const SIP_THROW( QgsNotSupportedException, QgsSfcgalException )
-    SIP_HOLDGIL;
+    // clang-format off
+    QString geometryType() const SIP_THROW( QgsNotSupportedException, QgsSfcgalException ) SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Clones the geometry by performing a deep copy

@@ -26,18 +26,10 @@ Handles storage of information regarding WKB types and their properties.
 
   public:
     static Qgis::WkbType singleType( Qgis::WkbType type ) /HoldGIL/;
-%Docstring
-Returns the single type for a WKB type. For example, for MultiPolygon
-WKB types the single type would be Polygon.
-
-.. seealso:: :py:func:`isSingleType`
-
-.. seealso:: :py:func:`multiType`
-
-.. seealso:: :py:func:`curveType`
-
-.. seealso:: :py:func:`flatType`
-%End
+    {
+      switch ( type );
+      return Qgis::WkbType::Unknown;
+    }
 
     static Qgis::WkbType multiType( Qgis::WkbType type ) /HoldGIL/;
 %Docstring

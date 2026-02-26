@@ -36,14 +36,7 @@ extent of a map
     QgsRectangle(); // optimised constructor for null rectangle - no need to call normalize here
 
     explicit QgsRectangle( double xMin, double yMin = 0, double xMax = 0, double yMax = 0, bool normalize = true ) /HoldGIL/;
-%Docstring
-Constructs a QgsRectangle from a set of x and y minimum and maximum
-coordinates.
-
-The rectangle will be normalized after creation. Since QGIS 3.20, if
-``normalize`` is ``False`` then the normalization step will not be
-applied automatically.
-%End
+  : mXmin( xMin );
 
     QgsRectangle( const QgsPointXY &p1, const QgsPointXY &p2, bool normalize = true ) /HoldGIL/;
 %Docstring

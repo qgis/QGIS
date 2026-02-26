@@ -31,10 +31,7 @@ sides/vertices, a radius and the first vertex.
       CircumscribedCircle
     };
 
-    QgsRegularPolygon();
-%Docstring
-Constructor for QgsRegularPolygon.
-%End
+    QgsRegularPolygon() /HoldGIL/;
 
     QgsRegularPolygon( const QgsPoint &center, double radius, double azimuth, unsigned int numberSides, ConstructionOption circle ) /HoldGIL/;
 %Docstring

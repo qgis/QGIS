@@ -42,12 +42,122 @@ a settings entry on its creation when a parent is provided.
   public:
     static const QMetaObject staticMetaObject;
 
+  public:
+
+    virtual ~QgsSettingsTreeNode();
+
+
+    QgsSettingsTreeNode *createChildNode( const QString &key )  /KeepReference/;
+%Docstring
+Creates a normal tree node It will return the existing child node if it
+exists at the given key
+
+:raises QgsSettingsException: if a setting exists with the same key
+%End
+
+    QgsSettingsTreeNamedListNode *createNamedListNode( const QString &key, const Qgis::SettingsTreeNodeOptions &options = Qgis::SettingsTreeNodeOptions() );
+%Docstring
+Creates a named list tree node. This is useful to register groups of
+settings for several named items (for instance credentials for several
+named services)
+%End
+
+
+    Qgis::SettingsTreeNodeType type() const;
+%Docstring
+Returns the type of node
+%End
+
+    void registerChildSetting( const QgsSettingsEntryBase *setting, const QString &key );
+%Docstring
+Registers a child setting
+
+:param setting: the setting to register
+:param key: the key of the setting (not the complete key from its
+            parents)
+
+.. note::
+
+   Ownership of the setting is transferred
+
+.. note::
+
+   The registration is automatically done when calling the setting's constructor with the parent argument signature
+
+:raises QgsSettingsException: if a setting exists with the same key
+%End
+
+    void unregisterChildSetting( const QgsSettingsEntryBase *setting, bool deleteSettingValues = false, const QStringList &parentsNamedItems = QStringList() );
+%Docstring
+Unregisters the child setting
+
+:param setting: the setting to unregister
+:param deleteSettingValues: if ``True``, the values of the settings will
+                            also be deleted
+:param parentsNamedItems: the list of named items in the parent named
+                          list (if any)
+%End
+
+    void unregisterChildNode( QgsSettingsTreeNode *node );
+%Docstring
+Unregisters the child tree ``node``
+%End
+
+    QList<QgsSettingsTreeNode *> childrenNodes() const;
+%Docstring
+Returns the children nodes
+%End
+
+    QgsSettingsTreeNode *childNode( const QString &key ) const;
+%Docstring
+Returns the existing child node if it exists at the given ``key``
+%End
+
+    QList<const QgsSettingsEntryBase *> childrenSettings() const;
+%Docstring
+Returns the children settings
+%End
+
+    const QgsSettingsEntryBase *childSetting( const QString &key ) const;
+%Docstring
+Returns the existing child settings if it exists at the given ``key``
+%End
+
+    QgsSettingsTreeNode *parent() const;
+%Docstring
+Returns the parent of the node or None if it does not exists
+%End
+
+    QString key() const;
+%Docstring
+Returns the key of the node (without its parents)
+%End
+
+    QString completeKey() const;
+%Docstring
+Returns the complete key of the node (including its parents)
+%End
+
+    int namedNodesCount() const;
+%Docstring
+Returns the number of named nodes in the complete key
+%End
+
     SIP_PYOBJECT __repr__();
 %MethodCode const QMetaEnum metaEnum = QMetaEnum::fromType<Qgis::SettingsTreeNodeType>();
 
     QString str = QStringLiteral( "<QgsSettingsTreeNode (%1): %2>" ).arg( metaEnum.valueToKey( static_cast<int>( sipCpp->type() ) ), sipCpp->key() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
+
+    protected :
+    void registerChildNode( QgsSettingsTreeNode *node );
+%Docstring
+Registers a child nodes
+%End
+
+    Qgis::SettingsTreeNodeType mType;
+
   private:
     QgsSettingsTreeNode();
 %Docstring

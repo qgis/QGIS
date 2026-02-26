@@ -78,8 +78,9 @@ class CORE_EXPORT QgsFields
     /**
      * Constructor for an empty field container
      */
-    QgsFields()
-    SIP_HOLDGIL;
+    // clang-format off
+    QgsFields() SIP_HOLDGIL;
+    // clang-format on
 
     QgsFields( const QgsFields &other ) SIP_HOLDGIL;
     QgsFields &operator =( const QgsFields &other ) SIP_SKIP;

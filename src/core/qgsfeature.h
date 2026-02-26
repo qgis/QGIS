@@ -72,8 +72,9 @@ class CORE_EXPORT QgsFeature
 
   public:
 #ifdef SIP_RUN
-    SIP_PYOBJECT __iter__()
-    SIP_HOLDGIL;
+    // clang-format off
+    SIP_PYOBJECT __iter__() SIP_HOLDGIL;
+    // clang-format on
     % MethodCode
     QgsAttributes attributes = sipCpp->attributes();
     PyObject *attrs = sipConvertFromType( &attributes, sipType_QgsAttributes, Py_None );

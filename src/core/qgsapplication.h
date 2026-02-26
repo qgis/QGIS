@@ -102,8 +102,7 @@ class QgsLabelingEngineRuleRegistry;
 // clang-format off
 class CORE_EXPORT QgsApplication : public QApplication
 {
-  // clang-format on
-
+// clang-format on
 #ifdef SIP_RUN
   % TypeCode
       // Convert a Python argv list to a conventional C argc count and argv
@@ -149,9 +148,10 @@ class CORE_EXPORT QgsApplication : public QApplication
 % End
 #endif
 
+    // clang-format off
     Q_OBJECT
 
-    public :
+  public:
 
     /**
      * The StyleSheetType enum represents the stylesheet type that
@@ -161,13 +161,12 @@ class CORE_EXPORT QgsApplication : public QApplication
      * the standard QGIS stylesheet, maintained according to QGIS
      * visual guidelines.
      */
-    enum StyleSheetType {
-      Qt, //!< StyleSheet for Qt GUI widgets (based on QLabel or QTextBrowser),
-          //!< supports basic CSS and Qt extensions
-      WebBrowser, //!< StyleSheet for embedded browsers (QtWebKit), supports
-                  //!< full standard CSS
+    enum StyleSheetType
+    {
+      Qt, //!< StyleSheet for Qt GUI widgets (based on QLabel or QTextBrowser), supports basic CSS and Qt extensions
+      WebBrowser, //!< StyleSheet for embedded browsers (QtWebKit), supports full standard CSS
     };
-
+  // clang-format on
   static const char *QGIS_ORGANIZATION_NAME;
   static const char *QGIS_ORGANIZATION_DOMAIN;
   static const char *QGIS_APPLICATION_NAME;
@@ -425,15 +424,18 @@ class CORE_EXPORT QgsApplication : public QApplication
    * \brief The Cursor enum defines constants for QGIS custom
    * cursors.
    */
-  enum Cursor {
-    ZoomIn,       //!< Zoom in
-    ZoomOut,      //!< Zoom out
-    Identify,     //!< Identify: obtain information about the object
-    CrossHair,    //!< Precisely identify a point on the canvas
+  // clang-format off
+  enum Cursor
+  {
+    ZoomIn, //!< Zoom in
+    ZoomOut, //!< Zoom out
+    Identify, //!< Identify: obtain information about the object
+    CrossHair, //!< Precisely identify a point on the canvas
     CapturePoint, //!< Select and capture a point or a feature
-    Select,       //!< Select a rectangle
-    Sampler,      //!< Color/Value picker
+    Select, //!< Select a rectangle
+    Sampler, //!< Color/Value picker
   };
+  // clang-format on
 
   /**
    * Helper to get a theme cursor. It will fall back to the
@@ -534,12 +536,16 @@ class CORE_EXPORT QgsApplication : public QApplication
   //! Returns the path to default style (works as a starting point).
   static QString defaultStylePath();
 
-  //! Returns the path to default themes folder from install (works as a
-  //! starting point).
+  /**
+   * Returns the path to default themes folder from install (works as a
+   * starting point).
+   */
   static QString defaultThemesFolder();
 
-  //! Returns the path containing qgis_core, qgis_gui, qgispython (and other)
-  //! libraries
+  /**
+   * Returns the path containing qgis_core, qgis_gui, qgispython (and other)
+   * libraries
+   */
   static QString libraryPath();
 
   //! Returns the path with utility executables (help viewer, crssync, ...)
@@ -585,10 +591,13 @@ class CORE_EXPORT QgsApplication : public QApplication
   static QString appIconPath();
 
   //! Constants for endian-ness
-  enum endian_t {
+  // clang-format off
+  enum endian_t
+  {
     XDR = 0, // network, or big-endian, byte order
-    NDR = 1  // little-endian byte order
+    NDR = 1 // little-endian byte order
   };
+  // clang-format on
 
   //! Returns whether this machine uses big or little endian
   static endian_t endian();
@@ -642,11 +651,17 @@ class CORE_EXPORT QgsApplication : public QApplication
 #if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
   static QString cfgIntDir() SIP_SKIP;
 #endif
-  //! Returns path to the source directory. Valid only when running from build
-  //! directory
+
+  /**
+   * Returns path to the source directory. Valid only when running from build
+   * directory
+   */
   static QString buildSourcePath();
-  //! Returns path to the build output directory. Valid only when running from
-  //! build directory
+
+  /**
+   * Returns path to the build output directory. Valid only when running from
+   * build directory
+   */
   static QString buildOutputPath();
 
   /**
@@ -1214,8 +1229,11 @@ class CORE_EXPORT QgsApplication : public QApplication
   static const QgsSettingsEntryBool *settingsLocaleShowGroupSeparator;
   //! Settings entry search path for SVG
   static const QgsSettingsEntryStringList *settingsSearchPathsForSVG;
-  //! Settings entry to configure the maximum number of concurrent connections
-  //! within connection pools
+
+  /**
+   * Settings entry to configure the maximum number of concurrent connections
+   * within connection pools
+   */
   static const QgsSettingsEntryInteger
       *settingsConnectionPoolMaximumConcurrentConnections;
 #endif

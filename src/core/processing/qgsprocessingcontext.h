@@ -91,8 +91,9 @@ class CORE_EXPORT QgsProcessingContext
      * Returns any flags set in the context.
      * \see setFlags()
      */
-    QgsProcessingContext::Flags flags() const
-    SIP_HOLDGIL { return mFlags; }
+    // clang-format off
+    QgsProcessingContext::Flags flags() const SIP_HOLDGIL { return mFlags; }
+    // clang-format on
 
     /**
      * Sets \a flags for the context.

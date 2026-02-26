@@ -38,8 +38,9 @@ class CORE_EXPORT QgsCircularString : public QgsCurve
     /**
      * Constructs an empty circular string.
      */
-    QgsCircularString()
-    SIP_HOLDGIL;
+    // clang-format off
+    QgsCircularString() SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Constructs a circular string with a single

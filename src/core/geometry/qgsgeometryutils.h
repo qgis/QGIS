@@ -100,8 +100,9 @@ class CORE_EXPORT QgsGeometryUtils
      * \param intersection the initial point and the returned intersection point
      * \return TRUE if an intersection has been found
      */
-    static bool lineCircleIntersection( const QgsPointXY &center, double radius, const QgsPointXY &linePoint1, const QgsPointXY &linePoint2, QgsPointXY &intersection SIP_INOUT )
-    SIP_HOLDGIL;
+    // clang-format off
+    static bool lineCircleIntersection( const QgsPointXY &center, double radius, const QgsPointXY &linePoint1, const QgsPointXY &linePoint2, QgsPointXY &intersection SIP_INOUT ) SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Calculates the intersections points between the circle with center \a center1 and

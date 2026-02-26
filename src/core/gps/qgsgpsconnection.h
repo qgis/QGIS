@@ -63,9 +63,14 @@ template<class T> class QgsSettingsEntryEnumFlag;
   SIP_END
 #endif
 
-  Q_OBJECT public :
+  // clang-format off
+  Q_OBJECT
 
-    enum Status {
+  public:
+
+    enum Status
+    {
+      // clang-format on
       NotConnected,
       Connected,
       DataReceived,

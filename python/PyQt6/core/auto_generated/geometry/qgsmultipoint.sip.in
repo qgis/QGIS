@@ -20,10 +20,7 @@ Multi point geometry collection.
 #include "qgsmultipoint.h"
 %End
   public:
-    QgsMultiPoint();
-%Docstring
-Constructor for an empty multipoint geometry.
-%End
+    QgsMultiPoint() /HoldGIL/;
 
 
     QgsMultiPoint( SIP_PYOBJECT points /TypeHint="Sequence[Union[QgsPoint, QgsPointXY, Sequence[float]]]"/ ) /HoldGIL/ [( const QVector<QgsPoint> &points )];

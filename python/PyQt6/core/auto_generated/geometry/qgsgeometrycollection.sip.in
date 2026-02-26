@@ -21,10 +21,7 @@ Geometry collection.
 #include "qgsgeometrycollection.h"
 %End
   public:
-    QgsGeometryCollection();
-%Docstring
-Constructor for an empty geometry collection.
-%End
+    QgsGeometryCollection() /HoldGIL/;
 
     QgsGeometryCollection( const QgsGeometryCollection &c );
     ~QgsGeometryCollection();

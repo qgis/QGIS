@@ -48,8 +48,9 @@ class CORE_EXPORT QgsSphere
     /**
      * Constructor for an invalid QgsSphere.
      */
-    QgsSphere()
-    SIP_HOLDGIL = default;
+    // clang-format off
+    QgsSphere() SIP_HOLDGIL = default;
+    // clang-format on
 
     /**
      * Constructor for QgsSphere with the specified center (\a x, \a y, \a z) and \a radius.

@@ -122,8 +122,9 @@ class QgsPointCloudLayer;
      * \see group()
      * \see tags()
     */
-    virtual QString name() const = 0
-    SIP_HOLDGIL;
+    // clang-format off
+    virtual QString name() const = 0 SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Returns the unique ID for the algorithm, which is a combination of the algorithm

@@ -49,8 +49,9 @@ class CORE_EXPORT QgsVector
     {}
 
     //! Swaps the sign of the x and y components of the vector.
-    QgsVector operator-() const
-    SIP_HOLDGIL
+    // clang-format off
+    QgsVector operator-() const SIP_HOLDGIL
+      // clang-format on
     {
       return QgsVector( -mX, -mY );
     }
