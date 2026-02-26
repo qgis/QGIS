@@ -949,6 +949,9 @@ QgsVectorDataProvider.ReloadData.__doc__ = "Provider is able to force reload dat
 QgsVectorDataProvider.FeatureSymbology = Qgis.VectorProviderCapability.FeatureSymbology
 QgsVectorDataProvider.FeatureSymbology.is_monkey_patched = True
 QgsVectorDataProvider.FeatureSymbology.__doc__ = "Provider is able retrieve embedded symbology associated with individual features \n.. versionadded:: 3.20"
+QgsVectorDataProvider.CacheData = Qgis.VectorProviderCapability.CacheData
+QgsVectorDataProvider.CacheData.is_monkey_patched = True
+QgsVectorDataProvider.CacheData.__doc__ = "Provider caches source data and should force provider data reloads when dependent layers are committed \n.. versionadded:: 3.99"
 QgsVectorDataProvider.EditingCapabilities = Qgis.VectorProviderCapability.EditingCapabilities
 QgsVectorDataProvider.EditingCapabilities.is_monkey_patched = True
 QgsVectorDataProvider.EditingCapabilities.__doc__ = "Bitmask of all editing capabilities"
@@ -996,6 +999,10 @@ Qgis.VectorProviderCapability.__doc__ = """Vector data provider capabilities.
 * ``FeatureSymbology``: Provider is able retrieve embedded symbology associated with individual features
 
   .. versionadded:: 3.20
+
+* ``CacheData``: Provider caches source data and should force provider data reloads when dependent layers are committed
+
+  .. versionadded:: 3.99
 
 * ``EditingCapabilities``: Bitmask of all editing capabilities
 

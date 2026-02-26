@@ -355,6 +355,7 @@ The development version
       CreateLabeling,
       ReloadData,
       FeatureSymbology,
+      CacheData,
       EditingCapabilities,
     };
 
