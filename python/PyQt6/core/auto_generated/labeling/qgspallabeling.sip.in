@@ -690,21 +690,7 @@ PAL labeling utilities.
 Called to find out whether a specified ``layer`` is used for labeling.
 %End
 
-    static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry(), bool mergeLines = false );
-%Docstring
-Prepares a geometry for registration with PAL. Handles reprojection,
-rotation, clipping, etc.
-
-:param geometry: geometry to prepare
-:param context: render context
-:param ct: coordinate transform, or invalid transform if no
-           transformation required
-:param clipGeometry: geometry to clip features to, if applicable
-:param mergeLines: ``True`` if touching lines from this layer will be
-                   merged and treated as single features during labeling
-
-:return: prepared geometry
-%End
+    static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry(), bool mergeLines = false ) /Factory/;
 
     static bool geometryRequiresPreparation(
       const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry(), bool mergeLines = false

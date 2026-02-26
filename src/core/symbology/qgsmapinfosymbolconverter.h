@@ -69,8 +69,9 @@ class CORE_EXPORT QgsMapInfoSymbolConverter
      *
      * The caller takes ownership of the returned symbol.
      */
-    static QgsLineSymbol *convertLineSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, double size, Qgis::RenderUnit sizeUnit, bool interleaved = false )
-      SIP_FACTORY;
+    // clang-format off
+    static QgsLineSymbol *convertLineSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, double size, Qgis::RenderUnit sizeUnit, bool interleaved = false ) SIP_FACTORY;
+    // clang-format on
 
     /**
      * Converts the MapInfo fill symbol with the specified \a identifier to a QgsFillSymbol.

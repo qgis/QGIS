@@ -65,8 +65,9 @@ class CORE_EXPORT QgsExternalStorage
      *
      * Caller takes ownership of the returned symbol.
      */
-    QgsExternalStorageStoredContent *store( const QString &filePath, const QString &url, const QString &authCfg = QString(), Qgis::ActionStart storingMode = Qgis::ActionStart::Deferred ) const
-      SIP_FACTORY;
+    // clang-format off
+    QgsExternalStorageStoredContent *store( const QString &filePath, const QString &url, const QString &authCfg = QString(), Qgis::ActionStart storingMode = Qgis::ActionStart::Deferred ) const SIP_FACTORY;
+    // clang-format on
 
     /**
      * Fetches file from \a url for this project external storage.

@@ -1109,8 +1109,9 @@ class CORE_EXPORT QgsPalLabeling
      * \param mergeLines TRUE if touching lines from this layer will be merged and treated as single features during labeling
      * \returns prepared geometry
      */
-    static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry(), bool mergeLines = false )
-      SIP_FACTORY;
+    // clang-format off
+    static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry(), bool mergeLines = false ) SIP_FACTORY;
+    // clang-format on
 
     /**
      * Checks whether a geometry requires preparation before registration with PAL

@@ -55,13 +55,7 @@ Handles conversion of MapInfo symbols to QGIS symbology.
 #include "qgsmapinfosymbolconverter.h"
 %End
   public:
-    static QgsLineSymbol *convertLineSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, double size, Qgis::RenderUnit sizeUnit, bool interleaved = false );
-%Docstring
-Converts the MapInfo line symbol with the specified ``identifier`` to a
-:py:class:`QgsLineSymbol`.
-
-The caller takes ownership of the returned symbol.
-%End
+    static QgsLineSymbol *convertLineSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, double size, Qgis::RenderUnit sizeUnit, bool interleaved = false ) /Factory/;
 
     static QgsFillSymbol *convertFillSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, const QColor &backColor = QColor() ) /Factory/;
 %Docstring

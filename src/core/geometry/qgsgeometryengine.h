@@ -172,8 +172,9 @@ class QgsAbstractGeometry;
      * \param parameters can be used to specify parameters which control the combination results (since QGIS 3.28)
      *
      */
-    virtual QgsAbstractGeometry *combine( const QVector< QgsGeometry > &geometries, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0
-      SIP_FACTORY;
+    // clang-format off
+    virtual QgsAbstractGeometry *combine( const QVector< QgsGeometry > &geometries, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 SIP_FACTORY;
+    // clang-format on
 
     /**
      * Calculate the symmetric difference of this and \a geom.

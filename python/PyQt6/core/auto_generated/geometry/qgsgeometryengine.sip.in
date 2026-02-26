@@ -145,16 +145,7 @@ Calculate the combination of this and ``geometries``.
                    combination results (since QGIS 3.28)
 %End
 
-    virtual QgsAbstractGeometry *combine( const QVector< QgsGeometry > &geometries, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0
-%Docstring
-Calculate the combination of this and ``geometries``.
-
-:param geometries: list of geometries to perform the operation
-:param errorMsg: Error message returned by GEOS
-:param parameters: can be used to specify parameters which control the
-                   combination results (since QGIS 3.28)
-%End
-      /Factory/;
+    virtual QgsAbstractGeometry *combine( const QVector< QgsGeometry > &geometries, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 /Factory/;
 
     virtual QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 /Factory/;
 %Docstring

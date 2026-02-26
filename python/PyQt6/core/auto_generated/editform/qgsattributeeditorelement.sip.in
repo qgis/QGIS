@@ -71,12 +71,7 @@ Constructor
 
     virtual ~QgsAttributeEditorElement();
 
-    static QgsAttributeEditorElement *create( const QDomElement &element, const QString &layerId, const QgsFields &fields, const QgsReadWriteContext &context, QgsAttributeEditorElement *parent = 0 );
-%Docstring
-Constructs the editor element from the given element
-
-.. versionadded:: 3.18
-%End
+    static QgsAttributeEditorElement *create( const QDomElement &element, const QString &layerId, const QgsFields &fields, const QgsReadWriteContext &context, QgsAttributeEditorElement *parent = 0 ) /Factory/;
 
     QString name() const;
 %Docstring
