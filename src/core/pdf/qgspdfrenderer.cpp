@@ -35,25 +35,22 @@ class PdfDocumentContainer
 {
   public:
     PdfDocumentContainer( const QString &path )
-      : reader( nullptr, []( bool * )->QString {return QString(); }, true, false )
+      : reader(
+          nullptr, []( bool * ) -> QString { return QString(); }, true, false
+        )
       , document( reader.readFromFile( path ) )
       , modifiedDocument( &document, nullptr )
       , fontCache( 1000, 1000 )
     {
       fontCache.setDocument( modifiedDocument );
-      renderer = std::make_unique< pdf::PDFRenderer >( &document,
-                 &fontCache,
-                 &pdfCms,
-                 nullptr,
-                 pdf::PDFRenderer::Features(),
-                 meshQualitySettings );
+      renderer = std::make_unique< pdf::PDFRenderer >( &document, &fontCache, &pdfCms, nullptr, pdf::PDFRenderer::Features(), meshQualitySettings );
     }
     pdf::PDFDocumentReader reader;
     pdf::PDFDocument document;
     pdf::PDFModifiedDocument modifiedDocument;
     pdf::PDFFontCache fontCache;
     pdf::PDFCMSGeneric pdfCms;
-    pdf::PDFMeshQualitySettings  meshQualitySettings;
+    pdf::PDFMeshQualitySettings meshQualitySettings;
     std::unique_ptr< pdf::PDFRenderer > renderer;
 };
 #endif
@@ -75,10 +72,7 @@ int QgsPdfRenderer::pageCount() const
   return catalog->getPageCount();
 }
 #else
-int QgsPdfRenderer::pageCount() const
-{
-  throw QgsNotSupportedException( QObject::tr( "Rendering PDF requires a QGIS build with PDF4Qt library support" ) );
-}
+int QgsPdfRenderer::pageCount() const { throw QgsNotSupportedException( QObject::tr( "Rendering PDF requires a QGIS build with PDF4Qt library support" ) ); }
 #endif
 
 #ifdef HAVE_PDF4QT
@@ -91,10 +85,7 @@ QRectF QgsPdfRenderer::pageMediaBox( int pageNumber ) const
   return catalog->getPage( pageNumber )->getMediaBox();
 }
 #else
-QRectF QgsPdfRenderer::pageMediaBox( int ) const
-{
-  throw QgsNotSupportedException( QObject::tr( "Rendering PDF requires a QGIS build with PDF4Qt library support" ) );
-}
+QRectF QgsPdfRenderer::pageMediaBox( int ) const { throw QgsNotSupportedException( QObject::tr( "Rendering PDF requires a QGIS build with PDF4Qt library support" ) ); }
 #endif
 
 #ifdef HAVE_PDF4QT
@@ -104,9 +95,6 @@ bool QgsPdfRenderer::render( QPainter *painter, const QRectF &rectangle, int pag
   return true;
 }
 #else
-bool QgsPdfRenderer::render( QPainter *, const QRectF &, int )
-{
-  throw QgsNotSupportedException( QObject::tr( "Rendering PDF requires a QGIS build with PDF4Qt library support" ) );
-}
+bool QgsPdfRenderer::render( QPainter *, const QRectF &, int ) { throw QgsNotSupportedException( QObject::tr( "Rendering PDF requires a QGIS build with PDF4Qt library support" ) ); }
 
 #endif
