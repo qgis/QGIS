@@ -83,7 +83,7 @@ Converts an ESRI REST field ``type`` to a QVariant type.
 Converts an ESRI REST geometry ``type`` to a WKB type.
 %End
 
-    static std::unique_ptr< QgsAbstractGeometry > convertGeometry( const QVariantMap &geometry, const QString &esriGeometryType, bool hasM, bool hasZ, QgsCoordinateReferenceSystem *crs /Out/ = 0 );
+    static std::unique_ptr< QgsAbstractGeometry > convertGeometry( const QVariantMap &geometry, const QString &esriGeometryType, bool hasM, bool hasZ, bool allowCurves = true, QgsCoordinateReferenceSystem *crs /Out/ = 0 );
 %Docstring
 Converts an ESRI REST ``geometry`` JSON definition to a
 :py:class:`QgsAbstractGeometry`.
@@ -94,6 +94,8 @@ Caller takes ownership of the returned object.
 :param esriGeometryType: ESRI geometry type string
 :param hasM: set to ``True`` to if geometry includes M values
 :param hasZ: set to ``True`` to if geometry includes Z values
+:param allowCurves: controls whether the returned geometry can be a
+                    curved geometry type (since QGIS 4.0)
 
 :return: - converted geometry
          - crs: the parsed geometry CRS
