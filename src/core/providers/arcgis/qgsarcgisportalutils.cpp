@@ -19,7 +19,7 @@
 #include <QUrl>
 #include <QUrlQuery>
 
-QVariantMap QgsArcGisPortalUtils::retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback, const QString &urlPrefix )
+QVariantMap QgsArcGisPortalUtils::retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback, const QString &urlPrefix, bool forceRefresh )
 {
   QString endPoint = communityUrl;
   if ( endPoint.endsWith( '/' ) )
@@ -35,7 +35,7 @@ QVariantMap QgsArcGisPortalUtils::retrieveUserInfo( const QString &communityUrl,
   query.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
   queryUrl.setQuery( query );
 
-  return QgsArcGisRestQueryUtils::queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders, feedback, urlPrefix );
+  return QgsArcGisRestQueryUtils::queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders, feedback, urlPrefix, forceRefresh );
 }
 
 QVariantMap QgsArcGisPortalUtils::retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle, QString &errorText, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback, const QString &urlPrefix )
@@ -43,9 +43,9 @@ QVariantMap QgsArcGisPortalUtils::retrieveUserInfo( const QString &communityUrl,
   return QgsArcGisPortalUtils::retrieveUserInfo( communityUrl, user, authcfg, errorTitle, errorText, QgsHttpHeaders( requestHeaders ), feedback, urlPrefix );
 }
 
-QVariantList QgsArcGisPortalUtils::retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback, const QString &urlPrefix )
+QVariantList QgsArcGisPortalUtils::retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback, const QString &urlPrefix, bool forceRefresh )
 {
-  const QVariantMap info = retrieveUserInfo( communityUrl, user, authcfg, errorTitle, errorText, requestHeaders, feedback, urlPrefix );
+  const QVariantMap info = retrieveUserInfo( communityUrl, user, authcfg, errorTitle, errorText, requestHeaders, feedback, urlPrefix, forceRefresh );
   return info.value( QStringLiteral( "groups" ) ).toList();
 }
 
@@ -54,7 +54,7 @@ QVariantList QgsArcGisPortalUtils::retrieveUserGroups( const QString &communityU
   return QgsArcGisPortalUtils::retrieveUserGroups( communityUrl, user, authcfg, errorTitle, errorText, QgsHttpHeaders( requestHeaders ), feedback, urlPrefix );
 }
 
-QVariantList QgsArcGisPortalUtils::retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback, int pageSize, const QString &urlPrefix )
+QVariantList QgsArcGisPortalUtils::retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback, int pageSize, const QString &urlPrefix, bool forceRefresh )
 {
   QString endPoint = contentUrl;
   if ( endPoint.endsWith( '/' ) )
@@ -74,7 +74,7 @@ QVariantList QgsArcGisPortalUtils::retrieveGroupContent( const QString &contentU
     query.addQueryItem( QStringLiteral( "num" ), QString::number( pageSize ) );
     queryUrl.setQuery( query );
 
-    const QVariantMap response = QgsArcGisRestQueryUtils::queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders, feedback, urlPrefix );
+    const QVariantMap response = QgsArcGisRestQueryUtils::queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders, feedback, urlPrefix, forceRefresh );
     if ( !errorText.isEmpty() )
       return QVariantList();
 
@@ -96,9 +96,9 @@ QVariantList QgsArcGisPortalUtils::retrieveGroupContent( const QString &contentU
   return QgsArcGisPortalUtils::retrieveGroupContent( contentUrl, groupId, authcfg, errorTitle, errorText, QgsHttpHeaders( requestHeaders ), feedback, pageSize, urlPrefix );
 }
 
-QVariantList QgsArcGisPortalUtils::retrieveGroupItemsOfType( const QString &contentUrl, const QString &groupId, const QString &authcfg, const QList<int> &itemTypes, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback, int pageSize, const QString &urlPrefix )
+QVariantList QgsArcGisPortalUtils::retrieveGroupItemsOfType( const QString &contentUrl, const QString &groupId, const QString &authcfg, const QList<int> &itemTypes, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback, int pageSize, const QString &urlPrefix, bool forceRefresh )
 {
-  const QVariantList items = retrieveGroupContent( contentUrl, groupId, authcfg, errorTitle, errorText, requestHeaders, feedback, pageSize, urlPrefix );
+  const QVariantList items = retrieveGroupContent( contentUrl, groupId, authcfg, errorTitle, errorText, requestHeaders, feedback, pageSize, urlPrefix, forceRefresh );
 
   // filter results to desired types
   QVariantList result;
