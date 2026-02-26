@@ -407,6 +407,8 @@ class CORE_EXPORT QgsDistanceArea
     double measurePolygon( const QgsCurve *curve ) const;
 
     QgsCoordinateTransform sourceToEllipsoid() const;
+
+    friend class TestQgsDistanceArea;
 };
 
 #endif
