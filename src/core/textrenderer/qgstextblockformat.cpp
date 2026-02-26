@@ -47,7 +47,9 @@ QgsTextBlockFormat::QgsTextBlockFormat( const QTextBlockFormat &format )
   : mBackgroundBrush( format.background() )
   , mBackgroundPath( format.stringProperty( QTextFormat::BackgroundImageUrl ) )
   , mLineHeight( format.hasProperty( QTextFormat::LineHeight ) && format.lineHeightType() != QTextBlockFormat::ProportionalHeight ? format.lineHeight() : std::numeric_limits< double >::quiet_NaN() )
-  , mLineHeightPercentage( format.hasProperty( QTextFormat::LineHeight ) && format.lineHeightType() == QTextBlockFormat::ProportionalHeight ? ( format.lineHeight() / 100.0 ) : std::numeric_limits< double >::quiet_NaN() )
+  , mLineHeightPercentage(
+      format.hasProperty( QTextFormat::LineHeight ) && format.lineHeightType() == QTextBlockFormat::ProportionalHeight ? ( format.lineHeight() / 100.0 ) : std::numeric_limits< double >::quiet_NaN()
+    )
 {
   mHorizontalAlign = convertTextBlockFormatAlign( format, mHasHorizontalAlignSet );
 
@@ -81,52 +83,22 @@ void QgsTextBlockFormat::overrideWith( const QgsTextBlockFormat &other )
     mMargins.setBottom( other.mMargins.bottom() );
 }
 
-double QgsTextBlockFormat::lineHeight() const
-{
-  return mLineHeight;
-}
+double QgsTextBlockFormat::lineHeight() const { return mLineHeight; }
 
-void QgsTextBlockFormat::setLineHeight( double height )
-{
-  mLineHeight = height;
-}
+void QgsTextBlockFormat::setLineHeight( double height ) { mLineHeight = height; }
 
-double QgsTextBlockFormat::lineHeightPercentage() const
-{
-  return mLineHeightPercentage;
-}
+double QgsTextBlockFormat::lineHeightPercentage() const { return mLineHeightPercentage; }
 
-void QgsTextBlockFormat::setLineHeightPercentage( double height )
-{
-  mLineHeightPercentage = height;
-}
+void QgsTextBlockFormat::setLineHeightPercentage( double height ) { mLineHeightPercentage = height; }
 
-void QgsTextBlockFormat::updateFontForFormat( QFont &, const QgsRenderContext &, const double ) const
-{
+void QgsTextBlockFormat::updateFontForFormat( QFont &, const QgsRenderContext &, const double ) const {}
 
-}
+bool QgsTextBlockFormat::hasBackground() const { return mBackgroundBrush.style() != Qt::NoBrush || !mBackgroundPath.isEmpty(); }
 
-bool QgsTextBlockFormat::hasBackground() const
-{
-  return mBackgroundBrush.style() != Qt::NoBrush || !mBackgroundPath.isEmpty();
-}
+QBrush QgsTextBlockFormat::backgroundBrush() const { return mBackgroundBrush; }
 
-QBrush QgsTextBlockFormat::backgroundBrush() const
-{
-  return mBackgroundBrush;
-}
+void QgsTextBlockFormat::setBackgroundBrush( const QBrush &brush ) { mBackgroundBrush = brush; }
 
-void QgsTextBlockFormat::setBackgroundBrush( const QBrush &brush )
-{
-  mBackgroundBrush = brush;
-}
+QString QgsTextBlockFormat::backgroundImagePath() const { return mBackgroundPath; }
 
-QString QgsTextBlockFormat::backgroundImagePath() const
-{
-  return mBackgroundPath;
-}
-
-void QgsTextBlockFormat::setBackgroundImagePath( const QString &path )
-{
-  mBackgroundPath = path;
-}
+void QgsTextBlockFormat::setBackgroundImagePath( const QString &path ) { mBackgroundPath = path; }

@@ -26,7 +26,6 @@ Encapsulates the context in which a text document is to be rendered.
 #include "qgstextdocumentmetrics.h"
 %End
   public:
-
     Qgis::TextRendererFlags flags() const;
 %Docstring
 Returns associated text renderer flags.
@@ -79,9 +78,10 @@ Contains pre-calculated metrics of a :py:class:`QgsTextDocument`.
 #include "qgstextdocumentmetrics.h"
 %End
   public:
-
-    static QgsTextDocumentMetrics calculateMetrics( const QgsTextDocument &document, const QgsTextFormat &format, const QgsRenderContext &context, double scaleFactor = 1.0,
-        const QgsTextDocumentRenderContext &documentContext = QgsTextDocumentRenderContext() );
+    static QgsTextDocumentMetrics calculateMetrics(
+      const QgsTextDocument &document, const QgsTextFormat &format, const QgsRenderContext &context, double scaleFactor = 1.0,
+      const QgsTextDocumentRenderContext &documentContext = QgsTextDocumentRenderContext()
+    );
 %Docstring
 Returns precalculated text metrics for a text ``document``, when
 rendered using the given base ``format`` and render ``context``.

@@ -31,21 +31,16 @@
 
 using namespace Qt::StringLiterals;
 
-QgsTextBufferSettings::QgsTextBufferSettings()
-{
-  d = new QgsTextBufferSettingsPrivate();
-}
+QgsTextBufferSettings::QgsTextBufferSettings() { d = new QgsTextBufferSettingsPrivate(); }
 
 QgsTextBufferSettings::QgsTextBufferSettings( const QgsTextBufferSettings &other ) //NOLINT
   : d( other.d )
-{
-}
+{}
 QgsTextBufferSettings::QgsTextBufferSettings( QgsTextBufferSettings &&other ) //NOLINT
   : d( std::move( other.d ) )
-{
-}
+{}
 
-QgsTextBufferSettings &QgsTextBufferSettings::operator=( const QgsTextBufferSettings &other )  //NOLINT
+QgsTextBufferSettings &QgsTextBufferSettings::operator=( const QgsTextBufferSettings &other ) //NOLINT
 {
   if ( &other == this )
     return *this;
@@ -54,7 +49,7 @@ QgsTextBufferSettings &QgsTextBufferSettings::operator=( const QgsTextBufferSett
   return *this;
 }
 
-QgsTextBufferSettings &QgsTextBufferSettings::operator=( QgsTextBufferSettings &&other )  //NOLINT
+QgsTextBufferSettings &QgsTextBufferSettings::operator=( QgsTextBufferSettings &&other ) //NOLINT
 {
   if ( &other == this )
     return *this;
@@ -64,134 +59,61 @@ QgsTextBufferSettings &QgsTextBufferSettings::operator=( QgsTextBufferSettings &
 }
 
 QgsTextBufferSettings::~QgsTextBufferSettings() //NOLINT
-{
-
-}
+{}
 
 bool QgsTextBufferSettings::operator==( const QgsTextBufferSettings &other ) const
 {
-  if ( d->enabled != other.enabled()
-       || d->size != other.size()
-       || d->sizeUnit != other.sizeUnit()
-       || d->sizeMapUnitScale != other.sizeMapUnitScale()
-       || d->color != other.color()
-       || d->opacity != other.opacity()
-       || d->fillBufferInterior != other.fillBufferInterior()
-       || d->joinStyle != other.joinStyle()
-       || d->blendMode != other.blendMode() )
+  if ( d->enabled != other.enabled() || d->size != other.size() || d->sizeUnit != other.sizeUnit() || d->sizeMapUnitScale != other.sizeMapUnitScale() || d->color != other.color()
+       || d->opacity != other.opacity() || d->fillBufferInterior != other.fillBufferInterior() || d->joinStyle != other.joinStyle() || d->blendMode != other.blendMode() )
     return false;
 
-  if ( static_cast< bool >( d->paintEffect ) != static_cast< bool >( other.paintEffect() )
-       || ( d->paintEffect && d->paintEffect->properties() != other.paintEffect()->properties() ) )
+  if ( static_cast< bool >( d->paintEffect ) != static_cast< bool >( other.paintEffect() ) || ( d->paintEffect && d->paintEffect->properties() != other.paintEffect()->properties() ) )
     return false;
 
   return true;
 }
 
-bool QgsTextBufferSettings::operator!=( const QgsTextBufferSettings &other ) const
-{
-  return !( *this == other );
-}
+bool QgsTextBufferSettings::operator!=( const QgsTextBufferSettings &other ) const { return !( *this == other ); }
 
-bool QgsTextBufferSettings::enabled() const
-{
-  return d->enabled;
-}
+bool QgsTextBufferSettings::enabled() const { return d->enabled; }
 
-void QgsTextBufferSettings::setEnabled( bool enabled )
-{
-  d->enabled = enabled;
-}
+void QgsTextBufferSettings::setEnabled( bool enabled ) { d->enabled = enabled; }
 
-double QgsTextBufferSettings::size() const
-{
-  return d->size;
-}
+double QgsTextBufferSettings::size() const { return d->size; }
 
-void QgsTextBufferSettings::setSize( double size )
-{
-  d->size = size;
-}
+void QgsTextBufferSettings::setSize( double size ) { d->size = size; }
 
-Qgis::RenderUnit QgsTextBufferSettings::sizeUnit() const
-{
-  return d->sizeUnit;
-}
+Qgis::RenderUnit QgsTextBufferSettings::sizeUnit() const { return d->sizeUnit; }
 
-void QgsTextBufferSettings::setSizeUnit( Qgis::RenderUnit unit )
-{
-  d->sizeUnit = unit;
-}
+void QgsTextBufferSettings::setSizeUnit( Qgis::RenderUnit unit ) { d->sizeUnit = unit; }
 
-QgsMapUnitScale QgsTextBufferSettings::sizeMapUnitScale() const
-{
-  return d->sizeMapUnitScale;
-}
+QgsMapUnitScale QgsTextBufferSettings::sizeMapUnitScale() const { return d->sizeMapUnitScale; }
 
-void QgsTextBufferSettings::setSizeMapUnitScale( const QgsMapUnitScale &scale )
-{
-  d->sizeMapUnitScale = scale;
-}
+void QgsTextBufferSettings::setSizeMapUnitScale( const QgsMapUnitScale &scale ) { d->sizeMapUnitScale = scale; }
 
-QColor QgsTextBufferSettings::color() const
-{
-  return d->color;
-}
+QColor QgsTextBufferSettings::color() const { return d->color; }
 
-void QgsTextBufferSettings::setColor( const QColor &color )
-{
-  d->color = color;
-}
+void QgsTextBufferSettings::setColor( const QColor &color ) { d->color = color; }
 
-bool QgsTextBufferSettings::fillBufferInterior() const
-{
-  return d->fillBufferInterior;
-}
+bool QgsTextBufferSettings::fillBufferInterior() const { return d->fillBufferInterior; }
 
-void QgsTextBufferSettings::setFillBufferInterior( bool fill )
-{
-  d->fillBufferInterior = fill;
-}
+void QgsTextBufferSettings::setFillBufferInterior( bool fill ) { d->fillBufferInterior = fill; }
 
-double QgsTextBufferSettings::opacity() const
-{
-  return d->opacity;
-}
+double QgsTextBufferSettings::opacity() const { return d->opacity; }
 
-void QgsTextBufferSettings::setOpacity( double opacity )
-{
-  d->opacity = opacity;
-}
+void QgsTextBufferSettings::setOpacity( double opacity ) { d->opacity = opacity; }
 
-Qt::PenJoinStyle QgsTextBufferSettings::joinStyle() const
-{
-  return d->joinStyle;
-}
+Qt::PenJoinStyle QgsTextBufferSettings::joinStyle() const { return d->joinStyle; }
 
-void QgsTextBufferSettings::setJoinStyle( Qt::PenJoinStyle style )
-{
-  d->joinStyle = style;
-}
+void QgsTextBufferSettings::setJoinStyle( Qt::PenJoinStyle style ) { d->joinStyle = style; }
 
-QPainter::CompositionMode QgsTextBufferSettings::blendMode() const
-{
-  return d->blendMode;
-}
+QPainter::CompositionMode QgsTextBufferSettings::blendMode() const { return d->blendMode; }
 
-void QgsTextBufferSettings::setBlendMode( QPainter::CompositionMode mode )
-{
-  d->blendMode = mode;
-}
+void QgsTextBufferSettings::setBlendMode( QPainter::CompositionMode mode ) { d->blendMode = mode; }
 
-const QgsPaintEffect *QgsTextBufferSettings::paintEffect() const
-{
-  return d->paintEffect.get();
-}
+const QgsPaintEffect *QgsTextBufferSettings::paintEffect() const { return d->paintEffect.get(); }
 
-void QgsTextBufferSettings::setPaintEffect( QgsPaintEffect *effect )
-{
-  d->paintEffect.reset( effect );
-}
+void QgsTextBufferSettings::setPaintEffect( QgsPaintEffect *effect ) { d->paintEffect.reset( effect ); }
 
 void QgsTextBufferSettings::updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties )
 {
@@ -315,7 +237,8 @@ void QgsTextBufferSettings::readFromLayer( QgsVectorLayer *layer )
     d->opacity = ( layer->customProperty( u"labeling/bufferOpacity"_s ).toDouble() );
   }
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< Qgis::BlendMode >( layer->customProperty( u"labeling/bufferBlendMode"_s, QVariant( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
+    static_cast< Qgis::BlendMode >( layer->customProperty( u"labeling/bufferBlendMode"_s, QVariant( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() )
+  );
   d->joinStyle = static_cast< Qt::PenJoinStyle >( layer->customProperty( u"labeling/bufferJoinStyle"_s, QVariant( Qt::RoundJoin ) ).toUInt() );
 
   d->fillBufferInterior = !layer->customProperty( u"labeling/bufferNoFill"_s, QVariant( false ) ).toBool();
@@ -388,7 +311,8 @@ void QgsTextBufferSettings::readXml( const QDomElement &elem )
   }
 
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< Qgis::BlendMode >( textBufferElem.attribute( u"bufferBlendMode"_s, QString::number( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
+    static_cast< Qgis::BlendMode >( textBufferElem.attribute( u"bufferBlendMode"_s, QString::number( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() )
+  );
   d->joinStyle = static_cast< Qt::PenJoinStyle >( textBufferElem.attribute( u"bufferJoinStyle"_s, QString::number( Qt::RoundJoin ) ).toUInt() );
   d->fillBufferInterior = !textBufferElem.attribute( u"bufferNoFill"_s, u"0"_s ).toInt();
   const QDomElement effectElem = textBufferElem.firstChildElement( u"effect"_s );

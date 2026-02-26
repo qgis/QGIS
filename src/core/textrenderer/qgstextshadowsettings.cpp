@@ -28,24 +28,17 @@
 
 using namespace Qt::StringLiterals;
 
-QgsTextShadowSettings::QgsTextShadowSettings()
-{
-  d = new QgsTextShadowSettingsPrivate();
-}
+QgsTextShadowSettings::QgsTextShadowSettings() { d = new QgsTextShadowSettingsPrivate(); }
 
 QgsTextShadowSettings::QgsTextShadowSettings( const QgsTextShadowSettings &other ) //NOLINT
   : d( other.d )
-{
-
-}
+{}
 
 QgsTextShadowSettings::QgsTextShadowSettings( QgsTextShadowSettings &&other ) //NOLINT
   : d( std::move( other.d ) )
-{
+{}
 
-}
-
-QgsTextShadowSettings &QgsTextShadowSettings::operator=( const QgsTextShadowSettings &other )  //NOLINT
+QgsTextShadowSettings &QgsTextShadowSettings::operator=( const QgsTextShadowSettings &other ) //NOLINT
 {
   if ( &other == this )
     return *this;
@@ -54,7 +47,7 @@ QgsTextShadowSettings &QgsTextShadowSettings::operator=( const QgsTextShadowSett
   return *this;
 }
 
-QgsTextShadowSettings &QgsTextShadowSettings::operator=( QgsTextShadowSettings &&other )  //NOLINT
+QgsTextShadowSettings &QgsTextShadowSettings::operator=( QgsTextShadowSettings &&other ) //NOLINT
 {
   if ( &other == this )
     return *this;
@@ -65,191 +58,85 @@ QgsTextShadowSettings &QgsTextShadowSettings::operator=( QgsTextShadowSettings &
 
 
 QgsTextShadowSettings::~QgsTextShadowSettings() //NOLINT
-{
-
-}
+{}
 
 bool QgsTextShadowSettings::operator==( const QgsTextShadowSettings &other ) const
 {
-  if ( d->enabled != other.enabled()
-       || d->shadowUnder != other.shadowPlacement()
-       || d->offsetAngle != other.offsetAngle()
-       || d->offsetDist != other.offsetDistance()
-       || d->offsetUnits != other.offsetUnit()
-       || d->offsetMapUnitScale != other.offsetMapUnitScale()
-       || d->offsetGlobal != other.offsetGlobal()
-       || d->radius != other.blurRadius()
-       || d->radiusUnits != other.blurRadiusUnit()
-       || d->radiusMapUnitScale != other.blurRadiusMapUnitScale()
-       || d->radiusAlphaOnly != other.blurAlphaOnly()
-       || d->scale != other.scale()
-       || d->color != other.color()
-       || d->opacity != other.opacity()
-       || d->blendMode != other.blendMode() )
+  if ( d->enabled != other.enabled() || d->shadowUnder != other.shadowPlacement() || d->offsetAngle != other.offsetAngle() || d->offsetDist != other.offsetDistance()
+       || d->offsetUnits != other.offsetUnit() || d->offsetMapUnitScale != other.offsetMapUnitScale() || d->offsetGlobal != other.offsetGlobal() || d->radius != other.blurRadius()
+       || d->radiusUnits != other.blurRadiusUnit() || d->radiusMapUnitScale != other.blurRadiusMapUnitScale() || d->radiusAlphaOnly != other.blurAlphaOnly() || d->scale != other.scale()
+       || d->color != other.color() || d->opacity != other.opacity() || d->blendMode != other.blendMode() )
     return false;
 
   return true;
 }
 
-bool QgsTextShadowSettings::operator!=( const QgsTextShadowSettings &other ) const
-{
-  return !( *this == other );
-}
+bool QgsTextShadowSettings::operator!=( const QgsTextShadowSettings &other ) const { return !( *this == other ); }
 
-bool QgsTextShadowSettings::enabled() const
-{
-  return d->enabled;
-}
+bool QgsTextShadowSettings::enabled() const { return d->enabled; }
 
-void QgsTextShadowSettings::setEnabled( bool enabled )
-{
-  d->enabled = enabled;
-}
+void QgsTextShadowSettings::setEnabled( bool enabled ) { d->enabled = enabled; }
 
-QgsTextShadowSettings::ShadowPlacement QgsTextShadowSettings::shadowPlacement() const
-{
-  return d->shadowUnder;
-}
+QgsTextShadowSettings::ShadowPlacement QgsTextShadowSettings::shadowPlacement() const { return d->shadowUnder; }
 
-void QgsTextShadowSettings::setShadowPlacement( QgsTextShadowSettings::ShadowPlacement placement )
-{
-  d->shadowUnder = placement;
-}
+void QgsTextShadowSettings::setShadowPlacement( QgsTextShadowSettings::ShadowPlacement placement ) { d->shadowUnder = placement; }
 
-int QgsTextShadowSettings::offsetAngle() const
-{
-  return d->offsetAngle;
-}
+int QgsTextShadowSettings::offsetAngle() const { return d->offsetAngle; }
 
-void QgsTextShadowSettings::setOffsetAngle( int angle )
-{
-  d->offsetAngle = angle;
-}
+void QgsTextShadowSettings::setOffsetAngle( int angle ) { d->offsetAngle = angle; }
 
-double QgsTextShadowSettings::offsetDistance() const
-{
-  return d->offsetDist;
-}
+double QgsTextShadowSettings::offsetDistance() const { return d->offsetDist; }
 
-void QgsTextShadowSettings::setOffsetDistance( double distance )
-{
-  d->offsetDist = distance;
-}
+void QgsTextShadowSettings::setOffsetDistance( double distance ) { d->offsetDist = distance; }
 
-Qgis::RenderUnit QgsTextShadowSettings::offsetUnit() const
-{
-  return d->offsetUnits;
-}
+Qgis::RenderUnit QgsTextShadowSettings::offsetUnit() const { return d->offsetUnits; }
 
-void QgsTextShadowSettings::setOffsetUnit( Qgis::RenderUnit units )
-{
-  d->offsetUnits = units;
-}
+void QgsTextShadowSettings::setOffsetUnit( Qgis::RenderUnit units ) { d->offsetUnits = units; }
 
-QgsMapUnitScale QgsTextShadowSettings::offsetMapUnitScale() const
-{
-  return d->offsetMapUnitScale;
-}
+QgsMapUnitScale QgsTextShadowSettings::offsetMapUnitScale() const { return d->offsetMapUnitScale; }
 
-void QgsTextShadowSettings::setOffsetMapUnitScale( const QgsMapUnitScale &scale )
-{
-  d->offsetMapUnitScale = scale;
-}
+void QgsTextShadowSettings::setOffsetMapUnitScale( const QgsMapUnitScale &scale ) { d->offsetMapUnitScale = scale; }
 
-bool QgsTextShadowSettings::offsetGlobal() const
-{
-  return d->offsetGlobal;
-}
+bool QgsTextShadowSettings::offsetGlobal() const { return d->offsetGlobal; }
 
-void QgsTextShadowSettings::setOffsetGlobal( bool global )
-{
-  d->offsetGlobal = global;
-}
+void QgsTextShadowSettings::setOffsetGlobal( bool global ) { d->offsetGlobal = global; }
 
-double QgsTextShadowSettings::blurRadius() const
-{
-  return d->radius;
-}
+double QgsTextShadowSettings::blurRadius() const { return d->radius; }
 
-void QgsTextShadowSettings::setBlurRadius( double radius )
-{
-  d->radius = radius;
-}
+void QgsTextShadowSettings::setBlurRadius( double radius ) { d->radius = radius; }
 
-Qgis::RenderUnit QgsTextShadowSettings::blurRadiusUnit() const
-{
-  return d->radiusUnits;
-}
+Qgis::RenderUnit QgsTextShadowSettings::blurRadiusUnit() const { return d->radiusUnits; }
 
-void QgsTextShadowSettings::setBlurRadiusUnit( Qgis::RenderUnit units )
-{
-  d->radiusUnits = units;
-}
+void QgsTextShadowSettings::setBlurRadiusUnit( Qgis::RenderUnit units ) { d->radiusUnits = units; }
 
-QgsMapUnitScale QgsTextShadowSettings::blurRadiusMapUnitScale() const
-{
-  return d->radiusMapUnitScale;
-}
+QgsMapUnitScale QgsTextShadowSettings::blurRadiusMapUnitScale() const { return d->radiusMapUnitScale; }
 
-void QgsTextShadowSettings::setBlurRadiusMapUnitScale( const QgsMapUnitScale &scale )
-{
-  d->radiusMapUnitScale = scale;
-}
+void QgsTextShadowSettings::setBlurRadiusMapUnitScale( const QgsMapUnitScale &scale ) { d->radiusMapUnitScale = scale; }
 
-bool QgsTextShadowSettings::blurAlphaOnly() const
-{
-  return d->radiusAlphaOnly;
-}
+bool QgsTextShadowSettings::blurAlphaOnly() const { return d->radiusAlphaOnly; }
 
-void QgsTextShadowSettings::setBlurAlphaOnly( bool alphaOnly )
-{
-  d->radiusAlphaOnly = alphaOnly;
-}
+void QgsTextShadowSettings::setBlurAlphaOnly( bool alphaOnly ) { d->radiusAlphaOnly = alphaOnly; }
 
-double QgsTextShadowSettings::opacity() const
-{
-  return d->opacity;
-}
+double QgsTextShadowSettings::opacity() const { return d->opacity; }
 
-void QgsTextShadowSettings::setOpacity( double opacity )
-{
-  d->opacity = opacity;
-}
+void QgsTextShadowSettings::setOpacity( double opacity ) { d->opacity = opacity; }
 
-int QgsTextShadowSettings::scale() const
-{
-  return d->scale;
-}
+int QgsTextShadowSettings::scale() const { return d->scale; }
 
-void QgsTextShadowSettings::setScale( int scale )
-{
-  d->scale = scale;
-}
+void QgsTextShadowSettings::setScale( int scale ) { d->scale = scale; }
 
-QColor QgsTextShadowSettings::color() const
-{
-  return d->color;
-}
+QColor QgsTextShadowSettings::color() const { return d->color; }
 
-void QgsTextShadowSettings::setColor( const QColor &color )
-{
-  d->color = color;
-}
+void QgsTextShadowSettings::setColor( const QColor &color ) { d->color = color; }
 
-QPainter::CompositionMode QgsTextShadowSettings::blendMode() const
-{
-  return d->blendMode;
-}
+QPainter::CompositionMode QgsTextShadowSettings::blendMode() const { return d->blendMode; }
 
-void QgsTextShadowSettings::setBlendMode( QPainter::CompositionMode mode )
-{
-  d->blendMode = mode;
-}
+void QgsTextShadowSettings::setBlendMode( QPainter::CompositionMode mode ) { d->blendMode = mode; }
 
 void QgsTextShadowSettings::readFromLayer( QgsVectorLayer *layer )
 {
   d->enabled = layer->customProperty( u"labeling/shadowDraw"_s, QVariant( false ) ).toBool();
-  d->shadowUnder = static_cast< ShadowPlacement >( layer->customProperty( u"labeling/shadowUnder"_s, QVariant( ShadowLowest ) ).toUInt() );//ShadowLowest;
+  d->shadowUnder = static_cast< ShadowPlacement >( layer->customProperty( u"labeling/shadowUnder"_s, QVariant( ShadowLowest ) ).toUInt() ); //ShadowLowest;
   d->offsetAngle = layer->customProperty( u"labeling/shadowOffsetAngle"_s, QVariant( 135 ) ).toInt();
   d->offsetDist = layer->customProperty( u"labeling/shadowOffsetDist"_s, QVariant( 1.0 ) ).toDouble();
 
@@ -309,14 +196,15 @@ void QgsTextShadowSettings::readFromLayer( QgsVectorLayer *layer )
   d->scale = layer->customProperty( u"labeling/shadowScale"_s, QVariant( 100 ) ).toInt();
   d->color = QgsTextRendererUtils::readColor( layer, u"labeling/shadowColor"_s, Qt::black, false );
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< Qgis::BlendMode >( layer->customProperty( u"labeling/shadowBlendMode"_s, QVariant( static_cast< int >( Qgis::BlendMode::Multiply ) ) ).toUInt() ) );
+    static_cast< Qgis::BlendMode >( layer->customProperty( u"labeling/shadowBlendMode"_s, QVariant( static_cast< int >( Qgis::BlendMode::Multiply ) ) ).toUInt() )
+  );
 }
 
 void QgsTextShadowSettings::readXml( const QDomElement &elem )
 {
   const QDomElement shadowElem = elem.firstChildElement( u"shadow"_s );
   d->enabled = shadowElem.attribute( u"shadowDraw"_s, u"0"_s ).toInt();
-  d->shadowUnder = static_cast< ShadowPlacement >( shadowElem.attribute( u"shadowUnder"_s, QString::number( ShadowLowest ) ).toUInt() );//ShadowLowest;
+  d->shadowUnder = static_cast< ShadowPlacement >( shadowElem.attribute( u"shadowUnder"_s, QString::number( ShadowLowest ) ).toUInt() ); //ShadowLowest;
   d->offsetAngle = shadowElem.attribute( u"shadowOffsetAngle"_s, u"135"_s ).toInt();
   d->offsetDist = shadowElem.attribute( u"shadowOffsetDist"_s, u"1"_s ).toDouble();
 
@@ -377,7 +265,8 @@ void QgsTextShadowSettings::readXml( const QDomElement &elem )
   d->scale = shadowElem.attribute( u"shadowScale"_s, u"100"_s ).toInt();
   d->color = QgsColorUtils::colorFromString( shadowElem.attribute( u"shadowColor"_s, QgsColorUtils::colorToString( Qt::black ) ) );
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< Qgis::BlendMode >( shadowElem.attribute( u"shadowBlendMode"_s, QString::number( static_cast<int>( Qgis::BlendMode::Multiply ) ) ).toUInt() ) );
+    static_cast< Qgis::BlendMode >( shadowElem.attribute( u"shadowBlendMode"_s, QString::number( static_cast<int>( Qgis::BlendMode::Multiply ) ) ).toUInt() )
+  );
 }
 
 QDomElement QgsTextShadowSettings::writeXml( QDomDocument &doc ) const

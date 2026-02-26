@@ -25,7 +25,6 @@ Container for all settings relating to text rendering.
 #include "qgstextformat.h"
 %End
   public:
-
     QgsTextFormat();
 %Docstring
 Default constructor for QgsTextFormat. Creates a text format initially
@@ -574,7 +573,6 @@ Defines a tab position for a text format.
 %End
 
       public:
-
         explicit Tab( double position );
 %Docstring
 Constructor for a Tab at the specified ``position``.
@@ -597,11 +595,14 @@ Returns the tab position.
         bool operator==( const QgsTextFormat::Tab &other ) const;
 
         SIP_PYOBJECT __repr__();
-%MethodCode
-        const QString str = QStringLiteral( "<QgsTextFormat.Tab: %1>" ).arg( sipCpp->position() );
+%MethodCode const QString str = QStringLiteral( "<QgsTextFormat.Tab: %1>" ).arg( sipCpp->position() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
+        private :
+
+        double mPosition
+        = 0;
     };
 
     QList< QgsTextFormat::Tab > tabPositions() const;

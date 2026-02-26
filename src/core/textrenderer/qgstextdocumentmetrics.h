@@ -43,7 +43,6 @@ struct BlockMetrics;
 class CORE_EXPORT QgsTextDocumentRenderContext
 {
   public:
-
     /**
      * Returns associated text renderer flags.
      *
@@ -77,10 +76,8 @@ class CORE_EXPORT QgsTextDocumentRenderContext
     void setMaximumWidth( double width ) { mMaximumWidth = width; }
 
   private:
-
     Qgis::TextRendererFlags mFlags;
     double mMaximumWidth = 0;
-
 };
 
 /**
@@ -96,7 +93,6 @@ class CORE_EXPORT QgsTextDocumentRenderContext
 class CORE_EXPORT QgsTextDocumentMetrics
 {
   public:
-
     /**
      * Returns precalculated text metrics for a text \a document, when rendered using the
      * given base \a format and render \a context.
@@ -109,8 +105,10 @@ class CORE_EXPORT QgsTextDocumentMetrics
      * Since QGIS 3.40 the optional \a documentContext argument can be used to pass text renderer context to change the
      * logistics of the calculated metrics.
      */
-    static QgsTextDocumentMetrics calculateMetrics( const QgsTextDocument &document, const QgsTextFormat &format, const QgsRenderContext &context, double scaleFactor = 1.0,
-        const QgsTextDocumentRenderContext &documentContext = QgsTextDocumentRenderContext() );
+    static QgsTextDocumentMetrics calculateMetrics(
+      const QgsTextDocument &document, const QgsTextFormat &format, const QgsRenderContext &context, double scaleFactor = 1.0,
+      const QgsTextDocumentRenderContext &documentContext = QgsTextDocumentRenderContext()
+    );
 
     /**
      * Returns TRUE if the metrics could not be calculated because the text format has a null font size.
@@ -276,7 +274,6 @@ class CORE_EXPORT QgsTextDocumentMetrics
     double blockRightMargin( int blockIndex ) const;
 
   private:
-
     QgsTextDocument mDocument;
 
     bool mIsNullSize = false;
@@ -289,7 +286,7 @@ class CORE_EXPORT QgsTextDocumentMetrics
 
     QRectF mOuterBoundsLabelMode;
 
-    QList < QList< QFont > > mFragmentFonts;
+    QList< QList< QFont > > mFragmentFonts;
     QList< double > mBlockWidths;
     QList< double > mBlockHeights;
     QList< double > mBaselineOffsetsLabelMode;
@@ -321,7 +318,10 @@ class CORE_EXPORT QgsTextDocumentMetrics
     QVector< double > mRightBlockMargins;
 
     static void finalizeBlock( QgsTextDocumentMetrics &res, const QgsTextFormat &format, DocumentMetrics &documentMetrics, QgsTextBlock &outputBlock, BlockMetrics &metrics );
-    static void processFragment( QgsTextDocumentMetrics &res, const QgsTextFormat &format, const QgsRenderContext &context, const QgsTextDocumentRenderContext &documentContext, double scaleFactor, DocumentMetrics &documentMetrics, BlockMetrics &thisBlockMetrics, const QFont &font, const QgsTextFragment &fragment, QgsTextBlock &currentOutputBlock );
+    static void processFragment(
+      QgsTextDocumentMetrics &res, const QgsTextFormat &format, const QgsRenderContext &context, const QgsTextDocumentRenderContext &documentContext, double scaleFactor,
+      DocumentMetrics &documentMetrics, BlockMetrics &thisBlockMetrics, const QFont &font, const QgsTextFragment &fragment, QgsTextBlock &currentOutputBlock
+    );
 };
 
 #endif // QGSTEXTDOCUMENTMETRICS_H

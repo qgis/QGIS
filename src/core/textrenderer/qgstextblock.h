@@ -36,9 +36,7 @@
  */
 class CORE_EXPORT QgsTextBlock
 {
-
   public:
-
     /**
      * Constructor for an empty text block.
      */
@@ -100,8 +98,7 @@ class CORE_EXPORT QgsTextBlock
      * \since QGIS 3.40
      */
     void insert( int index, const QgsTextFragment &fragment );
-    % MethodCode
-    if ( a0 < 0 || a0 > sipCpp->size() )
+    % MethodCode if ( a0 < 0 || a0 > sipCpp->size() )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -169,17 +166,16 @@ class CORE_EXPORT QgsTextBlock
 
 #ifdef SIP_RUN
     int __len__() const;
-    % MethodCode
-    sipRes = sipCpp->size();
+    % MethodCode sipRes = sipCpp->size();
     % End
 #endif
 
 #ifndef SIP_RUN
 
-    /**
+      /**
      * Returns the fragment at the specified \a index.
      */
-    const QgsTextFragment &at( int index ) const SIP_FACTORY;
+      const QgsTextFragment &at( int index ) const SIP_FACTORY;
 #else
 
     /**
@@ -188,8 +184,7 @@ class CORE_EXPORT QgsTextBlock
      * \throws KeyError if no fragment exists at the specified index.
      */
     const QgsTextFragment &at( int index ) const SIP_FACTORY;
-    % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->size() )
+    % MethodCode if ( a0 < 0 || a0 >= sipCpp->size() )
     {
       PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -206,8 +201,7 @@ class CORE_EXPORT QgsTextBlock
      */
     QgsTextFragment &operator[]( int index ) SIP_FACTORY;
 #ifdef SIP_RUN
-    % MethodCode
-    SIP_SSIZE_T idx = sipConvertFromSequenceIndex( a0, sipCpp->size() );
+    % MethodCode SIP_SSIZE_T idx = sipConvertFromSequenceIndex( a0, sipCpp->size() );
     if ( idx < 0 )
       sipIsErr = 1;
     else
@@ -216,14 +210,13 @@ class CORE_EXPORT QgsTextBlock
 #endif
 
 #ifndef SIP_RUN
-    ///@cond PRIVATE
-    QVector< QgsTextFragment >::const_iterator begin() const;
+        ///@cond PRIVATE
+        QVector< QgsTextFragment >::const_iterator begin() const;
     QVector< QgsTextFragment >::const_iterator end() const;
     ///@endcond
 #endif
 
   private:
-
     QVector< QgsTextFragment > mFragments;
     QgsTextBlockFormat mBlockFormat;
 };

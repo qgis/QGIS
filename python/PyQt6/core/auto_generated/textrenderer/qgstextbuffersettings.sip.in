@@ -24,7 +24,6 @@ Container for settings relating to a text buffer.
 #include "qgstextbuffersettings.h"
 %End
   public:
-
     QgsTextBufferSettings();
 
     QgsTextBufferSettings( const QgsTextBufferSettings &other );

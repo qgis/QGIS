@@ -39,9 +39,7 @@ class QgsTextFormat;
  */
 class CORE_EXPORT QgsTextDocument
 {
-
   public:
-
     QgsTextDocument();
     QgsTextDocument( const QgsTextDocument &other );
     SIP_SKIP QgsTextDocument( QgsTextDocument &&other );
@@ -113,8 +111,7 @@ class CORE_EXPORT QgsTextDocument
      * \since QGIS 3.40
      */
     void insert( int index, const QgsTextBlock &block );
-    % MethodCode
-    if ( a0 < 0 || a0 > sipCpp->size() )
+    % MethodCode if ( a0 < 0 || a0 > sipCpp->size() )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -152,8 +149,7 @@ class CORE_EXPORT QgsTextDocument
      * \throws KeyError if no block exists at the specified index.
      */
     const QgsTextBlock &at( int index ) const SIP_FACTORY;
-    % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->size() )
+    % MethodCode if ( a0 < 0 || a0 >= sipCpp->size() )
     {
       PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -170,8 +166,7 @@ class CORE_EXPORT QgsTextDocument
      */
     QgsTextBlock &operator[]( int index ) SIP_FACTORY;
 #ifdef SIP_RUN
-    % MethodCode
-    SIP_SSIZE_T idx = sipConvertFromSequenceIndex( a0, sipCpp->size() );
+    % MethodCode SIP_SSIZE_T idx = sipConvertFromSequenceIndex( a0, sipCpp->size() );
     if ( idx < 0 )
       sipIsErr = 1;
     else
@@ -179,22 +174,21 @@ class CORE_EXPORT QgsTextDocument
     % End
 #endif
 
-    /**
+      /**
      * Returns the number of blocks in the document.
      */
-    int size() const;
+      int size() const;
 
 #ifdef SIP_RUN
     int __len__() const;
-    % MethodCode
-    sipRes = sipCpp->size();
+    % MethodCode sipRes = sipCpp->size();
     % End
 #endif
 
-    /**
+        /**
      * Returns a list of plain text lines of text representing the document.
      */
-    QStringList toPlainText() const;
+        QStringList toPlainText() const;
 
     /**
      * Splits lines of text in the document to separate lines, using a specified wrap character (\a wrapCharacter) or newline characters.
@@ -236,9 +230,7 @@ class CORE_EXPORT QgsTextDocument
 #endif
 
   private:
-
     QVector< QgsTextBlock > mBlocks;
-
 };
 
 #endif // QGSTEXTDOCUMENT_H

@@ -33,28 +33,15 @@ QgsTextFragment::QgsTextFragment( const QTextFragment &fragment )
   : mText( fragment.text() != u"\ufffc"_s ? fragment.text() : QString() )
   , mIsImage( fragment.text() == u"\ufffc"_s )
   , mCharFormat( fragment.charFormat() )
-{
-}
+{}
 
-QString QgsTextFragment::text() const
-{
-  return mText;
-}
+QString QgsTextFragment::text() const { return mText; }
 
-void QgsTextFragment::setText( const QString &text )
-{
-  mText = text;
-}
+void QgsTextFragment::setText( const QString &text ) { mText = text; }
 
-void QgsTextFragment::setCharacterFormat( const QgsTextCharacterFormat &charFormat )
-{
-  mCharFormat = charFormat;
-}
+void QgsTextFragment::setCharacterFormat( const QgsTextCharacterFormat &charFormat ) { mCharFormat = charFormat; }
 
-bool QgsTextFragment::isImage() const
-{
-  return mIsImage;
-}
+bool QgsTextFragment::isImage() const { return mIsImage; }
 
 double QgsTextFragment::horizontalAdvance( const QFont &font, const QgsRenderContext &context, bool fontHasBeenUpdatedForFragment, double scaleFactor ) const
 {
@@ -72,8 +59,4 @@ double QgsTextFragment::horizontalAdvance( const QFont &font, const QgsRenderCon
   }
 }
 
-void QgsTextFragment::applyCapitalization( Qgis::Capitalization capitalization )
-{
-  mText = QgsStringUtils::capitalize( mText, capitalization );
-}
-
+void QgsTextFragment::applyCapitalization( Qgis::Capitalization capitalization ) { mText = QgsStringUtils::capitalize( mText, capitalization ); }
