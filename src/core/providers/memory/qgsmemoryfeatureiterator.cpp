@@ -101,10 +101,7 @@ QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource *sour
   rewind();
 }
 
-QgsMemoryFeatureIterator::~QgsMemoryFeatureIterator()
-{
-  close();
-}
+QgsMemoryFeatureIterator::~QgsMemoryFeatureIterator() { close(); }
 
 bool QgsMemoryFeatureIterator::fetchFeature( QgsFeature &feature )
 {
@@ -287,13 +284,9 @@ QgsMemoryFeatureSource::QgsMemoryFeatureSource( const QgsMemoryProvider *p )
   , mSpatialIndex( p->mSpatialIndex ? std::make_unique< QgsSpatialIndex >( *p->mSpatialIndex ) : nullptr ) // just shallow copy
   , mSubsetString( p->mSubsetString )
   , mCrs( p->mCrs )
-{
-}
+{}
 
-QgsFeatureIterator QgsMemoryFeatureSource::getFeatures( const QgsFeatureRequest &request )
-{
-  return QgsFeatureIterator( new QgsMemoryFeatureIterator( this, false, request ) );
-}
+QgsFeatureIterator QgsMemoryFeatureSource::getFeatures( const QgsFeatureRequest &request ) { return QgsFeatureIterator( new QgsMemoryFeatureIterator( this, false, request ) ); }
 
 QgsExpressionContext *QgsMemoryFeatureSource::expressionContext()
 {
@@ -302,9 +295,8 @@ QgsExpressionContext *QgsMemoryFeatureSource::expressionContext()
   if ( !mExpressionContext )
   {
     mExpressionContext = std::make_unique< QgsExpressionContext >(
-                           QList<QgsExpressionContextScope *>()
-                           << QgsExpressionContextUtils::globalScope()
-                           << QgsExpressionContextUtils::projectScope( QgsProject::instance() ) ); // skip-keyword-check
+      QList<QgsExpressionContextScope *>() << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+    ); // skip-keyword-check
     mExpressionContext->setFields( mFields );
   }
   return mExpressionContext.get();

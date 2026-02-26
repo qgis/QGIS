@@ -29,13 +29,11 @@
 
 class QgsEptPointCloudIndex;
 
-class QgsEptProvider: public QgsPointCloudDataProvider
+class QgsEptProvider : public QgsPointCloudDataProvider
 {
     Q_OBJECT
   public:
-    QgsEptProvider( const QString &uri,
-                    const QgsDataProvider::ProviderOptions &providerOptions,
-                    Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
+    QgsEptProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     ~QgsEptProvider() override;
 
@@ -49,9 +47,9 @@ class QgsEptProvider: public QgsPointCloudDataProvider
     QgsPointCloudIndex index() const override;
     qint64 pointCount() const override;
     QVariantMap originalMetadata() const override;
-    void loadIndex( ) override;
-    void generateIndex( ) override;
-    PointCloudIndexGenerationState indexingState( ) override { return PointCloudIndexGenerationState::Indexed; }
+    void loadIndex() override;
+    void generateIndex() override;
+    PointCloudIndexGenerationState indexingState() override { return PointCloudIndexGenerationState::Indexed; }
 
   private:
     QgsPointCloudIndex mIndex;

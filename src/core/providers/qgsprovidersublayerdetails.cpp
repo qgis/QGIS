@@ -55,22 +55,9 @@ QgsMimeDataUtils::Uri QgsProviderSublayerDetails::toMimeUri() const
 
 bool QgsProviderSublayerDetails::operator==( const QgsProviderSublayerDetails &other ) const
 {
-  return mProviderKey == other.mProviderKey
-         && mType == other.mType
-         && mFlags == other.mFlags
-         && mUri == other.mUri
-         && mLayerNumber == other.mLayerNumber
-         && mName == other.mName
-         && mDescription == other.mDescription
-         && mFeatureCount == other.mFeatureCount
-         && mGeometryColumnName == other.mGeometryColumnName
-         && mPath == other.mPath
-         && mWkbType == other.mWkbType
-         && mSkippedContainerScan == other.mSkippedContainerScan
-         && mDriverName == other.mDriverName;
+  return mProviderKey == other.mProviderKey && mType == other.mType && mFlags == other.mFlags && mUri == other.mUri && mLayerNumber == other.mLayerNumber && mName == other.mName
+         && mDescription == other.mDescription && mFeatureCount == other.mFeatureCount && mGeometryColumnName == other.mGeometryColumnName && mPath == other.mPath && mWkbType == other.mWkbType
+         && mSkippedContainerScan == other.mSkippedContainerScan && mDriverName == other.mDriverName;
 }
 
-bool QgsProviderSublayerDetails::operator!=( const QgsProviderSublayerDetails &other ) const
-{
-  return !( *this == other );
-}
+bool QgsProviderSublayerDetails::operator!=( const QgsProviderSublayerDetails &other ) const { return !( *this == other ); }

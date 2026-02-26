@@ -27,10 +27,9 @@ using namespace Qt::StringLiterals;
 
 #define SUBLAYER_SEPARATOR u"!!::!!"_s
 
-QgsDataProvider::QgsDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions,
-                                  Qgis::DataProviderReadFlags flags )
-  : mDataSourceURI( uri ),
-    mOptions( providerOptions )
+QgsDataProvider::QgsDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags )
+  : mDataSourceURI( uri )
+  , mOptions( providerOptions )
 {
   mReadFlags = flags;
 }
@@ -77,15 +76,9 @@ const QgsDataProviderElevationProperties *QgsDataProvider::elevationProperties()
   return nullptr;
 }
 
-QString QgsDataProvider::subsetStringDialect() const
-{
-  return QString();
-}
+QString QgsDataProvider::subsetStringDialect() const { return QString(); }
 
-QString QgsDataProvider::subsetStringHelpUrl() const
-{
-  return QString();
-}
+QString QgsDataProvider::subsetStringHelpUrl() const { return QString(); }
 
 bool QgsDataProvider::setSubsetString( const QString &subset, bool updateFeatureCount )
 {
@@ -95,15 +88,9 @@ bool QgsDataProvider::setSubsetString( const QString &subset, bool updateFeature
   return false;
 }
 
-bool QgsDataProvider::supportsSubsetString() const
-{
-  return false;
-}
+bool QgsDataProvider::supportsSubsetString() const { return false; }
 
-QString QgsDataProvider::subsetString() const
-{
-  return QString();
-}
+QString QgsDataProvider::subsetString() const { return QString(); }
 
 void QgsDataProvider::reloadData()
 {
@@ -172,12 +159,6 @@ void QgsDataProvider::setTransformContext( const QgsCoordinateTransformContext &
   mOptions.transformContext = value;
 }
 
-QString QgsDataProvider::sublayerSeparator()
-{
-  return SUBLAYER_SEPARATOR;
-}
+QString QgsDataProvider::sublayerSeparator() { return SUBLAYER_SEPARATOR; }
 
-Qgis::ProviderStyleStorageCapabilities QgsDataProvider::styleStorageCapabilities() const
-{
-  return Qgis::ProviderStyleStorageCapabilities();
-}
+Qgis::ProviderStyleStorageCapabilities QgsDataProvider::styleStorageCapabilities() const { return Qgis::ProviderStyleStorageCapabilities(); }

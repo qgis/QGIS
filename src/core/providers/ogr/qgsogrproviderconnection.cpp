@@ -36,7 +36,7 @@
 
 using namespace Qt::StringLiterals;
 
-#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,4,0)
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION( 3, 4, 0 )
 #include "qgsgdalutils.h"
 #endif
 
@@ -70,15 +70,9 @@ QgsOgrProviderResultIterator::~QgsOgrProviderResultIterator()
   }
 }
 
-void QgsOgrProviderResultIterator::setPrimaryKeyColumnName( const QString &primaryKeyColumnName )
-{
-  mPrimaryKeyColumnName = primaryKeyColumnName;
-}
+void QgsOgrProviderResultIterator::setPrimaryKeyColumnName( const QString &primaryKeyColumnName ) { mPrimaryKeyColumnName = primaryKeyColumnName; }
 
-void QgsOgrProviderResultIterator::setPrimaryKeyColumnIndex( int primaryKeyColumnIndex )
-{
-  mPrimaryKeyColumnIndex = primaryKeyColumnIndex;
-}
+void QgsOgrProviderResultIterator::setPrimaryKeyColumnIndex( int primaryKeyColumnIndex ) { mPrimaryKeyColumnIndex = primaryKeyColumnIndex; }
 
 QVariantList QgsOgrProviderResultIterator::nextRowPrivate()
 {
@@ -95,10 +89,10 @@ QVariantList QgsOgrProviderResultIterator::nextRowInternal()
     gdal::ogr_feature_unique_ptr fet;
     if ( fet.reset( OGR_L_GetNextFeature( mOgrLayer ) ), fet )
     {
-      if ( ! mFields.isEmpty() )
+      if ( !mFields.isEmpty() )
       {
         const QgsFeature f { QgsOgrUtils::readOgrFeature( fet.get(), mFields, QTextCodec::codecForName( "UTF-8" ) ) };
-        const QgsAttributes constAttrs  = f.attributes();
+        const QgsAttributes constAttrs = f.attributes();
         for ( const QVariant &attribute : constAttrs )
         {
           row.push_back( attribute );
@@ -148,7 +142,7 @@ QVariantList QgsOgrProviderResultIterator::nextRowInternal()
             }
             else
             {
-              row.insert( columnIndex,  wkbBuffer );
+              row.insert( columnIndex, wkbBuffer );
             }
           }
           else
@@ -160,7 +154,7 @@ QVariantList QgsOgrProviderResultIterator::nextRowInternal()
       }
 
       // PK
-      if ( ! mPrimaryKeyColumnName.isEmpty() )
+      if ( !mPrimaryKeyColumnName.isEmpty() )
       {
         if ( mPrimaryKeyColumnIndex < 0 || mPrimaryKeyColumnIndex >= row.count() )
         {
@@ -176,25 +170,13 @@ QVariantList QgsOgrProviderResultIterator::nextRowInternal()
   return row;
 }
 
-bool QgsOgrProviderResultIterator::hasNextRowPrivate() const
-{
-  return !mNextRow.isEmpty();
-}
+bool QgsOgrProviderResultIterator::hasNextRowPrivate() const { return !mNextRow.isEmpty(); }
 
-long long QgsOgrProviderResultIterator::rowCountPrivate() const
-{
-  return mRowCount;
-}
+long long QgsOgrProviderResultIterator::rowCountPrivate() const { return mRowCount; }
 
-void QgsOgrProviderResultIterator::setFields( const QgsFields &fields )
-{
-  mFields = fields;
-}
+void QgsOgrProviderResultIterator::setFields( const QgsFields &fields ) { mFields = fields; }
 
-void QgsOgrProviderResultIterator::addGeometryColumn( const QString &geometryColumnName, int index )
-{
-  mGeometryColumns[index] = geometryColumnName;
-}
+void QgsOgrProviderResultIterator::addGeometryColumn( const QString &geometryColumnName, int index ) { mGeometryColumns[index] = geometryColumnName; }
 
 //
 // QgsOgrProviderConnection
@@ -227,13 +209,9 @@ QgsOgrProviderConnection::QgsOgrProviderConnection( const QString &uri, const QV
   setDefaultCapabilities();
 }
 
-void QgsOgrProviderConnection::store( const QString & ) const
-{
-}
+void QgsOgrProviderConnection::store( const QString & ) const {}
 
-void QgsOgrProviderConnection::remove( const QString & ) const
-{
-}
+void QgsOgrProviderConnection::remove( const QString & ) const {}
 
 QString QgsOgrProviderConnection::tableUri( const QString &, const QString &name ) const
 {
@@ -250,10 +228,8 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsOgrProviderConnec
   QList<QgsAbstractDatabaseProviderConnection::TableProperty> tableInfo;
 
   QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( u"ogr"_s );
-  const QList< QgsProviderSublayerDetails > subLayers = metadata->querySublayers(
-        uri(),
-        ( flags & TableFlag::IncludeSystemTables ) ? Qgis::SublayerQueryFlag::IncludeSystemTables : Qgis::SublayerQueryFlags(),
-        feedback );
+  const QList< QgsProviderSublayerDetails > subLayers
+    = metadata->querySublayers( uri(), ( flags & TableFlag::IncludeSystemTables ) ? Qgis::SublayerQueryFlag::IncludeSystemTables : Qgis::SublayerQueryFlags(), feedback );
 
   tableInfo.reserve( subLayers.size() );
   for ( const QgsProviderSublayerDetails &subLayer : subLayers )
@@ -267,10 +243,7 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsOgrProviderConnec
   // Filters
   if ( flags )
   {
-    tableInfo.erase( std::remove_if( tableInfo.begin(), tableInfo.end(), [ & ]( const QgsAbstractDatabaseProviderConnection::TableProperty & ti )
-    {
-      return !( ti.flags() & flags );
-    } ), tableInfo.end() );
+    tableInfo.erase( std::remove_if( tableInfo.begin(), tableInfo.end(), [&]( const QgsAbstractDatabaseProviderConnection::TableProperty &ti ) { return !( ti.flags() & flags ); } ), tableInfo.end() );
   }
 
   return tableInfo;
@@ -310,7 +283,7 @@ QgsAbstractDatabaseProviderConnection::TableProperty QgsOgrProviderConnection::t
   const QByteArray fidColumn( userLayer->GetFIDColumn() );
   if ( !fidColumn.isEmpty() )
   {
-    property.setPrimaryKeyColumns( { QString( fidColumn )} );
+    property.setPrimaryKeyColumns( { QString( fidColumn ) } );
   }
 
   QgsOgrFeatureDefn &fdef = userLayer->GetLayerDefn();
@@ -365,36 +338,32 @@ QgsVectorLayer *QgsOgrProviderConnection::createSqlVectorLayer( const QgsAbstrac
 
   if ( !options.filter.isEmpty() )
   {
-    if ( ! where.isEmpty() )
+    if ( !where.isEmpty() )
     {
-      QString sql {  sanitizeSqlForQueryLayer( options.sql ) };
+      QString sql { sanitizeSqlForQueryLayer( options.sql ) };
       const thread_local QRegularExpression whereRegExp( R"sql(\s+WHERE\s+.+$)sql", QRegularExpression::CaseInsensitiveOption );
       sql.remove( whereRegExp );
-      decoded[ u"subset"_s ] = QStringLiteral( R"sql(%1 WHERE ( %2 ) AND ( %3 ))sql" ).arg( sql, where, options.filter );
+      decoded[u"subset"_s] = QStringLiteral( R"sql(%1 WHERE ( %2 ) AND ( %3 ))sql" ).arg( sql, where, options.filter );
     }
     else
     {
-      decoded[ u"subset"_s ] = QStringLiteral( R"sql(%1 WHERE ( %2 ))sql" ).arg( sanitizeSqlForQueryLayer( options.sql ), options.filter );
+      decoded[u"subset"_s] = QStringLiteral( R"sql(%1 WHERE ( %2 ))sql" ).arg( sanitizeSqlForQueryLayer( options.sql ), options.filter );
     }
   }
   else
   {
-    decoded[ u"subset"_s ] = sanitizeSqlForQueryLayer( options.sql );
+    decoded[u"subset"_s] = sanitizeSqlForQueryLayer( options.sql );
   }
 
   return new QgsVectorLayer( providerMetadata->encodeUri( decoded ), options.layerName.isEmpty() ? u"QueryLayer"_s : options.layerName, providerKey() );
 }
 
-void QgsOgrProviderConnection::createVectorTable( const QString &schema,
-    const QString &name,
-    const QgsFields &fields,
-    Qgis::WkbType wkbType,
-    const QgsCoordinateReferenceSystem &srs,
-    bool overwrite,
-    const QMap<QString, QVariant> *options ) const
+void QgsOgrProviderConnection::createVectorTable(
+  const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options
+) const
 {
   checkCapability( Capability::CreateVectorTable );
-  if ( ! schema.isEmpty() )
+  if ( !schema.isEmpty() )
   {
     QgsMessageLog::logMessage( u"Schema is not supported by OGR, ignoring"_s, u"OGR"_s, Qgis::MessageLevel::Info );
   }
@@ -406,23 +375,13 @@ void QgsOgrProviderConnection::createVectorTable( const QString &schema,
   }
 
   QMap<QString, QVariant> opts { *options };
-  opts[ u"layerName"_s ] = QVariant( name );
-  opts[ u"update"_s ] = true;
-  opts[ u"driverName"_s ] = QString( GDALGetDriverShortName( hDriver ) );
+  opts[u"layerName"_s] = QVariant( name );
+  opts[u"update"_s] = true;
+  opts[u"driverName"_s] = QString( GDALGetDriverShortName( hDriver ) );
   QMap<int, int> map;
   QString errCause;
   QString createdLayerName;
-  Qgis::VectorExportResult errCode = QgsOgrProvider::createEmptyLayer(
-                                       uri(),
-                                       fields,
-                                       wkbType,
-                                       srs,
-                                       overwrite,
-                                       &map,
-                                       createdLayerName,
-                                       &errCause,
-                                       &opts
-                                     );
+  Qgis::VectorExportResult errCode = QgsOgrProvider::createEmptyLayer( uri(), fields, wkbType, srs, overwrite, &map, createdLayerName, &errCause, &opts );
   // TODO we need some way to hand createdLayerName back to caller, as it may differ from the requested name...
   if ( errCode != Qgis::VectorExportResult::Success )
   {
@@ -447,13 +406,13 @@ QString QgsOgrProviderConnection::createVectorLayerExporterDestinationUri( const
 void QgsOgrProviderConnection::dropVectorTable( const QString &schema, const QString &name ) const
 {
   checkCapability( Capability::DropVectorTable );
-  if ( ! schema.isEmpty() )
+  if ( !schema.isEmpty() )
   {
     QgsMessageLog::logMessage( u"Schema is not supported by OGR, ignoring"_s, u"OGR"_s, Qgis::MessageLevel::Info );
   }
   QString errCause;
   const QString layerUri = tableUri( schema, name );
-  if ( ! QgsOgrProviderUtils::deleteLayer( layerUri, errCause ) )
+  if ( !QgsOgrProviderUtils::deleteLayer( layerUri, errCause ) )
   {
     throw QgsProviderConnectionException( QObject::tr( "Error deleting vector/aspatial table %1: %2" ).arg( name, errCause ) );
   }
@@ -481,7 +440,7 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
 
   mDriverName = GDALGetDriverShortName( hDriver );
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 6, 0 )
   mGeometryColumnCapabilities = GeometryColumnCapability::SinglePoint;
 
   if ( const char *pszGeometryFlags = GDALGetMetadataItem( hDriver, GDAL_DMD_GEOMETRY_FLAGS, nullptr ) )
@@ -510,41 +469,37 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
 
   CSLConstList driverMetadata = GDALGetMetadata( hDriver, nullptr );
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 6, 0 )
   if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_Z_GEOMETRIES, false ) )
     mGeometryColumnCapabilities |= GeometryColumnCapability::Z;
 #else
   mGeometryColumnCapabilities |= GeometryColumnCapability::Z; // Prior to GDAL 3.6 there was no generic way to test these per driver/dataset
 #endif
 
-  mCapabilities = Capability::SqlLayers
-                  | Capability::ExecuteSql
-                  | Capability::Tables;
+  mCapabilities = Capability::SqlLayers | Capability::ExecuteSql | Capability::Tables;
 
   if ( !CSLFetchBoolean( driverMetadata, GDAL_DCAP_NONSPATIAL, false ) && CSLFetchBoolean( driverMetadata, GDAL_DCAP_VECTOR, false ) )
     mCapabilities |= Capability::Spatial;
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 4, 0 )
   mSingleTableDataset = !GDALGetMetadataItem( hDriver, GDAL_DCAP_MULTIPLE_VECTOR_LAYERS, nullptr );
 #else
   {
     const QVariantMap uriParts = QgsProviderRegistry::instance()->providerMetadata( u"ogr"_s )->decodeUri( uri() );
     const QFileInfo pathInfo( uriParts.value( u"path"_s ).toString() );
-    const QString suffix = uriParts.value( u"vsiSuffix"_s ).toString().isEmpty()
-                           ? pathInfo.suffix().toLower()
-                           : QFileInfo( uriParts.value( u"vsiSuffix"_s ).toString() ).suffix().toLower();
+    const QString suffix = uriParts.value( u"vsiSuffix"_s ).toString().isEmpty() ? pathInfo.suffix().toLower() : QFileInfo( uriParts.value( u"vsiSuffix"_s ).toString() ).suffix().toLower();
     mSingleTableDataset = !QgsGdalUtils::multiLayerFileExtensions().contains( suffix );
   }
 #endif
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 6, 0 )
   if ( mDriverName == "OpenFileGDB"_L1 )
   {
     mCapabilities |= Vacuum;
   }
 #endif
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 6, 0 )
   if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE_FIELD, false ) )
     mCapabilities |= AddField;
   if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_DELETE_FIELD, false ) )
@@ -558,7 +513,7 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
       mCapabilities |= RenameField;
     }
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 7, 0 )
     // only supported on gdal 3.7 and above
     if ( CSLFindString( papszTokens, "AlternativeName" ) >= 0 )
     {
@@ -614,7 +569,7 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
     }
   }
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 5, 0 )
   if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_FIELD_DOMAINS, false ) )
   {
     mCapabilities |= Capability::RetrieveFieldDomain;
@@ -624,7 +579,7 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
   }
 #endif
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 6, 0 )
   if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_RELATIONSHIPS, false ) )
   {
     mCapabilities |= Capability::RetrieveRelationships;
@@ -676,7 +631,7 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
   }
 #endif
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 7, 0 )
   if ( const char *pszIllegalFieldNames = GDALGetMetadataItem( hDriver, GDAL_DMD_ILLEGAL_FIELD_NAMES, nullptr ) )
   {
     char **papszTokens = CSLTokenizeString2( pszIllegalFieldNames, " ", 0 );
@@ -688,46 +643,17 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
 #else
   if ( mDriverName == "OpenFileGDB"_L1 || mDriverName == "FileGDB"_L1 )
   {
-    mIllegalFieldNames =
-    {
-      u"ADD"_s,
-      u"ALTER"_s,
-      u"AND"_s,
-      u"BETWEEN"_s,
-      u"BY"_s,
-      u"COLUMN"_s,
-      u"CREATE"_s,
-      u"DELETE"_s,
-      u"DROP"_s,
-      u"EXISTS"_s,
-      u"FOR"_s,
-      u"FROM"_s,
-      u"GROUP"_s,
-      u"IN"_s,
-      u"INSERT"_s,
-      u"INTO"_s,
-      u"IS"_s,
-      u"LIKE"_s,
-      u"NOT"_s,
-      u"NULL"_s,
-      u"OR"_s,
-      u"ORDER"_s,
-      u"SELECT"_s,
-      u"SET"_s,
-      u"TABLE"_s,
-      u"UPDATE"_s,
-      u"VALUES"_s,
-      u"WHERE"_s
-    };
+    mIllegalFieldNames = { u"ADD"_s, u"ALTER"_s, u"AND"_s,    u"BETWEEN"_s, u"BY"_s,     u"COLUMN"_s, u"CREATE"_s, u"DELETE"_s, u"DROP"_s, u"EXISTS"_s,
+                           u"FOR"_s, u"FROM"_s,  u"GROUP"_s,  u"IN"_s,      u"INSERT"_s, u"INTO"_s,   u"IS"_s,     u"LIKE"_s,   u"NOT"_s,  u"NULL"_s,
+                           u"OR"_s,  u"ORDER"_s, u"SELECT"_s, u"SET"_s,     u"TABLE"_s,  u"UPDATE"_s, u"VALUES"_s, u"WHERE"_s };
   }
 #endif
 
-  mSqlLayerDefinitionCapabilities =
-  {
+  mSqlLayerDefinitionCapabilities = {
     Qgis::SqlLayerDefinitionCapability::SubsetStringFilter,
   };
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 7, 0 )
   if ( const char *pszRelatedTableTypes = GDALGetMetadataItem( hDriver, GDAL_DMD_RELATIONSHIP_RELATED_TABLE_TYPES, nullptr ) )
   {
     char **papszTokens = CSLTokenizeString2( pszRelatedTableTypes, " ", 0 );
@@ -737,30 +663,16 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
 #else
   if ( mDriverName == "OpenFileGDB"_L1 )
   {
-    mRelatedTableTypes = QStringList
-    {
-      u"media"_s,
-      u"features"_s
-    };
+    mRelatedTableTypes = QStringList { u"media"_s, u"features"_s };
   }
   else if ( mDriverName == "GPKG"_L1 )
   {
-    mRelatedTableTypes = QStringList
-    {
-      u"media"_s,
-      u"simple_attributes"_s,
-      u"features"_s,
-      u"attributes"_s,
-      u"tiles"_s
-    };
+    mRelatedTableTypes = QStringList { u"media"_s, u"simple_attributes"_s, u"features"_s, u"attributes"_s, u"tiles"_s };
   }
 #endif
 }
 
-QString QgsOgrProviderConnection::databaseQueryLogIdentifier() const
-{
-  return u"QgsOgrProviderConnection"_s;
-}
+QString QgsOgrProviderConnection::databaseQueryLogIdentifier() const { return u"QgsOgrProviderConnection"_s; }
 
 QString QgsOgrProviderConnection::primaryKeyColumnName( const QString &table ) const
 {
@@ -807,7 +719,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOgrProviderConnection::exe
     bool hasMultipleGeometries { false };
 
     // The parser isn't perfect: GDAL may have a chance anyway
-    if ( ! statement.hasParserError() )
+    if ( !statement.hasParserError() )
     {
       const QgsSQLStatement::NodeSelect *nodeSelect = dynamic_cast<const QgsSQLStatement::NodeSelect *>( statement.rootNode() );
       const QList<QgsSQLStatement::NodeSelectedColumn *> columnList { nodeSelect->columns() };
@@ -853,7 +765,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOgrProviderConnection::exe
         }
         else
         {
-          const QString alias {colNode->alias()};
+          const QString alias { colNode->alias() };
           columnNames.append( alias.isEmpty() ? columnName : alias );
         }
       }
@@ -876,11 +788,10 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOgrProviderConnection::exe
 
       if ( fet.reset( OGR_L_GetNextFeature( ogrLayer ) ), fet )
       {
-
         QString pkColumnName;
         QStringList geomColumnNames;
 
-        if ( ! tableNames.isEmpty() )
+        if ( !tableNames.isEmpty() )
         {
           pkColumnName = primaryKeyColumnName( tableNames.first() );
         }
@@ -896,7 +807,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOgrProviderConnection::exe
             if ( geomFldDef )
             {
               const QString geomColumnName { OGR_GFld_GetNameRef( geomFldDef ) };
-              if ( ! geomColumnName.isEmpty() )
+              if ( !geomColumnName.isEmpty() )
               {
                 geomColumnNames.append( geomColumnName );
               }
@@ -910,14 +821,13 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOgrProviderConnection::exe
         // If SQL had parser errors get columns from the feature
         if ( columnNames.empty() )
         {
-
           for ( const QgsField &field : std::as_const( fields ) )
           {
             columnNames.append( field.name() );
           }
 
           // Insert pk at the beginning
-          if ( ! pkColumnName.isEmpty() && !columnNames.contains( pkColumnName ) )
+          if ( !pkColumnName.isEmpty() && !columnNames.contains( pkColumnName ) )
           {
             columnNames.insert( 0, pkColumnName );
           }
@@ -925,7 +835,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOgrProviderConnection::exe
           // Append geom
           for ( const auto &geomColumnName : std::as_const( geomColumnNames ) )
           {
-            if ( ! columnNames.contains( geomColumnName ) )
+            if ( !columnNames.contains( geomColumnName ) )
             {
               columnNames.append( geomColumnName );
             }
@@ -937,7 +847,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOgrProviderConnection::exe
           iterator->addGeometryColumn( geomColumnName, columnNames.indexOf( geomColumnName ) );
         }
 
-        if ( ! pkColumnName.isEmpty() && ( hasAsterisk || columnNames.contains( pkColumnName ) ) )
+        if ( !pkColumnName.isEmpty() && ( hasAsterisk || columnNames.contains( pkColumnName ) ) )
         {
           iterator->setPrimaryKeyColumnName( pkColumnName );
           iterator->setPrimaryKeyColumnIndex( static_cast<int>( columnNames.indexOf( pkColumnName ) ) );
@@ -947,16 +857,15 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOgrProviderConnection::exe
         {
           results.appendColumn( name );
         }
-
       }
 
       // Check for errors
       if ( CE_Failure == CPLGetLastErrorType() || CE_Fatal == CPLGetLastErrorType() )
       {
-        errCause = CPLGetLastErrorMsg( );
+        errCause = CPLGetLastErrorMsg();
       }
 
-      if ( ! errCause.isEmpty() )
+      if ( !errCause.isEmpty() )
       {
         logWrapper.setError( errCause );
         throw QgsProviderConnectionException( QObject::tr( "Error executing SQL statement %1: %2" ).arg( sql, errCause ) );
@@ -971,9 +880,8 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOgrProviderConnection::exe
     // Check for errors
     if ( CE_Failure == CPLGetLastErrorType() || CE_Fatal == CPLGetLastErrorType() )
     {
-      errCause = CPLGetLastErrorMsg( );
+      errCause = CPLGetLastErrorMsg();
     }
-
   }
   else
   {
@@ -1002,7 +910,7 @@ QList<QgsVectorDataProvider::NativeType> QgsOgrProviderConnection::nativeTypes()
 
 QStringList QgsOgrProviderConnection::fieldDomainNames() const
 {
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 5, 0 )
   gdal::dataset_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
   if ( !hDS )
   {
@@ -1032,7 +940,7 @@ QStringList QgsOgrProviderConnection::fieldDomainNames() const
 
 QList<Qgis::FieldDomainType> QgsOgrProviderConnection::supportedFieldDomainTypes() const
 {
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 5, 0 )
   GDALDriverH hDriver = GDALIdentifyDriverEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr );
   if ( !hDriver )
     return {};
@@ -1064,7 +972,7 @@ QList<Qgis::FieldDomainType> QgsOgrProviderConnection::supportedFieldDomainTypes
 
 QgsFieldDomain *QgsOgrProviderConnection::fieldDomain( const QString &name ) const
 {
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 3, 0 )
   gdal::dataset_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
   if ( !hDS )
   {
@@ -1090,24 +998,21 @@ QgsFieldDomain *QgsOgrProviderConnection::fieldDomain( const QString &name ) con
     throw QgsProviderConnectionException( QObject::tr( "There was an error opening the dataset %1!" ).arg( uri() ) );
   }
 #else
-  ( void )name;
+  ( void ) name;
   throw QgsProviderConnectionException( QObject::tr( "Retrieving field domains for datasets requires GDAL 3.3 or later" ) );
 #endif
 }
 
 void QgsOgrProviderConnection::setFieldDomainName( const QString &fieldName, const QString &schema, const QString &tableName, const QString &domainName ) const
 {
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
-  if ( ! schema.isEmpty() )
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 3, 0 )
+  if ( !schema.isEmpty() )
   {
     QgsMessageLog::logMessage( u"Schema is not supported by OGR, ignoring"_s, u"OGR"_s, Qgis::MessageLevel::Info );
   }
 
   QString errCause;
-  QgsOgrLayerUniquePtr layer = QgsOgrProviderUtils::getLayer( uri(),
-                               true,
-                               QStringList(),
-                               tableName, errCause, true );
+  QgsOgrLayerUniquePtr layer = QgsOgrProviderUtils::getLayer( uri(), true, QStringList(), tableName, errCause, true );
   if ( !layer )
   {
     throw QgsProviderConnectionException( QObject::tr( "There was an error opening the dataset: %1" ).arg( errCause ) );
@@ -1127,18 +1032,18 @@ void QgsOgrProviderConnection::setFieldDomainName( const QString &fieldName, con
     throw QgsProviderConnectionException( QObject::tr( "Could not set field domain: %1" ).arg( CPLGetLastErrorMsg() ) );
   }
 #else
-  ( void )fieldName;
-  ( void )schema;
-  ( void )tableName;
-  ( void )domainName;
+  ( void ) fieldName;
+  ( void ) schema;
+  ( void ) tableName;
+  ( void ) domainName;
   throw QgsProviderConnectionException( QObject::tr( "Setting field domains for datasets requires GDAL 3.3 or later" ) );
 #endif
 }
 
 void QgsOgrProviderConnection::addFieldDomain( const QgsFieldDomain &domain, const QString &schema ) const
 {
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
-  if ( ! schema.isEmpty() )
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 3, 0 )
+  if ( !schema.isEmpty() )
   {
     QgsMessageLog::logMessage( u"Schema is not supported by OGR, ignoring"_s, u"OGR"_s, Qgis::MessageLevel::Info );
   }
@@ -1169,8 +1074,8 @@ void QgsOgrProviderConnection::addFieldDomain( const QgsFieldDomain &domain, con
     throw QgsProviderConnectionException( QObject::tr( "There was an error opening the dataset %1!" ).arg( uri() ) );
   }
 #else
-  ( void )domain;
-  ( void )schema;
+  ( void ) domain;
+  ( void ) schema;
   throw QgsProviderConnectionException( QObject::tr( "Creating field domains for datasets requires GDAL 3.3 or later" ) );
 #endif
 }
@@ -1250,16 +1155,13 @@ void QgsOgrProviderConnection::renameField( const QString &schema, const QString
 {
   checkCapability( Capability::RenameField );
 
-  if ( ! schema.isEmpty() )
+  if ( !schema.isEmpty() )
   {
     QgsMessageLog::logMessage( u"Schema is not supported by OGR, ignoring"_s, u"OGR"_s, Qgis::MessageLevel::Info );
   }
 
   QString errCause;
-  QgsOgrLayerUniquePtr layer = QgsOgrProviderUtils::getLayer( uri(),
-                               true,
-                               QStringList(),
-                               tableName, errCause, true );
+  QgsOgrLayerUniquePtr layer = QgsOgrProviderUtils::getLayer( uri(), true, QStringList(), tableName, errCause, true );
   if ( !layer )
   {
     throw QgsProviderConnectionException( QObject::tr( "There was an error opening the dataset: %1" ).arg( errCause ) );
@@ -1267,7 +1169,7 @@ void QgsOgrProviderConnection::renameField( const QString &schema, const QString
 
   QgsOgrFeatureDefn &fdef = layer->GetLayerDefn();
   const int geomFieldCount = fdef.GetGeomFieldCount();
-  for ( int i = 0; i < geomFieldCount; ++ i )
+  for ( int i = 0; i < geomFieldCount; ++i )
   {
     if ( OGRGeomFieldDefnH geomH = fdef.GetGeomFieldDefn( i ) )
     {
@@ -1295,17 +1197,14 @@ void QgsOgrProviderConnection::renameField( const QString &schema, const QString
 
 void QgsOgrProviderConnection::setFieldAlias( const QString &fieldName, const QString &schema, const QString &tableName, const QString &alias ) const
 {
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
-  if ( ! schema.isEmpty() )
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 7, 0 )
+  if ( !schema.isEmpty() )
   {
     QgsMessageLog::logMessage( u"Schema is not supported by OGR, ignoring"_s, u"OGR"_s, Qgis::MessageLevel::Info );
   }
 
   QString errCause;
-  QgsOgrLayerUniquePtr layer = QgsOgrProviderUtils::getLayer( uri(),
-                               true,
-                               QStringList(),
-                               tableName, errCause, true );
+  QgsOgrLayerUniquePtr layer = QgsOgrProviderUtils::getLayer( uri(), true, QStringList(), tableName, errCause, true );
   if ( !layer )
   {
     throw QgsProviderConnectionException( QObject::tr( "There was an error opening the dataset: %1" ).arg( errCause ) );
@@ -1325,27 +1224,24 @@ void QgsOgrProviderConnection::setFieldAlias( const QString &fieldName, const QS
     throw QgsProviderConnectionException( QObject::tr( "Could not set alias: %1" ).arg( CPLGetLastErrorMsg() ) );
   }
 #else
-  ( void )fieldName;
-  ( void )schema;
-  ( void )tableName;
-  ( void )alias;
+  ( void ) fieldName;
+  ( void ) schema;
+  ( void ) tableName;
+  ( void ) alias;
   throw QgsProviderConnectionException( QObject::tr( "Setting field aliases for datasets requires GDAL 3.7 or later" ) );
 #endif
 }
 
 void QgsOgrProviderConnection::setFieldComment( const QString &fieldName, const QString &schema, const QString &tableName, const QString &comment ) const
 {
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
-  if ( ! schema.isEmpty() )
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 7, 0 )
+  if ( !schema.isEmpty() )
   {
     QgsMessageLog::logMessage( u"Schema is not supported by OGR, ignoring"_s, u"OGR"_s, Qgis::MessageLevel::Info );
   }
 
   QString errCause;
-  QgsOgrLayerUniquePtr layer = QgsOgrProviderUtils::getLayer( uri(),
-                               true,
-                               QStringList(),
-                               tableName, errCause, true );
+  QgsOgrLayerUniquePtr layer = QgsOgrProviderUtils::getLayer( uri(), true, QStringList(), tableName, errCause, true );
   if ( !layer )
   {
     throw QgsProviderConnectionException( QObject::tr( "There was an error opening the dataset: %1" ).arg( errCause ) );
@@ -1365,10 +1261,10 @@ void QgsOgrProviderConnection::setFieldComment( const QString &fieldName, const 
     throw QgsProviderConnectionException( QObject::tr( "Could not set comment: %1" ).arg( CPLGetLastErrorMsg() ) );
   }
 #else
-  ( void )fieldName;
-  ( void )schema;
-  ( void )tableName;
-  ( void )comment;
+  ( void ) fieldName;
+  ( void ) schema;
+  ( void ) tableName;
+  ( void ) comment;
   throw QgsProviderConnectionException( QObject::tr( "Setting field comments for datasets requires GDAL 3.7 or later" ) );
 #endif
 }
@@ -1395,7 +1291,7 @@ QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsOgrProviderConne
     }
     else if ( mSingleTableDataset && !decoded.value( u"path"_s, QString() ).toString().isEmpty() )
     {
-      const QFileInfo fileInfo( decoded[ u"path"_s ].toString() );
+      const QFileInfo fileInfo( decoded[u"path"_s].toString() );
       options.sql = u"SELECT * FROM %1"_s.arg( QgsSqliteUtils::quotedIdentifier( fileInfo.baseName() ) );
     }
     options.filter = subset;
@@ -1403,36 +1299,24 @@ QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsOgrProviderConne
   return options;
 }
 
-QList<Qgis::RelationshipCardinality> QgsOgrProviderConnection::supportedRelationshipCardinalities() const
-{
-  return mSupportedRelationshipCardinality;
-}
+QList<Qgis::RelationshipCardinality> QgsOgrProviderConnection::supportedRelationshipCardinalities() const { return mSupportedRelationshipCardinality; }
 
-QList<Qgis::RelationshipStrength> QgsOgrProviderConnection::supportedRelationshipStrengths() const
-{
-  return mSupportedRelationshipStrength;
-}
+QList<Qgis::RelationshipStrength> QgsOgrProviderConnection::supportedRelationshipStrengths() const { return mSupportedRelationshipStrength; }
 
-Qgis::RelationshipCapabilities QgsOgrProviderConnection::supportedRelationshipCapabilities() const
-{
-  return mRelationshipCapabilities;
-}
+Qgis::RelationshipCapabilities QgsOgrProviderConnection::supportedRelationshipCapabilities() const { return mRelationshipCapabilities; }
 
-QStringList QgsOgrProviderConnection::relatedTableTypes() const
-{
-  return mRelatedTableTypes;
-}
+QStringList QgsOgrProviderConnection::relatedTableTypes() const { return mRelatedTableTypes; }
 
 QList<QgsWeakRelation> QgsOgrProviderConnection::relationships( const QString &schema, const QString &tableName ) const
 {
   checkCapability( Capability::RetrieveRelationships );
 
-  if ( ! schema.isEmpty() )
+  if ( !schema.isEmpty() )
   {
     QgsMessageLog::logMessage( u"Schema is not supported by OGR, ignoring"_s, u"OGR"_s, Qgis::MessageLevel::Info );
   }
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 6, 0 )
   gdal::dataset_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
   if ( !hDS )
   {
@@ -1484,7 +1368,7 @@ void QgsOgrProviderConnection::addRelationship( const QgsWeakRelation &relations
 {
   checkCapability( Capability::AddRelationship );
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 6, 0 )
   gdal::dataset_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_UPDATE | GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
   if ( hDS )
   {
@@ -1529,7 +1413,7 @@ void QgsOgrProviderConnection::updateRelationship( const QgsWeakRelation &relati
 {
   checkCapability( Capability::UpdateRelationship );
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 6, 0 )
   gdal::dataset_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_UPDATE | GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
   if ( hDS )
   {
@@ -1574,7 +1458,7 @@ void QgsOgrProviderConnection::deleteRelationship( const QgsWeakRelation &relati
 {
   checkCapability( Capability::DeleteRelationship );
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 6, 0 )
   gdal::dataset_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_UPDATE | GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
   if ( hDS )
   {
@@ -1600,9 +1484,6 @@ void QgsOgrProviderConnection::deleteRelationship( const QgsWeakRelation &relati
 #endif
 }
 
-Qgis::DatabaseProviderTableImportCapabilities QgsOgrProviderConnection::tableImportCapabilities() const
-{
-  return Qgis::DatabaseProviderTableImportCapabilities();
-}
+Qgis::DatabaseProviderTableImportCapabilities QgsOgrProviderConnection::tableImportCapabilities() const { return Qgis::DatabaseProviderTableImportCapabilities(); }
 
 ///@endcond

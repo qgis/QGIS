@@ -38,17 +38,15 @@ using namespace Qt::StringLiterals;
 #define PROVIDER_KEY u"copc"_s
 #define PROVIDER_DESCRIPTION u"COPC point cloud data provider"_s
 
-QgsCopcProvider::QgsCopcProvider(
-  const QString &uri,
-  const QgsDataProvider::ProviderOptions &options,
-  Qgis::DataProviderReadFlags flags )
-  : QgsPointCloudDataProvider( uri, options, flags ), mIndex( new QgsCopcPointCloudIndex )
+QgsCopcProvider::QgsCopcProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
+  : QgsPointCloudDataProvider( uri, options, flags )
+  , mIndex( new QgsCopcPointCloudIndex )
 {
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( u"projectload"_s ) )
     profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), u"projectload"_s );
 
-  loadIndex( );
+  loadIndex();
   if ( !mIndex.isValid() )
   {
     appendError( mIndex.error() );
@@ -64,10 +62,7 @@ QgsCoordinateReferenceSystem QgsCopcProvider::crs() const
   return mIndex.crs();
 }
 
-Qgis::DataProviderFlags QgsCopcProvider::flags() const
-{
-  return Qgis::DataProviderFlag::FastExtent2D;
-}
+Qgis::DataProviderFlags QgsCopcProvider::flags() const { return Qgis::DataProviderFlag::FastExtent2D; }
 
 QgsRectangle QgsCopcProvider::extent() const
 {
@@ -119,7 +114,7 @@ qint64 QgsCopcProvider::pointCount() const
   return mIndex.pointCount();
 }
 
-void QgsCopcProvider::loadIndex( )
+void QgsCopcProvider::loadIndex()
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -141,8 +136,7 @@ QVariantMap QgsCopcProvider::originalMetadata() const
   return mIndex.originalMetadata();
 }
 
-void QgsCopcProvider::generateIndex()
-{
+void QgsCopcProvider::generateIndex() {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   //no-op, index is always generated
@@ -155,15 +149,11 @@ QgsPointCloudDataProvider::Capabilities QgsCopcProvider::capabilities() const
   return QgsPointCloudDataProvider::Capability::ChangeAttributeValues;
 }
 
-QgsCopcProviderMetadata::QgsCopcProviderMetadata():
-  QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
-{
-}
+QgsCopcProviderMetadata::QgsCopcProviderMetadata()
+  : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
+{}
 
-QIcon QgsCopcProviderMetadata::icon() const
-{
-  return QgsApplication::getThemeIcon( u"mIconPointCloudLayer.svg"_s );
-}
+QIcon QgsCopcProviderMetadata::icon() const { return QgsApplication::getThemeIcon( u"mIconPointCloudLayer.svg"_s ); }
 
 QgsCopcProvider *QgsCopcProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
@@ -180,7 +170,7 @@ QList<QgsProviderSublayerDetails> QgsCopcProviderMetadata::querySublayers( const
     details.setProviderKey( u"copc"_s );
     details.setType( Qgis::LayerType::PointCloud );
     details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( uri ) );
-    return {details};
+    return { details };
   }
   else
   {
@@ -255,25 +245,16 @@ QString QgsCopcProviderMetadata::filters( Qgis::FileFilterType type )
   return QString();
 }
 
-QgsProviderMetadata::ProviderCapabilities QgsCopcProviderMetadata::providerCapabilities() const
-{
-  return FileBasedUris;
-}
+QgsProviderMetadata::ProviderCapabilities QgsCopcProviderMetadata::providerCapabilities() const { return FileBasedUris; }
 
-QList<Qgis::LayerType> QgsCopcProviderMetadata::supportedLayerTypes() const
-{
-  return { Qgis::LayerType::PointCloud };
-}
+QList<Qgis::LayerType> QgsCopcProviderMetadata::supportedLayerTypes() const { return { Qgis::LayerType::PointCloud }; }
 
 QgsProviderMetadata::ProviderMetadataCapabilities QgsCopcProviderMetadata::capabilities() const
 {
-  return ProviderMetadataCapability::LayerTypesForUri
-         | ProviderMetadataCapability::PriorityForUri
-         | ProviderMetadataCapability::QuerySublayers;
+  return ProviderMetadataCapability::LayerTypesForUri | ProviderMetadataCapability::PriorityForUri | ProviderMetadataCapability::QuerySublayers;
 }
 
 #undef PROVIDER_KEY
 #undef PROVIDER_DESCRIPTION
 
 ///@endcond
-

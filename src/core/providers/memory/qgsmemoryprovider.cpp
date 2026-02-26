@@ -80,63 +80,69 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
 
   mNextFeatureId = 1;
 
-  setNativeTypes( QList< NativeType >()
-                  << QgsVectorDataProvider::NativeType( tr( "Whole Number (integer)" ), u"integer"_s, QMetaType::Type::Int, 0, 10 )
-                  // Decimal number from OGR/Shapefile/dbf may come with length up to 32 and
-                  // precision up to length-2 = 30 (default, if width is not specified in dbf is length = 24 precision = 15)
-                  // We know that double (QVariant::Double) has only 15-16 significant numbers,
-                  // but setting that correct limits would disable the use of memory provider with
-                  // data from Shapefiles. In any case, the data are handled as doubles.
-                  // So the limits set here are not correct but enable use of data from Shapefiles.
-                  << QgsVectorDataProvider::NativeType( tr( "Decimal Number (real)" ), u"double"_s, QMetaType::Type::Double, 0, 32, 0, 30 )
-                  << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), u"string"_s, QMetaType::Type::QString, 0, 255 )
+  setNativeTypes(
+    QList< NativeType >()
+    << QgsVectorDataProvider::NativeType( tr( "Whole Number (integer)" ), u"integer"_s, QMetaType::Type::Int, 0, 10 )
+    // Decimal number from OGR/Shapefile/dbf may come with length up to 32 and
+    // precision up to length-2 = 30 (default, if width is not specified in dbf is length = 24 precision = 15)
+    // We know that double (QVariant::Double) has only 15-16 significant numbers,
+    // but setting that correct limits would disable the use of memory provider with
+    // data from Shapefiles. In any case, the data are handled as doubles.
+    // So the limits set here are not correct but enable use of data from Shapefiles.
+    << QgsVectorDataProvider::NativeType( tr( "Decimal Number (real)" ), u"double"_s, QMetaType::Type::Double, 0, 32, 0, 30 )
+    << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), u"string"_s, QMetaType::Type::QString, 0, 255 )
 
-                  // date type
-                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDate ), u"date"_s, QMetaType::Type::QDate, -1, -1, -1, -1 )
-                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QTime ), u"time"_s, QMetaType::Type::QTime, -1, -1, -1, -1 )
-                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDateTime ), u"datetime"_s, QMetaType::Type::QDateTime, -1, -1, -1, -1 )
+    // date type
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDate ), u"date"_s, QMetaType::Type::QDate, -1, -1, -1, -1 )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QTime ), u"time"_s, QMetaType::Type::QTime, -1, -1, -1, -1 )
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDateTime ), u"datetime"_s, QMetaType::Type::QDateTime, -1, -1, -1, -1 )
 
-                  // integer types
-                  << QgsVectorDataProvider::NativeType( tr( "Whole Number (smallint - 16bit)" ), u"int2"_s, QMetaType::Type::Int, -1, -1, 0, 0 )
-                  << QgsVectorDataProvider::NativeType( tr( "Whole Number (integer - 32bit)" ), u"int4"_s, QMetaType::Type::Int, -1, -1, 0, 0 )
-                  << QgsVectorDataProvider::NativeType( tr( "Whole Number (integer - 64bit)" ), u"int8"_s, QMetaType::Type::LongLong, -1, -1, 0, 0 )
-                  << QgsVectorDataProvider::NativeType( tr( "Decimal Number (numeric)" ), u"numeric"_s, QMetaType::Type::Double, 1, 20, 0, 20 )
-                  << QgsVectorDataProvider::NativeType( tr( "Decimal Number (decimal)" ), u"decimal"_s, QMetaType::Type::Double, 1, 20, 0, 20 )
+    // integer types
+    << QgsVectorDataProvider::NativeType( tr( "Whole Number (smallint - 16bit)" ), u"int2"_s, QMetaType::Type::Int, -1, -1, 0, 0 )
+    << QgsVectorDataProvider::NativeType( tr( "Whole Number (integer - 32bit)" ), u"int4"_s, QMetaType::Type::Int, -1, -1, 0, 0 )
+    << QgsVectorDataProvider::NativeType( tr( "Whole Number (integer - 64bit)" ), u"int8"_s, QMetaType::Type::LongLong, -1, -1, 0, 0 )
+    << QgsVectorDataProvider::NativeType( tr( "Decimal Number (numeric)" ), u"numeric"_s, QMetaType::Type::Double, 1, 20, 0, 20 )
+    << QgsVectorDataProvider::NativeType( tr( "Decimal Number (decimal)" ), u"decimal"_s, QMetaType::Type::Double, 1, 20, 0, 20 )
 
-                  // floating point
-                  << QgsVectorDataProvider::NativeType( tr( "Decimal Number (real)" ), u"real"_s, QMetaType::Type::Double, -1, -1, -1, -1 )
-                  << QgsVectorDataProvider::NativeType( tr( "Decimal Number (double)" ), u"double precision"_s, QMetaType::Type::Double, -1, -1, -1, -1 )
+    // floating point
+    << QgsVectorDataProvider::NativeType( tr( "Decimal Number (real)" ), u"real"_s, QMetaType::Type::Double, -1, -1, -1, -1 )
+    << QgsVectorDataProvider::NativeType( tr( "Decimal Number (double)" ), u"double precision"_s, QMetaType::Type::Double, -1, -1, -1, -1 )
 
-                  // string types
-                  << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), u"text"_s, QMetaType::Type::QString, -1, -1, -1, -1 )
+    // string types
+    << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), u"text"_s, QMetaType::Type::QString, -1, -1, -1, -1 )
 
-                  // boolean
-                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Bool ), u"boolean"_s, QMetaType::Type::Bool )
+    // boolean
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Bool ), u"boolean"_s, QMetaType::Type::Bool )
 
-                  // blob
-                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QByteArray ), u"binary"_s, QMetaType::Type::QByteArray )
+    // blob
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QByteArray ), u"binary"_s, QMetaType::Type::QByteArray )
 
-                  // list types
-                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QStringList ), u"stringlist"_s, QMetaType::Type::QStringList, 0, 0, 0, 0, QMetaType::Type::QString )
-                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantList, QMetaType::Type::Int ), u"integerlist"_s, QMetaType::Type::QVariantList, 0, 0, 0, 0, QMetaType::Type::Int )
-                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantList, QMetaType::Type::Double ), u"doublelist"_s, QMetaType::Type::QVariantList, 0, 0, 0, 0, QMetaType::Type::Double )
-                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantList, QMetaType::Type::LongLong ), u"integer64list"_s, QMetaType::Type::QVariantList, 0, 0, 0, 0, QMetaType::Type::LongLong )
+    // list types
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QStringList ), u"stringlist"_s, QMetaType::Type::QStringList, 0, 0, 0, 0, QMetaType::Type::QString )
+    << QgsVectorDataProvider::
+         NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantList, QMetaType::Type::Int ), u"integerlist"_s, QMetaType::Type::QVariantList, 0, 0, 0, 0, QMetaType::Type::Int )
+    << QgsVectorDataProvider::
+         NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantList, QMetaType::Type::Double ), u"doublelist"_s, QMetaType::Type::QVariantList, 0, 0, 0, 0, QMetaType::Type::Double )
+    << QgsVectorDataProvider::
+         NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantList, QMetaType::Type::LongLong ), u"integer64list"_s, QMetaType::Type::QVariantList, 0, 0, 0, 0, QMetaType::Type::LongLong )
 
-                  // complex types
-                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantMap ), u"map"_s, QMetaType::Type::QVariantMap, -1, -1, -1, -1 )
-                  << QgsVectorDataProvider::NativeType( tr( "Geometry" ), u"geometry"_s, QMetaType::Type::User )
-                );
+    // complex types
+    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantMap ), u"map"_s, QMetaType::Type::QVariantMap, -1, -1, -1, -1 )
+    << QgsVectorDataProvider::NativeType( tr( "Geometry" ), u"geometry"_s, QMetaType::Type::User )
+  );
 
   if ( query.hasQueryItem( u"field"_s ) )
   {
     QList<QgsField> attributes;
-    const thread_local QRegularExpression reFieldDef( "\\:"
-        "([\\w\\s]+)"                // type
-        "(?:\\((\\-?\\d+)"           // length
-        "(?:\\,(\\-?\\d+))?"         // precision
-        "\\))?(\\[\\])?"             // array
-        "$",
-        QRegularExpression::CaseInsensitiveOption );
+    const thread_local QRegularExpression reFieldDef(
+      "\\:"
+      "([\\w\\s]+)"        // type
+      "(?:\\((\\-?\\d+)"   // length
+      "(?:\\,(\\-?\\d+))?" // precision
+      "\\))?(\\[\\])?"     // array
+      "$",
+      QRegularExpression::CaseInsensitiveOption
+    );
     const QStringList fields = query.allQueryItemValues( u"field"_s );
     for ( int i = 0; i < fields.size(); i++ )
     {
@@ -233,28 +239,15 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
   {
     createSpatialIndex();
   }
-
 }
 
-QgsMemoryProvider::~QgsMemoryProvider()
-{
+QgsMemoryProvider::~QgsMemoryProvider() {}
 
-}
+QString QgsMemoryProvider::providerKey() { return TEXT_PROVIDER_KEY; }
 
-QString QgsMemoryProvider::providerKey()
-{
-  return TEXT_PROVIDER_KEY;
-}
+QString QgsMemoryProvider::providerDescription() { return TEXT_PROVIDER_DESCRIPTION; }
 
-QString QgsMemoryProvider::providerDescription()
-{
-  return TEXT_PROVIDER_DESCRIPTION;
-}
-
-QgsAbstractFeatureSource *QgsMemoryProvider::featureSource() const
-{
-  return new QgsMemoryFeatureSource( this );
-}
+QgsAbstractFeatureSource *QgsMemoryProvider::featureSource() const { return new QgsMemoryFeatureSource( this ); }
 
 QString QgsMemoryProvider::dataSourceUri( bool expandAuthConfig ) const
 {
@@ -324,13 +317,9 @@ QString QgsMemoryProvider::dataSourceUri( bool expandAuthConfig ) const
   uri.setQuery( query );
 
   return QString( uri.toEncoded() );
-
 }
 
-QString QgsMemoryProvider::storageType() const
-{
-  return u"Memory storage"_s;
-}
+QString QgsMemoryProvider::storageType() const { return u"Memory storage"_s; }
 
 QgsFeatureIterator QgsMemoryProvider::getFeatures( const QgsFeatureRequest &request ) const
 {
@@ -372,10 +361,7 @@ QgsRectangle QgsMemoryProvider::extent() const
   return mExtent;
 }
 
-Qgis::WkbType QgsMemoryProvider::wkbType() const
-{
-  return mWkbType;
-}
+Qgis::WkbType QgsMemoryProvider::wkbType() const { return mWkbType; }
 
 long long QgsMemoryProvider::featureCount() const
 {
@@ -383,7 +369,7 @@ long long QgsMemoryProvider::featureCount() const
     return mFeatures.count();
 
   // subset string set, no alternative but testing each feature
-  QgsFeatureIterator fit = QgsFeatureIterator( new QgsMemoryFeatureIterator( new QgsMemoryFeatureSource( this ), true,  QgsFeatureRequest().setNoAttributes() ) );
+  QgsFeatureIterator fit = QgsFeatureIterator( new QgsMemoryFeatureIterator( new QgsMemoryFeatureSource( this ), true, QgsFeatureRequest().setNoAttributes() ) );
   long long count = 0;
   QgsFeature feature;
   while ( fit.nextFeature( feature ) )
@@ -393,15 +379,9 @@ long long QgsMemoryProvider::featureCount() const
   return count;
 }
 
-QgsFields QgsMemoryProvider::fields() const
-{
-  return mFields;
-}
+QgsFields QgsMemoryProvider::fields() const { return mFields; }
 
-bool QgsMemoryProvider::isValid() const
-{
-  return ( mWkbType != Qgis::WkbType::Unknown );
-}
+bool QgsMemoryProvider::isValid() const { return ( mWkbType != Qgis::WkbType::Unknown ); }
 
 QgsCoordinateReferenceSystem QgsMemoryProvider::crs() const
 {
@@ -432,9 +412,9 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   // For rollback
   const auto oldExtent { mExtent };
   const auto oldNextFeatureId { mNextFeatureId };
-  QgsFeatureIds addedFids ;
+  QgsFeatureIds addedFids;
 
-  for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end() && result ; ++it )
+  for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end() && result; ++it )
   {
     it->setId( mNextFeatureId );
     it->setValid( true );
@@ -463,11 +443,9 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     {
       it->clearGeometry();
     }
-    else if ( it->hasGeometry() && QgsWkbTypes::geometryType( it->geometry().wkbType() ) !=
-              QgsWkbTypes::geometryType( mWkbType ) )
+    else if ( it->hasGeometry() && QgsWkbTypes::geometryType( it->geometry().wkbType() ) != QgsWkbTypes::geometryType( mWkbType ) )
     {
-      pushError( tr( "Could not add feature with geometry type %1 to layer of type %2" ).arg( QgsWkbTypes::displayString( it->geometry().wkbType() ),
-                 QgsWkbTypes::displayString( mWkbType ) ) );
+      pushError( tr( "Could not add feature with geometry type %1 to layer of type %2" ).arg( QgsWkbTypes::displayString( it->geometry().wkbType() ), QgsWkbTypes::displayString( mWkbType ) ) );
       result = false;
       continue;
     }
@@ -479,13 +457,12 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     {
       const QVariant originalValue = it->attribute( i );
       QVariant attrValue = originalValue;
-      if ( ! QgsVariantUtils::isNull( attrValue ) && ! mFields.at( i ).convertCompatible( attrValue, &errorMessage ) )
+      if ( !QgsVariantUtils::isNull( attrValue ) && !mFields.at( i ).convertCompatible( attrValue, &errorMessage ) )
       {
         // Push first conversion error only
         if ( result )
         {
-          pushError( tr( "Could not store attribute \"%1\": %2" )
-                     .arg( mFields.at( i ).name(), errorMessage ) );
+          pushError( tr( "Could not store attribute \"%1\": %2" ).arg( mFields.at( i ).name(), errorMessage ) );
         }
         result = false;
         conversionError = true;
@@ -525,7 +502,7 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   }
 
   // Roll back
-  if ( ! result && flags.testFlag( QgsFeatureSink::Flag::RollBackOnErrors ) )
+  if ( !result && flags.testFlag( QgsFeatureSink::Flag::RollBackOnErrors ) )
   {
     for ( const QgsFeatureId &addedFid : addedFids )
     {
@@ -585,8 +562,7 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
         break;
       }
 
-      if ( nativeType.mType == field.type()
-           && nativeTypeCandidate.mType == QMetaType::Type::UnknownType )
+      if ( nativeType.mType == field.type() && nativeTypeCandidate.mType == QMetaType::Type::UnknownType )
         nativeTypeCandidate = nativeType;
     }
     if ( !isNativeTypeName )
@@ -690,16 +666,13 @@ bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap &at
         continue;
 
       // Check attribute conversion
-      const bool conversionError { ! QgsVariantUtils::isNull( attrValue )
-                                   && ! mFields.at( it2.key() ).convertCompatible( attrValue, &errorMessage ) };
+      const bool conversionError { !QgsVariantUtils::isNull( attrValue ) && !mFields.at( it2.key() ).convertCompatible( attrValue, &errorMessage ) };
       if ( conversionError )
       {
         // Push first conversion error only
         if ( result )
         {
-          pushError( tr( "Could not change attribute %1 having type %2 for feature %4: %3" )
-                     .arg( mFields.at( it2.key() ).name(), it2.value( ).typeName(),
-                           errorMessage ).arg( it.key() ) );
+          pushError( tr( "Could not change attribute %1 having type %2 for feature %4: %3" ).arg( mFields.at( it2.key() ).name(), it2.value().typeName(), errorMessage ).arg( it.key() ) );
         }
         result = false;
         break;
@@ -711,7 +684,7 @@ bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap &at
   }
 
   // Roll back
-  if ( ! result )
+  if ( !result )
   {
     changeAttributeValues( rollBackMap );
   }
@@ -746,10 +719,7 @@ bool QgsMemoryProvider::changeGeometryValues( const QgsGeometryMap &geometry_map
   return true;
 }
 
-QString QgsMemoryProvider::subsetString() const
-{
-  return mSubsetString;
-}
+QString QgsMemoryProvider::subsetString() const { return mSubsetString; }
 
 bool QgsMemoryProvider::setSubsetString( const QString &theSQL, bool updateFeatureCount )
 {
@@ -773,15 +743,9 @@ bool QgsMemoryProvider::setSubsetString( const QString &theSQL, bool updateFeatu
   return true;
 }
 
-bool QgsMemoryProvider::supportsSubsetString() const
-{
-  return true;
-}
+bool QgsMemoryProvider::supportsSubsetString() const { return true; }
 
-QString QgsMemoryProvider::subsetStringDialect() const
-{
-  return tr( "QGIS expression" );
-}
+QString QgsMemoryProvider::subsetStringDialect() const { return tr( "QGIS expression" ); }
 
 QString QgsMemoryProvider::subsetStringHelpUrl() const
 {
@@ -804,19 +768,17 @@ bool QgsMemoryProvider::createSpatialIndex()
   return true;
 }
 
-Qgis::SpatialIndexPresence QgsMemoryProvider::hasSpatialIndex() const
-{
-  return mSpatialIndex ? Qgis::SpatialIndexPresence::Present : Qgis::SpatialIndexPresence::NotPresent;
-}
+Qgis::SpatialIndexPresence QgsMemoryProvider::hasSpatialIndex() const { return mSpatialIndex ? Qgis::SpatialIndexPresence::Present : Qgis::SpatialIndexPresence::NotPresent; }
 
 Qgis::VectorProviderCapabilities QgsMemoryProvider::capabilities() const
 {
-  Qgis::VectorProviderCapabilities caps { Qgis::VectorProviderCapability::AddFeatures | Qgis::VectorProviderCapability::DeleteFeatures |
-                                          Qgis::VectorProviderCapability::ChangeAttributeValues | Qgis::VectorProviderCapability::AddAttributes | Qgis::VectorProviderCapability::DeleteAttributes | Qgis::VectorProviderCapability::RenameAttributes |
-                                          Qgis::VectorProviderCapability::SelectAtId | Qgis::VectorProviderCapability::FastTruncate };
+  Qgis::VectorProviderCapabilities caps {
+    Qgis::VectorProviderCapability::AddFeatures | Qgis::VectorProviderCapability::DeleteFeatures | Qgis::VectorProviderCapability::ChangeAttributeValues | Qgis::VectorProviderCapability::AddAttributes
+    | Qgis::VectorProviderCapability::DeleteAttributes | Qgis::VectorProviderCapability::RenameAttributes | Qgis::VectorProviderCapability::SelectAtId | Qgis::VectorProviderCapability::FastTruncate
+  };
   if ( mWkbType != Qgis::WkbType::NoGeometry )
   {
-    caps |=  Qgis::VectorProviderCapability::CreateSpatialIndex | Qgis::VectorProviderCapability::CircularGeometries | Qgis::VectorProviderCapability::ChangeGeometries ;
+    caps |= Qgis::VectorProviderCapability::CreateSpatialIndex | Qgis::VectorProviderCapability::CircularGeometries | Qgis::VectorProviderCapability::ChangeGeometries;
   }
   return caps;
 }
@@ -829,41 +791,25 @@ bool QgsMemoryProvider::truncate()
   return true;
 }
 
-void QgsMemoryProvider::updateExtents()
-{
-  mExtent.setNull();
-}
+void QgsMemoryProvider::updateExtents() { mExtent.setNull(); }
 
-QString QgsMemoryProvider::name() const
-{
-  return TEXT_PROVIDER_KEY;
-}
+QString QgsMemoryProvider::name() const { return TEXT_PROVIDER_KEY; }
 
-QString QgsMemoryProvider::description() const
-{
-  return TEXT_PROVIDER_DESCRIPTION;
-}
+QString QgsMemoryProvider::description() const { return TEXT_PROVIDER_DESCRIPTION; }
 
 
 QgsMemoryProviderMetadata::QgsMemoryProviderMetadata()
   : QgsProviderMetadata( QgsMemoryProvider::providerKey(), QgsMemoryProvider::providerDescription() )
-{
-}
+{}
 
-QIcon QgsMemoryProviderMetadata::icon() const
-{
-  return QgsApplication::getThemeIcon( u"mIconMemory.svg"_s );
-}
+QIcon QgsMemoryProviderMetadata::icon() const { return QgsApplication::getThemeIcon( u"mIconMemory.svg"_s ); }
 
 QgsDataProvider *QgsMemoryProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsMemoryProvider( uri, options, flags );
 }
 
-QList<Qgis::LayerType> QgsMemoryProviderMetadata::supportedLayerTypes() const
-{
-  return { Qgis::LayerType::Vector };
-}
+QList<Qgis::LayerType> QgsMemoryProviderMetadata::supportedLayerTypes() const { return { Qgis::LayerType::Vector }; }
 
 #undef TEXT_PROVIDER_KEY
 #undef TEXT_PROVIDER_DESCRIPTION

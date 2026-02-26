@@ -33,11 +33,8 @@ bool QgsProviderUtils::sublayerDetailsAreIncomplete( const QList<QgsProviderSubl
     switch ( sublayer.type() )
     {
       case Qgis::LayerType::Vector:
-        if ( sublayer.skippedContainerScan()
-             || ( !ignoreUnknownGeometryTypes && sublayer.wkbType() == Qgis::WkbType::Unknown )
-             || ( !ignoreUnknownFeatureCount &&
-                  ( sublayer.featureCount() == static_cast< long long >( Qgis::FeatureCountState::Uncounted )
-                    || sublayer.featureCount() == static_cast< long long >( Qgis::FeatureCountState::UnknownCount ) ) ) )
+        if ( sublayer.skippedContainerScan() || ( !ignoreUnknownGeometryTypes && sublayer.wkbType() == Qgis::WkbType::Unknown )
+             || ( !ignoreUnknownFeatureCount && ( sublayer.featureCount() == static_cast< long long >( Qgis::FeatureCountState::Uncounted ) || sublayer.featureCount() == static_cast< long long >( Qgis::FeatureCountState::UnknownCount ) ) ) )
           return true;
         break;
 

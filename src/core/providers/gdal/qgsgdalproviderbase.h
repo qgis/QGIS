@@ -25,7 +25,7 @@
 
 #define SIP_NO_FILE
 
-#define CPL_SUPRESS_CPLUSPLUS  //#spellok
+#define CPL_SUPRESS_CPLUSPLUS //#spellok
 #include <gdal.h>
 #include "qgis_sip.h"
 
@@ -43,10 +43,13 @@ class QgsGdalProviderBase
     static void registerGdalDrivers();
 
     //! Wrapper function for GDALOpen to get around possible bugs in GDAL
-    static GDALDatasetH  gdalOpen( const QString &uri, unsigned int nOpenFlags );
+    static GDALDatasetH gdalOpen( const QString &uri, unsigned int nOpenFlags );
 
     //! Wrapper function for GDALRasterIO to get around possible bugs in GDAL
-    static CPLErr gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWFlag, int nXOff, int nYOff, int nXSize, int nYSize, void *pData, int nBufXSize, int nBufYSize, GDALDataType eBufType, int nPixelSpace, int nLineSpace, QgsRasterBlockFeedback *feedback = nullptr );
+    static CPLErr gdalRasterIO(
+      GDALRasterBandH hBand, GDALRWFlag eRWFlag, int nXOff, int nYOff, int nXSize, int nYSize, void *pData, int nBufXSize, int nBufYSize, GDALDataType eBufType, int nPixelSpace, int nLineSpace,
+      QgsRasterBlockFeedback *feedback = nullptr
+    );
 
     //! Wrapper function for GDALRasterIO to get around possible bugs in GDAL
     static int gdalGetOverviewCount( GDALRasterBandH hBand );
@@ -56,12 +59,11 @@ class QgsGdalProviderBase
     static QString encodeGdalUri( const QVariantMap &parts );
 
   protected:
-
     Qgis::DataType dataTypeFromGdal( GDALDataType gdalDataType ) const;
 
     Qgis::RasterColorInterpretation colorInterpretationFromGdal( GDALColorInterp gdalColorInterpretation ) const;
 
-    QList<QgsColorRampShader::ColorRampItem> colorTable( GDALDatasetH gdalDataset, int bandNo )const;
+    QList<QgsColorRampShader::ColorRampItem> colorTable( GDALDatasetH gdalDataset, int bandNo ) const;
 
     QgsRectangle extent( GDALDatasetH gdalDataset ) const;
 };

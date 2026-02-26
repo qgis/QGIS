@@ -64,8 +64,6 @@ QgsSensorThingsConnectionItem::QgsSensorThingsConnectionItem( QgsDataItem *paren
   mIconName = u"mIconConnect.svg"_s;
   mCapabilities |= Qgis::BrowserItemCapability::Collapse | Qgis::BrowserItemCapability::Fast;
   populate();
-
-
 }
 
 bool QgsSensorThingsConnectionItem::equal( const QgsDataItem *other )
@@ -80,11 +78,9 @@ QVector<QgsDataItem *> QgsSensorThingsConnectionItem::createChildren()
 
   const QgsSensorThingsProviderConnection::Data connectionData = QgsSensorThingsProviderConnection::connection( mConnName );
   const QString uri = QgsSensorThingsProviderConnection::encodedLayerUri( connectionData );
-  const QVariantMap connectionUriParts = QgsProviderRegistry::instance()->decodeUri(
-      QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY, uri );
+  const QVariantMap connectionUriParts = QgsProviderRegistry::instance()->decodeUri( QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY, uri );
 
-  for ( Qgis::SensorThingsEntity entity :
-        {
+  for ( Qgis::SensorThingsEntity entity : {
           Qgis::SensorThingsEntity::Thing,
           Qgis::SensorThingsEntity::Location,
           Qgis::SensorThingsEntity::HistoricalLocation,
@@ -101,19 +97,13 @@ QVector<QgsDataItem *> QgsSensorThingsConnectionItem::createChildren()
 
     if ( QgsSensorThingsUtils::entityTypeHasGeometry( entity ) )
     {
-      children.append( new QgsSensorThingsEntityContainerItem( this,
-                       QgsSensorThingsUtils::displayString( entity, true ),
-                       mPath + '/' + qgsEnumValueToKey( entity ),
-                       entityUriParts, entity, mConnName ) );
+      children.append( new QgsSensorThingsEntityContainerItem( this, QgsSensorThingsUtils::displayString( entity, true ), mPath + '/' + qgsEnumValueToKey( entity ), entityUriParts, entity, mConnName ) );
     }
     else
     {
-      children.append( new QgsSensorThingsLayerEntityItem( this,
-                       QgsSensorThingsUtils::displayString( entity, true ),
-                       mPath + '/' + qgsEnumValueToKey( entity ),
-                       entityUriParts,
-                       QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY,
-                       Qgis::BrowserLayerType::TableLayer, entity, mConnName ) );
+      children.append(
+        new QgsSensorThingsLayerEntityItem( this, QgsSensorThingsUtils::displayString( entity, true ), mPath + '/' + qgsEnumValueToKey( entity ), entityUriParts, QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY, Qgis::BrowserLayerType::TableLayer, entity, mConnName )
+      );
     }
   }
 
@@ -125,7 +115,9 @@ QVector<QgsDataItem *> QgsSensorThingsConnectionItem::createChildren()
 // QgsSensorThingsEntityContainerItem
 //
 
-QgsSensorThingsEntityContainerItem::QgsSensorThingsEntityContainerItem( QgsDataItem *parent, const QString &name, const QString &path, const QVariantMap &entityUriParts, Qgis::SensorThingsEntity entityType, const QString &connectionName )
+QgsSensorThingsEntityContainerItem::QgsSensorThingsEntityContainerItem(
+  QgsDataItem *parent, const QString &name, const QString &path, const QVariantMap &entityUriParts, Qgis::SensorThingsEntity entityType, const QString &connectionName
+)
   : QgsDataCollectionItem( parent, name, path, u"sensorthings"_s )
   , mEntityUriParts( entityUriParts )
   , mEntityType( entityType )
@@ -202,12 +194,7 @@ QVector<QgsDataItem *> QgsSensorThingsEntityContainerItem::createChildren()
       default:
         break;
     }
-    children.append( new QgsSensorThingsLayerEntityItem( this,
-                     name,
-                     mPath + '/' + name,
-                     geometryUriParts,
-                     QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY,
-                     layerType, mEntityType, mConnectionName ) );
+    children.append( new QgsSensorThingsLayerEntityItem( this, name, mPath + '/' + name, geometryUriParts, QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY, layerType, mEntityType, mConnectionName ) );
     children.last()->setSortKey( sortKey++ );
   }
 
@@ -218,11 +205,11 @@ QVector<QgsDataItem *> QgsSensorThingsEntityContainerItem::createChildren()
 // QgsSensorThingsLayerEntityItem
 //
 
-QgsSensorThingsLayerEntityItem::QgsSensorThingsLayerEntityItem( QgsDataItem *parent, const QString &name, const QString &path,
-    const QVariantMap &uriParts, const QString &provider, Qgis::BrowserLayerType type, Qgis::SensorThingsEntity entityType, const QString &connectionName )
-  : QgsLayerItem( parent, name, path,
-                  QgsProviderRegistry::instance()->encodeUri( QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY, uriParts ),
-                  type, provider )
+QgsSensorThingsLayerEntityItem::QgsSensorThingsLayerEntityItem(
+  QgsDataItem *parent, const QString &name, const QString &path, const QVariantMap &uriParts, const QString &provider, Qgis::BrowserLayerType type, Qgis::SensorThingsEntity entityType,
+  const QString &connectionName
+)
+  : QgsLayerItem( parent, name, path, QgsProviderRegistry::instance()->encodeUri( QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY, uriParts ), type, provider )
   , mUriParts( uriParts )
   , mEntityType( entityType )
   , mConnectionName( connectionName )
@@ -237,8 +224,7 @@ QString QgsSensorThingsLayerEntityItem::layerName() const
   {
     const QString geometryType = mUriParts.value( u"geometryType"_s ).toString();
     QString geometryNamePart;
-    if ( geometryType.compare( "point"_L1, Qt::CaseInsensitive ) == 0 ||
-         geometryType.compare( "multipoint"_L1, Qt::CaseInsensitive ) == 0 )
+    if ( geometryType.compare( "point"_L1, Qt::CaseInsensitive ) == 0 || geometryType.compare( "multipoint"_L1, Qt::CaseInsensitive ) == 0 )
     {
       geometryNamePart = tr( "Points" );
     }
@@ -253,20 +239,16 @@ QString QgsSensorThingsLayerEntityItem::layerName() const
 
     if ( !geometryNamePart.isEmpty() )
     {
-      baseName = u"%1 - %2 (%3)"_s.arg( mConnectionName,
-                                        QgsSensorThingsUtils::displayString( mEntityType, true ),
-                                        geometryNamePart );
+      baseName = u"%1 - %2 (%3)"_s.arg( mConnectionName, QgsSensorThingsUtils::displayString( mEntityType, true ), geometryNamePart );
     }
     else
     {
-      baseName = u"%1 - %2"_s.arg( mConnectionName,
-                                   QgsSensorThingsUtils::displayString( mEntityType, true ) );
+      baseName = u"%1 - %2"_s.arg( mConnectionName, QgsSensorThingsUtils::displayString( mEntityType, true ) );
     }
   }
   else
   {
-    baseName = u"%1 - %2"_s.arg( mConnectionName,
-                                 QgsSensorThingsUtils::displayString( mEntityType, true ) );
+    baseName = u"%1 - %2"_s.arg( mConnectionName, QgsSensorThingsUtils::displayString( mEntityType, true ) );
   }
 
   return baseName;
@@ -276,20 +258,11 @@ QString QgsSensorThingsLayerEntityItem::layerName() const
 // QgsSensorThingsDataItemProvider
 //
 
-QString QgsSensorThingsDataItemProvider::name()
-{
-  return u"SensorThings"_s;
-}
+QString QgsSensorThingsDataItemProvider::name() { return u"SensorThings"_s; }
 
-QString QgsSensorThingsDataItemProvider::dataProviderKey() const
-{
-  return u"sensorthings"_s;
-}
+QString QgsSensorThingsDataItemProvider::dataProviderKey() const { return u"sensorthings"_s; }
 
-Qgis::DataItemProviderCapabilities QgsSensorThingsDataItemProvider::capabilities() const
-{
-  return Qgis::DataItemProviderCapability::NetworkSources;
-}
+Qgis::DataItemProviderCapabilities QgsSensorThingsDataItemProvider::capabilities() const { return Qgis::DataItemProviderCapability::NetworkSources; }
 
 QgsDataItem *QgsSensorThingsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
@@ -300,4 +273,3 @@ QgsDataItem *QgsSensorThingsDataItemProvider::createDataItem( const QString &pat
 }
 
 ///@endcond
-

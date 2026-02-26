@@ -39,27 +39,22 @@ using namespace Qt::StringLiterals;
 #define PROVIDER_KEY u"ept"_s
 #define PROVIDER_DESCRIPTION u"EPT point cloud data provider"_s
 
-QgsEptProvider::QgsEptProvider(
-  const QString &uri,
-  const QgsDataProvider::ProviderOptions &options,
-  Qgis::DataProviderReadFlags flags )
-  : QgsPointCloudDataProvider( uri, options, flags ), mIndex( new QgsEptPointCloudIndex )
+QgsEptProvider::QgsEptProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
+  : QgsPointCloudDataProvider( uri, options, flags )
+  , mIndex( new QgsEptPointCloudIndex )
 {
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( u"projectload"_s ) )
     profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), u"projectload"_s );
 
-  loadIndex( );
+  loadIndex();
   if ( mIndex && !mIndex.isValid() )
   {
     appendError( mIndex.error() );
   }
 }
 
-Qgis::DataProviderFlags QgsEptProvider::flags() const
-{
-  return Qgis::DataProviderFlag::FastExtent2D;
-}
+Qgis::DataProviderFlags QgsEptProvider::flags() const { return Qgis::DataProviderFlag::FastExtent2D; }
 
 QgsEptProvider::~QgsEptProvider() = default;
 
@@ -120,7 +115,7 @@ qint64 QgsEptProvider::pointCount() const
   return mIndex.pointCount();
 }
 
-void QgsEptProvider::loadIndex( )
+void QgsEptProvider::loadIndex()
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -141,22 +136,17 @@ QVariantMap QgsEptProvider::originalMetadata() const
   return mIndex.originalMetadata();
 }
 
-void QgsEptProvider::generateIndex()
-{
+void QgsEptProvider::generateIndex() {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   //no-op, index is always generated
 }
 
-QgsEptProviderMetadata::QgsEptProviderMetadata():
-  QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
-{
-}
+QgsEptProviderMetadata::QgsEptProviderMetadata()
+  : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
+{}
 
-QIcon QgsEptProviderMetadata::icon() const
-{
-  return QgsApplication::getThemeIcon( u"mIconPointCloudLayer.svg"_s );
-}
+QIcon QgsEptProviderMetadata::icon() const { return QgsApplication::getThemeIcon( u"mIconPointCloudLayer.svg"_s ); }
 
 QgsEptProvider *QgsEptProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
@@ -173,7 +163,7 @@ QList<QgsProviderSublayerDetails> QgsEptProviderMetadata::querySublayers( const 
     details.setProviderKey( u"ept"_s );
     details.setType( Qgis::LayerType::PointCloud );
     details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( uri ) );
-    return {details};
+    return { details };
   }
   else
   {
@@ -263,25 +253,16 @@ QString QgsEptProviderMetadata::filters( Qgis::FileFilterType type )
   return QString();
 }
 
-QgsProviderMetadata::ProviderCapabilities QgsEptProviderMetadata::providerCapabilities() const
-{
-  return FileBasedUris;
-}
+QgsProviderMetadata::ProviderCapabilities QgsEptProviderMetadata::providerCapabilities() const { return FileBasedUris; }
 
-QList<Qgis::LayerType> QgsEptProviderMetadata::supportedLayerTypes() const
-{
-  return { Qgis::LayerType::PointCloud };
-}
+QList<Qgis::LayerType> QgsEptProviderMetadata::supportedLayerTypes() const { return { Qgis::LayerType::PointCloud }; }
 
 QgsProviderMetadata::ProviderMetadataCapabilities QgsEptProviderMetadata::capabilities() const
 {
-  return ProviderMetadataCapability::LayerTypesForUri
-         | ProviderMetadataCapability::PriorityForUri
-         | ProviderMetadataCapability::QuerySublayers;
+  return ProviderMetadataCapability::LayerTypesForUri | ProviderMetadataCapability::PriorityForUri | ProviderMetadataCapability::QuerySublayers;
 }
 
 #undef PROVIDER_KEY
 #undef PROVIDER_DESCRIPTION
 
 ///@endcond
-

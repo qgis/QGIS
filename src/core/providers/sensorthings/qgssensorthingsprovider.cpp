@@ -48,8 +48,7 @@ QgsSensorThingsProvider::QgsSensorThingsProvider( const QString &uri, const Prov
   const QUrl url( QgsSensorThingsSharedData::parseUrl( mSharedData->mRootUri ) );
 
   QNetworkRequest request = QNetworkRequest( url );
-  QgsSetRequestInitiatorClass( request, u"QgsSensorThingsProvider"_s )
-  mSharedData->mHeaders.updateNetworkRequest( request );
+  QgsSetRequestInitiatorClass( request, u"QgsSensorThingsProvider"_s ) mSharedData->mHeaders.updateNetworkRequest( request );
 
   QgsBlockingNetworkRequest networkRequest;
   networkRequest.setAuthCfg( mSharedData->mAuthCfg );
@@ -108,7 +107,6 @@ QgsSensorThingsProvider::QgsSensorThingsProvider( const QString &uri, const Prov
     {
       switch ( mSharedData->mEntityType )
       {
-
         case Qgis::SensorThingsEntity::Invalid:
         case Qgis::SensorThingsEntity::Thing:
         case Qgis::SensorThingsEntity::Location:
@@ -223,9 +221,7 @@ Qgis::VectorProviderCapabilities QgsSensorThingsProvider::capabilities() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  Qgis::VectorProviderCapabilities c = Qgis::VectorProviderCapability::SelectAtId
-                                       | Qgis::VectorProviderCapability::ReadLayerMetadata
-                                       | Qgis::VectorProviderCapability::ReloadData;
+  Qgis::VectorProviderCapabilities c = Qgis::VectorProviderCapability::SelectAtId | Qgis::VectorProviderCapability::ReadLayerMetadata | Qgis::VectorProviderCapability::ReloadData;
 
   return c;
 }
@@ -236,15 +232,9 @@ bool QgsSensorThingsProvider::supportsSubsetString() const
   return true;
 }
 
-QString QgsSensorThingsProvider::subsetStringDialect() const
-{
-  return tr( "OGC SensorThings filter" );
-}
+QString QgsSensorThingsProvider::subsetStringDialect() const { return tr( "OGC SensorThings filter" ); }
 
-QString QgsSensorThingsProvider::subsetStringHelpUrl() const
-{
-  return u"https://docs.ogc.org/is/18-088/18-088.html#filter"_s;
-}
+QString QgsSensorThingsProvider::subsetStringHelpUrl() const { return u"https://docs.ogc.org/is/18-088/18-088.html#filter"_s; }
 
 QString QgsSensorThingsProvider::subsetString() const
 {
@@ -305,20 +295,11 @@ QString QgsSensorThingsProvider::name() const
   return SENSORTHINGS_PROVIDER_KEY;
 }
 
-QString QgsSensorThingsProvider::providerKey()
-{
-  return SENSORTHINGS_PROVIDER_KEY;
-}
+QString QgsSensorThingsProvider::providerKey() { return SENSORTHINGS_PROVIDER_KEY; }
 
-void QgsSensorThingsProvider::handlePostCloneOperations( QgsVectorDataProvider *source )
-{
-  mSharedData = qobject_cast<QgsSensorThingsProvider *>( source )->mSharedData;
-}
+void QgsSensorThingsProvider::handlePostCloneOperations( QgsVectorDataProvider *source ) { mSharedData = qobject_cast<QgsSensorThingsProvider *>( source )->mSharedData; }
 
-QString QgsSensorThingsProvider::description() const
-{
-  return SENSORTHINGS_PROVIDER_DESCRIPTION;
-}
+QString QgsSensorThingsProvider::description() const { return SENSORTHINGS_PROVIDER_DESCRIPTION; }
 
 bool QgsSensorThingsProvider::renderInPreview( const PreviewContext & )
 {
@@ -337,20 +318,13 @@ void QgsSensorThingsProvider::reloadProviderData()
 // QgsSensorThingsProviderMetadata
 //
 
-QgsSensorThingsProviderMetadata::QgsSensorThingsProviderMetadata():
-  QgsProviderMetadata( QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY, QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_DESCRIPTION )
-{
-}
+QgsSensorThingsProviderMetadata::QgsSensorThingsProviderMetadata()
+  : QgsProviderMetadata( QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY, QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_DESCRIPTION )
+{}
 
-QIcon QgsSensorThingsProviderMetadata::icon() const
-{
-  return QgsApplication::getThemeIcon( u"mIconSensorThings.svg"_s );
-}
+QIcon QgsSensorThingsProviderMetadata::icon() const { return QgsApplication::getThemeIcon( u"mIconSensorThings.svg"_s ); }
 
-QList<QgsDataItemProvider *> QgsSensorThingsProviderMetadata::dataItemProviders() const
-{
-  return { new QgsSensorThingsDataItemProvider() };
-}
+QList<QgsDataItemProvider *> QgsSensorThingsProviderMetadata::dataItemProviders() const { return { new QgsSensorThingsDataItemProvider() }; }
 
 QVariantMap QgsSensorThingsProviderMetadata::decodeUri( const QString &uri ) const
 {
@@ -490,15 +464,13 @@ QString QgsSensorThingsProviderMetadata::encodeUri( const QVariantMap &parts ) c
     dsUri.setParam( u"referer"_s, parts.value( u"referer"_s ).toString() );
   }
 
-  Qgis::SensorThingsEntity entity = QgsSensorThingsUtils::entitySetStringToEntity(
-                                      parts.value( u"entity"_s ).toString() );
+  Qgis::SensorThingsEntity entity = QgsSensorThingsUtils::entitySetStringToEntity( parts.value( u"entity"_s ).toString() );
   if ( entity == Qgis::SensorThingsEntity::Invalid )
     entity = QgsSensorThingsUtils::stringToEntity( parts.value( u"entity"_s ).toString() );
 
   if ( entity != Qgis::SensorThingsEntity::Invalid )
   {
-    dsUri.setParam( u"entity"_s,
-                    qgsEnumValueToKey( entity ) );
+    dsUri.setParam( u"entity"_s, qgsEnumValueToKey( entity ) );
   }
 
   const QVariantList expandToParam = parts.value( u"expandTo"_s ).toList();
@@ -568,29 +540,17 @@ QgsSensorThingsProvider *QgsSensorThingsProviderMetadata::createProvider( const 
   return new QgsSensorThingsProvider( uri, options, flags );
 }
 
-QList<Qgis::LayerType> QgsSensorThingsProviderMetadata::supportedLayerTypes() const
-{
-  return { Qgis::LayerType::Vector };
-}
+QList<Qgis::LayerType> QgsSensorThingsProviderMetadata::supportedLayerTypes() const { return { Qgis::LayerType::Vector }; }
 
 QMap<QString, QgsAbstractProviderConnection *> QgsSensorThingsProviderMetadata::connections( bool cached )
 {
   return connectionsProtected<QgsSensorThingsProviderConnection, QgsSensorThingsProviderConnection>( cached );
 }
 
-QgsAbstractProviderConnection *QgsSensorThingsProviderMetadata::createConnection( const QString &name )
-{
-  return new QgsSensorThingsProviderConnection( name );
-}
+QgsAbstractProviderConnection *QgsSensorThingsProviderMetadata::createConnection( const QString &name ) { return new QgsSensorThingsProviderConnection( name ); }
 
-void QgsSensorThingsProviderMetadata::deleteConnection( const QString &name )
-{
-  deleteConnectionProtected<QgsSensorThingsProviderConnection>( name );
-}
+void QgsSensorThingsProviderMetadata::deleteConnection( const QString &name ) { deleteConnectionProtected<QgsSensorThingsProviderConnection>( name ); }
 
-void QgsSensorThingsProviderMetadata::saveConnection( const QgsAbstractProviderConnection *connection, const QString &name )
-{
-  saveConnectionProtected( connection, name );
-}
+void QgsSensorThingsProviderMetadata::saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) { saveConnectionProtected( connection, name ); }
 
 ///@endcond
