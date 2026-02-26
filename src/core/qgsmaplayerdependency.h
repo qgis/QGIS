@@ -72,10 +72,13 @@ class CORE_EXPORT QgsMapLayerDependency
     bool operator==( const QgsMapLayerDependency &other ) const { return layerId() == other.layerId() && origin() == other.origin() && type() == other.type(); }
 
 #ifdef SIP_RUN
+    // clang-format off
     //! hash operator
     long __hash__() const;
-    % MethodCode sipRes = qHash( *sipCpp );
-  % End
+    % MethodCode
+    sipRes = qHash( *sipCpp );
+    % End
+// clang-format on
 #endif
     // clang-format off
     private:

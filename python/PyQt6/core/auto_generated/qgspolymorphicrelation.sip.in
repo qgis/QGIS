@@ -151,7 +151,8 @@ each pair are the field names of the matching primary key.
 
 :return: The fields forming the relation
 %End
-%MethodCode const QList< QgsRelation::FieldPair > &pairs = sipCpp->fieldPairs();
+%MethodCode
+    const QList< QgsRelation::FieldPair > &pairs = sipCpp->fieldPairs();
     sipRes = new QMap< QString, QString >();
     for ( const QgsRelation::FieldPair &pair : pairs )
     {

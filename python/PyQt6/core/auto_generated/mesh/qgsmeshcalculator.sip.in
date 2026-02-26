@@ -42,7 +42,7 @@ Resulting dataset is always scalar
       MemoryError,
     };
 
- QgsMeshCalculator( const QString &formulaString, const QString &outputFile, const QgsRectangle &outputExtent, double startTime, double endTime, QgsMeshLayer *layer );
+ QgsMeshCalculator( const QString &formulaString, const QString &outputFile, const QgsRectangle &outputExtent, double startTime, double endTime, QgsMeshLayer *layer ) /Deprecated="Since 3.12. "/;
 %Docstring
 Creates calculator with bounding box (rectangular) mask
 

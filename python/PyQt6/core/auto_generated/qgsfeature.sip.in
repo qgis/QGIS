@@ -35,9 +35,7 @@ geometry and a list of field/values attributes.
     static const QMetaObject staticMetaObject;
 
   public:
-    // clang-format off
     SIP_PYOBJECT __iter__() /HoldGIL/;
-    // clang-format on
 %MethodCode
     QgsAttributes attributes = sipCpp->attributes();
     PyObject *attrs = sipConvertFromType( &attributes, sipType_QgsAttributes, Py_None );
@@ -58,11 +56,20 @@ geometry and a list of field/values attributes.
     else
     {
       const QVariant v = sipCpp->attribute( a0 );
-      // QByteArray null handling is "special"! See null_from_qvariant_converter in conversions.sip
-      if ( QgsVariantUtils::isNull( v, true ) && v.userType() != QMetaType::Type::QByteArray )
+      if ( !v.isValid() )
       {
         Py_INCREF( Py_None );
         sipRes = Py_None;
+      }
+      // QByteArray null handling is "special"! See null_from_qvariant_converter in conversions.sip
+      else if ( QgsVariantUtils::isNull( v, true ) && v.userType() != QMetaType::Type::QByteArray )
+      {
+        PyObject *vartype = sipConvertFromEnum( v.type(), sipType_QVariant_Type );
+        PyObject *args = PyTuple_Pack( 1, vartype );
+        PyTypeObject *typeObj = sipTypeAsPyTypeObject( sipType_QVariant );
+        sipRes = PyObject_Call( ( PyObject * )typeObj, args, nullptr );
+        Py_DECREF( args );
+        Py_DECREF( vartype );
       }
       else
       {
@@ -121,11 +128,20 @@ geometry and a list of field/values attributes.
     else
     {
       const QVariant v = sipCpp->attribute( fieldIdx );
-      // QByteArray null handling is "special"! See null_from_qvariant_converter in conversions.sip
-      if ( QgsVariantUtils::isNull( v, true ) && v.userType() != QMetaType::Type::QByteArray )
+      if ( !v.isValid() )
       {
         Py_INCREF( Py_None );
         sipRes = Py_None;
+      }
+      // QByteArray null handling is "special"! See null_from_qvariant_converter in conversions.sip
+      else if ( QgsVariantUtils::isNull( v, true ) && v.userType() != QMetaType::Type::QByteArray )
+      {
+        PyObject *vartype = sipConvertFromEnum( v.type(), sipType_QVariant_Type );
+        PyObject *args = PyTuple_Pack( 1, vartype );
+        PyTypeObject *typeObj = sipTypeAsPyTypeObject( sipType_QVariant );
+        sipRes = PyObject_Call( ( PyObject * )typeObj, args, nullptr );
+        Py_DECREF( args );
+        Py_DECREF( vartype );
       }
       else
       {

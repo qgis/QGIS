@@ -177,10 +177,13 @@ class CORE_EXPORT QgsLayoutPoint
     QgsLayoutPoint operator/=( double v );
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsLayoutPoint: %1, %2 %3 >"_s.arg( sipCpp->x() ).arg( sipCpp->y() ).arg( QgsUnitTypes::toAbbreviatedString( sipCpp->units() ) );
+    % MethodCode
+    QString str = u"<QgsLayoutPoint: %1, %2 %3 >"_s.arg( sipCpp->x() ).arg( sipCpp->y() ).arg( QgsUnitTypes::toAbbreviatedString( sipCpp->units() ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off

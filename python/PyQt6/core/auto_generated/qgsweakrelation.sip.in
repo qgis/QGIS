@@ -478,7 +478,7 @@ projects
     SIP_PYOBJECT __repr__();
 %MethodCode
 
-        QString leftIdentifier;
+    QString leftIdentifier;
     if ( !sipCpp->referencedLayer().source.isEmpty() )
       leftIdentifier = sipCpp->referencedLayer().source;
 

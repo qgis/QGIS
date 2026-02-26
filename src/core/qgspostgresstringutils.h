@@ -22,9 +22,11 @@
 #include <qlist.h>
 
 #ifdef SIP_RUN
+// clang-format off
 % ModuleHeaderCode
 #include "qgspostgresstringutils.h"
-  % End
+% End
+// clang-format on
 #endif
 
   /**

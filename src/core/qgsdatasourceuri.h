@@ -391,10 +391,13 @@ class CORE_EXPORT QgsDataSourceUri
     void setHttpHeaders( const QgsHttpHeaders &headers ) { mHttpHeaders = headers; }
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsDataSourceUri: %1>"_s.arg( sipCpp->uri( false ) );
+    % MethodCode
+    QString str = u"<QgsDataSourceUri: %1>"_s.arg( sipCpp->uri( false ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
       bool operator==( const QgsDataSourceUri &other ) const;

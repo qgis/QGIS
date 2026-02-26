@@ -38,7 +38,7 @@ Abstract base class for all geometries.
 #include "qgsabstractgeometry.h"
 %End
 %ConvertToSubClassCode
-    if ( qgsgeometry_cast<QgsPoint *>( sipCpp ) != nullptr )
+if ( qgsgeometry_cast<QgsPoint *>( sipCpp ) != nullptr )
       sipType = sipType_QgsPoint;
     else if ( qgsgeometry_cast<QgsLineString *>( sipCpp ) != nullptr )
       sipType = sipType_QgsLineString;
@@ -1090,8 +1090,7 @@ Returns next vertex of the geometry (undefined behavior if
 %MethodCode
     if ( sipCpp->hasNext() )
       sipRes = sipConvertFromType( new QgsPoint( sipCpp->next() ), sipType_QgsPoint, Py_None );
-    else
-      PyErr_SetString( PyExc_StopIteration, "" );
+    else PyErr_SetString( PyExc_StopIteration, "" );
 %End
 
 };
@@ -1137,8 +1136,7 @@ calling :py:func:`~QgsGeometryPartIterator.next`)
 %MethodCode
     if ( sipCpp->hasNext() )
       sipRes = sipConvertFromType( sipCpp->next(), sipType_QgsAbstractGeometry, NULL );
-    else
-      PyErr_SetString( PyExc_StopIteration, "" );
+    else PyErr_SetString( PyExc_StopIteration, "" );
 %End
 
 };
@@ -1185,8 +1183,7 @@ before calling :py:func:`~QgsGeometryConstPartIterator.next`)
 %MethodCode
     if ( sipCpp->hasNext() )
       sipRes = sipConvertFromType( const_cast< QgsAbstractGeometry * >( sipCpp->next() ), sipType_QgsAbstractGeometry, NULL );
-    else
-      PyErr_SetString( PyExc_StopIteration, "" );
+    else PyErr_SetString( PyExc_StopIteration, "" );
 %End
 
 };

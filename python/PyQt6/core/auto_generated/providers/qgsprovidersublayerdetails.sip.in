@@ -234,7 +234,8 @@ Set to an empty string if not applicable.
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str = QStringLiteral( "<QgsProviderSublayerDetails: %1 - %2>" ).arg( sipCpp->providerKey(), sipCpp->name() );
+%MethodCode
+    QString str = QStringLiteral( "<QgsProviderSublayerDetails: %1 - %2>" ).arg( sipCpp->providerKey(), sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

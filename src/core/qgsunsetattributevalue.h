@@ -58,14 +58,17 @@ class CORE_EXPORT QgsUnsetAttributeValue
     inline bool operator!=( const QgsUnsetAttributeValue & ) const { return false; }
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str;
+    % MethodCode
+    QString str;
     if ( !sipCpp->defaultValueClause().isEmpty() )
       str = u"<QgsUnsetAttributeValue: %1>"_s.arg( sipCpp->defaultValueClause() );
     else
       str = u"<QgsUnsetAttributeValue>"_s;
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
       //! Allows direct construction of QVariants from unset values.

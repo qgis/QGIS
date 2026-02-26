@@ -183,10 +183,13 @@ class CORE_EXPORT QgsLayoutSize
     QgsLayoutSize operator/=( double v );
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsLayoutSize: %1 x %2 %3 >"_s.arg( sipCpp->width() ).arg( sipCpp->height() ).arg( QgsUnitTypes::toAbbreviatedString( sipCpp->units() ) );
+    % MethodCode
+    QString str = u"<QgsLayoutSize: %1 x %2 %3 >"_s.arg( sipCpp->width() ).arg( sipCpp->height() ).arg( QgsUnitTypes::toAbbreviatedString( sipCpp->units() ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off

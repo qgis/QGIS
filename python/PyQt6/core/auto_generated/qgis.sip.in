@@ -17,8 +17,8 @@
 #include <qgis.h>
 %End
 
-%ModuleCode int QgisEvent
-  = QEvent::User + 1;
+%ModuleCode
+int QgisEvent = QEvent::User + 1;
 %End
 
 
@@ -172,8 +172,7 @@ The development version
 
     enum class LoadStyleFlag /BaseType=IntFlag/
     {
-      IgnoreMissingStyleErrors
-      = 1 << 0, //!< If the style is missing, then don't flag it as an error. This flag can be used when the caller is not certain that a style exists, and accordingly a failure to find the style does not indicate an issue with loading the style itself.
+      IgnoreMissingStyleErrors,
     };
 
     typedef QFlags<Qgis::LoadStyleFlag> LoadStyleFlags;
@@ -328,15 +327,13 @@ The development version
 
     enum class DataProviderReadFlag /BaseType=IntFlag/
     {
-      TrustDataSource
-      = 1 << 0, //!< Trust datasource config (primary key unicity, geometry type and srid, etc). Improves provider load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on data load \since QGIS 3.16
+      TrustDataSource,
       SkipFeatureCount,
       LoadDefaultStyle,
       SkipGetExtent,
       SkipFullScan,
       ForceReadOnly,
-      SkipCredentialsRequest
-      = 1 << 6, //!< Skip credentials if the provided one are not valid, let the provider be invalid, avoiding to block the thread creating the provider if it is not the main thread \since QGIS 3.32
+      SkipCredentialsRequest,
       ParallelThreadLoading,
     };
 
@@ -940,8 +937,7 @@ The development version
     enum class RasterRendererFlag /BaseType=IntFlag/
     {
       InternalLayerOpacityHandling,
-      UseNoDataForOutOfRangePixels
-      = 1 << 1, //!< Out of range pixels (eg those values outside of the rendered map's z range filter) should be set using additional nodata values instead of additional transparency values \since QGIS 3.38
+      UseNoDataForOutOfRangePixels,
     };
 
     typedef QFlags<Qgis::RasterRendererFlag> RasterRendererFlags;
@@ -1266,8 +1262,7 @@ The development version
 
     enum class GeometryValidityFlag /BaseType=IntFlag/
     {
-      AllowSelfTouchingHoles
-      = 1 << 0, //!< Indicates that self-touching holes are permitted. OGC validity states that self-touching holes are NOT permitted, whilst other vendor validity checks (e.g. ESRI) permit self-touching holes.
+      AllowSelfTouchingHoles,
     };
     typedef QFlags<Qgis::GeometryValidityFlag> GeometryValidityFlags;
 
@@ -1333,8 +1328,7 @@ The development version
       NoGeometry,
       SubsetOfAttributes,
       ExactIntersect,
-      IgnoreStaticNodesDuringExpressionCompilation
-      = 8, //!< If a feature request uses a filter expression which can be partially precalculated due to static nodes in the expression, setting this flag will prevent these precalculated values from being utilized during compilation of the filter for the backend provider. This flag significantly slows down feature requests and should be used for debugging purposes only. \since QGIS 3.18
+      IgnoreStaticNodesDuringExpressionCompilation,
       EmbeddedSymbols,
     };
 
@@ -1373,8 +1367,7 @@ The development version
 
     enum class MapLayerProperty /BaseType=IntFlag/
     {
-      UsersCannotToggleEditing
-      = 1 << 0, //!< Indicates that users are not allowed to toggle editing for this layer. Note that this does not imply that the layer is non-editable (see isEditable(), supportsEditing() ), rather that the editable status of the layer cannot be changed by users manually \since QGIS 3.22
+      UsersCannotToggleEditing,
       IsBasemapLayer,
       Is3DBasemapLayer,
     };
@@ -1475,21 +1468,14 @@ The development version
 
     enum class CrsWktVariant /BaseType=IntEnum/
     {
-      Wkt1Gdal
-        WKT1_GDAL
-      ), //!< WKT1 as traditionally output by GDAL, deriving from OGC 01-009. A notable departure from WKT1_GDAL with respect to OGC 01-009 is that in WKT1_GDAL, the unit of the PRIMEM value is always degrees.
+      Wkt1Gdal,
       Wkt1Esri,
       Wkt2_2015,
-      Wkt2_2015Simplified
-        WKT2_2015_SIMPLIFIED
-      ), //!< Same as WKT2_2015 with the following exceptions: UNIT keyword used. ID node only on top element. No ORDER element in AXIS element. PRIMEM node omitted if it is Greenwich.  ELLIPSOID.UNIT node omitted if it is UnitOfMeasure::METRE. PARAMETER.UNIT / PRIMEM.UNIT omitted if same as AXIS. AXIS.UNIT omitted and replaced by a common GEODCRS.UNIT if they are all the same on all axis.
-      Wkt2_2019
-        WKT2_2019
-      ), //!< Full WKT2 string, conforming to ISO 19162:2019 / OGC 18-010, with all possible nodes and new keyword names. Non-normative list of differences: WKT2_2019 uses GEOGCRS / BASEGEOGCRS keywords for GeographicCRS.
+      Wkt2_2015Simplified,
+      Wkt2_2019,
       Wkt2_2019Simplified,
       Preferred,
-      PreferredSimplified
-      = Wkt2_2019Simplified, //!< Preferred simplified format, matching the most recent WKT ISO standard. Currently an alias to WKT2_2019_SIMPLIFIED, but may change in future versions.
+      PreferredSimplified,
       PreferredGdal,
     };
 
@@ -1569,9 +1555,7 @@ The development version
       FeatureDateTimeStartAndEndFromFields,
       FeatureDateTimeStartAndDurationFromFields,
       FeatureDateTimeStartAndEndFromExpressions,
-      RedrawLayerOnly
-        ModeRedrawLayerOnly
-      ), //!< Redraw the layer when temporal range changes, but don't apply any filtering. Useful when symbology or rule based renderer expressions depend on the time range.
+      RedrawLayerOnly,
     };
 
     enum class VectorTemporalLimitMode /BaseType=IntEnum/
@@ -1591,8 +1575,7 @@ The development version
     {
       FixedTemporalRange,
       TemporalRangeFromDataProvider,
-      RedrawLayerOnly
-      = 2,                   //!< Redraw the layer when temporal range changes, but don't apply any filtering. Useful when raster symbology expressions depend on the time range. \since QGIS 3.22
+      RedrawLayerOnly,
       FixedRangePerBand,
       RepresentsTemporalValues,
       FixedDateTime,
@@ -1609,8 +1592,7 @@ The development version
 
     enum class RasterTemporalCapabilityFlag /BaseType=IntFlag/
     {
-      RequestedTimesMustExactlyMatchAllAvailableTemporalRanges
-      = 1 << 0, //!< If present, indicates that the provider must only request temporal values which are exact matches for the values present in QgsRasterDataProviderTemporalCapabilities::allAvailableTemporalRanges().
+      RequestedTimesMustExactlyMatchAllAvailableTemporalRanges,
     };
 
     typedef QFlags<Qgis::RasterTemporalCapabilityFlag> RasterTemporalCapabilityFlags;
@@ -1624,10 +1606,8 @@ The development version
 
     enum class CoordinateTransformationFlag /BaseType=IntFlag/
     {
-      BallparkTransformsAreAppropriate
-      = 1 << 0, //!< Indicates that approximate "ballpark" results are appropriate for this coordinate transform. See QgsCoordinateTransform::setBallparkTransformsAreAppropriate() for further details.
-      IgnoreImpossibleTransformations
-      = 1 << 1, //!< Indicates that impossible transformations (such as those which attempt to transform between two different celestial bodies) should be silently handled and marked as invalid. See QgsCoordinateTransform::isTransformationPossible() and QgsCoordinateTransform::isValid().
+      BallparkTransformsAreAppropriate,
+      IgnoreImpossibleTransformations,
     };
 
     typedef QFlags<Qgis::CoordinateTransformationFlag> CoordinateTransformationFlags;
@@ -1654,15 +1634,13 @@ The development version
       RenderPartialOutput,
       RenderPreviewJob,
       RenderBlocking,
-      LosslessImageRendering
-      = 0x1000, //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF). This flag only works with builds based on Qt 5.13 or later.
+      LosslessImageRendering,
       Render3DMap,
       HighQualityImageTransforms,
       SkipSymbolRendering,
       ForceRasterMasks,
       RecordProfile,
-      AlwaysUseGlobalMasks
-      = 0x40000, //!< When applying clipping paths for selective masking, always use global ("entire map") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex vector exports in all current Qt versions. This flag only applies to vector map exports. \since QGIS 3.38
+      AlwaysUseGlobalMasks,
     };
     typedef QFlags<Qgis::MapSettingsFlag> MapSettingsFlags;
 
@@ -1717,12 +1695,8 @@ The development version
 
     enum class TextRenderFormat /BaseType=IntEnum/
     {
-      AlwaysOutlines
-        TextFormatAlwaysOutlines
-      ), //!< Always render text using path objects (AKA outlines/curves). This setting guarantees the best quality rendering, even when using a raster paint surface (where sub-pixel path based text rendering is superior to sub-pixel text-based rendering). The downside is that text is converted to paths only, so users cannot open created vector outputs for post-processing in other applications and retain text editability.  This setting also guarantees complete compatibility with the full range of formatting options available through QgsTextRenderer and QgsTextFormat, some of which may not be possible to reproduce when using a vector-based paint surface and TextFormatAlwaysText mode. A final benefit to this setting is that vector exports created using text as outlines do not require all users to have the original fonts installed in order to display the text in its original style.
-      AlwaysText
-        TextFormatAlwaysText
-      ), //!< Always render text as text objects. While this mode preserves text objects as text for post-processing in external vector editing applications, it can result in rendering artifacts or poor quality rendering, depending on the text format settings. Even with raster based paint devices, TextFormatAlwaysText can result in inferior rendering quality to TextFormatAlwaysOutlines. When rendering using TextFormatAlwaysText to a vector based device (e.g. PDF or SVG), care must be taken to ensure that the required fonts are available to users when opening the created files, or default fallback fonts will be used to display the output instead. (Although PDF exports MAY automatically embed some fonts when possible, depending on the user's platform).
+      AlwaysOutlines,
+      AlwaysText,
       PreferText,
     };
 
@@ -2124,8 +2098,7 @@ The development version
 
     enum class ProcessingProviderFlag /BaseType=IntFlag/
     {
-      DeemphasiseSearchResults
-      = 1 << 1, //!< Algorithms should be de-emphasised in the search results when searching for algorithms. Use for low-priority providers or those with substantial known issues.
+      DeemphasiseSearchResults,
       CompatibleWithVirtualRaster,
     };
 
@@ -2187,10 +2160,8 @@ The development version
 
     enum class ProcessingFeatureSourceDefinitionFlag /BaseType=IntFlag/
     {
-      OverrideDefaultGeometryCheck
-      = 1 << 0, //!< If set, the default geometry check method (as dictated by QgsProcessingContext) will be overridden for this source
-      CreateIndividualOutputPerInputFeature
-      = 1 << 1, //!< If set, every feature processed from this source will be placed into its own individually created output destination. Support for this flag depends on how an algorithm is executed.
+      OverrideDefaultGeometryCheck,
+      CreateIndividualOutputPerInputFeature,
     };
 
     typedef QFlags<Qgis::ProcessingFeatureSourceDefinitionFlag> ProcessingFeatureSourceDefinitionFlags;
@@ -2395,8 +2366,7 @@ The development version
     enum class ProjectFlag /BaseType=IntFlag/
     {
       EvaluateDefaultValuesOnProviderSide,
-      TrustStoredLayerStatistics
-      = 1 << 1, //!< If set, then layer statistics (such as the layer extent) will be read from values stored in the project instead of requesting updated values from the data provider. Additionally, when this flag is set, primary key unicity is not checked for views and materialized views with Postgres provider.
+      TrustStoredLayerStatistics,
       RememberLayerEditStatusBetweenSessions,
       RememberAttributeTableWindowsBetweenSessions,
     };
@@ -2513,12 +2483,9 @@ The development version
 
     enum class ProjectReadFlag /BaseType=IntFlag/
     {
-      DontResolveLayers
-      = 1 << 0, //!< Don't resolve layer paths (i.e. don't load any layer content). Dramatically improves project read time if the actual data from the layers is not required.
-      DontLoadLayouts
-      = 1 << 1, //!< Don't load print layouts. Improves project read time if layouts are not required, and allows projects to be safely read in background threads (since print layouts are not thread safe).
-      TrustLayerMetadata
-      = 1 << 2, //!< Trust layer metadata. Improves project read time. Do not use it if layers' extent is not fixed during the project's use by QGIS and QGIS Server.
+      DontResolveLayers,
+      DontLoadLayouts,
+      TrustLayerMetadata,
       DontStoreOriginalStyles,
       DontLoad3DViews,
       DontLoadProjectStyles,
@@ -3066,19 +3033,14 @@ The development version
       OutlineOnly,
       Antialiasing,
       UseAdvancedEffects,
-      ForceVectorOutput
-      = 1 << 5, //!< Force output in vector format where possible, even if items require rasterization to keep their correct appearance. \deprecated QGIS 3.44. Use rasterizedRenderingPolicy() instead.
+      ForceVectorOutput,
       HideCoverageLayer,
       DrawSelection,
-      DisableTiledRasterLayerRenders
-      = 1 << 8, //!< If set, then raster layers will not be drawn as separate tiles. This may improve the appearance in exported files, at the cost of much higher memory usage during exports.
-      RenderLabelsByMapLayer
-      = 1 << 9, //!< When rendering map items to multi-layered exports, render labels belonging to different layers into separate export layers
-      LosslessImageRendering
-      = 1 << 10, //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF).
+      DisableTiledRasterLayerRenders,
+      RenderLabelsByMapLayer,
+      LosslessImageRendering,
       SynchronousLegendGraphics,
-      AlwaysUseGlobalMasks
-      = 1 << 12, //!< When applying clipping paths for selective masking, always use global ("entire map") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex layout exports in all current Qt versions. This flag only applies to vector layout exports. \since QGIS 3.38
+      AlwaysUseGlobalMasks,
       LimitCoverageLayerRenderToCurrentFeature,
     };
 
@@ -3458,8 +3420,7 @@ The development version
       Variance,
       MinimumPoint,
       MaximumPoint,
-      All
-            | Variance, //!< All statistics. For QGIS 3.x this includes ONLY numeric statistics, but for 4.0 this will be extended to included non-numeric statistics. Consider using AllNumeric instead.
+      All,
       AllNumeric,
       Default,
     };

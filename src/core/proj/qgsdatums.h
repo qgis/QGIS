@@ -62,15 +62,18 @@ class CORE_EXPORT QgsDatumEnsembleMember
     QString code() const { return mCode; }
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString id;
+    % MethodCode
+    QString id;
     if ( !sipCpp->code().isEmpty() )
       id = u"%1 (%2:%3)"_s.arg( sipCpp->name(), sipCpp->authority(), sipCpp->code() );
     else
       id = sipCpp->name();
     QString str = u"<QgsDatumEnsembleMember: %1>"_s.arg( id );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off
@@ -138,8 +141,10 @@ class CORE_EXPORT QgsDatumEnsemble
     QList< QgsDatumEnsembleMember > members() const { return mMembers; }
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str;
+    % MethodCode
+    QString str;
     if ( !sipCpp->isValid() )
     {
       str = u"<QgsDatumEnsemble: invalid>"_s;
@@ -154,7 +159,8 @@ class CORE_EXPORT QgsDatumEnsemble
       str = u"<QgsDatumEnsemble: %1>"_s.arg( id );
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off

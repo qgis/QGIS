@@ -196,8 +196,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
       Notes = 1 << 17,                                                          //!< Layer user notes \since QGIS 3.20
       AllVisualStyleCategories = Symbology | Symbology3D | Labeling | Diagrams, //!< All categories dealing with map canvas rendering
       AllAttributeCategories = Fields | Forms | AttributeTable,                 //!< All categories dealing with attributes and attribute form
-      AllStyleCategories = LayerConfiguration | Symbology | Symbology3D | Labeling | Fields | Forms | Actions | MapTips | Diagrams | AttributeTable | Rendering | CustomProperties | GeometryOptions
-                           | Relations | Temporal | Legend | Elevation | Notes,
+      // clang-format off
+      AllStyleCategories = LayerConfiguration | Symbology | Symbology3D | Labeling | Fields | Forms | Actions | MapTips | Diagrams | AttributeTable | Rendering | CustomProperties | GeometryOptions | Relations | Temporal | Legend | Elevation | Notes,
+      // clang-format on
     };
     Q_ENUM( StyleCategory )
     Q_DECLARE_FLAGS( StyleCategories, StyleCategory )
@@ -1977,10 +1978,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) = 0;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsMapLayer: '%1' (%2)>"_s.arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : u"Invalid"_s );
+    % MethodCode
+    QString str = u"<QgsMapLayer: '%1' (%2)>"_s.arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : u"Invalid"_s );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
       /**

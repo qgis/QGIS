@@ -529,8 +529,10 @@ class CORE_EXPORT QgsProperty
 
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString typeString;
+    % MethodCode
+    QString typeString;
     QString definitionString;
     switch ( sipCpp->propertyType() )
     {
@@ -554,11 +556,12 @@ class CORE_EXPORT QgsProperty
         break;
     }
 
-    QString str
-      = u"<QgsProperty: %1%2%3>"_s
-          .arg( !sipCpp->isActive() && sipCpp->propertyType() != Qgis::PropertyType::Invalid ? u"INACTIVE "_s : QString(), typeString, definitionString.isEmpty() ? QString() : u" (%1)"_s.arg( definitionString ) );
+    QString str = u"<QgsProperty: %1%2%3>"_s.arg( !sipCpp->isActive() && sipCpp->propertyType() != Qgis::PropertyType::Invalid ? u"INACTIVE "_s : QString(),
+                  typeString,
+                  definitionString.isEmpty() ? QString() : u" (%1)"_s.arg( definitionString ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off

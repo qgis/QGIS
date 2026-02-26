@@ -595,7 +595,8 @@ Returns the tab position.
         bool operator==( const QgsTextFormat::Tab &other ) const;
 
         SIP_PYOBJECT __repr__();
-%MethodCode const QString str = QStringLiteral( "<QgsTextFormat.Tab: %1>" ).arg( sipCpp->position() );
+%MethodCode
+        const QString str = QStringLiteral( "<QgsTextFormat.Tab: %1>" ).arg( sipCpp->position() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

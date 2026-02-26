@@ -36,7 +36,8 @@ Constructor
 
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str = QStringLiteral( "<QgsLayerTreeGroup: %1>" ).arg( sipCpp->name() );
+%MethodCode
+    QString str = QStringLiteral( "<QgsLayerTreeGroup: %1>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

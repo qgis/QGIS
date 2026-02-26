@@ -29,9 +29,11 @@ using namespace Qt::StringLiterals;
 class QgsAbstractGeometry;
 
 #ifdef SIP_RUN
+// clang-format off
 % ModuleHeaderCode
 #include <qgsgeos.h>
-  % End
+% End
+// clang-format on
 #endif
 
   /**

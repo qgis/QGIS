@@ -77,11 +77,14 @@ class CORE_EXPORT QgsLabelPosition
     QgsLabelPosition() = default;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode const QString text = sipCpp->labelText;
+    % MethodCode
+    const QString text = sipCpp->labelText;
     QString str = u"<QgsLabelPosition: \"%1\"%2>"_s.arg( text, sipCpp->isUnplaced ? u" (unplaced)"_s : QString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
         /**

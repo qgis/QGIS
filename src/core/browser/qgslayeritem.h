@@ -42,12 +42,13 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     QgsLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, Qgis::BrowserLayerType layerType, const QString &providerKey );
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-        QString str
-      = u"<QgsLayerItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
+    QString str = u"<QgsLayerItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
       // --- reimplemented from QgsDataItem ---

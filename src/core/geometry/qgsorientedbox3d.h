@@ -179,6 +179,7 @@ class CORE_EXPORT QgsOrientedBox3D
     bool intersects( const QgsOrientedBox3D &other ) const SIP_HOLDGIL;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = u"<QgsOrientedBox3D([%1, %2, %3], [%4, %5, %6, %7, %8, %9, %10, %11, %12])>"_s
@@ -196,6 +197,7 @@ class CORE_EXPORT QgsOrientedBox3D
                   .arg( sipCpp->halfAxes()[8] );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
   private:

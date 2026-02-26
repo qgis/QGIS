@@ -50,20 +50,23 @@ class CORE_EXPORT QgsRenderedLayerStatistics : public QgsRenderedItemDetails
 #ifndef SIP_RUN
     QgsRenderedLayerStatistics( const QString &layerId, double minimum = std::numeric_limits<double>::quiet_NaN(), double maximum = std::numeric_limits<double>::quiet_NaN() );
 #else
-    QgsRenderedLayerStatistics(
-      const QString &layerId, SIP_PYOBJECT minimum SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT maximum SIP_TYPEHINT( Optional[float] ) = Py_None
-    )[( const QString &layerId, double minimum = 0.0, double maximum = 0.0 )];
-    % MethodCode double minP = a1 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a1 );
+    // clang-format off
+    QgsRenderedLayerStatistics( const QString &layerId, SIP_PYOBJECT minimum SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT maximum SIP_TYPEHINT( Optional[float] ) = Py_None ) [( const QString & layerId, double minimum = 0.0, double maximum = 0.0 )];
+    % MethodCode
+    double minP = a1 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a1 );
     double maxP = a2 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a2 );
-    QList<double> minL = { minP };
-    QList<double> maxL = { maxP };
+    QList<double> minL = {minP};
+    QList<double> maxL = {maxP};
     sipCpp = new sipQgsRenderedLayerStatistics( *a0, minL, maxL );
     % End
+// clang-format on
 #endif
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QStringList minimums;
+    % MethodCode
+    QStringList minimums;
     minimums.reserve( sipCpp->minimum().size() );
     for ( double min : sipCpp->minimum() )
     {
@@ -78,6 +81,7 @@ class CORE_EXPORT QgsRenderedLayerStatistics : public QgsRenderedItemDetails
     QString str = u"<QgsRenderedLayerStatistics: %1 (min: %2 - max: %3)>"_s.arg( sipCpp->layerId(), minimums.join( ',' ), maximums.join( ',' ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
         /**

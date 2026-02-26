@@ -34,9 +34,6 @@ only of triangle patches.
 
   public:
     virtual bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const /HoldGIL/;
-    {
-      return fuzzyHelper( other, epsilon, false );
-    }
     virtual bool fuzzyDistanceEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const /HoldGIL/;
 
     virtual bool operator==( const QgsAbstractGeometry &other ) const;

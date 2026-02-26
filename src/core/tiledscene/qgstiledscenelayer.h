@@ -88,10 +88,13 @@ class CORE_EXPORT QgsTiledSceneLayer : public QgsMapLayer
     QgsTiledSceneLayer &operator=( QgsTiledSceneLayer const &other ) = delete;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsTiledSceneLayer: '%1' (%2)>"_s.arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : u"Invalid"_s );
+    % MethodCode
+    QString str = u"<QgsTiledSceneLayer: '%1' (%2)>"_s.arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : u"Invalid"_s );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
       QgsTiledSceneLayer *clone() const override SIP_FACTORY;

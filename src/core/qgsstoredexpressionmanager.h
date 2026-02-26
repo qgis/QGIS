@@ -26,9 +26,11 @@
 #include <QUuid>
 
 #ifdef SIP_RUN
+// clang-format off
 % ModuleHeaderCode
 #include <qgsstoredexpressionmanager.h>
-  % End
+% End
+// clang-format on
 #endif
 
   class QDomNode;

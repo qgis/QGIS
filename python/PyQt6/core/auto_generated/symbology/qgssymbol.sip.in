@@ -214,7 +214,7 @@ Abstract base class for all rendered symbols.
 #include "qgssymbol.h"
 %End
 %ConvertToSubClassCode
-    switch ( sipCpp->type() )
+switch ( sipCpp->type() )
     {
       case Qgis::SymbolType::Marker:
         sipType = sipType_QgsMarkerSymbol;
@@ -297,7 +297,8 @@ Returns the symbol layer at the specified index.
 
 .. seealso:: :py:func:`symbolLayerCount`
 %End
-%MethodCode const int count = sipCpp->symbolLayerCount();
+%MethodCode
+    const int count = sipCpp->symbolLayerCount();
     if ( a0 < 0 || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
@@ -325,15 +326,17 @@ Returns the total number of symbol layers contained in the symbol.
 %Docstring
 Returns the number of symbol layers contained in the symbol.
 %End
-%MethodCode sipRes = sipCpp->symbolLayerCount();
+%MethodCode
+    sipRes = sipCpp->symbolLayerCount();
 %End
 
-      //! Ensures that bool(obj) returns ``True`` (otherwise __len__() would be used)
-      int __bool__() const;
-%MethodCode sipRes = true;
+    //! Ensures that bool(obj) returns ``True`` (otherwise __len__() would be used)
+    int __bool__() const;
+%MethodCode
+    sipRes = true;
 %End
 
-        SIP_PYOBJECT
+    SIP_PYOBJECT __getitem__( int index ) /TypeHint="QgsSymbolLayer"/;
 %Docstring
 Returns the symbol layer at the specified ``index``.
 
@@ -345,8 +348,8 @@ in the symbol.
 
 .. versionadded:: 3.10
 %End
-      __getitem__( int index ) /TypeHint="QgsSymbolLayer"/;
-%MethodCode const int count = sipCpp->symbolLayerCount();
+%MethodCode
+    const int count = sipCpp->symbolLayerCount();
     if ( a0 < -count || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
@@ -362,7 +365,7 @@ in the symbol.
     }
 %End
 
-      void
+    void __delitem__( int index );
 %Docstring
 Deletes the layer at the specified ``index``.
 
@@ -374,8 +377,8 @@ in the symbol.
 
 .. versionadded:: 3.10
 %End
-      __delitem__( int index );
-%MethodCode const int count = sipCpp->symbolLayerCount();
+%MethodCode
+    const int count = sipCpp->symbolLayerCount();
     if ( a0 >= 0 && a0 < count )
       sipCpp->deleteSymbolLayer( a0 );
     else if ( a0 < 0 && a0 >= -count )
@@ -555,7 +558,7 @@ Returns a large (roughly 100x100 pixel) preview image for the symbol.
 .. seealso:: :py:func:`drawPreviewIcon`
 %End
 
- QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = 0, int flags = static_cast< int >( Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols ) );
+ QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = 0, int flags = static_cast< int >( Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols ) ) /Deprecated="Since 3.40. Use bigSymbolPreviewImageV2() instead."/;
 %Docstring
 .. deprecated:: 3.40
 

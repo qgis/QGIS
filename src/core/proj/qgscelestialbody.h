@@ -51,8 +51,10 @@ class CORE_EXPORT QgsCelestialBody
     QString authority() const { return mAuthority; }
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str;
+    % MethodCode
+    QString str;
     if ( !sipCpp->isValid() )
     {
       str = u"<QgsCelestialBody: invalid>"_s;
@@ -67,7 +69,8 @@ class CORE_EXPORT QgsCelestialBody
       str = u"<QgsCelestialBody: %1>"_s.arg( id );
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off

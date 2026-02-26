@@ -142,7 +142,8 @@ Sets the item's ``icon``.
         bool operator!=( const QgsProviderSublayerModel::NonLayerItem &other ) const;
 
         SIP_PYOBJECT __repr__();
-%MethodCode QString str = QStringLiteral( "<QgsProviderSublayerModel.NonLayerItem: %1 - %2>" ).arg( sipCpp->type(), sipCpp->name() );
+%MethodCode
+        QString str = QStringLiteral( "<QgsProviderSublayerModel.NonLayerItem: %1 - %2>" ).arg( sipCpp->type(), sipCpp->name() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

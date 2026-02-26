@@ -48,7 +48,8 @@ The ``options`` argument specifies load-time layer options.
     ~QgsGroupLayer();
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str = QStringLiteral( "<QgsGroupLayer: '%1'>" ).arg( sipCpp->name() );
+%MethodCode
+    QString str = QStringLiteral( "<QgsGroupLayer: '%1'>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

@@ -45,7 +45,7 @@ against the native QGIS metadata schema can be performed using
 #include "qgsabstractmetadatabase.h"
 %End
 %ConvertToSubClassCode
-    if ( dynamic_cast< QgsLayerMetadata * >( sipCpp ) != NULL )
+if ( dynamic_cast< QgsLayerMetadata * >( sipCpp ) != NULL )
       sipType = sipType_QgsLayerMetadata;
     else if ( dynamic_cast< QgsProjectMetadata * >( sipCpp ) != NULL )
       sipType = sipType_QgsProjectMetadata;

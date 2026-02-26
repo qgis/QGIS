@@ -20,7 +20,6 @@ struct QgsVertexId
 %Docstring
 Constructor for QgsVertexId.
 %End
-: part( _part );
 
   bool isValid() const  /HoldGIL/;
 %Docstring

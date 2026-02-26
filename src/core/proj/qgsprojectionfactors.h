@@ -75,8 +75,10 @@ class CORE_EXPORT QgsProjectionFactors
     double dyDphi() const { return mDyDphi; }
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str;
+    % MethodCode
+    QString str;
     if ( !sipCpp->isValid() )
     {
       str = u"<QgsProjectionFactors: invalid>"_s;
@@ -86,7 +88,8 @@ class CORE_EXPORT QgsProjectionFactors
       str = u"<QgsProjectionFactors>"_s;
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off

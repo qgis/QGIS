@@ -29,9 +29,11 @@ class QgsPointCloudAttribute;
 class QgsPointCloudNodeId;
 
 #ifdef SIP_RUN
+// clang-format off
 % ModuleHeaderCode
 #include "qgspointcloudstatistics.h"
-  % End
+% End
+// clang-format on
 #endif
 
   /**

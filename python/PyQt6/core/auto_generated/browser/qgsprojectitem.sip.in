@@ -32,8 +32,7 @@ A data item holding a reference to a QGIS project file.
 
     SIP_PYOBJECT __repr__();
 %MethodCode
-        QString str
-      = QStringLiteral( "<QgsProjectItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+    QString str = QStringLiteral( "<QgsProjectItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

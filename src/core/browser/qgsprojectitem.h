@@ -43,12 +43,13 @@ class CORE_EXPORT QgsProjectItem : public QgsDataItem
     QgsProjectItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &providerKey = QString() );
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-        QString str
-      = u"<QgsProjectItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
+    QString str = u"<QgsProjectItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
       bool hasDragEnabled() const override

@@ -44,6 +44,7 @@ class CORE_EXPORT QgsMultiCurve : public QgsGeometryCollection
      */
     QgsCurve *curveN( int index );
 #else
+    // clang-format off
 
     /**
      * Returns the curve with the specified \a index.
@@ -53,7 +54,8 @@ class CORE_EXPORT QgsMultiCurve : public QgsGeometryCollection
      * \since QGIS 3.16
      */
     SIP_PYOBJECT curveN( int index ) SIP_TYPEHINT( QgsCurve );
-    % MethodCode if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -63,6 +65,7 @@ class CORE_EXPORT QgsMultiCurve : public QgsGeometryCollection
       return sipConvertFromType( sipCpp->curveN( a0 ), sipType_QgsCurve, NULL );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -145,6 +148,7 @@ class CORE_EXPORT QgsMultiCurve : public QgsGeometryCollection
     QgsMultiCurve *createEmptyWithSameType() const override SIP_FACTORY;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString wkt = sipCpp->asWkt();
@@ -153,6 +157,7 @@ class CORE_EXPORT QgsMultiCurve : public QgsGeometryCollection
     QString str = u"<QgsMultiCurve: %1>"_s.arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
 };

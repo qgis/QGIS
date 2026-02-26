@@ -125,12 +125,15 @@ class CORE_EXPORT QgsSelectiveMaskingSourceSet
      */
     QgsSelectiveMaskSource &operator[]( int index ) SIP_FACTORY;
 #ifdef SIP_RUN
-    % MethodCode SIP_SSIZE_T idx = sipConvertFromSequenceIndex( a0, sipCpp->size() );
+    // clang-format off
+    % MethodCode
+    SIP_SSIZE_T idx = sipConvertFromSequenceIndex( a0, sipCpp->size() );
     if ( idx < 0 )
       sipIsErr = 1;
     else
       sipRes = new QgsSelectiveMaskSource( sipCpp->operator[]( idx ) );
     % End
+// clang-format on
 #endif
 
       /**
@@ -144,25 +147,37 @@ class CORE_EXPORT QgsSelectiveMaskingSourceSet
     bool isEmpty() const;
 
 #ifdef SIP_RUN
+    // clang-format off
     int __len__() const;
-    % MethodCode sipRes = sipCpp->size();
+    % MethodCode
+    sipRes = sipCpp->size();
     % End
+// clang-format on
 #endif
 
 #ifdef SIP_RUN
-        SIP_PYOBJECT __repr__();
-    % MethodCode if ( !sipCpp->isValid() ) { sipRes = PyUnicode_FromString( "<QgsSelectiveMaskingSourceSet: invalid>" ); }
+        // clang-format off
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    if ( !sipCpp->isValid() )
+    {
+      sipRes = PyUnicode_FromString( "<QgsSelectiveMaskingSourceSet: invalid>" );
+    }
     else if ( !sipCpp->name().isEmpty() )
     {
-      const QString str = u"<QgsSelectiveMaskingSourceSet: %1 (%2)>"_s.arg( sipCpp->id(), sipCpp->name() );
+      const QString str = u"<QgsSelectiveMaskingSourceSet: %1 (%2)>"_s.arg(
+                            sipCpp->id(),
+                            sipCpp->name() );
       sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     }
     else
     {
-      const QString str = u"<QgsSelectiveMaskingSourceSet: %1>"_s.arg( sipCpp->id() );
+      const QString str = u"<QgsSelectiveMaskingSourceSet: %1>"_s.arg(
+                            sipCpp->id() );
       sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     }
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off

@@ -22,10 +22,12 @@
 #include "qgsrectangle.h"
 
 #ifdef SIP_RUN
+// clang-format off
 // this is needed for the "convert to subclass" code below to compile
 % ModuleHeaderCode
 #include "qgsrenderedannotationitemdetails.h"
-  % End
+% End
+// clang-format on
 #endif
 
   /**

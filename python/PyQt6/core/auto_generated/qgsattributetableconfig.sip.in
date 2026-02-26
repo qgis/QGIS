@@ -71,7 +71,8 @@ Returns the number of columns in the configuration.
 %End
 
     Py_ssize_t __len__() const;
-%MethodCode sipRes = sipCpp->size();
+%MethodCode
+    sipRes = sipCpp->size();
 %End
 
       int mapVisibleColumnToIndex( int visibleColumn ) const;
@@ -163,7 +164,7 @@ Returns the width of a column, or -1 if column should use default width.
 %End
 
 
-      void setColumnWidth( int column, int width );
+    void setColumnWidth( int column, int width );
 %Docstring
 Sets the width of a column.
 
@@ -175,7 +176,8 @@ Sets the width of a column.
 
 .. seealso:: :py:func:`columnWidth`
 %End
-%MethodCode if ( a0 < 0 || a0 >= sipCpp->size() )
+%MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->size() )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -187,7 +189,7 @@ Sets the width of a column.
 %End
 
 
-      bool columnHidden( int column ) const;
+    bool columnHidden( int column ) const;
 %Docstring
 Returns ``True`` if the specified column is hidden.
 
@@ -212,7 +214,7 @@ Returns ``True`` if the specified column is hidden.
 %End
 
 
-      void setColumnHidden( int column, bool hidden );
+    void setColumnHidden( int column, bool hidden );
 %Docstring
 Sets whether the specified column should be hidden.
 
@@ -223,7 +225,8 @@ Sets whether the specified column should be hidden.
 
 .. seealso:: :py:func:`columnHidden`
 %End
-%MethodCode if ( a0 < 0 || a0 >= sipCpp->size() )
+%MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->size() )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;

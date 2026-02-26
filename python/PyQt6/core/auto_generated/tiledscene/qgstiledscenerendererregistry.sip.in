@@ -94,16 +94,6 @@ scene renderer and its widget.
 #include "qgstiledscenerendererregistry.h"
 %End
   public:
-    QgsTiledSceneRendererMetadata( const QString &name, const QString &visibleName, QgsTiledSceneRendererCreateFunc pfCreate, const QIcon &icon = QIcon(), QgsTiledSceneRendererWidgetFunc pfWidget = 0 );
-%Docstring
-Construct metadata
-
-.. note::
-
-   not available in Python bindings
-%End
-                 mCreateFunc( pfCreate ),
-                 mWidgetFunc( pfWidget );
 
     virtual QgsTiledSceneRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) /Factory/;
 

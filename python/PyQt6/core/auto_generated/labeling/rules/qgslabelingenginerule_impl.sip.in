@@ -189,7 +189,8 @@ features from a different layer.
     virtual QString description() const;
 
     SIP_PYOBJECT __repr__();
-%MethodCode const QString str = QStringLiteral( "<QgsLabelingEngineRuleMinimumDistanceLabelToFeature: %1>" ).arg( sipCpp->name() );
+%MethodCode
+    const QString str = QStringLiteral( "<QgsLabelingEngineRuleMinimumDistanceLabelToFeature: %1>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
@@ -223,7 +224,8 @@ features from a different layer.
 
 
     SIP_PYOBJECT __repr__();
-%MethodCode const QString str = QStringLiteral( "<QgsLabelingEngineRuleMaximumDistanceLabelToFeature: %1>" ).arg( sipCpp->name() );
+%MethodCode
+    const QString str = QStringLiteral( "<QgsLabelingEngineRuleMaximumDistanceLabelToFeature: %1>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
@@ -267,7 +269,8 @@ labels from a different layer.
 
 
     SIP_PYOBJECT __repr__();
-%MethodCode const QString str = QStringLiteral( "<QgsLabelingEngineRuleMinimumDistanceLabelToLabel: %1>" ).arg( sipCpp->name() );
+%MethodCode
+    const QString str = QStringLiteral( "<QgsLabelingEngineRuleMinimumDistanceLabelToLabel: %1>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
@@ -411,7 +414,8 @@ features from a different layer.
 
 
     SIP_PYOBJECT __repr__();
-%MethodCode const QString str = QStringLiteral( "<QgsLabelingEngineRuleAvoidLabelOverlapWithFeature: %1>" ).arg( sipCpp->name() );
+%MethodCode
+    const QString str = QStringLiteral( "<QgsLabelingEngineRuleAvoidLabelOverlapWithFeature: %1>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

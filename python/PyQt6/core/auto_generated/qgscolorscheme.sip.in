@@ -26,7 +26,7 @@ colors returned can be generated using an optional base color.
 #include "qgscolorscheme.h"
 %End
 %ConvertToSubClassCode
-    if ( dynamic_cast<QgsUserColorScheme *>( sipCpp ) != NULL )
+if ( dynamic_cast<QgsUserColorScheme *>( sipCpp ) != NULL )
       sipType = sipType_QgsUserColorScheme;
     else if ( dynamic_cast<QgsRecentColorScheme *>( sipCpp ) != NULL )
       sipType = sipType_QgsRecentColorScheme;

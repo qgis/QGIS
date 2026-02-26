@@ -140,20 +140,17 @@ class CORE_EXPORT QgsRasterTransparency
         bool operator!=( const QgsRasterTransparency::TransparentThreeValuePixel &other ) const { return !( *this == other ); }
 
 #ifdef SIP_RUN
-        SIP_PYOBJECT __repr__();
-        % MethodCode QString str;
-        if ( !qgsDoubleNear( sipCpp->fuzzyToleranceRed, 0 ) || !qgsDoubleNear( sipCpp->fuzzyToleranceGreen, 0 ) || !qgsDoubleNear( sipCpp->fuzzyToleranceBlue, 0 ) )
-          str = u"<QgsRasterTransparency.TransparentThreeValuePixel: %1, %2, %3, %4, %5, %6, %7>"_s.arg( sipCpp->red )
-                  .arg( sipCpp->green )
-                  .arg( sipCpp->blue )
-                  .arg( sipCpp->opacity )
-                  .arg( sipCpp->fuzzyToleranceRed )
-                  .arg( sipCpp->fuzzyToleranceGreen )
-                  .arg( sipCpp->fuzzyToleranceBlue );
-        else
-          str = u"<QgsRasterTransparency.TransparentThreeValuePixel: %1, %2, %3, %4>"_s.arg( sipCpp->red ).arg( sipCpp->green ).arg( sipCpp->blue ).arg( sipCpp->opacity );
-        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-        % End
+        // clang-format off
+      SIP_PYOBJECT __repr__();
+      % MethodCode
+      QString str;
+      if ( !qgsDoubleNear( sipCpp->fuzzyToleranceRed, 0 ) || !qgsDoubleNear( sipCpp->fuzzyToleranceGreen, 0 ) || !qgsDoubleNear( sipCpp->fuzzyToleranceBlue, 0 ) )
+        str = u"<QgsRasterTransparency.TransparentThreeValuePixel: %1, %2, %3, %4, %5, %6, %7>"_s.arg( sipCpp->red ).arg( sipCpp->green ).arg( sipCpp->blue ).arg( sipCpp->opacity ).arg( sipCpp->fuzzyToleranceRed ).arg( sipCpp->fuzzyToleranceGreen ).arg( sipCpp->fuzzyToleranceBlue );
+      else
+        str = u"<QgsRasterTransparency.TransparentThreeValuePixel: %1, %2, %3, %4>"_s.arg( sipCpp->red ).arg( sipCpp->green ).arg( sipCpp->blue ).arg( sipCpp->opacity );
+      sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+      % End
+// clang-format on
 #endif
     };
 
@@ -222,10 +219,13 @@ class CORE_EXPORT QgsRasterTransparency
         bool operator!=( const QgsRasterTransparency::TransparentSingleValuePixel &other ) const { return !( *this == other ); }
 
 #ifdef SIP_RUN
-        SIP_PYOBJECT __repr__();
-        % MethodCode const QString str = u"<QgsRasterTransparency.TransparentSingleValuePixel: %1, %2, %3>"_s.arg( sipCpp->min ).arg( sipCpp->max ).arg( sipCpp->opacity );
-        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-        % End
+        // clang-format off
+      SIP_PYOBJECT __repr__();
+      % MethodCode
+      const QString str = u"<QgsRasterTransparency.TransparentSingleValuePixel: %1, %2, %3>"_s.arg( sipCpp->min ).arg( sipCpp->max ).arg( sipCpp->opacity );
+      sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+      % End
+// clang-format on
 #endif
     };
 

@@ -322,6 +322,7 @@ class CORE_EXPORT QgsSymbol
      */
     const QgsSymbolLayer *symbolLayer( int layer ) const;
 #else
+    // clang-format off
 
     /**
      * Returns the symbol layer at the specified index.
@@ -332,7 +333,8 @@ class CORE_EXPORT QgsSymbol
      * \see symbolLayerCount
      */
     SIP_PYOBJECT symbolLayer( int layer ) SIP_TYPEHINT( QgsSymbolLayer );
-    % MethodCode const int count = sipCpp->symbolLayerCount();
+    % MethodCode
+    const int count = sipCpp->symbolLayerCount();
     if ( a0 < 0 || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
@@ -343,6 +345,7 @@ class CORE_EXPORT QgsSymbol
       sipRes = sipConvertFromType( sipCpp->symbolLayer( a0 ), sipType_QgsSymbolLayer, NULL );
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -354,20 +357,23 @@ class CORE_EXPORT QgsSymbol
     int symbolLayerCount() const { return mLayers.count(); }
 
 #ifdef SIP_RUN
+    // clang-format off
 
     /**
      * Returns the number of symbol layers contained in the symbol.
      */
     int __len__() const;
-    % MethodCode sipRes = sipCpp->symbolLayerCount();
+    % MethodCode
+    sipRes = sipCpp->symbolLayerCount();
     % End
 
-      //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
-      int __bool__() const;
-    % MethodCode sipRes = true;
+    //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
+    int __bool__() const;
+    % MethodCode
+    sipRes = true;
     % End
 
-        /**
+    /**
     * Returns the symbol layer at the specified ``index``.
     *
     * Indexes can be less than 0, in which case they correspond to layers from the end of the symbol. E.g. an index of -1
@@ -377,9 +383,9 @@ class CORE_EXPORT QgsSymbol
     *
     * \since QGIS 3.10
     */
-        SIP_PYOBJECT
-      __getitem__( int index ) SIP_TYPEHINT( QgsSymbolLayer );
-    % MethodCode const int count = sipCpp->symbolLayerCount();
+    SIP_PYOBJECT __getitem__( int index ) SIP_TYPEHINT( QgsSymbolLayer );
+    % MethodCode
+    const int count = sipCpp->symbolLayerCount();
     if ( a0 < -count || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
@@ -395,7 +401,7 @@ class CORE_EXPORT QgsSymbol
     }
     % End
 
-      /**
+    /**
      * Deletes the layer at the specified ``index``.
      *
      * Indexes can be less than 0, in which case they correspond to layers from the end of the symbol. E.g. an index of -1
@@ -405,9 +411,9 @@ class CORE_EXPORT QgsSymbol
      *
      * \since QGIS 3.10
      */
-      void
-      __delitem__( int index );
-    % MethodCode const int count = sipCpp->symbolLayerCount();
+    void __delitem__( int index );
+    % MethodCode
+    const int count = sipCpp->symbolLayerCount();
     if ( a0 >= 0 && a0 < count )
       sipCpp->deleteSymbolLayer( a0 );
     else if ( a0 < 0 && a0 >= -count )
@@ -418,6 +424,7 @@ class CORE_EXPORT QgsSymbol
       sipIsErr = 1;
     }
     % End
+// clang-format on
 #endif
 
       /**

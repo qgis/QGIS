@@ -366,10 +366,13 @@ and can mutate the request if necessary.
 
 .. versionadded:: 3.22
 %End
-%MethodCode PyObject *s = 0;
+%MethodCode
+    PyObject *s = 0;
     QString id;
     Py_XINCREF( a0 );
-    Py_BEGIN_ALLOW_THREADS id = QgsNetworkAccessManager::setRequestPreprocessor( [a0]( QNetworkRequest *arg ) -> QString {
+    Py_BEGIN_ALLOW_THREADS
+    id = QgsNetworkAccessManager::setRequestPreprocessor( [a0]( QNetworkRequest *arg )->QString
+    {
       QString res;
       SIP_BLOCK_THREADS
       PyObject *s = sipCallMethod( NULL, a0, "D", arg, sipType_QNetworkRequest, NULL );
@@ -386,12 +389,11 @@ and can mutate the request if necessary.
     } );
     Py_END_ALLOW_THREADS
 
-      s
-      = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
+    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
     return s;
 %End
 
-      static void removeRequestPreprocessor( const QString &id );
+    static void removeRequestPreprocessor( const QString &id );
 %Docstring
 Removes the custom request pre-processor function with matching ``id``.
 
@@ -404,14 +406,15 @@ Returns ``True`` if processor existed and was removed.
 
 .. versionadded:: 3.22
 %End
-%MethodCode if ( !QgsNetworkAccessManager::removeRequestPreprocessor( *a0 ) )
+%MethodCode
+    if ( !QgsNetworkAccessManager::removeRequestPreprocessor( *a0 ) )
     {
       PyErr_SetString( PyExc_KeyError, QStringLiteral( "No processor with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;
     }
 %End
 
-      static QString setAdvancedRequestPreprocessor( SIP_PYCALLABLE / AllowNone / );
+    static QString setAdvancedRequestPreprocessor( SIP_PYCALLABLE / AllowNone / );
 %Docstring
 Sets an advanced request pre-processor function, which allows
 manipulation of a network request before it is processed.
@@ -433,10 +436,13 @@ data as a tuple, transforming as desired.
 
 .. versionadded:: 3.44
 %End
-%MethodCode PyObject *s = 0;
+%MethodCode
+    PyObject *s = 0;
     QString id;
     Py_XINCREF( a0 );
-    Py_BEGIN_ALLOW_THREADS id = QgsNetworkAccessManager::setAdvancedRequestPreprocessor( [a0]( QNetworkRequest *reqArg, int &op, QByteArray *data ) {
+    Py_BEGIN_ALLOW_THREADS
+    id = QgsNetworkAccessManager::setAdvancedRequestPreprocessor( [a0]( QNetworkRequest *reqArg, int &op, QByteArray *data )
+    {
       SIP_BLOCK_THREADS
 
       PyObject *requestObj = sipConvertFromType( reqArg, sipType_QNetworkRequest, NULL );
@@ -475,12 +481,11 @@ data as a tuple, transforming as desired.
     } );
     Py_END_ALLOW_THREADS
 
-      s
-      = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
+    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
     return s;
 %End
 
-      static void removeAdvancedRequestPreprocessor( const QString &id );
+    static void removeAdvancedRequestPreprocessor( const QString &id );
 %Docstring
 Removes an advanced request pre-processor function with matching ``id``.
 
@@ -494,7 +499,8 @@ Returns ``True`` if processor existed and was removed.
 
 .. versionadded:: 3.44
 %End
-%MethodCode if ( !QgsNetworkAccessManager::removeAdvancedRequestPreprocessor( *a0 ) )
+%MethodCode
+    if ( !QgsNetworkAccessManager::removeAdvancedRequestPreprocessor( *a0 ) )
     {
       PyErr_SetString( PyExc_KeyError, QStringLiteral( "No processor with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;
@@ -502,7 +508,7 @@ Returns ``True`` if processor existed and was removed.
 %End
 
 
-      static QString setReplyPreprocessor( SIP_PYCALLABLE / AllowNone / );
+    static QString setReplyPreprocessor( SIP_PYCALLABLE / AllowNone / );
 %Docstring
 Sets a reply pre-processor function, which allows manipulation of
 QNetworkReply objects after they are created (but before they are
@@ -521,20 +527,23 @@ directly as desired.
 
 .. versionadded:: 3.26
 %End
-%MethodCode PyObject *s = 0;
+%MethodCode
+    PyObject *s = 0;
     QString id;
     Py_XINCREF( a0 );
-    Py_BEGIN_ALLOW_THREADS id = QgsNetworkAccessManager::setReplyPreprocessor( [a0]( const QNetworkRequest &request, QNetworkReply *reply ) {
-      SIP_BLOCK_THREADS
-      Py_XDECREF( sipCallMethod( NULL, a0, "ND", new QNetworkRequest( request ), sipType_QNetworkRequest, NULL, reply, sipType_QNetworkReply, NULL ) );
+    Py_BEGIN_ALLOW_THREADS
+    id = QgsNetworkAccessManager::setReplyPreprocessor( [a0]( const QNetworkRequest &request, QNetworkReply *reply )
+    {
+      SIP_BLOCK_THREADS Py_XDECREF( sipCallMethod( NULL, a0, "ND", new QNetworkRequest( request ), sipType_QNetworkRequest, NULL, reply, sipType_QNetworkReply, NULL ) );
       SIP_UNBLOCK_THREADS
     } );
 
-    Py_END_ALLOW_THREADS s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
+    Py_END_ALLOW_THREADS
+    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
     return s;
 %End
 
-      static void removeReplyPreprocessor( const QString &id );
+    static void removeReplyPreprocessor( const QString &id );
 %Docstring
 Removes the custom reply pre-processor function with matching ``id``.
 
@@ -547,7 +556,8 @@ Returns ``True`` if processor existed and was removed.
 
 .. versionadded:: 3.26
 %End
-%MethodCode if ( !QgsNetworkAccessManager::removeReplyPreprocessor( *a0 ) )
+%MethodCode
+    if ( !QgsNetworkAccessManager::removeReplyPreprocessor( *a0 ) )
     {
       PyErr_SetString( PyExc_KeyError, QStringLiteral( "No processor with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;

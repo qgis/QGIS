@@ -495,8 +495,7 @@ Converts field values from an iterator to an array of data.
 %End
 %MethodCode
 
-      const int fieldIndex
-      = a0->lookupField( *a1 );
+    const int fieldIndex = a0->lookupField( *a1 );
     if ( fieldIndex == -1 )
     {
       PyErr_SetString( PyExc_KeyError, QStringLiteral( "Field %1 does not exist." ).arg( *a1 ).toUtf8().constData() );
@@ -518,8 +517,10 @@ Converts field values from an iterator to an array of data.
         case QMetaType::Type::Short:
         case QMetaType::Type::UShort:
         {
-          Py_BEGIN_ALLOW_THREADS sipRes = new QByteArray( QgsVectorLayerUtils::fieldToDataArray( *a0, *a1, *a2, *a3 ) );
-          Py_END_ALLOW_THREADS break;
+          Py_BEGIN_ALLOW_THREADS
+          sipRes = new QByteArray( QgsVectorLayerUtils::fieldToDataArray( *a0, *a1, *a2, *a3 ) );
+          Py_END_ALLOW_THREADS
+          break;
         }
 
         default:

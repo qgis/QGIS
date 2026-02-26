@@ -22,7 +22,7 @@ Abstract base class for spatial data provider implementations.
 #include "qgsdataprovider.h"
 %End
 %ConvertToSubClassCode
-    if ( qobject_cast<QgsVectorDataProvider *>( sipCpp ) )
+if ( qobject_cast<QgsVectorDataProvider *>( sipCpp ) )
     {
       sipType = sipType_QgsVectorDataProvider;
     }

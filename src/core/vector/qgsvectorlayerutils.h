@@ -527,6 +527,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      */
     static QByteArray fieldToDataArray( const QgsFields &fields, const QString &fieldName, QgsFeatureIterator &it, const QVariant &nullValue );
 #else
+    // clang-format off
 
     /**
      * Converts field values from an iterator to an array of data.
@@ -546,8 +547,7 @@ class CORE_EXPORT QgsVectorLayerUtils
     static QByteArray fieldToDataArray( const QgsFields &fields, const QString &fieldName, QgsFeatureIterator &it, const QVariant &nullValue );
     % MethodCode
 
-      const int fieldIndex
-      = a0->lookupField( *a1 );
+    const int fieldIndex = a0->lookupField( *a1 );
     if ( fieldIndex == -1 )
     {
       PyErr_SetString( PyExc_KeyError, u"Field %1 does not exist."_s.arg( *a1 ).toUtf8().constData() );
@@ -569,8 +569,10 @@ class CORE_EXPORT QgsVectorLayerUtils
         case QMetaType::Type::Short:
         case QMetaType::Type::UShort:
         {
-          Py_BEGIN_ALLOW_THREADS sipRes = new QByteArray( QgsVectorLayerUtils::fieldToDataArray( *a0, *a1, *a2, *a3 ) );
-          Py_END_ALLOW_THREADS break;
+          Py_BEGIN_ALLOW_THREADS
+          sipRes = new QByteArray( QgsVectorLayerUtils::fieldToDataArray( *a0, *a1, *a2, *a3 ) );
+          Py_END_ALLOW_THREADS
+          break;
         }
 
         default:
@@ -582,6 +584,7 @@ class CORE_EXPORT QgsVectorLayerUtils
     }
     % End
 
+// clang-format on
 #endif
 };
 

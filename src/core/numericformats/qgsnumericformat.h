@@ -203,6 +203,7 @@ class CORE_EXPORT QgsNumericFormatContext
 };
 
 #ifdef SIP_RUN
+// clang-format off
 % ModuleHeaderCode
 #include <qgsbasicnumericformat.h>
 #include <qgsbearingnumericformat.h>
@@ -212,7 +213,8 @@ class CORE_EXPORT QgsNumericFormatContext
 #include <qgsscientificnumericformat.h>
 #include <qgscoordinatenumericformat.h>
 #include <qgsexpressionbasednumericformat.h>
-  % End
+% End
+// clang-format on
 #endif
 
   /**

@@ -118,6 +118,7 @@ class CORE_EXPORT QgsCurve : public QgsAbstractGeometry SIP_ABSTRACT
     virtual int numPoints() const = 0;
 
 #ifdef SIP_RUN
+// clang-format off
     int __len__() const;
     % Docstring
     Returns the number of points in the curve.
@@ -131,6 +132,7 @@ class CORE_EXPORT QgsCurve : public QgsAbstractGeometry SIP_ABSTRACT
     % MethodCode
     sipRes = true;
     % End
+// clang-format on
 #endif
 
     /**

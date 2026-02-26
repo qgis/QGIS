@@ -479,19 +479,23 @@ class CORE_EXPORT QgsFeatureRequest
 #ifndef SIP_RUN
     QgsFeatureRequest &setInvalidGeometryCallback( const std::function< void( const QgsFeature & )> &callback );
 #else
+    // clang-format off
     QgsFeatureRequest &setInvalidGeometryCallback( SIP_PYCALLABLE / AllowNone / );
-    % MethodCode Py_BEGIN_ALLOW_THREADS
+    % MethodCode
+    Py_BEGIN_ALLOW_THREADS
 
-        sipCpp->setInvalidGeometryCallback( [a0]( const QgsFeature &arg ) {
-          SIP_BLOCK_THREADS
-          Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
-          SIP_UNBLOCK_THREADS
-        } );
+    sipCpp->setInvalidGeometryCallback( [a0]( const QgsFeature &arg )
+    {
+      SIP_BLOCK_THREADS
+      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
+      SIP_UNBLOCK_THREADS
+    } );
 
     sipRes = sipCpp;
 
     Py_END_ALLOW_THREADS
-      % End
+    % End
+// clang-format on
 #endif
 
     /**
@@ -834,19 +838,23 @@ class CORE_EXPORT QgsFeatureRequest
 #ifndef SIP_RUN
     QgsFeatureRequest &setTransformErrorCallback( const std::function< void( const QgsFeature & )> &callback );
 #else
+    // clang-format off
     QgsFeatureRequest &setTransformErrorCallback( SIP_PYCALLABLE / AllowNone / );
-    % MethodCode Py_BEGIN_ALLOW_THREADS
+    % MethodCode
+    Py_BEGIN_ALLOW_THREADS
 
-        sipCpp->setTransformErrorCallback( [a0]( const QgsFeature &arg ) {
-          SIP_BLOCK_THREADS
-          Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
-          SIP_UNBLOCK_THREADS
-        } );
+    sipCpp->setTransformErrorCallback( [a0]( const QgsFeature &arg )
+    {
+      SIP_BLOCK_THREADS
+      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
+      SIP_UNBLOCK_THREADS
+    } );
 
     sipRes = sipCpp;
 
     Py_END_ALLOW_THREADS
-      % End
+    % End
+// clang-format on
 #endif
 
     /**

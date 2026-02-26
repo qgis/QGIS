@@ -158,10 +158,13 @@ class CORE_EXPORT QgsProviderSublayerModel : public QAbstractItemModel
         bool operator!=( const QgsProviderSublayerModel::NonLayerItem &other ) const;
 
 #ifdef SIP_RUN
+        // clang-format off
         SIP_PYOBJECT __repr__();
-        % MethodCode QString str = u"<QgsProviderSublayerModel.NonLayerItem: %1 - %2>"_s.arg( sipCpp->type(), sipCpp->name() );
+        % MethodCode
+        QString str = u"<QgsProviderSublayerModel.NonLayerItem: %1 - %2>"_s.arg( sipCpp->type(), sipCpp->name() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-      % End
+        % End
+// clang-format on
 #endif
 
         // clang-format off

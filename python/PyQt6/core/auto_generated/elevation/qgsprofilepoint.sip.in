@@ -31,7 +31,6 @@ Constructor for an empty point.
 %Docstring
 Create a point at the specified distance and elevation coordinates
 %End
-      : mDistance( distance );
 
     void setDistance( double distance ) /HoldGIL/;
 %Docstring

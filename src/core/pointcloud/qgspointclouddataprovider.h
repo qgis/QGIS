@@ -85,6 +85,7 @@ class CORE_EXPORT QgsPointCloudDataProvider : public QgsDataProvider
      */
     QVector<QVariantMap> identify( double maxError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange = QgsDoubleRange(), int pointsLimit = 1000 );
 #else
+    // clang-format off
 
     /**
      * Returns the list of points of the point cloud according to a zoom level
@@ -113,6 +114,7 @@ class CORE_EXPORT QgsPointCloudDataProvider : public QgsDataProvider
       }
     }
     % End
+// clang-format on
 #endif
 
     /**

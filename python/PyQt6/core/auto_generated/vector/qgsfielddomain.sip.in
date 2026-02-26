@@ -25,7 +25,7 @@ fields.
 #include "qgsfielddomain.h"
 %End
 %ConvertToSubClassCode
-    if ( sipCpp->type() == Qgis::FieldDomainType::Coded )
+if ( sipCpp->type() == Qgis::FieldDomainType::Coded )
     {
       sipType = sipType_QgsCodedFieldDomain;
     }
@@ -196,7 +196,8 @@ representation.
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str = QStringLiteral( "<QgsCodedValue: %1 (%2)>" ).arg( sipCpp->code().toString(), sipCpp->value() );
+%MethodCode
+    QString str = QStringLiteral( "<QgsCodedValue: %1 (%2)>" ).arg( sipCpp->code().toString(), sipCpp->value() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
@@ -269,7 +270,8 @@ Sets the enumeration as :py:class:`QgsCodedValue` ``values``.
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str = QStringLiteral( "<QgsCodedFieldDomain: %1>" ).arg( sipCpp->name() );
+%MethodCode
+    QString str = QStringLiteral( "<QgsCodedFieldDomain: %1>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
@@ -405,9 +407,12 @@ Sets whether the maximum value is ``inclusive``.
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str
-      = QStringLiteral( "<QgsRangeFieldDomain: %1 %2%3, %4%5>" )
-          .arg( sipCpp->name(), sipCpp->minimumIsInclusive() ? QStringLiteral( "[" ) : QStringLiteral( "(" ), sipCpp->minimum().toString(), sipCpp->maximum().toString(), sipCpp->maximumIsInclusive() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) );
+%MethodCode
+    QString str = QStringLiteral( "<QgsRangeFieldDomain: %1 %2%3, %4%5>" ).arg( sipCpp->name(),
+                  sipCpp->minimumIsInclusive() ? QStringLiteral( "[" ) : QStringLiteral( "(" ),
+                  sipCpp->minimum().toString(),
+                  sipCpp->maximum().toString(),
+                  sipCpp->maximumIsInclusive() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
@@ -480,7 +485,8 @@ Globs are matching expression like ``*[a-z][0-1]?``
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str = QStringLiteral( "<QgsGlobFieldDomain: %1 '%2'>" ).arg( sipCpp->name(), sipCpp->glob() );
+%MethodCode
+    QString str = QStringLiteral( "<QgsGlobFieldDomain: %1 '%2'>" ).arg( sipCpp->name(), sipCpp->glob() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

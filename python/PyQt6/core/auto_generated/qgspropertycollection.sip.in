@@ -22,7 +22,7 @@ Abstract base class for :py:class:`QgsPropertyCollection` like objects.
 #include "qgspropertycollection.h"
 %End
 %ConvertToSubClassCode
-    if ( dynamic_cast<QgsPropertyCollection *>( sipCpp ) )
+if ( dynamic_cast<QgsPropertyCollection *>( sipCpp ) )
       sipType = sipType_QgsPropertyCollection;
     else if ( dynamic_cast<QgsPropertyCollectionStack *>( sipCpp ) )
       sipType = sipType_QgsPropertyCollectionStack;

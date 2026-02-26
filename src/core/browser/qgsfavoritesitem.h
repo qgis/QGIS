@@ -42,12 +42,13 @@ class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
     QgsFavoritesItem( QgsDataItem *parent, const QString &name, const QString &path = QString() );
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-        QString str
-      = u"<QgsFavoritesItem: \"%1\">"_s.arg( sipCpp->name() );
+    QString str = u"<QgsFavoritesItem: \"%1\">"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
         QVector<QgsDataItem *> createChildren() override;

@@ -30,6 +30,7 @@ class QgsRendererRange;
 
 
 #ifdef SIP_RUN
+// clang-format off
 // This is required for the ConvertToSubClassCode to work properly
 // so RTTI for casting is available in the whole module.
 % ModuleCode
@@ -39,7 +40,8 @@ class QgsRendererRange;
 #include "qgsclassificationquantile.h"
 #include "qgsclassificationstandarddeviation.h"
 #include "qgsclassificationfixedinterval.h"
-  % End
+% End
+// clang-format on
 #endif
 
 
@@ -107,7 +109,7 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
       sipType = sipType_QgsClassificationFixedInterval;
     else
       sipType = 0;
-    SIP_END
+  SIP_END
 #endif
 
   public:

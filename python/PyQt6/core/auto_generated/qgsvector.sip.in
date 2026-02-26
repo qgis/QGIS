@@ -36,9 +36,6 @@ Constructor for QgsVector taking x and y component values.
 %End
 
     QgsVector operator-() const /HoldGIL/;
-    {
-      return QgsVector( -mX, -mY );
-    }
 
     QgsVector operator*( double scalar ) const /HoldGIL/;
 

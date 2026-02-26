@@ -906,13 +906,12 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 #ifndef SIP_RUN
     QList< Qgis::CrsAxisDirection > axisOrdering() const;
 #else
+    // clang-format off
     SIP_PYOBJECT axisOrdering() const SIP_TYPEHINT( List[Qgis.CrsAxisDirection] );
     % MethodCode
-      // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+    // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
 
-      const QList< Qgis::CrsAxisDirection >
-        cppRes
-      = sipCpp->axisOrdering();
+    const QList< Qgis::CrsAxisDirection > cppRes = sipCpp->axisOrdering();
 
     PyObject *l = PyList_New( cppRes.size() );
 
@@ -922,7 +921,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     {
       for ( int i = 0; i < cppRes.size(); ++i )
       {
-        PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ), sipType_Qgis_CrsAxisDirection );
+        PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ),
+                                             sipType_Qgis_CrsAxisDirection );
 
         if ( !eobj )
         {
@@ -942,6 +942,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
       }
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -1113,14 +1114,15 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     QString geographicCrsAuthId() const;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode const QString str
-      = sipCpp->isValid()
-          ? u"<QgsCoordinateReferenceSystem: %1%2>"_s
-              .arg( !sipCpp->authid().isEmpty() ? sipCpp->authid() : sipCpp->toWkt( Qgis::CrsWktVariant::Preferred ), std::isfinite( sipCpp->coordinateEpoch() ) ? u" @ %1"_s.arg( sipCpp->coordinateEpoch() ) : QString() )
-          : u"<QgsCoordinateReferenceSystem: invalid>"_s;
+    % MethodCode
+    const QString str = sipCpp->isValid() ? u"<QgsCoordinateReferenceSystem: %1%2>"_s.arg( !sipCpp->authid().isEmpty() ? sipCpp->authid() : sipCpp->toWkt( Qgis::CrsWktVariant::Preferred ),
+                        std::isfinite( sipCpp->coordinateEpoch() ) ? u" @ %1"_s.arg( sipCpp->coordinateEpoch() ) : QString() )
+                        : u"<QgsCoordinateReferenceSystem: invalid>"_s;
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN

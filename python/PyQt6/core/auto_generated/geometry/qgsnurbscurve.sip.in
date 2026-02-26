@@ -64,7 +64,8 @@ algorithm for B-spline basis function evaluation.
 
 :raises ValueError: if t is not in range [0, 1]
 %End
-%MethodCode if ( a0 < 0.0 || a0 > 1.0 )
+%MethodCode
+    if ( a0 < 0.0 || a0 > 1.0 )
     {
       PyErr_SetString( PyExc_ValueError, "Parameter t must be in range [0, 1]" );
       sipIsErr = 1;

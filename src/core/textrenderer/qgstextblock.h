@@ -90,6 +90,7 @@ class CORE_EXPORT QgsTextBlock
     void insert( int index, const QgsTextFragment &fragment );
 
 #else
+    // clang-format off
     /**
      * Inserts a \a fragment into the block, at the specified index.
      *
@@ -98,7 +99,8 @@ class CORE_EXPORT QgsTextBlock
      * \since QGIS 3.40
      */
     void insert( int index, const QgsTextFragment &fragment );
-    % MethodCode if ( a0 < 0 || a0 > sipCpp->size() )
+    % MethodCode
+    if ( a0 < 0 || a0 > sipCpp->size() )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -108,6 +110,7 @@ class CORE_EXPORT QgsTextBlock
       sipCpp->insert( a0, *a1 );
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -165,9 +168,12 @@ class CORE_EXPORT QgsTextBlock
     bool hasBackgrounds() const;
 
 #ifdef SIP_RUN
+    // clang-format off
     int __len__() const;
-    % MethodCode sipRes = sipCpp->size();
+    % MethodCode
+    sipRes = sipCpp->size();
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -177,6 +183,7 @@ class CORE_EXPORT QgsTextBlock
      */
       const QgsTextFragment &at( int index ) const SIP_FACTORY;
 #else
+    // clang-format off
 
     /**
      * Returns the fragment at the specified \a index.
@@ -184,7 +191,8 @@ class CORE_EXPORT QgsTextBlock
      * \throws KeyError if no fragment exists at the specified index.
      */
     const QgsTextFragment &at( int index ) const SIP_FACTORY;
-    % MethodCode if ( a0 < 0 || a0 >= sipCpp->size() )
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->size() )
     {
       PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -194,6 +202,7 @@ class CORE_EXPORT QgsTextBlock
       sipRes = new QgsTextFragment( sipCpp->at( a0 ) );
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -201,12 +210,15 @@ class CORE_EXPORT QgsTextBlock
      */
     QgsTextFragment &operator[]( int index ) SIP_FACTORY;
 #ifdef SIP_RUN
-    % MethodCode SIP_SSIZE_T idx = sipConvertFromSequenceIndex( a0, sipCpp->size() );
+    // clang-format off
+    % MethodCode
+    SIP_SSIZE_T idx = sipConvertFromSequenceIndex( a0, sipCpp->size() );
     if ( idx < 0 )
       sipIsErr = 1;
     else
       sipRes = new QgsTextFragment( sipCpp->operator[]( idx ) );
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN

@@ -22,7 +22,9 @@ Contains a collection of relationship items.
 #include "qgsrelationshipsitem.h"
 %End
   public:
-    QgsRelationshipsItem( QgsDataItem *parent /TransferThis/, const QString &path, const QString &connectionUri, const QString &providerKey, const QString &schema = QString(), const QString &tableName = QString() );
+    QgsRelationshipsItem(
+      QgsDataItem *parent /TransferThis/, const QString &path, const QString &connectionUri, const QString &providerKey, const QString &schema = QString(), const QString &tableName = QString()
+    );
 %Docstring
 Constructor for QgsRelationshipsItem, with the specified ``parent``
 item.
@@ -45,8 +47,7 @@ table.
 
     SIP_PYOBJECT __repr__();
 %MethodCode
-        QString str
-      = QStringLiteral( "<QgsRelationshipsItem: %1>" ).arg( sipCpp->path() );
+    QString str = QStringLiteral( "<QgsRelationshipsItem: %1>" ).arg( sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
@@ -104,8 +105,7 @@ and ``relation``.
 
     SIP_PYOBJECT __repr__();
 %MethodCode
-        QString str
-      = QStringLiteral( "<QgsRelationshipItem: %1>" ).arg( sipCpp->name() );
+    QString str = QStringLiteral( "<QgsRelationshipItem: %1>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

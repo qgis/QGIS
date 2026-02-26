@@ -74,7 +74,7 @@ Custom properties that have already been used within QGIS:
 #include "qgslayertreenode.h"
 %End
 %ConvertToSubClassCode
-    if ( sipCpp->inherits( "QgsLayerTreeNode" ) )
+if ( sipCpp->inherits( "QgsLayerTreeNode" ) )
     {
       sipType = sipType_QgsLayerTreeNode;
       QgsLayerTreeNode *node = qobject_cast<QgsLayerTreeNode *>( sipCpp );
@@ -102,21 +102,22 @@ Custom properties that have already been used within QGIS:
     ~QgsLayerTreeNode();
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str = QStringLiteral( "<QgsLayerTreeNode: %1>" ).arg( sipCpp->name() );
+%MethodCode
+    QString str = QStringLiteral( "<QgsLayerTreeNode: %1>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-      int
+    Py_ssize_t __len__() const;
 %Docstring
 Returns the number of children contained in the node.
 
 .. versionadded:: 4.0
 %End
-      __len__() const;
-%MethodCode sipRes = sipCpp->children().count();
+%MethodCode
+    sipRes = sipCpp->children().count();
 %End
 
-        SIP_PYOBJECT
+    SIP_PYOBJECT __getitem__( int index ) /TypeHint="QgsLayerTreeNode"/;
 %Docstring
 Returns the child node at the specified ``index``.
 
@@ -124,8 +125,8 @@ Returns the child node at the specified ``index``.
 
 .. versionadded:: 4.0
 %End
-      __getitem__( int index ) /TypeHint="QgsLayerTreeNode"/;
-%MethodCode const QList< QgsLayerTreeNode * > children = sipCpp->children();
+%MethodCode
+    const QList< QgsLayerTreeNode * > children = sipCpp->children();
     const int count = children.count();
     if ( a0 < 0 || a0 >= count )
     {

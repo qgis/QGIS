@@ -33,7 +33,8 @@ Creates a group of settings which have a common definition of base key.
 %Docstring
 Constructor
 %End
-%MethodCode sipCpp = new QgsSettingsEntryGroup( *a0, false );
+%MethodCode
+    sipCpp = new QgsSettingsEntryGroup( *a0, false );
     sipIsErr = sipCpp->isValid() ? 0 : 1;
     if ( sipIsErr )
       PyErr_SetString( PyExc_ValueError, QStringLiteral( "Settings do not share the same base definition key for this group. This will lead to unpredictable results." ).toUtf8().constData() );

@@ -565,6 +565,7 @@ class CORE_EXPORT QgsRasterBlock
     */
     bool fill( double value );
 #else
+// clang-format off
 
     /**
      * Fills the whole block with a constant \a value.
@@ -596,6 +597,7 @@ class CORE_EXPORT QgsRasterBlock
       sipCpp->fill( a0 );
     }
     % End
+// clang-format on
 #endif
 
     /**

@@ -26,7 +26,7 @@ Abstract base class for labeling settings for raster layers.
 %End
   public:
 %ConvertToSubClassCode
-    if ( sipCpp->type() == "simple" )
+if ( sipCpp->type() == "simple" )
       sipType = sipType_QgsRasterLayerSimpleLabeling;
     else
       sipType = 0;
@@ -224,23 +224,13 @@ lowest priority.
 .. seealso:: :py:func:`priority`
 %End
 
-    const QgsLabelPlacementSettings &placementSettings() const;
-%Docstring
-Returns the label placement settings.
 
-.. seealso:: :py:func:`setPlacementSettings`
-
-.. note::
-
-   Not available in Python bindings
-%End
-    QgsLabelPlacementSettings &
+    QgsLabelPlacementSettings &placementSettings();
 %Docstring
 Returns the label placement settings.
 
 .. seealso:: :py:func:`setPlacementSettings`
 %End
-      placementSettings();
 
     void setPlacementSettings( const QgsLabelPlacementSettings &settings );
 %Docstring
@@ -249,23 +239,13 @@ Sets the label placement ``settings``.
 .. seealso:: :py:func:`placementSettings`
 %End
 
-    const QgsLabelThinningSettings &thinningSettings() const;
-%Docstring
-Returns the label thinning settings.
 
-.. seealso:: :py:func:`setThinningSettings`
-
-.. note::
-
-   Not available in Python bindings
-%End
-    QgsLabelThinningSettings &
+    QgsLabelThinningSettings &thinningSettings();
 %Docstring
 Returns the label thinning settings.
 
 .. seealso:: :py:func:`setThinningSettings`
 %End
-      thinningSettings();
 
     void setThinningSettings( const QgsLabelThinningSettings &settings );
 %Docstring

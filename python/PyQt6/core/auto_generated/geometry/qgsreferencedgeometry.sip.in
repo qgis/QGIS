@@ -78,7 +78,8 @@ Constructor for QgsReferencedRectangle, with the specified initial
     bool operator!=( const QgsReferencedRectangle &other ) const;
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str = QStringLiteral( "<QgsReferencedRectangle: %1 (%2)>" ).arg( sipCpp->asWktCoordinates(), sipCpp->crs().authid() );
+%MethodCode
+    QString str = QStringLiteral( "<QgsReferencedRectangle: %1 (%2)>" ).arg( sipCpp->asWktCoordinates(), sipCpp->crs().authid() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 };
@@ -108,7 +109,8 @@ Constructor for QgsReferencedPointXY, with the specified initial
     bool operator!=( const QgsReferencedPointXY &other );
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str = QStringLiteral( "<QgsReferencedPointXY: %1 (%2)>" ).arg( sipCpp->asWkt(), sipCpp->crs().authid() );
+%MethodCode
+    QString str = QStringLiteral( "<QgsReferencedPointXY: %1 (%2)>" ).arg( sipCpp->asWkt(), sipCpp->crs().authid() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 };
@@ -151,7 +153,8 @@ Construct a new QgsReferencedGeometry from referenced ``rectangle``
 
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str = QStringLiteral( "<QgsReferencedGeometry: %1 (%2)>" ).arg( sipCpp->asWkt(), sipCpp->crs().authid() );
+%MethodCode
+    QString str = QStringLiteral( "<QgsReferencedGeometry: %1 (%2)>" ).arg( sipCpp->asWkt(), sipCpp->crs().authid() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 };

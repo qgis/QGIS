@@ -44,7 +44,6 @@ The rectangle will be normalized after creation. Since QGIS 3.20, if
 ``normalize`` is ``False`` then the normalization step will not be
 applied automatically.
 %End
-  : mXmin( xMin );
 
     QgsRectangle( const QgsPointXY &p1, const QgsPointXY &p2, bool normalize = true ) /HoldGIL/;
 %Docstring

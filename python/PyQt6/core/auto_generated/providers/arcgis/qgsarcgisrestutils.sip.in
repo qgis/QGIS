@@ -189,11 +189,10 @@ Returns a null rectangle if the value cannot be converted.
     typedef QFlags<QgsArcGisRestUtils::FeatureToJsonFlag> FeatureToJsonFlags;
 
 
-    static QVariantMap featureToJson(
-      const QgsFeature &feature, const QgsArcGisRestContext &context, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
-      QgsArcGisRestUtils::FeatureToJsonFlags flags = QgsArcGisRestUtils::FeatureToJsonFlags(
-        static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeGeometry ) | static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeNonObjectIdAttributes )
-      );
+    static QVariantMap featureToJson( const QgsFeature &feature,
+                                      const QgsArcGisRestContext &context,
+                                      const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+                                      QgsArcGisRestUtils::FeatureToJsonFlags flags = QgsArcGisRestUtils::FeatureToJsonFlags( static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeGeometry ) | static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeNonObjectIdAttributes ) ) );
 %Docstring
 Converts a ``feature`` to an ArcGIS REST JSON representation.
 

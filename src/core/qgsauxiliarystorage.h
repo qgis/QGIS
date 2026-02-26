@@ -80,10 +80,13 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
     QgsAuxiliaryLayer &operator=( QgsAuxiliaryLayer const &rhs ) = delete;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsAuxiliaryLayer: '%1'>"_s.arg( sipCpp->name() );
+    % MethodCode
+    QString str = u"<QgsAuxiliaryLayer: '%1'>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN

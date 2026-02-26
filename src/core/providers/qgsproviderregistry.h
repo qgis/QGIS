@@ -407,10 +407,13 @@ class CORE_EXPORT QgsProviderRegistry
         QList<Qgis::LayerType> layerTypes() const { return mLayerTypes; }
 
 #ifdef SIP_RUN
+        // clang-format off
         SIP_PYOBJECT __repr__();
-        % MethodCode QString str = u"<QgsProviderRegistry.ProviderCandidateDetails: %1>"_s.arg( sipCpp->metadata()->key() );
+        % MethodCode
+        QString str = u"<QgsProviderRegistry.ProviderCandidateDetails: %1>"_s.arg( sipCpp->metadata()->key() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-      % End
+        % End
+// clang-format on
 #endif
 
         // clang-format off
@@ -488,10 +491,13 @@ class CORE_EXPORT QgsProviderRegistry
         QList<Qgis::LayerType> layerTypes;
 
 #ifdef SIP_RUN
+        // clang-format off
         SIP_PYOBJECT __repr__();
-        % MethodCode QString str = u"<QgsProviderRegistry.UnusableUriDetails: %1>"_s.arg( sipCpp->warning );
+        % MethodCode
+        QString str = u"<QgsProviderRegistry.UnusableUriDetails: %1>"_s.arg( sipCpp->warning );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
         % End
+// clang-format on
 #endif
     };
 

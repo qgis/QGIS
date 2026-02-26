@@ -103,6 +103,7 @@ class CORE_EXPORT QgsMapHitTest
 
 
 #ifdef SIP_RUN
+    // clang-format off
     /**
      * Returns the hit test results, for layers with UpdatedCanvas renderers (raster/mesh layers).
      * Results are given as QMap of layer IDs to pairs of (min, max) values.
@@ -110,7 +111,8 @@ class CORE_EXPORT QgsMapHitTest
      * \since QGIS 4.0
      */
     SIP_PYOBJECT resultsRenderersUpdatedCanvasPy() const SIP_PYNAME( resultsRenderersUpdatedCanvas ) SIP_TYPEHINT( Dict[str, Tuple[float, float]] );
-    % MethodCode QMap<QString, std::pair<double, double>> results = sipCpp->resultsRenderersUpdatedCanvas();
+    % MethodCode
+    QMap<QString, std::pair<double, double>> results = sipCpp->resultsRenderersUpdatedCanvas();
     sipRes = PyDict_New();
 
     for ( auto it = results.constBegin(); it != results.constEnd(); ++it )
@@ -122,6 +124,7 @@ class CORE_EXPORT QgsMapHitTest
       Py_DECREF( tuple );
     }
     % End
+// clang-format on
 #endif
 
       /**
@@ -250,6 +253,7 @@ class CORE_EXPORT QgsMapHitTestTask : public QgsTask
     QMap<QString, std::pair<double, double>> resultsRenderersUpdatedCanvas() const SIP_SKIP { return mResultsRenderersUpdatedCanvas; };
 
 #ifdef SIP_RUN
+    // clang-format off
     /**
      * Returns the hit test results, for layers with UpdatedCanvas renderers (raster/mesh layers).
      * Results are given as QMap of layer IDs to pairs of (min, max) values.
@@ -257,7 +261,8 @@ class CORE_EXPORT QgsMapHitTestTask : public QgsTask
      * \since QGIS 4.0
      */
     SIP_PYOBJECT resultsRenderersUpdatedCanvasPy() const SIP_PYNAME( resultsRenderersUpdatedCanvas ) SIP_TYPEHINT( Dict[str, Tuple[float, float]] );
-    % MethodCode QMap<QString, std::pair<double, double>> results = sipCpp->resultsRenderersUpdatedCanvas();
+    % MethodCode
+    QMap<QString, std::pair<double, double>> results = sipCpp->resultsRenderersUpdatedCanvas();
     sipRes = PyDict_New();
 
     for ( auto it = results.constBegin(); it != results.constEnd(); ++it )
@@ -268,7 +273,8 @@ class CORE_EXPORT QgsMapHitTestTask : public QgsTask
       PyDict_SetItem( sipRes, PyUnicode_FromString( it.key().toUtf8().constData() ), tuple );
       Py_DECREF( tuple );
     }
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off

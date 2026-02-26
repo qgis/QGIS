@@ -28,7 +28,7 @@ respect to feature selection.
 #include "qgsvectorlayerselectionproperties.h"
 %End
 %ConvertToSubClassCode
-    if ( qobject_cast<QgsVectorLayerSelectionProperties *>( sipCpp ) )
+if ( qobject_cast<QgsVectorLayerSelectionProperties *>( sipCpp ) )
     {
       sipType = sipType_QgsVectorLayerSelectionProperties;
     }

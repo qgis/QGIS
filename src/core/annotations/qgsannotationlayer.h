@@ -82,12 +82,13 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     ~QgsAnnotationLayer() override;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-        QString str
-      = u"<QgsAnnotationLayer: '%1'>"_s.arg( sipCpp->name() );
+    QString str = u"<QgsAnnotationLayer: '%1'>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
       /**

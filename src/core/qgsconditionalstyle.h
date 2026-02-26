@@ -329,14 +329,17 @@ class CORE_EXPORT QgsConditionalStyle
     bool operator!=( const QgsConditionalStyle &other ) const;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str;
+    % MethodCode
+    QString str;
     if ( !sipCpp->name().isEmpty() )
       str = u"<QgsConditionalStyle: '%1' (%2)>"_s.arg( sipCpp->name(), sipCpp->rule() );
     else
       str = u"<QgsConditionalStyle: %2>"_s.arg( sipCpp->rule() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off

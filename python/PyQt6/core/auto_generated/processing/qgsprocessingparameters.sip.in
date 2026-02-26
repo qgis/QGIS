@@ -339,60 +339,113 @@ parameters, their acceptable ranges, defaults, etc.
 #include "qgsprocessingparametertininputlayers.h"
 #include "qgsprocessingparametervectortilewriterlayers.h"
 #include "qgsprocessingparametermeshdataset.h"
-%End SIP_CONVERT_TO_SUBCLASS_CODE if ( sipCpp->type() == QgsProcessingParameterBoolean::typeName() ) sipType
-      = sipType_QgsProcessingParameterBoolean;
-    else if ( sipCpp->type() == QgsProcessingParameterCrs::typeName() ) sipType = sipType_QgsProcessingParameterCrs;
-    else if ( sipCpp->type() == QgsProcessingParameterMapLayer::typeName() ) sipType = sipType_QgsProcessingParameterMapLayer;
-    else if ( sipCpp->type() == QgsProcessingParameterExtent::typeName() ) sipType = sipType_QgsProcessingParameterExtent;
-    else if ( sipCpp->type() == QgsProcessingParameterPoint::typeName() ) sipType = sipType_QgsProcessingParameterPoint;
-    else if ( sipCpp->type() == QgsProcessingParameterGeometry::typeName() ) sipType = sipType_QgsProcessingParameterGeometry;
-    else if ( sipCpp->type() == QgsProcessingParameterFile::typeName() ) sipType = sipType_QgsProcessingParameterFile;
-    else if ( sipCpp->type() == QgsProcessingParameterMatrix::typeName() ) sipType = sipType_QgsProcessingParameterMatrix;
-    else if ( sipCpp->type() == QgsProcessingParameterMultipleLayers::typeName() ) sipType = sipType_QgsProcessingParameterMultipleLayers;
-    else if ( sipCpp->type() == QgsProcessingParameterNumber::typeName() ) sipType = sipType_QgsProcessingParameterNumber;
-    else if ( sipCpp->type() == QgsProcessingParameterDistance::typeName() ) sipType = sipType_QgsProcessingParameterDistance;
-    else if ( sipCpp->type() == QgsProcessingParameterArea::typeName() ) sipType = sipType_QgsProcessingParameterArea;
-    else if ( sipCpp->type() == QgsProcessingParameterVolume::typeName() ) sipType = sipType_QgsProcessingParameterVolume;
-    else if ( sipCpp->type() == QgsProcessingParameterDuration::typeName() ) sipType = sipType_QgsProcessingParameterDuration;
-    else if ( sipCpp->type() == QgsProcessingParameterScale::typeName() ) sipType = sipType_QgsProcessingParameterScale;
-    else if ( sipCpp->type() == QgsProcessingParameterRange::typeName() ) sipType = sipType_QgsProcessingParameterRange;
-    else if ( sipCpp->type() == QgsProcessingParameterRasterLayer::typeName() ) sipType = sipType_QgsProcessingParameterRasterLayer;
-    else if ( sipCpp->type() == QgsProcessingParameterMeshLayer::typeName() ) sipType = sipType_QgsProcessingParameterMeshLayer;
-    else if ( sipCpp->type() == QgsProcessingParameterEnum::typeName() ) sipType = sipType_QgsProcessingParameterEnum;
-    else if ( sipCpp->type() == QgsProcessingParameterString::typeName() ) sipType = sipType_QgsProcessingParameterString;
-    else if ( sipCpp->type() == QgsProcessingParameterExpression::typeName() ) sipType = sipType_QgsProcessingParameterExpression;
-    else if ( sipCpp->type() == QgsProcessingParameterAuthConfig::typeName() ) sipType = sipType_QgsProcessingParameterAuthConfig;
-    else if ( sipCpp->type() == QgsProcessingParameterVectorLayer::typeName() ) sipType = sipType_QgsProcessingParameterVectorLayer;
-    else if ( sipCpp->type() == QgsProcessingParameterField::typeName() ) sipType = sipType_QgsProcessingParameterField;
-    else if ( sipCpp->type() == QgsProcessingParameterFeatureSource::typeName() ) sipType = sipType_QgsProcessingParameterFeatureSource;
-    else if ( sipCpp->type() == QgsProcessingParameterFeatureSink::typeName() ) sipType = sipType_QgsProcessingParameterFeatureSink;
-    else if ( sipCpp->type() == QgsProcessingParameterVectorDestination::typeName() ) sipType = sipType_QgsProcessingParameterVectorDestination;
-    else if ( sipCpp->type() == QgsProcessingParameterRasterDestination::typeName() ) sipType = sipType_QgsProcessingParameterRasterDestination;
-    else if ( sipCpp->type() == QgsProcessingParameterPointCloudDestination::typeName() ) sipType = sipType_QgsProcessingParameterPointCloudDestination;
-    else if ( sipCpp->type() == QgsProcessingParameterFileDestination::typeName() ) sipType = sipType_QgsProcessingParameterFileDestination;
-    else if ( sipCpp->type() == QgsProcessingParameterFolderDestination::typeName() ) sipType = sipType_QgsProcessingParameterFolderDestination;
-    else if ( sipCpp->type() == QgsProcessingParameterBand::typeName() ) sipType = sipType_QgsProcessingParameterBand;
-    else if ( sipCpp->type() == QgsProcessingParameterLayout::typeName() ) sipType = sipType_QgsProcessingParameterLayout;
-    else if ( sipCpp->type() == QgsProcessingParameterLayoutItem::typeName() ) sipType = sipType_QgsProcessingParameterLayoutItem;
-    else if ( sipCpp->type() == QgsProcessingParameterColor::typeName() ) sipType = sipType_QgsProcessingParameterColor;
-    else if ( sipCpp->type() == QgsProcessingParameterCoordinateOperation::typeName() ) sipType = sipType_QgsProcessingParameterCoordinateOperation;
-    else if ( sipCpp->type() == QgsProcessingParameterMapTheme::typeName() ) sipType = sipType_QgsProcessingParameterMapTheme;
-    else if ( sipCpp->type() == QgsProcessingParameterDateTime::typeName() ) sipType = sipType_QgsProcessingParameterDateTime;
-    else if ( sipCpp->type() == QgsProcessingParameterProviderConnection::typeName() ) sipType = sipType_QgsProcessingParameterProviderConnection;
-    else if ( sipCpp->type() == QgsProcessingParameterDatabaseSchema::typeName() ) sipType = sipType_QgsProcessingParameterDatabaseSchema;
-    else if ( sipCpp->type() == QgsProcessingParameterDatabaseTable::typeName() ) sipType = sipType_QgsProcessingParameterDatabaseTable;
-    else if ( sipCpp->type() == QgsProcessingParameterFieldMapping::typeName() ) sipType = sipType_QgsProcessingParameterFieldMapping;
-    else if ( sipCpp->type() == QgsProcessingParameterTinInputLayers::typeName() ) sipType = sipType_QgsProcessingParameterTinInputLayers;
-    else if ( sipCpp->type() == QgsProcessingParameterVectorTileWriterLayers::typeName() ) sipType = sipType_QgsProcessingParameterVectorTileWriterLayers;
-    else if ( sipCpp->type() == QgsProcessingParameterDxfLayers::typeName() ) sipType = sipType_QgsProcessingParameterDxfLayers;
-    else if ( sipCpp->type() == QgsProcessingParameterMeshDatasetGroups::typeName() ) sipType = sipType_QgsProcessingParameterMeshDatasetGroups;
-    else if ( sipCpp->type() == QgsProcessingParameterMeshDatasetTime::typeName() ) sipType = sipType_QgsProcessingParameterMeshDatasetTime;
-    else if ( sipCpp->type() == QgsProcessingParameterPointCloudLayer::typeName() ) sipType = sipType_QgsProcessingParameterPointCloudLayer;
-    else if ( sipCpp->type() == QgsProcessingParameterAnnotationLayer::typeName() ) sipType = sipType_QgsProcessingParameterAnnotationLayer;
-    else if ( sipCpp->type() == QgsProcessingParameterPointCloudAttribute::typeName() ) sipType = sipType_QgsProcessingParameterPointCloudAttribute;
-    else if ( sipCpp->type() == QgsProcessingParameterVectorTileDestination::typeName() ) sipType = sipType_QgsProcessingParameterVectorTileDestination;
-    else sipType = 0;
 %End
+%End
+%ConvertToSubClassCode
+if ( sipCpp->type() == QgsProcessingParameterBoolean::typeName() )
+      sipType = sipType_QgsProcessingParameterBoolean;
+    else if ( sipCpp->type() == QgsProcessingParameterCrs::typeName() )
+      sipType = sipType_QgsProcessingParameterCrs;
+    else if ( sipCpp->type() == QgsProcessingParameterMapLayer::typeName() )
+      sipType = sipType_QgsProcessingParameterMapLayer;
+    else if ( sipCpp->type() == QgsProcessingParameterExtent::typeName() )
+      sipType = sipType_QgsProcessingParameterExtent;
+    else if ( sipCpp->type() == QgsProcessingParameterPoint::typeName() )
+      sipType = sipType_QgsProcessingParameterPoint;
+    else if ( sipCpp->type() == QgsProcessingParameterGeometry::typeName() )
+      sipType = sipType_QgsProcessingParameterGeometry;
+    else if ( sipCpp->type() == QgsProcessingParameterFile::typeName() )
+      sipType = sipType_QgsProcessingParameterFile;
+    else if ( sipCpp->type() == QgsProcessingParameterMatrix::typeName() )
+      sipType = sipType_QgsProcessingParameterMatrix;
+    else if ( sipCpp->type() == QgsProcessingParameterMultipleLayers::typeName() )
+      sipType = sipType_QgsProcessingParameterMultipleLayers;
+    else if ( sipCpp->type() == QgsProcessingParameterNumber::typeName() )
+      sipType = sipType_QgsProcessingParameterNumber;
+    else if ( sipCpp->type() == QgsProcessingParameterDistance::typeName() )
+      sipType = sipType_QgsProcessingParameterDistance;
+    else if ( sipCpp->type() == QgsProcessingParameterArea::typeName() )
+      sipType = sipType_QgsProcessingParameterArea;
+    else if ( sipCpp->type() == QgsProcessingParameterVolume::typeName() )
+      sipType = sipType_QgsProcessingParameterVolume;
+    else if ( sipCpp->type() == QgsProcessingParameterDuration::typeName() )
+      sipType = sipType_QgsProcessingParameterDuration;
+    else if ( sipCpp->type() == QgsProcessingParameterScale::typeName() )
+      sipType = sipType_QgsProcessingParameterScale;
+    else if ( sipCpp->type() == QgsProcessingParameterRange::typeName() )
+      sipType = sipType_QgsProcessingParameterRange;
+    else if ( sipCpp->type() == QgsProcessingParameterRasterLayer::typeName() )
+      sipType = sipType_QgsProcessingParameterRasterLayer;
+    else if ( sipCpp->type() == QgsProcessingParameterMeshLayer::typeName() )
+      sipType = sipType_QgsProcessingParameterMeshLayer;
+    else if ( sipCpp->type() == QgsProcessingParameterEnum::typeName() )
+      sipType = sipType_QgsProcessingParameterEnum;
+    else if ( sipCpp->type() == QgsProcessingParameterString::typeName() )
+      sipType = sipType_QgsProcessingParameterString;
+    else if ( sipCpp->type() == QgsProcessingParameterExpression::typeName() )
+      sipType = sipType_QgsProcessingParameterExpression;
+    else if ( sipCpp->type() == QgsProcessingParameterAuthConfig::typeName() )
+      sipType = sipType_QgsProcessingParameterAuthConfig;
+    else if ( sipCpp->type() == QgsProcessingParameterVectorLayer::typeName() )
+      sipType = sipType_QgsProcessingParameterVectorLayer;
+    else if ( sipCpp->type() == QgsProcessingParameterField::typeName() )
+      sipType = sipType_QgsProcessingParameterField;
+    else if ( sipCpp->type() == QgsProcessingParameterFeatureSource::typeName() )
+      sipType = sipType_QgsProcessingParameterFeatureSource;
+    else if ( sipCpp->type() == QgsProcessingParameterFeatureSink::typeName() )
+      sipType = sipType_QgsProcessingParameterFeatureSink;
+    else if ( sipCpp->type() == QgsProcessingParameterVectorDestination::typeName() )
+      sipType = sipType_QgsProcessingParameterVectorDestination;
+    else if ( sipCpp->type() == QgsProcessingParameterRasterDestination::typeName() )
+      sipType = sipType_QgsProcessingParameterRasterDestination;
+    else if ( sipCpp->type() == QgsProcessingParameterPointCloudDestination::typeName() )
+      sipType = sipType_QgsProcessingParameterPointCloudDestination;
+    else if ( sipCpp->type() == QgsProcessingParameterFileDestination::typeName() )
+      sipType = sipType_QgsProcessingParameterFileDestination;
+    else if ( sipCpp->type() == QgsProcessingParameterFolderDestination::typeName() )
+      sipType = sipType_QgsProcessingParameterFolderDestination;
+    else if ( sipCpp->type() == QgsProcessingParameterBand::typeName() )
+      sipType = sipType_QgsProcessingParameterBand;
+    else if ( sipCpp->type() == QgsProcessingParameterLayout::typeName() )
+      sipType = sipType_QgsProcessingParameterLayout;
+    else if ( sipCpp->type() == QgsProcessingParameterLayoutItem::typeName() )
+      sipType = sipType_QgsProcessingParameterLayoutItem;
+    else if ( sipCpp->type() == QgsProcessingParameterColor::typeName() )
+      sipType = sipType_QgsProcessingParameterColor;
+    else if ( sipCpp->type() == QgsProcessingParameterCoordinateOperation::typeName() )
+      sipType = sipType_QgsProcessingParameterCoordinateOperation;
+    else if ( sipCpp->type() == QgsProcessingParameterMapTheme::typeName() )
+      sipType = sipType_QgsProcessingParameterMapTheme;
+    else if ( sipCpp->type() == QgsProcessingParameterDateTime::typeName() )
+      sipType = sipType_QgsProcessingParameterDateTime;
+    else if ( sipCpp->type() == QgsProcessingParameterProviderConnection::typeName() )
+      sipType = sipType_QgsProcessingParameterProviderConnection;
+    else if ( sipCpp->type() == QgsProcessingParameterDatabaseSchema::typeName() )
+      sipType = sipType_QgsProcessingParameterDatabaseSchema;
+    else if ( sipCpp->type() == QgsProcessingParameterDatabaseTable::typeName() )
+      sipType = sipType_QgsProcessingParameterDatabaseTable;
+    else if ( sipCpp->type() == QgsProcessingParameterFieldMapping::typeName() )
+      sipType = sipType_QgsProcessingParameterFieldMapping;
+    else if ( sipCpp->type() == QgsProcessingParameterTinInputLayers::typeName() )
+      sipType = sipType_QgsProcessingParameterTinInputLayers;
+    else if ( sipCpp->type() == QgsProcessingParameterVectorTileWriterLayers::typeName() )
+      sipType = sipType_QgsProcessingParameterVectorTileWriterLayers;
+    else if ( sipCpp->type() == QgsProcessingParameterDxfLayers::typeName() )
+      sipType = sipType_QgsProcessingParameterDxfLayers;
+    else if ( sipCpp->type() == QgsProcessingParameterMeshDatasetGroups::typeName() )
+      sipType = sipType_QgsProcessingParameterMeshDatasetGroups;
+    else if ( sipCpp->type() == QgsProcessingParameterMeshDatasetTime::typeName() )
+      sipType = sipType_QgsProcessingParameterMeshDatasetTime;
+    else if ( sipCpp->type() == QgsProcessingParameterPointCloudLayer::typeName() )
+      sipType = sipType_QgsProcessingParameterPointCloudLayer;
+    else if ( sipCpp->type() == QgsProcessingParameterAnnotationLayer::typeName() )
+      sipType = sipType_QgsProcessingParameterAnnotationLayer;
+    else if ( sipCpp->type() == QgsProcessingParameterPointCloudAttribute::typeName() )
+      sipType = sipType_QgsProcessingParameterPointCloudAttribute;
+    else if ( sipCpp->type() == QgsProcessingParameterVectorTileDestination::typeName() )
+      sipType = sipType_QgsProcessingParameterVectorTileDestination;
+    else
+      sipType = nullptr;
 %End
   public:
 

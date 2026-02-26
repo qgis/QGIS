@@ -100,17 +100,19 @@ class CORE_EXPORT QgsSymbolLayerId
     bool operator<( const QgsSymbolLayerId &other ) const { return ( mSymbolKey == other.mSymbolKey ) ? mIndexPath < other.mIndexPath : mSymbolKey < other.mSymbolKey; }
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
 
-        QStringList pathString;
+    QStringList pathString;
     for ( int path : sipCpp->symbolLayerIndexPath() )
     {
       pathString.append( QString::number( path ) );
     }
     QString str = u"<QgsSymbolLayerId: %1 (%2)>"_s.arg( sipCpp->symbolKey(), pathString.join( ',' ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off
@@ -177,17 +179,19 @@ class CORE_EXPORT QgsSymbolLayerReference
     }
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
 
-        QStringList pathString;
+    QStringList pathString;
     for ( int path : sipCpp->symbolLayerId().symbolLayerIndexPath() )
     {
       pathString.append( QString::number( path ) );
     }
     QString str = u"<QgsSymbolLayerReference: %1 - %2>"_s.arg( sipCpp->layerId(), sipCpp->symbolLayerIdV2() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off

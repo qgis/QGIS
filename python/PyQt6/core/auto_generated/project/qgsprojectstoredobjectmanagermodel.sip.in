@@ -50,19 +50,23 @@ specified ``parent`` object.
   protected:
 };
 
-template<T> class QgsProjectStoredObjectManagerModel : public QgsProjectStoredObjectManagerModelBase
+template<class T> class QgsProjectStoredObjectManagerModel : QgsProjectStoredObjectManagerModelBase
 {
-%Docstring
+%Docstring(signature="appended")
 Template class for models representing the objects available in a
 :py:class:`QgsAbstractProjectStoredObjectManager`.
 
 .. versionadded:: 4.0
 %End
+
+%TypeHeaderCode
+#include "qgsprojectstoredobjectmanagermodel.h"
+%End
   public:
     explicit QgsProjectStoredObjectManagerModel( QgsAbstractProjectStoredObjectManager<T> *manager, QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for :py:class:`QgsProjectStoredObjectManagerModel`, showing
-the objects from the specified ``manager``.
+Constructor for QgsProjectStoredObjectManagerModel, showing the objects
+from the specified ``manager``.
 %End
 
     T *objectFromIndex( const QModelIndex &index ) const;
@@ -176,9 +180,9 @@ Subclasses should override this method instead of
 };
 
 
-template<T> class QgsProjectStoredObjectManagerProxyModel : public QgsProjectStoredObjectManagerProxyModelBase
+template<class T> class QgsProjectStoredObjectManagerProxyModel : QgsProjectStoredObjectManagerProxyModelBase
 {
-%Docstring
+%Docstring(signature="appended")
 Template class QSortFilterProxyModel subclass for
 :py:class:`QgsProjectStoredObjectManagerModel`.
 
@@ -187,10 +191,14 @@ object name.
 
 .. versionadded:: 4.0
 %End
+
+%TypeHeaderCode
+#include "qgsprojectstoredobjectmanagermodel.h"
+%End
   public:
     explicit QgsProjectStoredObjectManagerProxyModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for :py:class:`QgsProjectStoredObjectManagerProxyModel`.
+Constructor for QgsProjectStoredObjectManagerProxyModel.
 %End
 
   protected:

@@ -122,6 +122,7 @@ class CORE_EXPORT QgsGeometryCollection : public QgsAbstractGeometry
     }
 
 #ifdef SIP_RUN
+// clang-format off
 
     /**
      * Returns the number of geometries within the collection.
@@ -136,6 +137,7 @@ class CORE_EXPORT QgsGeometryCollection : public QgsAbstractGeometry
     % MethodCode
     sipRes = true;
     % End
+// clang-format on
 #endif
 
 
@@ -157,6 +159,7 @@ class CORE_EXPORT QgsGeometryCollection : public QgsAbstractGeometry
      */
     QgsAbstractGeometry *geometryN( int n ) SIP_HOLDGIL;
 #else
+// clang-format off
 
     /**
      * Returns a geometry from within the collection.
@@ -175,6 +178,7 @@ class CORE_EXPORT QgsGeometryCollection : public QgsAbstractGeometry
       return sipConvertFromType( sipCpp->geometryN( a0 ), sipType_QgsAbstractGeometry, NULL );
     }
     % End
+// clang-format on
 #endif
 
 
@@ -230,6 +234,7 @@ class CORE_EXPORT QgsGeometryCollection : public QgsAbstractGeometry
      */
     virtual bool removeGeometry( int nr );
 #else
+// clang-format off
 
     /**
      * Removes a geometry from the collection by index.
@@ -250,6 +255,7 @@ class CORE_EXPORT QgsGeometryCollection : public QgsAbstractGeometry
       return PyBool_FromLong( sipCpp->removeGeometry( a0 ) );
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -361,6 +367,7 @@ class CORE_EXPORT QgsGeometryCollection : public QgsAbstractGeometry
 
 
 #ifdef SIP_RUN
+// clang-format off
 
     /**
     * Returns the geometry at the specified ``index``.
@@ -423,6 +430,7 @@ class CORE_EXPORT QgsGeometryCollection : public QgsAbstractGeometry
     % MethodCode
     sipRes = sipConvertFromNewType( new QgsGeometryPartIterator( sipCpp ), sipType_QgsGeometryPartIterator, Py_None );
     % End
+// clang-format on
 #endif
 
     /**

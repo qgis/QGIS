@@ -64,7 +64,8 @@ Returns the ID of the layer this dependency depends on
 
     //! hash operator
     Py_hash_t __hash__() const;
-%MethodCode sipRes = qHash( *sipCpp );
+%MethodCode
+    sipRes = qHash( *sipCpp );
 %End
 };
 

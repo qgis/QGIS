@@ -94,16 +94,6 @@ cloud renderer and its widget.
 #include "qgspointcloudrendererregistry.h"
 %End
   public:
-    QgsPointCloudRendererMetadata( const QString &name, const QString &visibleName, QgsPointCloudRendererCreateFunc pfCreate, const QIcon &icon = QIcon(), QgsPointCloudRendererWidgetFunc pfWidget = 0 );
-%Docstring
-Construct metadata
-
-.. note::
-
-   not available in Python bindings
-%End
-                 mCreateFunc( pfCreate ),
-                 mWidgetFunc( pfWidget );
 
     virtual QgsPointCloudRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) /Factory/;
 

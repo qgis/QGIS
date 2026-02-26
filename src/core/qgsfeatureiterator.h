@@ -284,21 +284,27 @@ class CORE_EXPORT QgsFeatureIterator
 {
   public:
 #ifdef SIP_RUN
+    // clang-format off
     QgsFeatureIterator *__iter__();
-    % MethodCode sipRes = sipCpp;
+    % MethodCode
+    sipRes = sipCpp;
     % End
 
-        SIP_PYOBJECT
-      __next__() SIP_TYPEHINT( QgsFeature );
-    % MethodCode auto f = std::make_unique< QgsFeature >();
+    SIP_PYOBJECT __next__() SIP_TYPEHINT( QgsFeature );
+    % MethodCode
+    auto f = std::make_unique< QgsFeature >();
     bool result = false;
-    Py_BEGIN_ALLOW_THREADS result = ( sipCpp->nextFeature( *f ) );
-    Py_END_ALLOW_THREADS if ( result ) sipRes = sipConvertFromType( f.release(), sipType_QgsFeature, Py_None );
+    Py_BEGIN_ALLOW_THREADS
+    result = ( sipCpp->nextFeature( *f ) );
+    Py_END_ALLOW_THREADS
+    if ( result )
+      sipRes = sipConvertFromType( f.release(), sipType_QgsFeature, Py_None );
     else
     {
       PyErr_SetString( PyExc_StopIteration, "" );
     }
     % End
+// clang-format on
 #endif
 
       //! Construct invalid iterator

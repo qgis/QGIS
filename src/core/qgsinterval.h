@@ -34,9 +34,11 @@
 using namespace Qt::StringLiterals;
 
 #ifdef SIP_RUN
+// clang-format off
 % ModuleHeaderCode
 #include "qgsunittypes.h"
-  % End
+% End
+// clang-format on
 #endif
   class QString;
 
@@ -98,9 +100,11 @@ class CORE_EXPORT QgsInterval
     QgsInterval( double years, double months, double weeks, double days, double hours, double minutes, double seconds );
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str;
-    if ( !sipCpp->isValid() )
+    % MethodCode
+    QString str;
+    if ( ! sipCpp->isValid() )
       str = u"<QgsInterval: invalid>"_s;
     else if ( sipCpp->originalUnit() != Qgis::TemporalUnit::Unknown )
       str = u"<QgsInterval: %1 %2>"_s.arg( sipCpp->originalDuration() ).arg( QgsUnitTypes::toString( sipCpp->originalUnit() ) );
@@ -108,6 +112,7 @@ class CORE_EXPORT QgsInterval
       str = u"<QgsInterval: %1 seconds>"_s.arg( sipCpp->seconds() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
       /**

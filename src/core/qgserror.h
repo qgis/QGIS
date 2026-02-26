@@ -134,10 +134,13 @@ class CORE_EXPORT QgsError
 
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsError: %1>"_s.arg( sipCpp->message( QgsErrorMessage::Text ) );
+    % MethodCode
+    QString str = u"<QgsError: %1>"_s.arg( sipCpp->message( QgsErrorMessage::Text ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off

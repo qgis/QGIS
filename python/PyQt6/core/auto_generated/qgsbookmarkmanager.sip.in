@@ -126,8 +126,15 @@ Returns a DOM element representing the bookmark's properties.
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str = QStringLiteral( "<QgsBookmark: '%1' (%2)>" ).arg( sipCpp->name() )
-                                 .arg( sipCpp->extent().isNull() ? QStringLiteral( "EMPTY" ) : QStringLiteral( "%1 - %2" ).arg( sipCpp->extent().asWktCoordinates(), sipCpp->extent().crs().authid() ) );
+%MethodCode
+    QString str = QStringLiteral( "<QgsBookmark: '%1' (%2)>" )
+                  .arg( sipCpp->name() )
+                  .arg(
+                    sipCpp->extent().isNull() ?
+                    QStringLiteral( "EMPTY" ) :
+                    QStringLiteral( "%1 - %2" )
+                    .arg( sipCpp->extent().asWktCoordinates(), sipCpp->extent().crs().authid() )
+                  );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

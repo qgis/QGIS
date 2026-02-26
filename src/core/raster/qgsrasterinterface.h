@@ -398,6 +398,7 @@ class CORE_EXPORT QgsRasterInterface
                                           bool includeOutOfRange = false,
                                           QgsRasterBlockFeedback *feedback = nullptr );
 #else
+// clang-format off
     virtual QgsRasterHistogram histogram( int bandNo,
                                           int binCount = 0,
                                           SIP_PYOBJECT minimum = Py_None,
@@ -438,6 +439,7 @@ class CORE_EXPORT QgsRasterInterface
     QgsRasterHistogram *h = new QgsRasterHistogram( sipCpp->histogram( a0, a1, minimum, maximum, *a4, a5, a6, a7 ) );
     return sipConvertFromType( h, sipType_QgsRasterHistogram, Py_None );
     % End
+// clang-format on
 #endif
     // clang-format on
 
@@ -456,6 +458,7 @@ class CORE_EXPORT QgsRasterInterface
                                int sampleSize = 0,
                                bool includeOutOfRange = false );
 #else
+// clang-format off
     virtual bool hasHistogram( int bandNo,
                                int binCount,
                                SIP_PYOBJECT minimum = Py_None,
@@ -493,6 +496,7 @@ class CORE_EXPORT QgsRasterInterface
 
     sipRes = sipCpp->hasHistogram( a0, a1, minimum, maximum, *a4, a5, a6 );
     % End
+// clang-format on
 #endif
     // clang-format on
 
@@ -546,6 +550,7 @@ class CORE_EXPORT QgsRasterInterface
                         int sampleSize = 0,
                         bool includeOutOfRange = false );
 #else
+// clang-format off
     void initHistogram( QgsRasterHistogram &histogram,
                         int bandNo,
                         int binCount,
@@ -554,14 +559,14 @@ class CORE_EXPORT QgsRasterInterface
                         const QgsRectangle &boundingBox = QgsRectangle(),
                         int sampleSize = 0,
                         bool includeOutOfRange = false )
-    [void( QgsRasterHistogram &histogram,
-           int bandNo,
-           int binCount,
-           double minimum = 0.0,
-           double maximum = 0.0,
-           const QgsRectangle &boundingBox = QgsRectangle(),
-           int sampleSize = 0,
-           bool includeOutOfRange = false )];
+    [void ( QgsRasterHistogram & histogram,
+            int bandNo,
+            int binCount,
+            double minimum = 0.0,
+            double maximum = 0.0,
+            const QgsRectangle &boundingBox = QgsRectangle(),
+            int sampleSize = 0,
+            bool includeOutOfRange = false )];
     % MethodCode
     double minimum;
     double maximum;
@@ -583,12 +588,13 @@ class CORE_EXPORT QgsRasterInterface
       maximum = PyFloat_AsDouble( a4 );
     }
 
-#if defined( SIP_PROTECTED_IS_PUBLIC ) || ( SIP_VERSION >= 0x050000 && !defined( _MSC_VER ) )
+#if defined(SIP_PROTECTED_IS_PUBLIC) || (SIP_VERSION >= 0x050000 && !defined(_MSC_VER))
     sipCpp->initHistogram( *a0, a1, a2, minimum, maximum, *a5, a6, a7 );
 #else
     sipCpp->sipProtect_initHistogram( *a0, a1, a2, minimum, maximum, *a5, a6, a7 );
 #endif
     % End
+// clang-format on
 #endif
     // clang-format on
 

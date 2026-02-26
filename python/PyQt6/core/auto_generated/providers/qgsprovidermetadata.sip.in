@@ -216,11 +216,9 @@ Returns a list of the map layer types supported by the provider.
 .. versionadded:: 3.26
 %End
 %MethodCode
-      // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+    // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
 
-      const QList< Qgis::LayerType >
-        cppRes
-      = sipCpp->supportedLayerTypes();
+    const QList< Qgis::LayerType > cppRes = sipCpp->supportedLayerTypes();
 
     PyObject *l = PyList_New( cppRes.size() );
 
@@ -230,7 +228,8 @@ Returns a list of the map layer types supported by the provider.
     {
       for ( int i = 0; i < cppRes.size(); ++i )
       {
-        PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ), sipType_Qgis_LayerType );
+        PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ),
+                                             sipType_Qgis_LayerType );
 
         if ( !eobj )
         {
@@ -832,7 +831,8 @@ Stores the connection in the settings
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str = QStringLiteral( "<QgsProviderMetadata: %1>" ).arg( sipCpp->key() );
+%MethodCode
+    QString str = QStringLiteral( "<QgsProviderMetadata: %1>" ).arg( sipCpp->key() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

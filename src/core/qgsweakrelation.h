@@ -452,10 +452,11 @@ class CORE_EXPORT QgsWeakRelation
     static void writeXml( const QgsVectorLayer *layer, WeakRelationType type, const QgsRelation &relation, QDomNode &node, QDomDocument &doc );
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
 
-        QString leftIdentifier;
+    QString leftIdentifier;
     if ( !sipCpp->referencedLayer().source.isEmpty() )
       leftIdentifier = sipCpp->referencedLayer().source;
 
@@ -470,7 +471,8 @@ class CORE_EXPORT QgsWeakRelation
       str = u"<QgsWeakRelation: %1 - %2 -> %3>"_s.arg( sipCpp->id(), leftIdentifier, rightIdentifier );
 
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off

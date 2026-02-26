@@ -99,9 +99,12 @@ class CORE_EXPORT QgsAttributeTableConfig
     int size() const;
 
 #ifdef SIP_RUN
+    // clang-format off
     int __len__() const;
-    % MethodCode sipRes = sipCpp->size();
+    % MethodCode
+    sipRes = sipCpp->size();
     % End
+// clang-format on
 #endif
 
       /**
@@ -174,6 +177,7 @@ class CORE_EXPORT QgsAttributeTableConfig
      */
     int columnWidth( int column ) const;
 #else
+    // clang-format off
 
     /**
      * Returns the width of a column, or -1 if column should use default width.
@@ -195,6 +199,7 @@ class CORE_EXPORT QgsAttributeTableConfig
       }
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -207,16 +212,18 @@ class CORE_EXPORT QgsAttributeTableConfig
      */
     void setColumnWidth( int column, int width );
 #else
+      // clang-format off
 
-      /**
+    /**
      * Sets the width of a column.
      * \param column column index
      * \param width column width in pixels, or -1 if column should use default width
      * \throws IndexError if the column is not found
      * \see columnWidth()
      */
-      void setColumnWidth( int column, int width );
-    % MethodCode if ( a0 < 0 || a0 >= sipCpp->size() )
+    void setColumnWidth( int column, int width );
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->size() )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -226,6 +233,7 @@ class CORE_EXPORT QgsAttributeTableConfig
       sipCpp->setColumnWidth( a0, a1 );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -237,14 +245,15 @@ class CORE_EXPORT QgsAttributeTableConfig
      */
     bool columnHidden( int column ) const;
 #else
+      // clang-format off
 
-      /**
+    /**
      * Returns TRUE if the specified column is hidden.
      * \param column column index
      * \throws IndexError if the column is not found
      * \see setColumnHidden()
      */
-      bool columnHidden( int column ) const;
+    bool columnHidden( int column ) const;
     % MethodCode
     {
       if ( a0 < 0 || a0 >= sipCpp->size() )
@@ -258,6 +267,7 @@ class CORE_EXPORT QgsAttributeTableConfig
       }
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -270,16 +280,18 @@ class CORE_EXPORT QgsAttributeTableConfig
      */
     void setColumnHidden( int column, bool hidden );
 #else
+      // clang-format off
 
-      /**
+    /**
      * Sets whether the specified column should be hidden.
      * \param column column index
      * \param hidden set to TRUE to hide column
      * \throws IndexError if the column is not found
      * \see columnHidden()
      */
-      void setColumnHidden( int column, bool hidden );
-    % MethodCode if ( a0 < 0 || a0 >= sipCpp->size() )
+    void setColumnHidden( int column, bool hidden );
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->size() )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -289,6 +301,7 @@ class CORE_EXPORT QgsAttributeTableConfig
       sipCpp->setColumnHidden( a0, a1 );
     }
     % End
+// clang-format on
 #endif
 
     /**

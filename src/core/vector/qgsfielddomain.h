@@ -207,10 +207,13 @@ class CORE_EXPORT QgsCodedValue
     QString value() const { return mValue; }
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsCodedValue: %1 (%2)>"_s.arg( sipCpp->code().toString(), sipCpp->value() );
+    % MethodCode
+    QString str = u"<QgsCodedValue: %1 (%2)>"_s.arg( sipCpp->code().toString(), sipCpp->value() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
       bool operator==( const QgsCodedValue &other ) const;
@@ -278,10 +281,13 @@ class CORE_EXPORT QgsCodedFieldDomain : public QgsFieldDomain
     void setValues( const QList< QgsCodedValue> &values ) { mValues = values; }
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsCodedFieldDomain: %1>"_s.arg( sipCpp->name() );
+    % MethodCode
+    QString str = u"<QgsCodedFieldDomain: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off
@@ -407,12 +413,17 @@ class CORE_EXPORT QgsRangeFieldDomain : public QgsFieldDomain
     void setMaximumIsInclusive( bool inclusive ) { mMaxIsInclusive = inclusive; }
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str
-      = u"<QgsRangeFieldDomain: %1 %2%3, %4%5>"_s
-          .arg( sipCpp->name(), sipCpp->minimumIsInclusive() ? u"["_s : u"("_s, sipCpp->minimum().toString(), sipCpp->maximum().toString(), sipCpp->maximumIsInclusive() ? u"]"_s : u")"_s );
+    % MethodCode
+    QString str = u"<QgsRangeFieldDomain: %1 %2%3, %4%5>"_s.arg( sipCpp->name(),
+                  sipCpp->minimumIsInclusive() ? u"["_s : u"("_s,
+                  sipCpp->minimum().toString(),
+                  sipCpp->maximum().toString(),
+                  sipCpp->maximumIsInclusive() ? u"]"_s : u")"_s );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off
@@ -486,10 +497,13 @@ class CORE_EXPORT QgsGlobFieldDomain : public QgsFieldDomain
     void setGlob( const QString &glob ) { mGlob = glob; }
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsGlobFieldDomain: %1 '%2'>"_s.arg( sipCpp->name(), sipCpp->glob() );
+    % MethodCode
+    QString str = u"<QgsGlobFieldDomain: %1 '%2'>"_s.arg( sipCpp->name(), sipCpp->glob() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off

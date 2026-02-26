@@ -1119,6 +1119,7 @@ class CORE_EXPORT QgsGeometry
      TODO QGIS 5 remove MethodCode
     */
 #ifdef SIP_RUN
+// clang-format off
 
     /**
      * Splits this geometry according to a given line.
@@ -1203,6 +1204,7 @@ class CORE_EXPORT QgsGeometry
       }
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -2160,6 +2162,7 @@ class CORE_EXPORT QgsGeometry
     QVector< QgsPointXY > randomPointsInPolygon( int count, unsigned long seed = 0, QgsFeedback *feedback = nullptr ) const;
     ///@cond PRIVATE
 #else
+// clang-format off
 
     /**
      * Returns a list of \a count random points generated inside a (multi)polygon geometry.
@@ -2195,6 +2198,7 @@ class CORE_EXPORT QgsGeometry
     % End
 
 
+// clang-format on
 #endif
     ///@endcond
 
@@ -2223,6 +2227,7 @@ class CORE_EXPORT QgsGeometry
     Q_INVOKABLE QString asWkt( int precision = 17 ) const;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str;
@@ -2237,6 +2242,7 @@ class CORE_EXPORT QgsGeometry
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
     /**
@@ -2316,6 +2322,7 @@ class CORE_EXPORT QgsGeometry
      */
     QgsPointXY asPoint() const;
 #else
+// clang-format off
 
     /**
      * Returns the contents of the geometry as a 2-dimensional point.
@@ -2348,6 +2355,7 @@ class CORE_EXPORT QgsGeometry
       }
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -2362,6 +2370,7 @@ class CORE_EXPORT QgsGeometry
      */
     QgsPolylineXY asPolyline() const;
 #else
+// clang-format off
 
     /**
     * Returns the contents of the geometry as a polyline.
@@ -2393,6 +2402,7 @@ class CORE_EXPORT QgsGeometry
       sipRes = sipConvertFromNewType( new QgsPolylineXY( sipCpp->asPolyline() ), qvector_type, Py_None );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -2407,6 +2417,7 @@ class CORE_EXPORT QgsGeometry
      */
     QgsPolygonXY asPolygon() const;
 #else
+// clang-format off
 
     /**
     * Returns the contents of the geometry as a polygon.
@@ -2438,6 +2449,7 @@ class CORE_EXPORT QgsGeometry
       sipRes = sipConvertFromNewType( new QgsPolygonXY( sipCpp->asPolygon() ), qvector_type, Py_None );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -2451,6 +2463,7 @@ class CORE_EXPORT QgsGeometry
      */
     QgsMultiPointXY asMultiPoint() const;
 #else
+// clang-format off
 
     /**
     * Returns the contents of the geometry as a multi-point.
@@ -2481,6 +2494,7 @@ class CORE_EXPORT QgsGeometry
       sipRes = sipConvertFromNewType( new QgsPolylineXY( sipCpp->asMultiPoint() ), qvector_type, Py_None );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -2495,6 +2509,7 @@ class CORE_EXPORT QgsGeometry
      */
     QgsMultiPolylineXY asMultiPolyline() const;
 #else
+// clang-format off
 
     /**
     * Returns the contents of the geometry as a multi-linestring.
@@ -2526,6 +2541,7 @@ class CORE_EXPORT QgsGeometry
       sipRes = sipConvertFromNewType( new QgsMultiPolylineXY( sipCpp->asMultiPolyline() ), qvector_type, Py_None );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -2540,6 +2556,7 @@ class CORE_EXPORT QgsGeometry
      */
     QgsMultiPolygonXY asMultiPolygon() const;
 #else
+// clang-format off
 
     /**
     * Returns the contents of the geometry as a multi-polygon.
@@ -2571,6 +2588,7 @@ class CORE_EXPORT QgsGeometry
       sipRes = sipConvertFromNewType( new QgsMultiPolygonXY( sipCpp->asMultiPolygon() ), qvector_type, Py_None );
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -2825,11 +2843,13 @@ class CORE_EXPORT QgsGeometry
         bool hasWhere() const;
 
 #ifdef SIP_RUN
+// clang-format off
         SIP_PYOBJECT __repr__();
         % MethodCode
         QString str = u"<QgsGeometry.Error: %1>"_s.arg( sipCpp->what() );
         sipRes = PyUnicode_FromString( str.toUtf8().data() );
         % End
+// clang-format on
 #endif
 
         // TODO c++20 - replace with = default
@@ -3033,6 +3053,7 @@ class CORE_EXPORT QgsGeometry
      */
     static bool compare( const QgsMultiPolygonXY &p1, const QgsMultiPolygonXY &p2, double epsilon = 4 * std::numeric_limits<double>::epsilon() );
 #else
+// clang-format off
 
     /**
      * Compares two geometry objects for equality within a specified tolerance.
@@ -3128,6 +3149,7 @@ class CORE_EXPORT QgsGeometry
       }
     }
     % End
+// clang-format on
 #endif
 
     /**

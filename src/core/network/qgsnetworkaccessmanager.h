@@ -519,11 +519,15 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 #ifndef SIP_RUN
     static QString setRequestPreprocessor( const std::function< void( QNetworkRequest *request )> &processor );
 #else
+    // clang-format off
     static QString setRequestPreprocessor( SIP_PYCALLABLE / AllowNone / );
-    % MethodCode PyObject *s = 0;
+    % MethodCode
+    PyObject *s = 0;
     QString id;
     Py_XINCREF( a0 );
-    Py_BEGIN_ALLOW_THREADS id = QgsNetworkAccessManager::setRequestPreprocessor( [a0]( QNetworkRequest *arg ) -> QString {
+    Py_BEGIN_ALLOW_THREADS
+    id = QgsNetworkAccessManager::setRequestPreprocessor( [a0]( QNetworkRequest *arg )->QString
+    {
       QString res;
       SIP_BLOCK_THREADS
       PyObject *s = sipCallMethod( NULL, a0, "D", arg, sipType_QNetworkRequest, NULL );
@@ -540,10 +544,10 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     } );
     Py_END_ALLOW_THREADS
 
-      s
-      = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
+    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
     return s;
     % End
+// clang-format on
 #endif
 
     /**
@@ -559,13 +563,16 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 #ifndef SIP_RUN
     static bool removeRequestPreprocessor( const QString &id );
 #else
-      static void removeRequestPreprocessor( const QString &id );
-    % MethodCode if ( !QgsNetworkAccessManager::removeRequestPreprocessor( *a0 ) )
+      // clang-format off
+    static void removeRequestPreprocessor( const QString &id );
+    % MethodCode
+    if ( !QgsNetworkAccessManager::removeRequestPreprocessor( *a0 ) )
     {
       PyErr_SetString( PyExc_KeyError, u"No processor with id %1 exists."_s.arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -586,11 +593,15 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 #ifndef SIP_RUN
     static QString setAdvancedRequestPreprocessor( const std::function< void( QNetworkRequest *, int &op, QByteArray *data )> &processor );
 #else
-      static QString setAdvancedRequestPreprocessor( SIP_PYCALLABLE / AllowNone / );
-    % MethodCode PyObject *s = 0;
+      // clang-format off
+    static QString setAdvancedRequestPreprocessor( SIP_PYCALLABLE / AllowNone / );
+    % MethodCode
+    PyObject *s = 0;
     QString id;
     Py_XINCREF( a0 );
-    Py_BEGIN_ALLOW_THREADS id = QgsNetworkAccessManager::setAdvancedRequestPreprocessor( [a0]( QNetworkRequest *reqArg, int &op, QByteArray *data ) {
+    Py_BEGIN_ALLOW_THREADS
+    id = QgsNetworkAccessManager::setAdvancedRequestPreprocessor( [a0]( QNetworkRequest *reqArg, int &op, QByteArray *data )
+    {
       SIP_BLOCK_THREADS
 
       PyObject *requestObj = sipConvertFromType( reqArg, sipType_QNetworkRequest, NULL );
@@ -629,10 +640,10 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     } );
     Py_END_ALLOW_THREADS
 
-      s
-      = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
+    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
     return s;
     % End
+// clang-format on
 #endif
 
     /**
@@ -648,13 +659,16 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 #ifndef SIP_RUN
     static bool removeAdvancedRequestPreprocessor( const QString &id );
 #else
-      static void removeAdvancedRequestPreprocessor( const QString &id );
-    % MethodCode if ( !QgsNetworkAccessManager::removeAdvancedRequestPreprocessor( *a0 ) )
+      // clang-format off
+    static void removeAdvancedRequestPreprocessor( const QString &id );
+    % MethodCode
+    if ( !QgsNetworkAccessManager::removeAdvancedRequestPreprocessor( *a0 ) )
     {
       PyErr_SetString( PyExc_KeyError, u"No processor with id %1 exists."_s.arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;
     }
     % End
+// clang-format on
 #endif
 
 
@@ -672,19 +686,25 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 #ifndef SIP_RUN
     static QString setReplyPreprocessor( const std::function<void( const QNetworkRequest &, QNetworkReply * )> &processor );
 #else
-      static QString setReplyPreprocessor( SIP_PYCALLABLE / AllowNone / );
-    % MethodCode PyObject *s = 0;
+      // clang-format off
+    static QString setReplyPreprocessor( SIP_PYCALLABLE / AllowNone / );
+    % MethodCode
+    PyObject *s = 0;
     QString id;
     Py_XINCREF( a0 );
-    Py_BEGIN_ALLOW_THREADS id = QgsNetworkAccessManager::setReplyPreprocessor( [a0]( const QNetworkRequest &request, QNetworkReply *reply ) {
+    Py_BEGIN_ALLOW_THREADS
+    id = QgsNetworkAccessManager::setReplyPreprocessor( [a0]( const QNetworkRequest &request, QNetworkReply *reply )
+    {
       SIP_BLOCK_THREADS
       Py_XDECREF( sipCallMethod( NULL, a0, "ND", new QNetworkRequest( request ), sipType_QNetworkRequest, NULL, reply, sipType_QNetworkReply, NULL ) );
       SIP_UNBLOCK_THREADS
     } );
 
-    Py_END_ALLOW_THREADS s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
+    Py_END_ALLOW_THREADS
+    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
     return s;
     % End
+// clang-format on
 #endif
 
     /**
@@ -700,13 +720,16 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 #ifndef SIP_RUN
     static bool removeReplyPreprocessor( const QString &id );
 #else
-      static void removeReplyPreprocessor( const QString &id );
-    % MethodCode if ( !QgsNetworkAccessManager::removeReplyPreprocessor( *a0 ) )
+      // clang-format off
+    static void removeReplyPreprocessor( const QString &id );
+    % MethodCode
+    if ( !QgsNetworkAccessManager::removeReplyPreprocessor( *a0 ) )
     {
       PyErr_SetString( PyExc_KeyError, u"No processor with id %1 exists."_s.arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;
     }
     % End
+// clang-format on
 #endif
 
     /**

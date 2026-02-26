@@ -220,7 +220,8 @@ Sets the ``properties`` for the cell.
 
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str = QStringLiteral( "<QgsTableCell: %1>" ).arg( sipCpp->content().toString() );
+%MethodCode
+    QString str = QStringLiteral( "<QgsTableCell: %1>" ).arg( sipCpp->content().toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

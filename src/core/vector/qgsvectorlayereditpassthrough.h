@@ -23,9 +23,11 @@ class QgsVectorLayerUndoPassthroughCommand;
 class QgsTransaction;
 
 #ifdef SIP_RUN
+// clang-format off
 % ModuleHeaderCode
 #include <qgsvectorlayereditpassthrough.h>
-  % End
+% End
+// clang-format on
 #endif
 
   /**

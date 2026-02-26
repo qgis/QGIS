@@ -40,7 +40,8 @@ other than layers and groups.
 
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str = QStringLiteral( "<QgsLayerTreeCustomNode: %1>" ).arg( sipCpp->name() );
+%MethodCode
+    QString str = QStringLiteral( "<QgsLayerTreeCustomNode: %1>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

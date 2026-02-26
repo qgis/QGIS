@@ -39,12 +39,13 @@ class CORE_EXPORT QgsRenderedAnnotationItemDetails : public QgsRenderedItemDetai
     QgsRenderedAnnotationItemDetails( const QString &layerId, const QString &itemId );
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-        QString str
-      = u"<QgsRenderedAnnotationItemDetails: %1 - %2>"_s.arg( sipCpp->layerId(), sipCpp->itemId() );
+    QString str = u"<QgsRenderedAnnotationItemDetails: %1 - %2>"_s.arg( sipCpp->layerId(), sipCpp->itemId() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
         /**

@@ -216,11 +216,13 @@ class CORE_EXPORT QgsQuadrilateral
      */
     double perimeter() const SIP_HOLDGIL;
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = u"<QgsQuadrilateral: %1>"_s.arg( sipCpp->toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
   private:
     QgsPoint mPoint1, mPoint2, mPoint3, mPoint4;

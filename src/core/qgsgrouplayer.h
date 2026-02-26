@@ -75,10 +75,13 @@ class CORE_EXPORT QgsGroupLayer : public QgsMapLayer
     ~QgsGroupLayer() override;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsGroupLayer: '%1'>"_s.arg( sipCpp->name() );
+    % MethodCode
+    QString str = u"<QgsGroupLayer: '%1'>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
       QgsGroupLayer *clone() const override SIP_FACTORY;

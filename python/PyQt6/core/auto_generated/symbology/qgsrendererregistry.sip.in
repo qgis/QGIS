@@ -129,15 +129,7 @@ and its widget.
 #include "qgsrendererregistry.h"
 %End
   public:
-                 mCreateFunc( pfCreate ),
-                 mWidgetFunc( pfWidget ),
-                 mCreateFromSldFunc( 0 ),
-                 mLayerTypes( layerTypes );
 
-                 mCreateFunc( pfCreate ),
-                 mWidgetFunc( pfWidget ),
-                 mCreateFromSldFunc( pfCreateFromSld ),
-                 mLayerTypes( layerTypes );
 
     virtual QgsFeatureRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) /Factory/;
     virtual QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;

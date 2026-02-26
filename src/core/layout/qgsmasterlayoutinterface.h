@@ -28,10 +28,12 @@ class QgsReadWriteContext;
 class QgsStyleEntityVisitorInterface;
 
 #ifdef SIP_RUN
+// clang-format off
 % ModuleHeaderCode
 #include "qgsprintlayout.h"
 #include "qgsreport.h"
-  % End
+% End
+// clang-format on
 #endif
 
   /**

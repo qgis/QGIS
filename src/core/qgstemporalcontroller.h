@@ -25,9 +25,11 @@
 #include <QObject>
 
 #ifdef SIP_RUN
+// clang-format off
 % ModuleHeaderCode
 #include <qgstemporalnavigationobject.h>
-  % End
+% End
+// clang-format on
 #endif
 
   /**

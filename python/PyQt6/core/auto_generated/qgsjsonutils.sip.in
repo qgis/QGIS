@@ -374,27 +374,6 @@ Exports all attributes from a :py:class:`QgsFeature` as a JSON map type.
                               same layer.
 %End
 
-    static json exportAttributesToJsonObject( const QgsFeature &feature, QgsVectorLayer *layer = 0, const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>(), bool useFieldFormatters = true );
-%Docstring
-Exports all attributes from a :py:class:`QgsFeature` as a json object.
-
-:param feature: feature to export
-:param layer: optional associated vector layer. If specified, this
-              allows richer export utilising settings like the layer's
-              fields widget configuration.
-:param attributeWidgetCaches: optional widget configuration cache. Can
-                              be used to speed up exporting the
-                              attributes for multiple features from the
-                              same layer.
-:param useFieldFormatters: Whether field formatters should be used
-                           (since QGIS 3.40)
-
-.. note::
-
-   Not available in Python bindings
-
-.. versionadded:: 3.8
-%End
 
     static QVariantList parseArray( const QString &json, QMetaType::Type type = QMetaType::Type::UnknownType );
 %Docstring

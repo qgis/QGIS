@@ -32,7 +32,7 @@ settings description for the gui.
 #include "qgssettingsentry.h"
 %End
 %ConvertToSubClassCode
-    if ( dynamic_cast< QgsSettingsEntryVariant * >( sipCpp ) )
+if ( dynamic_cast< QgsSettingsEntryVariant * >( sipCpp ) )
       sipType = sipType_QgsSettingsEntryVariant;
     else if ( dynamic_cast< QgsSettingsEntryString * >( sipCpp ) )
       sipType = sipType_QgsSettingsEntryString;
@@ -389,14 +389,18 @@ session.
 
 };
 
-template<T> class QgsSettingsEntryBaseTemplate : public QgsSettingsEntryBase
+template<class T> class QgsSettingsEntryBaseTemplate : QgsSettingsEntryBase
 {
-%Docstring
+%Docstring(signature="appended")
 Base abstract class for settings entries with typed get and set methods.
 
 .. seealso:: :py:class:`QgsSettingsEntryBase`
 
 .. versionadded:: 3.32
+%End
+
+%TypeHeaderCode
+#include "qgssettingsentry.h"
 %End
   public:
     QgsSettingsEntryBaseTemplate(

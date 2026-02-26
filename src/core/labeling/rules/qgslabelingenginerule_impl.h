@@ -203,10 +203,13 @@ class CORE_EXPORT QgsLabelingEngineRuleMinimumDistanceLabelToFeature : public Qg
     QString displayType() const override;
     QString description() const override;
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode const QString str = u"<QgsLabelingEngineRuleMinimumDistanceLabelToFeature: %1>"_s.arg( sipCpp->name() );
+    % MethodCode
+    const QString str = u"<QgsLabelingEngineRuleMinimumDistanceLabelToFeature: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off
@@ -235,10 +238,13 @@ class CORE_EXPORT QgsLabelingEngineRuleMaximumDistanceLabelToFeature : public Qg
     QString description() const override;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode const QString str = u"<QgsLabelingEngineRuleMaximumDistanceLabelToFeature: %1>"_s.arg( sipCpp->name() );
+    % MethodCode
+    const QString str = u"<QgsLabelingEngineRuleMaximumDistanceLabelToFeature: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off
@@ -274,10 +280,13 @@ class CORE_EXPORT QgsLabelingEngineRuleMinimumDistanceLabelToLabel : public QgsA
     bool candidatesAreConflicting( const pal::LabelPosition *lp1, const pal::LabelPosition *lp2 ) const override SIP_SKIP;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode const QString str = u"<QgsLabelingEngineRuleMinimumDistanceLabelToLabel: %1>"_s.arg( sipCpp->name() );
+    % MethodCode
+    const QString str = u"<QgsLabelingEngineRuleMinimumDistanceLabelToLabel: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
       /**
@@ -400,10 +409,13 @@ class CORE_EXPORT QgsLabelingEngineRuleAvoidLabelOverlapWithFeature : public Qgs
     bool candidateIsIllegal( const pal::LabelPosition *candidate, QgsLabelingEngineContext &context ) const override SIP_SKIP;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode const QString str = u"<QgsLabelingEngineRuleAvoidLabelOverlapWithFeature: %1>"_s.arg( sipCpp->name() );
+    % MethodCode
+    const QString str = u"<QgsLabelingEngineRuleAvoidLabelOverlapWithFeature: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
       /**

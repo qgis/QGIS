@@ -103,7 +103,7 @@ the fix fails
 %Docstring
 Resets the triangular mesh
 %End
-    bool
+    bool faceCanBeAdded( const QgsMeshFace &face ) const;
 %Docstring
 Returns ``True`` if a ``face`` can be added to the mesh
 
@@ -111,7 +111,6 @@ Returns ``True`` if a ``face`` can be added to the mesh
 
    All vertices related to this face must be already in the mesh.
 %End
-      faceCanBeAdded( const QgsMeshFace &face ) const;
 
     bool faceCanBeAddedWithNewVertices( const QList<int> &verticesIndex, const QList<QgsMeshVertex> &newVertices ) const;
 %Docstring
@@ -123,13 +122,12 @@ in ``newVertices`` sorted by their positions in the face.
 
 .. versionadded:: 3.30
 %End
-    bool
+    bool isFaceGeometricallyCompatible( const QgsMeshFace &face ) const;
 %Docstring
 Returns ``True`` if the face does not intersect or contains any other
 elements (faces or vertices) The topological compatibility is not
 checked
 %End
-      isFaceGeometricallyCompatible( const QgsMeshFace &face ) const;
 
     QgsMeshEditingError addFaces( const QVector<QgsMeshFace> &faces );
 %Docstring
@@ -207,7 +205,7 @@ effectivly added.
    this operation remove including face if exists and replace it by new faces surrounding the vertex
    if the mesh hasn't topological error before this operation, the toological operation always succeed.
 %End
-    int
+    int addPointsAsVertices( const QVector<QgsPoint> &point, double tolerance );
 %Docstring
 Adds points as vertices in triangular mesh coordinate in the mesh.
 Vertex is effectivly added if the transform from triangular coordinate
@@ -220,7 +218,6 @@ vertices effectivly added.
    this operation remove including face if exists and replace it by new faces surrounding the vertex
    if the mesh hasn't topological error before this operation, the toological operation always succeed
 %End
-      addPointsAsVertices( const QVector<QgsPoint> &point, double tolerance );
 
     QgsMeshEditingError removeVerticesWithoutFillHoles( const QList<int> &verticesToRemoveIndexes );
 %Docstring
@@ -264,14 +261,13 @@ transformation is done in layer coordinates
    all the mesh are supposed to path through this transform function (but it is possible that transform function is not able to transform all vertices).
    Moving free vertices of the mesh is also checked.
 %End
-    void
+    void changeXYValues( const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
 %Docstring
 Changes the (X,Y) coordinates values of the vertices with indexes in
 ``verticesIndexes`` with the values in ``newValues``. The caller has the
 responsibility to check if changing the vertices coordinates does not
 lead to topological errors. New values are in layer CRS.
 %End
-      changeXYValues( const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
 
     void changeCoordinates( const QList<int> &verticesIndexes, const QList<QgsPoint> &newCoordinates );
 %Docstring

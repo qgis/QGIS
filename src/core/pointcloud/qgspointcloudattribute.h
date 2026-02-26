@@ -104,10 +104,13 @@ class CORE_EXPORT QgsPointCloudAttribute
     static bool isNumeric( DataType type );
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsPointCloudAttribute: %1 (%2)>"_s.arg( sipCpp->name() ).arg( sipCpp->displayType() );
+    % MethodCode
+    QString str = u"<QgsPointCloudAttribute: %1 (%2)>"_s.arg( sipCpp->name() ).arg( sipCpp->displayType() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
       /**

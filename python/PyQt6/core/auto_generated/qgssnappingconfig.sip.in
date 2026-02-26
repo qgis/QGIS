@@ -378,9 +378,8 @@ enabled
 Returns individual snapping settings for all layers
 %End
 %MethodCode
-      // Create the dictionary.
-      PyObject *d
-      = PyDict_New();
+    // Create the dictionary.
+    PyObject *d = PyDict_New();
     if ( !d )
       return nullptr;
     // Set the dictionary elements.

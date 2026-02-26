@@ -319,8 +319,13 @@ class CORE_EXPORT QgsSensorThingsExpansionDefinition
     bool operator!=( const QgsSensorThingsExpansionDefinition &other ) const;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode if ( !sipCpp->isValid() ) { sipRes = PyUnicode_FromString( "<QgsSensorThingsExpansionDefinition: invalid>" ); }
+    % MethodCode
+    if ( !sipCpp->isValid() )
+    {
+      sipRes = PyUnicode_FromString( "<QgsSensorThingsExpansionDefinition: invalid>" );
+    }
     else
     {
       QString innerDefinition;
@@ -346,7 +351,8 @@ class CORE_EXPORT QgsSensorThingsExpansionDefinition
       QString str = u"<QgsSensorThingsExpansionDefinition: %1%2>"_s.arg( qgsEnumValueToKey( sipCpp->childEntity() ), innerDefinition.isEmpty() ? QString() : ( u" "_s + innerDefinition ) );
       sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     }
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off

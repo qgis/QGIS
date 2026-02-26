@@ -43,7 +43,8 @@ Authority name, e.g. EPSG.
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str;
+%MethodCode
+    QString str;
     if ( !sipCpp->isValid() )
     {
       str = QStringLiteral( "<QgsCelestialBody: invalid>" );

@@ -27,7 +27,11 @@ Returns ``True`` if an object is currently owned by Python.
 If ``False`` is returned, then the object is currently owned by another
 object (e.g. a c++ class).
 %End
-%MethodCode if ( sipIsOwnedByPython( ( sipSimpleWrapper * ) a0Wrapper ) ) { sipRes = true; }
+%MethodCode
+    if ( sipIsOwnedByPython( ( sipSimpleWrapper * )a0Wrapper ) )
+    {
+      sipRes = true;
+    }
     else
     {
       sipRes = false;

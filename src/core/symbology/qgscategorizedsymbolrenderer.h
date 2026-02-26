@@ -146,12 +146,17 @@ class CORE_EXPORT QgsRendererCategory
     bool toSld( QDomDocument &doc, QDomElement &element, const QString &classAttribute, QgsSldExportContext &context ) const;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode const QString str = !sipCpp->value().isValid()  ? u"<QgsRendererCategory>"_s
-                                     : sipCpp->label().isEmpty() ? u"<QgsRendererCategory: %1>"_s.arg( sipCpp->value().toString() )
-                                                                 : u"<QgsRendererCategory: %1 (%2)>"_s.arg( sipCpp->value().toString(), sipCpp->label() );
+    % MethodCode
+    const QString str = !sipCpp->value().isValid()
+                        ? u"<QgsRendererCategory>"_s
+                        : sipCpp->label().isEmpty()
+                        ? u"<QgsRendererCategory: %1>"_s.arg( sipCpp->value().toString() )
+                        : u"<QgsRendererCategory: %1 (%2)>"_s.arg( sipCpp->value().toString(), sipCpp->label() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off

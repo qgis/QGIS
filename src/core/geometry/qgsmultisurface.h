@@ -46,6 +46,7 @@ class CORE_EXPORT QgsMultiSurface : public QgsGeometryCollection
      */
     QgsSurface *surfaceN( int index );
 #else
+// clang-format off
 
     /**
      * Returns the surface with the specified \a index.
@@ -66,6 +67,7 @@ class CORE_EXPORT QgsMultiSurface : public QgsGeometryCollection
       return sipConvertFromType( sipCpp->surfaceN( a0 ), sipType_QgsSurface, NULL );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN

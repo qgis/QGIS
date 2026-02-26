@@ -34,8 +34,7 @@ Constructor
 
     SIP_PYOBJECT __repr__();
 %MethodCode
-        QString str
-      = QStringLiteral( "<QgsZipItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+    QString str = QStringLiteral( "<QgsZipItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

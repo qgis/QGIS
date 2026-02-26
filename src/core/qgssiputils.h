@@ -31,6 +31,7 @@ class CORE_EXPORT QgsSipUtils
 {
   public:
 #ifdef SIP_RUN
+    // clang-format off
     /**
      * Returns TRUE if an object is currently owned by Python.
      *
@@ -38,12 +39,17 @@ class CORE_EXPORT QgsSipUtils
      * object (e.g. a c++ class).
      */
     static bool isPyOwned( SIP_PYOBJECT SIP_GETWRAPPER );
-    % MethodCode if ( sipIsOwnedByPython( ( sipSimpleWrapper * ) a0Wrapper ) ) { sipRes = true; }
+    % MethodCode
+    if ( sipIsOwnedByPython( ( sipSimpleWrapper * )a0Wrapper ) )
+    {
+      sipRes = true;
+    }
     else
     {
       sipRes = false;
     }
     % End
+// clang-format on
 #endif
 };
 

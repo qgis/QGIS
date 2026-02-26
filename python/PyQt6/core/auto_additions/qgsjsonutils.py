@@ -4,7 +4,6 @@ try:
     QgsJsonUtils.stringToFields = staticmethod(QgsJsonUtils.stringToFields)
     QgsJsonUtils.encodeValue = staticmethod(QgsJsonUtils.encodeValue)
     QgsJsonUtils.exportAttributes = staticmethod(QgsJsonUtils.exportAttributes)
-    QgsJsonUtils.exportAttributesToJsonObject = staticmethod(QgsJsonUtils.exportAttributesToJsonObject)
     QgsJsonUtils.parseArray = staticmethod(QgsJsonUtils.parseArray)
     QgsJsonUtils.geometryFromGeoJson = staticmethod(QgsJsonUtils.geometryFromGeoJson)
 except (NameError, AttributeError):

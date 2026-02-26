@@ -123,28 +123,6 @@ coordinates).
 
 .. versionadded:: 3.22
 %End
-        void setLockedSnapVertices( const QQueue< QgsPointLocator::Match > &lockedSnapVertices );
-%Docstring
-Sets the queue of locked vertices.
-
-Point locator matches are stored instead of vertices to keep more
-context.
-
-.. seealso:: :py:func:`lockedSnapVertices`
-
-.. versionadded:: 3.26
-%End
-
-        QQueue< QgsPointLocator::Match > lockedSnapVertices() const;
-%Docstring
-Returns the queue of point locator matches that contain the locked
-vertices.
-
-.. seealso:: :py:func:`setLockedSnapVertices`
-
-.. versionadded:: 3.26
-%End
-
 %Property( name = cadPointList, get = _cadPointList, set = _setCadPointList )
         void _setCadPointList( const QList< QgsPointXY > &list );
         QList< QgsPointXY > _cadPointList() const;

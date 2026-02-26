@@ -57,15 +57,17 @@ Returns the geometry type for features returned by this source.
 Returns the number of features contained in the source, or -1 if the
 feature count is unknown.
 %End
-%MethodCode sipRes = sipCpp->featureCount();
+%MethodCode
+    sipRes = sipCpp->featureCount();
 %End
 
-      //! Ensures that bool(obj) returns ``True`` (otherwise __len__() would be used)
-      int __bool__() const;
-%MethodCode sipRes = true;
+    //! Ensures that bool(obj) returns ``True`` (otherwise __len__() would be used)
+    int __bool__() const;
+%MethodCode
+    sipRes = true;
 %End
 
-      virtual long long featureCount() const;
+      virtual long long featureCount() const = 0;
 %Docstring
 Returns the number of features contained in the source, or -1 if the
 feature count is unknown.

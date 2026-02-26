@@ -52,7 +52,8 @@ Authority code, e.g. "8447" (for EPSG:8447).
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString id;
+%MethodCode
+    QString id;
     if ( !sipCpp->code().isEmpty() )
       id = QStringLiteral( "%1 (%2:%3)" ).arg( sipCpp->name(), sipCpp->authority(), sipCpp->code() );
     else
@@ -121,7 +122,8 @@ Contains a list of members of the ensemble.
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str;
+%MethodCode
+    QString str;
     if ( !sipCpp->isValid() )
     {
       str = QStringLiteral( "<QgsDatumEnsemble: invalid>" );

@@ -63,10 +63,13 @@ class CORE_EXPORT QgsTileXYZ
     bool operator!=( const QgsTileXYZ &other ) const { return !( *this == other ); }
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode const QString str = u"<QgsTileXYZ: %1, %2, %3>"_s.arg( sipCpp->column() ).arg( sipCpp->row() ).arg( sipCpp->zoomLevel() );
+    % MethodCode
+    const QString str = u"<QgsTileXYZ: %1, %2, %3>"_s.arg( sipCpp->column() ).arg( sipCpp->row() ).arg( sipCpp->zoomLevel() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off

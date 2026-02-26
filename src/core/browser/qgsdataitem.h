@@ -73,12 +73,12 @@ class CORE_EXPORT QgsDataItem : public QObject
       sipType = sipType_QgsProjectItem;
     else
       sipType = 0;
-    SIP_END
+  SIP_END
 #endif
 
-    Q_OBJECT
+  Q_OBJECT
 
-  public:
+    public :
     /**
      * Constructor for QgsDataItem, with the specified \a parent item.
      *
@@ -95,12 +95,13 @@ class CORE_EXPORT QgsDataItem : public QObject
     ~QgsDataItem() override;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-        QString str
-      = u"<QgsDataItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
+    QString str = u"<QgsDataItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
       /**
@@ -347,8 +348,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      *
      * \since QGIS 3.38
      */
-    template<class T>
-    static QList< T * > filteredItems( const QList< QgsDataItem * > &items )
+    template<class T> static QList< T * > filteredItems( const QList< QgsDataItem * > &items )
     {
       QList< T * > result;
       result.reserve( items.size() );
@@ -649,12 +649,13 @@ class CORE_EXPORT QgsErrorItem : public QgsDataItem
     QgsErrorItem( QgsDataItem *parent, const QString &error, const QString &path );
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-        QString str
-      = u"<QgsErrorItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
+    QString str = u"<QgsErrorItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 };
 

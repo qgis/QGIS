@@ -69,6 +69,7 @@ class CORE_EXPORT QgsPathResolver
      */
     static QString setPathPreprocessor( const std::function< QString( const QString &filename )> &processor );
 #else
+    // clang-format off
 
     /**
      * Sets a path pre-processor function, which allows for manipulation of paths and data sources prior
@@ -114,10 +115,13 @@ class CORE_EXPORT QgsPathResolver
      * \since QGIS 3.10
      */
     static QString setPathPreprocessor( SIP_PYCALLABLE / AllowNone / );
-    % MethodCode PyObject *s = 0;
+    % MethodCode
+    PyObject *s = 0;
     QString id;
     Py_XINCREF( a0 );
-    Py_BEGIN_ALLOW_THREADS id = QgsPathResolver::setPathPreprocessor( [a0]( const QString &arg ) -> QString {
+    Py_BEGIN_ALLOW_THREADS
+    id = QgsPathResolver::setPathPreprocessor( [a0]( const QString &arg )->QString
+    {
       QString res;
       SIP_BLOCK_THREADS
       PyObject *s = sipCallMethod( NULL, a0, "D", &arg, sipType_QString, NULL );
@@ -133,9 +137,11 @@ class CORE_EXPORT QgsPathResolver
       return res;
     } );
 
-    Py_END_ALLOW_THREADS s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
+    Py_END_ALLOW_THREADS
+    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
     return s;
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -152,8 +158,9 @@ class CORE_EXPORT QgsPathResolver
      */
     static bool removePathPreprocessor( const QString &id );
 #else
+      // clang-format off
 
-      /**
+    /**
      * Removes the custom pre-processor function with matching \a id.
      *
      * The \a id must correspond to a pre-processor previously added via a call to setPathPreprocessor().
@@ -163,13 +170,15 @@ class CORE_EXPORT QgsPathResolver
      * \see setPathPreprocessor()
      * \since QGIS 3.10
      */
-      static void removePathPreprocessor( const QString &id );
-    % MethodCode if ( !QgsPathResolver::removePathPreprocessor( *a0 ) )
+    static void removePathPreprocessor( const QString &id );
+    % MethodCode
+    if ( !QgsPathResolver::removePathPreprocessor( *a0 ) )
     {
       PyErr_SetString( PyExc_KeyError, u"No processor with id %1 exists."_s.arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;
     }
     % End
+// clang-format on
 #endif
 
 
@@ -194,8 +203,9 @@ class CORE_EXPORT QgsPathResolver
 #ifndef SIP_RUN
     static QString setPathWriter( const std::function< QString( const QString &filename )> &writer );
 #else
+      // clang-format off
 
-      /**
+    /**
      * Sets a path writer function, which allows for manipulation of paths and data sources prior
      * to writing them to the project file.
      *
@@ -218,11 +228,14 @@ class CORE_EXPORT QgsPathResolver
      *
      * \since QGIS 3.22
      */
-      static QString setPathWriter( SIP_PYCALLABLE / AllowNone / );
-    % MethodCode PyObject *s = 0;
+    static QString setPathWriter( SIP_PYCALLABLE / AllowNone / );
+    % MethodCode
+    PyObject *s = 0;
     QString id;
     Py_XINCREF( a0 );
-    Py_BEGIN_ALLOW_THREADS id = QgsPathResolver::setPathWriter( [a0]( const QString &arg ) -> QString {
+    Py_BEGIN_ALLOW_THREADS
+    id = QgsPathResolver::setPathWriter( [a0]( const QString &arg )->QString
+    {
       QString res;
       SIP_BLOCK_THREADS
       PyObject *s = sipCallMethod( NULL, a0, "D", &arg, sipType_QString, NULL );
@@ -238,9 +251,11 @@ class CORE_EXPORT QgsPathResolver
       return res;
     } );
 
-    Py_END_ALLOW_THREADS s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
+    Py_END_ALLOW_THREADS
+    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
     return s;
     % End
+// clang-format on
 #endif
 
     /**
@@ -256,8 +271,9 @@ class CORE_EXPORT QgsPathResolver
 #ifndef SIP_RUN
     static bool removePathWriter( const QString &id );
 #else
+      // clang-format off
 
-      /**
+    /**
      * Removes the custom writer function with matching \a id.
      *
      * The \a id must correspond to a writer previously added via a call to setPathWriter().
@@ -266,13 +282,15 @@ class CORE_EXPORT QgsPathResolver
      * \see setPathWriter()
      * \since QGIS 3.22
      */
-      static void removePathWriter( const QString &id );
-    % MethodCode if ( !QgsPathResolver::removePathWriter( *a0 ) )
+    static void removePathWriter( const QString &id );
+    % MethodCode
+    if ( !QgsPathResolver::removePathWriter( *a0 ) )
     {
       PyErr_SetString( PyExc_KeyError, u"No writer with id %1 exists."_s.arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;
     }
-  % End
+    % End
+// clang-format on
 #endif
 
   private:

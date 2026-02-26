@@ -44,7 +44,7 @@ GEOS geometry engine constructor
 
 
 
-    std::unique_ptr< QgsAbstractGeometry > makeValid( Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework, bool keepCollapsed = false, QString *errorMsg = 0 ) const SIP_THROW(
+    std::unique_ptr< QgsAbstractGeometry > makeValid( Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework, bool keepCollapsed = false, QString *errorMsg = 0 ) const;
 %Docstring
 Repairs the geometry using GEOS make valid routine.
 
@@ -58,8 +58,6 @@ GEOS 3.10 or later.
 
 .. versionadded:: 3.20
 %End
-      QgsNotSupportedException
-    );
 
 
     virtual void geometryChanged();
@@ -379,7 +377,7 @@ This method requires a QGIS build based on GEOS 3.9 or later.
 .. versionadded:: 3.20
 %End
 
-    std::unique_ptr< QgsAbstractGeometry > largestEmptyCircle( double tolerance, const QgsAbstractGeometry *boundary = 0, QString *errorMsg /Out/ = 0 ) const SIP_THROW(
+    std::unique_ptr< QgsAbstractGeometry > largestEmptyCircle( double tolerance, const QgsAbstractGeometry *boundary = 0, QString *errorMsg /Out/ = 0 ) const;
 %Docstring
 Constructs the Largest Empty Circle for a set of obstacle geometries, up
 to a specified tolerance.
@@ -416,8 +414,6 @@ This method requires a QGIS build based on GEOS 3.9 or later.
 
 .. versionadded:: 3.20
 %End
-      QgsNotSupportedException
-    );
 
     std::unique_ptr< QgsAbstractGeometry > minimumWidth( QString *errorMsg /Out/ = 0 ) const;
 %Docstring

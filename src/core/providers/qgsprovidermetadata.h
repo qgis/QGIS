@@ -267,13 +267,12 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
 #ifndef SIP_RUN
     virtual QList< Qgis::LayerType > supportedLayerTypes() const;
 #else
+    // clang-format off
     SIP_PYOBJECT supportedLayerTypes() const SIP_TYPEHINT( List[Qgis.LayerType] );
     % MethodCode
-      // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+    // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
 
-      const QList< Qgis::LayerType >
-        cppRes
-      = sipCpp->supportedLayerTypes();
+    const QList< Qgis::LayerType > cppRes = sipCpp->supportedLayerTypes();
 
     PyObject *l = PyList_New( cppRes.size() );
 
@@ -283,7 +282,8 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     {
       for ( int i = 0; i < cppRes.size(); ++i )
       {
-        PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ), sipType_Qgis_LayerType );
+        PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ),
+                                             sipType_Qgis_LayerType );
 
         if ( !eobj )
         {
@@ -303,6 +303,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
       }
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -806,10 +807,13 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     virtual void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) SIP_THROW( QgsProviderConnectionException );
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsProviderMetadata: %1>"_s.arg( sipCpp->key() );
+    % MethodCode
+    QString str = u"<QgsProviderMetadata: %1>"_s.arg( sipCpp->key() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
         signals :

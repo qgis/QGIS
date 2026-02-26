@@ -125,21 +125,25 @@ class CORE_EXPORT QgsBlockingProcess : public QObject
      */
     void setStdOutHandler( const std::function< void( const QByteArray & ) > &handler ) { mStdoutHandler = handler; }
 #else
+    // clang-format off
 
     /**
      * Sets a handler function to call whenever content is written by the process to stdout.
      */
     void setStdOutHandler( SIP_PYCALLABLE / AllowNone / );
-    % MethodCode Py_BEGIN_ALLOW_THREADS
+    % MethodCode
+    Py_BEGIN_ALLOW_THREADS
 
-        sipCpp->setStdOutHandler( [a0]( const QByteArray &arg ) {
-          SIP_BLOCK_THREADS
-          Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QByteArray, NULL ) );
-          SIP_UNBLOCK_THREADS
-        } );
+    sipCpp->setStdOutHandler( [a0]( const QByteArray &arg )
+    {
+      SIP_BLOCK_THREADS
+      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QByteArray, NULL ) );
+      SIP_UNBLOCK_THREADS
+    } );
 
     Py_END_ALLOW_THREADS
-      % End
+    % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -149,21 +153,25 @@ class CORE_EXPORT QgsBlockingProcess : public QObject
      */
     void setStdErrHandler( const std::function< void( const QByteArray & ) > &handler ) { mStderrHandler = handler; }
 #else
+      // clang-format off
 
-      /**
+    /**
      * Sets a \a handler function to call whenever content is written by the process to stderr.
      */
-      void setStdErrHandler( SIP_PYCALLABLE / AllowNone / );
-    % MethodCode Py_BEGIN_ALLOW_THREADS
+    void setStdErrHandler( SIP_PYCALLABLE / AllowNone / );
+    % MethodCode
+    Py_BEGIN_ALLOW_THREADS
 
-        sipCpp->setStdErrHandler( [a0]( const QByteArray &arg ) {
-          SIP_BLOCK_THREADS
-          Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QByteArray, NULL ) );
-          SIP_UNBLOCK_THREADS
-        } );
+    sipCpp->setStdErrHandler( [a0]( const QByteArray &arg )
+    {
+      SIP_BLOCK_THREADS
+      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QByteArray, NULL ) );
+      SIP_UNBLOCK_THREADS
+    } );
 
     Py_END_ALLOW_THREADS
-      % End
+    % End
+// clang-format on
 #endif
 
     /**

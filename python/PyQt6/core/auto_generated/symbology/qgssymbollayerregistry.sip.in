@@ -89,11 +89,6 @@ layer and its widget.
 #include "qgssymbollayerregistry.h"
 %End
   public:
-                 mCreateFunc( pfCreate ),
-                 mWidgetFunc( pfWidget ),
-                 mCreateFromSldFunc( pfCreateFromSld ),
-                 mPathResolverFunc( pfPathResolver ),
-                 mFontResolverFunc( pfFontResolver );
 
 
 

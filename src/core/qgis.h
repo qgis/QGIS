@@ -33,13 +33,15 @@
 using namespace Qt::StringLiterals;
 
 #ifdef SIP_RUN
+// clang-format off
 % ModuleHeaderCode
 #include <qgis.h>
-  % End
-
-  % ModuleCode int QgisEvent
-  = QEvent::User + 1;
 % End
+
+% ModuleCode
+int QgisEvent = QEvent::User + 1;
+% End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -6126,8 +6128,9 @@ using namespace Qt::StringLiterals;
       Variance = 1 << 11,     //!< Variance of pixel values
       MinimumPoint = 1 << 12, //!< Pixel centroid for minimum pixel value \since QGIS 3.42
       MaximumPoint = 1 << 13, //!< Pixel centroid for maximum pixel value \since QGIS 3.42
-      All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety
-            | Variance, //!< All statistics. For QGIS 3.x this includes ONLY numeric statistics, but for 4.0 this will be extended to included non-numeric statistics. Consider using AllNumeric instead.
+      // clang-format off
+      All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | Variance, //!< All statistics. For QGIS 3.x this includes ONLY numeric statistics, but for 4.0 this will be extended to included non-numeric statistics. Consider using AllNumeric instead.
+      // clang-format on
       AllNumeric = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | Variance, //!< All numeric statistics \since QGIS 3.42
       Default = Count | Sum | Mean,                                                                                    //!< Default statistics
     };

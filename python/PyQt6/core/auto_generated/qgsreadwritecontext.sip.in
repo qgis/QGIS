@@ -51,7 +51,8 @@ Returns the stack of categories of the message
         bool operator!=( const QgsReadWriteContext::ReadWriteMessage &other ) const;
 
         SIP_PYOBJECT __repr__();
-%MethodCode QString str = QStringLiteral( "<QgsReadWriteContext.ReadWriteMessage: %1>" ).arg( sipCpp->message() );
+%MethodCode
+        QString str = QStringLiteral( "<QgsReadWriteContext.ReadWriteMessage: %1>" ).arg( sipCpp->message() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

@@ -50,9 +50,11 @@ class CORE_EXPORT QgsActionScope
 {
   public:
 #ifdef SIP_RUN
+    // clang-format off
     % TypeCode
 #include <QHash>
-      % End
+    % End
+// clang-format on
 #endif
 
       /**

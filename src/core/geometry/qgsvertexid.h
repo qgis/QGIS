@@ -102,11 +102,13 @@ struct CORE_EXPORT QgsVertexId
   Qgis::VertexType type = Qgis::VertexType::Segment;
 
 #ifdef SIP_RUN
+// clang-format off
   SIP_PYOBJECT __repr__();
   % MethodCode
   QString str = u"<QgsVertexId: %1,%2,%3 %4>"_s.arg( sipCpp->part ).arg( sipCpp->ring ).arg( sipCpp->vertex ).arg( qgsEnumValueToKey( sipCpp->type ) );
   sipRes = PyUnicode_FromString( str.toUtf8().data() );
   % End
+// clang-format on
 #endif
 
 };

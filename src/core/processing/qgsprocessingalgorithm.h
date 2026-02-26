@@ -38,9 +38,11 @@ class QgsMeshLayer;
 class QgsPointCloudLayer;
 
 #ifdef SIP_RUN
+// clang-format off
 % ModuleHeaderCode
 #include <qgsprocessingmodelalgorithm.h>
-  % End
+% End
+// clang-format on
 #endif
 
   /**

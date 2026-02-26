@@ -41,9 +41,11 @@ class QgsExpressionContext;
 class QgsVectorLayerFeatureIterator;
 
 #ifdef SIP_RUN
+// clang-format off
 % ModuleHeaderCode
 #include "qgsfeatureiterator.h"
-  % End
+% End
+// clang-format on
 #endif
 
   /**

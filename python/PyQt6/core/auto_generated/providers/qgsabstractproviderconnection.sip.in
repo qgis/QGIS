@@ -32,7 +32,7 @@ connections from the settings.
 #include "qgsabstractproviderconnection.h"
 %End
 %ConvertToSubClassCode
-    if ( dynamic_cast<QgsAbstractDatabaseProviderConnection *>( sipCpp ) != NULL )
+if ( dynamic_cast<QgsAbstractDatabaseProviderConnection *>( sipCpp ) != NULL )
     {
       sipType = sipType_QgsAbstractDatabaseProviderConnection;
     }

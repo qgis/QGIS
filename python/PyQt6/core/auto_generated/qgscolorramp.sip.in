@@ -19,7 +19,7 @@ Abstract base class for color ramps.
 #include "qgscolorramp.h"
 %End
 %ConvertToSubClassCode
-    if ( sipCpp->type() == QgsGradientColorRamp::typeString() )
+if ( sipCpp->type() == QgsGradientColorRamp::typeString() )
       sipType = sipType_QgsGradientColorRamp;
     else if ( sipCpp->type() == QgsLimitedRandomColorRamp::typeString() )
       sipType = sipType_QgsLimitedRandomColorRamp;

@@ -1255,6 +1255,7 @@ class CORE_EXPORT QgsVertexIterator
     QgsPoint next();
 
 #ifdef SIP_RUN
+// clang-format off
     QgsVertexIterator *__iter__();
     % MethodCode
     sipRes = sipCpp;
@@ -1267,6 +1268,7 @@ class CORE_EXPORT QgsVertexIterator
     else
       PyErr_SetString( PyExc_StopIteration, "" );
     % End
+// clang-format on
 #endif
 
   private:
@@ -1304,6 +1306,7 @@ class CORE_EXPORT QgsGeometryPartIterator
     QgsAbstractGeometry *next();
 
 #ifdef SIP_RUN
+// clang-format off
     QgsGeometryPartIterator *__iter__();
     % MethodCode
     sipRes = sipCpp;
@@ -1316,6 +1319,7 @@ class CORE_EXPORT QgsGeometryPartIterator
     else
       PyErr_SetString( PyExc_StopIteration, "" );
     % End
+// clang-format on
 #endif
 
   private:
@@ -1354,6 +1358,7 @@ class CORE_EXPORT QgsGeometryConstPartIterator
     const QgsAbstractGeometry *next();
 
 #ifdef SIP_RUN
+// clang-format off
     QgsGeometryConstPartIterator *__iter__();
     % MethodCode
     sipRes = sipCpp;
@@ -1366,6 +1371,7 @@ class CORE_EXPORT QgsGeometryConstPartIterator
     else
       PyErr_SetString( PyExc_StopIteration, "" );
     % End
+// clang-format on
 #endif
 
   private:

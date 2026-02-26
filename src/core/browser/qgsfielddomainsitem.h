@@ -50,12 +50,13 @@ class CORE_EXPORT QgsFieldDomainsItem : public QgsDataItem
     ~QgsFieldDomainsItem() override;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-        QString str
-      = u"<QgsFieldDomainsItem: %1>"_s.arg( sipCpp->path() );
+    QString str = u"<QgsFieldDomainsItem: %1>"_s.arg( sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
         QVector<QgsDataItem *> createChildren() override;
@@ -94,12 +95,13 @@ class CORE_EXPORT QgsFieldDomainItem : public QgsDataItem
     ~QgsFieldDomainItem() override;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-        QString str
-      = u"<QgsFieldDomainItem: %1>"_s.arg( sipCpp->name() );
+    QString str = u"<QgsFieldDomainItem: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
         QIcon icon() override;

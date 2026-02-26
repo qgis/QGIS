@@ -189,7 +189,7 @@ Abstract node class for SQL statement nodes.
 %End
 
 %ConvertToSubClassCode
-        switch ( sipCpp->nodeType() )
+switch ( sipCpp->nodeType() )
         {
           case QgsSQLStatement::ntUnaryOperator:
             sipType = sipType_QgsSQLStatement_NodeUnaryOperator;

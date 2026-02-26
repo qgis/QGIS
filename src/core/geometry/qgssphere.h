@@ -178,6 +178,7 @@ class CORE_EXPORT QgsSphere
     QgsBox3D boundingBox() const SIP_HOLDGIL;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str;
@@ -191,6 +192,7 @@ class CORE_EXPORT QgsSphere
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
   private:

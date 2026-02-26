@@ -23,7 +23,7 @@ Abstract base class for symbol layers.
 #include "qgslinesymbollayer.h"
 %End
 %ConvertToSubClassCode
-    switch ( sipCpp->type() )
+switch ( sipCpp->type() )
     {
       case Qgis::SymbolType::Marker:
         if ( sipCpp->layerType() == "EllipseMarker" )

@@ -105,9 +105,10 @@ create a new layer corresponding to the URI.
 
         QString filePath;
 
-        SIP_PYOBJECT __repr__();
-%MethodCode QString str = QStringLiteral( "<QgsMimeDataUtils::Uri (%1): %2>" ).arg( sipCpp->providerKey, sipCpp->uri );
-        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+      SIP_PYOBJECT __repr__();
+%MethodCode
+      QString str = QStringLiteral( "<QgsMimeDataUtils::Uri (%1): %2>" ).arg( sipCpp->providerKey, sipCpp->uri );
+      sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
     };
     typedef QList<QgsMimeDataUtils::Uri> UriList;

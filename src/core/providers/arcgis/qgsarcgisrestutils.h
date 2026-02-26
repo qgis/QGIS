@@ -242,12 +242,12 @@ class CORE_EXPORT QgsArcGisRestUtils
      *
      * \since QGIS 3.28
      */
-    static QVariantMap featureToJson(
-      const QgsFeature &feature, const QgsArcGisRestContext &context, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
-      QgsArcGisRestUtils::FeatureToJsonFlags flags = QgsArcGisRestUtils::FeatureToJsonFlags(
-        static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeGeometry ) | static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeNonObjectIdAttributes )
-      )
-    );
+    // clang-format off
+    static QVariantMap featureToJson( const QgsFeature &feature,
+                                      const QgsArcGisRestContext &context,
+                                      const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+                                      QgsArcGisRestUtils::FeatureToJsonFlags flags = QgsArcGisRestUtils::FeatureToJsonFlags( static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeGeometry ) | static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeNonObjectIdAttributes ) ) );
+    // clang-format on
 
     /**
      * Converts a variant to a REST attribute value.

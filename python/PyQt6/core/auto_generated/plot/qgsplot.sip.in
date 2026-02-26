@@ -30,7 +30,7 @@ Base class for plot/chart/graphs.
 #include "qgspiechartplot.h"
 %End
 %ConvertToSubClassCode
-    if ( QgsPlot *item = dynamic_cast< QgsPlot * >( sipCpp ) )
+if ( QgsPlot *item = dynamic_cast< QgsPlot * >( sipCpp ) )
     {
       if ( dynamic_cast<QgsBarChartPlot *>( item ) != NULL )
       {
@@ -182,7 +182,7 @@ An abstract class used to encapsulate the data for a plot series.
 #include "qgsplot.h"
 %End
 %ConvertToSubClassCode
-    if ( QgsAbstractPlotSeries *item = dynamic_cast< QgsAbstractPlotSeries * >( sipCpp ) )
+if ( QgsAbstractPlotSeries *item = dynamic_cast< QgsAbstractPlotSeries * >( sipCpp ) )
     {
       if ( dynamic_cast<QgsXyPlotSeries *>( item ) != NULL )
       {

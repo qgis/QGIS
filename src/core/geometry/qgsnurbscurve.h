@@ -70,6 +70,7 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
      */
     [[nodiscard]] QgsPoint evaluate( double t ) const;
 #else
+    // clang-format off
 
     /**
      * Evaluates the NURBS curve at parameter t ∈ [0,1].
@@ -79,7 +80,8 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
      * \throws ValueError if t is not in range [0, 1]
      */
     SIP_PYOBJECT evaluate( double t ) const SIP_TYPEHINT( QgsPoint );
-    % MethodCode if ( a0 < 0.0 || a0 > 1.0 )
+    % MethodCode
+    if ( a0 < 0.0 || a0 > 1.0 )
     {
       PyErr_SetString( PyExc_ValueError, "Parameter t must be in range [0, 1]" );
       sipIsErr = 1;
@@ -89,6 +91,7 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
       sipRes = sipConvertFromType( new QgsPoint( sipCpp->evaluate( a0 ) ), sipType_QgsPoint, Py_None );
     }
     % End
+// clang-format on
 #endif
 
     // clang-format off
@@ -284,6 +287,7 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
      */
     bool setWeight( int index, double weight );
 #else
+// clang-format off
 
     /**
      * Returns the weight at the specified control point \a index.
@@ -331,6 +335,7 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
       sipCpp->setWeight( a0, a1 );
     }
     % End
+// clang-format on
 #endif
 
     /**

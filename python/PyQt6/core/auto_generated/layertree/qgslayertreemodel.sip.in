@@ -36,7 +36,7 @@ to show legend or whether to allow changes to the layer tree.
 #include "qgslayertreemodel.h"
 %End
 %ConvertToSubClassCode
-    if ( sipCpp->inherits( "QgsLayerTreeModel" ) )
+if ( sipCpp->inherits( "QgsLayerTreeModel" ) )
       sipType = sipType_QgsLayerTreeModel;
     else
       sipType = 0;

@@ -132,16 +132,20 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 
 
 #ifdef SIP_RUN
+        // clang-format off
         // Python iterator
         QueryResult *__iter__();
-        % MethodCode sipRes = sipCpp;
+        % MethodCode
+        sipRes = sipCpp;
         % End
 
-            SIP_PYOBJECT
-          __next__();
-        % MethodCode QList<QVariant> result;
-        Py_BEGIN_ALLOW_THREADS result = sipCpp->nextRow();
-        Py_END_ALLOW_THREADS if ( !result.isEmpty() )
+        SIP_PYOBJECT __next__();
+        % MethodCode
+        QList<QVariant> result;
+        Py_BEGIN_ALLOW_THREADS
+        result = sipCpp->nextRow( );
+        Py_END_ALLOW_THREADS
+        if ( ! result.isEmpty() )
         {
           const sipTypeDef *qvariantlist_type = sipFindType( "QList<QVariant>" );
           sipRes = sipConvertFromNewType( new QList<QVariant>( result ), qvariantlist_type, Py_None );
@@ -151,6 +155,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
           PyErr_SetString( PyExc_StopIteration, "" );
         }
         % End
+// clang-format on
 #endif
 
           ///@cond private
@@ -273,10 +278,13 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     struct CORE_EXPORT TableProperty
     {
 #ifdef SIP_RUN
+        // clang-format off
         SIP_PYOBJECT __repr__();
-        % MethodCode QString str = u"<QgsAbstractDatabaseProviderConnection.TableProperty: '%1'>"_s.arg( sipCpp->tableName() );
+        % MethodCode
+        QString str = u"<QgsAbstractDatabaseProviderConnection.TableProperty: '%1'>"_s.arg( sipCpp->tableName() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
         % End
+// clang-format on
 #endif
 
           /**
@@ -286,10 +294,13 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
           struct CORE_EXPORT GeometryColumnType
         {
 #ifdef SIP_RUN
-            SIP_PYOBJECT __repr__();
-            % MethodCode QString str = u"<QgsAbstractDatabaseProviderConnection.TableProperty.GeometryColumnType: '%1, %2'>"_s.arg( QgsWkbTypes::displayString( sipCpp->wkbType ), sipCpp->crs.authid() );
-            sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-            % End
+            // clang-format off
+          SIP_PYOBJECT __repr__();
+          % MethodCode
+          QString str = u"<QgsAbstractDatabaseProviderConnection.TableProperty.GeometryColumnType: '%1, %2'>"_s.arg( QgsWkbTypes::displayString( sipCpp->wkbType ), sipCpp->crs.authid() );
+          sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+          % End
+// clang-format on
 #endif
                 Qgis::WkbType wkbType;
             QgsCoordinateReferenceSystem crs;
@@ -1097,13 +1108,12 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 #ifndef SIP_RUN
     virtual QList< Qgis::RelationshipCardinality > supportedRelationshipCardinalities() const;
 #else
+    // clang-format off
     SIP_PYOBJECT supportedRelationshipCardinalities() const SIP_TYPEHINT( List[Qgis.RelationshipCardinality] );
     % MethodCode
-      // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+    // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
 
-      const QList< Qgis::RelationshipCardinality >
-        cppRes
-      = sipCpp->supportedRelationshipCardinalities();
+    const QList< Qgis::RelationshipCardinality > cppRes = sipCpp->supportedRelationshipCardinalities();
 
     PyObject *l = PyList_New( cppRes.size() );
 
@@ -1113,7 +1123,8 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     {
       for ( int i = 0; i < cppRes.size(); ++i )
       {
-        PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ), sipType_Qgis_RelationshipCardinality );
+        PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ),
+                                             sipType_Qgis_RelationshipCardinality );
 
         if ( !eobj )
         {
@@ -1133,6 +1144,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       }
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -1143,13 +1155,12 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 #ifndef SIP_RUN
     virtual QList< Qgis::RelationshipStrength > supportedRelationshipStrengths() const;
 #else
-        SIP_PYOBJECT supportedRelationshipStrengths() const SIP_TYPEHINT( List[Qgis.RelationshipStrength] );
+        // clang-format off
+    SIP_PYOBJECT supportedRelationshipStrengths() const SIP_TYPEHINT( List[Qgis.RelationshipStrength] );
     % MethodCode
-      // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+    // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
 
-      const QList< Qgis::RelationshipStrength >
-        cppRes
-      = sipCpp->supportedRelationshipStrengths();
+    const QList< Qgis::RelationshipStrength > cppRes = sipCpp->supportedRelationshipStrengths();
 
     PyObject *l = PyList_New( cppRes.size() );
 
@@ -1159,7 +1170,8 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     {
       for ( int i = 0; i < cppRes.size(); ++i )
       {
-        PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ), sipType_Qgis_RelationshipStrength );
+        PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ),
+                                             sipType_Qgis_RelationshipStrength );
 
         if ( !eobj )
         {
@@ -1179,6 +1191,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       }
     }
     % End
+// clang-format on
 #endif
 
     /**

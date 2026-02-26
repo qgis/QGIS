@@ -140,17 +140,18 @@ CORE_EXPORT uint qHash( const QgsAttributes &attributes );
 
 #ifdef SIP_PYQT5_RUN
 #ifdef SIP_RUN
+// clang-format off
 typedef QVector<QVariant> QgsAttributes;
 
 % MappedType QgsAttributes
 {
   % TypeHeaderCode
 #include "qgsfeature.h"
-    % End
+  % End
 
-    % ConvertFromTypeCode
-    // Create the list.
-    PyObject *l;
+  % ConvertFromTypeCode
+  // Create the list.
+  PyObject *l;
 
   if ( ( l = PyList_New( sipCpp->size() ) ) == NULL )
     return NULL;
@@ -171,7 +172,7 @@ typedef QVector<QVariant> QgsAttributes;
       PyObject *vartype = sipConvertFromEnum( v.type(), sipType_QVariant_Type );
       PyObject *args = PyTuple_Pack( 1, vartype );
       PyTypeObject *typeObj = sipTypeAsPyTypeObject( sipType_QVariant );
-      tobj = PyObject_Call( ( PyObject * ) typeObj, args, nullptr );
+      tobj = PyObject_Call( ( PyObject * )typeObj, args, nullptr );
       Py_DECREF( args );
       Py_DECREF( vartype );
     }
@@ -230,9 +231,9 @@ typedef QVector<QVariant> QgsAttributes;
   return l;
   % End
 
-    % ConvertToTypeCode
-    // Check the type if that is all that is required.
-    if ( sipIsErr == NULL )
+  % ConvertToTypeCode
+  // Check the type if that is all that is required.
+  if ( sipIsErr == NULL )
   {
     if ( !PyList_Check( sipPy ) )
       return 0;
@@ -299,22 +300,24 @@ typedef QVector<QVariant> QgsAttributes;
   return sipGetState( sipTransferObj );
   % End
 };
+// clang-format on
 #endif
 #endif
 
 #ifdef SIP_PYQT6_RUN
 #ifdef SIP_RUN
+// clang-format off
 typedef QVector<QVariant> QgsAttributes;
 
 % MappedType QgsAttributes
 {
   % TypeHeaderCode
 #include "qgsfeature.h"
-    % End
+  % End
 
-    % ConvertFromTypeCode
-    // Create the list.
-    PyObject *l;
+  % ConvertFromTypeCode
+  // Create the list.
+  PyObject *l;
 
   if ( ( l = PyList_New( sipCpp->size() ) ) == NULL )
     return NULL;
@@ -324,11 +327,20 @@ typedef QVector<QVariant> QgsAttributes;
   {
     const QVariant v = sipCpp->at( i );
     PyObject *tobj = NULL;
-    // QByteArray null handling is "special"! See null_from_qvariant_converter in conversions.sip
-    if ( QgsVariantUtils::isNull( v, true ) && v.userType() != QMetaType::Type::QByteArray )
+    if ( !v.isValid() )
     {
       Py_INCREF( Py_None );
       tobj = Py_None;
+    }
+    // QByteArray null handling is "special"! See null_from_qvariant_converter in conversions.sip
+    else if ( QgsVariantUtils::isNull( v, true ) && v.userType() != QMetaType::Type::QByteArray )
+    {
+      PyObject *vartype = sipConvertFromEnum( v.type(), sipType_QVariant_Type );
+      PyObject *args = PyTuple_Pack( 1, vartype );
+      PyTypeObject *typeObj = sipTypeAsPyTypeObject( sipType_QVariant );
+      tobj = PyObject_Call( ( PyObject * )typeObj, args, nullptr );
+      Py_DECREF( args );
+      Py_DECREF( vartype );
     }
     else
     {
@@ -385,9 +397,9 @@ typedef QVector<QVariant> QgsAttributes;
   return l;
   % End
 
-    % ConvertToTypeCode
-    // Check the type if that is all that is required.
-    if ( sipIsErr == NULL )
+  % ConvertToTypeCode
+  // Check the type if that is all that is required.
+  if ( sipIsErr == NULL )
   {
     if ( !PyList_Check( sipPy ) )
       return 0;
@@ -454,6 +466,7 @@ typedef QVector<QVariant> QgsAttributes;
   return sipGetState( sipTransferObj );
   % End
 };
+// clang-format on
 #endif
 #endif
 #endif // QGSATTRIBUTES_H

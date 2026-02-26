@@ -71,7 +71,6 @@ content to several frames (:py:class:`QgsLayoutFrame` items).
 
     enum UndoCommand /BaseType=IntEnum/
     {
-      // clang-format on
       UndoHtmlBreakDistance,
       UndoHtmlSource,
       UndoHtmlStylesheet,

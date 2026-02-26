@@ -128,11 +128,20 @@ class CORE_EXPORT QgsBookmark
     QDomElement writeXml( QDomDocument &doc ) const;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsBookmark: '%1' (%2)>"_s.arg( sipCpp->name() )
-                                 .arg( sipCpp->extent().isNull() ? u"EMPTY"_s : u"%1 - %2"_s.arg( sipCpp->extent().asWktCoordinates(), sipCpp->extent().crs().authid() ) );
+    % MethodCode
+    QString str = u"<QgsBookmark: '%1' (%2)>"_s
+                  .arg( sipCpp->name() )
+                  .arg(
+                    sipCpp->extent().isNull() ?
+                    u"EMPTY"_s :
+                    u"%1 - %2"_s
+                    .arg( sipCpp->extent().asWktCoordinates(), sipCpp->extent().crs().authid() )
+                  );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
       // TODO c++20 - replace with = default

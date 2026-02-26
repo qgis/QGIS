@@ -1431,6 +1431,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void removeMapLayers( const QList<QgsMapLayer *> &layers );
 #else
+    // clang-format off
 
     /**
      * \brief
@@ -1446,7 +1447,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see removeAllMapLayers()
      */
     void removeMapLayers( SIP_PYOBJECT layers SIP_TYPEHINT( Union[List[QgsVectorLayer], List[str]] ) );
-    % MethodCode if ( !PyList_Check( a0 ) )
+    % MethodCode
+    if ( !PyList_Check( a0 ) )
     {
       sipIsErr = 1;
       PyErr_SetString( PyExc_TypeError, "Expected a list of layers or layers IDs" );
@@ -1484,6 +1486,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
       }
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -1830,11 +1833,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void cleanFunctionsFromProject() SIP_SKIP;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsProject: '%1'%2>"_s.arg( sipCpp->fileName(),
-                                                              sipCpp == QgsProject::instance() ? u" (singleton instance)"_s : QString() ); // skip-keyword-check
+    % MethodCode
+    QString str = u"<QgsProject: '%1'%2>"_s.arg( sipCpp->fileName(),
+                  sipCpp == QgsProject::instance() ? u" (singleton instance)"_s : QString() ); // skip-keyword-check
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
         signals :

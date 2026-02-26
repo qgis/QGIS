@@ -145,6 +145,7 @@ class CORE_EXPORT QgsTriangulatedSurface : public QgsPolyhedralSurface
      */
     QgsTriangle *triangleN( int index );
 #else
+// clang-format off
 
     /**
      * Returns the triangle with the specified \a index.
@@ -163,6 +164,7 @@ class CORE_EXPORT QgsTriangulatedSurface : public QgsPolyhedralSurface
       return sipConvertFromType( sipCpp->triangleN( a0 ), sipType_QgsTriangle, NULL );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -213,6 +215,7 @@ class CORE_EXPORT QgsTriangulatedSurface : public QgsPolyhedralSurface
     QgsTriangulatedSurface *createEmptyWithSameType() const override SIP_FACTORY;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString wkt = sipCpp->asWkt();
@@ -221,6 +224,7 @@ class CORE_EXPORT QgsTriangulatedSurface : public QgsPolyhedralSurface
     QString str = u"<QgsTriangulatedSurface: %1>"_s.arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
   protected:

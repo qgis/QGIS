@@ -48,17 +48,20 @@ class CORE_EXPORT QgsRelationshipsItem : public QgsDataItem
      * The optional \a schema and \a tableName arguments can be used to restrict the visible relationships to
      * those with a matching parent table.
      */
-    QgsRelationshipsItem( QgsDataItem *parent SIP_TRANSFERTHIS, const QString &path, const QString &connectionUri, const QString &providerKey, const QString &schema = QString(), const QString &tableName = QString() );
+    QgsRelationshipsItem(
+      QgsDataItem *parent SIP_TRANSFERTHIS, const QString &path, const QString &connectionUri, const QString &providerKey, const QString &schema = QString(), const QString &tableName = QString()
+    );
 
     ~QgsRelationshipsItem() override;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-        QString str
-      = u"<QgsRelationshipsItem: %1>"_s.arg( sipCpp->path() );
+    QString str = u"<QgsRelationshipsItem: %1>"_s.arg( sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
         QVector<QgsDataItem *> createChildren() override;
@@ -111,12 +114,13 @@ class CORE_EXPORT QgsRelationshipItem : public QgsDataItem
     ~QgsRelationshipItem() override;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-        QString str
-      = u"<QgsRelationshipItem: %1>"_s.arg( sipCpp->name() );
+    QString str = u"<QgsRelationshipItem: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
         QIcon icon() override;

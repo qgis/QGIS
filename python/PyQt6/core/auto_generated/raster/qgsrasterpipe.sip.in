@@ -63,7 +63,8 @@ returned
 
 .. seealso:: :py:func:`replace`
 %End
-%MethodCode sipRes = sipCpp->insert( a0, a1 );
+%MethodCode
+    sipRes = sipCpp->insert( a0, a1 );
     if ( !sipRes )
     {
       // if insertion failed transfer ownership back to python

@@ -311,7 +311,8 @@ Write vector conditional style specific state from layer Dom node.
     bool operator!=( const QgsConditionalStyle &other ) const;
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str;
+%MethodCode
+    QString str;
     if ( !sipCpp->name().isEmpty() )
       str = QStringLiteral( "<QgsConditionalStyle: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->rule() );
     else

@@ -54,7 +54,8 @@ Returns tile coordinates in a formatted string
     bool operator!=( const QgsTileXYZ &other ) const;
 
     SIP_PYOBJECT __repr__();
-%MethodCode const QString str = QStringLiteral( "<QgsTileXYZ: %1, %2, %3>" ).arg( sipCpp->column() ).arg( sipCpp->row() ).arg( sipCpp->zoomLevel() );
+%MethodCode
+    const QString str = QStringLiteral( "<QgsTileXYZ: %1, %2, %3>" ).arg( sipCpp->column() ).arg( sipCpp->row() ).arg( sipCpp->zoomLevel() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

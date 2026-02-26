@@ -74,7 +74,8 @@ Returns the hit test results, for layers with UpdatedCanvas renderers
 
 .. versionadded:: 4.0
 %End
-%MethodCode QMap<QString, std::pair<double, double>> results = sipCpp->resultsRenderersUpdatedCanvas();
+%MethodCode
+    QMap<QString, std::pair<double, double>> results = sipCpp->resultsRenderersUpdatedCanvas();
     sipRes = PyDict_New();
 
     for ( auto it = results.constBegin(); it != results.constEnd(); ++it )
@@ -147,7 +148,8 @@ Returns the hit test results, for layers with UpdatedCanvas renderers
 
 .. versionadded:: 4.0
 %End
-%MethodCode QMap<QString, std::pair<double, double>> results = sipCpp->resultsRenderersUpdatedCanvas();
+%MethodCode
+    QMap<QString, std::pair<double, double>> results = sipCpp->resultsRenderersUpdatedCanvas();
     sipRes = PyDict_New();
 
     for ( auto it = results.constBegin(); it != results.constEnd(); ++it )

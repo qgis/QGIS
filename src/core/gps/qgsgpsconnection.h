@@ -37,9 +37,11 @@ template<class T> class QgsSettingsEntryEnumFlag;
 
 
 #ifdef SIP_RUN
+// clang-format off
 % ModuleHeaderCode
 #include "qgsgpsconnection.h"
-  % End
+% End
+// clang-format on
 #endif
 
   /**

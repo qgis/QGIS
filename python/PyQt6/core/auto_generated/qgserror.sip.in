@@ -124,7 +124,8 @@ messageList return the list of current error messages
 
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str = QStringLiteral( "<QgsError: %1>" ).arg( sipCpp->message( QgsErrorMessage::Text ) );
+%MethodCode
+    QString str = QStringLiteral( "<QgsError: %1>" ).arg( sipCpp->message( QgsErrorMessage::Text ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

@@ -66,10 +66,13 @@ class CORE_EXPORT QgsReadWriteContext
         bool operator!=( const QgsReadWriteContext::ReadWriteMessage &other ) const { return !( *this == other ); }
 
 #ifdef SIP_RUN
+        // clang-format off
         SIP_PYOBJECT __repr__();
-        % MethodCode QString str = u"<QgsReadWriteContext.ReadWriteMessage: %1>"_s.arg( sipCpp->message() );
+        % MethodCode
+        QString str = u"<QgsReadWriteContext.ReadWriteMessage: %1>"_s.arg( sipCpp->message() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-      % End
+        % End
+// clang-format on
 #endif
 
         // clang-format off

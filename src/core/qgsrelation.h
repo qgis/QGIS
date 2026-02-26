@@ -311,14 +311,17 @@ class CORE_EXPORT QgsRelation
 #ifndef SIP_RUN
     QList< QgsRelation::FieldPair > fieldPairs() const;
 #else
+    // clang-format off
     QMap< QString, QString > fieldPairs() const;
-    % MethodCode const QList< QgsRelation::FieldPair > &pairs = sipCpp->fieldPairs();
+    % MethodCode
+    const QList< QgsRelation::FieldPair > &pairs = sipCpp->fieldPairs();
     sipRes = new QMap< QString, QString >();
     for ( const QgsRelation::FieldPair &pair : pairs )
     {
       sipRes->insert( pair.first, pair.second );
     }
     % End
+// clang-format on
 #endif
 
     /**

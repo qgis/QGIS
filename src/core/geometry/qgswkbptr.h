@@ -280,12 +280,9 @@ class CORE_EXPORT QgsConstWkbPtr
     const QgsConstWkbPtr &operator>>( QPolygonF &points ) const;
     SIP_SKIP
 
-    inline void
-      operator+=( int n ) const SIP_SKIP
-    {
-      verifyBound( n );
-      mP += n;
-    }
+    // clang-format off
+    inline void operator+=( int n ) const SIP_SKIP { verifyBound( n ); mP += n; }
+    // clang-format on
     inline void operator-=( int n ) const SIP_SKIP { mP -= n; }
 
     inline operator const unsigned char *() const SIP_SKIP { return mP; }

@@ -22,7 +22,7 @@ Base class for all diagram types.
 %End
   public:
 %ConvertToSubClassCode
-    if ( sipCpp->diagramName() == QLatin1String( "Pie" ) )
+if ( sipCpp->diagramName() == QLatin1String( "Pie" ) )
       sipType = sipType_QgsPieDiagram;
     else if ( sipCpp->diagramName() == QLatin1String( "Histogram" ) )
       sipType = sipType_QgsHistogramDiagram;

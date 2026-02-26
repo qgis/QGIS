@@ -70,8 +70,9 @@ Constructor for QgsInterval, using the specified ``years``, ``months``,
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str;
-    if ( !sipCpp->isValid() )
+%MethodCode
+    QString str;
+    if ( ! sipCpp->isValid() )
       str = QStringLiteral( "<QgsInterval: invalid>" );
     else if ( sipCpp->originalUnit() != Qgis::TemporalUnit::Unknown )
       str = QStringLiteral( "<QgsInterval: %1 %2>" ).arg( sipCpp->originalDuration() ).arg( QgsUnitTypes::toString( sipCpp->originalUnit() ) );

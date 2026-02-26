@@ -614,11 +614,14 @@ class CORE_EXPORT QgsCoordinateTransform
     double scaleFactor( const QgsRectangle &referenceExtent ) const;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsCoordinateTransform: %1 to %2>"_s
-                                 .arg( sipCpp->sourceCrs().isValid() ? sipCpp->sourceCrs().authid() : u"NULL"_s, sipCpp->destinationCrs().isValid() ? sipCpp->destinationCrs().authid() : u"NULL"_s );
+    % MethodCode
+    QString str = u"<QgsCoordinateTransform: %1 to %2>"_s.arg( sipCpp->sourceCrs().isValid() ? sipCpp->sourceCrs().authid() : u"NULL"_s,
+                  sipCpp->destinationCrs().isValid() ? sipCpp->destinationCrs().authid() : u"NULL"_s );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN

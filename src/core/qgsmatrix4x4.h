@@ -88,6 +88,7 @@ class CORE_EXPORT QgsMatrix4x4
     void setToIdentity() SIP_HOLDGIL;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = u"<QgsMatrix4x4(%1, %2, %3, %4, %5, %6, %7, %8, %9, %10, %11, %12, %13, %14, %15, %16)>"_s
@@ -109,6 +110,7 @@ class CORE_EXPORT QgsMatrix4x4
                   .arg( sipCpp->data()[15] );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN

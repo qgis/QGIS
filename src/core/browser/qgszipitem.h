@@ -47,12 +47,13 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     QgsZipItem( QgsDataItem *parent, const QString &name, const QString &filePath, const QString &path, const QString &providerKey = QString() );
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-        QString str
-      = u"<QgsZipItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
+    QString str = u"<QgsZipItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
         QVector<QgsDataItem *> createChildren() override;

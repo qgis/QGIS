@@ -596,7 +596,8 @@ non-performance critical code.
 
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString typeString;
+%MethodCode
+    QString typeString;
     QString definitionString;
     switch ( sipCpp->propertyType() )
     {
@@ -620,9 +621,9 @@ non-performance critical code.
         break;
     }
 
-    QString str
-      = QStringLiteral( "<QgsProperty: %1%2%3>" )
-          .arg( !sipCpp->isActive() && sipCpp->propertyType() != Qgis::PropertyType::Invalid ? QStringLiteral( "INACTIVE " ) : QString(), typeString, definitionString.isEmpty() ? QString() : QStringLiteral( " (%1)" ).arg( definitionString ) );
+    QString str = QStringLiteral( "<QgsProperty: %1%2%3>" ).arg( !sipCpp->isActive() && sipCpp->propertyType() != Qgis::PropertyType::Invalid ? QStringLiteral( "INACTIVE " ) : QString(),
+                  typeString,
+                  definitionString.isEmpty() ? QString() : QStringLiteral( " (%1)" ).arg( definitionString ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

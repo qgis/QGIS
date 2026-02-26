@@ -30,8 +30,7 @@ Constructor for QgsRenderedAnnotationItemDetails.
 
     SIP_PYOBJECT __repr__();
 %MethodCode
-        QString str
-      = QStringLiteral( "<QgsRenderedAnnotationItemDetails: %1 - %2>" ).arg( sipCpp->layerId(), sipCpp->itemId() );
+    QString str = QStringLiteral( "<QgsRenderedAnnotationItemDetails: %1 - %2>" ).arg( sipCpp->layerId(), sipCpp->itemId() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

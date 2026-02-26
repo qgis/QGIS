@@ -594,12 +594,10 @@ Exports a marker to SLD
 .. versionadded:: 3.44
 %End
 
-    static bool wellKnownMarkerFromSld( QDomElement &element, QString &name, QColor &color, QColor &strokeColor, Qt::PenStyle &strokeStyle, double &strokeWidth, double &size ) SIP_PYNAME(
+    static bool wellKnownMarkerFromSld( QDomElement &element, QString &name, QColor &color, QColor &strokeColor, Qt::PenStyle &strokeStyle, double &strokeWidth, double &size ) /PyName=wellKnownMarkerFromSld2/;
 %Docstring
 Extracts properties from an SLD marker definition.
 %End
-      wellKnownMarkerFromSld2
-    );
 
  static void externalMarkerToSld(
       QDomDocument &doc, QDomElement &element, const QString &path, const QString &format, int *markIndex = 0, const QColor &color = QColor(), double size = -1
@@ -1166,7 +1164,7 @@ Merges the local scale limits, if any, with the ones already in the map,
 if any
 %End
 
- static void parametricSvgToSld( QDomDocument &doc, QDomElement &graphicElem, const QString &path, const QColor &fillColor, double size, const QColor &strokeColor, double strokeWidth );
+ static void parametricSvgToSld( QDomDocument &doc, QDomElement &graphicElem, const QString &path, const QColor &fillColor, double size, const QColor &strokeColor, double strokeWidth ) /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
 %Docstring
 Encodes a reference to a parametric SVG into SLD, as a succession of
 parametric SVG using URL parameters, a fallback SVG without parameters,

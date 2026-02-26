@@ -104,48 +104,53 @@ class CORE_EXPORT QgsApplication : public QApplication
 {
 // clang-format on
 #ifdef SIP_RUN
-  % TypeCode
-      // Convert a Python argv list to a conventional C argc count and argv
-      // array.
-      static char **qtgui_ArgvToC(PyObject *argvlist, int &argc) {
-    char **argv;
+  // clang-format off
+    % TypeCode
+    // Convert a Python argv list to a conventional C argc count and argv array.
+    static char **qtgui_ArgvToC( PyObject *argvlist, int &argc )
+    {
+      char **argv;
 
-    argc = PyList_GET_SIZE(argvlist);
+      argc = PyList_GET_SIZE( argvlist );
 
-    // Allocate space for two copies of the argument pointers, plus the
-    // terminating NULL.
-    if ((argv = (char **)sipMalloc(2 * (argc + 1) * sizeof(char *))) == NULL)
-      return NULL;
-
-    // Convert the list.
-    for (int a = 0; a < argc; ++a) {
-      char *arg;
-      // Get the argument and allocate memory for it.
-      if ((arg = PyBytes_AsString(PyList_GET_ITEM(argvlist, a))) == NULL ||
-          (argv[a] = (char *)sipMalloc(strlen(arg) + 1)) == NULL)
+      // Allocate space for two copies of the argument pointers, plus the
+      // terminating NULL.
+      if ( ( argv = ( char ** )sipMalloc( 2 * ( argc + 1 ) * sizeof( char * ) ) ) == NULL )
         return NULL;
-      // Copy the argument and save a pointer to it.
-      strcpy(argv[a], arg);
-      argv[a + argc + 1] = argv[a];
+
+      // Convert the list.
+      for ( int a = 0; a < argc; ++a )
+      {
+        char *arg;
+        // Get the argument and allocate memory for it.
+        if ( ( arg = PyBytes_AsString( PyList_GET_ITEM( argvlist, a ) ) ) == NULL ||
+             ( argv[a] = ( char * )sipMalloc( strlen( arg ) + 1 ) ) == NULL )
+          return NULL;
+        // Copy the argument and save a pointer to it.
+        strcpy( argv[a], arg );
+        argv[a + argc + 1] = argv[a];
+      }
+
+      argv[argc + argc + 1] = argv[argc] = NULL;
+
+      return argv;
     }
 
-    argv[argc + argc + 1] = argv[argc] = NULL;
-
-    return argv;
-  }
-
-  // Remove arguments from the Python argv list that have been removed from the
-  // C argv array.
-  static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv) {
-    for (int a = 0, na = 0; a < argc; ++a) {
-      // See if it was removed.
-      if (argv[na] == argv[a + argc + 1])
-        ++na;
-      else
-        PyList_SetSlice(argvlist, na, na + 1, NULL);
+    // Remove arguments from the Python argv list that have been removed from the
+    // C argv array.
+    static void qtgui_UpdatePyArgv( PyObject *argvlist, int argc, char **argv )
+    {
+      for ( int a = 0, na = 0; a < argc; ++a )
+      {
+        // See if it was removed.
+        if ( argv[na] == argv[a + argc + 1] )
+          ++na;
+        else
+          PyList_SetSlice( argvlist, na, na + 1, NULL );
+      }
     }
-  }
-% End
+    % End
+// clang-format on
 #endif
 
     // clang-format off
@@ -188,43 +193,38 @@ class CORE_EXPORT QgsApplication : public QApplication
                  const QString &profileFolder = QString(),
                  const QString &platformName = "external");
 #else
+  // clang-format off
 
-  /**
-   * Constructor for QgsApplication.
-   *
-   * \param argv command line arguments
-   * \param GUIenabled set to TRUE if a GUI application is required, or FALSE
-   * for a console only application
-   * \param profileFolder optional string representing the profile to load at
-   * startup
-   * \param platformName the QGIS platform name, e.g., "desktop", "server",
-   * "qgis_process" or "external" (for external CLI scripts)
-   */
-  QgsApplication(SIP_PYLIST argv, bool GUIenabled,
-                 QString profileFolder = QString(),
-                 QString platformName = "external") /
-      PostHook = __pyQtQAppHook__ / [(int &argc, char **argv, bool GUIenabled,
-                                      const QString &profileFolder = QString(),
-                                      const QString &platformName = "desktop")];
-  % MethodCode
-      // The Python interface is a list of argument strings that is modified.
+    /**
+     * Constructor for QgsApplication.
+     *
+     * \param argv command line arguments
+     * \param GUIenabled set to TRUE if a GUI application is required, or FALSE for a console only application
+     * \param profileFolder optional string representing the profile to load at startup
+     * \param platformName the QGIS platform name, e.g., "desktop", "server", "qgis_process" or "external" (for external CLI scripts)
+     */
+    QgsApplication( SIP_PYLIST argv, bool GUIenabled, QString profileFolder = QString(), QString platformName = "external" ) / PostHook = __pyQtQAppHook__ / [( int &argc, char **argv, bool GUIenabled, const QString &profileFolder = QString(), const QString &platformName = "desktop" )];
+    % MethodCode
+    // The Python interface is a list of argument strings that is modified.
 
-      int argc;
-  char **argv;
+    int argc;
+    char **argv;
 
-  // Convert the list.
-  if ((argv = qtgui_ArgvToC(a0, argc)) == NULL)
-    sipIsErr = 1;
-  else {
-    // Create it now the arguments are right.
-    static int nargc = argc;
+    // Convert the list.
+    if ( ( argv = qtgui_ArgvToC( a0, argc ) ) == NULL )
+      sipIsErr = 1;
+    else
+    {
+      // Create it now the arguments are right.
+      static int nargc = argc;
 
-    sipCpp = new sipQgsApplication(nargc, argv, a1, *a2, *a3);
+      sipCpp = new sipQgsApplication( nargc, argv, a1, *a2, *a3 );
 
-    // Now modify the original list.
-    qtgui_UpdatePyArgv(a0, argc, argv);
-  }
-  % End
+      // Now modify the original list.
+      qtgui_UpdatePyArgv( a0, argc, argv );
+    }
+    % End
+// clang-format on
 #endif
 
   ~QgsApplication() override;

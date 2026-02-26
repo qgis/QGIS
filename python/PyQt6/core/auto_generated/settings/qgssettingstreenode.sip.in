@@ -32,7 +32,7 @@ a settings entry on its creation when a parent is provided.
 #include "qgssettingstreenode.h"
 %End
 %ConvertToSubClassCode
-    if ( dynamic_cast< QgsSettingsTreeNamedListNode * >( sipCpp ) )
+if ( dynamic_cast< QgsSettingsTreeNamedListNode * >( sipCpp ) )
       sipType = sipType_QgsSettingsTreeNamedListNode;
     else if ( dynamic_cast< QgsSettingsTreeNode * >( sipCpp ) )
       sipType = sipType_QgsSettingsTreeNode;
@@ -55,7 +55,7 @@ exists at the given key
 :raises QgsSettingsException: if a setting exists with the same key
 %End
 
-    QgsSettingsTreeNamedListNode *createNamedListNode( const QString &key, const Qgis::SettingsTreeNodeOptions &options = Qgis::SettingsTreeNodeOptions() );
+    QgsSettingsTreeNamedListNode *createNamedListNode( const QString &key, const Qgis::SettingsTreeNodeOptions &options = Qgis::SettingsTreeNodeOptions() )  /KeepReference/;
 %Docstring
 Creates a named list tree node. This is useful to register groups of
 settings for several named items (for instance credentials for several
@@ -144,7 +144,8 @@ Returns the number of named nodes in the complete key
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode const QMetaEnum metaEnum = QMetaEnum::fromType<Qgis::SettingsTreeNodeType>();
+%MethodCode
+    const QMetaEnum metaEnum = QMetaEnum::fromType<Qgis::SettingsTreeNodeType>();
 
     QString str = QStringLiteral( "<QgsSettingsTreeNode (%1): %2>" ).arg( metaEnum.valueToKey( static_cast<int>( sipCpp->type() ) ), sipCpp->key() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );

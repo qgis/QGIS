@@ -685,6 +685,7 @@ class CORE_EXPORT QgsRectangle
     QgsRectangle snappedToGrid( double spacing ) const;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str;
@@ -694,6 +695,7 @@ class CORE_EXPORT QgsRectangle
       str = u"<QgsRectangle: %1>"_s.arg( sipCpp->asWktCoordinates() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
   private:

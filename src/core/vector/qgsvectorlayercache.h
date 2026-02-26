@@ -307,19 +307,23 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     Qgis::WkbType wkbType() const;
 
 #ifdef SIP_RUN
+    // clang-format off
 
     /**
      * Returns the number of features contained in the source, or -1
      * if the feature count is unknown.
      */
     int __len__() const;
-    % MethodCode sipRes = sipCpp->featureCount();
+    % MethodCode
+    sipRes = sipCpp->featureCount();
     % End
 
-      //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
-      int __bool__() const;
-    % MethodCode sipRes = true;
+    //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
+    int __bool__() const;
+    % MethodCode
+    sipRes = true;
     % End
+// clang-format on
 #endif
 
       /**

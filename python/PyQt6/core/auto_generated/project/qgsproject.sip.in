@@ -785,20 +785,6 @@ is embedded from other project file.
 Returns an empty string if the matching layer is not embedded.
 %End
 
-    bool createEmbeddedLayer( const QString &layerId, const QString &projectFilePath, QList<QDomNode> &brokenNodes, bool saveFlag = true, Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
-%Docstring
-Creates a maplayer instance defined in an arbitrary project file. Caller
-takes ownership.
-
-The optional ``flags`` argument can be used to specify flags which
-control layer reading.
-
-:return: the layer or 0 in case of error
-
-.. note::
-
-   not available in Python bindings
-%End
 
     std::unique_ptr< QgsLayerTreeGroup > createEmbeddedGroup(
       const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags()
@@ -1393,7 +1379,8 @@ has ownership of any layers these layers will also be deleted.
 
 .. seealso:: :py:func:`removeAllMapLayers`
 %End
-%MethodCode if ( !PyList_Check( a0 ) )
+%MethodCode
+    if ( !PyList_Check( a0 ) )
     {
       sipIsErr = 1;
       PyErr_SetString( PyExc_TypeError, "Expected a list of layers or layers IDs" );
@@ -1833,8 +1820,9 @@ Sets the elevation shading renderer used for global map shading
 
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str = QStringLiteral( "<QgsProject: '%1'%2>" ).arg( sipCpp->fileName(),
-                                                              sipCpp == QgsProject::instance() ? QStringLiteral( " (singleton instance)" ) : QString() ); // skip-keyword-check
+%MethodCode
+    QString str = QStringLiteral( "<QgsProject: '%1'%2>" ).arg( sipCpp->fileName(),
+                  sipCpp == QgsProject::instance() ? QStringLiteral( " (singleton instance)" ) : QString() ); // skip-keyword-check
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

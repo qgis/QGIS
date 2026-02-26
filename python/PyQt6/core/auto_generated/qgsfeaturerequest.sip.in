@@ -515,13 +515,14 @@ called using the feature with invalid geometry as a parameter.
 
 .. seealso:: :py:func:`invalidGeometryCallback`
 %End
-%MethodCode Py_BEGIN_ALLOW_THREADS
+%MethodCode
+    Py_BEGIN_ALLOW_THREADS
 
-        sipCpp->setInvalidGeometryCallback( [a0]( const QgsFeature &arg ) {
-          SIP_BLOCK_THREADS
-          Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
-          SIP_UNBLOCK_THREADS
-        } );
+    sipCpp->setInvalidGeometryCallback( [a0]( const QgsFeature &arg )
+    {
+      SIP_BLOCK_THREADS Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
+      SIP_UNBLOCK_THREADS
+    } );
 
     sipRes = sipCpp;
 
@@ -907,13 +908,14 @@ the transform error as a parameter.
 
 .. seealso:: :py:func:`setDestinationCrs`
 %End
-%MethodCode Py_BEGIN_ALLOW_THREADS
+%MethodCode
+    Py_BEGIN_ALLOW_THREADS
 
-        sipCpp->setTransformErrorCallback( [a0]( const QgsFeature &arg ) {
-          SIP_BLOCK_THREADS
-          Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
-          SIP_UNBLOCK_THREADS
-        } );
+    sipCpp->setTransformErrorCallback( [a0]( const QgsFeature &arg )
+    {
+      SIP_BLOCK_THREADS Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
+      SIP_UNBLOCK_THREADS
+    } );
 
     sipRes = sipCpp;
 

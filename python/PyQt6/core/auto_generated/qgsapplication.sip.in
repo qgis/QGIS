@@ -31,46 +31,48 @@ change due to centralization.
 %TypeHeaderCode
 #include "qgsapplication.h"
 %TypeCode
-      // Convert a Python argv list to a conventional C argc count and argv
-      // array.
-      static char **qtgui_ArgvToC(PyObject *argvlist, int &argc) {
-    char **argv;
+    // Convert a Python argv list to a conventional C argc count and argv array.
+    static char **qtgui_ArgvToC( PyObject *argvlist, int &argc )
+    {
+      char **argv;
 
-    argc = PyList_GET_SIZE(argvlist);
+      argc = PyList_GET_SIZE( argvlist );
 
-    // Allocate space for two copies of the argument pointers, plus the
-    // terminating NULL.
-    if ((argv = (char **)sipMalloc(2 * (argc + 1) * sizeof(char *))) == NULL)
-      return NULL;
-
-    // Convert the list.
-    for (int a = 0; a < argc; ++a) {
-      char *arg;
-      // Get the argument and allocate memory for it.
-      if ((arg = PyBytes_AsString(PyList_GET_ITEM(argvlist, a))) == NULL ||
-          (argv[a] = (char *)sipMalloc(strlen(arg) + 1)) == NULL)
+      // Allocate space for two copies of the argument pointers, plus the
+      // terminating NULL.
+      if ( ( argv = ( char ** )sipMalloc( 2 * ( argc + 1 ) * sizeof( char * ) ) ) == NULL )
         return NULL;
-      // Copy the argument and save a pointer to it.
-      strcpy(argv[a], arg);
-      argv[a + argc + 1] = argv[a];
+
+      // Convert the list.
+      for ( int a = 0; a < argc; ++a )
+      {
+        char *arg;
+        // Get the argument and allocate memory for it.
+        if ( ( arg = PyBytes_AsString( PyList_GET_ITEM( argvlist, a ) ) ) == NULL ||
+             ( argv[a] = ( char * )sipMalloc( strlen( arg ) + 1 ) ) == NULL )
+          return NULL;
+        // Copy the argument and save a pointer to it.
+        strcpy( argv[a], arg );
+        argv[a + argc + 1] = argv[a];
+      }
+
+      argv[argc + argc + 1] = argv[argc] = NULL;
+
+      return argv;
     }
 
-    argv[argc + argc + 1] = argv[argc] = NULL;
-
-    return argv;
-  }
-
-  // Remove arguments from the Python argv list that have been removed from the
-  // C argv array.
-  static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv) {
-    for (int a = 0, na = 0; a < argc; ++a) {
-      // See if it was removed.
-      if (argv[na] == argv[a + argc + 1])
-        ++na;
-      else
-        PyList_SetSlice(argvlist, na, na + 1, NULL);
+    // Remove arguments from the Python argv list that have been removed from the
+    // C argv array.
+    static void qtgui_UpdatePyArgv( PyObject *argvlist, int argc, char **argv )
+    {
+      for ( int a = 0, na = 0; a < argc; ++a )
+      {
+        // See if it was removed.
+        if ( argv[na] == argv[a + argc + 1] )
+          ++na;
+        else PyList_SetSlice( argvlist, na, na + 1, NULL );
+      }
     }
-  }
 %End
 %End
   public:
@@ -84,9 +86,7 @@ change due to centralization.
   static const char *QGIS_ORGANIZATION_DOMAIN;
   static const char *QGIS_APPLICATION_NAME;
 
-  QgsApplication(SIP_PYLIST argv, bool GUIenabled,
-                 QString profileFolder = QString(),
-                 QString platformName = "external") /;
+    QgsApplication( SIP_PYLIST argv, bool GUIenabled, QString profileFolder = QString(), QString platformName = "external" ) / PostHook = __pyQtQAppHook__ / [( int &argc, char **argv, bool GUIenabled, const QString &profileFolder = QString(), const QString &platformName = "desktop" )];
 %Docstring
 Constructor for QgsApplication.
 
@@ -99,26 +99,25 @@ Constructor for QgsApplication.
                      "qgis_process" or "external" (for external CLI
                      scripts)
 %End
-                                      const QString &profileFolder = QString(),
-                                      const QString &platformName = "desktop")];
 %MethodCode
-      // The Python interface is a list of argument strings that is modified.
+    // The Python interface is a list of argument strings that is modified.
 
-      int argc;
-  char **argv;
+    int argc;
+    char **argv;
 
-  // Convert the list.
-  if ((argv = qtgui_ArgvToC(a0, argc)) == NULL)
-    sipIsErr = 1;
-  else {
-    // Create it now the arguments are right.
-    static int nargc = argc;
+    // Convert the list.
+    if ( ( argv = qtgui_ArgvToC( a0, argc ) ) == NULL )
+      sipIsErr = 1;
+    else
+    {
+      // Create it now the arguments are right.
+      static int nargc = argc;
 
-    sipCpp = new sipQgsApplication(nargc, argv, a1, *a2, *a3);
+      sipCpp = new sipQgsApplication( nargc, argv, a1, *a2, *a3 );
 
-    // Now modify the original list.
-    qtgui_UpdatePyArgv(a0, argc, argv);
-  }
+      // Now modify the original list.
+      qtgui_UpdatePyArgv( a0, argc, argv );
+    }
 %End
 
   ~QgsApplication();
@@ -578,7 +577,8 @@ Gets application icon
 Returns whether this machine uses big or little endian
 %End
 
-  static QString
+  static QString reportStyleSheet(QgsApplication::StyleSheetType styleSheetType =
+                       QgsApplication::StyleSheetType::Qt);
 %Docstring
 Returns a css style sheet for reports, the ``styleSheetType`` argument
 determines what type of stylesheet is supported by the widget.
@@ -600,8 +600,6 @@ inject the CSS into a head -> script tag instead.
    if styleSheetType equals StyleSheetType.Qt you can use the special
    Qt extensions too, for example the gradient fills for backgrounds.
 %End
-  reportStyleSheet(QgsApplication::StyleSheetType styleSheetType =
-                       QgsApplication::StyleSheetType::Qt);
 
   static QString showSettings();
 %Docstring
@@ -695,7 +693,8 @@ the next application restart.
 .. versionadded:: 3.10
 %End
 
-  static void
+  static void setSkippedGdalDrivers(const QStringList &skippedGdalDrivers,
+                        const QStringList &deferredSkippedGdalDrivers);
 %Docstring
 Sets the list of gdal drivers that should be disabled (\a
 skippedGdalDrivers), but excludes for now the ones defines in \a
@@ -703,8 +702,6 @@ deferredSkippedGdalDrivers. This writes the "gdal/skipList" setting.
 
 .. versionadded:: 3.10
 %End
-  setSkippedGdalDrivers(const QStringList &skippedGdalDrivers,
-                        const QStringList &deferredSkippedGdalDrivers);
 
   static int maxThreads();
 %Docstring
@@ -726,7 +723,7 @@ Returns the application's task manager, used for managing application
 wide background task handling.
 %End
 
- static QgsSettingsRegistryCore *
+ static QgsSettingsRegistryCore *settingsRegistryCore() /KeepReference,Deprecated="Since 3.30. Use QgsSettings.treeRoot() instead."/;
 %Docstring
 Returns the application's settings registry, used for managing
 application settings.
@@ -737,7 +734,6 @@ application settings.
 
    Use :py:func:`QgsSettings.treeRoot()` instead.
 %End
-  settingsRegistryCore() /KeepReference,Deprecated/;
 
   static QgsColorSchemeRegistry *colorSchemeRegistry() /KeepReference/;
 %Docstring
@@ -758,39 +754,35 @@ layer renderers.
 %End
 
 
-  static QgsPointCloudRendererRegistry *
+  static QgsPointCloudRendererRegistry *pointCloudRendererRegistry() /KeepReference/;
 %Docstring
 Returns the application's point cloud renderer registry, used for
 managing point cloud layer 2D renderers.
 
 .. versionadded:: 3.18
 %End
-  pointCloudRendererRegistry() /KeepReference/;
 
-  static QgsTiledSceneRendererRegistry *
+  static QgsTiledSceneRendererRegistry *tiledSceneRendererRegistry() /KeepReference/;
 %Docstring
 Returns the application's tiled scene renderer registry, used for
 managing tiled scene layer 2D renderers.
 
 .. versionadded:: 3.34
 %End
-  tiledSceneRendererRegistry() /KeepReference/;
 
-  static QgsDataItemProviderRegistry *
+  static QgsDataItemProviderRegistry *dataItemProviderRegistry() /KeepReference/;
 %Docstring
 Returns the application's data item provider registry, which keeps a
 list of data item providers that may add items to the browser tree.
 %End
-  dataItemProviderRegistry() /KeepReference/;
 
-  static QgsCoordinateReferenceSystemRegistry *
+  static QgsCoordinateReferenceSystemRegistry *coordinateReferenceSystemRegistry() /KeepReference/;
 %Docstring
 Returns the application's coordinate reference system (CRS) registry,
 which handles known CRS definitions (including user-defined CRSes).
 
 .. versionadded:: 3.18
 %End
-  coordinateReferenceSystemRegistry() /KeepReference/;
 
   static QgsSvgCache *svgCache();
 %Docstring
@@ -818,14 +810,13 @@ remote source strings as local files
 .. versionadded:: 3.16
 %End
 
-  static QgsNetworkContentFetcherRegistry *
+  static QgsNetworkContentFetcherRegistry *networkContentFetcherRegistry() /KeepReference/;
 %Docstring
 Returns the application's network content registry used for fetching
 temporary files during QGIS session
 
 .. versionadded:: 3.2
 %End
-  networkContentFetcherRegistry() /KeepReference/;
 
   static QgsValidityCheckRegistry *validityCheckRegistry() /KeepReference/;
 %Docstring
@@ -883,14 +874,13 @@ Returns the application's plugin layer registry, used for managing
 plugin layer types.
 %End
 
-  static QgsClassificationMethodRegistry *
+  static QgsClassificationMethodRegistry *classificationMethodRegistry() /KeepReference/;
 %Docstring
 Returns the application's classification methods registry, used in
 graduated renderer
 
 .. versionadded:: 3.10
 %End
-  classificationMethodRegistry() /KeepReference/;
 
   static QgsBookmarkManager *bookmarkManager();
 %Docstring
@@ -964,13 +954,12 @@ Returns the application's authentication manager instance
 .. seealso:: :py:func:`initQgis`
 %End
 
-  static QgsAuthConfigurationStorageRegistry *
+  static QgsAuthConfigurationStorageRegistry *authConfigurationStorageRegistry();
 %Docstring
 Returns the application's authentication configuration storage registry
 
 .. versionadded:: 3.40
 %End
-  authConfigurationStorageRegistry();
 
   static QgsProcessingRegistry *processingRegistry();
 %Docstring
@@ -985,14 +974,13 @@ page sizes.
 %End
 
 
-  static QgsApplicationThemeRegistry *
+  static QgsApplicationThemeRegistry *applicationThemeRegistry() /KeepReference/;
 %Docstring
 Returns the application's theme registry, used for styling the user
 interface.
 
 .. versionadded:: 4.0
 %End
-  applicationThemeRegistry() /KeepReference/;
 
   static QgsActionScopeRegistry *actionScopeRegistry() /KeepReference/;
 %Docstring
@@ -1036,21 +1024,19 @@ Returns registry of available 3D symbols.
 .. versionadded:: 3.16
 %End
 
-  static QgsScaleBarRendererRegistry *
+  static QgsScaleBarRendererRegistry *scaleBarRendererRegistry() /KeepReference/;
 %Docstring
 Gets the registry of available scalebar renderers.
 
 .. versionadded:: 3.14
 %End
-  scaleBarRendererRegistry() /KeepReference/;
 
-  static QgsLabelingEngineRuleRegistry *
+  static QgsLabelingEngineRuleRegistry *labelingEngineRuleRegistry() /KeepReference/;
 %Docstring
 Gets the registry of available labeling engine rules.
 
 .. versionadded:: 3.40
 %End
-  labelingEngineRuleRegistry() /KeepReference/;
 
   static QgsProjectStorageRegistry *projectStorageRegistry() /KeepReference/;
 %Docstring
@@ -1059,21 +1045,19 @@ Returns registry of available project storage implementations.
 .. versionadded:: 3.2
 %End
 
-  static QgsLayerMetadataProviderRegistry *
+  static QgsLayerMetadataProviderRegistry *layerMetadataProviderRegistry() /KeepReference/;
 %Docstring
 Returns registry of available layer metadata provider implementations.
 
 .. versionadded:: 3.28
 %End
-  layerMetadataProviderRegistry() /KeepReference/;
 
-  static QgsExternalStorageRegistry *
+  static QgsExternalStorageRegistry *externalStorageRegistry() /KeepReference/;
 %Docstring
 Returns registry of available external storage implementations.
 
 .. versionadded:: 3.20
 %End
-  externalStorageRegistry() /KeepReference/;
 
   static QgsProfileSourceRegistry *profileSourceRegistry() /KeepReference/;
 %Docstring
@@ -1082,7 +1066,7 @@ Returns registry of available profile source implementations.
 .. versionadded:: 3.38
 %End
 
-  static QgsLocalizedDataPathRegistry *
+  static QgsLocalizedDataPathRegistry *localizedDataPathRegistry() /KeepReference/;
 %Docstring
 Returns the registry of data repositories These are used as paths for
 basemaps, logos, etc. which can be referenced differently across work
@@ -1092,7 +1076,6 @@ stations.
 
 .. versionadded:: 3.14
 %End
-  localizedDataPathRegistry() /KeepReference/;
 
   static QString nullRepresentation();
 %Docstring

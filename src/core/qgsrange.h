@@ -266,10 +266,16 @@ class CORE_EXPORT QgsDoubleRange : public QgsRange< double >
     bool isInfinite() const { return lower() == std::numeric_limits< double >::lowest() && upper() == std::numeric_limits< double >::max(); }
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsDoubleRange: %1%2, %3%4>"_s.arg( sipCpp->includeLower() ? u"["_s : u"("_s ).arg( sipCpp->lower() ).arg( sipCpp->upper() ).arg( sipCpp->includeUpper() ? u"]"_s : u")"_s );
+    % MethodCode
+    QString str = u"<QgsDoubleRange: %1%2, %3%4>"_s.arg( sipCpp->includeLower() ? u"["_s : u"("_s )
+                  .arg( sipCpp->lower() )
+                  .arg( sipCpp->upper() )
+                  .arg( sipCpp->includeUpper() ? u"]"_s : u")"_s );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
       bool operator==( const QgsDoubleRange &other ) const
@@ -343,10 +349,16 @@ class CORE_EXPORT QgsIntRange : public QgsRange< int >
     bool isInfinite() const { return lower() == std::numeric_limits< int >::lowest() && upper() == std::numeric_limits< int >::max(); }
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsIntRange: %1%2, %3%4>"_s.arg( sipCpp->includeLower() ? u"["_s : u"("_s ).arg( sipCpp->lower() ).arg( sipCpp->upper() ).arg( sipCpp->includeUpper() ? u"]"_s : u")"_s );
+    % MethodCode
+    QString str = u"<QgsIntRange: %1%2, %3%4>"_s.arg( sipCpp->includeLower() ? u"["_s : u"("_s )
+                  .arg( sipCpp->lower() )
+                  .arg( sipCpp->upper() )
+                  .arg( sipCpp->includeUpper() ? u"]"_s : u")"_s );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 };
 

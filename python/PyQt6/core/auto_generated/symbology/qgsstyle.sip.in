@@ -1326,7 +1326,7 @@ database.
 #include "qgsstyle.h"
 %End
 %ConvertToSubClassCode
-    switch ( sipCpp->type() )
+switch ( sipCpp->type() )
     {
       case QgsStyle::SymbolEntity:
         sipType = sipType_QgsStyleSymbolEntity;

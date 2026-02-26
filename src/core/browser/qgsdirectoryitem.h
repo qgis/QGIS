@@ -73,12 +73,13 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     QgsDirectoryItem( QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &dirPath, const QString &path, const QString &providerKey = QString() );
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-        QString str
-      = u"<QgsDirectoryItem: %1 - %2>"_s.arg( sipCpp->dirPath(), sipCpp->path() );
+    QString str = u"<QgsDirectoryItem: %1 - %2>"_s.arg( sipCpp->dirPath(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
       void setState( Qgis::BrowserItemState state ) override;
 

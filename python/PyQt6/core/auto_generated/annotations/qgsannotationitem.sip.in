@@ -25,7 +25,7 @@ Abstract base class for annotation items which are drawn with
 #include "qgsannotationitem.h"
 %End
 %ConvertToSubClassCode
-    if ( sipCpp->type() == QLatin1String( "marker" ) )
+if ( sipCpp->type() == QLatin1String( "marker" ) )
     {
       sipType = sipType_QgsAnnotationMarkerItem;
     }

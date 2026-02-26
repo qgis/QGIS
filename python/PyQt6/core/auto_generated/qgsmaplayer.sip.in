@@ -109,8 +109,7 @@ point cloud, annotations, etc).
       Notes,
       AllVisualStyleCategories,
       AllAttributeCategories,
-      AllStyleCategories
-                           | Relations | Temporal | Legend | Elevation | Notes,
+      AllStyleCategories,
     };
     typedef QFlags<QgsMapLayer::StyleCategory> StyleCategories;
 
@@ -418,13 +417,6 @@ Returns QGIS Server Properties for the map layer
 
 .. versionadded:: 3.22
 %End
-    const QgsMapLayerServerProperties *serverProperties() const;
-%Docstring
-Returns QGIS Server Properties const for the map layer
-
-.. versionadded:: 3.22
-%End
-
  void setMetadataUrl( const QString &metaUrl ) /Deprecated="Since 3.22. "/;
 %Docstring
 Sets the metadata URL of the layer used by QGIS Server in
@@ -693,8 +685,7 @@ mesh layer dataset)
     enum ReadFlag /BaseType=IntEnum/
     {
       FlagDontResolveLayers,
-      FlagTrustLayerMetadata
-      = 1 << 1, //!< Trust layer metadata. Improves layer load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on layer load \since QGIS 3.16
+      FlagTrustLayerMetadata,
       FlagReadExtentFromXml,
       FlagForceReadOnly,
     };
@@ -2141,7 +2132,8 @@ Sets the coordinate transform context to ``transformContext``
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str = QStringLiteral( "<QgsMapLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+%MethodCode
+    QString str = QStringLiteral( "<QgsMapLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

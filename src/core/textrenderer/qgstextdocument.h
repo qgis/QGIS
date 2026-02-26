@@ -102,6 +102,7 @@ class CORE_EXPORT QgsTextDocument
      */
     void insert( int index, const QgsTextBlock &block );
 #else
+    // clang-format off
 
     /**
      * Inserts a \a block into the document, at the specified index.
@@ -111,7 +112,8 @@ class CORE_EXPORT QgsTextDocument
      * \since QGIS 3.40
      */
     void insert( int index, const QgsTextBlock &block );
-    % MethodCode if ( a0 < 0 || a0 > sipCpp->size() )
+    % MethodCode
+    if ( a0 < 0 || a0 > sipCpp->size() )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -121,6 +123,7 @@ class CORE_EXPORT QgsTextDocument
       sipCpp->insert( a0, *a1 );
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -142,6 +145,7 @@ class CORE_EXPORT QgsTextDocument
      */
     const QgsTextBlock &at( int index ) const SIP_FACTORY;
 #else
+    // clang-format off
 
     /**
      * Returns the block at the specified \a index.
@@ -149,7 +153,8 @@ class CORE_EXPORT QgsTextDocument
      * \throws KeyError if no block exists at the specified index.
      */
     const QgsTextBlock &at( int index ) const SIP_FACTORY;
-    % MethodCode if ( a0 < 0 || a0 >= sipCpp->size() )
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->size() )
     {
       PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -159,6 +164,7 @@ class CORE_EXPORT QgsTextDocument
       sipRes = new QgsTextBlock( sipCpp->at( a0 ) );
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -166,12 +172,15 @@ class CORE_EXPORT QgsTextDocument
      */
     QgsTextBlock &operator[]( int index ) SIP_FACTORY;
 #ifdef SIP_RUN
-    % MethodCode SIP_SSIZE_T idx = sipConvertFromSequenceIndex( a0, sipCpp->size() );
+    // clang-format off
+    % MethodCode
+    SIP_SSIZE_T idx = sipConvertFromSequenceIndex( a0, sipCpp->size() );
     if ( idx < 0 )
       sipIsErr = 1;
     else
       sipRes = new QgsTextBlock( sipCpp->operator[]( idx ) );
     % End
+// clang-format on
 #endif
 
       /**
@@ -180,9 +189,12 @@ class CORE_EXPORT QgsTextDocument
       int size() const;
 
 #ifdef SIP_RUN
+    // clang-format off
     int __len__() const;
-    % MethodCode sipRes = sipCpp->size();
+    % MethodCode
+    sipRes = sipCpp->size();
     % End
+// clang-format on
 #endif
 
         /**

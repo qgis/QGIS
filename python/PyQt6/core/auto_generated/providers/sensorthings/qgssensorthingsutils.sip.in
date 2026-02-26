@@ -23,24 +23,15 @@ Utility functions for working with OGC SensorThings API services.
 %End
   public:
     static const int DEFAULT_PAGE_SIZE;
-    static const int DEFAULT_FEATURE_LIMIT
-%Docstring
-Default limit on number of features fetched
-%End
-      = 10000;
-    static const int DEFAULT_EXPANSION_LIMIT
-%Docstring
-Default limit on number of expanded features fetched
-%End
-      = 100;
-    static Qgis::SensorThingsEntity
+    static const int DEFAULT_FEATURE_LIMIT;
+    static const int DEFAULT_EXPANSION_LIMIT;
+    static Qgis::SensorThingsEntity stringToEntity( const QString &type );
 %Docstring
 Converts a string value to a :py:class:`Qgis`.SensorThingsEntity type.
 
 Returns :py:class:`Qgis`.SensorThingsEntity.Invalid if the string could
 not be converted to a known entity type.
 %End
-      stringToEntity( const QString &type );
 
     static QString displayString( Qgis::SensorThingsEntity type, bool plural = false );
 %Docstring
@@ -329,7 +320,11 @@ expansion.
     bool operator!=( const QgsSensorThingsExpansionDefinition &other ) const;
 
     SIP_PYOBJECT __repr__();
-%MethodCode if ( !sipCpp->isValid() ) { sipRes = PyUnicode_FromString( "<QgsSensorThingsExpansionDefinition: invalid>" ); }
+%MethodCode
+    if ( !sipCpp->isValid() )
+    {
+      sipRes = PyUnicode_FromString( "<QgsSensorThingsExpansionDefinition: invalid>" );
+    }
     else
     {
       QString innerDefinition;

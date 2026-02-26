@@ -98,7 +98,8 @@ Constructs a new vector tile layer
     ~QgsVectorTileLayer();
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str = QStringLiteral( "<QgsVectorTileLayer: '%1'>" ).arg( sipCpp->name() );
+%MethodCode
+    QString str = QStringLiteral( "<QgsVectorTileLayer: '%1'>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

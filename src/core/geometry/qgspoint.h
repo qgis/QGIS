@@ -91,11 +91,10 @@ class CORE_EXPORT QgsPoint : public QgsAbstractGeometry
       double m = std::numeric_limits<double>::quiet_NaN(), Qgis::WkbType wkbType = Qgis::WkbType::Unknown
     );
 #else
-    QgsPoint(
-      SIP_PYOBJECT x SIP_TYPEHINT( Optional[Union[QgsPoint, QPointF, float]] ) = Py_None, SIP_PYOBJECT y SIP_TYPEHINT( Optional[float] ) = Py_None,
-      SIP_PYOBJECT z SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT m SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT wkbType SIP_TYPEHINT( Optional[int] ) = Py_None
-    )[( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, Qgis::WkbType wkbType = Qgis::WkbType::Unknown )];
-    % MethodCode if ( sipCanConvertToType( a0, sipType_QgsPointXY, SIP_NOT_NONE ) && a1 == Py_None && a2 == Py_None && a3 == Py_None && a4 == Py_None )
+    // clang-format off
+    QgsPoint( SIP_PYOBJECT x SIP_TYPEHINT( Optional[Union[QgsPoint, QPointF, float]] ) = Py_None, SIP_PYOBJECT y SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT z SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT m SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT wkbType SIP_TYPEHINT( Optional[int] ) = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, Qgis::WkbType wkbType = Qgis::WkbType::Unknown )];
+    % MethodCode
+    if ( sipCanConvertToType( a0, sipType_QgsPointXY, SIP_NOT_NONE ) && a1 == Py_None && a2 == Py_None && a3 == Py_None && a4 == Py_None )
     {
       int state;
       sipIsErr = 0;
@@ -119,8 +118,11 @@ class CORE_EXPORT QgsPoint : public QgsAbstractGeometry
       }
       sipReleaseType( p, sipType_QPointF, state );
     }
-    else if ( ( a0 == Py_None || PyFloat_AsDouble( a0 ) != -1.0 || !PyErr_Occurred() ) && ( a1 == Py_None || PyFloat_AsDouble( a1 ) != -1.0 || !PyErr_Occurred() )
-              && ( a2 == Py_None || PyFloat_AsDouble( a2 ) != -1.0 || !PyErr_Occurred() ) && ( a3 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) )
+    else if (
+      ( a0 == Py_None || PyFloat_AsDouble( a0 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a1 == Py_None || PyFloat_AsDouble( a1 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a2 == Py_None || PyFloat_AsDouble( a2 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a3 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) )
     {
       double x = a0 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a0 );
       double y = a1 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a1 );
@@ -135,6 +137,7 @@ class CORE_EXPORT QgsPoint : public QgsAbstractGeometry
       sipIsErr = 1;
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -718,11 +721,13 @@ class CORE_EXPORT QgsPoint : public QgsAbstractGeometry
     QgsPoint *createEmptyWithSameType() const override SIP_FACTORY;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = u"<QgsPoint: %1>"_s.arg( sipCpp->asWkt() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
   protected:

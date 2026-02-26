@@ -590,10 +590,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
     QgsVectorLayer &operator=( QgsVectorLayer const &rhs ) = delete;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsVectorLayer: '%1' (%2)>"_s.arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : u"Invalid"_s );
+    % MethodCode
+    QString str = u"<QgsVectorLayer: '%1' (%2)>"_s.arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : u"Invalid"_s );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
       /**
@@ -1854,6 +1857,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      */
     void setFieldMergePolicy( int index, Qgis::FieldDomainMergePolicy policy );
 #else
+    // clang-format off
 
     /**
      * Sets a split \a policy for the field with the specified index.
@@ -1863,7 +1867,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
      */
     void setFieldSplitPolicy( int index, Qgis::FieldDomainSplitPolicy policy );
 
-    % MethodCode if ( a0 < 0 || a0 >= sipCpp->fields().count() )
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->fields().count() )
     {
       PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -1874,16 +1879,16 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
     }
     % End
 
-      /**
+    /**
      * Sets a duplicate \a policy for the field with the specified index.
      *
      * \throws KeyError if no field with the specified index exists
      * \since QGIS 3.38
      */
-      void
-      setFieldDuplicatePolicy( int index, Qgis::FieldDuplicatePolicy policy );
+    void setFieldDuplicatePolicy( int index, Qgis::FieldDuplicatePolicy policy );
 
-    % MethodCode if ( a0 < 0 || a0 >= sipCpp->fields().count() )
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->fields().count() )
     {
       PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -1894,16 +1899,16 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
     }
     % End
 
-      /**
+    /**
      * Sets a merge \a policy for the field with the specified index.
      *
      * \throws KeyError if no field with the specified index exists
      * \since QGIS 3.44
      */
-      void
-      setFieldMergePolicy( int index, Qgis::FieldDomainMergePolicy policy );
+    void setFieldMergePolicy( int index, Qgis::FieldDomainMergePolicy policy );
 
-    % MethodCode if ( a0 < 0 || a0 >= sipCpp->fields().count() )
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->fields().count() )
     {
       PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -1913,6 +1918,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer,
       sipCpp->setFieldMergePolicy( a0, a1 );
     }
     % End
+// clang-format on
 #endif
 
     /**

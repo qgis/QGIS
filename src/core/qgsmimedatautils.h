@@ -163,10 +163,13 @@ class CORE_EXPORT QgsMimeDataUtils
         QString filePath;
 
 #ifdef SIP_RUN
-        SIP_PYOBJECT __repr__();
-        % MethodCode QString str = u"<QgsMimeDataUtils::Uri (%1): %2>"_s.arg( sipCpp->providerKey, sipCpp->uri );
-        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-        % End
+        // clang-format off
+      SIP_PYOBJECT __repr__();
+      % MethodCode
+      QString str = u"<QgsMimeDataUtils::Uri (%1): %2>"_s.arg( sipCpp->providerKey, sipCpp->uri );
+      sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+      % End
+// clang-format on
 #endif
     };
     typedef QList<QgsMimeDataUtils::Uri> UriList;

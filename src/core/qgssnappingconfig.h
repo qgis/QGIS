@@ -334,11 +334,11 @@ class CORE_EXPORT QgsSnappingConfig
 #ifndef SIP_RUN
     QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> individualLayerSettings() const;
 #else
+    // clang-format off
     SIP_PYDICT individualLayerSettings() const;
     % MethodCode
-      // Create the dictionary.
-      PyObject *d
-      = PyDict_New();
+    // Create the dictionary.
+    PyObject *d = PyDict_New();
     if ( !d )
       return nullptr;
     // Set the dictionary elements.
@@ -375,6 +375,7 @@ class CORE_EXPORT QgsSnappingConfig
     }
     sipRes = d;
     % End
+// clang-format on
 #endif
 
     //! Returns individual layer snappings settings (applied if mode is AdvancedConfiguration)

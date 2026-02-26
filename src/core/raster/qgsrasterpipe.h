@@ -96,7 +96,9 @@ class CORE_EXPORT QgsRasterPipe
     */
     bool insert( int idx, QgsRasterInterface *interface SIP_TRANSFER );
 #ifdef SIP_RUN
-    % MethodCode sipRes = sipCpp->insert( a0, a1 );
+    // clang-format off
+    % MethodCode
+    sipRes = sipCpp->insert( a0, a1 );
     if ( !sipRes )
     {
       // if insertion failed transfer ownership back to python
@@ -105,6 +107,7 @@ class CORE_EXPORT QgsRasterPipe
         sipTransferTo( o, NULL );
     }
     % End
+// clang-format on
 #endif
 
       /**

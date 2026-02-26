@@ -321,10 +321,13 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     virtual QSizeF drawSymbolText( const QgsLegendSettings &settings, ItemContext *ctx, QSizeF symbolSize ) const;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsLayerTreeModelLegendNode: \"%1\">"_s.arg( sipCpp->data( Qt::DisplayRole ).toString() );
+    % MethodCode
+    QString str = u"<QgsLayerTreeModelLegendNode: \"%1\">"_s.arg( sipCpp->data( Qt::DisplayRole ).toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
       public slots :
@@ -557,11 +560,15 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     QgsExpressionContextScope *createSymbolScope() const SIP_FACTORY;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsSymbolLegendNode: %1 \"%2\""_s
-                                 .arg( sipCpp->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString(), sipCpp->data( Qt::DisplayRole ).toString() );
+    % MethodCode
+    QString str = u"<QgsSymbolLegendNode: %1 \"%2\""_s.arg(
+                    sipCpp->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString(),
+                    sipCpp->data( Qt::DisplayRole ).toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off
@@ -610,10 +617,13 @@ class CORE_EXPORT QgsSimpleLegendNode : public QgsLayerTreeModelLegendNode
     QVariant data( int role ) const override;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsSimpleLegendNode: \"%1\">"_s.arg( sipCpp->data( Qt::DisplayRole ).toString() );
+    % MethodCode
+    QString str = u"<QgsSimpleLegendNode: \"%1\">"_s.arg( sipCpp->data( Qt::DisplayRole ).toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off
@@ -650,10 +660,13 @@ class CORE_EXPORT QgsImageLegendNode : public QgsLayerTreeModelLegendNode
     QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const override;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsImageLegendNode: \"%1\">"_s.arg( sipCpp->data( Qt::DisplayRole ).toString() );
+    % MethodCode
+    QString str = u"<QgsImageLegendNode: \"%1\">"_s.arg( sipCpp->data( Qt::DisplayRole ).toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off
@@ -708,10 +721,13 @@ class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
     bool isCheckable() const { return mCheckable; }
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsRasterSymbolLegendNode: \"%1\">"_s.arg( sipCpp->data( Qt::DisplayRole ).toString() );
+    % MethodCode
+    QString str = u"<QgsRasterSymbolLegendNode: \"%1\">"_s.arg( sipCpp->data( Qt::DisplayRole ).toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off
@@ -761,13 +777,18 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
 
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsWmsLegendNode: \"%1\">"_s.arg( sipCpp->data( Qt::DisplayRole ).toString() );
+    % MethodCode
+    QString str = u"<QgsWmsLegendNode: \"%1\">"_s.arg( sipCpp->data( Qt::DisplayRole ).toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-      private slots :
+      // clang-format off
+      private slots:
+      // clang-format on
 
       void getLegendGraphicFinished( const QImage & );
     void getLegendGraphicErrored( const QString & );
@@ -805,10 +826,13 @@ class CORE_EXPORT QgsDataDefinedSizeLegendNode : public QgsLayerTreeModelLegendN
     ItemMetrics draw( const QgsLegendSettings &settings, ItemContext &ctx ) override;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsDataDefinedSizeLegendNode: \"%1\">"_s.arg( sipCpp->data( Qt::DisplayRole ).toString() );
+    % MethodCode
+    QString str = u"<QgsDataDefinedSizeLegendNode: \"%1\">"_s.arg( sipCpp->data( Qt::DisplayRole ).toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off
@@ -862,10 +886,13 @@ class CORE_EXPORT QgsVectorLabelLegendNode : public QgsLayerTreeModelLegendNode
     QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const override;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsVectorLabelLegendNode: \"%1\">"_s.arg( sipCpp->data( Qt::DisplayRole ).toString() );
+    % MethodCode
+    QString str = u"<QgsVectorLabelLegendNode: \"%1\">"_s.arg( sipCpp->data( Qt::DisplayRole ).toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off

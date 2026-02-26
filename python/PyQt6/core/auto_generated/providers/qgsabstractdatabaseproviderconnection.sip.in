@@ -101,14 +101,16 @@ Returns the number of rows returned by a SELECT query or
 
         // Python iterator
         QueryResult *__iter__();
-%MethodCode sipRes = sipCpp;
+%MethodCode
+        sipRes = sipCpp;
 %End
 
-            SIP_PYOBJECT
-          __next__();
-%MethodCode QList<QVariant> result;
-        Py_BEGIN_ALLOW_THREADS result = sipCpp->nextRow();
-        Py_END_ALLOW_THREADS if ( !result.isEmpty() )
+        SIP_PYOBJECT __next__();
+%MethodCode
+        QList<QVariant> result;
+        Py_BEGIN_ALLOW_THREADS
+        result = sipCpp->nextRow( );
+        Py_END_ALLOW_THREADS if ( ! result.isEmpty() )
         {
           const sipTypeDef *qvariantlist_type = sipFindType( "QList<QVariant>" );
           sipRes = sipConvertFromNewType( new QList<QVariant>( result ), qvariantlist_type, Py_None );
@@ -152,15 +154,17 @@ Sets the query execution time to ``queryExecutionTime`` milliseconds.
     struct TableProperty
     {
         SIP_PYOBJECT __repr__();
-%MethodCode QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.TableProperty: '%1'>" ).arg( sipCpp->tableName() );
+%MethodCode
+        QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.TableProperty: '%1'>" ).arg( sipCpp->tableName() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
           struct GeometryColumnType
         {
-            SIP_PYOBJECT __repr__();
-%MethodCode QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.TableProperty.GeometryColumnType: '%1, %2'>" ).arg( QgsWkbTypes::displayString( sipCpp->wkbType ), sipCpp->crs.authid() );
-            sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+          SIP_PYOBJECT __repr__();
+%MethodCode
+          QString str = QStringLiteral( "<QgsAbstractDatabaseProviderConnection.TableProperty.GeometryColumnType: '%1, %2'>" ).arg( QgsWkbTypes::displayString( sipCpp->wkbType ), sipCpp->crs.authid() );
+          sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
                 Qgis::WkbType wkbType;
             QgsCoordinateReferenceSystem crs;
@@ -471,7 +475,7 @@ ignored if not supported by the backend).
         QString geometryColumn;
     };
 
-    virtual QString createVectorLayerExporterDestinationUri( const QgsAbstractDatabaseProviderConnection::VectorLayerExporterOptions &options, QVariantMap &providerOptions /Out/ ) const SIP_THROW(
+    virtual QString createVectorLayerExporterDestinationUri( const QgsAbstractDatabaseProviderConnection::VectorLayerExporterOptions &options, QVariantMap &providerOptions /Out/ ) const;
 %Docstring
 Creates a URI for use with :py:class:`QgsVectorLayerExporter`
 corresponding to given destination table ``options`` for the backend.
@@ -486,8 +490,6 @@ corresponding to given destination table ``options`` for the backend.
 
 :raises QgsProviderConnectionException: if any errors are encountered.
 %End
-      QgsProviderConnectionException
-    );
 
     virtual bool tableExists( const QString &schema, const QString &name ) const;
 %Docstring
@@ -1044,11 +1046,9 @@ provider.
 .. versionadded:: 3.30
 %End
 %MethodCode
-      // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+    // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
 
-      const QList< Qgis::RelationshipCardinality >
-        cppRes
-      = sipCpp->supportedRelationshipCardinalities();
+    const QList< Qgis::RelationshipCardinality > cppRes = sipCpp->supportedRelationshipCardinalities();
 
     PyObject *l = PyList_New( cppRes.size() );
 
@@ -1058,7 +1058,8 @@ provider.
     {
       for ( int i = 0; i < cppRes.size(); ++i )
       {
-        PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ), sipType_Qgis_RelationshipCardinality );
+        PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ),
+                                             sipType_Qgis_RelationshipCardinality );
 
         if ( !eobj )
         {
@@ -1079,7 +1080,7 @@ provider.
     }
 %End
 
-        SIP_PYOBJECT supportedRelationshipStrengths() const /TypeHint="List[Qgis.RelationshipStrength]"/;
+    SIP_PYOBJECT supportedRelationshipStrengths() const /TypeHint="List[Qgis.RelationshipStrength]"/;
 %Docstring
 Returns a list of relationship strengths which are supported by the
 provider.
@@ -1087,11 +1088,9 @@ provider.
 .. versionadded:: 3.30
 %End
 %MethodCode
-      // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+    // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
 
-      const QList< Qgis::RelationshipStrength >
-        cppRes
-      = sipCpp->supportedRelationshipStrengths();
+    const QList< Qgis::RelationshipStrength > cppRes = sipCpp->supportedRelationshipStrengths();
 
     PyObject *l = PyList_New( cppRes.size() );
 
@@ -1101,7 +1100,8 @@ provider.
     {
       for ( int i = 0; i < cppRes.size(); ++i )
       {
-        PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ), sipType_Qgis_RelationshipStrength );
+        PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ),
+                                             sipType_Qgis_RelationshipStrength );
 
         if ( !eobj )
         {

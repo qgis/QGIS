@@ -65,11 +65,16 @@ class CORE_EXPORT QgsDefaultValue
     bool operator==( const QgsDefaultValue &other ) const;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode const QString str = sipCpp->isValid() ? u"<QgsDefaultValue: %1>"_s.arg( sipCpp->expression().length() > 1000 ? sipCpp->expression().left( 1000 ) + u"..."_s : sipCpp->expression() )
-                                                       : u"<QgsDefaultValue: invalid>"_s;
+    % MethodCode
+    const QString str = sipCpp->isValid() ? u"<QgsDefaultValue: %1>"_s.arg(
+                          sipCpp->expression().length() > 1000 ? sipCpp->expression().left( 1000 ) + u"..."_s
+                          : sipCpp->expression() )
+                        : u"<QgsDefaultValue: invalid>"_s;
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
         /**

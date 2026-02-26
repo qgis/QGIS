@@ -199,14 +199,17 @@ class CORE_EXPORT QgsLayoutTableColumn
 
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str;
+    % MethodCode
+    QString str;
     if ( sipCpp->heading() != sipCpp->attribute() && !sipCpp->heading().isEmpty() )
       str = u"<QgsLayoutTableColumn: %1 (\"%2\")>"_s.arg( sipCpp->attribute(), sipCpp->heading() );
     else
       str = u"<QgsLayoutTableColumn: %1>"_s.arg( sipCpp->attribute() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off

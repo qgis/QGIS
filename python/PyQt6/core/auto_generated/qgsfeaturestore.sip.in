@@ -70,12 +70,14 @@ Returns the number of features contained in the store.
 %Docstring
 Returns the number of features contained in the store.
 %End
-%MethodCode sipRes = sipCpp->count();
+%MethodCode
+    sipRes = sipCpp->count();
 %End
 
-      //! Ensures that bool(obj) returns ``True`` (otherwise __len__() would be used)
-      int __bool__() const;
-%MethodCode sipRes = true;
+    //! Ensures that bool(obj) returns ``True`` (otherwise __len__() would be used)
+    int __bool__() const;
+%MethodCode
+    sipRes = true;
 %End
 
         QgsFeatureList features() const;
@@ -101,15 +103,16 @@ Returns the map of optional parameters.
 
 typedef QVector<QgsFeatureStore> QgsFeatureStoreList;
 
-%MappedType QgsFeatureStoreList
+%MappedType
+QgsFeatureStoreList
 {
 %TypeHeaderCode
 #include "qgsfeaturestore.h"
 %End
 
 %ConvertFromTypeCode
-    // Create the list.
-    PyObject *l;
+  // Create the list.
+  PyObject *l;
 
   if ( ( l = PyList_New( sipCpp->size() ) ) == NULL )
     return NULL;
@@ -135,8 +138,8 @@ typedef QVector<QgsFeatureStore> QgsFeatureStoreList;
 %End
 
 %ConvertToTypeCode
-    // Check the type if that is all that is required.
-    if ( sipIsErr == NULL )
+  // Check the type if that is all that is required.
+  if ( sipIsErr == NULL )
   {
     if ( !PyList_Check( sipPy ) )
       return 0;

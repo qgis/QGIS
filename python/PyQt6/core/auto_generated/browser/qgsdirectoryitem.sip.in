@@ -60,8 +60,7 @@ the :py:class:`QgsDataItemProvider` that created this item.
 
     SIP_PYOBJECT __repr__();
 %MethodCode
-        QString str
-      = QStringLiteral( "<QgsDirectoryItem: %1 - %2>" ).arg( sipCpp->dirPath(), sipCpp->path() );
+    QString str = QStringLiteral( "<QgsDirectoryItem: %1 - %2>" ).arg( sipCpp->dirPath(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
       virtual void setState( Qgis::BrowserItemState state );

@@ -1,7 +1,8 @@
 # The following has been generated automatically from src/core/providers/sensorthings/qgssensorthingsutils.h
 try:
-    QgsSensorThingsUtils.__attribute_docs__ = {'DEFAULT_PAGE_SIZE': 'Default page size'}
-    QgsSensorThingsUtils.__annotations__ = {'DEFAULT_PAGE_SIZE': int}
+    QgsSensorThingsUtils.__attribute_docs__ = {'DEFAULT_PAGE_SIZE': 'Default page size', 'DEFAULT_FEATURE_LIMIT': 'Default limit on number of features fetched', 'DEFAULT_EXPANSION_LIMIT': 'Default limit on number of expanded features fetched'}
+    QgsSensorThingsUtils.__annotations__ = {'DEFAULT_PAGE_SIZE': int, 'DEFAULT_FEATURE_LIMIT': int, 'DEFAULT_EXPANSION_LIMIT': int}
+    QgsSensorThingsUtils.stringToEntity = staticmethod(QgsSensorThingsUtils.stringToEntity)
     QgsSensorThingsUtils.displayString = staticmethod(QgsSensorThingsUtils.displayString)
     QgsSensorThingsUtils.entitySetStringToEntity = staticmethod(QgsSensorThingsUtils.entitySetStringToEntity)
     QgsSensorThingsUtils.entityToSetString = staticmethod(QgsSensorThingsUtils.entityToSetString)

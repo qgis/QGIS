@@ -78,12 +78,10 @@ class CORE_EXPORT QgsBox3D
     explicit QgsBox3D( const QgsRectangle &rect, double zMin = std::numeric_limits<double>::quiet_NaN(), double zMax = std::numeric_limits<double>::quiet_NaN(), bool normalize = true );
 
 #else
-    QgsBox3D(
-      SIP_PYOBJECT x SIP_TYPEHINT( Optional[Union[QgsPoint, QgsVector3D, QgsRectangle, float]] ) = Py_None, SIP_PYOBJECT y SIP_TYPEHINT( Optional[QgsPoint, QgsVector3D, float] ) = Py_None,
-      SIP_PYOBJECT z SIP_TYPEHINT( Optional[Union[bool, float]] ) = Py_None, SIP_PYOBJECT x2 SIP_TYPEHINT( Optional[Union[bool, float]] ) = Py_None,
-      SIP_PYOBJECT y2 SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT z2 SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT n SIP_TYPEHINT( Optional[bool] ) = Py_None
-    )[( double x = 0.0, double y = 0.0, double z = 0.0, double x2 = 0.0, double y2 = 0.0, double z2 = 0.0, bool n = true )];
-    % MethodCode if ( sipCanConvertToType( a0, sipType_QgsRectangle, SIP_NOT_NONE ) && a4 == Py_None && a5 == Py_None && a6 == Py_None )
+    // clang-format off
+    QgsBox3D( SIP_PYOBJECT x SIP_TYPEHINT( Optional[Union[QgsPoint, QgsVector3D, QgsRectangle, float]] ) = Py_None, SIP_PYOBJECT y SIP_TYPEHINT( Optional[QgsPoint, QgsVector3D, float] ) = Py_None, SIP_PYOBJECT z SIP_TYPEHINT( Optional[Union[bool, float]] ) = Py_None, SIP_PYOBJECT x2 SIP_TYPEHINT( Optional[Union[bool, float]] ) = Py_None, SIP_PYOBJECT y2 SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT z2 SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT n SIP_TYPEHINT( Optional[bool] ) = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double x2 = 0.0, double y2 = 0.0, double z2 = 0.0, bool n = true )];
+    % MethodCode
+    if ( sipCanConvertToType( a0, sipType_QgsRectangle, SIP_NOT_NONE ) && a4 == Py_None && a5 == Py_None && a6 == Py_None )
     {
       int state;
       sipIsErr = 0;
@@ -117,8 +115,7 @@ class CORE_EXPORT QgsBox3D
       }
       sipReleaseType( pt1, sipType_QgsPoint, state );
     }
-    else if ( sipCanConvertToType( a0, sipType_QgsVector3D, SIP_NOT_NONE ) && sipCanConvertToType( a1, sipType_QgsVector3D, SIP_NOT_NONE ) && a3 == Py_None && a4 == Py_None && a5 == Py_None
-              && a6 == Py_None )
+    else if ( sipCanConvertToType( a0, sipType_QgsVector3D, SIP_NOT_NONE ) && sipCanConvertToType( a1, sipType_QgsVector3D, SIP_NOT_NONE ) && a3 == Py_None && a4 == Py_None && a5 == Py_None && a6 == Py_None )
     {
       int state;
       sipIsErr = 0;
@@ -136,10 +133,14 @@ class CORE_EXPORT QgsBox3D
       }
       sipReleaseType( corner1, sipType_QgsVector3D, state );
     }
-    else if ( ( a0 == Py_None || PyFloat_AsDouble( a0 ) != -1.0 || !PyErr_Occurred() ) && ( a1 == Py_None || PyFloat_AsDouble( a1 ) != -1.0 || !PyErr_Occurred() )
-              && ( a2 == Py_None || PyFloat_AsDouble( a2 ) != -1.0 || !PyErr_Occurred() ) && ( a3 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() )
-              && ( a4 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) && ( a5 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() )
-              && ( a6 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) )
+    else if (
+      ( a0 == Py_None || PyFloat_AsDouble( a0 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a1 == Py_None || PyFloat_AsDouble( a1 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a2 == Py_None || PyFloat_AsDouble( a2 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a3 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a4 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a5 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) &&
+      ( a6 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) )
     {
       double x1 = a0 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a0 );
       double y1 = a1 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a1 );
@@ -156,6 +157,7 @@ class CORE_EXPORT QgsBox3D
       sipIsErr = 1;
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -482,6 +484,7 @@ class CORE_EXPORT QgsBox3D
 
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = u"<QgsBox3D(%1, %2, %3, %4, %5, %6)>"_s
@@ -493,6 +496,7 @@ class CORE_EXPORT QgsBox3D
                   .arg( sipCpp->zMaximum() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
   private:

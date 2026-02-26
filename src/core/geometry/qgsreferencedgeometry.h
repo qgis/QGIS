@@ -92,10 +92,13 @@ class CORE_EXPORT QgsReferencedRectangle : public QgsRectangle, public QgsRefere
     bool operator!=( const QgsReferencedRectangle &other ) const;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsReferencedRectangle: %1 (%2)>"_s.arg( sipCpp->asWktCoordinates(), sipCpp->crs().authid() );
+    % MethodCode
+    QString str = u"<QgsReferencedRectangle: %1 (%2)>"_s.arg( sipCpp->asWktCoordinates(), sipCpp->crs().authid() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 };
 
@@ -123,10 +126,13 @@ class CORE_EXPORT QgsReferencedPointXY : public QgsPointXY, public QgsReferenced
     bool operator!=( const QgsReferencedPointXY &other );
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsReferencedPointXY: %1 (%2)>"_s.arg( sipCpp->asWkt(), sipCpp->crs().authid() );
+    % MethodCode
+    QString str = u"<QgsReferencedPointXY: %1 (%2)>"_s.arg( sipCpp->asWkt(), sipCpp->crs().authid() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 };
 
@@ -169,10 +175,13 @@ class CORE_EXPORT QgsReferencedGeometry : public QgsGeometry, public QgsReferenc
 
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsReferencedGeometry: %1 (%2)>"_s.arg( sipCpp->asWkt(), sipCpp->crs().authid() );
+    % MethodCode
+    QString str = u"<QgsReferencedGeometry: %1 (%2)>"_s.arg( sipCpp->asWkt(), sipCpp->crs().authid() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 };
 

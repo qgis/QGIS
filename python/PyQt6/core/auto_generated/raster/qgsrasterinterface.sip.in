@@ -132,7 +132,7 @@ etc.
 #include "qgsrastercontourrenderer.h"
 %End
 %ConvertToSubClassCode
-    if ( dynamic_cast<QgsBrightnessContrastFilter *>( sipCpp ) )
+if ( dynamic_cast<QgsBrightnessContrastFilter *>( sipCpp ) )
       sipType = sipType_QgsBrightnessContrastFilter;
     else if ( dynamic_cast<QgsHueSaturationFilter *>( sipCpp ) )
       sipType = sipType_QgsHueSaturationFilter;
@@ -514,14 +514,14 @@ Sets base class members from xml. Usually called from
                         const QgsRectangle &boundingBox = QgsRectangle(),
                         int sampleSize = 0,
                         bool includeOutOfRange = false )
-    [void( QgsRasterHistogram &histogram,
-           int bandNo,
-           int binCount,
-           double minimum = 0.0,
-           double maximum = 0.0,
-           const QgsRectangle &boundingBox = QgsRectangle(),
-           int sampleSize = 0,
-           bool includeOutOfRange = false )];
+    [void ( QgsRasterHistogram & histogram,
+            int bandNo,
+            int binCount,
+            double minimum = 0.0,
+            double maximum = 0.0,
+            const QgsRectangle &boundingBox = QgsRectangle(),
+            int sampleSize = 0,
+            bool includeOutOfRange = false )];
 %Docstring
 Fill in histogram defaults if not specified
 
@@ -550,7 +550,7 @@ Fill in histogram defaults if not specified
       maximum = PyFloat_AsDouble( a4 );
     }
 
-#if defined( SIP_PROTECTED_IS_PUBLIC ) || ( SIP_VERSION >= 0x050000 && !defined( _MSC_VER ) )
+#if defined(SIP_PROTECTED_IS_PUBLIC) || (SIP_VERSION >= 0x050000 && !defined(_MSC_VER))
     sipCpp->initHistogram( *a0, a1, a2, minimum, maximum, *a5, a6, a7 );
 #else
     sipCpp->sipProtect_initHistogram( *a0, a1, a2, minimum, maximum, *a5, a6, a7 );

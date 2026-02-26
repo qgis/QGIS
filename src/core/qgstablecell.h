@@ -215,10 +215,13 @@ class CORE_EXPORT QgsTableCell
 
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str = u"<QgsTableCell: %1>"_s.arg( sipCpp->content().toString() );
+    % MethodCode
+    QString str = u"<QgsTableCell: %1>"_s.arg( sipCpp->content().toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off

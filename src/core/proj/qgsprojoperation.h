@@ -55,8 +55,10 @@ class CORE_EXPORT QgsProjOperation
     QString details() const { return mDetails; }
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
-    % MethodCode QString str;
+    % MethodCode
+    QString str;
     if ( !sipCpp->isValid() )
     {
       str = u"<QgsProjOperation: invalid>"_s;
@@ -66,7 +68,8 @@ class CORE_EXPORT QgsProjOperation
       str = u"<QgsProjOperation: %1>"_s.arg( sipCpp->id() );
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-  % End
+    % End
+// clang-format on
 #endif
 
     // clang-format off

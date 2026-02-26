@@ -247,6 +247,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
     QgsGeometry geometry( QgsFeatureId id ) const;
 
 #else
+    // clang-format off
 
     /**
      * Returns the stored geometry for the indexed feature with matching \a id.
@@ -258,7 +259,8 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      * \since QGIS 3.6
      */
     SIP_PYOBJECT geometry( QgsFeatureId id ) const SIP_TYPEHINT( QgsGeometry );
-    % MethodCode auto g = std::make_unique< QgsGeometry >( sipCpp->geometry( a0 ) );
+    % MethodCode
+    auto g = std::make_unique< QgsGeometry >( sipCpp->geometry( a0 ) );
     if ( g->isNull() )
     {
       PyErr_SetString( PyExc_KeyError, u"No geometry with feature id %1 exists in the index."_s.arg( a0 ).toUtf8().constData() );
@@ -269,6 +271,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
       sipRes = sipConvertFromType( g.release(), sipType_QgsGeometry, Py_None );
     }
     % End
+// clang-format on
 #endif
 
     /* debugging */

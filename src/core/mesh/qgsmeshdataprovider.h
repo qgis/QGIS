@@ -33,9 +33,11 @@
 #include <QVector>
 
 #ifdef SIP_RUN
+// clang-format off
 % ModuleHeaderCode
 #include "qgsmeshutils.h"
-  % End
+% End
+// clang-format on
 #endif
 
   class QgsRectangle;

@@ -75,7 +75,8 @@ Inserts a ``fragment`` into the block, at the specified index.
 
 .. versionadded:: 3.40
 %End
-%MethodCode if ( a0 < 0 || a0 > sipCpp->size() )
+%MethodCode
+    if ( a0 < 0 || a0 > sipCpp->size() )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -136,7 +137,8 @@ background brushes set.
 %End
 
     Py_ssize_t __len__() const;
-%MethodCode sipRes = sipCpp->size();
+%MethodCode
+    sipRes = sipCpp->size();
 %End
 
 
@@ -146,7 +148,8 @@ Returns the fragment at the specified ``index``.
 
 :raises KeyError: if no fragment exists at the specified index.
 %End
-%MethodCode if ( a0 < 0 || a0 >= sipCpp->size() )
+%MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->size() )
     {
       PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -158,7 +161,8 @@ Returns the fragment at the specified ``index``.
 %End
 
     QgsTextFragment &operator[]( int index ) /Factory/;
-%MethodCode SIP_SSIZE_T idx = sipConvertFromSequenceIndex( a0, sipCpp->size() );
+%MethodCode
+    Py_ssize_t idx = sipConvertFromSequenceIndex( a0, sipCpp->size() );
     if ( idx < 0 )
       sipIsErr = 1;
     else

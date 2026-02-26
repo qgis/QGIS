@@ -50,12 +50,13 @@ class CORE_EXPORT QgsConnectionsRootItem : public QgsDataCollectionItem
     ~QgsConnectionsRootItem() override = default;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
-        QString str
-      = u"<QgsConnectionsRootItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
+    QString str = u"<QgsConnectionsRootItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 };
 

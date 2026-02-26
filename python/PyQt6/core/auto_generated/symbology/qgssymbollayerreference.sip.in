@@ -87,7 +87,7 @@ Returns the symbol layer index path inside the symbol
     SIP_PYOBJECT __repr__();
 %MethodCode
 
-        QStringList pathString;
+    QStringList pathString;
     for ( int path : sipCpp->symbolLayerIndexPath() )
     {
       pathString.append( QString::number( path ) );
@@ -158,7 +158,7 @@ The symbol layer's id
     SIP_PYOBJECT __repr__();
 %MethodCode
 
-        QStringList pathString;
+    QStringList pathString;
     for ( int path : sipCpp->symbolLayerId().symbolLayerIndexPath() )
     {
       pathString.append( QString::number( path ) );

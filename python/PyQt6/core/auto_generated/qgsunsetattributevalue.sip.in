@@ -41,7 +41,8 @@ Returns the original data provider's default value clause.
     bool operator!=( const QgsUnsetAttributeValue & ) const;
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str;
+%MethodCode
+    QString str;
     if ( !sipCpp->defaultValueClause().isEmpty() )
       str = QStringLiteral( "<QgsUnsetAttributeValue: %1>" ).arg( sipCpp->defaultValueClause() );
     else

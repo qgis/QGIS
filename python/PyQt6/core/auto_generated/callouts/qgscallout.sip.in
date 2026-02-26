@@ -28,7 +28,7 @@ of the callout and using any relevant symbology elements to render them.
 #include "qgscallout.h"
 %End
 %ConvertToSubClassCode
-    if ( sipCpp->type() == "simple" && dynamic_cast<QgsSimpleLineCallout *>( sipCpp ) != NULL )
+if ( sipCpp->type() == "simple" && dynamic_cast<QgsSimpleLineCallout *>( sipCpp ) != NULL )
     {
       sipType = sipType_QgsSimpleLineCallout;
     }

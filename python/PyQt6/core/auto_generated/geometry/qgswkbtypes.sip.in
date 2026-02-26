@@ -38,10 +38,6 @@ WKB types the single type would be Polygon.
 
 .. seealso:: :py:func:`flatType`
 %End
-    {
-      switch ( type );
-      return Qgis::WkbType::Unknown;
-    }
 
     static Qgis::WkbType multiType( Qgis::WkbType type ) /HoldGIL/;
 %Docstring

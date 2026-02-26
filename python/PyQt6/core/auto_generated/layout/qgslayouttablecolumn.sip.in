@@ -243,7 +243,8 @@ Creates a duplicate column which is a deep copy of this column.
 
 
     SIP_PYOBJECT __repr__();
-%MethodCode QString str;
+%MethodCode
+    QString str;
     if ( sipCpp->heading() != sipCpp->attribute() && !sipCpp->heading().isEmpty() )
       str = QStringLiteral( "<QgsLayoutTableColumn: %1 (\"%2\")>" ).arg( sipCpp->attribute(), sipCpp->heading() );
     else

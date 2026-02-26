@@ -521,10 +521,13 @@ class CORE_EXPORT QgsTextFormat
         bool operator==( const QgsTextFormat::Tab &other ) const { return qgsDoubleNear( mPosition, other.mPosition ); }
 
 #ifdef SIP_RUN
+        // clang-format off
         SIP_PYOBJECT __repr__();
-        % MethodCode const QString str = u"<QgsTextFormat.Tab: %1>"_s.arg( sipCpp->position() );
+        % MethodCode
+        const QString str = u"<QgsTextFormat.Tab: %1>"_s.arg( sipCpp->position() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-      % End
+        % End
+// clang-format on
 #endif
 
         // clang-format off
