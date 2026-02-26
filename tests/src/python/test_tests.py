@@ -21,6 +21,7 @@ TEST_CLASS_BASES = ("QgisTestCase", "TestCase")
 RX_ADD_PYTHON_TEST = re.compile(
     r"\s*ADD_PYTHON_TEST\s*\((.*?) +(.*?)(?: +.*)?\)\s*", re.IGNORECASE
 )
+SPECIAL_CASES = ("test_testrunner.py",)
 
 
 class TestQgsTests(QgisTestCase):
@@ -69,6 +70,9 @@ class TestQgsTests(QgisTestCase):
         # scan for python files which contain tests
         all_test_files = set()
         for filepath in TEST_DIR.rglob("*.py"):
+            if filepath.name in SPECIAL_CASES:
+                continue
+
             if self.contains_test_class(filepath):
                 all_test_files.add(filepath.name)
 
