@@ -22,18 +22,11 @@ using namespace Qt::StringLiterals;
 QgsProcessingParameterAggregate::QgsProcessingParameterAggregate( const QString &name, const QString &description, const QString &parentLayerParameterName, bool optional )
   : QgsProcessingParameterDefinition( name, description, QVariant(), optional )
   , mParentLayerParameterName( parentLayerParameterName )
-{
-}
+{}
 
-QgsProcessingParameterDefinition *QgsProcessingParameterAggregate::clone() const
-{
-  return new QgsProcessingParameterAggregate( *this );
-}
+QgsProcessingParameterDefinition *QgsProcessingParameterAggregate::clone() const { return new QgsProcessingParameterAggregate( *this ); }
 
-QString QgsProcessingParameterAggregate::type() const
-{
-  return typeName();
-}
+QString QgsProcessingParameterAggregate::type() const { return typeName(); }
 
 bool QgsProcessingParameterAggregate::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
 {
@@ -64,10 +57,7 @@ bool QgsProcessingParameterAggregate::checkValueIsAcceptable( const QVariant &in
   return true;
 }
 
-QString QgsProcessingParameterAggregate::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
-{
-  return QgsProcessingUtils::variantToPythonLiteral( value );
-}
+QString QgsProcessingParameterAggregate::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const { return QgsProcessingUtils::variantToPythonLiteral( value ); }
 
 QString QgsProcessingParameterAggregate::asPythonString( QgsProcessing::PythonOutputType outputType ) const
 {
@@ -75,8 +65,7 @@ QString QgsProcessingParameterAggregate::asPythonString( QgsProcessing::PythonOu
   {
     case QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = u"QgsProcessingParameterAggregate('%1', %2"_s
-                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
+      QString code = u"QgsProcessingParameterAggregate('%1', %2"_s.arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( !mParentLayerParameterName.isEmpty() )
         code += u", parentLayerParameterName=%1"_s.arg( QgsProcessingUtils::stringToPythonLiteral( mParentLayerParameterName ) );
 
@@ -111,13 +100,6 @@ QStringList QgsProcessingParameterAggregate::dependsOnOtherParameters() const
   return depends;
 }
 
-QString QgsProcessingParameterAggregate::parentLayerParameterName() const
-{
-  return mParentLayerParameterName;
-}
+QString QgsProcessingParameterAggregate::parentLayerParameterName() const { return mParentLayerParameterName; }
 
-void QgsProcessingParameterAggregate::setParentLayerParameterName( const QString &name )
-{
-  mParentLayerParameterName = name;
-}
-
+void QgsProcessingParameterAggregate::setParentLayerParameterName( const QString &name ) { mParentLayerParameterName = name; }

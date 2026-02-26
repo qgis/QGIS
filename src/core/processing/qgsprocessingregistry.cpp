@@ -49,7 +49,7 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   addParameterType( new QgsProcessingParameterTypeEnum() );
   addParameterType( new QgsProcessingParameterTypeExtent() );
   addParameterType( new QgsProcessingParameterTypeMatrix() );
-  addParameterType( new QgsProcessingParameterTypeFile() ) ;
+  addParameterType( new QgsProcessingParameterTypeFile() );
   addParameterType( new QgsProcessingParameterTypeField() );
   addParameterType( new QgsProcessingParameterTypeVectorDestination() );
   addParameterType( new QgsProcessingParameterTypeRasterDestination() );
@@ -127,13 +127,10 @@ bool QgsProcessingRegistry::addProvider( QgsProcessingProvider *provider )
   }
 
   provider->setParent( this );
-  mProviders[ provider->id()] = provider;
+  mProviders[provider->id()] = provider;
 
   mCachedInformation.clear();
-  connect( provider, &QgsProcessingProvider::algorithmsLoaded, this, [this]
-  {
-    mCachedInformation.clear();
-  } );
+  connect( provider, &QgsProcessingProvider::algorithmsLoaded, this, [this] { mCachedInformation.clear(); } );
 
   emit providerAdded( provider->id() );
   return true;
@@ -261,10 +258,7 @@ QgsProcessingAlgorithm *QgsProcessingRegistry::createAlgorithmById( const QStrin
   return creation.release();
 }
 
-void QgsProcessingRegistry::addAlgorithmAlias( const QString &aliasId, const QString &actualId )
-{
-  mAlgorithmAliases.insert( aliasId, actualId );
-}
+void QgsProcessingRegistry::addAlgorithmAlias( const QString &aliasId, const QString &actualId ) { mAlgorithmAliases.insert( aliasId, actualId ); }
 
 bool QgsProcessingRegistry::addParameterType( QgsProcessingParameterType *type )
 {
@@ -292,12 +286,6 @@ void QgsProcessingRegistry::removeParameterType( QgsProcessingParameterType *typ
   delete type;
 }
 
-QgsProcessingParameterType *QgsProcessingRegistry::parameterType( const QString &id ) const
-{
-  return mParameterTypes.value( id );
-}
+QgsProcessingParameterType *QgsProcessingRegistry::parameterType( const QString &id ) const { return mParameterTypes.value( id ); }
 
-QList<QgsProcessingParameterType *> QgsProcessingRegistry::parameterTypes() const
-{
-  return mParameterTypes.values();
-}
+QList<QgsProcessingParameterType *> QgsProcessingRegistry::parameterTypes() const { return mParameterTypes.values(); }

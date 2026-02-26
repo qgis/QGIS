@@ -21,19 +21,13 @@
 
 using namespace Qt::StringLiterals;
 
-QgsProcessingParameterTinInputLayers::QgsProcessingParameterTinInputLayers( const QString &name, const QString &description ):
-  QgsProcessingParameterDefinition( name, description )
+QgsProcessingParameterTinInputLayers::QgsProcessingParameterTinInputLayers( const QString &name, const QString &description )
+  : QgsProcessingParameterDefinition( name, description )
 {}
 
-QgsProcessingParameterDefinition *QgsProcessingParameterTinInputLayers::clone() const
-{
-  return new QgsProcessingParameterTinInputLayers( name(), description() );
-}
+QgsProcessingParameterDefinition *QgsProcessingParameterTinInputLayers::clone() const { return new QgsProcessingParameterTinInputLayers( name(), description() ); }
 
-QString QgsProcessingParameterTinInputLayers::type() const
-{
-  return typeName();
-}
+QString QgsProcessingParameterTinInputLayers::type() const { return typeName(); }
 
 bool QgsProcessingParameterTinInputLayers::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
 {
@@ -51,13 +45,11 @@ bool QgsProcessingParameterTinInputLayers::checkValueIsAcceptable( const QVarian
       return false;
     const QVariantMap layerMap = variantLayer.toMap();
 
-    if ( !layerMap.contains( u"source"_s ) ||
-         !layerMap.contains( u"type"_s ) ||
-         !layerMap.contains( u"attributeIndex"_s ) )
+    if ( !layerMap.contains( u"source"_s ) || !layerMap.contains( u"type"_s ) || !layerMap.contains( u"attributeIndex"_s ) )
       return false;
 
     if ( !context )
-      continue;  // when called without context, we will skip checking whether the layer can be resolved
+      continue; // when called without context, we will skip checking whether the layer can be resolved
 
     QgsMapLayer *mapLayer = QgsProcessingUtils::mapLayerFromString( layerMap.value( u"source"_s ).toString(), *context );
     if ( !mapLayer || mapLayer->type() != Qgis::LayerType::Vector )
@@ -106,8 +98,7 @@ QString QgsProcessingParameterTinInputLayers::asPythonString( QgsProcessing::Pyt
   {
     case QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = u"QgsProcessingParameterTinInputLayers('%1', %2)"_s
-                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
+      QString code = u"QgsProcessingParameterTinInputLayers('%1', %2)"_s.arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       return code;
     }
   }

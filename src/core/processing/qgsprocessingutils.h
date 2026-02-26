@@ -53,7 +53,6 @@ class CORE_EXPORT QgsProcessingUtils
     Q_GADGET
 
   public:
-
     /**
      * Returns a list of raster layers from a \a project which are compatible with the processing
      * framework.
@@ -91,9 +90,7 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatibleTiledSceneLayers()
      * \see compatibleLayers()
      */
-    static QList< QgsVectorLayer * > compatibleVectorLayers( QgsProject *project,
-        const QList< int > &sourceTypes = QList< int >(),
-        bool sort = true );
+    static QList< QgsVectorLayer * > compatibleVectorLayers( QgsProject *project, const QList< int > &sourceTypes = QList< int >(), bool sort = true );
 
     /**
      * Returns a list of mesh layers from a \a project which are compatible with the processing
@@ -254,13 +251,13 @@ class CORE_EXPORT QgsProcessingUtils
     enum class LayerHint SIP_MONKEYPATCH_SCOPEENUM : int
     {
       UnknownType, //!< Unknown layer type
-      Vector, //!< Vector layer type
-      Raster, //!< Raster layer type
-      Mesh, //!< Mesh layer type, since QGIS 3.6
-      PointCloud, //!< Point cloud layer type, since QGIS 3.22
-      Annotation, //!< Annotation layer type, since QGIS 3.22
-      VectorTile, //!< Vector tile layer type, since QGIS 3.32
-      TiledScene, //!< Tiled scene layer type, since QGIS 3.34
+      Vector,      //!< Vector layer type
+      Raster,      //!< Raster layer type
+      Mesh,        //!< Mesh layer type, since QGIS 3.6
+      PointCloud,  //!< Point cloud layer type, since QGIS 3.22
+      Annotation,  //!< Annotation layer type, since QGIS 3.22
+      VectorTile,  //!< Vector tile layer type, since QGIS 3.32
+      TiledScene,  //!< Tiled scene layer type, since QGIS 3.34
     };
     Q_ENUM( LayerHint )
 
@@ -276,7 +273,10 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * The \a typeHint can be used to dictate the type of map layer expected.
      */
-    static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType, QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags() );
+    static QgsMapLayer *mapLayerFromString(
+      const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, QgsProcessingUtils::LayerHint typeHint = QgsProcessingUtils::LayerHint::UnknownType,
+      QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags()
+    );
 
     /**
      * Converts a variant \a value to a new feature source.
@@ -305,7 +305,8 @@ class CORE_EXPORT QgsProcessingUtils
      * Normalizes a layer \a source string for safe comparison across different
      * operating system environments.
      */
-    static QString normalizeLayerSource( const QString &source ) SIP_HOLDGIL;
+    static QString normalizeLayerSource( const QString &source )
+    SIP_HOLDGIL;
 
     /**
      * Returns a string representation of the source for a \a layer. The returned

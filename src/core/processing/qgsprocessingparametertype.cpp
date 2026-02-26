@@ -17,47 +17,20 @@
 
 #include "qgsprocessingparametertype.h"
 
-QColor QgsProcessingParameterType::defaultModelColor()
-{
-  return QColor( 128, 128, 128 ); /* mid gray */
-}
+QColor QgsProcessingParameterType::defaultModelColor() { return QColor( 128, 128, 128 ); /* mid gray */ }
 
-Qgis::ProcessingParameterTypeFlags QgsProcessingParameterType::flags() const
-{
-  return Qgis::ProcessingParameterTypeFlag::ExposeToModeler;
-}
+Qgis::ProcessingParameterTypeFlags QgsProcessingParameterType::flags() const { return Qgis::ProcessingParameterTypeFlag::ExposeToModeler; }
 
-QVariantMap QgsProcessingParameterType::metadata() const
-{
-  return QVariantMap();
-}
+QVariantMap QgsProcessingParameterType::metadata() const { return QVariantMap(); }
 
-QStringList QgsProcessingParameterType::acceptedPythonTypes() const
-{
-  return QStringList();
-}
+QStringList QgsProcessingParameterType::acceptedPythonTypes() const { return QStringList(); }
 
-QStringList QgsProcessingParameterType::acceptedStringValues() const
-{
-  return QStringList();
-}
+QStringList QgsProcessingParameterType::acceptedStringValues() const { return QStringList(); }
 
-QStringList QgsProcessingParameterType::acceptedParameterTypes() const
-{
-  return QStringList();
-}
+QStringList QgsProcessingParameterType::acceptedParameterTypes() const { return QStringList(); }
 
-QStringList QgsProcessingParameterType::acceptedOutputTypes() const
-{
-  return QStringList();
-}
+QStringList QgsProcessingParameterType::acceptedOutputTypes() const { return QStringList(); }
 
-QList<int> QgsProcessingParameterType::acceptedDataTypes( const QgsProcessingParameterDefinition * ) const
-{
-  return QList<int>();
-}
+QList<int> QgsProcessingParameterType::acceptedDataTypes( const QgsProcessingParameterDefinition * ) const { return QList<int>(); }
 
-QColor QgsProcessingParameterType::modelColor() const
-{
-  return defaultModelColor();
-}
+QColor QgsProcessingParameterType::modelColor() const { return defaultModelColor(); }

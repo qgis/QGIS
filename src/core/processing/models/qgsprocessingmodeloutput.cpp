@@ -28,10 +28,7 @@ QgsProcessingModelOutput::QgsProcessingModelOutput( const QString &name, const Q
   , mName( name )
 {}
 
-QgsProcessingModelOutput *QgsProcessingModelOutput::clone() const
-{
-  return new QgsProcessingModelOutput( *this );
-}
+QgsProcessingModelOutput *QgsProcessingModelOutput::clone() const { return new QgsProcessingModelOutput( *this ); }
 
 QVariant QgsProcessingModelOutput::toVariant() const
 {

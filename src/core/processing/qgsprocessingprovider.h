@@ -37,7 +37,6 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingProvider.
      */
@@ -52,7 +51,8 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * Returns an icon for the provider.
      * \see svgIconPath()
      */
-    virtual QIcon icon() const SIP_HOLDGIL;
+    virtual QIcon icon() const
+    SIP_HOLDGIL;
 
     /**
      * Returns a path to an SVG version of the provider's icon.

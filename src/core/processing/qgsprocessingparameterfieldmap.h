@@ -64,7 +64,6 @@ class CORE_EXPORT QgsProcessingParameterFieldMapping : public QgsProcessingParam
 
   private:
     QString mParentLayerParameterName;
-
 };
 
 #ifndef SIP_RUN
@@ -80,51 +79,26 @@ class CORE_EXPORT QgsProcessingParameterFieldMapping : public QgsProcessingParam
 class CORE_EXPORT QgsProcessingParameterTypeFieldMapping : public QgsProcessingParameterType
 {
   public:
-    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
-    {
-      return new QgsProcessingParameterFieldMapping( name );
-    }
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY { return new QgsProcessingParameterFieldMapping( name ); }
 
     QString description() const override
     {
       return QCoreApplication::translate( "Processing", "A mapping of field names to field type definitions and expressions. Used for the refactor fields algorithm." );
     }
 
-    QString name() const override
-    {
-      return QCoreApplication::translate( "Processing", "Fields Mapper" );
-    }
+    QString name() const override { return QCoreApplication::translate( "Processing", "Fields Mapper" ); }
 
-    QString id() const override
-    {
-      return QgsProcessingParameterFieldMapping::typeName();
-    }
+    QString id() const override { return QgsProcessingParameterFieldMapping::typeName(); }
 
-    QString pythonImportString() const override
-    {
-      return u"from qgis.core import QgsProcessingParameterFieldMapping"_s;
-    }
+    QString pythonImportString() const override { return u"from qgis.core import QgsProcessingParameterFieldMapping"_s; }
 
-    QString className() const override
-    {
-      return u"QgsProcessingParameterFieldMapping"_s;
-    }
+    QString className() const override { return u"QgsProcessingParameterFieldMapping"_s; }
 
-    QStringList acceptedPythonTypes() const override
-    {
-      return QStringList() << QObject::tr( "list[dict]: list of field definitions as dictionaries" );
-    }
+    QStringList acceptedPythonTypes() const override { return QStringList() << QObject::tr( "list[dict]: list of field definitions as dictionaries" ); }
 
-    QStringList acceptedParameterTypes() const override
-    {
-      return QStringList()
-             << QgsProcessingParameterFieldMapping::typeName();
-    }
+    QStringList acceptedParameterTypes() const override { return QStringList() << QgsProcessingParameterFieldMapping::typeName(); }
 
-    QStringList acceptedOutputTypes() const override
-    {
-      return QStringList();
-    }
+    QStringList acceptedOutputTypes() const override { return QStringList(); }
 };
 
 ///@endcond

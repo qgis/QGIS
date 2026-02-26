@@ -23,7 +23,6 @@ Contains basic properties for a Processing algorithm.
 #include "qgsprocessingregistry.h"
 %End
   public:
-
     QString displayName;
 
     QIcon icon;
@@ -44,7 +43,6 @@ rather accessed through :py:func:`QgsApplication.processingRegistry()`.
 #include "qgsprocessingregistry.h"
 %End
   public:
-
     QgsProcessingRegistry( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProcessingRegistry.
@@ -89,7 +87,7 @@ provider does not exist in the registry).
 .. seealso:: :py:func:`addProvider`
 %End
 
-    QgsProcessingProvider *providerById( const QString &id ) const /HoldGIL/;
+    QgsProcessingProvider *providerById( const QString &id ) const;
 %Docstring
 Returns a matching provider by provider ID.
 %End

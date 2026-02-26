@@ -32,7 +32,6 @@
 class CORE_EXPORT QgsProcessingModelChildAlgorithmResult
 {
   public:
-
     QgsProcessingModelChildAlgorithmResult();
 
     /**
@@ -93,23 +92,15 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithmResult
 
     bool operator==( const QgsProcessingModelChildAlgorithmResult &other ) const
     {
-      return mExecutionStatus == other.mExecutionStatus
-             && mHtmlLog == other.mHtmlLog
-             && mInputs == other.mInputs
-             && mOutputs == other.mOutputs;
+      return mExecutionStatus == other.mExecutionStatus && mHtmlLog == other.mHtmlLog && mInputs == other.mInputs && mOutputs == other.mOutputs;
     }
-    bool operator!=( const QgsProcessingModelChildAlgorithmResult &other ) const
-    {
-      return !( *this == other );
-    }
+    bool operator!=( const QgsProcessingModelChildAlgorithmResult &other ) const { return !( *this == other ); }
 
   private:
-
     Qgis::ProcessingModelChildAlgorithmExecutionStatus mExecutionStatus = Qgis::ProcessingModelChildAlgorithmExecutionStatus::NotExecuted;
     QVariantMap mInputs;
     QVariantMap mOutputs;
     QString mHtmlLog;
-
 };
 
 /**
@@ -121,7 +112,6 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithmResult
 class CORE_EXPORT QgsProcessingModelResult
 {
   public:
-
     QgsProcessingModelResult();
 
     /**
@@ -186,18 +176,12 @@ class CORE_EXPORT QgsProcessingModelResult
     QSet< QString > executedChildIds() const { return mExecutedChildren; }
 
   private:
-
     QMap< QString, QgsProcessingModelChildAlgorithmResult > mChildResults;
 
     QSet< QString > mExecutedChildren;
     QVariantMap mRawChildInputs;
     QVariantMap mRawChildOutputs;
-
 };
 
 
 #endif // QGSPROCESSINGMODELRESULT_H
-
-
-
-

@@ -23,15 +23,9 @@ QgsProcessingModelInitialRunConfig::QgsProcessingModelInitialRunConfig() = defau
 
 QgsProcessingModelInitialRunConfig::~QgsProcessingModelInitialRunConfig() = default;
 
-QgsMapLayerStore *QgsProcessingModelInitialRunConfig::previousLayerStore()
-{
-  return mModelInitialLayerStore.get();
-}
+QgsMapLayerStore *QgsProcessingModelInitialRunConfig::previousLayerStore() { return mModelInitialLayerStore.get(); }
 
-std::unique_ptr<QgsMapLayerStore> QgsProcessingModelInitialRunConfig::takePreviousLayerStore()
-{
-  return std::move( mModelInitialLayerStore );
-}
+std::unique_ptr<QgsMapLayerStore> QgsProcessingModelInitialRunConfig::takePreviousLayerStore() { return std::move( mModelInitialLayerStore ); }
 
 void QgsProcessingModelInitialRunConfig::setPreviousLayerStore( std::unique_ptr<QgsMapLayerStore> store )
 {

@@ -22,7 +22,6 @@ Represents a group box in a model.
 #include "qgsprocessingmodelgroupbox.h"
 %End
   public:
-
     QgsProcessingModelGroupBox( const QString &description = QString() );
 %Docstring
 Constructor for QgsProcessingModelGroupBox with the specified

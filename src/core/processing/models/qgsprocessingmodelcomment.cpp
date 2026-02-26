@@ -25,10 +25,7 @@ QgsProcessingModelComment::QgsProcessingModelComment( const QString &description
   setSize( QSizeF( 100, 60 ) );
 }
 
-QgsProcessingModelComment *QgsProcessingModelComment::clone() const
-{
-  return new QgsProcessingModelComment( *this );
-}
+QgsProcessingModelComment *QgsProcessingModelComment::clone() const { return new QgsProcessingModelComment( *this ); }
 
 QVariant QgsProcessingModelComment::toVariant() const
 {

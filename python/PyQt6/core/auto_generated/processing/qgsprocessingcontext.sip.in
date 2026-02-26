@@ -26,7 +26,6 @@ and expression context.
 #include "qgsprocessingcontext.h"
 %End
   public:
-
     enum Flag /BaseType=IntEnum/
     {
       // For future API flexibility only and to avoid sip issues, remove when real entries are added to flags.
@@ -46,7 +45,7 @@ Copies all settings which are safe for use across different threads from
 ``other`` to this context.
 %End
 
-    QgsProcessingContext::Flags flags() const /HoldGIL/;
+    QgsProcessingContext::Flags flags() const;
 %Docstring
 Returns any flags set in the context.
 

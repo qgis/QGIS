@@ -34,40 +34,19 @@ QgsProcessingProvider::QgsProcessingProvider( QObject *parent SIP_TRANSFERTHIS )
 {}
 
 
-QgsProcessingProvider::~QgsProcessingProvider()
-{
-  qDeleteAll( mAlgorithms );
-}
+QgsProcessingProvider::~QgsProcessingProvider() { qDeleteAll( mAlgorithms ); }
 
-QIcon QgsProcessingProvider::icon() const
-{
-  return QgsApplication::getThemeIcon( "/processingAlgorithm.svg" );
-}
+QIcon QgsProcessingProvider::icon() const { return QgsApplication::getThemeIcon( "/processingAlgorithm.svg" ); }
 
-QString QgsProcessingProvider::svgIconPath() const
-{
-  return QgsApplication::iconPath( u"processingAlgorithm.svg"_s );
-}
+QString QgsProcessingProvider::svgIconPath() const { return QgsApplication::iconPath( u"processingAlgorithm.svg"_s ); }
 
-Qgis::ProcessingProviderFlags QgsProcessingProvider::flags() const
-{
-  return Qgis::ProcessingProviderFlags();
-}
+Qgis::ProcessingProviderFlags QgsProcessingProvider::flags() const { return Qgis::ProcessingProviderFlags(); }
 
-QString QgsProcessingProvider::helpId() const
-{
-  return QString();
-}
+QString QgsProcessingProvider::helpId() const { return QString(); }
 
-QString QgsProcessingProvider::longName() const
-{
-  return name();
-}
+QString QgsProcessingProvider::longName() const { return name(); }
 
-QString QgsProcessingProvider::versionInfo() const
-{
-  return QString();
-}
+QString QgsProcessingProvider::versionInfo() const { return QString(); }
 
 QStringList QgsProcessingProvider::supportedOutputRasterLayerExtensions() const
 {
@@ -85,10 +64,7 @@ QStringList QgsProcessingProvider::supportedOutputRasterLayerExtensions() const
   return res;
 }
 
-QList<QPair<QString, QString>> QgsProcessingProvider::supportedOutputRasterLayerFormatAndExtensions() const
-{
-  return supportedOutputRasterLayerFormatAndExtensionsDefault();
-}
+QList<QPair<QString, QString>> QgsProcessingProvider::supportedOutputRasterLayerFormatAndExtensions() const { return supportedOutputRasterLayerFormatAndExtensionsDefault(); }
 
 QList<QPair<QString, QString>> QgsProcessingProvider::supportedOutputRasterLayerFormatAndExtensionsDefault()
 {
@@ -108,8 +84,7 @@ QList<QPair<QString, QString>> QgsProcessingProvider::supportedOutputRasterLayer
     res << QPair<QString, QString>( format.driverName, matched );
   }
 
-  std::sort( res.begin(), res.end(), []( const QPair<QString, QString> &a, const QPair<QString, QString> &b ) -> bool
-  {
+  std::sort( res.begin(), res.end(), []( const QPair<QString, QString> &a, const QPair<QString, QString> &b ) -> bool {
     for ( const QString &tifExt : { u"tif"_s, u"tiff"_s } )
     {
       if ( a.second == tifExt )
@@ -143,15 +118,9 @@ QList<QPair<QString, QString>> QgsProcessingProvider::supportedOutputRasterLayer
   return res;
 }
 
-QStringList QgsProcessingProvider::supportedOutputPointCloudLayerExtensions() const
-{
-  return QStringList();
-}
+QStringList QgsProcessingProvider::supportedOutputPointCloudLayerExtensions() const { return QStringList(); }
 
-QStringList QgsProcessingProvider::supportedOutputVectorTileLayerExtensions() const
-{
-  return QStringList() << QgsProcessingUtils::defaultVectorTileExtension();
-}
+QStringList QgsProcessingProvider::supportedOutputVectorTileLayerExtensions() const { return QStringList() << QgsProcessingUtils::defaultVectorTileExtension(); }
 
 void QgsProcessingProvider::refreshAlgorithms()
 {
@@ -164,15 +133,9 @@ void QgsProcessingProvider::refreshAlgorithms()
   }
 }
 
-QList<const QgsProcessingAlgorithm *> QgsProcessingProvider::algorithms() const
-{
-  return mAlgorithms.values();
-}
+QList<const QgsProcessingAlgorithm *> QgsProcessingProvider::algorithms() const { return mAlgorithms.values(); }
 
-const QgsProcessingAlgorithm *QgsProcessingProvider::algorithm( const QString &name ) const
-{
-  return mAlgorithms.value( name );
-}
+const QgsProcessingAlgorithm *QgsProcessingProvider::algorithm( const QString &name ) const { return mAlgorithms.value( name ); }
 
 bool QgsProcessingProvider::addAlgorithm( QgsProcessingAlgorithm *algorithm )
 {
@@ -194,15 +157,9 @@ bool QgsProcessingProvider::addAlgorithm( QgsProcessingAlgorithm *algorithm )
   return true;
 }
 
-QStringList QgsProcessingProvider::supportedOutputVectorLayerExtensions() const
-{
-  return QgsVectorFileWriter::supportedFormatExtensions();
-}
+QStringList QgsProcessingProvider::supportedOutputVectorLayerExtensions() const { return QgsVectorFileWriter::supportedFormatExtensions(); }
 
-QStringList QgsProcessingProvider::supportedOutputTableExtensions() const
-{
-  return supportedOutputVectorLayerExtensions();
-}
+QStringList QgsProcessingProvider::supportedOutputTableExtensions() const { return supportedOutputVectorLayerExtensions(); }
 
 bool QgsProcessingProvider::isSupportedOutputValue( const QVariant &outputValue, const QgsProcessingDestinationParameter *parameter, QgsProcessingContext &context, QString &error ) const
 {
@@ -222,8 +179,7 @@ bool QgsProcessingProvider::isSupportedOutputValue( const QVariant &outputValue,
     }
   }
 
-  if ( parameter->type() == QgsProcessingParameterVectorDestination::typeName()
-       ||  parameter->type() == QgsProcessingParameterFeatureSink::typeName() )
+  if ( parameter->type() == QgsProcessingParameterVectorDestination::typeName() || parameter->type() == QgsProcessingParameterFeatureSink::typeName() )
   {
     if ( outputPath.startsWith( "memory:"_L1 ) )
     {
@@ -399,7 +355,4 @@ QString QgsProcessingProvider::defaultVectorTileFileExtension() const
   }
 }
 
-bool QgsProcessingProvider::supportsNonFileBasedOutput() const
-{
-  return true;
-}
+bool QgsProcessingProvider::supportsNonFileBasedOutput() const { return true; }

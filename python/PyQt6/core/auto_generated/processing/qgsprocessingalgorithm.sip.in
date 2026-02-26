@@ -15,7 +15,7 @@
 #include <qgsprocessingmodelalgorithm.h>
 %End
 
-class QgsProcessingAlgorithm
+  class QgsProcessingAlgorithm
 {
 %Docstring(signature="appended")
 Abstract base class for processing algorithms.
@@ -70,7 +70,7 @@ could not be created, e.g. if there is an issue with the subclass'
 .. seealso:: :py:func:`initAlgorithm`
 %End
 
-    virtual QString name() const = 0 /HoldGIL/;
+    virtual QString name() const = 0
 %Docstring
 Returns the algorithm name, used for identifying the algorithm. This
 string should be fixed for the algorithm, and must not be localised. The
@@ -84,6 +84,7 @@ characters.
 
 .. seealso:: :py:func:`tags`
 %End
+    /HoldGIL/;
 
     QString id() const /HoldGIL/;
 %Docstring

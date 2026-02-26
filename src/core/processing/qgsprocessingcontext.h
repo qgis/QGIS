@@ -44,7 +44,6 @@ class QgsProcessingLayerPostProcessorInterface;
 class CORE_EXPORT QgsProcessingContext
 {
   public:
-
     //! Flags that affect how processing algorithms are run
     enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
@@ -92,7 +91,8 @@ class CORE_EXPORT QgsProcessingContext
      * Returns any flags set in the context.
      * \see setFlags()
      */
-    QgsProcessingContext::Flags flags() const SIP_HOLDGIL { return mFlags; }
+    QgsProcessingContext::Flags flags() const
+    SIP_HOLDGIL { return mFlags; }
 
     /**
      * Sets \a flags for the context.

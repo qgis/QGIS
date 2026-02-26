@@ -40,17 +40,16 @@ class QgsPointCloudLayer;
 #ifdef SIP_RUN
 % ModuleHeaderCode
 #include <qgsprocessingmodelalgorithm.h>
-% End
+  % End
 #endif
 
-/**
+  /**
  * \class QgsProcessingAlgorithm
  * \ingroup core
  * \brief Abstract base class for processing algorithms.
  */
-class CORE_EXPORT QgsProcessingAlgorithm
+  class CORE_EXPORT QgsProcessingAlgorithm
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast< QgsProcessingModelAlgorithm * >( sipCpp ) != NULL )
@@ -59,7 +58,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
       sipType = sipType_QgsProcessingFeatureBasedAlgorithm;
     else
       sipType = sipType_QgsProcessingAlgorithm;
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -123,7 +122,8 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \see group()
      * \see tags()
     */
-    virtual QString name() const = 0 SIP_HOLDGIL;
+    virtual QString name() const = 0
+    SIP_HOLDGIL;
 
     /**
      * Returns the unique ID for the algorithm, which is a combination of the algorithm

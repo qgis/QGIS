@@ -14,8 +14,8 @@ try:
     QgsProcessingAlgorithm.invalidSinkError = staticmethod(QgsProcessingAlgorithm.invalidSinkError)
     QgsProcessingAlgorithm.invalidPointCloudError = staticmethod(QgsProcessingAlgorithm.invalidPointCloudError)
     QgsProcessingAlgorithm.writeFeatureError = staticmethod(QgsProcessingAlgorithm.writeFeatureError)
-    QgsProcessingAlgorithm.__virtual_methods__ = ['shortDescription', 'tags', 'shortHelpString', 'helpString', 'helpUrl', 'documentationFlags', 'icon', 'svgIconPath', 'group', 'groupId', 'flags', 'canExecute', 'checkParameterValues', 'preprocessParameters', 'autogenerateParameterValues', 'sinkProperties', 'createCustomParametersWidget', 'createExpressionContext', 'validateInputCrs', 'asPythonCommand', 'asQgisProcessCommand', 'asMap', 'supportInPlaceEdit', 'prepareAlgorithm', 'postProcessAlgorithm']
-    QgsProcessingAlgorithm.__abstract_methods__ = ['name', 'displayName', 'createInstance', 'initAlgorithm', 'processAlgorithm']
+    QgsProcessingAlgorithm.__virtual_methods__ = ['name', 'shortDescription', 'tags', 'shortHelpString', 'helpString', 'helpUrl', 'documentationFlags', 'icon', 'svgIconPath', 'group', 'groupId', 'flags', 'canExecute', 'checkParameterValues', 'preprocessParameters', 'autogenerateParameterValues', 'sinkProperties', 'createCustomParametersWidget', 'createExpressionContext', 'validateInputCrs', 'asPythonCommand', 'asQgisProcessCommand', 'asMap', 'supportInPlaceEdit', 'prepareAlgorithm', 'postProcessAlgorithm']
+    QgsProcessingAlgorithm.__abstract_methods__ = ['displayName', 'createInstance', 'initAlgorithm', 'processAlgorithm']
     QgsProcessingAlgorithm.__group__ = ['processing']
 except (NameError, AttributeError):
     pass

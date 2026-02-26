@@ -23,18 +23,11 @@ using namespace Qt::StringLiterals;
 
 QgsProcessingParameterVectorTileWriterLayers::QgsProcessingParameterVectorTileWriterLayers( const QString &name, const QString &description )
   : QgsProcessingParameterDefinition( name, description, QVariant(), false )
-{
-}
+{}
 
-QgsProcessingParameterDefinition *QgsProcessingParameterVectorTileWriterLayers::clone() const
-{
-  return new QgsProcessingParameterVectorTileWriterLayers( *this );
-}
+QgsProcessingParameterDefinition *QgsProcessingParameterVectorTileWriterLayers::clone() const { return new QgsProcessingParameterVectorTileWriterLayers( *this ); }
 
-QString QgsProcessingParameterVectorTileWriterLayers::type() const
-{
-  return typeName();
-}
+QString QgsProcessingParameterVectorTileWriterLayers::type() const { return typeName(); }
 
 bool QgsProcessingParameterVectorTileWriterLayers::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
 {
@@ -61,7 +54,7 @@ bool QgsProcessingParameterVectorTileWriterLayers::checkValueIsAcceptable( const
       continue;
 
     if ( !context )
-      continue;  // when called without context, we will skip checking whether the layer can be resolved
+      continue; // when called without context, we will skip checking whether the layer can be resolved
 
     if ( !QgsProcessingUtils::mapLayerFromString( inputItemLayer.toString(), *context ) )
       return false;
@@ -99,8 +92,7 @@ QString QgsProcessingParameterVectorTileWriterLayers::asPythonString( QgsProcess
   {
     case QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = u"QgsProcessingParameterVectorTileWriterLayers('%1', %2)"_s
-                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
+      QString code = u"QgsProcessingParameterVectorTileWriterLayers('%1', %2)"_s.arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       return code;
     }
   }

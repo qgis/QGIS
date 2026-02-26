@@ -36,7 +36,6 @@ class QgsProcessingAlgorithmConfigurationWidgetFactory;
 class CORE_EXPORT QgsProcessingAlgorithmInformation
 {
   public:
-
     //! Algorithm display name
     QString displayName;
 
@@ -59,7 +58,6 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingRegistry.
      */
@@ -103,7 +101,8 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
     /**
      * Returns a matching provider by provider ID.
      */
-    QgsProcessingProvider *providerById( const QString &id ) const SIP_HOLDGIL;
+    QgsProcessingProvider *providerById( const QString &id ) const
+    SIP_HOLDGIL;
 
     /**
      * Returns a list of all available algorithms from registered providers.

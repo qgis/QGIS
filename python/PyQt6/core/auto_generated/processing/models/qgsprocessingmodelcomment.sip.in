@@ -22,7 +22,6 @@ Represents a comment in a model.
 #include "qgsprocessingmodelcomment.h"
 %End
   public:
-
     QgsProcessingModelComment( const QString &description = QString() );
 %Docstring
 Constructor for QgsProcessingModelComment with the specified

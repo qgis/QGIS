@@ -34,7 +34,6 @@
 class CORE_EXPORT QgsProcessingParameterType
 {
   public:
-
     /**
      * Returns the default color for a processing parameter.
      *
@@ -187,7 +186,6 @@ class CORE_EXPORT QgsProcessingParameterType
      * \since QGIS 4.0
      */
     virtual QColor modelColor() const;
-
 };
 
 #endif // QGSPROCESSINGPARAMETERTYPE_H

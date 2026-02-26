@@ -21,26 +21,20 @@ using namespace Qt::StringLiterals;
 
 /// @cond PRIVATE
 ///
-QgsProcessingParameterMeshDatasetGroups::QgsProcessingParameterMeshDatasetGroups( const QString &name,
-    const QString &description,
-    const QString &meshLayerParameterName,
-    const QSet<int> supportedDataType,
-    bool optional ):
-  QgsProcessingParameterDefinition( name, description, QVariantList(), optional, QString() ),
-  mMeshLayerParameterName( meshLayerParameterName ),
-  mSupportedDataType( supportedDataType )
-{
-}
+QgsProcessingParameterMeshDatasetGroups::QgsProcessingParameterMeshDatasetGroups(
+  const QString &name, const QString &description, const QString &meshLayerParameterName, const QSet<int> supportedDataType, bool optional
+)
+  : QgsProcessingParameterDefinition( name, description, QVariantList(), optional, QString() )
+  , mMeshLayerParameterName( meshLayerParameterName )
+  , mSupportedDataType( supportedDataType )
+{}
 
 QgsProcessingParameterDefinition *QgsProcessingParameterMeshDatasetGroups::clone() const
 {
   return new QgsProcessingParameterMeshDatasetGroups( name(), description(), mMeshLayerParameterName, mSupportedDataType );
 }
 
-QString QgsProcessingParameterMeshDatasetGroups::type() const
-{
-  return typeName();
-}
+QString QgsProcessingParameterMeshDatasetGroups::type() const { return typeName(); }
 
 bool QgsProcessingParameterMeshDatasetGroups::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
 {
@@ -65,8 +59,7 @@ QString QgsProcessingParameterMeshDatasetGroups::asPythonString( QgsProcessing::
   {
     case QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = u"QgsProcessingParameterMeshDatasetGroups('%1', %2"_s
-                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
+      QString code = u"QgsProcessingParameterMeshDatasetGroups('%1', %2"_s.arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( !mMeshLayerParameterName.isEmpty() )
         code += u", meshLayerParameterName=%1"_s.arg( QgsProcessingUtils::stringToPythonLiteral( mMeshLayerParameterName ) );
 
@@ -103,15 +96,9 @@ QStringList QgsProcessingParameterMeshDatasetGroups::dependsOnOtherParameters() 
     return QStringList() << mMeshLayerParameterName;
 }
 
-QString QgsProcessingParameterMeshDatasetGroups::meshLayerParameterName() const
-{
-  return mMeshLayerParameterName;
-}
+QString QgsProcessingParameterMeshDatasetGroups::meshLayerParameterName() const { return mMeshLayerParameterName; }
 
-bool QgsProcessingParameterMeshDatasetGroups::isDataTypeSupported( QgsMeshDatasetGroupMetadata::DataType dataType ) const
-{
-  return mSupportedDataType.contains( dataType );
-}
+bool QgsProcessingParameterMeshDatasetGroups::isDataTypeSupported( QgsMeshDatasetGroupMetadata::DataType dataType ) const { return mSupportedDataType.contains( dataType ); }
 
 QList<int> QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( const QVariant &value )
 {
@@ -186,26 +173,18 @@ bool QgsProcessingParameterMeshDatasetGroups::valueIsAcceptable( const QVariant 
   return true;
 }
 
-QgsProcessingParameterMeshDatasetTime::QgsProcessingParameterMeshDatasetTime( const QString &name,
-    const QString &description,
-    const QString &meshLayerParameterName,
-    const QString &datasetGroupParameterName )
+QgsProcessingParameterMeshDatasetTime::QgsProcessingParameterMeshDatasetTime( const QString &name, const QString &description, const QString &meshLayerParameterName, const QString &datasetGroupParameterName )
   : QgsProcessingParameterDefinition( name, description, QVariant() )
   , mMeshLayerParameterName( meshLayerParameterName )
   , mDatasetGroupParameterName( datasetGroupParameterName )
-{
-
-}
+{}
 
 QgsProcessingParameterDefinition *QgsProcessingParameterMeshDatasetTime::clone() const
 {
   return new QgsProcessingParameterMeshDatasetTime( name(), description(), mMeshLayerParameterName, mDatasetGroupParameterName );
 }
 
-QString QgsProcessingParameterMeshDatasetTime::type() const
-{
-  return typeName();
-}
+QString QgsProcessingParameterMeshDatasetTime::type() const { return typeName(); }
 
 bool QgsProcessingParameterMeshDatasetTime::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
 {
@@ -218,7 +197,7 @@ QString QgsProcessingParameterMeshDatasetTime::valueAsPythonString( const QVaria
   Q_UNUSED( context );
   QStringList parts;
   const QString type = QgsProcessingUtils::variantToPythonLiteral( valueAsTimeType( value ) );
-  parts << u"'type': "_s +  type;
+  parts << u"'type': "_s + type;
 
   if ( value.toDateTime().isValid() )
   {
@@ -249,8 +228,7 @@ QString QgsProcessingParameterMeshDatasetTime::asPythonString( QgsProcessing::Py
   {
     case QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = u"QgsProcessingParameterMeshDatasetTime('%1', '%2'"_s
-                     .arg( name(), description() );
+      QString code = u"QgsProcessingParameterMeshDatasetTime('%1', '%2'"_s.arg( name(), description() );
       if ( !mMeshLayerParameterName.isEmpty() )
         code += u", meshLayerParameterName=%1"_s.arg( QgsProcessingUtils::stringToPythonLiteral( mMeshLayerParameterName ) );
 
@@ -294,15 +272,9 @@ bool QgsProcessingParameterMeshDatasetTime::fromVariantMap( const QVariantMap &m
   return true;
 }
 
-QString QgsProcessingParameterMeshDatasetTime::meshLayerParameterName() const
-{
-  return mMeshLayerParameterName;
-}
+QString QgsProcessingParameterMeshDatasetTime::meshLayerParameterName() const { return mMeshLayerParameterName; }
 
-QString QgsProcessingParameterMeshDatasetTime::datasetGroupParameterName() const
-{
-  return mDatasetGroupParameterName;
-}
+QString QgsProcessingParameterMeshDatasetTime::datasetGroupParameterName() const { return mDatasetGroupParameterName; }
 
 QString QgsProcessingParameterMeshDatasetTime::valueAsTimeType( const QVariant &value )
 {
@@ -355,7 +327,7 @@ bool QgsProcessingParameterMeshDatasetTime::valueIsAcceptable( const QVariant &i
   if ( map.isEmpty() )
     return allowEmpty;
 
-  if ( ! map.contains( u"type"_s ) )
+  if ( !map.contains( u"type"_s ) )
     return false;
 
   const QString type = map.value( u"type"_s ).toString();

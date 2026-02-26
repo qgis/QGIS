@@ -31,12 +31,9 @@ evaluated with the method :py:func:`~valueAsDatasetGroup`
 #include "qgsprocessingparametermeshdataset.h"
 %End
   public:
-
-    QgsProcessingParameterMeshDatasetGroups( const QString &name,
-        const QString &description = QString(),
-        const QString &meshLayerParameterName = QString(),
-        QSet<int> supportedDataType = QSet<int>(),
-        bool optional = false );
+    QgsProcessingParameterMeshDatasetGroups(
+      const QString &name, const QString &description = QString(), const QString &meshLayerParameterName = QString(), QSet<int> supportedDataType = QSet<int>(), bool optional = false
+    );
 %Docstring
 Constructor
 
@@ -115,12 +112,9 @@ form:
 #include "qgsprocessingparametermeshdataset.h"
 %End
   public:
-
     QgsProcessingParameterMeshDatasetTime(
-      const QString &name,
-      const QString &description = QString(),
-      const QString &meshLayerParameterName = QString(),
-      const QString &datasetGroupParameterName = QString() );
+      const QString &name, const QString &description = QString(), const QString &meshLayerParameterName = QString(), const QString &datasetGroupParameterName = QString()
+    );
 %Docstring
 Constructor
 

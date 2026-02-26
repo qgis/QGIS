@@ -91,15 +91,9 @@ QgsProcessingModelChildParameterSource QgsProcessingModelChildParameterSource::f
   return src;
 }
 
-Qgis::ProcessingModelChildParameterSource QgsProcessingModelChildParameterSource::source() const
-{
-  return mSource;
-}
+Qgis::ProcessingModelChildParameterSource QgsProcessingModelChildParameterSource::source() const { return mSource; }
 
-void QgsProcessingModelChildParameterSource::setSource( Qgis::ProcessingModelChildParameterSource source )
-{
-  mSource = source;
-}
+void QgsProcessingModelChildParameterSource::setSource( Qgis::ProcessingModelChildParameterSource source ) { mSource = source; }
 
 QVariant QgsProcessingModelChildParameterSource::toVariant() const
 {

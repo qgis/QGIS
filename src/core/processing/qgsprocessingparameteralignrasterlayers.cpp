@@ -24,18 +24,11 @@ using namespace Qt::StringLiterals;
 
 QgsProcessingParameterAlignRasterLayers::QgsProcessingParameterAlignRasterLayers( const QString &name, const QString &description )
   : QgsProcessingParameterDefinition( name, description, QVariant(), false )
-{
-}
+{}
 
-QgsProcessingParameterDefinition *QgsProcessingParameterAlignRasterLayers::clone() const
-{
-  return new QgsProcessingParameterAlignRasterLayers( *this );
-}
+QgsProcessingParameterDefinition *QgsProcessingParameterAlignRasterLayers::clone() const { return new QgsProcessingParameterAlignRasterLayers( *this ); }
 
-QString QgsProcessingParameterAlignRasterLayers::type() const
-{
-  return typeName();
-}
+QString QgsProcessingParameterAlignRasterLayers::type() const { return typeName(); }
 
 bool QgsProcessingParameterAlignRasterLayers::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
 {
@@ -61,7 +54,8 @@ bool QgsProcessingParameterAlignRasterLayers::checkValueIsAcceptable( const QVar
   else if ( input.userType() == QMetaType::Type::QVariantList )
   {
     if ( input.toList().isEmpty() )
-      return mFlags & Qgis::ProcessingParameterFlag::Optional;;
+      return mFlags & Qgis::ProcessingParameterFlag::Optional;
+    ;
 
     const QVariantList layerList = input.toList();
     for ( const QVariant &variantLayer : layerList )
@@ -88,9 +82,7 @@ bool QgsProcessingParameterAlignRasterLayers::checkValueIsAcceptable( const QVar
         if ( !context )
           return true;
 
-        QgsRasterLayer *rasterLayer = qobject_cast< QgsRasterLayer * >(
-                                        QgsProcessingUtils::mapLayerFromString( layerMap.value( u"inputFile"_s ).toString(), *context )
-                                      );
+        QgsRasterLayer *rasterLayer = qobject_cast< QgsRasterLayer * >( QgsProcessingUtils::mapLayerFromString( layerMap.value( u"inputFile"_s ).toString(), *context ) );
         if ( !rasterLayer )
           return false;
       }
@@ -145,8 +137,7 @@ QString QgsProcessingParameterAlignRasterLayers::asPythonString( QgsProcessing::
   {
     case QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = u"QgsProcessingParameterAlignRasterLayers('%1', %2)"_s
-                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
+      QString code = u"QgsProcessingParameterAlignRasterLayers('%1', %2)"_s.arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       return code;
     }
   }
@@ -219,7 +210,7 @@ QList<QgsAlignRasterData::RasterItem> QgsProcessingParameterAlignRasterLayers::p
 
 QgsAlignRasterData::RasterItem QgsProcessingParameterAlignRasterLayers::variantMapAsItem( const QVariantMap &layerVariantMap, QgsProcessingContext &context )
 {
-  const QVariant layerVariant = layerVariantMap[ u"inputFile"_s ];
+  const QVariant layerVariant = layerVariantMap[u"inputFile"_s];
 
   QgsRasterLayer *inputLayer = nullptr;
   if ( ( inputLayer = qobject_cast< QgsRasterLayer * >( qvariant_cast<QObject *>( layerVariant ) ) ) )
@@ -236,7 +227,7 @@ QgsAlignRasterData::RasterItem QgsProcessingParameterAlignRasterLayers::variantM
     return item;
   }
 
-  QgsAlignRasterData::RasterItem item( inputLayer->source(), layerVariantMap[ u"outputFile"_s ].toString() );
+  QgsAlignRasterData::RasterItem item( inputLayer->source(), layerVariantMap[u"outputFile"_s].toString() );
   item.resampleMethod = static_cast<Qgis::GdalResampleAlgorithm>( layerVariantMap.value( u"resampleMethod"_s, 0 ).toInt() );
   item.rescaleValues = layerVariantMap.value( u"rescale"_s, false ).toBool();
   return item;
@@ -245,9 +236,9 @@ QgsAlignRasterData::RasterItem QgsProcessingParameterAlignRasterLayers::variantM
 QVariantMap QgsProcessingParameterAlignRasterLayers::itemAsVariantMap( const QgsAlignRasterData::RasterItem &item )
 {
   QVariantMap vm;
-  vm[ u"inputFile"_s] = item.inputFilename;
-  vm[ u"outputFile"_s ] = item.outputFilename;
-  vm[ u"resampleMethod"_s ] = static_cast<int>( item.resampleMethod );
-  vm[ u"rescale"_s ] = item.rescaleValues;
+  vm[u"inputFile"_s] = item.inputFilename;
+  vm[u"outputFile"_s] = item.outputFilename;
+  vm[u"resampleMethod"_s] = static_cast<int>( item.resampleMethod );
+  vm[u"rescale"_s] = item.rescaleValues;
   return vm;
 }

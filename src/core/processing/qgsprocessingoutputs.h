@@ -45,7 +45,6 @@ class QgsProcessingContext;
 
 class CORE_EXPORT QgsProcessingOutputDefinition
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( sipCpp->type() == QgsProcessingOutputVectorLayer::typeName() )
@@ -78,7 +77,7 @@ class CORE_EXPORT QgsProcessingOutputDefinition
       sipType = sipType_QgsProcessingOutputVariant;
     else
       sipType = nullptr;
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -176,7 +175,6 @@ class CORE_EXPORT QgsProcessingOutputDefinition
     virtual QString valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const;
 
   protected:
-
     //! Output name
     QString mName;
 
@@ -201,7 +199,6 @@ typedef QList< const QgsProcessingOutputDefinition * > QgsProcessingOutputDefini
 class CORE_EXPORT QgsProcessingOutputMapLayer : public QgsProcessingOutputDefinition
 {
   public:
-
     /**
      * Constructor for QgsProcessingOutputMapLayer.
      */
@@ -215,7 +212,6 @@ class CORE_EXPORT QgsProcessingOutputMapLayer : public QgsProcessingOutputDefini
     static QString typeName() { return u"outputLayer"_s; }
 
     QString type() const override;
-
 };
 
 /**
@@ -226,7 +222,6 @@ class CORE_EXPORT QgsProcessingOutputMapLayer : public QgsProcessingOutputDefini
 class CORE_EXPORT QgsProcessingOutputVectorLayer : public QgsProcessingOutputDefinition
 {
   public:
-
     /**
      * Constructor for QgsProcessingOutputVectorLayer.
      */
@@ -253,7 +248,6 @@ class CORE_EXPORT QgsProcessingOutputVectorLayer : public QgsProcessingOutputDef
     void setDataType( Qgis::ProcessingSourceType type );
 
   private:
-
     Qgis::ProcessingSourceType mDataType = Qgis::ProcessingSourceType::VectorAnyGeometry;
 };
 
@@ -265,7 +259,6 @@ class CORE_EXPORT QgsProcessingOutputVectorLayer : public QgsProcessingOutputDef
 class CORE_EXPORT QgsProcessingOutputRasterLayer : public QgsProcessingOutputDefinition
 {
   public:
-
     /**
      * Constructor for QgsProcessingOutputRasterLayer.
      */
@@ -289,7 +282,6 @@ class CORE_EXPORT QgsProcessingOutputRasterLayer : public QgsProcessingOutputDef
 class CORE_EXPORT QgsProcessingOutputPointCloudLayer : public QgsProcessingOutputDefinition
 {
   public:
-
     /**
      * Constructor for QgsProcessingOutputPointCloudLayer.
      */
@@ -317,7 +309,6 @@ class CORE_EXPORT QgsProcessingOutputPointCloudLayer : public QgsProcessingOutpu
 class CORE_EXPORT QgsProcessingOutputMultipleLayers : public QgsProcessingOutputDefinition
 {
   public:
-
     /**
      * Constructor for QgsProcessingOutputMultipleLayers.
      */
@@ -341,7 +332,6 @@ class CORE_EXPORT QgsProcessingOutputMultipleLayers : public QgsProcessingOutput
 class CORE_EXPORT QgsProcessingOutputHtml : public QgsProcessingOutputDefinition
 {
   public:
-
     /**
      * Constructor for QgsProcessingOutputHtml.
      */
@@ -367,7 +357,6 @@ class CORE_EXPORT QgsProcessingOutputHtml : public QgsProcessingOutputDefinition
 class CORE_EXPORT QgsProcessingOutputVariant : public QgsProcessingOutputDefinition
 {
   public:
-
     /**
      * Constructor for QgsProcessingOutputVariant.
      */
@@ -380,7 +369,6 @@ class CORE_EXPORT QgsProcessingOutputVariant : public QgsProcessingOutputDefinit
 
     QString type() const override;
     QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
-
 };
 
 /**
@@ -391,7 +379,6 @@ class CORE_EXPORT QgsProcessingOutputVariant : public QgsProcessingOutputDefinit
 class CORE_EXPORT QgsProcessingOutputNumber : public QgsProcessingOutputDefinition
 {
   public:
-
     /**
      * Constructor for QgsProcessingOutputNumber.
      */
@@ -405,7 +392,6 @@ class CORE_EXPORT QgsProcessingOutputNumber : public QgsProcessingOutputDefiniti
     static QString typeName() { return u"outputNumber"_s; }
     QString type() const override { return typeName(); }
     QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
-
 };
 
 /**
@@ -416,7 +402,6 @@ class CORE_EXPORT QgsProcessingOutputNumber : public QgsProcessingOutputDefiniti
 class CORE_EXPORT QgsProcessingOutputString : public QgsProcessingOutputDefinition
 {
   public:
-
     /**
      * Constructor for QgsProcessingOutputString.
      */
@@ -440,13 +425,12 @@ class CORE_EXPORT QgsProcessingOutputString : public QgsProcessingOutputDefiniti
 class CORE_EXPORT QgsProcessingOutputBoolean : public QgsProcessingOutputDefinition
 {
   public:
-
     /**
      * Constructor for QgsProcessingOutputNumber.
      */
     QgsProcessingOutputBoolean( const QString &name, const QString &description = QString() );
 
-    QColor modelColor() const override ;
+    QColor modelColor() const override;
 
     /**
      * Returns the type name for the output class.
@@ -464,7 +448,6 @@ class CORE_EXPORT QgsProcessingOutputBoolean : public QgsProcessingOutputDefinit
 class CORE_EXPORT QgsProcessingOutputFolder : public QgsProcessingOutputDefinition
 {
   public:
-
     /**
      * Constructor for QgsProcessingOutputFolder.
      */
@@ -489,7 +472,6 @@ class CORE_EXPORT QgsProcessingOutputFolder : public QgsProcessingOutputDefiniti
 class CORE_EXPORT QgsProcessingOutputFile : public QgsProcessingOutputDefinition
 {
   public:
-
     /**
      * Constructor for QgsProcessingOutputFile.
      */
@@ -515,7 +497,6 @@ class CORE_EXPORT QgsProcessingOutputFile : public QgsProcessingOutputDefinition
 class CORE_EXPORT QgsProcessingOutputConditionalBranch : public QgsProcessingOutputDefinition
 {
   public:
-
     /**
      * Constructor for QgsProcessingOutputConditionalBranch.
      */
@@ -537,7 +518,6 @@ class CORE_EXPORT QgsProcessingOutputConditionalBranch : public QgsProcessingOut
 class CORE_EXPORT QgsProcessingOutputVectorTileLayer : public QgsProcessingOutputDefinition
 {
   public:
-
     /**
      * Constructor for QgsProcessingOutputVectorTileLayer.
      */

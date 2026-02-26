@@ -27,10 +27,7 @@ using namespace Qt::StringLiterals;
 
 ///@cond NOT_STABLE
 
-QgsProcessingModelChildAlgorithm::QgsProcessingModelChildAlgorithm( const QString &algorithmId )
-{
-  setAlgorithmId( algorithmId );
-}
+QgsProcessingModelChildAlgorithm::QgsProcessingModelChildAlgorithm( const QString &algorithmId ) { setAlgorithmId( algorithmId ); }
 
 QgsProcessingModelChildAlgorithm::QgsProcessingModelChildAlgorithm( const QgsProcessingModelChildAlgorithm &other )
   : QgsProcessingModelComponent( other )
@@ -50,7 +47,7 @@ QgsProcessingModelChildAlgorithm &QgsProcessingModelChildAlgorithm::operator=( c
   if ( &other == this )
     return *this;
 
-  QgsProcessingModelComponent::operator =( other );
+  QgsProcessingModelComponent::operator=( other );
   mId = other.mId;
   mConfiguration = other.mConfiguration;
   setAlgorithmId( other.algorithmId() );
@@ -62,10 +59,7 @@ QgsProcessingModelChildAlgorithm &QgsProcessingModelChildAlgorithm::operator=( c
   return *this;
 }
 
-QgsProcessingModelChildAlgorithm *QgsProcessingModelChildAlgorithm::clone() const
-{
-  return new QgsProcessingModelChildAlgorithm( *this );
-}
+QgsProcessingModelChildAlgorithm *QgsProcessingModelChildAlgorithm::clone() const { return new QgsProcessingModelChildAlgorithm( *this ); }
 
 void QgsProcessingModelChildAlgorithm::copyNonDefinitionPropertiesFromModel( QgsProcessingModelAlgorithm *model )
 {
@@ -102,10 +96,7 @@ void QgsProcessingModelChildAlgorithm::copyNonDefinitionPropertiesFromModel( Qgs
   }
 }
 
-const QgsProcessingAlgorithm *QgsProcessingModelChildAlgorithm::algorithm() const
-{
-  return mAlgorithm.get();
-}
+const QgsProcessingAlgorithm *QgsProcessingModelChildAlgorithm::algorithm() const { return mAlgorithm.get(); }
 
 void QgsProcessingModelChildAlgorithm::setModelOutputs( const QMap<QString, QgsProcessingModelOutput> &modelOutputs )
 {
@@ -241,8 +232,10 @@ bool QgsProcessingModelChildAlgorithm::loadVariant( const QVariant &child )
   return true;
 }
 
-QStringList QgsProcessingModelChildAlgorithm::asPythonCode( const QgsProcessing::PythonOutputType outputType, const QgsStringMap &extraParameters,
-    int currentIndent, int indentSize, const QMap<QString, QString> &friendlyChildNames, const QMap<QString, QString> &friendlyOutputNames ) const
+QStringList QgsProcessingModelChildAlgorithm::asPythonCode(
+  const QgsProcessing::PythonOutputType outputType, const QgsStringMap &extraParameters, int currentIndent, int indentSize, const QMap<QString, QString> &friendlyChildNames,
+  const QMap<QString, QString> &friendlyOutputNames
+) const
 {
   QStringList lines;
   const QString baseIndent = QString( ' ' ).repeated( currentIndent );
@@ -312,7 +305,7 @@ QStringList QgsProcessingModelChildAlgorithm::asPythonCode( const QgsProcessing:
   }
   if ( lines.constLast().endsWith( ',' ) )
   {
-    lines[ lines.count() - 1 ].truncate( lines.constLast().length() - 1 );
+    lines[lines.count() - 1].truncate( lines.constLast().length() - 1 );
   }
   lines << baseIndent + u"}"_s;
 
@@ -328,10 +321,7 @@ QStringList QgsProcessingModelChildAlgorithm::asPythonCode( const QgsProcessing:
   return lines;
 }
 
-QVariantMap QgsProcessingModelChildAlgorithm::configuration() const
-{
-  return mConfiguration;
-}
+QVariantMap QgsProcessingModelChildAlgorithm::configuration() const { return mConfiguration; }
 
 void QgsProcessingModelChildAlgorithm::setConfiguration( const QVariantMap &configuration )
 {
@@ -360,9 +350,6 @@ bool QgsProcessingModelChildAlgorithm::setAlgorithmId( const QString &algorithmI
   return static_cast< bool >( mAlgorithm.get() );
 }
 
-bool QgsProcessingModelChildAlgorithm::reattach() const
-{
-  return const_cast< QgsProcessingModelChildAlgorithm * >( this )->setAlgorithmId( mAlgorithmId );
-}
+bool QgsProcessingModelChildAlgorithm::reattach() const { return const_cast< QgsProcessingModelChildAlgorithm * >( this )->setAlgorithmId( mAlgorithmId ); }
 
 ///@endcond
