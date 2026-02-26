@@ -28,7 +28,6 @@
 class CORE_EXPORT QgsAttributeEditorAction : public QgsAttributeEditorElement
 {
   public:
-
     /**
      * Creates a new element which can display a layer action.
      *
@@ -59,7 +58,6 @@ class CORE_EXPORT QgsAttributeEditorAction : public QgsAttributeEditorElement
     void setAction( const QgsAction &newAction );
 
   private:
-
     // Lazy loaded
     mutable QgsAction mAction;
     QUuid mUuid;
@@ -68,7 +66,6 @@ class CORE_EXPORT QgsAttributeEditorAction : public QgsAttributeEditorElement
     void saveConfiguration( QDomElement &elem, QDomDocument &doc ) const override;
     void loadConfiguration( const QDomElement &element, const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields ) override;
     QString typeIdentifier() const override;
-
 };
 
 #endif // QGSATTRIBUTEEDITORACTION_H

@@ -24,20 +24,11 @@ void QgsExternalStorageContent::reportError( const QString &errorMsg )
   emit errorOccurred( mErrorString );
 }
 
-void QgsExternalStorageContent::setStatus( Qgis::ContentStatus status )
-{
-  mStatus = status;
-}
+void QgsExternalStorageContent::setStatus( Qgis::ContentStatus status ) { mStatus = status; }
 
-Qgis::ContentStatus QgsExternalStorageContent::status() const
-{
-  return mStatus;
-}
+Qgis::ContentStatus QgsExternalStorageContent::status() const { return mStatus; }
 
-const QString &QgsExternalStorageContent::errorString() const
-{
-  return mErrorString;
-};
+const QString &QgsExternalStorageContent::errorString() const { return mErrorString; };
 
 QgsExternalStorageStoredContent *QgsExternalStorage::store( const QString &filePath, const QString &url, const QString &authCfg, Qgis::ActionStart storingMode ) const
 {

@@ -28,15 +28,9 @@ QgsAttributeEditorElement *QgsAttributeEditorHtmlElement::clone( QgsAttributeEdi
   return element;
 }
 
-QString QgsAttributeEditorHtmlElement::htmlCode() const
-{
-  return mHtmlCode;
-}
+QString QgsAttributeEditorHtmlElement::htmlCode() const { return mHtmlCode; }
 
-void QgsAttributeEditorHtmlElement::setHtmlCode( const QString &htmlCode )
-{
-  mHtmlCode = htmlCode;
-}
+void QgsAttributeEditorHtmlElement::setHtmlCode( const QString &htmlCode ) { mHtmlCode = htmlCode; }
 
 void QgsAttributeEditorHtmlElement::saveConfiguration( QDomElement &elem, QDomDocument &doc ) const
 {
@@ -52,8 +46,4 @@ void QgsAttributeEditorHtmlElement::loadConfiguration( const QDomElement &elemen
   setHtmlCode( element.text() );
 }
 
-QString QgsAttributeEditorHtmlElement::typeIdentifier() const
-{
-  return u"attributeEditorHtmlElement"_s;
-}
-
+QString QgsAttributeEditorHtmlElement::typeIdentifier() const { return u"attributeEditorHtmlElement"_s; }

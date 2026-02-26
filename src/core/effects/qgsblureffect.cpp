@@ -33,10 +33,7 @@ QgsPaintEffect *QgsBlurEffect::create( const QVariantMap &map )
   return newEffect;
 }
 
-Qgis::PaintEffectFlags QgsBlurEffect::flags() const
-{
-  return Qgis::PaintEffectFlag::RequiresRasterization;
-}
+Qgis::PaintEffectFlags QgsBlurEffect::flags() const { return Qgis::PaintEffectFlag::RequiresRasterization; }
 
 void QgsBlurEffect::draw( QgsRenderContext &context )
 {

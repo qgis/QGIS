@@ -46,17 +46,15 @@ children of another layer.
     }
 %End
   public:
-
     struct LabelStyle
     {
+        QColor color;
 
-      QColor color;
+        QFont font;
 
-      QFont font;
+        bool overrideColor;
 
-      bool overrideColor;
-
-      bool overrideFont;
+        bool overrideFont;
 
 
 
@@ -73,7 +71,7 @@ Constructor
 
     virtual ~QgsAttributeEditorElement();
 
-    static QgsAttributeEditorElement *create( const QDomElement &element, const QString &layerId, const QgsFields &fields, const QgsReadWriteContext &context, QgsAttributeEditorElement *parent = 0 ) /Factory/;
+    static QgsAttributeEditorElement *create( const QDomElement &element, const QString &layerId, const QgsFields &fields, const QgsReadWriteContext &context, QgsAttributeEditorElement *parent = 0 );
 %Docstring
 Constructs the editor element from the given element
 

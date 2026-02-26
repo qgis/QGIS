@@ -43,15 +43,9 @@ QgsEffectStack::QgsEffectStack( QgsEffectStack &&other )
   std::swap( mEffectList, other.mEffectList );
 }
 
-QgsEffectStack::QgsEffectStack( const QgsPaintEffect &effect )
-{
-  appendEffect( effect.clone() );
-}
+QgsEffectStack::QgsEffectStack( const QgsPaintEffect &effect ) { appendEffect( effect.clone() ); }
 
-QgsEffectStack::~QgsEffectStack()
-{
-  clearStack();
-}
+QgsEffectStack::~QgsEffectStack() { clearStack(); }
 
 Qgis::PaintEffectFlags QgsEffectStack::flags() const
 {
@@ -183,10 +177,7 @@ void QgsEffectStack::draw( QgsRenderContext &context )
   }
 }
 
-QgsEffectStack *QgsEffectStack::clone() const
-{
-  return new QgsEffectStack( *this );
-}
+QgsEffectStack *QgsEffectStack::clone() const { return new QgsEffectStack( *this ); }
 
 bool QgsEffectStack::saveProperties( QDomDocument &doc, QDomElement &element ) const
 {
@@ -240,10 +231,7 @@ QVariantMap QgsEffectStack::properties() const
   return props;
 }
 
-void QgsEffectStack::readProperties( const QVariantMap &props )
-{
-  Q_UNUSED( props )
-}
+void QgsEffectStack::readProperties( const QVariantMap &props ) { Q_UNUSED( props ) }
 
 void QgsEffectStack::clearStack()
 {
@@ -251,10 +239,7 @@ void QgsEffectStack::clearStack()
   mEffectList.clear();
 }
 
-void QgsEffectStack::appendEffect( QgsPaintEffect *effect )
-{
-  mEffectList.append( effect );
-}
+void QgsEffectStack::appendEffect( QgsPaintEffect *effect ) { mEffectList.append( effect ); }
 
 bool QgsEffectStack::insertEffect( const int index, QgsPaintEffect *effect )
 {
@@ -287,10 +272,7 @@ QgsPaintEffect *QgsEffectStack::takeEffect( const int index )
   return mEffectList.takeAt( index );
 }
 
-QList<QgsPaintEffect *> *QgsEffectStack::effectList()
-{
-  return &mEffectList;
-}
+QList<QgsPaintEffect *> *QgsEffectStack::effectList() { return &mEffectList; }
 
 QgsPaintEffect *QgsEffectStack::effect( int index ) const
 {

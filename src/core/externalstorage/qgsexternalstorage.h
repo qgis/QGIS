@@ -36,7 +36,6 @@ class QgsExternalStorageStoredContent;
 class CORE_EXPORT QgsExternalStorage
 {
   public:
-
     virtual ~QgsExternalStorage() = default;
 
     /**
@@ -66,7 +65,8 @@ class CORE_EXPORT QgsExternalStorage
      *
      * Caller takes ownership of the returned symbol.
      */
-    QgsExternalStorageStoredContent *store( const QString &filePath, const QString &url, const QString &authCfg = QString(), Qgis::ActionStart storingMode = Qgis::ActionStart::Deferred ) const SIP_FACTORY;
+    QgsExternalStorageStoredContent *store( const QString &filePath, const QString &url, const QString &authCfg = QString(), Qgis::ActionStart storingMode = Qgis::ActionStart::Deferred ) const
+      SIP_FACTORY;
 
     /**
      * Fetches file from \a url for this project external storage.
@@ -85,7 +85,6 @@ class CORE_EXPORT QgsExternalStorage
     QgsExternalStorageFetchedContent *fetch( const QString &url, const QString &authCfg = QString(), Qgis::ActionStart fetchingMode = Qgis::ActionStart::Deferred ) const SIP_FACTORY;
 
   protected:
-
     /**
      * Stores file \a filePath to the \a url using \a authCfg authentication for this project external storage.
      * \see QgsExternalStorage::store()
@@ -110,7 +109,6 @@ class CORE_EXPORT QgsExternalStorageContent : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Returns content status
      */
@@ -147,7 +145,6 @@ class CORE_EXPORT QgsExternalStorageContent : public QObject
     void canceled();
 
   protected:
-
     /**
      * Update content according to given \a errorMsg error message
      * Inherited classes should call this method whenever they meet an error.
@@ -163,7 +160,6 @@ class CORE_EXPORT QgsExternalStorageContent : public QObject
 
 
   private:
-
     Qgis::ContentStatus mStatus = Qgis::ContentStatus::NotStarted;
 };
 
@@ -178,7 +174,6 @@ class CORE_EXPORT QgsExternalStorageFetchedContent : public QgsExternalStorageCo
     Q_OBJECT
 
   public:
-
     /**
      * Returns fetched resource file path
      */
@@ -208,7 +203,6 @@ class CORE_EXPORT QgsExternalStorageStoredContent : public QgsExternalStorageCon
     Q_OBJECT
 
   public:
-
     /**
      * Returns stored resource URL
      */

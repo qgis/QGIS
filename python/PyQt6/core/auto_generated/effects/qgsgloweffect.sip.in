@@ -22,7 +22,6 @@ picture.
 #include "qgsgloweffect.h"
 %End
   public:
-
     enum GlowColorType /BaseType=IntEnum/
     {
       SingleColor,
@@ -336,7 +335,6 @@ color.
 
 
   protected:
-
     virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const;
 
     virtual void draw( QgsRenderContext &context );
@@ -350,7 +348,6 @@ picture.
 :return: ``True`` if glow is to be drawn outside the picture, or
          ``False`` to draw glow within the picture
 %End
-
 
 };
 
@@ -366,7 +363,6 @@ A paint effect which draws a glow outside of a picture.
 #include "qgsgloweffect.h"
 %End
   public:
-
     static QgsPaintEffect *create( const QVariantMap &map ) /Factory/;
 %Docstring
 Creates a new QgsOuterGlowEffect effect from a properties string map.
@@ -383,9 +379,7 @@ Creates a new QgsOuterGlowEffect effect from a properties string map.
 
 
   protected:
-
     virtual bool shadeExterior() const;
-
 };
 
 
@@ -400,7 +394,6 @@ A paint effect which draws a glow within a picture.
 #include "qgsgloweffect.h"
 %End
   public:
-
     static QgsPaintEffect *create( const QVariantMap &map ) /Factory/;
 %Docstring
 Creates a new QgsInnerGlowEffect effect from a properties string map.
@@ -417,11 +410,8 @@ Creates a new QgsInnerGlowEffect effect from a properties string map.
 
 
   protected:
-
     virtual bool shadeExterior() const;
-
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

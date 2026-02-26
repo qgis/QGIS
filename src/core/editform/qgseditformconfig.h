@@ -39,33 +39,31 @@ class QgsAttributeEditorElement;
  */
 class CORE_EXPORT QgsEditFormConfig
 {
-
     Q_GADGET
 
   public:
-
     struct GroupData
     {
-      GroupData() = default;
-      GroupData( const QString &name, const QList<QString> &fields )
-        : mName( name )
-        , mFields( fields )
-      {}
-      QString mName;
-      QList<QString> mFields;
+        GroupData() = default;
+        GroupData( const QString &name, const QList<QString> &fields )
+          : mName( name )
+          , mFields( fields )
+        {}
+        QString mName;
+        QList<QString> mFields;
     };
 
     struct TabData
     {
-      TabData() = default;
-      TabData( const QString &name, const QList<QString> &fields, const QList<QgsEditFormConfig::GroupData> &groups )
-        : mName( name )
-        , mFields( fields )
-        , mGroups( groups )
-      {}
-      QString mName;
-      QList<QString> mFields;
-      QList<QgsEditFormConfig::GroupData> mGroups;
+        TabData() = default;
+        TabData( const QString &name, const QList<QString> &fields, const QList<QgsEditFormConfig::GroupData> &groups )
+          : mName( name )
+          , mFields( fields )
+          , mGroups( groups )
+        {}
+        QString mName;
+        QList<QString> mFields;
+        QList<QgsEditFormConfig::GroupData> mGroups;
     };
 
     // *INDENT-OFF*
@@ -78,11 +76,11 @@ class CORE_EXPORT QgsEditFormConfig
      * \since QGIS 3.14
      */
     enum class DataDefinedProperty SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsEditFormConfig, DataDefinedProperty ) : int
-      {
-      NoProperty = 0, //!< No property
+    {
+      NoProperty = 0,    //!< No property
       AllProperties = 1, //!< All properties for item
-      Alias = 2, //!< Alias
-      Editable = 3, //!< Editable state \since QGIS 3.30
+      Alias = 2,         //!< Alias
+      Editable = 3,      //!< Editable state \since QGIS 3.30
     };
     // *INDENT-ON*
 
@@ -313,7 +311,9 @@ class CORE_EXPORT QgsEditFormConfig
      * Deserialize drag and drop designer elements.
      * \deprecated QGIS 3.18. Use QgsAttributeEditorElement::create instead.
      */
-    Q_DECL_DEPRECATED QgsAttributeEditorElement *attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement *parent, const QString &layerId = QString(), const QgsReadWriteContext &context = QgsReadWriteContext() ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QgsAttributeEditorElement *attributeEditorElementFromDomElement(
+      QDomElement &elem, QgsAttributeEditorElement *parent, const QString &layerId = QString(), const QgsReadWriteContext &context = QgsReadWriteContext()
+    ) SIP_DEPRECATED;
 
     /**
      * Create a new edit form config. Normally invoked by QgsVectorLayer
@@ -339,7 +339,6 @@ class CORE_EXPORT QgsEditFormConfig
     static const QgsPropertiesDefinition &propertyDefinitions();
 
   private:
-
     /**
      * Used internally to set the fields when they change.
      * This should only be called from QgsVectorLayer for synchronization reasons
@@ -355,7 +354,7 @@ class CORE_EXPORT QgsEditFormConfig
      * Used for the backwards compatibility of the api, on setting nmrel or force-suppress-popup for relations.
      * Returns TRUE when a relation instance (the first one found) has been updated.
      */
-    bool legacyUpdateRelationWidgetInTabs( QgsAttributeEditorContainer *container,  const QString &widgetName, const QVariantMap &config );
+    bool legacyUpdateRelationWidgetInTabs( QgsAttributeEditorContainer *container, const QString &widgetName, const QVariantMap &config );
 
   private:
     void fixLegacyConfig( QDomElement &el ) const;

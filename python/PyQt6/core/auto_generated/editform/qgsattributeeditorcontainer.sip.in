@@ -18,7 +18,6 @@ attribute form if it is set to the drag and drop designer.
 #include "qgsattributeeditorcontainer.h"
 %End
   public:
-
     QgsAttributeEditorContainer( const QString &name, QgsAttributeEditorElement *parent, const QColor &backgroundColor = QColor() );
 %Docstring
 Creates a new attribute editor container

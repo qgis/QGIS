@@ -37,8 +37,7 @@ QgsHttpExternalStorageStoreTask::QgsHttpExternalStorageStoreTask( const QUrl &ur
   , mFilePath( filePath )
   , mAuthCfg( authCfg )
   , mFeedback( std::make_unique<QgsFeedback>( this ) )
-{
-}
+{}
 
 QgsHttpExternalStorageStoreTask::~QgsHttpExternalStorageStoreTask() = default;
 
@@ -57,8 +56,7 @@ bool QgsHttpExternalStorageStoreTask::run()
   if ( mPrepareRequestHandler )
     mPrepareRequestHandler( req, &f );
 
-  connect( &request, &QgsBlockingNetworkRequest::uploadProgress, this, [this]( qint64 bytesReceived, qint64 bytesTotal )
-  {
+  connect( &request, &QgsBlockingNetworkRequest::uploadProgress, this, [this]( qint64 bytesReceived, qint64 bytesTotal ) {
     if ( !isCanceled() && bytesTotal > 0 )
     {
       const int progress = ( bytesReceived * 100 ) / bytesTotal;
@@ -82,15 +80,9 @@ void QgsHttpExternalStorageStoreTask::cancel()
   QgsTask::cancel();
 }
 
-QString QgsHttpExternalStorageStoreTask::errorString() const
-{
-  return mErrorString;
-}
+QString QgsHttpExternalStorageStoreTask::errorString() const { return mErrorString; }
 
-void QgsHttpExternalStorageStoreTask::setPrepareRequestHandler( std::function< void( QNetworkRequest &request, QFile *f ) > handler )
-{
-  mPrepareRequestHandler = std::move( handler );
-}
+void QgsHttpExternalStorageStoreTask::setPrepareRequestHandler( std::function< void( QNetworkRequest &request, QFile *f ) > handler ) { mPrepareRequestHandler = std::move( handler ); }
 
 QgsHttpExternalStorageStoredContent::QgsHttpExternalStorageStoredContent( const QString &filePath, const QString &url, const QString &authcfg )
 {
@@ -100,22 +92,15 @@ QgsHttpExternalStorageStoredContent::QgsHttpExternalStorageStoredContent( const 
 
   mUploadTask = new QgsHttpExternalStorageStoreTask( storageUrl, filePath, authcfg );
 
-  connect( mUploadTask, &QgsTask::taskCompleted, this, [this, storageUrl]
-  {
+  connect( mUploadTask, &QgsTask::taskCompleted, this, [this, storageUrl] {
     mUrl = storageUrl;
     setStatus( Qgis::ContentStatus::Finished );
     emit stored();
   } );
 
-  connect( mUploadTask, &QgsTask::taskTerminated, this, [this]
-  {
-    reportError( mUploadTask->errorString() );
-  } );
+  connect( mUploadTask, &QgsTask::taskTerminated, this, [this] { reportError( mUploadTask->errorString() ); } );
 
-  connect( mUploadTask, &QgsTask::progressChanged, this, [this]( double progress )
-  {
-    emit progressChanged( progress );
-  } );
+  connect( mUploadTask, &QgsTask::progressChanged, this, [this]( double progress ) { emit progressChanged( progress ); } );
 }
 
 void QgsHttpExternalStorageStoredContent::store()
@@ -131,8 +116,7 @@ void QgsHttpExternalStorageStoredContent::cancel()
     return;
 
   disconnect( mUploadTask, &QgsTask::taskTerminated, this, nullptr );
-  connect( mUploadTask, &QgsTask::taskTerminated, this, [this]
-  {
+  connect( mUploadTask, &QgsTask::taskTerminated, this, [this] {
     setStatus( Qgis::ContentStatus::Canceled );
     emit canceled();
   } );
@@ -140,10 +124,7 @@ void QgsHttpExternalStorageStoredContent::cancel()
   mUploadTask->cancel();
 }
 
-QString QgsHttpExternalStorageStoredContent::url() const
-{
-  return mUrl;
-}
+QString QgsHttpExternalStorageStoredContent::url() const { return mUrl; }
 
 void QgsHttpExternalStorageStoredContent::setPrepareRequestHandler( std::function< void( QNetworkRequest &request, QFile *f ) > handler )
 {
@@ -155,8 +136,7 @@ QgsHttpExternalStorageFetchedContent::QgsHttpExternalStorageFetchedContent( QgsF
   : mFetchedContent( fetchedContent )
 {
   connect( mFetchedContent, &QgsFetchedContent::fetched, this, &QgsHttpExternalStorageFetchedContent::onFetched );
-  connect( mFetchedContent, &QgsFetchedContent::errorOccurred, this, [this]( QNetworkReply::NetworkError code, const QString & errorMsg )
-  {
+  connect( mFetchedContent, &QgsFetchedContent::errorOccurred, this, [this]( QNetworkReply::NetworkError code, const QString &errorMsg ) {
     Q_UNUSED( code );
     reportError( errorMsg );
   } );
@@ -178,10 +158,7 @@ void QgsHttpExternalStorageFetchedContent::fetch()
   }
 }
 
-QString QgsHttpExternalStorageFetchedContent::filePath() const
-{
-  return mFetchedContent ? mFetchedContent->filePath() : QString();
-}
+QString QgsHttpExternalStorageFetchedContent::filePath() const { return mFetchedContent ? mFetchedContent->filePath() : QString(); }
 
 void QgsHttpExternalStorageFetchedContent::onFetched()
 {
@@ -195,23 +172,14 @@ void QgsHttpExternalStorageFetchedContent::onFetched()
   }
 }
 
-void QgsHttpExternalStorageFetchedContent::cancel()
-{
-  mFetchedContent->cancel();
-}
+void QgsHttpExternalStorageFetchedContent::cancel() { mFetchedContent->cancel(); }
 
 
 // WEB DAV PROTOCOL
 
-QString QgsWebDavExternalStorage::type() const
-{
-  return u"WebDAV"_s;
-};
+QString QgsWebDavExternalStorage::type() const { return u"WebDAV"_s; };
 
-QString QgsWebDavExternalStorage::displayName() const
-{
-  return QObject::tr( "WebDAV Storage" );
-};
+QString QgsWebDavExternalStorage::displayName() const { return QObject::tr( "WebDAV Storage" ); };
 
 QgsExternalStorageStoredContent *QgsWebDavExternalStorage::doStore( const QString &filePath, const QString &url, const QString &authcfg ) const
 {
@@ -228,21 +196,14 @@ QgsExternalStorageFetchedContent *QgsWebDavExternalStorage::doFetch( const QStri
 
 // AWS S3 PROTOCOL
 
-QString QgsAwsS3ExternalStorage::type() const
-{
-  return u"AWSS3"_s;
-};
+QString QgsAwsS3ExternalStorage::type() const { return u"AWSS3"_s; };
 
-QString QgsAwsS3ExternalStorage::displayName() const
-{
-  return QObject::tr( "AWS S3" );
-};
+QString QgsAwsS3ExternalStorage::displayName() const { return QObject::tr( "AWS S3" ); };
 
 QgsExternalStorageStoredContent *QgsAwsS3ExternalStorage::doStore( const QString &filePath, const QString &url, const QString &authcfg ) const
 {
   auto storedContent = std::make_unique<QgsHttpExternalStorageStoredContent>( filePath, url, authcfg );
-  storedContent->setPrepareRequestHandler( []( QNetworkRequest & request, QFile * f )
-  {
+  storedContent->setPrepareRequestHandler( []( QNetworkRequest &request, QFile *f ) {
     QCryptographicHash payloadCrypto( QCryptographicHash::Sha256 );
     payloadCrypto.addData( f );
     QByteArray payloadHash = payloadCrypto.result().toHex();

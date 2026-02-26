@@ -44,7 +44,7 @@ QgsAttributeEditorElement *QgsAttributeEditorAction::clone( QgsAttributeEditorEl
 const QgsAction &QgsAttributeEditorAction::action( const QgsVectorLayer *layer ) const
 {
   // Lazy loading
-  if ( ! mAction.isValid() && ! mUuid.isNull() && layer )
+  if ( !mAction.isValid() && !mUuid.isNull() && layer )
   {
     mAction = layer->actions()->action( mUuid );
   }
@@ -57,10 +57,7 @@ void QgsAttributeEditorAction::setAction( const QgsAction &newAction )
   mAction = newAction;
 }
 
-QString QgsAttributeEditorAction::typeIdentifier() const
-{
-  return u"attributeEditorAction"_s;
-}
+QString QgsAttributeEditorAction::typeIdentifier() const { return u"attributeEditorAction"_s; }
 
 void QgsAttributeEditorAction::saveConfiguration( QDomElement &elem, QDomDocument &doc ) const
 {

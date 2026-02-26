@@ -22,7 +22,6 @@ An abstract base class for defining :py:class:`QgsExpression` functions.
 %End
   public:
 
-
     class Parameter
     {
 %Docstring(signature="appended")
@@ -30,11 +29,7 @@ Represents a single parameter passed to a function.
 %End
 
       public:
-
-        Parameter( const QString &name,
-                   bool optional = false,
-                   const QVariant &defaultValue = QVariant(),
-                   bool isSubExpression = false );
+        Parameter( const QString &name, bool optional = false, const QVariant &defaultValue = QVariant(), bool isSubExpression = false );
 %Docstring
 Constructor for Parameter.
 
@@ -76,46 +71,28 @@ expression.
 
     typedef QList< QgsExpressionFunction::Parameter > ParameterList;
 
-    QgsExpressionFunction( const QString &fnname,
-                           int params,
-                           const QString &group,
-                           const QString &helpText = QString(),
-                           bool lazyEval = false,
-                           bool handlesNull = false,
-                           bool isContextual = false );
+    QgsExpressionFunction( const QString &fnname, int params, const QString &group, const QString &helpText = QString(), bool lazyEval = false, bool handlesNull = false, bool isContextual = false );
 %Docstring
 Constructor for function which uses unnamed parameters
 %End
 
-    QgsExpressionFunction( const QString &fnname,
-                           int params,
-                           const QStringList &groups,
-                           const QString &helpText = QString(),
-                           bool lazyEval = false,
-                           bool handlesNull = false,
-                           bool isContextual = false );
+    QgsExpressionFunction( const QString &fnname, int params, const QStringList &groups, const QString &helpText = QString(), bool lazyEval = false, bool handlesNull = false, bool isContextual = false );
 %Docstring
 Constructor for function which uses unnamed parameters and group list
 %End
 
-    QgsExpressionFunction( const QString &fnname,
-                           const QgsExpressionFunction::ParameterList &params,
-                           const QString &group,
-                           const QString &helpText = QString(),
-                           bool lazyEval = false,
-                           bool handlesNull = false,
-                           bool isContextual = false );
+    QgsExpressionFunction(
+      const QString &fnname, const QgsExpressionFunction::ParameterList &params, const QString &group, const QString &helpText = QString(), bool lazyEval = false, bool handlesNull = false,
+      bool isContextual = false
+    );
 %Docstring
 Constructor for function which uses named parameter list.
 %End
 
-    QgsExpressionFunction( const QString &fnname,
-                           const QgsExpressionFunction::ParameterList &params,
-                           const QStringList &groups,
-                           const QString &helpText = QString(),
-                           bool lazyEval = false,
-                           bool handlesNull = false,
-                           bool isContextual = false );
+    QgsExpressionFunction(
+      const QString &fnname, const QgsExpressionFunction::ParameterList &params, const QStringList &groups, const QString &helpText = QString(), bool lazyEval = false, bool handlesNull = false,
+      bool isContextual = false
+    );
 %Docstring
 Constructor for function which uses named parameter list and group list.
 %End
@@ -253,7 +230,6 @@ itself, and the default NULL value handling should be skipped.
 %End
 
   protected:
-
     static bool allParamsStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context );
 %Docstring
 This will return ``True`` if all the params for the provided function

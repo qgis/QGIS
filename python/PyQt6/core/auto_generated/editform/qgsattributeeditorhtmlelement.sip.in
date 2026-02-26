@@ -19,7 +19,6 @@ An attribute editor widget that will represent arbitrary HTML code.
 #include "qgsattributeeditorhtmlelement.h"
 %End
   public:
-
     QgsAttributeEditorHtmlElement( const QString &name, QgsAttributeEditorElement *parent );
 %Docstring
 Creates a new element which can display HTML

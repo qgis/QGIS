@@ -31,9 +31,7 @@ using namespace Qt::StringLiterals;
 
 QgsGlowEffect::QgsGlowEffect()
   : mColor( Qt::white )
-{
-
-}
+{}
 
 QgsGlowEffect::QgsGlowEffect( const QgsGlowEffect &other )
   : QgsPaintEffect( other )
@@ -41,15 +39,9 @@ QgsGlowEffect::QgsGlowEffect( const QgsGlowEffect &other )
   operator=( other );
 }
 
-QgsGlowEffect::~QgsGlowEffect()
-{
-  delete mRamp;
-}
+QgsGlowEffect::~QgsGlowEffect() { delete mRamp; }
 
-Qgis::PaintEffectFlags QgsGlowEffect::flags() const
-{
-  return Qgis::PaintEffectFlag::RequiresRasterization;
-}
+Qgis::PaintEffectFlags QgsGlowEffect::flags() const { return Qgis::PaintEffectFlag::RequiresRasterization; }
 
 void QgsGlowEffect::draw( QgsRenderContext &context )
 {
@@ -264,9 +256,7 @@ QRectF QgsGlowEffect::boundingRect( const QRectF &rect, const QgsRenderContext &
 
 QgsOuterGlowEffect::QgsOuterGlowEffect()
   : QgsGlowEffect()
-{
-
-}
+{}
 
 QgsPaintEffect *QgsOuterGlowEffect::create( const QVariantMap &map )
 {
@@ -288,9 +278,7 @@ QgsOuterGlowEffect *QgsOuterGlowEffect::clone() const
 
 QgsInnerGlowEffect::QgsInnerGlowEffect()
   : QgsGlowEffect()
-{
-
-}
+{}
 
 QgsPaintEffect *QgsInnerGlowEffect::create( const QVariantMap &map )
 {

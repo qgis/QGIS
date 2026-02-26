@@ -36,14 +36,9 @@ QgsPaintEffect *QgsColorEffect::create( const QVariantMap &map )
 
 QgsColorEffect::QgsColorEffect()
   : mColorizeColor( QColor::fromRgb( 255, 128, 128 ) )
-{
+{}
 
-}
-
-Qgis::PaintEffectFlags QgsColorEffect::flags() const
-{
-  return Qgis::PaintEffectFlag::RequiresRasterization;
-}
+Qgis::PaintEffectFlags QgsColorEffect::flags() const { return Qgis::PaintEffectFlag::RequiresRasterization; }
 
 void QgsColorEffect::draw( QgsRenderContext &context )
 {
@@ -154,17 +149,8 @@ QgsColorEffect *QgsColorEffect::clone() const
   return newEffect;
 }
 
-void QgsColorEffect::setBrightness( int brightness )
-{
-  mBrightness = std::clamp( brightness, -255, 255 );
-}
+void QgsColorEffect::setBrightness( int brightness ) { mBrightness = std::clamp( brightness, -255, 255 ); }
 
-void QgsColorEffect::setContrast( int contrast )
-{
-  mContrast = std::clamp( contrast, -100, 100 );
-}
+void QgsColorEffect::setContrast( int contrast ) { mContrast = std::clamp( contrast, -100, 100 ); }
 
-void QgsColorEffect::setColorizeColor( const QColor &colorizeColor )
-{
-  mColorizeColor = colorizeColor;
-}
+void QgsColorEffect::setColorizeColor( const QColor &colorizeColor ) { mColorizeColor = colorizeColor; }

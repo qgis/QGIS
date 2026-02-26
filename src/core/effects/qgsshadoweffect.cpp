@@ -28,14 +28,9 @@ using namespace Qt::StringLiterals;
 
 QgsShadowEffect::QgsShadowEffect()
   : mColor( Qt::black )
-{
+{}
 
-}
-
-Qgis::PaintEffectFlags QgsShadowEffect::flags() const
-{
-  return Qgis::PaintEffectFlag::RequiresRasterization;
-}
+Qgis::PaintEffectFlags QgsShadowEffect::flags() const { return Qgis::PaintEffectFlag::RequiresRasterization; }
 
 void QgsShadowEffect::draw( QgsRenderContext &context )
 {
@@ -85,9 +80,8 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
 
   const double offsetDist = context.convertToPainterUnits( mOffsetDist, mOffsetUnit, mOffsetMapUnitScale );
 
-  const double   angleRad = mOffsetAngle * M_PI / 180; // to radians
-  const QPointF transPt( -offsetDist * std::cos( angleRad + M_PI_2 ),
-                         -offsetDist * std::sin( angleRad + M_PI_2 ) );
+  const double angleRad = mOffsetAngle * M_PI / 180; // to radians
+  const QPointF transPt( -offsetDist * std::cos( angleRad + M_PI_2 ), -offsetDist * std::sin( angleRad + M_PI_2 ) );
 
   //transparency, scale
   QgsImageOperation::multiplyOpacity( colorisedIm, mOpacity, context.feedback() );
@@ -216,24 +210,13 @@ QgsPaintEffect *QgsDropShadowEffect::create( const QVariantMap &map )
 
 QgsDropShadowEffect::QgsDropShadowEffect()
   : QgsShadowEffect()
-{
+{}
 
-}
+QString QgsDropShadowEffect::type() const { return u"dropShadow"_s; }
 
-QString QgsDropShadowEffect::type() const
-{
-  return u"dropShadow"_s;
-}
+QgsDropShadowEffect *QgsDropShadowEffect::clone() const { return new QgsDropShadowEffect( *this ); }
 
-QgsDropShadowEffect *QgsDropShadowEffect::clone() const
-{
-  return new QgsDropShadowEffect( *this );
-}
-
-bool QgsDropShadowEffect::exteriorShadow() const
-{
-  return true;
-}
+bool QgsDropShadowEffect::exteriorShadow() const { return true; }
 
 
 //
@@ -249,21 +232,10 @@ QgsPaintEffect *QgsInnerShadowEffect::create( const QVariantMap &map )
 
 QgsInnerShadowEffect::QgsInnerShadowEffect()
   : QgsShadowEffect()
-{
+{}
 
-}
+QString QgsInnerShadowEffect::type() const { return u"innerShadow"_s; }
 
-QString QgsInnerShadowEffect::type() const
-{
-  return u"innerShadow"_s;
-}
+QgsInnerShadowEffect *QgsInnerShadowEffect::clone() const { return new QgsInnerShadowEffect( *this ); }
 
-QgsInnerShadowEffect *QgsInnerShadowEffect::clone() const
-{
-  return new QgsInnerShadowEffect( *this );
-}
-
-bool QgsInnerShadowEffect::exteriorShadow() const
-{
-  return false;
-}
+bool QgsInnerShadowEffect::exteriorShadow() const { return false; }

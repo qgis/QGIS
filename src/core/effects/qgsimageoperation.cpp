@@ -37,8 +37,7 @@ using namespace Qt::StringLiterals;
 
 /// @cond PRIVATE
 
-template <typename PixelOperation>
-void QgsImageOperation::runPixelOperation( QImage &image, PixelOperation &operation, QgsFeedback *feedback )
+template<typename PixelOperation> void QgsImageOperation::runPixelOperation( QImage &image, PixelOperation &operation, QgsFeedback *feedback )
 {
   if ( static_cast< qgssize >( image.height() ) * image.width() < 100000 )
   {
@@ -54,8 +53,7 @@ void QgsImageOperation::runPixelOperation( QImage &image, PixelOperation &operat
   }
 }
 
-template <typename PixelOperation>
-void QgsImageOperation::runPixelOperationOnWholeImage( QImage &image, PixelOperation &operation, QgsFeedback *feedback )
+template<typename PixelOperation> void QgsImageOperation::runPixelOperationOnWholeImage( QImage &image, PixelOperation &operation, QgsFeedback *feedback )
 {
   int height = image.height();
   int width = image.width();
@@ -74,8 +72,7 @@ void QgsImageOperation::runPixelOperationOnWholeImage( QImage &image, PixelOpera
 
 //rect operations
 
-template <typename RectOperation>
-void QgsImageOperation::runRectOperation( QImage &image, RectOperation &operation )
+template<typename RectOperation> void QgsImageOperation::runRectOperation( QImage &image, RectOperation &operation )
 {
   //possibly could be tweaked for rect operations
   if ( static_cast< qgssize >( image.height() ) * image.width() < 100000 )
@@ -91,8 +88,7 @@ void QgsImageOperation::runRectOperation( QImage &image, RectOperation &operatio
   }
 }
 
-template <class RectOperation>
-void QgsImageOperation::runRectOperationOnWholeImage( QImage &image, RectOperation &operation )
+template<class RectOperation> void QgsImageOperation::runRectOperationOnWholeImage( QImage &image, RectOperation &operation )
 {
   ImageBlock fullImage;
   fullImage.beginLine = 0;
@@ -105,8 +101,7 @@ void QgsImageOperation::runRectOperationOnWholeImage( QImage &image, RectOperati
 
 //linear operations
 
-template <typename LineOperation>
-void QgsImageOperation::runLineOperation( QImage &image, LineOperation &operation, QgsFeedback *feedback )
+template<typename LineOperation> void QgsImageOperation::runLineOperation( QImage &image, LineOperation &operation, QgsFeedback *feedback )
 {
   //possibly could be tweaked for rect operations
   if ( static_cast< qgssize >( image.height() ) * image.width() < 100000 )
@@ -123,8 +118,7 @@ void QgsImageOperation::runLineOperation( QImage &image, LineOperation &operatio
   }
 }
 
-template <class LineOperation>
-void QgsImageOperation::runLineOperationOnWholeImage( QImage &image, LineOperation &operation, QgsFeedback *feedback )
+template<class LineOperation> void QgsImageOperation::runLineOperationOnWholeImage( QImage &image, LineOperation &operation, QgsFeedback *feedback )
 {
   int height = image.height();
   int width = image.width();
@@ -159,8 +153,7 @@ void QgsImageOperation::runLineOperationOnWholeImage( QImage &image, LineOperati
 
 //multithreaded block processing
 
-template <typename BlockOperation>
-void QgsImageOperation::runBlockOperationInThreads( QImage &image, BlockOperation &operation, LineOperationDirection direction )
+template<typename BlockOperation> void QgsImageOperation::runBlockOperationInThreads( QImage &image, BlockOperation &operation, LineOperationDirection direction )
 {
   QList< ImageBlock > blocks;
   unsigned int height = image.height();
@@ -285,8 +278,7 @@ int QgsImageOperation::adjustColorComponent( int colorComponent, int brightness,
 void QgsImageOperation::adjustHueSaturation( QImage &image, const double saturation, const QColor &colorizeColor, const double colorizeStrength, QgsFeedback *feedback )
 {
   image.detach();
-  HueSaturationPixelOperation operation( saturation, colorizeColor.isValid() && colorizeStrength > 0.0,
-                                         colorizeColor.hue(), colorizeColor.saturation(), colorizeStrength );
+  HueSaturationPixelOperation operation( saturation, colorizeColor.isValid() && colorizeStrength > 0.0, colorizeColor.hue(), colorizeColor.saturation(), colorizeStrength );
   runPixelOperation( image, operation, feedback );
 }
 
@@ -395,14 +387,14 @@ void QgsImageOperation::overlayColor( QImage &image, const QColor &color )
 
 void QgsImageOperation::distanceTransform( QImage &image, const DistanceTransformProperties &properties, QgsFeedback *feedback )
 {
-  if ( ! properties.ramp )
+  if ( !properties.ramp )
   {
     QgsDebugError( u"no color ramp specified for distance transform"_s );
     return;
   }
 
   //first convert to 1 bit alpha mask array
-  std::unique_ptr<double[]> array( new double[ static_cast< qgssize >( image.width() ) * image.height()] );
+  std::unique_ptr<double[]> array( new double[static_cast< qgssize >( image.width() ) * image.height()] );
   if ( feedback && feedback->isCanceled() )
     return;
 
@@ -443,12 +435,12 @@ void QgsImageOperation::ConvertToArrayPixelOperation::operator()( QRgb &rgb, con
     if ( qAlpha( rgb ) > 0 )
     {
       //opaque pixel, so zero distance
-      mArray[ idx ] = 1 - qAlpha( rgb ) / 255.0;
+      mArray[idx] = 1 - qAlpha( rgb ) / 255.0;
     }
     else
     {
       //transparent pixel, so initially set distance as infinite
-      mArray[ idx ] = INF;
+      mArray[idx] = INF;
     }
   }
   else
@@ -456,7 +448,7 @@ void QgsImageOperation::ConvertToArrayPixelOperation::operator()( QRgb &rgb, con
     //TODO - fix this for semi-transparent pixels
     if ( qAlpha( rgb ) == 255 )
     {
-      mArray[ idx ] = INF;
+      mArray[idx] = INF;
     }
     else
     {
@@ -473,19 +465,19 @@ void QgsImageOperation::distanceTransform1d( double *f, int n, int *v, double *z
   int k = 0;
   v[0] = 0;
   z[0] = -INF;
-  z[1] = + INF;
+  z[1] = +INF;
   for ( int q = 1; q <= n - 1; q++ )
   {
-    double s  = ( ( f[q] + q * q ) - ( f[v[k]] + ( v[k] * v[k] ) ) ) / ( 2 * q - 2 * v[k] );
+    double s = ( ( f[q] + q * q ) - ( f[v[k]] + ( v[k] * v[k] ) ) ) / ( 2 * q - 2 * v[k] );
     while ( s <= z[k] )
     {
       k--;
-      s  = ( ( f[q] + q * q ) - ( f[v[k]] + ( v[k] * v[k] ) ) ) / ( 2 * q - 2 * v[k] );
+      s = ( ( f[q] + q * q ) - ( f[v[k]] + ( v[k] * v[k] ) ) ) / ( 2 * q - 2 * v[k] );
     }
     k++;
     v[k] = q;
     z[k] = s;
-    z[k + 1] = + INF;
+    z[k + 1] = +INF;
   }
 
   k = 0;
@@ -515,10 +507,10 @@ void QgsImageOperation::distanceTransform2d( double *im, int width, int height, 
 {
   int maxDimension = std::max( width, height );
 
-  std::unique_ptr<double[]> f( new double[ maxDimension ] );
-  std::unique_ptr<int []> v( new int[ maxDimension ] );
-  std::unique_ptr<double[]>z( new double[ maxDimension + 1 ] );
-  std::unique_ptr<double[]>d( new double[ maxDimension ] );
+  std::unique_ptr<double[]> f( new double[maxDimension] );
+  std::unique_ptr<int[]> v( new int[maxDimension] );
+  std::unique_ptr<double[]> z( new double[maxDimension + 1] );
+  std::unique_ptr<double[]> d( new double[maxDimension] );
 
   // transform along columns
   for ( int x = 0; x < width; x++ )
@@ -528,12 +520,12 @@ void QgsImageOperation::distanceTransform2d( double *im, int width, int height, 
 
     for ( int y = 0; y < height; y++ )
     {
-      f[y] = im[ x + y * width ];
+      f[y] = im[x + y * width];
     }
     distanceTransform1d( f.get(), height, v.get(), z.get(), d.get() );
     for ( int y = 0; y < height; y++ )
     {
-      im[ x + y * width ] = d[y];
+      im[x + y * width] = d[y];
     }
   }
 
@@ -545,19 +537,19 @@ void QgsImageOperation::distanceTransform2d( double *im, int width, int height, 
 
     for ( int x = 0; x < width; x++ )
     {
-      f[x] = im[  x + y * width ];
+      f[x] = im[x + y * width];
     }
     distanceTransform1d( f.get(), width, v.get(), z.get(), d.get() );
     for ( int x = 0; x < width; x++ )
     {
-      im[  x + y * width ] = d[x];
+      im[x + y * width] = d[x];
     }
   }
 }
 
 void QgsImageOperation::ShadeFromArrayOperation::operator()( QRgb &rgb, const int x, const int y )
 {
-  if ( ! mProperties.ramp )
+  if ( !mProperties.ramp )
     return;
 
   if ( qgsDoubleNear( mSpread, 0.0 ) )
@@ -569,7 +561,7 @@ void QgsImageOperation::ShadeFromArrayOperation::operator()( QRgb &rgb, const in
   int idx = y * mWidth + x;
 
   //values are distance squared
-  double squaredVal = mArray[ idx ];
+  double squaredVal = mArray[idx];
   if ( squaredVal > mSpreadSquared )
   {
     rgb = Qt::transparent;
@@ -595,7 +587,7 @@ void QgsImageOperation::stackBlur( QImage &image, const int radius, const bool a
 {
   // culled from Qt's qpixmapfilter.cpp, see: http://www.qtcentre.org/archive/index.php/t-26534.html
   int tab[] = { 14, 10, 8, 6, 5, 5, 4, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2 };
-  int alpha = ( radius < 1 )  ? 16 : ( radius > 17 ) ? 1 : tab[radius - 1];
+  int alpha = ( radius < 1 ) ? 16 : ( radius > 17 ) ? 1 : tab[radius - 1];
 
   int i1 = 0;
   int i2 = 3;
@@ -669,7 +661,7 @@ QImage *QgsImageOperation::gaussianBlur( QImage &image, const int radius, QgsFee
     return copy;
   }
 
-  std::unique_ptr<double[]>kernel( createGaussianKernel( radius ) );
+  std::unique_ptr<double[]> kernel( createGaussianKernel( radius ) );
   if ( feedback && feedback->isCanceled() )
     return new QImage();
 
@@ -819,7 +811,7 @@ inline QRgb QgsImageOperation::GaussianBlurOperation::gaussianBlurHorizontal( co
 
 double *QgsImageOperation::createGaussianKernel( const int radius )
 {
-  double *kernel = new double[ radius * 2 + 1 ];
+  double *kernel = new double[radius * 2 + 1];
   double sigma = radius / 3.0;
   double twoSigmaSquared = 2 * sigma * sigma;
   double coefficient = 1.0 / std::sqrt( M_PI * twoSigmaSquared );
@@ -830,7 +822,7 @@ double *QgsImageOperation::createGaussianKernel( const int radius )
   for ( int i = 0; i <= radius; ++i )
   {
     result = coefficient * std::exp( i * i * expCoefficient );
-    kernel[ radius - i ] = result;
+    kernel[radius - i] = result;
     sum += result;
     if ( i > 0 )
     {
@@ -961,10 +953,7 @@ QRect QgsImageOperation::nonTransparentImageRect( const QImage &image, QSize min
   return QRect( xmin, ymin, xmax - xmin, ymax - ymin );
 }
 
-QImage QgsImageOperation::cropTransparent( const QImage &image, QSize minSize, bool center )
-{
-  return image.copy( QgsImageOperation::nonTransparentImageRect( image, minSize, center ) );
-}
+QImage QgsImageOperation::cropTransparent( const QImage &image, QSize minSize, bool center ) { return image.copy( QgsImageOperation::nonTransparentImageRect( image, minSize, center ) ); }
 
 void QgsImageOperation::FlipLineOperation::operator()( QRgb *startRef, const int lineLength, const int bytesPerLine ) const
 {
@@ -972,7 +961,7 @@ void QgsImageOperation::FlipLineOperation::operator()( QRgb *startRef, const int
 
   //store temporary line
   unsigned char *p = reinterpret_cast< unsigned char * >( startRef );
-  unsigned char *tempLine = new unsigned char[ lineLength * 4 ];
+  unsigned char *tempLine = new unsigned char[lineLength * 4];
   for ( int i = 0; i < lineLength * 4; ++i, p += increment )
   {
     tempLine[i++] = *( p++ );

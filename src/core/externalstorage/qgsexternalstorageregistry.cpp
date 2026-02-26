@@ -26,25 +26,16 @@ QgsExternalStorageRegistry::QgsExternalStorageRegistry()
   registerExternalStorage( new QgsAwsS3ExternalStorage() );
 }
 
-QgsExternalStorageRegistry::~QgsExternalStorageRegistry()
-{
-  qDeleteAll( mBackends );
-}
+QgsExternalStorageRegistry::~QgsExternalStorageRegistry() { qDeleteAll( mBackends ); }
 
 QgsExternalStorage *QgsExternalStorageRegistry::externalStorageFromType( const QString &type ) const
 {
-  auto it = std::find_if( mBackends.begin(), mBackends.end(), [type]( QgsExternalStorage * storage )
-  {
-    return storage->type() == type;
-  } );
+  auto it = std::find_if( mBackends.begin(), mBackends.end(), [type]( QgsExternalStorage *storage ) { return storage->type() == type; } );
 
   return it != mBackends.end() ? *it : nullptr;
 }
 
-QList<QgsExternalStorage *> QgsExternalStorageRegistry::externalStorages() const
-{
-  return mBackends;
-}
+QList<QgsExternalStorage *> QgsExternalStorageRegistry::externalStorages() const { return mBackends; }
 
 void QgsExternalStorageRegistry::registerExternalStorage( QgsExternalStorage *storage )
 {

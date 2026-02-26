@@ -42,10 +42,20 @@ class QgsMapLayer;
 class QgsGradientColorRamp;
 class QgsVectorLayerFeatureSource;
 
-#define ENSURE_NO_EVAL_ERROR   {  if ( parent->hasEvalError() ) return QVariant(); }
-#define SET_EVAL_ERROR(x)   { parent->setEvalErrorString( x ); return QVariant(); }
+#define ENSURE_NO_EVAL_ERROR      \
+  {                               \
+    if ( parent->hasEvalError() ) \
+      return QVariant();          \
+  }
+#define SET_EVAL_ERROR( x )          \
+  {                                  \
+    parent->setEvalErrorString( x ); \
+    return QVariant();               \
+  }
 
-#define FEAT_FROM_CONTEXT(c, f) if ( !(c) || !( c )->hasFeature() ) return QVariant(); \
+#define FEAT_FROM_CONTEXT( c, f )       \
+  if ( !( c ) || !( c )->hasFeature() ) \
+    return QVariant();                  \
   QgsFeature f = ( c )->feature();
 
 /**
@@ -58,9 +68,9 @@ class QgsVectorLayerFeatureSource;
 class CORE_EXPORT QgsExpressionUtils
 {
   public:
-/// @cond PRIVATE
-///////////////////////////////////////////////
-// three-value logic
+    /// @cond PRIVATE
+    ///////////////////////////////////////////////
+    // three-value logic
     enum TVL
     {
       False,
@@ -93,7 +103,7 @@ class CORE_EXPORT QgsExpressionUtils
       }
     }
 
-// this handles also NULL values
+    // this handles also NULL values
     static TVL getTVLValue( const QVariant &value, QgsExpression *parent )
     {
       // we need to convert to TVL
@@ -176,12 +186,7 @@ class CORE_EXPORT QgsExpressionUtils
       return false;
     }
 
-    static inline bool isDateTimeSafe( const QVariant &v )
-    {
-      return v.userType() == QMetaType::Type::QDateTime
-             || v.userType() == QMetaType::Type::QDate
-             || v.userType() == QMetaType::Type::QTime;
-    }
+    static inline bool isDateTimeSafe( const QVariant &v ) { return v.userType() == QMetaType::Type::QDateTime || v.userType() == QMetaType::Type::QDate || v.userType() == QMetaType::Type::QTime; }
 
     static inline bool isIntervalSafe( const QVariant &v )
     {
@@ -197,21 +202,12 @@ class CORE_EXPORT QgsExpressionUtils
       return false;
     }
 
-    static inline bool isNull( const QVariant &v )
-    {
-      return QgsVariantUtils::isNull( v );
-    }
+    static inline bool isNull( const QVariant &v ) { return QgsVariantUtils::isNull( v ); }
 
-    static inline bool isList( const QVariant &v )
-    {
-      return v.userType() == QMetaType::Type::QVariantList || v.userType() == QMetaType::Type::QStringList;
-    }
+    static inline bool isList( const QVariant &v ) { return v.userType() == QMetaType::Type::QVariantList || v.userType() == QMetaType::Type::QStringList; }
 
     // implicit conversion to string
-    static QString getStringValue( const QVariant &value, QgsExpression * )
-    {
-      return value.toString();
-    }
+    static QString getStringValue( const QVariant &value, QgsExpression * ) { return value.toString(); }
 
     /**
      * Returns an expression value converted to binary (byte array) value.
@@ -412,7 +408,9 @@ class CORE_EXPORT QgsExpressionUtils
      *
      * \since QGIS 3.30
      */
-    static QVariant runMapLayerFunctionThreadSafe( const QVariant &value, const QgsExpressionContext *context, QgsExpression *expression, const std::function<QVariant( QgsMapLayer * ) > &function, bool &foundLayer );
+    static QVariant runMapLayerFunctionThreadSafe(
+      const QVariant &value, const QgsExpressionContext *context, QgsExpression *expression, const std::function<QVariant( QgsMapLayer * ) > &function, bool &foundLayer
+    );
 
     /**
      * Gets a vector layer feature source for a \a value which corresponds to a vector layer, in a thread-safe way.
@@ -513,7 +511,7 @@ class CORE_EXPORT QgsExpressionUtils
         return value.toString();
       }
     }
-/// @endcond
+    /// @endcond
 
     /**
      * Returns a value type and user type for a given expression.
@@ -524,15 +522,16 @@ class CORE_EXPORT QgsExpressionUtils
      * \param foundFeatures An optional boolean parameter that will be set when features are found.
      * \since QGIS 3.22
      */
-    static std::tuple<QMetaType::Type, int> determineResultType( const QString &expression, const QgsVectorLayer *layer, const QgsFeatureRequest &request = QgsFeatureRequest(), const QgsExpressionContext &context = QgsExpressionContext(), bool *foundFeatures = nullptr );
+    static std::tuple<QMetaType::Type, int> determineResultType(
+      const QString &expression, const QgsVectorLayer *layer, const QgsFeatureRequest &request = QgsFeatureRequest(), const QgsExpressionContext &context = QgsExpressionContext(),
+      bool *foundFeatures = nullptr
+    );
 
   private:
-
     /**
      * \warning Only call when thread safety has been taken care of by the caller!
      */
     static QgsMapLayer *getMapLayerPrivate( const QVariant &value, const QgsExpressionContext *context, QgsExpression * );
-
 };
 
 
