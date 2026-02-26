@@ -68,7 +68,6 @@ class CORE_EXPORT QgsSettings : public QObject
 {
     Q_OBJECT
   public:
-
     //! Sections for namespaced settings
     enum Section
     {
@@ -89,8 +88,7 @@ class CORE_EXPORT QgsSettings : public QObject
      * Constructs a QgsSettings object for accessing settings of the application
      * called application from the organization called organization, and with parent parent.
      */
-    explicit QgsSettings( const QString &organization,
-                          const QString &application = QString(), QObject *parent = nullptr );
+    explicit QgsSettings( const QString &organization, const QString &application = QString(), QObject *parent = nullptr );
 
     /**
      * Constructs a QgsSettings object for accessing settings of the application called application
@@ -106,8 +104,7 @@ class CORE_EXPORT QgsSettings : public QObject
      * If no application name is given, the QSettings object will only access the organization-wide
      * locations.
      */
-    QgsSettings( QSettings::Scope scope, const QString &organization,
-                 const QString &application = QString(), QObject *parent = nullptr );
+    QgsSettings( QSettings::Scope scope, const QString &organization, const QString &application = QString(), QObject *parent = nullptr );
 
     /**
      * Constructs a QgsSettings object for accessing settings of the application called application
@@ -123,8 +120,7 @@ class CORE_EXPORT QgsSettings : public QObject
      * If no application name is given, the QSettings object will only access the organization-wide
      * locations.
      */
-    QgsSettings( QSettings::Format format, QSettings::Scope scope, const QString &organization,
-                 const QString &application = QString(), QObject *parent = nullptr );
+    QgsSettings( QSettings::Format format, QSettings::Scope scope, const QString &organization, const QString &application = QString(), QObject *parent = nullptr );
 
     /**
      * Constructs a QgsSettings object for accessing the settings stored in the file called fileName,
@@ -228,22 +224,18 @@ class CORE_EXPORT QgsSettings : public QObject
      * An optional Section argument can be used to get a value from a specific Section.
      */
 #ifndef SIP_RUN
-    QVariant value( const QString &key, const QVariant &defaultValue = QVariant(),
-                    Section section = NoSection ) const;
+    QVariant value( const QString &key, const QVariant &defaultValue = QVariant(), Section section = NoSection ) const;
 #else
-    SIP_PYOBJECT value( const QString &key, const QVariant &defaultValue = QVariant(),
-                        SIP_PYOBJECT type = 0,
-                        QgsSettings::Section section = QgsSettings::NoSection ) const / ReleaseGIL /;
-    % MethodCode
-    typedef PyObject *( *pyqt_from_qvariant_by_type )( QVariant &value, PyObject *type );
+    SIP_PYOBJECT value( const QString &key, const QVariant &defaultValue = QVariant(), SIP_PYOBJECT type = 0, QgsSettings::Section section = QgsSettings::NoSection ) const / ReleaseGIL / ;
+    % MethodCode typedef PyObject *( *pyqt_from_qvariant_by_type )( QVariant &value, PyObject *type );
     QVariant value;
 
     // QSettings has an internal mutex so release the GIL to avoid the possibility of deadlocks.
-    Py_BEGIN_ALLOW_THREADS
-    value = sipCpp->value( *a0, *a1, a3 );
+    Py_BEGIN_ALLOW_THREADS value = sipCpp->value( *a0, *a1, a3 );
     Py_END_ALLOW_THREADS
 
-    pyqt_from_qvariant_by_type f = ( pyqt_from_qvariant_by_type ) sipImportSymbol( SIP_PYQT_FROM_QVARIANT_BY_TYPE );
+      pyqt_from_qvariant_by_type f
+      = ( pyqt_from_qvariant_by_type ) sipImportSymbol( SIP_PYQT_FROM_QVARIANT_BY_TYPE );
     sipRes = f( value, a2 );
 
     sipIsErr = !sipRes;
@@ -263,9 +255,7 @@ class CORE_EXPORT QgsSettings : public QObject
      * \see setEnumValue
      * \see flagValue
      */
-    template <class T>
-    T enumValue( const QString &key, const T &defaultValue,
-                 const Section section = NoSection )
+    template<class T> T enumValue( const QString &key, const T &defaultValue, const Section section = NoSection )
     {
       const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( metaEnum.isValid() );
@@ -315,9 +305,7 @@ class CORE_EXPORT QgsSettings : public QObject
      * \see enumValue
      * \see setFlagValue
      */
-    template <class T>
-    void setEnumValue( const QString &key, const T &value,
-                       const Section section = NoSection )
+    template<class T> void setEnumValue( const QString &key, const T &value, const Section section = NoSection )
     {
       const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( metaEnum.isValid() );
@@ -341,9 +329,7 @@ class CORE_EXPORT QgsSettings : public QObject
      * \see setFlagValue
      * \see enumValue
      */
-    template <class T>
-    T flagValue( const QString &key, const T &defaultValue,
-                 const Section section = NoSection )
+    template<class T> T flagValue( const QString &key, const T &defaultValue, const Section section = NoSection )
     {
       const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( metaEnum.isValid() );
@@ -405,9 +391,7 @@ class CORE_EXPORT QgsSettings : public QObject
      * \see flagValue
      * \see setEnumValue
      */
-    template <class T>
-    void setFlagValue( const QString &key, const T &value,
-                       const Section section = NoSection )
+    template<class T> void setFlagValue( const QString &key, const T &value, const Section section = NoSection )
     {
       const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
       Q_ASSERT( metaEnum.isValid() );
@@ -502,7 +486,6 @@ class CORE_EXPORT QgsSettings : public QObject
     std::unique_ptr<QSettings> mGlobalSettings;
     bool mUsingGlobalArray = false;
     Q_DISABLE_COPY( QgsSettings )
-
 };
 
 // as static members cannot be CORE_EXPORTed

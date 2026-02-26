@@ -6,9 +6,8 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsSettingsEntryBaseTemplate.__virtual_methods__ = ['setValuePrivate', 'convertToVariant', 'checkValuePrivate']
-    QgsSettingsEntryBaseTemplate.__abstract_methods__ = ['settingsType', 'convertFromVariant']
-    QgsSettingsEntryBaseTemplate.__overridden_methods__ = ['settingsType', 'checkValueVariant']
-    QgsSettingsEntryBaseTemplate.__group__ = ['settings']
+    .__virtual_methods__ = ['setValuePrivate', 'convertToVariant', 'checkValuePrivate']
+    .__abstract_methods__ = ['settingsType', 'convertFromVariant']
+    .__overridden_methods__ = ['settingsType', 'checkValueVariant']
 except (NameError, AttributeError):
     pass

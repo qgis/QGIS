@@ -29,7 +29,6 @@ Used for settings introspection and collects a list of child
 #include "qgssettingsregistry.h"
 %End
   public:
-
     QgsSettingsRegistry();
     virtual ~QgsSettingsRegistry();
 
@@ -63,7 +62,6 @@ Returns the list of registered child QgsSettingsRegistry.
 %End
 
   protected:
-
     bool addSettingsEntry( const QgsSettingsEntryBase *settingsEntry );
 %Docstring
 Adds ``settingsEntry`` to the registry.

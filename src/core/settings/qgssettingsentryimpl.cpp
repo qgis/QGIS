@@ -23,219 +23,128 @@
 
 using namespace Qt::StringLiterals;
 
-Qgis::SettingsType QgsSettingsEntryVariant::settingsType() const
-{
-  return Qgis::SettingsType::Variant;
-}
+Qgis::SettingsType QgsSettingsEntryVariant::settingsType() const { return Qgis::SettingsType::Variant; }
 
 
 bool QgsSettingsEntryString::checkValuePrivate( const QString &value ) const
 {
   if ( value.length() < mMinLength )
   {
-    QgsDebugError( u"Can't set value for settings. String length '%1' is shorter than minimum length '%2'."_s
-                   .arg( value.length() )
-                   .arg( mMinLength ) );
+    QgsDebugError( u"Can't set value for settings. String length '%1' is shorter than minimum length '%2'."_s.arg( value.length() ).arg( mMinLength ) );
     return false;
   }
 
-  if ( mMaxLength >= 0
-       && value.length() > mMaxLength )
+  if ( mMaxLength >= 0 && value.length() > mMaxLength )
   {
-    QgsDebugError( u"Can't set value for settings. String length '%1' is longer than maximum length '%2'."_s
-                   .arg( value.length() )
-                   .arg( mMinLength ) );
+    QgsDebugError( u"Can't set value for settings. String length '%1' is longer than maximum length '%2'."_s.arg( value.length() ).arg( mMinLength ) );
     return false;
   }
 
   return true;
 }
 
-QString QgsSettingsEntryString::convertFromVariant( const QVariant &value ) const
-{
-  return value.toString();
-}
+QString QgsSettingsEntryString::convertFromVariant( const QVariant &value ) const { return value.toString(); }
 
-Qgis::SettingsType QgsSettingsEntryString::settingsType() const
-{
-  return Qgis::SettingsType::String;
-}
+Qgis::SettingsType QgsSettingsEntryString::settingsType() const { return Qgis::SettingsType::String; }
 
-int QgsSettingsEntryString::minLength() const
-{
-  return mMinLength;
-}
+int QgsSettingsEntryString::minLength() const { return mMinLength; }
 
-int QgsSettingsEntryString::maxLength() const
-{
-  return mMaxLength;
-}
+int QgsSettingsEntryString::maxLength() const { return mMaxLength; }
 
-QStringList QgsSettingsEntryStringList::convertFromVariant( const QVariant &value ) const
-{
-  return value.toStringList();
-}
+QStringList QgsSettingsEntryStringList::convertFromVariant( const QVariant &value ) const { return value.toStringList(); }
 
-Qgis::SettingsType QgsSettingsEntryStringList::settingsType() const
-{
-  return Qgis::SettingsType::StringList;
-}
+Qgis::SettingsType QgsSettingsEntryStringList::settingsType() const { return Qgis::SettingsType::StringList; }
 
 
-bool QgsSettingsEntryBool::convertFromVariant( const QVariant &value ) const
-{
-  return value.toBool();
-}
+bool QgsSettingsEntryBool::convertFromVariant( const QVariant &value ) const { return value.toBool(); }
 
 
-Qgis::SettingsType QgsSettingsEntryBool::settingsType() const
-{
-  return Qgis::SettingsType::Bool;
-}
+Qgis::SettingsType QgsSettingsEntryBool::settingsType() const { return Qgis::SettingsType::Bool; }
 
 
 bool QgsSettingsEntryInteger::checkValuePrivate( const int &value ) const
 {
   if ( value < mMinValue )
   {
-    QgsDebugError( QObject::tr( "Can't set value for setting. Value '%1' is less than minimum value '%2'." )
-                   .arg( QString::number( value ) )
-                   .arg( QString::number( mMinValue ) ) );
+    QgsDebugError( QObject::tr( "Can't set value for setting. Value '%1' is less than minimum value '%2'." ).arg( QString::number( value ) ).arg( QString::number( mMinValue ) ) );
     return false;
   }
 
   if ( value > mMaxValue )
   {
-    QgsDebugError( QObject::tr( "Can't set value for setting. Value '%1' is greater than maximum value '%2'." )
-                   .arg( QString::number( value ) )
-                   .arg( QString::number( mMaxValue ) ) );
+    QgsDebugError( QObject::tr( "Can't set value for setting. Value '%1' is greater than maximum value '%2'." ).arg( QString::number( value ) ).arg( QString::number( mMaxValue ) ) );
     return false;
   }
 
   return true;
 }
 
-int QgsSettingsEntryInteger::convertFromVariant( const QVariant &value ) const
-{
-  return value.toLongLong();
-}
+int QgsSettingsEntryInteger::convertFromVariant( const QVariant &value ) const { return value.toLongLong(); }
 
-Qgis::SettingsType QgsSettingsEntryInteger::settingsType() const
-{
-  return Qgis::SettingsType::Integer;
-}
+Qgis::SettingsType QgsSettingsEntryInteger::settingsType() const { return Qgis::SettingsType::Integer; }
 
-int QgsSettingsEntryInteger::maxValue() const
-{
-  return mMaxValue;
-}
+int QgsSettingsEntryInteger::maxValue() const { return mMaxValue; }
 
-int QgsSettingsEntryInteger::minValue() const
-{
-  return mMaxValue;
-}
+int QgsSettingsEntryInteger::minValue() const { return mMaxValue; }
 
 bool QgsSettingsEntryInteger64::checkValuePrivate( const qlonglong &value ) const
 {
   if ( value < mMinValue )
   {
-    QgsDebugError( QObject::tr( "Can't set value for setting. Value '%1' is less than minimum value '%2'." )
-                   .arg( QString::number( value ) )
-                   .arg( QString::number( mMinValue ) ) );
+    QgsDebugError( QObject::tr( "Can't set value for setting. Value '%1' is less than minimum value '%2'." ).arg( QString::number( value ) ).arg( QString::number( mMinValue ) ) );
     return false;
   }
 
   if ( value > mMaxValue )
   {
-    QgsDebugError( QObject::tr( "Can't set value for setting. Value '%1' is greater than maximum value '%2'." )
-                   .arg( QString::number( value ) )
-                   .arg( QString::number( mMaxValue ) ) );
+    QgsDebugError( QObject::tr( "Can't set value for setting. Value '%1' is greater than maximum value '%2'." ).arg( QString::number( value ) ).arg( QString::number( mMaxValue ) ) );
     return false;
   }
 
   return true;
 }
 
-qlonglong QgsSettingsEntryInteger64::convertFromVariant( const QVariant &value ) const
-{
-  return value.toLongLong();
-}
+qlonglong QgsSettingsEntryInteger64::convertFromVariant( const QVariant &value ) const { return value.toLongLong(); }
 
-Qgis::SettingsType QgsSettingsEntryInteger64::settingsType() const
-{
-  return Qgis::SettingsType::Integer;
-}
+Qgis::SettingsType QgsSettingsEntryInteger64::settingsType() const { return Qgis::SettingsType::Integer; }
 
-qlonglong QgsSettingsEntryInteger64::maxValue() const
-{
-  return mMaxValue;
-}
+qlonglong QgsSettingsEntryInteger64::maxValue() const { return mMaxValue; }
 
-qlonglong QgsSettingsEntryInteger64::minValue() const
-{
-  return mMaxValue;
-}
-
+qlonglong QgsSettingsEntryInteger64::minValue() const { return mMaxValue; }
 
 
 bool QgsSettingsEntryDouble::checkValuePrivate( const double &value ) const
 {
   if ( value < mMinValue )
   {
-    QgsDebugError( QObject::tr( "Can't set value for setting. Value '%1' is less than minimum value '%2'." )
-                   .arg( QString::number( value ), QString::number( mMinValue ) ) );
+    QgsDebugError( QObject::tr( "Can't set value for setting. Value '%1' is less than minimum value '%2'." ).arg( QString::number( value ), QString::number( mMinValue ) ) );
     return false;
   }
 
   if ( value > mMaxValue )
   {
-    QgsDebugError( QObject::tr( "Can't set value for setting. Value '%1' is greater than maximum value '%2'." )
-                   .arg( QString::number( value ), QString::number( mMaxValue ) ) );
+    QgsDebugError( QObject::tr( "Can't set value for setting. Value '%1' is greater than maximum value '%2'." ).arg( QString::number( value ), QString::number( mMaxValue ) ) );
     return false;
   }
 
   return true;
 }
 
-double QgsSettingsEntryDouble::convertFromVariant( const QVariant &value ) const
-{
-  return value.toDouble();
-}
+double QgsSettingsEntryDouble::convertFromVariant( const QVariant &value ) const { return value.toDouble(); }
 
-Qgis::SettingsType QgsSettingsEntryDouble::settingsType() const
-{
-  return Qgis::SettingsType::Double;
-}
+Qgis::SettingsType QgsSettingsEntryDouble::settingsType() const { return Qgis::SettingsType::Double; }
 
-double QgsSettingsEntryDouble::minValue() const
-{
-  return mMinValue;
-}
+double QgsSettingsEntryDouble::minValue() const { return mMinValue; }
 
-double QgsSettingsEntryDouble::maxValue() const
-{
-  return mMaxValue;
-}
+double QgsSettingsEntryDouble::maxValue() const { return mMaxValue; }
 
-void QgsSettingsEntryDouble::setDisplayHintDecimals( int displayHintDecimals )
-{
-  mDisplayHintDecimals = displayHintDecimals;
-}
+void QgsSettingsEntryDouble::setDisplayHintDecimals( int displayHintDecimals ) { mDisplayHintDecimals = displayHintDecimals; }
 
-int QgsSettingsEntryDouble::displayHintDecimals() const
-{
-  return mDisplayHintDecimals;
-}
+int QgsSettingsEntryDouble::displayHintDecimals() const { return mDisplayHintDecimals; }
 
-QColor QgsSettingsEntryColor::convertFromVariant( const QVariant &value ) const
-{
-  return value.value<QColor>();
-}
+QColor QgsSettingsEntryColor::convertFromVariant( const QVariant &value ) const { return value.value<QColor>(); }
 
-Qgis::SettingsType QgsSettingsEntryColor::settingsType() const
-{
-  return Qgis::SettingsType::Color;
-}
+Qgis::SettingsType QgsSettingsEntryColor::settingsType() const { return Qgis::SettingsType::Color; }
 
 bool QgsSettingsEntryColor::checkValuePrivate( const QColor &value ) const
 {
@@ -285,13 +194,6 @@ void QgsSettingsEntryColor::copyValueToKeys( const QString &redKey, const QStrin
     settings->setValue( alphaKey, color.alpha() );
 }
 
-QVariantMap QgsSettingsEntryVariantMap::convertFromVariant( const QVariant &value ) const
-{
-  return value.value<QVariantMap>();
-}
+QVariantMap QgsSettingsEntryVariantMap::convertFromVariant( const QVariant &value ) const { return value.value<QVariantMap>(); }
 
-Qgis::SettingsType QgsSettingsEntryVariantMap::settingsType() const
-{
-  return Qgis::SettingsType::VariantMap;
-}
-
+Qgis::SettingsType QgsSettingsEntryVariantMap::settingsType() const { return Qgis::SettingsType::VariantMap; }

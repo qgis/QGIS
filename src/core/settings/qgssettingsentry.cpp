@@ -47,21 +47,12 @@ QgsSettingsEntryBase::~QgsSettingsEntryBase()
     mParentTreeElement->unregisterChildSetting( this );
 }
 
-QString QgsSettingsEntryBase::typeId() const
-{
-  return QString::fromUtf8( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( settingsType() ) ) );
-}
+QString QgsSettingsEntryBase::typeId() const { return QString::fromUtf8( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( settingsType() ) ) ); }
 
 
-QString QgsSettingsEntryBase::key( const QString &dynamicKeyPart ) const
-{
-  return key( dynamicKeyPartToList( dynamicKeyPart ) );
-}
+QString QgsSettingsEntryBase::key( const QString &dynamicKeyPart ) const { return key( dynamicKeyPartToList( dynamicKeyPart ) ); }
 
-QString QgsSettingsEntryBase::key( const QStringList &dynamicKeyPartList ) const
-{
-  return completeKeyPrivate( mKey, dynamicKeyPartList );
-}
+QString QgsSettingsEntryBase::key( const QStringList &dynamicKeyPartList ) const { return completeKeyPrivate( mKey, dynamicKeyPartList ); }
 
 QString QgsSettingsEntryBase::completeKeyPrivate( const QString &key, const QStringList &dynamicKeyPartList ) const
 {
@@ -106,10 +97,7 @@ bool QgsSettingsEntryBase::keyIsValid( const QString &key ) const
   return regularExpressionMatch.hasMatch();
 }
 
-QString QgsSettingsEntryBase::definitionKey() const
-{
-  return mKey;
-}
+QString QgsSettingsEntryBase::definitionKey() const { return mKey; }
 
 bool QgsSettingsEntryBase::hasDynamicKey() const
 {
@@ -117,40 +105,19 @@ bool QgsSettingsEntryBase::hasDynamicKey() const
   return mKey.contains( regularExpression );
 }
 
-bool QgsSettingsEntryBase::exists( const QString &dynamicKeyPart ) const
-{
-  return QgsSettings::get()->contains( key( dynamicKeyPart ) );
-}
+bool QgsSettingsEntryBase::exists( const QString &dynamicKeyPart ) const { return QgsSettings::get()->contains( key( dynamicKeyPart ) ); }
 
-bool QgsSettingsEntryBase::exists( const QStringList &dynamicKeyPartList ) const
-{
-  return QgsSettings::get()->contains( key( dynamicKeyPartList ) );
-}
+bool QgsSettingsEntryBase::exists( const QStringList &dynamicKeyPartList ) const { return QgsSettings::get()->contains( key( dynamicKeyPartList ) ); }
 
-Qgis::SettingsOrigin QgsSettingsEntryBase::origin( const QStringList &dynamicKeyPartList ) const
-{
-  return QgsSettings::get()->origin( key( dynamicKeyPartList ) );
-}
+Qgis::SettingsOrigin QgsSettingsEntryBase::origin( const QStringList &dynamicKeyPartList ) const { return QgsSettings::get()->origin( key( dynamicKeyPartList ) ); }
 
-void QgsSettingsEntryBase::remove( const QString &dynamicKeyPart ) const
-{
-  QgsSettings::get()->remove( key( dynamicKeyPart ) );
-}
+void QgsSettingsEntryBase::remove( const QString &dynamicKeyPart ) const { QgsSettings::get()->remove( key( dynamicKeyPart ) ); }
 
-void QgsSettingsEntryBase::remove( const QStringList &dynamicKeyPartList ) const
-{
-  QgsSettings::get()->remove( key( dynamicKeyPartList ) );
-}
+void QgsSettingsEntryBase::remove( const QStringList &dynamicKeyPartList ) const { QgsSettings::get()->remove( key( dynamicKeyPartList ) ); }
 
-int QgsSettingsEntryBase::section() const
-{
-  return QgsSettings::NoSection;
-}
+int QgsSettingsEntryBase::section() const { return QgsSettings::NoSection; }
 
-bool QgsSettingsEntryBase::setVariantValue( const QVariant &value, const QString &dynamicKeyPart ) const
-{
-  return setVariantValue( value, dynamicKeyPartToList( dynamicKeyPart ) );
-}
+bool QgsSettingsEntryBase::setVariantValue( const QVariant &value, const QString &dynamicKeyPart ) const { return setVariantValue( value, dynamicKeyPartToList( dynamicKeyPart ) ); }
 
 bool QgsSettingsEntryBase::setVariantValue( const QVariant &value, const QStringList &dynamicKeyPartList ) const
 {
@@ -179,15 +146,9 @@ QStringList QgsSettingsEntryBase::dynamicKeyPartToList( const QString &dynamicKe
   return dynamicKeyPartList;
 }
 
-QVariant QgsSettingsEntryBase::valueAsVariant( const QString &dynamicKeyPart ) const
-{
-  return valueAsVariant( dynamicKeyPartToList( dynamicKeyPart ) );
-}
+QVariant QgsSettingsEntryBase::valueAsVariant( const QString &dynamicKeyPart ) const { return valueAsVariant( dynamicKeyPartToList( dynamicKeyPart ) ); }
 
-QVariant QgsSettingsEntryBase::valueAsVariant( const QStringList &dynamicKeyPartList ) const
-{
-  return QgsSettings::get()->value( key( dynamicKeyPartList ), mDefaultValue );
-}
+QVariant QgsSettingsEntryBase::valueAsVariant( const QStringList &dynamicKeyPartList ) const { return QgsSettings::get()->value( key( dynamicKeyPartList ), mDefaultValue ); }
 
 QVariant QgsSettingsEntryBase::valueAsVariant( const QString &dynamicKeyPart, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const
 {
@@ -214,20 +175,11 @@ QVariant QgsSettingsEntryBase::valueAsVariantWithDefaultOverride( const QVariant
   return QgsSettings::get()->value( key( dynamicKeyPartList ), defaultValueOverride );
 }
 
-QVariant QgsSettingsEntryBase::defaultValueAsVariant() const
-{
-  return mDefaultValue;
-}
+QVariant QgsSettingsEntryBase::defaultValueAsVariant() const { return mDefaultValue; }
 
-QString QgsSettingsEntryBase::description() const
-{
-  return mDescription;
-}
+QString QgsSettingsEntryBase::description() const { return mDescription; }
 
-QVariant QgsSettingsEntryBase::formerValueAsVariant( const QString &dynamicKeyPart ) const
-{
-  return formerValueAsVariant( dynamicKeyPartToList( dynamicKeyPart ) );
-}
+QVariant QgsSettingsEntryBase::formerValueAsVariant( const QString &dynamicKeyPart ) const { return formerValueAsVariant( dynamicKeyPartToList( dynamicKeyPart ) ); }
 
 QVariant QgsSettingsEntryBase::formerValueAsVariant( const QStringList &dynamicKeyPartList ) const
 {
@@ -273,7 +225,4 @@ void QgsSettingsEntryBase::copyValueToKeyIfChanged( const QString &key, const QS
   }
 }
 
-QString QgsSettingsEntryBase::formerValuekey( const QStringList &dynamicKeyPartList ) const
-{
-  return key( dynamicKeyPartList ) + u"_formervalue"_s;
-}
+QString QgsSettingsEntryBase::formerValuekey( const QStringList &dynamicKeyPartList ) const { return key( dynamicKeyPartList ) + u"_formervalue"_s; }

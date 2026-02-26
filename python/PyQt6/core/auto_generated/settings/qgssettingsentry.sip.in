@@ -62,11 +62,9 @@ Transforms a dynamic key part string to list
 .. versionadded:: 3.26
 %End
 
-    QgsSettingsEntryBase( const QString &key,
-                          const QString &section,
-                          const QVariant &defaultValue = QVariant(),
-                          const QString &description = QString(),
-                          Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+    QgsSettingsEntryBase(
+      const QString &key, const QString &section, const QVariant &defaultValue = QVariant(), const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions()
+    );
 %Docstring
 Constructor for QgsSettingsEntryBase.
 
@@ -77,11 +75,9 @@ Constructor for QgsSettingsEntryBase.
 :param options: specifies the options for the settings entry.
 %End
 
-    QgsSettingsEntryBase( const QString &name,
-                          QgsSettingsTreeNode *parent,
-                          const QVariant &defaultValue = QVariant(),
-                          const QString &description = QString(),
-                          Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+    QgsSettingsEntryBase(
+      const QString &name, QgsSettingsTreeNode *parent, const QVariant &defaultValue = QVariant(), const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions()
+    );
 %Docstring
 Constructor for QgsSettingsEntryBase.
 
@@ -393,27 +389,19 @@ session.
 
 };
 
-template<T>
-class QgsSettingsEntryBaseTemplate : QgsSettingsEntryBase
+template<T> class QgsSettingsEntryBaseTemplate : public QgsSettingsEntryBase
 {
-%Docstring(signature="appended")
+%Docstring
 Base abstract class for settings entries with typed get and set methods.
 
 .. seealso:: :py:class:`QgsSettingsEntryBase`
 
 .. versionadded:: 3.32
 %End
-
-%TypeHeaderCode
-#include "qgssettingsentry.h"
-%End
   public:
-
-    QgsSettingsEntryBaseTemplate( const QString &name,
-                                  QgsSettingsTreeNode *parent,
-                                  const QVariant &defaultValue,
-                                  const QString &description = QString(),
-                                  Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+    QgsSettingsEntryBaseTemplate(
+      const QString &name, QgsSettingsTreeNode *parent, const QVariant &defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions()
+    );
 %Docstring
 Constructor for :py:class:`QgsSettingsEntryByReference`.
 
@@ -429,11 +417,7 @@ Constructor for :py:class:`QgsSettingsEntryByReference`.
 .. versionadded:: 3.30
 %End
 
-    QgsSettingsEntryBaseTemplate( const QString &key,
-                                  const QString &section,
-                                  const QVariant &defaultValue,
-                                  const QString &description = QString(),
-                                  Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+    QgsSettingsEntryBaseTemplate( const QString &key, const QString &section, const QVariant &defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions() );
 %Docstring
 Constructor for :py:class:`QgsSettingsEntryByReference`.
 
@@ -455,7 +439,7 @@ Returns settings value.
 :param dynamicKeyPart: specifies the dynamic part of the settings key.
 %End
 
-    T value( const QStringList &dynamicKeyPartList )  const;
+    T value( const QStringList &dynamicKeyPartList ) const;
 %Docstring
 Returns settings value.
 
@@ -533,8 +517,6 @@ Converts the value to a variant
 Check if the value is valid
 %End
 };
-
-
 
 
 /************************************************************************

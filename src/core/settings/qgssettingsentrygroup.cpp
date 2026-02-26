@@ -28,9 +28,7 @@ using namespace Qt::StringLiterals;
 
 QgsSettingsEntryGroup::QgsSettingsEntryGroup( QList<const QgsSettingsEntryBase *> settings )
   : QgsSettingsEntryGroup( settings, true )
-{
-
-}
+{}
 
 QgsSettingsEntryGroup::QgsSettingsEntryGroup( QList<const QgsSettingsEntryBase *> settings, bool fatalErrorIfInvalid )
   : mSettings( settings )
@@ -99,10 +97,7 @@ void QgsSettingsEntryGroup::removeAllSettingsAtBaseKey( const QStringList &dynam
   settings.remove( key );
 }
 
-void QgsSettingsEntryGroup::removeAllChildrenSettings( const QString &dynamicKeyPart ) const
-{
-  removeAllChildrenSettings( QgsSettingsEntryBase::dynamicKeyPartToList( dynamicKeyPart ) );
-}
+void QgsSettingsEntryGroup::removeAllChildrenSettings( const QString &dynamicKeyPart ) const { removeAllChildrenSettings( QgsSettingsEntryBase::dynamicKeyPartToList( dynamicKeyPart ) ); }
 
 void QgsSettingsEntryGroup::removeAllChildrenSettings( const QStringList &dynamicKeyPartList ) const
 {

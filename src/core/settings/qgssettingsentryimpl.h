@@ -28,8 +28,6 @@
 class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryBaseTemplate<QVariant>
 {
   public:
-
-
     /**
      * Constructor for QgsSettingsEntryVariant.
      *
@@ -40,12 +38,9 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryBaseTemplate<
      * \param options specifies the options for the settings entry.
      * \since QGIS 3.30
      */
-    QgsSettingsEntryVariant( const QString &name,
-                             QgsSettingsTreeNode *parent,
-                             const QVariant &defaultValue = QVariant(),
-                             const QString &description = QString(),
-                             Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER
-  : QgsSettingsEntryBaseTemplate( name, parent, defaultValue, description, options )
+    QgsSettingsEntryVariant(
+      const QString &name, QgsSettingsTreeNode *parent, const QVariant &defaultValue = QVariant(), const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions()
+    ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER : QgsSettingsEntryBaseTemplate( name, parent, defaultValue, description, options )
     {}
 
     /**
@@ -58,12 +53,9 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryBaseTemplate<
      * \param options specifies the options for the settings entry.
      * \since QGIS 3.30
      */
-    QgsSettingsEntryVariant( const QString &key,
-                             const QString &section,
-                             const QVariant &defaultValue = QVariant(),
-                             const QString &description = QString(),
-                             Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER SIP_MAKE_PRIVATE
-  : QgsSettingsEntryBaseTemplate( key, section, defaultValue, description, options )
+    QgsSettingsEntryVariant(
+      const QString &key, const QString &section, const QVariant &defaultValue = QVariant(), const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions()
+    ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER SIP_MAKE_PRIVATE : QgsSettingsEntryBaseTemplate( key, section, defaultValue, description, options )
     {}
 
 #ifdef SIP_RUN
@@ -78,27 +70,23 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryBaseTemplate<
      * \param description specifies a description for the settings entry.
      * \param options specifies the options for the settings entry.
      */
-    QgsSettingsEntryVariant( const QString &key,
-                             const QString &pluginName,
-                             const QVariant &defaultValue = QVariant(),
-                             const QString &description = QString(),
-                             Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
-    % MethodCode
-    sipCpp = new sipQgsSettingsEntryVariant( QgsSettingsEntryVariant( *a0, QgsSettingsTree::createPluginTreeNode( *a1 ), *a2, *a3, *a4 ) );
+    QgsSettingsEntryVariant(
+      const QString &key, const QString &pluginName, const QVariant &defaultValue = QVariant(), const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions()
+    ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
+    % MethodCode sipCpp = new sipQgsSettingsEntryVariant( QgsSettingsEntryVariant( *a0, QgsSettingsTree::createPluginTreeNode( *a1 ), *a2, *a3, *a4 ) );
     % End
 #endif
 
 #ifdef SIP_RUN
 
-    /**
+        /**
      * Returns settings value.
      *
      * \param type is the Python type of the value to be returned
      */
 
-    SIP_PYOBJECT valueAs( SIP_PYOBJECT type ) const;
-    % MethodCode
-    typedef PyObject *( *pyqt_from_qvariant_by_type )( QVariant &value, PyObject *type );
+        SIP_PYOBJECT valueAs( SIP_PYOBJECT type ) const;
+    % MethodCode typedef PyObject *( *pyqt_from_qvariant_by_type )( QVariant &value, PyObject *type );
     QVariant value;
 
     value = sipCpp->value();
@@ -111,9 +99,9 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryBaseTemplate<
 #endif
 
 
-    Qgis::SettingsType settingsType() const override;
+        Qgis::SettingsType settingsType() const override;
 
-    QVariant convertFromVariant( const QVariant &value ) const override SIP_FORCE {return value;}
+    QVariant convertFromVariant( const QVariant &value ) const override SIP_FORCE { return value; }
 };
 
 /**
@@ -126,7 +114,6 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryBaseTemplate<
 class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryBaseTemplate<QString>
 {
   public:
-
     /**
      * Constructor for QgsSettingsEntryString.
      *
@@ -138,16 +125,12 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryBaseTemplate<Q
      * \param minLength specifies the minimal length of the string value. 0 means no limit.
      * \param maxLength specifies the maximal length of the string value. -1 means no limit.
      */
-    QgsSettingsEntryString( const QString &name,
-                            QgsSettingsTreeNode *parent,
-                            const QString &defaultValue = QString(),
-                            const QString &description = QString(),
-                            Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-                            int minLength = 0,
-                            int maxLength = -1 ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER
-  : QgsSettingsEntryBaseTemplate<QString>( name, parent, defaultValue, description, options )
-    , mMinLength( minLength )
-    , mMaxLength( maxLength )
+    QgsSettingsEntryString(
+      const QString &name, QgsSettingsTreeNode *parent, const QString &defaultValue = QString(), const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+      int minLength = 0, int maxLength = -1
+    ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER : QgsSettingsEntryBaseTemplate<QString>( name, parent, defaultValue, description, options ),
+                                                       mMinLength( minLength ),
+                                                       mMaxLength( maxLength )
     {}
 
     /**
@@ -161,16 +144,12 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryBaseTemplate<Q
      * \param minLength specifies the minimal length of the string value. 0 means no limit.
      * \param maxLength specifies the maximal length of the string value. -1 means no limit.
      */
-    QgsSettingsEntryString( const QString &key,
-                            const QString &section,
-                            const QString &defaultValue = QString(),
-                            const QString &description = QString(),
-                            Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-                            int minLength = 0,
-                            int maxLength = -1 ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER SIP_MAKE_PRIVATE
-  : QgsSettingsEntryBaseTemplate<QString>( key, section, defaultValue, description, options )
-    , mMinLength( minLength )
-    , mMaxLength( maxLength )
+    QgsSettingsEntryString(
+      const QString &key, const QString &section, const QString &defaultValue = QString(), const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+      int minLength = 0, int maxLength = -1
+    ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER SIP_MAKE_PRIVATE : QgsSettingsEntryBaseTemplate<QString>( key, section, defaultValue, description, options ),
+                                                                        mMinLength( minLength ),
+                                                                        mMaxLength( maxLength )
     {}
 
 #ifdef SIP_RUN
@@ -185,19 +164,15 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryBaseTemplate<Q
      * \param description specifies a description for the settings entry.
      * \param options specifies the options for the settings entry.
      */
-    QgsSettingsEntryString( const QString &key,
-                            const QString &pluginName,
-                            const QString &defaultValue = QString(),
-                            const QString &description = QString(),
-                            Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-                            int minLength = 0,
-                            int maxLength = -1 ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
-    % MethodCode
-    sipCpp = new sipQgsSettingsEntryString( QgsSettingsEntryString( *a0, QgsSettingsTree::createPluginTreeNode( *a1 ), *a2, *a3, *a4 ) );
+    QgsSettingsEntryString(
+      const QString &key, const QString &pluginName, const QString &defaultValue = QString(), const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+      int minLength = 0, int maxLength = -1
+    ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
+    % MethodCode sipCpp = new sipQgsSettingsEntryString( QgsSettingsEntryString( *a0, QgsSettingsTree::createPluginTreeNode( *a1 ), *a2, *a3, *a4 ) );
     % End
 #endif
 
-    Qgis::SettingsType settingsType() const override;
+        Qgis::SettingsType settingsType() const override;
 
     /**
      * Returns the string minimum length.
@@ -216,7 +191,6 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryBaseTemplate<Q
 
     int mMinLength;
     int mMaxLength;
-
 };
 
 
@@ -230,7 +204,6 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryBaseTemplate<Q
 class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryBaseTemplate<QStringList>
 {
   public:
-
     /**
      * Constructor for QgsSettingsEntryStringList.
      *
@@ -240,12 +213,9 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryBaseTempla
      * \param description specifies a description for the settings entry.
      * \param options specifies the options for the settings entry.
      */
-    QgsSettingsEntryStringList( const QString &name,
-                                QgsSettingsTreeNode *parent,
-                                const QStringList &defaultValue = QStringList(),
-                                const QString &description = QString(),
-                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER
-  : QgsSettingsEntryBaseTemplate( name, parent, defaultValue, description, options )
+    QgsSettingsEntryStringList(
+      const QString &name, QgsSettingsTreeNode *parent, const QStringList &defaultValue = QStringList(), const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions()
+    ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER : QgsSettingsEntryBaseTemplate( name, parent, defaultValue, description, options )
     {}
 
     /**
@@ -257,12 +227,9 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryBaseTempla
      * \param description specifies a description for the settings entry.
      * \param options specifies the options for the settings entry.
      */
-    QgsSettingsEntryStringList( const QString &key,
-                                const QString &section,
-                                const QStringList &defaultValue = QStringList(),
-                                const QString &description = QString(),
-                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER SIP_MAKE_PRIVATE
-  : QgsSettingsEntryBaseTemplate( key, section, defaultValue, description, options )
+    QgsSettingsEntryStringList(
+      const QString &key, const QString &section, const QStringList &defaultValue = QStringList(), const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions()
+    ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER SIP_MAKE_PRIVATE : QgsSettingsEntryBaseTemplate( key, section, defaultValue, description, options )
     {}
 
 
@@ -278,17 +245,14 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryBaseTempla
      * \param description specifies a description for the settings entry.
      * \param options specifies the options for the settings entry.
      */
-    QgsSettingsEntryStringList( const QString &key,
-                                const QString &pluginName,
-                                const QStringList &defaultValue = QStringList(),
-                                const QString &description = QString(),
-                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
-    % MethodCode
-    sipCpp = new sipQgsSettingsEntryStringList( QgsSettingsEntryStringList( *a0, QgsSettingsTree::createPluginTreeNode( *a1 ), *a2, *a3, *a4 ) );
+    QgsSettingsEntryStringList(
+      const QString &key, const QString &pluginName, const QStringList &defaultValue = QStringList(), const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions()
+    ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
+    % MethodCode sipCpp = new sipQgsSettingsEntryStringList( QgsSettingsEntryStringList( *a0, QgsSettingsTree::createPluginTreeNode( *a1 ), *a2, *a3, *a4 ) );
     % End
 #endif
 
-    Qgis::SettingsType settingsType() const override;
+        Qgis::SettingsType settingsType() const override;
 
     QStringList convertFromVariant( const QVariant &value ) const override SIP_FORCE;
 };
@@ -304,7 +268,6 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryBaseTempla
 class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryBaseTemplate<bool>
 {
   public:
-
     /**
      * Constructor for QgsSettingsEntryBool.
      *
@@ -314,12 +277,9 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryBaseTemplate<boo
      * \param description specifies a description for the settings entry.
      * \param options specifies the options for the settings entry.
      */
-    QgsSettingsEntryBool( const QString &name,
-                          QgsSettingsTreeNode *parent,
-                          bool defaultValue = false,
-                          const QString &description = QString(),
-                          Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER
-  : QgsSettingsEntryBaseTemplate( name, parent, defaultValue, description, options )
+    QgsSettingsEntryBool(
+      const QString &name, QgsSettingsTreeNode *parent, bool defaultValue = false, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions()
+    ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER : QgsSettingsEntryBaseTemplate( name, parent, defaultValue, description, options )
     {}
 
     /**
@@ -331,12 +291,9 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryBaseTemplate<boo
      * \param description specifies a description for the settings entry.
      * \param options specifies the options for the settings entry.
      */
-    QgsSettingsEntryBool( const QString &key,
-                          const QString &section,
-                          bool defaultValue = false,
-                          const QString &description = QString(),
-                          Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER SIP_MAKE_PRIVATE
-  : QgsSettingsEntryBaseTemplate( key, section, defaultValue, description, options )
+    QgsSettingsEntryBool(
+      const QString &key, const QString &section, bool defaultValue = false, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions()
+    ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER SIP_MAKE_PRIVATE : QgsSettingsEntryBaseTemplate( key, section, defaultValue, description, options )
     {}
 
 #ifdef SIP_RUN
@@ -351,18 +308,15 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryBaseTemplate<boo
      * \param description specifies a description for the settings entry.
      * \param options specifies the options for the settings entry.
      */
-    QgsSettingsEntryBool( const QString &key,
-                          const QString &pluginName,
-                          bool defaultValue = false,
-                          const QString &description = QString(),
-                          Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
-    % MethodCode
-    sipCpp = new sipQgsSettingsEntryBool( QgsSettingsEntryBool( *a0, QgsSettingsTree::createPluginTreeNode( *a1 ), a2, *a3, *a4 ) );
+    QgsSettingsEntryBool(
+      const QString &key, const QString &pluginName, bool defaultValue = false, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions()
+    ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
+    % MethodCode sipCpp = new sipQgsSettingsEntryBool( QgsSettingsEntryBool( *a0, QgsSettingsTree::createPluginTreeNode( *a1 ), a2, *a3, *a4 ) );
     % End
 #endif
 
 
-    Qgis::SettingsType settingsType() const override;
+        Qgis::SettingsType settingsType() const override;
 
     bool convertFromVariant( const QVariant &value ) const override SIP_FORCE;
 };
@@ -378,7 +332,6 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryBaseTemplate<boo
 class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryBaseTemplate<int>
 {
   public:
-
     /**
      * Constructor for QgsSettingsEntryInteger.
      *
@@ -390,17 +343,13 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryBaseTemplate<
      * \param minValue specifies the minimal value.
      * \param maxValue specifies the maximal value.
      */
-    QgsSettingsEntryInteger( const QString &name,
-                             QgsSettingsTreeNode *parent,
-                             int defaultValue = 0,
-                             const QString &description = QString(),
-                             Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-                             int minValue = std::numeric_limits<int>::min(),
-                             int maxValue = std::numeric_limits<int>::max() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER
-  : QgsSettingsEntryBaseTemplate( name, parent, defaultValue, description, options )
-    , mMinValue( minValue )
-    , mMaxValue( maxValue )
-    { }
+    QgsSettingsEntryInteger(
+      const QString &name, QgsSettingsTreeNode *parent, int defaultValue = 0, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+      int minValue = std::numeric_limits<int>::min(), int maxValue = std::numeric_limits<int>::max()
+    ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER : QgsSettingsEntryBaseTemplate( name, parent, defaultValue, description, options ),
+                                                       mMinValue( minValue ),
+                                                       mMaxValue( maxValue )
+    {}
 
     /**
      * Constructor for QgsSettingsEntryInteger.
@@ -413,17 +362,13 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryBaseTemplate<
      * \param minValue specifies the minimal value.
      * \param maxValue specifies the maximal value.
      */
-    QgsSettingsEntryInteger( const QString &key,
-                             const QString &section,
-                             int defaultValue = 0,
-                             const QString &description = QString(),
-                             Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-                             int minValue = std::numeric_limits<int>::min(),
-                             int maxValue = std::numeric_limits<int>::max() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER SIP_MAKE_PRIVATE
-  : QgsSettingsEntryBaseTemplate( key, section, defaultValue, description, options )
-    , mMinValue( minValue )
-    , mMaxValue( maxValue )
-    { }
+    QgsSettingsEntryInteger(
+      const QString &key, const QString &section, int defaultValue = 0, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+      int minValue = std::numeric_limits<int>::min(), int maxValue = std::numeric_limits<int>::max()
+    ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER SIP_MAKE_PRIVATE : QgsSettingsEntryBaseTemplate( key, section, defaultValue, description, options ),
+                                                                        mMinValue( minValue ),
+                                                                        mMaxValue( maxValue )
+    {}
 
 #ifdef SIP_RUN
 
@@ -439,19 +384,15 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryBaseTemplate<
      * \param minValue specifies the minimal value.
      * \param maxValue specifies the maximal value.
      */
-    QgsSettingsEntryInteger( const QString &key,
-                             const QString &pluginName,
-                             int defaultValue = 0,
-                             const QString &description = QString(),
-                             Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-                             int minValue = std::numeric_limits<int>::min(),
-                             int maxValue = std::numeric_limits<int>::max() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
-    % MethodCode
-    sipCpp = new sipQgsSettingsEntryInteger( QgsSettingsEntryInteger( *a0, QgsSettingsTree::createPluginTreeNode( *a1 ), a2, *a3, *a4, a5, a6 ) );
+    QgsSettingsEntryInteger(
+      const QString &key, const QString &pluginName, int defaultValue = 0, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+      int minValue = std::numeric_limits<int>::min(), int maxValue = std::numeric_limits<int>::max()
+    ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
+    % MethodCode sipCpp = new sipQgsSettingsEntryInteger( QgsSettingsEntryInteger( *a0, QgsSettingsTree::createPluginTreeNode( *a1 ), a2, *a3, *a4, a5, a6 ) );
     % End
 #endif
 
-    Qgis::SettingsType settingsType() const override;
+        Qgis::SettingsType settingsType() const override;
 
     /**
      * Returns the minimum value.
@@ -484,7 +425,6 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryBaseTemplate<
 class CORE_EXPORT QgsSettingsEntryInteger64 : public QgsSettingsEntryBaseTemplate<qlonglong>
 {
   public:
-
     /**
      * Constructor for QgsSettingsEntryInteger64.
      *
@@ -496,17 +436,14 @@ class CORE_EXPORT QgsSettingsEntryInteger64 : public QgsSettingsEntryBaseTemplat
      * \param minValue specifies the minimal value.
      * \param maxValue specifies the maximal value.
      */
-    QgsSettingsEntryInteger64( const QString &name,
-                               QgsSettingsTreeNode *parent,
-                               qlonglong defaultValue = 0,
-                               const QString &description = QString(),
-                               Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-                               qlonglong minValue = std::numeric_limits<qlonglong>::min(),
-                               qlonglong maxValue = std::numeric_limits<qlonglong>::max() ) SIP_THROW( QgsSettingsException )
+    QgsSettingsEntryInteger64(
+      const QString &name, QgsSettingsTreeNode *parent, qlonglong defaultValue = 0, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+      qlonglong minValue = std::numeric_limits<qlonglong>::min(), qlonglong maxValue = std::numeric_limits<qlonglong>::max()
+    ) SIP_THROW( QgsSettingsException )
       : QgsSettingsEntryBaseTemplate( name, parent, defaultValue, description, options )
       , mMinValue( minValue )
       , mMaxValue( maxValue )
-    { }
+    {}
 
     /**
      * Constructor for QgsSettingsEntryInteger64.
@@ -519,17 +456,14 @@ class CORE_EXPORT QgsSettingsEntryInteger64 : public QgsSettingsEntryBaseTemplat
      * \param minValue specifies the minimal value.
      * \param maxValue specifies the maximal value.
      */
-    QgsSettingsEntryInteger64( const QString &key,
-                               const QString &section,
-                               qlonglong defaultValue = 0,
-                               const QString &description = QString(),
-                               Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-                               qlonglong minValue = std::numeric_limits<qlonglong>::min(),
-                               qlonglong maxValue = std::numeric_limits<qlonglong>::max() )
+    QgsSettingsEntryInteger64(
+      const QString &key, const QString &section, qlonglong defaultValue = 0, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+      qlonglong minValue = std::numeric_limits<qlonglong>::min(), qlonglong maxValue = std::numeric_limits<qlonglong>::max()
+    )
       : QgsSettingsEntryBaseTemplate( key, section, defaultValue, description, options )
       , mMinValue( minValue )
       , mMaxValue( maxValue )
-    { }
+    {}
 
     Qgis::SettingsType settingsType() const override;
 
@@ -562,7 +496,6 @@ class CORE_EXPORT QgsSettingsEntryInteger64 : public QgsSettingsEntryBaseTemplat
 class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryBaseTemplate<double>
 {
   public:
-
     /**
      * Constructor for QgsSettingsEntryDouble.
      *
@@ -576,18 +509,13 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryBaseTemplate<d
      * \param displayDecimals specifies a hint for the gui about how much decimals to show
      * for example for a QDoubleSpinBox.
      */
-    QgsSettingsEntryDouble( const QString &name,
-                            QgsSettingsTreeNode *parent,
-                            double defaultValue = 0.0,
-                            const QString &description = QString(),
-                            Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-                            double minValue = std::numeric_limits<double>::lowest(),
-                            double maxValue = std::numeric_limits<double>::max(),
-                            int displayDecimals = 1 ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER
-  : QgsSettingsEntryBaseTemplate( name, parent, defaultValue, description, options )
-    , mMinValue( minValue )
-    , mMaxValue( maxValue )
-    , mDisplayHintDecimals( displayDecimals )
+    QgsSettingsEntryDouble(
+      const QString &name, QgsSettingsTreeNode *parent, double defaultValue = 0.0, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+      double minValue = std::numeric_limits<double>::lowest(), double maxValue = std::numeric_limits<double>::max(), int displayDecimals = 1
+    ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER : QgsSettingsEntryBaseTemplate( name, parent, defaultValue, description, options ),
+                                                       mMinValue( minValue ),
+                                                       mMaxValue( maxValue ),
+                                                       mDisplayHintDecimals( displayDecimals )
     {}
 
     /**
@@ -603,18 +531,13 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryBaseTemplate<d
      * \param displayDecimals specifies a hint for the gui about how much decimals to show
      * for example for a QDoubleSpinBox.
      */
-    QgsSettingsEntryDouble( const QString &key,
-                            const QString &section,
-                            double defaultValue = 0.0,
-                            const QString &description = QString(),
-                            Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-                            double minValue = std::numeric_limits<double>::lowest(),
-                            double maxValue = std::numeric_limits<double>::max(),
-                            int displayDecimals = 1 ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER SIP_MAKE_PRIVATE
-  : QgsSettingsEntryBaseTemplate( key, section, defaultValue, description, options )
-    , mMinValue( minValue )
-    , mMaxValue( maxValue )
-    , mDisplayHintDecimals( displayDecimals )
+    QgsSettingsEntryDouble(
+      const QString &key, const QString &section, double defaultValue = 0.0, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+      double minValue = std::numeric_limits<double>::lowest(), double maxValue = std::numeric_limits<double>::max(), int displayDecimals = 1
+    ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER SIP_MAKE_PRIVATE : QgsSettingsEntryBaseTemplate( key, section, defaultValue, description, options ),
+                                                                        mMinValue( minValue ),
+                                                                        mMaxValue( maxValue ),
+                                                                        mDisplayHintDecimals( displayDecimals )
     {}
 
 #ifdef SIP_RUN
@@ -632,21 +555,16 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryBaseTemplate<d
      * \param maxValue specifies the maximal value.
      * \param displayDecimals specifies a hint for the gui about how much decimals to show
      */
-    QgsSettingsEntryDouble( const QString &key,
-                            const QString &pluginName,
-                            double defaultValue,
-                            const QString &description = QString(),
-                            Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-                            double minValue = std::numeric_limits<double>::lowest(),
-                            double maxValue = std::numeric_limits<double>::max(),
-                            int displayDecimals = 1 ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
-    % MethodCode
-    sipCpp = new sipQgsSettingsEntryDouble( QgsSettingsEntryDouble( *a0, QgsSettingsTree::createPluginTreeNode( *a1 ), a2, *a3, *a4, a5, a6, a7 ) );
+    QgsSettingsEntryDouble(
+      const QString &key, const QString &pluginName, double defaultValue, const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+      double minValue = std::numeric_limits<double>::lowest(), double maxValue = std::numeric_limits<double>::max(), int displayDecimals = 1
+    ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
+    % MethodCode sipCpp = new sipQgsSettingsEntryDouble( QgsSettingsEntryDouble( *a0, QgsSettingsTree::createPluginTreeNode( *a1 ), a2, *a3, *a4, a5, a6, a7 ) );
     % End
 #endif
 
 
-    Qgis::SettingsType settingsType() const override;
+        Qgis::SettingsType settingsType() const override;
 
     /**
      * Returns the minimum value.
@@ -678,9 +596,7 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryBaseTemplate<d
     double mMaxValue;
 
     int mDisplayHintDecimals;
-
 };
-
 
 
 /**
@@ -693,7 +609,6 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryBaseTemplate<d
 class CORE_EXPORT QgsSettingsEntryColor : public QgsSettingsEntryBaseTemplate<QColor>
 {
   public:
-
     /**
      * Constructor for QgsSettingsEntryColor.
      *
@@ -704,14 +619,11 @@ class CORE_EXPORT QgsSettingsEntryColor : public QgsSettingsEntryBaseTemplate<QC
      * \param options specifies the options for the settings entry.
      * \param allowAlpha specifies if the color can have transparency.
      */
-    QgsSettingsEntryColor( const QString &name,
-                           QgsSettingsTreeNode *parent,
-                           const QColor &defaultValue = QColor(),
-                           const QString &description = QString(),
-                           Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-                           bool allowAlpha = true ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER
-  : QgsSettingsEntryBaseTemplate( name, parent, defaultValue, description, options )
-    , mAllowAlpha( allowAlpha )
+    QgsSettingsEntryColor(
+      const QString &name, QgsSettingsTreeNode *parent, const QColor &defaultValue = QColor(), const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+      bool allowAlpha = true
+    ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER : QgsSettingsEntryBaseTemplate( name, parent, defaultValue, description, options ),
+                                                       mAllowAlpha( allowAlpha )
     {}
 
     /**
@@ -724,14 +636,11 @@ class CORE_EXPORT QgsSettingsEntryColor : public QgsSettingsEntryBaseTemplate<QC
      * \param options specifies the options for the settings entry.
      * \param allowAlpha specifies if the color can have transparency.
      */
-    QgsSettingsEntryColor( const QString &key,
-                           const QString &section,
-                           const QColor &defaultValue = QColor(),
-                           const QString &description = QString(),
-                           Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-                           bool allowAlpha = true ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER SIP_MAKE_PRIVATE
-  : QgsSettingsEntryBaseTemplate( key, section, defaultValue, description, options )
-    , mAllowAlpha( allowAlpha )
+    QgsSettingsEntryColor(
+      const QString &key, const QString &section, const QColor &defaultValue = QColor(), const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+      bool allowAlpha = true
+    ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER SIP_MAKE_PRIVATE : QgsSettingsEntryBaseTemplate( key, section, defaultValue, description, options ),
+                                                                        mAllowAlpha( allowAlpha )
     {}
 
 #ifdef SIP_RUN
@@ -746,24 +655,21 @@ class CORE_EXPORT QgsSettingsEntryColor : public QgsSettingsEntryBaseTemplate<QC
      * \param description specifies a description for the settings entry.
      * \param options specifies the options for the settings entry.
      */
-    QgsSettingsEntryColor( const QString &key,
-                           const QString &pluginName,
-                           const QColor &defaultValue = QColor(),
-                           const QString &description = QString(),
-                           Qgis::SettingsOptions options = Qgis::SettingsOptions(),
-                           bool allowAlpha = true ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
-    % MethodCode
-    sipCpp = new sipQgsSettingsEntryColor( QgsSettingsEntryColor( *a0, QgsSettingsTree::createPluginTreeNode( *a1 ), *a2, *a3, *a4, a5 ) );
+    QgsSettingsEntryColor(
+      const QString &key, const QString &pluginName, const QColor &defaultValue = QColor(), const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions(),
+      bool allowAlpha = true
+    ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
+    % MethodCode sipCpp = new sipQgsSettingsEntryColor( QgsSettingsEntryColor( *a0, QgsSettingsTree::createPluginTreeNode( *a1 ), *a2, *a3, *a4, a5 ) );
     % End
 #endif
 
-    Qgis::SettingsType settingsType() const override;
+        Qgis::SettingsType settingsType() const override;
 
     /**
      * Returns TRUE if transparency is allowed for the color
      * \since QGIS 3.30
      */
-    bool allowAlpha() const {return mAllowAlpha;}
+    bool allowAlpha() const { return mAllowAlpha; }
 
     /**
      * Copies the value from the given keys if they exist.
@@ -781,7 +687,6 @@ class CORE_EXPORT QgsSettingsEntryColor : public QgsSettingsEntryBaseTemplate<QC
     QColor convertFromVariant( const QVariant &value ) const override SIP_FORCE;
 
   private:
-
     bool checkValuePrivate( const QColor &value ) const override SIP_FORCE;
     bool mAllowAlpha = true;
 };
@@ -796,8 +701,6 @@ class CORE_EXPORT QgsSettingsEntryColor : public QgsSettingsEntryBaseTemplate<QC
 class CORE_EXPORT QgsSettingsEntryVariantMap : public QgsSettingsEntryBaseTemplate<QVariantMap>
 {
   public:
-
-
     /**
      * Constructor for QgsSettingsEntryVariantMap.
      *
@@ -807,14 +710,10 @@ class CORE_EXPORT QgsSettingsEntryVariantMap : public QgsSettingsEntryBaseTempla
      * \param description specifies a description for the settings entry.
      * \param options specifies the options for the settings entry.
      */
-    QgsSettingsEntryVariantMap( const QString &name,
-                                QgsSettingsTreeNode *parent,
-                                const QVariantMap &defaultValue = QVariantMap(),
-                                const QString &description = QString(),
-                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER
-  : QgsSettingsEntryBaseTemplate( name, parent, defaultValue, description, options )
-    {
-    }
+    QgsSettingsEntryVariantMap(
+      const QString &name, QgsSettingsTreeNode *parent, const QVariantMap &defaultValue = QVariantMap(), const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions()
+    ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER : QgsSettingsEntryBaseTemplate( name, parent, defaultValue, description, options )
+    {}
 
     /**
      * Constructor for QgsSettingsEntryVariantMap.
@@ -825,14 +724,10 @@ class CORE_EXPORT QgsSettingsEntryVariantMap : public QgsSettingsEntryBaseTempla
      * \param description specifies a description for the settings entry.
      * \param options specifies the options for the settings entry.
      */
-    QgsSettingsEntryVariantMap( const QString &key,
-                                const QString &section,
-                                const QVariantMap &defaultValue = QVariantMap(),
-                                const QString &description = QString(),
-                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER SIP_MAKE_PRIVATE
-  : QgsSettingsEntryBaseTemplate( key, section, defaultValue, description, options )
-    {
-    }
+    QgsSettingsEntryVariantMap(
+      const QString &key, const QString &section, const QVariantMap &defaultValue = QVariantMap(), const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions()
+    ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER SIP_MAKE_PRIVATE : QgsSettingsEntryBaseTemplate( key, section, defaultValue, description, options )
+    {}
 
 #ifdef SIP_RUN
 
@@ -846,17 +741,14 @@ class CORE_EXPORT QgsSettingsEntryVariantMap : public QgsSettingsEntryBaseTempla
      * \param description specifies a description for the settings entry.
      * \param options specifies the options for the settings entry.
      */
-    QgsSettingsEntryVariantMap( const QString &key,
-                                const QString &pluginName,
-                                const QVariantMap &defaultValue = QVariantMap(),
-                                const QString &description = QString(),
-                                Qgis::SettingsOptions options = Qgis::SettingsOptions() ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
-    % MethodCode
-    sipCpp = new sipQgsSettingsEntryVariantMap( QgsSettingsEntryVariantMap( *a0, QgsSettingsTree::createPluginTreeNode( *a1 ), *a2, *a3, *a4 ) );
+    QgsSettingsEntryVariantMap(
+      const QString &key, const QString &pluginName, const QVariantMap &defaultValue = QVariantMap(), const QString &description = QString(), Qgis::SettingsOptions options = Qgis::SettingsOptions()
+    ) SIP_THROW( QgsSettingsException ) SIP_TRANSFER;
+    % MethodCode sipCpp = new sipQgsSettingsEntryVariantMap( QgsSettingsEntryVariantMap( *a0, QgsSettingsTree::createPluginTreeNode( *a1 ), *a2, *a3, *a4 ) );
     % End
 #endif
 
-    Qgis::SettingsType settingsType() const override;
+        Qgis::SettingsType settingsType() const override;
 
     QVariantMap convertFromVariant( const QVariant &value ) const override SIP_FORCE;
 };
