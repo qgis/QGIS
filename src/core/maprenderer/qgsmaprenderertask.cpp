@@ -47,9 +47,7 @@ using namespace Qt::StringLiterals;
 
 class QgsMapRendererTaskGeospatialPdfExporter : public QgsAbstractGeospatialPdfExporter
 {
-
   public:
-
     QgsMapRendererTaskGeospatialPdfExporter( const QgsMapSettings &ms )
     {
       // collect details upfront, while we are still in the main thread
@@ -63,16 +61,12 @@ class QgsMapRendererTaskGeospatialPdfExporter : public QgsAbstractGeospatialPdfE
         {
           detail.displayAttribute = vl->displayField();
         }
-        mLayerDetails[ layer->id() ] = detail;
+        mLayerDetails[layer->id()] = detail;
       }
     }
 
   private:
-
-    QgsAbstractGeospatialPdfExporter::VectorComponentDetail componentDetailForLayerId( const QString &layerId ) override
-    {
-      return mLayerDetails.value( layerId );
-    }
+    QgsAbstractGeospatialPdfExporter::VectorComponentDetail componentDetailForLayerId( const QString &layerId ) override { return mLayerDetails.value( layerId ); }
 
     QMap< QString, VectorComponentDetail > mLayerDetails;
 };
@@ -81,7 +75,6 @@ class QgsMapRendererTaskGeospatialPdfExporter : public QgsAbstractGeospatialPdfE
 class QgsMapRendererTaskRenderedFeatureHandler : public QgsRenderedFeatureHandlerInterface
 {
   public:
-
     QgsMapRendererTaskRenderedFeatureHandler( QgsMapRendererTaskGeospatialPdfExporter *exporter, const QgsMapSettings &settings )
       : mExporter( exporter )
       , mMapSettings( settings )
@@ -107,24 +100,21 @@ class QgsMapRendererTaskRenderedFeatureHandler : public QgsRenderedFeatureHandle
       mExporter->pushRenderedFeature( layerId, QgsAbstractGeospatialPdfExporter::RenderedFeature( feature, transformed ) );
     }
 
-    QSet<QString> usedAttributes( QgsVectorLayer *, const QgsRenderContext & ) const override
-    {
-      return QSet< QString >() << QgsFeatureRequest::ALL_ATTRIBUTES;
-    }
+    QSet<QString> usedAttributes( QgsVectorLayer *, const QgsRenderContext & ) const override { return QSet< QString >() << QgsFeatureRequest::ALL_ATTRIBUTES; }
 
   private:
-
     QgsMapRendererTaskGeospatialPdfExporter *mExporter = nullptr;
     QgsMapSettings mMapSettings;
     //! Transform from output space (pixels) to PDF space (pixels at 72 dpi)
     QTransform mTransform;
-
 };
 
 ///@endcond
 
-QgsMapRendererTask::QgsMapRendererTask( const QgsMapSettings &ms, const QString &fileName, const QString &fileFormat, const bool forceRaster, QgsTask::Flags flags,
-                                        const bool geoPDF, const QgsAbstractGeospatialPdfExporter::ExportDetails &geospatialPdfExportDetails )
+QgsMapRendererTask::QgsMapRendererTask(
+  const QgsMapSettings &ms, const QString &fileName, const QString &fileFormat, const bool forceRaster, QgsTask::Flags flags, const bool geoPDF,
+  const QgsAbstractGeospatialPdfExporter::ExportDetails &geospatialPdfExportDetails
+)
   : QgsTask( fileFormat == "PDF"_L1 ? tr( "Saving as PDF" ) : tr( "Saving as image" ), flags )
   , mMapSettings( ms )
   , mFileName( fileName )
@@ -164,10 +154,7 @@ void QgsMapRendererTask::addAnnotations( const QList< QgsAnnotation * > &annotat
   }
 }
 
-void QgsMapRendererTask::addDecorations( const QList< QgsMapDecoration * > &decorations )
-{
-  mDecorations = decorations;
-}
+void QgsMapRendererTask::addDecorations( const QList< QgsMapDecoration * > &decorations ) { mDecorations = decorations; }
 
 
 void QgsMapRendererTask::cancel()
@@ -206,7 +193,7 @@ bool QgsMapRendererTask::run()
       pdfWriter.setPageOrientation( QPageLayout::Orientation::Portrait );
       // paper size needs to be given in millimeters in order to be able to set a resolution to pass onto the map renderer
       const QSizeF outputSize = mMapSettings.outputSize();
-      const QPageSize pageSize( outputSize  * 25.4 / mMapSettings.outputDpi(), QPageSize::Unit::Millimeter );
+      const QPageSize pageSize( outputSize * 25.4 / mMapSettings.outputDpi(), QPageSize::Unit::Millimeter );
       pdfWriter.setPageSize( pageSize );
       pdfWriter.setPageMargins( QMarginsF( 0, 0, 0, 0 ) );
       pdfWriter.setResolution( static_cast<int>( mMapSettings.outputDpi() ) );
@@ -236,7 +223,8 @@ bool QgsMapRendererTask::run()
       georef.controlPoints.reserve( 4 );
       georef.controlPoints << QgsAbstractGeospatialPdfExporter::ControlPoint( QgsPointXY( 0, 0 ), mMapSettings.mapToPixel().toMapCoordinates( 0, 0 ) );
       georef.controlPoints << QgsAbstractGeospatialPdfExporter::ControlPoint( QgsPointXY( pageWidthMM, 0 ), mMapSettings.mapToPixel().toMapCoordinates( mMapSettings.outputSize().width(), 0 ) );
-      georef.controlPoints << QgsAbstractGeospatialPdfExporter::ControlPoint( QgsPointXY( pageWidthMM, pageHeightMM ), mMapSettings.mapToPixel().toMapCoordinates( mMapSettings.outputSize().width(), mMapSettings.outputSize().height() ) );
+      georef.controlPoints << QgsAbstractGeospatialPdfExporter::
+          ControlPoint( QgsPointXY( pageWidthMM, pageHeightMM ), mMapSettings.mapToPixel().toMapCoordinates( mMapSettings.outputSize().width(), mMapSettings.outputSize().height() ) );
       georef.controlPoints << QgsAbstractGeospatialPdfExporter::ControlPoint( QgsPointXY( 0, pageHeightMM ), mMapSettings.mapToPixel().toMapCoordinates( 0, mMapSettings.outputSize().height() ) );
       exportDetails.georeferencedSections << georef;
     }
@@ -395,7 +383,7 @@ bool QgsMapRendererTask::run()
 
       if ( mSaveWorldFile )
       {
-        const QFileInfo info  = QFileInfo( mFileName );
+        const QFileInfo info = QFileInfo( mFileName );
 
         // build the world file name
         const QString outputSuffix = info.suffix();
@@ -420,8 +408,7 @@ bool QgsMapRendererTask::run()
 
         if ( !skipWorldFile )
         {
-          const QString worldFileName = info.absolutePath() + '/' + info.completeBaseName() + '.'
-                                        + outputSuffix.at( 0 ) + outputSuffix.at( info.suffix().size() - 1 ) + 'w';
+          const QString worldFileName = info.absolutePath() + '/' + info.completeBaseName() + '.' + outputSuffix.at( 0 ) + outputSuffix.at( info.suffix().size() - 1 ) + 'w';
           QFile worldFile( worldFileName );
 
           if ( worldFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) ) //don't use QIODevice::Text
@@ -482,7 +469,7 @@ void QgsMapRendererTask::prepare()
     mPdfWriter->setPageOrientation( QPageLayout::Orientation::Portrait );
     // paper size needs to be given in millimeters in order to be able to set a resolution to pass onto the map renderer
     const QSizeF outputSize = mMapSettings.outputSize();
-    const QPageSize pageSize( outputSize  * 25.4 / mMapSettings.outputDpi(), QPageSize::Unit::Millimeter );
+    const QPageSize pageSize( outputSize * 25.4 / mMapSettings.outputDpi(), QPageSize::Unit::Millimeter );
     mPdfWriter->setPageSize( pageSize );
     mPdfWriter->setPageMargins( QMarginsF( 0, 0, 0, 0 ) );
     mPdfWriter->setResolution( static_cast<int>( mMapSettings.outputDpi() ) );

@@ -46,7 +46,6 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
 {
     Q_OBJECT
   public:
-
     QgsMapRendererCache();
 
     /**
@@ -100,11 +99,9 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
      * \see cacheImage()
      * \since QGIS 3.18
      */
-    void setCacheImageWithParameters( const QString &cacheKey,
-                                      const QImage &image,
-                                      const QgsRectangle &extent,
-                                      const QgsMapToPixel &mapToPixel,
-                                      const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >() );
+    void setCacheImageWithParameters(
+      const QString &cacheKey, const QImage &image, const QgsRectangle &extent, const QgsMapToPixel &mapToPixel, const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >()
+    );
 
     /**
      * Returns TRUE if the cache contains an image with the specified \a cacheKey
@@ -175,13 +172,12 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
     void layerRequestedRepaint();
 
   private:
-
     struct CacheParameters
     {
-      QImage cachedImage;
-      QgsWeakMapLayerPointerList dependentLayers;
-      QgsRectangle cachedExtent;
-      QgsMapToPixel cachedMtp;
+        QImage cachedImage;
+        QgsWeakMapLayerPointerList dependentLayers;
+        QgsRectangle cachedExtent;
+        QgsMapToPixel cachedMtp;
     };
 
     //! Invalidate cache contents (without locking)

@@ -25,10 +25,7 @@
 
 #include "moc_qgsmaprenderercache.cpp"
 
-QgsMapRendererCache::QgsMapRendererCache()
-{
-  clear();
-}
+QgsMapRendererCache::QgsMapRendererCache() { clear(); }
 
 void QgsMapRendererCache::clear()
 {
@@ -91,8 +88,7 @@ bool QgsMapRendererCache::init( const QgsRectangle &extent, double scale )
   QMutexLocker lock( &mMutex );
 
   // check whether the params are the same
-  if ( extent == mExtent &&
-       qgsDoubleNear( scale, mScale ) )
+  if ( extent == mExtent && qgsDoubleNear( scale, mScale ) )
     return true;
 
   clearInternal();
@@ -110,8 +106,7 @@ bool QgsMapRendererCache::updateParameters( const QgsRectangle &extent, const Qg
   QMutexLocker lock( &mMutex );
 
   // check whether the params are the same
-  if ( extent == mExtent &&
-       mtp.transform() == mMtp.transform() )
+  if ( extent == mExtent && mtp.transform() == mMtp.transform() )
     return true;
 
   // set new params
@@ -182,8 +177,7 @@ bool QgsMapRendererCache::hasCacheImage( const QString &cacheKey ) const
   if ( it != mCachedImages.constEnd() )
   {
     const CacheParameters &params = it.value();
-    return ( params.cachedExtent == mExtent &&
-             params.cachedMtp.transform() == mMtp.transform() );
+    return ( params.cachedExtent == mExtent && params.cachedMtp.transform() == mMtp.transform() );
   }
   else
   {
@@ -230,8 +224,7 @@ QImage QgsMapRendererCache::transformedCacheImage( const QString &cacheKey, cons
   QMutexLocker lock( &mMutex );
   const CacheParameters params = mCachedImages.value( cacheKey );
 
-  if ( params.cachedExtent == mExtent &&
-       mtp.transform() == mMtp.transform() )
+  if ( params.cachedExtent == mExtent && mtp.transform() == mMtp.transform() )
   {
     return params.cachedImage;
   }
@@ -252,8 +245,8 @@ QImage QgsMapRendererCache::transformedCacheImage( const QString &cacheKey, cons
     const QRectF targetRect( ulT.x(), ulT.y(), lrT.x() - ulT.x(), lrT.y() - ulT.y() );
 
     // Calculate source rect
-    const QPointF ulS = _transform( params.cachedMtp, QgsPointXY( intersection.xMinimum(), intersection.yMaximum() ),  params.cachedImage.devicePixelRatio() );
-    const QPointF lrS = _transform( params.cachedMtp, QgsPointXY( intersection.xMaximum(), intersection.yMinimum() ),  params.cachedImage.devicePixelRatio() );
+    const QPointF ulS = _transform( params.cachedMtp, QgsPointXY( intersection.xMinimum(), intersection.yMaximum() ), params.cachedImage.devicePixelRatio() );
+    const QPointF lrS = _transform( params.cachedMtp, QgsPointXY( intersection.xMaximum(), intersection.yMinimum() ), params.cachedImage.devicePixelRatio() );
     const QRectF sourceRect( ulS.x(), ulS.y(), lrS.x() - ulS.x(), lrS.y() - ulS.y() );
 
     // Draw image
@@ -316,4 +309,3 @@ void QgsMapRendererCache::clearCacheImage( const QString &cacheKey )
   mCachedImages.remove( cacheKey );
   dropUnusedConnections();
 }
-

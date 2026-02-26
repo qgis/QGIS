@@ -65,7 +65,7 @@ void QgsMapRendererParallelJob::startPrivate()
 
   if ( mSettings.testFlag( Qgis::MapSettingsFlag::DrawLabeling ) )
   {
-    mLabelingEngineV2 = std::make_unique<QgsDefaultLabelingEngine>( );
+    mLabelingEngineV2 = std::make_unique<QgsDefaultLabelingEngine>();
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 
@@ -201,15 +201,9 @@ void QgsMapRendererParallelJob::waitForFinished()
   Q_ASSERT( mStatus == Idle );
 }
 
-bool QgsMapRendererParallelJob::isActive() const
-{
-  return mStatus != Idle;
-}
+bool QgsMapRendererParallelJob::isActive() const { return mStatus != Idle; }
 
-bool QgsMapRendererParallelJob::usedCachedLabels() const
-{
-  return mLabelJob.cached;
-}
+bool QgsMapRendererParallelJob::usedCachedLabels() const { return mLabelJob.cached; }
 
 QgsLabelingResults *QgsMapRendererParallelJob::takeLabelingResults()
 {
@@ -296,7 +290,7 @@ void QgsMapRendererParallelJob::renderingFinished()
     mLabelJob.maskImage->save( QString( "/tmp/labels_mask.png" ) );
   }
 #endif
-  if ( ! mSecondPassLayerJobs.empty() )
+  if ( !mSecondPassLayerJobs.empty() )
   {
     initSecondPassJobs( mSecondPassLayerJobs, mLabelJob );
 
