@@ -29,7 +29,7 @@ QgsNetworkReplyContent::QgsNetworkReplyContent( QNetworkReply *reply )
   for ( int i = 0; i <= maxAttribute; ++i )
   {
     if ( reply->attribute( static_cast< QNetworkRequest::Attribute>( i ) ).isValid() )
-      mAttributes[ static_cast< QNetworkRequest::Attribute>( i ) ] = reply->attribute( static_cast< QNetworkRequest::Attribute>( i ) );
+      mAttributes[static_cast< QNetworkRequest::Attribute>( i )] = reply->attribute( static_cast< QNetworkRequest::Attribute>( i ) );
   }
 
   bool ok = false;
@@ -38,21 +38,15 @@ QgsNetworkReplyContent::QgsNetworkReplyContent( QNetworkReply *reply )
     mRequestId = requestId;
 }
 
-void QgsNetworkReplyContent::clear()
-{
-  *this = QgsNetworkReplyContent();
-}
+void QgsNetworkReplyContent::clear() { *this = QgsNetworkReplyContent(); }
 
-QVariant QgsNetworkReplyContent::attribute( QNetworkRequest::Attribute code ) const
-{
-  return mAttributes.value( code );
-}
+QVariant QgsNetworkReplyContent::attribute( QNetworkRequest::Attribute code ) const { return mAttributes.value( code ); }
 
 bool QgsNetworkReplyContent::hasRawHeader( const QByteArray &headerName ) const
 {
   for ( auto &header : mRawHeaderPairs )
   {
-    if ( ! QString::fromLocal8Bit( header.first ).compare( QString::fromLocal8Bit( headerName ), Qt::CaseInsensitive ) )
+    if ( !QString::fromLocal8Bit( header.first ).compare( QString::fromLocal8Bit( headerName ), Qt::CaseInsensitive ) )
       return true;
   }
   return false;
@@ -73,7 +67,7 @@ QByteArray QgsNetworkReplyContent::rawHeader( const QByteArray &headerName ) con
 {
   for ( auto &header : mRawHeaderPairs )
   {
-    if ( ! QString::fromLocal8Bit( header.first ).compare( QString::fromLocal8Bit( headerName ), Qt::CaseInsensitive ) )
+    if ( !QString::fromLocal8Bit( header.first ).compare( QString::fromLocal8Bit( headerName ), Qt::CaseInsensitive ) )
       return header.second;
   }
   return QByteArray();

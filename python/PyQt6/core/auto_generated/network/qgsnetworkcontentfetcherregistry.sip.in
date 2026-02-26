@@ -32,8 +32,9 @@ Holds information about fetched network content.
       Failed
     };
 
-    explicit QgsFetchedContent( const QString &url, QTemporaryFile *file /Transfer/ = 0, ContentStatus status = NotStarted,
-                                const QString &authConfig = QString(), const QgsHttpHeaders &headers = QgsHttpHeaders() );
+    explicit QgsFetchedContent(
+      const QString &url, QTemporaryFile *file /Transfer/ = 0, ContentStatus status = NotStarted, const QString &authConfig = QString(), const QgsHttpHeaders &headers = QgsHttpHeaders()
+    );
 %Docstring
 Constructs a FetchedContent with pointer to the downloaded file and
 status of the download
@@ -112,7 +113,6 @@ during QGIS application running.
 #include "qgsnetworkcontentfetcherregistry.h"
 %End
   public:
-
     explicit QgsNetworkContentFetcherRegistry();
 %Docstring
 Create the registry for temporary downloaded files

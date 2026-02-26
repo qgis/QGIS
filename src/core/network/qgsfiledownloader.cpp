@@ -133,7 +133,7 @@ void QgsFileDownloader::onSslErrors( QNetworkReply *reply, const QList<QSslError
   {
     QStringList errorMessages;
     errorMessages.reserve( errors.size() + 1 );
-    errorMessages <<  u"SSL Errors: "_s;
+    errorMessages << u"SSL Errors: "_s;
 
     for ( const QSslError &error : errors )
       errorMessages << error.errorString();
@@ -154,10 +154,7 @@ void QgsFileDownloader::error( const QStringList &errorMessages )
   emit downloadError( mErrors );
 }
 
-void QgsFileDownloader::error( const QString &errorMessage )
-{
-  error( QStringList() << errorMessage );
-}
+void QgsFileDownloader::error( const QString &errorMessage ) { error( QStringList() << errorMessage ); }
 
 void QgsFileDownloader::onReadyRead()
 {
@@ -167,7 +164,7 @@ void QgsFileDownloader::onReadyRead()
     error( tr( "No output filename specified" ) );
     onFinished();
   }
-  else if ( ! mFile.isOpen() && ! mFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+  else if ( !mFile.isOpen() && !mFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     error( tr( "Cannot open output file: %1" ).arg( mFile.fileName() ) );
     onFinished();
@@ -182,7 +179,7 @@ void QgsFileDownloader::onReadyRead()
 void QgsFileDownloader::onFinished()
 {
   // when canceled
-  if ( ! mErrors.isEmpty() || mDownloadCanceled )
+  if ( !mErrors.isEmpty() || mDownloadCanceled )
   {
     if ( mFile.isOpen() )
       mFile.close();
@@ -221,4 +218,3 @@ void QgsFileDownloader::onDownloadProgress( qint64 bytesReceived, qint64 bytesTo
   }
   emit downloadProgress( bytesReceived, bytesTotal );
 }
-

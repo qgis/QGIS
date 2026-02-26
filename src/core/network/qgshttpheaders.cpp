@@ -46,20 +46,11 @@ QgsHttpHeaders::QgsHttpHeaders( const QVariantMap &headers )
   mHeaders.detach(); // clone like
 }
 
-QgsHttpHeaders::QgsHttpHeaders( const QgsSettings &settings, const QString &key )
-{
-  setFromSettings( settings, key );
-}
+QgsHttpHeaders::QgsHttpHeaders( const QgsSettings &settings, const QString &key ) { setFromSettings( settings, key ); }
 
-QgsHttpHeaders::QgsHttpHeaders( const QString &key )
-{
-  setFromSettings( QgsSettings(), key );
-}
+QgsHttpHeaders::QgsHttpHeaders( const QString &key ) { setFromSettings( QgsSettings(), key ); }
 
-QgsHttpHeaders::QgsHttpHeaders( const QDomElement &element )
-{
-  setFromDomElement( element );
-}
+QgsHttpHeaders::QgsHttpHeaders( const QDomElement &element ) { setFromDomElement( element ); }
 
 QgsHttpHeaders::~QgsHttpHeaders() = default;
 
@@ -91,7 +82,7 @@ bool QgsHttpHeaders::updateSettings( QgsSettings &settings, const QString &key )
   settings.remove( keyHH ); // cleanup
   for ( auto ite = mHeaders.constBegin(); ite != mHeaders.constEnd(); ++ite )
   {
-    settings.setValue( keyHH  + ite.key(), ite.value() );
+    settings.setValue( keyHH + ite.key(), ite.value() );
   }
 
   if ( !mHeaders[QgsHttpHeaders::KEY_REFERER].toString().isEmpty() && settings.contains( keyFixed + QgsHttpHeaders::KEY_REFERER ) ) // backward comptibility
@@ -212,13 +203,13 @@ void QgsHttpHeaders::setFromMap( const QVariantMap &map )
     if ( key.startsWith( QgsHttpHeaders::PARAM_PREFIX ) )
     {
       QString name = key.right( key.size() - QgsHttpHeaders::PARAM_PREFIX.size() );
-      mHeaders[sanitizeKey( name )] = map [key].toString();
+      mHeaders[sanitizeKey( name )] = map[key].toString();
     }
   }
 
   if ( map.contains( QgsHttpHeaders::KEY_REFERER ) ) // backward comptibility
   {
-    mHeaders[QgsHttpHeaders::KEY_REFERER] = map [QgsHttpHeaders::KEY_REFERER].toString();
+    mHeaders[QgsHttpHeaders::KEY_REFERER] = map[QgsHttpHeaders::KEY_REFERER].toString();
   }
 }
 
@@ -242,7 +233,6 @@ void QgsHttpHeaders::setFromDomElement( const QDomElement &el )
   {
     mHeaders[QgsHttpHeaders::KEY_REFERER] = attribs.namedItem( QgsHttpHeaders::KEY_REFERER ).nodeValue();
   }
-
 }
 
 QString QgsHttpHeaders::toSpacedString() const
@@ -253,12 +243,11 @@ QString QgsHttpHeaders::toSpacedString() const
     out += u" %1%2='%3'"_s.arg( QgsHttpHeaders::PARAM_PREFIX, ite.key(), ite.value().toString() );
   }
 
-  if ( !mHeaders [ QgsHttpHeaders::KEY_REFERER ].toString().isEmpty() )
-    out += u" %1='%2'"_s.arg( QgsHttpHeaders::KEY_REFERER, mHeaders [QgsHttpHeaders::KEY_REFERER].toString() );
+  if ( !mHeaders[QgsHttpHeaders::KEY_REFERER].toString().isEmpty() )
+    out += u" %1='%2'"_s.arg( QgsHttpHeaders::KEY_REFERER, mHeaders[QgsHttpHeaders::KEY_REFERER].toString() );
 
   return out;
 }
-
 
 
 // To clean the path
@@ -269,26 +258,17 @@ QString QgsHttpHeaders::sanitizeKey( const QString &key ) const
 }
 
 
-QVariant &QgsHttpHeaders::operator[]( const QString &key )
-{
-  return mHeaders[sanitizeKey( key )];
-}
+QVariant &QgsHttpHeaders::operator[]( const QString &key ) { return mHeaders[sanitizeKey( key )]; }
 
-const QVariant QgsHttpHeaders::operator[]( const QString &key ) const
-{
-  return mHeaders[sanitizeKey( key )];
-}
+const QVariant QgsHttpHeaders::operator[]( const QString &key ) const { return mHeaders[sanitizeKey( key )]; }
 
-QgsHttpHeaders &QgsHttpHeaders::operator = ( const QMap<QString, QVariant> &headers )
+QgsHttpHeaders &QgsHttpHeaders::operator=( const QMap<QString, QVariant> &headers )
 {
   mHeaders = headers;
   return *this;
 }
 
-QList<QString> QgsHttpHeaders::keys() const
-{
-  return mHeaders.keys();
-}
+QList<QString> QgsHttpHeaders::keys() const { return mHeaders.keys(); }
 
 
 void QgsHttpHeaders::insert( const QString &key, const QVariant &val )
@@ -302,12 +282,6 @@ void QgsHttpHeaders::insert( const QString &key, const QVariant &val )
   mHeaders.insert( k2, val );
 }
 
-bool QgsHttpHeaders::operator==( const QgsHttpHeaders &other ) const
-{
-  return mHeaders == other.mHeaders;
-}
+bool QgsHttpHeaders::operator==( const QgsHttpHeaders &other ) const { return mHeaders == other.mHeaders; }
 
-bool QgsHttpHeaders::operator!=( const QgsHttpHeaders &other ) const
-{
-  return !( *this == other );
-}
+bool QgsHttpHeaders::operator!=( const QgsHttpHeaders &other ) const { return !( *this == other ); }
