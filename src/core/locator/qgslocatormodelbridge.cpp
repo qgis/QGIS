@@ -37,10 +37,7 @@ QgsLocatorModelBridge::QgsLocatorModelBridge( QObject *parent )
   connect( mLocator, &QgsLocator::finished, this, &QgsLocatorModelBridge::searchFinished );
 }
 
-bool QgsLocatorModelBridge::isRunning() const
-{
-  return mIsRunning;
-}
+bool QgsLocatorModelBridge::isRunning() const { return mIsRunning; }
 
 void QgsLocatorModelBridge::triggerResult( const QModelIndex &index, const int actionId )
 {
@@ -93,15 +90,9 @@ void QgsLocatorModelBridge::invalidateResults()
   mLocatorModel->clear();
 }
 
-void QgsLocatorModelBridge::updateCanvasExtent( const QgsRectangle &extent )
-{
-  mCanvasExtent = extent;
-}
+void QgsLocatorModelBridge::updateCanvasExtent( const QgsRectangle &extent ) { mCanvasExtent = extent; }
 
-void QgsLocatorModelBridge::updateCanvasCrs( const QgsCoordinateReferenceSystem &crs )
-{
-  mCanvasCrs = crs;
-}
+void QgsLocatorModelBridge::updateCanvasCrs( const QgsCoordinateReferenceSystem &crs ) { mCanvasCrs = crs; }
 
 void QgsLocatorModelBridge::addResult( const QgsLocatorResult &result )
 {
@@ -149,20 +140,11 @@ void QgsLocatorModelBridge::performSearch( const QString &text )
   }
 }
 
-QgsLocator *QgsLocatorModelBridge::locator() const
-{
-  return mLocator;
-}
+QgsLocator *QgsLocatorModelBridge::locator() const { return mLocator; }
 
-QgsLocatorProxyModel *QgsLocatorModelBridge::proxyModel() const
-{
-  return mProxyModel;
-}
+QgsLocatorProxyModel *QgsLocatorModelBridge::proxyModel() const { return mProxyModel; }
 
-bool QgsLocatorModelBridge::hasQueueRequested() const
-{
-  return mHasQueuedRequest;
-}
+bool QgsLocatorModelBridge::hasQueueRequested() const { return mHasQueuedRequest; }
 
 QgsLocatorContext QgsLocatorModelBridge::createContext()
 {

@@ -59,20 +59,13 @@ void QgsLocatorModel::deferredClear()
   mDeferredClearTimer.start();
 }
 
-int QgsLocatorModel::rowCount( const QModelIndex & ) const
-{
-  return mResults.count();
-}
+int QgsLocatorModel::rowCount( const QModelIndex & ) const { return mResults.count(); }
 
-int QgsLocatorModel::columnCount( const QModelIndex & ) const
-{
-  return 2;
-}
+int QgsLocatorModel::columnCount( const QModelIndex & ) const { return 2; }
 
 QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
 {
-  if ( !index.isValid() || index.row() < 0 || index.column() < 0 ||
-       index.row() >= rowCount( QModelIndex() ) || index.column() >= columnCount( QModelIndex() ) )
+  if ( !index.isValid() || index.row() < 0 || index.column() < 0 || index.row() >= rowCount( QModelIndex() ) || index.column() >= columnCount( QModelIndex() ) )
     return QVariant();
 
   const Entry &entry = mResults.at( index.row() );
@@ -200,8 +193,7 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
 
 Qt::ItemFlags QgsLocatorModel::flags( const QModelIndex &index ) const
 {
-  if ( !index.isValid() || index.row() < 0 || index.column() < 0 ||
-       index.row() >= rowCount( QModelIndex() ) || index.column() >= columnCount( QModelIndex() ) )
+  if ( !index.isValid() || index.row() < 0 || index.column() < 0 || index.row() >= rowCount( QModelIndex() ) || index.column() >= columnCount( QModelIndex() ) )
     return QAbstractTableModel::flags( index );
 
   Qt::ItemFlags flags = QAbstractTableModel::flags( index );
@@ -242,8 +234,8 @@ void QgsLocatorModel::addResult( const QgsLocatorResult &result )
   if ( addingFilter )
     mFoundResultsFromFilterNames << result.filter->name();
 
-  const bool addingGroup = !result.group.isEmpty() && ( !mFoundResultsFilterGroups.contains( result.filter )
-                           || !mFoundResultsFilterGroups.value( result.filter ).contains( std::pair( result.group, result.groupScore ) ) );
+  const bool addingGroup = !result.group.isEmpty()
+                           && ( !mFoundResultsFilterGroups.contains( result.filter ) || !mFoundResultsFilterGroups.value( result.filter ).contains( std::pair( result.group, result.groupScore ) ) );
   if ( addingGroup )
   {
     if ( !mFoundResultsFilterGroups.contains( result.filter ) )
@@ -312,10 +304,7 @@ QgsLocatorAutomaticModel::QgsLocatorAutomaticModel( QgsLocator *locator )
   connect( mLocator, &QgsLocator::finished, this, &QgsLocatorAutomaticModel::searchFinished );
 }
 
-QgsLocator *QgsLocatorAutomaticModel::locator()
-{
-  return mLocator;
-}
+QgsLocator *QgsLocatorAutomaticModel::locator() { return mLocator; }
 
 void QgsLocatorAutomaticModel::search( const QString &string )
 {
@@ -336,10 +325,7 @@ void QgsLocatorAutomaticModel::search( const QString &string )
   }
 }
 
-QgsLocatorContext QgsLocatorAutomaticModel::createContext()
-{
-  return QgsLocatorContext();
-}
+QgsLocatorContext QgsLocatorAutomaticModel::createContext() { return QgsLocatorContext(); }
 
 void QgsLocatorAutomaticModel::searchFinished()
 {
@@ -352,9 +338,6 @@ void QgsLocatorAutomaticModel::searchFinished()
     search( nextSearch );
   }
 }
-
-
-
 
 
 //
@@ -377,7 +360,7 @@ bool QgsLocatorProxyModel::lessThan( const QModelIndex &left, const QModelIndex 
   // sort by filter priority
   const QAbstractItemModel *lSourceModel = sourceModel();
   const int leftFilterPriority = lSourceModel->data( left, static_cast< int >( CustomRole::ResultFilterPriority ) ).toInt();
-  const int rightFilterPriority  = lSourceModel->data( right, static_cast< int >( CustomRole::ResultFilterPriority ) ).toInt();
+  const int rightFilterPriority = lSourceModel->data( right, static_cast< int >( CustomRole::ResultFilterPriority ) ).toInt();
   if ( leftFilterPriority != rightFilterPriority )
     return leftFilterPriority < rightFilterPriority;
 
@@ -420,4 +403,3 @@ bool QgsLocatorProxyModel::lessThan( const QModelIndex &left, const QModelIndex 
   rightFilter = lSourceModel->data( right, Qt::DisplayRole ).toString();
   return QString::localeAwareCompare( leftFilter, rightFilter ) < 0;
 }
-

@@ -30,13 +30,9 @@ using namespace Qt::StringLiterals;
 
 QgsLocatorFilter::QgsLocatorFilter( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
-QgsLocatorFilter::Flags QgsLocatorFilter::flags() const
-{
-  return QgsLocatorFilter::Flags();
-}
+QgsLocatorFilter::Flags QgsLocatorFilter::flags() const { return QgsLocatorFilter::Flags(); }
 
 void QgsLocatorFilter::triggerResultFromAction( const QgsLocatorResult &result, const int actionId )
 {
@@ -44,45 +40,21 @@ void QgsLocatorFilter::triggerResultFromAction( const QgsLocatorResult &result, 
   Q_UNUSED( actionId )
 }
 
-bool QgsLocatorFilter::stringMatches( const QString &candidate, const QString &search )
-{
-  return !search.isEmpty() && candidate.contains( search, Qt::CaseInsensitive );
-}
+bool QgsLocatorFilter::stringMatches( const QString &candidate, const QString &search ) { return !search.isEmpty() && candidate.contains( search, Qt::CaseInsensitive ); }
 
-double QgsLocatorFilter::fuzzyScore( const QString &candidate, const QString &search )
-{
-  return QgsStringUtils::fuzzyScore( candidate, search );
-}
+double QgsLocatorFilter::fuzzyScore( const QString &candidate, const QString &search ) { return QgsStringUtils::fuzzyScore( candidate, search ); }
 
-bool QgsLocatorFilter::enabled() const
-{
-  return mEnabled;
-}
+bool QgsLocatorFilter::enabled() const { return mEnabled; }
 
-void QgsLocatorFilter::setEnabled( bool enabled )
-{
-  mEnabled = enabled;
-}
+void QgsLocatorFilter::setEnabled( bool enabled ) { mEnabled = enabled; }
 
-bool QgsLocatorFilter::hasConfigWidget() const
-{
-  return false;
-}
+bool QgsLocatorFilter::hasConfigWidget() const { return false; }
 
-void QgsLocatorFilter::openConfigWidget( QWidget *parent )
-{
-  Q_UNUSED( parent )
-}
+void QgsLocatorFilter::openConfigWidget( QWidget *parent ) { Q_UNUSED( parent ) }
 
-bool QgsLocatorFilter::useWithoutPrefix() const
-{
-  return mUseWithoutPrefix;
-}
+bool QgsLocatorFilter::useWithoutPrefix() const { return mUseWithoutPrefix; }
 
-void QgsLocatorFilter::setUseWithoutPrefix( bool useWithoutPrefix )
-{
-  mUseWithoutPrefix = useWithoutPrefix;
-}
+void QgsLocatorFilter::setUseWithoutPrefix( bool useWithoutPrefix ) { mUseWithoutPrefix = useWithoutPrefix; }
 
 QString QgsLocatorFilter::activePrefix() const
 {
@@ -95,23 +67,11 @@ QString QgsLocatorFilter::activePrefix() const
     return mActivePrefifx;
 }
 
-void QgsLocatorFilter::setActivePrefix( const QString &activePrefix )
-{
-  mActivePrefifx = activePrefix;
-}
+void QgsLocatorFilter::setActivePrefix( const QString &activePrefix ) { mActivePrefifx = activePrefix; }
 
-void QgsLocatorFilter::logMessage( const QString &message, Qgis::MessageLevel level )
-{
-  QgsMessageLog::logMessage( QString( "%1: %2" ).arg( name(), message ), u"Locator bar"_s, level );
-}
+void QgsLocatorFilter::logMessage( const QString &message, Qgis::MessageLevel level ) { QgsMessageLog::logMessage( QString( "%1: %2" ).arg( name(), message ), u"Locator bar"_s, level ); }
 
 
-QVariant QgsLocatorResult::userData() const
-{
-  return mUserData;
-}
+QVariant QgsLocatorResult::userData() const { return mUserData; }
 
-void QgsLocatorResult::setUserData( const QVariant &userData )
-{
-  mUserData = userData;
-}
+void QgsLocatorResult::setUserData( const QVariant &userData ) { mUserData = userData; }
