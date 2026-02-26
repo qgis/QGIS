@@ -43,7 +43,7 @@ using namespace Qt::StringLiterals;
 QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
   , mLayerName( layer->name() )
-  , mDataProvider( qgis::down_cast< const QgsVectorTileDataProvider* >( layer->dataProvider() )->clone() )
+  , mDataProvider( qgis::down_cast< const QgsVectorTileDataProvider * >( layer->dataProvider() )->clone() )
   , mRenderer( layer->renderer()->clone() )
   , mLayerBlendMode( layer->blendMode() )
   , mDrawTileBoundaries( layer->isTileBorderRenderingEnabled() )
@@ -155,9 +155,14 @@ bool QgsVectorTileLayerRenderer::render()
   mTileMatrix = mTileMatrixSet.tileMatrix( mTileZoomToFetch );
 
   mTileRange = mTileMatrix.tileRangeFromExtent( extent );
-  QgsDebugMsgLevel( u"Vector tiles range X: %1 - %2  Y: %3 - %4 (%5 tiles total)"_s
-                    .arg( mTileRange.startColumn() ).arg( mTileRange.endColumn() )
-                    .arg( mTileRange.startRow() ).arg( mTileRange.endRow() ).arg( mTileRange.count() ), 2 );
+  QgsDebugMsgLevel(
+    u"Vector tiles range X: %1 - %2  Y: %3 - %4 (%5 tiles total)"_s.arg( mTileRange.startColumn() )
+      .arg( mTileRange.endColumn() )
+      .arg( mTileRange.startRow() )
+      .arg( mTileRange.endRow() )
+      .arg( mTileRange.count() ),
+    2
+  );
 
   // view center is used to sort the order of tiles for fetching and rendering
   const QPointF viewCenter = mTileMatrix.mapToTileCoordinates( extent.center() );
@@ -165,7 +170,7 @@ bool QgsVectorTileLayerRenderer::render()
   if ( !mTileRange.isValid() )
   {
     QgsDebugMsgLevel( u"Vector tiles - outside of range"_s, 2 );
-    return true;   // nothing to do
+    return true; // nothing to do
   }
 
   preparingProfile.reset();
@@ -188,8 +193,7 @@ bool QgsVectorTileLayerRenderer::render()
   else
   {
     asyncLoader = std::make_unique<QgsVectorTileLoader>( mDataProvider.get(), mTileMatrixSet, mTileRange, mTileZoomToFetch, viewCenter, mFeedback.get(), renderContext()->rendererUsage() );
-    QObject::connect( asyncLoader.get(), &QgsVectorTileLoader::tileRequestFinished, asyncLoader.get(), [this]( const QgsVectorTileRawData & rawTile )
-    {
+    QObject::connect( asyncLoader.get(), &QgsVectorTileLoader::tileRequestFinished, asyncLoader.get(), [this]( const QgsVectorTileRawData &rawTile ) {
       QgsDebugMsgLevel( u"Got tile asynchronously: "_s + rawTile.id.toString(), 2 );
       if ( !rawTile.data.isEmpty() )
         decodeAndDrawTile( rawTile );
@@ -229,7 +233,7 @@ bool QgsVectorTileLayerRenderer::render()
   if ( mLabelProvider )
   {
     mLabelProvider->setFields( mPerLayerFields );
-    QSet<QString> attributeNames;  // we don't need this - already got referenced columns in provider constructor
+    QSet<QString> attributeNames; // we don't need this - already got referenced columns in provider constructor
     if ( !mLabelProvider->prepare( ctx, attributeNames ) )
     {
       ctx.labelingEngine()->removeProvider( mLabelProvider );
@@ -382,9 +386,8 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
     format.setColor( QColor( 255, 0, 0 ) );
     format.buffer().setEnabled( true );
 
-    QgsTextRenderer::drawText( QRectF( QPoint( 0, 0 ), ctx.outputSize() ).intersected( tile.tilePolygon().boundingRect() ),
-                               0, Qgis::TextHorizontalAlignment::Center, { tile.id().toString() },
-                               ctx, format, true, Qgis::TextVerticalAlignment::VerticalCenter );
+    QgsTextRenderer::
+      drawText( QRectF( QPoint( 0, 0 ), ctx.outputSize() ).intersected( tile.tilePolygon().boundingRect() ), 0, Qgis::TextHorizontalAlignment::Center, { tile.id().toString() }, ctx, format, true, Qgis::TextVerticalAlignment::VerticalCenter );
 #endif
   }
 }

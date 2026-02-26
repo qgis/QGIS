@@ -87,8 +87,7 @@ QgsMbTilesVectorTileDataProvider::QgsMbTilesVectorTileDataProvider( const QStrin
   QgsDebugMsgLevel( u"zoom range: %1 - %2"_s.arg( mMatrixSet.minimumZoom() ).arg( mMatrixSet.maximumZoom() ), 2 );
 
   QgsRectangle r = reader.extent();
-  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ),
-                             QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), transformContext() );
+  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), transformContext() );
   ct.setBallparkTransformsAreAppropriate( true );
   try
   {
@@ -110,10 +109,7 @@ QgsMbTilesVectorTileDataProvider::QgsMbTilesVectorTileDataProvider( const QgsMbT
   mMatrixSet = other.mMatrixSet;
 }
 
-Qgis::DataProviderFlags QgsMbTilesVectorTileDataProvider::flags() const
-{
-  return Qgis::DataProviderFlag::FastExtent2D;
-}
+Qgis::DataProviderFlags QgsMbTilesVectorTileDataProvider::flags() const { return Qgis::DataProviderFlag::FastExtent2D; }
 
 QString QgsMbTilesVectorTileDataProvider::name() const
 {
@@ -240,16 +236,12 @@ QByteArray QgsMbTilesVectorTileDataProvider::loadFromMBTiles( QgsMbTiles &mbTile
 //
 
 QgsMbTilesVectorTileDataProviderMetadata::QgsMbTilesVectorTileDataProviderMetadata()
-  : QgsProviderMetadata( QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY,
-                         QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_DESCRIPTION )
-{
-}
+  : QgsProviderMetadata( QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY, QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_DESCRIPTION )
+{}
 
 QgsProviderMetadata::ProviderMetadataCapabilities QgsMbTilesVectorTileDataProviderMetadata::capabilities() const
 {
-  return ProviderMetadataCapability::LayerTypesForUri
-         | ProviderMetadataCapability::PriorityForUri
-         | ProviderMetadataCapability::QuerySublayers;
+  return ProviderMetadataCapability::LayerTypesForUri | ProviderMetadataCapability::PriorityForUri | ProviderMetadataCapability::QuerySublayers;
 }
 
 QgsMbTilesVectorTileDataProvider *QgsMbTilesVectorTileDataProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
@@ -257,15 +249,9 @@ QgsMbTilesVectorTileDataProvider *QgsMbTilesVectorTileDataProviderMetadata::crea
   return new QgsMbTilesVectorTileDataProvider( uri, options, flags );
 }
 
-QIcon QgsMbTilesVectorTileDataProviderMetadata::icon() const
-{
-  return QgsApplication::getThemeIcon( u"mIconVectorTileLayer.svg"_s );
-}
+QIcon QgsMbTilesVectorTileDataProviderMetadata::icon() const { return QgsApplication::getThemeIcon( u"mIconVectorTileLayer.svg"_s ); }
 
-QgsProviderMetadata::ProviderCapabilities QgsMbTilesVectorTileDataProviderMetadata::providerCapabilities() const
-{
-  return FileBasedUris;
-}
+QgsProviderMetadata::ProviderCapabilities QgsMbTilesVectorTileDataProviderMetadata::providerCapabilities() const { return FileBasedUris; }
 
 QString QgsMbTilesVectorTileDataProviderMetadata::filters( Qgis::FileFilterType type )
 {
@@ -316,7 +302,7 @@ QList<QgsProviderSublayerDetails> QgsMbTilesVectorTileDataProviderMetadata::quer
       details.setType( Qgis::LayerType::VectorTile );
       details.setSkippedContainerScan( true );
       details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( fileName ) );
-      return {details};
+      return { details };
     }
     else
     {
@@ -331,7 +317,7 @@ QList<QgsProviderSublayerDetails> QgsMbTilesVectorTileDataProviderMetadata::quer
           details.setProviderKey( key() );
           details.setType( Qgis::LayerType::VectorTile );
           details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( fileName ) );
-          return {details};
+          return { details };
         }
       }
     }
@@ -402,12 +388,7 @@ QString QgsMbTilesVectorTileDataProviderMetadata::relativeToAbsoluteUri( const Q
   return encodeUri( parts );
 }
 
-QList<Qgis::LayerType> QgsMbTilesVectorTileDataProviderMetadata::supportedLayerTypes() const
-{
-  return { Qgis::LayerType::VectorTile };
-}
+QList<Qgis::LayerType> QgsMbTilesVectorTileDataProviderMetadata::supportedLayerTypes() const { return { Qgis::LayerType::VectorTile }; }
 
 
 ///@endcond
-
-

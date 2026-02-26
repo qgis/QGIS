@@ -61,10 +61,7 @@ QgsXyzVectorTileDataProviderBase::QgsXyzVectorTileDataProviderBase( const QgsXyz
   mHeaders = other.mHeaders;
 }
 
-bool QgsXyzVectorTileDataProviderBase::supportsAsync() const
-{
-  return true;
-}
+bool QgsXyzVectorTileDataProviderBase::supportsAsync() const { return true; }
 
 QgsVectorTileRawData QgsXyzVectorTileDataProviderBase::readTile( const QgsTileMatrixSet &set, const QgsTileXYZ &id, QgsFeedback *feedback ) const
 {
@@ -141,7 +138,7 @@ QList<QNetworkRequest> QgsXyzVectorTileDataProviderBase::tileRequests( const Qgs
 
     mHeaders.updateNetworkRequest( request );
 
-    if ( !mAuthCfg.isEmpty() &&  !QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg ) )
+    if ( !mAuthCfg.isEmpty() && !QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg ) )
     {
       QgsMessageLog::logMessage( tr( "network request update failed for authentication config" ), tr( "Network" ) );
     }
@@ -152,7 +149,9 @@ QList<QNetworkRequest> QgsXyzVectorTileDataProviderBase::tileRequests( const Qgs
   return requests;
 }
 
-QByteArray QgsXyzVectorTileDataProviderBase::loadFromNetwork( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QString &requestUrl, const QString &authid, const QgsHttpHeaders &headers, QgsFeedback *feedback, Qgis::RendererUsage usage )
+QByteArray QgsXyzVectorTileDataProviderBase::loadFromNetwork(
+  const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QString &requestUrl, const QString &authid, const QgsHttpHeaders &headers, QgsFeedback *feedback, Qgis::RendererUsage usage
+)
 {
   QString url = QgsVectorTileUtils::formatXYZUrlTemplate( requestUrl, id, tileMatrix );
 
@@ -199,23 +198,16 @@ QByteArray QgsXyzVectorTileDataProviderBase::loadFromNetwork( const QgsTileXYZ &
 
 QgsXyzVectorTileDataProviderMetadata::QgsXyzVectorTileDataProviderMetadata()
   : QgsProviderMetadata( QgsXyzVectorTileDataProvider::XYZ_DATA_PROVIDER_KEY, QgsXyzVectorTileDataProvider::XYZ_DATA_PROVIDER_DESCRIPTION )
-{
-}
+{}
 
 QgsXyzVectorTileDataProvider *QgsXyzVectorTileDataProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsXyzVectorTileDataProvider( uri, options, flags );
 }
 
-QIcon QgsXyzVectorTileDataProviderMetadata::icon() const
-{
-  return QgsApplication::getThemeIcon( u"mIconVectorTileLayer.svg"_s );
-}
+QIcon QgsXyzVectorTileDataProviderMetadata::icon() const { return QgsApplication::getThemeIcon( u"mIconVectorTileLayer.svg"_s ); }
 
-QgsProviderMetadata::ProviderCapabilities QgsXyzVectorTileDataProviderMetadata::providerCapabilities() const
-{
-  return FileBasedUris;
-}
+QgsProviderMetadata::ProviderCapabilities QgsXyzVectorTileDataProviderMetadata::providerCapabilities() const { return FileBasedUris; }
 
 QVariantMap QgsXyzVectorTileDataProviderMetadata::decodeUri( const QString &uri ) const
 {
@@ -225,9 +217,7 @@ QVariantMap QgsXyzVectorTileDataProviderMetadata::decodeUri( const QString &uri 
   QVariantMap uriComponents;
   uriComponents.insert( u"type"_s, u"xyz"_s );
 
-  if ( uriComponents[ u"type"_s ] == "mbtiles"_L1 ||
-       ( uriComponents[ u"type"_s ] == "xyz"_L1 &&
-         !dsUri.param( u"url"_s ).startsWith( "http"_L1 ) ) )
+  if ( uriComponents[u"type"_s] == "mbtiles"_L1 || ( uriComponents[u"type"_s] == "xyz"_L1 && !dsUri.param( u"url"_s ).startsWith( "http"_L1 ) ) )
   {
     uriComponents.insert( u"path"_s, dsUri.param( u"url"_s ) );
   }
@@ -273,7 +263,7 @@ QString QgsXyzVectorTileDataProviderMetadata::encodeUri( const QVariantMap &part
   dsUri.setParam( u"type"_s, u"xyz"_s );
   dsUri.setParam( u"url"_s, parts.value( parts.contains( u"path"_s ) ? u"path"_s : u"url"_s ).toString() );
   if ( parts.contains( u"urlName"_s ) )
-    dsUri.setParam( u"urlName"_s, parts[ u"urlName"_s ].toString() );
+    dsUri.setParam( u"urlName"_s, parts[u"urlName"_s].toString() );
 
   int i = 2;
   while ( true )
@@ -288,23 +278,23 @@ QString QgsXyzVectorTileDataProviderMetadata::encodeUri( const QVariantMap &part
     if ( url.isEmpty() || urlName.isEmpty() )
       break;
 
-    dsUri.setParam( urlNameKey, parts[ urlNameKey ].toString() );
-    dsUri.setParam( urlKey, parts[ urlKey ].toString() );
+    dsUri.setParam( urlNameKey, parts[urlNameKey].toString() );
+    dsUri.setParam( urlKey, parts[urlKey].toString() );
     i++;
   }
 
   if ( parts.contains( u"zmin"_s ) )
-    dsUri.setParam( u"zmin"_s, parts[ u"zmin"_s ].toString() );
+    dsUri.setParam( u"zmin"_s, parts[u"zmin"_s].toString() );
   if ( parts.contains( u"zmax"_s ) )
-    dsUri.setParam( u"zmax"_s, parts[ u"zmax"_s ].toString() );
+    dsUri.setParam( u"zmax"_s, parts[u"zmax"_s].toString() );
 
   dsUri.httpHeaders().setFromMap( parts );
 
   if ( parts.contains( u"styleUrl"_s ) )
-    dsUri.setParam( u"styleUrl"_s, parts[ u"styleUrl"_s ].toString() );
+    dsUri.setParam( u"styleUrl"_s, parts[u"styleUrl"_s].toString() );
 
   if ( parts.contains( u"authcfg"_s ) )
-    dsUri.setAuthConfigId( parts[ u"authcfg"_s ].toString() );
+    dsUri.setAuthConfigId( parts[u"authcfg"_s].toString() );
 
   return dsUri.encodedUri();
 }
@@ -321,7 +311,7 @@ QString QgsXyzVectorTileDataProviderMetadata::absoluteToRelativeUri( const QStri
   {
     // relative path will become "file:./x.txt"
     const QString relSrcUrl = context.pathResolver().writePath( sourceUrl.toLocalFile() );
-    dsUri.removeParam( u"url"_s );  // needed because setParam() would insert second "url" key
+    dsUri.removeParam( u"url"_s ); // needed because setParam() would insert second "url" key
     dsUri.setParam( u"url"_s, QUrl::fromLocalFile( relSrcUrl ).toString( QUrl::DecodeReserved ) );
     return dsUri.encodedUri();
   }
@@ -337,10 +327,10 @@ QString QgsXyzVectorTileDataProviderMetadata::relativeToAbsoluteUri( const QStri
   QString sourcePath = dsUri.param( u"url"_s );
 
   const QUrl sourceUrl( sourcePath );
-  if ( sourceUrl.isLocalFile() )  // file-based URL? convert to relative path
+  if ( sourceUrl.isLocalFile() ) // file-based URL? convert to relative path
   {
     const QString absSrcUrl = context.pathResolver().readPath( sourceUrl.toLocalFile() );
-    dsUri.removeParam( u"url"_s );  // needed because setParam() would insert second "url" key
+    dsUri.removeParam( u"url"_s ); // needed because setParam() would insert second "url" key
     dsUri.setParam( u"url"_s, QUrl::fromLocalFile( absSrcUrl ).toString( QUrl::DecodeReserved ) );
     return dsUri.encodedUri();
   }
@@ -348,10 +338,7 @@ QString QgsXyzVectorTileDataProviderMetadata::relativeToAbsoluteUri( const QStri
   return uri;
 }
 
-QList<Qgis::LayerType> QgsXyzVectorTileDataProviderMetadata::supportedLayerTypes() const
-{
-  return { Qgis::LayerType::VectorTile };
-}
+QList<Qgis::LayerType> QgsXyzVectorTileDataProviderMetadata::supportedLayerTypes() const { return { Qgis::LayerType::VectorTile }; }
 
 
 //
@@ -394,10 +381,7 @@ QgsXyzVectorTileDataProvider::QgsXyzVectorTileDataProvider( const QgsXyzVectorTi
   mMatrixSet = other.mMatrixSet;
 }
 
-Qgis::DataProviderFlags QgsXyzVectorTileDataProvider::flags() const
-{
-  return Qgis::DataProviderFlag::FastExtent2D;
-}
+Qgis::DataProviderFlags QgsXyzVectorTileDataProvider::flags() const { return Qgis::DataProviderFlag::FastExtent2D; }
 
 QString QgsXyzVectorTileDataProvider::name() const
 {
@@ -482,6 +466,3 @@ QgsStringMap QgsXyzVectorTileDataProvider::sourcePaths() const
 }
 
 ///@endcond
-
-
-

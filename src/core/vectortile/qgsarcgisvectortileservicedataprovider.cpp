@@ -78,20 +78,14 @@ QgsArcGisVectorTileServiceDataProvider::QgsArcGisVectorTileServiceDataProvider( 
   mLayerMetadata = other.mLayerMetadata;
 }
 
-Qgis::DataProviderFlags QgsArcGisVectorTileServiceDataProvider::flags() const
-{
-  return Qgis::DataProviderFlag::FastExtent2D;
-}
+Qgis::DataProviderFlags QgsArcGisVectorTileServiceDataProvider::flags() const { return Qgis::DataProviderFlag::FastExtent2D; }
 
 Qgis::VectorTileProviderFlags QgsArcGisVectorTileServiceDataProvider::providerFlags() const
 {
   return QgsXyzVectorTileDataProviderBase::providerFlags() | Qgis::VectorTileProviderFlag::AlwaysUseTileMatrixSetFromProvider;
 }
 
-Qgis::VectorTileProviderCapabilities QgsArcGisVectorTileServiceDataProvider::providerCapabilities() const
-{
-  return Qgis::VectorTileProviderCapability::ReadLayerMetadata;
-}
+Qgis::VectorTileProviderCapabilities QgsArcGisVectorTileServiceDataProvider::providerCapabilities() const { return Qgis::VectorTileProviderCapability::ReadLayerMetadata; }
 
 QString QgsArcGisVectorTileServiceDataProvider::name() const
 {
@@ -168,8 +162,7 @@ QString QgsArcGisVectorTileServiceDataProvider::styleUrl() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   // for ArcMap VectorTileServices we default to the defaultStyles URL from the layer configuration
-  return mArcgisLayerConfiguration.value( u"serviceUri"_s ).toString()
-         + '/' + mArcgisLayerConfiguration.value( u"defaultStyles"_s ).toString();
+  return mArcgisLayerConfiguration.value( u"serviceUri"_s ).toString() + '/' + mArcgisLayerConfiguration.value( u"defaultStyles"_s ).toString();
 }
 
 QString QgsArcGisVectorTileServiceDataProvider::htmlMetadata() const
@@ -201,7 +194,7 @@ bool QgsArcGisVectorTileServiceDataProvider::setupArcgisVectorTileServiceConnect
 
   QgsSetRequestInitiatorClass( request, u"QgsVectorTileLayer"_s )
 
-  QgsBlockingNetworkRequest networkRequest;
+    QgsBlockingNetworkRequest networkRequest;
   switch ( networkRequest.get( request ) )
   {
     case QgsBlockingNetworkRequest::NoError:
@@ -247,7 +240,7 @@ bool QgsArcGisVectorTileServiceDataProvider::setupArcgisVectorTileServiceConnect
 
       QgsSetRequestInitiatorClass( request, u"QgsVectorTileLayer"_s )
 
-      QgsBlockingNetworkRequest networkRequest;
+        QgsBlockingNetworkRequest networkRequest;
       switch ( networkRequest.get( request ) )
       {
         case QgsBlockingNetworkRequest::NoError:
@@ -294,7 +287,7 @@ bool QgsArcGisVectorTileServiceDataProvider::setupArcgisVectorTileServiceConnect
     QNetworkRequest tileMapRequest = QNetworkRequest( tilemapUrl );
     QgsSetRequestInitiatorClass( tileMapRequest, u"QgsVectorTileLayer"_s )
 
-    QgsBlockingNetworkRequest tileMapNetworkRequest;
+      QgsBlockingNetworkRequest tileMapNetworkRequest;
     switch ( tileMapNetworkRequest.get( tileMapRequest ) )
     {
       case QgsBlockingNetworkRequest::NoError:
@@ -338,12 +331,8 @@ bool QgsArcGisVectorTileServiceDataProvider::setupArcgisVectorTileServiceConnect
   const QVariantMap fullExtent = mArcgisLayerConfiguration.value( u"fullExtent"_s ).toMap();
   if ( !fullExtent.isEmpty() )
   {
-    const QgsRectangle fullExtentRect(
-      fullExtent.value( u"xmin"_s ).toDouble(),
-      fullExtent.value( u"ymin"_s ).toDouble(),
-      fullExtent.value( u"xmax"_s ).toDouble(),
-      fullExtent.value( u"ymax"_s ).toDouble()
-    );
+    const QgsRectangle
+      fullExtentRect( fullExtent.value( u"xmin"_s ).toDouble(), fullExtent.value( u"ymin"_s ).toDouble(), fullExtent.value( u"xmax"_s ).toDouble(), fullExtent.value( u"ymax"_s ).toDouble() );
 
     const QgsCoordinateReferenceSystem fullExtentCrs = QgsArcGisRestUtils::convertSpatialReference( fullExtent.value( u"spatialReference"_s ).toMap() );
     const QgsCoordinateTransform extentTransform( fullExtentCrs, mCrs, transformContext() );
@@ -379,20 +368,12 @@ bool QgsArcGisVectorTileServiceDataProvider::setupArcgisVectorTileServiceConnect
 //
 
 QgsArcGisVectorTileServiceDataProviderMetadata::QgsArcGisVectorTileServiceDataProviderMetadata()
-  : QgsProviderMetadata( QgsArcGisVectorTileServiceDataProvider::ARCGIS_VT_SERVICE_DATA_PROVIDER_KEY,
-                         QgsArcGisVectorTileServiceDataProvider::ARCGIS_VT_SERVICE_DATA_PROVIDER_DESCRIPTION )
-{
-}
+  : QgsProviderMetadata( QgsArcGisVectorTileServiceDataProvider::ARCGIS_VT_SERVICE_DATA_PROVIDER_KEY, QgsArcGisVectorTileServiceDataProvider::ARCGIS_VT_SERVICE_DATA_PROVIDER_DESCRIPTION )
+{}
 
-QIcon QgsArcGisVectorTileServiceDataProviderMetadata::icon() const
-{
-  return QgsApplication::getThemeIcon( u"mIconVectorTileLayer.svg"_s );
-}
+QIcon QgsArcGisVectorTileServiceDataProviderMetadata::icon() const { return QgsApplication::getThemeIcon( u"mIconVectorTileLayer.svg"_s ); }
 
-QgsProviderMetadata::ProviderCapabilities QgsArcGisVectorTileServiceDataProviderMetadata::providerCapabilities() const
-{
-  return QgsProviderMetadata::ProviderCapabilities();
-}
+QgsProviderMetadata::ProviderCapabilities QgsArcGisVectorTileServiceDataProviderMetadata::providerCapabilities() const { return QgsProviderMetadata::ProviderCapabilities(); }
 
 QgsArcGisVectorTileServiceDataProvider *QgsArcGisVectorTileServiceDataProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
@@ -434,17 +415,17 @@ QString QgsArcGisVectorTileServiceDataProviderMetadata::encodeUri( const QVarian
   dsUri.setParam( u"url"_s, parts.value( u"url"_s ).toString() );
 
   if ( parts.contains( u"zmin"_s ) )
-    dsUri.setParam( u"zmin"_s, parts[ u"zmin"_s ].toString() );
+    dsUri.setParam( u"zmin"_s, parts[u"zmin"_s].toString() );
   if ( parts.contains( u"zmax"_s ) )
-    dsUri.setParam( u"zmax"_s, parts[ u"zmax"_s ].toString() );
+    dsUri.setParam( u"zmax"_s, parts[u"zmax"_s].toString() );
 
   dsUri.httpHeaders().setFromMap( parts );
 
   if ( parts.contains( u"styleUrl"_s ) )
-    dsUri.setParam( u"styleUrl"_s, parts[ u"styleUrl"_s ].toString() );
+    dsUri.setParam( u"styleUrl"_s, parts[u"styleUrl"_s].toString() );
 
   if ( parts.contains( u"authcfg"_s ) )
-    dsUri.setAuthConfigId( parts[ u"authcfg"_s ].toString() );
+    dsUri.setAuthConfigId( parts[u"authcfg"_s].toString() );
 
   return dsUri.encodedUri();
 }
@@ -463,11 +444,6 @@ QString QgsArcGisVectorTileServiceDataProviderMetadata::relativeToAbsoluteUri( c
   return uri;
 }
 
-QList<Qgis::LayerType> QgsArcGisVectorTileServiceDataProviderMetadata::supportedLayerTypes() const
-{
-  return { Qgis::LayerType::VectorTile };
-}
+QList<Qgis::LayerType> QgsArcGisVectorTileServiceDataProviderMetadata::supportedLayerTypes() const { return { Qgis::LayerType::VectorTile }; }
 
 ///@endcond
-
-

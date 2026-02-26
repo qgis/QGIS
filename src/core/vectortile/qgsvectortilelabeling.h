@@ -53,7 +53,12 @@ class QgsVectorTileLabelProvider : public QgsVectorLayerLabelProvider
      *
      * \since QGIS 3.16
      */
-    virtual QSet< QString > requiredLayers( QgsRenderContext &context, int tileZoom ) const { Q_UNUSED( context ); Q_UNUSED( tileZoom ); return QSet< QString >() << QString(); }
+    virtual QSet< QString > requiredLayers( QgsRenderContext &context, int tileZoom ) const
+    {
+      Q_UNUSED( context );
+      Q_UNUSED( tileZoom );
+      return QSet< QString >() << QString();
+    }
 
     //! Sets fields for each sub-layer
     virtual void setFields( const QMap<QString, QgsFields> &perLayerFields ) = 0;
@@ -72,7 +77,6 @@ class QgsVectorTileLabelProvider : public QgsVectorLayerLabelProvider
  */
 class CORE_EXPORT QgsVectorTileLabeling
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
 
@@ -82,7 +86,7 @@ class CORE_EXPORT QgsVectorTileLabeling
       sipType = sipType_QgsVectorTileBasicLabeling;
     else
       sipType = 0;
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -98,7 +102,11 @@ class CORE_EXPORT QgsVectorTileLabeling
      * Factory for label provider implementation
      * \note not available in Python bindings
      */
-    virtual QgsVectorTileLabelProvider *provider( QgsVectorTileLayer *layer ) const SIP_SKIP { Q_UNUSED( layer ) return nullptr; }
+    virtual QgsVectorTileLabelProvider *provider( QgsVectorTileLayer *layer ) const SIP_SKIP
+    {
+      Q_UNUSED( layer )
+      return nullptr;
+    }
 
     //! Writes labeling properties to given XML element
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const = 0;
@@ -106,7 +114,6 @@ class CORE_EXPORT QgsVectorTileLabeling
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) = 0;
     //! Resolves references to other objects - second phase of loading - after readXml()
     virtual void resolveReferences( const QgsProject &project ) { Q_UNUSED( project ) }
-
 };
 
 #endif // QGSVECTORTILELABELING_H

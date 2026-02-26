@@ -116,7 +116,6 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
 
     bool mEnableProfile = false;
     quint64 mPreparationTime = 0;
-
 };
 
 

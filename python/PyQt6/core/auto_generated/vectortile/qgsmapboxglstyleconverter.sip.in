@@ -27,7 +27,6 @@ Context for a MapBox GL style conversion operation.
 #include "qgsmapboxglstyleconverter.h"
 %End
   public:
-
     void pushWarning( const QString &warning );
 %Docstring
 Pushes a ``warning`` message generated during the conversion.
@@ -162,8 +161,6 @@ Sets the layer ID of the layer currently being converted.
 };
 
 
-
-
 class QgsMapBoxGlStyleAbstractSource
 {
 %Docstring(signature="appended")
@@ -180,7 +177,6 @@ Abstract base class for MapBox GL style sources.
 #include "qgsmapboxglstyleconverter.h"
 %End
   public:
-
 %ConvertToSubClassCode
 
     switch ( sipCpp->type() )
@@ -235,7 +231,6 @@ Encapsulates a MapBox GL style raster source.
 #include "qgsmapboxglstyleconverter.h"
 %End
   public:
-
     QgsMapBoxGlStyleRasterSource( const QString &name );
 %Docstring
 Constructor for QgsMapBoxGlStyleRasterSource.
@@ -286,7 +281,6 @@ The caller takes ownership of the returned layer.
 };
 
 
-
 class QgsMapBoxGlStyleRasterSubLayer
 {
 %Docstring(signature="appended")
@@ -303,7 +297,6 @@ Encapsulates a MapBox GL style raster sub layer.
 #include "qgsmapboxglstyleconverter.h"
 %End
   public:
-
     QgsMapBoxGlStyleRasterSubLayer( const QString &id, const QString &source );
 %Docstring
 Constructor for QgsMapBoxGlStyleRasterSubLayer, with the given ``id``
@@ -349,7 +342,6 @@ calling :py:func:`~renderer` or :py:func:`~labeling` respectively.
     static const QMetaObject staticMetaObject;
 
   public:
-
     QgsMapBoxGlStyleConverter();
 %Docstring
 Constructor for QgsMapBoxGlStyleConverter.
@@ -463,7 +455,6 @@ The caller takes ownership of the returned layers.
 %End
 
   protected:
-
     void parseSources( const QVariantMap &sources, QgsMapBoxGlStyleConversionContext *context = 0 );
 %Docstring
 Parse list of ``sources`` from JSON.
@@ -542,11 +533,10 @@ Parses a circle layer.
          - style: generated QGIS vector tile style
 %End
 
-    static void parseSymbolLayer( const QVariantMap &jsonLayer,
-                                  QgsVectorTileBasicRendererStyle &rendererStyle /Out/,
-                                  bool &hasRenderer /Out/,
-                                  QgsVectorTileBasicLabelingStyle &labelingStyle /Out/,
-                                  bool &hasLabeling /Out/, QgsMapBoxGlStyleConversionContext &context );
+    static void parseSymbolLayer(
+      const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &rendererStyle /Out/, bool &hasRenderer /Out/, QgsVectorTileBasicLabelingStyle &labelingStyle /Out/,
+      bool &hasLabeling /Out/, QgsMapBoxGlStyleConversionContext &context
+    );
 %Docstring
 Parses a symbol layer as renderer or labeling.
 
@@ -565,8 +555,7 @@ Parses a symbol layer as renderer or labeling.
            style
 %End
 
-    static bool parseSymbolLayerAsRenderer( const QVariantMap &jsonLayer,
-                                            QgsVectorTileBasicRendererStyle &rendererStyle /Out/, QgsMapBoxGlStyleConversionContext &context );
+    static bool parseSymbolLayerAsRenderer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &rendererStyle /Out/, QgsMapBoxGlStyleConversionContext &context );
 %Docstring
 Parses a symbol layer as a renderer
 
@@ -646,9 +635,7 @@ value). For ``json`` with intermediate stops it uses
    This is private API only, and may change in future QGIS versions
 %End
 
-    static QgsProperty parseInterpolateStringByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context,
-        const QVariantMap &conversionMap,
-        QString *defaultString /Out/ = 0 );
+    static QgsProperty parseInterpolateStringByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, const QVariantMap &conversionMap, QString *defaultString /Out/ = 0 );
 %Docstring
 Interpolates a string by zoom. For ``json`` with intermediate stops it
 uses :py:func:`~QgsMapBoxGlStyleConverter.parseStringStops` function.
@@ -689,9 +676,7 @@ Parses a list of interpolation stops
 :param context: conversion context
 %End
 
-    static QString parseStringStops( const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context,
-                                     const QVariantMap &conversionMap,
-                                     QString *defaultString /Out/ = 0 );
+    static QString parseStringStops( const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context, const QVariantMap &conversionMap, QString *defaultString /Out/ = 0 );
 %Docstring
 Parses a list of interpolation stops containing string values.
 
@@ -714,8 +699,10 @@ Parses a list of interpolation stops containing label values.
 :return: converted expression
 %End
 
-    static QgsProperty parseValueList( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
-                                       int maxOpacity = 255, QColor *defaultColor /Out/ = 0, double *defaultNumber /Out/ = 0 );
+    static QgsProperty parseValueList(
+      const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, int maxOpacity = 255, QColor *defaultColor /Out/ = 0,
+      double *defaultNumber /Out/ = 0
+    );
 %Docstring
 Parses and converts a value list (e.g. an interpolate list).
 
@@ -725,8 +712,10 @@ Parses and converts a value list (e.g. an interpolate list).
 %End
 
 
-    static QgsProperty parseMatchList( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
-                                       int maxOpacity = 255, QColor *defaultColor /Out/ = 0, double *defaultNumber /Out/ = 0 );
+    static QgsProperty parseMatchList(
+      const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, int maxOpacity = 255, QColor *defaultColor /Out/ = 0,
+      double *defaultNumber /Out/ = 0
+    );
 %Docstring
 Parses and converts a match function value list.
 
@@ -735,8 +724,10 @@ Parses and converts a match function value list.
    This is private API only, and may change in future QGIS versions
 %End
 
-    static QgsProperty parseStepList( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
-                                      int maxOpacity = 255, QColor *defaultColor /Out/ = 0, double *defaultNumber /Out/ = 0 );
+    static QgsProperty parseStepList(
+      const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, int maxOpacity = 255, QColor *defaultColor /Out/ = 0,
+      double *defaultNumber /Out/ = 0
+    );
 %Docstring
 Parses and converts a match function value list.
 
@@ -745,8 +736,10 @@ Parses and converts a match function value list.
    This is private API only, and may change in future QGIS versions
 %End
 
-    static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
-        int maxOpacity = 255, QColor *defaultColor /Out/ = 0, double *defaultNumber /Out/ = 0 );
+    static QgsProperty parseInterpolateListByZoom(
+      const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, int maxOpacity = 255, QColor *defaultColor /Out/ = 0,
+      double *defaultNumber /Out/ = 0
+    );
 %Docstring
 Interpolates a list which starts with the interpolate function.
 
@@ -860,7 +853,9 @@ The ``context`` must have valid sprite definitions and images set via
 conversion.
 %End
 
-    static QString retrieveSpriteAsBase64WithProperties( const QVariant &value, QgsMapBoxGlStyleConversionContext &context, QSize &spriteSize /Out/, QString &spriteProperty /Out/, QString &spriteSizeProperty /Out/ );
+    static QString retrieveSpriteAsBase64WithProperties(
+      const QVariant &value, QgsMapBoxGlStyleConversionContext &context, QSize &spriteSize /Out/, QString &spriteProperty /Out/, QString &spriteSizeProperty /Out/
+    );
 %Docstring
 Retrieves the sprite image with the specified ``name``, taken from the
 specified ``context`` as a base64 encoded value

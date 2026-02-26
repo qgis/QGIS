@@ -24,7 +24,6 @@ Utility functions for working with vector tiles.
 #include "qgsvectortileutils.h"
 %End
   public:
-
     static void updateUriSources( QString &uri /In,Out/, bool forceUpdate = false );
 %Docstring
 Parses the style URL to update the source URLs in the ``uri``. If

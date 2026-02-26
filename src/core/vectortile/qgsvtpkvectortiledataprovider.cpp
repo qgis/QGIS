@@ -80,7 +80,8 @@ QgsVtpkVectorTileDataProvider::QgsVtpkVectorTileDataProvider( const QgsVtpkVecto
   : QgsVectorTileDataProvider( other )
 {
   mIsValid = other.mIsValid;
-  mCrs = other.mCrs;;
+  mCrs = other.mCrs;
+  ;
   mExtent = other.mExtent;
   mMatrixSet = other.mMatrixSet;
   mLayerMetadata = other.mLayerMetadata;
@@ -89,20 +90,11 @@ QgsVtpkVectorTileDataProvider::QgsVtpkVectorTileDataProvider( const QgsVtpkVecto
   mSpriteImage = other.mSpriteImage;
 }
 
-Qgis::DataProviderFlags QgsVtpkVectorTileDataProvider::flags() const
-{
-  return Qgis::DataProviderFlag::FastExtent2D;
-}
+Qgis::DataProviderFlags QgsVtpkVectorTileDataProvider::flags() const { return Qgis::DataProviderFlag::FastExtent2D; }
 
-Qgis::VectorTileProviderFlags QgsVtpkVectorTileDataProvider::providerFlags() const
-{
-  return Qgis::VectorTileProviderFlag::AlwaysUseTileMatrixSetFromProvider;
-}
+Qgis::VectorTileProviderFlags QgsVtpkVectorTileDataProvider::providerFlags() const { return Qgis::VectorTileProviderFlag::AlwaysUseTileMatrixSetFromProvider; }
 
-Qgis::VectorTileProviderCapabilities QgsVtpkVectorTileDataProvider::providerCapabilities() const
-{
-  return Qgis::VectorTileProviderCapability::ReadLayerMetadata;
-}
+Qgis::VectorTileProviderCapabilities QgsVtpkVectorTileDataProvider::providerCapabilities() const { return Qgis::VectorTileProviderCapability::ReadLayerMetadata; }
 
 QString QgsVtpkVectorTileDataProvider::name() const
 {
@@ -154,10 +146,7 @@ QgsRectangle QgsVtpkVectorTileDataProvider::extent() const
   return mExtent;
 }
 
-QgsLayerMetadata QgsVtpkVectorTileDataProvider::layerMetadata() const
-{
-  return mLayerMetadata;
-}
+QgsLayerMetadata QgsVtpkVectorTileDataProvider::layerMetadata() const { return mLayerMetadata; }
 
 const QgsVectorTileMatrixSet &QgsVtpkVectorTileDataProvider::tileMatrixSet() const
 {
@@ -267,7 +256,8 @@ QString QgsVtpkVectorTileDataProvider::htmlMetadata() const
 
   if ( reader.metadata().contains( u"minLOD"_s ) )
   {
-    metadata += u"<tr><td class=\"highlight\">"_s % tr( "Tile detail levels" ) % u"</td><td>"_s % u"%1 - %2"_s.arg( reader.metadata().value( u"minLOD"_s ).toInt() ).arg( reader.metadata().value( u"maxLOD"_s ).toInt() ) % u"</td></tr>\n"_s;
+    metadata += u"<tr><td class=\"highlight\">"_s % tr( "Tile detail levels" ) % u"</td><td>"_s
+                % u"%1 - %2"_s.arg( reader.metadata().value( u"minLOD"_s ).toInt() ).arg( reader.metadata().value( u"maxLOD"_s ).toInt() ) % u"</td></tr>\n"_s;
   }
 
   return metadata;
@@ -301,14 +291,11 @@ QgsVectorTileRawData QgsVtpkVectorTileDataProvider::loadFromVtpk( QgsVtpkTiles &
 
 QgsVtpkVectorTileDataProviderMetadata::QgsVtpkVectorTileDataProviderMetadata()
   : QgsProviderMetadata( QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY, QgsVtpkVectorTileDataProvider::DATA_PROVIDER_DESCRIPTION )
-{
-}
+{}
 
 QgsProviderMetadata::ProviderMetadataCapabilities QgsVtpkVectorTileDataProviderMetadata::capabilities() const
 {
-  return ProviderMetadataCapability::LayerTypesForUri
-         | ProviderMetadataCapability::PriorityForUri
-         | ProviderMetadataCapability::QuerySublayers;
+  return ProviderMetadataCapability::LayerTypesForUri | ProviderMetadataCapability::PriorityForUri | ProviderMetadataCapability::QuerySublayers;
 }
 
 QgsVtpkVectorTileDataProvider *QgsVtpkVectorTileDataProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
@@ -316,15 +303,9 @@ QgsVtpkVectorTileDataProvider *QgsVtpkVectorTileDataProviderMetadata::createProv
   return new QgsVtpkVectorTileDataProvider( uri, options, flags );
 }
 
-QIcon QgsVtpkVectorTileDataProviderMetadata::icon() const
-{
-  return QgsApplication::getThemeIcon( u"mIconVectorTileLayer.svg"_s );
-}
+QIcon QgsVtpkVectorTileDataProviderMetadata::icon() const { return QgsApplication::getThemeIcon( u"mIconVectorTileLayer.svg"_s ); }
 
-QgsProviderMetadata::ProviderCapabilities QgsVtpkVectorTileDataProviderMetadata::providerCapabilities() const
-{
-  return FileBasedUris;
-}
+QgsProviderMetadata::ProviderCapabilities QgsVtpkVectorTileDataProviderMetadata::providerCapabilities() const { return FileBasedUris; }
 
 QString QgsVtpkVectorTileDataProviderMetadata::filters( Qgis::FileFilterType type )
 {
@@ -371,7 +352,7 @@ QList<QgsProviderSublayerDetails> QgsVtpkVectorTileDataProviderMetadata::querySu
     details.setProviderKey( key() );
     details.setType( Qgis::LayerType::VectorTile );
     details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( fileName ) );
-    return {details};
+    return { details };
   }
   else
   {
@@ -442,12 +423,7 @@ QString QgsVtpkVectorTileDataProviderMetadata::relativeToAbsoluteUri( const QStr
   return encodeUri( parts );
 }
 
-QList<Qgis::LayerType> QgsVtpkVectorTileDataProviderMetadata::supportedLayerTypes() const
-{
-  return { Qgis::LayerType::VectorTile };
-}
+QList<Qgis::LayerType> QgsVtpkVectorTileDataProviderMetadata::supportedLayerTypes() const { return { Qgis::LayerType::VectorTile }; }
 
 
 ///@endcond
-
-

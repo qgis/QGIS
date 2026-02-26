@@ -198,7 +198,6 @@ Reads renderer's properties from given XML element
 Resolves references to other objects - second phase of loading - after
 :py:func:`~QgsVectorTileRenderer.readXml`
 %End
-
 };
 
 /************************************************************************

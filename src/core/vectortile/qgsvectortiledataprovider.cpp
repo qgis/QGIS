@@ -28,10 +28,7 @@ int QgsVectorTileDataProvider::DATA_ROW = QNetworkRequest::User + 2;
 int QgsVectorTileDataProvider::DATA_ZOOM = QNetworkRequest::User + 3;
 int QgsVectorTileDataProvider::DATA_SOURCE_ID = QNetworkRequest::User + 4;
 
-QgsVectorTileDataProvider::QgsVectorTileDataProvider(
-  const QString &uri,
-  const ProviderOptions &options,
-  Qgis::DataProviderReadFlags flags )
+QgsVectorTileDataProvider::QgsVectorTileDataProvider( const QString &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsDataProvider( uri, options, flags )
   , mShared( new QgsVectorTileDataProviderSharedData )
 {}
@@ -43,15 +40,9 @@ QgsVectorTileDataProvider::QgsVectorTileDataProvider( const QgsVectorTileDataPro
   setTransformContext( other.transformContext() );
 }
 
-Qgis::VectorTileProviderFlags QgsVectorTileDataProvider::providerFlags() const
-{
-  return Qgis::VectorTileProviderFlags();
-}
+Qgis::VectorTileProviderFlags QgsVectorTileDataProvider::providerFlags() const { return Qgis::VectorTileProviderFlags(); }
 
-Qgis::VectorTileProviderCapabilities QgsVectorTileDataProvider::providerCapabilities() const
-{
-  return Qgis::VectorTileProviderCapabilities();
-}
+Qgis::VectorTileProviderCapabilities QgsVectorTileDataProvider::providerCapabilities() const { return Qgis::VectorTileProviderCapabilities(); }
 
 QgsRectangle QgsVectorTileDataProvider::extent() const
 {
@@ -113,11 +104,7 @@ QImage QgsVectorTileDataProvider::spriteImage() const
 }
 
 
-
-QgsVectorTileDataProviderSharedData::QgsVectorTileDataProviderSharedData()
-{
-  mTileCache.setMaxCost( 200 );
-}
+QgsVectorTileDataProviderSharedData::QgsVectorTileDataProviderSharedData() { mTileCache.setMaxCost( 200 ); }
 
 bool QgsVectorTileDataProviderSharedData::getCachedTileData( QgsVectorTileRawData &data, QgsTileXYZ tile )
 {

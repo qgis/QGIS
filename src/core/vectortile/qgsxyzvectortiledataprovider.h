@@ -31,9 +31,7 @@ class CORE_EXPORT QgsXyzVectorTileDataProviderBase : public QgsVectorTileDataPro
     Q_OBJECT
 
   public:
-    QgsXyzVectorTileDataProviderBase( const QString &uri,
-                                      const QgsDataProvider::ProviderOptions &providerOptions,
-                                      Qgis::DataProviderReadFlags flags );
+    QgsXyzVectorTileDataProviderBase( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags );
     QgsXyzVectorTileDataProviderBase( const QgsXyzVectorTileDataProviderBase &other );
 
     QgsXyzVectorTileDataProviderBase &operator=( const QgsXyzVectorTileDataProviderBase &other ) = delete;
@@ -44,21 +42,15 @@ class CORE_EXPORT QgsXyzVectorTileDataProviderBase : public QgsVectorTileDataPro
     QList<QNetworkRequest> tileRequests( const QgsTileMatrixSet &tileMatrix, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const override;
 
   protected:
-
     QString mAuthCfg;
     QgsHttpHeaders mHeaders;
 
   private:
-
     //! Returns raw tile data for a single tile, doing a HTTP request. Block the caller until tile data are downloaded.
-    static QByteArray loadFromNetwork( const QgsTileXYZ &id,
-                                       const QgsTileMatrix &tileMatrix,
-                                       const QString &requestUrl,
-                                       const QString &authid,
-                                       const QgsHttpHeaders &headers,
-                                       QgsFeedback *feedback = nullptr,
-                                       Qgis::RendererUsage usage = Qgis::RendererUsage::Unknown );
-
+    static QByteArray loadFromNetwork(
+      const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QString &requestUrl, const QString &authid, const QgsHttpHeaders &headers, QgsFeedback *feedback = nullptr,
+      Qgis::RendererUsage usage = Qgis::RendererUsage::Unknown
+    );
 };
 
 class CORE_EXPORT QgsXyzVectorTileDataProvider : public QgsXyzVectorTileDataProviderBase
@@ -66,9 +58,7 @@ class CORE_EXPORT QgsXyzVectorTileDataProvider : public QgsXyzVectorTileDataProv
     Q_OBJECT
 
   public:
-    QgsXyzVectorTileDataProvider( const QString &uri,
-                                  const QgsDataProvider::ProviderOptions &providerOptions,
-                                  Qgis::DataProviderReadFlags flags );
+    QgsXyzVectorTileDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags );
     QgsXyzVectorTileDataProvider( const QgsXyzVectorTileDataProvider &other );
 
     QgsXyzVectorTileDataProvider &operator=( const QgsXyzVectorTileDataProvider &other ) = delete;
@@ -86,22 +76,17 @@ class CORE_EXPORT QgsXyzVectorTileDataProvider : public QgsXyzVectorTileDataProv
 
     static QString XYZ_DATA_PROVIDER_KEY;
     static QString XYZ_DATA_PROVIDER_DESCRIPTION;
-  protected:
 
+  protected:
     bool mIsValid = false;
     QgsRectangle mExtent;
     QgsVectorTileMatrixSet mMatrixSet;
 
   private:
-
     //! Returns raw tile data for a single tile, doing a HTTP request. Block the caller until tile data are downloaded.
-    static QByteArray loadFromNetwork( const QgsTileXYZ &id,
-                                       const QgsTileMatrix &tileMatrix,
-                                       const QString &requestUrl,
-                                       const QString &authid,
-                                       const QgsHttpHeaders &headers,
-                                       QgsFeedback *feedback = nullptr );
-
+    static QByteArray loadFromNetwork(
+      const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QString &requestUrl, const QString &authid, const QgsHttpHeaders &headers, QgsFeedback *feedback = nullptr
+    );
 };
 
 

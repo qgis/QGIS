@@ -41,11 +41,17 @@ class CORE_EXPORT QgsVectorTileRawData
   public:
     //! Constructs a raw tile object for single source
     QgsVectorTileRawData( QgsTileXYZ tileID = QgsTileXYZ(), const QByteArray &data = QByteArray() )
-      : id( tileID ), tileGeometryId( tileID ), data( { { QString(), data } } ) {}
+      : id( tileID )
+      , tileGeometryId( tileID )
+      , data( { { QString(), data } } )
+    {}
 
     //! Constructs a raw tile object for one or more sources
     QgsVectorTileRawData( QgsTileXYZ tileID, const QMap<QString, QByteArray> &data )
-      : id( tileID ), tileGeometryId( tileID ), data( data ) {}
+      : id( tileID )
+      , tileGeometryId( tileID )
+      , data( data )
+    {}
 
     //! Tile position in tile matrix set
     QgsTileXYZ id;
@@ -75,24 +81,20 @@ class CORE_EXPORT QgsVectorTileLoader : public QObject
 {
     Q_OBJECT
   public:
-
     //! Returns raw tile data for the specified range of tiles. Blocks the caller until all tiles are fetched.
     static QList<QgsVectorTileRawData> blockingFetchTileRawData(
-      const QgsVectorTileDataProvider *provider,
-      const QgsTileMatrixSet &tileMatrixSet,
-      const QPointF &viewCenter,
-      const QgsTileRange &range,
-      int zoomLevel,
-      QgsFeedback *feedback = nullptr,
-      Qgis::RendererUsage usage = Qgis::RendererUsage::Unknown );
+      const QgsVectorTileDataProvider *provider, const QgsTileMatrixSet &tileMatrixSet, const QPointF &viewCenter, const QgsTileRange &range, int zoomLevel, QgsFeedback *feedback = nullptr,
+      Qgis::RendererUsage usage = Qgis::RendererUsage::Unknown
+    );
 
     //
     // non-static stuff
     //
 
     //! Constructs tile loader for doing asynchronous requests and starts network requests
-    QgsVectorTileLoader( const QgsVectorTileDataProvider *provider, const QgsTileMatrixSet &tileMatrixSet, const QgsTileRange &range, int zoomLevel, const QPointF &viewCenter,
-                         QgsFeedback *feedback, Qgis::RendererUsage usage );
+    QgsVectorTileLoader(
+      const QgsVectorTileDataProvider *provider, const QgsTileMatrixSet &tileMatrixSet, const QgsTileRange &range, int zoomLevel, const QPointF &viewCenter, QgsFeedback *feedback, Qgis::RendererUsage usage
+    );
     ~QgsVectorTileLoader() override;
 
     //! Blocks the caller until all asynchronous requests are finished (with a success or a failure)

@@ -58,14 +58,9 @@ void QgsVectorTileBasicLabelingStyle::readXml( const QDomElement &elem, const Qg
 //
 
 
-QgsVectorTileBasicLabeling::QgsVectorTileBasicLabeling()
-{
-}
+QgsVectorTileBasicLabeling::QgsVectorTileBasicLabeling() {}
 
-QString QgsVectorTileBasicLabeling::type() const
-{
-  return u"basic"_s;
-}
+QString QgsVectorTileBasicLabeling::type() const { return u"basic"_s; }
 
 QgsVectorTileLabeling *QgsVectorTileBasicLabeling::clone() const
 {
@@ -74,10 +69,7 @@ QgsVectorTileLabeling *QgsVectorTileBasicLabeling::clone() const
   return l;
 }
 
-QgsVectorTileLabelProvider *QgsVectorTileBasicLabeling::provider( QgsVectorTileLayer *layer ) const
-{
-  return new QgsVectorTileBasicLabelProvider( layer, mStyles );
-}
+QgsVectorTileLabelProvider *QgsVectorTileBasicLabeling::provider( QgsVectorTileLayer *layer ) const { return new QgsVectorTileBasicLabelProvider( layer, mStyles ); }
 
 void QgsVectorTileBasicLabeling::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
@@ -115,7 +107,6 @@ QgsVectorTileBasicLabelProvider::QgsVectorTileBasicLabelProvider( QgsVectorTileL
   : QgsVectorTileLabelProvider( layer )
   , mStyles( styles )
 {
-
   for ( int i = 0; i < mStyles.count(); ++i )
   {
     const QgsVectorTileBasicLabelingStyle &style = mStyles[i];
@@ -158,17 +149,14 @@ QSet<QString> QgsVectorTileBasicLabelProvider::requiredLayers( QgsRenderContext 
   return res;
 }
 
-void QgsVectorTileBasicLabelProvider::setFields( const QMap<QString, QgsFields> &perLayerFields )
-{
-  mPerLayerFields = perLayerFields;
-}
+void QgsVectorTileBasicLabelProvider::setFields( const QMap<QString, QgsFields> &perLayerFields ) { mPerLayerFields = perLayerFields; }
 
 QList<QgsAbstractLabelProvider *> QgsVectorTileBasicLabelProvider::subProviders()
 {
   QList<QgsAbstractLabelProvider *> lst;
   for ( QgsVectorLayerLabelProvider *subprovider : std::as_const( mSubProviders ) )
   {
-    if ( subprovider )  // sub-providers that failed to initialize are set to null
+    if ( subprovider ) // sub-providers that failed to initialize are set to null
       lst << subprovider;
   }
   return lst;
@@ -222,7 +210,7 @@ void QgsVectorTileBasicLabelProvider::registerTileFeatures( const QgsVectorTileR
 
     QgsVectorLayerLabelProvider *subProvider = mSubProviders[i];
     if ( !subProvider )
-      continue;  // sub-providers that failed to initialize are set to null
+      continue; // sub-providers that failed to initialize are set to null
 
     if ( layerStyle.layerName().isEmpty() )
     {
