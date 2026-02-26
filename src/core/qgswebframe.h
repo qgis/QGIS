@@ -33,20 +33,15 @@
  */
 class CORE_EXPORT QWebFrame : public QObject
 {
-/// @cond NOT_STABLE_API
+    /// @cond NOT_STABLE_API
     Q_OBJECT
 
   public:
     QWebFrame( QObject *parent = nullptr )
       : QObject( parent )
-    {
+    {}
 
-    }
-
-    void setZoomFactor( qreal factor )
-    {
-      Q_UNUSED( factor )
-    }
+    void setZoomFactor( qreal factor ) { Q_UNUSED( factor ) }
 
     void setScrollBarPolicy( Qt::Orientation orientation, Qt::ScrollBarPolicy scrollbarpolicy )
     {
@@ -61,30 +56,18 @@ class CORE_EXPORT QWebFrame : public QObject
       emit loadFinished( true );
     }
 
-    QSize contentsSize() const
-    {
-      return QSize();
-    }
+    QSize contentsSize() const { return QSize(); }
 
-    void render( QPainter *, const QRegion = QRegion() )
-    {
+    void render( QPainter *, const QRegion = QRegion() ) {}
 
-    }
+    void addToJavaScriptWindowObject( const QString &, QObject * ) {}
 
-    void addToJavaScriptWindowObject( const QString &, QObject * )
-    {
-
-    }
-
-    QVariant evaluateJavaScript( const QString & )
-    {
-      return QVariant();
-    }
+    QVariant evaluateJavaScript( const QString & ) { return QVariant(); }
 
   signals:
     void loadFinished( bool ok );
 
     void javaScriptWindowObjectCleared();
-/// @endcond
+    /// @endcond
 };
 #endif // QGSWEBFRAME_H

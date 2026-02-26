@@ -41,7 +41,6 @@
 class CORE_EXPORT QgsRuntimeProfilerNode
 {
   public:
-
     // *INDENT-OFF*
 
     /**
@@ -53,10 +52,10 @@ class CORE_EXPORT QgsRuntimeProfilerNode
     enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRuntimeProfilerNode, Roles ) : int
     {
       Name = Qt::UserRole + 1, //!< Profile item name
-      Group, //!< Node group
-      Elapsed, //!< Node elapsed time
-      ParentElapsed, //!< Total elapsed time for node's parent
-      Id, //!< Internal node ID \since QGIS 3.34
+      Group,                   //!< Node group
+      Elapsed,                 //!< Node elapsed time
+      ParentElapsed,           //!< Total elapsed time for node's parent
+      Id,                      //!< Internal node ID \since QGIS 3.34
     };
     // *INDENT-ON*
 
@@ -167,7 +166,6 @@ class CORE_EXPORT QgsRuntimeProfilerNode
     QString mId;
     QString mName;
     QString mGroup;
-
 };
 #endif
 
@@ -189,7 +187,6 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
     Q_OBJECT
 
   public:
-
     /**
      * Constructor to create a new runtime profiler.
      *
@@ -317,7 +314,6 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
     void otherProfilerEnded( const QString &group, const QStringList &path, const QString &name, const QString &id, double elapsed );
 
   private:
-
     static QgsRuntimeProfiler *threadLocalInstance();
     static QgsRuntimeProfiler *sMainProfiler;
     bool mInitialized = false;
@@ -362,7 +358,6 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
 class CORE_EXPORT QgsScopedRuntimeProfile
 {
   public:
-
     /**
      * Constructor for QgsScopedRuntimeProfile.
      *
@@ -390,9 +385,7 @@ class CORE_EXPORT QgsScopedRuntimeProfile
     void switchTask( const QString &name ); // cppcheck-suppress functionConst
 
   private:
-
     QString mGroup;
-
 };
 
 

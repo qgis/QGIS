@@ -33,17 +33,13 @@ using namespace Qt::StringLiterals;
  * See details in QEP #17
  ****************************************************************************/
 
-QgsFields::QgsFields()
-{
-  d = new QgsFieldsPrivate();
-}
+QgsFields::QgsFields() { d = new QgsFieldsPrivate(); }
 
 QgsFields::QgsFields( const QgsFields &other ) //NOLINT
   : d( other.d )
-{
-}
+{}
 
-QgsFields &QgsFields::operator =( const QgsFields &other )  //NOLINT
+QgsFields &QgsFields::operator=( const QgsFields &other ) //NOLINT
 {
   d = other.d;
   return *this;
@@ -109,7 +105,7 @@ bool QgsFields::append( const QgsFields &fields )
       return false;
   }
 
-  for ( int i = 0; i < fields.size(); ++ i )
+  for ( int i = 0; i < fields.size(); ++i )
   {
     append( fields.at( i ), fields.fieldOrigin( i ), fields.fieldOriginIndex( i ) );
   }
@@ -127,8 +123,8 @@ bool QgsFields::rename( int fieldIdx, const QString &name )
   if ( d->nameToIndex.contains( name ) )
     return false;
 
-  const QString oldName = d->fields[ fieldIdx ].field.name();
-  d->fields[ fieldIdx ].field.setName( name );
+  const QString oldName = d->fields[fieldIdx].field.name();
+  d->fields[fieldIdx].field.setName( name );
   d->nameToIndex.remove( oldName );
   d->nameToIndex.insert( name, fieldIdx );
   return true;
@@ -172,20 +168,11 @@ void QgsFields::extend( const QgsFields &other )
  * See details in QEP #17
  ****************************************************************************/
 
-bool QgsFields::isEmpty() const
-{
-  return d->fields.isEmpty();
-}
+bool QgsFields::isEmpty() const { return d->fields.isEmpty(); }
 
-int QgsFields::count() const
-{
-  return d->fields.count();
-}
+int QgsFields::count() const { return d->fields.count(); }
 
-int QgsFields::size() const
-{
-  return d->fields.count();
-}
+int QgsFields::size() const { return d->fields.count(); }
 
 QStringList QgsFields::names() const
 {
@@ -197,30 +184,15 @@ QStringList QgsFields::names() const
   return lst;
 }
 
-bool QgsFields::exists( int i ) const
-{
-  return i >= 0 && i < d->fields.count();
-}
+bool QgsFields::exists( int i ) const { return i >= 0 && i < d->fields.count(); }
 
-QgsField &QgsFields::operator[]( int i )
-{
-  return d->fields[i].field;
-}
+QgsField &QgsFields::operator[]( int i ) { return d->fields[i].field; }
 
-QgsField QgsFields::at( int i ) const
-{
-  return d->fields[i].field;
-}
+QgsField QgsFields::at( int i ) const { return d->fields[i].field; }
 
-QgsField QgsFields::field( int fieldIdx ) const
-{
-  return d->fields[fieldIdx].field;
-}
+QgsField QgsFields::field( int fieldIdx ) const { return d->fields[fieldIdx].field; }
 
-QgsField QgsFields::field( const QString &name ) const
-{
-  return d->fields[ indexFromName( name )].field;
-}
+QgsField QgsFields::field( const QString &name ) const { return d->fields[indexFromName( name )].field; }
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -228,10 +200,7 @@ QgsField QgsFields::field( const QString &name ) const
  * See details in QEP #17
  ****************************************************************************/
 
-QgsField QgsFields::operator[]( int i ) const
-{
-  return d->fields[i].field;
-}
+QgsField QgsFields::operator[]( int i ) const { return d->fields[i].field; }
 
 Qgis::FieldOrigin QgsFields::fieldOrigin( int fieldIdx ) const
 {
@@ -241,20 +210,11 @@ Qgis::FieldOrigin QgsFields::fieldOrigin( int fieldIdx ) const
   return d->fields[fieldIdx].origin;
 }
 
-int QgsFields::fieldOriginIndex( int fieldIdx ) const
-{
-  return d->fields[fieldIdx].originIndex;
-}
+int QgsFields::fieldOriginIndex( int fieldIdx ) const { return d->fields[fieldIdx].originIndex; }
 
-int QgsFields::indexFromName( const QString &fieldName ) const
-{
-  return d->nameToIndex.value( fieldName, -1 );
-}
+int QgsFields::indexFromName( const QString &fieldName ) const { return d->nameToIndex.value( fieldName, -1 ); }
 
-int QgsFields::indexOf( const QString &fieldName ) const
-{
-  return d->nameToIndex.value( fieldName, -1 );
-}
+int QgsFields::indexOf( const QString &fieldName ) const { return d->nameToIndex.value( fieldName, -1 ); }
 
 QList<QgsField> QgsFields::toList() const
 {
@@ -264,10 +224,7 @@ QList<QgsField> QgsFields::toList() const
   return lst;
 }
 
-bool QgsFields::operator==( const QgsFields &other ) const
-{
-  return d->fields == other.d->fields;
-}
+bool QgsFields::operator==( const QgsFields &other ) const { return d->fields == other.d->fields; }
 
 QgsFields::const_iterator QgsFields::constBegin() const noexcept
 {

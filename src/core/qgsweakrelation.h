@@ -45,7 +45,6 @@ using namespace Qt::StringLiterals;
 class CORE_EXPORT QgsWeakRelation
 {
   public:
-
     /**
      * Enum to distinguish if the layer is referenced or referencing
      * \since QGIS 3.16
@@ -53,7 +52,7 @@ class CORE_EXPORT QgsWeakRelation
     enum WeakRelationType
     {
       Referencing, //!< The layer is referencing (or the "child" / "right" layer in the relationship)
-      Referenced //!< The layer is referenced (or the "parent" / "left" left in the relationship)
+      Referenced   //!< The layer is referenced (or the "parent" / "left" left in the relationship)
     };
 
     /**
@@ -66,18 +65,11 @@ class CORE_EXPORT QgsWeakRelation
      *
      * \since QGIS 3.30
      */
-    QgsWeakRelation( const QString &relationId,
-                     const QString &relationName,
-                     const Qgis::RelationshipStrength strength,
-                     const QString &referencingLayerId,
-                     const QString &referencingLayerName,
-                     const QString &referencingLayerSource,
-                     const QString &referencingLayerProviderKey,
-                     const QString &referencedLayerId,
-                     const QString &referencedLayerName,
-                     const QString &referencedLayerSource,
-                     const QString &referencedLayerProviderKey
-                   );
+    QgsWeakRelation(
+      const QString &relationId, const QString &relationName, const Qgis::RelationshipStrength strength, const QString &referencingLayerId, const QString &referencingLayerName,
+      const QString &referencingLayerSource, const QString &referencingLayerProviderKey, const QString &referencedLayerId, const QString &referencedLayerName, const QString &referencedLayerSource,
+      const QString &referencedLayerProviderKey
+    );
 
     /**
      * Resolves a weak relation in the given \a project returning a list of possibly invalid QgsRelations
@@ -463,7 +455,7 @@ class CORE_EXPORT QgsWeakRelation
     SIP_PYOBJECT __repr__();
     % MethodCode
 
-    QString leftIdentifier;
+        QString leftIdentifier;
     if ( !sipCpp->referencedLayer().source.isEmpty() )
       leftIdentifier = sipCpp->referencedLayer().source;
 
@@ -478,10 +470,10 @@ class CORE_EXPORT QgsWeakRelation
       str = u"<QgsWeakRelation: %1 - %2 -> %3>"_s.arg( sipCpp->id(), leftIdentifier, rightIdentifier );
 
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-    % End
+  % End
 #endif
 
-  private:
+    private :
 
     QgsVectorLayerRef mReferencingLayer;
     QgsVectorLayerRef mReferencedLayer;
@@ -502,7 +494,6 @@ class CORE_EXPORT QgsWeakRelation
     QString mRelatedTableType;
 
     friend class TestQgsWeakRelation;
-
 };
 
 #endif // QGSWEAKRELATION_H

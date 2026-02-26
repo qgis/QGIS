@@ -63,7 +63,7 @@ behaves with relation to z values or elevations.
 
 
     enum class Property /BaseType=IntEnum/
-      {
+    {
       ZOffset,
       ExtrusionHeight,
       RasterPerBandLowerElevation,

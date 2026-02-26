@@ -49,15 +49,10 @@
 class QgsFieldPrivate : public QSharedData
 {
   public:
-
-    QgsFieldPrivate( const QString &name = QString(),
-                     QMetaType::Type type = QMetaType::Type::UnknownType,
-                     QMetaType::Type subType = QMetaType::Type::UnknownType,
-                     const QString &typeName = QString(),
-                     int len = 0,
-                     int prec = 0,
-                     const QString &comment = QString(),
-                     const QMap< int, QVariant > &metadata = QMap< int, QVariant >() )
+    QgsFieldPrivate(
+      const QString &name = QString(), QMetaType::Type type = QMetaType::Type::UnknownType, QMetaType::Type subType = QMetaType::Type::UnknownType, const QString &typeName = QString(), int len = 0,
+      int prec = 0, const QString &comment = QString(), const QMap< int, QVariant > &metadata = QMap< int, QVariant >()
+    )
       : name( name )
       , type( type )
       , subType( subType )
@@ -66,8 +61,7 @@ class QgsFieldPrivate : public QSharedData
       , precision( prec )
       , comment( comment )
       , metadata( metadata )
-    {
-    }
+    {}
 
     QgsFieldPrivate( const QgsFieldPrivate &other )
       : QSharedData( other )
@@ -88,24 +82,19 @@ class QgsFieldPrivate : public QSharedData
       , duplicatePolicy( other.duplicatePolicy )
       , mergePolicy( other.mergePolicy )
       , isReadOnly( other.isReadOnly )
-    {
-    }
+    {}
 
     ~QgsFieldPrivate() = default;
 
     // TODO c++20 - replace with = default
     bool operator==( const QgsFieldPrivate &other ) const
     {
-      return ( ( name == other.name ) && ( type == other.type ) && ( subType == other.subType )
-               && ( length == other.length ) && ( precision == other.precision )
-               && ( metadata == other.metadata )
-               && ( alias == other.alias ) && ( defaultValueDefinition == other.defaultValueDefinition )
-               && ( constraints == other.constraints )  && ( flags == other.flags )
-               && ( splitPolicy == other.splitPolicy )
-               && ( duplicatePolicy == other.duplicatePolicy )
-               && ( mergePolicy == other.mergePolicy )
-               && ( isReadOnly == other.isReadOnly )
-               && ( editorWidgetSetup == other.editorWidgetSetup ) );
+      return (
+        ( name == other.name ) && ( type == other.type ) && ( subType == other.subType ) && ( length == other.length ) && ( precision == other.precision ) && ( metadata == other.metadata )
+        && ( alias == other.alias ) && ( defaultValueDefinition == other.defaultValueDefinition ) && ( constraints == other.constraints ) && ( flags == other.flags )
+        && ( splitPolicy == other.splitPolicy ) && ( duplicatePolicy == other.duplicatePolicy ) && ( mergePolicy == other.mergePolicy ) && ( isReadOnly == other.isReadOnly )
+        && ( editorWidgetSetup == other.editorWidgetSetup )
+      );
     }
 
     //! Name

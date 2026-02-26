@@ -46,8 +46,9 @@ class CORE_EXPORT QgsTessellator
      * \brief Creates tessellator with a specified origin point of the world (in map coordinates)
      * \deprecated QGIS 4.0. Use the default QgsTessellator() constructor and individual setters instead.
      */
-    Q_DECL_DEPRECATED QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
-                                      bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QgsTessellator(
+      double originX, double originY, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false, bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f
+    ) SIP_DEPRECATED;
 
     /**
      * Creates tessellator with a specified \a bounds of input geometry coordinates.
@@ -59,8 +60,9 @@ class CORE_EXPORT QgsTessellator
      * \since QGIS 3.10
      * \deprecated QGIS 4.0. Use the default QgsTessellator() constructor and individual setters instead.
      */
-    Q_DECL_DEPRECATED QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
-                                      bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QgsTessellator(
+      const QgsRectangle &bounds, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false, bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f
+    ) SIP_DEPRECATED;
 
     /**
      * Sets the origin point of the map.
@@ -262,20 +264,15 @@ class CORE_EXPORT QgsTessellator
   private:
     struct VertexPoint
     {
-      QVector3D position;
-      QVector3D normal;
+        QVector3D position;
+        QVector3D normal;
 
-      inline bool operator==( const VertexPoint &other ) const
-      {
-        return position == other.position
-               && normal == other.normal;
-      }
+        inline bool operator==( const VertexPoint &other ) const { return position == other.position && normal == other.normal; }
     };
 
     friend uint qHash( const VertexPoint &key )
     {
-      return qHash( key.position.x() ) ^ qHash( key.position.y() ) ^ qHash( key.position.z() )
-             ^ qHash( key.normal.x() ) ^ qHash( key.normal.y() )  ^ qHash( key.normal.z() );
+      return qHash( key.position.x() ) ^ qHash( key.position.y() ) ^ qHash( key.position.z() ) ^ qHash( key.normal.x() ) ^ qHash( key.normal.y() ) ^ qHash( key.normal.z() );
     }
 
     QVector<uint32_t> mIndexBuffer;
@@ -284,11 +281,14 @@ class CORE_EXPORT QgsTessellator
     void setExtrusionFacesLegacy( int facade );
     void calculateBaseTransform( const QVector3D &pNormal, QMatrix4x4 *base ) const;
     QVector3D applyTransformWithExtrusion( const QVector3D point, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset );
-    void addVertex( const QVector3D &point, const QVector3D &normal, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset, QHash<VertexPoint, unsigned int> *vertexBuffer, const size_t &vertexBufferOffset );
+    void addVertex(
+      const QVector3D &point, const QVector3D &normal, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset, QHash<VertexPoint, unsigned int> *vertexBuffer,
+      const size_t &vertexBufferOffset
+    );
     void addVertex( const QVector3D &point, const QVector3D &normal, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset );
     void makeWalls( const QgsLineString &ring, bool ccw, float extrusionHeight );
     void addExtrusionWallQuad( const QVector3D &pt1, const QVector3D &pt2, float height );
-    void ringToEarcutPoints( const QgsLineString *ring, std::vector<std::array<double, 2>> &polyline, QHash<std::array<double, 2>*, float> *zHash );
+    void ringToEarcutPoints( const QgsLineString *ring, std::vector<std::array<double, 2>> &polyline, QHash<std::array<double, 2> *, float> *zHash );
     std::vector<QVector3D> generateConstrainedDelaunayTriangles( const QgsPolygon *polygonNew );
     std::vector<QVector3D> generateEarcutTriangles( const QgsPolygon *polygonNew );
 

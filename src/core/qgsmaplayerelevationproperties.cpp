@@ -29,23 +29,13 @@ QgsPropertiesDefinition QgsMapLayerElevationProperties::sPropertyDefinitions;
 
 QgsMapLayerElevationProperties::QgsMapLayerElevationProperties( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
-bool QgsMapLayerElevationProperties::hasElevation() const
-{
-  return false;
-}
+bool QgsMapLayerElevationProperties::hasElevation() const { return false; }
 
-void QgsMapLayerElevationProperties::setDefaultsFromLayer( QgsMapLayer * )
-{
+void QgsMapLayerElevationProperties::setDefaultsFromLayer( QgsMapLayer * ) {}
 
-}
-
-QString QgsMapLayerElevationProperties::htmlSummary() const
-{
-  return QString();
-}
+QString QgsMapLayerElevationProperties::htmlSummary() const { return QString(); }
 
 void QgsMapLayerElevationProperties::writeCommonProperties( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext & )
 {
@@ -74,25 +64,13 @@ void QgsMapLayerElevationProperties::copyCommonProperties( const QgsMapLayerElev
   mZOffset = other->zOffset();
 }
 
-bool QgsMapLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange &, QgsMapLayer * ) const
-{
-  return true;
-}
+bool QgsMapLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange &, QgsMapLayer * ) const { return true; }
 
-QgsDoubleRange QgsMapLayerElevationProperties::calculateZRange( QgsMapLayer * ) const
-{
-  return QgsDoubleRange();
-}
+QgsDoubleRange QgsMapLayerElevationProperties::calculateZRange( QgsMapLayer * ) const { return QgsDoubleRange(); }
 
-QList<double> QgsMapLayerElevationProperties::significantZValues( QgsMapLayer * ) const
-{
-  return {};
-}
+QList<double> QgsMapLayerElevationProperties::significantZValues( QgsMapLayer * ) const { return {}; }
 
-bool QgsMapLayerElevationProperties::showByDefaultInElevationProfilePlots() const
-{
-  return false;
-}
+bool QgsMapLayerElevationProperties::showByDefaultInElevationProfilePlots() const { return false; }
 
 void QgsMapLayerElevationProperties::setZOffset( double offset )
 {
@@ -137,11 +115,13 @@ void QgsMapLayerElevationProperties::initPropertyDefinitions()
 {
   const QString origin = u"elevation"_s;
 
-  sPropertyDefinitions = QgsPropertiesDefinition
-  {
+  sPropertyDefinitions = QgsPropertiesDefinition {
     { static_cast< int >( QgsMapLayerElevationProperties::Property::ZOffset ), QgsPropertyDefinition( "ZOffset", QObject::tr( "Offset" ), QgsPropertyDefinition::Double, origin ) },
-    { static_cast< int >( QgsMapLayerElevationProperties::Property::ExtrusionHeight ), QgsPropertyDefinition( "ExtrusionHeight", QObject::tr( "Extrusion height" ), QgsPropertyDefinition::DoublePositive, origin ) },
-    { static_cast< int >( QgsMapLayerElevationProperties::Property::RasterPerBandLowerElevation ), QgsPropertyDefinition( "RasterPerBandLowerElevation", QObject::tr( "Lower elevation for band" ), QgsPropertyDefinition::Double, origin ) },
-    { static_cast< int >( QgsMapLayerElevationProperties::Property::RasterPerBandUpperElevation ), QgsPropertyDefinition( "RasterPerBandUpperElevation", QObject::tr( "Upper elevation for band" ), QgsPropertyDefinition::Double, origin ) },
+    { static_cast< int >( QgsMapLayerElevationProperties::Property::ExtrusionHeight ),
+      QgsPropertyDefinition( "ExtrusionHeight", QObject::tr( "Extrusion height" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { static_cast< int >( QgsMapLayerElevationProperties::Property::RasterPerBandLowerElevation ),
+      QgsPropertyDefinition( "RasterPerBandLowerElevation", QObject::tr( "Lower elevation for band" ), QgsPropertyDefinition::Double, origin ) },
+    { static_cast< int >( QgsMapLayerElevationProperties::Property::RasterPerBandUpperElevation ),
+      QgsPropertyDefinition( "RasterPerBandUpperElevation", QObject::tr( "Upper elevation for band" ), QgsPropertyDefinition::Double, origin ) },
   };
 }

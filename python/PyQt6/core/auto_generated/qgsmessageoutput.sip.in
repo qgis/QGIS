@@ -32,7 +32,6 @@ signal :py:func:`~destroyed` to notify the deletion
 #include "qgsmessageoutput.h"
 %End
   public:
-
     virtual ~QgsMessageOutput();
 
     virtual void setMessage( const QString &message, Qgis::StringFormat format ) = 0;
@@ -85,7 +84,6 @@ be the right choice for apps without GUI.
 #include "qgsmessageoutput.h"
 %End
   public:
-
     QgsMessageOutputConsole();
 
     virtual void setMessage( const QString &message, Qgis::StringFormat format );

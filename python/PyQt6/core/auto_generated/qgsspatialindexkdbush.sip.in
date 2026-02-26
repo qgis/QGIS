@@ -40,7 +40,6 @@ be inexpensively copied.
 #include "qgsspatialindexkdbush.h"
 %End
   public:
-
     explicit QgsSpatialIndexKDBush( QgsFeatureIterator &fi, QgsFeedback *feedback = 0 );
 %Docstring
 Constructor - creates KDBush index and bulk loads it with features from

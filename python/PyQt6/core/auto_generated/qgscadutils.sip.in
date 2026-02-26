@@ -20,7 +20,6 @@ Provides routines for CAD editing.
 #include "qgscadutils.h"
 %End
   public:
-
     class AlignMapPointConstraint
     {
 %Docstring(signature="appended")
@@ -28,7 +27,6 @@ Structure with details of one constraint.
 %End
 
       public:
-
         AlignMapPointConstraint( bool locked = false, bool relative = false, double value = 0 );
 %Docstring
 Constructor for AlignMapPointConstraint.
@@ -125,6 +123,28 @@ coordinates).
 
 .. versionadded:: 3.22
 %End
+        void setLockedSnapVertices( const QQueue< QgsPointLocator::Match > &lockedSnapVertices );
+%Docstring
+Sets the queue of locked vertices.
+
+Point locator matches are stored instead of vertices to keep more
+context.
+
+.. seealso:: :py:func:`lockedSnapVertices`
+
+.. versionadded:: 3.26
+%End
+
+        QQueue< QgsPointLocator::Match > lockedSnapVertices() const;
+%Docstring
+Returns the queue of point locator matches that contain the locked
+vertices.
+
+.. seealso:: :py:func:`setLockedSnapVertices`
+
+.. versionadded:: 3.26
+%End
+
 %Property( name = cadPointList, get = _cadPointList, set = _setCadPointList )
         void _setCadPointList( const QList< QgsPointXY > &list );
         QList< QgsPointXY > _cadPointList() const;
@@ -137,7 +157,6 @@ Applies X/Y/angle/distance constraints from the given context to a map
 point. Returns a structure containing aligned map point, whether the
 constraints are valid and some extra information.
 %End
-
 };
 
 /************************************************************************

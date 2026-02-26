@@ -29,8 +29,8 @@ typedef QVector<QVariant> QgsAttributes;
 %End
 
 %ConvertFromTypeCode
-  // Create the list.
-  PyObject *l;
+    // Create the list.
+    PyObject *l;
 
   if ( ( l = PyList_New( sipCpp->size() ) ) == NULL )
     return NULL;
@@ -102,8 +102,8 @@ typedef QVector<QVariant> QgsAttributes;
 %End
 
 %ConvertToTypeCode
-  // Check the type if that is all that is required.
-  if ( sipIsErr == NULL )
+    // Check the type if that is all that is required.
+    if ( sipIsErr == NULL )
   {
     if ( !PyList_Check( sipPy ) )
       return 0;

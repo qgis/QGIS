@@ -42,7 +42,6 @@ class CORE_EXPORT QgsDatabaseTableModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-
     // *INDENT-OFF*
 
     /**
@@ -53,14 +52,14 @@ class CORE_EXPORT QgsDatabaseTableModel : public QAbstractItemModel
      */
     enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDatabaseTableModel, Role ) : int
     {
-      TableName SIP_MONKEYPATCH_COMPAT_NAME(RoleTableName) = Qt::UserRole, //!< Table name
-      Schema SIP_MONKEYPATCH_COMPAT_NAME(RoleSchema), //!< Table schema
-      TableFlags SIP_MONKEYPATCH_COMPAT_NAME(RoleTableFlags), //!< Table flags role
-      Comment SIP_MONKEYPATCH_COMPAT_NAME(RoleComment), //!< Comment role
-      CustomInfo SIP_MONKEYPATCH_COMPAT_NAME(RoleCustomInfo), //!< Custom info variant map role
-      WkbType SIP_MONKEYPATCH_COMPAT_NAME(RoleWkbType), //!< WKB type for primary (first) geometry column in table
-      Crs SIP_MONKEYPATCH_COMPAT_NAME(RoleCrs), //!< CRS for primary (first) geometry column in table
-      Empty SIP_MONKEYPATCH_COMPAT_NAME(RoleEmpty), //!< Entry is an empty entry
+      TableName SIP_MONKEYPATCH_COMPAT_NAME( RoleTableName ) = Qt::UserRole, //!< Table name
+      Schema SIP_MONKEYPATCH_COMPAT_NAME( RoleSchema ),                      //!< Table schema
+      TableFlags SIP_MONKEYPATCH_COMPAT_NAME( RoleTableFlags ),              //!< Table flags role
+      Comment SIP_MONKEYPATCH_COMPAT_NAME( RoleComment ),                    //!< Comment role
+      CustomInfo SIP_MONKEYPATCH_COMPAT_NAME( RoleCustomInfo ),              //!< Custom info variant map role
+      WkbType SIP_MONKEYPATCH_COMPAT_NAME( RoleWkbType ),                    //!< WKB type for primary (first) geometry column in table
+      Crs SIP_MONKEYPATCH_COMPAT_NAME( RoleCrs ),                            //!< CRS for primary (first) geometry column in table
+      Empty SIP_MONKEYPATCH_COMPAT_NAME( RoleEmpty ),                        //!< Entry is an empty entry
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*

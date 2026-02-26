@@ -34,9 +34,7 @@ class QgsRenderContext;
  */
 class CORE_EXPORT QgsScreenProperties
 {
-
   public:
-
     /**
      * Constructor for invalid properties.
      */
@@ -48,17 +46,9 @@ class CORE_EXPORT QgsScreenProperties
      */
     explicit QgsScreenProperties( const QScreen *screen );
 
-    bool operator==( const QgsScreenProperties &other ) const
-    {
-      return mValid == other.mValid
-             && mDevicePixelRatio == other.mDevicePixelRatio
-             && mPhysicalDpi == other.mPhysicalDpi;
-    }
+    bool operator==( const QgsScreenProperties &other ) const { return mValid == other.mValid && mDevicePixelRatio == other.mDevicePixelRatio && mPhysicalDpi == other.mPhysicalDpi; }
 
-    bool operator!=( const QgsScreenProperties &other ) const
-    {
-      return !( *this == other );
-    }
+    bool operator!=( const QgsScreenProperties &other ) const { return !( *this == other ); }
 
     /**
      * Returns TRUE if the properties are valid.
@@ -120,19 +110,17 @@ class CORE_EXPORT QgsScreenProperties
     void updateRenderContextForScreen( QgsRenderContext &context ) const;
 
   private:
-
     bool mValid = false;
     double mDevicePixelRatio = 1;
     double mPhysicalDpi = 96;
 };
 
 #ifndef SIP_RUN
-#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
+#if ( __GNUC__ > 4 || ( __GNUC__ == 4 && __GNUC_MINOR__ >= 6 ) ) || defined( __clang__ )
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wattributes"
-#elif defined(_MSC_VER)
-__pragma( warning( push ) )
-__pragma( warning( disable: 4273 ) )
+#elif defined( _MSC_VER )
+__pragma( warning( push ) ) __pragma( warning( disable : 4273 ) )
 #endif
 #endif
 
@@ -141,15 +129,12 @@ __pragma( warning( disable: 4273 ) )
  *
  * \since QGIS 3.32
  */
-CORE_EXPORT inline uint qHash( const QgsScreenProperties &properties ) SIP_SKIP
-{
-  return qHash( properties.devicePixelRatio() ) + qHash( properties.physicalDpi() );
-}
+CORE_EXPORT inline uint qHash( const QgsScreenProperties &properties ) SIP_SKIP { return qHash( properties.devicePixelRatio() ) + qHash( properties.physicalDpi() ); }
 
 #ifndef SIP_RUN
-#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
+#if ( __GNUC__ > 4 || ( __GNUC__ == 4 && __GNUC_MINOR__ >= 6 ) ) || defined( __clang__ )
 #pragma GCC diagnostic pop
-#elif defined(_MSC_VER)
+#elif defined( _MSC_VER )
 __pragma( warning( pop ) )
 #endif
 #endif

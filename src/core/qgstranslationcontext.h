@@ -34,20 +34,18 @@ class QgsProject;
 
 class CORE_EXPORT QgsTranslationContext
 {
-
     /**
      * Object that could be translated by the QTranslator with the qm file.
      */
     struct TranslatableObject
     {
-      QString context; //!< In what context the object is used
-      QString source; //!< The original text of the object
+        QString context; //!< In what context the object is used
+        QString source;  //!< The original text of the object
 
-      bool operator==( const TranslatableObject &other ) const { return context == other.context && source == other.source; }
+        bool operator==( const TranslatableObject &other ) const { return context == other.context && source == other.source; }
     };
 
   public:
-
     QgsTranslationContext() = default;
 
     /**
@@ -88,11 +86,9 @@ class CORE_EXPORT QgsTranslationContext
     void writeTsFile( const QString &locale ) const;
 
   private:
-
     QgsProject *mProject = nullptr;
     QString mFileName;
-    QList < TranslatableObject > mTranslatableObjects;
-
+    QList< TranslatableObject > mTranslatableObjects;
 };
 
 #endif // QGSTRANSLATIONCONTEXT_H

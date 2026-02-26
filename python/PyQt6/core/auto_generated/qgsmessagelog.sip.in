@@ -29,12 +29,13 @@ accessed through :py:func:`QgsApplication.messageLog()`.
 #include "qgsmessagelog.h"
 %End
   public:
-
     QgsMessageLog();
 
 
-    static void logMessage( const QString &message, const QString &tag = QString(), Qgis::MessageLevel level = Qgis::MessageLevel::Warning, bool notifyUser = true,
-                            const char *file = __builtin_FILE(), const char *function = __builtin_FUNCTION(), int line = __builtin_LINE(), Qgis::StringFormat format = Qgis::StringFormat::PlainText );
+    static void logMessage(
+      const QString &message, const QString &tag = QString(), Qgis::MessageLevel level = Qgis::MessageLevel::Warning, bool notifyUser = true, const char *file = __builtin_FILE(),
+      const char *function = __builtin_FUNCTION(), int line = __builtin_LINE(), Qgis::StringFormat format = Qgis::StringFormat::PlainText
+    );
 %Docstring
 Adds a ``message`` to the log instance (and creates it if necessary).
 
@@ -104,7 +105,6 @@ destroyed before the messageReceived( bool ) signal is emitted again.
 #include "qgsmessagelog.h"
 %End
   public:
-
     QgsMessageLogNotifyBlocker();
 %Docstring
 Constructor for QgsMessageLogNotifyBlocker.
@@ -133,14 +133,12 @@ might be the right choice for applications without GUI.
 #include "qgsmessagelog.h"
 %End
   public:
-
     QgsMessageLogConsole();
 %Docstring
 Constructor for QgsMessageLogConsole.
 %End
 
   protected:
-
     QString formatLogMessage( const QString &message, const QString &tag, Qgis::MessageLevel level = Qgis::MessageLevel::Info ) const;
 %Docstring
 Formats a log message. Used by child classes.

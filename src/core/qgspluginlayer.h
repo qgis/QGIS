@@ -44,17 +44,17 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    QString str = u"<QgsPluginLayer: '%1'>"_s.arg( sipCpp->name() );
+    % MethodCode QString str = u"<QgsPluginLayer: '%1'>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    /**
+      /**
      * Returns a new instance equivalent to this one.
      * \returns a new layer instance
      */
-    QgsPluginLayer *clone() const override = 0;
+      QgsPluginLayer *clone() const override
+      = 0;
 
     //! Returns plugin layer type (the same as used in QgsPluginLayerRegistry)
     QString pluginLayerType() const;
@@ -92,9 +92,7 @@ class QgsPluginLayerDataProvider : public QgsDataProvider
     Q_OBJECT
 
   public:
-    QgsPluginLayerDataProvider( const QString &layerType,
-                                const QgsDataProvider::ProviderOptions &providerOptions,
-                                Qgis::DataProviderReadFlags flags );
+    QgsPluginLayerDataProvider( const QString &layerType, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags );
     void setExtent( const QgsRectangle &extent ) { mExtent = extent; }
     QgsCoordinateReferenceSystem crs() const override;
     QString name() const override;

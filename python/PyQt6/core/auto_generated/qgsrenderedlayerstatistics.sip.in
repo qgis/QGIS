@@ -12,7 +12,7 @@
 
 
 
-class QgsRenderedLayerStatistics: QgsRenderedItemDetails
+class QgsRenderedLayerStatistics : QgsRenderedItemDetails
 {
 %Docstring(signature="appended")
 Contains computed statistics for a layer render.
@@ -24,7 +24,6 @@ Contains computed statistics for a layer render.
 #include "qgsrenderedlayerstatistics.h"
 %End
   public:
-
     QgsRenderedLayerStatistics( const QString &layerId, const QList<double> &minimum, const QList<double> &maximum );
 %Docstring
 Constructor for QgsRenderedLayerStatistics from a list of ``minimum``
@@ -36,22 +35,22 @@ bands. In that case, ``minimum`` will contain the minimum value of each
 band and ``maximum`` will contain the maximum value of each band.
 %End
 
-    QgsRenderedLayerStatistics( const QString &layerId, SIP_PYOBJECT minimum /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT maximum /TypeHint="Optional[float]"/ = Py_None ) [( const QString & layerId, double minimum = 0.0, double maximum = 0.0 )];
+    QgsRenderedLayerStatistics(
+      const QString &layerId, SIP_PYOBJECT minimum /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT maximum /TypeHint="Optional[float]"/ = Py_None
+    )[( const QString &layerId, double minimum = 0.0, double maximum = 0.0 )];
 %Docstring
 Constructor for QgsRenderedLayerStatistics with only one value for
 ``minimum`` and ``maximum``.
 %End
-%MethodCode
-    double minP = a1 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a1 );
+%MethodCode double minP = a1 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a1 );
     double maxP = a2 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a2 );
-    QList<double> minL = {minP};
-    QList<double> maxL = {maxP};
+    QList<double> minL = { minP };
+    QList<double> maxL = { maxP };
     sipCpp = new sipQgsRenderedLayerStatistics( *a0, minL, maxL );
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    QStringList minimums;
+%MethodCode QStringList minimums;
     minimums.reserve( sipCpp->minimum().size() );
     for ( double min : sipCpp->minimum() )
     {
@@ -67,7 +66,7 @@ Constructor for QgsRenderedLayerStatistics with only one value for
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    QList<double> minimum() const;
+        QList<double> minimum() const;
 %Docstring
 Returns the minimum values of the computed statistics.
 

@@ -21,20 +21,10 @@
 
 QgsMapLayerTemporalProperties::QgsMapLayerTemporalProperties( QObject *parent, bool enabled )
   : QgsTemporalProperty( parent, enabled )
-{
-}
+{}
 
-bool QgsMapLayerTemporalProperties::isVisibleInTemporalRange( const QgsDateTimeRange & ) const
-{
-  return true;
-}
+bool QgsMapLayerTemporalProperties::isVisibleInTemporalRange( const QgsDateTimeRange & ) const { return true; }
 
-QgsDateTimeRange QgsMapLayerTemporalProperties::calculateTemporalExtent( QgsMapLayer * ) const
-{
-  return QgsDateTimeRange();
-}
+QgsDateTimeRange QgsMapLayerTemporalProperties::calculateTemporalExtent( QgsMapLayer * ) const { return QgsDateTimeRange(); }
 
-QList<QgsDateTimeRange> QgsMapLayerTemporalProperties::allTemporalRanges( QgsMapLayer * ) const
-{
-  return {};
-}
+QList<QgsDateTimeRange> QgsMapLayerTemporalProperties::allTemporalRanges( QgsMapLayer * ) const { return {}; }

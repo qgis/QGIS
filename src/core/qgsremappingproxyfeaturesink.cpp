@@ -36,10 +36,7 @@ QgsRemappingProxyFeatureSink::~QgsRemappingProxyFeatureSink()
     delete mSink;
 }
 
-void QgsRemappingProxyFeatureSink::setExpressionContext( const QgsExpressionContext &context ) const
-{
-  mContext = context;
-}
+void QgsRemappingProxyFeatureSink::setExpressionContext( const QgsExpressionContext &context ) const { mContext = context; }
 
 void QgsRemappingProxyFeatureSink::setTransformContext( const QgsCoordinateTransformContext &context )
 {
@@ -135,10 +132,7 @@ bool QgsRemappingProxyFeatureSink::addFeatures( QgsFeatureIterator &iterator, Qg
   return res;
 }
 
-QString QgsRemappingProxyFeatureSink::lastError() const
-{
-  return mSink->lastError();
-}
+QString QgsRemappingProxyFeatureSink::lastError() const { return mSink->lastError(); }
 
 QVariant QgsRemappingSinkDefinition::toVariant() const
 {
@@ -191,14 +185,8 @@ bool QgsRemappingSinkDefinition::loadVariant( const QVariantMap &map )
 
 bool QgsRemappingSinkDefinition::operator==( const QgsRemappingSinkDefinition &other ) const
 {
-  return mDestinationWkbType == other.mDestinationWkbType
-         && mDestinationFields == other.mDestinationFields
-         && mFieldMap == other.mFieldMap
-         && mSourceCrs == other.mSourceCrs
+  return mDestinationWkbType == other.mDestinationWkbType && mDestinationFields == other.mDestinationFields && mFieldMap == other.mFieldMap && mSourceCrs == other.mSourceCrs
          && mDestinationCrs == other.mDestinationCrs;
 }
 
-bool QgsRemappingSinkDefinition::operator!=( const QgsRemappingSinkDefinition &other ) const
-{
-  return !( *this == other );
-}
+bool QgsRemappingSinkDefinition::operator!=( const QgsRemappingSinkDefinition &other ) const { return !( *this == other ); }

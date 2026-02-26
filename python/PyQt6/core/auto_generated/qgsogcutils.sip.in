@@ -28,16 +28,14 @@ Currently supported standards:
 #include "qgsogcutils.h"
 %End
   public:
-
     struct Context
     {
-
-      Context( const QgsMapLayer *layer = 0, const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() );
+        Context( const QgsMapLayer *layer = 0, const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() );
 %Docstring
 Constructs a Context from ``layer`` and ``transformContext``
 %End
-      const QgsMapLayer *layer;
-      QgsCoordinateTransformContext transformContext;
+        const QgsMapLayer *layer;
+        QgsCoordinateTransformContext transformContext;
     };
 
     enum GMLVersion /BaseType=IntEnum/
@@ -74,12 +72,9 @@ Read rectangle from GML2 Box
 Read rectangle from GML3 Envelope
 %End
 
-    static QDomElement geometryToGML( const QgsGeometry &geometry, QDomDocument &doc,
-                                      QgsOgcUtils::GMLVersion gmlVersion,
-                                      const QString &srsName,
-                                      bool invertAxisOrientation,
-                                      const QString &gmlIdBase,
-                                      int precision = 17 );
+    static QDomElement geometryToGML(
+      const QgsGeometry &geometry, QDomDocument &doc, QgsOgcUtils::GMLVersion gmlVersion, const QString &srsName, bool invertAxisOrientation, const QString &gmlIdBase, int precision = 17
+    );
 %Docstring
 Exports the geometry to GML
 
@@ -107,10 +102,7 @@ Exports the rectangle to GML2 Box
 :return: QDomElement
 %End
 
-    static QDomElement rectangleToGMLBox( const QgsRectangle *box, QDomDocument &doc,
-                                          const QString &srsName,
-                                          bool invertAxisOrientation,
-                                          int precision = 17 );
+    static QDomElement rectangleToGMLBox( const QgsRectangle *box, QDomDocument &doc, const QString &srsName, bool invertAxisOrientation, int precision = 17 );
 %Docstring
 Exports the rectangle to GML2 Box
 
@@ -124,10 +116,7 @@ Exports the rectangle to GML3 Envelope
 :return: QDomElement
 %End
 
-    static QDomElement rectangleToGMLEnvelope( const QgsRectangle *env, QDomDocument &doc,
-        const QString &srsName,
-        bool invertAxisOrientation,
-        int precision = 17 );
+    static QDomElement rectangleToGMLEnvelope( const QgsRectangle *env, QDomDocument &doc, const QString &srsName, bool invertAxisOrientation, int precision = 17 );
 %Docstring
 Exports the rectangle to GML3 Envelope
 
@@ -173,8 +162,7 @@ Returns an expression from a WFS filter embedded in a document.
 %End
 
 
-    static QDomElement expressionToOgcExpression( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = 0,
-        bool requiresFilterElement = false );
+    static QDomElement expressionToOgcExpression( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = 0, bool requiresFilterElement = false );
 %Docstring
 Creates an OGC expression XML element from the ``exp`` expression with
 default values for the geometry name, srs name, honourAsisOrientation
@@ -194,18 +182,11 @@ Creates an ElseFilter from ``doc``
 .. versionadded:: 3.28
 %End
 
-    static QDomElement expressionToOgcExpression( const QgsExpression &exp,
-        QDomDocument &doc,
-        QgsOgcUtils::GMLVersion gmlVersion,
-        FilterVersion filterVersion,
-        const QString &geometryName,
-        const QString &srsName,
-        bool honourAxisOrientation,
-        bool invertAxisOrientation,
-        QString *errorMessage = 0,
-        bool requiresFilterElement = false,
-        const QMap<QString, QString> &fieldNameToXPathMap = QMap<QString, QString>(),
-        const QMap<QString, QString> &namespacePrefixToUriMap = QMap<QString, QString>() );
+    static QDomElement expressionToOgcExpression(
+      const QgsExpression &exp, QDomDocument &doc, QgsOgcUtils::GMLVersion gmlVersion, FilterVersion filterVersion, const QString &geometryName, const QString &srsName, bool honourAxisOrientation,
+      bool invertAxisOrientation, QString *errorMessage = 0, bool requiresFilterElement = false, const QMap<QString, QString> &fieldNameToXPathMap = QMap<QString, QString>(),
+      const QMap<QString, QString> &namespacePrefixToUriMap = QMap<QString, QString>()
+    );
 %Docstring
 Creates an OGC expression XML element from the ``exp`` expression.
 
@@ -218,7 +199,6 @@ Creates an OGC expression XML element from the ``exp`` expression.
 
 
 };
-
 
 
 

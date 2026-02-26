@@ -32,13 +32,11 @@ attributes in layer DOM node:
     ~QgsPluginLayer();
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    QString str = QStringLiteral( "<QgsPluginLayer: '%1'>" ).arg( sipCpp->name() );
+%MethodCode QString str = QStringLiteral( "<QgsPluginLayer: '%1'>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    virtual QgsPluginLayer *clone() const = 0;
-
+      virtual QgsPluginLayer *clone() const;
 %Docstring
 Returns a new instance equivalent to this one.
 

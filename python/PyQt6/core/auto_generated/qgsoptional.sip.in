@@ -7,10 +7,9 @@
  ************************************************************************/
 
 
-template<T>
-class QgsOptional
+template<T> class QgsOptional
 {
-%Docstring(signature="appended")
+%Docstring
 A container for other classes and adds an additional enabled/disabled
 flag.
 
@@ -26,28 +25,24 @@ should not be lost when disabling and re-enabling.
 
    Not available in Python bindings (although SIP file is present for specific implementations).
 %End
-
-%TypeHeaderCode
-#include "qgsoptional.h"
-%End
   public:
-
     QgsOptional();
 %Docstring
-A QgsOptional is disabled by default if default constructed.
+A :py:class:`QgsOptional` is disabled by default if default constructed.
 %End
 
     QgsOptional( const T &data );
 %Docstring
-A QgsOptional is enabled by default if constructed with payload.
+A :py:class:`QgsOptional` is enabled by default if constructed with
+payload.
 %End
 
     QgsOptional( const T &data, bool enabled );
 %Docstring
-A QgsOptional constructed with enabled status and data
+A :py:class:`QgsOptional` constructed with enabled status and data
 %End
 
-    bool operator== ( const QgsOptional<T> &other ) const;
+    bool operator==( const QgsOptional<T> &other ) const;
 
 
     bool enabled() const;

@@ -29,10 +29,7 @@
 
 using namespace Qt::StringLiterals;
 
-bool QgsZipUtils::isZipFile( const QString &filename )
-{
-  return QFileInfo( filename ).suffix().compare( "qgz"_L1, Qt::CaseInsensitive ) == 0;
-}
+bool QgsZipUtils::isZipFile( const QString &filename ) { return QFileInfo( filename ).suffix().compare( "qgz"_L1, Qt::CaseInsensitive ) == 0; }
 
 bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QStringList &files, bool checkConsistency )
 {
@@ -94,10 +91,7 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
 
           if ( !QString( QDir::cleanPath( newFile.absolutePath() ) + u"/"_s ).startsWith( QDir( dir ).absolutePath() + u"/"_s ) )
           {
-            QgsMessageLog::logMessage( QObject::tr( "Skipped file %1 outside of the directory %2" ).arg(
-                                         newFile.absoluteFilePath(),
-                                         QDir( dir ).absolutePath()
-                                       ) );
+            QgsMessageLog::logMessage( QObject::tr( "Skipped file %1 outside of the directory %2" ).arg( newFile.absoluteFilePath(), QDir( dir ).absolutePath() ) );
             continue;
           }
 
@@ -206,10 +200,7 @@ bool QgsZipUtils::zip( const QString &zipFilename, const QStringList &files, boo
   return true;
 }
 
-bool QgsZipUtils::decodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut )
-{
-  return decodeGzip( bytesIn.constData(), bytesIn.count(), bytesOut );
-}
+bool QgsZipUtils::decodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut ) { return decodeGzip( bytesIn.constData(), bytesIn.count(), bytesOut ); }
 
 bool QgsZipUtils::decodeGzip( const char *bytesIn, std::size_t size, QByteArray &bytesOut )
 {
@@ -245,7 +236,7 @@ bool QgsZipUtils::decodeGzip( const char *bytesIn, std::size_t size, QByteArray 
     bytesInLeft -= bytesToProcess;
 
     if ( bytesToProcess == 0 )
-      break;  // we end with an error - no more data but inflate() wants more data
+      break; // we end with an error - no more data but inflate() wants more data
 
     // run inflate() on input until output buffer not full
     do
@@ -261,8 +252,7 @@ bool QgsZipUtils::decodeGzip( const char *bytesIn, std::size_t size, QByteArray 
       }
       const unsigned have = CHUNK - strm.avail_out;
       bytesOut.append( QByteArray::fromRawData( reinterpret_cast<const char *>( out ), static_cast<int>( have ) ) );
-    }
-    while ( strm.avail_out == 0 );
+    } while ( strm.avail_out == 0 );
   }
 
   inflateEnd( &strm );
@@ -302,9 +292,8 @@ bool QgsZipUtils::encodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut )
 
     const unsigned have = CHUNK - strm.avail_out;
     bytesOut.append( QByteArray::fromRawData( reinterpret_cast<const char *>( out ), static_cast<int>( have ) ) );
-  }
-  while ( strm.avail_out == 0 );
-  Q_ASSERT( ret == Z_STREAM_END );      // stream will be complete
+  } while ( strm.avail_out == 0 );
+  Q_ASSERT( ret == Z_STREAM_END ); // stream will be complete
 
   // clean up and return
   deflateEnd( &strm );

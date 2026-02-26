@@ -17,10 +17,7 @@
 
 #include "qgsfeaturestore.h"
 
-void QgsFeatureSink::finalize()
-{
-  flushBuffer();
-}
+void QgsFeatureSink::finalize() { flushBuffer(); }
 
 bool QgsFeatureSink::addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags )
 {
@@ -46,4 +43,3 @@ bool QgsFeatureSink::addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::
   }
   return result;
 }
-

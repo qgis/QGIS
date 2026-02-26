@@ -37,7 +37,7 @@ using namespace Qt::StringLiterals;
 #include <QThread>
 static int trace_callback( unsigned, void *ctx, void *p, void * )
 {
-  sqlite3_stmt *stmt = ( sqlite3_stmt * )p;
+  sqlite3_stmt *stmt = ( sqlite3_stmt * ) p;
   char *sql = sqlite3_expanded_sql( stmt );
   qDebug() << "SPATIALITE" << QThread::currentThreadId() << ( sqlite3 * ) ctx << sql;
   sqlite3_free( sql );
@@ -65,10 +65,7 @@ int spatialite_database_unique_ptr::open( const QString &path )
   return result;
 }
 
-void spatialite_database_unique_ptr::reset()
-{
-  std::unique_ptr< sqlite3, QgsSpatialiteCloser>::reset();
-}
+void spatialite_database_unique_ptr::reset() { std::unique_ptr< sqlite3, QgsSpatialiteCloser>::reset(); }
 
 int spatialite_database_unique_ptr::open_v2( const QString &path, int flags, const char *zVfs )
 {
@@ -88,21 +85,13 @@ int spatialite_database_unique_ptr::open_v2( const QString &path, int flags, con
 
 #ifdef SPATIALITE_PRINT_ALL_SQL
   // Log all queries
-  sqlite3_trace_v2(
-    database,
-    SQLITE_TRACE_STMT,
-    trace_callback,
-    database
-  );
+  sqlite3_trace_v2( database, SQLITE_TRACE_STMT, trace_callback, database );
 #endif
 
   return result;
 }
 
-QString spatialite_database_unique_ptr::errorMessage() const
-{
-  return QString( sqlite3_errmsg( get() ) );
-}
+QString spatialite_database_unique_ptr::errorMessage() const { return QString( sqlite3_errmsg( get() ) ); }
 
 sqlite3_statement_unique_ptr spatialite_database_unique_ptr::prepare( const QString &sql, int &resultCode )
 {

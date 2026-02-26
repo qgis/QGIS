@@ -18,7 +18,6 @@ Abstract interface for generating an expression context scope.
 #include "qgsexpressioncontextscopegenerator.h"
 %End
   public:
-
     virtual QgsExpressionContextScope *createExpressionContextScope() const = 0 /Factory/;
 %Docstring
 This method needs to be reimplemented in all classes which implement

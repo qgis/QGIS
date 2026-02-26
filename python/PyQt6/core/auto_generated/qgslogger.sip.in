@@ -40,7 +40,6 @@ appended to this file rather than to stdout.
 #include "qgslogger.h"
 %End
   public:
-
     static void debug( const QString &msg, int debuglevel = 1, const char *file = 0, const char *function = 0, int line = -1 );
 %Docstring
 Goes to qDebug.
@@ -118,6 +117,7 @@ Logs the location of the call.
   public:
     QgsScopeLogger( const char *file, const char *func, int line );
     ~QgsScopeLogger();
+
 };
 
 /************************************************************************

@@ -37,14 +37,12 @@ class QgsRectangle;
 class CORE_EXPORT QgsScaleCalculator
 {
   public:
-
     /**
      * Constructor
      * \param dpi Monitor resolution in dots per inch
      * \param mapUnits Units of the data on the map
      */
-    QgsScaleCalculator( double dpi = 0,
-                        Qgis::DistanceUnit mapUnits = Qgis::DistanceUnit::Meters );
+    QgsScaleCalculator( double dpi = 0, Qgis::DistanceUnit mapUnits = Qgis::DistanceUnit::Meters );
 
 
     /**
@@ -140,7 +138,6 @@ class CORE_EXPORT QgsScaleCalculator
     double calculateGeographicDistanceAtLatitude( double latitude, double longitude1, double longitude2 ) const;
 
   private:
-
     //! Calculate the \a delta and \a conversionFactor values based on the provided \a mapExtent.
     void calculateMetrics( const QgsRectangle &mapExtent, double &delta, double &conversionFactor ) const;
 

@@ -110,6 +110,7 @@ point cloud, annotations, etc).
       AllVisualStyleCategories,
       AllAttributeCategories,
       AllStyleCategories
+                           | Relations | Temporal | Legend | Elevation | Notes,
     };
     typedef QFlags<QgsMapLayer::StyleCategory> StyleCategories;
 
@@ -417,6 +418,13 @@ Returns QGIS Server Properties for the map layer
 
 .. versionadded:: 3.22
 %End
+    const QgsMapLayerServerProperties *serverProperties() const;
+%Docstring
+Returns QGIS Server Properties const for the map layer
+
+.. versionadded:: 3.22
+%End
+
  void setMetadataUrl( const QString &metaUrl ) /Deprecated="Since 3.22. "/;
 %Docstring
 Sets the metadata URL of the layer used by QGIS Server in
@@ -685,15 +693,15 @@ mesh layer dataset)
     enum ReadFlag /BaseType=IntEnum/
     {
       FlagDontResolveLayers,
-      FlagTrustLayerMetadata,
+      FlagTrustLayerMetadata
+      = 1 << 1, //!< Trust layer metadata. Improves layer load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on layer load \since QGIS 3.16
       FlagReadExtentFromXml,
       FlagForceReadOnly,
     };
     typedef QFlags<QgsMapLayer::ReadFlag> ReadFlags;
 
 
-    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context,
-                       QgsMapLayer::ReadFlags flags = QgsMapLayer::ReadFlags(), QgsDataProvider *preloadedProvider /Transfer/ = 0 );
+    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags = QgsMapLayer::ReadFlags(), QgsDataProvider *preloadedProvider /Transfer/ = 0 );
 %Docstring
 Sets state from DOM document
 
@@ -791,8 +799,7 @@ and saved in project file.
 .. versionadded:: 3.14
 %End
 
-    virtual int listStylesInDatabase( QStringList &ids /Out/, QStringList &names /Out/,
-                                      QStringList &descriptions /Out/, QString &msgError /Out/ );
+    virtual int listStylesInDatabase( QStringList &ids /Out/, QStringList &names /Out/, QStringList &descriptions /Out/, QString &msgError /Out/ );
 %Docstring
 Lists all the style in db split into related to the layer and not
 related to
@@ -839,10 +846,9 @@ Deletes a style from the database
     typedef QFlags<QgsMapLayer::SaveStyleResult> SaveStyleResults;
 
 
- virtual void saveStyleToDatabase( const QString &name, const QString &description,
-        bool useAsDefault, const QString &uiFileContent,
-        QString &msgError /Out/,
-        QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) /Deprecated="Since 4.0. Use saveStyleToDatabaseV2() instead."/;
+ virtual void saveStyleToDatabase(
+      const QString &name, const QString &description, bool useAsDefault, const QString &uiFileContent, QString &msgError /Out/, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories
+    ) /Deprecated="Since 4.0. Use saveStyleToDatabaseV2() instead."/;
 %Docstring
 Saves QML and SLD representations of the layer's style to a table in the
 database.
@@ -869,10 +875,9 @@ database.
    Use :py:func:`~QgsMapLayer.saveStyleToDatabaseV2` instead.
 %End
 
-    QgsMapLayer::SaveStyleResults saveStyleToDatabaseV2( const QString &name, const QString &description,
-        bool useAsDefault, const QString &uiFileContent,
-        QString &msgError /Out/,
-        QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+    QgsMapLayer::SaveStyleResults saveStyleToDatabaseV2(
+      const QString &name, const QString &description, bool useAsDefault, const QString &uiFileContent, QString &msgError /Out/, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories
+    );
 %Docstring
 Saves QML and SLD representations of the layer's style to a table in the
 database.
@@ -891,9 +896,10 @@ database.
 %End
 
 
-    virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag /Out/, bool loadFromLocalDb,
-                                    QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories,
-                                    Qgis::LoadStyleFlags flags = Qgis::LoadStyleFlags() );
+    virtual QString loadNamedStyle(
+      const QString &theURI, bool &resultFlag /Out/, bool loadFromLocalDb, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories,
+      Qgis::LoadStyleFlags flags = Qgis::LoadStyleFlags()
+    );
 %Docstring
 Loads a named style from file/local db/datasource db
 
@@ -1039,7 +1045,7 @@ the vertical CRS is changed.
 .. versionadded:: 3.38
 %End
 
-    QgsCoordinateTransformContext transformContext( ) const;
+    QgsCoordinateTransformContext transformContext() const;
 %Docstring
 Returns the layer data provider coordinate transform context or a
 default transform context if the layer does not have a valid data
@@ -1182,7 +1188,9 @@ personal qgis.db)
 %End
 
 
-    virtual QString loadNamedStyle( const QString &uri, bool &resultFlag /Out/, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories, Qgis::LoadStyleFlags flags = Qgis::LoadStyleFlags() );
+    virtual QString loadNamedStyle(
+      const QString &uri, bool &resultFlag /Out/, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories, Qgis::LoadStyleFlags flags = Qgis::LoadStyleFlags()
+    );
 %Docstring
 Retrieve a named style for this layer if one exists (either as a .qml
 file on disk or as a record in the users style table in their personal
@@ -1214,8 +1222,7 @@ Retrieve a named style for this layer from a sqlite database.
          - qml: QML style content from database
 %End
 
-    virtual bool importNamedStyle( QDomDocument &doc, QString &errorMsg /Out/,
-                                   QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+    virtual bool importNamedStyle( QDomDocument &doc, QString &errorMsg /Out/, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
 %Docstring
 Import the properties of this layer from a QDomDocument
 
@@ -1227,8 +1234,9 @@ Import the properties of this layer from a QDomDocument
            execution of :py:func:`~QgsMapLayer.readSymbology`
 %End
 
-    virtual void exportNamedStyle( QDomDocument &doc, QString &errorMsg /Out/, const QgsReadWriteContext &context = QgsReadWriteContext(),
-                                   QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const;
+    virtual void exportNamedStyle(
+      QDomDocument &doc, QString &errorMsg /Out/, const QgsReadWriteContext &context = QgsReadWriteContext(), QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories
+    ) const;
 %Docstring
 Export the properties of this layer as named style in a QDomDocument
 
@@ -1379,9 +1387,7 @@ Attempts to style the layer using the formatting from an SLD type file.
     virtual bool readSld( const QDomNode &node, QString &errorMessage );
 
 
-
-    virtual bool readSymbology( const QDomNode &node, QString &errorMessage,
-                                QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) = 0;
+    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) = 0;
 %Docstring
 Read the symbology for the current layer from the DOM node supplied.
 
@@ -1396,8 +1402,7 @@ Read the symbology for the current layer from the DOM node supplied.
 :return: ``True`` in case of success.
 %End
 
-    virtual bool readStyle( const QDomNode &node, QString &errorMessage,
-                            QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
+    virtual bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
 %Docstring
 Read the style for the current layer from the DOM node supplied.
 
@@ -1415,8 +1420,7 @@ Read the style for the current layer from the DOM node supplied.
    To be implemented in subclasses. Default implementation does nothing and returns ``False``.
 %End
 
-    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
-                                 StyleCategories categories = AllStyleCategories ) const = 0;
+    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const = 0;
 %Docstring
 Write the style for the layer into the document provided.
 
@@ -1435,8 +1439,7 @@ Write the style for the layer into the document provided.
 :return: ``True`` in case of success.
 %End
 
-    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
-                             StyleCategories categories = AllStyleCategories ) const;
+    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const;
 %Docstring
 Write just the symbology information for the layer into the document
 
@@ -2138,12 +2141,11 @@ Sets the coordinate transform context to ``transformContext``
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    QString str = QStringLiteral( "<QgsMapLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+%MethodCode QString str = QStringLiteral( "<QgsMapLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    QgsProject *project() const;
+      QgsProject *project() const;
 %Docstring
 Returns the parent project if this map layer is added to a project.
 Otherwise returns ``None``
@@ -2428,7 +2430,6 @@ Emitted when map tips are enabled or disabled for the layer.
 %End
 
   protected:
-
     void clone( QgsMapLayer *layer ) const;
 %Docstring
 Copies attributes like name, short name, ... into another layer.
@@ -2526,15 +2527,12 @@ Write style manager's configuration (if exists). To be called by
 subclasses.
 %End
 
-    void writeCommonStyle( QDomElement &layerElement, QDomDocument &document,
-                           const QgsReadWriteContext &context,
-                           StyleCategories categories = AllStyleCategories ) const;
+    void writeCommonStyle( QDomElement &layerElement, QDomDocument &document, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const;
 %Docstring
 Write style data common to all layer types
 %End
 
-    void readCommonStyle( const QDomElement &layerElement, const QgsReadWriteContext &context,
-                          StyleCategories categories = AllStyleCategories );
+    void readCommonStyle( const QDomElement &layerElement, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
 %Docstring
 Read style data common to all layer types
 %End

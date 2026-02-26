@@ -20,7 +20,6 @@ Contains utilities for working with HTML.
 #include "qgshtmlutils.h"
 %End
   public:
-
     static QString buildBulletList( const QStringList &values );
 %Docstring
 Build a bullet list. This will return a HTML "ul" element.

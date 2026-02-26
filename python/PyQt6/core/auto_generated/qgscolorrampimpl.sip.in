@@ -22,7 +22,6 @@ ramp.
 #include "qgscolorrampimpl.h"
 %End
   public:
-
     QgsGradientStop( double offset, const QColor &color );
 %Docstring
 Constructor for QgsGradientStop
@@ -109,11 +108,7 @@ also supports optional extra color stops.
 #include "qgscolorrampimpl.h"
 %End
   public:
-
-    QgsGradientColorRamp( const QColor &color1 = DEFAULT_GRADIENT_COLOR1,
-                          const QColor &color2 = DEFAULT_GRADIENT_COLOR2,
-                          bool discrete = false,
-                          const QgsGradientStopsList &stops = QgsGradientStopsList() );
+    QgsGradientColorRamp( const QColor &color1 = DEFAULT_GRADIENT_COLOR1, const QColor &color2 = DEFAULT_GRADIENT_COLOR2, bool discrete = false, const QgsGradientStopsList &stops = QgsGradientStopsList() );
 %Docstring
 Constructor for QgsGradientColorRamp
 
@@ -344,11 +339,10 @@ preset parameters.
 #include "qgscolorrampimpl.h"
 %End
   public:
-
-    QgsLimitedRandomColorRamp( int count = DEFAULT_RANDOM_COUNT,
-                               int hueMin = DEFAULT_RANDOM_HUE_MIN, int hueMax = DEFAULT_RANDOM_HUE_MAX,
-                               int satMin = DEFAULT_RANDOM_SAT_MIN, int satMax = DEFAULT_RANDOM_SAT_MAX,
-                               int valMin = DEFAULT_RANDOM_VAL_MIN, int valMax = DEFAULT_RANDOM_VAL_MAX );
+    QgsLimitedRandomColorRamp(
+      int count = DEFAULT_RANDOM_COUNT, int hueMin = DEFAULT_RANDOM_HUE_MIN, int hueMax = DEFAULT_RANDOM_HUE_MAX, int satMin = DEFAULT_RANDOM_SAT_MIN, int satMax = DEFAULT_RANDOM_SAT_MAX,
+      int valMin = DEFAULT_RANDOM_VAL_MIN, int valMax = DEFAULT_RANDOM_VAL_MAX
+    );
 %Docstring
 Constructor for QgsLimitedRandomColorRamp
 
@@ -391,10 +385,10 @@ Returns the string identifier for QgsLimitedRandomColorRamp.
 
     virtual int count() const;
 
-    static QList<QColor> randomColors( int count,
-                                       int hueMax = DEFAULT_RANDOM_HUE_MAX, int hueMin = DEFAULT_RANDOM_HUE_MIN,
-                                       int satMax = DEFAULT_RANDOM_SAT_MAX, int satMin = DEFAULT_RANDOM_SAT_MIN,
-                                       int valMax = DEFAULT_RANDOM_VAL_MAX, int valMin = DEFAULT_RANDOM_VAL_MIN );
+    static QList<QColor> randomColors(
+      int count, int hueMax = DEFAULT_RANDOM_HUE_MAX, int hueMin = DEFAULT_RANDOM_HUE_MIN, int satMax = DEFAULT_RANDOM_SAT_MAX, int satMin = DEFAULT_RANDOM_SAT_MIN,
+      int valMax = DEFAULT_RANDOM_VAL_MAX, int valMin = DEFAULT_RANDOM_VAL_MIN
+    );
 %Docstring
 Gets a list of random colors
 %End
@@ -497,7 +491,7 @@ Sets the maximum value for generated colors
   protected:
 };
 
-class QgsRandomColorRamp: QgsColorRamp
+class QgsRandomColorRamp : QgsColorRamp
 {
 %Docstring(signature="appended")
 A color ramp consisting of random colors, constrained within component
@@ -511,7 +505,6 @@ saturation and value ranges to prevent ugly color generation.
 #include "qgscolorrampimpl.h"
 %End
   public:
-
     QgsRandomColorRamp();
 
     virtual int count() const;
@@ -550,8 +543,6 @@ Returns the string identifier for QgsRandomColorRamp.
 
 
   protected:
-
-
 };
 
 
@@ -565,7 +556,6 @@ A scheme based color ramp consisting of a list of predefined colors.
 #include "qgscolorrampimpl.h"
 %End
   public:
-
     QgsPresetSchemeColorRamp( const QList< QColor > &colors = QList< QColor >() );
 %Docstring
 Constructor for QgsPresetSchemeColorRamp.
@@ -648,10 +638,7 @@ Color ramp utilising "Color Brewer" preset color schemes.
 #include "qgscolorrampimpl.h"
 %End
   public:
-
-    QgsColorBrewerColorRamp( const QString &schemeName = DEFAULT_COLORBREWER_SCHEMENAME,
-                             int colors = DEFAULT_COLORBREWER_COLORS,
-                             bool inverted = false );
+    QgsColorBrewerColorRamp( const QString &schemeName = DEFAULT_COLORBREWER_SCHEMENAME, int colors = DEFAULT_COLORBREWER_COLORS, bool inverted = false );
 %Docstring
 Constructor for QgsColorBrewerColorRamp
 
@@ -746,7 +733,6 @@ color brewer scheme name
 %End
 
   protected:
-
     void loadPalette();
 %Docstring
 Generates the scheme using the current name and number of colors
@@ -766,11 +752,7 @@ A color ramp from the CPT City collection.
 #include "qgscolorrampimpl.h"
 %End
   public:
-
-    QgsCptCityColorRamp( const QString &schemeName = DEFAULT_CPTCITY_SCHEMENAME,
-                         const QString &variantName = DEFAULT_CPTCITY_VARIANTNAME,
-                         bool inverted = false,
-                         bool doLoadFile = true );
+    QgsCptCityColorRamp( const QString &schemeName = DEFAULT_CPTCITY_SCHEMENAME, const QString &variantName = DEFAULT_CPTCITY_VARIANTNAME, bool inverted = false, bool doLoadFile = true );
 %Docstring
 Constructor for QgsCptCityColorRamp
 
@@ -780,9 +762,7 @@ Constructor for QgsCptCityColorRamp
 :param doLoadFile: load cpt-city ramp from file
 %End
 
-    QgsCptCityColorRamp( const QString &schemeName, const QStringList &variantList,
-                         const QString &variantName = QString(), bool inverted = false,
-                         bool doLoadFile = true );
+    QgsCptCityColorRamp( const QString &schemeName, const QStringList &variantList, const QString &variantName = QString(), bool inverted = false, bool doLoadFile = true );
 %Docstring
 Constructor for QgsCptCityColorRamp
 
@@ -841,7 +821,6 @@ Returns the string identifier for QgsCptCityColorRamp.
     QgsStringMap copyingInfo() const;
 
   protected:
-
 };
 
 

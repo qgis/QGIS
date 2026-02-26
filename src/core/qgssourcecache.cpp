@@ -36,8 +36,7 @@ using namespace Qt::StringLiterals;
 
 QgsSourceCacheEntry::QgsSourceCacheEntry( const QString &path )
   : QgsAbstractContentCacheEntry( path )
-{
-}
+{}
 
 bool QgsSourceCacheEntry::isEqual( const QgsAbstractContentCacheEntry *other ) const
 {
@@ -49,22 +48,16 @@ bool QgsSourceCacheEntry::isEqual( const QgsAbstractContentCacheEntry *other ) c
   return true;
 }
 
-int QgsSourceCacheEntry::dataSize() const
-{
-  return filePath.size();
-}
+int QgsSourceCacheEntry::dataSize() const { return filePath.size(); }
 
-void QgsSourceCacheEntry::dump() const
-{
-  QgsDebugMsgLevel( u"path: %1"_s.arg( path ), 3 );
-}
+void QgsSourceCacheEntry::dump() const { QgsDebugMsgLevel( u"path: %1"_s.arg( path ), 3 ); }
 
 ///@endcond
 
 QgsSourceCache::QgsSourceCache( QObject *parent )
   : QgsAbstractContentCache< QgsSourceCacheEntry >( parent, QObject::tr( "Source" ) )
 {
-  temporaryDir = std::make_unique<QTemporaryDir>( );
+  temporaryDir = std::make_unique<QTemporaryDir>();
 
   connect( this, &QgsAbstractContentCacheBase::remoteContentFetched, this, &QgsSourceCache::remoteSourceFetched );
 }

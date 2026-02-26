@@ -40,10 +40,10 @@ inexpensively copied.
 %End
   public:
 
-
     enum Flag /BaseType=IntEnum/
     {
-      FlagStoreFeatureGeometries,
+      FlagStoreFeatureGeometries
+      = 1 << 0, //!< Indicates that the spatial index should also store feature geometries. This requires more memory, but can speed up operations by avoiding additional requests to data providers to fetch matching feature geometries. Additionally, it is required for non-bounding box nearest neighbor searches.
     };
     typedef QFlags<QgsSpatialIndex::Flag> Flags;
 
@@ -217,8 +217,7 @@ FlagStoreFeatureGeometries flag.
 
 .. versionadded:: 3.6
 %End
-%MethodCode
-    auto g = std::make_unique< QgsGeometry >( sipCpp->geometry( a0 ) );
+%MethodCode auto g = std::make_unique< QgsGeometry >( sipCpp->geometry( a0 ) );
     if ( g->isNull() )
     {
       PyErr_SetString( PyExc_KeyError, QStringLiteral( "No geometry with feature id %1 exists in the index." ).arg( a0 ).toUtf8().constData() );

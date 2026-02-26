@@ -22,20 +22,11 @@
 
 using namespace Qt::StringLiterals;
 
-QVector<QgsAttributeTableConfig::ColumnConfig> QgsAttributeTableConfig::columns() const
-{
-  return mColumns;
-}
+QVector<QgsAttributeTableConfig::ColumnConfig> QgsAttributeTableConfig::columns() const { return mColumns; }
 
-bool QgsAttributeTableConfig::isEmpty() const
-{
-  return mColumns.isEmpty();
-}
+bool QgsAttributeTableConfig::isEmpty() const { return mColumns.isEmpty(); }
 
-int QgsAttributeTableConfig::size() const
-{
-  return mColumns.size();
-}
+int QgsAttributeTableConfig::size() const { return mColumns.size(); }
 
 int QgsAttributeTableConfig::mapVisibleColumnToIndex( int visibleColumn ) const
 {
@@ -52,10 +43,7 @@ int QgsAttributeTableConfig::mapVisibleColumnToIndex( int visibleColumn ) const
   return -1;
 }
 
-void QgsAttributeTableConfig::setColumns( const QVector<ColumnConfig> &columns )
-{
-  mColumns = columns;
-}
+void QgsAttributeTableConfig::setColumns( const QVector<ColumnConfig> &columns ) { mColumns = columns; }
 
 void QgsAttributeTableConfig::update( const QgsFields &fields )
 {
@@ -135,15 +123,9 @@ void QgsAttributeTableConfig::setActionWidgetVisible( bool visible )
   }
 }
 
-QgsAttributeTableConfig::ActionWidgetStyle QgsAttributeTableConfig::actionWidgetStyle() const
-{
-  return mActionWidgetStyle;
-}
+QgsAttributeTableConfig::ActionWidgetStyle QgsAttributeTableConfig::actionWidgetStyle() const { return mActionWidgetStyle; }
 
-void QgsAttributeTableConfig::setActionWidgetStyle( ActionWidgetStyle actionWidgetStyle )
-{
-  mActionWidgetStyle = actionWidgetStyle;
-}
+void QgsAttributeTableConfig::setActionWidgetStyle( ActionWidgetStyle actionWidgetStyle ) { mActionWidgetStyle = actionWidgetStyle; }
 
 
 void QgsAttributeTableConfig::readXml( const QDomNode &node )
@@ -211,45 +193,24 @@ void QgsAttributeTableConfig::readXml( const QDomNode &node )
   setSortOrder( sortOrder );
 }
 
-QString QgsAttributeTableConfig::sortExpression() const
-{
-  return mSortExpression;
-}
+QString QgsAttributeTableConfig::sortExpression() const { return mSortExpression; }
 
-void QgsAttributeTableConfig::setSortExpression( const QString &sortExpression )
-{
-  mSortExpression = sortExpression;
-}
+void QgsAttributeTableConfig::setSortExpression( const QString &sortExpression ) { mSortExpression = sortExpression; }
 
-int QgsAttributeTableConfig::columnWidth( int column ) const
-{
-  return mColumns.at( column ).width;
-}
+int QgsAttributeTableConfig::columnWidth( int column ) const { return mColumns.at( column ).width; }
 
-void QgsAttributeTableConfig::setColumnWidth( int column, int width )
-{
-  mColumns[ column ].width = width;
-}
+void QgsAttributeTableConfig::setColumnWidth( int column, int width ) { mColumns[column].width = width; }
 
-bool QgsAttributeTableConfig::columnHidden( int column ) const
-{
-  return mColumns.at( column ).hidden;
-}
+bool QgsAttributeTableConfig::columnHidden( int column ) const { return mColumns.at( column ).hidden; }
 
-void QgsAttributeTableConfig::setColumnHidden( int column, bool hidden )
-{
-  mColumns[ column ].hidden = hidden;
-}
+void QgsAttributeTableConfig::setColumnHidden( int column, bool hidden ) { mColumns[column].hidden = hidden; }
 
 bool QgsAttributeTableConfig::operator!=( const QgsAttributeTableConfig &other ) const
 {
   return mSortExpression != other.mSortExpression || mColumns != other.mColumns || mActionWidgetStyle != other.mActionWidgetStyle || mSortOrder != other.mSortOrder;
 }
 
-Qt::SortOrder QgsAttributeTableConfig::sortOrder() const
-{
-  return mSortOrder;
-}
+Qt::SortOrder QgsAttributeTableConfig::sortOrder() const { return mSortOrder; }
 
 void QgsAttributeTableConfig::setSortOrder( Qt::SortOrder sortOrder )
 {
@@ -266,14 +227,14 @@ void QgsAttributeTableConfig::writeXml( QDomNode &node ) const
 {
   QDomDocument doc( node.ownerDocument() );
 
-  QDomElement configElement  = doc.createElement( u"attributetableconfig"_s );
+  QDomElement configElement = doc.createElement( u"attributetableconfig"_s );
   configElement.setAttribute( u"actionWidgetStyle"_s, mActionWidgetStyle == ButtonList ? "buttonList" : "dropDown" );
 
   configElement.setAttribute( u"sortExpression"_s, mSortExpression );
 
   configElement.setAttribute( u"sortOrder"_s, mSortOrder );
 
-  QDomElement columnsElement  = doc.createElement( u"columns"_s );
+  QDomElement columnsElement = doc.createElement( u"columns"_s );
 
   const auto constMColumns = mColumns;
   for ( const ColumnConfig &column : constMColumns )
@@ -307,9 +268,7 @@ bool QgsAttributeTableConfig::hasSameColumns( const QgsAttributeTableConfig &oth
   {
     for ( int i = 0; i < columns().size(); i++ )
     {
-      if ( columns().at( i ).name != other.columns().at( i ).name ||
-           columns().at( i ).type != other.columns().at( i ).type ||
-           columns().at( i ).hidden != other.columns().at( i ).hidden )
+      if ( columns().at( i ).name != other.columns().at( i ).name || columns().at( i ).type != other.columns().at( i ).type || columns().at( i ).hidden != other.columns().at( i ).hidden )
       {
         return false;
       }
@@ -320,7 +279,4 @@ bool QgsAttributeTableConfig::hasSameColumns( const QgsAttributeTableConfig &oth
   return false;
 }
 
-bool QgsAttributeTableConfig::ColumnConfig::operator== ( const ColumnConfig &other ) const
-{
-  return type == other.type && name == other.name && hidden == other.hidden && width == other.width;
-}
+bool QgsAttributeTableConfig::ColumnConfig::operator==( const ColumnConfig &other ) const { return type == other.type && name == other.name && hidden == other.hidden && width == other.width; }

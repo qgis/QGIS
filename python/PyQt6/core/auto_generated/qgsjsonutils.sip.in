@@ -25,7 +25,6 @@ GeoJSON spec if either the source vector layer or source CRS is set.
 #include "qgsjsonutils.h"
 %End
   public:
-
     QgsJsonExporter( QgsVectorLayer *vectorLayer = 0, int precision = 6 );
 %Docstring
 Constructor for QgsJsonExporter.
@@ -253,10 +252,7 @@ values.
 .. versionadded:: 3.40
 %End
 
-    QString exportFeature( const QgsFeature &feature,
-                           const QVariantMap &extraProperties = QVariantMap(),
-                           const QVariant &id = QVariant(),
-                           int indent = -1 ) const;
+    QString exportFeature( const QgsFeature &feature, const QVariantMap &extraProperties = QVariantMap(), const QVariant &id = QVariant(), int indent = -1 ) const;
 %Docstring
 Returns a GeoJSON string representation of a feature.
 
@@ -321,7 +317,6 @@ Helper utilities for working with JSON and GeoJSON conversions.
     static const QMetaObject staticMetaObject;
 
   public:
-
     static QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields = QgsFields() );
 %Docstring
 Attempts to parse a GeoJSON ``string`` to a collection of features. It
@@ -365,8 +360,7 @@ quotations and escaping where required.
 :return: encoded value
 %End
 
-    static QString exportAttributes( const QgsFeature &feature, QgsVectorLayer *layer = 0,
-                                     const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>() );
+    static QString exportAttributes( const QgsFeature &feature, QgsVectorLayer *layer = 0, const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>() );
 %Docstring
 Exports all attributes from a :py:class:`QgsFeature` as a JSON map type.
 
@@ -380,6 +374,27 @@ Exports all attributes from a :py:class:`QgsFeature` as a JSON map type.
                               same layer.
 %End
 
+    static json exportAttributesToJsonObject( const QgsFeature &feature, QgsVectorLayer *layer = 0, const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>(), bool useFieldFormatters = true );
+%Docstring
+Exports all attributes from a :py:class:`QgsFeature` as a json object.
+
+:param feature: feature to export
+:param layer: optional associated vector layer. If specified, this
+              allows richer export utilising settings like the layer's
+              fields widget configuration.
+:param attributeWidgetCaches: optional widget configuration cache. Can
+                              be used to speed up exporting the
+                              attributes for multiple features from the
+                              same layer.
+:param useFieldFormatters: Whether field formatters should be used
+                           (since QGIS 3.40)
+
+.. note::
+
+   Not available in Python bindings
+
+.. versionadded:: 3.8
+%End
 
     static QVariantList parseArray( const QString &json, QMetaType::Type type = QMetaType::Type::UnknownType );
 %Docstring
@@ -414,7 +429,6 @@ Returns a null geometry if the geometry could not be parsed.
 
 .. versionadded:: 3.36
 %End
-
 
 
 

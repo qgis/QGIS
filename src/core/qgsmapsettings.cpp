@@ -69,15 +69,9 @@ void QgsMapSettings::setMagnificationFactor( double factor, const QgsPointXY *ce
   updateDerived();
 }
 
-double QgsMapSettings::magnificationFactor() const
-{
-  return mMagnificationFactor;
-}
+double QgsMapSettings::magnificationFactor() const { return mMagnificationFactor; }
 
-QgsRectangle QgsMapSettings::extent() const
-{
-  return mExtent;
-}
+QgsRectangle QgsMapSettings::extent() const { return mExtent; }
 
 void QgsMapSettings::setExtent( const QgsRectangle &extent, bool magnified )
 {
@@ -91,20 +85,11 @@ void QgsMapSettings::setExtent( const QgsRectangle &extent, bool magnified )
   updateDerived();
 }
 
-double QgsMapSettings::extentBuffer() const
-{
-  return mExtentBuffer;
-}
+double QgsMapSettings::extentBuffer() const { return mExtentBuffer; }
 
-void QgsMapSettings::setExtentBuffer( const double buffer )
-{
-  mExtentBuffer = buffer;
-}
+void QgsMapSettings::setExtentBuffer( const double buffer ) { mExtentBuffer = buffer; }
 
-double QgsMapSettings::rotation() const
-{
-  return mRotation;
-}
+double QgsMapSettings::rotation() const { return mRotation; }
 
 void QgsMapSettings::setRotation( double degrees )
 {
@@ -139,10 +124,7 @@ void QgsMapSettings::updateDerived()
   // the ratio indicates that there is more than about 12 significant
   // figures (there are about 16 significant figures in a double).
 
-  if ( extent.width()  > 0 &&
-       extent.height() > 0 &&
-       extent.width()  < 1 &&
-       extent.height() < 1 )
+  if ( extent.width() > 0 && extent.height() > 0 && extent.width() < 1 && extent.height() < 1 )
   {
     // Use abs() on the extent to avoid the case where the extent is
     // symmetrical about 0.
@@ -175,8 +157,7 @@ void QgsMapSettings::updateDerived()
   mMapUnitsPerPixel = mapUnitsPerPixelY > mapUnitsPerPixelX ? mapUnitsPerPixelY : mapUnitsPerPixelX;
 
   // calculate the actual extent of the mapCanvas
-  double dxmin = mExtent.xMinimum(), dxmax = mExtent.xMaximum(),
-         dymin = mExtent.yMinimum(), dymax = mExtent.yMaximum(), whitespace;
+  double dxmin = mExtent.xMinimum(), dxmax = mExtent.xMaximum(), dymin = mExtent.yMinimum(), dymax = mExtent.yMaximum(), whitespace;
 
   if ( mapUnitsPerPixelY > mapUnitsPerPixelX )
   {
@@ -198,13 +179,7 @@ void QgsMapSettings::updateDerived()
   mScale = mScaleCalculator.calculate( mVisibleExtent, mSize.width() );
 
   bool ok = true;
-  mMapToPixel.setParameters(
-    mapUnitsPerPixel(),
-    visibleExtent().center().x(),
-    visibleExtent().center().y(),
-    outputSize().width(),
-    outputSize().height(),
-    mRotation, &ok );
+  mMapToPixel.setParameters( mapUnitsPerPixel(), visibleExtent().center().x(), visibleExtent().center().y(), outputSize().width(), outputSize().height(), mRotation, &ok );
 
   mValid = ok;
 
@@ -234,26 +209,19 @@ void QgsMapSettings::updateDerived()
   QgsDebugMsgLevel( u"Extent: %1"_s.arg( mExtent.asWktCoordinates() ), 5 );
   QgsDebugMsgLevel( u"Visible Extent: %1"_s.arg( mVisibleExtent.asWktCoordinates() ), 5 );
   QgsDebugMsgLevel( u"Magnification factor: %1"_s.arg( mMagnificationFactor ), 5 );
-
 }
 
 void QgsMapSettings::matchRasterizedRenderingPolicyToFlags()
 {
-  if ( !mFlags.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput )
-       && mFlags.testFlag( Qgis::MapSettingsFlag::UseAdvancedEffects ) )
+  if ( !mFlags.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) && mFlags.testFlag( Qgis::MapSettingsFlag::UseAdvancedEffects ) )
     mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::Default;
-  else if ( mFlags.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput )
-            && mFlags.testFlag( Qgis::MapSettingsFlag::UseAdvancedEffects ) )
+  else if ( mFlags.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) && mFlags.testFlag( Qgis::MapSettingsFlag::UseAdvancedEffects ) )
     mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::PreferVector;
-  else if ( mFlags.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput )
-            && !mFlags.testFlag( Qgis::MapSettingsFlag::UseAdvancedEffects ) )
+  else if ( mFlags.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) && !mFlags.testFlag( Qgis::MapSettingsFlag::UseAdvancedEffects ) )
     mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::ForceVector;
 }
 
-QSize QgsMapSettings::outputSize() const
-{
-  return mSize;
-}
+QSize QgsMapSettings::outputSize() const { return mSize; }
 
 void QgsMapSettings::setOutputSize( QSize size )
 {
@@ -262,10 +230,7 @@ void QgsMapSettings::setOutputSize( QSize size )
   updateDerived();
 }
 
-float QgsMapSettings::devicePixelRatio() const
-{
-  return mDevicePixelRatio;
-}
+float QgsMapSettings::devicePixelRatio() const { return mDevicePixelRatio; }
 
 void QgsMapSettings::setDevicePixelRatio( float dpr )
 {
@@ -273,15 +238,9 @@ void QgsMapSettings::setDevicePixelRatio( float dpr )
   updateDerived();
 }
 
-QSize QgsMapSettings::deviceOutputSize() const
-{
-  return outputSize() * mDevicePixelRatio;
-}
+QSize QgsMapSettings::deviceOutputSize() const { return outputSize() * mDevicePixelRatio; }
 
-double QgsMapSettings::outputDpi() const
-{
-  return mDpi;
-}
+double QgsMapSettings::outputDpi() const { return mDpi; }
 
 void QgsMapSettings::setOutputDpi( double dpi )
 {
@@ -290,15 +249,9 @@ void QgsMapSettings::setOutputDpi( double dpi )
   updateDerived();
 }
 
-double QgsMapSettings::dpiTarget() const
-{
-  return mDpiTarget;
-}
+double QgsMapSettings::dpiTarget() const { return mDpiTarget; }
 
-void QgsMapSettings::setDpiTarget( double dpi )
-{
-  mDpiTarget = dpi;
-}
+void QgsMapSettings::setDpiTarget( double dpi ) { mDpiTarget = dpi; }
 
 QStringList QgsMapSettings::layerIds( bool expandGroupLayers ) const
 {
@@ -325,9 +278,8 @@ QList<QgsMapLayer *> QgsMapSettings::layers( bool expandGroupLayers ) const
 
   QList< QgsMapLayer * > result;
 
-  std::function< void( const QList< QgsMapLayer * >& layers ) > expandLayers;
-  expandLayers = [&result, &expandLayers]( const QList< QgsMapLayer * > &layers )
-  {
+  std::function< void( const QList< QgsMapLayer * > &layers ) > expandLayers;
+  expandLayers = [&result, &expandLayers]( const QList< QgsMapLayer * > &layers ) {
     for ( QgsMapLayer *layer : layers )
     {
       if ( QgsGroupLayer *groupLayer = qobject_cast< QgsGroupLayer * >( layer ) )
@@ -345,8 +297,7 @@ QList<QgsMapLayer *> QgsMapSettings::layers( bool expandGroupLayers ) const
   return result;
 }
 
-template<typename T>
-QVector<T> QgsMapSettings::layers() const
+template<typename T> QVector<T> QgsMapSettings::layers() const
 {
   const QList<QgsMapLayer *> actualLayers = _qgis_listQPointerToRaw( mLayers );
 
@@ -366,11 +317,7 @@ void QgsMapSettings::setLayers( const QList<QgsMapLayer *> &layers )
 {
   // filter list, removing null layers and non-spatial layers
   auto filteredList = layers;
-  filteredList.erase( std::remove_if( filteredList.begin(), filteredList.end(),
-                                      []( QgsMapLayer * layer )
-  {
-    return !layer || !layer->isSpatial();
-  } ), filteredList.end() );
+  filteredList.erase( std::remove_if( filteredList.begin(), filteredList.end(), []( QgsMapLayer *layer ) { return !layer || !layer->isSpatial(); } ), filteredList.end() );
 
   mLayers = _qgis_listRawToQPointer( filteredList );
 
@@ -387,15 +334,9 @@ void QgsMapSettings::setLayers( const QList<QgsMapLayer *> &layers )
   }
 }
 
-QMap<QString, QString> QgsMapSettings::layerStyleOverrides() const
-{
-  return mLayerStyleOverrides;
-}
+QMap<QString, QString> QgsMapSettings::layerStyleOverrides() const { return mLayerStyleOverrides; }
 
-void QgsMapSettings::setLayerStyleOverrides( const QMap<QString, QString> &overrides )
-{
-  mLayerStyleOverrides = overrides;
-}
+void QgsMapSettings::setLayerStyleOverrides( const QMap<QString, QString> &overrides ) { mLayerStyleOverrides = overrides; }
 
 void QgsMapSettings::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
 {
@@ -405,10 +346,7 @@ void QgsMapSettings::setDestinationCrs( const QgsCoordinateReferenceSystem &crs 
   updateDerived();
 }
 
-QgsCoordinateReferenceSystem QgsMapSettings::destinationCrs() const
-{
-  return mDestCRS;
-}
+QgsCoordinateReferenceSystem QgsMapSettings::destinationCrs() const { return mDestCRS; }
 
 bool QgsMapSettings::setEllipsoid( const QString &ellipsoid )
 {
@@ -439,25 +377,13 @@ void QgsMapSettings::setFlag( Qgis::MapSettingsFlag flag, bool on )
   matchRasterizedRenderingPolicyToFlags();
 }
 
-Qgis::MapSettingsFlags QgsMapSettings::flags() const
-{
-  return mFlags;
-}
+Qgis::MapSettingsFlags QgsMapSettings::flags() const { return mFlags; }
 
-bool QgsMapSettings::testFlag( Qgis::MapSettingsFlag flag ) const
-{
-  return mFlags.testFlag( flag );
-}
+bool QgsMapSettings::testFlag( Qgis::MapSettingsFlag flag ) const { return mFlags.testFlag( flag ); }
 
-Qgis::DistanceUnit QgsMapSettings::mapUnits() const
-{
-  return mScaleCalculator.mapUnits();
-}
+Qgis::DistanceUnit QgsMapSettings::mapUnits() const { return mScaleCalculator.mapUnits(); }
 
-Qgis::ScaleCalculationMethod QgsMapSettings::scaleMethod() const
-{
-  return mScaleCalculator.method();
-}
+Qgis::ScaleCalculationMethod QgsMapSettings::scaleMethod() const { return mScaleCalculator.method(); }
 
 void QgsMapSettings::setScaleMethod( Qgis::ScaleCalculationMethod method )
 {
@@ -465,15 +391,9 @@ void QgsMapSettings::setScaleMethod( Qgis::ScaleCalculationMethod method )
   updateDerived();
 }
 
-bool QgsMapSettings::hasValidSettings() const
-{
-  return mValid;
-}
+bool QgsMapSettings::hasValidSettings() const { return mValid; }
 
-QgsRectangle QgsMapSettings::visibleExtent() const
-{
-  return mVisibleExtent;
-}
+QgsRectangle QgsMapSettings::visibleExtent() const { return mVisibleExtent; }
 
 QPolygonF QgsMapSettings::visiblePolygon() const
 {
@@ -512,15 +432,9 @@ QPolygonF QgsMapSettings::visiblePolygonWithBuffer() const
   return poly;
 }
 
-double QgsMapSettings::mapUnitsPerPixel() const
-{
-  return mMapUnitsPerPixel;
-}
+double QgsMapSettings::mapUnitsPerPixel() const { return mMapUnitsPerPixel; }
 
-double QgsMapSettings::scale() const
-{
-  return mScale;
-}
+double QgsMapSettings::scale() const { return mScale; }
 
 QgsCoordinateTransformContext QgsMapSettings::transformContext() const
 {
@@ -576,15 +490,9 @@ QgsRectangle QgsMapSettings::computeExtentForScale( const QgsPointXY &center, do
   }
 }
 
-double QgsMapSettings::computeScaleForExtent( const QgsRectangle &extent ) const
-{
-  return mScaleCalculator.calculate( extent, outputSize().width() );
-}
+double QgsMapSettings::computeScaleForExtent( const QgsRectangle &extent ) const { return mScaleCalculator.calculate( extent, outputSize().width() ); }
 
-double QgsMapSettings::layerToMapUnits( const QgsMapLayer *layer, const QgsRectangle &referenceExtent ) const
-{
-  return layerTransform( layer ).scaleFactor( referenceExtent );
-}
+double QgsMapSettings::layerToMapUnits( const QgsMapLayer *layer, const QgsRectangle &referenceExtent ) const { return layerTransform( layer ).scaleFactor( referenceExtent ); }
 
 
 QgsRectangle QgsMapSettings::layerExtentToOutputExtent( const QgsMapLayer *layer, QgsRectangle extent ) const
@@ -747,7 +655,6 @@ QgsRectangle QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, Qg
 }
 
 
-
 QgsRectangle QgsMapSettings::fullExtent() const
 {
   // reset the map canvas extent since the extent may now be smaller
@@ -784,8 +691,7 @@ QgsRectangle QgsMapSettings::fullExtent() const
     // rectangle a bit. If they are all at zero, do something a bit
     // more crude.
 
-    if ( fullExtent.xMinimum() == 0.0 && fullExtent.xMaximum() == 0.0 &&
-         fullExtent.yMinimum() == 0.0 && fullExtent.yMaximum() == 0.0 )
+    if ( fullExtent.xMinimum() == 0.0 && fullExtent.xMaximum() == 0.0 && fullExtent.yMinimum() == 0.0 && fullExtent.yMaximum() == 0.0 )
     {
       fullExtent.set( -1.0, -1.0, 1.0, 1.0 );
     }
@@ -826,7 +732,7 @@ void QgsMapSettings::readXml( QDomNode &node )
   // set rotation
   const QDomNode rotationNode = node.namedItem( u"rotation"_s );
   const QString rotationVal = rotationNode.toElement().text();
-  if ( ! rotationVal.isEmpty() )
+  if ( !rotationVal.isEmpty() )
   {
     const double rot = rotationVal.toDouble();
     setRotation( rot );
@@ -841,7 +747,6 @@ void QgsMapSettings::readXml( QDomNode &node )
 }
 
 
-
 void QgsMapSettings::writeXml( QDomNode &node, QDomDocument &doc )
 {
   // units
@@ -852,9 +757,7 @@ void QgsMapSettings::writeXml( QDomNode &node, QDomDocument &doc )
 
   // Write current view rotation
   QDomElement rotNode = doc.createElement( u"rotation"_s );
-  rotNode.appendChild(
-    doc.createTextNode( qgsDoubleToString( rotation() ) )
-  );
+  rotNode.appendChild( doc.createTextNode( qgsDoubleToString( rotation() ) ) );
   node.appendChild( rotNode );
 
   // destination CRS
@@ -872,100 +775,43 @@ void QgsMapSettings::writeXml( QDomNode &node, QDomDocument &doc )
   node.appendChild( renderMapTileElem );
 }
 
-QgsGeometry QgsMapSettings::labelBoundaryGeometry() const
-{
-  return mLabelBoundaryGeometry;
-}
+QgsGeometry QgsMapSettings::labelBoundaryGeometry() const { return mLabelBoundaryGeometry; }
 
-void QgsMapSettings::setLabelBoundaryGeometry( const QgsGeometry &boundary )
-{
-  mLabelBoundaryGeometry = boundary;
-}
+void QgsMapSettings::setLabelBoundaryGeometry( const QgsGeometry &boundary ) { mLabelBoundaryGeometry = boundary; }
 
-void QgsMapSettings::addClippingRegion( const QgsMapClippingRegion &region )
-{
-  mClippingRegions.append( region );
-}
+void QgsMapSettings::addClippingRegion( const QgsMapClippingRegion &region ) { mClippingRegions.append( region ); }
 
-void QgsMapSettings::setClippingRegions( const QList<QgsMapClippingRegion> &regions )
-{
-  mClippingRegions = regions;
-}
+void QgsMapSettings::setClippingRegions( const QList<QgsMapClippingRegion> &regions ) { mClippingRegions = regions; }
 
-QList<QgsMapClippingRegion> QgsMapSettings::clippingRegions() const
-{
-  return mClippingRegions;
-}
+QList<QgsMapClippingRegion> QgsMapSettings::clippingRegions() const { return mClippingRegions; }
 
-void QgsMapSettings::setMaskSettings( const QgsMaskRenderSettings &settings )
-{
-  mMaskRenderSettings = settings;
-}
+void QgsMapSettings::setMaskSettings( const QgsMaskRenderSettings &settings ) { mMaskRenderSettings = settings; }
 
-void QgsMapSettings::addRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler )
-{
-  mRenderedFeatureHandlers.append( handler );
-}
+void QgsMapSettings::addRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler ) { mRenderedFeatureHandlers.append( handler ); }
 
-QList<QgsRenderedFeatureHandlerInterface *> QgsMapSettings::renderedFeatureHandlers() const
-{
-  return mRenderedFeatureHandlers;
-}
+QList<QgsRenderedFeatureHandlerInterface *> QgsMapSettings::renderedFeatureHandlers() const { return mRenderedFeatureHandlers; }
 
-QgsDoubleRange QgsMapSettings::zRange() const
-{
-  return mZRange;
-}
+QgsDoubleRange QgsMapSettings::zRange() const { return mZRange; }
 
-void QgsMapSettings::setZRange( const QgsDoubleRange &zRange )
-{
-  mZRange = zRange;
-}
+void QgsMapSettings::setZRange( const QgsDoubleRange &zRange ) { mZRange = zRange; }
 
-Qgis::RendererUsage QgsMapSettings::rendererUsage() const
-{
-  return mRendererUsage;
-}
+Qgis::RendererUsage QgsMapSettings::rendererUsage() const { return mRendererUsage; }
 
-void QgsMapSettings::setRendererUsage( Qgis::RendererUsage rendererUsage )
-{
-  mRendererUsage = rendererUsage;
-}
+void QgsMapSettings::setRendererUsage( Qgis::RendererUsage rendererUsage ) { mRendererUsage = rendererUsage; }
 
-double QgsMapSettings::frameRate() const
-{
-  return mFrameRate;
-}
+double QgsMapSettings::frameRate() const { return mFrameRate; }
 
-void QgsMapSettings::setFrameRate( double rate )
-{
-  mFrameRate = rate;
-}
+void QgsMapSettings::setFrameRate( double rate ) { mFrameRate = rate; }
 
-long long QgsMapSettings::currentFrame() const
-{
-  return mCurrentFrame;
-}
+long long QgsMapSettings::currentFrame() const { return mCurrentFrame; }
 
-void QgsMapSettings::setCurrentFrame( long long frame )
-{
-  mCurrentFrame = frame;
-}
+void QgsMapSettings::setCurrentFrame( long long frame ) { mCurrentFrame = frame; }
 
-const QgsElevationShadingRenderer &QgsMapSettings::elevationShadingRenderer() const
-{
-  return mShadingRenderer;
-}
+const QgsElevationShadingRenderer &QgsMapSettings::elevationShadingRenderer() const { return mShadingRenderer; }
 
-void QgsMapSettings::setElevationShadingRenderer( const QgsElevationShadingRenderer &elevationShadingRenderer )
-{
-  mShadingRenderer = elevationShadingRenderer;
-}
+void QgsMapSettings::setElevationShadingRenderer( const QgsElevationShadingRenderer &elevationShadingRenderer ) { mShadingRenderer = elevationShadingRenderer; }
 
-Qgis::RasterizedRenderingPolicy QgsMapSettings::rasterizedRenderingPolicy() const
-{
-  return mRasterizedRenderingPolicy;
-}
+Qgis::RasterizedRenderingPolicy QgsMapSettings::rasterizedRenderingPolicy() const { return mRasterizedRenderingPolicy; }
 
 void QgsMapSettings::setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy policy )
 {
@@ -987,10 +833,7 @@ void QgsMapSettings::setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPoli
   }
 }
 
-QHash<QString, QgsSelectiveMaskingSourceSet> QgsMapSettings::selectiveMaskingSourceSets() const
-{
-  return mSelectiveMaskingSourceSets;
-}
+QHash<QString, QgsSelectiveMaskingSourceSet> QgsMapSettings::selectiveMaskingSourceSets() const { return mSelectiveMaskingSourceSets; }
 
 void QgsMapSettings::setSelectiveMaskingSourceSets( const QVector<QgsSelectiveMaskingSourceSet> &sets )
 {
@@ -1001,4 +844,3 @@ void QgsMapSettings::setSelectiveMaskingSourceSets( const QVector<QgsSelectiveMa
     mSelectiveMaskingSourceSets.insert( set.id(), set );
   }
 }
-

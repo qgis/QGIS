@@ -47,7 +47,6 @@ with a different than current style).
 #include "qgsmaplayerstylemanager.h"
 %End
   public:
-
     QgsMapLayerStyleManager( QgsMapLayer *layer /TransferThis/ );
 %Docstring
 Construct a style manager associated with a map layer (must not be

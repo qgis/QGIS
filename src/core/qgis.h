@@ -35,33 +35,30 @@ using namespace Qt::StringLiterals;
 #ifdef SIP_RUN
 % ModuleHeaderCode
 #include <qgis.h>
-% End
+  % End
 
-% ModuleCode
-int QgisEvent = QEvent::User + 1;
+  % ModuleCode int QgisEvent
+  = QEvent::User + 1;
 % End
 #endif
 
 #ifndef SIP_RUN
 // qHash implementation for scoped enum type
 // https://gitlab.com/frostasm/programming-knowledge-base/-/snippets/20120
-#define QHASH_FOR_CLASS_ENUM(T) \
-  inline uint qHash(const T &t, uint seed) { \
-    return ::qHash(static_cast<typename std::underlying_type<T>::type>(t), seed); \
-  }
+#define QHASH_FOR_CLASS_ENUM( T ) \
+  inline uint qHash( const T &t, uint seed ) { return ::qHash( static_cast<typename std::underlying_type<T>::type>( t ), seed ); }
 #endif
 
-/**
+  /**
  * \ingroup core
  * \brief Provides global constants and enumerations for use throughout the application.
  */
-class CORE_EXPORT Qgis
+  class CORE_EXPORT Qgis
 {
     Q_GADGET
     Q_CLASSINFO( "RegisterEnumClassesUnscoped", "false" )
 
   public:
-
     /**
      * Version string.
      *
@@ -101,41 +98,41 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.40
      */
-    enum class AuthConfigurationStorageCapability: int SIP_ENUM_BASETYPE( IntFlag )
+    enum class AuthConfigurationStorageCapability : int SIP_ENUM_BASETYPE( IntFlag )
     {
       ClearStorage = 1 << 0, //!< Can clear all configurations from storage
 
-      ReadConfiguration = 1 << 1, //!< Can read an authentication configuration
+      ReadConfiguration = 1 << 1,   //!< Can read an authentication configuration
       UpdateConfiguration = 1 << 2, //!< Can update an authentication configuration
       DeleteConfiguration = 1 << 3, //!< Can deleet an authentication configuration
       CreateConfiguration = 1 << 4, //!< Can create a new authentication configuration
 
-      ReadCertificateIdentity = 1 << 5, //!< Can read a certificate identity
+      ReadCertificateIdentity = 1 << 5,   //!< Can read a certificate identity
       UpdateCertificateIdentity = 1 << 6, //!< Can update a certificate identity
       DeleteCertificateIdentity = 1 << 7, //!< Can delete a certificate identity
       CreateCertificateIdentity = 1 << 8, //!< Can create a new certificate identity
 
-      ReadSslCertificateCustomConfig = 1 << 9, //!< Can read a SSL certificate custom config
+      ReadSslCertificateCustomConfig = 1 << 9,    //!< Can read a SSL certificate custom config
       UpdateSslCertificateCustomConfig = 1 << 10, //!< Can update a SSL certificate custom config
       DeleteSslCertificateCustomConfig = 1 << 11, //!< Can delete a SSL certificate custom config
       CreateSslCertificateCustomConfig = 1 << 12, //!< Can create a new SSL certificate custom config
 
-      ReadCertificateAuthority = 1 << 13, //!< Can read a certificate authority
+      ReadCertificateAuthority = 1 << 13,   //!< Can read a certificate authority
       UpdateCertificateAuthority = 1 << 14, //!< Can update a certificate authority
       DeleteCertificateAuthority = 1 << 15, //!< Can delete a certificate authority
       CreateCertificateAuthority = 1 << 16, //!< Can create a new certificate authority
 
-      ReadCertificateTrustPolicy = 1 << 17, //!< Can read a certificate trust policy
+      ReadCertificateTrustPolicy = 1 << 17,   //!< Can read a certificate trust policy
       UpdateCertificateTrustPolicy = 1 << 18, //!< Can update a certificate trust policy
       DeleteCertificateTrustPolicy = 1 << 19, //!< Can delete a certificate trust policy
       CreateCertificateTrustPolicy = 1 << 20, //!< Can create a new certificate trust policy
 
-      ReadMasterPassword = 1 << 21, //!< Can read the master password
+      ReadMasterPassword = 1 << 21,   //!< Can read the master password
       UpdateMasterPassword = 1 << 22, //!< Can update the master password
       DeleteMasterPassword = 1 << 23, //!< Can delete the master password
       CreateMasterPassword = 1 << 24, //!< Can create a new master password
 
-      ReadSetting = 1 << 25, //!< Can read the authentication settings
+      ReadSetting = 1 << 25,   //!< Can read the authentication settings
       UpdateSetting = 1 << 26, //!< Can update the authentication setting
       DeleteSetting = 1 << 27, //!< Can delete the authentication setting
       CreateSetting = 1 << 28, //!< Can create a new authentication setting
@@ -156,11 +153,11 @@ class CORE_EXPORT Qgis
      */
     enum MessageLevel
     {
-      Info = 0, //!< Information message
-      Warning = 1, //!< Warning message
+      Info = 0,     //!< Information message
+      Warning = 1,  //!< Warning message
       Critical = 2, //!< Critical/error message
-      Success = 3, //!< Used for reporting a successful operation
-      NoLevel = 4, //!< No level
+      Success = 3,  //!< Used for reporting a successful operation
+      NoLevel = 4,  //!< No level
     };
     Q_ENUM( MessageLevel )
 
@@ -170,9 +167,9 @@ class CORE_EXPORT Qgis
      * \since QGIS 4.0. Prior to QGIS 4.0 this was available as QgsMessageOutput.MessageType
      */
     enum class StringFormat SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMessageOutput, MessageType ) : int
-      {
+    {
       PlainText SIP_MONKEYPATCH_COMPAT_NAME( MessageText ), //!< Text message
-      Html SIP_MONKEYPATCH_COMPAT_NAME( MessageHtml ), //!< HTML message
+      Html SIP_MONKEYPATCH_COMPAT_NAME( MessageHtml ),      //!< HTML message
     };
     Q_ENUM( StringFormat )
 
@@ -201,16 +198,16 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.30. Prior to 3.30 this was available as QgsMapLayerType.
      */
     enum class LayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayer, LayerType ) : int
-      {
-      Vector SIP_MONKEYPATCH_COMPAT_NAME( VectorLayer ), //!< Vector layer
-      Raster SIP_MONKEYPATCH_COMPAT_NAME( RasterLayer ), //!< Raster layer
-      Plugin SIP_MONKEYPATCH_COMPAT_NAME( PluginLayer ), //!< Plugin based layer
-      Mesh SIP_MONKEYPATCH_COMPAT_NAME( MeshLayer ),    //!< Mesh layer. Added in QGIS 3.2
+    {
+      Vector SIP_MONKEYPATCH_COMPAT_NAME( VectorLayer ),         //!< Vector layer
+      Raster SIP_MONKEYPATCH_COMPAT_NAME( RasterLayer ),         //!< Raster layer
+      Plugin SIP_MONKEYPATCH_COMPAT_NAME( PluginLayer ),         //!< Plugin based layer
+      Mesh SIP_MONKEYPATCH_COMPAT_NAME( MeshLayer ),             //!< Mesh layer. Added in QGIS 3.2
       VectorTile SIP_MONKEYPATCH_COMPAT_NAME( VectorTileLayer ), //!< Vector tile layer. Added in QGIS 3.14
       Annotation SIP_MONKEYPATCH_COMPAT_NAME( AnnotationLayer ), //!< Contains freeform, georeferenced annotations. Added in QGIS 3.16
       PointCloud SIP_MONKEYPATCH_COMPAT_NAME( PointCloudLayer ), //!< Point cloud layer. Added in QGIS 3.18
-      Group SIP_MONKEYPATCH_COMPAT_NAME( GroupLayer ), //!< Composite group layer. Added in QGIS 3.24
-      TiledScene, //!< Tiled scene layer. Added in QGIS 3.34
+      Group SIP_MONKEYPATCH_COMPAT_NAME( GroupLayer ),           //!< Composite group layer. Added in QGIS 3.24
+      TiledScene,                                                //!< Tiled scene layer. Added in QGIS 3.34
     };
     Q_ENUM( LayerType )
 
@@ -230,12 +227,12 @@ class CORE_EXPORT Qgis
       VectorLayer = NoGeometry | HasGeometry,
       PluginLayer = 32,
       WritableLayer = 64,
-      MeshLayer = 128, //!< QgsMeshLayer \since QGIS 3.6
-      VectorTileLayer = 256, //!< QgsVectorTileLayer \since QGIS 3.14
-      PointCloudLayer = 512, //!< QgsPointCloudLayer \since QGIS 3.18
-      AnnotationLayer = 1024, //!< QgsAnnotationLayer \since QGIS 3.22
-      TiledSceneLayer = 2048, //!< QgsTiledSceneLayer \since QGIS 3.34
-      All = RasterLayer | VectorLayer | PluginLayer | MeshLayer | VectorTileLayer | PointCloudLayer | AnnotationLayer | TiledSceneLayer, //!< All layers
+      MeshLayer = 128,                                                                                                                           //!< QgsMeshLayer \since QGIS 3.6
+      VectorTileLayer = 256,                                                                                                                     //!< QgsVectorTileLayer \since QGIS 3.14
+      PointCloudLayer = 512,                                                                                                                     //!< QgsPointCloudLayer \since QGIS 3.18
+      AnnotationLayer = 1024,                                                                                                                    //!< QgsAnnotationLayer \since QGIS 3.22
+      TiledSceneLayer = 2048,                                                                                                                    //!< QgsTiledSceneLayer \since QGIS 3.34
+      All = RasterLayer | VectorLayer | PluginLayer | MeshLayer | VectorTileLayer | PointCloudLayer | AnnotationLayer | TiledSceneLayer,         //!< All layers
       SpatialLayer = RasterLayer | HasGeometry | PluginLayer | MeshLayer | VectorTileLayer | PointCloudLayer | AnnotationLayer | TiledSceneLayer //!< All spatial layers. \since QGIS 3.24
     };
     Q_DECLARE_FLAGS( LayerFilters, LayerFilter )
@@ -248,7 +245,8 @@ class CORE_EXPORT Qgis
      */
     enum class LoadStyleFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      IgnoreMissingStyleErrors = 1 << 0, //!< If the style is missing, then don't flag it as an error. This flag can be used when the caller is not certain that a style exists, and accordingly a failure to find the style does not indicate an issue with loading the style itself.
+      IgnoreMissingStyleErrors
+      = 1 << 0, //!< If the style is missing, then don't flag it as an error. This flag can be used when the caller is not certain that a style exists, and accordingly a failure to find the style does not indicate an issue with loading the style itself.
     };
     Q_ENUM( LoadStyleFlag )
 
@@ -288,79 +286,79 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.30
      */
     enum class WkbType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsWkbTypes, Type ) : quint32
-      {
-      Unknown =  0, //!< Unknown
-      Point = 1, //!< Point
-      LineString = 2, //!< LineString
-      Polygon = 3, //!< Polygon
-      Triangle = 17, //!< Triangle
-      MultiPoint = 4, //!< MultiPoint
-      MultiLineString = 5, //!< MultiLineString
-      MultiPolygon = 6, //!< MultiPolygon
-      GeometryCollection = 7, //!< GeometryCollection
-      CircularString = 8, //!< CircularString
-      CompoundCurve = 9, //!< CompoundCurve
-      CurvePolygon = 10, //!< CurvePolygon
-      MultiCurve = 11, //!< MultiCurve
-      MultiSurface = 12, //!< MultiSurface
-      PolyhedralSurface = 15, //!< PolyhedralSurface \since QGIS 3.40
-      TIN = 16, //!< TIN \since QGIS 3.40
-      NurbsCurve = 21, //!< NurbsCurve \since QGIS 4.0
-      NoGeometry = 100, //!< No geometry
-      PointZ = 1001, //!< PointZ
-      LineStringZ = 1002, //!< LineStringZ
-      PolygonZ = 1003, //!< PolygonZ
-      TriangleZ = 1017, //!< TriangleZ
-      MultiPointZ = 1004, //!< MultiPointZ
-      MultiLineStringZ = 1005, //!< MultiLineStringZ
-      MultiPolygonZ = 1006, //!< MultiPolygonZ
-      GeometryCollectionZ = 1007, //!< GeometryCollectionZ
-      CircularStringZ = 1008, //!< CircularStringZ
-      CompoundCurveZ = 1009, //!< CompoundCurveZ
-      CurvePolygonZ = 1010, //!< CurvePolygonZ
-      MultiCurveZ = 1011, //!< MultiCurveZ
-      MultiSurfaceZ = 1012, //!< MultiSurfaceZ
-      PolyhedralSurfaceZ = 1015, //!< PolyhedralSurfaceZ
-      TINZ = 1016, //!< TINZ
-      NurbsCurveZ = 1021, //!< NurbsCurveZ \since QGIS 4.0
-      PointM = 2001, //!< PointM
-      LineStringM = 2002, //!< LineStringM
-      PolygonM = 2003, //!< PolygonM
-      TriangleM = 2017, //!< TriangleM
-      MultiPointM = 2004, //!< MultiPointM
-      MultiLineStringM = 2005, //!< MultiLineStringM
-      MultiPolygonM = 2006, //!< MultiPolygonM
-      GeometryCollectionM = 2007, //!< GeometryCollectionM
-      CircularStringM = 2008, //!< CircularStringM
-      CompoundCurveM = 2009, //!< CompoundCurveM
-      CurvePolygonM = 2010, //!< CurvePolygonM
-      MultiCurveM = 2011, //!< MultiCurveM
-      MultiSurfaceM = 2012, //!< MultiSurfaceM
-      PolyhedralSurfaceM = 2015, //!< PolyhedralSurfaceM
-      TINM = 2016, //!< TINM
-      NurbsCurveM = 2021, //!< NurbsCurveM \since QGIS 4.0
-      PointZM = 3001, //!< PointZM
-      LineStringZM = 3002, //!< LineStringZM
-      PolygonZM = 3003, //!< PolygonZM
-      MultiPointZM = 3004, //!< MultiPointZM
-      MultiLineStringZM = 3005, //!< MultiLineStringZM
-      MultiPolygonZM = 3006, //!< MultiPolygonZM
+    {
+      Unknown = 0,                 //!< Unknown
+      Point = 1,                   //!< Point
+      LineString = 2,              //!< LineString
+      Polygon = 3,                 //!< Polygon
+      Triangle = 17,               //!< Triangle
+      MultiPoint = 4,              //!< MultiPoint
+      MultiLineString = 5,         //!< MultiLineString
+      MultiPolygon = 6,            //!< MultiPolygon
+      GeometryCollection = 7,      //!< GeometryCollection
+      CircularString = 8,          //!< CircularString
+      CompoundCurve = 9,           //!< CompoundCurve
+      CurvePolygon = 10,           //!< CurvePolygon
+      MultiCurve = 11,             //!< MultiCurve
+      MultiSurface = 12,           //!< MultiSurface
+      PolyhedralSurface = 15,      //!< PolyhedralSurface \since QGIS 3.40
+      TIN = 16,                    //!< TIN \since QGIS 3.40
+      NurbsCurve = 21,             //!< NurbsCurve \since QGIS 4.0
+      NoGeometry = 100,            //!< No geometry
+      PointZ = 1001,               //!< PointZ
+      LineStringZ = 1002,          //!< LineStringZ
+      PolygonZ = 1003,             //!< PolygonZ
+      TriangleZ = 1017,            //!< TriangleZ
+      MultiPointZ = 1004,          //!< MultiPointZ
+      MultiLineStringZ = 1005,     //!< MultiLineStringZ
+      MultiPolygonZ = 1006,        //!< MultiPolygonZ
+      GeometryCollectionZ = 1007,  //!< GeometryCollectionZ
+      CircularStringZ = 1008,      //!< CircularStringZ
+      CompoundCurveZ = 1009,       //!< CompoundCurveZ
+      CurvePolygonZ = 1010,        //!< CurvePolygonZ
+      MultiCurveZ = 1011,          //!< MultiCurveZ
+      MultiSurfaceZ = 1012,        //!< MultiSurfaceZ
+      PolyhedralSurfaceZ = 1015,   //!< PolyhedralSurfaceZ
+      TINZ = 1016,                 //!< TINZ
+      NurbsCurveZ = 1021,          //!< NurbsCurveZ \since QGIS 4.0
+      PointM = 2001,               //!< PointM
+      LineStringM = 2002,          //!< LineStringM
+      PolygonM = 2003,             //!< PolygonM
+      TriangleM = 2017,            //!< TriangleM
+      MultiPointM = 2004,          //!< MultiPointM
+      MultiLineStringM = 2005,     //!< MultiLineStringM
+      MultiPolygonM = 2006,        //!< MultiPolygonM
+      GeometryCollectionM = 2007,  //!< GeometryCollectionM
+      CircularStringM = 2008,      //!< CircularStringM
+      CompoundCurveM = 2009,       //!< CompoundCurveM
+      CurvePolygonM = 2010,        //!< CurvePolygonM
+      MultiCurveM = 2011,          //!< MultiCurveM
+      MultiSurfaceM = 2012,        //!< MultiSurfaceM
+      PolyhedralSurfaceM = 2015,   //!< PolyhedralSurfaceM
+      TINM = 2016,                 //!< TINM
+      NurbsCurveM = 2021,          //!< NurbsCurveM \since QGIS 4.0
+      PointZM = 3001,              //!< PointZM
+      LineStringZM = 3002,         //!< LineStringZM
+      PolygonZM = 3003,            //!< PolygonZM
+      MultiPointZM = 3004,         //!< MultiPointZM
+      MultiLineStringZM = 3005,    //!< MultiLineStringZM
+      MultiPolygonZM = 3006,       //!< MultiPolygonZM
       GeometryCollectionZM = 3007, //!< GeometryCollectionZM
-      CircularStringZM = 3008, //!< CircularStringZM
-      CompoundCurveZM = 3009, //!< CompoundCurveZM
-      CurvePolygonZM = 3010, //!< CurvePolygonZM
-      MultiCurveZM = 3011, //!< MultiCurveZM
-      MultiSurfaceZM = 3012, //!< MultiSurfaceZM
-      PolyhedralSurfaceZM = 3015, //!< PolyhedralSurfaceM
-      TINZM = 3016, //!< TINZM
-      TriangleZM = 3017, //!< TriangleZM
-      NurbsCurveZM = 3021, //!< NurbsCurveZM \since QGIS 4.0
-      Point25D = 0x80000001, //!< Point25D
-      LineString25D, //!< LineString25D
-      Polygon25D, //!< Polygon25D
-      MultiPoint25D, //!< MultiPoint25D
-      MultiLineString25D, //!< MultiLineString25D
-      MultiPolygon25D //!< MultiPolygon25D
+      CircularStringZM = 3008,     //!< CircularStringZM
+      CompoundCurveZM = 3009,      //!< CompoundCurveZM
+      CurvePolygonZM = 3010,       //!< CurvePolygonZM
+      MultiCurveZM = 3011,         //!< MultiCurveZM
+      MultiSurfaceZM = 3012,       //!< MultiSurfaceZM
+      PolyhedralSurfaceZM = 3015,  //!< PolyhedralSurfaceM
+      TINZM = 3016,                //!< TINZM
+      TriangleZM = 3017,           //!< TriangleZM
+      NurbsCurveZM = 3021,         //!< NurbsCurveZM \since QGIS 4.0
+      Point25D = 0x80000001,       //!< Point25D
+      LineString25D,               //!< LineString25D
+      Polygon25D,                  //!< Polygon25D
+      MultiPoint25D,               //!< MultiPoint25D
+      MultiLineString25D,          //!< MultiLineString25D
+      MultiPolygon25D              //!< MultiPolygon25D
     };
     Q_ENUM( WkbType )
 
@@ -373,12 +371,12 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.30
      */
     enum class GeometryType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsWkbTypes, GeometryType ) : int
-      {
-      Point SIP_MONKEYPATCH_COMPAT_NAME( PointGeometry ), //!< Points
-      Line SIP_MONKEYPATCH_COMPAT_NAME( LineGeometry ), //!< Lines
+    {
+      Point SIP_MONKEYPATCH_COMPAT_NAME( PointGeometry ),     //!< Points
+      Line SIP_MONKEYPATCH_COMPAT_NAME( LineGeometry ),       //!< Lines
       Polygon SIP_MONKEYPATCH_COMPAT_NAME( PolygonGeometry ), //!< Polygons
       Unknown SIP_MONKEYPATCH_COMPAT_NAME( UnknownGeometry ), //!< Unknown types
-      Null SIP_MONKEYPATCH_COMPAT_NAME( NullGeometry ), //!< No geometry
+      Null SIP_MONKEYPATCH_COMPAT_NAME( NullGeometry ),       //!< No geometry
     };
     Q_ENUM( GeometryType )
 
@@ -387,21 +385,21 @@ class CORE_EXPORT Qgis
      * This is modified and extended copy of GDALDataType.
      */
     enum class DataType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( Qgis, DataType ) : int
-      {
-      UnknownDataType = 0, //!< Unknown or unspecified type
-      Byte = 1, //!< Eight bit unsigned integer (quint8)
-      Int8 = 14, //!< Eight bit signed integer (qint8) (added in QGIS 3.30)
-      UInt16 = 2, //!< Sixteen bit unsigned integer (quint16)
-      Int16 = 3, //!< Sixteen bit signed integer (qint16)
-      UInt32 = 4, //!< Thirty two bit unsigned integer (quint32)
-      Int32 = 5, //!< Thirty two bit signed integer (qint32)
-      Float32 = 6, //!< Thirty two bit floating point (float)
-      Float64 = 7, //!< Sixty four bit floating point (double)
-      CInt16 = 8, //!< Complex Int16
-      CInt32 = 9, //!< Complex Int32
-      CFloat32 = 10, //!< Complex Float32
-      CFloat64 = 11, //!< Complex Float64
-      ARGB32 = 12, //!< Color, alpha, red, green, blue, 4 bytes the same as QImage::Format_ARGB32
+    {
+      UnknownDataType = 0,      //!< Unknown or unspecified type
+      Byte = 1,                 //!< Eight bit unsigned integer (quint8)
+      Int8 = 14,                //!< Eight bit signed integer (qint8) (added in QGIS 3.30)
+      UInt16 = 2,               //!< Sixteen bit unsigned integer (quint16)
+      Int16 = 3,                //!< Sixteen bit signed integer (qint16)
+      UInt32 = 4,               //!< Thirty two bit unsigned integer (quint32)
+      Int32 = 5,                //!< Thirty two bit signed integer (qint32)
+      Float32 = 6,              //!< Thirty two bit floating point (float)
+      Float64 = 7,              //!< Sixty four bit floating point (double)
+      CInt16 = 8,               //!< Complex Int16
+      CInt32 = 9,               //!< Complex Int32
+      CFloat32 = 10,            //!< Complex Float32
+      CFloat64 = 11,            //!< Complex Float64
+      ARGB32 = 12,              //!< Color, alpha, red, green, blue, 4 bytes the same as QImage::Format_ARGB32
       ARGB32_Premultiplied = 13 //!< Color, alpha, red, green, blue, 4 bytes  the same as QImage::Format_ARGB32_Premultiplied
     };
     Q_ENUM( DataType )
@@ -414,11 +412,11 @@ class CORE_EXPORT Qgis
     enum class CaptureTechnique : int
     {
       StraightSegments, //!< Default capture mode - capture occurs with straight line segments
-      CircularString, //!< Capture in circular strings
-      Streaming, //!< Streaming points digitizing mode (points are automatically added as the mouse cursor moves).
-      Shape, //!< Digitize shapes.
-      PolyBezier, //!< Digitizes poly-Bézier curves with anchors and tangent handles (curve passes through anchor points). \since QGIS 4.0
-      NurbsCurve, //!< Digitizes NURBS curves with control points (curve is attracted to but does not pass through control points). \since QGIS 4.0
+      CircularString,   //!< Capture in circular strings
+      Streaming,        //!< Streaming points digitizing mode (points are automatically added as the mouse cursor moves).
+      Shape,            //!< Digitize shapes.
+      PolyBezier,       //!< Digitizes poly-Bézier curves with anchors and tangent handles (curve passes through anchor points). \since QGIS 4.0
+      NurbsCurve,       //!< Digitizes NURBS curves with control points (curve is attracted to but does not pass through control points). \since QGIS 4.0
     };
     Q_ENUM( CaptureTechnique )
 
@@ -442,13 +440,13 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.40
      */
     enum class EmbeddedScriptMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( Qgis, PythonMacroMode ) : int
-      {
-      Never = 0,              //!< Embedded scripts never run
-      Ask = 1,                //!< User is prompted before running scripts
-      SessionOnly = 2,        //!< Only during this session (only used prior to QGIS 4.0)
-      Always = 3,             //!< Embedded scripts are always run
-      NotForThisSession = 4,  //!< Embedded scripts will not be run for this session (only used prior to QGIS 4.0)
-      NeverAsk = 5,           //!< The user is never prompted, embedded scripts are only run on trusted projects and folders \since QGIS 4.0
+    {
+      Never = 0,             //!< Embedded scripts never run
+      Ask = 1,               //!< User is prompted before running scripts
+      SessionOnly = 2,       //!< Only during this session (only used prior to QGIS 4.0)
+      Always = 3,            //!< Embedded scripts are always run
+      NotForThisSession = 4, //!< Embedded scripts will not be run for this session (only used prior to QGIS 4.0)
+      NeverAsk = 5,          //!< The user is never prompted, embedded scripts are only run on trusted projects and folders \since QGIS 4.0
     };
     Q_ENUM( EmbeddedScriptMode )
 
@@ -486,13 +484,15 @@ class CORE_EXPORT Qgis
      */
     enum class DataProviderReadFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDataProvider, ReadFlag ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      TrustDataSource SIP_MONKEYPATCH_COMPAT_NAME( FlagTrustDataSource ) = 1 << 0, //!< Trust datasource config (primary key unicity, geometry type and srid, etc). Improves provider load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on data load \since QGIS 3.16
+      TrustDataSource SIP_MONKEYPATCH_COMPAT_NAME( FlagTrustDataSource )
+      = 1 << 0, //!< Trust datasource config (primary key unicity, geometry type and srid, etc). Improves provider load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on data load \since QGIS 3.16
       SkipFeatureCount = 1 << 1, //!< Make featureCount() return -1 to indicate unknown, and subLayers() to return a unknown feature count as well. Since QGIS 3.18. Only implemented by OGR provider at time of writing.
       LoadDefaultStyle SIP_MONKEYPATCH_COMPAT_NAME( FlagLoadDefaultStyle ) = 1 << 2, //!< Reset the layer's style to the default for the datasource
-      SkipGetExtent = 1 << 3, //!< Skip the extent from provider
-      SkipFullScan = 1 << 4, //!< Skip expensive full scan on files (i.e. on delimited text) \since QGIS 3.24
-      ForceReadOnly = 1 << 5, //!< Open layer in a read-only mode \since QGIS 3.28
-      SkipCredentialsRequest =  1 << 6, //!< Skip credentials if the provided one are not valid, let the provider be invalid, avoiding to block the thread creating the provider if it is not the main thread \since QGIS 3.32
+      SkipGetExtent = 1 << 3,                                                        //!< Skip the extent from provider
+      SkipFullScan = 1 << 4,                                                         //!< Skip expensive full scan on files (i.e. on delimited text) \since QGIS 3.24
+      ForceReadOnly = 1 << 5,                                                        //!< Open layer in a read-only mode \since QGIS 3.28
+      SkipCredentialsRequest
+      = 1 << 6, //!< Skip credentials if the provided one are not valid, let the provider be invalid, avoiding to block the thread creating the provider if it is not the main thread \since QGIS 3.32
       ParallelThreadLoading = 1 << 7, //!< Provider is created in a parallel thread than the one where it will live \since QGIS 3.32.1
     };
     Q_ENUM( DataProviderReadFlag )
@@ -576,10 +576,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.36
      */
     enum class SpatialIndexPresence SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsFeatureSource, SpatialIndexPresence ) : int
-      {
-      Unknown SIP_MONKEYPATCH_COMPAT_NAME( SpatialIndexUnknown ) = 0, //!< Spatial index presence cannot be determined, index may or may not exist
+    {
+      Unknown SIP_MONKEYPATCH_COMPAT_NAME( SpatialIndexUnknown ) = 0,       //!< Spatial index presence cannot be determined, index may or may not exist
       NotPresent SIP_MONKEYPATCH_COMPAT_NAME( SpatialIndexNotPresent ) = 1, //!< No spatial index exists for the source
-      Present SIP_MONKEYPATCH_COMPAT_NAME( SpatialIndexPresent ) = 2, //!< A valid spatial index exists for the source
+      Present SIP_MONKEYPATCH_COMPAT_NAME( SpatialIndexPresent ) = 2,       //!< A valid spatial index exists for the source
     };
     Q_ENUM( SpatialIndexPresence )
 
@@ -595,10 +595,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.36
      */
     enum class FeatureAvailability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsFeatureSource, FeatureAvailability ) : int
-      {
+    {
       NoFeaturesAvailable = 0, //!< There are certainly no features available in this source
-      FeaturesAvailable, //!< There is at least one feature available in this source
-      FeaturesMaybeAvailable //!< There may be features available in this source
+      FeaturesAvailable,       //!< There is at least one feature available in this source
+      FeaturesMaybeAvailable   //!< There may be features available in this source
     };
     Q_ENUM( FeatureAvailability )
 
@@ -609,7 +609,7 @@ class CORE_EXPORT Qgis
      */
     enum class VectorDataProviderAttributeEditCapability : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      EditAlias = 1 << 0, //!< Allows editing aliases
+      EditAlias = 1 << 0,   //!< Allows editing aliases
       EditComment = 1 << 1, //!< Allows editing comments
     };
 
@@ -628,11 +628,11 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.20
      */
     enum class SymbolType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSymbol, SymbolType ) : int
-      {
+    {
       Marker, //!< Marker symbol
-      Line, //!< Line symbol
-      Fill, //!< Fill symbol
-      Hybrid //!< Hybrid symbol
+      Line,   //!< Line symbol
+      Fill,   //!< Fill symbol
+      Hybrid  //!< Hybrid symbol
     };
     Q_ENUM( SymbolType )
 
@@ -642,9 +642,9 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.20
      */
     enum class ScaleMethod SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSymbol, ScaleMethod ) : int
-      {
-      ScaleArea,     //!< Calculate scale by the area
-      ScaleDiameter  //!< Calculate scale by the diameter
+    {
+      ScaleArea,    //!< Calculate scale by the area
+      ScaleDiameter //!< Calculate scale by the diameter
     };
     Q_ENUM( ScaleMethod )
 
@@ -653,17 +653,17 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.26
      */
     enum class SettingsType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSettingsEntryBase, SettingsType ) : int
-      {
-      Custom, //!< Custom implementation
-      Variant, //!< Generic variant
-      String, //!< String
+    {
+      Custom,     //!< Custom implementation
+      Variant,    //!< Generic variant
+      String,     //!< String
       StringList, //!< List of strings
       VariantMap, //!< Map of strings
-      Bool, //!< Boolean
-      Integer, //!< Integer
-      Double, //!< Double precision number
-      EnumFlag, //!< Enum or Flag
-      Color //!< Color
+      Bool,       //!< Boolean
+      Integer,    //!< Integer
+      Double,     //!< Double precision number
+      EnumFlag,   //!< Enum or Flag
+      Color       //!< Color
     };
     Q_ENUM( SettingsType )
 
@@ -673,8 +673,8 @@ class CORE_EXPORT Qgis
      */
     enum class SettingsTreeNodeType
     {
-      Root, //!< Root Node
-      Standard, //!< Normal Node
+      Root,      //!< Root Node
+      Standard,  //!< Normal Node
       NamedList, //!< Named List Node
     };
     Q_ENUM( SettingsTreeNodeType )
@@ -699,11 +699,11 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.36
      */
-    enum class PropertyType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProperty, Type ): int
-      {
-      Invalid SIP_MONKEYPATCH_COMPAT_NAME( InvalidProperty ), //!< Invalid (not set) property
-      Static SIP_MONKEYPATCH_COMPAT_NAME( StaticProperty ), //!< Static property
-      Field SIP_MONKEYPATCH_COMPAT_NAME( FieldBasedProperty ), //!< Field based property
+    enum class PropertyType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProperty, Type ) : int
+    {
+      Invalid SIP_MONKEYPATCH_COMPAT_NAME( InvalidProperty ),            //!< Invalid (not set) property
+      Static SIP_MONKEYPATCH_COMPAT_NAME( StaticProperty ),              //!< Static property
+      Field SIP_MONKEYPATCH_COMPAT_NAME( FieldBasedProperty ),           //!< Field based property
       Expression SIP_MONKEYPATCH_COMPAT_NAME( ExpressionBasedProperty ), //!< Expression based property
     };
     Q_ENUM( PropertyType )
@@ -715,9 +715,9 @@ class CORE_EXPORT Qgis
      */
     enum class SldExportOption : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      NoOptions = 0,                      //!< Default SLD export
-      Svg = 1 << 0,                       //!< Export complex styles to separate SVG files for better compatibility with OGC servers
-      Png = 1 << 1,                       //!< Export complex styles to separate PNG files for better compatibility with OGC servers
+      NoOptions = 0, //!< Default SLD export
+      Svg = 1 << 0,  //!< Export complex styles to separate SVG files for better compatibility with OGC servers
+      Png = 1 << 1,  //!< Export complex styles to separate PNG files for better compatibility with OGC servers
     };
     Q_ENUM( SldExportOption )
     Q_DECLARE_FLAGS( SldExportOptions, SldExportOption )
@@ -743,7 +743,7 @@ class CORE_EXPORT Qgis
      */
     enum class SettingsOption : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      SaveFormerValue = 1 << 1, //!< Save the former value of the settings
+      SaveFormerValue = 1 << 1,   //!< Save the former value of the settings
       SaveEnumFlagAsInt = 1 << 2, //!< The enum/flag will be saved as an integer value instead of text
     };
     Q_ENUM( SettingsOption )
@@ -755,9 +755,9 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.26
      */
     enum class SnappingMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSnappingConfig, SnappingMode ) : int
-      {
-      ActiveLayer = 1, //!< On the active layer
-      AllLayers = 2, //!< On all vector layers
+    {
+      ActiveLayer = 1,           //!< On the active layer
+      AllLayers = 2,             //!< On all vector layers
       AdvancedConfiguration = 3, //!< On a per layer configuration basis
     };
     Q_ENUM( SnappingMode )
@@ -768,13 +768,13 @@ class CORE_EXPORT Qgis
      */
     enum class SnappingType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSnappingConfig, SnappingTypes ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      NoSnap SIP_MONKEYPATCH_COMPAT_NAME( NoSnapFlag ) = 0, //!< No snapping
-      Vertex SIP_MONKEYPATCH_COMPAT_NAME( VertexFlag ) = 1 << 0, //!< On vertices
-      Segment SIP_MONKEYPATCH_COMPAT_NAME( SegmentFlag ) = 1 << 1, //!< On segments
-      Area SIP_MONKEYPATCH_COMPAT_NAME( AreaFlag ) = 1 << 2, //!< On Area
-      Centroid SIP_MONKEYPATCH_COMPAT_NAME( CentroidFlag ) = 1 << 3, //!< On centroid
+      NoSnap SIP_MONKEYPATCH_COMPAT_NAME( NoSnapFlag ) = 0,                        //!< No snapping
+      Vertex SIP_MONKEYPATCH_COMPAT_NAME( VertexFlag ) = 1 << 0,                   //!< On vertices
+      Segment SIP_MONKEYPATCH_COMPAT_NAME( SegmentFlag ) = 1 << 1,                 //!< On segments
+      Area SIP_MONKEYPATCH_COMPAT_NAME( AreaFlag ) = 1 << 2,                       //!< On Area
+      Centroid SIP_MONKEYPATCH_COMPAT_NAME( CentroidFlag ) = 1 << 3,               //!< On centroid
       MiddleOfSegment SIP_MONKEYPATCH_COMPAT_NAME( MiddleOfSegmentFlag ) = 1 << 4, //!< On Middle segment
-      LineEndpoint SIP_MONKEYPATCH_COMPAT_NAME( LineEndpointFlag ) = 1 << 5, //!< Start or end points of lines, or first vertex in polygon rings only \since QGIS 3.20
+      LineEndpoint SIP_MONKEYPATCH_COMPAT_NAME( LineEndpointFlag ) = 1 << 5,       //!< Start or end points of lines, or first vertex in polygon rings only \since QGIS 3.20
     };
     Q_ENUM( SnappingType )
     //! Snapping types
@@ -818,10 +818,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.44
      */
     enum class HorizontalAnchorPoint SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMarkerSymbolLayer, HorizontalAnchorPoint ) : int
-      {
-      Left, //!< Align to left side of symbol
+    {
+      Left,                                          //!< Align to left side of symbol
       Center SIP_MONKEYPATCH_COMPAT_NAME( HCenter ), //!< Align to horizontal center of symbol
-      Right, //!< Align to right side of symbol
+      Right,                                         //!< Align to right side of symbol
     };
     Q_ENUM( HorizontalAnchorPoint )
 
@@ -832,10 +832,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.44
      */
     enum class VerticalAnchorPoint SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMarkerSymbolLayer, VerticalAnchorPoint ) : int
-      {
-      Top, //!< Align to top of symbol
+    {
+      Top,                                           //!< Align to top of symbol
       Center SIP_MONKEYPATCH_COMPAT_NAME( VCenter ), //!< Align to vertical center of symbol
-      Bottom, //!< Align to bottom of symbol
+      Bottom,                                        //!< Align to bottom of symbol
       Baseline, //!< Align to baseline of symbol, e.g. font baseline for font marker symbol layers. Treated as Bottom if no baseline is available for the symbol layer type. \since QGIS 3.44
     };
     Q_ENUM( VerticalAnchorPoint )
@@ -867,7 +867,7 @@ class CORE_EXPORT Qgis
     enum class SymbolFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       RendererShouldUseSymbolLevels = 1 << 0, //!< If present, indicates that a QgsFeatureRenderer using the symbol should use symbol levels for best results
-      AffectsLabeling = 1 << 1, //!< If present, indicates that the symbol will participate in the map labeling problem \since QGIS 3.40
+      AffectsLabeling = 1 << 1,               //!< If present, indicates that the symbol will participate in the map labeling problem \since QGIS 3.40
     };
     Q_ENUM( SymbolFlag )
     //! Symbol flags
@@ -937,16 +937,16 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.20
      */
     enum class BrowserItemType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDataItem, Type ) : int
-      {
+    {
       Collection, //!< A collection of items
-      Directory, //!< Represents a file directory
-      Layer, //!< Represents a map layer
-      Error, //!< Contains an error message
-      Favorites, //!< Represents a favorite item
-      Project, //!< Represents a QGIS project
-      Custom, //!< Custom item type
-      Fields, //!< Collection of fields
-      Field, //!< Vector layer field
+      Directory,  //!< Represents a file directory
+      Layer,      //!< Represents a map layer
+      Error,      //!< Contains an error message
+      Favorites,  //!< Represents a favorite item
+      Project,    //!< Represents a QGIS project
+      Custom,     //!< Custom item type
+      Fields,     //!< Collection of fields
+      Field,      //!< Vector layer field
     };
     Q_ENUM( BrowserItemType )
 
@@ -956,10 +956,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.20
      */
     enum class BrowserItemState SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDataItem, State ) : int
-      {
+    {
       NotPopulated, //!< Children not yet created
-      Populating, //!< Creating children in separate thread (populating or refreshing)
-      Populated, //!< Children created
+      Populating,   //!< Creating children in separate thread (populating or refreshing)
+      Populated,    //!< Children created
     };
     Q_ENUM( BrowserItemState )
 
@@ -971,15 +971,15 @@ class CORE_EXPORT Qgis
     enum class BrowserItemCapability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDataItem, Capability ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
       NoCapabilities = 0, //!< Item has no capabilities
-      SetCrs = 1 << 0, //!< Can set CRS on layer or group of layers. deprecated since QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 5.0
-      Fertile = 1 << 1, //!< Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors.
+      SetCrs = 1 << 0,    //!< Can set CRS on layer or group of layers. deprecated since QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 5.0
+      Fertile = 1 << 1,   //!< Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors.
       Fast = 1 << 2, //!< CreateChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QgsSettings
-      Collapse = 1 << 3, //!< The collapse/expand status for this items children should be ignored in order to avoid undesired network connections (wms etc.)
-      Rename = 1 << 4, //!< Item can be renamed
-      Delete = 1 << 5, //!< Item can be deleted
-      ItemRepresentsFile = 1 << 6, //!< Item's path() directly represents a file on disk \since QGIS 3.22
+      Collapse = 1 << 3,                           //!< The collapse/expand status for this items children should be ignored in order to avoid undesired network connections (wms etc.)
+      Rename = 1 << 4,                             //!< Item can be renamed
+      Delete = 1 << 5,                             //!< Item can be deleted
+      ItemRepresentsFile = 1 << 6,                 //!< Item's path() directly represents a file on disk \since QGIS 3.22
       RefreshChildrenWhenItemIsRefreshed = 1 << 7, //!< When the item is refreshed, all its populated children will also be refreshed in turn \since QGIS 3.26
-      ReadOnly = 1 << 8, //!< Item is read only \since QGIS 3.40
+      ReadOnly = 1 << 8,                           //!< Item is read only \since QGIS 3.40
     };
     Q_ENUM( BrowserItemCapability )
     //! Browser item capabilities
@@ -1044,8 +1044,8 @@ class CORE_EXPORT Qgis
      */
     enum class BrowserDirectoryMonitoring : int
     {
-      Default, //!< Use default logic to determine whether directory should be monitored
-      NeverMonitor, //!< Never monitor the directory, regardless of the default logic
+      Default,       //!< Use default logic to determine whether directory should be monitored
+      NeverMonitor,  //!< Never monitor the directory, regardless of the default logic
       AlwaysMonitor, //!< Always monitor the directory, regardless of the default logic
     };
     Q_ENUM( BrowserDirectoryMonitoring )
@@ -1056,11 +1056,11 @@ class CORE_EXPORT Qgis
      */
     enum class HttpMethod : int
     {
-      Get = 0, //!< GET method
+      Get = 0,  //!< GET method
       Post = 1, //!< POST method
-      Head, //!< HEAD method. \since QGIS 3.44
-      Put, //!< PUT method. \since QGIS 3.44
-      Delete, //!< DELETE method. \since QGIS 3.44
+      Head,     //!< HEAD method. \since QGIS 3.44
+      Put,      //!< PUT method. \since QGIS 3.44
+      Delete,   //!< DELETE method. \since QGIS 3.44
     };
     Q_ENUM( HttpMethod )
 
@@ -1070,19 +1070,19 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.20
      */
     enum class VectorExportResult SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorLayerExporter, ExportError ) : int
-      {
-      Success SIP_MONKEYPATCH_COMPAT_NAME( NoError ) = 0, //!< No errors were encountered
-      ErrorCreatingDataSource SIP_MONKEYPATCH_COMPAT_NAME( ErrCreateDataSource ), //!< Could not create the destination data source
-      ErrorCreatingLayer SIP_MONKEYPATCH_COMPAT_NAME( ErrCreateLayer ), //!< Could not create destination layer
-      ErrorAttributeTypeUnsupported SIP_MONKEYPATCH_COMPAT_NAME( ErrAttributeTypeUnsupported ), //!< Source layer has an attribute type which could not be handled by destination
-      ErrorAttributeCreationFailed SIP_MONKEYPATCH_COMPAT_NAME( ErrAttributeCreationFailed ), //!< Destination provider was unable to create an attribute
-      ErrorProjectingFeatures SIP_MONKEYPATCH_COMPAT_NAME( ErrProjection ), //!< An error occurred while reprojecting features to destination CRS
-      ErrorFeatureWriteFailed SIP_MONKEYPATCH_COMPAT_NAME( ErrFeatureWriteFailed ), //!< An error occurred while writing a feature to the destination
-      ErrorInvalidLayer SIP_MONKEYPATCH_COMPAT_NAME( ErrInvalidLayer ), //!< Could not access newly created destination layer
-      ErrorInvalidProvider SIP_MONKEYPATCH_COMPAT_NAME( ErrInvalidProvider ), //!< Could not find a matching provider key
+    {
+      Success SIP_MONKEYPATCH_COMPAT_NAME( NoError ) = 0,                                           //!< No errors were encountered
+      ErrorCreatingDataSource SIP_MONKEYPATCH_COMPAT_NAME( ErrCreateDataSource ),                   //!< Could not create the destination data source
+      ErrorCreatingLayer SIP_MONKEYPATCH_COMPAT_NAME( ErrCreateLayer ),                             //!< Could not create destination layer
+      ErrorAttributeTypeUnsupported SIP_MONKEYPATCH_COMPAT_NAME( ErrAttributeTypeUnsupported ),     //!< Source layer has an attribute type which could not be handled by destination
+      ErrorAttributeCreationFailed SIP_MONKEYPATCH_COMPAT_NAME( ErrAttributeCreationFailed ),       //!< Destination provider was unable to create an attribute
+      ErrorProjectingFeatures SIP_MONKEYPATCH_COMPAT_NAME( ErrProjection ),                         //!< An error occurred while reprojecting features to destination CRS
+      ErrorFeatureWriteFailed SIP_MONKEYPATCH_COMPAT_NAME( ErrFeatureWriteFailed ),                 //!< An error occurred while writing a feature to the destination
+      ErrorInvalidLayer SIP_MONKEYPATCH_COMPAT_NAME( ErrInvalidLayer ),                             //!< Could not access newly created destination layer
+      ErrorInvalidProvider SIP_MONKEYPATCH_COMPAT_NAME( ErrInvalidProvider ),                       //!< Could not find a matching provider key
       ErrorProviderUnsupportedFeature SIP_MONKEYPATCH_COMPAT_NAME( ErrProviderUnsupportedFeature ), //!< Provider does not support creation of empty layers
-      ErrorConnectionFailed SIP_MONKEYPATCH_COMPAT_NAME( ErrConnectionFailed ), //!< Could not connect to destination
-      UserCanceled SIP_MONKEYPATCH_COMPAT_NAME( ErrUserCanceled ), //!< User canceled the export
+      ErrorConnectionFailed SIP_MONKEYPATCH_COMPAT_NAME( ErrConnectionFailed ),                     //!< Could not connect to destination
+      UserCanceled SIP_MONKEYPATCH_COMPAT_NAME( ErrUserCanceled ),                                  //!< User canceled the export
     };
     Q_ENUM( VectorExportResult )
 
@@ -1092,7 +1092,7 @@ class CORE_EXPORT Qgis
      */
     enum class VectorFileWriterCapability : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      FieldAliases = 1 << 0, //!< Writer can support field aliases
+      FieldAliases = 1 << 0,  //!< Writer can support field aliases
       FieldComments = 1 << 2, //!< Writer can support field comments
     };
     Q_ENUM( VectorFileWriterCapability )
@@ -1110,10 +1110,10 @@ class CORE_EXPORT Qgis
      */
     enum class SqlLayerDefinitionCapability : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      SubsetStringFilter = 1 << 1,  //!< SQL layer definition supports subset string filter
-      GeometryColumn = 1 << 2,      //!< SQL layer definition supports geometry column
-      PrimaryKeys = 1 << 3,         //!< SQL layer definition supports primary keys
-      UnstableFeatureIds = 1 << 4   //!< SQL layer definition supports disabling select at id
+      SubsetStringFilter = 1 << 1, //!< SQL layer definition supports subset string filter
+      GeometryColumn = 1 << 2,     //!< SQL layer definition supports geometry column
+      PrimaryKeys = 1 << 3,        //!< SQL layer definition supports primary keys
+      UnstableFeatureIds = 1 << 4  //!< SQL layer definition supports disabling select at id
     };
     Q_ENUM( SqlLayerDefinitionCapability )
     //! SQL layer definition capabilities
@@ -1127,15 +1127,15 @@ class CORE_EXPORT Qgis
      */
     enum class SqlKeywordCategory : int
     {
-      Keyword,      //!< SQL keyword
-      Constant,     //!< SQL constant
-      Function,     //!< SQL generic function
-      Geospatial,   //!< SQL spatial function
-      Operator,     //!< SQL operator
-      Math,         //!< SQL math function
-      Aggregate,    //!< SQL aggregate function
-      String,       //!< SQL string function
-      Identifier    //!< SQL identifier
+      Keyword,    //!< SQL keyword
+      Constant,   //!< SQL constant
+      Function,   //!< SQL generic function
+      Geospatial, //!< SQL spatial function
+      Operator,   //!< SQL operator
+      Math,       //!< SQL math function
+      Aggregate,  //!< SQL aggregate function
+      String,     //!< SQL string function
+      Identifier  //!< SQL identifier
     };
     Q_ENUM( SqlKeywordCategory )
 
@@ -1145,14 +1145,14 @@ class CORE_EXPORT Qgis
      */
     enum class DriveType : int
     {
-      Unknown, //!< Unknown type
-      Invalid, //!< Invalid path
+      Unknown,   //!< Unknown type
+      Invalid,   //!< Invalid path
       Removable, //!< Removable drive
-      Fixed, //!< Fixed drive
-      Remote, //!< Remote drive
-      CdRom, //!< CD-ROM
-      RamDisk, //!< RAM disk
-      Cloud, //!< Cloud storage -- files may be remote or locally stored, depending on user configuration
+      Fixed,     //!< Fixed drive
+      Remote,    //!< Remote drive
+      CdRom,     //!< CD-ROM
+      RamDisk,   //!< RAM disk
+      Cloud,     //!< Cloud storage -- files may be remote or locally stored, depending on user configuration
     };
     Q_ENUM( DriveType )
 
@@ -1161,8 +1161,8 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.22
      */
     enum class ActionStart SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsNetworkContentFetcherRegistry, FetchingMode ) : int
-      {
-      Deferred SIP_MONKEYPATCH_COMPAT_NAME( DownloadLater ), //!< Do not start immediately the action
+    {
+      Deferred SIP_MONKEYPATCH_COMPAT_NAME( DownloadLater ),        //!< Do not start immediately the action
       Immediate SIP_MONKEYPATCH_COMPAT_NAME( DownloadImmediately ), //!< Action will start immediately
     };
     Q_ENUM( ActionStart )
@@ -1175,7 +1175,7 @@ class CORE_EXPORT Qgis
     enum class UnplacedLabelVisibility : int
     {
       FollowEngineSetting, //!< Respect the label engine setting
-      NeverShow, //!< Never show unplaced labels, regardless of the engine setting
+      NeverShow,           //!< Never show unplaced labels, regardless of the engine setting
     };
     Q_ENUM( UnplacedLabelVisibility )
 
@@ -1186,9 +1186,9 @@ class CORE_EXPORT Qgis
      */
     enum class LabelOverlapHandling : int
     {
-      PreventOverlap, //!< Do not allow labels to overlap other labels
+      PreventOverlap,         //!< Do not allow labels to overlap other labels
       AllowOverlapIfRequired, //!< Avoids overlapping labels when possible, but permit overlaps if labels for features cannot otherwise be placed
-      AllowOverlapAtNoCost, //!< Labels may freely overlap other labels, at no cost
+      AllowOverlapAtNoCost,   //!< Labels may freely overlap other labels, at no cost
     };
     Q_ENUM( LabelOverlapHandling )
 
@@ -1211,7 +1211,7 @@ class CORE_EXPORT Qgis
      */
     enum class LabelPrioritization : int
     {
-      PreferCloser, //!< Prefer closer labels, falling back to alternate positions before larger distances
+      PreferCloser,           //!< Prefer closer labels, falling back to alternate positions before larger distances
       PreferPositionOrdering, //!< Prefer labels follow position ordering, falling back to more distance labels before alternate positions
     };
     Q_ENUM( LabelPrioritization )
@@ -1224,13 +1224,13 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.26
      */
     enum class LabelPlacement SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPalLayerSettings, Placement ) : int
-      {
+    {
       AroundPoint, //!< Arranges candidates in a circle around a point (or centroid of a polygon). Applies to point or polygon layers only.
-      OverPoint, //!< Arranges candidates over a point (or centroid of a polygon), or at a preset offset from the point. Applies to point or polygon layers only.
-      Line, //!< Arranges candidates parallel to a generalised line representing the feature or parallel to a polygon's perimeter. Applies to line or polygon layers only.
-      Curved, //!< Arranges candidates following the curvature of a line feature. Applies to line layers only.
-      Horizontal, //!< Arranges horizontal candidates scattered throughout a polygon feature. Applies to polygon layers only.
-      Free, //!< Arranges candidates scattered throughout a polygon feature. Candidates are rotated to respect the polygon's orientation. Applies to polygon layers only.
+      OverPoint,   //!< Arranges candidates over a point (or centroid of a polygon), or at a preset offset from the point. Applies to point or polygon layers only.
+      Line,        //!< Arranges candidates parallel to a generalised line representing the feature or parallel to a polygon's perimeter. Applies to line or polygon layers only.
+      Curved,      //!< Arranges candidates following the curvature of a line feature. Applies to line layers only.
+      Horizontal,  //!< Arranges horizontal candidates scattered throughout a polygon feature. Applies to polygon layers only.
+      Free,        //!< Arranges candidates scattered throughout a polygon feature. Candidates are rotated to respect the polygon's orientation. Applies to polygon layers only.
       OrderedPositionsAroundPoint, //!< Candidates are placed in predefined positions around a point. Preference is given to positions with greatest cartographic appeal, e.g., top right, bottom right, etc. Applies to point layers only.
       PerimeterCurved, //!< Arranges candidates following the curvature of a polygon's boundary. Applies to polygon layers only.
       OutsidePolygons, //!< Candidates are placed outside of polygon boundaries. Applies to polygon layers only \since QGIS 3.14
@@ -1244,10 +1244,10 @@ class CORE_EXPORT Qgis
      */
     enum class CurvedLabelMode : int
     {
-      Default, //!< Default curved placement, characters are placed in an optimal position along the line. Glyphs are placed at regular character and word spacing.
+      Default,                   //!< Default curved placement, characters are placed in an optimal position along the line. Glyphs are placed at regular character and word spacing.
       PlaceCharactersAtVertices, //!< Each individual character from the label text is placed such that their left-baseline position is located at a corresponding vertex from the line geometry. If the line geometry does not contain sufficient vertices for the characters present in the label text then the excess characters will be ignored.
       StretchCharacterSpacingToFitLine, //!< Increases (or decreases) the character spacing used for each label in order to fit the entire text over the actual length of the line geometry.
-      StretchWordSpacingToFitLine, //!< Increases (or decreases) the word spacing used for each label in order to fit the entire text over the actual length of the line geometry.
+      StretchWordSpacingToFitLine,      //!< Increases (or decreases) the word spacing used for each label in order to fit the entire text over the actual length of the line geometry.
     };
     Q_ENUM( CurvedLabelMode )
 
@@ -1259,20 +1259,20 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.26
      */
     enum class LabelPredefinedPointPosition SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPalLayerSettings, PredefinedPointPosition ) : int
-      {
-      TopLeft, //!< Label on top-left of point
-      TopSlightlyLeft, //!< Label on top of point, slightly left of center
-      TopMiddle, //!< Label directly above point
-      TopSlightlyRight, //!< Label on top of point, slightly right of center
-      TopRight, //!< Label on top-right of point
-      MiddleLeft, //!< Label on left of point
-      MiddleRight, //!< Label on right of point
-      BottomLeft, //!< Label on bottom-left of point
-      BottomSlightlyLeft, //!< Label below point, slightly left of center
-      BottomMiddle, //!< Label directly below point
+    {
+      TopLeft,             //!< Label on top-left of point
+      TopSlightlyLeft,     //!< Label on top of point, slightly left of center
+      TopMiddle,           //!< Label directly above point
+      TopSlightlyRight,    //!< Label on top of point, slightly right of center
+      TopRight,            //!< Label on top-right of point
+      MiddleLeft,          //!< Label on left of point
+      MiddleRight,         //!< Label on right of point
+      BottomLeft,          //!< Label on bottom-left of point
+      BottomSlightlyLeft,  //!< Label below point, slightly left of center
+      BottomMiddle,        //!< Label directly below point
       BottomSlightlyRight, //!< Label below point, slightly right of center
-      BottomRight, //!< Label on bottom right of point
-      OverPoint, //!< Label directly centered over point \since QGIS 3.38
+      BottomRight,         //!< Label on bottom right of point
+      OverPoint,           //!< Label directly centered over point \since QGIS 3.38
     };
     Q_ENUM( LabelPredefinedPointPosition )
 
@@ -1283,9 +1283,9 @@ class CORE_EXPORT Qgis
      */
     enum class MultiPartLabelingBehavior : int
     {
-      LabelLargestPartOnly, //!< Place a label only on the largest part from the geometry
+      LabelLargestPartOnly,          //!< Place a label only on the largest part from the geometry
       LabelEveryPartWithEntireLabel, //!< Place the (same) entire label over every part from the geometry
-      SplitLabelTextLinesOverParts, //!< Splits the label text over the parts of the geometry, such that each consecutive part is labeled with the corresponding text line from the label text
+      SplitLabelTextLinesOverParts,  //!< Splits the label text over the parts of the geometry, such that each consecutive part is labeled with the corresponding text line from the label text
     };
     Q_ENUM( MultiPartLabelingBehavior )
 
@@ -1298,8 +1298,8 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.26
      */
     enum class LabelOffsetType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPalLayerSettings, OffsetType ) : int
-      {
-      FromPoint, //!< Offset distance applies from point geometry
+    {
+      FromPoint,        //!< Offset distance applies from point geometry
       FromSymbolBounds, //!< Offset distance applies from rendered symbol bounds
     };
     Q_ENUM( LabelOffsetType )
@@ -1312,15 +1312,15 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.26
      */
     enum class LabelQuadrantPosition SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPalLayerSettings, QuadrantPosition ) : int
-      {
-      AboveLeft SIP_MONKEYPATCH_COMPAT_NAME( QuadrantAboveLeft ), //!< Above left
-      Above SIP_MONKEYPATCH_COMPAT_NAME( QuadrantAbove ), //!< Above center
+    {
+      AboveLeft SIP_MONKEYPATCH_COMPAT_NAME( QuadrantAboveLeft ),   //!< Above left
+      Above SIP_MONKEYPATCH_COMPAT_NAME( QuadrantAbove ),           //!< Above center
       AboveRight SIP_MONKEYPATCH_COMPAT_NAME( QuadrantAboveRight ), //!< Above right
-      Left SIP_MONKEYPATCH_COMPAT_NAME( QuadrantLeft ), //!< Left middle
-      Over SIP_MONKEYPATCH_COMPAT_NAME( QuadrantOver ), //!< Center middle
-      Right SIP_MONKEYPATCH_COMPAT_NAME( QuadrantRight ), //!< Right middle
-      BelowLeft SIP_MONKEYPATCH_COMPAT_NAME( QuadrantBelowLeft ), //!< Below left
-      Below SIP_MONKEYPATCH_COMPAT_NAME( QuadrantBelow ), //!< Below center
+      Left SIP_MONKEYPATCH_COMPAT_NAME( QuadrantLeft ),             //!< Left middle
+      Over SIP_MONKEYPATCH_COMPAT_NAME( QuadrantOver ),             //!< Center middle
+      Right SIP_MONKEYPATCH_COMPAT_NAME( QuadrantRight ),           //!< Right middle
+      BelowLeft SIP_MONKEYPATCH_COMPAT_NAME( QuadrantBelowLeft ),   //!< Below left
+      Below SIP_MONKEYPATCH_COMPAT_NAME( QuadrantBelow ),           //!< Below center
       BelowRight SIP_MONKEYPATCH_COMPAT_NAME( QuadrantBelowRight ), //!< Below right
     };
     Q_ENUM( LabelQuadrantPosition )
@@ -1333,7 +1333,7 @@ class CORE_EXPORT Qgis
      */
     enum class LabelLinePlacementFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLabeling, LinePlacementFlag ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      OnLine = 1, //!< Labels can be placed directly over a line feature.
+      OnLine = 1,    //!< Labels can be placed directly over a line feature.
       AboveLine = 2, //!< Labels can be placed above a line feature. Unless MapOrientation is also specified this mode respects the direction of the line feature, so a line from right to left labels will have labels placed placed below the line feature.
       BelowLine = 4, //!< Labels can be placed below a line feature. Unless MapOrientation is also specified this mode respects the direction of the line feature, so a line from right to left labels will have labels placed placed above the line feature.
       MapOrientation = 8, //!< Signifies that the AboveLine and BelowLine flags should respect the map's orientation rather than the feature's orientation. For example, AboveLine will always result in label's being placed above a line, regardless of the line's direction.
@@ -1380,10 +1380,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.26
      */
     enum class UpsideDownLabelHandling SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPalLayerSettings, UpsideDownLabels ) : int
-      {
-      FlipUpsideDownLabels SIP_MONKEYPATCH_COMPAT_NAME( Upright ), //!< Upside-down labels (90 <= angle < 270) are shown upright
+    {
+      FlipUpsideDownLabels SIP_MONKEYPATCH_COMPAT_NAME( Upright ),                     //!< Upside-down labels (90 <= angle < 270) are shown upright
       AllowUpsideDownWhenRotationIsDefined SIP_MONKEYPATCH_COMPAT_NAME( ShowDefined ), //!< Show upside down when rotation is layer- or data-defined
-      AlwaysAllowUpsideDown SIP_MONKEYPATCH_COMPAT_NAME( ShowAll ) //!< Show upside down for all labels, including dynamic ones
+      AlwaysAllowUpsideDown SIP_MONKEYPATCH_COMPAT_NAME( ShowAll )                     //!< Show upside down for all labels, including dynamic ones
     };
     Q_ENUM( UpsideDownLabelHandling )
 
@@ -1395,12 +1395,12 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.26
      */
     enum class LabelMultiLineAlignment SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPalLayerSettings, MultiLineAlign ) : int
-      {
-      Left SIP_MONKEYPATCH_COMPAT_NAME( MultiLeft ) = 0, //!< Left align
-      Center SIP_MONKEYPATCH_COMPAT_NAME( MultiCenter ), //!< Center align
-      Right SIP_MONKEYPATCH_COMPAT_NAME( MultiRight ), //!< Right align
+    {
+      Left SIP_MONKEYPATCH_COMPAT_NAME( MultiLeft ) = 0,                   //!< Left align
+      Center SIP_MONKEYPATCH_COMPAT_NAME( MultiCenter ),                   //!< Center align
+      Right SIP_MONKEYPATCH_COMPAT_NAME( MultiRight ),                     //!< Right align
       FollowPlacement SIP_MONKEYPATCH_COMPAT_NAME( MultiFollowPlacement ), //!< Alignment follows placement of label, e.g., labels to the left of a feature will be drawn with right alignment
-      Justify SIP_MONKEYPATCH_COMPAT_NAME( MultiJustify ), //!< Justified
+      Justify SIP_MONKEYPATCH_COMPAT_NAME( MultiJustify ),                 //!< Justified
     };
     Q_ENUM( LabelMultiLineAlignment )
 
@@ -1411,14 +1411,14 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.32
      */
     enum class FileFilterType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProviderMetadata, FilterType ) : int
-      {
-      Vector SIP_MONKEYPATCH_COMPAT_NAME( FilterVector ) = 1, //!< Vector layers
-      Raster SIP_MONKEYPATCH_COMPAT_NAME( FilterRaster ), //!< Raster layers
-      Mesh SIP_MONKEYPATCH_COMPAT_NAME( FilterMesh ), //!< Mesh layers
+    {
+      Vector SIP_MONKEYPATCH_COMPAT_NAME( FilterVector ) = 1,       //!< Vector layers
+      Raster SIP_MONKEYPATCH_COMPAT_NAME( FilterRaster ),           //!< Raster layers
+      Mesh SIP_MONKEYPATCH_COMPAT_NAME( FilterMesh ),               //!< Mesh layers
       MeshDataset SIP_MONKEYPATCH_COMPAT_NAME( FilterMeshDataset ), //!< Mesh datasets
-      PointCloud SIP_MONKEYPATCH_COMPAT_NAME( FilterPointCloud ), //!< Point clouds \since QGIS 3.18
-      VectorTile, //!< Vector tile layers \since QGIS 3.32
-      TiledScene, //!< Tiled scene layers \since QGIS 3.34
+      PointCloud SIP_MONKEYPATCH_COMPAT_NAME( FilterPointCloud ),   //!< Point clouds \since QGIS 3.18
+      VectorTile,                                                   //!< Vector tile layers \since QGIS 3.32
+      TiledScene,                                                   //!< Tiled scene layers \since QGIS 3.34
     };
     Q_ENUM( FileFilterType )
 
@@ -1450,8 +1450,8 @@ class CORE_EXPORT Qgis
     enum class SourceHierarchyLevel : int
     {
       Connection, //!< The top-level container, e.g. database connection, catalog (for remote services), or file (for file-based databases).
-      Group, //!< An intermediate logical grouping, e.g. a database schema or layer group.
-      Object, //!< Represents a specific data entity, e.g. a table, view, or layer.
+      Group,      //!< An intermediate logical grouping, e.g. a database schema or layer group.
+      Object,     //!< Represents a specific data entity, e.g. a table, view, or layer.
     };
     Q_ENUM( SourceHierarchyLevel )
 
@@ -1463,9 +1463,9 @@ class CORE_EXPORT Qgis
     enum class SublayerQueryFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       FastScan = 1 << 0, //!< Indicates that the provider must scan for sublayers using the fastest possible approach -- e.g. by first checking that a uri has an extension which is known to be readable by the provider
-      ResolveGeometryType = 1 << 1, //!< Attempt to resolve the geometry type for vector sublayers
-      CountFeatures = 1 << 2, //!< Count features in vector sublayers
-      IncludeSystemTables = 1 << 3, //!< Include system or internal tables (these are not included by default)
+      ResolveGeometryType = 1 << 1,             //!< Attempt to resolve the geometry type for vector sublayers
+      CountFeatures = 1 << 2,                   //!< Count features in vector sublayers
+      IncludeSystemTables = 1 << 3,             //!< Include system or internal tables (these are not included by default)
       OpenLayersToResolveDescriptions = 1 << 4, //!< Attempt to open layers in order to resolve layer descriptions. May be slow and should never be done in a UI blocking call. \since QGIS 4.0
     };
     //! Sublayer query flags
@@ -1495,10 +1495,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.38
      */
     enum class ShaderInterpolationMethod SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsColorRampShader, Type ) : int
-      {
+    {
       Linear SIP_MONKEYPATCH_COMPAT_NAME( Interpolated ) = 0, //!< Interpolates the color between two class breaks linearly
-      Discrete = 1, //!< Assigns the color of the higher class for every pixel between two class breaks
-      Exact = 2, //!< Assigns the color of the exact matching value in the color ramp item list
+      Discrete = 1,                                           //!< Assigns the color of the higher class for every pixel between two class breaks
+      Exact = 2,                                              //!< Assigns the color of the exact matching value in the color ramp item list
     };
     Q_ENUM( ShaderInterpolationMethod )
 
@@ -1510,10 +1510,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.38
      */
     enum class ShaderClassificationMethod SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsColorRampShader, ClassificationMode ) : int
-      {
-      Continuous = 1, //!< Uses breaks from color palette
+    {
+      Continuous = 1,    //!< Uses breaks from color palette
       EqualInterval = 2, //!< Uses equal interval
-      Quantile = 3, //!< Uses quantile (i.e. equal pixel) count
+      Quantile = 3,      //!< Uses quantile (i.e. equal pixel) count
     };
     Q_ENUM( ShaderClassificationMethod )
 
@@ -1523,14 +1523,14 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.22
      */
     enum class RasterPipeInterfaceRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterPipe, Role ) : int
-      {
-      Unknown SIP_MONKEYPATCH_COMPAT_NAME( UnknownRole ) = 0, //!< Unknown role
-      Provider SIP_MONKEYPATCH_COMPAT_NAME( ProviderRole ) = 1, //!< Data provider role
-      Renderer SIP_MONKEYPATCH_COMPAT_NAME( RendererRole ) = 2, //!< Raster renderer role
-      Brightness SIP_MONKEYPATCH_COMPAT_NAME( BrightnessRole ) = 3, //!< Brightness filter role
-      Resampler SIP_MONKEYPATCH_COMPAT_NAME( ResamplerRole ) = 4, //!< Resampler role
-      Projector SIP_MONKEYPATCH_COMPAT_NAME( ProjectorRole ) = 5, //!< Projector role
-      Nuller SIP_MONKEYPATCH_COMPAT_NAME( NullerRole ) = 6, //!< Raster nuller role
+    {
+      Unknown SIP_MONKEYPATCH_COMPAT_NAME( UnknownRole ) = 0,             //!< Unknown role
+      Provider SIP_MONKEYPATCH_COMPAT_NAME( ProviderRole ) = 1,           //!< Data provider role
+      Renderer SIP_MONKEYPATCH_COMPAT_NAME( RendererRole ) = 2,           //!< Raster renderer role
+      Brightness SIP_MONKEYPATCH_COMPAT_NAME( BrightnessRole ) = 3,       //!< Brightness filter role
+      Resampler SIP_MONKEYPATCH_COMPAT_NAME( ResamplerRole ) = 4,         //!< Resampler role
+      Projector SIP_MONKEYPATCH_COMPAT_NAME( ProjectorRole ) = 5,         //!< Projector role
+      Nuller SIP_MONKEYPATCH_COMPAT_NAME( NullerRole ) = 6,               //!< Raster nuller role
       HueSaturation SIP_MONKEYPATCH_COMPAT_NAME( HueSaturationRole ) = 7, //!< Hue/saturation filter role (also applies grayscale/color inversion)
     };
     Q_ENUM( RasterPipeInterfaceRole )
@@ -1540,9 +1540,9 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.22
      */
     enum class RasterResamplingStage SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterPipe, ResamplingStage ) : int
-      {
+    {
       ResampleFilter, //!< Resampling occurs in ResamplingFilter
-      Provider, //!< Resampling occurs in Provider
+      Provider,       //!< Resampling occurs in Provider
     };
     Q_ENUM( RasterResamplingStage )
 
@@ -1554,15 +1554,15 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.42
      */
     enum class RasterResamplingMethod SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterDataProvider, ResamplingMethod ) : int
-      {
-      Nearest, //!< Nearest-neighbour resampling
-      Bilinear, //!< Bilinear (2x2 kernel) resampling
-      Cubic, //!< Cubic Convolution Approximation (4x4 kernel) resampling
+    {
+      Nearest,     //!< Nearest-neighbour resampling
+      Bilinear,    //!< Bilinear (2x2 kernel) resampling
+      Cubic,       //!< Cubic Convolution Approximation (4x4 kernel) resampling
       CubicSpline, //!< Cubic B-Spline Approximation (4x4 kernel)
-      Lanczos, //!< Lanczos windowed sinc interpolation (6x6 kernel)
-      Average, //!< Average resampling
-      Mode, //!< Mode (selects the value which appears most often of all the sampled points)
-      Gauss //!< Gauss blurring
+      Lanczos,     //!< Lanczos windowed sinc interpolation (6x6 kernel)
+      Average,     //!< Average resampling
+      Mode,        //!< Mode (selects the value which appears most often of all the sampled points)
+      Gauss        //!< Gauss blurring
     };
     Q_ENUM( RasterResamplingMethod )
 
@@ -1574,7 +1574,8 @@ class CORE_EXPORT Qgis
     enum class RasterRendererFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       InternalLayerOpacityHandling = 1 << 0, //!< The renderer internally handles the raster layer's opacity, so the default layer level opacity handling should not be applied.
-      UseNoDataForOutOfRangePixels = 1 << 1, //!< Out of range pixels (eg those values outside of the rendered map's z range filter) should be set using additional nodata values instead of additional transparency values \since QGIS 3.38
+      UseNoDataForOutOfRangePixels
+      = 1 << 1, //!< Out of range pixels (eg those values outside of the rendered map's z range filter) should be set using additional nodata values instead of additional transparency values \since QGIS 3.38
     };
 
     /**
@@ -1614,11 +1615,11 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.42
      */
     enum class RasterRangeLimit SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterMinMaxOrigin, Limits ) : int
-      {
-      NotSet SIP_MONKEYPATCH_COMPAT_NAME( None_ ), //!< User defined
+    {
+      NotSet SIP_MONKEYPATCH_COMPAT_NAME( None_ ),          //!< User defined
       MinimumMaximum SIP_MONKEYPATCH_COMPAT_NAME( MinMax ), //!< Real min-max values
-      StdDev, //!< Range is [ mean - stdDevFactor() * stddev, mean + stdDevFactor() * stddev ]
-      CumulativeCut //!< Range is [ min + cumulativeCutLower() * (max - min), min + cumulativeCutUpper() * (max - min) ]
+      StdDev,                                               //!< Range is [ mean - stdDevFactor() * stddev, mean + stdDevFactor() * stddev ]
+      CumulativeCut                                         //!< Range is [ min + cumulativeCutLower() * (max - min), min + cumulativeCutUpper() * (max - min) ]
     };
     Q_ENUM( RasterRangeLimit )
 
@@ -1630,10 +1631,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.42
      */
     enum class RasterRangeExtent SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterMinMaxOrigin, Extent ) : int
-      {
-      WholeRaster SIP_MONKEYPATCH_COMPAT_NAME( None_ ), //!< Whole raster is used to compute statistics
+    {
+      WholeRaster SIP_MONKEYPATCH_COMPAT_NAME( None_ ),         //!< Whole raster is used to compute statistics
       FixedCanvas SIP_MONKEYPATCH_COMPAT_NAME( CurrentCanvas ), //!< Current extent of the canvas (at the time of computation) is used to compute statistics
-      UpdatedCanvas, //!< Constantly updated extent of the canvas is used to compute statistics
+      UpdatedCanvas,                                            //!< Constantly updated extent of the canvas is used to compute statistics
     };
     Q_ENUM( RasterRangeExtent )
 
@@ -1644,9 +1645,9 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.42
      */
-    enum class RasterRangeAccuracy SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterMinMaxOrigin, StatAccuracy ): int
-      {
-      Exact, //!< Exact statistics
+    enum class RasterRangeAccuracy SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterMinMaxOrigin, StatAccuracy ) : int
+    {
+      Exact,     //!< Exact statistics
       Estimated, //!< Approximated statistics
     };
     Q_ENUM( RasterRangeAccuracy )
@@ -1658,25 +1659,25 @@ class CORE_EXPORT Qgis
      */
     enum class RasterAttributeTableFieldUsage : int
     {
-      Generic = 0, //!< Field usage Generic
+      Generic = 0,    //!< Field usage Generic
       PixelCount = 1, //!< Field usage PixelCount
-      Name = 2, //!< Field usage Name
-      Min = 3, //!< Field usage Min
-      Max = 4, //!< Field usage Max
-      MinMax = 5, //!< Field usage MinMax
-      Red = 6, //!< Field usage Red
-      Green = 7, //!< Field usage Green
-      Blue = 8, //!< Field usage Blue
-      Alpha = 9, //!< Field usage Alpha
-      RedMin = 10, //!< Field usage RedMin
-      GreenMin = 11, //!< Field usage GreenMin
-      BlueMin = 12, //!< Field usage BlueMin
-      AlphaMin = 13, //!< Field usage AlphaMin
-      RedMax = 14, //!< Field usage RedMax
-      GreenMax = 15, //!< Field usage GreenMax
-      BlueMax = 16, //!< Field usage BlueMax
-      AlphaMax = 17, //!< Field usage AlphaMax
-      MaxCount   //!< Not used by QGIS: GDAL Maximum GFU value (equals to GFU_AlphaMax+1 currently)
+      Name = 2,       //!< Field usage Name
+      Min = 3,        //!< Field usage Min
+      Max = 4,        //!< Field usage Max
+      MinMax = 5,     //!< Field usage MinMax
+      Red = 6,        //!< Field usage Red
+      Green = 7,      //!< Field usage Green
+      Blue = 8,       //!< Field usage Blue
+      Alpha = 9,      //!< Field usage Alpha
+      RedMin = 10,    //!< Field usage RedMin
+      GreenMin = 11,  //!< Field usage GreenMin
+      BlueMin = 12,   //!< Field usage BlueMin
+      AlphaMin = 13,  //!< Field usage AlphaMin
+      RedMax = 14,    //!< Field usage RedMax
+      GreenMax = 15,  //!< Field usage GreenMax
+      BlueMax = 16,   //!< Field usage BlueMax
+      AlphaMax = 17,  //!< Field usage AlphaMax
+      MaxCount        //!< Not used by QGIS: GDAL Maximum GFU value (equals to GFU_AlphaMax+1 currently)
     };
     Q_ENUM( RasterAttributeTableFieldUsage )
 
@@ -1699,8 +1700,8 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.32
      */
     enum class RasterExportType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterFileWriter, Mode ) : int
-      {
-      Raw = 0, //!< Raw data
+    {
+      Raw = 0,                                               //!< Raw data
       RenderedImage SIP_MONKEYPATCH_COMPAT_NAME( Image ) = 1 //!< Rendered image
     };
     Q_ENUM( RasterExportType )
@@ -1712,14 +1713,14 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.32
      */
     enum class RasterFileWriterResult SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterFileWriter, WriterError ) : int
-      {
-      Success SIP_MONKEYPATCH_COMPAT_NAME( NoError ) = 0, //!< Successful export
-      SourceProviderError = 1, //!< Source data provider error
+    {
+      Success SIP_MONKEYPATCH_COMPAT_NAME( NoError ) = 0,                            //!< Successful export
+      SourceProviderError = 1,                                                       //!< Source data provider error
       DestinationProviderError SIP_MONKEYPATCH_COMPAT_NAME( DestProviderError ) = 2, //!< Destination data provider error
-      CreateDatasourceError = 3, //!< Data source creation error
-      WriteError = 4, //!< Write error
-      NoDataConflict = 5, //!< Internal error if a value used for 'no data' was found in input
-      Canceled SIP_MONKEYPATCH_COMPAT_NAME( WriteCanceled ) = 6, //!< Writing was manually canceled
+      CreateDatasourceError = 3,                                                     //!< Data source creation error
+      WriteError = 4,                                                                //!< Write error
+      NoDataConflict = 5,                                                            //!< Internal error if a value used for 'no data' was found in input
+      Canceled SIP_MONKEYPATCH_COMPAT_NAME( WriteCanceled ) = 6,                     //!< Writing was manually canceled
     };
     Q_ENUM( RasterFileWriterResult )
 
@@ -1730,13 +1731,13 @@ class CORE_EXPORT Qgis
      */
     enum class MeshEditingErrorType : int
     {
-      NoError, //!< No type
-      InvalidFace, //!< An error occurs due to an invalid face (for example, vertex indexes are unordered)
+      NoError,               //!< No type
+      InvalidFace,           //!< An error occurs due to an invalid face (for example, vertex indexes are unordered)
       TooManyVerticesInFace, //!< A face has more vertices than the maximum number supported per face
-      FlatFace, //!< A flat face is present
-      UniqueSharedVertex, //!< A least two faces share only one vertices
-      InvalidVertex, //!< An error occurs due to an invalid vertex (for example, vertex index is out of range the available vertex)
-      ManifoldFace, //!< ManifoldFace
+      FlatFace,              //!< A flat face is present
+      UniqueSharedVertex,    //!< A least two faces share only one vertices
+      InvalidVertex,         //!< An error occurs due to an invalid vertex (for example, vertex index is out of range the available vertex)
+      ManifoldFace,          //!< ManifoldFace
     };
     Q_ENUM( MeshEditingErrorType )
 
@@ -1759,10 +1760,10 @@ class CORE_EXPORT Qgis
      */
     enum class SublayerPromptMode : int
     {
-      AlwaysAsk, //!< Always ask users to select from available sublayers, if sublayers are present
+      AlwaysAsk,               //!< Always ask users to select from available sublayers, if sublayers are present
       AskExcludingRasterBands, //!< Ask users to select from available sublayers, unless only raster bands are present
-      NeverAskSkip, //!< Never ask users to select sublayers, instead don't load anything
-      NeverAskLoadAll, //!< Never ask users to select sublayers, instead automatically load all available sublayers
+      NeverAskSkip,            //!< Never ask users to select sublayers, instead don't load anything
+      NeverAskLoadAll,         //!< Never ask users to select sublayers, instead automatically load all available sublayers
     };
     Q_ENUM( SublayerPromptMode )
 
@@ -1774,11 +1775,11 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.38
     */
     enum class FieldOrigin SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsFields, FieldOrigin ) : int
-      {
-      Unknown SIP_MONKEYPATCH_COMPAT_NAME( OriginUnknown ), //!< The field origin has not been specified
-      Provider SIP_MONKEYPATCH_COMPAT_NAME( OriginProvider ), //!< Field originates from the underlying data provider of the vector layer
-      Join SIP_MONKEYPATCH_COMPAT_NAME( OriginJoin ), //!< Field originates from a joined layer
-      Edit SIP_MONKEYPATCH_COMPAT_NAME( OriginEdit ), //!< Field has been temporarily added in editing mode
+    {
+      Unknown SIP_MONKEYPATCH_COMPAT_NAME( OriginUnknown ),      //!< The field origin has not been specified
+      Provider SIP_MONKEYPATCH_COMPAT_NAME( OriginProvider ),    //!< Field originates from the underlying data provider of the vector layer
+      Join SIP_MONKEYPATCH_COMPAT_NAME( OriginJoin ),            //!< Field originates from a joined layer
+      Edit SIP_MONKEYPATCH_COMPAT_NAME( OriginEdit ),            //!< Field has been temporarily added in editing mode
       Expression SIP_MONKEYPATCH_COMPAT_NAME( OriginExpression ) //!< Field is calculated from an expression
     };
     Q_ENUM( FieldOrigin )
@@ -1792,10 +1793,10 @@ class CORE_EXPORT Qgis
      */
     enum class FieldConfigurationFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      NoFlag = 0, //!< No flag is defined
+      NoFlag = 0,             //!< No flag is defined
       NotSearchable = 1 << 1, //!< Defines if the field is searchable (used in the locator search for instance)
-      HideFromWms = 1 << 2, //!< Field is not available if layer is served as WMS from QGIS server
-      HideFromWfs = 1 << 3, //!< Field is not available if layer is served as WFS from QGIS server
+      HideFromWms = 1 << 2,   //!< Field is not available if layer is served as WMS from QGIS server
+      HideFromWfs = 1 << 3,   //!< Field is not available if layer is served as WFS from QGIS server
     };
     Q_ENUM( FieldConfigurationFlag )
 
@@ -1816,8 +1817,8 @@ class CORE_EXPORT Qgis
      */
     enum class FieldMetadataProperty : int
     {
-      GeometryCrs = 0x1000, //!< Available for geometry field types with a specific associated coordinate reference system (as a QgsCoordinateReferenceSystem value)
-      GeometryWkbType = 0x1001, //!< Available for geometry field types which accept geometries of a specific WKB type only (as a QgsWkbTypes::Type value)
+      GeometryCrs = 0x1000,      //!< Available for geometry field types with a specific associated coordinate reference system (as a QgsCoordinateReferenceSystem value)
+      GeometryWkbType = 0x1001,  //!< Available for geometry field types which accept geometries of a specific WKB type only (as a QgsWkbTypes::Type value)
       CustomProperty = 0x100000, //!< Starting point for custom user set properties
     };
     Q_ENUM( FieldMetadataProperty )
@@ -1829,8 +1830,8 @@ class CORE_EXPORT Qgis
      */
     enum class SelectionRenderingMode : int
     {
-      Default, //!< Use default symbol and selection colors
-      CustomColor, //!< Use default symbol with a custom selection color
+      Default,      //!< Use default symbol and selection colors
+      CustomColor,  //!< Use default symbol with a custom selection color
       CustomSymbol, //!< Use a custom symbol
     };
     Q_ENUM( SelectionRenderingMode )
@@ -1841,10 +1842,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.22
      */
     enum class SelectBehavior SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorLayer, SelectBehavior ) : int
-      {
-      SetSelection, //!< Set selection, removing any existing selection
-      AddToSelection, //!< Add selection to current selection
-      IntersectSelection, //!< Modify current selection to include only select features which match
+    {
+      SetSelection,        //!< Set selection, removing any existing selection
+      AddToSelection,      //!< Add selection to current selection
+      IntersectSelection,  //!< Modify current selection to include only select features which match
       RemoveFromSelection, //!< Remove from current selection
     };
     Q_ENUM( SelectBehavior )
@@ -1857,7 +1858,7 @@ class CORE_EXPORT Qgis
     enum class SelectGeometryRelationship : int
     {
       Intersect, //!< Select where features intersect the reference geometry
-      Within, //!< Select where features are within the reference geometry
+      Within,    //!< Select where features are within the reference geometry
     };
     Q_ENUM( SelectGeometryRelationship )
 
@@ -1888,12 +1889,12 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.22
      */
     enum class VectorEditResult SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorLayer, EditResult ) : int
-      {
-      Success = 0, //!< Edit operation was successful
-      EmptyGeometry = 1, //!< Edit operation resulted in an empty geometry
-      EditFailed = 2, //!< Edit operation failed
+    {
+      Success = 0,            //!< Edit operation was successful
+      EmptyGeometry = 1,      //!< Edit operation resulted in an empty geometry
+      EditFailed = 2,         //!< Edit operation failed
       FetchFeatureFailed = 3, //!< Unable to fetch requested feature
-      InvalidLayer = 4, //!< Edit failed due to invalid layer
+      InvalidLayer = 4,       //!< Edit failed due to invalid layer
     };
     Q_ENUM( VectorEditResult )
 
@@ -1903,10 +1904,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.22
      */
     enum class VertexMarkerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSymbolLayerUtils, VertexMarkerType ) : int
-      {
+    {
       SemiTransparentCircle, //!< Semi-transparent circle marker
-      Cross, //!< Cross marker
-      NoMarker, //!< No marker
+      Cross,                 //!< Cross marker
+      NoMarker,              //!< No marker
     };
     Q_ENUM( VertexMarkerType )
 
@@ -1917,10 +1918,10 @@ class CORE_EXPORT Qgis
     enum class ContentStatus : int
     {
       NotStarted, //!< Content fetching/storing has not started yet
-      Running, //!< Content fetching/storing is in progress
-      Finished, //!< Content fetching/storing is finished and successful
-      Failed, //!< Content fetching/storing has failed
-      Canceled, //!< Content fetching/storing has been canceled
+      Running,    //!< Content fetching/storing is in progress
+      Finished,   //!< Content fetching/storing is finished and successful
+      Failed,     //!< Content fetching/storing has failed
+      Canceled,   //!< Content fetching/storing has been canceled
     };
     Q_ENUM( ContentStatus )
 
@@ -1932,9 +1933,9 @@ class CORE_EXPORT Qgis
     enum class GpsConnectionType : int
     {
       Automatic, //!< Automatically detected GPS device connection
-      Internal, //!< Internal GPS device
-      Serial, //!< Serial port GPS device
-      Gpsd, //!< GPSD device
+      Internal,  //!< Internal GPS device
+      Serial,    //!< Serial port GPS device
+      Gpsd,      //!< GPSD device
     };
     Q_ENUM( GpsConnectionType )
 
@@ -1944,10 +1945,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.30
      */
     enum class DeviceConnectionStatus SIP_MONKEYPATCH_SCOPEENUM_UNNEST( Qgis, GpsConnectionStatus ) : int
-      {
+    {
       Disconnected, //!< Device is disconnected
-      Connecting, //!< Device is connecting
-      Connected, //!< Device is successfully connected
+      Connecting,   //!< Device is connecting
+      Connected,    //!< Device is successfully connected
     };
     Q_ENUM( DeviceConnectionStatus )
 
@@ -1959,11 +1960,11 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.30
      */
     enum class GpsFixStatus SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsGpsInformation, FixStatus ) : int
-      {
+    {
       NoData, //!< No fix data available
-      NoFix, //!< GPS is not fixed
-      Fix2D, //!< 2D fix
-      Fix3D //!< 3D fix
+      NoFix,  //!< GPS is not fixed
+      Fix2D,  //!< 2D fix
+      Fix3D   //!< 3D fix
     };
     Q_ENUM( GpsFixStatus );
 
@@ -1976,13 +1977,13 @@ class CORE_EXPORT Qgis
     enum class GnssConstellation
     {
       Unknown, //!< Unknown/other system
-      Gps, //!< Global Positioning System (GPS)
+      Gps,     //!< Global Positioning System (GPS)
       Glonass, //!< Global Navigation Satellite System (GLONASS)
       Galileo, //!< Galileo
-      BeiDou, //!< BeiDou
-      Qzss, //!< Quasi Zenith Satellite System (QZSS)
-      Navic, //!< Indian Regional Navigation Satellite System (IRNSS) / NAVIC
-      Sbas, //!< SBAS
+      BeiDou,  //!< BeiDou
+      Qzss,    //!< Quasi Zenith Satellite System (QZSS)
+      Navic,   //!< Indian Regional Navigation Satellite System (IRNSS) / NAVIC
+      Sbas,    //!< SBAS
     };
     Q_ENUM( GnssConstellation );
 
@@ -1994,15 +1995,15 @@ class CORE_EXPORT Qgis
     enum class GpsQualityIndicator
     {
       Unknown = -1, //!< Unknown
-      Invalid, //!< Invalid
-      GPS, //!< Standalone
-      DGPS, //!< Differential GPS
-      PPS, //!< PPS
-      RTK, //!< Real-time-kynematic
-      FloatRTK, //!< Float real-time-kynematic
-      Estimated, //!< Estimated
-      Manual, //!< Manual input mode
-      Simulation, //!< Simulation mode
+      Invalid,      //!< Invalid
+      GPS,          //!< Standalone
+      DGPS,         //!< Differential GPS
+      PPS,          //!< PPS
+      RTK,          //!< Real-time-kynematic
+      FloatRTK,     //!< Float real-time-kynematic
+      Estimated,    //!< Estimated
+      Manual,       //!< Manual input mode
+      Simulation,   //!< Simulation mode
     };
     Q_ENUM( GpsQualityIndicator )
 
@@ -2014,9 +2015,9 @@ class CORE_EXPORT Qgis
     enum class GpsNavigationStatus : int
     {
       NotValid, //!< Navigation status not valid
-      Safe, //!< Safe
-      Caution, //!< Caution
-      Unsafe, //!< Unsafe
+      Safe,     //!< Safe
+      Caution,  //!< Caution
+      Unsafe,   //!< Unsafe
     };
     Q_ENUM( GpsNavigationStatus );
 
@@ -2027,26 +2028,26 @@ class CORE_EXPORT Qgis
      */
     enum class GpsInformationComponent : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      Location = 1 << 0, //!< 2D location (latitude/longitude), as a QgsPointXY value
-      Altitude = 1 << 1, //!< Altitude/elevation above or below the mean sea level
-      GroundSpeed = 1 << 2, //!< Ground speed
-      Bearing = 1 << 3, //!< Bearing measured in degrees clockwise from true north to the direction of travel
-      TotalTrackLength = 1 << 4, //!< Total distance of current GPS track (available from QgsGpsLogger class only)
-      TrackDistanceFromStart = 1 << 5, //!< Direct distance from first vertex in current GPS track to last vertex (available from QgsGpsLogger class only)
-      Pdop = 1 << 6, //!< Dilution of precision
-      Hdop = 1 << 7, //!< Horizontal dilution of precision
-      Vdop = 1 << 8, //!< Vertical dilution of precision
-      HorizontalAccuracy = 1 << 9, //!< Horizontal accuracy in meters
-      VerticalAccuracy = 1 << 10, //!< Vertical accuracy in meters
-      HvAccuracy = 1 << 11, //!< 3D RMS
-      SatellitesUsed = 1 << 12, //!< Count of satellites used in obtaining the fix
-      Timestamp = 1 << 13, //!< Timestamp
-      TrackStartTime = 1 << 14, //!< Timestamp at start of current track (available from QgsGpsLogger class only)
-      TrackEndTime = 1 << 15, //!< Timestamp at end (current point) of current track (available from QgsGpsLogger class only)
+      Location = 1 << 0,                     //!< 2D location (latitude/longitude), as a QgsPointXY value
+      Altitude = 1 << 1,                     //!< Altitude/elevation above or below the mean sea level
+      GroundSpeed = 1 << 2,                  //!< Ground speed
+      Bearing = 1 << 3,                      //!< Bearing measured in degrees clockwise from true north to the direction of travel
+      TotalTrackLength = 1 << 4,             //!< Total distance of current GPS track (available from QgsGpsLogger class only)
+      TrackDistanceFromStart = 1 << 5,       //!< Direct distance from first vertex in current GPS track to last vertex (available from QgsGpsLogger class only)
+      Pdop = 1 << 6,                         //!< Dilution of precision
+      Hdop = 1 << 7,                         //!< Horizontal dilution of precision
+      Vdop = 1 << 8,                         //!< Vertical dilution of precision
+      HorizontalAccuracy = 1 << 9,           //!< Horizontal accuracy in meters
+      VerticalAccuracy = 1 << 10,            //!< Vertical accuracy in meters
+      HvAccuracy = 1 << 11,                  //!< 3D RMS
+      SatellitesUsed = 1 << 12,              //!< Count of satellites used in obtaining the fix
+      Timestamp = 1 << 13,                   //!< Timestamp
+      TrackStartTime = 1 << 14,              //!< Timestamp at start of current track (available from QgsGpsLogger class only)
+      TrackEndTime = 1 << 15,                //!< Timestamp at end (current point) of current track (available from QgsGpsLogger class only)
       TrackDistanceSinceLastPoint = 1 << 16, //!< Distance since last recorded location (available from QgsGpsLogger class only)
-      TrackTimeSinceLastPoint = 1 << 17, //!< Time since last recorded location (available from QgsGpsLogger class only)
-      GeoidalSeparation = 1 << 18, //!< Geoidal separation, the difference between the WGS-84 Earth ellipsoid and mean-sea-level (geoid), "-" means mean-sea-level below ellipsoid
-      EllipsoidAltitude = 1 << 19, //!< Altitude/elevation above or below the WGS-84 Earth ellipsoid
+      TrackTimeSinceLastPoint = 1 << 17,     //!< Time since last recorded location (available from QgsGpsLogger class only)
+      GeoidalSeparation = 1 << 18,           //!< Geoidal separation, the difference between the WGS-84 Earth ellipsoid and mean-sea-level (geoid), "-" means mean-sea-level below ellipsoid
+      EllipsoidAltitude = 1 << 19,           //!< Altitude/elevation above or below the WGS-84 Earth ellipsoid
     };
 
     /**
@@ -2065,11 +2066,11 @@ class CORE_EXPORT Qgis
      */
     enum class BabelFormatCapability : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      Import = 1 << 0, //!< Format supports importing
-      Export = 1 << 1, //!< Format supports exporting
+      Import = 1 << 0,    //!< Format supports importing
+      Export = 1 << 1,    //!< Format supports exporting
       Waypoints = 1 << 2, //!< Format supports waypoints
-      Routes = 1 << 3, //!< Format supports routes
-      Tracks = 1 << 4, //!< Format supports tracks
+      Routes = 1 << 3,    //!< Format supports routes
+      Tracks = 1 << 4,    //!< Format supports tracks
     };
     //! Babel GPS format capabilities
     Q_DECLARE_FLAGS( BabelFormatCapabilities, BabelFormatCapability )
@@ -2099,8 +2100,8 @@ class CORE_EXPORT Qgis
     enum class GpsFeatureType : int
     {
       Waypoint, //!< Waypoint
-      Route, //!< Route
-      Track, //!< Track
+      Route,    //!< Route
+      Track,    //!< Track
     };
     Q_ENUM( GpsFeatureType )
 
@@ -2112,25 +2113,25 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.22
      */
     enum class GeometryOperationResult SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsGeometry, OperationResult ) : int
-      {
-      Success = 0, //!< Operation succeeded
-      NothingHappened = 1000, //!< Nothing happened, without any error
-      InvalidBaseGeometry, //!< The base geometry on which the operation is done is invalid or empty
-      InvalidInputGeometryType, //!< The input geometry (ring, part, split line, etc.) has not the correct geometry type
-      SelectionIsEmpty, //!< No features were selected
+    {
+      Success = 0,               //!< Operation succeeded
+      NothingHappened = 1000,    //!< Nothing happened, without any error
+      InvalidBaseGeometry,       //!< The base geometry on which the operation is done is invalid or empty
+      InvalidInputGeometryType,  //!< The input geometry (ring, part, split line, etc.) has not the correct geometry type
+      SelectionIsEmpty,          //!< No features were selected
       SelectionIsGreaterThanOne, //!< More than one features were selected
-      GeometryEngineError, //!< Geometry engine misses a method implemented or an error occurred in the geometry engine
-      LayerNotEditable, //!< Cannot edit layer
+      GeometryEngineError,       //!< Geometry engine misses a method implemented or an error occurred in the geometry engine
+      LayerNotEditable,          //!< Cannot edit layer
       // Add part issues
       AddPartSelectedGeometryNotFound, //!< The selected geometry cannot be found
-      AddPartNotMultiGeometry, //!< The source geometry is not multi
+      AddPartNotMultiGeometry,         //!< The source geometry is not multi
       // Add ring issues
-      AddRingNotClosed, //!< The input ring is not closed
-      AddRingNotValid, //!< The input ring is not valid
+      AddRingNotClosed,            //!< The input ring is not closed
+      AddRingNotValid,             //!< The input ring is not valid
       AddRingCrossesExistingRings, //!< The input ring crosses existing rings (it is not disjoint)
       AddRingNotInExistingFeature, //!< The input ring doesn't have any existing ring to fit into
       // Split features
-      SplitCannotSplitPoint, //!< Cannot split points
+      SplitCannotSplitPoint,  //!< Cannot split points
       GeometryTypeHasChanged, //!< Operation has changed geometry type
     };
     Q_ENUM( GeometryOperationResult )
@@ -2142,7 +2143,8 @@ class CORE_EXPORT Qgis
      */
     enum class GeometryValidityFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsGeometry, ValidityFlag ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      AllowSelfTouchingHoles SIP_MONKEYPATCH_COMPAT_NAME( FlagAllowSelfTouchingHoles ) = 1 << 0, //!< Indicates that self-touching holes are permitted. OGC validity states that self-touching holes are NOT permitted, whilst other vendor validity checks (e.g. ESRI) permit self-touching holes.
+      AllowSelfTouchingHoles SIP_MONKEYPATCH_COMPAT_NAME( FlagAllowSelfTouchingHoles )
+      = 1 << 0, //!< Indicates that self-touching holes are permitted. OGC validity states that self-touching holes are NOT permitted, whilst other vendor validity checks (e.g. ESRI) permit self-touching holes.
     };
     //! Geometry validity flags
     Q_DECLARE_FLAGS( GeometryValidityFlags, GeometryValidityFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsGeometry, ValidityFlags )
@@ -2166,9 +2168,9 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.22
      */
     enum class BufferSide SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsGeometry, BufferSide ) : int
-      {
+    {
       Left SIP_MONKEYPATCH_COMPAT_NAME( SideLeft ) = 0, //!< Buffer to left of line
-      Right SIP_MONKEYPATCH_COMPAT_NAME( SideRight ), //!< Buffer to right of line
+      Right SIP_MONKEYPATCH_COMPAT_NAME( SideRight ),   //!< Buffer to right of line
     };
     Q_ENUM( BufferSide )
 
@@ -2178,10 +2180,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.22
      */
     enum class EndCapStyle SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsGeometry, EndCapStyle ) : int
-      {
+    {
       Round SIP_MONKEYPATCH_COMPAT_NAME( CapRound ) = 1, //!< Round cap
-      Flat SIP_MONKEYPATCH_COMPAT_NAME( CapFlat ), //!< Flat cap (in line with start/end of line)
-      Square SIP_MONKEYPATCH_COMPAT_NAME( CapSquare ), //!< Square cap (extends past start/end of line by buffer distance)
+      Flat SIP_MONKEYPATCH_COMPAT_NAME( CapFlat ),       //!< Flat cap (in line with start/end of line)
+      Square SIP_MONKEYPATCH_COMPAT_NAME( CapSquare ),   //!< Square cap (extends past start/end of line by buffer distance)
     };
     Q_ENUM( EndCapStyle )
 
@@ -2191,10 +2193,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.22
      */
     enum class JoinStyle SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsGeometry, JoinStyle ) : int
-      {
+    {
       Round SIP_MONKEYPATCH_COMPAT_NAME( JoinStyleRound ) = 1, //!< Use rounded joins
-      Miter SIP_MONKEYPATCH_COMPAT_NAME( JoinStyleMiter ), //!< Use mitered joins
-      Bevel SIP_MONKEYPATCH_COMPAT_NAME( JoinStyleBevel ), //!< Use beveled joins
+      Miter SIP_MONKEYPATCH_COMPAT_NAME( JoinStyleMiter ),     //!< Use mitered joins
+      Bevel SIP_MONKEYPATCH_COMPAT_NAME( JoinStyleBevel ),     //!< Use beveled joins
     };
     Q_ENUM( JoinStyle )
 
@@ -2218,8 +2220,8 @@ class CORE_EXPORT Qgis
      */
     enum class GeosCreationFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      RejectOnInvalidSubGeometry = 1 << 0,  //!< Don't allow geometries with invalid sub-geometries to be created
-      SkipEmptyInteriorRings = 1 << 1,      //!< Skip any empty polygon interior ring
+      RejectOnInvalidSubGeometry = 1 << 0, //!< Don't allow geometries with invalid sub-geometries to be created
+      SkipEmptyInteriorRings = 1 << 1,     //!< Skip any empty polygon interior ring
     };
     Q_ENUM( GeosCreationFlag )
 
@@ -2239,8 +2241,8 @@ class CORE_EXPORT Qgis
     enum class CoverageValidityResult : int
     {
       Invalid = 0, //!< Coverage is invalid. Invalidity includes polygons that overlap, that have gaps smaller than the gap width, or non-polygonal entries in the input collection.
-      Valid = 1, //!< Coverage is valid
-      Error = 2, //!< An exception occurred while determining validity
+      Valid = 1,   //!< Coverage is valid
+      Error = 2,   //!< An exception occurred while determining validity
     };
     Q_ENUM( CoverageValidityResult )
 
@@ -2251,7 +2253,7 @@ class CORE_EXPORT Qgis
      */
     enum class MakeValidMethod : int
     {
-      Linework = 0, //!< Combines all rings into a set of noded lines and then extracts valid polygons from that linework.
+      Linework = 0,  //!< Combines all rings into a set of noded lines and then extracts valid polygons from that linework.
       Structure = 1, //!< Structured method, first makes all rings valid and then merges shells and subtracts holes from shells to generate valid result. Assumes that holes and shells are correctly categorized. Requires GEOS 3.10+.
     };
     Q_ENUM( MakeValidMethod )
@@ -2265,12 +2267,13 @@ class CORE_EXPORT Qgis
      */
     enum class FeatureRequestFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsFeatureRequest, Flag ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      NoFlags            = 0, //!< No flags are set
-      NoGeometry         = 1,  //!< Geometry is not required. It may still be returned if e.g. required for a filter condition.
-      SubsetOfAttributes = 2,  //!< Fetch only a subset of attributes (setSubsetOfAttributes sets this flag)
-      ExactIntersect     = 4,   //!< Use exact geometry intersection (slower) instead of bounding boxes
-      IgnoreStaticNodesDuringExpressionCompilation = 8, //!< If a feature request uses a filter expression which can be partially precalculated due to static nodes in the expression, setting this flag will prevent these precalculated values from being utilized during compilation of the filter for the backend provider. This flag significantly slows down feature requests and should be used for debugging purposes only. \since QGIS 3.18
-      EmbeddedSymbols    = 16,  //!< Retrieve any embedded feature symbology \since QGIS 3.20
+      NoFlags = 0,            //!< No flags are set
+      NoGeometry = 1,         //!< Geometry is not required. It may still be returned if e.g. required for a filter condition.
+      SubsetOfAttributes = 2, //!< Fetch only a subset of attributes (setSubsetOfAttributes sets this flag)
+      ExactIntersect = 4,     //!< Use exact geometry intersection (slower) instead of bounding boxes
+      IgnoreStaticNodesDuringExpressionCompilation
+      = 8, //!< If a feature request uses a filter expression which can be partially precalculated due to static nodes in the expression, setting this flag will prevent these precalculated values from being utilized during compilation of the filter for the backend provider. This flag significantly slows down feature requests and should be used for debugging purposes only. \since QGIS 3.18
+      EmbeddedSymbols = 16, //!< Retrieve any embedded feature symbology \since QGIS 3.20
     };
     Q_ENUM( FeatureRequestFlag )
 
@@ -2308,8 +2311,8 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.36
      */
     enum class InvalidGeometryCheck SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsFeatureRequest, InvalidGeometryCheck ) : int
-      {
-      NoCheck SIP_MONKEYPATCH_COMPAT_NAME( GeometryNoCheck ) = 0, //!< No invalid geometry checking
+    {
+      NoCheck SIP_MONKEYPATCH_COMPAT_NAME( GeometryNoCheck ) = 0,         //!< No invalid geometry checking
       SkipInvalid SIP_MONKEYPATCH_COMPAT_NAME( GeometrySkipInvalid ) = 1, //!< Skip any features with invalid geometry. This requires a slow geometry validity check for every feature.
       AbortOnInvalid SIP_MONKEYPATCH_COMPAT_NAME( GeometryAbortOnInvalid ) = 2, //!< Close iterator on encountering any features with invalid geometry. This requires a slow geometry validity check for every feature.
     };
@@ -2322,8 +2325,8 @@ class CORE_EXPORT Qgis
      */
     enum class SpatialFilterType : int
     {
-      NoFilter, //!< No spatial filtering of features
-      BoundingBox, //!< Filter using a bounding box
+      NoFilter,       //!< No spatial filtering of features
+      BoundingBox,    //!< Filter using a bounding box
       DistanceWithin, //!< Filter by distance to reference geometry
     };
     Q_ENUM( SpatialFilterType )
@@ -2336,7 +2339,7 @@ class CORE_EXPORT Qgis
     enum class FileOperationFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       IncludeMetadataFile = 1 << 0, //!< Indicates that any associated .qmd metadata file should be included with the operation
-      IncludeStyleFile = 1 << 1, //!< Indicates that any associated .qml styling file should be included with the operation
+      IncludeStyleFile = 1 << 1,    //!< Indicates that any associated .qml styling file should be included with the operation
     };
     //! File operation flags
     Q_DECLARE_FLAGS( FileOperationFlags, FileOperationFlag )
@@ -2350,7 +2353,8 @@ class CORE_EXPORT Qgis
      */
     enum class MapLayerProperty : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      UsersCannotToggleEditing = 1 << 0, //!< Indicates that users are not allowed to toggle editing for this layer. Note that this does not imply that the layer is non-editable (see isEditable(), supportsEditing() ), rather that the editable status of the layer cannot be changed by users manually \since QGIS 3.22
+      UsersCannotToggleEditing
+      = 1 << 0, //!< Indicates that users are not allowed to toggle editing for this layer. Note that this does not imply that the layer is non-editable (see isEditable(), supportsEditing() ), rather that the editable status of the layer cannot be changed by users manually \since QGIS 3.22
       IsBasemapLayer = 1 << 1, //!< Layer is considered a 'basemap' layer, and certain properties of the layer should be ignored when calculating project-level properties. For instance, the extent of basemap layers is ignored when calculating the extent of a project, as these layers are typically global and extend outside of a project's area of interest \since QGIS 3.26
       Is3DBasemapLayer = 1 << 2, //!< Layer is considered a '3D basemap' layer. This flag is similar to IsBasemapLayer, but reserved for layers which contain 3D data \since QGIS 3.44
     };
@@ -2366,7 +2370,7 @@ class CORE_EXPORT Qgis
      */
     enum class AutoRefreshMode : int
     {
-      Disabled = 0, //!< Automatic refreshing is disabled
+      Disabled = 0,   //!< Automatic refreshing is disabled
       ReloadData = 1, //!< Reload data (and draw the new data)
       RedrawOnly = 2, //!< Redraw current data only
     };
@@ -2379,9 +2383,9 @@ class CORE_EXPORT Qgis
      */
     enum class DataProviderFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      IsBasemapSource = 1 << 1, //!< Associated source should be considered a 'basemap' layer. See Qgis::MapLayerProperty::IsBasemapLayer.
-      FastExtent2D = 1 << 2, //!< Provider's 2D extent retrieval via QgsDataProvider::extent() is always guaranteed to be trivial/fast to calculate \since QGIS 3.38
-      FastExtent3D = 1 << 3, //!< Provider's 3D extent retrieval via QgsDataProvider::extent3D() is always guaranteed to be trivial/fast to calculate \since QGIS 3.38
+      IsBasemapSource = 1 << 1,   //!< Associated source should be considered a 'basemap' layer. See Qgis::MapLayerProperty::IsBasemapLayer.
+      FastExtent2D = 1 << 2,      //!< Provider's 2D extent retrieval via QgsDataProvider::extent() is always guaranteed to be trivial/fast to calculate \since QGIS 3.38
+      FastExtent3D = 1 << 3,      //!< Provider's 3D extent retrieval via QgsDataProvider::extent3D() is always guaranteed to be trivial/fast to calculate \since QGIS 3.38
       Is3DBasemapSource = 1 << 4, //!< Associated source should be considered a '3D basemap' layer. See Qgis::MapLayerProperty::Is3DBasemapLayer. \since QGIS 3.44
     };
     //! Data provider flags
@@ -2398,18 +2402,18 @@ class CORE_EXPORT Qgis
      */
     enum class CrsType : int
     {
-      Unknown, //!< Unknown type
-      Geodetic, //!< Geodetic CRS
-      Geocentric, //!< Geocentric CRS
-      Geographic2d, //!< 2D geographic CRS
-      Geographic3d, //!< 3D geopraphic CRS
-      Vertical, //!< Vertical CRS
-      Projected, //!< Projected CRS
-      Compound, //!< Compound (horizontal + vertical) CRS
-      Temporal, //!< Temporal CRS
-      Engineering, //!< Engineering CRS
-      Bound, //!< Bound CRS
-      Other, //!< Other type
+      Unknown,          //!< Unknown type
+      Geodetic,         //!< Geodetic CRS
+      Geocentric,       //!< Geocentric CRS
+      Geographic2d,     //!< 2D geographic CRS
+      Geographic3d,     //!< 3D geopraphic CRS
+      Vertical,         //!< Vertical CRS
+      Projected,        //!< Projected CRS
+      Compound,         //!< Compound (horizontal + vertical) CRS
+      Temporal,         //!< Temporal CRS
+      Engineering,      //!< Engineering CRS
+      Bound,            //!< Bound CRS
+      Other,            //!< Other type
       DerivedProjected, //!< Derived projected CRS
     };
     Q_ENUM( CrsType )
@@ -2423,46 +2427,46 @@ class CORE_EXPORT Qgis
      */
     enum class CrsAxisDirection : int
     {
-      North, //!< North
-      NorthNorthEast, //!< North North East
-      NorthEast, //!< North East
-      EastNorthEast, //!< East North East
-      East, //!< East
-      EastSouthEast, //!< East South East
-      SouthEast, //!< South East
-      SouthSouthEast, //!< South South East
-      South, //!< South
-      SouthSouthWest, //!< South South West
-      SouthWest, //!< South West
-      WestSouthWest, //!< West South West
-      West, //!< West
-      WestNorthWest, //!< West North West
-      NorthWest, //!< North West
-      NorthNorthWest, //!< North North West
-      GeocentricX, //!< Geocentric (X)
-      GeocentricY, //!< Geocentric (Y)
-      GeocentricZ, //!< Geocentric (Z)
-      Up, //!< Up
-      Down, //!< Down
-      Forward, //!< Forward
-      Aft, //!< Aft
-      Port, //!< Port
-      Starboard, //!< Starboard
-      Clockwise, //!< Clockwise
+      North,            //!< North
+      NorthNorthEast,   //!< North North East
+      NorthEast,        //!< North East
+      EastNorthEast,    //!< East North East
+      East,             //!< East
+      EastSouthEast,    //!< East South East
+      SouthEast,        //!< South East
+      SouthSouthEast,   //!< South South East
+      South,            //!< South
+      SouthSouthWest,   //!< South South West
+      SouthWest,        //!< South West
+      WestSouthWest,    //!< West South West
+      West,             //!< West
+      WestNorthWest,    //!< West North West
+      NorthWest,        //!< North West
+      NorthNorthWest,   //!< North North West
+      GeocentricX,      //!< Geocentric (X)
+      GeocentricY,      //!< Geocentric (Y)
+      GeocentricZ,      //!< Geocentric (Z)
+      Up,               //!< Up
+      Down,             //!< Down
+      Forward,          //!< Forward
+      Aft,              //!< Aft
+      Port,             //!< Port
+      Starboard,        //!< Starboard
+      Clockwise,        //!< Clockwise
       CounterClockwise, //!< Counter clockwise
-      ColumnPositive, //!< Column positive
-      ColumnNegative, //!< Column negative
-      RowPositive, //!< Row positive
-      RowNegative, //!< Row negative
-      DisplayRight, //!< Display right
-      DisplayLeft, //!< Display left
-      DisplayUp, //!< Display up
-      DisplayDown, //!< Display down
-      Future, //!< Future
-      Past, //!< Past
-      Towards, //!< Towards
-      AwayFrom, //!< Away from
-      Unspecified, //!< Unspecified
+      ColumnPositive,   //!< Column positive
+      ColumnNegative,   //!< Column negative
+      RowPositive,      //!< Row positive
+      RowNegative,      //!< Row negative
+      DisplayRight,     //!< Display right
+      DisplayLeft,      //!< Display left
+      DisplayUp,        //!< Display up
+      DisplayDown,      //!< Display down
+      Future,           //!< Future
+      Past,             //!< Past
+      Towards,          //!< Towards
+      AwayFrom,         //!< Away from
+      Unspecified,      //!< Unspecified
     };
     Q_ENUM( CrsAxisDirection )
 
@@ -2474,8 +2478,8 @@ class CORE_EXPORT Qgis
     enum class CoordinateOrder : int
     {
       Default, //!< Respect the default axis ordering for the CRS, as defined in the CRS's parameters
-      XY, //!< Easting/Northing (or Longitude/Latitude for geographic CRS)
-      YX, //!< Northing/Easting (or Latitude/Longitude for geographic CRS)
+      XY,      //!< Easting/Northing (or Longitude/Latitude for geographic CRS)
+      YX,      //!< Northing/Easting (or Latitude/Longitude for geographic CRS)
     };
     Q_ENUM( CoordinateOrder )
 
@@ -2487,10 +2491,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.36
      */
     enum class CrsIdentifierType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsCoordinateReferenceSystem, IdentifierType ) : int
-      {
-      ShortString, //!< A heavily abbreviated string, for use when a compact representation is required
+    {
+      ShortString,  //!< A heavily abbreviated string, for use when a compact representation is required
       MediumString, //!< A medium-length string, recommended for general purpose use
-      FullString, //!< Full definition -- possibly a very lengthy string, e.g. with no truncation of custom WKT definitions
+      FullString,   //!< Full definition -- possibly a very lengthy string, e.g. with no truncation of custom WKT definitions
     };
     Q_ENUM( CrsIdentifierType )
 
@@ -2502,15 +2506,22 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.36
      */
     enum class CrsWktVariant SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsCoordinateReferenceSystem, WktVariant ) : int
-      {
-      Wkt1Gdal SIP_MONKEYPATCH_COMPAT_NAME( WKT1_GDAL ), //!< WKT1 as traditionally output by GDAL, deriving from OGC 01-009. A notable departure from WKT1_GDAL with respect to OGC 01-009 is that in WKT1_GDAL, the unit of the PRIMEM value is always degrees.
-      Wkt1Esri SIP_MONKEYPATCH_COMPAT_NAME( WKT1_ESRI ), //!< WKT1 as traditionally output by ESRI software, deriving from OGC 99-049.
+    {
+      Wkt1Gdal SIP_MONKEYPATCH_COMPAT_NAME(
+        WKT1_GDAL
+      ), //!< WKT1 as traditionally output by GDAL, deriving from OGC 01-009. A notable departure from WKT1_GDAL with respect to OGC 01-009 is that in WKT1_GDAL, the unit of the PRIMEM value is always degrees.
+      Wkt1Esri SIP_MONKEYPATCH_COMPAT_NAME( WKT1_ESRI ),  //!< WKT1 as traditionally output by ESRI software, deriving from OGC 99-049.
       Wkt2_2015 SIP_MONKEYPATCH_COMPAT_NAME( WKT2_2015 ), //!< Full WKT2 string, conforming to ISO 19162:2015(E) / OGC 12-063r5 with all possible nodes and new keyword names.
-      Wkt2_2015Simplified SIP_MONKEYPATCH_COMPAT_NAME( WKT2_2015_SIMPLIFIED ), //!< Same as WKT2_2015 with the following exceptions: UNIT keyword used. ID node only on top element. No ORDER element in AXIS element. PRIMEM node omitted if it is Greenwich.  ELLIPSOID.UNIT node omitted if it is UnitOfMeasure::METRE. PARAMETER.UNIT / PRIMEM.UNIT omitted if same as AXIS. AXIS.UNIT omitted and replaced by a common GEODCRS.UNIT if they are all the same on all axis.
-      Wkt2_2019  SIP_MONKEYPATCH_COMPAT_NAME( WKT2_2019 ), //!< Full WKT2 string, conforming to ISO 19162:2019 / OGC 18-010, with all possible nodes and new keyword names. Non-normative list of differences: WKT2_2019 uses GEOGCRS / BASEGEOGCRS keywords for GeographicCRS.
-      Wkt2_2019Simplified  SIP_MONKEYPATCH_COMPAT_NAME( WKT2_2019_SIMPLIFIED ), //!< WKT2_2019 with the simplification rule of WKT2_SIMPLIFIED
+      Wkt2_2015Simplified SIP_MONKEYPATCH_COMPAT_NAME(
+        WKT2_2015_SIMPLIFIED
+      ), //!< Same as WKT2_2015 with the following exceptions: UNIT keyword used. ID node only on top element. No ORDER element in AXIS element. PRIMEM node omitted if it is Greenwich.  ELLIPSOID.UNIT node omitted if it is UnitOfMeasure::METRE. PARAMETER.UNIT / PRIMEM.UNIT omitted if same as AXIS. AXIS.UNIT omitted and replaced by a common GEODCRS.UNIT if they are all the same on all axis.
+      Wkt2_2019 SIP_MONKEYPATCH_COMPAT_NAME(
+        WKT2_2019
+      ), //!< Full WKT2 string, conforming to ISO 19162:2019 / OGC 18-010, with all possible nodes and new keyword names. Non-normative list of differences: WKT2_2019 uses GEOGCRS / BASEGEOGCRS keywords for GeographicCRS.
+      Wkt2_2019Simplified SIP_MONKEYPATCH_COMPAT_NAME( WKT2_2019_SIMPLIFIED ), //!< WKT2_2019 with the simplification rule of WKT2_SIMPLIFIED
       Preferred SIP_MONKEYPATCH_COMPAT_NAME( WKT_PREFERRED ) = Wkt2_2019, //!< Preferred format, matching the most recent WKT ISO standard. Currently an alias to WKT2_2019, but may change in future versions.
-      PreferredSimplified  SIP_MONKEYPATCH_COMPAT_NAME( WKT_PREFERRED_SIMPLIFIED ) = Wkt2_2019Simplified, //!< Preferred simplified format, matching the most recent WKT ISO standard. Currently an alias to WKT2_2019_SIMPLIFIED, but may change in future versions.
+      PreferredSimplified SIP_MONKEYPATCH_COMPAT_NAME( WKT_PREFERRED_SIMPLIFIED )
+      = Wkt2_2019Simplified, //!< Preferred simplified format, matching the most recent WKT ISO standard. Currently an alias to WKT2_2019_SIMPLIFIED, but may change in future versions.
       PreferredGdal SIP_MONKEYPATCH_COMPAT_NAME( WKT_PREFERRED_GDAL ) = Wkt2_2019, //!< Preferred format for conversion of CRS to WKT for use with the GDAL library.
     };
     Q_ENUM( CrsWktVariant )
@@ -2524,7 +2535,7 @@ class CORE_EXPORT Qgis
     {
       X, //!< X-axis
       Y, //!< Y-axis
-      Z //!< Z-axis
+      Z  //!< Z-axis
     };
     Q_ENUM( Axis )
 
@@ -2536,8 +2547,8 @@ class CORE_EXPORT Qgis
     enum class AnnotationItemFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       ScaleDependentBoundingBox = 1 << 0, //!< Item's bounding box will vary depending on map scale
-      SupportsReferenceScale = 1 << 1, //!< Item supports reference scale based rendering \since QGIS 3.40
-      SupportsCallouts = 1 << 2, //!< Item supports callouts \since QGIS 3.40
+      SupportsReferenceScale = 1 << 1,    //!< Item supports reference scale based rendering \since QGIS 3.40
+      SupportsCallouts = 1 << 2,          //!< Item supports callouts \since QGIS 3.40
     };
     //! Annotation item flags
     Q_DECLARE_FLAGS( AnnotationItemFlags, AnnotationItemFlag )
@@ -2551,8 +2562,8 @@ class CORE_EXPORT Qgis
      */
     enum class AnnotationPlacementMode : int
     {
-      SpatialBounds = 0, //!< Item is rendered inside fixed spatial bounds, and size will depend on map scale
-      FixedSize, //!< Item is rendered at a fixed size, regardless of map scale. Item's location is georeferenced to a spatial location.
+      SpatialBounds = 0,  //!< Item is rendered inside fixed spatial bounds, and size will depend on map scale
+      FixedSize,          //!< Item is rendered at a fixed size, regardless of map scale. Item's location is georeferenced to a spatial location.
       RelativeToMapFrame, //!< Items size and placement is relative to the map's frame, and the item will always be rendered in the same visible location regardless of map extent or scale.
     };
     Q_ENUM( AnnotationPlacementMode )
@@ -2564,7 +2575,7 @@ class CORE_EXPORT Qgis
      */
     enum class AnnotationItemGuiFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      FlagNoCreationTools = 1 << 0,  //!< Do not show item creation tools for the item type
+      FlagNoCreationTools = 1 << 0, //!< Do not show item creation tools for the item type
     };
     //! Annotation item GUI flags
     Q_DECLARE_FLAGS( AnnotationItemGuiFlags, AnnotationItemGuiFlag )
@@ -2578,7 +2589,7 @@ class CORE_EXPORT Qgis
      */
     enum class AnnotationItemNodeType : int
     {
-      VertexHandle, //!< Node is a handle for manipulating vertices
+      VertexHandle,  //!< Node is a handle for manipulating vertices
       CalloutHandle, //!< Node is a handle for manipulating callouts \since QGIS 3.40
     };
     Q_ENUM( AnnotationItemNodeType )
@@ -2590,8 +2601,8 @@ class CORE_EXPORT Qgis
      */
     enum class AnnotationItemEditOperationResult : int
     {
-      Success, //!< Item was modified successfully
-      Invalid, //!< Operation has invalid parameters for the item, no change occurred
+      Success,     //!< Item was modified successfully
+      Invalid,     //!< Operation has invalid parameters for the item, no change occurred
       ItemCleared, //!< The operation results in the item being cleared, and the item should be removed from the layer as a result
     };
     Q_ENUM( AnnotationItemEditOperationResult )
@@ -2604,11 +2615,11 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.36
      */
     enum class TemporalNavigationMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTemporalNavigationObject, NavigationMode ) : int
-      {
+    {
       Disabled SIP_MONKEYPATCH_COMPAT_NAME( NavigationOff ), //!< Temporal navigation is disabled
-      Animated, //!< Temporal navigation relies on frames within a datetime range
-      FixedRange, //!< Temporal navigation relies on a fixed datetime range
-      Movie, //!< Movie mode -- behaves like a video player, with a fixed frame duration and no temporal range \since QGIS 3.36
+      Animated,                                              //!< Temporal navigation relies on frames within a datetime range
+      FixedRange,                                            //!< Temporal navigation relies on a fixed datetime range
+      Movie,                                                 //!< Movie mode -- behaves like a video player, with a fixed frame duration and no temporal range \since QGIS 3.36
     };
     Q_ENUM( TemporalNavigationMode )
 
@@ -2620,10 +2631,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.36
      */
     enum class AnimationState SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTemporalNavigationObject, AnimationState ) : int
-      {
+    {
       Forward, //!< Animation is playing forward.
       Reverse, //!< Animation is playing in reverse.
-      Idle, //!< Animation is paused.
+      Idle,    //!< Animation is paused.
     };
     Q_ENUM( AnimationState )
 
@@ -2634,13 +2645,13 @@ class CORE_EXPORT Qgis
      */
     enum class PlaybackOperation : int
     {
-      SkipToStart, //!< Jump to start of playback
+      SkipToStart,   //!< Jump to start of playback
       PreviousFrame, //!< Step to previous frame
-      PlayReverse, //!< Play in reverse
-      Pause, //!< Pause playback
-      PlayForward, //!< Play forward
-      NextFrame, //!< Step to next frame
-      SkipToEnd, //!< Jump to end of playback
+      PlayReverse,   //!< Play in reverse
+      Pause,         //!< Pause playback
+      PlayForward,   //!< Play forward
+      NextFrame,     //!< Step to next frame
+      SkipToEnd,     //!< Jump to end of playback
     };
     Q_ENUM( PlaybackOperation )
 
@@ -2650,13 +2661,15 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.22
      */
     enum class VectorTemporalMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorLayerTemporalProperties, TemporalMode ) : int
-      {
-      FixedTemporalRange SIP_MONKEYPATCH_COMPAT_NAME( ModeFixedTemporalRange ) = 0, //!< Mode when temporal properties have fixed start and end datetimes.
-      FeatureDateTimeInstantFromField SIP_MONKEYPATCH_COMPAT_NAME( ModeFeatureDateTimeInstantFromField ), //!< Mode when features have a datetime instant taken from a single field
-      FeatureDateTimeStartAndEndFromFields SIP_MONKEYPATCH_COMPAT_NAME( ModeFeatureDateTimeStartAndEndFromFields ), //!< Mode when features have separate fields for start and end times
+    {
+      FixedTemporalRange SIP_MONKEYPATCH_COMPAT_NAME( ModeFixedTemporalRange ) = 0,                                           //!< Mode when temporal properties have fixed start and end datetimes.
+      FeatureDateTimeInstantFromField SIP_MONKEYPATCH_COMPAT_NAME( ModeFeatureDateTimeInstantFromField ),                     //!< Mode when features have a datetime instant taken from a single field
+      FeatureDateTimeStartAndEndFromFields SIP_MONKEYPATCH_COMPAT_NAME( ModeFeatureDateTimeStartAndEndFromFields ),           //!< Mode when features have separate fields for start and end times
       FeatureDateTimeStartAndDurationFromFields SIP_MONKEYPATCH_COMPAT_NAME( ModeFeatureDateTimeStartAndDurationFromFields ), //!< Mode when features have a field for start time and a field for event duration
       FeatureDateTimeStartAndEndFromExpressions SIP_MONKEYPATCH_COMPAT_NAME( ModeFeatureDateTimeStartAndEndFromExpressions ), //!< Mode when features use expressions for start and end times
-      RedrawLayerOnly SIP_MONKEYPATCH_COMPAT_NAME( ModeRedrawLayerOnly ), //!< Redraw the layer when temporal range changes, but don't apply any filtering. Useful when symbology or rule based renderer expressions depend on the time range.
+      RedrawLayerOnly SIP_MONKEYPATCH_COMPAT_NAME(
+        ModeRedrawLayerOnly
+      ), //!< Redraw the layer when temporal range changes, but don't apply any filtering. Useful when symbology or rule based renderer expressions depend on the time range.
     };
     Q_ENUM( VectorTemporalMode )
 
@@ -2668,7 +2681,7 @@ class CORE_EXPORT Qgis
     enum class VectorTemporalLimitMode : int
     {
       IncludeBeginExcludeEnd = 0, //!< Default mode: include the Begin limit, but exclude the End limit
-      IncludeBeginIncludeEnd, //!< Mode to include both limits of the filtering timeframe
+      IncludeBeginIncludeEnd,     //!< Mode to include both limits of the filtering timeframe
     };
     Q_ENUM( VectorTemporalLimitMode )
 
@@ -2678,8 +2691,8 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.22
      */
     enum class VectorDataProviderTemporalMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorDataProviderTemporalCapabilities, TemporalMode ) : int
-      {
-      HasFixedTemporalRange SIP_MONKEYPATCH_COMPAT_NAME( ProviderHasFixedTemporalRange ) = 0, //!< Entire dataset from provider has a fixed start and end datetime.
+    {
+      HasFixedTemporalRange SIP_MONKEYPATCH_COMPAT_NAME( ProviderHasFixedTemporalRange ) = 0,                         //!< Entire dataset from provider has a fixed start and end datetime.
       StoresFeatureDateTimeInstantInField SIP_MONKEYPATCH_COMPAT_NAME( ProviderStoresFeatureDateTimeInstantInField ), //!< Dataset has feature datetime instants stored in a single field
       StoresFeatureDateTimeStartAndEndInSeparateFields SIP_MONKEYPATCH_COMPAT_NAME( ProviderStoresFeatureDateTimeStartAndEndInSeparateFields ), //!< Dataset stores feature start and end datetimes in separate fields
     };
@@ -2691,13 +2704,14 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.22
      */
     enum class RasterTemporalMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterLayerTemporalProperties, TemporalMode ) : int
-      {
-      FixedTemporalRange SIP_MONKEYPATCH_COMPAT_NAME( ModeFixedTemporalRange ) = 0, //!< Mode when temporal properties have fixed start and end datetimes.
+    {
+      FixedTemporalRange SIP_MONKEYPATCH_COMPAT_NAME( ModeFixedTemporalRange ) = 0,                       //!< Mode when temporal properties have fixed start and end datetimes.
       TemporalRangeFromDataProvider SIP_MONKEYPATCH_COMPAT_NAME( ModeTemporalRangeFromDataProvider ) = 1, //!< Mode when raster layer delegates temporal range handling to the dataprovider.
-      RedrawLayerOnly SIP_MONKEYPATCH_COMPAT_NAME( ModeRedrawLayerOnly ) = 2, //!< Redraw the layer when temporal range changes, but don't apply any filtering. Useful when raster symbology expressions depend on the time range. \since QGIS 3.22
+      RedrawLayerOnly SIP_MONKEYPATCH_COMPAT_NAME( ModeRedrawLayerOnly )
+      = 2,                   //!< Redraw the layer when temporal range changes, but don't apply any filtering. Useful when raster symbology expressions depend on the time range. \since QGIS 3.22
       FixedRangePerBand = 3, //!< Layer has a fixed temporal range per band \since QGIS 3.38
       RepresentsTemporalValues = 4, //!< Pixel values represent an datetime
-      FixedDateTime = 5, //!< Layer has a fixed date time instant. \since QGIS 3.44
+      FixedDateTime = 5,            //!< Layer has a fixed date time instant. \since QGIS 3.44
     };
     Q_ENUM( RasterTemporalMode )
 
@@ -2707,12 +2721,12 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.22
      */
     enum class TemporalIntervalMatchMethod SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterDataProviderTemporalCapabilities, IntervalHandlingMethod ) : int
-      {
-      MatchUsingWholeRange, //!< Use an exact match to the whole temporal range
-      MatchExactUsingStartOfRange, //!< Match the start of the temporal range to a corresponding layer or band, and only use exact matching results
-      MatchExactUsingEndOfRange, //!< Match the end of the temporal range to a corresponding layer or band, and only use exact matching results
+    {
+      MatchUsingWholeRange,           //!< Use an exact match to the whole temporal range
+      MatchExactUsingStartOfRange,    //!< Match the start of the temporal range to a corresponding layer or band, and only use exact matching results
+      MatchExactUsingEndOfRange,      //!< Match the end of the temporal range to a corresponding layer or band, and only use exact matching results
       FindClosestMatchToStartOfRange, //!< Match the start of the temporal range to the least previous closest datetime.
-      FindClosestMatchToEndOfRange //!< Match the end of the temporal range to the least previous closest datetime.
+      FindClosestMatchToEndOfRange    //!< Match the end of the temporal range to the least previous closest datetime.
     };
     Q_ENUM( TemporalIntervalMatchMethod )
 
@@ -2723,7 +2737,8 @@ class CORE_EXPORT Qgis
      */
     enum class RasterTemporalCapabilityFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      RequestedTimesMustExactlyMatchAllAvailableTemporalRanges = 1 << 0, //!< If present, indicates that the provider must only request temporal values which are exact matches for the values present in QgsRasterDataProviderTemporalCapabilities::allAvailableTemporalRanges().
+      RequestedTimesMustExactlyMatchAllAvailableTemporalRanges
+      = 1 << 0, //!< If present, indicates that the provider must only request temporal values which are exact matches for the values present in QgsRasterDataProviderTemporalCapabilities::allAvailableTemporalRanges().
     };
     Q_ENUM( RasterTemporalCapabilityFlag )
 
@@ -2741,9 +2756,9 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.22
      */
     enum class TransformDirection SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsCoordinateTransform, TransformDirection ) : int
-      {
+    {
       Forward SIP_MONKEYPATCH_COMPAT_NAME( ForwardTransform ), //!< Forward transform (from source to destination)
-      Reverse SIP_MONKEYPATCH_COMPAT_NAME( ReverseTransform ) //!< Reverse/inverse transform (from destination to source)
+      Reverse SIP_MONKEYPATCH_COMPAT_NAME( ReverseTransform )  //!< Reverse/inverse transform (from destination to source)
     };
     Q_ENUM( TransformDirection )
 
@@ -2752,10 +2767,12 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.26
      */
-    enum class CoordinateTransformationFlag  : int SIP_ENUM_BASETYPE( IntFlag )
+    enum class CoordinateTransformationFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      BallparkTransformsAreAppropriate = 1 << 0, //!< Indicates that approximate "ballpark" results are appropriate for this coordinate transform. See QgsCoordinateTransform::setBallparkTransformsAreAppropriate() for further details.
-      IgnoreImpossibleTransformations = 1 << 1, //!< Indicates that impossible transformations (such as those which attempt to transform between two different celestial bodies) should be silently handled and marked as invalid. See QgsCoordinateTransform::isTransformationPossible() and QgsCoordinateTransform::isValid().
+      BallparkTransformsAreAppropriate
+      = 1 << 0, //!< Indicates that approximate "ballpark" results are appropriate for this coordinate transform. See QgsCoordinateTransform::setBallparkTransformsAreAppropriate() for further details.
+      IgnoreImpossibleTransformations
+      = 1 << 1, //!< Indicates that impossible transformations (such as those which attempt to transform between two different celestial bodies) should be silently handled and marked as invalid. See QgsCoordinateTransform::isTransformationPossible() and QgsCoordinateTransform::isValid().
     };
     Q_ENUM( CoordinateTransformationFlag )
 
@@ -2774,7 +2791,7 @@ class CORE_EXPORT Qgis
      */
     enum class RasterizedRenderingPolicy : int
     {
-      Default, //!< Allow raster-based rendering in situations where it is required for correct rendering or where it will be faster than vector based rendering.
+      Default,      //!< Allow raster-based rendering in situations where it is required for correct rendering or where it will be faster than vector based rendering.
       PreferVector, //!< Prefer vector-based rendering, when the result will still be visually near-identical to a raster-based render. The render may be slower or result in larger output file sizes.
       ForceVector, //!< Always force vector-based rendering, even when the result will be visually different to a raster-based render. For example, this policy will ignore effects which require flattened rasters during renders such as layer-wide opacity or blend modes.
     };
@@ -2787,25 +2804,27 @@ class CORE_EXPORT Qgis
      */
     enum class MapSettingsFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapSettings, Flag ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      Antialiasing             = 0x01,  //!< Enable anti-aliasing for map rendering
-      DrawEditingInfo          = 0x02,  //!< Enable drawing of vertex markers for layers in editing mode
-      ForceVectorOutput        = 0x04,  //!< Vector graphics should not be cached and drawn as raster images. \deprecated QGIS 3.44. Use Qgis::RasterizedRenderingPolicy instead.
-      UseAdvancedEffects       = 0x08,  //!< Enable layer opacity and blending effects \deprecated QGIS 3.44. Use Qgis::RasterizedRenderingPolicy instead.
-      DrawLabeling             = 0x10,  //!< Enable drawing of labels on top of the map
-      UseRenderingOptimization = 0x20,  //!< Enable vector simplification and other rendering optimizations
-      DrawSelection            = 0x40,  //!< Whether vector selections should be shown in the rendered map
-      DrawSymbolBounds         = 0x80,  //!< Draw bounds of symbols (for debugging/testing)
-      RenderMapTile            = 0x100, //!< Draw map such that there are no problems between adjacent tiles
-      RenderPartialOutput      = 0x200, //!< Whether to make extra effort to update map image with partially rendered layers (better for interactive map canvas). Added in QGIS 3.0
-      RenderPreviewJob         = 0x400, //!< Render is a 'canvas preview' render, and shortcuts should be taken to ensure fast rendering
-      RenderBlocking           = 0x800, //!< Render and load remote sources in the same thread to ensure rendering remote sources (svg and images). WARNING: this flag must NEVER be used from GUI based applications (like the main QGIS application) or crashes will result. Only for use in external scripts or QGIS server.
-      LosslessImageRendering   = 0x1000, //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF). This flag only works with builds based on Qt 5.13 or later.
-      Render3DMap              = 0x2000, //!< Render is for a 3D map
+      Antialiasing = 0x01,             //!< Enable anti-aliasing for map rendering
+      DrawEditingInfo = 0x02,          //!< Enable drawing of vertex markers for layers in editing mode
+      ForceVectorOutput = 0x04,        //!< Vector graphics should not be cached and drawn as raster images. \deprecated QGIS 3.44. Use Qgis::RasterizedRenderingPolicy instead.
+      UseAdvancedEffects = 0x08,       //!< Enable layer opacity and blending effects \deprecated QGIS 3.44. Use Qgis::RasterizedRenderingPolicy instead.
+      DrawLabeling = 0x10,             //!< Enable drawing of labels on top of the map
+      UseRenderingOptimization = 0x20, //!< Enable vector simplification and other rendering optimizations
+      DrawSelection = 0x40,            //!< Whether vector selections should be shown in the rendered map
+      DrawSymbolBounds = 0x80,         //!< Draw bounds of symbols (for debugging/testing)
+      RenderMapTile = 0x100,           //!< Draw map such that there are no problems between adjacent tiles
+      RenderPartialOutput = 0x200,     //!< Whether to make extra effort to update map image with partially rendered layers (better for interactive map canvas). Added in QGIS 3.0
+      RenderPreviewJob = 0x400,        //!< Render is a 'canvas preview' render, and shortcuts should be taken to ensure fast rendering
+      RenderBlocking = 0x800, //!< Render and load remote sources in the same thread to ensure rendering remote sources (svg and images). WARNING: this flag must NEVER be used from GUI based applications (like the main QGIS application) or crashes will result. Only for use in external scripts or QGIS server.
+      LosslessImageRendering
+      = 0x1000, //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF). This flag only works with builds based on Qt 5.13 or later.
+      Render3DMap = 0x2000,                //!< Render is for a 3D map
       HighQualityImageTransforms = 0x4000, //!< Enable high quality image transformations, which results in better appearance of scaled or rotated raster components of a map \since QGIS 3.24
-      SkipSymbolRendering      = 0x8000, //!< Disable symbol rendering while still drawing labels if enabled \since QGIS 3.24
-      ForceRasterMasks         = 0x10000,  //!< Force symbol masking to be applied using a raster method. This is considerably faster when compared to the vector method, but results in a inferior quality output. \since QGIS 3.26.1
-      RecordProfile            = 0x20000, //!< Enable run-time profiling while rendering \since QGIS 3.34
-      AlwaysUseGlobalMasks     = 0x40000, //!< When applying clipping paths for selective masking, always use global ("entire map") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex vector exports in all current Qt versions. This flag only applies to vector map exports. \since QGIS 3.38
+      SkipSymbolRendering = 0x8000,        //!< Disable symbol rendering while still drawing labels if enabled \since QGIS 3.24
+      ForceRasterMasks = 0x10000, //!< Force symbol masking to be applied using a raster method. This is considerably faster when compared to the vector method, but results in a inferior quality output. \since QGIS 3.26.1
+      RecordProfile = 0x20000, //!< Enable run-time profiling while rendering \since QGIS 3.34
+      AlwaysUseGlobalMasks
+      = 0x40000, //!< When applying clipping paths for selective masking, always use global ("entire map") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex vector exports in all current Qt versions. This flag only applies to vector map exports. \since QGIS 3.38
     };
     //! Map settings flags
     Q_DECLARE_FLAGS( MapSettingsFlags, MapSettingsFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsMapSettings, Flags )
@@ -2896,9 +2915,13 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.22
      */
     enum class TextRenderFormat SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRenderContext, TextRenderFormat ) : int
-      {
-      AlwaysOutlines SIP_MONKEYPATCH_COMPAT_NAME( TextFormatAlwaysOutlines ), //!< Always render text using path objects (AKA outlines/curves). This setting guarantees the best quality rendering, even when using a raster paint surface (where sub-pixel path based text rendering is superior to sub-pixel text-based rendering). The downside is that text is converted to paths only, so users cannot open created vector outputs for post-processing in other applications and retain text editability.  This setting also guarantees complete compatibility with the full range of formatting options available through QgsTextRenderer and QgsTextFormat, some of which may not be possible to reproduce when using a vector-based paint surface and TextFormatAlwaysText mode. A final benefit to this setting is that vector exports created using text as outlines do not require all users to have the original fonts installed in order to display the text in its original style.
-      AlwaysText SIP_MONKEYPATCH_COMPAT_NAME( TextFormatAlwaysText ), //!< Always render text as text objects. While this mode preserves text objects as text for post-processing in external vector editing applications, it can result in rendering artifacts or poor quality rendering, depending on the text format settings. Even with raster based paint devices, TextFormatAlwaysText can result in inferior rendering quality to TextFormatAlwaysOutlines. When rendering using TextFormatAlwaysText to a vector based device (e.g. PDF or SVG), care must be taken to ensure that the required fonts are available to users when opening the created files, or default fallback fonts will be used to display the output instead. (Although PDF exports MAY automatically embed some fonts when possible, depending on the user's platform).
+    {
+      AlwaysOutlines SIP_MONKEYPATCH_COMPAT_NAME(
+        TextFormatAlwaysOutlines
+      ), //!< Always render text using path objects (AKA outlines/curves). This setting guarantees the best quality rendering, even when using a raster paint surface (where sub-pixel path based text rendering is superior to sub-pixel text-based rendering). The downside is that text is converted to paths only, so users cannot open created vector outputs for post-processing in other applications and retain text editability.  This setting also guarantees complete compatibility with the full range of formatting options available through QgsTextRenderer and QgsTextFormat, some of which may not be possible to reproduce when using a vector-based paint surface and TextFormatAlwaysText mode. A final benefit to this setting is that vector exports created using text as outlines do not require all users to have the original fonts installed in order to display the text in its original style.
+      AlwaysText SIP_MONKEYPATCH_COMPAT_NAME(
+        TextFormatAlwaysText
+      ), //!< Always render text as text objects. While this mode preserves text objects as text for post-processing in external vector editing applications, it can result in rendering artifacts or poor quality rendering, depending on the text format settings. Even with raster based paint devices, TextFormatAlwaysText can result in inferior rendering quality to TextFormatAlwaysOutlines. When rendering using TextFormatAlwaysText to a vector based device (e.g. PDF or SVG), care must be taken to ensure that the required fonts are available to users when opening the created files, or default fallback fonts will be used to display the output instead. (Although PDF exports MAY automatically embed some fonts when possible, depending on the user's platform).
       PreferText, //!< Render text as text objects, unless doing so results in rendering artifacts or poor quality rendering (depending on text format settings). When rendering using TextFormatAlwaysText to a vector based device (e.g. PDF or SVG), care must be taken to ensure that the required fonts are available to users when opening the created files, or default fallback fonts will be used to display the output instead. (Although PDF exports MAY automatically embed some fonts when possible, depending on the user's platform). \since QGIS 3.40
     };
     Q_ENUM( TextRenderFormat )
@@ -2912,15 +2935,15 @@ class CORE_EXPORT Qgis
      */
     enum class LabelingFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLabelingEngineSettings, Flag ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      UseAllLabels          = 1 << 1, //!< Whether to draw all labels even if there would be collisions
-      UsePartialCandidates  = 1 << 2, //!< Whether to use also label candidates that are partially outside of the map view
+      UseAllLabels = 1 << 1,         //!< Whether to draw all labels even if there would be collisions
+      UsePartialCandidates = 1 << 2, //!< Whether to use also label candidates that are partially outside of the map view
       // TODO QGIS 5.0: remove
-      RenderOutlineLabels   = 1 << 3, //!< Whether to render labels as text or outlines. Deprecated and of QGIS 3.4.3 - use defaultTextRenderFormat() instead.
-      DrawLabelRectOnly     = 1 << 4, //!< Whether to only draw the label rect and not the actual label text (used for unit tests)
-      DrawCandidates        = 1 << 5, //!< Whether to draw rectangles of generated candidates (good for debugging)
-      DrawUnplacedLabels    = 1 << 6, //!< Whether to render unplaced labels as an indicator/warning for users
+      RenderOutlineLabels = 1 << 3,   //!< Whether to render labels as text or outlines. Deprecated and of QGIS 3.4.3 - use defaultTextRenderFormat() instead.
+      DrawLabelRectOnly = 1 << 4,     //!< Whether to only draw the label rect and not the actual label text (used for unit tests)
+      DrawCandidates = 1 << 5,        //!< Whether to draw rectangles of generated candidates (good for debugging)
+      DrawUnplacedLabels = 1 << 6,    //!< Whether to render unplaced labels as an indicator/warning for users
       CollectUnplacedLabels = 1 << 7, //!< Whether unplaced labels should be collected in the labeling results (regardless of whether they are being rendered) \since QGIS 3.20
-      DrawLabelMetrics      = 1 << 8, //!< Whether to render label metric guides (for debugging) \since QGIS 3.30
+      DrawLabelMetrics = 1 << 8,      //!< Whether to render label metric guides (for debugging) \since QGIS 3.30
     };
     Q_ENUM( LabelingFlag )
 
@@ -2956,9 +2979,9 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.28
      */
     enum class TextOrientation SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextFormat, TextOrientation ) : int
-      {
-      Horizontal SIP_MONKEYPATCH_COMPAT_NAME( HorizontalOrientation ), //!< Horizontally oriented text
-      Vertical SIP_MONKEYPATCH_COMPAT_NAME( VerticalOrientation ), //!< Vertically oriented text
+    {
+      Horizontal SIP_MONKEYPATCH_COMPAT_NAME( HorizontalOrientation ),       //!< Horizontally oriented text
+      Vertical SIP_MONKEYPATCH_COMPAT_NAME( VerticalOrientation ),           //!< Vertically oriented text
       RotationBased SIP_MONKEYPATCH_COMPAT_NAME( RotationBasedOrientation ), //!< Horizontally or vertically oriented text based on rotation (only available for map labeling)
     };
     Q_ENUM( TextOrientation )
@@ -2971,9 +2994,9 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.28
      */
     enum class TextLayoutMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextRenderer, DrawMode ) : int
-      {
+    {
       Rectangle SIP_MONKEYPATCH_COMPAT_NAME( Rect ), //!< Text within rectangle layout mode
-      Point, //!< Text at point of origin layout mode
+      Point,                                         //!< Text at point of origin layout mode
       Labeling SIP_MONKEYPATCH_COMPAT_NAME( Label ), //!< Labeling-specific layout mode
       RectangleCapHeightBased, //!< Similar to Rectangle mode, but uses cap height only when calculating font heights for the first line of text, and cap height + descent for subsequent lines of text \since QGIS 3.30
       RectangleAscentBased, //!< Similar to Rectangle mode, but uses ascents only when calculating font and line heights. \since QGIS 3.30
@@ -2989,10 +3012,10 @@ class CORE_EXPORT Qgis
      */
     enum class TextComponent SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextRenderer, TextPart ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      Text = 1 << 0, //!< Text component
-      Buffer = 1 << 1, //!< Buffer component
+      Text = 1 << 0,       //!< Text component
+      Buffer = 1 << 1,     //!< Buffer component
       Background = 1 << 2, //!< Background shape
-      Shadow = 1 << 3, //!< Drop shadow
+      Shadow = 1 << 3,     //!< Drop shadow
     };
     Q_ENUM( TextComponent )
 
@@ -3012,10 +3035,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.28
      */
     enum class TextHorizontalAlignment SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextRenderer, HAlignment ) : int
-      {
-      Left SIP_MONKEYPATCH_COMPAT_NAME( AlignLeft ), //!< Left align
-      Center SIP_MONKEYPATCH_COMPAT_NAME( AlignCenter ), //!< Center align
-      Right SIP_MONKEYPATCH_COMPAT_NAME( AlignRight ), //!< Right align
+    {
+      Left SIP_MONKEYPATCH_COMPAT_NAME( AlignLeft ),       //!< Left align
+      Center SIP_MONKEYPATCH_COMPAT_NAME( AlignCenter ),   //!< Center align
+      Right SIP_MONKEYPATCH_COMPAT_NAME( AlignRight ),     //!< Right align
       Justify SIP_MONKEYPATCH_COMPAT_NAME( AlignJustify ), //!< Justify align
     };
     Q_ENUM( TextHorizontalAlignment )
@@ -3031,10 +3054,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.28
      */
     enum class TextVerticalAlignment SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextRenderer, VAlignment ) : int
-      {
-      Top SIP_MONKEYPATCH_COMPAT_NAME( AlignTop ), //!< Align to top
+    {
+      Top SIP_MONKEYPATCH_COMPAT_NAME( AlignTop ),                //!< Align to top
       VerticalCenter SIP_MONKEYPATCH_COMPAT_NAME( AlignVCenter ), //!< Center align
-      Bottom SIP_MONKEYPATCH_COMPAT_NAME( AlignBottom ), //!< Align to bottom
+      Bottom SIP_MONKEYPATCH_COMPAT_NAME( AlignBottom ),          //!< Align to bottom
     };
     Q_ENUM( TextVerticalAlignment )
 
@@ -3048,9 +3071,9 @@ class CORE_EXPORT Qgis
      */
     enum class TextCharacterVerticalAlignment : int
     {
-      Normal, //!< Adjacent characters are positioned in the standard way for text in the writing system in use
+      Normal,      //!< Adjacent characters are positioned in the standard way for text in the writing system in use
       SuperScript, //!< Characters are placed above the base line for normal text.
-      SubScript, //!< Characters are placed below the base line for normal text.
+      SubScript,   //!< Characters are placed below the base line for normal text.
     };
     Q_ENUM( TextCharacterVerticalAlignment )
 
@@ -3062,9 +3085,9 @@ class CORE_EXPORT Qgis
     enum class CurvedTextFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextRendererUtils, CurvedTextFlag ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
       TruncateStringWhenLineIsTooShort = 1 << 0, //!< When a string is too long for the line, truncate characters instead of aborting the placement
-      UseBaselinePlacement = 1 << 1, //!< Generate placement based on the character baselines instead of centers
-      UprightCharactersOnly = 1 << 2, //!< Permit upright characters only. If not present then upside down text placement is permitted.
-      ExtendLineToFitText = 1 << 3, //!< When a string is too long for the line, extend the line's final segment to fit the entire string. \since QGIS 4.0
+      UseBaselinePlacement = 1 << 1,             //!< Generate placement based on the character baselines instead of centers
+      UprightCharactersOnly = 1 << 2,            //!< Permit upright characters only. If not present then upside down text placement is permitted.
+      ExtendLineToFitText = 1 << 3,              //!< When a string is too long for the line, extend the line's final segment to fit the entire string. \since QGIS 4.0
     };
     Q_ENUM( CurvedTextFlag )
 
@@ -3100,10 +3123,10 @@ class CORE_EXPORT Qgis
      */
     enum class VectorRenderingSimplificationFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorSimplifyMethod, SimplifyHint ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      NoSimplification           = 0, //!< No simplification can be applied
-      GeometrySimplification     = 1, //!< The geometries can be simplified using the current map2pixel context state
+      NoSimplification = 0,           //!< No simplification can be applied
+      GeometrySimplification = 1,     //!< The geometries can be simplified using the current map2pixel context state
       AntialiasingSimplification = 2, //!< The geometries can be rendered with 'AntiAliasing' disabled because of it is '1-pixel size'
-      FullSimplification         = 3, //!< All simplification hints can be applied ( Geometry + AA-disabling )
+      FullSimplification = 3,         //!< All simplification hints can be applied ( Geometry + AA-disabling )
     };
     Q_ENUM( VectorRenderingSimplificationFlag )
 
@@ -3139,7 +3162,7 @@ class CORE_EXPORT Qgis
     enum class SelectiveMaskSourceType : int
     {
       SymbolLayer, //!< A mask generated from a symbol layer
-      Label, //!< A mask generated from a labeling provider
+      Label,       //!< A mask generated from a labeling provider
     };
     Q_ENUM( SelectiveMaskSourceType )
 
@@ -3148,9 +3171,9 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.22
      */
     enum class VertexType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVertexId, VertexType ) : int
-      {
-      Segment SIP_MONKEYPATCH_COMPAT_NAME( SegmentVertex ) = 1, //!< The actual start or end point of a segment
-      Curve SIP_MONKEYPATCH_COMPAT_NAME( CurveVertex ) = 2, //!< An intermediate point on a segment defining the curvature of the segment
+    {
+      Segment SIP_MONKEYPATCH_COMPAT_NAME( SegmentVertex ) = 1,           //!< The actual start or end point of a segment
+      Curve SIP_MONKEYPATCH_COMPAT_NAME( CurveVertex ) = 2,               //!< An intermediate point on a segment defining the curvature of the segment
       ControlPoint SIP_MONKEYPATCH_COMPAT_NAME( ControlPointVertex ) = 3, //!< A NURBS control point (does not lie on the curve) \since QGIS 4.0
     };
     Q_ENUM( VertexType )
@@ -3163,44 +3186,44 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.24
      */
     enum class MarkerShape SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSimpleMarkerSymbolLayerBase, Shape ) : int
-      {
-      Square, //!< Square
-      Diamond, //!< Diamond
-      Pentagon, //!< Pentagon
-      Hexagon, //!< Hexagon
-      Triangle, //!< Triangle
+    {
+      Square,              //!< Square
+      Diamond,             //!< Diamond
+      Pentagon,            //!< Pentagon
+      Hexagon,             //!< Hexagon
+      Triangle,            //!< Triangle
       EquilateralTriangle, //!< Equilateral triangle
-      Star, //!< Star
-      Arrow, //!< Arrow
-      Circle, //!< Circle
-      Cross, //!< Cross (lines only)
-      CrossFill, //!< Solid filled cross
-      Cross2, //!< Rotated cross (lines only), 'x' shape
-      Line, //!< Vertical line
-      ArrowHead, //!< Right facing arrow head (unfilled, lines only)
-      ArrowHeadFilled, //!< Right facing filled arrow head
-      SemiCircle, //!< Semi circle (top half)
-      ThirdCircle, //!< One third circle (top left third)
-      QuarterCircle, //!< Quarter circle (top left quarter)
-      QuarterSquare, //!< Quarter square (top left quarter)
-      HalfSquare, //!< Half square (left half)
-      DiagonalHalfSquare, //!< Diagonal half square (bottom left half)
-      RightHalfTriangle, //!< Right half of triangle
-      LeftHalfTriangle, //!< Left half of triangle
-      Octagon, //!< Octagon \since QGIS 3.18
-      SquareWithCorners, //!< A square with diagonal corners \since QGIS 3.18
-      AsteriskFill, //!< A filled asterisk shape \since QGIS 3.18
-      HalfArc, //!< A line-only half arc \since QGIS 3.20
-      ThirdArc, //!< A line-only one third arc \since QGIS 3.20
-      QuarterArc, //!< A line-only one quarter arc \since QGIS 3.20
-      ParallelogramRight, //!< Parallelogram that slants right \since QGIS 3.28
-      ParallelogramLeft, //!< Parallelogram that slants left \since QGIS 3.28
-      Trapezoid, //!< Trapezoid \since QGIS 3.28
-      Shield, //!< A shape consisting of a triangle attached to a rectangle \since QGIS 3.28
-      DiamondStar, //!< A 4-sided star \since QGIS 3.28
-      Heart, //!< Heart \since QGIS 3.28
-      Decagon, //!< Decagon \since QGIS 3.28
-      RoundedSquare, //!< A square with rounded corners \since QGIS 3.28
+      Star,                //!< Star
+      Arrow,               //!< Arrow
+      Circle,              //!< Circle
+      Cross,               //!< Cross (lines only)
+      CrossFill,           //!< Solid filled cross
+      Cross2,              //!< Rotated cross (lines only), 'x' shape
+      Line,                //!< Vertical line
+      ArrowHead,           //!< Right facing arrow head (unfilled, lines only)
+      ArrowHeadFilled,     //!< Right facing filled arrow head
+      SemiCircle,          //!< Semi circle (top half)
+      ThirdCircle,         //!< One third circle (top left third)
+      QuarterCircle,       //!< Quarter circle (top left quarter)
+      QuarterSquare,       //!< Quarter square (top left quarter)
+      HalfSquare,          //!< Half square (left half)
+      DiagonalHalfSquare,  //!< Diagonal half square (bottom left half)
+      RightHalfTriangle,   //!< Right half of triangle
+      LeftHalfTriangle,    //!< Left half of triangle
+      Octagon,             //!< Octagon \since QGIS 3.18
+      SquareWithCorners,   //!< A square with diagonal corners \since QGIS 3.18
+      AsteriskFill,        //!< A filled asterisk shape \since QGIS 3.18
+      HalfArc,             //!< A line-only half arc \since QGIS 3.20
+      ThirdArc,            //!< A line-only one third arc \since QGIS 3.20
+      QuarterArc,          //!< A line-only one quarter arc \since QGIS 3.20
+      ParallelogramRight,  //!< Parallelogram that slants right \since QGIS 3.28
+      ParallelogramLeft,   //!< Parallelogram that slants left \since QGIS 3.28
+      Trapezoid,           //!< Trapezoid \since QGIS 3.28
+      Shield,              //!< A shape consisting of a triangle attached to a rectangle \since QGIS 3.28
+      DiamondStar,         //!< A 4-sided star \since QGIS 3.28
+      Heart,               //!< Heart \since QGIS 3.28
+      Decagon,             //!< Decagon \since QGIS 3.28
+      RoundedSquare,       //!< A square with rounded corners \since QGIS 3.28
     };
     Q_ENUM( MarkerShape )
 
@@ -3213,12 +3236,12 @@ class CORE_EXPORT Qgis
      */
     enum class MarkerLinePlacement SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTemplatedLineSymbolLayerBase, Placement ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      Interval = 1 << 0, //!< Place symbols at regular intervals
-      Vertex = 1 << 1, //!< Place symbols on every vertex in the line
-      LastVertex = 1 << 2, //!< Place symbols on the last vertex in the line
-      FirstVertex = 1 << 3, //!< Place symbols on the first vertex in the line
-      CentralPoint = 1 << 4, //!< Place symbols at the mid point of the line
-      CurvePoint = 1 << 5, //!< Place symbols at every virtual curve point in the line (used when rendering curved geometry types only)
+      Interval = 1 << 0,      //!< Place symbols at regular intervals
+      Vertex = 1 << 1,        //!< Place symbols on every vertex in the line
+      LastVertex = 1 << 2,    //!< Place symbols on the last vertex in the line
+      FirstVertex = 1 << 3,   //!< Place symbols on the first vertex in the line
+      CentralPoint = 1 << 4,  //!< Place symbols at the mid point of the line
+      CurvePoint = 1 << 5,    //!< Place symbols at every virtual curve point in the line (used when rendering curved geometry types only)
       SegmentCenter = 1 << 6, //!< Place symbols at the center of every line segment
       InnerVertices = 1 << 7, //!< Inner vertices (i.e. all vertices except the first and last vertex) \since QGIS 3.24
     };
@@ -3234,9 +3257,9 @@ class CORE_EXPORT Qgis
     enum class LinearReferencingPlacement : int SIP_ENUM_BASETYPE( IntFlag )
     {
       IntervalCartesian2D = 1 << 0, //!< Place labels at regular intervals, using Cartesian distance calculations on a 2D plane
-      IntervalZ = 1 << 1, //!< Place labels at regular intervals, linearly interpolated using Z values
-      IntervalM = 1 << 2, //!< Place labels at regular intervals, linearly interpolated using M values
-      Vertex = 1 << 3, //!< Place labels on every vertex in the line
+      IntervalZ = 1 << 1,           //!< Place labels at regular intervals, linearly interpolated using Z values
+      IntervalM = 1 << 2,           //!< Place labels at regular intervals, linearly interpolated using M values
+      Vertex = 1 << 3,              //!< Place labels on every vertex in the line
     };
     Q_ENUM( LinearReferencingPlacement )
 
@@ -3248,8 +3271,8 @@ class CORE_EXPORT Qgis
     enum class LinearReferencingLabelSource : int
     {
       CartesianDistance2D, //!< Distance along line, calculated using Cartesian calculations on a 2D plane.
-      Z, //!< Z values
-      M, //!< M values
+      Z,                   //!< Z values
+      M,                   //!< M values
     };
     Q_ENUM( LinearReferencingLabelSource )
 
@@ -3261,9 +3284,9 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.24
      */
     enum class GradientColorSource SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsGradientFillSymbolLayer, GradientColorType ) : int
-      {
+    {
       SimpleTwoColor, //!< Simple two color gradient
-      ColorRamp, //!< Gradient color ramp
+      ColorRamp,      //!< Gradient color ramp
     };
     Q_ENUM( GradientColorSource )
 
@@ -3275,9 +3298,9 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.24
      */
     enum class GradientType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsGradientFillSymbolLayer, GradientType ) : int
-      {
-      Linear, //!< Linear gradient
-      Radial, //!< Radial (circular) gradient
+    {
+      Linear,  //!< Linear gradient
+      Radial,  //!< Radial (circular) gradient
       Conical, //!< Conical (polar) gradient
     };
     Q_ENUM( GradientType )
@@ -3290,8 +3313,8 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.24
      */
     enum class SymbolCoordinateReference SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsGradientFillSymbolLayer, GradientCoordinateMode ) : int
-      {
-      Feature, //!< Relative to feature/shape being rendered
+    {
+      Feature,  //!< Relative to feature/shape being rendered
       Viewport, //!< Relative to the whole viewport/output device
     };
     Q_ENUM( SymbolCoordinateReference )
@@ -3305,10 +3328,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.24
      */
     enum class GradientSpread SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsGradientFillSymbolLayer, GradientSpread ) : int
-      {
-      Pad, //!< Pad out gradient using colors at endpoint of gradient
+    {
+      Pad,     //!< Pad out gradient using colors at endpoint of gradient
       Reflect, //!< Reflect gradient
-      Repeat, //!< Repeat gradient
+      Repeat,  //!< Repeat gradient
     };
     Q_ENUM( GradientSpread )
 
@@ -3320,8 +3343,8 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.24
      */
     enum class PointCountMethod SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRandomMarkerFillSymbolLayer, CountMethod ) : int
-      {
-      Absolute SIP_MONKEYPATCH_COMPAT_NAME( AbsoluteCount ), //!< The point count is used as an absolute count of markers
+    {
+      Absolute SIP_MONKEYPATCH_COMPAT_NAME( AbsoluteCount ),         //!< The point count is used as an absolute count of markers
       DensityBased SIP_MONKEYPATCH_COMPAT_NAME( DensityBasedCount ), //!< The point count is part of a marker density count
     };
     Q_ENUM( PointCountMethod )
@@ -3333,9 +3356,9 @@ class CORE_EXPORT Qgis
      */
     enum class MarkerClipMode : int
     {
-      NoClipping, //!< No clipping, render complete markers
-      Shape, //!< Clip to polygon shape
-      CentroidWithin, //!< Render complete markers wherever their centroid falls within the polygon shape
+      NoClipping,       //!< No clipping, render complete markers
+      Shape,            //!< Clip to polygon shape
+      CentroidWithin,   //!< Render complete markers wherever their centroid falls within the polygon shape
       CompletelyWithin, //!< Render complete markers wherever the completely fall within the polygon shape
     };
     Q_ENUM( MarkerClipMode )
@@ -3347,9 +3370,9 @@ class CORE_EXPORT Qgis
      */
     enum class LineClipMode : int
     {
-      ClipPainterOnly, //!< Applying clipping on the painter only (i.e. line endpoints will coincide with polygon bounding box, but will not be part of the visible portion of the line)
+      ClipPainterOnly,    //!< Applying clipping on the painter only (i.e. line endpoints will coincide with polygon bounding box, but will not be part of the visible portion of the line)
       ClipToIntersection, //!< Clip lines to intersection with polygon shape (slower) (i.e. line endpoints will coincide with polygon exterior)
-      NoClipping, //!< Lines are not clipped, will extend to shape's bounding box.
+      NoClipping,         //!< Lines are not clipped, will extend to shape's bounding box.
     };
     Q_ENUM( LineClipMode )
 
@@ -3360,11 +3383,11 @@ class CORE_EXPORT Qgis
      */
     enum class DashPatternLineEndingRule : int
     {
-      NoRule, //!< No special rule
+      NoRule,   //!< No special rule
       FullDash, //!< Start or finish the pattern with a full dash
       HalfDash, //!< Start or finish the pattern with a half length dash
-      FullGap, //!< Start or finish the pattern with a full gap
-      HalfGap, //!< Start or finish the pattern with a half length gap
+      FullGap,  //!< Start or finish the pattern with a full gap
+      HalfGap,  //!< Start or finish the pattern with a half length gap
     };
     Q_ENUM( DashPatternLineEndingRule )
 
@@ -3376,8 +3399,8 @@ class CORE_EXPORT Qgis
     enum class DashPatternSizeAdjustment : int
     {
       ScaleBothDashAndGap, //!< Both the dash and gap lengths are adjusted equally
-      ScaleDashOnly, //!< Only dash lengths are adjusted
-      ScaleGapOnly, //!< Only gap lengths are adjusted
+      ScaleDashOnly,       //!< Only dash lengths are adjusted
+      ScaleGapOnly,        //!< Only gap lengths are adjusted
     };
     Q_ENUM( DashPatternSizeAdjustment )
 
@@ -3389,9 +3412,9 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.26
      */
     enum class GraduatedMethod SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsGraduatedSymbolRenderer, GraduatedMethod ) : int
-      {
+    {
       Color SIP_MONKEYPATCH_COMPAT_NAME( GraduatedColor ), //!< Alter color of symbols
-      Size SIP_MONKEYPATCH_COMPAT_NAME( GraduatedSize ), //!< Alter size of symbols
+      Size SIP_MONKEYPATCH_COMPAT_NAME( GraduatedSize ),   //!< Alter size of symbols
     };
     Q_ENUM( GraduatedMethod )
 
@@ -3402,10 +3425,10 @@ class CORE_EXPORT Qgis
      */
     enum class PlotAxisSuffixPlacement
     {
-      NoLabels, //!< Do not place suffixes
-      EveryLabel, //!< Place suffix after every value label
-      FirstLabel, //!< Place suffix after the first label value only
-      LastLabel, //!< Place suffix after the last label value only
+      NoLabels,           //!< Do not place suffixes
+      EveryLabel,         //!< Place suffix after every value label
+      FirstLabel,         //!< Place suffix after the first label value only
+      LastLabel,          //!< Place suffix after the last label value only
       FirstAndLastLabels, //!< Place suffix after the first and last label values only
     };
     Q_ENUM( PlotAxisSuffixPlacement )
@@ -3418,7 +3441,7 @@ class CORE_EXPORT Qgis
      */
     enum class PlotAxisType
     {
-      Interval, //!< The axis represents a range of values
+      Interval,    //!< The axis represents a range of values
       Categorical, //!< The axis represents categories
     };
     Q_ENUM( PlotAxisType )
@@ -3430,9 +3453,9 @@ class CORE_EXPORT Qgis
      */
     enum class PieChartLabelType : int
     {
-      NoLabels,       //!< Labels are not drawn
+      NoLabels,   //!< Labels are not drawn
       Categories, //!< Category labels are drawn
-      Values,    //!< Value labels are drawn
+      Values,     //!< Value labels are drawn
     };
     Q_ENUM( PieChartLabelType )
 
@@ -3442,10 +3465,10 @@ class CORE_EXPORT Qgis
      */
     enum class DpiMode
     {
-      All = 7, //!< All
-      Off = 0, //!< Off
-      QGIS = 1, //!< QGIS
-      UMN = 2, //!< UMN
+      All = 7,       //!< All
+      Off = 0,       //!< Off
+      QGIS = 1,      //!< QGIS
+      UMN = 2,       //!< UMN
       GeoServer = 4, //!< GeoServer
     };
     Q_ENUM( DpiMode )
@@ -3456,9 +3479,9 @@ class CORE_EXPORT Qgis
      */
     enum class TilePixelRatio
     {
-      Undefined = 0, //!< Undefined (not scale)
+      Undefined = 0,   //!< Undefined (not scale)
       StandardDpi = 1, //!< Standard (96 DPI)
-      HighDpi = 2, //!< High (192 DPI)
+      HighDpi = 2,     //!< High (192 DPI)
     };
     Q_ENUM( TilePixelRatio )
 
@@ -3472,15 +3495,15 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.24
      */
     enum class Capitalization SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsStringUtils, Capitalization ) : int
-      {
-      MixedCase = 0, //!< Mixed case, ie no change
-      AllUppercase = 1, //!< Convert all characters to uppercase
-      AllLowercase = 2,  //!< Convert all characters to lowercase
+    {
+      MixedCase = 0,                 //!< Mixed case, ie no change
+      AllUppercase = 1,              //!< Convert all characters to uppercase
+      AllLowercase = 2,              //!< Convert all characters to lowercase
       ForceFirstLetterToCapital = 4, //!< Convert just the first letter of each word to uppercase, leave the rest untouched
-      SmallCaps = 5, //!< Mixed case small caps \since QGIS 3.24
+      SmallCaps = 5,                 //!< Mixed case small caps \since QGIS 3.24
       TitleCase = 1004, //!< Simple title case conversion - does not fully grammatically parse the text and uses simple rules only. Note that this method does not convert any characters to lowercase, it only uppercases required letters. Callers must ensure that input strings are already lowercased.
       UpperCamelCase = 1005, //!< Convert the string to upper camel case. Note that this method does not unaccent characters.
-      AllSmallCaps = 1006, //!< Force all characters to small caps \since QGIS 3.24
+      AllSmallCaps = 1006,   //!< Force all characters to small caps \since QGIS 3.24
     };
     Q_ENUM( Capitalization )
 
@@ -3505,7 +3528,7 @@ class CORE_EXPORT Qgis
     enum class ScaleToTileZoomLevelMethod : int
     {
       MapBox, //!< Uses a scale doubling approach to account for hi-DPI tiles, and rounds to the nearest tile level for the map scale
-      Esri, //!< No scale doubling, always rounds down when matching to available tile levels
+      Esri,   //!< No scale doubling, always rounds down when matching to available tile levels
     };
     Q_ENUM( ScaleToTileZoomLevelMethod );
 
@@ -3515,10 +3538,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.24
      */
     enum class AngularDirection SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsCurve, Orientation ) : int
-      {
-      Clockwise, //!< Clockwise direction
+    {
+      Clockwise,        //!< Clockwise direction
       CounterClockwise, //!< Counter-clockwise direction
-      NoOrientation, //!< Unknown orientation or sentinel value
+      NoOrientation,    //!< Unknown orientation or sentinel value
     };
     Q_ENUM( AngularDirection )
 
@@ -3529,8 +3552,8 @@ class CORE_EXPORT Qgis
      */
     enum class RendererUsage : int
     {
-      View, //!< Renderer used for displaying on screen
-      Export, //!< Renderer used for printing or exporting to a file
+      View,    //!< Renderer used for displaying on screen
+      Export,  //!< Renderer used for printing or exporting to a file
       Unknown, //!< Renderer used for unknown usage
     };
     Q_ENUM( RendererUsage )
@@ -3574,9 +3597,9 @@ class CORE_EXPORT Qgis
      */
     enum class MapRecenteringMode
     {
-      Always, //!< Always recenter map
+      Always,                   //!< Always recenter map
       WhenOutsideVisibleExtent, //!< Only recenter map when new center would be outside of current visible extent
-      Never, //!< Never recenter map
+      Never,                    //!< Never recenter map
     };
     Q_ENUM( MapRecenteringMode )
 
@@ -3588,7 +3611,7 @@ class CORE_EXPORT Qgis
     enum class HistoryProviderBackend : int SIP_ENUM_BASETYPE( IntFlag )
     {
       LocalProfile = 1 << 0, //!< Local profile
-//      Project = 1 << 1, //!< QGIS Project  (not yet implemented)
+                             //      Project = 1 << 1, //!< QGIS Project  (not yet implemented)
     };
     Q_ENUM( HistoryProviderBackend )
     Q_DECLARE_FLAGS( HistoryProviderBackends, HistoryProviderBackend )
@@ -3601,7 +3624,7 @@ class CORE_EXPORT Qgis
      */
     enum class QueryStorageBackend : int
     {
-      LocalProfile, //!< Local user profile
+      LocalProfile,   //!< Local user profile
       CurrentProject, //!< Current QGIS project
     };
     Q_ENUM( QueryStorageBackend )
@@ -3614,21 +3637,21 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.36
      */
     enum class ProcessingSourceType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessing, SourceType ) : int
-      {
-      MapLayer SIP_MONKEYPATCH_COMPAT_NAME( TypeMapLayer ) = -2, //!< Any map layer type (raster, vector, mesh, point cloud, annotation or plugin layer)
+    {
+      MapLayer SIP_MONKEYPATCH_COMPAT_NAME( TypeMapLayer ) = -2,                   //!< Any map layer type (raster, vector, mesh, point cloud, annotation or plugin layer)
       VectorAnyGeometry SIP_MONKEYPATCH_COMPAT_NAME( TypeVectorAnyGeometry ) = -1, //!< Any vector layer with geometry
-      VectorPoint SIP_MONKEYPATCH_COMPAT_NAME( TypeVectorPoint ) = 0, //!< Vector point layers
-      VectorLine SIP_MONKEYPATCH_COMPAT_NAME( TypeVectorLine ) = 1, //!< Vector line layers
-      VectorPolygon SIP_MONKEYPATCH_COMPAT_NAME( TypeVectorPolygon ) = 2, //!< Vector polygon layers
-      Raster SIP_MONKEYPATCH_COMPAT_NAME( TypeRaster ) = 3, //!< Raster layers
-      File SIP_MONKEYPATCH_COMPAT_NAME( TypeFile ) = 4, //!< Files (i.e. non map layer sources, such as text files)
-      Vector SIP_MONKEYPATCH_COMPAT_NAME( TypeVector ) = 5, //!< Tables (i.e. vector layers with or without geometry). When used for a sink this indicates the sink has no geometry.
-      Mesh SIP_MONKEYPATCH_COMPAT_NAME( TypeMesh ) = 6, //!< Mesh layers \since QGIS 3.6
-      Plugin SIP_MONKEYPATCH_COMPAT_NAME( TypePlugin ) = 7, //!< Plugin layers \since QGIS 3.22
-      PointCloud SIP_MONKEYPATCH_COMPAT_NAME( TypePointCloud ) = 8, //!< Point cloud layers \since QGIS 3.22
-      Annotation SIP_MONKEYPATCH_COMPAT_NAME( TypeAnnotation ) = 9, //!< Annotation layers \since QGIS 3.22
+      VectorPoint SIP_MONKEYPATCH_COMPAT_NAME( TypeVectorPoint ) = 0,              //!< Vector point layers
+      VectorLine SIP_MONKEYPATCH_COMPAT_NAME( TypeVectorLine ) = 1,                //!< Vector line layers
+      VectorPolygon SIP_MONKEYPATCH_COMPAT_NAME( TypeVectorPolygon ) = 2,          //!< Vector polygon layers
+      Raster SIP_MONKEYPATCH_COMPAT_NAME( TypeRaster ) = 3,                        //!< Raster layers
+      File SIP_MONKEYPATCH_COMPAT_NAME( TypeFile ) = 4,                            //!< Files (i.e. non map layer sources, such as text files)
+      Vector SIP_MONKEYPATCH_COMPAT_NAME( TypeVector ) = 5,          //!< Tables (i.e. vector layers with or without geometry). When used for a sink this indicates the sink has no geometry.
+      Mesh SIP_MONKEYPATCH_COMPAT_NAME( TypeMesh ) = 6,              //!< Mesh layers \since QGIS 3.6
+      Plugin SIP_MONKEYPATCH_COMPAT_NAME( TypePlugin ) = 7,          //!< Plugin layers \since QGIS 3.22
+      PointCloud SIP_MONKEYPATCH_COMPAT_NAME( TypePointCloud ) = 8,  //!< Point cloud layers \since QGIS 3.22
+      Annotation SIP_MONKEYPATCH_COMPAT_NAME( TypeAnnotation ) = 9,  //!< Annotation layers \since QGIS 3.22
       VectorTile SIP_MONKEYPATCH_COMPAT_NAME( TypeVectorTile ) = 10, //!< Vector tile layers \since QGIS 3.32
-      TiledScene = 11 //!< Tiled scene layers \since QGIS 4.0
+      TiledScene = 11                                                //!< Tiled scene layers \since QGIS 4.0
     };
     Q_ENUM( ProcessingSourceType )
 
@@ -3642,7 +3665,8 @@ class CORE_EXPORT Qgis
      */
     enum class ProcessingProviderFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingProvider, Flag ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      DeemphasiseSearchResults SIP_MONKEYPATCH_COMPAT_NAME( FlagDeemphasiseSearchResults ) = 1 << 1, //!< Algorithms should be de-emphasised in the search results when searching for algorithms. Use for low-priority providers or those with substantial known issues.
+      DeemphasiseSearchResults SIP_MONKEYPATCH_COMPAT_NAME( FlagDeemphasiseSearchResults )
+      = 1 << 1, //!< Algorithms should be de-emphasised in the search results when searching for algorithms. Use for low-priority providers or those with substantial known issues.
       CompatibleWithVirtualRaster SIP_MONKEYPATCH_COMPAT_NAME( FlagCompatibleWithVirtualRaster ) = 1 << 2, //!< The processing provider's algorithms can work with QGIS virtualraster data provider \since QGIS 3.36
     };
     Q_ENUM( ProcessingProviderFlag );
@@ -3725,9 +3749,9 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.36
      */
     enum class ProcessingPropertyAvailability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingAlgorithm, PropertyAvailability ) : int
-      {
+    {
       NotAvailable, //!< Properties are not available
-      Available, //!< Properties are available
+      Available,    //!< Properties are available
     };
     Q_ENUM( ProcessingPropertyAvailability )
 
@@ -3739,10 +3763,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.36
      */
     enum class ProcessingLogLevel SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingContext, LogLevel ) : int
-      {
+    {
       DefaultLevel = 0, //!< Default logging level
-      Verbose, //!< Verbose logging
-      ModelDebug, //!< Model debug level logging. Includes verbose logging and other outputs useful for debugging models \since QGIS 3.34
+      Verbose,          //!< Verbose logging
+      ModelDebug,       //!< Model debug level logging. Includes verbose logging and other outputs useful for debugging models \since QGIS 3.34
     };
     Q_ENUM( ProcessingLogLevel )
 
@@ -3756,8 +3780,8 @@ class CORE_EXPORT Qgis
     enum class ProcessingMode
     {
       Standard, //!< Standard (single-run) algorithm mode
-      Batch, //!< Batch processing mode
-      Modeler, //!< Modeler mode
+      Batch,    //!< Batch processing mode
+      Modeler,  //!< Modeler mode
     };
     Q_ENUM( ProcessingMode )
 
@@ -3770,8 +3794,10 @@ class CORE_EXPORT Qgis
      */
     enum class ProcessingFeatureSourceDefinitionFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingFeatureSourceDefinition, Flag ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      OverrideDefaultGeometryCheck SIP_MONKEYPATCH_COMPAT_NAME( FlagOverrideDefaultGeometryCheck ) = 1 << 0, //!< If set, the default geometry check method (as dictated by QgsProcessingContext) will be overridden for this source
-      CreateIndividualOutputPerInputFeature SIP_MONKEYPATCH_COMPAT_NAME( FlagCreateIndividualOutputPerInputFeature ) = 1 << 1, //!< If set, every feature processed from this source will be placed into its own individually created output destination. Support for this flag depends on how an algorithm is executed.
+      OverrideDefaultGeometryCheck SIP_MONKEYPATCH_COMPAT_NAME( FlagOverrideDefaultGeometryCheck )
+      = 1 << 0, //!< If set, the default geometry check method (as dictated by QgsProcessingContext) will be overridden for this source
+      CreateIndividualOutputPerInputFeature SIP_MONKEYPATCH_COMPAT_NAME( FlagCreateIndividualOutputPerInputFeature )
+      = 1 << 1, //!< If set, every feature processed from this source will be placed into its own individually created output destination. Support for this flag depends on how an algorithm is executed.
     };
     Q_ENUM( ProcessingFeatureSourceDefinitionFlag )
 
@@ -3885,9 +3911,9 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.36
      */
     enum class ProcessingNumberParameterType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingParameterNumber, Type ) : int
-      {
+    {
       Integer, //!< Integer values
-      Double, //!< Double/float values
+      Double,  //!< Double/float values
     };
     Q_ENUM( ProcessingNumberParameterType )
 
@@ -3899,13 +3925,13 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.36
      */
     enum class ProcessingFieldParameterDataType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingParameterField, DataType ) : int
-      {
-      Any = -1, //!< Accepts any field
-      Numeric = 0, //!< Accepts numeric fields
-      String = 1, //!< Accepts string fields
+    {
+      Any = -1,     //!< Accepts any field
+      Numeric = 0,  //!< Accepts numeric fields
+      String = 1,   //!< Accepts string fields
       DateTime = 2, //!< Accepts datetime fields
-      Binary = 3, //!< Accepts binary fields, since QGIS 3.34
-      Boolean = 4, //!< Accepts boolean fields, since QGIS 3.34
+      Binary = 3,   //!< Accepts binary fields, since QGIS 3.34
+      Boolean = 4,  //!< Accepts boolean fields, since QGIS 3.34
     };
     Q_ENUM( ProcessingFieldParameterDataType )
 
@@ -3917,10 +3943,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.36
      */
     enum class ProcessingDateTimeParameterDataType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingParameterDateTime, Type ) : int
-      {
+    {
       DateTime, //!< Datetime values
-      Date, //!< Date values
-      Time, //!< Time values
+      Date,     //!< Date values
+      Time,     //!< Time values
     };
     Q_ENUM( ProcessingDateTimeParameterDataType )
 
@@ -3932,11 +3958,11 @@ class CORE_EXPORT Qgis
     enum class ProcessingModelChildParameterSource : int
     {
       ModelParameter, //!< Parameter value is taken from a parent model parameter
-      ChildOutput, //!< Parameter value is taken from an output generated by a child algorithm
-      StaticValue, //!< Parameter value is a static value
-      Expression, //!< Parameter value is taken from an expression, evaluated just before the algorithm runs
+      ChildOutput,    //!< Parameter value is taken from an output generated by a child algorithm
+      StaticValue,    //!< Parameter value is a static value
+      Expression,     //!< Parameter value is taken from an expression, evaluated just before the algorithm runs
       ExpressionText, //!< Parameter value is taken from a text with expressions, evaluated just before the algorithm runs
-      ModelOutput, //!< Parameter value is linked to an output parameter for the model
+      ModelOutput,    //!< Parameter value is linked to an output parameter for the model
     };
     Q_ENUM( ProcessingModelChildParameterSource )
 
@@ -3948,8 +3974,8 @@ class CORE_EXPORT Qgis
     enum class ProcessingModelChildAlgorithmExecutionStatus : int
     {
       NotExecuted, //!< Child has not been executed
-      Success, //!< Child was successfully executed
-      Failed, //!< Child encountered an error while executing
+      Success,     //!< Child was successfully executed
+      Failed,      //!< Child encountered an error while executing
     };
     Q_ENUM( ProcessingModelChildAlgorithmExecutionStatus )
 
@@ -3961,10 +3987,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.36
      */
     enum class ProcessingTinInputLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProcessingParameterTinInputLayers, Type ) : int
-      {
-      Vertices, //!< Input that adds only vertices
+    {
+      Vertices,       //!< Input that adds only vertices
       StructureLines, //!< Input that adds add structure lines
-      BreakLines //!< Input that adds vertices and break lines
+      BreakLines      //!< Input that adds vertices and break lines
     };
     Q_ENUM( ProcessingTinInputLayerType )
 
@@ -3974,8 +4000,8 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.24
      */
     enum class CrsDefinitionFormat SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsCoordinateReferenceSystem, Format ) : int
-      {
-      Wkt SIP_MONKEYPATCH_COMPAT_NAME( FormatWkt ), //!< WKT format (always recommended over proj string format)
+    {
+      Wkt SIP_MONKEYPATCH_COMPAT_NAME( FormatWkt ),   //!< WKT format (always recommended over proj string format)
       Proj SIP_MONKEYPATCH_COMPAT_NAME( FormatProj ), //!< Proj string format
     };
     Q_ENUM( CrsDefinitionFormat )
@@ -3990,10 +4016,10 @@ class CORE_EXPORT Qgis
      */
     enum class FieldDomainSplitPolicy : int
     {
-      DefaultValue, //!< Use default field value
-      Duplicate, //!< Duplicate original value
+      DefaultValue,  //!< Use default field value
+      Duplicate,     //!< Duplicate original value
       GeometryRatio, //!< New values are computed by the ratio of their area/length compared to the area/length of the original feature
-      UnsetField, //!< Clears the field value so that the data provider backend will populate using any backend triggers or similar logic \since QGIS 3.30
+      UnsetField,    //!< Clears the field value so that the data provider backend will populate using any backend triggers or similar logic \since QGIS 3.30
     };
     Q_ENUM( FieldDomainSplitPolicy )
 
@@ -4007,14 +4033,14 @@ class CORE_EXPORT Qgis
      */
     enum class FieldDomainMergePolicy : int
     {
-      DefaultValue, //!< Use default field value
-      Sum, //!< Sum of values
+      DefaultValue,     //!< Use default field value
+      Sum,              //!< Sum of values
       GeometryWeighted, //!< New values are computed as the weighted average of the source values
-      UnsetField, //!< Clears the field value so that the data provider backend will populate using any backend triggers or similar logic \since QGIS 3.44
-      LargestGeometry, //!< Use value from the feature with the largest geometry \since QGIS 3.44
-      MinimumValue, //!< Use the minimum value from the features-to-be-merged \since QGIS 3.44
-      MaximumValue, //!< Use the maximum value from the features-to-be-merged \since QGIS 3.44
-      SetToNull, //!< Use a null value \since QGIS 3.44
+      UnsetField,       //!< Clears the field value so that the data provider backend will populate using any backend triggers or similar logic \since QGIS 3.44
+      LargestGeometry,  //!< Use value from the feature with the largest geometry \since QGIS 3.44
+      MinimumValue,     //!< Use the minimum value from the features-to-be-merged \since QGIS 3.44
+      MaximumValue,     //!< Use the maximum value from the features-to-be-merged \since QGIS 3.44
+      SetToNull,        //!< Use a null value \since QGIS 3.44
     };
     Q_ENUM( FieldDomainMergePolicy )
 
@@ -4028,8 +4054,8 @@ class CORE_EXPORT Qgis
     enum class FieldDuplicatePolicy : int
     {
       DefaultValue, //!< Use default field value
-      Duplicate, //!< Duplicate original value
-      UnsetField, //!< Clears the field value so that the data provider backend will populate using any backend triggers or similar logic \since QGIS 3.30
+      Duplicate,    //!< Duplicate original value
+      UnsetField,   //!< Clears the field value so that the data provider backend will populate using any backend triggers or similar logic \since QGIS 3.30
     };
     Q_ENUM( FieldDuplicatePolicy )
 
@@ -4042,7 +4068,7 @@ class CORE_EXPORT Qgis
     {
       Coded, //!< Coded field domain
       Range, //!< Numeric range field domain (min/max)
-      Glob, //!< Glob string pattern field domain
+      Glob,  //!< Glob string pattern field domain
     };
     Q_ENUM( FieldDomainType )
 
@@ -4053,7 +4079,7 @@ class CORE_EXPORT Qgis
      */
     enum class TransactionMode : int
     {
-      Disabled = 0, //!< Edits are buffered locally and sent to the provider when toggling layer editing mode.
+      Disabled = 0,        //!< Edits are buffered locally and sent to the provider when toggling layer editing mode.
       AutomaticGroups = 1, //!< Automatic transactional editing means that on supported datasources (postgres and geopackage databases) the edit state of all tables that originate from the same database are synchronized and executed in a server side transaction.
       BufferedGroups = 2, //!< Buffered transactional editing means that all editable layers in the buffered transaction group are toggled synchronously and all edits are saved in a local edit buffer. Saving changes is executed within a single transaction on all layers (per provider).
     };
@@ -4068,7 +4094,7 @@ class CORE_EXPORT Qgis
     {
       Absolute, //!< Elevation is taken directly from feature and is independent of terrain height (final elevation = feature elevation)
       Relative, //!< Elevation is relative to terrain height (final elevation = terrain elevation + feature elevation)
-      Terrain, //!< Elevation is clamped to terrain (final elevation = terrain elevation)
+      Terrain,  //!< Elevation is clamped to terrain (final elevation = terrain elevation)
     };
     Q_ENUM( AltitudeClamping )
 
@@ -4079,7 +4105,7 @@ class CORE_EXPORT Qgis
      */
     enum class AltitudeBinding : int
     {
-      Vertex, //!< Clamp every vertex of feature
+      Vertex,   //!< Clamp every vertex of feature
       Centroid, //!< Clamp just centroid of feature
     };
     Q_ENUM( AltitudeBinding )
@@ -4091,10 +4117,10 @@ class CORE_EXPORT Qgis
      */
     enum class RangeLimits : int
     {
-      IncludeBoth = 0, //!< Both lower and upper values are included in the range
+      IncludeBoth = 0,          //!< Both lower and upper values are included in the range
       IncludeLowerExcludeUpper, //!< Lower value is included in the range, upper value is excluded
       ExcludeLowerIncludeUpper, //!< Lower value is excluded from the range, upper value in inccluded
-      ExcludeBoth, //!< Both lower and upper values are excluded from the range
+      ExcludeBoth,              //!< Both lower and upper values are excluded from the range
     };
     Q_ENUM( RangeLimits )
 
@@ -4105,10 +4131,10 @@ class CORE_EXPORT Qgis
      */
     enum class RasterElevationMode : int
     {
-      FixedElevationRange = 0, //!< Layer has a fixed elevation range
+      FixedElevationRange = 0,        //!< Layer has a fixed elevation range
       RepresentsElevationSurface = 1, //!< Pixel values represent an elevation surface
-      FixedRangePerBand = 2, //!< Layer has a fixed (manually specified) elevation range per band
-      DynamicRangePerBand = 3, //!< Layer has a elevation range per band, calculated dynamically from an expression
+      FixedRangePerBand = 2,          //!< Layer has a fixed (manually specified) elevation range per band
+      DynamicRangePerBand = 3,        //!< Layer has a elevation range per band, calculated dynamically from an expression
     };
     Q_ENUM( RasterElevationMode )
 
@@ -4120,8 +4146,8 @@ class CORE_EXPORT Qgis
     enum class MeshElevationMode : int
     {
       FixedElevationRange = 0, //!< Layer has a fixed elevation range
-      FromVertices = 1, //!< Elevation should be taken from mesh vertices
-      FixedRangePerGroup = 2, //!< Layer has a fixed (manually specified) elevation range per group
+      FromVertices = 1,        //!< Elevation should be taken from mesh vertices
+      FixedRangePerGroup = 2,  //!< Layer has a fixed (manually specified) elevation range per group
     };
     Q_ENUM( MeshElevationMode )
 
@@ -4146,8 +4172,8 @@ class CORE_EXPORT Qgis
     enum class LineExtensionSide : int
     {
       BeforeVertex, //!< Lock to previous vertex
-      AfterVertex, //!< Lock to next vertex
-      NoVertex, //!< Don't lock to vertex
+      AfterVertex,  //!< Lock to next vertex
+      NoVertex,     //!< Don't lock to vertex
     };
     Q_ENUM( LineExtensionSide )
 
@@ -4158,13 +4184,13 @@ class CORE_EXPORT Qgis
      */
     enum class CadConstraintType : int
     {
-      Generic,      //!< Generic value
-      Angle,        //!< Angle value
-      Distance,     //!< Distance value
-      XCoordinate,  //!< X Coordinate value
-      YCoordinate,  //!< Y Coordinate value
-      ZValue,       //!< Z value
-      MValue,       //!< M value
+      Generic,     //!< Generic value
+      Angle,       //!< Angle value
+      Distance,    //!< Distance value
+      XCoordinate, //!< X Coordinate value
+      YCoordinate, //!< Y Coordinate value
+      ZValue,      //!< Z value
+      MValue,      //!< M value
     };
     Q_ENUM( CadConstraintType )
 
@@ -4174,8 +4200,8 @@ class CORE_EXPORT Qgis
      */
     enum class CadMeasurementDisplayType : int
     {
-      Hidden, //!< Hide measurement
-      Cartesian, //!< Use Cartesian measurements
+      Hidden,      //!< Hide measurement
+      Cartesian,   //!< Use Cartesian measurements
       Ellipsoidal, //!< Use Ellipsoidal measurements
     };
     Q_ENUM( CadMeasurementDisplayType )
@@ -4188,7 +4214,8 @@ class CORE_EXPORT Qgis
     enum class ProjectFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       EvaluateDefaultValuesOnProviderSide = 1 << 0, //!< If set, default values for fields will be evaluated on the provider side when features from the project are created instead of when they are committed.
-      TrustStoredLayerStatistics = 1 << 1, //!< If set, then layer statistics (such as the layer extent) will be read from values stored in the project instead of requesting updated values from the data provider. Additionally, when this flag is set, primary key unicity is not checked for views and materialized views with Postgres provider.
+      TrustStoredLayerStatistics
+      = 1 << 1, //!< If set, then layer statistics (such as the layer extent) will be read from values stored in the project instead of requesting updated values from the data provider. Additionally, when this flag is set, primary key unicity is not checked for views and materialized views with Postgres provider.
       RememberLayerEditStatusBetweenSessions = 1 << 2, //!< If set, then any layers set to be editable will be stored in the project and immediately made editable whenever that project is restored
       RememberAttributeTableWindowsBetweenSessions = 1 << 3, //!< If set, then any open attribute tables will be stored in the project and immediately reopened when the project is restored
     };
@@ -4219,15 +4246,15 @@ class CORE_EXPORT Qgis
      */
     enum class Point3DShape : int
     {
-      Cylinder, //!< Cylinder
-      Sphere, //!< Sphere
-      Cone, //!< Cone
-      Cube, //!< Cube
-      Torus, //!< Torus
-      Plane, //!< Flat plane
+      Cylinder,     //!< Cylinder
+      Sphere,       //!< Sphere
+      Cone,         //!< Cone
+      Cube,         //!< Cube
+      Torus,        //!< Torus
+      Plane,        //!< Flat plane
       ExtrudedText, //!< Extruded text
-      Model, //!< Model
-      Billboard, //!< Billboard
+      Model,        //!< Model
+      Billboard,    //!< Billboard
     };
     Q_ENUM( Point3DShape )
 
@@ -4238,7 +4265,7 @@ class CORE_EXPORT Qgis
      */
     enum class LightSourceType : int
     {
-      Point, //!< Point light source
+      Point,       //!< Point light source
       Directional, //!< Directional light source
     };
     Q_ENUM( LightSourceType )
@@ -4250,9 +4277,9 @@ class CORE_EXPORT Qgis
      */
     enum class NavigationMode : int
     {
-      TerrainBased, //!< The default navigation based on the terrain
-      Walk, //!< Uses WASD keys or arrows to navigate in walking (first person) manner
-      GlobeTerrainBased  //!< Navigation similar to TerrainBased, but for use with globe  \since QGIS 3.44
+      TerrainBased,     //!< The default navigation based on the terrain
+      Walk,             //!< Uses WASD keys or arrows to navigate in walking (first person) manner
+      GlobeTerrainBased //!< Navigation similar to TerrainBased, but for use with globe  \since QGIS 3.44
     };
     Q_ENUM( NavigationMode )
 
@@ -4263,8 +4290,8 @@ class CORE_EXPORT Qgis
      */
     enum class SceneMode : int
     {
-      Local,   //!< Local scene based on a projected CRS
-      Globe    //!< Scene is represented as a globe using a geocentric CRS
+      Local, //!< Local scene based on a projected CRS
+      Globe  //!< Scene is represented as a globe using a geocentric CRS
     };
     Q_ENUM( SceneMode )
 
@@ -4275,9 +4302,9 @@ class CORE_EXPORT Qgis
      */
     enum class VerticalAxisInversion : int
     {
-      Never, //!< Never invert vertical axis movements
+      Never,        //!< Never invert vertical axis movements
       WhenDragging, //!< Invert vertical axis movements when dragging in first person modes
-      Always, //!< Always invert vertical axis movements
+      Always,       //!< Always invert vertical axis movements
     };
     Q_ENUM( VerticalAxisInversion )
 
@@ -4288,7 +4315,7 @@ class CORE_EXPORT Qgis
      */
     enum class ProfileSurfaceSymbology : int
     {
-      Line, //!< The elevation surface will be rendered using a line symbol
+      Line,      //!< The elevation surface will be rendered using a line symbol
       FillBelow, //!< The elevation surface will be rendered using a fill symbol below the surface level
       FillAbove, //!< The elevation surface will be rendered using a fill symbol above the surface level \since QGIS 3.32
     };
@@ -4302,7 +4329,7 @@ class CORE_EXPORT Qgis
     enum class VectorProfileType : int
     {
       IndividualFeatures, //!< Treat each feature as an individual object (eg buildings)
-      ContinuousSurface, //!< The features should be treated as representing values on a continuous surface (eg contour lines)
+      ContinuousSurface,  //!< The features should be treated as representing values on a continuous surface (eg contour lines)
     };
     Q_ENUM( VectorProfileType );
 
@@ -4313,7 +4340,7 @@ class CORE_EXPORT Qgis
      */
     enum class PointCloudProfileType : int
     {
-      IndividualPoints, //!< Sample individual points from the point cloud
+      IndividualPoints,    //!< Sample individual points from the point cloud
       TriangulatedSurface, //!< Create a TIN from the point cloud using Delaunay triangulation
     };
     Q_ENUM( PointCloudProfileType );
@@ -4326,8 +4353,8 @@ class CORE_EXPORT Qgis
     enum class ProfileGeneratorFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       RespectsMaximumErrorMapUnit = 1 << 0, //!< Generated profile respects the QgsProfileGenerationContext::maximumErrorMapUnits() property.
-      RespectsDistanceRange = 1 << 1, //!< Generated profile respects the QgsProfileGenerationContext::distanceRange() property.
-      RespectsElevationRange = 1 << 2, //!< Generated profile respects the QgsProfileGenerationContext::elevationRange() property.
+      RespectsDistanceRange = 1 << 1,       //!< Generated profile respects the QgsProfileGenerationContext::distanceRange() property.
+      RespectsElevationRange = 1 << 2,      //!< Generated profile respects the QgsProfileGenerationContext::elevationRange() property.
     };
     Q_ENUM( ProfileGeneratorFlag )
     Q_DECLARE_FLAGS( ProfileGeneratorFlags, ProfileGeneratorFlag )
@@ -4340,8 +4367,8 @@ class CORE_EXPORT Qgis
      */
     enum class ProfileExportType : int
     {
-      Features3D, //!< Export profiles as 3D features, with elevation values stored in exported geometry Z values
-      Profile2D, //!< Export profiles as 2D profile lines, with elevation stored in exported geometry Y dimension and distance in X dimension
+      Features3D,               //!< Export profiles as 3D features, with elevation values stored in exported geometry Z values
+      Profile2D,                //!< Export profiles as 2D profile lines, with elevation stored in exported geometry Y dimension and distance in X dimension
       DistanceVsElevationTable, //!< Export profiles as a table of sampled distance vs elevation values
     };
     Q_ENUM( ProfileExportType );
@@ -4352,7 +4379,7 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.26
      */
     enum class PointCloudSymbol SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPointCloudRenderer, PointSymbol ) : int
-      {
+    {
       Square, //!< Renders points as squares
       Circle, //!< Renders points as circles
     };
@@ -4364,8 +4391,8 @@ class CORE_EXPORT Qgis
      * /since QGIS 3.26
      */
     enum class PointCloudDrawOrder SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPointCloudRenderer, DrawOrder ) : int
-      {
-      Default, //!< Draw points in the order they are stored
+    {
+      Default,     //!< Draw points in the order they are stored
       BottomToTop, //!< Draw points with larger Z values last
       TopToBottom, //!< Draw points with larger Z values first
     };
@@ -4379,10 +4406,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.26
      */
     enum class AvoidIntersectionsMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProject, AvoidIntersectionsMode ) : int
-      {
-      AllowIntersections, //!< Overlap with any feature allowed when digitizing new features
+    {
+      AllowIntersections,             //!< Overlap with any feature allowed when digitizing new features
       AvoidIntersectionsCurrentLayer, //!< Overlap with features from the active layer when digitizing new features not allowed
-      AvoidIntersectionsLayers, //!< Overlap with features from a specified list of layers when digitizing new features not allowed
+      AvoidIntersectionsLayers,       //!< Overlap with features from a specified list of layers when digitizing new features not allowed
     };
     Q_ENUM( AvoidIntersectionsMode )
 
@@ -4394,7 +4421,7 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.26
      */
     enum class ProjectFileFormat SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProject, FileFormat ) : int
-      {
+    {
       Qgz, //!< Archive file format, supports auxiliary data
       Qgs, //!< Project saved in a clear text, does not support auxiliary data
     };
@@ -4409,14 +4436,17 @@ class CORE_EXPORT Qgis
      */
     enum class ProjectReadFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProject, ReadFlag ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      DontResolveLayers SIP_MONKEYPATCH_COMPAT_NAME( FlagDontResolveLayers ) = 1 << 0, //!< Don't resolve layer paths (i.e. don't load any layer content). Dramatically improves project read time if the actual data from the layers is not required.
-      DontLoadLayouts SIP_MONKEYPATCH_COMPAT_NAME( FlagDontLoadLayouts ) = 1 << 1, //!< Don't load print layouts. Improves project read time if layouts are not required, and allows projects to be safely read in background threads (since print layouts are not thread safe).
-      TrustLayerMetadata SIP_MONKEYPATCH_COMPAT_NAME( FlagTrustLayerMetadata ) = 1 << 2, //!< Trust layer metadata. Improves project read time. Do not use it if layers' extent is not fixed during the project's use by QGIS and QGIS Server.
+      DontResolveLayers SIP_MONKEYPATCH_COMPAT_NAME( FlagDontResolveLayers )
+      = 1 << 0, //!< Don't resolve layer paths (i.e. don't load any layer content). Dramatically improves project read time if the actual data from the layers is not required.
+      DontLoadLayouts SIP_MONKEYPATCH_COMPAT_NAME( FlagDontLoadLayouts )
+      = 1 << 1, //!< Don't load print layouts. Improves project read time if layouts are not required, and allows projects to be safely read in background threads (since print layouts are not thread safe).
+      TrustLayerMetadata SIP_MONKEYPATCH_COMPAT_NAME( FlagTrustLayerMetadata )
+      = 1 << 2, //!< Trust layer metadata. Improves project read time. Do not use it if layers' extent is not fixed during the project's use by QGIS and QGIS Server.
       DontStoreOriginalStyles SIP_MONKEYPATCH_COMPAT_NAME( FlagDontStoreOriginalStyles ) = 1 << 3, //!< Skip the initial XML style storage for layers. Useful for minimising project load times in non-interactive contexts.
       DontLoad3DViews SIP_MONKEYPATCH_COMPAT_NAME( FlagDontLoad3DViews ) = 1 << 4, //!< Skip loading 3D views \since QGIS 3.26
-      DontLoadProjectStyles = 1 << 5, //!< Skip loading project style databases (deprecated -- use ProjectCapability::ProjectStyles flag instead)
-      ForceReadOnlyLayers = 1 << 6, //!< Open layers in a read-only mode. \since QGIS 3.28
-      DontUpgradeAnnotations = 1 << 7, //!< Don't upgrade old annotation items to QgsAnnotationItem \since QGIS 3.40
+      DontLoadProjectStyles = 1 << 5,                                              //!< Skip loading project style databases (deprecated -- use ProjectCapability::ProjectStyles flag instead)
+      ForceReadOnlyLayers = 1 << 6,                                                //!< Open layers in a read-only mode. \since QGIS 3.28
+      DontUpgradeAnnotations = 1 << 7,                                             //!< Don't upgrade old annotation items to QgsAnnotationItem \since QGIS 3.40
     };
     Q_ENUM( ProjectReadFlag )
 
@@ -4459,13 +4489,13 @@ class CORE_EXPORT Qgis
      */
     enum class MapBoxGlStyleSourceType : int
     {
-      Vector, //!< Vector source
-      Raster, //!< Raster source
+      Vector,    //!< Vector source
+      Raster,    //!< Raster source
       RasterDem, //!< Raster DEM source
-      GeoJson, //!< GeoJSON source
-      Image, //!< Image source
-      Video, //!< Video source
-      Unknown, //!< Other/unknown source type
+      GeoJson,   //!< GeoJSON source
+      Image,     //!< Image source
+      Video,     //!< Video source
+      Unknown,   //!< Other/unknown source type
     };
     Q_ENUM( MapBoxGlStyleSourceType )
 
@@ -4477,15 +4507,15 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.28
      */
     enum class ArcGisRestServiceType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsArcGisPortalUtils, ItemType ) : int
-      {
+    {
       FeatureServer SIP_MONKEYPATCH_COMPAT_NAME( FeatureService ), //!< FeatureServer
-      MapServer SIP_MONKEYPATCH_COMPAT_NAME( MapService ), //!< MapServer
-      ImageServer SIP_MONKEYPATCH_COMPAT_NAME( ImageService ), //!< ImageServer
-      GlobeServer, //!< GlobeServer
-      GPServer, //!< GPServer
-      GeocodeServer, //!< GeocodeServer
-      Unknown, //!< Other unknown/unsupported type
-      SceneServer, //!< SceneServer
+      MapServer SIP_MONKEYPATCH_COMPAT_NAME( MapService ),         //!< MapServer
+      ImageServer SIP_MONKEYPATCH_COMPAT_NAME( ImageService ),     //!< ImageServer
+      GlobeServer,                                                 //!< GlobeServer
+      GPServer,                                                    //!< GPServer
+      GeocodeServer,                                               //!< GeocodeServer
+      Unknown,                                                     //!< Other unknown/unsupported type
+      SceneServer,                                                 //!< SceneServer
     };
     Q_ENUM( ArcGisRestServiceType )
 
@@ -4497,8 +4527,8 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.28
      */
     enum class RelationshipType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRelation, RelationType ) : int
-      {
-      Normal, //!< A normal relation
+    {
+      Normal,    //!< A normal relation
       Generated, //!< A generated relation is a child of a polymorphic relation
     };
     Q_ENUM( RelationshipType )
@@ -4511,7 +4541,7 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.28
      */
     enum class RelationshipStrength SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRelation, RelationStrength ) : int
-      {
+    {
       Association, //!< Loose relation, related elements are not part of the parent and a parent copy will not copy any children.
       Composition, //!< Fix relation, related elements are part of the parent and a parent copy will copy any children or delete of parent will delete children
     };
@@ -4524,9 +4554,9 @@ class CORE_EXPORT Qgis
      */
     enum class RelationshipCardinality : int
     {
-      OneToOne, //!< One to one relationship
-      OneToMany, //!< One to many relationship
-      ManyToOne, //!< Many to one relationship
+      OneToOne,   //!< One to one relationship
+      OneToMany,  //!< One to many relationship
+      ManyToOne,  //!< Many to one relationship
       ManyToMany, //!< Many to many relationship
     };
     Q_ENUM( RelationshipCardinality )
@@ -4539,7 +4569,7 @@ class CORE_EXPORT Qgis
     enum class RelationshipCapability : int SIP_ENUM_BASETYPE( IntFlag )
     {
       MultipleFieldKeys = 1 << 0, //!< Supports multiple field keys (as opposed to a singular field)
-      ForwardPathLabel = 1 << 1, //!< Supports forward path labels
+      ForwardPathLabel = 1 << 1,  //!< Supports forward path labels
       BackwardPathLabel = 1 << 2, //!< Supports backward path labels
     };
     Q_ENUM( RelationshipCapability )
@@ -4559,9 +4589,9 @@ class CORE_EXPORT Qgis
      */
     enum class CoordinateDisplayType : int
     {
-      MapCrs, //!< Map CRS
+      MapCrs,        //!< Map CRS
       MapGeographic, //!< Map Geographic CRS equivalent (stays unchanged if the map CRS is geographic)
-      CustomCrs, //!< Custom CRS
+      CustomCrs,     //!< Custom CRS
     };
     Q_ENUM( CoordinateDisplayType )
 
@@ -4572,9 +4602,9 @@ class CORE_EXPORT Qgis
      */
     enum class SettingsOrigin : int
     {
-      Any, //!< From any origin
+      Any,    //!< From any origin
       Global, //!< Global settings are stored in `qgis_global_settings.ini`
-      Local, //!< Local settings are stored in the user profile
+      Local,  //!< Local settings are stored in the user profile
     };
     Q_ENUM( SettingsOrigin )
 
@@ -4585,17 +4615,17 @@ class CORE_EXPORT Qgis
      */
     enum class ScriptLanguage : int
     {
-      Css, //!< CSS
+      Css,            //!< CSS
       QgisExpression, //!< QGIS expressions
-      Html, //!< HTML
-      JavaScript, //!< JavaScript
-      Json, //!< JSON
-      Python, //!< Python
-      R, //!< R Stats
-      Sql, //!< SQL
-      Batch, //!< Windows batch files
-      Bash, //!< Bash scripts
-      Unknown, //!< Unknown/other language
+      Html,           //!< HTML
+      JavaScript,     //!< JavaScript
+      Json,           //!< JSON
+      Python,         //!< Python
+      R,              //!< R Stats
+      Sql,            //!< SQL
+      Batch,          //!< Windows batch files
+      Bash,           //!< Bash scripts
+      Unknown,        //!< Unknown/other language
     };
     Q_ENUM( ScriptLanguage )
 
@@ -4608,8 +4638,8 @@ class CORE_EXPORT Qgis
      */
     enum class ScriptLanguageCapability : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      Reformat = 1 << 0, //!< Language supports automatic code reformatting
-      CheckSyntax = 1 << 1, //!< Language supports syntax checking
+      Reformat = 1 << 0,      //!< Language supports automatic code reformatting
+      CheckSyntax = 1 << 1,   //!< Language supports syntax checking
       ToggleComment = 1 << 2, //!< Language supports comment toggling
     };
     Q_ENUM( ScriptLanguageCapability )
@@ -4629,8 +4659,8 @@ class CORE_EXPORT Qgis
      */
     enum class LayerTreeInsertionMethod : int
     {
-      AboveInsertionPoint, //!< Layers are added in the tree above the insertion point
-      TopOfTree, //!< Layers are added at the top of the layer tree
+      AboveInsertionPoint,     //!< Layers are added in the tree above the insertion point
+      TopOfTree,               //!< Layers are added at the top of the layer tree
       OptimalInInsertionGroup, //!< Layers are added at optimal locations across the insertion point's group
     };
     Q_ENUM( LayerTreeInsertionMethod )
@@ -4681,13 +4711,13 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.42
      */
     enum class LegendComponent SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLegendStyle, Style ) : int
-      {
-      Undefined, //!< Should not happen, only if corrupted project file
-      Hidden, //!< Special style, item is hidden including margins around
-      Title, //!< Legend title
-      Group, //!< Legend group title
-      Subgroup, //!< Legend subgroup title
-      Symbol, //!< Symbol icon (excluding label)
+    {
+      Undefined,   //!< Should not happen, only if corrupted project file
+      Hidden,      //!< Special style, item is hidden including margins around
+      Title,       //!< Legend title
+      Group,       //!< Legend group title
+      Subgroup,    //!< Legend subgroup title
+      Symbol,      //!< Symbol icon (excluding label)
       SymbolLabel, //!< Symbol label (excluding icon)
     };
     // !!! WARNING: If adding new values to this enum, make sure you update QgsLegendSettings constructor accordingly!!
@@ -4701,8 +4731,8 @@ class CORE_EXPORT Qgis
     enum class LegendSyncMode : int
     {
       AllProjectLayers, //!< Synchronize to all project layers.
-      VisibleLayers, //!< Synchronize to map layers. The legend will include layers which are included in the linked map only.
-      Manual, //!< No automatic synchronization of legend layers. The legend will be manually populated.
+      VisibleLayers,    //!< Synchronize to map layers. The legend will include layers which are included in the linked map only.
+      Manual,           //!< No automatic synchronization of legend layers. The legend will be manually populated.
     };
     Q_ENUM( LegendSyncMode )
 
@@ -4730,7 +4760,7 @@ class CORE_EXPORT Qgis
      */
     enum class ActionType : int
     {
-      Invalid, //!< Invalid
+      Invalid,        //!< Invalid
       MapLayerAction, //!< Standard actions (defined by core or plugins), corresponds to QgsMapLayerAction class.
       AttributeAction //!< Custom actions (manually defined in layer properties), corresponds to QgsAction class.
     };
@@ -4745,8 +4775,8 @@ class CORE_EXPORT Qgis
      */
     enum class MapLayerActionTarget : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      Layer = 1 << 0, //!< Action targets a complete layer
-      SingleFeature = 1 << 1, //!< Action targets a single feature from a layer
+      Layer = 1 << 0,            //!< Action targets a complete layer
+      SingleFeature = 1 << 1,    //!< Action targets a single feature from a layer
       MultipleFeatures = 1 << 2, //!< Action targets multiple features from a layer
       AllActions = Layer | SingleFeature | MultipleFeatures
     };
@@ -4771,7 +4801,7 @@ class CORE_EXPORT Qgis
      */
     enum class MapLayerActionFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      EnabledOnlyWhenEditable = 1 << 1, //!< Action should be shown only for editable layers
+      EnabledOnlyWhenEditable = 1 << 1,   //!< Action should be shown only for editable layers
       EnableOnlyWhenHasGeometry = 1 << 2, //!< Action should be shown only for layers with geometry, \since QGIS 3.42
     };
     Q_ENUM( MapLayerActionFlag )
@@ -4794,14 +4824,14 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.30
      */
     enum class AttributeActionType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAction, ActionType ) : int
-      {
-      Generic, //!< Generic
-      GenericPython, //!< Python
-      Mac, //!< MacOS specific
-      Windows, //!< Windows specific
-      Unix, //!< Unix specific
-      OpenUrl, //!< Open URL action
-      SubmitUrlEncoded, //!< POST data to an URL, using "application/x-www-form-urlencoded" or "application/json" if the body is valid JSON \since QGIS 3.24
+    {
+      Generic,            //!< Generic
+      GenericPython,      //!< Python
+      Mac,                //!< MacOS specific
+      Windows,            //!< Windows specific
+      Unix,               //!< Unix specific
+      OpenUrl,            //!< Open URL action
+      SubmitUrlEncoded,   //!< POST data to an URL, using "application/x-www-form-urlencoded" or "application/json" if the body is valid JSON \since QGIS 3.24
       SubmitUrlMultipart, //!< POST data to an URL using "multipart/form-data"  \since QGIS 3.24
     };
     Q_ENUM( AttributeActionType )
@@ -4813,9 +4843,9 @@ class CORE_EXPORT Qgis
      */
     enum class MetadataDateType
     {
-      Created, //!< Date created
-      Published, //!< Date published
-      Revised, //!< Date revised
+      Created,    //!< Date created
+      Published,  //!< Date published
+      Revised,    //!< Date revised
       Superseded, //!< Date superseded
     };
     Q_ENUM( MetadataDateType )
@@ -4831,46 +4861,46 @@ class CORE_EXPORT Qgis
      */
 
     enum class RasterColorInterpretation SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRaster, ColorInterpretation ) : int
-      {
+    {
       Undefined SIP_MONKEYPATCH_COMPAT_NAME( UndefinedColorInterpretation ) = 0, //!< Undefined
-      GrayIndex = 1,          //!< Grayscale
-      PaletteIndex = 2,       //!< Paletted (see associated color table)
-      RedBand = 3,            //!< Red band of RGBA image, or red spectral band [0.62 - 0.69 um]
-      GreenBand = 4,          //!< Green band of RGBA image, or green spectral band [0.51 - 0.60 um]
-      BlueBand = 5,           //!< Blue band of RGBA image, or blue spectral band [0.45 - 0.53 um]
-      AlphaBand = 6,          //!< Alpha (0=transparent, 255=opaque)
-      HueBand = 7,            //!< Hue band of HLS image
-      SaturationBand = 8,     //!< Saturation band of HLS image
-      LightnessBand = 9,      //!< Lightness band of HLS image
-      CyanBand = 10,          //!< Cyan band of CMYK image
-      MagentaBand = 11,       //!< Magenta band of CMYK image
-      YellowBand = 12,        //!< Yellow band of CMYK image, or yellow spectral band [0.58 - 0.62 um]
-      BlackBand = 13,         //!< Black band of CMLY image
-      YCbCr_YBand = 14,       //!< Y Luminance
-      YCbCr_CbBand = 15,      //!< Cb Chroma
-      YCbCr_CrBand = 16,      //!< Cr Chroma
-      ContinuousPalette = 17, //!< Continuous palette, QGIS addition, GRASS
+      GrayIndex = 1,                                                             //!< Grayscale
+      PaletteIndex = 2,                                                          //!< Paletted (see associated color table)
+      RedBand = 3,                                                               //!< Red band of RGBA image, or red spectral band [0.62 - 0.69 um]
+      GreenBand = 4,                                                             //!< Green band of RGBA image, or green spectral band [0.51 - 0.60 um]
+      BlueBand = 5,                                                              //!< Blue band of RGBA image, or blue spectral band [0.45 - 0.53 um]
+      AlphaBand = 6,                                                             //!< Alpha (0=transparent, 255=opaque)
+      HueBand = 7,                                                               //!< Hue band of HLS image
+      SaturationBand = 8,                                                        //!< Saturation band of HLS image
+      LightnessBand = 9,                                                         //!< Lightness band of HLS image
+      CyanBand = 10,                                                             //!< Cyan band of CMYK image
+      MagentaBand = 11,                                                          //!< Magenta band of CMYK image
+      YellowBand = 12,                                                           //!< Yellow band of CMYK image, or yellow spectral band [0.58 - 0.62 um]
+      BlackBand = 13,                                                            //!< Black band of CMLY image
+      YCbCr_YBand = 14,                                                          //!< Y Luminance
+      YCbCr_CbBand = 15,                                                         //!< Cb Chroma
+      YCbCr_CrBand = 16,                                                         //!< Cr Chroma
+      ContinuousPalette = 17,                                                    //!< Continuous palette, QGIS addition, GRASS
 
       // Note: values between PanBand and SAR_P_Band match additions done in
       // GDAL 3.10, except that the numeric values of the constant don't match GDAL ones
 
-      PanBand = 18,           //!< Panchromatic band [0.40 - 1.00 um] \since QGIS 3.40
-      CoastalBand = 19,       //!< Coastal band [0.40 - 0.45 um] \since QGIS 3.40
-      RedEdgeBand = 20,       //!< Red-edge band [0.69 - 0.79 um] \since QGIS 3.40
-      NIRBand = 21,           //!< Near-InfraRed (NIR) band [0.75 - 1.40 um] \since QGIS 3.40
-      SWIRBand = 22,          //!< Short-Wavelength InfraRed (SWIR) band [1.40 - 3.00 um] \since QGIS 3.40
-      MWIRBand = 23,          //!< Mid-Wavelength InfraRed (MWIR) band [3.00 - 8.00 um] \since QGIS 3.40
-      LWIRBand = 24,          //!< Long-Wavelength InfraRed (LWIR) band [8.00 - 15 um] \since QGIS 3.40
-      TIRBand = 25,           //!< Thermal InfraRed (TIR) band (MWIR or LWIR) [3 - 15 um] \since QGIS 3.40
-      OtherIRBand = 26,       //!< Other infrared band [0.75 - 1000 um] \since QGIS 3.40
-      SAR_Ka_Band = 27,       //!< Synthetic Aperture Radar (SAR) Ka band [0.8 - 1.1 cm / 27 - 40 GHz] \since QGIS 3.40
-      SAR_K_Band = 28,        //!< Synthetic Aperture Radar (SAR) K band [1.1 - 1.7 cm / 18 - 27 GHz] \since QGIS 3.40
-      SAR_Ku_Band = 30,       //!< Synthetic Aperture Radar (SAR) Ku band [1.7 - 2.4 cm / 12 - 18 GHz] \since QGIS 3.40
-      SAR_X_Band = 31,        //!< Synthetic Aperture Radar (SAR) X band [2.4 - 3.8 cm / 8 - 12 GHz] \since QGIS 3.40
-      SAR_C_Band = 32,        //!< Synthetic Aperture Radar (SAR) C band [3.8 - 7.5 cm / 4 - 8 GHz] \since QGIS 3.40
-      SAR_S_Band = 33,        //!< Synthetic Aperture Radar (SAR) S band [7.5 - 15 cm / 2 - 4 GHz] \since QGIS 3.40
-      SAR_L_Band = 34,        //!< Synthetic Aperture Radar (SAR) L band [15 - 30 cm / 1 - 2 GHz] \since QGIS 3.40
-      SAR_P_Band = 35,        //!< Synthetic Aperture Radar (SAR) P band [30 - 100 cm / 0.3 - 1 GHz] \since QGIS 3.40
+      PanBand = 18,     //!< Panchromatic band [0.40 - 1.00 um] \since QGIS 3.40
+      CoastalBand = 19, //!< Coastal band [0.40 - 0.45 um] \since QGIS 3.40
+      RedEdgeBand = 20, //!< Red-edge band [0.69 - 0.79 um] \since QGIS 3.40
+      NIRBand = 21,     //!< Near-InfraRed (NIR) band [0.75 - 1.40 um] \since QGIS 3.40
+      SWIRBand = 22,    //!< Short-Wavelength InfraRed (SWIR) band [1.40 - 3.00 um] \since QGIS 3.40
+      MWIRBand = 23,    //!< Mid-Wavelength InfraRed (MWIR) band [3.00 - 8.00 um] \since QGIS 3.40
+      LWIRBand = 24,    //!< Long-Wavelength InfraRed (LWIR) band [8.00 - 15 um] \since QGIS 3.40
+      TIRBand = 25,     //!< Thermal InfraRed (TIR) band (MWIR or LWIR) [3 - 15 um] \since QGIS 3.40
+      OtherIRBand = 26, //!< Other infrared band [0.75 - 1000 um] \since QGIS 3.40
+      SAR_Ka_Band = 27, //!< Synthetic Aperture Radar (SAR) Ka band [0.8 - 1.1 cm / 27 - 40 GHz] \since QGIS 3.40
+      SAR_K_Band = 28,  //!< Synthetic Aperture Radar (SAR) K band [1.1 - 1.7 cm / 18 - 27 GHz] \since QGIS 3.40
+      SAR_Ku_Band = 30, //!< Synthetic Aperture Radar (SAR) Ku band [1.7 - 2.4 cm / 12 - 18 GHz] \since QGIS 3.40
+      SAR_X_Band = 31,  //!< Synthetic Aperture Radar (SAR) X band [2.4 - 3.8 cm / 8 - 12 GHz] \since QGIS 3.40
+      SAR_C_Band = 32,  //!< Synthetic Aperture Radar (SAR) C band [3.8 - 7.5 cm / 4 - 8 GHz] \since QGIS 3.40
+      SAR_S_Band = 33,  //!< Synthetic Aperture Radar (SAR) S band [7.5 - 15 cm / 2 - 4 GHz] \since QGIS 3.40
+      SAR_L_Band = 34,  //!< Synthetic Aperture Radar (SAR) L band [15 - 30 cm / 1 - 2 GHz] \since QGIS 3.40
+      SAR_P_Band = 35,  //!< Synthetic Aperture Radar (SAR) P band [30 - 100 cm / 0.3 - 1 GHz] \since QGIS 3.40
     };
     Q_ENUM( RasterColorInterpretation )
 
@@ -4882,10 +4912,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.30
     */
     enum class RasterLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterLayer, LayerType ) : int
-      {
-      GrayOrUndefined, //!< Gray or undefined
-      Palette, //!< Palette
-      MultiBand SIP_MONKEYPATCH_COMPAT_NAME( Multiband ), //!< Multi band
+    {
+      GrayOrUndefined,                                               //!< Gray or undefined
+      Palette,                                                       //!< Palette
+      MultiBand SIP_MONKEYPATCH_COMPAT_NAME( Multiband ),            //!< Multi band
       SingleBandColorData SIP_MONKEYPATCH_COMPAT_NAME( ColorLayer ), //!< Single band containing color data
     };
     Q_ENUM( RasterLayerType )
@@ -4898,16 +4928,16 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.30
     */
     enum class RasterDrawingStyle SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRaster, DrawingStyle ) : int
-      {
-      Undefined SIP_MONKEYPATCH_COMPAT_NAME( UndefinedDrawingStyle ),//!< Undefined
-      SingleBandGray, //!< A single band image drawn as a range of gray colors
-      SingleBandPseudoColor, //!< A single band image drawn using a pseudocolor algorithm
-      PalettedColor, //!< A "Palette" image drawn using color table
-      PalettedSingleBandGray, //!< A "Palette" layer drawn in gray scale
-      PalettedSingleBandPseudoColor, //!< A "Palette" layerdrawn using a pseudocolor algorithm
-      PalettedMultiBandColor, //!< Currently not supported
-      MultiBandSingleBandGray, //!< A layer containing 2 or more bands, but a single band drawn as a range of gray colors
-      MultiBandSingleBandPseudoColor, //!< A layer containing 2 or more bands, but a single band drawn using a pseudocolor algorithm
+    {
+      Undefined SIP_MONKEYPATCH_COMPAT_NAME( UndefinedDrawingStyle ), //!< Undefined
+      SingleBandGray,                                                 //!< A single band image drawn as a range of gray colors
+      SingleBandPseudoColor,                                          //!< A single band image drawn using a pseudocolor algorithm
+      PalettedColor,                                                  //!< A "Palette" image drawn using color table
+      PalettedSingleBandGray,                                         //!< A "Palette" layer drawn in gray scale
+      PalettedSingleBandPseudoColor,                                  //!< A "Palette" layerdrawn using a pseudocolor algorithm
+      PalettedMultiBandColor,                                         //!< Currently not supported
+      MultiBandSingleBandGray,                                        //!< A layer containing 2 or more bands, but a single band drawn as a range of gray colors
+      MultiBandSingleBandPseudoColor,                                 //!< A layer containing 2 or more bands, but a single band drawn using a pseudocolor algorithm
       MultiBandColor, //!< A layer containing 2 or more bands, mapped to RGB color space. In the case of a multiband with only two bands, one band will be mapped to more than one color.
       SingleBandColorData SIP_MONKEYPATCH_COMPAT_NAME( SingleBandColorDataStyle ), //!< ARGB values rendered directly
     };
@@ -4921,10 +4951,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.30
      */
     enum class RasterPyramidFormat SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRaster, RasterPyramidsFormat ) : int
-      {
-      GeoTiff SIP_MONKEYPATCH_COMPAT_NAME( PyramidsGTiff ) = 0, //!< Geotiff .ovr (external)
+    {
+      GeoTiff SIP_MONKEYPATCH_COMPAT_NAME( PyramidsGTiff ) = 0,     //!< Geotiff .ovr (external)
       Internal SIP_MONKEYPATCH_COMPAT_NAME( PyramidsInternal ) = 1, //!< Internal
-      Erdas SIP_MONKEYPATCH_COMPAT_NAME( PyramidsErdas ) = 2 //!< Erdas Image .aux (external)
+      Erdas SIP_MONKEYPATCH_COMPAT_NAME( PyramidsErdas ) = 2        //!< Erdas Image .aux (external)
     };
     Q_ENUM( RasterPyramidFormat )
 
@@ -4936,9 +4966,9 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.30
      */
     enum class RasterBuildPyramidOption SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRaster, RasterBuildPyramids ) : int
-      {
-      No SIP_MONKEYPATCH_COMPAT_NAME( PyramidsFlagNo ) = 0, //!< Never
-      Yes SIP_MONKEYPATCH_COMPAT_NAME( PyramidsFlagYes ) = 1, //!< Yes
+    {
+      No SIP_MONKEYPATCH_COMPAT_NAME( PyramidsFlagNo ) = 0,                //!< Never
+      Yes SIP_MONKEYPATCH_COMPAT_NAME( PyramidsFlagYes ) = 1,              //!< Yes
       CopyExisting SIP_MONKEYPATCH_COMPAT_NAME( PyramidsCopyExisting ) = 2 //!< Copy existing
     };
     Q_ENUM( RasterBuildPyramidOption )
@@ -4952,10 +4982,10 @@ class CORE_EXPORT Qgis
      */
     enum class RasterIdentifyFormat SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRaster, IdentifyFormat ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      Undefined SIP_MONKEYPATCH_COMPAT_NAME( IdentifyFormatUndefined ) = 0, //!< Undefined
-      Value SIP_MONKEYPATCH_COMPAT_NAME( IdentifyFormatValue ) = 1, //!< Numerical pixel value
-      Text SIP_MONKEYPATCH_COMPAT_NAME( IdentifyFormatText ) = 1 << 1, //!< WMS text
-      Html SIP_MONKEYPATCH_COMPAT_NAME( IdentifyFormatHtml ) = 1 << 2, //!< WMS HTML
+      Undefined SIP_MONKEYPATCH_COMPAT_NAME( IdentifyFormatUndefined ) = 0,  //!< Undefined
+      Value SIP_MONKEYPATCH_COMPAT_NAME( IdentifyFormatValue ) = 1,          //!< Numerical pixel value
+      Text SIP_MONKEYPATCH_COMPAT_NAME( IdentifyFormatText ) = 1 << 1,       //!< WMS text
+      Html SIP_MONKEYPATCH_COMPAT_NAME( IdentifyFormatHtml ) = 1 << 2,       //!< WMS HTML
       Feature SIP_MONKEYPATCH_COMPAT_NAME( IdentifyFormatFeature ) = 1 << 3, //!< WMS GML/JSON -> feature
     };
     Q_ENUM( RasterIdentifyFormat )
@@ -4973,17 +5003,17 @@ class CORE_EXPORT Qgis
      */
     enum class RasterInterfaceCapability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterInterface, Capability ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      NoCapabilities = 0, //!< No capabilities
-      Size = 1 << 1, //!< Original data source size (and thus resolution) is known, it is not always available, for example for WMS
-      Create = 1 << 2, //!< Create new datasets (Unused and deprecated -- will be removed in QGIS 5)
-      Remove = 1 << 3, //!< Delete datasets (Unused and deprecated -- will be removed in QGIS 5)
-      BuildPyramids = 1 << 4, //!< Supports building of pyramids (overviews) (Deprecated since QGIS 3.38 -- use RasterProviderCapability::BuildPyramids instead)
-      Identify = 1 << 5, //!< At least one identify format supported
-      IdentifyValue = 1 << 6, //!< Numerical values
-      IdentifyText = 1 << 7, //!< WMS text
-      IdentifyHtml = 1 << 8, //!< WMS HTML
+      NoCapabilities = 0,       //!< No capabilities
+      Size = 1 << 1,            //!< Original data source size (and thus resolution) is known, it is not always available, for example for WMS
+      Create = 1 << 2,          //!< Create new datasets (Unused and deprecated -- will be removed in QGIS 5)
+      Remove = 1 << 3,          //!< Delete datasets (Unused and deprecated -- will be removed in QGIS 5)
+      BuildPyramids = 1 << 4,   //!< Supports building of pyramids (overviews) (Deprecated since QGIS 3.38 -- use RasterProviderCapability::BuildPyramids instead)
+      Identify = 1 << 5,        //!< At least one identify format supported
+      IdentifyValue = 1 << 6,   //!< Numerical values
+      IdentifyText = 1 << 7,    //!< WMS text
+      IdentifyHtml = 1 << 8,    //!< WMS HTML
       IdentifyFeature = 1 << 9, //!< WMS GML -> feature
-      Prefetch = 1 << 10, //!< Allow prefetching of out-of-view images
+      Prefetch = 1 << 10,       //!< Allow prefetching of out-of-view images
     };
     Q_ENUM( RasterInterfaceCapability )
 
@@ -5006,15 +5036,15 @@ class CORE_EXPORT Qgis
      */
     enum class RasterProviderCapability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterDataProvider, ProviderCapability ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      NoProviderCapabilities = 0, //!< Provider has no capabilities
-      ReadLayerMetadata = 1 << 1, //!< Provider can read layer metadata from data store. Since QGIS 3.0. See QgsDataProvider::layerMetadata()
-      WriteLayerMetadata = 1 << 2, //!< Provider can write layer metadata to the data store. Since QGIS 3.0. See QgsDataProvider::writeLayerMetadata()
-      ProviderHintBenefitsFromResampling = 1 << 3, //!< Provider benefits from resampling and should apply user default resampling settings \since QGIS 3.10
+      NoProviderCapabilities = 0,                        //!< Provider has no capabilities
+      ReadLayerMetadata = 1 << 1,                        //!< Provider can read layer metadata from data store. Since QGIS 3.0. See QgsDataProvider::layerMetadata()
+      WriteLayerMetadata = 1 << 2,                       //!< Provider can write layer metadata to the data store. Since QGIS 3.0. See QgsDataProvider::writeLayerMetadata()
+      ProviderHintBenefitsFromResampling = 1 << 3,       //!< Provider benefits from resampling and should apply user default resampling settings \since QGIS 3.10
       ProviderHintCanPerformProviderResampling = 1 << 4, //!< Provider can perform resampling (to be opposed to post rendering resampling) \since QGIS 3.16
-      ReloadData = 1 << 5, //!< Is able to force reload data / clear local caches. Since QGIS 3.18, see QgsDataProvider::reloadProviderData()
-      DpiDependentData = 1 << 6, //!< Provider's rendering is dependent on requested pixel size of the viewport \since QGIS 3.20
-      NativeRasterAttributeTable = 1 << 7, //!< Indicates that the provider supports native raster attribute table \since QGIS 3.30
-      BuildPyramids = 1 << 8, //!< Supports building of pyramids (overviews) (since QGIS 3.38 -- this is a replacement for RasterInterfaceCapability::BuildPyramids)
+      ReloadData = 1 << 5,                               //!< Is able to force reload data / clear local caches. Since QGIS 3.18, see QgsDataProvider::reloadProviderData()
+      DpiDependentData = 1 << 6,                         //!< Provider's rendering is dependent on requested pixel size of the viewport \since QGIS 3.20
+      NativeRasterAttributeTable = 1 << 7,               //!< Indicates that the provider supports native raster attribute table \since QGIS 3.30
+      BuildPyramids = 1 << 8,                            //!< Supports building of pyramids (overviews) (since QGIS 3.38 -- this is a replacement for RasterInterfaceCapability::BuildPyramids)
     };
     Q_ENUM( RasterProviderCapability )
 
@@ -5049,31 +5079,31 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.30
      */
     enum class BlendMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPainting, BlendMode ) : int
-      {
-      Normal SIP_MONKEYPATCH_COMPAT_NAME( BlendNormal ), //!< Normal
-      Lighten SIP_MONKEYPATCH_COMPAT_NAME( BlendLighten ), //!< Lighten
-      Screen SIP_MONKEYPATCH_COMPAT_NAME( BlendScreen ), //!< Screen
-      Dodge SIP_MONKEYPATCH_COMPAT_NAME( BlendDodge ), //!< Dodge
-      Addition SIP_MONKEYPATCH_COMPAT_NAME( BlendAddition ), //!< Addition
-      Darken SIP_MONKEYPATCH_COMPAT_NAME( BlendDarken ), //!< Darken
-      Multiply SIP_MONKEYPATCH_COMPAT_NAME( BlendMultiply ), //!< Multiple
-      Burn SIP_MONKEYPATCH_COMPAT_NAME( BlendBurn ), //!< Burn
-      Overlay SIP_MONKEYPATCH_COMPAT_NAME( BlendOverlay ), //!< Overlay
-      SoftLight SIP_MONKEYPATCH_COMPAT_NAME( BlendSoftLight ), //!< Soft light
-      HardLight SIP_MONKEYPATCH_COMPAT_NAME( BlendHardLight ), //!< Hard light
-      Difference SIP_MONKEYPATCH_COMPAT_NAME( BlendDifference ), //!< Difference
-      Subtract SIP_MONKEYPATCH_COMPAT_NAME( BlendSubtract ), //!< Subtract
-      Source SIP_MONKEYPATCH_COMPAT_NAME( BlendSource ), //!< Source
+    {
+      Normal SIP_MONKEYPATCH_COMPAT_NAME( BlendNormal ),                   //!< Normal
+      Lighten SIP_MONKEYPATCH_COMPAT_NAME( BlendLighten ),                 //!< Lighten
+      Screen SIP_MONKEYPATCH_COMPAT_NAME( BlendScreen ),                   //!< Screen
+      Dodge SIP_MONKEYPATCH_COMPAT_NAME( BlendDodge ),                     //!< Dodge
+      Addition SIP_MONKEYPATCH_COMPAT_NAME( BlendAddition ),               //!< Addition
+      Darken SIP_MONKEYPATCH_COMPAT_NAME( BlendDarken ),                   //!< Darken
+      Multiply SIP_MONKEYPATCH_COMPAT_NAME( BlendMultiply ),               //!< Multiple
+      Burn SIP_MONKEYPATCH_COMPAT_NAME( BlendBurn ),                       //!< Burn
+      Overlay SIP_MONKEYPATCH_COMPAT_NAME( BlendOverlay ),                 //!< Overlay
+      SoftLight SIP_MONKEYPATCH_COMPAT_NAME( BlendSoftLight ),             //!< Soft light
+      HardLight SIP_MONKEYPATCH_COMPAT_NAME( BlendHardLight ),             //!< Hard light
+      Difference SIP_MONKEYPATCH_COMPAT_NAME( BlendDifference ),           //!< Difference
+      Subtract SIP_MONKEYPATCH_COMPAT_NAME( BlendSubtract ),               //!< Subtract
+      Source SIP_MONKEYPATCH_COMPAT_NAME( BlendSource ),                   //!< Source
       DestinationOver SIP_MONKEYPATCH_COMPAT_NAME( BlendDestinationOver ), //!< Destination over
-      Clear SIP_MONKEYPATCH_COMPAT_NAME( BlendClear ), //!< Clear
-      Destination SIP_MONKEYPATCH_COMPAT_NAME( BlendDestination ), //!< Destination
-      SourceIn SIP_MONKEYPATCH_COMPAT_NAME( BlendSourceIn ), //!< Source in
-      DestinationIn SIP_MONKEYPATCH_COMPAT_NAME( BlendDestinationIn ), //!< Destination in
-      SourceOut SIP_MONKEYPATCH_COMPAT_NAME( BlendSourceOut ), //!< Source out
-      DestinationOut SIP_MONKEYPATCH_COMPAT_NAME( BlendDestinationOut ), //!< Destination out
-      SourceAtop SIP_MONKEYPATCH_COMPAT_NAME( BlendSourceAtop ), //!< Source atop
+      Clear SIP_MONKEYPATCH_COMPAT_NAME( BlendClear ),                     //!< Clear
+      Destination SIP_MONKEYPATCH_COMPAT_NAME( BlendDestination ),         //!< Destination
+      SourceIn SIP_MONKEYPATCH_COMPAT_NAME( BlendSourceIn ),               //!< Source in
+      DestinationIn SIP_MONKEYPATCH_COMPAT_NAME( BlendDestinationIn ),     //!< Destination in
+      SourceOut SIP_MONKEYPATCH_COMPAT_NAME( BlendSourceOut ),             //!< Source out
+      DestinationOut SIP_MONKEYPATCH_COMPAT_NAME( BlendDestinationOut ),   //!< Destination out
+      SourceAtop SIP_MONKEYPATCH_COMPAT_NAME( BlendSourceAtop ),           //!< Source atop
       DestinationAtop SIP_MONKEYPATCH_COMPAT_NAME( BlendDestinationAtop ), //!< Destination atop
-      Xor SIP_MONKEYPATCH_COMPAT_NAME( BlendXor ), //!< XOR
+      Xor SIP_MONKEYPATCH_COMPAT_NAME( BlendXor ),                         //!< XOR
     };
     Q_ENUM( BlendMode )
 
@@ -5085,11 +5115,11 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.30
      */
     enum class SystemOfMeasurement SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsUnitTypes, SystemOfMeasurement ) : int
-      {
+    {
       Unknown SIP_MONKEYPATCH_COMPAT_NAME( UnknownSystem ) = 0, //!< Unknown system of measurement
-      Metric SIP_MONKEYPATCH_COMPAT_NAME( MetricSystem ), //!< International System of Units (SI)
-      Imperial SIP_MONKEYPATCH_COMPAT_NAME( ImperialSystem ), //!< British Imperial
-      USCS SIP_MONKEYPATCH_COMPAT_NAME( USCSSystem ), //!< United States customary system
+      Metric SIP_MONKEYPATCH_COMPAT_NAME( MetricSystem ),       //!< International System of Units (SI)
+      Imperial SIP_MONKEYPATCH_COMPAT_NAME( ImperialSystem ),   //!< British Imperial
+      USCS SIP_MONKEYPATCH_COMPAT_NAME( USCSSystem ),           //!< United States customary system
     };
     Q_ENUM( SystemOfMeasurement )
 
@@ -5100,10 +5130,10 @@ class CORE_EXPORT Qgis
     * \since QGIS 3.32
     */
     enum class MapToolUnit SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTolerance, UnitType ) : int
-      {
-      Layer SIP_MONKEYPATCH_COMPAT_NAME( LayerUnits ), //!< Layer unit value
-      Pixels, //!< Pixels unit of tolerance
-      Project  SIP_MONKEYPATCH_COMPAT_NAME( ProjectUnits ) //!< Map (project) units
+    {
+      Layer SIP_MONKEYPATCH_COMPAT_NAME( LayerUnits ),    //!< Layer unit value
+      Pixels,                                             //!< Pixels unit of tolerance
+      Project SIP_MONKEYPATCH_COMPAT_NAME( ProjectUnits ) //!< Map (project) units
     };
     Q_ENUM( MapToolUnit )
 
@@ -5115,12 +5145,12 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.30
      */
     enum class UnitType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsUnitTypes, UnitType ) : int
-      {
+    {
       Distance SIP_MONKEYPATCH_COMPAT_NAME( TypeDistance ) = 0, //!< Distance unit
-      Area SIP_MONKEYPATCH_COMPAT_NAME( TypeArea ), //!< Area unit
-      Volume SIP_MONKEYPATCH_COMPAT_NAME( TypeVolume ), //!< Volume unit
-      Unknown SIP_MONKEYPATCH_COMPAT_NAME( TypeUnknown ), //!< Unknown unit type
-      Temporal SIP_MONKEYPATCH_COMPAT_NAME( TypeTemporal ), //!< Temporal unit
+      Area SIP_MONKEYPATCH_COMPAT_NAME( TypeArea ),             //!< Area unit
+      Volume SIP_MONKEYPATCH_COMPAT_NAME( TypeVolume ),         //!< Volume unit
+      Unknown SIP_MONKEYPATCH_COMPAT_NAME( TypeUnknown ),       //!< Unknown unit type
+      Temporal SIP_MONKEYPATCH_COMPAT_NAME( TypeTemporal ),     //!< Temporal unit
     };
     Q_ENUM( UnitType )
 
@@ -5132,57 +5162,57 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.30
      */
     enum class DistanceUnit SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsUnitTypes, DistanceUnit ) : int
-      {
-      Meters SIP_MONKEYPATCH_COMPAT_NAME( DistanceMeters ), //!< Meters
-      Kilometers SIP_MONKEYPATCH_COMPAT_NAME( DistanceKilometers ), //!< Kilometers
-      Feet SIP_MONKEYPATCH_COMPAT_NAME( DistanceFeet ), //!< Imperial feet
+    {
+      Meters SIP_MONKEYPATCH_COMPAT_NAME( DistanceMeters ),               //!< Meters
+      Kilometers SIP_MONKEYPATCH_COMPAT_NAME( DistanceKilometers ),       //!< Kilometers
+      Feet SIP_MONKEYPATCH_COMPAT_NAME( DistanceFeet ),                   //!< Imperial feet
       NauticalMiles SIP_MONKEYPATCH_COMPAT_NAME( DistanceNauticalMiles ), //!< Nautical miles
-      Yards SIP_MONKEYPATCH_COMPAT_NAME( DistanceYards ), //!< Imperial yards
-      Miles SIP_MONKEYPATCH_COMPAT_NAME( DistanceMiles ), //!< Terrestrial miles
-      Degrees SIP_MONKEYPATCH_COMPAT_NAME( DistanceDegrees ), //!< Degrees, for planar geographic CRS distance measurements
-      Centimeters SIP_MONKEYPATCH_COMPAT_NAME( DistanceCentimeters ), //!< Centimeters
-      Millimeters SIP_MONKEYPATCH_COMPAT_NAME( DistanceMillimeters ), //!< Millimeters
-      Inches, //!< Inches \since QGIS 3.32
-      ChainsInternational, //!< International chains \since QGIS 3.40
-      ChainsBritishBenoit1895A, //!< British chains (Benoit 1895 A) \since QGIS 3.40
-      ChainsBritishBenoit1895B, //!< British chains (Benoit 1895 B) \since QGIS 3.40
-      ChainsBritishSears1922Truncated, //!< British chains (Sears 1922 truncated) \since QGIS 3.40
-      ChainsBritishSears1922, //!< British chains (Sears 1922) \since QGIS 3.40
-      ChainsClarkes, //!< Clarke's chains \since QGIS 3.40
-      ChainsUSSurvey, //!< US Survey chains \since QGIS 3.40
-      FeetBritish1865, //!< British feet (1865) \since QGIS 3.40
-      FeetBritish1936, //!< British feet (1936) \since QGIS 3.40
-      FeetBritishBenoit1895A, //!< British feet (Benoit 1895 A) \since QGIS 3.40
-      FeetBritishBenoit1895B, //!< British feet (Benoit 1895 B) \since QGIS 3.40
-      FeetBritishSears1922Truncated, //!< British feet (Sears 1922 truncated) \since QGIS 3.40
-      FeetBritishSears1922, //!< British feet (Sears 1922) \since QGIS 3.40
-      FeetClarkes, //!< Clarke's feet \since QGIS 3.40
-      FeetGoldCoast, //!< Gold Coast feet \since QGIS 3.40
-      FeetIndian, //!< Indian (geodetic) feet \since QGIS 3.40
-      FeetIndian1937, //!< Indian feet (1937) \since QGIS 3.40
-      FeetIndian1962, //!< Indian feet (1962) \since QGIS 3.40
-      FeetIndian1975, //!< Indian feet (1975) \since QGIS 3.40
-      FeetUSSurvey, //!< US Survey feet \since QGIS 3.40
-      LinksInternational, //!< International links \since QGIS 3.40
-      LinksBritishBenoit1895A, //!< British links (Benoit 1895 A) \since QGIS 3.40
-      LinksBritishBenoit1895B, //!< British links (Benoit 1895 B) \since QGIS 3.40
-      LinksBritishSears1922Truncated, //!< British links (Sears 1922 truncated) \since QGIS 3.40
-      LinksBritishSears1922, //!< British links (Sears 1922) \since QGIS 3.40
-      LinksClarkes, //!< Clarke's links \since QGIS 3.40
-      LinksUSSurvey, //!< US Survey links \since QGIS 3.40
-      YardsBritishBenoit1895A, //!< British yards (Benoit 1895 A) \since QGIS 3.40
-      YardsBritishBenoit1895B, //!< British yards (Benoit 1895 B) \since QGIS 3.40
-      YardsBritishSears1922Truncated, //!< British yards (Sears 1922 truncated) \since QGIS 3.40
-      YardsBritishSears1922, //!< British yards (Sears 1922) \since QGIS 3.40
-      YardsClarkes, //!< Clarke's yards \since QGIS 3.40
-      YardsIndian, //!< Indian yards \since QGIS 3.40
-      YardsIndian1937, //!< Indian yards (1937) \since QGIS 3.40
-      YardsIndian1962, //!< Indian yards (1962) \since QGIS 3.40
-      YardsIndian1975, //!< Indian yards (1975) \since QGIS 3.40
-      MilesUSSurvey, //!< US Survey miles \since QGIS 3.40
-      Fathoms, //!< Fathoms \since QGIS 3.40
-      MetersGermanLegal, //!< German legal meter \since QGIS 3.40
-      Unknown SIP_MONKEYPATCH_COMPAT_NAME( DistanceUnknownUnit ), //!< Unknown distance unit
+      Yards SIP_MONKEYPATCH_COMPAT_NAME( DistanceYards ),                 //!< Imperial yards
+      Miles SIP_MONKEYPATCH_COMPAT_NAME( DistanceMiles ),                 //!< Terrestrial miles
+      Degrees SIP_MONKEYPATCH_COMPAT_NAME( DistanceDegrees ),             //!< Degrees, for planar geographic CRS distance measurements
+      Centimeters SIP_MONKEYPATCH_COMPAT_NAME( DistanceCentimeters ),     //!< Centimeters
+      Millimeters SIP_MONKEYPATCH_COMPAT_NAME( DistanceMillimeters ),     //!< Millimeters
+      Inches,                                                             //!< Inches \since QGIS 3.32
+      ChainsInternational,                                                //!< International chains \since QGIS 3.40
+      ChainsBritishBenoit1895A,                                           //!< British chains (Benoit 1895 A) \since QGIS 3.40
+      ChainsBritishBenoit1895B,                                           //!< British chains (Benoit 1895 B) \since QGIS 3.40
+      ChainsBritishSears1922Truncated,                                    //!< British chains (Sears 1922 truncated) \since QGIS 3.40
+      ChainsBritishSears1922,                                             //!< British chains (Sears 1922) \since QGIS 3.40
+      ChainsClarkes,                                                      //!< Clarke's chains \since QGIS 3.40
+      ChainsUSSurvey,                                                     //!< US Survey chains \since QGIS 3.40
+      FeetBritish1865,                                                    //!< British feet (1865) \since QGIS 3.40
+      FeetBritish1936,                                                    //!< British feet (1936) \since QGIS 3.40
+      FeetBritishBenoit1895A,                                             //!< British feet (Benoit 1895 A) \since QGIS 3.40
+      FeetBritishBenoit1895B,                                             //!< British feet (Benoit 1895 B) \since QGIS 3.40
+      FeetBritishSears1922Truncated,                                      //!< British feet (Sears 1922 truncated) \since QGIS 3.40
+      FeetBritishSears1922,                                               //!< British feet (Sears 1922) \since QGIS 3.40
+      FeetClarkes,                                                        //!< Clarke's feet \since QGIS 3.40
+      FeetGoldCoast,                                                      //!< Gold Coast feet \since QGIS 3.40
+      FeetIndian,                                                         //!< Indian (geodetic) feet \since QGIS 3.40
+      FeetIndian1937,                                                     //!< Indian feet (1937) \since QGIS 3.40
+      FeetIndian1962,                                                     //!< Indian feet (1962) \since QGIS 3.40
+      FeetIndian1975,                                                     //!< Indian feet (1975) \since QGIS 3.40
+      FeetUSSurvey,                                                       //!< US Survey feet \since QGIS 3.40
+      LinksInternational,                                                 //!< International links \since QGIS 3.40
+      LinksBritishBenoit1895A,                                            //!< British links (Benoit 1895 A) \since QGIS 3.40
+      LinksBritishBenoit1895B,                                            //!< British links (Benoit 1895 B) \since QGIS 3.40
+      LinksBritishSears1922Truncated,                                     //!< British links (Sears 1922 truncated) \since QGIS 3.40
+      LinksBritishSears1922,                                              //!< British links (Sears 1922) \since QGIS 3.40
+      LinksClarkes,                                                       //!< Clarke's links \since QGIS 3.40
+      LinksUSSurvey,                                                      //!< US Survey links \since QGIS 3.40
+      YardsBritishBenoit1895A,                                            //!< British yards (Benoit 1895 A) \since QGIS 3.40
+      YardsBritishBenoit1895B,                                            //!< British yards (Benoit 1895 B) \since QGIS 3.40
+      YardsBritishSears1922Truncated,                                     //!< British yards (Sears 1922 truncated) \since QGIS 3.40
+      YardsBritishSears1922,                                              //!< British yards (Sears 1922) \since QGIS 3.40
+      YardsClarkes,                                                       //!< Clarke's yards \since QGIS 3.40
+      YardsIndian,                                                        //!< Indian yards \since QGIS 3.40
+      YardsIndian1937,                                                    //!< Indian yards (1937) \since QGIS 3.40
+      YardsIndian1962,                                                    //!< Indian yards (1962) \since QGIS 3.40
+      YardsIndian1975,                                                    //!< Indian yards (1975) \since QGIS 3.40
+      MilesUSSurvey,                                                      //!< US Survey miles \since QGIS 3.40
+      Fathoms,                                                            //!< Fathoms \since QGIS 3.40
+      MetersGermanLegal,                                                  //!< German legal meter \since QGIS 3.40
+      Unknown SIP_MONKEYPATCH_COMPAT_NAME( DistanceUnknownUnit ),         //!< Unknown distance unit
     };
     Q_ENUM( DistanceUnit )
 
@@ -5194,10 +5224,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.30
      */
     enum class DistanceUnitType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsUnitTypes, DistanceUnitType ) : int
-      {
-      Standard, //!< Unit is a standard measurement unit
-      Geographic, //!< Unit is a geographic (e.g., degree based) unit
-      Unknown SIP_MONKEYPATCH_COMPAT_NAME( UnknownType ),  //!< Unknown unit type
+    {
+      Standard,                                           //!< Unit is a standard measurement unit
+      Geographic,                                         //!< Unit is a geographic (e.g., degree based) unit
+      Unknown SIP_MONKEYPATCH_COMPAT_NAME( UnknownType ), //!< Unknown unit type
     };
     Q_ENUM( DistanceUnitType )
 
@@ -5209,20 +5239,20 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.30
      */
     enum class AreaUnit SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsUnitTypes, AreaUnit ) : int
-      {
-      SquareMeters SIP_MONKEYPATCH_COMPAT_NAME( AreaSquareMeters ), //!< Square meters
-      SquareKilometers SIP_MONKEYPATCH_COMPAT_NAME( AreaSquareKilometers ), //!< Square kilometers
-      SquareFeet SIP_MONKEYPATCH_COMPAT_NAME( AreaSquareFeet ), //!< Square feet
-      SquareYards SIP_MONKEYPATCH_COMPAT_NAME( AreaSquareYards ), //!< Square yards
-      SquareMiles SIP_MONKEYPATCH_COMPAT_NAME( AreaSquareMiles ), //!< Square miles
-      Hectares SIP_MONKEYPATCH_COMPAT_NAME( AreaHectares ), //!< Hectares
-      Acres SIP_MONKEYPATCH_COMPAT_NAME( AreaAcres ), //!< Acres
+    {
+      SquareMeters SIP_MONKEYPATCH_COMPAT_NAME( AreaSquareMeters ),               //!< Square meters
+      SquareKilometers SIP_MONKEYPATCH_COMPAT_NAME( AreaSquareKilometers ),       //!< Square kilometers
+      SquareFeet SIP_MONKEYPATCH_COMPAT_NAME( AreaSquareFeet ),                   //!< Square feet
+      SquareYards SIP_MONKEYPATCH_COMPAT_NAME( AreaSquareYards ),                 //!< Square yards
+      SquareMiles SIP_MONKEYPATCH_COMPAT_NAME( AreaSquareMiles ),                 //!< Square miles
+      Hectares SIP_MONKEYPATCH_COMPAT_NAME( AreaHectares ),                       //!< Hectares
+      Acres SIP_MONKEYPATCH_COMPAT_NAME( AreaAcres ),                             //!< Acres
       SquareNauticalMiles SIP_MONKEYPATCH_COMPAT_NAME( AreaSquareNauticalMiles ), //!< Square nautical miles
-      SquareDegrees SIP_MONKEYPATCH_COMPAT_NAME( AreaSquareDegrees ), //!< Square degrees, for planar geographic CRS area measurements
-      SquareCentimeters SIP_MONKEYPATCH_COMPAT_NAME( AreaSquareCentimeters ), //!< Square centimeters
-      SquareMillimeters SIP_MONKEYPATCH_COMPAT_NAME( AreaSquareMillimeters ), //!< Square millimeters
-      SquareInches, //!< Square inches \since QGIS 3.32
-      Unknown SIP_MONKEYPATCH_COMPAT_NAME( AreaUnknownUnit ), //!< Unknown areal unit
+      SquareDegrees SIP_MONKEYPATCH_COMPAT_NAME( AreaSquareDegrees ),             //!< Square degrees, for planar geographic CRS area measurements
+      SquareCentimeters SIP_MONKEYPATCH_COMPAT_NAME( AreaSquareCentimeters ),     //!< Square centimeters
+      SquareMillimeters SIP_MONKEYPATCH_COMPAT_NAME( AreaSquareMillimeters ),     //!< Square millimeters
+      SquareInches,                                                               //!< Square inches \since QGIS 3.32
+      Unknown SIP_MONKEYPATCH_COMPAT_NAME( AreaUnknownUnit ),                     //!< Unknown areal unit
     };
     Q_ENUM( AreaUnit )
 
@@ -5234,18 +5264,18 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.30
      */
     enum class VolumeUnit SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsUnitTypes, VolumeUnit ) : int
-      {
-      CubicMeters SIP_MONKEYPATCH_COMPAT_NAME( VolumeCubicMeters ), //!< Cubic meters
-      CubicFeet SIP_MONKEYPATCH_COMPAT_NAME( VolumeCubicFeet ), //!< Cubic feet
-      CubicYards SIP_MONKEYPATCH_COMPAT_NAME( VolumeCubicYards ), //!< Cubic yards
-      Barrel SIP_MONKEYPATCH_COMPAT_NAME( VolumeBarrel ), //!< Barrels
-      CubicDecimeter SIP_MONKEYPATCH_COMPAT_NAME( VolumeCubicDecimeter ), //!< Cubic decimeters
-      Liters SIP_MONKEYPATCH_COMPAT_NAME( VolumeLiters ), //!< Litres
-      GallonUS SIP_MONKEYPATCH_COMPAT_NAME( VolumeGallonUS ), //!< US Gallons
-      CubicInch SIP_MONKEYPATCH_COMPAT_NAME( VolumeCubicInch ), //!< Cubic inches
+    {
+      CubicMeters SIP_MONKEYPATCH_COMPAT_NAME( VolumeCubicMeters ),         //!< Cubic meters
+      CubicFeet SIP_MONKEYPATCH_COMPAT_NAME( VolumeCubicFeet ),             //!< Cubic feet
+      CubicYards SIP_MONKEYPATCH_COMPAT_NAME( VolumeCubicYards ),           //!< Cubic yards
+      Barrel SIP_MONKEYPATCH_COMPAT_NAME( VolumeBarrel ),                   //!< Barrels
+      CubicDecimeter SIP_MONKEYPATCH_COMPAT_NAME( VolumeCubicDecimeter ),   //!< Cubic decimeters
+      Liters SIP_MONKEYPATCH_COMPAT_NAME( VolumeLiters ),                   //!< Litres
+      GallonUS SIP_MONKEYPATCH_COMPAT_NAME( VolumeGallonUS ),               //!< US Gallons
+      CubicInch SIP_MONKEYPATCH_COMPAT_NAME( VolumeCubicInch ),             //!< Cubic inches
       CubicCentimeter SIP_MONKEYPATCH_COMPAT_NAME( VolumeCubicCentimeter ), //!< Cubic Centimeters
-      CubicDegrees SIP_MONKEYPATCH_COMPAT_NAME( VolumeCubicDegrees ), //!< Cubic degrees, for planar geographic CRS volume measurements
-      Unknown SIP_MONKEYPATCH_COMPAT_NAME( VolumeUnknownUnit ), //!< Unknown volume unit
+      CubicDegrees SIP_MONKEYPATCH_COMPAT_NAME( VolumeCubicDegrees ),       //!< Cubic degrees, for planar geographic CRS volume measurements
+      Unknown SIP_MONKEYPATCH_COMPAT_NAME( VolumeUnknownUnit ),             //!< Unknown volume unit
     };
     Q_ENUM( VolumeUnit )
 
@@ -5257,16 +5287,16 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.30
      */
     enum class AngleUnit SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsUnitTypes, AngleUnit ) : int
-      {
-      Degrees SIP_MONKEYPATCH_COMPAT_NAME( AngleDegrees ), //!< Degrees
-      Radians SIP_MONKEYPATCH_COMPAT_NAME( AngleRadians ), //!< Square kilometers
-      Gon SIP_MONKEYPATCH_COMPAT_NAME( AngleGon ), //!< Gon/gradian
-      MinutesOfArc SIP_MONKEYPATCH_COMPAT_NAME( AngleMinutesOfArc ), //!< Minutes of arc
-      SecondsOfArc SIP_MONKEYPATCH_COMPAT_NAME( AngleSecondsOfArc ), //!< Seconds of arc
-      Turn SIP_MONKEYPATCH_COMPAT_NAME( AngleTurn ), //!< Turn/revolutions
+    {
+      Degrees SIP_MONKEYPATCH_COMPAT_NAME( AngleDegrees ),               //!< Degrees
+      Radians SIP_MONKEYPATCH_COMPAT_NAME( AngleRadians ),               //!< Square kilometers
+      Gon SIP_MONKEYPATCH_COMPAT_NAME( AngleGon ),                       //!< Gon/gradian
+      MinutesOfArc SIP_MONKEYPATCH_COMPAT_NAME( AngleMinutesOfArc ),     //!< Minutes of arc
+      SecondsOfArc SIP_MONKEYPATCH_COMPAT_NAME( AngleSecondsOfArc ),     //!< Seconds of arc
+      Turn SIP_MONKEYPATCH_COMPAT_NAME( AngleTurn ),                     //!< Turn/revolutions
       MilliradiansSI SIP_MONKEYPATCH_COMPAT_NAME( AngleMilliradiansSI ), //!< Angular milliradians (SI definition, 1/1000 of radian)
-      MilNATO SIP_MONKEYPATCH_COMPAT_NAME( AngleMilNATO ), //!< Angular mil (NATO definition, 6400 mil = 2PI radians)
-      Unknown SIP_MONKEYPATCH_COMPAT_NAME( AngleUnknownUnit ), //!< Unknown angle unit
+      MilNATO SIP_MONKEYPATCH_COMPAT_NAME( AngleMilNATO ),               //!< Angular mil (NATO definition, 6400 mil = 2PI radians)
+      Unknown SIP_MONKEYPATCH_COMPAT_NAME( AngleUnknownUnit ),           //!< Unknown angle unit
     };
     Q_ENUM( AngleUnit )
 
@@ -5278,19 +5308,19 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.30
      */
     enum class TemporalUnit SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsUnitTypes, TemporalUnit ) : int
-      {
-      Milliseconds SIP_MONKEYPATCH_COMPAT_NAME( TemporalMilliseconds ), //!< Milliseconds
-      Seconds SIP_MONKEYPATCH_COMPAT_NAME( TemporalSeconds ), //!< Seconds
-      Minutes SIP_MONKEYPATCH_COMPAT_NAME( TemporalMinutes ), //!< Minutes
-      Hours SIP_MONKEYPATCH_COMPAT_NAME( TemporalHours ), //!< Hours
-      Days SIP_MONKEYPATCH_COMPAT_NAME( TemporalDays ), //!< Days
-      Weeks SIP_MONKEYPATCH_COMPAT_NAME( TemporalWeeks ), //!< Weeks
-      Months SIP_MONKEYPATCH_COMPAT_NAME( TemporalMonths ),  //!< Months
-      Years SIP_MONKEYPATCH_COMPAT_NAME( TemporalYears ), //!< Years
-      Decades SIP_MONKEYPATCH_COMPAT_NAME( TemporalDecades ), //!< Decades
-      Centuries SIP_MONKEYPATCH_COMPAT_NAME( TemporalCenturies ), //!< Centuries
+    {
+      Milliseconds SIP_MONKEYPATCH_COMPAT_NAME( TemporalMilliseconds ),   //!< Milliseconds
+      Seconds SIP_MONKEYPATCH_COMPAT_NAME( TemporalSeconds ),             //!< Seconds
+      Minutes SIP_MONKEYPATCH_COMPAT_NAME( TemporalMinutes ),             //!< Minutes
+      Hours SIP_MONKEYPATCH_COMPAT_NAME( TemporalHours ),                 //!< Hours
+      Days SIP_MONKEYPATCH_COMPAT_NAME( TemporalDays ),                   //!< Days
+      Weeks SIP_MONKEYPATCH_COMPAT_NAME( TemporalWeeks ),                 //!< Weeks
+      Months SIP_MONKEYPATCH_COMPAT_NAME( TemporalMonths ),               //!< Months
+      Years SIP_MONKEYPATCH_COMPAT_NAME( TemporalYears ),                 //!< Years
+      Decades SIP_MONKEYPATCH_COMPAT_NAME( TemporalDecades ),             //!< Decades
+      Centuries SIP_MONKEYPATCH_COMPAT_NAME( TemporalCenturies ),         //!< Centuries
       IrregularStep SIP_MONKEYPATCH_COMPAT_NAME( TemporalIrregularStep ), //!< Special 'irregular step' time unit, used for temporal data which uses irregular, non-real-world unit steps \since QGIS 3.20
-      Unknown SIP_MONKEYPATCH_COMPAT_NAME( TemporalUnknownUnit ) //!< Unknown time unit
+      Unknown SIP_MONKEYPATCH_COMPAT_NAME( TemporalUnknownUnit )          //!< Unknown time unit
     };
     Q_ENUM( TemporalUnit )
 
@@ -5302,14 +5332,14 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.30
      */
     enum class RenderUnit SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsUnitTypes, RenderUnit ) : int
-      {
-      Millimeters SIP_MONKEYPATCH_COMPAT_NAME( RenderMillimeters ), //!< Millimeters
-      MapUnits SIP_MONKEYPATCH_COMPAT_NAME( RenderMapUnits ), //!< Map units
-      Pixels SIP_MONKEYPATCH_COMPAT_NAME( RenderPixels ), //!< Pixels
-      Percentage SIP_MONKEYPATCH_COMPAT_NAME( RenderPercentage ), //!< Percentage of another measurement (e.g., canvas size, feature size)
-      Points SIP_MONKEYPATCH_COMPAT_NAME( RenderPoints ), //!< Points (e.g., for font sizes)
-      Inches SIP_MONKEYPATCH_COMPAT_NAME( RenderInches ), //!< Inches
-      Unknown SIP_MONKEYPATCH_COMPAT_NAME( RenderUnknownUnit ), //!< Mixed or unknown units
+    {
+      Millimeters SIP_MONKEYPATCH_COMPAT_NAME( RenderMillimeters ),           //!< Millimeters
+      MapUnits SIP_MONKEYPATCH_COMPAT_NAME( RenderMapUnits ),                 //!< Map units
+      Pixels SIP_MONKEYPATCH_COMPAT_NAME( RenderPixels ),                     //!< Pixels
+      Percentage SIP_MONKEYPATCH_COMPAT_NAME( RenderPercentage ),             //!< Percentage of another measurement (e.g., canvas size, feature size)
+      Points SIP_MONKEYPATCH_COMPAT_NAME( RenderPoints ),                     //!< Points (e.g., for font sizes)
+      Inches SIP_MONKEYPATCH_COMPAT_NAME( RenderInches ),                     //!< Inches
+      Unknown SIP_MONKEYPATCH_COMPAT_NAME( RenderUnknownUnit ),               //!< Mixed or unknown units
       MetersInMapUnits SIP_MONKEYPATCH_COMPAT_NAME( RenderMetersInMapUnits ), //!< Meters value as Map units
     };
     Q_ENUM( RenderUnit )
@@ -5322,15 +5352,15 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.30
      */
     enum class LayoutUnit SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsUnitTypes, LayoutUnit ) : int
-      {
+    {
       Millimeters SIP_MONKEYPATCH_COMPAT_NAME( LayoutMillimeters ), //!< Millimeters
       Centimeters SIP_MONKEYPATCH_COMPAT_NAME( LayoutCentimeters ), //!< Centimeters
-      Meters SIP_MONKEYPATCH_COMPAT_NAME( LayoutMeters ), //!< Meters
-      Inches SIP_MONKEYPATCH_COMPAT_NAME( LayoutInches ), //!< Inches
-      Feet SIP_MONKEYPATCH_COMPAT_NAME( LayoutFeet ), //!< Feet
-      Points SIP_MONKEYPATCH_COMPAT_NAME( LayoutPoints ), //!< Typographic points
-      Picas SIP_MONKEYPATCH_COMPAT_NAME( LayoutPicas ), //!< Typographic picas
-      Pixels SIP_MONKEYPATCH_COMPAT_NAME( LayoutPixels ) //!< Pixels
+      Meters SIP_MONKEYPATCH_COMPAT_NAME( LayoutMeters ),           //!< Meters
+      Inches SIP_MONKEYPATCH_COMPAT_NAME( LayoutInches ),           //!< Inches
+      Feet SIP_MONKEYPATCH_COMPAT_NAME( LayoutFeet ),               //!< Feet
+      Points SIP_MONKEYPATCH_COMPAT_NAME( LayoutPoints ),           //!< Typographic points
+      Picas SIP_MONKEYPATCH_COMPAT_NAME( LayoutPicas ),             //!< Typographic picas
+      Pixels SIP_MONKEYPATCH_COMPAT_NAME( LayoutPixels )            //!< Pixels
     };
     Q_ENUM( LayoutUnit )
 
@@ -5342,8 +5372,8 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.30
      */
     enum class LayoutUnitType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsUnitTypes, LayoutUnitType ) : int
-      {
-      PaperUnits SIP_MONKEYPATCH_COMPAT_NAME( LayoutPaperUnits ), //!< Unit is a paper based measurement unit
+    {
+      PaperUnits SIP_MONKEYPATCH_COMPAT_NAME( LayoutPaperUnits ),  //!< Unit is a paper based measurement unit
       ScreenUnits SIP_MONKEYPATCH_COMPAT_NAME( LayoutScreenUnits ) //!< Unit is a screen based measurement unit
     };
     Q_ENUM( LayoutUnitType )
@@ -5357,18 +5387,23 @@ class CORE_EXPORT Qgis
     */
     enum class LayoutRenderFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutRenderContext, Flag ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      Debug SIP_MONKEYPATCH_COMPAT_NAME( FlagDebug ) = 1 << 1,  //!< Debug/testing mode, items are drawn as solid rectangles.
-      OutlineOnly SIP_MONKEYPATCH_COMPAT_NAME( FlagOutlineOnly ) = 1 << 2, //!< Render items as outlines only.
-      Antialiasing SIP_MONKEYPATCH_COMPAT_NAME( FlagAntialiasing ) = 1 << 3, //!< Use antialiasing when drawing items.
+      Debug SIP_MONKEYPATCH_COMPAT_NAME( FlagDebug ) = 1 << 1,                           //!< Debug/testing mode, items are drawn as solid rectangles.
+      OutlineOnly SIP_MONKEYPATCH_COMPAT_NAME( FlagOutlineOnly ) = 1 << 2,               //!< Render items as outlines only.
+      Antialiasing SIP_MONKEYPATCH_COMPAT_NAME( FlagAntialiasing ) = 1 << 3,             //!< Use antialiasing when drawing items.
       UseAdvancedEffects SIP_MONKEYPATCH_COMPAT_NAME( FlagUseAdvancedEffects ) = 1 << 4, //!< Enable advanced effects such as blend modes. \deprecated QGIS 3.44. Use rasterizedRenderingPolicy() instead.
-      ForceVectorOutput SIP_MONKEYPATCH_COMPAT_NAME( FlagForceVectorOutput ) = 1 << 5, //!< Force output in vector format where possible, even if items require rasterization to keep their correct appearance. \deprecated QGIS 3.44. Use rasterizedRenderingPolicy() instead.
+      ForceVectorOutput SIP_MONKEYPATCH_COMPAT_NAME( FlagForceVectorOutput )
+      = 1 << 5, //!< Force output in vector format where possible, even if items require rasterization to keep their correct appearance. \deprecated QGIS 3.44. Use rasterizedRenderingPolicy() instead.
       HideCoverageLayer SIP_MONKEYPATCH_COMPAT_NAME( FlagHideCoverageLayer ) = 1 << 6, //!< Hide coverage layer in outputs
-      DrawSelection SIP_MONKEYPATCH_COMPAT_NAME( FlagDrawSelection ) = 1 << 7, //!< Draw selection
-      DisableTiledRasterLayerRenders SIP_MONKEYPATCH_COMPAT_NAME( FlagDisableTiledRasterLayerRenders ) = 1 << 8, //!< If set, then raster layers will not be drawn as separate tiles. This may improve the appearance in exported files, at the cost of much higher memory usage during exports.
-      RenderLabelsByMapLayer SIP_MONKEYPATCH_COMPAT_NAME( FlagRenderLabelsByMapLayer ) = 1 << 9, //!< When rendering map items to multi-layered exports, render labels belonging to different layers into separate export layers
-      LosslessImageRendering SIP_MONKEYPATCH_COMPAT_NAME( FlagLosslessImageRendering ) = 1 << 10, //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF).
+      DrawSelection SIP_MONKEYPATCH_COMPAT_NAME( FlagDrawSelection ) = 1 << 7,         //!< Draw selection
+      DisableTiledRasterLayerRenders SIP_MONKEYPATCH_COMPAT_NAME( FlagDisableTiledRasterLayerRenders )
+      = 1 << 8, //!< If set, then raster layers will not be drawn as separate tiles. This may improve the appearance in exported files, at the cost of much higher memory usage during exports.
+      RenderLabelsByMapLayer SIP_MONKEYPATCH_COMPAT_NAME( FlagRenderLabelsByMapLayer )
+      = 1 << 9, //!< When rendering map items to multi-layered exports, render labels belonging to different layers into separate export layers
+      LosslessImageRendering SIP_MONKEYPATCH_COMPAT_NAME( FlagLosslessImageRendering )
+      = 1 << 10, //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF).
       SynchronousLegendGraphics SIP_MONKEYPATCH_COMPAT_NAME( FlagSynchronousLegendGraphics ) = 1 << 11, //!< Query legend graphics synchronously.
-      AlwaysUseGlobalMasks SIP_MONKEYPATCH_COMPAT_NAME( FlagAlwaysUseGlobalMasks ) = 1 << 12, //!< When applying clipping paths for selective masking, always use global ("entire map") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex layout exports in all current Qt versions. This flag only applies to vector layout exports. \since QGIS 3.38
+      AlwaysUseGlobalMasks SIP_MONKEYPATCH_COMPAT_NAME( FlagAlwaysUseGlobalMasks )
+      = 1 << 12, //!< When applying clipping paths for selective masking, always use global ("entire map") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex layout exports in all current Qt versions. This flag only applies to vector layout exports. \since QGIS 3.38
       LimitCoverageLayerRenderToCurrentFeature = 1 << 13, //!< Limit coverage layer rendering to the current atlas feature. \since QGIS 4.0
     };
     Q_ENUM( LayoutRenderFlag )
@@ -5406,8 +5441,8 @@ class CORE_EXPORT Qgis
     enum class ScaleCalculationMethod : int
     {
       HorizontalTop = 0, //!< Calculate horizontally, across top of map
-      HorizontalMiddle, //!< Calculate horizontally, across midle of map
-      HorizontalBottom, //!< Calculate horizontally, across bottom of map
+      HorizontalMiddle,  //!< Calculate horizontally, across midle of map
+      HorizontalBottom,  //!< Calculate horizontally, across bottom of map
       HorizontalAverage, //!< Calculate horizontally, using the average of the top, middle and bottom scales
       AtEquator, //!< Always calculate the scale at the equator, regardless of the actual visible map extent. This method can be used to provide a consistent, static scale for maps in geographic reference systems, regardless of the latitudes actually visible in the map (permitting consistent appearance of these maps when rendering relies on scale based visibility or calculations). This method is only applicable when calculating scales with a degree based reference system. \since QGIS 3.44
     };
@@ -5421,10 +5456,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.40
      */
     enum class ScaleBarAlignment SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsScaleBarSettings, Alignment ) : int
-      {
+    {
       Left SIP_MONKEYPATCH_COMPAT_NAME( AlignLeft ) = 0, //!< Left aligned
       Middle SIP_MONKEYPATCH_COMPAT_NAME( AlignMiddle ), //!< Center aligned
-      Right SIP_MONKEYPATCH_COMPAT_NAME( AlignRight ), //!< Right aligned
+      Right SIP_MONKEYPATCH_COMPAT_NAME( AlignRight ),   //!< Right aligned
     };
     Q_ENUM( ScaleBarAlignment )
 
@@ -5436,8 +5471,8 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.40
      */
     enum class ScaleBarSegmentSizeMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsScaleBarSettings, SegmentSizeMode ) : int
-      {
-      Fixed SIP_MONKEYPATCH_COMPAT_NAME( SegmentSizeFixed ) = 0, //!< Scale bar segment size is fixed to a map unit
+    {
+      Fixed SIP_MONKEYPATCH_COMPAT_NAME( SegmentSizeFixed ) = 0,      //!< Scale bar segment size is fixed to a map unit
       FitWidth SIP_MONKEYPATCH_COMPAT_NAME( SegmentSizeFitWidth ) = 1 //!< Scale bar segment size is calculated to fit a size range
     };
     Q_ENUM( ScaleBarSegmentSizeMode )
@@ -5450,9 +5485,9 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.40
      */
     enum class ScaleBarDistanceLabelVerticalPlacement SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsScaleBarSettings, LabelVerticalPlacement ) : int
-      {
+    {
       AboveSegment SIP_MONKEYPATCH_COMPAT_NAME( LabelAboveSegment ) = 0, //!< Labels are drawn above the scalebar
-      BelowSegment SIP_MONKEYPATCH_COMPAT_NAME( LabelBelowSegment ), //!< Labels are drawn below the scalebar
+      BelowSegment SIP_MONKEYPATCH_COMPAT_NAME( LabelBelowSegment ),     //!< Labels are drawn below the scalebar
     };
     Q_ENUM( ScaleBarDistanceLabelVerticalPlacement )
 
@@ -5464,8 +5499,8 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.40
      */
     enum class ScaleBarDistanceLabelHorizontalPlacement SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsScaleBarSettings, LabelHorizontalPlacement ) : int
-      {
-      CenteredEdge SIP_MONKEYPATCH_COMPAT_NAME( LabelCenteredEdge ) = 0, //!< Labels are drawn centered relative to segment's edge
+    {
+      CenteredEdge SIP_MONKEYPATCH_COMPAT_NAME( LabelCenteredEdge ) = 0,   //!< Labels are drawn centered relative to segment's edge
       CenteredSegment SIP_MONKEYPATCH_COMPAT_NAME( LabelCenteredSegment ), //!< Labels are drawn centered relative to segment
     };
     Q_ENUM( ScaleBarDistanceLabelHorizontalPlacement )
@@ -5479,11 +5514,11 @@ class CORE_EXPORT Qgis
      * \since QGIS 4.0
      */
     enum class MapGridUnit SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, GridUnit ) : int
-      {
+    {
       MapUnits SIP_MONKEYPATCH_COMPAT_NAME( MapUnit ), //!< Grid units follow map units
-      Millimeters SIP_MONKEYPATCH_COMPAT_NAME( MM ), //!< Grid units in millimeters
-      Centimeters SIP_MONKEYPATCH_COMPAT_NAME( CM ), //!< Grid units in centimeters
-      DynamicPageSizeBased, //!< Dynamically sized, based on a on-page size range
+      Millimeters SIP_MONKEYPATCH_COMPAT_NAME( MM ),   //!< Grid units in millimeters
+      Centimeters SIP_MONKEYPATCH_COMPAT_NAME( CM ),   //!< Grid units in centimeters
+      DynamicPageSizeBased,                            //!< Dynamically sized, based on a on-page size range
     };
     Q_ENUM( MapGridUnit )
 
@@ -5495,10 +5530,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 4.0
      */
     enum class MapGridStyle SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, GridStyle ) : int
-      {
-      Lines SIP_MONKEYPATCH_COMPAT_NAME( Solid ) = 0, //!< Draw lines for grid
-      LineCrosses SIP_MONKEYPATCH_COMPAT_NAME( Cross ), //!< Draw line crosses at intersections of grid lines
-      Markers, //!< Draw markers at intersections of grid lines
+    {
+      Lines SIP_MONKEYPATCH_COMPAT_NAME( Solid ) = 0,                             //!< Draw lines for grid
+      LineCrosses SIP_MONKEYPATCH_COMPAT_NAME( Cross ),                           //!< Draw line crosses at intersections of grid lines
+      Markers,                                                                    //!< Draw markers at intersections of grid lines
       FrameAndAnnotationsOnly SIP_MONKEYPATCH_COMPAT_NAME( FrameAnnotationsOnly ) //!< No grid lines over the map, only draw frame and annotations
     };
     Q_ENUM( MapGridStyle )
@@ -5511,11 +5546,11 @@ class CORE_EXPORT Qgis
      * \since QGIS 4.0
      */
     enum class MapGridComponentVisibility SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, DisplayMode ) : int
-      {
-      ShowAll = 0, //!< Show both latitude and longitude annotations/divisions
-      LatitudeOnly, //!< Show latitude/y annotations/divisions only
+    {
+      ShowAll = 0,   //!< Show both latitude and longitude annotations/divisions
+      LatitudeOnly,  //!< Show latitude/y annotations/divisions only
       LongitudeOnly, //!< Show longitude/x annotations/divisions only
-      HideAll //!< No annotations
+      HideAll        //!< No annotations
     };
     Q_ENUM( MapGridComponentVisibility )
 
@@ -5527,9 +5562,9 @@ class CORE_EXPORT Qgis
      * \since QGIS 4.0
      */
     enum class MapGridAnnotationPosition SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, AnnotationPosition ) : int
-      {
+    {
       InsideMapFrame = 0, //!< Draw annotations inside the map frame
-      OutsideMapFrame, //!< Draw annotations outside the map frame
+      OutsideMapFrame,    //!< Draw annotations outside the map frame
     };
     Q_ENUM( MapGridAnnotationPosition )
 
@@ -5541,14 +5576,14 @@ class CORE_EXPORT Qgis
      * \since QGIS 4.0
      */
     enum class MapGridAnnotationDirection SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, AnnotationDirection ) : int
-      {
-      Horizontal = 0, //!< Draw annotations horizontally
-      Vertical, //!< Draw annotations vertically, ascending
+    {
+      Horizontal = 0,     //!< Draw annotations horizontally
+      Vertical,           //!< Draw annotations vertically, ascending
       VerticalDescending, //!< Draw annotations vertically, descending
-      BoundaryDirection, //!< Annotations follow the boundary direction
-      AboveTick, //!< Draw annotations parallel to tick (above the line)
-      OnTick, //!< Draw annotations parallel to tick (on the line)
-      UnderTick, //!< Draw annotations parallel to tick (under the line)
+      BoundaryDirection,  //!< Annotations follow the boundary direction
+      AboveTick,          //!< Draw annotations parallel to tick (above the line)
+      OnTick,             //!< Draw annotations parallel to tick (on the line)
+      UnderTick,          //!< Draw annotations parallel to tick (under the line)
     };
     Q_ENUM( MapGridAnnotationDirection )
 
@@ -5560,16 +5595,16 @@ class CORE_EXPORT Qgis
      * \since QGIS 4.0
      */
     enum class MapGridAnnotationFormat SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, AnnotationFormat ) : int
-      {
-      Decimal = 0, //!< Decimal degrees, use - for S/W coordinates
-      DegreeMinute, //!< Degree/minutes, use NSEW suffix
-      DegreeMinuteSecond, //!< Degree/minutes/seconds, use NSEW suffix
-      DecimalWithSuffix, //!< Decimal degrees, use NSEW suffix
-      DegreeMinuteNoSuffix, //!< Degree/minutes, use - for S/W coordinates
-      DegreeMinutePadded, //!< Degree/minutes, with minutes using leading zeros where required
+    {
+      Decimal = 0,                //!< Decimal degrees, use - for S/W coordinates
+      DegreeMinute,               //!< Degree/minutes, use NSEW suffix
+      DegreeMinuteSecond,         //!< Degree/minutes/seconds, use NSEW suffix
+      DecimalWithSuffix,          //!< Decimal degrees, use NSEW suffix
+      DegreeMinuteNoSuffix,       //!< Degree/minutes, use - for S/W coordinates
+      DegreeMinutePadded,         //!< Degree/minutes, with minutes using leading zeros where required
       DegreeMinuteSecondNoSuffix, //!< Degree/minutes/seconds, use - for S/W coordinates
-      DegreeMinuteSecondPadded, //!< Degree/minutes/seconds, with minutes using leading zeros where required
-      CustomFormat //!< Custom expression-based format
+      DegreeMinuteSecondPadded,   //!< Degree/minutes/seconds, with minutes using leading zeros where required
+      CustomFormat                //!< Custom expression-based format
     };
     Q_ENUM( MapGridAnnotationFormat )
 
@@ -5581,11 +5616,11 @@ class CORE_EXPORT Qgis
      * \since QGIS 4.0
      */
     enum class MapGridBorderSide SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, BorderSide ) : int
-      {
-      Left, //!< Left border
-      Right, //!< Right border
+    {
+      Left,   //!< Left border
+      Right,  //!< Right border
       Bottom, //!< Bottom border
-      Top, //!< Top border
+      Top,    //!< Top border
     };
     Q_ENUM( MapGridBorderSide )
 
@@ -5597,15 +5632,15 @@ class CORE_EXPORT Qgis
      * \since QGIS 4.0
      */
     enum class MapGridFrameStyle SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, FrameStyle ) : int
-      {
-      NoFrame = 0, //!< Disable grid frame
-      Zebra, //!< Black/white pattern
-      InteriorTicks,  //!< Tick markers drawn inside map frame
-      ExteriorTicks,  //!< Tick markers drawn outside map frame
+    {
+      NoFrame = 0,           //!< Disable grid frame
+      Zebra,                 //!< Black/white pattern
+      InteriorTicks,         //!< Tick markers drawn inside map frame
+      ExteriorTicks,         //!< Tick markers drawn outside map frame
       InteriorExteriorTicks, //!< Tick markers drawn both inside and outside the map frame
-      LineBorder, //!< Simple solid line frame
-      LineBorderNautical, //!< Simple solid line frame, with nautical style diagonals on corners
-      ZebraNautical, //!< Black/white pattern, with nautical style diagonals on corners
+      LineBorder,            //!< Simple solid line frame
+      LineBorderNautical,    //!< Simple solid line frame, with nautical style diagonals on corners
+      ZebraNautical,         //!< Black/white pattern, with nautical style diagonals on corners
     };
     Q_ENUM( MapGridFrameStyle )
 
@@ -5617,9 +5652,9 @@ class CORE_EXPORT Qgis
      * \since QGIS 4.0
      */
     enum class MapGridTickLengthMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, TickLengthMode ) : int
-      {
+    {
       OrthogonalTicks = 0, //!< Align ticks orthogonaly
-      NormalizedTicks, //!< Constant tick lengths
+      NormalizedTicks,     //!< Constant tick lengths
     };
     Q_ENUM( MapGridTickLengthMode )
 
@@ -5633,9 +5668,9 @@ class CORE_EXPORT Qgis
      */
     enum class MapGridFrameSideFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, FrameSideFlag ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      Left SIP_MONKEYPATCH_COMPAT_NAME( FrameLeft ) = 0x01, //!< Left side of map
-      Right SIP_MONKEYPATCH_COMPAT_NAME( FrameRight ) = 0x02, //!< Right side of map
-      Top SIP_MONKEYPATCH_COMPAT_NAME( FrameTop ) = 0x04, //!< Top side of map
+      Left SIP_MONKEYPATCH_COMPAT_NAME( FrameLeft ) = 0x01,    //!< Left side of map
+      Right SIP_MONKEYPATCH_COMPAT_NAME( FrameRight ) = 0x02,  //!< Right side of map
+      Top SIP_MONKEYPATCH_COMPAT_NAME( FrameTop ) = 0x04,      //!< Top side of map
       Bottom SIP_MONKEYPATCH_COMPAT_NAME( FrameBottom ) = 0x08 //!< Bottom side of map
     };
     Q_ENUM( MapGridFrameSideFlag )
@@ -5672,7 +5707,7 @@ class CORE_EXPORT Qgis
     enum class InputControllerType : int
     {
       Map2D, //!< 2D map controller
-      Map3D //!< 3D map controller
+      Map3D  //!< 3D map controller
     };
     Q_ENUM( InputControllerType );
 
@@ -5683,16 +5718,16 @@ class CORE_EXPORT Qgis
      */
     enum class PostgresRelKind
     {
-      NotSet, //!< Not set
-      Unknown, //!< Unknown
-      OrdinaryTable, //!< Ordinary table
-      Index, //!< Index
-      Sequence, //!< Sequence
-      View, //!< View
+      NotSet,           //!< Not set
+      Unknown,          //!< Unknown
+      OrdinaryTable,    //!< Ordinary table
+      Index,            //!< Index
+      Sequence,         //!< Sequence
+      View,             //!< View
       MaterializedView, //!< Materialized view
-      CompositeType, //!< Composition type
-      ToastTable, //!< TOAST table
-      ForeignTable, //!< Foreign table
+      CompositeType,    //!< Composition type
+      ToastTable,       //!< TOAST table
+      ForeignTable,     //!< Foreign table
       PartitionedTable, //!< Partitioned table
     };
     Q_ENUM( PostgresRelKind )
@@ -5704,9 +5739,9 @@ class CORE_EXPORT Qgis
      */
     enum class DatabaseProviderConnectionCapability2 : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      SetFieldComment = 1 << 0, //!< Can set comments for fields via setFieldComment()
-      SetFieldAlias = 1 << 1, //!< Can set aliases for fields via setFieldAlias()
-      SetTableComment = 1 << 2, //!< Can set comments for tables via setTableComment() \since QGIS 3.44
+      SetFieldComment = 1 << 0,   //!< Can set comments for fields via setFieldComment()
+      SetFieldAlias = 1 << 1,     //!< Can set aliases for fields via setFieldAlias()
+      SetTableComment = 1 << 2,   //!< Can set comments for tables via setTableComment() \since QGIS 3.44
       EditFieldDomain = 1 << 3,   //!< Can edit existing field domain \since QGIS 4.0
       DeleteFieldDomain = 1 << 4, //!< Can delete existing field domain \since QGIS 4.0
     };
@@ -5722,7 +5757,7 @@ class CORE_EXPORT Qgis
     enum class DatabaseProviderTableImportCapability : int SIP_ENUM_BASETYPE( IntFlag )
     {
       SetGeometryColumnName = 1 << 0, //!< Can set the name of the geometry column
-      SetPrimaryKeyName = 1 << 1, //!< Can set the name of the primary key column
+      SetPrimaryKeyName = 1 << 1,     //!< Can set the name of the primary key column
     };
     Q_ENUM( DatabaseProviderTableImportCapability )
     Q_DECLARE_FLAGS( DatabaseProviderTableImportCapabilities, DatabaseProviderTableImportCapability )
@@ -5750,9 +5785,9 @@ class CORE_EXPORT Qgis
      */
     enum class UserProfileSelectionPolicy : int
     {
-      LastProfile, //!< Open the last closed profile (only mode supported prior to QGIS 3.32)
+      LastProfile,    //!< Open the last closed profile (only mode supported prior to QGIS 3.32)
       DefaultProfile, //!< Open a specific profile
-      AskUser, //!< Let the user choose which profile to open
+      AskUser,        //!< Let the user choose which profile to open
     };
     Q_ENUM( UserProfileSelectionPolicy )
 
@@ -5764,16 +5799,16 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.32
      */
     enum class AttributeEditorType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAttributeEditorElement, AttributeEditorType ) : int
-      {
-      Container SIP_MONKEYPATCH_COMPAT_NAME( AeTypeContainer ), //!< A container
-      Field SIP_MONKEYPATCH_COMPAT_NAME( AeTypeField ), //!< A field
-      Relation SIP_MONKEYPATCH_COMPAT_NAME( AeTypeRelation ), //!< A relation
-      QmlElement SIP_MONKEYPATCH_COMPAT_NAME( AeTypeQmlElement ), //!< A QML element
-      HtmlElement SIP_MONKEYPATCH_COMPAT_NAME( AeTypeHtmlElement ), //!< A HTML element
-      Action SIP_MONKEYPATCH_COMPAT_NAME( AeTypeAction ), //!< A layer action element \since QGIS 3.22
-      TextElement SIP_MONKEYPATCH_COMPAT_NAME( AeTypeTextElement ), //!< A text element \since QGIS 3.30
+    {
+      Container SIP_MONKEYPATCH_COMPAT_NAME( AeTypeContainer ),         //!< A container
+      Field SIP_MONKEYPATCH_COMPAT_NAME( AeTypeField ),                 //!< A field
+      Relation SIP_MONKEYPATCH_COMPAT_NAME( AeTypeRelation ),           //!< A relation
+      QmlElement SIP_MONKEYPATCH_COMPAT_NAME( AeTypeQmlElement ),       //!< A QML element
+      HtmlElement SIP_MONKEYPATCH_COMPAT_NAME( AeTypeHtmlElement ),     //!< A HTML element
+      Action SIP_MONKEYPATCH_COMPAT_NAME( AeTypeAction ),               //!< A layer action element \since QGIS 3.22
+      TextElement SIP_MONKEYPATCH_COMPAT_NAME( AeTypeTextElement ),     //!< A text element \since QGIS 3.30
       SpacerElement SIP_MONKEYPATCH_COMPAT_NAME( AeTypeSpacerElement ), //!< A spacer element \since QGIS 3.30
-      Invalid SIP_MONKEYPATCH_COMPAT_NAME( AeTypeInvalid ), //!< Invalid
+      Invalid SIP_MONKEYPATCH_COMPAT_NAME( AeTypeInvalid ),             //!< Invalid
     };
     Q_ENUM( AttributeEditorType )
 
@@ -5785,8 +5820,8 @@ class CORE_EXPORT Qgis
     enum class AttributeEditorContainerType : int
     {
       GroupBox, //!< A group box
-      Tab, //!< A tab widget
-      Row, //!< A row of editors (horizontal layout)
+      Tab,      //!< A tab widget
+      Row,      //!< A row of editors (horizontal layout)
     };
     Q_ENUM( AttributeEditorContainerType )
 
@@ -5798,10 +5833,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.32
      */
     enum class AttributeFormLayout SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsEditFormConfig, EditorLayout ) : int
-      {
+    {
       AutoGenerated SIP_MONKEYPATCH_COMPAT_NAME( GeneratedLayout ) = 0, //!< Autogenerate a simple tabular layout for the form
-      DragAndDrop SIP_MONKEYPATCH_COMPAT_NAME( TabLayout ) = 1, //!< "Drag and drop" layout. Needs to be configured.
-      UiFile SIP_MONKEYPATCH_COMPAT_NAME( UiFileLayout ) = 2 //!< Load a .ui file for the layout. Needs to be configured.
+      DragAndDrop SIP_MONKEYPATCH_COMPAT_NAME( TabLayout ) = 1,         //!< "Drag and drop" layout. Needs to be configured.
+      UiFile SIP_MONKEYPATCH_COMPAT_NAME( UiFileLayout ) = 2            //!< Load a .ui file for the layout. Needs to be configured.
     };
     Q_ENUM( AttributeFormLayout )
 
@@ -5813,10 +5848,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.32
      */
     enum class AttributeFormSuppression SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsEditFormConfig, FeatureFormSuppress ) : int
-      {
+    {
       Default SIP_MONKEYPATCH_COMPAT_NAME( SuppressDefault ) = 0, //!< Use the application-wide setting.
-      On SIP_MONKEYPATCH_COMPAT_NAME( SuppressOn ) = 1, //!< Always suppress feature form.
-      Off SIP_MONKEYPATCH_COMPAT_NAME( SuppressOff ) = 2 //!< Never suppress feature form.
+      On SIP_MONKEYPATCH_COMPAT_NAME( SuppressOn ) = 1,           //!< Always suppress feature form.
+      Off SIP_MONKEYPATCH_COMPAT_NAME( SuppressOff ) = 2          //!< Never suppress feature form.
     };
     Q_ENUM( AttributeFormSuppression )
 
@@ -5828,10 +5863,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.32
      */
     enum class AttributeFormPythonInitCodeSource SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsEditFormConfig, PythonInitCodeSource ) : int
-      {
-      NoSource SIP_MONKEYPATCH_COMPAT_NAME( CodeSourceNone ) = 0, //!< Do not use Python code at all
-      File SIP_MONKEYPATCH_COMPAT_NAME( CodeSourceFile ) = 1, //!< Load the Python code from an external file
-      Dialog SIP_MONKEYPATCH_COMPAT_NAME( CodeSourceDialog ) = 2, //!< Use the Python code provided in the dialog
+    {
+      NoSource SIP_MONKEYPATCH_COMPAT_NAME( CodeSourceNone ) = 0,          //!< Do not use Python code at all
+      File SIP_MONKEYPATCH_COMPAT_NAME( CodeSourceFile ) = 1,              //!< Load the Python code from an external file
+      Dialog SIP_MONKEYPATCH_COMPAT_NAME( CodeSourceDialog ) = 2,          //!< Use the Python code provided in the dialog
       Environment SIP_MONKEYPATCH_COMPAT_NAME( CodeSourceEnvironment ) = 3 //!< Use the Python code available in the Python environment
     };
     Q_ENUM( AttributeFormPythonInitCodeSource )
@@ -5843,8 +5878,8 @@ class CORE_EXPORT Qgis
      */
     enum class AttributeFormReuseLastValuePolicy : int
     {
-      NotAllowed = 0,       //!< Reuse of last values not allowed
-      AllowedDefaultOn = 1, //!< Reuse of last values allowed and enabled by default
+      NotAllowed = 0,        //!< Reuse of last values not allowed
+      AllowedDefaultOn = 1,  //!< Reuse of last values allowed and enabled by default
       AllowedDefaultOff = 2, //!< Reuse of last values allowed and disabled by default
     };
     Q_ENUM( AttributeFormReuseLastValuePolicy )
@@ -5856,8 +5891,8 @@ class CORE_EXPORT Qgis
      */
     enum class ExpressionType
     {
-      Qgis, //!< Native QGIS expression
-      PointCloud, //!< Point cloud expression
+      Qgis,             //!< Native QGIS expression
+      PointCloud,       //!< Point cloud expression
       RasterCalculator, //!< Raster calculator expression \since QGIS 3.34
     };
     Q_ENUM( ExpressionType )
@@ -5870,9 +5905,9 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.32
      */
     enum class FeatureSymbologyExport SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorFileWriter, SymbologyExport ) : int
-      {
-      NoSymbology = 0, //!< Export only data
-      PerFeature SIP_MONKEYPATCH_COMPAT_NAME( FeatureSymbology ), //!< Keeps the number of features and export symbology per feature
+    {
+      NoSymbology = 0,                                                   //!< Export only data
+      PerFeature SIP_MONKEYPATCH_COMPAT_NAME( FeatureSymbology ),        //!< Keeps the number of features and export symbology per feature
       PerSymbolLayer SIP_MONKEYPATCH_COMPAT_NAME( SymbolLayerSymbology ) //!< Exports one feature per symbol layer (considering symbol levels)
     };
     Q_ENUM( FeatureSymbologyExport )
@@ -5921,9 +5956,9 @@ class CORE_EXPORT Qgis
      */
     enum class TileAvailability
     {
-      Available, //!< Tile is available within the matrix
-      NotAvailable, //!< Tile is not available within the matrix, e.g. there is no content for the tile
-      AvailableNoChildren, //!< Tile is available within the matrix, and is known to have no children (ie no higher zoom level tiles exist covering this tile's region)
+      Available,             //!< Tile is available within the matrix
+      NotAvailable,          //!< Tile is not available within the matrix, e.g. there is no content for the tile
+      AvailableNoChildren,   //!< Tile is available within the matrix, and is known to have no children (ie no higher zoom level tiles exist covering this tile's region)
       UseLowerZoomLevelTile, //!< Tile is not available at the requested zoom level, it should be replaced by a tile from a lower zoom level instead182
     };
     Q_ENUM( TileAvailability )
@@ -5954,9 +5989,9 @@ class CORE_EXPORT Qgis
      */
     enum class TiledSceneBoundingVolumeType
     {
-      Region, //!< Region type
+      Region,      //!< Region type
       OrientedBox, //!< Oriented bounding box (rotated box)
-      Sphere, //!< Sphere
+      Sphere,      //!< Sphere
     };
     Q_ENUM( TiledSceneBoundingVolumeType )
 
@@ -5971,7 +6006,7 @@ class CORE_EXPORT Qgis
     enum class TileRefinementProcess
     {
       Replacement, //!< When tile is refined then its children should be used in place of itself.
-      Additive, //!< When tile is refined its content should be used alongside its children simultaneously.
+      Additive,    //!< When tile is refined its content should be used alongside its children simultaneously.
     };
     Q_ENUM( TileRefinementProcess )
 
@@ -5982,8 +6017,8 @@ class CORE_EXPORT Qgis
      */
     enum class TileChildrenAvailability
     {
-      NoChildren, //!< Tile is known to have no children
-      Available, //!< Tile children are already available
+      NoChildren,   //!< Tile is known to have no children
+      Available,    //!< Tile children are already available
       NeedFetching, //!< Tile has children, but they are not yet available and must be fetched
     };
     Q_ENUM( TileChildrenAvailability )
@@ -5995,7 +6030,7 @@ class CORE_EXPORT Qgis
      */
     enum class TiledSceneRequestFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      NoHierarchyFetch = 1 << 0,  //!< Do not allow hierarchy fetching when hierarchy is not currently available. Avoids network requests, but may result in an incomplete tile set. If set, then callers will need to manually perform hierarchy fetches as required.
+      NoHierarchyFetch = 1 << 0, //!< Do not allow hierarchy fetching when hierarchy is not currently available. Avoids network requests, but may result in an incomplete tile set. If set, then callers will need to manually perform hierarchy fetches as required.
     };
     Q_ENUM( TiledSceneRequestFlag )
 
@@ -6016,8 +6051,8 @@ class CORE_EXPORT Qgis
     {
       RequiresTextures = 1 << 0,  //!< Renderer requires textures
       ForceRasterRender = 1 << 1, //!< Layer should always be rendered as a raster image
-      RendersTriangles = 1 << 2, //!< Renderer can render triangle primitives
-      RendersLines = 1 << 3, //!< Renderer can render line primitives
+      RendersTriangles = 1 << 2,  //!< Renderer can render triangle primitives
+      RendersLines = 1 << 3,      //!< Renderer can render line primitives
     };
     Q_ENUM( TiledSceneRendererFlag )
 
@@ -6037,17 +6072,17 @@ class CORE_EXPORT Qgis
     enum class GdalResampleAlgorithm : int
     {
       RA_NearestNeighbour = 0, //!< Nearest neighbour (select on one input pixel)
-      RA_Bilinear = 1,       //!< Bilinear (2x2 kernel)
-      RA_Cubic = 2,          //!< Cubic Convolution Approximation (4x4 kernel)
-      RA_CubicSpline = 3,    //!< Cubic B-Spline Approximation (4x4 kernel)
-      RA_Lanczos = 4,        //!< Lanczos windowed sinc interpolation (6x6 kernel)
-      RA_Average = 5,        //!< Average (computes the average of all non-NODATA contributing pixels)
-      RA_Mode = 6,            //!< Mode (selects the value which appears most often of all the sampled points)
-      RA_Max = 8, //!< Maximum (selects the maximum of all non-NODATA contributing pixels)
-      RA_Min = 9, //!< Minimum (selects the minimum of all non-NODATA contributing pixels)
-      RA_Median = 10, //!< Median (selects the median of all non-NODATA contributing pixels)
-      RA_Q1 = 11, //!< First quartile (selects the first quartile of all non-NODATA contributing pixels)
-      RA_Q3 = 12, //!< Third quartile (selects the third quartile of all non-NODATA contributing pixels)
+      RA_Bilinear = 1,         //!< Bilinear (2x2 kernel)
+      RA_Cubic = 2,            //!< Cubic Convolution Approximation (4x4 kernel)
+      RA_CubicSpline = 3,      //!< Cubic B-Spline Approximation (4x4 kernel)
+      RA_Lanczos = 4,          //!< Lanczos windowed sinc interpolation (6x6 kernel)
+      RA_Average = 5,          //!< Average (computes the average of all non-NODATA contributing pixels)
+      RA_Mode = 6,             //!< Mode (selects the value which appears most often of all the sampled points)
+      RA_Max = 8,              //!< Maximum (selects the maximum of all non-NODATA contributing pixels)
+      RA_Min = 9,              //!< Minimum (selects the minimum of all non-NODATA contributing pixels)
+      RA_Median = 10,          //!< Median (selects the median of all non-NODATA contributing pixels)
+      RA_Q1 = 11,              //!< First quartile (selects the first quartile of all non-NODATA contributing pixels)
+      RA_Q3 = 12,              //!< Third quartile (selects the third quartile of all non-NODATA contributing pixels)
     };
     Q_ENUM( GdalResampleAlgorithm )
 
@@ -6061,9 +6096,9 @@ class CORE_EXPORT Qgis
       Invalid, //!< Invalid type, i.e. not a valid VSI handler
       Archive, //!< File archive type (e.g. vsizip)
       Network, //!< Generic network types (e.g. vsicurl)
-      Cloud, //!< Specific cloud provider types (e.g. vsis3)
-      Memory, //!< In-memory types (e.g. vsimem)
-      Other, //!< All other types
+      Cloud,   //!< Specific cloud provider types (e.g. vsis3)
+      Memory,  //!< In-memory types (e.g. vsimem)
+      Other,   //!< All other types
     };
     Q_ENUM( VsiHandlerType )
 
@@ -6077,23 +6112,24 @@ class CORE_EXPORT Qgis
      */
     enum class ZonalStatistic : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      Count = 1 << 0,  //!< Pixel count
-      Sum = 1 << 1,  //!< Sum of pixel values
-      Mean = 1 << 2,  //!< Mean of pixel values
-      Median = 1 << 3, //!< Median of pixel values
-      StDev = 1 << 4, //!< Standard deviation of pixel values
-      Min = 1 << 5,  //!< Min of pixel values
-      Max = 1 << 6,  //!< Max of pixel values
-      Range = 1 << 7, //!< Range of pixel values (max - min)
-      Minority = 1 << 8, //!< Minority of pixel values
-      Majority = 1 << 9, //!< Majority of pixel values
-      Variety = 1 << 10, //!< Variety (count of distinct) pixel values
-      Variance = 1 << 11, //!< Variance of pixel values
+      Count = 1 << 0,         //!< Pixel count
+      Sum = 1 << 1,           //!< Sum of pixel values
+      Mean = 1 << 2,          //!< Mean of pixel values
+      Median = 1 << 3,        //!< Median of pixel values
+      StDev = 1 << 4,         //!< Standard deviation of pixel values
+      Min = 1 << 5,           //!< Min of pixel values
+      Max = 1 << 6,           //!< Max of pixel values
+      Range = 1 << 7,         //!< Range of pixel values (max - min)
+      Minority = 1 << 8,      //!< Minority of pixel values
+      Majority = 1 << 9,      //!< Majority of pixel values
+      Variety = 1 << 10,      //!< Variety (count of distinct) pixel values
+      Variance = 1 << 11,     //!< Variance of pixel values
       MinimumPoint = 1 << 12, //!< Pixel centroid for minimum pixel value \since QGIS 3.42
       MaximumPoint = 1 << 13, //!< Pixel centroid for maximum pixel value \since QGIS 3.42
-      All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | Variance, //!< All statistics. For QGIS 3.x this includes ONLY numeric statistics, but for 4.0 this will be extended to included non-numeric statistics. Consider using AllNumeric instead.
+      All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety
+            | Variance, //!< All statistics. For QGIS 3.x this includes ONLY numeric statistics, but for 4.0 this will be extended to included non-numeric statistics. Consider using AllNumeric instead.
       AllNumeric = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | Variance, //!< All numeric statistics \since QGIS 3.42
-      Default = Count | Sum | Mean, //!< Default statistics
+      Default = Count | Sum | Mean,                                                                                    //!< Default statistics
     };
     Q_ENUM( ZonalStatistic )
 
@@ -6129,28 +6165,28 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.36. Prior to 3.36 this was available as QgsAggregateCalculator::Aggregate.
      */
     enum class Aggregate SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAggregateCalculator, Aggregate ) : int
-      {
-      Count, //!< Count
-      CountDistinct, //!< Number of distinct values
-      CountMissing, //!< Number of missing (null) values
-      Min, //!< Min of values
-      Max, //!< Max of values
-      Sum, //!< Sum of values
-      Mean, //!< Mean of values (numeric fields only)
-      Median, //!< Median of values (numeric fields only)
-      StDev, //!< Standard deviation of values (numeric fields only)
-      StDevSample,//!< Sample standard deviation of values (numeric fields only)
-      Range, //!< Range of values (max - min) (numeric and datetime fields only)
-      Minority, //!< Minority of values
-      Majority, //!< Majority of values
-      FirstQuartile, //!< First quartile (numeric fields only)
-      ThirdQuartile, //!< Third quartile (numeric fields only)
-      InterQuartileRange, //!< Inter quartile range (IQR) (numeric fields only)
-      StringMinimumLength, //!< Minimum length of string (string fields only)
-      StringMaximumLength, //!< Maximum length of string (string fields only)
-      StringConcatenate, //!< Concatenate values with a joining string (string fields only). Specify the delimiter using setDelimiter().
-      GeometryCollect, //!< Create a multipart geometry from aggregated geometries
-      ArrayAggregate, //!< Create an array of values
+    {
+      Count,                  //!< Count
+      CountDistinct,          //!< Number of distinct values
+      CountMissing,           //!< Number of missing (null) values
+      Min,                    //!< Min of values
+      Max,                    //!< Max of values
+      Sum,                    //!< Sum of values
+      Mean,                   //!< Mean of values (numeric fields only)
+      Median,                 //!< Median of values (numeric fields only)
+      StDev,                  //!< Standard deviation of values (numeric fields only)
+      StDevSample,            //!< Sample standard deviation of values (numeric fields only)
+      Range,                  //!< Range of values (max - min) (numeric and datetime fields only)
+      Minority,               //!< Minority of values
+      Majority,               //!< Majority of values
+      FirstQuartile,          //!< First quartile (numeric fields only)
+      ThirdQuartile,          //!< Third quartile (numeric fields only)
+      InterQuartileRange,     //!< Inter quartile range (IQR) (numeric fields only)
+      StringMinimumLength,    //!< Minimum length of string (string fields only)
+      StringMaximumLength,    //!< Maximum length of string (string fields only)
+      StringConcatenate,      //!< Concatenate values with a joining string (string fields only). Specify the delimiter using setDelimiter().
+      GeometryCollect,        //!< Create a multipart geometry from aggregated geometries
+      ArrayAggregate,         //!< Create an array of values
       StringConcatenateUnique //!< Concatenate unique values with a joining string (string fields only). Specify the delimiter using setDelimiter().
     };
     Q_ENUM( Aggregate )
@@ -6162,24 +6198,24 @@ class CORE_EXPORT Qgis
      */
     enum class Statistic SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsStatisticalSummary, Statistic ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      Count = 1 << 0,  //!< Count
-      CountMissing = 1 << 15, //!< Number of missing (null) values
-      Sum = 1 << 1,  //!< Sum of values
-      Mean = 1 << 2,  //!< Mean of values
-      Median = 1 << 3, //!< Median of values
-      StDev = 1 << 4, //!< Standard deviation of values
-      StDevSample = 1 << 5, //!< Sample standard deviation of values
-      Min = 1 << 6,  //!< Min of values
-      Max = 1 << 7,  //!< Max of values
-      Range = 1 << 8, //!< Range of values (max - min)
-      Minority = 1 << 9, //!< Minority of values
-      Majority = 1 << 10, //!< Majority of values
-      Variety = 1 << 11, //!< Variety (count of distinct) values
-      FirstQuartile = 1 << 12, //!< First quartile
-      ThirdQuartile = 1 << 13, //!< Third quartile
+      Count = 1 << 0,               //!< Count
+      CountMissing = 1 << 15,       //!< Number of missing (null) values
+      Sum = 1 << 1,                 //!< Sum of values
+      Mean = 1 << 2,                //!< Mean of values
+      Median = 1 << 3,              //!< Median of values
+      StDev = 1 << 4,               //!< Standard deviation of values
+      StDevSample = 1 << 5,         //!< Sample standard deviation of values
+      Min = 1 << 6,                 //!< Min of values
+      Max = 1 << 7,                 //!< Max of values
+      Range = 1 << 8,               //!< Range of values (max - min)
+      Minority = 1 << 9,            //!< Minority of values
+      Majority = 1 << 10,           //!< Majority of values
+      Variety = 1 << 11,            //!< Variety (count of distinct) values
+      FirstQuartile = 1 << 12,      //!< First quartile
+      ThirdQuartile = 1 << 13,      //!< Third quartile
       InterQuartileRange = 1 << 14, //!< Inter quartile range (IQR)
-      First = 1 << 16, //!< First value \since QGIS 3.6
-      Last = 1 << 17, //!< Last value \since QGIS 3.6
+      First = 1 << 16,              //!< First value \since QGIS 3.6
+      Last = 1 << 17,               //!< Last value \since QGIS 3.6
       All = Count | CountMissing | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | FirstQuartile | ThirdQuartile | InterQuartileRange | First | Last //!< All statistics
     };
     Q_ENUM( Statistic )
@@ -6300,7 +6336,7 @@ class CORE_EXPORT Qgis
      */
     enum class ColorModel : int
     {
-      Rgb, //!< RGB color model
+      Rgb,  //!< RGB color model
       Cmyk, //!< CMYK color model
     };
     Q_ENUM( ColorModel )
@@ -6312,10 +6348,10 @@ class CORE_EXPORT Qgis
      */
     enum class DocumentationApi : int
     {
-      PyQgis, //!< PyQgis API documentation
+      PyQgis,       //!< PyQgis API documentation
       PyQgisSearch, //!< Search in PyQgis API documentation
-      CppQgis, //!< C++ QGIS API documentation
-      Qt, //!< Qt API documentation
+      CppQgis,      //!< C++ QGIS API documentation
+      Qt,           //!< Qt API documentation
     };
     Q_ENUM( DocumentationApi )
 
@@ -6327,7 +6363,7 @@ class CORE_EXPORT Qgis
     enum class DocumentationBrowser : int
     {
       DeveloperToolsPanel, //!< Embedded webview in the DevTools panel
-      SystemWebBrowser, //!< Default system web browser
+      SystemWebBrowser,    //!< Default system web browser
     };
     Q_ENUM( DocumentationBrowser )
 
@@ -6338,21 +6374,21 @@ class CORE_EXPORT Qgis
      */
     enum class MouseHandlesAction : int
     {
-      MoveItem, //!< Move item
-      ResizeUp, //!< Resize up (Top handle)
-      ResizeDown, //!< Resize down (Bottom handle)
-      ResizeLeft, //!< Resize left (Left handle)
-      ResizeRight, //!< Resize right (Right handle)
-      ResizeLeftUp, //!< Resize left up (Top left handle)
-      ResizeRightUp, //!< Resize right up (Top right handle)
-      ResizeLeftDown, //!< Resize left down (Bottom left handle)
-      ResizeRightDown, //!< Resize right down (Bottom right handle)
-      RotateTopLeft, //!< Rotate from top left handle. \since QGIS 4.0
-      RotateTopRight, //!< Rotate from top right handle. \since QGIS 4.0
-      RotateBottomLeft, //!< Rotate from bottom left handle. \since QGIS 4.0
+      MoveItem,          //!< Move item
+      ResizeUp,          //!< Resize up (Top handle)
+      ResizeDown,        //!< Resize down (Bottom handle)
+      ResizeLeft,        //!< Resize left (Left handle)
+      ResizeRight,       //!< Resize right (Right handle)
+      ResizeLeftUp,      //!< Resize left up (Top left handle)
+      ResizeRightUp,     //!< Resize right up (Top right handle)
+      ResizeLeftDown,    //!< Resize left down (Bottom left handle)
+      ResizeRightDown,   //!< Resize right down (Bottom right handle)
+      RotateTopLeft,     //!< Rotate from top left handle. \since QGIS 4.0
+      RotateTopRight,    //!< Rotate from top right handle. \since QGIS 4.0
+      RotateBottomLeft,  //!< Rotate from bottom left handle. \since QGIS 4.0
       RotateBottomRight, //!< Rotate right bottom right handle. \since QGIS 4.0
-      SelectItem, //!< Select item
-      NoAction //!< No action
+      SelectItem,        //!< Select item
+      NoAction           //!< No action
     };
     Q_ENUM( MouseHandlesAction )
 
@@ -6362,8 +6398,8 @@ class CORE_EXPORT Qgis
      */
     enum class MeshRangeLimit : int
     {
-      NotSet, //!< User defined
-      MinimumMaximum,  //!< Real min-max values
+      NotSet,         //!< User defined
+      MinimumMaximum, //!< Real min-max values
     };
     Q_ENUM( MeshRangeLimit )
 
@@ -6374,8 +6410,8 @@ class CORE_EXPORT Qgis
      */
     enum class MeshRangeExtent : int
     {
-      WholeMesh, //!< Whole mesh is used to compute statistics
-      FixedCanvas, //!< Current extent of the canvas (at the time of computation) is used to compute statistics
+      WholeMesh,     //!< Whole mesh is used to compute statistics
+      FixedCanvas,   //!< Current extent of the canvas (at the time of computation) is used to compute statistics
       UpdatedCanvas, //!< Constantly updated extent of the canvas is used to compute statistics
     };
     Q_ENUM( MeshRangeExtent )
@@ -6399,8 +6435,8 @@ class CORE_EXPORT Qgis
      */
     enum class PointCloudZoomOutRenderBehavior : int
     {
-      RenderExtents, //!< Render only point cloud extents when zoomed out
-      RenderOverview, //!< Render overview point cloud when zoomed out
+      RenderExtents,           //!< Render only point cloud extents when zoomed out
+      RenderOverview,          //!< Render overview point cloud when zoomed out
       RenderOverviewAndExtents //!< Render point cloud extents over overview point cloud
     };
     Q_ENUM( PointCloudZoomOutRenderBehavior )
@@ -6424,10 +6460,10 @@ class CORE_EXPORT Qgis
     */
     enum class StacObjectType : int
     {
-      Unknown,      //!< Type is not known
-      Catalog,      //!< STAC catalog
-      Collection,   //!< STAC collection
-      Item,         //!< STAC item
+      Unknown,    //!< Type is not known
+      Catalog,    //!< STAC catalog
+      Collection, //!< STAC collection
+      Item,       //!< STAC item
     };
     Q_ENUM( StacObjectType )
 
@@ -6662,20 +6698,14 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.44
      */
-    static QString geoNone()
-    {
-      return u"NONE"_s;
-    }
+    static QString geoNone() { return u"NONE"_s; }
 
     /**
      * Geographic coordinate system auth:id string for a default geographic CRS (EPSG:4326).
      *
      * \since QGIS 3.44
      */
-    static QString geographicCrsAuthId()
-    {
-      return u"EPSG:4326"_s;
-    }
+    static QString geographicCrsAuthId() { return u"EPSG:4326"_s; }
 
     /**
     * WKT string that represents a geographic coord system
@@ -6684,19 +6714,15 @@ class CORE_EXPORT Qgis
     Q_DECL_DEPRECATED static QString geoWkt()
     {
       return QStringLiteral(
-               R"""(GEOGCRS["WGS 84",DATUM["World Geodetic System 1984",ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["unknown"],AREA["World"],BBOX[-90,-180,90,180]],ID["EPSG",4326]] )"""
-             );
+        R"""(GEOGCRS["WGS 84",DATUM["World Geodetic System 1984",ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["unknown"],AREA["World"],BBOX[-90,-180,90,180]],ID["EPSG",4326]] )"""
+      );
     }
 
     /**
      * PROJ4 string that represents a geographic coord system.
      * \deprecated QGIS 3.44. Will be removed in QGIS 5.0.
      */
-    Q_DECL_DEPRECATED static QString geoProj4()
-    {
-      return u"+proj=longlat +datum=WGS84 +no_defs"_s;
-    }
-
+    Q_DECL_DEPRECATED static QString geoProj4() { return u"+proj=longlat +datum=WGS84 +no_defs"_s; }
 };
 
 QHASH_FOR_CLASS_ENUM( Qgis::CaptureTechnique )
@@ -6799,7 +6825,7 @@ Q_DECLARE_METATYPE( QTimeZone )
 // retrieved from QLibrary::resolve to function pointers.
 // It's assumed that this works on all systems supporting
 // QLibrary
-#define cast_to_fptr(f) f
+#define cast_to_fptr( f ) f
 
 
 /**
@@ -6813,7 +6839,6 @@ Q_DECLARE_METATYPE( QTimeZone )
 template<class Object> class QgsSignalBlocker SIP_SKIP SIP_SKIP // clazy:exclude=rule-of-three
 {
   public:
-
     /**
      * Constructor for QgsSignalBlocker
      * \param object QObject to block signals from
@@ -6823,19 +6848,14 @@ template<class Object> class QgsSignalBlocker SIP_SKIP SIP_SKIP // clazy:exclude
       , mPreviousState( object->blockSignals( true ) )
     {}
 
-    ~QgsSignalBlocker()
-    {
-      mObject->blockSignals( mPreviousState );
-    }
+    ~QgsSignalBlocker() { mObject->blockSignals( mPreviousState ); }
 
     //! Returns pointer to blocked QObject
     Object *operator->() { return mObject; }
 
   private:
-
     Object *mObject = nullptr;
     bool mPreviousState;
-
 };
 
 /**
@@ -6851,10 +6871,7 @@ template<class Object> class QgsSignalBlocker SIP_SKIP SIP_SKIP // clazy:exclude
  * \note not available in Python bindings
  */
 // based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
-template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object *object ) SIP_SKIP SIP_SKIP
-{
-  return QgsSignalBlocker<Object>( object );
-}
+template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object *object ) SIP_SKIP SIP_SKIP { return QgsSignalBlocker<Object>( object ); }
 
 //! Hash for QVariant
 CORE_EXPORT uint qHash( const QVariant &variant );
@@ -6928,8 +6945,7 @@ inline bool qgsNanCompatibleEquals( double a, double b )
  * \param epsilon maximum difference allowable between numbers
  * \since QGIS 3.36
  */
-template<typename T>
-inline bool qgsNumberNear( T a, T b, T epsilon = std::numeric_limits<T>::epsilon() * 4 )
+template<typename T> inline bool qgsNumberNear( T a, T b, T epsilon = std::numeric_limits<T>::epsilon() * 4 )
 {
   const bool aIsNan = std::isnan( a );
   const bool bIsNan = std::isnan( b );
@@ -6947,10 +6963,7 @@ inline bool qgsNumberNear( T a, T b, T epsilon = std::numeric_limits<T>::epsilon
  * \param b second double
  * \param epsilon maximum difference allowable between doubles
  */
-inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * std::numeric_limits<double>::epsilon() )
-{
-  return qgsNumberNear<double>( a, b, epsilon );
-}
+inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) { return qgsNumberNear<double>( a, b, epsilon ); }
 
 /**
  * Compare two floats (but allow some difference)
@@ -6958,10 +6971,7 @@ inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * std::numeric
  * \param b second float
  * \param epsilon maximum difference allowable between floats
  */
-inline bool qgsFloatNear( float a, float b, float epsilon = 4 * FLT_EPSILON )
-{
-  return qgsNumberNear<float>( a, b, epsilon );
-}
+inline bool qgsFloatNear( float a, float b, float epsilon = 4 * FLT_EPSILON ) { return qgsNumberNear<float>( a, b, epsilon ); }
 
 //! Compare two doubles using specified number of significant digits
 inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
@@ -6980,8 +6990,7 @@ inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
   const double ar = std::frexp( a, &aexp );
   const double br = std::frexp( b, &bexp );
 
-  return aexp == bexp &&
-         std::round( ar * std::pow( 10.0, significantDigits ) ) == std::round( br * std::pow( 10.0, significantDigits ) );
+  return aexp == bexp && std::round( ar * std::pow( 10.0, significantDigits ) ) == std::round( br * std::pow( 10.0, significantDigits ) );
 }
 
 /**
@@ -7003,8 +7012,7 @@ inline double qgsRound( double number, int places )
  * This method avoid calling keys() before joining because it creates an unneeded temporary list
  * see clazy container-anti-pattern
  */
-template<class Key, class Value>
-QString qgsMapJoinKeys( const QMap<Key, Value> &map, const QString &separator )
+template<class Key, class Value> QString qgsMapJoinKeys( const QMap<Key, Value> &map, const QString &separator )
 {
   QString result;
   for ( auto it = map.constBegin(); it != map.constEnd(); it++ )
@@ -7020,8 +7028,7 @@ QString qgsMapJoinKeys( const QMap<Key, Value> &map, const QString &separator )
  * This method avoid calling values() before joining because it creates an unneeded temporary list
  * see clazy container-anti-pattern
  */
-template<class Key, class Value>
-QString qgsMapJoinValues( const QMap<Key, Value> &map, const QString &separator )
+template<class Key, class Value> QString qgsMapJoinValues( const QMap<Key, Value> &map, const QString &separator )
 {
   QString result;
   for ( auto it = map.constBegin(); it != map.constEnd(); it++ )
@@ -7037,8 +7044,7 @@ QString qgsMapJoinValues( const QMap<Key, Value> &map, const QString &separator 
  * This method avoid calling values() before joining because it creates an unneeded temporary list
  * see clazy container-anti-pattern
  */
-template<class T>
-QString qgsSetJoin( const QSet<T> &set, const QString &separator )
+template<class T> QString qgsSetJoin( const QSet<T> &set, const QString &separator )
 {
   QString result;
   for ( auto it = set.constBegin(); it != set.constEnd(); it++ )
@@ -7076,26 +7082,15 @@ namespace qgis
    */
   template<typename To, typename From> inline To down_cast( From *f )
   {
-    static_assert(
-      ( std::is_base_of<From,
-        typename std::remove_pointer<To>::type>::value ),
-      "target type not derived from source type" );
+    static_assert( ( std::is_base_of<From, typename std::remove_pointer<To>::type>::value ), "target type not derived from source type" );
     Q_ASSERT( f == nullptr || dynamic_cast<To>( f ) != nullptr );
     return static_cast<To>( f );
   }
 
-  template<class T>
-  QSet<T> listToSet( const QList<T> &list )
-  {
-    return QSet<T>( list.begin(), list.end() );
-  }
+  template<class T> QSet<T> listToSet( const QList<T> &list ) { return QSet<T>( list.begin(), list.end() ); }
 
-  template<class T>
-  QList<T> setToList( const QSet<T> &set )
-  {
-    return QList<T>( set.begin(), set.end() );
-  }
-}
+  template<class T> QList<T> setToList( const QSet<T> &set ) { return QList<T>( set.begin(), set.end() ); }
+} //namespace qgis
 
 ///@endcond
 #endif
@@ -7157,7 +7152,7 @@ template<class T> QString qgsEnumValueToKey( const T &value, bool *returnOk = nu
  * If \a returnOk is given, it defines if the key could be converted to the value or if it had returned the default
  * \since QGIS 3.6
  */
-template<class T> T qgsEnumKeyToValue( const QString &key, const T &defaultValue, bool tryValueAsKey = true,  bool *returnOk = nullptr ) SIP_SKIP
+template<class T> T qgsEnumKeyToValue( const QString &key, const T &defaultValue, bool tryValueAsKey = true, bool *returnOk = nullptr ) SIP_SKIP
 {
   const QMetaEnum metaEnum = QMetaEnum::fromType<T>();
   Q_ASSERT( metaEnum.isValid() );
@@ -7218,7 +7213,7 @@ template<class T> QString qgsFlagValueToKeys( const T &value, bool *returnOk = n
  * If \a returnOk is given, it defines if the key could be converted to the value or if it had returned the default
  * \since QGIS 3.16
  */
-template<class T> T qgsFlagKeysToValue( const QString &keys, const T &defaultValue, bool tryValueAsKey = true,  bool *returnOk = nullptr ) SIP_SKIP
+template<class T> T qgsFlagKeysToValue( const QString &keys, const T &defaultValue, bool tryValueAsKey = true, bool *returnOk = nullptr ) SIP_SKIP
 {
   if ( keys.isEmpty() )
   {
@@ -7361,10 +7356,7 @@ CORE_EXPORT bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs
  * \see qgsVariantLessThan()
  * \see qgsVariantGreaterThan()
  */
-inline bool operator> ( const QVariant &v1, const QVariant &v2 )
-{
-  return qgsVariantCompare( v1, v2, true ) > 0;
-}
+inline bool operator>( const QVariant &v1, const QVariant &v2 ) { return qgsVariantCompare( v1, v2, true ) > 0; }
 
 /**
  * Compares two QVariant values and returns whether the first is less than the second.
@@ -7377,10 +7369,7 @@ inline bool operator> ( const QVariant &v1, const QVariant &v2 )
  * \see qgsVariantLessThan()
  * \see qgsVariantGreaterThan()
  */
-inline bool operator< ( const QVariant &v1, const QVariant &v2 )
-{
-  return qgsVariantCompare( v1, v2, true ) < 0;
-}
+inline bool operator<( const QVariant &v1, const QVariant &v2 ) { return qgsVariantCompare( v1, v2, true ) < 0; }
 
 /**
  * Returns a the vsi prefix which corresponds to a file \a path, or an empty
@@ -7409,7 +7398,6 @@ void CORE_EXPORT qgsFree( void *ptr ) SIP_SKIP;
 class ScopedIntIncrementor
 {
   public:
-
     ScopedIntIncrementor( int *variable )
       : mVariable( variable )
     {
@@ -7427,10 +7415,7 @@ class ScopedIntIncrementor
       mVariable = nullptr;
     }
 
-    ~ScopedIntIncrementor()
-    {
-      release();
-    }
+    ~ScopedIntIncrementor() { release(); }
 
   private:
     int *mVariable = nullptr;
@@ -7473,28 +7458,19 @@ typedef QMap<QString, QString> QgsStringMap SIP_SKIP;
 typedef unsigned long long qgssize;
 
 #ifndef SIP_RUN
-#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
+#if ( __GNUC__ > 4 || ( __GNUC__ == 4 && __GNUC_MINOR__ >= 6 ) ) || defined( __clang__ )
 
-#define Q_NOWARN_DEPRECATED_PUSH \
-  _Pragma("GCC diagnostic push") \
-  _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"");
-#define Q_NOWARN_DEPRECATED_POP \
-  _Pragma("GCC diagnostic pop");
+#define Q_NOWARN_DEPRECATED_PUSH _Pragma( "GCC diagnostic push" ) _Pragma( "GCC diagnostic ignored \"-Wdeprecated-declarations\"" );
+#define Q_NOWARN_DEPRECATED_POP _Pragma( "GCC diagnostic pop" );
 #define Q_NOWARN_UNREACHABLE_PUSH
 #define Q_NOWARN_UNREACHABLE_POP
 
-#elif defined(_MSC_VER)
+#elif defined( _MSC_VER )
 
-#define Q_NOWARN_DEPRECATED_PUSH \
-  __pragma(warning(push)) \
-  __pragma(warning(disable:4996))
-#define Q_NOWARN_DEPRECATED_POP \
-  __pragma(warning(pop))
-#define Q_NOWARN_UNREACHABLE_PUSH \
-  __pragma(warning(push)) \
-  __pragma(warning(disable:4702))
-#define Q_NOWARN_UNREACHABLE_POP \
-  __pragma(warning(pop))
+#define Q_NOWARN_DEPRECATED_PUSH __pragma( warning( push ) ) __pragma( warning( disable : 4996 ) )
+#define Q_NOWARN_DEPRECATED_POP __pragma( warning( pop ) )
+#define Q_NOWARN_UNREACHABLE_PUSH __pragma( warning( push ) ) __pragma( warning( disable : 4702 ) )
+#define Q_NOWARN_UNREACHABLE_POP __pragma( warning( pop ) )
 #else
 
 #define Q_NOWARN_DEPRECATED_PUSH
@@ -7507,22 +7483,21 @@ typedef unsigned long long qgssize;
 
 #ifndef QGISEXTERN
 #ifdef Q_OS_WIN
-#  define QGISEXTERN extern "C" __declspec( dllexport )
+#define QGISEXTERN extern "C" __declspec( dllexport )
 #else
-#  if defined(__GNUC__) || defined(__clang__)
-#    define QGISEXTERN extern "C" __attribute__ ((visibility ("default")))
-#  else
-#    define QGISEXTERN extern "C"
-#  endif
+#if defined( __GNUC__ ) || defined( __clang__ )
+#define QGISEXTERN extern "C" __attribute__( ( visibility( "default" ) ) )
+#else
+#define QGISEXTERN extern "C"
+#endif
 #endif
 #endif
 #endif
 
 #ifndef SIP_RUN
 #ifdef _MSC_VER
-#define BUILTIN_UNREACHABLE \
-  __assume(false);
-#elif defined(__GNUC__) && !defined(__clang__)
+#define BUILTIN_UNREACHABLE __assume( false );
+#elif defined( __GNUC__ ) && !defined( __clang__ )
 // Workaround a GCC bug where a -Wreturn-type warning is emitted in constructs
 // like:
 // switch( mVariableThatCanOnlyBeXorY )
@@ -7533,8 +7508,7 @@ typedef unsigned long long qgssize;
 //        return "foo";
 // }
 // See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=87951
-#define BUILTIN_UNREACHABLE \
-  __builtin_unreachable();
+#define BUILTIN_UNREACHABLE __builtin_unreachable();
 #else
 #define BUILTIN_UNREACHABLE
 #endif

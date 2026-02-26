@@ -28,8 +28,7 @@ using namespace Qt::StringLiterals;
 
 QgsFieldModel::QgsFieldModel( QObject *parent )
   : QAbstractItemModel( parent )
-{
-}
+{}
 
 QModelIndex QgsFieldModel::indexFromName( const QString &fieldName )
 {
@@ -491,7 +490,7 @@ QString QgsFieldModel::fieldToolTip( const QgsField &field )
 
   const QString comment = field.comment();
 
-  if ( ! comment.isEmpty() )
+  if ( !comment.isEmpty() )
   {
     toolTip += u"<br><em>%1</em>"_s.arg( comment );
   }
@@ -508,9 +507,7 @@ QString QgsFieldModel::fieldToolTipExtended( const QgsField &field, const QgsVec
   if ( fieldIdx < 0 )
     return QString();
 
-  const QString expressionString = fields.fieldOrigin( fieldIdx ) == Qgis::FieldOrigin::Expression
-                                   ? layer->expressionField( fieldIdx )
-                                   : QString();
+  const QString expressionString = fields.fieldOrigin( fieldIdx ) == Qgis::FieldOrigin::Expression ? layer->expressionField( fieldIdx ) : QString();
 
   if ( !expressionString.isEmpty() )
   {
@@ -528,7 +525,4 @@ void QgsFieldModel::setFields( const QgsFields &fields )
   endResetModel();
 }
 
-QgsFields QgsFieldModel::fields() const
-{
-  return mFields;
-}
+QgsFields QgsFieldModel::fields() const { return mFields; }

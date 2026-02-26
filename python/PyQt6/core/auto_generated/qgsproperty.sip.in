@@ -26,7 +26,6 @@ and blend modes.
 #include "qgsproperty.h"
 %End
   public:
-
     enum StandardPropertyTemplate /BaseType=IntEnum/
     {
       Boolean,
@@ -196,7 +195,6 @@ inexpensively copied.
 #include "qgsproperty.h"
 %End
   public:
-
     static QVariantMap propertyMapToVariantMap( const QMap<QString, QgsProperty> &propertyMap );
 %Docstring
 Convert a map of QgsProperty to a map of QVariant This is useful to save
@@ -598,8 +596,7 @@ non-performance critical code.
 
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    QString typeString;
+%MethodCode QString typeString;
     QString definitionString;
     switch ( sipCpp->propertyType() )
     {
@@ -623,12 +620,22 @@ non-performance critical code.
         break;
     }
 
-    QString str = QStringLiteral( "<QgsProperty: %1%2%3>" ).arg( !sipCpp->isActive() && sipCpp->propertyType() != Qgis::PropertyType::Invalid ? QStringLiteral( "INACTIVE " ) : QString(),
-                  typeString,
-                  definitionString.isEmpty() ? QString() : QStringLiteral( " (%1)" ).arg( definitionString ) );
+    QString str
+      = QStringLiteral( "<QgsProperty: %1%2%3>" )
+          .arg( !sipCpp->isActive() && sipCpp->propertyType() != Qgis::PropertyType::Invalid ? QStringLiteral( "INACTIVE " ) : QString(), typeString, definitionString.isEmpty() ? QString() : QStringLiteral( " (%1)" ).arg( definitionString ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
+    private :
+
+    mutable QExplicitlySharedDataPointer<QgsPropertyPrivate>
+      d;
+
+    QVariant propertyValue( const QgsExpressionContext &context, const QVariant &defaultValue = QVariant(), bool *ok = 0 ) const;
+%Docstring
+Calculates the current value of the property, before any transformations
+or conversions are applied.
+%End
 };
 
 

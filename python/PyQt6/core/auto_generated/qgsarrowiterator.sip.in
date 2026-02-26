@@ -298,7 +298,10 @@ Infer the :py:class:`QgsArrowSchema` for a given
                       unsupported type.
 %End
 
-    static QgsArrowSchema inferSchema( const QgsFields &fields, bool hasGeometry = false, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), const QgsArrowInferSchemaOptions &options = QgsArrowInferSchemaOptions() );
+    static QgsArrowSchema inferSchema(
+      const QgsFields &fields, bool hasGeometry = false, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+      const QgsArrowInferSchemaOptions &options = QgsArrowInferSchemaOptions()
+    );
 %Docstring
 Infer the :py:class:`QgsArrowSchema` from components
 

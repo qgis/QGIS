@@ -29,7 +29,6 @@ class QgsFeatureIterator;
 class CORE_EXPORT QgsAbstractCacheIndex
 {
   public:
-
     QgsAbstractCacheIndex() = default;
     virtual ~QgsAbstractCacheIndex() = default;
 

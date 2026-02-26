@@ -32,7 +32,7 @@ QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject 
   : QAbstractItemModel( parent )
   , mProject( project ? project : QgsProject::instance() ) // skip-keyword-check
 {
-  connect( mProject, static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
+  connect( mProject, static_cast< void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
   addLayers( layers );
 }
 
@@ -41,7 +41,7 @@ QgsMapLayerModel::QgsMapLayerModel( QObject *parent, QgsProject *project )
   , mProject( project ? project : QgsProject::instance() ) // skip-keyword-check
 {
   connect( mProject, &QgsProject::layersAdded, this, &QgsMapLayerModel::addLayers );
-  connect( mProject, static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
+  connect( mProject, static_cast< void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
   addLayers( mProject->mapLayers().values() );
 }
 
@@ -55,31 +55,22 @@ void QgsMapLayerModel::setProject( QgsProject *project )
   {
     removeLayers( mProject->mapLayers().keys() );
     disconnect( mProject, &QgsProject::layersAdded, this, &QgsMapLayerModel::addLayers );
-    disconnect( mProject, static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
+    disconnect( mProject, static_cast< void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
   }
 
   mProject = project ? project : QgsProject::instance(); // skip-keyword-check
 
   connect( mProject, &QgsProject::layersAdded, this, &QgsMapLayerModel::addLayers );
-  connect( mProject, static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
+  connect( mProject, static_cast< void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
   addLayers( mProject->mapLayers().values() );
 }
 
 
-void QgsMapLayerModel::setItemsCheckable( bool checkable )
-{
-  mItemCheckable = checkable;
-}
+void QgsMapLayerModel::setItemsCheckable( bool checkable ) { mItemCheckable = checkable; }
 
-void QgsMapLayerModel::setItemsCanBeReordered( bool allow )
-{
-  mCanReorder = allow;
-}
+void QgsMapLayerModel::setItemsCanBeReordered( bool allow ) { mCanReorder = allow; }
 
-bool QgsMapLayerModel::itemsCanBeReordered() const
-{
-  return mCanReorder;
-}
+bool QgsMapLayerModel::itemsCanBeReordered() const { return mCanReorder; }
 
 void QgsMapLayerModel::checkAll( Qt::CheckState checkState )
 {
@@ -144,7 +135,7 @@ void QgsMapLayerModel::setLayersChecked( const QList<QgsMapLayer *> &layers )
   }
   for ( const QgsMapLayer *layer : layers )
   {
-    mLayersChecked[ layer->id() ] = Qt::Checked;
+    mLayersChecked[layer->id()] = Qt::Checked;
   }
   emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ), QVector<int>() << Qt::CheckStateRole );
 }
@@ -157,10 +148,7 @@ QModelIndex QgsMapLayerModel::indexFromLayer( QgsMapLayer *layer ) const
   return index( r, 0 );
 }
 
-QgsMapLayer *QgsMapLayerModel::layerFromIndex( const QModelIndex &index ) const
-{
-  return mProject->mapLayer( index.data( static_cast< int >( CustomRole::LayerId ) ).toString() );
-}
+QgsMapLayer *QgsMapLayerModel::layerFromIndex( const QModelIndex &index ) const { return mProject->mapLayer( index.data( static_cast< int >( CustomRole::LayerId ) ).toString() ); }
 
 void QgsMapLayerModel::setAdditionalItems( const QStringList &items )
 {
@@ -206,17 +194,14 @@ void QgsMapLayerModel::setAdditionalLayers( const QList<QgsMapLayer *> &layers )
     {
       addLayers( { layer } );
       const QString layerId = layer->id();
-      connect( layer, &QgsMapLayer::willBeDeleted, this, [this, layerId] { removeLayers( {layerId} ); } );
+      connect( layer, &QgsMapLayer::willBeDeleted, this, [this, layerId] { removeLayers( { layerId } ); } );
     }
   }
 
   mAdditionalLayers = _qgis_listRawToQPointer( layers );
 }
 
-QList<QgsMapLayer *> QgsMapLayerModel::additionalLayers() const
-{
-  return _qgis_listQPointerToRaw( mAdditionalLayers );
-}
+QList<QgsMapLayer *> QgsMapLayerModel::additionalLayers() const { return _qgis_listQPointerToRaw( mAdditionalLayers ); }
 
 void QgsMapLayerModel::removeLayers( const QStringList &layerIds )
 {
@@ -241,13 +226,13 @@ void QgsMapLayerModel::removeLayers( const QStringList &layerIds )
 
 void QgsMapLayerModel::addLayers( const QList<QgsMapLayer *> &layers )
 {
-  if ( !layers.empty( ) )
+  if ( !layers.empty() )
   {
     int offset = 0;
     if ( mAllowEmpty )
       offset++;
 
-    beginInsertRows( QModelIndex(), mLayers.count() + offset, mLayers.count() + layers.count() - 1  + offset );
+    beginInsertRows( QModelIndex(), mLayers.count() + offset, mLayers.count() + layers.count() - 1 + offset );
     const auto constLayers = layers;
     for ( QgsMapLayer *layer : constLayers )
     {
@@ -274,7 +259,6 @@ QModelIndex QgsMapLayerModel::index( int row, int column, const QModelIndex &par
   }
 
   return QModelIndex();
-
 }
 
 QModelIndex QgsMapLayerModel::parent( const QModelIndex &child ) const
@@ -375,7 +359,8 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
       if ( layer )
       {
         QStringList parts;
-        QString title = !layer->metadata().title().isEmpty() ? layer->metadata().title() : ( layer->serverProperties()->title().isEmpty() ? layer->serverProperties()->shortName() : layer->serverProperties()->title() );
+        QString title = !layer->metadata().title().isEmpty() ? layer->metadata().title()
+                                                             : ( layer->serverProperties()->title().isEmpty() ? layer->serverProperties()->shortName() : layer->serverProperties()->title() );
         if ( title.isEmpty() )
           title = layer->name();
         title = "<b>" + title + "</b>";
@@ -426,8 +411,8 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
 
 QHash<int, QByteArray> QgsMapLayerModel::roleNames() const
 {
-  QHash<int, QByteArray> roles  = QAbstractItemModel::roleNames();
-  roles[static_cast< int >( CustomRole::LayerId ) ]  = "layerId";
+  QHash<int, QByteArray> roles = QAbstractItemModel::roleNames();
+  roles[static_cast< int >( CustomRole::LayerId )] = "layerId";
   roles[static_cast< int >( CustomRole::Layer )] = "layer";
 
   return roles;
@@ -576,15 +561,9 @@ bool QgsMapLayerModel::dropMimeData( const QMimeData *data, Qt::DropAction actio
   return true;
 }
 
-Qt::DropActions QgsMapLayerModel::supportedDropActions() const
-{
-  return Qt::MoveAction;
-}
+Qt::DropActions QgsMapLayerModel::supportedDropActions() const { return Qt::MoveAction; }
 
-QIcon QgsMapLayerModel::iconForLayer( QgsMapLayer *layer )
-{
-  return QgsIconUtils::iconForLayer( layer );
-}
+QIcon QgsMapLayerModel::iconForLayer( QgsMapLayer *layer ) { return QgsIconUtils::iconForLayer( layer ); }
 
 bool QgsMapLayerModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
@@ -601,7 +580,7 @@ bool QgsMapLayerModel::setData( const QModelIndex &index, const QVariant &value,
       if ( !isEmpty && additionalIndex < 0 )
       {
         QgsMapLayer *layer = static_cast<QgsMapLayer *>( index.internalPointer() );
-        mLayersChecked[layer->id()] = ( Qt::CheckState )value.toInt();
+        mLayersChecked[layer->id()] = ( Qt::CheckState ) value.toInt();
         emit dataChanged( index, index, QVector< int >() << Qt::CheckStateRole );
         return true;
       }

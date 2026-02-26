@@ -34,7 +34,6 @@ in meters.
 #include "qgselevationmap.h"
 %End
   public:
-
     QgsElevationMap();
 
     explicit QgsElevationMap( const QSize &size, float devicePixelRatio = 1.0 );

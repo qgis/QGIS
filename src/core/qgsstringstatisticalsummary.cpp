@@ -64,10 +64,7 @@ void QgsStringStatisticalSummary::calculate( const QStringList &values )
   finalize();
 }
 
-void QgsStringStatisticalSummary::addString( const QString &string )
-{
-  testString( string );
-}
+void QgsStringStatisticalSummary::addString( const QString &string ) { testString( string ); }
 
 void QgsStringStatisticalSummary::addValue( const QVariant &value )
 {
@@ -221,4 +218,3 @@ QString QgsStringStatisticalSummary::displayName( Qgis::StringStatistic statisti
   }
   return QString();
 }
-

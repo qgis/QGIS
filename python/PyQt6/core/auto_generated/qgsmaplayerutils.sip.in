@@ -22,7 +22,6 @@ Contains utility functions for working with map layers.
 #include "qgsmaplayerutils.h"
 %End
   public:
-
     static QgsRectangle combinedExtent( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext );
 %Docstring
 Returns the combined extent of a list of ``layers``.
@@ -126,10 +125,7 @@ Returns the translated name of the type for a given layer type.
 
 .. versionadded:: 4.0
 %End
-
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

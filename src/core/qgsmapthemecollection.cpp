@@ -107,7 +107,7 @@ void QgsMapThemeCollection::createThemeFromCurrentState( QgsLayerTreeGroup *pare
 QgsMapThemeCollection::MapThemeRecord QgsMapThemeCollection::createThemeFromCurrentState( QgsLayerTreeGroup *root, QgsLayerTreeModel *model )
 {
   QgsMapThemeCollection::MapThemeRecord rec;
-  rec.setHasExpandedStateInfo( true );  // all newly created theme records have expanded state info
+  rec.setHasExpandedStateInfo( true ); // all newly created theme records have expanded state info
   rec.setHasCheckedStateInfo( true );  // all newly created theme records have checked state info
   createThemeFromCurrentState( root, model, rec );
   return rec;
@@ -159,8 +159,7 @@ void QgsMapThemeCollection::applyThemeToLayer( QgsLayerTreeLayer *nodeLayer, Qgs
     {
       QString ruleKey = legendNode->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString();
       Qt::CheckState shouldHaveState = layerRec.checkedLegendItems.contains( ruleKey ) ? Qt::Checked : Qt::Unchecked;
-      if ( ( legendNode->flags() & Qt::ItemIsUserCheckable ) &&
-           legendNode->data( Qt::CheckStateRole ).toInt() != shouldHaveState )
+      if ( ( legendNode->flags() & Qt::ItemIsUserCheckable ) && legendNode->data( Qt::CheckStateRole ).toInt() != shouldHaveState )
         legendNode->setData( shouldHaveState, Qt::CheckStateRole );
     }
   }
@@ -170,8 +169,7 @@ void QgsMapThemeCollection::applyThemeToLayer( QgsLayerTreeLayer *nodeLayer, Qgs
     const QList<QgsLayerTreeModelLegendNode *> constLayerLegendNodes = model->layerLegendNodes( nodeLayer, true );
     for ( QgsLayerTreeModelLegendNode *legendNode : constLayerLegendNodes )
     {
-      if ( ( legendNode->flags() & Qt::ItemIsUserCheckable ) &&
-           legendNode->data( Qt::CheckStateRole ).toInt() != Qt::Checked )
+      if ( ( legendNode->flags() & Qt::ItemIsUserCheckable ) && legendNode->data( Qt::CheckStateRole ).toInt() != Qt::Checked )
         legendNode->setData( Qt::Checked, Qt::CheckStateRole );
     }
   }
@@ -212,10 +210,7 @@ void QgsMapThemeCollection::applyTheme( const QString &name, QgsLayerTreeGroup *
   update( name, createThemeFromCurrentState( root, model ) );
 }
 
-QgsProject *QgsMapThemeCollection::project()
-{
-  return mProject;
-}
+QgsProject *QgsMapThemeCollection::project() { return mProject; }
 
 void QgsMapThemeCollection::setProject( QgsProject *project )
 {
@@ -259,10 +254,7 @@ QList<QgsMapLayer *> QgsMapThemeCollection::masterVisibleLayers() const
 }
 
 
-bool QgsMapThemeCollection::hasMapTheme( const QString &name ) const
-{
-  return mMapThemes.contains( name );
-}
+bool QgsMapThemeCollection::hasMapTheme( const QString &name ) const { return mMapThemes.contains( name ); }
 
 void QgsMapThemeCollection::insert( const QString &name, const QgsMapThemeCollection::MapThemeRecord &state )
 {
@@ -285,7 +277,7 @@ void QgsMapThemeCollection::update( const QString &name, const MapThemeRecord &s
   emit mapThemesChanged();
 }
 
-bool QgsMapThemeCollection::renameMapTheme( const QString &name,  const QString &newName )
+bool QgsMapThemeCollection::renameMapTheme( const QString &name, const QString &newName )
 {
   if ( !mMapThemes.contains( name ) || mMapThemes.contains( newName ) )
     return false;
@@ -317,10 +309,7 @@ void QgsMapThemeCollection::clear()
   emit mapThemesChanged();
 }
 
-QStringList QgsMapThemeCollection::mapThemes() const
-{
-  return mMapThemes.keys();
-}
+QStringList QgsMapThemeCollection::mapThemes() const { return mMapThemes.keys(); }
 
 QStringList QgsMapThemeCollection::mapThemeVisibleLayerIds( const QString &name ) const
 {
@@ -393,7 +382,7 @@ QMap<QString, QString> QgsMapThemeCollection::mapThemeStyleOverrides( const QStr
   if ( !mMapThemes.contains( presetName ) )
     return styleOverrides;
 
-  const QList<MapThemeLayerRecord> records {mMapThemes.value( presetName ).mLayerRecords};
+  const QList<MapThemeLayerRecord> records { mMapThemes.value( presetName ).mLayerRecords };
   for ( const MapThemeLayerRecord &layerRec : records )
   {
     if ( !layerRec.layer() )
@@ -549,10 +538,7 @@ void QgsMapThemeCollection::MapThemeRecord::removeLayerRecord( QgsMapLayer *laye
   }
 }
 
-void QgsMapThemeCollection::MapThemeRecord::addLayerRecord( const QgsMapThemeCollection::MapThemeLayerRecord &record )
-{
-  mLayerRecords.append( record );
-}
+void QgsMapThemeCollection::MapThemeRecord::addLayerRecord( const QgsMapThemeCollection::MapThemeLayerRecord &record ) { mLayerRecords.append( record ); }
 
 QHash<QgsMapLayer *, QgsMapThemeCollection::MapThemeLayerRecord> QgsMapThemeCollection::MapThemeRecord::validLayerRecords() const
 {
@@ -756,7 +742,4 @@ void QgsMapThemeCollection::MapThemeRecord::writeXml( QDomElement element, QDomD
   }
 }
 
-void QgsMapThemeCollection::MapThemeLayerRecord::setLayer( QgsMapLayer *layer )
-{
-  mLayer = layer;
-}
+void QgsMapThemeCollection::MapThemeLayerRecord::setLayer( QgsMapLayer *layer ) { mLayer = layer; }

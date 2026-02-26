@@ -65,7 +65,6 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
      *
@@ -82,14 +81,13 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    QString str = u"<QgsAuxiliaryLayer: '%1'>"_s.arg( sipCpp->name() );
+    % MethodCode QString str = u"<QgsAuxiliaryLayer: '%1'>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
 #ifndef SIP_RUN
-    using QgsVectorLayer::clone;
+      using QgsVectorLayer::clone;
 #endif
 
     /**
@@ -285,7 +283,6 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
 class CORE_EXPORT QgsAuxiliaryStorage
 {
   public:
-
     /**
      * Constructor.
      *
@@ -436,7 +433,7 @@ class CORE_EXPORT QgsAuxiliaryStorage
     static QgsDataSourceUri parseOgrUri( const QgsDataSourceUri &uri );
 
     bool mValid = false;
-    QString mFileName; // original filename
+    QString mFileName;    // original filename
     QString mTmpFileName; // temporary filename used in copy mode
     bool mCopy = false;
     mutable QString mErrorString;

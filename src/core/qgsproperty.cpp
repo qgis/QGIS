@@ -106,9 +106,12 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
 
     case BlendMode:
       mTypes = DataTypeString;
-      mHelpText = trString() + QStringLiteral( "[<b>Normal</b>|<b>Lighten</b>|<b>Screen</b>|<b>Dodge</b>|<br>"
-                  "<b>Addition</b>|<b>Darken</b>|<b>Multiply</b>|<b>Burn</b>|<b>Overlay</b>|<br>"
-                  "<b>SoftLight</b>|<b>HardLight</b>|<b>Difference</b>|<b>Subtract</b>]" );
+      mHelpText = trString()
+                  + QStringLiteral(
+                    "[<b>Normal</b>|<b>Lighten</b>|<b>Screen</b>|<b>Dodge</b>|<br>"
+                    "<b>Addition</b>|<b>Darken</b>|<b>Multiply</b>|<b>Burn</b>|<b>Overlay</b>|<br>"
+                    "<b>SoftLight</b>|<b>HardLight</b>|<b>Difference</b>|<b>Subtract</b>]"
+                  );
       break;
 
     case Point:
@@ -138,9 +141,12 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
 
     case FillStyle:
       mTypes = DataTypeString;
-      mHelpText = trString() + QStringLiteral( "[<b>solid</b>|<b>horizontal</b>|<b>vertical</b>|<b>cross</b>|<b>b_diagonal</b>|<b>f_diagonal"
-                  "</b>|<b>diagonal_x</b>|<b>dense1</b>|<b>dense2</b>|<b>dense3</b>|<b>dense4</b>|<b>dense5"
-                  "</b>|<b>dense6</b>|<b>dense7</b>|<b>no]" );
+      mHelpText = trString()
+                  + QStringLiteral(
+                    "[<b>solid</b>|<b>horizontal</b>|<b>vertical</b>|<b>cross</b>|<b>b_diagonal</b>|<b>f_diagonal"
+                    "</b>|<b>diagonal_x</b>|<b>dense1</b>|<b>dense2</b>|<b>dense3</b>|<b>dense4</b>|<b>dense5"
+                    "</b>|<b>dense6</b>|<b>dense7</b>|<b>no]"
+                  );
       break;
 
     case CapStyle:
@@ -160,9 +166,12 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
 
     case SvgPath:
       mTypes = DataTypeString;
-      mHelpText = trString() + QStringLiteral( "[<b>filepath</b>] as<br>"
-                  "<b>''</b>=empty|absolute|search-paths-relative|<br>"
-                  "project-relative|URL" );
+      mHelpText = trString()
+                  + QStringLiteral(
+                    "[<b>filepath</b>] as<br>"
+                    "<b>''</b>=empty|absolute|search-paths-relative|<br>"
+                    "project-relative|URL"
+                  );
       break;
 
     case Offset:
@@ -191,8 +200,7 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, DataType data
 
 bool QgsPropertyDefinition::supportsAssistant() const
 {
-  return mTypes == DataTypeNumeric || mStandardType == Size || mStandardType == StrokeWidth || mStandardType == ColorNoAlpha || mStandardType == ColorWithAlpha
-         || mStandardType == Rotation;
+  return mTypes == DataTypeNumeric || mStandardType == Size || mStandardType == StrokeWidth || mStandardType == ColorNoAlpha || mStandardType == ColorWithAlpha || mStandardType == Rotation;
 }
 
 QString QgsPropertyDefinition::trString()
@@ -227,10 +235,7 @@ QMap<QString, QgsProperty> QgsProperty::variantMapToPropertyMap( const QVariantM
   return propertyMap;
 }
 
-QgsProperty::QgsProperty()
-{
-  d = new QgsPropertyPrivate();
-}
+QgsProperty::QgsProperty() { d = new QgsPropertyPrivate(); }
 
 QgsProperty::~QgsProperty() = default;
 
@@ -262,7 +267,7 @@ QgsProperty::QgsProperty( const QgsProperty &other ) //NOLINT
   : d( other.d )
 {}
 
-QgsProperty &QgsProperty::operator=( const QgsProperty &other )  //NOLINT
+QgsProperty &QgsProperty::operator=( const QgsProperty &other ) //NOLINT
 {
   if ( &other == this )
     return *this;
@@ -273,28 +278,16 @@ QgsProperty &QgsProperty::operator=( const QgsProperty &other )  //NOLINT
 
 bool QgsProperty::operator==( const QgsProperty &other ) const
 {
-  return d->active == other.d->active
-         && d->type == other.d->type
-         && ( d->type != Qgis::PropertyType::Static || d->staticValue == other.d->staticValue )
-         && ( d->type != Qgis::PropertyType::Field || d->fieldName == other.d->fieldName )
-         && ( d->type != Qgis::PropertyType::Expression || d->expressionString == other.d->expressionString )
+  return d->active == other.d->active && d->type == other.d->type && ( d->type != Qgis::PropertyType::Static || d->staticValue == other.d->staticValue )
+         && ( d->type != Qgis::PropertyType::Field || d->fieldName == other.d->fieldName ) && ( d->type != Qgis::PropertyType::Expression || d->expressionString == other.d->expressionString )
          && ( ( !d->transformer && !other.d->transformer ) || ( d->transformer && other.d->transformer && d->transformer->toExpression( QString() ) == other.d->transformer->toExpression( QString() ) ) );
 }
 
-bool QgsProperty::operator!=( const QgsProperty &other ) const
-{
-  return ( !( ( *this ) == other ) );
-}
+bool QgsProperty::operator!=( const QgsProperty &other ) const { return ( !( ( *this ) == other ) ); }
 
-Qgis::PropertyType QgsProperty::propertyType() const
-{
-  return d->type;
-}
+Qgis::PropertyType QgsProperty::propertyType() const { return d->type; }
 
-bool QgsProperty::isActive() const
-{
-  return d->type != Qgis::PropertyType::Invalid && d->active;
-}
+bool QgsProperty::isActive() const { return d->type != Qgis::PropertyType::Invalid && d->active; }
 
 bool QgsProperty::isStaticValueInContext( const QgsExpressionContext &context, QVariant &staticValue ) const
 {
@@ -365,10 +358,7 @@ QString QgsProperty::field() const
   return d->fieldName;
 }
 
-QgsProperty::operator bool() const
-{
-  return d->type != Qgis::PropertyType::Invalid;
-}
+QgsProperty::operator bool() const { return d->type != Qgis::PropertyType::Invalid; }
 
 void QgsProperty::setExpressionString( const QString &expression )
 {
@@ -460,7 +450,6 @@ bool QgsProperty::prepare( const QgsExpressionContext &context ) const
 
     case Qgis::PropertyType::Invalid:
       return true;
-
   }
 
   return false;
@@ -504,7 +493,6 @@ QSet<QString> QgsProperty::referencedFields( const QgsExpressionContext &context
 
       return d->expressionReferencedCols;
     }
-
   }
   return QSet<QString>();
 }
@@ -512,8 +500,7 @@ QSet<QString> QgsProperty::referencedFields( const QgsExpressionContext &context
 bool QgsProperty::isProjectColor() const
 {
   const thread_local QRegularExpression rx( u"^project_color(_object|)\\('.*'\\)$"_s );
-  return d->type == Qgis::PropertyType::Expression && !d->expressionString.isEmpty()
-         && rx.match( d->expressionString ).hasMatch();
+  return d->type == Qgis::PropertyType::Expression && !d->expressionString.isEmpty() && rx.match( d->expressionString ).hasMatch();
 }
 
 QVariant QgsProperty::propertyValue( const QgsExpressionContext &context, const QVariant &defaultValue, bool *ok ) const
@@ -578,7 +565,6 @@ QVariant QgsProperty::propertyValue( const QgsExpressionContext &context, const 
 
     case Qgis::PropertyType::Invalid:
       return defaultValue;
-
   }
 
   return QVariant();
@@ -837,7 +823,6 @@ bool QgsProperty::loadVariant( const QVariant &property )
 
     case Qgis::PropertyType::Invalid:
       break;
-
   }
 
   //restore transformer if present
@@ -871,10 +856,7 @@ void QgsProperty::setTransformer( QgsPropertyTransformer *transformer )
   d->transformer = transformer;
 }
 
-const QgsPropertyTransformer *QgsProperty::transformer() const
-{
-  return d->transformer;
-}
+const QgsPropertyTransformer *QgsProperty::transformer() const { return d->transformer; }
 
 bool QgsProperty::convertToTransformer()
 {

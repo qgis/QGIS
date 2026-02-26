@@ -25,7 +25,6 @@ proportionally to the map scale.
 #include "qgsmapunitscale.h"
 %End
   public:
-
     explicit QgsMapUnitScale( double minScale = 0.0, double maxScale = 0.0 );
 %Docstring
 Constructor for QgsMapUnitScale
@@ -67,9 +66,6 @@ and maximum scales set for the object.
 
     bool operator!=( const QgsMapUnitScale &other ) const;
 };
-
-
-
 
 
 /************************************************************************

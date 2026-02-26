@@ -24,10 +24,7 @@
 
 using namespace Qt::StringLiterals;
 
-QgsApplicationThemeRegistry::QgsApplicationThemeRegistry()
-{
-  addApplicationThemes();
-}
+QgsApplicationThemeRegistry::QgsApplicationThemeRegistry() { addApplicationThemes(); }
 
 void QgsApplicationThemeRegistry::addApplicationThemes()
 {
@@ -81,17 +78,8 @@ bool QgsApplicationThemeRegistry::removeTheme( const QString &name )
   return true;
 }
 
-QStringList QgsApplicationThemeRegistry::themes() const
-{
-  return mThemes.keys();
-}
+QStringList QgsApplicationThemeRegistry::themes() const { return mThemes.keys(); }
 
-QString QgsApplicationThemeRegistry::themeFolder( const QString &name ) const
-{
-  return mThemes.value( name );
-}
+QString QgsApplicationThemeRegistry::themeFolder( const QString &name ) const { return mThemes.value( name ); }
 
-QHash<QString, QString> QgsApplicationThemeRegistry::themeFolders() const
-{
-  return mThemes;
-}
+QHash<QString, QString> QgsApplicationThemeRegistry::themeFolders() const { return mThemes; }

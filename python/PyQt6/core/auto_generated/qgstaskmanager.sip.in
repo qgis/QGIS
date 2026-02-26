@@ -35,7 +35,6 @@ earliest possible convenience.
 #include "qgstaskmanager.h"
 %End
   public:
-
     enum TaskStatus /BaseType=IntEnum/
     {
       Queued,
@@ -152,8 +151,7 @@ If the task in not currently being held then calling this has no effect.
       ParentDependsOnSubTask,
     };
 
-    void addSubTask( QgsTask *subTask /Transfer/, const QgsTaskList &dependencies = QgsTaskList(),
-                     SubTaskDependency subTaskDependency = SubTaskIndependent );
+    void addSubTask( QgsTask *subTask /Transfer/, const QgsTaskList &dependencies = QgsTaskList(), SubTaskDependency subTaskDependency = SubTaskIndependent );
 %Docstring
 Adds a subtask to this task.
 
@@ -266,7 +264,6 @@ internal error).
 %End
 
   protected:
-
     virtual bool run() = 0;
 %Docstring
 Performs the task's operation. This method will be called when the task
@@ -328,7 +325,6 @@ This class can be created directly, or accessed via
 #include "qgstaskmanager.h"
 %End
   public:
-
     QgsTaskManager( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsTaskManager.
@@ -340,17 +336,15 @@ Constructor for QgsTaskManager.
 
     struct TaskDefinition
     {
-
-      explicit TaskDefinition( QgsTask *task, const QgsTaskList &dependentTasks = QgsTaskList() );
+        explicit TaskDefinition( QgsTask *task, const QgsTaskList &dependentTasks = QgsTaskList() );
 %Docstring
 Constructor for TaskDefinition. Ownership of the task is not transferred
 to the definition, but will be transferred to a QgsTaskManager.
 %End
 
-      QgsTask *task;
+        QgsTask *task;
 
-      QgsTaskList dependentTasks;
-
+        QgsTaskList dependentTasks;
     };
 
     QThreadPool *threadPool();
@@ -576,7 +570,6 @@ For now, subtasks can *NOT* be nested.
 
 
   protected:
-
 
     virtual bool run();
 

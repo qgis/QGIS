@@ -41,7 +41,7 @@ using namespace Qt::StringLiterals;
 #ifdef _MSC_VER
 #include <Windows.h>
 #include <ShlObj.h>
-#pragma comment(lib,"Shell32.lib")
+#pragma comment( lib, "Shell32.lib" )
 #endif
 
 QString QgsFileUtils::representFileSize( qint64 bytes )
@@ -194,7 +194,7 @@ QStringList QgsFileUtils::findFile( const QString &file, const QString &basePath
 
   if ( QFileInfo( baseFolder ).isDir() )
   {
-    folder = QDir( baseFolder ) ;
+    folder = QDir( baseFolder );
     originalFolder = folder.absolutePath();
   }
   else // invalid folder or file path
@@ -214,7 +214,6 @@ QStringList QgsFileUtils::findFile( const QString &file, const QString &basePath
   // find the nearest existing folder
   while ( !folder.exists() && folder.absolutePath().count( '/' ) > searchCeilling )
   {
-
     existingBase = folder.path();
     if ( !folder.cdUp() )
       folder = QFileInfo( existingBase ).absoluteDir(); // using fileinfo to move up one level
@@ -234,7 +233,6 @@ QStringList QgsFileUtils::findFile( const QString &file, const QString &basePath
 
   while ( depth <= maxClimbs && folderExists && folder.absolutePath().count( '/' ) >= searchCeilling )
   {
-
     QDirIterator localFinder( folder.path(), QStringList() << fileName, QDir::Files, QDirIterator::NoIteratorFlags );
     searchedFolder.append( folder.absolutePath() );
     if ( localFinder.hasNext() )
@@ -247,7 +245,7 @@ QStringList QgsFileUtils::findFile( const QString &file, const QString &basePath
     const QFileInfoList subdirs = folder.entryInfoList( QDir::AllDirs );
     for ( const QFileInfo &subdir : subdirs )
     {
-      if ( ! searchedFolder.contains( subdir.absolutePath() ) )
+      if ( !searchedFolder.contains( subdir.absolutePath() ) )
       {
         QDirIterator subDirFinder( subdir.path(), QStringList() << fileName, QDir::Files, QDirIterator::Subdirectories );
         if ( subDirFinder.hasNext() )
@@ -311,10 +309,7 @@ void fileAttributesNew( HANDLE handle, DWORD &fileAttributes, bool &hasFileAttri
   hasFileAttributes = false;
 #if WINVER >= 0x0602
   _FILE_BASIC_INFO infoEx;
-  if ( GetFileInformationByHandleEx(
-         handle,
-         FileBasicInfo,
-         &infoEx, sizeof( infoEx ) ) )
+  if ( GetFileInformationByHandleEx( handle, FileBasicInfo, &infoEx, sizeof( infoEx ) ) )
   {
     hasFileAttributes = true;
     fileAttributes = infoEx.FileAttributes;
@@ -340,8 +335,7 @@ bool pathIsLikelyCloudStorage( QString path )
   }
 
   std::unique_ptr< wchar_t[] > pathArray = pathToWChar( path );
-  const HANDLE handle = CreateFileW( pathArray.get(), 0, FILE_SHARE_READ,
-                                     nullptr, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, nullptr );
+  const HANDLE handle = CreateFileW( pathArray.get(), 0, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, nullptr );
   if ( handle != INVALID_HANDLE_VALUE )
   {
     bool hasFileAttributes = false;
@@ -362,8 +356,7 @@ bool pathIsLikelyCloudStorage( QString path )
          * For a file that means that not all of its data is on local storage (e.g. it may be sparse with
          * some data still in remote storage).
          */
-      return ( attributes & FILE_ATTRIBUTE_RECALL_ON_OPEN )
-             || ( attributes & FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS );
+      return ( attributes & FILE_ATTRIBUTE_RECALL_ON_OPEN ) || ( attributes & FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS );
     }
   }
   return false;
@@ -373,8 +366,7 @@ bool pathIsLikelyCloudStorage( QString path )
 Qgis::DriveType QgsFileUtils::driveType( const QString &path )
 {
 #ifdef _MSC_VER
-  auto pathType = []( const QString & path ) -> Qgis::DriveType
-  {
+  auto pathType = []( const QString &path ) -> Qgis::DriveType {
     std::unique_ptr< wchar_t[] > pathArray = pathToWChar( path );
     const UINT type = GetDriveTypeW( pathArray.get() );
     switch ( type )
@@ -402,7 +394,6 @@ Qgis::DriveType QgsFileUtils::driveType( const QString &path )
     }
 
     return Qgis::DriveType::Unknown;
-
   };
 
   const QString originalPath = QDir::cleanPath( path );
@@ -423,7 +414,7 @@ Qgis::DriveType QgsFileUtils::driveType( const QString &path )
   return Qgis::DriveType::Unknown;
 
 #else
-  ( void )path;
+  ( void ) path;
   throw QgsNotSupportedException( u"Determining drive type is not supported on this platform"_s );
 #endif
 }
@@ -454,9 +445,7 @@ bool QgsFileUtils::pathIsSlowDevice( const QString &path )
     }
   }
   catch ( QgsNotSupportedException & )
-  {
-
-  }
+  {}
   return false;
 }
 
@@ -626,7 +615,7 @@ QStringList QgsFileUtils::splitPathToComponents( const QString &input )
 
 QString QgsFileUtils::uniquePath( const QString &path )
 {
-  if ( ! QFileInfo::exists( path ) )
+  if ( !QFileInfo::exists( path ) )
   {
     return path;
   }

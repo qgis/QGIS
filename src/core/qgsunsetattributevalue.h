@@ -35,7 +35,6 @@ using namespace Qt::StringLiterals;
 class CORE_EXPORT QgsUnsetAttributeValue
 {
   public:
-
     QgsUnsetAttributeValue() = default;
 
     /**
@@ -60,8 +59,7 @@ class CORE_EXPORT QgsUnsetAttributeValue
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    QString str;
+    % MethodCode QString str;
     if ( !sipCpp->defaultValueClause().isEmpty() )
       str = u"<QgsUnsetAttributeValue: %1>"_s.arg( sipCpp->defaultValueClause() );
     else
@@ -70,60 +68,43 @@ class CORE_EXPORT QgsUnsetAttributeValue
     % End
 #endif
 
-    //! Allows direct construction of QVariants from unset values.
-    operator QVariant() const
+      //! Allows direct construction of QVariants from unset values.
+      operator QVariant() const
     {
       return QVariant::fromValue( *this );
     }
 
   private:
-
     QString mDefaultValueClause;
-
 };
 
 Q_DECLARE_METATYPE( QgsUnsetAttributeValue )
 
 #ifndef SIP_RUN
-#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
+#if ( __GNUC__ > 4 || ( __GNUC__ == 4 && __GNUC_MINOR__ >= 6 ) ) || defined( __clang__ )
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wattributes"
-#elif defined(_MSC_VER)
-__pragma( warning( push ) )
-__pragma( warning( disable: 4273 ) )
+#elif defined( _MSC_VER )
+__pragma( warning( push ) ) __pragma( warning( disable : 4273 ) )
 #endif
 #endif
 
-inline bool CORE_EXPORT operator==( const QgsUnsetAttributeValue &value, const QString &other )
-{
-  return other == value.defaultValueClause();
-}
+inline bool CORE_EXPORT operator==( const QgsUnsetAttributeValue &value, const QString &other ) { return other == value.defaultValueClause(); }
 
 #ifndef SIP_RUN
-#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
+#if ( __GNUC__ > 4 || ( __GNUC__ == 4 && __GNUC_MINOR__ >= 6 ) ) || defined( __clang__ )
 #pragma GCC diagnostic pop
-#elif defined(_MSC_VER)
+#elif defined( _MSC_VER )
 __pragma( warning( pop ) )
 #endif
 #endif
 
-inline bool operator!=( const QgsUnsetAttributeValue &value, const QString &other )
-{
-  return other != value.defaultValueClause();
-}
+inline bool operator!=( const QgsUnsetAttributeValue &value, const QString &other ) { return other != value.defaultValueClause(); }
 
 #ifndef SIP_RUN
-inline bool operator==( const QString &other, const QgsUnsetAttributeValue &value )
-{
-  return other == value.defaultValueClause();
-}
+inline bool operator==( const QString &other, const QgsUnsetAttributeValue &value ) { return other == value.defaultValueClause(); }
 
-inline bool operator!=( const QString &other, const QgsUnsetAttributeValue &value )
-{
-  return other != value.defaultValueClause();
-}
+inline bool operator!=( const QString &other, const QgsUnsetAttributeValue &value ) { return other != value.defaultValueClause(); }
 #endif
 
 #endif // QGSUNSETATTRIBUTEVALUE_H
-
-

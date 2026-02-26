@@ -13,7 +13,7 @@
 
 
 
-class QgsRunProcess: QObject /NoDefaultCtors/
+class QgsRunProcess : QObject /NoDefaultCtors/
 {
 %Docstring(signature="appended")
 Executes an external program/script.
@@ -76,7 +76,6 @@ https://lists.qt-project.org/pipermail/development/2015-July/022205.html
 #include "qgsrunprocess.h"
 %End
   public:
-
     QgsBlockingProcess( const QString &program, const QStringList &arguments );
 %Docstring
 Constructor for the given ``program``, with the specified list of
@@ -92,34 +91,30 @@ process execution.
 Sets a handler function to call whenever content is written by the
 process to stdout.
 %End
-%MethodCode
-    Py_BEGIN_ALLOW_THREADS
+%MethodCode Py_BEGIN_ALLOW_THREADS
 
-    sipCpp->setStdOutHandler( [a0]( const QByteArray &arg )
-    {
-      SIP_BLOCK_THREADS
-      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QByteArray, NULL ) );
-      SIP_UNBLOCK_THREADS
-    } );
+        sipCpp->setStdOutHandler( [a0]( const QByteArray &arg ) {
+          SIP_BLOCK_THREADS
+          Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QByteArray, NULL ) );
+          SIP_UNBLOCK_THREADS
+        } );
 
     Py_END_ALLOW_THREADS
 %End
 
 
-    void setStdErrHandler( SIP_PYCALLABLE / AllowNone / );
+      void setStdErrHandler( SIP_PYCALLABLE / AllowNone / );
 %Docstring
 Sets a ``handler`` function to call whenever content is written by the
 process to stderr.
 %End
-%MethodCode
-    Py_BEGIN_ALLOW_THREADS
+%MethodCode Py_BEGIN_ALLOW_THREADS
 
-    sipCpp->setStdErrHandler( [a0]( const QByteArray &arg )
-    {
-      SIP_BLOCK_THREADS
-      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QByteArray, NULL ) );
-      SIP_UNBLOCK_THREADS
-    } );
+        sipCpp->setStdErrHandler( [a0]( const QByteArray &arg ) {
+          SIP_BLOCK_THREADS
+          Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QByteArray, NULL ) );
+          SIP_UNBLOCK_THREADS
+        } );
 
     Py_END_ALLOW_THREADS
 %End

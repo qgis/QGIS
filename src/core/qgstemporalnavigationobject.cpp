@@ -32,8 +32,7 @@ QgsTemporalNavigationObject::QgsTemporalNavigationObject( QObject *parent )
 {
   mNewFrameTimer = new QTimer( this );
 
-  connect( mNewFrameTimer, &QTimer::timeout,
-           this, &QgsTemporalNavigationObject::timerTimeout );
+  connect( mNewFrameTimer, &QTimer::timeout, this, &QgsTemporalNavigationObject::timerTimeout );
 }
 
 void QgsTemporalNavigationObject::timerTimeout()
@@ -68,10 +67,7 @@ void QgsTemporalNavigationObject::timerTimeout()
   }
 }
 
-long long QgsTemporalNavigationObject::totalMovieFrames() const
-{
-  return mTotalMovieFrames;
-}
+long long QgsTemporalNavigationObject::totalMovieFrames() const { return mTotalMovieFrames; }
 
 void QgsTemporalNavigationObject::setTotalMovieFrames( long long frames )
 {
@@ -84,15 +80,9 @@ void QgsTemporalNavigationObject::setTotalMovieFrames( long long frames )
   emit temporalExtentsChanged( mTemporalExtents );
 }
 
-bool QgsTemporalNavigationObject::isLooping() const
-{
-  return mLoopAnimation;
-}
+bool QgsTemporalNavigationObject::isLooping() const { return mLoopAnimation; }
 
-void QgsTemporalNavigationObject::setLooping( bool loopAnimation )
-{
-  mLoopAnimation = loopAnimation;
-}
+void QgsTemporalNavigationObject::setLooping( bool loopAnimation ) { mLoopAnimation = loopAnimation; }
 
 QgsExpressionContextScope *QgsTemporalNavigationObject::createExpressionContextScope() const
 {
@@ -201,23 +191,13 @@ void QgsTemporalNavigationObject::setTemporalExtents( const QgsDateTimeRange &te
     case Qgis::TemporalNavigationMode::Movie:
       break;
   }
-
 }
 
-QgsDateTimeRange QgsTemporalNavigationObject::temporalExtents() const
-{
-  return mTemporalExtents;
-}
+QgsDateTimeRange QgsTemporalNavigationObject::temporalExtents() const { return mTemporalExtents; }
 
-void QgsTemporalNavigationObject::setAvailableTemporalRanges( const QList<QgsDateTimeRange> &ranges )
-{
-  mAllRanges = ranges;
-}
+void QgsTemporalNavigationObject::setAvailableTemporalRanges( const QList<QgsDateTimeRange> &ranges ) { mAllRanges = ranges; }
 
-QList<QgsDateTimeRange> QgsTemporalNavigationObject::availableTemporalRanges() const
-{
-  return mAllRanges;
-}
+QList<QgsDateTimeRange> QgsTemporalNavigationObject::availableTemporalRanges() const { return mAllRanges; }
 
 void QgsTemporalNavigationObject::setCurrentFrameNumber( long long frameNumber )
 {
@@ -231,10 +211,7 @@ void QgsTemporalNavigationObject::setCurrentFrameNumber( long long frameNumber )
   }
 }
 
-long long QgsTemporalNavigationObject::currentFrameNumber() const
-{
-  return mCurrentFrameNumber;
-}
+long long QgsTemporalNavigationObject::currentFrameNumber() const { return mCurrentFrameNumber; }
 
 void QgsTemporalNavigationObject::setFrameDuration( const QgsInterval &frameDuration )
 {
@@ -256,10 +233,7 @@ void QgsTemporalNavigationObject::setFrameDuration( const QgsInterval &frameDura
     emit updateTemporalRange( range );
 }
 
-QgsInterval QgsTemporalNavigationObject::frameDuration() const
-{
-  return mFrameDuration;
-}
+QgsInterval QgsTemporalNavigationObject::frameDuration() const { return mFrameDuration; }
 
 void QgsTemporalNavigationObject::setFramesPerSecond( double framesPerSeconds )
 {
@@ -270,10 +244,7 @@ void QgsTemporalNavigationObject::setFramesPerSecond( double framesPerSeconds )
   }
 }
 
-double QgsTemporalNavigationObject::framesPerSecond() const
-{
-  return mFramesPerSecond;
-}
+double QgsTemporalNavigationObject::framesPerSecond() const { return mFramesPerSecond; }
 
 void QgsTemporalNavigationObject::setTemporalRangeCumulative( bool state )
 {
@@ -288,15 +259,9 @@ void QgsTemporalNavigationObject::setTemporalRangeCumulative( bool state )
   }
 }
 
-bool QgsTemporalNavigationObject::temporalRangeCumulative() const
-{
-  return mCumulativeTemporalRange;
-}
+bool QgsTemporalNavigationObject::temporalRangeCumulative() const { return mCumulativeTemporalRange; }
 
-void QgsTemporalNavigationObject::play()
-{
-  mNewFrameTimer->start( static_cast< int >( ( 1.0 / mFramesPerSecond ) * 1000 ) );
-}
+void QgsTemporalNavigationObject::play() { mNewFrameTimer->start( static_cast< int >( ( 1.0 / mFramesPerSecond ) * 1000 ) ); }
 
 void QgsTemporalNavigationObject::pause()
 {
@@ -306,7 +271,7 @@ void QgsTemporalNavigationObject::pause()
 
 void QgsTemporalNavigationObject::playForward()
 {
-  if ( mPlayBackMode == Qgis::AnimationState::Idle &&  mCurrentFrameNumber >= totalFrameCount() - 1 )
+  if ( mPlayBackMode == Qgis::AnimationState::Idle && mCurrentFrameNumber >= totalFrameCount() - 1 )
   {
     // if we are paused at the end of the video, and the user hits play, we automatically rewind and play again
     rewindToStart();
@@ -318,7 +283,7 @@ void QgsTemporalNavigationObject::playForward()
 
 void QgsTemporalNavigationObject::playBackward()
 {
-  if ( mPlayBackMode == Qgis::AnimationState::Idle &&  mCurrentFrameNumber <= 0 )
+  if ( mPlayBackMode == Qgis::AnimationState::Idle && mCurrentFrameNumber <= 0 )
   {
     // if we are paused at the start of the video, and the user hits play, we automatically skip to end and play in reverse again
     skipToEnd();
@@ -328,20 +293,11 @@ void QgsTemporalNavigationObject::playBackward()
   play();
 }
 
-void QgsTemporalNavigationObject::next()
-{
-  setCurrentFrameNumber( mCurrentFrameNumber + 1 );
-}
+void QgsTemporalNavigationObject::next() { setCurrentFrameNumber( mCurrentFrameNumber + 1 ); }
 
-void QgsTemporalNavigationObject::previous()
-{
-  setCurrentFrameNumber( mCurrentFrameNumber - 1 );
-}
+void QgsTemporalNavigationObject::previous() { setCurrentFrameNumber( mCurrentFrameNumber - 1 ); }
 
-void QgsTemporalNavigationObject::rewindToStart()
-{
-  setCurrentFrameNumber( 0 );
-}
+void QgsTemporalNavigationObject::rewindToStart() { setCurrentFrameNumber( 0 ); }
 
 void QgsTemporalNavigationObject::skipToEnd()
 {
@@ -374,10 +330,7 @@ void QgsTemporalNavigationObject::setAnimationState( Qgis::AnimationState mode )
   }
 }
 
-Qgis::AnimationState QgsTemporalNavigationObject::animationState() const
-{
-  return mPlayBackMode;
-}
+Qgis::AnimationState QgsTemporalNavigationObject::animationState() const { return mPlayBackMode; }
 
 long long QgsTemporalNavigationObject::findBestFrameNumberForFrameStart( const QDateTime &frameStart ) const
 {
@@ -403,7 +356,8 @@ long long QgsTemporalNavigationObject::findBestFrameNumberForFrameStart( const Q
     long long roughFrameEnd = totalFrameCount();
     // For the smaller step frames we calculate an educated guess, to prevent the loop becoming too
     // large, freezing the ui (eg having a mTemporalExtents of several months and the user selects milliseconds)
-    if ( mFrameDuration.originalUnit() != Qgis::TemporalUnit::Months && mFrameDuration.originalUnit() != Qgis::TemporalUnit::Years && mFrameDuration.originalUnit() != Qgis::TemporalUnit::Decades && mFrameDuration.originalUnit() != Qgis::TemporalUnit::Centuries )
+    if ( mFrameDuration.originalUnit() != Qgis::TemporalUnit::Months && mFrameDuration.originalUnit() != Qgis::TemporalUnit::Years && mFrameDuration.originalUnit() != Qgis::TemporalUnit::Decades
+         && mFrameDuration.originalUnit() != Qgis::TemporalUnit::Centuries )
     {
       // Only if we receive a valid frameStart, that is within current mTemporalExtents
       // We tend to receive a framestart of 'now()' upon startup for example

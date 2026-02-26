@@ -34,7 +34,6 @@ the screen coordinates (+/- 32768, i.e. 16 bit integer).
   public:
 
 
-
     static const double MAX_X;
     static const double MIN_X;
     static const double MAX_Y;
@@ -51,9 +50,7 @@ the screen coordinates (+/- 32768, i.e. 16 bit integer).
       ZMin,
     };
 
-    static void trimFeature( QVector<double> &x,
-                             QVector<double> &y,
-                             bool shapeOpen );
+    static void trimFeature( QVector<double> &x, QVector<double> &y, bool shapeOpen );
 %Docstring
 Trims the given feature to a rectangular box. Returns the trimmed
 feature in x and y. The shapeOpen parameter determines whether the

@@ -24,11 +24,9 @@
 
 using namespace Qt::StringLiterals;
 
-QgsElevationShadingRenderer::QgsElevationShadingRenderer()
-{
-}
+QgsElevationShadingRenderer::QgsElevationShadingRenderer() {}
 
-void QgsElevationShadingRenderer::renderShading( const QgsElevationMap &elevation, QImage &image,  const QgsRenderContext &context ) const
+void QgsElevationShadingRenderer::renderShading( const QgsElevationMap &elevation, QImage &image, const QgsRenderContext &context ) const
 {
   if ( elevation.rawElevationImage().size() != image.size() )
     return;
@@ -40,75 +38,33 @@ void QgsElevationShadingRenderer::renderShading( const QgsElevationMap &elevatio
     renderHillshading( elevation, image, context );
 }
 
-void QgsElevationShadingRenderer::setActive( bool active )
-{
-  mIsActive = active;
-}
+void QgsElevationShadingRenderer::setActive( bool active ) { mIsActive = active; }
 
-bool QgsElevationShadingRenderer::isActive() const
-{
-  return mIsActive;
-}
+bool QgsElevationShadingRenderer::isActive() const { return mIsActive; }
 
-void QgsElevationShadingRenderer::setActiveEyeDomeLighting( bool active )
-{
-  mRenderEdl = active;
-}
+void QgsElevationShadingRenderer::setActiveEyeDomeLighting( bool active ) { mRenderEdl = active; }
 
-bool QgsElevationShadingRenderer::isActiveEyeDomeLighting() const
-{
-  return mRenderEdl;
-}
+bool QgsElevationShadingRenderer::isActiveEyeDomeLighting() const { return mRenderEdl; }
 
-void QgsElevationShadingRenderer::setActiveHillshading( bool active )
-{
-  mRenderHillshading = active;
-}
+void QgsElevationShadingRenderer::setActiveHillshading( bool active ) { mRenderHillshading = active; }
 
-bool QgsElevationShadingRenderer::isActiveHillshading() const
-{
-  return mRenderHillshading;
-}
+bool QgsElevationShadingRenderer::isActiveHillshading() const { return mRenderHillshading; }
 
-double QgsElevationShadingRenderer::hillshadingZFactor() const
-{
-  return mHillshadingZFactor;
-}
+double QgsElevationShadingRenderer::hillshadingZFactor() const { return mHillshadingZFactor; }
 
-void QgsElevationShadingRenderer::setHillshadingZFactor( double zFactor )
-{
-  mHillshadingZFactor = zFactor;
-}
+void QgsElevationShadingRenderer::setHillshadingZFactor( double zFactor ) { mHillshadingZFactor = zFactor; }
 
-bool QgsElevationShadingRenderer::isHillshadingMultidirectional() const
-{
-  return mHillshadingMultiDir;
-}
+bool QgsElevationShadingRenderer::isHillshadingMultidirectional() const { return mHillshadingMultiDir; }
 
-void QgsElevationShadingRenderer::setHillshadingMultidirectional( bool multiDirectional )
-{
-  mHillshadingMultiDir = multiDirectional;
-}
+void QgsElevationShadingRenderer::setHillshadingMultidirectional( bool multiDirectional ) { mHillshadingMultiDir = multiDirectional; }
 
-double QgsElevationShadingRenderer::lightAltitude() const
-{
-  return mLightAltitude;
-}
+double QgsElevationShadingRenderer::lightAltitude() const { return mLightAltitude; }
 
-void QgsElevationShadingRenderer::setLightAltitude( double lightAltitude )
-{
-  mLightAltitude = lightAltitude;
-}
+void QgsElevationShadingRenderer::setLightAltitude( double lightAltitude ) { mLightAltitude = lightAltitude; }
 
-double QgsElevationShadingRenderer::lightAzimuth() const
-{
-  return mLightAzimuth;
-}
+double QgsElevationShadingRenderer::lightAzimuth() const { return mLightAzimuth; }
 
-void QgsElevationShadingRenderer::setLightAzimuth( double lightAzimuth )
-{
-  mLightAzimuth = lightAzimuth;
-}
+void QgsElevationShadingRenderer::setLightAzimuth( double lightAzimuth ) { mLightAzimuth = lightAzimuth; }
 
 void QgsElevationShadingRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext & ) const
 {
@@ -117,16 +73,16 @@ void QgsElevationShadingRenderer::writeXml( QDomElement &elem, const QgsReadWrit
   elem.setAttribute( u"combined-method"_s, static_cast<int>( mCombinedElevationMethod ) );
 
   elem.setAttribute( u"edl-is-active"_s, mRenderEdl ? 1 : 0 );
-  elem.setAttribute( u"edl-strength"_s,  qgsDoubleToString( mEyeDomeLightingStrength ) );
-  elem.setAttribute( u"edl-distance"_s,  qgsDoubleToString( mEyeDomeLightingDistance ) );
+  elem.setAttribute( u"edl-strength"_s, qgsDoubleToString( mEyeDomeLightingStrength ) );
+  elem.setAttribute( u"edl-distance"_s, qgsDoubleToString( mEyeDomeLightingDistance ) );
   elem.setAttribute( u"edl-distance-unit"_s, static_cast<int>( mEyeDomeLightingDistanceUnit ) );
 
   elem.setAttribute( u"hillshading-is-active"_s, mRenderHillshading ? 1 : 0 );
   elem.setAttribute( u"hillshading-z-factor"_s, qgsDoubleToString( mHillshadingZFactor ) );
   elem.setAttribute( u"hillshading-is-multidirectional"_s, mHillshadingMultiDir ? 1 : 0 );
 
-  elem.setAttribute( u"light-altitude"_s,  qgsDoubleToString( mLightAltitude ) );
-  elem.setAttribute( u"light-azimuth"_s,  qgsDoubleToString( mLightAzimuth ) );
+  elem.setAttribute( u"light-altitude"_s, qgsDoubleToString( mLightAltitude ) );
+  elem.setAttribute( u"light-azimuth"_s, qgsDoubleToString( mLightAzimuth ) );
 }
 
 void QgsElevationShadingRenderer::readXml( const QDomElement &element, const QgsReadWriteContext & )
@@ -165,45 +121,21 @@ void QgsElevationShadingRenderer::readXml( const QDomElement &element, const Qgs
     mLightAzimuth = element.attribute( u"light-azimuth"_s ).toDouble();
 }
 
-Qgis::ElevationMapCombineMethod QgsElevationShadingRenderer::combinedElevationMethod() const
-{
-  return mCombinedElevationMethod;
-}
+Qgis::ElevationMapCombineMethod QgsElevationShadingRenderer::combinedElevationMethod() const { return mCombinedElevationMethod; }
 
-void QgsElevationShadingRenderer::setCombinedElevationMethod( Qgis::ElevationMapCombineMethod newCombinedElevationMethod )
-{
-  mCombinedElevationMethod = newCombinedElevationMethod;
-}
+void QgsElevationShadingRenderer::setCombinedElevationMethod( Qgis::ElevationMapCombineMethod newCombinedElevationMethod ) { mCombinedElevationMethod = newCombinedElevationMethod; }
 
-Qgis::RenderUnit QgsElevationShadingRenderer::eyeDomeLightingDistanceUnit() const
-{
-  return mEyeDomeLightingDistanceUnit;
-}
+Qgis::RenderUnit QgsElevationShadingRenderer::eyeDomeLightingDistanceUnit() const { return mEyeDomeLightingDistanceUnit; }
 
-void QgsElevationShadingRenderer::setEyeDomeLightingDistanceUnit( Qgis::RenderUnit newEyeDomeLightingDistanceUnit )
-{
-  mEyeDomeLightingDistanceUnit = newEyeDomeLightingDistanceUnit;
-}
+void QgsElevationShadingRenderer::setEyeDomeLightingDistanceUnit( Qgis::RenderUnit newEyeDomeLightingDistanceUnit ) { mEyeDomeLightingDistanceUnit = newEyeDomeLightingDistanceUnit; }
 
-double QgsElevationShadingRenderer::eyeDomeLightingDistance() const
-{
-  return mEyeDomeLightingDistance;
-}
+double QgsElevationShadingRenderer::eyeDomeLightingDistance() const { return mEyeDomeLightingDistance; }
 
-void QgsElevationShadingRenderer::setEyeDomeLightingDistance( double distance )
-{
-  mEyeDomeLightingDistance = distance;
-}
+void QgsElevationShadingRenderer::setEyeDomeLightingDistance( double distance ) { mEyeDomeLightingDistance = distance; }
 
-double QgsElevationShadingRenderer::eyeDomeLightingStrength() const
-{
-  return mEyeDomeLightingStrength;
-}
+double QgsElevationShadingRenderer::eyeDomeLightingStrength() const { return mEyeDomeLightingStrength; }
 
-void QgsElevationShadingRenderer::setEyeDomeLightingStrength( double strength )
-{
-  mEyeDomeLightingStrength = strength;
-}
+void QgsElevationShadingRenderer::setEyeDomeLightingStrength( double strength ) { mEyeDomeLightingStrength = strength; }
 
 void QgsElevationShadingRenderer::renderEdl( const QgsElevationMap &elevation, QImage &image, const QgsRenderContext &context ) const
 {

@@ -66,10 +66,10 @@ class CORE_EXPORT QgsPointXY
     Q_PROPERTY( double y READ y WRITE setY )
 
   public:
-
     QgsPointXY() = default;
 
-    QgsPointXY( const QgsPointXY &p ) SIP_HOLDGIL;
+    QgsPointXY( const QgsPointXY &p )
+    SIP_HOLDGIL;
 
     /**
      * Create a point from x,y coordinates

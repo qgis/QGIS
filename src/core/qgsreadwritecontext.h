@@ -37,7 +37,6 @@ class QgsReadWriteContextCategoryPopper;
 class CORE_EXPORT QgsReadWriteContext
 {
   public:
-
     /**
      * Struct for QgsReadWriteContext error or warning messages
      * \since QGIS 3.2
@@ -52,36 +51,28 @@ class CORE_EXPORT QgsReadWriteContext
         {}
 
         //! Returns the message string
-        QString message() const {return mMessage;}
+        QString message() const { return mMessage; }
 
         //! Returns the message level
-        Qgis::MessageLevel level() const {return mLevel;}
+        Qgis::MessageLevel level() const { return mLevel; }
 
         //! Returns the stack of categories of the message
-        QStringList categories() const {return mCategories;}
+        QStringList categories() const { return mCategories; }
 
         // TODO c++20 - replace with = default
 
-        bool operator==( const QgsReadWriteContext::ReadWriteMessage &other ) const
-        {
-          return mMessage == other.mMessage && mLevel == other.mLevel && mCategories == other.mCategories;
-        }
+        bool operator==( const QgsReadWriteContext::ReadWriteMessage &other ) const { return mMessage == other.mMessage && mLevel == other.mLevel && mCategories == other.mCategories; }
 
-        bool operator!=( const QgsReadWriteContext::ReadWriteMessage &other ) const
-        {
-          return !( *this == other );
-        }
+        bool operator!=( const QgsReadWriteContext::ReadWriteMessage &other ) const { return !( *this == other ); }
 
 #ifdef SIP_RUN
         SIP_PYOBJECT __repr__();
-        % MethodCode
-        QString str = u"<QgsReadWriteContext.ReadWriteMessage: %1>"_s.arg( sipCpp->message() );
+        % MethodCode QString str = u"<QgsReadWriteContext.ReadWriteMessage: %1>"_s.arg( sipCpp->message() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-        % End
+      % End
 #endif
 
-      private:
-        QString mMessage;
+        private : QString mMessage;
         Qgis::MessageLevel mLevel;
         QStringList mCategories;
     };
@@ -129,7 +120,7 @@ class CORE_EXPORT QgsReadWriteContext
      * Returns the project translator
      * \since QGIS 3.4
      */
-    const QgsProjectTranslator *projectTranslator( ) const { return mProjectTranslator; }
+    const QgsProjectTranslator *projectTranslator() const { return mProjectTranslator; }
 
     /**
      * Sets the project translator.
@@ -169,10 +160,9 @@ class CORE_EXPORT QgsReadWriteContext
      *
      * \since QGIS 4.0
      */
-    void setCurrentLayerId( const QString &layerId ) {mCurrentLayerId = layerId;}
+    void setCurrentLayerId( const QString &layerId ) { mCurrentLayerId = layerId; }
 
   private:
-
     //! Pop the last category
     void leaveCategory() const;
 
@@ -199,8 +189,11 @@ class CORE_EXPORT QgsReadWriteContextCategoryPopper
 {
   public:
     //! Creates a popper
-    QgsReadWriteContextCategoryPopper( const QgsReadWriteContext &context ) : mContext( context ) {}
-    ~QgsReadWriteContextCategoryPopper() {mContext.leaveCategory();}
+    QgsReadWriteContextCategoryPopper( const QgsReadWriteContext &context )
+      : mContext( context )
+    {}
+    ~QgsReadWriteContextCategoryPopper() { mContext.leaveCategory(); }
+
   private:
 #ifdef SIP_RUN
     QgsReadWriteContextCategoryPopper &operator=( const QgsReadWriteContextCategoryPopper & );

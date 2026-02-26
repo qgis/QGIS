@@ -39,10 +39,7 @@ QgsUserProfileManager::QgsUserProfileManager( const QString &rootLocation, QObje
   setRootLocation( rootLocation );
 }
 
-QString QgsUserProfileManager::resolveProfilesFolder( const QString &basePath )
-{
-  return basePath + QDir::separator() + "profiles";
-}
+QString QgsUserProfileManager::resolveProfilesFolder( const QString &basePath ) { return basePath + QDir::separator() + "profiles"; }
 
 std::unique_ptr< QgsUserProfile > QgsUserProfileManager::getProfile( const QString &defaultProfile, bool createNew, bool initSettings )
 {
@@ -75,12 +72,9 @@ void QgsUserProfileManager::setNewProfileNotificationEnabled( bool enabled )
   mWatchProfiles = enabled;
   if ( mWatchProfiles && !mRootProfilePath.isEmpty() && QDir( mRootProfilePath ).exists() )
   {
-    mWatcher = std::make_unique<QFileSystemWatcher>( );
+    mWatcher = std::make_unique<QFileSystemWatcher>();
     mWatcher->addPath( mRootProfilePath );
-    connect( mWatcher.get(), &QFileSystemWatcher::directoryChanged, this, [this]
-    {
-      emit profilesChanged();
-    } );
+    connect( mWatcher.get(), &QFileSystemWatcher::directoryChanged, this, [this] { emit profilesChanged(); } );
   }
   else
   {
@@ -88,15 +82,9 @@ void QgsUserProfileManager::setNewProfileNotificationEnabled( bool enabled )
   }
 }
 
-bool QgsUserProfileManager::isNewProfileNotificationEnabled() const
-{
-  return static_cast< bool >( mWatcher.get() );
-}
+bool QgsUserProfileManager::isNewProfileNotificationEnabled() const { return static_cast< bool >( mWatcher.get() ); }
 
-bool QgsUserProfileManager::rootLocationIsSet() const
-{
-  return !mRootProfilePath.isEmpty();
-}
+bool QgsUserProfileManager::rootLocationIsSet() const { return !mRootProfilePath.isEmpty(); }
 
 QString QgsUserProfileManager::defaultProfileName() const
 {
@@ -119,17 +107,11 @@ void QgsUserProfileManager::setDefaultProfileName( const QString &name )
   mSettings->sync();
 }
 
-void QgsUserProfileManager::setDefaultFromActive()
-{
-  setDefaultProfileName( userProfile()->name() );
-}
+void QgsUserProfileManager::setDefaultFromActive() { setDefaultProfileName( userProfile()->name() ); }
 
-QString QgsUserProfileManager::lastProfileName() const
-{
-  return mSettings->value( u"/core/lastProfile"_s, QString() ).toString();
-}
+QString QgsUserProfileManager::lastProfileName() const { return mSettings->value( u"/core/lastProfile"_s, QString() ).toString(); }
 
-void QgsUserProfileManager::updateLastProfileName( )
+void QgsUserProfileManager::updateLastProfileName()
 {
   mSettings->setValue( u"/core/lastProfile"_s, userProfile()->name() );
   mSettings->sync();
@@ -146,15 +128,9 @@ void QgsUserProfileManager::setUserProfileSelectionPolicy( Qgis::UserProfileSele
   mSettings->sync();
 }
 
-QStringList QgsUserProfileManager::allProfiles() const
-{
-  return QDir( mRootProfilePath ).entryList( QDir::Dirs | QDir::NoDotAndDotDot );
-}
+QStringList QgsUserProfileManager::allProfiles() const { return QDir( mRootProfilePath ).entryList( QDir::Dirs | QDir::NoDotAndDotDot ); }
 
-bool QgsUserProfileManager::profileExists( const QString &name ) const
-{
-  return allProfiles().contains( name );
-}
+bool QgsUserProfileManager::profileExists( const QString &name ) const { return allProfiles().contains( name ); }
 
 std::unique_ptr< QgsUserProfile > QgsUserProfileManager::profileForName( const QString &name ) const
 {
@@ -233,24 +209,15 @@ QgsError QgsUserProfileManager::deleteProfile( const QString &name )
   return error;
 }
 
-QString QgsUserProfileManager::settingsFile() const
-{
-  return  mRootProfilePath + QDir::separator() + "profiles.ini";
-}
+QString QgsUserProfileManager::settingsFile() const { return mRootProfilePath + QDir::separator() + "profiles.ini"; }
 
-QSettings *QgsUserProfileManager::settings()
-{
-  return mSettings.get();
-}
+QSettings *QgsUserProfileManager::settings() { return mSettings.get(); }
 
-QgsUserProfile *QgsUserProfileManager::userProfile()
-{
-  return mUserProfile.get();
-}
+QgsUserProfile *QgsUserProfileManager::userProfile() { return mUserProfile.get(); }
 
 void QgsUserProfileManager::loadUserProfile( const QString &name )
 {
-#if QT_CONFIG(process)
+#if QT_CONFIG( process )
   const QString path = QDir::toNativeSeparators( QCoreApplication::applicationFilePath() );
   QStringList arguments;
   arguments << QCoreApplication::arguments();
@@ -269,7 +236,7 @@ void QgsUserProfileManager::loadUserProfile( const QString &name )
 
 void QgsUserProfileManager::setActiveUserProfile( const QString &profile )
 {
-  if ( ! mUserProfile )
+  if ( !mUserProfile )
   {
     mUserProfile = profileForName( profile );
   }

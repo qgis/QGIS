@@ -30,9 +30,7 @@ using namespace Qt::StringLiterals;
 
 QgsTransactionGroup::QgsTransactionGroup( QObject *parent )
   : QObject( parent )
-{
-
-}
+{}
 
 bool QgsTransactionGroup::addLayer( QgsVectorLayer *layer )
 {
@@ -58,10 +56,7 @@ bool QgsTransactionGroup::addLayer( QgsVectorLayer *layer )
   return true;
 }
 
-QSet<QgsVectorLayer *> QgsTransactionGroup::layers() const
-{
-  return mLayers;
-}
+QSet<QgsVectorLayer *> QgsTransactionGroup::layers() const { return mLayers; }
 
 bool QgsTransactionGroup::modified() const
 {
@@ -101,14 +96,10 @@ void QgsTransactionGroup::onEditingStarted()
 
     connect( layer, &QgsVectorLayer::beforeCommitChanges, this, &QgsTransactionGroup::onBeforeCommitChanges );
     connect( layer, &QgsVectorLayer::beforeRollBack, this, &QgsTransactionGroup::onRollback );
-
   }
 }
 
-void QgsTransactionGroup::onLayerDeleted()
-{
-  mLayers.remove( static_cast<QgsVectorLayer *>( sender() ) );
-}
+void QgsTransactionGroup::onLayerDeleted() { mLayers.remove( static_cast<QgsVectorLayer *>( sender() ) ); }
 
 void QgsTransactionGroup::onBeforeCommitChanges( bool stopEditing )
 {
@@ -137,12 +128,11 @@ void QgsTransactionGroup::onBeforeCommitChanges( bool stopEditing )
     }
     else
     {
-      if ( ! mTransaction->begin( errMsg ) )
+      if ( !mTransaction->begin( errMsg ) )
       {
         QgsDebugError( u"Could not restart a transaction for %1: %2"_s.arg( triggeringLayer->name() ).arg( errMsg ) );
       }
     }
-
   }
   else
   {
@@ -197,17 +187,8 @@ void QgsTransactionGroup::restartTransaction( const QgsVectorLayer *layer )
   QTimer::singleShot( 0, layer, &QgsVectorLayer::startEditing );
 }
 
-QString QgsTransactionGroup::providerKey() const
-{
-  return mProviderKey;
-}
+QString QgsTransactionGroup::providerKey() const { return mProviderKey; }
 
-bool QgsTransactionGroup::isEmpty() const
-{
-  return mLayers.isEmpty();
-}
+bool QgsTransactionGroup::isEmpty() const { return mLayers.isEmpty(); }
 
-QString QgsTransactionGroup::connString() const
-{
-  return mConnString;
-}
+QString QgsTransactionGroup::connString() const { return mConnString; }

@@ -29,15 +29,9 @@ using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryString *QgsGeometryOptions::settingsGeometryValidationDefaultChecks = new QgsSettingsEntryString( u"default_checks"_s, QgsSettingsTree::sTreeGeometryValidation, QString() );
 
-QgsGeometryOptions::QgsGeometryOptions()
-{
-  mGeometryChecks = settingsGeometryValidationDefaultChecks->value().split( ',' ) ;
-}
+QgsGeometryOptions::QgsGeometryOptions() { mGeometryChecks = settingsGeometryValidationDefaultChecks->value().split( ',' ); }
 
-bool QgsGeometryOptions::removeDuplicateNodes() const
-{
-  return mRemoveDuplicateNodes;
-}
+bool QgsGeometryOptions::removeDuplicateNodes() const { return mRemoveDuplicateNodes; }
 
 void QgsGeometryOptions::setRemoveDuplicateNodes( bool value )
 {
@@ -45,10 +39,7 @@ void QgsGeometryOptions::setRemoveDuplicateNodes( bool value )
   emit removeDuplicateNodesChanged();
 }
 
-double QgsGeometryOptions::geometryPrecision() const
-{
-  return mGeometryPrecision;
-}
+double QgsGeometryOptions::geometryPrecision() const { return mGeometryPrecision; }
 
 void QgsGeometryOptions::setGeometryPrecision( double value )
 {
@@ -56,10 +47,7 @@ void QgsGeometryOptions::setGeometryPrecision( double value )
   emit geometryPrecisionChanged();
 }
 
-bool QgsGeometryOptions::isActive() const
-{
-  return mGeometryPrecision != 0.0 || mRemoveDuplicateNodes;
-}
+bool QgsGeometryOptions::isActive() const { return mGeometryPrecision != 0.0 || mRemoveDuplicateNodes; }
 
 void QgsGeometryOptions::apply( QgsGeometry &geometry ) const
 {
@@ -70,10 +58,7 @@ void QgsGeometryOptions::apply( QgsGeometry &geometry ) const
     geometry.removeDuplicateNodes( 4 * std::numeric_limits<double>::epsilon(), true );
 }
 
-QStringList QgsGeometryOptions::geometryChecks() const
-{
-  return mGeometryChecks;
-}
+QStringList QgsGeometryOptions::geometryChecks() const { return mGeometryChecks; }
 
 void QgsGeometryOptions::setGeometryChecks( const QStringList &geometryChecks )
 {
@@ -81,10 +66,7 @@ void QgsGeometryOptions::setGeometryChecks( const QStringList &geometryChecks )
   emit geometryChecksChanged();
 }
 
-QVariantMap QgsGeometryOptions::checkConfiguration( const QString &checkId ) const
-{
-  return mCheckConfiguration.value( checkId ).toMap();
-}
+QVariantMap QgsGeometryOptions::checkConfiguration( const QString &checkId ) const { return mCheckConfiguration.value( checkId ).toMap(); }
 
 void QgsGeometryOptions::setCheckConfiguration( const QString &checkId, const QVariantMap &checkConfiguration )
 {
@@ -112,8 +94,8 @@ void QgsGeometryOptions::writeXml( QDomNode &node ) const
 void QgsGeometryOptions::readXml( const QDomNode &node )
 {
   const QDomElement geometryOptionsElement = node.toElement();
-  setGeometryPrecision( geometryOptionsElement.attribute( u"geometryPrecision"_s,  u"0.0"_s ).toDouble() );
-  setRemoveDuplicateNodes( geometryOptionsElement.attribute( u"removeDuplicateNodes"_s,  u"0"_s ).toInt() == 1 );
+  setGeometryPrecision( geometryOptionsElement.attribute( u"geometryPrecision"_s, u"0.0"_s ).toDouble() );
+  setRemoveDuplicateNodes( geometryOptionsElement.attribute( u"removeDuplicateNodes"_s, u"0"_s ).toInt() == 1 );
 
   const QDomElement activeChecksElem = node.namedItem( u"activeChecks"_s ).toElement();
   const QVariant activeChecks = QgsXmlUtils::readVariant( activeChecksElem );

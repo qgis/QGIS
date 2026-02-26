@@ -37,7 +37,6 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsMapLayerStore.
      */
@@ -62,25 +61,23 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      * Returns the number of layers contained in the store.
      */
     int __len__() const;
-    % MethodCode
-    sipRes = sipCpp->count();
+    % MethodCode sipRes = sipCpp->count();
     % End
 
-    //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
-    int __bool__() const;
-    % MethodCode
-    sipRes = true;
+      //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
+      int __bool__() const;
+    % MethodCode sipRes = true;
     % End
 #endif
 
-    /**
+      /**
      * Retrieve a pointer to a layer by layer \a id.
      * \param id ID of layer to retrieve
      * \returns matching layer, or NULLPTR if no matching layer found
      * \see mapLayersByName()
      * \see mapLayers()
      */
-    QgsMapLayer *mapLayer( const QString &id ) const;
+      QgsMapLayer *mapLayer( const QString &id ) const;
 
     /**
      * Retrieve a list of matching layers by layer \a name.
@@ -120,8 +117,7 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      * \note not available in Python bindings
      * \see mapLayers()
      */
-    template <typename T>
-    QVector<T> layers() const
+    template<typename T> QVector<T> layers() const
     {
       QVector<T> layers;
       QMap<QString, QgsMapLayer *>::const_iterator layerIt = mMapLayers.constBegin();
@@ -160,8 +156,7 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      *
      * \see addMapLayer()
      */
-    QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &layers SIP_TRANSFER,
-                                       bool takeOwnership SIP_PYARGREMOVE = true );
+    QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &layers SIP_TRANSFER, bool takeOwnership SIP_PYARGREMOVE = true );
 
     /**
      * \brief
@@ -184,8 +179,7 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      * \note Use addMapLayers() if adding more than one layer at a time.
      * \see addMapLayers()
      */
-    QgsMapLayer *addMapLayer( QgsMapLayer *layer SIP_TRANSFER,
-                              bool takeOwnership SIP_PYARGREMOVE = true );
+    QgsMapLayer *addMapLayer( QgsMapLayer *layer SIP_TRANSFER, bool takeOwnership SIP_PYARGREMOVE = true );
 
     /**
      * \brief
@@ -361,9 +355,7 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
     void onMapLayerDeleted( QObject *obj );
 
   private:
-
     QMap<QString, QgsMapLayer *> mMapLayers;
-
 };
 
 #endif //QGSMAPLAYERSTORE_H

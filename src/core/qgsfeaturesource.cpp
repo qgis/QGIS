@@ -24,10 +24,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
-Qgis::FeatureAvailability QgsFeatureSource::hasFeatures() const
-{
-  return Qgis::FeatureAvailability::FeaturesMaybeAvailable;
-}
+Qgis::FeatureAvailability QgsFeatureSource::hasFeatures() const { return Qgis::FeatureAvailability::FeaturesMaybeAvailable; }
 
 QSet<QVariant> QgsFeatureSource::uniqueValues( int fieldIndex, int limit ) const
 {
@@ -96,10 +93,7 @@ QVariant QgsFeatureSource::maximumValue( int fieldIndex ) const
   return max;
 }
 
-QgsRectangle QgsFeatureSource::sourceExtent() const
-{
-  return sourceExtent3D().toRectangle();
-}
+QgsRectangle QgsFeatureSource::sourceExtent() const { return sourceExtent3D().toRectangle(); }
 
 QgsBox3D QgsFeatureSource::sourceExtent3D() const
 {
@@ -120,9 +114,7 @@ QgsBox3D QgsFeatureSource::sourceExtent3D() const
 
 QgsFeatureIds QgsFeatureSource::allFeatureIds() const
 {
-  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
-                                        .setFlags( Qgis::FeatureRequestFlag::NoGeometry )
-                                        .setNoAttributes() );
+  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest().setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setNoAttributes() );
 
   QgsFeatureIds ids;
 
@@ -139,7 +131,8 @@ QgsVectorLayer *QgsFeatureSource::materialize( const QgsFeatureRequest &request,
 {
   const Qgis::WkbType outWkbType = ( request.flags() & Qgis::FeatureRequestFlag::NoGeometry ) ? Qgis::WkbType::NoGeometry : wkbType();
   const QgsCoordinateReferenceSystem crs = request.coordinateTransform().isValid() ? request.coordinateTransform().destinationCrs()
-      : request.destinationCrs().isValid() ? request.destinationCrs() : sourceCrs();
+                                           : request.destinationCrs().isValid()    ? request.destinationCrs()
+                                                                                   : sourceCrs();
 
   const QgsAttributeList requestedAttrs = request.subsetOfAttributes();
 
@@ -160,11 +153,7 @@ QgsVectorLayer *QgsFeatureSource::materialize( const QgsFeatureRequest &request,
     outFields = fields();
   }
 
-  std::unique_ptr< QgsVectorLayer > layer( QgsMemoryProviderUtils::createMemoryLayer(
-        sourceName(),
-        outFields,
-        outWkbType,
-        crs ) );
+  std::unique_ptr< QgsVectorLayer > layer( QgsMemoryProviderUtils::createMemoryLayer( sourceName(), outFields, outWkbType, crs ) );
   QgsFeature f;
   QgsFeatureIterator it = getFeatures( request );
   const int fieldCount = fields().count();
@@ -194,7 +183,4 @@ QgsVectorLayer *QgsFeatureSource::materialize( const QgsFeatureRequest &request,
   return layer.release();
 }
 
-Qgis::SpatialIndexPresence QgsFeatureSource::hasSpatialIndex() const
-{
-  return Qgis::SpatialIndexPresence::Unknown;
-}
+Qgis::SpatialIndexPresence QgsFeatureSource::hasSpatialIndex() const { return Qgis::SpatialIndexPresence::Unknown; }

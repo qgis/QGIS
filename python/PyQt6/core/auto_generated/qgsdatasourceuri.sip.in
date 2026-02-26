@@ -29,7 +29,6 @@ clause.
     static const QMetaObject staticMetaObject;
 
   public:
-
     enum SslMode /BaseType=IntEnum/
     {
       SslPrefer,
@@ -117,23 +116,14 @@ Returns multiple generic parameter values corresponding to the specified
 Returns ``True`` if a parameter with the specified ``key`` exists.
 %End
 
-    void setConnection( const QString &aHost,
-                        const QString &aPort,
-                        const QString &aDatabase,
-                        const QString &aUsername,
-                        const QString &aPassword,
-                        SslMode sslmode = SslPrefer,
-                        const QString &authConfigId = QString() );
+    void setConnection(
+      const QString &aHost, const QString &aPort, const QString &aDatabase, const QString &aUsername, const QString &aPassword, SslMode sslmode = SslPrefer, const QString &authConfigId = QString()
+    );
 %Docstring
 Sets all connection related members at once.
 %End
 
-    void setConnection( const QString &aService,
-                        const QString &aDatabase,
-                        const QString &aUsername,
-                        const QString &aPassword,
-                        SslMode sslmode = SslPrefer,
-                        const QString &authConfigId = QString() );
+    void setConnection( const QString &aService, const QString &aDatabase, const QString &aUsername, const QString &aPassword, SslMode sslmode = SslPrefer, const QString &authConfigId = QString() );
 %Docstring
 Sets all connection related members at once (for a service case).
 %End
@@ -143,11 +133,7 @@ Sets all connection related members at once (for a service case).
 Sets the URI database name.
 %End
 
-    void setDataSource( const QString &aSchema,
-                        const QString &aTable,
-                        const QString &aGeometryColumn,
-                        const QString &aSql = QString(),
-                        const QString &aKeyColumn = QString() );
+    void setDataSource( const QString &aSchema, const QString &aTable, const QString &aGeometryColumn, const QString &aSql = QString(), const QString &aKeyColumn = QString() );
 %Docstring
 Sets all data source related members at once.
 
@@ -436,12 +422,11 @@ Sets headers to ``headers``
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    QString str = QStringLiteral( "<QgsDataSourceUri: %1>" ).arg( sipCpp->uri( false ) );
+%MethodCode QString str = QStringLiteral( "<QgsDataSourceUri: %1>" ).arg( sipCpp->uri( false ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    bool operator==( const QgsDataSourceUri &other ) const;
+      bool operator==( const QgsDataSourceUri &other ) const;
     bool operator!=( const QgsDataSourceUri &other ) const;
 
 };

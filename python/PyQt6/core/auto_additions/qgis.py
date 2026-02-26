@@ -288,12 +288,12 @@ Qgis.LayerFilters = lambda flags=0: Qgis.LayerFilter(flags)
 Qgis.LayerFilters.baseClass = Qgis
 LayerFilters = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
-Qgis.LoadStyleFlag.IgnoreMissingStyleErrors.__doc__ = "If the style is missing, then don't flag it as an error. This flag can be used when the caller is not certain that a style exists, and accordingly a failure to find the style does not indicate an issue with loading the style itself."
+Qgis.LoadStyleFlag.IgnoreMissingStyleErrors.__doc__ = ""
 Qgis.LoadStyleFlag.__doc__ = """Flags for loading layer styles.
 
 .. versionadded:: 3.38
 
-* ``IgnoreMissingStyleErrors``: If the style is missing, then don't flag it as an error. This flag can be used when the caller is not certain that a style exists, and accordingly a failure to find the style does not indicate an issue with loading the style itself.
+* ``IgnoreMissingStyleErrors``: 
 
 """
 # --
@@ -879,7 +879,7 @@ QgsDataProvider.ReadFlag = Qgis.DataProviderReadFlag
 QgsDataProvider.FlagTrustDataSource = Qgis.DataProviderReadFlag.TrustDataSource
 QgsDataProvider.ReadFlag.FlagTrustDataSource = Qgis.DataProviderReadFlag.TrustDataSource
 QgsDataProvider.FlagTrustDataSource.is_monkey_patched = True
-QgsDataProvider.FlagTrustDataSource.__doc__ = "Trust datasource config (primary key unicity, geometry type and srid, etc). Improves provider load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on data load \n.. versionadded:: 3.16"
+QgsDataProvider.FlagTrustDataSource.__doc__ = ""
 QgsDataProvider.SkipFeatureCount = Qgis.DataProviderReadFlag.SkipFeatureCount
 QgsDataProvider.SkipFeatureCount.is_monkey_patched = True
 QgsDataProvider.SkipFeatureCount.__doc__ = "Make featureCount() return -1 to indicate unknown, and subLayers() to return a unknown feature count as well. Since QGIS 3.18. Only implemented by OGR provider at time of writing."
@@ -898,7 +898,7 @@ QgsDataProvider.ForceReadOnly.is_monkey_patched = True
 QgsDataProvider.ForceReadOnly.__doc__ = "Open layer in a read-only mode \n.. versionadded:: 3.28"
 QgsDataProvider.SkipCredentialsRequest = Qgis.DataProviderReadFlag.SkipCredentialsRequest
 QgsDataProvider.SkipCredentialsRequest.is_monkey_patched = True
-QgsDataProvider.SkipCredentialsRequest.__doc__ = "Skip credentials if the provided one are not valid, let the provider be invalid, avoiding to block the thread creating the provider if it is not the main thread \n.. versionadded:: 3.32"
+QgsDataProvider.SkipCredentialsRequest.__doc__ = ""
 QgsDataProvider.ParallelThreadLoading = Qgis.DataProviderReadFlag.ParallelThreadLoading
 QgsDataProvider.ParallelThreadLoading.is_monkey_patched = True
 QgsDataProvider.ParallelThreadLoading.__doc__ = "Provider is created in a parallel thread than the one where it will live \n.. versionadded:: 3.32.1"
@@ -910,10 +910,7 @@ Qgis.DataProviderReadFlag.__doc__ = """Flags which control data provider constru
 
 .. versionadded:: 3.40
 
-* ``TrustDataSource``: Trust datasource config (primary key unicity, geometry type and srid, etc). Improves provider load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on data load
-
-  .. versionadded:: 3.16
-
+* ``TrustDataSource``: 
 
   Available as ``QgsDataProvider.FlagTrustDataSource`` in older QGIS releases.
 
@@ -931,10 +928,7 @@ Qgis.DataProviderReadFlag.__doc__ = """Flags which control data provider constru
 
   .. versionadded:: 3.28
 
-* ``SkipCredentialsRequest``: Skip credentials if the provided one are not valid, let the provider be invalid, avoiding to block the thread creating the provider if it is not the main thread
-
-  .. versionadded:: 3.32
-
+* ``SkipCredentialsRequest``: 
 * ``ParallelThreadLoading``: Provider is created in a parallel thread than the one where it will live
 
   .. versionadded:: 3.32.1
@@ -3045,16 +3039,13 @@ Qgis.RasterResamplingMethod.__doc__ = """Resampling method for raster provider-l
 Qgis.RasterResamplingMethod.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.RasterRendererFlag.InternalLayerOpacityHandling.__doc__ = "The renderer internally handles the raster layer's opacity, so the default layer level opacity handling should not be applied."
-Qgis.RasterRendererFlag.UseNoDataForOutOfRangePixels.__doc__ = "Out of range pixels (eg those values outside of the rendered map's z range filter) should be set using additional nodata values instead of additional transparency values \n.. versionadded:: 3.38"
+Qgis.RasterRendererFlag.UseNoDataForOutOfRangePixels.__doc__ = ""
 Qgis.RasterRendererFlag.__doc__ = """Flags which control behavior of raster renderers.
 
 .. versionadded:: 3.28
 
 * ``InternalLayerOpacityHandling``: The renderer internally handles the raster layer's opacity, so the default layer level opacity handling should not be applied.
-* ``UseNoDataForOutOfRangePixels``: Out of range pixels (eg those values outside of the rendered map's z range filter) should be set using additional nodata values instead of additional transparency values
-
-  .. versionadded:: 3.38
-
+* ``UseNoDataForOutOfRangePixels``: 
 
 """
 # --
@@ -3925,12 +3916,12 @@ QgsGeometry.ValidityFlag = Qgis.GeometryValidityFlag
 QgsGeometry.FlagAllowSelfTouchingHoles = Qgis.GeometryValidityFlag.AllowSelfTouchingHoles
 QgsGeometry.ValidityFlag.FlagAllowSelfTouchingHoles = Qgis.GeometryValidityFlag.AllowSelfTouchingHoles
 QgsGeometry.FlagAllowSelfTouchingHoles.is_monkey_patched = True
-QgsGeometry.FlagAllowSelfTouchingHoles.__doc__ = "Indicates that self-touching holes are permitted. OGC validity states that self-touching holes are NOT permitted, whilst other vendor validity checks (e.g. ESRI) permit self-touching holes."
+QgsGeometry.FlagAllowSelfTouchingHoles.__doc__ = ""
 Qgis.GeometryValidityFlag.__doc__ = """Geometry validity check flags.
 
 .. versionadded:: 3.22
 
-* ``AllowSelfTouchingHoles``: Indicates that self-touching holes are permitted. OGC validity states that self-touching holes are NOT permitted, whilst other vendor validity checks (e.g. ESRI) permit self-touching holes.
+* ``AllowSelfTouchingHoles``: 
 
   Available as ``QgsGeometry.FlagAllowSelfTouchingHoles`` in older QGIS releases.
 
@@ -4137,7 +4128,7 @@ QgsFeatureRequest.ExactIntersect.is_monkey_patched = True
 QgsFeatureRequest.ExactIntersect.__doc__ = "Use exact geometry intersection (slower) instead of bounding boxes"
 QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation = Qgis.FeatureRequestFlag.IgnoreStaticNodesDuringExpressionCompilation
 QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation.is_monkey_patched = True
-QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation.__doc__ = "If a feature request uses a filter expression which can be partially precalculated due to static nodes in the expression, setting this flag will prevent these precalculated values from being utilized during compilation of the filter for the backend provider. This flag significantly slows down feature requests and should be used for debugging purposes only. \n.. versionadded:: 3.18"
+QgsFeatureRequest.IgnoreStaticNodesDuringExpressionCompilation.__doc__ = ""
 QgsFeatureRequest.EmbeddedSymbols = Qgis.FeatureRequestFlag.EmbeddedSymbols
 QgsFeatureRequest.EmbeddedSymbols.is_monkey_patched = True
 QgsFeatureRequest.EmbeddedSymbols.__doc__ = "Retrieve any embedded feature symbology \n.. versionadded:: 3.20"
@@ -4153,10 +4144,7 @@ Qgis.FeatureRequestFlag.__doc__ = """Flags for controlling feature requests.
 * ``NoGeometry``: Geometry is not required. It may still be returned if e.g. required for a filter condition.
 * ``SubsetOfAttributes``: Fetch only a subset of attributes (setSubsetOfAttributes sets this flag)
 * ``ExactIntersect``: Use exact geometry intersection (slower) instead of bounding boxes
-* ``IgnoreStaticNodesDuringExpressionCompilation``: If a feature request uses a filter expression which can be partially precalculated due to static nodes in the expression, setting this flag will prevent these precalculated values from being utilized during compilation of the filter for the backend provider. This flag significantly slows down feature requests and should be used for debugging purposes only.
-
-  .. versionadded:: 3.18
-
+* ``IgnoreStaticNodesDuringExpressionCompilation``: 
 * ``EmbeddedSymbols``: Retrieve any embedded feature symbology
 
   .. versionadded:: 3.20
@@ -4285,17 +4273,14 @@ Qgis.FileOperationFlag.baseClass = Qgis
 Qgis.FileOperationFlags.baseClass = Qgis
 FileOperationFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
-Qgis.MapLayerProperty.UsersCannotToggleEditing.__doc__ = "Indicates that users are not allowed to toggle editing for this layer. Note that this does not imply that the layer is non-editable (see isEditable(), supportsEditing() ), rather that the editable status of the layer cannot be changed by users manually \n.. versionadded:: 3.22"
+Qgis.MapLayerProperty.UsersCannotToggleEditing.__doc__ = ""
 Qgis.MapLayerProperty.IsBasemapLayer.__doc__ = "Layer is considered a 'basemap' layer, and certain properties of the layer should be ignored when calculating project-level properties. For instance, the extent of basemap layers is ignored when calculating the extent of a project, as these layers are typically global and extend outside of a project's area of interest \n.. versionadded:: 3.26"
 Qgis.MapLayerProperty.Is3DBasemapLayer.__doc__ = "Layer is considered a '3D basemap' layer. This flag is similar to IsBasemapLayer, but reserved for layers which contain 3D data \n.. versionadded:: 3.44"
 Qgis.MapLayerProperty.__doc__ = """Generic map layer properties.
 
 .. versionadded:: 3.22
 
-* ``UsersCannotToggleEditing``: Indicates that users are not allowed to toggle editing for this layer. Note that this does not imply that the layer is non-editable (see isEditable(), supportsEditing() ), rather that the editable status of the layer cannot be changed by users manually
-
-  .. versionadded:: 3.22
-
+* ``UsersCannotToggleEditing``: 
 * ``IsBasemapLayer``: Layer is considered a 'basemap' layer, and certain properties of the layer should be ignored when calculating project-level properties. For instance, the extent of basemap layers is ignored when calculating the extent of a project, as these layers are typically global and extend outside of a project's area of interest
 
   .. versionadded:: 3.26
@@ -4526,10 +4511,12 @@ Qgis.CrsIdentifierType.__doc__ = """Available identifier string types for repres
 Qgis.CrsIdentifierType.baseClass = Qgis
 QgsCoordinateReferenceSystem.WktVariant = Qgis.CrsWktVariant
 # monkey patching scoped based enum
-QgsCoordinateReferenceSystem.WKT1_GDAL = Qgis.CrsWktVariant.Wkt1Gdal
-QgsCoordinateReferenceSystem.WktVariant.WKT1_GDAL = Qgis.CrsWktVariant.Wkt1Gdal
+QgsCoordinateReferenceSystem.Wkt1Gdal = Qgis.CrsWktVariant.Wkt1Gdal
+QgsCoordinateReferenceSystem.Wkt1Gdal.is_monkey_patched = True
+QgsCoordinateReferenceSystem.Wkt1Gdal.__doc__ = ""
+QgsCoordinateReferenceSystem.WKT1_GDAL = Qgis.CrsWktVariant.WKT1_GDAL
 QgsCoordinateReferenceSystem.WKT1_GDAL.is_monkey_patched = True
-QgsCoordinateReferenceSystem.WKT1_GDAL.__doc__ = "WKT1 as traditionally output by GDAL, deriving from OGC 01-009. A notable departure from WKT1_GDAL with respect to OGC 01-009 is that in WKT1_GDAL, the unit of the PRIMEM value is always degrees."
+QgsCoordinateReferenceSystem.WKT1_GDAL.__doc__ = ""
 QgsCoordinateReferenceSystem.WKT1_ESRI = Qgis.CrsWktVariant.Wkt1Esri
 QgsCoordinateReferenceSystem.WktVariant.WKT1_ESRI = Qgis.CrsWktVariant.Wkt1Esri
 QgsCoordinateReferenceSystem.WKT1_ESRI.is_monkey_patched = True
@@ -4538,14 +4525,18 @@ QgsCoordinateReferenceSystem.WKT2_2015 = Qgis.CrsWktVariant.Wkt2_2015
 QgsCoordinateReferenceSystem.WktVariant.WKT2_2015 = Qgis.CrsWktVariant.Wkt2_2015
 QgsCoordinateReferenceSystem.WKT2_2015.is_monkey_patched = True
 QgsCoordinateReferenceSystem.WKT2_2015.__doc__ = "Full WKT2 string, conforming to ISO 19162:2015(E) / OGC 12-063r5 with all possible nodes and new keyword names."
-QgsCoordinateReferenceSystem.WKT2_2015_SIMPLIFIED = Qgis.CrsWktVariant.Wkt2_2015Simplified
-QgsCoordinateReferenceSystem.WktVariant.WKT2_2015_SIMPLIFIED = Qgis.CrsWktVariant.Wkt2_2015Simplified
+QgsCoordinateReferenceSystem.Wkt2_2015Simplified = Qgis.CrsWktVariant.Wkt2_2015Simplified
+QgsCoordinateReferenceSystem.Wkt2_2015Simplified.is_monkey_patched = True
+QgsCoordinateReferenceSystem.Wkt2_2015Simplified.__doc__ = ""
+QgsCoordinateReferenceSystem.WKT2_2015_SIMPLIFIED = Qgis.CrsWktVariant.WKT2_2015_SIMPLIFIED
 QgsCoordinateReferenceSystem.WKT2_2015_SIMPLIFIED.is_monkey_patched = True
-QgsCoordinateReferenceSystem.WKT2_2015_SIMPLIFIED.__doc__ = "Same as WKT2_2015 with the following exceptions: UNIT keyword used. ID node only on top element. No ORDER element in AXIS element. PRIMEM node omitted if it is Greenwich.  ELLIPSOID.UNIT node omitted if it is UnitOfMeasure.METRE. PARAMETER.UNIT / PRIMEM.UNIT omitted if same as AXIS. AXIS.UNIT omitted and replaced by a common GEODCRS.UNIT if they are all the same on all axis."
-QgsCoordinateReferenceSystem.WKT2_2019 = Qgis.CrsWktVariant.Wkt2_2019
-QgsCoordinateReferenceSystem.WktVariant.WKT2_2019 = Qgis.CrsWktVariant.Wkt2_2019
+QgsCoordinateReferenceSystem.WKT2_2015_SIMPLIFIED.__doc__ = ""
+QgsCoordinateReferenceSystem.Wkt2_2019 = Qgis.CrsWktVariant.Wkt2_2019
+QgsCoordinateReferenceSystem.Wkt2_2019.is_monkey_patched = True
+QgsCoordinateReferenceSystem.Wkt2_2019.__doc__ = ""
+QgsCoordinateReferenceSystem.WKT2_2019 = Qgis.CrsWktVariant.WKT2_2019
 QgsCoordinateReferenceSystem.WKT2_2019.is_monkey_patched = True
-QgsCoordinateReferenceSystem.WKT2_2019.__doc__ = "Full WKT2 string, conforming to ISO 19162:2019 / OGC 18-010, with all possible nodes and new keyword names. Non-normative list of differences: WKT2_2019 uses GEOGCRS / BASEGEOGCRS keywords for GeographicCRS."
+QgsCoordinateReferenceSystem.WKT2_2019.__doc__ = ""
 QgsCoordinateReferenceSystem.WKT2_2019_SIMPLIFIED = Qgis.CrsWktVariant.Wkt2_2019Simplified
 QgsCoordinateReferenceSystem.WktVariant.WKT2_2019_SIMPLIFIED = Qgis.CrsWktVariant.Wkt2_2019Simplified
 QgsCoordinateReferenceSystem.WKT2_2019_SIMPLIFIED.is_monkey_patched = True
@@ -4557,7 +4548,7 @@ QgsCoordinateReferenceSystem.WKT_PREFERRED.__doc__ = "Preferred format, matching
 QgsCoordinateReferenceSystem.WKT_PREFERRED_SIMPLIFIED = Qgis.CrsWktVariant.PreferredSimplified
 QgsCoordinateReferenceSystem.WktVariant.WKT_PREFERRED_SIMPLIFIED = Qgis.CrsWktVariant.PreferredSimplified
 QgsCoordinateReferenceSystem.WKT_PREFERRED_SIMPLIFIED.is_monkey_patched = True
-QgsCoordinateReferenceSystem.WKT_PREFERRED_SIMPLIFIED.__doc__ = "Preferred simplified format, matching the most recent WKT ISO standard. Currently an alias to WKT2_2019_SIMPLIFIED, but may change in future versions."
+QgsCoordinateReferenceSystem.WKT_PREFERRED_SIMPLIFIED.__doc__ = ""
 QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL = Qgis.CrsWktVariant.PreferredGdal
 QgsCoordinateReferenceSystem.WktVariant.WKT_PREFERRED_GDAL = Qgis.CrsWktVariant.PreferredGdal
 QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL.is_monkey_patched = True
@@ -4570,10 +4561,8 @@ Qgis.CrsWktVariant.__doc__ = """Coordinate reference system WKT formatting varia
 
 .. versionadded:: 3.36
 
-* ``Wkt1Gdal``: WKT1 as traditionally output by GDAL, deriving from OGC 01-009. A notable departure from WKT1_GDAL with respect to OGC 01-009 is that in WKT1_GDAL, the unit of the PRIMEM value is always degrees.
-
-  Available as ``QgsCoordinateReferenceSystem.WKT1_GDAL`` in older QGIS releases.
-
+* ``Wkt1Gdal``: 
+* ``WKT1_GDAL``: 
 * ``Wkt1Esri``: WKT1 as traditionally output by ESRI software, deriving from OGC 99-049.
 
   Available as ``QgsCoordinateReferenceSystem.WKT1_ESRI`` in older QGIS releases.
@@ -4582,14 +4571,10 @@ Qgis.CrsWktVariant.__doc__ = """Coordinate reference system WKT formatting varia
 
   Available as ``QgsCoordinateReferenceSystem.WKT2_2015`` in older QGIS releases.
 
-* ``Wkt2_2015Simplified``: Same as WKT2_2015 with the following exceptions: UNIT keyword used. ID node only on top element. No ORDER element in AXIS element. PRIMEM node omitted if it is Greenwich.  ELLIPSOID.UNIT node omitted if it is UnitOfMeasure.METRE. PARAMETER.UNIT / PRIMEM.UNIT omitted if same as AXIS. AXIS.UNIT omitted and replaced by a common GEODCRS.UNIT if they are all the same on all axis.
-
-  Available as ``QgsCoordinateReferenceSystem.WKT2_2015_SIMPLIFIED`` in older QGIS releases.
-
-* ``Wkt2_2019``: Full WKT2 string, conforming to ISO 19162:2019 / OGC 18-010, with all possible nodes and new keyword names. Non-normative list of differences: WKT2_2019 uses GEOGCRS / BASEGEOGCRS keywords for GeographicCRS.
-
-  Available as ``QgsCoordinateReferenceSystem.WKT2_2019`` in older QGIS releases.
-
+* ``Wkt2_2015Simplified``: 
+* ``WKT2_2015_SIMPLIFIED``: 
+* ``Wkt2_2019``: 
+* ``WKT2_2019``: 
 * ``Wkt2_2019Simplified``: WKT2_2019 with the simplification rule of WKT2_SIMPLIFIED
 
   Available as ``QgsCoordinateReferenceSystem.WKT2_2019_SIMPLIFIED`` in older QGIS releases.
@@ -4598,7 +4583,7 @@ Qgis.CrsWktVariant.__doc__ = """Coordinate reference system WKT formatting varia
 
   Available as ``QgsCoordinateReferenceSystem.WKT_PREFERRED`` in older QGIS releases.
 
-* ``PreferredSimplified``: Preferred simplified format, matching the most recent WKT ISO standard. Currently an alias to WKT2_2019_SIMPLIFIED, but may change in future versions.
+* ``PreferredSimplified``: 
 
   Available as ``QgsCoordinateReferenceSystem.WKT_PREFERRED_SIMPLIFIED`` in older QGIS releases.
 
@@ -4817,10 +4802,12 @@ QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromExpressions =
 QgsVectorLayerTemporalProperties.TemporalMode.ModeFeatureDateTimeStartAndEndFromExpressions = Qgis.VectorTemporalMode.FeatureDateTimeStartAndEndFromExpressions
 QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromExpressions.is_monkey_patched = True
 QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromExpressions.__doc__ = "Mode when features use expressions for start and end times"
-QgsVectorLayerTemporalProperties.ModeRedrawLayerOnly = Qgis.VectorTemporalMode.RedrawLayerOnly
-QgsVectorLayerTemporalProperties.TemporalMode.ModeRedrawLayerOnly = Qgis.VectorTemporalMode.RedrawLayerOnly
+QgsVectorLayerTemporalProperties.RedrawLayerOnly = Qgis.VectorTemporalMode.RedrawLayerOnly
+QgsVectorLayerTemporalProperties.RedrawLayerOnly.is_monkey_patched = True
+QgsVectorLayerTemporalProperties.RedrawLayerOnly.__doc__ = ""
+QgsVectorLayerTemporalProperties.ModeRedrawLayerOnly = Qgis.VectorTemporalMode.ModeRedrawLayerOnly
 QgsVectorLayerTemporalProperties.ModeRedrawLayerOnly.is_monkey_patched = True
-QgsVectorLayerTemporalProperties.ModeRedrawLayerOnly.__doc__ = "Redraw the layer when temporal range changes, but don't apply any filtering. Useful when symbology or rule based renderer expressions depend on the time range."
+QgsVectorLayerTemporalProperties.ModeRedrawLayerOnly.__doc__ = ""
 Qgis.VectorTemporalMode.__doc__ = """Vector layer temporal feature modes
 
 .. versionadded:: 3.22
@@ -4845,10 +4832,8 @@ Qgis.VectorTemporalMode.__doc__ = """Vector layer temporal feature modes
 
   Available as ``QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromExpressions`` in older QGIS releases.
 
-* ``RedrawLayerOnly``: Redraw the layer when temporal range changes, but don't apply any filtering. Useful when symbology or rule based renderer expressions depend on the time range.
-
-  Available as ``QgsVectorLayerTemporalProperties.ModeRedrawLayerOnly`` in older QGIS releases.
-
+* ``RedrawLayerOnly``: 
+* ``ModeRedrawLayerOnly``: 
 
 """
 # --
@@ -4913,7 +4898,7 @@ QgsRasterLayerTemporalProperties.ModeTemporalRangeFromDataProvider.__doc__ = "Mo
 QgsRasterLayerTemporalProperties.ModeRedrawLayerOnly = Qgis.RasterTemporalMode.RedrawLayerOnly
 QgsRasterLayerTemporalProperties.TemporalMode.ModeRedrawLayerOnly = Qgis.RasterTemporalMode.RedrawLayerOnly
 QgsRasterLayerTemporalProperties.ModeRedrawLayerOnly.is_monkey_patched = True
-QgsRasterLayerTemporalProperties.ModeRedrawLayerOnly.__doc__ = "Redraw the layer when temporal range changes, but don't apply any filtering. Useful when raster symbology expressions depend on the time range. \n.. versionadded:: 3.22"
+QgsRasterLayerTemporalProperties.ModeRedrawLayerOnly.__doc__ = ""
 QgsRasterLayerTemporalProperties.FixedRangePerBand = Qgis.RasterTemporalMode.FixedRangePerBand
 QgsRasterLayerTemporalProperties.FixedRangePerBand.is_monkey_patched = True
 QgsRasterLayerTemporalProperties.FixedRangePerBand.__doc__ = "Layer has a fixed temporal range per band \n.. versionadded:: 3.38"
@@ -4935,10 +4920,7 @@ Qgis.RasterTemporalMode.__doc__ = """Raster layer temporal modes
 
   Available as ``QgsRasterLayerTemporalProperties.ModeTemporalRangeFromDataProvider`` in older QGIS releases.
 
-* ``RedrawLayerOnly``: Redraw the layer when temporal range changes, but don't apply any filtering. Useful when raster symbology expressions depend on the time range.
-
-  .. versionadded:: 3.22
-
+* ``RedrawLayerOnly``: 
 
   Available as ``QgsRasterLayerTemporalProperties.ModeRedrawLayerOnly`` in older QGIS releases.
 
@@ -4986,12 +4968,12 @@ Qgis.TemporalIntervalMatchMethod.__doc__ = """Method to use when resolving a tem
 # --
 Qgis.TemporalIntervalMatchMethod.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.RasterTemporalCapabilityFlag.RequestedTimesMustExactlyMatchAllAvailableTemporalRanges.__doc__ = "If present, indicates that the provider must only request temporal values which are exact matches for the values present in QgsRasterDataProviderTemporalCapabilities.allAvailableTemporalRanges()."
+Qgis.RasterTemporalCapabilityFlag.RequestedTimesMustExactlyMatchAllAvailableTemporalRanges.__doc__ = ""
 Qgis.RasterTemporalCapabilityFlag.__doc__ = """Flags for raster layer temporal capabilities.
 
 .. versionadded:: 3.28
 
-* ``RequestedTimesMustExactlyMatchAllAvailableTemporalRanges``: If present, indicates that the provider must only request temporal values which are exact matches for the values present in QgsRasterDataProviderTemporalCapabilities.allAvailableTemporalRanges().
+* ``RequestedTimesMustExactlyMatchAllAvailableTemporalRanges``: 
 
 """
 # --
@@ -5026,14 +5008,14 @@ Qgis.TransformDirection.__doc__ = """Indicates the direction (forward or inverse
 # --
 Qgis.TransformDirection.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.CoordinateTransformationFlag.BallparkTransformsAreAppropriate.__doc__ = "Indicates that approximate \"ballpark\" results are appropriate for this coordinate transform. See QgsCoordinateTransform.setBallparkTransformsAreAppropriate() for further details."
-Qgis.CoordinateTransformationFlag.IgnoreImpossibleTransformations.__doc__ = "Indicates that impossible transformations (such as those which attempt to transform between two different celestial bodies) should be silently handled and marked as invalid. See QgsCoordinateTransform.isTransformationPossible() and QgsCoordinateTransform.isValid()."
+Qgis.CoordinateTransformationFlag.BallparkTransformsAreAppropriate.__doc__ = ""
+Qgis.CoordinateTransformationFlag.IgnoreImpossibleTransformations.__doc__ = ""
 Qgis.CoordinateTransformationFlag.__doc__ = """Flags which adjust the coordinate transformations behave.
 
 .. versionadded:: 3.26
 
-* ``BallparkTransformsAreAppropriate``: Indicates that approximate \"ballpark\" results are appropriate for this coordinate transform. See QgsCoordinateTransform.setBallparkTransformsAreAppropriate() for further details.
-* ``IgnoreImpossibleTransformations``: Indicates that impossible transformations (such as those which attempt to transform between two different celestial bodies) should be silently handled and marked as invalid. See QgsCoordinateTransform.isTransformationPossible() and QgsCoordinateTransform.isValid().
+* ``BallparkTransformsAreAppropriate``: 
+* ``IgnoreImpossibleTransformations``: 
 
 """
 # --
@@ -5096,7 +5078,7 @@ QgsMapSettings.RenderBlocking.is_monkey_patched = True
 QgsMapSettings.RenderBlocking.__doc__ = "Render and load remote sources in the same thread to ensure rendering remote sources (svg and images). WARNING: this flag must NEVER be used from GUI based applications (like the main QGIS application) or crashes will result. Only for use in external scripts or QGIS server."
 QgsMapSettings.LosslessImageRendering = Qgis.MapSettingsFlag.LosslessImageRendering
 QgsMapSettings.LosslessImageRendering.is_monkey_patched = True
-QgsMapSettings.LosslessImageRendering.__doc__ = "Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF). This flag only works with builds based on Qt 5.13 or later."
+QgsMapSettings.LosslessImageRendering.__doc__ = ""
 QgsMapSettings.Render3DMap = Qgis.MapSettingsFlag.Render3DMap
 QgsMapSettings.Render3DMap.is_monkey_patched = True
 QgsMapSettings.Render3DMap.__doc__ = "Render is for a 3D map"
@@ -5114,7 +5096,7 @@ QgsMapSettings.RecordProfile.is_monkey_patched = True
 QgsMapSettings.RecordProfile.__doc__ = "Enable run-time profiling while rendering \n.. versionadded:: 3.34"
 QgsMapSettings.AlwaysUseGlobalMasks = Qgis.MapSettingsFlag.AlwaysUseGlobalMasks
 QgsMapSettings.AlwaysUseGlobalMasks.is_monkey_patched = True
-QgsMapSettings.AlwaysUseGlobalMasks.__doc__ = "When applying clipping paths for selective masking, always use global (\"entire map\") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex vector exports in all current Qt versions. This flag only applies to vector map exports. \n.. versionadded:: 3.38"
+QgsMapSettings.AlwaysUseGlobalMasks.__doc__ = ""
 Qgis.MapSettingsFlag.__doc__ = """Flags which adjust the way maps are rendered.
 
 .. versionadded:: 3.22
@@ -5137,7 +5119,7 @@ Qgis.MapSettingsFlag.__doc__ = """Flags which adjust the way maps are rendered.
 * ``RenderPartialOutput``: Whether to make extra effort to update map image with partially rendered layers (better for interactive map canvas). Added in QGIS 3.0
 * ``RenderPreviewJob``: Render is a 'canvas preview' render, and shortcuts should be taken to ensure fast rendering
 * ``RenderBlocking``: Render and load remote sources in the same thread to ensure rendering remote sources (svg and images). WARNING: this flag must NEVER be used from GUI based applications (like the main QGIS application) or crashes will result. Only for use in external scripts or QGIS server.
-* ``LosslessImageRendering``: Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF). This flag only works with builds based on Qt 5.13 or later.
+* ``LosslessImageRendering``: 
 * ``Render3DMap``: Render is for a 3D map
 * ``HighQualityImageTransforms``: Enable high quality image transformations, which results in better appearance of scaled or rotated raster components of a map
 
@@ -5155,10 +5137,7 @@ Qgis.MapSettingsFlag.__doc__ = """Flags which adjust the way maps are rendered.
 
   .. versionadded:: 3.34
 
-* ``AlwaysUseGlobalMasks``: When applying clipping paths for selective masking, always use global (\"entire map\") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex vector exports in all current Qt versions. This flag only applies to vector map exports.
-
-  .. versionadded:: 3.38
-
+* ``AlwaysUseGlobalMasks``: 
 
 """
 # --
@@ -5337,14 +5316,18 @@ Qgis.PaintEffectFlags.baseClass = Qgis
 PaintEffectFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsRenderContext.TextRenderFormat = Qgis.TextRenderFormat
 # monkey patching scoped based enum
-QgsRenderContext.TextFormatAlwaysOutlines = Qgis.TextRenderFormat.AlwaysOutlines
-QgsRenderContext.TextRenderFormat.TextFormatAlwaysOutlines = Qgis.TextRenderFormat.AlwaysOutlines
+QgsRenderContext.AlwaysOutlines = Qgis.TextRenderFormat.AlwaysOutlines
+QgsRenderContext.AlwaysOutlines.is_monkey_patched = True
+QgsRenderContext.AlwaysOutlines.__doc__ = ""
+QgsRenderContext.TextFormatAlwaysOutlines = Qgis.TextRenderFormat.TextFormatAlwaysOutlines
 QgsRenderContext.TextFormatAlwaysOutlines.is_monkey_patched = True
-QgsRenderContext.TextFormatAlwaysOutlines.__doc__ = "Always render text using path objects (AKA outlines/curves). This setting guarantees the best quality rendering, even when using a raster paint surface (where sub-pixel path based text rendering is superior to sub-pixel text-based rendering). The downside is that text is converted to paths only, so users cannot open created vector outputs for post-processing in other applications and retain text editability.  This setting also guarantees complete compatibility with the full range of formatting options available through QgsTextRenderer and QgsTextFormat, some of which may not be possible to reproduce when using a vector-based paint surface and TextFormatAlwaysText mode. A final benefit to this setting is that vector exports created using text as outlines do not require all users to have the original fonts installed in order to display the text in its original style."
-QgsRenderContext.TextFormatAlwaysText = Qgis.TextRenderFormat.AlwaysText
-QgsRenderContext.TextRenderFormat.TextFormatAlwaysText = Qgis.TextRenderFormat.AlwaysText
+QgsRenderContext.TextFormatAlwaysOutlines.__doc__ = ""
+QgsRenderContext.AlwaysText = Qgis.TextRenderFormat.AlwaysText
+QgsRenderContext.AlwaysText.is_monkey_patched = True
+QgsRenderContext.AlwaysText.__doc__ = ""
+QgsRenderContext.TextFormatAlwaysText = Qgis.TextRenderFormat.TextFormatAlwaysText
 QgsRenderContext.TextFormatAlwaysText.is_monkey_patched = True
-QgsRenderContext.TextFormatAlwaysText.__doc__ = "Always render text as text objects. While this mode preserves text objects as text for post-processing in external vector editing applications, it can result in rendering artifacts or poor quality rendering, depending on the text format settings. Even with raster based paint devices, TextFormatAlwaysText can result in inferior rendering quality to TextFormatAlwaysOutlines. When rendering using TextFormatAlwaysText to a vector based device (e.g. PDF or SVG), care must be taken to ensure that the required fonts are available to users when opening the created files, or default fallback fonts will be used to display the output instead. (Although PDF exports MAY automatically embed some fonts when possible, depending on the user's platform)."
+QgsRenderContext.TextFormatAlwaysText.__doc__ = ""
 QgsRenderContext.PreferText = Qgis.TextRenderFormat.PreferText
 QgsRenderContext.PreferText.is_monkey_patched = True
 QgsRenderContext.PreferText.__doc__ = "Render text as text objects, unless doing so results in rendering artifacts or poor quality rendering (depending on text format settings). When rendering using TextFormatAlwaysText to a vector based device (e.g. PDF or SVG), care must be taken to ensure that the required fonts are available to users when opening the created files, or default fallback fonts will be used to display the output instead. (Although PDF exports MAY automatically embed some fonts when possible, depending on the user's platform). \n.. versionadded:: 3.40"
@@ -5352,14 +5335,10 @@ Qgis.TextRenderFormat.__doc__ = """Options for rendering text.
 
 .. versionadded:: 3.22
 
-* ``AlwaysOutlines``: Always render text using path objects (AKA outlines/curves). This setting guarantees the best quality rendering, even when using a raster paint surface (where sub-pixel path based text rendering is superior to sub-pixel text-based rendering). The downside is that text is converted to paths only, so users cannot open created vector outputs for post-processing in other applications and retain text editability.  This setting also guarantees complete compatibility with the full range of formatting options available through QgsTextRenderer and QgsTextFormat, some of which may not be possible to reproduce when using a vector-based paint surface and TextFormatAlwaysText mode. A final benefit to this setting is that vector exports created using text as outlines do not require all users to have the original fonts installed in order to display the text in its original style.
-
-  Available as ``QgsRenderContext.TextFormatAlwaysOutlines`` in older QGIS releases.
-
-* ``AlwaysText``: Always render text as text objects. While this mode preserves text objects as text for post-processing in external vector editing applications, it can result in rendering artifacts or poor quality rendering, depending on the text format settings. Even with raster based paint devices, TextFormatAlwaysText can result in inferior rendering quality to TextFormatAlwaysOutlines. When rendering using TextFormatAlwaysText to a vector based device (e.g. PDF or SVG), care must be taken to ensure that the required fonts are available to users when opening the created files, or default fallback fonts will be used to display the output instead. (Although PDF exports MAY automatically embed some fonts when possible, depending on the user's platform).
-
-  Available as ``QgsRenderContext.TextFormatAlwaysText`` in older QGIS releases.
-
+* ``AlwaysOutlines``: 
+* ``TextFormatAlwaysOutlines``: 
+* ``AlwaysText``: 
+* ``TextFormatAlwaysText``: 
 * ``PreferText``: Render text as text objects, unless doing so results in rendering artifacts or poor quality rendering (depending on text format settings). When rendering using TextFormatAlwaysText to a vector based device (e.g. PDF or SVG), care must be taken to ensure that the required fonts are available to users when opening the created files, or default fallback fonts will be used to display the output instead. (Although PDF exports MAY automatically embed some fonts when possible, depending on the user's platform).
 
   .. versionadded:: 3.40
@@ -6759,7 +6738,7 @@ QgsProcessingProvider.Flag = Qgis.ProcessingProviderFlag
 QgsProcessingProvider.FlagDeemphasiseSearchResults = Qgis.ProcessingProviderFlag.DeemphasiseSearchResults
 QgsProcessingProvider.Flag.FlagDeemphasiseSearchResults = Qgis.ProcessingProviderFlag.DeemphasiseSearchResults
 QgsProcessingProvider.FlagDeemphasiseSearchResults.is_monkey_patched = True
-QgsProcessingProvider.FlagDeemphasiseSearchResults.__doc__ = "Algorithms should be de-emphasised in the search results when searching for algorithms. Use for low-priority providers or those with substantial known issues."
+QgsProcessingProvider.FlagDeemphasiseSearchResults.__doc__ = ""
 QgsProcessingProvider.FlagCompatibleWithVirtualRaster = Qgis.ProcessingProviderFlag.CompatibleWithVirtualRaster
 QgsProcessingProvider.Flag.FlagCompatibleWithVirtualRaster = Qgis.ProcessingProviderFlag.CompatibleWithVirtualRaster
 QgsProcessingProvider.FlagCompatibleWithVirtualRaster.is_monkey_patched = True
@@ -6772,7 +6751,7 @@ Qgis.ProcessingProviderFlag.__doc__ = """Flags indicating how and when an proces
 
 .. versionadded:: 3.36
 
-* ``DeemphasiseSearchResults``: Algorithms should be de-emphasised in the search results when searching for algorithms. Use for low-priority providers or those with substantial known issues.
+* ``DeemphasiseSearchResults``: 
 
   Available as ``QgsProcessingProvider.FlagDeemphasiseSearchResults`` in older QGIS releases.
 
@@ -7033,11 +7012,11 @@ QgsProcessingFeatureSourceDefinition.Flag = Qgis.ProcessingFeatureSourceDefiniti
 QgsProcessingFeatureSourceDefinition.FlagOverrideDefaultGeometryCheck = Qgis.ProcessingFeatureSourceDefinitionFlag.OverrideDefaultGeometryCheck
 QgsProcessingFeatureSourceDefinition.Flag.FlagOverrideDefaultGeometryCheck = Qgis.ProcessingFeatureSourceDefinitionFlag.OverrideDefaultGeometryCheck
 QgsProcessingFeatureSourceDefinition.FlagOverrideDefaultGeometryCheck.is_monkey_patched = True
-QgsProcessingFeatureSourceDefinition.FlagOverrideDefaultGeometryCheck.__doc__ = "If set, the default geometry check method (as dictated by QgsProcessingContext) will be overridden for this source"
+QgsProcessingFeatureSourceDefinition.FlagOverrideDefaultGeometryCheck.__doc__ = ""
 QgsProcessingFeatureSourceDefinition.FlagCreateIndividualOutputPerInputFeature = Qgis.ProcessingFeatureSourceDefinitionFlag.CreateIndividualOutputPerInputFeature
 QgsProcessingFeatureSourceDefinition.Flag.FlagCreateIndividualOutputPerInputFeature = Qgis.ProcessingFeatureSourceDefinitionFlag.CreateIndividualOutputPerInputFeature
 QgsProcessingFeatureSourceDefinition.FlagCreateIndividualOutputPerInputFeature.is_monkey_patched = True
-QgsProcessingFeatureSourceDefinition.FlagCreateIndividualOutputPerInputFeature.__doc__ = "If set, every feature processed from this source will be placed into its own individually created output destination. Support for this flag depends on how an algorithm is executed."
+QgsProcessingFeatureSourceDefinition.FlagCreateIndividualOutputPerInputFeature.__doc__ = ""
 Qgis.ProcessingFeatureSourceDefinitionFlag.__doc__ = """Flags which control behavior for a Processing feature source.
 
 .. note::
@@ -7046,11 +7025,11 @@ Qgis.ProcessingFeatureSourceDefinitionFlag.__doc__ = """Flags which control beha
 
 .. versionadded:: 3.36
 
-* ``OverrideDefaultGeometryCheck``: If set, the default geometry check method (as dictated by QgsProcessingContext) will be overridden for this source
+* ``OverrideDefaultGeometryCheck``: 
 
   Available as ``QgsProcessingFeatureSourceDefinition.FlagOverrideDefaultGeometryCheck`` in older QGIS releases.
 
-* ``CreateIndividualOutputPerInputFeature``: If set, every feature processed from this source will be placed into its own individually created output destination. Support for this flag depends on how an algorithm is executed.
+* ``CreateIndividualOutputPerInputFeature``: 
 
   Available as ``QgsProcessingFeatureSourceDefinition.FlagCreateIndividualOutputPerInputFeature`` in older QGIS releases.
 
@@ -7629,7 +7608,7 @@ Qgis.CadMeasurementDisplayType.__doc__ = """Advanced digitizing measurement disp
 Qgis.CadMeasurementDisplayType.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide.__doc__ = "If set, default values for fields will be evaluated on the provider side when features from the project are created instead of when they are committed."
-Qgis.ProjectFlag.TrustStoredLayerStatistics.__doc__ = "If set, then layer statistics (such as the layer extent) will be read from values stored in the project instead of requesting updated values from the data provider. Additionally, when this flag is set, primary key unicity is not checked for views and materialized views with Postgres provider."
+Qgis.ProjectFlag.TrustStoredLayerStatistics.__doc__ = ""
 Qgis.ProjectFlag.RememberLayerEditStatusBetweenSessions.__doc__ = "If set, then any layers set to be editable will be stored in the project and immediately made editable whenever that project is restored"
 Qgis.ProjectFlag.RememberAttributeTableWindowsBetweenSessions.__doc__ = "If set, then any open attribute tables will be stored in the project and immediately reopened when the project is restored"
 Qgis.ProjectFlag.__doc__ = """Flags which control the behavior of :py:class:`QgsProjects`.
@@ -7637,7 +7616,7 @@ Qgis.ProjectFlag.__doc__ = """Flags which control the behavior of :py:class:`Qgs
 .. versionadded:: 3.26
 
 * ``EvaluateDefaultValuesOnProviderSide``: If set, default values for fields will be evaluated on the provider side when features from the project are created instead of when they are committed.
-* ``TrustStoredLayerStatistics``: If set, then layer statistics (such as the layer extent) will be read from values stored in the project instead of requesting updated values from the data provider. Additionally, when this flag is set, primary key unicity is not checked for views and materialized views with Postgres provider.
+* ``TrustStoredLayerStatistics``: 
 * ``RememberLayerEditStatusBetweenSessions``: If set, then any layers set to be editable will be stored in the project and immediately made editable whenever that project is restored
 * ``RememberAttributeTableWindowsBetweenSessions``: If set, then any open attribute tables will be stored in the project and immediately reopened when the project is restored
 
@@ -7921,15 +7900,15 @@ QgsProject.ReadFlag = Qgis.ProjectReadFlag
 QgsProject.FlagDontResolveLayers = Qgis.ProjectReadFlag.DontResolveLayers
 QgsProject.ReadFlag.FlagDontResolveLayers = Qgis.ProjectReadFlag.DontResolveLayers
 QgsProject.FlagDontResolveLayers.is_monkey_patched = True
-QgsProject.FlagDontResolveLayers.__doc__ = "Don't resolve layer paths (i.e. don't load any layer content). Dramatically improves project read time if the actual data from the layers is not required."
+QgsProject.FlagDontResolveLayers.__doc__ = ""
 QgsProject.FlagDontLoadLayouts = Qgis.ProjectReadFlag.DontLoadLayouts
 QgsProject.ReadFlag.FlagDontLoadLayouts = Qgis.ProjectReadFlag.DontLoadLayouts
 QgsProject.FlagDontLoadLayouts.is_monkey_patched = True
-QgsProject.FlagDontLoadLayouts.__doc__ = "Don't load print layouts. Improves project read time if layouts are not required, and allows projects to be safely read in background threads (since print layouts are not thread safe)."
+QgsProject.FlagDontLoadLayouts.__doc__ = ""
 QgsProject.FlagTrustLayerMetadata = Qgis.ProjectReadFlag.TrustLayerMetadata
 QgsProject.ReadFlag.FlagTrustLayerMetadata = Qgis.ProjectReadFlag.TrustLayerMetadata
 QgsProject.FlagTrustLayerMetadata.is_monkey_patched = True
-QgsProject.FlagTrustLayerMetadata.__doc__ = "Trust layer metadata. Improves project read time. Do not use it if layers' extent is not fixed during the project's use by QGIS and QGIS Server."
+QgsProject.FlagTrustLayerMetadata.__doc__ = ""
 QgsProject.FlagDontStoreOriginalStyles = Qgis.ProjectReadFlag.DontStoreOriginalStyles
 QgsProject.ReadFlag.FlagDontStoreOriginalStyles = Qgis.ProjectReadFlag.DontStoreOriginalStyles
 QgsProject.FlagDontStoreOriginalStyles.is_monkey_patched = True
@@ -7955,15 +7934,15 @@ Qgis.ProjectReadFlag.__doc__ = """Flags which control project read behavior.
 
 .. versionadded:: 3.26
 
-* ``DontResolveLayers``: Don't resolve layer paths (i.e. don't load any layer content). Dramatically improves project read time if the actual data from the layers is not required.
+* ``DontResolveLayers``: 
 
   Available as ``QgsProject.FlagDontResolveLayers`` in older QGIS releases.
 
-* ``DontLoadLayouts``: Don't load print layouts. Improves project read time if layouts are not required, and allows projects to be safely read in background threads (since print layouts are not thread safe).
+* ``DontLoadLayouts``: 
 
   Available as ``QgsProject.FlagDontLoadLayouts`` in older QGIS releases.
 
-* ``TrustLayerMetadata``: Trust layer metadata. Improves project read time. Do not use it if layers' extent is not fixed during the project's use by QGIS and QGIS Server.
+* ``TrustLayerMetadata``: 
 
   Available as ``QgsProject.FlagTrustLayerMetadata`` in older QGIS releases.
 
@@ -10446,7 +10425,7 @@ QgsLayoutRenderContext.FlagUseAdvancedEffects.__doc__ = "Enable advanced effects
 QgsLayoutRenderContext.FlagForceVectorOutput = Qgis.LayoutRenderFlag.ForceVectorOutput
 QgsLayoutRenderContext.Flag.FlagForceVectorOutput = Qgis.LayoutRenderFlag.ForceVectorOutput
 QgsLayoutRenderContext.FlagForceVectorOutput.is_monkey_patched = True
-QgsLayoutRenderContext.FlagForceVectorOutput.__doc__ = "Force output in vector format where possible, even if items require rasterization to keep their correct appearance. \n.. deprecated:: 3.44. Use rasterizedRenderingPolicy() instead."
+QgsLayoutRenderContext.FlagForceVectorOutput.__doc__ = ""
 QgsLayoutRenderContext.FlagHideCoverageLayer = Qgis.LayoutRenderFlag.HideCoverageLayer
 QgsLayoutRenderContext.Flag.FlagHideCoverageLayer = Qgis.LayoutRenderFlag.HideCoverageLayer
 QgsLayoutRenderContext.FlagHideCoverageLayer.is_monkey_patched = True
@@ -10458,15 +10437,15 @@ QgsLayoutRenderContext.FlagDrawSelection.__doc__ = "Draw selection"
 QgsLayoutRenderContext.FlagDisableTiledRasterLayerRenders = Qgis.LayoutRenderFlag.DisableTiledRasterLayerRenders
 QgsLayoutRenderContext.Flag.FlagDisableTiledRasterLayerRenders = Qgis.LayoutRenderFlag.DisableTiledRasterLayerRenders
 QgsLayoutRenderContext.FlagDisableTiledRasterLayerRenders.is_monkey_patched = True
-QgsLayoutRenderContext.FlagDisableTiledRasterLayerRenders.__doc__ = "If set, then raster layers will not be drawn as separate tiles. This may improve the appearance in exported files, at the cost of much higher memory usage during exports."
+QgsLayoutRenderContext.FlagDisableTiledRasterLayerRenders.__doc__ = ""
 QgsLayoutRenderContext.FlagRenderLabelsByMapLayer = Qgis.LayoutRenderFlag.RenderLabelsByMapLayer
 QgsLayoutRenderContext.Flag.FlagRenderLabelsByMapLayer = Qgis.LayoutRenderFlag.RenderLabelsByMapLayer
 QgsLayoutRenderContext.FlagRenderLabelsByMapLayer.is_monkey_patched = True
-QgsLayoutRenderContext.FlagRenderLabelsByMapLayer.__doc__ = "When rendering map items to multi-layered exports, render labels belonging to different layers into separate export layers"
+QgsLayoutRenderContext.FlagRenderLabelsByMapLayer.__doc__ = ""
 QgsLayoutRenderContext.FlagLosslessImageRendering = Qgis.LayoutRenderFlag.LosslessImageRendering
 QgsLayoutRenderContext.Flag.FlagLosslessImageRendering = Qgis.LayoutRenderFlag.LosslessImageRendering
 QgsLayoutRenderContext.FlagLosslessImageRendering.is_monkey_patched = True
-QgsLayoutRenderContext.FlagLosslessImageRendering.__doc__ = "Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF)."
+QgsLayoutRenderContext.FlagLosslessImageRendering.__doc__ = ""
 QgsLayoutRenderContext.FlagSynchronousLegendGraphics = Qgis.LayoutRenderFlag.SynchronousLegendGraphics
 QgsLayoutRenderContext.Flag.FlagSynchronousLegendGraphics = Qgis.LayoutRenderFlag.SynchronousLegendGraphics
 QgsLayoutRenderContext.FlagSynchronousLegendGraphics.is_monkey_patched = True
@@ -10474,7 +10453,7 @@ QgsLayoutRenderContext.FlagSynchronousLegendGraphics.__doc__ = "Query legend gra
 QgsLayoutRenderContext.FlagAlwaysUseGlobalMasks = Qgis.LayoutRenderFlag.AlwaysUseGlobalMasks
 QgsLayoutRenderContext.Flag.FlagAlwaysUseGlobalMasks = Qgis.LayoutRenderFlag.AlwaysUseGlobalMasks
 QgsLayoutRenderContext.FlagAlwaysUseGlobalMasks.is_monkey_patched = True
-QgsLayoutRenderContext.FlagAlwaysUseGlobalMasks.__doc__ = "When applying clipping paths for selective masking, always use global (\"entire map\") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex layout exports in all current Qt versions. This flag only applies to vector layout exports. \n.. versionadded:: 3.38"
+QgsLayoutRenderContext.FlagAlwaysUseGlobalMasks.__doc__ = ""
 QgsLayoutRenderContext.LimitCoverageLayerRenderToCurrentFeature = Qgis.LayoutRenderFlag.LimitCoverageLayerRenderToCurrentFeature
 QgsLayoutRenderContext.LimitCoverageLayerRenderToCurrentFeature.is_monkey_patched = True
 QgsLayoutRenderContext.LimitCoverageLayerRenderToCurrentFeature.__doc__ = "Limit coverage layer rendering to the current atlas feature. \n.. versionadded:: 4.0"
@@ -10505,10 +10484,7 @@ Qgis.LayoutRenderFlag.__doc__ = """Flags for controlling how a layout is rendere
 
   Available as ``QgsLayoutRenderContext.FlagUseAdvancedEffects`` in older QGIS releases.
 
-* ``ForceVectorOutput``: Force output in vector format where possible, even if items require rasterization to keep their correct appearance.
-
-  .. deprecated:: 3.44. Use rasterizedRenderingPolicy() instead.
-
+* ``ForceVectorOutput``: 
 
   Available as ``QgsLayoutRenderContext.FlagForceVectorOutput`` in older QGIS releases.
 
@@ -10520,15 +10496,15 @@ Qgis.LayoutRenderFlag.__doc__ = """Flags for controlling how a layout is rendere
 
   Available as ``QgsLayoutRenderContext.FlagDrawSelection`` in older QGIS releases.
 
-* ``DisableTiledRasterLayerRenders``: If set, then raster layers will not be drawn as separate tiles. This may improve the appearance in exported files, at the cost of much higher memory usage during exports.
+* ``DisableTiledRasterLayerRenders``: 
 
   Available as ``QgsLayoutRenderContext.FlagDisableTiledRasterLayerRenders`` in older QGIS releases.
 
-* ``RenderLabelsByMapLayer``: When rendering map items to multi-layered exports, render labels belonging to different layers into separate export layers
+* ``RenderLabelsByMapLayer``: 
 
   Available as ``QgsLayoutRenderContext.FlagRenderLabelsByMapLayer`` in older QGIS releases.
 
-* ``LosslessImageRendering``: Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF).
+* ``LosslessImageRendering``: 
 
   Available as ``QgsLayoutRenderContext.FlagLosslessImageRendering`` in older QGIS releases.
 
@@ -10536,10 +10512,7 @@ Qgis.LayoutRenderFlag.__doc__ = """Flags for controlling how a layout is rendere
 
   Available as ``QgsLayoutRenderContext.FlagSynchronousLegendGraphics`` in older QGIS releases.
 
-* ``AlwaysUseGlobalMasks``: When applying clipping paths for selective masking, always use global (\"entire map\") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex layout exports in all current Qt versions. This flag only applies to vector layout exports.
-
-  .. versionadded:: 3.38
-
+* ``AlwaysUseGlobalMasks``: 
 
   Available as ``QgsLayoutRenderContext.FlagAlwaysUseGlobalMasks`` in older QGIS releases.
 
@@ -11776,7 +11749,7 @@ Qgis.ZonalStatistic.Variety.__doc__ = "Variety (count of distinct) pixel values"
 Qgis.ZonalStatistic.Variance.__doc__ = "Variance of pixel values"
 Qgis.ZonalStatistic.MinimumPoint.__doc__ = "Pixel centroid for minimum pixel value \n.. versionadded:: 3.42"
 Qgis.ZonalStatistic.MaximumPoint.__doc__ = "Pixel centroid for maximum pixel value \n.. versionadded:: 3.42"
-Qgis.ZonalStatistic.All.__doc__ = "All statistics. For QGIS 3.x this includes ONLY numeric statistics, but for 4.0 this will be extended to included non-numeric statistics. Consider using AllNumeric instead."
+Qgis.ZonalStatistic.All.__doc__ = ""
 Qgis.ZonalStatistic.AllNumeric.__doc__ = "All numeric statistics \n.. versionadded:: 3.42"
 Qgis.ZonalStatistic.Default.__doc__ = "Default statistics"
 Qgis.ZonalStatistic.__doc__ = """Statistics to be calculated during a zonal statistics operation.
@@ -11803,7 +11776,7 @@ Qgis.ZonalStatistic.__doc__ = """Statistics to be calculated during a zonal stat
 
   .. versionadded:: 3.42
 
-* ``All``: All statistics. For QGIS 3.x this includes ONLY numeric statistics, but for 4.0 this will be extended to included non-numeric statistics. Consider using AllNumeric instead.
+* ``All``: 
 * ``AllNumeric``: All numeric statistics
 
   .. versionadded:: 3.42

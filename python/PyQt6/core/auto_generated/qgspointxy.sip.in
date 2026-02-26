@@ -54,10 +54,9 @@ include:
     static const QMetaObject staticMetaObject;
 
   public:
-
     QgsPointXY();
 
-    QgsPointXY( const QgsPointXY &p ) /HoldGIL/;
+    QgsPointXY( const QgsPointXY &p );
 
     QgsPointXY( double x, double y ) /HoldGIL/;
 %Docstring

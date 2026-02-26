@@ -39,7 +39,6 @@ class QgsMapClippingRegion;
 class CORE_EXPORT QgsMapClippingUtils
 {
   public:
-
     /**
      * Collects the list of map clipping regions from a \a context which apply to a map \a layer.
      */

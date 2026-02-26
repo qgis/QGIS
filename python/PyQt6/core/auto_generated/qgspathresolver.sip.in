@@ -88,13 +88,10 @@ Example - replace stored database credentials with new ones:
 
 .. versionadded:: 3.10
 %End
-%MethodCode
-    PyObject *s = 0;
+%MethodCode PyObject *s = 0;
     QString id;
     Py_XINCREF( a0 );
-    Py_BEGIN_ALLOW_THREADS
-    id = QgsPathResolver::setPathPreprocessor( [a0]( const QString &arg )->QString
-    {
+    Py_BEGIN_ALLOW_THREADS id = QgsPathResolver::setPathPreprocessor( [a0]( const QString &arg ) -> QString {
       QString res;
       SIP_BLOCK_THREADS
       PyObject *s = sipCallMethod( NULL, a0, "D", &arg, sipType_QString, NULL );
@@ -110,13 +107,12 @@ Example - replace stored database credentials with new ones:
       return res;
     } );
 
-    Py_END_ALLOW_THREADS
-    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
+    Py_END_ALLOW_THREADS s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
     return s;
 %End
 
 
-    static void removePathPreprocessor( const QString &id );
+      static void removePathPreprocessor( const QString &id );
 %Docstring
 Removes the custom pre-processor function with matching ``id``.
 
@@ -129,8 +125,7 @@ call to :py:func:`~QgsPathResolver.setPathPreprocessor`.
 
 .. versionadded:: 3.10
 %End
-%MethodCode
-    if ( !QgsPathResolver::removePathPreprocessor( *a0 ) )
+%MethodCode if ( !QgsPathResolver::removePathPreprocessor( *a0 ) )
     {
       PyErr_SetString( PyExc_KeyError, QStringLiteral( "No processor with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;
@@ -139,8 +134,7 @@ call to :py:func:`~QgsPathResolver.setPathPreprocessor`.
 
 
 
-
-    static QString setPathWriter( SIP_PYCALLABLE / AllowNone / );
+      static QString setPathWriter( SIP_PYCALLABLE / AllowNone / );
 %Docstring
 Sets a path writer function, which allows for manipulation of paths and
 data sources prior to writing them to the project file.
@@ -165,13 +159,10 @@ Example - replace path with a variable:
 
 .. versionadded:: 3.22
 %End
-%MethodCode
-    PyObject *s = 0;
+%MethodCode PyObject *s = 0;
     QString id;
     Py_XINCREF( a0 );
-    Py_BEGIN_ALLOW_THREADS
-    id = QgsPathResolver::setPathWriter( [a0]( const QString &arg )->QString
-    {
+    Py_BEGIN_ALLOW_THREADS id = QgsPathResolver::setPathWriter( [a0]( const QString &arg ) -> QString {
       QString res;
       SIP_BLOCK_THREADS
       PyObject *s = sipCallMethod( NULL, a0, "D", &arg, sipType_QString, NULL );
@@ -187,13 +178,12 @@ Example - replace path with a variable:
       return res;
     } );
 
-    Py_END_ALLOW_THREADS
-    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
+    Py_END_ALLOW_THREADS s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
     return s;
 %End
 
 
-    static void removePathWriter( const QString &id );
+      static void removePathWriter( const QString &id );
 %Docstring
 Removes the custom writer function with matching ``id``.
 
@@ -205,8 +195,7 @@ no processor with the specified ``id`` exists.
 
 .. versionadded:: 3.22
 %End
-%MethodCode
-    if ( !QgsPathResolver::removePathWriter( *a0 ) )
+%MethodCode if ( !QgsPathResolver::removePathWriter( *a0 ) )
     {
       PyErr_SetString( PyExc_KeyError, QStringLiteral( "No writer with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;

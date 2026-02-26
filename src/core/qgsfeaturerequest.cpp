@@ -28,40 +28,33 @@ using namespace Qt::StringLiterals;
 //constants
 const QString QgsFeatureRequest::ALL_ATTRIBUTES = u"#!allattributes!#"_s;
 
-QgsFeatureRequest::QgsFeatureRequest()
-{
-}
+QgsFeatureRequest::QgsFeatureRequest() {}
 
 QgsFeatureRequest::~QgsFeatureRequest() = default;
 
 QgsFeatureRequest::QgsFeatureRequest( QgsFeatureId fid )
   : mFilter( Qgis::FeatureRequestFilterType::Fid )
   , mFilterFid( fid )
-{
-}
+{}
 
 QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureIds &fids )
   : mFilter( Qgis::FeatureRequestFilterType::Fids )
   , mFilterFids( fids )
-{
-
-}
+{}
 
 QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle &rect )
   : mSpatialFilter( !rect.isNull() ? Qgis::SpatialFilterType::BoundingBox : Qgis::SpatialFilterType::NoFilter )
   , mFilterRect( rect )
-{
-}
+{}
 
 QgsFeatureRequest::QgsFeatureRequest( const QgsExpression &expr, const QgsExpressionContext &context )
   : mFilter( Qgis::FeatureRequestFilterType::Expression )
   , mFilterExpression( new QgsExpression( expr ) )
   , mExpressionContext( context )
-{
-}
+{}
 
 QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureRequest &rh )
-//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+  //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
   : mFilter( rh.mFilter )
   , mSpatialFilter( rh.mSpatialFilter )
   , mFilterRect( rh.mFilterRect )
@@ -74,7 +67,7 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureRequest &rh )
   , mExpressionContext( rh.mExpressionContext )
   , mFlags( rh.mFlags )
   , mAttrs( rh.mAttrs )
-    //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+  //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
   , mSimplifyMethod( rh.mSimplifyMethod )
   , mLimit( rh.mLimit )
   , mOrderBy( rh.mOrderBy )
@@ -87,10 +80,8 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureRequest &rh )
   , mTimeout( rh.mTimeout )
   , mRequestMayBeNested( rh.mRequestMayBeNested )
   , mFeedback( rh.mFeedback )
-    //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
-{
-
-}
+//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+{}
 
 QgsFeatureRequest::QgsFeatureRequest( QgsFeatureRequest &&rh )
   : mFilter( rh.mFilter )
@@ -117,9 +108,7 @@ QgsFeatureRequest::QgsFeatureRequest( QgsFeatureRequest &&rh )
   , mTimeout( rh.mTimeout )
   , mRequestMayBeNested( rh.mRequestMayBeNested )
   , mFeedback( rh.mFeedback )
-{
-
-}
+{}
 
 QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
 {
@@ -202,25 +191,11 @@ bool QgsFeatureRequest::compare( const QgsFeatureRequest &rh ) const
   if ( &rh == this )
     return true;
 
-  return mFlags == rh.mFlags &&
-         mFilter == rh.mFilter &&
-         mSpatialFilter == rh.mSpatialFilter &&
-         mFilterRect == rh.mFilterRect &&
-         ( ( mReferenceGeometry.isNull() && rh.mReferenceGeometry.isNull() ) || mReferenceGeometry.equals( rh.mReferenceGeometry ) ) &&
-         mDistanceWithin == rh.mDistanceWithin &&
-         mFilterFid == rh.mFilterFid &&
-         mFilterFids == rh.mFilterFids &&
-         ( mFilterExpression ? rh.mFilterExpression && *mFilterExpression == *rh.mFilterExpression : !rh.mFilterExpression ) &&
-         mInvalidGeometryFilter == rh.mInvalidGeometryFilter &&
-         mAttrs == rh.mAttrs &&
-         mSimplifyMethod == rh.mSimplifyMethod &&
-         mLimit == rh.mLimit &&
-         mOrderBy == rh.mOrderBy &&
-         mTransform == rh.mTransform &&
-         mCrs == rh.mCrs &&
-         mTransformContext == rh.mTransformContext &&
-         mTimeout == rh.mTimeout &&
-         mRequestMayBeNested == rh.mRequestMayBeNested;
+  return mFlags == rh.mFlags && mFilter == rh.mFilter && mSpatialFilter == rh.mSpatialFilter && mFilterRect == rh.mFilterRect
+         && ( ( mReferenceGeometry.isNull() && rh.mReferenceGeometry.isNull() ) || mReferenceGeometry.equals( rh.mReferenceGeometry ) ) && mDistanceWithin == rh.mDistanceWithin
+         && mFilterFid == rh.mFilterFid && mFilterFids == rh.mFilterFids && ( mFilterExpression ? rh.mFilterExpression && *mFilterExpression == *rh.mFilterExpression : !rh.mFilterExpression )
+         && mInvalidGeometryFilter == rh.mInvalidGeometryFilter && mAttrs == rh.mAttrs && mSimplifyMethod == rh.mSimplifyMethod && mLimit == rh.mLimit && mOrderBy == rh.mOrderBy
+         && mTransform == rh.mTransform && mCrs == rh.mCrs && mTransformContext == rh.mTransformContext && mTimeout == rh.mTimeout && mRequestMayBeNested == rh.mRequestMayBeNested;
 }
 
 
@@ -240,10 +215,7 @@ QgsFeatureRequest &QgsFeatureRequest::setFilterRect( const QgsRectangle &rect )
   return *this;
 }
 
-QgsRectangle QgsFeatureRequest::filterRect() const
-{
-  return mFilterRect;
-}
+QgsRectangle QgsFeatureRequest::filterRect() const { return mFilterRect; }
 
 QgsFeatureRequest &QgsFeatureRequest::setDistanceWithin( const QgsGeometry &geometry, double distance )
 {
@@ -284,7 +256,7 @@ QgsFeatureRequest &QgsFeatureRequest::setInvalidGeometryCheck( Qgis::InvalidGeom
   return *this;
 }
 
-QgsFeatureRequest &QgsFeatureRequest::setInvalidGeometryCallback( const std::function<void ( const QgsFeature & )> &callback )
+QgsFeatureRequest &QgsFeatureRequest::setInvalidGeometryCallback( const std::function<void( const QgsFeature & )> &callback )
 {
   mInvalidGeometryCallback = callback;
   return *this;
@@ -328,10 +300,7 @@ QgsFeatureRequest &QgsFeatureRequest::addOrderBy( const QString &expression, boo
   return *this;
 }
 
-QgsFeatureRequest::OrderBy QgsFeatureRequest::orderBy() const
-{
-  return mOrderBy;
-}
+QgsFeatureRequest::OrderBy QgsFeatureRequest::orderBy() const { return mOrderBy; }
 
 QgsFeatureRequest &QgsFeatureRequest::setOrderBy( const QgsFeatureRequest::OrderBy &orderBy )
 {
@@ -358,10 +327,7 @@ QgsFeatureRequest &QgsFeatureRequest::setSubsetOfAttributes( const QgsAttributeL
   return *this;
 }
 
-QgsFeatureRequest &QgsFeatureRequest::setNoAttributes()
-{
-  return setSubsetOfAttributes( QgsAttributeList() );
-}
+QgsFeatureRequest &QgsFeatureRequest::setNoAttributes() { return setSubsetOfAttributes( QgsAttributeList() ); }
 
 QgsFeatureRequest &QgsFeatureRequest::setSubsetOfAttributes( const QStringList &attrNames, const QgsFields &fields )
 {
@@ -413,20 +379,11 @@ QgsFeatureRequest &QgsFeatureRequest::setSimplifyMethod( const QgsSimplifyMethod
   return *this;
 }
 
-QgsCoordinateTransform QgsFeatureRequest::coordinateTransform() const
-{
-  return mTransform;
-}
+QgsCoordinateTransform QgsFeatureRequest::coordinateTransform() const { return mTransform; }
 
-QgsCoordinateReferenceSystem QgsFeatureRequest::destinationCrs() const
-{
-  return mCrs;
-}
+QgsCoordinateReferenceSystem QgsFeatureRequest::destinationCrs() const { return mCrs; }
 
-QgsCoordinateTransformContext QgsFeatureRequest::transformContext() const
-{
-  return mTransformContext;
-}
+QgsCoordinateTransformContext QgsFeatureRequest::transformContext() const { return mTransformContext; }
 
 QgsCoordinateTransform QgsFeatureRequest::calculateTransform( const QgsCoordinateReferenceSystem &sourceCrs ) const
 {
@@ -454,7 +411,7 @@ QgsFeatureRequest &QgsFeatureRequest::setDestinationCrs( const QgsCoordinateRefe
   return *this;
 }
 
-QgsFeatureRequest &QgsFeatureRequest::setTransformErrorCallback( const std::function<void ( const QgsFeature & )> &callback )
+QgsFeatureRequest &QgsFeatureRequest::setTransformErrorCallback( const std::function<void( const QgsFeature & )> &callback )
 {
   mTransformErrorCallback = callback;
   return *this;
@@ -503,11 +460,8 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature &feature )
       break;
 
     case Qgis::SpatialFilterType::DistanceWithin:
-      if ( !feature.hasGeometry()
-           || !mReferenceGeometryEngine
-           || !feature.geometry().boundingBoxIntersects( mFilterRect )
-           || !mReferenceGeometryEngine->distanceWithin( feature.geometry().constGet(), mDistanceWithin )
-         )
+      if ( !feature.hasGeometry() || !mReferenceGeometryEngine || !feature.geometry().boundingBoxIntersects( mFilterRect )
+           || !mReferenceGeometryEngine->distanceWithin( feature.geometry().constGet(), mDistanceWithin ) )
         return false;
       break;
   }
@@ -515,10 +469,7 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature &feature )
   return true;
 }
 
-int QgsFeatureRequest::connectionTimeout() const
-{
-  return mTimeout;
-}
+int QgsFeatureRequest::connectionTimeout() const { return mTimeout; }
 
 QgsFeatureRequest &QgsFeatureRequest::setConnectionTimeout( int connectionTimeout )
 {
@@ -526,10 +477,7 @@ QgsFeatureRequest &QgsFeatureRequest::setConnectionTimeout( int connectionTimeou
   return *this;
 }
 
-int QgsFeatureRequest::timeout() const
-{
-  return mTimeout;
-}
+int QgsFeatureRequest::timeout() const { return mTimeout; }
 
 QgsFeatureRequest &QgsFeatureRequest::setTimeout( int timeout )
 {
@@ -537,10 +485,7 @@ QgsFeatureRequest &QgsFeatureRequest::setTimeout( int timeout )
   return *this;
 }
 
-bool QgsFeatureRequest::requestMayBeNested() const
-{
-  return mRequestMayBeNested;
-}
+bool QgsFeatureRequest::requestMayBeNested() const { return mRequestMayBeNested; }
 
 QgsFeatureRequest &QgsFeatureRequest::setRequestMayBeNested( bool requestMayBeNested )
 {
@@ -548,15 +493,9 @@ QgsFeatureRequest &QgsFeatureRequest::setRequestMayBeNested( bool requestMayBeNe
   return *this;
 }
 
-void QgsFeatureRequest::setFeedback( QgsFeedback *feedback )
-{
-  mFeedback = feedback;
-}
+void QgsFeatureRequest::setFeedback( QgsFeedback *feedback ) { mFeedback = feedback; }
 
-QgsFeedback *QgsFeatureRequest::feedback() const
-{
-  return mFeedback;
-}
+QgsFeedback *QgsFeatureRequest::feedback() const { return mFeedback; }
 
 
 #include "qgsfeatureiterator.h"
@@ -572,16 +511,9 @@ QgsAbstractFeatureSource::~QgsAbstractFeatureSource()
   }
 }
 
-void QgsAbstractFeatureSource::iteratorOpened( QgsAbstractFeatureIterator *it )
-{
-  mActiveIterators.insert( it );
-}
+void QgsAbstractFeatureSource::iteratorOpened( QgsAbstractFeatureIterator *it ) { mActiveIterators.insert( it ); }
 
-void QgsAbstractFeatureSource::iteratorClosed( QgsAbstractFeatureIterator *it )
-{
-  mActiveIterators.remove( it );
-}
-
+void QgsAbstractFeatureSource::iteratorClosed( QgsAbstractFeatureIterator *it ) { mActiveIterators.remove( it ); }
 
 
 QgsFeatureRequest::OrderByClause::OrderByClause( const QString &expression, bool ascending )
@@ -596,8 +528,7 @@ QgsFeatureRequest::OrderByClause::OrderByClause( const QString &expression, bool
   : mExpression( expression )
   , mAscending( ascending )
   , mNullsFirst( nullsfirst )
-{
-}
+{}
 
 QgsFeatureRequest::OrderByClause::OrderByClause( const QgsExpression &expression, bool ascending )
   : mExpression( expression )
@@ -611,47 +542,21 @@ QgsFeatureRequest::OrderByClause::OrderByClause( const QgsExpression &expression
   : mExpression( expression )
   , mAscending( ascending )
   , mNullsFirst( nullsfirst )
-{
+{}
 
-}
+bool QgsFeatureRequest::OrderByClause::ascending() const { return mAscending; }
 
-bool QgsFeatureRequest::OrderByClause::ascending() const
-{
-  return mAscending;
-}
+void QgsFeatureRequest::OrderByClause::setAscending( bool ascending ) { mAscending = ascending; }
 
-void QgsFeatureRequest::OrderByClause::setAscending( bool ascending )
-{
-  mAscending = ascending;
-}
+bool QgsFeatureRequest::OrderByClause::nullsFirst() const { return mNullsFirst; }
 
-bool QgsFeatureRequest::OrderByClause::nullsFirst() const
-{
-  return mNullsFirst;
-}
+void QgsFeatureRequest::OrderByClause::setNullsFirst( bool nullsFirst ) { mNullsFirst = nullsFirst; }
 
-void QgsFeatureRequest::OrderByClause::setNullsFirst( bool nullsFirst )
-{
-  mNullsFirst = nullsFirst;
-}
+QString QgsFeatureRequest::OrderByClause::dump() const { return u"%1 %2 %3"_s.arg( mExpression.expression(), mAscending ? "ASC" : "DESC", mNullsFirst ? "NULLS FIRST" : "NULLS LAST" ); }
 
-QString QgsFeatureRequest::OrderByClause::dump() const
-{
-  return u"%1 %2 %3"_s
-         .arg( mExpression.expression(),
-               mAscending ? "ASC" : "DESC",
-               mNullsFirst ? "NULLS FIRST" : "NULLS LAST" );
-}
+QgsExpression QgsFeatureRequest::OrderByClause::expression() const { return mExpression; }
 
-QgsExpression QgsFeatureRequest::OrderByClause::expression() const
-{
-  return mExpression;
-}
-
-bool QgsFeatureRequest::OrderByClause::prepare( QgsExpressionContext *context )
-{
-  return mExpression.prepare( context );
-}
+bool QgsFeatureRequest::OrderByClause::prepare( QgsExpressionContext *context ) { return mExpression.prepare( context ); }
 
 QgsFeatureRequest::OrderBy::OrderBy() = default;
 
@@ -664,7 +569,7 @@ QgsFeatureRequest::OrderBy::OrderBy( const QList<QgsFeatureRequest::OrderByClaus
   }
 }
 
-bool QgsFeatureRequest::OrderBy::operator== ( const QgsFeatureRequest::OrderBy &other ) const
+bool QgsFeatureRequest::OrderBy::operator==( const QgsFeatureRequest::OrderBy &other ) const
 {
   if ( this == &other )
     return true;
@@ -678,15 +583,9 @@ bool QgsFeatureRequest::OrderBy::operator== ( const QgsFeatureRequest::OrderBy &
   return true;
 }
 
-bool QgsFeatureRequest::OrderBy::operator!= ( const QgsFeatureRequest::OrderBy &other ) const
-{
-  return !operator==( other );
-}
+bool QgsFeatureRequest::OrderBy::operator!=( const QgsFeatureRequest::OrderBy &other ) const { return !operator==( other ); }
 
-QList<QgsFeatureRequest::OrderByClause> QgsFeatureRequest::OrderBy::list() const
-{
-  return *this;
-}
+QList<QgsFeatureRequest::OrderByClause> QgsFeatureRequest::OrderBy::list() const { return *this; }
 
 void QgsFeatureRequest::OrderBy::save( QDomElement &elem ) const
 {
@@ -715,7 +614,7 @@ void QgsFeatureRequest::OrderBy::load( const QDomElement &elem )
     const QDomElement clauseElem = clauses.at( i ).toElement();
     const QString expression = clauseElem.text();
     const bool asc = clauseElem.attribute( u"asc"_s ).toInt() != 0;
-    const bool nullsFirst  = clauseElem.attribute( u"nullsFirst"_s ).toInt() != 0;
+    const bool nullsFirst = clauseElem.attribute( u"nullsFirst"_s ).toInt() != 0;
 
     append( OrderByClause( expression, asc, nullsFirst ) );
   }

@@ -28,7 +28,6 @@
  */
 class CORE_EXPORT QgsColorRamp
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( sipCpp->type() == QgsGradientColorRamp::typeString() )
@@ -45,7 +44,7 @@ class CORE_EXPORT QgsColorRamp
       sipType = sipType_QgsCptCityColorRamp;
     else
       sipType = 0;
-    SIP_END
+  SIP_END
 #endif
   public:
 

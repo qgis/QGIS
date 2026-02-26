@@ -47,10 +47,7 @@ QgsFeatureFilterModel::QgsFeatureFilterModel( QObject *parent )
   setExtraIdentifierValueUnguarded( nullIdentifier() );
 }
 
-QString QgsFeatureFilterModel::identifierField() const
-{
-  return mIdentifierFields.value( 0 );
-}
+QString QgsFeatureFilterModel::identifierField() const { return mIdentifierFields.value( 0 ); }
 
 void QgsFeatureFilterModel::requestToReloadCurrentFeature( QgsFeatureRequest &request )
 {
@@ -69,15 +66,9 @@ void QgsFeatureFilterModel::requestToReloadCurrentFeature( QgsFeatureRequest &re
   request.setFilterExpression( conditions.join( " AND "_L1 ) );
 }
 
-QSet<QString> QgsFeatureFilterModel::requestedAttributes() const
-{
-  return QSet<QString>( mIdentifierFields.begin(), mIdentifierFields.end() );
-}
+QSet<QString> QgsFeatureFilterModel::requestedAttributes() const { return QSet<QString>( mIdentifierFields.begin(), mIdentifierFields.end() ); }
 
-QVariant QgsFeatureFilterModel::entryIdentifier( const QgsFeatureExpressionValuesGatherer::Entry &entry ) const
-{
-  return entry.featureId;
-}
+QVariant QgsFeatureFilterModel::entryIdentifier( const QgsFeatureExpressionValuesGatherer::Entry &entry ) const { return entry.featureId; }
 
 QgsFeatureExpressionValuesGatherer::Entry QgsFeatureFilterModel::createEntry( const QVariant &identifier ) const
 {
@@ -116,10 +107,7 @@ QVariant QgsFeatureFilterModel::nullIdentifier() const
   return nullValues;
 }
 
-QStringList QgsFeatureFilterModel::identifierFields() const
-{
-  return mIdentifierFields;
-}
+QStringList QgsFeatureFilterModel::identifierFields() const { return mIdentifierFields; }
 
 
 void QgsFeatureFilterModel::setIdentifierFields( const QStringList &identifierFields )
@@ -148,13 +136,6 @@ QVariantList QgsFeatureFilterModel::extraIdentifierValues() const
   return values;
 }
 
-void QgsFeatureFilterModel::setExtraIdentifierValues( const QVariantList &extraIdentifierValues )
-{
-  setExtraIdentifierValue( extraIdentifierValues );
-}
+void QgsFeatureFilterModel::setExtraIdentifierValues( const QVariantList &extraIdentifierValues ) { setExtraIdentifierValue( extraIdentifierValues ); }
 
-void QgsFeatureFilterModel::setExtraIdentifierValueToNull()
-{
-  setExtraIdentifierValue( nullIdentifier() );
-}
-
+void QgsFeatureFilterModel::setExtraIdentifierValueToNull() { setExtraIdentifierValue( nullIdentifier() ); }

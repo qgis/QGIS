@@ -32,7 +32,6 @@ if QGIS was built with GeographicLib support.
 #include "qgsmagneticmodel.h"
 %End
   public:
-
     static QString defaultFilePath();
 %Docstring
 Returns the default path used by GeographicLib to search for magnetic
@@ -265,7 +264,9 @@ Evaluates the components of the geomagnetic field at a point.
 .. seealso:: :py:func:`getComponentsWithTimeDerivatives`
 %End
 
-    bool getComponentsWithTimeDerivatives( double years, double latitude, double longitude, double height, double &Bx /Out/, double &By /Out/, double &Bz /Out/, double &Bxt /Out/, double &Byt /Out/, double &Bzt /Out/ ) const;
+    bool getComponentsWithTimeDerivatives(
+      double years, double latitude, double longitude, double height, double &Bx /Out/, double &By /Out/, double &Bz /Out/, double &Bxt /Out/, double &Byt /Out/, double &Bzt /Out/
+    ) const;
 %Docstring
 Evaluates the components of the geomagnetic field at a point, and their
 time derivatives.
@@ -316,7 +317,10 @@ Compute various quantities dependent on a magnetic field.
 .. seealso:: :py:func:`fieldComponentsWithTimeDerivatives`
 %End
 
-    static bool fieldComponentsWithTimeDerivatives( double Bx, double By, double Bz, double Bxt, double Byt, double Bzt, double &H /Out/, double &F /Out/, double &D /Out/, double &I /Out/, double &Ht /Out/, double &Ft /Out/, double &Dt /Out/, double &It /Out/ );
+    static bool fieldComponentsWithTimeDerivatives(
+      double Bx, double By, double Bz, double Bxt, double Byt, double Bzt, double &H /Out/, double &F /Out/, double &D /Out/, double &I /Out/, double &Ht /Out/, double &Ft /Out/,
+      double &Dt /Out/, double &It /Out/
+    );
 %Docstring
 Compute various quantities dependent on a magnetic field and their rates
 of change.

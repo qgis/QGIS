@@ -23,7 +23,6 @@ store and have their lifetime bound to the store.
 #include "qgsmaplayerstore.h"
 %End
   public:
-
     explicit QgsMapLayerStore( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsMapLayerStore.
@@ -48,17 +47,15 @@ Returns the number of valid layers contained in the store.
 %Docstring
 Returns the number of layers contained in the store.
 %End
-%MethodCode
-    sipRes = sipCpp->count();
+%MethodCode sipRes = sipCpp->count();
 %End
 
-    //! Ensures that bool(obj) returns ``True`` (otherwise __len__() would be used)
-    int __bool__() const;
-%MethodCode
-    sipRes = true;
+      //! Ensures that bool(obj) returns ``True`` (otherwise __len__() would be used)
+      int __bool__() const;
+%MethodCode sipRes = true;
 %End
 
-    QgsMapLayer *mapLayer( const QString &id ) const;
+      QgsMapLayer *mapLayer( const QString &id ) const;
 %Docstring
 Retrieve a pointer to a layer by layer ``id``.
 

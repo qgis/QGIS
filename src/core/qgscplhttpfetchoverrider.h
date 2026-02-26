@@ -66,15 +66,8 @@ class CORE_EXPORT QgsCPLHTTPFetchOverrider
     QThread *thread() const;
 
   private:
-
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,2,0)
-    static CPLHTTPResult *callback( const char *pszURL,
-                                    CSLConstList papszOptions,
-                                    GDALProgressFunc pfnProgress,
-                                    void *pProgressArg,
-                                    CPLHTTPFetchWriteFunc pfnWrite,
-                                    void *pWriteArg,
-                                    void *pUserData );
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 2, 0 )
+    static CPLHTTPResult *callback( const char *pszURL, CSLConstList papszOptions, GDALProgressFunc pfnProgress, void *pProgressArg, CPLHTTPFetchWriteFunc pfnWrite, void *pWriteArg, void *pUserData );
 #endif
 
     QString mAuthCfg;

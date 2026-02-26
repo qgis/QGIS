@@ -52,36 +52,22 @@ QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings( bool enable
   Q_NOWARN_DEPRECATED_POP
 }
 
-bool QgsSnappingConfig::IndividualLayerSettings::valid() const
-{
-  return mValid;
-}
+bool QgsSnappingConfig::IndividualLayerSettings::valid() const { return mValid; }
 
-bool QgsSnappingConfig::IndividualLayerSettings::enabled() const
-{
-  return mEnabled;
-}
+bool QgsSnappingConfig::IndividualLayerSettings::enabled() const { return mEnabled; }
 
-void QgsSnappingConfig::IndividualLayerSettings::setEnabled( bool enabled )
-{
-  mEnabled = enabled;
-}
+void QgsSnappingConfig::IndividualLayerSettings::setEnabled( bool enabled ) { mEnabled = enabled; }
 
-Qgis::SnappingTypes QgsSnappingConfig::IndividualLayerSettings::typeFlag() const
-{
-  return mType;
-}
+Qgis::SnappingTypes QgsSnappingConfig::IndividualLayerSettings::typeFlag() const { return mType; }
 
 QgsSnappingConfig::SnappingType QgsSnappingConfig::IndividualLayerSettings::type() const
 {
-
   if ( ( mType & QgsSnappingConfig::SnappingType::Segment ) && ( mType & QgsSnappingConfig::SnappingType::Vertex ) )
     return QgsSnappingConfig::SnappingType::VertexAndSegment;
   else if ( mType & QgsSnappingConfig::SnappingType::Segment )
     return QgsSnappingConfig::SnappingType::Segment;
   else
     return QgsSnappingConfig::SnappingType::Vertex;
-
 }
 
 void QgsSnappingConfig::IndividualLayerSettings::setType( QgsSnappingConfig::SnappingType type )
@@ -102,70 +88,33 @@ void QgsSnappingConfig::IndividualLayerSettings::setType( QgsSnappingConfig::Sna
       break;
   }
 }
-void QgsSnappingConfig::IndividualLayerSettings::setTypeFlag( Qgis::SnappingTypes type )
-{
-  mType = type;
-}
+void QgsSnappingConfig::IndividualLayerSettings::setTypeFlag( Qgis::SnappingTypes type ) { mType = type; }
 
-double QgsSnappingConfig::IndividualLayerSettings::tolerance() const
-{
-  return mTolerance;
-}
+double QgsSnappingConfig::IndividualLayerSettings::tolerance() const { return mTolerance; }
 
-void QgsSnappingConfig::IndividualLayerSettings::setTolerance( double tolerance )
-{
-  mTolerance = tolerance;
-}
+void QgsSnappingConfig::IndividualLayerSettings::setTolerance( double tolerance ) { mTolerance = tolerance; }
 
-Qgis::MapToolUnit QgsSnappingConfig::IndividualLayerSettings::units() const
-{
-  return mUnits;
-}
+Qgis::MapToolUnit QgsSnappingConfig::IndividualLayerSettings::units() const { return mUnits; }
 
-void QgsSnappingConfig::IndividualLayerSettings::setUnits( Qgis::MapToolUnit units )
-{
-  mUnits = units;
-}
+void QgsSnappingConfig::IndividualLayerSettings::setUnits( Qgis::MapToolUnit units ) { mUnits = units; }
 
-double QgsSnappingConfig::IndividualLayerSettings::minimumScale() const
-{
-  return mMinimumScale;
-}
+double QgsSnappingConfig::IndividualLayerSettings::minimumScale() const { return mMinimumScale; }
 
-void QgsSnappingConfig::IndividualLayerSettings::setMinimumScale( double minScale )
-{
-  mMinimumScale = minScale;
-}
+void QgsSnappingConfig::IndividualLayerSettings::setMinimumScale( double minScale ) { mMinimumScale = minScale; }
 
-double QgsSnappingConfig::IndividualLayerSettings::maximumScale() const
-{
-  return mMaximumScale;
-}
+double QgsSnappingConfig::IndividualLayerSettings::maximumScale() const { return mMaximumScale; }
 
-void QgsSnappingConfig::IndividualLayerSettings::setMaximumScale( double maxScale )
-{
-  mMaximumScale = maxScale;
-}
+void QgsSnappingConfig::IndividualLayerSettings::setMaximumScale( double maxScale ) { mMaximumScale = maxScale; }
 
-bool QgsSnappingConfig::IndividualLayerSettings::operator !=( const QgsSnappingConfig::IndividualLayerSettings &other ) const
+bool QgsSnappingConfig::IndividualLayerSettings::operator!=( const QgsSnappingConfig::IndividualLayerSettings &other ) const
 {
-  return mValid != other.mValid
-         || mEnabled != other.mEnabled
-         || mType != other.mType
-         || mTolerance != other.mTolerance
-         || mUnits != other.mUnits
-         || mMinimumScale != other.mMinimumScale
+  return mValid != other.mValid || mEnabled != other.mEnabled || mType != other.mType || mTolerance != other.mTolerance || mUnits != other.mUnits || mMinimumScale != other.mMinimumScale
          || mMaximumScale != other.mMaximumScale;
 }
 
-bool QgsSnappingConfig::IndividualLayerSettings::operator ==( const QgsSnappingConfig::IndividualLayerSettings &other ) const
+bool QgsSnappingConfig::IndividualLayerSettings::operator==( const QgsSnappingConfig::IndividualLayerSettings &other ) const
 {
-  return mValid == other.mValid
-         && mEnabled == other.mEnabled
-         && mType == other.mType
-         && mTolerance == other.mTolerance
-         && mUnits == other.mUnits
-         && mMinimumScale == other.mMinimumScale
+  return mValid == other.mValid && mEnabled == other.mEnabled && mType == other.mType && mTolerance == other.mTolerance && mUnits == other.mUnits && mMinimumScale == other.mMinimumScale
          && mMaximumScale == other.mMaximumScale;
 }
 
@@ -178,17 +127,9 @@ QgsSnappingConfig::QgsSnappingConfig( QgsProject *project )
 
 bool QgsSnappingConfig::operator==( const QgsSnappingConfig &other ) const
 {
-  return mEnabled == other.mEnabled
-         && mMode == other.mMode
-         && mType == other.mType
-         && mTolerance == other.mTolerance
-         && mUnits == other.mUnits
-         && mIntersectionSnapping == other.mIntersectionSnapping
-         && mSelfSnapping == other.mSelfSnapping
-         && mIndividualLayerSettings == other.mIndividualLayerSettings
-         && mScaleDependencyMode == other.mScaleDependencyMode
-         && mMinimumScale == other.mMinimumScale
-         && mMaximumScale == other.mMaximumScale;
+  return mEnabled == other.mEnabled && mMode == other.mMode && mType == other.mType && mTolerance == other.mTolerance && mUnits == other.mUnits && mIntersectionSnapping == other.mIntersectionSnapping
+         && mSelfSnapping == other.mSelfSnapping && mIndividualLayerSettings == other.mIndividualLayerSettings && mScaleDependencyMode == other.mScaleDependencyMode
+         && mMinimumScale == other.mMinimumScale && mMaximumScale == other.mMaximumScale;
 }
 
 void QgsSnappingConfig::reset()
@@ -236,10 +177,7 @@ void QgsSnappingConfig::reset()
   }
 }
 
-bool QgsSnappingConfig::enabled() const
-{
-  return mEnabled;
-}
+bool QgsSnappingConfig::enabled() const { return mEnabled; }
 
 void QgsSnappingConfig::setEnabled( bool enabled )
 {
@@ -250,10 +188,7 @@ void QgsSnappingConfig::setEnabled( bool enabled )
   mEnabled = enabled;
 }
 
-Qgis::SnappingMode QgsSnappingConfig::mode() const
-{
-  return mMode;
-}
+Qgis::SnappingMode QgsSnappingConfig::mode() const { return mMode; }
 
 void QgsSnappingConfig::setMode( Qgis::SnappingMode mode )
 {
@@ -264,10 +199,7 @@ void QgsSnappingConfig::setMode( Qgis::SnappingMode mode )
   mMode = mode;
 }
 
-Qgis::SnappingTypes QgsSnappingConfig::typeFlag() const
-{
-  return mType;
-}
+Qgis::SnappingTypes QgsSnappingConfig::typeFlag() const { return mType; }
 
 QgsSnappingConfig::SnappingType QgsSnappingConfig::type() const
 {
@@ -350,10 +282,7 @@ void QgsSnappingConfig::setTypeFlag( Qgis::SnappingTypes type )
   mType = type;
 }
 
-double QgsSnappingConfig::tolerance() const
-{
-  return mTolerance;
-}
+double QgsSnappingConfig::tolerance() const { return mTolerance; }
 
 void QgsSnappingConfig::setTolerance( double tolerance )
 {
@@ -364,10 +293,7 @@ void QgsSnappingConfig::setTolerance( double tolerance )
   mTolerance = tolerance;
 }
 
-Qgis::MapToolUnit QgsSnappingConfig::units() const
-{
-  return mUnits;
-}
+Qgis::MapToolUnit QgsSnappingConfig::units() const { return mUnits; }
 
 void QgsSnappingConfig::setUnits( Qgis::MapToolUnit units )
 {
@@ -378,30 +304,15 @@ void QgsSnappingConfig::setUnits( Qgis::MapToolUnit units )
   mUnits = units;
 }
 
-bool QgsSnappingConfig::intersectionSnapping() const
-{
-  return mIntersectionSnapping;
-}
+bool QgsSnappingConfig::intersectionSnapping() const { return mIntersectionSnapping; }
 
-void QgsSnappingConfig::setIntersectionSnapping( bool enabled )
-{
-  mIntersectionSnapping = enabled;
-}
+void QgsSnappingConfig::setIntersectionSnapping( bool enabled ) { mIntersectionSnapping = enabled; }
 
-bool QgsSnappingConfig::selfSnapping() const
-{
-  return mSelfSnapping;
-}
+bool QgsSnappingConfig::selfSnapping() const { return mSelfSnapping; }
 
-void QgsSnappingConfig::setSelfSnapping( bool enabled )
-{
-  mSelfSnapping = enabled;
-}
+void QgsSnappingConfig::setSelfSnapping( bool enabled ) { mSelfSnapping = enabled; }
 
-QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> QgsSnappingConfig::individualLayerSettings() const
-{
-  return mIndividualLayerSettings;
-}
+QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> QgsSnappingConfig::individualLayerSettings() const { return mIndividualLayerSettings; }
 
 QgsSnappingConfig::IndividualLayerSettings QgsSnappingConfig::individualLayerSettings( QgsVectorLayer *vl ) const
 {
@@ -416,10 +327,7 @@ QgsSnappingConfig::IndividualLayerSettings QgsSnappingConfig::individualLayerSet
   }
 }
 
-void QgsSnappingConfig::clearIndividualLayerSettings()
-{
-  mIndividualLayerSettings.clear();
-}
+void QgsSnappingConfig::clearIndividualLayerSettings() { mIndividualLayerSettings.clear(); }
 
 void QgsSnappingConfig::setIndividualLayerSettings( QgsVectorLayer *vl, const IndividualLayerSettings &individualLayerSettings )
 {
@@ -432,14 +340,8 @@ void QgsSnappingConfig::setIndividualLayerSettings( QgsVectorLayer *vl, const In
 
 bool QgsSnappingConfig::operator!=( const QgsSnappingConfig &other ) const
 {
-  return mEnabled != other.mEnabled
-         || mMode != other.mMode
-         || mType != other.mType
-         || mTolerance != other.mTolerance
-         || mUnits != other.mUnits
-         || mIndividualLayerSettings != other.mIndividualLayerSettings
-         || mScaleDependencyMode != other.mScaleDependencyMode
-         || mMinimumScale != other.mMinimumScale
+  return mEnabled != other.mEnabled || mMode != other.mMode || mType != other.mType || mTolerance != other.mTolerance || mUnits != other.mUnits
+         || mIndividualLayerSettings != other.mIndividualLayerSettings || mScaleDependencyMode != other.mScaleDependencyMode || mMinimumScale != other.mMinimumScale
          || mMaximumScale != other.mMaximumScale;
 }
 
@@ -650,10 +552,7 @@ void QgsSnappingConfig::readLegacySettings()
   const QStringList snapToList = mProject->readListEntry( u"Digitizing"_s, u"/LayerSnapToList"_s, QStringList() );
 
   // lists must have the same size, otherwise something is wrong
-  if ( layerIdList.size() != enabledList.size() ||
-       layerIdList.size() != toleranceList.size() ||
-       layerIdList.size() != toleranceUnitList.size() ||
-       layerIdList.size() != snapToList.size() )
+  if ( layerIdList.size() != enabledList.size() || layerIdList.size() != toleranceList.size() || layerIdList.size() != toleranceUnitList.size() || layerIdList.size() != snapToList.size() )
     return;
 
   // Use snapping information from the project
@@ -661,7 +560,7 @@ void QgsSnappingConfig::readLegacySettings()
     mMode = Qgis::SnappingMode::ActiveLayer;
   else if ( snapMode == "all_layers"_L1 )
     mMode = Qgis::SnappingMode::AllLayers;
-  else   // either "advanced" or empty (for background compatibility)
+  else // either "advanced" or empty (for background compatibility)
     mMode = Qgis::SnappingMode::AdvancedConfiguration;
 
   // load layers, tolerances, snap type
@@ -676,11 +575,10 @@ void QgsSnappingConfig::readLegacySettings()
     if ( !vlayer || !vlayer->isSpatial() )
       continue;
 
-    const Qgis::SnappingTypes t( *snapIt == "to_vertex"_L1 ? Qgis::SnappingType::Vertex :
-                                 ( *snapIt == "to_segment"_L1 ? Qgis::SnappingType::Segment :
-                                   static_cast<Qgis::SnappingTypes>( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment )
-                                 )
-                               );
+    const Qgis::SnappingTypes t(
+      *snapIt == "to_vertex"_L1 ? Qgis::SnappingType::Vertex
+                                : ( *snapIt == "to_segment"_L1 ? Qgis::SnappingType::Segment : static_cast<Qgis::SnappingTypes>( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment ) )
+    );
 
     mIndividualLayerSettings.insert( vlayer, IndividualLayerSettings( *enabledIt == "enabled"_L1, t, tolIt->toDouble(), static_cast<Qgis::MapToolUnit>( tolUnitIt->toInt() ), 0.0, 0.0 ) );
   }
@@ -699,10 +597,7 @@ void QgsSnappingConfig::readLegacySettings()
   }
 }
 
-QgsProject *QgsSnappingConfig::project() const
-{
-  return mProject;
-}
+QgsProject *QgsSnappingConfig::project() const { return mProject; }
 
 void QgsSnappingConfig::setProject( QgsProject *project )
 {
@@ -714,37 +609,14 @@ void QgsSnappingConfig::setProject( QgsProject *project )
   reset();
 }
 
-double QgsSnappingConfig::minimumScale() const
-{
-  return mMinimumScale;
-}
+double QgsSnappingConfig::minimumScale() const { return mMinimumScale; }
 
-void QgsSnappingConfig::setMinimumScale( double minScale )
-{
-  mMinimumScale = minScale;
-}
+void QgsSnappingConfig::setMinimumScale( double minScale ) { mMinimumScale = minScale; }
 
-double QgsSnappingConfig::maximumScale() const
-{
-  return mMaximumScale;
-}
+double QgsSnappingConfig::maximumScale() const { return mMaximumScale; }
 
-void QgsSnappingConfig::setMaximumScale( double maxScale )
-{
-  mMaximumScale = maxScale;
-}
+void QgsSnappingConfig::setMaximumScale( double maxScale ) { mMaximumScale = maxScale; }
 
-void QgsSnappingConfig::setScaleDependencyMode( QgsSnappingConfig::ScaleDependencyMode mode )
-{
-  mScaleDependencyMode = mode;
-}
+void QgsSnappingConfig::setScaleDependencyMode( QgsSnappingConfig::ScaleDependencyMode mode ) { mScaleDependencyMode = mode; }
 
-QgsSnappingConfig::ScaleDependencyMode QgsSnappingConfig::scaleDependencyMode() const
-{
-  return mScaleDependencyMode;
-}
-
-
-
-
-
+QgsSnappingConfig::ScaleDependencyMode QgsSnappingConfig::scaleDependencyMode() const { return mScaleDependencyMode; }

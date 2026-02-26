@@ -48,7 +48,4 @@ int QgsMaskIdProvider::maskId( const QString &labelLayerId, const QString &label
   return -1;
 }
 
-int QgsMaskIdProvider::size() const
-{
-  return mMaskIds.size();
-}
+int QgsMaskIdProvider::size() const { return mMaskIds.size(); }

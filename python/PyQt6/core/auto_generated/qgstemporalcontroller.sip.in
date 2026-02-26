@@ -14,7 +14,7 @@
 #include <qgstemporalnavigationobject.h>
 %End
 
-class QgsTemporalController : QObject
+  class QgsTemporalController : QObject
 {
 %Docstring(signature="appended")
 A controller base class for temporal objects, contains a signal for
@@ -51,7 +51,6 @@ object.
 Signals that a temporal ``range`` has changed and needs to be updated in
 all connected objects.
 %End
-
 };
 
 /************************************************************************

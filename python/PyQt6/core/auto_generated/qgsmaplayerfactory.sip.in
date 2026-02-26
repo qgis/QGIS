@@ -24,7 +24,6 @@ Contains utility functions for creating map layers.
 #include "qgsmaplayerfactory.h"
 %End
   public:
-
     static Qgis::LayerType typeFromString( const QString &string, bool &ok /Out/ );
 %Docstring
 Returns the map layer type corresponding a ``string`` value.
@@ -47,21 +46,19 @@ Converts a map layer ``type`` to a string value.
 
     struct LayerOptions
     {
-
-      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext );
+        explicit LayerOptions( const QgsCoordinateTransformContext &transformContext );
 %Docstring
 Constructor for LayerOptions with ``transformContext``.
 %End
 
-      QgsCoordinateTransformContext transformContext;
+        QgsCoordinateTransformContext transformContext;
 
-      bool loadDefaultStyle;
+        bool loadDefaultStyle;
 
-      bool loadAllStoredStyles;
+        bool loadAllStoredStyles;
     };
 
-    static QgsMapLayer *createLayer( const QString &uri, const QString &name, Qgis::LayerType type, const LayerOptions &options,
-                                     const QString &provider = QString() ) /Factory/;
+    static QgsMapLayer *createLayer( const QString &uri, const QString &name, Qgis::LayerType type, const LayerOptions &options, const QString &provider = QString() ) /Factory/;
 %Docstring
 Creates a map layer, given a ``uri``, ``name``, layer ``type`` and
 ``provider`` name.
@@ -70,7 +67,6 @@ Caller takes ownership of the returned layer.
 
 .. versionadded:: 3.22
 %End
-
 };
 
 /************************************************************************

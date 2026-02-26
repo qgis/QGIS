@@ -51,28 +51,26 @@ class CORE_EXPORT QgsFields
     Q_PROPERTY( QStringList names READ names )
 
   public:
-
 #ifndef SIP_RUN
 
     typedef struct Field
     {
-      Field()
-      {}
+        Field() {}
 
-      Field( const QgsField &f, Qgis::FieldOrigin o, int oi )
-        : field( f )
-        , origin( o )
-        , originIndex( oi )
-      {}
+        Field( const QgsField &f, Qgis::FieldOrigin o, int oi )
+          : field( f )
+          , origin( o )
+          , originIndex( oi )
+        {}
 
-      // TODO c++20 - replace with = default
+        // TODO c++20 - replace with = default
 
-      bool operator==( const Field &other ) const { return field == other.field && origin == other.origin && originIndex == other.originIndex; }
-      bool operator!=( const Field &other ) const { return !( *this == other ); }
+        bool operator==( const Field &other ) const { return field == other.field && origin == other.origin && originIndex == other.originIndex; }
+        bool operator!=( const Field &other ) const { return !( *this == other ); }
 
-      QgsField field;      //!< Field
-      Qgis::FieldOrigin origin = Qgis::FieldOrigin::Unknown ;  //!< Origin of the field
-      int originIndex = -1 ;     //!< Index specific to the origin
+        QgsField field;                                        //!< Field
+        Qgis::FieldOrigin origin = Qgis::FieldOrigin::Unknown; //!< Origin of the field
+        int originIndex = -1;                                  //!< Index specific to the origin
     } Field;
 
 #endif
@@ -80,7 +78,8 @@ class CORE_EXPORT QgsFields
     /**
      * Constructor for an empty field container
      */
-    QgsFields() SIP_HOLDGIL;
+    QgsFields()
+    SIP_HOLDGIL;
 
     QgsFields( const QgsFields &other ) SIP_HOLDGIL;
     QgsFields &operator =( const QgsFields &other ) SIP_SKIP;

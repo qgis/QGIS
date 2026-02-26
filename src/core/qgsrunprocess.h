@@ -23,7 +23,7 @@
 
 #include <QObject>
 
-#if QT_CONFIG(process)
+#if QT_CONFIG( process )
 #include <QProcess>
 #endif
 
@@ -45,7 +45,7 @@ class QgsMessageOutput;
  * On some platforms (e.g. iOS) , the process execution is skipped
  * https://lists.qt-project.org/pipermail/development/2015-July/022205.html
  */
-class CORE_EXPORT QgsRunProcess: public QObject SIP_NODEFAULTCTORS
+class CORE_EXPORT QgsRunProcess : public QObject SIP_NODEFAULTCTORS
 {
     Q_OBJECT
 
@@ -57,8 +57,7 @@ class CORE_EXPORT QgsRunProcess: public QObject SIP_NODEFAULTCTORS
     // The action argument contains string with the command.
     // If capture is true, the standard output and error from the process
     // will be sent to QgsMessageOutput - usually a dialog box.
-    static QgsRunProcess *create( const QString &action, bool capture ) SIP_FACTORY
-    { return new QgsRunProcess( action, capture ); }
+    static QgsRunProcess *create( const QString &action, bool capture ) SIP_FACTORY { return new QgsRunProcess( action, capture ); }
 
     /**
      * Splits the string \a command into a list of tokens, and returns
@@ -75,7 +74,7 @@ class CORE_EXPORT QgsRunProcess: public QObject SIP_NODEFAULTCTORS
     QgsRunProcess( const QString &action, bool capture ) SIP_FORCE;
     ~QgsRunProcess() override SIP_FORCE;
 
-#if QT_CONFIG(process)
+#if QT_CONFIG( process )
     // Deletes the instance of the class
     void die();
 
@@ -92,7 +91,7 @@ class CORE_EXPORT QgsRunProcess: public QObject SIP_NODEFAULTCTORS
 #endif // !(QT_CONFIG(process)
 };
 
-#if QT_CONFIG(process)
+#if QT_CONFIG( process )
 
 /**
  * \brief A thread safe class for performing blocking (sync) execution of external processes.
@@ -112,7 +111,6 @@ class CORE_EXPORT QgsBlockingProcess : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for the given \a program, with the specified list of \a arguments.
      *
@@ -132,18 +130,16 @@ class CORE_EXPORT QgsBlockingProcess : public QObject
      * Sets a handler function to call whenever content is written by the process to stdout.
      */
     void setStdOutHandler( SIP_PYCALLABLE / AllowNone / );
-    % MethodCode
-    Py_BEGIN_ALLOW_THREADS
+    % MethodCode Py_BEGIN_ALLOW_THREADS
 
-    sipCpp->setStdOutHandler( [a0]( const QByteArray &arg )
-    {
-      SIP_BLOCK_THREADS
-      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QByteArray, NULL ) );
-      SIP_UNBLOCK_THREADS
-    } );
+        sipCpp->setStdOutHandler( [a0]( const QByteArray &arg ) {
+          SIP_BLOCK_THREADS
+          Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QByteArray, NULL ) );
+          SIP_UNBLOCK_THREADS
+        } );
 
     Py_END_ALLOW_THREADS
-    % End
+      % End
 #endif
 
 #ifndef SIP_RUN
@@ -154,22 +150,20 @@ class CORE_EXPORT QgsBlockingProcess : public QObject
     void setStdErrHandler( const std::function< void( const QByteArray & ) > &handler ) { mStderrHandler = handler; }
 #else
 
-    /**
+      /**
      * Sets a \a handler function to call whenever content is written by the process to stderr.
      */
-    void setStdErrHandler( SIP_PYCALLABLE / AllowNone / );
-    % MethodCode
-    Py_BEGIN_ALLOW_THREADS
+      void setStdErrHandler( SIP_PYCALLABLE / AllowNone / );
+    % MethodCode Py_BEGIN_ALLOW_THREADS
 
-    sipCpp->setStdErrHandler( [a0]( const QByteArray &arg )
-    {
-      SIP_BLOCK_THREADS
-      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QByteArray, NULL ) );
-      SIP_UNBLOCK_THREADS
-    } );
+        sipCpp->setStdErrHandler( [a0]( const QByteArray &arg ) {
+          SIP_BLOCK_THREADS
+          Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QByteArray, NULL ) );
+          SIP_UNBLOCK_THREADS
+        } );
 
     Py_END_ALLOW_THREADS
-    % End
+      % End
 #endif
 
     /**
@@ -194,7 +188,6 @@ class CORE_EXPORT QgsBlockingProcess : public QObject
     QProcess::ProcessError processError() const;
 
   private:
-
     QString mProcess;
     QStringList mArguments;
     std::function< void( const QByteArray & ) > mStdoutHandler;
@@ -217,13 +210,9 @@ class ProcessThread : public QThread
     ProcessThread( const std::function<void()> &function, QObject *parent = nullptr )
       : QThread( parent )
       , mFunction( function )
-    {
-    }
+    {}
 
-    void run() override
-    {
-      mFunction();
-    }
+    void run() override { mFunction(); }
 
   private:
     std::function<void()> mFunction;

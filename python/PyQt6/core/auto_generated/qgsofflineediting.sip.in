@@ -41,7 +41,10 @@ layer data.
 
     QgsOfflineEditing();
 
-    bool convertToOfflineProject( const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected = false, ContainerType containerType = SpatiaLite, const QString &layerNameSuffix = QStringLiteral( " (offline)" ) );
+    bool convertToOfflineProject(
+      const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected = false, ContainerType containerType = SpatiaLite,
+      const QString &layerNameSuffix = QStringLiteral( " (offline)" )
+    );
 %Docstring
 Convert current project for offline editing
 

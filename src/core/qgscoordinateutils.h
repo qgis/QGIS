@@ -44,7 +44,6 @@ class CORE_EXPORT QgsCoordinateUtils
     Q_GADGET
 
   public:
-
     /**
      * Returns the precision to use for displaying coordinates in \a mapCrs to the user.
      * It respects the user's \a project settings.
@@ -128,7 +127,6 @@ class CORE_EXPORT QgsCoordinateUtils
      * \since QGIS 3.26
      */
     Q_INVOKABLE static double degreeToDecimal( const QString &string, bool *ok = nullptr, bool *isEasting = nullptr );
-
 };
 
 

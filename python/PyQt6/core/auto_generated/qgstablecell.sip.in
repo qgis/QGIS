@@ -23,7 +23,6 @@ Encapsulates the contents and formatting of a single table cell.
 #include "qgstablecell.h"
 %End
   public:
-
     QgsTableCell( const QVariant &content = QVariant() );
 %Docstring
 Constructor for QgsTableCell, with the specified ``content``.
@@ -221,11 +220,23 @@ Sets the ``properties`` for the cell.
 
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    QString str = QStringLiteral( "<QgsTableCell: %1>" ).arg( sipCpp->content().toString() );
+%MethodCode QString str = QStringLiteral( "<QgsTableCell: %1>" ).arg( sipCpp->content().toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
+    private :
+
+    QVariant mContent;
+    QColor mBackgroundColor;
+    QColor mForegroundColor;
+    QgsTextFormat mTextFormat;
+    std::unique_ptr< QgsNumericFormat > mFormat;
+
+    Qt::Alignment mHAlign;
+    Qt::Alignment mVAlign;
+
+    int mRowSpan;
+    int mColumnSpan;
 };
 
 typedef QVector<QgsTableCell> QgsTableRow;

@@ -29,17 +29,14 @@ automatically cleaned up whenever the linked child layer is deleted.
 #include "qgsgrouplayer.h"
 %End
   public:
-
     struct LayerOptions
     {
-
-      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext );
+        explicit LayerOptions( const QgsCoordinateTransformContext &transformContext );
 %Docstring
 Constructor for LayerOptions.
 %End
 
-      QgsCoordinateTransformContext transformContext;
-
+        QgsCoordinateTransformContext transformContext;
     };
 
     QgsGroupLayer( const QString &name, const QgsGroupLayer::LayerOptions &options );
@@ -51,12 +48,11 @@ The ``options`` argument specifies load-time layer options.
     ~QgsGroupLayer();
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    QString str = QStringLiteral( "<QgsGroupLayer: '%1'>" ).arg( sipCpp->name() );
+%MethodCode QString str = QStringLiteral( "<QgsGroupLayer: '%1'>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    virtual QgsGroupLayer *clone() const /Factory/;
+      virtual QgsGroupLayer *clone() const /Factory/;
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
 

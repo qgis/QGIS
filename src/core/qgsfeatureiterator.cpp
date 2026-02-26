@@ -22,8 +22,7 @@
 
 QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest &request )
   : mRequest( request )
-{
-}
+{}
 
 bool QgsAbstractFeatureIterator::nextFeature( QgsFeature &f )
 {
@@ -187,10 +186,7 @@ void QgsAbstractFeatureIterator::deref()
     delete this;
 }
 
-bool QgsAbstractFeatureIterator::compileFailed() const
-{
-  return mCompileFailed;
-}
+bool QgsAbstractFeatureIterator::compileFailed() const { return mCompileFailed; }
 
 bool QgsAbstractFeatureIterator::prepareSimplification( const QgsSimplifyMethod &simplifyMethod )
 {
@@ -213,8 +209,7 @@ void QgsAbstractFeatureIterator::setupOrderBy( const QList<QgsFeatureRequest::Or
     do
     {
       orderByIt->prepare( expressionContext );
-    }
-    while ( ++orderByIt != preparedOrderBys.end() );
+    } while ( ++orderByIt != preparedOrderBys.end() );
 
     // Fetch all features
     QgsIndexedFeature indexedFeature;
@@ -257,9 +252,7 @@ bool QgsAbstractFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::
   return false;
 }
 
-void QgsAbstractFeatureIterator::setInterruptionChecker( QgsFeedback * )
-{
-}
+void QgsAbstractFeatureIterator::setInterruptionChecker( QgsFeedback * ) {}
 
 ///////
 
@@ -276,7 +269,4 @@ QgsFeatureIterator &QgsFeatureIterator::operator=( const QgsFeatureIterator &oth
   return *this;
 }
 
-bool QgsFeatureIterator::isValid() const
-{
-  return mIter && mIter->isValid();
-}
+bool QgsFeatureIterator::isValid() const { return mIter && mIter->isValid(); }

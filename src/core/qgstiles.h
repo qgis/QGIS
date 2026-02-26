@@ -44,9 +44,10 @@ class CORE_EXPORT QgsTileXYZ
   public:
     //! Constructs a tile identifier from given column, row and zoom level indices
     QgsTileXYZ( int tc = -1, int tr = -1, int tz = -1 )
-      : mColumn( tc ), mRow( tr ), mZoomLevel( tz )
-    {
-    }
+      : mColumn( tc )
+      , mRow( tr )
+      , mZoomLevel( tz )
+    {}
 
     //! Returns tile's column index (X)
     int column() const { return mColumn; }
@@ -63,25 +64,23 @@ class CORE_EXPORT QgsTileXYZ
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    const QString str = u"<QgsTileXYZ: %1, %2, %3>"_s.arg( sipCpp->column() ).arg( sipCpp->row() ).arg( sipCpp->zoomLevel() );
+    % MethodCode const QString str = u"<QgsTileXYZ: %1, %2, %3>"_s.arg( sipCpp->column() ).arg( sipCpp->row() ).arg( sipCpp->zoomLevel() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-    % End
+  % End
 #endif
 
-  private:
-    int mColumn = -1;
+    private : int mColumn
+    = -1;
     int mRow = -1;
     int mZoomLevel = -1;
 };
 
 #ifndef SIP_RUN
-#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
+#if ( __GNUC__ > 4 || ( __GNUC__ == 4 && __GNUC_MINOR__ >= 6 ) ) || defined( __clang__ )
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wattributes"
-#elif defined(_MSC_VER)
-__pragma( warning( push ) )
-__pragma( warning( disable: 4273 ) )
+#elif defined( _MSC_VER )
+__pragma( warning( push ) ) __pragma( warning( disable : 4273 ) )
 #endif
 #endif
 
@@ -92,16 +91,16 @@ __pragma( warning( disable: 4273 ) )
  */
 CORE_EXPORT inline uint qHash( QgsTileXYZ id ) SIP_SKIP
 {
-  const uint h1 = qHash( static_cast< quint64 >( id.column( ) ) );
+  const uint h1 = qHash( static_cast< quint64 >( id.column() ) );
   const uint h2 = qHash( static_cast< quint64 >( id.row() ) );
   const uint h3 = qHash( static_cast< quint64 >( id.zoomLevel() ) );
   return h1 ^ ( h2 << 1 ) ^ ( h3 << 2 );
 }
 
 #ifndef SIP_RUN
-#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
+#if ( __GNUC__ > 4 || ( __GNUC__ == 4 && __GNUC_MINOR__ >= 6 ) ) || defined( __clang__ )
 #pragma GCC diagnostic pop
-#elif defined(_MSC_VER)
+#elif defined( _MSC_VER )
 __pragma( warning( pop ) )
 #endif
 #endif
@@ -119,7 +118,11 @@ class CORE_EXPORT QgsTileRange
   public:
     //! Constructs a range of tiles from given span of columns and rows
     QgsTileRange( int c1 = -1, int c2 = -1, int r1 = -1, int r2 = -1 )
-      : mStartColumn( c1 ), mEndColumn( c2 ), mStartRow( r1 ), mEndRow( r2 ) {}
+      : mStartColumn( c1 )
+      , mEndColumn( c2 )
+      , mStartRow( r1 )
+      , mEndRow( r2 )
+    {}
 
     //! Returns whether the range is valid (when all row/column numbers are not negative)
     bool isValid() const { return mStartColumn >= 0 && mEndColumn >= 0 && mStartRow >= 0 && mEndRow >= 0; }
@@ -161,7 +164,6 @@ class CORE_EXPORT QgsTileRange
 class CORE_EXPORT QgsTileMatrix
 {
   public:
-
     //! Returns a tile matrix for the usual web mercator
     static QgsTileMatrix fromWebMercator( int zoomLevel );
 
@@ -170,9 +172,7 @@ class CORE_EXPORT QgsTileMatrix
      *
      * The \a z0Dimension argument must specify the dimension (width or height, in map units) of the root tiles in zoom level 0.
      */
-    static QgsTileMatrix fromCustomDef( int zoomLevel, const QgsCoordinateReferenceSystem &crs,
-                                        const QgsPointXY &z0TopLeftPoint, double z0Dimension,
-                                        int z0MatrixWidth = 1, int z0MatrixHeight = 1 );
+    static QgsTileMatrix fromCustomDef( int zoomLevel, const QgsCoordinateReferenceSystem &crs, const QgsPointXY &z0TopLeftPoint, double z0Dimension, int z0MatrixWidth = 1, int z0MatrixHeight = 1 );
 
     //! Returns a tile matrix based on another one
     static QgsTileMatrix fromTileMatrix( int zoomLevel, const QgsTileMatrix &tileMatrix );
@@ -190,7 +190,7 @@ class CORE_EXPORT QgsTileMatrix
      * \see crs()
      * \since QGIS 3.22.6
      */
-    void setCrs( const QgsCoordinateReferenceSystem &crs ) { mCrs = crs;}
+    void setCrs( const QgsCoordinateReferenceSystem &crs ) { mCrs = crs; }
 
     /**
      * Returns the zoom level of the tile matrix.
@@ -276,9 +276,7 @@ class CORE_EXPORT QgsTileMatrix
  */
 class CORE_EXPORT QgsTileMatrixSet
 {
-
   public:
-
     QgsTileMatrixSet();
 
     virtual ~QgsTileMatrixSet() = default;
@@ -388,12 +386,7 @@ class CORE_EXPORT QgsTileMatrixSet
      *
      * \since QGIS 3.26
      */
-    double calculateTileScaleForMap( double actualMapScale,
-                                     const QgsCoordinateReferenceSystem &mapCrs,
-                                     const QgsRectangle &mapExtent,
-                                     const QSize mapSize,
-                                     const double mapDpi
-                                   ) const;
+    double calculateTileScaleForMap( double actualMapScale, const QgsCoordinateReferenceSystem &mapCrs, const QgsRectangle &mapExtent, const QSize mapSize, const double mapDpi ) const;
 
     /**
      * Reads the set from an XML \a element.

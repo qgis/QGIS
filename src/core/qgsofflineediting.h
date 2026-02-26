@@ -69,7 +69,10 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
      * \param containerType defines the SQLite file container type like SpatiaLite or GPKG
      * \param layerNameSuffix Suffix string added to the offline layer name
      */
-    bool convertToOfflineProject( const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected = false, ContainerType containerType = SpatiaLite, const QString &layerNameSuffix = u" (offline)"_s );
+    bool convertToOfflineProject(
+      const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected = false, ContainerType containerType = SpatiaLite,
+      const QString &layerNameSuffix = u" (offline)"_s
+    );
 
     //! Returns TRUE if current project is offline
     bool isOfflineProject() const;
@@ -125,7 +128,9 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     bool createOfflineDb( const QString &offlineDbPath, ContainerType containerType = SpatiaLite );
     void createLoggingTables( sqlite3 *db );
 
-    void convertToOfflineLayer( QgsVectorLayer *layer, sqlite3 *db, const QString &offlineDbPath, bool onlySelected, ContainerType containerType = SpatiaLite, const QString &layerNameSuffix = u" (offline)"_s );
+    void convertToOfflineLayer(
+      QgsVectorLayer *layer, sqlite3 *db, const QString &offlineDbPath, bool onlySelected, ContainerType containerType = SpatiaLite, const QString &layerNameSuffix = u" (offline)"_s
+    );
 
     void applyAttributesAdded( QgsVectorLayer *remoteLayer, sqlite3 *db, int layerId, int commitNo );
     void applyFeaturesAdded( QgsVectorLayer *offlineLayer, QgsVectorLayer *remoteLayer, sqlite3 *db, int layerId );
@@ -163,17 +168,17 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
 
     struct AttributeValueChange
     {
-      QgsFeatureId fid;
-      int attr;
-      QString value;
+        QgsFeatureId fid;
+        int attr;
+        QString value;
     };
     typedef QList<AttributeValueChange> AttributeValueChanges;
     AttributeValueChanges sqlQueryAttributeValueChanges( sqlite3 *db, const QString &sql );
 
     struct GeometryChange
     {
-      QgsFeatureId fid;
-      QString geom_wkt;
+        QgsFeatureId fid;
+        QString geom_wkt;
     };
     typedef QList<GeometryChange> GeometryChanges;
     GeometryChanges sqlQueryGeometryChanges( sqlite3 *db, const QString &sql );

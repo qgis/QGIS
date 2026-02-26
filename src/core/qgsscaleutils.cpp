@@ -66,10 +66,7 @@ bool QgsScaleUtils::loadScaleList( const QString &fileName, QStringList &scales,
 
   if ( !doc.setContent( &file, true, &errorStr, &errorLine, &errorColumn ) )
   {
-    errorMessage = u"Parse error at line %1, column %2:\n%3"_s
-                   .arg( errorLine )
-                   .arg( errorColumn )
-                   .arg( errorStr );
+    errorMessage = u"Parse error at line %1, column %2:\n%3"_s.arg( errorLine ).arg( errorColumn ).arg( errorStr );
     return false;
   }
 
@@ -90,12 +87,6 @@ bool QgsScaleUtils::loadScaleList( const QString &fileName, QStringList &scales,
   return true;
 }
 
-bool QgsScaleUtils::equalToOrGreaterThanMinimumScale( const double scale, const double minScale )
-{
-  return scale > minScale || qgsDoubleNear( scale, minScale, 1E-8 );
-}
+bool QgsScaleUtils::equalToOrGreaterThanMinimumScale( const double scale, const double minScale ) { return scale > minScale || qgsDoubleNear( scale, minScale, 1E-8 ); }
 
-bool QgsScaleUtils::lessThanMaximumScale( const double scale, const double maxScale )
-{
-  return scale < maxScale && !qgsDoubleNear( scale, maxScale, 1E-8 );
-}
+bool QgsScaleUtils::lessThanMaximumScale( const double scale, const double maxScale ) { return scale < maxScale && !qgsDoubleNear( scale, maxScale, 1E-8 ); }

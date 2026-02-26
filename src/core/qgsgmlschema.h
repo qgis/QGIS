@@ -42,11 +42,10 @@ class QgsFeature;
 class CORE_EXPORT QgsGmlFeatureClass
 {
   public:
-
     QgsGmlFeatureClass() = default;
     QgsGmlFeatureClass( const QString &name, const QString &path );
 
-    QList<QgsField> &fields() { return  mFields; }
+    QList<QgsField> &fields() { return mFields; }
 
     int fieldIndex( const QString &name );
 
@@ -55,7 +54,6 @@ class CORE_EXPORT QgsGmlFeatureClass
     QStringList &geometryAttributes() { return mGeometryAttributes; }
 
   private:
-
     /**
      * Feature class name:
      *
@@ -114,14 +112,13 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     QgsError error() const { return mError; }
 
   private:
-
     enum ParseMode
     {
       None,
       BoundingBox,
       FeatureMembers, // gml:featureMembers
-      FeatureMember, // gml:featureMember
-      Feature,  // feature element containing attrs and geo (inside gml:featureMember)
+      FeatureMember,  // gml:featureMember
+      Feature,        // feature element containing attrs and geo (inside gml:featureMember)
       Attribute,
       Geometry
     };
@@ -130,18 +127,9 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     void startElement( const XML_Char *el, const XML_Char **attr );
     void endElement( const XML_Char *el );
     void characters( const XML_Char *chars, int len );
-    static void start( void *data, const XML_Char *el, const XML_Char **attr )
-    {
-      static_cast<QgsGmlSchema *>( data )->startElement( el, attr );
-    }
-    static void end( void *data, const XML_Char *el )
-    {
-      static_cast<QgsGmlSchema *>( data )->endElement( el );
-    }
-    static void chars( void *data, const XML_Char *chars, int len )
-    {
-      static_cast<QgsGmlSchema *>( data )->characters( chars, len );
-    }
+    static void start( void *data, const XML_Char *el, const XML_Char **attr ) { static_cast<QgsGmlSchema *>( data )->startElement( el, attr ); }
+    static void end( void *data, const XML_Char *el ) { static_cast<QgsGmlSchema *>( data )->endElement( el ); }
+    static void chars( void *data, const XML_Char *chars, int len ) { static_cast<QgsGmlSchema *>( data )->characters( chars, len ); }
     // Add attribute or reset its type according to value of current feature
     void addAttribute( const QString &name, const QString &value );
 

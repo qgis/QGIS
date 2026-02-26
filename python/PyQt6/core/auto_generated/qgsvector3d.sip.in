@@ -30,11 +30,13 @@ Constructs a null vector
 %Docstring
 Constructs a vector from given coordinates
 %End
+
     QgsVector3D( const QVector3D &v );
 %Docstring
 Constructs a vector from single-precision QVector3D
 %End
-    bool isNull() const /HoldGIL/;
+
+    bool isNull() const;
 %Docstring
 Returns ``True`` if all three coordinates are zero
 %End

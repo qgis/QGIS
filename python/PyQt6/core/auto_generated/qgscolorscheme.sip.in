@@ -68,8 +68,7 @@ Returns the current flags for the color scheme.
 :return: current flags
 %End
 
-    virtual QgsNamedColorList fetchColors( const QString &context = QString(),
-                                           const QColor &baseColor = QColor() ) = 0;
+    virtual QgsNamedColorList fetchColors( const QString &context = QString(), const QColor &baseColor = QColor() ) = 0;
 %Docstring
 Gets a list of colors from the scheme. The colors can optionally be
 generated using the supplied context and base color.
@@ -129,24 +128,21 @@ A color scheme which stores its colors in a gpl palette file.
 #include "qgscolorscheme.h"
 %End
   public:
-
     QgsGplColorScheme();
 
-     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
-                                   const QColor &baseColor = QColor() );
+    virtual QgsNamedColorList fetchColors( const QString &context = QString(), const QColor &baseColor = QColor() );
+
 
     virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() );
 
 
   protected:
-
     virtual QString gplFilePath() = 0;
 %Docstring
 Returns the file path for the associated gpl palette file
 
 :return: gpl file path
 %End
-
 };
 
 class QgsUserColorScheme : QgsGplColorScheme
@@ -160,7 +156,6 @@ A color scheme which stores its colors in a gpl palette file within the
 #include "qgscolorscheme.h"
 %End
   public:
-
     QgsUserColorScheme( const QString &filename );
 %Docstring
 Constructs a new user color scheme, using a specified gpl palette file
@@ -206,9 +201,7 @@ Sets whether a this scheme should be shown in color button menus.
 
 
 
-
     virtual QString gplFilePath();
-
 
 };
 
@@ -222,15 +215,14 @@ A color scheme which contains the most recently used colors.
 #include "qgscolorscheme.h"
 %End
   public:
-
     QgsRecentColorScheme();
 
     virtual QString schemeName() const;
 
     virtual SchemeFlags flags() const;
 
-     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
-                                   const QColor &baseColor = QColor() );
+    virtual QgsNamedColorList fetchColors( const QString &context = QString(), const QColor &baseColor = QColor() );
+
 
     virtual QgsRecentColorScheme *clone() const /Factory/;
 
@@ -263,15 +255,14 @@ dialog.
 #include "qgscolorscheme.h"
 %End
   public:
-
     QgsCustomColorScheme();
 
     virtual QString schemeName() const;
 
     virtual SchemeFlags flags() const;
 
-     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
-                                   const QColor &baseColor = QColor() );
+    virtual QgsNamedColorList fetchColors( const QString &context = QString(), const QColor &baseColor = QColor() );
+
 
     virtual bool isEditable() const;
 
@@ -293,15 +284,14 @@ project properties dialog.
 #include "qgscolorscheme.h"
 %End
   public:
-
     QgsProjectColorScheme();
 
     virtual QString schemeName() const;
 
     virtual SchemeFlags flags() const;
 
-     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
-                                   const QColor &baseColor = QColor() );
+    virtual QgsNamedColorList fetchColors( const QString &context = QString(), const QColor &baseColor = QColor() );
+
 
     virtual bool isEditable() const;
 

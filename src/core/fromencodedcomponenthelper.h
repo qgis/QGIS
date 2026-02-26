@@ -26,15 +26,9 @@
 // (I can't see any way to port the below code to NOT require this without breaking
 // existing projects.)
 
-inline char toHexUpper( uint value ) noexcept
-{
-  return "0123456789ABCDEF"[value & 0xF];
-}
+inline char toHexUpper( uint value ) noexcept { return "0123456789ABCDEF"[value & 0xF]; }
 
-inline ushort encodeNibble( ushort c )
-{
-  return ushort( toHexUpper( c ) );
-}
+inline ushort encodeNibble( ushort c ) { return ushort( toHexUpper( c ) ); }
 
 /*!
     \a ba contains an 8-bit form of the component and it might be
@@ -46,4 +40,3 @@ inline ushort encodeNibble( ushort c )
     This method is named qt_urlRecodeByteArray in Qt's internals
 */
 QString CORE_EXPORT fromEncodedComponent_helper( const QByteArray &ba );
-

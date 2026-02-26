@@ -59,15 +59,9 @@ QgsTableCell &QgsTableCell::operator=( const QgsTableCell &other )
   return *this;
 }
 
-const QgsNumericFormat *QgsTableCell::numericFormat() const
-{
-  return mFormat.get();
-}
+const QgsNumericFormat *QgsTableCell::numericFormat() const { return mFormat.get(); }
 
-void QgsTableCell::setNumericFormat( QgsNumericFormat *format )
-{
-  mFormat.reset( format );
-}
+void QgsTableCell::setNumericFormat( QgsNumericFormat *format ) { mFormat.reset( format ); }
 
 QVariantMap QgsTableCell::properties( const QgsReadWriteContext &context ) const
 {
@@ -121,10 +115,7 @@ void QgsTableCell::setProperties( const QVariantMap &properties, const QgsReadWr
 
   if ( properties.contains( u"format_type"_s ) )
   {
-
-    mFormat.reset( QgsApplication::numericFormatRegistry()->create( properties.value( u"format_type"_s ).toString(),
-                   properties.value( u"format"_s ).toMap(),
-                   context ) );
+    mFormat.reset( QgsApplication::numericFormatRegistry()->create( properties.value( u"format_type"_s ).toString(), properties.value( u"format"_s ).toMap(), context ) );
   }
   else
   {
@@ -138,25 +129,13 @@ void QgsTableCell::setProperties( const QVariantMap &properties, const QgsReadWr
   mColumnSpan = properties.value( u"column_span"_s, 1 ).toInt();
 }
 
-Qt::Alignment QgsTableCell::horizontalAlignment() const
-{
-  return mHAlign;
-}
+Qt::Alignment QgsTableCell::horizontalAlignment() const { return mHAlign; }
 
-void QgsTableCell::setHorizontalAlignment( Qt::Alignment alignment )
-{
-  mHAlign = alignment;
-}
+void QgsTableCell::setHorizontalAlignment( Qt::Alignment alignment ) { mHAlign = alignment; }
 
-Qt::Alignment QgsTableCell::verticalAlignment() const
-{
-  return mVAlign;
-}
+Qt::Alignment QgsTableCell::verticalAlignment() const { return mVAlign; }
 
-void QgsTableCell::setVerticalAlignment( Qt::Alignment alignment )
-{
-  mVAlign = alignment;
-}
+void QgsTableCell::setVerticalAlignment( Qt::Alignment alignment ) { mVAlign = alignment; }
 
 void QgsTableCell::setSpan( int rowSpan, int columnSpan )
 {

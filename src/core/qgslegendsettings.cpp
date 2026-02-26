@@ -75,10 +75,7 @@ void QgsLegendSettings::updateDataDefinedProperties( QgsRenderContext &context )
   rstyle( Qgis::LegendComponent::SymbolLabel ).updateDataDefinedProperties( context );
 }
 
-QColor QgsLegendSettings::fontColor() const
-{
-  return style( Qgis::LegendComponent::SymbolLabel ).textFormat().color();
-}
+QColor QgsLegendSettings::fontColor() const { return style( Qgis::LegendComponent::SymbolLabel ).textFormat().color(); }
 
 void QgsLegendSettings::setFontColor( const QColor &c )
 {
@@ -88,10 +85,7 @@ void QgsLegendSettings::setFontColor( const QColor &c )
   rstyle( Qgis::LegendComponent::SymbolLabel ).textFormat().setColor( c );
 }
 
-QColor QgsLegendSettings::layerFontColor() const
-{
-  return style( Qgis::LegendComponent::Subgroup ).textFormat().color();
-}
+QColor QgsLegendSettings::layerFontColor() const { return style( Qgis::LegendComponent::Subgroup ).textFormat().color(); }
 
 void QgsLegendSettings::setLayerFontColor( const QColor &fontColor )
 {
@@ -126,55 +120,25 @@ void QgsLegendSettings::setLineSpacing( double s ) SIP_DEPRECATED
   rstyle( Qgis::LegendComponent::SymbolLabel ).setTextFormat( f );
 }
 
-double QgsLegendSettings::mmPerMapUnit() const
-{
-  return mMmPerMapUnit;
-}
+double QgsLegendSettings::mmPerMapUnit() const { return mMmPerMapUnit; }
 
-void QgsLegendSettings::setMmPerMapUnit( double mmPerMapUnit )
-{
-  mMmPerMapUnit = mmPerMapUnit;
-}
+void QgsLegendSettings::setMmPerMapUnit( double mmPerMapUnit ) { mMmPerMapUnit = mmPerMapUnit; }
 
-bool QgsLegendSettings::useAdvancedEffects() const
-{
-  return mUseAdvancedEffects;
-}
+bool QgsLegendSettings::useAdvancedEffects() const { return mUseAdvancedEffects; }
 
-void QgsLegendSettings::setUseAdvancedEffects( bool use )
-{
-  mUseAdvancedEffects = use;
-}
+void QgsLegendSettings::setUseAdvancedEffects( bool use ) { mUseAdvancedEffects = use; }
 
-double QgsLegendSettings::mapScale() const
-{
-  return mMapScale;
-}
+double QgsLegendSettings::mapScale() const { return mMapScale; }
 
-void QgsLegendSettings::setMapScale( double scale )
-{
-  mMapScale = scale;
-}
+void QgsLegendSettings::setMapScale( double scale ) { mMapScale = scale; }
 
-double QgsLegendSettings::mapUnitsPerPixel() const
-{
-  return 1 / ( mMmPerMapUnit * ( mDpi / 25.4 ) );
-}
+double QgsLegendSettings::mapUnitsPerPixel() const { return 1 / ( mMmPerMapUnit * ( mDpi / 25.4 ) ); }
 
-void QgsLegendSettings::setMapUnitsPerPixel( double mapUnitsPerPixel )
-{
-  mMmPerMapUnit = 1 / mapUnitsPerPixel / ( mDpi / 25.4 );
-}
+void QgsLegendSettings::setMapUnitsPerPixel( double mapUnitsPerPixel ) { mMmPerMapUnit = 1 / mapUnitsPerPixel / ( mDpi / 25.4 ); }
 
-int QgsLegendSettings::dpi() const
-{
-  return mDpi;
-}
+int QgsLegendSettings::dpi() const { return mDpi; }
 
-void QgsLegendSettings::setDpi( int dpi )
-{
-  mDpi = dpi;
-}
+void QgsLegendSettings::setDpi( int dpi ) { mDpi = dpi; }
 
 QStringList QgsLegendSettings::evaluateItemText( const QString &text, const QgsExpressionContext &context ) const
 {
@@ -217,8 +181,7 @@ void QgsLegendSettings::drawText( QPainter *p, const QRectF &rect, const QString
 {
   const QFont textFont = scaledFontPixelSize( font );
 
-  const QRectF scaledRect( rect.x() * FONT_WORKAROUND_SCALE, rect.y() * FONT_WORKAROUND_SCALE,
-                           rect.width() * FONT_WORKAROUND_SCALE, rect.height() * FONT_WORKAROUND_SCALE );
+  const QRectF scaledRect( rect.x() * FONT_WORKAROUND_SCALE, rect.y() * FONT_WORKAROUND_SCALE, rect.width() * FONT_WORKAROUND_SCALE, rect.height() * FONT_WORKAROUND_SCALE );
 
   const QgsScopedQPainterState painterState( p );
   p->setFont( textFont );
@@ -236,10 +199,7 @@ QFont QgsLegendSettings::scaledFontPixelSize( const QFont &font ) const
   return scaledFont;
 }
 
-double QgsLegendSettings::pixelFontSize( double pointSize ) const
-{
-  return ( pointSize * 0.3527 );
-}
+double QgsLegendSettings::pixelFontSize( double pointSize ) const { return ( pointSize * 0.3527 ); }
 
 double QgsLegendSettings::textWidthMillimeters( const QFont &font, const QString &text ) const
 {
@@ -269,12 +229,6 @@ double QgsLegendSettings::fontDescentMillimeters( const QFont &font ) const
   return ( fontMetrics.descent() / FONT_WORKAROUND_SCALE );
 }
 
-Qgis::LegendJsonRenderFlags QgsLegendSettings::jsonRenderFlags() const
-{
-  return mJsonRenderFlags;
-}
+Qgis::LegendJsonRenderFlags QgsLegendSettings::jsonRenderFlags() const { return mJsonRenderFlags; }
 
-void QgsLegendSettings::setJsonRenderFlags( const Qgis::LegendJsonRenderFlags &jsonRenderFlags )
-{
-  mJsonRenderFlags = jsonRenderFlags;
-}
+void QgsLegendSettings::setJsonRenderFlags( const Qgis::LegendJsonRenderFlags &jsonRenderFlags ) { mJsonRenderFlags = jsonRenderFlags; }

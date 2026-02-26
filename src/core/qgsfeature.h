@@ -59,8 +59,8 @@ class QgsSymbol;
 class CORE_EXPORT QgsFeature
 {
 #ifdef SIP_RUN
-#if (SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c01)
-#define sipType_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
+#if ( SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c01 )
+#define sipType_QVariant ( ( sipWrapperType * ) sipTypeAsPyTypeObject( sipType_QVariant ) )
 #endif
 #endif
     Q_GADGET
@@ -71,9 +71,9 @@ class CORE_EXPORT QgsFeature
     Q_PROPERTY( QgsGeometry geometry READ geometry WRITE setGeometry )
 
   public:
-
 #ifdef SIP_RUN
-    SIP_PYOBJECT __iter__() SIP_HOLDGIL;
+    SIP_PYOBJECT __iter__()
+    SIP_HOLDGIL;
     % MethodCode
     QgsAttributes attributes = sipCpp->attributes();
     PyObject *attrs = sipConvertFromType( &attributes, sipType_QgsAttributes, Py_None );

@@ -52,7 +52,6 @@ class QgsLayout;
 class CORE_EXPORT QgsMultiRenderChecker
 {
   public:
-
     /**
      * Constructor for QgsMultiRenderChecker.
      */
@@ -115,7 +114,11 @@ class CORE_EXPORT QgsMultiRenderChecker
      * \param xTolerance x tolerance in pixels
      * \param yTolerance y tolerance in pixels
      */
-    void setSizeTolerance( int xTolerance, int yTolerance ) { mMaxSizeDifferenceX = xTolerance; mMaxSizeDifferenceY = yTolerance; }
+    void setSizeTolerance( int xTolerance, int yTolerance )
+    {
+      mMaxSizeDifferenceX = xTolerance;
+      mMaxSizeDifferenceY = yTolerance;
+    }
 
     /**
      * Test using renderer to generate the image to be compared.
@@ -197,7 +200,6 @@ class CORE_EXPORT QgsMultiRenderChecker
 class CORE_EXPORT QgsLayoutChecker : public QgsMultiRenderChecker
 {
   public:
-
     /**
      * Constructor for QgsLayoutChecker.
      */

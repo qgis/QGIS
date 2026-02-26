@@ -21,7 +21,6 @@ Contains utility functions for OGC WMS layers.
 #include "qgswmsutils.h"
 %End
   public:
-
     static bool isWmsLayer( QgsMapLayer *layer );
 %Docstring
 Returns whether a map ``layer`` is an OGC WMS layer or not.

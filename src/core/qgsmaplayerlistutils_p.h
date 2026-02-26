@@ -142,10 +142,7 @@ inline static QgsMapLayer *_qgis_findLayer( const QList< QgsMapLayer *> &layers,
   }
 }
 
-inline uint qHash( const QgsWeakMapLayerPointer &key )
-{
-  return qHash( key ? key->id() : QString() );
-}
+inline uint qHash( const QgsWeakMapLayerPointer &key ) { return qHash( key ? key->id() : QString() ); }
 
 ///@endcond
 

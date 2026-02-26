@@ -69,10 +69,7 @@ void QgsStoredExpressionManager::updateStoredExpression( const QString &id, cons
   }
 }
 
-void QgsStoredExpressionManager::addStoredExpressions( const QList< QgsStoredExpression > &storedExpressions )
-{
-  mStoredExpressions.append( storedExpressions );
-}
+void QgsStoredExpressionManager::addStoredExpressions( const QList< QgsStoredExpression > &storedExpressions ) { mStoredExpressions.append( storedExpressions ); }
 
 QList< QgsStoredExpression > QgsStoredExpressionManager::storedExpressions( const QgsStoredExpression::Category &tag )
 {
@@ -112,10 +109,7 @@ QgsStoredExpression QgsStoredExpressionManager::findStoredExpressionByExpression
   return QgsStoredExpression();
 }
 
-void QgsStoredExpressionManager::clearStoredExpressions()
-{
-  mStoredExpressions.clear();
-}
+void QgsStoredExpressionManager::clearStoredExpressions() { mStoredExpressions.clear(); }
 
 bool QgsStoredExpressionManager::writeXml( QDomNode &layerNode ) const
 {

@@ -63,7 +63,7 @@ void QgsMathUtils::doubleToRational( double value, qlonglong &numerator, qlonglo
     long long nextKConvergent = a * currentBConvergent + previousBConvergent;
     previousAConvergent = currentAConvergent;
     previousBConvergent = currentBConvergent;
-    currentAConvergent = nextHConvergent ;
+    currentAConvergent = nextHConvergent;
     currentBConvergent = nextKConvergent;
 
     // is approximation within the specified tolerance?

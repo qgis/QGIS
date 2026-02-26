@@ -34,19 +34,10 @@ QgsScaleCalculator::QgsScaleCalculator( double dpi, Qgis::DistanceUnit mapUnits 
   , mMapUnits( mapUnits )
 {}
 
-void QgsScaleCalculator::setMethod( Qgis::ScaleCalculationMethod method )
-{
-  mMethod = method;
-}
+void QgsScaleCalculator::setMethod( Qgis::ScaleCalculationMethod method ) { mMethod = method; }
 
-void QgsScaleCalculator::setDpi( double dpi )
-{
-  mDpi = dpi;
-}
-double QgsScaleCalculator::dpi() const
-{
-  return mDpi;
-}
+void QgsScaleCalculator::setDpi( double dpi ) { mDpi = dpi; }
+double QgsScaleCalculator::dpi() const { return mDpi; }
 
 void QgsScaleCalculator::setMapUnits( Qgis::DistanceUnit mapUnits )
 {
@@ -60,7 +51,7 @@ Qgis::DistanceUnit QgsScaleCalculator::mapUnits() const
   return mMapUnits;
 }
 
-double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, double canvasWidth )  const
+double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, double canvasWidth ) const
 {
   if ( qgsDoubleNear( canvasWidth, 0. ) || qgsDoubleNear( mDpi, 0.0 ) )
   {
@@ -77,7 +68,7 @@ double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, double canv
   return scale;
 }
 
-QSizeF QgsScaleCalculator::calculateImageSize( const QgsRectangle &mapExtent, double scale )  const
+QSizeF QgsScaleCalculator::calculateImageSize( const QgsRectangle &mapExtent, double scale ) const
 {
   if ( qgsDoubleNear( scale, 0.0 ) || qgsDoubleNear( mDpi, 0.0 ) )
   {
@@ -92,8 +83,7 @@ QSizeF QgsScaleCalculator::calculateImageSize( const QgsRectangle &mapExtent, do
   const double deltaHeight = ( mapExtent.yMaximum() - mapExtent.yMinimum() ) * delta / ( mapExtent.xMaximum() - mapExtent.xMinimum() );
   const double imageHeight = ( deltaHeight * conversionFactor ) / ( static_cast< double >( scale ) ) * mDpi;
 
-  QgsDebugMsgLevel( u"imageWidth = %1 imageHeight = %2 conversionFactor = %3"_s
-                    .arg( imageWidth ).arg( imageHeight ).arg( conversionFactor ), 4 );
+  QgsDebugMsgLevel( u"imageWidth = %1 imageHeight = %2 conversionFactor = %3"_s.arg( imageWidth ).arg( imageHeight ).arg( conversionFactor ), 4 );
 
   return QSizeF( imageWidth, imageHeight );
 }
@@ -176,31 +166,24 @@ double QgsScaleCalculator::calculateGeographicDistance( const QgsRectangle &mapE
   switch ( mMethod )
   {
     case Qgis::ScaleCalculationMethod::HorizontalTop:
-      return calculateGeographicDistanceAtLatitude( mapExtent.yMaximum(),
-             mapExtent.xMinimum(), mapExtent.xMaximum() );
+      return calculateGeographicDistanceAtLatitude( mapExtent.yMaximum(), mapExtent.xMinimum(), mapExtent.xMaximum() );
 
     case Qgis::ScaleCalculationMethod::HorizontalMiddle:
-      return calculateGeographicDistanceAtLatitude( ( mapExtent.yMaximum() + mapExtent.yMinimum() ) * 0.5,
-             mapExtent.xMinimum(), mapExtent.xMaximum() );
+      return calculateGeographicDistanceAtLatitude( ( mapExtent.yMaximum() + mapExtent.yMinimum() ) * 0.5, mapExtent.xMinimum(), mapExtent.xMaximum() );
 
     case Qgis::ScaleCalculationMethod::HorizontalBottom:
-      return calculateGeographicDistanceAtLatitude( mapExtent.yMinimum(),
-             mapExtent.xMinimum(), mapExtent.xMaximum() );
+      return calculateGeographicDistanceAtLatitude( mapExtent.yMinimum(), mapExtent.xMinimum(), mapExtent.xMaximum() );
 
     case Qgis::ScaleCalculationMethod::HorizontalAverage:
     {
-      const double dTop = calculateGeographicDistanceAtLatitude( mapExtent.yMaximum(),
-                          mapExtent.xMinimum(), mapExtent.xMaximum() );
-      const double dMiddle = calculateGeographicDistanceAtLatitude( ( mapExtent.yMaximum() + mapExtent.yMinimum() ) * 0.5,
-                             mapExtent.xMinimum(), mapExtent.xMaximum() );
-      const double dBottom = calculateGeographicDistanceAtLatitude( mapExtent.yMinimum(),
-                             mapExtent.xMinimum(), mapExtent.xMaximum() );
+      const double dTop = calculateGeographicDistanceAtLatitude( mapExtent.yMaximum(), mapExtent.xMinimum(), mapExtent.xMaximum() );
+      const double dMiddle = calculateGeographicDistanceAtLatitude( ( mapExtent.yMaximum() + mapExtent.yMinimum() ) * 0.5, mapExtent.xMinimum(), mapExtent.xMaximum() );
+      const double dBottom = calculateGeographicDistanceAtLatitude( mapExtent.yMinimum(), mapExtent.xMinimum(), mapExtent.xMaximum() );
       return ( dTop + dMiddle + dBottom ) / 3.0;
     }
 
     case Qgis::ScaleCalculationMethod::AtEquator:
-      return calculateGeographicDistanceAtLatitude( 0,
-             mapExtent.xMinimum(), mapExtent.xMaximum() );
+      return calculateGeographicDistanceAtLatitude( 0, mapExtent.xMinimum(), mapExtent.xMaximum() );
   }
   // unreachable!
   return 0;
@@ -240,8 +223,7 @@ double QgsScaleCalculator::calculateGeographicDistanceAtLatitude( double lat, do
   // The eccentricity. This comes from sqrt(1.0 - rb*rb/(ra*ra)) with rb set
   // to 6357000 m.
   static const double E = 0.0810820288;
-  const double radius = RA * ( 1.0 - E * E ) /
-                        std::pow( 1.0 - E * E * std::sin( lat * RADS ) * std::sin( lat * RADS ), 1.5 );
+  const double radius = RA * ( 1.0 - E * E ) / std::pow( 1.0 - E * E * std::sin( lat * RADS ) * std::sin( lat * RADS ), 1.5 );
   const double meters = ( longitude2 - longitude1 ) / 180.0 * radius * c;
 
   QgsDebugMsgLevel( "Distance across map extent (m): " + QString::number( meters ), 4 );

@@ -37,7 +37,6 @@ class QPoint;
 class CORE_EXPORT QgsMapToPixel
 {
   public:
-
     /**
      * Constructor for an invalid QgsMapToPixel.
      *
@@ -185,8 +184,7 @@ class CORE_EXPORT QgsMapToPixel
      * transform.
      * \note not available in Python bindings
      */
-    template <class T> SIP_SKIP
-    void transformInPlace( QVector<T> &x, QVector<T> &y ) const
+    template<class T> SIP_SKIP void transformInPlace( QVector<T> &x, QVector<T> &y ) const
     {
       assert( x.size() == y.size() );
       T *xData = x.data();
@@ -200,10 +198,7 @@ class CORE_EXPORT QgsMapToPixel
     /**
      * Transforms device coordinates to map (world) coordinates.
      */
-    QgsPointXY toMapCoordinates( int x, int y ) const
-    {
-      return toMapCoordinates( static_cast<double>( x ), static_cast<double>( y ) );
-    }
+    QgsPointXY toMapCoordinates( int x, int y ) const { return toMapCoordinates( static_cast<double>( x ), static_cast<double>( y ) ); }
 
     /**
      * Transforms device coordinates to map (world) coordinates.
@@ -235,10 +230,7 @@ class CORE_EXPORT QgsMapToPixel
      *
      * \deprecated QGIS 3.4. Use toMapCoordinates() instead.
      */
-    Q_DECL_DEPRECATED QgsPointXY toMapPoint( double x, double y ) const SIP_DEPRECATED
-    {
-      return toMapCoordinates( x, y );
-    }
+    Q_DECL_DEPRECATED QgsPointXY toMapPoint( double x, double y ) const SIP_DEPRECATED { return toMapCoordinates( x, y ); }
 
     /**
      * Sets the map units per pixel.
@@ -351,21 +343,11 @@ class CORE_EXPORT QgsMapToPixel
 
     bool operator==( const QgsMapToPixel &other ) const
     {
-      return mValid == other.mValid
-             && mMapUnitsPerPixel == other.mMapUnitsPerPixel
-             && mWidth == other.mWidth
-             && mHeight == other.mHeight
-             && mRotation == other.mRotation
-             && mXCenter == other.mXCenter
-             && mYCenter == other.mYCenter
-             && mXMin == other.mXMin
-             && mYMin == other.mYMin;
+      return mValid == other.mValid && mMapUnitsPerPixel == other.mMapUnitsPerPixel && mWidth == other.mWidth && mHeight == other.mHeight && mRotation == other.mRotation && mXCenter == other.mXCenter
+             && mYCenter == other.mYCenter && mXMin == other.mXMin && mYMin == other.mYMin;
     }
 
-    bool operator!=( const QgsMapToPixel &other ) const
-    {
-      return !( *this == other );
-    }
+    bool operator!=( const QgsMapToPixel &other ) const { return !( *this == other ); }
 
   private:
     bool mValid = false;

@@ -29,7 +29,6 @@ class CORE_EXPORT QgsCopyFileTask : public QgsTask
     Q_OBJECT
 
   public:
-
     /**
      * Creates a task that copy \a source file to \a destination
      */
@@ -49,7 +48,6 @@ class CORE_EXPORT QgsCopyFileTask : public QgsTask
     const QString &destination() const;
 
   private:
-
     QString mSource;
     QString mDestination;
     QString mErrorString;

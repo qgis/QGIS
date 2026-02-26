@@ -21,7 +21,9 @@
 
 #include "moc_qgstrackedvectorlayertools.cpp"
 
-bool QgsTrackedVectorLayerTools::addFeatureV2( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature, const QgsVectorLayerToolsContext &context ) const
+bool QgsTrackedVectorLayerTools::addFeatureV2(
+  QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature, const QgsVectorLayerToolsContext &context
+) const
 {
   QgsFeature *f = feature;
   if ( !feature )
@@ -43,30 +45,20 @@ bool QgsTrackedVectorLayerTools::addFeatureV2( QgsVectorLayer *layer, const QgsA
   }
 }
 
-bool QgsTrackedVectorLayerTools::startEditing( QgsVectorLayer *layer ) const
-{
-  return mBackend->startEditing( layer );
-}
+bool QgsTrackedVectorLayerTools::startEditing( QgsVectorLayer *layer ) const { return mBackend->startEditing( layer ); }
 
-bool QgsTrackedVectorLayerTools::stopEditing( QgsVectorLayer *layer, bool allowCancel ) const
-{
-  return mBackend->stopEditing( layer, allowCancel );
-}
+bool QgsTrackedVectorLayerTools::stopEditing( QgsVectorLayer *layer, bool allowCancel ) const { return mBackend->stopEditing( layer, allowCancel ); }
 
-bool QgsTrackedVectorLayerTools::saveEdits( QgsVectorLayer *layer ) const
-{
-  return mBackend->saveEdits( layer );
-}
+bool QgsTrackedVectorLayerTools::saveEdits( QgsVectorLayer *layer ) const { return mBackend->saveEdits( layer ); }
 
-bool QgsTrackedVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double dx, double dy, QString *errorMsg, const bool topologicalEditing, QgsVectorLayer *topologicalLayer, QString *childrenInfoMsg ) const
+bool QgsTrackedVectorLayerTools::copyMoveFeatures(
+  QgsVectorLayer *layer, QgsFeatureRequest &request, double dx, double dy, QString *errorMsg, const bool topologicalEditing, QgsVectorLayer *topologicalLayer, QString *childrenInfoMsg
+) const
 {
   return mBackend->copyMoveFeatures( layer, request, dx, dy, errorMsg, topologicalEditing, topologicalLayer, childrenInfoMsg );
 }
 
-void QgsTrackedVectorLayerTools::setVectorLayerTools( const QgsVectorLayerTools *tools )
-{
-  mBackend = tools;
-}
+void QgsTrackedVectorLayerTools::setVectorLayerTools( const QgsVectorLayerTools *tools ) { mBackend = tools; }
 
 void QgsTrackedVectorLayerTools::rollback()
 {

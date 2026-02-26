@@ -30,14 +30,14 @@
 using namespace Qt::StringLiterals;
 
 #ifdef Q_OS_WIN
-#if defined(UNICODE) && !defined(_UNICODE)
+#if defined( UNICODE ) && !defined( _UNICODE )
 #define _UNICODE
 #endif
 #include <windows.h>
 #include <tchar.h>
 #endif
 
-#if defined(_MSC_VER)
+#if defined( _MSC_VER )
 #include <windows.h>
 #include <excpt.h>
 #endif
@@ -58,10 +58,8 @@ const std::vector<cl::Device> QgsOpenClUtils::devices()
   for ( const auto &p : platforms )
   {
     const std::string platver = p.getInfo<CL_PLATFORM_VERSION>();
-    QgsMessageLog::logMessage( QObject::tr( "Found OpenCL platform %1: %2" )
-                               .arg( QString::fromStdString( platver ),
-                                     QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ),
-                               LOGMESSAGE_TAG, Qgis::MessageLevel::Info );
+    QgsMessageLog::
+      logMessage( QObject::tr( "Found OpenCL platform %1: %2" ).arg( QString::fromStdString( platver ), QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ), LOGMESSAGE_TAG, Qgis::MessageLevel::Info );
     if ( platver.find( "OpenCL " ) != std::string::npos )
     {
       std::vector<cl::Device> _devices;
@@ -72,19 +70,16 @@ const std::vector<cl::Device> QgsOpenClUtils::devices()
       }
       catch ( cl::Error &e )
       {
-        QgsMessageLog::logMessage( QObject::tr( "Error %1 on platform %3 searching for OpenCL device: %2" )
-                                   .arg( errorText( e.err() ),
-                                         QString::fromStdString( e.what() ),
-                                         QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ),
-                                   LOGMESSAGE_TAG, Qgis::MessageLevel::Warning );
+        QgsMessageLog::logMessage(
+          QObject::tr( "Error %1 on platform %3 searching for OpenCL device: %2" ).arg( errorText( e.err() ), QString::fromStdString( e.what() ), QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ),
+          LOGMESSAGE_TAG, Qgis::MessageLevel::Warning
+        );
       }
       if ( _devices.size() > 0 )
       {
         for ( unsigned long i = 0; i < _devices.size(); i++ )
         {
-          QgsMessageLog::logMessage( QObject::tr( "Found OpenCL device: %1" )
-                                     .arg( deviceId( _devices[i] ) ),
-                                     LOGMESSAGE_TAG, Qgis::MessageLevel::Info );
+          QgsMessageLog::logMessage( QObject::tr( "Found OpenCL device: %1" ).arg( deviceId( _devices[i] ) ), LOGMESSAGE_TAG, Qgis::MessageLevel::Info );
           existingDevices.push_back( _devices[i] );
         }
       }
@@ -96,27 +91,24 @@ const std::vector<cl::Device> QgsOpenClUtils::devices()
 void QgsOpenClUtils::init()
 {
   static std::once_flag initialized;
-  std::call_once( initialized, []( )
-  {
+  std::call_once( initialized, []() {
 #ifdef Q_OS_MAC
     QLibrary openCLLib { u"/System/Library/Frameworks/OpenCL.framework/Versions/Current/OpenCL"_s };
 #else
     QLibrary openCLLib { u"OpenCL"_s };
 #endif
     openCLLib.setLoadHints( QLibrary::LoadHint::ResolveAllSymbolsHint );
-    if ( ! openCLLib.load() )
+    if ( !openCLLib.load() )
     {
-      QgsMessageLog::logMessage( QObject::tr( "Error loading OpenCL library: %1" )
-                                 .arg( openCLLib.errorString() ),
-                                 LOGMESSAGE_TAG, Qgis::MessageLevel::Critical );
+      QgsMessageLog::logMessage( QObject::tr( "Error loading OpenCL library: %1" ).arg( openCLLib.errorString() ), LOGMESSAGE_TAG, Qgis::MessageLevel::Critical );
       return;
     }
 
 #ifdef Q_OS_WIN
 #ifdef _UNICODE
-#define _T(x) L##x
+#define _T( x ) L##x
 #else
-#define _T(x) x
+#define _T( x ) x
 #endif
     HMODULE hModule = GetModuleHandle( _T( "OpenCL.dll" ) );
     if ( hModule )
@@ -124,9 +116,7 @@ void QgsOpenClUtils::init()
       TCHAR pszFileName[1024];
       if ( GetModuleFileName( hModule, pszFileName, 1024 ) < 1024 )
       {
-        QgsMessageLog::logMessage( QObject::tr( "Found OpenCL library filename %1" )
-                                   .arg( pszFileName ),
-                                   LOGMESSAGE_TAG, Qgis::MessageLevel::Info );
+        QgsMessageLog::logMessage( QObject::tr( "Found OpenCL library filename %1" ).arg( pszFileName ), LOGMESSAGE_TAG, Qgis::MessageLevel::Info );
 
         DWORD dwUseless;
         DWORD dwLen = GetFileVersionInfoSize( pszFileName, &dwUseless );
@@ -140,65 +130,57 @@ void QgsOpenClUtils::init()
               VS_FIXEDFILEINFO *lpFFI;
               if ( VerQueryValue( lpVI, _T( "\\" ), ( LPVOID * ) &lpFFI, ( UINT * ) &dwUseless ) )
               {
-                QgsMessageLog::logMessage( QObject::tr( "OpenCL Product version: %1.%2.%3.%4" )
-                                           .arg( lpFFI->dwProductVersionMS >> 16 )
-                                           .arg( lpFFI->dwProductVersionMS & 0xffff )
-                                           .arg( lpFFI->dwProductVersionLS >> 16 )
-                                           .arg( lpFFI->dwProductVersionLS & 0xffff ),
-                                           LOGMESSAGE_TAG, Qgis::MessageLevel::Info );
+                QgsMessageLog::logMessage(
+                  QObject::tr( "OpenCL Product version: %1.%2.%3.%4" )
+                    .arg( lpFFI->dwProductVersionMS >> 16 )
+                    .arg( lpFFI->dwProductVersionMS & 0xffff )
+                    .arg( lpFFI->dwProductVersionLS >> 16 )
+                    .arg( lpFFI->dwProductVersionLS & 0xffff ),
+                  LOGMESSAGE_TAG, Qgis::MessageLevel::Info
+                );
               }
 
               struct LANGANDCODEPAGE
               {
-                WORD wLanguage;
-                WORD wCodePage;
+                  WORD wLanguage;
+                  WORD wCodePage;
               } *lpTranslate;
 
               DWORD cbTranslate;
 
               if ( VerQueryValue( lpVI, _T( "\\VarFileInfo\\Translation" ), ( LPVOID * ) &lpTranslate, ( UINT * ) &cbTranslate ) && cbTranslate >= sizeof( struct LANGANDCODEPAGE ) )
               {
-                QStringList items = QStringList()
-                                    << u"Comments"_s
-                                    << u"InternalName"_s
-                                    << u"ProductName"_s
-                                    << u"CompanyName"_s
-                                    << u"LegalCopyright"_s
-                                    << u"ProductVersion"_s
-                                    << u"FileDescription"_s
-                                    << u"LegalTrademarks"_s
-                                    << u"PrivateBuild"_s
-                                    << u"FileVersion"_s
-                                    << u"OriginalFilename"_s
-                                    << u"SpecialBuild"_s;
+                QStringList items = QStringList() << u"Comments"_s << u"InternalName"_s << u"ProductName"_s << u"CompanyName"_s << u"LegalCopyright"_s << u"ProductVersion"_s << u"FileDescription"_s
+                                                  << u"LegalTrademarks"_s << u"PrivateBuild"_s << u"FileVersion"_s << u"OriginalFilename"_s << u"SpecialBuild"_s;
                 for ( auto d : items )
                 {
                   LPTSTR lpBuffer;
-                  QString subBlock = QString( u"\\StringFileInfo\\%1%2\\%3"_s )
-                                     .arg( lpTranslate[0].wLanguage, 4, 16, '0'_L1 )
-                                     .arg( lpTranslate[0].wCodePage, 4, 16, '0'_L1 )
-                                     .arg( d );
+                  QString subBlock = QString( u"\\StringFileInfo\\%1%2\\%3"_s ).arg( lpTranslate[0].wLanguage, 4, 16, '0'_L1 ).arg( lpTranslate[0].wCodePage, 4, 16, '0'_L1 ).arg( d );
 
                   QgsDebugMsgLevel( QString( "d:%1 subBlock:%2" ).arg( d ).arg( subBlock ), 2 );
 
-                  BOOL r = VerQueryValue( lpVI,
+                  BOOL r = VerQueryValue(
+                    lpVI,
 #ifdef UNICODE
-                                          subBlock.toStdWString().c_str(),
+                    subBlock.toStdWString().c_str(),
 #else
                                           subBlock.toUtf8(),
 #endif
-                                          ( LPVOID * )&lpBuffer, ( UINT * )&dwUseless );
+                    ( LPVOID * ) &lpBuffer, ( UINT * ) &dwUseless
+                  );
 
                   if ( r && lpBuffer && lpBuffer != INVALID_HANDLE_VALUE && dwUseless < 1023 )
                   {
-                    QgsMessageLog::logMessage( QObject::tr( "Found OpenCL version info %1: %2" )
-                                               .arg( d )
+                    QgsMessageLog::logMessage(
+                      QObject::tr( "Found OpenCL version info %1: %2" )
+                        .arg( d )
 #ifdef UNICODE
-                                               .arg( QString::fromUtf16( ( const ushort * ) lpBuffer ) ),
+                        .arg( QString::fromUtf16( ( const ushort * ) lpBuffer ) ),
 #else
                                                .arg( QString::fromLocal8Bit( lpBuffer ) ),
 #endif
-                                               LOGMESSAGE_TAG, Qgis::MessageLevel::Info );
+                      LOGMESSAGE_TAG, Qgis::MessageLevel::Info
+                    );
                   }
                 }
               }
@@ -225,28 +207,16 @@ void QgsOpenClUtils::init()
     }
     catch ( cl::Error &e )
     {
-      QgsMessageLog::logMessage( QObject::tr( "Error %1 initializing OpenCL device: %2" )
-                                 .arg( errorText( e.err() ), QString::fromStdString( e.what() ) ),
-                                 LOGMESSAGE_TAG, Qgis::MessageLevel::Critical );
+      QgsMessageLog::logMessage( QObject::tr( "Error %1 initializing OpenCL device: %2" ).arg( errorText( e.err() ), QString::fromStdString( e.what() ) ), LOGMESSAGE_TAG, Qgis::MessageLevel::Critical );
     }
-
   } );
 }
 
-QString QgsOpenClUtils::sourcePath()
-{
-  return *sSourcePath();
-}
+QString QgsOpenClUtils::sourcePath() { return *sSourcePath(); }
 
-void QgsOpenClUtils::setSourcePath( const QString &value )
-{
-  *sSourcePath() = value;
-}
+void QgsOpenClUtils::setSourcePath( const QString &value ) { *sSourcePath() = value; }
 
-QString QgsOpenClUtils::activeDeviceInfo( const QgsOpenClUtils::Info infoType )
-{
-  return deviceInfo( infoType, activeDevice( ) );
-}
+QString QgsOpenClUtils::activeDeviceInfo( const QgsOpenClUtils::Info infoType ) { return deviceInfo( infoType, activeDevice() ); }
 
 QString QgsOpenClUtils::deviceInfo( const Info infoType, cl::Device device )
 {
@@ -293,24 +263,16 @@ QString QgsOpenClUtils::deviceInfo( const Info infoType, cl::Device device )
   catch ( cl::Error &e )
   {
     // This can be a legitimate error when initializing, let's log it quietly
-    QgsDebugMsgLevel( u"Error %1 getting info for OpenCL device: %2"_s
-                      .arg( errorText( e.err() ), QString::fromStdString( e.what() ) ),
-                      4 );
+    QgsDebugMsgLevel( u"Error %1 getting info for OpenCL device: %2"_s.arg( errorText( e.err() ), QString::fromStdString( e.what() ) ), 4 );
     return QString();
   }
   return QString();
 }
 
 
-bool QgsOpenClUtils::enabled()
-{
-  return QgsSettings().value( SETTINGS_GLOBAL_ENABLED_KEY, false, QgsSettings::Section::Core ).toBool();
-}
+bool QgsOpenClUtils::enabled() { return QgsSettings().value( SETTINGS_GLOBAL_ENABLED_KEY, false, QgsSettings::Section::Core ).toBool(); }
 
-cl::Device QgsOpenClUtils::activeDevice()
-{
-  return cl::Device::getDefault();
-}
+cl::Device QgsOpenClUtils::activeDevice() { return cl::Device::getDefault(); }
 
 QString QgsOpenClUtils::activePlatformVersion()
 {
@@ -326,36 +288,29 @@ QString QgsOpenClUtils::activePlatformVersion()
   return version;
 }
 
-void QgsOpenClUtils::storePreferredDevice( const QString deviceId )
-{
-  QgsSettings().setValue( SETTINGS_DEFAULT_DEVICE_KEY, deviceId, QgsSettings::Section::Core );
-}
+void QgsOpenClUtils::storePreferredDevice( const QString deviceId ) { QgsSettings().setValue( SETTINGS_DEFAULT_DEVICE_KEY, deviceId, QgsSettings::Section::Core ); }
 
-QString QgsOpenClUtils::preferredDevice()
-{
-  return QgsSettings().value( SETTINGS_DEFAULT_DEVICE_KEY, QString( ), QgsSettings::Section::Core ).toString();
-}
+QString QgsOpenClUtils::preferredDevice() { return QgsSettings().value( SETTINGS_DEFAULT_DEVICE_KEY, QString(), QgsSettings::Section::Core ).toString(); }
 
 QString QgsOpenClUtils::deviceId( const cl::Device device )
 {
   return u"%1|%2|%3|%4"_s
-         .arg( deviceInfo( QgsOpenClUtils::Info::Name, device ),
-               deviceInfo( QgsOpenClUtils::Info::Vendor, device ),
-               deviceInfo( QgsOpenClUtils::Info::Version, device ),
-               deviceInfo( QgsOpenClUtils::Info::Type, device ) );
+    .arg( deviceInfo( QgsOpenClUtils::Info::Name, device ), deviceInfo( QgsOpenClUtils::Info::Vendor, device ), deviceInfo( QgsOpenClUtils::Info::Version, device ), deviceInfo( QgsOpenClUtils::Info::Type, device ) );
 }
 
-#if defined(_MSC_VER)
+#if defined( _MSC_VER )
 static void emitLogMessageForSEHException( int exceptionCode )
 {
-  QgsMessageLog::logMessage( QObject::tr( "Unexpected exception of code %1 occurred while searching for OpenCL device. Note that the application may become unreliable and may need to be restarted." ).arg( exceptionCode ),
-                             QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::MessageLevel::Warning );
+  QgsMessageLog::logMessage(
+    QObject::tr( "Unexpected exception of code %1 occurred while searching for OpenCL device. Note that the application may become unreliable and may need to be restarted." ).arg( exceptionCode ),
+    QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::MessageLevel::Warning
+  );
 }
 #endif
 
 bool QgsOpenClUtils::activate( const QString &preferredDeviceId )
 {
-#if defined(_MSC_VER)
+#if defined( _MSC_VER )
   // Try to capture hard crashes such as https://github.com/qgis/QGIS/issues/59617
   __try
   {
@@ -401,7 +356,7 @@ bool QgsOpenClUtils::activateInternal( const QString &preferredDeviceId )
         {
           p.getDevices( CL_DEVICE_TYPE_ALL, &devices );
           // First search for the preferred device
-          if ( ! preferredDeviceId.isEmpty() )
+          if ( !preferredDeviceId.isEmpty() )
           {
             for ( const auto &_dev : devices )
             {
@@ -416,7 +371,7 @@ bool QgsOpenClUtils::activateInternal( const QString &preferredDeviceId )
             }
           }
           // Not found or preferred device id not set: get the first GPU
-          if ( ! deviceFound )
+          if ( !deviceFound )
           {
             for ( const auto &_dev : devices )
             {
@@ -431,7 +386,7 @@ bool QgsOpenClUtils::activateInternal( const QString &preferredDeviceId )
             }
           }
           // Still nothing? Get the first device
-          if ( ! deviceFound )
+          if ( !deviceFound )
           {
             for ( const auto &_dev : devices )
             {
@@ -445,22 +400,20 @@ bool QgsOpenClUtils::activateInternal( const QString &preferredDeviceId )
               }
             }
           }
-          if ( ! deviceFound )
+          if ( !deviceFound )
           {
             QgsMessageLog::logMessage( QObject::tr( "No OpenCL device could be found." ), LOGMESSAGE_TAG, Qgis::MessageLevel::Warning );
           }
         }
         catch ( cl::Error &e )
         {
-          QgsDebugError( u"Error %1 on platform %3 searching for OpenCL device: %2"_s
-                         .arg( errorText( e.err() ),
-                               QString::fromStdString( e.what() ),
-                               QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ) );
+          QgsDebugError(
+            u"Error %1 on platform %3 searching for OpenCL device: %2"_s.arg( errorText( e.err() ), QString::fromStdString( e.what() ), QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) )
+          );
         }
-
       }
     }
-    if ( ! plat() )
+    if ( !plat() )
     {
       QgsMessageLog::logMessage( QObject::tr( "No OpenCL platform found." ), LOGMESSAGE_TAG, Qgis::MessageLevel::Warning );
       sAvailable = false;
@@ -470,16 +423,13 @@ bool QgsOpenClUtils::activateInternal( const QString &preferredDeviceId )
       const cl::Platform newP = cl::Platform::setDefault( plat );
       if ( newP != plat )
       {
-        QgsMessageLog::logMessage( QObject::tr( "Error setting default platform." ),
-                                   LOGMESSAGE_TAG, Qgis::MessageLevel::Warning );
+        QgsMessageLog::logMessage( QObject::tr( "Error setting default platform." ), LOGMESSAGE_TAG, Qgis::MessageLevel::Warning );
         sAvailable = false;
       }
       else
       {
         cl::Device::setDefault( dev );
-        QgsMessageLog::logMessage( QObject::tr( "Active OpenCL device: %1" )
-                                   .arg( QString::fromStdString( dev.getInfo<CL_DEVICE_NAME>() ) ),
-                                   LOGMESSAGE_TAG, Qgis::MessageLevel::Success );
+        QgsMessageLog::logMessage( QObject::tr( "Active OpenCL device: %1" ).arg( QString::fromStdString( dev.getInfo<CL_DEVICE_NAME>() ) ), LOGMESSAGE_TAG, Qgis::MessageLevel::Success );
         sAvailable = true;
       }
     }
@@ -487,9 +437,7 @@ bool QgsOpenClUtils::activateInternal( const QString &preferredDeviceId )
 
   catch ( cl::Error &e )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Error %1 searching for OpenCL device: %2" )
-                               .arg( errorText( e.err() ), QString::fromStdString( e.what() ) ),
-                               LOGMESSAGE_TAG, Qgis::MessageLevel::Warning );
+    QgsMessageLog::logMessage( QObject::tr( "Error %1 searching for OpenCL device: %2" ).arg( errorText( e.err() ), QString::fromStdString( e.what() ) ), LOGMESSAGE_TAG, Qgis::MessageLevel::Warning );
     sAvailable = false;
   }
 
@@ -508,20 +456,19 @@ QString QgsOpenClUtils::deviceDescription( const cl::Device device )
            "Max image2d width: <b>%6</b><br>"
            "Max image2d height: <b>%7</b><br>"
            "Max mem alloc size: <b>%8</b><br>"
-         ).arg( QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Name, device ),
-                QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Vendor, device ),
-                QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Profile, device ),
-                QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Version, device ),
-                QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::ImageSupport, device ),
-                QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Image2dMaxWidth, device ),
-                QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Image2dMaxHeight, device ),
-                QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::MaxMemAllocSize, device ),
-                QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Type, device ) );
+  )
+    .arg(
+      QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Name, device ), QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Vendor, device ),
+      QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Profile, device ), QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Version, device ),
+      QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::ImageSupport, device ), QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Image2dMaxWidth, device ),
+      QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Image2dMaxHeight, device ), QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::MaxMemAllocSize, device ),
+      QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Type, device )
+    );
 }
 
 QString QgsOpenClUtils::deviceDescription( const QString deviceId )
 {
-  for ( const auto &dev : devices( ) )
+  for ( const auto &dev : devices() )
   {
     if ( QgsOpenClUtils::deviceId( dev ) == deviceId )
       return deviceDescription( dev );
@@ -535,11 +482,7 @@ bool QgsOpenClUtils::available()
   return sAvailable;
 }
 
-void QgsOpenClUtils::setEnabled( bool enabled )
-{
-  QgsSettings().setValue( SETTINGS_GLOBAL_ENABLED_KEY, enabled, QgsSettings::Section::Core );
-}
-
+void QgsOpenClUtils::setEnabled( bool enabled ) { QgsSettings().setValue( SETTINGS_GLOBAL_ENABLED_KEY, enabled, QgsSettings::Section::Core ); }
 
 
 QString QgsOpenClUtils::sourceFromPath( const QString &path )
@@ -580,96 +523,186 @@ QString QgsOpenClUtils::errorText( const int errorCode )
 {
   switch ( errorCode )
   {
-    case 0: return u"CL_SUCCESS"_s;
-    case -1: return u"CL_DEVICE_NOT_FOUND"_s;
-    case -2: return u"CL_DEVICE_NOT_AVAILABLE"_s;
-    case -3: return u"CL_COMPILER_NOT_AVAILABLE"_s;
-    case -4: return u"CL_MEM_OBJECT_ALLOCATION_FAILURE"_s;
-    case -5: return u"CL_OUT_OF_RESOURCES"_s;
-    case -6: return u"CL_OUT_OF_HOST_MEMORY"_s;
-    case -7: return u"CL_PROFILING_INFO_NOT_AVAILABLE"_s;
-    case -8: return u"CL_MEM_COPY_OVERLAP"_s;
-    case -9: return u"CL_IMAGE_FORMAT_MISMATCH"_s;
-    case -10: return u"CL_IMAGE_FORMAT_NOT_SUPPORTED"_s;
-    case -12: return u"CL_MAP_FAILURE"_s;
-    case -13: return u"CL_MISALIGNED_SUB_BUFFER_OFFSET"_s;
-    case -14: return u"CL_EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST"_s;
-    case -15: return u"CL_COMPILE_PROGRAM_FAILURE"_s;
-    case -16: return u"CL_LINKER_NOT_AVAILABLE"_s;
-    case -17: return u"CL_LINK_PROGRAM_FAILURE"_s;
-    case -18: return u"CL_DEVICE_PARTITION_FAILED"_s;
-    case -19: return u"CL_KERNEL_ARG_INFO_NOT_AVAILABLE"_s;
-    case -30: return u"CL_INVALID_VALUE"_s;
-    case -31: return u"CL_INVALID_DEVICE_TYPE"_s;
-    case -32: return u"CL_INVALID_PLATFORM"_s;
-    case -33: return u"CL_INVALID_DEVICE"_s;
-    case -34: return u"CL_INVALID_CONTEXT"_s;
-    case -35: return u"CL_INVALID_QUEUE_PROPERTIES"_s;
-    case -36: return u"CL_INVALID_COMMAND_QUEUE"_s;
-    case -37: return u"CL_INVALID_HOST_PTR"_s;
-    case -38: return u"CL_INVALID_MEM_OBJECT"_s;
-    case -39: return u"CL_INVALID_IMAGE_FORMAT_DESCRIPTOR"_s;
-    case -40: return u"CL_INVALID_IMAGE_SIZE"_s;
-    case -41: return u"CL_INVALID_SAMPLER"_s;
-    case -42: return u"CL_INVALID_BINARY"_s;
-    case -43: return u"CL_INVALID_BUILD_OPTIONS"_s;
-    case -44: return u"CL_INVALID_PROGRAM"_s;
-    case -45: return u"CL_INVALID_PROGRAM_EXECUTABLE"_s;
-    case -46: return u"CL_INVALID_KERNEL_NAME"_s;
-    case -47: return u"CL_INVALID_KERNEL_DEFINITION"_s;
-    case -48: return u"CL_INVALID_KERNEL"_s;
-    case -49: return u"CL_INVALID_ARG_INDEX"_s;
-    case -50: return u"CL_INVALID_ARG_VALUE"_s;
-    case -51: return u"CL_INVALID_ARG_SIZE"_s;
-    case -52: return u"CL_INVALID_KERNEL_ARGS"_s;
-    case -53: return u"CL_INVALID_WORK_DIMENSION"_s;
-    case -54: return u"CL_INVALID_WORK_GROUP_SIZE"_s;
-    case -55: return u"CL_INVALID_WORK_ITEM_SIZE"_s;
-    case -56: return u"CL_INVALID_GLOBAL_OFFSET"_s;
-    case -57: return u"CL_INVALID_EVENT_WAIT_LIST"_s;
-    case -58: return u"CL_INVALID_EVENT"_s;
-    case -59: return u"CL_INVALID_OPERATION"_s;
-    case -60: return u"CL_INVALID_GL_OBJECT"_s;
-    case -61: return u"CL_INVALID_BUFFER_SIZE"_s;
-    case -62: return u"CL_INVALID_MIP_LEVEL"_s;
-    case -63: return u"CL_INVALID_GLOBAL_WORK_SIZE"_s;
-    case -64: return u"CL_INVALID_PROPERTY"_s;
-    case -65: return u"CL_INVALID_IMAGE_DESCRIPTOR"_s;
-    case -66: return u"CL_INVALID_COMPILER_OPTIONS"_s;
-    case -67: return u"CL_INVALID_LINKER_OPTIONS"_s;
-    case -68: return u"CL_INVALID_DEVICE_PARTITION_COUNT"_s;
-    case -69: return u"CL_INVALID_PIPE_SIZE"_s;
-    case -70: return u"CL_INVALID_DEVICE_QUEUE"_s;
-    case -71: return u"CL_INVALID_SPEC_ID"_s;
-    case -72: return u"CL_MAX_SIZE_RESTRICTION_EXCEEDED"_s;
-    case -1002: return u"CL_INVALID_D3D10_DEVICE_KHR"_s;
-    case -1003: return u"CL_INVALID_D3D10_RESOURCE_KHR"_s;
-    case -1004: return u"CL_D3D10_RESOURCE_ALREADY_ACQUIRED_KHR"_s;
-    case -1005: return u"CL_D3D10_RESOURCE_NOT_ACQUIRED_KHR"_s;
-    case -1006: return u"CL_INVALID_D3D11_DEVICE_KHR"_s;
-    case -1007: return u"CL_INVALID_D3D11_RESOURCE_KHR"_s;
-    case -1008: return u"CL_D3D11_RESOURCE_ALREADY_ACQUIRED_KHR"_s;
-    case -1009: return u"CL_D3D11_RESOURCE_NOT_ACQUIRED_KHR"_s;
-    case -1010: return u"CL_INVALID_DX9_MEDIA_ADAPTER_KHR"_s;
-    case -1011: return u"CL_INVALID_DX9_MEDIA_SURFACE_KHR"_s;
-    case -1012: return u"CL_DX9_MEDIA_SURFACE_ALREADY_ACQUIRED_KHR"_s;
-    case -1013: return u"CL_DX9_MEDIA_SURFACE_NOT_ACQUIRED_KHR"_s;
-    case -1093: return u"CL_INVALID_EGL_OBJECT_KHR"_s;
-    case -1092: return u"CL_EGL_RESOURCE_NOT_ACQUIRED_KHR"_s;
-    case -1001: return u"CL_PLATFORM_NOT_FOUND_KHR"_s;
-    case -1057: return u"CL_DEVICE_PARTITION_FAILED_EXT"_s;
-    case -1058: return u"CL_INVALID_PARTITION_COUNT_EXT"_s;
-    case -1059: return u"CL_INVALID_PARTITION_NAME_EXT"_s;
-    case -1094: return u"CL_INVALID_ACCELERATOR_INTEL"_s;
-    case -1095: return u"CL_INVALID_ACCELERATOR_TYPE_INTEL"_s;
-    case -1096: return u"CL_INVALID_ACCELERATOR_DESCRIPTOR_INTEL"_s;
-    case -1097: return u"CL_ACCELERATOR_TYPE_NOT_SUPPORTED_INTEL"_s;
-    case -1000: return u"CL_INVALID_GL_SHAREGROUP_REFERENCE_KHR"_s;
-    case -1098: return u"CL_INVALID_VA_API_MEDIA_ADAPTER_INTEL"_s;
-    case -1099: return u"CL_INVALID_VA_API_MEDIA_SURFACE_INTEL"_s;
-    case -1100: return u"CL_VA_API_MEDIA_SURFACE_ALREADY_ACQUIRED_INTEL"_s;
-    case -1101: return u"CL_VA_API_MEDIA_SURFACE_NOT_ACQUIRED_INTEL"_s;
-    default: return u"CL_UNKNOWN_ERROR"_s;
+    case 0:
+      return u"CL_SUCCESS"_s;
+    case -1:
+      return u"CL_DEVICE_NOT_FOUND"_s;
+    case -2:
+      return u"CL_DEVICE_NOT_AVAILABLE"_s;
+    case -3:
+      return u"CL_COMPILER_NOT_AVAILABLE"_s;
+    case -4:
+      return u"CL_MEM_OBJECT_ALLOCATION_FAILURE"_s;
+    case -5:
+      return u"CL_OUT_OF_RESOURCES"_s;
+    case -6:
+      return u"CL_OUT_OF_HOST_MEMORY"_s;
+    case -7:
+      return u"CL_PROFILING_INFO_NOT_AVAILABLE"_s;
+    case -8:
+      return u"CL_MEM_COPY_OVERLAP"_s;
+    case -9:
+      return u"CL_IMAGE_FORMAT_MISMATCH"_s;
+    case -10:
+      return u"CL_IMAGE_FORMAT_NOT_SUPPORTED"_s;
+    case -12:
+      return u"CL_MAP_FAILURE"_s;
+    case -13:
+      return u"CL_MISALIGNED_SUB_BUFFER_OFFSET"_s;
+    case -14:
+      return u"CL_EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST"_s;
+    case -15:
+      return u"CL_COMPILE_PROGRAM_FAILURE"_s;
+    case -16:
+      return u"CL_LINKER_NOT_AVAILABLE"_s;
+    case -17:
+      return u"CL_LINK_PROGRAM_FAILURE"_s;
+    case -18:
+      return u"CL_DEVICE_PARTITION_FAILED"_s;
+    case -19:
+      return u"CL_KERNEL_ARG_INFO_NOT_AVAILABLE"_s;
+    case -30:
+      return u"CL_INVALID_VALUE"_s;
+    case -31:
+      return u"CL_INVALID_DEVICE_TYPE"_s;
+    case -32:
+      return u"CL_INVALID_PLATFORM"_s;
+    case -33:
+      return u"CL_INVALID_DEVICE"_s;
+    case -34:
+      return u"CL_INVALID_CONTEXT"_s;
+    case -35:
+      return u"CL_INVALID_QUEUE_PROPERTIES"_s;
+    case -36:
+      return u"CL_INVALID_COMMAND_QUEUE"_s;
+    case -37:
+      return u"CL_INVALID_HOST_PTR"_s;
+    case -38:
+      return u"CL_INVALID_MEM_OBJECT"_s;
+    case -39:
+      return u"CL_INVALID_IMAGE_FORMAT_DESCRIPTOR"_s;
+    case -40:
+      return u"CL_INVALID_IMAGE_SIZE"_s;
+    case -41:
+      return u"CL_INVALID_SAMPLER"_s;
+    case -42:
+      return u"CL_INVALID_BINARY"_s;
+    case -43:
+      return u"CL_INVALID_BUILD_OPTIONS"_s;
+    case -44:
+      return u"CL_INVALID_PROGRAM"_s;
+    case -45:
+      return u"CL_INVALID_PROGRAM_EXECUTABLE"_s;
+    case -46:
+      return u"CL_INVALID_KERNEL_NAME"_s;
+    case -47:
+      return u"CL_INVALID_KERNEL_DEFINITION"_s;
+    case -48:
+      return u"CL_INVALID_KERNEL"_s;
+    case -49:
+      return u"CL_INVALID_ARG_INDEX"_s;
+    case -50:
+      return u"CL_INVALID_ARG_VALUE"_s;
+    case -51:
+      return u"CL_INVALID_ARG_SIZE"_s;
+    case -52:
+      return u"CL_INVALID_KERNEL_ARGS"_s;
+    case -53:
+      return u"CL_INVALID_WORK_DIMENSION"_s;
+    case -54:
+      return u"CL_INVALID_WORK_GROUP_SIZE"_s;
+    case -55:
+      return u"CL_INVALID_WORK_ITEM_SIZE"_s;
+    case -56:
+      return u"CL_INVALID_GLOBAL_OFFSET"_s;
+    case -57:
+      return u"CL_INVALID_EVENT_WAIT_LIST"_s;
+    case -58:
+      return u"CL_INVALID_EVENT"_s;
+    case -59:
+      return u"CL_INVALID_OPERATION"_s;
+    case -60:
+      return u"CL_INVALID_GL_OBJECT"_s;
+    case -61:
+      return u"CL_INVALID_BUFFER_SIZE"_s;
+    case -62:
+      return u"CL_INVALID_MIP_LEVEL"_s;
+    case -63:
+      return u"CL_INVALID_GLOBAL_WORK_SIZE"_s;
+    case -64:
+      return u"CL_INVALID_PROPERTY"_s;
+    case -65:
+      return u"CL_INVALID_IMAGE_DESCRIPTOR"_s;
+    case -66:
+      return u"CL_INVALID_COMPILER_OPTIONS"_s;
+    case -67:
+      return u"CL_INVALID_LINKER_OPTIONS"_s;
+    case -68:
+      return u"CL_INVALID_DEVICE_PARTITION_COUNT"_s;
+    case -69:
+      return u"CL_INVALID_PIPE_SIZE"_s;
+    case -70:
+      return u"CL_INVALID_DEVICE_QUEUE"_s;
+    case -71:
+      return u"CL_INVALID_SPEC_ID"_s;
+    case -72:
+      return u"CL_MAX_SIZE_RESTRICTION_EXCEEDED"_s;
+    case -1002:
+      return u"CL_INVALID_D3D10_DEVICE_KHR"_s;
+    case -1003:
+      return u"CL_INVALID_D3D10_RESOURCE_KHR"_s;
+    case -1004:
+      return u"CL_D3D10_RESOURCE_ALREADY_ACQUIRED_KHR"_s;
+    case -1005:
+      return u"CL_D3D10_RESOURCE_NOT_ACQUIRED_KHR"_s;
+    case -1006:
+      return u"CL_INVALID_D3D11_DEVICE_KHR"_s;
+    case -1007:
+      return u"CL_INVALID_D3D11_RESOURCE_KHR"_s;
+    case -1008:
+      return u"CL_D3D11_RESOURCE_ALREADY_ACQUIRED_KHR"_s;
+    case -1009:
+      return u"CL_D3D11_RESOURCE_NOT_ACQUIRED_KHR"_s;
+    case -1010:
+      return u"CL_INVALID_DX9_MEDIA_ADAPTER_KHR"_s;
+    case -1011:
+      return u"CL_INVALID_DX9_MEDIA_SURFACE_KHR"_s;
+    case -1012:
+      return u"CL_DX9_MEDIA_SURFACE_ALREADY_ACQUIRED_KHR"_s;
+    case -1013:
+      return u"CL_DX9_MEDIA_SURFACE_NOT_ACQUIRED_KHR"_s;
+    case -1093:
+      return u"CL_INVALID_EGL_OBJECT_KHR"_s;
+    case -1092:
+      return u"CL_EGL_RESOURCE_NOT_ACQUIRED_KHR"_s;
+    case -1001:
+      return u"CL_PLATFORM_NOT_FOUND_KHR"_s;
+    case -1057:
+      return u"CL_DEVICE_PARTITION_FAILED_EXT"_s;
+    case -1058:
+      return u"CL_INVALID_PARTITION_COUNT_EXT"_s;
+    case -1059:
+      return u"CL_INVALID_PARTITION_NAME_EXT"_s;
+    case -1094:
+      return u"CL_INVALID_ACCELERATOR_INTEL"_s;
+    case -1095:
+      return u"CL_INVALID_ACCELERATOR_TYPE_INTEL"_s;
+    case -1096:
+      return u"CL_INVALID_ACCELERATOR_DESCRIPTOR_INTEL"_s;
+    case -1097:
+      return u"CL_ACCELERATOR_TYPE_NOT_SUPPORTED_INTEL"_s;
+    case -1000:
+      return u"CL_INVALID_GL_SHAREGROUP_REFERENCE_KHR"_s;
+    case -1098:
+      return u"CL_INVALID_VA_API_MEDIA_ADAPTER_INTEL"_s;
+    case -1099:
+      return u"CL_INVALID_VA_API_MEDIA_SURFACE_INTEL"_s;
+    case -1100:
+      return u"CL_VA_API_MEDIA_SURFACE_ALREADY_ACQUIRED_INTEL"_s;
+    case -1101:
+      return u"CL_VA_API_MEDIA_SURFACE_NOT_ACQUIRED_INTEL"_s;
+    default:
+      return u"CL_UNKNOWN_ERROR"_s;
   }
 }
 
@@ -683,12 +716,12 @@ cl::CommandQueue QgsOpenClUtils::commandQueue()
   {
     return cl::CommandQueue( context );
   }
-  else  // legacy
+  else // legacy
   {
     cl::Device device( QgsOpenClUtils::activeDevice() );
     const cl_command_queue_properties properties = 0;
     Q_NOWARN_DEPRECATED_PUSH
-    cl_command_queue queue = clCreateCommandQueue( context(), device(),  properties, nullptr );
+    cl_command_queue queue = clCreateCommandQueue( context(), device(), properties, nullptr );
     Q_NOWARN_DEPRECATED_POP
     return cl::CommandQueue( queue, true );
   }
@@ -698,8 +731,7 @@ cl::Context QgsOpenClUtils::context()
 {
   static cl::Context context;
   static std::once_flag contextCreated;
-  std::call_once( contextCreated, []()
-  {
+  std::call_once( contextCreated, []() {
     if ( available() && cl::Platform::getDefault()() && cl::Device::getDefault()() )
     {
       context = cl::Context( cl::Device::getDefault() );
@@ -719,20 +751,18 @@ cl::Program QgsOpenClUtils::buildProgram( const QString &source, QgsOpenClUtils:
   cl::Program program;
   try
   {
-    program = cl::Program( QgsOpenClUtils::context(), source.toStdString( ) );
+    program = cl::Program( QgsOpenClUtils::context(), source.toStdString() );
     // OpenCL version for compatibility with older hardware, but it's up to
     // llvm to support latest CL versions
     bool ok;
     const float version( QgsOpenClUtils::activePlatformVersion().toFloat( &ok ) );
     if ( ok && version < 2.0f )
     {
-      program.build( u"-cl-std=CL%1 -I\"%2\""_s
-                     .arg( QgsOpenClUtils::activePlatformVersion( ), sourcePath() ).toStdString().c_str() );
+      program.build( u"-cl-std=CL%1 -I\"%2\""_s.arg( QgsOpenClUtils::activePlatformVersion(), sourcePath() ).toStdString().c_str() );
     }
     else
     {
-      program.build( u"-I\"%1\""_s
-                     .arg( sourcePath() ).toStdString().c_str() );
+      program.build( u"-I\"%1\""_s.arg( sourcePath() ).toStdString().c_str() );
     }
   }
   catch ( cl::BuildError &e )
@@ -740,16 +770,14 @@ cl::Program QgsOpenClUtils::buildProgram( const QString &source, QgsOpenClUtils:
     QString build_log( buildLog( e ) );
     if ( build_log.isEmpty() )
       build_log = QObject::tr( "Build logs not available!" );
-    const QString err = QObject::tr( "Error building OpenCL program: %1" )
-                        .arg( build_log );
+    const QString err = QObject::tr( "Error building OpenCL program: %1" ).arg( build_log );
     QgsMessageLog::logMessage( err, LOGMESSAGE_TAG, Qgis::MessageLevel::Critical );
     if ( exceptionBehavior == Throw )
       throw e;
   }
   catch ( cl::Error &e )
   {
-    const QString err = QObject::tr( "Error %1 building OpenCL program in %2" )
-                        .arg( errorText( e.err() ), QString::fromStdString( e.what() ) );
+    const QString err = QObject::tr( "Error %1 building OpenCL program in %2" ).arg( errorText( e.err() ), QString::fromStdString( e.what() ) );
     QgsMessageLog::logMessage( err, LOGMESSAGE_TAG, Qgis::MessageLevel::Critical );
     throw e;
   }

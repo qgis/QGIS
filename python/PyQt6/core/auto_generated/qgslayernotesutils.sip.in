@@ -22,7 +22,6 @@ Contains utility functions for working with layer notes.
 #include "qgslayernotesutils.h"
 %End
   public:
-
     static QString layerNotes( const QgsMapLayer *layer );
 %Docstring
 Returns the notes for the specified ``layer``.
@@ -46,7 +45,6 @@ Returns ``True`` if the specified ``layer`` has notes available.
 %Docstring
 Removes any notes for the specified ``layer``.
 %End
-
 };
 
 

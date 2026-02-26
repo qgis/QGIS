@@ -36,7 +36,6 @@ class QgsFeedback;
 class CORE_EXPORT QgsFeatureSource
 {
   public:
-
     virtual ~QgsFeatureSource() = default;
 
     /**
@@ -73,22 +72,21 @@ class CORE_EXPORT QgsFeatureSource
      * if the feature count is unknown.
      */
     int __len__() const;
-    % MethodCode
-    sipRes = sipCpp->featureCount();
+    % MethodCode sipRes = sipCpp->featureCount();
     % End
 
-    //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
-    int __bool__() const;
-    % MethodCode
-    sipRes = true;
+      //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
+      int __bool__() const;
+    % MethodCode sipRes = true;
     % End
 #endif
 
-    /**
+      /**
      * Returns the number of features contained in the source, or -1
      * if the feature count is unknown.
      */
-    virtual long long featureCount() const = 0;
+      virtual long long featureCount() const
+      = 0;
 
     /**
      * Determines if there are any features available in the source.
@@ -167,8 +165,7 @@ class CORE_EXPORT QgsFeatureSource
      * for its ownership.
      *
      */
-    QgsVectorLayer *materialize( const QgsFeatureRequest &request,
-                                 QgsFeedback *feedback = nullptr ) SIP_FACTORY;
+    QgsVectorLayer *materialize( const QgsFeatureRequest &request, QgsFeedback *feedback = nullptr ) SIP_FACTORY;
 
     /**
      * Returns an enum value representing the presence of a valid spatial index on the source,

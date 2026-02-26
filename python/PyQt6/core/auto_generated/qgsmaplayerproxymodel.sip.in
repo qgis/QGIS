@@ -21,7 +21,6 @@ layers in widgets.
 #include "qgsmaplayerproxymodel.h"
 %End
   public:
-
     explicit QgsMapLayerProxyModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
 :py:class:`QgsMapLayerProxModel` creates a proxy model with a

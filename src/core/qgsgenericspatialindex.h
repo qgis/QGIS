@@ -44,11 +44,9 @@ class QgsRectangle;
  * \note Not available in Python bindings.
  * \since QGIS 3.12
  */
-template <typename T>
-class QgsGenericSpatialIndex
+template<typename T> class QgsGenericSpatialIndex
 {
   public:
-
     /**
      * Constructor for QgsGenericSpatialIndex.
      */
@@ -155,14 +153,13 @@ class QgsGenericSpatialIndex
     /**
      * Returns TRUE if the index contains no items.
      */
-    bool isEmpty( ) const
+    bool isEmpty() const
     {
       const QMutexLocker locker( &mMutex );
       return mIdToData.isEmpty();
     }
 
   private:
-
     std::unique_ptr< SpatialIndex::ISpatialIndex > createSpatialIndex( SpatialIndex::IStorageManager &storageManager )
     {
       // R-Tree parameters
@@ -174,8 +171,7 @@ class QgsGenericSpatialIndex
 
       // create R-tree
       SpatialIndex::id_type indexId;
-      return std::unique_ptr< SpatialIndex::ISpatialIndex >( SpatialIndex::RTree::createNewRTree( storageManager, fillFactor, indexCapacity,
-             leafCapacity, dimension, variant, indexId ) );
+      return std::unique_ptr< SpatialIndex::ISpatialIndex >( SpatialIndex::RTree::createNewRTree( storageManager, fillFactor, indexCapacity, leafCapacity, dimension, variant, indexId ) );
     }
 
     std::unique_ptr< SpatialIndex::IStorageManager > mStorageManager;
@@ -187,8 +183,7 @@ class QgsGenericSpatialIndex
     QHash< qint64, T * > mIdToData;
     QHash< T *, qint64 > mDataToId;
 
-    template <typename TT>
-    class GenericIndexVisitor : public SpatialIndex::IVisitor
+    template<typename TT> class GenericIndexVisitor : public SpatialIndex::IVisitor
     {
       public:
         explicit GenericIndexVisitor( const std::function< bool( TT *data )> &callback, const QHash< qint64, TT * > &data )
@@ -196,8 +191,7 @@ class QgsGenericSpatialIndex
           , mData( data )
         {}
 
-        void visitNode( const SpatialIndex::INode &n ) override
-        { Q_UNUSED( n ) }
+        void visitNode( const SpatialIndex::INode &n ) override { Q_UNUSED( n ) }
 
         void visitData( const SpatialIndex::IData &d ) override
         {
@@ -206,14 +200,12 @@ class QgsGenericSpatialIndex
           mCallback( data );
         }
 
-        void visitData( std::vector<const SpatialIndex::IData *> &v ) override
-        { Q_UNUSED( v ) }
+        void visitData( std::vector<const SpatialIndex::IData *> &v ) override { Q_UNUSED( v ) }
 
       private:
         const std::function< bool( TT *data )> &mCallback;
         QHash< qint64, TT * > mData;
     };
-
 };
 
 #endif // QGSGENERICSPATIALINDEX_H

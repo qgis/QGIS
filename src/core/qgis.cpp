@@ -45,8 +45,8 @@ using namespace Qt::StringLiterals;
 #include <GeographicLib/Constants.hpp>
 #endif
 
-#define qgis_xstr(x) qgis_str(x)
-#define qgis_str(x) #x
+#define qgis_xstr( x ) qgis_str( x )
+#define qgis_str( x ) #x
 
 // Version constants
 //
@@ -131,10 +131,7 @@ void *qgsMalloc( size_t size )
   return p;
 }
 
-void qgsFree( void *ptr )
-{
-  free( ptr );
-}
+void qgsFree( void *ptr ) { free( ptr ); }
 
 int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs, bool strictTypeCheck )
 {
@@ -593,20 +590,11 @@ int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs, bool strictType
   return std::clamp( QString::localeAwareCompare( lhs.toString(), rhs.toString() ), -1, 1 );
 }
 
-bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs )
-{
-  return qgsVariantCompare( lhs, rhs ) < 0;
-}
+bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs ) { return qgsVariantCompare( lhs, rhs ) < 0; }
 
-bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs )
-{
-  return qgsVariantCompare( lhs, rhs ) > 0;
-}
+bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs ) { return qgsVariantCompare( lhs, rhs ) > 0; }
 
-QString qgsVsiPrefix( const QString &path )
-{
-  return QgsGdalUtils::vsiPrefixForPath( path );
-}
+QString qgsVsiPrefix( const QString &path ) { return QgsGdalUtils::vsiPrefixForPath( path ); }
 
 uint qHash( const QVariant &variant )
 {
@@ -662,9 +650,7 @@ bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs )
     {
       const QString lhsString = lhs.toString();
       const QString rhsString = rhs.toString();
-      return lhsString.isNull() == rhsString.isNull()
-             && lhsString.isEmpty() == rhsString.isEmpty()
-             && lhsString == rhsString;
+      return lhsString.isNull() == rhsString.isNull() && lhsString.isEmpty() == rhsString.isEmpty() && lhsString == rhsString;
     }
     if ( lhs == rhs )
       return true;
@@ -675,14 +661,13 @@ bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs )
 
 QString Qgis::defaultProjectScales()
 {
-  return QStringLiteral( "1:1000000,1:500000,1:250000,1:100000,1:50000,1:25000,"
-                         "1:10000,1:5000,1:2500,1:1000,1:500" );
+  return QStringLiteral(
+    "1:1000000,1:500000,1:250000,1:100000,1:50000,1:25000,"
+    "1:10000,1:5000,1:2500,1:1000,1:500"
+  );
 }
 
-QString Qgis::version()
-{
-  return QString::fromUtf8( VERSION );
-}
+QString Qgis::version() { return QString::fromUtf8( VERSION ); }
 
 int Qgis::versionInt()
 {
@@ -691,20 +676,11 @@ int Qgis::versionInt()
   return VERSION_INT;
 }
 
-QString Qgis::releaseName()
-{
-  return QString::fromUtf8( RELEASE_NAME );
-}
+QString Qgis::releaseName() { return QString::fromUtf8( RELEASE_NAME ); }
 
-QString Qgis::devVersion()
-{
-  return QString::fromUtf8( QGIS_DEV_VERSION );
-}
+QString Qgis::devVersion() { return QString::fromUtf8( QGIS_DEV_VERSION ); }
 
-QString Qgis::geosVersion()
-{
-  return GEOSversion();
-}
+QString Qgis::geosVersion() { return GEOSversion(); }
 
 bool Qgis::hasSfcgal()
 {
@@ -742,30 +718,17 @@ int Qgis::geographicLibVersion()
 #endif
 }
 
-bool Qgis::hasQtWebkit()
-{
-  return false;
-}
+bool Qgis::hasQtWebkit() { return false; }
 
 int Qgis::geosVersionInt()
 {
-  static const int version = u"%1%2%3"_s
-                             .arg( GEOS_VERSION_MAJOR, 2, 10, QChar( '0' ) )
-                             .arg( GEOS_VERSION_MINOR, 2, 10, QChar( '0' ) )
-                             .arg( geosVersionPatch(), 2, 10, QChar( '0' ) ).toInt()
-                             ;
+  static const int version = u"%1%2%3"_s.arg( GEOS_VERSION_MAJOR, 2, 10, QChar( '0' ) ).arg( GEOS_VERSION_MINOR, 2, 10, QChar( '0' ) ).arg( geosVersionPatch(), 2, 10, QChar( '0' ) ).toInt();
   return version;
 }
 
-int Qgis::geosVersionMajor()
-{
-  return GEOS_VERSION_MAJOR;
-}
+int Qgis::geosVersionMajor() { return GEOS_VERSION_MAJOR; }
 
-int Qgis::geosVersionMinor()
-{
-  return GEOS_VERSION_MINOR;
-}
+int Qgis::geosVersionMinor() { return GEOS_VERSION_MINOR; }
 
 int Qgis::geosVersionPatch()
 {

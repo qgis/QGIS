@@ -15,27 +15,12 @@
 
 #include "qgsidentifycontext.h"
 
-void QgsIdentifyContext::setTemporalRange( const QgsDateTimeRange &range )
-{
-  mTemporalRange = range;
-}
+void QgsIdentifyContext::setTemporalRange( const QgsDateTimeRange &range ) { mTemporalRange = range; }
 
-const QgsDateTimeRange &QgsIdentifyContext::temporalRange() const
-{
-  return mTemporalRange;
-}
+const QgsDateTimeRange &QgsIdentifyContext::temporalRange() const { return mTemporalRange; }
 
-bool QgsIdentifyContext::isTemporal() const
-{
-  return mTemporalRange.begin().isValid() || mTemporalRange.end().isValid();
-}
+bool QgsIdentifyContext::isTemporal() const { return mTemporalRange.begin().isValid() || mTemporalRange.end().isValid(); }
 
-QgsDoubleRange QgsIdentifyContext::zRange() const
-{
-  return mZRange;
-}
+QgsDoubleRange QgsIdentifyContext::zRange() const { return mZRange; }
 
-void QgsIdentifyContext::setZRange( const QgsDoubleRange &range )
-{
-  mZRange = range;
-}
+void QgsIdentifyContext::setZRange( const QgsDoubleRange &range ) { mZRange = range; }

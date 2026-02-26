@@ -97,15 +97,9 @@ QString QgsCoordinateFormatter::asPair( double x, double y, int precision, Qgis:
   BUILTIN_UNREACHABLE
 }
 
-QChar QgsCoordinateFormatter::separator()
-{
-  return QLocale().decimalPoint() == ','_L1 ? ' '_L1 : ','_L1;
-}
+QChar QgsCoordinateFormatter::separator() { return QLocale().decimalPoint() == ','_L1 ? ' '_L1 : ','_L1; }
 
-QString QgsCoordinateFormatter::formatAsPair( double val, int precision )
-{
-  return std::isfinite( val ) ? QLocale().toString( val, 'f', precision ) : QObject::tr( "infinite" );
-}
+QString QgsCoordinateFormatter::formatAsPair( double val, int precision ) { return std::isfinite( val ) ? QLocale().toString( val, 'f', precision ) : QObject::tr( "infinite" ); }
 
 QString QgsCoordinateFormatter::formatXAsDegreesMinutesSeconds( double val, int precision, FormatFlags flags )
 {
@@ -183,10 +177,7 @@ QString QgsCoordinateFormatter::formatXAsDegreesMinutesSeconds( double val, int 
     strSecondsX = QLocale().toString( secondsX, 'f', precision );
   }
 
-  return sign + QLocale().toString( degreesX ) + QChar( 176 ) +
-         minutesX + QChar( 0x2032 ) +
-         strSecondsX + QChar( 0x2033 ) +
-         hemisphere;
+  return sign + QLocale().toString( degreesX ) + QChar( 176 ) + minutesX + QChar( 0x2032 ) + strSecondsX + QChar( 0x2033 ) + hemisphere;
 }
 
 QString QgsCoordinateFormatter::formatYAsDegreesMinutesSeconds( double val, int precision, FormatFlags flags )
@@ -259,10 +250,7 @@ QString QgsCoordinateFormatter::formatYAsDegreesMinutesSeconds( double val, int 
     strSecondsY = QLocale().toString( secondsY, 'f', precision );
   }
 
-  return sign + QLocale().toString( degreesY ) + QChar( 176 ) +
-         strMinutesY + QChar( 0x2032 ) +
-         strSecondsY + QChar( 0x2033 ) +
-         hemisphere;
+  return sign + QLocale().toString( degreesY ) + QChar( 176 ) + strMinutesY + QChar( 0x2032 ) + strSecondsY + QChar( 0x2033 ) + hemisphere;
 }
 
 QString QgsCoordinateFormatter::formatXAsDegreesMinutes( double val, int precision, FormatFlags flags )
@@ -321,11 +309,9 @@ QString QgsCoordinateFormatter::formatXAsDegreesMinutes( double val, int precisi
   //pad minutes with leading digits if required
   const int digits = 2 + ( precision == 0 ? 0 : 1 + precision ); //1 for decimal place if required
   const QString strMinutesX = flags.testFlag( FlagDegreesPadMinutesSeconds ) ? QString( "%1" ).arg( floatMinutesX, digits, 'f', precision, QChar( '0' ) )
-                              : QLocale().toString( floatMinutesX, 'f', precision );
+                                                                             : QLocale().toString( floatMinutesX, 'f', precision );
 
-  return sign + QLocale().toString( degreesX ) + QChar( 176 ) +
-         strMinutesX + QChar( 0x2032 ) +
-         hemisphere;
+  return sign + QLocale().toString( degreesX ) + QChar( 176 ) + strMinutesX + QChar( 0x2032 ) + hemisphere;
 }
 
 QString QgsCoordinateFormatter::formatYAsDegreesMinutes( double val, int precision, FormatFlags flags )
@@ -379,11 +365,9 @@ QString QgsCoordinateFormatter::formatYAsDegreesMinutes( double val, int precisi
   //pad minutes with leading digits if required
   const int digits = 2 + ( precision == 0 ? 0 : 1 + precision ); //1 for decimal place if required
   const QString strMinutesY = flags.testFlag( FlagDegreesPadMinutesSeconds ) ? QString( "%1" ).arg( floatMinutesY, digits, 'f', precision, QChar( '0' ) )
-                              : QLocale().toString( floatMinutesY, 'f', precision );
+                                                                             : QLocale().toString( floatMinutesY, 'f', precision );
 
-  return sign + QLocale().toString( degreesY ) + QChar( 176 ) +
-         strMinutesY + QChar( 0x2032 ) +
-         hemisphere;
+  return sign + QLocale().toString( degreesY ) + QChar( 176 ) + strMinutesY + QChar( 0x2032 ) + hemisphere;
 }
 
 QString QgsCoordinateFormatter::formatXAsDegrees( double val, int precision, FormatFlags flags )

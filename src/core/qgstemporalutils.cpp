@@ -42,9 +42,9 @@ QgsDateTimeRange QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject 
       continue;
     const QgsDateTimeRange layerRange = currentLayer->temporalProperties()->calculateTemporalExtent( currentLayer );
 
-    if ( layerRange.begin().isValid() && ( !minDate.isValid() ||  layerRange.begin() < minDate ) )
+    if ( layerRange.begin().isValid() && ( !minDate.isValid() || layerRange.begin() < minDate ) )
       minDate = layerRange.begin();
-    if ( layerRange.end().isValid() && ( !maxDate.isValid() ||  layerRange.end() > maxDate ) )
+    if ( layerRange.end().isValid() && ( !maxDate.isValid() || layerRange.end() > maxDate ) )
       maxDate = layerRange.end();
   }
 
@@ -171,7 +171,6 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
 
 QDateTime QgsTemporalUtils::calculateFrameTime( const QDateTime &start, const long long frame, const QgsInterval &interval )
 {
-
   double unused;
   const bool isFractional = !qgsDoubleNear( fabs( modf( interval.originalDuration(), &unused ) ), 0.0 );
 
@@ -222,8 +221,7 @@ QList<QDateTime> QgsTemporalUtils::calculateDateTimesUsingDuration( const QDateT
   if ( !ok )
     return {};
 
-  if ( timeDuration.years == 0 && timeDuration.months == 0 && timeDuration.weeks == 0 && timeDuration.days == 0
-       && timeDuration.hours == 0 && timeDuration.minutes == 0 && timeDuration.seconds == 0 )
+  if ( timeDuration.years == 0 && timeDuration.months == 0 && timeDuration.weeks == 0 && timeDuration.days == 0 && timeDuration.hours == 0 && timeDuration.minutes == 0 && timeDuration.seconds == 0 )
   {
     ok = false;
     return {};
@@ -282,10 +280,7 @@ QList<QDateTime> QgsTemporalUtils::calculateDateTimesFromISO8601( const QString 
 // QgsTimeDuration
 //
 
-QgsInterval QgsTimeDuration::toInterval() const
-{
-  return QgsInterval( years, months, weeks, days, hours, minutes, seconds );
-}
+QgsInterval QgsTimeDuration::toInterval() const { return QgsInterval( years, months, weeks, days, hours, minutes, seconds ); }
 
 QString QgsTimeDuration::toString() const
 {

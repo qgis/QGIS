@@ -21,5 +21,4 @@
 
 QgsTemporalController::QgsTemporalController( QObject *parent )
   : QObject( parent )
-{
-}
+{}

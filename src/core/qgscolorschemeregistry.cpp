@@ -86,10 +86,7 @@ void QgsColorSchemeRegistry::addUserSchemes()
   }
 }
 
-void QgsColorSchemeRegistry::addColorScheme( QgsColorScheme *scheme )
-{
-  mColorSchemeList.append( scheme );
-}
+void QgsColorSchemeRegistry::addColorScheme( QgsColorScheme *scheme ) { mColorSchemeList.append( scheme ); }
 
 QList<QgsColorScheme *> QgsColorSchemeRegistry::schemes() const
 {
@@ -139,10 +136,7 @@ void QgsColorSchemeRegistry::setRandomStyleColorScheme( QgsColorScheme *scheme )
   }
 }
 
-QgsColorScheme *QgsColorSchemeRegistry::randomStyleColorScheme()
-{
-  return mRandomStyleColorScheme;
-}
+QgsColorScheme *QgsColorSchemeRegistry::randomStyleColorScheme() { return mRandomStyleColorScheme; }
 
 QColor QgsColorSchemeRegistry::fetchRandomStyleColor() const
 {

@@ -31,9 +31,7 @@
 
 using namespace Qt::StringLiterals;
 
-QgsLegendStyle::QgsLegendStyle()
-{
-}
+QgsLegendStyle::QgsLegendStyle() {}
 
 void QgsLegendStyle::setFont( const QFont &font )
 {
@@ -87,7 +85,8 @@ void QgsLegendStyle::writeXml( const QString &name, QDomElement &elem, QDomDocum
 void QgsLegendStyle::readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
   Q_UNUSED( doc )
-  if ( elem.isNull() ) return;
+  if ( elem.isNull() )
+    return;
 
   QDomNodeList textFormatNodeList = elem.elementsByTagName( u"text-style"_s );
   if ( !textFormatNodeList.isEmpty() )
@@ -118,7 +117,6 @@ void QgsLegendStyle::updateDataDefinedProperties( QgsRenderContext &context )
 {
   if ( mTextFormat.dataDefinedProperties().hasActiveProperties() ) // note, we use format instead of tmpFormat here, it's const and potentially avoids a detach
     mTextFormat.updateDataDefinedProperties( context );
-
 }
 
 QString QgsLegendStyle::styleName( Qgis::LegendComponent s )

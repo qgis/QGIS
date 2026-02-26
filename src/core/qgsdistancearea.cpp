@@ -41,9 +41,9 @@
 
 using namespace Qt::StringLiterals;
 
-#define DEG2RAD(x)    ((x)*M_PI/180)
-#define RAD2DEG(r) (180.0 * (r) / M_PI)
-#define POW2(x) ((x)*(x))
+#define DEG2RAD( x ) ( ( x ) * M_PI / 180 )
+#define RAD2DEG( r ) ( 180.0 * ( r ) / M_PI )
+#define POW2( x ) ( ( x ) * ( x ) )
 
 QgsDistanceArea::QgsDistanceArea()
 {
@@ -51,7 +51,7 @@ QgsDistanceArea::QgsDistanceArea()
   mSemiMajor = -1.0;
   mSemiMinor = -1.0;
   mInvFlattening = -1.0;
-  const QgsCoordinateTransformContext context; // this is ok - by default we have a source/dest of WGS84, so no reprojection takes place
+  const QgsCoordinateTransformContext context;                             // this is ok - by default we have a source/dest of WGS84, so no reprojection takes place
   setSourceCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), context ); // WGS 84
   setEllipsoid( Qgis::geoNone() );
 }
@@ -59,7 +59,7 @@ QgsDistanceArea::QgsDistanceArea()
 QgsDistanceArea::~QgsDistanceArea() = default;
 
 QgsDistanceArea::QgsDistanceArea( const QgsDistanceArea &other )
-//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+  //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
   : mCoordTransform( other.mCoordTransform )
   , mEllipsoid( other.mEllipsoid )
   , mSemiMajor( other.mSemiMajor )
@@ -78,8 +78,7 @@ QgsDistanceArea::QgsDistanceArea( QgsDistanceArea &&other )
   , mSemiMinor( other.mSemiMinor )
   , mInvFlattening( other.mInvFlattening )
   , mGeod( std::move( other.mGeod ) )
-{
-}
+{}
 
 QgsDistanceArea &QgsDistanceArea::operator=( const QgsDistanceArea &other )
 {
@@ -111,10 +110,7 @@ QgsDistanceArea &QgsDistanceArea::operator=( QgsDistanceArea &&other )
   return *this;
 }
 
-bool QgsDistanceArea::willUseEllipsoid() const
-{
-  return mEllipsoid != Qgis::geoNone();
-}
+bool QgsDistanceArea::willUseEllipsoid() const { return mEllipsoid != Qgis::geoNone(); }
 
 void QgsDistanceArea::setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateTransformContext &context )
 {
@@ -290,7 +286,7 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry &geometry ) const
   if ( multiSurf )
   {
     surfaces.reserve( ( surf ? 1 : 0 ) + multiSurf->numGeometries() );
-    for ( int i = 0; i  < multiSurf->numGeometries(); ++i )
+    for ( int i = 0; i < multiSurf->numGeometries(); ++i )
     {
       surfaces.append( static_cast<const QgsSurface *>( multiSurf->geometryN( i ) ) );
     }
@@ -443,19 +439,18 @@ double QgsDistanceArea::measureLineProjected( const QgsPointXY &p1, double dista
     }
     p2 = p1.project( distance, azimuth );
   }
-  QgsDebugMsgLevel( u"Converted distance of %1 %2 to %3 distance %4 %5, using azimuth[%6] from point[%7] to point[%8] sourceCrs[%9] mEllipsoid[%10] isGeographic[%11] [%12]"_s
-                    .arg( QString::number( distance, 'f', 7 ),
-                          QgsUnitTypes::toString( Qgis::DistanceUnit::Meters ),
-                          QString::number( result, 'f', 7 ),
-                          mCoordTransform.sourceCrs().isGeographic() ? u"Geographic"_s : u"Cartesian"_s,
-                          QgsUnitTypes::toString( sourceCrs().mapUnits() ) )
-                    .arg( azimuth )
-                    .arg( p1.asWkt(),
-                          p2.asWkt(),
-                          sourceCrs().description(),
-                          mEllipsoid )
-                    .arg( sourceCrs().isGeographic() )
-                    .arg( u"SemiMajor[%1] SemiMinor[%2] InvFlattening[%3] "_s.arg( QString::number( mSemiMajor, 'f', 7 ), QString::number( mSemiMinor, 'f', 7 ), QString::number( mInvFlattening, 'f', 7 ) ) ), 4 );
+  QgsDebugMsgLevel(
+    u"Converted distance of %1 %2 to %3 distance %4 %5, using azimuth[%6] from point[%7] to point[%8] sourceCrs[%9] mEllipsoid[%10] isGeographic[%11] [%12]"_s
+      .arg(
+        QString::number( distance, 'f', 7 ), QgsUnitTypes::toString( Qgis::DistanceUnit::Meters ), QString::number( result, 'f', 7 ),
+        mCoordTransform.sourceCrs().isGeographic() ? u"Geographic"_s : u"Cartesian"_s, QgsUnitTypes::toString( sourceCrs().mapUnits() )
+      )
+      .arg( azimuth )
+      .arg( p1.asWkt(), p2.asWkt(), sourceCrs().description(), mEllipsoid )
+      .arg( sourceCrs().isGeographic() )
+      .arg( u"SemiMajor[%1] SemiMinor[%2] InvFlattening[%3] "_s.arg( QString::number( mSemiMajor, 'f', 7 ), QString::number( mSemiMinor, 'f', 7 ), QString::number( mInvFlattening, 'f', 7 ) ) ),
+    4
+  );
   if ( projectedPoint )
   {
     *projectedPoint = QgsPointXY( p2 );
@@ -463,8 +458,7 @@ double QgsDistanceArea::measureLineProjected( const QgsPointXY &p1, double dista
   return result;
 }
 
-QgsPointXY QgsDistanceArea::computeSpheroidProject(
-  const QgsPointXY &p1, double distance, double azimuth ) const
+QgsPointXY QgsDistanceArea::computeSpheroidProject( const QgsPointXY &p1, double distance, double azimuth ) const
 {
   if ( !mGeod )
     computeAreaInit();
@@ -621,7 +615,7 @@ QgsGeometry QgsDistanceArea::splitGeometryAtAntimeridian( const QgsGeometry &geo
         mCoordTransform.transformInPlace( lon, lat, z );
 
         //test if we crossed the antimeridian in this segment
-        if ( i > 0 && ( ( prevLon < -120 && lon > 120 ) || ( prevLon > 120 && lon  < -120 ) ) )
+        if ( i > 0 && ( ( prevLon < -120 && lon > 120 ) || ( prevLon > 120 && lon < -120 ) ) )
         {
           // we did!
           // when crossing the antimeridian, we need to calculate the latitude
@@ -787,7 +781,6 @@ QVector< QVector<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &
       {
         QgsMessageLog::logMessage( QObject::tr( "Caught a coordinate system exception while trying to transform a point." ) );
       }
-
     }
 
     prevLon = lon;
@@ -813,16 +806,9 @@ QVector< QVector<QgsPointXY> > QgsDistanceArea::geodesicLine( const QgsPointXY &
   return res;
 }
 
-Qgis::DistanceUnit QgsDistanceArea::lengthUnits() const
-{
-  return willUseEllipsoid() ? Qgis::DistanceUnit::Meters : mCoordTransform.sourceCrs().mapUnits();
-}
+Qgis::DistanceUnit QgsDistanceArea::lengthUnits() const { return willUseEllipsoid() ? Qgis::DistanceUnit::Meters : mCoordTransform.sourceCrs().mapUnits(); }
 
-Qgis::AreaUnit QgsDistanceArea::areaUnits() const
-{
-  return willUseEllipsoid() ? Qgis::AreaUnit::SquareMeters :
-         QgsUnitTypes::distanceToAreaUnit( mCoordTransform.sourceCrs().mapUnits() );
-}
+Qgis::AreaUnit QgsDistanceArea::areaUnits() const { return willUseEllipsoid() ? Qgis::AreaUnit::SquareMeters : QgsUnitTypes::distanceToAreaUnit( mCoordTransform.sourceCrs().mapUnits() ); }
 
 double QgsDistanceArea::measurePolygon( const QgsCurve *curve ) const
 {
@@ -903,7 +889,7 @@ void QgsDistanceArea::computeAreaInit() const
     return;
   }
 
-  mGeod = std::make_unique<geod_geodesic>( );
+  mGeod = std::make_unique<geod_geodesic>();
   geod_init( mGeod.get(), mSemiMajor, 1 / mInvFlattening );
 }
 
@@ -983,15 +969,9 @@ double QgsDistanceArea::computePolygonFlatArea( const QVector<QgsPointXY> &point
   return std::fabs( area ); // All areas are positive!
 }
 
-QString QgsDistanceArea::formatDistance( double distance, int decimals, Qgis::DistanceUnit unit, bool keepBaseUnit )
-{
-  return QgsUnitTypes::formatDistance( distance, decimals, unit, keepBaseUnit );
-}
+QString QgsDistanceArea::formatDistance( double distance, int decimals, Qgis::DistanceUnit unit, bool keepBaseUnit ) { return QgsUnitTypes::formatDistance( distance, decimals, unit, keepBaseUnit ); }
 
-QString QgsDistanceArea::formatArea( double area, int decimals, Qgis::AreaUnit unit, bool keepBaseUnit )
-{
-  return QgsUnitTypes::formatArea( area, decimals, unit, keepBaseUnit );
-}
+QString QgsDistanceArea::formatArea( double area, int decimals, Qgis::AreaUnit unit, bool keepBaseUnit ) { return QgsUnitTypes::formatArea( area, decimals, unit, keepBaseUnit ); }
 
 double QgsDistanceArea::convertLengthMeasurement( double length, Qgis::DistanceUnit toUnits ) const
 {
@@ -1000,10 +980,7 @@ double QgsDistanceArea::convertLengthMeasurement( double length, Qgis::DistanceU
   const double factorUnits = QgsUnitTypes::fromUnitToUnitFactor( measureUnits, toUnits );
 
   const double result = length * factorUnits;
-  QgsDebugMsgLevel( u"Converted length of %1 %2 to %3 %4"_s.arg( length )
-                    .arg( QgsUnitTypes::toString( measureUnits ) )
-                    .arg( result )
-                    .arg( QgsUnitTypes::toString( toUnits ) ), 3 );
+  QgsDebugMsgLevel( u"Converted length of %1 %2 to %3 %4"_s.arg( length ).arg( QgsUnitTypes::toString( measureUnits ) ).arg( result ).arg( QgsUnitTypes::toString( toUnits ) ), 3 );
   return result;
 }
 
@@ -1014,9 +991,6 @@ double QgsDistanceArea::convertAreaMeasurement( double area, Qgis::AreaUnit toUn
   const double factorUnits = QgsUnitTypes::fromUnitToUnitFactor( measureUnits, toUnits );
 
   const double result = area * factorUnits;
-  QgsDebugMsgLevel( u"Converted area of %1 %2 to %3 %4"_s.arg( area )
-                    .arg( QgsUnitTypes::toString( measureUnits ) )
-                    .arg( result )
-                    .arg( QgsUnitTypes::toString( toUnits ) ), 3 );
+  QgsDebugMsgLevel( u"Converted area of %1 %2 to %3 %4"_s.arg( area ).arg( QgsUnitTypes::toString( measureUnits ) ).arg( result ).arg( QgsUnitTypes::toString( toUnits ) ), 3 );
   return result;
 }

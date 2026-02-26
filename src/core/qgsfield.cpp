@@ -51,23 +51,18 @@ QgsField::QgsField( QString nam, QString typ, int len, int prec, bool num,
   // names how they are now.
 }
 #endif
-QgsField::QgsField( const QString &name, QMetaType::Type type,
-                    const QString &typeName, int len, int prec, const QString &comment, QMetaType::Type subType )
+QgsField::QgsField( const QString &name, QMetaType::Type type, const QString &typeName, int len, int prec, const QString &comment, QMetaType::Type subType )
 {
   d = new QgsFieldPrivate( name, type, subType, typeName, len, prec, comment );
 }
 
-QgsField::QgsField( const QString &name, QVariant::Type type,
-                    const QString &typeName, int len, int prec, const QString &comment, QVariant::Type subType )
+QgsField::QgsField( const QString &name, QVariant::Type type, const QString &typeName, int len, int prec, const QString &comment, QVariant::Type subType )
   : QgsField( name, QgsVariantUtils::variantTypeToMetaType( type ), typeName, len, prec, comment, QgsVariantUtils::variantTypeToMetaType( subType ) )
-{
-}
+{}
 
 QgsField::QgsField( const QgsField &other ) //NOLINT
   : d( other.d )
-{
-
-}
+{}
 
 QgsField::~QgsField() = default;
 
@@ -77,26 +72,17 @@ QgsField::~QgsField() = default;
  * See details in QEP #17
  ****************************************************************************/
 
-QgsField &QgsField::operator =( const QgsField &other )  //NOLINT
+QgsField &QgsField::operator=( const QgsField &other ) //NOLINT
 {
   d = other.d;
   return *this;
 }
 
-bool QgsField::operator==( const QgsField &other ) const
-{
-  return *( other.d ) == *d;
-}
+bool QgsField::operator==( const QgsField &other ) const { return *( other.d ) == *d; }
 
-bool QgsField::operator!=( const QgsField &other ) const
-{
-  return !( *this == other );
-}
+bool QgsField::operator!=( const QgsField &other ) const { return !( *this == other ); }
 
-QString QgsField::name() const
-{
-  return d->name;
-}
+QString QgsField::name() const { return d->name; }
 
 QString QgsField::displayName() const
 {
@@ -130,13 +116,9 @@ QString QgsField::displayType( const bool showConstraints ) const
 
   if ( showConstraints )
   {
-    typeStr += ( constraints().constraints() & QgsFieldConstraints::ConstraintNotNull )
-               ? u" NOT NULL"_s
-               : u" NULL"_s;
+    typeStr += ( constraints().constraints() & QgsFieldConstraints::ConstraintNotNull ) ? u" NOT NULL"_s : u" NULL"_s;
 
-    typeStr += ( constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
-               ? u" UNIQUE"_s
-               : QString();
+    typeStr += ( constraints().constraints() & QgsFieldConstraints::ConstraintUnique ) ? u" UNIQUE"_s : QString();
   }
 
   return typeStr;
@@ -154,75 +136,36 @@ QString QgsField::friendlyTypeString() const
   return QgsVariantUtils::typeToDisplayString( d->type, d->subType );
 }
 
-QMetaType::Type QgsField::type() const
-{
-  return d->type;
-}
+QMetaType::Type QgsField::type() const { return d->type; }
 
-QMetaType::Type QgsField::subType() const
-{
-  return d->subType;
-}
+QMetaType::Type QgsField::subType() const { return d->subType; }
 
-QString QgsField::typeName() const
-{
-  return d->typeName;
-}
+QString QgsField::typeName() const { return d->typeName; }
 
-int QgsField::length() const
-{
-  return d->length;
-}
+int QgsField::length() const { return d->length; }
 
-int QgsField::precision() const
-{
-  return d->precision;
-}
+int QgsField::precision() const { return d->precision; }
 
-QString QgsField::comment() const
-{
-  return d->comment;
-}
+QString QgsField::comment() const { return d->comment; }
 
-QVariant QgsField::metadata( int property ) const
-{
-  return d->metadata.value( property );
-}
+QVariant QgsField::metadata( int property ) const { return d->metadata.value( property ); }
 
-QMap<int, QVariant> QgsField::metadata() const
-{
-  return d->metadata;
-}
+QMap<int, QVariant> QgsField::metadata() const { return d->metadata; }
 
-QVariant QgsField::metadata( Qgis::FieldMetadataProperty property ) const
-{
-  return d->metadata.value( static_cast< int >( property ) );
-}
+QVariant QgsField::metadata( Qgis::FieldMetadataProperty property ) const { return d->metadata.value( static_cast< int >( property ) ); }
 
-void QgsField::setMetadata( const QMap<int, QVariant> metadata )
-{
-  d->metadata = metadata;
-}
+void QgsField::setMetadata( const QMap<int, QVariant> metadata ) { d->metadata = metadata; }
 
-void QgsField::setMetadata( Qgis::FieldMetadataProperty property, const QVariant &value )
-{
-  d->metadata[ static_cast< int >( property )] = value;
-}
+void QgsField::setMetadata( Qgis::FieldMetadataProperty property, const QVariant &value ) { d->metadata[static_cast< int >( property )] = value; }
 
-void QgsField::setMetadata( int property, const QVariant &value )
-{
-  d->metadata[ property ] = value;
-}
+void QgsField::setMetadata( int property, const QVariant &value ) { d->metadata[property] = value; }
 
 bool QgsField::isNumeric() const
 {
   return d->type == QMetaType::Type::Double || d->type == QMetaType::Type::Int || d->type == QMetaType::Type::UInt || d->type == QMetaType::Type::LongLong || d->type == QMetaType::Type::ULongLong;
 }
 
-bool QgsField::isDateOrTime() const
-{
-  return d->type == QMetaType::Type::QDate || d->type == QMetaType::Type::QTime || d->type == QMetaType::Type::QDateTime;
-}
+bool QgsField::isDateOrTime() const { return d->type == QMetaType::Type::QDate || d->type == QMetaType::Type::QTime || d->type == QMetaType::Type::QDateTime; }
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -230,89 +173,38 @@ bool QgsField::isDateOrTime() const
  * See details in QEP #17
  ****************************************************************************/
 
-void QgsField::setName( const QString &name )
-{
-  d->name = name;
-}
+void QgsField::setName( const QString &name ) { d->name = name; }
 
-void QgsField::setType( QMetaType::Type type )
-{
-  d->type = type;
-}
+void QgsField::setType( QMetaType::Type type ) { d->type = type; }
 
-void QgsField::setType( QVariant::Type type )
-{
-  setType( QgsVariantUtils::variantTypeToMetaType( type ) );
-}
+void QgsField::setType( QVariant::Type type ) { setType( QgsVariantUtils::variantTypeToMetaType( type ) ); }
 
-void QgsField::setSubType( QMetaType::Type subType )
-{
-  d->subType = subType;
-}
+void QgsField::setSubType( QMetaType::Type subType ) { d->subType = subType; }
 
-void QgsField::setSubType( QVariant::Type subType )
-{
-  setSubType( QgsVariantUtils::variantTypeToMetaType( subType ) );
-}
+void QgsField::setSubType( QVariant::Type subType ) { setSubType( QgsVariantUtils::variantTypeToMetaType( subType ) ); }
 
-void QgsField::setTypeName( const QString &typeName )
-{
-  d->typeName = typeName;
-}
+void QgsField::setTypeName( const QString &typeName ) { d->typeName = typeName; }
 
-void QgsField::setLength( int len )
-{
-  d->length = len;
-}
-void QgsField::setPrecision( int precision )
-{
-  d->precision = precision;
-}
+void QgsField::setLength( int len ) { d->length = len; }
+void QgsField::setPrecision( int precision ) { d->precision = precision; }
 
-void QgsField::setComment( const QString &comment )
-{
-  d->comment = comment;
-}
+void QgsField::setComment( const QString &comment ) { d->comment = comment; }
 
-QgsDefaultValue QgsField::defaultValueDefinition() const
-{
-  return d->defaultValueDefinition;
-}
+QgsDefaultValue QgsField::defaultValueDefinition() const { return d->defaultValueDefinition; }
 
-void QgsField::setDefaultValueDefinition( const QgsDefaultValue &defaultValueDefinition )
-{
-  d->defaultValueDefinition = defaultValueDefinition;
-}
+void QgsField::setDefaultValueDefinition( const QgsDefaultValue &defaultValueDefinition ) { d->defaultValueDefinition = defaultValueDefinition; }
 
-void QgsField::setConstraints( const QgsFieldConstraints &constraints )
-{
-  d->constraints = constraints;
-}
+void QgsField::setConstraints( const QgsFieldConstraints &constraints ) { d->constraints = constraints; }
 
-const QgsFieldConstraints &QgsField::constraints() const
-{
-  return d->constraints;
-}
+const QgsFieldConstraints &QgsField::constraints() const { return d->constraints; }
 
-QString QgsField::alias() const
-{
-  return d->alias;
-}
+QString QgsField::alias() const { return d->alias; }
 
-void QgsField::setAlias( const QString &alias )
-{
-  d->alias = alias;
-}
+void QgsField::setAlias( const QString &alias ) { d->alias = alias; }
 
-Qgis::FieldConfigurationFlags QgsField::configurationFlags() const
-{
-  return d->flags;
-}
+Qgis::FieldConfigurationFlags QgsField::configurationFlags() const { return d->flags; }
 
-void QgsField::setConfigurationFlags( Qgis::FieldConfigurationFlags flags )
-{
-  d->flags = flags;
-}
+void QgsField::setConfigurationFlags( Qgis::FieldConfigurationFlags flags ) { d->flags = flags; }
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -355,8 +247,7 @@ QString QgsField::displayString( const QVariant &v ) const
       return v.toString();
 
     // Locales with decimal point != '.' or that require group separator: use QLocale
-    if ( QLocale().decimalPoint() != '.' ||
-         !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
+    if ( QLocale().decimalPoint() != '.' || !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
     {
       if ( d->precision > 0 )
       {
@@ -383,8 +274,10 @@ QString QgsField::displayString( const QVariant &v ) const
         }
         else
         {
-          if ( dotPosition < 0 ) precision = 0;
-          else precision = s.length() - dotPosition - 1;
+          if ( dotPosition < 0 )
+            precision = 0;
+          else
+            precision = s.length() - dotPosition - 1;
 
           if ( -1 < v.toDouble() && v.toDouble() < 1 )
           {
@@ -420,8 +313,7 @@ QString QgsField::displayString( const QVariant &v ) const
     }
   }
   // Other numeric types than doubles
-  else if ( isNumeric() &&
-            !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
+  else if ( isNumeric() && !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
   {
     bool ok;
     const qlonglong converted( v.toLongLong( &ok ) );
@@ -484,7 +376,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
 
   if ( QgsVariantUtils::isNull( v ) )
   {
-    ( void )v.convert( d->type );
+    ( void ) v.convert( d->type );
     return true;
   }
 
@@ -581,7 +473,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     }
 
     const double round = std::round( dbl );
-    if ( round  > std::numeric_limits<int>::max() || round < -std::numeric_limits<int>::max() )
+    if ( round > std::numeric_limits<int>::max() || round < -std::numeric_limits<int>::max() )
     {
       //double too large to fit in int
       v = QgsVariantUtils::createNullVariant( d->type );
@@ -617,7 +509,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
       }
 
       const double round = std::round( dbl );
-      if ( round  > static_cast<double>( std::numeric_limits<long long>::max() ) || round < static_cast<double>( -std::numeric_limits<long long>::max() ) )
+      if ( round > static_cast<double>( std::numeric_limits<long long>::max() ) || round < static_cast<double>( -std::numeric_limits<long long>::max() ) )
       {
         //double too large to fit in longlong
         v = QgsVariantUtils::createNullVariant( d->type );
@@ -656,8 +548,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     }
   }
 
-  if ( ( d->type == QMetaType::Type::QStringList || ( d->type == QMetaType::Type::QVariantList && d->subType == QMetaType::Type::QString ) )
-       && ( v.userType() == QMetaType::Type::QString ) )
+  if ( ( d->type == QMetaType::Type::QStringList || ( d->type == QMetaType::Type::QVariantList && d->subType == QMetaType::Type::QString ) ) && ( v.userType() == QMetaType::Type::QString ) )
   {
     v = QStringList( { v.toString() } );
     return true;
@@ -676,7 +567,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
   // Handle referenced geometries (e.g. from additional geometry fields)
   if ( d->type == QMetaType::Type::QString && v.userType() == qMetaTypeId<QgsReferencedGeometry>() )
   {
-    const QgsReferencedGeometry geom { v.value<QgsReferencedGeometry>( ) };
+    const QgsReferencedGeometry geom { v.value<QgsReferencedGeometry>() };
     if ( geom.isNull() )
     {
       v = QgsVariantUtils::createNullVariant( d->type );
@@ -709,9 +600,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     v = QgsVariantUtils::createNullVariant( d->type );
 
     if ( errorMessage )
-      *errorMessage = QObject::tr( "Could not convert value \"%1\" to target type \"%2\"" )
-                      .arg( original.toString(),
-                            d->typeName );
+      *errorMessage = QObject::tr( "Could not convert value \"%1\" to target type \"%2\"" ).arg( original.toString(), d->typeName );
 
     return false;
   }
@@ -738,60 +627,27 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
   return true;
 }
 
-QgsField::operator QVariant() const
-{
-  return QVariant::fromValue( *this );
-}
+QgsField::operator QVariant() const { return QVariant::fromValue( *this ); }
 
-void QgsField::setEditorWidgetSetup( const QgsEditorWidgetSetup &v )
-{
-  d->editorWidgetSetup = v;
-}
+void QgsField::setEditorWidgetSetup( const QgsEditorWidgetSetup &v ) { d->editorWidgetSetup = v; }
 
-QgsEditorWidgetSetup QgsField::editorWidgetSetup() const
-{
-  return d->editorWidgetSetup;
-}
+QgsEditorWidgetSetup QgsField::editorWidgetSetup() const { return d->editorWidgetSetup; }
 
-void QgsField::setReadOnly( bool readOnly )
-{
-  d->isReadOnly = readOnly;
-}
+void QgsField::setReadOnly( bool readOnly ) { d->isReadOnly = readOnly; }
 
-bool QgsField::isReadOnly() const
-{
-  return d->isReadOnly;
-}
+bool QgsField::isReadOnly() const { return d->isReadOnly; }
 
-Qgis::FieldDomainSplitPolicy QgsField::splitPolicy() const
-{
-  return d->splitPolicy;
-}
+Qgis::FieldDomainSplitPolicy QgsField::splitPolicy() const { return d->splitPolicy; }
 
-void QgsField::setSplitPolicy( Qgis::FieldDomainSplitPolicy policy )
-{
-  d->splitPolicy = policy;
-}
+void QgsField::setSplitPolicy( Qgis::FieldDomainSplitPolicy policy ) { d->splitPolicy = policy; }
 
-Qgis::FieldDuplicatePolicy QgsField::duplicatePolicy() const
-{
-  return d->duplicatePolicy;
-}
+Qgis::FieldDuplicatePolicy QgsField::duplicatePolicy() const { return d->duplicatePolicy; }
 
-void QgsField::setDuplicatePolicy( Qgis::FieldDuplicatePolicy policy )
-{
-  d->duplicatePolicy = policy;
-}
+void QgsField::setDuplicatePolicy( Qgis::FieldDuplicatePolicy policy ) { d->duplicatePolicy = policy; }
 
-Qgis::FieldDomainMergePolicy QgsField::mergePolicy() const
-{
-  return d->mergePolicy;
-}
+Qgis::FieldDomainMergePolicy QgsField::mergePolicy() const { return d->mergePolicy; }
 
-void QgsField::setMergePolicy( Qgis::FieldDomainMergePolicy policy )
-{
-  d->mergePolicy = policy;
-}
+void QgsField::setMergePolicy( Qgis::FieldDomainMergePolicy policy ) { d->mergePolicy = policy; }
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -853,9 +709,8 @@ QDataStream &operator>>( QDataStream &in, QgsField &field )
   QString constraintDescription;
   QMap< int, QVariant > metadata;
 
-  in >> name >> type >> typeName >> length >> precision >> comment >> alias
-     >> defaultValueExpression >> applyOnUpdate >> constraints >> originNotNull >> originUnique >> originExpression >> strengthNotNull >> strengthUnique >> strengthExpression >>
-     constraintExpression >> constraintDescription >> subType >> splitPolicy >> duplicatePolicy >> metadata;
+  in >> name >> type >> typeName >> length >> precision >> comment >> alias >> defaultValueExpression >> applyOnUpdate >> constraints >> originNotNull >> originUnique >> originExpression
+    >> strengthNotNull >> strengthUnique >> strengthExpression >> constraintExpression >> constraintDescription >> subType >> splitPolicy >> duplicatePolicy >> metadata;
   field.setName( name );
   field.setType( static_cast< QMetaType::Type >( type ) );
   field.setTypeName( typeName );

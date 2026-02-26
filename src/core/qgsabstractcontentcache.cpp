@@ -32,8 +32,7 @@ using namespace Qt::StringLiterals;
 
 QgsAbstractContentCacheEntry::QgsAbstractContentCacheEntry( const QString &path )
   : path( path )
-{
-}
+{}
 
 //
 // QgsAbstractContentCacheBase
@@ -49,10 +48,7 @@ bool QgsAbstractContentCacheBase::invalidateCacheEntry( const QString &path )
   return false;
 }
 
-void QgsAbstractContentCacheBase::onRemoteContentFetched( const QString &, bool )
-{
-
-}
+void QgsAbstractContentCacheBase::onRemoteContentFetched( const QString &, bool ) {}
 
 bool QgsAbstractContentCacheBase::parseBase64DataUrl( const QString &path, QString *mimeType, QString *data )
 {
@@ -98,8 +94,4 @@ bool QgsAbstractContentCacheBase::parseEmbeddedStringData( const QString &path, 
   return true;
 }
 
-bool QgsAbstractContentCacheBase::isBase64Data( const QString &path )
-{
-  return path.startsWith( "base64:"_L1 )
-         || parseBase64DataUrl( path );
-}
+bool QgsAbstractContentCacheBase::isBase64Data( const QString &path ) { return path.startsWith( "base64:"_L1 ) || parseBase64DataUrl( path ); }

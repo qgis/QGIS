@@ -28,15 +28,9 @@
 
 using namespace Qt::StringLiterals;
 
-QgsUserProfile::QgsUserProfile( const QString &folder )
-{
-  mProfileFolder = folder;
-}
+QgsUserProfile::QgsUserProfile( const QString &folder ) { mProfileFolder = folder; }
 
-const QString QgsUserProfile::folder() const
-{
-  return mProfileFolder;
-}
+const QString QgsUserProfile::folder() const { return mProfileFolder; }
 
 QgsError QgsUserProfile::validate() const
 {
@@ -118,8 +112,7 @@ QgsError QgsUserProfile::setAlias( const QString &alias ) const
     return error;
   }
 
-  const QString sql = u"INSERT OR REPLACE INTO tbl_config_variables VALUES ('ALIAS', %1);"_s.arg(
-                        QgsSqliteUtils::quotedString( alias ) );
+  const QString sql = u"INSERT OR REPLACE INTO tbl_config_variables VALUES ('ALIAS', %1);"_s.arg( QgsSqliteUtils::quotedString( alias ) );
 
   sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
   if ( result != SQLITE_OK || preparedStatement.step() != SQLITE_DONE )
@@ -132,7 +125,7 @@ QgsError QgsUserProfile::setAlias( const QString &alias ) const
 
 const QIcon QgsUserProfile::icon() const
 {
-  const QStringList extensions = {".svg", ".png", ".jpg", ".jpeg", ".gif", ".bmp"};
+  const QStringList extensions = { ".svg", ".png", ".jpg", ".jpeg", ".gif", ".bmp" };
   const QString basename = mProfileFolder + QDir::separator() + "icon";
 
   for ( const QString &extension : extensions )
@@ -144,7 +137,4 @@ const QIcon QgsUserProfile::icon() const
   return QgsApplication::getThemeIcon( "user.svg" );
 }
 
-QString QgsUserProfile::qgisDB() const
-{
-  return mProfileFolder + QDir::separator() + "qgis.db";
-}
+QString QgsUserProfile::qgisDB() const { return mProfileFolder + QDir::separator() + "qgis.db"; }

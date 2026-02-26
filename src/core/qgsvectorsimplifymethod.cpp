@@ -22,5 +22,4 @@
 QgsVectorSimplifyMethod::QgsVectorSimplifyMethod()
   : mSimplifyHints( Qgis::DEFAULT_MAPTOPIXEL_THRESHOLD > 1 ? Qgis::VectorRenderingSimplificationFlag::FullSimplification : Qgis::VectorRenderingSimplificationFlag::GeometrySimplification )
   , mThreshold( Qgis::DEFAULT_MAPTOPIXEL_THRESHOLD )
-{
-}
+{}

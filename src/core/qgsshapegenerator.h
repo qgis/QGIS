@@ -38,7 +38,6 @@ class QPainterPath;
 class CORE_EXPORT QgsShapeGenerator
 {
   public:
-
     /**
      * Generates a "balloon"/"talking bubble" style shape (as a QPolygonF).
      *

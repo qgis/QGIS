@@ -45,7 +45,6 @@
 class CORE_EXPORT QgsCredentials
 {
   public:
-
     virtual ~QgsCredentials() = default;
 
     /**
@@ -99,7 +98,6 @@ class CORE_EXPORT QgsCredentials
     QMutex *mutex() { return &mAuthMutex; }
 
   protected:
-
     QgsCredentials() = default;
 
     //! request a password

@@ -27,7 +27,6 @@ bookmarks.
 #include "qgsbookmarkmanager.h"
 %End
   public:
-
     QgsBookmark();
 %Docstring
 Default constructor, creates an empty bookmark.
@@ -127,19 +126,12 @@ Returns a DOM element representing the bookmark's properties.
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    QString str = QStringLiteral( "<QgsBookmark: '%1' (%2)>" )
-                  .arg( sipCpp->name() )
-                  .arg(
-                    sipCpp->extent().isNull() ?
-                    QStringLiteral( "EMPTY" ) :
-                    QStringLiteral( "%1 - %2" )
-                    .arg( sipCpp->extent().asWktCoordinates(), sipCpp->extent().crs().authid() )
-                  );
+%MethodCode QString str = QStringLiteral( "<QgsBookmark: '%1' (%2)>" ).arg( sipCpp->name() )
+                                 .arg( sipCpp->extent().isNull() ? QStringLiteral( "EMPTY" ) : QStringLiteral( "%1 - %2" ).arg( sipCpp->extent().asWktCoordinates(), sipCpp->extent().crs().authid() ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    bool operator==( const QgsBookmark &other ) const;
+      bool operator==( const QgsBookmark &other ) const;
     bool operator!=( const QgsBookmark &other ) const;
 
 };
@@ -163,7 +155,6 @@ via the application-wide bookmark store at
 #include "qgsbookmarkmanager.h"
 %End
   public:
-
     static QgsBookmarkManager *createProjectBasedManager( QgsProject *project );
 %Docstring
 Returns a newly created QgsBookmarkManager using a project-based

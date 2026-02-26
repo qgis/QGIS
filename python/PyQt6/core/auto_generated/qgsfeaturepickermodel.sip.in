@@ -20,7 +20,6 @@ Features are fetched asynchronously.
 #include "qgsfeaturepickermodel.h"
 %End
   public:
-
     explicit QgsFeaturePickerModel( QObject *parent = 0 );
 %Docstring
 Create a new QgsFeaturePickerModel, optionally specifying a ``parent``.

@@ -32,23 +32,13 @@ QgsErrorMessage::QgsErrorMessage( const QString &message, const QString &tag, co
   , mFile( file )
   , mFunction( function )
   , mLine( line )
-{
-}
+{}
 
-QgsError::QgsError( const QString &message, const QString &tag )
-{
-  append( message, tag );
-}
+QgsError::QgsError( const QString &message, const QString &tag ) { append( message, tag ); }
 
-void QgsError::append( const QString &message, const QString &tag )
-{
-  mMessageList.append( QgsErrorMessage( message, tag ) );
-}
+void QgsError::append( const QString &message, const QString &tag ) { mMessageList.append( QgsErrorMessage( message, tag ) ); }
 
-void QgsError::append( const QgsErrorMessage &message )
-{
-  mMessageList.append( message );
-}
+void QgsError::append( const QgsErrorMessage &message ) { mMessageList.append( message ); }
 
 QString QgsError::message( QgsErrorMessage::Format format ) const
 {
@@ -58,7 +48,7 @@ QString QgsError::message( QgsErrorMessage::Format format ) const
   QString srcUrl;
 #endif
 
-#if defined(QGISDEBUG) && defined(QGS_GIT_REMOTE_URL)
+#if defined( QGISDEBUG ) && defined( QGS_GIT_REMOTE_URL )
   // TODO: verify if we are not ahead to origin (remote hash does not exist)
   //       and there are no local not committed changes
   QString hash = QString( Qgis::devVersion() );

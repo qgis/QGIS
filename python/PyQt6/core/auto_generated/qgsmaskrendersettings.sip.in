@@ -21,7 +21,6 @@ a map render.
 #include "qgsmaskrendersettings.h"
 %End
   public:
-
     QgsMaskRenderSettings();
 
     double simplifyTolerance() const;

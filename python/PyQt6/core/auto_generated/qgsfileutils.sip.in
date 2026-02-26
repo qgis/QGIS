@@ -20,7 +20,6 @@ Contains utilities for working with files.
 #include "qgsfileutils.h"
 %End
   public:
-
     static QString representFileSize( qint64 bytes );
 %Docstring
 Returns the human size from bytes
@@ -169,7 +168,9 @@ For instance, if ``path`` specified a .shp file then the corresponding
 .. versionadded:: 3.22
 %End
 
-    static bool renameDataset( const QString &oldPath, const QString &newPath, QString &error /Out/, Qgis::FileOperationFlags flags = Qgis::FileOperationFlag::IncludeMetadataFile | Qgis::FileOperationFlag::IncludeStyleFile );
+    static bool renameDataset(
+      const QString &oldPath, const QString &newPath, QString &error /Out/, Qgis::FileOperationFlags flags = Qgis::FileOperationFlag::IncludeMetadataFile | Qgis::FileOperationFlag::IncludeStyleFile
+    );
 %Docstring
 Renames the dataset at ``oldPath`` to ``newPath``, renaming both the
 file at ``oldPath`` and all associated sidecar files which exist for it.
@@ -232,7 +233,6 @@ already exist is found.
 
 .. versionadded:: 3.30
 %End
-
     static bool copyDirectory( const QString &source, const QString &destination );
 %Docstring
 Recursively copies a whole directory.

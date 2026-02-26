@@ -42,10 +42,7 @@ using namespace Qt::StringLiterals;
 // QgsFeature
 //
 
-QgsFeature::QgsFeature( QgsFeatureId id )
-{
-  d = new QgsFeaturePrivate( id );
-}
+QgsFeature::QgsFeature( QgsFeatureId id ) { d = new QgsFeaturePrivate( id ); }
 
 QgsFeature::QgsFeature( const QgsFields &fields, QgsFeatureId id )
 {
@@ -56,10 +53,9 @@ QgsFeature::QgsFeature( const QgsFields &fields, QgsFeatureId id )
 
 QgsFeature::QgsFeature( const QgsFeature &rhs ) //NOLINT
   : d( rhs.d )
-{
-}
+{}
 
-QgsFeature &QgsFeature::operator=( const QgsFeature &rhs )   //NOLINT
+QgsFeature &QgsFeature::operator=( const QgsFeature &rhs ) //NOLINT
 {
   if ( &rhs == this )
     return *this;
@@ -68,16 +64,12 @@ QgsFeature &QgsFeature::operator=( const QgsFeature &rhs )   //NOLINT
   return *this;
 }
 
-bool QgsFeature::operator ==( const QgsFeature &other ) const
+bool QgsFeature::operator==( const QgsFeature &other ) const
 {
   if ( d == other.d )
     return true;
 
-  if ( !( d->fid == other.d->fid
-          && d->valid == other.d->valid
-          && d->fields == other.d->fields
-          && d->attributes == other.d->attributes
-          && d->symbol == other.d->symbol ) )
+  if ( !( d->fid == other.d->fid && d->valid == other.d->valid && d->fields == other.d->fields && d->attributes == other.d->attributes && d->symbol == other.d->symbol ) )
     return false;
 
   // compare geometry
@@ -91,14 +83,10 @@ bool QgsFeature::operator ==( const QgsFeature &other ) const
   return true;
 }
 
-bool QgsFeature::operator!=( const QgsFeature &other ) const
-{
-  return !( *this == other );
-}
+bool QgsFeature::operator!=( const QgsFeature &other ) const { return !( *this == other ); }
 
 QgsFeature::~QgsFeature() //NOLINT
-{
-}
+{}
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -106,10 +94,7 @@ QgsFeature::~QgsFeature() //NOLINT
  * See details in QEP #17
  ****************************************************************************/
 
-QgsFeatureId QgsFeature::id() const
-{
-  return d->fid;
-}
+QgsFeatureId QgsFeature::id() const { return d->fid; }
 
 void QgsFeature::deleteAttribute( int field )
 {
@@ -117,10 +102,7 @@ void QgsFeature::deleteAttribute( int field )
   d->attributes.remove( field );
 }
 
-QgsGeometry QgsFeature::geometry() const
-{
-  return d->geometry;
-}
+QgsGeometry QgsFeature::geometry() const { return d->geometry; }
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -138,10 +120,7 @@ void QgsFeature::setId( QgsFeatureId id )
   d->valid = true;
 }
 
-QgsAttributes QgsFeature::attributes() const
-{
-  return d->attributes;
-}
+QgsAttributes QgsFeature::attributes() const { return d->attributes; }
 
 QVariantMap QgsFeature::attributeMap() const
 {
@@ -161,10 +140,7 @@ QVariantMap QgsFeature::attributeMap() const
   return res;
 }
 
-int QgsFeature::attributeCount() const
-{
-  return d->attributes.size();
-}
+int QgsFeature::attributeCount() const { return d->attributes.size(); }
 
 void QgsFeature::setAttributes( const QgsAttributes &attrs )
 {
@@ -211,10 +187,7 @@ void QgsFeature::setFields( const QgsFields &fields, bool init )
   }
 }
 
-QgsFields QgsFeature::fields() const
-{
-  return d->fields;
-}
+QgsFields QgsFeature::fields() const { return d->fields; }
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -222,10 +195,7 @@ QgsFields QgsFeature::fields() const
  * See details in QEP #17
  ****************************************************************************/
 
-bool QgsFeature::isValid() const
-{
-  return d->valid;
-}
+bool QgsFeature::isValid() const { return d->valid; }
 
 void QgsFeature::setValid( bool validity )
 {
@@ -236,10 +206,7 @@ void QgsFeature::setValid( bool validity )
   d->valid = validity;
 }
 
-bool QgsFeature::hasGeometry() const
-{
-  return !d->geometry.isNull();
-}
+bool QgsFeature::hasGeometry() const { return !d->geometry.isNull(); }
 
 void QgsFeature::initAttributes( int fieldCount )
 {
@@ -327,10 +294,7 @@ bool QgsFeature::isUnsetValue( int fieldIdx ) const
   return d->attributes.at( fieldIdx ).userType() == qMetaTypeId<QgsUnsetAttributeValue>();
 }
 
-const QgsSymbol *QgsFeature::embeddedSymbol() const
-{
-  return d->symbol.get();
-}
+const QgsSymbol *QgsFeature::embeddedSymbol() const { return d->symbol.get(); }
 
 void QgsFeature::setEmbeddedSymbol( QgsSymbol *symbol )
 {
@@ -356,15 +320,9 @@ QVariant QgsFeature::attribute( const QString &name ) const
  * See details in QEP #17
  ****************************************************************************/
 
-int QgsFeature::fieldNameIndex( const QString &fieldName ) const
-{
-  return d->fields.lookupField( fieldName );
-}
+int QgsFeature::fieldNameIndex( const QString &fieldName ) const { return d->fields.lookupField( fieldName ); }
 
-static size_t qgsQStringApproximateMemoryUsage( const QString &str )
-{
-  return sizeof( QString ) + str.size() * sizeof( QChar );
-}
+static size_t qgsQStringApproximateMemoryUsage( const QString &str ) { return sizeof( QString ) + str.size() * sizeof( QChar ); }
 
 static size_t qgsQVariantApproximateMemoryUsage( const QVariant &v )
 {
@@ -407,7 +365,7 @@ int QgsFeature::approximateMemoryUsage() const
   // Fields
   s += sizeof( QgsFieldsPrivate );
   // TODO potentially: take into account the length of the name, comment, default value, etc...
-  s += d->fields.size() * ( sizeof( QgsField )  + sizeof( QgsFieldPrivate ) );
+  s += d->fields.size() * ( sizeof( QgsField ) + sizeof( QgsFieldPrivate ) );
 
   return static_cast<int>( s );
 }
@@ -464,4 +422,3 @@ uint qHash( const QgsFeature &key, uint seed )
 
   return hash;
 }
-

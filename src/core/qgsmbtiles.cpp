@@ -26,13 +26,12 @@ using namespace Qt::StringLiterals;
 
 QgsMbTiles::QgsMbTiles( const QString &filename )
   : mFilename( filename )
-{
-}
+{}
 
 bool QgsMbTiles::open()
 {
   if ( mDatabase )
-    return true;  // already opened
+    return true; // already opened
 
   if ( mFilename.isEmpty() )
     return false;
@@ -47,10 +46,7 @@ bool QgsMbTiles::open()
   return true;
 }
 
-bool QgsMbTiles::isOpen() const
-{
-  return bool( mDatabase );
-}
+bool QgsMbTiles::isOpen() const { return bool( mDatabase ); }
 
 bool QgsMbTiles::create()
 {
@@ -68,9 +64,8 @@ bool QgsMbTiles::create()
     return false;
   }
 
-  const QString sql = \
-                      "CREATE TABLE metadata (name text, value text);" \
-                      "CREATE TABLE tiles (zoom_level integer, tile_column integer, tile_row integer, tile_data blob);" \
+  const QString sql = "CREATE TABLE metadata (name text, value text);"
+                      "CREATE TABLE tiles (zoom_level integer, tile_column integer, tile_row integer, tile_data blob);"
                       "CREATE UNIQUE INDEX tile_index on tiles (zoom_level, tile_column, tile_row);";
   QString errorMessage;
   result = mDatabase.exec( sql, errorMessage );
@@ -142,8 +137,7 @@ QgsRectangle QgsMbTiles::extent() const
   if ( boundsArray.count() != 4 )
     return QgsRectangle();
 
-  return QgsRectangle( boundsArray[0].toDouble(), boundsArray[1].toDouble(),
-                       boundsArray[2].toDouble(), boundsArray[3].toDouble() );
+  return QgsRectangle( boundsArray[0].toDouble(), boundsArray[1].toDouble(), boundsArray[2].toDouble(), boundsArray[3].toDouble() );
 }
 
 QByteArray QgsMbTiles::tileData( int z, int x, int y ) const

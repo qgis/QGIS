@@ -11,10 +11,9 @@
 
 
 
-template <T>
-class QgsRange
+template<T> class QgsRange
 {
-%Docstring(signature="appended")
+%Docstring
 A template based class for storing ranges (lower to upper values).
 
 :py:class:`QgsRange` classes represent a range of values of some element
@@ -34,23 +33,19 @@ range intersections.
 
    not available in Python bindings (but class provided for template-based inheritance)
 %End
-
-%TypeHeaderCode
-#include "qgsrange.h"
-%End
   public:
-
     QgsRange( T lower, T upper, bool includeLower = true, bool includeUpper = true );
 %Docstring
-Constructor for QgsRange. The ``lower`` and ``upper`` bounds are
-specified, and optionally whether or not these bounds are included in
-the range.
+Constructor for :py:class:`QgsRange`. The ``lower`` and ``upper`` bounds
+are specified, and optionally whether or not these bounds are included
+in the range.
 %End
 
     QgsRange( T lower, T upper, Qgis::RangeLimits limits );
 %Docstring
-Constructor for QgsRange. The ``lower`` and ``upper`` bounds are
-specified, and whether or not these bounds are included in the range.
+Constructor for :py:class:`QgsRange`. The ``lower`` and ``upper`` bounds
+are specified, and whether or not these bounds are included in the
+range.
 
 .. versionadded:: 3.38
 %End
@@ -140,8 +135,6 @@ Returns ``True`` if this range overlaps another range.
     bool operator!=( const QgsRange<T> &other ) const;
 
   protected:
-
-
 };
 
 
@@ -162,10 +155,10 @@ class QgsDoubleRange : QgsRangedoubleBase
 
 %TypeHeaderCode
 #include "qgsrange.h"
+#include "qgsrange.h"
 typedef QgsRange<double> QgsRangedoubleBase;
 %End
   public:
-
     QgsDoubleRange( double lower, double upper, Qgis::RangeLimits limits );
 %Docstring
 Constructor for QgsDoubleRange. The ``lower`` and ``upper`` bounds are
@@ -175,9 +168,7 @@ specified, and whether or not these bounds are included in the range.
 %End
 
 
-    QgsDoubleRange( double lower,
-                    double upper,
-                    bool includeLower = true, bool includeUpper = true );
+    QgsDoubleRange( double lower, double upper, bool includeLower = true, bool includeUpper = true );
 %Docstring
 Constructor for QgsDoubleRange. The ``lower`` and ``upper`` bounds are
 specified, and optionally whether or not these bounds are included in
@@ -200,18 +191,13 @@ Returns ``True`` if the range consists of all possible values.
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    QString str = QStringLiteral( "<QgsDoubleRange: %1%2, %3%4>" ).arg( sipCpp->includeLower() ? QStringLiteral( "[" ) : QStringLiteral( "(" ) )
-                  .arg( sipCpp->lower() )
-                  .arg( sipCpp->upper() )
-                  .arg( sipCpp->includeUpper() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) );
+%MethodCode QString str = QStringLiteral( "<QgsDoubleRange: %1%2, %3%4>" ).arg( sipCpp->includeLower() ? QStringLiteral( "[" ) : QStringLiteral( "(" ) ).arg( sipCpp->lower() ).arg( sipCpp->upper() ).arg( sipCpp->includeUpper() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    bool operator==( const QgsDoubleRange &other ) const;
+      bool operator==( const QgsDoubleRange &other ) const;
 
     bool operator!=( const QgsDoubleRange &other ) const;
-
 };
 
 
@@ -233,10 +219,10 @@ class QgsIntRange : QgsRangeintBase
 
 %TypeHeaderCode
 #include "qgsrange.h"
+#include "qgsrange.h"
 typedef QgsRange<int> QgsRangeintBase;
 %End
   public:
-
     QgsIntRange( int lower, int upper, Qgis::RangeLimits limits );
 %Docstring
 Constructor for QgsIntRange. The ``lower`` and ``upper`` bounds are
@@ -246,9 +232,7 @@ specified, and whether or not these bounds are included in the range.
 %End
 
 
-    QgsIntRange( int lower,
-                 int upper,
-                 bool includeLower = true, bool includeUpper = true );
+    QgsIntRange( int lower, int upper, bool includeLower = true, bool includeUpper = true );
 %Docstring
 Constructor for QgsIntRange. The ``lower`` and ``upper`` bounds are
 specified, and optionally whether or not these bounds are included in
@@ -271,22 +255,16 @@ Returns ``True`` if the range consists of all possible values.
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    QString str = QStringLiteral( "<QgsIntRange: %1%2, %3%4>" ).arg( sipCpp->includeLower() ? QStringLiteral( "[" ) : QStringLiteral( "(" ) )
-                  .arg( sipCpp->lower() )
-                  .arg( sipCpp->upper() )
-                  .arg( sipCpp->includeUpper() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) );
+%MethodCode QString str = QStringLiteral( "<QgsIntRange: %1%2, %3%4>" ).arg( sipCpp->includeLower() ? QStringLiteral( "[" ) : QStringLiteral( "(" ) ).arg( sipCpp->lower() ).arg( sipCpp->upper() ).arg( sipCpp->includeUpper() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
-
 };
 
 
 
-template <T>
-class QgsTemporalRange
+template<T> class QgsTemporalRange
 {
-%Docstring(signature="appended")
+%Docstring
 A template based class for storing temporal ranges (beginning to end
 values).
 
@@ -305,17 +283,12 @@ range intersections.
 
    not available in Python bindings (but class provided for template-based inheritance)
 %End
-
-%TypeHeaderCode
-#include "qgsrange.h"
-%End
   public:
-
     QgsTemporalRange( const T &begin, const T &end, bool includeBeginning = true, bool includeEnd = true );
 %Docstring
-Constructor for QgsTemporalRange. The ``begin`` and ``end`` are
-specified, and optionally whether or not these bounds are included in
-the range.
+Constructor for :py:class:`QgsTemporalRange`. The ``begin`` and ``end``
+are specified, and optionally whether or not these bounds are included
+in the range.
 
 .. note::
 

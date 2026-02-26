@@ -20,42 +20,18 @@
 QgsDefaultValue::QgsDefaultValue( const QString &expression, bool applyOnUpdate )
   : mExpression( expression )
   , mApplyOnUpdate( applyOnUpdate )
-{
+{}
 
-}
+bool QgsDefaultValue::operator==( const QgsDefaultValue &other ) const { return mExpression == other.mExpression && mApplyOnUpdate == other.mApplyOnUpdate; }
 
-bool QgsDefaultValue::operator==( const QgsDefaultValue &other ) const
-{
-  return mExpression == other.mExpression
-         && mApplyOnUpdate == other.mApplyOnUpdate;
-}
+QString QgsDefaultValue::expression() const { return mExpression; }
 
-QString QgsDefaultValue::expression() const
-{
-  return mExpression;
-}
+void QgsDefaultValue::setExpression( const QString &expression ) { mExpression = expression; }
 
-void QgsDefaultValue::setExpression( const QString &expression )
-{
-  mExpression = expression;
-}
+bool QgsDefaultValue::applyOnUpdate() const { return mApplyOnUpdate; }
 
-bool QgsDefaultValue::applyOnUpdate() const
-{
-  return mApplyOnUpdate;
-}
+void QgsDefaultValue::setApplyOnUpdate( bool applyOnUpdate ) { mApplyOnUpdate = applyOnUpdate; }
 
-void QgsDefaultValue::setApplyOnUpdate( bool applyOnUpdate )
-{
-  mApplyOnUpdate = applyOnUpdate;
-}
+bool QgsDefaultValue::isValid() const { return !mExpression.isEmpty(); }
 
-bool QgsDefaultValue::isValid() const
-{
-  return !mExpression.isEmpty();
-}
-
-QgsDefaultValue::operator bool() const
-{
-  return !mExpression.isEmpty();
-}
+QgsDefaultValue::operator bool() const { return !mExpression.isEmpty(); }

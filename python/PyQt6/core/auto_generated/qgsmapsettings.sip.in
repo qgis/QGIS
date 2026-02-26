@@ -23,14 +23,12 @@ Label blocking region (in map coordinates and CRS).
 #include "qgsmapsettings.h"
 %End
   public:
-
     explicit QgsLabelBlockingRegion( const QgsGeometry &geometry );
 %Docstring
 Constructor for a label blocking region
 %End
 
     QgsGeometry geometry;
-
 };
 
 
@@ -1098,7 +1096,6 @@ Sets a list of all selective masking source sets defined for the map.
 %End
 
   protected:
-
 
 
 

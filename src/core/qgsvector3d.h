@@ -37,14 +37,21 @@ class CORE_EXPORT QgsVector3D
 
     //! Constructs a vector from given coordinates
     QgsVector3D( double x, double y, double z )
-      : mX( x ), mY( y ), mZ( z ) {}
+      : mX( x )
+      , mY( y )
+      , mZ( z )
+    {}
 
     //! Constructs a vector from single-precision QVector3D
     QgsVector3D( const QVector3D &v )
-      : mX( v.x() ), mY( v.y() ), mZ( v.z() ) {}
+      : mX( v.x() )
+      , mY( v.y() )
+      , mZ( v.z() )
+    {}
 
     //! Returns TRUE if all three coordinates are zero
-    bool isNull() const SIP_HOLDGIL { return mX == 0 && mY == 0 && mZ == 0; }
+    bool isNull() const
+    SIP_HOLDGIL { return mX == 0 && mY == 0 && mZ == 0; }
 
     //! Returns X coordinate
     double x() const SIP_HOLDGIL { return mX; }

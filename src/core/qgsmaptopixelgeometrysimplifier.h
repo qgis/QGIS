@@ -41,21 +41,22 @@ class QgsConstWkbPtr;
 class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
 {
   public:
-
     //! Constructor
     QgsMapToPixelSimplifier( int simplifyFlags, double tolerance, Qgis::VectorSimplificationAlgorithm simplifyAlgorithm = Qgis::VectorSimplificationAlgorithm::Distance );
 
     //! Applicable simplification flags
     enum SimplifyFlag
     {
-      NoFlags          = 0, //!< No simplification can be applied
+      NoFlags = 0,          //!< No simplification can be applied
       SimplifyGeometry = 1, //!< The geometries can be simplified using the current map2pixel context state
       SimplifyEnvelope = 2, //!< The geometries can be fully simplified by its BoundingBox
     };
 
   private:
     //! Simplify the geometry using the specified tolerance
-    static std::unique_ptr<QgsAbstractGeometry> simplifyGeometry( int simplifyFlags, Qgis::VectorSimplificationAlgorithm simplifyAlgorithm, const QgsAbstractGeometry &geometry, double map2pixelTol, bool isaLinearRing );
+    static std::unique_ptr<QgsAbstractGeometry> simplifyGeometry(
+      int simplifyFlags, Qgis::VectorSimplificationAlgorithm simplifyAlgorithm, const QgsAbstractGeometry &geometry, double map2pixelTol, bool isaLinearRing
+    );
 
   protected:
     //! Current simplification flags
@@ -92,15 +93,11 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
 
     // MapToPixel simplification helper methods
   public:
-
     //! Returns whether the envelope can be replaced by its BBOX when is applied the specified map2pixel context
     static bool isGeneralizableByMapBoundingBox( const QgsRectangle &envelope, double map2pixelTol );
 
     //! Returns whether the envelope can be replaced by its BBOX when is applied the specified map2pixel context
-    inline bool isGeneralizableByMapBoundingBox( const QgsRectangle &envelope ) const
-    {
-      return isGeneralizableByMapBoundingBox( envelope, mTolerance );
-    }
+    inline bool isGeneralizableByMapBoundingBox( const QgsRectangle &envelope ) const { return isGeneralizableByMapBoundingBox( envelope, mTolerance ); }
 };
 
 #endif // QGSMAPTOPIXELGEOMETRYSIMPLIFIER_H

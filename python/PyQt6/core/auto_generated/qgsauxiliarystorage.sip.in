@@ -40,7 +40,6 @@ source layer is not and edition of a joined field is also possible.
 #include "qgsauxiliarystorage.h"
 %End
   public:
-
     QgsAuxiliaryLayer( const QString &pkField, const QString &filename, const QString &table, QgsVectorLayer *vlayer );
 %Docstring
 Constructor
@@ -54,8 +53,7 @@ Constructor
 
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    QString str = QStringLiteral( "<QgsAuxiliaryLayer: '%1'>" ).arg( sipCpp->name() );
+%MethodCode QString str = QStringLiteral( "<QgsAuxiliaryLayer: '%1'>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
@@ -264,7 +262,6 @@ Providing some utility methods to manage auxiliary storage.
 #include "qgsauxiliarystorage.h"
 %End
   public:
-
     QgsAuxiliaryStorage( const QgsProject &project, bool copy = true );
 %Docstring
 Constructor.

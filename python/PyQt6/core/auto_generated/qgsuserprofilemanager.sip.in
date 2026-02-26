@@ -27,7 +27,6 @@ A user profile is all settings and anything that used to be found in
 #include "qgsuserprofilemanager.h"
 %End
   public:
-
     QgsUserProfileManager( const QString &rootLocation = QString(), QObject *parent = 0 );
 %Docstring
 User profile manager used to manage user profiles for the instance of

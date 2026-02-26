@@ -18,7 +18,6 @@ Internal feature iterator to be implemented within data providers.
 #include "qgsfeatureiterator.h"
 %End
   public:
-
     enum CompileStatus /BaseType=IntEnum/
     {
       NoCompilation,
@@ -83,7 +82,6 @@ compiler.
     };
 
   protected:
-
     virtual bool fetchFeature( QgsFeature &f ) = 0;
 %Docstring
 If you write a feature iterator for your provider, this is the method
@@ -188,20 +186,15 @@ simplify method
 };
 
 
-template<T>
-class QgsAbstractFeatureIteratorFromSource : QgsAbstractFeatureIterator
+template<T> class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
 {
-%Docstring(signature="appended")
+%Docstring
 Helper template that cares of two things: 1. automatic deletion of
 source if owned by iterator, 2. notification of open/closed iterator.
 
 .. note::
 
    not available in Python bindings (although present in SIP file)
-%End
-
-%TypeHeaderCode
-#include "qgsfeatureiterator.h"
 %End
   public:
     QgsAbstractFeatureIteratorFromSource( T *source, bool ownSource, const QgsFeatureRequest &request );
@@ -211,8 +204,7 @@ source if owned by iterator, 2. notification of open/closed iterator.
   protected:
     void iteratorClosed();
 %Docstring
-to be called by from subclass in
-:py:func:`~QgsAbstractFeatureIteratorFromSource.close`
+to be called by from subclass in :py:func:`~close`
 %End
 
 };
@@ -229,28 +221,23 @@ layer.
 #include "qgsfeatureiterator.h"
 %End
   public:
-
     QgsFeatureIterator *__iter__();
-%MethodCode
-    sipRes = sipCpp;
+%MethodCode sipRes = sipCpp;
 %End
 
-    SIP_PYOBJECT __next__() /TypeHint="QgsFeature"/;
-%MethodCode
-    auto f = std::make_unique< QgsFeature >();
+        SIP_PYOBJECT
+      __next__() /TypeHint="QgsFeature"/;
+%MethodCode auto f = std::make_unique< QgsFeature >();
     bool result = false;
-    Py_BEGIN_ALLOW_THREADS
-    result = ( sipCpp->nextFeature( *f ) );
-    Py_END_ALLOW_THREADS
-    if ( result )
-      sipRes = sipConvertFromType( f.release(), sipType_QgsFeature, Py_None );
+    Py_BEGIN_ALLOW_THREADS result = ( sipCpp->nextFeature( *f ) );
+    Py_END_ALLOW_THREADS if ( result ) sipRes = sipConvertFromType( f.release(), sipType_QgsFeature, Py_None );
     else
     {
       PyErr_SetString( PyExc_StopIteration, "" );
     }
 %End
 
-    QgsFeatureIterator();
+      QgsFeatureIterator();
 %Docstring
 Construct invalid iterator
 %End
@@ -313,8 +300,6 @@ compiler.
 
 
   protected:
-
-
 };
 
 

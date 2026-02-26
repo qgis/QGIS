@@ -207,10 +207,10 @@ bool QgsMagneticModel::declination( double years, double latitude, double longit
 
   return true;
 #else
-  ( void )years;
-  ( void )latitude;
-  ( void )longitude;
-  ( void )height;
+  ( void ) years;
+  ( void ) latitude;
+  ( void ) longitude;
+  ( void ) height;
   throw QgsNotSupportedException( u"GeographicLib is not available on this system"_s );
 #endif
 }
@@ -233,10 +233,10 @@ bool QgsMagneticModel::inclination( double years, double latitude, double longit
 
   return true;
 #else
-  ( void )years;
-  ( void )latitude;
-  ( void )longitude;
-  ( void )height;
+  ( void ) years;
+  ( void ) latitude;
+  ( void ) longitude;
+  ( void ) height;
   throw QgsNotSupportedException( u"GeographicLib is not available on this system"_s );
 #endif
 }
@@ -301,7 +301,9 @@ bool QgsMagneticModel::fieldComponents( double Bx, double By, double Bz, double 
 #endif
 }
 
-bool QgsMagneticModel::fieldComponentsWithTimeDerivatives( double Bx, double By, double Bz, double Bxt, double Byt, double Bzt, double &H, double &F, double &D, double &I, double &Ht, double &Ft, double &Dt, double &It )
+bool QgsMagneticModel::fieldComponentsWithTimeDerivatives(
+  double Bx, double By, double Bz, double Bxt, double Byt, double Bzt, double &H, double &F, double &D, double &I, double &Ht, double &Ft, double &Dt, double &It
+)
 {
   H = 0;
   F = 0;

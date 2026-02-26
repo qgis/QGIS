@@ -31,46 +31,24 @@ using namespace Qt::StringLiterals;
 
 bool QgsServerMetadataUrlProperties::MetadataUrl::operator==( const QgsServerMetadataUrlProperties::MetadataUrl &other ) const
 {
-  return url == other.url &&
-         type == other.type &&
-         format == other.format;
+  return url == other.url && type == other.type && format == other.format;
 }
 
-bool QgsServerMetadataUrlProperties::operator==( const QgsServerMetadataUrlProperties &other ) const
-{
-  return mMetadataUrls == other.mMetadataUrls;
-}
+bool QgsServerMetadataUrlProperties::operator==( const QgsServerMetadataUrlProperties &other ) const { return mMetadataUrls == other.mMetadataUrls; }
 
-bool QgsServerMetadataUrlProperties::operator!=( const QgsServerMetadataUrlProperties &other ) const
-{
-  return !( *this == other );
-}
+bool QgsServerMetadataUrlProperties::operator!=( const QgsServerMetadataUrlProperties &other ) const { return !( *this == other ); }
 
 bool QgsServerWmsDimensionProperties::WmsDimensionInfo::operator==( const WmsDimensionInfo &other ) const
 {
-  return name == other.name
-         && fieldName == other.fieldName
-         && endFieldName == other.endFieldName
-         && units == other.units
-         && unitSymbol == other.unitSymbol
-         && defaultDisplayType == other.defaultDisplayType
-         && referenceValue == other.referenceValue;
+  return name == other.name && fieldName == other.fieldName && endFieldName == other.endFieldName && units == other.units && unitSymbol == other.unitSymbol
+         && defaultDisplayType == other.defaultDisplayType && referenceValue == other.referenceValue;
 }
 
-bool QgsServerWmsDimensionProperties::WmsDimensionInfo::operator!=( const WmsDimensionInfo &other ) const
-{
-  return !( *this == other );
-}
+bool QgsServerWmsDimensionProperties::WmsDimensionInfo::operator!=( const WmsDimensionInfo &other ) const { return !( *this == other ); }
 
-void QgsServerMetadataUrlProperties::copyTo( QgsServerMetadataUrlProperties *properties ) const
-{
-  properties->setMetadataUrls( metadataUrls() );
-}
+void QgsServerMetadataUrlProperties::copyTo( QgsServerMetadataUrlProperties *properties ) const { properties->setMetadataUrls( metadataUrls() ); }
 
-void QgsServerMetadataUrlProperties::reset()
-{
-  mMetadataUrls.clear();
-}
+void QgsServerMetadataUrlProperties::reset() { mMetadataUrls.clear(); }
 
 void QgsServerMetadataUrlProperties::readXml( const QDomNode &layer_node )
 {
@@ -107,30 +85,15 @@ void QgsServerMetadataUrlProperties::writeXml( QDomNode &layer_node, QDomDocumen
 
 // QgsServerWmsDimensionProperties
 
-bool QgsServerWmsDimensionProperties::operator==( const QgsServerWmsDimensionProperties &other ) const
-{
-  return mWmsDimensions == other.mWmsDimensions;
-}
+bool QgsServerWmsDimensionProperties::operator==( const QgsServerWmsDimensionProperties &other ) const { return mWmsDimensions == other.mWmsDimensions; }
 
-bool QgsServerWmsDimensionProperties::operator!=( const QgsServerWmsDimensionProperties &other ) const
-{
-  return !( *this == other );
-}
+bool QgsServerWmsDimensionProperties::operator!=( const QgsServerWmsDimensionProperties &other ) const { return !( *this == other ); }
 
-void QgsServerWmsDimensionProperties::copyTo( QgsServerWmsDimensionProperties *properties ) const
-{
-  properties->setWmsDimensions( wmsDimensions() );
-}
+void QgsServerWmsDimensionProperties::copyTo( QgsServerWmsDimensionProperties *properties ) const { properties->setWmsDimensions( wmsDimensions() ); }
 
-void QgsServerWmsDimensionProperties::reset()
-{
-  mWmsDimensions.clear();
-}
+void QgsServerWmsDimensionProperties::reset() { mWmsDimensions.clear(); }
 
-void QgsServerWmsDimensionProperties::setWmsDimensions( const QList<QgsServerWmsDimensionProperties::WmsDimensionInfo> &dimensions )
-{
-  mWmsDimensions = dimensions;
-}
+void QgsServerWmsDimensionProperties::setWmsDimensions( const QList<QgsServerWmsDimensionProperties::WmsDimensionInfo> &dimensions ) { mWmsDimensions = dimensions; }
 
 QMap<int, QString> QgsServerWmsDimensionProperties::wmsDimensionDefaultDisplayLabels()
 {
@@ -159,7 +122,7 @@ bool QgsServerWmsDimensionProperties::removeWmsDimension( const QString &wmsDimN
 {
   for ( int i = 0; i < mWmsDimensions.size(); ++i )
   {
-    if ( mWmsDimensions[ i ].name == wmsDimName )
+    if ( mWmsDimensions[i].name == wmsDimName )
     {
       mWmsDimensions.removeAt( i );
       return true;
@@ -168,10 +131,7 @@ bool QgsServerWmsDimensionProperties::removeWmsDimension( const QString &wmsDimN
   return false;
 }
 
-const QList< QgsServerWmsDimensionProperties::WmsDimensionInfo > QgsServerWmsDimensionProperties::wmsDimensions() const
-{
-  return mWmsDimensions;
-}
+const QList< QgsServerWmsDimensionProperties::WmsDimensionInfo > QgsServerWmsDimensionProperties::wmsDimensions() const { return mWmsDimensions; }
 
 void QgsServerWmsDimensionProperties::readXml( const QDomNode &layer_node )
 {
@@ -216,11 +176,8 @@ void QgsServerWmsDimensionProperties::readXml( const QDomNode &layer_node )
         }
       }
     }
-    QgsServerWmsDimensionProperties::WmsDimensionInfo dim( dimName, dimFieldName,
-        dimElem.attribute( u"endFieldName"_s ),
-        dimElem.attribute( u"units"_s ),
-        dimElem.attribute( u"unitSymbol"_s ),
-        dimDefaultDisplayType, dimRefValue );
+    QgsServerWmsDimensionProperties::WmsDimensionInfo
+      dim( dimName, dimFieldName, dimElem.attribute( u"endFieldName"_s ), dimElem.attribute( u"units"_s ), dimElem.attribute( u"unitSymbol"_s ), dimDefaultDisplayType, dimRefValue );
     //XXX This add O(n^2) complexity !!!!
     // addWmsDimension( dim );
     // Better to trust the XML:
@@ -231,7 +188,7 @@ void QgsServerWmsDimensionProperties::readXml( const QDomNode &layer_node )
 void QgsServerWmsDimensionProperties::writeXml( QDomNode &layer_node, QDomDocument &document ) const
 {
   // save QGIS Server WMS Dimension definitions
-  if ( ! mWmsDimensions.isEmpty() )
+  if ( !mWmsDimensions.isEmpty() )
   {
     QDomElement wmsDimsElem = document.createElement( u"wmsDimensions"_s );
     for ( const QgsServerWmsDimensionProperties::WmsDimensionInfo &dim : mWmsDimensions )
@@ -255,8 +212,7 @@ void QgsServerWmsDimensionProperties::writeXml( QDomNode &layer_node, QDomDocume
 
 QgsMapLayerServerProperties::QgsMapLayerServerProperties( QgsMapLayer *layer )
   : mLayer( layer )
-{
-}
+{}
 
 void QgsMapLayerServerProperties::copyTo( QgsMapLayerServerProperties *properties ) const
 {
@@ -277,24 +233,12 @@ void QgsMapLayerServerProperties::copyTo( QgsMapLayerServerProperties *propertie
 
 bool QgsMapLayerServerProperties::operator==( const QgsMapLayerServerProperties &other ) const
 {
-  return QgsServerMetadataUrlProperties::operator==( other )
-         && QgsServerWmsDimensionProperties::operator==( other )
-         && mShortName == other.mShortName
-         && mTitle == other.mTitle
-         && mAbstract == other.mAbstract
-         && mKeywordList == other.mKeywordList
-         && mDataUrl == other.mDataUrl
-         && mDataUrlFormat == other.mDataUrlFormat
-         && mAttribution == other.mAttribution
-         && mAttributionUrl == other.mAttributionUrl
-         && mLegendUrl == other.mLegendUrl
-         && mLegendUrlFormat == other.mLegendUrlFormat;
+  return QgsServerMetadataUrlProperties::operator==( other ) && QgsServerWmsDimensionProperties::operator==( other ) && mShortName == other.mShortName && mTitle == other.mTitle
+         && mAbstract == other.mAbstract && mKeywordList == other.mKeywordList && mDataUrl == other.mDataUrl && mDataUrlFormat == other.mDataUrlFormat && mAttribution == other.mAttribution
+         && mAttributionUrl == other.mAttributionUrl && mLegendUrl == other.mLegendUrl && mLegendUrlFormat == other.mLegendUrlFormat;
 }
 
-bool QgsMapLayerServerProperties::operator!=( const QgsMapLayerServerProperties &other ) const
-{
-  return !( *this == other );
-}
+bool QgsMapLayerServerProperties::operator!=( const QgsMapLayerServerProperties &other ) const { return !( *this == other ); }
 
 void QgsMapLayerServerProperties::reset() // cppcheck-suppress duplInheritedMember
 {
@@ -417,7 +361,7 @@ void QgsMapLayerServerProperties::writeXml( QDomNode &layerNode, QDomDocument &d
 
     if ( mTitle != mWfsTitle )
     {
-      layerTitle.setAttribute( "wfs",  mWfsTitle );
+      layerTitle.setAttribute( "wfs", mWfsTitle );
     }
 
     layerNode.appendChild( layerTitle );

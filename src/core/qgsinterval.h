@@ -36,9 +36,9 @@ using namespace Qt::StringLiterals;
 #ifdef SIP_RUN
 % ModuleHeaderCode
 #include "qgsunittypes.h"
-% End
+  % End
 #endif
-class QString;
+  class QString;
 
 /**
  * \ingroup core
@@ -49,7 +49,6 @@ class QString;
 class CORE_EXPORT QgsInterval
 {
   public:
-
     // YEAR const value taken from postgres query
     // SELECT EXTRACT(EPOCH FROM interval '1 year')
     //! Seconds per year (average)
@@ -100,9 +99,8 @@ class CORE_EXPORT QgsInterval
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    QString str;
-    if ( ! sipCpp->isValid() )
+    % MethodCode QString str;
+    if ( !sipCpp->isValid() )
       str = u"<QgsInterval: invalid>"_s;
     else if ( sipCpp->originalUnit() != Qgis::TemporalUnit::Unknown )
       str = u"<QgsInterval: %1 %2>"_s.arg( sipCpp->originalDuration() ).arg( QgsUnitTypes::toString( sipCpp->originalUnit() ) );
@@ -112,7 +110,7 @@ class CORE_EXPORT QgsInterval
     % End
 #endif
 
-    /**
+      /**
      * Returns the interval duration in years (based on an average year length)
      *
      * If the originalUnit() is QgsUnitTypes::TemporalYears then this value
@@ -121,7 +119,7 @@ class CORE_EXPORT QgsInterval
      *
      * \see setYears()
      */
-    double years() const;
+      double years() const;
 
     /**
      * Sets the interval duration in years.
@@ -334,10 +332,7 @@ class CORE_EXPORT QgsInterval
         return false;
     }
 
-    bool operator!=( QgsInterval other ) const
-    {
-      return !( *this == other );
-    }
+    bool operator!=( QgsInterval other ) const { return !( *this == other ); }
 
     /**
      * Converts a string to an interval
@@ -347,13 +342,9 @@ class CORE_EXPORT QgsInterval
     static QgsInterval fromString( const QString &string );
 
     //! Allows direct construction of QVariants from intervals.
-    operator QVariant() const
-    {
-      return QVariant::fromValue( *this );
-    }
+    operator QVariant() const { return QVariant::fromValue( *this ); }
 
   private:
-
     //! Duration of interval in seconds
     double mSeconds = 0.0;
 

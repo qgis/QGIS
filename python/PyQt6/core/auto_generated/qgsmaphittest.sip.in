@@ -74,8 +74,7 @@ Returns the hit test results, for layers with UpdatedCanvas renderers
 
 .. versionadded:: 4.0
 %End
-%MethodCode
-    QMap<QString, std::pair<double, double>> results = sipCpp->resultsRenderersUpdatedCanvas();
+%MethodCode QMap<QString, std::pair<double, double>> results = sipCpp->resultsRenderersUpdatedCanvas();
     sipRes = PyDict_New();
 
     for ( auto it = results.constBegin(); it != results.constEnd(); ++it )
@@ -88,7 +87,7 @@ Returns the hit test results, for layers with UpdatedCanvas renderers
     }
 %End
 
-    bool symbolVisible( QgsSymbol *symbol, QgsVectorLayer *layer ) const;
+      bool symbolVisible( QgsSymbol *symbol, QgsVectorLayer *layer ) const;
 %Docstring
 Tests whether a symbol is visible for a specified layer.
 
@@ -123,7 +122,6 @@ Executes a :py:class:`QgsMapHitTest` in a background thread.
 #include "qgsmaphittest.h"
 %End
   public:
-
     QgsMapHitTestTask( const QgsLayerTreeFilterSettings &settings );
 %Docstring
 Constructor for QgsMapHitTestTask, using the specified filter
@@ -149,8 +147,7 @@ Returns the hit test results, for layers with UpdatedCanvas renderers
 
 .. versionadded:: 4.0
 %End
-%MethodCode
-    QMap<QString, std::pair<double, double>> results = sipCpp->resultsRenderersUpdatedCanvas();
+%MethodCode QMap<QString, std::pair<double, double>> results = sipCpp->resultsRenderersUpdatedCanvas();
     sipRes = PyDict_New();
 
     for ( auto it = results.constBegin(); it != results.constEnd(); ++it )
@@ -163,7 +160,7 @@ Returns the hit test results, for layers with UpdatedCanvas renderers
     }
 %End
 
-  protected:
+    protected :
 
     virtual bool run();
 

@@ -24,7 +24,6 @@ Used to resolve layers from projects.
 #include "qgsrelationcontext.h"
 %End
   public:
-
     QgsRelationContext( QgsProject *project = 0 );
 %Docstring
 Constructor for QgsRelationContext.
@@ -41,7 +40,6 @@ project instance
     ~QgsRelationContext();
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

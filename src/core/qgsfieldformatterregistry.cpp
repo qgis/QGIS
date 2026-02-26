@@ -49,7 +49,6 @@ QgsFieldFormatterRegistry::~QgsFieldFormatterRegistry()
 {
   const QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Write );
   qDeleteAll( mFieldFormatters );
-
 }
 
 void QgsFieldFormatterRegistry::addFieldFormatter( QgsFieldFormatter *formatter )
@@ -60,10 +59,7 @@ void QgsFieldFormatterRegistry::addFieldFormatter( QgsFieldFormatter *formatter 
   emit fieldFormatterAdded( formatter );
 }
 
-void QgsFieldFormatterRegistry::removeFieldFormatter( QgsFieldFormatter *formatter )
-{
-  removeFieldFormatter( formatter->id() );
-}
+void QgsFieldFormatterRegistry::removeFieldFormatter( QgsFieldFormatter *formatter ) { removeFieldFormatter( formatter->id() ); }
 
 void QgsFieldFormatterRegistry::removeFieldFormatter( const QString &id )
 {
@@ -81,7 +77,4 @@ QgsFieldFormatter *QgsFieldFormatterRegistry::fieldFormatter( const QString &id 
   return mFieldFormatters.value( id, mFallbackFieldFormatter.get() );
 }
 
-QgsFieldFormatter *QgsFieldFormatterRegistry::fallbackFieldFormatter() const
-{
-  return mFallbackFieldFormatter.get();
-}
+QgsFieldFormatter *QgsFieldFormatterRegistry::fallbackFieldFormatter() const { return mFallbackFieldFormatter.get(); }

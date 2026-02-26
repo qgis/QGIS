@@ -23,12 +23,7 @@
 #include <QTransform>
 #include <QVector>
 
-QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel,
-                              double xc,
-                              double yc,
-                              int width,
-                              int height,
-                              double rotation )
+QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel, double xc, double yc, int width, int height, double rotation )
   : mValid( true )
   , mMapUnitsPerPixel( mapUnitsPerPixel )
   , mWidth( width )
@@ -61,10 +56,7 @@ QgsMapToPixel QgsMapToPixel::fromScale( double scale, Qgis::DistanceUnit mapUnit
   return QgsMapToPixel( mapUnitsPerPixel * scale );
 }
 
-QgsMapToPixel::QgsMapToPixel()
-{
-  updateMatrix();
-}
+QgsMapToPixel::QgsMapToPixel() { updateMatrix(); }
 
 bool QgsMapToPixel::updateMatrix()
 {
@@ -117,13 +109,7 @@ void QgsMapToPixel::setMapRotation( double degrees, double cx, double cy )
   }
 }
 
-void QgsMapToPixel::setParameters( double mapUnitsPerPixel,
-                                   double xc,
-                                   double yc,
-                                   int width,
-                                   int height,
-                                   double rotation,
-                                   bool *ok )
+void QgsMapToPixel::setParameters( double mapUnitsPerPixel, double xc, double yc, int width, int height, double rotation, bool *ok )
 {
   mValid = true;
 
@@ -163,12 +149,7 @@ void QgsMapToPixel::setParameters( double mapUnitsPerPixel,
   }
 }
 
-void QgsMapToPixel::setParameters( double mapUnitsPerPixel,
-                                   double xc,
-                                   double yc,
-                                   int width,
-                                   int height,
-                                   double rotation )
+void QgsMapToPixel::setParameters( double mapUnitsPerPixel, double xc, double yc, int width, int height, double rotation )
 {
   mValid = true;
   bool ok;
@@ -178,10 +159,7 @@ void QgsMapToPixel::setParameters( double mapUnitsPerPixel,
 QString QgsMapToPixel::showParameters() const
 {
   QString rep;
-  QTextStream( &rep ) << "Map units/pixel: " << mMapUnitsPerPixel
-                      << " center: " << mXCenter << ',' << mYCenter
-                      << " rotation: " << mRotation
-                      << " size: " << mWidth << 'x' << mHeight;
+  QTextStream( &rep ) << "Map units/pixel: " << mMapUnitsPerPixel << " center: " << mXCenter << ',' << mYCenter << " rotation: " << mRotation << " size: " << mWidth << 'x' << mHeight;
   return rep;
 }
 
@@ -196,17 +174,12 @@ QTransform QgsMapToPixel::transform() const
   if ( qgsDoubleNear( rotation, 0.0 ) )
   {
     //no rotation, return a simplified matrix
-    return QTransform::fromScale( 1.0 / mMapUnitsPerPixel, -1.0 / mMapUnitsPerPixel )
-           .translate( -mXMin, - ( mYMin + mHeight * mMapUnitsPerPixel ) );
+    return QTransform::fromScale( 1.0 / mMapUnitsPerPixel, -1.0 / mMapUnitsPerPixel ).translate( -mXMin, -( mYMin + mHeight * mMapUnitsPerPixel ) );
   }
   else
   {
     const double cy = mapHeight() / 2.0;
     const double cx = mapWidth() / 2.0;
-    return QTransform::fromTranslate( cx, cy )
-           .rotate( rotation )
-           .scale( 1 / mMapUnitsPerPixel, -1 / mMapUnitsPerPixel )
-           .translate( -mXCenter, -mYCenter );
+    return QTransform::fromTranslate( cx, cy ).rotate( rotation ).scale( 1 / mMapUnitsPerPixel, -1 / mMapUnitsPerPixel ).translate( -mXCenter, -mYCenter );
   }
 }
-

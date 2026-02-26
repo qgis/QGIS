@@ -67,10 +67,7 @@ QgsGroupLayerRenderer::QgsGroupLayerRenderer( QgsGroupLayer *layer, QgsRenderCon
 
 QgsGroupLayerRenderer::~QgsGroupLayerRenderer() = default;
 
-QgsFeedback *QgsGroupLayerRenderer::feedback() const
-{
-  return mFeedback.get();
-}
+QgsFeedback *QgsGroupLayerRenderer::feedback() const { return mFeedback.get(); }
 
 bool QgsGroupLayerRenderer::render()
 {

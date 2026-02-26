@@ -41,10 +41,7 @@ QgsRelationManager::QgsRelationManager( QgsProject *project )
   }
 }
 
-QgsRelationContext QgsRelationManager::context() const
-{
-  return QgsRelationContext( mProject );
-}
+QgsRelationContext QgsRelationManager::context() const { return QgsRelationContext( mProject ); }
 
 void QgsRelationManager::setRelations( const QList<QgsRelation> &relations )
 {
@@ -56,10 +53,7 @@ void QgsRelationManager::setRelations( const QList<QgsRelation> &relations )
   emit changed();
 }
 
-QMap<QString, QgsRelation> QgsRelationManager::relations() const
-{
-  return mRelations;
-}
+QMap<QString, QgsRelation> QgsRelationManager::relations() const { return mRelations; }
 
 void QgsRelationManager::addRelation( const QgsRelation &relation )
 {
@@ -246,7 +240,7 @@ void QgsRelationManager::writeProject( QDomDocument &doc )
     QgsDebugError( u"Unable to find qgis element in project file"_s );
     return;
   }
-  QDomNode qgisNode = nl.item( 0 );  // there should only be one
+  QDomNode qgisNode = nl.item( 0 ); // there should only be one
 
   QDomElement relationsNode = doc.createElement( u"relations"_s );
   qgisNode.appendChild( relationsNode );
@@ -286,8 +280,7 @@ void QgsRelationManager::layersRemoved( const QStringList &layers )
     {
       it.next();
 
-      if ( it.value().referencedLayerId() == layer
-           || it.value().referencingLayerId() == layer )
+      if ( it.value().referencedLayerId() == layer || it.value().referencingLayerId() == layer )
       {
         mRelations.remove( it.key() );
         relationsChanged = true;
@@ -304,7 +297,8 @@ static bool hasRelationWithEqualDefinition( const QList<QgsRelation> &existingRe
 {
   for ( const QgsRelation &cur : std::as_const( existingRelations ) )
   {
-    if ( cur.hasEqualDefinition( relation ) ) return true;
+    if ( cur.hasEqualDefinition( relation ) )
+      return true;
   }
   return false;
 }
@@ -329,15 +323,9 @@ QList<QgsRelation> QgsRelationManager::discoverRelations( const QList<QgsRelatio
   return result;
 }
 
-QMap<QString, QgsPolymorphicRelation> QgsRelationManager::polymorphicRelations() const
-{
-  return mPolymorphicRelations;
-}
+QMap<QString, QgsPolymorphicRelation> QgsRelationManager::polymorphicRelations() const { return mPolymorphicRelations; }
 
-QgsPolymorphicRelation QgsRelationManager::polymorphicRelation( const QString &polymorphicRelationId ) const
-{
-  return mPolymorphicRelations.value( polymorphicRelationId );
-}
+QgsPolymorphicRelation QgsRelationManager::polymorphicRelation( const QString &polymorphicRelationId ) const { return mPolymorphicRelations.value( polymorphicRelationId ); }
 
 void QgsRelationManager::addPolymorphicRelation( const QgsPolymorphicRelation &polymorphicRelation )
 {

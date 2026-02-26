@@ -78,21 +78,22 @@ class CORE_EXPORT QgsFeatureStore : public QgsFeatureSink
      * Returns the number of features contained in the store.
      */
     int __len__() const;
-    % MethodCode
-    sipRes = sipCpp->count();
+    % MethodCode sipRes = sipCpp->count();
     % End
 
-    //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
-    int __bool__() const;
-    % MethodCode
-    sipRes = true;
+      //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
+      int __bool__() const;
+    % MethodCode sipRes = true;
     % End
 #endif
 
-    /**
+        /**
      * Returns the list of features contained in the store.
      */
-    QgsFeatureList features() const { return mFeatures; }
+        QgsFeatureList features() const
+    {
+      return mFeatures;
+    }
 
     /**
      * Sets a map of optional \a parameters for the store.
@@ -126,11 +127,11 @@ typedef QVector<QgsFeatureStore> QgsFeatureStoreList;
 {
   % TypeHeaderCode
 #include "qgsfeaturestore.h"
-  % End
+    % End
 
-  % ConvertFromTypeCode
-  // Create the list.
-  PyObject *l;
+    % ConvertFromTypeCode
+    // Create the list.
+    PyObject *l;
 
   if ( ( l = PyList_New( sipCpp->size() ) ) == NULL )
     return NULL;
@@ -155,9 +156,9 @@ typedef QVector<QgsFeatureStore> QgsFeatureStoreList;
   return l;
   % End
 
-  % ConvertToTypeCode
-  // Check the type if that is all that is required.
-  if ( sipIsErr == NULL )
+    % ConvertToTypeCode
+    // Check the type if that is all that is required.
+    if ( sipIsErr == NULL )
   {
     if ( !PyList_Check( sipPy ) )
       return 0;

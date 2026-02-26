@@ -35,9 +35,7 @@
  */
 class CORE_EXPORT QgsApplicationThemeRegistry
 {
-
   public:
-
     /**
      * Constructor for an empty user interface theme registry
      */
@@ -78,14 +76,12 @@ class CORE_EXPORT QgsApplicationThemeRegistry
     QHash<QString, QString> themeFolders() const;
 
   private:
-
     /**
      * Adds all default user interface themes.
      */
     void addApplicationThemes();
 
     QHash<QString, QString> mThemes;
-
 };
 
 #endif

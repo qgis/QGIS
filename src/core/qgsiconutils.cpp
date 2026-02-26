@@ -51,60 +51,27 @@ QIcon QgsIconUtils::iconForGeometryType( Qgis::GeometryType typeGroup )
   return iconDefaultLayer();
 }
 
-QIcon QgsIconUtils::iconPoint()
-{
-  return QgsApplication::getThemeIcon( u"/mIconPointLayer.svg"_s );
-}
+QIcon QgsIconUtils::iconPoint() { return QgsApplication::getThemeIcon( u"/mIconPointLayer.svg"_s ); }
 
-QIcon QgsIconUtils::iconLine()
-{
-  return QgsApplication::getThemeIcon( u"/mIconLineLayer.svg"_s );
-}
+QIcon QgsIconUtils::iconLine() { return QgsApplication::getThemeIcon( u"/mIconLineLayer.svg"_s ); }
 
-QIcon QgsIconUtils::iconPolygon()
-{
-  return QgsApplication::getThemeIcon( u"/mIconPolygonLayer.svg"_s );
-}
+QIcon QgsIconUtils::iconPolygon() { return QgsApplication::getThemeIcon( u"/mIconPolygonLayer.svg"_s ); }
 
-QIcon QgsIconUtils::iconGeometryCollection()
-{
-  return QgsApplication::getThemeIcon( u"/mIconGeometryCollectionLayer.svg"_s );
-}
+QIcon QgsIconUtils::iconGeometryCollection() { return QgsApplication::getThemeIcon( u"/mIconGeometryCollectionLayer.svg"_s ); }
 
-QIcon QgsIconUtils::iconTable()
-{
-  return QgsApplication::getThemeIcon( u"/mIconTableLayer.svg"_s );
-}
+QIcon QgsIconUtils::iconTable() { return QgsApplication::getThemeIcon( u"/mIconTableLayer.svg"_s ); }
 
-QIcon QgsIconUtils::iconRaster()
-{
-  return QgsApplication::getThemeIcon( u"/mIconRaster.svg"_s );
-}
+QIcon QgsIconUtils::iconRaster() { return QgsApplication::getThemeIcon( u"/mIconRaster.svg"_s ); }
 
-QIcon QgsIconUtils::iconMesh()
-{
-  return QgsApplication::getThemeIcon( u"/mIconMeshLayer.svg"_s );
-}
+QIcon QgsIconUtils::iconMesh() { return QgsApplication::getThemeIcon( u"/mIconMeshLayer.svg"_s ); }
 
-QIcon QgsIconUtils::iconVectorTile()
-{
-  return QgsApplication::getThemeIcon( u"/mIconVectorTileLayer.svg"_s );
-}
+QIcon QgsIconUtils::iconVectorTile() { return QgsApplication::getThemeIcon( u"/mIconVectorTileLayer.svg"_s ); }
 
-QIcon QgsIconUtils::iconPointCloud()
-{
-  return QgsApplication::getThemeIcon( u"/mIconPointCloudLayer.svg"_s );
-}
+QIcon QgsIconUtils::iconPointCloud() { return QgsApplication::getThemeIcon( u"/mIconPointCloudLayer.svg"_s ); }
 
-QIcon QgsIconUtils::iconTiledScene()
-{
-  return QgsApplication::getThemeIcon( u"/mIconTiledSceneLayer.svg"_s );
-}
+QIcon QgsIconUtils::iconTiledScene() { return QgsApplication::getThemeIcon( u"/mIconTiledSceneLayer.svg"_s ); }
 
-QIcon QgsIconUtils::iconDefaultLayer()
-{
-  return QgsApplication::getThemeIcon( u"/mIconLayer.png"_s );
-}
+QIcon QgsIconUtils::iconDefaultLayer() { return QgsApplication::getThemeIcon( u"/mIconLayer.png"_s ); }
 
 QIcon QgsIconUtils::iconForLayer( const QgsMapLayer *layer )
 {

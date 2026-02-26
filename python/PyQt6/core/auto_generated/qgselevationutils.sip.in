@@ -22,7 +22,6 @@ projects.
 #include "qgselevationutils.h"
 %End
   public:
-
     static QgsDoubleRange calculateZRangeForProject( QgsProject *project );
 %Docstring
 Calculates the elevation range for a ``project``.
@@ -70,7 +69,6 @@ Returns ``True`` if the elevation was enabled successfully.
 
 .. versionadded:: 3.32
 %End
-
 };
 
 

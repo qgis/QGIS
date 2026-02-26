@@ -33,7 +33,7 @@
 
 #include "moc_qgsrunprocess.cpp"
 
-#if QT_CONFIG(process)
+#if QT_CONFIG( process )
 QgsRunProcess::QgsRunProcess( const QString &action, bool capture )
 
 {
@@ -58,7 +58,7 @@ QgsRunProcess::QgsRunProcess( const QString &action, bool capture )
     // We only care if the process has finished if we are capturing
     // the output from the process, hence this connect() call is
     // inside the capture if() statement.
-    connect( mProcess.get(), static_cast < void ( QProcess::* )( int,  QProcess::ExitStatus ) >( &QProcess::finished ), this, &QgsRunProcess::processExit );
+    connect( mProcess.get(), static_cast< void ( QProcess::* )( int, QProcess::ExitStatus ) >( &QProcess::finished ), this, &QgsRunProcess::processExit );
 
     // Use QgsMessageOutput for displaying output to user
     // It will delete itself when the dialog box is closed.
@@ -79,11 +79,9 @@ QgsRunProcess::QgsRunProcess( const QString &action, bool capture )
   }
   else
   {
-    if ( ! QProcess::startDetached( command, arguments ) ) // let the program run by itself
+    if ( !QProcess::startDetached( command, arguments ) ) // let the program run by itself
     {
-      QMessageBox::critical( nullptr, tr( "Action" ),
-                             tr( "Unable to run command\n%1" ).arg( action ),
-                             QMessageBox::Ok, Qt::NoButton );
+      QMessageBox::critical( nullptr, tr( "Action" ), tr( "Unable to run command\n%1" ).arg( action ), QMessageBox::Ok, Qt::NoButton );
     }
     // We're not capturing the output from the process, so we don't
     // need to exist anymore.
@@ -91,10 +89,7 @@ QgsRunProcess::QgsRunProcess( const QString &action, bool capture )
   }
 }
 
-QgsRunProcess::~QgsRunProcess()
-{
-
-}
+QgsRunProcess::~QgsRunProcess() {}
 
 void QgsRunProcess::die()
 {
@@ -156,7 +151,7 @@ void QgsRunProcess::dialogGone()
   disconnect( mProcess.get(), &QProcess::errorOccurred, this, &QgsRunProcess::processError );
   disconnect( mProcess.get(), &QProcess::readyReadStandardOutput, this, &QgsRunProcess::stdoutAvailable );
   disconnect( mProcess.get(), &QProcess::readyReadStandardError, this, &QgsRunProcess::stderrAvailable );
-  disconnect( mProcess.get(), static_cast < void ( QProcess::* )( int, QProcess::ExitStatus ) >( &QProcess::finished ), this, &QgsRunProcess::processExit );
+  disconnect( mProcess.get(), static_cast< void ( QProcess::* )( int, QProcess::ExitStatus ) >( &QProcess::finished ), this, &QgsRunProcess::processExit );
 
   die();
 }
@@ -176,10 +171,7 @@ void QgsRunProcess::processError( QProcess::ProcessError err )
   }
 }
 
-QStringList QgsRunProcess::splitCommand( const QString &command )
-{
-  return QProcess::splitCommand( command );
-}
+QStringList QgsRunProcess::splitCommand( const QString &command ) { return QProcess::splitCommand( command ); }
 #else
 QgsRunProcess::QgsRunProcess( const QString &action, bool )
 {
@@ -187,14 +179,9 @@ QgsRunProcess::QgsRunProcess( const QString &action, bool )
   QgsDebugError( "Skipping command: " + action );
 }
 
-QgsRunProcess::~QgsRunProcess()
-{
-}
+QgsRunProcess::~QgsRunProcess() {}
 
-QStringList QgsRunProcess::splitCommand( const QString & )
-{
-  return QStringList();
-}
+QStringList QgsRunProcess::splitCommand( const QString & ) { return QStringList(); }
 #endif
 
 
@@ -202,14 +189,12 @@ QStringList QgsRunProcess::splitCommand( const QString & )
 // QgsBlockingProcess
 //
 
-#if QT_CONFIG(process)
+#if QT_CONFIG( process )
 QgsBlockingProcess::QgsBlockingProcess( const QString &process, const QStringList &arguments )
   : QObject()
   , mProcess( process )
   , mArguments( arguments )
-{
-
-}
+{}
 
 int QgsBlockingProcess::run( QgsFeedback *feedback )
 {
@@ -219,8 +204,7 @@ int QgsBlockingProcess::run( QgsFeedback *feedback )
   QProcess::ExitStatus exitStatus = QProcess::NormalExit;
   QProcess::ProcessError error = QProcess::UnknownError;
 
-  const std::function<void()> runFunction = [ this, &result, &exitStatus, &error, feedback]()
-  {
+  const std::function<void()> runFunction = [this, &result, &exitStatus, &error, feedback]() {
     // this function will always be run in worker threads -- either the blocking call is being made in a worker thread,
     // or the blocking call has been made from the main thread and we've fired up a new thread for this function
     Q_ASSERT( QThread::currentThread() != QgsApplication::instance()->thread() );
@@ -236,31 +220,31 @@ int QgsBlockingProcess::run( QgsFeedback *feedback )
     connect( qApp, &QCoreApplication::aboutToQuit, &loop, &QEventLoop::quit, Qt::DirectConnection );
 
     if ( feedback )
-      QObject::connect( feedback, &QgsFeedback::canceled, &p, [ &p]
-    {
+      QObject::connect( feedback, &QgsFeedback::canceled, &p, [&p] {
 #ifdef Q_OS_WIN
-      // From the qt docs:
-      // "Console applications on Windows that do not run an event loop, or whose
-      // event loop does not handle the WM_CLOSE message, can only be terminated by calling kill()."
-      p.kill();
+        // From the qt docs:
+        // "Console applications on Windows that do not run an event loop, or whose
+        // event loop does not handle the WM_CLOSE message, can only be terminated by calling kill()."
+        p.kill();
 #else
       p.terminate();
 #endif
-    } );
-    connect( &p, qOverload< int, QProcess::ExitStatus >( &QProcess::finished ), this, [&loop, &result, &exitStatus]( int res, QProcess::ExitStatus st )
-    {
-      result = res;
-      exitStatus = st;
-      loop.quit();
-    }, Qt::DirectConnection );
+      } );
+    connect(
+      &p, qOverload< int, QProcess::ExitStatus >( &QProcess::finished ), this,
+      [&loop, &result, &exitStatus]( int res, QProcess::ExitStatus st ) {
+        result = res;
+        exitStatus = st;
+        loop.quit();
+      },
+      Qt::DirectConnection
+    );
 
-    connect( &p, &QProcess::readyReadStandardOutput, &p, [&p, this]
-    {
+    connect( &p, &QProcess::readyReadStandardOutput, &p, [&p, this] {
       const QByteArray ba = p.readAllStandardOutput();
       mStdoutHandler( ba );
     } );
-    connect( &p, &QProcess::readyReadStandardError, &p, [&p, this]
-    {
+    connect( &p, &QProcess::readyReadStandardError, &p, [&p, this] {
       const QByteArray ba = p.readAllStandardError();
       mStderrHandler( ba );
     } );
@@ -297,13 +281,7 @@ int QgsBlockingProcess::run( QgsFeedback *feedback )
   return result;
 }
 
-QProcess::ExitStatus QgsBlockingProcess::exitStatus() const
-{
-  return mExitStatus;
-};
+QProcess::ExitStatus QgsBlockingProcess::exitStatus() const { return mExitStatus; };
 
-QProcess::ProcessError QgsBlockingProcess::processError() const
-{
-  return mProcessError;
-};
+QProcess::ProcessError QgsBlockingProcess::processError() const { return mProcessError; };
 #endif // QT_CONFIG(process)

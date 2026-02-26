@@ -36,34 +36,29 @@ using namespace Qt::StringLiterals;
 
 QgsArchive::QgsArchive()
   : mDir( new QTemporaryDir() )
-{
-}
+{}
 
 QgsArchive::QgsArchive( const QgsArchive &other )
   : mFiles( other.mFiles )
   , mDir( new QTemporaryDir() )
-{
-}
+{}
 
 QgsArchive &QgsArchive::operator=( const QgsArchive &other )
 {
   if ( this != &other )
   {
     mFiles = other.mFiles;
-    mDir = std::make_unique<QTemporaryDir>( );
+    mDir = std::make_unique<QTemporaryDir>();
   }
 
   return *this;
 }
 
-QString QgsArchive::dir() const
-{
-  return mDir->path();
-}
+QString QgsArchive::dir() const { return mDir->path(); }
 
 void QgsArchive::clear()
 {
-  mDir = std::make_unique<QTemporaryDir>( );
+  mDir = std::make_unique<QTemporaryDir>();
   mFiles.clear();
 }
 
@@ -72,14 +67,14 @@ bool QgsArchive::zip( const QString &filename )
   const QString tempPath( QDir::temp().absoluteFilePath( u"qgis-project-XXXXXX.zip"_s ) );
 
   // zip content
-  if ( ! QgsZipUtils::zip( tempPath, mFiles, true ) )
+  if ( !QgsZipUtils::zip( tempPath, mFiles, true ) )
   {
     const QString err = QObject::tr( "Unable to zip content" );
     QgsMessageLog::logMessage( err, u"QgsArchive"_s );
     return false;
   }
 
-  QString target {filename};
+  QString target { filename };
 
   // remove existing zip file
   if ( QFile::exists( target ) )
@@ -97,10 +92,10 @@ bool QgsArchive::zip( const QString &filename )
   DWORD dwAttrs;
 #ifdef UNICODE
   dwAttrs = GetFileAttributes( qUtf16Printable( tempPath ) );
-  SetFileAttributes( qUtf16Printable( tempPath ), dwAttrs & ~ FILE_ATTRIBUTE_TEMPORARY );
+  SetFileAttributes( qUtf16Printable( tempPath ), dwAttrs & ~FILE_ATTRIBUTE_TEMPORARY );
 #else
-  dwAttrs = GetFileAttributes( tempPath.toLocal8Bit( ).data( ) );
-  SetFileAttributes( tempPath.toLocal8Bit( ).data( ), dwAttrs & ~ FILE_ATTRIBUTE_TEMPORARY );
+  dwAttrs = GetFileAttributes( tempPath.toLocal8Bit().data() );
+  SetFileAttributes( tempPath.toLocal8Bit().data(), dwAttrs & ~FILE_ATTRIBUTE_TEMPORARY );
 #endif
 
 #endif // Q_OS_WIN
@@ -122,10 +117,7 @@ bool QgsArchive::unzip( const QString &filename )
   return QgsZipUtils::unzip( filename, mDir->path(), mFiles );
 }
 
-void QgsArchive::addFile( const QString &file )
-{
-  mFiles.append( file );
-}
+void QgsArchive::addFile( const QString &file ) { mFiles.append( file ); }
 
 bool QgsArchive::removeFile( const QString &file )
 {
@@ -139,15 +131,9 @@ bool QgsArchive::removeFile( const QString &file )
   return rc;
 }
 
-QStringList QgsArchive::files() const
-{
-  return mFiles;
-}
+QStringList QgsArchive::files() const { return mFiles; }
 
-bool QgsArchive::exists() const
-{
-  return QFileInfo::exists( mDir->path() );
-}
+bool QgsArchive::exists() const { return QFileInfo::exists( mDir->path() ); }
 
 QString QgsProjectArchive::projectFile() const
 {
@@ -165,15 +151,12 @@ QString QgsProjectArchive::projectFile() const
 bool QgsProjectArchive::unzip( const QString &filename )
 {
   if ( QgsArchive::unzip( filename ) )
-    return ! projectFile().isEmpty();
+    return !projectFile().isEmpty();
   else
     return false;
 }
 
-bool QgsProjectArchive::clearProjectFile()
-{
-  return removeFile( projectFile() );
-}
+bool QgsProjectArchive::clearProjectFile() { return removeFile( projectFile() ); }
 
 QString QgsProjectArchive::auxiliaryStorageFile() const
 {

@@ -21,7 +21,6 @@ method.
 #include "qgsfeaturesource.h"
 %End
   public:
-
     virtual ~QgsFeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const = 0;
@@ -58,17 +57,15 @@ Returns the geometry type for features returned by this source.
 Returns the number of features contained in the source, or -1 if the
 feature count is unknown.
 %End
-%MethodCode
-    sipRes = sipCpp->featureCount();
+%MethodCode sipRes = sipCpp->featureCount();
 %End
 
-    //! Ensures that bool(obj) returns ``True`` (otherwise __len__() would be used)
-    int __bool__() const;
-%MethodCode
-    sipRes = true;
+      //! Ensures that bool(obj) returns ``True`` (otherwise __len__() would be used)
+      int __bool__() const;
+%MethodCode sipRes = true;
 %End
 
-    virtual long long featureCount() const = 0;
+      virtual long long featureCount() const;
 %Docstring
 Returns the number of features contained in the source, or -1 if the
 feature count is unknown.
@@ -137,8 +134,7 @@ features in the source.
 Returns a list of all feature IDs for features present in the source.
 %End
 
-    QgsVectorLayer *materialize( const QgsFeatureRequest &request,
-                                 QgsFeedback *feedback = 0 ) /Factory/;
+    QgsVectorLayer *materialize( const QgsFeatureRequest &request, QgsFeedback *feedback = 0 ) /Factory/;
 %Docstring
 Materializes a ``request`` (query) made against this feature source, by
 running it over the source and returning a new memory based vector layer

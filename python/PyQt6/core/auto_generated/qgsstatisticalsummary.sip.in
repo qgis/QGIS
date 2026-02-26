@@ -29,7 +29,6 @@ calculated by specifying the statistic in the constructor or via
 #include "qgsstatisticalsummary.h"
 %End
   public:
-
     QgsStatisticalSummary( Qgis::Statistics stats = Qgis::Statistic::All );
 %Docstring
 Constructor for QgsStatisticalSummary

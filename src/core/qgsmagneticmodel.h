@@ -50,7 +50,6 @@ namespace GeographicLib
 class CORE_EXPORT QgsMagneticModel
 {
   public:
-
     /**
      * Returns the default path used by GeographicLib to search for magnetic models.
      *
@@ -269,7 +268,9 @@ class CORE_EXPORT QgsMagneticModel
      *
      * \see getComponents()
      */
-    bool getComponentsWithTimeDerivatives( double years, double latitude, double longitude, double height, double &Bx SIP_OUT, double &By SIP_OUT, double &Bz SIP_OUT, double &Bxt SIP_OUT, double &Byt SIP_OUT, double &Bzt SIP_OUT ) const SIP_THROW( QgsNotSupportedException );
+    bool getComponentsWithTimeDerivatives(
+      double years, double latitude, double longitude, double height, double &Bx SIP_OUT, double &By SIP_OUT, double &Bz SIP_OUT, double &Bxt SIP_OUT, double &Byt SIP_OUT, double &Bzt SIP_OUT
+    ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Compute various quantities dependent on a magnetic field.
@@ -314,10 +315,12 @@ class CORE_EXPORT QgsMagneticModel
      *
      * \see fieldComponentsWithTimeDerivatives()
      */
-    static bool fieldComponentsWithTimeDerivatives( double Bx, double By, double Bz, double Bxt, double Byt, double Bzt, double &H SIP_OUT, double &F SIP_OUT, double &D SIP_OUT, double &I SIP_OUT, double &Ht SIP_OUT, double &Ft SIP_OUT, double &Dt SIP_OUT, double &It SIP_OUT ) SIP_THROW( QgsNotSupportedException );
+    static bool fieldComponentsWithTimeDerivatives(
+      double Bx, double By, double Bz, double Bxt, double Byt, double Bzt, double &H SIP_OUT, double &F SIP_OUT, double &D SIP_OUT, double &I SIP_OUT, double &Ht SIP_OUT, double &Ft SIP_OUT,
+      double &Dt SIP_OUT, double &It SIP_OUT
+    ) SIP_THROW( QgsNotSupportedException );
 
   private:
-
 #ifdef SIP_RUN
     QgsMagneticModel( const QgsMagneticModel &other );
 #endif
@@ -329,7 +332,6 @@ class CORE_EXPORT QgsMagneticModel
     std::unique_ptr< GeographicLib::MagneticModel > mModel;
 #endif
     QString mError;
-
 };
 
 #endif // QGSMAGNETICMODEL_H

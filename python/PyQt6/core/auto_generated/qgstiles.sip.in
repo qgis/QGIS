@@ -54,11 +54,14 @@ Returns tile coordinates in a formatted string
     bool operator!=( const QgsTileXYZ &other ) const;
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    const QString str = QStringLiteral( "<QgsTileXYZ: %1, %2, %3>" ).arg( sipCpp->column() ).arg( sipCpp->row() ).arg( sipCpp->zoomLevel() );
+%MethodCode const QString str = QStringLiteral( "<QgsTileXYZ: %1, %2, %3>" ).arg( sipCpp->column() ).arg( sipCpp->row() ).arg( sipCpp->zoomLevel() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
+    private : int mColumn
+    = -1;
+    int mRow;
+    int mZoomLevel;
 };
 
 
@@ -82,6 +85,7 @@ The selection is rectangular, given by start/end row and column numbers.
 %Docstring
 Constructs a range of tiles from given span of columns and rows
 %End
+
     bool isValid() const;
 %Docstring
 Returns whether the range is valid (when all row/column numbers are not
@@ -132,15 +136,12 @@ bottom-left tile has [0,0] coordinate).
 #include "qgstiles.h"
 %End
   public:
-
     static QgsTileMatrix fromWebMercator( int zoomLevel );
 %Docstring
 Returns a tile matrix for the usual web mercator
 %End
 
-    static QgsTileMatrix fromCustomDef( int zoomLevel, const QgsCoordinateReferenceSystem &crs,
-                                        const QgsPointXY &z0TopLeftPoint, double z0Dimension,
-                                        int z0MatrixWidth = 1, int z0MatrixHeight = 1 );
+    static QgsTileMatrix fromCustomDef( int zoomLevel, const QgsCoordinateReferenceSystem &crs, const QgsPointXY &z0TopLeftPoint, double z0Dimension, int z0MatrixWidth = 1, int z0MatrixHeight = 1 );
 %Docstring
 Returns a tile matrix for a specific CRS, top left point, zoom level 0
 dimension in CRS units.
@@ -258,7 +259,6 @@ Defines a set of tile matrices for multiple zoom levels.
 #include "qgstiles.h"
 %End
   public:
-
     QgsTileMatrixSet();
 
     virtual ~QgsTileMatrixSet();
@@ -372,12 +372,7 @@ the specified render ``context``.
 .. versionadded:: 3.26
 %End
 
-    double calculateTileScaleForMap( double actualMapScale,
-                                     const QgsCoordinateReferenceSystem &mapCrs,
-                                     const QgsRectangle &mapExtent,
-                                     const QSize mapSize,
-                                     const double mapDpi
-                                   ) const;
+    double calculateTileScaleForMap( double actualMapScale, const QgsCoordinateReferenceSystem &mapCrs, const QgsRectangle &mapExtent, const QSize mapSize, const double mapDpi ) const;
 %Docstring
 Calculates the correct scale to use for the tiles when rendered using
 the specified map properties.

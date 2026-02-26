@@ -28,9 +28,7 @@ using namespace Qt::StringLiterals;
 
 QgsAbstractPropertyCollection::QgsAbstractPropertyCollection( const QString &name )
   : mName( name )
-{
-
-}
+{}
 
 QDateTime QgsAbstractPropertyCollection::valueAsDateTime( int key, const QgsExpressionContext &context, const QDateTime &defaultDateTime, bool *ok ) const
 {
@@ -117,7 +115,6 @@ bool QgsAbstractPropertyCollection::readXml( const QDomElement &collectionElem, 
 }
 
 
-
 //
 // QgsPropertyCollection
 //
@@ -152,15 +149,9 @@ QgsPropertyCollection &QgsPropertyCollection::operator=( const QgsPropertyCollec
   return *this;
 }
 
-bool QgsPropertyCollection::operator==( const QgsPropertyCollection &other ) const
-{
-  return mProperties == other.mProperties;
-}
+bool QgsPropertyCollection::operator==( const QgsPropertyCollection &other ) const { return mProperties == other.mProperties; }
 
-bool QgsPropertyCollection::operator!=( const QgsPropertyCollection &other ) const
-{
-  return !( *this == other );
-}
+bool QgsPropertyCollection::operator!=( const QgsPropertyCollection &other ) const { return !( *this == other ); }
 
 int QgsPropertyCollection::count() const
 {
@@ -230,7 +221,7 @@ QgsProperty QgsPropertyCollection::property( int key ) const
 QgsProperty &QgsPropertyCollection::property( int key )
 {
   mDirty = true;
-  return mProperties[ key ];
+  return mProperties[key];
 }
 
 QVariant QgsPropertyCollection::value( int key, const QgsExpressionContext &context, const QVariant &defaultValue ) const
@@ -380,10 +371,7 @@ bool QgsPropertyCollection::loadVariant( const QVariant &collection, const QgsPr
     mCount++;
 
     mHasActiveProperties = mHasActiveProperties || prop.isActive();
-    mHasDynamicProperties = mHasDynamicProperties ||
-                            ( prop.isActive() &&
-                              ( prop.propertyType() == Qgis::PropertyType::Field ||
-                                prop.propertyType() == Qgis::PropertyType::Expression ) );
+    mHasDynamicProperties = mHasDynamicProperties || ( prop.isActive() && ( prop.propertyType() == Qgis::PropertyType::Field || prop.propertyType() == Qgis::PropertyType::Expression ) );
   }
   return true;
 }
@@ -392,13 +380,11 @@ bool QgsPropertyCollection::loadVariant( const QVariant &collection, const QgsPr
 // QgsPropertyCollectionStack
 //
 
-QgsPropertyCollectionStack::~QgsPropertyCollectionStack()
-{
-  clear();
-}
+QgsPropertyCollectionStack::~QgsPropertyCollectionStack() { clear(); }
 
 QgsPropertyCollectionStack::QgsPropertyCollectionStack( const QgsPropertyCollectionStack &other )
-  : QgsAbstractPropertyCollection( other ), mStack()
+  : QgsAbstractPropertyCollection( other )
+  , mStack()
 {
   clear();
 
@@ -424,10 +410,7 @@ QgsPropertyCollectionStack &QgsPropertyCollectionStack::operator=( const QgsProp
   return *this;
 }
 
-int QgsPropertyCollectionStack::count() const
-{
-  return mStack.size();
-}
+int QgsPropertyCollectionStack::count() const { return mStack.size(); }
 
 void QgsPropertyCollectionStack::clear()
 {
@@ -435,20 +418,11 @@ void QgsPropertyCollectionStack::clear()
   mStack.clear();
 }
 
-void QgsPropertyCollectionStack::appendCollection( QgsPropertyCollection *collection )
-{
-  mStack.append( collection );
-}
+void QgsPropertyCollectionStack::appendCollection( QgsPropertyCollection *collection ) { mStack.append( collection ); }
 
-QgsPropertyCollection *QgsPropertyCollectionStack::at( int index )
-{
-  return mStack.value( index );
-}
+QgsPropertyCollection *QgsPropertyCollectionStack::at( int index ) { return mStack.value( index ); }
 
-const QgsPropertyCollection *QgsPropertyCollectionStack::at( int index ) const
-{
-  return mStack.value( index );
-}
+const QgsPropertyCollection *QgsPropertyCollectionStack::at( int index ) const { return mStack.value( index ); }
 
 QgsPropertyCollection *QgsPropertyCollectionStack::collection( const QString &name )
 {
@@ -483,10 +457,7 @@ bool QgsPropertyCollectionStack::hasDynamicProperties() const
   return false;
 }
 
-bool QgsPropertyCollectionStack::isActive( int key ) const
-{
-  return static_cast< bool >( property( key ) );
-}
+bool QgsPropertyCollectionStack::isActive( int key ) const { return static_cast< bool >( property( key ) ); }
 
 QgsProperty QgsPropertyCollectionStack::property( int key ) const
 {

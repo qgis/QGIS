@@ -28,23 +28,13 @@ using namespace Qt::StringLiterals;
 
 QgsMapLayerStyle::QgsMapLayerStyle( const QString &xmlData )
   : mXmlData( xmlData )
-{
-}
+{}
 
-bool QgsMapLayerStyle::isValid() const
-{
-  return !mXmlData.isEmpty();
-}
+bool QgsMapLayerStyle::isValid() const { return !mXmlData.isEmpty(); }
 
-void QgsMapLayerStyle::clear()
-{
-  mXmlData.clear();
-}
+void QgsMapLayerStyle::clear() { mXmlData.clear(); }
 
-QString QgsMapLayerStyle::xmlData() const
-{
-  return mXmlData;
-}
+QString QgsMapLayerStyle::xmlData() const { return mXmlData; }
 
 void QgsMapLayerStyle::readFromLayer( QgsMapLayer *layer )
 {

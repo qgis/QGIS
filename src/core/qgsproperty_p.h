@@ -38,7 +38,6 @@
 class QgsPropertyPrivate : public QSharedData
 {
   public:
-
     QgsPropertyPrivate() = default;
 
     QgsPropertyPrivate( const QgsPropertyPrivate &other )
@@ -56,10 +55,7 @@ class QgsPropertyPrivate : public QSharedData
       , expressionReferencedCols( other.expressionReferencedCols )
     {}
 
-    ~QgsPropertyPrivate()
-    {
-      delete transformer;
-    }
+    ~QgsPropertyPrivate() { delete transformer; }
 
     Qgis::PropertyType type = Qgis::PropertyType::Invalid;
 

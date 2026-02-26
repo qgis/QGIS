@@ -31,7 +31,6 @@
  */
 class CORE_EXPORT QgsDataProviderElevationProperties
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsRasterDataProviderElevationProperties *>( sipCpp ) )
@@ -42,7 +41,7 @@ class CORE_EXPORT QgsDataProviderElevationProperties
     {
       sipType = 0;
     }
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -75,7 +74,6 @@ class CORE_EXPORT QgsDataProviderElevationProperties
 
   protected:
     bool mContainsElevationData = false;
-
 };
 
 #endif // QGSDATAPROVIDERELEVATIONPROPERTIES_H

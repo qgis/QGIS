@@ -45,10 +45,7 @@ bool QgsProxyFeatureSink::addFeatures( QgsFeatureIterator &iterator, Flags flags
   return mSink->addFeatures( iterator, flags );
 }
 
-QString QgsProxyFeatureSink::lastError() const
-{
-  return mSink ? mSink->lastError() : QString();
-}
+QString QgsProxyFeatureSink::lastError() const { return mSink ? mSink->lastError() : QString(); }
 
 bool QgsProxyFeatureSink::flushBuffer()
 {

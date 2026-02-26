@@ -64,10 +64,7 @@ QgsNamedColorList QgsRecentColorScheme::fetchColors( const QString &context, con
   return colorList;
 }
 
-QgsRecentColorScheme *QgsRecentColorScheme::clone() const
-{
-  return new QgsRecentColorScheme();
-}
+QgsRecentColorScheme *QgsRecentColorScheme::clone() const { return new QgsRecentColorScheme(); }
 
 void QgsRecentColorScheme::addRecentColor( const QColor &color )
 {
@@ -149,8 +146,7 @@ QgsNamedColorList QgsCustomColorScheme::fetchColors( const QString &context, con
 
   //generate list from custom colors
   int colorIndex = 0;
-  for ( QList< QVariant >::iterator it = customColorVariants.begin();
-        it != customColorVariants.end(); ++it )
+  for ( QList< QVariant >::iterator it = customColorVariants.begin(); it != customColorVariants.end(); ++it )
   {
     const QColor color = ( *it ).value<QColor>();
     QString label;
@@ -189,10 +185,7 @@ bool QgsCustomColorScheme::setColors( const QgsNamedColorList &colors, const QSt
   return true;
 }
 
-QgsCustomColorScheme *QgsCustomColorScheme::clone() const
-{
-  return new QgsCustomColorScheme();
-}
+QgsCustomColorScheme *QgsCustomColorScheme::clone() const { return new QgsCustomColorScheme(); }
 
 
 QgsNamedColorList QgsProjectColorScheme::fetchColors( const QString &context, const QColor &baseColor )
@@ -202,13 +195,12 @@ QgsNamedColorList QgsProjectColorScheme::fetchColors( const QString &context, co
 
   QgsNamedColorList colorList;
 
-  QStringList colorStrings = QgsProject::instance()->readListEntry( u"Palette"_s, u"/Colors"_s ); // skip-keyword-check
+  QStringList colorStrings = QgsProject::instance()->readListEntry( u"Palette"_s, u"/Colors"_s );      // skip-keyword-check
   const QStringList colorLabels = QgsProject::instance()->readListEntry( u"Palette"_s, u"/Labels"_s ); // skip-keyword-check
 
   //generate list from custom colors
   int colorIndex = 0;
-  for ( QStringList::iterator it = colorStrings.begin();
-        it != colorStrings.end(); ++it )
+  for ( QStringList::iterator it = colorStrings.begin(); it != colorStrings.end(); ++it )
   {
     const QColor color = QgsColorUtils::colorFromString( *it );
     QString label;
@@ -232,10 +224,7 @@ bool QgsProjectColorScheme::setColors( const QgsNamedColorList &colors, const QS
   return true;
 }
 
-QgsProjectColorScheme *QgsProjectColorScheme::clone() const
-{
-  return new QgsProjectColorScheme();
-}
+QgsProjectColorScheme *QgsProjectColorScheme::clone() const { return new QgsProjectColorScheme(); }
 
 
 //
@@ -330,15 +319,9 @@ QgsUserColorScheme::QgsUserColorScheme( const QString &filename )
   mEditable = !sourceFileInfo.exists() || sourceFileInfo.isWritable();
 }
 
-QString QgsUserColorScheme::schemeName() const
-{
-  return mName;
-}
+QString QgsUserColorScheme::schemeName() const { return mName; }
 
-QgsUserColorScheme *QgsUserColorScheme::clone() const
-{
-  return new QgsUserColorScheme( mFilename );
-}
+QgsUserColorScheme *QgsUserColorScheme::clone() const { return new QgsUserColorScheme( mFilename ); }
 
 QgsColorScheme::SchemeFlags QgsUserColorScheme::flags() const
 {
@@ -364,7 +347,7 @@ bool QgsUserColorScheme::erase()
   }
 
   // if file does not exist, nothing to do on the disk, so we can consider erasing done
-  if ( ! QFile::exists( filePath ) )
+  if ( !QFile::exists( filePath ) )
   {
     return true;
   }

@@ -18,8 +18,7 @@
 
 QgsRelationContext::QgsRelationContext( QgsProject *project )
   : mProject( project )
-{
-}
+{}
 
 QgsRelationContext::~QgsRelationContext() = default;
 
@@ -34,4 +33,3 @@ const QgsProject *QgsRelationContext::project() const
   // Fallback to qgis instance
   return QgsProject::instance(); // skip-keyword-check
 }
-

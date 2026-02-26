@@ -47,11 +47,11 @@ void QgsLogger::init()
   *sFileFilter() = getenv( "QGIS_DEBUG_FILE" ) ? getenv( "QGIS_DEBUG_FILE" ) : "";
   sDebugLevel = getenv( "QGIS_DEBUG" ) ? atoi( getenv( "QGIS_DEBUG" ) ) :
 #ifdef QGISDEBUG
-                1
+                                       1
 #else
-                0
+                                       0
 #endif
-                ;
+    ;
 
   sPrefixLength = sizeof( CMAKE_SOURCE_DIR );
   // cppcheck-suppress internalAstError
@@ -121,10 +121,7 @@ void QgsLogger::debug( const QString &msg, int debuglevel, const char *file, con
   }
 }
 
-void QgsLogger::debug( const QString &var, int val, int debuglevel, const char *file, const char *function, int line )
-{
-  debug( u"%1: %2"_s.arg( var ).arg( val ), debuglevel, file, function, line );
-}
+void QgsLogger::debug( const QString &var, int val, int debuglevel, const char *file, const char *function, int line ) { debug( u"%1: %2"_s.arg( var ).arg( val ), debuglevel, file, function, line ); }
 
 void QgsLogger::debug( const QString &var, double val, int debuglevel, const char *file, const char *function, int line )
 {

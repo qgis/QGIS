@@ -29,28 +29,24 @@ using namespace Qt::StringLiterals;
 
 QgsPolymorphicRelation::QgsPolymorphicRelation()
   : d( new QgsPolymorphicRelationPrivate() )
-{
-}
+{}
 
 QgsPolymorphicRelation::QgsPolymorphicRelation( const QgsRelationContext &context )
   : d( new QgsPolymorphicRelationPrivate() )
   , mContext( context )
-{
-}
+{}
 
 QgsPolymorphicRelation::~QgsPolymorphicRelation() = default;
 
 QgsPolymorphicRelation::QgsPolymorphicRelation( const QgsPolymorphicRelation &other )
   : d( other.d )
   , mContext( other.mContext )
-{
-}
+{}
 
 QgsPolymorphicRelation::QgsPolymorphicRelation( QgsPolymorphicRelation &&other )
   : d( std::move( other.d ) )
   , mContext( std::move( other.mContext ) )
-{
-}
+{}
 
 QgsPolymorphicRelation &QgsPolymorphicRelation::operator=( const QgsPolymorphicRelation &other )
 {
@@ -72,7 +68,7 @@ QgsPolymorphicRelation &QgsPolymorphicRelation::operator=( QgsPolymorphicRelatio
   return *this;
 }
 
-QgsPolymorphicRelation QgsPolymorphicRelation::createFromXml( const QDomNode &node, QgsReadWriteContext &context,  const QgsRelationContext &relationContext )
+QgsPolymorphicRelation QgsPolymorphicRelation::createFromXml( const QDomNode &node, QgsReadWriteContext &context, const QgsRelationContext &relationContext )
 {
   Q_UNUSED( context );
   QDomElement elem = node.toElement();
@@ -132,7 +128,7 @@ void QgsPolymorphicRelation::writeXml( QDomNode &node, QDomDocument &doc ) const
 
   // note that a layer id can store a comma in theory. Luckyly, this is not easy to achieve, e.g. you need to modify the .qgs file manually
   for ( const QString &layerId : std::as_const( d->mReferencedLayerIds ) )
-    Q_ASSERT( ! layerId.contains( "," ) );
+    Q_ASSERT( !layerId.contains( "," ) );
 
   for ( const QgsRelation::FieldPair &pair : std::as_const( d->mFieldPairs ) )
   {
@@ -178,35 +174,19 @@ void QgsPolymorphicRelation::addFieldPair( const QgsRelation::FieldPair &fieldPa
   updateRelationStatus();
 }
 
-QString QgsPolymorphicRelation::id() const
-{
-  return d->mRelationId;
-}
+QString QgsPolymorphicRelation::id() const { return d->mRelationId; }
 
 void QgsPolymorphicRelation::generateId()
 {
-  d->mRelationId = u"%1_%2_%3_%4"_s
-                   .arg( referencingLayerId(),
-                         d->mFieldPairs.at( 0 ).referencingField(),
-                         referencedLayerField(),
-                         d->mFieldPairs.at( 0 ).referencedField() );
+  d->mRelationId = u"%1_%2_%3_%4"_s.arg( referencingLayerId(), d->mFieldPairs.at( 0 ).referencingField(), referencedLayerField(), d->mFieldPairs.at( 0 ).referencedField() );
   updateRelationStatus();
 }
 
-QString QgsPolymorphicRelation::referencingLayerId() const
-{
-  return d->mReferencingLayerId;
-}
+QString QgsPolymorphicRelation::referencingLayerId() const { return d->mReferencingLayerId; }
 
-QgsVectorLayer *QgsPolymorphicRelation::referencingLayer() const
-{
-  return d->mReferencingLayer;
-}
+QgsVectorLayer *QgsPolymorphicRelation::referencingLayer() const { return d->mReferencingLayer; }
 
-QList<QgsRelation::FieldPair> QgsPolymorphicRelation::fieldPairs() const
-{
-  return d->mFieldPairs;
-}
+QList<QgsRelation::FieldPair> QgsPolymorphicRelation::fieldPairs() const { return d->mFieldPairs; }
 
 QgsAttributeList QgsPolymorphicRelation::referencedFields( const QString &layerId ) const
 {
@@ -237,7 +217,6 @@ QgsAttributeList QgsPolymorphicRelation::referencingFields() const
     attrs << d->mReferencingLayer->fields().lookupField( pair.first );
   }
   return attrs;
-
 }
 
 bool QgsPolymorphicRelation::isValid() const
@@ -247,9 +226,7 @@ bool QgsPolymorphicRelation::isValid() const
 
 bool QgsPolymorphicRelation::hasEqualDefinition( const QgsPolymorphicRelation &other ) const
 {
-  return d->mReferencedLayerField == other.d->mReferencedLayerField
-         && d->mReferencedLayerExpression == other.d->mReferencedLayerExpression
-         && d->mReferencingLayerId == other.d->mReferencingLayerId
+  return d->mReferencedLayerField == other.d->mReferencedLayerField && d->mReferencedLayerExpression == other.d->mReferencedLayerExpression && d->mReferencingLayerId == other.d->mReferencingLayerId
          && d->mFieldPairs == other.d->mFieldPairs;
 }
 
@@ -258,9 +235,7 @@ void QgsPolymorphicRelation::updateRelationStatus()
   const QMap<QString, QgsMapLayer *> &mapLayers = mContext.project()->mapLayers();
 
   d->mValid = true;
-  d->mReferencingLayer = mapLayers.contains( d->mReferencingLayerId )
-                         ? qobject_cast<QgsVectorLayer *>( mapLayers[d->mReferencingLayerId] )
-                         : nullptr;
+  d->mReferencingLayer = mapLayers.contains( d->mReferencingLayerId ) ? qobject_cast<QgsVectorLayer *>( mapLayers[d->mReferencingLayerId] ) : nullptr;
   d->mReferencedLayersMap.clear();
 
   if ( d->mRelationId.isEmpty() )
@@ -357,10 +332,7 @@ void QgsPolymorphicRelation::setReferencedLayerField( const QString &referencedL
   updateRelationStatus();
 }
 
-QString QgsPolymorphicRelation::referencedLayerField() const
-{
-  return d->mReferencedLayerField;
-}
+QString QgsPolymorphicRelation::referencedLayerField() const { return d->mReferencedLayerField; }
 
 void QgsPolymorphicRelation::setReferencedLayerExpression( const QString &referencedLayerExpression )
 {
@@ -369,10 +341,7 @@ void QgsPolymorphicRelation::setReferencedLayerExpression( const QString &refere
   updateRelationStatus();
 }
 
-QString QgsPolymorphicRelation::referencedLayerExpression() const
-{
-  return d->mReferencedLayerExpression;
-}
+QString QgsPolymorphicRelation::referencedLayerExpression() const { return d->mReferencedLayerExpression; }
 
 void QgsPolymorphicRelation::setReferencedLayerIds( const QStringList &referencedLayerIds )
 {
@@ -381,15 +350,9 @@ void QgsPolymorphicRelation::setReferencedLayerIds( const QStringList &reference
   updateRelationStatus();
 }
 
-QStringList QgsPolymorphicRelation::referencedLayerIds() const
-{
-  return d->mReferencedLayerIds;
-}
+QStringList QgsPolymorphicRelation::referencedLayerIds() const { return d->mReferencedLayerIds; }
 
-Qgis::RelationshipStrength QgsPolymorphicRelation::strength() const
-{
-  return d->mRelationStrength;
-}
+Qgis::RelationshipStrength QgsPolymorphicRelation::strength() const { return d->mRelationStrength; }
 
 void QgsPolymorphicRelation::setRelationStrength( Qgis::RelationshipStrength relationStrength )
 {

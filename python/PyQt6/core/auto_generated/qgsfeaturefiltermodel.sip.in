@@ -20,7 +20,6 @@ Features are fetched asynchronously.
 #include "qgsfeaturefiltermodel.h"
 %End
   public:
-
     explicit QgsFeatureFilterModel( QObject *parent = 0 );
 %Docstring
 Create a new QgsFeatureFilterModel, optionally specifying a ``parent``.

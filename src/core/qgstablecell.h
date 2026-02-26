@@ -39,9 +39,7 @@ class QgsReadWriteContext;
  */
 class CORE_EXPORT QgsTableCell
 {
-
   public:
-
     /**
      * Constructor for QgsTableCell, with the specified \a content.
      */
@@ -218,13 +216,12 @@ class CORE_EXPORT QgsTableCell
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    QString str = u"<QgsTableCell: %1>"_s.arg( sipCpp->content().toString() );
+    % MethodCode QString str = u"<QgsTableCell: %1>"_s.arg( sipCpp->content().toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-    % End
+  % End
 #endif
 
-  private:
+    private :
 
     QVariant mContent;
     QColor mBackgroundColor;
@@ -237,7 +234,6 @@ class CORE_EXPORT QgsTableCell
 
     int mRowSpan = 1;
     int mColumnSpan = 1;
-
 };
 
 /**

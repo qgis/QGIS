@@ -31,7 +31,6 @@ class CORE_EXPORT QgsMathUtils
     Q_GADGET
 
   public:
-
     /**
      * Converts a double \a value to a rational fraction.
      *
@@ -42,7 +41,6 @@ class CORE_EXPORT QgsMathUtils
      * \param maxIterations maximum number of iterations. Higher values result in better approximations, but at the cost of additional computation.
      */
     Q_INVOKABLE static void doubleToRational( double value, qlonglong &numerator SIP_OUT, qlonglong &denominator SIP_OUT, double tolerance = 1.0e-9, int maxIterations = 100 );
-
 };
 
 #endif // QGSMATHUTILS_H

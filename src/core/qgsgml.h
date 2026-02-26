@@ -54,7 +54,6 @@ class QTextCodec;
 class CORE_EXPORT QgsGmlStreamingParser
 {
   public:
-
     typedef QPair<QgsFeature *, QString> QgsGmlFeaturePtrGmlIdPair;
 
     /**
@@ -64,7 +63,6 @@ class CORE_EXPORT QgsGmlStreamingParser
     class LayerProperties
     {
       public:
-
         LayerProperties() = default;
 
         //! Layer name
@@ -85,18 +83,15 @@ class CORE_EXPORT QgsGmlStreamingParser
     } AxisOrientationLogic;
 
     //! Constructor
-    QgsGmlStreamingParser( const QString &typeName,
-                           const QString &geometryAttribute,
-                           const QgsFields &fields,
-                           AxisOrientationLogic axisOrientationLogic = Honour_EPSG_if_urn,
-                           bool invertAxisOrientation = false );
+    QgsGmlStreamingParser(
+      const QString &typeName, const QString &geometryAttribute, const QgsFields &fields, AxisOrientationLogic axisOrientationLogic = Honour_EPSG_if_urn, bool invertAxisOrientation = false
+    );
 
     //! Constructor for a join layer, or dealing with renamed fields
-    QgsGmlStreamingParser( const QList<LayerProperties> &layerProperties,
-                           const QgsFields &fields,
-                           const QMap< QString, QPair<QString, QString> > &fieldNameToSrcLayerNameFieldNameMap,
-                           AxisOrientationLogic axisOrientationLogic = Honour_EPSG_if_urn,
-                           bool invertAxisOrientation = false );
+    QgsGmlStreamingParser(
+      const QList<LayerProperties> &layerProperties, const QgsFields &fields, const QMap< QString, QPair<QString, QString> > &fieldNameToSrcLayerNameFieldNameMap,
+      AxisOrientationLogic axisOrientationLogic = Honour_EPSG_if_urn, bool invertAxisOrientation = false
+    );
     ~QgsGmlStreamingParser();
 
     QgsGmlStreamingParser( const QgsGmlStreamingParser &other ) = delete;
@@ -107,9 +102,7 @@ class CORE_EXPORT QgsGmlStreamingParser
      * content. Also provides a map from namespace prefix to namespace URI,
      * to help decoding the XPath.
      */
-    void setFieldsXPath(
-      const QMap<QString, QPair<QString, bool>> &fieldNameToSrcLayerNameFieldNameMap,
-      const QMap<QString, QString> &namespacePrefixToURIMap );
+    void setFieldsXPath( const QMap<QString, QPair<QString, bool>> &fieldNameToSrcLayerNameFieldNameMap, const QMap<QString, QString> &namespacePrefixToURIMap );
 
     /**
      * Process a new chunk of data. atEnd must be set to TRUE when this is
@@ -156,7 +149,6 @@ class CORE_EXPORT QgsGmlStreamingParser
     bool isTruncatedResponse() const { return mTruncatedResponse; }
 
   private:
-
     enum ParseMode
     {
       None,
@@ -165,7 +157,7 @@ class CORE_EXPORT QgsGmlStreamingParser
       Envelope,
       LowerCorner,
       UpperCorner,
-      Feature,  // feature element containing attrs and geo (inside gml:featureMember)
+      Feature, // feature element containing attrs and geo (inside gml:featureMember)
       Attribute,
       Tuple, // wfs:Tuple of a join layer
       FeatureTuple,
@@ -184,18 +176,9 @@ class CORE_EXPORT QgsGmlStreamingParser
     void startElement( const XML_Char *el, const XML_Char **attr );
     void endElement( const XML_Char *el );
     void characters( const XML_Char *chars, int len );
-    static void start( void *data, const XML_Char *el, const XML_Char **attr )
-    {
-      static_cast<QgsGmlStreamingParser *>( data )->startElement( el, attr );
-    }
-    static void end( void *data, const XML_Char *el )
-    {
-      static_cast<QgsGmlStreamingParser *>( data )->endElement( el );
-    }
-    static void chars( void *data, const XML_Char *chars, int len )
-    {
-      static_cast<QgsGmlStreamingParser *>( data )->characters( chars, len );
-    }
+    static void start( void *data, const XML_Char *el, const XML_Char **attr ) { static_cast<QgsGmlStreamingParser *>( data )->startElement( el, attr ); }
+    static void end( void *data, const XML_Char *el ) { static_cast<QgsGmlStreamingParser *>( data )->endElement( el ); }
+    static void chars( void *data, const XML_Char *chars, int len ) { static_cast<QgsGmlStreamingParser *>( data )->characters( chars, len ); }
 
     // Add mStringCash to the current json object
     void addStringContentToJson();
@@ -385,10 +368,7 @@ class CORE_EXPORT QgsGml : public QObject
 {
     Q_OBJECT
   public:
-    QgsGml(
-      const QString &typeName,
-      const QString &geometryAttribute,
-      const QgsFields &fields );
+    QgsGml( const QString &typeName, const QString &geometryAttribute, const QgsFields &fields );
 
     /**
      * Does the HTTP GET request to the WFS server
@@ -402,12 +382,9 @@ class CORE_EXPORT QgsGml : public QObject
      *  \returns 0 in case of success
      *  \note available in Python as getFeaturesUri
      */
-    int getFeatures( const QString &uri,
-                     Qgis::WkbType *wkbType,
-                     QgsRectangle *extent = nullptr,
-                     const QString &userName = QString(),
-                     const QString &password = QString(),
-                     const QString &authcfg = QString() ) SIP_PYNAME( getFeaturesUri );
+    int getFeatures(
+      const QString &uri, Qgis::WkbType *wkbType, QgsRectangle *extent = nullptr, const QString &userName = QString(), const QString &password = QString(), const QString &authcfg = QString()
+    ) SIP_PYNAME( getFeaturesUri );
 
     /**
      * Read from GML data.
@@ -459,7 +436,6 @@ class CORE_EXPORT QgsGml : public QObject
     void handleProgressEvent( qint64 progress, qint64 totalSteps );
 
   private:
-
     /**
      * This function evaluates the layer bounding box from the features and
      * sets it to mExtent.  Less efficient compared to reading the bbox from

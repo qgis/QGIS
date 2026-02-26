@@ -22,11 +22,7 @@ A representation of a single string replacement.
 #include "qgsstringutils.h"
 %End
   public:
-
-    QgsStringReplacement( const QString &match,
-                          const QString &replacement,
-                          bool caseSensitive = false,
-                          bool wholeWordOnly = false );
+    QgsStringReplacement( const QString &match, const QString &replacement, bool caseSensitive = false, bool wholeWordOnly = false );
 %Docstring
 Constructor for QgsStringReplacement.
 
@@ -99,7 +95,6 @@ A collection of string replacements (specified using
 #include "qgsstringutils.h"
 %End
   public:
-
     QgsStringReplacementCollection( const QList< QgsStringReplacement > &replacements = QList< QgsStringReplacement >() );
 %Docstring
 Constructor for QgsStringReplacementCollection
@@ -168,7 +163,6 @@ Utility functions for working with strings.
 #include "qgsstringutils.h"
 %End
   public:
-
     static QString capitalize( const QString &string, Qgis::Capitalization capitalization );
 %Docstring
 Converts a string by applying capitalization rules to the string.
@@ -418,8 +412,6 @@ Example usage:
 
 .. versionadded:: 4.0
 %End
-
-
 };
 
 /************************************************************************

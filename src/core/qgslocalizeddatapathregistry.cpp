@@ -27,10 +27,7 @@ using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryStringList *QgsLocalizedDataPathRegistry::settingsLocalizedDataPaths = new QgsSettingsEntryStringList( u"localized_data_paths"_s, QgsSettingsTree::sTreeQgis, QStringList() );
 
-QgsLocalizedDataPathRegistry::QgsLocalizedDataPathRegistry()
-{
-  readFromSettings();
-}
+QgsLocalizedDataPathRegistry::QgsLocalizedDataPathRegistry() { readFromSettings(); }
 
 QString QgsLocalizedDataPathRegistry::globalPath( const QString &relativePath ) const
 {
@@ -52,7 +49,6 @@ QString QgsLocalizedDataPathRegistry::localizedPath( const QString &fullPath ) c
       return basePath.relativeFilePath( fullPath );
 
   return QString();
-
 }
 
 QStringList QgsLocalizedDataPathRegistry::paths() const
@@ -109,12 +105,6 @@ void QgsLocalizedDataPathRegistry::unregisterPath( const QString &path )
   writeToSettings();
 }
 
-void QgsLocalizedDataPathRegistry::readFromSettings()
-{
-  setPaths( settingsLocalizedDataPaths->value() );
-}
+void QgsLocalizedDataPathRegistry::readFromSettings() { setPaths( settingsLocalizedDataPaths->value() ); }
 
-void QgsLocalizedDataPathRegistry::writeToSettings() const
-{
-  settingsLocalizedDataPaths->setValue( paths() );
-}
+void QgsLocalizedDataPathRegistry::writeToSettings() const { settingsLocalizedDataPaths->setValue( paths() ); }

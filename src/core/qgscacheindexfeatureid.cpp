@@ -21,18 +21,11 @@
 
 QgsCacheIndexFeatureId::QgsCacheIndexFeatureId( QgsVectorLayerCache *cachedVectorLayer )
   : C( cachedVectorLayer )
-{
+{}
 
-}
+void QgsCacheIndexFeatureId::flushFeature( const QgsFeatureId fid ) { Q_UNUSED( fid ) }
 
-void QgsCacheIndexFeatureId::flushFeature( const QgsFeatureId fid )
-{
-  Q_UNUSED( fid )
-}
-
-void QgsCacheIndexFeatureId::flush()
-{
-}
+void QgsCacheIndexFeatureId::flush() {}
 
 void QgsCacheIndexFeatureId::requestCompleted( const QgsFeatureRequest &featureRequest, const QgsFeatureIds &fids )
 {
@@ -76,4 +69,3 @@ bool QgsCacheIndexFeatureId::getCacheIterator( QgsFeatureIterator &featureIterat
 
   return false;
 }
-

@@ -84,7 +84,6 @@
 class CORE_EXPORT QgsFeatureRequest
 {
   public:
-
     /**
      * \ingroup core
      * \brief The OrderByClause class represents an order by clause for a QgsFeatureRequest.
@@ -110,7 +109,6 @@ class CORE_EXPORT QgsFeatureRequest
     class CORE_EXPORT OrderByClause
     {
       public:
-
         /**
          * Creates a new OrderByClause for a QgsFeatureRequest
          *
@@ -192,17 +190,9 @@ class CORE_EXPORT QgsFeatureRequest
 
         // friend inline int qHash(const OrderByClause &a) { return qHash(a.mExpression.expression()) ^ qHash(a.mAscending) ^ qHash( a.mNullsFirst); }
 
-        bool operator==( const OrderByClause &v ) const
-        {
-          return mExpression == v.mExpression &&
-                 mAscending == v.mAscending &&
-                 mNullsFirst == v.mNullsFirst;
-        }
+        bool operator==( const OrderByClause &v ) const { return mExpression == v.mExpression && mAscending == v.mAscending && mNullsFirst == v.mNullsFirst; }
 
-        bool operator!=( const OrderByClause &v ) const
-        {
-          return !( v == *this );
-        }
+        bool operator!=( const OrderByClause &v ) const { return !( v == *this ); }
 
       private:
         QgsExpression mExpression;
@@ -220,7 +210,6 @@ class CORE_EXPORT QgsFeatureRequest
     class OrderBy : public QList<QgsFeatureRequest::OrderByClause>
     {
       public:
-
         /**
          * Create a new empty order by
          */
@@ -491,20 +480,18 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest &setInvalidGeometryCallback( const std::function< void( const QgsFeature & )> &callback );
 #else
     QgsFeatureRequest &setInvalidGeometryCallback( SIP_PYCALLABLE / AllowNone / );
-    % MethodCode
-    Py_BEGIN_ALLOW_THREADS
+    % MethodCode Py_BEGIN_ALLOW_THREADS
 
-    sipCpp->setInvalidGeometryCallback( [a0]( const QgsFeature &arg )
-    {
-      SIP_BLOCK_THREADS
-      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
-      SIP_UNBLOCK_THREADS
-    } );
+        sipCpp->setInvalidGeometryCallback( [a0]( const QgsFeature &arg ) {
+          SIP_BLOCK_THREADS
+          Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
+          SIP_UNBLOCK_THREADS
+        } );
 
     sipRes = sipCpp;
 
     Py_END_ALLOW_THREADS
-    % End
+      % End
 #endif
 
     /**
@@ -567,7 +554,12 @@ class CORE_EXPORT QgsFeatureRequest
      * \returns The object the method is called on for chaining
      *
      */
-    QgsFeatureRequest &disableFilter() { mFilter = Qgis::FeatureRequestFilterType::NoFilter; mFilterExpression.reset(); return *this; }
+    QgsFeatureRequest &disableFilter()
+    {
+      mFilter = Qgis::FeatureRequestFilterType::NoFilter;
+      mFilterExpression.reset();
+      return *this;
+    }
 
     /**
      * Adds a new OrderByClause, appending it as the least important one.
@@ -843,20 +835,18 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest &setTransformErrorCallback( const std::function< void( const QgsFeature & )> &callback );
 #else
     QgsFeatureRequest &setTransformErrorCallback( SIP_PYCALLABLE / AllowNone / );
-    % MethodCode
-    Py_BEGIN_ALLOW_THREADS
+    % MethodCode Py_BEGIN_ALLOW_THREADS
 
-    sipCpp->setTransformErrorCallback( [a0]( const QgsFeature &arg )
-    {
-      SIP_BLOCK_THREADS
-      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
-      SIP_UNBLOCK_THREADS
-    } );
+        sipCpp->setTransformErrorCallback( [a0]( const QgsFeature &arg ) {
+          SIP_BLOCK_THREADS
+          Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
+          SIP_UNBLOCK_THREADS
+        } );
 
     sipRes = sipCpp;
 
     Py_END_ALLOW_THREADS
-    % End
+      % End
 #endif
 
     /**
@@ -975,7 +965,6 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeedback *feedback() const;
 
   protected:
-
     /**
      * Attribute/ID filter type.
      */

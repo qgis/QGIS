@@ -16,12 +16,6 @@
 
 #include "qgsselectioncontext.h"
 
-void QgsSelectionContext::setScale( double scale )
-{
-  mScale = scale;
-}
+void QgsSelectionContext::setScale( double scale ) { mScale = scale; }
 
-double QgsSelectionContext::scale() const
-{
-  return mScale;
-}
+double QgsSelectionContext::scale() const { return mScale; }

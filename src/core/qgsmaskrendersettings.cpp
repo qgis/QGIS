@@ -17,7 +17,4 @@
 
 QgsMaskRenderSettings::QgsMaskRenderSettings() = default;
 
-void QgsMaskRenderSettings::setSimplificationTolerance( double tolerance )
-{
-  mSimplifyTolerance = tolerance;
-}
+void QgsMaskRenderSettings::setSimplificationTolerance( double tolerance ) { mSimplifyTolerance = tolerance; }

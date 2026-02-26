@@ -28,8 +28,7 @@ QgsSqlExpressionCompiler::QgsSqlExpressionCompiler( const QgsFields &fields, Fla
   : mFields( fields )
   , mFlags( flags )
   , mIgnoreStaticNodes( ignoreStaticNodes )
-{
-}
+{}
 
 QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compile( const QgsExpression *exp )
 {
@@ -39,18 +38,12 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compile( const QgsExp
     return Fail;
 }
 
-QString QgsSqlExpressionCompiler::result()
-{
-  return mResult;
-}
+QString QgsSqlExpressionCompiler::result() { return mResult; }
 
 bool QgsSqlExpressionCompiler::opIsStringComparison( QgsExpressionNodeBinaryOperator::BinaryOperator op )
 {
-  if ( op == QgsExpressionNodeBinaryOperator::BinaryOperator::boILike ||
-       op == QgsExpressionNodeBinaryOperator::BinaryOperator::boLike ||
-       op == QgsExpressionNodeBinaryOperator::BinaryOperator::boNotILike ||
-       op == QgsExpressionNodeBinaryOperator::BinaryOperator::boNotLike ||
-       op == QgsExpressionNodeBinaryOperator::BinaryOperator::boRegexp )
+  if ( op == QgsExpressionNodeBinaryOperator::BinaryOperator::boILike || op == QgsExpressionNodeBinaryOperator::BinaryOperator::boLike || op == QgsExpressionNodeBinaryOperator::BinaryOperator::boNotILike
+       || op == QgsExpressionNodeBinaryOperator::BinaryOperator::boNotLike || op == QgsExpressionNodeBinaryOperator::BinaryOperator::boRegexp )
     return true;
   else
     return false;
@@ -100,8 +93,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
 
   // This is just to identify the most simple cases where nodes are numeric
   std::function<bool( const QgsExpressionNode * )> nodeIsNumeric;
-  nodeIsNumeric = [this, &nodeIsNumeric]( const QgsExpressionNode * node )
-  {
+  nodeIsNumeric = [this, &nodeIsNumeric]( const QgsExpressionNode *node ) {
     const QgsExpressionNode::NodeType nodeType { node->nodeType() };
 
     switch ( nodeType )
@@ -131,7 +123,6 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
       default:
         return false;
     }
-
   };
 
   switch ( node->nodeType() )
@@ -317,7 +308,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
       QString left;
       const Result lr( compileNode( n->opLeft(), left ) );
 
-      if ( opIsStringComparison( n ->op() ) )
+      if ( opIsStringComparison( n->op() ) )
         left = castToText( left );
 
       QString right;
@@ -537,10 +528,7 @@ QString QgsSqlExpressionCompiler::castToReal( const QString &value ) const
   return QString();
 }
 
-QString QgsSqlExpressionCompiler::castToText( const QString &value ) const
-{
-  return value;
-}
+QString QgsSqlExpressionCompiler::castToText( const QString &value ) const { return value; }
 
 QString QgsSqlExpressionCompiler::castToInt( const QString &value ) const
 {

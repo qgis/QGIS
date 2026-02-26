@@ -36,7 +36,6 @@ class QgsRenderContext;
 class CORE_EXPORT QgsMapUnitScale
 {
   public:
-
     /**
      * Constructor for QgsMapUnitScale
      * \param minScale minimum allowed scale, or 0.0 if no minimum scale set
@@ -86,22 +85,12 @@ class CORE_EXPORT QgsMapUnitScale
 
     bool operator==( const QgsMapUnitScale &other ) const
     {
-      return qgsDoubleNear( minScale, other.minScale )
-             && qgsDoubleNear( maxScale, other.maxScale )
-             && minSizeMMEnabled == other.minSizeMMEnabled
-             && qgsDoubleNear( minSizeMM, other.minSizeMM )
-             && maxSizeMMEnabled == other.maxSizeMMEnabled
-             && qgsDoubleNear( maxSizeMM, other.maxSizeMM );
+      return qgsDoubleNear( minScale, other.minScale ) && qgsDoubleNear( maxScale, other.maxScale ) && minSizeMMEnabled == other.minSizeMMEnabled && qgsDoubleNear( minSizeMM, other.minSizeMM )
+             && maxSizeMMEnabled == other.maxSizeMMEnabled && qgsDoubleNear( maxSizeMM, other.maxSizeMM );
     }
 
-    bool operator!=( const QgsMapUnitScale &other ) const
-    {
-      return !operator==( other );
-    }
+    bool operator!=( const QgsMapUnitScale &other ) const { return !operator==( other ); }
 };
 
 
 #endif // QGSMAPUNITSCALE_H
-
-
-
