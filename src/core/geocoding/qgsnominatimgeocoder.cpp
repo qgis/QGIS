@@ -47,10 +47,7 @@ QgsNominatimGeocoder::QgsNominatimGeocoder( const QString &countryCodes, const Q
     mEndpoint = endpoint;
 }
 
-QgsGeocoderInterface::Flags QgsNominatimGeocoder::flags() const
-{
-  return QgsGeocoderInterface::Flag::GeocodesStrings;
-}
+QgsGeocoderInterface::Flags QgsNominatimGeocoder::flags() const { return QgsGeocoderInterface::Flag::GeocodesStrings; }
 
 QgsFields QgsNominatimGeocoder::appendedFields() const
 {
@@ -71,10 +68,7 @@ QgsFields QgsNominatimGeocoder::appendedFields() const
   return fields;
 }
 
-Qgis::WkbType QgsNominatimGeocoder::wkbType() const
-{
-  return Qgis::WkbType::Point;
-}
+Qgis::WkbType QgsNominatimGeocoder::wkbType() const { return Qgis::WkbType::Point; }
 
 QList<QgsGeocoderResult> QgsNominatimGeocoder::geocodeString( const QString &string, const QgsGeocoderContext &context, QgsFeedback *feedback ) const
 {
@@ -177,9 +171,7 @@ QgsGeocoderResult QgsNominatimGeocoder::jsonToResult( const QVariantMap &json ) 
 
   const QgsGeometry geom = QgsGeometry::fromPointXY( QgsPointXY( longitude, latitude ) );
 
-  QgsGeocoderResult res( json.value( u"display_name"_s ).toString(),
-                         geom,
-                         QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  QgsGeocoderResult res( json.value( u"display_name"_s ).toString(), geom, QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
 
   QVariantMap attributes;
 
@@ -222,32 +214,17 @@ QgsGeocoderResult QgsNominatimGeocoder::jsonToResult( const QVariantMap &json ) 
   {
     const QVariantList boundingBox = json.value( u"boundingbox"_s ).toList();
     if ( boundingBox.size() == 4 )
-      res.setViewport( QgsRectangle( boundingBox.at( 2 ).toDouble(),
-                                     boundingBox.at( 0 ).toDouble(),
-                                     boundingBox.at( 3 ).toDouble(),
-                                     boundingBox.at( 1 ).toDouble() ) );
+      res.setViewport( QgsRectangle( boundingBox.at( 2 ).toDouble(), boundingBox.at( 0 ).toDouble(), boundingBox.at( 3 ).toDouble(), boundingBox.at( 1 ).toDouble() ) );
   }
 
   res.setAdditionalAttributes( attributes );
   return res;
 }
 
-QString QgsNominatimGeocoder::endpoint() const
-{
-  return mEndpoint;
-}
+QString QgsNominatimGeocoder::endpoint() const { return mEndpoint; }
 
-void QgsNominatimGeocoder::setEndpoint( const QString &endpoint )
-{
-  mEndpoint = endpoint;
-}
+void QgsNominatimGeocoder::setEndpoint( const QString &endpoint ) { mEndpoint = endpoint; }
 
-QString QgsNominatimGeocoder::countryCodes() const
-{
-  return mCountryCodes;
-}
+QString QgsNominatimGeocoder::countryCodes() const { return mCountryCodes; }
 
-void QgsNominatimGeocoder::setCountryCodes( const QString &countryCodes )
-{
-  mCountryCodes = countryCodes;
-}
+void QgsNominatimGeocoder::setCountryCodes( const QString &countryCodes ) { mCountryCodes = countryCodes; }

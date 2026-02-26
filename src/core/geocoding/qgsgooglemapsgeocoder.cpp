@@ -44,14 +44,9 @@ QgsGoogleMapsGeocoder::QgsGoogleMapsGeocoder( const QString &apiKey, const QStri
   , mApiKey( apiKey )
   , mRegion( regionBias )
   , mEndpoint( u"https://maps.googleapis.com/maps/api/geocode/json"_s )
-{
+{}
 
-}
-
-QgsGeocoderInterface::Flags QgsGoogleMapsGeocoder::flags() const
-{
-  return QgsGeocoderInterface::Flag::GeocodesStrings;
-}
+QgsGeocoderInterface::Flags QgsGoogleMapsGeocoder::flags() const { return QgsGeocoderInterface::Flag::GeocodesStrings; }
 
 QgsFields QgsGoogleMapsGeocoder::appendedFields() const
 {
@@ -71,10 +66,7 @@ QgsFields QgsGoogleMapsGeocoder::appendedFields() const
   return fields;
 }
 
-Qgis::WkbType QgsGoogleMapsGeocoder::wkbType() const
-{
-  return Qgis::WkbType::Point;
-}
+Qgis::WkbType QgsGoogleMapsGeocoder::wkbType() const { return Qgis::WkbType::Point; }
 
 QList<QgsGeocoderResult> QgsGoogleMapsGeocoder::geocodeString( const QString &string, const QgsGeocoderContext &context, QgsFeedback *feedback ) const
 {
@@ -153,7 +145,7 @@ QList<QgsGeocoderResult> QgsGoogleMapsGeocoder::geocodeString( const QString &st
   }
 
   QList< QgsGeocoderResult > matches;
-  matches.reserve( results.size( ) );
+  matches.reserve( results.size() );
   for ( const QVariant &result : results )
   {
     matches << jsonToResult( result.toMap() );
@@ -169,10 +161,7 @@ QUrl QgsGoogleMapsGeocoder::requestUrl( const QString &address, const QgsRectang
   QUrlQuery query;
   if ( !bounds.isNull() )
   {
-    query.addQueryItem( u"bounds"_s, u"%1,%2|%3,%4"_s.arg( bounds.yMinimum() )
-                        .arg( bounds.xMinimum() )
-                        .arg( bounds.yMaximum() )
-                        .arg( bounds.yMinimum() ) );
+    query.addQueryItem( u"bounds"_s, u"%1,%2|%3,%4"_s.arg( bounds.yMinimum() ).arg( bounds.xMinimum() ).arg( bounds.yMaximum() ).arg( bounds.yMinimum() ) );
   }
   if ( !mRegion.isEmpty() )
   {
@@ -236,9 +225,7 @@ QgsGeocoderResult QgsGoogleMapsGeocoder::jsonToResult( const QVariantMap &json )
 
   const QgsGeometry geom = QgsGeometry::fromPointXY( QgsPointXY( longitude, latitude ) );
 
-  QgsGeocoderResult res( json.value( u"formatted_address"_s ).toString(),
-                         geom,
-                         QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
+  QgsGeocoderResult res( json.value( u"formatted_address"_s ).toString(), geom, QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
 
   QVariantMap attributes;
 
@@ -255,16 +242,7 @@ QgsGeocoderResult QgsGoogleMapsGeocoder::jsonToResult( const QVariantMap &json )
     const QVariantMap componentMap = component.toMap();
     const QStringList types = componentMap.value( u"types"_s ).toStringList();
 
-    for ( const QString &t :
-          {
-            u"street_number"_s,
-            u"route"_s,
-            u"locality"_s,
-            u"administrative_area_level_2"_s,
-            u"administrative_area_level_1"_s,
-            u"country"_s,
-            u"postal_code"_s
-          } )
+    for ( const QString &t : { u"street_number"_s, u"route"_s, u"locality"_s, u"administrative_area_level_2"_s, u"administrative_area_level_1"_s, u"country"_s, u"postal_code"_s } )
     {
       if ( types.contains( t ) )
       {
@@ -280,38 +258,19 @@ QgsGeocoderResult QgsGoogleMapsGeocoder::jsonToResult( const QVariantMap &json )
     const QVariantMap viewport = geometry.value( u"viewport"_s ).toMap();
     const QVariantMap northEast = viewport.value( u"northeast"_s ).toMap();
     const QVariantMap southWest = viewport.value( u"southwest"_s ).toMap();
-    res.setViewport( QgsRectangle( southWest.value( u"lng"_s ).toDouble(),
-                                   southWest.value( u"lat"_s ).toDouble(),
-                                   northEast.value( u"lng"_s ).toDouble(),
-                                   northEast.value( u"lat"_s ).toDouble()
-                                 ) );
+    res.setViewport( QgsRectangle( southWest.value( u"lng"_s ).toDouble(), southWest.value( u"lat"_s ).toDouble(), northEast.value( u"lng"_s ).toDouble(), northEast.value( u"lat"_s ).toDouble() ) );
   }
 
   res.setAdditionalAttributes( attributes );
   return res;
 }
 
-void QgsGoogleMapsGeocoder::setEndpoint( const QString &endpoint )
-{
-  mEndpoint = endpoint;
-}
+void QgsGoogleMapsGeocoder::setEndpoint( const QString &endpoint ) { mEndpoint = endpoint; }
 
-QString QgsGoogleMapsGeocoder::apiKey() const
-{
-  return mApiKey;
-}
+QString QgsGoogleMapsGeocoder::apiKey() const { return mApiKey; }
 
-void QgsGoogleMapsGeocoder::setApiKey( const QString &apiKey )
-{
-  mApiKey = apiKey;
-}
+void QgsGoogleMapsGeocoder::setApiKey( const QString &apiKey ) { mApiKey = apiKey; }
 
-QString QgsGoogleMapsGeocoder::region() const
-{
-  return mRegion;
-}
+QString QgsGoogleMapsGeocoder::region() const { return mRegion; }
 
-void QgsGoogleMapsGeocoder::setRegion( const QString &region )
-{
-  mRegion = region;
-}
+void QgsGoogleMapsGeocoder::setRegion( const QString &region ) { mRegion = region; }
