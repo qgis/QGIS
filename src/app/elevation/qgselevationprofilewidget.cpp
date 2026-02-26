@@ -902,6 +902,12 @@ void QgsElevationProfileWidget::onTotalPendingJobsCountChanged( int count )
     mJobProgressBarTimer.stop();
     mLastJobTimeSeconds = mLastJobTime.elapsed() / 1000.0;
     mProgressPendingJobs->setVisible( false );
+
+    if ( mProfile )
+    {
+      const QgsDoubleRange elevationRange = mCanvas->dataElevationRange();
+      emit profileDataChanged( mProfile, elevationRange.lower(), elevationRange.upper() );
+    }
   }
 }
 
@@ -941,11 +947,13 @@ void QgsElevationProfileWidget::onCanvasPointHovered( const QgsPointXY &, const 
   if ( mapPoint.isEmpty() )
   {
     mMapPointRubberBand->hide();
+    emit profileCursorMoved( mProfile, QgsPointXY(), profilePoint );
   }
   else
   {
     mMapPointRubberBand->setToGeometry( mapPoint );
     mMapPointRubberBand->show();
+    emit profileCursorMoved( mProfile, QgsPointXY( mapPoint.asPoint() ), profilePoint );
   }
 }
 

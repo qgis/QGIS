@@ -205,6 +205,16 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     QgsDoubleRange visibleElevationRange() const;
 
     /**
+     * Returns elevation range of the computed profile results.
+     *
+     * Calculated from data, not from visible extent.
+     *
+     * \see visibleElevationRange()
+     * \since QGIS 4.2
+     */
+    QgsDoubleRange dataElevationRange() const;
+
+    /**
      * Returns a reference to the 2D plot used by the widget.
      *
      * \note Not available in Python bindings

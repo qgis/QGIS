@@ -252,6 +252,26 @@ class CORE_EXPORT QgsElevationProfile : public QObject
      */
     void useProjectLayerTreeChanged( bool useProjectTree );
 
+    /**
+     * Emitted when the profile curve is changed.
+     *
+     * \see profileCurve()
+     * \see setProfileCurve()
+     *
+     * \since QGIS 4.2
+     */
+    void profileCurveChanged();
+
+    /**
+     * Emitted when the profile tolerance is changed.
+     *
+     * \see tolerance()
+     * \see setTolerance()
+     *
+     * \since QGIS 4.2
+     */
+    void toleranceChanged( double tolerance );
+
   private slots:
 
     void dirtyProject();

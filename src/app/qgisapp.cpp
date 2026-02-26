@@ -13533,6 +13533,12 @@ Qgs3DMapCanvasWidget *QgisApp::createNew3DMapCanvasDock( const QString &name, bo
   widget->setMainCanvas( mMapCanvas );
   widget->mapCanvas3D()->setTemporalController( mTemporalControllerWidget->temporalController() );
 
+  for ( QgsElevationProfileWidget *profileWidget : std::as_const( mElevationProfileWidgets ) )
+  {
+    connect( profileWidget, &QgsElevationProfileWidget::profileDataChanged, widget, &Qgs3DMapCanvasWidget::setProfileData );
+    connect( profileWidget, &QgsElevationProfileWidget::profileCursorMoved, widget, &Qgs3DMapCanvasWidget::updateProfileCursorPosition );
+  }
+
   return widget;
 #else
   Q_UNUSED( name );
@@ -13573,6 +13579,15 @@ QgsElevationProfileWidget *QgisApp::openElevationProfile( QgsElevationProfile *p
   connect( widget, &QgsElevationProfileWidget::destroyed, this, [this, widget] {
     mElevationProfileWidgets.remove( widget );
   } );
+
+#ifdef HAVE_3D
+  // Connect the new elevation profile widget's signals to all open 3D map views
+  for ( Qgs3DMapCanvasWidget *canvasWidget : std::as_const( mOpen3DMapViews ) )
+  {
+    connect( widget, &QgsElevationProfileWidget::profileDataChanged, canvasWidget, &Qgs3DMapCanvasWidget::setProfileData );
+    connect( widget, &QgsElevationProfileWidget::profileCursorMoved, canvasWidget, &Qgs3DMapCanvasWidget::updateProfileCursorPosition );
+  }
+#endif
 
   mElevationProfileWidgets.insert( widget );
 
