@@ -25,7 +25,6 @@ class is passed in the method :py:func:`QgsMeshEditor.advancedEdit()`.
 #include "qgsmeshadvancedediting.h"
 %End
   public:
-
     QgsMeshAdvancedEditing();
     virtual ~QgsMeshAdvancedEditing();
 
@@ -65,6 +64,14 @@ Default implementation return a void string.
 
   protected:
 
+    virtual QgsTopologicalMesh::Changes apply( QgsMeshEditor *meshEditor ) = 0;
+%Docstring
+Apply a change to ``mesh`` Editor. This method is called by the
+:py:class:`QgsMeshEditor` to apply the editing on the topological mesh
+
+The method has to be implemented in the derived class to provide the
+changes of the advanced editing
+%End
 };
 
 class QgsMeshEditRefineFaces : QgsMeshAdvancedEditing
@@ -90,7 +97,6 @@ triangulated to take account of the new vertex in the shared edge.
 #include "qgsmeshadvancedediting.h"
 %End
   public:
-
     QgsMeshEditRefineFaces();
 
     virtual QString text() const;
@@ -127,7 +133,6 @@ $vertex_x <= 100 , $vertex_z + 80 , $vertex_z - 150)"
 #include "qgsmeshadvancedediting.h"
 %End
   public:
-
     QgsMeshTransformVerticesByExpression();
 
     virtual QString text() const;

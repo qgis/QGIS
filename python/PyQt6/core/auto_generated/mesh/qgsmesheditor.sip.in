@@ -22,7 +22,6 @@ Represents an error which occurred during mesh editing.
 #include "qgsmesheditor.h"
 %End
   public:
-
     QgsMeshEditingError();
 %Docstring
 Constructor of the default error, that is NoError
@@ -54,12 +53,16 @@ Handles edit operations on a mesh layer.
 #include "qgsmesheditor.h"
 %End
   public:
-
     QgsMeshEditor( QgsMeshLayer *meshLayer );
 %Docstring
 Constructor with a specified layer ``meshLayer``
 %End
 
+    QgsMeshEditor( QgsMesh *nativeMesh, QgsTriangularMesh *triangularMesh, QObject *parent = 0 );
+%Docstring
+Constructor with a specific mesh ``nativeMesh`` and an associated
+triangular mesh ``triangularMesh``
+%End
 
 
     std::unique_ptr< QgsMeshDatasetGroup > createZValueDatasetGroup();
@@ -96,7 +99,11 @@ the fix fails
 .. versionadded:: 3.28
 %End
 
-    bool faceCanBeAdded( const QgsMeshFace &face ) const;
+    void resetTriangularMesh( QgsTriangularMesh *triangularMesh );
+%Docstring
+Resets the triangular mesh
+%End
+    bool
 %Docstring
 Returns ``True`` if a ``face`` can be added to the mesh
 
@@ -104,14 +111,31 @@ Returns ``True`` if a ``face`` can be added to the mesh
 
    All vertices related to this face must be already in the mesh.
 %End
+      faceCanBeAdded( const QgsMeshFace &face ) const;
 
-    bool isFaceGeometricallyCompatible( const QgsMeshFace &face ) const;
+    bool faceCanBeAddedWithNewVertices( const QList<int> &verticesIndex, const QList<QgsMeshVertex> &newVertices ) const;
+%Docstring
+Returns ``True`` if a face formed by some vertices can be added to the
+mesh. The vertices are defined by ``verticesIndex`` that contains the
+index of already existing vertices or the value -1 if the vertex is not
+existing for now in the mesh. The positions of new vertices are stored
+in ``newVertices`` sorted by their positions in the face.
+
+.. versionadded:: 3.30
+%End
+    bool
 %Docstring
 Returns ``True`` if the face does not intersect or contains any other
 elements (faces or vertices) The topological compatibility is not
 checked
 %End
+      isFaceGeometricallyCompatible( const QgsMeshFace &face ) const;
 
+    QgsMeshEditingError addFaces( const QVector<QgsMeshFace> &faces );
+%Docstring
+Adds faces ``faces`` to the mesh, returns topological errors if this
+operation fails (operation is not realized)
+%End
     QgsMeshEditingError addFace( const QVector<int> &vertexIndexes );
 %Docstring
 Adds a face ``face`` to the mesh with vertex indexes ``vertexIndexes``,
@@ -119,6 +143,17 @@ returns topological errors if this operation fails (operation is not
 realized)
 %End
 
+    QgsMeshEditingError addFaceWithNewVertices( const QList<int> &vertexIndexes, const QList<QgsMeshVertex> &newVertices );
+%Docstring
+Adds a face formed by some vertices ``vertexIndexes`` to the mesh,
+returns topological errors if this operation fails (operation is not
+realized) The vertices are defined by ``verticesIndex`` that contains
+the index of already existing vertices or the value -1 if the vertex is
+not existing for now in the mesh. The positions of new vertices are
+stored in ``newVertices`` sorted by their positions in the face.
+
+.. versionadded:: 3.30
+%End
     QgsMeshEditingError removeFaces( const QList<int> &facesToRemove );
 %Docstring
 Removes faces ``faces`` to the mesh, returns topological errors if this
@@ -159,7 +194,20 @@ Splits faces with index ``faceIndexes``. Only faces that can be split
 are split. Returns the count of faces effictively split
 %End
 
-    int addPointsAsVertices( const QVector<QgsPoint> &point, double tolerance );
+    int addVertices( const QVector<QgsMeshVertex> &vertices, double tolerance );
+%Docstring
+Adds vertices in triangular mesh coordinate in the mesh. Vertex is
+effectivly added if the transform from triangular coordinate to layer
+coordinate succeeds or if any vertices are next the added vertex (under
+``tolerance`` distance). The method returns the number of vertices
+effectivly added.
+
+.. note::
+
+   this operation remove including face if exists and replace it by new faces surrounding the vertex
+   if the mesh hasn't topological error before this operation, the toological operation always succeed.
+%End
+    int
 %Docstring
 Adds points as vertices in triangular mesh coordinate in the mesh.
 Vertex is effectivly added if the transform from triangular coordinate
@@ -172,6 +220,7 @@ vertices effectivly added.
    this operation remove including face if exists and replace it by new faces surrounding the vertex
    if the mesh hasn't topological error before this operation, the toological operation always succeed
 %End
+      addPointsAsVertices( const QVector<QgsPoint> &point, double tolerance );
 
     QgsMeshEditingError removeVerticesWithoutFillHoles( const QList<int> &verticesToRemoveIndexes );
 %Docstring
@@ -199,13 +248,30 @@ Changes the Z values of the vertices with indexes in ``vertices``
 indexes with the values in ``newValues``
 %End
 
-    void changeXYValues( const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
+    bool canBeTransformed( const QList<int> &facesToCheck, const std::function<const QgsMeshVertex( int )> &transformFunction ) const;
+%Docstring
+Returns ``True`` if faces with index in ``transformedFaces`` can be
+transformed without obtaining topologic or geometrical errors
+considering the transform function ``transformFunction``
+
+The transform function takes a vertex index in parameter and return a
+:py:class:`QgsMeshVertex` object with transformed coordinates. This
+transformation is done in layer coordinates
+
+.. note::
+
+   Even only the faces with indexes in ``facesToCheck`` are checked to avoid testing all the mesh,
+   all the mesh are supposed to path through this transform function (but it is possible that transform function is not able to transform all vertices).
+   Moving free vertices of the mesh is also checked.
+%End
+    void
 %Docstring
 Changes the (X,Y) coordinates values of the vertices with indexes in
 ``verticesIndexes`` with the values in ``newValues``. The caller has the
 responsibility to check if changing the vertices coordinates does not
 lead to topological errors. New values are in layer CRS.
 %End
+      changeXYValues( const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
 
     void changeCoordinates( const QList<int> &verticesIndexes, const QList<QgsPoint> &newCoordinates );
 %Docstring
@@ -263,6 +329,26 @@ Returns whether the vertex with index ``vertexIndex`` is on a boundary
 Returns whether the vertex with index ``vertexIndex`` is a free vertex
 %End
 
+    QgsMeshVertexCirculator vertexCirculator( int vertexIndex ) const;
+%Docstring
+Returns a vertex circulator linked to this mesh around the vertex with
+index ``vertexIndex``. If the vertex does not exist or is a free vertex,
+the cirxulator is invalid. If :py:func:`~QgsMeshEditor.stopEditing` is
+called, circulator created before and new circulator are valid and must
+not be used. It is recommended to destruct all circulator created before
+calling any edit methods or :py:func:`~QgsMeshEditor.stopEditing` to
+save memory usage. Calling :py:func:`~QgsMeshEditor.initialize` allows
+creation of new circulator after :py:func:`~QgsMeshEditor.stopEditing`
+is called.
+%End
+    QgsTopologicalMesh &topologicalMesh();
+%Docstring
+Returns a reference to the topological mesh
+%End
+    QgsTriangularMesh *triangularMesh();
+%Docstring
+Returns a pointer to the triangular mesh
+%End
     bool checkConsistency( QgsMeshEditingError &error ) const;
 %Docstring
 Return ``True`` if the edited mesh is consistent

@@ -27,8 +27,8 @@
 
 using namespace Qt::StringLiterals;
 
-QgsMeshLayerTemporalProperties::QgsMeshLayerTemporalProperties( QObject *parent, bool enabled ):
-  QgsMapLayerTemporalProperties( parent, enabled )
+QgsMeshLayerTemporalProperties::QgsMeshLayerTemporalProperties( QObject *parent, bool enabled )
+  : QgsMapLayerTemporalProperties( parent, enabled )
 {}
 
 QDomElement QgsMeshLayerTemporalProperties::writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context )
@@ -59,16 +59,14 @@ bool QgsMeshLayerTemporalProperties::readXml( const QDomElement &element, const 
 
   mReferenceTime = QDateTime::fromString( temporalElement.attribute( u"reference-time"_s ), Qt::ISODate );
 
-  if ( temporalElement.hasAttribute( u"start-time-extent"_s )
-       && temporalElement.hasAttribute( u"end-time-extent"_s ) )
+  if ( temporalElement.hasAttribute( u"start-time-extent"_s ) && temporalElement.hasAttribute( u"end-time-extent"_s ) )
   {
     const QDateTime start = QDateTime::fromString( temporalElement.attribute( u"start-time-extent"_s ), Qt::ISODate );
     const QDateTime end = QDateTime::fromString( temporalElement.attribute( u"end-time-extent"_s ), Qt::ISODate );
     mTimeExtent = QgsDateTimeRange( start, end );
   }
 
-  mMatchingMethod = static_cast<QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod>(
-                      temporalElement.attribute( u"matching-method"_s ).toInt() );
+  mMatchingMethod = static_cast<QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod>( temporalElement.attribute( u"matching-method"_s ).toInt() );
 
   mIsValid = true;
   return true;
@@ -76,8 +74,7 @@ bool QgsMeshLayerTemporalProperties::readXml( const QDomElement &element, const 
 
 void QgsMeshLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabilities( const QgsDataProviderTemporalCapabilities *capabilities )
 {
-  const QgsMeshDataProviderTemporalCapabilities *temporalCapabilities =
-    static_cast<const QgsMeshDataProviderTemporalCapabilities *>( capabilities );
+  const QgsMeshDataProviderTemporalCapabilities *temporalCapabilities = static_cast<const QgsMeshDataProviderTemporalCapabilities *>( capabilities );
 
   setIsActive( temporalCapabilities->hasTemporalCapabilities() );
   mReferenceTime = temporalCapabilities->referenceTime();
@@ -88,20 +85,11 @@ void QgsMeshLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabili
   mIsValid = true;
 }
 
-QgsDateTimeRange QgsMeshLayerTemporalProperties::calculateTemporalExtent( QgsMapLayer * ) const
-{
-  return mTimeExtent;
-}
+QgsDateTimeRange QgsMeshLayerTemporalProperties::calculateTemporalExtent( QgsMapLayer * ) const { return mTimeExtent; }
 
-QgsDateTimeRange QgsMeshLayerTemporalProperties::timeExtent() const
-{
-  return mTimeExtent;
-}
+QgsDateTimeRange QgsMeshLayerTemporalProperties::timeExtent() const { return mTimeExtent; }
 
-QDateTime QgsMeshLayerTemporalProperties::referenceTime() const
-{
-  return mReferenceTime;
-}
+QDateTime QgsMeshLayerTemporalProperties::referenceTime() const { return mReferenceTime; }
 
 void QgsMeshLayerTemporalProperties::setReferenceTime( const QDateTime &referenceTime, const QgsDataProviderTemporalCapabilities *capabilities )
 {
@@ -115,32 +103,14 @@ void QgsMeshLayerTemporalProperties::setReferenceTime( const QDateTime &referenc
     mTimeExtent = QgsDateTimeRange( referenceTime, referenceTime );
 }
 
-QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod QgsMeshLayerTemporalProperties::matchingMethod() const
-{
-  return mMatchingMethod;
-}
+QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod QgsMeshLayerTemporalProperties::matchingMethod() const { return mMatchingMethod; }
 
-void QgsMeshLayerTemporalProperties::setMatchingMethod( const QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod &matchingMethod )
-{
-  mMatchingMethod = matchingMethod;
-}
+void QgsMeshLayerTemporalProperties::setMatchingMethod( const QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod &matchingMethod ) { mMatchingMethod = matchingMethod; }
 
-bool QgsMeshLayerTemporalProperties::isValid() const
-{
-  return mIsValid;
-}
+bool QgsMeshLayerTemporalProperties::isValid() const { return mIsValid; }
 
-void QgsMeshLayerTemporalProperties::setIsValid( bool isValid )
-{
-  mIsValid = isValid;
-}
+void QgsMeshLayerTemporalProperties::setIsValid( bool isValid ) { mIsValid = isValid; }
 
-bool QgsMeshLayerTemporalProperties::alwaysLoadReferenceTimeFromSource() const
-{
-  return mAlwaysLoadReferenceTimeFromSource;
-}
+bool QgsMeshLayerTemporalProperties::alwaysLoadReferenceTimeFromSource() const { return mAlwaysLoadReferenceTimeFromSource; }
 
-void QgsMeshLayerTemporalProperties::setAlwaysLoadReferenceTimeFromSource( bool autoReloadFromProvider )
-{
-  mAlwaysLoadReferenceTimeFromSource = autoReloadFromProvider;
-}
+void QgsMeshLayerTemporalProperties::setAlwaysLoadReferenceTimeFromSource( bool autoReloadFromProvider ) { mAlwaysLoadReferenceTimeFromSource = autoReloadFromProvider; }

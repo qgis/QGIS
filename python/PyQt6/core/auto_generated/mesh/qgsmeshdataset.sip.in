@@ -47,8 +47,9 @@ Returns a dataset index within :py:func:`~QgsMeshDatasetIndex.group`
 Returns whether index is valid, ie at least groups is set
 %End
 
-    bool operator == ( QgsMeshDatasetIndex other ) const;
-    bool operator != ( QgsMeshDatasetIndex other ) const;
+    bool operator==( QgsMeshDatasetIndex other ) const;
+    bool operator!=( QgsMeshDatasetIndex other ) const;
+
 };
 
 class QgsMeshDatasetValue
@@ -69,8 +70,7 @@ Values may be scalar or vector. Nodata values are represented by NaNs.
 #include "qgsmeshdataset.h"
 %End
   public:
-    QgsMeshDatasetValue( double x,
-                         double y );
+    QgsMeshDatasetValue( double x, double y );
 %Docstring
 Constructor for vector value
 %End
@@ -392,7 +392,6 @@ vector or scalar, name.
 #include "qgsmeshdataset.h"
 %End
   public:
-
     enum DataType /BaseType=IntEnum/
     {
       DataOnFaces,
@@ -406,16 +405,10 @@ vector or scalar, name.
 Constructs an empty metadata object
 %End
 
-    QgsMeshDatasetGroupMetadata( const QString &name,
-                                 const QString uri,
-                                 bool isScalar,
-                                 DataType dataType,
-                                 double minimum,
-                                 double maximum,
-                                 int maximumVerticalLevels,
-                                 const QDateTime &referenceTime,
-                                 bool isTemporal,
-                                 const QMap<QString, QString> &extraOptions );
+    QgsMeshDatasetGroupMetadata(
+      const QString &name, const QString uri, bool isScalar, DataType dataType, double minimum, double maximum, int maximumVerticalLevels, const QDateTime &referenceTime, bool isTemporal,
+      const QMap<QString, QString> &extraOptions
+    );
 %Docstring
 Constructs a valid metadata object
 
@@ -541,12 +534,7 @@ the associated time.
 Constructs an empty metadata object
 %End
 
-    QgsMeshDatasetMetadata( double time,
-                            bool isValid,
-                            double minimum,
-                            double maximum,
-                            int maximumVerticalLevels
-                          );
+    QgsMeshDatasetMetadata( double time, bool isValid, double minimum, double maximum, int maximumVerticalLevels );
 %Docstring
 Constructs a valid metadata object
 
@@ -602,7 +590,6 @@ Abstract class that represents a mesh dataset.
 #include "qgsmeshdataset.h"
 %End
   public:
-
     QgsMeshDataset();
 
     virtual ~QgsMeshDataset();
@@ -650,7 +637,6 @@ Abstract class that represents a dataset group.
 #include "qgsmeshdataset.h"
 %End
   public:
-
     enum Type /BaseType=IntEnum/
     {
       Unknown,
@@ -832,16 +818,12 @@ represented by these items.
 #include "qgsmeshdataset.h"
 %End
   public:
-
     QgsMeshDatasetGroupTreeItem();
 %Docstring
 Constructor for an empty dataset group tree item
 %End
 
-    QgsMeshDatasetGroupTreeItem( const QString &defaultName,
-                                 const QString &sourceName,
-                                 bool isVector,
-                                 int index );
+    QgsMeshDatasetGroupTreeItem( const QString &defaultName, const QString &sourceName, bool isVector, int index );
 %Docstring
 Constructor
 

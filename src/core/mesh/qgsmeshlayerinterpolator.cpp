@@ -34,20 +34,16 @@
 #include "qgsrendercontext.h"
 
 QgsMeshLayerInterpolator::QgsMeshLayerInterpolator(
-  const QgsTriangularMesh &m,
-  const QVector<double> &datasetValues,
-  const QgsMeshDataBlock &activeFaceFlagValues,
-  QgsMeshDatasetGroupMetadata::DataType dataType,
-  const QgsRenderContext &context,
-  const QSize &size )
-  : mTriangularMesh( m ),
-    mDatasetValues( datasetValues ),
-    mActiveFaceFlagValues( activeFaceFlagValues ),
-    mContext( context ),
-    mDataType( dataType ),
-    mOutputSize( size )
-{
-}
+  const QgsTriangularMesh &m, const QVector<double> &datasetValues, const QgsMeshDataBlock &activeFaceFlagValues, QgsMeshDatasetGroupMetadata::DataType dataType, const QgsRenderContext &context,
+  const QSize &size
+)
+  : mTriangularMesh( m )
+  , mDatasetValues( datasetValues )
+  , mActiveFaceFlagValues( activeFaceFlagValues )
+  , mContext( context )
+  , mDataType( dataType )
+  , mOutputSize( size )
+{}
 
 QgsMeshLayerInterpolator::~QgsMeshLayerInterpolator() = default;
 
@@ -57,22 +53,16 @@ QgsRasterInterface *QgsMeshLayerInterpolator::clone() const
   return nullptr;
 }
 
-Qgis::DataType QgsMeshLayerInterpolator::dataType( int ) const
-{
-  return Qgis::DataType::Float64;
-}
+Qgis::DataType QgsMeshLayerInterpolator::dataType( int ) const { return Qgis::DataType::Float64; }
 
-int QgsMeshLayerInterpolator::bandCount() const
-{
-  return 1;
-}
+int QgsMeshLayerInterpolator::bandCount() const { return 1; }
 
 QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   auto outputBlock = std::make_unique<QgsRasterBlock>( Qgis::DataType::Float64, width, height );
   const double noDataValue = std::numeric_limits<double>::quiet_NaN();
   outputBlock->setNoDataValue( noDataValue );
-  outputBlock->setIsNoData();  // assume initially that all values are unset
+  outputBlock->setIsNoData(); // assume initially that all values are unset
   double *data = reinterpret_cast<double *>( outputBlock->bits() );
 
   QList<int> spatialIndexTriangles;
@@ -156,23 +146,10 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
         double val;
         const QgsPointXY p = mContext.mapToPixel().toMapCoordinates( k / pixelRatio, j / pixelRatio );
         if ( mDataType == QgsMeshDatasetGroupMetadata::DataType::DataOnVertices )
-          val = QgsMeshLayerUtils::interpolateFromVerticesData(
-                  p1,
-                  p2,
-                  p3,
-                  value1,
-                  value2,
-                  value3,
-                  p );
+          val = QgsMeshLayerUtils::interpolateFromVerticesData( p1, p2, p3, value1, value2, value3, p );
         else
         {
-          val = QgsMeshLayerUtils::interpolateFromFacesData(
-                  p1,
-                  p2,
-                  p3,
-                  value,
-                  p
-                );
+          val = QgsMeshLayerUtils::interpolateFromFacesData( p1, p2, p3, value, p );
         }
         if ( !std::isnan( val ) )
         {
@@ -193,10 +170,7 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
   return outputBlock.release();
 }
 
-void QgsMeshLayerInterpolator::setSpatialIndexActive( bool active )
-{
-  mSpatialIndexActive = active;
-}
+void QgsMeshLayerInterpolator::setSpatialIndexActive( bool active ) { mSpatialIndexActive = active; }
 
 void QgsMeshLayerInterpolator::setElevationMapSettings( bool renderElevationMap, double elevationScale, double elevationOffset )
 {

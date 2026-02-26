@@ -59,7 +59,6 @@ typedef QPair<int, int> QgsMeshEdge;
 class CORE_EXPORT QgsMeshUtils
 {
   public:
-
     /**
      * Exports mesh layer's dataset values as raster block
      *
@@ -78,13 +77,8 @@ class CORE_EXPORT QgsMeshUtils
      * \since QGIS 3.6
      */
     static QgsRasterBlock *exportRasterBlock(
-      const QgsMeshLayer &layer,
-      const QgsMeshDatasetIndex &datasetIndex,
-      const QgsCoordinateReferenceSystem &destinationCrs,
-      const QgsCoordinateTransformContext &transformContext,
-      double mapUnitsPerPixel,
-      const QgsRectangle &extent,
-      QgsRasterBlockFeedback *feedback = nullptr
+      const QgsMeshLayer &layer, const QgsMeshDatasetIndex &datasetIndex, const QgsCoordinateReferenceSystem &destinationCrs, const QgsCoordinateTransformContext &transformContext,
+      double mapUnitsPerPixel, const QgsRectangle &extent, QgsRasterBlockFeedback *feedback = nullptr
     ) SIP_FACTORY;
 
 
@@ -104,14 +98,8 @@ class CORE_EXPORT QgsMeshUtils
      * \since QGIS 3.18
      */
     static QgsRasterBlock *exportRasterBlock(
-      const QgsTriangularMesh &triangularMesh,
-      const QgsMeshDataBlock &datasetValues,
-      const QgsMeshDataBlock &activeFlags,
-      const QgsMeshDatasetGroupMetadata::DataType dataType,
-      const QgsCoordinateTransform &transform,
-      double mapUnitsPerPixel,
-      const QgsRectangle &extent,
-      QgsRasterBlockFeedback *feedback = nullptr
+      const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetValues, const QgsMeshDataBlock &activeFlags, const QgsMeshDatasetGroupMetadata::DataType dataType,
+      const QgsCoordinateTransform &transform, double mapUnitsPerPixel, const QgsRectangle &extent, QgsRasterBlockFeedback *feedback = nullptr
     ) SIP_SKIP;
 
     /**
@@ -165,7 +153,7 @@ class CORE_EXPORT QgsMeshUtils
      * \note Not available in Python bindings
      * \since QGIS 3.12
     */
-    SIP_SKIP static bool isInTriangleFace( const QgsPointXY point, const QgsMeshFace &face,  const QVector<QgsMeshVertex> &vertices );
+    SIP_SKIP static bool isInTriangleFace( const QgsPointXY point, const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices );
 
     /**
      * Checks if the triangle is counter clockwise, if not sets it counter clockwise
@@ -173,7 +161,6 @@ class CORE_EXPORT QgsMeshUtils
      * \since QGIS 3.22
     */
     SIP_SKIP static void setCounterClockwise( QgsMeshFace &triangle, const QgsMeshVertex &v0, const QgsMeshVertex &v1, const QgsMeshVertex &v2 );
-
 };
 
 #endif // QGSMESHUTILS_H

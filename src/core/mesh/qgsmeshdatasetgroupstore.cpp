@@ -31,29 +31,17 @@
 
 using namespace Qt::StringLiterals;
 
-QList<int> QgsMeshDatasetGroupStore::datasetGroupIndexes() const
-{
-  return mRegistry.keys();
-}
+QList<int> QgsMeshDatasetGroupStore::datasetGroupIndexes() const { return mRegistry.keys(); }
 
-QList<int> QgsMeshDatasetGroupStore::enabledDatasetGroupIndexes() const
-{
-  return mDatasetGroupTreeRootItem->enabledDatasetGroupIndexes();
-}
+QList<int> QgsMeshDatasetGroupStore::enabledDatasetGroupIndexes() const { return mDatasetGroupTreeRootItem->enabledDatasetGroupIndexes(); }
 
-int QgsMeshDatasetGroupStore::datasetGroupCount() const
-{
-  return mRegistry.count();
-}
+int QgsMeshDatasetGroupStore::datasetGroupCount() const { return mRegistry.count(); }
 
-int QgsMeshDatasetGroupStore::extraDatasetGroupCount() const
-{
-  return mExtraDatasets.datasetGroupCount();
-}
+int QgsMeshDatasetGroupStore::extraDatasetGroupCount() const { return mExtraDatasets.datasetGroupCount(); }
 
-QgsMeshDatasetGroupStore::QgsMeshDatasetGroupStore( QgsMeshLayer *layer ):
-  mLayer( layer ),
-  mDatasetGroupTreeRootItem( new QgsMeshDatasetGroupTreeItem )
+QgsMeshDatasetGroupStore::QgsMeshDatasetGroupStore( QgsMeshLayer *layer )
+  : mLayer( layer )
+  , mDatasetGroupTreeRootItem( new QgsMeshDatasetGroupTreeItem )
 {}
 
 void QgsMeshDatasetGroupStore::setPersistentProvider( QgsMeshDataProvider *provider, const QStringList &extraDatasetUri )
@@ -81,16 +69,13 @@ void QgsMeshDatasetGroupStore::setPersistentProvider( QgsMeshDataProvider *provi
   connect( mPersistentProvider, &QgsMeshDataProvider::datasetGroupsAdded, this, &QgsMeshDatasetGroupStore::onPersistentDatasetAdded );
 }
 
-QgsMeshDatasetGroupStore::DatasetGroup QgsMeshDatasetGroupStore::datasetGroup( int index ) const
-{
-  return mRegistry.value( index, DatasetGroup{nullptr, -1} );
-}
+QgsMeshDatasetGroupStore::DatasetGroup QgsMeshDatasetGroupStore::datasetGroup( int index ) const { return mRegistry.value( index, DatasetGroup { nullptr, -1 } ); }
 
 bool QgsMeshDatasetGroupStore::addPersistentDatasets( const QString &path )
 {
   if ( !mPersistentProvider )
     return false;
-  return mPersistentProvider->addDataset( path ) ;
+  return mPersistentProvider->addDataset( path );
 }
 
 bool QgsMeshDatasetGroupStore::addDatasetGroup( std::unique_ptr<QgsMeshDatasetGroup> group )
@@ -101,24 +86,24 @@ bool QgsMeshDatasetGroupStore::addDatasetGroup( std::unique_ptr<QgsMeshDatasetGr
   switch ( group->dataType() )
   {
     case QgsMeshDatasetGroupMetadata::DataOnFaces:
-      if ( ! group->checkValueCountPerDataset( mLayer->meshFaceCount() ) )
+      if ( !group->checkValueCountPerDataset( mLayer->meshFaceCount() ) )
         return false;
       break;
     case QgsMeshDatasetGroupMetadata::DataOnVertices:
-      if ( ! group->checkValueCountPerDataset( mLayer->meshVertexCount() ) )
+      if ( !group->checkValueCountPerDataset( mLayer->meshVertexCount() ) )
         return false;
       break;
     case QgsMeshDatasetGroupMetadata::DataOnVolumes:
       return false; // volume not supported for extra dataset
       break;
     case QgsMeshDatasetGroupMetadata::DataOnEdges:
-      if ( ! group->checkValueCountPerDataset( mLayer->meshEdgeCount() ) )
+      if ( !group->checkValueCountPerDataset( mLayer->meshEdgeCount() ) )
         return false;
       break;
   }
 
   int nativeIndex = mExtraDatasets.addDatasetGroup( std::move( group ) );
-  int groupIndex = registerDatasetGroup( DatasetGroup{&mExtraDatasets, nativeIndex} );
+  int groupIndex = registerDatasetGroup( DatasetGroup { &mExtraDatasets, nativeIndex } );
 
   if ( groupIndex == -1 )
     return false;
@@ -155,7 +140,7 @@ void QgsMeshDatasetGroupStore::reindexDatasetGroups()
   for ( int i = 0; i < mPersistentProvider->datasetGroupCount(); i++ )
   {
     const QString name = mPersistentProvider->datasetGroupMetadata( i ).name();
-    mRegistry[globalIndex] = DatasetGroup{mPersistentProvider, i};
+    mRegistry[globalIndex] = DatasetGroup { mPersistentProvider, i };
     mPersistentExtraDatasetGroupIndexes.append( globalIndex );
     mGroupNameToGlobalIndex.insert( name, globalIndex );
     globalIndex++;
@@ -165,7 +150,7 @@ void QgsMeshDatasetGroupStore::reindexDatasetGroups()
   {
     QgsMeshDatasetSourceInterface *source = &mExtraDatasets;
     const QString name = source->datasetGroupMetadata( i ).name();
-    mRegistry[globalIndex] = DatasetGroup{source, i};
+    mRegistry[globalIndex] = DatasetGroup { source, i };
     mGroupNameToGlobalIndex.insert( name, globalIndex );
     globalIndex++;
   }
@@ -173,17 +158,14 @@ void QgsMeshDatasetGroupStore::reindexDatasetGroups()
 
 void QgsMeshDatasetGroupStore::resetDatasetGroupTreeItem()
 {
-  mDatasetGroupTreeRootItem = std::make_unique<QgsMeshDatasetGroupTreeItem>( );
+  mDatasetGroupTreeRootItem = std::make_unique<QgsMeshDatasetGroupTreeItem>();
   createDatasetGroupTreeItems( datasetGroupIndexes() );
   QList<int> groupIndexes = datasetGroupIndexes();
   for ( int groupIndex : groupIndexes )
     syncItemToDatasetGroup( groupIndex );
 }
 
-QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupStore::datasetGroupTreeItem() const
-{
-  return mDatasetGroupTreeRootItem.get();
-}
+QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupStore::datasetGroupTreeItem() const { return mDatasetGroupTreeRootItem.get(); }
 
 void QgsMeshDatasetGroupStore::setDatasetGroupTreeItem( const QgsMeshDatasetGroupTreeItem *rootItem )
 {
@@ -197,7 +179,7 @@ void QgsMeshDatasetGroupStore::setDatasetGroupTreeItem( const QgsMeshDatasetGrou
 
 QgsMeshDatasetGroupMetadata QgsMeshDatasetGroupStore::datasetGroupMetadata( const QgsMeshDatasetIndex &index ) const
 {
-  QgsMeshDatasetGroupStore::DatasetGroup  group = datasetGroup( index.group() );
+  QgsMeshDatasetGroupStore::DatasetGroup group = datasetGroup( index.group() );
   if ( group.first )
     return group.first->datasetGroupMetadata( group.second );
   else
@@ -206,7 +188,7 @@ QgsMeshDatasetGroupMetadata QgsMeshDatasetGroupStore::datasetGroupMetadata( cons
 
 int QgsMeshDatasetGroupStore::datasetCount( int groupIndex ) const
 {
-  QgsMeshDatasetGroupStore::DatasetGroup  group = datasetGroup( groupIndex );
+  QgsMeshDatasetGroupStore::DatasetGroup group = datasetGroup( groupIndex );
   if ( group.first )
     return group.first->datasetCount( group.second );
   else
@@ -215,7 +197,7 @@ int QgsMeshDatasetGroupStore::datasetCount( int groupIndex ) const
 
 QgsMeshDatasetMetadata QgsMeshDatasetGroupStore::datasetMetadata( const QgsMeshDatasetIndex &index ) const
 {
-  QgsMeshDatasetGroupStore::DatasetGroup  group = datasetGroup( index.group() );
+  QgsMeshDatasetGroupStore::DatasetGroup group = datasetGroup( index.group() );
   if ( group.first )
     return group.first->datasetMetadata( QgsMeshDatasetIndex( group.second, index.dataset() ) );
   else
@@ -224,7 +206,7 @@ QgsMeshDatasetMetadata QgsMeshDatasetGroupStore::datasetMetadata( const QgsMeshD
 
 QgsMeshDatasetValue QgsMeshDatasetGroupStore::datasetValue( const QgsMeshDatasetIndex &index, int valueIndex ) const
 {
-  QgsMeshDatasetGroupStore::DatasetGroup  group = datasetGroup( index.group() );
+  QgsMeshDatasetGroupStore::DatasetGroup group = datasetGroup( index.group() );
   if ( group.first )
     return group.first->datasetValue( QgsMeshDatasetIndex( group.second, index.dataset() ), valueIndex );
   else
@@ -233,7 +215,7 @@ QgsMeshDatasetValue QgsMeshDatasetGroupStore::datasetValue( const QgsMeshDataset
 
 QgsMeshDataBlock QgsMeshDatasetGroupStore::datasetValues( const QgsMeshDatasetIndex &index, int valueIndex, int count ) const
 {
-  QgsMeshDatasetGroupStore::DatasetGroup  group = datasetGroup( index.group() );
+  QgsMeshDatasetGroupStore::DatasetGroup group = datasetGroup( index.group() );
   if ( group.first )
     return group.first->datasetValues( QgsMeshDatasetIndex( group.second, index.dataset() ), valueIndex, count );
   else
@@ -242,7 +224,7 @@ QgsMeshDataBlock QgsMeshDatasetGroupStore::datasetValues( const QgsMeshDatasetIn
 
 QgsMesh3DDataBlock QgsMeshDatasetGroupStore::dataset3dValues( const QgsMeshDatasetIndex &index, int faceIndex, int count ) const
 {
-  QgsMeshDatasetGroupStore::DatasetGroup  group = datasetGroup( index.group() );
+  QgsMeshDatasetGroupStore::DatasetGroup group = datasetGroup( index.group() );
   if ( group.first )
     return group.first->dataset3dValues( QgsMeshDatasetIndex( group.second, index.dataset() ), faceIndex, count );
   else
@@ -251,7 +233,7 @@ QgsMesh3DDataBlock QgsMeshDatasetGroupStore::dataset3dValues( const QgsMeshDatas
 
 QgsMeshDataBlock QgsMeshDatasetGroupStore::areFacesActive( const QgsMeshDatasetIndex &index, int faceIndex, int count ) const
 {
-  QgsMeshDatasetGroupStore::DatasetGroup  group = datasetGroup( index.group() );
+  QgsMeshDatasetGroupStore::DatasetGroup group = datasetGroup( index.group() );
   if ( group.first )
     return group.first->areFacesActive( QgsMeshDatasetIndex( group.second, index.dataset() ), faceIndex, count );
   else
@@ -260,33 +242,27 @@ QgsMeshDataBlock QgsMeshDatasetGroupStore::areFacesActive( const QgsMeshDatasetI
 
 bool QgsMeshDatasetGroupStore::isFaceActive( const QgsMeshDatasetIndex &index, int faceIndex ) const
 {
-  QgsMeshDatasetGroupStore::DatasetGroup  group = datasetGroup( index.group() );
+  QgsMeshDatasetGroupStore::DatasetGroup group = datasetGroup( index.group() );
   if ( group.first )
     return group.first->isFaceActive( QgsMeshDatasetIndex( group.second, index.dataset() ), faceIndex );
   else
     return false;
 }
 
-QgsMeshDatasetIndex QgsMeshDatasetGroupStore::datasetIndexAtTime(
-  qint64 time,
-  int groupIndex, QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod method ) const
+QgsMeshDatasetIndex QgsMeshDatasetGroupStore::datasetIndexAtTime( qint64 time, int groupIndex, QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod method ) const
 {
-  QgsMeshDatasetGroupStore::DatasetGroup  group = datasetGroup( groupIndex );
+  QgsMeshDatasetGroupStore::DatasetGroup group = datasetGroup( groupIndex );
   if ( !group.first )
     return QgsMeshDatasetIndex();
 
   const QDateTime &referenceTime = mPersistentProvider ? mPersistentProvider->temporalCapabilities()->referenceTime() : QDateTime();
 
-  return QgsMeshDatasetIndex( groupIndex,
-                              group.first->datasetIndexAtTime( referenceTime, group.second, time, method ).dataset() );
+  return QgsMeshDatasetIndex( groupIndex, group.first->datasetIndexAtTime( referenceTime, group.second, time, method ).dataset() );
 }
 
-QList<QgsMeshDatasetIndex> QgsMeshDatasetGroupStore::datasetIndexInTimeInterval(
-  qint64 time1,
-  qint64 time2,
-  int groupIndex ) const
+QList<QgsMeshDatasetIndex> QgsMeshDatasetGroupStore::datasetIndexInTimeInterval( qint64 time1, qint64 time2, int groupIndex ) const
 {
-  const QgsMeshDatasetGroupStore::DatasetGroup  group = datasetGroup( groupIndex );
+  const QgsMeshDatasetGroupStore::DatasetGroup group = datasetGroup( groupIndex );
   if ( !group.first )
     return QList<QgsMeshDatasetIndex>();
 
@@ -305,7 +281,7 @@ QList<QgsMeshDatasetIndex> QgsMeshDatasetGroupStore::datasetIndexInTimeInterval(
 
 qint64 QgsMeshDatasetGroupStore::datasetRelativeTime( const QgsMeshDatasetIndex &index ) const
 {
-  QgsMeshDatasetGroupStore::DatasetGroup  group = datasetGroup( index.group() );
+  QgsMeshDatasetGroupStore::DatasetGroup group = datasetGroup( index.group() );
   if ( !group.first || group.second < 0 )
     return INVALID_MESHLAYER_TIME;
 
@@ -317,13 +293,11 @@ qint64 QgsMeshDatasetGroupStore::datasetRelativeTime( const QgsMeshDatasetIndex 
     return mExtraDatasets.datasetRelativeTime( nativeIndex );
 
   return INVALID_MESHLAYER_TIME;
-
 }
 
 bool QgsMeshDatasetGroupStore::hasTemporalCapabilities() const
 {
-  return ( mPersistentProvider && mPersistentProvider->temporalCapabilities()->hasTemporalCapabilities() ) ||
-         ( mExtraDatasets.hasTemporalCapabilities() );
+  return ( mPersistentProvider && mPersistentProvider->temporalCapabilities()->hasTemporalCapabilities() ) || ( mExtraDatasets.hasTemporalCapabilities() );
 }
 
 QDomElement QgsMeshDatasetGroupStore::writeXml( QDomDocument &doc, const QgsReadWriteContext &context )
@@ -332,7 +306,7 @@ QDomElement QgsMeshDatasetGroupStore::writeXml( QDomDocument &doc, const QgsRead
   QDomElement storeElement = doc.createElement( u"mesh-dataset-groups-store"_s );
   storeElement.appendChild( mDatasetGroupTreeRootItem->writeXml( doc, context ) );
 
-  QMap < int, DatasetGroup>::const_iterator it = mRegistry.constBegin();
+  QMap< int, DatasetGroup>::const_iterator it = mRegistry.constBegin();
   while ( it != mRegistry.constEnd() )
   {
     QDomElement elemDataset;
@@ -396,7 +370,7 @@ void QgsMeshDatasetGroupStore::readXml( const QDomElement &storeElem, const QgsR
       auto dsg = std::make_unique< QgsMeshVirtualDatasetGroup >( name, formula, mLayer, startTime, endTime );
       int sourceIndex = mExtraDatasets.addDatasetGroup( std::move( dsg ) );
 
-      mRegistry[globalIndex] = DatasetGroup{source, sourceIndex};
+      mRegistry[globalIndex] = DatasetGroup { source, sourceIndex };
     }
     else
     {
@@ -437,15 +411,9 @@ int QgsMeshDatasetGroupStore::globalDatasetGroupIndexInSource( QgsMeshDatasetSou
   return -1;
 }
 
-int QgsMeshDatasetGroupStore::indexFromGroupName( const QString &groupName ) const
-{
-  return mGroupNameToGlobalIndex.value( groupName, -1 );
-}
+int QgsMeshDatasetGroupStore::indexFromGroupName( const QString &groupName ) const { return mGroupNameToGlobalIndex.value( groupName, -1 ); }
 
-QString QgsMeshDatasetGroupStore::groupName( int groupIndex ) const
-{
-  return  datasetGroupMetadata( groupIndex ).name();
-}
+QString QgsMeshDatasetGroupStore::groupName( int groupIndex ) const { return datasetGroupMetadata( groupIndex ).name(); }
 
 bool QgsMeshDatasetGroupStore::saveDatasetGroup( QString filePath, int groupIndex, QString driver )
 {
@@ -491,11 +459,11 @@ void QgsMeshDatasetGroupStore::onPersistentDatasetAdded( int count )
     else if ( mGroupNameToGlobalIndex.contains( groupName ) )
     {
       // The dataset group name is associated with an index, so it is not a new dataset group
-      registerDatasetGroup( DatasetGroup{mPersistentProvider, i} );
+      registerDatasetGroup( DatasetGroup { mPersistentProvider, i } );
     }
     else
     {
-      int newGroupIndex = registerDatasetGroup( DatasetGroup{mPersistentProvider, i} );
+      int newGroupIndex = registerDatasetGroup( DatasetGroup { mPersistentProvider, i } );
       if ( newGroupIndex != -1 )
         newGroupIndexes.append( newGroupIndex );
     }
@@ -520,7 +488,7 @@ void QgsMeshDatasetGroupStore::removePersistentProvider()
 
   disconnect( mPersistentProvider, &QgsMeshDataProvider::datasetGroupsAdded, this, &QgsMeshDatasetGroupStore::onPersistentDatasetAdded );
 
-  QMap < int, DatasetGroup>::iterator it = mRegistry.begin();
+  QMap< int, DatasetGroup>::iterator it = mRegistry.begin();
   while ( it != mRegistry.end() )
   {
     if ( it.value().first == mPersistentProvider )
@@ -583,7 +551,7 @@ void QgsMeshDatasetGroupStore::eraseExtraDataset( int indexInExtraStore )
   mExtraDatasets.removeDatasetGroup( indexInExtraStore );
 
   //search dataset with index greater than indexInExtraStore and decrement it
-  QMap < int, DatasetGroup>::iterator it = mRegistry.begin();
+  QMap< int, DatasetGroup>::iterator it = mRegistry.begin();
   while ( it != mRegistry.end() )
   {
     int localIndex = it.value().second;
@@ -599,11 +567,11 @@ void QgsMeshDatasetGroupStore::checkDatasetConsistency( QgsMeshDatasetSourceInte
   QList<int> indexes;
   for ( int i = 0; i < source->datasetGroupCount(); ++i )
   {
-    int globalIndex =  globalDatasetGroupIndexInSource( source, i );
+    int globalIndex = globalDatasetGroupIndexInSource( source, i );
     if ( globalIndex == -1 )
-      globalIndex = registerDatasetGroup( DatasetGroup{source, i} );
+      globalIndex = registerDatasetGroup( DatasetGroup { source, i } );
 
-    if ( globalIndex != - 1 )
+    if ( globalIndex != -1 )
       indexes.append( globalIndex );
   }
 
@@ -611,7 +579,7 @@ void QgsMeshDatasetGroupStore::checkDatasetConsistency( QgsMeshDatasetSourceInte
     createDatasetGroupTreeItems( indexes );
 
   const QList<int> globalIndexes = mRegistry.keys();
-  for ( int globalIndex :  globalIndexes )
+  for ( int globalIndex : globalIndexes )
   {
     if ( mRegistry.value( globalIndex ).first == source )
       syncItemToDatasetGroup( globalIndex );
@@ -651,15 +619,15 @@ void QgsMeshDatasetGroupStore::unregisterGroupNotPresentInTree()
     return;
   }
 
-  QMap < int, DatasetGroup>::iterator it = mRegistry.begin();
+  QMap< int, DatasetGroup>::iterator it = mRegistry.begin();
   while ( it != mRegistry.end() )
   {
     DatasetGroup datasetGroup = it.value();
     int globalIndex = it.key();
-    if ( ! mDatasetGroupTreeRootItem->childFromDatasetGroupIndex( globalIndex ) // Not in the tree item
-         && datasetGroup.first != mPersistentProvider ) // and not persistent
+    if ( !mDatasetGroupTreeRootItem->childFromDatasetGroupIndex( globalIndex ) // Not in the tree item
+         && datasetGroup.first != mPersistentProvider )                        // and not persistent
     {
-      it = mRegistry.erase( it ); //remove from registry
+      it = mRegistry.erase( it );        //remove from registry
       eraseDatasetGroup( datasetGroup ); //remove from where the dataset group is stored
     }
     else
@@ -748,15 +716,9 @@ void QgsMeshExtraDatasetStore::removeDatasetGroup( int groupIndex )
   updateTemporalCapabilities();
 }
 
-bool QgsMeshExtraDatasetStore::hasTemporalCapabilities() const
-{
-  return mTemporalCapabilities->hasTemporalCapabilities();
-}
+bool QgsMeshExtraDatasetStore::hasTemporalCapabilities() const { return mTemporalCapabilities->hasTemporalCapabilities(); }
 
-qint64 QgsMeshExtraDatasetStore::datasetRelativeTime( QgsMeshDatasetIndex index ) const
-{
-  return mTemporalCapabilities->datasetTime( index );
-}
+qint64 QgsMeshExtraDatasetStore::datasetRelativeTime( QgsMeshDatasetIndex index ) const { return mTemporalCapabilities->datasetTime( index ); }
 
 QString QgsMeshExtraDatasetStore::description( int groupIndex ) const
 {
@@ -780,15 +742,9 @@ bool QgsMeshExtraDatasetStore::addDataset( const QString &uri )
   return false;
 }
 
-QStringList QgsMeshExtraDatasetStore::extraDatasets() const
-{
-  return QStringList();
-}
+QStringList QgsMeshExtraDatasetStore::extraDatasets() const { return QStringList(); }
 
-int QgsMeshExtraDatasetStore::datasetGroupCount() const
-{
-  return mGroups.size();
-}
+int QgsMeshExtraDatasetStore::datasetGroupCount() const { return mGroups.size(); }
 
 int QgsMeshExtraDatasetStore::datasetCount( int groupIndex ) const
 {
@@ -883,12 +839,10 @@ QgsMeshDataBlock QgsMeshExtraDatasetStore::areFacesActive( QgsMeshDatasetIndex i
   return QgsMeshDataBlock();
 }
 
-bool QgsMeshExtraDatasetStore::persistDatasetGroup( const QString &outputFilePath,
-    const QString &outputDriver,
-    const QgsMeshDatasetGroupMetadata &meta,
-    const QVector<QgsMeshDataBlock> &datasetValues,
-    const QVector<QgsMeshDataBlock> &datasetActive,
-    const QVector<double> &times )
+bool QgsMeshExtraDatasetStore::persistDatasetGroup(
+  const QString &outputFilePath, const QString &outputDriver, const QgsMeshDatasetGroupMetadata &meta, const QVector<QgsMeshDataBlock> &datasetValues, const QVector<QgsMeshDataBlock> &datasetActive,
+  const QVector<double> &times
+)
 {
   Q_UNUSED( outputFilePath )
   Q_UNUSED( outputDriver )
@@ -899,10 +853,7 @@ bool QgsMeshExtraDatasetStore::persistDatasetGroup( const QString &outputFilePat
   return true; // not implemented/supported
 }
 
-bool QgsMeshExtraDatasetStore::persistDatasetGroup( const QString &outputFilePath,
-    const QString &outputDriver,
-    QgsMeshDatasetSourceInterface *source,
-    int datasetGroupIndex )
+bool QgsMeshExtraDatasetStore::persistDatasetGroup( const QString &outputFilePath, const QString &outputDriver, QgsMeshDatasetSourceInterface *source, int datasetGroupIndex )
 {
   Q_UNUSED( outputFilePath )
   Q_UNUSED( outputDriver )

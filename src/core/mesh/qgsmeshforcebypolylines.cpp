@@ -24,10 +24,7 @@
 #include "qgsmulticurve.h"
 #include "qgsmultisurface.h"
 
-static int vertexPositionInFace( int vertexIndex, const QgsMeshFace &face )
-{
-  return face.indexOf( vertexIndex );
-}
+static int vertexPositionInFace( int vertexIndex, const QgsMeshFace &face ) { return face.indexOf( vertexIndex ); }
 
 static int vertexPositionInFace( const QgsMesh &mesh, int vertexIndex, int faceIndex )
 {
@@ -37,12 +34,7 @@ static int vertexPositionInFace( const QgsMesh &mesh, int vertexIndex, int faceI
   return vertexPositionInFace( vertexIndex, mesh.face( faceIndex ) );
 }
 
-bool QgsMeshEditForceByLine::edgeIntersection(
-  int vertex1,
-  int vertex2,
-  int &closestSnappedVertex,
-  QgsPoint &intersectionPoint,
-  bool outAllowed )
+bool QgsMeshEditForceByLine::edgeIntersection( int vertex1, int vertex2, int &closestSnappedVertex, QgsPoint &intersectionPoint, bool outAllowed )
 {
   const QgsPointXY pt1( mCurrentPointPosition );
   const QgsPointXY pt2( mPoint2 );
@@ -61,14 +53,8 @@ bool QgsMeshEditForceByLine::edgeIntersection(
   bool snapV2 = sqrt( v2.sqrDistToSegment( pt1.x(), pt1.y(), pt2.x(), pt2.y(), minDistPoint, epsilon ) ) < mTolerance;
 
   bool intersectLine = false;
-  bool isIntersect = QgsGeometryUtils::segmentIntersection(
-                       mCurrentPointPosition,
-                       mPoint2,
-                       triangularMesh->vertices().at( vertex1 ),
-                       triangularMesh->vertices().at( vertex2 ),
-                       intersectionPoint,
-                       intersectLine,
-                       outAllowed ? mTolerance : 0, true );
+  bool isIntersect = QgsGeometryUtils::
+    segmentIntersection( mCurrentPointPosition, mPoint2, triangularMesh->vertices().at( vertex1 ), triangularMesh->vertices().at( vertex2 ), intersectionPoint, intersectLine, outAllowed ? mTolerance : 0, true );
 
   if ( snapV1 == snapV2 ) //both or neither of them are snapped
   {
@@ -103,14 +89,9 @@ bool QgsMeshEditForceByLine::edgeIntersection(
 }
 
 
-static void buildHolesWithOneFace( QgsMeshEditor *meshEditor,
-                                   int faceIndex,
-                                   int firstVertex,
-                                   int secondVertex,
-                                   QList<int> &holeOnLeft,
-                                   QList<int> &neighborsOnLeft,
-                                   QList<int> &holeOnRight,
-                                   QList<int> &neighborsOnRight )
+static void buildHolesWithOneFace(
+  QgsMeshEditor *meshEditor, int faceIndex, int firstVertex, int secondVertex, QList<int> &holeOnLeft, QList<int> &neighborsOnLeft, QList<int> &holeOnRight, QList<int> &neighborsOnRight
+)
 {
   const QgsMeshFace &face = meshEditor->topologicalMesh().mesh()->face( faceIndex );
   const QVector<int> &neighbors = meshEditor->topologicalMesh().neighborsOfFace( faceIndex );
@@ -143,14 +124,10 @@ static void buildHolesWithOneFace( QgsMeshEditor *meshEditor,
 
 
 //! Returns the next faces (face on the other side of the cut edge)
-static int cutEdgeFromSnappedVertex( QgsMeshEditor *meshEditor,
-                                     int faceIndex,
-                                     int startingSnappedVertex,
-                                     int edgePosition,
-                                     QList<int> &newVerticesOnLeftHole,
-                                     QList<int> &newNeighborsOnLeftHole,
-                                     QList<int> &newVerticesOnRightHole,
-                                     QList<int> &newNeighborsOnRightHole )
+static int cutEdgeFromSnappedVertex(
+  QgsMeshEditor *meshEditor, int faceIndex, int startingSnappedVertex, int edgePosition, QList<int> &newVerticesOnLeftHole, QList<int> &newNeighborsOnLeftHole, QList<int> &newVerticesOnRightHole,
+  QList<int> &newNeighborsOnRightHole
+)
 {
   const QgsMeshFace &face = meshEditor->topologicalMesh().mesh()->face( faceIndex );
   const QVector<int> &neighbors = meshEditor->topologicalMesh().neighborsOfFace( faceIndex );
@@ -213,7 +190,7 @@ QgsTopologicalMesh::Changes QgsMeshEditForceByLine::apply( QgsMeshEditor *meshEd
   clear();
   mEditor = meshEditor;
 
-  if ( ! mFirstPointChecked )
+  if ( !mFirstPointChecked )
   {
     mFirstPointChecked = true;
 
@@ -230,8 +207,8 @@ QgsTopologicalMesh::Changes QgsMeshEditForceByLine::apply( QgsMeshEditor *meshEd
       int vertexIndex1 = face.at( closeEdge );
       int vertexIndex2 = face.at( ( closeEdge + 1 ) % face.size() );
 
-      if ( ( meshEditor->triangularMesh()->vertices().at( vertexIndex1 ).distance( mPoint1 ) > mTolerance ) &&
-           ( meshEditor->triangularMesh()->vertices().at( vertexIndex2 ).distance( mPoint1 ) > mTolerance ) )
+      if ( ( meshEditor->triangularMesh()->vertices().at( vertexIndex1 ).distance( mPoint1 ) > mTolerance )
+           && ( meshEditor->triangularMesh()->vertices().at( vertexIndex2 ).distance( mPoint1 ) > mTolerance ) )
         return meshEditor->topologicalMesh().insertVertexInFacesEdge( faceCloseEdge, closeEdge, v1 );
     }
     else
@@ -244,7 +221,7 @@ QgsTopologicalMesh::Changes QgsMeshEditForceByLine::apply( QgsMeshEditor *meshEd
     }
   }
 
-  if ( ! mSecondPointChecked )
+  if ( !mSecondPointChecked )
   {
     mSecondPointChecked = true;
     if ( mInterpolateZValueOnMesh )
@@ -260,8 +237,8 @@ QgsTopologicalMesh::Changes QgsMeshEditForceByLine::apply( QgsMeshEditor *meshEd
       int vertexIndex1 = face.at( closeEdge );
       int vertexIndex2 = face.at( ( closeEdge + 1 ) % face.size() );
 
-      bool snap1 = meshEditor->triangularMesh()->vertices().at( vertexIndex1 ).distance( mPoint2 ) <= mTolerance ;
-      bool snap2 = meshEditor->triangularMesh()->vertices().at( vertexIndex2 ).distance( mPoint2 ) <= mTolerance ;
+      bool snap1 = meshEditor->triangularMesh()->vertices().at( vertexIndex1 ).distance( mPoint2 ) <= mTolerance;
+      bool snap2 = meshEditor->triangularMesh()->vertices().at( vertexIndex2 ).distance( mPoint2 ) <= mTolerance;
 
       if ( snap1 )
       {
@@ -313,10 +290,7 @@ QgsTopologicalMesh::Changes QgsMeshEditForceByLine::apply( QgsMeshEditor *meshEd
   return QgsTopologicalMesh::Changes();
 }
 
-void QgsMeshEditForceByLine::finish()
-{
-  mIsFinished = true;
-}
+void QgsMeshEditForceByLine::finish() { mIsFinished = true; }
 
 void QgsMeshEditForceByLine::interpolateZValueOnMesh( QgsPoint &point ) const
 {
@@ -343,7 +317,7 @@ void QgsMeshEditForceByLine::interpolateZValue( QgsMeshVertex &point, const QgsP
   double distPoint = point.distance( otherPoint1 );
   double totalDistance = otherPoint1.distance( otherPoint2 );
 
-  point.setZ( otherPoint1.z() + ( otherPoint2.z() - otherPoint1.z() )*distPoint / totalDistance );
+  point.setZ( otherPoint1.z() + ( otherPoint2.z() - otherPoint1.z() ) * distPoint / totalDistance );
 }
 
 bool QgsMeshEditForceByLine::buildForcedElements()
@@ -357,11 +331,11 @@ bool QgsMeshEditForceByLine::buildForcedElements()
 
   int currentFaceIndex = -1;
   bool searchOutside = false; //if we need to search outside last faces
-  QPair<int, int> currentEdge{-1, -1};
+  QPair<int, int> currentEdge { -1, -1 };
 
   int currentAddedVertex = -1; // Last added point
-  int nextCutFace = -1; //face that has to be cut from an intersected edge (not snap on existing vertex)
-  int leftFace = -1; //the face that has been just cut in a edge
+  int nextCutFace = -1;        //face that has to be cut from an intersected edge (not snap on existing vertex)
+  int leftFace = -1;           //the face that has been just cut in a edge
 
   while ( true )
   {
@@ -380,19 +354,12 @@ bool QgsMeshEditForceByLine::buildForcedElements()
       QgsPoint intersectionPoint( 0, 0, 0 );
       int edgePosition = -1;
 
-      bool result = searchIntersectionEdgeFromSnappedVertex(
-                      intersectionFaceIndex,
-                      previousSnappedVertex,
-                      mCurrentSnappedVertex,
-                      intersectionPoint,
-                      edgePosition,
-                      treatedFaces );
+      bool result = searchIntersectionEdgeFromSnappedVertex( intersectionFaceIndex, previousSnappedVertex, mCurrentSnappedVertex, intersectionPoint, edgePosition, treatedFaces );
 
       if ( !result )
       {
         //here maybe mPoint2 is snapped with the current snap vertex, check first this last check and stop if it true
-        if ( mCurrentSnappedVertex != -1 &&
-             mPoint2.distance( triangularMesh->vertices().at( mCurrentSnappedVertex ) ) < mTolerance )
+        if ( mCurrentSnappedVertex != -1 && mPoint2.distance( triangularMesh->vertices().at( mCurrentSnappedVertex ) ) < mTolerance )
           break;
 
         //we have nothing in this part of the mesh, restart from the last interesting point to the point 2
@@ -410,14 +377,7 @@ bool QgsMeshEditForceByLine::buildForcedElements()
         {
           // we have snapped a vertex on the other side of a face, we can build holes
 
-          buildHolesWithOneFace( mEditor,
-                                 intersectionFaceIndex,
-                                 previousSnappedVertex,
-                                 mCurrentSnappedVertex,
-                                 mHoleOnLeft,
-                                 mNeighborOnLeft,
-                                 mHoleOnRight,
-                                 mNeighborOnRight );
+          buildHolesWithOneFace( mEditor, intersectionFaceIndex, previousSnappedVertex, mCurrentSnappedVertex, mHoleOnLeft, mNeighborOnLeft, mHoleOnRight, mNeighborOnRight );
 
           mRemovedFaces.append( intersectionFaceIndex );
 
@@ -430,14 +390,7 @@ bool QgsMeshEditForceByLine::buildForcedElements()
         {
           // we cut an edge and start a new hole (without finishing it)
 
-          nextCutFace = cutEdgeFromSnappedVertex( mEditor,
-                                                  intersectionFaceIndex,
-                                                  previousSnappedVertex,
-                                                  edgePosition,
-                                                  mHoleOnLeft,
-                                                  mNeighborOnLeft,
-                                                  mHoleOnRight,
-                                                  mNeighborOnRight );
+          nextCutFace = cutEdgeFromSnappedVertex( mEditor, intersectionFaceIndex, previousSnappedVertex, edgePosition, mHoleOnLeft, mNeighborOnLeft, mHoleOnRight, mNeighborOnRight );
 
           mRemovedFaces.append( intersectionFaceIndex );
 
@@ -449,9 +402,7 @@ bool QgsMeshEditForceByLine::buildForcedElements()
             currentAddedVertex = startingVertexIndex + mVerticesToAdd.count();
             mNewVerticesIndexesOnLine.append( mVerticesToAdd.count() );
             if ( mInterpolateZValueOnMesh )
-              interpolateZValue( intersectionPoint,
-                                 triangularMesh->vertices().at( iv1 ),
-                                 triangularMesh->vertices().at( iv2 ) );
+              interpolateZValue( intersectionPoint, triangularMesh->vertices().at( iv1 ), triangularMesh->vertices().at( iv2 ) );
             else
               interpolateZValue( intersectionPoint, mPoint1, mPoint2 );
             mVerticesToAdd.append( triangularMesh->triangularToNativeCoordinates( intersectionPoint ) );
@@ -461,7 +412,7 @@ bool QgsMeshEditForceByLine::buildForcedElements()
           {
             mCurrentSnappedVertex = -1;
             currentFaceIndex = nextCutFace;
-            currentEdge = {mHoleOnLeft.last(), mHoleOnRight.last()};
+            currentEdge = { mHoleOnLeft.last(), mHoleOnRight.last() };
           }
           else
           {
@@ -470,9 +421,7 @@ bool QgsMeshEditForceByLine::buildForcedElements()
             {
               currentAddedVertex = startingVertexIndex + mVerticesToAdd.count();
               if ( mInterpolateZValueOnMesh )
-                interpolateZValue( intersectionPoint,
-                                   triangularMesh->vertices().at( iv1 ),
-                                   triangularMesh->vertices().at( iv2 ) );
+                interpolateZValue( intersectionPoint, triangularMesh->vertices().at( iv1 ), triangularMesh->vertices().at( iv2 ) );
               else
                 interpolateZValue( intersectionPoint, mPoint1, mPoint2 );
               mVerticesToAdd.append( triangularMesh->triangularToNativeCoordinates( intersectionPoint ) );
@@ -507,7 +456,7 @@ bool QgsMeshEditForceByLine::buildForcedElements()
 
       mRemovedFaces.append( nextCutFace );
 
-      int edgePositionOnLeft =  vertexPositionInFace( currentEdge.first, face );
+      int edgePositionOnLeft = vertexPositionInFace( currentEdge.first, face );
       int edgePositionOnRight = vertexPositionInFace( currentEdge.second, face );
       int firstEdgeToTest = vertexPositionInFace( currentEdge.second, face );
 
@@ -523,8 +472,7 @@ bool QgsMeshEditForceByLine::buildForcedElements()
 
         int snapVertex = -1;
         QgsPoint intersection( 0, 0, 0 );
-        if ( edgeIntersection( iv1, iv2, snapVertex, intersection, false ) ||
-             snapVertex != -1 )
+        if ( edgeIntersection( iv1, iv2, snapVertex, intersection, false ) || snapVertex != -1 )
         {
           foundSomething = true;
 
@@ -538,7 +486,7 @@ bool QgsMeshEditForceByLine::buildForcedElements()
             endPositionOnLeft = vertexPositionInFace( snapVertex, face );
 
             nextCutFace = -1;
-            currentEdge = {-1, -1};
+            currentEdge = { -1, -1 };
             mCurrentSnappedVertex = snapVertex;
           }
           else
@@ -554,9 +502,7 @@ bool QgsMeshEditForceByLine::buildForcedElements()
               currentAddedVertex = startingVertexIndex + mVerticesToAdd.count();
               mNewVerticesIndexesOnLine.append( mVerticesToAdd.count() );
               if ( mInterpolateZValueOnMesh )
-                interpolateZValue( intersection,
-                                   triangularMesh->vertices().at( iv1 ),
-                                   triangularMesh->vertices().at( iv2 ) );
+                interpolateZValue( intersection, triangularMesh->vertices().at( iv1 ), triangularMesh->vertices().at( iv2 ) );
               else
                 interpolateZValue( intersection, mPoint1, mPoint2 );
               mVerticesToAdd.append( triangularMesh->triangularToNativeCoordinates( intersection ) );
@@ -587,7 +533,7 @@ bool QgsMeshEditForceByLine::buildForcedElements()
 
           if ( snapVertex != -1 )
           {
-            currentEdge = {-1, -1};
+            currentEdge = { -1, -1 };
 
             if ( finishForcingLine() )
             {
@@ -607,9 +553,7 @@ bool QgsMeshEditForceByLine::buildForcedElements()
             {
               currentAddedVertex = startingVertexIndex + mVerticesToAdd.count();
               if ( mInterpolateZValueOnMesh )
-                interpolateZValue( intersection,
-                                   triangularMesh->vertices().at( iv1 ),
-                                   triangularMesh->vertices().at( iv2 ) );
+                interpolateZValue( intersection, triangularMesh->vertices().at( iv1 ), triangularMesh->vertices().at( iv2 ) );
               else
                 interpolateZValue( intersection, mPoint1, mPoint2 );
               mVerticesToAdd.append( triangularMesh->triangularToNativeCoordinates( intersection ) );
@@ -631,13 +575,13 @@ bool QgsMeshEditForceByLine::buildForcedElements()
             }
           }
           else
-            currentEdge = {mHoleOnLeft.last(), mHoleOnRight.last()};
+            currentEdge = { mHoleOnLeft.last(), mHoleOnRight.last() };
 
           break;
         }
       }
 
-      if ( ! foundSomething )
+      if ( !foundSomething )
       {
         // nothing intersected, something wrong -->leave with false
         break;
@@ -715,20 +659,17 @@ bool QgsMeshEditForceByLine::buildForcedElements()
 
 
           mHoleOnLeft.append( currentAddedVertex );
-          mHoleOnLeft.append( closestEdge ) ;
+          mHoleOnLeft.append( closestEdge );
           mNeighborOnLeft.append( -1 );
 
-          currentEdge = {mHoleOnLeft.last(), mHoleOnRight.last()};
+          currentEdge = { mHoleOnLeft.last(), mHoleOnRight.last() };
 
           if ( mInterpolateZValueOnMesh )
-            interpolateZValue( closestIntersectionPoint,
-                               triangularMesh->vertices().at( mHoleOnLeft.last() ),
-                               triangularMesh->vertices().at( mHoleOnRight.last() ) );
+            interpolateZValue( closestIntersectionPoint, triangularMesh->vertices().at( mHoleOnLeft.last() ), triangularMesh->vertices().at( mHoleOnRight.last() ) );
           else
             interpolateZValue( closestIntersectionPoint, mPoint1, mPoint2 );
 
           mVerticesToAdd.append( triangularMesh->triangularToNativeCoordinates( closestIntersectionPoint ) );
-
         }
       }
     }
@@ -771,13 +712,9 @@ bool QgsMeshEditForceByLine::buildForcedElements()
 }
 
 
-bool QgsMeshEditForceByLine::searchIntersectionEdgeFromSnappedVertex
-( int &intersectionFaceIndex,
-  int &previousSnappedVertex,
-  int &currentSnappedVertexIndex,
-  QgsPoint &intersectionPoint,
-  int &edgePosition,
-  QSet<int> &treatedFaces )
+bool QgsMeshEditForceByLine::searchIntersectionEdgeFromSnappedVertex(
+  int &intersectionFaceIndex, int &previousSnappedVertex, int &currentSnappedVertexIndex, QgsPoint &intersectionPoint, int &edgePosition, QSet<int> &treatedFaces
+)
 {
   previousSnappedVertex = currentSnappedVertexIndex;
   QSet<int> treatedVertices;
@@ -797,12 +734,8 @@ bool QgsMeshEditForceByLine::searchIntersectionEdgeFromSnappedVertex
       int newSnapVertex = -1;
       for ( int i = 1; i < faceSize - 1; ++i )
       {
-        edgePosition = ( vertexPos + i ) % faceSize ;
-        foundSomething = edgeIntersection( face.at( edgePosition ),
-                                           face.at( ( edgePosition + 1 ) % faceSize ),
-                                           newSnapVertex,
-                                           intersectionPoint,
-                                           false );
+        edgePosition = ( vertexPos + i ) % faceSize;
+        foundSomething = edgeIntersection( face.at( edgePosition ), face.at( ( edgePosition + 1 ) % faceSize ), newSnapVertex, intersectionPoint, false );
 
         if ( mEndOnPoint2 && newSnapVertex == mPoint2VertexIndex )
         {
@@ -811,8 +744,7 @@ bool QgsMeshEditForceByLine::searchIntersectionEdgeFromSnappedVertex
         }
 
         if ( newSnapVertex != -1 )
-          foundSomething = ( newSnapVertex != previousSnappedVertex &&
-                             !treatedVertices.contains( newSnapVertex ) );
+          foundSomething = ( newSnapVertex != previousSnappedVertex && !treatedVertices.contains( newSnapVertex ) );
 
         if ( foundSomething )
           break;
@@ -854,12 +786,7 @@ bool QgsMeshEditForceByLine::searchIntersectionEdgeFromSnappedVertex
   return false;
 }
 
-bool QgsMeshEditForceByLine::triangulateHoles(
-  const QList<int> &hole,
-  const QList<int> &neighbors,
-  bool isLeftHole,
-  QList<std::array<int, 2>> &newFacesOnLine,
-  std::array<int, 2> &extremeFaces )
+bool QgsMeshEditForceByLine::triangulateHoles( const QList<int> &hole, const QList<int> &neighbors, bool isLeftHole, QList<std::array<int, 2>> &newFacesOnLine, std::array<int, 2> &extremeFaces )
 {
   QgsMesh *mesh = mEditor->topologicalMesh().mesh();
 
@@ -936,7 +863,7 @@ bool QgsMeshEditForceByLine::triangulateHoles(
     {
       int firstLinkedFace = mEditor->topologicalMesh().firstFaceLinked( vtc );
       if ( mRemovedFaces.contains( firstLinkedFace ) )
-        mVerticesToFaceChanges.append( {vtc, firstLinkedFace, topologicalFaces.vertexToFace( vtc ) + startingFaceGlobalIndex} );
+        mVerticesToFaceChanges.append( { vtc, firstLinkedFace, topologicalFaces.vertexToFace( vtc ) + startingFaceGlobalIndex } );
     }
 
     // reindex neighborhood for new faces
@@ -952,7 +879,7 @@ bool QgsMeshEditForceByLine::triangulateHoles(
     }
 
     // link neighborhood for boundaries of each side
-    for ( int i = 0 ; i < hole.count() - 1; ++i )
+    for ( int i = 0; i < hole.count() - 1; ++i )
     {
       int vertexHoleIndex = hole.at( i );
       int meshFaceBoundaryIndex = neighbors.at( i );
@@ -982,7 +909,7 @@ bool QgsMeshEditForceByLine::triangulateHoles(
           positionInMeshFaceBoundary = ( positionInMeshFaceBoundary - 1 + meshFace.size() ) % meshFace.size(); //take the index just before
 
         int oldNeighbor = mEditor->topologicalMesh().neighborsOfFace( meshFaceBoundaryIndex ).at( positionInMeshFaceBoundary );
-        mNeighborhoodChanges.append( {meshFaceBoundaryIndex, positionInMeshFaceBoundary, oldNeighbor, newFaceBoundaryIndexInMesh} );
+        mNeighborhoodChanges.append( { meshFaceBoundaryIndex, positionInMeshFaceBoundary, oldNeighbor, newFaceBoundaryIndexInMesh } );
       }
 
       mFacesNeighborhoodToAdd[newFaceBoundaryLocalIndex + startingFaceLocalIndex][positionInNewFaces] = meshFaceBoundaryIndex;
@@ -1009,7 +936,7 @@ bool QgsMeshEditForceByLine::triangulateHoles(
       if ( !isLeftHole )
         positionOnFaceOnTheLine = ( positionOnFaceOnTheLine - 1 + faceOnLine.size() ) % faceOnLine.size();
 
-      newFacesOnLine.append( {circulatorOnLine.currentFaceIndex() + startingFaceLocalIndex, positionOnFaceOnTheLine} );
+      newFacesOnLine.append( { circulatorOnLine.currentFaceIndex() + startingFaceLocalIndex, positionOnFaceOnTheLine } );
       vertexOnLine = nextVertex;
     }
 
@@ -1026,9 +953,7 @@ bool QgsMeshEditForceByLine::triangulateHoles(
       circulatorOnEnd.goBoundaryCounterClockwise();
 
 
-    extremeFaces = {circulatorOnStart.currentFaceIndex() + startingFaceLocalIndex,
-                    circulatorOnEnd.currentFaceIndex() + startingFaceLocalIndex
-                   };
+    extremeFaces = { circulatorOnStart.currentFaceIndex() + startingFaceLocalIndex, circulatorOnEnd.currentFaceIndex() + startingFaceLocalIndex };
     qDeleteAll( holeToFill );
   }
   catch ( ... )
@@ -1036,7 +961,6 @@ bool QgsMeshEditForceByLine::triangulateHoles(
     qDeleteAll( holeToFill );
     return false;
   }
-
 
 
   return true;
@@ -1110,15 +1034,9 @@ bool QgsMeshEditForceByLine::finishForcingLine()
 }
 
 
-QString QgsMeshEditForceByPolylines::text() const
-{
-  return QObject::tr( "Force mesh by polyline" );
-}
+QString QgsMeshEditForceByPolylines::text() const { return QObject::tr( "Force mesh by polyline" ); }
 
-bool QgsMeshEditForceByPolylines::isFinished() const
-{
-  return mCurrentPolyline >= mPolylines.count() && QgsMeshEditForceByLine::isFinished();
-}
+bool QgsMeshEditForceByPolylines::isFinished() const { return mCurrentPolyline >= mPolylines.count() && QgsMeshEditForceByLine::isFinished(); }
 
 QgsTopologicalMesh::Changes QgsMeshEditForceByPolylines::apply( QgsMeshEditor *meshEditor )
 {
@@ -1130,9 +1048,7 @@ QgsTopologicalMesh::Changes QgsMeshEditForceByPolylines::apply( QgsMeshEditor *m
 
   if ( mCurrentPolyline == 0 && mCurrentSegment == 0 )
   {
-    setInputLine( mPolylines.at( 0 ).at( 0 ),
-                  mPolylines.at( 0 ).at( 1 ),
-                  mTolerance, mNewVertexOnIntersection );
+    setInputLine( mPolylines.at( 0 ).at( 0 ), mPolylines.at( 0 ).at( 1 ), mTolerance, mNewVertexOnIntersection );
 
     incrementSegment();
     return QgsMeshEditForceByLine::apply( meshEditor );
@@ -1140,9 +1056,7 @@ QgsTopologicalMesh::Changes QgsMeshEditForceByPolylines::apply( QgsMeshEditor *m
 
   if ( QgsMeshEditForceByLine::isFinished() )
   {
-    setInputLine( mPolylines.at( mCurrentPolyline ).at( mCurrentSegment ),
-                  mPolylines.at( mCurrentPolyline ).at( mCurrentSegment + 1 ),
-                  mTolerance, mNewVertexOnIntersection );
+    setInputLine( mPolylines.at( mCurrentPolyline ).at( mCurrentSegment ), mPolylines.at( mCurrentPolyline ).at( mCurrentSegment + 1 ), mTolerance, mNewVertexOnIntersection );
 
     incrementSegment();
   }
@@ -1215,25 +1129,13 @@ void QgsMeshEditForceByPolylines::addLinesFromGeometries( const QList<QgsGeometr
     addLineFromGeometry( geom );
 }
 
-void QgsMeshEditForceByLine::setTolerance( double tolerance )
-{
-  mTolerance = tolerance;
-}
+void QgsMeshEditForceByLine::setTolerance( double tolerance ) { mTolerance = tolerance; }
 
-void QgsMeshEditForceByLine::setAddVertexOnIntersection( bool addVertex )
-{
-  mNewVertexOnIntersection = addVertex;
-}
+void QgsMeshEditForceByLine::setAddVertexOnIntersection( bool addVertex ) { mNewVertexOnIntersection = addVertex; }
 
-void QgsMeshEditForceByLine::setDefaultZValue( double defaultZValue )
-{
-  mDefaultZValue = defaultZValue;
-}
+void QgsMeshEditForceByLine::setDefaultZValue( double defaultZValue ) { mDefaultZValue = defaultZValue; }
 
-void QgsMeshEditForceByLine::setInterpolateZValueOnMesh( bool interpolateZValueOnMesh )
-{
-  mInterpolateZValueOnMesh = interpolateZValueOnMesh;
-}
+void QgsMeshEditForceByLine::setInterpolateZValueOnMesh( bool interpolateZValueOnMesh ) { mInterpolateZValueOnMesh = interpolateZValueOnMesh; }
 
 void QgsMeshEditForceByPolylines::incrementSegment()
 {

@@ -90,18 +90,14 @@ class QgisMeshVisitor : public SpatialIndex::IVisitor
 {
   public:
     explicit QgisMeshVisitor( QList<int> &list )
-      : mList( list ) {}
+      : mList( list )
+    {}
 
-    void visitNode( const INode &n ) override
-    { Q_UNUSED( n ) }
+    void visitNode( const INode &n ) override { Q_UNUSED( n ) }
 
-    void visitData( const IData &d ) override
-    {
-      mList.append( static_cast<int>( d.getIdentifier() ) );
-    }
+    void visitData( const IData &d ) override { mList.append( static_cast<int>( d.getIdentifier() ) ); }
 
-    void visitData( std::vector<const IData *> &v ) override
-    { Q_UNUSED( v ) }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ) }
 
   private:
     QList<int> &mList;
@@ -117,10 +113,10 @@ class QgsMeshSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
 {
   public:
     explicit QgsMeshSpatialIndexCopyVisitor( SpatialIndex::ISpatialIndex *newIndex )
-      : mNewIndex( newIndex ) {}
+      : mNewIndex( newIndex )
+    {}
 
-    void visitNode( const INode &n ) override
-    { Q_UNUSED( n ) }
+    void visitNode( const INode &n ) override { Q_UNUSED( n ) }
 
     void visitData( const IData &d ) override
     {
@@ -130,8 +126,7 @@ class QgsMeshSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
       delete shape;
     }
 
-    void visitData( std::vector<const IData *> &v ) override
-    { Q_UNUSED( v ) }
+    void visitData( std::vector<const IData *> &v ) override { Q_UNUSED( v ) }
 
   private:
     SpatialIndex::ISpatialIndex *mNewIndex = nullptr;
@@ -148,10 +143,7 @@ class QgsMeshIteratorDataStream : public IDataStream
 {
   public:
     //! constructor - needs to load all data to a vector for later access when bulk loading
-    explicit QgsMeshIteratorDataStream( const QgsMesh &mesh,
-                                        int featuresCount,
-                                        std::function<Region( const QgsMesh &mesh, int id, bool &ok )> featureToRegionFunction,
-                                        QgsFeedback *feedback = nullptr )
+    explicit QgsMeshIteratorDataStream( const QgsMesh &mesh, int featuresCount, std::function<Region( const QgsMesh &mesh, int id, bool &ok )> featureToRegionFunction, QgsFeedback *feedback = nullptr )
       : mMesh( mesh )
       , mFeaturesCount( featuresCount )
       , mFeatureToRegionFunction( std::move( featureToRegionFunction ) )
@@ -160,10 +152,7 @@ class QgsMeshIteratorDataStream : public IDataStream
       readNextEntry();
     }
 
-    ~QgsMeshIteratorDataStream() override
-    {
-      delete mNextData;
-    }
+    ~QgsMeshIteratorDataStream() override { delete mNextData; }
 
     //! returns a pointer to the next entry in the stream or 0 at the end of the stream.
     IData *getNext() override
@@ -178,22 +167,13 @@ class QgsMeshIteratorDataStream : public IDataStream
     }
 
     //! returns true if there are more items in the stream.
-    bool hasNext() override
-    {
-      return nullptr != mNextData;
-    }
+    bool hasNext() override { return nullptr != mNextData; }
 
     //! returns the total number of entries available in the stream.
-    uint32_t size() override
-    {
-      return static_cast<uint32_t>( mFeaturesCount );
-    }
+    uint32_t size() override { return static_cast<uint32_t>( mFeaturesCount ); }
 
     //! sets the stream pointer to the first entry, if possible.
-    void rewind() override
-    {
-      mIterator = 0;
-    }
+    void rewind() override { mIterator = 0; }
 
   protected:
     void readNextEntry()
@@ -235,10 +215,7 @@ class QgsMeshIteratorDataStream : public IDataStream
 class QgsMeshSpatialIndexData : public QSharedData
 {
   public:
-    QgsMeshSpatialIndexData()
-    {
-      initTree();
-    }
+    QgsMeshSpatialIndexData() { initTree(); }
 
     /**
      * Constructor for QgsSpatialIndexData which bulk loads faces from the specified mesh
@@ -279,7 +256,7 @@ class QgsMeshSpatialIndexData : public QSharedData
       initTree();
 
       // copy R-tree data one by one (is there a faster way??)
-      double low[]  = { std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest() };
+      double low[] = { std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest() };
       double high[] = { std::numeric_limits<double>::max(), std::numeric_limits<double>::max() };
       const SpatialIndex::Region query( low, high, 2 );
       QgsMeshSpatialIndexCopyVisitor visitor( mRTree.get() );
@@ -306,28 +283,9 @@ class QgsMeshSpatialIndexData : public QSharedData
       SpatialIndex::id_type indexId;
 
       if ( inputStream && inputStream->hasNext() )
-        mRTree.reset(
-          RTree::createAndBulkLoadNewRTree(
-            RTree::BLM_STR,
-            *inputStream,
-            *mStorage, fillFactor,
-            indexCapacity,
-            leafCapacity,
-            dimension,
-            variant,
-            indexId )
-        );
+        mRTree.reset( RTree::createAndBulkLoadNewRTree( RTree::BLM_STR, *inputStream, *mStorage, fillFactor, indexCapacity, leafCapacity, dimension, variant, indexId ) );
       else
-        mRTree.reset(
-          RTree::createNewRTree(
-            *mStorage,
-            fillFactor,
-            indexCapacity,
-            leafCapacity,
-            dimension,
-            variant,
-            indexId )
-        );
+        mRTree.reset( RTree::createNewRTree( *mStorage, fillFactor, indexCapacity, leafCapacity, dimension, variant, indexId ) );
     }
 
     //! Storage manager
@@ -341,10 +299,7 @@ class QgsMeshSpatialIndexData : public QSharedData
 
 ///@endcond
 
-QgsMeshSpatialIndex::QgsMeshSpatialIndex()
-{
-  d = new QgsMeshSpatialIndexData;
-}
+QgsMeshSpatialIndex::QgsMeshSpatialIndex() { d = new QgsMeshSpatialIndexData; }
 
 QgsMeshSpatialIndex::QgsMeshSpatialIndex( const QgsMesh &mesh, QgsFeedback *feedback, QgsMesh::ElementType elementType )
   : mElementType( elementType )
@@ -355,16 +310,14 @@ QgsMeshSpatialIndex::QgsMeshSpatialIndex( const QgsMesh &mesh, QgsFeedback *feed
 QgsMeshSpatialIndex::QgsMeshSpatialIndex( const QgsMeshSpatialIndex &other ) //NOLINT
   : mElementType( other.mElementType )
   , d( other.d )
-{
-}
+{}
 
 QgsMeshSpatialIndex::QgsMeshSpatialIndex( QgsMeshSpatialIndex &&other ) //NOLINT
   : mElementType( other.mElementType )
   , d( std::move( other.d ) )
-{
-}
+{}
 
-QgsMeshSpatialIndex:: ~QgsMeshSpatialIndex() = default; //NOLINT
+QgsMeshSpatialIndex::~QgsMeshSpatialIndex() = default; //NOLINT
 
 QgsMeshSpatialIndex &QgsMeshSpatialIndex::operator=( const QgsMeshSpatialIndex &other )
 {
@@ -413,10 +366,7 @@ QList<int> QgsMeshSpatialIndex::nearestNeighbor( const QgsPointXY &point, int ne
   return list;
 }
 
-QgsMesh::ElementType QgsMeshSpatialIndex::elementType() const
-{
-  return mElementType;
-}
+QgsMesh::ElementType QgsMeshSpatialIndex::elementType() const { return mElementType; }
 
 void QgsMeshSpatialIndex::addFace( int faceIndex, const QgsMesh &mesh )
 {

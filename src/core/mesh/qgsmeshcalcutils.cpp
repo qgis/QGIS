@@ -32,7 +32,9 @@ const double D_TRUE = 1.0;
 const double D_FALSE = 0.0;
 const double D_NODATA = std::numeric_limits<double>::quiet_NaN();
 
-std::shared_ptr<QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::createMemoryDatasetGroup( const QString &datasetGroupName, const QgsInterval &relativeTime, const QgsInterval &startTime, const QgsInterval &endTime ) const
+std::shared_ptr<QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::createMemoryDatasetGroup(
+  const QString &datasetGroupName, const QgsInterval &relativeTime, const QgsInterval &startTime, const QgsInterval &endTime
+) const
 {
   std::shared_ptr<QgsMeshMemoryDatasetGroup> grp;
   const QList<int> &indexes = mMeshLayer->datasetGroupsIndexes();
@@ -53,7 +55,7 @@ std::shared_ptr<QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::createMemoryDataset
       grp->setMinimumMaximum( meta.minimum(), meta.maximum() );
       grp->setName( meta.name() );
 
-      if ( !relativeTime.isValid()  && ( !endTime.isValid() || !startTime.isValid() ) )
+      if ( !relativeTime.isValid() && ( !endTime.isValid() || !startTime.isValid() ) )
       {
         for ( int index = 0; index < mMeshLayer->datasetCount( groupIndex ); ++index )
           grp->addDataset( createMemoryDataset( QgsMeshDatasetIndex( groupIndex, index ) ) );
@@ -82,10 +84,7 @@ std::shared_ptr<QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::createMemoryDataset
   return grp;
 }
 
-std::shared_ptr<QgsMeshMemoryDataset> QgsMeshCalcUtils::createMemoryDataset( const QgsMeshMemoryDatasetGroup &grp ) const
-{
-  return createMemoryDataset( grp.dataType() );
-}
+std::shared_ptr<QgsMeshMemoryDataset> QgsMeshCalcUtils::createMemoryDataset( const QgsMeshMemoryDatasetGroup &grp ) const { return createMemoryDataset( grp.dataType() ); }
 
 std::shared_ptr<QgsMeshMemoryDataset> QgsMeshCalcUtils::createMemoryDataset( const QgsMeshDatasetIndex &datasetIndex ) const
 {
@@ -114,14 +113,7 @@ std::shared_ptr<QgsMeshMemoryDataset> QgsMeshCalcUtils::createMemoryDataset( con
   {
     if ( meta.isScalar() )
     {
-      QVector<double> data =
-        QgsMeshLayerUtils::interpolateFromFacesData(
-          block.values(),
-          nativeMesh(),
-          triangularMesh(),
-          nullptr,
-          QgsMeshRendererScalarSettings::NeighbourAverage
-        );
+      QVector<double> data = QgsMeshLayerUtils::interpolateFromFacesData( block.values(), nativeMesh(), triangularMesh(), nullptr, QgsMeshRendererScalarSettings::NeighbourAverage );
       Q_ASSERT( data.size() == resultCount );
       for ( int valueIndex = 0; valueIndex < resultCount; ++valueIndex )
         ds->values[valueIndex] = QgsMeshDatasetValue( data[valueIndex] );
@@ -137,23 +129,11 @@ std::shared_ptr<QgsMeshMemoryDataset> QgsMeshCalcUtils::createMemoryDataset( con
         y[value_i] = buf[2 * value_i + 1];
       }
 
-      QVector<double> dataX =
-        QgsMeshLayerUtils::interpolateFromFacesData(
-          x,
-          mMeshLayer->nativeMesh(),
-          mMeshLayer->triangularMesh(),
-          nullptr,
-          mMeshLayer->rendererSettings().scalarSettings( groupIndex ).dataResamplingMethod()
-        );
+      QVector<double> dataX
+        = QgsMeshLayerUtils::interpolateFromFacesData( x, mMeshLayer->nativeMesh(), mMeshLayer->triangularMesh(), nullptr, mMeshLayer->rendererSettings().scalarSettings( groupIndex ).dataResamplingMethod() );
       Q_ASSERT( dataX.size() == resultCount );
-      QVector<double> dataY =
-        QgsMeshLayerUtils::interpolateFromFacesData(
-          y,
-          mMeshLayer->nativeMesh(),
-          mMeshLayer->triangularMesh(),
-          nullptr,
-          mMeshLayer->rendererSettings().scalarSettings( groupIndex ).dataResamplingMethod()
-        );
+      QVector<double> dataY
+        = QgsMeshLayerUtils::interpolateFromFacesData( y, mMeshLayer->nativeMesh(), mMeshLayer->triangularMesh(), nullptr, mMeshLayer->rendererSettings().scalarSettings( groupIndex ).dataResamplingMethod() );
 
       Q_ASSERT( dataY.size() == resultCount );
 
@@ -199,10 +179,7 @@ std::shared_ptr<QgsMeshMemoryDataset> QgsMeshCalcUtils::createMemoryDataset( con
   return ds;
 }
 
-QgsMeshCalcUtils:: QgsMeshCalcUtils( QgsMeshLayer *layer,
-                                     const QStringList &usedGroupNames,
-                                     double startTime,
-                                     double endTime )
+QgsMeshCalcUtils::QgsMeshCalcUtils( QgsMeshLayer *layer, const QStringList &usedGroupNames, double startTime, double endTime )
   : mMeshLayer( layer )
   , mIsValid( false )
 {
@@ -289,9 +266,7 @@ QgsMeshCalcUtils:: QgsMeshCalcUtils( QgsMeshLayer *layer,
     // filter out times we do not need to speed up calculations
     for ( QVector<double>::iterator it = mTimes.begin(); it != mTimes.end(); )
     {
-      if ( qgsDoubleNear( *it, startTime ) ||
-           qgsDoubleNear( *it, endTime ) ||
-           ( ( *it >= startTime ) && ( *it <= endTime ) ) )
+      if ( qgsDoubleNear( *it, startTime ) || qgsDoubleNear( *it, endTime ) || ( ( *it >= startTime ) && ( *it <= endTime ) ) )
         ++it;
       else
         it = mTimes.erase( it );
@@ -346,12 +321,9 @@ QgsMeshCalcUtils::QgsMeshCalcUtils( QgsMeshLayer *layer, const QStringList &used
   mIsValid = true;
 }
 
-QgsMeshCalcUtils::QgsMeshCalcUtils( QgsMeshLayer *layer,
-                                    const QStringList &usedGroupNames,
-                                    const QStringList &usedGroupNamesForAggregate,
-                                    const QgsInterval &relativeTime,
-                                    const QgsInterval &startTime,
-                                    const QgsInterval &endTime )
+QgsMeshCalcUtils::QgsMeshCalcUtils(
+  QgsMeshLayer *layer, const QStringList &usedGroupNames, const QStringList &usedGroupNamesForAggregate, const QgsInterval &relativeTime, const QgsInterval &startTime, const QgsInterval &endTime
+)
   : mMeshLayer( layer )
   , mIsValid( false )
 {
@@ -402,15 +374,9 @@ QgsMeshCalcUtils::QgsMeshCalcUtils( QgsMeshLayer *layer,
   mIgnoreTime = true;
 }
 
-bool  QgsMeshCalcUtils::isValid() const
-{
-  return mIsValid;
-}
+bool QgsMeshCalcUtils::isValid() const { return mIsValid; }
 
-const QgsMeshLayer *QgsMeshCalcUtils::layer() const
-{
-  return mMeshLayer;
-}
+const QgsMeshLayer *QgsMeshCalcUtils::layer() const { return mMeshLayer; }
 
 std::shared_ptr<const QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::group( const QString &datasetName, bool isAggregate ) const
 {
@@ -420,10 +386,7 @@ std::shared_ptr<const QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::group( const 
     return mDatasetGroupMap.value( datasetName );
 }
 
-std::shared_ptr<const QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::group( const QString &datasetName ) const
-{
-  return mDatasetGroupMap[datasetName];
-}
+std::shared_ptr<const QgsMeshMemoryDatasetGroup> QgsMeshCalcUtils::group( const QString &datasetName ) const { return mDatasetGroupMap[datasetName]; }
 
 void QgsMeshCalcUtils::populateSpatialFilter( QgsMeshMemoryDatasetGroup &filter, const QgsRectangle &extent ) const
 {
@@ -509,7 +472,7 @@ void QgsMeshCalcUtils::populateMaskFilter( QgsMeshMemoryDatasetGroup &filter, co
   filter.addDataset( output );
 }
 
-std::shared_ptr<QgsMeshMemoryDataset>  QgsMeshCalcUtils::number( double val, double time ) const
+std::shared_ptr<QgsMeshMemoryDataset> QgsMeshCalcUtils::number( double val, double time ) const
 {
   Q_ASSERT( isValid() );
 
@@ -556,9 +519,7 @@ void QgsMeshCalcUtils::nodata( QgsMeshMemoryDatasetGroup &group1 ) const
 }
 
 
-std::shared_ptr<QgsMeshMemoryDataset>  QgsMeshCalcUtils::copy(
-  std::shared_ptr<const QgsMeshMemoryDataset> dataset0
-) const
+std::shared_ptr<QgsMeshMemoryDataset> QgsMeshCalcUtils::copy( std::shared_ptr<const QgsMeshMemoryDataset> dataset0 ) const
 {
   Q_ASSERT( isValid() );
   Q_ASSERT( dataset0 );
@@ -590,11 +551,7 @@ void QgsMeshCalcUtils::copy( QgsMeshMemoryDatasetGroup &group1, const QString &g
     for ( int output_index = 0; output_index < group2->datasetCount(); ++output_index )
     {
       const std::shared_ptr<const QgsMeshMemoryDataset> o0 = group2->constDataset( output_index );
-      if ( mIgnoreTime ||
-           qgsDoubleNear( o0->time, mTimes.first() ) ||
-           qgsDoubleNear( o0->time, mTimes.last() ) ||
-           ( ( o0->time >= mTimes.first() ) && ( o0->time <= mTimes.last() ) )
-         )
+      if ( mIgnoreTime || qgsDoubleNear( o0->time, mTimes.first() ) || qgsDoubleNear( o0->time, mTimes.last() ) || ( ( o0->time >= mTimes.first() ) && ( o0->time <= mTimes.last() ) ) )
       {
         const std::shared_ptr<QgsMeshMemoryDataset> output = copy( o0 );
         group1.addDataset( output );
@@ -643,9 +600,7 @@ void QgsMeshCalcUtils::expand( QgsMeshMemoryDatasetGroup &group1, const QgsMeshM
 }
 
 
-std::shared_ptr<QgsMeshMemoryDataset>  QgsMeshCalcUtils::canditateDataset(
-  QgsMeshMemoryDatasetGroup &group,
-  int datasetIndex ) const
+std::shared_ptr<QgsMeshMemoryDataset> QgsMeshCalcUtils::canditateDataset( QgsMeshMemoryDatasetGroup &group, int datasetIndex ) const
 {
   Q_ASSERT( isValid() );
 
@@ -661,9 +616,7 @@ std::shared_ptr<QgsMeshMemoryDataset>  QgsMeshCalcUtils::canditateDataset(
   }
 }
 
-std::shared_ptr<const QgsMeshMemoryDataset>  QgsMeshCalcUtils::constCandidateDataset(
-  const QgsMeshMemoryDatasetGroup &group,
-  int datasetIndex ) const
+std::shared_ptr<const QgsMeshMemoryDataset> QgsMeshCalcUtils::constCandidateDataset( const QgsMeshMemoryDatasetGroup &group, int datasetIndex ) const
 {
   Q_ASSERT( isValid() );
 
@@ -679,9 +632,7 @@ std::shared_ptr<const QgsMeshMemoryDataset>  QgsMeshCalcUtils::constCandidateDat
   }
 }
 
-int  QgsMeshCalcUtils::datasetCount(
-  const QgsMeshMemoryDatasetGroup &group1,
-  const QgsMeshMemoryDatasetGroup &group2 ) const
+int QgsMeshCalcUtils::datasetCount( const QgsMeshMemoryDatasetGroup &group1, const QgsMeshMemoryDatasetGroup &group2 ) const
 {
   Q_ASSERT( isValid() );
 
@@ -698,8 +649,7 @@ int  QgsMeshCalcUtils::datasetCount(
   }
 }
 
-void QgsMeshCalcUtils::func1( QgsMeshMemoryDatasetGroup &group,
-                              std::function<double( double )> func ) const
+void QgsMeshCalcUtils::func1( QgsMeshMemoryDatasetGroup &group, std::function<double( double )> func ) const
 {
   Q_ASSERT( isValid() );
 
@@ -722,9 +672,7 @@ void QgsMeshCalcUtils::func1( QgsMeshMemoryDatasetGroup &group,
 }
 
 
-void QgsMeshCalcUtils::func2( QgsMeshMemoryDatasetGroup &group1,
-                              const QgsMeshMemoryDatasetGroup &group2,
-                              std::function<double( double, double )> func ) const
+void QgsMeshCalcUtils::func2( QgsMeshMemoryDatasetGroup &group1, const QgsMeshMemoryDatasetGroup &group2, std::function<double( double, double )> func ) const
 {
   Q_ASSERT( isValid() );
   Q_ASSERT( group1.dataType() == group2.dataType() ); // we do not support mixed output types
@@ -750,14 +698,10 @@ void QgsMeshCalcUtils::func2( QgsMeshMemoryDatasetGroup &group1,
     {
       activate( o1, o2 );
     }
-
   }
 }
 
-void QgsMeshCalcUtils::funcAggr(
-  QgsMeshMemoryDatasetGroup &group1,
-  std::function<double( QVector<double>& )> func
-) const
+void QgsMeshCalcUtils::funcAggr( QgsMeshMemoryDatasetGroup &group1, std::function<double( QVector<double> & )> func ) const
 {
   Q_ASSERT( isValid() );
 
@@ -767,7 +711,7 @@ void QgsMeshCalcUtils::funcAggr(
     output->time = mTimes[0];
     for ( int n = 0; n < mMeshLayer->dataProvider()->vertexCount(); ++n )
     {
-      QVector < double > vals;
+      QVector< double > vals;
       for ( int datasetIndex = 0; datasetIndex < group1.datasetCount(); ++datasetIndex )
       {
         const std::shared_ptr<QgsMeshMemoryDataset> o1 = canditateDataset( group1, datasetIndex );
@@ -796,7 +740,6 @@ void QgsMeshCalcUtils::funcAggr(
 
     group1.clearDatasets();
     group1.addDataset( output );
-
   }
   else
   {
@@ -808,7 +751,7 @@ void QgsMeshCalcUtils::funcAggr(
 
     for ( int n = 0; n < mMeshLayer->dataProvider()->faceCount(); ++n )
     {
-      QVector < double > vals;
+      QVector< double > vals;
       for ( int datasetIndex = 0; datasetIndex < group1.datasetCount(); ++datasetIndex )
       {
         const std::shared_ptr<QgsMeshMemoryDataset> o1 = canditateDataset( group1, datasetIndex );
@@ -850,21 +793,16 @@ const QgsMesh *QgsMeshCalcUtils::nativeMesh() const
 
 void QgsMeshCalcUtils::updateMesh() const
 {
-  if ( ! mMeshLayer->nativeMesh() )
+  if ( !mMeshLayer->nativeMesh() )
   {
     //calling this method creates the triangular mesh if it doesn't exist
     mMeshLayer->updateTriangularMesh();
   }
 }
 
-QgsMeshDatasetGroupMetadata::DataType QgsMeshCalcUtils::outputType() const
-{
-  return mOutputType;
-}
+QgsMeshDatasetGroupMetadata::DataType QgsMeshCalcUtils::outputType() const { return mOutputType; }
 
-void QgsMeshCalcUtils::addIf( QgsMeshMemoryDatasetGroup &trueGroup,
-                              const QgsMeshMemoryDatasetGroup &falseGroup,
-                              const QgsMeshMemoryDatasetGroup &condition ) const
+void QgsMeshCalcUtils::addIf( QgsMeshMemoryDatasetGroup &trueGroup, const QgsMeshMemoryDatasetGroup &falseGroup, const QgsMeshMemoryDatasetGroup &condition ) const
 {
   Q_ASSERT( isValid() );
 
@@ -873,7 +811,7 @@ void QgsMeshCalcUtils::addIf( QgsMeshMemoryDatasetGroup &trueGroup,
   expand( trueGroup, falseGroup );
 
   Q_ASSERT( trueGroup.dataType() == falseGroup.dataType() ); // we do not support mixed output types
-  Q_ASSERT( trueGroup.dataType() == condition.dataType() ); // we do not support mixed output types
+  Q_ASSERT( trueGroup.dataType() == condition.dataType() );  // we do not support mixed output types
 
   for ( int time_index = 0; time_index < trueGroup.datasetCount(); ++time_index )
   {
@@ -882,7 +820,7 @@ void QgsMeshCalcUtils::addIf( QgsMeshMemoryDatasetGroup &trueGroup,
     const std::shared_ptr<const QgsMeshMemoryDataset> condition_o = constCandidateDataset( condition, time_index );
     for ( int n = 0; n < true_o->values.size(); ++n )
     {
-      const double conditionValue =  condition_o->values[n].scalar();
+      const double conditionValue = condition_o->values[n].scalar();
       double resultValue = D_NODATA;
       if ( !std::isnan( conditionValue ) )
       {
@@ -921,11 +859,9 @@ void QgsMeshCalcUtils::activate( QgsMeshMemoryDatasetGroup &group ) const
 }
 
 void QgsMeshCalcUtils::activate(
-  std::shared_ptr<QgsMeshMemoryDataset> dataset,
-  std::shared_ptr<const QgsMeshMemoryDataset> refDataset /*=0*/
+  std::shared_ptr<QgsMeshMemoryDataset> dataset, std::shared_ptr<const QgsMeshMemoryDataset> refDataset /*=0*/
 ) const
 {
-
   Q_ASSERT( isValid() );
   Q_ASSERT( dataset );
 
@@ -973,7 +909,6 @@ double QgsMeshCalcUtils::fadd( double val1, double val2 ) const
   Q_ASSERT( !std::isnan( val1 ) );
   Q_ASSERT( !std::isnan( val2 ) );
   return val1 + val2;
-
 }
 
 double QgsMeshCalcUtils::fsubtract( double val1, double val2 ) const
@@ -981,7 +916,6 @@ double QgsMeshCalcUtils::fsubtract( double val1, double val2 ) const
   Q_ASSERT( !std::isnan( val1 ) );
   Q_ASSERT( !std::isnan( val2 ) );
   return val1 - val2;
-
 }
 
 double QgsMeshCalcUtils::fmultiply( double val1, double val2 ) const
@@ -989,7 +923,6 @@ double QgsMeshCalcUtils::fmultiply( double val1, double val2 ) const
   Q_ASSERT( !std::isnan( val1 ) );
   Q_ASSERT( !std::isnan( val2 ) );
   return val1 * val2;
-
 }
 
 double QgsMeshCalcUtils::fdivide( double val1, double val2 ) const
@@ -1000,7 +933,6 @@ double QgsMeshCalcUtils::fdivide( double val1, double val2 ) const
     return D_NODATA;
   else
     return val1 / val2;
-
 }
 
 double QgsMeshCalcUtils::fpower( double val1, double val2 ) const
@@ -1008,7 +940,6 @@ double QgsMeshCalcUtils::fpower( double val1, double val2 ) const
   Q_ASSERT( !std::isnan( val1 ) );
   Q_ASSERT( !std::isnan( val2 ) );
   return pow( val1, val2 );
-
 }
 
 double QgsMeshCalcUtils::fequal( double val1, double val2 ) const
@@ -1023,7 +954,6 @@ double QgsMeshCalcUtils::fequal( double val1, double val2 ) const
   {
     return D_FALSE;
   }
-
 }
 
 double QgsMeshCalcUtils::fnotEqual( double val1, double val2 ) const
@@ -1038,7 +968,6 @@ double QgsMeshCalcUtils::fnotEqual( double val1, double val2 ) const
   {
     return D_TRUE;
   }
-
 }
 
 double QgsMeshCalcUtils::fgreaterThan( double val1, double val2 ) const
@@ -1053,7 +982,6 @@ double QgsMeshCalcUtils::fgreaterThan( double val1, double val2 ) const
   {
     return D_FALSE;
   }
-
 }
 
 double QgsMeshCalcUtils::flesserThan( double val1, double val2 ) const
@@ -1068,7 +996,6 @@ double QgsMeshCalcUtils::flesserThan( double val1, double val2 ) const
   {
     return D_FALSE;
   }
-
 }
 
 double QgsMeshCalcUtils::flesserEqual( double val1, double val2 ) const
@@ -1083,7 +1010,6 @@ double QgsMeshCalcUtils::flesserEqual( double val1, double val2 ) const
   {
     return D_FALSE;
   }
-
 }
 
 double QgsMeshCalcUtils::fgreaterEqual( double val1, double val2 ) const
@@ -1098,7 +1024,6 @@ double QgsMeshCalcUtils::fgreaterEqual( double val1, double val2 ) const
   {
     return D_FALSE;
   }
-
 }
 
 
@@ -1112,7 +1037,6 @@ double QgsMeshCalcUtils::flogicalAnd( double val1, double val2 ) const
     return D_TRUE;
   else
     return D_FALSE;
-
 }
 
 double QgsMeshCalcUtils::flogicalOr( double val1, double val2 ) const
@@ -1125,7 +1049,6 @@ double QgsMeshCalcUtils::flogicalOr( double val1, double val2 ) const
     return D_TRUE;
   else
     return D_FALSE;
-
 }
 
 double QgsMeshCalcUtils::flogicalNot( double val1 ) const
@@ -1136,7 +1059,6 @@ double QgsMeshCalcUtils::flogicalNot( double val1 ) const
     return D_FALSE;
   else
     return D_TRUE;
-
 }
 
 double QgsMeshCalcUtils::fchangeSign( double val1 ) const
@@ -1171,7 +1093,6 @@ double QgsMeshCalcUtils::fmax( double val1, double val2 ) const
   {
     return val1;
   }
-
 }
 
 double QgsMeshCalcUtils::fabs( double val1 ) const
@@ -1185,7 +1106,6 @@ double QgsMeshCalcUtils::fabs( double val1 ) const
   {
     return -val1;
   }
-
 }
 
 double QgsMeshCalcUtils::fsumAggregated( QVector<double> &vals ) const
@@ -1216,94 +1136,85 @@ double QgsMeshCalcUtils::faverageAggregated( QVector<double> &vals ) const
   return fsumAggregated( vals ) / vals.size();
 }
 
-void QgsMeshCalcUtils::logicalNot( QgsMeshMemoryDatasetGroup &group1 ) const
-{
-  return func1( group1, std::bind( & QgsMeshCalcUtils::flogicalNot, this, std::placeholders::_1 ) );
-}
+void QgsMeshCalcUtils::logicalNot( QgsMeshMemoryDatasetGroup &group1 ) const { return func1( group1, std::bind( &QgsMeshCalcUtils::flogicalNot, this, std::placeholders::_1 ) ); }
 
-void QgsMeshCalcUtils::changeSign( QgsMeshMemoryDatasetGroup &group1 ) const
-{
-  return func1( group1, std::bind( & QgsMeshCalcUtils::fchangeSign, this, std::placeholders::_1 ) );
-}
+void QgsMeshCalcUtils::changeSign( QgsMeshMemoryDatasetGroup &group1 ) const { return func1( group1, std::bind( &QgsMeshCalcUtils::fchangeSign, this, std::placeholders::_1 ) ); }
 
-void QgsMeshCalcUtils::abs( QgsMeshMemoryDatasetGroup &group1 ) const
-{
-  return func1( group1, std::bind( & QgsMeshCalcUtils::fabs, this, std::placeholders::_1 ) );
-}
+void QgsMeshCalcUtils::abs( QgsMeshMemoryDatasetGroup &group1 ) const { return func1( group1, std::bind( &QgsMeshCalcUtils::fabs, this, std::placeholders::_1 ) ); }
 
 void QgsMeshCalcUtils::add( QgsMeshMemoryDatasetGroup &group1, const QgsMeshMemoryDatasetGroup &group2 ) const
 {
-  return func2( group1, group2, std::bind( & QgsMeshCalcUtils::fadd, this, std::placeholders::_1, std::placeholders::_2 ) );
+  return func2( group1, group2, std::bind( &QgsMeshCalcUtils::fadd, this, std::placeholders::_1, std::placeholders::_2 ) );
 }
 
 void QgsMeshCalcUtils::subtract( QgsMeshMemoryDatasetGroup &group1, const QgsMeshMemoryDatasetGroup &group2 ) const
 {
-  return func2( group1, group2, std::bind( & QgsMeshCalcUtils::fsubtract, this, std::placeholders::_1, std::placeholders::_2 ) );
+  return func2( group1, group2, std::bind( &QgsMeshCalcUtils::fsubtract, this, std::placeholders::_1, std::placeholders::_2 ) );
 }
 
 void QgsMeshCalcUtils::multiply( QgsMeshMemoryDatasetGroup &group1, const QgsMeshMemoryDatasetGroup &group2 ) const
 {
-  return func2( group1, group2, std::bind( & QgsMeshCalcUtils::fmultiply, this, std::placeholders::_1, std::placeholders::_2 ) );
+  return func2( group1, group2, std::bind( &QgsMeshCalcUtils::fmultiply, this, std::placeholders::_1, std::placeholders::_2 ) );
 }
 
 void QgsMeshCalcUtils::divide( QgsMeshMemoryDatasetGroup &group1, const QgsMeshMemoryDatasetGroup &group2 ) const
 {
-  return func2( group1, group2, std::bind( & QgsMeshCalcUtils::fdivide, this, std::placeholders::_1, std::placeholders::_2 ) );
+  return func2( group1, group2, std::bind( &QgsMeshCalcUtils::fdivide, this, std::placeholders::_1, std::placeholders::_2 ) );
 }
 
 void QgsMeshCalcUtils::power( QgsMeshMemoryDatasetGroup &group1, const QgsMeshMemoryDatasetGroup &group2 ) const
 {
-  return func2( group1, group2, std::bind( & QgsMeshCalcUtils::fpower, this, std::placeholders::_1, std::placeholders::_2 ) );
+  return func2( group1, group2, std::bind( &QgsMeshCalcUtils::fpower, this, std::placeholders::_1, std::placeholders::_2 ) );
 }
 
 void QgsMeshCalcUtils::equal( QgsMeshMemoryDatasetGroup &group1, const QgsMeshMemoryDatasetGroup &group2 ) const
 {
-  return func2( group1, group2, std::bind( & QgsMeshCalcUtils::fequal, this, std::placeholders::_1, std::placeholders::_2 ) );
+  return func2( group1, group2, std::bind( &QgsMeshCalcUtils::fequal, this, std::placeholders::_1, std::placeholders::_2 ) );
 }
 
 void QgsMeshCalcUtils::notEqual( QgsMeshMemoryDatasetGroup &group1, const QgsMeshMemoryDatasetGroup &group2 ) const
 {
-  return func2( group1, group2, std::bind( & QgsMeshCalcUtils::fnotEqual, this, std::placeholders::_1, std::placeholders::_2 ) );
+  return func2( group1, group2, std::bind( &QgsMeshCalcUtils::fnotEqual, this, std::placeholders::_1, std::placeholders::_2 ) );
 }
 
 void QgsMeshCalcUtils::greaterThan( QgsMeshMemoryDatasetGroup &group1, const QgsMeshMemoryDatasetGroup &group2 ) const
 {
-  return func2( group1, group2, std::bind( & QgsMeshCalcUtils::fgreaterThan, this, std::placeholders::_1, std::placeholders::_2 ) );
+  return func2( group1, group2, std::bind( &QgsMeshCalcUtils::fgreaterThan, this, std::placeholders::_1, std::placeholders::_2 ) );
 }
 
 void QgsMeshCalcUtils::lesserThan( QgsMeshMemoryDatasetGroup &group1, const QgsMeshMemoryDatasetGroup &group2 ) const
 {
-  return func2( group1, group2, std::bind( & QgsMeshCalcUtils::flesserThan, this, std::placeholders::_1, std::placeholders::_2 ) );
+  return func2( group1, group2, std::bind( &QgsMeshCalcUtils::flesserThan, this, std::placeholders::_1, std::placeholders::_2 ) );
 }
 
 void QgsMeshCalcUtils::lesserEqual( QgsMeshMemoryDatasetGroup &group1, const QgsMeshMemoryDatasetGroup &group2 ) const
 {
-  return func2( group1, group2, std::bind( & QgsMeshCalcUtils::flesserEqual, this, std::placeholders::_1, std::placeholders::_2 ) );
+  return func2( group1, group2, std::bind( &QgsMeshCalcUtils::flesserEqual, this, std::placeholders::_1, std::placeholders::_2 ) );
 }
 
 void QgsMeshCalcUtils::greaterEqual( QgsMeshMemoryDatasetGroup &group1, const QgsMeshMemoryDatasetGroup &group2 ) const
 {
-  return func2( group1, group2, std::bind( & QgsMeshCalcUtils::fgreaterEqual, this, std::placeholders::_1, std::placeholders::_2 ) );
+  return func2( group1, group2, std::bind( &QgsMeshCalcUtils::fgreaterEqual, this, std::placeholders::_1, std::placeholders::_2 ) );
 }
 
 void QgsMeshCalcUtils::logicalAnd( QgsMeshMemoryDatasetGroup &group1, const QgsMeshMemoryDatasetGroup &group2 ) const
 {
-  return func2( group1, group2, std::bind( & QgsMeshCalcUtils::flogicalAnd, this, std::placeholders::_1, std::placeholders::_2 ) );
+  return func2( group1, group2, std::bind( &QgsMeshCalcUtils::flogicalAnd, this, std::placeholders::_1, std::placeholders::_2 ) );
 }
 
 void QgsMeshCalcUtils::logicalOr( QgsMeshMemoryDatasetGroup &group1, const QgsMeshMemoryDatasetGroup &group2 ) const
 {
-  return func2( group1, group2, std::bind( & QgsMeshCalcUtils::flogicalOr, this, std::placeholders::_1, std::placeholders::_2 ) );
+  return func2( group1, group2, std::bind( &QgsMeshCalcUtils::flogicalOr, this, std::placeholders::_1, std::placeholders::_2 ) );
 }
 
 void QgsMeshCalcUtils::minimum( QgsMeshMemoryDatasetGroup &group1, const QgsMeshMemoryDatasetGroup &group2 ) const
 {
-  return func2( group1, group2, std::bind( & QgsMeshCalcUtils::fmin, this, std::placeholders::_1, std::placeholders::_2 ) );
+  return func2( group1, group2, std::bind( &QgsMeshCalcUtils::fmin, this, std::placeholders::_1, std::placeholders::_2 ) );
 }
 
 void QgsMeshCalcUtils::maximum( QgsMeshMemoryDatasetGroup &group1, const QgsMeshMemoryDatasetGroup &group2 ) const
 {
-  return func2( group1, group2, std::bind( & QgsMeshCalcUtils::fmax, this, std::placeholders::_1, std::placeholders::_2 ) );
+  return func2( group1, group2, std::bind( &QgsMeshCalcUtils::fmax, this, std::placeholders::_1, std::placeholders::_2 ) );
 }
 
 QgsMeshDatasetGroupMetadata::DataType QgsMeshCalcUtils::determineResultDataType( QgsMeshLayer *layer, const QStringList &usedGroupNames )
@@ -1314,7 +1225,7 @@ QgsMeshDatasetGroupMetadata::DataType QgsMeshCalcUtils::determineResultDataType(
   {
     const QgsMeshDatasetGroupMetadata meta = layer->datasetGroupMetadata( groupId );
     const QString name = meta.name();
-    names[ name ] = groupId;
+    names[name] = groupId;
   }
   for ( const QString &datasetGroupName : usedGroupNames )
   {
@@ -1339,34 +1250,22 @@ void QgsMeshCalcUtils::filter( QgsMeshMemoryDatasetGroup &group1, const QgsRecta
 {
   QgsMeshMemoryDatasetGroup filter( "filter", outputType() );
   populateSpatialFilter( filter, extent );
-  return func2( group1, filter, std::bind( & QgsMeshCalcUtils::ffilter, this, std::placeholders::_1, std::placeholders::_2 ) );
+  return func2( group1, filter, std::bind( &QgsMeshCalcUtils::ffilter, this, std::placeholders::_1, std::placeholders::_2 ) );
 }
 
 void QgsMeshCalcUtils::filter( QgsMeshMemoryDatasetGroup &group1, const QgsGeometry &mask ) const
 {
   QgsMeshMemoryDatasetGroup filter( "filter", outputType() );
   populateMaskFilter( filter, mask );
-  return func2( group1, filter, std::bind( & QgsMeshCalcUtils::ffilter, this, std::placeholders::_1, std::placeholders::_2 ) );
+  return func2( group1, filter, std::bind( &QgsMeshCalcUtils::ffilter, this, std::placeholders::_1, std::placeholders::_2 ) );
 }
 
-void QgsMeshCalcUtils::sumAggregated( QgsMeshMemoryDatasetGroup &group1 ) const
-{
-  return funcAggr( group1, std::bind( & QgsMeshCalcUtils::fsumAggregated, this, std::placeholders::_1 ) );
-}
+void QgsMeshCalcUtils::sumAggregated( QgsMeshMemoryDatasetGroup &group1 ) const { return funcAggr( group1, std::bind( &QgsMeshCalcUtils::fsumAggregated, this, std::placeholders::_1 ) ); }
 
-void QgsMeshCalcUtils::minimumAggregated( QgsMeshMemoryDatasetGroup &group1 ) const
-{
-  return funcAggr( group1, std::bind( & QgsMeshCalcUtils::fminimumAggregated, this, std::placeholders::_1 ) );
-}
+void QgsMeshCalcUtils::minimumAggregated( QgsMeshMemoryDatasetGroup &group1 ) const { return funcAggr( group1, std::bind( &QgsMeshCalcUtils::fminimumAggregated, this, std::placeholders::_1 ) ); }
 
-void QgsMeshCalcUtils::maximumAggregated( QgsMeshMemoryDatasetGroup &group1 ) const
-{
-  return funcAggr( group1, std::bind( & QgsMeshCalcUtils::fmaximumAggregated, this, std::placeholders::_1 ) );
-}
+void QgsMeshCalcUtils::maximumAggregated( QgsMeshMemoryDatasetGroup &group1 ) const { return funcAggr( group1, std::bind( &QgsMeshCalcUtils::fmaximumAggregated, this, std::placeholders::_1 ) ); }
 
-void QgsMeshCalcUtils::averageAggregated( QgsMeshMemoryDatasetGroup &group1 ) const
-{
-  return funcAggr( group1, std::bind( & QgsMeshCalcUtils::faverageAggregated, this, std::placeholders::_1 ) );
-}
+void QgsMeshCalcUtils::averageAggregated( QgsMeshMemoryDatasetGroup &group1 ) const { return funcAggr( group1, std::bind( &QgsMeshCalcUtils::faverageAggregated, this, std::placeholders::_1 ) ); }
 
 ///@endcond

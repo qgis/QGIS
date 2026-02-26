@@ -27,7 +27,6 @@ the labeling of a mesh layer.
 #include "qgsmeshlayerlabeling.h"
 %End
   public:
-
     QgsAbstractMeshLayerLabeling();
     virtual ~QgsAbstractMeshLayerLabeling();
 
@@ -138,7 +137,6 @@ Basic implementation of the labeling interface for mesh layers.
 #include "qgsmeshlayerlabeling.h"
 %End
   public:
-
     explicit QgsMeshLayerSimpleLabeling( const QgsPalLayerSettings &settings, bool labelFaces = false );
 %Docstring
 Constructs simple labeling configuration with given initial

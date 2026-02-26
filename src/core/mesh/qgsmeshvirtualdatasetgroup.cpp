@@ -21,19 +21,13 @@
 
 using namespace Qt::StringLiterals;
 
-QgsMeshVirtualDatasetGroup::QgsMeshVirtualDatasetGroup(
-  const QString &name,
-  const QString &formulaString,
-  QgsMeshLayer *layer,
-  qint64 relativeStartTime,
-  qint64 relativeEndTime ):
-  QgsMeshDatasetGroup( name )
+QgsMeshVirtualDatasetGroup::QgsMeshVirtualDatasetGroup( const QString &name, const QString &formulaString, QgsMeshLayer *layer, qint64 relativeStartTime, qint64 relativeEndTime )
+  : QgsMeshDatasetGroup( name )
   , mFormula( formulaString )
   , mLayer( layer )
   , mStartTime( relativeStartTime )
   , mEndTime( relativeEndTime )
-{
-}
+{}
 
 void QgsMeshVirtualDatasetGroup::initialize()
 {
@@ -45,8 +39,7 @@ void QgsMeshVirtualDatasetGroup::initialize()
 
   mDatasetGroupNameUsed = mCalcNode->notAggregatedUsedDatasetGroupNames();
   mDatasetGroupNameUsedForAggregate = mCalcNode->aggregatedUsedDatasetGroupNames();
-  setDataType( QgsMeshCalcUtils::determineResultDataType( mLayer,
-               mDatasetGroupNameUsed + mDatasetGroupNameUsedForAggregate ) );
+  setDataType( QgsMeshCalcUtils::determineResultDataType( mLayer, mDatasetGroupNameUsed + mDatasetGroupNameUsedForAggregate ) );
 
   //populate used group indexes
   QMap<QString, int> usedDatasetGroupindexes;
@@ -102,10 +95,7 @@ void QgsMeshVirtualDatasetGroup::initialize()
   calculateStatistic();
 }
 
-int QgsMeshVirtualDatasetGroup::datasetCount() const
-{
-  return mDatasetTimes.count();
-}
+int QgsMeshVirtualDatasetGroup::datasetCount() const { return mDatasetTimes.count(); }
 
 QgsMeshDataset *QgsMeshVirtualDatasetGroup::dataset( int index ) const
 {
@@ -129,10 +119,7 @@ QgsMeshDatasetMetadata QgsMeshVirtualDatasetGroup::datasetMetadata( int datasetI
   return mDatasetMetaData.at( datasetIndex );
 }
 
-QStringList QgsMeshVirtualDatasetGroup::datasetGroupNamesDependentOn() const
-{
-  return mDatasetGroupNameUsed;
-}
+QStringList QgsMeshVirtualDatasetGroup::datasetGroupNamesDependentOn() const { return mDatasetGroupNameUsed; }
 
 QDomElement QgsMeshVirtualDatasetGroup::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
@@ -147,28 +134,21 @@ QDomElement QgsMeshVirtualDatasetGroup::writeXml( QDomDocument &doc, const QgsRe
   return elemDataset;
 }
 
-QString QgsMeshVirtualDatasetGroup::description() const
-{
-  return mFormula;
-}
+QString QgsMeshVirtualDatasetGroup::description() const { return mFormula; }
 
 bool QgsMeshVirtualDatasetGroup::calculateDataset() const
 {
   if ( !mLayer )
     return false;
 
-  const QgsMeshCalcUtils dsu( mLayer,
-                              mDatasetGroupNameUsed,
-                              mDatasetGroupNameUsedForAggregate,
-                              QgsInterval( mDatasetTimes[mCurrentDatasetIndex] / 1000.0 ),
-                              QgsInterval( mStartTime / 1000.0 ),
-                              QgsInterval( mEndTime / 1000.0 ) );
+  const QgsMeshCalcUtils
+    dsu( mLayer, mDatasetGroupNameUsed, mDatasetGroupNameUsedForAggregate, QgsInterval( mDatasetTimes[mCurrentDatasetIndex] / 1000.0 ), QgsInterval( mStartTime / 1000.0 ), QgsInterval( mEndTime / 1000.0 ) );
 
   if ( !dsu.isValid() )
     return false;
 
   //open output dataset
-  auto outputGroup = std::make_unique<QgsMeshMemoryDatasetGroup> ( QString(), dsu.outputType() );
+  auto outputGroup = std::make_unique<QgsMeshMemoryDatasetGroup>( QString(), dsu.outputType() );
   mCalcNode->calculate( dsu, *outputGroup );
 
   if ( outputGroup->memoryDatasets.isEmpty() )

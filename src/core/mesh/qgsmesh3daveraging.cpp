@@ -32,28 +32,26 @@ static const double eps = 1e-6;
 
 QgsMesh3DAveragingMethod::QgsMesh3DAveragingMethod( Method method )
   : mMethod( method )
-{
-}
+{}
 
 QgsMesh3DAveragingMethod *QgsMesh3DAveragingMethod::createFromXml( const QDomElement &elem )
 {
   std::unique_ptr<QgsMesh3DAveragingMethod> ret;
 
-  const QgsMesh3DAveragingMethod::Method method = static_cast<QgsMesh3DAveragingMethod::Method>(
-        elem.attribute( u"method"_s ).toInt() );
+  const QgsMesh3DAveragingMethod::Method method = static_cast<QgsMesh3DAveragingMethod::Method>( elem.attribute( u"method"_s ).toInt() );
   switch ( method )
   {
     case QgsMesh3DAveragingMethod::MultiLevelsAveragingMethod:
-      ret = std::make_unique<QgsMeshMultiLevelsAveragingMethod>( );
+      ret = std::make_unique<QgsMeshMultiLevelsAveragingMethod>();
       break;
     case QgsMesh3DAveragingMethod::SigmaAveragingMethod:
-      ret = std::make_unique<QgsMeshSigmaAveragingMethod>( );
+      ret = std::make_unique<QgsMeshSigmaAveragingMethod>();
       break;
     case QgsMesh3DAveragingMethod::RelativeHeightAveragingMethod:
-      ret = std::make_unique<QgsMeshRelativeHeightAveragingMethod>( );
+      ret = std::make_unique<QgsMeshRelativeHeightAveragingMethod>();
       break;
     case QgsMesh3DAveragingMethod::ElevationAveragingMethod:
-      ret = std::make_unique<QgsMeshElevationAveragingMethod>( );
+      ret = std::make_unique<QgsMeshElevationAveragingMethod>();
       break;
   }
   ret->readXml( elem );
@@ -104,10 +102,7 @@ QgsMeshDataBlock QgsMesh3DAveragingMethod::calculate( const QgsMesh3DDataBlock &
     double methodLevelBottom = std::numeric_limits<double>::quiet_NaN();
 
     int singleVerticalIndex = -1;
-    volumeRangeForFace( methodLevelTop,
-                        methodLevelBottom,
-                        singleVerticalIndex,
-                        verticalLevelsForFace );
+    volumeRangeForFace( methodLevelTop, methodLevelBottom, singleVerticalIndex, verticalLevelsForFace );
 
     if ( singleVerticalIndex != -1 )
     {
@@ -115,7 +110,7 @@ QgsMeshDataBlock QgsMesh3DAveragingMethod::calculate( const QgsMesh3DDataBlock &
       if ( isVector )
       {
         valuesFaces[2 * faceIndex] = volumeValues.at( 2 * volumeIndex );
-        valuesFaces[2 * faceIndex + 1 ] = volumeValues.at( 2 * volumeIndex + 1 );
+        valuesFaces[2 * faceIndex + 1] = volumeValues.at( 2 * volumeIndex + 1 );
       }
       else
       {
@@ -133,17 +128,7 @@ QgsMeshDataBlock QgsMesh3DAveragingMethod::calculate( const QgsMesh3DDataBlock &
       // check if we are completely outside the limits
       if ( ( methodLevelTop >= faceLevelBottom ) && ( methodLevelBottom <= faceLevelTop ) )
       {
-        averageVolumeValuesForFace(
-          faceIndex,
-          volumesBelowFaceCount,
-          startVolumeIndex,
-          methodLevelTop,
-          methodLevelBottom,
-          isVector,
-          verticalLevelsForFace,
-          volumeValues,
-          valuesFaces
-        );
+        averageVolumeValuesForFace( faceIndex, volumesBelowFaceCount, startVolumeIndex, methodLevelTop, methodLevelBottom, isVector, verticalLevelsForFace, volumeValues, valuesFaces );
       }
     }
 
@@ -154,21 +139,11 @@ QgsMeshDataBlock QgsMesh3DAveragingMethod::calculate( const QgsMesh3DDataBlock &
   return result;
 }
 
-QgsMesh3DAveragingMethod::Method QgsMesh3DAveragingMethod::method() const
-{
-  return mMethod;
-}
+QgsMesh3DAveragingMethod::Method QgsMesh3DAveragingMethod::method() const { return mMethod; }
 
 void QgsMesh3DAveragingMethod::averageVolumeValuesForFace(
-  int faceIndex,
-  int volumesBelowFaceCount,
-  int startVolumeIndex,
-  double methodLevelTop,
-  double methodLevelBottom,
-  bool isVector,
-  const QVector<double> &verticalLevelsForFace,
-  const QVector<double> &volumeValues,
-  QVector<double> &valuesFaces
+  int faceIndex, int volumesBelowFaceCount, int startVolumeIndex, double methodLevelTop, double methodLevelBottom, bool isVector, const QVector<double> &verticalLevelsForFace,
+  const QVector<double> &volumeValues, QVector<double> &valuesFaces
 ) const
 {
   double totalAveragedHeight = 0;
@@ -194,11 +169,9 @@ void QgsMesh3DAveragingMethod::averageVolumeValuesForFace(
     {
       if ( isVector )
       {
-        const double x = volumeValues[2 * volumeIndex ];
-        const double y = volumeValues[ 2 * volumeIndex + 1 ];
-        if ( ! std::isnan( x ) &&
-             ! std::isnan( y )
-           )
+        const double x = volumeValues[2 * volumeIndex];
+        const double y = volumeValues[2 * volumeIndex + 1];
+        if ( !std::isnan( x ) && !std::isnan( y ) )
         {
           nSumX += x * effectiveInterval;
           nSumY += y * effectiveInterval;
@@ -207,8 +180,8 @@ void QgsMesh3DAveragingMethod::averageVolumeValuesForFace(
       }
       else
       {
-        const double x = volumeValues[ volumeIndex ];
-        if ( ! std::isnan( x ) )
+        const double x = volumeValues[volumeIndex];
+        if ( !std::isnan( x ) )
         {
           nSumX += x * effectiveInterval;
           totalAveragedHeight += effectiveInterval;
@@ -223,7 +196,7 @@ void QgsMesh3DAveragingMethod::averageVolumeValuesForFace(
     if ( isVector )
     {
       valuesFaces[2 * faceIndex] = nSumX / totalAveragedHeight;
-      valuesFaces[2 * faceIndex + 1 ] = nSumY / totalAveragedHeight;
+      valuesFaces[2 * faceIndex + 1] = nSumY / totalAveragedHeight;
     }
     else
     {
@@ -254,16 +227,14 @@ QgsMeshMultiLevelsAveragingMethod::QgsMeshMultiLevelsAveragingMethod( int startL
 
 QgsMeshMultiLevelsAveragingMethod::QgsMeshMultiLevelsAveragingMethod()
   : QgsMesh3DAveragingMethod( QgsMesh3DAveragingMethod::MultiLevelsAveragingMethod )
-{
-}
+{}
 
 QgsMeshMultiLevelsAveragingMethod::QgsMeshMultiLevelsAveragingMethod( int verticalLevel, bool countedFromTop )
   : QgsMesh3DAveragingMethod( QgsMesh3DAveragingMethod::MultiLevelsAveragingMethod )
   , mStartVerticalLevel( verticalLevel )
   , mEndVerticalLevel( verticalLevel )
   , mCountedFromTop( countedFromTop )
-{
-}
+{}
 
 QgsMeshMultiLevelsAveragingMethod::~QgsMeshMultiLevelsAveragingMethod() = default;
 
@@ -296,36 +267,19 @@ bool QgsMeshMultiLevelsAveragingMethod::equals( const QgsMesh3DAveragingMethod *
 
   const QgsMeshMultiLevelsAveragingMethod *otherMethod = static_cast<const QgsMeshMultiLevelsAveragingMethod *>( other );
 
-  return ( otherMethod->startVerticalLevel() == startVerticalLevel() ) &&
-         ( otherMethod->endVerticalLevel() == endVerticalLevel() ) &&
-         ( otherMethod->countedFromTop() == countedFromTop() );
+  return ( otherMethod->startVerticalLevel() == startVerticalLevel() ) && ( otherMethod->endVerticalLevel() == endVerticalLevel() ) && ( otherMethod->countedFromTop() == countedFromTop() );
 }
 
-QgsMesh3DAveragingMethod *QgsMeshMultiLevelsAveragingMethod::clone() const
-{
-  return new QgsMeshMultiLevelsAveragingMethod( startVerticalLevel(), endVerticalLevel(), countedFromTop() );
-}
+QgsMesh3DAveragingMethod *QgsMeshMultiLevelsAveragingMethod::clone() const { return new QgsMeshMultiLevelsAveragingMethod( startVerticalLevel(), endVerticalLevel(), countedFromTop() ); }
 
 
-int QgsMeshMultiLevelsAveragingMethod::startVerticalLevel() const
-{
-  return mStartVerticalLevel;
-}
+int QgsMeshMultiLevelsAveragingMethod::startVerticalLevel() const { return mStartVerticalLevel; }
 
-int QgsMeshMultiLevelsAveragingMethod::endVerticalLevel() const
-{
-  return mEndVerticalLevel;
-}
+int QgsMeshMultiLevelsAveragingMethod::endVerticalLevel() const { return mEndVerticalLevel; }
 
-bool QgsMeshMultiLevelsAveragingMethod::hasValidInputs() const
-{
-  return mStartVerticalLevel >= 1 && mEndVerticalLevel >= mStartVerticalLevel;
-}
+bool QgsMeshMultiLevelsAveragingMethod::hasValidInputs() const { return mStartVerticalLevel >= 1 && mEndVerticalLevel >= mStartVerticalLevel; }
 
-void QgsMeshMultiLevelsAveragingMethod::volumeRangeForFace( double &startVerticalLevel,
-    double &endVerticalLevel,
-    int &singleVerticalIndex,
-    const QVector<double> &verticalLevels ) const
+void QgsMeshMultiLevelsAveragingMethod::volumeRangeForFace( double &startVerticalLevel, double &endVerticalLevel, int &singleVerticalIndex, const QVector<double> &verticalLevels ) const
 {
   Q_ASSERT( mStartVerticalLevel <= mEndVerticalLevel );
 
@@ -341,16 +295,16 @@ void QgsMeshMultiLevelsAveragingMethod::volumeRangeForFace( double &startVertica
     {
       if ( startIndex >= 0 && startIndex < verticalLevels.size() )
       {
-        startVerticalLevel = verticalLevels[ startIndex ];
+        startVerticalLevel = verticalLevels[startIndex];
       }
 
       if ( mEndVerticalLevel >= 0 && mEndVerticalLevel < verticalLevels.size() )
       {
-        endVerticalLevel = verticalLevels[ mEndVerticalLevel ];
+        endVerticalLevel = verticalLevels[mEndVerticalLevel];
       }
       else
       {
-        endVerticalLevel = verticalLevels[ verticalLevels.size() - 1 ];
+        endVerticalLevel = verticalLevels[verticalLevels.size() - 1];
       }
     }
   }
@@ -367,17 +321,17 @@ void QgsMeshMultiLevelsAveragingMethod::volumeRangeForFace( double &startVertica
     {
       if ( startIndex >= 0 && startIndex < verticalLevels.size() )
       {
-        startVerticalLevel = verticalLevels[ startIndex ];
+        startVerticalLevel = verticalLevels[startIndex];
       }
       else
       {
-        startVerticalLevel = verticalLevels[ 0 ];
+        startVerticalLevel = verticalLevels[0];
       }
 
       const int endIndex = volumesBelowFaceCount - mStartVerticalLevel + 1;
       if ( endIndex >= 0 && endIndex < verticalLevels.size() )
       {
-        endVerticalLevel = verticalLevels[ endIndex ];
+        endVerticalLevel = verticalLevels[endIndex];
       }
     }
   }
@@ -385,8 +339,7 @@ void QgsMeshMultiLevelsAveragingMethod::volumeRangeForFace( double &startVertica
 
 QgsMeshSigmaAveragingMethod::QgsMeshSigmaAveragingMethod()
   : QgsMesh3DAveragingMethod( QgsMesh3DAveragingMethod::SigmaAveragingMethod )
-{
-}
+{}
 
 QgsMeshSigmaAveragingMethod::QgsMeshSigmaAveragingMethod( double startFraction, double endFraction )
   : QgsMesh3DAveragingMethod( QgsMesh3DAveragingMethod::SigmaAveragingMethod )
@@ -430,36 +383,21 @@ bool QgsMeshSigmaAveragingMethod::equals( const QgsMesh3DAveragingMethod *other 
 
   const QgsMeshSigmaAveragingMethod *otherMethod = static_cast<const QgsMeshSigmaAveragingMethod *>( other );
 
-  return qgsDoubleNear( otherMethod->startFraction(), startFraction() ) && qgsDoubleNear( otherMethod->endFraction(), endFraction() ) ;
+  return qgsDoubleNear( otherMethod->startFraction(), startFraction() ) && qgsDoubleNear( otherMethod->endFraction(), endFraction() );
 }
 
-QgsMesh3DAveragingMethod *QgsMeshSigmaAveragingMethod::clone() const
-{
-  return new QgsMeshSigmaAveragingMethod( startFraction(), endFraction() );
-}
+QgsMesh3DAveragingMethod *QgsMeshSigmaAveragingMethod::clone() const { return new QgsMeshSigmaAveragingMethod( startFraction(), endFraction() ); }
 
-double QgsMeshSigmaAveragingMethod::startFraction() const
-{
-  return mStartFraction;
-}
+double QgsMeshSigmaAveragingMethod::startFraction() const { return mStartFraction; }
 
-double QgsMeshSigmaAveragingMethod::endFraction() const
-{
-  return mEndFraction;
-}
+double QgsMeshSigmaAveragingMethod::endFraction() const { return mEndFraction; }
 
-bool QgsMeshSigmaAveragingMethod::hasValidInputs() const
-{
-  return mStartFraction >= 0 && mEndFraction >= mStartFraction && mEndFraction <= 1;
-}
+bool QgsMeshSigmaAveragingMethod::hasValidInputs() const { return mStartFraction >= 0 && mEndFraction >= mStartFraction && mEndFraction <= 1; }
 
-void QgsMeshSigmaAveragingMethod::volumeRangeForFace( double &startVerticalLevel,
-    double &endVerticalLevel,
-    int &,
-    const QVector<double> &verticalLevels ) const
+void QgsMeshSigmaAveragingMethod::volumeRangeForFace( double &startVerticalLevel, double &endVerticalLevel, int &, const QVector<double> &verticalLevels ) const
 {
-  const double top = verticalLevels[ 0 ];
-  const double bot = verticalLevels[ verticalLevels.size() - 1 ];
+  const double top = verticalLevels[0];
+  const double bot = verticalLevels[verticalLevels.size() - 1];
   const double diff = top - bot;
 
   if ( mStartFraction < 0 )
@@ -473,21 +411,14 @@ void QgsMeshSigmaAveragingMethod::volumeRangeForFace( double &startVerticalLevel
     endVerticalLevel = bot + diff * mEndFraction;
 }
 
-bool QgsMeshMultiLevelsAveragingMethod::countedFromTop() const
-{
-  return mCountedFromTop;
-}
+bool QgsMeshMultiLevelsAveragingMethod::countedFromTop() const { return mCountedFromTop; }
 
-bool QgsMeshMultiLevelsAveragingMethod::isSingleLevel() const
-{
-  return mStartVerticalLevel == mEndVerticalLevel;
-}
+bool QgsMeshMultiLevelsAveragingMethod::isSingleLevel() const { return mStartVerticalLevel == mEndVerticalLevel; }
 
 
 QgsMeshRelativeHeightAveragingMethod::QgsMeshRelativeHeightAveragingMethod()
   : QgsMesh3DAveragingMethod( QgsMesh3DAveragingMethod::RelativeHeightAveragingMethod )
-{
-}
+{}
 
 QgsMeshRelativeHeightAveragingMethod::QgsMeshRelativeHeightAveragingMethod( double startDepth, double endDepth, bool countedFromTop )
   : QgsMesh3DAveragingMethod( QgsMesh3DAveragingMethod::RelativeHeightAveragingMethod )
@@ -532,39 +463,22 @@ bool QgsMeshRelativeHeightAveragingMethod::equals( const QgsMesh3DAveragingMetho
 
   const QgsMeshRelativeHeightAveragingMethod *otherMethod = static_cast<const QgsMeshRelativeHeightAveragingMethod *>( other );
 
-  return qgsDoubleNear( otherMethod->startHeight(), startHeight() ) &&
-         qgsDoubleNear( otherMethod->endHeight(), endHeight() ) &&
-         otherMethod->countedFromTop() == countedFromTop();
+  return qgsDoubleNear( otherMethod->startHeight(), startHeight() ) && qgsDoubleNear( otherMethod->endHeight(), endHeight() ) && otherMethod->countedFromTop() == countedFromTop();
 }
 
-QgsMesh3DAveragingMethod *QgsMeshRelativeHeightAveragingMethod::clone() const
-{
-  return new QgsMeshRelativeHeightAveragingMethod( startHeight(), endHeight(), countedFromTop() );
-}
+QgsMesh3DAveragingMethod *QgsMeshRelativeHeightAveragingMethod::clone() const { return new QgsMeshRelativeHeightAveragingMethod( startHeight(), endHeight(), countedFromTop() ); }
 
-double QgsMeshRelativeHeightAveragingMethod::startHeight() const
-{
-  return mStartHeight;
-}
+double QgsMeshRelativeHeightAveragingMethod::startHeight() const { return mStartHeight; }
 
-double QgsMeshRelativeHeightAveragingMethod::endHeight() const
-{
-  return mEndHeight;
-}
+double QgsMeshRelativeHeightAveragingMethod::endHeight() const { return mEndHeight; }
 
-bool QgsMeshRelativeHeightAveragingMethod::hasValidInputs() const
-{
-  return mStartHeight >= 0 && mEndHeight >= mStartHeight;
-}
+bool QgsMeshRelativeHeightAveragingMethod::hasValidInputs() const { return mStartHeight >= 0 && mEndHeight >= mStartHeight; }
 
-void QgsMeshRelativeHeightAveragingMethod::volumeRangeForFace( double &startVerticalLevel,
-    double &endVerticalLevel,
-    int &,
-    const QVector<double> &verticalLevels ) const
+void QgsMeshRelativeHeightAveragingMethod::volumeRangeForFace( double &startVerticalLevel, double &endVerticalLevel, int &, const QVector<double> &verticalLevels ) const
 {
   if ( countedFromTop() )
   {
-    const double top = verticalLevels[ 0 ];
+    const double top = verticalLevels[0];
     startVerticalLevel = top - mStartHeight;
     endVerticalLevel = top - mEndHeight;
   }
@@ -576,15 +490,11 @@ void QgsMeshRelativeHeightAveragingMethod::volumeRangeForFace( double &startVert
   }
 }
 
-bool QgsMeshRelativeHeightAveragingMethod::countedFromTop() const
-{
-  return mCountedFromTop;
-}
+bool QgsMeshRelativeHeightAveragingMethod::countedFromTop() const { return mCountedFromTop; }
 
 QgsMeshElevationAveragingMethod::QgsMeshElevationAveragingMethod()
   : QgsMesh3DAveragingMethod( QgsMesh3DAveragingMethod::ElevationAveragingMethod )
-{
-}
+{}
 
 QgsMeshElevationAveragingMethod::QgsMeshElevationAveragingMethod( double startElevation, double endElevation )
   : QgsMesh3DAveragingMethod( QgsMesh3DAveragingMethod::ElevationAveragingMethod )
@@ -628,33 +538,18 @@ bool QgsMeshElevationAveragingMethod::equals( const QgsMesh3DAveragingMethod *ot
 
   const QgsMeshElevationAveragingMethod *otherMethod = static_cast<const QgsMeshElevationAveragingMethod *>( other );
 
-  return qgsDoubleNear( otherMethod->startElevation(), startElevation() ) && qgsDoubleNear( otherMethod->endElevation(), endElevation() ) ;
+  return qgsDoubleNear( otherMethod->startElevation(), startElevation() ) && qgsDoubleNear( otherMethod->endElevation(), endElevation() );
 }
 
-QgsMesh3DAveragingMethod *QgsMeshElevationAveragingMethod::clone() const
-{
-  return new QgsMeshElevationAveragingMethod( startElevation(), endElevation() );
-}
+QgsMesh3DAveragingMethod *QgsMeshElevationAveragingMethod::clone() const { return new QgsMeshElevationAveragingMethod( startElevation(), endElevation() ); }
 
-double QgsMeshElevationAveragingMethod::startElevation() const
-{
-  return mStartElevation;
-}
+double QgsMeshElevationAveragingMethod::startElevation() const { return mStartElevation; }
 
-double QgsMeshElevationAveragingMethod::endElevation() const
-{
-  return mEndElevation;
-}
+double QgsMeshElevationAveragingMethod::endElevation() const { return mEndElevation; }
 
-bool QgsMeshElevationAveragingMethod::hasValidInputs() const
-{
-  return mStartElevation <= 0.0 && mEndElevation <= mStartElevation;
-}
+bool QgsMeshElevationAveragingMethod::hasValidInputs() const { return mStartElevation <= 0.0 && mEndElevation <= mStartElevation; }
 
-void QgsMeshElevationAveragingMethod::volumeRangeForFace( double &startVerticalLevel,
-    double &endVerticalLevel,
-    int &,
-    const QVector<double> &verticalLevels ) const
+void QgsMeshElevationAveragingMethod::volumeRangeForFace( double &startVerticalLevel, double &endVerticalLevel, int &, const QVector<double> &verticalLevels ) const
 {
   Q_UNUSED( verticalLevels )
   startVerticalLevel = mStartElevation;

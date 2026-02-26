@@ -49,7 +49,7 @@ using namespace pal;
 
 QgsMeshLayerLabelProvider::QgsMeshLayerLabelProvider( QgsMeshLayer *layer, const QString &providerId, const QgsPalLayerSettings *settings, const QString &layerName, bool labelFaces )
   : QgsAbstractLabelProvider( layer, providerId )
-  , mSettings( settings ? * settings : QgsPalLayerSettings() )
+  , mSettings( settings ? *settings : QgsPalLayerSettings() )
   , mLabelFaces( labelFaces )
   , mCrs( layer->crs() )
 {
@@ -72,13 +72,7 @@ void QgsMeshLayerLabelProvider::init()
 
   mPriority = 1 - mSettings.priority / 10.0; // convert 0..10 --> 1..0
 
-  mVectorLabelProvider = std::make_unique<QgsVectorLayerLabelProvider>(
-                           mLabelFaces ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Point,
-                           QgsFields(),
-                           mCrs,
-                           QString(),
-                           &mSettings,
-                           mLayer );
+  mVectorLabelProvider = std::make_unique<QgsVectorLayerLabelProvider>( mLabelFaces ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Point, QgsFields(), mCrs, QString(), &mSettings, mLayer );
 
   if ( mLabelFaces )
   {
@@ -94,10 +88,7 @@ void QgsMeshLayerLabelProvider::init()
 }
 
 
-QgsMeshLayerLabelProvider::~QgsMeshLayerLabelProvider()
-{
-  qDeleteAll( mLabels );
-}
+QgsMeshLayerLabelProvider::~QgsMeshLayerLabelProvider() { qDeleteAll( mLabels ); }
 
 bool QgsMeshLayerLabelProvider::prepare( QgsRenderContext &context, QSet<QString> &attributeNames )
 {
@@ -141,12 +132,6 @@ QList< QgsLabelFeature * > QgsMeshLayerLabelProvider::registerFeature( const Qgs
   return res;
 }
 
-const QgsPalLayerSettings &QgsMeshLayerLabelProvider::settings() const
-{
-  return mSettings;
-}
+const QgsPalLayerSettings &QgsMeshLayerLabelProvider::settings() const { return mSettings; }
 
-void QgsMeshLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const
-{
-  mVectorLabelProvider->drawLabel( context, label );
-}
+void QgsMeshLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const { mVectorLabelProvider->drawLabel( context, label ); }

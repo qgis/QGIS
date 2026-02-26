@@ -1,6 +1,7 @@
 # The following has been generated automatically from src/core/mesh/qgsmeshadvancedediting.h
 try:
     QgsMeshAdvancedEditing.__virtual_methods__ = ['isFinished', 'text']
+    QgsMeshAdvancedEditing.__abstract_methods__ = ['apply']
     QgsMeshAdvancedEditing.__group__ = ['mesh']
 except (NameError, AttributeError):
     pass

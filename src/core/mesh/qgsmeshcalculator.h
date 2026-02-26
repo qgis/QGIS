@@ -50,18 +50,17 @@ class QgsFeedback;
 class CORE_EXPORT QgsMeshCalculator
 {
   public:
-
     //! Result of the calculation
     enum Result
     {
-      Success = 0, //!< Calculation successful
-      Canceled, //!< Calculation canceled
+      Success = 0,       //!< Calculation successful
+      Canceled,          //!< Calculation canceled
       CreateOutputError, //!< Error creating output data file
-      InputLayerError, //!< Error reading input layer
-      ParserError, //!< Error parsing formula
-      InvalidDatasets, //!< Datasets with different time outputs or not part of the mesh
-      EvaluateError, //!< Error during evaluation
-      MemoryError, //!< Error allocating memory for result
+      InputLayerError,   //!< Error reading input layer
+      ParserError,       //!< Error parsing formula
+      InvalidDatasets,   //!< Datasets with different time outputs or not part of the mesh
+      EvaluateError,     //!< Error during evaluation
+      MemoryError,       //!< Error allocating memory for result
     };
 
     /**
@@ -75,12 +74,8 @@ class CORE_EXPORT QgsMeshCalculator
      *
      * \deprecated QGIS 3.12
      */
-    Q_DECL_DEPRECATED QgsMeshCalculator( const QString &formulaString,
-                                         const QString &outputFile,
-                                         const QgsRectangle &outputExtent,
-                                         double startTime,
-                                         double endTime,
-                                         QgsMeshLayer *layer ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QgsMeshCalculator( const QString &formulaString, const QString &outputFile, const QgsRectangle &outputExtent, double startTime, double endTime, QgsMeshLayer *layer )
+      SIP_DEPRECATED;
 
     /**
      * Creates calculator with geometry mask
@@ -93,12 +88,7 @@ class CORE_EXPORT QgsMeshCalculator
      *
      * \deprecated QGIS 3.12
      */
-    Q_DECL_DEPRECATED QgsMeshCalculator( const QString &formulaString,
-                                         const QString &outputFile,
-                                         const QgsGeometry &outputMask,
-                                         double startTime,
-                                         double endTime,
-                                         QgsMeshLayer *layer ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QgsMeshCalculator( const QString &formulaString, const QString &outputFile, const QgsGeometry &outputMask, double startTime, double endTime, QgsMeshLayer *layer ) SIP_DEPRECATED;
 
     /**
      * Creates calculator with bounding box (rectangular) mask
@@ -113,14 +103,10 @@ class CORE_EXPORT QgsMeshCalculator
      *
      * \since QGIS 3.12
      */
-    QgsMeshCalculator( const QString &formulaString,
-                       const QString &outputDriver,
-                       const QString &outputGroupName,
-                       const QString &outputFile,
-                       const QgsRectangle &outputExtent,
-                       double startTime,
-                       double endTime,
-                       QgsMeshLayer *layer );
+    QgsMeshCalculator(
+      const QString &formulaString, const QString &outputDriver, const QString &outputGroupName, const QString &outputFile, const QgsRectangle &outputExtent, double startTime, double endTime,
+      QgsMeshLayer *layer
+    );
 
     /**
      * Creates calculator with geometry mask
@@ -135,14 +121,10 @@ class CORE_EXPORT QgsMeshCalculator
      *
      * \since QGIS 3.12
      */
-    QgsMeshCalculator( const QString &formulaString,
-                       const QString &outputDriver,
-                       const QString &outputGroupName,
-                       const QString &outputFile,
-                       const QgsGeometry &outputMask,
-                       double startTime,
-                       double endTime,
-                       QgsMeshLayer *layer );
+    QgsMeshCalculator(
+      const QString &formulaString, const QString &outputDriver, const QString &outputGroupName, const QString &outputFile, const QgsGeometry &outputMask, double startTime, double endTime,
+      QgsMeshLayer *layer
+    );
 
     /**
      * Creates calculator with bounding box (rectangular) mask, store the result in \a destination (must be on memory or virtual),
@@ -157,13 +139,9 @@ class CORE_EXPORT QgsMeshCalculator
      *
      * \since QGIS 3.16
      */
-    QgsMeshCalculator( const QString &formulaString,
-                       const QString &outputGroupName,
-                       const QgsRectangle &outputExtent,
-                       const QgsMeshDatasetGroup::Type &destination,
-                       QgsMeshLayer *layer,
-                       double startTime,
-                       double endTime );
+    QgsMeshCalculator(
+      const QString &formulaString, const QString &outputGroupName, const QgsRectangle &outputExtent, const QgsMeshDatasetGroup::Type &destination, QgsMeshLayer *layer, double startTime, double endTime
+    );
 
     /**
      * Creates calculator with with geometry mask, store the result in \a destination (must be on memory or virtual),
@@ -178,13 +156,9 @@ class CORE_EXPORT QgsMeshCalculator
      *
      * \since QGIS 3.16
      */
-    QgsMeshCalculator( const QString &formulaString,
-                       const QString &outputGroupName,
-                       const QgsGeometry &outputMask,
-                       const QgsMeshDatasetGroup::Type &destination,
-                       QgsMeshLayer *layer,
-                       double startTime,
-                       double endTime );
+    QgsMeshCalculator(
+      const QString &formulaString, const QString &outputGroupName, const QgsGeometry &outputMask, const QgsMeshDatasetGroup::Type &destination, QgsMeshLayer *layer, double startTime, double endTime
+    );
 
     /**
      * Starts the calculation, creates new dataset group and adds it to the mesh layer
@@ -201,8 +175,7 @@ class CORE_EXPORT QgsMeshCalculator
      *
      * \deprecated QGIS 3.12. Use expressionIsValid.
      */
-    Q_DECL_DEPRECATED static Result expression_valid( const QString &formulaString,
-        QgsMeshLayer *layer ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED static Result expression_valid( const QString &formulaString, QgsMeshLayer *layer ) SIP_DEPRECATED;
 
     /**
      * Returns whether formula is valid for particular mesh layer
@@ -213,9 +186,7 @@ class CORE_EXPORT QgsMeshCalculator
      *
      * \since QGIS 3.12
      */
-    static Result expressionIsValid( const QString &formulaString,
-                                     QgsMeshLayer *layer,
-                                     QgsMeshDriverMetadata::MeshDriverCapability &requiredCapability );
+    static Result expressionIsValid( const QString &formulaString, QgsMeshLayer *layer, QgsMeshDriverMetadata::MeshDriverCapability &requiredCapability );
 
   private:
     QgsMeshCalculator();

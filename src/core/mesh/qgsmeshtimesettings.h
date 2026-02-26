@@ -38,7 +38,6 @@ using namespace Qt::StringLiterals;
 class CORE_EXPORT QgsMeshTimeSettings
 {
   public:
-
     /**
      *  Time units used to display time
      *  \since QGIS 3.12
@@ -73,7 +72,6 @@ class CORE_EXPORT QgsMeshTimeSettings
     void setAbsoluteTimeFormat( const QString &absoluteTimeFormat );
 
   private:
-
     QString mRelativeTimeFormat = u"d hh:mm:ss"_s;
     QString mAbsoluteTimeFormat = u"yyyy-MM-dd HH:mm:ss"_s;
 };

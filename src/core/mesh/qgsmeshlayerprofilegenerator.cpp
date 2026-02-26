@@ -37,10 +37,7 @@ using namespace Qt::StringLiterals;
 // QgsMeshLayerProfileGenerator
 //
 
-QString QgsMeshLayerProfileResults::type() const
-{
-  return u"mesh"_s;
-}
+QString QgsMeshLayerProfileResults::type() const { return u"mesh"_s; }
 
 QVector<QgsProfileIdentifyResults> QgsMeshLayerProfileResults::identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context )
 {
@@ -82,15 +79,9 @@ QgsMeshLayerProfileGenerator::QgsMeshLayerProfileGenerator( QgsMeshLayer *layer,
   mFillSymbol.reset( qgis::down_cast< QgsMeshLayerElevationProperties * >( layer->elevationProperties() )->profileFillSymbol()->clone() );
 }
 
-QString QgsMeshLayerProfileGenerator::sourceId() const
-{
-  return mId;
-}
+QString QgsMeshLayerProfileGenerator::sourceId() const { return mId; }
 
-QString QgsMeshLayerProfileGenerator::type() const
-{
-  return u"mesh"_s;
-}
+QString QgsMeshLayerProfileGenerator::type() const { return u"mesh"_s; }
 
 QgsMeshLayerProfileGenerator::~QgsMeshLayerProfileGenerator() = default;
 
@@ -176,18 +167,8 @@ bool QgsMeshLayerProfileGenerator::generateProfile( const QgsProfileGenerationCo
   return true;
 }
 
-QgsAbstractProfileResults *QgsMeshLayerProfileGenerator::takeResults()
-{
-  return mResults.release();
-}
+QgsAbstractProfileResults *QgsMeshLayerProfileGenerator::takeResults() { return mResults.release(); }
 
-QgsFeedback *QgsMeshLayerProfileGenerator::feedback() const
-{
-  return mFeedback.get();
-}
+QgsFeedback *QgsMeshLayerProfileGenerator::feedback() const { return mFeedback.get(); }
 
-double QgsMeshLayerProfileGenerator::heightAt( double x, double y )
-{
-  return QgsMeshLayerUtils::interpolateZForPoint( mTriangularMesh, x, y ) * mScale + mOffset;
-}
-
+double QgsMeshLayerProfileGenerator::heightAt( double x, double y ) { return QgsMeshLayerUtils::interpolateZForPoint( mTriangularMesh, x, y ) * mScale + mOffset; }

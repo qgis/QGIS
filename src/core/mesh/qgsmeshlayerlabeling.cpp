@@ -39,10 +39,7 @@ QgsAbstractMeshLayerLabeling *QgsAbstractMeshLayerLabeling::create( const QDomEl
   }
 }
 
-bool QgsAbstractMeshLayerLabeling::accept( QgsStyleEntityVisitorInterface * ) const
-{
-  return true;
-}
+bool QgsAbstractMeshLayerLabeling::accept( QgsStyleEntityVisitorInterface * ) const { return true; }
 
 QgsPalLayerSettings QgsAbstractMeshLayerLabeling::defaultSettingsForLayer( const QgsMeshLayer *layer )
 {
@@ -58,23 +55,13 @@ QgsPalLayerSettings QgsAbstractMeshLayerLabeling::defaultSettingsForLayer( const
 QgsMeshLayerSimpleLabeling::QgsMeshLayerSimpleLabeling( const QgsPalLayerSettings &settings, bool labelFaces )
   : mSettings( new QgsPalLayerSettings( settings ) )
   , mLabelFaces( labelFaces )
-{
-}
+{}
 
-QString QgsMeshLayerSimpleLabeling::type() const
-{
-  return u"simple"_s;
-}
+QString QgsMeshLayerSimpleLabeling::type() const { return u"simple"_s; }
 
-QgsMeshLayerSimpleLabeling *QgsMeshLayerSimpleLabeling::clone() const
-{
-  return new QgsMeshLayerSimpleLabeling( *mSettings, mLabelFaces );
-}
+QgsMeshLayerSimpleLabeling *QgsMeshLayerSimpleLabeling::clone() const { return new QgsMeshLayerSimpleLabeling( *mSettings, mLabelFaces ); }
 
-QgsMeshLayerLabelProvider *QgsMeshLayerSimpleLabeling::provider( QgsMeshLayer *layer ) const
-{
-  return new QgsMeshLayerLabelProvider( layer, QString(), mSettings.get(), QString(), mLabelFaces );
-}
+QgsMeshLayerLabelProvider *QgsMeshLayerSimpleLabeling::provider( QgsMeshLayer *layer ) const { return new QgsMeshLayerLabelProvider( layer, QString(), mSettings.get(), QString(), mLabelFaces ); }
 
 QDomElement QgsMeshLayerSimpleLabeling::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
@@ -102,18 +89,13 @@ bool QgsMeshLayerSimpleLabeling::accept( QgsStyleEntityVisitorInterface *visitor
   return true;
 }
 
-bool QgsMeshLayerSimpleLabeling::requiresAdvancedEffects() const
-{
-  return mSettings->containsAdvancedEffects();
-}
+bool QgsMeshLayerSimpleLabeling::requiresAdvancedEffects() const { return mSettings->containsAdvancedEffects(); }
 
 bool QgsMeshLayerSimpleLabeling::hasNonDefaultCompositionMode() const
 {
-  return mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::FontBlendMode )
-         || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::ShapeBlendMode )
+  return mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::FontBlendMode ) || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::ShapeBlendMode )
          || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::BufferBlendMode )
-         || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::ShadowBlendMode )
-         || mSettings->format().hasNonDefaultCompositionMode();
+         || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::ShadowBlendMode ) || mSettings->format().hasNonDefaultCompositionMode();
 }
 
 QgsMeshLayerSimpleLabeling *QgsMeshLayerSimpleLabeling::create( const QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember

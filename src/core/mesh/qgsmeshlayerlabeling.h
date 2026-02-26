@@ -46,7 +46,6 @@ class QgsStyleEntityVisitorInterface;
 class CORE_EXPORT QgsAbstractMeshLayerLabeling
 {
   public:
-
     QgsAbstractMeshLayerLabeling() = default;
     virtual ~QgsAbstractMeshLayerLabeling() = default;
 
@@ -60,7 +59,11 @@ class CORE_EXPORT QgsAbstractMeshLayerLabeling
      * Factory for label provider implementation
      * \note not available in Python bindings
      */
-    virtual QgsMeshLayerLabelProvider *provider( QgsMeshLayer *layer ) const SIP_SKIP { Q_UNUSED( layer ) return nullptr; }
+    virtual QgsMeshLayerLabelProvider *provider( QgsMeshLayer *layer ) const SIP_SKIP
+    {
+      Q_UNUSED( layer )
+      return nullptr;
+    }
 
     //! Returns labeling configuration as XML element
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const = 0;
@@ -147,7 +150,6 @@ class CORE_EXPORT QgsAbstractMeshLayerLabeling
 #ifdef SIP_RUN
     QgsAbstractMeshLayerLabeling( const QgsAbstractMeshLayerLabeling &rhs );
 #endif
-
 };
 
 /**
@@ -159,7 +161,6 @@ class CORE_EXPORT QgsAbstractMeshLayerLabeling
 class CORE_EXPORT QgsMeshLayerSimpleLabeling : public QgsAbstractMeshLayerLabeling
 {
   public:
-
     /**
      *  Constructs simple labeling configuration with given initial \a settings.
      *  Labels are placed on mesh vertices unless \a labelFaces is TRUE, when they are placed on mesh faces.

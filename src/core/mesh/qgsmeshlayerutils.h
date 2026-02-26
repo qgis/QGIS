@@ -49,7 +49,6 @@ class QgsMeshLayer;
 class CORE_EXPORT QgsMeshLayerUtils
 {
   public:
-
     /**
      * Returns (maximum) number of values that can be extracted from the mesh by type
      *
@@ -77,11 +76,7 @@ class CORE_EXPORT QgsMeshLayerUtils
      *
      * \since QGIS 3.12
      */
-    static QgsMeshDataBlock datasetValues(
-      const QgsMeshLayer *meshLayer,
-      QgsMeshDatasetIndex index,
-      int valueIndex,
-      int count );
+    static QgsMeshDataBlock datasetValues( const QgsMeshLayer *meshLayer, QgsMeshDatasetIndex index, int valueIndex, int count );
 
     /**
      * \brief Returns gridded vector values, if extentInMap is default, uses the triangular mesh extent
@@ -96,13 +91,7 @@ class CORE_EXPORT QgsMeshLayerUtils
      *
      * \since QGIS 3.14
      */
-    static QVector<QgsVector> griddedVectorValues(
-      const QgsMeshLayer *meshLayer,
-      const QgsMeshDatasetIndex index,
-      double xSpacing,
-      double ySpacing,
-      const QSize &size,
-      const QgsPointXY &minCorner );
+    static QVector<QgsVector> griddedVectorValues( const QgsMeshLayer *meshLayer, const QgsMeshDatasetIndex index, double xSpacing, double ySpacing, const QSize &size, const QgsPointXY &minCorner );
 
     /**
      * Calculates magnitude values from the given QgsMeshDataBlock.
@@ -122,25 +111,15 @@ class CORE_EXPORT QgsMeshLayerUtils
      * \param topLim maximum y coordinate in pixel, clipped by outputSize height
      */
     static void boundingBoxToScreenRectangle(
-      const QgsMapToPixel &mtp,
-      const QSize &outputSize,
-      const QgsRectangle &bbox,
-      int &leftLim,
-      int &rightLim,
-      int &bottomLim,
-      int &topLim,
-      double devicePixelRatio = 1.0 );
+      const QgsMapToPixel &mtp, const QSize &outputSize, const QgsRectangle &bbox, int &leftLim, int &rightLim, int &bottomLim, int &topLim, double devicePixelRatio = 1.0
+    );
 
     /**
      * Transformes the bounding box to rectangle in screen coordinates (in pixels)
      * \param mtp actual renderer map to pixel
      * \param bbox bounding box in map coordinates
      */
-    static QgsRectangle boundingBoxToScreenRectangle(
-      const QgsMapToPixel &mtp,
-      const QgsRectangle &bbox,
-      double devicePixelRatio = 1.0
-    );
+    static QgsRectangle boundingBoxToScreenRectangle( const QgsMapToPixel &mtp, const QgsRectangle &bbox, double devicePixelRatio = 1.0 );
 
     /**
      * Calculates barycentric coordinates of point \a pP in a triangle given by
@@ -150,15 +129,7 @@ class CORE_EXPORT QgsMeshLayerUtils
      *
      * \since QGIS 3.36
      */
-    static bool calculateBarycentricCoordinates(
-      const QgsPointXY &pA,
-      const QgsPointXY &pB,
-      const QgsPointXY &pC,
-      const QgsPointXY &pP,
-      double &lam1,
-      double &lam2,
-      double &lam3
-    );
+    static bool calculateBarycentricCoordinates( const QgsPointXY &pA, const QgsPointXY &pB, const QgsPointXY &pC, const QgsPointXY &pP, double &lam1, double &lam2, double &lam3 );
 
     /**
     * Interpolates value based on known values on the vertices of a edge
@@ -166,10 +137,7 @@ class CORE_EXPORT QgsMeshLayerUtils
     *
     * \since QGIS 3.14
     */
-    static double interpolateFromVerticesData(
-      double fraction,
-      double val1, double val2
-    );
+    static double interpolateFromVerticesData( double fraction, double val1, double val2 );
 
     /**
     * Interpolates value based on known values on the vertices of a edge
@@ -177,9 +145,7 @@ class CORE_EXPORT QgsMeshLayerUtils
     *
     * \since QGIS 3.14
     */
-    static QgsMeshDatasetValue interpolateFromVerticesData( double fraction,
-        const QgsMeshDatasetValue &val1, const QgsMeshDatasetValue &val2
-                                                          );
+    static QgsMeshDatasetValue interpolateFromVerticesData( double fraction, const QgsMeshDatasetValue &val1, const QgsMeshDatasetValue &val2 );
 
     /**
     * Interpolates value based on known values on the vertices of a triangle
@@ -192,10 +158,7 @@ class CORE_EXPORT QgsMeshLayerUtils
     * \param pt point where to calculate value
     * \returns value on the point pt or NaN in case the point is outside the triangle
     */
-    static double interpolateFromVerticesData(
-      const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3,
-      double val1, double val2, double val3, const QgsPointXY &pt
-    );
+    static double interpolateFromVerticesData( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3, double val1, double val2, double val3, const QgsPointXY &pt );
 
     /**
      * Interpolates the z value for a \a mesh at the specified point (\a x, \a y).
@@ -219,10 +182,7 @@ class CORE_EXPORT QgsMeshLayerUtils
     *
     * \since QGIS 3.12
     */
-    static QgsVector interpolateVectorFromVerticesData(
-      const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3,
-      QgsVector vect1, QgsVector vect2, QgsVector vect3, const QgsPointXY &pt
-    );
+    static QgsVector interpolateVectorFromVerticesData( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3, QgsVector vect1, QgsVector vect2, QgsVector vect3, const QgsPointXY &pt );
 
     /**
     * Interpolate value based on known value on the face of a triangle
@@ -233,9 +193,7 @@ class CORE_EXPORT QgsMeshLayerUtils
     * \param pt point where to calculate value
     * \returns value on the point pt or NaN in case the point is outside the triangle
     */
-    static double interpolateFromFacesData(
-      const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3,
-      double val, const QgsPointXY &pt );
+    static double interpolateFromFacesData( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3, double val, const QgsPointXY &pt );
 
     /**
     * Interpolate value based on known value on the face of a triangle
@@ -248,9 +206,7 @@ class CORE_EXPORT QgsMeshLayerUtils
     *
     * \since QGIS 3.12
     */
-    static QgsVector interpolateVectorFromFacesData(
-      const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3,
-      QgsVector vect, const QgsPointXY &pt );
+    static QgsVector interpolateVectorFromFacesData( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3, QgsVector vect, const QgsPointXY &pt );
 
     /**
     * Interpolate values on vertices from values on faces
@@ -258,11 +214,7 @@ class CORE_EXPORT QgsMeshLayerUtils
     * \since QGIS 3.12
     */
     static QVector<double> interpolateFromFacesData(
-      QVector<double> valuesOnFaces,
-      const QgsMesh *nativeMesh,
-      const QgsTriangularMesh *triangularMesh,
-      QgsMeshDataBlock *active,
-      QgsMeshRendererScalarSettings::DataResamplingMethod method
+      QVector<double> valuesOnFaces, const QgsMesh *nativeMesh, const QgsTriangularMesh *triangularMesh, QgsMeshDataBlock *active, QgsMeshRendererScalarSettings::DataResamplingMethod method
     );
 
     /**
@@ -270,12 +222,7 @@ class CORE_EXPORT QgsMeshLayerUtils
     *
     * \since QGIS 3.18
     */
-    static QVector<double> interpolateFromFacesData(
-      const QVector<double> &valuesOnFaces,
-      const QgsMesh &nativeMesh,
-      QgsMeshDataBlock *active,
-      QgsMeshRendererScalarSettings::DataResamplingMethod method
-    );
+    static QVector<double> interpolateFromFacesData( const QVector<double> &valuesOnFaces, const QgsMesh &nativeMesh, QgsMeshDataBlock *active, QgsMeshRendererScalarSettings::DataResamplingMethod method );
 
     /**
     * Interpolate values on vertices from values on faces
@@ -283,10 +230,7 @@ class CORE_EXPORT QgsMeshLayerUtils
     * \since QGIS 3.20
     */
     static QVector<double> interpolateFromFacesData(
-      const QVector<double> &valuesOnFaces,
-      const QgsMesh &nativeMesh,
-      const QgsMeshDataBlock &active,
-      QgsMeshRendererScalarSettings::DataResamplingMethod method
+      const QVector<double> &valuesOnFaces, const QgsMesh &nativeMesh, const QgsMeshDataBlock &active, QgsMeshRendererScalarSettings::DataResamplingMethod method
     );
 
     /**
@@ -295,11 +239,7 @@ class CORE_EXPORT QgsMeshLayerUtils
     * \since QGIS 3.14
     */
     static QVector<double> resampleFromVerticesToFaces(
-      const QVector<double> valuesOnVertices,
-      const QgsMesh *nativeMesh,
-      const QgsTriangularMesh *triangularMesh,
-      const QgsMeshDataBlock *active,
-      QgsMeshRendererScalarSettings::DataResamplingMethod method
+      const QVector<double> valuesOnVertices, const QgsMesh *nativeMesh, const QgsTriangularMesh *triangularMesh, const QgsMeshDataBlock *active, QgsMeshRendererScalarSettings::DataResamplingMethod method
     );
 
     /**
@@ -313,10 +253,9 @@ class CORE_EXPORT QgsMeshLayerUtils
      * \since QGIS 3.14
      */
     static QVector<double> calculateMagnitudeOnVertices(
-      const QgsMeshLayer *meshLayer,
-      const QgsMeshDatasetIndex index,
-      QgsMeshDataBlock *activeFaceFlagValues,
-      const QgsMeshRendererScalarSettings::DataResamplingMethod method = QgsMeshRendererScalarSettings::NeighbourAverage );
+      const QgsMeshLayer *meshLayer, const QgsMeshDatasetIndex index, QgsMeshDataBlock *activeFaceFlagValues,
+      const QgsMeshRendererScalarSettings::DataResamplingMethod method = QgsMeshRendererScalarSettings::NeighbourAverage
+    );
 
     /**
      * Calculates magnitude values on vertices from the given QgsMeshDataBlock.
@@ -331,12 +270,9 @@ class CORE_EXPORT QgsMeshLayerUtils
      * \since QGIS 3.18
      */
     static QVector<double> calculateMagnitudeOnVertices(
-      const QgsMesh &nativeMesh,
-      const QgsMeshDatasetGroupMetadata &groupMetadata,
-      const QgsMeshDataBlock &datasetValues,
-      const QgsMeshDataBlock &activeFaceFlagValues,
-      const QgsMeshRendererScalarSettings::DataResamplingMethod method = QgsMeshRendererScalarSettings::NeighbourAverage );
-
+      const QgsMesh &nativeMesh, const QgsMeshDatasetGroupMetadata &groupMetadata, const QgsMeshDataBlock &datasetValues, const QgsMeshDataBlock &activeFaceFlagValues,
+      const QgsMeshRendererScalarSettings::DataResamplingMethod method = QgsMeshRendererScalarSettings::NeighbourAverage
+    );
 
 
     /**
@@ -366,10 +302,7 @@ class CORE_EXPORT QgsMeshLayerUtils
      * \returns normals (3D vector) on all the vertices
      * \since QGIS 3.14
      */
-    static QVector<QVector3D> calculateNormals(
-      const QgsTriangularMesh &triangularMesh,
-      const QVector<double> &verticalMagnitude,
-      bool isRelative );
+    static QVector<QVector3D> calculateNormals( const QgsTriangularMesh &triangularMesh, const QVector<double> &verticalMagnitude, bool isRelative );
 
     /**
      * Returns TRUE if the datasets from \a layer at \a index1 and \a index2 share the same parent quantity.
@@ -377,7 +310,6 @@ class CORE_EXPORT QgsMeshLayerUtils
      * \since QGIS 3.38
      */
     static bool haveSameParentQuantity( const QgsMeshLayer *layer, const QgsMeshDatasetIndex &index1, const QgsMeshDatasetIndex &index2 );
-
 };
 
 ///@endcond

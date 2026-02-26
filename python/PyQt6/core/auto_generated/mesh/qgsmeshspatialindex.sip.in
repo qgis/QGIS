@@ -35,7 +35,6 @@ inexpensively copied.
 #include "qgsmeshspatialindex.h"
 %End
   public:
-
     QgsMeshSpatialIndex();
 %Docstring
 Constructor for :py:class:`QgsSpatialIndex`. Creates an empty R-tree
