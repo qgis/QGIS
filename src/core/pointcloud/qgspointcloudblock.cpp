@@ -20,49 +20,26 @@
 #include "qgis.h"
 #include "qgspointcloudattribute.h"
 
-QgsPointCloudBlock::QgsPointCloudBlock(
-  int count,
-  const QgsPointCloudAttributeCollection &attributes,
-  const QByteArray &data, const QgsVector3D &scale, const QgsVector3D &offset
-)
+QgsPointCloudBlock::QgsPointCloudBlock( int count, const QgsPointCloudAttributeCollection &attributes, const QByteArray &data, const QgsVector3D &scale, const QgsVector3D &offset )
   : mPointCount( count )
   , mAttributes( attributes )
   , mRecordSize( mAttributes.pointRecordSize() )
   , mStorage( data )
   , mScale( scale )
   , mOffset( offset )
-{
-}
+{}
 
-QgsPointCloudBlock *QgsPointCloudBlock::clone() const
-{
-  return new QgsPointCloudBlock( *this );
-}
+QgsPointCloudBlock *QgsPointCloudBlock::clone() const { return new QgsPointCloudBlock( *this ); }
 
-const char *QgsPointCloudBlock::data() const
-{
-  return mStorage.data();
-}
+const char *QgsPointCloudBlock::data() const { return mStorage.data(); }
 
-int QgsPointCloudBlock::pointCount() const
-{
-  return mPointCount;
-}
+int QgsPointCloudBlock::pointCount() const { return mPointCount; }
 
-QgsPointCloudAttributeCollection QgsPointCloudBlock::attributes() const
-{
-  return mAttributes;
-}
+QgsPointCloudAttributeCollection QgsPointCloudBlock::attributes() const { return mAttributes; }
 
-QgsVector3D QgsPointCloudBlock::scale() const
-{
-  return mScale;
-}
+QgsVector3D QgsPointCloudBlock::scale() const { return mScale; }
 
-QgsVector3D QgsPointCloudBlock::offset() const
-{
-  return mOffset;
-}
+QgsVector3D QgsPointCloudBlock::offset() const { return mOffset; }
 
 void QgsPointCloudBlock::setPointCount( int size )
 {

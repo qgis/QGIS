@@ -27,7 +27,6 @@ Stores metadata about one point cloud renderer class.
 #include "qgspointcloudrendererregistry.h"
 %End
   public:
-
     QgsPointCloudRendererAbstractMetadata( const QString &name, const QString &visibleName, const QIcon &icon = QIcon() );
 %Docstring
 Constructor for QgsPointCloudRendererAbstractMetadata, with the
@@ -95,7 +94,16 @@ cloud renderer and its widget.
 #include "qgspointcloudrendererregistry.h"
 %End
   public:
+    QgsPointCloudRendererMetadata( const QString &name, const QString &visibleName, QgsPointCloudRendererCreateFunc pfCreate, const QIcon &icon = QIcon(), QgsPointCloudRendererWidgetFunc pfWidget = 0 );
+%Docstring
+Construct metadata
 
+.. note::
+
+   not available in Python bindings
+%End
+                 mCreateFunc( pfCreate ),
+                 mWidgetFunc( pfWidget );
 
     virtual QgsPointCloudRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) /Factory/;
 
@@ -125,7 +133,6 @@ created, but rather accessed through
 #include "qgspointcloudrendererregistry.h"
 %End
   public:
-
     QgsPointCloudRendererRegistry();
     ~QgsPointCloudRendererRegistry();
 
@@ -175,6 +182,7 @@ Returns a list of categories using the available Classification classes
 of a specified ``layer``, along with default colors and translated names
 for the 19 classes (0-18) of point data record formats 6-10
 %End
+
   private:
     QgsPointCloudRendererRegistry( const QgsPointCloudRendererRegistry &rh );
 };

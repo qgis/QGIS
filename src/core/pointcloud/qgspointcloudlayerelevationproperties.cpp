@@ -44,18 +44,14 @@ QgsPointCloudLayerElevationProperties::QgsPointCloudLayerElevationProperties( QO
 
   if ( QgsPointCloudLayer *pcLayer = qobject_cast< QgsPointCloudLayer * >( parent ) )
   {
-    connect( pcLayer, &QgsPointCloudLayer::rendererChanged, this, [this]
-    {
+    connect( pcLayer, &QgsPointCloudLayer::rendererChanged, this, [this] {
       if ( mRespectLayerColors )
         emit profileGenerationPropertyChanged();
     } );
   }
 }
 
-QgsLineSymbol *QgsPointCloudLayerElevationProperties::profileLineSymbol() const
-{
-  return mProfileLineSymbol.get();
-}
+QgsLineSymbol *QgsPointCloudLayerElevationProperties::profileLineSymbol() const { return mProfileLineSymbol.get(); }
 
 void QgsPointCloudLayerElevationProperties::setProfileLineSymbol( QgsLineSymbol *symbol )
 {
@@ -67,10 +63,7 @@ void QgsPointCloudLayerElevationProperties::setProfileLineSymbol( QgsLineSymbol 
   emit profileRenderingPropertyChanged();
 }
 
-QgsFillSymbol *QgsPointCloudLayerElevationProperties::profileFillSymbol() const
-{
-  return mProfileFillSymbol.get();
-}
+QgsFillSymbol *QgsPointCloudLayerElevationProperties::profileFillSymbol() const { return mProfileFillSymbol.get(); }
 
 void QgsPointCloudLayerElevationProperties::setProfileFillSymbol( QgsFillSymbol *symbol )
 {
@@ -92,10 +85,7 @@ void QgsPointCloudLayerElevationProperties::setProfileSymbology( Qgis::ProfileSu
   emit profileRenderingPropertyChanged();
 }
 
-double QgsPointCloudLayerElevationProperties::elevationLimit() const
-{
-  return mElevationLimit;
-}
+double QgsPointCloudLayerElevationProperties::elevationLimit() const { return mElevationLimit; }
 
 void QgsPointCloudLayerElevationProperties::setElevationLimit( double limit )
 {
@@ -122,10 +112,7 @@ void QgsPointCloudLayerElevationProperties::setDefaultProfileFillSymbol( const Q
 }
 
 
-bool QgsPointCloudLayerElevationProperties::hasElevation() const
-{
-  return true;
-}
+bool QgsPointCloudLayerElevationProperties::hasElevation() const { return true; }
 
 QDomElement QgsPointCloudLayerElevationProperties::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context )
 {
@@ -264,7 +251,8 @@ QgsDoubleRange QgsPointCloudLayerElevationProperties::calculateZRange( QgsMapLay
         for ( QgsPointCloudSubIndex subIndex : virtualProvider->subIndexes() )
         {
           const QgsDoubleRange newRange = subIndex.zRange();
-          if ( newRange.isInfinite() ) continue;
+          if ( newRange.isInfinite() )
+            continue;
           zMin = std::isnan( zMin ) ? newRange.lower() : std::min( zMin, newRange.lower() );
           zMax = std::isnan( zMax ) ? newRange.upper() : std::max( zMax, newRange.upper() );
         }
@@ -284,17 +272,14 @@ QList<double> QgsPointCloudLayerElevationProperties::significantZValues( QgsMapL
 {
   const QgsDoubleRange range = calculateZRange( layer );
   if ( !range.isInfinite() && range.lower() != range.upper() )
-    return {range.lower(), range.upper() };
+    return { range.lower(), range.upper() };
   else if ( !range.isInfinite() )
-    return {range.lower() };
+    return { range.lower() };
   else
     return {};
 }
 
-bool QgsPointCloudLayerElevationProperties::showByDefaultInElevationProfilePlots() const
-{
-  return true;
-}
+bool QgsPointCloudLayerElevationProperties::showByDefaultInElevationProfilePlots() const { return true; }
 
 void QgsPointCloudLayerElevationProperties::setMaximumScreenError( double error )
 {
@@ -316,10 +301,7 @@ void QgsPointCloudLayerElevationProperties::setMaximumScreenErrorUnit( Qgis::Ren
   emit profileGenerationPropertyChanged();
 }
 
-Qgis::PointCloudSymbol QgsPointCloudLayerElevationProperties::pointSymbol() const
-{
-  return mPointSymbol;
-}
+Qgis::PointCloudSymbol QgsPointCloudLayerElevationProperties::pointSymbol() const { return mPointSymbol; }
 
 void QgsPointCloudLayerElevationProperties::setPointSymbol( Qgis::PointCloudSymbol symbol )
 {

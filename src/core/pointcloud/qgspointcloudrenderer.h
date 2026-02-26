@@ -46,7 +46,6 @@ class QgsElevationMap;
 class CORE_EXPORT QgsPointCloudRenderContext
 {
   public:
-
     /**
      * Constructor for QgsPointCloudRenderContext.
      *
@@ -59,8 +58,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
      * The \a zValueFixedOffset argument specifies any constant offset value which must be added to z values
      * taken from the point cloud index.
      */
-    QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset,
-                                double zValueScale, double zValueFixedOffset, QgsFeedback *feedback = nullptr );
+    QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset, double zValueScale, double zValueFixedOffset, QgsFeedback *feedback = nullptr );
 
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh ) = delete;
     QgsPointCloudRenderContext &operator=( const QgsPointCloudRenderContext & ) = delete;
@@ -181,8 +179,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
      * Retrieves the attribute \a value from \a data at the specified \a offset, where
      * \a type indicates the original data type for the attribute.
      */
-    template <typename T>
-    static void getAttribute( const char *data, std::size_t offset, QgsPointCloudAttribute::DataType type, T &value )
+    template<typename T> static void getAttribute( const char *data, std::size_t offset, QgsPointCloudAttribute::DataType type, T &value )
     {
       switch ( type )
       {
@@ -226,7 +223,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
     }
 #endif
 
-#ifndef SIP_RUN    // this is only meant for low-level rendering in C++ code
+#ifndef SIP_RUN // this is only meant for low-level rendering in C++ code
 
     /**
      * Helper data structure used when rendering points as triangulated surface.
@@ -236,9 +233,9 @@ class CORE_EXPORT QgsPointCloudRenderContext
      */
     struct TriangulationData
     {
-      std::vector<double> points;     //!< X,Y for each point - kept in this structure so that we can use it without further conversions in Delaunator-cpp
-      std::vector<QRgb> colors;       //!< RGB color for each point
-      std::vector<float> elevations;  //!< Z value for each point (only used when global map shading is enabled)
+        std::vector<double> points;    //!< X,Y for each point - kept in this structure so that we can use it without further conversions in Delaunator-cpp
+        std::vector<QRgb> colors;      //!< RGB color for each point
+        std::vector<float> elevations; //!< Z value for each point (only used when global map shading is enabled)
     };
 
     /**
@@ -284,7 +281,6 @@ class CORE_EXPORT QgsPointCloudRenderContext
 class CORE_EXPORT QgsPreparedPointCloudRendererData
 {
   public:
-
     virtual ~QgsPreparedPointCloudRendererData();
 
     /**
@@ -307,7 +303,6 @@ class CORE_EXPORT QgsPreparedPointCloudRendererData
      * \since QGIS 3.26
      */
     virtual QColor pointColor( const QgsPointCloudBlock *block, int i, double z ) = 0;
-
 };
 
 #endif
@@ -323,7 +318,6 @@ class CORE_EXPORT QgsPreparedPointCloudRendererData
  */
 class CORE_EXPORT QgsPointCloudRenderer
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
 
@@ -339,7 +333,7 @@ class CORE_EXPORT QgsPointCloudRenderer
       sipType = sipType_QgsPointCloudExtentRenderer;
     else
       sipType = 0;
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -734,7 +728,6 @@ class CORE_EXPORT QgsPointCloudRenderer
     double overviewSwitchingScale() const { return mOverviewSwitchingScale; }
 
   protected:
-
     /**
      * Retrieves the x and y coordinate for the point at index \a i.
      */
@@ -762,10 +755,7 @@ class CORE_EXPORT QgsPointCloudRenderer
     /**
      * Draws a point using a \a color at the specified \a x and \a y (in map coordinates).
      */
-    void drawPoint( double x, double y, const QColor &color, QgsPointCloudRenderContext &context ) const
-    {
-      drawPoint( x, y, color, mDefaultPainterPenWidth, context );
-    }
+    void drawPoint( double x, double y, const QColor &color, QgsPointCloudRenderContext &context ) const { drawPoint( x, y, color, mDefaultPainterPenWidth, context ); }
 
     /**
      * Draws a point using a \a color and painter \a width at the specified \a x and \a y (in map coordinates).
@@ -780,22 +770,18 @@ class CORE_EXPORT QgsPointCloudRenderer
       switch ( mPointSymbol )
       {
         case Qgis::PointCloudSymbol::Square:
-          painter->fillRect( QRectF( x - width * 0.5,
-                                     y - width * 0.5,
-                                     width, width ), color );
+          painter->fillRect( QRectF( x - width * 0.5, y - width * 0.5, width, width ), color );
           break;
 
         case Qgis::PointCloudSymbol::Circle:
           painter->setBrush( QBrush( color ) );
           painter->setPen( Qt::NoPen );
-          painter->drawEllipse( QRectF( x - width * 0.5,
-                                        y - width * 0.5,
-                                        width, width ) );
+          painter->drawEllipse( QRectF( x - width * 0.5, y - width * 0.5, width, width ) );
           break;
       };
     }
 
-#ifndef SIP_RUN   // intentionally left out from SIP to avoid API breaks in future when we move elevation post-processing elsewhere
+#ifndef SIP_RUN // intentionally left out from SIP to avoid API breaks in future when we move elevation post-processing elsewhere
 
     /**
      * Draws a point at the elevation \a z using at the specified \a x and \a y (in map coordinates) on the elevation map.

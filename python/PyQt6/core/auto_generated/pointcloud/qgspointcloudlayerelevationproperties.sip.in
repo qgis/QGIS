@@ -23,7 +23,6 @@ Point cloud layer specific subclass of
 #include "qgspointcloudlayerelevationproperties.h"
 %End
   public:
-
     QgsPointCloudLayerElevationProperties( QObject *parent /TransferThis/ );
 %Docstring
 Constructor for QgsPointCloudLayerElevationProperties, with the

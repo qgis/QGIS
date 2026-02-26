@@ -34,10 +34,7 @@ QgsPointCloudAttributeByRampRenderer::QgsPointCloudAttributeByRampRenderer()
   mColorRampShader.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
 }
 
-QString QgsPointCloudAttributeByRampRenderer::type() const
-{
-  return u"ramp"_s;
-}
+QString QgsPointCloudAttributeByRampRenderer::type() const { return u"ramp"_s; }
 
 QgsPointCloudRenderer *QgsPointCloudAttributeByRampRenderer::clone() const
 {
@@ -206,12 +203,12 @@ QList<QgsLayerTreeModelLegendNode *> QgsPointCloudAttributeByRampRenderer::creat
     case Qgis::ShaderInterpolationMethod::Linear:
       // for interpolated shaders we use a ramp legend node unless the settings flag
       // to use the continuous legend is not set, in that case we fall through
-      if ( mColorRampShader.sourceColorRamp() && ( ! mColorRampShader.legendSettings() || mColorRampShader.legendSettings()->useContinuousLegend() ) )
+      if ( mColorRampShader.sourceColorRamp() && ( !mColorRampShader.legendSettings() || mColorRampShader.legendSettings()->useContinuousLegend() ) )
       {
-        res << new QgsColorRampLegendNode( nodeLayer, mColorRampShader.sourceColorRamp()->clone(),
-                                           mColorRampShader.legendSettings() ? *mColorRampShader.legendSettings() : QgsColorRampLegendNodeSettings(),
-                                           mColorRampShader.minimumValue(),
-                                           mColorRampShader.maximumValue() );
+        res << new QgsColorRampLegendNode(
+          nodeLayer, mColorRampShader.sourceColorRamp()->clone(), mColorRampShader.legendSettings() ? *mColorRampShader.legendSettings() : QgsColorRampLegendNodeSettings(),
+          mColorRampShader.minimumValue(), mColorRampShader.maximumValue()
+        );
         break;
       }
       [[fallthrough]];
@@ -232,45 +229,21 @@ QList<QgsLayerTreeModelLegendNode *> QgsPointCloudAttributeByRampRenderer::creat
   return res;
 }
 
-QString QgsPointCloudAttributeByRampRenderer::attribute() const
-{
-  return mAttribute;
-}
+QString QgsPointCloudAttributeByRampRenderer::attribute() const { return mAttribute; }
 
-void QgsPointCloudAttributeByRampRenderer::setAttribute( const QString &attribute )
-{
-  mAttribute = attribute;
-}
+void QgsPointCloudAttributeByRampRenderer::setAttribute( const QString &attribute ) { mAttribute = attribute; }
 
-QgsColorRampShader QgsPointCloudAttributeByRampRenderer::colorRampShader() const
-{
-  return mColorRampShader;
-}
+QgsColorRampShader QgsPointCloudAttributeByRampRenderer::colorRampShader() const { return mColorRampShader; }
 
-void QgsPointCloudAttributeByRampRenderer::setColorRampShader( const QgsColorRampShader &shader )
-{
-  mColorRampShader = shader;
-}
+void QgsPointCloudAttributeByRampRenderer::setColorRampShader( const QgsColorRampShader &shader ) { mColorRampShader = shader; }
 
-double QgsPointCloudAttributeByRampRenderer::minimum() const
-{
-  return mMin;
-}
+double QgsPointCloudAttributeByRampRenderer::minimum() const { return mMin; }
 
-void QgsPointCloudAttributeByRampRenderer::setMinimum( double minimum )
-{
-  mMin = minimum;
-}
+void QgsPointCloudAttributeByRampRenderer::setMinimum( double minimum ) { mMin = minimum; }
 
-double QgsPointCloudAttributeByRampRenderer::maximum() const
-{
-  return mMax;
-}
+double QgsPointCloudAttributeByRampRenderer::maximum() const { return mMax; }
 
-void QgsPointCloudAttributeByRampRenderer::setMaximum( double value )
-{
-  mMax = value;
-}
+void QgsPointCloudAttributeByRampRenderer::setMaximum( double value ) { mMax = value; }
 
 std::unique_ptr<QgsPreparedPointCloudRendererData> QgsPointCloudAttributeByRampRenderer::prepare()
 {
@@ -305,10 +278,7 @@ QColor QgsPointCloudAttributeByRampRendererPreparedData::pointColor( const QgsPo
   return QColor( red, green, blue, alpha );
 }
 
-QSet<QString> QgsPointCloudAttributeByRampRendererPreparedData::usedAttributes() const
-{
-  return { attributeName };
-}
+QSet<QString> QgsPointCloudAttributeByRampRendererPreparedData::usedAttributes() const { return { attributeName }; }
 
 bool QgsPointCloudAttributeByRampRendererPreparedData::prepareBlock( const QgsPointCloudBlock *block )
 {

@@ -45,8 +45,7 @@ class CORE_EXPORT QgsPointCloudSubIndex
       , mGeometry( geometry )
       , mPointCount( count )
       , mZRange( zRange )
-    {
-    }
+    {}
 
     //! Returns the point cloud index. May be NULLPTR if not loaded.
     QgsPointCloudIndex index() const { return mIndex; }

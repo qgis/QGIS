@@ -24,7 +24,6 @@ Represents an individual category (class) from a
 #include "qgspointcloudclassifiedrenderer.h"
 %End
   public:
-
     QgsPointCloudCategory();
 
     QgsPointCloudCategory( int value, const QColor &color, const QString &label, bool render = true, double pointSize = 0 );
@@ -139,7 +138,6 @@ Renders point clouds by a classification attribute.
 #include "qgspointcloudclassifiedrenderer.h"
 %End
   public:
-
     QgsPointCloudClassifiedRenderer( const QString &attributeName = QString(), const QgsPointCloudCategoryList &categories = QgsPointCloudCategoryList() );
 %Docstring
 Constructor for QgsPointCloudClassifiedRenderer.

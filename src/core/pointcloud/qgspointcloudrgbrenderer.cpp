@@ -26,15 +26,9 @@
 
 using namespace Qt::StringLiterals;
 
-QgsPointCloudRgbRenderer::QgsPointCloudRgbRenderer()
-{
+QgsPointCloudRgbRenderer::QgsPointCloudRgbRenderer() {}
 
-}
-
-QString QgsPointCloudRgbRenderer::type() const
-{
-  return u"rgb"_s;
-}
+QString QgsPointCloudRgbRenderer::type() const { return u"rgb"_s; }
 
 QgsPointCloudRenderer *QgsPointCloudRgbRenderer::clone() const
 {
@@ -146,8 +140,7 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
       context.getAttribute( ptr, i * recordSize + blueOffset, blueType, blue );
 
       //skip if red, green or blue not in displayable range
-      if ( ( useRedContrastEnhancement && !mRedContrastEnhancement->isValueInDisplayableRange( red ) )
-           || ( useGreenContrastEnhancement && !mGreenContrastEnhancement->isValueInDisplayableRange( green ) )
+      if ( ( useRedContrastEnhancement && !mRedContrastEnhancement->isValueInDisplayableRange( red ) ) || ( useGreenContrastEnhancement && !mGreenContrastEnhancement->isValueInDisplayableRange( green ) )
            || ( useBlueContrastEnhancement && !mBlueContrastEnhancement->isValueInDisplayableRange( blue ) ) )
       {
         continue;
@@ -294,10 +287,7 @@ std::unique_ptr<QgsPreparedPointCloudRendererData> QgsPointCloudRgbRenderer::pre
   return data;
 }
 
-QSet<QString> QgsPointCloudRgbRendererPreparedData::usedAttributes() const
-{
-  return { redAttribute, greenAttribute, blueAttribute };
-}
+QSet<QString> QgsPointCloudRgbRendererPreparedData::usedAttributes() const { return { redAttribute, greenAttribute, blueAttribute }; }
 
 bool QgsPointCloudRgbRendererPreparedData::prepareBlock( const QgsPointCloudBlock *block )
 {
@@ -335,8 +325,7 @@ QColor QgsPointCloudRgbRendererPreparedData::pointColor( const QgsPointCloudBloc
   QgsPointCloudRenderContext::getAttribute( ptr, i * pointRecordSize + blueOffset, blueType, blue );
 
   //skip if red, green or blue not in displayable range
-  if ( ( useRedContrastEnhancement && !redContrastEnhancement->isValueInDisplayableRange( red ) )
-       || ( useGreenContrastEnhancement && !greenContrastEnhancement->isValueInDisplayableRange( green ) )
+  if ( ( useRedContrastEnhancement && !redContrastEnhancement->isValueInDisplayableRange( red ) ) || ( useGreenContrastEnhancement && !greenContrastEnhancement->isValueInDisplayableRange( green ) )
        || ( useBlueContrastEnhancement && !blueContrastEnhancement->isValueInDisplayableRange( blue ) ) )
   {
     return QColor();
@@ -363,62 +352,26 @@ QColor QgsPointCloudRgbRendererPreparedData::pointColor( const QgsPointCloudBloc
   return QColor( red, green, blue );
 }
 
-QString QgsPointCloudRgbRenderer::redAttribute() const
-{
-  return mRedAttribute;
-}
+QString QgsPointCloudRgbRenderer::redAttribute() const { return mRedAttribute; }
 
-void QgsPointCloudRgbRenderer::setRedAttribute( const QString &redAttribute )
-{
-  mRedAttribute = redAttribute;
-}
+void QgsPointCloudRgbRenderer::setRedAttribute( const QString &redAttribute ) { mRedAttribute = redAttribute; }
 
-QString QgsPointCloudRgbRenderer::greenAttribute() const
-{
-  return mGreenAttribute;
-}
+QString QgsPointCloudRgbRenderer::greenAttribute() const { return mGreenAttribute; }
 
-void QgsPointCloudRgbRenderer::setGreenAttribute( const QString &greenAttribute )
-{
-  mGreenAttribute = greenAttribute;
-}
+void QgsPointCloudRgbRenderer::setGreenAttribute( const QString &greenAttribute ) { mGreenAttribute = greenAttribute; }
 
-QString QgsPointCloudRgbRenderer::blueAttribute() const
-{
-  return mBlueAttribute;
-}
+QString QgsPointCloudRgbRenderer::blueAttribute() const { return mBlueAttribute; }
 
-void QgsPointCloudRgbRenderer::setBlueAttribute( const QString &blueAttribute )
-{
-  mBlueAttribute = blueAttribute;
-}
+void QgsPointCloudRgbRenderer::setBlueAttribute( const QString &blueAttribute ) { mBlueAttribute = blueAttribute; }
 
-const QgsContrastEnhancement *QgsPointCloudRgbRenderer::redContrastEnhancement() const
-{
-  return mRedContrastEnhancement.get();
-}
+const QgsContrastEnhancement *QgsPointCloudRgbRenderer::redContrastEnhancement() const { return mRedContrastEnhancement.get(); }
 
-void QgsPointCloudRgbRenderer::setRedContrastEnhancement( QgsContrastEnhancement *enhancement )
-{
-  mRedContrastEnhancement.reset( enhancement );
-}
+void QgsPointCloudRgbRenderer::setRedContrastEnhancement( QgsContrastEnhancement *enhancement ) { mRedContrastEnhancement.reset( enhancement ); }
 
-const QgsContrastEnhancement *QgsPointCloudRgbRenderer::greenContrastEnhancement() const
-{
-  return mGreenContrastEnhancement.get();
-}
+const QgsContrastEnhancement *QgsPointCloudRgbRenderer::greenContrastEnhancement() const { return mGreenContrastEnhancement.get(); }
 
-void QgsPointCloudRgbRenderer::setGreenContrastEnhancement( QgsContrastEnhancement *enhancement )
-{
-  mGreenContrastEnhancement.reset( enhancement );
-}
+void QgsPointCloudRgbRenderer::setGreenContrastEnhancement( QgsContrastEnhancement *enhancement ) { mGreenContrastEnhancement.reset( enhancement ); }
 
-const QgsContrastEnhancement *QgsPointCloudRgbRenderer::blueContrastEnhancement() const
-{
-  return mBlueContrastEnhancement.get();
-}
+const QgsContrastEnhancement *QgsPointCloudRgbRenderer::blueContrastEnhancement() const { return mBlueContrastEnhancement.get(); }
 
-void QgsPointCloudRgbRenderer::setBlueContrastEnhancement( QgsContrastEnhancement *enhancement )
-{
-  mBlueContrastEnhancement.reset( enhancement );
-}
+void QgsPointCloudRgbRenderer::setBlueContrastEnhancement( QgsContrastEnhancement *enhancement ) { mBlueContrastEnhancement.reset( enhancement ); }

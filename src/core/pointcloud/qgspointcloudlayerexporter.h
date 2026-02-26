@@ -44,18 +44,17 @@ class QgsGeos;
 class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
 {
   public:
-
     /**
      * Supported export formats for point clouds
      */
     enum class ExportFormat : int
     {
       Memory = 0, //!< Memory layer
-      Las = 1, //!< LAS/LAZ point cloud
-      Gpkg = 2, //!< Geopackage
-      Shp = 3, //!< ESRI ShapeFile
-      Dxf = 4, //!< AutoCAD dxf
-      Csv = 5, //!< Comma separated values
+      Las = 1,    //!< LAS/LAZ point cloud
+      Gpkg = 2,   //!< Geopackage
+      Shp = 3,    //!< ESRI ShapeFile
+      Dxf = 4,    //!< AutoCAD dxf
+      Csv = 5,    //!< Comma separated values
     };
 
     /**
@@ -70,10 +69,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
 #ifdef HAVE_PDAL_QGIS
               << ExportFormat::Las
 #endif
-              << ExportFormat::Gpkg
-              << ExportFormat::Shp
-              << ExportFormat::Dxf
-              << ExportFormat::Csv;
+              << ExportFormat::Gpkg << ExportFormat::Shp << ExportFormat::Dxf << ExportFormat::Csv;
       return formats;
     }
 
@@ -186,7 +182,11 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
      * Sets the \a crs for the exported file, and the transform \a context that will be used
      * for reprojection if different from the point cloud layer's CRS.
      */
-    void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context = QgsCoordinateTransformContext() ) { mTargetCrs = crs; mTransformContext = context; }
+    void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context = QgsCoordinateTransformContext() )
+    {
+      mTargetCrs = crs;
+      mTransformContext = context;
+    }
 
     /**
      * Gets the \a crs for the exported file.
@@ -247,7 +247,6 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     QString lastError() const { return mLastError; }
 
   private:
-
     void exportToSink( QgsFeatureSink * );
 
     QgsFields outputFields();
@@ -261,11 +260,8 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     ExportFormat mFormat = ExportFormat::Memory;
     QString mFilename;
     QString mLastError;
-    QgsRectangle mExtent = QgsRectangle( -std::numeric_limits<double>::infinity(),
-                                         -std::numeric_limits<double>::infinity(),
-                                         std::numeric_limits<double>::infinity(),
-                                         std::numeric_limits<double>::infinity(),
-                                         false );
+    QgsRectangle mExtent
+      = QgsRectangle( -std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(), std::numeric_limits<double>::infinity(), std::numeric_limits<double>::infinity(), false );
     std::unique_ptr< QgsGeos > mFilterGeometryEngine;
     QgsDoubleRange mZRange;
     QgsFeedback *mFeedback = nullptr;
@@ -288,6 +284,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
         ExporterBase() = default;
         virtual ~ExporterBase() = default;
         void run();
+
       protected:
         virtual void handlePoint( double x, double y, double z, const QVariantMap &map, const qint64 pointNumber ) = 0;
         virtual void handleNode() = 0;
@@ -337,9 +334,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
         pdal::PointViewPtr mView;
     };
 #endif
-
 };
-
 
 
 /**
@@ -357,7 +352,6 @@ class CORE_EXPORT QgsPointCloudLayerExporterTask : public QgsTask
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsPointCloudLayerExporterTask. Takes ownership of \a exporter.
     */
@@ -373,7 +367,6 @@ class CORE_EXPORT QgsPointCloudLayerExporterTask : public QgsTask
     void exportComplete();
 
   protected:
-
     bool run() override;
     void finished( bool result ) override;
 
@@ -381,6 +374,5 @@ class CORE_EXPORT QgsPointCloudLayerExporterTask : public QgsTask
     QgsPointCloudLayerExporter *mExp = nullptr;
 
     std::unique_ptr< QgsFeedback > mOwnedFeedback;
-
 };
 #endif // QGSPOINTCLOUDLAYEREXPORTER_H

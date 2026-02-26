@@ -65,10 +65,7 @@ class CORE_EXPORT QgsPointCloudNodeId
 
     // TODO c++20 - replace with = default
 
-    bool operator==( QgsPointCloudNodeId other ) const
-    {
-      return mD == other.d() && mX == other.x() && mY == other.y() && mZ == other.z();
-    }
+    bool operator==( QgsPointCloudNodeId other ) const { return mD == other.d() && mX == other.x() && mY == other.y() && mZ == other.z(); }
 
     /**
      * Returns the parent of the node
@@ -158,23 +155,17 @@ uint qHash( const QgsPointCloudCacheKey &key );
 class CORE_EXPORT QgsPointCloudNode
 {
   public:
-
     /**
      * Constructs new node object. Should only be called by QgsAbstractPointCloudIndex::getNode().
      * Bounds should always be computed by QgsPointCloudNode::bounds().
      */
-    QgsPointCloudNode( const QgsPointCloudNodeId &id,
-                       qint64 pointCount,
-                       const QList<QgsPointCloudNodeId> &childIds,
-                       float error,
-                       const QgsBox3D &bounds )
+    QgsPointCloudNode( const QgsPointCloudNodeId &id, qint64 pointCount, const QList<QgsPointCloudNodeId> &childIds, float error, const QgsBox3D &bounds )
       : mId( id )
       , mPointCount( pointCount )
       , mChildIds( childIds )
       , mError( error )
       , mBounds( bounds )
-    {
-    }
+    {}
     //! Returns node's ID (unique in index)
     QgsPointCloudNodeId id() const { return mId; }
     //! Returns number of points contained in node data
@@ -359,8 +350,7 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
     /**
      * Stores existing \a data to the cache for the specified \a node, \a request, \a expression and \a uri. Ownership is not transferred, block gets cloned in the cache.
      */
-    static void storeNodeDataToCacheStatic( QgsPointCloudBlock *data, const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request,
-                                            const QgsPointCloudExpression &expression, const QString &uri );
+    static void storeNodeDataToCacheStatic( QgsPointCloudBlock *data, const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request, const QgsPointCloudExpression &expression, const QString &uri );
 
     /**
      * Returns extra metadata that's not accessible through the other methods
@@ -381,17 +371,17 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
     //! Sets native attributes of the data
     void setAttributes( const QgsPointCloudAttributeCollection &attributes );
 
-    QgsRectangle mExtent;  //!< 2D extent of data
-    double mZMin = 0, mZMax = 0;   //!< Vertical extent of data
+    QgsRectangle mExtent;        //!< 2D extent of data
+    double mZMin = 0, mZMax = 0; //!< Vertical extent of data
 
     mutable QMutex mHierarchyMutex;
     mutable QHash<QgsPointCloudNodeId, int> mHierarchy; //!< Data hierarchy
-    QgsVector3D mScale; //!< Scale of our int32 coordinates compared to CRS coords
-    QgsVector3D mOffset; //!< Offset of our int32 coordinates compared to CRS coords
-    QgsBox3D mRootBounds;  //!< Bounds of the root node's cube (in int32 coordinates)
-    QgsPointCloudAttributeCollection mAttributes; //! All native attributes stored in the file
-    int mSpan = 0;  //!< Number of points in one direction in a single node
-    QgsPointCloudExpression mFilterExpression;  //!< The filter expression to be evaluated when fetching node data
+    QgsVector3D mScale;                                 //!< Scale of our int32 coordinates compared to CRS coords
+    QgsVector3D mOffset;                                //!< Offset of our int32 coordinates compared to CRS coords
+    QgsBox3D mRootBounds;                               //!< Bounds of the root node's cube (in int32 coordinates)
+    QgsPointCloudAttributeCollection mAttributes;       //! All native attributes stored in the file
+    int mSpan = 0;                                      //!< Number of points in one direction in a single node
+    QgsPointCloudExpression mFilterExpression;          //!< The filter expression to be evaluated when fetching node data
 
     QString mError;
     QString mUri;

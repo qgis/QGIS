@@ -40,19 +40,19 @@ class CORE_EXPORT QgsCopcPointCloudBlockRequest : public QgsPointCloudBlockReque
 {
     Q_OBJECT
   public:
-
     /**
      * QgsPointCloudBlockRequest constructor
      * Requests the block data of size \a blockSize at offset blockOffset
      * Note: It is the responsablitiy of the caller to delete the block if it was loaded correctly
      */
-    QgsCopcPointCloudBlockRequest( const QgsPointCloudNodeId &node, const QString &Uri,
-                                   const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
-                                   const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsRectangle &filterRect,
-                                   uint64_t blockOffset, int32_t blockSize, int pointCount, const QgsLazInfo &lazInfo,
-                                   const QString &authcfg = QString() );
+    QgsCopcPointCloudBlockRequest(
+      const QgsPointCloudNodeId &node, const QString &Uri, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale,
+      const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsRectangle &filterRect, uint64_t blockOffset, int32_t blockSize, int pointCount, const QgsLazInfo &lazInfo,
+      const QString &authcfg = QString()
+    );
 
     ~QgsCopcPointCloudBlockRequest() override = default;
+
   private:
     uint64_t mBlockOffset;
     int32_t mBlockSize;

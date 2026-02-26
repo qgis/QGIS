@@ -86,8 +86,7 @@ Returns ``True`` if the specified data ``type`` is numeric.
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    QString str = QStringLiteral( "<QgsPointCloudAttribute: %1 (%2)>" ).arg( sipCpp->name() ).arg( sipCpp->displayType() );
+%MethodCode QString str = QStringLiteral( "<QgsPointCloudAttribute: %1 (%2)>" ).arg( sipCpp->name() ).arg( sipCpp->displayType() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
@@ -107,7 +106,6 @@ A collection of point cloud attributes.
 #include "qgspointcloudattribute.h"
 %End
   public:
-
     QgsPointCloudAttributeCollection();
     QgsPointCloudAttributeCollection( const QVector<QgsPointCloudAttribute> &attributes );
 %Docstring

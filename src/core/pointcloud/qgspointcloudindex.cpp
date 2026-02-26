@@ -49,10 +49,7 @@ QgsPointCloudNodeId::QgsPointCloudNodeId( int _d, int _x, int _y, int _z )
   , mZ( _z )
 {}
 
-QgsPointCloudNodeId QgsPointCloudNodeId::parentNode() const
-{
-  return QgsPointCloudNodeId( mD - 1, mX / 2, mY / 2, mZ / 2 );
-}
+QgsPointCloudNodeId QgsPointCloudNodeId::parentNode() const { return QgsPointCloudNodeId( mD - 1, mX / 2, mY / 2, mZ / 2 ); }
 
 QgsPointCloudNodeId QgsPointCloudNodeId::fromString( const QString &str )
 {
@@ -62,35 +59,17 @@ QgsPointCloudNodeId QgsPointCloudNodeId::fromString( const QString &str )
   return QgsPointCloudNodeId( lst[0].toInt(), lst[1].toInt(), lst[2].toInt(), lst[3].toInt() );
 }
 
-QString QgsPointCloudNodeId::toString() const
-{
-  return u"%1-%2-%3-%4"_s.arg( mD ).arg( mX ).arg( mY ).arg( mZ );
-}
+QString QgsPointCloudNodeId::toString() const { return u"%1-%2-%3-%4"_s.arg( mD ).arg( mX ).arg( mY ).arg( mZ ); }
 
-int QgsPointCloudNodeId::d() const
-{
-  return mD;
-}
+int QgsPointCloudNodeId::d() const { return mD; }
 
-int QgsPointCloudNodeId::x() const
-{
-  return mX;
-}
+int QgsPointCloudNodeId::x() const { return mX; }
 
-int QgsPointCloudNodeId::y() const
-{
-  return mY;
-}
+int QgsPointCloudNodeId::y() const { return mY; }
 
-int QgsPointCloudNodeId::z() const
-{
-  return mZ;
-}
+int QgsPointCloudNodeId::z() const { return mZ; }
 
-uint qHash( QgsPointCloudNodeId id )
-{
-  return id.d() + id.x() + id.y() + id.z();
-}
+uint qHash( QgsPointCloudNodeId id ) { return id.d() + id.x() + id.y() + id.z(); }
 
 ///@cond PRIVATE
 
@@ -103,30 +82,20 @@ QgsPointCloudCacheKey::QgsPointCloudCacheKey( const QgsPointCloudNodeId &n, cons
   , mUri( uri )
   , mRequest( request )
   , mSubsetString( subset )
-{
-}
+{}
 
 bool QgsPointCloudCacheKey::operator==( const QgsPointCloudCacheKey &other ) const
 {
-  return mNode == other.mNode &&
-         mUri == other.mUri &&
-         mRequest == other.mRequest &&
-         mSubsetString == other.mSubsetString;
+  return mNode == other.mNode && mUri == other.mUri && mRequest == other.mRequest && mSubsetString == other.mSubsetString;
 }
 
-uint qHash( const QgsPointCloudCacheKey &key )
-{
-  return qHash( key.node() ) ^ qHash( key.request() ) ^ qHash( key.uri() ) ^ qHash( key.subsetString() );
-}
+uint qHash( const QgsPointCloudCacheKey &key ) { return qHash( key.node() ) ^ qHash( key.request() ) ^ qHash( key.uri() ) ^ qHash( key.subsetString() ); }
 
 //
 // QgsPointCloudNode
 //
 
-QgsBox3D QgsPointCloudNode::bounds() const
-{
-  return mBounds;
-}
+QgsBox3D QgsPointCloudNode::bounds() const { return mBounds; }
 
 QgsBox3D QgsPointCloudNode::bounds( QgsBox3D rootBounds, QgsPointCloudNodeId id )
 {
@@ -143,10 +112,7 @@ QgsBox3D QgsPointCloudNode::bounds( QgsBox3D rootBounds, QgsPointCloudNodeId id 
   return QgsBox3D( xMin, yMin, zMin, xMax, yMax, zMax );
 }
 
-float QgsPointCloudNode::error() const
-{
-  return mError;
-}
+float QgsPointCloudNode::error() const { return mError; }
 
 ///@endcond
 
@@ -197,35 +163,17 @@ QgsPointCloudNode QgsAbstractPointCloudIndex::getNode( const QgsPointCloudNodeId
   return QgsPointCloudNode( id, pointCount, children, bounds.width() / mSpan, bounds );
 }
 
-bool QgsAbstractPointCloudIndex::updateNodeData( const QHash<QgsPointCloudNodeId, QByteArray> & )
-{
-  return false;
-}
+bool QgsAbstractPointCloudIndex::updateNodeData( const QHash<QgsPointCloudNodeId, QByteArray> & ) { return false; }
 
-QgsPointCloudAttributeCollection QgsAbstractPointCloudIndex::attributes() const
-{
-  return mAttributes;
-}
+QgsPointCloudAttributeCollection QgsAbstractPointCloudIndex::attributes() const { return mAttributes; }
 
-QgsVector3D QgsAbstractPointCloudIndex::scale() const
-{
-  return mScale;
-}
+QgsVector3D QgsAbstractPointCloudIndex::scale() const { return mScale; }
 
-QgsVector3D QgsAbstractPointCloudIndex::offset() const
-{
-  return mOffset;
-}
+QgsVector3D QgsAbstractPointCloudIndex::offset() const { return mOffset; }
 
-void QgsAbstractPointCloudIndex::setAttributes( const QgsPointCloudAttributeCollection &attributes )
-{
-  mAttributes = attributes;
-}
+void QgsAbstractPointCloudIndex::setAttributes( const QgsPointCloudAttributeCollection &attributes ) { mAttributes = attributes; }
 
-int QgsAbstractPointCloudIndex::span() const
-{
-  return mSpan;
-}
+int QgsAbstractPointCloudIndex::span() const { return mSpan; }
 
 bool QgsAbstractPointCloudIndex::setSubsetString( const QString &subset )
 {
@@ -251,20 +199,17 @@ bool QgsAbstractPointCloudIndex::setSubsetString( const QString &subset )
   return true;
 }
 
-QString QgsAbstractPointCloudIndex::subsetString() const
-{
-  return mFilterExpression;
-}
+QString QgsAbstractPointCloudIndex::subsetString() const { return mFilterExpression; }
 
 QgsPointCloudStatistics QgsAbstractPointCloudIndex::metadataStatistics() const
 {
   QMap<QString, QgsPointCloudAttributeStatistics> statsMap;
-  statsMap[ "X" ].minimum = mExtent.xMinimum();
-  statsMap[ "X" ].maximum = mExtent.xMaximum();
-  statsMap[ "Y" ].minimum = mExtent.yMinimum();
-  statsMap[ "Y" ].maximum = mExtent.yMinimum();
-  statsMap[ "Z" ].minimum = mZMin;
-  statsMap[ "Z" ].maximum = mZMax;
+  statsMap["X"].minimum = mExtent.xMinimum();
+  statsMap["X"].maximum = mExtent.xMaximum();
+  statsMap["Y"].minimum = mExtent.yMinimum();
+  statsMap["Y"].maximum = mExtent.yMinimum();
+  statsMap["Z"].minimum = mZMin;
+  statsMap["Z"].maximum = mZMax;
 
   return QgsPointCloudStatistics( pointCount(), statsMap );
 }
@@ -305,7 +250,9 @@ void QgsAbstractPointCloudIndex::storeNodeDataToCache( QgsPointCloudBlock *data,
   storeNodeDataToCacheStatic( data, node, request, mFilterExpression, mUri );
 }
 
-void QgsAbstractPointCloudIndex::storeNodeDataToCacheStatic( QgsPointCloudBlock *data, const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request, const QgsPointCloudExpression &expression, const QString &uri )
+void QgsAbstractPointCloudIndex::storeNodeDataToCacheStatic(
+  QgsPointCloudBlock *data, const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request, const QgsPointCloudExpression &expression, const QString &uri
+)
 {
   if ( !data )
     return;
@@ -319,25 +266,16 @@ void QgsAbstractPointCloudIndex::storeNodeDataToCacheStatic( QgsPointCloudBlock 
   sBlockCache.insert( key, data->clone(), cost );
 }
 
-QVariantMap QgsAbstractPointCloudIndex::extraMetadata() const
-{
-  return {};
-}
+QVariantMap QgsAbstractPointCloudIndex::extraMetadata() const { return {}; }
 
 //
 // QgsPointCloudIndex
 //
 //
 
-QgsPointCloudIndex::QgsPointCloudIndex( QgsAbstractPointCloudIndex *index )
-{
-  mIndex.reset( index );
-}
+QgsPointCloudIndex::QgsPointCloudIndex( QgsAbstractPointCloudIndex *index ) { mIndex.reset( index ); }
 
-QgsPointCloudIndex::operator bool() const
-{
-  return mIndex != nullptr;
-}
+QgsPointCloudIndex::operator bool() const { return mIndex != nullptr; }
 
 void QgsPointCloudIndex::load( const QString &url, const QString &authcfg )
 {
@@ -345,15 +283,9 @@ void QgsPointCloudIndex::load( const QString &url, const QString &authcfg )
   mIndex->load( url, authcfg );
 }
 
-bool QgsPointCloudIndex::isValid() const
-{
-  return mIndex && mIndex->isValid();
-}
+bool QgsPointCloudIndex::isValid() const { return mIndex && mIndex->isValid(); }
 
-QString QgsPointCloudIndex::error() const
-{
-  return mIndex ? mIndex->error() : u"Index is NULL"_s;
-}
+QString QgsPointCloudIndex::error() const { return mIndex ? mIndex->error() : u"Index is NULL"_s; }
 
 Qgis::PointCloudAccessType QgsPointCloudIndex::accessType() const
 {

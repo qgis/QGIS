@@ -45,9 +45,6 @@ void QgsPointCloudStatsCalculationTask::cancel()
   QgsTask::cancel();
 }
 
-QgsPointCloudStatistics QgsPointCloudStatsCalculationTask::calculationResults() const
-{
-  return mCalculator.statistics();
-}
+QgsPointCloudStatistics QgsPointCloudStatsCalculationTask::calculationResults() const { return mCalculator.statistics(); }
 
 /// @endcond

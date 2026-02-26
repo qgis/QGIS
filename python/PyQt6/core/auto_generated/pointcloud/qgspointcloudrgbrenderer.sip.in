@@ -25,7 +25,6 @@ green and blue attributes.
 #include "qgspointcloudrgbrenderer.h"
 %End
   public:
-
     QgsPointCloudRgbRenderer();
 %Docstring
 Constructor for QgsPointCloudRgbRenderer.

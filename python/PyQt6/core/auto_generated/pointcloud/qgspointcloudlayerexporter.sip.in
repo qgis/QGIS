@@ -24,7 +24,6 @@ files and PDAL supported files.
 #include "qgspointcloudlayerexporter.h"
 %End
   public:
-
     enum class ExportFormat /BaseType=IntEnum/
     {
       Memory,
@@ -235,7 +234,6 @@ error occurred an empty string is returned.
 };
 
 
-
 class QgsPointCloudLayerExporterTask : QgsTask
 {
 %Docstring(signature="appended")
@@ -253,7 +251,6 @@ blocking the QGIS interface.
 #include "qgspointcloudlayerexporter.h"
 %End
   public:
-
     QgsPointCloudLayerExporterTask( QgsPointCloudLayerExporter *exporter );
 %Docstring
 Constructor for QgsPointCloudLayerExporterTask. Takes ownership of
@@ -271,7 +268,6 @@ Emitted when exporting the layer is successfully completed.
 %End
 
   protected:
-
     virtual bool run();
 
     virtual void finished( bool result );

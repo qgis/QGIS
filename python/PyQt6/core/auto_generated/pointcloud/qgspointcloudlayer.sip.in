@@ -30,24 +30,22 @@ Represents a map layer supporting display of point clouds.
 #include "qgspointcloudlayer.h"
 %End
   public:
-
     struct LayerOptions
     {
-
-      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext( ) );
+        explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() );
 %Docstring
 Constructor for LayerOptions with optional ``transformContext``.
 %End
 
-      QgsCoordinateTransformContext transformContext;
+        QgsCoordinateTransformContext transformContext;
 
-      bool loadDefaultStyle;
+        bool loadDefaultStyle;
 
-      bool skipCrsValidation;
+        bool skipCrsValidation;
 
-      bool skipIndexGeneration;
+        bool skipIndexGeneration;
 
-      bool skipStatisticsCalculation;
+        bool skipStatisticsCalculation;
     };
 
 
@@ -58,10 +56,10 @@ Constructor for LayerOptions with optional ``transformContext``.
       Calculated
     };
 
-    explicit QgsPointCloudLayer( const QString &uri = QString(),
-                                 const QString &baseName = QString(),
-                                 const QString &providerLib = QStringLiteral( "pointcloud" ),
-                                 const QgsPointCloudLayer::LayerOptions &options = QgsPointCloudLayer::LayerOptions() );
+    explicit QgsPointCloudLayer(
+      const QString &uri = QString(), const QString &baseName = QString(), const QString &providerLib = QStringLiteral( "pointcloud" ),
+      const QgsPointCloudLayer::LayerOptions &options = QgsPointCloudLayer::LayerOptions()
+    );
 %Docstring
 Constructor - creates a point cloud layer
 %End
@@ -70,12 +68,11 @@ Constructor - creates a point cloud layer
 
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    QString str = QStringLiteral( "<QgsPointCloudLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+%MethodCode QString str = QStringLiteral( "<QgsPointCloudLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    virtual QgsPointCloudLayer *clone() const /Factory/;
+      virtual QgsPointCloudLayer *clone() const /Factory/;
 
     virtual QgsRectangle extent() const;
 
@@ -103,12 +100,12 @@ Constructor - creates a point cloud layer
     virtual bool writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
 
-     virtual bool readSymbology( const QDomNode &node, QString &errorMessage,
-                        QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
+    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
+
     bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) final;
 
-     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
-                         StyleCategories categories = AllStyleCategories ) const;
+    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const;
+
     bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const final;
 
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );

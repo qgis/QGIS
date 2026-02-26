@@ -106,12 +106,7 @@ Keeps metadata for an indexed point cloud node.
 #include "qgspointcloudindex.h"
 %End
   public:
-
-    QgsPointCloudNode( const QgsPointCloudNodeId &id,
-                       qint64 pointCount,
-                       const QList<QgsPointCloudNodeId> &childIds,
-                       float error,
-                       const QgsBox3D &bounds );
+    QgsPointCloudNode( const QgsPointCloudNodeId &id, qint64 pointCount, const QList<QgsPointCloudNodeId> &childIds, float error, const QgsBox3D &bounds );
 %Docstring
 Constructs new node object. Should only be called by
 :py:func:`QgsAbstractPointCloudIndex.getNode()`. Bounds should always be
