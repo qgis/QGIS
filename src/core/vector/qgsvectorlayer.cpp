@@ -6283,6 +6283,16 @@ void QgsVectorLayer::emitDataChanged()
   mDataChangedFired = false;
 }
 
+void QgsVectorLayer::onDependencyAfterCommitChanges()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mDataProvider && mDataProvider->capabilities().testFlag( Qgis::VectorProviderCapability::CacheData ) )
+    mDataProvider->reloadData();
+  else
+    emitDataChanged();
+}
+
 bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -6310,8 +6320,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
       disconnect( lyr, &QgsVectorLayer::geometryChanged, this, &QgsVectorLayer::emitDataChanged );
       disconnect( lyr, &QgsVectorLayer::dataChanged, this, &QgsVectorLayer::emitDataChanged );
       disconnect( lyr, &QgsVectorLayer::repaintRequested, this, &QgsVectorLayer::triggerRepaint );
-      disconnect( lyr, &QgsVectorLayer::afterCommitChanges, this, &QgsVectorLayer::emitDataChanged );
-      disconnect( lyr, &QgsVectorLayer::afterCommitChanges, this, &QgsVectorLayer::reload );
+      disconnect( lyr, &QgsVectorLayer::afterCommitChanges, this, &QgsVectorLayer::onDependencyAfterCommitChanges );
     }
   }
 
@@ -6335,10 +6344,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
       connect( lyr, &QgsVectorLayer::geometryChanged, this, &QgsVectorLayer::emitDataChanged );
       connect( lyr, &QgsVectorLayer::dataChanged, this, &QgsVectorLayer::emitDataChanged );
       connect( lyr, &QgsVectorLayer::repaintRequested, this, &QgsVectorLayer::triggerRepaint );
-      if ( providerType() == QStringLiteral("WFS") || providerType() == QStringLiteral("OAPIF") )
-        connect( lyr, &QgsVectorLayer::afterCommitChanges, this, &QgsVectorLayer::emitDataChanged );
-      else
-        connect( lyr, &QgsVectorLayer::afterCommitChanges, this, &QgsVectorLayer::reload );
+      connect( lyr, &QgsVectorLayer::afterCommitChanges, this, &QgsVectorLayer::onDependencyAfterCommitChanges );
     }
   }
 
