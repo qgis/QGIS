@@ -25,10 +25,12 @@
 #include "qgslogger.h"
 #include "qgsdataitemprovider.h"
 #include "qgsapplication.h"
+#include "qgsrenderer.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsfeedback.h"
 #include "qgsreadwritelocker.h"
 #include "qgsvariantutils.h"
+#include "qgsvectorlayerlabeling.h"
 
 
 QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
@@ -753,12 +755,12 @@ void QgsAfsProvider::reloadProviderData()
 
 QgsFeatureRenderer *QgsAfsProvider::createRenderer( const QVariantMap & ) const
 {
-  return QgsArcGisRestUtils::convertRenderer( mRendererDataMap );
+  return QgsArcGisRestUtils::convertRenderer( mRendererDataMap ).release();
 }
 
 QgsAbstractVectorLayerLabeling *QgsAfsProvider::createLabeling( const QVariantMap & ) const
 {
-  return QgsArcGisRestUtils::convertLabeling( mLabelingDataList );
+  return QgsArcGisRestUtils::convertLabeling( mLabelingDataList ).release();
 }
 
 bool QgsAfsProvider::renderInPreview( const QgsDataProvider::PreviewContext & )
