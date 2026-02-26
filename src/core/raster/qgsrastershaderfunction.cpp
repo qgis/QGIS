@@ -75,12 +75,6 @@ bool QgsRasterShaderFunction::shade( double redValue, double greenValue, double 
 }
 
 
-int QgsRasterShaderFunction::labelPrecision() const
-{
-  return mLabelPrecision;
-}
+int QgsRasterShaderFunction::labelPrecision() const { return mLabelPrecision; }
 
-void QgsRasterShaderFunction::setLabelPrecision( int labelPrecision )
-{
-  mLabelPrecision = labelPrecision;
-}
+void QgsRasterShaderFunction::setLabelPrecision( int labelPrecision ) { mLabelPrecision = labelPrecision; }

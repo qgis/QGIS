@@ -20,9 +20,9 @@ email                : ersts@amnh.org
 
 #include "qgscontrastenhancement.h"
 
-QgsClipToMinMaxEnhancement::QgsClipToMinMaxEnhancement( Qgis::DataType qgsRasterDataType, double minimumValue, double maximumValue ) : QgsContrastEnhancementFunction( qgsRasterDataType, minimumValue, maximumValue )
-{
-}
+QgsClipToMinMaxEnhancement::QgsClipToMinMaxEnhancement( Qgis::DataType qgsRasterDataType, double minimumValue, double maximumValue )
+  : QgsContrastEnhancementFunction( qgsRasterDataType, minimumValue, maximumValue )
+{}
 
 int QgsClipToMinMaxEnhancement::enhance( double value )
 {
@@ -41,7 +41,4 @@ int QgsClipToMinMaxEnhancement::enhance( double value )
   }
 }
 
-bool QgsClipToMinMaxEnhancement::isValueInDisplayableRange( double value )
-{
-  return !( value < mMinimumValue || value > mMaximumValue );
-}
+bool QgsClipToMinMaxEnhancement::isValueInDisplayableRange( double value ) { return !( value < mMinimumValue || value > mMaximumValue ); }

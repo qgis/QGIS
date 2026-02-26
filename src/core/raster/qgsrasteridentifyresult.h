@@ -30,7 +30,6 @@
 class CORE_EXPORT QgsRasterIdentifyResult
 {
   public:
-
     QgsRasterIdentifyResult() = default;
 
     /**
@@ -73,7 +72,7 @@ class CORE_EXPORT QgsRasterIdentifyResult
     QgsError error() const { return mError; }
 
     //! Sets the last error
-    void setError( const QgsError &error ) { mError = error;}
+    void setError( const QgsError &error ) { mError = error; }
 
   private:
     //! \brief Is valid
@@ -96,5 +95,3 @@ class CORE_EXPORT QgsRasterIdentifyResult
 };
 
 #endif
-
-

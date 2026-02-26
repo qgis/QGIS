@@ -43,10 +43,7 @@ QgsRasterLayerElevationProperties::QgsRasterLayerElevationProperties( QObject *p
 
 QgsRasterLayerElevationProperties::~QgsRasterLayerElevationProperties() = default;
 
-bool QgsRasterLayerElevationProperties::hasElevation() const
-{
-  return mEnabled;
-}
+bool QgsRasterLayerElevationProperties::hasElevation() const { return mEnabled; }
 
 QDomElement QgsRasterLayerElevationProperties::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context )
 {
@@ -385,9 +382,9 @@ QList<double> QgsRasterLayerElevationProperties::significantZValues( QgsMapLayer
         if ( it.value().isInfinite() )
           continue;
 
-        if ( !res.contains( it.value().lower( ) ) )
+        if ( !res.contains( it.value().lower() ) )
           res.append( it.value().lower() );
-        if ( !res.contains( it.value().upper( ) ) )
+        if ( !res.contains( it.value().upper() ) )
           res.append( it.value().upper() );
       }
       std::sort( res.begin(), res.end() );
@@ -435,10 +432,7 @@ QList<double> QgsRasterLayerElevationProperties::significantZValues( QgsMapLayer
   BUILTIN_UNREACHABLE
 }
 
-bool QgsRasterLayerElevationProperties::showByDefaultInElevationProfilePlots() const
-{
-  return mEnabled;
-}
+bool QgsRasterLayerElevationProperties::showByDefaultInElevationProfilePlots() const { return mEnabled; }
 
 QgsMapLayerElevationProperties::Flags QgsRasterLayerElevationProperties::flags() const
 {
@@ -468,10 +462,7 @@ void QgsRasterLayerElevationProperties::setEnabled( bool enabled )
   emit profileGenerationPropertyChanged();
 }
 
-Qgis::RasterElevationMode QgsRasterLayerElevationProperties::mode() const
-{
-  return mMode;
-}
+Qgis::RasterElevationMode QgsRasterLayerElevationProperties::mode() const { return mMode; }
 
 void QgsRasterLayerElevationProperties::setMode( Qgis::RasterElevationMode mode )
 {
@@ -570,8 +561,7 @@ int QgsRasterLayerElevationProperties::bandForElevationRange( QgsRasterLayer *la
       {
         if ( it.value().overlaps( range ) )
         {
-          if ( currentMatchingRange.isInfinite()
-               || ( it.value().includeUpper() && it.value().upper() >= currentMatchingRange.upper() )
+          if ( currentMatchingRange.isInfinite() || ( it.value().includeUpper() && it.value().upper() >= currentMatchingRange.upper() )
                || ( !currentMatchingRange.includeUpper() && it.value().upper() >= currentMatchingRange.upper() ) )
           {
             currentMatchingBand = it.key();
@@ -616,8 +606,7 @@ int QgsRasterLayerElevationProperties::bandForElevationRange( QgsRasterLayer *la
           const QgsDoubleRange bandRange = QgsDoubleRange( lower, upper );
           if ( bandRange.overlaps( range ) )
           {
-            if ( currentMatchingRange.isInfinite()
-                 || ( bandRange.includeUpper() && bandRange.upper() >= currentMatchingRange.upper() )
+            if ( currentMatchingRange.isInfinite() || ( bandRange.includeUpper() && bandRange.upper() >= currentMatchingRange.upper() )
                  || ( !currentMatchingRange.includeUpper() && bandRange.upper() >= currentMatchingRange.upper() ) )
             {
               currentMatchingBand = band;
@@ -633,10 +622,7 @@ int QgsRasterLayerElevationProperties::bandForElevationRange( QgsRasterLayer *la
   BUILTIN_UNREACHABLE
 }
 
-QgsLineSymbol *QgsRasterLayerElevationProperties::profileLineSymbol() const
-{
-  return mProfileLineSymbol.get();
-}
+QgsLineSymbol *QgsRasterLayerElevationProperties::profileLineSymbol() const { return mProfileLineSymbol.get(); }
 
 void QgsRasterLayerElevationProperties::setProfileLineSymbol( QgsLineSymbol *symbol )
 {
@@ -645,10 +631,7 @@ void QgsRasterLayerElevationProperties::setProfileLineSymbol( QgsLineSymbol *sym
   emit profileRenderingPropertyChanged();
 }
 
-QgsFillSymbol *QgsRasterLayerElevationProperties::profileFillSymbol() const
-{
-  return mProfileFillSymbol.get();
-}
+QgsFillSymbol *QgsRasterLayerElevationProperties::profileFillSymbol() const { return mProfileFillSymbol.get(); }
 
 void QgsRasterLayerElevationProperties::setProfileFillSymbol( QgsFillSymbol *symbol )
 {
@@ -667,10 +650,7 @@ void QgsRasterLayerElevationProperties::setProfileSymbology( Qgis::ProfileSurfac
   emit profileRenderingPropertyChanged();
 }
 
-double QgsRasterLayerElevationProperties::elevationLimit() const
-{
-  return mElevationLimit;
-}
+double QgsRasterLayerElevationProperties::elevationLimit() const { return mElevationLimit; }
 
 void QgsRasterLayerElevationProperties::setElevationLimit( double limit )
 {
@@ -721,25 +701,13 @@ bool QgsRasterLayerElevationProperties::layerLooksLikeDem( QgsRasterLayer *layer
   // Check the layer's name for DEM-ish hints.
   // See discussion at https://github.com/qgis/QGIS/pull/30245 - this list must NOT be translated,
   // but adding hardcoded localized variants of the strings is encouraged.
-  static const QStringList sPartialCandidates{ u"dem"_s,
-      u"dtm"_s,
-      u"dsm"_s,
-      u"height"_s,
-      u"elev"_s,
-      u"srtm"_s,
-      u"dted"_s,
-      // French hints
-      u"mne"_s,
-      u"mnt"_s,
-      u"mns"_s,
-      u"rge"_s,
-      u"alti"_s,
-      // German hints
-      u"dhm"_s,
-      u"dgm"_s,
-      u"dom"_s,
-      u"Höhe"_s,
-      u"Hoehe"_s };
+  static const QStringList sPartialCandidates {
+    u"dem"_s, u"dtm"_s, u"dsm"_s, u"height"_s, u"elev"_s, u"srtm"_s, u"dted"_s,
+    // French hints
+    u"mne"_s, u"mnt"_s, u"mns"_s, u"rge"_s, u"alti"_s,
+    // German hints
+    u"dhm"_s, u"dgm"_s, u"dom"_s, u"Höhe"_s, u"Hoehe"_s
+  };
   const QString layerName = layer->name();
   for ( const QString &candidate : sPartialCandidates )
   {
@@ -748,7 +716,7 @@ bool QgsRasterLayerElevationProperties::layerLooksLikeDem( QgsRasterLayer *layer
   }
 
   // these candidates must occur with word boundaries (we don't want to find "aster" in "raster"!)
-  static const QStringList sWordCandidates{ u"aster"_s };
+  static const QStringList sWordCandidates { u"aster"_s };
   for ( const QString &candidate : sWordCandidates )
   {
     const thread_local QRegularExpression re( u"\\b%1\\b"_s.arg( candidate ) );
@@ -772,10 +740,7 @@ void QgsRasterLayerElevationProperties::setDefaultProfileFillSymbol( const QColo
   mProfileFillSymbol = std::make_unique< QgsFillSymbol>( QgsSymbolLayerList( { profileFillLayer.release() } ) );
 }
 
-QMap<int, QgsDoubleRange> QgsRasterLayerElevationProperties::fixedRangePerBand() const
-{
-  return mRangePerBand;
-}
+QMap<int, QgsDoubleRange> QgsRasterLayerElevationProperties::fixedRangePerBand() const { return mRangePerBand; }
 
 void QgsRasterLayerElevationProperties::setFixedRangePerBand( const QMap<int, QgsDoubleRange> &ranges )
 {
@@ -786,10 +751,7 @@ void QgsRasterLayerElevationProperties::setFixedRangePerBand( const QMap<int, Qg
   emit changed();
 }
 
-QgsDoubleRange QgsRasterLayerElevationProperties::fixedRange() const
-{
-  return mFixedRange;
-}
+QgsDoubleRange QgsRasterLayerElevationProperties::fixedRange() const { return mFixedRange; }
 
 void QgsRasterLayerElevationProperties::setFixedRange( const QgsDoubleRange &range )
 {

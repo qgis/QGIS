@@ -10,7 +10,7 @@
 
 
 
-class QgsMultiBandColorRenderer: QgsRasterRenderer
+class QgsMultiBandColorRenderer : QgsRasterRenderer
 {
 %Docstring(signature="appended")
 Renderer for multiband images with the color components.
@@ -20,11 +20,10 @@ Renderer for multiband images with the color components.
 #include "qgsmultibandcolorrenderer.h"
 %End
   public:
-
-    QgsMultiBandColorRenderer( QgsRasterInterface *input, int redBand, int greenBand, int blueBand,
-                               QgsContrastEnhancement *redEnhancement /Transfer/ = 0,
-                               QgsContrastEnhancement *greenEnhancement /Transfer/ = 0,
-                               QgsContrastEnhancement *blueEnhancement /Transfer/ = 0 );
+    QgsMultiBandColorRenderer(
+      QgsRasterInterface *input, int redBand, int greenBand, int blueBand, QgsContrastEnhancement *redEnhancement /Transfer/ = 0,
+      QgsContrastEnhancement *greenEnhancement /Transfer/ = 0, QgsContrastEnhancement *blueEnhancement /Transfer/ = 0
+    );
 %Docstring
 Constructor for QgsMultiBandColorRenderer.
 

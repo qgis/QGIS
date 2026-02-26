@@ -70,7 +70,8 @@ class CORE_EXPORT QgsRasterBlock
      *  An empty block may still be valid (if zero size block was requested).
      *  If the block is not valid, error may be retrieved by error() method.
      */
-    bool isValid() const SIP_HOLDGIL { return mValid; }
+    bool isValid() const
+    SIP_HOLDGIL { return mValid; }
 
     //! \brief Mark block as valid or invalid
     void setValid( bool valid ) SIP_HOLDGIL { mValid = valid; }

@@ -31,7 +31,6 @@ email                : ersts@amnh.org
  */
 class CORE_EXPORT QgsContrastEnhancementFunction
 {
-
   public:
     QgsContrastEnhancementFunction( Qgis::DataType, double, double );
     QgsContrastEnhancementFunction( const QgsContrastEnhancementFunction &f );

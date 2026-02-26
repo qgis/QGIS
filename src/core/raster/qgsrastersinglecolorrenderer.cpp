@@ -30,8 +30,7 @@ QgsRasterSingleColorRenderer::QgsRasterSingleColorRenderer( QgsRasterInterface *
   : QgsRasterRenderer( input, u"singlecolor"_s )
   , mInputBand( band )
   , mColor( color )
-{
-}
+{}
 
 QgsRasterSingleColorRenderer *QgsRasterSingleColorRenderer::clone() const
 {
@@ -40,10 +39,7 @@ QgsRasterSingleColorRenderer *QgsRasterSingleColorRenderer::clone() const
   return renderer;
 }
 
-Qgis::RasterRendererFlags QgsRasterSingleColorRenderer::flags() const
-{
-  return Qgis::RasterRendererFlag::InternalLayerOpacityHandling;
-}
+Qgis::RasterRendererFlags QgsRasterSingleColorRenderer::flags() const { return Qgis::RasterRendererFlag::InternalLayerOpacityHandling; }
 
 QgsRasterRenderer *QgsRasterSingleColorRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
 {
@@ -127,10 +123,12 @@ QgsRasterBlock *QgsRasterSingleColorRenderer::block( int, const QgsRectangle &ex
     }
     else
     {
-      outputBlock->setColor( i, qRgba( static_cast<int>( currentAlpha * mColor.red() ),
-                                       static_cast<int>( currentAlpha * mColor.green() ),
-                                       static_cast<int>( currentAlpha * mColor.blue() ),
-                                       static_cast<int>( currentAlpha * mColor.alpha() ) ) );
+      outputBlock->setColor(
+        i, qRgba(
+             static_cast<int>( currentAlpha * mColor.red() ), static_cast<int>( currentAlpha * mColor.green() ), static_cast<int>( currentAlpha * mColor.blue() ),
+             static_cast<int>( currentAlpha * mColor.alpha() )
+           )
+      );
     }
   }
 
@@ -139,13 +137,11 @@ QgsRasterBlock *QgsRasterSingleColorRenderer::block( int, const QgsRectangle &ex
 
 void QgsRasterSingleColorRenderer::setColor( const QColor &color )
 {
-  mColor = color;;
+  mColor = color;
+  ;
 }
 
-QColor QgsRasterSingleColorRenderer::color() const
-{
-  return mColor;
-}
+QColor QgsRasterSingleColorRenderer::color() const { return mColor; }
 
 void QgsRasterSingleColorRenderer::writeXml( QDomDocument &doc, QDomElement &parentElem ) const
 {
@@ -163,10 +159,7 @@ void QgsRasterSingleColorRenderer::writeXml( QDomDocument &doc, QDomElement &par
   parentElem.appendChild( rasterRendererElem );
 }
 
-int QgsRasterSingleColorRenderer::inputBand() const
-{
-  return mInputBand;
-}
+int QgsRasterSingleColorRenderer::inputBand() const { return mInputBand; }
 
 bool QgsRasterSingleColorRenderer::setInputBand( int band )
 {

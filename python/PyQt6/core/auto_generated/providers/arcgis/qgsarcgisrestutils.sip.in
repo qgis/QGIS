@@ -24,7 +24,6 @@ Contains the context of a ArcGIS REST service operation.
 #include "qgsarcgisrestutils.h"
 %End
   public:
-
     void setTimeZone( const QTimeZone &zone );
 %Docstring
 Sets the time ``zone`` for datetime values.
@@ -72,7 +71,6 @@ Utility functions for working with ArcGIS REST services.
     static const QMetaObject staticMetaObject;
 
   public:
-
     static QMetaType::Type convertFieldType( const QString &type );
 %Docstring
 Converts an ESRI REST field ``type`` to a QVariant type.
@@ -191,10 +189,11 @@ Returns a null rectangle if the value cannot be converted.
     typedef QFlags<QgsArcGisRestUtils::FeatureToJsonFlag> FeatureToJsonFlags;
 
 
-    static QVariantMap featureToJson( const QgsFeature &feature,
-                                      const QgsArcGisRestContext &context,
-                                      const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
-                                      QgsArcGisRestUtils::FeatureToJsonFlags flags = QgsArcGisRestUtils::FeatureToJsonFlags( static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeGeometry ) | static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeNonObjectIdAttributes ) ) );
+    static QVariantMap featureToJson(
+      const QgsFeature &feature, const QgsArcGisRestContext &context, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+      QgsArcGisRestUtils::FeatureToJsonFlags flags = QgsArcGisRestUtils::FeatureToJsonFlags(
+        static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeGeometry ) | static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeNonObjectIdAttributes )
+      );
 %Docstring
 Converts a ``feature`` to an ArcGIS REST JSON representation.
 

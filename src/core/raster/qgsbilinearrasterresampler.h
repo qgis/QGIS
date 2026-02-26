@@ -29,10 +29,9 @@
  * \ingroup core
  * \brief Bilinear raster resampler.
  */
-class CORE_EXPORT QgsBilinearRasterResampler: public QgsRasterResamplerV2
+class CORE_EXPORT QgsBilinearRasterResampler : public QgsRasterResamplerV2
 {
   public:
-
     QgsBilinearRasterResampler() = default;
 
     /**

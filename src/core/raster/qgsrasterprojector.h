@@ -52,7 +52,6 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     Q_GADGET
 
   public:
-
     /**
      * Precision defines if each pixel is reprojected or approximate reprojection based
      *  on an approximation matrix of reprojected points is used.
@@ -60,7 +59,7 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     enum Precision
     {
       Approximate = 0, //!< Approximate (default), fast but possibly inaccurate
-      Exact = 1,   //!< Exact, precise but slow
+      Exact = 1,       //!< Exact, precise but slow
     };
     Q_ENUM( Precision )
 
@@ -76,15 +75,13 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
      * Sets the source and destination CRS
      * \deprecated QGIS 3.8. Use transformContext version instead.
      */
-    Q_DECL_DEPRECATED void setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS,
-                                   int srcDatumTransform = -1, int destDatumTransform = -1 ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED void setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS, int srcDatumTransform = -1, int destDatumTransform = -1 ) SIP_DEPRECATED;
 
     /**
      * Sets source CRS to \a srcCRS and destination CRS to \a destCRS and the transformation context to \a transformContext
      * \since QGIS 3.8
      */
-    void setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS,
-                 QgsCoordinateTransformContext transformContext );
+    void setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS, QgsCoordinateTransformContext transformContext );
 
     //! Returns the source CRS
     QgsCoordinateReferenceSystem sourceCrs() const { return mSrcCRS; }
@@ -100,16 +97,12 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
     //! Calculate destination extent and size from source extent and size
-    bool destExtentSize( const QgsRectangle &srcExtent, int srcXSize, int srcYSize,
-                         QgsRectangle &destExtent SIP_OUT, int &destXSize SIP_OUT, int &destYSize SIP_OUT );
+    bool destExtentSize( const QgsRectangle &srcExtent, int srcXSize, int srcYSize, QgsRectangle &destExtent SIP_OUT, int &destXSize SIP_OUT, int &destYSize SIP_OUT );
 
     //! Calculate destination extent and size from source extent and size
-    static bool extentSize( const QgsCoordinateTransform &ct,
-                            const QgsRectangle &srcExtent, int srcXSize, int srcYSize,
-                            QgsRectangle &destExtent SIP_OUT, int &destXSize SIP_OUT, int &destYSize SIP_OUT );
+    static bool extentSize( const QgsCoordinateTransform &ct, const QgsRectangle &srcExtent, int srcXSize, int srcYSize, QgsRectangle &destExtent SIP_OUT, int &destXSize SIP_OUT, int &destYSize SIP_OUT );
 
   private:
-
     //! Source CRS
     QgsCoordinateReferenceSystem mSrcCRS;
 
@@ -126,7 +119,6 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     Precision mPrecision = Approximate;
 
     QgsCoordinateTransformContext mTransformContext;
-
 };
 
 
@@ -142,7 +134,10 @@ class ProjectorData
 {
   public:
     //! Initialize reprojector and calculate matrix
-    ProjectorData( const QgsRectangle &extent, int width, int height, QgsRasterInterface *input, const QgsCoordinateTransform &inverseCt, QgsRasterProjector::Precision precision, QgsRasterBlockFeedback *feedback = nullptr );
+    ProjectorData(
+      const QgsRectangle &extent, int width, int height, QgsRasterInterface *input, const QgsCoordinateTransform &inverseCt, QgsRasterProjector::Precision precision,
+      QgsRasterBlockFeedback *feedback = nullptr
+    );
     ~ProjectorData();
 
     ProjectorData( const ProjectorData &other ) = delete;
@@ -160,7 +155,6 @@ class ProjectorData
     int srcCols() const { return mSrcCols; }
 
   private:
-
     //! Returns the destination point for _current_ destination position.
     void destPointOnCPMatrix( int row, int col, double *theX, double *theY ) const;
 
@@ -295,11 +289,9 @@ class ProjectorData
     //! Maximum source resolution
     double mMaxSrcXRes = 0;
     double mMaxSrcYRes = 0;
-
 };
 
 /// @endcond
 #endif
 
 #endif
-

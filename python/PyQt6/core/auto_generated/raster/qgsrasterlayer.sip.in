@@ -11,7 +11,7 @@
 
 
 
-typedef QList < QPair< QString, QColor > > QgsLegendColorList;
+typedef QList< QPair< QString, QColor > > QgsLegendColorList;
 
 class QgsRasterLayer : QgsMapLayer, QgsAbstractProfileSource
 {
@@ -37,7 +37,6 @@ Sample usage of the :py:class:`QgsRasterLayer` class:
 %End
   public:
 
-
     static const double SAMPLE_SIZE;
 
     static const QgsContrastEnhancement::ContrastEnhancementAlgorithm SINGLE_BAND_ENHANCEMENT_ALGORITHM;
@@ -59,25 +58,19 @@ Constructor. Provider is not set.
 
     struct LayerOptions
     {
-
-      explicit LayerOptions( bool loadDefaultStyle = true,
-                             const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() );
+        explicit LayerOptions( bool loadDefaultStyle = true, const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() );
 %Docstring
 Constructor for LayerOptions.
 %End
 
-      bool loadDefaultStyle;
+        bool loadDefaultStyle;
 
-      QgsCoordinateTransformContext transformContext;
+        QgsCoordinateTransformContext transformContext;
 
-      bool skipCrsValidation;
-
+        bool skipCrsValidation;
     };
 
-    explicit QgsRasterLayer( const QString &uri,
-                             const QString &baseName = QString(),
-                             const QString &providerType = "gdal",
-                             const QgsRasterLayer::LayerOptions &options = QgsRasterLayer::LayerOptions() );
+    explicit QgsRasterLayer( const QString &uri, const QString &baseName = QString(), const QString &providerType = "gdal", const QgsRasterLayer::LayerOptions &options = QgsRasterLayer::LayerOptions() );
 %Docstring
 This is the constructor for the RasterLayer class.
 
@@ -93,12 +86,11 @@ The main tasks carried out by the constructor are:
     ~QgsRasterLayer();
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    QString str = QStringLiteral( "<QgsRasterLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+%MethodCode QString str = QStringLiteral( "<QgsRasterLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    virtual QgsRasterLayer *clone() const /Factory/;
+      virtual QgsRasterLayer *clone() const /Factory/;
 
 %Docstring
 Returns a new instance equivalent to this one. A new provider is created
@@ -124,7 +116,7 @@ in ``retError``.
 
     static bool isValidRasterFileName( const QString &fileNameQString );
 
-    static QDateTime lastModified( const QString   &name );
+    static QDateTime lastModified( const QString &name );
 %Docstring
 Returns time stamp for given file name
 %End
@@ -252,7 +244,7 @@ Returns the (possibly NULL) raster attribute table for the given band
 .. versionadded:: 3.30
 %End
 
-    int attributeTableCount( ) const;
+    int attributeTableCount() const;
 %Docstring
 Returns the number of attribute tables for the raster by counting the
 number of bands that have an associated attribute table.
@@ -260,7 +252,7 @@ number of bands that have an associated attribute table.
 .. versionadded:: 3.30
 %End
 
-    bool canCreateRasterAttributeTable( );
+    bool canCreateRasterAttributeTable();
 %Docstring
 Returns ``True`` if the raster renderer is suitable for creation of a
 raster attribute table. The supported renderers are
@@ -291,9 +283,7 @@ This will be ``None`` if the layer is invalid.
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
 
 
-    void draw( QPainter *theQPainter,
-               QgsRasterViewPort *myRasterViewPort,
-               const QgsMapToPixel *qgsMapToPixel = 0 );
+    void draw( QPainter *theQPainter, QgsRasterViewPort *myRasterViewPort, const QgsMapToPixel *qgsMapToPixel = 0 );
 %Docstring
 This is an overloaded version of the :py:func:`~QgsRasterLayer.draw`
 function that is called by both :py:func:`~QgsRasterLayer.draw` and
@@ -357,11 +347,10 @@ In a world file, this is normally the first row (without the sign).
     void setOpacity( double opacity ) final;
     double opacity() const final;
 
-    void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
-                                 Qgis::RasterRangeLimit limits = Qgis::RasterRangeLimit::MinimumMaximum,
-                                 const QgsRectangle &extent = QgsRectangle(),
-                                 int sampleSize = QgsRasterLayer::SAMPLE_SIZE,
-                                 bool generateLookupTableFlag = true );
+    void setContrastEnhancement(
+      QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm, Qgis::RasterRangeLimit limits = Qgis::RasterRangeLimit::MinimumMaximum, const QgsRectangle &extent = QgsRectangle(),
+      int sampleSize = QgsRasterLayer::SAMPLE_SIZE, bool generateLookupTableFlag = true
+    );
 %Docstring
 Set contrast enhancement algorithm
 
@@ -408,8 +397,7 @@ Sets the default contrast enhancement
     virtual QStringList subLayers() const;
 
 
-    QImage previewAsImage( QSize size, const QColor &bgColor = Qt::white,
-                           QImage::Format format = QImage::Format_ARGB32_Premultiplied );
+    QImage previewAsImage( QSize size, const QColor &bgColor = Qt::white, QImage::Format format = QImage::Format_ARGB32_Premultiplied );
 %Docstring
 Draws a preview of the rasterlayer into a QImage
 %End
@@ -557,15 +545,15 @@ Emitted when the layer's subset string has changed.
 
     virtual bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context );
 
-     virtual bool writeSymbology( QDomNode &, QDomDocument &doc, QString &errorMessage,
-                         const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const;
-     virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
-                     const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const;
+    virtual bool writeSymbology( QDomNode &, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const;
+
+    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const;
+
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     virtual QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const;
 
-    virtual QString decodedSource( const QString &source, const QString &provider,  const QgsReadWriteContext &context ) const;
+    virtual QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const;
 
 
 };

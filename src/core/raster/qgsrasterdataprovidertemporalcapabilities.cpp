@@ -18,19 +18,12 @@
 #include "qgsrasterdataprovidertemporalcapabilities.h"
 
 QgsRasterDataProviderTemporalCapabilities::QgsRasterDataProviderTemporalCapabilities( bool enabled )
-  :  QgsDataProviderTemporalCapabilities( enabled )
-{
-}
+  : QgsDataProviderTemporalCapabilities( enabled )
+{}
 
-Qgis::RasterTemporalCapabilityFlags QgsRasterDataProviderTemporalCapabilities::flags() const
-{
-  return mFlags;
-}
+Qgis::RasterTemporalCapabilityFlags QgsRasterDataProviderTemporalCapabilities::flags() const { return mFlags; }
 
-void QgsRasterDataProviderTemporalCapabilities::setFlags( Qgis::RasterTemporalCapabilityFlags flags )
-{
-  mFlags = flags;
-}
+void QgsRasterDataProviderTemporalCapabilities::setFlags( Qgis::RasterTemporalCapabilityFlags flags ) { mFlags = flags; }
 
 void QgsRasterDataProviderTemporalCapabilities::setAvailableTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
@@ -40,20 +33,11 @@ void QgsRasterDataProviderTemporalCapabilities::setAvailableTemporalRange( const
   mAvailableTemporalRange = dateTimeRange;
 }
 
-const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::availableTemporalRange() const
-{
-  return mAvailableTemporalRange;
-}
+const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::availableTemporalRange() const { return mAvailableTemporalRange; }
 
-void QgsRasterDataProviderTemporalCapabilities::setAllAvailableTemporalRanges( const QList<QgsDateTimeRange> &ranges )
-{
-  mAllAvailableTemporalRanges = ranges;
-}
+void QgsRasterDataProviderTemporalCapabilities::setAllAvailableTemporalRanges( const QList<QgsDateTimeRange> &ranges ) { mAllAvailableTemporalRanges = ranges; }
 
-QList<QgsDateTimeRange> QgsRasterDataProviderTemporalCapabilities::allAvailableTemporalRanges() const
-{
-  return mAllAvailableTemporalRanges;
-}
+QList<QgsDateTimeRange> QgsRasterDataProviderTemporalCapabilities::allAvailableTemporalRanges() const { return mAllAvailableTemporalRanges; }
 
 void QgsRasterDataProviderTemporalCapabilities::setAvailableReferenceTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
@@ -63,35 +47,17 @@ void QgsRasterDataProviderTemporalCapabilities::setAvailableReferenceTemporalRan
   mAvailableReferenceRange = dateTimeRange;
 }
 
-const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::availableReferenceTemporalRange() const
-{
-  return mAvailableReferenceRange;
-}
+const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::availableReferenceTemporalRange() const { return mAvailableReferenceRange; }
 
-void QgsRasterDataProviderTemporalCapabilities::setRequestedTemporalRange( const QgsDateTimeRange &dateTimeRange )
-{
-  mRequestedRange = dateTimeRange;
-}
+void QgsRasterDataProviderTemporalCapabilities::setRequestedTemporalRange( const QgsDateTimeRange &dateTimeRange ) { mRequestedRange = dateTimeRange; }
 
-QgsInterval QgsRasterDataProviderTemporalCapabilities::defaultInterval() const
-{
-  return mDefaultInterval;
-}
+QgsInterval QgsRasterDataProviderTemporalCapabilities::defaultInterval() const { return mDefaultInterval; }
 
-void QgsRasterDataProviderTemporalCapabilities::setDefaultInterval( const QgsInterval &defaultInterval )
-{
-  mDefaultInterval = defaultInterval;
-}
+void QgsRasterDataProviderTemporalCapabilities::setDefaultInterval( const QgsInterval &defaultInterval ) { mDefaultInterval = defaultInterval; }
 
-const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::requestedTemporalRange() const
-{
-  return mRequestedRange;
-}
+const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::requestedTemporalRange() const { return mRequestedRange; }
 
-Qgis::TemporalIntervalMatchMethod QgsRasterDataProviderTemporalCapabilities::intervalHandlingMethod() const
-{
-  return mIntervalMatchMethod;
-}
+Qgis::TemporalIntervalMatchMethod QgsRasterDataProviderTemporalCapabilities::intervalHandlingMethod() const { return mIntervalMatchMethod; }
 
 void QgsRasterDataProviderTemporalCapabilities::setIntervalHandlingMethod( Qgis::TemporalIntervalMatchMethod mode )
 {

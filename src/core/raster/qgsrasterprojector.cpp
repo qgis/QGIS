@@ -30,7 +30,7 @@
 using namespace Qt::StringLiterals;
 
 Q_NOWARN_DEPRECATED_PUSH // because of deprecated members
-QgsRasterProjector::QgsRasterProjector()
+  QgsRasterProjector::QgsRasterProjector()
   : QgsRasterInterface( nullptr )
 {
   QgsDebugMsgLevel( u"Entered"_s, 4 );
@@ -57,14 +57,16 @@ QgsRasterProjector *QgsRasterProjector::clone() const
 
 int QgsRasterProjector::bandCount() const
 {
-  if ( mInput ) return mInput->bandCount();
+  if ( mInput )
+    return mInput->bandCount();
 
   return 0;
 }
 
 Qgis::DataType QgsRasterProjector::dataType( int bandNo ) const
 {
-  if ( mInput ) return mInput->dataType( bandNo );
+  if ( mInput )
+    return mInput->dataType( bandNo );
 
   return Qgis::DataType::UnknownDataType;
 }
@@ -72,10 +74,7 @@ Qgis::DataType QgsRasterProjector::dataType( int bandNo ) const
 
 /// @cond PRIVATE
 
-void QgsRasterProjector::setCrs( const QgsCoordinateReferenceSystem &srcCRS,
-                                 const QgsCoordinateReferenceSystem &destCRS,
-                                 int srcDatumTransform,
-                                 int destDatumTransform )
+void QgsRasterProjector::setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS, int srcDatumTransform, int destDatumTransform )
 {
   mSrcCRS = srcCRS;
   mDestCRS = destCRS;
@@ -97,7 +96,9 @@ void QgsRasterProjector::setCrs( const QgsCoordinateReferenceSystem &srcCRS, con
 }
 
 
-ProjectorData::ProjectorData( const QgsRectangle &extent, int width, int height, QgsRasterInterface *input, const QgsCoordinateTransform &inverseCt, QgsRasterProjector::Precision precision, QgsRasterBlockFeedback *feedback )
+ProjectorData::ProjectorData(
+  const QgsRectangle &extent, int width, int height, QgsRasterInterface *input, const QgsCoordinateTransform &inverseCt, QgsRasterProjector::Precision precision, QgsRasterBlockFeedback *feedback
+)
   : mInverseCt( inverseCt )
   , mDestExtent( extent )
   , mDestRows( height )
@@ -115,8 +116,7 @@ ProjectorData::ProjectorData( const QgsRectangle &extent, int width, int height,
       // result by not requesting at the maximum resolution and then doing nearest
       // resampling here. A real fix would be to do resampling during reprojection
       // however.
-      if ( !( provider->providerCapabilities() & Qgis::RasterProviderCapability::ProviderHintCanPerformProviderResampling ) &&
-           ( provider->capabilities() & Qgis::RasterInterfaceCapability::Size ) )
+      if ( !( provider->providerCapabilities() & Qgis::RasterProviderCapability::ProviderHintCanPerformProviderResampling ) && ( provider->capabilities() & Qgis::RasterInterfaceCapability::Size ) )
       {
         mMaxSrcXRes = provider->extent().width() / provider->xSize();
         mMaxSrcYRes = provider->extent().height() / provider->ySize();
@@ -200,7 +200,7 @@ ProjectorData::ProjectorData( const QgsRectangle &extent, int width, int height,
     // What is the maximum reasonable size of transformatio matrix?
     // TODO: consider better when to break - ratio
     if ( mCPRows * mCPCols > 0.25 * mDestRows * mDestCols )
-      //if ( mCPRows * mCPCols > mDestRows * mDestCols )
+    //if ( mCPRows * mCPCols > mDestRows * mDestCols )
     {
       QgsDebugMsgLevel( u"Too large CP matrix"_s, 4 );
       mApproximate = false;
@@ -255,7 +255,7 @@ void ProjectorData::calcSrcExtent()
   mSrcExtent = QgsRectangle( myPoint.x(), myPoint.y(), myPoint.x(), myPoint.y() );
   for ( int i = 0; i < mCPRows; i++ )
   {
-    for ( int j = 0; j < mCPCols ; j++ )
+    for ( int j = 0; j < mCPCols; j++ )
     {
       myPoint = mCPMatrix[i][j];
       if ( mCPLegalMatrix[i][j] )
@@ -432,14 +432,8 @@ inline void ProjectorData::destPointOnCPMatrix( int row, int col, double *theX, 
   *theY = mDestExtent.yMaximum() - row * mDestExtent.height() / ( mCPRows - 1 );
 }
 
-inline int ProjectorData::matrixRow( int destRow ) const
-{
-  return static_cast< int >( std::floor( ( destRow + 0.5 ) / mDestRowsPerMatrixRow ) );
-}
-inline int ProjectorData::matrixCol( int destCol ) const
-{
-  return static_cast< int >( std::floor( ( destCol + 0.5 ) / mDestColsPerMatrixCol ) );
-}
+inline int ProjectorData::matrixRow( int destRow ) const { return static_cast< int >( std::floor( ( destRow + 0.5 ) / mDestRowsPerMatrixRow ) ); }
+inline int ProjectorData::matrixCol( int destCol ) const { return static_cast< int >( std::floor( ( destCol + 0.5 ) / mDestColsPerMatrixCol ) ); }
 
 void ProjectorData::calcHelper( int matrixRow, QgsPointXY *points )
 {
@@ -538,10 +532,14 @@ bool ProjectorData::preciseSrcRowCol( int destRow, int destCol, int *srcRow, int
   // For now silently correct limits to avoid crashes
   // TODO: review
   // should not happen
-  if ( *srcRow >= mSrcRows ) return false;
-  if ( *srcRow < 0 ) return false;
-  if ( *srcCol >= mSrcCols ) return false;
-  if ( *srcCol < 0 ) return false;
+  if ( *srcRow >= mSrcRows )
+    return false;
+  if ( *srcRow < 0 )
+    return false;
+  if ( *srcCol >= mSrcCols )
+    return false;
+  if ( *srcCol < 0 )
+    return false;
 
   return true;
 }
@@ -595,10 +593,14 @@ bool ProjectorData::approximateSrcRowCol( int destRow, int destCol, int *srcRow,
   // For now silently correct limits to avoid crashes
   // TODO: review
   // should not happen
-  if ( *srcRow >= mSrcRows ) return false;
-  if ( *srcRow < 0 ) return false;
-  if ( *srcCol >= mSrcCols ) return false;
-  if ( *srcCol < 0 ) return false;
+  if ( *srcRow >= mSrcRows )
+    return false;
+  if ( *srcRow < 0 )
+    return false;
+  if ( *srcCol >= mSrcCols )
+    return false;
+  if ( *srcCol < 0 )
+    return false;
 
   return true;
 }
@@ -642,7 +644,6 @@ void ProjectorData::insertCols( const QgsCoordinateTransform &ct )
   {
     calcCol( c, ct );
   }
-
 }
 
 void ProjectorData::calcCP( int row, int col, const QgsCoordinateTransform &ct )
@@ -797,7 +798,7 @@ QString QgsRasterProjector::precisionLabel( Precision precision )
   return u"Unknown"_s;
 }
 
-QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
+QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   QgsDebugMsgLevel( u"extent:\n%1"_s.arg( extent.toString() ), 4 );
   QgsDebugMsgLevel( u"width = %1 height = %2"_s.arg( width ).arg( height ), 4 );
@@ -810,15 +811,15 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
   if ( feedback && feedback->isCanceled() )
     return new QgsRasterBlock();
 
-  if ( ! mSrcCRS.isValid() || ! mDestCRS.isValid() || mSrcCRS == mDestCRS )
+  if ( !mSrcCRS.isValid() || !mDestCRS.isValid() || mSrcCRS == mDestCRS )
   {
     QgsDebugMsgLevel( u"No projection necessary"_s, 4 );
     return mInput->block( bandNo, extent, width, height, feedback );
   }
 
   Q_NOWARN_DEPRECATED_PUSH
-  const QgsCoordinateTransform inverseCt = mSrcDatumTransform != -1 || mDestDatumTransform != -1 ?
-      QgsCoordinateTransform( mDestCRS, mSrcCRS, mDestDatumTransform, mSrcDatumTransform ) : QgsCoordinateTransform( mDestCRS, mSrcCRS, mTransformContext ) ;
+  const QgsCoordinateTransform inverseCt = mSrcDatumTransform != -1 || mDestDatumTransform != -1 ? QgsCoordinateTransform( mDestCRS, mSrcCRS, mDestDatumTransform, mSrcDatumTransform )
+                                                                                                 : QgsCoordinateTransform( mDestCRS, mSrcCRS, mTransformContext );
   Q_NOWARN_DEPRECATED_POP
 
   ProjectorData pd( extent, width, height, mInput, inverseCt, mPrecision, feedback );
@@ -882,7 +883,8 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
     for ( int j = 0; j < width; ++j )
     {
       const bool inside = pd.srcRowCol( i, j, &srcRow, &srcCol );
-      if ( !inside ) continue; // we have everything set to no data
+      if ( !inside )
+        continue; // we have everything set to no data
 
       const qgssize srcIndex = static_cast< qgssize >( srcRow ) * pd.srcCols() + srcCol;
 
@@ -913,8 +915,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
   return outputBlock.release();
 }
 
-bool QgsRasterProjector::destExtentSize( const QgsRectangle &srcExtent, int srcXSize, int srcYSize,
-    QgsRectangle &destExtent, int &destXSize, int &destYSize )
+bool QgsRasterProjector::destExtentSize( const QgsRectangle &srcExtent, int srcXSize, int srcYSize, QgsRectangle &destExtent, int &destXSize, int &destYSize )
 {
   if ( srcExtent.isEmpty() || srcXSize <= 0 || srcYSize <= 0 )
   {
@@ -922,16 +923,14 @@ bool QgsRasterProjector::destExtentSize( const QgsRectangle &srcExtent, int srcX
   }
 
   Q_NOWARN_DEPRECATED_PUSH
-  const QgsCoordinateTransform ct = mSrcDatumTransform != -1 || mDestDatumTransform != -1 ?
-                                    QgsCoordinateTransform( mSrcCRS, mDestCRS, mSrcDatumTransform, mDestDatumTransform ) : QgsCoordinateTransform( mSrcCRS, mDestCRS, mTransformContext ) ;
+  const QgsCoordinateTransform ct = mSrcDatumTransform != -1 || mDestDatumTransform != -1 ? QgsCoordinateTransform( mSrcCRS, mDestCRS, mSrcDatumTransform, mDestDatumTransform )
+                                                                                          : QgsCoordinateTransform( mSrcCRS, mDestCRS, mTransformContext );
   Q_NOWARN_DEPRECATED_POP
 
   return extentSize( ct, srcExtent, srcXSize, srcYSize, destExtent, destXSize, destYSize );
 }
 
-bool QgsRasterProjector::extentSize( const QgsCoordinateTransform &ct,
-                                     const QgsRectangle &srcExtent, int srcXSize, int srcYSize,
-                                     QgsRectangle &destExtent, int &destXSize, int &destYSize )
+bool QgsRasterProjector::extentSize( const QgsCoordinateTransform &ct, const QgsRectangle &srcExtent, int srcXSize, int srcYSize, QgsRectangle &destExtent, int &destXSize, int &destYSize )
 {
   if ( srcExtent.isEmpty() || srcXSize <= 0 || srcYSize <= 0 )
   {
@@ -979,9 +978,7 @@ bool QgsRasterProjector::extentSize( const QgsCoordinateTransform &ct,
         }
       }
       catch ( QgsCsException & )
-      {
-
-      }
+      {}
     }
   }
 
@@ -996,9 +993,9 @@ bool QgsRasterProjector::extentSize( const QgsCoordinateTransform &ct,
   {
     destYRes = 0.1 * maxYRes;
   }
-  if ( destXRes == 0 || destExtent.width() / destXRes  > std::numeric_limits<int>::max() )
+  if ( destXRes == 0 || destExtent.width() / destXRes > std::numeric_limits<int>::max() )
     return false;
-  if ( destYRes == 0 || destExtent.height() / destYRes  > std::numeric_limits<int>::max() )
+  if ( destYRes == 0 || destExtent.height() / destYRes > std::numeric_limits<int>::max() )
     return false;
 
   destXSize = std::max( 1, static_cast< int >( destExtent.width() / destXRes ) );
@@ -1006,4 +1003,3 @@ bool QgsRasterProjector::extentSize( const QgsCoordinateTransform &ct,
 
   return true;
 }
-

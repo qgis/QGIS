@@ -24,8 +24,10 @@ Utility functions for working with ArcGIS REST services.
 #include "qgsarcgisportalutils.h"
 %End
   public:
-
-    static QVariantMap retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = 0, const QString &urlPrefix = QString(), bool forceRefresh = false );
+    static QVariantMap retrieveUserInfo(
+      const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
+      QgsFeedback *feedback = 0, const QString &urlPrefix = QString()
+    );
 %Docstring
 Retrieves JSON user info for the specified user name.
 
@@ -40,9 +42,6 @@ details will be retrieved
 :param requestHeaders: optional additional request headers
 :param feedback: optional feedback argument for cancellation support
 :param urlPrefix: http web proxy url prefix
-:param forceRefresh: if ``False`` then previously cached replies may be
-                     used for the request. If it is set to ``True`` then
-                     a new query is always performed. (since QGIS 4.0)
 
 :return: - JSON user info
          - errorTitle: title summary of any encountered errors
@@ -51,7 +50,10 @@ details will be retrieved
 .. versionadded:: 3.24
 %End
 
- static QVariantMap retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = 0, const QString &urlPrefix = QString() ) /Deprecated="Since 3.24. Use the version with QgsHttpHeaders instead."/;
+ static QVariantMap retrieveUserInfo(
+      const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders,
+      QgsFeedback *feedback = 0, const QString &urlPrefix = QString()
+    ) /Deprecated="Since 3.24. Use the version with QgsHttpHeaders instead."/;
 %Docstring
 Retrieves JSON user info for the specified user name. Only to avoid API
 break.
@@ -77,7 +79,10 @@ details will be retrieved
    Use the version with :py:class:`QgsHttpHeaders` instead.
 %End
 
-    static QVariantList retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = 0, const QString &urlPrefix = QString(), bool forceRefresh = false );
+    static QVariantList retrieveUserGroups(
+      const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
+      QgsFeedback *feedback = 0, const QString &urlPrefix = QString()
+    );
 %Docstring
 Retrieves JSON definitions for all groups which the specified user name
 is a member of.
@@ -93,9 +98,6 @@ details will be retrieved
 :param requestHeaders: optional additional request headers
 :param feedback: optional feedback argument for cancellation support
 :param urlPrefix: http web proxy url prefix
-:param forceRefresh: if ``False`` then previously cached replies may be
-                     used for the request. If it is set to ``True`` then
-                     a new query is always performed. (since QGIS 4.0)
 
 :return: - a list of JSON group info
          - errorTitle: title summary of any encountered errors
@@ -104,7 +106,10 @@ details will be retrieved
 .. versionadded:: 3.24
 %End
 
- static QVariantList retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = 0, const QString &urlPrefix = QString() ) /Deprecated="Since 3.24. Use the version with QgsHttpHeaders instead."/;
+ static QVariantList retrieveUserGroups(
+      const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders,
+      QgsFeedback *feedback = 0, const QString &urlPrefix = QString()
+    ) /Deprecated="Since 3.24. Use the version with QgsHttpHeaders instead."/;
 %Docstring
 Retrieves JSON definitions for all groups which the specified user name
 is a member of. Only to avoid API break.
@@ -130,7 +135,10 @@ details will be retrieved
    Use the version with :py:class:`QgsHttpHeaders` instead.
 %End
 
-    static QVariantList retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),  QgsFeedback *feedback = 0, int pageSize = 100, const QString &urlPrefix = QString(), bool forceRefresh = false );
+    static QVariantList retrieveGroupContent(
+      const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
+      QgsFeedback *feedback = 0, int pageSize = 100, const QString &urlPrefix = QString()
+    );
 %Docstring
 Retrieves JSON definitions for all items which belong the the specified
 ``groupId``.
@@ -144,9 +152,6 @@ Retrieves JSON definitions for all items which belong the the specified
 :param pageSize: number of results to retrieve for each request. Maximum
                  value is 100.
 :param urlPrefix: http web proxy url prefix
-:param forceRefresh: if ``False`` then previously cached replies may be
-                     used for the request. If it is set to ``True`` then
-                     a new query is always performed. (since QGIS 4.0)
 
 :return: - a list of JSON item info for all items within the group
          - errorTitle: title summary of any encountered errors
@@ -155,7 +160,10 @@ Retrieves JSON definitions for all items which belong the the specified
 .. versionadded:: 3.24
 %End
 
- static QVariantList retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = 0, int pageSize = 100, const QString &urlPrefix = QString() ) /Deprecated="Since 3.24. Use the version with QgsHttpHeaders instead."/;
+ static QVariantList retrieveGroupContent(
+      const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders,
+      QgsFeedback *feedback = 0, int pageSize = 100, const QString &urlPrefix = QString()
+    ) /Deprecated="Since 3.24. Use the version with QgsHttpHeaders instead."/;
 %Docstring
 Retrieves JSON definitions for all items which belong the the specified
 ``groupId``. Only to avoid API break.
@@ -179,9 +187,10 @@ Retrieves JSON definitions for all items which belong the the specified
    Use the version with :py:class:`QgsHttpHeaders` instead.
 %End
 
-    static QVariantList retrieveGroupItemsOfType( const QString &contentUrl, const QString &groupId, const QString &authcfg,
-        const QList< int > &itemTypes,
-        QString &errorTitle /Out/, QString &errorText /Out/, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = 0, int pageSize = 100, const QString &urlPrefix = QString(), bool forceRefresh = false );
+    static QVariantList retrieveGroupItemsOfType(
+      const QString &contentUrl, const QString &groupId, const QString &authcfg, const QList< int > &itemTypes, QString &errorTitle /Out/, QString &errorText /Out/,
+      const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = 0, int pageSize = 100, const QString &urlPrefix = QString()
+    );
 %Docstring
 Retrieves JSON definitions for all items which belong the the specified
 ``groupId``.
@@ -197,9 +206,6 @@ Retrieves JSON definitions for all items which belong the the specified
 :param pageSize: number of results to retrieve for each request. Maximum
                  value is 100.
 :param urlPrefix: http web proxy url prefix
-:param forceRefresh: if ``False`` then previously cached replies may be
-                     used for the request. If it is set to ``True`` then
-                     a new query is always performed. (since QGIS 4.0)
 
 :return: - a list of JSON item info for all items within the group
          - errorTitle: title summary of any encountered errors
@@ -208,9 +214,10 @@ Retrieves JSON definitions for all items which belong the the specified
 .. versionadded:: 3.24
 %End
 
- static QVariantList retrieveGroupItemsOfType( const QString &contentUrl, const QString &groupId, const QString &authcfg,
-        const QList< int > &itemTypes,
-        QString &errorTitle /Out/, QString &errorText /Out/, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = 0, int pageSize = 100, const QString &urlPrefix = QString() ) /Deprecated="Since 3.24. Use the version with QgsHttpHeaders instead."/;
+ static QVariantList retrieveGroupItemsOfType(
+      const QString &contentUrl, const QString &groupId, const QString &authcfg, const QList< int > &itemTypes, QString &errorTitle /Out/, QString &errorText /Out/,
+      const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = 0, int pageSize = 100, const QString &urlPrefix = QString()
+    ) /Deprecated="Since 3.24. Use the version with QgsHttpHeaders instead."/;
 %Docstring
 Retrieves JSON definitions for all items which belong the the specified
 ``groupId``. Only to avoid API break.

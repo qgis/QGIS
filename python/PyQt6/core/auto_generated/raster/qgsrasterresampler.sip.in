@@ -83,14 +83,12 @@ appearance), which provides a more efficient interface vs
 #include "qgsrasterresampler.h"
 %End
   public:
-
     virtual QImage resampleV2( const QImage &source, const QSize &size ) = 0;
 %Docstring
 Resamples a ``source`` image to the specified ``size``.
 
 Returns the resampled image, or a null QImage if the resampling fails.
 %End
-
 };
 
 /************************************************************************

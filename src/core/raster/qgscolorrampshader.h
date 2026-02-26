@@ -43,9 +43,7 @@ class QgsRasterInterface;
  */
 class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 {
-
   public:
-
     /**
      * Creates a new color ramp shader.
      * \param minimumValue minimum value for the raster shader
@@ -54,7 +52,10 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      * \param classificationMode method used to classify the color ramp shader
      * \param colorRamp vector color ramp used to classify the color ramp shader. Ownership is transferred to the shader.
      */
-    QgsColorRampShader( double minimumValue = 0.0, double maximumValue = 255.0, QgsColorRamp *colorRamp SIP_TRANSFER = nullptr, Qgis::ShaderInterpolationMethod type = Qgis::ShaderInterpolationMethod::Linear, Qgis::ShaderClassificationMethod classificationMode = Qgis::ShaderClassificationMethod::Continuous );
+    QgsColorRampShader(
+      double minimumValue = 0.0, double maximumValue = 255.0, QgsColorRamp *colorRamp SIP_TRANSFER = nullptr, Qgis::ShaderInterpolationMethod type = Qgis::ShaderInterpolationMethod::Linear,
+      Qgis::ShaderClassificationMethod classificationMode = Qgis::ShaderClassificationMethod::Continuous
+    );
 
     ~QgsColorRampShader() override;
 
@@ -63,23 +64,19 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 
     bool operator==( const QgsColorRampShader &other ) const
     {
-      if ( mColorRampItemList.count() != other.mColorRampItemList.count() ||
-           mClassificationMode != other.mClassificationMode ||
-           mColorRampType != other.mColorRampType )
+      if ( mColorRampItemList.count() != other.mColorRampItemList.count() || mClassificationMode != other.mClassificationMode || mColorRampType != other.mColorRampType )
       {
         return false;
       }
       for ( int i = 0; i < mColorRampItemList.count(); ++i )
       {
-        if ( mColorRampItemList.at( i ) != other.mColorRampItemList.at( i ) ) return false;
+        if ( mColorRampItemList.at( i ) != other.mColorRampItemList.at( i ) )
+          return false;
       }
       return true;
     }
 
-    bool operator!=( const QgsColorRampShader &other ) const
-    {
-      return !( *this == other );
-    }
+    bool operator!=( const QgsColorRampShader &other ) const { return !( *this == other ); }
 
     //An entry for classification based upon value.
     //Such a classification is typically used for
@@ -87,28 +84,25 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     //not a color but a quantity, e.g. temperature or elevation
     struct ColorRampItem
     {
+        ColorRampItem() = default;
+        //! convenience constructor
+        ColorRampItem( double val, const QColor &col, const QString &lbl = QString() )
+          : label( lbl )
+          , value( val )
+          , color( col )
+        {}
 
-      ColorRampItem() = default;
-      //! convenience constructor
-      ColorRampItem( double val, const QColor &col, const QString &lbl = QString() )
-        : label( lbl )
-        , value( val )
-        , color( col )
-      {}
+        QString label;
+        double value = 0;
+        QColor color;
 
-      QString label;
-      double value = 0;
-      QColor color;
+        // compare operator for sorting
+        bool operator<( const QgsColorRampShader::ColorRampItem &other ) const { return value < other.value; }
 
-      // compare operator for sorting
-      bool operator<( const QgsColorRampShader::ColorRampItem &other ) const { return value < other.value; }
-
-      bool operator!=( const QgsColorRampShader::ColorRampItem &other ) const
-      {
-        return ( color != other.color ) ||
-               ( !std::isnan( value ) && !std::isnan( other.value ) && value != other.value ) ||
-               ( std::isnan( value ) != std::isnan( other.value ) );
-      }
+        bool operator!=( const QgsColorRampShader::ColorRampItem &other ) const
+        {
+          return ( color != other.color ) || ( !std::isnan( value ) && !std::isnan( other.value ) && value != other.value ) || ( std::isnan( value ) != std::isnan( other.value ) );
+        }
     };
 
     /**
@@ -187,10 +181,9 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     void classifyColorRamp( int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = nullptr ) SIP_PYNAME( classifyColorRampV2 );
 
     bool shade( double value, int *returnRedValue SIP_OUT, int *returnGreenValue SIP_OUT, int *returnBlueValue SIP_OUT, int *returnAlphaValue SIP_OUT ) const override;
-    bool shade( double redValue, double greenValue,
-                double blueValue, double alphaValue,
-                int *returnRedValue SIP_OUT, int *returnGreenValue SIP_OUT,
-                int *returnBlueValue SIP_OUT, int *returnAlphaValue SIP_OUT ) const override;
+    bool shade(
+      double redValue, double greenValue, double blueValue, double alphaValue, int *returnRedValue SIP_OUT, int *returnGreenValue SIP_OUT, int *returnBlueValue SIP_OUT, int *returnAlphaValue SIP_OUT
+    ) const override;
     void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const override;
 
     /**
@@ -251,12 +244,10 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     void setLegendSettings( QgsColorRampLegendNodeSettings *settings SIP_TRANSFER );
 
   protected:
-
     //! Source color ramp
     std::unique_ptr<QgsColorRamp> mSourceColorRamp;
 
   private:
-
     /**
      * This vector holds the information for classification based on values.
      * Each item holds a value, a label and a color. The member
@@ -282,7 +273,6 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     bool mClip = false;
 
     std::unique_ptr< QgsColorRampLegendNodeSettings > mLegendSettings;
-
 };
 
 #endif

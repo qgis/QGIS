@@ -48,7 +48,7 @@ Reset block
 %End
 
 
-    bool isValid() const /HoldGIL/;
+    bool isValid() const;
 %Docstring
 Returns ``True`` if the block is valid (correctly filled with data). An
 empty block may still be valid (if zero size block was requested). If

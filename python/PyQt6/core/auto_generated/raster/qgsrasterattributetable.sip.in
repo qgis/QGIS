@@ -26,7 +26,6 @@ file.
 #include "qgsrasterattributetable.h"
 %End
   public:
-
     class UsageInformation
     {
 %Docstring(signature="appended")
@@ -36,7 +35,6 @@ The UsageInformation class represents information about a field usage.
 %End
 
       public:
-
         QString description;
 
         bool unique;
@@ -64,7 +62,6 @@ name, usage and type.
 %End
 
       public:
-
         Field( const QString &name, const Qgis::RasterAttributeTableFieldUsage &usage, const QMetaType::Type type );
 %Docstring
 Creates a new Field with ``name``, ``type`` and ``usage``.
@@ -79,13 +76,13 @@ Creates a new Field with ``name``, ``type`` and ``usage``.
    Use the method with a QMetaType.Type argument instead.
 %End
 
-        bool isColor( ) const;
+        bool isColor() const;
 %Docstring
 Returns ``True`` if the field carries a color component (Red, Green,
 Blue and optionally Alpha) information.
 %End
 
-        bool isRamp( ) const;
+        bool isRamp() const;
 %Docstring
 Returns ``True`` if the field carries a color ramp component information
 (RedMin/RedMax, GreenMin/GreenMax, BlueMin/BlueMax and optionally
@@ -180,7 +177,7 @@ Sets the color ramp for the row at ``rowIndex`` to ``colorMin`` and
 
 
 
-    QList<int> intUsages( ) const /PyName=usages/;
+    QList<int> intUsages() const /PyName=usages/;
 %Docstring
 Returns the list of field usages.
 %End
@@ -233,7 +230,7 @@ Returns the Raster Attribute Table fields as :py:class:`QgsFields`.
 .. seealso:: :py:func:`fields`
 %End
 
-    QgsFeatureList qgisFeatures( ) const;
+    QgsFeatureList qgisFeatures() const;
 %Docstring
 Returns the Raster Attribute Table rows as a list of
 :py:class:`QgsFeature`.
@@ -273,7 +270,7 @@ at ``position``, optionally reporting any error in ``errorMessage``,
 returns ``True`` on success.
 %End
 
- bool insertField( int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage /Out/ = 0 ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
+ bool insertField( int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage /Out/ = 0 );
 %Docstring
 Creates a new field from ``name``, ``usage`` and ``type`` and inserts it
 at ``position``, optionally reporting any error in ``errorMessage``,
@@ -410,13 +407,13 @@ Sets the ``value`` for ``row`` and ``column``.
 Returns the ``value`` for ``row`` and ``column``.
 %End
 
-    double minimumValue( ) const;
+    double minimumValue() const;
 %Docstring
 Returns the minimum value of the MinMax (thematic) or Min (athematic)
 column, returns NaN on errors.
 %End
 
-    double maximumValue( ) const;
+    double maximumValue() const;
 %Docstring
 Returns the maximum value of the MinMax (thematic) or Max (athematic)
 column, returns NaN on errors.
@@ -428,7 +425,7 @@ Returns a row of data for the given ``matchValue`` or and empty row if
 there is not match.
 %End
 
-    QList<QgsRasterAttributeTable::MinMaxClass> minMaxClasses( const int classificationColumn  = -1 ) const;
+    QList<QgsRasterAttributeTable::MinMaxClass> minMaxClasses( const int classificationColumn = -1 ) const;
 %Docstring
 Returns the classes for a thematic Raster Attribute Table, classified by
 ``classificationColumn``, the default value of -1 makes the method guess
@@ -455,7 +452,7 @@ the classification column based on the field usage.
    generating the class labels.
 %End
 
-    QList<QList<QVariant>> orderedRows( ) const;
+    QList<QList<QVariant>> orderedRows() const;
 %Docstring
 Returns the data rows ordered by the value column(s) in ascending order,
 if the attribute table type is athematic the middle value for each row
@@ -510,7 +507,7 @@ raster band from which the attribute table was created.
 
 
 
-    static QHash<int, QgsRasterAttributeTable::UsageInformation> usageInformationInt( ) /PyName=usageInformation/;
+    static QHash<int, QgsRasterAttributeTable::UsageInformation> usageInformationInt() /PyName=usageInformation/;
 %Docstring
 Returns information about supported Raster Attribute Table usages.
 

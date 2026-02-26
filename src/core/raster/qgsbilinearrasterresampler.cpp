@@ -26,29 +26,14 @@
 
 using namespace Qt::StringLiterals;
 
-QgsBilinearRasterResampler *QgsBilinearRasterResampler::clone() const
-{
-  return new QgsBilinearRasterResampler();
-}
+QgsBilinearRasterResampler *QgsBilinearRasterResampler::clone() const { return new QgsBilinearRasterResampler(); }
 
-int QgsBilinearRasterResampler::tileBufferPixels() const
-{
-  return 1;
-}
+int QgsBilinearRasterResampler::tileBufferPixels() const { return 1; }
 
 Q_NOWARN_DEPRECATED_PUSH
-void QgsBilinearRasterResampler::resample( const QImage &srcImage, QImage &dstImage )
-{
-  dstImage = QgsGdalUtils::resampleImage( srcImage, dstImage.size(), GRIORA_Bilinear );
-}
+void QgsBilinearRasterResampler::resample( const QImage &srcImage, QImage &dstImage ) { dstImage = QgsGdalUtils::resampleImage( srcImage, dstImage.size(), GRIORA_Bilinear ); }
 Q_NOWARN_DEPRECATED_POP
 
-QImage QgsBilinearRasterResampler::resampleV2( const QImage &source, const QSize &size )
-{
-  return source.scaled( size.width(), size.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
-}
+QImage QgsBilinearRasterResampler::resampleV2( const QImage &source, const QSize &size ) { return source.scaled( size.width(), size.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation ); }
 
-QString QgsBilinearRasterResampler::type() const
-{
-  return u"bilinear"_s;
-}
+QString QgsBilinearRasterResampler::type() const { return u"bilinear"_s; }

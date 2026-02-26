@@ -1,6 +1,7 @@
 # The following has been generated automatically from src/core/providers/sensorthings/qgssensorthingsutils.h
 try:
-    QgsSensorThingsUtils.stringToEntity = staticmethod(QgsSensorThingsUtils.stringToEntity)
+    QgsSensorThingsUtils.__attribute_docs__ = {'DEFAULT_PAGE_SIZE': 'Default page size'}
+    QgsSensorThingsUtils.__annotations__ = {'DEFAULT_PAGE_SIZE': int}
     QgsSensorThingsUtils.displayString = staticmethod(QgsSensorThingsUtils.displayString)
     QgsSensorThingsUtils.entitySetStringToEntity = staticmethod(QgsSensorThingsUtils.entitySetStringToEntity)
     QgsSensorThingsUtils.entityToSetString = staticmethod(QgsSensorThingsUtils.entityToSetString)

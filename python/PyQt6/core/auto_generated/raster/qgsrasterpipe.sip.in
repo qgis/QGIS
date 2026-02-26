@@ -24,9 +24,8 @@ processing.
 %End
   public:
 
-
     enum class Property /BaseType=IntEnum/
-      {
+    {
       RendererOpacity,
     };
 
@@ -64,8 +63,7 @@ returned
 
 .. seealso:: :py:func:`replace`
 %End
-%MethodCode
-    sipRes = sipCpp->insert( a0, a1 );
+%MethodCode sipRes = sipCpp->insert( a0, a1 );
     if ( !sipRes )
     {
       // if insertion failed transfer ownership back to python
@@ -75,7 +73,7 @@ returned
     }
 %End
 
-    bool replace( int idx, QgsRasterInterface *interface /Transfer/ );
+      bool replace( int idx, QgsRasterInterface *interface /Transfer/ );
 %Docstring
 Attempts to replace the interface at specified index and reconnect the
 pipe.
@@ -264,8 +262,6 @@ raster pipes.
   private:
     QgsRasterPipe( const QgsRasterPipe &pipe );
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

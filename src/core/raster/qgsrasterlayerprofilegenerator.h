@@ -45,15 +45,12 @@ class QgsProfileSnapContext;
  */
 class CORE_EXPORT QgsRasterLayerProfileResults : public QgsAbstractProfileSurfaceResults
 {
-
   public:
-
     QString type() const override;
     using QgsAbstractProfileSurfaceResults::identify;
     QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
 
   private:
-
     QPointer< QgsRasterLayer > mLayer;
 
     friend class QgsRasterLayerProfileGenerator;
@@ -68,9 +65,7 @@ class CORE_EXPORT QgsRasterLayerProfileResults : public QgsAbstractProfileSurfac
  */
 class CORE_EXPORT QgsRasterLayerProfileGenerator : public QgsAbstractProfileSurfaceGenerator
 {
-
   public:
-
     /**
      * Constructor for QgsRasterLayerProfileGenerator.
      */
@@ -110,7 +105,6 @@ class CORE_EXPORT QgsRasterLayerProfileGenerator : public QgsAbstractProfileSurf
     double mStepDistance = std::numeric_limits<double>::quiet_NaN();
 
     friend class QgsRasterLayerProfileResults;
-
 };
 
 #endif // QGSRASTERLAYERPROFILEGENERATOR_H

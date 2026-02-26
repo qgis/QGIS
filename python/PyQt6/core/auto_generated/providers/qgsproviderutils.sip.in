@@ -21,7 +21,6 @@ Contains utility functions for working with data providers.
 #include "qgsproviderutils.h"
 %End
   public:
-
     enum class SublayerCompletenessFlag /BaseType=IntFlag/
     {
       IgnoreUnknownFeatureCount,
@@ -53,13 +52,9 @@ formats which use fixed file paths (such as aigrid files) will instead
 return the parent directory name (e.g. "rivers" for a path of "c:/my
 data/water/rivers/hdr.adf").
 %End
-
 };
 
 QFlags<QgsProviderUtils::SublayerCompletenessFlag> operator|(QgsProviderUtils::SublayerCompletenessFlag f1, QFlags<QgsProviderUtils::SublayerCompletenessFlag> f2);
-
-
-
 
 
 /************************************************************************

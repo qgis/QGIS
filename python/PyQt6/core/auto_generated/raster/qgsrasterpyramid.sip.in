@@ -19,7 +19,6 @@ This struct is used to store pyramid info for the raster layer.
 %End
   public:
 
-
     int getLevel() const;
 %Docstring
 Returns the pyramid level.

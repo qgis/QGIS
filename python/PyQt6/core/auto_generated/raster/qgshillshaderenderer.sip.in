@@ -22,7 +22,6 @@ A renderer for generating live hillshade models.
 #include "qgshillshaderenderer.h"
 %End
   public:
-
     QgsHillshadeRenderer( QgsRasterInterface *input, int band, double lightAzimuth, double lightAltitude );
 %Docstring
 A renderer for generating live hillshade models.
@@ -93,14 +92,14 @@ Returns the direction of the light over the raster between 0-360.
 .. seealso:: :py:func:`setAzimuth`
 %End
 
-    double altitude()  const;
+    double altitude() const;
 %Docstring
 Returns the angle of the light source over the raster.
 
 .. seealso:: :py:func:`setAltitude`
 %End
 
-    double zFactor()  const;
+    double zFactor() const;
 %Docstring
 Returns the Z scaling factor.
 

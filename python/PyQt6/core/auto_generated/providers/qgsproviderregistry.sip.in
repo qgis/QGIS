@@ -35,7 +35,6 @@ gdal|ogr|postgres it will load only providers gdal, ogr and postgres.
 %End
   public:
 
-
     enum WidgetMode /BaseType=IntEnum/
     {
 
@@ -81,10 +80,10 @@ Sets library directory where to search for plugins
 %End
 
 
-    QgsDataProvider *createProvider( const QString &providerKey,
-                                     const QString &dataSource,
-                                     const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions(),
-                                     Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) /TransferBack/;
+    QgsDataProvider *createProvider(
+      const QString &providerKey, const QString &dataSource, const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions(),
+      Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags()
+    ) /TransferBack/;
 %Docstring
 Creates a new instance of a provider.
 
@@ -109,18 +108,15 @@ Returns the provider capabilities
    Use instead :py:func:`~QgsProviderRegistry.capabilities` method of individual data item provider.
 %End
 
+      const QString &providerKey, const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap,
+      QString &errorMessage, const QMap<QString, QVariant> *options, QString &createdLayerName
+    );
 
 
     QgsRasterDataProvider *createRasterDataProvider(
-      const QString &providerKey,
-      const QString &uri,
-      const QString &format,
-      int nBands,
-      Qgis::DataType type,
-      int width, int height,
-      double *geoTransform,
-      const QgsCoordinateReferenceSystem &crs,
-      const QStringList &createOptions = QStringList() ) /Factory/;
+      const QString &providerKey, const QString &uri, const QString &format, int nBands, Qgis::DataType type, int width, int height, double *geoTransform, const QgsCoordinateReferenceSystem &crs,
+      const QStringList &createOptions = QStringList()
+    ) /Factory/;
 %Docstring
 Creates new instance of raster data provider
 
@@ -213,7 +209,9 @@ returned.
 .. versionadded:: 3.30
 %End
 
- QWidget *createSelectionWidget( const QString &providerKey, QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone ) /Deprecated="Since 3.10. Use QgsGui.sourceSelectProviderRegistry()->createDataSourceWidget() instead."/;
+ QWidget *createSelectionWidget(
+      const QString &providerKey, QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone
+    ) /Deprecated="Since 3.10. Use QgsGui.sourceSelectProviderRegistry()->createDataSourceWidget() instead."/;
 %Docstring
 Returns a new widget for selecting layers from a provider. Either the
 ``parent`` widget must be set or the caller becomes responsible for
@@ -235,12 +233,7 @@ Returns list of data item providers of the provider
 .. versionadded:: 3.10
 %End
 
-    int listStyles( const QString &providerKey,
-                    const QString &uri,
-                    QStringList &ids,
-                    QStringList &names,
-                    QStringList &descriptions,
-                    QString &errCause );
+    int listStyles( const QString &providerKey, const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause );
 %Docstring
 Lists stored layer styles in the provider defined by ``providerKey`` and
 ``uri``
@@ -285,9 +278,10 @@ Deletes a layer style defined by ``styleId``
 .. versionadded:: 3.10
 %End
 
-    bool saveStyle( const QString &providerKey,  const QString &uri, const QString &qmlStyle, const QString &sldStyle,
-                    const QString &styleName, const QString &styleDescription,
-                    const QString &uiFileContent, bool useAsDefault, QString &errCause );
+    bool saveStyle(
+      const QString &providerKey, const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName, const QString &styleDescription, const QString &uiFileContent,
+      bool useAsDefault, QString &errCause
+    );
 %Docstring
 Saves a layer style to provider
 
@@ -407,7 +401,6 @@ Contains information pertaining to a candidate provider.
 %End
 
       public:
-
         ProviderCandidateDetails( QgsProviderMetadata *metadata, const QList< Qgis::LayerType > &layerTypes );
 %Docstring
 Constructor for ProviderCandidateDetails, with the specified provider
@@ -426,11 +419,14 @@ the target using this candidate provider.
 %End
 
         SIP_PYOBJECT __repr__();
-%MethodCode
-        QString str = QStringLiteral( "<QgsProviderRegistry.ProviderCandidateDetails: %1>" ).arg( sipCpp->metadata()->key() );
+%MethodCode QString str = QStringLiteral( "<QgsProviderRegistry.ProviderCandidateDetails: %1>" ).arg( sipCpp->metadata()->key() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
+        private : QgsProviderMetadata *mMetadata
+        = 0;
+
+        QList< Qgis::LayerType > mLayerTypes;
     };
 
     QList< QgsProviderRegistry::ProviderCandidateDetails > preferredProvidersForUri( const QString &uri ) const;
@@ -469,7 +465,6 @@ used on their QGIS build.
 %End
 
       public:
-
         UnusableUriDetails( const QString &uri = QString(), const QString &warning = QString(), const QList< Qgis::LayerType > &layerTypes = QList< Qgis::LayerType >() );
 %Docstring
 Constructor for UnusableUriDetails for the given ``uri``, with the
@@ -488,11 +483,9 @@ which are usually valid options for opening the URI.
         QList<Qgis::LayerType> layerTypes;
 
         SIP_PYOBJECT __repr__();
-%MethodCode
-        QString str = QStringLiteral( "<QgsProviderRegistry.UnusableUriDetails: %1>" ).arg( sipCpp->warning );
+%MethodCode QString str = QStringLiteral( "<QgsProviderRegistry.UnusableUriDetails: %1>" ).arg( sipCpp->warning );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
-
     };
 
     class UnusableUriHandlerInterface
@@ -511,7 +504,6 @@ used on their QGIS build.
 %End
 
       public:
-
         virtual ~UnusableUriHandlerInterface();
 
         virtual bool matchesUri( const QString &uri ) const = 0;
@@ -524,7 +516,6 @@ specified ``uri``.
 %Docstring
 Returns the details for advising the user why the ``uri`` is not usable.
 %End
-
     };
 
     bool registerUnusableUriHandler( UnusableUriHandlerInterface *handler /Transfer/ );

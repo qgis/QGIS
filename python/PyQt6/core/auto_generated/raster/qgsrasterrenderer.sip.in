@@ -22,7 +22,6 @@ Raster renderer pipe that applies colors to a raster.
 #include "qgsrasterrenderer.h"
 %End
   public:
-
     static const QRgb NODATA_COLOR;
 
     QgsRasterRenderer( QgsRasterInterface *input = 0, const QString &type = QString() );
@@ -53,7 +52,7 @@ Returns flags which dictate renderer behavior.
 .. versionadded:: 3.28
 %End
 
-    virtual bool canCreateRasterAttributeTable( ) const;
+    virtual bool canCreateRasterAttributeTable() const;
 %Docstring
 Returns ``True`` if the renderer is suitable for attribute table
 creation. The default implementation returns ``False``.
@@ -98,11 +97,8 @@ band could not be set.
 .. versionadded:: 3.38
 %End
 
-     virtual QgsRasterBlock *block( int bandNo,
-                           const QgsRectangle &extent,
-                           int width,
-                           int height,
-                           QgsRasterBlockFeedback *feedback = 0 ) = 0 /Factory/;
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) = 0 /Factory/;
+
 
     bool usesTransparency() const;
 
@@ -237,7 +233,6 @@ or ``False`` if visiting should be canceled.
 
 
   protected:
-
     void _writeXml( QDomDocument &doc, QDomElement &rasterRendererElem ) const;
 %Docstring
 Write upper class info into rasterrenderer element (called by writeXml

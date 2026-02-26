@@ -44,7 +44,7 @@ using namespace Qt::StringLiterals;
 QgsRasterDataProvider *QgsRasterFileWriter::createOneBandRaster( Qgis::DataType dataType, int width, int height, const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs )
 {
   if ( mTiledMode )
-    return nullptr;  // does not make sense with tiled mode
+    return nullptr; // does not make sense with tiled mode
 
   double pixelSize;
   double geoTransform[6];
@@ -56,7 +56,7 @@ QgsRasterDataProvider *QgsRasterFileWriter::createOneBandRaster( Qgis::DataType 
 QgsRasterDataProvider *QgsRasterFileWriter::createMultiBandRaster( Qgis::DataType dataType, int width, int height, const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs, int nBands )
 {
   if ( mTiledMode )
-    return nullptr;  // does not make sense with tiled mode
+    return nullptr; // does not make sense with tiled mode
 
   double pixelSize;
   double geoTransform[6];
@@ -67,26 +67,23 @@ QgsRasterDataProvider *QgsRasterFileWriter::createMultiBandRaster( Qgis::DataTyp
 
 QgsRasterFileWriter::QgsRasterFileWriter( const QString &outputUrl )
   : mOutputUrl( outputUrl )
-{
+{}
 
-}
-
-QgsRasterFileWriter::QgsRasterFileWriter()
-{
-
-}
+QgsRasterFileWriter::QgsRasterFileWriter() {}
 
 
 // Deprecated!
-Qgis::RasterFileWriterResult QgsRasterFileWriter::writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
-    const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback )
+Qgis::RasterFileWriterResult QgsRasterFileWriter::writeRaster(
+  const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback
+)
 {
   return writeRaster( pipe, nCols, nRows, outputExtent, crs, ( pipe && pipe->provider() ) ? pipe->provider()->transformContext() : QgsCoordinateTransformContext(), feedback );
 }
 
-Qgis::RasterFileWriterResult QgsRasterFileWriter::writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
-    const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext,
-    QgsRasterBlockFeedback *feedback )
+Qgis::RasterFileWriterResult QgsRasterFileWriter::writeRaster(
+  const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext,
+  QgsRasterBlockFeedback *feedback
+)
 {
   QgsDebugMsgLevel( u"Entered"_s, 4 );
 
@@ -162,8 +159,10 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeRaster( const QgsRasterPi
   }
 }
 
-Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRasterPipe *pipe, QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent,
-    const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext, QgsRasterBlockFeedback *feedback )
+Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster(
+  const QgsRasterPipe *pipe, QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &crs,
+  const QgsCoordinateTransformContext &transformContext, QgsRasterBlockFeedback *feedback
+)
 {
   QgsDebugMsgLevel( u"Entered"_s, 4 );
   if ( !iter )
@@ -216,8 +215,7 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
   destHasNoDataValueList.reserve( nBands );
   destNoDataValueList.reserve( nBands );
 
-  const bool isGpkgOutput = mOutputProviderKey == "gdal" &&
-                            mOutputFormat.compare( "gpkg"_L1, Qt::CaseInsensitive ) == 0;
+  const bool isGpkgOutput = mOutputProviderKey == "gdal" && mOutputFormat.compare( "gpkg"_L1, Qt::CaseInsensitive ) == 0;
   double pixelSize;
   double geoTransform[6];
   globalOutputParameters( outputExtent, nCols, nRows, geoTransform, pixelSize );
@@ -236,7 +234,6 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
     QgsDebugMsgLevel( u"srcHasNoDataValue = %1 srcNoDataValue = %2"_s.arg( srcHasNoDataValue ).arg( srcProvider->sourceNoDataValue( bandNo ) ), 4 );
     if ( srcHasNoDataValue )
     {
-
       // If source has no data value, it is used by provider
       destNoDataValue = srcProvider->sourceNoDataValue( bandNo );
       destHasNoDataValue = true;
@@ -314,12 +311,11 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
   }
 
   Qgis::RasterFileWriterResult error;
-  for ( int attempt = 0; attempt < 2; attempt ++ )
+  for ( int attempt = 0; attempt < 2; attempt++ )
   {
     //create destProvider for whole dataset here
     // initOutput() returns 0 in tile mode!
-    std::unique_ptr<QgsRasterDataProvider> destProvider(
-      initOutput( nCols, nRows, crs, geoTransform, nBands, destDataType, destHasNoDataValueList, destNoDataValueList ) );
+    std::unique_ptr<QgsRasterDataProvider> destProvider( initOutput( nCols, nRows, crs, geoTransform, nBands, destDataType, destHasNoDataValueList, destNoDataValueList ) );
     if ( !mTiledMode )
     {
       if ( !destProvider )
@@ -396,21 +392,12 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
   return error;
 }
 
-static int qgsDivRoundUp( int a, int b )
-{
-  return a / b + ( ( ( a % b ) != 0 ) ? 1 : 0 );
-}
+static int qgsDivRoundUp( int a, int b ) { return a / b + ( ( ( a % b ) != 0 ) ? 1 : 0 ); }
 
-Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRasterPipe *pipe,
-    QgsRasterIterator *iter,
-    int nCols, int nRows,
-    const QgsRectangle &outputExtent,
-    const QgsCoordinateReferenceSystem &crs,
-    Qgis::DataType destDataType,
-    const QList<bool> &destHasNoDataValueList,
-    const QList<double> &destNoDataValueList,
-    std::unique_ptr<QgsRasterDataProvider> &destProvider,
-    QgsRasterBlockFeedback *feedback )
+Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster(
+  const QgsRasterPipe *pipe, QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &crs, Qgis::DataType destDataType,
+  const QList<bool> &destHasNoDataValueList, const QList<double> &destNoDataValueList, std::unique_ptr<QgsRasterDataProvider> &destProvider, QgsRasterBlockFeedback *feedback
+)
 {
   Q_UNUSED( pipe )
   Q_UNUSED( destHasNoDataValueList )
@@ -527,10 +514,7 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
 
     if ( mTiledMode ) //write to file
     {
-      std::unique_ptr< QgsRasterDataProvider > partDestProvider( createPartProvider( outputExtent,
-          nCols, iterCols, iterRows,
-          iterLeft, iterTop, mOutputUrl,
-          fileIndex, nBands, destDataType, crs ) );
+      std::unique_ptr< QgsRasterDataProvider > partDestProvider( createPartProvider( outputExtent, nCols, iterCols, iterRows, iterLeft, iterTop, mOutputUrl, fileIndex, nBands, destDataType, crs ) );
 
       if ( !partDestProvider || !partDestProvider->isValid() )
       {
@@ -544,7 +528,7 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
         {
           partDestProvider->setNoDataValue( i, destNoDataValueList.value( i - 1 ) );
         }
-        if ( destBlockList[ i - 1 ]->isEmpty() )
+        if ( destBlockList[i - 1]->isEmpty() )
           continue;
 
         if ( !partDestProvider->write( destBlockList[i - 1]->constBits( 0 ), i, iterCols, iterRows, 0, 0 ) )
@@ -553,14 +537,13 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
         }
         addToVRT( partFileName( fileIndex ), i, iterCols, iterRows, iterLeft, iterTop );
       }
-
     }
     else if ( destProvider )
     {
       //loop over data
       for ( int i = 1; i <= nBands; ++i )
       {
-        if ( destBlockList[ i - 1 ]->isEmpty() )
+        if ( destBlockList[i - 1]->isEmpty() )
           continue;
 
         if ( !destProvider->write( destBlockList[i - 1]->constBits( 0 ), i, iterCols, iterRows, iterLeft, iterTop ) )
@@ -581,9 +564,7 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
     {
       destProvider->remove();
       destProvider.reset();
-      return ( feedback && feedback->isCanceled() ) ?
-             Qgis::RasterFileWriterResult::Canceled :
-             Qgis::RasterFileWriterResult::WriteError;
+      return ( feedback && feedback->isCanceled() ) ? Qgis::RasterFileWriterResult::Canceled : Qgis::RasterFileWriterResult::WriteError;
     }
   }
 
@@ -591,8 +572,9 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeDataRaster( const QgsRast
   return ( feedback && feedback->isCanceled() ) ? Qgis::RasterFileWriterResult::Canceled : Qgis::RasterFileWriterResult::Success;
 }
 
-Qgis::RasterFileWriterResult QgsRasterFileWriter::writeImageRaster( QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent,
-    const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback )
+Qgis::RasterFileWriterResult QgsRasterFileWriter::writeImageRaster(
+  QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback
+)
 {
   QgsDebugMsgLevel( u"Entered"_s, 4 );
   if ( !iter )
@@ -720,10 +702,7 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeImageRaster( QgsRasterIte
     //create output file
     if ( mTiledMode )
     {
-      std::unique_ptr< QgsRasterDataProvider > partDestProvider( createPartProvider( outputExtent,
-          nCols, iterCols, iterRows,
-          iterLeft, iterTop, mOutputUrl, fileIndex,
-          4, Qgis::DataType::Byte, crs ) );
+      std::unique_ptr< QgsRasterDataProvider > partDestProvider( createPartProvider( outputExtent, nCols, iterCols, iterRows, iterLeft, iterTop, mOutputUrl, fileIndex, 4, Qgis::DataType::Byte, crs ) );
 
       if ( !partDestProvider || partDestProvider->isValid() )
       {
@@ -731,10 +710,8 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeImageRaster( QgsRasterIte
       }
 
       //write data to output file
-      if ( !partDestProvider->write( &redData[0], 1, iterCols, iterRows, 0, 0 ) ||
-           !partDestProvider->write( &greenData[0], 2, iterCols, iterRows, 0, 0 ) ||
-           !partDestProvider->write( &blueData[0], 3, iterCols, iterRows, 0, 0 ) ||
-           !partDestProvider->write( &alphaData[0], 4, iterCols, iterRows, 0, 0 ) )
+      if ( !partDestProvider->write( &redData[0], 1, iterCols, iterRows, 0, 0 ) || !partDestProvider->write( &greenData[0], 2, iterCols, iterRows, 0, 0 )
+           || !partDestProvider->write( &blueData[0], 3, iterCols, iterRows, 0, 0 ) || !partDestProvider->write( &alphaData[0], 4, iterCols, iterRows, 0, 0 ) )
       {
         return Qgis::RasterFileWriterResult::WriteError;
       }
@@ -746,10 +723,8 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeImageRaster( QgsRasterIte
     }
     else if ( destProvider )
     {
-      if ( !destProvider->write( &redData[0], 1, iterCols, iterRows, iterLeft, iterTop ) ||
-           !destProvider->write( &greenData[0], 2, iterCols, iterRows, iterLeft, iterTop ) ||
-           !destProvider->write( &blueData[0], 3, iterCols, iterRows, iterLeft, iterTop ) ||
-           !destProvider->write( &alphaData[0], 4, iterCols, iterRows, iterLeft, iterTop ) )
+      if ( !destProvider->write( &redData[0], 1, iterCols, iterRows, iterLeft, iterTop ) || !destProvider->write( &greenData[0], 2, iterCols, iterRows, iterLeft, iterTop )
+           || !destProvider->write( &blueData[0], 3, iterCols, iterRows, iterLeft, iterTop ) || !destProvider->write( &alphaData[0], 4, iterCols, iterRows, iterLeft, iterTop ) )
       {
         return Qgis::RasterFileWriterResult::WriteError;
       }
@@ -784,22 +759,15 @@ Qgis::RasterFileWriterResult QgsRasterFileWriter::writeImageRaster( QgsRasterIte
       QgsFeedback closingProgress;
       if ( feedback )
       {
-        QObject::connect( &closingProgress, &QgsFeedback::progressChanged,
-                          feedback, [feedback]( double progress )
-        {
-          feedback->setProgress( 50.0 + progress * 0.5 );
-        } );
-        QObject::connect( &closingProgress, &QgsFeedback::canceled,
-                          feedback, &QgsFeedback::cancel );
+        QObject::connect( &closingProgress, &QgsFeedback::progressChanged, feedback, [feedback]( double progress ) { feedback->setProgress( 50.0 + progress * 0.5 ); } );
+        QObject::connect( &closingProgress, &QgsFeedback::canceled, feedback, &QgsFeedback::cancel );
       }
 
       if ( !destProvider->closeWithProgress( feedback ? &closingProgress : nullptr ) )
       {
         destProvider->remove();
         destProvider.reset();
-        return ( feedback && feedback->isCanceled() ) ?
-               Qgis::RasterFileWriterResult::Canceled :
-               Qgis::RasterFileWriterResult::WriteError;
+        return ( feedback && feedback->isCanceled() ) ? Qgis::RasterFileWriterResult::Canceled : Qgis::RasterFileWriterResult::WriteError;
       }
     }
 
@@ -883,17 +851,22 @@ bool QgsRasterFileWriter::buildPyramids( const QString &filename, QgsRasterDataP
   // TODO test mTiledMode - not tested b/c segfault at line # 289
   // connect( provider, &FIXME::progressUpdate, mPyramidProgress, &FIXME::setValue );
   QList< QgsRasterPyramid> myPyramidList;
-  if ( ! mPyramidsList.isEmpty() )
+  if ( !mPyramidsList.isEmpty() )
     myPyramidList = destProvider->buildPyramidList( mPyramidsList );
   for ( int myCounterInt = 0; myCounterInt < myPyramidList.count(); myCounterInt++ )
   {
     myPyramidList[myCounterInt].setBuild( true );
   }
 
-  QgsDebugMsgLevel( u"building pyramids : %1 pyramids, %2 resampling, %3 format, %4 options"_s.arg( myPyramidList.count() ).arg( mPyramidsResampling ).arg( qgsEnumValueToKey( mPyramidsFormat ) ).arg( mPyramidsConfigOptions.count() ), 4 );
+  QgsDebugMsgLevel(
+    u"building pyramids : %1 pyramids, %2 resampling, %3 format, %4 options"_s.arg( myPyramidList.count() )
+      .arg( mPyramidsResampling )
+      .arg( qgsEnumValueToKey( mPyramidsFormat ) )
+      .arg( mPyramidsConfigOptions.count() ),
+    4
+  );
   // QApplication::setOverrideCursor( Qt::WaitCursor );
-  const QString res = destProvider->buildPyramids( myPyramidList, mPyramidsResampling,
-                      mPyramidsFormat, mPyramidsConfigOptions );
+  const QString res = destProvider->buildPyramids( myPyramidList, mPyramidsResampling, mPyramidsFormat, mPyramidsConfigOptions );
   // QApplication::restoreOverrideCursor();
 
   // TODO put this in provider or elsewhere
@@ -906,8 +879,10 @@ bool QgsRasterFileWriter::buildPyramids( const QString &filename, QgsRasterDataP
     }
     else if ( res == "ERROR_WRITE_FORMAT"_L1 )
     {
-      message = QObject::tr( "The file was not writable. Some formats do not "
-                             "support pyramid overviews. Consult the GDAL documentation if in doubt." );
+      message = QObject::tr(
+        "The file was not writable. Some formats do not "
+        "support pyramid overviews. Consult the GDAL documentation if in doubt."
+      );
     }
     else if ( res == "FAILED_NOT_SUPPORTED"_L1 )
     {
@@ -948,7 +923,9 @@ int QgsRasterFileWriter::pyramidsProgress( double dfComplete, const char *pszMes
 }
 #endif
 
-void QgsRasterFileWriter::createVRT( int xSize, int ySize, const QgsCoordinateReferenceSystem &crs, double *geoTransform, Qgis::DataType type, const QList<bool> &destHasNoDataValueList, const QList<double> &destNoDataValueList )
+void QgsRasterFileWriter::createVRT(
+  int xSize, int ySize, const QgsCoordinateReferenceSystem &crs, double *geoTransform, Qgis::DataType type, const QList<bool> &destHasNoDataValueList, const QList<double> &destNoDataValueList
+)
 {
   mVRTDocument.clear();
   QDomElement VRTDatasetElem = mVRTDocument.createElement( u"VRTDataset"_s );
@@ -968,8 +945,8 @@ void QgsRasterFileWriter::createVRT( int xSize, int ySize, const QgsCoordinateRe
   if ( geoTransform )
   {
     QDomElement geoTransformElem = mVRTDocument.createElement( u"GeoTransform"_s );
-    const QString geoTransformString = QString::number( geoTransform[0], 'f', 6 ) + ", " + QString::number( geoTransform[1] ) + ", " + QString::number( geoTransform[2] ) +
-                                       ", "  + QString::number( geoTransform[3], 'f', 6 ) + ", " + QString::number( geoTransform[4] ) + ", " + QString::number( geoTransform[5] );
+    const QString geoTransformString = QString::number( geoTransform[0], 'f', 6 ) + ", " + QString::number( geoTransform[1] ) + ", " + QString::number( geoTransform[2] ) + ", "
+                                       + QString::number( geoTransform[3], 'f', 6 ) + ", " + QString::number( geoTransform[4] ) + ", " + QString::number( geoTransform[5] );
     const QDomText geoTransformText = mVRTDocument.createTextNode( geoTransformString );
     geoTransformElem.appendChild( geoTransformText );
     VRTDatasetElem.appendChild( geoTransformElem );
@@ -1011,7 +988,6 @@ void QgsRasterFileWriter::createVRT( int xSize, int ySize, const QgsCoordinateRe
 
     if ( mMode == Qgis::RasterExportType::RenderedImage )
     {
-
       VRTBand.setAttribute( u"dataType"_s, u"Byte"_s );
       QDomElement colorInterpElement = mVRTDocument.createElement( u"ColorInterp"_s );
       const QDomText interpText = mVRTDocument.createTextNode( colorInterp.value( i - 1 ) );
@@ -1032,7 +1008,7 @@ void QgsRasterFileWriter::createVRT( int xSize, int ySize, const QgsCoordinateRe
 bool QgsRasterFileWriter::writeVRT( const QString &file )
 {
   QFile outputFile( file );
-  if ( ! outputFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+  if ( !outputFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     return false;
   }
@@ -1042,9 +1018,10 @@ bool QgsRasterFileWriter::writeVRT( const QString &file )
   return true;
 }
 
-QgsRasterDataProvider *QgsRasterFileWriter::createPartProvider( const QgsRectangle &extent, int nCols, int iterCols,
-    int iterRows, int iterLeft, int iterTop, const QString &outputUrl, int fileIndex, int nBands, Qgis::DataType type,
-    const QgsCoordinateReferenceSystem &crs )
+QgsRasterDataProvider *QgsRasterFileWriter::createPartProvider(
+  const QgsRectangle &extent, int nCols, int iterCols, int iterRows, int iterLeft, int iterTop, const QString &outputUrl, int fileIndex, int nBands, Qgis::DataType type,
+  const QgsCoordinateReferenceSystem &crs
+)
 {
   const double mup = extent.width() / nCols;
   const double mapLeft = extent.xMinimum() + iterLeft * mup;
@@ -1087,9 +1064,9 @@ void QgsRasterFileWriter::setBuildPyramidsFlag( Qgis::RasterBuildPyramidOption f
   mBuildPyramidsFlagSet = true;
 }
 
-QgsRasterDataProvider *QgsRasterFileWriter::initOutput( int nCols, int nRows, const QgsCoordinateReferenceSystem &crs,
-    double *geoTransform, int nBands, Qgis::DataType type,
-    const QList<bool> &destHasNoDataValueList, const QList<double> &destNoDataValueList )
+QgsRasterDataProvider *QgsRasterFileWriter::initOutput(
+  int nCols, int nRows, const QgsCoordinateReferenceSystem &crs, double *geoTransform, int nBands, Qgis::DataType type, const QList<bool> &destHasNoDataValueList, const QList<double> &destNoDataValueList
+)
 {
   if ( mTiledMode )
   {
@@ -1148,8 +1125,7 @@ QgsRasterDataProvider *QgsRasterFileWriter::initOutput( int nCols, int nRows, co
   }
 }
 
-void QgsRasterFileWriter::globalOutputParameters( const QgsRectangle &extent, int nCols, int &nRows,
-    double *geoTransform, double &pixelSize )
+void QgsRasterFileWriter::globalOutputParameters( const QgsRectangle &extent, int nCols, int &nRows, double *geoTransform, double &pixelSize )
 {
   pixelSize = extent.width() / nCols;
 
@@ -1188,8 +1164,7 @@ QString QgsRasterFileWriter::driverForExtension( const QString &extension )
   if ( ext.startsWith( '.' ) )
     ext.remove( 0, 1 );
 
-  if ( ext.compare( "tif"_L1, Qt::CaseInsensitive ) == 0 ||
-       ext.compare( "tiff"_L1, Qt::CaseInsensitive ) == 0 )
+  if ( ext.compare( "tif"_L1, Qt::CaseInsensitive ) == 0 || ext.compare( "tiff"_L1, Qt::CaseInsensitive ) == 0 )
   {
     // Be robust to GDAL drivers potentially recognizing the tif/tiff extensions
     // but being registered before the GTiff one.
@@ -1311,10 +1286,7 @@ QList< QgsRasterFileWriter::FilterFormatDetails > QgsRasterFileWriter::supported
     }
   }
 
-  std::sort( results.begin(), results.end(), []( const FilterFormatDetails & a, const FilterFormatDetails & b ) -> bool
-  {
-    return a.driverName < b.driverName;
-  } );
+  std::sort( results.begin(), results.end(), []( const FilterFormatDetails &a, const FilterFormatDetails &b ) -> bool { return a.driverName < b.driverName; } );
 
   if ( options & SortRecommended )
   {
@@ -1349,8 +1321,7 @@ QStringList QgsRasterFileWriter::supportedFormatExtensions( const RasterFormatOp
 
   QStringList extensionList( extensions.constBegin(), extensions.constEnd() );
 
-  std::sort( extensionList.begin(), extensionList.end(), [options]( const QString & a, const QString & b ) -> bool
-  {
+  std::sort( extensionList.begin(), extensionList.end(), [options]( const QString &a, const QString &b ) -> bool {
     if ( options & SortRecommended )
     {
       if ( a == "tif"_L1 )

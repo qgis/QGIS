@@ -40,11 +40,9 @@ class QgsLayerTreeLayer;
   */
 class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 {
-
     Q_DECLARE_TR_FUNCTIONS( QgsRasterRenderer ) // cppcheck-suppress duplInheritedMember
 
   public:
-
     static const QRgb NODATA_COLOR;
 
     /**
@@ -82,7 +80,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
      *
      *  \since QGIS 3.30
      */
-    virtual bool canCreateRasterAttributeTable( ) const;
+    virtual bool canCreateRasterAttributeTable() const;
 
     bool setInput( QgsRasterInterface *input ) override;
 
@@ -114,11 +112,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
      */
     virtual bool setInputBand( int band );
 
-    QgsRasterBlock *block( int bandNo,
-                           const QgsRectangle &extent,
-                           int width,
-                           int height,
-                           QgsRasterBlockFeedback *feedback = nullptr ) override = 0 SIP_FACTORY;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override = 0 SIP_FACTORY;
 
     bool usesTransparency() const;
 
@@ -248,7 +242,6 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     virtual bool refresh( const QgsRectangle &extent, const QList<double> &min, const QList<double> &max, bool forceRefresh = false ) SIP_SKIP;
 
   protected:
-
     //! Write upper class info into rasterrenderer element (called by writeXml method of subclasses)
     void _writeXml( QDomDocument &doc, QDomElement &rasterRendererElem ) const;
 
@@ -282,14 +275,12 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     QgsRectangle mLastRectangleUsedByRefreshContrastEnhancementIfNeeded;
 
   private:
-
     QColor mNodataColor;
 
 #ifdef SIP_RUN
     QgsRasterRenderer( const QgsRasterRenderer & );
     const QgsRasterRenderer &operator=( const QgsRasterRenderer & );
 #endif
-
 };
 
 #endif // QGSRASTERRENDERER_H

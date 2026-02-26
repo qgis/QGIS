@@ -27,15 +27,9 @@ email                : ersts@amnh.org
 
 using namespace Qt::StringLiterals;
 
-QVector<QgsRasterTransparency::TransparentSingleValuePixel> QgsRasterTransparency::transparentSingleValuePixelList() const
-{
-  return mTransparentSingleValuePixelList;
-}
+QVector<QgsRasterTransparency::TransparentSingleValuePixel> QgsRasterTransparency::transparentSingleValuePixelList() const { return mTransparentSingleValuePixelList; }
 
-QVector<QgsRasterTransparency::TransparentThreeValuePixel> QgsRasterTransparency::transparentThreeValuePixelList() const
-{
-  return mTransparentThreeValuePixelList;
-}
+QVector<QgsRasterTransparency::TransparentThreeValuePixel> QgsRasterTransparency::transparentThreeValuePixelList() const { return mTransparentThreeValuePixelList; }
 
 void QgsRasterTransparency::initializeTransparentPixelList( double value )
 {
@@ -55,20 +49,11 @@ void QgsRasterTransparency::initializeTransparentPixelList( double redValue, dou
   mTransparentThreeValuePixelList.append( TransparentThreeValuePixel( redValue, greenValue, blueValue, 0 ) );
 }
 
-void QgsRasterTransparency::setTransparentSingleValuePixelList( const QVector<QgsRasterTransparency::TransparentSingleValuePixel> &newList )
-{
-  mTransparentSingleValuePixelList = newList;
-}
+void QgsRasterTransparency::setTransparentSingleValuePixelList( const QVector<QgsRasterTransparency::TransparentSingleValuePixel> &newList ) { mTransparentSingleValuePixelList = newList; }
 
-void QgsRasterTransparency::setTransparentThreeValuePixelList( const QVector<QgsRasterTransparency::TransparentThreeValuePixel> &newList )
-{
-  mTransparentThreeValuePixelList = newList;
-}
+void QgsRasterTransparency::setTransparentThreeValuePixelList( const QVector<QgsRasterTransparency::TransparentThreeValuePixel> &newList ) { mTransparentThreeValuePixelList = newList; }
 
-int QgsRasterTransparency::alphaValue( double value, int globalTransparency ) const
-{
-  return static_cast< int >( opacityForValue( value ) * globalTransparency );
-}
+int QgsRasterTransparency::alphaValue( double value, int globalTransparency ) const { return static_cast< int >( opacityForValue( value ) * globalTransparency ); }
 
 double QgsRasterTransparency::opacityForValue( double value ) const
 {
@@ -79,11 +64,8 @@ double QgsRasterTransparency::opacityForValue( double value ) const
   }
 
   //Search through the transparency list looking for a match
-  auto it = std::find_if( mTransparentSingleValuePixelList.constBegin(), mTransparentSingleValuePixelList.constEnd(), [value]( const TransparentSingleValuePixel & p )
-  {
-    return ( value > p.min && value < p.max )
-           || ( p.includeMinimum && qgsDoubleNear( value, p.min ) )
-           || ( p.includeMaximum && qgsDoubleNear( value, p.max ) );
+  auto it = std::find_if( mTransparentSingleValuePixelList.constBegin(), mTransparentSingleValuePixelList.constEnd(), [value]( const TransparentSingleValuePixel &p ) {
+    return ( value > p.min && value < p.max ) || ( p.includeMinimum && qgsDoubleNear( value, p.min ) ) || ( p.includeMaximum && qgsDoubleNear( value, p.max ) );
   } );
 
   if ( it != mTransparentSingleValuePixelList.constEnd() )
@@ -108,11 +90,8 @@ double QgsRasterTransparency::opacityForRgbValues( double redValue, double green
   }
 
   //Search through the transparency list looking for a match
-  auto it = std::find_if( mTransparentThreeValuePixelList.constBegin(), mTransparentThreeValuePixelList.constEnd(), [redValue, greenValue, blueValue]( const TransparentThreeValuePixel & p )
-  {
-    return qgsDoubleNear( p.red, redValue, p.fuzzyToleranceRed )
-           && qgsDoubleNear( p.green, greenValue, p.fuzzyToleranceGreen )
-           && qgsDoubleNear( p.blue, blueValue, p.fuzzyToleranceBlue );
+  auto it = std::find_if( mTransparentThreeValuePixelList.constBegin(), mTransparentThreeValuePixelList.constEnd(), [redValue, greenValue, blueValue]( const TransparentThreeValuePixel &p ) {
+    return qgsDoubleNear( p.red, redValue, p.fuzzyToleranceRed ) && qgsDoubleNear( p.green, greenValue, p.fuzzyToleranceGreen ) && qgsDoubleNear( p.blue, blueValue, p.fuzzyToleranceBlue );
   } );
 
   if ( it != mTransparentThreeValuePixelList.constEnd() )
@@ -123,10 +102,7 @@ double QgsRasterTransparency::opacityForRgbValues( double redValue, double green
   return 1;
 }
 
-bool QgsRasterTransparency::isEmpty() const
-{
-  return mTransparentSingleValuePixelList.isEmpty() && mTransparentThreeValuePixelList.isEmpty();
-}
+bool QgsRasterTransparency::isEmpty() const { return mTransparentSingleValuePixelList.isEmpty() && mTransparentThreeValuePixelList.isEmpty(); }
 
 void QgsRasterTransparency::writeXml( QDomDocument &doc, QDomElement &parentElem ) const
 {
@@ -144,7 +120,6 @@ void QgsRasterTransparency::writeXml( QDomDocument &doc, QDomElement &parentElem
       singleValuePixelListElement.appendChild( pixelListElement );
     }
     rasterTransparencyElem.appendChild( singleValuePixelListElement );
-
   }
   if ( !mTransparentThreeValuePixelList.isEmpty() )
   {
@@ -221,10 +196,10 @@ void QgsRasterTransparency::readXml( const QDomElement &elem )
       const double toleranceGreen = currentEntryElem.attribute( u"toleranceGreen"_s ).toDouble( &greenOk );
       bool blueOk = false;
       const double toleranceBlue = currentEntryElem.attribute( u"toleranceBlue"_s ).toDouble( &blueOk );
-      mTransparentThreeValuePixelList.append( TransparentThreeValuePixel( red, green, blue, opacity,
-                                              redOk ? toleranceRed : 4 * std::numeric_limits<double>::epsilon(),
-                                              greenOk ? toleranceGreen : 4 * std::numeric_limits<double>::epsilon(),
-                                              blueOk ? toleranceBlue : 4 * std::numeric_limits<double>::epsilon() ) );
+      mTransparentThreeValuePixelList.append( TransparentThreeValuePixel(
+        red, green, blue, opacity, redOk ? toleranceRed : 4 * std::numeric_limits<double>::epsilon(), greenOk ? toleranceGreen : 4 * std::numeric_limits<double>::epsilon(),
+        blueOk ? toleranceBlue : 4 * std::numeric_limits<double>::epsilon()
+      ) );
     }
   }
 }

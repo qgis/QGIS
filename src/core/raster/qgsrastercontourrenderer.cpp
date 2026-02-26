@@ -47,10 +47,7 @@ QgsRasterContourRenderer *QgsRasterContourRenderer::clone() const
   return renderer;
 }
 
-Qgis::RasterRendererFlags QgsRasterContourRenderer::flags() const
-{
-  return Qgis::RasterRendererFlag::UseNoDataForOutOfRangePixels;
-}
+Qgis::RasterRendererFlags QgsRasterContourRenderer::flags() const { return Qgis::RasterRendererFlag::UseNoDataForOutOfRangePixels; }
 
 QgsRasterRenderer *QgsRasterContourRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
 {
@@ -119,12 +116,12 @@ void QgsRasterContourRenderer::writeXml( QDomDocument &doc, QDomElement &parentE
 
 struct ContourWriterData
 {
-  QPainter *painter;
-  double scaleX, scaleY;
-  QgsLineSymbol *symbol;
-  QgsLineSymbol *indexSymbol;
-  double indexInterval;
-  QgsRenderContext *context;
+    QPainter *painter;
+    double scaleX, scaleY;
+    QgsLineSymbol *symbol;
+    QgsLineSymbol *indexSymbol;
+    double indexInterval;
+    QgsRenderContext *context;
 };
 
 CPLErr _rasterContourWriter( double dfLevel, int nPoints, double *padfX, double *padfY, void *ptr )
@@ -191,10 +188,8 @@ QgsRasterBlock *QgsRasterContourRenderer::block( int bandNo, const QgsRectangle 
     crData.indexSymbol->startRender( context );
 
   const double contourBase = 0.;
-  GDALContourGeneratorH cg = GDAL_CG_Create( inputBlock->width(), inputBlock->height(),
-                             inputBlock->hasNoDataValue(), inputBlock->noDataValue(),
-                             mContourInterval, contourBase,
-                             _rasterContourWriter, static_cast<void *>( &crData ) );
+  GDALContourGeneratorH cg
+    = GDAL_CG_Create( inputBlock->width(), inputBlock->height(), inputBlock->hasNoDataValue(), inputBlock->noDataValue(), mContourInterval, contourBase, _rasterContourWriter, static_cast<void *>( &crData ) );
   for ( int i = 0; i < inputHeight; ++i )
   {
     if ( feedback && feedback->isCanceled() )
@@ -241,10 +236,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsRasterContourRenderer::createLegendNodes
   return nodes;
 }
 
-int QgsRasterContourRenderer::inputBand() const
-{
-  return mInputBand;
-}
+int QgsRasterContourRenderer::inputBand() const { return mInputBand; }
 
 bool QgsRasterContourRenderer::setInputBand( int band )
 {
@@ -261,12 +253,6 @@ bool QgsRasterContourRenderer::setInputBand( int band )
   return false;
 }
 
-void QgsRasterContourRenderer::setContourSymbol( QgsLineSymbol *symbol )
-{
-  mContourSymbol.reset( symbol );
-}
+void QgsRasterContourRenderer::setContourSymbol( QgsLineSymbol *symbol ) { mContourSymbol.reset( symbol ); }
 
-void QgsRasterContourRenderer::setContourIndexSymbol( QgsLineSymbol *symbol )
-{
-  mContourIndexSymbol.reset( symbol );
-}
+void QgsRasterContourRenderer::setContourIndexSymbol( QgsLineSymbol *symbol ) { mContourIndexSymbol.reset( symbol ); }

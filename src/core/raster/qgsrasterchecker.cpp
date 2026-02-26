@@ -40,8 +40,7 @@ QgsRasterChecker::QgsRasterChecker()
   mErrMsgStyle = u"color: #ff0000;"_s;
 }
 
-bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
-                                const QString &expectedKey, QString expectedUri )
+bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri, const QString &expectedKey, QString expectedUri )
 {
   bool ok = true;
   mReport += "\n\n"_L1;
@@ -77,12 +76,14 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
 
   compareRow( u"Extent"_s, verifiedProvider->extent().toString(), expectedProvider->extent().toString(), mReport, verifiedProvider->extent() == expectedProvider->extent() );
 
-  if ( verifiedProvider->extent() != expectedProvider->extent() ) ok = false;
+  if ( verifiedProvider->extent() != expectedProvider->extent() )
+    ok = false;
 
 
   mReport += "</table>\n"_L1;
 
-  if ( !ok ) return false;
+  if ( !ok )
+    return false;
 
   bool allOk = true;
   for ( int band = 1; band <= expectedProvider->bandCount(); band++ )
@@ -147,8 +148,7 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
     std::unique_ptr< QgsRasterBlock > expectedBlock( expectedProvider->block( band, expectedProvider->extent(), width, height ) );
     std::unique_ptr< QgsRasterBlock > verifiedBlock( verifiedProvider->block( band, expectedProvider->extent(), width, height ) );
 
-    if ( !expectedBlock || !expectedBlock->isValid() ||
-         !verifiedBlock || !verifiedBlock->isValid() )
+    if ( !expectedBlock || !expectedBlock->isValid() || !verifiedBlock || !verifiedBlock->isValid() )
     {
       allOk = false;
       mReport += "cannot read raster block"_L1;
@@ -157,10 +157,10 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
 
     // compare data values
     QString htmlTable = u"<table style='%1'>"_s.arg( mTabStyle );
-    for ( int row = 0; row < height; row ++ )
+    for ( int row = 0; row < height; row++ )
     {
       htmlTable += "<tr>"_L1;
-      for ( int col = 0; col < width; col ++ )
+      for ( int col = 0; col < width; col++ )
       {
         bool cellOk = true;
         const double verifiedVal = verifiedBlock->value( row, col );

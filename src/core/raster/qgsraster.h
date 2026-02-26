@@ -31,7 +31,6 @@
 class CORE_EXPORT QgsRaster
 {
   public:
-
     /**
      * Check if the specified value is representable in the given data type.
      * Supported are numerical types Byte, Int8, UInt16, Int16, UInt32, Int32, Float32, Float64.
@@ -53,5 +52,3 @@ class CORE_EXPORT QgsRaster
 };
 
 #endif
-
-

@@ -24,7 +24,6 @@ formats and data providers can be used by calling
 #include "qgsrasterfilewriter.h"
 %End
   public:
-
     enum RasterFormatOption /BaseType=IntEnum/
     {
       SortRecommended,
@@ -38,10 +37,7 @@ Constructor for QgsRasterFileWriter, writing to the specified output
 URL/filename.
 %End
 
-    QgsRasterDataProvider *createOneBandRaster( Qgis::DataType dataType,
-        int width, int height,
-        const QgsRectangle &extent,
-        const QgsCoordinateReferenceSystem &crs ) /Factory/;
+    QgsRasterDataProvider *createOneBandRaster( Qgis::DataType dataType, int width, int height, const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs ) /Factory/;
 %Docstring
 Create a raster file with one band without initializing the pixel data.
 Returned provider may be used to initialize the raster using
@@ -56,11 +52,7 @@ returned provider is passed to the caller.
    Does not work with tiled mode enabled.
 %End
 
-    QgsRasterDataProvider *createMultiBandRaster( Qgis::DataType dataType,
-        int width, int height,
-        const QgsRectangle &extent,
-        const QgsCoordinateReferenceSystem &crs,
-        int nBands ) /Factory/;
+    QgsRasterDataProvider *createMultiBandRaster( Qgis::DataType dataType, int width, int height, const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs, int nBands ) /Factory/;
 %Docstring
 Create a raster file with given number of bands without initializing the
 pixel data. Returned provider may be used to initialize the raster using
@@ -76,8 +68,9 @@ returned provider is passed to the caller.
 %End
 
 
- Qgis::RasterFileWriterResult writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
-        const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback = 0 ) /Deprecated="Since 3.8. Use version with transformContext instead."/;
+ Qgis::RasterFileWriterResult writeRaster(
+      const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback = 0
+    ) /Deprecated="Since 3.8. Use version with transformContext instead."/;
 %Docstring
 Write raster file
 
@@ -94,10 +87,10 @@ Write raster file
    Use version with transformContext instead.
 %End
 
-    Qgis::RasterFileWriterResult writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
-        const QgsCoordinateReferenceSystem &crs,
-        const QgsCoordinateTransformContext &transformContext,
-        QgsRasterBlockFeedback *feedback = 0 );
+    Qgis::RasterFileWriterResult writeRaster(
+      const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext,
+      QgsRasterBlockFeedback *feedback = 0
+    );
 %Docstring
 Write raster file
 
@@ -329,9 +322,9 @@ Creates a filter for an GDAL driver key
 
     struct FilterFormatDetails
     {
-      QString driverName;
+        QString driverName;
 
-      QString filterString;
+        QString filterString;
     };
 
     static QList< QgsRasterFileWriter::FilterFormatDetails > supportedFiltersAndFormats( RasterFormatOptions options = SortRecommended );

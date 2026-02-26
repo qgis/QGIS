@@ -39,19 +39,17 @@ const QRgb QgsRasterRenderer::NODATA_COLOR = qRgba( 0, 0, 0, 0 );
 QgsRasterRenderer::QgsRasterRenderer( QgsRasterInterface *input, const QString &type )
   : QgsRasterInterface( input )
   , mType( type )
-{
-}
+{}
 
-QgsRasterRenderer::~QgsRasterRenderer()
-{
-
-}
+QgsRasterRenderer::~QgsRasterRenderer() {}
 
 int QgsRasterRenderer::bandCount() const
 {
-  if ( mOn ) return 1;
+  if ( mOn )
+    return 1;
 
-  if ( mInput ) return mInput->bandCount();
+  if ( mInput )
+    return mInput->bandCount();
 
   return 0;
 }
@@ -60,27 +58,24 @@ Qgis::DataType QgsRasterRenderer::dataType( int bandNo ) const
 {
   QgsDebugMsgLevel( u"Entered"_s, 4 );
 
-  if ( mOn ) return Qgis::DataType::ARGB32_Premultiplied;
+  if ( mOn )
+    return Qgis::DataType::ARGB32_Premultiplied;
 
-  if ( mInput ) return mInput->dataType( bandNo );
+  if ( mInput )
+    return mInput->dataType( bandNo );
 
   return Qgis::DataType::UnknownDataType;
 }
 
-Qgis::RasterRendererFlags QgsRasterRenderer::flags() const
-{
-  return Qgis::RasterRendererFlags();
-}
+Qgis::RasterRendererFlags QgsRasterRenderer::flags() const { return Qgis::RasterRendererFlags(); }
 
-bool QgsRasterRenderer::canCreateRasterAttributeTable() const
-{
-  return false;
-}
+bool QgsRasterRenderer::canCreateRasterAttributeTable() const { return false; }
 
 bool QgsRasterRenderer::setInput( QgsRasterInterface *input )
 {
   // Renderer can only work with numerical values in at least 1 band
-  if ( !input ) return false;
+  if ( !input )
+    return false;
 
   if ( !mOn )
   {
@@ -103,15 +98,9 @@ bool QgsRasterRenderer::setInput( QgsRasterInterface *input )
   return true;
 }
 
-int QgsRasterRenderer::inputBand() const
-{
-  return -1;
-}
+int QgsRasterRenderer::inputBand() const { return -1; }
 
-bool QgsRasterRenderer::setInputBand( int )
-{
-  return false;
-}
+bool QgsRasterRenderer::setInputBand( int ) { return false; }
 
 bool QgsRasterRenderer::usesTransparency() const
 {
@@ -122,16 +111,9 @@ bool QgsRasterRenderer::usesTransparency() const
   return ( mAlphaBand > 0 || ( mRasterTransparency && !mRasterTransparency->isEmpty() ) || !qgsDoubleNear( mOpacity, 1.0 ) );
 }
 
-void QgsRasterRenderer::setRasterTransparency( QgsRasterTransparency *t )
-{
-  mRasterTransparency.reset( t );
+void QgsRasterRenderer::setRasterTransparency( QgsRasterTransparency *t ) { mRasterTransparency.reset( t ); }
 
-}
-
-QList< QPair< QString, QColor > > QgsRasterRenderer::legendSymbologyItems() const
-{
-  return QList< QPair< QString, QColor > >();
-}
+QList< QPair< QString, QColor > > QgsRasterRenderer::legendSymbologyItems() const { return QList< QPair< QString, QColor > >(); }
 
 QList<QgsLayerTreeModelLegendNode *> QgsRasterRenderer::createLegendNodes( QgsLayerTreeLayer *nodeLayer )
 {
@@ -207,7 +189,7 @@ void QgsRasterRenderer::readXml( const QDomElement &rendererElem )
   const QDomElement rasterTransparencyElem = rendererElem.firstChildElement( u"rasterTransparency"_s );
   if ( !rasterTransparencyElem.isNull() )
   {
-    mRasterTransparency = std::make_unique<QgsRasterTransparency>( );
+    mRasterTransparency = std::make_unique<QgsRasterTransparency>();
 
     mRasterTransparency->readXml( rasterTransparencyElem );
   }
@@ -254,16 +236,11 @@ bool QgsRasterRenderer::toSld( QDomDocument &doc, QDomElement &element, QgsSldEx
   return true;
 }
 
-bool QgsRasterRenderer::accept( QgsStyleEntityVisitorInterface * ) const
-{
-  return true;
-}
+bool QgsRasterRenderer::accept( QgsStyleEntityVisitorInterface * ) const { return true; }
 
 bool QgsRasterRenderer::needsRefresh( const QgsRectangle &extent ) const
 {
-  if ( mLastRectangleUsedByRefreshContrastEnhancementIfNeeded != extent &&
-       mMinMaxOrigin.limits() != Qgis::RasterRangeLimit::NotSet &&
-       mMinMaxOrigin.extent() == Qgis::RasterRangeExtent::UpdatedCanvas )
+  if ( mLastRectangleUsedByRefreshContrastEnhancementIfNeeded != extent && mMinMaxOrigin.limits() != Qgis::RasterRangeLimit::NotSet && mMinMaxOrigin.extent() == Qgis::RasterRangeExtent::UpdatedCanvas )
   {
     return true;
   }

@@ -23,8 +23,10 @@ in a ramp.
 #include "qgscolorrampshader.h"
 %End
   public:
-
-    QgsColorRampShader( double minimumValue = 0.0, double maximumValue = 255.0, QgsColorRamp *colorRamp /Transfer/ = 0, Qgis::ShaderInterpolationMethod type = Qgis::ShaderInterpolationMethod::Linear, Qgis::ShaderClassificationMethod classificationMode = Qgis::ShaderClassificationMethod::Continuous );
+    QgsColorRampShader(
+      double minimumValue = 0.0, double maximumValue = 255.0, QgsColorRamp *colorRamp /Transfer/ = 0, Qgis::ShaderInterpolationMethod type = Qgis::ShaderInterpolationMethod::Linear,
+      Qgis::ShaderClassificationMethod classificationMode = Qgis::ShaderClassificationMethod::Continuous
+    );
 %Docstring
 Creates a new color ramp shader.
 
@@ -46,20 +48,19 @@ Creates a new color ramp shader.
 
     struct ColorRampItem
     {
-
-      ColorRampItem();
-      ColorRampItem( double val, const QColor &col, const QString &lbl = QString() );
+        ColorRampItem();
+        ColorRampItem( double val, const QColor &col, const QString &lbl = QString() );
 %Docstring
 convenience constructor
 %End
 
-      QString label;
-      double value;
-      QColor color;
+        QString label;
+        double value;
+        QColor color;
 
-      bool operator<( const QgsColorRampShader::ColorRampItem &other ) const;
+        bool operator<( const QgsColorRampShader::ColorRampItem &other ) const;
 
-      bool operator!=( const QgsColorRampShader::ColorRampItem &other ) const;
+        bool operator!=( const QgsColorRampShader::ColorRampItem &other ) const;
     };
 
     QList<QgsColorRampShader::ColorRampItem> colorRampItemList() const;
@@ -147,10 +148,9 @@ Classify color ramp shader
 
     virtual bool shade( double value, int *returnRedValue /Out/, int *returnGreenValue /Out/, int *returnBlueValue /Out/, int *returnAlphaValue /Out/ ) const;
 
-     virtual bool shade( double redValue, double greenValue,
-                double blueValue, double alphaValue,
-                int *returnRedValue /Out/, int *returnGreenValue /Out/,
-                int *returnBlueValue /Out/, int *returnAlphaValue /Out/ ) const;
+     virtual bool shade(
+      double redValue, double greenValue, double blueValue, double alphaValue, int *returnRedValue /Out/, int *returnGreenValue /Out/, int *returnBlueValue /Out/, int *returnAlphaValue /Out/
+    ) const;
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
 
 
@@ -219,7 +219,6 @@ Ownership of ``settings`` is transferred.
 %End
 
   protected:
-
 
 };
 

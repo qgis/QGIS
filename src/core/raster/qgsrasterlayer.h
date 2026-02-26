@@ -58,7 +58,7 @@ class QImage;
 class QPixmap;
 class QSlider;
 
-typedef QList < QPair< QString, QColor > > QgsLegendColorList;
+typedef QList< QPair< QString, QColor > > QgsLegendColorList;
 
 /**
  * \ingroup core
@@ -82,7 +82,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     Q_OBJECT
 
   public:
-
     static const QgsSettingsEntryBool *settingsRasterDefaultEarlyResampling SIP_SKIP;
     static const QgsSettingsEntryDouble *settingsRasterDefaultOversampling SIP_SKIP;
 
@@ -115,26 +114,24 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      */
     struct LayerOptions
     {
-
-      /**
+        /**
        * Constructor for LayerOptions.
        */
-      explicit LayerOptions( bool loadDefaultStyle = true,
-                             const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() )
-        : loadDefaultStyle( loadDefaultStyle )
-        , transformContext( transformContext )
-      {}
+        explicit LayerOptions( bool loadDefaultStyle = true, const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() )
+          : loadDefaultStyle( loadDefaultStyle )
+          , transformContext( transformContext )
+        {}
 
-      //! Sets to TRUE if the default layer style should be loaded
-      bool loadDefaultStyle = true;
+        //! Sets to TRUE if the default layer style should be loaded
+        bool loadDefaultStyle = true;
 
-      /**
+        /**
        * Coordinate transform context
        * \since QGIS 3.8
        */
-      QgsCoordinateTransformContext transformContext = QgsCoordinateTransformContext();
+        QgsCoordinateTransformContext transformContext = QgsCoordinateTransformContext();
 
-      /**
+        /**
        * Controls whether the layer is allowed to have an invalid/unknown CRS.
        *
        * If TRUE, then no validation will be performed on the layer's CRS and the layer
@@ -147,8 +144,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
        *
        * \since QGIS 3.10
        */
-      bool skipCrsValidation = false;
-
+        bool skipCrsValidation = false;
     };
 
     /**
@@ -163,31 +159,27 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      * - Assign sensible defaults for the red, green, blue and gray bands.
      *
      */
-    explicit QgsRasterLayer( const QString &uri,
-                             const QString &baseName = QString(),
-                             const QString &providerType = "gdal",
-                             const QgsRasterLayer::LayerOptions &options = QgsRasterLayer::LayerOptions() );
+    explicit QgsRasterLayer( const QString &uri, const QString &baseName = QString(), const QString &providerType = "gdal", const QgsRasterLayer::LayerOptions &options = QgsRasterLayer::LayerOptions() );
 
     ~QgsRasterLayer() override;
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    QString str = u"<QgsRasterLayer: '%1' (%2)>"_s.arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : u"Invalid"_s );
+    % MethodCode QString str = u"<QgsRasterLayer: '%1' (%2)>"_s.arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : u"Invalid"_s );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    /**
+      /**
      * Returns a new instance equivalent to this one. A new provider is
      *  created for the same data source and renderer is cloned too.
      * \returns a new layer instance
      */
-    QgsRasterLayer *clone() const override SIP_FACTORY;
+      QgsRasterLayer *clone() const override SIP_FACTORY;
 
-    QgsAbstractProfileSource *profileSource() override {return this;}
-    QString profileSourceId() const override {return id();}
-    QString profileSourceName() const override {return name();}
+    QgsAbstractProfileSource *profileSource() override { return this; }
+    QString profileSourceId() const override { return id(); }
+    QString profileSourceName() const override { return name(); }
 
     QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) override SIP_FACTORY;
 
@@ -203,7 +195,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     static bool isValidRasterFileName( const QString &fileNameQString );
 
     //! Returns time stamp for given file name
-    static QDateTime lastModified( const QString   &name );
+    static QDateTime lastModified( const QString &name );
 
     /**
      * Set the data provider.
@@ -317,13 +309,13 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      * Returns the number of attribute tables for the raster by counting the number of bands that have an associated attribute table.
      * \since QGIS 3.30
      */
-    int attributeTableCount( ) const;
+    int attributeTableCount() const;
 
     /**
      * Returns TRUE if the raster renderer is suitable for creation of a raster attribute table. The supported renderers are QgsPalettedRasterRenderer and QgsSingleBandPseudoColorRenderer.
      * \since QGIS 3.30
      */
-    bool canCreateRasterAttributeTable( );
+    bool canCreateRasterAttributeTable();
 
     /**
      * Returns the source data provider.
@@ -343,9 +335,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
 
     //! \brief This is an overloaded version of the draw() function that is called by both draw() and thumbnailAsPixmap
-    void draw( QPainter *theQPainter,
-               QgsRasterViewPort *myRasterViewPort,
-               const QgsMapToPixel *qgsMapToPixel = nullptr );
+    void draw( QPainter *theQPainter, QgsRasterViewPort *myRasterViewPort, const QgsMapToPixel *qgsMapToPixel = nullptr );
 
     /**
      * Returns a list with classification items (Text and color).
@@ -401,11 +391,10 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      *  \param sampleSize Size of data sample to calculate limits, if 0, use full resolution
      *  \param generateLookupTableFlag Generate lookup table.
     */
-    void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
-                                 Qgis::RasterRangeLimit limits = Qgis::RasterRangeLimit::MinimumMaximum,
-                                 const QgsRectangle &extent = QgsRectangle(),
-                                 int sampleSize = QgsRasterLayer::SAMPLE_SIZE,
-                                 bool generateLookupTableFlag = true );
+    void setContrastEnhancement(
+      QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm, Qgis::RasterRangeLimit limits = Qgis::RasterRangeLimit::MinimumMaximum, const QgsRectangle &extent = QgsRectangle(),
+      int sampleSize = QgsRasterLayer::SAMPLE_SIZE, bool generateLookupTableFlag = true
+    );
 
     /**
      * \brief Refresh contrast enhancement with new extent.
@@ -434,9 +423,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      * Returns default contrast enhancement settings for that type of raster.
      *  \note not available in Python bindings
      */
-    bool defaultContrastEnhancementSettings(
-      QgsContrastEnhancement::ContrastEnhancementAlgorithm &myAlgorithm,
-      Qgis::RasterRangeLimit &myLimits ) const SIP_SKIP;
+    bool defaultContrastEnhancementSettings( QgsContrastEnhancement::ContrastEnhancementAlgorithm &myAlgorithm, Qgis::RasterRangeLimit &myLimits ) const SIP_SKIP;
 
     //! Sets the default contrast enhancement
     void setDefaultContrastEnhancement();
@@ -446,8 +433,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     /**
      * \brief Draws a preview of the rasterlayer into a QImage
     */
-    QImage previewAsImage( QSize size, const QColor &bgColor = Qt::white,
-                           QImage::Format format = QImage::Format_ARGB32_Premultiplied );
+    QImage previewAsImage( QSize size, const QColor &bgColor = Qt::white, QImage::Format format = QImage::Format_ARGB32_Premultiplied );
 
     void setLayerOrder( const QStringList &layers ) override;
     void setSubLayerVisibility( const QString &name, bool vis ) override;
@@ -551,12 +537,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      *
      * \since QGIS 3.42
      */
-    void computeMinMax( int band,
-                        const QgsRasterMinMaxOrigin &mmo,
-                        Qgis::RasterRangeLimit limits,
-                        const QgsRectangle &extent,
-                        int sampleSize,
-                        double &min, double &max ) SIP_SKIP;
+    void computeMinMax( int band, const QgsRasterMinMaxOrigin &mmo, Qgis::RasterRangeLimit limits, const QgsRectangle &extent, int sampleSize, double &min, double &max ) SIP_SKIP;
 
   public slots:
     void showStatusMessage( const QString &message );
@@ -580,13 +561,11 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) override;
     bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) override;
     bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context ) override;
-    bool writeSymbology( QDomNode &, QDomDocument &doc, QString &errorMessage,
-                         const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const override;
-    bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
-                     const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const override;
+    bool writeSymbology( QDomNode &, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const override;
+    bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const override;
     bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const override;
-    QString decodedSource( const QString &source, const QString &provider,  const QgsReadWriteContext &context ) const override;
+    QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const override;
 
   private:
     //! \brief Initialize default values
@@ -601,12 +580,10 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     //! Sets corresponding renderer for style
     void setRendererForDrawingStyle( Qgis::RasterDrawingStyle drawingStyle );
 
-    void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
-                                 Qgis::RasterRangeLimit limits,
-                                 const QgsRectangle &extent,
-                                 int sampleSize,
-                                 bool generateLookupTableFlag,
-                                 QgsRasterRenderer *rasterRenderer );
+    void setContrastEnhancement(
+      QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm, Qgis::RasterRangeLimit limits, const QgsRectangle &extent, int sampleSize, bool generateLookupTableFlag,
+      QgsRasterRenderer *rasterRenderer
+    );
 
     /**
      * Updates the data source of the layer. The layer's renderer and legend will be preserved only
@@ -667,7 +644,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
 
     QDomDocument mOriginalStyleDocument;
     QDomElement mOriginalStyleElement;
-
 };
 
 // clazy:excludeall=qstring-allocations

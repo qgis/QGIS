@@ -19,7 +19,6 @@ Iterator for sequentially processing raster cells.
 #include "qgsrasteriterator.h"
 %End
   public:
-
     QgsRasterIterator( QgsRasterInterface *input, int tileOverlapPixels = 0 );
 %Docstring
 Constructor for QgsRasterIterator, iterating over the specified
@@ -64,7 +63,10 @@ Returns the current "snap to pixel" factor in pixels.
 .. versionadded:: 3.42
 %End
 
-    static QgsRectangle subRegion( const QgsRectangle &rasterExtent, int rasterWidth, int rasterHeight, const QgsRectangle &subRegion, int &subRegionWidth /Out/, int &subRegionHeight /Out/, int &subRegionLeft /Out/, int &subRegionTop /Out/, int resamplingFactor = 1 );
+    static QgsRectangle subRegion(
+      const QgsRectangle &rasterExtent, int rasterWidth, int rasterHeight, const QgsRectangle &subRegion, int &subRegionWidth /Out/, int &subRegionHeight /Out/, int &subRegionLeft /Out/,
+      int &subRegionTop /Out/, int resamplingFactor = 1
+    );
 %Docstring
 Given an overall raster extent and width and height in pixels,
 calculates the sub region of the raster covering the specified
@@ -127,10 +129,7 @@ calling :py:func:`~QgsRasterIterator.readNextRasterPart`.
 .. versionadded:: 3.6
 %End
 
-    bool readNextRasterPart( int bandNumber,
-                             int &nCols, int &nRows,
-                             QgsRasterBlock **block /TransferBack/,
-                             int &topLeftCol, int &topLeftRow );
+    bool readNextRasterPart( int bandNumber, int &nCols, int &nRows, QgsRasterBlock **block /TransferBack/, int &topLeftCol, int &topLeftRow );
 %Docstring
 Fetches next part of raster data, caller takes ownership of the block
 and caller should delete the block.

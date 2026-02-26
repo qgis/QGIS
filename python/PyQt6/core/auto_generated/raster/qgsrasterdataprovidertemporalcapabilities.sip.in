@@ -28,7 +28,6 @@ user-configurable, and should only be set by the
 #include "qgsrasterdataprovidertemporalcapabilities.h"
 %End
   public:
-
     QgsRasterDataProviderTemporalCapabilities( bool enabled = false );
 %Docstring
 Constructor for :py:class:`QgsRasterDataProviderTemporalProperties`.

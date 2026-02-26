@@ -21,12 +21,10 @@ Utility functions for use with the memory vector data provider.
 #include "qgsmemoryproviderutils.h"
 %End
   public:
-
-    static QgsVectorLayer *createMemoryLayer( const QString &name,
-        const QgsFields &fields,
-        Qgis::WkbType geometryType = Qgis::WkbType::NoGeometry,
-        const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
-        bool loadDefaultStyle = true ) /Factory/;
+    static QgsVectorLayer *createMemoryLayer(
+      const QString &name, const QgsFields &fields, Qgis::WkbType geometryType = Qgis::WkbType::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+      bool loadDefaultStyle = true
+    ) /Factory/;
 %Docstring
 Creates a new memory layer using the specified parameters. The caller
 takes responsibility for deleting the newly created layer.
@@ -38,8 +36,6 @@ takes responsibility for deleting the newly created layer.
 :param loadDefaultStyle: optional load default style toggle
 %End
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *
