@@ -127,7 +127,7 @@ Qgis::WkbType QgsArcGisRestUtils::convertGeometryType( const QString &esriGeomet
 
 std::unique_ptr< QgsPoint > QgsArcGisRestUtils::convertPoint( const QVariantList &coordList, Qgis::WkbType pointType )
 {
-  int nCoords = coordList.size();
+  const int nCoords = static_cast< int >( coordList.size() );
   if ( nCoords < 2 )
     return nullptr;
   bool xok = false, yok = false;
@@ -148,7 +148,7 @@ std::unique_ptr< QgsCircularString > QgsArcGisRestUtils::convertCircularString( 
   const QVariantList coordsList = curveData[u"c"_s].toList();
   if ( coordsList.isEmpty() )
     return nullptr;
-  const int coordsListSize = coordsList.size();
+  const int coordsListSize = static_cast< int >( coordsList.size() );
 
   QVector<QgsPoint> points;
   points.reserve( coordsListSize + 1 );
@@ -183,7 +183,7 @@ std::unique_ptr< QgsCurve > QgsArcGisRestUtils::convertCompoundCurve( const QVar
   QVector< double > lineY;
   QVector< double > lineZ;
   QVector< double > lineM;
-  int maxCurveListSize = curvesList.size();
+  const int maxCurveListSize = static_cast< int >( curvesList.size() );
   lineX.resize( maxCurveListSize );
   lineY.resize( maxCurveListSize );
 
@@ -209,7 +209,7 @@ std::unique_ptr< QgsCurve > QgsArcGisRestUtils::convertCompoundCurve( const QVar
     if ( curveData.userType() == QMetaType::Type::QVariantList )
     {
       const QVariantList coordList = curveData.toList();
-      const int nCoords = coordList.size();
+      const int nCoords = static_cast< int >( coordList.size() );
       if ( nCoords < 2 )
         return nullptr;
 
@@ -325,7 +325,7 @@ std::unique_ptr<QgsLineString> QgsArcGisRestUtils::convertLineString( const QVar
   QVector< double > lineY;
   QVector< double > lineZ;
   QVector< double > lineM;
-  int maxCurveListSize = curvesList.size();
+  const int maxCurveListSize = static_cast< int >( curvesList.size() );
   lineX.resize( maxCurveListSize );
   lineY.resize( maxCurveListSize );
 
@@ -350,7 +350,7 @@ std::unique_ptr<QgsLineString> QgsArcGisRestUtils::convertLineString( const QVar
     if ( curveData.userType() == QMetaType::Type::QVariantList )
     {
       const QVariantList coordList = curveData.toList();
-      const int nCoords = coordList.size();
+      const int nCoords = static_cast< int >( coordList.size() );
       if ( nCoords < 2 )
         return nullptr;
 
@@ -411,7 +411,7 @@ std::unique_ptr< QgsMultiPoint > QgsArcGisRestUtils::convertMultiPoint( const QV
   const QVariantList coordsList = geometryData[u"points"_s].toList();
 
   auto multiPoint = std::make_unique< QgsMultiPoint >();
-  multiPoint->reserve( coordsList.size() );
+  multiPoint->reserve( static_cast< int >( coordsList.size() ) );
   for ( const QVariant &coordData : coordsList )
   {
     const QVariantList coordList = coordData.toList();
@@ -448,7 +448,7 @@ std::unique_ptr< QgsMultiCurve > QgsArcGisRestUtils::convertGeometryPolyline( co
   if ( pathsList.isEmpty() )
     return nullptr;
   std::unique_ptr< QgsMultiCurve > multiCurve = allowCurves ? std::make_unique< QgsMultiCurve >() : std::make_unique< QgsMultiLineString >();
-  multiCurve->reserve( pathsList.size() );
+  multiCurve->reserve( static_cast< int >( pathsList.size() ) );
   for ( const QVariant &pathData : std::as_const( pathsList ) )
   {
     std::unique_ptr< QgsCurve > curve = allowCurves ? convertCompoundCurve( pathData.toList(), pointType ) : convertLineString( pathData.toList(), pointType );
@@ -473,7 +473,7 @@ std::unique_ptr< QgsMultiSurface > QgsArcGisRestUtils::convertGeometryPolygon( c
     return nullptr;
 
   QList< QgsCurve * > curves;
-  for ( int i = 0, n = ringsList.size(); i < n; ++i )
+  for ( int i = 0, n = static_cast< int >( ringsList.size() ); i < n; ++i )
   {
     std::unique_ptr< QgsCurve > curve = allowCurves ? convertCompoundCurve( ringsList[i].toList(), pointType ) : convertLineString( ringsList[i].toList(), pointType );
     if ( !curve )
@@ -496,7 +496,7 @@ std::unique_ptr< QgsMultiSurface > QgsArcGisRestUtils::convertGeometryPolygon( c
   }
 
   std::sort( curves.begin(), curves.end(), []( const QgsCurve * a, const QgsCurve * b )->bool{ double a_area = 0.0; double b_area = 0.0; a->sumUpArea( a_area ); b->sumUpArea( b_area ); return std::abs( a_area ) > std::abs( b_area ); } );
-  result->reserve( curves.size() );
+  result->reserve( static_cast< int >( curves.size() ) );
   while ( !curves.isEmpty() )
   {
     QgsCurve *exterior = curves.takeFirst();
