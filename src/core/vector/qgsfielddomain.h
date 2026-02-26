@@ -36,7 +36,6 @@ using namespace Qt::StringLiterals;
  */
 class CORE_EXPORT QgsFieldDomain
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( sipCpp->type() == Qgis::FieldDomainType::Coded )
@@ -55,7 +54,7 @@ class CORE_EXPORT QgsFieldDomain
     {
       sipType = 0;
     }
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -63,17 +62,13 @@ class CORE_EXPORT QgsFieldDomain
     /**
      * Constructor for QgsFieldDomain, with the specified \a name, \a description and \a fieldType.
      */
-    QgsFieldDomain( const QString &name,
-                    const QString &description,
-                    QMetaType::Type fieldType );
+    QgsFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType );
 
     /**
      * Constructor for QgsFieldDomain, with the specified \a name, \a description and \a fieldType.
      * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
      */
-    Q_DECL_DEPRECATED QgsFieldDomain( const QString &name,
-                                      const QString &description,
-                                      QVariant::Type fieldType ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QgsFieldDomain( const QString &name, const QString &description, QVariant::Type fieldType ) SIP_DEPRECATED;
 
     virtual ~QgsFieldDomain();
 
@@ -171,14 +166,12 @@ class CORE_EXPORT QgsFieldDomain
     void setMergePolicy( Qgis::FieldDomainMergePolicy policy ) { mMergePolicy = policy; }
 
   protected:
-
     QString mName;
     QString mDescription;
 
     QMetaType::Type mFieldType = QMetaType::Type::QString;
     Qgis::FieldDomainSplitPolicy mSplitPolicy = Qgis::FieldDomainSplitPolicy::DefaultValue;
     Qgis::FieldDomainMergePolicy mMergePolicy = Qgis::FieldDomainMergePolicy::DefaultValue;
-
 };
 
 /**
@@ -190,7 +183,6 @@ class CORE_EXPORT QgsFieldDomain
 class CORE_EXPORT QgsCodedValue
 {
   public:
-
     /**
      * Constructor for QgsCodedValue, with the associated \a code and \a value.
      *
@@ -216,17 +208,15 @@ class CORE_EXPORT QgsCodedValue
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    QString str = u"<QgsCodedValue: %1 (%2)>"_s.arg( sipCpp->code().toString(), sipCpp->value() );
+    % MethodCode QString str = u"<QgsCodedValue: %1 (%2)>"_s.arg( sipCpp->code().toString(), sipCpp->value() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    bool operator==( const QgsCodedValue &other ) const;
+      bool operator==( const QgsCodedValue &other ) const;
     bool operator!=( const QgsCodedValue &other ) const;
 
   private:
-
     QVariant mCode;
     QString mValue;
 };
@@ -244,19 +234,14 @@ class CORE_EXPORT QgsCodedValue
  */
 class CORE_EXPORT QgsCodedFieldDomain : public QgsFieldDomain
 {
-
   public:
-
     /**
      * Constructor for QgsCodedFieldDomain, with the associated \a name, \a description and \a fieldType.
      *
      * The \a values list details the coded field values as QgsCodedValue objects. Each code should
      * appear only once, but it is the responsibility of the user to check this.
      */
-    QgsCodedFieldDomain( const QString &name,
-                         const QString &description,
-                         QMetaType::Type fieldType,
-                         const QList<QgsCodedValue> &values );
+    QgsCodedFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType, const QList<QgsCodedValue> &values );
 
     /**
      * Constructor for QgsCodedFieldDomain, with the associated \a name, \a description and \a fieldType.
@@ -265,16 +250,13 @@ class CORE_EXPORT QgsCodedFieldDomain : public QgsFieldDomain
      * appear only once, but it is the responsibility of the user to check this.
      * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
      */
-    Q_DECL_DEPRECATED QgsCodedFieldDomain( const QString &name,
-                                           const QString &description,
-                                           QVariant::Type fieldType,
-                                           const QList<QgsCodedValue> &values ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QgsCodedFieldDomain( const QString &name, const QString &description, QVariant::Type fieldType, const QList<QgsCodedValue> &values ) SIP_DEPRECATED;
 
 #ifndef SIP_RUN
     //! QgsCodedFieldDomain cannot be copied - use clone() instead
     QgsCodedFieldDomain( const QgsCodedFieldDomain & ) = delete;
     //! QgsCodedFieldDomain cannot be copied - use clone() instead
-    QgsCodedFieldDomain &operator= ( const QgsCodedFieldDomain & ) = delete;
+    QgsCodedFieldDomain &operator=( const QgsCodedFieldDomain & ) = delete;
 #endif
 
     Qgis::FieldDomainType type() const override;
@@ -297,14 +279,13 @@ class CORE_EXPORT QgsCodedFieldDomain : public QgsFieldDomain
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    QString str = u"<QgsCodedFieldDomain: %1>"_s.arg( sipCpp->name() );
+    % MethodCode QString str = u"<QgsCodedFieldDomain: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-    % End
+  % End
 #endif
 
-  private:
-    QList< QgsCodedValue> mValues;
+    private : QList< QgsCodedValue>
+                mValues;
 
 #ifdef SIP_RUN
     QgsCodedFieldDomain( const QgsCodedFieldDomain & );
@@ -320,21 +301,13 @@ class CORE_EXPORT QgsCodedFieldDomain : public QgsFieldDomain
  */
 class CORE_EXPORT QgsRangeFieldDomain : public QgsFieldDomain
 {
-
   public:
-
     /**
      * Constructor for QgsRangeFieldDomain, with the specified \a name, \a description and \a fieldType.
      *
      * Set an invalid QVariant for \a minimum or \a maximum respectively if no minimum or maximum value is desired.
      */
-    QgsRangeFieldDomain( const QString &name,
-                         const QString &description,
-                         QMetaType::Type fieldType,
-                         const QVariant &minimum,
-                         bool minimumIsInclusive,
-                         const QVariant &maximum,
-                         bool maximumIsInclusive );
+    QgsRangeFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType, const QVariant &minimum, bool minimumIsInclusive, const QVariant &maximum, bool maximumIsInclusive );
 
     /**
      * Constructor for QgsRangeFieldDomain, with the specified \a name, \a description and \a fieldType.
@@ -342,20 +315,16 @@ class CORE_EXPORT QgsRangeFieldDomain : public QgsFieldDomain
      * Set an invalid QVariant for \a minimum or \a maximum respectively if no minimum or maximum value is desired.
      * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
      */
-    Q_DECL_DEPRECATED QgsRangeFieldDomain( const QString &name,
-                                           const QString &description,
-                                           QVariant::Type fieldType,
-                                           const QVariant &minimum,
-                                           bool minimumIsInclusive,
-                                           const QVariant &maximum,
-                                           bool maximumIsInclusive ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QgsRangeFieldDomain(
+      const QString &name, const QString &description, QVariant::Type fieldType, const QVariant &minimum, bool minimumIsInclusive, const QVariant &maximum, bool maximumIsInclusive
+    ) SIP_DEPRECATED;
 
 
 #ifndef SIP_RUN
     //! QgsRangeFieldDomain cannot be copied - use clone() instead
     QgsRangeFieldDomain( const QgsRangeFieldDomain & ) = delete;
     //! QgsRangeFieldDomain cannot be copied - use clone() instead
-    QgsRangeFieldDomain &operator= ( const QgsRangeFieldDomain & ) = delete;
+    QgsRangeFieldDomain &operator=( const QgsRangeFieldDomain & ) = delete;
 #endif
 
     Qgis::FieldDomainType type() const override;
@@ -436,18 +405,14 @@ class CORE_EXPORT QgsRangeFieldDomain : public QgsFieldDomain
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    QString str = u"<QgsRangeFieldDomain: %1 %2%3, %4%5>"_s.arg( sipCpp->name(),
-                  sipCpp->minimumIsInclusive() ? u"["_s : u"("_s,
-                  sipCpp->minimum().toString(),
-                  sipCpp->maximum().toString(),
-                  sipCpp->maximumIsInclusive() ? u"]"_s : u")"_s );
+    % MethodCode QString str
+      = u"<QgsRangeFieldDomain: %1 %2%3, %4%5>"_s
+          .arg( sipCpp->name(), sipCpp->minimumIsInclusive() ? u"["_s : u"("_s, sipCpp->minimum().toString(), sipCpp->maximum().toString(), sipCpp->maximumIsInclusive() ? u"]"_s : u")"_s );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-    % End
+  % End
 #endif
 
-  private:
-    QVariant mMin;
+    private : QVariant mMin;
     QVariant mMax;
     bool mMinIsInclusive = false;
     bool mMaxIsInclusive = false;
@@ -468,18 +433,13 @@ class CORE_EXPORT QgsRangeFieldDomain : public QgsFieldDomain
  */
 class CORE_EXPORT QgsGlobFieldDomain : public QgsFieldDomain
 {
-
   public:
-
     /**
      * Constructor for QgsGlobFieldDomain, with the specified \a name, \a description and \a fieldType.
      *
      * The \a glob argument specifies the content validation glob, e.g. ``*[a-z][0-1]?``.
      */
-    QgsGlobFieldDomain( const QString &name,
-                        const QString &description,
-                        QMetaType::Type fieldType,
-                        const QString &glob );
+    QgsGlobFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType, const QString &glob );
 
     /**
      * Constructor for QgsGlobFieldDomain, with the specified \a name, \a description and \a fieldType.
@@ -487,17 +447,14 @@ class CORE_EXPORT QgsGlobFieldDomain : public QgsFieldDomain
      * The \a glob argument specifies the content validation glob, e.g. ``*[a-z][0-1]?``.
      * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
      */
-    Q_DECL_DEPRECATED QgsGlobFieldDomain( const QString &name,
-                                          const QString &description,
-                                          QVariant::Type fieldType,
-                                          const QString &glob ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QgsGlobFieldDomain( const QString &name, const QString &description, QVariant::Type fieldType, const QString &glob ) SIP_DEPRECATED;
 
 
 #ifndef SIP_RUN
     //! QgsGlobFieldDomain cannot be copied - use clone() instead
     QgsGlobFieldDomain( const QgsGlobFieldDomain & ) = delete;
     //! QgsGlobFieldDomain cannot be copied - use clone() instead
-    QgsGlobFieldDomain &operator= ( const QgsGlobFieldDomain & ) = delete;
+    QgsGlobFieldDomain &operator=( const QgsGlobFieldDomain & ) = delete;
 #endif
 
     Qgis::FieldDomainType type() const override;
@@ -524,19 +481,16 @@ class CORE_EXPORT QgsGlobFieldDomain : public QgsFieldDomain
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    QString str = u"<QgsGlobFieldDomain: %1 '%2'>"_s.arg( sipCpp->name(), sipCpp->glob() );
+    % MethodCode QString str = u"<QgsGlobFieldDomain: %1 '%2'>"_s.arg( sipCpp->name(), sipCpp->glob() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-    % End
+  % End
 #endif
 
-  private:
-    QString mGlob;
+    private : QString mGlob;
 
 #ifdef SIP_RUN
     QgsGlobFieldDomain( const QgsGlobFieldDomain & );
 #endif
-
 };
 
 #endif // QGSFIELDDOMAIN_H

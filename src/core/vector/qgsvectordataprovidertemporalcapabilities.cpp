@@ -18,19 +18,12 @@
 #include "qgsvectordataprovidertemporalcapabilities.h"
 
 QgsVectorDataProviderTemporalCapabilities::QgsVectorDataProviderTemporalCapabilities( bool enabled )
-  :  QgsDataProviderTemporalCapabilities( enabled )
-{
-}
+  : QgsDataProviderTemporalCapabilities( enabled )
+{}
 
-Qgis::VectorDataProviderTemporalMode QgsVectorDataProviderTemporalCapabilities::mode() const
-{
-  return mMode;
-}
+Qgis::VectorDataProviderTemporalMode QgsVectorDataProviderTemporalCapabilities::mode() const { return mMode; }
 
-void QgsVectorDataProviderTemporalCapabilities::setMode( Qgis::VectorDataProviderTemporalMode mode )
-{
-  mMode = mode;
-}
+void QgsVectorDataProviderTemporalCapabilities::setMode( Qgis::VectorDataProviderTemporalMode mode ) { mMode = mode; }
 
 void QgsVectorDataProviderTemporalCapabilities::setAvailableTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
@@ -40,27 +33,12 @@ void QgsVectorDataProviderTemporalCapabilities::setAvailableTemporalRange( const
   mAvailableTemporalRange = dateTimeRange;
 }
 
-const QgsDateTimeRange &QgsVectorDataProviderTemporalCapabilities::availableTemporalRange() const
-{
-  return mAvailableTemporalRange;
-}
+const QgsDateTimeRange &QgsVectorDataProviderTemporalCapabilities::availableTemporalRange() const { return mAvailableTemporalRange; }
 
-QString QgsVectorDataProviderTemporalCapabilities::startField() const
-{
-  return mStartField;
-}
+QString QgsVectorDataProviderTemporalCapabilities::startField() const { return mStartField; }
 
-void QgsVectorDataProviderTemporalCapabilities::setStartField( const QString &field )
-{
-  mStartField = field;
-}
+void QgsVectorDataProviderTemporalCapabilities::setStartField( const QString &field ) { mStartField = field; }
 
-QString QgsVectorDataProviderTemporalCapabilities::endField() const
-{
-  return mEndField;
-}
+QString QgsVectorDataProviderTemporalCapabilities::endField() const { return mEndField; }
 
-void QgsVectorDataProviderTemporalCapabilities::setEndField( const QString &field )
-{
-  mEndField = field;
-}
+void QgsVectorDataProviderTemporalCapabilities::setEndField( const QString &field ) { mEndField = field; }

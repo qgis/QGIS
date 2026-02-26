@@ -150,8 +150,7 @@ void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext &context, pal::L
   }
   QgsPointXY outPt( centerX / 4.0, centerY / 4.0 );
   //then, calculate the top left point for the diagram with this center position
-  QgsPointXY centerPt = xform.transform( outPt.x() - label->getWidth() / 2,
-                                         outPt.y() - label->getHeight() / 2 );
+  QgsPointXY centerPt = xform.transform( outPt.x() - label->getWidth() / 2, outPt.y() - label->getHeight() / 2 );
 
   mSettings.renderer()->renderDiagram( feature, context, centerPt.toQPointF(), mSettings.dataDefinedProperties() );
 
@@ -191,10 +190,7 @@ void QgsVectorLayerDiagramProvider::registerFeature( QgsFeature &feature, QgsRen
     mFeatures << label;
 }
 
-void QgsVectorLayerDiagramProvider::setClipFeatureGeometry( const QgsGeometry &geometry )
-{
-  mLabelClipFeatureGeom = geometry;
-}
+void QgsVectorLayerDiagramProvider::setClipFeatureGeometry( const QgsGeometry &geometry ) { mLabelClipFeatureGeom = geometry; }
 
 QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( const QgsFeature &feat, QgsRenderContext &context, const QgsGeometry &obstacleGeometry )
 {
@@ -337,8 +333,7 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( const QgsFeatur
 
   // z-Index
   double zIndex = mSettings.zIndex();
-  if ( mSettings.dataDefinedProperties().hasProperty( QgsDiagramLayerSettings::Property::ZIndex )
-       && mSettings.dataDefinedProperties().property( QgsDiagramLayerSettings::Property::ZIndex ).isActive() )
+  if ( mSettings.dataDefinedProperties().hasProperty( QgsDiagramLayerSettings::Property::ZIndex ) && mSettings.dataDefinedProperties().property( QgsDiagramLayerSettings::Property::ZIndex ).isActive() )
   {
     context.expressionContext().setOriginalValueVariable( zIndex );
     zIndex = mSettings.dataDefinedProperties().valueAsDouble( QgsDiagramLayerSettings::Property::ZIndex, context.expressionContext(), zIndex );
@@ -362,4 +357,3 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( const QgsFeatur
   lf->setDistLabel( dist );
   return lf;
 }
-

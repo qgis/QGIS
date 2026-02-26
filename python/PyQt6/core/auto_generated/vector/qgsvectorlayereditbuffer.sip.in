@@ -319,7 +319,6 @@ Emitted after feature geometry changes have been committed to the layer.
 %End
 
   protected:
-
     QgsVectorLayerEditBuffer();
 
     void updateFeatureGeometry( QgsFeature &f );

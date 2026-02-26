@@ -37,7 +37,6 @@
 class CORE_EXPORT QgsVectorDataProviderTemporalCapabilities : public QgsDataProviderTemporalCapabilities
 {
   public:
-
     /**
      * Constructor for QgsVectorDataProviderTemporalCapabilities.
      *
@@ -110,7 +109,6 @@ class CORE_EXPORT QgsVectorDataProviderTemporalCapabilities : public QgsDataProv
     void setEndField( const QString &field );
 
   private:
-
     /**
      * Represents available data provider datetime range.
      *
@@ -125,7 +123,6 @@ class CORE_EXPORT QgsVectorDataProviderTemporalCapabilities : public QgsDataProv
 
     QString mStartField;
     QString mEndField;
-
 };
 
 #endif // QGSVECTORDATAPROVIDERTEMPORALCAPABILITIES_H

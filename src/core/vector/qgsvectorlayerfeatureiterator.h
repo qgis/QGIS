@@ -43,17 +43,16 @@ class QgsVectorLayerFeatureIterator;
 #ifdef SIP_RUN
 % ModuleHeaderCode
 #include "qgsfeatureiterator.h"
-% End
+  % End
 #endif
 
-/**
+  /**
  * \ingroup core
  * \brief Partial snapshot of vector layer's state (only the members necessary for access to features).
 */
-class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
+  class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-
     /**
      * Constructor for QgsVectorLayerFeatureSource.
      * \param layer source layer
@@ -89,7 +88,6 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
     QString id() const;
 
   protected:
-
     std::unique_ptr< QgsAbstractFeatureSource > mProviderFeatureSource;
 
     std::unique_ptr< QgsVectorLayerJoinBuffer > mJoinBuffer;
@@ -104,16 +102,15 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
      */
     struct JoinLayerSource
     {
-
-      /**
+        /**
        * Feature source for join
        */
-      std::shared_ptr< QgsVectorLayerFeatureSource > joinSource;
+        std::shared_ptr< QgsVectorLayerFeatureSource > joinSource;
 
-      /**
+        /**
        * Fields from joined layer.
        */
-      QgsFields joinLayerFields;
+        QgsFields joinLayerFields;
     };
 
     //! Contains prepared join sources by layer ID
@@ -173,42 +170,42 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      */
     struct CORE_EXPORT FetchJoinInfo
     {
-      //! Canonical source of information about the join
-      const QgsVectorLayerJoinInfo *joinInfo;
-      //! Attributes to fetch
-      QgsAttributeList attributes;
-      //! Mapping from original attribute index to the joined layer index
-      QMap<int, int> attributesSourceToDestLayerMap SIP_SKIP;
-      //! At what position the joined fields start
-      int indexOffset;
+        //! Canonical source of information about the join
+        const QgsVectorLayerJoinInfo *joinInfo;
+        //! Attributes to fetch
+        QgsAttributeList attributes;
+        //! Mapping from original attribute index to the joined layer index
+        QMap<int, int> attributesSourceToDestLayerMap SIP_SKIP;
+        //! At what position the joined fields start
+        int indexOffset;
 
 #ifndef SIP_RUN
 
-      /**
+        /**
        * Feature source for join
        *
        * \note Not available in Python bindings
        * \since QGIS 3.20
        */
-      std::shared_ptr< QgsVectorLayerFeatureSource > joinSource;
+        std::shared_ptr< QgsVectorLayerFeatureSource > joinSource;
 
-      /**
+        /**
        * Fields from joined layer.
        *
        * \note Not available in Python bindings
        * \since QGIS 3.20
        */
-      QgsFields joinLayerFields;
+        QgsFields joinLayerFields;
 #endif
 
-      //! Index of field (of this layer) that drives the join
-      int targetField;
+        //! Index of field (of this layer) that drives the join
+        int targetField;
 
-      //!< Index of field (of the joined layer) must have equal value
-      int joinField;
+        //!< Index of field (of the joined layer) must have equal value
+        int joinField;
 
-      void addJoinedAttributesCached( QgsFeature &f, const QVariant &joinValue ) const;
-      void addJoinedAttributesDirect( QgsFeature &f, const QVariant &joinValue ) const;
+        void addJoinedAttributesCached( QgsFeature &f, const QVariant &joinValue ) const;
+        void addJoinedAttributesDirect( QgsFeature &f, const QVariant &joinValue ) const;
     };
 
     bool isValid() const override;
@@ -361,7 +358,6 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 };
 
 
-
 /**
  * \class QgsVectorLayerSelectedFeatureSource
  * \ingroup core
@@ -370,7 +366,6 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource, public QgsExpressionContextScopeGenerator
 {
   public:
-
     /**
      * Constructor for QgsVectorLayerSelectedFeatureSource, for selected features from the specified \a layer.
      * The currently selected feature IDs are stored, so change to the layer selection after constructing
@@ -391,7 +386,6 @@ class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource,
     Qgis::SpatialIndexPresence hasSpatialIndex() const override;
 
   private:
-
 #ifdef SIP_RUN
     QgsVectorLayerSelectedFeatureSource( const QgsVectorLayerSelectedFeatureSource &other );
 #endif
@@ -402,7 +396,6 @@ class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource,
     Qgis::WkbType mWkbType = Qgis::WkbType::Unknown;
     QString mName;
     QPointer< QgsVectorLayer > mLayer;
-
 };
 
 ///@cond PRIVATE
@@ -411,10 +404,7 @@ class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource,
 class QgsVectorLayerSelectedFeatureIterator : public QgsAbstractFeatureIterator
 {
   public:
-
-    QgsVectorLayerSelectedFeatureIterator( const QgsFeatureIds &selectedFeatureIds,
-                                           const QgsFeatureRequest &request,
-                                           QgsVectorLayerFeatureSource &source );
+    QgsVectorLayerSelectedFeatureIterator( const QgsFeatureIds &selectedFeatureIds, const QgsFeatureRequest &request, QgsVectorLayerFeatureSource &source );
 
     bool rewind() override;
     bool close() override;
@@ -425,7 +415,6 @@ class QgsVectorLayerSelectedFeatureIterator : public QgsAbstractFeatureIterator
   private:
     QgsFeatureIds mSelectedFeatureIds;
     QgsFeatureIterator mIterator;
-
 };
 
 #endif

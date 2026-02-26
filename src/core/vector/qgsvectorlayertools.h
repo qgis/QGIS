@@ -63,7 +63,10 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      *
      * \note addFeature or addFeatureV2 must be overwritten when implementing a class inheriting from QgsVectorLayerTools
      */
-    virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues = QgsAttributeMap(), const QgsGeometry &defaultGeometry = QgsGeometry(), QgsFeature *feature SIP_OUT = nullptr, QWidget *parentWidget = nullptr, bool showModal = true, bool hideParent = false ) const
+    virtual bool addFeature(
+      QgsVectorLayer *layer, const QgsAttributeMap &defaultValues = QgsAttributeMap(), const QgsGeometry &defaultGeometry = QgsGeometry(), QgsFeature *feature SIP_OUT = nullptr,
+      QWidget *parentWidget = nullptr, bool showModal = true, bool hideParent = false
+    ) const
     {
       QgsVectorLayerToolsContext context;
       context.setParentWidget( parentWidget );
@@ -85,7 +88,10 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      * \note addFeature or addFeatureV2 must be overwritten when implementing a class inheriting from QgsVectorLayerTools
      * \since QGIS 3.38
      */
-    virtual bool addFeatureV2( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues = QgsAttributeMap(), const QgsGeometry &defaultGeometry = QgsGeometry(), QgsFeature *feature SIP_OUT = nullptr, const QgsVectorLayerToolsContext &context = QgsVectorLayerToolsContext() ) const
+    virtual bool addFeatureV2(
+      QgsVectorLayer *layer, const QgsAttributeMap &defaultValues = QgsAttributeMap(), const QgsGeometry &defaultGeometry = QgsGeometry(), QgsFeature *feature SIP_OUT = nullptr,
+      const QgsVectorLayerToolsContext &context = QgsVectorLayerToolsContext()
+    ) const
     {
       Q_UNUSED( context )
       return addFeature( layer, defaultValues, defaultGeometry, feature, context.parentWidget(), context.showModal(), context.hideParent() );
@@ -146,7 +152,10 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      * \returns TRUE if all features could be copied.
      *
      */
-    virtual bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request SIP_INOUT, double dx = 0, double dy = 0, QString *errorMsg SIP_OUT = nullptr, const bool topologicalEditing = false, QgsVectorLayer *topologicalLayer = nullptr, QString *childrenInfoMsg = nullptr ) const;
+    virtual bool copyMoveFeatures(
+      QgsVectorLayer *layer, QgsFeatureRequest &request SIP_INOUT, double dx = 0, double dy = 0, QString *errorMsg SIP_OUT = nullptr, const bool topologicalEditing = false,
+      QgsVectorLayer *topologicalLayer = nullptr, QString *childrenInfoMsg = nullptr
+    ) const;
 
     /**
      * Returns force suppress form popup status.
@@ -181,11 +190,8 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
     QgsProject *project() const { return mProject; }
 
   private:
-
     QgsProject *mProject = nullptr;
     bool mForceSuppressFormPopup { false };
-
-
 };
 
 #endif // QGSVECTORLAYERTOOLS_H

@@ -30,14 +30,12 @@
 
 QgsVectorLayerUndoPassthroughCommand::QgsVectorLayerUndoPassthroughCommand( QgsVectorLayerEditBuffer *buffer, const QString &text, bool autocreate )
   : QgsVectorLayerUndoCommand( buffer )
-  , mSavePointId( ( mBuffer->L->isEditCommandActive() && !mBuffer->L->dataProvider()->transaction()->savePoints().isEmpty() )
-                  || !autocreate
-                  ? mBuffer->L->dataProvider()->transaction()->savePoints().last()
-                  : mBuffer->L->dataProvider()->transaction()->createSavepoint( mError ) )
+  , mSavePointId(
+      ( mBuffer->L->isEditCommandActive() && !mBuffer->L->dataProvider()->transaction()->savePoints().isEmpty() ) || !autocreate ? mBuffer->L->dataProvider()->transaction()->savePoints().last()
+                                                                                                                                 : mBuffer->L->dataProvider()->transaction()->createSavepoint( mError )
+    )
   , mHasError( !mError.isEmpty() )
-  , mRecreateSavePoint( mBuffer->L->isEditCommandActive()
-                        ? !mBuffer->L->dataProvider()->transaction()->lastSavePointIsDirty()
-                        : true )
+  , mRecreateSavePoint( mBuffer->L->isEditCommandActive() ? !mBuffer->L->dataProvider()->transaction()->lastSavePointIsDirty() : true )
 {
   // the first command in the undo stack macro will have a clean save point
   // the first command is responsible to re-create the savepoint after undo
@@ -54,15 +52,9 @@ void QgsVectorLayerUndoPassthroughCommand::setError()
   }
 }
 
-void QgsVectorLayerUndoPassthroughCommand::setErrorMessage( const QString &errorMessage )
-{
-  mError = errorMessage;
-}
+void QgsVectorLayerUndoPassthroughCommand::setErrorMessage( const QString &errorMessage ) { mError = errorMessage; }
 
-QString QgsVectorLayerUndoPassthroughCommand::errorMessage() const
-{
-  return mError;
-}
+QString QgsVectorLayerUndoPassthroughCommand::errorMessage() const { return mError; }
 
 bool QgsVectorLayerUndoPassthroughCommand::setSavePoint( const QString &savePointId )
 {
@@ -114,7 +106,6 @@ QgsVectorLayerUndoPassthroughCommandAddFeatures::QgsVectorLayerUndoPassthroughCo
     mInitialFeatures.last().setId( sAddedIdLowWaterMark );
   }
   mFeatures = mInitialFeatures;
-
 }
 
 void QgsVectorLayerUndoPassthroughCommandAddFeatures::undo()
@@ -134,7 +125,7 @@ void QgsVectorLayerUndoPassthroughCommandAddFeatures::redo()
 {
   mFeatures = mInitialFeatures;
   mBuffer->L->dataProvider()->clearErrors();
-  if ( setSavePoint() && mBuffer->L->dataProvider()->addFeatures( mFeatures ) && ! mBuffer->L->dataProvider()->hasErrors() )
+  if ( setSavePoint() && mBuffer->L->dataProvider()->addFeatures( mFeatures ) && !mBuffer->L->dataProvider()->hasErrors() )
   {
     for ( const QgsFeature &f : std::as_const( mFeatures ) )
     {
@@ -151,8 +142,7 @@ void QgsVectorLayerUndoPassthroughCommandAddFeatures::redo()
 QgsVectorLayerUndoPassthroughCommandDeleteFeatures::QgsVectorLayerUndoPassthroughCommandDeleteFeatures( QgsVectorLayerEditBuffer *buffer, const QgsFeatureIds &fids )
   : QgsVectorLayerUndoPassthroughCommand( buffer, QObject::tr( "delete features" ) )
   , mFids( fids )
-{
-}
+{}
 
 void QgsVectorLayerUndoPassthroughCommandDeleteFeatures::undo()
 {
@@ -173,14 +163,14 @@ void QgsVectorLayerUndoPassthroughCommandDeleteFeatures::undo()
 void QgsVectorLayerUndoPassthroughCommandDeleteFeatures::redo()
 {
   mBuffer->L->dataProvider()->clearErrors();
-  if ( setSavePoint() && mBuffer->L->dataProvider()->deleteFeatures( mFids ) && ! mBuffer->L->dataProvider()->hasErrors() )
+  if ( setSavePoint() && mBuffer->L->dataProvider()->deleteFeatures( mFids ) && !mBuffer->L->dataProvider()->hasErrors() )
   {
     mDeletedNewFeatures.clear();
     for ( const QgsFeatureId &fid : mFids )
     {
       if ( mBuffer->mAddedFeatures.contains( fid ) )
       {
-        mDeletedNewFeatures.insert( fid, mBuffer->mAddedFeatures[ fid ] );
+        mDeletedNewFeatures.insert( fid, mBuffer->mAddedFeatures[fid] );
         mBuffer->mAddedFeatures.remove( fid );
       }
       else
@@ -219,7 +209,7 @@ void QgsVectorLayerUndoPassthroughCommandChangeGeometry::undo()
   {
     if ( mBuffer->mAddedFeatures.contains( mFid ) )
     {
-      mBuffer->mAddedFeatures[ mFid ].setGeometry( mOldGeom );
+      mBuffer->mAddedFeatures[mFid].setGeometry( mOldGeom );
     }
     else if ( mFirstChange )
     {
@@ -229,7 +219,7 @@ void QgsVectorLayerUndoPassthroughCommandChangeGeometry::undo()
     {
       mBuffer->mChangedGeometries[mFid] = mOldGeom;
     }
-    emit mBuffer->geometryChanged( mFid,  mOldGeom );
+    emit mBuffer->geometryChanged( mFid, mOldGeom );
   }
 }
 
@@ -238,15 +228,15 @@ void QgsVectorLayerUndoPassthroughCommandChangeGeometry::redo()
   QgsGeometryMap geomMap;
   geomMap.insert( mFid, mNewGeom );
   mBuffer->L->dataProvider()->clearErrors();
-  if ( setSavePoint() && mBuffer->L->dataProvider()->changeGeometryValues( geomMap ) && ! mBuffer->L->dataProvider()->hasErrors() )
+  if ( setSavePoint() && mBuffer->L->dataProvider()->changeGeometryValues( geomMap ) && !mBuffer->L->dataProvider()->hasErrors() )
   {
     if ( mBuffer->mAddedFeatures.contains( mFid ) )
     {
-      mBuffer->mAddedFeatures[ mFid ].setGeometry( mNewGeom );
+      mBuffer->mAddedFeatures[mFid].setGeometry( mNewGeom );
     }
     else
     {
-      mBuffer->mChangedGeometries[ mFid ] = mNewGeom;
+      mBuffer->mChangedGeometries[mFid] = mNewGeom;
     }
     emit mBuffer->geometryChanged( mFid, mNewGeom );
   }
@@ -275,7 +265,6 @@ bool QgsVectorLayerUndoPassthroughCommandChangeGeometry::mergeWith( const QUndoC
 }
 
 
-
 QgsVectorLayerUndoPassthroughCommandChangeAttribute::QgsVectorLayerUndoPassthroughCommandChangeAttribute( QgsVectorLayerEditBuffer *buffer, QgsFeatureId fid, int field, const QVariant &newValue )
   : QgsVectorLayerUndoPassthroughCommand( buffer, QObject::tr( "change attribute value" ) )
   , mFid( fid )
@@ -283,7 +272,6 @@ QgsVectorLayerUndoPassthroughCommandChangeAttribute::QgsVectorLayerUndoPassthrou
   , mNewValue( newValue )
   , mOldValue( mBuffer->L->getFeature( mFid ).attribute( field ) )
 {
-
   if ( mBuffer->mAddedFeatures.contains( mFid ) )
   {
     // work with added feature
@@ -351,7 +339,7 @@ void QgsVectorLayerUndoPassthroughCommandChangeAttribute::redo()
   QgsChangedAttributesMap attribMap;
   attribMap.insert( mFid, map );
   mBuffer->L->dataProvider()->clearErrors();
-  if ( setSavePoint() && mBuffer->L->dataProvider()->changeAttributeValues( attribMap ) && ! mBuffer->L->dataProvider()->hasErrors() )
+  if ( setSavePoint() && mBuffer->L->dataProvider()->changeAttributeValues( attribMap ) && !mBuffer->L->dataProvider()->hasErrors() )
   {
     // Update existing feature
     QgsFeatureMap::iterator it = mBuffer->mAddedFeatures.find( mFid );
@@ -380,8 +368,7 @@ void QgsVectorLayerUndoPassthroughCommandChangeAttribute::redo()
 QgsVectorLayerUndoPassthroughCommandAddAttribute::QgsVectorLayerUndoPassthroughCommandAddAttribute( QgsVectorLayerEditBuffer *buffer, const QgsField &field )
   : QgsVectorLayerUndoPassthroughCommand( buffer, QObject::tr( "add attribute" ) + " " + field.name() )
   , mField( field )
-{
-}
+{}
 
 void QgsVectorLayerUndoPassthroughCommandAddAttribute::undo()
 {
@@ -395,7 +382,7 @@ void QgsVectorLayerUndoPassthroughCommandAddAttribute::undo()
     // isn't already gone
     if ( mBuffer->L->dataProvider()->fieldNameIndex( mField.name() ) != -1 )
     {
-      ( void )mBuffer->L->dataProvider()->deleteAttributes( QgsAttributeIds() << attr );
+      ( void ) mBuffer->L->dataProvider()->deleteAttributes( QgsAttributeIds() << attr );
     }
     mBuffer->mAddedAttributes.removeAll( mField );
     mBuffer->updateLayerFields();
@@ -410,7 +397,7 @@ void QgsVectorLayerUndoPassthroughCommandAddAttribute::undo()
 void QgsVectorLayerUndoPassthroughCommandAddAttribute::redo()
 {
   mBuffer->L->dataProvider()->clearErrors();
-  if ( setSavePoint() && mBuffer->L->dataProvider()->addAttributes( QList<QgsField>() << mField ) && ! mBuffer->L->dataProvider()->hasErrors() )
+  if ( setSavePoint() && mBuffer->L->dataProvider()->addAttributes( QList<QgsField>() << mField ) && !mBuffer->L->dataProvider()->hasErrors() )
   {
     mBuffer->updateLayerFields();
     const int attr = mBuffer->L->dataProvider()->fieldNameIndex( mField.name() );
@@ -425,10 +412,9 @@ void QgsVectorLayerUndoPassthroughCommandAddAttribute::redo()
 
 QgsVectorLayerUndoPassthroughCommandDeleteAttribute::QgsVectorLayerUndoPassthroughCommandDeleteAttribute( QgsVectorLayerEditBuffer *buffer, int attr )
   : QgsVectorLayerUndoPassthroughCommand( buffer, QObject::tr( "delete attribute" ) )
-  , mField( mBuffer->L->fields()[ attr ] )
+  , mField( mBuffer->L->fields()[attr] )
   , mOriginalFieldIndex( attr )
-{
-}
+{}
 
 void QgsVectorLayerUndoPassthroughCommandDeleteAttribute::undo()
 {
@@ -445,7 +431,7 @@ void QgsVectorLayerUndoPassthroughCommandDeleteAttribute::undo()
     {
       ok = mBuffer->L->dataProvider()->addAttributes( QList<QgsField>() << mField );
     }
-    if ( ok && ! mBuffer->L->dataProvider()->hasErrors() )
+    if ( ok && !mBuffer->L->dataProvider()->hasErrors() )
     {
       mBuffer->mDeletedAttributeIds.removeOne( mOriginalFieldIndex );
       mBuffer->updateLayerFields();
@@ -465,7 +451,7 @@ void QgsVectorLayerUndoPassthroughCommandDeleteAttribute::undo()
 void QgsVectorLayerUndoPassthroughCommandDeleteAttribute::redo()
 {
   mBuffer->L->dataProvider()->clearErrors();
-  if ( setSavePoint() && mBuffer->L->dataProvider()->deleteAttributes( QgsAttributeIds() << mOriginalFieldIndex ) && ! mBuffer->L->dataProvider()->hasErrors() )
+  if ( setSavePoint() && mBuffer->L->dataProvider()->deleteAttributes( QgsAttributeIds() << mOriginalFieldIndex ) && !mBuffer->L->dataProvider()->hasErrors() )
   {
     mBuffer->mDeletedAttributeIds.append( mOriginalFieldIndex );
     mBuffer->updateLayerFields();
@@ -481,16 +467,15 @@ QgsVectorLayerUndoPassthroughCommandRenameAttribute::QgsVectorLayerUndoPassthrou
   : QgsVectorLayerUndoPassthroughCommand( buffer, QObject::tr( "rename attribute" ) + " " + newName )
   , mAttr( attr )
   , mNewName( newName )
-  , mOldName( mBuffer->L->fields()[ mAttr ].name() )
-{
-}
+  , mOldName( mBuffer->L->fields()[mAttr].name() )
+{}
 
 void QgsVectorLayerUndoPassthroughCommandRenameAttribute::undo()
 {
   // note that the renameAttributes here is only necessary to inform the provider that
   // an attribute is renamed after the rollBackToSavePoint
   QgsFieldNameMap map;
-  map[ mAttr ] = mOldName;
+  map[mAttr] = mOldName;
   mBuffer->L->dataProvider()->clearErrors();
   if ( rollBackToSavePoint() )
   {
@@ -502,7 +487,7 @@ void QgsVectorLayerUndoPassthroughCommandRenameAttribute::undo()
     {
       ok = mBuffer->L->dataProvider()->renameAttributes( map );
     }
-    if ( ok && ! mBuffer->L->dataProvider()->hasErrors() )
+    if ( ok && !mBuffer->L->dataProvider()->hasErrors() )
     {
       mBuffer->updateLayerFields();
       emit mBuffer->attributeRenamed( mAttr, mOldName );
@@ -521,9 +506,9 @@ void QgsVectorLayerUndoPassthroughCommandRenameAttribute::undo()
 void QgsVectorLayerUndoPassthroughCommandRenameAttribute::redo()
 {
   QgsFieldNameMap map;
-  map[ mAttr ] = mNewName;
+  map[mAttr] = mNewName;
   mBuffer->L->dataProvider()->clearErrors();
-  if ( setSavePoint() && mBuffer->L->dataProvider()->renameAttributes( map ) && ! mBuffer->L->dataProvider()->hasErrors() )
+  if ( setSavePoint() && mBuffer->L->dataProvider()->renameAttributes( map ) && !mBuffer->L->dataProvider()->hasErrors() )
   {
     mBuffer->updateLayerFields();
     emit mBuffer->attributeRenamed( mAttr, mNewName );
@@ -538,8 +523,7 @@ QgsVectorLayerUndoPassthroughCommandUpdate::QgsVectorLayerUndoPassthroughCommand
   : QgsVectorLayerUndoPassthroughCommand( buffer, name.isEmpty() ? QObject::tr( "custom transaction" ) : name, false )
   , mTransaction( transaction )
   , mSql( sql )
-{
-}
+{}
 
 void QgsVectorLayerUndoPassthroughCommandUpdate::undo()
 {
@@ -586,7 +570,9 @@ void QgsVectorLayerUndoPassthroughCommandUpdate::redo()
   }
 }
 
-QgsVectorLayerUndoPassthroughCommandChangeAttributes::QgsVectorLayerUndoPassthroughCommandChangeAttributes( QgsVectorLayerEditBuffer *buffer, QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues )
+QgsVectorLayerUndoPassthroughCommandChangeAttributes::QgsVectorLayerUndoPassthroughCommandChangeAttributes(
+  QgsVectorLayerEditBuffer *buffer, QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues
+)
   : QgsVectorLayerUndoPassthroughCommand( buffer, QObject::tr( "change attribute value" ) )
   , mFid( fid )
   , mNewValues( newValues )
@@ -597,23 +583,23 @@ QgsVectorLayerUndoPassthroughCommandChangeAttributes::QgsVectorLayerUndoPassthro
     const auto oldAttrs( mBuffer->L->getFeature( mFid ).attributes() );
     for ( auto it = mNewValues.constBegin(); it != mNewValues.constEnd(); ++it )
     {
-      mOldValues[ it.key() ] = oldAttrs[ it.key() ];
+      mOldValues[it.key()] = oldAttrs[it.key()];
     }
   }
   const bool isAdded { mBuffer->mAddedFeatures.contains( mFid ) };
   for ( auto it = mNewValues.constBegin(); it != mNewValues.constEnd(); ++it )
   {
-    if ( isAdded && mBuffer->mAddedFeatures[ mFid ].attribute( it.key() ).isValid() )
+    if ( isAdded && mBuffer->mAddedFeatures[mFid].attribute( it.key() ).isValid() )
     {
-      mFirstChanges[ it.key() ] = false;
+      mFirstChanges[it.key()] = false;
     }
     else if ( mBuffer->mChangedAttributeValues.contains( mFid ) && mBuffer->mChangedAttributeValues[mFid].contains( it.key() ) )
     {
-      mFirstChanges[ it.key() ] = false;
+      mFirstChanges[it.key()] = false;
     }
     else
     {
-      mFirstChanges[ it.key() ] = true;
+      mFirstChanges[it.key()] = true;
     }
   }
 }
@@ -628,9 +614,9 @@ void QgsVectorLayerUndoPassthroughCommandChangeAttributes::undo()
       const auto fieldIndex { it.key() };
       if ( addedIt != mBuffer->mAddedFeatures.end() )
       {
-        addedIt.value().setAttribute( fieldIndex, mOldValues[ it.key() ] );
+        addedIt.value().setAttribute( fieldIndex, mOldValues[it.key()] );
       }
-      else if ( mFirstChanges.contains( fieldIndex ) && mFirstChanges[ fieldIndex ] )
+      else if ( mFirstChanges.contains( fieldIndex ) && mFirstChanges[fieldIndex] )
       {
         // existing feature
         mBuffer->mChangedAttributeValues[mFid].remove( fieldIndex );
@@ -642,9 +628,9 @@ void QgsVectorLayerUndoPassthroughCommandChangeAttributes::undo()
         {
           mBuffer->mChangedAttributeValues.insert( mFid, QgsAttributeMap() );
         }
-        mBuffer->mChangedAttributeValues[mFid].insert( fieldIndex, mOldValues[ it.key() ] );
+        mBuffer->mChangedAttributeValues[mFid].insert( fieldIndex, mOldValues[it.key()] );
       }
-      emit mBuffer->attributeValueChanged( mFid, it.key(), mOldValues[ it.key() ] );
+      emit mBuffer->attributeValueChanged( mFid, it.key(), mOldValues[it.key()] );
     }
     if ( mBuffer->mChangedAttributeValues[mFid].isEmpty() )
       mBuffer->mChangedAttributeValues.remove( mFid );
@@ -656,7 +642,7 @@ void QgsVectorLayerUndoPassthroughCommandChangeAttributes::redo()
   QgsChangedAttributesMap attribMap;
   attribMap.insert( mFid, mNewValues );
   mBuffer->L->dataProvider()->clearErrors();
-  if ( setSavePoint() && mBuffer->L->dataProvider()->changeAttributeValues( attribMap ) && ! mBuffer->L->dataProvider()->hasErrors() )
+  if ( setSavePoint() && mBuffer->L->dataProvider()->changeAttributeValues( attribMap ) && !mBuffer->L->dataProvider()->hasErrors() )
   {
     QgsFeatureMap::iterator addedIt = mBuffer->mAddedFeatures.find( mFid );
     for ( auto it = mNewValues.constBegin(); it != mNewValues.constEnd(); ++it )

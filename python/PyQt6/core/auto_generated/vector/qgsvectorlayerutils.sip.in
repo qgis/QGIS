@@ -23,7 +23,6 @@ Contains utility methods for working with :py:class:`QgsVectorLayers`.
 #include "qgsvectorlayerutils.h"
 %End
   public:
-
     class QgsDuplicateFeatureContext
     {
 %Docstring(signature="appended")
@@ -32,7 +31,6 @@ Contains mainly the QMap with :py:class:`QgsVectorLayer` and
 %End
 
       public:
-
         QgsDuplicateFeatureContext();
 
         QList<QgsVectorLayer *> layers() const;
@@ -60,7 +58,6 @@ createFeatures.
 %End
 
       public:
-
         QgsFeatureData( const QgsGeometry &geometry = QgsGeometry(), const QgsAttributeMap &attributes = QgsAttributeMap() );
 %Docstring
 Constructs a new QgsFeatureData with given ``geometry`` and
@@ -203,9 +200,10 @@ Returns ``True`` if a feature attribute has active constraints.
 .. versionadded:: 3.30
 %End
 
-    static bool validateAttribute( const QgsVectorLayer *layer, const QgsFeature &feature, int attributeIndex, QStringList &errors /Out/,
-                                   QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthNotSet,
-                                   QgsFieldConstraints::ConstraintOrigin origin = QgsFieldConstraints::ConstraintOriginNotSet );
+    static bool validateAttribute(
+      const QgsVectorLayer *layer, const QgsFeature &feature, int attributeIndex, QStringList &errors /Out/,
+      QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthNotSet, QgsFieldConstraints::ConstraintOrigin origin = QgsFieldConstraints::ConstraintOriginNotSet
+    );
 %Docstring
 Tests a feature attribute value to check whether it passes all
 constraints which are present on the corresponding field. Returns
@@ -215,10 +213,9 @@ origin parameter is set then only constraints with a matching
 strength/origin will be checked.
 %End
 
-    static QgsFeature createFeature( const QgsVectorLayer *layer,
-                                     const QgsGeometry &geometry = QgsGeometry(),
-                                     const QgsAttributeMap &attributes = QgsAttributeMap(),
-                                     QgsExpressionContext *context = 0 );
+    static QgsFeature createFeature(
+      const QgsVectorLayer *layer, const QgsGeometry &geometry = QgsGeometry(), const QgsAttributeMap &attributes = QgsAttributeMap(), QgsExpressionContext *context = 0
+    );
 %Docstring
 Creates a new feature ready for insertion into a layer. Default values
 and constraints (e.g., unique constraints) will automatically be
@@ -230,9 +227,7 @@ not automatically inserted into the layer.
 .. seealso:: :py:func:`createFeatures`
 %End
 
-    static QgsFeatureList createFeatures( const QgsVectorLayer *layer,
-                                          const QgsFeaturesDataList &featuresData,
-                                          QgsExpressionContext *context = 0 );
+    static QgsFeatureList createFeatures( const QgsVectorLayer *layer, const QgsFeaturesDataList &featuresData, QgsExpressionContext *context = 0 );
 %Docstring
 Creates a set of new features ready for insertion into a layer. Default
 values and constraints (e.g., unique constraints) will automatically be
@@ -244,7 +239,8 @@ into the layer.
 .. versionadded:: 3.6
 %End
 
-    static QgsFeature duplicateFeature( QgsVectorLayer *layer, const QgsFeature &feature, QgsProject *project, QgsDuplicateFeatureContext &duplicateFeatureContext /Out/, const int maxDepth = 0 );
+
+      )
 %Docstring
 Duplicates a feature and it's children (one level deep). It calls
 CreateFeature, so default values and constraints (e.g., unique
@@ -257,6 +253,7 @@ the current depth, not exposed in Python ``referencedLayersBranch`` the
 current branch of layers across the relations, not exposed in Python,
 taken by copy not reference, used to avoid infinite loop
 %End
+    );
 
 
 
@@ -395,7 +392,10 @@ The definition is taken from the ``displayExpression`` property of
     typedef QFlags<QgsVectorLayerUtils::CascadedFeatureFlag> CascadedFeatureFlags;
 
 
-    static bool impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context /Out/, QgsVectorLayerUtils::CascadedFeatureFlags flags = QgsVectorLayerUtils::CascadedFeatureFlags() );
+    static bool impactsCascadeFeatures(
+      const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context /Out/,
+      QgsVectorLayerUtils::CascadedFeatureFlags flags = QgsVectorLayerUtils::CascadedFeatureFlags()
+    );
 %Docstring
 Returns ``True`` if at least one feature of the ``fids`` on ``layer`` is
 connected as parent in at least one composition relation of the
@@ -497,7 +497,8 @@ Converts field values from an iterator to an array of data.
 %End
 %MethodCode
 
-    const int fieldIndex = a0->lookupField( *a1 );
+      const int fieldIndex
+      = a0->lookupField( *a1 );
     if ( fieldIndex == -1 )
     {
       PyErr_SetString( PyExc_KeyError, QStringLiteral( "Field %1 does not exist." ).arg( *a1 ).toUtf8().constData() );
@@ -519,10 +520,8 @@ Converts field values from an iterator to an array of data.
         case QMetaType::Type::Short:
         case QMetaType::Type::UShort:
         {
-          Py_BEGIN_ALLOW_THREADS
-          sipRes = new QByteArray( QgsVectorLayerUtils::fieldToDataArray( *a0, *a1, *a2, *a3 ) );
-          Py_END_ALLOW_THREADS
-          break;
+          Py_BEGIN_ALLOW_THREADS sipRes = new QByteArray( QgsVectorLayerUtils::fieldToDataArray( *a0, *a1, *a2, *a3 ) );
+          Py_END_ALLOW_THREADS break;
         }
 
         default:

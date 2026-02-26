@@ -273,10 +273,7 @@ bool QgsVectorLayerElevationProperties::showByDefaultInElevationProfilePlots() c
 {
   // show by default if the features aren't just directly clamped onto the terrain with
   // no other changes
-  return !qgsDoubleNear( mZOffset, 0 )
-         || !qgsDoubleNear( mZScale, 1 )
-         || mEnableExtrusion
-         || mClamping != Qgis::AltitudeClamping::Terrain;
+  return !qgsDoubleNear( mZOffset, 0 ) || !qgsDoubleNear( mZScale, 1 ) || mEnableExtrusion || mClamping != Qgis::AltitudeClamping::Terrain;
 }
 
 void QgsVectorLayerElevationProperties::setClamping( Qgis::AltitudeClamping clamping )
@@ -359,10 +356,7 @@ void QgsVectorLayerElevationProperties::setRespectLayerSymbology( bool enabled )
   emit profileRenderingPropertyChanged();
 }
 
-QgsLineSymbol *QgsVectorLayerElevationProperties::profileLineSymbol() const
-{
-  return mProfileLineSymbol.get();
-}
+QgsLineSymbol *QgsVectorLayerElevationProperties::profileLineSymbol() const { return mProfileLineSymbol.get(); }
 
 void QgsVectorLayerElevationProperties::setProfileLineSymbol( QgsLineSymbol *symbol )
 {
@@ -371,10 +365,7 @@ void QgsVectorLayerElevationProperties::setProfileLineSymbol( QgsLineSymbol *sym
   emit profileRenderingPropertyChanged();
 }
 
-QgsFillSymbol *QgsVectorLayerElevationProperties::profileFillSymbol() const
-{
-  return mProfileFillSymbol.get();
-}
+QgsFillSymbol *QgsVectorLayerElevationProperties::profileFillSymbol() const { return mProfileFillSymbol.get(); }
 
 void QgsVectorLayerElevationProperties::setProfileFillSymbol( QgsFillSymbol *symbol )
 {
@@ -383,10 +374,7 @@ void QgsVectorLayerElevationProperties::setProfileFillSymbol( QgsFillSymbol *sym
   emit profileRenderingPropertyChanged();
 }
 
-QgsMarkerSymbol *QgsVectorLayerElevationProperties::profileMarkerSymbol() const
-{
-  return mProfileMarkerSymbol.get();
-}
+QgsMarkerSymbol *QgsVectorLayerElevationProperties::profileMarkerSymbol() const { return mProfileMarkerSymbol.get(); }
 
 void QgsVectorLayerElevationProperties::setProfileMarkerSymbol( QgsMarkerSymbol *symbol )
 {
@@ -405,10 +393,7 @@ void QgsVectorLayerElevationProperties::setProfileSymbology( Qgis::ProfileSurfac
   emit profileRenderingPropertyChanged();
 }
 
-double QgsVectorLayerElevationProperties::elevationLimit() const
-{
-  return mElevationLimit;
-}
+double QgsVectorLayerElevationProperties::elevationLimit() const { return mElevationLimit; }
 
 void QgsVectorLayerElevationProperties::setElevationLimit( double limit )
 {

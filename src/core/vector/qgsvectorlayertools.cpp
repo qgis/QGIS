@@ -32,7 +32,9 @@ QgsVectorLayerTools::QgsVectorLayerTools()
   : QObject( nullptr )
 {}
 
-bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double dx, double dy, QString *errorMsg, const bool topologicalEditing, QgsVectorLayer *topologicalLayer, QString *childrenInfoMsg ) const
+bool QgsVectorLayerTools::copyMoveFeatures(
+  QgsVectorLayer *layer, QgsFeatureRequest &request, double dx, double dy, QString *errorMsg, const bool topologicalEditing, QgsVectorLayer *topologicalLayer, QString *childrenInfoMsg
+) const
 {
   bool res = false;
   if ( !layer || !layer->isEditable() )
@@ -142,8 +144,7 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
   }
   else if ( errorMsg )
   {
-    errorMsg = new QString( tr( "Only %1 out of %2 features were copied." )
-                            .arg( browsedFeatureCount - couldNotWriteCount - noGeometryCount, browsedFeatureCount ) );
+    errorMsg = new QString( tr( "Only %1 out of %2 features were copied." ).arg( browsedFeatureCount - couldNotWriteCount - noGeometryCount, browsedFeatureCount ) );
     if ( noGeometryCount )
     {
       errorMsg->append( " " );
@@ -158,12 +159,6 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
   return res;
 }
 
-bool QgsVectorLayerTools::forceSuppressFormPopup() const
-{
-  return mForceSuppressFormPopup;
-}
+bool QgsVectorLayerTools::forceSuppressFormPopup() const { return mForceSuppressFormPopup; }
 
-void QgsVectorLayerTools::setForceSuppressFormPopup( bool forceSuppressFormPopup )
-{
-  mForceSuppressFormPopup = forceSuppressFormPopup;
-}
+void QgsVectorLayerTools::setForceSuppressFormPopup( bool forceSuppressFormPopup ) { mForceSuppressFormPopup = forceSuppressFormPopup; }

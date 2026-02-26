@@ -24,7 +24,6 @@ Implementation of layer selection properties for vector layers.
 #include "qgsvectorlayerselectionproperties.h"
 %End
   public:
-
     QgsVectorLayerSelectionProperties( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsVectorLayerSelectionProperties, with the specified

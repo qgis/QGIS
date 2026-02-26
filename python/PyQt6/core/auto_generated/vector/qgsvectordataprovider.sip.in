@@ -27,12 +27,11 @@ feature and attribute information from a spatial datasource.
 #include "qgsvectordataprovider.h"
 %End
   public:
-
     static const int EditingCapabilities;
 
-    QgsVectorDataProvider( const QString &uri = QString(),
-                           const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions(),
-                           Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
+    QgsVectorDataProvider(
+      const QString &uri = QString(), const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions(), Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags()
+    );
 %Docstring
 Constructor for a vector data provider.
 
@@ -188,8 +187,7 @@ and maximal values. If provider has facilities to retrieve maximal value
 directly, override this function.
 %End
 
-    virtual QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
-        QgsFeedback *feedback = 0 ) const;
+    virtual QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1, QgsFeedback *feedback = 0 ) const;
 %Docstring
 Returns unique string values of an attribute which contain a specified
 subset string. Subset matching is done in a case-insensitive manner.
@@ -203,12 +201,9 @@ subset string. Subset matching is done in a case-insensitive manner.
 :return: list of unique strings containing substring
 %End
 
-    virtual QVariant aggregate( Qgis::Aggregate aggregate,
-                                int index,
-                                const QgsAggregateCalculator::AggregateParameters &parameters,
-                                QgsExpressionContext *context,
-                                bool &ok,
-                                QgsFeatureIds *fids = 0 ) const;
+    virtual QVariant aggregate(
+      Qgis::Aggregate aggregate, int index, const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context, bool &ok, QgsFeatureIds *fids = 0
+    ) const;
 %Docstring
 Calculates an aggregated value from the layer's features. The base
 implementation does nothing, but subclasses can override this method to
@@ -320,8 +315,7 @@ capability or if any of the changes could not be successfully applied.
 :return: ``True`` in case of success and ``False`` in case of failure
 %End
 
-    virtual bool changeFeatures( const QgsChangedAttributesMap &attr_map,
-                                 const QgsGeometryMap &geometry_map );
+    virtual bool changeFeatures( const QgsChangedAttributesMap &attr_map, const QgsGeometryMap &geometry_map );
 %Docstring
 Changes attribute values and geometries of existing features. This
 should succeed if the provider reports both the ChangeAttributeValues
@@ -499,19 +493,23 @@ check if provider supports type of field
 
     struct NativeType
     {
-      NativeType( const QString &typeDesc, const QString &typeName, QMetaType::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0, QMetaType::Type subType = QMetaType::Type::UnknownType );
+        NativeType(
+          const QString &typeDesc, const QString &typeName, QMetaType::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0, QMetaType::Type subType = QMetaType::Type::UnknownType
+        );
 
- NativeType( const QString &typeDesc, const QString &typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0, QVariant::Type subType = QVariant::Type::Invalid );
+ NativeType(
+          const QString &typeDesc, const QString &typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0, QVariant::Type subType = QVariant::Type::Invalid
+        );
 
 
-          QString mTypeDesc;
-      QString mTypeName;
-      QMetaType::Type mType;
-      int mMinLen;
-      int mMaxLen;
-      int mMinPrec;
-      int mMaxPrec;
-      QMetaType::Type mSubType;
+        QString mTypeDesc;
+        QString mTypeName;
+        QMetaType::Type mType;
+        int mMinLen;
+        int mMaxLen;
+        int mMinPrec;
+        int mMaxPrec;
+        QMetaType::Type mSubType;
     };
 
     QList< QgsVectorDataProvider::NativeType > nativeTypes() const;
@@ -678,7 +676,6 @@ Signals an error in this provider
 %End
 
   protected:
-
     void clearMinMaxCache();
 %Docstring
 Invalidates the min/max cache. This will force the provider to
@@ -719,7 +716,7 @@ the constructor.
 %End
 
 
-    static QgsGeometry convertToProviderType( const QgsGeometry &geometry,  Qgis::WkbType providerGeometryType );
+    static QgsGeometry convertToProviderType( const QgsGeometry &geometry, Qgis::WkbType providerGeometryType );
 %Docstring
 Converts the ``geometry`` to the provider geometry type
 ``providerGeometryType`` if possible / necessary

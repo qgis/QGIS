@@ -22,15 +22,9 @@
 
 #include "moc_qgsvectorlayereditpassthrough.cpp"
 
-QgsVectorLayerEditPassthrough::QgsVectorLayerEditPassthrough( QgsVectorLayer *layer )
-{
-  L = layer;
-}
+QgsVectorLayerEditPassthrough::QgsVectorLayerEditPassthrough( QgsVectorLayer *layer ) { L = layer; }
 
-bool QgsVectorLayerEditPassthrough::isModified() const
-{
-  return mModified;
-}
+bool QgsVectorLayerEditPassthrough::isModified() const { return mModified; }
 
 bool QgsVectorLayerEditPassthrough::modify( QgsVectorLayerUndoPassthroughCommand *cmd )
 {
@@ -68,22 +62,13 @@ bool QgsVectorLayerEditPassthrough::addFeatures( QgsFeatureList &features )
   return true;
 }
 
-bool QgsVectorLayerEditPassthrough::deleteFeature( QgsFeatureId fid )
-{
-  return modify( new QgsVectorLayerUndoPassthroughCommandDeleteFeatures( this, QgsFeatureIds() << fid ) );
-}
+bool QgsVectorLayerEditPassthrough::deleteFeature( QgsFeatureId fid ) { return modify( new QgsVectorLayerUndoPassthroughCommandDeleteFeatures( this, QgsFeatureIds() << fid ) ); }
 
-bool QgsVectorLayerEditPassthrough::deleteFeatures( const QgsFeatureIds &fids )
-{
-  return modify( new QgsVectorLayerUndoPassthroughCommandDeleteFeatures( this, fids ) );
-}
+bool QgsVectorLayerEditPassthrough::deleteFeatures( const QgsFeatureIds &fids ) { return modify( new QgsVectorLayerUndoPassthroughCommandDeleteFeatures( this, fids ) ); }
 
-bool QgsVectorLayerEditPassthrough::changeGeometry( QgsFeatureId fid, const QgsGeometry &geom )
-{
-  return modify( new QgsVectorLayerUndoPassthroughCommandChangeGeometry( this, fid, geom ) );
-}
+bool QgsVectorLayerEditPassthrough::changeGeometry( QgsFeatureId fid, const QgsGeometry &geom ) { return modify( new QgsVectorLayerUndoPassthroughCommandChangeGeometry( this, fid, geom ) ); }
 
-bool QgsVectorLayerEditPassthrough::changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &/*oldValue*/ )
+bool QgsVectorLayerEditPassthrough::changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant & /*oldValue*/ )
 {
   return modify( new QgsVectorLayerUndoPassthroughCommandChangeAttribute( this, fid, field, newValue ) );
 }
@@ -93,20 +78,11 @@ bool QgsVectorLayerEditPassthrough::changeAttributeValues( QgsFeatureId fid, con
   return modify( new QgsVectorLayerUndoPassthroughCommandChangeAttributes( this, fid, newValues, oldValues ) );
 }
 
-bool QgsVectorLayerEditPassthrough::addAttribute( const QgsField &field )
-{
-  return modify( new QgsVectorLayerUndoPassthroughCommandAddAttribute( this, field ) );
-}
+bool QgsVectorLayerEditPassthrough::addAttribute( const QgsField &field ) { return modify( new QgsVectorLayerUndoPassthroughCommandAddAttribute( this, field ) ); }
 
-bool QgsVectorLayerEditPassthrough::deleteAttribute( int attr )
-{
-  return modify( new QgsVectorLayerUndoPassthroughCommandDeleteAttribute( this, attr ) );
-}
+bool QgsVectorLayerEditPassthrough::deleteAttribute( int attr ) { return modify( new QgsVectorLayerUndoPassthroughCommandDeleteAttribute( this, attr ) ); }
 
-bool QgsVectorLayerEditPassthrough::renameAttribute( int attr, const QString &newName )
-{
-  return modify( new QgsVectorLayerUndoPassthroughCommandRenameAttribute( this, attr, newName ) );
-}
+bool QgsVectorLayerEditPassthrough::renameAttribute( int attr, const QString &newName ) { return modify( new QgsVectorLayerUndoPassthroughCommandRenameAttribute( this, attr, newName ) ); }
 
 bool QgsVectorLayerEditPassthrough::commitChanges( QStringList & /*commitErrors*/ )
 {
@@ -114,12 +90,6 @@ bool QgsVectorLayerEditPassthrough::commitChanges( QStringList & /*commitErrors*
   return true;
 }
 
-void QgsVectorLayerEditPassthrough::rollBack()
-{
-  mModified = false;
-}
+void QgsVectorLayerEditPassthrough::rollBack() { mModified = false; }
 
-bool QgsVectorLayerEditPassthrough::update( QgsTransaction *tr, const QString &sql, const QString &name )
-{
-  return modify( new QgsVectorLayerUndoPassthroughCommandUpdate( this, tr, sql, name ) );
-}
+bool QgsVectorLayerEditPassthrough::update( QgsTransaction *tr, const QString &sql, const QString &name ) { return modify( new QgsVectorLayerUndoPassthroughCommandUpdate( this, tr, sql, name ) ); }

@@ -27,9 +27,8 @@
 using namespace Qt::StringLiterals;
 
 QgsVectorLayerSelectionProperties::QgsVectorLayerSelectionProperties( QObject *parent )
-  :  QgsMapLayerSelectionProperties( parent )
-{
-}
+  : QgsMapLayerSelectionProperties( parent )
+{}
 
 QgsVectorLayerSelectionProperties::~QgsVectorLayerSelectionProperties() = default;
 
@@ -78,10 +77,7 @@ QgsVectorLayerSelectionProperties *QgsVectorLayerSelectionProperties::clone() co
   return res.release();
 }
 
-QColor QgsVectorLayerSelectionProperties::selectionColor() const
-{
-  return mSelectionColor;
-}
+QColor QgsVectorLayerSelectionProperties::selectionColor() const { return mSelectionColor; }
 
 void QgsVectorLayerSelectionProperties::setSelectionColor( const QColor &color )
 {
@@ -94,10 +90,7 @@ void QgsVectorLayerSelectionProperties::setSelectionColor( const QColor &color )
   emit selectionColorChanged();
 }
 
-QgsSymbol *QgsVectorLayerSelectionProperties::selectionSymbol() const
-{
-  return mSelectionSymbol.get();
-}
+QgsSymbol *QgsVectorLayerSelectionProperties::selectionSymbol() const { return mSelectionSymbol.get(); }
 
 void QgsVectorLayerSelectionProperties::setSelectionSymbol( QgsSymbol *symbol )
 {
@@ -105,10 +98,7 @@ void QgsVectorLayerSelectionProperties::setSelectionSymbol( QgsSymbol *symbol )
   emit selectionSymbolChanged();
 }
 
-Qgis::SelectionRenderingMode QgsVectorLayerSelectionProperties::selectionRenderingMode() const
-{
-  return mSelectionRenderingMode;
-}
+Qgis::SelectionRenderingMode QgsVectorLayerSelectionProperties::selectionRenderingMode() const { return mSelectionRenderingMode; }
 
 void QgsVectorLayerSelectionProperties::setSelectionRenderingMode( Qgis::SelectionRenderingMode mode )
 {
