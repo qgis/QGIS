@@ -86,21 +86,24 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             )
 
             self.runAsBatchButton = None
-            has_selection = self.active_layer and (
-                self.active_layer.selectedFeatureCount() > 0
-            )
-            self.buttonBox().button(QDialogButtonBox.StandardButton.Ok).setText(
-                QCoreApplication.translate(
-                    "AlgorithmDialog", "Modify Selected Features"
+
+            if self.active_layer:
+                self.updateRunButtonText()
+                self.active_layer.selectionChanged.connect(self.updateRunButtonText)
+                self.active_layer.willBeDeleted.connect(self.close)
+                self.setWindowTitle(
+                    self.windowTitle() + " | " + self.active_layer.name()
                 )
-                if has_selection
-                else QCoreApplication.translate(
-                    "AlgorithmDialog", "Modify All Features"
-                )
-            )
-            self.setWindowTitle(self.windowTitle() + " | " + self.active_layer.name())
 
         self.updateRunButtonVisibility()
+
+    def updateRunButtonText(self):
+        has_selection = self.active_layer.selectedFeatureCount() > 0
+        self.buttonBox().button(QDialogButtonBox.StandardButton.Ok).setText(
+            QCoreApplication.translate("AlgorithmDialog", "Modify Selected Features")
+            if has_selection
+            else QCoreApplication.translate("AlgorithmDialog", "Modify All Features")
+        )
 
     def getParametersPanel(self, alg, parent):
         panel = ParametersPanel(parent, alg, self.in_place, self.active_layer)
