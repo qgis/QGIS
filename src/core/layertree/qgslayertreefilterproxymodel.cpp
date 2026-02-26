@@ -25,11 +25,14 @@
 QgsLayerTreeFilterProxyModel::QgsLayerTreeFilterProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
 {
-  connect( QgsProject::instance(), &QgsProject::readProject, this, [this] // skip-keyword-check
-  {
-    beginResetModel();
-    endResetModel();
-  } );
+  connect(
+    QgsProject::instance(), &QgsProject::readProject, this,
+    [this] // skip-keyword-check
+    {
+      beginResetModel();
+      endResetModel();
+    }
+  );
 }
 
 void QgsLayerTreeFilterProxyModel::setCheckedLayers( const QList<QgsMapLayer *> layers )
@@ -64,10 +67,7 @@ QModelIndex QgsLayerTreeFilterProxyModel::index( int row, int column, const QMod
   return createIndex( row, column, newIndex.internalId() );
 }
 
-QModelIndex QgsLayerTreeFilterProxyModel::parent( const QModelIndex &child ) const
-{
-  return QSortFilterProxyModel::parent( createIndex( child.row(), 0, child.internalId() ) );
-}
+QModelIndex QgsLayerTreeFilterProxyModel::parent( const QModelIndex &child ) const { return QSortFilterProxyModel::parent( createIndex( child.row(), 0, child.internalId() ) ); }
 
 QModelIndex QgsLayerTreeFilterProxyModel::sibling( int row, int column, const QModelIndex &idx ) const
 {
@@ -98,10 +98,7 @@ void QgsLayerTreeFilterProxyModel::setFilterText( const QString &filterText )
   invalidateFilter();
 }
 
-QgsLayerTreeModel *QgsLayerTreeFilterProxyModel::layerTreeModel() const
-{
-  return mLayerTreeModel;
-}
+QgsLayerTreeModel *QgsLayerTreeFilterProxyModel::layerTreeModel() const { return mLayerTreeModel; }
 
 void QgsLayerTreeFilterProxyModel::setLayerTreeModel( QgsLayerTreeModel *layerTreeModel )
 {
@@ -109,10 +106,7 @@ void QgsLayerTreeFilterProxyModel::setLayerTreeModel( QgsLayerTreeModel *layerTr
   QSortFilterProxyModel::setSourceModel( layerTreeModel );
 }
 
-bool QgsLayerTreeFilterProxyModel::showPrivateLayers() const
-{
-  return mShowPrivateLayers;
-}
+bool QgsLayerTreeFilterProxyModel::showPrivateLayers() const { return mShowPrivateLayers; }
 
 void QgsLayerTreeFilterProxyModel::setShowPrivateLayers( bool showPrivate )
 {
@@ -135,10 +129,7 @@ bool QgsLayerTreeFilterProxyModel::filterAcceptsRow( int sourceRow, const QModel
   return nodeShown( node );
 }
 
-bool QgsLayerTreeFilterProxyModel::isLayerChecked( QgsMapLayer *layer ) const
-{
-  return mCheckedLayers.contains( layer );
-}
+bool QgsLayerTreeFilterProxyModel::isLayerChecked( QgsMapLayer *layer ) const { return mCheckedLayers.contains( layer ); }
 
 void QgsLayerTreeFilterProxyModel::setLayerChecked( QgsMapLayer *layer, bool checked )
 {
@@ -196,7 +187,7 @@ bool QgsLayerTreeFilterProxyModel::nodeShown( QgsLayerTreeNode *node ) const
       return false;
     if ( !mFilterText.isEmpty() && !layer->name().contains( mFilterText, Qt::CaseInsensitive ) )
       return false;
-    if ( ! mShowPrivateLayers && layer->flags().testFlag( QgsMapLayer::LayerFlag::Private ) )
+    if ( !mShowPrivateLayers && layer->flags().testFlag( QgsMapLayer::LayerFlag::Private ) )
     {
       return false;
     }
@@ -257,7 +248,7 @@ QVariant QgsLayerTreeFilterProxyModel::data( const QModelIndex &idx, int role ) 
           return Qt::Unchecked;
 
         // both
-        if ( hasChecked &&  hasUnchecked )
+        if ( hasChecked && hasUnchecked )
           return Qt::PartiallyChecked;
 
         if ( hasChecked )
@@ -282,7 +273,7 @@ bool QgsLayerTreeFilterProxyModel::setData( const QModelIndex &index, const QVar
     if ( role == Qt::CheckStateRole )
     {
       int i = 0;
-      for ( i = 0; ; i++ )
+      for ( i = 0;; i++ )
       {
         const QModelIndex child = QgsLayerTreeFilterProxyModel::index( i, 0, index );
         if ( !child.isValid() )

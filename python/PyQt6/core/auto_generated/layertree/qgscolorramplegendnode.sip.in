@@ -21,10 +21,10 @@ A legend node which renders a color ramp.
 #include "qgscolorramplegendnode.h"
 %End
   public:
-
-    QgsColorRampLegendNode( QgsLayerTreeLayer *nodeLayer, QgsColorRamp *ramp /Transfer/,
-                            const QString &minimumLabel, const QString &maximumLabel, QObject *parent /TransferThis/ = 0,
-                            const QString &key = QString(), const QString &parentKey = QString() );
+    QgsColorRampLegendNode(
+      QgsLayerTreeLayer *nodeLayer, QgsColorRamp *ramp /Transfer/, const QString &minimumLabel, const QString &maximumLabel, QObject *parent /TransferThis/ = 0,
+      const QString &key = QString(), const QString &parentKey = QString()
+    );
 %Docstring
 Constructor for QgsColorRampLegendNode.
 
@@ -41,10 +41,10 @@ Constructor for QgsColorRampLegendNode.
 :param parentKey: rule key of parent (since QGIS 3.40)
 %End
 
-    QgsColorRampLegendNode( QgsLayerTreeLayer *nodeLayer, QgsColorRamp *ramp /Transfer/,
-                            const QgsColorRampLegendNodeSettings &settings, double minimumValue,
-                            double maximumValue, QObject *parent /TransferThis/ = 0,
-                            const QString &key = QString(), const QString &parentKey = QString() );
+    QgsColorRampLegendNode(
+      QgsLayerTreeLayer *nodeLayer, QgsColorRamp *ramp /Transfer/, const QgsColorRampLegendNodeSettings &settings, double minimumValue, double maximumValue,
+      QObject *parent /TransferThis/ = 0, const QString &key = QString(), const QString &parentKey = QString()
+    );
 %Docstring
 Constructor for QgsColorRampLegendNode.
 
@@ -130,7 +130,6 @@ Returns the node's maximum value.
 .. versionadded:: 4.0
 %End
 };
-
 
 
 /************************************************************************

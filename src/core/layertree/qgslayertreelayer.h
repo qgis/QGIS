@@ -60,18 +60,20 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    QString str = u"<QgsLayerTreeLayer: %1>"_s.arg( sipCpp->name() );
+    % MethodCode QString str = u"<QgsLayerTreeLayer: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    /**
+        /**
      * Returns the ID for the map layer associated with this node.
      *
      * \see layer()
      */
-    QString layerId() const { return mRef.layerId; }
+        QString layerId() const
+    {
+      return mRef.layerId;
+    }
 
     /**
      * Returns the map layer associated with this node.
@@ -117,7 +119,7 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
      * Read layer node from XML. Returns new instance.
      * Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
      */
-    static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;  // cppcheck-suppress duplInheritedMember
+    static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
 
     /**
      * Read layer node from XML. Returns new instance.
@@ -195,8 +197,8 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
      */
     enum LegendNodesSplitBehavior
     {
-      UseDefaultLegendSetting, //!< Inherit default legend column splitting setting
-      AllowSplittingLegendNodesOverMultipleColumns, //!< Allow splitting node's legend nodes across multiple columns
+      UseDefaultLegendSetting,                        //!< Inherit default legend column splitting setting
+      AllowSplittingLegendNodesOverMultipleColumns,   //!< Allow splitting node's legend nodes across multiple columns
       PreventSplittingLegendNodesOverMultipleColumns, //!< Prevent splitting node's legend nodes across multiple columns
     };
 
@@ -258,7 +260,6 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     void layerWillBeDeleted();
 
   private:
-
 #ifdef SIP_RUN
 
     /**
@@ -273,7 +274,6 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
 
     QgsLayerTreeLayer &operator=( const QgsLayerTreeLayer & ) = delete;
 };
-
 
 
 #endif // QGSLAYERTREELAYER_H

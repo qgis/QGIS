@@ -31,8 +31,7 @@ QgsLayerTreeNode::QgsLayerTreeNode( QgsLayerTreeNode::NodeType t, bool checked )
   : mNodeType( t )
   , mChecked( checked )
 
-{
-}
+{}
 
 QgsLayerTreeNode::QgsLayerTreeNode( const QgsLayerTreeNode &other )
   : QObject( nullptr )
@@ -48,10 +47,7 @@ QgsLayerTreeNode::QgsLayerTreeNode( const QgsLayerTreeNode &other )
   insertChildrenPrivate( -1, clonedChildren );
 }
 
-QgsLayerTreeNode::~QgsLayerTreeNode()
-{
-  qDeleteAll( mChildren );
-}
+QgsLayerTreeNode::~QgsLayerTreeNode() { qDeleteAll( mChildren ); }
 
 QList<QgsLayerTreeNode *> QgsLayerTreeNode::abandonChildren()
 {
@@ -59,7 +55,7 @@ QList<QgsLayerTreeNode *> QgsLayerTreeNode::abandonChildren()
   mChildren.clear();
   for ( auto orphan : std::as_const( orphans ) )
   {
-    orphan->makeOrphan( );
+    orphan->makeOrphan();
   }
   return orphans;
 }
@@ -107,10 +103,7 @@ void QgsLayerTreeNode::setItemVisibilityChecked( bool checked )
   emit visibilityChanged( this );
 }
 
-void QgsLayerTreeNode::setItemVisibilityCheckedRecursive( bool checked )
-{
-  setItemVisibilityChecked( checked );
-}
+void QgsLayerTreeNode::setItemVisibilityCheckedRecursive( bool checked ) { setItemVisibilityChecked( checked ); }
 
 void QgsLayerTreeNode::setItemVisibilityCheckedParentRecursive( bool checked )
 {
@@ -119,16 +112,10 @@ void QgsLayerTreeNode::setItemVisibilityCheckedParentRecursive( bool checked )
     mParent->setItemVisibilityCheckedParentRecursive( checked );
 }
 
-bool QgsLayerTreeNode::isVisible() const
-{
-  return mChecked && ( !mParent || mParent->isVisible() );
-}
+bool QgsLayerTreeNode::isVisible() const { return mChecked && ( !mParent || mParent->isVisible() ); }
 
 
-bool QgsLayerTreeNode::isExpanded() const
-{
-  return mExpanded;
-}
+bool QgsLayerTreeNode::isExpanded() const { return mExpanded; }
 
 bool QgsLayerTreeNode::isItemVisibilityCheckedRecursive() const
 {
@@ -221,10 +208,7 @@ void QgsLayerTreeNode::setCustomProperty( const QString &key, const QVariant &va
   }
 }
 
-QVariant QgsLayerTreeNode::customProperty( const QString &key, const QVariant &defaultValue ) const
-{
-  return mProperties.value( key, defaultValue );
-}
+QVariant QgsLayerTreeNode::customProperty( const QString &key, const QVariant &defaultValue ) const { return mProperties.value( key, defaultValue ); }
 
 void QgsLayerTreeNode::removeCustomProperty( const QString &key )
 {
@@ -235,15 +219,9 @@ void QgsLayerTreeNode::removeCustomProperty( const QString &key )
   }
 }
 
-QStringList QgsLayerTreeNode::customProperties() const
-{
-  return mProperties.keys();
-}
+QStringList QgsLayerTreeNode::customProperties() const { return mProperties.keys(); }
 
-void QgsLayerTreeNode::readCommonXml( const QDomElement &element )
-{
-  mProperties.readXml( element );
-}
+void QgsLayerTreeNode::readCommonXml( const QDomElement &element ) { mProperties.readXml( element ); }
 
 void QgsLayerTreeNode::writeCommonXml( QDomElement &element )
 {
@@ -286,7 +264,7 @@ void QgsLayerTreeNode::insertChildrenPrivate( int index, const QList<QgsLayerTre
     connect( node, &QgsLayerTreeNode::nameChanged, this, &QgsLayerTreeNode::nameChanged );
 
     // Now add children
-    if ( ! orphans.isEmpty() )
+    if ( !orphans.isEmpty() )
     {
       node->insertChildrenPrivate( -1, orphans );
     }
@@ -309,13 +287,13 @@ void QgsLayerTreeNode::removeChildrenPrivate( int from, int count, bool destroy 
   while ( --count >= 0 )
   {
     const int last { from + count };
-    Q_ASSERT( last >= 0 && last < mChildren.count( ) );
+    Q_ASSERT( last >= 0 && last < mChildren.count() );
     QgsLayerTreeNode *node = mChildren.at( last );
 
     // Remove children first
-    if ( ! node->children().isEmpty() )
+    if ( !node->children().isEmpty() )
     {
-      node->removeChildrenPrivate( 0, node->children().count( ), destroy );
+      node->removeChildrenPrivate( 0, node->children().count(), destroy );
     }
 
     emit willRemoveChildren( this, last, last );

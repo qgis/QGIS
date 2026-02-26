@@ -27,7 +27,6 @@ unique in the whole layer tree.
 #include "qgslayertreecustomnode.h"
 %End
   public:
-
     explicit QgsLayerTreeCustomNode( const QString &nodeId, const QString &nodeName = QString(), bool checked = true );
 %Docstring
 Constructor to create custom nodes that represent application objects
@@ -41,15 +40,15 @@ other than layers and groups.
 
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    QString str = QStringLiteral( "<QgsLayerTreeCustomNode: %1>" ).arg( sipCpp->name() );
+%MethodCode QString str = QStringLiteral( "<QgsLayerTreeCustomNode: %1>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    QString nodeId() const;
+        QString nodeId() const;
 %Docstring
 Returns the node's unique identifier.
 %End
+
     virtual QString name() const;
 
 %Docstring

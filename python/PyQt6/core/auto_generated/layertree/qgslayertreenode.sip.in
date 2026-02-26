@@ -102,22 +102,21 @@ Custom properties that have already been used within QGIS:
     ~QgsLayerTreeNode();
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    QString str = QStringLiteral( "<QgsLayerTreeNode: %1>" ).arg( sipCpp->name() );
+%MethodCode QString str = QStringLiteral( "<QgsLayerTreeNode: %1>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    Py_ssize_t __len__() const;
+      int
 %Docstring
 Returns the number of children contained in the node.
 
 .. versionadded:: 4.0
 %End
-%MethodCode
-    sipRes = sipCpp->children().count();
+      __len__() const;
+%MethodCode sipRes = sipCpp->children().count();
 %End
 
-    SIP_PYOBJECT __getitem__( int index ) /TypeHint="QgsLayerTreeNode"/;
+        SIP_PYOBJECT
 %Docstring
 Returns the child node at the specified ``index``.
 
@@ -125,8 +124,8 @@ Returns the child node at the specified ``index``.
 
 .. versionadded:: 4.0
 %End
-%MethodCode
-    const QList< QgsLayerTreeNode * > children = sipCpp->children();
+      __getitem__( int index ) /TypeHint="QgsLayerTreeNode"/;
+%MethodCode const QList< QgsLayerTreeNode * > children = sipCpp->children();
     const int count = children.count();
     if ( a0 < 0 || a0 >= count )
     {
@@ -140,7 +139,7 @@ Returns the child node at the specified ``index``.
     }
 %End
 
-    NodeType nodeType() const;
+        NodeType nodeType() const;
 %Docstring
 Find out about type of the node. It is usually shorter to use
 convenience functions from :py:class:`QgsLayerTree` namespace for that
@@ -332,7 +331,6 @@ Emitted when the name of the node is changed
 %End
 
   protected:
-
     QgsLayerTreeNode( NodeType t, bool checked = true );
 %Docstring
 Constructor
@@ -363,8 +361,6 @@ Low-level removal of children from the node.
 
 
 };
-
-
 
 
 /************************************************************************

@@ -39,8 +39,7 @@ QgsLayerTreeLayer::QgsLayerTreeLayer( const QString &layerId, const QString &nam
   : QgsLayerTreeNode( NodeLayer, true )
   , mRef( layerId, name, source, provider )
   , mLayerName( name.isEmpty() ? u"(?)"_s : name )
-{
-}
+{}
 
 QgsLayerTreeLayer::QgsLayerTreeLayer( const QgsLayerTreeLayer &other )
   : QgsLayerTreeNode( other )
@@ -56,7 +55,7 @@ QgsLayerTreeLayer::QgsLayerTreeLayer( const QgsLayerTreeLayer &other )
 void QgsLayerTreeLayer::resolveReferences( const QgsProject *project, bool looseMatching )
 {
   if ( mRef )
-    return;  // already assigned
+    return; // already assigned
 
   if ( !looseMatching )
   {
@@ -84,10 +83,7 @@ void QgsLayerTreeLayer::attachToLayer()
 }
 
 
-QString QgsLayerTreeLayer::name() const
-{
-  return ( mRef && mUseLayerName ) ? mRef->name() : mLayerName;
-}
+QString QgsLayerTreeLayer::name() const { return ( mRef && mUseLayerName ) ? mRef->name() : mLayerName; }
 
 void QgsLayerTreeLayer::setName( const QString &n )
 {
@@ -189,15 +185,9 @@ void QgsLayerTreeLayer::writeXml( QDomElement &parentElement, const QgsReadWrite
   parentElement.appendChild( elem );
 }
 
-QString QgsLayerTreeLayer::dump() const
-{
-  return u"LAYER: %1 checked=%2 expanded=%3 id=%4\n"_s.arg( name() ).arg( mChecked ).arg( mExpanded ).arg( layerId() );
-}
+QString QgsLayerTreeLayer::dump() const { return u"LAYER: %1 checked=%2 expanded=%3 id=%4\n"_s.arg( name() ).arg( mChecked ).arg( mExpanded ).arg( layerId() ); }
 
-QgsLayerTreeLayer *QgsLayerTreeLayer::clone() const
-{
-  return new QgsLayerTreeLayer( *this );
-}
+QgsLayerTreeLayer *QgsLayerTreeLayer::clone() const { return new QgsLayerTreeLayer( *this ); }
 
 void QgsLayerTreeLayer::layerWillBeDeleted()
 {
@@ -209,18 +199,11 @@ void QgsLayerTreeLayer::layerWillBeDeleted()
   // in theory we do not even need to do this - the weak ref should clear itself
   mRef.layer.clear();
   // layerId stays in the reference
-
 }
 
-void QgsLayerTreeLayer::setUseLayerName( const bool use )
-{
-  mUseLayerName = use;
-}
+void QgsLayerTreeLayer::setUseLayerName( const bool use ) { mUseLayerName = use; }
 
-bool QgsLayerTreeLayer::useLayerName() const
-{
-  return mUseLayerName;
-}
+bool QgsLayerTreeLayer::useLayerName() const { return mUseLayerName; }
 
 void QgsLayerTreeLayer::layerNameChanged()
 {
@@ -228,18 +211,8 @@ void QgsLayerTreeLayer::layerNameChanged()
   emit nameChanged( this, mRef->name() );
 }
 
-void QgsLayerTreeLayer::setLabelExpression( const QString &expression )
-{
-  mLabelExpression = expression;
-}
+void QgsLayerTreeLayer::setLabelExpression( const QString &expression ) { mLabelExpression = expression; }
 
-QgsLegendPatchShape QgsLayerTreeLayer::patchShape() const
-{
-  return mPatchShape;
-}
+QgsLegendPatchShape QgsLayerTreeLayer::patchShape() const { return mPatchShape; }
 
-void QgsLayerTreeLayer::setPatchShape( const QgsLegendPatchShape &shape )
-{
-  mPatchShape = shape;
-}
-
+void QgsLayerTreeLayer::setPatchShape( const QgsLegendPatchShape &shape ) { mPatchShape = shape; }

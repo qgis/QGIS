@@ -53,7 +53,6 @@ bool QgsLayerTreeUtils::readOldLegend( QgsLayerTreeGroup *root, const QDomElemen
 }
 
 
-
 static bool _readOldLegendLayerOrderGroup( const QDomElement &groupElem, QMap<int, QString> &layerIndexes )
 {
   const QDomNodeList legendChildren = groupElem.childNodes();
@@ -209,7 +208,6 @@ Qt::CheckState QgsLayerTreeUtils::checkStateFromXml( const QString &txt )
 }
 
 
-
 static void _readOldLegendGroup( const QDomElement &groupElem, QgsLayerTreeGroup *parent )
 {
   const QDomNodeList groupChildren = groupElem.childNodes();
@@ -314,12 +312,11 @@ void QgsLayerTreeUtils::removeInvalidLayers( QgsLayerTreeGroup *group )
     group->removeChildNode( node );
 }
 
-void QgsLayerTreeUtils::storeOriginalLayersProperties( QgsLayerTreeGroup *group,  const QDomDocument *doc )
+void QgsLayerTreeUtils::storeOriginalLayersProperties( QgsLayerTreeGroup *group, const QDomDocument *doc )
 {
   const QDomElement projectLayersElement { doc->documentElement().firstChildElement( u"projectlayers"_s ) };
 
-  std::function<void ( QgsLayerTreeNode * )> _store = [ & ]( QgsLayerTreeNode * node )
-  {
+  std::function<void( QgsLayerTreeNode * )> _store = [&]( QgsLayerTreeNode *node ) {
     if ( QgsLayerTree::isLayer( node ) )
     {
       if ( QgsMapLayer *l = QgsLayerTree::toLayer( node )->layer() )
@@ -329,7 +326,7 @@ void QgsLayerTreeUtils::storeOriginalLayersProperties( QgsLayerTreeGroup *group,
           return;
 
         QDomElement layerElement { projectLayersElement.firstChildElement( u"maplayer"_s ) };
-        while ( ! layerElement.isNull() )
+        while ( !layerElement.isNull() )
         {
           const QString id( layerElement.firstChildElement( u"id"_s ).firstChild().nodeValue() );
           if ( id == l->id() )
@@ -340,13 +337,13 @@ void QgsLayerTreeUtils::storeOriginalLayersProperties( QgsLayerTreeGroup *group,
             l->setOriginalXmlProperties( u"<!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>\n%1"_s.arg( str ) );
             break;
           }
-          layerElement = layerElement.nextSiblingElement( );
+          layerElement = layerElement.nextSiblingElement();
         }
       }
     }
     else if ( QgsLayerTree::isGroup( node ) )
     {
-      const QList<QgsLayerTreeNode *> constChildren( node->children( ) );
+      const QList<QgsLayerTreeNode *> constChildren( node->children() );
       for ( const auto &childNode : constChildren )
       {
         _store( childNode );

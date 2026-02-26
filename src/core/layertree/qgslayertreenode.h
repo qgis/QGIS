@@ -98,7 +98,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     }
     else
       sipType = 0;
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -106,39 +106,38 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     //! Enumeration of possible tree node types
     enum NodeType
     {
-      NodeGroup,   //!< Container of other groups and layers
-      NodeLayer,    //!< Leaf node pointing to a layer
-      NodeCustom    //!< Leaf node pointing to a custom object
+      NodeGroup, //!< Container of other groups and layers
+      NodeLayer, //!< Leaf node pointing to a layer
+      NodeCustom //!< Leaf node pointing to a custom object
     };
 
     ~QgsLayerTreeNode() override;
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    QString str = u"<QgsLayerTreeNode: %1>"_s.arg( sipCpp->name() );
+    % MethodCode QString str = u"<QgsLayerTreeNode: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 
-    /**
+      /**
      * Returns the number of children contained in the node.
      *
      * \since QGIS 4.0
      */
-    int __len__() const;
-    % MethodCode
-    sipRes = sipCpp->children().count();
+      int
+      __len__() const;
+    % MethodCode sipRes = sipCpp->children().count();
     % End
 
-    /**
+        /**
      * Returns the child node at the specified ``index``.
      *
      * \throws IndexError if no child with the specified ``index`` exists.
      * \since QGIS 4.0
      */
-    SIP_PYOBJECT __getitem__( int index ) SIP_TYPEHINT( QgsLayerTreeNode );
-    % MethodCode
-    const QList< QgsLayerTreeNode * > children = sipCpp->children();
+        SIP_PYOBJECT
+      __getitem__( int index ) SIP_TYPEHINT( QgsLayerTreeNode );
+    % MethodCode const QList< QgsLayerTreeNode * > children = sipCpp->children();
     const int count = children.count();
     if ( a0 < 0 || a0 >= count )
     {
@@ -153,8 +152,11 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     % End
 #endif
 
-    //! Find out about type of the node. It is usually shorter to use convenience functions from QgsLayerTree namespace for that
-    NodeType nodeType() const { return mNodeType; }
+        //! Find out about type of the node. It is usually shorter to use convenience functions from QgsLayerTree namespace for that
+        NodeType nodeType() const
+    {
+      return mNodeType;
+    }
     //! Gets pointer to the parent. If parent is NULLPTR, the node is a root node
     QgsLayerTreeNode *parent() { return mParent; }
     //! Gets list of children of the node. Children are owned by the parent
@@ -299,7 +301,6 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     void nameChanged( QgsLayerTreeNode *node, QString name );
 
   protected:
-
     //! Constructor
     QgsLayerTreeNode( NodeType t, bool checked = true );
     QgsLayerTreeNode( const QgsLayerTreeNode &other );
@@ -334,10 +335,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
 
   private:
     QgsLayerTreeNode &operator=( const QgsLayerTreeNode & ) = delete;
-
 };
-
-
 
 
 #endif // QGSLAYERTREENODE_H
