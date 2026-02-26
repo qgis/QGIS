@@ -3165,6 +3165,16 @@ GIntBig QgsOgrLayer::GetApproxFeatureCount()
       QByteArray layerName = OGR_L_GetName( hLayer );
       QByteArray sql( "SELECT COUNT(*) FROM (SELECT 1 FROM " );
       sql += QgsOgrProviderUtils::quotedIdentifier( layerName, driverName );
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,13,0)
+      const char *pszAttrFilter = OGR_L_GetAttributeFilter( hLayer );
+      if ( pszAttrFilter && pszAttrFilter[0] != '\0' )
+      {
+        sql += " WHERE ";
+        sql += pszAttrFilter;
+      }
+#endif
+
       sql += " LIMIT ";
       sql += CPLSPrintf( CPL_FRMT_GIB, nLimit );
       sql += ")";

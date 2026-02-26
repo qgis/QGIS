@@ -1835,6 +1835,40 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
             provider_extent.asPolygon()[0],
         )
 
+    @unittest.skipIf(
+        int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 13, 0),
+        "GDAL 3.13 required",
+    )
+    def testApproxFeatureCountWithProviderFilter(self):
+        """Test issue GH #65067 where the provider filter was not applied when doing an approximate feature count"""
+        tmpfile = os.path.join(
+            self.basetestpath, "testApproxFeatureCountWithProviderFilter.gpkg"
+        )
+        ds = ogr.GetDriverByName("GPKG").CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer("test", geom_type=ogr.wkbPoint)
+        # Add an int field
+        lyr.CreateField(ogr.FieldDefn("int_field", ogr.OFTInteger))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt("POINT(0 1)"))
+        f.SetField("int_field", 1)
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt("POINT(2 3)"))
+        f.SetField("int_field", 2)
+        lyr.CreateFeature(f)
+
+        # Drop gpkg_ogr_contents
+        ds.ExecuteSQL("DROP TABLE IF EXISTS gpkg_ogr_contents")
+
+        ds = None
+
+        vl = QgsVectorLayer(f"{tmpfile}" + "|layername=" + "test", "test", "ogr")
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 2)
+
+        vl.setSubsetString("int_field = 1")
+        self.assertEqual(vl.featureCount(), 1)
+
     def testRegenerateFid(self):
         """Test regenerating feature ids"""
 
