@@ -23,7 +23,6 @@ Instances of derived classes may be registered in Qgs3DRendererRegistry.
 #include "qgs3drendererregistry.h"
 %End
   public:
-
     virtual ~Qgs3DRendererAbstractMetadata();
 
     QString type() const;
@@ -39,7 +38,6 @@ classes.
 %End
 
   protected:
-
     explicit Qgs3DRendererAbstractMetadata( const QString &type );
 %Docstring
 Constructor of the base class
@@ -62,7 +60,6 @@ Should be accessed through
 #include "qgs3drendererregistry.h"
 %End
   public:
-
     Qgs3DRendererRegistry();
 
     ~Qgs3DRendererRegistry();

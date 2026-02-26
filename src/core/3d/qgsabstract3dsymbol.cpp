@@ -22,10 +22,7 @@ using namespace Qt::StringLiterals;
 QgsPropertiesDefinition QgsAbstract3DSymbol::sPropertyDefinitions;
 
 
-QList<Qgis::GeometryType> QgsAbstract3DSymbol::compatibleGeometryTypes() const
-{
-  return QList< Qgis::GeometryType >();
-}
+QList<Qgis::GeometryType> QgsAbstract3DSymbol::compatibleGeometryTypes() const { return QList< Qgis::GeometryType >(); }
 
 const QgsPropertiesDefinition &QgsAbstract3DSymbol::propertyDefinitions()
 {
@@ -33,10 +30,7 @@ const QgsPropertiesDefinition &QgsAbstract3DSymbol::propertyDefinitions()
   return sPropertyDefinitions;
 }
 
-void QgsAbstract3DSymbol::copyBaseSettings( QgsAbstract3DSymbol *destination ) const
-{
-  destination->mDataDefinedProperties = mDataDefinedProperties;
-}
+void QgsAbstract3DSymbol::copyBaseSettings( QgsAbstract3DSymbol *destination ) const { destination->mDataDefinedProperties = mDataDefinedProperties; }
 
 void QgsAbstract3DSymbol::initPropertyDefinitions()
 {
@@ -45,12 +39,10 @@ void QgsAbstract3DSymbol::initPropertyDefinitions()
 
   const QString origin = u"symbol3d"_s;
 
-  sPropertyDefinitions = QgsPropertiesDefinition
-  {
+  sPropertyDefinitions = QgsPropertiesDefinition {
     { static_cast< int >( Property::Height ), QgsPropertyDefinition( "height", QObject::tr( "Height" ), QgsPropertyDefinition::Double, origin ) },
     { static_cast< int >( Property::ExtrusionHeight ), QgsPropertyDefinition( "extrusionHeight", QObject::tr( "ExtrusionHeight" ), QgsPropertyDefinition::DoublePositive, origin ) },
   };
-
 }
 
 bool QgsAbstract3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const
@@ -61,7 +53,4 @@ bool QgsAbstract3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCo
   return false;
 }
 
-void QgsAbstract3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer * )
-{
-
-}
+void QgsAbstract3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer * ) {}

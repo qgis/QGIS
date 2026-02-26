@@ -41,7 +41,6 @@ class QgsFeature3DHandler;
 class CORE_EXPORT Qgs3DSymbolAbstractMetadata
 {
   public:
-
     /**
      * Constructor for Qgs3DSymbolAbstractMetadata, with the specified \a type and \a visibleName.
      */
@@ -87,7 +86,12 @@ class CORE_EXPORT Qgs3DSymbolAbstractMetadata
      *
      * \note Not available in Python bindings
      */
-    virtual QgsFeature3DHandler *createFeatureHandler( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol ) SIP_FACTORY { Q_UNUSED( layer ); Q_UNUSED( symbol ); return nullptr; }
+    virtual QgsFeature3DHandler *createFeatureHandler( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol ) SIP_FACTORY
+    {
+      Q_UNUSED( layer );
+      Q_UNUSED( symbol );
+      return nullptr;
+    }
 #endif
 
   private:
@@ -117,21 +121,17 @@ typedef Qgs3DSymbolWidget *( *Qgs3DSymbolWidgetFunc )( QgsVectorLayer * ) SIP_SK
 class CORE_EXPORT Qgs3DSymbolMetadata : public Qgs3DSymbolAbstractMetadata
 {
   public:
-
     /**
      * Constructor for Qgs3DSymbolMetadata, with the specified \a type and \a visibleName.
      *
      * The \a pfCreate, \a pfWidget and \a pfHandler arguments are used to specify
      * static functions for creating the symbol type and configuration widget.
      */
-    Qgs3DSymbolMetadata( const QString &type, const QString &visibleName,
-                         Qgs3DSymbolCreateFunc pfCreate,
-                         Qgs3DSymbolWidgetFunc pfWidget = nullptr,
-                         Qgs3DSymbolFeatureHandlerFunc pfHandler = nullptr ) SIP_SKIP
-  : Qgs3DSymbolAbstractMetadata( type, visibleName )
-    , mCreateFunc( pfCreate )
-    , mWidgetFunc( pfWidget )
-    , mFeatureHandlerFunc( pfHandler )
+    Qgs3DSymbolMetadata( const QString &type, const QString &visibleName, Qgs3DSymbolCreateFunc pfCreate, Qgs3DSymbolWidgetFunc pfWidget = nullptr, Qgs3DSymbolFeatureHandlerFunc pfHandler = nullptr )
+      SIP_SKIP : Qgs3DSymbolAbstractMetadata( type, visibleName ),
+                 mCreateFunc( pfCreate ),
+                 mWidgetFunc( pfWidget ),
+                 mFeatureHandlerFunc( pfHandler )
     {}
 
     /**
@@ -160,13 +160,15 @@ class CORE_EXPORT Qgs3DSymbolMetadata : public Qgs3DSymbolAbstractMetadata
 
     QgsAbstract3DSymbol *create() override SIP_FACTORY { return mCreateFunc ? mCreateFunc() : nullptr; }
     Qgs3DSymbolWidget *createSymbolWidget( QgsVectorLayer *vl ) override SIP_FACTORY { return mWidgetFunc ? mWidgetFunc( vl ) : nullptr; }
-    QgsFeature3DHandler *createFeatureHandler( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol ) override SIP_FACTORY { return mFeatureHandlerFunc ? mFeatureHandlerFunc( layer, symbol ) : nullptr; }
+    QgsFeature3DHandler *createFeatureHandler( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol ) override SIP_FACTORY
+    {
+      return mFeatureHandlerFunc ? mFeatureHandlerFunc( layer, symbol ) : nullptr;
+    }
 
   private:
     Qgs3DSymbolCreateFunc mCreateFunc;
     Qgs3DSymbolWidgetFunc mWidgetFunc;
     Qgs3DSymbolFeatureHandlerFunc mFeatureHandlerFunc;
-
 };
 #endif
 
@@ -183,7 +185,6 @@ class CORE_EXPORT Qgs3DSymbolMetadata : public Qgs3DSymbolAbstractMetadata
 class CORE_EXPORT Qgs3DSymbolRegistry
 {
   public:
-
     Qgs3DSymbolRegistry();
     ~Qgs3DSymbolRegistry();
 
