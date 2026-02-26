@@ -42,7 +42,6 @@ class QgsVectorLayerAbstractPlotDataGatherer;
 class CORE_EXPORT QgsPieChartPlot : public Qgs2DPlot
 {
   public:
-
     QgsPieChartPlot();
     ~QgsPieChartPlot() override = default;
 
@@ -130,7 +129,6 @@ class CORE_EXPORT QgsPieChartPlot : public Qgs2DPlot
     static QgsVectorLayerAbstractPlotDataGatherer *createDataGatherer( QgsPlot *plot ) SIP_TRANSFERBACK;
 
   private:
-
     std::vector<std::unique_ptr<QgsFillSymbol>> mFillSymbols;
     std::vector<std::unique_ptr<QgsColorRamp>> mColorRamps;
 

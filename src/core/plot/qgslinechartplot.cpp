@@ -364,10 +364,7 @@ bool QgsLineChartPlot::readXml( const QDomElement &element, const QgsReadWriteCo
   return true;
 }
 
-QgsLineChartPlot *QgsLineChartPlot::create()
-{
-  return new QgsLineChartPlot();
-}
+QgsLineChartPlot *QgsLineChartPlot::create() { return new QgsLineChartPlot(); }
 
 QgsVectorLayerAbstractPlotDataGatherer *QgsLineChartPlot::createDataGatherer( QgsPlot *plot )
 {

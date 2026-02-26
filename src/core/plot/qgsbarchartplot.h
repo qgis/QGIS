@@ -40,7 +40,6 @@ class QgsVectorLayerAbstractPlotDataGatherer;
 class CORE_EXPORT QgsBarChartPlot : public Qgs2DXyPlot
 {
   public:
-
     QgsBarChartPlot();
     ~QgsBarChartPlot() override = default;
 
@@ -73,7 +72,6 @@ class CORE_EXPORT QgsBarChartPlot : public Qgs2DXyPlot
     static QgsVectorLayerAbstractPlotDataGatherer *createDataGatherer( QgsPlot *plot ) SIP_TRANSFERBACK;
 
   private:
-
     std::vector<std::unique_ptr<QgsFillSymbol>> mFillSymbols;
 };
 

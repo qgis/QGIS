@@ -415,10 +415,7 @@ bool QgsPieChartPlot::readXml( const QDomElement &element, const QgsReadWriteCon
   return true;
 }
 
-QgsPieChartPlot *QgsPieChartPlot::create()
-{
-  return new QgsPieChartPlot();
-}
+QgsPieChartPlot *QgsPieChartPlot::create() { return new QgsPieChartPlot(); }
 
 QgsVectorLayerAbstractPlotDataGatherer *QgsPieChartPlot::createDataGatherer( QgsPlot *plot )
 {
@@ -431,17 +428,8 @@ QgsVectorLayerAbstractPlotDataGatherer *QgsPieChartPlot::createDataGatherer( Qgs
   return new QgsVectorLayerXyPlotDataGatherer( Qgis::PlotAxisType::Categorical );
 }
 
-void QgsPieChartPlot::setTextFormat( const QgsTextFormat &format )
-{
-  mLabelTextFormat = format;
-}
+void QgsPieChartPlot::setTextFormat( const QgsTextFormat &format ) { mLabelTextFormat = format; }
 
-void QgsPieChartPlot::setNumericFormat( QgsNumericFormat *format )
-{
-  mNumericFormat.reset( format );
-}
+void QgsPieChartPlot::setNumericFormat( QgsNumericFormat *format ) { mNumericFormat.reset( format ); }
 
-void QgsPieChartPlot::setLabelType( Qgis::PieChartLabelType type )
-{
-  mLabelType = type;
-}
+void QgsPieChartPlot::setLabelType( Qgis::PieChartLabelType type ) { mLabelType = type; }

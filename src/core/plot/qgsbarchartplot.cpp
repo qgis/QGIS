@@ -27,10 +27,7 @@
 
 using namespace Qt::StringLiterals;
 
-QgsBarChartPlot::QgsBarChartPlot()
-{
-  setFillSymbolAt( 0, QgsPlotDefaultSettings::barChartFillSymbol() );
-}
+QgsBarChartPlot::QgsBarChartPlot() { setFillSymbolAt( 0, QgsPlotDefaultSettings::barChartFillSymbol() ); }
 
 void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderContext &, const QRectF &plotArea, const QgsPlotData &plotData )
 {
@@ -143,17 +140,13 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
         QPoint bottomRight;
         if ( flipAxes() )
         {
-          topLeft = QPoint( plotArea.x() + zero,
-                            plotArea.bottom() - x - barWidth );
-          bottomRight = QPoint( plotArea.x() + y,
-                                plotArea.bottom() - x );
+          topLeft = QPoint( plotArea.x() + zero, plotArea.bottom() - x - barWidth );
+          bottomRight = QPoint( plotArea.x() + y, plotArea.bottom() - x );
         }
         else
         {
-          topLeft = QPoint( plotArea.left() + x,
-                            plotArea.y() + plotArea.height() - y );
-          bottomRight = QPoint( plotArea.left() + x + barWidth,
-                                plotArea.y() + plotArea.height() - zero );
+          topLeft = QPoint( plotArea.left() + x, plotArea.y() + plotArea.height() - y );
+          bottomRight = QPoint( plotArea.left() + x + barWidth, plotArea.y() + plotArea.height() - zero );
         }
 
         chartScope->addVariable( QgsExpressionContextScope::StaticVariable( u"chart_value"_s, pair.second, true ) );
@@ -239,10 +232,7 @@ bool QgsBarChartPlot::readXml( const QDomElement &element, const QgsReadWriteCon
   return true;
 }
 
-QgsBarChartPlot *QgsBarChartPlot::create()
-{
-  return new QgsBarChartPlot();
-}
+QgsBarChartPlot *QgsBarChartPlot::create() { return new QgsBarChartPlot(); }
 
 QgsVectorLayerAbstractPlotDataGatherer *QgsBarChartPlot::createDataGatherer( QgsPlot *plot )
 {

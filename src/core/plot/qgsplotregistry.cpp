@@ -30,13 +30,9 @@ using namespace Qt::StringLiterals;
 
 QgsPlotRegistry::QgsPlotRegistry( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
-QgsPlotRegistry::~QgsPlotRegistry()
-{
-  qDeleteAll( mMetadata );
-}
+QgsPlotRegistry::~QgsPlotRegistry() { qDeleteAll( mMetadata ); }
 
 bool QgsPlotRegistry::populate()
 {
@@ -50,10 +46,7 @@ bool QgsPlotRegistry::populate()
   return true;
 }
 
-QgsPlotAbstractMetadata *QgsPlotRegistry::plotMetadata( const QString &type ) const
-{
-  return mMetadata.value( type );
-}
+QgsPlotAbstractMetadata *QgsPlotRegistry::plotMetadata( const QString &type ) const { return mMetadata.value( type ); }
 
 bool QgsPlotRegistry::addPlotType( QgsPlotAbstractMetadata *metadata )
 {
