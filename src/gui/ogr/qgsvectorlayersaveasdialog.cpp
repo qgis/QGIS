@@ -19,6 +19,7 @@
 
 #include <gdal.h>
 #include <limits>
+#include <optional>
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatums.h"
@@ -564,10 +565,42 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
 
   if ( mLayer )
   {
+    // save fields state: if it is checked and should be exported as displayed value
+    const bool isPreviousFormatForFieldsAsDisplayedValues = ( mPreviousFormat == "CSV"_L1 || mPreviousFormat == "XLS"_L1 || mPreviousFormat == "XLSX"_L1 || mPreviousFormat == "ODS"_L1 );
+    for ( int i = 0; i < mAttributeTable->rowCount(); i++ )
+    {
+      QTableWidgetItem *nameItem = mAttributeTable->item( i, static_cast<int>( ColumnIndex::Name ) );
+      if ( !nameItem )
+      {
+        continue;
+      }
+
+      const QString fieldName = nameItem->text();
+      const bool exportField = ( nameItem->checkState() == Qt::Checked );
+
+      std::optional<bool> exportAsValue = std::nullopt;
+      if ( isPreviousFormatForFieldsAsDisplayedValues )
+      {
+        QTableWidgetItem *valueItem = mAttributeTable->item( i, static_cast<int>( ColumnIndex::ExportAsDisplayedValue ) );
+        if ( valueItem && ( valueItem->flags() & Qt::ItemIsUserCheckable ) )
+        {
+          exportAsValue = ( valueItem->checkState() == Qt::Checked );
+        }
+      }
+      else
+      {
+        exportAsValue = mFieldsState[fieldName].second;
+      }
+
+      mFieldsState[fieldName] = { exportField, exportAsValue };
+    }
+
+    mPreviousFormat = sFormat;
+
     mAttributeTable->setRowCount( mLayer->fields().count() );
 
     QStringList horizontalHeaders = QStringList() << tr( "Name" ) << tr( "Export name" ) << tr( "Type" ) << tr( "Replace with displayed values" );
-    mAttributeTable->setColumnCount( horizontalHeaders.size() );
+    mAttributeTable->setColumnCount( static_cast<int>( horizontalHeaders.size() ) );
     mAttributeTable->setHorizontalHeaderLabels( horizontalHeaders );
 
     bool foundFieldThatCanBeExportedAsDisplayedValue = false;
@@ -582,7 +615,10 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
     }
     mAttributeTable->setColumnHidden( static_cast<int>( ColumnIndex::ExportAsDisplayedValue ), !foundFieldThatCanBeExportedAsDisplayedValue );
 
-    bool checkReplaceRawFieldValues = selectAllFields && isFormatForFieldsAsDisplayedValues;
+    bool allChecked = true;
+    bool allUnchecked = true;
+    bool anyEnabled = false;
+
     const QSignalBlocker signalBlockerAttributeTable( mAttributeTable );
     {
       for ( int i = 0; i < mLayer->fields().size(); ++i )
@@ -590,12 +626,14 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
         QgsField fld = mLayer->fields().at( i );
         Qt::ItemFlags flags = mLayer->providerType() != "oracle"_L1 || !fld.typeName().contains( "SDO_GEOMETRY"_L1 ) ? Qt::ItemIsEnabled : Qt::NoItemFlags;
         QTableWidgetItem *item = nullptr;
-        item = new QTableWidgetItem( fld.name() );
+        const QString fieldName = fld.name();
+        const bool exportField = mFieldsState.contains( fieldName ) ? mFieldsState[fieldName].first : selectAllFields;
+        item = new QTableWidgetItem( fieldName );
         item->setFlags( flags | Qt::ItemIsUserCheckable );
-        item->setCheckState( ( selectAllFields ) ? Qt::Checked : Qt::Unchecked );
+        item->setCheckState( ( exportField ) ? Qt::Checked : Qt::Unchecked );
         mAttributeTable->setItem( i, static_cast<int>( ColumnIndex::Name ), item );
 
-        item = new QTableWidgetItem( fld.name() );
+        item = new QTableWidgetItem( fieldName );
         item->setFlags( flags | Qt::ItemIsEditable );
         item->setData( Qt::UserRole, fld.displayName() );
         mAttributeTable->setItem( i, static_cast<int>( ColumnIndex::ExportName ), item );
@@ -612,11 +650,28 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
           if ( flags == Qt::ItemIsEnabled && widgetId != "TextEdit"_L1 && ( factory = QgsGui::editorWidgetRegistry()->factory( widgetId ) ) )
           {
             item = new QTableWidgetItem( tr( "Use %1" ).arg( factory->name() ) );
-            item->setFlags( ( selectAllFields ) ? ( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable ) : Qt::ItemIsUserCheckable );
-            const bool checkItem = ( selectAllFields && isFormatForFieldsAsDisplayedValues && ( widgetId == "ValueMap"_L1 || widgetId == "ValueRelation"_L1 || widgetId == "CheckBox"_L1 || widgetId == "RelationReference"_L1 ) );
-            checkReplaceRawFieldValues &= checkItem;
-            item->setCheckState( checkItem ? Qt::Checked : Qt::Unchecked );
+            bool exportAsValue;
+            if ( mFieldsState.contains( fieldName ) && mFieldsState[fieldName].second.has_value() )
+            {
+              exportAsValue = mFieldsState[fieldName].second.value();
+            }
+            else
+            {
+              exportAsValue = ( exportField && isFormatForFieldsAsDisplayedValues && ( widgetId == "ValueMap"_L1 || widgetId == "ValueRelation"_L1 || widgetId == "CheckBox"_L1 || widgetId == "RelationReference"_L1 ) );
+            }
+            item->setFlags( ( exportField ) ? ( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable ) : Qt::ItemIsUserCheckable );
+            item->setCheckState( exportAsValue ? Qt::Checked : Qt::Unchecked );
             mAttributeTable->setItem( i, static_cast<int>( ColumnIndex::ExportAsDisplayedValue ), item );
+
+            // collect information for setting mReplaceRawFieldValues state
+            if ( exportField )
+            {
+              anyEnabled = true;
+              if ( exportAsValue )
+                allUnchecked = false;
+              else
+                allChecked = false;
+            }
           }
           else
           {
@@ -628,8 +683,16 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
       }
     }
 
-    whileBlocking( mReplaceRawFieldValues )->setChecked( checkReplaceRawFieldValues );
-    mReplaceRawFieldValues->setEnabled( selectAllFields );
+    Qt::CheckState replaceRawState;
+    if ( !anyEnabled || allUnchecked )
+      replaceRawState = Qt::Unchecked;
+    else if ( allChecked )
+      replaceRawState = Qt::Checked;
+    else
+      replaceRawState = Qt::PartiallyChecked;
+
+    whileBlocking( mReplaceRawFieldValues )->setCheckState( replaceRawState );
+    mReplaceRawFieldValues->setEnabled( selectAllFields && anyEnabled );
     mReplaceRawFieldValues->setVisible( foundFieldThatCanBeExportedAsDisplayedValue );
 
     mAttributeTable->resizeColumnsToContents();
