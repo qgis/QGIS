@@ -29,9 +29,7 @@ using namespace Qt::StringLiterals;
 
 QgsProjectTimeSettings::QgsProjectTimeSettings( QObject *parent )
   : QObject( parent )
-{
-
-}
+{}
 
 void QgsProjectTimeSettings::reset()
 {
@@ -39,10 +37,7 @@ void QgsProjectTimeSettings::reset()
   emit temporalRangeChanged();
 }
 
-QgsDateTimeRange QgsProjectTimeSettings::temporalRange() const
-{
-  return mRange;
-}
+QgsDateTimeRange QgsProjectTimeSettings::temporalRange() const { return mRange; }
 
 void QgsProjectTimeSettings::setTemporalRange( const QgsDateTimeRange &range )
 {
@@ -65,7 +60,6 @@ bool QgsProjectTimeSettings::readXml( const QDomElement &element, const QgsReadW
     const QDateTime endDate = QDateTime::fromString( end.toElement().text(), Qt::ISODate );
 
     setTemporalRange( QgsDateTimeRange( beginDate, endDate ) );
-
   }
 
   mTimeStepUnit = QgsUnitTypes::decodeTemporalUnit( element.attribute( u"timeStepUnit"_s, QgsUnitTypes::encodeUnit( Qgis::TemporalUnit::Hours ) ) );
@@ -103,59 +97,28 @@ QDomElement QgsProjectTimeSettings::writeXml( QDomDocument &document, const QgsR
   element.setAttribute( u"timeStepUnit"_s, QgsUnitTypes::encodeUnit( mTimeStepUnit ) );
   element.setAttribute( u"timeStep"_s, qgsDoubleToString( mTimeStep ) );
   element.setAttribute( u"frameRate"_s, qgsDoubleToString( mFrameRate ) );
-  element.setAttribute( u"cumulativeTemporalRange"_s,  mCumulativeTemporalRange ? 1 : 0 );
-  element.setAttribute( u"totalMovieFrames"_s,  mTotalMovieFrames );
+  element.setAttribute( u"cumulativeTemporalRange"_s, mCumulativeTemporalRange ? 1 : 0 );
+  element.setAttribute( u"totalMovieFrames"_s, mTotalMovieFrames );
 
   return element;
 }
 
-Qgis::TemporalUnit QgsProjectTimeSettings::timeStepUnit() const
-{
-  return mTimeStepUnit;
-}
+Qgis::TemporalUnit QgsProjectTimeSettings::timeStepUnit() const { return mTimeStepUnit; }
 
-void QgsProjectTimeSettings::setTimeStepUnit( Qgis::TemporalUnit unit )
-{
-  mTimeStepUnit = unit;
-}
+void QgsProjectTimeSettings::setTimeStepUnit( Qgis::TemporalUnit unit ) { mTimeStepUnit = unit; }
 
-double QgsProjectTimeSettings::timeStep() const
-{
-  return mTimeStep;
-}
+double QgsProjectTimeSettings::timeStep() const { return mTimeStep; }
 
-void QgsProjectTimeSettings::setTimeStep( double timeStep )
-{
-  mTimeStep = timeStep;
-}
+void QgsProjectTimeSettings::setTimeStep( double timeStep ) { mTimeStep = timeStep; }
 
-void QgsProjectTimeSettings::setFramesPerSecond( double rate )
-{
-  mFrameRate = rate;
-}
+void QgsProjectTimeSettings::setFramesPerSecond( double rate ) { mFrameRate = rate; }
 
-double QgsProjectTimeSettings::framesPerSecond() const
-{
-  return mFrameRate;
-}
+double QgsProjectTimeSettings::framesPerSecond() const { return mFrameRate; }
 
-void QgsProjectTimeSettings::setIsTemporalRangeCumulative( bool state )
-{
-  mCumulativeTemporalRange = state;
-}
+void QgsProjectTimeSettings::setIsTemporalRangeCumulative( bool state ) { mCumulativeTemporalRange = state; }
 
-bool QgsProjectTimeSettings::isTemporalRangeCumulative() const
-{
-  return mCumulativeTemporalRange;
-}
+bool QgsProjectTimeSettings::isTemporalRangeCumulative() const { return mCumulativeTemporalRange; }
 
-long long QgsProjectTimeSettings::totalMovieFrames() const
-{
-  return mTotalMovieFrames;
-}
+long long QgsProjectTimeSettings::totalMovieFrames() const { return mTotalMovieFrames; }
 
-void QgsProjectTimeSettings::setTotalMovieFrames( long long frames )
-{
-  mTotalMovieFrames = frames;
-}
-
+void QgsProjectTimeSettings::setTotalMovieFrames( long long frames ) { mTotalMovieFrames = frames; }

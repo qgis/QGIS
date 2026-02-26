@@ -25,9 +25,7 @@ using namespace Qt::StringLiterals;
 
 QgsMapViewsManager::QgsMapViewsManager( QgsProject *project )
   : QObject( project )
-{
-
-}
+{}
 
 bool QgsMapViewsManager::readXml( const QDomElement &element, const QDomDocument &doc )
 {
@@ -66,15 +64,9 @@ void QgsMapViewsManager::clear()
   emit views3DListChanged();
 }
 
-QDomElement QgsMapViewsManager::get3DViewSettings( const QString &name ) const
-{
-  return m3DMapViewsDom.value( name, QDomElement() );
-}
+QDomElement QgsMapViewsManager::get3DViewSettings( const QString &name ) const { return m3DMapViewsDom.value( name, QDomElement() ); }
 
-QList<QDomElement> QgsMapViewsManager::get3DViews() const
-{
-  return m3DMapViewsDom.values();
-}
+QList<QDomElement> QgsMapViewsManager::get3DViews() const { return m3DMapViewsDom.values(); }
 
 void QgsMapViewsManager::register3DViewSettings( const QString &name, const QDomElement &dom )
 {
@@ -82,10 +74,7 @@ void QgsMapViewsManager::register3DViewSettings( const QString &name, const QDom
   emit views3DListChanged();
 }
 
-QStringList QgsMapViewsManager::get3DViewsNames() const
-{
-  return m3DMapViewsDom.keys();
-}
+QStringList QgsMapViewsManager::get3DViewsNames() const { return m3DMapViewsDom.keys(); }
 
 void QgsMapViewsManager::remove3DView( const QString &name )
 {
@@ -97,8 +86,8 @@ void QgsMapViewsManager::rename3DView( const QString &oldTitle, const QString &n
 {
   QDomElement elem = m3DMapViewsDom.value( oldTitle );
   m3DMapViewsDom.remove( oldTitle );
-  m3DMapViewsDom[ newTitle ] = elem;
-  m3DMapViewsDom[ newTitle ].setAttribute( u"name"_s, newTitle );
+  m3DMapViewsDom[newTitle] = elem;
+  m3DMapViewsDom[newTitle].setAttribute( u"name"_s, newTitle );
   emit views3DListChanged();
 }
 
@@ -106,11 +95,8 @@ void QgsMapViewsManager::set3DViewInitiallyVisible( const QString &name, bool vi
 {
   if ( m3DMapViewsDom.contains( name ) )
   {
-    m3DMapViewsDom[ name ].setAttribute( u"isOpen"_s, visible );
+    m3DMapViewsDom[name].setAttribute( u"isOpen"_s, visible );
   }
 }
 
-bool QgsMapViewsManager::is3DViewOpen( const QString &name )
-{
-  return m3DMapViewsDom.value( name, QDomElement() ).attribute( u"isOpen"_s, u"1"_s ).toInt() == 1;
-}
+bool QgsMapViewsManager::is3DViewOpen( const QString &name ) { return m3DMapViewsDom.value( name, QDomElement() ).attribute( u"isOpen"_s, u"1"_s ).toInt() == 1; }

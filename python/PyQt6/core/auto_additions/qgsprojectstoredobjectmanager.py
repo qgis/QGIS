@@ -6,7 +6,6 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsAbstractProjectStoredObjectManager.__virtual_methods__ = ['setupObjectConnections']
-    QgsAbstractProjectStoredObjectManager.__group__ = ['project']
+    .__virtual_methods__ = ['setupObjectConnections']
 except (NameError, AttributeError):
     pass

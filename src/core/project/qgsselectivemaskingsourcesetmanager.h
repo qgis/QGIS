@@ -52,7 +52,6 @@ class CORE_EXPORT QgsSelectiveMaskingSourceSetManager : public QgsAbstractProjec
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsSelectiveMaskingSourceSetManager. The project will become the parent object for this
      * manager.
@@ -164,7 +163,6 @@ class CORE_EXPORT QgsSelectiveMaskingSourceSetManager : public QgsAbstractProjec
 
     //! Emitted when a set is renamed
     void setRenamed( const QString &oldName, const QString &newName );
-
 };
 
 

@@ -31,9 +31,7 @@ using namespace Qt::StringLiterals;
 QgsProjectViewSettings::QgsProjectViewSettings( QgsProject *project )
   : QObject( project )
   , mProject( project )
-{
-
-}
+{}
 
 void QgsProjectViewSettings::reset()
 {
@@ -54,20 +52,11 @@ void QgsProjectViewSettings::reset()
   }
 }
 
-QgsReferencedRectangle QgsProjectViewSettings::defaultViewExtent() const
-{
-  return mDefaultViewExtent;
-}
+QgsReferencedRectangle QgsProjectViewSettings::defaultViewExtent() const { return mDefaultViewExtent; }
 
-void QgsProjectViewSettings::setDefaultViewExtent( const QgsReferencedRectangle &extent )
-{
-  mDefaultViewExtent = extent;
-}
+void QgsProjectViewSettings::setDefaultViewExtent( const QgsReferencedRectangle &extent ) { mDefaultViewExtent = extent; }
 
-QgsReferencedRectangle QgsProjectViewSettings::presetFullExtent() const
-{
-  return mPresetFullExtent;
-}
+QgsReferencedRectangle QgsProjectViewSettings::presetFullExtent() const { return mPresetFullExtent; }
 
 void QgsProjectViewSettings::setPresetFullExtent( const QgsReferencedRectangle &extent )
 {
@@ -78,15 +67,9 @@ void QgsProjectViewSettings::setPresetFullExtent( const QgsReferencedRectangle &
   emit presetFullExtentChanged();
 }
 
-void QgsProjectViewSettings::setRestoreProjectExtentOnProjectLoad( bool projectExtentCheckboxState )
-{
-  mRestoreProjectExtentOnProjectLoad = projectExtentCheckboxState;
-}
+void QgsProjectViewSettings::setRestoreProjectExtentOnProjectLoad( bool projectExtentCheckboxState ) { mRestoreProjectExtentOnProjectLoad = projectExtentCheckboxState; }
 
-bool QgsProjectViewSettings::restoreProjectExtentOnProjectLoad( )
-{
-  return mRestoreProjectExtentOnProjectLoad;
-}
+bool QgsProjectViewSettings::restoreProjectExtentOnProjectLoad() { return mRestoreProjectExtentOnProjectLoad; }
 
 
 QgsReferencedRectangle QgsProjectViewSettings::fullExtent() const
@@ -113,12 +96,12 @@ QgsReferencedRectangle QgsProjectViewSettings::fullExtent() const
     const QList< QgsMapLayer * > layers = mProject->mapLayers( true ).values();
 
     QList< QgsMapLayer * > nonBaseMapLayers;
-    std::copy_if( layers.begin(), layers.end(),
-                  std::back_inserter( nonBaseMapLayers ),
-    []( const QgsMapLayer * layer ) { return !( layer->properties() & Qgis::MapLayerProperty::IsBasemapLayer ) && !( layer->properties() & Qgis::MapLayerProperty::Is3DBasemapLayer ); } );
+    std::copy_if( layers.begin(), layers.end(), std::back_inserter( nonBaseMapLayers ), []( const QgsMapLayer *layer ) {
+      return !( layer->properties() & Qgis::MapLayerProperty::IsBasemapLayer ) && !( layer->properties() & Qgis::MapLayerProperty::Is3DBasemapLayer );
+    } );
 
     // unless ALL layers from the project are basemap layers, we exclude these by default as their extent won't be useful for the project.
-    if ( !nonBaseMapLayers.empty( ) )
+    if ( !nonBaseMapLayers.empty() )
       return QgsReferencedRectangle( QgsMapLayerUtils::combinedExtent( nonBaseMapLayers, mProject->crs(), mProject->transformContext() ), mProject->crs() );
     else
       return QgsReferencedRectangle( QgsMapLayerUtils::combinedExtent( layers, mProject->crs(), mProject->transformContext() ), mProject->crs() );
@@ -139,10 +122,7 @@ void QgsProjectViewSettings::setMapScales( const QVector<double> &scales )
   emit mapScalesChanged();
 }
 
-QVector<double> QgsProjectViewSettings::mapScales() const
-{
-  return mMapScales;
-}
+QVector<double> QgsProjectViewSettings::mapScales() const { return mMapScales; }
 
 void QgsProjectViewSettings::setUseProjectScales( bool enabled )
 {
@@ -153,20 +133,11 @@ void QgsProjectViewSettings::setUseProjectScales( bool enabled )
   emit mapScalesChanged();
 }
 
-bool QgsProjectViewSettings::useProjectScales() const
-{
-  return mUseProjectScales;
-}
+bool QgsProjectViewSettings::useProjectScales() const { return mUseProjectScales; }
 
-double QgsProjectViewSettings::defaultRotation() const
-{
-  return mDefaultRotation;
-}
+double QgsProjectViewSettings::defaultRotation() const { return mDefaultRotation; }
 
-void QgsProjectViewSettings::setDefaultRotation( double rotation )
-{
-  mDefaultRotation = rotation;
-}
+void QgsProjectViewSettings::setDefaultRotation( double rotation ) { mDefaultRotation = rotation; }
 
 bool QgsProjectViewSettings::readXml( const QDomElement &element, const QgsReadWriteContext & )
 {

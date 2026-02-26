@@ -22,7 +22,6 @@ Contains utility functions for working with QGIS projects.
 #include "qgsprojectutils.h"
 %End
   public:
-
     static QList< QgsMapLayer * > layersMatchingPath( const QgsProject *project, const QString &path );
 %Docstring
 Returns a list of all layers in the specified ``project`` which match
@@ -62,10 +61,7 @@ Returns the current trust status of the specified ``project``.
 
 .. versionadded:: 4.0
 %End
-
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

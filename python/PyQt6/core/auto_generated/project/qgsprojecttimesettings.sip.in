@@ -23,7 +23,6 @@ used when animating maps or showing temporal layers.
 #include "qgsprojecttimesettings.h"
 %End
   public:
-
     QgsProjectTimeSettings( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProjectTimeSettings with the specified ``parent``

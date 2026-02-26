@@ -29,8 +29,7 @@ QgsProjectVersion::QgsProjectVersion( int major, int minor, int sub, const QStri
   , mMinor( minor )
   , mSub( sub )
   , mName( name )
-{
-}
+{}
 
 QgsProjectVersion::QgsProjectVersion( const QString &string )
 {
@@ -51,41 +50,20 @@ QgsProjectVersion::QgsProjectVersion( const QString &string )
   QgsDebugMsgLevel( u"Version is set to "_s + text(), 4 );
 }
 
-bool QgsProjectVersion::operator==( const QgsProjectVersion &other ) const
-{
-  return ( ( mMajor == other.mMajor ) &&
-           ( mMinor == other.mMinor ) &&
-           ( mSub == other.mSub ) );
-}
+bool QgsProjectVersion::operator==( const QgsProjectVersion &other ) const { return ( ( mMajor == other.mMajor ) && ( mMinor == other.mMinor ) && ( mSub == other.mSub ) ); }
 
-bool QgsProjectVersion::operator!=( const QgsProjectVersion &other ) const
-{
-  return ( ( mMajor != other.mMajor ) ||
-           ( mMinor != other.mMinor ) ||
-           ( mSub != other.mSub ) );
-}
+bool QgsProjectVersion::operator!=( const QgsProjectVersion &other ) const { return ( ( mMajor != other.mMajor ) || ( mMinor != other.mMinor ) || ( mSub != other.mSub ) ); }
 
-bool QgsProjectVersion::operator>=( const QgsProjectVersion &other ) const
-{
-  return ( *this == other ) || ( *this > other );
-}
+bool QgsProjectVersion::operator>=( const QgsProjectVersion &other ) const { return ( *this == other ) || ( *this > other ); }
 
 bool QgsProjectVersion::operator>( const QgsProjectVersion &other ) const
 {
-  return ( ( mMajor > other.mMajor ) ||
-           ( ( mMajor == other.mMajor ) && ( mMinor > other.mMinor ) ) ||
-           ( ( mMajor == other.mMajor ) && ( mMinor == other.mMinor ) && ( mSub > other.mSub ) ) );
+  return ( ( mMajor > other.mMajor ) || ( ( mMajor == other.mMajor ) && ( mMinor > other.mMinor ) ) || ( ( mMajor == other.mMajor ) && ( mMinor == other.mMinor ) && ( mSub > other.mSub ) ) );
 }
 
-bool QgsProjectVersion::operator<( const QgsProjectVersion &other ) const
-{
-  return other > *this;
-}
+bool QgsProjectVersion::operator<( const QgsProjectVersion &other ) const { return other > *this; }
 
-bool QgsProjectVersion::operator<=( const QgsProjectVersion &other ) const
-{
-  return other >= *this;
-}
+bool QgsProjectVersion::operator<=( const QgsProjectVersion &other ) const { return other >= *this; }
 
 
 QString QgsProjectVersion::text() const
@@ -100,7 +78,4 @@ QString QgsProjectVersion::text() const
   }
 }
 
-bool QgsProjectVersion::isNull() const
-{
-  return mMajor == 0 && mMinor == 0 && mSub == 0;
-}
+bool QgsProjectVersion::isNull() const { return mMajor == 0 && mMinor == 0 && mSub == 0; }

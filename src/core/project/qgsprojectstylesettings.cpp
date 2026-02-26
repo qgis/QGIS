@@ -108,10 +108,7 @@ void QgsProjectStyleSettings::setDefaultSymbol( Qgis::SymbolType symbolType, Qgs
   }
 }
 
-QgsColorRamp *QgsProjectStyleSettings::defaultColorRamp() const
-{
-  return mDefaultColorRamp ? mDefaultColorRamp->clone() : nullptr;
-}
+QgsColorRamp *QgsProjectStyleSettings::defaultColorRamp() const { return mDefaultColorRamp ? mDefaultColorRamp->clone() : nullptr; }
 
 void QgsProjectStyleSettings::setDefaultColorRamp( QgsColorRamp *colorRamp )
 {
@@ -123,10 +120,7 @@ void QgsProjectStyleSettings::setDefaultColorRamp( QgsColorRamp *colorRamp )
   makeDirty();
 }
 
-QgsTextFormat QgsProjectStyleSettings::defaultTextFormat() const
-{
-  return mDefaultTextFormat;
-}
+QgsTextFormat QgsProjectStyleSettings::defaultTextFormat() const { return mDefaultTextFormat; }
 
 void QgsProjectStyleSettings::setDefaultTextFormat( const QgsTextFormat &textFormat )
 {
@@ -214,10 +208,7 @@ void QgsProjectStyleSettings::setProjectStyle( QgsStyle *style )
   emit projectStyleChanged();
 }
 
-QgsStyle *QgsProjectStyleSettings::projectStyle()
-{
-  return mProjectStyle;
-}
+QgsStyle *QgsProjectStyleSettings::projectStyle() { return mProjectStyle; }
 
 bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context, Qgis::ProjectReadFlags )
 {
@@ -463,7 +454,7 @@ void QgsProjectStyleSettings::loadStyleAtPath( const QString &path )
   if ( fileInfo.suffix().compare( "xml"_L1, Qt::CaseInsensitive ) == 0 )
   {
     style->createMemoryDatabase();
-    ( void )style->importXml( path );
+    ( void ) style->importXml( path );
     style->setFileName( path );
     style->setReadOnly( true );
   }
@@ -508,10 +499,7 @@ void QgsProjectStyleSettings::clearStyles()
   mStyles.clear();
 }
 
-QgsCombinedStyleModel *QgsProjectStyleSettings::combinedStyleModel()
-{
-  return mCombinedStyleModel;
-}
+QgsCombinedStyleModel *QgsProjectStyleSettings::combinedStyleModel() { return mCombinedStyleModel; }
 
 void QgsProjectStyleSettings::setColorModel( Qgis::ColorModel colorModel )
 {
@@ -522,7 +510,7 @@ void QgsProjectStyleSettings::setColorModel( Qgis::ColorModel colorModel )
 
   makeDirty();
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
   if ( mColorSpace.isValid() && QgsColorUtils::toColorModel( mColorSpace.colorModel() ) != colorModel )
   {
     setColorSpace( QColorSpace() );
@@ -530,10 +518,7 @@ void QgsProjectStyleSettings::setColorModel( Qgis::ColorModel colorModel )
 #endif
 }
 
-Qgis::ColorModel QgsProjectStyleSettings::colorModel() const
-{
-  return mColorModel;
-}
+Qgis::ColorModel QgsProjectStyleSettings::colorModel() const { return mColorModel; }
 
 void QgsProjectStyleSettings::setColorSpace( const QColorSpace &colorSpace )
 {
@@ -546,8 +531,7 @@ void QgsProjectStyleSettings::setColorSpace( const QColorSpace &colorSpace )
     return;
   }
 
-  auto clearIccProfile = [this]()
-  {
+  auto clearIccProfile = [this]() {
     mProject->removeAttachedFile( mIccProfileFilePath );
     mIccProfileFilePath.clear();
     mColorSpace = QColorSpace();
@@ -556,7 +540,7 @@ void QgsProjectStyleSettings::setColorSpace( const QColorSpace &colorSpace )
   if ( !mIccProfileFilePath.isEmpty() )
     clearIccProfile();
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
   bool ok;
   Qgis::ColorModel colorModel = QgsColorUtils::toColorModel( colorSpace.colorModel(), &ok );
   mColorSpace = ok ? colorSpace : QColorSpace();
@@ -569,7 +553,7 @@ void QgsProjectStyleSettings::setColorSpace( const QColorSpace &colorSpace )
   if ( !mColorSpace.isValid() )
     return;
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
   if ( colorModel != mColorModel )
     mColorModel = colorModel;
 #endif
@@ -580,10 +564,7 @@ void QgsProjectStyleSettings::setColorSpace( const QColorSpace &colorSpace )
     clearIccProfile();
 }
 
-QColorSpace QgsProjectStyleSettings::colorSpace() const
-{
-  return mColorSpace;
-}
+QColorSpace QgsProjectStyleSettings::colorSpace() const { return mColorSpace; }
 
 void QgsProjectStyleSettings::makeDirty()
 {
@@ -764,30 +745,15 @@ void QgsProjectStyleDatabaseModel::styleDatabaseAboutToBeRemoved( const QString 
     beginRemoveRows( QModelIndex(), row, row );
 }
 
-void QgsProjectStyleDatabaseModel::styleDatabaseAdded( const QString & )
-{
-  endInsertRows();
-}
+void QgsProjectStyleDatabaseModel::styleDatabaseAdded( const QString & ) { endInsertRows(); }
 
-void QgsProjectStyleDatabaseModel::styleDatabaseRemoved( const QString & )
-{
-  endRemoveRows();
-}
+void QgsProjectStyleDatabaseModel::styleDatabaseRemoved( const QString & ) { endRemoveRows(); }
 
-void QgsProjectStyleDatabaseModel::projectStyleAboutToBeDestroyed()
-{
-  beginRemoveRows( QModelIndex(), 0, 0 );
-}
+void QgsProjectStyleDatabaseModel::projectStyleAboutToBeDestroyed() { beginRemoveRows( QModelIndex(), 0, 0 ); }
 
-void QgsProjectStyleDatabaseModel::projectStyleDestroyed()
-{
-  endRemoveRows();
-}
+void QgsProjectStyleDatabaseModel::projectStyleDestroyed() { endRemoveRows(); }
 
-void QgsProjectStyleDatabaseModel::projectStyleChanged()
-{
-  setProjectStyle( mSettings->projectStyle() );
-}
+void QgsProjectStyleDatabaseModel::projectStyleChanged() { setProjectStyle( mSettings->projectStyle() ); }
 
 //
 // QgsProjectStyleDatabaseProxyModel
@@ -804,7 +770,9 @@ bool QgsProjectStyleDatabaseProxyModel::filterAcceptsRow( int sourceRow, const Q
 {
   if ( mFilters & Filter::FilterHideReadOnly )
   {
-    if ( const QgsStyle *style = qobject_cast< QgsStyle * >( sourceModel()->data( sourceModel()->index( sourceRow, 0, sourceParent ), static_cast< int >( QgsProjectStyleDatabaseModel::CustomRole::Style ) ).value< QObject * >() ) )
+    if ( const QgsStyle *style = qobject_cast< QgsStyle * >(
+           sourceModel()->data( sourceModel()->index( sourceRow, 0, sourceParent ), static_cast< int >( QgsProjectStyleDatabaseModel::CustomRole::Style ) ).value< QObject * >()
+         ) )
     {
       if ( style->isReadOnly() )
         return false;
@@ -814,10 +782,7 @@ bool QgsProjectStyleDatabaseProxyModel::filterAcceptsRow( int sourceRow, const Q
   return true;
 }
 
-QgsProjectStyleDatabaseProxyModel::Filters QgsProjectStyleDatabaseProxyModel::filters() const
-{
-  return mFilters;
-}
+QgsProjectStyleDatabaseProxyModel::Filters QgsProjectStyleDatabaseProxyModel::filters() const { return mFilters; }
 
 void QgsProjectStyleDatabaseProxyModel::setFilters( QgsProjectStyleDatabaseProxyModel::Filters filters )
 {

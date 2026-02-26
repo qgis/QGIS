@@ -29,7 +29,6 @@ the objects contained in the manager.
 #include "qgsprojectstoredobjectmanager.h"
 %End
   public:
-
     explicit QgsProjectStoredObjectManagerBase( QgsProject *project /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProjectStoredObjectManagerBase, for objects attached
@@ -60,17 +59,15 @@ Emitted when an object is about to be removed from the manager
 
   protected:
 
-
     void markProjectDirty();
 %Docstring
 Marks the project as dirty.
 %End
 };
 
-template<T>
-class QgsAbstractProjectStoredObjectManager : QgsProjectStoredObjectManagerBase
+template<T> class QgsAbstractProjectStoredObjectManager : public QgsProjectStoredObjectManagerBase
 {
-%Docstring(signature="appended")
+%Docstring
 Template class for storage of a set of objects attached to a
 :py:class:`QgsProject`.
 
@@ -82,16 +79,11 @@ all the objects contained in the manager.
 
 .. versionadded:: 4.0
 %End
-
-%TypeHeaderCode
-#include "qgsprojectstoredobjectmanager.h"
-%End
   public:
-
     explicit QgsAbstractProjectStoredObjectManager( QgsProject *project /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsAbstractProjectStoredObjectManager, for objects
-attached to the specified ``project``.
+Constructor for :py:class:`QgsAbstractProjectStoredObjectManager`, for
+objects attached to the specified ``project``.
 %End
 
     ~QgsAbstractProjectStoredObjectManager();
@@ -108,7 +100,6 @@ objects were found.
 %End
 
   protected:
-
 
     void clearObjects();
 %Docstring
@@ -150,7 +141,6 @@ the manager).
 Sets up additional connections to an ``object``, called when the object
 is first added to the manager.
 %End
-
 };
 
 

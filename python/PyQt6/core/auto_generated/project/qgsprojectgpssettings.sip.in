@@ -23,7 +23,6 @@ Contains settings and properties relating to how a
 %End
   public:
 
-
     QgsProjectGpsSettings( QObject *parent = 0 );
 %Docstring
 Constructor for QgsProjectGpsSettings with the specified ``parent``

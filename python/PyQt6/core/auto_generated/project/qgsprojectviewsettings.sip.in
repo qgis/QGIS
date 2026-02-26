@@ -23,7 +23,6 @@ scales and default view extent for the project.
 #include "qgsprojectviewsettings.h"
 %End
   public:
-
     QgsProjectViewSettings( QgsProject *project = 0 );
 %Docstring
 Constructor for QgsProjectViewSettings for the specified ``project``.

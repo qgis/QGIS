@@ -25,12 +25,6 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsProjectStoredObjectManagerModel.__overridden_methods__ = ['rowCountInternal', 'dataInternal', 'setDataInternal', 'flagsInternal', 'objectAboutToBeAddedInternal', 'objectAboutToBeRemovedInternal', 'objectAddedInternal', 'objectRemovedInternal']
-    QgsProjectStoredObjectManagerModel.__group__ = ['project']
-except (NameError, AttributeError):
-    pass
-try:
-    QgsProjectStoredObjectManagerProxyModel.__overridden_methods__ = ['filterAcceptsRowInternal']
-    QgsProjectStoredObjectManagerProxyModel.__group__ = ['project']
+    .__overridden_methods__ = ['rowCountInternal', 'dataInternal', 'setDataInternal', 'flagsInternal', 'objectAboutToBeAddedInternal', 'objectAboutToBeRemovedInternal', 'objectAddedInternal', 'objectRemovedInternal', 'filterAcceptsRowInternal']
 except (NameError, AttributeError):
     pass

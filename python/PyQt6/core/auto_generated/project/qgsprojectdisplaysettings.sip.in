@@ -26,7 +26,6 @@ bearings.
 %End
   public:
 
-
     QgsProjectDisplaySettings( QObject *parent = 0 );
 %Docstring
 Constructor for QgsProjectDisplaySettings with the specified ``parent``

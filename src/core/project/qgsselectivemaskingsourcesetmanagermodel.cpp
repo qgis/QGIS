@@ -28,22 +28,15 @@
 QgsSelectiveMaskingSourceSetManagerModel::QgsSelectiveMaskingSourceSetManagerModel( QgsSelectiveMaskingSourceSetManager *manager, QObject *parent )
   : QgsProjectStoredObjectManagerModel( manager, parent )
 {
-  connect( manager, &QgsSelectiveMaskingSourceSetManager::setRenamed, this, [this]( const QString &, const QString & newName )
-  {
+  connect( manager, &QgsSelectiveMaskingSourceSetManager::setRenamed, this, [this]( const QString &, const QString &newName ) {
     QgsSelectiveMaskingSourceSet *sourceSet = mObjectManager->objectByName( newName );
     objectRenamedInternal( sourceSet, newName );
   } );
 }
 
-QgsSelectiveMaskingSourceSet *QgsSelectiveMaskingSourceSetManagerModel::setFromIndex( const QModelIndex &index ) const
-{
-  return objectFromIndex( index );
-}
+QgsSelectiveMaskingSourceSet *QgsSelectiveMaskingSourceSetManagerModel::setFromIndex( const QModelIndex &index ) const { return objectFromIndex( index ); }
 
-QModelIndex QgsSelectiveMaskingSourceSetManagerModel::indexFromSet( QgsSelectiveMaskingSourceSet *set ) const
-{
-  return indexFromObject( set );
-}
+QModelIndex QgsSelectiveMaskingSourceSetManagerModel::indexFromSet( QgsSelectiveMaskingSourceSet *set ) const { return indexFromObject( set ); }
 
 QVariant QgsSelectiveMaskingSourceSetManagerModel::data( const QModelIndex &index, int role ) const
 {
@@ -101,5 +94,4 @@ QVariant QgsSelectiveMaskingSourceSetManagerModel::data( const QModelIndex &inde
 
 QgsSelectiveMaskingSourceSetManagerProxyModel::QgsSelectiveMaskingSourceSetManagerProxyModel( QObject *parent )
   : QgsProjectStoredObjectManagerProxyModel( parent )
-{
-}
+{}

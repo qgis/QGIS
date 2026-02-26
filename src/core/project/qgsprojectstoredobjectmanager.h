@@ -42,7 +42,6 @@ class CORE_EXPORT QgsProjectStoredObjectManagerBase : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProjectStoredObjectManagerBase, for objects attached to the specified \a project.
      */
@@ -63,7 +62,6 @@ class CORE_EXPORT QgsProjectStoredObjectManagerBase : public QObject
     void objectAboutToBeRemoved( const QString &name );
 
   protected:
-
     //! Associated project
     QgsProject *mProject = nullptr;
 
@@ -87,11 +85,9 @@ class CORE_EXPORT QgsProjectStoredObjectManagerBase : public QObject
  *
  * \since QGIS 4.0
  */
-template<class T>
-class CORE_EXPORT QgsAbstractProjectStoredObjectManager : public QgsProjectStoredObjectManagerBase
+template<class T> class CORE_EXPORT QgsAbstractProjectStoredObjectManager : public QgsProjectStoredObjectManagerBase
 {
   public:
-
     /**
      * Constructor for QgsAbstractProjectStoredObjectManager, for objects attached to the specified \a project.
      */
@@ -111,7 +107,6 @@ class CORE_EXPORT QgsAbstractProjectStoredObjectManager : public QgsProjectStore
     T *objectByName( const QString &name ) const;
 
   protected:
-
     //! Attached objects, owned by the manager
     QList< T * > mObjects;
 
@@ -147,7 +142,6 @@ class CORE_EXPORT QgsAbstractProjectStoredObjectManager : public QgsProjectStore
      * is first added to the manager.
      */
     virtual void setupObjectConnections( T *object );
-
 };
 
 

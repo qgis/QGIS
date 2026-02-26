@@ -23,7 +23,6 @@ Base class for list models representing the objects available in a
 %End
   public:
 
-
     enum class CustomRole /BaseType=IntEnum/
     {
       Object,
@@ -49,28 +48,21 @@ specified ``parent`` object.
 
 
   protected:
-
 };
 
-template<T>
-class QgsProjectStoredObjectManagerModel : QgsProjectStoredObjectManagerModelBase
+template<T> class QgsProjectStoredObjectManagerModel : public QgsProjectStoredObjectManagerModelBase
 {
-%Docstring(signature="appended")
+%Docstring
 Template class for models representing the objects available in a
 :py:class:`QgsAbstractProjectStoredObjectManager`.
 
 .. versionadded:: 4.0
 %End
-
-%TypeHeaderCode
-#include "qgsprojectstoredobjectmanagermodel.h"
-%End
   public:
-
     explicit QgsProjectStoredObjectManagerModel( QgsAbstractProjectStoredObjectManager<T> *manager, QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsProjectStoredObjectManagerModel, showing the objects
-from the specified ``manager``.
+Constructor for :py:class:`QgsProjectStoredObjectManagerModel`, showing
+the objects from the specified ``manager``.
 %End
 
     T *objectFromIndex( const QModelIndex &index ) const;
@@ -104,7 +96,6 @@ choice.
 %End
 
   protected:
-
     virtual int rowCountInternal( const QModelIndex &parent ) const;
 
     virtual QVariant dataInternal( const QModelIndex &index, int role ) const;
@@ -129,8 +120,6 @@ choice.
 };
 
 
-
-
 class QgsProjectStoredObjectManagerProxyModelBase : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
@@ -147,7 +136,6 @@ object name.
 #include "qgsprojectstoredobjectmanagermodel.h"
 %End
   public:
-
     explicit QgsProjectStoredObjectManagerProxyModelBase( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProjectStoredObjectManagerProxyModelBase.
@@ -175,7 +163,6 @@ the specified string will be shown.
 %End
 
   protected:
-
     virtual bool filterAcceptsRowInternal( int sourceRow, const QModelIndex &sourceParent ) const;
 %Docstring
 Returns ``True`` if the proxy accepts the matching source row.
@@ -189,10 +176,9 @@ Subclasses should override this method instead of
 };
 
 
-template<T>
-class QgsProjectStoredObjectManagerProxyModel : QgsProjectStoredObjectManagerProxyModelBase
+template<T> class QgsProjectStoredObjectManagerProxyModel : public QgsProjectStoredObjectManagerProxyModelBase
 {
-%Docstring(signature="appended")
+%Docstring
 Template class QSortFilterProxyModel subclass for
 :py:class:`QgsProjectStoredObjectManagerModel`.
 
@@ -201,21 +187,14 @@ object name.
 
 .. versionadded:: 4.0
 %End
-
-%TypeHeaderCode
-#include "qgsprojectstoredobjectmanagermodel.h"
-%End
   public:
-
     explicit QgsProjectStoredObjectManagerProxyModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsProjectStoredObjectManagerProxyModel.
+Constructor for :py:class:`QgsProjectStoredObjectManagerProxyModel`.
 %End
 
   protected:
-
     virtual bool filterAcceptsRowInternal( int sourceRow, const QModelIndex &sourceParent ) const;
-
 
 };
 

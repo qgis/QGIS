@@ -23,7 +23,6 @@ Contains settings and properties relating to how a
 #include "qgsprojectstylesettings.h"
 %End
   public:
-
     QgsProjectStyleSettings( QgsProject *project = 0 );
 %Docstring
 Constructor for QgsProjectStyleSettings for the specified ``project``.
@@ -332,7 +331,6 @@ List model representing the style databases associated with a
 %End
   public:
 
-
     enum class CustomRole /BaseType=IntEnum/
     {
       Style,
@@ -392,7 +390,6 @@ A proxy model for filtering :py:class:`QgsProjectStyleDatabaseModel`.
 #include "qgsprojectstylesettings.h"
 %End
   public:
-
     enum class Filter /BaseType=IntFlag/
     {
       FilterHideReadOnly,

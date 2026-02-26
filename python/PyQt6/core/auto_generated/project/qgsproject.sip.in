@@ -37,9 +37,8 @@ reference open within the main QGIS application.
 %End
   public:
 
-
     enum class DataDefinedServerProperty /BaseType=IntEnum/
-      {
+    {
       NoProperty,
       AllProperties,
       WMSOnlineResource,
@@ -786,8 +785,24 @@ is embedded from other project file.
 Returns an empty string if the matching layer is not embedded.
 %End
 
+    bool createEmbeddedLayer( const QString &layerId, const QString &projectFilePath, QList<QDomNode> &brokenNodes, bool saveFlag = true, Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
+%Docstring
+Creates a maplayer instance defined in an arbitrary project file. Caller
+takes ownership.
 
-    std::unique_ptr< QgsLayerTreeGroup > createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers,  Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
+The optional ``flags`` argument can be used to specify flags which
+control layer reading.
+
+:return: the layer or 0 in case of error
+
+.. note::
+
+   not available in Python bindings
+%End
+
+    std::unique_ptr< QgsLayerTreeGroup > createEmbeddedGroup(
+      const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags()
+    );
 %Docstring
 Create layer group instance defined in an arbitrary project file.
 
@@ -1291,8 +1306,7 @@ otherwise.
 %End
 
 
-    QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &mapLayers /Transfer/,
-                                       bool addToLegend = true );
+    QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &mapLayers /Transfer/, bool addToLegend = true );
 %Docstring
 Add a list of layers to the map of loaded layers.
 
@@ -1323,8 +1337,7 @@ addToLegend is ``True``.
 .. seealso:: :py:func:`addMapLayer`
 %End
 
-    QgsMapLayer *addMapLayer( QgsMapLayer *mapLayer /Transfer/,
-                              bool addToLegend = true );
+    QgsMapLayer *addMapLayer( QgsMapLayer *mapLayer /Transfer/, bool addToLegend = true );
 %Docstring
 Add a layer to the map of loaded layers.
 
@@ -1380,8 +1393,7 @@ has ownership of any layers these layers will also be deleted.
 
 .. seealso:: :py:func:`removeAllMapLayers`
 %End
-%MethodCode
-    if ( !PyList_Check( a0 ) )
+%MethodCode if ( !PyList_Check( a0 ) )
     {
       sipIsErr = 1;
       PyErr_SetString( PyExc_TypeError, "Expected a list of layers or layers IDs" );
@@ -1821,15 +1833,14 @@ Sets the elevation shading renderer used for global map shading
 
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    QString str = QStringLiteral( "<QgsProject: '%1'%2>" ).arg( sipCpp->fileName(),
-                  sipCpp == QgsProject::instance() ? QStringLiteral( " (singleton instance)" ) : QString() ); // skip-keyword-check
+%MethodCode QString str = QStringLiteral( "<QgsProject: '%1'%2>" ).arg( sipCpp->fileName(),
+                                                              sipCpp == QgsProject::instance() ? QStringLiteral( " (singleton instance)" ) : QString() ); // skip-keyword-check
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-  signals:
+        signals :
 
-    void cleared();
+      void cleared();
 %Docstring
 Emitted when the project is cleared (and additionally when an open
 project is cleared just before a new project is read).
@@ -2534,7 +2545,6 @@ directly. Instead, use :py:func:`QgsProject.blockDirtying()`
 #include "qgsproject.h"
 %End
   public:
-
     QgsProjectDirtyBlocker( QgsProject *project );
 %Docstring
 Constructor for QgsProjectDirtyBlocker.
@@ -2549,7 +2559,6 @@ this object.
   private:
     QgsProjectDirtyBlocker( const QgsProjectDirtyBlocker &other );
 };
-
 
 
 
