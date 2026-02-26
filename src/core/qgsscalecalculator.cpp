@@ -33,7 +33,10 @@ using namespace Qt::StringLiterals;
 QgsScaleCalculator::QgsScaleCalculator( double dpi, Qgis::DistanceUnit mapUnits )
   : mDpi( dpi )
   , mMapUnits( mapUnits )
-{}
+{
+  mEllipsoidDefinition.acronym = "PARAMETER:6378000:6357000"_L1;
+  mEllipsoidDefinition.parameters = QgsEllipsoidUtils::ellipsoidParameters( mEllipsoidDefinition.acronym );
+}
 
 void QgsScaleCalculator::setMethod( Qgis::ScaleCalculationMethod method )
 {
@@ -61,9 +64,17 @@ Qgis::DistanceUnit QgsScaleCalculator::mapUnits() const
   return mMapUnits;
 }
 
-void QgsScaleCalculator::setMapCrs( const QgsCoordinateReferenceSystem &crs )
+void QgsScaleCalculator::setEllipsoid( const QString &ellipsoid )
 {
-  mCrs = crs;
+  mEllipsoidDefinition.acronym = ellipsoid;
+  mEllipsoidDefinition.parameters = QgsEllipsoidUtils::ellipsoidParameters( ellipsoid );
+
+  // If the ellipsoid parameters are not valid, set them to the approximate values for the WGS84
+  if ( !mEllipsoidDefinition.parameters.valid )
+  {
+    mEllipsoidDefinition.acronym = "PARAMETER:6378000:6357000"_L1;
+    mEllipsoidDefinition.parameters = QgsEllipsoidUtils::ellipsoidParameters( mEllipsoidDefinition.acronym );
+  }
 }
 
 
@@ -236,26 +247,15 @@ double QgsScaleCalculator::calculateGeographicDistanceAtLatitude( double lat, do
   // - Scale this distance by the number of degrees between
   //   the two longitudes
 
-  // default approx values that are close to WGS-84 ellipsoid and
-  // are used if crs is not valid or it does not have ellipsoid information
-  double semiMajor = 6378000; // [m]
-  // The eccentricity. This comes from sqrt(1.0 - rb*rb/(ra*ra)) with rb set
-  // to 6357000 m.
-  double E = 0.0810820288;
-
-  if ( mCrs.isValid() && !mCrs.ellipsoidAcronym().isEmpty() )
-  {
-    QgsEllipsoidUtils::EllipsoidParameters ellipsoidParameters = QgsEllipsoidUtils::ellipsoidParameters( mCrs.ellipsoidAcronym() );
-
-    semiMajor = ellipsoidParameters.semiMajor;
-    E = std::sqrt( ( semiMajor * semiMajor -  ellipsoidParameters.semiMinor *  ellipsoidParameters.semiMinor ) / ( semiMajor * semiMajor ) );
-  }
+  const double semiMajor = mEllipsoidDefinition.parameters.semiMajor;
+  const double semiMinor = mEllipsoidDefinition.parameters.semiMinor;
 
   // For a longitude change of 180 degrees
   static const double RADS = ( 4.0 * std::atan( 1.0 ) ) / 180.0;
   const double a = std::pow( std::cos( lat * RADS ), 2 );
   const double c = 2.0 * std::atan2( std::sqrt( a ), std::sqrt( 1.0 - a ) );
   // The eccentricity, derived from sqrt( (a*a-b*b)/(a*a))
+  const double E = std::sqrt( ( semiMajor * semiMajor -  semiMinor *  semiMinor ) / ( semiMajor * semiMajor ) );
   const double radius = semiMajor * ( 1.0 - E * E ) /
                         std::pow( 1.0 - E * E * std::sin( lat * RADS ) * std::sin( lat * RADS ), 1.5 );
   const double meters = ( longitude2 - longitude1 ) / 180.0 * radius * c;

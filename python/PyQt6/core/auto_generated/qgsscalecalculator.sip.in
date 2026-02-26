@@ -82,16 +82,21 @@ Returns current map units.
 .. seealso:: :py:func:`setMapUnits`
 %End
 
-    void setMapCrs( const QgsCoordinateReferenceSystem &crs );
+    void setEllipsoid( const QString &ellipsoid );
 %Docstring
-Set the crs.
+Sets the ``ellipsoid`` by its acronym. Known ellipsoid acronyms can be
+retrieved using :py:func:`QgsEllipsoidUtils.acronyms()`.
+
+.. seealso:: :py:func:`ellipsoid`
 
 .. versionadded:: 4.2
 %End
 
-    QgsCoordinateReferenceSystem mapCrs() const;
+    QString ellipsoid() const;
 %Docstring
-Returns current crs.
+Returns ellipsoid's acronym.
+
+.. seealso:: :py:func:`setEllipsoid`
 
 .. versionadded:: 4.2
 %End
