@@ -135,11 +135,12 @@ class CORE_EXPORT QgsArcGisRestUtils
      * \param esriGeometryType ESRI geometry type string
      * \param hasM set to TRUE to if geometry includes M values
      * \param hasZ set to TRUE to if geometry includes Z values
+     * \param allowCurves controls whether the returned geometry can be a curved geometry type (since QGIS 4.0)
      * \param crs if specified will be set to the parsed geometry CRS
      *
      * \returns converted geometry
      */
-    static std::unique_ptr< QgsAbstractGeometry > convertGeometry( const QVariantMap &geometry, const QString &esriGeometryType, bool hasM, bool hasZ, QgsCoordinateReferenceSystem *crs SIP_OUT = nullptr );
+    static std::unique_ptr< QgsAbstractGeometry > convertGeometry( const QVariantMap &geometry, const QString &esriGeometryType, bool hasM, bool hasZ, bool allowCurves = true, QgsCoordinateReferenceSystem *crs SIP_OUT = nullptr );
 
     /**
      * Converts a spatial reference JSON definition to a QgsCoordinateReferenceSystem value.
@@ -288,7 +289,12 @@ class CORE_EXPORT QgsArcGisRestUtils
     /**
      * Converts a compound curve JSON \a list to a geometry object of the specified \a type.
      */
-    static std::unique_ptr< QgsCompoundCurve > convertCompoundCurve( const QVariantList &list, Qgis::WkbType type );
+    static std::unique_ptr< QgsCurve > convertCompoundCurve( const QVariantList &list, Qgis::WkbType type );
+
+    /**
+     * Converts a line string JSON \a list to a geometry object of the specified \a type.
+     */
+    static std::unique_ptr< QgsLineString > convertLineString( const QVariantList &list, Qgis::WkbType type );
 
     /**
      * Converts point \a data to a point object of the specified \a type.
@@ -302,13 +308,17 @@ class CORE_EXPORT QgsArcGisRestUtils
 
     /**
      * Converts polyline \a data to a curve object of the specified \a type.
+     *
+     *The \a allowCurves argument controls whether the returned geometry can be a curved geometry type.
      */
-    static std::unique_ptr< QgsMultiCurve > convertGeometryPolyline( const QVariantMap &data, Qgis::WkbType pointType );
+    static std::unique_ptr< QgsMultiCurve > convertGeometryPolyline( const QVariantMap &data, Qgis::WkbType pointType, bool allowCurves );
 
     /**
      * Converts polygon \a data to a polygon object of the specified \a type.
+     *
+     * The \a allowCurves argument controls whether the returned geometry can be a curved geometry type.
      */
-    static std::unique_ptr< QgsMultiSurface > convertGeometryPolygon( const QVariantMap &data, Qgis::WkbType pointType );
+    static std::unique_ptr< QgsMultiSurface > convertGeometryPolygon( const QVariantMap &data, Qgis::WkbType pointType, bool allowCurves );
 
     /**
      * Converts envelope \a data to a polygon object.
