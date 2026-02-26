@@ -377,7 +377,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
     */
     static int calculateSegments( double radius, double parameter, int minSegments, Qgis::SegmentCalculationMethod method );
 
-
+// clang-format off
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
@@ -387,7 +387,8 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
     % End
 #endif
 
-  private :
+  private:
+// clang-format on
 
     /**
      * Calculate the number of segments needed to approximate a circle within a given tolerance.
