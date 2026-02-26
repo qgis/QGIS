@@ -22,13 +22,9 @@
 QgsMaskPaintEngine::QgsMaskPaintEngine( bool usePathStroker )
   : QPaintEngine( QPaintEngine::AllFeatures )
   , mUsePathStroker( usePathStroker )
-{
-}
+{}
 
-QPainterPath QgsMaskPaintEngine::maskPainterPath() const
-{
-  return mMaskPainterPath;
-}
+QPainterPath QgsMaskPaintEngine::maskPainterPath() const { return mMaskPainterPath; }
 
 void QgsMaskPaintEngine::drawPath( const QPainterPath &path )
 {
@@ -60,15 +56,9 @@ void QgsMaskPaintEngine::drawPolygon( const QPointF *points, int numPoints, QPai
 
 ///@endcond
 
-QgsMaskPaintDevice::QgsMaskPaintDevice( bool usePathStroker )
-{
-  mPaintEngine = std::make_unique<QgsMaskPaintEngine>( usePathStroker );
-}
+QgsMaskPaintDevice::QgsMaskPaintDevice( bool usePathStroker ) { mPaintEngine = std::make_unique<QgsMaskPaintEngine>( usePathStroker ); }
 
-QPaintEngine *QgsMaskPaintDevice::paintEngine() const
-{
-  return mPaintEngine.get();
-}
+QPaintEngine *QgsMaskPaintDevice::paintEngine() const { return mPaintEngine.get(); }
 
 int QgsMaskPaintDevice::metric( PaintDeviceMetric m ) const
 {
@@ -115,7 +105,4 @@ int QgsMaskPaintDevice::metric( PaintDeviceMetric m ) const
   return val;
 }
 
-QPainterPath QgsMaskPaintDevice::maskPainterPath() const
-{
-  return mPaintEngine->maskPainterPath();
-}
+QPainterPath QgsMaskPaintDevice::maskPainterPath() const { return mPaintEngine->maskPainterPath(); }

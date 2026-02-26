@@ -15,15 +15,9 @@
 
 #include "qgsnullpainterdevice.h"
 
-QgsNullPaintDevice::QgsNullPaintDevice()
-{
-  mPaintEngine = std::make_unique<QgsNullPaintEngine>();
-}
+QgsNullPaintDevice::QgsNullPaintDevice() { mPaintEngine = std::make_unique<QgsNullPaintEngine>(); }
 
-QPaintEngine *QgsNullPaintDevice::paintEngine() const
-{
-  return mPaintEngine.get();
-}
+QPaintEngine *QgsNullPaintDevice::paintEngine() const { return mPaintEngine.get(); }
 
 int QgsNullPaintDevice::metric( PaintDeviceMetric metric ) const
 {
@@ -51,7 +45,7 @@ int QgsNullPaintDevice::metric( PaintDeviceMetric metric ) const
       return 1;
     case QPaintDevice::PdmDevicePixelRatioScaled:
       return 1;
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 8, 0))
+#if ( QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 ) )
     case PdmDevicePixelRatioF_EncodedA:
       return 1;
     case PdmDevicePixelRatioF_EncodedB:
