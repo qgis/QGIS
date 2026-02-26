@@ -23,7 +23,6 @@ import warnings
 
 from qgis.core import (
     NULL,
-    QgsFeatureRequest,
     QgsProcessingException,
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,

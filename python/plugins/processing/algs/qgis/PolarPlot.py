@@ -27,7 +27,6 @@ from qgis.core import (
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterField,
     QgsProcessingParameterFileDestination,
-    QgsFeatureRequest,
     QgsProcessingParameterString,
 )
 from qgis.PyQt.QtCore import QCoreApplication
