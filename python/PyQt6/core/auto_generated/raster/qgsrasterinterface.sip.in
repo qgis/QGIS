@@ -301,7 +301,7 @@ used to get info about original data, e.g. resolution to decide
 resampling etc.
 %End
 
- QgsRasterBandStats bandStatistics( int bandNo, int stats, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0, QgsRasterBlockFeedback *feedback = 0 );
+ QgsRasterBandStats bandStatistics( int bandNo, int stats, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0, QgsRasterBlockFeedback *feedback = 0 ) /Deprecated="Since 3.40. Use Qgis.RasterBandStatistic instead of int for ``stats`` argument."/;
 %Docstring
 Returns the band statistics.
 
@@ -360,10 +360,22 @@ The parameters are the same as in
 %End
 
 
-    virtual QgsRasterHistogram histogram(
-      int bandNo, int binCount = 0, SIP_PYOBJECT minimum = Py_None, SIP_PYOBJECT maximum = Py_None, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0, bool includeOutOfRange = false,
-      QgsRasterBlockFeedback *feedback = 0
-    )[QgsRasterHistogram(;
+    virtual QgsRasterHistogram histogram( int bandNo,
+                                          int binCount = 0,
+                                          SIP_PYOBJECT minimum = Py_None,
+                                          SIP_PYOBJECT maximum = Py_None,
+                                          const QgsRectangle &extent = QgsRectangle(),
+                                          int sampleSize = 0,
+                                          bool includeOutOfRange = false,
+                                          QgsRasterBlockFeedback *feedback = 0 )
+    [QgsRasterHistogram( int bandNo,
+                         int binCount = 0,
+                         double minimum = 0.0,
+                         double maximum = 0.0,
+                         const QgsRectangle &extent = QgsRectangle(),
+                         int sampleSize = 0,
+                         bool includeOutOfRange = false,
+                         QgsRasterBlockFeedback *feedback = nullptr )];
 %Docstring
 Returns a band histogram. Histograms are cached in providers.
 
@@ -390,9 +402,8 @@ Returns a band histogram. Histograms are cached in providers.
 
    binCount, minimum and maximum not optional in Python bindings
 %End
-      QgsRasterBlockFeedback *feedback = 0
-    )];
-%MethodCode double minimum;
+%MethodCode
+    double minimum;
     double maximum;
     if ( a2 == Py_None )
     {
@@ -417,9 +428,20 @@ Returns a band histogram. Histograms are cached in providers.
 %End
 
 
-      virtual bool hasHistogram(
-        int bandNo, int binCount, SIP_PYOBJECT minimum = Py_None, SIP_PYOBJECT maximum = Py_None, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0, bool includeOutOfRange = false
-      )[bool( int bandNo, int binCount, double minimum = 0.0, double maximum = 0.0, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0, bool includeOutOfRange = false )];
+    virtual bool hasHistogram( int bandNo,
+                               int binCount,
+                               SIP_PYOBJECT minimum = Py_None,
+                               SIP_PYOBJECT maximum = Py_None,
+                               const QgsRectangle &extent = QgsRectangle(),
+                               int sampleSize = 0,
+                               bool includeOutOfRange = false )
+    [bool( int bandNo,
+           int binCount,
+           double minimum = 0.0,
+           double maximum = 0.0,
+           const QgsRectangle &extent = QgsRectangle(),
+           int sampleSize = 0,
+           bool includeOutOfRange = false )];
 %Docstring
 Returns ``True`` if histogram is available (cached, already calculated)
 
@@ -427,7 +449,8 @@ Returns ``True`` if histogram is available (cached, already calculated)
 
    the parameters are the same as in :py:func:`histogram`
 %End
-%MethodCode double minimum;
+%MethodCode
+    double minimum;
     double maximum;
     if ( a2 == Py_None )
     {
@@ -483,10 +506,22 @@ Sets base class members from xml. Usually called from
 
 
 
-    void initHistogram(
-      QgsRasterHistogram &histogram, int bandNo, int binCount, SIP_PYOBJECT minimum = Py_None, SIP_PYOBJECT maximum = Py_None, const QgsRectangle &boundingBox = QgsRectangle(), int sampleSize = 0,
-      bool includeOutOfRange = false
-    )[void(;
+    void initHistogram( QgsRasterHistogram &histogram,
+                        int bandNo,
+                        int binCount,
+                        SIP_PYOBJECT minimum = Py_None,
+                        SIP_PYOBJECT maximum = Py_None,
+                        const QgsRectangle &boundingBox = QgsRectangle(),
+                        int sampleSize = 0,
+                        bool includeOutOfRange = false )
+    [void( QgsRasterHistogram &histogram,
+           int bandNo,
+           int binCount,
+           double minimum = 0.0,
+           double maximum = 0.0,
+           const QgsRectangle &boundingBox = QgsRectangle(),
+           int sampleSize = 0,
+           bool includeOutOfRange = false )];
 %Docstring
 Fill in histogram defaults if not specified
 
@@ -494,8 +529,8 @@ Fill in histogram defaults if not specified
 
    the parameters are the same as in :py:func:`histogram`
 %End
-    )];
-%MethodCode double minimum;
+%MethodCode
+    double minimum;
     double maximum;
     if ( a3 == Py_None )
     {
