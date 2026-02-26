@@ -39,15 +39,15 @@
  */
 class CORE_EXPORT QgsIODeviceSensor : public QgsAbstractSensor
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for a abstract QIODevice-based sensor, bound to the specified \a parent.
      */
-    explicit QgsIODeviceSensor( QObject *parent = nullptr ) : QgsAbstractSensor( parent ) {}
+    explicit QgsIODeviceSensor( QObject *parent = nullptr )
+      : QgsAbstractSensor( parent )
+    {}
     ~QgsIODeviceSensor() override;
 
     /**
@@ -56,7 +56,6 @@ class CORE_EXPORT QgsIODeviceSensor : public QgsAbstractSensor
     QIODevice *iODevice() const;
 
   protected:
-
     /**
      * Initiates the I/O \a device.
      * \note Takes ownership of the device.
@@ -71,9 +70,7 @@ class CORE_EXPORT QgsIODeviceSensor : public QgsAbstractSensor
     virtual void parseData();
 
   private:
-
     std::unique_ptr<QIODevice> mIODevice;
-
 };
 
 /**
@@ -84,11 +81,9 @@ class CORE_EXPORT QgsIODeviceSensor : public QgsAbstractSensor
  */
 class CORE_EXPORT QgsTcpSocketSensor : public QgsIODeviceSensor
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for a TCP socket sensor, bound to the specified \a parent.
      */
@@ -129,7 +124,6 @@ class CORE_EXPORT QgsTcpSocketSensor : public QgsIODeviceSensor
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document ) override;
 
   protected:
-
     void handleConnect() override;
     void handleDisconnect() override;
 
@@ -139,12 +133,10 @@ class CORE_EXPORT QgsTcpSocketSensor : public QgsIODeviceSensor
     void handleError( QAbstractSocket::SocketError error );
 
   private:
-
     QTcpSocket *mTcpSocket = nullptr;
 
     QString mHostName;
     int mPort = 0;
-
 };
 
 /**
@@ -155,11 +147,9 @@ class CORE_EXPORT QgsTcpSocketSensor : public QgsIODeviceSensor
  */
 class CORE_EXPORT QgsUdpSocketSensor : public QgsIODeviceSensor
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for a UDP socket sensor, bound to the specified \a parent.
      */
@@ -200,7 +190,6 @@ class CORE_EXPORT QgsUdpSocketSensor : public QgsIODeviceSensor
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document ) override;
 
   protected:
-
     void handleConnect() override;
     void handleDisconnect() override;
 
@@ -210,13 +199,11 @@ class CORE_EXPORT QgsUdpSocketSensor : public QgsIODeviceSensor
     void handleError( QAbstractSocket::SocketError error );
 
   private:
-
     std::unique_ptr<QUdpSocket> mUdpSocket;
     QBuffer *mBuffer = nullptr;
 
     QString mHostName;
     int mPort = 0;
-
 };
 
 #if defined( HAVE_QTSERIALPORT )
@@ -230,11 +217,9 @@ SIP_IF_FEATURE( HAVE_QTSERIALPORT )
  */
 class CORE_EXPORT QgsSerialPortSensor : public QgsIODeviceSensor
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for a serial port sensor, bound to the specified \a parent.
      */
@@ -294,7 +279,6 @@ class CORE_EXPORT QgsSerialPortSensor : public QgsIODeviceSensor
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document ) override;
 
   protected:
-
     void handleConnect() override;
     void handleDisconnect() override;
 
@@ -307,7 +291,6 @@ class CORE_EXPORT QgsSerialPortSensor : public QgsIODeviceSensor
     void handleError( QSerialPort::SerialPortError error );
 
   private:
-
     QSerialPort *mSerialPort = nullptr;
 
     QString mPortName;
@@ -315,12 +298,8 @@ class CORE_EXPORT QgsSerialPortSensor : public QgsIODeviceSensor
     QByteArray mDelimiter;
     bool mFirstDelimiterHit = false;
     QByteArray mDataBuffer;
-
 };
 SIP_END
 #endif
 
 #endif //QGSIODEVICESENSOR_H
-
-
-

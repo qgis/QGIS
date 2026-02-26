@@ -209,10 +209,7 @@ QModelIndex QgsSensorModel::index( int row, int column, const QModelIndex &paren
   return QModelIndex();
 }
 
-QModelIndex QgsSensorModel::parent( const QModelIndex & ) const
-{
-  return QModelIndex();
-}
+QModelIndex QgsSensorModel::parent( const QModelIndex & ) const { return QModelIndex(); }
 
 int QgsSensorModel::rowCount( const QModelIndex &parent ) const
 {
@@ -223,10 +220,7 @@ int QgsSensorModel::rowCount( const QModelIndex &parent ) const
   return 0;
 }
 
-int QgsSensorModel::columnCount( const QModelIndex & ) const
-{
-  return 2;
-}
+int QgsSensorModel::columnCount( const QModelIndex & ) const { return 2; }
 
 void QgsSensorModel::sensorAdded( const QString &id )
 {
@@ -270,5 +264,8 @@ void QgsSensorModel::sensorDataCaptured( const QString &id )
   if ( sensorIndex < 0 )
     return;
 
-  emit dataChanged( index( sensorIndex, static_cast<int>( Column::LastValue ) ), index( sensorIndex, static_cast<int>( Column::LastValue ) ), QVector< int >() << static_cast< int >( CustomRole::SensorLastValue ) << static_cast< int >( CustomRole::SensorLastTimestamp ) );
+  emit dataChanged(
+    index( sensorIndex, static_cast<int>( Column::LastValue ) ), index( sensorIndex, static_cast<int>( Column::LastValue ) ),
+    QVector< int >() << static_cast< int >( CustomRole::SensorLastValue ) << static_cast< int >( CustomRole::SensorLastTimestamp )
+  );
 }
