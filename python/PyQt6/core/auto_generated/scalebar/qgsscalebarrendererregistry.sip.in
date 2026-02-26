@@ -24,7 +24,6 @@ obtained from :py:func:`QgsApplication.scalebarRendererRegistry()`.
 #include "qgsscalebarrendererregistry.h"
 %End
   public:
-
     explicit QgsScaleBarRendererRegistry();
 %Docstring
 You should not normally need to create your own scalebar renderer

@@ -38,28 +38,27 @@ class QgsScaleBarSettings;
 class CORE_EXPORT QgsScaleBarRenderer
 {
   public:
-
     /**
      * Flags which control scalebar renderer behavior.
      * \since QGIS 3.14
      */
     enum class Flag : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      FlagUsesLineSymbol = 1 << 0, //!< Renderer utilizes the scalebar line symbol (see QgsScaleBarSettings::lineSymbol() )
-      FlagUsesFillSymbol = 1 << 1, //!< Renderer utilizes the scalebar fill symbol (see QgsScaleBarSettings::fillSymbol() )
-      FlagUsesAlternateFillSymbol = 1 << 2, //!< Renderer utilizes the alternate scalebar fill symbol (see QgsScaleBarSettings::alternateFillSymbol() )
-      FlagRespectsUnits = 1 << 3, //!< Renderer respects the QgsScaleBarSettings::units() setting
+      FlagUsesLineSymbol = 1 << 0,                  //!< Renderer utilizes the scalebar line symbol (see QgsScaleBarSettings::lineSymbol() )
+      FlagUsesFillSymbol = 1 << 1,                  //!< Renderer utilizes the scalebar fill symbol (see QgsScaleBarSettings::fillSymbol() )
+      FlagUsesAlternateFillSymbol = 1 << 2,         //!< Renderer utilizes the alternate scalebar fill symbol (see QgsScaleBarSettings::alternateFillSymbol() )
+      FlagRespectsUnits = 1 << 3,                   //!< Renderer respects the QgsScaleBarSettings::units() setting
       FlagRespectsMapUnitsPerScaleBarUnit = 1 << 4, //!< Renderer respects the QgsScaleBarSettings::mapUnitsPerScaleBarUnit() setting
-      FlagUsesUnitLabel = 1 << 5, //!< Renderer uses the QgsScaleBarSettings::unitLabel() setting
-      FlagUsesSegments = 1 << 6, //!< Renderer uses the scalebar segments
-      FlagUsesLabelBarSpace = 1 << 7, //!< Renderer uses the QgsScaleBarSettings::labelBarSpace() setting
-      FlagUsesLabelVerticalPlacement = 1 << 8, //!< Renderer uses the QgsScaleBarSettings::labelVerticalPlacement() setting
-      FlagUsesLabelHorizontalPlacement = 1 << 8, //!< Renderer uses the QgsScaleBarSettings::labelHorizontalPlacement() setting
-      FlagUsesAlignment = 1 << 9, //!< Renderer uses the QgsScaleBarSettings::alignment() setting
-      FlagUsesSubdivisions = 1 << 10, //!< Renderer uses the scalebar subdivisions (see QgsScaleBarSettings::numberOfSubdivisions() )
-      FlagUsesDivisionSymbol = 1 << 11, //!< Renderer utilizes the scalebar division symbol (see QgsScaleBarSettings::divisionLineSymbol() )
-      FlagUsesSubdivisionSymbol = 1 << 12, //!< Renderer utilizes the scalebar subdivision symbol (see QgsScaleBarSettings::subdivisionLineSymbol() )
-      FlagUsesSubdivisionsHeight = 1 << 13, //!< Renderer uses the scalebar subdivisions height (see QgsScaleBarSettings::subdivisionsHeight() )
+      FlagUsesUnitLabel = 1 << 5,                   //!< Renderer uses the QgsScaleBarSettings::unitLabel() setting
+      FlagUsesSegments = 1 << 6,                    //!< Renderer uses the scalebar segments
+      FlagUsesLabelBarSpace = 1 << 7,               //!< Renderer uses the QgsScaleBarSettings::labelBarSpace() setting
+      FlagUsesLabelVerticalPlacement = 1 << 8,      //!< Renderer uses the QgsScaleBarSettings::labelVerticalPlacement() setting
+      FlagUsesLabelHorizontalPlacement = 1 << 8,    //!< Renderer uses the QgsScaleBarSettings::labelHorizontalPlacement() setting
+      FlagUsesAlignment = 1 << 9,                   //!< Renderer uses the QgsScaleBarSettings::alignment() setting
+      FlagUsesSubdivisions = 1 << 10,               //!< Renderer uses the scalebar subdivisions (see QgsScaleBarSettings::numberOfSubdivisions() )
+      FlagUsesDivisionSymbol = 1 << 11,             //!< Renderer utilizes the scalebar division symbol (see QgsScaleBarSettings::divisionLineSymbol() )
+      FlagUsesSubdivisionSymbol = 1 << 12,          //!< Renderer utilizes the scalebar subdivision symbol (see QgsScaleBarSettings::subdivisionLineSymbol() )
+      FlagUsesSubdivisionsHeight = 1 << 13,         //!< Renderer uses the scalebar subdivisions height (see QgsScaleBarSettings::subdivisionsHeight() )
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -69,33 +68,31 @@ class CORE_EXPORT QgsScaleBarRenderer
      */
     struct CORE_EXPORT ScaleBarContext
     {
-
-      /**
+        /**
        * The width, in millimeters, of each individual segment drawn.
        * \note The number of map units per segment needs to be set via QgsScaleBarSettings::setUnitsPerSegment.
        */
-      double segmentWidth { 0.0 };
+        double segmentWidth { 0.0 };
 
-      /**
+        /**
        * Destination size for scalebar. This is used for scalebars which
        * alter their appearance or alignment based on the desired scalebar
        * size (e.g. correctly aligning text in a numeric scale bar).
        */
-      QSizeF size;
+        QSizeF size;
 
-      //! Scale denominator
-      double scale { 1.0 };
+        //! Scale denominator
+        double scale { 1.0 };
 
-      //! Scalebar renderer flags
-      QgsScaleBarRenderer::Flags flags;
+        //! Scalebar renderer flags
+        QgsScaleBarRenderer::Flags flags;
 
-      /**
+        /**
        * Returns TRUE if the context has valid settings.
        *
        * \since QGIS 3.40
        */
-      bool isValid() const;
-
+        bool isValid() const;
     };
 
     QgsScaleBarRenderer() = default;
@@ -141,25 +138,20 @@ class CORE_EXPORT QgsScaleBarRenderer
     /**
      * Draws the scalebar using the specified \a settings and \a scaleContext to a destination render \a context.
      */
-    virtual void draw( QgsRenderContext &context,
-                       const QgsScaleBarSettings &settings,
-                       const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const = 0;
+    virtual void draw( QgsRenderContext &context, const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const = 0;
 
     /**
      * Calculates the required box size (in millimeters) for a scalebar using the specified \a settings and \a scaleContext.
      * \deprecated QGIS 3.40. Use the version with a QgsRenderContext instead.
      */
-    Q_DECL_DEPRECATED virtual QSizeF calculateBoxSize( const QgsScaleBarSettings &settings,
-        const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const SIP_DEPRECATED;
+    Q_DECL_DEPRECATED virtual QSizeF calculateBoxSize( const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const SIP_DEPRECATED;
 
     /**
      * Calculates the required box size (in millimeters) for a scalebar using the specified \a settings and \a scaleContext.
      *
      * \since QGIS 3.14
      */
-    virtual QSizeF calculateBoxSize( QgsRenderContext &context,
-                                     const QgsScaleBarSettings &settings,
-                                     const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
+    virtual QSizeF calculateBoxSize( QgsRenderContext &context, const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
 
     /**
      * Applies any default settings relating to the scalebar to the passed \a settings object.
@@ -171,13 +163,10 @@ class CORE_EXPORT QgsScaleBarRenderer
     virtual bool applyDefaultSettings( QgsScaleBarSettings &settings ) const;
 
   protected:
-
     /**
      * Draws default scalebar labels using the specified \a settings and \a scaleContext to a destination render \a context.
      */
-    void drawDefaultLabels( QgsRenderContext &context,
-                            const QgsScaleBarSettings &settings,
-                            const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
+    void drawDefaultLabels( QgsRenderContext &context, const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
 
     /**
      * Returns the text used for the first label in the scalebar.
@@ -212,7 +201,6 @@ class CORE_EXPORT QgsScaleBarRenderer
      * Returns a list of widths of each segment of the scalebar.
      */
     QList<double> segmentWidths( const QgsScaleBarRenderer::ScaleBarContext &scaleContext, const QgsScaleBarSettings &settings ) const;
-
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsScaleBarRenderer::Flags )

@@ -50,7 +50,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsScaleBarRenderer.__virtual_methods__ = ['flags', 'sortKey', 'draw', 'calculateBoxSize', 'applyDefaultSettings']
+    QgsScaleBarRenderer.__virtual_methods__ = ['flags', 'sortKey', 'calculateBoxSize', 'applyDefaultSettings']
     QgsScaleBarRenderer.__abstract_methods__ = ['id', 'visibleName', 'clone', 'draw']
     QgsScaleBarRenderer.__group__ = ['scalebar']
 except (NameError, AttributeError):

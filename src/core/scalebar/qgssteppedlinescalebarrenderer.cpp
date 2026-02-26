@@ -27,37 +27,19 @@
 
 using namespace Qt::StringLiterals;
 
-QString QgsSteppedLineScaleBarRenderer::id() const
-{
-  return u"stepped"_s;
-}
+QString QgsSteppedLineScaleBarRenderer::id() const { return u"stepped"_s; }
 
-QString QgsSteppedLineScaleBarRenderer::visibleName() const
-{
-  return QObject::tr( "Stepped Line" );
-}
+QString QgsSteppedLineScaleBarRenderer::visibleName() const { return QObject::tr( "Stepped Line" ); }
 
-int QgsSteppedLineScaleBarRenderer::sortKey() const
-{
-  return 7;
-}
+int QgsSteppedLineScaleBarRenderer::sortKey() const { return 7; }
 
 QgsScaleBarRenderer::Flags QgsSteppedLineScaleBarRenderer::flags() const
 {
-  return Flag::FlagUsesLineSymbol |
-         Flag::FlagRespectsUnits |
-         Flag::FlagRespectsMapUnitsPerScaleBarUnit |
-         Flag::FlagUsesUnitLabel |
-         Flag::FlagUsesSegments |
-         Flag::FlagUsesLabelBarSpace |
-         Flag::FlagUsesLabelVerticalPlacement |
-         Flag::FlagUsesLabelHorizontalPlacement;
+  return Flag::FlagUsesLineSymbol | Flag::FlagRespectsUnits | Flag::FlagRespectsMapUnitsPerScaleBarUnit | Flag::FlagUsesUnitLabel | Flag::FlagUsesSegments | Flag::FlagUsesLabelBarSpace
+         | Flag::FlagUsesLabelVerticalPlacement | Flag::FlagUsesLabelHorizontalPlacement;
 }
 
-QgsSteppedLineScaleBarRenderer *QgsSteppedLineScaleBarRenderer::clone() const
-{
-  return new QgsSteppedLineScaleBarRenderer( *this );
-}
+QgsSteppedLineScaleBarRenderer *QgsSteppedLineScaleBarRenderer::clone() const { return new QgsSteppedLineScaleBarRenderer( *this ); }
 
 void QgsSteppedLineScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBarSettings &settings, const ScaleBarContext &scaleContext ) const
 {
@@ -68,12 +50,13 @@ void QgsSteppedLineScaleBarRenderer::draw( QgsRenderContext &context, const QgsS
   QPainter *painter = context.painter();
 
   std::unique_ptr< QgsLineSymbol > sym( settings.lineSymbol()->clone() );
-  sym->startRender( context ) ;
+  sym->startRender( context );
 
   const double scaledLabelBarSpace = context.convertToPainterUnits( settings.labelBarSpace(), Qgis::RenderUnit::Millimeters );
   const double scaledBoxContentSpace = context.convertToPainterUnits( settings.boxContentSpace(), Qgis::RenderUnit::Millimeters );
   const QFontMetricsF fontMetrics = QgsTextRenderer::fontMetrics( context, settings.textFormat() );
-  const double barTopPosition = scaledBoxContentSpace + ( settings.labelVerticalPlacement() == Qgis::ScaleBarDistanceLabelVerticalPlacement::AboveSegment ? fontMetrics.ascent() + scaledLabelBarSpace : 0 );
+  const double barTopPosition = scaledBoxContentSpace
+                                + ( settings.labelVerticalPlacement() == Qgis::ScaleBarDistanceLabelVerticalPlacement::AboveSegment ? fontMetrics.ascent() + scaledLabelBarSpace : 0 );
   const double barBottomPosition = barTopPosition + context.convertToPainterUnits( settings.height(), Qgis::RenderUnit::Millimeters );
 
   painter->save();
@@ -92,14 +75,15 @@ void QgsSteppedLineScaleBarRenderer::draw( QgsRenderContext &context, const QgsS
   {
     // we render one extra place, corresponding to the final position + width (i.e. the "end" of the bar)
     const double x = i < positions.size() ? context.convertToPainterUnits( positions.at( i ), Qgis::RenderUnit::Millimeters ) + xOffset
-                     : context.convertToPainterUnits( positions.at( i - 1 ), Qgis::RenderUnit::Millimeters ) + xOffset + context.convertToPainterUnits( widths.at( i - 1 ), Qgis::RenderUnit::Millimeters );
+                                          : context.convertToPainterUnits( positions.at( i - 1 ), Qgis::RenderUnit::Millimeters ) + xOffset
+                                              + context.convertToPainterUnits( widths.at( i - 1 ), Qgis::RenderUnit::Millimeters );
     if ( i % 2 == 0 )
     {
       points << QPointF( x, barBottomPosition ) << QPointF( x, barTopPosition );
     }
     else
     {
-      points << QPointF( x, barTopPosition ) << QPointF( x, barBottomPosition ) ;
+      points << QPointF( x, barTopPosition ) << QPointF( x, barBottomPosition );
     }
   }
 
@@ -112,6 +96,3 @@ void QgsSteppedLineScaleBarRenderer::draw( QgsRenderContext &context, const QgsS
   //draw labels using the default method
   drawDefaultLabels( context, settings, scaleContext );
 }
-
-
-

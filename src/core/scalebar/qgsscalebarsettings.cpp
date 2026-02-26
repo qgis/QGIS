@@ -83,9 +83,7 @@ QgsScaleBarSettings::QgsScaleBarSettings( const QgsScaleBarSettings &other )
   , mAlignment( other.mAlignment )
   , mUnits( other.mUnits )
   , mNumericFormat( other.mNumericFormat->clone() )
-{
-
-}
+{}
 
 QgsScaleBarSettings &QgsScaleBarSettings::operator=( const QgsScaleBarSettings &other )
 {
@@ -119,30 +117,15 @@ QgsScaleBarSettings &QgsScaleBarSettings::operator=( const QgsScaleBarSettings &
   return *this;
 }
 
-QColor QgsScaleBarSettings::fillColor() const
-{
-  return mFillSymbol->color();
-}
+QColor QgsScaleBarSettings::fillColor() const { return mFillSymbol->color(); }
 
-void QgsScaleBarSettings::setFillColor( const QColor &color )
-{
-  mFillSymbol->setColor( color );
-}
+void QgsScaleBarSettings::setFillColor( const QColor &color ) { mFillSymbol->setColor( color ); }
 
-QColor QgsScaleBarSettings::fillColor2() const
-{
-  return mAlternateFillSymbol->color();
-}
+QColor QgsScaleBarSettings::fillColor2() const { return mAlternateFillSymbol->color(); }
 
-void QgsScaleBarSettings::setFillColor2( const QColor &color )
-{
-  mAlternateFillSymbol->setColor( color );
-}
+void QgsScaleBarSettings::setFillColor2( const QColor &color ) { mAlternateFillSymbol->setColor( color ); }
 
-QColor QgsScaleBarSettings::lineColor() const
-{
-  return mLineSymbol->color();
-}
+QColor QgsScaleBarSettings::lineColor() const { return mLineSymbol->color(); }
 
 void QgsScaleBarSettings::setLineColor( const QColor &color )
 {
@@ -152,10 +135,7 @@ void QgsScaleBarSettings::setLineColor( const QColor &color )
   }
 }
 
-double QgsScaleBarSettings::lineWidth() const
-{
-  return mLineSymbol->width();
-}
+double QgsScaleBarSettings::lineWidth() const { return mLineSymbol->width(); }
 
 void QgsScaleBarSettings::setLineWidth( double width )
 {
@@ -193,55 +173,25 @@ void QgsScaleBarSettings::setPen( const QPen &pen )
   }
 }
 
-QgsLineSymbol *QgsScaleBarSettings::lineSymbol() const
-{
-  return mLineSymbol.get();
-}
+QgsLineSymbol *QgsScaleBarSettings::lineSymbol() const { return mLineSymbol.get(); }
 
-void QgsScaleBarSettings::setLineSymbol( QgsLineSymbol *symbol )
-{
-  mLineSymbol.reset( symbol );
-}
+void QgsScaleBarSettings::setLineSymbol( QgsLineSymbol *symbol ) { mLineSymbol.reset( symbol ); }
 
-QgsLineSymbol *QgsScaleBarSettings::divisionLineSymbol() const
-{
-  return mDivisionLineSymbol.get();
-}
+QgsLineSymbol *QgsScaleBarSettings::divisionLineSymbol() const { return mDivisionLineSymbol.get(); }
 
-void QgsScaleBarSettings::setDivisionLineSymbol( QgsLineSymbol *symbol )
-{
-  mDivisionLineSymbol.reset( symbol );
-}
+void QgsScaleBarSettings::setDivisionLineSymbol( QgsLineSymbol *symbol ) { mDivisionLineSymbol.reset( symbol ); }
 
-QgsLineSymbol *QgsScaleBarSettings::subdivisionLineSymbol() const
-{
-  return mSubdivisionLineSymbol.get();
-}
+QgsLineSymbol *QgsScaleBarSettings::subdivisionLineSymbol() const { return mSubdivisionLineSymbol.get(); }
 
-void QgsScaleBarSettings::setSubdivisionLineSymbol( QgsLineSymbol *symbol )
-{
-  mSubdivisionLineSymbol.reset( symbol );
-}
+void QgsScaleBarSettings::setSubdivisionLineSymbol( QgsLineSymbol *symbol ) { mSubdivisionLineSymbol.reset( symbol ); }
 
-QgsFillSymbol *QgsScaleBarSettings::fillSymbol() const
-{
-  return mFillSymbol.get();
-}
+QgsFillSymbol *QgsScaleBarSettings::fillSymbol() const { return mFillSymbol.get(); }
 
-void QgsScaleBarSettings::setFillSymbol( QgsFillSymbol *symbol )
-{
-  mFillSymbol.reset( symbol );
-}
+void QgsScaleBarSettings::setFillSymbol( QgsFillSymbol *symbol ) { mFillSymbol.reset( symbol ); }
 
-QgsFillSymbol *QgsScaleBarSettings::alternateFillSymbol() const
-{
-  return mAlternateFillSymbol.get();
-}
+QgsFillSymbol *QgsScaleBarSettings::alternateFillSymbol() const { return mAlternateFillSymbol.get(); }
 
-void QgsScaleBarSettings::setAlternateFillSymbol( QgsFillSymbol *symbol )
-{
-  mAlternateFillSymbol.reset( symbol );
-}
+void QgsScaleBarSettings::setAlternateFillSymbol( QgsFillSymbol *symbol ) { mAlternateFillSymbol.reset( symbol ); }
 
 QBrush QgsScaleBarSettings::brush() const
 {
@@ -325,15 +275,8 @@ void QgsScaleBarSettings::setLineCapStyle( Qt::PenCapStyle style )
   }
 }
 
-const QgsNumericFormat *QgsScaleBarSettings::numericFormat() const
-{
-  return mNumericFormat.get();
-}
+const QgsNumericFormat *QgsScaleBarSettings::numericFormat() const { return mNumericFormat.get(); }
 
-void QgsScaleBarSettings::setNumericFormat( QgsNumericFormat *format )
-{
-  mNumericFormat.reset( format );
-}
+void QgsScaleBarSettings::setNumericFormat( QgsNumericFormat *format ) { mNumericFormat.reset( format ); }
 
 QgsScaleBarSettings::~QgsScaleBarSettings() = default;
-
