@@ -72,25 +72,13 @@ void QgsStacParser::setData( const QByteArray &data )
   }
 }
 
-void QgsStacParser::setBaseUrl( const QUrl &url )
-{
-  mBaseUrl = url;
-}
+void QgsStacParser::setBaseUrl( const QUrl &url ) { mBaseUrl = url; }
 
-Qgis::StacObjectType QgsStacParser::type() const
-{
-  return mType;
-}
+Qgis::StacObjectType QgsStacParser::type() const { return mType; }
 
-QString QgsStacParser::error() const
-{
-  return mError;
-}
+QString QgsStacParser::error() const { return mError; }
 
-std::unique_ptr<QgsStacCatalog> QgsStacParser::catalog()
-{
-  return parseCatalog( mData );
-}
+std::unique_ptr<QgsStacCatalog> QgsStacParser::catalog() { return parseCatalog( mData ); }
 
 std::unique_ptr<QgsStacCatalog> QgsStacParser::parseCatalog( const nlohmann::json &data )
 {
@@ -108,10 +96,7 @@ std::unique_ptr<QgsStacCatalog> QgsStacParser::parseCatalog( const nlohmann::jso
 
     QVector< QgsStacLink > links = parseLinks( data.at( "links" ) );
 
-    auto catalog = std::make_unique< QgsStacCatalog >( id,
-                   ver,
-                   description,
-                   links );
+    auto catalog = std::make_unique< QgsStacCatalog >( id, ver, description, links );
 
     if ( data.contains( "title" ) )
       catalog->setTitle( getString( data["title"] ) );
@@ -146,10 +131,7 @@ std::unique_ptr<QgsStacCatalog> QgsStacParser::parseCatalog( const nlohmann::jso
   }
 }
 
-std::unique_ptr<QgsStacCollection> QgsStacParser::collection()
-{
-  return parseCollection( mData );
-}
+std::unique_ptr<QgsStacCollection> QgsStacParser::collection() { return parseCollection( mData ); }
 
 std::unique_ptr<QgsStacCollection> QgsStacParser::parseCollection( const nlohmann::json &data )
 {
@@ -173,21 +155,11 @@ std::unique_ptr<QgsStacCollection> QgsStacParser::parseCollection( const nlohman
       QgsBox3D extent;
       if ( e.size() == 4 )
       {
-        extent = QgsBox3D( e[0].get<double>(),
-                           e[1].get<double>(),
-                           0.,
-                           e[2].get<double>(),
-                           e[3].get<double>(),
-                           0. );
+        extent = QgsBox3D( e[0].get<double>(), e[1].get<double>(), 0., e[2].get<double>(), e[3].get<double>(), 0. );
       }
       else if ( e.size() == 6 )
       {
-        extent = QgsBox3D( e[0].get<double>(),
-                           e[1].get<double>(),
-                           e[2].get<double>(),
-                           e[3].get<double>(),
-                           e[4].get<double>(),
-                           e[5].get<double>() );
+        extent = QgsBox3D( e[0].get<double>(), e[1].get<double>(), e[2].get<double>(), e[3].get<double>(), e[4].get<double>(), e[5].get<double>() );
       }
       else
       {
@@ -204,8 +176,7 @@ std::unique_ptr<QgsStacCollection> QgsStacParser::parseCollection( const nlohman
     totalExtents = 0;
     for ( const auto &e : data.at( "extent" ).at( "temporal" ).at( "interval" ) )
     {
-      if ( !e.is_array() ||
-           e.size() != 2 )
+      if ( !e.is_array() || e.size() != 2 )
       {
         mError = u"Malformed STAC collection temporal extents"_s;
         QgsDebugError( mError );
@@ -222,12 +193,7 @@ std::unique_ptr<QgsStacCollection> QgsStacParser::parseCollection( const nlohman
 
     QVector< QgsStacLink > links = parseLinks( data.at( "links" ) );
 
-    auto collection = std::make_unique< QgsStacCollection >( id,
-                      ver,
-                      description,
-                      links,
-                      license,
-                      stacExtent );
+    auto collection = std::make_unique< QgsStacCollection >( id, ver, description, links, license, stacExtent );
 
     if ( data.contains( "title" ) )
       collection->setTitle( getString( data["title"] ) );
@@ -259,8 +225,7 @@ std::unique_ptr<QgsStacCollection> QgsStacParser::parseCollection( const nlohman
       QVector< QgsStacProvider > providers;
       for ( const auto &p : data["providers"] )
       {
-        if ( !p.contains( "name" ) ||
-             ( p.contains( "roles" ) && !p["roles"].is_array() ) )
+        if ( !p.contains( "name" ) || ( p.contains( "roles" ) && !p["roles"].is_array() ) )
         {
           QgsDebugError( u"Malformed STAC provider object"_s );
           continue;
@@ -275,11 +240,8 @@ std::unique_ptr<QgsStacCollection> QgsStacParser::parseCollection( const nlohman
               roles.append( QString::fromStdString( role ) );
           }
         }
-        const QgsStacProvider provider( QString::fromStdString( p["name"] ),
-                                        p.contains( "description" ) ? getString( p["description"] ) : QString(),
-                                        roles,
-                                        p.contains( "url" ) ? getString( p["url"] ) : QString() );
-
+        const QgsStacProvider
+          provider( QString::fromStdString( p["name"] ), p.contains( "description" ) ? getString( p["description"] ) : QString(), roles, p.contains( "url" ) ? getString( p["url"] ) : QString() );
 
 
         providers.append( provider );
@@ -309,10 +271,7 @@ std::unique_ptr<QgsStacCollection> QgsStacParser::parseCollection( const nlohman
   }
 }
 
-std::unique_ptr<QgsStacItem> QgsStacParser::item()
-{
-  return parseItem( mData );
-}
+std::unique_ptr<QgsStacItem> QgsStacParser::item() { return parseItem( mData ); }
 
 std::unique_ptr<QgsStacItem> QgsStacParser::parseItem( const nlohmann::json &data )
 {
@@ -351,8 +310,7 @@ std::unique_ptr<QgsStacItem> QgsStacParser::parseItem( const nlohmann::json &dat
     }
 
     auto datetime = data.at( "properties" ).at( "datetime" );
-    if ( !datetime.is_string() ||
-         !QDateTime::fromString( QString::fromStdString( datetime ), Qt::ISODate ).isValid() )
+    if ( !datetime.is_string() || !QDateTime::fromString( QString::fromStdString( datetime ), Qt::ISODate ).isValid() )
     {
       auto s = data.at( "properties" ).at( "start_datetime" );
       QString ss = QString::fromStdString( s );
@@ -361,8 +319,7 @@ std::unique_ptr<QgsStacItem> QgsStacParser::parseItem( const nlohmann::json &dat
       auto e = data.at( "properties" ).at( "end_datetime" );
       const QString ee = QString::fromStdString( e );
       const QDateTime end = QDateTime::fromString( ee, Qt::ISODate );
-      if ( start.isNull() ||
-           end.isNull() )
+      if ( start.isNull() || end.isNull() )
       {
         // invalid datetime
         mError = u"Invalid STAC item temporal range"_s;
@@ -375,13 +332,7 @@ std::unique_ptr<QgsStacItem> QgsStacParser::parseItem( const nlohmann::json &dat
 
     QMap< QString, QgsStacAsset > assets = parseAssets( data.at( "assets" ) );
 
-    auto item = std::make_unique< QgsStacItem >( id,
-                ver,
-                geom,
-                properties,
-                links,
-                assets,
-                bbox );
+    auto item = std::make_unique< QgsStacItem >( id, ver, geom, properties, links, assets, bbox );
 
     if ( data.contains( "stac_extensions" ) )
     {
@@ -417,10 +368,9 @@ QVector<QgsStacLink> QgsStacParser::parseLinks( const json &data )
     if ( linkUrl.isRelative() )
       linkUrl = mBaseUrl.resolved( linkUrl );
 
-    const QgsStacLink l( linkUrl.toString(),
-                         QString::fromStdString( link.at( "rel" ) ),
-                         link.contains( "type" ) ? getString( link["type"] ) : QString(),
-                         link.contains( "title" ) ? getString( link["title"] ) : QString() );
+    const QgsStacLink
+      l( linkUrl.toString(), QString::fromStdString( link.at( "rel" ) ), link.contains( "type" ) ? getString( link["type"] ) : QString(),
+         link.contains( "title" ) ? getString( link["title"] ) : QString() );
     links.append( l );
   }
   return links;
@@ -436,11 +386,9 @@ QMap<QString, QgsStacAsset> QgsStacParser::parseAssets( const json &data )
     if ( assetUrl.isRelative() )
       assetUrl = mBaseUrl.resolved( assetUrl );
 
-    const QgsStacAsset a( assetUrl.toString(),
-                          value.contains( "title" ) ? getString( value["title"] ) : QString(),
-                          value.contains( "description" ) ? getString( value["description"] ) : QString(),
-                          value.contains( "type" ) ? getString( value["type"] ) : QString(),
-                          value.contains( "roles" ) ? QgsJsonUtils::jsonToVariant( value["roles"] ).toStringList() : QStringList() );
+    const QgsStacAsset
+      a( assetUrl.toString(), value.contains( "title" ) ? getString( value["title"] ) : QString(), value.contains( "description" ) ? getString( value["description"] ) : QString(),
+         value.contains( "type" ) ? getString( value["type"] ) : QString(), value.contains( "roles" ) ? QgsJsonUtils::jsonToVariant( value["roles"] ).toStringList() : QStringList() );
     assets.insert( QString::fromStdString( asset.key() ), a );
   }
   return assets;
@@ -466,21 +414,15 @@ bool QgsStacParser::isSupportedStacVersion( const QString &version )
   const int minor = m[2].toInt();
   const int release = m[3].toInt();
 
-  if ( major > maxMajor ||
-       major < minMajor ||
-       ( major == minMajor && minor < minMinor ) ||
-       ( major == minMajor && minor == minMinor && release < minRelease ) ||
-       ( major == minMajor && minor == minMinor && release == minRelease && m.length() == 5 ) )
+  if ( major > maxMajor || major < minMajor || ( major == minMajor && minor < minMinor ) || ( major == minMajor && minor == minMinor && release < minRelease )
+       || ( major == minMajor && minor == minMinor && release == minRelease && m.length() == 5 ) )
   {
     return false;
   }
   return true;
 }
 
-QString QgsStacParser::getString( const nlohmann::json &data )
-{
-  return data.is_null() ? QString() : QString::fromStdString( data );
-}
+QString QgsStacParser::getString( const nlohmann::json &data ) { return data.is_null() ? QString() : QString::fromStdString( data ); }
 
 std::unique_ptr<QgsStacItemCollection> QgsStacParser::itemCollection()
 {
@@ -498,7 +440,7 @@ std::unique_ptr<QgsStacItemCollection> QgsStacParser::itemCollection()
     }
 
     if ( mData.contains( "numberMatched" ) )
-      numberMatched =  mData["numberMatched"].get<int>();
+      numberMatched = mData["numberMatched"].get<int>();
   }
   catch ( nlohmann::json::exception &ex )
   {

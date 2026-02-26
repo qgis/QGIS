@@ -15,62 +15,26 @@
 
 #include "qgsstacextent.h"
 
-void QgsStacExtent::setSpatialExtent( QgsBox3D extent )
-{
-  mSpatialExtent = extent;
-}
+void QgsStacExtent::setSpatialExtent( QgsBox3D extent ) { mSpatialExtent = extent; }
 
-void QgsStacExtent::setSpatialExtent( QgsRectangle extent )
-{
-  setSpatialExtent( extent.toBox3d( 0, 0 ) );
-}
+void QgsStacExtent::setSpatialExtent( QgsRectangle extent ) { setSpatialExtent( extent.toBox3d( 0, 0 ) ); }
 
-void QgsStacExtent::addDetailedSpatialExtent( QgsBox3D extent )
-{
-  mDetailedSpatialExtents.append( extent );
-}
+void QgsStacExtent::addDetailedSpatialExtent( QgsBox3D extent ) { mDetailedSpatialExtents.append( extent ); }
 
-void QgsStacExtent::addDetailedSpatialExtent( QgsRectangle extent )
-{
-  addDetailedSpatialExtent( extent.toBox3d( 0, 0 ) );
-}
+void QgsStacExtent::addDetailedSpatialExtent( QgsRectangle extent ) { addDetailedSpatialExtent( extent.toBox3d( 0, 0 ) ); }
 
-QgsBox3D QgsStacExtent::spatialExtent() const
-{
-  return mSpatialExtent;
-}
+QgsBox3D QgsStacExtent::spatialExtent() const { return mSpatialExtent; }
 
-void QgsStacExtent::setTemporalExtent( QgsDateTimeRange extent )
-{
-  mTemporalExtent = extent;
-}
+void QgsStacExtent::setTemporalExtent( QgsDateTimeRange extent ) { mTemporalExtent = extent; }
 
-void QgsStacExtent::addDetailedTemporalExtent( QgsDateTimeRange extent )
-{
-  mDetailedTemporalExtents.append( extent );
-}
+void QgsStacExtent::addDetailedTemporalExtent( QgsDateTimeRange extent ) { mDetailedTemporalExtents.append( extent ); }
 
-QgsDateTimeRange QgsStacExtent::temporalExtent() const
-{
-  return mTemporalExtent;
-}
+QgsDateTimeRange QgsStacExtent::temporalExtent() const { return mTemporalExtent; }
 
-QVector<QgsBox3D> QgsStacExtent::detailedSpatialExtents() const
-{
-  return mDetailedSpatialExtents;
-}
+QVector<QgsBox3D> QgsStacExtent::detailedSpatialExtents() const { return mDetailedSpatialExtents; }
 
-QVector<QgsDateTimeRange> QgsStacExtent::detailedTemporalExtents() const
-{
-  return mDetailedTemporalExtents;
-}
+QVector<QgsDateTimeRange> QgsStacExtent::detailedTemporalExtents() const { return mDetailedTemporalExtents; }
 
-bool QgsStacExtent::hasDetailedSpatialExtents() const
-{
-  return !mDetailedSpatialExtents.isEmpty();
-}
+bool QgsStacExtent::hasDetailedSpatialExtents() const { return !mDetailedSpatialExtents.isEmpty(); }
 
-bool QgsStacExtent::hasDetailedTemporalExtents() const
-{
-  return !mDetailedTemporalExtents.isEmpty();
-}
+bool QgsStacExtent::hasDetailedTemporalExtents() const { return !mDetailedTemporalExtents.isEmpty(); }

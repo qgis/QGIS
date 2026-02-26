@@ -39,9 +39,9 @@ constexpr int MAX_DISPLAYED_ITEMS = 20;
 //
 
 QgsStacAssetItem::QgsStacAssetItem( QgsDataItem *parent, const QString &name, const QgsStacAsset *asset )
-  : QgsDataItem( Qgis::BrowserItemType::Custom, parent, name, QString( "%1/%2" ).arg( parent->path(), name ), u"special:Stac"_s ),
-    mStacAsset( asset ),
-    mName( name )
+  : QgsDataItem( Qgis::BrowserItemType::Custom, parent, name, QString( "%1/%2" ).arg( parent->path(), name ), u"special:Stac"_s )
+  , mStacAsset( asset )
+  , mName( name )
 {
   if ( QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( asset->uri().providerKey ) )
   {
@@ -55,10 +55,7 @@ QgsStacAssetItem::QgsStacAssetItem( QgsDataItem *parent, const QString &name, co
   setState( Qgis::BrowserItemState::Populated );
 }
 
-bool QgsStacAssetItem::hasDragEnabled() const
-{
-  return mStacAsset->isCloudOptimized();
-}
+bool QgsStacAssetItem::hasDragEnabled() const { return mStacAsset->isCloudOptimized(); }
 
 QgsStacController *QgsStacAssetItem::stacController() const
 {
@@ -93,10 +90,7 @@ QgsMimeDataUtils::UriList QgsStacAssetItem::mimeUris() const
   return { uri };
 }
 
-bool QgsStacAssetItem::equal( const QgsDataItem * )
-{
-  return false;
-}
+bool QgsStacAssetItem::equal( const QgsDataItem * ) { return false; }
 
 void QgsStacAssetItem::updateToolTip()
 {
@@ -113,10 +107,7 @@ void QgsStacAssetItem::updateToolTip()
 //
 
 QgsStacFetchMoreItem::QgsStacFetchMoreItem( QgsDataItem *parent, const QString &name )
-  : QgsDataItem( Qgis::BrowserItemType::Custom,
-                 parent,
-                 name,
-                 QString() )
+  : QgsDataItem( Qgis::BrowserItemType::Custom, parent, name, QString() )
 {
   mState = Qgis::BrowserItemState::Populated;
 }
@@ -203,10 +194,7 @@ QgsMimeDataUtils::UriList QgsStacItemItem::mimeUris() const
   return uris;
 }
 
-bool QgsStacItemItem::equal( const QgsDataItem * )
-{
-  return false;
-}
+bool QgsStacItemItem::equal( const QgsDataItem * ) { return false; }
 
 void QgsStacItemItem::updateToolTip()
 {
@@ -237,10 +225,7 @@ void QgsStacItemItem::setStacItem( std::unique_ptr<QgsStacItem> item )
   updateToolTip();
 }
 
-QgsStacItem *QgsStacItemItem::stacItem() const
-{
-  return mStacItem.get();
-}
+QgsStacItem *QgsStacItemItem::stacItem() const { return mStacItem.get(); }
 
 void QgsStacItemItem::itemRequestFinished( int requestId, QString error )
 {
@@ -281,15 +266,9 @@ QgsStacCatalogItem::QgsStacCatalogItem( QgsDataItem *parent, const QString &name
   updateToolTip();
 }
 
-bool QgsStacCatalogItem::isCatalog() const
-{
-  return !mIsCollection;
-}
+bool QgsStacCatalogItem::isCatalog() const { return !mIsCollection; }
 
-bool QgsStacCatalogItem::isCollection() const
-{
-  return mIsCollection;
-}
+bool QgsStacCatalogItem::isCollection() const { return mIsCollection; }
 
 QgsStacController *QgsStacCatalogItem::stacController() const
 {
@@ -367,7 +346,6 @@ void QgsStacCatalogItem::onControllerFinished( int requestId, const QString &err
 
 QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
 {
-
   QgsStacController *controller = stacController();
   QString error;
   setStacCatalog( controller->fetchStacObject< QgsStacCatalog >( mPath, &error ) );
@@ -395,8 +373,7 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
       {
         useItemsEndpoint = true;
       }
-      else if ( link.relation() == "data"_L1 &&
-                link.href().endsWith( "/collections"_L1 ) )
+      else if ( link.relation() == "data"_L1 && link.href().endsWith( "/collections"_L1 ) )
       {
         useCollectionsEndpoint = true;
       }
@@ -409,21 +386,16 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
   for ( const QgsStacLink &link : links )
   {
     // skip hierarchical navigation links
-    if ( link.relation() == "self"_L1 ||
-         link.relation() == "root"_L1 ||
-         link.relation() == "parent"_L1 ||
-         link.relation() == "collection"_L1 )
+    if ( link.relation() == "self"_L1 || link.relation() == "root"_L1 || link.relation() == "parent"_L1 || link.relation() == "collection"_L1 )
       continue;
 
-    if ( link.relation() == "child"_L1 &&
-         !useCollectionsEndpoint )
+    if ( link.relation() == "child"_L1 && !useCollectionsEndpoint )
     {
       // may be either catalog or collection
       QgsStacCatalogItem *c = new QgsStacCatalogItem( this, link.title(), link.href() );
       contents.append( c );
     }
-    else if ( link.relation() == "data"_L1 &&
-              link.href().endsWith( "/collections"_L1 ) )
+    else if ( link.relation() == "data"_L1 && link.href().endsWith( "/collections"_L1 ) )
     {
       // use /collections api
       QString error;
@@ -439,8 +411,7 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
         contents.append( new QgsErrorItem( this, error, path() + u"/error"_s ) );
       }
     }
-    else if ( link.relation() == "item"_L1 &&
-              !useItemsEndpoint )
+    else if ( link.relation() == "item"_L1 && !useItemsEndpoint )
     {
       itemsCount++;
 
@@ -450,8 +421,7 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
       QgsStacItemItem *i = new QgsStacItemItem( this, link.title(), link.href() );
       contents.append( i );
     }
-    else if ( link.relation() == "items"_L1 &&
-              useItemsEndpoint )
+    else if ( link.relation() == "items"_L1 && useItemsEndpoint )
     {
       // stac api items (ogcapi features)
       QString error;
@@ -536,10 +506,7 @@ void QgsStacCatalogItem::setStacCatalog( std::unique_ptr<QgsStacCatalog> catalog
   updateToolTip();
 }
 
-QgsStacCatalog *QgsStacCatalogItem::stacCatalog() const
-{
-  return mStacCatalog.get();
-}
+QgsStacCatalog *QgsStacCatalogItem::stacCatalog() const { return mStacCatalog.get(); }
 
 QVector< QgsDataItem * > QgsStacCatalogItem::createItems( const QVector<QgsStacItem *> items )
 {
@@ -598,7 +565,6 @@ void QgsStacCatalogItem::fetchMoreChildren()
     mFetchMoreUrl = ic->nextUrl();
     if ( !ic->nextUrl().isEmpty() && moreItem )
     {
-
       const int numberMatched = ic->numberMatched();
       if ( numberMatched > -1 )
       {
@@ -634,11 +600,7 @@ QgsStacConnectionItem::QgsStacConnectionItem( QgsDataItem *parent, const QString
   mToolTip = u"Connection:\n%1\n%2"_s.arg( connectionName, mPath );
 }
 
-QgsStacController *QgsStacConnectionItem::controller() const
-{
-  return mController.get();
-}
-
+QgsStacController *QgsStacConnectionItem::controller() const { return mController.get(); }
 
 
 //
@@ -665,30 +627,18 @@ QVector<QgsDataItem *> QgsStacRootItem::createChildren()
   return connections;
 }
 
-void QgsStacRootItem::onConnectionsChanged()
-{
-  refresh();
-}
+void QgsStacRootItem::onConnectionsChanged() { refresh(); }
 
 
 //
 // QgsStacDataItemProvider
 //
 
-QString QgsStacDataItemProvider::name()
-{
-  return u"STAC"_s;
-}
+QString QgsStacDataItemProvider::name() { return u"STAC"_s; }
 
-QString QgsStacDataItemProvider::dataProviderKey() const
-{
-  return u"special:Stac"_s;
-}
+QString QgsStacDataItemProvider::dataProviderKey() const { return u"special:Stac"_s; }
 
-Qgis::DataItemProviderCapabilities QgsStacDataItemProvider::capabilities() const
-{
-  return Qgis::DataItemProviderCapability::NetworkSources;
-}
+Qgis::DataItemProviderCapabilities QgsStacDataItemProvider::capabilities() const { return Qgis::DataItemProviderCapability::NetworkSources; }
 
 QgsDataItem *QgsStacDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {

@@ -218,14 +218,13 @@ void QgsStacController::handleCollectionsReply()
   mReplies.removeOne( reply );
 }
 
-template<class T>
-std::unique_ptr<T> QgsStacController::takeStacObject( int requestId )
+template<class T> std::unique_ptr<T> QgsStacController::takeStacObject( int requestId )
 {
   std::unique_ptr< QgsStacObject > obj( mFetchedStacObjects.take( requestId ) );
 
   if ( T *downCastObj = dynamic_cast< T * >( obj.get() ) )
   {
-    ( void )obj.release();
+    ( void ) obj.release();
     return std::unique_ptr< T >( downCastObj );
   }
 
@@ -309,15 +308,9 @@ QgsNetworkReplyContent QgsStacController::fetchBlocking( const QUrl &url )
   return nam->blockingGet( req, mAuthCfg );
 }
 
-QString QgsStacController::authCfg() const
-{
-  return mAuthCfg;
-}
+QString QgsStacController::authCfg() const { return mAuthCfg; }
 
-void QgsStacController::setAuthCfg( const QString &authCfg )
-{
-  mAuthCfg = authCfg;
-}
+void QgsStacController::setAuthCfg( const QString &authCfg ) { mAuthCfg = authCfg; }
 
 std::unique_ptr<QgsStacCatalog> QgsStacController::openLocalCatalog( const QString &fileName ) const
 {
@@ -368,8 +361,7 @@ std::unique_ptr<QgsStacItem> QgsStacController::openLocalItem( const QString &fi
   return parser.item();
 }
 
-template<class T>
-std::unique_ptr<T> QgsStacController::fetchStacObject( const QUrl &url, QString *error )
+template<class T> std::unique_ptr<T> QgsStacController::fetchStacObject( const QUrl &url, QString *error )
 {
   QgsNetworkReplyContent content = fetchBlocking( url );
 
@@ -405,7 +397,7 @@ std::unique_ptr<T> QgsStacController::fetchStacObject( const QUrl &url, QString 
   std::unique_ptr< T > res;
   if ( T *castObject = dynamic_cast< T * >( object.get() ) )
   {
-    ( void )object.release();
+    ( void ) object.release();
     res.reset( castObject );
   }
   else

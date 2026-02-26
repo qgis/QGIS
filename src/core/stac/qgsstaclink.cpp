@@ -20,25 +20,12 @@ QgsStacLink::QgsStacLink( const QString &href, const QString &relation, const QS
   , mRelation( relation )
   , mMediaType( mediaType )
   , mTitle( title )
-{
-}
+{}
 
-QString QgsStacLink::href() const
-{
-  return mHref;
-}
+QString QgsStacLink::href() const { return mHref; }
 
-QString QgsStacLink::relation() const
-{
-  return mRelation;
-}
+QString QgsStacLink::relation() const { return mRelation; }
 
-QString QgsStacLink::title() const
-{
-  return mTitle;
-}
+QString QgsStacLink::title() const { return mTitle; }
 
-QString QgsStacLink::mediaType() const
-{
-  return mMediaType;
-}
+QString QgsStacLink::mediaType() const { return mMediaType; }

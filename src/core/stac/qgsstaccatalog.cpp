@@ -19,19 +19,12 @@
 
 using namespace Qt::StringLiterals;
 
-QgsStacCatalog::QgsStacCatalog( const QString &id,
-                                const QString &version,
-                                const QString &description,
-                                const QVector< QgsStacLink > &links )
+QgsStacCatalog::QgsStacCatalog( const QString &id, const QString &version, const QString &description, const QVector< QgsStacLink > &links )
   : QgsStacObject( id, version, links )
   , mDescription( description )
-{
-}
+{}
 
-Qgis::StacObjectType QgsStacCatalog::type() const
-{
-  return Qgis::StacObjectType::Catalog;
-}
+Qgis::StacObjectType QgsStacCatalog::type() const { return Qgis::StacObjectType::Catalog; }
 
 QString QgsStacCatalog::toHtml() const
 {
@@ -56,7 +49,7 @@ QString QgsStacCatalog::toHtml() const
     html += "</ul>\n"_L1;
   }
 
-  if ( ! mConformanceClasses.isEmpty() )
+  if ( !mConformanceClasses.isEmpty() )
   {
     html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Conformance Classes"_L1 );
     html += "<ul>\n"_L1;
@@ -82,37 +75,16 @@ QString QgsStacCatalog::toHtml() const
   return html;
 }
 
-QString QgsStacCatalog::title() const
-{
-  return mTitle;
-}
+QString QgsStacCatalog::title() const { return mTitle; }
 
-void QgsStacCatalog::setTitle( const QString &title )
-{
-  mTitle = title;
-}
+void QgsStacCatalog::setTitle( const QString &title ) { mTitle = title; }
 
-QString QgsStacCatalog::description() const
-{
-  return mDescription;
-}
+QString QgsStacCatalog::description() const { return mDescription; }
 
-void QgsStacCatalog::setDescription( const QString &description )
-{
-  mDescription = description;
-}
+void QgsStacCatalog::setDescription( const QString &description ) { mDescription = description; }
 
-bool QgsStacCatalog::conformsTo( const QString &conformanceClass ) const
-{
-  return mConformanceClasses.contains( conformanceClass );
-}
+bool QgsStacCatalog::conformsTo( const QString &conformanceClass ) const { return mConformanceClasses.contains( conformanceClass ); }
 
-void QgsStacCatalog::setConformanceClasses( const QStringList &conformanceClasses )
-{
-  mConformanceClasses = QSet< QString >( conformanceClasses.constBegin(), conformanceClasses.constEnd() );
-}
+void QgsStacCatalog::setConformanceClasses( const QStringList &conformanceClasses ) { mConformanceClasses = QSet< QString >( conformanceClasses.constBegin(), conformanceClasses.constEnd() ); }
 
-void QgsStacCatalog::addConformanceClass( const QString &conformanceClass )
-{
-  mConformanceClasses.insert( conformanceClass );
-}
+void QgsStacCatalog::addConformanceClass( const QString &conformanceClass ) { mConformanceClasses.insert( conformanceClass ); }

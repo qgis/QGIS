@@ -19,25 +19,18 @@
 
 using namespace Qt::StringLiterals;
 
-QgsStacItem::QgsStacItem( const QString &id,
-                          const QString &version,
-                          const QgsGeometry &geometry,
-                          const QVariantMap &properties,
-                          const QVector< QgsStacLink > &links,
-                          const QMap< QString, QgsStacAsset > &assets,
-                          const QgsBox3D &bbox )
+QgsStacItem::QgsStacItem(
+  const QString &id, const QString &version, const QgsGeometry &geometry, const QVariantMap &properties, const QVector< QgsStacLink > &links, const QMap< QString, QgsStacAsset > &assets,
+  const QgsBox3D &bbox
+)
   : QgsStacObject( id, version, links )
-  ,  mGeometry( geometry )
-  ,  mBbox( bbox )
-  ,  mProperties( properties )
-  ,  mAssets( assets )
-{
-}
+  , mGeometry( geometry )
+  , mBbox( bbox )
+  , mProperties( properties )
+  , mAssets( assets )
+{}
 
-Qgis::StacObjectType QgsStacItem::type() const
-{
-  return Qgis::StacObjectType::Item;
-}
+Qgis::StacObjectType QgsStacItem::type() const { return Qgis::StacObjectType::Item; }
 
 QString QgsStacItem::toHtml() const
 {
@@ -69,7 +62,7 @@ QString QgsStacItem::toHtml() const
   html += u"<li>%1</li>\n"_s.arg( mBbox.is2d() ? mBbox.toRectangle().toString() : mBbox.toString() );
   html += "</ul>\n"_L1;
 
-  if ( ! mProperties.isEmpty() )
+  if ( !mProperties.isEmpty() )
   {
     html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Properties"_L1 );
     html += "<table class=\"list-view\">\n"_L1;
@@ -91,7 +84,7 @@ QString QgsStacItem::toHtml() const
     html += "</table><br/>\n"_L1;
   }
 
-  if ( ! mAssets.isEmpty() )
+  if ( !mAssets.isEmpty() )
   {
     html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Assets"_L1 );
     for ( auto it = mAssets.constBegin(); it != mAssets.constEnd(); ++it )
@@ -102,66 +95,29 @@ QString QgsStacItem::toHtml() const
   return html;
 }
 
-QgsGeometry QgsStacItem::geometry() const
-{
-  return mGeometry;
-}
+QgsGeometry QgsStacItem::geometry() const { return mGeometry; }
 
-void QgsStacItem::setGeometry( const QgsGeometry &geometry )
-{
-  mGeometry = geometry;
-}
+void QgsStacItem::setGeometry( const QgsGeometry &geometry ) { mGeometry = geometry; }
 
-QgsBox3D QgsStacItem::boundingBox() const
-{
-  return mBbox;
-}
+QgsBox3D QgsStacItem::boundingBox() const { return mBbox; }
 
-void QgsStacItem::setBoundingBox( const QgsBox3D &bbox )
-{
-  mBbox = bbox;
-}
+void QgsStacItem::setBoundingBox( const QgsBox3D &bbox ) { mBbox = bbox; }
 
-QVariantMap QgsStacItem::properties() const
-{
-  return mProperties;
-}
+QVariantMap QgsStacItem::properties() const { return mProperties; }
 
-void QgsStacItem::setProperties( const QVariantMap &properties )
-{
-  mProperties = properties;
-}
+void QgsStacItem::setProperties( const QVariantMap &properties ) { mProperties = properties; }
 
-QMap< QString, QgsStacAsset > QgsStacItem::assets() const
-{
-  return mAssets;
-}
+QMap< QString, QgsStacAsset > QgsStacItem::assets() const { return mAssets; }
 
-void QgsStacItem::setAssets( const QMap< QString, QgsStacAsset > &assets )
-{
-  mAssets = assets;
-}
+void QgsStacItem::setAssets( const QMap< QString, QgsStacAsset > &assets ) { mAssets = assets; }
 
-QString QgsStacItem::collection() const
-{
-  return mCollection;
-}
+QString QgsStacItem::collection() const { return mCollection; }
 
-void QgsStacItem::setCollection( const QString &collection )
-{
-  mCollection = collection;
-}
+void QgsStacItem::setCollection( const QString &collection ) { mCollection = collection; }
 
-QDateTime QgsStacItem::dateTime() const
-{
-  return QDateTime::fromString( mProperties.value( u"datetime"_s, u"null"_s ).toString() );
-}
+QDateTime QgsStacItem::dateTime() const { return QDateTime::fromString( mProperties.value( u"datetime"_s, u"null"_s ).toString() ); }
 
-bool QgsStacItem::hasDateTimeRange() const
-{
-  return mProperties.contains( u"start_datetime"_s ) &&
-         mProperties.contains( u"end_datetime"_s );
-}
+bool QgsStacItem::hasDateTimeRange() const { return mProperties.contains( u"start_datetime"_s ) && mProperties.contains( u"end_datetime"_s ); }
 
 QgsDateTimeRange QgsStacItem::dateTimeRange() const
 {
@@ -170,15 +126,9 @@ QgsDateTimeRange QgsStacItem::dateTimeRange() const
   return QgsDateTimeRange( start, end );
 }
 
-QString QgsStacItem::title() const
-{
-  return mProperties.value( u"title"_s ).toString();
-}
+QString QgsStacItem::title() const { return mProperties.value( u"title"_s ).toString(); }
 
-QString QgsStacItem::description() const
-{
-  return mProperties.value( u"description"_s ).toString();
-}
+QString QgsStacItem::description() const { return mProperties.value( u"description"_s ).toString(); }
 
 QgsMimeDataUtils::UriList QgsStacItem::uris() const
 {

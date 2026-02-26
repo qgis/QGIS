@@ -20,25 +20,12 @@ QgsStacProvider::QgsStacProvider( const QString &name, const QString &descriptio
   , mDescription( description )
   , mRoles( roles )
   , mUrl( url )
-{
-}
+{}
 
-QString QgsStacProvider::name() const
-{
-  return mName;
-}
+QString QgsStacProvider::name() const { return mName; }
 
-QString QgsStacProvider::description() const
-{
-  return mDescription;
-}
+QString QgsStacProvider::description() const { return mDescription; }
 
-QStringList QgsStacProvider::roles() const
-{
-  return mRoles;
-}
+QStringList QgsStacProvider::roles() const { return mRoles; }
 
-QString QgsStacProvider::url() const
-{
-  return mUrl;
-}
+QString QgsStacProvider::url() const { return mUrl; }

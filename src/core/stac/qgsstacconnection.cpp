@@ -63,10 +63,7 @@ QgsStacConnection::Data QgsStacConnection::decodedUri( const QString &uri )
   return conn;
 }
 
-QStringList QgsStacConnection::connectionList()
-{
-  return QgsStacConnection::sTreeConnectionStac->items();
-}
+QStringList QgsStacConnection::connectionList() { return QgsStacConnection::sTreeConnectionStac->items(); }
 
 QgsStacConnection::Data QgsStacConnection::connection( const QString &name )
 {
@@ -85,10 +82,7 @@ QgsStacConnection::Data QgsStacConnection::connection( const QString &name )
   return conn;
 }
 
-void QgsStacConnection::deleteConnection( const QString &name )
-{
-  sTreeConnectionStac->deleteItem( name );
-}
+void QgsStacConnection::deleteConnection( const QString &name ) { sTreeConnectionStac->deleteItem( name ); }
 
 void QgsStacConnection::addConnection( const QString &name, const Data &conn )
 {
@@ -99,15 +93,9 @@ void QgsStacConnection::addConnection( const QString &name, const Data &conn )
   settingsHeaders->setValue( conn.httpHeaders.headers(), name );
 }
 
-QString QgsStacConnection::selectedConnection()
-{
-  return sTreeConnectionStac->selectedItem();
-}
+QString QgsStacConnection::selectedConnection() { return sTreeConnectionStac->selectedItem(); }
 
-void QgsStacConnection::setSelectedConnection( const QString &name )
-{
-  sTreeConnectionStac->setSelectedItem( name );
-}
+void QgsStacConnection::setSelectedConnection( const QString &name ) { sTreeConnectionStac->setSelectedItem( name ); }
 
 
 QgsStacConnection::QgsStacConnection( const QString &name )
@@ -118,17 +106,10 @@ QgsStacConnection::QgsStacConnection( const QString &name )
 
 QgsStacConnection::QgsStacConnection( const QString &uri, const QVariantMap &configuration )
   : QgsAbstractProviderConnection( uri, configuration )
-{
-}
+{}
 
-void QgsStacConnection::store( const QString &name ) const
-{
-  addConnection( name, decodedUri( uri() ) );
-}
+void QgsStacConnection::store( const QString &name ) const { addConnection( name, decodedUri( uri() ) ); }
 
-void QgsStacConnection::remove( const QString &name ) const
-{
-  deleteConnection( name );
-}
+void QgsStacConnection::remove( const QString &name ) const { deleteConnection( name ); }
 
 ///@endcond

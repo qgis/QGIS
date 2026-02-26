@@ -33,7 +33,6 @@
 class CORE_EXPORT QgsStacProvider
 {
   public:
-
     /**
      * QgsStacProvider constructor
      * \param name The name of the organization or the individual.

@@ -25,24 +25,15 @@ QgsStacCollectionList::QgsStacCollectionList( const QVector< QgsStacCollection *
 {
   for ( const QgsStacLink &link : links )
   {
-    if ( link.relation() == "self"_L1 ||
-         link.relation() == "root"_L1 ||
-         link.relation() == "next"_L1 ||
-         link.relation() == "prev"_L1 )
+    if ( link.relation() == "self"_L1 || link.relation() == "root"_L1 || link.relation() == "next"_L1 || link.relation() == "prev"_L1 )
       mUrls.insert( link.relation(), link.href() );
   }
 }
 
 
-QgsStacCollectionList::~QgsStacCollectionList()
-{
-  qDeleteAll( mCollections );
-}
+QgsStacCollectionList::~QgsStacCollectionList() { qDeleteAll( mCollections ); }
 
-QVector<QgsStacCollection *> QgsStacCollectionList::collections() const
-{
-  return mCollections;
-}
+QVector<QgsStacCollection *> QgsStacCollectionList::collections() const { return mCollections; }
 
 QVector<QgsStacCollection *> QgsStacCollectionList::takeCollections()
 {
@@ -51,32 +42,14 @@ QVector<QgsStacCollection *> QgsStacCollectionList::takeCollections()
   return cols;
 }
 
-int QgsStacCollectionList::numberReturned() const
-{
-  return mCollections.size();
-}
+int QgsStacCollectionList::numberReturned() const { return mCollections.size(); }
 
-int QgsStacCollectionList::numberMatched() const
-{
-  return mNumberMatched;
-}
+int QgsStacCollectionList::numberMatched() const { return mNumberMatched; }
 
-QUrl QgsStacCollectionList::url() const
-{
-  return QUrl( mUrls.value( u"self"_s, QString() ) );
-}
+QUrl QgsStacCollectionList::url() const { return QUrl( mUrls.value( u"self"_s, QString() ) ); }
 
-QUrl QgsStacCollectionList::rootUrl() const
-{
-  return QUrl( mUrls.value( u"root"_s, QString() ) );
-}
+QUrl QgsStacCollectionList::rootUrl() const { return QUrl( mUrls.value( u"root"_s, QString() ) ); }
 
-QUrl QgsStacCollectionList::nextUrl() const
-{
-  return QUrl( mUrls.value( u"next"_s, QString() ) );
-}
+QUrl QgsStacCollectionList::nextUrl() const { return QUrl( mUrls.value( u"next"_s, QString() ) ); }
 
-QUrl QgsStacCollectionList::prevUrl() const
-{
-  return QUrl( mUrls.value( u"prev"_s, QString() ) );
-}
+QUrl QgsStacCollectionList::prevUrl() const { return QUrl( mUrls.value( u"prev"_s, QString() ) ); }
