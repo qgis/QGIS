@@ -21,8 +21,8 @@ Rule based labeling for a vector layer.
 %End
   public:
     typedef QList<QgsRuleBasedLabeling::Rule *> RuleList;
-  public:
 
+  public:
     class Rule
     {
 %Docstring(signature="appended")
@@ -30,7 +30,9 @@ A child rule for QgsRuleBasedLabeling.
 %End
 
       public:
-        Rule( QgsPalLayerSettings *settings /Transfer/, double maximumScale = 0, double minimumScale = 0, const QString &filterExp = QString(), const QString &description = QString(), bool elseRule = false );
+        Rule(
+          QgsPalLayerSettings *settings /Transfer/, double maximumScale = 0, double minimumScale = 0, const QString &filterExp = QString(), const QString &description = QString(), bool elseRule = false
+        );
 %Docstring
 takes ownership of settings, settings may be ``None``
 %End

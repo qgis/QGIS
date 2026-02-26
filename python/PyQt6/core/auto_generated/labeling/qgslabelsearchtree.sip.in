@@ -25,7 +25,6 @@ This class is a small wrapper around the pal RTree class.
 #include "qgslabelsearchtree.h"
 %End
   public:
-
     QgsLabelSearchTree();
     ~QgsLabelSearchTree();
 

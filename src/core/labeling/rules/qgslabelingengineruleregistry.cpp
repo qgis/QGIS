@@ -78,12 +78,8 @@ bool QgsLabelingEngineRuleRegistry::addRule( QgsAbstractLabelingEngineRule *rule
     return false;
   }
 
-  mRules[ rule->id() ] = std::unique_ptr< QgsAbstractLabelingEngineRule >( rule );
+  mRules[rule->id()] = std::unique_ptr< QgsAbstractLabelingEngineRule >( rule );
   return true;
 }
 
-void QgsLabelingEngineRuleRegistry::removeRule( const QString &id )
-{
-  mRules.erase( id );
-}
-
+void QgsLabelingEngineRuleRegistry::removeRule( const QString &id ) { mRules.erase( id ); }

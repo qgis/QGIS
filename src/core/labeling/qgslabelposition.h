@@ -35,7 +35,6 @@ using namespace Qt::StringLiterals;
 class CORE_EXPORT QgsLabelPosition
 {
   public:
-
     /**
      * Constructor for QgsLabelPosition.
      * \param id associated feature ID
@@ -54,8 +53,10 @@ class CORE_EXPORT QgsLabelPosition
      * \param labelGeometry polygon geometry of label boundary
      * \param isUnplaced set to TRUE if label was unplaced (e.g. due to collisions with other labels)
      */
-    QgsLabelPosition( QgsFeatureId id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram = false, bool pinned = false, const QString &providerId = QString(),
-                      const QgsGeometry &labelGeometry = QgsGeometry(), bool isUnplaced = false )
+    QgsLabelPosition(
+      QgsFeatureId id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont,
+      bool upside_down, bool diagram = false, bool pinned = false, const QString &providerId = QString(), const QgsGeometry &labelGeometry = QgsGeometry(), bool isUnplaced = false
+    )
       : featureId( id )
       , rotation( r )
       , cornerPoints( corners )
@@ -77,17 +78,17 @@ class CORE_EXPORT QgsLabelPosition
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    const QString text = sipCpp->labelText;
+    % MethodCode const QString text = sipCpp->labelText;
     QString str = u"<QgsLabelPosition: \"%1\"%2>"_s.arg( text, sipCpp->isUnplaced ? u" (unplaced)"_s : QString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    /**
+        /**
      * ID of feature associated with this label.
      */
-    QgsFeatureId featureId = FID_NULL;
+        QgsFeatureId featureId
+      = FID_NULL;
 
     /**
      * Rotation of label, in degrees clockwise.

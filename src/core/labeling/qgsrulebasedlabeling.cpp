@@ -110,7 +110,7 @@ void QgsRuleBasedLabeling::Rule::initFilter()
   if ( mFilterExp.trimmed().compare( "ELSE"_L1, Qt::CaseInsensitive ) == 0 )
   {
     mElseRule = true;
-    mFilter.reset( );
+    mFilter.reset();
   }
   else if ( mFilterExp.trimmed().isEmpty() )
   {
@@ -351,11 +351,7 @@ void QgsRuleBasedLabeling::Rule::createSubProviders( QgsVectorLayer *layer, QgsR
   {
     // add provider!
     QgsVectorLayerLabelProvider *p = provider->createProvider( layer, mRuleKey, false, mSettings.get() );
-    auto it = std::find_if( subProviders.begin(), subProviders.end(),
-                            [this]( const std::pair<QgsRuleBasedLabeling::Rule *, QgsVectorLayerLabelProvider *> &item )
-    {
-      return item.first == this;
-    } );
+    auto it = std::find_if( subProviders.begin(), subProviders.end(), [this]( const std::pair<QgsRuleBasedLabeling::Rule *, QgsVectorLayerLabelProvider *> &item ) { return item.first == this; } );
 
     if ( it != subProviders.end() )
     {
@@ -363,7 +359,7 @@ void QgsRuleBasedLabeling::Rule::createSubProviders( QgsVectorLayer *layer, QgsR
       subProviders.erase( it );
     }
 
-    subProviders.push_back( {this, p} );
+    subProviders.push_back( { this, p } );
   }
 
   // call recursively
@@ -377,11 +373,7 @@ void QgsRuleBasedLabeling::Rule::prepare( QgsRenderContext &context, QSet<QStrin
 {
   if ( mSettings )
   {
-    auto it = std::find_if( subProviders.begin(), subProviders.end(),
-                            [this]( const std::pair<QgsRuleBasedLabeling::Rule *, QgsVectorLayerLabelProvider *> &item )
-    {
-      return item.first == this;
-    } );
+    auto it = std::find_if( subProviders.begin(), subProviders.end(), [this]( const std::pair<QgsRuleBasedLabeling::Rule *, QgsVectorLayerLabelProvider *> &item ) { return item.first == this; } );
 
     if ( it != subProviders.end() )
     {
@@ -407,11 +399,12 @@ void QgsRuleBasedLabeling::Rule::prepare( QgsRenderContext &context, QSet<QStrin
   }
 }
 
-std::tuple< QgsRuleBasedLabeling::Rule::RegisterResult, QList< QgsLabelFeature * > > QgsRuleBasedLabeling::Rule::registerFeature( const QgsFeature &feature, QgsRenderContext &context, QgsRuleBasedLabeling::RuleToProviderVec &subProviders, const QgsGeometry &obstacleGeometry, const QgsSymbol *symbol )
+std::tuple< QgsRuleBasedLabeling::Rule::RegisterResult, QList< QgsLabelFeature * > > QgsRuleBasedLabeling::Rule::registerFeature(
+  const QgsFeature &feature, QgsRenderContext &context, QgsRuleBasedLabeling::RuleToProviderVec &subProviders, const QgsGeometry &obstacleGeometry, const QgsSymbol *symbol
+)
 {
   QList< QgsLabelFeature * > labels;
-  if ( !isFilterOK( feature, context )
-       || !isScaleOK( context.rendererScale() ) )
+  if ( !isFilterOK( feature, context ) || !isScaleOK( context.rendererScale() ) )
   {
     return { Filtered, labels };
   }
@@ -419,11 +412,7 @@ std::tuple< QgsRuleBasedLabeling::Rule::RegisterResult, QList< QgsLabelFeature *
   bool registered = false;
 
   // do we have active subprovider for the rule?
-  auto it = std::find_if( subProviders.begin(), subProviders.end(),
-                          [this]( const std::pair<QgsRuleBasedLabeling::Rule *, QgsVectorLayerLabelProvider *> &item )
-  {
-    return item.first == this;
-  } );
+  auto it = std::find_if( subProviders.begin(), subProviders.end(), [this]( const std::pair<QgsRuleBasedLabeling::Rule *, QgsVectorLayerLabelProvider *> &item ) { return item.first == this; } );
 
   if ( it != subProviders.end() && mIsActive )
   {
@@ -456,7 +445,7 @@ std::tuple< QgsRuleBasedLabeling::Rule::RegisterResult, QList< QgsLabelFeature *
     {
       RegisterResult res;
       QList< QgsLabelFeature * > added;
-      std::tie( res, added ) = rule->registerFeature( feature, context, subProviders, obstacleGeometry, symbol ) ;
+      std::tie( res, added ) = rule->registerFeature( feature, context, subProviders, obstacleGeometry, symbol );
       matchedAChild |= ( res == Registered || res == Inactive );
       registered |= res != Filtered;
       labels.append( added );
@@ -473,7 +462,7 @@ std::tuple< QgsRuleBasedLabeling::Rule::RegisterResult, QList< QgsLabelFeature *
 
 bool QgsRuleBasedLabeling::Rule::isFilterOK( const QgsFeature &f, QgsRenderContext &context ) const
 {
-  if ( ! mFilter || mElseRule )
+  if ( !mFilter || mElseRule )
     return true;
 
   context.expressionContext().setFeature( f );
@@ -502,8 +491,7 @@ bool QgsRuleBasedLabeling::Rule::isScaleOK( double scale ) const
 
 QgsRuleBasedLabeling::QgsRuleBasedLabeling( QgsRuleBasedLabeling::Rule *root )
   : mRootRule( root )
-{
-}
+{}
 
 QgsRuleBasedLabeling *QgsRuleBasedLabeling::clone() const
 {
@@ -521,19 +509,11 @@ QgsRuleBasedLabeling *QgsRuleBasedLabeling::clone() const
   return new QgsRuleBasedLabeling( rootRule );
 }
 
-QgsRuleBasedLabeling::~QgsRuleBasedLabeling()
-{
-}
+QgsRuleBasedLabeling::~QgsRuleBasedLabeling() {}
 
-QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::rootRule()
-{
-  return mRootRule.get();
-}
+QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::rootRule() { return mRootRule.get(); }
 
-const QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::rootRule() const
-{
-  return mRootRule.get();
-}
+const QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::rootRule() const { return mRootRule.get(); }
 
 
 QgsRuleBasedLabeling *QgsRuleBasedLabeling::create( const QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
@@ -548,10 +528,7 @@ QgsRuleBasedLabeling *QgsRuleBasedLabeling::create( const QDomElement &element, 
   return rl;
 }
 
-QString QgsRuleBasedLabeling::type() const
-{
-  return u"rule-based"_s;
-}
+QString QgsRuleBasedLabeling::type() const { return u"rule-based"_s; }
 
 QDomElement QgsRuleBasedLabeling::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
@@ -565,10 +542,7 @@ QDomElement QgsRuleBasedLabeling::save( QDomDocument &doc, const QgsReadWriteCon
   return elem;
 }
 
-QgsVectorLayerLabelProvider *QgsRuleBasedLabeling::provider( QgsVectorLayer *layer ) const
-{
-  return new QgsRuleBasedLabelProvider( *this, layer, false );
-}
+QgsVectorLayerLabelProvider *QgsRuleBasedLabeling::provider( QgsVectorLayer *layer ) const { return new QgsRuleBasedLabelProvider( *this, layer, false ); }
 
 QStringList QgsRuleBasedLabeling::subProviders() const
 {
@@ -586,20 +560,11 @@ QgsPalLayerSettings QgsRuleBasedLabeling::settings( const QString &providerId ) 
   return QgsPalLayerSettings();
 }
 
-bool QgsRuleBasedLabeling::accept( QgsStyleEntityVisitorInterface *visitor ) const
-{
-  return mRootRule->accept( visitor );
-}
+bool QgsRuleBasedLabeling::accept( QgsStyleEntityVisitorInterface *visitor ) const { return mRootRule->accept( visitor ); }
 
-bool QgsRuleBasedLabeling::requiresAdvancedEffects() const
-{
-  return mRootRule->requiresAdvancedEffects();
-}
+bool QgsRuleBasedLabeling::requiresAdvancedEffects() const { return mRootRule->requiresAdvancedEffects(); }
 
-bool QgsRuleBasedLabeling::hasNonDefaultCompositionMode() const
-{
-  return mRootRule->hasNonDefaultCompositionMode();
-}
+bool QgsRuleBasedLabeling::hasNonDefaultCompositionMode() const { return mRootRule->hasNonDefaultCompositionMode(); }
 
 void QgsRuleBasedLabeling::setSettings( QgsPalLayerSettings *settings, const QString &providerId )
 {
@@ -678,6 +643,5 @@ void QgsRuleBasedLabeling::multiplyOpacity( double opacityFactor )
       format.multiplyOpacity( opacityFactor );
       settings->setFormat( format );
     }
-
   }
 }

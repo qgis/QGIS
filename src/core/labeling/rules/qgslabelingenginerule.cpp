@@ -21,29 +21,15 @@
 
 QgsLabelingEngineContext::QgsLabelingEngineContext( QgsRenderContext &renderContext )
   : mRenderContext( renderContext )
-{
+{}
 
-}
+QgsGeometry QgsLabelingEngineContext::mapBoundaryGeometry() const { return mMapBoundaryGeometry; }
 
-QgsGeometry QgsLabelingEngineContext::mapBoundaryGeometry() const
-{
-  return mMapBoundaryGeometry;
-}
+void QgsLabelingEngineContext::setMapBoundaryGeometry( const QgsGeometry &geometry ) { mMapBoundaryGeometry = geometry; }
 
-void QgsLabelingEngineContext::setMapBoundaryGeometry( const QgsGeometry &geometry )
-{
-  mMapBoundaryGeometry = geometry;
-}
+QgsRectangle QgsLabelingEngineContext::extent() const { return mExtent; }
 
-QgsRectangle QgsLabelingEngineContext::extent() const
-{
-  return mExtent;
-}
-
-void QgsLabelingEngineContext::setExtent( const QgsRectangle &extent )
-{
-  mExtent = extent;
-}
+void QgsLabelingEngineContext::setExtent( const QgsRectangle &extent ) { mExtent = extent; }
 
 //
 // QgsAbstractLabelingEngineRule
@@ -51,30 +37,15 @@ void QgsLabelingEngineContext::setExtent( const QgsRectangle &extent )
 
 QgsAbstractLabelingEngineRule::~QgsAbstractLabelingEngineRule() = default;
 
-void QgsAbstractLabelingEngineRule::resolveReferences( const QgsProject * )
-{
+void QgsAbstractLabelingEngineRule::resolveReferences( const QgsProject * ) {}
 
-}
+bool QgsAbstractLabelingEngineRule::candidatesAreConflicting( const pal::LabelPosition *, const pal::LabelPosition * ) const { return false; }
 
-bool QgsAbstractLabelingEngineRule::candidatesAreConflicting( const pal::LabelPosition *, const pal::LabelPosition * ) const
-{
-  return false;
-}
+QgsRectangle QgsAbstractLabelingEngineRule::modifyCandidateConflictSearchBoundingBox( const QgsRectangle &candidateBounds ) const { return candidateBounds; }
 
-QgsRectangle QgsAbstractLabelingEngineRule::modifyCandidateConflictSearchBoundingBox( const QgsRectangle &candidateBounds ) const
-{
-  return candidateBounds;
-}
+bool QgsAbstractLabelingEngineRule::candidateIsIllegal( const pal::LabelPosition *, QgsLabelingEngineContext & ) const { return false; }
 
-bool QgsAbstractLabelingEngineRule::candidateIsIllegal( const pal::LabelPosition *, QgsLabelingEngineContext & ) const
-{
-  return false;
-}
-
-void QgsAbstractLabelingEngineRule::alterCandidateCost( pal::LabelPosition *, QgsLabelingEngineContext & ) const
-{
-
-}
+void QgsAbstractLabelingEngineRule::alterCandidateCost( pal::LabelPosition *, QgsLabelingEngineContext & ) const {}
 
 void QgsAbstractLabelingEngineRule::copyCommonProperties( QgsAbstractLabelingEngineRule *other ) const
 {
@@ -82,22 +53,10 @@ void QgsAbstractLabelingEngineRule::copyCommonProperties( QgsAbstractLabelingEng
   other->mIsActive = mIsActive;
 }
 
-bool QgsAbstractLabelingEngineRule::isAvailable() const
-{
-  return true;
-}
+bool QgsAbstractLabelingEngineRule::isAvailable() const { return true; }
 
-QString QgsAbstractLabelingEngineRule::description() const
-{
-  return mName.isEmpty() ? displayType() : mName;
-}
+QString QgsAbstractLabelingEngineRule::description() const { return mName.isEmpty() ? displayType() : mName; }
 
-bool QgsAbstractLabelingEngineRule::active() const
-{
-  return mIsActive;
-}
+bool QgsAbstractLabelingEngineRule::active() const { return mIsActive; }
 
-void QgsAbstractLabelingEngineRule::setActive( bool active )
-{
-  mIsActive = active;
-}
+void QgsAbstractLabelingEngineRule::setActive( bool active ) { mIsActive = active; }

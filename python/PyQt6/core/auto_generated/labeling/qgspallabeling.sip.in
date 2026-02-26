@@ -28,7 +28,7 @@ Contains settings for how a map layer will be labeled.
 
 
     enum class Property /BaseType=IntEnum/
-      {
+    {
       // text style
       Size,
       Bold,
@@ -385,7 +385,10 @@ legendString
 :return: the string to show in the legend and in the preview icon
 %End
 
- void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = 0, QgsRenderContext *context = 0, double *rotatedLabelX /Out/ = 0, double *rotatedLabelY /Out/ = 0 ) /Deprecated="Since 3.40. Will be removed from public API in QGIS 5.0."/;
+ void calculateLabelSize(
+      const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = 0, QgsRenderContext *context = 0, double *rotatedLabelX /Out/ = 0,
+      double *rotatedLabelY /Out/ = 0
+    ) /Deprecated="Since 3.40. Will be removed from public API in QGIS 5.0."/;
 %Docstring
 Calculates the space required to render the provided ``text`` in map
 units. Results will be written to ``labelX`` and ``labelY``.
@@ -599,7 +602,9 @@ Sets the label placement ``settings``.
 .. versionadded:: 3.26
 %End
 
-    static QPixmap labelSettingsPreviewPixmap( const QgsPalLayerSettings &settings, QSize size, const QString &previewText = QString(), int padding = 0, const QgsScreenProperties &screen = QgsScreenProperties() );
+    static QPixmap labelSettingsPreviewPixmap(
+      const QgsPalLayerSettings &settings, QSize size, const QString &previewText = QString(), int padding = 0, const QgsScreenProperties &screen = QgsScreenProperties()
+    );
 %Docstring
 Returns a pixmap preview for label ``settings``.
 
@@ -665,7 +670,7 @@ If data can be parsed as a labeling settings, ``ok`` will be set to
     QgsGeometry extentGeom;
     int mFeaturesToLabel;
     int mFeatsSendingToPal; // total features tested for sending into PAL (relative to maxNumLabels)
-    int mFeatsRegPal; // number of features registered in PAL, when using limitNumLabels
+    int mFeatsRegPal;       // number of features registered in PAL, when using limitNumLabels
 
 };
 
@@ -680,13 +685,12 @@ PAL labeling utilities.
 #include "qgspallabeling.h"
 %End
   public:
-
     static bool staticWillUseLayer( const QgsMapLayer *layer );
 %Docstring
 Called to find out whether a specified ``layer`` is used for labeling.
 %End
 
-    static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry(), bool mergeLines = false ) /Factory/;
+    static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry(), bool mergeLines = false );
 %Docstring
 Prepares a geometry for registration with PAL. Handles reprojection,
 rotation, clipping, etc.
@@ -702,7 +706,9 @@ rotation, clipping, etc.
 :return: prepared geometry
 %End
 
-    static bool geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry(), bool mergeLines = false );
+    static bool geometryRequiresPreparation(
+      const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry(), bool mergeLines = false
+    );
 %Docstring
 Checks whether a geometry requires preparation before registration with
 PAL

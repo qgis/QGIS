@@ -78,7 +78,7 @@ void QgsAbstractLabelingEngineRuleDistanceFromFeature::readXml( const QDomElemen
 {
   mDistance = element.attribute( u"distance"_s, u"5"_s ).toDouble();
   mDistanceUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( u"distanceUnit"_s ) );
-  mDistanceUnitScale =  QgsSymbolLayerUtils::decodeMapUnitScale( element.attribute( u"distanceUnitScale"_s ) );
+  mDistanceUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( element.attribute( u"distanceUnitScale"_s ) );
   mCost = element.attribute( u"cost"_s, u"10"_s ).toDouble();
 
   {
@@ -144,32 +144,20 @@ void QgsAbstractLabelingEngineRuleDistanceFromFeature::alterCandidateCost( pal::
 
 bool QgsAbstractLabelingEngineRuleDistanceFromFeature::isAvailable() const
 {
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
   return true;
 #else
   return false;
 #endif
 }
 
-QgsMapLayer *QgsAbstractLabelingEngineRuleDistanceFromFeature::labeledLayer() const
-{
-  return mLabeledLayer.get();
-}
+QgsMapLayer *QgsAbstractLabelingEngineRuleDistanceFromFeature::labeledLayer() const { return mLabeledLayer.get(); }
 
-void QgsAbstractLabelingEngineRuleDistanceFromFeature::setLabeledLayer( QgsMapLayer *layer )
-{
-  mLabeledLayer = layer;
-}
+void QgsAbstractLabelingEngineRuleDistanceFromFeature::setLabeledLayer( QgsMapLayer *layer ) { mLabeledLayer = layer; }
 
-QgsVectorLayer *QgsAbstractLabelingEngineRuleDistanceFromFeature::targetLayer() const
-{
-  return mTargetLayer.get();
-}
+QgsVectorLayer *QgsAbstractLabelingEngineRuleDistanceFromFeature::targetLayer() const { return mTargetLayer.get(); }
 
-void QgsAbstractLabelingEngineRuleDistanceFromFeature::setTargetLayer( QgsVectorLayer *layer )
-{
-  mTargetLayer = layer;
-}
+void QgsAbstractLabelingEngineRuleDistanceFromFeature::setTargetLayer( QgsVectorLayer *layer ) { mTargetLayer = layer; }
 
 void QgsAbstractLabelingEngineRuleDistanceFromFeature::copyCommonProperties( QgsAbstractLabelingEngineRule *other ) const
 {
@@ -222,7 +210,7 @@ bool QgsAbstractLabelingEngineRuleDistanceFromFeature::candidateExceedsTolerance
     try
     {
       geos::unique_ptr featureCandidate = QgsGeos::asGeos( mIndex->geometry( overlapCandidateId ).constGet() );
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
       if ( GEOSPreparedDistanceWithin_r( geosctxt, candidateGeos, featureCandidate.get(), mDistanceMapUnits ) )
       {
         return mMustBeDistant;
@@ -255,27 +243,19 @@ QgsLabelingEngineRuleMinimumDistanceLabelToFeature *QgsLabelingEngineRuleMinimum
   return res.release();
 }
 
-QString QgsLabelingEngineRuleMinimumDistanceLabelToFeature::id() const
-{
-  return u"minimumDistanceLabelToFeature"_s;
-}
+QString QgsLabelingEngineRuleMinimumDistanceLabelToFeature::id() const { return u"minimumDistanceLabelToFeature"_s; }
 
-QString QgsLabelingEngineRuleMinimumDistanceLabelToFeature::displayType() const
-{
-  return QObject::tr( "Push Labels Away from Features" );
-}
+QString QgsLabelingEngineRuleMinimumDistanceLabelToFeature::displayType() const { return QObject::tr( "Push Labels Away from Features" ); }
 
 QString QgsLabelingEngineRuleMinimumDistanceLabelToFeature::description() const
 {
   QString res = u"<b>%1</b>"_s.arg( name().isEmpty() ? displayType() : name() );
   if ( labeledLayer() && targetLayer() )
   {
-    res += u"<p>"_s + QObject::tr( "Labels from <i>%1</i> must be at least %2 %3 from features in <i>%4</i>" ).arg(
-             labeledLayer()->name(),
-             QString::number( distance() ),
-             QgsUnitTypes::toAbbreviatedString( distanceUnit() ),
-             targetLayer()->name()
-           ) + u"</p>"_s;
+    res += u"<p>"_s
+           + QObject::tr( "Labels from <i>%1</i> must be at least %2 %3 from features in <i>%4</i>" )
+               .arg( labeledLayer()->name(), QString::number( distance() ), QgsUnitTypes::toAbbreviatedString( distanceUnit() ), targetLayer()->name() )
+           + u"</p>"_s;
   }
   return res;
 }
@@ -285,10 +265,7 @@ QString QgsLabelingEngineRuleMinimumDistanceLabelToFeature::description() const
 // QgsLabelingEngineRuleMaximumDistanceLabelToFeature
 //
 
-QgsLabelingEngineRuleMaximumDistanceLabelToFeature::QgsLabelingEngineRuleMaximumDistanceLabelToFeature()
-{
-  mMustBeDistant = false;
-}
+QgsLabelingEngineRuleMaximumDistanceLabelToFeature::QgsLabelingEngineRuleMaximumDistanceLabelToFeature() { mMustBeDistant = false; }
 
 QgsLabelingEngineRuleMaximumDistanceLabelToFeature::~QgsLabelingEngineRuleMaximumDistanceLabelToFeature() = default;
 
@@ -299,27 +276,19 @@ QgsLabelingEngineRuleMaximumDistanceLabelToFeature *QgsLabelingEngineRuleMaximum
   return res.release();
 }
 
-QString QgsLabelingEngineRuleMaximumDistanceLabelToFeature::id() const
-{
-  return u"maximumDistanceLabelToFeature"_s;
-}
+QString QgsLabelingEngineRuleMaximumDistanceLabelToFeature::id() const { return u"maximumDistanceLabelToFeature"_s; }
 
-QString QgsLabelingEngineRuleMaximumDistanceLabelToFeature::displayType() const
-{
-  return QObject::tr( "Pull Labels Toward Features" );
-}
+QString QgsLabelingEngineRuleMaximumDistanceLabelToFeature::displayType() const { return QObject::tr( "Pull Labels Toward Features" ); }
 
 QString QgsLabelingEngineRuleMaximumDistanceLabelToFeature::description() const
 {
   QString res = u"<b>%1</b>"_s.arg( name().isEmpty() ? displayType() : name() );
   if ( labeledLayer() && targetLayer() )
   {
-    res += u"<p>"_s + QObject::tr( "Labels from <i>%1</i> must be at most %2 %3 from features in <i>%4</i>" ).arg(
-             labeledLayer()->name(),
-             QString::number( distance() ),
-             QgsUnitTypes::toAbbreviatedString( distanceUnit() ),
-             targetLayer()->name()
-           ) + u"</p>"_s;
+    res += u"<p>"_s
+           + QObject::tr( "Labels from <i>%1</i> must be at most %2 %3 from features in <i>%4</i>" )
+               .arg( labeledLayer()->name(), QString::number( distance() ), QgsUnitTypes::toAbbreviatedString( distanceUnit() ), targetLayer()->name() )
+           + u"</p>"_s;
   }
   return res;
 }
@@ -344,34 +313,26 @@ QgsLabelingEngineRuleMinimumDistanceLabelToLabel *QgsLabelingEngineRuleMinimumDi
   return res.release();
 }
 
-QString QgsLabelingEngineRuleMinimumDistanceLabelToLabel::id() const
-{
-  return u"minimumDistanceLabelToLabel"_s;
-}
+QString QgsLabelingEngineRuleMinimumDistanceLabelToLabel::id() const { return u"minimumDistanceLabelToLabel"_s; }
 
-QString QgsLabelingEngineRuleMinimumDistanceLabelToLabel::displayType() const
-{
-  return QObject::tr( "Push Labels Away from Other Labels" );
-}
+QString QgsLabelingEngineRuleMinimumDistanceLabelToLabel::displayType() const { return QObject::tr( "Push Labels Away from Other Labels" ); }
 
 QString QgsLabelingEngineRuleMinimumDistanceLabelToLabel::description() const
 {
   QString res = u"<b>%1</b>"_s.arg( name().isEmpty() ? displayType() : name() );
   if ( labeledLayer() && targetLayer() )
   {
-    res += u"<p>"_s + QObject::tr( "Labels from <i>%1</i> must be at least %2 %3 from labels from <i>%4</i>" ).arg(
-             labeledLayer()->name(),
-             QString::number( distance() ),
-             QgsUnitTypes::toAbbreviatedString( distanceUnit() ),
-             targetLayer()->name()
-           ) + u"</p>"_s;
+    res += u"<p>"_s
+           + QObject::tr( "Labels from <i>%1</i> must be at least %2 %3 from labels from <i>%4</i>" )
+               .arg( labeledLayer()->name(), QString::number( distance() ), QgsUnitTypes::toAbbreviatedString( distanceUnit() ), targetLayer()->name() )
+           + u"</p>"_s;
   }
   return res;
 }
 
 bool QgsLabelingEngineRuleMinimumDistanceLabelToLabel::isAvailable() const
 {
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
   return true;
 #else
   return false;
@@ -404,7 +365,7 @@ void QgsLabelingEngineRuleMinimumDistanceLabelToLabel::readXml( const QDomElemen
 {
   mDistance = element.attribute( u"distance"_s, u"5"_s ).toDouble();
   mDistanceUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( u"distanceUnit"_s ) );
-  mDistanceUnitScale =  QgsSymbolLayerUtils::decodeMapUnitScale( element.attribute( u"distanceUnitScale"_s ) );
+  mDistanceUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( element.attribute( u"distanceUnitScale"_s ) );
 
   {
     const QString layerId = element.attribute( u"labeledLayer"_s );
@@ -442,18 +403,13 @@ QgsRectangle QgsLabelingEngineRuleMinimumDistanceLabelToLabel::modifyCandidateCo
 bool QgsLabelingEngineRuleMinimumDistanceLabelToLabel::candidatesAreConflicting( const pal::LabelPosition *lp1, const pal::LabelPosition *lp2 ) const
 {
   // conflicts are commutative -- we need to check both layers
-  if (
-    ( lp1->getFeaturePart()->feature()->provider()->layerId() == mLabeledLayer.layerId
-      && lp2->getFeaturePart()->feature()->provider()->layerId() == mTargetLayer.layerId )
-    ||
-    ( lp2->getFeaturePart()->feature()->provider()->layerId() == mLabeledLayer.layerId
-      && lp1->getFeaturePart()->feature()->provider()->layerId() == mTargetLayer.layerId )
-  )
+  if ( ( lp1->getFeaturePart()->feature()->provider()->layerId() == mLabeledLayer.layerId && lp2->getFeaturePart()->feature()->provider()->layerId() == mTargetLayer.layerId )
+       || ( lp2->getFeaturePart()->feature()->provider()->layerId() == mLabeledLayer.layerId && lp1->getFeaturePart()->feature()->provider()->layerId() == mTargetLayer.layerId ) )
   {
     GEOSContextHandle_t geosctxt = QgsGeosContext::get();
     try
     {
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
       if ( GEOSPreparedDistanceWithin_r( geosctxt, lp1->preparedMultiPartGeom(), lp2->multiPartGeom(), mDistanceMapUnits ) )
       {
         return true;
@@ -472,25 +428,13 @@ bool QgsLabelingEngineRuleMinimumDistanceLabelToLabel::candidatesAreConflicting(
   return false;
 }
 
-QgsMapLayer *QgsLabelingEngineRuleMinimumDistanceLabelToLabel::labeledLayer() const
-{
-  return mLabeledLayer.get();
-}
+QgsMapLayer *QgsLabelingEngineRuleMinimumDistanceLabelToLabel::labeledLayer() const { return mLabeledLayer.get(); }
 
-void QgsLabelingEngineRuleMinimumDistanceLabelToLabel::setLabeledLayer( QgsMapLayer *layer )
-{
-  mLabeledLayer = layer;
-}
+void QgsLabelingEngineRuleMinimumDistanceLabelToLabel::setLabeledLayer( QgsMapLayer *layer ) { mLabeledLayer = layer; }
 
-QgsMapLayer *QgsLabelingEngineRuleMinimumDistanceLabelToLabel::targetLayer() const
-{
-  return mTargetLayer.get();
-}
+QgsMapLayer *QgsLabelingEngineRuleMinimumDistanceLabelToLabel::targetLayer() const { return mTargetLayer.get(); }
 
-void QgsLabelingEngineRuleMinimumDistanceLabelToLabel::setTargetLayer( QgsMapLayer *layer )
-{
-  mTargetLayer = layer;
-}
+void QgsLabelingEngineRuleMinimumDistanceLabelToLabel::setTargetLayer( QgsMapLayer *layer ) { mTargetLayer = layer; }
 
 
 //
@@ -509,25 +453,16 @@ QgsLabelingEngineRuleAvoidLabelOverlapWithFeature *QgsLabelingEngineRuleAvoidLab
   return res.release();
 }
 
-QString QgsLabelingEngineRuleAvoidLabelOverlapWithFeature::id() const
-{
-  return u"avoidLabelOverlapWithFeature"_s;
-}
+QString QgsLabelingEngineRuleAvoidLabelOverlapWithFeature::id() const { return u"avoidLabelOverlapWithFeature"_s; }
 
-QString QgsLabelingEngineRuleAvoidLabelOverlapWithFeature::displayType() const
-{
-  return QObject::tr( "Prevent Labels Overlapping Features" );
-}
+QString QgsLabelingEngineRuleAvoidLabelOverlapWithFeature::displayType() const { return QObject::tr( "Prevent Labels Overlapping Features" ); }
 
 QString QgsLabelingEngineRuleAvoidLabelOverlapWithFeature::description() const
 {
   QString res = u"<b>%1</b>"_s.arg( name().isEmpty() ? displayType() : name() );
   if ( labeledLayer() && targetLayer() )
   {
-    res += u"<p>"_s + QObject::tr( "Labels from <i>%1</i> must not overlap features from <i>%2</i>" ).arg(
-             labeledLayer()->name(),
-             targetLayer()->name()
-           ) + u"</p>"_s;
+    res += u"<p>"_s + QObject::tr( "Labels from <i>%1</i> must not overlap features from <i>%2</i>" ).arg( labeledLayer()->name(), targetLayer()->name() ) + u"</p>"_s;
   }
   return res;
 }
@@ -624,25 +559,13 @@ bool QgsLabelingEngineRuleAvoidLabelOverlapWithFeature::candidateIsIllegal( cons
   return false;
 }
 
-QgsMapLayer *QgsLabelingEngineRuleAvoidLabelOverlapWithFeature::labeledLayer() const
-{
-  return mLabeledLayer.get();
-}
+QgsMapLayer *QgsLabelingEngineRuleAvoidLabelOverlapWithFeature::labeledLayer() const { return mLabeledLayer.get(); }
 
-void QgsLabelingEngineRuleAvoidLabelOverlapWithFeature::setLabeledLayer( QgsMapLayer *layer )
-{
-  mLabeledLayer = layer;
-}
+void QgsLabelingEngineRuleAvoidLabelOverlapWithFeature::setLabeledLayer( QgsMapLayer *layer ) { mLabeledLayer = layer; }
 
-QgsVectorLayer *QgsLabelingEngineRuleAvoidLabelOverlapWithFeature::targetLayer() const
-{
-  return mTargetLayer.get();
-}
+QgsVectorLayer *QgsLabelingEngineRuleAvoidLabelOverlapWithFeature::targetLayer() const { return mTargetLayer.get(); }
 
-void QgsLabelingEngineRuleAvoidLabelOverlapWithFeature::setTargetLayer( QgsVectorLayer *layer )
-{
-  mTargetLayer = layer;
-}
+void QgsLabelingEngineRuleAvoidLabelOverlapWithFeature::setTargetLayer( QgsVectorLayer *layer ) { mTargetLayer = layer; }
 
 void QgsLabelingEngineRuleAvoidLabelOverlapWithFeature::initialize( QgsLabelingEngineContext &context )
 {

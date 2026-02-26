@@ -59,7 +59,6 @@ class QgsGeometry;
 class CORE_EXPORT QgsLabelFeature
 {
   public:
-
     /**
      * Constructor for QgsLabelFeature.
      *
@@ -818,7 +817,6 @@ class CORE_EXPORT QgsLabelFeature
     Qgis::LabelPolygonPlacementFlags mPolygonPlacementFlags = Qgis::LabelPolygonPlacementFlag::AllowPlacementInsideOfPolygon;
 
   private:
-
     //! GEOS geometry on which mPermissibleZoneGeosPrepared is based on
     geos::unique_ptr mPermissibleZoneGeos;
 
@@ -850,7 +848,6 @@ class CORE_EXPORT QgsLabelFeature
     double mMinimumSize = 0.0;
 
     Qgis::LabelWhitespaceCollisionHandling mWhitespaceCollisionHandling = Qgis::LabelWhitespaceCollisionHandling::TreatWhitespaceAsCollision;
-
 };
 
 #endif // QGSLABELFEATURE_H

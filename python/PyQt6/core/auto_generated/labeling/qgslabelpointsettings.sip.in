@@ -30,7 +30,6 @@ placement modes.
     static const QMetaObject staticMetaObject;
 
   public:
-
     void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );
 %Docstring
 Updates the point settings to respect any data defined properties set

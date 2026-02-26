@@ -25,8 +25,7 @@ void QgsLabelSearchTree::label( const QgsPointXY &point, QList<QgsLabelPosition 
   const QgsPointXY p( point );
 
   QList<QgsLabelPosition *> searchResults;
-  mSpatialIndex.intersects( QgsRectangle( p.x() - 0.1, p.y() - 0.1, p.x() + 0.1, p.y() + 0.1 ), [&searchResults]( const QgsLabelPosition * pos ) -> bool
-  {
+  mSpatialIndex.intersects( QgsRectangle( p.x() - 0.1, p.y() - 0.1, p.x() + 0.1, p.y() + 0.1 ), [&searchResults]( const QgsLabelPosition *pos ) -> bool {
     searchResults.push_back( const_cast< QgsLabelPosition * >( pos ) );
     return true;
   } );
@@ -49,7 +48,7 @@ QList<QgsLabelPosition> QgsLabelSearchTree::allLabels() const
   res.reserve( mOwnedPositions.size() );
   for ( const std::unique_ptr< QgsLabelPosition > &pos : mOwnedPositions )
   {
-    res.append( * pos );
+    res.append( *pos );
   }
   return res;
 }
@@ -57,8 +56,7 @@ QList<QgsLabelPosition> QgsLabelSearchTree::allLabels() const
 void QgsLabelSearchTree::labelsInRect( const QgsRectangle &r, QList<QgsLabelPosition *> &posList ) const
 {
   QList<QgsLabelPosition *> searchResults;
-  mSpatialIndex.intersects( r, [&searchResults]( const QgsLabelPosition * pos )->bool
-  {
+  mSpatialIndex.intersects( r, [&searchResults]( const QgsLabelPosition *pos ) -> bool {
     searchResults.push_back( const_cast< QgsLabelPosition * >( pos ) );
     return true;
   } );
@@ -74,7 +72,10 @@ void QgsLabelSearchTree::labelsInRect( const QgsRectangle &r, QList<QgsLabelPosi
   }
 }
 
-bool QgsLabelSearchTree::insertLabel( pal::LabelPosition *labelPos, QgsFeatureId featureId, const QString &layerName, const QString &labeltext, const QFont &labelfont, bool diagram, bool pinned, const QString &providerId, bool isUnplaced, long long linkedId )
+bool QgsLabelSearchTree::insertLabel(
+  pal::LabelPosition *labelPos, QgsFeatureId featureId, const QString &layerName, const QString &labeltext, const QFont &labelfont, bool diagram, bool pinned, const QString &providerId,
+  bool isUnplaced, long long linkedId
+)
 {
   if ( !labelPos )
   {
@@ -107,14 +108,16 @@ bool QgsLabelSearchTree::insertLabel( pal::LabelPosition *labelPos, QgsFeatureId
 
   const QgsRectangle bounds( xMin, yMin, xMax, yMax );
   const QgsGeometry labelGeometry( QgsGeometry::fromPolygonXY( QVector<QgsPolylineXY>() << cornerPoints ) );
-  auto newEntry = std::make_unique< QgsLabelPosition >( featureId, -labelPos->getAlpha() * 180 / M_PI + mMapSettings.rotation(), cornerPoints, bounds,
-                  labelPos->getWidth(), labelPos->getHeight(), layerName, labeltext, labelfont, labelPos->getUpsideDown(), diagram, pinned, providerId, labelGeometry, isUnplaced );
+  auto newEntry = std::make_unique< QgsLabelPosition >(
+    featureId, -labelPos->getAlpha() * 180 / M_PI + mMapSettings.rotation(), cornerPoints, bounds, labelPos->getWidth(), labelPos->getHeight(), layerName, labeltext, labelfont,
+    labelPos->getUpsideDown(), diagram, pinned, providerId, labelGeometry, isUnplaced
+  );
   newEntry->groupedLabelId = uniqueLinkedId;
   mSpatialIndex.insert( newEntry.get(), bounds );
 
   if ( uniqueLinkedId != 0 )
   {
-    mLinkedLabelHash[ uniqueLinkedId ].append( newEntry.get() );
+    mLinkedLabelHash[uniqueLinkedId].append( newEntry.get() );
   }
 
   mOwnedPositions.emplace_back( std::move( newEntry ) );
@@ -144,8 +147,7 @@ bool QgsLabelSearchTree::insertCallout( const QgsCalloutPosition &position )
 QList<const QgsCalloutPosition *> QgsLabelSearchTree::calloutsInRectangle( const QgsRectangle &rectangle ) const
 {
   QList<const QgsCalloutPosition *> searchResults;
-  mCalloutIndex.intersects( rectangle, [&searchResults]( const QgsCalloutPosition * pos )->bool
-  {
+  mCalloutIndex.intersects( rectangle, [&searchResults]( const QgsCalloutPosition *pos ) -> bool {
     searchResults.push_back( pos );
     return true;
   } );
@@ -156,10 +158,7 @@ QList<const QgsCalloutPosition *> QgsLabelSearchTree::calloutsInRectangle( const
   return searchResults;
 }
 
-QList<QgsLabelPosition *> QgsLabelSearchTree::groupedLabelPositions( long long groupId ) const
-{
-  return mLinkedLabelHash.value( groupId );
-}
+QList<QgsLabelPosition *> QgsLabelSearchTree::groupedLabelPositions( long long groupId ) const { return mLinkedLabelHash.value( groupId ); }
 
 void QgsLabelSearchTree::setMapSettings( const QgsMapSettings &settings )
 {
@@ -180,7 +179,4 @@ void QgsLabelSearchTree::setMapSettings( const QgsMapSettings &settings )
 }
 
 
-void QgsLabelSearchTree::clear()
-{
-
-}
+void QgsLabelSearchTree::clear() {}

@@ -20,7 +20,6 @@ Stores global configuration for labeling engine.
 %End
   public:
 
-
     enum Search /BaseType=IntEnum/
     {
       Chain,

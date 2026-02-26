@@ -23,8 +23,7 @@ QgsLabelFeature::QgsLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QS
   , mSubPartId( subPartId )
   , mGeometry( std::move( geometry ) )
   , mSize( size )
-{
-}
+{}
 
 QgsLabelFeature::~QgsLabelFeature()
 {
@@ -56,10 +55,7 @@ void QgsLabelFeature::setPermissibleZone( const QgsGeometry &geometry )
   mPermissibleZoneGeosPrepared.reset( GEOSPrepare_r( QgsGeosContext::get(), mPermissibleZoneGeos.get() ) );
 }
 
-QgsFeature QgsLabelFeature::feature() const
-{
-  return mFeature;
-}
+QgsFeature QgsLabelFeature::feature() const { return mFeature; }
 
 QSizeF QgsLabelFeature::size( double angle ) const
 {
@@ -70,35 +66,17 @@ QSizeF QgsLabelFeature::size( double angle ) const
   return ( angle >= 0.785398 && angle <= 2.35619 ) || ( angle >= 3.92699 && angle <= 5.49779 ) ? mRotatedSize : mSize;
 }
 
-QgsPointXY QgsLabelFeature::anchorPosition() const
-{
-  return mAnchorPosition;
-}
+QgsPointXY QgsLabelFeature::anchorPosition() const { return mAnchorPosition; }
 
-void QgsLabelFeature::setFeature( const QgsFeature &feature )
-{
-  mFeature = feature;
-}
+void QgsLabelFeature::setFeature( const QgsFeature &feature ) { mFeature = feature; }
 
-double QgsLabelFeature::overrunDistance() const
-{
-  return mOverrunDistance;
-}
+double QgsLabelFeature::overrunDistance() const { return mOverrunDistance; }
 
-void QgsLabelFeature::setOverrunDistance( double overrunDistance )
-{
-  mOverrunDistance = overrunDistance;
-}
+void QgsLabelFeature::setOverrunDistance( double overrunDistance ) { mOverrunDistance = overrunDistance; }
 
-double QgsLabelFeature::overrunSmoothDistance() const
-{
-  return mOverrunSmoothDistance;
-}
+double QgsLabelFeature::overrunSmoothDistance() const { return mOverrunSmoothDistance; }
 
-void QgsLabelFeature::setOverrunSmoothDistance( double overrunSmoothDistance )
-{
-  mOverrunSmoothDistance = overrunSmoothDistance;
-}
+void QgsLabelFeature::setOverrunSmoothDistance( double overrunSmoothDistance ) { mOverrunSmoothDistance = overrunSmoothDistance; }
 
 QgsLabelLineSettings::AnchorTextPoint QgsLabelFeature::lineAnchorTextPoint() const
 {
@@ -117,27 +95,12 @@ QgsLabelLineSettings::AnchorTextPoint QgsLabelFeature::lineAnchorTextPoint() con
   }
 }
 
-const QgsLabelObstacleSettings &QgsLabelFeature::obstacleSettings() const
-{
-  return mObstacleSettings;
-}
+const QgsLabelObstacleSettings &QgsLabelFeature::obstacleSettings() const { return mObstacleSettings; }
 
-void QgsLabelFeature::setObstacleSettings( const QgsLabelObstacleSettings &settings )
-{
-  mObstacleSettings = settings;
-}
+void QgsLabelFeature::setObstacleSettings( const QgsLabelObstacleSettings &settings ) { mObstacleSettings = settings; }
 
-QgsCoordinateReferenceSystem QgsLabelFeature::originalFeatureCrs() const
-{
-  return mOriginalFeatureCrs;
-}
+QgsCoordinateReferenceSystem QgsLabelFeature::originalFeatureCrs() const { return mOriginalFeatureCrs; }
 
-void QgsLabelFeature::setOriginalFeatureCrs( const QgsCoordinateReferenceSystem &originalFeatureCrs )
-{
-  mOriginalFeatureCrs = originalFeatureCrs;
-}
+void QgsLabelFeature::setOriginalFeatureCrs( const QgsCoordinateReferenceSystem &originalFeatureCrs ) { mOriginalFeatureCrs = originalFeatureCrs; }
 
-void QgsLabelFeature::setAnchorPosition( const QgsPointXY &anchorPosition )
-{
-  mAnchorPosition = anchorPosition;
-}
+void QgsLabelFeature::setAnchorPosition( const QgsPointXY &anchorPosition ) { mAnchorPosition = anchorPosition; }

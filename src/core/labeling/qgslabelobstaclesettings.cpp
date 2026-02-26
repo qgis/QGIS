@@ -20,15 +20,9 @@
 #include "qgspropertycollection.h"
 #include "qgsvariantutils.h"
 
-void QgsLabelObstacleSettings::setObstacleGeometry( const QgsGeometry &obstacleGeom )
-{
-  mObstacleGeometry = obstacleGeom;
-}
+void QgsLabelObstacleSettings::setObstacleGeometry( const QgsGeometry &obstacleGeom ) { mObstacleGeometry = obstacleGeom; }
 
-QgsGeometry QgsLabelObstacleSettings::obstacleGeometry() const
-{
-  return mObstacleGeometry;
-}
+QgsGeometry QgsLabelObstacleSettings::obstacleGeometry() const { return mObstacleGeometry; }
 
 void QgsLabelObstacleSettings::updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context )
 {
@@ -48,5 +42,4 @@ void QgsLabelObstacleSettings::updateDataDefinedProperties( const QgsPropertyCol
       }
     }
   }
-
 }
