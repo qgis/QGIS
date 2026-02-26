@@ -4985,7 +4985,7 @@ QList<QgsDataItemProvider *> QgsWmsProviderMetadata::dataItemProviders() const
 QVariantMap QgsWmsProviderMetadata::decodeUri( const QString &uri ) const
 {
   const QUrlQuery query { uri };
-  const QList<QPair<QString, QString>> constItems { query.queryItems() };
+  const QList<QPair<QString, QString>> constItems { query.queryItems( QUrl::ComponentFormattingOption::FullyDecoded ) };
   QVariantMap decoded;
   for ( const QPair<QString, QString> &item : constItems )
   {
@@ -5037,24 +5037,31 @@ QString QgsWmsProviderMetadata::encodeUri( const QVariantMap &parts ) const
   {
     if ( it.key() == "path"_L1 )
     {
-      items.push_back( { u"url"_s, QUrl::fromLocalFile( it.value().toString() ).toString() } );
+      items.push_back( { u"url"_s, QUrl::toPercentEncoding( QUrl::fromLocalFile( it.value().toString() ).toString() ) } );
     }
     else if ( it.key() == "url"_L1 )
     {
       if ( !parts.contains( "path"_L1 ) )
       {
-        items.push_back( { it.key(), it.value().toString() } );
+        items.push_back( { it.key(), QUrl::toPercentEncoding( it.value().toString() ) } );
       }
     }
     else
     {
       if ( it.value().userType() == QMetaType::Type::QStringList )
       {
-        listItems.push_back( { it.key(), it.value().toStringList() } );
+        QStringList encodedList;
+        const QStringList unencodedList = it.value().toStringList();
+        encodedList.reserve( unencodedList.size() );
+        for ( const QString &item : unencodedList )
+        {
+          encodedList << QUrl::toPercentEncoding( item );
+        }
+        listItems.push_back( { it.key(), encodedList } );
       }
       else
       {
-        items.push_back( { it.key(), it.value().toString() } );
+        items.push_back( { it.key(), QUrl::toPercentEncoding( it.value().toString() ) } );
       }
     }
   }

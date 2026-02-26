@@ -20,6 +20,7 @@ import unittest
 from qgis.core import (
     Qgis,
     QgsCoordinateReferenceSystem,
+    QgsProviderRegistry,
     QgsRasterLayer,
     QgsSettings,
     QgsWmsUtils,
@@ -171,6 +172,103 @@ class TestPyQgsWMSProvider(QgisTestCase, RasterProviderTestCase):
         self.assertTrue(rl2.isValid())
         self.assertFalse(QgsWmsUtils.isWmsLayer(rl2))
         self.assertEqual(QgsWmsUtils.wmsVersion(rl2), "")
+
+    def test_wms_encode_decode_uri(self):
+        """
+        Test provider metadata encode/decode URI logic
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata("wms")
+
+        res = metadata.decodeUri("layers=layer_1_name&url=http://url_1")
+        self.assertEqual(res, {"layers": "layer_1_name", "url": "http://url_1"})
+
+        self.assertEqual(
+            metadata.encodeUri(res), "layers=layer_1_name&url=http%3A%2F%2Furl_1"
+        )
+
+        res = metadata.decodeUri("layers=layer_1_name&url=http%3A%2F%2Furl_1")
+        self.assertEqual(res, {"layers": "layer_1_name", "url": "http://url_1"})
+        self.assertEqual(
+            metadata.encodeUri(res), "layers=layer_1_name&url=http%3A%2F%2Furl_1"
+        )
+
+        res = metadata.decodeUri("layers=layer_2_name&opacities=100&url=http://url_2")
+        self.assertEqual(
+            res, {"layers": "layer_2_name", "opacities": "100", "url": "http://url_2"}
+        )
+        self.assertEqual(
+            metadata.encodeUri(res),
+            "layers=layer_2_name&opacities=100&url=http%3A%2F%2Furl_2",
+        )
+
+        res = metadata.decodeUri(
+            "layers=layer_2_name&opacities=100&url=http%3A%2F%2Furl_2"
+        )
+        self.assertEqual(
+            res, {"layers": "layer_2_name", "opacities": "100", "url": "http://url_2"}
+        )
+        self.assertEqual(
+            metadata.encodeUri(res),
+            "layers=layer_2_name&opacities=100&url=http%3A%2F%2Furl_2",
+        )
+
+        res = metadata.decodeUri(
+            "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/jpeg"
+        )
+        self.assertEqual(
+            res,
+            {
+                "contextualWMSLegend": "0",
+                "crs": "EPSG:4326",
+                "dpiMode": "7",
+                "featureCount": "10",
+                "format": "image/jpeg",
+            },
+        )
+        self.assertEqual(
+            metadata.encodeUri(res),
+            "contextualWMSLegend=0&crs=EPSG%3A4326&dpiMode=7&featureCount=10&format=image%2Fjpeg",
+        )
+
+        res = metadata.decodeUri(
+            "contextualWMSLegend=0&crs=EPSG%3A4326&dpiMode=7&featureCount=10&format=image%2Fjpeg"
+        )
+        self.assertEqual(
+            res,
+            {
+                "contextualWMSLegend": "0",
+                "crs": "EPSG:4326",
+                "dpiMode": "7",
+                "featureCount": "10",
+                "format": "image/jpeg",
+            },
+        )
+        self.assertEqual(
+            metadata.encodeUri(res),
+            "contextualWMSLegend=0&crs=EPSG%3A4326&dpiMode=7&featureCount=10&format=image%2Fjpeg",
+        )
+
+        res = metadata.decodeUri(
+            "styleUrl=http%3A%2F%2Flocalhost%3A8000%2F%26f%3Dapplication%252Fvnd.geoserver.mbstyle%252Bjson&zmax=14&zmin=0"
+        )
+        self.assertEqual(
+            res,
+            {
+                "styleUrl": "http://localhost:8000/&f=application%2Fvnd.geoserver.mbstyle%2Bjson",
+                "zmax": "14",
+                "zmin": "0",
+            },
+        )
+        self.assertEqual(
+            metadata.encodeUri(
+                {
+                    "styleUrl": "http://localhost:8000/&f=application%2Fvnd.geoserver.mbstyle%2Bjson",
+                    "zmax": "14",
+                    "zmin": "0",
+                }
+            ),
+            "styleUrl=http%3A%2F%2Flocalhost%3A8000%2F%26f%3Dapplication%252Fvnd.geoserver.mbstyle%252Bjson&zmax=14&zmin=0",
+        )
 
 
 if __name__ == "__main__":
