@@ -34,7 +34,6 @@ using namespace Qt::StringLiterals;
 class CORE_EXPORT QgsCelestialBody
 {
   public:
-
     /**
      * Returns TRUE if the body is a valid object, or FALSE if it is a null/invalid
      * object.
@@ -53,8 +52,7 @@ class CORE_EXPORT QgsCelestialBody
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    QString str;
+    % MethodCode QString str;
     if ( !sipCpp->isValid() )
     {
       str = u"<QgsCelestialBody: invalid>"_s;
@@ -69,12 +67,13 @@ class CORE_EXPORT QgsCelestialBody
       str = u"<QgsCelestialBody: %1>"_s.arg( id );
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-    % End
+  % End
 #endif
 
-  private:
+    private :
 
-    bool mValid = false;
+    bool mValid
+    = false;
     QString mName;
     QString mAuthority;
 

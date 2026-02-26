@@ -22,7 +22,6 @@ Contains information about a PROJ operation.
 #include "qgsprojoperation.h"
 %End
   public:
-
     bool isValid() const;
 %Docstring
 Returns ``True`` if the body is a valid object, or ``False`` if it is a
@@ -45,8 +44,7 @@ Additional details.
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    QString str;
+%MethodCode QString str;
     if ( !sipCpp->isValid() )
     {
       str = QStringLiteral( "<QgsProjOperation: invalid>" );
@@ -57,6 +55,14 @@ Additional details.
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
+
+    private :
+
+    bool mValid
+    = false;
+    QString mId;
+    QString mDescription;
+    QString mDetails;
 
 };
 

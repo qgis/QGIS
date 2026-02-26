@@ -26,7 +26,6 @@ Contains information about a celestial body.
 #include "qgscelestialbody.h"
 %End
   public:
-
     bool isValid() const;
 %Docstring
 Returns ``True`` if the body is a valid object, or ``False`` if it is a
@@ -44,8 +43,7 @@ Authority name, e.g. EPSG.
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    QString str;
+%MethodCode QString str;
     if ( !sipCpp->isValid() )
     {
       str = QStringLiteral( "<QgsCelestialBody: invalid>" );
@@ -61,6 +59,13 @@ Authority name, e.g. EPSG.
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
+
+    private :
+
+    bool mValid
+    = false;
+    QString mName;
+    QString mAuthority;
 
 };
 

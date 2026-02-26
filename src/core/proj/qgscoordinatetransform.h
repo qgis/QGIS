@@ -60,9 +60,7 @@ class QgsVector3D;
 */
 class CORE_EXPORT QgsCoordinateTransform
 {
-
   public:
-
     //! Default constructor, creates an invalid QgsCoordinateTransform.
     QgsCoordinateTransform();
 
@@ -92,10 +90,10 @@ class CORE_EXPORT QgsCoordinateTransform
      * accepts a QgsProject argument instead.
      *
      */
-    explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
-                                     const QgsCoordinateReferenceSystem &destination,
-                                     const QgsCoordinateTransformContext &context,
-                                     Qgis::CoordinateTransformationFlags flags = Qgis::CoordinateTransformationFlags() );
+    explicit QgsCoordinateTransform(
+      const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, const QgsCoordinateTransformContext &context,
+      Qgis::CoordinateTransformationFlags flags = Qgis::CoordinateTransformationFlags()
+    );
 
     /**
      * Constructs a QgsCoordinateTransform to transform from the \a source
@@ -122,10 +120,10 @@ class CORE_EXPORT QgsCoordinateTransform
      * between a static and dynamic CRS based on either the source OR destination CRS coordinate epoch,
      * however dynamic CRS to dynamic CRS transformations are not currently supported.
      */
-    explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
-                                     const QgsCoordinateReferenceSystem &destination,
-                                     const QgsProject *project,
-                                     Qgis::CoordinateTransformationFlags flags = Qgis::CoordinateTransformationFlags() );
+    explicit QgsCoordinateTransform(
+      const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, const QgsProject *project,
+      Qgis::CoordinateTransformationFlags flags = Qgis::CoordinateTransformationFlags()
+    );
 
     /**
      * Constructs a QgsCoordinateTransform to transform from the \a source
@@ -134,10 +132,8 @@ class CORE_EXPORT QgsCoordinateTransform
      *
      * \deprecated QGIS 3.40. Will be removed in QGIS 5.0. Use the constructor with a QgsCoordinateTransformContext argument instead.
      */
-    Q_DECL_DEPRECATED explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
-        const QgsCoordinateReferenceSystem &destination,
-        int sourceDatumTransformId,
-        int destinationDatumTransformId ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, int sourceDatumTransformId, int destinationDatumTransformId )
+      SIP_DEPRECATED;
 
     QgsCoordinateTransform( const QgsCoordinateTransform &o );
     QgsCoordinateTransform &operator=( const QgsCoordinateTransform &o );
@@ -264,7 +260,9 @@ class CORE_EXPORT QgsCoordinateTransform
      * \warning Do not call this method if the transformation involves geocentric CRS -- in this situation transformation of a 2D bounding box is meaningless! Calling this method with a geocentric CRS will result in a QgsCsException being thrown.
      * \throws QgsCsException if the transformation fails
      */
-    QgsRectangle transformBoundingBox( const QgsRectangle &rectangle, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward, bool handle180Crossover = false ) const SIP_THROW( QgsCsException );
+    QgsRectangle transformBoundingBox( const QgsRectangle &rectangle, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward, bool handle180Crossover = false ) const SIP_THROW(
+      QgsCsException
+    );
 
     /**
      * Transforms an array of x, y and z double coordinates in place, from the source CRS to the destination CRS.
@@ -323,8 +321,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \throws QgsCsException if the transformation fails
      * \note not available in Python bindings
      */
-    void transformInPlace( QVector<float> &x, QVector<float> &y, QVector<float> &z,
-                           Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const SIP_SKIP;
+    void transformInPlace( QVector<float> &x, QVector<float> &y, QVector<float> &z, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const SIP_SKIP;
 
     /**
      * Transforms a vector of x, y and z double coordinates in place, from the source CRS to the destination CRS.
@@ -339,8 +336,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \throws QgsCsException if the transformation fails
      * \note not available in Python bindings
      */
-    void transformInPlace( QVector<double> &x, QVector<double> &y, QVector<double> &z,
-                           Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const SIP_SKIP;
+    void transformInPlace( QVector<double> &x, QVector<double> &y, QVector<double> &z, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const SIP_SKIP;
 
     /**
      * Transforms a polygon to the destination coordinate system.
@@ -619,16 +615,15 @@ class CORE_EXPORT QgsCoordinateTransform
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    QString str = u"<QgsCoordinateTransform: %1 to %2>"_s.arg( sipCpp->sourceCrs().isValid() ? sipCpp->sourceCrs().authid() : u"NULL"_s,
-                  sipCpp->destinationCrs().isValid() ? sipCpp->destinationCrs().authid() : u"NULL"_s );
+    % MethodCode QString str = u"<QgsCoordinateTransform: %1 to %2>"_s
+                                 .arg( sipCpp->sourceCrs().isValid() ? sipCpp->sourceCrs().authid() : u"NULL"_s, sipCpp->destinationCrs().isValid() ? sipCpp->destinationCrs().authid() : u"NULL"_s );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
 #ifndef SIP_RUN
 
-    /**
+      /**
      * Sets a custom handler to use when a coordinate transform is created between \a sourceCrs and
      * \a destinationCrs, yet the coordinate operation requires a transform \a grid which is not present
      * on the system.
@@ -640,9 +635,9 @@ class CORE_EXPORT QgsCoordinateTransform
      * \note Not available in Python bindings
      * \since QGIS 3.8
      */
-    static void setCustomMissingRequiredGridHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-        const QgsCoordinateReferenceSystem &destinationCrs,
-        const QgsDatumTransform::GridDetails &grid )> &handler );
+      static void setCustomMissingRequiredGridHandler(
+        const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::GridDetails &grid )> &handler
+      );
 
     /**
      * Sets a custom handler to use when a coordinate transform is created between \a sourceCrs and
@@ -660,10 +655,12 @@ class CORE_EXPORT QgsCoordinateTransform
      * \note Not available in Python bindings
      * \since QGIS 3.8
      */
-    static void setCustomMissingPreferredGridHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-        const QgsCoordinateReferenceSystem &destinationCrs,
-        const QgsDatumTransform::TransformDetails &preferredOperation,
-        const QgsDatumTransform::TransformDetails &availableOperation )> &handler );
+    static void setCustomMissingPreferredGridHandler(
+      const std::function< void(
+        const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &preferredOperation,
+        const QgsDatumTransform::TransformDetails &availableOperation
+      )> &handler
+    );
 
     /**
      * Sets a custom handler to use when a coordinate transform was required between \a sourceCrs and
@@ -677,9 +674,9 @@ class CORE_EXPORT QgsCoordinateTransform
      * \note Not available in Python bindings
      * \since QGIS 3.8
      */
-    static void setCustomCoordinateOperationCreationErrorHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-        const QgsCoordinateReferenceSystem &destinationCrs,
-        const QString &error )> &handler );
+    static void setCustomCoordinateOperationCreationErrorHandler(
+      const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &error )> &handler
+    );
 
     /**
      * Sets a custom handler to use when a coordinate operation was specified for use between \a sourceCrs and
@@ -693,9 +690,9 @@ class CORE_EXPORT QgsCoordinateTransform
      * \note Not available in Python bindings
      * \since QGIS 3.8
      */
-    static void setCustomMissingGridUsedByContextHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-        const QgsCoordinateReferenceSystem &destinationCrs,
-        const QgsDatumTransform::TransformDetails &desiredOperation )> &handler );
+    static void setCustomMissingGridUsedByContextHandler(
+      const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &desiredOperation )> &handler
+    );
 
 
     /**
@@ -704,9 +701,9 @@ class CORE_EXPORT QgsCoordinateTransform
      *
      * \since QGIS 3.10.3
      */
-    static void setFallbackOperationOccurredHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-        const QgsCoordinateReferenceSystem &destinationCrs,
-        const QString &desiredOperation )> &handler );
+    static void setFallbackOperationOccurredHandler(
+      const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &desiredOperation )> &handler
+    );
 
     /**
      * Sets a custom \a handler to use when the desired coordinate operation for use between \a sourceCrs and
@@ -714,13 +711,11 @@ class CORE_EXPORT QgsCoordinateTransform
      *
      * \since QGIS 3.20
      */
-    static void setDynamicCrsToDynamicCrsWarningHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-        const QgsCoordinateReferenceSystem &destinationCrs )> &handler );
+    static void setDynamicCrsToDynamicCrsWarningHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs )> &handler );
 
 #endif
 
   private:
-
 #ifndef SIP_RUN
     friend class QgsProjContext;
 
@@ -743,9 +738,7 @@ class CORE_EXPORT QgsCoordinateTransform
     bool mDisableFallbackHandler = false;
     mutable bool mFallbackOperationOccurred = false;
 
-    bool setFromCache( const QgsCoordinateReferenceSystem &src,
-                       const QgsCoordinateReferenceSystem &dest,
-                       const QString &coordinateOperationProj, bool allowFallback );
+    bool setFromCache( const QgsCoordinateReferenceSystem &src, const QgsCoordinateReferenceSystem &dest, const QString &coordinateOperationProj, bool allowFallback );
 
     void addToCache();
 
@@ -763,17 +756,14 @@ class CORE_EXPORT QgsCoordinateTransform
     static bool sDisableCache;
 
 
-    static std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-                                const QgsCoordinateReferenceSystem &destinationCrs,
-                                const QString &desiredOperation )> sFallbackOperationOccurredHandler;
+    static std::function< void( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &desiredOperation )> sFallbackOperationOccurredHandler;
 
     friend class TestQgsCoordinateTransform;
-
 };
 
 //! Output stream operator
 #ifndef SIP_RUN
-inline std::ostream &operator << ( std::ostream &os, const QgsCoordinateTransform &r )
+inline std::ostream &operator<<( std::ostream &os, const QgsCoordinateTransform &r )
 {
   QString mySummary( u"\n%%%%%%%%%%%%%%%%%%%%%%%%\nCoordinate Transform def begins:"_s );
   mySummary += "\n\tInitialized? : "_L1;

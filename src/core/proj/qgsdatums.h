@@ -36,7 +36,6 @@ using namespace Qt::StringLiterals;
 class CORE_EXPORT QgsDatumEnsembleMember
 {
   public:
-
     /**
      * Returns the name of the member.
      */
@@ -64,18 +63,17 @@ class CORE_EXPORT QgsDatumEnsembleMember
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    QString id;
+    % MethodCode QString id;
     if ( !sipCpp->code().isEmpty() )
       id = u"%1 (%2:%3)"_s.arg( sipCpp->name(), sipCpp->authority(), sipCpp->code() );
     else
       id = sipCpp->name();
     QString str = u"<QgsDatumEnsembleMember: %1>"_s.arg( id );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-    % End
+  % End
 #endif
 
-  private:
+    private :
 
     QString mName;
     QString mScope;
@@ -96,7 +94,6 @@ class CORE_EXPORT QgsDatumEnsembleMember
 class CORE_EXPORT QgsDatumEnsemble
 {
   public:
-
     /**
      * Returns TRUE if the datum ensemble is a valid object, or FALSE if it is a null/invalid
      * object.
@@ -140,8 +137,7 @@ class CORE_EXPORT QgsDatumEnsemble
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    QString str;
+    % MethodCode QString str;
     if ( !sipCpp->isValid() )
     {
       str = u"<QgsDatumEnsemble: invalid>"_s;
@@ -156,12 +152,13 @@ class CORE_EXPORT QgsDatumEnsemble
       str = u"<QgsDatumEnsemble: %1>"_s.arg( id );
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-    % End
+  % End
 #endif
 
-  private:
+    private :
 
-    bool mValid = false;
+    bool mValid
+    = false;
     QString mName;
     double mAccuracy = 0;
     QString mAuthority;

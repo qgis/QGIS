@@ -23,7 +23,6 @@ distortion and meridian convergence.
 #include "qgsprojectionfactors.h"
 %End
   public:
-
     bool isValid() const;
 %Docstring
 Returns ``True`` if the factors are valid, or ``False`` if they could
@@ -92,8 +91,7 @@ Partial derivative ∂y/∂ϕ of coordinate (λ,ϕ).
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    QString str;
+%MethodCode QString str;
     if ( !sipCpp->isValid() )
     {
       str = QStringLiteral( "<QgsProjectionFactors: invalid>" );
@@ -104,6 +102,23 @@ Partial derivative ∂y/∂ϕ of coordinate (λ,ϕ).
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
+
+    private :
+
+    bool mIsValid
+    = false;
+    double mMeridionalScale;
+    double mParallelScale;
+    double mArealScale;
+    double mAngularDistortion;
+    double mMeridianParallelAngle;
+    double mMeridianConvergence;
+    double mTissotSemimajor;
+    double mTissotSemiminor;
+    double mDxDlam;
+    double mDxDphi;
+    double mDyDlam;
+    double mDyDphi;
 
 };
 

@@ -26,7 +26,6 @@ Contains information about a member of a datum ensemble.
 #include "qgsdatums.h"
 %End
   public:
-
     QString name() const;
 %Docstring
 Returns the name of the member.
@@ -53,8 +52,7 @@ Authority code, e.g. "8447" (for EPSG:8447).
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    QString id;
+%MethodCode QString id;
     if ( !sipCpp->code().isEmpty() )
       id = QStringLiteral( "%1 (%2:%3)" ).arg( sipCpp->name(), sipCpp->authority(), sipCpp->code() );
     else
@@ -62,6 +60,14 @@ Authority code, e.g. "8447" (for EPSG:8447).
     QString str = QStringLiteral( "<QgsDatumEnsembleMember: %1>" ).arg( id );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
+
+    private :
+
+    QString mName;
+    QString mScope;
+    QString mRemarks;
+    QString mAuthority;
+    QString mCode;
 
 };
 
@@ -81,7 +87,6 @@ Contains information about a datum ensemble.
 #include "qgsdatums.h"
 %End
   public:
-
     bool isValid() const;
 %Docstring
 Returns ``True`` if the datum ensemble is a valid object, or ``False``
@@ -124,8 +129,7 @@ Contains a list of members of the ensemble.
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    QString str;
+%MethodCode QString str;
     if ( !sipCpp->isValid() )
     {
       str = QStringLiteral( "<QgsDatumEnsemble: invalid>" );
@@ -141,6 +145,18 @@ Contains a list of members of the ensemble.
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
+
+    private :
+
+    bool mValid
+    = false;
+    QString mName;
+    double mAccuracy;
+    QString mAuthority;
+    QString mCode;
+    QString mScope;
+    QString mRemarks;
+    QList< QgsDatumEnsembleMember > mMembers;
 
 };
 

@@ -40,7 +40,6 @@ destination coordinate reference system.
 #include "qgscoordinatetransformcontext.h"
 %End
   public:
-
     QgsCoordinateTransformContext();
 %Docstring
 Constructor for QgsCoordinateTransformContext.
@@ -103,7 +102,9 @@ will be :py:class:`QgsCoordinateReferenceSystems`.authid()s.
 .. versionadded:: 3.8
 %End
 
- bool addSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, int sourceTransformId, int destinationTransformId ) /Deprecated="Since 3.40. Has no effect on builds based on Proj 6.0 or later, use addCoordinateOperation() instead."/;
+ bool addSourceDestinationDatumTransform(
+      const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, int sourceTransformId, int destinationTransformId
+    ) /Deprecated="Since 3.40. Has no effect on builds based on Proj 6.0 or later, use addCoordinateOperation() instead."/;
 %Docstring
 Adds a new ``sourceTransform`` and ``destinationTransform`` to use when
 projecting coordinates from the specified ``sourceCrs`` to the specified
@@ -186,8 +187,7 @@ Removes the coordinate operation for the specified ``sourceCrs`` and
 .. versionadded:: 3.8
 %End
 
-    bool hasTransform( const QgsCoordinateReferenceSystem &source,
-                       const QgsCoordinateReferenceSystem &destination ) const;
+    bool hasTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const;
 %Docstring
 Returns ``True`` if the context has a valid coordinate operation to use
 when transforming from the specified ``source`` CRS to ``destination``
@@ -299,10 +299,6 @@ Write the context's state to application settings.
 
 
 };
-
-
-
-
 
 
 /************************************************************************

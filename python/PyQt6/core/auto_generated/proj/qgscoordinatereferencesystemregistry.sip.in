@@ -30,7 +30,6 @@ created, but rather accessed through
 #include "qgscoordinatereferencesystemregistry.h"
 %End
   public:
-
     explicit QgsCoordinateReferenceSystemRegistry( QObject *parent = 0 );
 %Docstring
 Constructor for QgsCoordinateReferenceSystemRegistry, with the specified
@@ -48,7 +47,6 @@ Contains details of a custom (user defined) CRS.
 %End
 
       public:
-
         long id;
 
         QString name;

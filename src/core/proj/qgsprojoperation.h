@@ -33,7 +33,6 @@ using namespace Qt::StringLiterals;
 class CORE_EXPORT QgsProjOperation
 {
   public:
-
     /**
      * Returns TRUE if the body is a valid object, or FALSE if it is a null/invalid
      * object.
@@ -57,8 +56,7 @@ class CORE_EXPORT QgsProjOperation
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    QString str;
+    % MethodCode QString str;
     if ( !sipCpp->isValid() )
     {
       str = u"<QgsProjOperation: invalid>"_s;
@@ -68,12 +66,13 @@ class CORE_EXPORT QgsProjOperation
       str = u"<QgsProjOperation: %1>"_s.arg( sipCpp->id() );
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-    % End
+  % End
 #endif
 
-  private:
+    private :
 
-    bool mValid = false;
+    bool mValid
+    = false;
     QString mId;
     QString mDescription;
     QString mDetails;

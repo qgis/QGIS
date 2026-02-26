@@ -211,7 +211,6 @@ the same. QGIS is able to consume both flavors.
     static const QMetaObject staticMetaObject;
 
   public:
-
     enum CrsType /BaseType=IntEnum/
     {
       InternalCrsId,
@@ -1081,9 +1080,11 @@ axis order for the CRS.
 .. versionadded:: 3.26
 %End
 %MethodCode
-    // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+      // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
 
-    const QList< Qgis::CrsAxisDirection > cppRes = sipCpp->axisOrdering();
+      const QList< Qgis::CrsAxisDirection >
+        cppRes
+      = sipCpp->axisOrdering();
 
     PyObject *l = PyList_New( cppRes.size() );
 
@@ -1093,8 +1094,7 @@ axis order for the CRS.
     {
       for ( int i = 0; i < cppRes.size(); ++i )
       {
-        PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ),
-                                             sipType_Qgis_CrsAxisDirection );
+        PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ), sipType_Qgis_CrsAxisDirection );
 
         if ( !eobj )
         {
@@ -1314,10 +1314,11 @@ Returns auth id of related geographic CRS
 %End
 
     SIP_PYOBJECT __repr__();
-%MethodCode
-    const QString str = sipCpp->isValid() ? QStringLiteral( "<QgsCoordinateReferenceSystem: %1%2>" ).arg( !sipCpp->authid().isEmpty() ? sipCpp->authid() : sipCpp->toWkt( Qgis::CrsWktVariant::Preferred ),
-                        std::isfinite( sipCpp->coordinateEpoch() ) ? QStringLiteral( " @ %1" ).arg( sipCpp->coordinateEpoch() ) : QString() )
-                        : QStringLiteral( "<QgsCoordinateReferenceSystem: invalid>" );
+%MethodCode const QString str
+      = sipCpp->isValid()
+          ? QStringLiteral( "<QgsCoordinateReferenceSystem: %1%2>" )
+              .arg( !sipCpp->authid().isEmpty() ? sipCpp->authid() : sipCpp->toWkt( Qgis::CrsWktVariant::Preferred ), std::isfinite( sipCpp->coordinateEpoch() ) ? QStringLiteral( " @ %1" ).arg( sipCpp->coordinateEpoch() ) : QString() )
+          : QStringLiteral( "<QgsCoordinateReferenceSystem: invalid>" );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

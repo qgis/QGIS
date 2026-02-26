@@ -25,10 +25,7 @@
 
 using namespace Qt::StringLiterals;
 
-QString crsToKey( const QgsCoordinateReferenceSystem &crs )
-{
-  return crs.authid().isEmpty() ? crs.toWkt( Qgis::CrsWktVariant::Preferred ) : crs.authid();
-}
+QString crsToKey( const QgsCoordinateReferenceSystem &crs ) { return crs.authid().isEmpty() ? crs.toWkt( Qgis::CrsWktVariant::Preferred ) : crs.authid(); }
 
 QgsCoordinateTransformContext::QgsCoordinateTransformContext()
   : d( new QgsCoordinateTransformContextPrivate() )
@@ -36,16 +33,16 @@ QgsCoordinateTransformContext::QgsCoordinateTransformContext()
 
 QgsCoordinateTransformContext::~QgsCoordinateTransformContext() = default;
 
-QgsCoordinateTransformContext::QgsCoordinateTransformContext( const QgsCoordinateTransformContext &rhs )  //NOLINT
+QgsCoordinateTransformContext::QgsCoordinateTransformContext( const QgsCoordinateTransformContext &rhs ) //NOLINT
   : d( rhs.d )
 {}
 
-QgsCoordinateTransformContext::QgsCoordinateTransformContext( QgsCoordinateTransformContext &&rhs )  //NOLINT
+QgsCoordinateTransformContext::QgsCoordinateTransformContext( QgsCoordinateTransformContext &&rhs ) //NOLINT
   : d( std::move( rhs.d ) )
 {}
 
 
-QgsCoordinateTransformContext &QgsCoordinateTransformContext::operator=( const QgsCoordinateTransformContext &rhs )  //NOLINT
+QgsCoordinateTransformContext &QgsCoordinateTransformContext::operator=( const QgsCoordinateTransformContext &rhs ) //NOLINT
 {
   if ( &rhs == this )
     return *this;
@@ -54,7 +51,7 @@ QgsCoordinateTransformContext &QgsCoordinateTransformContext::operator=( const Q
   return *this;
 }
 
-QgsCoordinateTransformContext &QgsCoordinateTransformContext::operator=( QgsCoordinateTransformContext &&rhs )  //NOLINT
+QgsCoordinateTransformContext &QgsCoordinateTransformContext::operator=( QgsCoordinateTransformContext &&rhs ) //NOLINT
 {
   if ( &rhs == this )
     return *this;
@@ -76,10 +73,7 @@ bool QgsCoordinateTransformContext::operator==( const QgsCoordinateTransformCont
   return equal;
 }
 
-bool QgsCoordinateTransformContext::operator!=( const QgsCoordinateTransformContext &rhs ) const
-{
-  return !( *this == rhs );
-}
+bool QgsCoordinateTransformContext::operator!=( const QgsCoordinateTransformContext &rhs ) const { return !( *this == rhs ); }
 
 void QgsCoordinateTransformContext::clear()
 {
@@ -108,7 +102,9 @@ QMap<QPair<QString, QString>, QString> QgsCoordinateTransformContext::coordinate
   return results;
 }
 
-bool QgsCoordinateTransformContext::addSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, int sourceTransform, int destinationTransform )
+bool QgsCoordinateTransformContext::addSourceDestinationDatumTransform(
+  const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, int sourceTransform, int destinationTransform
+)
 {
   if ( !sourceCrs.isValid() || !destinationCrs.isValid() )
     return false;
@@ -117,7 +113,9 @@ bool QgsCoordinateTransformContext::addSourceDestinationDatumTransform( const Qg
   return false;
 }
 
-bool QgsCoordinateTransformContext::addCoordinateOperation( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &coordinateOperationProjString, bool allowFallback )
+bool QgsCoordinateTransformContext::addCoordinateOperation(
+  const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &coordinateOperationProjString, bool allowFallback
+)
 {
   if ( !sourceCrs.isValid() || !destinationCrs.isValid() )
     return false;
@@ -290,7 +288,7 @@ void QgsCoordinateTransformContext::writeXml( QDomElement &element, const QgsRea
   QDomElement contextElem = doc.createElement( u"transformContext"_s );
 
   //src/dest transforms
-  for ( auto it = d->mSourceDestDatumTransforms.constBegin(); it != d->mSourceDestDatumTransforms.constEnd(); ++ it )
+  for ( auto it = d->mSourceDestDatumTransforms.constBegin(); it != d->mSourceDestDatumTransforms.constEnd(); ++it )
   {
     QDomElement transformElem = doc.createElement( u"srcDest"_s );
     QDomElement srcElem = doc.createElement( u"src"_s );
@@ -331,7 +329,7 @@ void QgsCoordinateTransformContext::readSettings()
     {
       const QStringList split = pkeyIt->split( '/' );
       QString srcAuthId, destAuthId;
-      if ( ! split.isEmpty() )
+      if ( !split.isEmpty() )
       {
         srcAuthId = split.at( 0 );
       }
@@ -348,7 +346,7 @@ void QgsCoordinateTransformContext::readSettings()
       QgsCoordinateTransformContextPrivate::OperationDetails deets;
       deets.operation = proj;
       deets.allowFallback = allowFallback;
-      transforms[ qMakePair( QgsCoordinateReferenceSystem( srcAuthId ), QgsCoordinateReferenceSystem( destAuthId ) )] = deets;
+      transforms[qMakePair( QgsCoordinateReferenceSystem( srcAuthId ), QgsCoordinateReferenceSystem( destAuthId ) )] = deets;
     }
   }
 
