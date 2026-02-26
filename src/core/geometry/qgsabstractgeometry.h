@@ -246,8 +246,9 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see geometryType
      * \see wktTypeStr
      */
-    inline Qgis::WkbType wkbType() const
-    SIP_HOLDGIL { return mWkbType; }
+    // clang-format off
+    inline Qgis::WkbType wkbType() const SIP_HOLDGIL { return mWkbType; }
+    // clang-format on
 
     /**
      * Returns the WKT type string of the geometry.

@@ -185,14 +185,7 @@ Returns a unique string representing the geometry type.
 .. seealso:: :py:func:`wktTypeStr`
 %End
 
-    Qgis::WkbType wkbType() const;
-%Docstring
-Returns the WKB type of the geometry.
-
-.. seealso:: :py:func:`geometryType`
-
-.. seealso:: :py:func:`wktTypeStr`
-%End
+    Qgis::WkbType wkbType() const /HoldGIL/;
 
     QString wktTypeStr() const;
 %Docstring
