@@ -1738,7 +1738,7 @@ QStringList QgsWFSProvider::insertedFeatureIds( const QDomDocument &serverRespon
 
 bool QgsWFSProvider::getCapabilities()
 {
-  mCapabilities = Qgis::VectorProviderCapability::SelectAtId | Qgis::VectorProviderCapability::ReloadData;
+  mCapabilities = Qgis::VectorProviderCapability::SelectAtId | Qgis::VectorProviderCapability::ReloadData | Qgis::VectorProviderCapability::CacheData;
 
   if ( mShared->mCaps.version.isEmpty() )
   {
