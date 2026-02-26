@@ -470,7 +470,7 @@ bool QgsOapifProvider::isValid() const
 
 void QgsOapifProvider::computeCapabilities( const QgsOapifItemsRequest &itemsRequest )
 {
-  mCapabilities = Qgis::VectorProviderCapability::SelectAtId | Qgis::VectorProviderCapability::ReadLayerMetadata | Qgis::VectorProviderCapability::ReloadData;
+  mCapabilities = Qgis::VectorProviderCapability::SelectAtId | Qgis::VectorProviderCapability::ReadLayerMetadata | Qgis::VectorProviderCapability::ReloadData | Qgis::VectorProviderCapability::CacheData;
 
   // Determine edition capabilities: create (POST on /items),
   // update (PUT on /items/some_id) and delete (DELETE on /items/some_id)

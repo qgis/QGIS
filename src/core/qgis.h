@@ -521,6 +521,7 @@ class CORE_EXPORT Qgis
       CreateLabeling = 1 << 25, //!< Provider can set labeling settings using backend-specific formatting information. Since QGIS 3.6. See QgsVectorDataProvider::createLabeling().
       ReloadData = 1 << 26, //!< Provider is able to force reload data
       FeatureSymbology = 1 << 27, //!< Provider is able retrieve embedded symbology associated with individual features \since QGIS 3.20
+      CacheData = 1 << 28, //!< Provider caches source data and should force provider data reloads when dependent layers are committed \since QGIS 3.99
       EditingCapabilities = AddFeatures | DeleteFeatures | ChangeAttributeValues | ChangeGeometries | AddAttributes | DeleteAttributes | RenameAttributes, //!< Bitmask of all editing capabilities
     };
     Q_ENUM( VectorProviderCapability )
