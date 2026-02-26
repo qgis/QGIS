@@ -38,7 +38,7 @@
    <item>
     <widget class="QgsScrollArea" name="scrollArea">
      <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::Shape::StyledPanel</enum>
      </property>
      <property name="widgetResizable">
       <bool>true</bool>
@@ -47,9 +47,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-127</y>
+        <y>0</y>
         <width>548</width>
-        <height>1515</height>
+        <height>1183</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -178,9 +178,6 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="symbolsListGroupBox">
-         <property name="title">
-          <string>Symbols list</string>
-         </property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
            <horstretch>0</horstretch>
@@ -192,6 +189,9 @@
            <width>16777215</width>
            <height>320</height>
           </size>
+         </property>
+         <property name="title">
+          <string>Symbols list</string>
          </property>
          <layout class="QVBoxLayout" name="verticalBoxLayout">
           <item>
@@ -316,7 +316,7 @@
            </widget>
           </item>
           <item row="4" column="0">
-           <widget class="QLabel" name="label_5">
+           <widget class="QLabel" name="mXAxisMinorLinesLabel">
             <property name="text">
              <string>Minor grid lines</string>
             </property>
@@ -362,7 +362,7 @@
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QLabel" name="label_6">
+           <widget class="QLabel" name="mXAxisMajorIntervalLabel">
             <property name="text">
              <string>Major interval</string>
             </property>
@@ -376,7 +376,7 @@
            </widget>
           </item>
           <item row="3" column="0" colspan="2">
-           <widget class="QLabel" name="label_7">
+           <widget class="QLabel" name="mXAxisMinorIntervalLabel">
             <property name="text">
              <string>Minor interval</string>
             </property>
@@ -410,7 +410,7 @@
            </widget>
           </item>
           <item row="2" column="0">
-           <widget class="QLabel" name="label_4">
+           <widget class="QLabel" name="mXAxisMajorLinesLabel">
             <property name="text">
              <string>Major grid lines</string>
             </property>
