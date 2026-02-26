@@ -253,7 +253,7 @@ void QgsMapSaveDialog::updateExtent( const QgsRectangle &extent )
     else // Update size, leave scale untouched
     {
       QgsScaleCalculator calculator;
-      calculator.setMapCrs( mExtentGroupBox->currentCrs() );
+      calculator.setEllipsoid( mExtentGroupBox->currentCrs().ellipsoidAcronym() );
       calculator.setMapUnits( mExtentGroupBox->currentCrs().mapUnits() );
       calculator.setDpi( mDpi );
       calculator.setMethod( QgsProject::instance()->scaleMethod() );
@@ -282,7 +282,7 @@ void QgsMapSaveDialog::updateExtent( const QgsRectangle &extent )
 void QgsMapSaveDialog::updateScale( double scale )
 {
   QgsScaleCalculator calculator;
-  calculator.setMapCrs( mExtentGroupBox->currentCrs() );
+  calculator.setEllipsoid( mExtentGroupBox->currentCrs().ellipsoidAcronym() );
   calculator.setMapUnits( mExtentGroupBox->currentCrs().mapUnits() );
   calculator.setDpi( mDpi );
   calculator.setMethod( QgsProject::instance()->scaleMethod() );
