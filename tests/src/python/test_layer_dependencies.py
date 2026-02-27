@@ -10,7 +10,9 @@ __author__ = "Hugo Mercier"
 __date__ = "12/07/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
+import hashlib
 import os
+import shutil
 import tempfile
 
 from qgis.PyQt.QtCore import QPoint, QSize
@@ -35,6 +37,24 @@ from qgis.utils import spatialite_connect
 
 # Convenience instances in case you may need them
 start_app()
+
+
+def sanitize(endpoint, x):
+    if len(endpoint + x) > 256:
+        # print('Before: ' + endpoint + x)
+        x = x.replace("/", "_").encode()
+        ret = endpoint + hashlib.md5(x).hexdigest()
+        # print('After:  ' + ret)
+        return ret
+    ret = endpoint + x.replace("?", "_").replace("&", "_").replace("<", "_").replace(
+        ">", "_"
+    ).replace('"', "_").replace("'", "_").replace(" ", "_").replace(":", "_").replace(
+        "/", "_"
+    ).replace(
+        "\n", "_"
+    )
+    # print('Sanitize: ' + x)
+    return ret
 
 
 class TestLayerDependencies(QgisTestCase):
@@ -84,8 +104,71 @@ class TestLayerDependencies(QgisTestCase):
             f"dbname='{fn}' table=\"node2\" (geom) sql=", "_points2", "spatialite"
         )
         assert self.pointsLayer2.isValid()
+
+        self.basetestpath = tempfile.mkdtemp().replace("\\", "/")
+        endpoint = self.basetestpath + "/fake_qgis_http_endpoint_cache_data_dependency"
+
+        with open(
+            sanitize(
+                endpoint,
+                "?SERVICE=WFS?REQUEST=GetCapabilities?ACCEPTVERSIONS=2.0.0,1.1.0,1.0.0",
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                b"""
+<wfs:WFS_Capabilities version="2.0.0" xmlns="http://www.opengis.net/wfs/2.0" xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:gml="http://schemas.opengis.net/gml/3.2" xmlns:fes="http://www.opengis.net/fes/2.0">
+  <FeatureTypeList>
+    <FeatureType>
+      <Name>my:typename</Name>
+      <Title>Title</Title>
+      <Abstract>Abstract</Abstract>
+      <DefaultCRS>urn:ogc:def:crs:EPSG::4326</DefaultCRS>
+      <WGS84BoundingBox>
+        <LowerCorner>-71.123 66.33</LowerCorner>
+        <UpperCorner>-65.32 78.3</UpperCorner>
+      </WGS84BoundingBox>
+    </FeatureType>
+  </FeatureTypeList>
+</wfs:WFS_Capabilities>"""
+            )
+
+        with open(
+            sanitize(
+                endpoint,
+                "?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename",
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                b"""
+<xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
+  <xsd:import namespace="http://www.opengis.net/gml/3.2"/>
+  <xsd:complexType name="typenameType">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="pk" nillable="true" type="xsd:long"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="geometryProperty" nillable="true" type="gml:PointPropertyType"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="typename" substitutionGroup="gml:_Feature" type="my:typenameType"/>
+</xsd:schema>"""
+            )
+
+        self.cachedLayer = QgsVectorLayer(
+            "url='http://"
+            + endpoint
+            + "' typename='my:typename' skipInitialGetFeature='true'",
+            "cache_data_dependent",
+            "WFS",
+        )
+        assert self.cachedLayer.isValid()
+
         QgsProject.instance().addMapLayers(
-            [self.pointsLayer, self.linesLayer, self.pointsLayer2]
+            [self.pointsLayer, self.linesLayer, self.pointsLayer2, self.cachedLayer]
         )
 
         # save the project file
@@ -99,7 +182,7 @@ class TestLayerDependencies(QgisTestCase):
     def tearDown(self):
         """Run after each test."""
         QgsProject.instance().clear()
-        pass
+        shutil.rmtree(self.basetestpath, True)
 
     def test_resetSnappingIndex(self):
         self.pointsLayer.setDependencies([])
@@ -384,6 +467,32 @@ class TestLayerDependencies(QgisTestCase):
 
         self.pointsLayer.setDependencies([])
         self.pointsLayer2.setDependencies([])
+
+    def test_cache_data_dependency_triggers_provider_reload(self):
+        self.assertTrue(
+            self.cachedLayer.dataProvider().capabilities()
+            & Qgis.VectorProviderCapability.CacheData
+        )
+
+        self.assertTrue(
+            self.cachedLayer.setDependencies([QgsMapLayerDependency(self.linesLayer.id())])
+        )
+
+        spy_cached_provider_data_changed = QSignalSpy(
+            self.cachedLayer.dataProvider().dataChanged
+        )
+
+        f = QgsFeature(self.linesLayer.fields())
+        f.setId(5)
+        geom = QgsGeometry.fromWkt("LINESTRING(0.2 0.2,0.3 0.3)")
+        f.setGeometry(geom)
+        self.linesLayer.startEditing()
+        self.linesLayer.addFeatures([f])
+        self.assertTrue(self.linesLayer.commitChanges())
+
+        self.assertEqual(len(spy_cached_provider_data_changed), 1)
+
+        self.cachedLayer.setDependencies([])
 
 
 if __name__ == "__main__":
