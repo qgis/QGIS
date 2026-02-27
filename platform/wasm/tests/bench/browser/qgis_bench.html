@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, user-scalable=0"/>
+    <title>qgis_bench</title>
+    <style>
+      html, body { padding: 0; margin: 0; height: 100% }
+      #screen { width: 800; height: 600; }
+      #downloads {
+        padding: 1rem;
+        background: #f5f5f5;
+      }
+      #downloads h3 { margin: 0 0 1rem 0; }
+      #downloads .image-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      #downloads .image-item {
+        border: 1px solid #ccc;
+        padding: 0.5rem;
+        background: white;
+      }
+      #downloads .image-item img {
+        max-width: 400px;
+        display: block;
+      }
+      #downloads .image-item .filename {
+        font-family: monospace;
+        font-size: 0.9em;
+        margin-top: 0.5rem;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body onload="init()">
+    <figure style="overflow:visible;" id="qtspinner">
+      <center style="margin-top:1.5em; line-height:150%">
+        <img src="/qgis/images/svg/logos/qgis-logo.svg" width="320" style="display:block"></img>
+        <strong>QGIS for WebAssembly: qgis_bench</strong>
+        <div id="qtstatus"></div>
+        <noscript>JavaScript is disabled. Please enable JavaScript to use this application.</noscript>
+      </center>
+    </figure>
+    <div id="screen"></div>
+    <div id="downloads" style="display: none;">
+      <h3>Downloaded Files</h3>
+      <div class="image-container"></div>
+    </div>
+
+    <script type="text/javascript">
+        async function init()
+        {
+            const spinner = document.querySelector('#qtspinner');
+            const screen = document.querySelector('#screen');
+            const status = document.querySelector('#qtstatus');
+            const downloads = document.querySelector('#downloads');
+            const imageContainer = downloads.querySelector('.image-container');
+
+            const showUi = (ui) => {
+                [spinner, screen].forEach(element => element.style.display = 'none');
+                if (screen === ui)
+                    screen.style.position = 'default';
+                ui.style.display = 'block';
+            }
+
+            try {
+                showUi(spinner);
+                status.innerHTML = 'Loading...';
+
+                const urlParams = new URLSearchParams(window.location.search);
+                const args = urlParams.getAll('arg');
+                const fileUrls = urlParams.getAll('file');
+
+                if (args.length > 0) {
+                    console.log('QGIS Bench arguments:', args);
+                }
+
+                // Fetch files to upload to virtual filesystem
+                const uploadDir = "/upload";
+                const downloadDir = "/download";
+                const filesToUpload = [];
+                for (const url of fileUrls) {
+                    const filename = decodeURIComponent(url.split('/').pop());
+                    status.innerHTML = `Fetching ${filename}...`;
+                    const response = await fetch(url);
+                    const buffer = await response.arrayBuffer();
+                    filesToUpload.push({ path: `${uploadDir}/${filename}`, data: new Uint8Array(buffer) });
+                }
+
+                // Track which files we've already displayed
+                const displayedFiles = new Set();
+
+                const instance = await qtLoad({
+                    qt: {
+                        onLoaded: () => {
+                            showUi(screen);
+
+                            // Scan /download directory for new images
+                            setInterval(() => {
+                                try {
+                                    const files = instance.FS.readdir(downloadDir);
+                                    for (const file of files) {
+                                        if (file === '.' || file === '..') continue;
+                                        if (displayedFiles.has(file)) continue;
+
+                                        const filePath = `${downloadDir}/${file}`;
+                                        const stat = instance.FS.stat(filePath);
+
+                                        // Check if it's a file (not directory)
+                                        if (!instance.FS.isFile(stat.mode)) continue;
+
+                                        // Check if it's an image by extension
+                                        const ext = file.split('.').pop().toLowerCase();
+                                        if (!['png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp'].includes(ext)) continue;
+
+                                        // Read the file and create blob URL
+                                        const data = instance.FS.readFile(filePath);
+                                        const mimeType = ext === 'jpg' ? 'image/jpeg' : `image/${ext}`;
+                                        const blob = new Blob([data], { type: mimeType });
+                                        const url = URL.createObjectURL(blob);
+
+                                        // Create image element
+                                        const item = document.createElement('div');
+                                        item.className = 'image-item';
+
+                                        const img = document.createElement('img');
+                                        img.src = url;
+                                        img.alt = file;
+
+                                        const label = document.createElement('div');
+                                        label.className = 'filename';
+                                        label.textContent = file;
+
+                                        item.appendChild(img);
+                                        item.appendChild(label);
+                                        imageContainer.appendChild(item);
+
+                                        displayedFiles.add(file);
+                                        downloads.style.display = 'block';
+                                        console.log(`Displayed: ${filePath}`);
+                                    }
+                                } catch (e) {
+                                    // Directory might not exist yet, ignore
+                                }
+                            }, 1000);
+                        },
+                        onExit: exitData =>
+                        {
+                            status.innerHTML = 'Application exit';
+                            status.innerHTML +=
+                                exitData.code !== undefined ? ` with code ${exitData.code}` : '';
+                            status.innerHTML +=
+                                exitData.text !== undefined ? ` (${exitData.text})` : '';
+                            showUi(spinner);
+                        },
+                        entryFunction: window.qgis_bench_entry,
+                        containerElements: [screen],
+                    },
+                    arguments: args,
+                    preRun: [function(module) {
+                        if (filesToUpload.length > 0) {
+                            module.FS.mkdir(uploadDir);
+                            for (const { path, data } of filesToUpload) {
+                                module.FS.writeFile(path, data);
+                                console.log(`Uploaded: ${path}`);
+                            }
+                        }
+                        // Create download directory for output files
+                        module.FS.mkdir(downloadDir);
+                    }],
+                });
+            } catch (e) {
+                console.error(e);
+                console.error(e.stack);
+            }
+        }
+    </script>
+    <script src="qgis_bench.js"></script>
+    <script type="text/javascript" src="qtloader.js"></script>
+  </body>
+</html>
