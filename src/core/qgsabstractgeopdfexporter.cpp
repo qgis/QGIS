@@ -24,6 +24,7 @@
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -237,75 +238,47 @@ bool QgsAbstractGeospatialPdfExporter::saveTemporaryLayers()
   return true;
 }
 
-///@cond PRIVATE
-struct TreeNode
-{
-  QString id;
-  bool initiallyVisible = false;
-  QString name;
-  QString mutuallyExclusiveGroupId;
-  QString mapLayerId;
-  std::vector< std::unique_ptr< TreeNode > > children;
-  TreeNode *parent = nullptr;
-
-  void addChild( std::unique_ptr< TreeNode > child )
-  {
-    child->parent = this;
-    children.emplace_back( std::move( child ) );
-  }
-
-  QDomElement toElement( QDomDocument &doc ) const
-  {
-    QDomElement layerElement = doc.createElement( u"Layer"_s );
-    layerElement.setAttribute( u"id"_s, id );
-    layerElement.setAttribute( u"name"_s, name );
-    layerElement.setAttribute( u"initiallyVisible"_s, initiallyVisible ? u"true"_s : u"false"_s );
-    if ( !mutuallyExclusiveGroupId.isEmpty() )
-      layerElement.setAttribute( u"mutuallyExclusiveGroupId"_s, mutuallyExclusiveGroupId );
-
-    for ( const auto &child : children )
-    {
-      layerElement.appendChild( child->toElement( doc ) );
-    }
-
-    return layerElement;
-  }
-
-  QDomElement createIfLayerOnElement( QDomDocument &doc, QDomElement &contentElement ) const
-  {
-    QDomElement element = doc.createElement( u"IfLayerOn"_s );
-    element.setAttribute( u"layerId"_s, id );
-    contentElement.appendChild( element );
-    return element;
-  }
-
-  QDomElement createNestedIfLayerOnElements( QDomDocument &doc, QDomElement &contentElement ) const
-  {
-    TreeNode *currentParent = parent;
-    QDomElement finalElement = doc.createElement( u"IfLayerOn"_s );
-    finalElement.setAttribute( u"layerId"_s, id );
-
-    QDomElement currentElement = finalElement;
-    while ( currentParent )
-    {
-      QDomElement ifGroupOn = doc.createElement( u"IfLayerOn"_s );
-      ifGroupOn.setAttribute( u"layerId"_s, currentParent->id );
-      ifGroupOn.appendChild( currentElement );
-      currentElement = ifGroupOn;
-      currentParent = currentParent->parent;
-    }
-    contentElement.appendChild( currentElement );
-    return finalElement;
-  }
-};
-///@endcond
-
-QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<ComponentLayerDetail> &components, const ExportDetails &details )
+QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<ComponentLayerDetail> &components, const ExportDetails &details ) const
 {
   QDomDocument doc;
-
   QDomElement compositionElem = doc.createElement( u"PDFComposition"_s );
 
+  // metadata
+  createMetadataXmlSection( compositionElem, doc, details );
+
+  // pages
+  QDomElement page = doc.createElement( u"Page"_s );
+  // hardcode DPI of 72 to get correct page sizes in outputs -- refs discussion in https://github.com/OSGeo/gdal/pull/2961
+  const double pageWidthPdfUnits = std::ceil( details.pageSizeMm.width() / 25.4 * DPI_72 );
+  const double pageHeightPdfUnits = std::ceil( details.pageSizeMm.height() / 25.4 * DPI_72 );
+  createPageDimensionXmlSection( page, doc, pageWidthPdfUnits, pageHeightPdfUnits );
+
+  // georeferencing
+  createGeoreferencingXmlSection( page, doc, details, pageWidthPdfUnits, pageHeightPdfUnits );
+
+  // layer tree and content
+  QgsLayerTree *layerTreePointer = layerTree();
+  if ( details.useLayerTreeConfig && layerTreePointer )
+  {
+    createLayerTreeAndContentXmlSectionsFromLayerTree( layerTreePointer, compositionElem, page, doc, components, details );
+  }
+  else
+  {
+    createLayerTreeAndContentXmlSections( compositionElem, page, doc, components, details );
+  }
+
+  compositionElem.appendChild( page );
+  doc.appendChild( compositionElem );
+
+  QString composition;
+  QTextStream stream( &composition );
+  doc.save( stream, -1 );
+
+  return composition;
+}
+
+void QgsAbstractGeospatialPdfExporter::createMetadataXmlSection( QDomElement &compositionElem, QDomDocument &doc, const ExportDetails &details ) const
+{
   // metadata tags
   QDomElement metadata = doc.createElement( u"Metadata"_s );
   if ( !details.author.isEmpty() )
@@ -370,7 +343,100 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
     metadata.appendChild( keywords );
   }
   compositionElem.appendChild( metadata );
+}
 
+void QgsAbstractGeospatialPdfExporter::createGeoreferencingXmlSection( QDomElement &pageElem, QDomDocument &doc, const ExportDetails &details, const double pageWidthPdfUnits, const double pageHeightPdfUnits ) const
+{
+  int i = 0;
+  for ( const QgsAbstractGeospatialPdfExporter::GeoReferencedSection &section : details.georeferencedSections )
+  {
+    QDomElement georeferencing = doc.createElement( u"Georeferencing"_s );
+    georeferencing.setAttribute( u"id"_s, u"georeferenced_%1"_s.arg( i++ ) );
+    georeferencing.setAttribute( u"ISO32000ExtensionFormat"_s, details.useIso32000ExtensionFormatGeoreferencing ? u"true"_s : u"false"_s );
+
+    if ( section.crs.isValid() )
+    {
+      QDomElement srs = doc.createElement( u"SRS"_s );
+      // not currently used by GDAL or the PDF spec, but exposed in the GDAL XML schema. Maybe something we'll need to consider down the track...
+      // srs.setAttribute( u"dataAxisToSRSAxisMapping"_s, u"2,1"_s );
+      if ( !section.crs.authid().isEmpty() && !section.crs.authid().startsWith( u"user"_s, Qt::CaseInsensitive ) )
+      {
+        srs.appendChild( doc.createTextNode( section.crs.authid() ) );
+      }
+      else
+      {
+        srs.appendChild( doc.createTextNode( section.crs.toWkt( Qgis::CrsWktVariant::PreferredGdal ) ) );
+      }
+      georeferencing.appendChild( srs );
+    }
+
+    if ( !section.pageBoundsPolygon.isEmpty() )
+    {
+      /*
+        Define a polygon / neatline in PDF units into which the
+        Measure tool will display coordinates.
+        If not specified, BoundingBox will be used instead.
+        If none of BoundingBox and BoundingPolygon are specified,
+        the whole PDF page will be assumed to be georeferenced.
+       */
+      QDomElement boundingPolygon = doc.createElement( u"BoundingPolygon"_s );
+
+      // transform to PDF coordinate space
+      QTransform t = QTransform::fromTranslate( 0, pageHeightPdfUnits ).scale( pageWidthPdfUnits / details.pageSizeMm.width(),
+                     -pageHeightPdfUnits / details.pageSizeMm.height() );
+
+      QgsPolygon p = section.pageBoundsPolygon;
+      p.transform( t );
+      boundingPolygon.appendChild( doc.createTextNode( p.asWkt() ) );
+
+      georeferencing.appendChild( boundingPolygon );
+    }
+    else
+    {
+      /* Define the viewport where georeferenced coordinates are available.
+        If not specified, the extent of BoundingPolygon will be used instead.
+        If none of BoundingBox and BoundingPolygon are specified,
+        the whole PDF page will be assumed to be georeferenced.
+        */
+      QDomElement boundingBox = doc.createElement( u"BoundingBox"_s );
+      boundingBox.setAttribute( u"x1"_s, qgsDoubleToString( section.pageBoundsMm.xMinimum() / 25.4 * DPI_72 ) );
+      boundingBox.setAttribute( u"y1"_s, qgsDoubleToString( section.pageBoundsMm.yMinimum() / 25.4 * DPI_72 ) );
+      boundingBox.setAttribute( u"x2"_s, qgsDoubleToString( section.pageBoundsMm.xMaximum() / 25.4 * DPI_72 ) );
+      boundingBox.setAttribute( u"y2"_s, qgsDoubleToString( section.pageBoundsMm.yMaximum() / 25.4 * DPI_72 ) );
+      georeferencing.appendChild( boundingBox );
+    }
+
+    for ( const ControlPoint &point : section.controlPoints )
+    {
+      QDomElement cp1 = doc.createElement( u"ControlPoint"_s );
+      cp1.setAttribute( u"x"_s, qgsDoubleToString( point.pagePoint.x() / 25.4 * DPI_72 ) );
+      cp1.setAttribute( u"y"_s, qgsDoubleToString( ( details.pageSizeMm.height() - point.pagePoint.y() ) / 25.4 * DPI_72 ) );
+      cp1.setAttribute( u"GeoX"_s, qgsDoubleToString( point.geoPoint.x() ) );
+      cp1.setAttribute( u"GeoY"_s, qgsDoubleToString( point.geoPoint.y() ) );
+      georeferencing.appendChild( cp1 );
+    }
+
+    pageElem.appendChild( georeferencing );
+  }
+}
+
+void QgsAbstractGeospatialPdfExporter::createPageDimensionXmlSection( QDomElement &pageElem, QDomDocument &doc, const double pageWidthPdfUnits, const double pageHeightPdfUnits ) const
+{
+  QDomElement dpi = doc.createElement( u"DPI"_s );
+  // hardcode DPI of 72 to get correct page sizes in outputs -- refs discussion in https://github.com/OSGeo/gdal/pull/2961
+  dpi.appendChild( doc.createTextNode( qgsDoubleToString( DPI_72 ) ) );
+  pageElem.appendChild( dpi );
+  // assumes DPI of 72, as noted above.
+  QDomElement width = doc.createElement( u"Width"_s );
+  width.appendChild( doc.createTextNode( qgsDoubleToString( pageWidthPdfUnits ) ) );
+  pageElem.appendChild( width );
+  QDomElement height = doc.createElement( u"Height"_s );
+  height.appendChild( doc.createTextNode( qgsDoubleToString( pageHeightPdfUnits ) ) );
+  pageElem.appendChild( height );
+}
+
+void QgsAbstractGeospatialPdfExporter::createLayerTreeAndContentXmlSections( QDomElement &compositionElem, QDomElement &pageElem, QDomDocument &doc,  const QList<ComponentLayerDetail> &components, const ExportDetails &details ) const
+{
   QSet< QString > createdLayerIds;
   std::vector< std::unique_ptr< TreeNode > > rootGroups;
   std::vector< std::unique_ptr< TreeNode > > rootLayers;
@@ -407,6 +473,7 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
       layerTreeGroupOrder.append( component.group );
     }
   }
+
   // now we are confident that we have a definitive list of all the groups for the export
   QMap< QString, TreeNode * > groupNameToTreeNode;
   QMap< QString, TreeNode * > layerIdToTreeNode;
@@ -514,157 +581,10 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
     }
   }
 
-  // pages
-  QDomElement page = doc.createElement( u"Page"_s );
-  QDomElement dpi = doc.createElement( u"DPI"_s );
-  // hardcode DPI of 72 to get correct page sizes in outputs -- refs discussion in https://github.com/OSGeo/gdal/pull/2961
-  dpi.appendChild( doc.createTextNode( qgsDoubleToString( 72 ) ) );
-  page.appendChild( dpi );
-  // assumes DPI of 72, as noted above.
-  QDomElement width = doc.createElement( u"Width"_s );
-  const double pageWidthPdfUnits = std::ceil( details.pageSizeMm.width() / 25.4 * 72 );
-  width.appendChild( doc.createTextNode( qgsDoubleToString( pageWidthPdfUnits ) ) );
-  page.appendChild( width );
-  QDomElement height = doc.createElement( u"Height"_s );
-  const double pageHeightPdfUnits = std::ceil( details.pageSizeMm.height() / 25.4 * 72 );
-  height.appendChild( doc.createTextNode( qgsDoubleToString( pageHeightPdfUnits ) ) );
-  page.appendChild( height );
+  QDomElement contentElem = doc.createElement( u"Content"_s );
+  createContentXmlSection( contentElem, doc, groupNameToTreeNode, layerIdToTreeNode, components, details );
 
-  // georeferencing
-  int i = 0;
-  for ( const QgsAbstractGeospatialPdfExporter::GeoReferencedSection &section : details.georeferencedSections )
-  {
-    QDomElement georeferencing = doc.createElement( u"Georeferencing"_s );
-    georeferencing.setAttribute( u"id"_s, u"georeferenced_%1"_s.arg( i++ ) );
-    georeferencing.setAttribute( u"ISO32000ExtensionFormat"_s, details.useIso32000ExtensionFormatGeoreferencing ? u"true"_s : u"false"_s );
-
-    if ( section.crs.isValid() )
-    {
-      QDomElement srs = doc.createElement( u"SRS"_s );
-      // not currently used by GDAL or the PDF spec, but exposed in the GDAL XML schema. Maybe something we'll need to consider down the track...
-      // srs.setAttribute( u"dataAxisToSRSAxisMapping"_s, u"2,1"_s );
-      if ( !section.crs.authid().isEmpty() && !section.crs.authid().startsWith( u"user"_s, Qt::CaseInsensitive ) )
-      {
-        srs.appendChild( doc.createTextNode( section.crs.authid() ) );
-      }
-      else
-      {
-        srs.appendChild( doc.createTextNode( section.crs.toWkt( Qgis::CrsWktVariant::PreferredGdal ) ) );
-      }
-      georeferencing.appendChild( srs );
-    }
-
-    if ( !section.pageBoundsPolygon.isEmpty() )
-    {
-      /*
-        Define a polygon / neatline in PDF units into which the
-        Measure tool will display coordinates.
-        If not specified, BoundingBox will be used instead.
-        If none of BoundingBox and BoundingPolygon are specified,
-        the whole PDF page will be assumed to be georeferenced.
-       */
-      QDomElement boundingPolygon = doc.createElement( u"BoundingPolygon"_s );
-
-      // transform to PDF coordinate space
-      QTransform t = QTransform::fromTranslate( 0, pageHeightPdfUnits ).scale( pageWidthPdfUnits / details.pageSizeMm.width(),
-                     -pageHeightPdfUnits / details.pageSizeMm.height() );
-
-      QgsPolygon p = section.pageBoundsPolygon;
-      p.transform( t );
-      boundingPolygon.appendChild( doc.createTextNode( p.asWkt() ) );
-
-      georeferencing.appendChild( boundingPolygon );
-    }
-    else
-    {
-      /* Define the viewport where georeferenced coordinates are available.
-        If not specified, the extent of BoundingPolygon will be used instead.
-        If none of BoundingBox and BoundingPolygon are specified,
-        the whole PDF page will be assumed to be georeferenced.
-        */
-      QDomElement boundingBox = doc.createElement( u"BoundingBox"_s );
-      boundingBox.setAttribute( u"x1"_s, qgsDoubleToString( section.pageBoundsMm.xMinimum() / 25.4 * 72 ) );
-      boundingBox.setAttribute( u"y1"_s, qgsDoubleToString( section.pageBoundsMm.yMinimum() / 25.4 * 72 ) );
-      boundingBox.setAttribute( u"x2"_s, qgsDoubleToString( section.pageBoundsMm.xMaximum() / 25.4 * 72 ) );
-      boundingBox.setAttribute( u"y2"_s, qgsDoubleToString( section.pageBoundsMm.yMaximum() / 25.4 * 72 ) );
-      georeferencing.appendChild( boundingBox );
-    }
-
-    for ( const ControlPoint &point : section.controlPoints )
-    {
-      QDomElement cp1 = doc.createElement( u"ControlPoint"_s );
-      cp1.setAttribute( u"x"_s, qgsDoubleToString( point.pagePoint.x() / 25.4 * 72 ) );
-      cp1.setAttribute( u"y"_s, qgsDoubleToString( ( details.pageSizeMm.height() - point.pagePoint.y() ) / 25.4 * 72 ) );
-      cp1.setAttribute( u"GeoX"_s, qgsDoubleToString( point.geoPoint.x() ) );
-      cp1.setAttribute( u"GeoY"_s, qgsDoubleToString( point.geoPoint.y() ) );
-      georeferencing.appendChild( cp1 );
-    }
-
-    page.appendChild( georeferencing );
-  }
-
-  auto createPdfDatasetElement = [&doc]( const ComponentLayerDetail & component ) -> QDomElement
-  {
-    QDomElement pdfDataset = doc.createElement( u"PDF"_s );
-    pdfDataset.setAttribute( u"dataset"_s, component.sourcePdfPath );
-    if ( component.opacity != 1.0 || component.compositionMode != QPainter::CompositionMode_SourceOver )
-    {
-      QDomElement blendingElement = doc.createElement( u"Blending"_s );
-      blendingElement.setAttribute( u"opacity"_s, component.opacity );
-      blendingElement.setAttribute( u"function"_s, compositionModeToString( component.compositionMode ) );
-
-      pdfDataset.appendChild( blendingElement );
-    }
-    return pdfDataset;
-  };
-
-  // content
-  QDomElement content = doc.createElement( u"Content"_s );
-  for ( const ComponentLayerDetail &component : components )
-  {
-    if ( component.mapLayerId.isEmpty() && component.group.isEmpty() )
-    {
-      content.appendChild( createPdfDatasetElement( component ) );
-    }
-    else if ( !component.mapLayerId.isEmpty() )
-    {
-      if ( TreeNode *treeNode = layerIdToTreeNode.value( component.mapLayerId ) )
-      {
-        QDomElement ifLayerOnElement = treeNode->createNestedIfLayerOnElements( doc, content );
-        ifLayerOnElement.appendChild( createPdfDatasetElement( component ) );
-      }
-    }
-    else if ( TreeNode *groupNode = groupNameToTreeNode.value( component.group ) )
-    {
-      QDomElement ifGroupOn = groupNode->createIfLayerOnElement( doc, content );
-      ifGroupOn.appendChild( createPdfDatasetElement( component ) );
-    }
-  }
-
-  // vector datasets (we "draw" these on top, just for debugging... but they are invisible, so are never really drawn!)
-  if ( details.includeFeatures )
-  {
-    for ( const VectorComponentDetail &component : std::as_const( mVectorComponents ) )
-    {
-      if ( TreeNode *treeNode = layerIdToTreeNode.value( component.mapLayerId ) )
-      {
-        QDomElement ifLayerOnElement = treeNode->createNestedIfLayerOnElements( doc, content );
-
-        QDomElement vectorDataset = doc.createElement( u"Vector"_s );
-        vectorDataset.setAttribute( u"dataset"_s, component.sourceVectorPath );
-        vectorDataset.setAttribute( u"layer"_s, component.sourceVectorLayer );
-        vectorDataset.setAttribute( u"visible"_s, u"false"_s );
-        QDomElement logicalStructure = doc.createElement( u"LogicalStructure"_s );
-        logicalStructure.setAttribute( u"displayLayerName"_s, component.name );
-        if ( !component.displayAttribute.isEmpty() )
-          logicalStructure.setAttribute( u"fieldToDisplay"_s, component.displayAttribute );
-        vectorDataset.appendChild( logicalStructure );
-        ifLayerOnElement.appendChild( vectorDataset );
-      }
-    }
-  }
-
-  page.appendChild( content );
+  pageElem.appendChild( contentElem );
 
   // layertree
   QDomElement layerTree = doc.createElement( u"LayerTree"_s );
@@ -719,15 +639,190 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
   }
 
   compositionElem.appendChild( layerTree );
-  compositionElem.appendChild( page );
+}
 
-  doc.appendChild( compositionElem );
+void QgsAbstractGeospatialPdfExporter::createLayerTreeAndContentXmlSectionsFromLayerTree( const QgsLayerTree *layerTree, QDomElement &compositionElem, QDomElement &pageElem, QDomDocument &doc,  const QList<ComponentLayerDetail> &components, const ExportDetails &details ) const
+{
+  QMap< QString, TreeNode * > groupNameToTreeNode;
+  QMap< QString, TreeNode * > layerIdToTreeNode;
 
-  QString composition;
-  QTextStream stream( &composition );
-  doc.save( stream, -1 );
+  // Add tree structure from QGIS layer tree to the intermediate TreeNode struct
+  std::unique_ptr< TreeNode > rootPdfNode = createPdfTreeNodes( groupNameToTreeNode, layerIdToTreeNode, layerTree );
+  rootPdfNode->isRootNode = true; // To skip the layer tree root from the PDF layer tree
 
-  return composition;
+  // Add missing groups from other components
+  for ( const ComponentLayerDetail &component : components )
+  {
+    if ( !component.group.isEmpty() && !groupNameToTreeNode.contains( component.group ) )
+    {
+      auto pdfTreeGroup = std::make_unique< TreeNode >();
+      const QString id = QUuid::createUuid().toString();
+      pdfTreeGroup->id = id;
+      pdfTreeGroup->name = component.group;
+      pdfTreeGroup->initiallyVisible = true;
+      groupNameToTreeNode[ pdfTreeGroup->name ] = pdfTreeGroup.get();
+      rootPdfNode->addChild( std::move( pdfTreeGroup ) );
+    }
+  }
+
+  QDomElement contentElem = doc.createElement( u"Content"_s );
+  createContentXmlSection( contentElem, doc, groupNameToTreeNode, layerIdToTreeNode, components, details );
+
+  pageElem.appendChild( contentElem );
+
+  // PDF Layer Tree
+  QDomElement layerTreeElem = doc.createElement( u"LayerTree"_s );
+  rootPdfNode->toChildrenElements( doc, layerTreeElem );
+  compositionElem.appendChild( layerTreeElem );
+}
+
+void QgsAbstractGeospatialPdfExporter::createContentXmlSection( QDomElement &contentElem, QDomDocument &doc, const QMap< QString, TreeNode * > &groupNameToTreeNode, const QMap< QString, TreeNode * > &layerIdToTreeNode, const QList<ComponentLayerDetail> &components, const ExportDetails &details ) const
+{
+  auto createPdfDatasetElement = [&doc]( const ComponentLayerDetail & component ) -> QDomElement
+  {
+    QDomElement pdfDataset = doc.createElement( u"PDF"_s );
+    pdfDataset.setAttribute( u"dataset"_s, component.sourcePdfPath );
+    if ( component.opacity != 1.0 || component.compositionMode != QPainter::CompositionMode_SourceOver )
+    {
+      QDomElement blendingElement = doc.createElement( u"Blending"_s );
+      blendingElement.setAttribute( u"opacity"_s, component.opacity );
+      blendingElement.setAttribute( u"function"_s, compositionModeToString( component.compositionMode ) );
+
+      pdfDataset.appendChild( blendingElement );
+    }
+    return pdfDataset;
+  };
+
+  // PDF Content
+  for ( const ComponentLayerDetail &component : components )
+  {
+    if ( component.mapLayerId.isEmpty() && component.group.isEmpty() )
+    {
+      contentElem.appendChild( createPdfDatasetElement( component ) );
+    }
+    else if ( !component.mapLayerId.isEmpty() )
+    {
+      if ( TreeNode *treeNode = layerIdToTreeNode.value( component.mapLayerId ) )
+      {
+        QDomElement ifLayerOnElement = treeNode->createNestedIfLayerOnElements( doc, contentElem );
+        ifLayerOnElement.appendChild( createPdfDatasetElement( component ) );
+      }
+    }
+    else if ( TreeNode *groupNode = groupNameToTreeNode.value( component.group ) )
+    {
+      QDomElement ifGroupOn = groupNode->createIfLayerOnElement( doc, contentElem );
+      ifGroupOn.appendChild( createPdfDatasetElement( component ) );
+    }
+  }
+
+  // vector datasets (we "draw" these on top, just for debugging... but they are invisible, so are never really drawn!)
+  if ( details.includeFeatures )
+  {
+    for ( const VectorComponentDetail &component : std::as_const( mVectorComponents ) )
+    {
+      if ( TreeNode *treeNode = layerIdToTreeNode.value( component.mapLayerId ) )
+      {
+        QDomElement ifLayerOnElement = treeNode->createNestedIfLayerOnElements( doc, contentElem );
+
+        QDomElement vectorDataset = doc.createElement( u"Vector"_s );
+        vectorDataset.setAttribute( u"dataset"_s, component.sourceVectorPath );
+        vectorDataset.setAttribute( u"layer"_s, component.sourceVectorLayer );
+        vectorDataset.setAttribute( u"visible"_s, u"false"_s );
+        QDomElement logicalStructure = doc.createElement( u"LogicalStructure"_s );
+        logicalStructure.setAttribute( u"displayLayerName"_s, component.name );
+        if ( !component.displayAttribute.isEmpty() )
+          logicalStructure.setAttribute( u"fieldToDisplay"_s, component.displayAttribute );
+        vectorDataset.appendChild( logicalStructure );
+        ifLayerOnElement.appendChild( vectorDataset );
+      }
+    }
+  }
+}
+
+std::unique_ptr< TreeNode > QgsAbstractGeospatialPdfExporter::createPdfTreeNodes( QMap< QString, TreeNode * > &groupNameToTreeNode, QMap< QString, TreeNode * > &layerIdToTreeNode, const QgsLayerTreeGroup *layerTreeGroup ) const
+{
+  auto pdfTreeNodes = std::make_unique< TreeNode >();
+  const QString id = QUuid::createUuid().toString();
+  pdfTreeNodes->id = id;
+  pdfTreeNodes->name = layerTreeGroup->name();
+  pdfTreeNodes->initiallyVisible = layerTreeGroup->itemVisibilityChecked();
+
+  const QList<QgsLayerTreeNode *> groupChildren = layerTreeGroup->children();
+
+  for ( QgsLayerTreeNode *qgisNode : groupChildren )
+  {
+    switch ( qgisNode->nodeType() )
+    {
+      case QgsLayerTreeNode::NodeLayer:
+      {
+        QgsLayerTreeLayer *layerTreeLayer = qobject_cast<QgsLayerTreeLayer *>( qgisNode );
+
+        // Skip invalid layers, tables and unknown geometry types, since they won't appear in the PDF
+        if ( !layerTreeLayer->layer()->isValid() )
+          break;
+
+        if ( layerTreeLayer->layer()->type() == Qgis::LayerType::Vector )
+        {
+          QgsVectorLayer *vectorLayer = qobject_cast< QgsVectorLayer * >( layerTreeLayer->layer() );
+          if ( vectorLayer->geometryType() == Qgis::GeometryType::Unknown || vectorLayer->geometryType() == Qgis::GeometryType::Null )
+            break;
+        }
+
+        auto pdfLayerNode = std::make_unique< TreeNode >();
+        pdfLayerNode->id = layerTreeLayer->layerId();
+        pdfLayerNode->name = layerTreeLayer->name();
+        pdfLayerNode->initiallyVisible = layerTreeLayer->itemVisibilityChecked();
+        pdfLayerNode->mapLayerId = layerTreeLayer->layerId();
+        layerIdToTreeNode.insert( pdfLayerNode->id, pdfLayerNode.get() );
+        pdfTreeNodes->addChild( std::move( pdfLayerNode ) );
+        break;
+      }
+
+      case QgsLayerTreeNode::NodeGroup:
+      {
+        QgsLayerTreeGroup *childLayerTreeGroup = qobject_cast<QgsLayerTreeGroup *>( qgisNode );
+
+        // GroupLayers support
+        if ( QgsGroupLayer *groupLayer = childLayerTreeGroup->groupLayer() )
+        {
+          // We deal with it as another map layer
+          auto pdfLayerNode = std::make_unique< TreeNode >();
+          pdfLayerNode->id = groupLayer->id();
+          pdfLayerNode->name = childLayerTreeGroup->name();
+          pdfLayerNode->initiallyVisible = childLayerTreeGroup->itemVisibilityChecked();
+          pdfLayerNode->mapLayerId = groupLayer->id();
+          layerIdToTreeNode.insert( pdfLayerNode->id, pdfLayerNode.get() );
+          pdfTreeNodes->addChild( std::move( pdfLayerNode ) );
+          break;
+        }
+
+        // Skip empty groups
+        if ( !childLayerTreeGroup->children().empty() )
+        {
+          std::unique_ptr< TreeNode > pdfGroupNode = createPdfTreeNodes( groupNameToTreeNode, layerIdToTreeNode, childLayerTreeGroup );
+
+          // A group that is not empty in the QGIS layer tree, may be emptied
+          // if it only contais invalid and/or geometryless layers. Skip it!
+          if ( !pdfGroupNode->children.empty() )
+          {
+            pdfTreeNodes->addChild( std::move( pdfGroupNode ) );
+          }
+        }
+        break;
+      }
+
+      case QgsLayerTreeNode::NodeCustom:
+        break;
+    }
+  }
+
+  // Now we know if our group is not empty. Add it to the groupNameToTreeNode then.
+  if ( !pdfTreeNodes->children.empty() )
+  {
+    groupNameToTreeNode[ pdfTreeNodes->name ] = pdfTreeNodes.get();
+  }
+
+  return pdfTreeNodes;
 }
 
 QString QgsAbstractGeospatialPdfExporter::compositionModeToString( QPainter::CompositionMode mode )

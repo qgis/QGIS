@@ -92,6 +92,22 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog : public QDialog, private Ui::Q
     //! Returns whether Geospatial PDF export is enabled
     bool exportGeospatialPdf() const;
 
+    /**
+     * Sets whether to use QGIS layer tree config to export a Geospatial PDF.
+     *
+     * If disabled, a custom configuration will be used.
+     */
+    void setUseLayerTreeConfig( bool enabled );
+    //! Returns whether to use QGIS layer tree config to export a Geospatial PDF
+    bool useLayerTreeConfig() const;
+    /**
+     * Disables the option to follow QGIS layer tree configuration from the GUI.
+     *
+     * That option should be disabled if all map items in the layout follow
+     * either map themes or locked layers.
+     */
+    void disableUseLayerTreeConfig();
+
     //! Sets the list of export themes
     void setExportThemes( const QStringList &themes );
     //! Returns the list of export themes
@@ -110,6 +126,7 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog : public QDialog, private Ui::Q
 
   private slots:
 
+    void toggleLayerTreeConfig();
     void showHelp();
     void showContextMenuForGeospatialPdfStructure( QPoint point, const QModelIndex &index );
 

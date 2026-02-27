@@ -64,6 +64,10 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
     mGeospatialPDFOptionsStackedWidget->setCurrentIndex( 1 );
   }
 
+  mGeospatialPDFCustomConfigRadioButton->setChecked( true );
+  mGeospatialPDFCustomConfigFrame->setEnabled( true );
+  connect( mGeospatialPDFLayerTreeConfigRadioButton, &QRadioButton::toggled, this, &QgsLayoutPdfExportOptionsDialog::toggleLayerTreeConfig );
+
   mComboImageCompression->addItem( tr( "Lossy (JPEG)" ), false );
   mComboImageCompression->addItem( tr( "Lossless" ), true );
 
@@ -203,6 +207,30 @@ bool QgsLayoutPdfExportOptionsDialog::exportGeospatialPdf() const
   return mGeospatialPDFGroupBox->isChecked();
 }
 
+void QgsLayoutPdfExportOptionsDialog::setUseLayerTreeConfig( bool enabled )
+{
+  if ( !mGeospatialPdfAvailable )
+    return;
+
+  mGeospatialPDFLayerTreeConfigRadioButton->setChecked( enabled );
+  mGeospatialPDFCustomConfigFrame->setEnabled( !enabled );
+}
+
+bool QgsLayoutPdfExportOptionsDialog::useLayerTreeConfig() const
+{
+  if ( !mGeospatialPdfAvailable )
+    return false;
+
+  return mGeospatialPDFLayerTreeConfigRadioButton->isChecked();
+}
+
+void QgsLayoutPdfExportOptionsDialog::disableUseLayerTreeConfig()
+{
+  setUseLayerTreeConfig( false );
+  mGeospatialPDFLayerTreeConfigRadioButton->setEnabled( false );
+  mGeospatialPDFLayerTreeConfigRadioButton->setToolTip( u"Unavailable: All map items in the layout are currently following either map themes or locked layers, which is not compatible with the QGIS layer tree configuration."_s );
+}
+
 void QgsLayoutPdfExportOptionsDialog::setExportThemes( const QStringList &themes )
 {
   if ( !mGeospatialPdfAvailable )
@@ -305,4 +333,9 @@ void QgsLayoutPdfExportOptionsDialog::showContextMenuForGeospatialPdfStructure( 
   {
     mGeospatialPdfStructureTreeMenu->exec( mGeospatialPdfStructureTree->mapToGlobal( point ) );
   }
+}
+
+void QgsLayoutPdfExportOptionsDialog::toggleLayerTreeConfig()
+{
+  mGeospatialPDFCustomConfigFrame->setEnabled( !mGeospatialPDFLayerTreeConfigRadioButton->isChecked() );
 }
