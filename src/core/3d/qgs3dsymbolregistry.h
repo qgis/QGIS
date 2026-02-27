@@ -87,7 +87,7 @@ class CORE_EXPORT Qgs3DSymbolAbstractMetadata
      *
      * \note Not available in Python bindings
      */
-    virtual QgsFeature3DHandler *createFeatureHandler( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol ) SIP_FACTORY { Q_UNUSED( layer ); Q_UNUSED( symbol ); return nullptr; }
+    virtual QgsFeature3DHandler *createFeatureHandler( const QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol ) SIP_FACTORY { Q_UNUSED( layer ); Q_UNUSED( symbol ); return nullptr; }
 #endif
 
   private:
@@ -99,7 +99,7 @@ class CORE_EXPORT Qgs3DSymbolAbstractMetadata
 typedef QgsAbstract3DSymbol *( *Qgs3DSymbolCreateFunc )() SIP_SKIP;
 
 //! 3D symbol widget creation function
-typedef QgsFeature3DHandler *( *Qgs3DSymbolFeatureHandlerFunc )( QgsVectorLayer *, const QgsAbstract3DSymbol * ) SIP_SKIP;
+typedef QgsFeature3DHandler *( *Qgs3DSymbolFeatureHandlerFunc )( const QgsVectorLayer *, const QgsAbstract3DSymbol * ) SIP_SKIP;
 
 //! 3D symbol widget creation function
 typedef Qgs3DSymbolWidget *( *Qgs3DSymbolWidgetFunc )( QgsVectorLayer * ) SIP_SKIP;
@@ -160,7 +160,7 @@ class CORE_EXPORT Qgs3DSymbolMetadata : public Qgs3DSymbolAbstractMetadata
 
     QgsAbstract3DSymbol *create() override SIP_FACTORY { return mCreateFunc ? mCreateFunc() : nullptr; }
     Qgs3DSymbolWidget *createSymbolWidget( QgsVectorLayer *vl ) override SIP_FACTORY { return mWidgetFunc ? mWidgetFunc( vl ) : nullptr; }
-    QgsFeature3DHandler *createFeatureHandler( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol ) override SIP_FACTORY { return mFeatureHandlerFunc ? mFeatureHandlerFunc( layer, symbol ) : nullptr; }
+    QgsFeature3DHandler *createFeatureHandler( const QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol ) override SIP_FACTORY { return mFeatureHandlerFunc ? mFeatureHandlerFunc( layer, symbol ) : nullptr; }
 
   private:
     Qgs3DSymbolCreateFunc mCreateFunc;
@@ -226,7 +226,7 @@ class CORE_EXPORT Qgs3DSymbolRegistry
      *
      * \note Not available in Python bindings
      */
-    QgsFeature3DHandler *createHandlerForSymbol( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol ) SIP_FACTORY;
+    QgsFeature3DHandler *createHandlerForSymbol( const QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol ) SIP_FACTORY;
 #endif
 
   private:

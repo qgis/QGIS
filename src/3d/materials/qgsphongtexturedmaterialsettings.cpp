@@ -81,6 +81,118 @@ double QgsPhongTexturedMaterialSettings::textureRotation() const
   return mTextureRotation;
 }
 
+QColor QgsPhongTexturedMaterialSettings::averageColor() const
+{
+  const double avgDiffuseFactor = 0.3;
+  const double avgSpecularFactor = 0.2;
+
+  const double kAmbient = 0.2;
+  const double kDiffuse = 0.6;
+  const double kSpecular = 0.2;
+
+  const QColor diffuse = textureAverageColor();
+
+  double red = kAmbient * mAmbient.redF()
+               + kDiffuse * avgDiffuseFactor * diffuse.redF()
+               + kSpecular * avgSpecularFactor * mSpecular.redF();
+
+  double green = kAmbient * mAmbient.greenF()
+                 + kDiffuse * avgDiffuseFactor * diffuse.greenF()
+                 + kSpecular * avgSpecularFactor * mSpecular.greenF();
+
+  double blue = kAmbient * mAmbient.blueF()
+                + kDiffuse * avgDiffuseFactor * diffuse.blueF()
+                + kSpecular * avgSpecularFactor * mSpecular.blueF();
+
+  red = std::clamp( red, 0.0, 1.0 );
+  green = std::clamp( green, 0.0, 1.0 );
+  blue = std::clamp( blue, 0.0, 1.0 );
+
+  return QColor::fromRgbF( static_cast<float>( red ), static_cast<float>( green ), static_cast<float>( blue ), static_cast<float>( mOpacity ) );
+}
+
+
+QColor QgsPhongTexturedMaterialSettings::textureAverageColor() const
+{
+  if ( mTextureAverageColor.has_value() )
+  {
+    return *mTextureAverageColor;
+  }
+
+  QImage texture( mDiffuseTexturePath );
+  if ( texture.isNull() )
+  {
+    mTextureAverageColor = QColor( 127, 127, 127 );
+    return *mTextureAverageColor;
+  }
+
+  if ( texture.format() != QImage::Format_ARGB32 )
+  {
+    texture = texture.convertToFormat( QImage::Format_ARGB32 );
+  }
+
+  int red = 0;
+  int green = 0;
+  int blue = 0;
+  int pixelCount = 0;
+
+  // downsampling to ensure a fast computation
+  const int sampleStep = 8;
+  const int width = texture.width();
+  const int height = texture.height();
+  for ( int y = 0; y < height; y += sampleStep )
+  {
+    const QRgb *line = reinterpret_cast< const QRgb * >( texture.constScanLine( y ) );
+    for ( int x = 0; x < width; x += sampleStep )
+    {
+      const QRgb pixel = line[x];
+      red += qRed( pixel );
+      green += qGreen( pixel );
+      blue += qBlue( pixel );
+      pixelCount++;
+    }
+  }
+
+  mTextureAverageColor = QColor( red / pixelCount, green / pixelCount, blue / pixelCount );
+  return *mTextureAverageColor;
+}
+
+void QgsPhongTexturedMaterialSettings::setColorsFromBase( const QColor &baseColor, float metallic )
+{
+  metallic = std::clamp( metallic, 0.0f, 1.0f );
+
+  const float baseR = baseColor.redF();
+  const float baseG = baseColor.greenF();
+  const float baseB = baseColor.blueF();
+
+  // ambient: stable, non-directional lighting
+  constexpr float AMBIENT_FACTOR = 0.2f;
+  mAmbient = QColor::fromRgbF( baseR * AMBIENT_FACTOR, baseG * AMBIENT_FACTOR, baseB * AMBIENT_FACTOR );
+
+  // F0: Fresnel reflectance at normal incidence
+  constexpr float F0_DIELECTRIC = 0.04f;
+
+  // specular
+  // * Non-metallic surfaces: Independent of base color
+  // * Metallic surfaces:
+  //   - Reflect their own color
+  //   - Linear interpolation from white to base color as metallic increases
+  mSpecular = QColor::fromRgbF(
+    ( 1.0f - metallic ) * F0_DIELECTRIC + metallic * baseR,
+    ( 1.0f - metallic ) * F0_DIELECTRIC + metallic * baseG,
+    ( 1.0f - metallic ) * F0_DIELECTRIC + metallic * baseB
+  );
+
+  constexpr float MIN_SHININESS = 32.0f;
+  constexpr float MAX_SHININESS = 200.0f;
+  mShininess = MIN_SHININESS + metallic * ( MAX_SHININESS - MIN_SHININESS );
+}
+
+void QgsPhongTexturedMaterialSettings::setColorsFromBase( const QColor &baseColor )
+{
+  setColorsFromBase( baseColor, 0.0f );
+}
+
 void QgsPhongTexturedMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   mAmbient = QgsColorUtils::colorFromString( elem.attribute( u"ambient"_s, u"25,25,25"_s ) );

@@ -16,6 +16,8 @@
 #ifndef QGSPHONGTEXTUREDMATERIALSETTINGS_H
 #define QGSPHONGTEXTUREDMATERIALSETTINGS_H
 
+#include <optional>
+
 #include "qgis_3d.h"
 #include "qgsabstractmaterialsettings.h"
 
@@ -105,7 +107,11 @@ class _3D_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialSe
      * Sets the \a path of the diffuse texture.
      * \see diffuseTexturePath()
      */
-    void setDiffuseTexturePath( const QString &path ) { mDiffuseTexturePath = path; }
+    void setDiffuseTexturePath( const QString &path )
+    {
+      mDiffuseTexturePath = path;
+      mTextureAverageColor.reset();
+    }
 
     /**
      * Sets the texture scale
@@ -123,6 +129,53 @@ class _3D_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialSe
      */
     void setOpacity( double opacity ) { mOpacity = opacity; }
 
+    /**
+     * Returns an approximate color representing the blended material color.
+     *
+     * This function calculates a weighted average of the ambient, diffuse, and
+     * specular color components to produce a single representative color.
+     *
+     * \see ambient()
+     * \see specular()
+     * \see diffuseTexturePath()
+     *
+     * \since QGIS 4.0
+     */
+    QColor averageColor() const override;
+
+    /**
+     * Decompose an average color into Phong material components.
+     *
+     * Sets ambient and specular colors from the input color.
+     * This also sets the shininess parameter based on the metallic value.
+     *
+     * \param baseColor The color to decompose
+     * \param metallic Controls how "metal-like" a material appears. Value between 0 and 1
+     *
+     * \see setAmbient()
+     * \see setSpecular()
+     * \see setShininess()
+     *
+     * \since QGIS 4.0
+     */
+    void setColorsFromBase( const QColor &baseColor, float metallic );
+
+    /**
+     * Decomposes a base color into Phong material components.
+     *
+     * Sets ambient and specular colors from the input color.
+     * This is equivalent to calling setColorsFromBase with the metallic parameter equal to 0:
+     * setColorsFromBase(baseColor, 0).
+     *
+     * \param baseColor The color to decompose
+     *
+     * \see setAmbient()
+     * \see setSpecular()
+     *
+     * \since QGIS 4.0
+     */
+    void setColorsFromBase( const QColor &baseColor ) override;
+
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
 #ifndef SIP_RUN
@@ -137,6 +190,9 @@ class _3D_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialSe
     }
 
   private:
+    QColor textureAverageColor() const;
+
+  private:
     QColor mAmbient { QColor::fromRgbF( 0.1f, 0.1f, 0.1f, 1.0f ) };
     QColor mSpecular { QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) };
     double mShininess = 0.0;
@@ -144,6 +200,7 @@ class _3D_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialSe
     QString mDiffuseTexturePath;
     double mTextureScale { 1.0f };
     double mTextureRotation { 0.0f };
+    mutable std::optional<QColor> mTextureAverageColor;
 };
 
 

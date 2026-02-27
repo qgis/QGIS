@@ -74,6 +74,56 @@ bool QgsGoochMaterialSettings::equals( const QgsAbstractMaterialSettings *other 
   return *this == *otherGooch;
 }
 
+QColor QgsGoochMaterialSettings::averageColor() const
+{
+  const double kDiffuse = 0.8;
+  const double kSpecular = 0.2;
+
+  double red = 0.5 * kDiffuse * ( ( mCool.redF() + mAlpha * mDiffuse.redF() ) + ( mWarm.redF() + mBeta * mDiffuse.redF() ) ) + kSpecular * mSpecular.redF();
+  double green = 0.5 * kDiffuse * ( ( mCool.greenF() + mAlpha * mDiffuse.greenF() ) + ( mWarm.greenF() + mBeta * mDiffuse.greenF() ) ) + kSpecular * mSpecular.greenF();
+  double blue = 0.5 * kDiffuse * ( ( mCool.blueF() + mAlpha * mDiffuse.blueF() ) + ( mWarm.blueF() + mBeta * mDiffuse.blueF() ) ) + kSpecular * mSpecular.blueF();
+
+  red = std::clamp( red, 0.0, 1.0 );
+  green = std::clamp( green, 0.0, 1.0 );
+  blue = std::clamp( blue, 0.0, 1.0 );
+
+  return QColor::fromRgbF( static_cast<float>( red ), static_cast<float>( green ), static_cast<float>( blue ) );
+}
+
+void QgsGoochMaterialSettings::setColorsFromBase( const QColor &baseColor, double alpha, double beta )
+{
+  mAlpha = std::clamp( alpha, 0.0, 1.0 );
+  mBeta = std::clamp( beta, 0.0, 1.0 );
+
+  const float alphaF = static_cast<float>( mAlpha );
+  const float betaF = static_cast<float>( mBeta );
+
+  // Cool color: linear interpolation between baseColor and blue
+  // with the alpha parameter
+  mCool.setRedF( baseColor.redF() * ( 1.0f - alphaF ) );
+  mCool.setGreenF( baseColor.greenF() * ( 1.0f - alphaF ) );
+  mCool.setBlueF( baseColor.blueF() * ( 1.0f - alphaF ) + alphaF );
+
+  // Warm color: linear interpolation between baseColor and yellow
+  // with the beta parameter
+  mWarm.setRedF( baseColor.redF() * ( 1.0f - betaF ) + betaF );
+  mWarm.setGreenF( baseColor.greenF() * ( 1.0f - betaF ) + betaF );
+  mWarm.setBlueF( baseColor.blueF() * ( 1.0f - betaF ) );
+
+  // Diffuse color: mid-range between warm and cool
+  mDiffuse.setRedF( 0.5f * ( mWarm.redF() + mCool.redF() ) );
+  mDiffuse.setGreenF( 0.5f * ( mWarm.greenF() + mCool.greenF() ) );
+  mDiffuse.setBlueF( 0.5f * ( mWarm.blueF() + mCool.blueF() ) );
+
+  // Specular: soft highlight
+  mSpecular = QColor::fromRgbF( 0.4f, 0.4f, 0.4f );
+}
+
+void QgsGoochMaterialSettings::setColorsFromBase( const QColor &baseColor )
+{
+  return setColorsFromBase( baseColor, mAlpha, mBeta );
+}
+
 void QgsGoochMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   mWarm = QgsColorUtils::colorFromString( elem.attribute( u"warm"_s, u"107,0,107"_s ) );

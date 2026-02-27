@@ -92,6 +92,60 @@ class _3D_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
     //! Sets beta value
     void setBeta( double beta ) { mBeta = beta; }
 
+    /**
+     * Returns an approximate color representing the blended material color.
+     *
+     * This function calculates a weighted average of the cool, warm, diffuse, and
+     * specular color components to produce a single representative color.
+     *
+     * \see cool()
+     * \see diffuse()
+     * \see specular()
+     * \see warm()
+     *
+     * \since QGIS 4.0
+     */
+    QColor averageColor() const override;
+
+    /**
+     * Decomposes an average color into Gooch material components.
+     *
+     * Sets warm, cool, diffuse and specular colors from the input color.
+     * It also sets the alpha and beta parameters
+     *
+     * \param baseColor The color to decompose
+     * \param alpha The alpha value
+     * \param beta The beta value
+     *
+     * \see setCool()
+     * \see setDiffuse()
+     * \see setSpecular()
+     * \see setWarm()
+     * \see setAlpha()
+     * \see setBeta()
+     *
+     * \since QGIS 4.0
+     */
+    void setColorsFromBase( const QColor &baseColor, double alpha, double beta );
+
+    /**
+     * Decomposes an average color into Gooch material components.
+     *
+     * Sets warm, cool, diffuse and specular colors from the input color.
+     * This is equivalent to calling setColorsFromBase with the existing alpha and beta parameters:
+     * setColorsFromBase(baseColor, alpha(), beta()).
+     *
+     * \param baseColor The color to decompose
+     *
+     * \see setCool()
+     * \see setDiffuse()
+     * \see setSpecular()
+     * \see setWarm()
+     *
+     * \since QGIS 4.0
+     */
+    void setColorsFromBase( const QColor &baseColor ) override;
+
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     QMap<QString, QString> toExportParameters() const override;

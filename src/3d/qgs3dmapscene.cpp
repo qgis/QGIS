@@ -31,6 +31,7 @@
 #include "qgsannotationlayer3drenderer.h"
 #include "qgsapplication.h"
 #include "qgscameracontroller.h"
+#include "qgscategorized3drenderer.h"
 #include "qgschunkedentity.h"
 #include "qgschunknode.h"
 #include "qgseventtracing.h"
@@ -822,7 +823,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     // It has happened before that renderer pointed to a different layer (probably after copying a style).
     // This is a bit of a hack and it should be handled in QgsMapLayer::setRenderer3D() but in qgis_core
     // the vector layer 3D renderer classes are not available.
-    if ( layer->type() == Qgis::LayerType::Vector && ( renderer->type() == "vector"_L1 || renderer->type() == "rulebased"_L1 ) )
+    if ( layer->type() == Qgis::LayerType::Vector && ( renderer->type() == "vector"_L1 || renderer->type() == "rulebased"_L1 || renderer->type() == "categorized"_L1 ) )
     {
       static_cast<QgsAbstractVectorLayer3DRenderer *>( renderer )->setLayer( static_cast<QgsVectorLayer *>( layer ) );
       if ( renderer->type() == "vector"_L1 )
@@ -843,6 +844,19 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
         for ( auto rule : rules )
         {
           const QgsPoint3DSymbol *pointSymbol = dynamic_cast<const QgsPoint3DSymbol *>( rule->symbol() );
+          if ( pointSymbol && pointSymbol->shape() == Qgis::Point3DShape::Model )
+          {
+            mModelVectorLayers.append( layer );
+            break;
+          }
+        }
+      }
+      else if ( renderer->type() == "categorized"_L1 )
+      {
+        const Qgs3DCategoryList categories = static_cast<QgsCategorized3DRenderer *>( renderer )->categories();
+        for ( const Qgs3DRendererCategory &category : categories )
+        {
+          const QgsPoint3DSymbol *pointSymbol = dynamic_cast<const QgsPoint3DSymbol *>( category.symbol() );
           if ( pointSymbol && pointSymbol->shape() == Qgis::Point3DShape::Model )
           {
             mModelVectorLayers.append( layer );

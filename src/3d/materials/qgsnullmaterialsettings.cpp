@@ -82,3 +82,13 @@ QMap<QString, QString> QgsNullMaterialSettings::toExportParameters() const
 void QgsNullMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *, const QgsMaterialContext & ) const
 {
 }
+
+QColor QgsNullMaterialSettings::averageColor() const
+{
+  return QColor();
+}
+
+void QgsNullMaterialSettings::setColorsFromBase( const QColor &baseColor )
+{
+  Q_UNUSED( baseColor )
+}
