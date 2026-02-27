@@ -186,7 +186,8 @@ simplify method
 };
 
 
-template<typename T> class QgsAbstractFeatureIteratorFromSource : QgsAbstractFeatureIterator
+template<T>
+class QgsAbstractFeatureIteratorFromSource : QgsAbstractFeatureIterator
 {
 %Docstring(signature="appended")
 Helper template that cares of two things: 1. automatic deletion of

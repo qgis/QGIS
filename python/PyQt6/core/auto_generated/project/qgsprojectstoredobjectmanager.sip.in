@@ -65,7 +65,8 @@ Marks the project as dirty.
 %End
 };
 
-template<class T> class QgsAbstractProjectStoredObjectManager : QgsProjectStoredObjectManagerBase
+template<T>
+class QgsAbstractProjectStoredObjectManager : QgsProjectStoredObjectManagerBase
 {
 %Docstring(signature="appended")
 Template class for storage of a set of objects attached to a

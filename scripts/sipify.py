@@ -833,6 +833,19 @@ def read_line():
     new_line = re.sub(r'("(?:(?:\\.|[^"\\])*)")_L1', r"QLatin1String( \1 )", new_line)
     new_line = re.sub(r"('(?:(?:\\.|[^'\\])*)')_L1", r"QLatin1Char( \1 )", new_line)
 
+    # Split "template<...> class/struct ..." back to two lines.
+    # clang-format may join them onto one line, but SIP requires them separate.
+    # But don't split if the class part has SIP_SKIP — the whole line should be
+    # processed as one unit so the skip applies to the template too.
+    template_class_match = re.match(
+        r"^(\s*template\s*<[^>]*>)\s+(class|struct)\b(.*)$", new_line
+    )
+    if template_class_match and "SIP_SKIP" not in template_class_match.group(3):
+        class_line = f"{template_class_match.group(2)}{template_class_match.group(3)}"
+        CONTEXT.input_lines.insert(CONTEXT.line_idx, class_line)
+        CONTEXT.line_count += 1
+        new_line = template_class_match.group(1)
+
     new_line = replace_macros(new_line)
     return new_line
 

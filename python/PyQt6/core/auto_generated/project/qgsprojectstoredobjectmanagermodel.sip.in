@@ -50,7 +50,8 @@ specified ``parent`` object.
   protected:
 };
 
-template<class T> class QgsProjectStoredObjectManagerModel : QgsProjectStoredObjectManagerModelBase
+template<T>
+class QgsProjectStoredObjectManagerModel : QgsProjectStoredObjectManagerModelBase
 {
 %Docstring(signature="appended")
 Template class for models representing the objects available in a
@@ -180,7 +181,8 @@ Subclasses should override this method instead of
 };
 
 
-template<class T> class QgsProjectStoredObjectManagerProxyModel : QgsProjectStoredObjectManagerProxyModelBase
+template<T>
+class QgsProjectStoredObjectManagerProxyModel : QgsProjectStoredObjectManagerProxyModelBase
 {
 %Docstring(signature="appended")
 Template class QSortFilterProxyModel subclass for

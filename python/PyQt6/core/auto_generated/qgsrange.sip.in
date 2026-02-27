@@ -11,7 +11,8 @@
 
 
 
-template<typename T> class QgsRange
+template<T>
+class QgsRange
 {
 %Docstring(signature="appended")
 A template based class for storing ranges (lower to upper values).
@@ -271,7 +272,8 @@ Returns ``True`` if the range consists of all possible values.
 
 
 
-template<typename T> class QgsTemporalRange
+template<T>
+class QgsTemporalRange
 {
 %Docstring(signature="appended")
 A template based class for storing temporal ranges (beginning to end
