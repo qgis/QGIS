@@ -113,6 +113,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
   private slots:
     void resetView();
     void configure();
+    void configureCamera();
     void saveAsImage();
     void toggleAnimations();
     void cameraControl();
@@ -190,6 +191,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mActionSync3DNavTo2D = nullptr;
     QAction *mShowFrustumPolygon = nullptr;
     QAction *mActionShow2DMapOverlay = nullptr;
+    QAction *mActionOpenCameraControlsWidget = nullptr;
     QAction *mActionAnim = nullptr;
     QAction *mActionExport = nullptr;
     QAction *mActionMapThemes = nullptr;
@@ -211,6 +213,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QObjectUniquePtr<QgsRubberBand> mViewFrustumHighlight;
     QObjectUniquePtr<QgsRubberBand> mViewExtentHighlight;
     QPointer<QDialog> mConfigureDialog;
+    QPointer<QDialog> mCameraControlsDialog;
     QgsMessageBar *mMessageBar = nullptr;
     bool mGpuMemoryLimitReachedReported = false;
 
