@@ -130,11 +130,9 @@ Remove a child node from this group. The node will be deleted.
 Remove map layer's node from this group. The node will be deleted.
 %End
 
-    void removeCustomNode( const QString &id );
+    void removeCustomNode( QgsLayerTreeCustomNode *customNode );
 %Docstring
 Remove a custom node from this group. The node will be deleted.
-
-:param id: Id of the node to be removed.
 
 .. versionadded:: 4.0
 %End

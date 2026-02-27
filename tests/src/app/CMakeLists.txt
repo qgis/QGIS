@@ -21,6 +21,7 @@ set(TESTS
   testqgscustomization.cpp
   testqgsdecorationscalebar.cpp
   testqgsdwgimportdialog.cpp
+  testqgselevationprofilewidget.cpp
   testqgsfieldcalculator.cpp
   testqgsidentify.cpp
   testqgslayerpropertiesdialogs.cpp
