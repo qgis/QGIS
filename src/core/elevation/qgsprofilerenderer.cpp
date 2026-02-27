@@ -318,8 +318,6 @@ QImage QgsProfilePlotRenderer::renderToImage( int width, int height, double dist
   context.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
 
   render( context, width, height, distanceMin, distanceMax, zMin, zMax, sourceId );
-  QRectF plotArea( QPointF( 0, 0 ), QPointF( width, height ) );
-  renderSubsectionsIndicator( context, plotArea, distanceMin, distanceMax, zMin, zMax );
   p.end();
 
   return res;
@@ -364,6 +362,9 @@ void QgsProfilePlotRenderer::render( QgsRenderContext &context, double width, do
       job->mutex.unlock();
     }
   }
+
+  QRectF plotArea( QPointF( 0, 0 ), QPointF( width, height ) );
+  renderSubsectionsIndicator( context, plotArea, distanceMin, distanceMax, zMin, zMax );
 }
 
 std::unique_ptr<QgsLineSymbol> QgsProfilePlotRenderer::defaultSubSectionsSymbol()
