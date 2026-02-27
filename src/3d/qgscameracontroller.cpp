@@ -214,6 +214,9 @@ void QgsCameraController::frameTriggered( float dt )
 {
   Q_UNUSED( dt )
 
+  // In case viewport size has changed
+  updateOrthographicProjectionPlane();
+
   if ( mCameraChanged )
   {
     emit cameraChanged();
@@ -454,6 +457,19 @@ void QgsCameraController::resetGlobe( float distance, double lat, double lon )
   setCameraPose( cp );
 }
 
+void QgsCameraController::updateOrthographicProjectionPlane()
+{
+  // When using orthographic projection, reuse the distance to center (which
+  // ordinarlily woudln't do anythning) to set the viewport size in the world.
+  if ( mScene->mapSettings()->projectionType() == Qt3DRender::QCameraLens::OrthographicProjection )
+  {
+    const QSize viewportRect = mScene->engine()->size();
+    const float viewWidthFromCenter = distance();
+    const float viewHeightFromCenter = distance() * static_cast<float>( viewportRect.height() ) / static_cast<float>( viewportRect.width() );
+    mCamera->lens()->setOrthographicProjection( -viewWidthFromCenter, viewWidthFromCenter, -viewHeightFromCenter, viewHeightFromCenter, mCamera->nearPlane(), mCamera->farPlane() );
+  }
+}
+
 void QgsCameraController::updateCameraFromPose()
 {
   if ( mCamera )
@@ -479,6 +495,9 @@ void QgsCameraController::updateCameraFromPose()
     {
       mCameraPose.updateCamera( mCamera );
     }
+
+    updateOrthographicProjectionPlane();
+
     mCameraChanged = true;
   }
 }
