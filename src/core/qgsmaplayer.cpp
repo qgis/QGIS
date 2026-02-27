@@ -3069,6 +3069,15 @@ QgsRectangle QgsMapLayer::wgs84Extent( bool forceRecalculate ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
+  if ( !crs().isEarthCrs() )
+  {
+    return QgsRectangle();
+  }
+
+  // if this function is called without previous call to extent() it will return empty rectangle as both mExtent2D and mExtent3D are null
+  // to avoid this call extent here to force extent calculation
+  ( void ) extent();
+
   QgsRectangle wgs84Extent;
 
   if ( ! forceRecalculate && ! mWgs84Extent.isNull() )
