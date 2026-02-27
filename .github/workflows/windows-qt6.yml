@@ -145,9 +145,9 @@ jobs:
 
       - name: 📤 Upload bundle
         uses: actions/upload-artifact@v6
-        id: artifact-${{ matrix.triplet }}
+        id: artifact-upload
         with:
-          name: qgis-windows-qt6
+          name: qgis-${{ matrix.triplet }}
           path: |
             build/*-win64.zip
 
@@ -159,6 +159,6 @@ jobs:
           marker: mingw64-qt6
           body: |
             ### 🪟 Windows Qt6 builds
-            Download [Windows Qt6 builds of this PR for testing](${{ steps.artifact-win64-qt6.outputs.artifact-url }}).
+            Download [Windows Qt6 builds of this PR for testing](${{ steps.artifact-upload.outputs.artifact-url }}).
             *(Built from commit ${{ github.event.pull_request.head.sha }})*
           pr: ${{ github.event.number }}
