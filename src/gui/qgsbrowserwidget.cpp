@@ -105,6 +105,8 @@ QgsBrowserWidget::QgsBrowserWidget( QgsBrowserGuiModel *browserModel, QWidget *p
   connect( mActionCollapse, &QAction::triggered, mBrowserView, &QgsDockBrowserTreeView::collapseAll );
   connect( mActionShowFilter, &QAction::triggered, this, &QgsBrowserWidget::showFilterWidget );
   connect( mActionPropertiesWidget, &QAction::triggered, this, &QgsBrowserWidget::propertiesWidgetToggled );
+  connect( mActionOpenPath, &QAction::triggered, this, &QgsBrowserWidget::openPath );
+
   connect( mLeFilter, &QgsFilterLineEdit::returnPressed, this, &QgsBrowserWidget::setFilter );
   connect( mLeFilter, &QgsFilterLineEdit::cleared, this, &QgsBrowserWidget::setFilter );
   connect( mLeFilter, &QgsFilterLineEdit::textChanged, this, &QgsBrowserWidget::setFilter );
@@ -140,8 +142,10 @@ void QgsBrowserWidget::showEvent( QShowEvent *e )
     mBrowserView->header()->setSectionResizeMode( 0, QHeaderView::ResizeToContents );
     mBrowserView->header()->setStretchLastSection( false );
 
-    // selectionModel is created when model is set on tree
-    connect( mBrowserView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsBrowserWidget::selectionChanged );
+    if ( mBrowserView->selectionModel() )
+    {
+      connect( mBrowserView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsBrowserWidget::selectionChanged );
+    }
 
     // Forward the model changed signals to the widget
     connect( mModel, &QgsBrowserModel::connectionsChanged, this, &QgsBrowserWidget::connectionsChanged );
@@ -175,7 +179,6 @@ void QgsBrowserWidget::itemDoubleClicked( const QModelIndex &index )
   // if no providers overrode the double-click handling for this item, we give the item itself a chance
   if ( !item->handleDoubleClick() )
   {
-    // double-click not handled by browser model, so use as default view expand behavior
     if ( mBrowserView->isExpanded( index ) )
       mBrowserView->collapse( index );
     else
@@ -545,11 +548,17 @@ void QgsBrowserWidget::propertiesWidgetToggled( bool enabled )
 
 void QgsBrowserWidget::setActiveIndex( const QModelIndex &index )
 {
+  if ( !mProxyModel || !mBrowserView )
+    return;
+
   if ( index.isValid() )
   {
     QModelIndex proxyIndex = mProxyModel->mapFromSource( index );
-    mBrowserView->expand( proxyIndex );
-    mBrowserView->setCurrentIndex( proxyIndex );
+    if ( proxyIndex.isValid() )
+    {
+      mBrowserView->expand( proxyIndex );
+      mBrowserView->setCurrentIndex( proxyIndex );
+    }
   }
 }
 
@@ -557,4 +566,24 @@ void QgsBrowserWidget::splitterMoved()
 {
   QgsSettings settings;
   settings.setValue( u"%1/splitterState"_s.arg( settingsSection() ), mSplitter->saveState() );
+}
+
+void QgsBrowserWidget::openPath()
+{
+  if ( !mBrowserView )
+    return;
+
+  // Show file dialog to let user select or paste a path
+  const QString path = QFileDialog::getExistingDirectory(
+    this,
+    tr( "Open Path in Browser" ),
+    QString(),
+    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks
+  );
+
+  if ( path.isEmpty() )
+    return;
+
+
+  mBrowserView->expandPath( path, true );
 }
