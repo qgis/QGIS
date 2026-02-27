@@ -131,7 +131,7 @@ jobs:
 #        if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
         uses: actions/upload-artifact@v6
         with:
-          name: qgis-sdk-x64-windows
+          name: qgis-sdk-${{ matrix.triplet }}
           path: |
             sdk/vcpkg-export-*.zip
 
@@ -139,13 +139,13 @@ jobs:
         uses: actions/upload-artifact@v6
         if: failure()
         with:
-          name: build-logs-x64-windows
+          name: build-logs-${{ matrix.triplet }}
           path: |
             C:/src/**/*.log
 
       - name: 📤 Upload bundle
         uses: actions/upload-artifact@v6
-        id: artifact-win64-qt6
+        id: artifact-${{ matrix.triplet }}
         with:
           name: qgis-windows-qt6
           path: |
