@@ -1,6 +1,6 @@
 """
 ***************************************************************************
-    BarPlot.py
+    BoxPlot.py
     ---------------------
     Date                 : March 2015
     Copyright            : (C) 2017 by Matteo Ghetta
@@ -22,7 +22,7 @@ __copyright__ = "(C) 2017, Matteo Ghetta"
 import warnings
 
 from qgis.core import (
-    QgsFeatureRequest,
+    NULL,
     QgsProcessingException,
     QgsProcessingParameterEnum,
     QgsProcessingParameterFeatureSource,
@@ -169,17 +169,8 @@ class BoxPlot(QgisAlgorithm):
 
         values = vector.values(source, valuefieldname)
 
-        x_index = source.fields().lookupField(namefieldname)
-        x_var = vector.convert_nulls(
-            [
-                i[namefieldname]
-                for i in source.getFeatures(
-                    QgsFeatureRequest()
-                    .setFlags(QgsFeatureRequest.Flag.NoGeometry)
-                    .setSubsetOfAttributes([x_index])
-                )
-            ],
-            "<NULL>",
+        x_var = vector.load_field(
+            source, namefieldname, replacements={NULL: "<NULL>", None: "<NULL>"}
         )
 
         msdIndex = self.parameterAsEnum(parameters, self.MSD, context)

@@ -42,6 +42,38 @@ def resolveFieldIndex(source, attr):
         return index
 
 
+def load_field(source, fieldname, replacements={}):
+    """Returns the values in the source attribute table for a given field.
+
+    :param source: The feature source
+    :param fieldname: Name of the field to load
+    :param replacements: Optional dictionary of values to replace
+    :return: List of values
+
+    Unlike the ``vector.values`` method, this function does not assume that
+    fields are numeric.
+
+    Use the ``replacements`` parameter to replace ``NULL``/``None`` values, if
+    necessary (e.g. ``{NULL: "<NULL>"}``).
+    """
+
+    values = []
+    field_index = source.fields().lookupField(fieldname)
+    request = (
+        QgsFeatureRequest()
+        .setFlags(QgsFeatureRequest.Flag.NoGeometry)
+        .setSubsetOfAttributes([field_index])
+    )
+
+    for feature in source.getFeatures(request):
+        value = feature[fieldname]
+        if value in replacements.keys():
+            values.append(replacements[value])
+        else:
+            values.append(value)
+    return values
+
+
 def values(source, *attributes):
     """Returns the values in the attributes table of a feature source,
     for the passed fields.
@@ -82,16 +114,6 @@ def values(source, *attributes):
             else:
                 ret[k] = [v]
     return ret
-
-
-def convert_nulls(values, replacement=None):
-    """
-    Converts NULL items in a list of values to a replacement value (usually None)
-    :param values: list of values
-    :param replacement: value to use in place of NULL
-    :return: converted list
-    """
-    return [i if i != NULL else replacement for i in values]
 
 
 def checkMinDistance(point, index, distance, points):
