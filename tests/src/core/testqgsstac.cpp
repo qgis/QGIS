@@ -181,15 +181,17 @@ void TestQgsStac::testParseLocalItem()
   QCOMPARE( item->description(), u"A sample STAC Item that includes examples of all common metadata"_s );
 
   const QgsMimeDataUtils::UriList uris = item->uris();
-  QCOMPARE( uris.size(), 4 );
+  QCOMPARE( uris.size(), 5 );
   QCOMPARE( uris.at( 0 ).uri, u"file://%1%2"_s.arg( mDataDir, u"20201211_223832_CS2_analytic.tif"_s ) );
   QCOMPARE( uris.at( 0 ).name, u"4-Band Analytic"_s );
   QCOMPARE( uris.at( 1 ).uri, u"/vsicurl/https://github.com/opengeospatial/geoparquet/raw/refs/heads/main/examples/example.parquet"_s );
   QCOMPARE( uris.at( 1 ).name, u"GeoParquet File"_s );
-  QCOMPARE( uris.at( 2 ).uri, u"/vsicurl/https://storage.googleapis.com/open-cogs/stac-examples/20201211_223832_CS2.tif"_s );
-  QCOMPARE( uris.at( 2 ).name, u"3-Band Visual"_s );
-  QCOMPARE( uris.at( 3 ).uri, u"ZARR:\"/vsicurl/https://objectstore.eodc.eu:2222/e05ab01a9d56408d82ac32d69a5aae2a:202505-s02msil2a/22/products/cpm_v256/S2B_MSIL2A_20250522T125039_N0511_R095_T26TML_20250522T133252.zarr\""_s );
-  QCOMPARE( uris.at( 3 ).name, u"Example Zarr Store"_s );
+  QCOMPARE( uris.at( 2 ).name, u"Example TileDB array"_s );
+  QCOMPARE( uris.at( 2 ).uri, u"/vsiaz/some-url.com/tiledb_array"_s );
+  QCOMPARE( uris.at( 3 ).uri, u"/vsicurl/https://storage.googleapis.com/open-cogs/stac-examples/20201211_223832_CS2.tif"_s );
+  QCOMPARE( uris.at( 3 ).name, u"3-Band Visual"_s );
+  QCOMPARE( uris.at( 4 ).uri, u"ZARR:\"/vsicurl/https://objectstore.eodc.eu:2222/e05ab01a9d56408d82ac32d69a5aae2a:202505-s02msil2a/22/products/cpm_v256/S2B_MSIL2A_20250522T125039_N0511_R095_T26TML_20250522T133252.zarr\""_s );
+  QCOMPARE( uris.at( 4 ).name, u"Example Zarr Store"_s );
 
   // check that relative links are correctly resolved into absolute links
   const QVector<QgsStacLink> links = item->links();
@@ -200,7 +202,7 @@ void TestQgsStac::testParseLocalItem()
   QCOMPARE( links.at( 2 ).href(), u"%1collection.json"_s.arg( basePath ) );
   QCOMPARE( links.at( 3 ).href(), u"http://remotedata.io/catalog/20201211_223832_CS2/index.html"_s );
 
-  QCOMPARE( item->assets().size(), 8 );
+  QCOMPARE( item->assets().size(), 9 );
   QgsStacAsset asset = item->assets().value( u"analytic"_s, QgsStacAsset( {}, {}, {}, {}, {} ) );
   QCOMPARE( asset.href(), basePath + u"20201211_223832_CS2_analytic.tif"_s );
   QVERIFY( asset.isCloudOptimized() );
@@ -244,6 +246,13 @@ void TestQgsStac::testParseLocalItem()
   QCOMPARE( asset.formatName(), u"Parquet"_s );
   QCOMPARE( asset.uri().layerType, u"vector"_s );
   QVERIFY( asset.isDownloadable() );
+
+  // TileDB recognized as cloud optimized
+  asset = item->assets().value( u"tiledb-array"_s, QgsStacAsset( {}, {}, {}, {}, {} ) );
+  QVERIFY( asset.isCloudOptimized() );
+  QCOMPARE( asset.formatName(), u"TileDB"_s );
+  QCOMPARE( asset.uri().layerType, u"raster"_s );
+  QVERIFY( !asset.isDownloadable() );
 }
 
 void TestQgsStac::testParseLocalItemCollection()
