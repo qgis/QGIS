@@ -48,7 +48,7 @@ class QgsLayoutItemRenderContext;
  * several frames (QgsLayoutFrame items).
  */
 
-class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutUndoObjectInterface
+class CORE_EXPORT QgsLayoutMultiFrame : public QgsLayoutObject, public QgsLayoutUndoObjectInterface
 {
     //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemhtml.h" );
     //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemattributetable.h" );
@@ -91,7 +91,8 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
     SIP_END
 #endif
 
-    Q_OBJECT
+    // clang-format off
+  Q_OBJECT
 
   public:
 
@@ -101,27 +102,28 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
     enum ResizeMode
     {
       UseExistingFrames = 0, //!< Don't automatically create new frames, just use existing frames
-      ExtendToNextPage, //!< Creates new full page frames on the following page(s) until the entire multiframe content is visible
-      RepeatOnEveryPage, //!< Repeats the same frame on every page
-      RepeatUntilFinished /*!< creates new frames with the same position and dimensions as the existing frame on the following page(s),
+      ExtendToNextPage,      //!< Creates new full page frames on the following page(s) until the entire multiframe content is visible
+      RepeatOnEveryPage,     //!< Repeats the same frame on every page
+      RepeatUntilFinished    /*!< creates new frames with the same position and dimensions as the existing frame on the following page(s),
                               until the entire multiframe content is visible */
     };
 
-//! Multiframe item undo commands, used for collapsing undo commands
+    //! Multiframe item undo commands, used for collapsing undo commands
     enum UndoCommand
     {
-      UndoHtmlBreakDistance, //!< HTML page break distance
-      UndoHtmlSource, //!< HTML source
-      UndoHtmlStylesheet, //!< HTML stylesheet
-      UndoTableCellStyle, //!< Table cell style
-      UndoTableMaximumFeatures, //!< Maximum features in table
-      UndoTableMargin, //!< Table margins
-      UndoTableHeaderFontColor, //!< Table header font color
+      // clang-format on
+      UndoHtmlBreakDistance,     //!< HTML page break distance
+      UndoHtmlSource,            //!< HTML source
+      UndoHtmlStylesheet,        //!< HTML stylesheet
+      UndoTableCellStyle,        //!< Table cell style
+      UndoTableMaximumFeatures,  //!< Maximum features in table
+      UndoTableMargin,           //!< Table margins
+      UndoTableHeaderFontColor,  //!< Table header font color
       UndoTableContentFontColor, //!< Table content font color
-      UndoTableGridStrokeWidth, //!< Table grid stroke width
-      UndoTableGridColor, //!< Table grid color
-      UndoTableBackgroundColor, //!< Table background color
-      UndoNone = -1, //!< No command suppression
+      UndoTableGridStrokeWidth,  //!< Table grid stroke width
+      UndoTableGridColor,        //!< Table grid color
+      UndoTableBackgroundColor,  //!< Table background color
+      UndoNone = -1,             //!< No command suppression
     };
 
     /**
@@ -377,7 +379,6 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
     void contentsChanged();
 
   protected:
-
     /**
      * Stores multiframe state within an XML DOM element.
      * \param element is the DOM element to store the multiframe's properties in
@@ -434,7 +435,7 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
     QList< QString > mFrameUuids;
     QList< QString > mFrameTemplateUuids;
 
-//! Unique id
+    //! Unique id
     QString mUuid;
     QString mTemplateUuid;
     friend class QgsLayoutFrame;

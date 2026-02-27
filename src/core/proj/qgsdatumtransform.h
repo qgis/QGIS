@@ -41,48 +41,38 @@ typedef struct PJconsts PJ;
  */
 class CORE_EXPORT QgsDatumTransform
 {
-
   public:
-
     /**
      * Contains datum transform information.
      * \deprecated QGIS 3.40. Not used for builds based on Proj >= 6.0.
      */
     struct TransformPair
     {
-
-      /**
+        /**
        * Constructor for a TransformPair with the specified \a sourceTransformId
        * and \a destinationTransformId transforms.
        */
-      TransformPair( int sourceTransformId = -1, int destinationTransformId = -1 )
-        : sourceTransformId( sourceTransformId )
-        , destinationTransformId( destinationTransformId )
-      {}
+        TransformPair( int sourceTransformId = -1, int destinationTransformId = -1 )
+          : sourceTransformId( sourceTransformId )
+          , destinationTransformId( destinationTransformId )
+        {}
 
-      /**
+        /**
         * ID for the datum transform to use when projecting from the source CRS.
         * \see QgsCoordinateTransform::datumTransformCrsInfo()
        */
-      int sourceTransformId = -1;
+        int sourceTransformId = -1;
 
-      /**
+        /**
        * ID for the datum transform to use when projecting to the destination CRS.
        * \see QgsCoordinateTransform::datumTransformCrsInfo()
        */
-      int destinationTransformId = -1;
+        int destinationTransformId = -1;
 
-      // TODO c++20 - replace with = default
-      bool operator==( QgsDatumTransform::TransformPair other ) const
-      {
-        return other.sourceTransformId == sourceTransformId && other.destinationTransformId == destinationTransformId;
-      }
+        // TODO c++20 - replace with = default
+        bool operator==( QgsDatumTransform::TransformPair other ) const { return other.sourceTransformId == sourceTransformId && other.destinationTransformId == destinationTransformId; }
 
-      bool operator!=( QgsDatumTransform::TransformPair other ) const
-      {
-        return other.sourceTransformId != sourceTransformId || other.destinationTransformId != destinationTransformId;
-      }
-
+        bool operator!=( QgsDatumTransform::TransformPair other ) const { return other.sourceTransformId != sourceTransformId || other.destinationTransformId != destinationTransformId; }
     };
 
     /**
@@ -91,36 +81,35 @@ class CORE_EXPORT QgsDatumTransform
      */
     struct TransformInfo
     {
-      //! Datum transform ID
-      int datumTransformId = -1;
+        //! Datum transform ID
+        int datumTransformId = -1;
 
-      //! EPSG code for the transform, or 0 if not found in EPSG database
-      int epsgCode = 0;
+        //! EPSG code for the transform, or 0 if not found in EPSG database
+        int epsgCode = 0;
 
-      //! Source CRS auth ID
-      QString sourceCrsAuthId;
+        //! Source CRS auth ID
+        QString sourceCrsAuthId;
 
-      //! Destination CRS auth ID
-      QString destinationCrsAuthId;
+        //! Destination CRS auth ID
+        QString destinationCrsAuthId;
 
-      //! Source CRS description
-      QString sourceCrsDescription;
+        //! Source CRS description
+        QString sourceCrsDescription;
 
-      //! Destination CRS description
-      QString destinationCrsDescription;
+        //! Destination CRS description
+        QString destinationCrsDescription;
 
-      //! Transform remarks
-      QString remarks;
+        //! Transform remarks
+        QString remarks;
 
-      //! Scope of transform
-      QString scope;
+        //! Scope of transform
+        QString scope;
 
-      //! True if transform is the preferred transform to use for the source/destination CRS combination
-      bool preferred = false;
+        //! True if transform is the preferred transform to use for the source/destination CRS combination
+        bool preferred = false;
 
-      //! True if transform is deprecated
-      bool deprecated = false;
-
+        //! True if transform is deprecated
+        bool deprecated = false;
     };
 
 
@@ -130,20 +119,20 @@ class CORE_EXPORT QgsDatumTransform
      */
     struct GridDetails
     {
-      //! Short name of transform grid
-      QString shortName;
-      //! Full name of transform grid
-      QString fullName;
-      //! Name of package the grid is included within
-      QString packageName;
-      //! Url to download grid from
-      QString url;
-      //! TRUE if direct download of grid is possible
-      bool directDownload = false;
-      //! TRUE if grid is available under an open license
-      bool openLicense = false;
-      //! TRUE if grid is currently available for use
-      bool isAvailable = false;
+        //! Short name of transform grid
+        QString shortName;
+        //! Full name of transform grid
+        QString fullName;
+        //! Name of package the grid is included within
+        QString packageName;
+        //! Url to download grid from
+        QString url;
+        //! TRUE if direct download of grid is possible
+        bool directDownload = false;
+        //! TRUE if grid is available under an open license
+        bool openLicense = false;
+        //! TRUE if grid is currently available for use
+        bool isAvailable = false;
     };
 
     /**
@@ -154,20 +143,20 @@ class CORE_EXPORT QgsDatumTransform
      */
     struct SingleOperationDetails
     {
-      //! Scope of operation, from EPSG registry database
-      QString scope;
+        //! Scope of operation, from EPSG registry database
+        QString scope;
 
-      //! Remarks for operation, from EPSG registry database
-      QString remarks;
+        //! Remarks for operation, from EPSG registry database
+        QString remarks;
 
-      //! Area of use, from EPSG registry database
-      QString areaOfUse;
+        //! Area of use, from EPSG registry database
+        QString areaOfUse;
 
-      //! Authority name, e.g. EPSG.
-      QString authority;
+        //! Authority name, e.g. EPSG.
+        QString authority;
 
-      //! Authority code, e.g. "8447" (for EPSG:8447).
-      QString code;
+        //! Authority code, e.g. "8447" (for EPSG:8447).
+        QString code;
     };
 
     /**
@@ -178,54 +167,54 @@ class CORE_EXPORT QgsDatumTransform
      */
     struct TransformDetails
     {
-      //! Proj representation of transform operation
-      QString proj;
-      //! Display name of transform operation
-      QString name;
-      //! Transformation accuracy (in meters)
-      double accuracy = 0;
+        //! Proj representation of transform operation
+        QString proj;
+        //! Display name of transform operation
+        QString name;
+        //! Transformation accuracy (in meters)
+        double accuracy = 0;
 
-      /**
+        /**
        * Authority name, e.g. EPSG.
        *
        * This is only available for single step coordinate operations. For multi-step operations, check
        * \a operationDetails instead.
        */
-      QString authority;
+        QString authority;
 
-      /**
+        /**
        * Identification code, e.g. "8447" (For EPSG:8447).
        *
        * This is only available for single step coordinate operations. For multi-step operations, check
        * \a operationDetails instead.
        */
-      QString code;
+        QString code;
 
-      /**
+        /**
        * Scope of operation, from EPSG registry database.
        *
        * This is only available for single step coordinate operations. For multi-step operations, check
        * \a operationDetails instead.
        */
-      QString scope;
+        QString scope;
 
-      /**
+        /**
       * Remarks for operation, from EPSG registry database.
       *
       * This is only available for single step coordinate operations. For multi-step operations, check
       * \a operationDetails instead.
       */
-      QString remarks;
+        QString remarks;
 
-      /**
+        /**
        * TRUE if operation is available.
        *
        * If FALSE, it likely means a transform grid is required which is not
        * available.
        */
-      bool isAvailable = false;
+        bool isAvailable = false;
 
-      /**
+        /**
        * Area of use string.
        *
        * This is only available for single step coordinate operations. For multi-step operations, check
@@ -233,26 +222,26 @@ class CORE_EXPORT QgsDatumTransform
        *
        * \see bounds
        */
-      QString areaOfUse;
+        QString areaOfUse;
 
-      /**
+        /**
        * Valid bounds for the coordinate operation.
        * \see areaOfUse
        */
-      QgsRectangle bounds;
+        QgsRectangle bounds;
 
-      /**
+        /**
        * Contains a list of transform grids used by the operation.
        */
-      QList< QgsDatumTransform::GridDetails > grids;
+        QList< QgsDatumTransform::GridDetails > grids;
 
-      /**
+        /**
        * Contains information about the single operation steps used in the transform operation.
        *
        * \note Only used in builds based on on Proj >= 6.2
        * \since QGIS 3.10
        */
-      QList< QgsDatumTransform::SingleOperationDetails > operationDetails;
+        QList< QgsDatumTransform::SingleOperationDetails > operationDetails;
     };
 
     /**
@@ -327,10 +316,7 @@ class CORE_EXPORT QgsDatumTransform
 #endif
 
   private:
-
     static void searchDatumTransform( const QString &sql, QList< int > &transforms );
-
-
 };
 
 #endif // QGSDATUMTRANSFORM_H

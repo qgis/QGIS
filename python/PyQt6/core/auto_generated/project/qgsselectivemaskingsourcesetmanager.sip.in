@@ -31,7 +31,6 @@ the sets contained in the manager.
 #include "qgsselectivemaskingsourcesetmanager.h"
 %End
   public:
-
     explicit QgsSelectiveMaskingSourceSetManager( QgsProject *project /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSelectiveMaskingSourceSetManager. The project will
@@ -162,7 +161,6 @@ Emitted when a set is about to be removed from the manager
 %Docstring
 Emitted when a set is renamed
 %End
-
 };
 
 

@@ -26,8 +26,7 @@
 
 QgsTiledSceneBoundingVolume::QgsTiledSceneBoundingVolume( const QgsOrientedBox3D &box )
   : mBox( box )
-{
-}
+{}
 
 void QgsTiledSceneBoundingVolume::transform( const QgsMatrix4x4 &transform )
 {
@@ -98,4 +97,3 @@ bool QgsTiledSceneBoundingVolume::intersects( const QgsOrientedBox3D &box ) cons
 {
   return mBox.intersects( box );
 }
-

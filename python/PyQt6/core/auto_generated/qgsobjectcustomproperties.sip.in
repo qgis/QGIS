@@ -23,7 +23,6 @@ element.
 #include "qgsobjectcustomproperties.h"
 %End
   public:
-
     QgsObjectCustomProperties();
 
     QStringList keys() const;
@@ -79,7 +78,6 @@ Writes the store contents to an XML node.
 %End
 
   protected:
-
 };
 
 /************************************************************************

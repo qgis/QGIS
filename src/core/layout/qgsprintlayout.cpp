@@ -30,8 +30,7 @@ using namespace Qt::StringLiterals;
 QgsPrintLayout::QgsPrintLayout( QgsProject *project )
   : QgsLayout( project )
   , mAtlas( new QgsLayoutAtlas( this ) )
-{
-}
+{}
 
 QgsPrintLayout *QgsPrintLayout::clone() const
 {

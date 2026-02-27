@@ -26,17 +26,11 @@ does not wait until the request is finished.
 #include "qgsgml.h"
 %End
   public:
-    QgsGml(
-      const QString &typeName,
-      const QString &geometryAttribute,
-      const QgsFields &fields );
+    QgsGml( const QString &typeName, const QString &geometryAttribute, const QgsFields &fields );
 
-    int getFeatures( const QString &uri,
-                     Qgis::WkbType *wkbType,
-                     QgsRectangle *extent = 0,
-                     const QString &userName = QString(),
-                     const QString &password = QString(),
-                     const QString &authcfg = QString() ) /PyName=getFeaturesUri/;
+    int getFeatures(
+      const QString &uri, Qgis::WkbType *wkbType, QgsRectangle *extent = 0, const QString &userName = QString(), const QString &password = QString(), const QString &authcfg = QString()
+    ) /PyName=getFeaturesUri/;
 %Docstring
 Does the HTTP GET request to the WFS server
 

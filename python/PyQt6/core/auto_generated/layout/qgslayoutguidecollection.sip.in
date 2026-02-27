@@ -21,7 +21,6 @@ Contains the configuration for a single snap guide used by a layout.
 #include "qgslayoutguidecollection.h"
 %End
   public:
-
     QgsLayoutGuide( Qt::Orientation orientation, QgsLayoutMeasurement position, QgsLayoutItemPage *page );
 %Docstring
 Constructor for a new guide with the specified ``orientation`` and
@@ -139,7 +138,6 @@ Stores and manages the snap guides used by a layout.
   public:
 
 
-
     enum class CustomRole /BaseType=IntEnum/
     {
       Orientation,
@@ -170,8 +168,8 @@ layout, and linked to the specified ``pageCollection``.
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
 
-     virtual QVariant headerData( int section, Qt::Orientation orientation,
-                         int role = Qt::DisplayRole ) const;
+    virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+
     virtual bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
 
 
@@ -280,7 +278,6 @@ single orientation (horizontal or vertical).
 #include "qgslayoutguidecollection.h"
 %End
   public:
-
     explicit QgsLayoutGuideProxyModel( QObject *parent /TransferThis/, Qt::Orientation orientation, int page );
 %Docstring
 Constructor for QgsLayoutGuideProxyModel, filtered to guides of the

@@ -19,9 +19,7 @@ QgsSldExportContext::QgsSldExportContext( const Qgis::SldExportOptions &options,
   : mExportOptions( options )
   , mVendorExtensions( vendorExtension )
   , mExportFilePath( filePath )
-{
-
-}
+{}
 
 Qgis::SldExportOptions QgsSldExportContext::exportOptions() const
 {

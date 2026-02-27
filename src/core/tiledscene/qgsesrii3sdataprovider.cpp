@@ -56,11 +56,7 @@ using namespace Qt::StringLiterals;
 class QgsEsriI3STiledSceneIndex final : public QgsAbstractTiledSceneIndex
 {
   public:
-
-    QgsEsriI3STiledSceneIndex(
-      const json &tileset,
-      const QUrl &rootUrl,
-      const QgsCoordinateTransformContext &transformContext );
+    QgsEsriI3STiledSceneIndex( const json &tileset, const QUrl &rootUrl, const QgsCoordinateTransformContext &transformContext );
 
     QgsTiledSceneTile rootTile() const final;
     QgsTiledSceneTile getTile( long long id ) final;
@@ -71,11 +67,9 @@ class QgsEsriI3STiledSceneIndex final : public QgsAbstractTiledSceneIndex
     bool fetchHierarchy( long long id, QgsFeedback *feedback = nullptr ) final;
 
   protected:
-
     QByteArray fetchContent( const QString &uri, QgsFeedback *feedback = nullptr ) final;
 
   private:
-
     bool fetchNodePage( int nodePage, QgsFeedback *feedback = nullptr );
     void parseNodePage( const QByteArray &nodePageContent );
     void parseMesh( QgsTiledSceneTile &t, const json &meshJson );
@@ -83,9 +77,9 @@ class QgsEsriI3STiledSceneIndex final : public QgsAbstractTiledSceneIndex
 
     struct NodeDetails
     {
-      long long parentNodeIndex;
-      QVector<long long> childNodeIndexes;
-      QgsTiledSceneTile tile;
+        long long parentNodeIndex;
+        QVector<long long> childNodeIndexes;
+        QgsTiledSceneTile tile;
     };
 
     QVector<QString> mTextureSetFormats;
@@ -99,9 +93,7 @@ class QgsEsriI3STiledSceneIndex final : public QgsAbstractTiledSceneIndex
     bool mGlobalMode = false;
     QMap< long long, NodeDetails > mNodeMap;
     QSet<int> mCachedNodePages;
-
 };
-
 
 
 /**
@@ -115,10 +107,7 @@ class QgsEsriI3SDataProviderSharedData
 {
   public:
     QgsEsriI3SDataProviderSharedData();
-    void initialize( const QString &i3sVersion,
-                     const json &layerJson,
-                     const QUrl &rootUrl,
-                     const QgsCoordinateTransformContext &transformContext );
+    void initialize( const QString &i3sVersion, const json &layerJson, const QUrl &rootUrl, const QgsCoordinateTransformContext &transformContext );
 
     QString mI3sVersion;
     json mLayerJson;
@@ -134,17 +123,13 @@ class QgsEsriI3SDataProviderSharedData
 
     QString mError;
     QReadWriteLock mReadWriteLock;
-
 };
 
 //
 // QgsEsriI3STiledSceneIndex
 //
 
-QgsEsriI3STiledSceneIndex::QgsEsriI3STiledSceneIndex(
-  const json &layerJson,
-  const QUrl &rootUrl,
-  const QgsCoordinateTransformContext &transformContext )
+QgsEsriI3STiledSceneIndex::QgsEsriI3STiledSceneIndex( const json &layerJson, const QUrl &rootUrl, const QgsCoordinateTransformContext &transformContext )
   : mRootUrl( rootUrl )
   , mTransformContext( transformContext )
 {
@@ -210,17 +195,12 @@ QVariantMap QgsEsriI3STiledSceneIndex::parseMaterialDefinition( const json &mate
     if ( pbrJson.contains( "baseColorFactor" ) )
     {
       const json pbrBaseColorFactorJson = pbrJson["baseColorFactor"];
-      materialDef[u"pbrBaseColorFactor"_s] = QVariantList
-      {
-        pbrBaseColorFactorJson[0].get<double>(),
-        pbrBaseColorFactorJson[1].get<double>(),
-        pbrBaseColorFactorJson[2].get<double>(),
-        pbrBaseColorFactorJson[3].get<double>()
-      };
+      materialDef[u"pbrBaseColorFactor"_s]
+        = QVariantList { pbrBaseColorFactorJson[0].get<double>(), pbrBaseColorFactorJson[1].get<double>(), pbrBaseColorFactorJson[2].get<double>(), pbrBaseColorFactorJson[3].get<double>() };
     }
     else
     {
-      materialDef[u"pbrBaseColorFactor"_s] = QVariantList{ 1.0, 1.0, 1.0, 1.0 };
+      materialDef[u"pbrBaseColorFactor"_s] = QVariantList { 1.0, 1.0, 1.0, 1.0 };
     }
     if ( pbrJson.contains( "baseColorTexture" ) )
     {
@@ -241,7 +221,7 @@ QVariantMap QgsEsriI3STiledSceneIndex::parseMaterialDefinition( const json &mate
   }
   else
   {
-    materialDef[u"pbrBaseColorFactor"_s] = QVariantList{ 1.0, 1.0, 1.0, 1.0 };
+    materialDef[u"pbrBaseColorFactor"_s] = QVariantList { 1.0, 1.0, 1.0, 1.0 };
   }
 
   if ( materialDefinitionJson.contains( "doubleSided" ) )
@@ -308,8 +288,7 @@ QVector< long long > QgsEsriI3STiledSceneIndex::getTiles( const QgsTiledSceneReq
   QVector< long long > results;
 
   std::function< void( long long )> traverseNode;
-  traverseNode = [&request, &traverseNode, &results, this]( long long nodeId )
-  {
+  traverseNode = [&request, &traverseNode, &results, this]( long long nodeId ) {
     QgsTiledSceneTile t = getTile( nodeId );
     if ( !request.filterBox().isNull() && !t.boundingVolume().intersects( request.filterBox() ) )
       return;
@@ -318,8 +297,7 @@ QVector< long long > QgsEsriI3STiledSceneIndex::getTiles( const QgsTiledSceneReq
     {
       // need to go deeper, this tile does not have enough details
 
-      if ( childAvailability( t.id() ) == Qgis::TileChildrenAvailability::NeedFetching &&
-           !( request.flags() & Qgis::TiledSceneRequestFlag::NoHierarchyFetch ) )
+      if ( childAvailability( t.id() ) == Qgis::TileChildrenAvailability::NeedFetching && !( request.flags() & Qgis::TiledSceneRequestFlag::NoHierarchyFetch ) )
       {
         fetchHierarchy( t.id() );
       }
@@ -438,8 +416,7 @@ QByteArray QgsEsriI3STiledSceneIndex::fetchContent( const QString &uri, QgsFeedb
     networkRequest.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
     networkRequest.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
-    const QgsNetworkReplyContent reply = QgsNetworkAccessManager::instance()->blockingGet(
-                                           networkRequest, QString(), false, feedback );
+    const QgsNetworkReplyContent reply = QgsNetworkAccessManager::instance()->blockingGet( networkRequest, QString(), false, feedback );
     return reply.content();
   }
 
@@ -492,19 +469,18 @@ static QgsOrientedBox3D parseBox( const json &box )
   {
     json center = box["center"];
     json halfSize = box["halfSize"];
-    json quaternion = box["quaternion"];  // order is x, y, z, w
+    json quaternion = box["quaternion"]; // order is x, y, z, w
 
     return QgsOrientedBox3D(
-             QgsVector3D( center[0].get<double>(),
-                          center[1].get<double>(),
-                          center[2].get<double>() ),
-             QgsVector3D( halfSize[0].get<double>(),
-                          halfSize[1].get<double>(),
-                          halfSize[2].get<double>() ),
-             QQuaternion( static_cast<float>( quaternion[3].get<double>() ),
-                          static_cast<float>( quaternion[0].get<double>() ),
-                          static_cast<float>( quaternion[1].get<double>() ),
-                          static_cast<float>( quaternion[2].get<double>() ) ) );
+      QgsVector3D( center[0].get<double>(), center[1].get<double>(), center[2].get<double>() ),
+      QgsVector3D( halfSize[0].get<double>(), halfSize[1].get<double>(), halfSize[2].get<double>() ),
+      QQuaternion(
+        static_cast<float>( quaternion[3].get<double>() ),
+        static_cast<float>( quaternion[0].get<double>() ),
+        static_cast<float>( quaternion[1].get<double>() ),
+        static_cast<float>( quaternion[2].get<double>() )
+      )
+    );
   }
   catch ( nlohmann::json::exception & )
   {
@@ -550,12 +526,7 @@ void QgsEsriI3STiledSceneIndex::parseMesh( QgsTiledSceneTile &t, const json &mes
 
   t.setResources( { { u"content"_s, geometryUri } } );
 
-  QVariantMap metadata =
-  {
-    { u"gltfUpAxis"_s, static_cast< int >( Qgis::Axis::Z ) },
-    { u"contentFormat"_s, u"draco"_s },
-    { u"material"_s, materialInfo }
-  };
+  QVariantMap metadata = { { u"gltfUpAxis"_s, static_cast< int >( Qgis::Axis::Z ) }, { u"contentFormat"_s, u"draco"_s }, { u"material"_s, materialInfo } };
   t.setMetadata( metadata );
 }
 
@@ -580,9 +551,7 @@ void QgsEsriI3STiledSceneIndex::parseNodePage( const QByteArray &nodePageContent
 
     if ( mGlobalMode )
     {
-      QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( u"EPSG:4979"_s ),
-                                 QgsCoordinateReferenceSystem( u"EPSG:4978"_s ),
-                                 mTransformContext );
+      QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( u"EPSG:4979"_s ), QgsCoordinateReferenceSystem( u"EPSG:4978"_s ), mTransformContext );
       QgsVector3D obbCenterEcef = ct.transform( obb.center() );
       obb = QgsOrientedBox3D( { obbCenterEcef.x(), obbCenterEcef.y(), obbCenterEcef.z() }, obb.halfAxesList() );
     }
@@ -630,14 +599,9 @@ void QgsEsriI3STiledSceneIndex::parseNodePage( const QByteArray &nodePageContent
 
 QgsEsriI3SDataProviderSharedData::QgsEsriI3SDataProviderSharedData()
   : mIndex( QgsTiledSceneIndex( nullptr ) )
-{
-}
+{}
 
-void QgsEsriI3SDataProviderSharedData::initialize(
-  const QString &i3sVersion,
-  const json &layerJson,
-  const QUrl &rootUrl,
-  const QgsCoordinateTransformContext &transformContext )
+void QgsEsriI3SDataProviderSharedData::initialize( const QString &i3sVersion, const json &layerJson, const QUrl &rootUrl, const QgsCoordinateTransformContext &transformContext )
 {
   mI3sVersion = i3sVersion;
   mLayerJson = layerJson;
@@ -675,25 +639,13 @@ void QgsEsriI3SDataProviderSharedData::initialize(
     mSceneCrs = mLayerCrs;
   }
 
-  mIndex = QgsTiledSceneIndex(
-             new QgsEsriI3STiledSceneIndex(
-               layerJson,
-               rootUrl,
-               transformContext
-             )
-           );
+  mIndex = QgsTiledSceneIndex( new QgsEsriI3STiledSceneIndex( layerJson, rootUrl, transformContext ) );
 
   if ( layerJson.contains( "fullExtent" ) )
   {
     const json fullExtentJson = layerJson["fullExtent"];
-    mExtent = QgsRectangle(
-                fullExtentJson["xmin"].get<double>(),
-                fullExtentJson["ymin"].get<double>(),
-                fullExtentJson["xmax"].get<double>(),
-                fullExtentJson["ymax"].get<double>() );
-    mZRange = QgsDoubleRange(
-                fullExtentJson["zmin"].get<double>(),
-                fullExtentJson["zmax"].get<double>() );
+    mExtent = QgsRectangle( fullExtentJson["xmin"].get<double>(), fullExtentJson["ymin"].get<double>(), fullExtentJson["xmax"].get<double>(), fullExtentJson["ymax"].get<double>() );
+    mZRange = QgsDoubleRange( fullExtentJson["zmin"].get<double>(), fullExtentJson["zmax"].get<double>() );
   }
   else
   {
@@ -710,9 +662,7 @@ void QgsEsriI3SDataProviderSharedData::initialize(
 //
 
 
-QgsEsriI3SDataProvider::QgsEsriI3SDataProvider( const QString &uri,
-    const QgsDataProvider::ProviderOptions &providerOptions,
-    Qgis::DataProviderReadFlags flags )
+QgsEsriI3SDataProvider::QgsEsriI3SDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags )
   : QgsTiledSceneDataProvider( uri, providerOptions, flags )
   , mShared( std::make_shared< QgsEsriI3SDataProviderSharedData >() )
 {
@@ -839,7 +789,7 @@ bool QgsEsriI3SDataProvider::loadFromSlpk( const QString &uri, json &layerJson, 
 
   QByteArray metadataContent;
   QString metadataFileName = u"metadata.json"_s;
-  if ( isExtracted )  // if a directory, read directly as Extracted SLPK
+  if ( isExtracted ) // if a directory, read directly as Extracted SLPK
   {
     const QString metadataDirPath = QDir( uri ).filePath( metadataFileName );
     QFile fMetadata( metadataDirPath );
@@ -850,7 +800,7 @@ bool QgsEsriI3SDataProvider::loadFromSlpk( const QString &uri, json &layerJson, 
     }
     metadataContent = fMetadata.readAll();
   }
-  else  // SLPK
+  else // SLPK
   {
     if ( !QgsZipUtils::extractFileFromZip( uri, metadataFileName, metadataContent ) )
     {
@@ -881,7 +831,7 @@ bool QgsEsriI3SDataProvider::loadFromSlpk( const QString &uri, json &layerJson, 
 
   QByteArray sceneLayerContentGzipped;
   const QString sceneLayerContentFileName = u"3dSceneLayer.json.gz"_s;
-  if ( isExtracted )  // if a directory, read directly as Extracted SLPK
+  if ( isExtracted ) // if a directory, read directly as Extracted SLPK
   {
     const QString sceneLayerContentDirPath = QDir( uri ).filePath( sceneLayerContentFileName );
     QFile fSceneLayerContent( sceneLayerContentDirPath );
@@ -892,7 +842,7 @@ bool QgsEsriI3SDataProvider::loadFromSlpk( const QString &uri, json &layerJson, 
     }
     sceneLayerContentGzipped = fSceneLayerContent.readAll();
   }
-  else  // SLPK
+  else // SLPK
   {
     if ( !QgsZipUtils::extractFileFromZip( uri, sceneLayerContentFileName, sceneLayerContentGzipped ) )
     {
@@ -1054,7 +1004,8 @@ QString QgsEsriI3SDataProvider::htmlMetadata() const
 
   if ( !mShared->mZRange.isInfinite() )
   {
-    metadata += u"<tr><td class=\"highlight\">"_s % tr( "Z Range" ) % u"</td><td>%1 - %2</a>"_s.arg( QLocale().toString( mShared->mZRange.lower() ), QLocale().toString( mShared->mZRange.upper() ) ) % u"</td></tr>\n"_s;
+    metadata += u"<tr><td class=\"highlight\">"_s % tr( "Z Range" ) % u"</td><td>%1 - %2</a>"_s.arg( QLocale().toString( mShared->mZRange.lower() ), QLocale().toString( mShared->mZRange.upper() ) )
+                % u"</td></tr>\n"_s;
   }
 
   return metadata;
@@ -1102,16 +1053,14 @@ QgsDoubleRange QgsEsriI3SDataProvider::zRange() const
 }
 
 
-
 //
 // QgsEsriI3SProviderMetadata
 //
 
 
-QgsEsriI3SProviderMetadata::QgsEsriI3SProviderMetadata():
-  QgsProviderMetadata( I3S_PROVIDER_KEY, I3S_PROVIDER_DESCRIPTION )
-{
-}
+QgsEsriI3SProviderMetadata::QgsEsriI3SProviderMetadata()
+  : QgsProviderMetadata( I3S_PROVIDER_KEY, I3S_PROVIDER_DESCRIPTION )
+{}
 
 QIcon QgsEsriI3SProviderMetadata::icon() const
 {
@@ -1150,7 +1099,7 @@ QList<QgsProviderSublayerDetails> QgsEsriI3SProviderMetadata::querySublayers( co
     details.setProviderKey( key() );
     details.setType( Qgis::LayerType::TiledScene );
     details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( fileName ) );
-    return {details};
+    return { details };
   }
   return {};
 }

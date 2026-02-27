@@ -59,10 +59,7 @@ class QgsExpressionPrivate
         mDaTransformContext = std::make_unique<QgsCoordinateTransformContext>( *other.mDaTransformContext.get() );
     }
 
-    ~QgsExpressionPrivate()
-    {
-
-    }
+    ~QgsExpressionPrivate() {}
 
     QAtomicInt ref;
 
@@ -86,7 +83,7 @@ class QgsExpressionPrivate
     //! Whether prepare() has been called before evaluate()
     bool mIsPrepared = false;
 
-    QgsExpressionPrivate &operator= ( const QgsExpressionPrivate & ) = delete;
+    QgsExpressionPrivate &operator=( const QgsExpressionPrivate & ) = delete;
 };
 
 

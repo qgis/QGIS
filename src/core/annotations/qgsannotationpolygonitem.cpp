@@ -34,9 +34,7 @@ QgsAnnotationPolygonItem::QgsAnnotationPolygonItem( QgsCurvePolygon *polygon )
   : QgsAnnotationItem()
   , mPolygon( polygon )
   , mSymbol( std::make_unique< QgsFillSymbol >() )
-{
-
-}
+{}
 
 QgsAnnotationPolygonItem::~QgsAnnotationPolygonItem() = default;
 
@@ -47,9 +45,7 @@ QString QgsAnnotationPolygonItem::type() const
 
 void QgsAnnotationPolygonItem::render( QgsRenderContext &context, QgsFeedback * )
 {
-
-  auto transformRing = [&context]( QPolygonF & pts )
-  {
+  auto transformRing = [&context]( QPolygonF &pts ) {
     //transform the QPolygonF to screen coordinates
     if ( context.coordinateTransform().isValid() )
     {
@@ -64,11 +60,7 @@ void QgsAnnotationPolygonItem::render( QgsRenderContext &context, QgsFeedback * 
     }
 
     // remove non-finite points, e.g. infinite or NaN points caused by reprojecting errors
-    pts.erase( std::remove_if( pts.begin(), pts.end(),
-                               []( const QPointF point )
-    {
-      return !std::isfinite( point.x() ) || !std::isfinite( point.y() );
-    } ), pts.end() );
+    pts.erase( std::remove_if( pts.begin(), pts.end(), []( const QPointF point ) { return !std::isfinite( point.x() ) || !std::isfinite( point.y() ); } ), pts.end() );
 
     QPointF *ptr = pts.data();
     for ( int i = 0; i < pts.size(); ++i, ++ptr )
@@ -106,8 +98,7 @@ QList<QgsAnnotationItemNode> QgsAnnotationPolygonItem::nodesV2( const QgsAnnotat
 {
   QList< QgsAnnotationItemNode > res;
 
-  auto processRing  = [&res]( const QgsCurve * ring, int ringId )
-  {
+  auto processRing = [&res]( const QgsCurve *ring, int ringId ) {
     // we don't want a duplicate node for the closed ring vertex
     const int count = ring->isClosed() ? ring->numPoints() - 1 : ring->numPoints();
     res.reserve( res.size() + count );
@@ -256,7 +247,8 @@ QgsAnnotationPolygonItem *QgsAnnotationPolygonItem::clone() const
 {
   auto item = std::make_unique< QgsAnnotationPolygonItem >( mPolygon->clone() );
   item->setSymbol( mSymbol->clone() );
-  item->copyCommonProperties( this );;
+  item->copyCommonProperties( this );
+  ;
   return item.release();
 }
 

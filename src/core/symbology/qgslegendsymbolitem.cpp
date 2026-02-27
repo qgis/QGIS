@@ -30,8 +30,7 @@ QgsLegendSymbolItem::QgsLegendSymbolItem( QgsSymbol *symbol, const QString &labe
   , mScaleMaxDenom( scaleMaxDenom )
   , mLevel( level )
   , mParentKey( parentRuleKey )
-{
-}
+{}
 
 QgsLegendSymbolItem::QgsLegendSymbolItem( const QgsLegendSymbolItem &other )
 {
@@ -39,8 +38,7 @@ QgsLegendSymbolItem::QgsLegendSymbolItem( const QgsLegendSymbolItem &other )
 }
 
 QgsLegendSymbolItem::~QgsLegendSymbolItem()
-{
-}
+{}
 
 QgsLegendSymbolItem &QgsLegendSymbolItem::operator=( const QgsLegendSymbolItem &other )
 {

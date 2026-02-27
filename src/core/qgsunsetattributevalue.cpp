@@ -19,6 +19,4 @@
 
 QgsUnsetAttributeValue::QgsUnsetAttributeValue( const QString &defaultValueClause )
   : mDefaultValueClause( defaultValueClause )
-{
-
-}
+{}

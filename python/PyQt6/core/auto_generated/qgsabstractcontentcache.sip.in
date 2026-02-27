@@ -27,7 +27,6 @@ method, applying their own logic for testing extra cache properties
 #include "qgsabstractcontentcache.h"
 %End
   public:
-
     QgsAbstractContentCacheEntry( const QString &path );
 %Docstring
 Constructor for QgsAbstractContentCacheEntry for an entry relating to
@@ -63,7 +62,6 @@ purposes only.
 %End
 
   protected:
-
     virtual bool isEqual( const QgsAbstractContentCacheEntry *other ) const = 0;
 %Docstring
 Tests whether this entry matches another entry. Subclasses must take
@@ -75,7 +73,7 @@ then test extra cache-specific properties, such as image size.
     QgsAbstractContentCacheEntry( const QgsAbstractContentCacheEntry &rh );
 };
 
-class QgsAbstractContentCacheBase: QObject
+class QgsAbstractContentCacheBase : QObject
 {
 %Docstring(signature="appended")
 A QObject derived base class for :py:class:`QgsAbstractContentCache`.
@@ -90,7 +88,6 @@ Required because template based class (such as
 #include "qgsabstractcontentcache.h"
 %End
   public:
-
     QgsAbstractContentCacheBase( QObject *parent );
 %Docstring
 Constructor for QgsAbstractContentCacheBase, with the specified
@@ -162,7 +159,6 @@ Emitted when the cache has finished retrieving content from a remote
 %End
 
   protected:
-
     virtual bool checkReply( QNetworkReply *reply, const QString &path ) const;
 %Docstring
 Runs additional checks on a network ``reply`` to ensure that the reply
@@ -179,7 +175,6 @@ Triggered after remote content (i.e. HTTP linked content at the given
 The ``success`` argument will be ``True`` if the content was
 successfully fetched, or ``False`` if it was not fetched successfully.
 %End
-
 };
 
 

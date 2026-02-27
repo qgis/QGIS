@@ -15,7 +15,7 @@
 #include <qgsprocessingmodelalgorithm.h>
 %End
 
-class QgsProcessingAlgorithm
+  class QgsProcessingAlgorithm
 {
 %Docstring(signature="appended")
 Abstract base class for processing algorithms.

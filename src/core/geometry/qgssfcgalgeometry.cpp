@@ -29,8 +29,7 @@ using namespace Qt::StringLiterals;
 
 QgsSfcgalGeometry::QgsSfcgalGeometry()
   : mIsPrimitive( false )
-{
-}
+{}
 
 QgsSfcgalGeometry::QgsSfcgalGeometry( const QgsAbstractGeometry *qgsGeom )
   : mIsPrimitive( false )
@@ -54,9 +53,9 @@ QgsSfcgalGeometry::QgsSfcgalGeometry( const QgsAbstractGeometry &qgsGeom )
 }
 
 QgsSfcgalGeometry::QgsSfcgalGeometry( sfcgal::shared_geom sfcgalGeom )
-  : mSfcgalGeom( sfcgalGeom ), mIsPrimitive( false )
-{
-}
+  : mSfcgalGeom( sfcgalGeom )
+  , mIsPrimitive( false )
+{}
 
 QgsSfcgalGeometry::QgsSfcgalGeometry( sfcgal::shared_prim sfcgalPrim, sfcgal::primitiveType type )
   : mIsPrimitive( true )
@@ -250,7 +249,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::boundary() const
 bool QgsSfcgalGeometry::operator==( const QgsSfcgalGeometry &other ) const
 {
 #if SFCGAL_VERSION_NUM < SFCGAL_MAKE_VERSION( 2, 1, 0 )
-  ( void )other;
+  ( void ) other;
   throw QgsNotSupportedException( QObject::tr( "This operation requires a QGIS build based on SFCGAL 2.1 or later" ) );
 #else
   QString errorMsg;
@@ -434,8 +433,7 @@ bool QgsSfcgalGeometry::isValid() const
 }
 
 void QgsSfcgalGeometry::clearCache() const
-{
-}
+{}
 
 bool QgsSfcgalGeometry::isSimple() const
 {

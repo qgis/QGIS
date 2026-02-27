@@ -172,7 +172,6 @@ By default this will return the same value as
   protected:
 
 
-
 };
 
 typedef QList< const QgsProcessingOutputDefinition * > QgsProcessingOutputDefinitions;
@@ -192,7 +191,6 @@ raster), use :py:class:`QgsProcessingOutputVectorLayer` or
 #include "qgsprocessingoutputs.h"
 %End
   public:
-
     QgsProcessingOutputMapLayer( const QString &name, const QString &description = QString() );
 %Docstring
 Constructor for QgsProcessingOutputMapLayer.
@@ -208,7 +206,6 @@ Returns the type name for the output class.
 
     virtual QString type() const;
 
-
 };
 
 class QgsProcessingOutputVectorLayer : QgsProcessingOutputDefinition
@@ -221,7 +218,6 @@ A vector layer output for processing algorithms.
 #include "qgsprocessingoutputs.h"
 %End
   public:
-
     QgsProcessingOutputVectorLayer( const QString &name, const QString &description = QString(), Qgis::ProcessingSourceType type = Qgis::ProcessingSourceType::VectorAnyGeometry );
 %Docstring
 Constructor for QgsProcessingOutputVectorLayer.
@@ -262,7 +258,6 @@ A raster layer output for processing algorithms.
 #include "qgsprocessingoutputs.h"
 %End
   public:
-
     QgsProcessingOutputRasterLayer( const QString &name, const QString &description = QString() );
 %Docstring
 Constructor for QgsProcessingOutputRasterLayer.
@@ -290,7 +285,6 @@ A pointcloud layer output for processing algorithms.
 #include "qgsprocessingoutputs.h"
 %End
   public:
-
     QgsProcessingOutputPointCloudLayer( const QString &name, const QString &description = QString() );
 %Docstring
 Constructor for QgsProcessingOutputPointCloudLayer.
@@ -322,7 +316,6 @@ when the number and nature of the output layers is not predefined.
 #include "qgsprocessingoutputs.h"
 %End
   public:
-
     QgsProcessingOutputMultipleLayers( const QString &name, const QString &description = QString() );
 %Docstring
 Constructor for QgsProcessingOutputMultipleLayers.
@@ -351,7 +344,6 @@ A HTML file output for processing algorithms.
 #include "qgsprocessingoutputs.h"
 %End
   public:
-
     QgsProcessingOutputHtml( const QString &name, const QString &description = QString() );
 %Docstring
 Constructor for QgsProcessingOutputHtml.
@@ -383,7 +375,6 @@ QVariant value.
 #include "qgsprocessingoutputs.h"
 %End
   public:
-
     QgsProcessingOutputVariant( const QString &name, const QString &description = QString() );
 %Docstring
 Constructor for QgsProcessingOutputVariant.
@@ -398,7 +389,6 @@ Returns the type name for the output class.
 
     virtual QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok /Out/ ) const;
 
-
 };
 
 class QgsProcessingOutputNumber : QgsProcessingOutputDefinition
@@ -411,7 +401,6 @@ A numeric output for processing algorithms.
 #include "qgsprocessingoutputs.h"
 %End
   public:
-
     QgsProcessingOutputNumber( const QString &name, const QString &description = QString() );
 %Docstring
 Constructor for QgsProcessingOutputNumber.
@@ -427,7 +416,6 @@ Returns the type name for the output class.
     virtual QString type() const;
     virtual QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok /Out/ ) const;
 
-
 };
 
 class QgsProcessingOutputString : QgsProcessingOutputDefinition
@@ -440,7 +428,6 @@ A string output for processing algorithms.
 #include "qgsprocessingoutputs.h"
 %End
   public:
-
     QgsProcessingOutputString( const QString &name, const QString &description = QString() );
 %Docstring
 Constructor for QgsProcessingOutputString.
@@ -468,7 +455,6 @@ A boolean output for processing algorithms.
 #include "qgsprocessingoutputs.h"
 %End
   public:
-
     QgsProcessingOutputBoolean( const QString &name, const QString &description = QString() );
 %Docstring
 Constructor for :py:class:`QgsProcessingOutputNumber`.
@@ -497,7 +483,6 @@ A folder output for processing algorithms.
 %End
   public:
 
-
     QgsProcessingOutputFolder( const QString &name, const QString &description = QString() );
 %Docstring
 Constructor for QgsProcessingOutputFolder.
@@ -525,7 +510,6 @@ A file output for processing algorithms.
 #include "qgsprocessingoutputs.h"
 %End
   public:
-
     QgsProcessingOutputFile( const QString &name, const QString &description = QString() );
 %Docstring
 Constructor for QgsProcessingOutputFile.
@@ -556,7 +540,6 @@ a possible model logic flow which branches out from this algorithm.
 #include "qgsprocessingoutputs.h"
 %End
   public:
-
     QgsProcessingOutputConditionalBranch( const QString &name, const QString &description = QString() );
 %Docstring
 Constructor for QgsProcessingOutputConditionalBranch.
@@ -581,7 +564,6 @@ A vector tile layer output for processing algorithms.
 #include "qgsprocessingoutputs.h"
 %End
   public:
-
     QgsProcessingOutputVectorTileLayer( const QString &name, const QString &description = QString() );
 %Docstring
 Constructor for QgsProcessingOutputVectorTileLayer.

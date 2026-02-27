@@ -109,13 +109,13 @@ bool QgsTriangulatedSurface::fromWkb( QgsConstWkbPtr &wkbPtr )
     Qgis::WkbType flatTriangleType = QgsWkbTypes::flatType( triangleType );
     if ( flatTriangleType == Qgis::WkbType::Triangle )
     {
-      currentTriangle = std::make_unique<QgsTriangle>( );
+      currentTriangle = std::make_unique<QgsTriangle>();
     }
     else
     {
       return false;
     }
-    currentTriangle->fromWkb( wkbPtr );  // also updates wkbPtr
+    currentTriangle->fromWkb( wkbPtr ); // also updates wkbPtr
     mPatches.append( currentTriangle.release() );
   }
 
@@ -135,8 +135,7 @@ bool QgsTriangulatedSurface::fromWkt( const QString &wkt )
 
   QString secondWithoutParentheses = parts.second;
   secondWithoutParentheses = secondWithoutParentheses.remove( '(' ).remove( ')' ).simplified().remove( ' ' );
-  if ( ( parts.second.compare( "EMPTY"_L1, Qt::CaseInsensitive ) == 0 ) ||
-       secondWithoutParentheses.isEmpty() )
+  if ( ( parts.second.compare( "EMPTY"_L1, Qt::CaseInsensitive ) == 0 ) || secondWithoutParentheses.isEmpty() )
     return true;
 
   QString defaultChildWkbType = u"Triangle%1%2"_s.arg( is3D() ? u"Z"_s : QString(), isMeasure() ? u"M"_s : QString() );

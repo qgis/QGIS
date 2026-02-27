@@ -67,7 +67,6 @@ data.
     virtual ~QgsDataProviderElevationProperties();
 
   protected:
-
 };
 
 /************************************************************************

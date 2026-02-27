@@ -40,7 +40,6 @@ class QgsReferencedGeometry;
 class CORE_EXPORT QgsLayerTreeFilterSettings
 {
   public:
-
     /**
      * Constructor for QgsLayerTreeFilterSettings, using the specified map \a settings.
      */
@@ -157,7 +156,6 @@ class CORE_EXPORT QgsLayerTreeFilterSettings
     QList<QgsMapLayer *> layers() const;
 
   private:
-
     QMap<QString, QString> mLayerFilterExpressions;
 
     std::unique_ptr<QgsMapSettings> mMapSettings;
@@ -170,7 +168,6 @@ class CORE_EXPORT QgsLayerTreeFilterSettings
 
     // geometry must be in layer CRS
     QMap<QString, QVector< QgsGeometry > > mLayerExtents;
-
 };
 
 #endif // QGSLAYERTREEFILTERSETTINGS_H

@@ -42,7 +42,6 @@ class QgsReadWriteContext;
 
 class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     switch ( sipCpp->type() )
@@ -63,46 +62,45 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
         sipType = nullptr;
         break;
     }
-    SIP_END
+  SIP_END
 #endif
-  public:
 
+  public:
     /**
      * The TabStyle struct defines color and font overrides for form fields, tabs and groups labels.
      * \since QGIS 3.26
      */
     struct CORE_EXPORT LabelStyle
     {
+        //! Label font
+        QColor color;
 
-      //! Label font
-      QColor color;
+        //! Label font
+        QFont font;
 
-      //! Label font
-      QFont font;
+        //! Override label color
+        bool overrideColor = false;
 
-      //! Override label color
-      bool overrideColor = false;
+        //! Override label font
+        bool overrideFont = false;
 
-      //! Override label font
-      bool overrideFont = false;
-
-      /**
+        /**
        * Reads configuration from \a node.
        * \note Not available in Python bindings
        */
-      void readXml( const QDomNode &node ) SIP_SKIP;
+        void readXml( const QDomNode &node ) SIP_SKIP;
 
-      /**
+        /**
        * Creates the XML configuration from \a document.
        * \note Not available in Python bindings
        */
-      QDomElement writeXml( QDomDocument &document ) const SIP_SKIP;
+        QDomElement writeXml( QDomDocument &document ) const SIP_SKIP;
 
-      /**
+        /**
        * Returns TRUE if the style is equal to \a other.
        * \note Not available in Python bindings
        */
-      bool operator==( LabelStyle const  &other ) const SIP_SKIP;
+        bool operator==( LabelStyle const &other ) const SIP_SKIP;
     };
 
     /**
@@ -120,12 +118,14 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
 
     virtual ~QgsAttributeEditorElement() = default;
 
+    // clang-format off
     /**
      * Constructs the editor element from the given element
      *
      * \since QGIS 3.18
      */
     static QgsAttributeEditorElement *create( const QDomElement &element, const QString &layerId, const QgsFields &fields, const QgsReadWriteContext &context, QgsAttributeEditorElement *parent = nullptr ) SIP_FACTORY;
+    // clang-format on
 
     /**
      * Returns the name of this element
@@ -240,7 +240,6 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
 #endif
 
   private:
-
     /**
      * Should be implemented by subclasses to save type specific configuration.
      *
@@ -251,7 +250,7 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
       * Should be implemented by subclasses to read specific configuration
       * \since QGIS 3.18
       */
-    virtual void loadConfiguration( const QDomElement &element,  const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields ) = 0;
+    virtual void loadConfiguration( const QDomElement &element, const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields ) = 0;
 
     /**
      * All subclasses need to overwrite this method and return a type specific identifier.
@@ -259,7 +258,6 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
      *
      */
     virtual QString typeIdentifier() const = 0;
-
 };
 
 #endif // QGSATTRIBUTEEDITORELEMENT_H

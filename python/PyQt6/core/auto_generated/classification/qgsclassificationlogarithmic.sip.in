@@ -21,7 +21,6 @@ Implementation of a logarithmic scale method for classification.
 #include "qgsclassificationlogarithmic.h"
 %End
   public:
-
     enum NegativeValueHandling /BaseType=IntEnum/
     {
       NoHandling,

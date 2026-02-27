@@ -36,7 +36,6 @@ using namespace Qt::StringLiterals;
 class CORE_EXPORT QgsDatumEnsembleMember
 {
   public:
-
     /**
      * Returns the name of the member.
      */
@@ -63,6 +62,7 @@ class CORE_EXPORT QgsDatumEnsembleMember
     QString code() const { return mCode; }
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString id;
@@ -73,9 +73,12 @@ class CORE_EXPORT QgsDatumEnsembleMember
     QString str = u"<QgsDatumEnsembleMember: %1>"_s.arg( id );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-  private:
+    // clang-format off
+    private:
+    // clang-format on
 
     QString mName;
     QString mScope;
@@ -96,7 +99,6 @@ class CORE_EXPORT QgsDatumEnsembleMember
 class CORE_EXPORT QgsDatumEnsemble
 {
   public:
-
     /**
      * Returns TRUE if the datum ensemble is a valid object, or FALSE if it is a null/invalid
      * object.
@@ -139,6 +141,7 @@ class CORE_EXPORT QgsDatumEnsemble
     QList< QgsDatumEnsembleMember > members() const { return mMembers; }
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str;
@@ -157,11 +160,15 @@ class CORE_EXPORT QgsDatumEnsemble
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-  private:
+    // clang-format off
+    private:
+    // clang-format on
 
-    bool mValid = false;
+    bool mValid
+    = false;
     QString mName;
     double mAccuracy = 0;
     QString mAuthority;

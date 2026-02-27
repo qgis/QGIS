@@ -21,7 +21,6 @@ Utilities for map settings.
 #include "qgsmapsettingsutils.h"
 %End
   public:
-
     enum class EffectsCheckFlag /BaseType=IntFlag/
     {
       IgnoreGeoPdfSupportedEffects,
@@ -64,7 +63,6 @@ Creates the content of a world file.
 
    Uses 17 places of precision for all numbers output
 %End
-
 };
 
 QFlags<QgsMapSettingsUtils::EffectsCheckFlag> operator|(QgsMapSettingsUtils::EffectsCheckFlag f1, QFlags<QgsMapSettingsUtils::EffectsCheckFlag> f2);

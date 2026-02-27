@@ -83,9 +83,8 @@ bool QgsRasterRendererUtils::parseColorMapFile( const QString &path, QList<QgsCo
           const QRegularExpressionMatch match = itemRegex.match( inputLine );
           if ( match.hasMatch() )
           {
-            const QgsColorRampShader::ColorRampItem currentItem( match.captured( 1 ).toDouble(),
-                QColor::fromRgb( match.captured( 2 ).toInt(), match.captured( 3 ).toInt(), match.captured( 4 ).toInt(), match.captured( 5 ).toInt() ),
-                match.captured( 6 ) );
+            const QgsColorRampShader::ColorRampItem
+              currentItem( match.captured( 1 ).toDouble(), QColor::fromRgb( match.captured( 2 ).toInt(), match.captured( 3 ).toInt(), match.captured( 4 ).toInt(), match.captured( 5 ).toInt() ), match.captured( 6 ) );
             items.push_back( currentItem );
           }
           else
@@ -147,4 +146,3 @@ bool QgsRasterRendererUtils::saveColorMapFile( const QString &path, const QList<
     return false;
   }
 }
-

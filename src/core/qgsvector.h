@@ -32,9 +32,7 @@ using namespace Qt::StringLiterals;
  */
 class CORE_EXPORT QgsVector
 {
-
   public:
-
     /**
      * Default constructor for QgsVector. Creates a vector with length of 0.0.
      */
@@ -48,11 +46,12 @@ class CORE_EXPORT QgsVector
     QgsVector( double x, double y )
       : mX( x )
       , mY( y )
-    {
-    }
+    {}
 
+    // clang-format off
     //! Swaps the sign of the x and y components of the vector.
     QgsVector operator-() const SIP_HOLDGIL
+      // clang-format on
     {
       return QgsVector( -mX, -mY );
     }
@@ -232,11 +231,13 @@ class CORE_EXPORT QgsVector
     }
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = u"<QgsVector: %1>"_s.arg( sipCpp->toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
   private:

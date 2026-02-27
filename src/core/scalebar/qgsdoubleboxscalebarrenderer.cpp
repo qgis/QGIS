@@ -41,16 +41,8 @@ QString QgsDoubleBoxScaleBarRenderer::visibleName() const
 
 QgsScaleBarRenderer::Flags QgsDoubleBoxScaleBarRenderer::flags() const
 {
-  return Flag::FlagUsesLineSymbol |
-         Flag::FlagUsesFillSymbol |
-         Flag::FlagUsesAlternateFillSymbol |
-         Flag::FlagRespectsUnits |
-         Flag::FlagRespectsMapUnitsPerScaleBarUnit |
-         Flag::FlagUsesUnitLabel |
-         Flag::FlagUsesSegments |
-         Flag::FlagUsesLabelBarSpace |
-         Flag::FlagUsesLabelVerticalPlacement |
-         Flag::FlagUsesLabelHorizontalPlacement;
+  return Flag::FlagUsesLineSymbol | Flag::FlagUsesFillSymbol | Flag::FlagUsesAlternateFillSymbol | Flag::FlagRespectsUnits | Flag::FlagRespectsMapUnitsPerScaleBarUnit | Flag::FlagUsesUnitLabel
+         | Flag::FlagUsesSegments | Flag::FlagUsesLabelBarSpace | Flag::FlagUsesLabelVerticalPlacement | Flag::FlagUsesLabelHorizontalPlacement;
 }
 
 int QgsDoubleBoxScaleBarRenderer::sortKey() const
@@ -74,7 +66,8 @@ void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
   const double scaledLabelBarSpace = context.convertToPainterUnits( settings.labelBarSpace(), Qgis::RenderUnit::Millimeters );
   const double scaledBoxContentSpace = context.convertToPainterUnits( settings.boxContentSpace(), Qgis::RenderUnit::Millimeters );
   const QFontMetricsF fontMetrics = QgsTextRenderer::fontMetrics( context, settings.textFormat() );
-  const double barTopPosition = scaledBoxContentSpace + ( settings.labelVerticalPlacement() == Qgis::ScaleBarDistanceLabelVerticalPlacement::AboveSegment ? fontMetrics.ascent() + scaledLabelBarSpace : 0 );
+  const double barTopPosition = scaledBoxContentSpace
+                                + ( settings.labelVerticalPlacement() == Qgis::ScaleBarDistanceLabelVerticalPlacement::AboveSegment ? fontMetrics.ascent() + scaledLabelBarSpace : 0 );
   const double segmentHeight = context.convertToPainterUnits( settings.height() / 2, Qgis::RenderUnit::Millimeters );
 
   painter->save();
@@ -123,13 +116,8 @@ void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
       maxX = thisX + thisWidth;
 
     const QRectF segmentRectTop( thisX, barTopPosition, thisWidth, segmentHeight );
-    currentSymbol->renderPolygon( QPolygonF()
-                                  << segmentRectTop.topLeft()
-                                  << segmentRectTop.topRight()
-                                  << segmentRectTop.bottomRight()
-                                  << segmentRectTop.bottomLeft()
-                                  << segmentRectTop.topLeft(),
-                                  nullptr, nullptr, context );
+    currentSymbol
+      ->renderPolygon( QPolygonF() << segmentRectTop.topLeft() << segmentRectTop.topRight() << segmentRectTop.bottomRight() << segmentRectTop.bottomLeft() << segmentRectTop.topLeft(), nullptr, nullptr, context );
     painter->drawRect( segmentRectTop );
 
     //draw bottom half
@@ -140,18 +128,14 @@ void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
     }
     else //primary symbol
     {
-      currentSymbol = fillSymbol1.get(); ;
+      currentSymbol = fillSymbol1.get();
+      ;
     }
 
     const QRectF segmentRectBottom( thisX, barTopPosition + segmentHeight, thisWidth, segmentHeight );
 
-    currentSymbol->renderPolygon( QPolygonF()
-                                  << segmentRectBottom.topLeft()
-                                  << segmentRectBottom.topRight()
-                                  << segmentRectBottom.bottomRight()
-                                  << segmentRectBottom.bottomLeft()
-                                  << segmentRectBottom.topLeft(),
-                                  nullptr, nullptr, context );
+    currentSymbol
+      ->renderPolygon( QPolygonF() << segmentRectBottom.topLeft() << segmentRectBottom.topRight() << segmentRectBottom.bottomRight() << segmentRectBottom.bottomLeft() << segmentRectBottom.topLeft(), nullptr, nullptr, context );
     useColor = !useColor;
   }
 
@@ -164,27 +148,21 @@ void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
     for ( int i = 1; i < positions.size(); ++i )
     {
       const double lineX = context.convertToPainterUnits( positions.at( i ), Qgis::RenderUnit::Millimeters ) + xOffset;
-      lineSymbol->renderPolyline( QPolygonF()
-                                  << QPointF( lineX, barTopPosition )
-                                  << QPointF( lineX, barTopPosition + segmentHeight * 2 ),
-                                  nullptr, context, layer );
+      lineSymbol->renderPolyline( QPolygonF() << QPointF( lineX, barTopPosition ) << QPointF( lineX, barTopPosition + segmentHeight * 2 ), nullptr, context, layer );
     }
 
     // middle horizontal line
-    lineSymbol->renderPolyline( QPolygonF()
-                                << QPointF( minX, barTopPosition + segmentHeight )
-                                << QPointF( maxX, barTopPosition + segmentHeight ),
-                                nullptr, context, layer );
+    lineSymbol->renderPolyline( QPolygonF() << QPointF( minX, barTopPosition + segmentHeight ) << QPointF( maxX, barTopPosition + segmentHeight ), nullptr, context, layer );
 
 
     // outside line
-    lineSymbol->renderPolyline( QPolygonF()
-                                << QPointF( minX, barTopPosition )
-                                << QPointF( maxX, barTopPosition )
-                                << QPointF( maxX, barTopPosition + segmentHeight * 2 )
-                                << QPointF( minX, barTopPosition + segmentHeight * 2 )
-                                << QPointF( minX, barTopPosition ),
-                                nullptr, context, layer );
+    lineSymbol->renderPolyline(
+      QPolygonF() << QPointF( minX, barTopPosition ) << QPointF( maxX, barTopPosition ) << QPointF( maxX, barTopPosition + segmentHeight * 2 ) << QPointF( minX, barTopPosition + segmentHeight * 2 )
+                  << QPointF( minX, barTopPosition ),
+      nullptr,
+      context,
+      layer
+    );
   }
 
   lineSymbol->stopRender( context );

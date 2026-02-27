@@ -43,7 +43,6 @@ class QgsStyleEntityVisitorInterface;
 class CORE_EXPORT QgsLayoutItemRenderContext
 {
   public:
-
     /**
      * Constructor for QgsLayoutItemRenderContext.
      *
@@ -90,7 +89,6 @@ class CORE_EXPORT QgsLayoutItemRenderContext
     double viewScaleFactor() const { return mViewScaleFactor; }
 
   private:
-
 #ifdef SIP_RUN
     QgsLayoutItemRenderContext( const QgsLayoutItemRenderContext &rh ) SIP_FORCE;
 #endif
@@ -191,7 +189,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
         *sipCppRet = static_cast<QgsLayoutItemChart *>( sipCpp );
         break;
 
-      // did you read that comment above? NO? Go read it now. You're about to break stuff.
+        // did you read that comment above? NO? Go read it now. You're about to break stuff.
 
       default:
         sipType = NULL;
@@ -199,7 +197,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     SIP_END
 #endif
 
-
+    // clang-format off
     Q_OBJECT
     Q_PROPERTY( bool locked READ isLocked WRITE setLocked NOTIFY lockChanged )
 
@@ -218,112 +216,113 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       LowerMiddle, //!< Lower center of item
       LowerRight, //!< Lower right corner of item
     };
+    // clang-format on
 
     //! Layout item undo commands, used for collapsing undo commands
     enum UndoCommand
     {
-      UndoNone = -1, //!< No command suppression
-      UndoIncrementalMove = 1, //!< Layout item incremental movement, e.g. as a result of a keypress
-      UndoIncrementalResize, //!< Incremental resize
-      UndoStrokeColor, //!< Stroke color adjustment
-      UndoStrokeWidth, //!< Stroke width adjustment
-      UndoBackgroundColor, //!< Background color adjustment
-      UndoOpacity, //!< Opacity adjustment
-      UndoMarginLeft, //!< Left margin \since QGIS 3.30
-      UndoMarginTop, //!< Top margin \since QGIS 3.30
-      UndoMarginBottom, //!< Bottom margin \since QGIS 3.30
-      UndoMarginRight, //!< Right margin \since QGIS 3.30
-      UndoSetId, //!< Change item ID
-      UndoRotation, //!< Rotation adjustment
-      UndoExportLayerName, //!< Export layer name \since QGIS 3.40
-      UndoShapeStyle, //!< Shape symbol style
-      UndoShapeCornerRadius, //!< Shape corner radius
-      UndoNodeMove, //!< Node move
-      UndoAtlasMargin, //!< Map atlas margin changed
-      UndoMapRotation, //!< Map rotation changed
-      UndoZoomContent, //!< Item content zoomed
-      UndoOverviewStyle, //!< Map overview style
-      UndoGridFramePenColor, //!< Map grid frame pen color
-      UndoMapGridFrameFill1Color, //!< Map grid frame fill color 1
-      UndoMapGridFrameFill2Color, //!< Map grid frame fill color 2
-      UndoMapAnnotationDistance, //!< Map frame annotation distance
-      UndoMapGridAnnotationFontColor, //!< Map frame annotation color
-      UndoMapGridLineSymbol, //!< Grid line symbol
-      UndoMapGridMarkerSymbol, //!< Grid marker symbol
-      UndoMapGridIntervalRange, //!< Grid interval range
-      UndoMapLabelMargin, //!< Margin for labels from edge of map
-      UndoPictureRotation, //!< Picture rotation
-      UndoPictureFillColor, //!< Picture fill color
-      UndoPictureStrokeColor, //!< Picture stroke color
-      UndoPictureStrokeWidth, //!< Picture stroke width
-      UndoPictureNorthOffset, //!< Picture north offset
-      UndoLabelText, //!< Label text
-      UndoLabelFont, //!< Label font
-      UndoLabelMargin, //!< Label margin
-      UndoLabelFontColor, //!< Label color
-      UndoLegendText, //!< Legend text
-      UndoLegendColumnCount, //!< Legend column count
-      UndoLegendSymbolWidth, //!< Legend symbol width
-      UndoLegendSymbolHeight, //!< Legend symbol height
-      UndoLegendMaxSymbolSize, //!< Legend maximum symbol size
-      UndoLegendMinSymbolSize, //!< Legend minimum symbol size
-      UndoLegendWmsLegendWidth, //!< Legend WMS width
-      UndoLegendWmsLegendHeight, //!< Legend WMS height
-      UndoLegendTitleSpaceBottom, //!< Legend title space
-      UndoLegendGroupSpace, //!< Legend group spacing
-      UndoLegendGroupIndent, //!< Legend group indent
-      UndoLegendSubgroupIndent, //!< Legend subgroup indent
-      UndoLegendLayerSpace, //!< Legend layer spacing
-      UndoLegendSymbolSpace, //!< Legend symbol spacing
-      UndoLegendIconSymbolSpace, //!< Legend icon symbol space
-      UndoLegendFontColor, //!< Legend font color
-      UndoLegendBoxSpace, //!< Legend box space
-      UndoLegendColumnSpace, //!< Legend column space
-      UndoLegendLineSpacing, //!< Legend line spacing
-      UndoLegendRasterStrokeWidth, //!< Legend raster stroke width
-      UndoLegendRasterStrokeColor, //!< Legend raster stroke color
-      UndoLegendTitleFont, //!< Legend title font
-      UndoLegendGroupFont, //!< Legend group font
-      UndoLegendLayerFont, //!< Legend layer font
-      UndoLegendItemFont, //!< Legend item font
-      UndoLegendAutoWrapAfter, //!< Legend auto wrap lines after distance. \since QGIS 3.44
-      UndoScaleBarLineWidth, //!< Scalebar line width
-      UndoScaleBarSegmentSize, //!< Scalebar segment size
-      UndoScaleBarSegmentsLeft, //!< Scalebar segments left
-      UndoScaleBarSegments, //!< Scalebar number of segments
-      UndoScaleBarHeight, //!< Scalebar height
-      UndoScaleBarSubdivisions, //!< Scalebar number of subdivisions
-      UndoScaleBarSubdivisionsHeight, //!< Scalebar subdivisions height
-      UndoScaleBarFontColor, //!< Scalebar font color
-      UndoScaleBarFillColor, //!< Scalebar fill color
-      UndoScaleBarFillColor2, //!< Scalebar secondary fill color
-      UndoScaleBarStrokeColor, //!< Scalebar stroke color
-      UndoScaleBarUnitText, //!< Scalebar unit text
-      UndoScaleBarMapUnitsSegment, //!< Scalebar map units per segment
-      UndoScaleBarLabelBarSize, //!< Scalebar label bar size
-      UndoScaleBarBoxContentSpace, //!< Scalebar box context space
-      UndoArrowStrokeWidth, //!< Arrow stroke width
-      UndoArrowHeadWidth, //!< Arrow head width
-      UndoArrowHeadFillColor, //!< Arrow head fill color
-      UndoArrowHeadStrokeColor, //!< Arrow head stroke color
-      UndoElevationProfileTolerance, //!< Change elevation profile distance tolerance
-      UndoElevationProfileChartBackground, //!< Change elevation profile chart background
-      UndoElevationProfileChartBorder, //!< Change elevation profile chart border
-      UndoElevationProfileDistanceMajorGridlines, //!< Change elevation profile distance axis major gridlines
-      UndoElevationProfileDistanceMinorGridlines, //!< Change elevation profile distance axis minor gridlines
-      UndoElevationProfileDistanceFormat, //!< Change elevation profile distance axis number format
-      UndoElevationProfileDistanceFont, //!< Change elevation profile distance axis number font
-      UndoElevationProfileDistanceLabels, //!< Change elevation profile distance axis label interval
+      UndoNone = -1,                               //!< No command suppression
+      UndoIncrementalMove = 1,                     //!< Layout item incremental movement, e.g. as a result of a keypress
+      UndoIncrementalResize,                       //!< Incremental resize
+      UndoStrokeColor,                             //!< Stroke color adjustment
+      UndoStrokeWidth,                             //!< Stroke width adjustment
+      UndoBackgroundColor,                         //!< Background color adjustment
+      UndoOpacity,                                 //!< Opacity adjustment
+      UndoMarginLeft,                              //!< Left margin \since QGIS 3.30
+      UndoMarginTop,                               //!< Top margin \since QGIS 3.30
+      UndoMarginBottom,                            //!< Bottom margin \since QGIS 3.30
+      UndoMarginRight,                             //!< Right margin \since QGIS 3.30
+      UndoSetId,                                   //!< Change item ID
+      UndoRotation,                                //!< Rotation adjustment
+      UndoExportLayerName,                         //!< Export layer name \since QGIS 3.40
+      UndoShapeStyle,                              //!< Shape symbol style
+      UndoShapeCornerRadius,                       //!< Shape corner radius
+      UndoNodeMove,                                //!< Node move
+      UndoAtlasMargin,                             //!< Map atlas margin changed
+      UndoMapRotation,                             //!< Map rotation changed
+      UndoZoomContent,                             //!< Item content zoomed
+      UndoOverviewStyle,                           //!< Map overview style
+      UndoGridFramePenColor,                       //!< Map grid frame pen color
+      UndoMapGridFrameFill1Color,                  //!< Map grid frame fill color 1
+      UndoMapGridFrameFill2Color,                  //!< Map grid frame fill color 2
+      UndoMapAnnotationDistance,                   //!< Map frame annotation distance
+      UndoMapGridAnnotationFontColor,              //!< Map frame annotation color
+      UndoMapGridLineSymbol,                       //!< Grid line symbol
+      UndoMapGridMarkerSymbol,                     //!< Grid marker symbol
+      UndoMapGridIntervalRange,                    //!< Grid interval range
+      UndoMapLabelMargin,                          //!< Margin for labels from edge of map
+      UndoPictureRotation,                         //!< Picture rotation
+      UndoPictureFillColor,                        //!< Picture fill color
+      UndoPictureStrokeColor,                      //!< Picture stroke color
+      UndoPictureStrokeWidth,                      //!< Picture stroke width
+      UndoPictureNorthOffset,                      //!< Picture north offset
+      UndoLabelText,                               //!< Label text
+      UndoLabelFont,                               //!< Label font
+      UndoLabelMargin,                             //!< Label margin
+      UndoLabelFontColor,                          //!< Label color
+      UndoLegendText,                              //!< Legend text
+      UndoLegendColumnCount,                       //!< Legend column count
+      UndoLegendSymbolWidth,                       //!< Legend symbol width
+      UndoLegendSymbolHeight,                      //!< Legend symbol height
+      UndoLegendMaxSymbolSize,                     //!< Legend maximum symbol size
+      UndoLegendMinSymbolSize,                     //!< Legend minimum symbol size
+      UndoLegendWmsLegendWidth,                    //!< Legend WMS width
+      UndoLegendWmsLegendHeight,                   //!< Legend WMS height
+      UndoLegendTitleSpaceBottom,                  //!< Legend title space
+      UndoLegendGroupSpace,                        //!< Legend group spacing
+      UndoLegendGroupIndent,                       //!< Legend group indent
+      UndoLegendSubgroupIndent,                    //!< Legend subgroup indent
+      UndoLegendLayerSpace,                        //!< Legend layer spacing
+      UndoLegendSymbolSpace,                       //!< Legend symbol spacing
+      UndoLegendIconSymbolSpace,                   //!< Legend icon symbol space
+      UndoLegendFontColor,                         //!< Legend font color
+      UndoLegendBoxSpace,                          //!< Legend box space
+      UndoLegendColumnSpace,                       //!< Legend column space
+      UndoLegendLineSpacing,                       //!< Legend line spacing
+      UndoLegendRasterStrokeWidth,                 //!< Legend raster stroke width
+      UndoLegendRasterStrokeColor,                 //!< Legend raster stroke color
+      UndoLegendTitleFont,                         //!< Legend title font
+      UndoLegendGroupFont,                         //!< Legend group font
+      UndoLegendLayerFont,                         //!< Legend layer font
+      UndoLegendItemFont,                          //!< Legend item font
+      UndoLegendAutoWrapAfter,                     //!< Legend auto wrap lines after distance. \since QGIS 3.44
+      UndoScaleBarLineWidth,                       //!< Scalebar line width
+      UndoScaleBarSegmentSize,                     //!< Scalebar segment size
+      UndoScaleBarSegmentsLeft,                    //!< Scalebar segments left
+      UndoScaleBarSegments,                        //!< Scalebar number of segments
+      UndoScaleBarHeight,                          //!< Scalebar height
+      UndoScaleBarSubdivisions,                    //!< Scalebar number of subdivisions
+      UndoScaleBarSubdivisionsHeight,              //!< Scalebar subdivisions height
+      UndoScaleBarFontColor,                       //!< Scalebar font color
+      UndoScaleBarFillColor,                       //!< Scalebar fill color
+      UndoScaleBarFillColor2,                      //!< Scalebar secondary fill color
+      UndoScaleBarStrokeColor,                     //!< Scalebar stroke color
+      UndoScaleBarUnitText,                        //!< Scalebar unit text
+      UndoScaleBarMapUnitsSegment,                 //!< Scalebar map units per segment
+      UndoScaleBarLabelBarSize,                    //!< Scalebar label bar size
+      UndoScaleBarBoxContentSpace,                 //!< Scalebar box context space
+      UndoArrowStrokeWidth,                        //!< Arrow stroke width
+      UndoArrowHeadWidth,                          //!< Arrow head width
+      UndoArrowHeadFillColor,                      //!< Arrow head fill color
+      UndoArrowHeadStrokeColor,                    //!< Arrow head stroke color
+      UndoElevationProfileTolerance,               //!< Change elevation profile distance tolerance
+      UndoElevationProfileChartBackground,         //!< Change elevation profile chart background
+      UndoElevationProfileChartBorder,             //!< Change elevation profile chart border
+      UndoElevationProfileDistanceMajorGridlines,  //!< Change elevation profile distance axis major gridlines
+      UndoElevationProfileDistanceMinorGridlines,  //!< Change elevation profile distance axis minor gridlines
+      UndoElevationProfileDistanceFormat,          //!< Change elevation profile distance axis number format
+      UndoElevationProfileDistanceFont,            //!< Change elevation profile distance axis number font
+      UndoElevationProfileDistanceLabels,          //!< Change elevation profile distance axis label interval
       UndoElevationProfileElevationMajorGridlines, //!< Change elevation profile elevation axis major gridlines
       UndoElevationProfileElevationMinorGridlines, //!< Change elevation profile elevation axis minor gridlines
-      UndoElevationProfileElevationFormat, //!< Change elevation profile elevation axis number format
-      UndoElevationProfileElevationFont, //!< Change elevation profile elevation axis number font
-      UndoElevationProfileElevationLabels, //!< Change elevation profile elevation axis label interval
-      UndoElevationProfileMinimumDistance, //!< Change elevation profile minimum distance
-      UndoElevationProfileMaximumDistance, //!< Change elevation profile maximum distance
-      UndoElevationProfileMinimumElevation, //!< Change elevation profile minimum elevation
-      UndoElevationProfileMaximumElevation, //!< Change elevation profile maximum elevation
-      UndoElevationProfileSubsectionLines, //!< Change elevation profile subsection indicator symbol. \since QGIS 3.44
+      UndoElevationProfileElevationFormat,         //!< Change elevation profile elevation axis number format
+      UndoElevationProfileElevationFont,           //!< Change elevation profile elevation axis number font
+      UndoElevationProfileElevationLabels,         //!< Change elevation profile elevation axis label interval
+      UndoElevationProfileMinimumDistance,         //!< Change elevation profile minimum distance
+      UndoElevationProfileMaximumDistance,         //!< Change elevation profile maximum distance
+      UndoElevationProfileMinimumElevation,        //!< Change elevation profile minimum elevation
+      UndoElevationProfileMaximumElevation,        //!< Change elevation profile maximum elevation
+      UndoElevationProfileSubsectionLines,         //!< Change elevation profile subsection indicator symbol. \since QGIS 3.44
 
       UndoCustomCommand, //!< Base id for plugin based item undo commands
     };
@@ -334,8 +333,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      */
     enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
-      FlagOverridesPaint = 1 << 1,  //!< Item overrides the default layout item painting method
-      FlagProvidesClipPath = 1 << 2, //!< Item can act as a clipping path provider (see clipPath())
+      FlagOverridesPaint = 1 << 1,      //!< Item overrides the default layout item painting method
+      FlagProvidesClipPath = 1 << 2,    //!< Item can act as a clipping path provider (see clipPath())
       FlagDisableSceneCaching = 1 << 3, //!< Item should not have QGraphicsItem caching enabled
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -461,10 +460,10 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      */
     enum ExportLayerBehavior
     {
-      CanGroupWithAnyOtherItem, //!< Item can be placed on a layer with any other item (default behavior)
+      CanGroupWithAnyOtherItem,    //!< Item can be placed on a layer with any other item (default behavior)
       CanGroupWithItemsOfSameType, //!< Item can only be placed on layers with other items of the same type, but multiple items of this type can be grouped together
-      MustPlaceInOwnLayer, //!< Item must be placed in its own individual layer
-      ItemContainsSubLayers, //!< Item contains multiple sublayers which must be individually exported
+      MustPlaceInOwnLayer,         //!< Item must be placed in its own individual layer
+      ItemContainsSubLayers,       //!< Item contains multiple sublayers which must be individually exported
     };
 
     /**
@@ -526,33 +525,33 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      */
     struct CORE_EXPORT ExportLayerDetail
     {
-      //! User-friendly name for the export layer
-      QString name;
+        //! User-friendly name for the export layer
+        QString name;
 
-      //! Associated map layer ID, or an empty string if this export layer is not associated with a map layer
-      QString mapLayerId;
+        //! Associated map layer ID, or an empty string if this export layer is not associated with a map layer
+        QString mapLayerId;
 
-      /**
+        /**
        * Associated composition mode if this layer is associated with a map layer
        * \since QGIS 3.14
        */
-      QPainter::CompositionMode compositionMode = QPainter::CompositionMode_SourceOver;
+        QPainter::CompositionMode compositionMode = QPainter::CompositionMode_SourceOver;
 
-      /**
+        /**
        * Associated opacity, if this layer is associated with a map layer
        * \since QGIS 3.14
        */
-      double opacity = 1.0;
+        double opacity = 1.0;
 
-      //! Associated map theme, or an empty string if this export layer does not need to be associated with a map theme
-      QString mapTheme;
+        //! Associated map theme, or an empty string if this export layer does not need to be associated with a map theme
+        QString mapTheme;
 
-      /**
+        /**
        * Associated group name, if this layer is associated with an export group.
        *
        * \since QGIS 3.40
        */
-      QString groupName;
+        QString groupName;
     };
 
     /**
@@ -1117,7 +1116,6 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void clipPathChanged();
 
   protected:
-
     /**
      * Draws a debugging rectangle of the item's current bounds within the specified
      * painter.
@@ -1293,7 +1291,6 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     QgsLayoutSize applyDataDefinedSize( const QgsLayoutSize &size );
 
   private:
-
     // true if layout manages the z value for this item
     bool mLayoutManagesZValue = false;
 

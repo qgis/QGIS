@@ -48,7 +48,6 @@ class QgsGeospatialPdfRenderedFeatureHandler;
 class CORE_EXPORT QgsLayoutGeospatialPdfExporter : public QgsAbstractGeospatialPdfExporter
 {
   public:
-
     /**
      * Constructor for QgsLayoutGeospatialPdfExporter, associated with the specified \a layout.
      */
@@ -93,7 +92,6 @@ class CORE_EXPORT QgsLayoutGeospatialPdfExporter : public QgsAbstractGeospatialP
     QStringList layerTreeGroupOrder() const { return mLayerTreeGroupOrder; }
 
   private:
-
     VectorComponentDetail componentDetailForLayerId( const QString &layerId ) override;
 
     QgsLayout *mLayout = nullptr;
@@ -108,6 +106,3 @@ class CORE_EXPORT QgsLayoutGeospatialPdfExporter : public QgsAbstractGeospatialP
 };
 
 #endif //QGSLAYOUTGEOPDFEXPORTER_H
-
-
-

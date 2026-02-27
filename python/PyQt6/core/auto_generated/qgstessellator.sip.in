@@ -29,8 +29,9 @@ when extrusion height is non-zero.
   public:
     QgsTessellator();
 
- QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
-                                      bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f ) /Deprecated="Since 4.0. Use the default QgsTessellator() constructor and individual setters instead."/;
+ QgsTessellator(
+      double originX, double originY, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false, bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f
+    ) /Deprecated="Since 4.0. Use the default QgsTessellator() constructor and individual setters instead."/;
 %Docstring
 Creates tessellator with a specified origin point of the world (in map
 coordinates)
@@ -40,8 +41,9 @@ coordinates)
    Use the default QgsTessellator() constructor and individual setters instead.
 %End
 
- QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
-                                      bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f ) /Deprecated="Since 4.0. Use the default QgsTessellator() constructor and individual setters instead."/;
+ QgsTessellator(
+      const QgsRectangle &bounds, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false, bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f
+    ) /Deprecated="Since 4.0. Use the default QgsTessellator() constructor and individual setters instead."/;
 %Docstring
 Creates tessellator with a specified ``bounds`` of input geometry
 coordinates. This constructor allows the tessellator to map input

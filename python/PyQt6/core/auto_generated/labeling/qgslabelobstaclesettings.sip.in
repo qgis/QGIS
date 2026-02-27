@@ -22,9 +22,8 @@ obstacles.
 #include "qgslabelobstaclesettings.h"
 %End
   public:
-
     enum class ObstacleType /BaseType=IntEnum/
-      {
+    {
       PolygonInterior,
       PolygonBoundary,
       PolygonWhole

@@ -32,7 +32,7 @@
 
 using namespace Qt::StringLiterals;
 
-#define TINYGLTF_IMPLEMENTATION       // should be defined just in one CPP file
+#define TINYGLTF_IMPLEMENTATION // should be defined just in one CPP file
 
 // decompression of meshes with Draco is optional, but recommended
 // because some 3D Tiles datasets use it (KHR_draco_mesh_compression is an optional extension of GLTF)
@@ -40,8 +40,8 @@ using namespace Qt::StringLiterals;
 #define TINYGLTF_ENABLE_DRACO
 #endif
 
-#define TINYGLTF_NO_STB_IMAGE         // we use QImage-based reading of images
-#define TINYGLTF_NO_STB_IMAGE_WRITE   // we don't need writing of images
+#define TINYGLTF_NO_STB_IMAGE       // we use QImage-based reading of images
+#define TINYGLTF_NO_STB_IMAGE_WRITE // we don't need writing of images
 //#define TINYGLTF_NO_FS
 
 //#include <fstream>
@@ -50,7 +50,18 @@ using namespace Qt::StringLiterals;
 ///@cond PRIVATE
 
 
-bool QgsGltfUtils::accessorToMapCoordinates( const tinygltf::Model &model, int accessorIndex, const QgsMatrix4x4 &tileTransform, const QgsCoordinateTransform *ecefToTargetCrs, const QgsVector3D &tileTranslationEcef, const QMatrix4x4 *nodeTransform, Qgis::Axis gltfUpAxis, QVector<double> &vx, QVector<double> &vy, QVector<double> &vz )
+bool QgsGltfUtils::accessorToMapCoordinates(
+  const tinygltf::Model &model,
+  int accessorIndex,
+  const QgsMatrix4x4 &tileTransform,
+  const QgsCoordinateTransform *ecefToTargetCrs,
+  const QgsVector3D &tileTranslationEcef,
+  const QMatrix4x4 *nodeTransform,
+  Qgis::Axis gltfUpAxis,
+  QVector<double> &vx,
+  QVector<double> &vy,
+  QVector<double> &vz
+)
 {
   const tinygltf::Accessor &accessor = model.accessors[accessorIndex];
   const tinygltf::BufferView &bv = model.bufferViews[accessor.bufferView];
@@ -197,21 +208,23 @@ std::unique_ptr<QMatrix4x4> QgsGltfUtils::parseNodeTransform( const tinygltf::No
   std::unique_ptr<QMatrix4x4> matrix;
   if ( !node.matrix.empty() )
   {
-    matrix = std::make_unique<QMatrix4x4>( );
+    matrix = std::make_unique<QMatrix4x4>();
     float *mdata = matrix->data();
     for ( int i = 0; i < 16; ++i )
       mdata[i] = static_cast< float >( node.matrix[i] );
   }
   else if ( node.translation.size() || node.rotation.size() || node.scale.size() )
   {
-    matrix = std::make_unique<QMatrix4x4>( );
+    matrix = std::make_unique<QMatrix4x4>();
     if ( node.scale.size() )
     {
       matrix->scale( static_cast< float >( node.scale[0] ), static_cast< float >( node.scale[1] ), static_cast< float >( node.scale[2] ) );
     }
     if ( node.rotation.size() )
     {
-      matrix->rotate( QQuaternion( static_cast< float >( node.rotation[3] ), static_cast< float >( node.rotation[0] ), static_cast< float >( node.rotation[1] ), static_cast< float >( node.rotation[2] ) ) );
+      matrix->rotate(
+        QQuaternion( static_cast< float >( node.rotation[3] ), static_cast< float >( node.rotation[0] ), static_cast< float >( node.rotation[1] ), static_cast< float >( node.rotation[2] ) )
+      );
     }
     if ( node.translation.size() )
     {
@@ -289,11 +302,9 @@ QgsVector3D QgsGltfUtils::extractTileTranslation( tinygltf::Model &model, Qgis::
 
 
 bool QgsGltfUtils::loadImageDataWithQImage(
-  tinygltf::Image *image, const int image_idx, std::string *err,
-  std::string *warn, int req_width, int req_height,
-  const unsigned char *bytes, int size, void *user_data )
+  tinygltf::Image *image, const int image_idx, std::string *err, std::string *warn, int req_width, int req_height, const unsigned char *bytes, int size, void *user_data
+)
 {
-
   if ( req_width != 0 || req_height != 0 )
   {
     if ( err )
@@ -303,17 +314,15 @@ bool QgsGltfUtils::loadImageDataWithQImage(
     return false;
   }
 
-  ( void )warn;
-  ( void )user_data;
+  ( void ) warn;
+  ( void ) user_data;
 
   QImage img;
   if ( !img.loadFromData( bytes, size ) )
   {
     if ( err )
     {
-      ( *err ) +=
-        "Unknown image format. QImage cannot decode image data for image[" +
-        std::to_string( image_idx ) + "] name = \"" + image->name + "\".\n";
+      ( *err ) += "Unknown image format. QImage cannot decode image data for image[" + std::to_string( image_idx ) + "] name = \"" + image->name + "\".\n";
     }
     return false;
   }
@@ -348,24 +357,22 @@ bool QgsGltfUtils::loadGltfModel( const QByteArray &data, tinygltf::Model &model
   // (and there's a lot of non-compliant GLTF out there!)
   loader.SetParseStrictness( tinygltf::ParseStrictness::Permissive );
 
-  std::string baseDir;  // TODO: may be useful to set it from baseUri
+  std::string baseDir; // TODO: may be useful to set it from baseUri
   std::string err, warn;
 
   bool res;
-  if ( data.startsWith( "glTF" ) )   // 4-byte magic value in binary GLTF
+  if ( data.startsWith( "glTF" ) ) // 4-byte magic value in binary GLTF
   {
     if ( data.at( 4 ) == 1 )
     {
       *errors = QObject::tr( "GLTF version 1 tiles cannot be loaded" );
       return false;
     }
-    res = loader.LoadBinaryFromMemory( &model, &err, &warn,
-                                       ( const unsigned char * )data.constData(), data.size(), baseDir );
+    res = loader.LoadBinaryFromMemory( &model, &err, &warn, ( const unsigned char * ) data.constData(), data.size(), baseDir );
   }
   else
   {
-    res = loader.LoadASCIIFromString( &model, &err, &warn,
-                                      data.constData(), data.size(), baseDir );
+    res = loader.LoadASCIIFromString( &model, &err, &warn, data.constData(), data.size(), baseDir );
   }
 
   if ( errors )
@@ -677,7 +684,7 @@ bool QgsGltfUtils::loadDracoModel( const QByteArray &data, const I3SNodeContext 
     uvBufferView.byteOffset = 0;
     uvBufferView.byteLength = uvData.size();
     uvBufferView.target = TINYGLTF_TARGET_ARRAY_BUFFER;
-    model.bufferViews.emplace_back( std::move( uvBufferView ) ) ;
+    model.bufferViews.emplace_back( std::move( uvBufferView ) );
 
     tinygltf::Accessor uvAccessor;
     uvAccessor.bufferView = static_cast<int>( model.bufferViews.size() ) - 1;
@@ -784,7 +791,7 @@ int QgsGltfUtils::loadMaterialFromMetadata( const QVariantMap &materialInfo, tin
     QString baseColorTextureUri = materialInfo["pbrBaseColorTexture"].toString();
 
     tinygltf::Image img;
-    img.uri = baseColorTextureUri.toStdString();   // file:/// or http:// ... will be fetched by QGIS
+    img.uri = baseColorTextureUri.toStdString(); // file:/// or http:// ... will be fetched by QGIS
     model.images.emplace_back( std::move( img ) );
 
     tinygltf::Texture tex;
@@ -808,16 +815,20 @@ int QgsGltfUtils::loadMaterialFromMetadata( const QVariantMap &materialInfo, tin
 bool QgsGltfUtils::writeGltfModel( const tinygltf::Model &model, const QString &outputFilename )
 {
   tinygltf::TinyGLTF gltf;
-  bool res = gltf.WriteGltfSceneToFile( &model,
-                                        outputFilename.toStdString(),
-                                        false,    // embedImages
-                                        true,     // embedBuffers
-                                        false,    // prettyPrint
-                                        true );   // writeBinary
+  bool res = gltf.WriteGltfSceneToFile(
+    &model,
+    outputFilename.toStdString(),
+    false, // embedImages
+    true,  // embedBuffers
+    false, // prettyPrint
+    true
+  ); // writeBinary
   return res;
 }
 
-void QgsGltfUtils::I3SNodeContext::initFromTile( const QgsTiledSceneTile &tile, const QgsCoordinateReferenceSystem &layerCrs, const QgsCoordinateReferenceSystem &sceneCrs, const QgsCoordinateTransformContext &transformContext )
+void QgsGltfUtils::I3SNodeContext::initFromTile(
+  const QgsTiledSceneTile &tile, const QgsCoordinateReferenceSystem &layerCrs, const QgsCoordinateReferenceSystem &sceneCrs, const QgsCoordinateTransformContext &transformContext
+)
 {
   const QVariantMap tileMetadata = tile.metadata();
 

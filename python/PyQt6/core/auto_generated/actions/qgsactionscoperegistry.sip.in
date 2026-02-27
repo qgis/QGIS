@@ -28,7 +28,6 @@ To get access use the :py:class:`QgsApplication`:
 #include "qgsactionscoperegistry.h"
 %End
   public:
-
     explicit QgsActionScopeRegistry( QObject *parent = 0 );
 %Docstring
 Create a new QgsActionScopeRegistry. QGIS already creates a central

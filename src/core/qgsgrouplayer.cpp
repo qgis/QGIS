@@ -52,7 +52,6 @@ QgsGroupLayer::QgsGroupLayer( const QString &name, const LayerOptions &options )
 QgsGroupLayer::~QgsGroupLayer()
 {
   emit willBeDeleted();
-
 }
 
 QgsGroupLayer *QgsGroupLayer::clone() const
@@ -162,7 +161,7 @@ bool QgsGroupLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &
   // add the layer opacity
   if ( categories.testFlag( Rendering ) )
   {
-    QDomElement layerOpacityElem  = doc.createElement( u"layerOpacity"_s );
+    QDomElement layerOpacityElem = doc.createElement( u"layerOpacity"_s );
     const QDomText layerOpacityText = doc.createTextNode( QString::number( opacity() ) );
     layerOpacityElem.appendChild( layerOpacityText );
     node.appendChild( layerOpacityElem );
@@ -178,7 +177,7 @@ bool QgsGroupLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &
   if ( categories.testFlag( Symbology ) )
   {
     // add the blend mode field
-    QDomElement blendModeElem  = doc.createElement( u"blendMode"_s );
+    QDomElement blendModeElem = doc.createElement( u"blendMode"_s );
     const QDomText blendModeText = doc.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
     blendModeElem.appendChild( blendModeText );
     node.appendChild( blendModeElem );
@@ -323,7 +322,7 @@ void QgsGroupLayer::setChildLayers( const QList< QgsMapLayer * > &layers )
   // group layer inherits first valid child layer's crs
   for ( const QgsMapLayer *layer : layers )
   {
-    if ( layer->isValid() && layer->crs().isValid( ) )
+    if ( layer->isValid() && layer->crs().isValid() )
     {
       setCrs( layer->crs() );
       mDataProvider->setCrs( crs() );
@@ -370,9 +369,7 @@ void QgsGroupLayer::prepareLayersForRemovalFromGroup()
 // QgsGroupLayerDataProvider
 //
 ///@cond PRIVATE
-QgsGroupLayerDataProvider::QgsGroupLayerDataProvider(
-  const ProviderOptions &options,
-  Qgis::DataProviderReadFlags flags )
+QgsGroupLayerDataProvider::QgsGroupLayerDataProvider( const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsDataProvider( QString(), options, flags )
 {}
 
@@ -418,4 +415,3 @@ bool QgsGroupLayerDataProvider::isValid() const
   return true;
 }
 ///@endcond
-

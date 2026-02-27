@@ -10,7 +10,6 @@
 
 
 
-
 class QgsSnappingConfig
 {
 %Docstring(signature="appended")
@@ -24,7 +23,6 @@ Stores configuration of snapping settings for the project.
     static const QMetaObject staticMetaObject;
 
   public:
-
     enum SnappingType /BaseType=IntEnum/
     {
       Vertex,
@@ -87,7 +85,6 @@ project.
 %End
 
       public:
-
  IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, Qgis::MapToolUnit units ) /Deprecated="Since 3.12. Use the method with Qgis.SnappingTypes instead."/;
 %Docstring
 IndividualLayerSettings
@@ -218,9 +215,9 @@ limit
 .. versionadded:: 3.14
 %End
 
-        bool operator!= ( const QgsSnappingConfig::IndividualLayerSettings &other ) const;
+        bool operator!=( const QgsSnappingConfig::IndividualLayerSettings &other ) const;
 
-        bool operator== ( const QgsSnappingConfig::IndividualLayerSettings &other ) const;
+        bool operator==( const QgsSnappingConfig::IndividualLayerSettings &other ) const;
 
     };
 
@@ -439,7 +436,7 @@ Removes all individual layer snapping settings
 .. versionadded:: 3.16
 %End
 
-    bool operator!= ( const QgsSnappingConfig &other ) const;
+    bool operator!=( const QgsSnappingConfig &other ) const;
 
     void readProject( const QDomDocument &doc );
 %Docstring

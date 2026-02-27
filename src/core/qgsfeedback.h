@@ -51,8 +51,10 @@ class CORE_EXPORT QgsFeedback : public QObject
 
     ~QgsFeedback() override;
 
+    // clang-format off
     //! Tells whether the operation has been canceled already
     bool isCanceled() const SIP_HOLDGIL { return mCanceled; }
+    // clang-format on
 
     /**
      * Sets the current progress for the feedback object. The \a progress

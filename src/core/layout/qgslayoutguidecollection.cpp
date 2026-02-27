@@ -190,7 +190,6 @@ Qt::Orientation QgsLayoutGuide::orientation() const
 }
 
 
-
 //
 // QgsLayoutGuideCollection
 //
@@ -281,7 +280,7 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
 
   switch ( role )
   {
-    case  Qt::EditRole:
+    case Qt::EditRole:
     {
       bool ok = false;
       double newPos = value.toDouble( &ok );
@@ -381,7 +380,7 @@ bool QgsLayoutGuideCollection::removeRows( int row, int count, const QModelIndex
   if ( !mBlockUndoCommands )
     mLayout->undoStack()->beginCommand( mPageCollection, tr( "Remove Guide(s)" ), Remove + row );
   beginRemoveRows( parent, row, row + count - 1 );
-  for ( int i = 0; i < count; ++ i )
+  for ( int i = 0; i < count; ++i )
   {
     delete mGuides.takeAt( row );
   }
@@ -405,10 +404,7 @@ void QgsLayoutGuideCollection::addGuide( QgsLayoutGuide *guide )
     mLayout->undoStack()->endCommand();
 
   QModelIndex index = createIndex( mGuides.length() - 1, 0 );
-  connect( guide, &QgsLayoutGuide::positionChanged, this, [ this, index ]
-  {
-    emit dataChanged( index, index );
-  } );
+  connect( guide, &QgsLayoutGuide::positionChanged, this, [this, index] { emit dataChanged( index, index ); } );
 }
 
 void QgsLayoutGuideCollection::removeGuide( QgsLayoutGuide *guide )
@@ -494,8 +490,7 @@ QList<QgsLayoutGuide *> QgsLayoutGuideCollection::guides( Qt::Orientation orient
   const auto constMGuides = mGuides;
   for ( QgsLayoutGuide *guide : constMGuides )
   {
-    if ( guide->orientation() == orientation && guide->item()->isVisible() &&
-         ( page < 0 || mPageCollection->page( page ) == guide->page() ) )
+    if ( guide->orientation() == orientation && guide->item()->isVisible() && ( page < 0 || mPageCollection->page( page ) == guide->page() ) )
       res << guide;
   }
   return res;

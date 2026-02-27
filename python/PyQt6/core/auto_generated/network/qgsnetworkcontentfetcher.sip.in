@@ -29,7 +29,6 @@ URL redirects are automatically handled.
 #include "qgsnetworkcontentfetcher.h"
 %End
   public:
-
     QgsNetworkContentFetcher();
 
     ~QgsNetworkContentFetcher();

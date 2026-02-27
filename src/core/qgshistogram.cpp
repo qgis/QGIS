@@ -104,10 +104,8 @@ QList<int> QgsHistogram::counts( int bins ) const
   if ( currentValueIndex < mValues.count() )
   {
     //last value needs to be added
-    binCounts[ bins - 1 ] = binCounts.last() + 1;
+    binCounts[bins - 1] = binCounts.last() + 1;
   }
 
   return binCounts;
 }
-
-

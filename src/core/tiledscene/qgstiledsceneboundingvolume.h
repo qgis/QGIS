@@ -38,7 +38,6 @@ class QgsMatrix4x4;
 class CORE_EXPORT QgsTiledSceneBoundingVolume
 {
   public:
-
     /**
      * Constructor for QgsTiledSceneBoundingVolume, with the specified oriented \a box.
      */
@@ -78,9 +77,7 @@ class CORE_EXPORT QgsTiledSceneBoundingVolume
     QgsOrientedBox3D box() const { return mBox; }
 
   private:
-
     QgsOrientedBox3D mBox;
-
 };
 
 #endif // QGSTILEDSCENEBOUNDINGVOLUME_H

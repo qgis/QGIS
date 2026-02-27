@@ -66,10 +66,11 @@ class CORE_EXPORT QgsPointXY
     Q_PROPERTY( double y READ y WRITE setY )
 
   public:
-
     QgsPointXY() = default;
 
+    // clang-format off
     QgsPointXY( const QgsPointXY &p ) SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Create a point from x,y coordinates
@@ -349,6 +350,7 @@ class CORE_EXPORT QgsPointXY
     }
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = u"<QgsPointXY: %1>"_s.arg( sipCpp->asWkt() );
@@ -382,6 +384,7 @@ class CORE_EXPORT QgsPointXY
     % MethodCode
     sipRes = qHash( *sipCpp );
     % End
+// clang-format on
 #endif
 
   private:

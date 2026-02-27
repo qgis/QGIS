@@ -42,7 +42,6 @@ class CORE_EXPORT QgsVectorLayerSelectionProperties : public QgsMapLayerSelectio
     Q_PROPERTY( QColor selectionColor READ selectionColor WRITE setSelectionColor NOTIFY selectionColorChanged )
 
   public:
-
     /**
      * Constructor for QgsVectorLayerSelectionProperties, with the specified \a parent object.
      */
@@ -127,7 +126,6 @@ class CORE_EXPORT QgsVectorLayerSelectionProperties : public QgsMapLayerSelectio
     void selectionSymbolChanged();
 
   private:
-
     Qgis::SelectionRenderingMode mSelectionRenderingMode = Qgis::SelectionRenderingMode::Default;
     QColor mSelectionColor;
     std::unique_ptr< QgsSymbol > mSelectionSymbol;

@@ -33,7 +33,6 @@ class QgsReadWriteContext;
 class CORE_EXPORT QgsLegendPatchShape
 {
   public:
-
     /**
      * Constructor for a null QgsLegendPatchShape.
      *
@@ -53,9 +52,7 @@ class CORE_EXPORT QgsLegendPatchShape
      * If \a preserveAspectRatio is TRUE, then the patch shape should preserve its aspect ratio when
      * it is resized to fit a desired legend patch size.
      */
-    QgsLegendPatchShape( Qgis::SymbolType type,
-                         const QgsGeometry &geometry,
-                         bool preserveAspectRatio = true );
+    QgsLegendPatchShape( Qgis::SymbolType type, const QgsGeometry &geometry, bool preserveAspectRatio = true );
 
     /**
      * Returns TRUE if the patch shape is a null QgsLegendPatchShape,
@@ -177,7 +174,6 @@ class CORE_EXPORT QgsLegendPatchShape
     QgsGeometry mGeometry;
     bool mPreserveAspectRatio = true;
     bool mScaleToTargetSize = true;
-
 };
 
 #endif // QGSLEGENDPATCHSHAPE_H

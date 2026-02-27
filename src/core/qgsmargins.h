@@ -39,7 +39,6 @@ using namespace Qt::StringLiterals;
 class CORE_EXPORT QgsMargins
 {
   public:
-
     /**
      * Constructs a margins object with all margins set to 0.
      */
@@ -62,10 +61,7 @@ class CORE_EXPORT QgsMargins
     /**
      * Returns \c TRUE if all margins are is 0; otherwise returns FALSE.
      */
-    bool isNull() const
-    {
-      return qgsDoubleNear( mLeft, 0.0 ) && qgsDoubleNear( mTop, 0.0 ) && qgsDoubleNear( mRight, 0.0 ) && qgsDoubleNear( mBottom, 0.0 );
-    }
+    bool isNull() const { return qgsDoubleNear( mLeft, 0.0 ) && qgsDoubleNear( mTop, 0.0 ) && qgsDoubleNear( mRight, 0.0 ) && qgsDoubleNear( mBottom, 0.0 ); }
 
     /**
      * Returns the left margin.
@@ -164,15 +160,20 @@ class CORE_EXPORT QgsMargins
     static QgsMargins fromString( const QString &string );
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     const QString str = u"<QgsMargins: %1 %2 %3 %4>"_s.arg( sipCpp->left() ).arg( sipCpp->top() ).arg( sipCpp->right() ).arg( sipCpp->bottom() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-  private:
-    double mLeft = 0.0;
+    // clang-format off
+    private:
+    // clang-format on
+    double mLeft
+    = 0.0;
     double mTop = 0.0;
     double mRight = 0.0;
     double mBottom = 0.0;
@@ -184,10 +185,7 @@ class CORE_EXPORT QgsMargins
  */
 inline bool operator==( const QgsMargins &lhs, const QgsMargins &rhs )
 {
-  return qgsDoubleNear( lhs.left(), rhs.left() )
-         && qgsDoubleNear( lhs.top(), rhs.top() )
-         && qgsDoubleNear( lhs.right(), rhs.right() )
-         && qgsDoubleNear( lhs.bottom(), rhs.bottom() );
+  return qgsDoubleNear( lhs.left(), rhs.left() ) && qgsDoubleNear( lhs.top(), rhs.top() ) && qgsDoubleNear( lhs.right(), rhs.right() ) && qgsDoubleNear( lhs.bottom(), rhs.bottom() );
 }
 
 /**
@@ -204,8 +202,7 @@ inline bool operator!=( const QgsMargins &lhs, const QgsMargins &rhs )
  */
 inline QgsMargins operator+( const QgsMargins &m1, const QgsMargins &m2 )
 {
-  return QgsMargins( m1.left() + m2.left(), m1.top() + m2.top(),
-                     m1.right() + m2.right(), m1.bottom() + m2.bottom() );
+  return QgsMargins( m1.left() + m2.left(), m1.top() + m2.top(), m1.right() + m2.right(), m1.bottom() + m2.bottom() );
 }
 
 /**
@@ -214,8 +211,7 @@ inline QgsMargins operator+( const QgsMargins &m1, const QgsMargins &m2 )
  */
 inline QgsMargins operator-( const QgsMargins &m1, const QgsMargins &m2 )
 {
-  return QgsMargins( m1.left() - m2.left(), m1.top() - m2.top(),
-                     m1.right() - m2.right(), m1.bottom() - m2.bottom() );
+  return QgsMargins( m1.left() - m2.left(), m1.top() - m2.top(), m1.right() - m2.right(), m1.bottom() - m2.bottom() );
 }
 
 /**
@@ -223,8 +219,7 @@ inline QgsMargins operator-( const QgsMargins &m1, const QgsMargins &m2 )
  */
 inline QgsMargins operator+( const QgsMargins &lhs, double rhs )
 {
-  return QgsMargins( lhs.left() + rhs, lhs.top() + rhs,
-                     lhs.right() + rhs, lhs.bottom() + rhs );
+  return QgsMargins( lhs.left() + rhs, lhs.top() + rhs, lhs.right() + rhs, lhs.bottom() + rhs );
 }
 
 /**
@@ -232,8 +227,7 @@ inline QgsMargins operator+( const QgsMargins &lhs, double rhs )
  */
 inline QgsMargins operator+( double lhs, const QgsMargins &rhs )
 {
-  return QgsMargins( rhs.left() + lhs, rhs.top() + lhs,
-                     rhs.right() + lhs, rhs.bottom() + lhs );
+  return QgsMargins( rhs.left() + lhs, rhs.top() + lhs, rhs.right() + lhs, rhs.bottom() + lhs );
 }
 
 /**
@@ -241,8 +235,7 @@ inline QgsMargins operator+( double lhs, const QgsMargins &rhs )
  */
 inline QgsMargins operator-( const QgsMargins &lhs, double rhs )
 {
-  return QgsMargins( lhs.left() - rhs, lhs.top() - rhs,
-                     lhs.right() - rhs, lhs.bottom() - rhs );
+  return QgsMargins( lhs.left() - rhs, lhs.top() - rhs, lhs.right() - rhs, lhs.bottom() - rhs );
 }
 
 /**
@@ -251,8 +244,7 @@ inline QgsMargins operator-( const QgsMargins &lhs, double rhs )
  */
 inline QgsMargins operator*( const QgsMargins &margins, double factor )
 {
-  return QgsMargins( margins.left() * factor, margins.top() * factor,
-                     margins.right() * factor, margins.bottom() * factor );
+  return QgsMargins( margins.left() * factor, margins.top() * factor, margins.right() * factor, margins.bottom() * factor );
 }
 
 /**
@@ -261,8 +253,7 @@ inline QgsMargins operator*( const QgsMargins &margins, double factor )
  */
 inline QgsMargins operator*( double factor, const QgsMargins &margins )
 {
-  return QgsMargins( margins.left() * factor, margins.top() * factor,
-                     margins.right() * factor, margins.bottom() * factor );
+  return QgsMargins( margins.left() * factor, margins.top() * factor, margins.right() * factor, margins.bottom() * factor );
 }
 
 /**
@@ -271,8 +262,7 @@ inline QgsMargins operator*( double factor, const QgsMargins &margins )
  */
 inline QgsMargins operator/( const QgsMargins &margins, double divisor )
 {
-  return QgsMargins( margins.left() / divisor, margins.top() / divisor,
-                     margins.right() / divisor, margins.bottom() / divisor );
+  return QgsMargins( margins.left() / divisor, margins.top() / divisor, margins.right() / divisor, margins.bottom() / divisor );
 }
 
 inline QgsMargins &QgsMargins::operator+=( const QgsMargins &margins ) SIP_SKIP

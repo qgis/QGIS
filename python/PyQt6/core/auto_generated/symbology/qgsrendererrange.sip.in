@@ -23,7 +23,6 @@ Represents a value range for a :py:class:`QgsGraduatedSymbolRenderer`.
 #include "qgsrendererrange.h"
 %End
   public:
-
     QgsRendererRange();
     ~QgsRendererRange();
 
@@ -203,7 +202,7 @@ Creates a DOM element representing the range in SLD format.
     }
 %End
 
-  protected:
+    protected:
 
 };
 

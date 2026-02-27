@@ -21,12 +21,7 @@ Class for storing a STAC Collection's data.
 %End
   public:
 
-    QgsStacCollection( const QString &id,
-                       const QString &version,
-                       const QString &description,
-                       const QVector< QgsStacLink > &links,
-                       const QString &license,
-                       const QgsStacExtent &extent );
+    QgsStacCollection( const QString &id, const QString &version, const QString &description, const QVector< QgsStacLink > &links, const QString &license, const QgsStacExtent &extent );
 %Docstring
 Constructs a valid QgsStacCollection
 

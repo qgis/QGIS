@@ -33,7 +33,7 @@ class QgsExpressionContext;
  */
 class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
 {
-
+    // clang-format off
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     switch ( sipCpp->nodeType() )
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
         sipType = 0;
         break;
     }
-    SIP_END
+  SIP_END
 #endif
 
     Q_DECLARE_TR_FUNCTIONS( QgsExpressionNode )
@@ -76,14 +76,15 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
     //! Known node types.
     enum NodeType
     {
-      ntUnaryOperator, //!< \see QgsExpression::Node::NodeUnaryOperator
-      ntBinaryOperator, //!< \see QgsExpression::Node::NodeBinaryOperator
-      ntInOperator, //!< \see QgsExpression::Node::NodeInOperator
-      ntFunction,  //!< \see QgsExpression::Node::NodeFunction
-      ntLiteral, //!< \see QgsExpression::Node::NodeLiteral
-      ntColumnRef, //!< \see QgsExpression::Node::NodeColumnRef
-      ntCondition, //!< \see QgsExpression::Node::NodeCondition
-      ntIndexOperator, //!< Index operator
+      // clang-format on
+      ntUnaryOperator,   //!< \see QgsExpression::Node::NodeUnaryOperator
+      ntBinaryOperator,  //!< \see QgsExpression::Node::NodeBinaryOperator
+      ntInOperator,      //!< \see QgsExpression::Node::NodeInOperator
+      ntFunction,        //!< \see QgsExpression::Node::NodeFunction
+      ntLiteral,         //!< \see QgsExpression::Node::NodeLiteral
+      ntColumnRef,       //!< \see QgsExpression::Node::NodeColumnRef
+      ntCondition,       //!< \see QgsExpression::Node::NodeCondition
+      ntIndexOperator,   //!< Index operator
       ntBetweenOperator, //!< Between operator \since QGIS 3.26
     };
 
@@ -95,7 +96,6 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
     struct NamedNode
     {
       public:
-
         /**
          * Constructor for NamedNode
          * \param name node name
@@ -122,7 +122,11 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
       public:
         virtual ~NodeList();
         //! Takes ownership of the provided node
-        void append( QgsExpressionNode *node SIP_TRANSFER ) { mList.append( node ); mNameList.append( QString() ); }
+        void append( QgsExpressionNode *node SIP_TRANSFER )
+        {
+          mList.append( node );
+          mNameList.append( QString() );
+        }
 
         /**
          * Adds a named node. Takes ownership of the provided node.
@@ -258,7 +262,7 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
      * \note not available in Python bindings
      * \since QGIS 3.2
      */
-    virtual QList<const QgsExpressionNode *> nodes( ) const = 0; SIP_SKIP
+    virtual QList<const QgsExpressionNode *> nodes() SIP_SKIP const = 0;
 
     /**
      * Abstract virtual method which returns if the geometry is required to evaluate
@@ -356,7 +360,6 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
     const QgsExpressionNode *effectiveNode() const { return mCompiledSimplifiedNode ? mCompiledSimplifiedNode.get() : this; }
 
   protected:
-
     QgsExpressionNode() = default;
     QgsExpressionNode( const QgsExpressionNode &other );
     QgsExpressionNode &operator=( const QgsExpressionNode &other );
@@ -401,7 +404,6 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
 #endif
 
   private:
-
     /**
      * Abstract virtual preparation method
      * Errors are reported to the parent
@@ -413,7 +415,6 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
      * Errors are reported to the parent
      */
     virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context ) = 0;
-
 };
 
 Q_DECLARE_METATYPE( QgsExpressionNode * )

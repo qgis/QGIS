@@ -40,9 +40,7 @@ class QgsProject;
  */
 class CORE_EXPORT QgsBookmark
 {
-
   public:
-
     /**
      * Default constructor, creates an empty bookmark.
      */
@@ -130,6 +128,7 @@ class CORE_EXPORT QgsBookmark
     QDomElement writeXml( QDomDocument &doc ) const;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = u"<QgsBookmark: '%1' (%2)>"_s
@@ -142,20 +141,19 @@ class CORE_EXPORT QgsBookmark
                   );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-    // TODO c++20 - replace with = default
-    bool operator==( const QgsBookmark &other ) const;
+      // TODO c++20 - replace with = default
+      bool operator==( const QgsBookmark &other ) const;
     bool operator!=( const QgsBookmark &other ) const;
 
   private:
-
     QString mId;
     QString mName;
     QString mGroup;
     QgsReferencedRectangle mExtent;
     double mRotation = 0;
-
 };
 
 /**
@@ -176,7 +174,6 @@ class CORE_EXPORT QgsBookmarkManager : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Returns a newly created QgsBookmarkManager using a project-based bookmark store, linked to the specified \a project.
      *
@@ -332,7 +329,6 @@ class CORE_EXPORT QgsBookmarkManager : public QObject
     void bookmarkChanged( const QString &id );
 
   private:
-
     QgsProject *mProject = nullptr;
     QString mFilePath;
     QList< QgsBookmark > mBookmarks;
@@ -340,7 +336,6 @@ class CORE_EXPORT QgsBookmarkManager : public QObject
 
     void store();
     bool mInitialized = false;
-
 };
 
 #endif // QGSBOOKMARKMANAGER_H

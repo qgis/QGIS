@@ -31,7 +31,6 @@
 class CORE_EXPORT QgsHtmlUtils
 {
   public:
-
     /**
      * Build a bullet list.
      * This will return a HTML "ul" element.

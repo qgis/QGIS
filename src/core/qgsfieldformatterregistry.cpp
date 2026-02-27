@@ -49,7 +49,6 @@ QgsFieldFormatterRegistry::~QgsFieldFormatterRegistry()
 {
   const QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Write );
   qDeleteAll( mFieldFormatters );
-
 }
 
 void QgsFieldFormatterRegistry::addFieldFormatter( QgsFieldFormatter *formatter )

@@ -59,8 +59,8 @@ class QgsSymbol;
 class CORE_EXPORT QgsFeature
 {
 #ifdef SIP_RUN
-#if (SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c01)
-#define sipType_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
+#if ( SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c01 )
+#define sipType_QVariant ( ( sipWrapperType * ) sipTypeAsPyTypeObject( sipType_QVariant ) )
 #endif
 #endif
     Q_GADGET
@@ -71,9 +71,10 @@ class CORE_EXPORT QgsFeature
     Q_PROPERTY( QgsGeometry geometry READ geometry WRITE setGeometry )
 
   public:
-
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __iter__() SIP_HOLDGIL;
+    // clang-format on
     % MethodCode
     QgsAttributes attributes = sipCpp->attributes();
     PyObject *attrs = sipConvertFromType( &attributes, sipType_QgsAttributes, Py_None );
@@ -86,6 +87,7 @@ class CORE_EXPORT QgsFeature
 
 #ifdef SIP_PYQT5_RUN
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __getitem__( int key ) SIP_HOLDGIL;
     % MethodCode
     if ( a0 < 0 || a0 >= sipCpp->attributeCount() )
@@ -228,11 +230,13 @@ class CORE_EXPORT QgsFeature
       }
     }
     % End
+// clang-format on
 #endif
 #endif
 
 #ifdef SIP_PYQT6_RUN
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __getitem__( int key ) SIP_HOLDGIL;
     % MethodCode
     if ( a0 < 0 || a0 >= sipCpp->attributeCount() )
@@ -243,11 +247,20 @@ class CORE_EXPORT QgsFeature
     else
     {
       const QVariant v = sipCpp->attribute( a0 );
-      // QByteArray null handling is "special"! See null_from_qvariant_converter in conversions.sip
-      if ( QgsVariantUtils::isNull( v, true ) && v.userType() != QMetaType::Type::QByteArray )
+      if ( !v.isValid() )
       {
         Py_INCREF( Py_None );
         sipRes = Py_None;
+      }
+      // QByteArray null handling is "special"! See null_from_qvariant_converter in conversions.sip
+      else if ( QgsVariantUtils::isNull( v, true ) && v.userType() != QMetaType::Type::QByteArray )
+      {
+        PyObject *vartype = sipConvertFromEnum( v.type(), sipType_QVariant_Type );
+        PyObject *args = PyTuple_Pack( 1, vartype );
+        PyTypeObject *typeObj = sipTypeAsPyTypeObject( sipType_QVariant );
+        sipRes = PyObject_Call( ( PyObject * )typeObj, args, nullptr );
+        Py_DECREF( args );
+        Py_DECREF( vartype );
       }
       else
       {
@@ -306,11 +319,20 @@ class CORE_EXPORT QgsFeature
     else
     {
       const QVariant v = sipCpp->attribute( fieldIdx );
-      // QByteArray null handling is "special"! See null_from_qvariant_converter in conversions.sip
-      if ( QgsVariantUtils::isNull( v, true ) && v.userType() != QMetaType::Type::QByteArray )
+      if ( !v.isValid() )
       {
         Py_INCREF( Py_None );
         sipRes = Py_None;
+      }
+      // QByteArray null handling is "special"! See null_from_qvariant_converter in conversions.sip
+      else if ( QgsVariantUtils::isNull( v, true ) && v.userType() != QMetaType::Type::QByteArray )
+      {
+        PyObject *vartype = sipConvertFromEnum( v.type(), sipType_QVariant_Type );
+        PyObject *args = PyTuple_Pack( 1, vartype );
+        PyTypeObject *typeObj = sipTypeAsPyTypeObject( sipType_QVariant );
+        sipRes = PyObject_Call( ( PyObject * )typeObj, args, nullptr );
+        Py_DECREF( args );
+        Py_DECREF( vartype );
       }
       else
       {
@@ -357,10 +379,12 @@ class CORE_EXPORT QgsFeature
       }
     }
     % End
+// clang-format on
 #endif
 #endif
 
 #ifdef SIP_RUN
+// clang-format off
     void __setitem__( int key, SIP_PYOBJECT value SIP_TYPEHINT( Optional[Union[bool, int, float, str, QVariant]] ) ) SIP_HOLDGIL;
     % MethodCode
     bool rv;
@@ -485,6 +509,7 @@ class CORE_EXPORT QgsFeature
     % MethodCode
     sipRes = qHash( *sipCpp );
     % End
+// clang-format on
 #endif
 
     /**
@@ -562,6 +587,7 @@ class CORE_EXPORT QgsFeature
      */
     QVariantMap attributeMap() const;
 #else
+// clang-format off
 
     /**
      * Returns the feature's attributes as a map of field name to value.
@@ -595,6 +621,7 @@ class CORE_EXPORT QgsFeature
       sipRes = sipConvertFromNewType( v, qvariantmap_type, Py_None );
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -635,6 +662,7 @@ class CORE_EXPORT QgsFeature
      */
     Q_INVOKABLE bool setAttribute( int field, const QVariant &attr );
 #else
+// clang-format off
 
     /**
      * Sets an attribute's value by field index.
@@ -711,6 +739,7 @@ class CORE_EXPORT QgsFeature
 
     sipRes = rv;
     % End
+// clang-format on
 #endif
 
     /**
@@ -758,6 +787,7 @@ class CORE_EXPORT QgsFeature
      */
     void deleteAttribute( int field );
 #else
+// clang-format off
 
     /**
      * Clear's an attribute's value by its index.
@@ -793,6 +823,7 @@ class CORE_EXPORT QgsFeature
       sipIsErr = 1;
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -872,10 +903,12 @@ class CORE_EXPORT QgsFeature
 #ifndef SIP_RUN
     void setGeometry( std::unique_ptr< QgsAbstractGeometry > geometry );
 #else
+// clang-format off
     void setGeometry( QgsAbstractGeometry *geometry SIP_TRANSFER ) SIP_HOLDGIL;
     % MethodCode
     sipCpp->setGeometry( std::unique_ptr< QgsAbstractGeometry>( a0 ) );
     % End
+// clang-format on
 #endif
 
     /**
@@ -917,6 +950,7 @@ class CORE_EXPORT QgsFeature
      */
     Q_INVOKABLE bool setAttribute( const QString &name, const QVariant &value );
 #else
+// clang-format off
 
     /**
      * Insert a value into attribute, by field \a name.
@@ -990,6 +1024,7 @@ class CORE_EXPORT QgsFeature
       }
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -1005,6 +1040,7 @@ class CORE_EXPORT QgsFeature
      */
     bool deleteAttribute( const QString &name );
 #else
+// clang-format off
 
     /**
      * Clear's an attribute's value by its field \a name.
@@ -1050,6 +1086,7 @@ class CORE_EXPORT QgsFeature
       sipRes = true;
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -1065,6 +1102,7 @@ class CORE_EXPORT QgsFeature
      */
     Q_INVOKABLE QVariant attribute( const QString &name ) const;
 #else
+// clang-format off
 
     /**
      * Lookup attribute value by attribute \a name.
@@ -1105,6 +1143,7 @@ class CORE_EXPORT QgsFeature
       sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
     }
     % End
+// clang-format on
 #endif
 
 #ifndef SIP_RUN
@@ -1118,6 +1157,7 @@ class CORE_EXPORT QgsFeature
      */
     QVariant attribute( int fieldIdx ) const;
 #else
+// clang-format off
 
     /**
      * Lookup attribute value from its index.
@@ -1158,6 +1198,7 @@ class CORE_EXPORT QgsFeature
       }
     }
     % End
+// clang-format on
 #endif
 
 
@@ -1171,6 +1212,7 @@ class CORE_EXPORT QgsFeature
      */
     bool isUnsetValue( int fieldIdx ) const;
 #else
+// clang-format off
 
     /**
      * Returns TRUE if the attribute at the specified index is an unset value.
@@ -1193,6 +1235,7 @@ class CORE_EXPORT QgsFeature
       }
     }
     % End
+// clang-format on
 #endif
 
     /**

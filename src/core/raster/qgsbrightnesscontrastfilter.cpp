@@ -27,8 +27,7 @@ using namespace Qt::StringLiterals;
 
 QgsBrightnessContrastFilter::QgsBrightnessContrastFilter( QgsRasterInterface *input )
   : QgsRasterInterface( input )
-{
-}
+{}
 
 QgsBrightnessContrastFilter *QgsBrightnessContrastFilter::clone() const
 {
@@ -95,8 +94,7 @@ bool QgsBrightnessContrastFilter::setInput( QgsRasterInterface *input )
     return false;
   }
 
-  if ( input->dataType( 1 ) != Qgis::DataType::ARGB32_Premultiplied &&
-       input->dataType( 1 ) != Qgis::DataType::ARGB32 )
+  if ( input->dataType( 1 ) != Qgis::DataType::ARGB32_Premultiplied && input->dataType( 1 ) != Qgis::DataType::ARGB32 )
   {
     QgsDebugError( u"Unknown input data type"_s );
     return false;
@@ -107,7 +105,7 @@ bool QgsBrightnessContrastFilter::setInput( QgsRasterInterface *input )
   return true;
 }
 
-QgsRasterBlock *QgsBrightnessContrastFilter::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
+QgsRasterBlock *QgsBrightnessContrastFilter::block( int bandNo, QgsRectangle const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   Q_UNUSED( bandNo )
   QgsDebugMsgLevel( u"width = %1 height = %2 extent = %3"_s.arg( width ).arg( height ).arg( extent.toString() ), 4 );
@@ -146,7 +144,7 @@ QgsRasterBlock *QgsBrightnessContrastFilter::block( int bandNo, QgsRectangle  co
   double f = std::pow( ( mContrast + 100 ) / 100.0, 2 );
   double gammaCorrection = 1.0 / mGamma;
 
-  for ( qgssize i = 0; i < ( qgssize )width * height; i++ )
+  for ( qgssize i = 0; i < ( qgssize ) width * height; i++ )
   {
     if ( inputBlock->color( i ) == myNoDataColor )
     {
@@ -187,7 +185,7 @@ int QgsBrightnessContrastFilter::adjustColorComponent( int colorComponent, int a
   if ( alpha == 255 )
   {
     // Opaque pixel, do simpler math
-    return std::clamp( ( int )( 255 * std::pow( ( ( ( ( ( ( colorComponent / 255.0 ) - 0.5 ) * contrastFactor ) + 0.5 ) * 255 ) + brightness ) / 255.0, gammaCorrection ) ), 0, 255 );
+    return std::clamp( ( int ) ( 255 * std::pow( ( ( ( ( ( ( colorComponent / 255.0 ) - 0.5 ) * contrastFactor ) + 0.5 ) * 255 ) + brightness ) / 255.0, gammaCorrection ) ), 0, 255 );
   }
   else if ( alpha == 0 )
   {

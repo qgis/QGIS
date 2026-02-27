@@ -41,7 +41,6 @@ class QTextFragment;
 class CORE_EXPORT QgsTextFragment
 {
   public:
-
     /**
      * Constructor for QgsTextFragment, with the specified \a text and optional character \a format.
      */
@@ -124,7 +123,6 @@ class CORE_EXPORT QgsTextFragment
     void applyCapitalization( Qgis::Capitalization capitalization );
 
   private:
-
     QString mText;
     bool mIsImage = false;
     QgsTextCharacterFormat mCharFormat;

@@ -27,8 +27,8 @@
 
 using namespace Qt::StringLiterals;
 
-QgsMeshLayerTemporalProperties::QgsMeshLayerTemporalProperties( QObject *parent, bool enabled ):
-  QgsMapLayerTemporalProperties( parent, enabled )
+QgsMeshLayerTemporalProperties::QgsMeshLayerTemporalProperties( QObject *parent, bool enabled )
+  : QgsMapLayerTemporalProperties( parent, enabled )
 {}
 
 QDomElement QgsMeshLayerTemporalProperties::writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context )
@@ -59,16 +59,14 @@ bool QgsMeshLayerTemporalProperties::readXml( const QDomElement &element, const 
 
   mReferenceTime = QDateTime::fromString( temporalElement.attribute( u"reference-time"_s ), Qt::ISODate );
 
-  if ( temporalElement.hasAttribute( u"start-time-extent"_s )
-       && temporalElement.hasAttribute( u"end-time-extent"_s ) )
+  if ( temporalElement.hasAttribute( u"start-time-extent"_s ) && temporalElement.hasAttribute( u"end-time-extent"_s ) )
   {
     const QDateTime start = QDateTime::fromString( temporalElement.attribute( u"start-time-extent"_s ), Qt::ISODate );
     const QDateTime end = QDateTime::fromString( temporalElement.attribute( u"end-time-extent"_s ), Qt::ISODate );
     mTimeExtent = QgsDateTimeRange( start, end );
   }
 
-  mMatchingMethod = static_cast<QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod>(
-                      temporalElement.attribute( u"matching-method"_s ).toInt() );
+  mMatchingMethod = static_cast<QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod>( temporalElement.attribute( u"matching-method"_s ).toInt() );
 
   mIsValid = true;
   return true;
@@ -76,8 +74,7 @@ bool QgsMeshLayerTemporalProperties::readXml( const QDomElement &element, const 
 
 void QgsMeshLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabilities( const QgsDataProviderTemporalCapabilities *capabilities )
 {
-  const QgsMeshDataProviderTemporalCapabilities *temporalCapabilities =
-    static_cast<const QgsMeshDataProviderTemporalCapabilities *>( capabilities );
+  const QgsMeshDataProviderTemporalCapabilities *temporalCapabilities = static_cast<const QgsMeshDataProviderTemporalCapabilities *>( capabilities );
 
   setIsActive( temporalCapabilities->hasTemporalCapabilities() );
   mReferenceTime = temporalCapabilities->referenceTime();

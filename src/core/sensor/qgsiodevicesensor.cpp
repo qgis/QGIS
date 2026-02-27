@@ -31,8 +31,7 @@ using namespace Qt::StringLiterals;
 #endif
 
 QgsIODeviceSensor::~QgsIODeviceSensor()
-{
-}
+{}
 
 void QgsIODeviceSensor::initIODevice( QIODevice *device )
 {
@@ -187,14 +186,12 @@ QgsUdpSocketSensor::QgsUdpSocketSensor( QObject *parent )
 #if defined( Q_OS_ANDROID ) || defined( Q_OS_LINUX )
   int sockfd = socket( AF_INET, SOCK_DGRAM, 0 );
   int optval = 1;
-  setsockopt( sockfd, SOL_SOCKET, SO_REUSEADDR,
-              ( void * ) &optval, sizeof( optval ) );
+  setsockopt( sockfd, SOL_SOCKET, SO_REUSEADDR, ( void * ) &optval, sizeof( optval ) );
   mUdpSocket->setSocketDescriptor( sockfd, QUdpSocket::UnconnectedState );
 #endif
 
   connect( mUdpSocket.get(), &QAbstractSocket::stateChanged, this, &QgsUdpSocketSensor::socketStateChanged );
-  connect( mUdpSocket.get(), &QUdpSocket::readyRead, this, [this]()
-  {
+  connect( mUdpSocket.get(), &QUdpSocket::readyRead, this, [this]() {
     QByteArray datagram;
     while ( mUdpSocket->hasPendingDatagrams() )
     {

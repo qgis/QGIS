@@ -34,7 +34,7 @@
 
 using namespace Qt::StringLiterals;
 
-#define FONTMARKER_CHR_FIX  "~!_#!#_!~"
+#define FONTMARKER_CHR_FIX "~!_#!#_!~"
 
 class QgsExpression;
 class QgsPathResolver;
@@ -63,7 +63,6 @@ class QgsSymbolLayerId;
 class CORE_EXPORT QgsSymbolLayerUtils
 {
   public:
-
     static QString encodeColor( const QColor &color );
     static QColor decodeColor( const QString &str );
 
@@ -321,10 +320,16 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param screen can be used to specify the destination screen properties for the icon. This allows the icon to be generated using the correct DPI and device pixel ratio for the target screen (since QGIS 3.32)
      * \see symbolPreviewIcon()
      */
-    static QPixmap symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = nullptr, bool selected = false,
-                                        const QgsExpressionContext *expressionContext = nullptr,
-                                        const QgsLegendPatchShape *shape = nullptr,
-                                        const QgsScreenProperties &screen = QgsScreenProperties() );
+    static QPixmap symbolPreviewPixmap(
+      const QgsSymbol *symbol,
+      QSize size,
+      int padding = 0,
+      QgsRenderContext *customContext = nullptr,
+      bool selected = false,
+      const QgsExpressionContext *expressionContext = nullptr,
+      const QgsLegendPatchShape *shape = nullptr,
+      const QgsScreenProperties &screen = QgsScreenProperties()
+    );
 
     /**
      * Draws a symbol layer preview to a QPicture
@@ -336,7 +341,9 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \returns QPicture containing symbol layer preview
      * \see symbolLayerPreviewIcon()
      */
-    static QPicture symbolLayerPreviewPicture( const QgsSymbolLayer *layer, Qgis::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid );
+    static QPicture symbolLayerPreviewPicture(
+      const QgsSymbolLayer *layer, Qgis::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid
+    );
 
     /**
      * Draws a symbol layer preview to an icon.
@@ -350,7 +357,15 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \returns icon containing symbol layer preview
      * \see symbolLayerPreviewPicture()
      */
-    static QIcon symbolLayerPreviewIcon( const QgsSymbolLayer *layer, Qgis::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid, QgsMapLayer *mapLayer = nullptr, const QgsScreenProperties &screen = QgsScreenProperties() );
+    static QIcon symbolLayerPreviewIcon(
+      const QgsSymbolLayer *layer,
+      Qgis::RenderUnit u,
+      QSize size,
+      const QgsMapUnitScale &scale = QgsMapUnitScale(),
+      Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid,
+      QgsMapLayer *mapLayer = nullptr,
+      const QgsScreenProperties &screen = QgsScreenProperties()
+    );
 
     /**
      * Returns an icon preview for a color ramp.
@@ -373,8 +388,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param drawTransparentBackground set to FALSE to disable the checkerboard effect drawn below transparent colors in the ramp
      * \see colorRampPreviewIcon()
      */
-    static QPixmap colorRampPreviewPixmap( QgsColorRamp *ramp, QSize size, int padding = 0, Qt::Orientation direction = Qt::Horizontal,
-                                           bool flipDirection = false, bool drawTransparentBackground = true );
+    static QPixmap colorRampPreviewPixmap( QgsColorRamp *ramp, QSize size, int padding = 0, Qt::Orientation direction = Qt::Horizontal, bool flipDirection = false, bool drawTransparentBackground = true );
 
     static void drawStippledBackground( QPainter *painter, QRect rect );
 
@@ -403,7 +417,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \returns decoded symbol cast to specified type, if possible
      * \note not available in Python bindings
      */
-    template <class SymbolType> static std::unique_ptr< SymbolType > loadSymbol( const QDomElement &element, const QgsReadWriteContext &context ) SIP_SKIP
+    template<class SymbolType> static std::unique_ptr< SymbolType > loadSymbol( const QDomElement &element, const QgsReadWriteContext &context ) SIP_SKIP
     {
       std::unique_ptr< QgsSymbol > tmpSymbol = QgsSymbolLayerUtils::loadSymbol( element, context );
       const bool canCast = dynamic_cast<SymbolType *>( tmpSymbol.get() );
@@ -511,105 +525,120 @@ class CORE_EXPORT QgsSymbolLayerUtils
      *
      * \deprecated QGIS 3.44. Use the version with QgsSldExportContext instead.
      */
-    Q_DECL_DEPRECATED static void fillToSld( QDomDocument &doc, QDomElement &element,
-        Qt::BrushStyle brushStyle, const QColor &color = QColor() ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED static void fillToSld( QDomDocument &doc, QDomElement &element, Qt::BrushStyle brushStyle, const QColor &color = QColor() ) SIP_DEPRECATED;
 
     /**
      * Exports fill details to an SLD element.
      *
      * \since QGIS 3.44
      */
-    static void fillToSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context,
-                           Qt::BrushStyle brushStyle, const QColor &color = QColor() );
+    static void fillToSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context, Qt::BrushStyle brushStyle, const QColor &color = QColor() );
 
-    static bool fillFromSld( QDomElement &element,
-                             Qt::BrushStyle &brushStyle, QColor &color );
+    static bool fillFromSld( QDomElement &element, Qt::BrushStyle &brushStyle, QColor &color );
 
     //! \note not available in Python bindings
-    static void lineToSld( QDomDocument &doc, QDomElement &element,
-                           Qt::PenStyle penStyle, const QColor &color, QgsSldExportContext &context, double width = -1,
-                           const Qt::PenJoinStyle *penJoinStyle = nullptr, const Qt::PenCapStyle *penCapStyle = nullptr,
-                           const QVector<qreal> *customDashPattern = nullptr, double dashOffset = 0.0 ) SIP_SKIP;
-    static bool lineFromSld( QDomElement &element,
-                             Qt::PenStyle &penStyle, QColor &color, double &width,
-                             Qt::PenJoinStyle *penJoinStyle = nullptr, Qt::PenCapStyle *penCapStyle = nullptr,
-                             QVector<qreal> *customDashPattern = nullptr, double *dashOffset = nullptr );
+    static void lineToSld(
+      QDomDocument &doc,
+      QDomElement &element,
+      Qt::PenStyle penStyle,
+      const QColor &color,
+      QgsSldExportContext &context,
+      double width = -1,
+      const Qt::PenJoinStyle *penJoinStyle = nullptr,
+      const Qt::PenCapStyle *penCapStyle = nullptr,
+      const QVector<qreal> *customDashPattern = nullptr,
+      double dashOffset = 0.0
+    ) SIP_SKIP;
+    static bool lineFromSld(
+      QDomElement &element,
+      Qt::PenStyle &penStyle,
+      QColor &color,
+      double &width,
+      Qt::PenJoinStyle *penJoinStyle = nullptr,
+      Qt::PenCapStyle *penCapStyle = nullptr,
+      QVector<qreal> *customDashPattern = nullptr,
+      double *dashOffset = nullptr
+    );
 
-    static void externalGraphicToSld( QDomDocument &doc, QDomElement &element,
-                                      const QString &path, const QString &mime,
-                                      const QColor &color, double size = -1 );
-    static bool externalGraphicFromSld( QDomElement &element,
-                                        QString &path, QString &mime,
-                                        QColor &color, double &size );
+    static void externalGraphicToSld( QDomDocument &doc, QDomElement &element, const QString &path, const QString &mime, const QColor &color, double size = -1 );
+    static bool externalGraphicFromSld( QDomElement &element, QString &path, QString &mime, QColor &color, double &size );
 
     /**
      * Exports a marker to SLD
      * \deprecated QGIS 3.44. Use the version with QgsSldExportContext instead.
      */
-    Q_DECL_DEPRECATED static void wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
-        const QString &name, const QColor &color, const QColor &strokeColor, Qt::PenStyle strokeStyle,
-        double strokeWidth = -1, double size = -1 ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED static void wellKnownMarkerToSld(
+      QDomDocument &doc, QDomElement &element, const QString &name, const QColor &color, const QColor &strokeColor, Qt::PenStyle strokeStyle, double strokeWidth = -1, double size = -1
+    ) SIP_DEPRECATED;
 
     /**
      * Exports a marker to SLD
      * \since QGIS 3.44
      */
-    static void wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
-                                      const QString &name, const QColor &color, const QColor &strokeColor, Qt::PenStyle strokeStyle,
-                                      QgsSldExportContext &context,
-                                      double strokeWidth = -1, double size = -1 );
+    static void wellKnownMarkerToSld(
+      QDomDocument &doc,
+      QDomElement &element,
+      const QString &name,
+      const QColor &color,
+      const QColor &strokeColor,
+      Qt::PenStyle strokeStyle,
+      QgsSldExportContext &context,
+      double strokeWidth = -1,
+      double size = -1
+    );
 
     /**
      * Extracts properties from an SLD marker definition.
      */
-    static bool wellKnownMarkerFromSld( QDomElement &element,
-                                        QString &name, QColor &color, QColor &strokeColor, Qt::PenStyle &strokeStyle,
-                                        double &strokeWidth, double &size ) SIP_PYNAME( wellKnownMarkerFromSld2 );
+    static bool wellKnownMarkerFromSld( QDomElement &element, QString &name, QColor &color, QColor &strokeColor, Qt::PenStyle &strokeStyle, double &strokeWidth, double &size ) SIP_PYNAME(
+      wellKnownMarkerFromSld2
+    );
 
     /**
      * Exports a marker to an SLD definition.
      *
      * \deprecated QGIS 3.44. Use the version with QgsSldExportContext instead.
      */
-    Q_DECL_DEPRECATED static void externalMarkerToSld( QDomDocument &doc, QDomElement &element,
-        const QString &path, const QString &format, int *markIndex = nullptr,
-        const QColor &color = QColor(), double size = -1 ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED static void externalMarkerToSld(
+      QDomDocument &doc, QDomElement &element, const QString &path, const QString &format, int *markIndex = nullptr, const QColor &color = QColor(), double size = -1
+    ) SIP_DEPRECATED;
 
     /**
      * Exports a marker to an SLD definition.
      *
      * \since QGIS 3.44
      */
-    static void externalMarkerToSld( QDomDocument &doc, QDomElement &element,
-                                     const QString &path, const QString &format, QgsSldExportContext &context, int *markIndex = nullptr,
-                                     const QColor &color = QColor(), double size = -1 );
+    static void externalMarkerToSld(
+      QDomDocument &doc, QDomElement &element, const QString &path, const QString &format, QgsSldExportContext &context, int *markIndex = nullptr, const QColor &color = QColor(), double size = -1
+    );
 
-    static bool externalMarkerFromSld( QDomElement &element,
-                                       QString &path, QString &format, int &markIndex,
-                                       QColor &color, double &size );
+    static bool externalMarkerFromSld( QDomElement &element, QString &path, QString &format, int &markIndex, QColor &color, double &size );
 
     /**
      * Exports label text to SLD
      *
      * \deprecated QGIS 3.44. Use the version with QgsSldExportContext instead.
      */
-    Q_DECL_DEPRECATED static void labelTextToSld( QDomDocument &doc, QDomElement &element, const QString &label,
-        const QFont &font, const QColor &color = QColor(), double size = -1 ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED static void labelTextToSld( QDomDocument &doc, QDomElement &element, const QString &label, const QFont &font, const QColor &color = QColor(), double size = -1 ) SIP_DEPRECATED;
 
     /**
      * Exports label text to SLD
      *
      * \since QGIS 3.44
      */
-    static void labelTextToSld( QDomDocument &doc, QDomElement &element, const QString &label,
-                                const QFont &font, QgsSldExportContext &context, const QColor &color = QColor(), double size = -1 );
+    static void labelTextToSld( QDomDocument &doc, QDomElement &element, const QString &label, const QFont &font, QgsSldExportContext &context, const QColor &color = QColor(), double size = -1 );
 
     //! Create ogr feature style string for pen
-    static QString ogrFeatureStylePen( double width, double mmScaleFactor, double mapUnitsScaleFactor, const QColor &c,
-                                       Qt::PenJoinStyle joinStyle = Qt::MiterJoin,
-                                       Qt::PenCapStyle capStyle = Qt::FlatCap,
-                                       double offset = 0.0,
-                                       const QVector<qreal> *dashPattern = nullptr );
+    static QString ogrFeatureStylePen(
+      double width,
+      double mmScaleFactor,
+      double mapUnitsScaleFactor,
+      const QColor &c,
+      Qt::PenJoinStyle joinStyle = Qt::MiterJoin,
+      Qt::PenCapStyle capStyle = Qt::FlatCap,
+      double offset = 0.0,
+      const QVector<qreal> *dashPattern = nullptr
+    );
 
     /**
      * Create ogr feature style string for brush
@@ -1034,9 +1063,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * that cannot do SVG at all
      * \deprecated QGIS 3.44. Use the version with QgsSldExportContext instead.
      */
-    Q_DECL_DEPRECATED static void parametricSvgToSld( QDomDocument &doc, QDomElement &graphicElem,
-        const QString &path,
-        const QColor &fillColor, double size, const QColor &strokeColor, double strokeWidth ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED static void parametricSvgToSld( QDomDocument &doc, QDomElement &graphicElem, const QString &path, const QColor &fillColor, double size, const QColor &strokeColor, double strokeWidth )
+      SIP_DEPRECATED;
 
     /**
      * Encodes a reference to a parametric SVG into SLD, as a succession of parametric SVG using URL parameters,
@@ -1044,10 +1072,9 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * that cannot do SVG at all
      * \since QGIS 3.44
      */
-    static void parametricSvgToSld( QDomDocument &doc, QDomElement &graphicElem,
-                                    const QString &path,
-                                    const QColor &fillColor, double size, const QColor &strokeColor, double strokeWidth,
-                                    QgsSldExportContext &context );
+    static void parametricSvgToSld(
+      QDomDocument &doc, QDomElement &graphicElem, const QString &path, const QColor &fillColor, double size, const QColor &strokeColor, double strokeWidth, QgsSldExportContext &context
+    );
 
     /**
      * Encodes a reference to a parametric SVG into a path with parameters according to the SVG Parameters spec
@@ -1163,13 +1190,12 @@ class CORE_EXPORT QgsSymbolLayerUtils
     {
       const QString exprString = property.asExpression();
       return QgsProperty::fromExpression(
-               ( !qgsDoubleNear( scaleFactorX, 0.0 ) ? "tostring(" + QString::number( scaleFactorX ) + "*(" + exprString + "))" : u"'0'"_s ) +
-               "|| ',' || " +
-               ( !qgsDoubleNear( scaleFactorY, 0.0 ) ? "tostring(" + QString::number( scaleFactorY ) + "*(" + exprString + "))" : u"'0'"_s ) );
+        ( !qgsDoubleNear( scaleFactorX, 0.0 ) ? "tostring(" + QString::number( scaleFactorX ) + "*(" + exprString + "))" : u"'0'"_s ) + "|| ',' || "
+        + ( !qgsDoubleNear( scaleFactorY, 0.0 ) ? "tostring(" + QString::number( scaleFactorY ) + "*(" + exprString + "))" : u"'0'"_s )
+      );
     }
 #endif
     ///@endcond
-
 };
 
 class QPolygonF;

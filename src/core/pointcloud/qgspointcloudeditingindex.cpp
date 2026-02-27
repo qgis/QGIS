@@ -166,7 +166,7 @@ bool QgsPointCloudEditingIndex::commitChanges( QString *errorMessage )
     QgsPointCloudNodeId n = it.key();
     // right now we're assuming there's no change of point count
     qint32 nodePointCount = static_cast<qint32>( getNode( n ).pointCount() );
-    updatedChunks[n] = QgsCopcUpdate::UpdatedChunk{ nodePointCount, it.value() };
+    updatedChunks[n] = QgsCopcUpdate::UpdatedChunk { nodePointCount, it.value() };
   }
 
   QFileInfo fileInfo( mUri );

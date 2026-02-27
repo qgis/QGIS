@@ -35,7 +35,6 @@
 class CORE_EXPORT QgsArchive
 {
   public:
-
     QgsArchive();
 
     QgsArchive( const QgsArchive &other );
@@ -108,10 +107,9 @@ class CORE_EXPORT QgsArchive
  * \ingroup core
  * \brief Allows managing the zip/unzip actions on project files.
  */
-class  CORE_EXPORT QgsProjectArchive : public QgsArchive
+class CORE_EXPORT QgsProjectArchive : public QgsArchive
 {
   public:
-
     /**
      * Clear the current content of this archive and unzip. If a project file
      * is found in the content, then this archive may be considered as a valid

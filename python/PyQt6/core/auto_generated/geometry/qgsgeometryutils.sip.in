@@ -26,7 +26,6 @@ Contains various geometry utility functions.
 #include "qgsgeometryutils.h"
 %End
   public:
-
     static QVector<QgsLineString *> extractLineStrings( const QgsAbstractGeometry *geom ) /Factory/;
 %Docstring
 Returns list of linestrings extracted from the passed geometry. The
@@ -57,10 +56,7 @@ specified vertex.
 :return: distance to vertex (following geometry)
 %End
 
-    static bool verticesAtDistance( const QgsAbstractGeometry &geometry,
-                                    double distance,
-                                    QgsVertexId &previousVertex /Out/,
-                                    QgsVertexId &nextVertex /Out/ );
+    static bool verticesAtDistance( const QgsAbstractGeometry &geometry, double distance, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ );
 %Docstring
 Retrieves the vertices which are before and after the interpolated point
 at a specified distance along a linestring (or polygon boundary).
@@ -89,9 +85,7 @@ Returns the distance between a point and an infinite line.
 .. versionadded:: 3.26
 %End
 
-    static bool lineCircleIntersection( const QgsPointXY &center, double radius,
-                                        const QgsPointXY &linePoint1, const QgsPointXY &linePoint2,
-                                        QgsPointXY &intersection /In,Out/ ) /HoldGIL/;
+    static bool lineCircleIntersection( const QgsPointXY &center, double radius, const QgsPointXY &linePoint1, const QgsPointXY &linePoint2, QgsPointXY &intersection /In,Out/ ) /HoldGIL/;
 %Docstring
 Compute the intersection of a line and a circle. If the intersection has
 two solutions (points), the closest point to the initial

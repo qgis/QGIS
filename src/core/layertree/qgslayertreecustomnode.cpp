@@ -29,15 +29,13 @@ QgsLayerTreeCustomNode::QgsLayerTreeCustomNode( const QString &nodeId, const QSt
   : QgsLayerTreeNode( NodeCustom, checked )
   , mId( nodeId )
   , mName( nodeName.isEmpty() ? nodeId : nodeName )
-{
-}
+{}
 
 QgsLayerTreeCustomNode::QgsLayerTreeCustomNode( const QgsLayerTreeCustomNode &other )
   : QgsLayerTreeNode( other )
   , mId( other.mId )
   , mName( other.mName )
-{
-}
+{}
 
 QString QgsLayerTreeCustomNode::name() const
 {
@@ -59,7 +57,7 @@ QgsLayerTreeCustomNode *QgsLayerTreeCustomNode::readXml( const QDomElement &elem
     return nullptr;
 
   const QString nodeId = element.attribute( u"id"_s );
-  const QString name =  element.attribute( u"name"_s );
+  const QString name = element.attribute( u"name"_s );
   bool checked = QgsLayerTreeUtils::checkStateFromXml( element.attribute( u"checked"_s ) ) != Qt::Unchecked;
 
   QgsLayerTreeCustomNode *customNode = new QgsLayerTreeCustomNode( nodeId, name, checked );
@@ -92,5 +90,4 @@ QgsLayerTreeCustomNode *QgsLayerTreeCustomNode::clone() const
 }
 
 void QgsLayerTreeCustomNode::resolveReferences( const QgsProject *, bool )
-{
-}
+{}

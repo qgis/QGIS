@@ -11,7 +11,7 @@
 
 
 
-class QgsStyleModel: QAbstractItemModel
+class QgsStyleModel : QAbstractItemModel
 {
 %Docstring(signature="appended")
 A QAbstractItemModel subclass for showing symbol and color ramp entities
@@ -31,7 +31,6 @@ performance instead.
 #include "qgsstylemodel.h"
 %End
   public:
-
     enum Column /BaseType=IntEnum/
     {
       Name,
@@ -74,10 +73,10 @@ Returns the style managed by the model.
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
 
-     virtual QVariant headerData( int section, Qt::Orientation orientation,
-                         int role = Qt::DisplayRole ) const;
-     virtual QModelIndex index( int row, int column,
-                       const QModelIndex &parent = QModelIndex() ) const;
+    virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+
+    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
+
     virtual QModelIndex parent( const QModelIndex &index ) const;
 
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
@@ -108,7 +107,7 @@ which this model is used.
 
 };
 
-class QgsStyleProxyModel: QSortFilterProxyModel
+class QgsStyleProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
 A QSortFilterProxyModel subclass for showing filtered symbol and color
@@ -123,7 +122,6 @@ ramps entries from a :py:class:`QgsStyle` database.
 #include "qgsstylemodel.h"
 %End
   public:
-
     explicit QgsStyleProxyModel( QgsStyle *style, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsStyleProxyModel, for the specified ``style`` and

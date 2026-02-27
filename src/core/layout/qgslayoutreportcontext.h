@@ -30,11 +30,9 @@
  */
 class CORE_EXPORT QgsLayoutReportContext : public QObject
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutReportContext.
      */
@@ -115,7 +113,6 @@ class CORE_EXPORT QgsLayoutReportContext : public QObject
     void changed();
 
   private:
-
     QgsLayout *mLayout = nullptr;
 
     QgsFeature mFeature;
@@ -129,10 +126,6 @@ class CORE_EXPORT QgsLayoutReportContext : public QObject
 
     friend class QgsLayoutExporter;
     friend class TestQgsLayout;
-
 };
 
 #endif //QGSLAYOUTREPORTCONTEXT_H
-
-
-

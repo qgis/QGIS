@@ -45,8 +45,7 @@ QVector<QgsDataItem *> QgsGdalCloudRootItem::createChildren()
   QVector<QgsDataItem *> connections;
 
   QList< QgsGdalUtils::VsiNetworkFileSystemDetails > vsiDetails = QgsGdalUtils::vsiNetworkFileSystems();
-  std::sort( vsiDetails.begin(), vsiDetails.end(), []( const QgsGdalUtils::VsiNetworkFileSystemDetails & a, const QgsGdalUtils::VsiNetworkFileSystemDetails & b )
-  {
+  std::sort( vsiDetails.begin(), vsiDetails.end(), []( const QgsGdalUtils::VsiNetworkFileSystemDetails &a, const QgsGdalUtils::VsiNetworkFileSystemDetails &b ) {
     return QString::localeAwareCompare( a.name, b.name ) < 0;
   } );
 
@@ -138,15 +137,14 @@ QVector<QgsDataItem *> QgsGdalCloudConnectionItem::createChildren()
     const QString subPath = connectionData.rootPath.isEmpty() ? object.name : ( connectionData.rootPath + '/' + object.name );
     if ( object.isDir )
     {
-      QgsGdalCloudDirectoryItem *child = new QgsGdalCloudDirectoryItem( this,
-          object.name, mPath + '/' + object.name, mConnName, subPath );
+      QgsGdalCloudDirectoryItem *child = new QgsGdalCloudDirectoryItem( this, object.name, mPath + '/' + object.name, mConnName, subPath );
       children.append( child );
     }
     else if ( object.isFile )
     {
       const QString filePath = u"/%1/%2/%3"_s.arg( connectionData.vsiHandler, connectionData.container, subPath );
       // QgsFileBasedDataItemProvider uses paths for item uris by default, so we need to specify that the credentialOptions should be appended to the layer URIs
-      if ( QgsDataItem *item = QgsFileBasedDataItemProvider::createLayerItemForPath( filePath, this, { u"gdal"_s, u"ogr"_s}, extraUriParts, Qgis::SublayerQueryFlag::FastScan ) )
+      if ( QgsDataItem *item = QgsFileBasedDataItemProvider::createLayerItemForPath( filePath, this, { u"gdal"_s, u"ogr"_s }, extraUriParts, Qgis::SublayerQueryFlag::FastScan ) )
       {
         item->setCapabilities( item->capabilities2() | Qgis::BrowserItemCapability::ReadOnly );
         children.append( item );
@@ -190,15 +188,14 @@ QVector<QgsDataItem *> QgsGdalCloudDirectoryItem::createChildren()
     const QString subPath = mDirectory + '/' + object.name;
     if ( object.isDir )
     {
-      QgsGdalCloudDirectoryItem *child = new QgsGdalCloudDirectoryItem( this,
-          object.name, mPath + '/' + object.name, mConnName, subPath );
+      QgsGdalCloudDirectoryItem *child = new QgsGdalCloudDirectoryItem( this, object.name, mPath + '/' + object.name, mConnName, subPath );
       children.append( child );
     }
     else if ( object.isFile )
     {
       const QString filePath = u"/%1/%2/%3"_s.arg( connectionData.vsiHandler, connectionData.container, subPath );
       // QgsFileBasedDataItemProvider uses paths for item uris by default, so we need to specify that the credentialOptions should be appended to the layer URIs
-      if ( QgsDataItem *item = QgsFileBasedDataItemProvider::createLayerItemForPath( filePath, this, { u"gdal"_s, u"ogr"_s}, extraUriParts, Qgis::SublayerQueryFlag::FastScan ) )
+      if ( QgsDataItem *item = QgsFileBasedDataItemProvider::createLayerItemForPath( filePath, this, { u"gdal"_s, u"ogr"_s }, extraUriParts, Qgis::SublayerQueryFlag::FastScan ) )
       {
         item->setCapabilities( item->capabilities2() | Qgis::BrowserItemCapability::ReadOnly );
         children.append( item );

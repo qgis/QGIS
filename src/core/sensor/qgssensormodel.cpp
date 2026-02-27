@@ -270,5 +270,9 @@ void QgsSensorModel::sensorDataCaptured( const QString &id )
   if ( sensorIndex < 0 )
     return;
 
-  emit dataChanged( index( sensorIndex, static_cast<int>( Column::LastValue ) ), index( sensorIndex, static_cast<int>( Column::LastValue ) ), QVector< int >() << static_cast< int >( CustomRole::SensorLastValue ) << static_cast< int >( CustomRole::SensorLastTimestamp ) );
+  emit dataChanged(
+    index( sensorIndex, static_cast<int>( Column::LastValue ) ),
+    index( sensorIndex, static_cast<int>( Column::LastValue ) ),
+    QVector< int >() << static_cast< int >( CustomRole::SensorLastValue ) << static_cast< int >( CustomRole::SensorLastTimestamp )
+  );
 }

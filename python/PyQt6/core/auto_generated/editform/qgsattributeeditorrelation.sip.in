@@ -22,7 +22,6 @@ This element will load a relation editor onto the form.
     static const QMetaObject staticMetaObject;
 
   public:
-
     enum Button /BaseType=IntEnum/
     {
       Link,

@@ -33,9 +33,7 @@ QgsLayoutMultiFrameUndoCommand::QgsLayoutMultiFrameUndoCommand( QgsLayoutMultiFr
   , mFrameUuid( frame->uuid() )
   , mLayout( frame->layout() )
   , mItemType( frame->type() )
-{
-
-}
+{}
 
 bool QgsLayoutMultiFrameUndoCommand::mergeWith( const QUndoCommand *command )
 {

@@ -23,7 +23,6 @@ Provides calculations for tolerance values in map units.
     static const QMetaObject staticMetaObject;
 
   public:
-
     static double vertexSearchRadius( const QgsMapSettings &mapSettings );
 %Docstring
 Static function to get vertex tolerance value. The value is read from

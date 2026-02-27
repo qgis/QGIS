@@ -38,7 +38,6 @@ class QgsSpatialIndex;
 class CORE_EXPORT QgsAbstractLabelingEngineRuleDistanceFromFeature : public QgsAbstractLabelingEngineRule
 {
   public:
-
     QgsAbstractLabelingEngineRuleDistanceFromFeature();
     ~QgsAbstractLabelingEngineRuleDistanceFromFeature() override;
     bool prepare( QgsRenderContext &context ) override;
@@ -152,7 +151,6 @@ class CORE_EXPORT QgsAbstractLabelingEngineRuleDistanceFromFeature : public QgsA
     void setCost( double cost ) { mCost = cost; }
 
   protected:
-
     void copyCommonProperties( QgsAbstractLabelingEngineRule *other ) const override;
 
     //! TRUE if labels must be distant from features, FALSE if they must be close
@@ -198,7 +196,6 @@ class CORE_EXPORT QgsAbstractLabelingEngineRuleDistanceFromFeature : public QgsA
 class CORE_EXPORT QgsLabelingEngineRuleMinimumDistanceLabelToFeature : public QgsAbstractLabelingEngineRuleDistanceFromFeature
 {
   public:
-
     QgsLabelingEngineRuleMinimumDistanceLabelToFeature();
     ~QgsLabelingEngineRuleMinimumDistanceLabelToFeature() override;
     QgsLabelingEngineRuleMinimumDistanceLabelToFeature *clone() const override SIP_FACTORY;
@@ -206,14 +203,18 @@ class CORE_EXPORT QgsLabelingEngineRuleMinimumDistanceLabelToFeature : public Qg
     QString displayType() const override;
     QString description() const override;
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     const QString str = u"<QgsLabelingEngineRuleMinimumDistanceLabelToFeature: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-  private:
+    // clang-format off
+    private:
+    // clang-format on
 #ifdef SIP_RUN
     QgsLabelingEngineRuleMinimumDistanceLabelToFeature( const QgsLabelingEngineRuleMinimumDistanceLabelToFeature & );
 #endif
@@ -237,18 +238,21 @@ class CORE_EXPORT QgsLabelingEngineRuleMaximumDistanceLabelToFeature : public Qg
     QString description() const override;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     const QString str = u"<QgsLabelingEngineRuleMaximumDistanceLabelToFeature: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-  private:
+    // clang-format off
+    private:
+    // clang-format on
 #ifdef SIP_RUN
     QgsLabelingEngineRuleMaximumDistanceLabelToFeature( const QgsLabelingEngineRuleMaximumDistanceLabelToFeature & );
 #endif
-
 };
 
 /**
@@ -276,19 +280,21 @@ class CORE_EXPORT QgsLabelingEngineRuleMinimumDistanceLabelToLabel : public QgsA
     bool candidatesAreConflicting( const pal::LabelPosition *lp1, const pal::LabelPosition *lp2 ) const override SIP_SKIP;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     const QString str = u"<QgsLabelingEngineRuleMinimumDistanceLabelToLabel: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-    /**
+      /**
      * Returns the layer providing the labels.
      *
      * \see setLabeledLayer()
      */
-    QgsMapLayer *labeledLayer() const;
+      QgsMapLayer *labeledLayer() const;
 
     /**
      * Sets the \a layer providing the labels.
@@ -390,7 +396,6 @@ class CORE_EXPORT QgsLabelingEngineRuleMinimumDistanceLabelToLabel : public QgsA
 class CORE_EXPORT QgsLabelingEngineRuleAvoidLabelOverlapWithFeature : public QgsAbstractLabelingEngineRule
 {
   public:
-
     QgsLabelingEngineRuleAvoidLabelOverlapWithFeature();
     ~QgsLabelingEngineRuleAvoidLabelOverlapWithFeature() override;
     QgsLabelingEngineRuleAvoidLabelOverlapWithFeature *clone() const override SIP_FACTORY;
@@ -404,19 +409,21 @@ class CORE_EXPORT QgsLabelingEngineRuleAvoidLabelOverlapWithFeature : public Qgs
     bool candidateIsIllegal( const pal::LabelPosition *candidate, QgsLabelingEngineContext &context ) const override SIP_SKIP;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     const QString str = u"<QgsLabelingEngineRuleAvoidLabelOverlapWithFeature: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-    /**
+      /**
      * Returns the layer providing the labels.
      *
      * \see setLabeledLayer()
      */
-    QgsMapLayer *labeledLayer() const;
+      QgsMapLayer *labeledLayer() const;
 
     /**
      * Sets the \a layer providing the labels.

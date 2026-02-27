@@ -20,7 +20,6 @@ A proxy model to filter the list of fields of a layer.
 #include "qgsfieldproxymodel.h"
 %End
   public:
-
     enum Filter /BaseType=IntEnum/
     {
       String,

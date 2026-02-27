@@ -32,7 +32,6 @@ class QgsCoordinateReferenceSystem;
 class CORE_EXPORT QgsCoordinateReferenceSystemUtils
 {
   public:
-
     /**
      * Returns the default coordinate order to use for the specified \a crs.
      *

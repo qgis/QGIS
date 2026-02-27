@@ -30,8 +30,7 @@ using namespace Qt::StringLiterals;
 
 QgsPlotRegistry::QgsPlotRegistry( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
 QgsPlotRegistry::~QgsPlotRegistry()
 {

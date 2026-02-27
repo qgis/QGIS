@@ -24,5 +24,5 @@ void QgsPaintEngineHack::fixFlags()
 
 void QgsPaintEngineHack::fixEngineFlags( QPaintEngine *engine )
 {
-  ( void )engine;
+  ( void ) engine;
 }

@@ -38,7 +38,7 @@ class QgsRasterResampleFilter;
 class QgsContrastEnhancement;
 class QgsRasterDataProvider;
 
-#if defined(Q_OS_WIN)
+#if defined( Q_OS_WIN )
 #undef interface
 #endif
 
@@ -49,7 +49,6 @@ class QgsRasterDataProvider;
 class CORE_EXPORT QgsRasterPipe
 {
   public:
-
     // *INDENT-OFF*
 
     /**
@@ -57,7 +56,7 @@ class CORE_EXPORT QgsRasterPipe
      * \since QGIS 3.22
      */
     enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterPipe, Property ) : int
-      {
+    {
       RendererOpacity, //!< Raster renderer global opacity
     };
     // *INDENT-ON*
@@ -97,6 +96,7 @@ class CORE_EXPORT QgsRasterPipe
     */
     bool insert( int idx, QgsRasterInterface *interface SIP_TRANSFER );
 #ifdef SIP_RUN
+    // clang-format off
     % MethodCode
     sipRes = sipCpp->insert( a0, a1 );
     if ( !sipRes )
@@ -107,9 +107,10 @@ class CORE_EXPORT QgsRasterPipe
         sipTransferTo( o, NULL );
     }
     % End
+// clang-format on
 #endif
 
-    /**
+      /**
      * Attempts to replace the interface at specified index and reconnect the pipe.
      *
      * If the connection would fail, the interface is not inserted and FALSE is returned.
@@ -117,7 +118,7 @@ class CORE_EXPORT QgsRasterPipe
      * \see insert()
      * \see set()
     */
-    bool replace( int idx, QgsRasterInterface *interface SIP_TRANSFER );
+      bool replace( int idx, QgsRasterInterface *interface SIP_TRANSFER );
 
     /**
      * Inserts a new known interface in default place or replace interface of the same
@@ -324,5 +325,3 @@ class CORE_EXPORT QgsRasterPipe
 };
 
 #endif
-
-

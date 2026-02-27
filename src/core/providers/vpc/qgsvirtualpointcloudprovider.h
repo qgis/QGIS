@@ -30,13 +30,11 @@
 class QgsCopcPointCloudIndex;
 class QgsRemoteCopcPointCloudIndex;
 
-class CORE_EXPORT QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
+class CORE_EXPORT QgsVirtualPointCloudProvider : public QgsPointCloudDataProvider
 {
     Q_OBJECT
   public:
-    QgsVirtualPointCloudProvider( const QString &uri,
-                                  const QgsDataProvider::ProviderOptions &providerOptions,
-                                  Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
+    QgsVirtualPointCloudProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     ~QgsVirtualPointCloudProvider() override;
 
@@ -52,9 +50,9 @@ class CORE_EXPORT QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
     QgsPointCloudIndex index() const override;
     qint64 pointCount() const override;
     QVariantMap originalMetadata() const override;
-    void loadIndex( ) override;
-    void generateIndex( ) override;
-    PointCloudIndexGenerationState indexingState( ) override { return PointCloudIndexGenerationState::Indexed; }
+    void loadIndex() override;
+    void generateIndex() override;
+    PointCloudIndexGenerationState indexingState() override { return PointCloudIndexGenerationState::Indexed; }
     QgsGeometry polygonBounds() const override;
     QVector<QgsPointCloudSubIndex> subIndexes() override { return mSubLayers; }
     void loadSubIndex( int i ) override;

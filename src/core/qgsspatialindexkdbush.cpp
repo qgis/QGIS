@@ -24,29 +24,25 @@
 
 QgsSpatialIndexKDBush::QgsSpatialIndexKDBush( QgsFeatureIterator &fi, QgsFeedback *feedback )
   : d( new QgsSpatialIndexKDBushPrivate( fi, feedback ) )
-{
-
-}
+{}
 
 QgsSpatialIndexKDBush::QgsSpatialIndexKDBush( const QgsFeatureSource &source, QgsFeedback *feedback )
   : d( new QgsSpatialIndexKDBushPrivate( source, feedback ) )
-{
-}
+{}
 
 ///@cond PRIVATE (avoid doxygen error)
-QgsSpatialIndexKDBush::QgsSpatialIndexKDBush( QgsFeatureIterator &fi, const std::function<bool ( const QgsFeature & )> &callback, QgsFeedback *feedback )
+QgsSpatialIndexKDBush::QgsSpatialIndexKDBush( QgsFeatureIterator &fi, const std::function<bool( const QgsFeature & )> &callback, QgsFeedback *feedback )
   : d( new QgsSpatialIndexKDBushPrivate( fi, callback, feedback ) )
-{
-}
+{}
 
 ///@endcond
 
 QgsSpatialIndexKDBush::QgsSpatialIndexKDBush()
   : d( new QgsSpatialIndexKDBushPrivate() )
-{
-}
+{}
 
-QgsSpatialIndexKDBush::QgsSpatialIndexKDBush( const QgsSpatialIndexKDBush &other ): d( other.d )
+QgsSpatialIndexKDBush::QgsSpatialIndexKDBush( const QgsSpatialIndexKDBush &other )
+  : d( other.d )
 {
   d->ref.ref();
 }
@@ -88,7 +84,7 @@ QList<QgsSpatialIndexKDBushData> QgsSpatialIndexKDBush::within( const QgsPointXY
     return {};
 
   QList<QgsSpatialIndexKDBushData> result;
-  d->index->within( point.x(), point.y(), radius, [&result]( const QgsSpatialIndexKDBushData & p ) { result << p; } );
+  d->index->within( point.x(), point.y(), radius, [&result]( const QgsSpatialIndexKDBushData &p ) { result << p; } );
   return result;
 }
 
@@ -111,10 +107,7 @@ QList<QgsSpatialIndexKDBushData> QgsSpatialIndexKDBush::intersects( const QgsRec
     return {};
 
   QList<QgsSpatialIndexKDBushData> result;
-  d->index->range( rectangle.xMinimum(),
-                   rectangle.yMinimum(),
-                   rectangle.xMaximum(),
-  rectangle.yMaximum(), [&result]( const QgsSpatialIndexKDBushData & p ) { result << p; } );
+  d->index->range( rectangle.xMinimum(), rectangle.yMinimum(), rectangle.xMaximum(), rectangle.yMaximum(), [&result]( const QgsSpatialIndexKDBushData &p ) { result << p; } );
   return result;
 }
 
@@ -123,8 +116,5 @@ void QgsSpatialIndexKDBush::intersects( const QgsRectangle &rectangle, const std
   if ( !d->index->finalized )
     return;
 
-  d->index->range( rectangle.xMinimum(),
-                   rectangle.yMinimum(),
-                   rectangle.xMaximum(),
-                   rectangle.yMaximum(), visitor );
+  d->index->range( rectangle.xMinimum(), rectangle.yMinimum(), rectangle.xMaximum(), rectangle.yMaximum(), visitor );
 }

@@ -108,8 +108,7 @@ QList<QPair<QString, QString>> QgsProcessingProvider::supportedOutputRasterLayer
     res << QPair<QString, QString>( format.driverName, matched );
   }
 
-  std::sort( res.begin(), res.end(), []( const QPair<QString, QString> &a, const QPair<QString, QString> &b ) -> bool
-  {
+  std::sort( res.begin(), res.end(), []( const QPair<QString, QString> &a, const QPair<QString, QString> &b ) -> bool {
     for ( const QString &tifExt : { u"tif"_s, u"tiff"_s } )
     {
       if ( a.second == tifExt )
@@ -222,8 +221,7 @@ bool QgsProcessingProvider::isSupportedOutputValue( const QVariant &outputValue,
     }
   }
 
-  if ( parameter->type() == QgsProcessingParameterVectorDestination::typeName()
-       ||  parameter->type() == QgsProcessingParameterFeatureSink::typeName() )
+  if ( parameter->type() == QgsProcessingParameterVectorDestination::typeName() || parameter->type() == QgsProcessingParameterFeatureSink::typeName() )
   {
     if ( outputPath.startsWith( "memory:"_L1 ) )
     {

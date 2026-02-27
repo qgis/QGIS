@@ -23,7 +23,6 @@ dataset's extents using a fill symbol.
 #include "qgspointcloudextentrenderer.h"
 %End
   public:
-
     QgsPointCloudExtentRenderer( QgsFillSymbol *symbol /Transfer/ = 0 );
 %Docstring
 Constructor for QgsPointCloudExtentRenderer.

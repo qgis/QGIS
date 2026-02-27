@@ -20,7 +20,7 @@
 
 #include <QSet>
 
-#if defined(_MSC_VER)
+#if defined( _MSC_VER )
 template CORE_EXPORT QVector<int> SIP_SKIP;
 template CORE_EXPORT QList<int> SIP_SKIP;
 template CORE_EXPORT QVector<QVector<int>> SIP_SKIP;
@@ -45,7 +45,6 @@ class QgsMeshVertexCirculator;
 class CORE_EXPORT QgsTopologicalMesh
 {
   public:
-
     using FaceNeighbors = QVector<int>;
 
     /**
@@ -60,12 +59,11 @@ class CORE_EXPORT QgsTopologicalMesh
     class CORE_EXPORT TopologicalFaces
     {
       public:
-
         /**
          * Returns faces.
          * \note Not available in Python bindings.
          */
-        SIP_SKIP QVector<QgsMeshFace>  meshFaces() const {return mFaces;}
+        SIP_SKIP QVector<QgsMeshFace> meshFaces() const { return mFaces; }
 
         //! Clears all data contained in the instance.
         void clear();
@@ -81,10 +79,10 @@ class CORE_EXPORT QgsTopologicalMesh
         int vertexToFace( int vertexIndex ) const;
 
       private:
-        QVector<QgsMeshFace> mFaces; // the faces containing the vertices indexes in the mesh
+        QVector<QgsMeshFace> mFaces;               // the faces containing the vertices indexes in the mesh
         QVector<FaceNeighbors> mFacesNeighborhood; // neighborhood of the faces, face indexes are local
-        QMultiHash<int, int> mVerticesToFace; // map of vertices to incident face, face indexes are local
-        QList<int> mBoundaries; // list of boundary vertices indexes in the mesh
+        QMultiHash<int, int> mVerticesToFace;      // map of vertices to incident face, face indexes are local
+        QList<int> mBoundaries;                    // list of boundary vertices indexes in the mesh
 
         friend class QgsTopologicalMesh;
         friend class QgsMeshVertexCirculator;
@@ -101,7 +99,6 @@ class CORE_EXPORT QgsTopologicalMesh
     class CORE_EXPORT Changes
     {
       public:
-
         /**
          * Returns the face that are added with this changes.
          *
@@ -366,22 +363,14 @@ class CORE_EXPORT QgsTopologicalMesh
     static QgsMeshEditingError checkTopology( const QgsMesh &mesh, int maxVerticesPerFace );
 
     //! Returns vertex position in face
-    static inline int vertexPositionInFace( int vertexIndex, const QgsMeshFace &face )
-    {
-      return face.indexOf( vertexIndex );
-    }
+    static inline int vertexPositionInFace( int vertexIndex, const QgsMeshFace &face ) { return face.indexOf( vertexIndex ); }
 
     //! Returns vertex position in face
     static int vertexPositionInFace( const QgsMesh &mesh, int vertexIndex, int faceIndex );
 
   private:
-
     //! Creates topological faces from mesh faces
-    static TopologicalFaces  createTopologicalFaces(
-      const QVector<QgsMeshFace> &faces,
-      QVector<int> *globalVertexToFace,
-      QgsMeshEditingError &error,
-      bool allowUniqueSharedVertex );
+    static TopologicalFaces createTopologicalFaces( const QVector<QgsMeshFace> &faces, QVector<int> *globalVertexToFace, QgsMeshEditingError &error, bool allowUniqueSharedVertex );
 
     //! Returns all faces indexes that are concerned by the face with index in \a faceIndex, that is sharing a least one vertex or one edge
     QSet<int> concernedFacesBy( const QList<int> &faceIndexes ) const;
@@ -395,14 +384,9 @@ class CORE_EXPORT QgsTopologicalMesh
      * Returns faces that are either side of th edge (\a vertexIndex1, \a vertexIndex2)
      * and neighbor vertices of entry vertex in each faces
      */
-    bool eitherSideFacesAndVertices( int vertexIndex1,
-                                     int vertexIndex2,
-                                     int &face1,
-                                     int &face2,
-                                     int &neighborVertex1InFace1,
-                                     int &neighborVertex1InFace2,
-                                     int &neighborVertex2inFace1,
-                                     int &neighborVertex2inFace2 ) const;
+    bool eitherSideFacesAndVertices(
+      int vertexIndex1, int vertexIndex2, int &face1, int &face2, int &neighborVertex1InFace1, int &neighborVertex1InFace2, int &neighborVertex2inFace1, int &neighborVertex2inFace2
+    ) const;
 
     bool renumberVertices( QVector<int> &oldToNewIndex ) const;
     bool renumberFaces( QVector<int> &oldToNewIndex ) const;
@@ -417,7 +401,6 @@ class CORE_EXPORT QgsTopologicalMesh
     int mMaximumVerticesPerFace = 0;
 
     friend class QgsMeshVertexCirculator;
-
 };
 
 #ifndef SIP_RUN
@@ -434,7 +417,6 @@ class CORE_EXPORT QgsTopologicalMesh
 class CORE_EXPORT QgsMeshVertexCirculator
 {
   public:
-
     //! Constructor with \a topologicalMesh and \a vertexIndex
     QgsMeshVertexCirculator( const QgsTopologicalMesh &topologicalMesh, int vertexIndex );
 

@@ -11,7 +11,7 @@
 
 
 
-class QgsMultiPolygon: QgsMultiSurface
+class QgsMultiPolygon : QgsMultiSurface
 {
 %Docstring(signature="appended")
 Multi polygon geometry collection.
@@ -21,7 +21,6 @@ Multi polygon geometry collection.
 #include "qgsmultipolygon.h"
 %End
   public:
-
     QgsMultiPolygon() /HoldGIL/;
 %Docstring
 Constructor for an empty multipolygon geometry.

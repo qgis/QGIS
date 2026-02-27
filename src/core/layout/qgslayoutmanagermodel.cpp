@@ -54,8 +54,7 @@ void QgsLayoutManagerModel::setAllowEmptyLayout( bool allowEmpty )
 
 QgsLayoutManagerProxyModel::QgsLayoutManagerProxyModel( QObject *parent )
   : QgsProjectStoredObjectManagerProxyModel( parent )
-{
-}
+{}
 
 bool QgsLayoutManagerProxyModel::filterAcceptsRowInternal( int sourceRow, const QModelIndex &sourceParent ) const
 {

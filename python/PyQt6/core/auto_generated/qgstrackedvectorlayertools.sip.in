@@ -17,7 +17,6 @@ Vector layer tools subclass which "tracks" edits.
 #include "qgstrackedvectorlayertools.h"
 %End
   public:
-
     QgsTrackedVectorLayerTools();
 
     virtual bool addFeatureV2( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature /Out/, const QgsVectorLayerToolsContext &context ) const;
@@ -42,8 +41,16 @@ This method calls the addFeature method of the backend
 
     virtual bool saveEdits( QgsVectorLayer *layer ) const;
 
-    virtual bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double  dx = 0, double dy = 0, QString *errorMsg = 0, const bool topologicalEditing = false, QgsVectorLayer *topologicalLayer = 0, QString *childrenInfoMsg = 0 ) const;
-
+     virtual bool copyMoveFeatures(
+      QgsVectorLayer *layer,
+      QgsFeatureRequest &request,
+      double dx = 0,
+      double dy = 0,
+      QString *errorMsg = 0,
+      const bool topologicalEditing = false,
+      QgsVectorLayer *topologicalLayer = 0,
+      QString *childrenInfoMsg = 0
+    ) const;
 
     void setVectorLayerTools( const QgsVectorLayerTools *tools );
 %Docstring

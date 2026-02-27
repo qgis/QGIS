@@ -26,7 +26,9 @@
 
 using namespace Qt::StringLiterals;
 
-QgsRunnableProviderCreator::QgsRunnableProviderCreator( const QString &layerId, const QString &providerKey, const QString &dataSource, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
+QgsRunnableProviderCreator::QgsRunnableProviderCreator(
+  const QString &layerId, const QString &providerKey, const QString &dataSource, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags
+)
   : mLayerId( layerId )
   , mProviderKey( providerKey )
   , mDataSource( dataSource )

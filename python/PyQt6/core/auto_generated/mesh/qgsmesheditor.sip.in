@@ -22,7 +22,6 @@ Represents an error which occurred during mesh editing.
 #include "qgsmesheditor.h"
 %End
   public:
-
     QgsMeshEditingError();
 %Docstring
 Constructor of the default error, that is NoError
@@ -54,12 +53,16 @@ Handles edit operations on a mesh layer.
 #include "qgsmesheditor.h"
 %End
   public:
-
     QgsMeshEditor( QgsMeshLayer *meshLayer );
 %Docstring
 Constructor with a specified layer ``meshLayer``
 %End
 
+    QgsMeshEditor( QgsMesh *nativeMesh, QgsTriangularMesh *triangularMesh, QObject *parent = 0 );
+%Docstring
+Constructor with a specific mesh ``nativeMesh`` and an associated
+triangular mesh ``triangularMesh``
+%End
 
 
     std::unique_ptr< QgsMeshDatasetGroup > createZValueDatasetGroup();

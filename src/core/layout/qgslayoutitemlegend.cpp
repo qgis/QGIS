@@ -105,7 +105,8 @@ bool QgsLegendFilterProxyModel::layerShown( QgsMapLayer *layer ) const
 // QgsLayoutItemLegend
 //
 
-const QgsSettingsEntryEnumFlag< Qgis::LegendSyncMode > *QgsLayoutItemLegend::settingDefaultLegendSyncMode = new QgsSettingsEntryEnumFlag< Qgis::LegendSyncMode >( u"default-legend-sync-mode"_s, QgsSettingsTree::sTreeLayout, Qgis::LegendSyncMode::VisibleLayers, u"Default sync mode to use for legend content."_s );
+const QgsSettingsEntryEnumFlag< Qgis::LegendSyncMode > *QgsLayoutItemLegend::settingDefaultLegendSyncMode = new QgsSettingsEntryEnumFlag<
+  Qgis::LegendSyncMode >( u"default-legend-sync-mode"_s, QgsSettingsTree::sTreeLayout, Qgis::LegendSyncMode::VisibleLayers, u"Default sync mode to use for legend content."_s );
 
 QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
   : QgsLayoutItem( layout )
@@ -118,8 +119,7 @@ QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
   mTitle = mSettings.title();
 
   connect( mLegendModel.get(), &QgsLayerTreeModel::hitTestStarted, this, [this] { emit backgroundTaskCountChanged( 1 ); } );
-  connect( mLegendModel.get(), &QgsLayerTreeModel::hitTestCompleted, this, [this]
-  {
+  connect( mLegendModel.get(), &QgsLayerTreeModel::hitTestCompleted, this, [this] {
     adjustBoxSize();
     emit backgroundTaskCountChanged( 0 );
   } );
@@ -130,13 +130,11 @@ QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
   connect( mLayout->project()->layerTreeRoot(), &QgsLayerTreeNode::visibilityChanged, this, &QgsLayoutItemLegend::nodeVisibilityChanged );
 
   // If project colors change, we need to redraw legend, as legend symbols may rely on project colors
-  connect( mLayout->project(), &QgsProject::projectColorsChanged, this, [this]
-  {
+  connect( mLayout->project(), &QgsProject::projectColorsChanged, this, [this] {
     invalidateCache();
     update();
   } );
-  connect( mLegendModel.get(), &QgsLegendModel::refreshLegend, this, [this]
-  {
+  connect( mLegendModel.get(), &QgsLegendModel::refreshLegend, this, [this] {
     // NOTE -- we do NOT connect to ::refresh here, as we don't want to trigger the call to onAtlasFeature() which sets mFilterAskedForUpdate to true,
     // causing an endless loop.
     invalidateCache();
@@ -217,8 +215,7 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
   //adjust box if width or height is too small
   if ( mSizeToContents )
   {
-    QgsRenderContext context = mMap ? QgsLayoutUtils::createRenderContextForMap( mMap, painter )
-                               : QgsLayoutUtils::createRenderContextForLayout( mLayout, painter );
+    QgsRenderContext context = mMap ? QgsLayoutUtils::createRenderContextForMap( mMap, painter ) : QgsLayoutUtils::createRenderContextForLayout( mLayout, painter );
     context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering );
 
     const QSizeF size = legendRenderer.minimumSize( &context );
@@ -296,7 +293,7 @@ void QgsLayoutItemLegend::draw( QgsLayoutItemRenderContext &context )
   QPainter *painter = context.renderContext().painter();
 
   QgsRenderContext rc = mMap ? QgsLayoutUtils::createRenderContextForMap( mMap, painter, context.renderContext().scaleFactor() * 25.4 )
-                        : QgsLayoutUtils::createRenderContextForLayout( mLayout, painter, context.renderContext().scaleFactor() * 25.4 );
+                             : QgsLayoutUtils::createRenderContextForLayout( mLayout, painter, context.renderContext().scaleFactor() * 25.4 );
 
   rc.expressionContext().appendScopes( createExpressionContext().takeScopes() );
   rc.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering );
@@ -343,8 +340,7 @@ void QgsLayoutItemLegend::adjustBoxSize()
     return;
   }
 
-  QgsRenderContext context = mMap ? QgsLayoutUtils::createRenderContextForMap( mMap, nullptr ) :
-                             QgsLayoutUtils::createRenderContextForLayout( mLayout, nullptr );
+  QgsRenderContext context = mMap ? QgsLayoutUtils::createRenderContextForMap( mMap, nullptr ) : QgsLayoutUtils::createRenderContextForLayout( mLayout, nullptr );
   context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering );
 
   QgsLegendRenderer legendRenderer = createRenderer();
@@ -494,8 +490,7 @@ void QgsLayoutItemLegend::resetManualLayers( Qgis::LegendSyncMode mode )
 
   // filter out excluded by default items
   std::function< void( QgsLayerTreeGroup * )> filterNodeChildren;
-  filterNodeChildren = [mapVisibleLayers, mode, &filterNodeChildren]( QgsLayerTreeGroup * group )
-  {
+  filterNodeChildren = [mapVisibleLayers, mode, &filterNodeChildren]( QgsLayerTreeGroup *group ) {
     if ( !group )
       return;
 
@@ -858,7 +853,6 @@ void QgsLayoutItemLegend::updateLegend()
 
 bool QgsLayoutItemLegend::writePropertiesToElement( QDomElement &legendElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-
   //write general properties
   legendElem.setAttribute( u"title"_s, mTitle );
   legendElem.setAttribute( u"titleAlignment"_s, QString::number( static_cast< int >( mSettings.titleAlignment() ) ) );
@@ -951,7 +945,8 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
     mSettings.setTitleAlignment( static_cast< Qt::AlignmentFlag >( itemElem.attribute( u"titleAlignment"_s ).toInt() ) );
   }
   int colCount = itemElem.attribute( u"columnCount"_s, u"1"_s ).toInt();
-  if ( colCount < 1 ) colCount = 1;
+  if ( colCount < 1 )
+    colCount = 1;
   mColumnCount = colCount;
   mSettings.setColumnCount( mColumnCount );
   mSettings.setSplitLayer( itemElem.attribute( u"splitLayer"_s, u"0"_s ).toInt() == 1 );
@@ -968,12 +963,18 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
       style.readXml( styleElem, doc, context );
       const QString name = styleElem.attribute( u"name"_s );
       Qgis::LegendComponent s;
-      if ( name == "title"_L1 ) s = Qgis::LegendComponent::Title;
-      else if ( name == "group"_L1 ) s = Qgis::LegendComponent::Group;
-      else if ( name == "subgroup"_L1 ) s = Qgis::LegendComponent::Subgroup;
-      else if ( name == "symbol"_L1 ) s = Qgis::LegendComponent::Symbol;
-      else if ( name == "symbolLabel"_L1 ) s = Qgis::LegendComponent::SymbolLabel;
-      else continue;
+      if ( name == "title"_L1 )
+        s = Qgis::LegendComponent::Title;
+      else if ( name == "group"_L1 )
+        s = Qgis::LegendComponent::Group;
+      else if ( name == "subgroup"_L1 )
+        s = Qgis::LegendComponent::Subgroup;
+      else if ( name == "symbol"_L1 )
+        s = Qgis::LegendComponent::Symbol;
+      else if ( name == "symbolLabel"_L1 )
+        s = Qgis::LegendComponent::SymbolLabel;
+      else
+        continue;
       setStyle( s, style );
     }
   }
@@ -1269,7 +1270,7 @@ void QgsLayoutItemLegend::setModelStyleOverrides( const QMap<QString, QString> &
   mLegendModel->setLayerStyleOverrides( overrides );
   if ( QgsLayerTree *rootGroup = mLegendModel->rootGroup() )
   {
-    const QList< QgsLayerTreeLayer * > layers =  rootGroup->findLayers();
+    const QList< QgsLayerTreeLayer * > layers = rootGroup->findLayers();
     for ( QgsLayerTreeLayer *nodeLayer : std::as_const( layers ) )
       mLegendModel->refreshLayerLegend( nodeLayer );
   }
@@ -1278,8 +1279,7 @@ void QgsLayoutItemLegend::setModelStyleOverrides( const QMap<QString, QString> &
 void QgsLayoutItemLegend::clearLegendCachedData()
 {
   std::function< void( QgsLayerTreeNode * ) > clearNodeCache;
-  clearNodeCache = [&]( QgsLayerTreeNode * node )
-  {
+  clearNodeCache = [&]( QgsLayerTreeNode *node ) {
     mLegendModel->clearCachedData( node );
     if ( QgsLayerTree::isGroup( node ) )
     {
@@ -1380,10 +1380,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
 
   const bool filterByExpression = QgsLayerTreeUtils::hasLegendFilterExpression( *( mCustomLayerTree ? mCustomLayerTree.get() : mLayout->project()->layerTreeRoot() ) );
 
-  const bool hasValidFilter = filterByExpression
-                              || ( mLegendFilterByMap && ( mMap || !mFilterByMapItems.empty() ) )
-                              || mInAtlas
-                              || requiresFilteringBecauseOfRendererSetting();
+  const bool hasValidFilter = filterByExpression || ( mLegendFilterByMap && ( mMap || !mFilterByMapItems.empty() ) ) || mInAtlas || requiresFilteringBecauseOfRendererSetting();
 
   if ( hasValidFilter )
   {
@@ -1446,7 +1443,6 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
     {
       for ( QgsLayoutItemMap *map : std::as_const( linkedFilterMaps ) )
       {
-
         if ( map == mMap )
           continue;
 
@@ -1564,10 +1560,9 @@ QgsLayoutItem::ExportLayerBehavior QgsLayoutItemLegend::exportLayerBehavior() co
 
 bool QgsLayoutItemLegend::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
-  std::function<bool( QgsLayerTreeGroup *group ) >visit;
+  std::function<bool( QgsLayerTreeGroup * group ) > visit;
 
-  visit = [this, visitor, &visit]( QgsLayerTreeGroup * group ) -> bool
-  {
+  visit = [this, visitor, &visit]( QgsLayerTreeGroup *group ) -> bool {
     const QList<QgsLayerTreeNode *> childNodes = group->children();
     for ( QgsLayerTreeNode *node : childNodes )
     {
@@ -1603,7 +1598,7 @@ bool QgsLayoutItemLegend::accept( QgsStyleEntityVisitorInterface *visitor ) cons
     }
     return true;
   };
-  return visit( model()->rootGroup( ) );
+  return visit( model()->rootGroup() );
 }
 
 bool QgsLayoutItemLegend::isRefreshing() const
@@ -1660,7 +1655,7 @@ QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode, QObject *parent, QgsLayo
   connect( this, &QgsLegendModel::dataChanged, this, &QgsLegendModel::refreshLegend );
 }
 
-QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode,  QgsLayoutItemLegend *layout )
+QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode, QgsLayoutItemLegend *layout )
   : QgsLayerTreeModel( rootNode )
   , mLayoutLegend( layout )
 {

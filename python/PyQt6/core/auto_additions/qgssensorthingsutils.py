@@ -1,5 +1,7 @@
 # The following has been generated automatically from src/core/providers/sensorthings/qgssensorthingsutils.h
 try:
+    QgsSensorThingsUtils.__attribute_docs__ = {'DEFAULT_FEATURE_LIMIT': 'Default limit on number of features fetched', 'DEFAULT_EXPANSION_LIMIT': 'Default limit on number of expanded features fetched'}
+    QgsSensorThingsUtils.__annotations__ = {'DEFAULT_FEATURE_LIMIT': int, 'DEFAULT_EXPANSION_LIMIT': int}
     QgsSensorThingsUtils.stringToEntity = staticmethod(QgsSensorThingsUtils.stringToEntity)
     QgsSensorThingsUtils.displayString = staticmethod(QgsSensorThingsUtils.displayString)
     QgsSensorThingsUtils.entitySetStringToEntity = staticmethod(QgsSensorThingsUtils.entitySetStringToEntity)

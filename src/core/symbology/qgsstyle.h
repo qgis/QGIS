@@ -90,7 +90,6 @@ class CORE_EXPORT QgsStyle : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Columns available in the Symbols table.
      *
@@ -98,9 +97,9 @@ class CORE_EXPORT QgsStyle : public QObject
      */
     enum class SymbolTableColumn : int
     {
-      Id, //!< Symbol ID
-      Name, //!< Symbol Name
-      XML, //!< Symbol definition (as XML)
+      Id,         //!< Symbol ID
+      Name,       //!< Symbol Name
+      XML,        //!< Symbol definition (as XML)
       FavoriteId, //!< Symbol is favorite flag
     };
     Q_ENUM( SymbolTableColumn )
@@ -112,7 +111,7 @@ class CORE_EXPORT QgsStyle : public QObject
     */
     enum class TagTableColumn : int
     {
-      Id, //!< Tag ID
+      Id,   //!< Tag ID
       Name, //!< Tag name
     };
     Q_ENUM( TagTableColumn )
@@ -124,7 +123,7 @@ class CORE_EXPORT QgsStyle : public QObject
     */
     enum class TagmapTableColumn : int
     {
-      TagId, //!< Tag ID
+      TagId,    //!< Tag ID
       SymbolId, //!< Symbol ID
     };
     Q_ENUM( TagmapTableColumn )
@@ -136,9 +135,9 @@ class CORE_EXPORT QgsStyle : public QObject
     */
     enum class ColorRampTableColumn : int
     {
-      Id, //!< Color ramp ID
-      Name, //!< Color ramp name
-      XML, //!< Color ramp definition (as XML)
+      Id,         //!< Color ramp ID
+      Name,       //!< Color ramp name
+      XML,        //!< Color ramp definition (as XML)
       FavoriteId, //!< Color ramp is favorite flag
     };
     Q_ENUM( ColorRampTableColumn )
@@ -150,9 +149,9 @@ class CORE_EXPORT QgsStyle : public QObject
     */
     enum class TextFormatTableColumn : int
     {
-      Id, //!< Text format ID
-      Name, //!< Text format name
-      XML, //!< Text format definition (as XML)
+      Id,         //!< Text format ID
+      Name,       //!< Text format name
+      XML,        //!< Text format definition (as XML)
       FavoriteId, //!< Text format is favorite flag
     };
     Q_ENUM( TextFormatTableColumn )
@@ -164,9 +163,9 @@ class CORE_EXPORT QgsStyle : public QObject
     */
     enum class LabelSettingsTableColumn : int
     {
-      Id, //!< Label settings ID
-      Name, //!< Label settings name
-      XML, //!< Label settings definition (as XML)
+      Id,         //!< Label settings ID
+      Name,       //!< Label settings name
+      XML,        //!< Label settings definition (as XML)
       FavoriteId, //!< Label settings is favorite flag
     };
     Q_ENUM( LabelSettingsTableColumn )
@@ -178,9 +177,9 @@ class CORE_EXPORT QgsStyle : public QObject
     */
     enum class SmartGroupTableColumn : int
     {
-      Id, //!< Smart group ID
+      Id,   //!< Smart group ID
       Name, //!< Smart group name
-      XML, //!< Smart group definition (as XML)
+      XML,  //!< Smart group definition (as XML)
     };
     Q_ENUM( SmartGroupTableColumn )
 
@@ -203,14 +202,14 @@ class CORE_EXPORT QgsStyle : public QObject
      */
     enum StyleEntity
     {
-      SymbolEntity, //!< Symbols
-      TagEntity, //!< Tags
-      ColorrampEntity, //!< Color ramps
-      SmartgroupEntity, //!< Smart groups
-      TextFormatEntity, //!< Text formats
-      LabelSettingsEntity, //!< Label settings
+      SymbolEntity,           //!< Symbols
+      TagEntity,              //!< Tags
+      ColorrampEntity,        //!< Color ramps
+      SmartgroupEntity,       //!< Smart groups
+      TextFormatEntity,       //!< Text formats
+      LabelSettingsEntity,    //!< Label settings
       LegendPatchShapeEntity, //!< Legend patch shape \since QGIS 3.14
-      Symbol3DEntity, //!< 3D symbol entity \since QGIS 3.14
+      Symbol3DEntity,         //!< 3D symbol entity \since QGIS 3.14
     };
 
     /**
@@ -375,8 +374,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *
      * \since QGIS 3.4
      */
-    int addSmartgroup( const QString &name, const QString &op, const QStringList &matchTag, const QStringList &noMatchTag,
-                       const QStringList &matchName, const QStringList &noMatchName );
+    int addSmartgroup( const QString &name, const QString &op, const QStringList &matchTag, const QStringList &noMatchTag, const QStringList &matchName, const QStringList &noMatchName );
 
     /**
      * Returns a list of all tags in the style database
@@ -825,7 +823,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *
      * \since QGIS 3.26
      */
-    static QgsTextFormat defaultTextFormatForProject( QgsProject *project,  QgsStyle::TextFormatContext context = QgsStyle::TextFormatContext::Labeling );
+    static QgsTextFormat defaultTextFormatForProject( QgsProject *project, QgsStyle::TextFormatContext context = QgsStyle::TextFormatContext::Labeling );
 
     /**
      * Adds a 3d \a symbol to the database.
@@ -1242,7 +1240,6 @@ class CORE_EXPORT QgsStyle : public QObject
     void rebuildIconPreviews();
 
   private:
-
     bool mInitialized = true;
     QString mName;
     bool mReadOnly = false;
@@ -1348,7 +1345,6 @@ class CORE_EXPORT QgsStyle : public QObject
  */
 class CORE_EXPORT QgsStyleEntityInterface
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     switch ( sipCpp->type() )
@@ -1374,7 +1370,7 @@ class CORE_EXPORT QgsStyleEntityInterface
         sipType = 0;
         break;
     }
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -1385,7 +1381,6 @@ class CORE_EXPORT QgsStyleEntityInterface
      * Returns the type of style entity.
      */
     virtual QgsStyle::StyleEntity type() const = 0;
-
 };
 
 /**
@@ -1397,7 +1392,6 @@ class CORE_EXPORT QgsStyleEntityInterface
 class CORE_EXPORT QgsStyleSymbolEntity : public QgsStyleEntityInterface
 {
   public:
-
     /**
      * Constructor for QgsStyleSymbolEntity, with the specified \a symbol.
      *
@@ -1415,9 +1409,7 @@ class CORE_EXPORT QgsStyleSymbolEntity : public QgsStyleEntityInterface
     QgsSymbol *symbol() const { return mSymbol; }
 
   private:
-
     QgsSymbol *mSymbol = nullptr;
-
 };
 
 /**
@@ -1429,7 +1421,6 @@ class CORE_EXPORT QgsStyleSymbolEntity : public QgsStyleEntityInterface
 class CORE_EXPORT QgsStyleColorRampEntity : public QgsStyleEntityInterface
 {
   public:
-
     /**
      * Constructor for QgsStyleColorRampEntity, with the specified color \a ramp.
      *
@@ -1447,7 +1438,6 @@ class CORE_EXPORT QgsStyleColorRampEntity : public QgsStyleEntityInterface
     QgsColorRamp *ramp() const { return mRamp; }
 
   private:
-
     QgsColorRamp *mRamp = nullptr;
 };
 
@@ -1460,7 +1450,6 @@ class CORE_EXPORT QgsStyleColorRampEntity : public QgsStyleEntityInterface
 class CORE_EXPORT QgsStyleTextFormatEntity : public QgsStyleEntityInterface
 {
   public:
-
     /**
      * Constructor for QgsStyleTextFormatEntity, with the specified text \a format.
      */
@@ -1476,9 +1465,7 @@ class CORE_EXPORT QgsStyleTextFormatEntity : public QgsStyleEntityInterface
     QgsTextFormat format() const { return mFormat; }
 
   private:
-
     QgsTextFormat mFormat;
-
 };
 
 /**
@@ -1490,7 +1477,6 @@ class CORE_EXPORT QgsStyleTextFormatEntity : public QgsStyleEntityInterface
 class CORE_EXPORT QgsStyleLabelSettingsEntity : public QgsStyleEntityInterface
 {
   public:
-
     /**
      * Constructor for QgsStyleLabelSettingsEntity, with the specified label \a settings.
      */
@@ -1507,7 +1493,6 @@ class CORE_EXPORT QgsStyleLabelSettingsEntity : public QgsStyleEntityInterface
     const QgsPalLayerSettings &settings() const { return mSettings; }
 
   private:
-
     QgsPalLayerSettings mSettings;
 };
 
@@ -1520,7 +1505,6 @@ class CORE_EXPORT QgsStyleLabelSettingsEntity : public QgsStyleEntityInterface
 class CORE_EXPORT QgsStyleLegendPatchShapeEntity : public QgsStyleEntityInterface
 {
   public:
-
     /**
      * Constructor for QgsStyleLegendPatchShapeEntity, with the specified legend patch \a shape.
      */
@@ -1537,7 +1521,6 @@ class CORE_EXPORT QgsStyleLegendPatchShapeEntity : public QgsStyleEntityInterfac
     const QgsLegendPatchShape &shape() const { return mShape; }
 
   private:
-
     QgsLegendPatchShape mShape;
 };
 
@@ -1550,7 +1533,6 @@ class CORE_EXPORT QgsStyleLegendPatchShapeEntity : public QgsStyleEntityInterfac
 class CORE_EXPORT QgsStyleSymbol3DEntity : public QgsStyleEntityInterface
 {
   public:
-
     /**
      * Constructor for QgsStyleSymbol3DEntity, with the specified \a symbol.
      *
@@ -1568,7 +1550,6 @@ class CORE_EXPORT QgsStyleSymbol3DEntity : public QgsStyleEntityInterface
     const QgsAbstract3DSymbol *symbol() const { return mSymbol; }
 
   private:
-
     const QgsAbstract3DSymbol *mSymbol = nullptr;
 };
 

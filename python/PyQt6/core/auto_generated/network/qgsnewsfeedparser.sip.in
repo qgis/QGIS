@@ -26,7 +26,6 @@ See https://github.com/elpaso/qgis-feed.
 %End
   public:
 
-
     class Entry
     {
 %Docstring(signature="appended")
@@ -36,7 +35,6 @@ Represents a single entry from a news feed.
 %End
 
       public:
-
         int key;
 
         QString title;

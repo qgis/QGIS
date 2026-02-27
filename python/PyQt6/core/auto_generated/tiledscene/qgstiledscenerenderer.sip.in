@@ -25,7 +25,6 @@ operation.
 #include "qgstiledscenerenderer.h"
 %End
   public:
-
     QgsTiledSceneRenderContext( QgsRenderContext &context, QgsFeedback *feedback = 0 );
 %Docstring
 Constructor for QgsTiledSceneRenderContext.
@@ -59,11 +58,7 @@ Sets the current texture ``image``.
 .. seealso:: :py:func:`textureImage`
 %End
 
-    void setTextureCoordinates(
-      float textureX1, float textureY1,
-      float textureX2, float textureY2,
-      float textureX3, float textureY3
-    );
+    void setTextureCoordinates( float textureX1, float textureY1, float textureX2, float textureY2, float textureX3, float textureY3 );
 %Docstring
 Sets the current texture coordinates.
 
@@ -261,7 +256,6 @@ Renders a ``line``.
 %End
 
   protected:
-
     void copyCommonProperties( QgsTiledSceneRenderer *destination ) const;
 %Docstring
 Copies common tiled scene renderer properties (such as screen error) to

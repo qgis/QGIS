@@ -36,7 +36,6 @@ creation of tracks from incoming GPS location points.
 
 
 
-
     QgsGpsLogger( QgsGpsConnection *connection, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsGpsLogger with the specified ``parent`` object.
@@ -223,7 +222,6 @@ changed.
 %End
 
   protected:
-
 
 
     void addTrackVertex();

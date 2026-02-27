@@ -27,12 +27,11 @@
 class QgsGeoPackageRasterWriter
 {
   public:
-
     //! Error codes
     enum WriterError
     {
-      NoError = 0, //!< No errors were encountered
-      WriteError, //!< Generic GDAL Translate error
+      NoError = 0,     //!< No errors were encountered
+      WriteError,      //!< Generic GDAL Translate error
       ErrUserCanceled, //!< User canceled the export
     };
 
@@ -50,4 +49,3 @@ class QgsGeoPackageRasterWriter
 ///@endcond
 
 #endif // QGSGEOPACKAGERASTERWRITER_H
-

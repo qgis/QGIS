@@ -52,7 +52,6 @@ class CORE_EXPORT QgsPointCloudLayerUndoCommand : public QUndoCommand
 class CORE_EXPORT QgsPointCloudLayerUndoCommandChangeAttribute : public QgsPointCloudLayerUndoCommand
 {
   public:
-
     /**
      * Constructor for QgsPointCloudLayerUndoCommandChangeAttribute
      * \param layer associated point cloud layer
@@ -68,17 +67,17 @@ class CORE_EXPORT QgsPointCloudLayerUndoCommandChangeAttribute : public QgsPoint
   private:
     struct PerNodeData
     {
-      QHash<int, double> oldPointValues;
-      bool firstEdit = false;
-      int attributeOffset = 0;
+        QHash<int, double> oldPointValues;
+        bool firstEdit = false;
+        int attributeOffset = 0;
     };
 
     struct NodeProcessData
     {
-      int position;
-      QgsPointCloudIndex index;
-      QgsPointCloudNodeId nodeId;
-      QVector<int> points;
+        int position;
+        QgsPointCloudIndex index;
+        QgsPointCloudNodeId nodeId;
+        QVector<int> points;
     };
 
     void undoRedoPrivate( bool isUndo );

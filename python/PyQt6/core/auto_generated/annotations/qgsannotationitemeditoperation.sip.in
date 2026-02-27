@@ -21,7 +21,6 @@ Encapsulates the context for an annotation item edit operation.
 #include "qgsannotationitemeditoperation.h"
 %End
   public:
-
     QgsAnnotationItemEditContext();
 
     QgsRectangle currentItemBounds() const;
@@ -68,7 +67,6 @@ Abstract base class for annotation item edit operations.
 #include "qgsannotationitemeditoperation.h"
 %End
   public:
-
     enum class Type /BaseType=IntEnum/
     {
       MoveNode,
@@ -97,8 +95,6 @@ Returns the associated item ID.
 %End
 
   protected:
-
-
 };
 
 class QgsAnnotationItemEditOperationMoveNode : QgsAbstractAnnotationItemEditOperation
@@ -113,9 +109,7 @@ Annotation item edit operation consisting of moving a node.
 #include "qgsannotationitemeditoperation.h"
 %End
   public:
-
-    QgsAnnotationItemEditOperationMoveNode( const QString &itemId, QgsVertexId nodeId, const QgsPoint &before, const QgsPoint &after,
-                                            double translatePixelsX = 0, double translatePixelsY = 0 );
+    QgsAnnotationItemEditOperationMoveNode( const QString &itemId, QgsVertexId nodeId, const QgsPoint &before, const QgsPoint &after, double translatePixelsX = 0, double translatePixelsY = 0 );
 %Docstring
 Constructor for QgsAnnotationItemEditOperationMoveNode, where the node
 with the specified ``id`` moves from ``before`` to ``after`` (in layer
@@ -184,7 +178,6 @@ Annotation item edit operation consisting of deleting a node.
 #include "qgsannotationitemeditoperation.h"
 %End
   public:
-
     QgsAnnotationItemEditOperationDeleteNode( const QString &itemId, QgsVertexId nodeId, const QgsPoint &before );
 %Docstring
 Constructor for QgsAnnotationItemEditOperationDeleteNode, where the node
@@ -219,7 +212,6 @@ Annotation item edit operation consisting of adding a node.
 #include "qgsannotationitemeditoperation.h"
 %End
   public:
-
     QgsAnnotationItemEditOperationAddNode( const QString &itemId, const QgsPoint &point );
 %Docstring
 Constructor for QgsAnnotationItemEditOperationAddNode at the specified
@@ -250,9 +242,7 @@ item.
 #include "qgsannotationitemeditoperation.h"
 %End
   public:
-
-    QgsAnnotationItemEditOperationTranslateItem( const QString &itemId, double translateX, double translateY,
-        double translatePixelsX = 0, double translatePixelsY = 0 );
+    QgsAnnotationItemEditOperationTranslateItem( const QString &itemId, double translateX, double translateY, double translatePixelsX = 0, double translatePixelsY = 0 );
 %Docstring
 Constructor for QgsAnnotationItemEditOperationTranslateItem, where the
 node with the specified ``id`` and translation (in map units)
@@ -320,7 +310,6 @@ Annotation item edit operation consisting of rotating an item.
 #include "qgsannotationitemeditoperation.h"
 %End
   public:
-
     QgsAnnotationItemEditOperationRotateItem( const QString &itemId, double angle );
 %Docstring
 Constructor for QgsAnnotationItemEditOperationRotateItem, where the item
@@ -351,7 +340,6 @@ operation.
 #include "qgsannotationitemeditoperation.h"
 %End
   public:
-
     QgsAnnotationItemEditOperationTransientResults( const QgsGeometry &representativeGeometry );
 %Docstring
 Constructor for QgsAnnotationItemEditOperationTransientResults.

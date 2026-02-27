@@ -9,7 +9,7 @@
 
 
 
-class QgsLayoutFrame: QgsLayoutItem
+class QgsLayoutFrame : QgsLayoutItem
 {
 %Docstring(signature="appended")
 Base class for frame items, which form a layout multiframe item.
@@ -19,7 +19,6 @@ Base class for frame items, which form a layout multiframe item.
 #include "qgslayoutframe.h"
 %End
   public:
-
     QgsLayoutFrame( QgsLayout *layout, QgsLayoutMultiFrame *multiFrame );
 %Docstring
 Constructor for QgsLayoutFrame, with the specified parent ``layout`` and
@@ -126,7 +125,6 @@ Returns whether the frame is empty.
 
 
   protected:
-
     virtual void draw( QgsLayoutItemRenderContext &context );
 
     virtual void drawFrame( QgsRenderContext &context );

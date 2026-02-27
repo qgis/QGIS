@@ -34,36 +34,28 @@ using namespace Qt::StringLiterals;
 
 /// @cond PRIVATE
 
-std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-                     const QgsCoordinateReferenceSystem &destinationCrs,
-                     const QgsDatumTransform::GridDetails &grid )> QgsCoordinateTransformPrivate::sMissingRequiredGridHandler = nullptr;
+std::function< void( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::GridDetails &grid )>
+  QgsCoordinateTransformPrivate::sMissingRequiredGridHandler = nullptr;
 
-std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-                     const QgsCoordinateReferenceSystem &destinationCrs,
-                     const QgsDatumTransform::TransformDetails &preferredOperation,
-                     const QgsDatumTransform::TransformDetails &availableOperation )> QgsCoordinateTransformPrivate::sMissingPreferredGridHandler = nullptr;
+std::function<
+  void( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &preferredOperation, const QgsDatumTransform::TransformDetails &availableOperation )>
+  QgsCoordinateTransformPrivate::sMissingPreferredGridHandler = nullptr;
 
-std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-                     const QgsCoordinateReferenceSystem &destinationCrs,
-                     const QString &error )> QgsCoordinateTransformPrivate::sCoordinateOperationCreationErrorHandler = nullptr;
+std::function< void( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &error )>
+  QgsCoordinateTransformPrivate::sCoordinateOperationCreationErrorHandler = nullptr;
 
-std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-                     const QgsCoordinateReferenceSystem &destinationCrs,
-                     const QgsDatumTransform::TransformDetails &desiredOperation )> QgsCoordinateTransformPrivate::sMissingGridUsedByContextHandler = nullptr;
+std::function< void( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &desiredOperation )>
+  QgsCoordinateTransformPrivate::sMissingGridUsedByContextHandler = nullptr;
 
-std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-                     const QgsCoordinateReferenceSystem &destinationCrs )> QgsCoordinateTransformPrivate::sDynamicCrsToDynamicCrsWarningHandler = nullptr;
+std::function< void( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs )> QgsCoordinateTransformPrivate::sDynamicCrsToDynamicCrsWarningHandler = nullptr;
 
 Q_NOWARN_DEPRECATED_PUSH // because of deprecated members
-QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate()
-{
-}
+  QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate()
+{}
 Q_NOWARN_DEPRECATED_POP
 
 Q_NOWARN_DEPRECATED_PUSH // because of deprecated members
-QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinateReferenceSystem &source,
-    const QgsCoordinateReferenceSystem &destination,
-    const QgsCoordinateTransformContext &context )
+  QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, const QgsCoordinateTransformContext &context )
   : mSourceCRS( source )
   , mDestCRS( destination )
 {
@@ -73,13 +65,12 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
 Q_NOWARN_DEPRECATED_POP
 
 Q_NOWARN_DEPRECATED_PUSH // because of deprecated members
-QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, int sourceDatumTransform, int destDatumTransform )
+  QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, int sourceDatumTransform, int destDatumTransform )
   : mSourceCRS( source )
   , mDestCRS( destination )
   , mSourceDatumTransform( sourceDatumTransform )
   , mDestinationDatumTransform( destDatumTransform )
-{
-}
+{}
 
 QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinateTransformPrivate &other )
   : QSharedData( other )
@@ -104,8 +95,7 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
   , mProjLock()
   , mProjProjections()
   , mProjFallbackProjections()
-{
-}
+{}
 Q_NOWARN_DEPRECATED_POP
 
 Q_NOWARN_DEPRECATED_PUSH
@@ -163,9 +153,7 @@ bool QgsCoordinateTransformPrivate::initialize()
     return true;
   }
 
-  mGeographicToWebMercator =
-    mSourceCRS.isGeographic() &&
-    mDestCRS.authid() == "EPSG:3857"_L1;
+  mGeographicToWebMercator = mSourceCRS.isGeographic() && mDestCRS.authid() == "EPSG:3857"_L1;
 
   mHasVerticalComponent = mSourceCRS.hasVerticalAxis() && mDestCRS.hasVerticalAxis();
 
@@ -179,10 +167,9 @@ bool QgsCoordinateTransformPrivate::initialize()
   // staticCRS -> dynamicCRS or dynamicCRS -> staticCRS transformations, and
   // in either case, the coordinate epoch of the dynamicCRS must be provided
   // as the input time.
-  mDefaultTime = ( mSourceIsDynamic && !std::isnan( mSourceCoordinateEpoch ) && !mDestIsDynamic )
-                 ? mSourceCoordinateEpoch
-                 : ( mDestIsDynamic && !std::isnan( mDestCoordinateEpoch ) && !mSourceIsDynamic )
-                 ? mDestCoordinateEpoch : std::numeric_limits< double >::quiet_NaN();
+  mDefaultTime = ( mSourceIsDynamic && !std::isnan( mSourceCoordinateEpoch ) && !mDestIsDynamic ) ? mSourceCoordinateEpoch
+                 : ( mDestIsDynamic && !std::isnan( mDestCoordinateEpoch ) && !mSourceIsDynamic ) ? mDestCoordinateEpoch
+                                                                                                  : std::numeric_limits< double >::quiet_NaN();
 
   if ( mSourceIsDynamic && mDestIsDynamic && !qgsNanCompatibleEquals( mSourceCoordinateEpoch, mDestCoordinateEpoch ) )
   {
@@ -255,7 +242,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
   QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Read );
 
   PJ_CONTEXT *context = QgsProjContext::get();
-  const QMap < uintptr_t, ProjData >::const_iterator it = mProjProjections.constFind( reinterpret_cast< uintptr_t>( context ) );
+  const QMap< uintptr_t, ProjData >::const_iterator it = mProjProjections.constFind( reinterpret_cast< uintptr_t>( context ) );
 
   if ( it != mProjProjections.constEnd() )
   {
@@ -282,11 +269,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
     // Cf https://github.com/OSGeo/PROJ/pull/3025.
     // When networking is not enabled, proj_create() will check that all grids are
     // present, so proj_coordoperation_is_instantiable() is not necessary.
-    if ( !transform
-         || (
-           proj_context_is_network_enabled( context ) &&
-           !proj_coordoperation_is_instantiable( context, transform.get() ) )
-       )
+    if ( !transform || ( proj_context_is_network_enabled( context ) && !proj_coordoperation_is_instantiable( context, transform.get() ) ) )
     {
       if ( sMissingGridUsedByContextHandler )
       {
@@ -298,9 +281,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
       }
       else
       {
-        const QString err = QObject::tr( "Could not use operation specified in project between %1 and %2. (Wanted to use: %3)." ).arg( mSourceCRS.authid(),
-                            mDestCRS.authid(),
-                            mProjCoordinateOperation );
+        const QString err = QObject::tr( "Could not use operation specified in project between %1 and %2. (Wanted to use: %3)." ).arg( mSourceCRS.authid(), mDestCRS.authid(), mProjCoordinateOperation );
         QgsMessageLog::logMessage( err, QString(), Qgis::MessageLevel::Critical );
       }
 
@@ -315,7 +296,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
   QString nonAvailableError;
   if ( !transform ) // fallback on default proj pathway
   {
-    if ( !mSourceCRS.projObject() || ! mDestCRS.projObject() )
+    if ( !mSourceCRS.projObject() || !mDestCRS.projObject() )
     {
       return nullptr;
     }
@@ -381,9 +362,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
                 }
                 else
                 {
-                  const QString err = QObject::tr( "Cannot create transform between %1 and %2, missing required grid %3" ).arg( mSourceCRS.authid(),
-                                      mDestCRS.authid(),
-                                      shortName );
+                  const QString err = QObject::tr( "Cannot create transform between %1 and %2, missing required grid %3" ).arg( mSourceCRS.authid(), mDestCRS.authid(), shortName );
                   QgsMessageLog::logMessage( err, QString(), Qgis::MessageLevel::Critical );
                 }
                 break;
@@ -392,13 +371,11 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
           }
           else
           {
-
             // transform may have either the source or destination CRS using swapped axis order. For QGIS, we ALWAYS need regular x/y axis order
             transform.reset( proj_normalize_for_visualization( context, transform.get() ) );
             if ( !transform )
             {
-              const QString err = QObject::tr( "Cannot normalize transform between %1 and %2" ).arg( mSourceCRS.authid(),
-                                  mDestCRS.authid() );
+              const QString err = QObject::tr( "Cannot normalize transform between %1 and %2" ).arg( mSourceCRS.authid(), mDestCRS.authid() );
               QgsMessageLog::logMessage( err, QString(), Qgis::MessageLevel::Critical );
             }
           }
@@ -410,7 +387,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
         QgsDatumTransform::TransformDetails preferred;
         bool missingPreferred = false;
         bool stillLookingForPreferred = true;
-        for ( int i = 0; i < mAvailableOpCount; ++ i )
+        for ( int i = 0; i < mAvailableOpCount; ++i )
         {
           transform.reset( proj_list_get( context, ops, i ) );
           const bool isInstantiable = transform && proj_coordoperation_is_instantiable( context, transform.get() );
@@ -443,10 +420,8 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
           }
           else
           {
-            const QString err = QObject::tr( "Using non-preferred coordinate operation between %1 and %2. Using %3, preferred %4." ).arg( mSourceCRS.authid(),
-                                mDestCRS.authid(),
-                                available.proj,
-                                preferred.proj );
+            const QString err = QObject::tr( "Using non-preferred coordinate operation between %1 and %2. Using %3, preferred %4." )
+                                  .arg( mSourceCRS.authid(), mDestCRS.authid(), available.proj, preferred.proj );
             QgsMessageLog::logMessage( err, QString(), Qgis::MessageLevel::Critical );
           }
         }
@@ -456,8 +431,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
           transform.reset( proj_normalize_for_visualization( context, transform.get() ) );
         if ( !transform )
         {
-          const QString err = QObject::tr( "Cannot normalize transform between %1 and %2" ).arg( mSourceCRS.authid(),
-                              mDestCRS.authid() );
+          const QString err = QObject::tr( "Cannot normalize transform between %1 and %2" ).arg( mSourceCRS.authid(), mDestCRS.authid() );
           QgsMessageLog::logMessage( err, QString(), Qgis::MessageLevel::Critical );
         }
       }
@@ -498,9 +472,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
     }
     else
     {
-      const QString err = QObject::tr( "Cannot create transform between %1 and %2: %3" ).arg( mSourceCRS.authid(),
-                          mDestCRS.authid(),
-                          nonAvailableError );
+      const QString err = QObject::tr( "Cannot create transform between %1 and %2: %3" ).arg( mSourceCRS.authid(), mDestCRS.authid(), nonAvailableError );
       QgsMessageLog::logMessage( err, QString(), Qgis::MessageLevel::Critical );
     }
   }
@@ -521,7 +493,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalFallbackProjData()
   QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Read );
 
   PJ_CONTEXT *context = QgsProjContext::get();
-  const QMap < uintptr_t, ProjData >::const_iterator it = mProjFallbackProjections.constFind( reinterpret_cast< uintptr_t>( context ) );
+  const QMap< uintptr_t, ProjData >::const_iterator it = mProjFallbackProjections.constFind( reinterpret_cast< uintptr_t>( context ) );
 
   if ( it != mProjFallbackProjections.constEnd() )
   {
@@ -541,27 +513,35 @@ ProjData QgsCoordinateTransformPrivate::threadLocalFallbackProjData()
   return res;
 }
 
-void QgsCoordinateTransformPrivate::setCustomMissingRequiredGridHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::GridDetails & )> &handler )
+void QgsCoordinateTransformPrivate::setCustomMissingRequiredGridHandler(
+  const std::function<void( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::GridDetails & )> &handler
+)
 {
   sMissingRequiredGridHandler = handler;
 }
 
-void QgsCoordinateTransformPrivate::setCustomMissingPreferredGridHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::TransformDetails &, const QgsDatumTransform::TransformDetails & )> &handler )
+void QgsCoordinateTransformPrivate::setCustomMissingPreferredGridHandler(
+  const std::function<void( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::TransformDetails &, const QgsDatumTransform::TransformDetails & )> &handler
+)
 {
   sMissingPreferredGridHandler = handler;
 }
 
-void QgsCoordinateTransformPrivate::setCustomCoordinateOperationCreationErrorHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QString & )> &handler )
+void QgsCoordinateTransformPrivate::setCustomCoordinateOperationCreationErrorHandler(
+  const std::function<void( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QString & )> &handler
+)
 {
   sCoordinateOperationCreationErrorHandler = handler;
 }
 
-void QgsCoordinateTransformPrivate::setCustomMissingGridUsedByContextHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::TransformDetails & )> &handler )
+void QgsCoordinateTransformPrivate::setCustomMissingGridUsedByContextHandler(
+  const std::function<void( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::TransformDetails & )> &handler
+)
 {
   sMissingGridUsedByContextHandler = handler;
 }
 
-void QgsCoordinateTransformPrivate::setDynamicCrsToDynamicCrsWarningHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem & )> &handler )
+void QgsCoordinateTransformPrivate::setDynamicCrsToDynamicCrsWarningHandler( const std::function<void( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem & )> &handler )
 {
   sDynamicCrsToDynamicCrsWarningHandler = handler;
 }
@@ -571,7 +551,7 @@ void QgsCoordinateTransformPrivate::freeProj()
   const QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
   if ( mProjProjections.isEmpty() && mProjFallbackProjections.isEmpty() )
     return;
-  QMap < uintptr_t, ProjData >::const_iterator it = mProjProjections.constBegin();
+  QMap< uintptr_t, ProjData >::const_iterator it = mProjProjections.constBegin();
 
   // During destruction of PJ* objects, the errno is set in the underlying
   // context. Consequently the context attached to the PJ* must still exist !
@@ -601,7 +581,7 @@ bool QgsCoordinateTransformPrivate::removeObjectsBelongingToCurrentThread( void 
 {
   const QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
 
-  QMap < uintptr_t, ProjData >::iterator it = mProjProjections.find( reinterpret_cast< uintptr_t>( pj_context ) );
+  QMap< uintptr_t, ProjData >::iterator it = mProjProjections.find( reinterpret_cast< uintptr_t>( pj_context ) );
   if ( it != mProjProjections.end() )
   {
     proj_destroy( it.value() );

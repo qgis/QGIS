@@ -40,7 +40,6 @@ inexpensively copied.
 %End
   public:
 
-
     enum Flag /BaseType=IntEnum/
     {
       FlagStoreFeatureGeometries,

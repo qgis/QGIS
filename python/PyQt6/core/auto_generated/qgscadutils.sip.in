@@ -20,7 +20,6 @@ Provides routines for CAD editing.
 #include "qgscadutils.h"
 %End
   public:
-
     class AlignMapPointConstraint
     {
 %Docstring(signature="appended")
@@ -28,7 +27,6 @@ Structure with details of one constraint.
 %End
 
       public:
-
         AlignMapPointConstraint( bool locked = false, bool relative = false, double value = 0 );
 %Docstring
 Constructor for AlignMapPointConstraint.
@@ -137,7 +135,6 @@ Applies X/Y/angle/distance constraints from the given context to a map
 point. Returns a structure containing aligned map point, whether the
 constraints are valid and some extra information.
 %End
-
 };
 
 /************************************************************************

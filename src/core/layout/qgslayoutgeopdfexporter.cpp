@@ -36,10 +36,9 @@
 using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
-class QgsGeospatialPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
+class QgsGeospatialPdfRenderedFeatureHandler : public QgsRenderedFeatureHandlerInterface
 {
   public:
-
     QgsGeospatialPdfRenderedFeatureHandler( QgsLayoutItemMap *map, QgsLayoutGeospatialPdfExporter *exporter, const QStringList &layerIds )
       : mExporter( exporter )
       , mMap( map )
@@ -65,8 +64,7 @@ class QgsGeospatialPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerIn
       QTransform::quadToQuad( mapRectPoly, mapRectInLayout, mMapToLayoutTransform );
 
       // and a transform to PDF coordinate space
-      mLayoutToPdfTransform = QTransform::fromTranslate( 0, pageHeightPdfUnits ).scale( pageWidthPdfUnits / pageSizeLayoutUnits.width(),
-                              -pageHeightPdfUnits / pageSizeLayoutUnits.height() );
+      mLayoutToPdfTransform = QTransform::fromTranslate( 0, pageHeightPdfUnits ).scale( pageWidthPdfUnits / pageSizeLayoutUnits.width(), -pageHeightPdfUnits / pageSizeLayoutUnits.height() );
     }
 
     void handleRenderedFeature( const QgsFeature &feature, const QgsGeometry &renderedBounds, const QgsRenderedFeatureHandlerInterface::RenderedFeatureContext &context ) override
@@ -95,10 +93,7 @@ class QgsGeospatialPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerIn
       mExporter->pushRenderedFeature( layerId, QgsLayoutGeospatialPdfExporter::RenderedFeature( feature, transformed ), theme );
     }
 
-    QSet<QString> usedAttributes( QgsVectorLayer *, const QgsRenderContext & ) const override
-    {
-      return QSet< QString >() << QgsFeatureRequest::ALL_ATTRIBUTES;
-    }
+    QSet<QString> usedAttributes( QgsVectorLayer *, const QgsRenderContext & ) const override { return QSet< QString >() << QgsFeatureRequest::ALL_ATTRIBUTES; }
 
   private:
     QTransform mMapToLayoutTransform;
@@ -194,4 +189,3 @@ QgsAbstractGeospatialPdfExporter::VectorComponentDetail QgsLayoutGeospatialPdfEx
   }
   return detail;
 }
-

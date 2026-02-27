@@ -19,7 +19,6 @@ Holder for the widget type and its configuration for a field.
 #include "qgseditorwidgetsetup.h"
 %End
   public:
-
     QgsEditorWidgetSetup( const QString &type, const QVariantMap &config );
 %Docstring
 Constructor

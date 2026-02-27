@@ -33,7 +33,6 @@ class QgsCurve;
 class CORE_EXPORT QgsAnnotationLineItem : public QgsAnnotationItem
 {
   public:
-
     /**
      * Constructor for QgsAnnotationLineItem, with the specified \a curve.
      */
@@ -95,14 +94,12 @@ class CORE_EXPORT QgsAnnotationLineItem : public QgsAnnotationItem
     void setSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
 
   private:
-
     std::unique_ptr< QgsCurve > mCurve;
     std::unique_ptr< QgsLineSymbol > mSymbol;
 
 #ifdef SIP_RUN
     QgsAnnotationLineItem( const QgsAnnotationLineItem &other );
 #endif
-
 };
 
 #endif // QGSANNOTATIONLINEITEM_H

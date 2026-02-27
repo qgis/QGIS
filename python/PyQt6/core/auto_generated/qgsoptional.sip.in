@@ -31,7 +31,6 @@ should not be lost when disabling and re-enabling.
 #include "qgsoptional.h"
 %End
   public:
-
     QgsOptional();
 %Docstring
 A QgsOptional is disabled by default if default constructed.
@@ -47,7 +46,7 @@ A QgsOptional is enabled by default if constructed with payload.
 A QgsOptional constructed with enabled status and data
 %End
 
-    bool operator== ( const QgsOptional<T> &other ) const;
+    bool operator==( const QgsOptional<T> &other ) const;
 
 
     bool enabled() const;

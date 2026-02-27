@@ -96,12 +96,11 @@ QString QgsStringUtils::capitalize( const QString &string, Qgis::Capitalization 
 
       wordSplitter.setPosition( 0 );
       bool first = true;
-      while ( ( first && wordSplitter.boundaryReasons() & QTextBoundaryFinder::StartOfItem )
-              || wordSplitter.toNextBoundary() >= 0 )
+      while ( ( first && wordSplitter.boundaryReasons() & QTextBoundaryFinder::StartOfItem ) || wordSplitter.toNextBoundary() >= 0 )
       {
         first = false;
         letterSplitter.setPosition( wordSplitter.position() );
-        ( void )letterSplitter.toNextBoundary();
+        ( void ) letterSplitter.toNextBoundary();
         QString substr = string.mid( wordSplitter.position(), letterSplitter.position() - wordSplitter.position() );
         temp.replace( wordSplitter.position(), substr.length(), substr.toUpper() );
       }
@@ -278,8 +277,8 @@ QString QgsStringUtils::longestCommonSubstring( const QString &string1, const QS
     return s1;
   }
 
-  int *currentScores = new int [ s2.length()];
-  int *previousScores = new int [ s2.length()];
+  int *currentScores = new int[s2.length()];
+  int *previousScores = new int[s2.length()];
   int maxCommonLength = 0;
   int lastMaxBeginIndex = 0;
 
@@ -318,8 +317,8 @@ QString QgsStringUtils::longestCommonSubstring( const QString &string1, const QS
     s1Char++;
     s2Char = s2Start;
   }
-  delete [] currentScores;
-  delete [] previousScores;
+  delete[] currentScores;
+  delete[] previousScores;
   return string1.mid( lastMaxBeginIndex - maxCommonLength + 1, maxCommonLength );
 }
 
@@ -460,8 +459,8 @@ QString QgsStringUtils::soundex( const QString &string )
 
 double QgsStringUtils::fuzzyScore( const QString &candidate, const QString &search )
 {
-  QString candidateNormalized = candidate.simplified().normalized( QString:: NormalizationForm_C ).toLower();
-  QString searchNormalized = search.simplified().normalized( QString:: NormalizationForm_C ).toLower();
+  QString candidateNormalized = candidate.simplified().normalized( QString::NormalizationForm_C ).toLower();
+  QString searchNormalized = search.simplified().normalized( QString::NormalizationForm_C ).toLower();
 
   int candidateLength = candidateNormalized.length();
   int searchLength = searchNormalized.length();
@@ -482,7 +481,7 @@ double QgsStringUtils::fuzzyScore( const QString &candidate, const QString &sear
   // loop trough each candidate char and calculate the potential max score
   while ( candidateIdx < candidateLength )
   {
-    QChar candidateChar = candidateNormalized[ candidateIdx++ ];
+    QChar candidateChar = candidateNormalized[candidateIdx++];
     bool isCandidateCharWordEnd = candidateChar == ' ' || candidateChar.isPunct();
 
     // the first char is always the default score
@@ -499,7 +498,7 @@ double QgsStringUtils::fuzzyScore( const QString &candidate, const QString &sear
     if ( searchIdx >= searchLength )
       continue;
 
-    QChar searchChar = searchNormalized[ searchIdx ];
+    QChar searchChar = searchNormalized[searchIdx];
     bool isSearchCharWordEnd = searchChar == ' ' || searchChar.isPunct();
 
     // match!
@@ -542,9 +541,7 @@ double QgsStringUtils::fuzzyScore( const QString &candidate, const QString &sear
     // if the search string is covered, check if the last match is end of word
     if ( searchIdx >= searchLength )
     {
-      bool isEndOfWord = ( candidateIdx >= candidateLength )
-                         ? true
-                         : candidateNormalized[candidateIdx] == ' ' || candidateNormalized[candidateIdx].isPunct();
+      bool isEndOfWord = ( candidateIdx >= candidateLength ) ? true : candidateNormalized[candidateIdx] == ' ' || candidateNormalized[candidateIdx].isPunct();
 
       if ( isEndOfWord )
         score += FUZZY_SCORE_WORD_MATCH;
@@ -568,7 +565,9 @@ QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
 
   // http://alanstorm.com/url_regex_explained
   // note - there's more robust implementations available
-  const thread_local QRegularExpression urlRegEx( u"((?:(?:http|https|ftp|file)://[^\\s]+[^\\s,.]+)|(?:\\b(([\\w-]+://?|www[.])[^\\s()<>]+(?:\\([\\w\\d]+\\)|([^!\"#$%&'()*+,\\-./:;<=>?@[\\\\\\]^_`{|}~\\s]|/)))))"_s );
+  const thread_local QRegularExpression urlRegEx(
+    u"((?:(?:http|https|ftp|file)://[^\\s]+[^\\s,.]+)|(?:\\b(([\\w-]+://?|www[.])[^\\s()<>]+(?:\\([\\w\\d]+\\)|([^!\"#$%&'()*+,\\-./:;<=>?@[\\\\\\]^_`{|}~\\s]|/)))))"_s
+  );
   const thread_local QRegularExpression protoRegEx( u"^(?:f|ht)tps?://|file://"_s );
   const thread_local QRegularExpression emailRegEx( u"([\\w._%+-]+@[\\w.-]+\\.[A-Za-z]+)"_s );
 
@@ -703,13 +702,13 @@ QString QgsStringUtils::wordWrap( const QString &string, const int length, const
       }
       if ( strHit > -1 )
       {
-        newstr.append( QStringView {line} .mid( strCurrent, strHit - strCurrent ) );
+        newstr.append( QStringView { line }.mid( strCurrent, strHit - strCurrent ) );
         newstr.append( '\n' );
         strCurrent = strHit + delimiterLength;
       }
       else
       {
-        newstr.append( QStringView {line} .mid( strCurrent ) );
+        newstr.append( QStringView { line }.mid( strCurrent ) );
         strCurrent = strLength;
       }
     }
@@ -722,23 +721,23 @@ QString QgsStringUtils::wordWrap( const QString &string, const int length, const
 
 QString QgsStringUtils::substituteVerticalCharacters( QString string )
 {
-  string = string.replace( ',', QChar( 65040 ) ).replace( QChar( 8229 ), QChar( 65072 ) ); // comma & two-dot leader
+  string = string.replace( ',', QChar( 65040 ) ).replace( QChar( 8229 ), QChar( 65072 ) );             // comma & two-dot leader
   string = string.replace( QChar( 12289 ), QChar( 65041 ) ).replace( QChar( 12290 ), QChar( 65042 ) ); // ideographic comma & full stop
   string = string.replace( ':', QChar( 65043 ) ).replace( ';', QChar( 65044 ) );
   string = string.replace( '!', QChar( 65045 ) ).replace( '?', QChar( 65046 ) );
   string = string.replace( QChar( 12310 ), QChar( 65047 ) ).replace( QChar( 12311 ), QChar( 65048 ) ); // white lenticular brackets
-  string = string.replace( QChar( 8230 ), QChar( 65049 ) ); // three-dot ellipse
-  string = string.replace( QChar( 8212 ), QChar( 65073 ) ).replace( QChar( 8211 ), QChar( 65074 ) ); // em & en dash
-  string = string.replace( '_', QChar( 65075 ) ).replace( QChar( 65103 ), QChar( 65076 ) ); // low line & wavy low line
+  string = string.replace( QChar( 8230 ), QChar( 65049 ) );                                            // three-dot ellipse
+  string = string.replace( QChar( 8212 ), QChar( 65073 ) ).replace( QChar( 8211 ), QChar( 65074 ) );   // em & en dash
+  string = string.replace( '_', QChar( 65075 ) ).replace( QChar( 65103 ), QChar( 65076 ) );            // low line & wavy low line
   string = string.replace( '(', QChar( 65077 ) ).replace( ')', QChar( 65078 ) );
   string = string.replace( '{', QChar( 65079 ) ).replace( '}', QChar( 65080 ) );
   string = string.replace( '<', QChar( 65087 ) ).replace( '>', QChar( 65088 ) );
   string = string.replace( '[', QChar( 65095 ) ).replace( ']', QChar( 65096 ) );
-  string = string.replace( QChar( 12308 ), QChar( 65081 ) ).replace( QChar( 12309 ), QChar( 65082 ) );   // tortoise shell brackets
-  string = string.replace( QChar( 12304 ), QChar( 65083 ) ).replace( QChar( 12305 ), QChar( 65084 ) );   // black lenticular brackets
+  string = string.replace( QChar( 12308 ), QChar( 65081 ) ).replace( QChar( 12309 ), QChar( 65082 ) ); // tortoise shell brackets
+  string = string.replace( QChar( 12304 ), QChar( 65083 ) ).replace( QChar( 12305 ), QChar( 65084 ) ); // black lenticular brackets
   string = string.replace( QChar( 12298 ), QChar( 65085 ) ).replace( QChar( 12299 ), QChar( 65086 ) ); // double angle brackets
-  string = string.replace( QChar( 12300 ), QChar( 65089 ) ).replace( QChar( 12301 ), QChar( 65090 ) );   // corner brackets
-  string = string.replace( QChar( 12302 ), QChar( 65091 ) ).replace( QChar( 12303 ), QChar( 65092 ) );   // white corner brackets
+  string = string.replace( QChar( 12300 ), QChar( 65089 ) ).replace( QChar( 12301 ), QChar( 65090 ) ); // corner brackets
+  string = string.replace( QChar( 12302 ), QChar( 65091 ) ).replace( QChar( 12303 ), QChar( 65092 ) ); // white corner brackets
   return string;
 }
 
@@ -844,10 +843,7 @@ QgsStringMap QgsStringReplacement::properties() const
 
 QgsStringReplacement QgsStringReplacement::fromProperties( const QgsStringMap &properties )
 {
-  return QgsStringReplacement( properties.value( u"match"_s ),
-                               properties.value( u"replace"_s ),
-                               properties.value( u"caseSensitive"_s, u"0"_s ) == "1"_L1,
-                               properties.value( u"wholeWord"_s, u"0"_s ) == "1"_L1 );
+  return QgsStringReplacement( properties.value( u"match"_s ), properties.value( u"replace"_s ), properties.value( u"caseSensitive"_s, u"0"_s ) == "1"_L1, properties.value( u"wholeWord"_s, u"0"_s ) == "1"_L1 );
 }
 
 QString QgsStringReplacementCollection::process( const QString &input ) const
@@ -891,5 +887,4 @@ void QgsStringReplacementCollection::readXml( const QDomElement &elem )
     }
     mReplacements << QgsStringReplacement::fromProperties( props );
   }
-
 }

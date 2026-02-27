@@ -51,8 +51,14 @@ class CORE_EXPORT QgsPointCloudLayerEditUtils
     static bool isAttributeValueValid( const QgsPointCloudAttribute &attribute, double value );
 
     //! Sets new classification value for the given points in voxel and return updated chunk data
-    static QByteArray updateChunkValues( QgsCopcPointCloudIndex *copcIndex, const QByteArray &chunkData, const QgsPointCloudAttribute &attribute, const QgsPointCloudNodeId &n, const QHash<int, double> &pointValues, std::optional<double> newValue = std::nullopt );
-
+    static QByteArray updateChunkValues(
+      QgsCopcPointCloudIndex *copcIndex,
+      const QByteArray &chunkData,
+      const QgsPointCloudAttribute &attribute,
+      const QgsPointCloudNodeId &n,
+      const QHash<int, double> &pointValues,
+      std::optional<double> newValue = std::nullopt
+    );
 };
 
 #endif // QGSPOINTCLOUDLAYEREDITUTILS_H

@@ -294,8 +294,7 @@ void QgsBookmarkManagerModel::bookmarkAboutToBeAdded( const QString & )
   if ( qobject_cast< QgsBookmarkManager * >( sender() ) == mManager )
     beginInsertRows( QModelIndex(), mManager->bookmarks().count(), mManager->bookmarks().count() );
   else
-    beginInsertRows( QModelIndex(), mManager->bookmarks().count() + mProjectManager->bookmarks().count(),
-                     mManager->bookmarks().count() + mProjectManager->bookmarks().count() );
+    beginInsertRows( QModelIndex(), mManager->bookmarks().count() + mProjectManager->bookmarks().count(), mManager->bookmarks().count() + mProjectManager->bookmarks().count() );
 }
 
 void QgsBookmarkManagerModel::bookmarkAdded( const QString & )
@@ -330,8 +329,7 @@ void QgsBookmarkManagerModel::bookmarkAboutToBeRemoved( const QString &id )
   if ( manager == mManager )
     beginRemoveRows( QModelIndex(), i, i );
   else
-    beginRemoveRows( QModelIndex(), mManager->bookmarks().count() + i,
-                     mManager->bookmarks().count() + i );
+    beginRemoveRows( QModelIndex(), mManager->bookmarks().count() + i, mManager->bookmarks().count() + i );
 }
 
 void QgsBookmarkManagerModel::bookmarkRemoved( const QString & )

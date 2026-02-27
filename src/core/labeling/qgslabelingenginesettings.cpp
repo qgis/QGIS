@@ -26,13 +26,12 @@
 using namespace Qt::StringLiterals;
 
 QgsLabelingEngineSettings::QgsLabelingEngineSettings()
-{
-}
+{}
 
 QgsLabelingEngineSettings::~QgsLabelingEngineSettings() = default;
 
 QgsLabelingEngineSettings::QgsLabelingEngineSettings( const QgsLabelingEngineSettings &other )
-//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+  //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
   : mFlags( other.mFlags )
   , mSearchMethod( other.mSearchMethod )
   , mMaxLineCandidatesPerCm( other.mMaxLineCandidatesPerCm )
@@ -40,7 +39,7 @@ QgsLabelingEngineSettings::QgsLabelingEngineSettings( const QgsLabelingEngineSet
   , mUnplacedLabelColor( other.mUnplacedLabelColor )
   , mPlacementVersion( other.mPlacementVersion )
   , mDefaultTextRenderFormat( other.mDefaultTextRenderFormat )
-    //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
 {
   mEngineRules.reserve( other.mEngineRules.size() );
   for ( const auto &rule : other.mEngineRules )
@@ -58,8 +57,7 @@ QgsLabelingEngineSettings::QgsLabelingEngineSettings( QgsLabelingEngineSettings 
   , mPlacementVersion( other.mPlacementVersion )
   , mDefaultTextRenderFormat( other.mDefaultTextRenderFormat )
   , mEngineRules( std::move( other.mEngineRules ) )
-{
-}
+{}
 
 QgsLabelingEngineSettings &QgsLabelingEngineSettings::operator=( const QgsLabelingEngineSettings &other )
 {
@@ -113,12 +111,18 @@ void QgsLabelingEngineSettings::readSettingsFromProject( QgsProject *prj )
   mMaxPolygonCandidatesPerCmSquared = prj->readDoubleEntry( u"PAL"_s, u"/CandidatesPolygonPerCM"_s, 2.5, &saved );
 
   mFlags = Qgis::LabelingFlags();
-  if ( prj->readBoolEntry( u"PAL"_s, u"/ShowingCandidates"_s, false, &saved ) ) mFlags |= Qgis::LabelingFlag::DrawCandidates;
-  if ( prj->readBoolEntry( u"PAL"_s, u"/DrawRectOnly"_s, false, &saved ) ) mFlags |= Qgis::LabelingFlag::DrawLabelRectOnly;
-  if ( prj->readBoolEntry( u"PAL"_s, u"/ShowingAllLabels"_s, false, &saved ) ) mFlags |= Qgis::LabelingFlag::UseAllLabels;
-  if ( prj->readBoolEntry( u"PAL"_s, u"/ShowingPartialsLabels"_s, true, &saved ) ) mFlags |= Qgis::LabelingFlag::UsePartialCandidates;
-  if ( prj->readBoolEntry( u"PAL"_s, u"/DrawUnplaced"_s, false, &saved ) ) mFlags |= Qgis::LabelingFlag::DrawUnplacedLabels;
-  if ( prj->readBoolEntry( u"PAL"_s, u"/DrawLabelMetrics"_s, false, &saved ) ) mFlags |= Qgis::LabelingFlag::DrawLabelMetrics;
+  if ( prj->readBoolEntry( u"PAL"_s, u"/ShowingCandidates"_s, false, &saved ) )
+    mFlags |= Qgis::LabelingFlag::DrawCandidates;
+  if ( prj->readBoolEntry( u"PAL"_s, u"/DrawRectOnly"_s, false, &saved ) )
+    mFlags |= Qgis::LabelingFlag::DrawLabelRectOnly;
+  if ( prj->readBoolEntry( u"PAL"_s, u"/ShowingAllLabels"_s, false, &saved ) )
+    mFlags |= Qgis::LabelingFlag::UseAllLabels;
+  if ( prj->readBoolEntry( u"PAL"_s, u"/ShowingPartialsLabels"_s, true, &saved ) )
+    mFlags |= Qgis::LabelingFlag::UsePartialCandidates;
+  if ( prj->readBoolEntry( u"PAL"_s, u"/DrawUnplaced"_s, false, &saved ) )
+    mFlags |= Qgis::LabelingFlag::DrawUnplacedLabels;
+  if ( prj->readBoolEntry( u"PAL"_s, u"/DrawLabelMetrics"_s, false, &saved ) )
+    mFlags |= Qgis::LabelingFlag::DrawLabelMetrics;
 
   mDefaultTextRenderFormat = Qgis::TextRenderFormat::AlwaysOutlines;
   // if users have disabled the older PAL "DrawOutlineLabels" setting, respect that
@@ -259,5 +263,3 @@ void QgsLabelingEngineSettings::setRules( const QList<QgsAbstractLabelingEngineR
     mEngineRules.emplace_back( rule );
   }
 }
-
-

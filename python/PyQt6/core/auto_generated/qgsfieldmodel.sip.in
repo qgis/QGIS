@@ -26,7 +26,6 @@ a layer and its fields.
 %End
   public:
 
-
     enum class CustomRole /BaseType=IntEnum/
     {
       FieldName,

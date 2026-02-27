@@ -19,10 +19,9 @@
 
 #include "moc_qgsdbfilterproxymodel.cpp"
 
-QgsDatabaseFilterProxyModel::QgsDatabaseFilterProxyModel( QObject *parent ): QSortFilterProxyModel( parent )
-{
-
-}
+QgsDatabaseFilterProxyModel::QgsDatabaseFilterProxyModel( QObject *parent )
+  : QSortFilterProxyModel( parent )
+{}
 
 bool QgsDatabaseFilterProxyModel::filterAcceptsRow( int row, const QModelIndex &source_parent ) const
 {

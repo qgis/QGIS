@@ -46,7 +46,6 @@ usually be triggered many times for a single call to
 #include "qgslocator.h"
 %End
   public:
-
     static const QList<QString> CORE_FILTERS;
 
     QgsLocator( QObject *parent /TransferThis/ = 0 );
@@ -177,8 +176,6 @@ successful completion or early cancellation.
 %End
 
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

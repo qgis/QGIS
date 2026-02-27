@@ -49,7 +49,10 @@ typedef QgsProjectVersion PFV;
 // Transformer functions below. Declare functions here,
 // define them in qgsprojectfiletransform.cpp and add them
 // to the transformArray with proper version number
-void transformNull( QgsProjectFileTransform *pft ) { Q_UNUSED( pft ) } // Do absolutely nothing
+void transformNull( QgsProjectFileTransform *pft )
+{
+  Q_UNUSED( pft )
+} // Do absolutely nothing
 void transform2200to2300( QgsProjectFileTransform *pft );
 void transform3000( QgsProjectFileTransform *pft );
 
@@ -60,9 +63,9 @@ void transformRasterTransparency( QDomDocument &doc, const QDomElement &orig, QD
 
 typedef struct
 {
-  QgsProjectVersion from;
-  QgsProjectVersion to;
-  void ( * transformFunc )( QgsProjectFileTransform * );
+    QgsProjectVersion from;
+    QgsProjectVersion to;
+    void ( *transformFunc )( QgsProjectFileTransform * );
 } TransformItem;
 
 typedef std::vector<TransformItem> Transformers;
@@ -72,35 +75,34 @@ bool QgsProjectFileTransform::updateRevision( const QgsProjectVersion &newVersio
   Q_UNUSED( newVersion )
   bool returnValue = false;
 
-  static const Transformers transformers(
-  {
-    {PFV( 0, 8, 0 ), PFV( 0, 8, 1 ), &transformNull},
-    {PFV( 0, 8, 1 ), PFV( 0, 9, 0 ), &transformNull},
-    {PFV( 0, 9, 0 ), PFV( 0, 9, 1 ), &transformNull},
-    {PFV( 0, 9, 1 ), PFV( 0, 10, 0 ), &transformNull},
+  static const Transformers transformers( {
+    { PFV( 0, 8, 0 ), PFV( 0, 8, 1 ), &transformNull },
+    { PFV( 0, 8, 1 ), PFV( 0, 9, 0 ), &transformNull },
+    { PFV( 0, 9, 0 ), PFV( 0, 9, 1 ), &transformNull },
+    { PFV( 0, 9, 1 ), PFV( 0, 10, 0 ), &transformNull },
     // Following line is a hack that takes us straight from 0.9.2 to 0.11.0
     // due to an unknown bug in migrating 0.9.2 files which we didn't pursue (TS & GS)
-    {PFV( 0, 9, 2 ), PFV( 0, 11, 0 ), &transformNull},
-    {PFV( 0, 10, 0 ), PFV( 0, 11, 0 ), &transformNull},
-    {PFV( 0, 11, 0 ), PFV( 1, 0, 0 ), &transformNull},
-    {PFV( 1, 0, 0 ), PFV( 1, 1, 0 ), &transformNull},
-    {PFV( 1, 0, 2 ), PFV( 1, 1, 0 ), &transformNull},
-    {PFV( 1, 1, 0 ), PFV( 1, 2, 0 ), &transformNull},
-    {PFV( 1, 2, 0 ), PFV( 1, 3, 0 ), &transformNull},
-    {PFV( 1, 3, 0 ), PFV( 1, 4, 0 ), &transformNull},
-    {PFV( 1, 4, 0 ), PFV( 1, 5, 0 ), &transformNull},
-    {PFV( 1, 5, 0 ), PFV( 1, 6, 0 ), &transformNull},
-    {PFV( 1, 6, 0 ), PFV( 1, 7, 0 ), &transformNull},
-    {PFV( 1, 7, 0 ), PFV( 1, 8, 0 ), &transformNull},
-    {PFV( 1, 8, 0 ), PFV( 1, 9, 0 ), &transformNull},
-    {PFV( 1, 9, 0 ), PFV( 2, 0, 0 ), &transformNull},
-    {PFV( 2, 0, 0 ), PFV( 2, 1, 0 ), &transformNull},
-    {PFV( 2, 1, 0 ), PFV( 2, 2, 0 ), &transformNull},
-    {PFV( 2, 2, 0 ), PFV( 2, 3, 0 ), &transform2200to2300},
+    { PFV( 0, 9, 2 ), PFV( 0, 11, 0 ), &transformNull },
+    { PFV( 0, 10, 0 ), PFV( 0, 11, 0 ), &transformNull },
+    { PFV( 0, 11, 0 ), PFV( 1, 0, 0 ), &transformNull },
+    { PFV( 1, 0, 0 ), PFV( 1, 1, 0 ), &transformNull },
+    { PFV( 1, 0, 2 ), PFV( 1, 1, 0 ), &transformNull },
+    { PFV( 1, 1, 0 ), PFV( 1, 2, 0 ), &transformNull },
+    { PFV( 1, 2, 0 ), PFV( 1, 3, 0 ), &transformNull },
+    { PFV( 1, 3, 0 ), PFV( 1, 4, 0 ), &transformNull },
+    { PFV( 1, 4, 0 ), PFV( 1, 5, 0 ), &transformNull },
+    { PFV( 1, 5, 0 ), PFV( 1, 6, 0 ), &transformNull },
+    { PFV( 1, 6, 0 ), PFV( 1, 7, 0 ), &transformNull },
+    { PFV( 1, 7, 0 ), PFV( 1, 8, 0 ), &transformNull },
+    { PFV( 1, 8, 0 ), PFV( 1, 9, 0 ), &transformNull },
+    { PFV( 1, 9, 0 ), PFV( 2, 0, 0 ), &transformNull },
+    { PFV( 2, 0, 0 ), PFV( 2, 1, 0 ), &transformNull },
+    { PFV( 2, 1, 0 ), PFV( 2, 2, 0 ), &transformNull },
+    { PFV( 2, 2, 0 ), PFV( 2, 3, 0 ), &transform2200to2300 },
     // A transformer with a NULL from version means that it should be run when upgrading
     // from any version and will take care that it's not going to cause trouble if it's
     // run several times on the same file.
-    {PFV(), PFV( 3, 0, 0 ), &transform3000},
+    { PFV(), PFV( 3, 0, 0 ), &transform3000 },
   } );
 
   if ( !mDom.isNull() )
@@ -121,10 +123,7 @@ bool QgsProjectFileTransform::updateRevision( const QgsProjectVersion &newVersio
 
 void QgsProjectFileTransform::dump()
 {
-  QgsDebugMsgLevel( u"Current project file version is %1.%2.%3"_s
-                    .arg( mCurrentVersion.majorVersion() )
-                    .arg( mCurrentVersion.minorVersion() )
-                    .arg( mCurrentVersion.subVersion() ), 1 );
+  QgsDebugMsgLevel( u"Current project file version is %1.%2.%3"_s.arg( mCurrentVersion.majorVersion() ).arg( mCurrentVersion.minorVersion() ).arg( mCurrentVersion.subVersion() ), 1 );
 #ifdef QGISDEBUG
   // Using QgsDebugMsgLevel() didn't print the entire pft->dom()...
   std::cout << mDom.toString( 2 ).toLatin1().constData(); // OK
@@ -381,8 +380,7 @@ void transform3000( QgsProjectFileTransform *pft )
   }
 }
 
-void QgsProjectFileTransform::convertRasterProperties( QDomDocument &doc, QDomNode &parentNode,
-    QDomElement &rasterPropertiesElem, QgsRasterLayer *rlayer )
+void QgsProjectFileTransform::convertRasterProperties( QDomDocument &doc, QDomNode &parentNode, QDomElement &rasterPropertiesElem, QgsRasterLayer *rlayer )
 {
   //no data
   //TODO: We would need to set no data on all bands, but we don't know number of bands here
@@ -411,7 +409,7 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument &doc, QDomNo
 
   //invert color
   rasterRendererElem.setAttribute( u"invertColor"_s, u"0"_s );
-  const QDomElement  invertColorElem = rasterPropertiesElem.firstChildElement( u"mInvertColor"_s );
+  const QDomElement invertColorElem = rasterPropertiesElem.firstChildElement( u"mInvertColor"_s );
   if ( !invertColorElem.isNull() )
   {
     if ( invertColorElem.text() == "true"_L1 )
@@ -728,16 +726,14 @@ void QgsProjectFileTransform::fixOldSymbolLayerReferences( const QMap<QString, Q
     if ( !vl )
       continue;
 
-    auto migrateOldReferences = [&mapLayers]( const QList<QgsSymbolLayerReference> &slRefs )
-    {
+    auto migrateOldReferences = [&mapLayers]( const QList<QgsSymbolLayerReference> &slRefs ) {
       QList<QgsSymbolLayerReference> newRefs;
       for ( const QgsSymbolLayerReference &slRef : slRefs )
       {
-        const QgsVectorLayer *vlRef = qobject_cast<QgsVectorLayer *>( mapLayers[ slRef.layerId() ] );
+        const QgsVectorLayer *vlRef = qobject_cast<QgsVectorLayer *>( mapLayers[slRef.layerId()] );
         const QgsFeatureRenderer *renderer = vlRef ? vlRef->renderer() : nullptr;
         Q_NOWARN_DEPRECATED_PUSH
-        QSet<const QgsSymbolLayer *> symbolLayers = renderer ? QgsSymbolLayerUtils::toSymbolLayerPointers(
-              renderer, QSet<QgsSymbolLayerId>() << slRef.symbolLayerId() ) : QSet<const QgsSymbolLayer *>();
+        QSet<const QgsSymbolLayer *> symbolLayers = renderer ? QgsSymbolLayerUtils::toSymbolLayerPointers( renderer, QSet<QgsSymbolLayerId>() << slRef.symbolLayerId() ) : QSet<const QgsSymbolLayer *>();
         Q_NOWARN_DEPRECATED_POP
         const QString slId = symbolLayers.isEmpty() ? QString() : ( *symbolLayers.constBegin() )->id();
         newRefs << QgsSymbolLayerReference( slRef.layerId(), slId );
@@ -762,14 +758,10 @@ void QgsProjectFileTransform::fixOldSymbolLayerReferences( const QMap<QString, Q
 
     if ( QgsFeatureRenderer *renderer = vl->renderer() )
     {
-
       class SymbolLayerVisitor : public QgsStyleEntityVisitorInterface
       {
         public:
-          bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node ) override
-          {
-            return ( node.type == QgsStyleEntityVisitorInterface::NodeType::SymbolRule );
-          }
+          bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node ) override { return ( node.type == QgsStyleEntityVisitorInterface::NodeType::SymbolRule ); }
 
           void visitSymbol( const QgsSymbol *symbol )
           {

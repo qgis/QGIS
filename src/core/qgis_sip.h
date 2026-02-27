@@ -24,7 +24,7 @@
 /*
  * the module will be included if the condition is met
  */
-#define SIP_IF_MODULE(condition)
+#define SIP_IF_MODULE( condition )
 
 
 /*
@@ -85,7 +85,7 @@
 /*
  * https://python-sip.readthedocs.io/en/stable/annotations.html#class-annotation-PyName
  */
-#define SIP_PYNAME(name)
+#define SIP_PYNAME( name )
 
 /*
  * https://python-sip.readthedocs.io/en/stable/annotations.html#argument-annotation-KeepReference
@@ -145,12 +145,12 @@
 /*
   * specify an alternative type for SIP argument or return value
   */
-#define SIP_PYALTERNATIVETYPE(type)
+#define SIP_PYALTERNATIVETYPE( type )
 
 /*
   * specify an alternative default value for SIP argument
   */
-#define SIP_PYARGDEFAULT(value)
+#define SIP_PYARGDEFAULT( value )
 
 /*
   * remove argument in SIP method
@@ -165,7 +165,7 @@
 /*
  * rename argument in SIP method
  */
-#define SIP_PYARGRENAME(pyname)
+#define SIP_PYARGRENAME( pyname )
 
 /*
  * https://python-sip.readthedocs.io/en/stable/annotations.html#function-annotation-ReleaseGIL
@@ -180,34 +180,34 @@
 /*
  * Will insert a `%Feature feature` directive in sip files
  */
-#define SIP_FEATURE(feature)
+#define SIP_FEATURE( feature )
 
 /*
  * Will insert a `%If feature` directive in sip files
  */
-#define SIP_IF_FEATURE(feature)
+#define SIP_IF_FEATURE( feature )
 
 /*
  * Will place the current line with an `%If feature` directive in sip file
  */
-#define SIP_WHEN_FEATURE(feature)
+#define SIP_WHEN_FEATURE( feature )
 
 /*
  * Convert to subclass code
  */
-#define SIP_CONVERT_TO_SUBCLASS_CODE(code)
+#define SIP_CONVERT_TO_SUBCLASS_CODE( code )
 
 /*
  * Virtual error handler (/VirtualErrorHandler/)
  */
-#define SIP_VIRTUALERRORHANDLER(name)
+#define SIP_VIRTUALERRORHANDLER( name )
 
 /*
  * Throw - adds deprecated c++ throw calls for sip. Required for sip to add appropriate
  * try/catch blocks around call and catch the correct exception, otherwise only
  * unknown generic exceptions are available for Python code.
  */
-#define SIP_THROW(name, ...)
+#define SIP_THROW( name, ... )
 
 /*
  * Will insert a `%End` directive in sip files
@@ -222,7 +222,7 @@
 /*
  * Virtual catcher code
  */
-#define SIP_VIRTUAL_CATCHER_CODE(code)
+#define SIP_VIRTUAL_CATCHER_CODE( code )
 
 /*
  * Force documentation of templates
@@ -236,7 +236,7 @@
  * SIP_PYOBJECT to provide a more specific type.
  * Available for SIP 4.18+
  */
-#define SIP_TYPEHINT(type)
+#define SIP_TYPEHINT( type )
 
 /*
  * Define Python special method (bool, repr, etc.) using the given method or code
@@ -251,8 +251,8 @@
  * SIP_PYTHON_SPECIAL_REPR( "'<MyClass {}>'format(self.toString())'" )
  * => sipify => MyClass.__repr__ = lambda self: '<MyClass {}>'format(self.toString())'
  */
-#define SIP_PYTHON_SPECIAL_BOOL(method_or_code)
-#define SIP_PYTHON_SPECIAL_REPR(method_or_code)
+#define SIP_PYTHON_SPECIAL_BOOL( method_or_code )
+#define SIP_PYTHON_SPECIAL_REPR( method_or_code )
 
 /*
  * If one reformat an enum to a scope based enum
@@ -264,19 +264,19 @@
  * These macros should be removed in QGIS 5
  */
 #define SIP_MONKEYPATCH_SCOPEENUM
-#define SIP_MONKEYPATCH_SCOPEENUM_UNNEST(OUTSIDE_CLASS,FORMERNAME)
-#define SIP_MONKEYPATCH_FLAGS_UNNEST(OUTSIDE_CLASS,FORMERNAME)
-#define SIP_MONKEYPATCH_COMPAT_NAME(FORMERNAME)
+#define SIP_MONKEYPATCH_SCOPEENUM_UNNEST( OUTSIDE_CLASS, FORMERNAME )
+#define SIP_MONKEYPATCH_FLAGS_UNNEST( OUTSIDE_CLASS, FORMERNAME )
+#define SIP_MONKEYPATCH_COMPAT_NAME( FORMERNAME )
 
 /*
  * Directive to define the base type for a enum
  */
-#define SIP_ENUM_BASETYPE(type)
+#define SIP_ENUM_BASETYPE( type )
 
 /*
  * Directive to define a Python property;
  */
-#define SIP_PROPERTY(name,getter,setter)
+#define SIP_PROPERTY( name, getter, setter )
 
 /*
  * Directive to indicate that following code is only available with Qt 5 version
@@ -286,14 +286,14 @@
 /*
  * Adds an include in the type header code
  */
-#define SIP_TYPEHEADER_INCLUDE(file)
+#define SIP_TYPEHEADER_INCLUDE( file )
 
 /*
  * Inserts sip conversion code for QList<class_name::enum_name>, where class_name::enum_name is a c++ enum.
  *
  * Extra arguments can contain extra headers to include in the conversion code.
  */
-#define SIP_INSERT_QLIST_ENUM_CONVERSION_CODE(class_name, ...)
+#define SIP_INSERT_QLIST_ENUM_CONVERSION_CODE( class_name, ... )
 
 #define SIP_NO_FILE
 

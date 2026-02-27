@@ -32,26 +32,24 @@
 
 class CORE_EXPORT QgsStyleEntityVisitorInterface
 {
-
   public:
-
     /**
      * Describes the types of nodes which may be visited by the visitor.
      */
     enum class NodeType : int
     {
-      Project, //!< QGIS Project node
-      Layer, //!< Map layer
-      SymbolRule, //!< Rule based symbology or label child rule
-      Layouts, //!< Layout collection
-      PrintLayout, //!< An individual print layout
-      LayoutItem, //!< Individual item in a print layout
-      Report, //!< A QGIS print report
-      ReportHeader, //!< Report header section
-      ReportFooter, //!< Report footer section
+      Project,       //!< QGIS Project node
+      Layer,         //!< Map layer
+      SymbolRule,    //!< Rule based symbology or label child rule
+      Layouts,       //!< Layout collection
+      PrintLayout,   //!< An individual print layout
+      LayoutItem,    //!< Individual item in a print layout
+      Report,        //!< A QGIS print report
+      ReportHeader,  //!< Report header section
+      ReportFooter,  //!< Report footer section
       ReportSection, //!< Report sub section
-      Annotations, //!< Annotations collection
-      Annotation, //!< An individual annotation
+      Annotations,   //!< Annotations collection
+      Annotation,    //!< An individual annotation
     };
 
     /**
@@ -59,19 +57,18 @@ class CORE_EXPORT QgsStyleEntityVisitorInterface
      */
     struct StyleLeaf
     {
-
-      /**
+        /**
        * Constructor for StyleLeaf, visiting the given style \a entity with the specified \a identifier and \a description.
        *
        * Ownership of \a entity is not transferred.
        */
-      StyleLeaf( const QgsStyleEntityInterface *entity, const QString &identifier = QString(), const QString &description = QString() )
-        : identifier( identifier )
-        , description( description )
-        , entity( entity )
-      {}
+        StyleLeaf( const QgsStyleEntityInterface *entity, const QString &identifier = QString(), const QString &description = QString() )
+          : identifier( identifier )
+          , description( description )
+          , entity( entity )
+        {}
 
-      /**
+        /**
        * A string identifying the style entity. The actual value of \a identifier will vary
        * depending on the class being visited. E.g for a categorized renderer, the
        * identifier will be the category ID associated with the symbol.
@@ -82,9 +79,9 @@ class CORE_EXPORT QgsStyleEntityVisitorInterface
        * Note that in some cases where a specific identifier is not available, a generic, untranslated
        * one may be used (e.g. "overview", "grid").
        */
-      QString identifier;
+        QString identifier;
 
-      /**
+        /**
        * A string describing the style entity. The actual value of \a description will vary
        * depending on the class being visited. E.g for a categorized renderer, the
        * description will be the category label associated with the symbol, for a print layout, it will
@@ -95,12 +92,12 @@ class CORE_EXPORT QgsStyleEntityVisitorInterface
        *
        * This value may be a generic, translated value in some cases, e.g. "Grid" or "Overview".
        */
-      QString description;
+        QString description;
 
-      /**
+        /**
        * Reference to style entity being visited.
        */
-      const QgsStyleEntityInterface *entity = nullptr;
+        const QgsStyleEntityInterface *entity = nullptr;
     };
 
     /**
@@ -109,37 +106,35 @@ class CORE_EXPORT QgsStyleEntityVisitorInterface
      */
     struct Node
     {
-
-      /**
+        /**
        * Constructor for Node, visiting the node with the specified \a identifier and \a description.
        */
-      Node( QgsStyleEntityVisitorInterface::NodeType type, const QString &identifier, const QString &description )
-        : type( type )
-        , identifier( identifier )
-        , description( description )
-      {}
+        Node( QgsStyleEntityVisitorInterface::NodeType type, const QString &identifier, const QString &description )
+          : type( type )
+          , identifier( identifier )
+          , description( description )
+        {}
 
-      /**
+        /**
        * Node type.
        */
-      QgsStyleEntityVisitorInterface::NodeType type = QgsStyleEntityVisitorInterface::NodeType::Project;
+        QgsStyleEntityVisitorInterface::NodeType type = QgsStyleEntityVisitorInterface::NodeType::Project;
 
-      /**
+        /**
        * A string identifying the node. The actual value of \a identifier will vary
        * depending on the node being visited. E.g for a rule based renderer, the
        * identifier will be a rule ID. For a project, node identifiers will be
        * layer IDs.
        */
-      QString identifier;
+        QString identifier;
 
-      /**
+        /**
        * A string describing the node. The actual value of \a description will vary
        * depending on the node being visited. E.g for a rule based renderer, the
        * identifier will be a rule label. For a project, node identifiers will be
        * layer names.
        */
-      QString description;
-
+        QString description;
     };
 
     virtual ~QgsStyleEntityVisitorInterface() = default;
@@ -185,7 +180,6 @@ class CORE_EXPORT QgsStyleEntityVisitorInterface
       Q_UNUSED( node )
       return true;
     }
-
 };
 
 #endif // QGSSTYLEENTITYVISITOR_H

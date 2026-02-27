@@ -25,7 +25,6 @@ Represents connections to STAC catalogs.
 %End
   public:
 
-
     QgsStacConnection( const QString &name );
 %Docstring
 Constructor for QgsStacConnection, using the stored settings with the
@@ -45,11 +44,11 @@ details.
 
     struct Data
     {
-      QString url;
-      QString authCfg;
-      QString username;
-      QString password;
-      QgsHttpHeaders httpHeaders;
+        QString url;
+        QString authCfg;
+        QString username;
+        QString password;
+        QgsHttpHeaders httpHeaders;
     };
 
     static QString encodedUri( const Data &conn );

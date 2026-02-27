@@ -139,7 +139,6 @@ call to :py:func:`~QgsPathResolver.setPathPreprocessor`.
 
 
 
-
     static QString setPathWriter( SIP_PYCALLABLE / AllowNone / );
 %Docstring
 Sets a path writer function, which allows for manipulation of paths and

@@ -43,7 +43,6 @@ class CORE_EXPORT QgsSensorManager : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsSensorManager, with the specified \a parent object.
      */
@@ -142,10 +141,8 @@ class CORE_EXPORT QgsSensorManager : public QObject
     void handleSensorErrorOccurred( const QString &errorMessage );
 
   private:
-
     QList<QgsAbstractSensor *> mSensors;
     QMap<QString, QgsAbstractSensor::SensorData> mSensorsData;
-
 };
 
 #endif // QGSSENSORMANAGER_H

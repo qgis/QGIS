@@ -194,9 +194,7 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::create( QDomElement &element, const
   const QDomElement sizeScaleElem = element.firstChildElement( u"sizescale"_s );
   if ( !sizeScaleElem.isNull() && !sizeScaleElem.attribute( u"field"_s ).isEmpty() )
   {
-    convertSymbolSizeScale( r->mSymbol.get(),
-                            QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( u"scalemethod"_s ) ),
-                            sizeScaleElem.attribute( u"field"_s ) );
+    convertSymbolSizeScale( r->mSymbol.get(), QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( u"scalemethod"_s ) ), sizeScaleElem.attribute( u"field"_s ) );
   }
 
   const QDomElement ddsLegendSizeElem = element.firstChildElement( u"data-defined-size-legend"_s );

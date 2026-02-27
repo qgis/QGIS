@@ -24,7 +24,6 @@ Exports QGIS layers to the DXF format.
 #include "qgsdxfexport.h"
 %End
   public:
-
     struct DxfLayer
     {
         DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1, bool buildDDBlocks = DEFAULT_DXF_DATA_DEFINED_BLOCKS, int ddBlocksMaxNumberOfClasses = -1, QString overriddenName = QString() );
@@ -201,7 +200,7 @@ Add layers to export
 .. seealso:: :py:func:`setLayerTitleAsName`
 %End
 
-    ExportResult writeToFile( QIODevice *d, const QString &codec );  //maybe add progress dialog? other parameters (e.g. scale, dpi)?
+    ExportResult writeToFile( QIODevice *d, const QString &codec ); //maybe add progress dialog? other parameters (e.g. scale, dpi)?
 
     const QString feedbackMessage() const;
 %Docstring
@@ -479,7 +478,16 @@ Write circle (as polyline)
 
 %End
 
-    void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor &color, QgsDxfExport::HAlign hali = QgsDxfExport::HAlign::Undefined, QgsDxfExport::VAlign vali = QgsDxfExport::VAlign::Undefined ) /PyName=writeTextV2/;
+    void writeText(
+      const QString &layer,
+      const QString &text,
+      const QgsPoint &pt,
+      double size,
+      double angle,
+      const QColor &color,
+      QgsDxfExport::HAlign hali = QgsDxfExport::HAlign::Undefined,
+      QgsDxfExport::VAlign vali = QgsDxfExport::VAlign::Undefined
+    ) /PyName=writeTextV2/;
 %Docstring
 Write text (TEXT)
 

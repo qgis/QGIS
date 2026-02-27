@@ -36,7 +36,6 @@ class QgsGpsConnection;
 class CORE_EXPORT QgsGpsConnectionRegistry
 {
   public:
-
     QgsGpsConnectionRegistry() = default;
     ~QgsGpsConnectionRegistry();
 

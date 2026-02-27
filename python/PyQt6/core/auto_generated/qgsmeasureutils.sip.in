@@ -26,7 +26,6 @@ Utilities for handling and formatting measurements.
     static const QMetaObject staticMetaObject;
 
   public:
-
     static QString formatAreaForProject( QgsProject *project, double area, Qgis::AreaUnit unit );
 %Docstring
 Formats an ``area`` measurement (with the specified ``unit``) for use
@@ -38,7 +37,6 @@ with a ``project``, respecting the project's area unit settings.
 Formats a ``distance`` measurement (with the specified ``unit``) for use
 with a ``project``, respecting the project's distance unit settings.
 %End
-
 };
 
 

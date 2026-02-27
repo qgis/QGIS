@@ -25,13 +25,12 @@
 using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
-const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsUrl = new QgsSettingsEntryString( u"url"_s, sTreeSensorThingsConnections, QString() ) ;
-const QgsSettingsEntryVariantMap *QgsSensorThingsProviderConnection::settingsHeaders = new QgsSettingsEntryVariantMap( u"http-header"_s, sTreeSensorThingsConnections ) ;
-const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsUsername = new QgsSettingsEntryString( u"username"_s, sTreeSensorThingsConnections ) ;
-const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsPassword = new QgsSettingsEntryString( u"password"_s, sTreeSensorThingsConnections ) ;
-const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsAuthcfg = new QgsSettingsEntryString( u"authcfg"_s, sTreeSensorThingsConnections ) ;
+const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsUrl = new QgsSettingsEntryString( u"url"_s, sTreeSensorThingsConnections, QString() );
+const QgsSettingsEntryVariantMap *QgsSensorThingsProviderConnection::settingsHeaders = new QgsSettingsEntryVariantMap( u"http-header"_s, sTreeSensorThingsConnections );
+const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsUsername = new QgsSettingsEntryString( u"username"_s, sTreeSensorThingsConnections );
+const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsPassword = new QgsSettingsEntryString( u"password"_s, sTreeSensorThingsConnections );
+const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsAuthcfg = new QgsSettingsEntryString( u"authcfg"_s, sTreeSensorThingsConnections );
 ///@endcond
-
 
 
 QgsSensorThingsProviderConnection::QgsSensorThingsProviderConnection( const QString &name )
@@ -43,8 +42,7 @@ QgsSensorThingsProviderConnection::QgsSensorThingsProviderConnection( const QStr
 
 QgsSensorThingsProviderConnection::QgsSensorThingsProviderConnection( const QString &uri, const QVariantMap &configuration )
   : QgsAbstractProviderConnection( uri, configuration )
-{
-}
+{}
 
 void QgsSensorThingsProviderConnection::store( const QString &name ) const
 {
@@ -145,4 +143,3 @@ QString QgsSensorThingsProviderConnection::encodedLayerUri( const QgsSensorThing
 
   return uri.uri( false );
 }
-

@@ -25,7 +25,6 @@ results by priority and match level.
 #include "qgslocatormodel.h"
 %End
   public:
-
     static const int NoGroup;
     static const int UnorderedGroup;
 
@@ -109,7 +108,6 @@ results by priority and match level.
 #include "qgslocatormodel.h"
 %End
   public:
-
     explicit QgsLocatorAutomaticModel( QgsLocator *locator /TransferThis/ );
 %Docstring
 Constructor for QgsLocatorAutomaticModel, linked with the specified
@@ -154,7 +152,6 @@ sorts results by precedence.
 #include "qgslocatormodel.h"
 %End
   public:
-
     explicit QgsLocatorProxyModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLocatorProxyModel, with the specified ``parent``
@@ -163,8 +160,6 @@ object.
     virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

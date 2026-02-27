@@ -192,16 +192,16 @@ void QgsVectorFieldSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderConte
   {
     case Cartesian:
     {
-      destPoint = QPointF( point.x() + mScale * ctx.convertToPainterUnits( xVal, mDistanceUnit, mDistanceMapUnitScale ),
-                           point.y() - mScale * ctx.convertToPainterUnits( yVal, mDistanceUnit, mDistanceMapUnitScale ) );
+      destPoint
+        = QPointF( point.x() + mScale * ctx.convertToPainterUnits( xVal, mDistanceUnit, mDistanceMapUnitScale ), point.y() - mScale * ctx.convertToPainterUnits( yVal, mDistanceUnit, mDistanceMapUnitScale ) );
       break;
     }
 
     case Polar:
     {
       convertPolarToCartesian( xVal, yVal, xComponent, yComponent );
-      destPoint = QPointF( point.x() + mScale * ctx.convertToPainterUnits( xComponent, mDistanceUnit, mDistanceMapUnitScale ),
-                           point.y() - mScale * ctx.convertToPainterUnits( yComponent, mDistanceUnit, mDistanceMapUnitScale ) );
+      destPoint
+        = QPointF( point.x() + mScale * ctx.convertToPainterUnits( xComponent, mDistanceUnit, mDistanceMapUnitScale ), point.y() - mScale * ctx.convertToPainterUnits( yComponent, mDistanceUnit, mDistanceMapUnitScale ) );
       break;
     }
 
@@ -215,8 +215,10 @@ void QgsVectorFieldSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderConte
   if ( !qgsDoubleNear( mapRotation, 0.0 ) && mVectorFieldType != Height )
   {
     const double radians = mapRotation * M_PI / 180.0;
-    destPoint = QPointF( cos( radians ) * ( destPoint.x() - point.x() ) - sin( radians ) * ( destPoint.y() - point.y() ) + point.x(),
-                         sin( radians ) * ( destPoint.x() - point.x() ) + cos( radians ) * ( destPoint.y() - point.y() ) + point.y() );
+    destPoint = QPointF(
+      cos( radians ) * ( destPoint.x() - point.x() ) - sin( radians ) * ( destPoint.y() - point.y() ) + point.x(),
+      sin( radians ) * ( destPoint.x() - point.x() ) + cos( radians ) * ( destPoint.y() - point.y() ) + point.y()
+    );
   }
 
   line << destPoint;
@@ -286,9 +288,8 @@ QVariantMap QgsVectorFieldSymbolLayer::properties() const
 
 bool QgsVectorFieldSymbolLayer::usesMapUnits() const
 {
-  return mDistanceUnit == Qgis::RenderUnit::MapUnits || mDistanceUnit == Qgis::RenderUnit::MetersInMapUnits
-         || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits
-         || mSizeUnit == Qgis::RenderUnit::MapUnits || mSizeUnit == Qgis::RenderUnit::MetersInMapUnits;
+  return mDistanceUnit == Qgis::RenderUnit::MapUnits || mDistanceUnit == Qgis::RenderUnit::MetersInMapUnits || mOffsetUnit == Qgis::RenderUnit::MapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits || mSizeUnit == Qgis::RenderUnit::MapUnits || mSizeUnit == Qgis::RenderUnit::MetersInMapUnits;
 }
 
 void QgsVectorFieldSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
@@ -382,5 +383,3 @@ QColor QgsVectorFieldSymbolLayer::color() const
 {
   return mLineSymbol ? mLineSymbol->color() : mColor;
 }
-
-

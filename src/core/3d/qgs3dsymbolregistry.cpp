@@ -22,8 +22,7 @@
 using namespace Qt::StringLiterals;
 
 Qgs3DSymbolRegistry::Qgs3DSymbolRegistry()
-{
-}
+{}
 
 Qgs3DSymbolRegistry::~Qgs3DSymbolRegistry()
 {

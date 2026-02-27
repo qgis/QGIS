@@ -25,7 +25,6 @@ sides/vertices, a radius and the first vertex.
 #include "qgsregularpolygon.h"
 %End
   public:
-
     enum ConstructionOption /BaseType=IntEnum/
     {
       InscribedCircle,

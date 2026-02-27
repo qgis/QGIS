@@ -23,18 +23,29 @@
 
 using namespace Qt::StringLiterals;
 
-const char *QgsPointCloudExpressionNodeBinaryOperator::BINARY_OPERATOR_TEXT[] =
-{
+const char *QgsPointCloudExpressionNodeBinaryOperator::BINARY_OPERATOR_TEXT[] = {
   // this must correspond (number and order of element) to the declaration of the enum BinaryOperator
-  "OR", "AND",
-  "=", "<>", "<=", ">=", "<", ">",
-  "+", "-", "*", "/", "//", "%", "^"
+  "OR",
+  "AND",
+  "=",
+  "<>",
+  "<=",
+  ">=",
+  "<",
+  ">",
+  "+",
+  "-",
+  "*",
+  "/",
+  "//",
+  "%",
+  "^"
 };
 
-const char *QgsPointCloudExpressionNodeUnaryOperator::UNARY_OPERATOR_TEXT[] =
-{
+const char *QgsPointCloudExpressionNodeUnaryOperator::UNARY_OPERATOR_TEXT[] = {
   // this must correspond (number and order of element) to the declaration of the enum UnaryOperator
-  "NOT", "-"
+  "NOT",
+  "-"
 };
 
 QgsPointCloudExpressionNode::NodeList::~NodeList()
@@ -60,8 +71,10 @@ QString QgsPointCloudExpressionNode::NodeList::dump() const
   bool first = true;
   for ( QgsPointCloudExpressionNode *n : mList )
   {
-    if ( !first ) msg += ", "_L1;
-    else first = false;
+    if ( !first )
+      msg += ", "_L1;
+    else
+      first = false;
     msg += n->dump();
   }
   return msg;
@@ -168,9 +181,9 @@ double QgsPointCloudExpressionNodeBinaryOperator::evalNode( QgsPointCloudExpress
   if ( mOp == boAnd || mOp == boOr )
   {
     if ( mOp == boAnd && vL == 0. )
-      return 0.;  // shortcut -- no need to evaluate right-hand side
+      return 0.; // shortcut -- no need to evaluate right-hand side
     if ( mOp == boOr && vL != 0. )
-      return 1.;  // shortcut -- no need to evaluate right-hand side
+      return 1.; // shortcut -- no need to evaluate right-hand side
   }
 
   double vR = mOpRight->eval( parent, pointIndex );
@@ -636,7 +649,7 @@ QString QgsPointCloudExpressionNodeInOperator::dump() const
   return u"%1 %2 IN (%3)"_s.arg( mNode->dump(), mNotIn ? "NOT" : "", mList->dump() );
 }
 
-std::unique_ptr<QgsPointCloudExpressionNode>  QgsPointCloudExpressionNodeInOperator::clone() const
+std::unique_ptr<QgsPointCloudExpressionNode> QgsPointCloudExpressionNodeInOperator::clone() const
 {
   auto copy = std::make_unique<QgsPointCloudExpressionNodeInOperator>( mNode->clone(), mList->clone(), mNotIn );
   cloneTo( copy.get() );

@@ -36,24 +36,28 @@ class QgsSensorThingsExpansionDefinition;
  */
 class CORE_EXPORT QgsSensorThingsUtils
 {
-
   public:
-
     //! Default page size
-    static constexpr int DEFAULT_PAGE_SIZE = 200; SIP_SKIP
+    static constexpr int DEFAULT_PAGE_SIZE = 200;
+    SIP_SKIP
 
     //! Default limit on number of features fetched
-    static constexpr int DEFAULT_FEATURE_LIMIT = 10000; SIP_SKIP
+    static constexpr int DEFAULT_FEATURE_LIMIT
+      = 10000;
+    SIP_SKIP
 
     //! Default limit on number of expanded features fetched
-    static constexpr int DEFAULT_EXPANSION_LIMIT = 100; SIP_SKIP
+    static constexpr int DEFAULT_EXPANSION_LIMIT
+      = 100;
+    SIP_SKIP
 
     /**
      * Converts a string value to a Qgis::SensorThingsEntity type.
      *
      * Returns Qgis::SensorThingsEntity::Invalid if the string could not be converted to a known entity type.
      */
-    static Qgis::SensorThingsEntity stringToEntity( const QString &type );
+    static Qgis::SensorThingsEntity
+      stringToEntity( const QString &type );
 
     /**
      * Converts a Qgis::SensorThingsEntity \a type to a user-friendly translated string.
@@ -179,7 +183,6 @@ class CORE_EXPORT QgsSensorThingsUtils
      * \since QGIS 3.38
      */
     static QString asQueryString( Qgis::SensorThingsEntity baseType, const QList< QgsSensorThingsExpansionDefinition > &expansions );
-
 };
 
 
@@ -192,15 +195,16 @@ class CORE_EXPORT QgsSensorThingsUtils
 class CORE_EXPORT QgsSensorThingsExpansionDefinition
 {
   public:
-
     /**
      * Constructor for QgsSensorThingsExpansionDefinition, targeting the specified child entity type.
      */
-    QgsSensorThingsExpansionDefinition( Qgis::SensorThingsEntity childEntity = Qgis::SensorThingsEntity::Invalid,
-                                        const QString &orderBy = QString(),
-                                        Qt::SortOrder sortOrder = Qt::SortOrder::AscendingOrder,
-                                        int limit = QgsSensorThingsUtils::DEFAULT_EXPANSION_LIMIT,
-                                        const QString &filter = QString() );
+    QgsSensorThingsExpansionDefinition(
+      Qgis::SensorThingsEntity childEntity = Qgis::SensorThingsEntity::Invalid,
+      const QString &orderBy = QString(),
+      Qt::SortOrder sortOrder = Qt::SortOrder::AscendingOrder,
+      int limit = QgsSensorThingsUtils::DEFAULT_EXPANSION_LIMIT,
+      const QString &filter = QString()
+    );
 
     /**
      * Returns an expansion definition for the specified \a entity type, populated with reasonable
@@ -318,6 +322,7 @@ class CORE_EXPORT QgsSensorThingsExpansionDefinition
     bool operator!=( const QgsSensorThingsExpansionDefinition &other ) const;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     if ( !sipCpp->isValid() )
@@ -350,16 +355,19 @@ class CORE_EXPORT QgsSensorThingsExpansionDefinition
       sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     }
     % End
+// clang-format on
 #endif
 
-  private:
+    // clang-format off
+    private:
+    // clang-format on
 
-    Qgis::SensorThingsEntity mChildEntity = Qgis::SensorThingsEntity::Invalid;
+    Qgis::SensorThingsEntity mChildEntity
+    = Qgis::SensorThingsEntity::Invalid;
     QString mOrderBy;
     Qt::SortOrder mSortOrder = Qt::SortOrder::AscendingOrder;
     int mLimit = QgsSensorThingsUtils::DEFAULT_EXPANSION_LIMIT;
     QString mFilter;
-
 };
 Q_DECLARE_METATYPE( QgsSensorThingsExpansionDefinition )
 

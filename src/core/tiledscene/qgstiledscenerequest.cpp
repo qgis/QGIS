@@ -20,7 +20,6 @@
 QgsTiledSceneRequest::QgsTiledSceneRequest() = default;
 
 
-
 void QgsTiledSceneRequest::setFeedback( QgsFeedback *feedback )
 {
   mFeedback = feedback;

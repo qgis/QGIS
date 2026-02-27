@@ -26,7 +26,6 @@ correct order across all contained edit buffers.
 #include "qgsvectorlayereditbuffergroup.h"
 %End
   public:
-
     explicit QgsVectorLayerEditBufferGroup( QObject *parent = 0 );
 %Docstring
 Constructor for :py:class:`QgsEditBufferGroup`

@@ -29,9 +29,7 @@ using namespace Qt::StringLiterals;
 
 QgsProjectTimeSettings::QgsProjectTimeSettings( QObject *parent )
   : QObject( parent )
-{
-
-}
+{}
 
 void QgsProjectTimeSettings::reset()
 {
@@ -65,7 +63,6 @@ bool QgsProjectTimeSettings::readXml( const QDomElement &element, const QgsReadW
     const QDateTime endDate = QDateTime::fromString( end.toElement().text(), Qt::ISODate );
 
     setTemporalRange( QgsDateTimeRange( beginDate, endDate ) );
-
   }
 
   mTimeStepUnit = QgsUnitTypes::decodeTemporalUnit( element.attribute( u"timeStepUnit"_s, QgsUnitTypes::encodeUnit( Qgis::TemporalUnit::Hours ) ) );
@@ -103,8 +100,8 @@ QDomElement QgsProjectTimeSettings::writeXml( QDomDocument &document, const QgsR
   element.setAttribute( u"timeStepUnit"_s, QgsUnitTypes::encodeUnit( mTimeStepUnit ) );
   element.setAttribute( u"timeStep"_s, qgsDoubleToString( mTimeStep ) );
   element.setAttribute( u"frameRate"_s, qgsDoubleToString( mFrameRate ) );
-  element.setAttribute( u"cumulativeTemporalRange"_s,  mCumulativeTemporalRange ? 1 : 0 );
-  element.setAttribute( u"totalMovieFrames"_s,  mTotalMovieFrames );
+  element.setAttribute( u"cumulativeTemporalRange"_s, mCumulativeTemporalRange ? 1 : 0 );
+  element.setAttribute( u"totalMovieFrames"_s, mTotalMovieFrames );
 
   return element;
 }
@@ -158,4 +155,3 @@ void QgsProjectTimeSettings::setTotalMovieFrames( long long frames )
 {
   mTotalMovieFrames = frames;
 }
-

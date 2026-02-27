@@ -70,7 +70,6 @@ class CORE_EXPORT QgsStacFetchMoreItem : public QgsDataItem
 
     bool handleDoubleClick() override;
     QVariant sortKey() const override { return u"3"_s; }
-
 };
 
 /**

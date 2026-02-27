@@ -47,7 +47,9 @@ QgsTextBlockFormat::QgsTextBlockFormat( const QTextBlockFormat &format )
   : mBackgroundBrush( format.background() )
   , mBackgroundPath( format.stringProperty( QTextFormat::BackgroundImageUrl ) )
   , mLineHeight( format.hasProperty( QTextFormat::LineHeight ) && format.lineHeightType() != QTextBlockFormat::ProportionalHeight ? format.lineHeight() : std::numeric_limits< double >::quiet_NaN() )
-  , mLineHeightPercentage( format.hasProperty( QTextFormat::LineHeight ) && format.lineHeightType() == QTextBlockFormat::ProportionalHeight ? ( format.lineHeight() / 100.0 ) : std::numeric_limits< double >::quiet_NaN() )
+  , mLineHeightPercentage(
+      format.hasProperty( QTextFormat::LineHeight ) && format.lineHeightType() == QTextBlockFormat::ProportionalHeight ? ( format.lineHeight() / 100.0 ) : std::numeric_limits< double >::quiet_NaN()
+    )
 {
   mHorizontalAlign = convertTextBlockFormatAlign( format, mHasHorizontalAlignSet );
 
@@ -102,9 +104,7 @@ void QgsTextBlockFormat::setLineHeightPercentage( double height )
 }
 
 void QgsTextBlockFormat::updateFontForFormat( QFont &, const QgsRenderContext &, const double ) const
-{
-
-}
+{}
 
 bool QgsTextBlockFormat::hasBackground() const
 {

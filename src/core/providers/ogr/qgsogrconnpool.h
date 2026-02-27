@@ -26,7 +26,7 @@
 
 using namespace Qt::StringLiterals;
 
-#define CPL_SUPRESS_CPLUSPLUS  //#spellok
+#define CPL_SUPRESS_CPLUSPLUS //#spellok
 #include <gdal.h>
 #include "qgis_sip.h"
 #include <cpl_string.h>
@@ -35,9 +35,9 @@ using namespace Qt::StringLiterals;
 
 struct QgsOgrConn
 {
-  QString path;
-  GDALDatasetH ds;
-  bool valid;
+    QString path;
+    GDALDatasetH ds;
+    bool valid;
 };
 
 inline QString qgsConnectionPool_ConnectionToName( QgsOgrConn *c )
@@ -50,15 +50,12 @@ inline void qgsConnectionPool_ConnectionCreate( const QString &connInfo, QgsOgrC
   c = new QgsOgrConn;
 
   const QVariantMap parts = QgsOgrProviderMetadata().decodeUri( connInfo );
-  const QString fullPath = parts.value( u"vsiPrefix"_s ).toString()
-                           + parts.value( u"path"_s ).toString()
-                           + parts.value( u"vsiSuffix"_s ).toString();
+  const QString fullPath = parts.value( u"vsiPrefix"_s ).toString() + parts.value( u"path"_s ).toString() + parts.value( u"vsiSuffix"_s ).toString();
   const QStringList openOptions = parts.value( u"openOptions"_s ).toStringList();
   char **papszOpenOptions = nullptr;
   for ( const QString &option : openOptions )
   {
-    papszOpenOptions = CSLAddString( papszOpenOptions,
-                                     option.toUtf8().constData() );
+    papszOpenOptions = CSLAddString( papszOpenOptions, option.toUtf8().constData() );
   }
   c->ds = QgsOgrProviderUtils::GDALOpenWrapper( fullPath.toUtf8().constData(), false, papszOpenOptions, nullptr );
   CSLDestroy( papszOpenOptions );
@@ -88,7 +85,7 @@ class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgr
 
   public:
     explicit QgsOgrConnPoolGroup( const QString &name )
-      : QgsConnectionPoolGroup<QgsOgrConn*>( name )
+      : QgsConnectionPoolGroup<QgsOgrConn *>( name )
     {
       initTimer<QgsOgrConnPoolGroup>( this );
     }
@@ -110,14 +107,12 @@ class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgr
 
   private:
     int mRefCount = 0;
-
 };
 
 //! Ogr connection pool - singleton
 class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn *, QgsOgrConnPoolGroup>
 {
   public:
-
     // NOTE: first call to this function initializes the
     //       singleton.
     // WARNING: concurrent call from multiple threads may result

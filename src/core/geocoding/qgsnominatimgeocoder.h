@@ -35,9 +35,7 @@
 */
 class CORE_EXPORT QgsNominatimGeocoder : public QgsGeocoderInterface
 {
-
   public:
-
     /**
      * Constructor for QgsNominatimGeocoder.
      *
@@ -110,7 +108,6 @@ class CORE_EXPORT QgsNominatimGeocoder : public QgsGeocoderInterface
     void setCountryCodes( const QString &countryCodes );
 
   private:
-
     QString mCountryCodes;
     QString mEndpoint;
     double mRequestsPerSecond = 1;
@@ -118,7 +115,6 @@ class CORE_EXPORT QgsNominatimGeocoder : public QgsGeocoderInterface
     static QMutex sMutex;
 
     static qint64 sLastRequestTimestamp;
-
 };
 
 #endif // QGSNOMINATIMGEOCODER_H

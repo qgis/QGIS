@@ -36,7 +36,6 @@ in QGIS relationships.
 #include "qgsweakrelation.h"
 %End
   public:
-
     enum WeakRelationType /BaseType=IntEnum/
     {
       Referencing,
@@ -48,18 +47,19 @@ in QGIS relationships.
 Default constructor for an invalid relation.
 %End
 
-    QgsWeakRelation( const QString &relationId,
-                     const QString &relationName,
-                     const Qgis::RelationshipStrength strength,
-                     const QString &referencingLayerId,
-                     const QString &referencingLayerName,
-                     const QString &referencingLayerSource,
-                     const QString &referencingLayerProviderKey,
-                     const QString &referencedLayerId,
-                     const QString &referencedLayerName,
-                     const QString &referencedLayerSource,
-                     const QString &referencedLayerProviderKey
-                   );
+    QgsWeakRelation(
+      const QString &relationId,
+      const QString &relationName,
+      const Qgis::RelationshipStrength strength,
+      const QString &referencingLayerId,
+      const QString &referencingLayerName,
+      const QString &referencingLayerSource,
+      const QString &referencingLayerProviderKey,
+      const QString &referencedLayerId,
+      const QString &referencedLayerName,
+      const QString &referencedLayerSource,
+      const QString &referencedLayerProviderKey
+    );
 %Docstring
 Creates a QgsWeakRelation.
 

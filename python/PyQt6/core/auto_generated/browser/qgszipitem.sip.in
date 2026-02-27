@@ -38,7 +38,7 @@ Constructor
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    virtual QVector<QgsDataItem *> createChildren();
+        virtual QVector<QgsDataItem *> createChildren();
 
     QStringList getZipFileList();
 
@@ -71,9 +71,6 @@ Creates a new data item from the specified path.
     static QIcon iconZip();
 
 };
-
-
-
 
 
 /************************************************************************

@@ -30,7 +30,6 @@
 class CORE_EXPORT QgsRay3D
 {
   public:
-
     /**
      * Constructor
      * \note : the direction is automatically normalized

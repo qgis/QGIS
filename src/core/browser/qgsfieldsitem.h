@@ -41,7 +41,6 @@ class CORE_EXPORT QgsFieldsItem : public QgsDataItem
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsFieldsItem, with the specified \a parent item.
      *
@@ -52,24 +51,21 @@ class CORE_EXPORT QgsFieldsItem : public QgsDataItem
      * The \a providerKey string can be used to specify the key for the QgsDataItemProvider that created this item.
      * The \a schema and \a tableName are used to retrieve the layer and field information from the \a connectionUri.
      */
-    QgsFieldsItem( QgsDataItem *parent SIP_TRANSFERTHIS,
-                   const QString &path,
-                   const QString &connectionUri,
-                   const QString &providerKey,
-                   const QString &schema,
-                   const QString &tableName );
+    QgsFieldsItem( QgsDataItem *parent SIP_TRANSFERTHIS, const QString &path, const QString &connectionUri, const QString &providerKey, const QString &schema, const QString &tableName );
 
     ~QgsFieldsItem() override;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = u"<QgsFieldsItem: %1>"_s.arg( sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-    QVector<QgsDataItem *> createChildren() override;
+        QVector<QgsDataItem *> createChildren() override;
 
     QIcon icon() override;
 
@@ -116,7 +112,6 @@ class CORE_EXPORT QgsFieldsItem : public QgsDataItem
     bool canRenameFields() const { return mCanRename; }
 
   private:
-
     QString mSchema;
     QString mTableName;
     QString mConnectionUri;
@@ -138,25 +133,25 @@ class CORE_EXPORT QgsFieldItem : public QgsDataItem
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsFieldItem, with the specified \a parent item and \a field.
      * \note parent item must be a QgsFieldsItem
      */
-    QgsFieldItem( QgsDataItem *parent SIP_TRANSFERTHIS,
-                  const QgsField &field );
+    QgsFieldItem( QgsDataItem *parent SIP_TRANSFERTHIS, const QgsField &field );
 
     ~QgsFieldItem() override;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = u"<QgsFieldItem: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-    QIcon icon() override;
+        QIcon icon() override;
 
     /**
      * Returns the field definition.
@@ -168,11 +163,7 @@ class CORE_EXPORT QgsFieldItem : public QgsDataItem
     bool equal( const QgsDataItem *other ) override;
 
   private:
-
     const QgsField mField;
-
 };
 
 #endif // QGSFIELDSITEM_H
-
-

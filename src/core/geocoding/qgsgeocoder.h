@@ -35,13 +35,11 @@ class QgsGeocoderContext;
 */
 class CORE_EXPORT QgsGeocoderInterface
 {
-
   public:
-
     //! Capability flags for the geocoder.
     enum class Flag SIP_ENUM_BASETYPE( IntFlag )
     {
-      GeocodesStrings = 1 << 0, //!< Can geocode string input values
+      GeocodesStrings = 1 << 0,  //!< Can geocode string input values
       GeocodesFeatures = 1 << 1, //!< Can geocode QgsFeature input values
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -88,7 +86,6 @@ class CORE_EXPORT QgsGeocoderInterface
      * The optional \a feedback argument can be used to provider cancellation support.
      */
     virtual QList< QgsGeocoderResult > geocodeString( const QString &string, const QgsGeocoderContext &context, QgsFeedback *feedback = nullptr ) const;
-
 };
 
 #endif // QGSGEOCODER_H

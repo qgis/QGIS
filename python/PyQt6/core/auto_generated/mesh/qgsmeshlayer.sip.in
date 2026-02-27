@@ -80,11 +80,9 @@ provider.
 #include "qgsmeshlayer.h"
 %End
   public:
-
     struct LayerOptions
     {
-
-      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext( ) );
+        explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() );
 %Docstring
 Constructor for LayerOptions with optional ``transformContext``.
 
@@ -93,15 +91,16 @@ Constructor for LayerOptions with optional ``transformContext``.
    transformContext argument was added in QGIS 3.8
 %End
 
-      QgsCoordinateTransformContext transformContext;
+        QgsCoordinateTransformContext transformContext;
 
-      bool loadDefaultStyle;
+        bool loadDefaultStyle;
 
-      bool skipCrsValidation;
+        bool skipCrsValidation;
     };
 
-    explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = QStringLiteral( "mesh_memory" ),
-                           const QgsMeshLayer::LayerOptions &options = QgsMeshLayer::LayerOptions() );
+    explicit QgsMeshLayer(
+      const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = QStringLiteral( "mesh_memory" ), const QgsMeshLayer::LayerOptions &options = QgsMeshLayer::LayerOptions()
+    );
 %Docstring
 Constructor - creates a mesh layer
 
@@ -126,7 +125,7 @@ connect to and access the data.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    virtual QgsMeshDataProvider *dataProvider();
+      virtual QgsMeshDataProvider *dataProvider();
 
     virtual QgsMeshLayer *clone() const /Factory/;
 
@@ -139,10 +138,10 @@ connect to and access the data.
     virtual QString profileSourceName() const;
     virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) /Factory/;
 
-     virtual bool readSymbology( const QDomNode &node, QString &errorMessage,
-                        QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
-     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
-                         const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const;
+    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+
+    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const;
+
     virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const;
 
     virtual bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
@@ -1058,8 +1057,9 @@ Returns the list of extra dataset URIs associated with this layer
 .. versionadded:: 4.0
 %End
 
-    virtual QString loadNamedStyle( const QString &uri, bool &resultFlag /Out/, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories, Qgis::LoadStyleFlags flags = Qgis::LoadStyleFlags() );
-
+     virtual QString loadNamedStyle(
+      const QString &uri, bool &resultFlag /Out/, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories, Qgis::LoadStyleFlags flags = Qgis::LoadStyleFlags()
+    );
 
   public slots:
 

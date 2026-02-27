@@ -49,7 +49,6 @@ class QgsMeshSpatialIndexData;
 class CORE_EXPORT QgsMeshSpatialIndex
 {
   public:
-
     /**
      * Constructor for QgsSpatialIndex. Creates an empty R-tree index.
      */

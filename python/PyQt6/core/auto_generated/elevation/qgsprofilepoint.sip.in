@@ -22,7 +22,6 @@ Encapsulates a point on a distance-elevation profile.
 #include "qgsprofilepoint.h"
 %End
   public:
-
     QgsProfilePoint();
 %Docstring
 Constructor for an empty point.
@@ -76,8 +75,8 @@ explicitly filled in.
     SIP_PYOBJECT __repr__();
 %MethodCode
     const QString str = sipCpp->isEmpty()
-                        ? QStringLiteral( "<QgsProfilePoint: EMPTY>" )
-                        : QStringLiteral( "<QgsProfilePoint: %1, %2>" ).arg( sipCpp->distance() ).arg( sipCpp->elevation() );
+                          ? QStringLiteral( "<QgsProfilePoint: EMPTY>" )
+                          : QStringLiteral( "<QgsProfilePoint: %1, %2>" ).arg( sipCpp->distance() ).arg( sipCpp->elevation() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
@@ -102,7 +101,6 @@ explicitly filled in.
       PyErr_SetString( PyExc_IndexError, msg.toLatin1().constData() );
     }
 %End
-
 
 };
 

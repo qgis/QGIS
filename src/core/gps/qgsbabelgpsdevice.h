@@ -35,7 +35,6 @@
 class CORE_EXPORT QgsBabelGpsDeviceFormat : public QgsAbstractBabelFormat
 {
   public:
-
     QgsBabelGpsDeviceFormat() = default;
 
     /**
@@ -48,20 +47,19 @@ class CORE_EXPORT QgsBabelGpsDeviceFormat : public QgsAbstractBabelFormat
      * \param trackDownloadCommand command for downloading tracks from device
      * \param trackUploadCommand command for uploading tracks to device
      */
-    QgsBabelGpsDeviceFormat( const QString &waypointDownloadCommand,
-                             const QString &waypointUploadCommand,
-                             const QString &routeDownloadCommand,
-                             const QString &routeUploadCommand,
-                             const QString &trackDownloadCommand,
-                             const QString &trackUploadCommand );
+    QgsBabelGpsDeviceFormat(
+      const QString &waypointDownloadCommand,
+      const QString &waypointUploadCommand,
+      const QString &routeDownloadCommand,
+      const QString &routeUploadCommand,
+      const QString &trackDownloadCommand,
+      const QString &trackUploadCommand
+    );
 
-    QStringList importCommand( const QString &babel, Qgis::GpsFeatureType type, const QString &in, const QString &out,
-                               Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const override;
-    QStringList exportCommand( const QString &babel, Qgis::GpsFeatureType type, const QString &in, const QString &out,
-                               Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const override;
+    QStringList importCommand( const QString &babel, Qgis::GpsFeatureType type, const QString &in, const QString &out, Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const override;
+    QStringList exportCommand( const QString &babel, Qgis::GpsFeatureType type, const QString &in, const QString &out, Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const override;
 
   private:
-
     QStringList mWaypointDownloadCommand;
     QStringList mWaypointUploadCommand;
     QStringList mRouteDownloadCommand;

@@ -162,8 +162,7 @@ bool QgsLayoutPageCollection::hasUniformPageSizes() const
       size = pageSize;
     else
     {
-      if ( !qgsDoubleNear( pageSize.width(), size.width(), 0.01 )
-           || !qgsDoubleNear( pageSize.height(), size.height(), 0.01 ) )
+      if ( !qgsDoubleNear( pageSize.width(), size.width(), 0.01 ) || !qgsDoubleNear( pageSize.height(), size.height(), 0.01 ) )
         return false;
     }
   }
@@ -659,7 +658,7 @@ void QgsLayoutPageCollection::insertPage( QgsLayoutItemPage *page, int beforePag
   }
 
   endPageSizeChange();
-  if ( ! mBlockUndoCommands )
+  if ( !mBlockUndoCommands )
   {
     mLayout->undoStack()->endCommand();
     mLayout->undoStack()->endMacro();
@@ -693,7 +692,7 @@ void QgsLayoutPageCollection::deletePage( int pageNumber )
   }
 
   endPageSizeChange();
-  if ( ! mBlockUndoCommands )
+  if ( !mBlockUndoCommands )
   {
     mLayout->undoStack()->endCommand();
     mLayout->undoStack()->endMacro();
@@ -744,7 +743,7 @@ void QgsLayoutPageCollection::clear()
     mLayout->undoStack()->beginMacro( tr( "Remove Pages" ) );
     mLayout->undoStack()->beginCommand( this, tr( "Remove Pages" ) );
   }
-  for ( int i = mPages.count() - 1;  i >= 0; --i )
+  for ( int i = mPages.count() - 1; i >= 0; --i )
   {
     emit pageAboutToBeRemoved( i );
     mPages.takeAt( i )->deleteLater();
@@ -772,4 +771,3 @@ void QgsLayoutPageCollection::createDefaultPageStyleSymbol()
   properties.insert( u"joinstyle"_s, u"miter"_s );
   mPageStyleSymbol = QgsFillSymbol::createSimple( properties );
 }
-

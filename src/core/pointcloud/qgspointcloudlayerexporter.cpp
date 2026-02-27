@@ -142,11 +142,8 @@ void QgsPointCloudLayerExporter::setAttributes( const QStringList &attributeList
   for ( const QgsPointCloudAttribute &attribute : allAttributes )
   {
     // Don't add x, y, z or duplicate attributes
-    if ( attribute.name().compare( 'X'_L1, Qt::CaseInsensitive ) &&
-         attribute.name().compare( 'Y'_L1, Qt::CaseInsensitive ) &&
-         attribute.name().compare( 'Z'_L1, Qt::CaseInsensitive ) &&
-         attributeList.contains( attribute.name() ) &&
-         ! mRequestedAttributes.contains( attribute.name() ) )
+    if ( attribute.name().compare( 'X'_L1, Qt::CaseInsensitive ) && attribute.name().compare( 'Y'_L1, Qt::CaseInsensitive ) && attribute.name().compare( 'Z'_L1, Qt::CaseInsensitive )
+         && attributeList.contains( attribute.name() ) && !mRequestedAttributes.contains( attribute.name() ) )
     {
       mRequestedAttributes.append( attribute.name() );
     }
@@ -171,10 +168,8 @@ const QgsPointCloudAttributeCollection QgsPointCloudLayerExporter::requestedAttr
   for ( const QgsPointCloudAttribute &attribute : allAttributes )
   {
     // For this collection we also need x, y, z apart from the requested attributes
-    if ( attribute.name().compare( 'X'_L1, Qt::CaseInsensitive ) ||
-         attribute.name().compare( 'Y'_L1, Qt::CaseInsensitive ) ||
-         attribute.name().compare( 'Z'_L1, Qt::CaseInsensitive ) ||
-         mRequestedAttributes.contains( attribute.name(), Qt::CaseInsensitive ) )
+    if ( attribute.name().compare( 'X'_L1, Qt::CaseInsensitive ) || attribute.name().compare( 'Y'_L1, Qt::CaseInsensitive ) || attribute.name().compare( 'Z'_L1, Qt::CaseInsensitive )
+         || mRequestedAttributes.contains( attribute.name(), Qt::CaseInsensitive ) )
     {
       requestAttributes.push_back( attribute );
     }
@@ -262,8 +257,7 @@ void QgsPointCloudLayerExporter::doExport()
     }
 
     case ExportFormat::Csv:
-      layerCreationOptions << u"GEOMETRY=AS_XYZ"_s
-                           << u"SEPARATOR=COMMA"_s; // just in case ogr changes the default lco
+      layerCreationOptions << u"GEOMETRY=AS_XYZ"_s << u"SEPARATOR=COMMA"_s; // just in case ogr changes the default lco
       [[fallthrough]];
     case ExportFormat::Gpkg:
     case ExportFormat::Dxf:
@@ -328,11 +322,8 @@ QgsMapLayer *QgsPointCloudLayerExporter::takeExportedLayer()
 
 void QgsPointCloudLayerExporter::ExporterBase::run()
 {
-  QgsRectangle geometryFilterRectangle( -std::numeric_limits<double>::infinity(),
-                                        -std::numeric_limits<double>::infinity(),
-                                        std::numeric_limits<double>::infinity(),
-                                        std::numeric_limits<double>::infinity(),
-                                        false );
+  QgsRectangle
+    geometryFilterRectangle( -std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(), std::numeric_limits<double>::infinity(), std::numeric_limits<double>::infinity(), false );
   if ( mParent->mFilterGeometryEngine )
   {
     const QgsAbstractGeometry *envelope = mParent->mFilterGeometryEngine->envelope();
@@ -349,9 +340,8 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
     QgsPointCloudNode node = mParent->mIndex.getNode( queue.front() );
     queue.pop_front();
     const QgsBox3D nodeBounds = node.bounds();
-    if ( mParent->mExtent.intersects( nodeBounds.toRectangle() ) &&
-         mParent->mZRange.overlaps( { nodeBounds.zMinimum(), nodeBounds.zMaximum() } ) &&
-         geometryFilterRectangle.intersects( nodeBounds.toRectangle() ) )
+    if ( mParent->mExtent.intersects( nodeBounds.toRectangle() ) && mParent->mZRange.overlaps( { nodeBounds.zMinimum(), nodeBounds.zMaximum() } )
+         && geometryFilterRectangle.intersects( nodeBounds.toRectangle() ) )
     {
       pointCount += node.pointCount();
       nodes.push_back( node.id() );
@@ -382,9 +372,7 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
     const QgsPointCloudAttribute::DataType zType = attributesCollection.find( u"Z"_s, zOffset )->type();
     for ( int i = 0; i < count; ++i )
     {
-
-      if ( mParent->mFeedback &&
-           i % 1000 == 0 )
+      if ( mParent->mFeedback && i % 1000 == 0 )
       {
         if ( pointsToExport > 0 )
         {
@@ -401,15 +389,8 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
         break;
 
       double x, y, z;
-      QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize,
-                                           xOffset, xType,
-                                           yOffset, yType,
-                                           zOffset, zType,
-                                           scale, offset,
-                                           x, y, z );
-      if ( ! mParent->mZRange.contains( z ) ||
-           ! mParent->mExtent.contains( x, y ) ||
-           ( mParent->mFilterGeometryEngine && ! mParent->mFilterGeometryEngine->contains( x, y ) ) )
+      QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, scale, offset, x, y, z );
+      if ( !mParent->mZRange.contains( z ) || !mParent->mExtent.contains( x, y ) || ( mParent->mFilterGeometryEngine && !mParent->mFilterGeometryEngine->contains( x, y ) ) )
       {
         continue;
       }
@@ -454,7 +435,7 @@ void QgsPointCloudLayerExporter::ExporterMemory::handlePoint( double x, double y
   QgsAttributes featureAttributes;
   for ( const QString &attribute : std::as_const( mParent->mRequestedAttributes ) )
   {
-    const double val = map[ attribute ].toDouble();
+    const double val = map[attribute].toDouble();
     featureAttributes.append( val );
   }
   feature.setAttributes( featureAttributes );
@@ -466,7 +447,7 @@ void QgsPointCloudLayerExporter::ExporterMemory::handleNode()
   QgsVectorLayer *vl = qgis::down_cast<QgsVectorLayer *>( mParent->mMemoryLayer );
   if ( vl )
   {
-    if ( ! vl->dataProvider()->addFeatures( mFeatures ) )
+    if ( !vl->dataProvider()->addFeatures( mFeatures ) )
     {
       mParent->setLastError( vl->dataProvider()->lastError() );
     }
@@ -475,9 +456,7 @@ void QgsPointCloudLayerExporter::ExporterMemory::handleNode()
 }
 
 void QgsPointCloudLayerExporter::ExporterMemory::handleAll()
-{
-
-}
+{}
 
 //
 // ExporterVector
@@ -503,7 +482,7 @@ void QgsPointCloudLayerExporter::ExporterVector::handlePoint( double x, double y
   QgsAttributes featureAttributes;
   for ( const QString &attribute : std::as_const( mParent->mRequestedAttributes ) )
   {
-    const double val = map[ attribute ].toDouble();
+    const double val = map[attribute].toDouble();
     featureAttributes.append( val );
   }
   feature.setAttributes( featureAttributes );
@@ -512,7 +491,7 @@ void QgsPointCloudLayerExporter::ExporterVector::handlePoint( double x, double y
 
 void QgsPointCloudLayerExporter::ExporterVector::handleNode()
 {
-  if ( ! mParent->mVectorSink->addFeatures( mFeatures ) )
+  if ( !mParent->mVectorSink->addFeatures( mFeatures ) )
   {
     mParent->setLastError( mParent->mVectorSink->lastError() );
   }
@@ -520,9 +499,7 @@ void QgsPointCloudLayerExporter::ExporterVector::handleNode()
 }
 
 void QgsPointCloudLayerExporter::ExporterVector::handleAll()
-{
-
-}
+{}
 
 //
 // ExporterPdal
@@ -596,48 +573,44 @@ void QgsPointCloudLayerExporter::ExporterPdal::handlePoint( double x, double y, 
   mView->setField( pdal::Dimension::Id::Z, pointNumber, z );
 
 
-  mView->setField( pdal::Dimension::Id::Classification, pointNumber, map[ u"Classification"_s ].toInt() );
-  mView->setField( pdal::Dimension::Id::Intensity, pointNumber, map[ u"Intensity"_s ].toInt() );
-  mView->setField( pdal::Dimension::Id::ReturnNumber, pointNumber, map[ u"ReturnNumber"_s ].toInt() );
-  mView->setField( pdal::Dimension::Id::NumberOfReturns, pointNumber, map[ u"NumberOfReturns"_s ].toInt() );
-  mView->setField( pdal::Dimension::Id::ScanDirectionFlag, pointNumber, map[ u"ScanDirectionFlag"_s ].toInt() );
-  mView->setField( pdal::Dimension::Id::EdgeOfFlightLine, pointNumber, map[ u"EdgeOfFlightLine"_s ].toInt() );
-  mView->setField( pdal::Dimension::Id::ScanAngleRank, pointNumber, map[ u"ScanAngleRank"_s ].toFloat() );
-  mView->setField( pdal::Dimension::Id::UserData, pointNumber, map[ u"UserData"_s ].toInt() );
-  mView->setField( pdal::Dimension::Id::PointSourceId, pointNumber, map[ u"PointSourceId"_s ].toInt() );
+  mView->setField( pdal::Dimension::Id::Classification, pointNumber, map[u"Classification"_s].toInt() );
+  mView->setField( pdal::Dimension::Id::Intensity, pointNumber, map[u"Intensity"_s].toInt() );
+  mView->setField( pdal::Dimension::Id::ReturnNumber, pointNumber, map[u"ReturnNumber"_s].toInt() );
+  mView->setField( pdal::Dimension::Id::NumberOfReturns, pointNumber, map[u"NumberOfReturns"_s].toInt() );
+  mView->setField( pdal::Dimension::Id::ScanDirectionFlag, pointNumber, map[u"ScanDirectionFlag"_s].toInt() );
+  mView->setField( pdal::Dimension::Id::EdgeOfFlightLine, pointNumber, map[u"EdgeOfFlightLine"_s].toInt() );
+  mView->setField( pdal::Dimension::Id::ScanAngleRank, pointNumber, map[u"ScanAngleRank"_s].toFloat() );
+  mView->setField( pdal::Dimension::Id::UserData, pointNumber, map[u"UserData"_s].toInt() );
+  mView->setField( pdal::Dimension::Id::PointSourceId, pointNumber, map[u"PointSourceId"_s].toInt() );
 
   if ( mPointFormat == 6 || mPointFormat == 7 || mPointFormat == 8 || mPointFormat == 9 || mPointFormat == 10 )
   {
-    mView->setField( pdal::Dimension::Id::ScanChannel, pointNumber, map[ u"ScannerChannel"_s ].toInt() );
-    const int classificationFlags = ( map[ u"Synthetic"_s ].toInt() & 0x01 ) << 0 |
-                                    ( map[ u"KeyPoint"_s ].toInt() & 0x01 ) << 1 |
-                                    ( map[ u"Withheld"_s ].toInt() & 0x01 ) << 2 |
-                                    ( map[ u"Overlap"_s ].toInt() & 0x01 ) << 3;
+    mView->setField( pdal::Dimension::Id::ScanChannel, pointNumber, map[u"ScannerChannel"_s].toInt() );
+    const int classificationFlags = ( map[u"Synthetic"_s].toInt() & 0x01 ) << 0 | ( map[u"KeyPoint"_s].toInt() & 0x01 ) << 1 | ( map[u"Withheld"_s].toInt() & 0x01 ) << 2
+                                    | ( map[u"Overlap"_s].toInt() & 0x01 ) << 3;
     mView->setField( pdal::Dimension::Id::ClassFlags, pointNumber, classificationFlags );
   }
 
   if ( mPointFormat != 0 && mPointFormat != 2 )
   {
-    mView->setField( pdal::Dimension::Id::GpsTime, pointNumber, map[ u"GpsTime"_s ].toDouble() );
+    mView->setField( pdal::Dimension::Id::GpsTime, pointNumber, map[u"GpsTime"_s].toDouble() );
   }
 
   if ( mPointFormat == 2 || mPointFormat == 3 || mPointFormat == 5 || mPointFormat == 7 || mPointFormat == 8 || mPointFormat == 10 )
   {
-    mView->setField( pdal::Dimension::Id::Red, pointNumber, map[ u"Red"_s ].toInt() );
-    mView->setField( pdal::Dimension::Id::Green, pointNumber, map[ u"Green"_s ].toInt() );
-    mView->setField( pdal::Dimension::Id::Blue, pointNumber, map[ u"Blue"_s ].toInt() );
+    mView->setField( pdal::Dimension::Id::Red, pointNumber, map[u"Red"_s].toInt() );
+    mView->setField( pdal::Dimension::Id::Green, pointNumber, map[u"Green"_s].toInt() );
+    mView->setField( pdal::Dimension::Id::Blue, pointNumber, map[u"Blue"_s].toInt() );
   }
 
   if ( mPointFormat == 8 || mPointFormat == 10 )
   {
-    mView->setField( pdal::Dimension::Id::Infrared, pointNumber, map[ u"Infrared"_s ].toInt() );
+    mView->setField( pdal::Dimension::Id::Infrared, pointNumber, map[u"Infrared"_s].toInt() );
   }
 }
 
 void QgsPointCloudLayerExporter::ExporterPdal::handleNode()
-{
-
-}
+{}
 
 void QgsPointCloudLayerExporter::ExporterPdal::handleAll()
 {
@@ -663,8 +636,7 @@ QgsPointCloudLayerExporterTask::QgsPointCloudLayerExporterTask( QgsPointCloudLay
   : QgsTask( tr( "Exporting point cloud" ), QgsTask::CanCancel )
   , mExp( exporter )
   , mOwnedFeedback( new QgsFeedback() )
-{
-}
+{}
 
 void QgsPointCloudLayerExporterTask::cancel()
 {

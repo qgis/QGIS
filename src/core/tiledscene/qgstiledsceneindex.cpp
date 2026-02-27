@@ -55,23 +55,17 @@ QByteArray QgsAbstractTiledSceneIndex::retrieveContent( const QString &uri, QgsF
 
 QgsTiledSceneIndex::QgsTiledSceneIndex( QgsAbstractTiledSceneIndex *index )
   : mIndex( index )
-{
-
-}
+{}
 
 QgsTiledSceneIndex::~QgsTiledSceneIndex() = default;
 
 QgsTiledSceneIndex::QgsTiledSceneIndex( const QgsTiledSceneIndex &other )
   : mIndex( other.mIndex )
-{
-
-}
+{}
 
 QgsTiledSceneIndex::QgsTiledSceneIndex( QgsTiledSceneIndex &&other )
   : mIndex( std::move( other.mIndex ) )
-{
-
-}
+{}
 
 QgsTiledSceneIndex &QgsTiledSceneIndex::operator=( const QgsTiledSceneIndex &other )
 {
@@ -159,4 +153,3 @@ QByteArray QgsTiledSceneIndex::retrieveContent( const QString &uri, QgsFeedback 
 
   return mIndex->retrieveContent( uri, feedback );
 }
-

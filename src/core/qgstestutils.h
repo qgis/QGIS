@@ -28,7 +28,6 @@ class QgsVectorDataProvider;
 class CORE_EXPORT QgsTestUtils
 {
   public:
-
     /**
      * Runs a thready safety test on iterators from a vector data \a provider, by concurrently
      * requesting features from the provider.

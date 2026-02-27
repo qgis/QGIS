@@ -38,9 +38,7 @@ data.
 #include "qgsprofilerenderer.h"
 %End
   public:
-
-    QgsProfilePlotRenderer( const QList< QgsAbstractProfileSource * > &sources,
-                            const QgsProfileRequest &request );
+    QgsProfilePlotRenderer( const QList< QgsAbstractProfileSource * > &sources, const QgsProfileRequest &request );
 %Docstring
 Constructor for QgsProfilePlotRenderer, using the provided list of
 profile ``sources`` to generate the results.

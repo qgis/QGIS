@@ -55,7 +55,7 @@ QDomElement QgsElevationProfile::writeXml( QDomDocument &document, const QgsRead
   if ( mProfileCurve )
   {
     QDomElement curveElem = document.createElement( u"curve"_s );
-    curveElem.appendChild( document.createTextNode( mProfileCurve->asWkt( ) ) );
+    curveElem.appendChild( document.createTextNode( mProfileCurve->asWkt() ) );
     profileElem.appendChild( curveElem );
   }
 

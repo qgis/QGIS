@@ -20,7 +20,6 @@ Manages a set of relations between layers.
 #include "qgsrelationmanager.h"
 %End
   public:
-
     explicit QgsRelationManager( QgsProject *project = 0 );
 %Docstring
 Constructor for QgsRelationManager.

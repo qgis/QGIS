@@ -10,7 +10,7 @@
 
 
 
-class QgsTiledSceneDataProvider: QgsDataProvider
+class QgsTiledSceneDataProvider : QgsDataProvider
 {
 %Docstring(signature="appended")
 Base class for data providers for :py:class:`QgsTiledSceneLayer`.
@@ -22,11 +22,7 @@ Base class for data providers for :py:class:`QgsTiledSceneLayer`.
 #include "qgstiledscenedataprovider.h"
 %End
   public:
-
-
-    QgsTiledSceneDataProvider( const QString &uri,
-                               const QgsDataProvider::ProviderOptions &providerOptions,
-                               Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
+    QgsTiledSceneDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 %Docstring
 Constructor for QgsTiledSceneDataProvider
 %End
@@ -87,7 +83,6 @@ or transferred between threads.
 Returns the provider's z range, or an infinite range if this is not
 known.
 %End
-
 };
 
 /************************************************************************

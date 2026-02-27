@@ -26,15 +26,14 @@
 
 #include "moc_qgsprofilerenderer.cpp"
 
-QgsProfilePlotRenderer::QgsProfilePlotRenderer( const QList< QgsAbstractProfileSource * > &sources,
-    const QgsProfileRequest &request )
+QgsProfilePlotRenderer::QgsProfilePlotRenderer( const QList< QgsAbstractProfileSource * > &sources, const QgsProfileRequest &request )
   : mRequest( request )
 {
   for ( QgsAbstractProfileSource *source : sources )
   {
     if ( source )
     {
-      if ( std::unique_ptr< QgsAbstractProfileGenerator > generator{ source->createProfileGenerator( mRequest ) } )
+      if ( std::unique_ptr< QgsAbstractProfileGenerator > generator { source->createProfileGenerator( mRequest ) } )
         mGenerators.emplace_back( std::move( generator ) );
     }
   }
@@ -43,8 +42,7 @@ QgsProfilePlotRenderer::QgsProfilePlotRenderer( const QList< QgsAbstractProfileS
 QgsProfilePlotRenderer::QgsProfilePlotRenderer( std::vector<std::unique_ptr<QgsAbstractProfileGenerator> > generators, const QgsProfileRequest &request )
   : mGenerators( std::move( generators ) )
   , mRequest( request )
-{
-}
+{}
 
 QgsProfilePlotRenderer::~QgsProfilePlotRenderer()
 {
@@ -235,7 +233,7 @@ bool QgsProfilePlotRenderer::replaceSourceInternal( QgsAbstractProfileSource *so
   if ( !source )
     return false;
 
-  std::unique_ptr< QgsAbstractProfileGenerator > generator{ source->createProfileGenerator( mRequest ) };
+  std::unique_ptr< QgsAbstractProfileGenerator > generator { source->createProfileGenerator( mRequest ) };
   if ( !generator )
     return false;
 

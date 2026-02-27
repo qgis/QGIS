@@ -26,7 +26,6 @@ one legend node.
 #include "qgsdatadefinedsizelegend.h"
 %End
   public:
-
     QgsDataDefinedSizeLegend();
 %Docstring
 Constructor for QgsDataDefinedSizeLegend.
@@ -50,11 +49,11 @@ Constructor for QgsDataDefinedSizeLegend.
 
     struct SizeClass
     {
-      SizeClass( double size, const QString &label );
+        SizeClass( double size, const QString &label );
 
-      double size;
+        double size;
 
-      QString label;
+        QString label;
     };
 
     void setLegendType( LegendType type );

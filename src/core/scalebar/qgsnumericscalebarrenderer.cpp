@@ -81,21 +81,19 @@ void QgsNumericScaleBarRenderer::draw( QgsRenderContext &context, const QgsScale
   }
 
   //text destination is item's rect, excluding the margin
-  const QRectF painterRect( margin, margin, context.convertToPainterUnits( scaleContext.size.width(), Qgis::RenderUnit::Millimeters ) - 2 * margin,
-                            context.convertToPainterUnits( scaleContext.size.height(), Qgis::RenderUnit::Millimeters ) - 2 * margin );
+  const QRectF
+    painterRect( margin, margin, context.convertToPainterUnits( scaleContext.size.width(), Qgis::RenderUnit::Millimeters ) - 2 * margin, context.convertToPainterUnits( scaleContext.size.height(), Qgis::RenderUnit::Millimeters ) - 2 * margin );
   QgsTextRenderer::drawText( painterRect, 0, hAlign, QStringList() << scaleText( scaleContext.scale, settings ), context, settings.textFormat() );
 }
 
-QSizeF QgsNumericScaleBarRenderer::calculateBoxSize( QgsRenderContext &context, const QgsScaleBarSettings &settings,
-    const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const
+QSizeF QgsNumericScaleBarRenderer::calculateBoxSize( QgsRenderContext &context, const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const
 {
   const double painterToMm = 1.0 / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
 
   const double textWidth = QgsTextRenderer::textWidth( context, settings.textFormat(), QStringList() << scaleText( scaleContext.scale, settings ) ) * painterToMm;
   const double textHeight = QgsTextRenderer::textHeight( context, settings.textFormat(), QStringList() << scaleText( scaleContext.scale, settings ) ) * painterToMm;
 
-  return QSizeF( 2 * settings.boxContentSpace() + textWidth,
-                 textHeight + 2 * settings.boxContentSpace() );
+  return QSizeF( 2 * settings.boxContentSpace() + textWidth, textHeight + 2 * settings.boxContentSpace() );
 }
 
 QSizeF QgsNumericScaleBarRenderer::calculateBoxSize( const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const
@@ -105,8 +103,7 @@ QSizeF QgsNumericScaleBarRenderer::calculateBoxSize( const QgsScaleBarSettings &
   const double textWidth = QgsLayoutUtils::textWidthMM( font, scaleText( scaleContext.scale, settings ) );
   const double textHeight = QgsLayoutUtils::fontAscentMM( font );
 
-  return QSizeF( 2 * settings.boxContentSpace() + textWidth,
-                 textHeight + 2 * settings.boxContentSpace() );
+  return QSizeF( 2 * settings.boxContentSpace() + textWidth, textHeight + 2 * settings.boxContentSpace() );
 }
 
 QString QgsNumericScaleBarRenderer::scaleText( double scale, const QgsScaleBarSettings &settings ) const

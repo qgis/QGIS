@@ -37,7 +37,6 @@ class CORE_EXPORT QgsLayoutUndoStack : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutUndoStack, for the specified parent \a layout.
      */
@@ -143,7 +142,6 @@ class CORE_EXPORT QgsLayoutUndoStack : public QObject
     void indexChanged();
 
   private:
-
     QgsLayout *mLayout = nullptr;
 
     std::unique_ptr< QUndoStack > mUndoStack;

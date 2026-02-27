@@ -39,9 +39,7 @@ class QgsTextFormat;
  */
 class CORE_EXPORT QgsTextDocument
 {
-
   public:
-
     QgsTextDocument();
     QgsTextDocument( const QgsTextDocument &other );
     SIP_SKIP QgsTextDocument( QgsTextDocument &&other );
@@ -104,6 +102,7 @@ class CORE_EXPORT QgsTextDocument
      */
     void insert( int index, const QgsTextBlock &block );
 #else
+    // clang-format off
 
     /**
      * Inserts a \a block into the document, at the specified index.
@@ -124,6 +123,7 @@ class CORE_EXPORT QgsTextDocument
       sipCpp->insert( a0, *a1 );
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -145,6 +145,7 @@ class CORE_EXPORT QgsTextDocument
      */
     const QgsTextBlock &at( int index ) const SIP_FACTORY;
 #else
+    // clang-format off
 
     /**
      * Returns the block at the specified \a index.
@@ -163,6 +164,7 @@ class CORE_EXPORT QgsTextDocument
       sipRes = new QgsTextBlock( sipCpp->at( a0 ) );
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -170,6 +172,7 @@ class CORE_EXPORT QgsTextDocument
      */
     QgsTextBlock &operator[]( int index ) SIP_FACTORY;
 #ifdef SIP_RUN
+    // clang-format off
     % MethodCode
     SIP_SSIZE_T idx = sipConvertFromSequenceIndex( a0, sipCpp->size() );
     if ( idx < 0 )
@@ -177,24 +180,27 @@ class CORE_EXPORT QgsTextDocument
     else
       sipRes = new QgsTextBlock( sipCpp->operator[]( idx ) );
     % End
+// clang-format on
 #endif
 
-    /**
+      /**
      * Returns the number of blocks in the document.
      */
-    int size() const;
+      int size() const;
 
 #ifdef SIP_RUN
+    // clang-format off
     int __len__() const;
     % MethodCode
     sipRes = sipCpp->size();
     % End
+// clang-format on
 #endif
 
-    /**
+        /**
      * Returns a list of plain text lines of text representing the document.
      */
-    QStringList toPlainText() const;
+        QStringList toPlainText() const;
 
     /**
      * Splits lines of text in the document to separate lines, using a specified wrap character (\a wrapCharacter) or newline characters.
@@ -236,9 +242,7 @@ class CORE_EXPORT QgsTextDocument
 #endif
 
   private:
-
     QVector< QgsTextBlock > mBlocks;
-
 };
 
 #endif // QGSTEXTDOCUMENT_H

@@ -58,8 +58,7 @@ QgsPalLayerSettings QgsAbstractMeshLayerLabeling::defaultSettingsForLayer( const
 QgsMeshLayerSimpleLabeling::QgsMeshLayerSimpleLabeling( const QgsPalLayerSettings &settings, bool labelFaces )
   : mSettings( new QgsPalLayerSettings( settings ) )
   , mLabelFaces( labelFaces )
-{
-}
+{}
 
 QString QgsMeshLayerSimpleLabeling::type() const
 {
@@ -109,11 +108,9 @@ bool QgsMeshLayerSimpleLabeling::requiresAdvancedEffects() const
 
 bool QgsMeshLayerSimpleLabeling::hasNonDefaultCompositionMode() const
 {
-  return mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::FontBlendMode )
-         || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::ShapeBlendMode )
+  return mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::FontBlendMode ) || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::ShapeBlendMode )
          || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::BufferBlendMode )
-         || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::ShadowBlendMode )
-         || mSettings->format().hasNonDefaultCompositionMode();
+         || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::ShadowBlendMode ) || mSettings->format().hasNonDefaultCompositionMode();
 }
 
 QgsMeshLayerSimpleLabeling *QgsMeshLayerSimpleLabeling::create( const QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember

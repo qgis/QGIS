@@ -34,7 +34,6 @@ also:
 
   public:
 
-
     QgsFields() /HoldGIL/;
 %Docstring
 Constructor for an empty field container

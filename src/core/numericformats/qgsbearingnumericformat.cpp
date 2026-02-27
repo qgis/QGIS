@@ -23,8 +23,7 @@
 using namespace Qt::StringLiterals;
 
 QgsBearingNumericFormat::QgsBearingNumericFormat()
-{
-}
+{}
 
 QString QgsBearingNumericFormat::id() const
 {

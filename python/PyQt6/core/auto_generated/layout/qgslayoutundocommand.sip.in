@@ -11,7 +11,7 @@
 
 
 
-class QgsAbstractLayoutUndoCommand: QUndoCommand
+class QgsAbstractLayoutUndoCommand : QUndoCommand
 {
 %Docstring(signature="appended")
 Base class for commands to undo/redo layout and layout object changes.
@@ -21,7 +21,6 @@ Base class for commands to undo/redo layout and layout object changes.
 #include "qgslayoutundocommand.h"
 %End
   public:
-
     QgsAbstractLayoutUndoCommand( const QString &text, int id = 0, QUndoCommand *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for :py:class:`QgsLayoutUndoCommand`. The ``id`` argument
@@ -79,7 +78,6 @@ different.
 %End
 
   protected:
-
     virtual void saveState( QDomDocument &stateDoc ) const = 0;
 %Docstring
 Saves the state of the object to the specified ``stateDoc``.
@@ -119,7 +117,6 @@ Interface for layout objects which support undo/redo commands.
 #include "qgslayoutundocommand.h"
 %End
   public:
-
     virtual ~QgsLayoutUndoObjectInterface();
 
     virtual QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id = 0, QUndoCommand *parent = 0 ) = 0 /Factory/;

@@ -29,7 +29,6 @@ provider.
 %End
   public:
 
-
     enum class CustomRole /BaseType=IntEnum/
     {
       ConnectionName,

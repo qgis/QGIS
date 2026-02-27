@@ -25,10 +25,9 @@
 using namespace Qt::StringLiterals;
 
 QgsElevationShadingRenderer::QgsElevationShadingRenderer()
-{
-}
+{}
 
-void QgsElevationShadingRenderer::renderShading( const QgsElevationMap &elevation, QImage &image,  const QgsRenderContext &context ) const
+void QgsElevationShadingRenderer::renderShading( const QgsElevationMap &elevation, QImage &image, const QgsRenderContext &context ) const
 {
   if ( elevation.rawElevationImage().size() != image.size() )
     return;
@@ -117,16 +116,16 @@ void QgsElevationShadingRenderer::writeXml( QDomElement &elem, const QgsReadWrit
   elem.setAttribute( u"combined-method"_s, static_cast<int>( mCombinedElevationMethod ) );
 
   elem.setAttribute( u"edl-is-active"_s, mRenderEdl ? 1 : 0 );
-  elem.setAttribute( u"edl-strength"_s,  qgsDoubleToString( mEyeDomeLightingStrength ) );
-  elem.setAttribute( u"edl-distance"_s,  qgsDoubleToString( mEyeDomeLightingDistance ) );
+  elem.setAttribute( u"edl-strength"_s, qgsDoubleToString( mEyeDomeLightingStrength ) );
+  elem.setAttribute( u"edl-distance"_s, qgsDoubleToString( mEyeDomeLightingDistance ) );
   elem.setAttribute( u"edl-distance-unit"_s, static_cast<int>( mEyeDomeLightingDistanceUnit ) );
 
   elem.setAttribute( u"hillshading-is-active"_s, mRenderHillshading ? 1 : 0 );
   elem.setAttribute( u"hillshading-z-factor"_s, qgsDoubleToString( mHillshadingZFactor ) );
   elem.setAttribute( u"hillshading-is-multidirectional"_s, mHillshadingMultiDir ? 1 : 0 );
 
-  elem.setAttribute( u"light-altitude"_s,  qgsDoubleToString( mLightAltitude ) );
-  elem.setAttribute( u"light-azimuth"_s,  qgsDoubleToString( mLightAzimuth ) );
+  elem.setAttribute( u"light-altitude"_s, qgsDoubleToString( mLightAltitude ) );
+  elem.setAttribute( u"light-azimuth"_s, qgsDoubleToString( mLightAzimuth ) );
 }
 
 void QgsElevationShadingRenderer::readXml( const QDomElement &element, const QgsReadWriteContext & )

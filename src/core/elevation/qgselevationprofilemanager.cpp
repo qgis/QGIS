@@ -144,9 +144,6 @@ void QgsElevationProfileManager::setupObjectConnections( QgsElevationProfile *pr
 {
   if ( profile )
   {
-    connect( profile, &QgsElevationProfile::nameChanged, this, [this, profile]( const QString & newName )
-    {
-      emit profileRenamed( profile, newName );
-    } );
+    connect( profile, &QgsElevationProfile::nameChanged, this, [this, profile]( const QString &newName ) { emit profileRenamed( profile, newName ); } );
   }
 }

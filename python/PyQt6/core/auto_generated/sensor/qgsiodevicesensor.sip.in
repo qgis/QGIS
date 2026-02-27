@@ -22,7 +22,6 @@ An abstract class for QIODevice-based sensors.
 #include "qgsiodevicesensor.h"
 %End
   public:
-
     explicit QgsIODeviceSensor( QObject *parent = 0 );
 %Docstring
 Constructor for a abstract QIODevice-based sensor, bound to the
@@ -36,7 +35,6 @@ Returns the I/O device.
 %End
 
   protected:
-
     void initIODevice( QIODevice *device /Transfer/ );
 %Docstring
 Initiates the I/O ``device``.
@@ -67,7 +65,6 @@ A TCP socket sensor class.
 #include "qgsiodevicesensor.h"
 %End
   public:
-
     explicit QgsTcpSocketSensor( QObject *parent = 0 );
 %Docstring
 Constructor for a TCP socket sensor, bound to the specified ``parent``.
@@ -112,7 +109,6 @@ Sets the ``port`` the socket connects to.
 
 
   protected:
-
     virtual void handleConnect();
 
     virtual void handleDisconnect();
@@ -132,7 +128,6 @@ A UDP socket sensor class.
 #include "qgsiodevicesensor.h"
 %End
   public:
-
     explicit QgsUdpSocketSensor( QObject *parent = 0 );
 %Docstring
 Constructor for a UDP socket sensor, bound to the specified ``parent``.
@@ -177,7 +172,6 @@ Sets the ``port`` the socket connects to.
 
 
   protected:
-
     virtual void handleConnect();
 
     virtual void handleDisconnect();
@@ -199,7 +193,6 @@ A serial port sensor class.
 #include "qgsiodevicesensor.h"
 %End
   public:
-
     explicit QgsSerialPortSensor( QObject *parent = 0 );
 %Docstring
 Constructor for a serial port sensor, bound to the specified ``parent``.
@@ -269,7 +262,6 @@ considered a data frame.
 
 
   protected:
-
     virtual void handleConnect();
 
     virtual void handleDisconnect();
@@ -282,9 +274,6 @@ considered a data frame.
 
 };
 %End
-
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

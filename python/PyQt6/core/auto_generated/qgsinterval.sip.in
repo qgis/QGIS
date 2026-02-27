@@ -27,7 +27,6 @@ A representation of the interval between two datetime values.
 #include "qgsinterval.h"
 %End
   public:
-
     static const int YEARS;
     static const int MONTHS;
     static const int WEEKS;
@@ -82,7 +81,7 @@ Constructor for QgsInterval, using the specified ``years``, ``months``,
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    double years() const;
+      double years() const;
 %Docstring
 Returns the interval duration in years (based on an average year length)
 

@@ -25,11 +25,9 @@ using namespace Qt::StringLiterals;
 #include "qgsogrprovider.h"
 
 QgsOgrExpressionCompiler::QgsOgrExpressionCompiler( QgsOgrFeatureSource *source, bool ignoreStaticNodes )
-  : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::CaseInsensitiveStringMatch | QgsSqlExpressionCompiler::NoNullInBooleanLogic
-                              | QgsSqlExpressionCompiler::NoUnaryMinus | QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger, ignoreStaticNodes )
+  : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::CaseInsensitiveStringMatch | QgsSqlExpressionCompiler::NoNullInBooleanLogic | QgsSqlExpressionCompiler::NoUnaryMinus | QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger, ignoreStaticNodes )
   , mSource( source )
-{
-}
+{}
 
 
 QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compile( const QgsExpression *exp )
@@ -118,8 +116,7 @@ QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compileNode( const Qg
 
 QString QgsOgrExpressionCompiler::sqlFunctionFromFunctionName( const QString &fnName ) const
 {
-  static const QMap<QString, QString> FN_NAMES
-  {
+  static const QMap<QString, QString> FN_NAMES {
     { "make_datetime", "" },
     { "make_date", "" },
     { "make_time", "" },
@@ -134,23 +131,19 @@ QStringList QgsOgrExpressionCompiler::sqlArgumentsFromFunctionName( const QStrin
   if ( fnName == "make_datetime"_L1 )
   {
     args = QStringList( u"'%1-%2-%3T%4:%5:%6Z'"_s.arg( args[0].rightJustified( 4, '0' ) )
-                        .arg( args[1].rightJustified( 2, '0' ) )
-                        .arg( args[2].rightJustified( 2, '0' ) )
-                        .arg( args[3].rightJustified( 2, '0' ) )
-                        .arg( args[4].rightJustified( 2, '0' ) )
-                        .arg( args[5].rightJustified( 2, '0' ) ) );
+                          .arg( args[1].rightJustified( 2, '0' ) )
+                          .arg( args[2].rightJustified( 2, '0' ) )
+                          .arg( args[3].rightJustified( 2, '0' ) )
+                          .arg( args[4].rightJustified( 2, '0' ) )
+                          .arg( args[5].rightJustified( 2, '0' ) ) );
   }
   else if ( fnName == "make_date"_L1 )
   {
-    args = QStringList( u"'%1-%2-%3'"_s.arg( args[0].rightJustified( 4, '0' ) )
-                        .arg( args[1].rightJustified( 2, '0' ) )
-                        .arg( args[2].rightJustified( 2, '0' ) ) );
+    args = QStringList( u"'%1-%2-%3'"_s.arg( args[0].rightJustified( 4, '0' ) ).arg( args[1].rightJustified( 2, '0' ) ).arg( args[2].rightJustified( 2, '0' ) ) );
   }
   else if ( fnName == "make_time"_L1 )
   {
-    args = QStringList( u"'%1:%2:%3'"_s.arg( args[0].rightJustified( 2, '0' ) )
-                        .arg( args[1].rightJustified( 2, '0' ) )
-                        .arg( args[2].rightJustified( 2, '0' ) ) );
+    args = QStringList( u"'%1:%2:%3'"_s.arg( args[0].rightJustified( 2, '0' ) ).arg( args[1].rightJustified( 2, '0' ) ).arg( args[2].rightJustified( 2, '0' ) ) );
   }
   return args;
 }

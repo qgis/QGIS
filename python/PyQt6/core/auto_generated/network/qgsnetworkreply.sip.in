@@ -21,7 +21,6 @@ copy and safe to pass between threads.
 #include "qgsnetworkreply.h"
 %End
   public:
-
     QgsNetworkReplyContent();
 %Docstring
 Default constructor for an empty reply.

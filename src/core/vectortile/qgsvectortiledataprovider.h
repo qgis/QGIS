@@ -43,7 +43,6 @@ class QgsVectorTileMatrixSet;
 class QgsVectorTileDataProviderSharedData
 {
   public:
-
     QgsVectorTileDataProviderSharedData();
 
     /**
@@ -62,7 +61,6 @@ class QgsVectorTileDataProviderSharedData
 
     // cannot use a read/write lock here -- see https://bugreports.qt.io/browse/QTBUG-19794
     QMutex mMutex; //!< Access to all data members is guarded by the mutex
-
 };
 
 /**
@@ -78,7 +76,6 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
     Q_OBJECT
 
   public:
-
     //! Role to set column attribute in the request so it can be retrieved later
     static int DATA_COLUMN;
     //! Role to set row attribute in the request so it can be retrieved later
@@ -91,9 +88,7 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
     /**
      * Constructor for QgsVectorTileDataProvider, with the specified \a uri.
      */
-    QgsVectorTileDataProvider( const QString &uri,
-                               const QgsDataProvider::ProviderOptions &providerOptions,
-                               Qgis::DataProviderReadFlags flags );
+    QgsVectorTileDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags );
 
     QgsVectorTileDataProvider( const QgsVectorTileDataProvider &other );
     QgsVectorTileDataProvider &operator=( const QgsVectorTileDataProvider &other ) = delete;
@@ -123,10 +118,7 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
      * Returns the list of source paths for the data.
      * \since QGIS 3.40
      */
-    virtual QgsStringMap sourcePaths() const
-    {
-      return { { QString(), sourcePath() } };
-    }
+    virtual QgsStringMap sourcePaths() const { return { { QString(), sourcePath() } }; }
 
 
     /**
@@ -154,7 +146,10 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
     /**
      * Returns raw tile data for a range of tiles.
      */
-    virtual QList<QgsVectorTileRawData> readTiles( const QgsTileMatrixSet &tileMatrixSet, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr, Qgis::RendererUsage usage = Qgis::RendererUsage::Unknown ) const = 0;
+    virtual QList<QgsVectorTileRawData> readTiles(
+      const QgsTileMatrixSet &tileMatrixSet, const QVector<QgsTileXYZ> &tiles, QgsFeedback *feedback = nullptr, Qgis::RendererUsage usage = Qgis::RendererUsage::Unknown
+    ) const
+      = 0;
 
     /**
      * Returns a network request for a tile.
@@ -195,11 +190,8 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
     virtual QImage spriteImage() const;
 
   protected:
-
-    std::shared_ptr<QgsVectorTileDataProviderSharedData> mShared;  //!< Mutable data shared between provider instances
-
+    std::shared_ptr<QgsVectorTileDataProviderSharedData> mShared; //!< Mutable data shared between provider instances
 };
-
 
 
 #endif // QGSVECTORTILEDATAPROVIDER_H

@@ -30,20 +30,19 @@ class QgsVectorLayer;
  * \ingroup core
  * \brief A layout table subclass that displays attributes from a vector layer.
 */
-class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
+class CORE_EXPORT QgsLayoutItemAttributeTable : public QgsLayoutTable
 {
     Q_OBJECT
 
   public:
-
     /**
      * Specifies the content source for the attribute table
      */
     enum ContentSource
     {
       LayerAttributes = 0, //!< Table shows attributes from features in a vector layer
-      AtlasFeature, //!< Table shows attributes from the current atlas feature
-      RelationChildren //!< Table shows attributes from related child features
+      AtlasFeature,        //!< Table shows attributes from the current atlas feature
+      RelationChildren     //!< Table shows attributes from related child features
     };
 
     /**
@@ -305,7 +304,6 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
     void setUseConditionalStyling( bool enabled );
 
   protected:
-
     bool writePropertiesToElement( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
@@ -314,7 +312,6 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
     void disconnectCurrentMap();
 
   private:
-
     //! Attribute source
     ContentSource mSource = LayerAttributes;
     //! Associated vector layer
@@ -361,15 +358,16 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
 
     struct Cell
     {
-      Cell() = default;
+        Cell() = default;
 
-      Cell( const QVariant &content, const QgsConditionalStyle &style, const QgsFeature &feature )
-        : content( content )
-        , style( style )
-        , feature( feature ) {}
-      QVariant content;
-      QgsConditionalStyle style;
-      QgsFeature feature;
+        Cell( const QVariant &content, const QgsConditionalStyle &style, const QgsFeature &feature )
+          : content( content )
+          , style( style )
+          , feature( feature )
+        {}
+        QVariant content;
+        QgsConditionalStyle style;
+        QgsFeature feature;
     };
 
     /**
@@ -396,7 +394,7 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
     /**
      * Returns the list of visible columns filtered by feature filter provider.
      */
-    QgsLayoutTableColumns filteredColumns( );
+    QgsLayoutTableColumns filteredColumns();
 #endif
 
   private slots:
@@ -404,7 +402,6 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
     void removeLayer( const QString &layerId );
 
     void atlasLayerChanged( QgsVectorLayer *layer );
-
 };
 
 #endif // QGSLAYOUTITEMATTRIBUTETABLE_H

@@ -867,7 +867,6 @@ Abstract base class for marker symbol layers.
 %End
   public:
 
-
     virtual void startRender( QgsSymbolRenderContext &context );
 
 
@@ -1186,7 +1185,6 @@ the marker layer.
 
   protected:
 
-
     QgsMarkerSymbolLayer( bool locked = false );
 %Docstring
 Constructor for QgsMarkerSymbolLayer.
@@ -1222,10 +1220,17 @@ and any displacement required to align with the marker's anchor point.
 
 %End
 
-    void markerOffset( QgsSymbolRenderContext &context, double width, double height,
-                       Qgis::RenderUnit widthUnit, Qgis::RenderUnit heightUnit,
-                       double &offsetX, double &offsetY,
-                       const QgsMapUnitScale &widthMapUnitScale, const QgsMapUnitScale &heightMapUnitScale ) const /PyName=markerOffset2/;
+    void markerOffset(
+      QgsSymbolRenderContext &context,
+      double width,
+      double height,
+      Qgis::RenderUnit widthUnit,
+      Qgis::RenderUnit heightUnit,
+      double &offsetX,
+      double &offsetY,
+      const QgsMapUnitScale &widthMapUnitScale,
+      const QgsMapUnitScale &heightMapUnitScale
+    ) const /PyName=markerOffset2/;
 %Docstring
 Calculates the required marker offset, including both the symbol offset
 and any displacement required to align with the marker's anchor point.
@@ -1268,7 +1273,6 @@ Abstract base class for line symbol layers.
 #include "qgssymbollayer.h"
 %End
   public:
-
     enum RenderRingFilter /BaseType=IntEnum/
     {
       AllRings,
@@ -1491,7 +1495,6 @@ Abstract base class for fill symbol layers.
 %End
   public:
 
-
     virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) = 0;
 %Docstring
 Renders the fill symbol layer for the polygon whose outer ring is
@@ -1526,7 +1529,7 @@ Returns the rotation angle of the fill symbol, in degrees clockwise.
 .. seealso:: :py:func:`setAngle`
 %End
 
-    virtual QImage toTiledPatternImage( ) const;
+    virtual QImage toTiledPatternImage() const;
 %Docstring
 Renders the symbol layer as an image that can be used as a seamless
 pattern fill for polygons, this method is used by SLD export to generate

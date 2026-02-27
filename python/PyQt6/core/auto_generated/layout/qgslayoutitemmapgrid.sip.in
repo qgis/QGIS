@@ -25,7 +25,6 @@ drawn and the order they are drawn in.
 #include "qgslayoutitemmapgrid.h"
 %End
   public:
-
     QgsLayoutItemMapGridStack( QgsLayoutItemMap *map );
 %Docstring
 Constructor for QgsLayoutItemMapGridStack, attached to the specified
@@ -139,7 +138,6 @@ An individual grid which is drawn above the map content in a
 #include "qgslayoutitemmapgrid.h"
 %End
   public:
-
     QgsLayoutItemMapGrid( const QString &name, QgsLayoutItemMap *map );
 %Docstring
 Constructor for QgsLayoutItemMapGrid.

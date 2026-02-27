@@ -30,9 +30,7 @@ using namespace Qt::StringLiterals;
 
 QgsTransactionGroup::QgsTransactionGroup( QObject *parent )
   : QObject( parent )
-{
-
-}
+{}
 
 bool QgsTransactionGroup::addLayer( QgsVectorLayer *layer )
 {
@@ -101,7 +99,6 @@ void QgsTransactionGroup::onEditingStarted()
 
     connect( layer, &QgsVectorLayer::beforeCommitChanges, this, &QgsTransactionGroup::onBeforeCommitChanges );
     connect( layer, &QgsVectorLayer::beforeRollBack, this, &QgsTransactionGroup::onRollback );
-
   }
 }
 
@@ -137,12 +134,11 @@ void QgsTransactionGroup::onBeforeCommitChanges( bool stopEditing )
     }
     else
     {
-      if ( ! mTransaction->begin( errMsg ) )
+      if ( !mTransaction->begin( errMsg ) )
       {
         QgsDebugError( u"Could not restart a transaction for %1: %2"_s.arg( triggeringLayer->name() ).arg( errMsg ) );
       }
     }
-
   }
   else
   {

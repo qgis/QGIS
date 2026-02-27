@@ -37,7 +37,6 @@ thorough query possible, regardless of how expensive this may be.
 #include "qgsprovidersublayertask.h"
 %End
   public:
-
     QgsProviderSublayerTask( const QString &uri, bool includeSystemTables = false );
 %Docstring
 Constructor for QgsProviderSublayerTask, which retrieves sublayer
@@ -63,7 +62,6 @@ Returns the sublayer details as calculated by the task.
 
 
   protected:
-
     virtual bool run();
 
 

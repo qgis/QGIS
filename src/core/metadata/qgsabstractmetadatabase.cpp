@@ -551,54 +551,30 @@ void QgsAbstractMetadataBase::combine( const QgsAbstractMetadataBase *other )
       mDates.insert( type, other->mDates[type] );
     }
   }
-
 }
 
-bool QgsAbstractMetadataBase::equals( const QgsAbstractMetadataBase &metadataOther )  const
+bool QgsAbstractMetadataBase::equals( const QgsAbstractMetadataBase &metadataOther ) const
 {
-  return ( ( mIdentifier == metadataOther.mIdentifier ) &&
-           ( mParentIdentifier == metadataOther.mParentIdentifier ) &&
-           ( mLanguage == metadataOther.mLanguage ) &&
-           ( mType == metadataOther.mType ) &&
-           ( mTitle == metadataOther.mTitle ) &&
-           ( mAbstract == metadataOther.mAbstract ) &&
-           ( mHistory == metadataOther.mHistory ) &&
-           ( mKeywords == metadataOther.mKeywords ) &&
-           ( mContacts == metadataOther.mContacts ) &&
-           ( mLinks == metadataOther.mLinks ) &&
-           ( mDates == metadataOther.mDates ) );
+  return (
+    ( mIdentifier == metadataOther.mIdentifier ) && ( mParentIdentifier == metadataOther.mParentIdentifier ) && ( mLanguage == metadataOther.mLanguage ) && ( mType == metadataOther.mType )
+    && ( mTitle == metadataOther.mTitle ) && ( mAbstract == metadataOther.mAbstract ) && ( mHistory == metadataOther.mHistory ) && ( mKeywords == metadataOther.mKeywords )
+    && ( mContacts == metadataOther.mContacts ) && ( mLinks == metadataOther.mLinks ) && ( mDates == metadataOther.mDates )
+  );
 }
 
 
 bool QgsAbstractMetadataBase::Contact::operator==( const QgsAbstractMetadataBase::Contact &other ) const
 {
-  return name == other.name &&
-         organization == other.organization &&
-         position == other.position &&
-         addresses == other.addresses &&
-         voice == other.voice &&
-         fax == other.fax &&
-         email == other.email &&
-         role == other.role;
+  return name == other.name && organization == other.organization && position == other.position && addresses == other.addresses && voice == other.voice && fax == other.fax && email == other.email
+         && role == other.role;
 }
 
 bool QgsAbstractMetadataBase::Link::operator==( const QgsAbstractMetadataBase::Link &other ) const
 {
-  return name == other.name &&
-         type == other.type &&
-         description == other.description &&
-         url == other.url &&
-         format == other.format &&
-         mimeType == other.mimeType &&
-         size == other.size;
+  return name == other.name && type == other.type && description == other.description && url == other.url && format == other.format && mimeType == other.mimeType && size == other.size;
 }
 
 bool QgsAbstractMetadataBase::Address::operator==( const QgsAbstractMetadataBase::Address &other ) const
 {
-  return type == other.type &&
-         address == other.address &&
-         city == other.city &&
-         administrativeArea == other.administrativeArea &&
-         postalCode == other.postalCode &&
-         country == other.country;
+  return type == other.type && address == other.address && city == other.city && administrativeArea == other.administrativeArea && postalCode == other.postalCode && country == other.country;
 }

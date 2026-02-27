@@ -42,7 +42,6 @@ class CORE_EXPORT QgsProjectElevationProperties : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProjectElevationProperties with the specified \a parent object.
      */
@@ -185,12 +184,10 @@ class CORE_EXPORT QgsProjectElevationProperties : public QObject
     void elevationRangeChanged( const QgsDoubleRange &range );
 
   private:
-
     std::unique_ptr< QgsAbstractTerrainProvider > mTerrainProvider;
     QgsDoubleRange mElevationRange;
     double mElevationFilterRangeSize = -1;
     bool mInvertElevationFilter = false;
-
 };
 
 

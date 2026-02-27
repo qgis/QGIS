@@ -21,7 +21,6 @@ Contains general settings related to how labels are placed.
 #include "qgslabelplacementsettings.h"
 %End
   public:
-
     Qgis::LabelOverlapHandling overlapHandling() const;
 %Docstring
 Returns the technique used to handle overlapping labels.

@@ -82,7 +82,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
 
     case Qgis::SelectionRenderingMode::CustomSymbol:
     {
-      if ( QgsSymbol *selectionSymbol =  qobject_cast< QgsVectorLayerSelectionProperties * >( layer->selectionProperties() )->selectionSymbol() )
+      if ( QgsSymbol *selectionSymbol = qobject_cast< QgsVectorLayerSelectionProperties * >( layer->selectionProperties() )->selectionSymbol() )
         mSelectionSymbol.reset( selectionSymbol->clone() );
       break;
     }
@@ -92,10 +92,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
     return;
 
   QList< const QgsFeatureRendererGenerator * > generators = layer->featureRendererGenerators();
-  std::sort( generators.begin(), generators.end(), []( const QgsFeatureRendererGenerator * g1, const QgsFeatureRendererGenerator * g2 )
-  {
-    return g1->level() < g2->level();
-  } );
+  std::sort( generators.begin(), generators.end(), []( const QgsFeatureRendererGenerator *g1, const QgsFeatureRendererGenerator *g2 ) { return g1->level() < g2->level(); } );
 
   bool insertedMainRenderer = false;
   double prevLevel = std::numeric_limits< double >::lowest();
@@ -140,8 +137,8 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   if ( renderContext()->vectorSimplifyMethod().simplifyHints() != Qgis::VectorRenderingSimplificationFlags( Qgis::VectorRenderingSimplificationFlag::NoSimplification ) )
   {
     mSimplifyMethod = renderContext()->vectorSimplifyMethod();
-    mSimplifyGeometry = renderContext()->vectorSimplifyMethod().simplifyHints() & Qgis::VectorRenderingSimplificationFlag::GeometrySimplification ||
-                        renderContext()->vectorSimplifyMethod().simplifyHints() & Qgis::VectorRenderingSimplificationFlag::FullSimplification;
+    mSimplifyGeometry = renderContext()->vectorSimplifyMethod().simplifyHints() & Qgis::VectorRenderingSimplificationFlag::GeometrySimplification
+                        || renderContext()->vectorSimplifyMethod().simplifyHints() & Qgis::VectorRenderingSimplificationFlag::FullSimplification;
   }
   else
   {
@@ -193,17 +190,15 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
 
   mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( context, layer );
 
-  if ( std::any_of( mRenderers.begin(), mRenderers.end(), []( const auto & renderer ) { return renderer->forceRasterRender(); } ) )
+  if ( std::any_of( mRenderers.begin(), mRenderers.end(), []( const auto &renderer ) { return renderer->forceRasterRender(); } ) )
   {
     //raster rendering is forced for this layer
     mForceRasterRender = true;
   }
 
   const bool allowFlattening = context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector;
-  if ( allowFlattening &&
-       ( ( layer->blendMode() != QPainter::CompositionMode_SourceOver )
-         || ( layer->featureBlendMode() != QPainter::CompositionMode_SourceOver )
-         || ( !qgsDoubleNear( layer->opacity(), 1.0 ) ) ) )
+  if ( allowFlattening
+       && ( ( layer->blendMode() != QPainter::CompositionMode_SourceOver ) || ( layer->featureBlendMode() != QPainter::CompositionMode_SourceOver ) || ( !qgsDoubleNear( layer->opacity(), 1.0 ) ) ) )
   {
     //layer properties require rasterization
     mForceRasterRender = true;
@@ -297,8 +292,7 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
   {
     // a little shortcut for the null symbol renderer - most of the time it is not going to render anything
     // so we can even skip the whole loop to fetch features
-    if ( !isMainRenderer ||
-         ( !mDrawVertexMarkers && !mLabelProvider && !mDiagramProvider && mSelectedFeatureIds.isEmpty() ) )
+    if ( !isMainRenderer || ( !mDrawVertexMarkers && !mLabelProvider && !mDiagramProvider && mSelectedFeatureIds.isEmpty() ) )
       return true;
   }
 
@@ -323,8 +317,7 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
   }
 
   // Per feature blending mode
-  if ( context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector
-       && mFeatureBlendMode != QPainter::CompositionMode_SourceOver )
+  if ( context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector && mFeatureBlendMode != QPainter::CompositionMode_SourceOver )
   {
     // set the painter to the feature blend mode, so that features drawn
     // on this layer will interact and blend with each other
@@ -363,10 +356,7 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
 
   renderer->modifyRequestExtent( requestExtent, context );
 
-  QgsFeatureRequest featureRequest = QgsFeatureRequest()
-                                     .setFilterRect( requestExtent )
-                                     .setSubsetOfAttributes( mAttrNames, mFields )
-                                     .setExpressionContext( context.expressionContext() );
+  QgsFeatureRequest featureRequest = QgsFeatureRequest().setFilterRect( requestExtent ).setSubsetOfAttributes( mAttrNames, mFields ).setExpressionContext( context.expressionContext() );
   if ( renderer->orderByEnabled() )
   {
     featureRequest.setOrderBy( renderer->orderBy() );
@@ -567,7 +557,7 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
       if ( mApplyClipGeometries )
         context.setFeatureClipGeometry( mClipFeatureGeom );
 
-      if ( ! mNoSetLayerExpressionContext )
+      if ( !mNoSetLayerExpressionContext )
         context.expressionContext().setFeature( fet );
 
       const bool featureIsSelected = isMainRenderer && context.showSelection() && mSelectedFeatureIds.contains( fet.id() );
@@ -645,8 +635,7 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
     catch ( const QgsCsException &cse )
     {
       Q_UNUSED( cse )
-      QgsDebugError( u"Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2"_s
-                     .arg( fet.id() ).arg( cse.what() ) );
+      QgsDebugError( u"Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2"_s.arg( fet.id() ).arg( cse.what() ) );
     }
   }
 
@@ -748,7 +737,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
     if ( clipEngine && !clipEngine->intersects( fet.geometry().constGet() ) )
       continue; // skip features outside of clipping region
 
-    if ( ! mNoSetLayerExpressionContext )
+    if ( !mNoSetLayerExpressionContext )
       context.expressionContext().setFeature( fet );
     QgsSymbol *sym = renderer->symbolForFeature( fet, context );
     if ( !sym )
@@ -905,7 +894,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
           // maybe vertex markers should be drawn only during the last pass...
           const bool drawMarker = isMainRenderer && ( mDrawVertexMarkers && context.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || featureIsSelected ) );
 
-          if ( ! mNoSetLayerExpressionContext )
+          if ( !mNoSetLayerExpressionContext )
             context.expressionContext().setFeature( feature );
 
           try
@@ -923,8 +912,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
           catch ( const QgsCsException &cse )
           {
             Q_UNUSED( cse )
-            QgsDebugError( u"Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2"_s
-                           .arg( fet.id() ).arg( cse.what() ) );
+            QgsDebugError( u"Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2"_s.arg( fet.id() ).arg( cse.what() ) );
           }
         }
       }
@@ -1060,9 +1048,8 @@ void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer *layer, QSet<QStrin
       if ( !mDiagramProvider->prepare( context, attributeNames ) )
       {
         engine2->removeProvider( mDiagramProvider );
-        mDiagramProvider = nullptr;  // deleted by engine
+        mDiagramProvider = nullptr; // deleted by engine
       }
     }
   }
 }
-

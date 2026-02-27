@@ -140,7 +140,7 @@ Returns the child node at the specified ``index``.
     }
 %End
 
-    NodeType nodeType() const;
+        NodeType nodeType() const;
 %Docstring
 Find out about type of the node. It is usually shorter to use
 convenience functions from :py:class:`QgsLayerTree` namespace for that
@@ -332,7 +332,6 @@ Emitted when the name of the node is changed
 %End
 
   protected:
-
     QgsLayerTreeNode( NodeType t, bool checked = true );
 %Docstring
 Constructor
@@ -363,8 +362,6 @@ Low-level removal of children from the node.
 
 
 };
-
-
 
 
 /************************************************************************

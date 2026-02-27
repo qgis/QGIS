@@ -22,8 +22,7 @@ using namespace Qt::StringLiterals;
 QgsProcessingParameterAggregate::QgsProcessingParameterAggregate( const QString &name, const QString &description, const QString &parentLayerParameterName, bool optional )
   : QgsProcessingParameterDefinition( name, description, QVariant(), optional )
   , mParentLayerParameterName( parentLayerParameterName )
-{
-}
+{}
 
 QgsProcessingParameterDefinition *QgsProcessingParameterAggregate::clone() const
 {
@@ -75,8 +74,7 @@ QString QgsProcessingParameterAggregate::asPythonString( QgsProcessing::PythonOu
   {
     case QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = u"QgsProcessingParameterAggregate('%1', %2"_s
-                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
+      QString code = u"QgsProcessingParameterAggregate('%1', %2"_s.arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( !mParentLayerParameterName.isEmpty() )
         code += u", parentLayerParameterName=%1"_s.arg( QgsProcessingUtils::stringToPythonLiteral( mParentLayerParameterName ) );
 
@@ -120,4 +118,3 @@ void QgsProcessingParameterAggregate::setParentLayerParameterName( const QString
 {
   mParentLayerParameterName = name;
 }
-

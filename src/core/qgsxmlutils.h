@@ -37,7 +37,6 @@ using namespace Qt::StringLiterals;
 class CORE_EXPORT QgsXmlUtils
 {
   public:
-
     /* reading */
 
     /**

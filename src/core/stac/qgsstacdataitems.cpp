@@ -39,9 +39,9 @@ constexpr int MAX_DISPLAYED_ITEMS = 20;
 //
 
 QgsStacAssetItem::QgsStacAssetItem( QgsDataItem *parent, const QString &name, const QgsStacAsset *asset )
-  : QgsDataItem( Qgis::BrowserItemType::Custom, parent, name, QString( "%1/%2" ).arg( parent->path(), name ), u"special:Stac"_s ),
-    mStacAsset( asset ),
-    mName( name )
+  : QgsDataItem( Qgis::BrowserItemType::Custom, parent, name, QString( "%1/%2" ).arg( parent->path(), name ), u"special:Stac"_s )
+  , mStacAsset( asset )
+  , mName( name )
 {
   if ( QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( asset->uri().providerKey ) )
   {
@@ -113,10 +113,7 @@ void QgsStacAssetItem::updateToolTip()
 //
 
 QgsStacFetchMoreItem::QgsStacFetchMoreItem( QgsDataItem *parent, const QString &name )
-  : QgsDataItem( Qgis::BrowserItemType::Custom,
-                 parent,
-                 name,
-                 QString() )
+  : QgsDataItem( Qgis::BrowserItemType::Custom, parent, name, QString() )
 {
   mState = Qgis::BrowserItemState::Populated;
 }
@@ -367,7 +364,6 @@ void QgsStacCatalogItem::onControllerFinished( int requestId, const QString &err
 
 QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
 {
-
   QgsStacController *controller = stacController();
   QString error;
   setStacCatalog( controller->fetchStacObject< QgsStacCatalog >( mPath, &error ) );
@@ -395,8 +391,7 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
       {
         useItemsEndpoint = true;
       }
-      else if ( link.relation() == "data"_L1 &&
-                link.href().endsWith( "/collections"_L1 ) )
+      else if ( link.relation() == "data"_L1 && link.href().endsWith( "/collections"_L1 ) )
       {
         useCollectionsEndpoint = true;
       }
@@ -409,21 +404,16 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
   for ( const QgsStacLink &link : links )
   {
     // skip hierarchical navigation links
-    if ( link.relation() == "self"_L1 ||
-         link.relation() == "root"_L1 ||
-         link.relation() == "parent"_L1 ||
-         link.relation() == "collection"_L1 )
+    if ( link.relation() == "self"_L1 || link.relation() == "root"_L1 || link.relation() == "parent"_L1 || link.relation() == "collection"_L1 )
       continue;
 
-    if ( link.relation() == "child"_L1 &&
-         !useCollectionsEndpoint )
+    if ( link.relation() == "child"_L1 && !useCollectionsEndpoint )
     {
       // may be either catalog or collection
       QgsStacCatalogItem *c = new QgsStacCatalogItem( this, link.title(), link.href() );
       contents.append( c );
     }
-    else if ( link.relation() == "data"_L1 &&
-              link.href().endsWith( "/collections"_L1 ) )
+    else if ( link.relation() == "data"_L1 && link.href().endsWith( "/collections"_L1 ) )
     {
       // use /collections api
       QString error;
@@ -439,8 +429,7 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
         contents.append( new QgsErrorItem( this, error, path() + u"/error"_s ) );
       }
     }
-    else if ( link.relation() == "item"_L1 &&
-              !useItemsEndpoint )
+    else if ( link.relation() == "item"_L1 && !useItemsEndpoint )
     {
       itemsCount++;
 
@@ -450,8 +439,7 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
       QgsStacItemItem *i = new QgsStacItemItem( this, link.title(), link.href() );
       contents.append( i );
     }
-    else if ( link.relation() == "items"_L1 &&
-              useItemsEndpoint )
+    else if ( link.relation() == "items"_L1 && useItemsEndpoint )
     {
       // stac api items (ogcapi features)
       QString error;
@@ -598,7 +586,6 @@ void QgsStacCatalogItem::fetchMoreChildren()
     mFetchMoreUrl = ic->nextUrl();
     if ( !ic->nextUrl().isEmpty() && moreItem )
     {
-
       const int numberMatched = ic->numberMatched();
       if ( numberMatched > -1 )
       {
@@ -638,7 +625,6 @@ QgsStacController *QgsStacConnectionItem::controller() const
 {
   return mController.get();
 }
-
 
 
 //

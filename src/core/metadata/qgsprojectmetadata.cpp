@@ -83,10 +83,9 @@ void QgsProjectMetadata::combine( const QgsAbstractMetadataBase *other )
   }
 }
 
-bool QgsProjectMetadata::operator==( const QgsProjectMetadata &metadataOther )  const
+bool QgsProjectMetadata::operator==( const QgsProjectMetadata &metadataOther ) const
 {
-  return equals( metadataOther ) &&
-         mAuthor == metadataOther.mAuthor;
+  return equals( metadataOther ) && mAuthor == metadataOther.mAuthor;
 }
 
 QgsProjectMetadata *QgsProjectMetadata::clone() const
@@ -111,5 +110,5 @@ QDateTime QgsProjectMetadata::creationDateTime() const
 
 void QgsProjectMetadata::setCreationDateTime( const QDateTime &creationDateTime )
 {
-  mDates[ Qgis::MetadataDateType::Created ] = creationDateTime;
+  mDates[Qgis::MetadataDateType::Created] = creationDateTime;
 }

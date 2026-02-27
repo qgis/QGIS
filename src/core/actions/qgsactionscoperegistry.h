@@ -47,7 +47,6 @@ class CORE_EXPORT QgsActionScopeRegistry : public QObject
     Q_PROPERTY( QSet<QgsActionScope> actionScopes READ actionScopes NOTIFY actionScopesChanged )
 
   public:
-
     /**
      * Create a new QgsActionScopeRegistry.
      * QGIS already creates a central registry. You will normally

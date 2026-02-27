@@ -61,10 +61,10 @@ class CORE_EXPORT QgsRectangle
     Q_PROPERTY( bool isValid READ isValid )
 
   public:
-
     //! Constructor for a null rectangle
     QgsRectangle() = default; // optimised constructor for null rectangle - no need to call normalize here
 
+    // clang-format off
     /**
      * Constructs a QgsRectangle from a set of x and y minimum and maximum coordinates.
      *
@@ -72,6 +72,7 @@ class CORE_EXPORT QgsRectangle
      * the normalization step will not be applied automatically.
      */
     explicit QgsRectangle( double xMin, double yMin = 0, double xMax = 0, double yMax = 0, bool normalize = true ) SIP_HOLDGIL
+      // clang-format on
   : mXmin( xMin )
     , mYmin( yMin )
     , mXmax( xMax )
@@ -684,6 +685,7 @@ class CORE_EXPORT QgsRectangle
     QgsRectangle snappedToGrid( double spacing ) const;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str;
@@ -693,6 +695,7 @@ class CORE_EXPORT QgsRectangle
       str = u"<QgsRectangle: %1>"_s.arg( sipCpp->asWktCoordinates() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
   private:

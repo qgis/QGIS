@@ -24,8 +24,7 @@
 
 using namespace Qt::StringLiterals;
 
-QgsProjectItem::QgsProjectItem( QgsDataItem *parent, const QString &name,
-                                const QString &path, const QString &providerKey )
+QgsProjectItem::QgsProjectItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &providerKey )
   : QgsDataItem( Qgis::BrowserItemType::Project, parent, name, path, providerKey )
 {
   mIconName = u":/images/icons/qgis_icon.svg"_s;
@@ -47,4 +46,3 @@ QgsMimeDataUtils::UriList QgsProjectItem::mimeUris() const
 
   return { u };
 }
-

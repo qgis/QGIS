@@ -143,7 +143,7 @@ void QgsNewsFeedModel::onEntryUpdated( const QgsNewsFeedParser::Entry &entry )
   {
     if ( mEntries.at( idx ).key == entry.key )
     {
-      mEntries[ idx ] = entry;
+      mEntries[idx] = entry;
       emit dataChanged( index( idx, 0 ), index( idx, 0 ) );
       break;
     }
@@ -153,10 +153,7 @@ void QgsNewsFeedModel::onEntryUpdated( const QgsNewsFeedParser::Entry &entry )
 void QgsNewsFeedModel::onEntryRemoved( const QgsNewsFeedParser::Entry &entry )
 {
   // find index of entry
-  const auto findIter = std::find_if( mEntries.begin(), mEntries.end(), [entry]( const QgsNewsFeedParser::Entry & candidate )
-  {
-    return candidate.key == entry.key;
-  } );
+  const auto findIter = std::find_if( mEntries.begin(), mEntries.end(), [entry]( const QgsNewsFeedParser::Entry &candidate ) { return candidate.key == entry.key; } );
   if ( findIter == mEntries.end() )
     return;
 
@@ -169,15 +166,12 @@ void QgsNewsFeedModel::onEntryRemoved( const QgsNewsFeedParser::Entry &entry )
 void QgsNewsFeedModel::onImageFetched( const int key, const QPixmap &pixmap )
 {
   // find index of entry
-  const auto findIter = std::find_if( mEntries.begin(), mEntries.end(), [key]( const QgsNewsFeedParser::Entry & candidate )
-  {
-    return candidate.key == key;
-  } );
+  const auto findIter = std::find_if( mEntries.begin(), mEntries.end(), [key]( const QgsNewsFeedParser::Entry &candidate ) { return candidate.key == key; } );
   if ( findIter == mEntries.end() )
     return;
 
   const int entryIndex = static_cast< int >( std::distance( mEntries.begin(), findIter ) );
-  mEntries[ entryIndex ].image = pixmap;
+  mEntries[entryIndex].image = pixmap;
   emit dataChanged( index( entryIndex, 0, QModelIndex() ), index( entryIndex, 0, QModelIndex() ) );
 }
 

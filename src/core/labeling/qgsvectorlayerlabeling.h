@@ -40,7 +40,6 @@ class QgsSldExportContext;
  */
 class CORE_EXPORT QgsAbstractVectorLayerLabeling
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( sipCpp->type() == "simple" )
@@ -49,7 +48,7 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
       sipType = sipType_QgsRuleBasedLabeling;
     else
       sipType = 0;
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -67,7 +66,11 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
      * Factory for label provider implementation
      * \note not available in Python bindings
      */
-    virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const SIP_SKIP { Q_UNUSED( layer ) return nullptr; }
+    virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const SIP_SKIP
+    {
+      Q_UNUSED( layer )
+      return nullptr;
+    }
 
     //! Returns labeling configuration as XML element
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const = 0;
@@ -159,7 +162,6 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
     static QgsPalLayerSettings defaultSettingsForLayer( const QgsVectorLayer *layer );
 
   protected:
-
     /**
      * Writes a TextSymbolizer element contents based on the provided labeling settings
      * \param parent the node that will have the text symbolizer element added to it
@@ -184,7 +186,6 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
 #ifdef SIP_RUN
     QgsAbstractVectorLayerLabeling( const QgsAbstractVectorLayerLabeling &rhs );
 #endif
-
 };
 
 /**

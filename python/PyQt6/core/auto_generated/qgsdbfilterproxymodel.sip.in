@@ -23,7 +23,6 @@ Implements a custom filter and can be used as a proxy for
 #include "qgsdbfilterproxymodel.h"
 %End
   public:
-
     QgsDatabaseFilterProxyModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsDatabaseFilterProxyModel.

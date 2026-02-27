@@ -28,7 +28,6 @@ order to update the listed tbales,
 %End
   public:
 
-
     enum class CustomRole /BaseType=IntEnum/
     {
       TableName,

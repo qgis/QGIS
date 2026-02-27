@@ -36,7 +36,6 @@ class CORE_EXPORT QgsRelationshipsItem : public QgsDataItem
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsRelationshipsItem, with the specified \a parent item.
      *
@@ -49,24 +48,23 @@ class CORE_EXPORT QgsRelationshipsItem : public QgsDataItem
      * The optional \a schema and \a tableName arguments can be used to restrict the visible relationships to
      * those with a matching parent table.
      */
-    QgsRelationshipsItem( QgsDataItem *parent SIP_TRANSFERTHIS,
-                          const QString &path,
-                          const QString &connectionUri,
-                          const QString &providerKey,
-                          const QString &schema = QString(),
-                          const QString &tableName = QString() );
+    QgsRelationshipsItem(
+      QgsDataItem *parent SIP_TRANSFERTHIS, const QString &path, const QString &connectionUri, const QString &providerKey, const QString &schema = QString(), const QString &tableName = QString()
+    );
 
     ~QgsRelationshipsItem() override;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = u"<QgsRelationshipsItem: %1>"_s.arg( sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-    QVector<QgsDataItem *> createChildren() override;
+        QVector<QgsDataItem *> createChildren() override;
 
     QIcon icon() override;
 
@@ -87,15 +85,13 @@ class CORE_EXPORT QgsRelationshipsItem : public QgsDataItem
      *
      * \see schema()
      */
-    QString tableName() const {return mTableName;}
+    QString tableName() const { return mTableName; }
 
   private:
-
     QString mConnectionUri;
     QString mSchema;
     QString mTableName;
     QStringList mRelationshipNames;
-
 };
 
 
@@ -108,26 +104,26 @@ class CORE_EXPORT QgsRelationshipItem : public QgsDataItem
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsRelationshipItem, with the specified \a parent item and \a relation.
      *
      * \note parent item must be a QgsRelationshipsItem.
      */
-    QgsRelationshipItem( QgsDataItem *parent SIP_TRANSFERTHIS,
-                         const QgsWeakRelation &relation );
+    QgsRelationshipItem( QgsDataItem *parent SIP_TRANSFERTHIS, const QgsWeakRelation &relation );
 
     ~QgsRelationshipItem() override;
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = u"<QgsRelationshipItem: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-    QIcon icon() override;
+        QIcon icon() override;
 
     /**
      * Returns the associated relationship.
@@ -135,11 +131,7 @@ class CORE_EXPORT QgsRelationshipItem : public QgsDataItem
     const QgsWeakRelation &relation() const;
 
   private:
-
     QgsWeakRelation mRelation;
-
 };
 
 #endif // QGSRELATIONSHIPSITEM_H
-
-

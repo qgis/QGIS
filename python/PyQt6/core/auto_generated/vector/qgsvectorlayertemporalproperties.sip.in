@@ -24,7 +24,6 @@ temporal capabilities will be applied.
 #include "qgsvectorlayertemporalproperties.h"
 %End
   public:
-
     QgsVectorLayer *layer() const;
 %Docstring
 Returns the associated layer.
@@ -53,7 +52,6 @@ Implementation of map layer temporal properties for vector layers.
 #include "qgsvectorlayertemporalproperties.h"
 %End
   public:
-
     QgsVectorLayerTemporalProperties( QObject *parent /TransferThis/ = 0, bool enabled = false );
 %Docstring
 Constructor for QgsVectorLayerTemporalProperties, with the specified

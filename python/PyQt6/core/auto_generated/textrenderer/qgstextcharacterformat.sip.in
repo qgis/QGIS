@@ -30,7 +30,6 @@ sets of characters).
 #include "qgstextcharacterformat.h"
 %End
   public:
-
     QgsTextCharacterFormat();
 
     QgsTextCharacterFormat( const QTextCharFormat &format );

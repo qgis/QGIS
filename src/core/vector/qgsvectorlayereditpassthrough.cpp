@@ -83,7 +83,7 @@ bool QgsVectorLayerEditPassthrough::changeGeometry( QgsFeatureId fid, const QgsG
   return modify( new QgsVectorLayerUndoPassthroughCommandChangeGeometry( this, fid, geom ) );
 }
 
-bool QgsVectorLayerEditPassthrough::changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &/*oldValue*/ )
+bool QgsVectorLayerEditPassthrough::changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant & /*oldValue*/ )
 {
   return modify( new QgsVectorLayerUndoPassthroughCommandChangeAttribute( this, fid, field, newValue ) );
 }

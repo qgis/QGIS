@@ -80,7 +80,6 @@ bool QgsFieldProxyModel::isReadOnly( const QModelIndex &index ) const
         return false;
       }
     }
-
   }
   return false; // avoid warnings
 }
@@ -122,16 +121,11 @@ bool QgsFieldProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
   if ( !ok )
     return true;
 
-  if ( ( mFilters.testFlag( String ) && type == QMetaType::Type::QString ) ||
-       ( mFilters.testFlag( LongLong ) && type == QMetaType::Type::LongLong ) ||
-       ( mFilters.testFlag( Int ) && type == QMetaType::Type::Int ) ||
-       ( mFilters.testFlag( Double ) && type == QMetaType::Type::Double ) ||
-       ( mFilters.testFlag( Date ) && type == QMetaType::Type::QDate ) ||
-       ( mFilters.testFlag( Date ) && type == QMetaType::Type::QDateTime ) ||
-       ( mFilters.testFlag( DateTime ) && type == QMetaType::Type::QDateTime ) ||
-       ( mFilters.testFlag( Time ) && type == QMetaType::Type::QTime ) ||
-       ( mFilters.testFlag( Binary ) && type == QMetaType::Type::QByteArray ) ||
-       ( mFilters.testFlag( Boolean ) && type == QMetaType::Type::Bool ) )
+  if ( ( mFilters.testFlag( String ) && type == QMetaType::Type::QString ) || ( mFilters.testFlag( LongLong ) && type == QMetaType::Type::LongLong )
+       || ( mFilters.testFlag( Int ) && type == QMetaType::Type::Int ) || ( mFilters.testFlag( Double ) && type == QMetaType::Type::Double )
+       || ( mFilters.testFlag( Date ) && type == QMetaType::Type::QDate ) || ( mFilters.testFlag( Date ) && type == QMetaType::Type::QDateTime )
+       || ( mFilters.testFlag( DateTime ) && type == QMetaType::Type::QDateTime ) || ( mFilters.testFlag( Time ) && type == QMetaType::Type::QTime )
+       || ( mFilters.testFlag( Binary ) && type == QMetaType::Type::QByteArray ) || ( mFilters.testFlag( Boolean ) && type == QMetaType::Type::Bool ) )
     return true;
 
   return false;

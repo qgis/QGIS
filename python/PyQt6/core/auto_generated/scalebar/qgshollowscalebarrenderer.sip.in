@@ -9,7 +9,7 @@
 
 
 
-class QgsHollowScaleBarRenderer: QgsScaleBarRenderer
+class QgsHollowScaleBarRenderer : QgsScaleBarRenderer
 {
 %Docstring(signature="appended")
 Scalebar style that draws a single box with alternating color for the
@@ -24,7 +24,6 @@ AKA "South African" style.
 #include "qgshollowscalebarrenderer.h"
 %End
   public:
-
     QgsHollowScaleBarRenderer();
 
     virtual QString id() const;
@@ -38,9 +37,8 @@ AKA "South African" style.
     virtual QgsHollowScaleBarRenderer *clone() const /Factory/;
 
 
-     virtual void draw( QgsRenderContext &context,
-               const QgsScaleBarSettings &settings,
-               const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
+    virtual void draw( QgsRenderContext &context, const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
+
     virtual bool applyDefaultSettings( QgsScaleBarSettings &settings ) const;
 
 };

@@ -24,8 +24,7 @@ QgsDartMeasurement::QgsDartMeasurement( const QString &name, Type type, const QS
   : mName( name )
   , mType( type )
   , mValue( value )
-{
-}
+{}
 
 const QString QgsDartMeasurement::toString() const
 {
@@ -35,11 +34,7 @@ const QString QgsDartMeasurement::toString() const
     elementName = u"DartMeasurementFile"_s;
   }
 
-  QString dashMessage = u"<%1 name=\"%2\" type=\"%3\">%4</%1>"_s
-                        .arg( elementName,
-                              mName,
-                              typeToString( mType ),
-                              mValue );
+  QString dashMessage = u"<%1 name=\"%2\" type=\"%3\">%4</%1>"_s.arg( elementName, mName, typeToString( mType ), mValue );
   return dashMessage;
 }
 

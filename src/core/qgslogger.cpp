@@ -47,11 +47,11 @@ void QgsLogger::init()
   *sFileFilter() = getenv( "QGIS_DEBUG_FILE" ) ? getenv( "QGIS_DEBUG_FILE" ) : "";
   sDebugLevel = getenv( "QGIS_DEBUG" ) ? atoi( getenv( "QGIS_DEBUG" ) ) :
 #ifdef QGISDEBUG
-                1
+                                       1
 #else
-                0
+                                       0
 #endif
-                ;
+    ;
 
   sPrefixLength = sizeof( CMAKE_SOURCE_DIR );
   // cppcheck-suppress internalAstError

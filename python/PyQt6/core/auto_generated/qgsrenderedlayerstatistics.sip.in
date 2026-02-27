@@ -12,7 +12,7 @@
 
 
 
-class QgsRenderedLayerStatistics: QgsRenderedItemDetails
+class QgsRenderedLayerStatistics : QgsRenderedItemDetails
 {
 %Docstring(signature="appended")
 Contains computed statistics for a layer render.
@@ -24,7 +24,6 @@ Contains computed statistics for a layer render.
 #include "qgsrenderedlayerstatistics.h"
 %End
   public:
-
     QgsRenderedLayerStatistics( const QString &layerId, const QList<double> &minimum, const QList<double> &maximum );
 %Docstring
 Constructor for QgsRenderedLayerStatistics from a list of ``minimum``
@@ -67,7 +66,7 @@ Constructor for QgsRenderedLayerStatistics with only one value for
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    QList<double> minimum() const;
+        QList<double> minimum() const;
 %Docstring
 Returns the minimum values of the computed statistics.
 

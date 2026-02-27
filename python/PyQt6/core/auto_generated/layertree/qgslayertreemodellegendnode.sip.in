@@ -26,19 +26,19 @@ implementations may offer additional interactivity and customized look.
 #include "qgscolorramplegendnode.h"
 %End
 %ConvertToSubClassCode
-    if ( qobject_cast<QgsSymbolLegendNode *> ( sipCpp ) )
+    if ( qobject_cast<QgsSymbolLegendNode *>( sipCpp ) )
       sipType = sipType_QgsSymbolLegendNode;
-    else if ( qobject_cast<QgsDataDefinedSizeLegendNode *> ( sipCpp ) )
+    else if ( qobject_cast<QgsDataDefinedSizeLegendNode *>( sipCpp ) )
       sipType = sipType_QgsDataDefinedSizeLegendNode;
-    else if ( qobject_cast<QgsImageLegendNode *> ( sipCpp ) )
+    else if ( qobject_cast<QgsImageLegendNode *>( sipCpp ) )
       sipType = sipType_QgsImageLegendNode;
-    else if ( qobject_cast<QgsRasterSymbolLegendNode *> ( sipCpp ) )
+    else if ( qobject_cast<QgsRasterSymbolLegendNode *>( sipCpp ) )
       sipType = sipType_QgsRasterSymbolLegendNode;
-    else if ( qobject_cast<QgsSimpleLegendNode *> ( sipCpp ) )
+    else if ( qobject_cast<QgsSimpleLegendNode *>( sipCpp ) )
       sipType = sipType_QgsSimpleLegendNode;
-    else if ( qobject_cast<QgsWmsLegendNode *> ( sipCpp ) )
+    else if ( qobject_cast<QgsWmsLegendNode *>( sipCpp ) )
       sipType = sipType_QgsWmsLegendNode;
-    else if ( qobject_cast<QgsColorRampLegendNode *> ( sipCpp ) )
+    else if ( qobject_cast<QgsColorRampLegendNode *>( sipCpp ) )
       sipType = sipType_QgsColorRampLegendNode;
     else
       sipType = 0;
@@ -154,39 +154,38 @@ changed. Default implementation does nothing.
 
     struct ItemContext
     {
-      ItemContext();
+          ItemContext();
 
-      QgsRenderContext *context;
-      QPainter *painter;
+        QgsRenderContext *context;
+        QPainter *painter;
 
  QPointF point;
 
  double labelXOffset;
 
-      double top;
+        double top;
 
-      double columnLeft;
+        double columnLeft;
 
-      double columnRight;
+        double columnRight;
 
-      double maxSiblingSymbolWidth;
+        double maxSiblingSymbolWidth;
 
-      QgsLegendPatchShape patchShape;
+        QgsLegendPatchShape patchShape;
 
-      QSizeF patchSize;
+        QSizeF patchSize;
 
-      const QgsTextDocument *textDocument;
+        const QgsTextDocument *textDocument;
 
-      const QgsTextDocumentMetrics *textDocumentMetrics;
+        const QgsTextDocumentMetrics *textDocumentMetrics;
 
-      QgsScreenProperties screenProperties;
-
+        QgsScreenProperties screenProperties;
     };
 
     struct ItemMetrics
     {
-      QSizeF symbolSize;
-      QSizeF labelSize;
+        QSizeF symbolSize;
+        QSizeF labelSize;
     };
 
     virtual ItemMetrics draw( const QgsLegendSettings &settings, ItemContext &ctx );
@@ -251,9 +250,9 @@ Draws label on the right side of the item
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-  public slots:
+      public slots :
 
-    void checkAllItems();
+      void checkAllItems();
 %Docstring
 Checks all checkable items belonging to the same layer as this node.
 
@@ -329,7 +328,6 @@ renderer.
 #include "qgslayertreemodellegendnode.h"
 %End
   public:
-
     static double MINIMUM_SIZE;
     static double MAXIMUM_SIZE;
 
@@ -531,7 +529,6 @@ with icons.
 #include "qgslayertreemodellegendnode.h"
 %End
   public:
-
     QgsSimpleLegendNode( QgsLayerTreeLayer *nodeLayer, const QString &label, const QIcon &icon = QIcon(), QObject *parent /TransferThis/ = 0, const QString &key = QString() );
 %Docstring
 Constructor for QgsSimpleLegendNode.
@@ -566,7 +563,6 @@ images.
 #include "qgslayertreemodellegendnode.h"
 %End
   public:
-
     QgsImageLegendNode( QgsLayerTreeLayer *nodeLayer, const QImage &img, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsImageLegendNode.
@@ -604,9 +600,15 @@ entries.
 #include "qgslayertreemodellegendnode.h"
 %End
   public:
-
-    QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent /TransferThis/ = 0,
-                               bool isCheckable = false, const QString &ruleKey = QString(), const QString &parentRuleKey = QString() );
+    QgsRasterSymbolLegendNode(
+      QgsLayerTreeLayer *nodeLayer,
+      const QColor &color,
+      const QString &label,
+      QObject *parent /TransferThis/ = 0,
+      bool isCheckable = false,
+      const QString &ruleKey = QString(),
+      const QString &parentRuleKey = QString()
+    );
 %Docstring
 Constructor for QgsRasterSymbolLegendNode.
 
@@ -668,7 +670,6 @@ entries.
 #include "qgslayertreemodellegendnode.h"
 %End
   public:
-
     QgsWmsLegendNode( QgsLayerTreeLayer *nodeLayer, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsWmsLegendNode.
@@ -691,7 +692,7 @@ Constructor for QgsWmsLegendNode.
     virtual void invalidateMapBasedData();
 
 
-    QImage getLegendGraphicBlocking( ) const;
+    QImage getLegendGraphicBlocking() const;
 %Docstring
 Fetches the image from the server and returns it.
 
@@ -751,7 +752,6 @@ A legend node for a labeling text symbol.
 #include "qgslayertreemodellegendnode.h"
 %End
   public:
-
     QgsVectorLabelLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsPalLayerSettings &labelSettings, QObject *parent = 0 );
 %Docstring
 QgsVectorLabelLegendNode

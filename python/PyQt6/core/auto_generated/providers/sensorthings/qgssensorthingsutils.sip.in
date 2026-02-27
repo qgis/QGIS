@@ -22,7 +22,8 @@ Utility functions for working with OGC SensorThings API services.
 #include "qgssensorthingsutils.h"
 %End
   public:
-
+    static const int DEFAULT_FEATURE_LIMIT;
+    static const int DEFAULT_EXPANSION_LIMIT;
     static Qgis::SensorThingsEntity stringToEntity( const QString &type );
 %Docstring
 Converts a string value to a :py:class:`Qgis`.SensorThingsEntity type.
@@ -169,7 +170,6 @@ The base entity type for the query must be specified.
 
 .. versionadded:: 3.38
 %End
-
 };
 
 
@@ -186,12 +186,13 @@ service should be expanded.
 #include "qgssensorthingsutils.h"
 %End
   public:
-
-    QgsSensorThingsExpansionDefinition( Qgis::SensorThingsEntity childEntity = Qgis::SensorThingsEntity::Invalid,
-                                        const QString &orderBy = QString(),
-                                        Qt::SortOrder sortOrder = Qt::SortOrder::AscendingOrder,
-                                        int limit = QgsSensorThingsUtils::DEFAULT_EXPANSION_LIMIT,
-                                        const QString &filter = QString() );
+    QgsSensorThingsExpansionDefinition(
+      Qgis::SensorThingsEntity childEntity = Qgis::SensorThingsEntity::Invalid,
+      const QString &orderBy = QString(),
+      Qt::SortOrder sortOrder = Qt::SortOrder::AscendingOrder,
+      int limit = QgsSensorThingsUtils::DEFAULT_EXPANSION_LIMIT,
+      const QString &filter = QString()
+    );
 %Docstring
 Constructor for QgsSensorThingsExpansionDefinition, targeting the
 specified child entity type.

@@ -27,7 +27,6 @@ Contains utility functions for working with symbols and symbol layers.
 #include "qgssymbollayerutils.h"
 %End
   public:
-
     static QString encodeColor( const QColor &color );
     static QColor decodeColor( const QString &str );
 
@@ -314,10 +313,16 @@ Returns an icon preview for a color ramp.
 .. seealso:: :py:func:`symbolPreviewPixmap`
 %End
 
-    static QPixmap symbolPreviewPixmap( const QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = 0, bool selected = false,
-                                        const QgsExpressionContext *expressionContext = 0,
-                                        const QgsLegendPatchShape *shape = 0,
-                                        const QgsScreenProperties &screen = QgsScreenProperties() );
+    static QPixmap symbolPreviewPixmap(
+      const QgsSymbol *symbol,
+      QSize size,
+      int padding = 0,
+      QgsRenderContext *customContext = 0,
+      bool selected = false,
+      const QgsExpressionContext *expressionContext = 0,
+      const QgsLegendPatchShape *shape = 0,
+      const QgsScreenProperties &screen = QgsScreenProperties()
+    );
 %Docstring
 Returns a pixmap preview for a color ramp.
 
@@ -339,7 +344,9 @@ Returns a pixmap preview for a color ramp.
 .. seealso:: :py:func:`symbolPreviewIcon`
 %End
 
-    static QPicture symbolLayerPreviewPicture( const QgsSymbolLayer *layer, Qgis::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid );
+    static QPicture symbolLayerPreviewPicture(
+      const QgsSymbolLayer *layer, Qgis::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid
+    );
 %Docstring
 Draws a symbol layer preview to a QPicture
 
@@ -356,7 +363,15 @@ Draws a symbol layer preview to a QPicture
 .. seealso:: :py:func:`symbolLayerPreviewIcon`
 %End
 
-    static QIcon symbolLayerPreviewIcon( const QgsSymbolLayer *layer, Qgis::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale(), Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid, QgsMapLayer *mapLayer = 0, const QgsScreenProperties &screen = QgsScreenProperties() );
+    static QIcon symbolLayerPreviewIcon(
+      const QgsSymbolLayer *layer,
+      Qgis::RenderUnit u,
+      QSize size,
+      const QgsMapUnitScale &scale = QgsMapUnitScale(),
+      Qgis::SymbolType parentSymbolType = Qgis::SymbolType::Hybrid,
+      QgsMapLayer *mapLayer = 0,
+      const QgsScreenProperties &screen = QgsScreenProperties()
+    );
 %Docstring
 Draws a symbol layer preview to an icon.
 
@@ -391,8 +406,7 @@ Returns an icon preview for a color ramp.
 .. seealso:: :py:func:`colorRampPreviewPixmap`
 %End
 
-    static QPixmap colorRampPreviewPixmap( QgsColorRamp *ramp, QSize size, int padding = 0, Qt::Orientation direction = Qt::Horizontal,
-                                           bool flipDirection = false, bool drawTransparentBackground = true );
+    static QPixmap colorRampPreviewPixmap( QgsColorRamp *ramp, QSize size, int padding = 0, Qt::Orientation direction = Qt::Horizontal, bool flipDirection = false, bool drawTransparentBackground = true );
 %Docstring
 Returns a pixmap preview for a color ramp.
 
@@ -544,8 +558,7 @@ type PNG, JPEG or GIF.
 .. versionadded:: 3.30
 %End
 
- static void fillToSld( QDomDocument &doc, QDomElement &element,
-        Qt::BrushStyle brushStyle, const QColor &color = QColor() ) /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
+ static void fillToSld( QDomDocument &doc, QDomElement &element, Qt::BrushStyle brushStyle, const QColor &color = QColor() ) /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
 %Docstring
 Exports fill details to an SLD element.
 
@@ -554,32 +567,32 @@ Exports fill details to an SLD element.
    Use the version with :py:class:`QgsSldExportContext` instead.
 %End
 
-    static void fillToSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context,
-                           Qt::BrushStyle brushStyle, const QColor &color = QColor() );
+    static void fillToSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context, Qt::BrushStyle brushStyle, const QColor &color = QColor() );
 %Docstring
 Exports fill details to an SLD element.
 
 .. versionadded:: 3.44
 %End
 
-    static bool fillFromSld( QDomElement &element,
-                             Qt::BrushStyle &brushStyle, QColor &color );
+    static bool fillFromSld( QDomElement &element, Qt::BrushStyle &brushStyle, QColor &color );
 
-    static bool lineFromSld( QDomElement &element,
-                             Qt::PenStyle &penStyle, QColor &color, double &width,
-                             Qt::PenJoinStyle *penJoinStyle = 0, Qt::PenCapStyle *penCapStyle = 0,
-                             QVector<qreal> *customDashPattern = 0, double *dashOffset = 0 );
+    static bool lineFromSld(
+      QDomElement &element,
+      Qt::PenStyle &penStyle,
+      QColor &color,
+      double &width,
+      Qt::PenJoinStyle *penJoinStyle = 0,
+      Qt::PenCapStyle *penCapStyle = 0,
+      QVector<qreal> *customDashPattern = 0,
+      double *dashOffset = 0
+    );
 
-    static void externalGraphicToSld( QDomDocument &doc, QDomElement &element,
-                                      const QString &path, const QString &mime,
-                                      const QColor &color, double size = -1 );
-    static bool externalGraphicFromSld( QDomElement &element,
-                                        QString &path, QString &mime,
-                                        QColor &color, double &size );
+    static void externalGraphicToSld( QDomDocument &doc, QDomElement &element, const QString &path, const QString &mime, const QColor &color, double size = -1 );
+    static bool externalGraphicFromSld( QDomElement &element, QString &path, QString &mime, QColor &color, double &size );
 
- static void wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
-        const QString &name, const QColor &color, const QColor &strokeColor, Qt::PenStyle strokeStyle,
-        double strokeWidth = -1, double size = -1 ) /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
+ static void wellKnownMarkerToSld(
+      QDomDocument &doc, QDomElement &element, const QString &name, const QColor &color, const QColor &strokeColor, Qt::PenStyle strokeStyle, double strokeWidth = -1, double size = -1
+    ) /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
 %Docstring
 Exports a marker to SLD
 
@@ -588,26 +601,31 @@ Exports a marker to SLD
    Use the version with :py:class:`QgsSldExportContext` instead.
 %End
 
-    static void wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
-                                      const QString &name, const QColor &color, const QColor &strokeColor, Qt::PenStyle strokeStyle,
-                                      QgsSldExportContext &context,
-                                      double strokeWidth = -1, double size = -1 );
+    static void wellKnownMarkerToSld(
+      QDomDocument &doc,
+      QDomElement &element,
+      const QString &name,
+      const QColor &color,
+      const QColor &strokeColor,
+      Qt::PenStyle strokeStyle,
+      QgsSldExportContext &context,
+      double strokeWidth = -1,
+      double size = -1
+    );
 %Docstring
 Exports a marker to SLD
 
 .. versionadded:: 3.44
 %End
 
-    static bool wellKnownMarkerFromSld( QDomElement &element,
-                                        QString &name, QColor &color, QColor &strokeColor, Qt::PenStyle &strokeStyle,
-                                        double &strokeWidth, double &size ) /PyName=wellKnownMarkerFromSld2/;
+    static bool wellKnownMarkerFromSld( QDomElement &element, QString &name, QColor &color, QColor &strokeColor, Qt::PenStyle &strokeStyle, double &strokeWidth, double &size ) /PyName=wellKnownMarkerFromSld2/;
 %Docstring
 Extracts properties from an SLD marker definition.
 %End
 
- static void externalMarkerToSld( QDomDocument &doc, QDomElement &element,
-        const QString &path, const QString &format, int *markIndex = 0,
-        const QColor &color = QColor(), double size = -1 ) /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
+ static void externalMarkerToSld(
+      QDomDocument &doc, QDomElement &element, const QString &path, const QString &format, int *markIndex = 0, const QColor &color = QColor(), double size = -1
+    ) /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
 %Docstring
 Exports a marker to an SLD definition.
 
@@ -616,21 +634,18 @@ Exports a marker to an SLD definition.
    Use the version with :py:class:`QgsSldExportContext` instead.
 %End
 
-    static void externalMarkerToSld( QDomDocument &doc, QDomElement &element,
-                                     const QString &path, const QString &format, QgsSldExportContext &context, int *markIndex = 0,
-                                     const QColor &color = QColor(), double size = -1 );
+    static void externalMarkerToSld(
+      QDomDocument &doc, QDomElement &element, const QString &path, const QString &format, QgsSldExportContext &context, int *markIndex = 0, const QColor &color = QColor(), double size = -1
+    );
 %Docstring
 Exports a marker to an SLD definition.
 
 .. versionadded:: 3.44
 %End
 
-    static bool externalMarkerFromSld( QDomElement &element,
-                                       QString &path, QString &format, int &markIndex,
-                                       QColor &color, double &size );
+    static bool externalMarkerFromSld( QDomElement &element, QString &path, QString &format, int &markIndex, QColor &color, double &size );
 
- static void labelTextToSld( QDomDocument &doc, QDomElement &element, const QString &label,
-        const QFont &font, const QColor &color = QColor(), double size = -1 ) /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
+ static void labelTextToSld( QDomDocument &doc, QDomElement &element, const QString &label, const QFont &font, const QColor &color = QColor(), double size = -1 ) /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
 %Docstring
 Exports label text to SLD
 
@@ -639,19 +654,23 @@ Exports label text to SLD
    Use the version with :py:class:`QgsSldExportContext` instead.
 %End
 
-    static void labelTextToSld( QDomDocument &doc, QDomElement &element, const QString &label,
-                                const QFont &font, QgsSldExportContext &context, const QColor &color = QColor(), double size = -1 );
+    static void labelTextToSld( QDomDocument &doc, QDomElement &element, const QString &label, const QFont &font, QgsSldExportContext &context, const QColor &color = QColor(), double size = -1 );
 %Docstring
 Exports label text to SLD
 
 .. versionadded:: 3.44
 %End
 
-    static QString ogrFeatureStylePen( double width, double mmScaleFactor, double mapUnitsScaleFactor, const QColor &c,
-                                       Qt::PenJoinStyle joinStyle = Qt::MiterJoin,
-                                       Qt::PenCapStyle capStyle = Qt::FlatCap,
-                                       double offset = 0.0,
-                                       const QVector<qreal> *dashPattern = 0 );
+    static QString ogrFeatureStylePen(
+      double width,
+      double mmScaleFactor,
+      double mapUnitsScaleFactor,
+      const QColor &c,
+      Qt::PenJoinStyle joinStyle = Qt::MiterJoin,
+      Qt::PenCapStyle capStyle = Qt::FlatCap,
+      double offset = 0.0,
+      const QVector<qreal> *dashPattern = 0
+    );
 %Docstring
 Create ogr feature style string for pen
 %End
@@ -1175,9 +1194,7 @@ Merges the local scale limits, if any, with the ones already in the map,
 if any
 %End
 
- static void parametricSvgToSld( QDomDocument &doc, QDomElement &graphicElem,
-        const QString &path,
-        const QColor &fillColor, double size, const QColor &strokeColor, double strokeWidth ) /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
+ static void parametricSvgToSld( QDomDocument &doc, QDomElement &graphicElem, const QString &path, const QColor &fillColor, double size, const QColor &strokeColor, double strokeWidth ) /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
 %Docstring
 Encodes a reference to a parametric SVG into SLD, as a succession of
 parametric SVG using URL parameters, a fallback SVG without parameters,
@@ -1189,10 +1206,9 @@ systems that cannot do SVG at all
    Use the version with :py:class:`QgsSldExportContext` instead.
 %End
 
-    static void parametricSvgToSld( QDomDocument &doc, QDomElement &graphicElem,
-                                    const QString &path,
-                                    const QColor &fillColor, double size, const QColor &strokeColor, double strokeWidth,
-                                    QgsSldExportContext &context );
+    static void parametricSvgToSld(
+      QDomDocument &doc, QDomElement &graphicElem, const QString &path, const QColor &fillColor, double size, const QColor &strokeColor, double strokeWidth, QgsSldExportContext &context
+    );
 %Docstring
 Encodes a reference to a parametric SVG into SLD, as a succession of
 parametric SVG using URL parameters, a fallback SVG without parameters,
@@ -1325,7 +1341,6 @@ then all clip geometries for the symbol layer will be returned.
 
 .. versionadded:: 3.38
 %End
-
 
 };
 

@@ -23,7 +23,6 @@ for the properties available from a QScreen object.
 #include "qgsscreenproperties.h"
 %End
   public:
-
     QgsScreenProperties();
 %Docstring
 Constructor for invalid properties.

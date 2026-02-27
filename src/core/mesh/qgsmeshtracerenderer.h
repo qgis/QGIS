@@ -49,15 +49,10 @@ class QgsMeshVectorValueInterpolator
 {
   public:
     //! Constructor
-    QgsMeshVectorValueInterpolator(
-      const QgsTriangularMesh &triangularMesh,
-      const QgsMeshDataBlock &datasetVectorValues );
+    QgsMeshVectorValueInterpolator( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues );
 
     //! Constructor with scalar active face flag values to not interpolate on inactive face
-    QgsMeshVectorValueInterpolator(
-      const QgsTriangularMesh &triangularMesh,
-      const QgsMeshDataBlock &datasetVectorValues,
-      const QgsMeshDataBlock &scalarActiveFaceFlagValues );
+    QgsMeshVectorValueInterpolator( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues );
 
     QgsMeshVectorValueInterpolator( const QgsMeshVectorValueInterpolator &other );
 
@@ -87,7 +82,6 @@ class QgsMeshVectorValueInterpolator
     bool isVectorValid( const QgsVector &v ) const;
 
   private:
-
     void activeFaceFilter( QgsVector &vector, int faceIndex ) const;
 
     virtual QgsVector interpolatedValuePrivate( int faceIndex, const QgsPointXY point ) const = 0;
@@ -101,19 +95,14 @@ class QgsMeshVectorValueInterpolator
  * \note not available in Python bindings
  * \since QGIS 3.12
  */
-class QgsMeshVectorValueInterpolatorFromVertex: public QgsMeshVectorValueInterpolator
+class QgsMeshVectorValueInterpolatorFromVertex : public QgsMeshVectorValueInterpolator
 {
   public:
     //! Constructor
-    QgsMeshVectorValueInterpolatorFromVertex(
-      const QgsTriangularMesh &triangularMesh,
-      const QgsMeshDataBlock &datasetVectorValues );
+    QgsMeshVectorValueInterpolatorFromVertex( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues );
 
     //! Constructor with scalar active face flag value to not interpolate on inactive face
-    QgsMeshVectorValueInterpolatorFromVertex(
-      const QgsTriangularMesh &triangularMesh,
-      const QgsMeshDataBlock &datasetVectorValues,
-      const QgsMeshDataBlock &scalarActiveFaceFlagValues );
+    QgsMeshVectorValueInterpolatorFromVertex( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues );
 
     QgsMeshVectorValueInterpolatorFromVertex( const QgsMeshVectorValueInterpolatorFromVertex &other );
 
@@ -134,19 +123,14 @@ class QgsMeshVectorValueInterpolatorFromVertex: public QgsMeshVectorValueInterpo
  * \note not available in Python bindings
  * \since QGIS 3.12
  */
-class QgsMeshVectorValueInterpolatorFromFace: public QgsMeshVectorValueInterpolator
+class QgsMeshVectorValueInterpolatorFromFace : public QgsMeshVectorValueInterpolator
 {
   public:
     //! Constructor
-    QgsMeshVectorValueInterpolatorFromFace(
-      const QgsTriangularMesh &triangularMesh,
-      const QgsMeshDataBlock &datasetVectorValues );
+    QgsMeshVectorValueInterpolatorFromFace( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues );
 
     //! Constructor with scalar active face flag value to not interpolate on inactive face
-    QgsMeshVectorValueInterpolatorFromFace(
-      const QgsTriangularMesh &triangularMesh,
-      const QgsMeshDataBlock &datasetVectorValues,
-      const QgsMeshDataBlock &scalarActiveFaceFlagValues );
+    QgsMeshVectorValueInterpolatorFromFace( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues, const QgsMeshDataBlock &scalarActiveFaceFlagValues );
 
     QgsMeshVectorValueInterpolatorFromFace( const QgsMeshVectorValueInterpolatorFromFace &other );
 
@@ -172,10 +156,10 @@ class QgsMeshStreamField
   public:
     struct FieldData
     {
-      double magnitude;
-      float time;
-      int directionX;
-      int directionY;
+        double magnitude;
+        float time;
+        int directionX;
+        int directionY;
     };
 
     //! Constructor
@@ -188,7 +172,8 @@ class QgsMeshStreamField
       bool dataIsOnVertices,
       const QgsRenderContext &rendererContext,
       const QgsInterpolatedLineColor &vectorColoring,
-      int resolution = 1 );
+      int resolution = 1
+    );
 
     QgsMeshStreamField( const QgsMeshStreamField &other );
     virtual ~QgsMeshStreamField();
@@ -272,9 +257,7 @@ class QgsMeshStreamField
 
   private:
     QgsPointXY positionToMapCoordinates( const QPoint &pixelPosition, const QgsPointXY &positionInPixel );
-    bool addPixelToChunkTrace( QPoint &pixel,
-                               QgsMeshStreamField::FieldData &data,
-                               std::list<QPair<QPoint, QgsMeshStreamField::FieldData> > &chunkTrace );
+    bool addPixelToChunkTrace( QPoint &pixel, QgsMeshStreamField::FieldData &data, std::list<QPair<QPoint, QgsMeshStreamField::FieldData> > &chunkTrace );
     void setChunkTrace( std::list<QPair<QPoint, FieldData>> &chunkTrace );
     virtual void drawTrace( const QPoint & ) const {}
     void clearChunkTrace( std::list<QPair<QPoint, FieldData>> &chunkTrace );
@@ -285,7 +268,6 @@ class QgsMeshStreamField
     virtual bool isTraceExists( const QPoint &pixel ) const = 0;
 
   protected:
-
     QSize mFieldSize;
     std::unique_ptr<QPainter> mPainter = std::unique_ptr<QPainter>( nullptr );
     int mFieldResolution = 1;
@@ -335,29 +317,33 @@ class QgsMeshStreamField
  * \note not available in Python bindings
  * \since QGIS 3.12
  */
-class QgsMeshStreamlinesField: public QgsMeshStreamField
+class QgsMeshStreamlinesField : public QgsMeshStreamField
 {
   public:
     //! Constructor
-    Q_DECL_DEPRECATED QgsMeshStreamlinesField( const QgsTriangularMesh &triangularMesh,
-        const QgsMeshDataBlock &datasetVectorValues,
-        const QgsMeshDataBlock &scalarActiveFaceFlagValues,
-        const QgsRectangle &layerExtent,
-        double magMax,
-        bool dataIsOnVertices,
-        QgsRenderContext &rendererContext,
-        const QgsInterpolatedLineColor &vectorColoring );
+    Q_DECL_DEPRECATED QgsMeshStreamlinesField(
+      const QgsTriangularMesh &triangularMesh,
+      const QgsMeshDataBlock &datasetVectorValues,
+      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+      const QgsRectangle &layerExtent,
+      double magMax,
+      bool dataIsOnVertices,
+      QgsRenderContext &rendererContext,
+      const QgsInterpolatedLineColor &vectorColoring
+    );
 
-    QgsMeshStreamlinesField( const QgsTriangularMesh &triangularMesh,
-                             const QgsMeshDataBlock &datasetVectorValues,
-                             const QgsMeshDataBlock &scalarActiveFaceFlagValues,
-                             const QVector<double> &datasetMagValues,
-                             const QgsRectangle &layerExtent,
-                             QgsMeshLayerRendererFeedback *feedBack,
-                             double magMax,
-                             bool dataIsOnVertices,
-                             QgsRenderContext &rendererContext,
-                             const QgsInterpolatedLineColor &vectorColoring );
+    QgsMeshStreamlinesField(
+      const QgsTriangularMesh &triangularMesh,
+      const QgsMeshDataBlock &datasetVectorValues,
+      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+      const QVector<double> &datasetMagValues,
+      const QgsRectangle &layerExtent,
+      QgsMeshLayerRendererFeedback *feedBack,
+      double magMax,
+      bool dataIsOnVertices,
+      QgsRenderContext &rendererContext,
+      const QgsInterpolatedLineColor &vectorColoring
+    );
 
     void compose();
 
@@ -378,7 +364,6 @@ class QgsMeshStreamlinesField: public QgsMeshStreamField
     QgsMeshDataBlock mScalarActiveFaceFlagValues;
     QgsMeshDatasetGroupMetadata::DataType mDataType = QgsMeshDatasetGroupMetadata::DataOnVertices;
     QgsMeshLayerRendererFeedback *mFeedBack = nullptr;
-
 };
 
 class QgsMeshParticleTracesField;
@@ -393,10 +378,10 @@ class QgsMeshParticleTracesField;
  */
 struct QgsMeshTraceParticle
 {
-  double lifeTime = 0;
-  QPoint position;
-  std::list<QPoint> tail;
-  double remainingTime = 0; //time remaining to spend in the current pixel at the end of the time step
+    double lifeTime = 0;
+    QPoint position;
+    std::list<QPoint> tail;
+    double remainingTime = 0; //time remaining to spend in the current pixel at the end of the time step
 };
 
 /**
@@ -407,18 +392,20 @@ struct QgsMeshTraceParticle
  * \note not available in Python bindings
  * \since QGIS 3.12
  */
-class QgsMeshParticleTracesField: public QgsMeshStreamField
+class QgsMeshParticleTracesField : public QgsMeshStreamField
 {
   public:
     //! Constructor
-    QgsMeshParticleTracesField( const QgsTriangularMesh &triangularMesh,
-                                const QgsMeshDataBlock &datasetVectorValues,
-                                const QgsMeshDataBlock &scalarActiveFaceFlagValues,
-                                const QgsRectangle &layerExtent,
-                                double magMax,
-                                bool dataIsOnVertices,
-                                const QgsRenderContext &rendererContext,
-                                const QgsInterpolatedLineColor &vectorColoring );
+    QgsMeshParticleTracesField(
+      const QgsTriangularMesh &triangularMesh,
+      const QgsMeshDataBlock &datasetVectorValues,
+      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+      const QgsRectangle &layerExtent,
+      double magMax,
+      bool dataIsOnVertices,
+      const QgsRenderContext &rendererContext,
+      const QgsInterpolatedLineColor &vectorColoring
+    );
 
     QgsMeshParticleTracesField( const QgsMeshParticleTracesField &other );
 
@@ -519,7 +506,7 @@ class QgsMeshParticleTracesField: public QgsMeshStreamField
  * \note not available in Python bindings
  * \since QGIS 3.12
  */
-class QgsMeshVectorStreamlineRenderer: public QgsMeshVectorRenderer
+class QgsMeshVectorStreamlineRenderer : public QgsMeshVectorRenderer
 {
   public:
     //!Constructor
@@ -531,7 +518,8 @@ class QgsMeshVectorStreamlineRenderer: public QgsMeshVectorRenderer
       const QgsMeshRendererVectorSettings &settings,
       QgsRenderContext &rendererContext,
       const QgsRectangle &layerExtent,
-      double magMax );
+      double magMax
+    );
 
     QgsMeshVectorStreamlineRenderer(
       const QgsTriangularMesh &triangularMesh,
@@ -543,7 +531,8 @@ class QgsMeshVectorStreamlineRenderer: public QgsMeshVectorRenderer
       QgsRenderContext &rendererContext,
       const QgsRectangle &layerExtent,
       QgsMeshLayerRendererFeedback *feedBack,
-      double magMax );
+      double magMax
+    );
 
     void draw() override;
 
@@ -563,7 +552,7 @@ class QgsMeshVectorStreamlineRenderer: public QgsMeshVectorRenderer
  * \note not available in Python bindings
  * \since QGIS 3.12
  */
-class QgsMeshVectorTraceRenderer: public QgsMeshVectorRenderer
+class QgsMeshVectorTraceRenderer : public QgsMeshVectorRenderer
 {
   public:
     //!Constructor
@@ -575,7 +564,8 @@ class QgsMeshVectorTraceRenderer: public QgsMeshVectorRenderer
       const QgsMeshRendererVectorSettings &settings,
       QgsRenderContext &rendererContext,
       const QgsRectangle &layerExtent,
-      double magMax );
+      double magMax
+    );
 
     void draw() override;
 
@@ -610,7 +600,8 @@ class CORE_EXPORT QgsMeshVectorTraceAnimationGenerator
       const QgsRenderContext &rendererContext,
       const QgsRectangle &layerExtent,
       double magMax,
-      const QgsMeshRendererVectorSettings &vectorSettings ) SIP_SKIP;
+      const QgsMeshRendererVectorSettings &vectorSettings
+    ) SIP_SKIP;
 
     //!Constructor to use with Python binding
     QgsMeshVectorTraceAnimationGenerator( QgsMeshLayer *layer, const QgsRenderContext &rendererContext );
@@ -654,7 +645,7 @@ class CORE_EXPORT QgsMeshVectorTraceAnimationGenerator
   private:
     std::unique_ptr<QgsMeshParticleTracesField> mParticleField;
     const QgsRenderContext &mRendererContext;
-    int mFPS = 15; //frame per second of the output, used to calculate orher parameters of the field
+    int mFPS = 15;       //frame per second of the output, used to calculate orher parameters of the field
     int mVpixMax = 2000; //is the number of pixels that are going through for 1 s
     double mParticleLifeTime = 5;
 

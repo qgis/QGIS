@@ -99,7 +99,6 @@ May return an empty list if the ranges could not be calculated.
 
 .. versionadded:: 3.20
 %End
-
 };
 
 /************************************************************************

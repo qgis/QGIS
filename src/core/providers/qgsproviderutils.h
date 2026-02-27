@@ -34,7 +34,6 @@ class QgsProviderSublayerDetails;
 class CORE_EXPORT QgsProviderUtils
 {
   public:
-
     /**
      * Flags which control how QgsProviderUtils::sublayerDetailsAreIncomplete() tests for completeness.
      */
@@ -66,12 +65,8 @@ class CORE_EXPORT QgsProviderUtils
      * a path of "c:/my data/water/rivers/hdr.adf").
      */
     static QString suggestLayerNameFromFilePath( const QString &path );
-
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProviderUtils::SublayerCompletenessFlags )
 
 #endif //QGSPROVIDERUTILS_H
-
-
-

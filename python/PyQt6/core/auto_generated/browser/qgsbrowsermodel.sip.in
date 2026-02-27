@@ -37,7 +37,6 @@ deferred initialization approach. After constructing a
 #include "qgsbrowsermodel.h"
 %End
   public:
-
     explicit QgsBrowserModel( QObject *parent = 0 );
 %Docstring
 Constructor for QgsBrowserModel, with the specified ``parent`` object.
@@ -53,7 +52,7 @@ Constructor for QgsBrowserModel, with the specified ``parent`` object.
 
 
     enum class CustomRole /BaseType=IntEnum/
-      {
+    {
       Path,
       Comment,
       Sort,

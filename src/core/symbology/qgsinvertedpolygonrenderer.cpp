@@ -106,10 +106,7 @@ QgsInvertedPolygonRenderer *QgsInvertedPolygonRenderer::convertFromRenderer( con
   {
     return dynamic_cast<QgsInvertedPolygonRenderer *>( renderer->clone() );
   }
-  else if ( renderer->type() == "singleSymbol"_L1 ||
-            renderer->type() == "categorizedSymbol"_L1 ||
-            renderer->type() == "graduatedSymbol"_L1 ||
-            renderer->type() == "RuleRenderer"_L1 )
+  else if ( renderer->type() == "singleSymbol"_L1 || renderer->type() == "categorizedSymbol"_L1 || renderer->type() == "graduatedSymbol"_L1 || renderer->type() == "RuleRenderer"_L1 )
   {
     auto res = std::make_unique< QgsInvertedPolygonRenderer >( renderer->clone() );
     renderer->copyRendererData( res.get() );
@@ -123,4 +120,3 @@ QgsInvertedPolygonRenderer *QgsInvertedPolygonRenderer::convertFromRenderer( con
   }
   return nullptr;
 }
-

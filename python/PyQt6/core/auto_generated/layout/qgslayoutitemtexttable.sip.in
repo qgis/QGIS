@@ -19,7 +19,6 @@ A text table item that reads text from string lists.
 #include "qgslayoutitemtexttable.h"
 %End
   public:
-
     QgsLayoutItemTextTable( QgsLayout *layout /TransferThis/ );
 %Docstring
 Constructor for QgsLayoutItemTextTable, for the specified ``layout``.

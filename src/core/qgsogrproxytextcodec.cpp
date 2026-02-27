@@ -26,9 +26,7 @@ using namespace Qt::StringLiterals;
 
 QgsOgrProxyTextCodec::QgsOgrProxyTextCodec( const QByteArray &name )
   : mName( name )
-{
-
-}
+{}
 
 QString QgsOgrProxyTextCodec::convertToUnicode( const char *chars, int, ConverterState * ) const
 {
@@ -88,8 +86,7 @@ QStringList QgsOgrProxyTextCodec::supportedCodecs()
 {
   static QStringList codecs;
   static std::once_flag initialized;
-  std::call_once( initialized, [&]( )
-  {
+  std::call_once( initialized, [&]() {
     // there's likely others that are supported by GDAL, but we're primarily concerned here
     // with codecs used by the shapefile driver, and which are no longer supported on the
     // windows Qt builds (due to removal of ICU support in windows Qt builds)

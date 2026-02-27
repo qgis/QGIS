@@ -106,9 +106,7 @@ void QgsProcessingModelComponent::setLinksCollapsed( Qt::Edge edge, bool collaps
 }
 
 void QgsProcessingModelComponent::setComment( const QgsProcessingModelComment & )
-{
-
-}
+{}
 
 void QgsProcessingModelComponent::saveCommonProperties( QVariantMap &map ) const
 {

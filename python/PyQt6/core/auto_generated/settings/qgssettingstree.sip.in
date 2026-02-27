@@ -24,7 +24,6 @@ Holds the tree structure for the settings in QGIS core.
 #include "qgssettingstree.h"
 %End
   public:
-
     static QgsSettingsTreeNode *treeRoot();
 %Docstring
 Returns the tree root node for the settings tree

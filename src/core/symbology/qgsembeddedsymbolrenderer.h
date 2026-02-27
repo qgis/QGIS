@@ -35,7 +35,6 @@
 class CORE_EXPORT QgsEmbeddedSymbolRenderer : public QgsFeatureRenderer
 {
   public:
-
     /**
      * Constructor for QgsEmbeddedSymbolRenderer.
      *
@@ -92,7 +91,6 @@ class CORE_EXPORT QgsEmbeddedSymbolRenderer : public QgsFeatureRenderer
 #endif
 
     std::unique_ptr<QgsSymbol> mDefaultSymbol;
-
 };
 
 

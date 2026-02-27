@@ -18,9 +18,8 @@
 #include "qgsrasterdataprovidertemporalcapabilities.h"
 
 QgsRasterDataProviderTemporalCapabilities::QgsRasterDataProviderTemporalCapabilities( bool enabled )
-  :  QgsDataProviderTemporalCapabilities( enabled )
-{
-}
+  : QgsDataProviderTemporalCapabilities( enabled )
+{}
 
 Qgis::RasterTemporalCapabilityFlags QgsRasterDataProviderTemporalCapabilities::flags() const
 {

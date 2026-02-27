@@ -20,9 +20,7 @@
 
 QgsProfileRenderContext::QgsProfileRenderContext( QgsRenderContext &context )
   : mRenderContext( context )
-{
-
-}
+{}
 
 const QTransform &QgsProfileRenderContext::worldTransform() const
 {
@@ -80,9 +78,7 @@ QVector<QgsProfileIdentifyResults> QgsAbstractProfileResults::identify( const Qg
 }
 
 void QgsAbstractProfileResults::copyPropertiesFromGenerator( const QgsAbstractProfileGenerator * )
-{
-
-}
+{}
 
 //
 // QgsProfileGenerationContext
@@ -131,11 +127,8 @@ double QgsProfileGenerationContext::convertDistanceToPixels( double size, Qgis::
 
 bool QgsProfileGenerationContext::operator==( const QgsProfileGenerationContext &other ) const
 {
-  return qgsDoubleNear( mMaxErrorMapUnits, other.mMaxErrorMapUnits )
-         && qgsDoubleNear( mMapUnitsPerDistancePixel, other.mMapUnitsPerDistancePixel )
-         && qgsDoubleNear( mDpi, other.mDpi )
-         && mDistanceRange == other.mDistanceRange
-         && mElevationRange == other.mElevationRange;
+  return qgsDoubleNear( mMaxErrorMapUnits, other.mMaxErrorMapUnits ) && qgsDoubleNear( mMapUnitsPerDistancePixel, other.mMapUnitsPerDistancePixel ) && qgsDoubleNear( mDpi, other.mDpi )
+         && mDistanceRange == other.mDistanceRange && mElevationRange == other.mElevationRange;
 }
 
 bool QgsProfileGenerationContext::operator!=( const QgsProfileGenerationContext &other ) const
@@ -151,6 +144,4 @@ Qgis::ProfileGeneratorFlags QgsAbstractProfileGenerator::flags() const
 QgsProfileIdentifyResults::QgsProfileIdentifyResults( QgsMapLayer *layer, const QVector<QVariantMap> &results )
   : mLayer( layer )
   , mResults( results )
-{
-
-}
+{}

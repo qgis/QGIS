@@ -37,8 +37,8 @@
 
 using namespace Qt::StringLiterals;
 
-#define CONN_POOL_EXPIRATION_TIME           60    // in seconds
-#define CONN_POOL_SPARE_CONNECTIONS          2    // number of spare connections in case all the base connections are used but we have a nested request with the risk of a deadlock
+#define CONN_POOL_EXPIRATION_TIME 60  // in seconds
+#define CONN_POOL_SPARE_CONNECTIONS 2 // number of spare connections in case all the base connections are used but we have a nested request with the risk of a deadlock
 
 
 /**
@@ -64,15 +64,13 @@ using namespace Qt::StringLiterals;
  * For an example on how to use the template class, have a look at the implementation in Postgres/SpatiaLite providers.
  * \note not available in Python bindings
  */
-template <typename T>
-class QgsConnectionPoolGroup
+template<typename T> class QgsConnectionPoolGroup
 {
   public:
-
     struct Item
     {
-      T c;
-      QTime lastUsedTime;
+        T c;
+        QTime lastUsedTime;
     };
 
     /**
@@ -81,8 +79,7 @@ class QgsConnectionPoolGroup
     QgsConnectionPoolGroup( const QString &ci )
       : connInfo( ci )
       , sem( QgsApplication::instance()->maxConcurrentConnectionsPerPool() + CONN_POOL_SPARE_CONNECTIONS )
-    {
-    }
+    {}
 
     ~QgsConnectionPoolGroup()
     {
@@ -219,15 +216,13 @@ class QgsConnectionPoolGroup
     }
 
   protected:
-
     /**
      * Initializes the connection timeout handling.
      *
      * Should be called from subclasses within their constructors, passing themselves as the
      * \a parent.
      */
-    template<typename U>
-    void initTimer( U *parent )
+    template<typename U> void initTimer( U *parent )
     {
       expirationTimer = new QTimer( parent );
       expirationTimer->setInterval( CONN_POOL_EXPIRATION_TIME * 1000 );
@@ -267,14 +262,12 @@ class QgsConnectionPoolGroup
     }
 
   protected:
-
     QString connInfo;
     QStack<Item> conns;
     QList<T> acquiredConns;
     QMutex connMutex;
     QSemaphore sem;
     QTimer *expirationTimer = nullptr;
-
 };
 
 
@@ -295,11 +288,9 @@ class QgsConnectionPoolGroup
  * to save resources.
  * \note not available in Python bindings
  */
-template <typename T, typename T_Group>
-class QgsConnectionPool
+template<typename T, typename T_Group> class QgsConnectionPool
 {
   public:
-
     typedef QMap<QString, T_Group *> T_Groups;
 
     virtual ~QgsConnectionPool()

@@ -43,7 +43,7 @@ QgsTextFormat::QgsTextFormat()
 }
 
 QgsTextFormat::QgsTextFormat( const QgsTextFormat &other ) //NOLINT
-//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+                                                           //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
   : mBufferSettings( other.mBufferSettings )
   , mBackgroundSettings( other.mBackgroundSettings )
   , mShadowSettings( other.mShadowSettings )
@@ -51,10 +51,8 @@ QgsTextFormat::QgsTextFormat( const QgsTextFormat &other ) //NOLINT
   , mTextFontFamily( other.mTextFontFamily )
   , mTextFontFound( other.mTextFontFound )
   , d( other.d )
-    //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
-{
-
-}
+//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+{}
 
 QgsTextFormat::QgsTextFormat( QgsTextFormat &&other ) //NOLINT
   : mBufferSettings( std::move( other.mBufferSettings ) )
@@ -64,11 +62,9 @@ QgsTextFormat::QgsTextFormat( QgsTextFormat &&other ) //NOLINT
   , mTextFontFamily( std::move( other.mTextFontFamily ) )
   , mTextFontFound( other.mTextFontFound )
   , d( std::move( other.d ) )
-{
+{}
 
-}
-
-QgsTextFormat &QgsTextFormat::operator=( const QgsTextFormat &other )  //NOLINT
+QgsTextFormat &QgsTextFormat::operator=( const QgsTextFormat &other ) //NOLINT
 {
   if ( &other == this )
     return *this;
@@ -85,7 +81,7 @@ QgsTextFormat &QgsTextFormat::operator=( const QgsTextFormat &other )  //NOLINT
   //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
 }
 
-QgsTextFormat &QgsTextFormat::operator=( QgsTextFormat &&other )  //NOLINT
+QgsTextFormat &QgsTextFormat::operator=( QgsTextFormat &&other ) //NOLINT
 {
   if ( &other == this )
     return *this;
@@ -101,39 +97,17 @@ QgsTextFormat &QgsTextFormat::operator=( QgsTextFormat &&other )  //NOLINT
 }
 
 QgsTextFormat::~QgsTextFormat() //NOLINT
-{
-
-}
+{}
 
 bool QgsTextFormat::operator==( const QgsTextFormat &other ) const
 {
-  if ( d->isValid != other.isValid()
-       || d->textFont != other.font()
-       || namedStyle() != other.namedStyle()
-       || d->fontSizeUnits != other.sizeUnit()
-       || d->fontSizeMapUnitScale != other.sizeMapUnitScale()
-       || d->fontSize != other.size()
-       || d->textColor != other.color()
-       || d->opacity != other.opacity()
-       || d->blendMode != other.blendMode()
-       || d->multilineHeight != other.lineHeight()
-       || d->multilineHeightUnits != other.lineHeightUnit()
-       || d->orientation != other.orientation()
-       || d->previewBackgroundColor != other.previewBackgroundColor()
-       || d->allowHtmlFormatting != other.allowHtmlFormatting()
-       || d->forcedBold != other.forcedBold()
-       || d->forcedItalic != other.forcedItalic()
-       || d->capitalization != other.capitalization()
-       || d->tabStopDistance != other.tabStopDistance()
-       || d->tabPositions != other.tabPositions()
-       || d->tabStopDistanceUnits != other.tabStopDistanceUnit()
-       || d->tabStopDistanceMapUnitScale != other.tabStopDistanceMapUnitScale()
-       || mBufferSettings != other.mBufferSettings
-       || mBackgroundSettings != other.mBackgroundSettings
-       || mShadowSettings != other.mShadowSettings
-       || mMaskSettings != other.mMaskSettings
-       || d->families != other.families()
-       || d->mDataDefinedProperties != other.dataDefinedProperties() )
+  if ( d->isValid != other.isValid() || d->textFont != other.font() || namedStyle() != other.namedStyle() || d->fontSizeUnits != other.sizeUnit() || d->fontSizeMapUnitScale != other.sizeMapUnitScale()
+       || d->fontSize != other.size() || d->textColor != other.color() || d->opacity != other.opacity() || d->blendMode != other.blendMode() || d->multilineHeight != other.lineHeight()
+       || d->multilineHeightUnits != other.lineHeightUnit() || d->orientation != other.orientation() || d->previewBackgroundColor != other.previewBackgroundColor()
+       || d->allowHtmlFormatting != other.allowHtmlFormatting() || d->forcedBold != other.forcedBold() || d->forcedItalic != other.forcedItalic() || d->capitalization != other.capitalization()
+       || d->tabStopDistance != other.tabStopDistance() || d->tabPositions != other.tabPositions() || d->tabStopDistanceUnits != other.tabStopDistanceUnit()
+       || d->tabStopDistanceMapUnitScale != other.tabStopDistanceMapUnitScale() || mBufferSettings != other.mBufferSettings || mBackgroundSettings != other.mBackgroundSettings
+       || mShadowSettings != other.mShadowSettings || mMaskSettings != other.mMaskSettings || d->families != other.families() || d->mDataDefinedProperties != other.dataDefinedProperties() )
     return false;
 
   return true;
@@ -215,8 +189,7 @@ QFont QgsTextFormat::scaledFont( const QgsRenderContext &context, double scaleFa
   QFont font = d->textFont;
   if ( scaleFactor == 1 )
   {
-    int fontPixelSize = QgsTextRenderer::sizeToPixel( d->fontSize, context, d->fontSizeUnits,
-                        d->fontSizeMapUnitScale );
+    int fontPixelSize = QgsTextRenderer::sizeToPixel( d->fontSize, context, d->fontSizeUnits, d->fontSizeMapUnitScale );
     if ( fontPixelSize == 0 )
     {
       if ( isZeroSize )
@@ -240,10 +213,9 @@ QFont QgsTextFormat::scaledFont( const QgsRenderContext &context, double scaleFa
   }
 
   font.setLetterSpacing( QFont::AbsoluteSpacing, context.convertToPainterUnits( d->textFont.letterSpacing(), d->fontSizeUnits, d->fontSizeMapUnitScale ) * scaleFactor );
-  font.setWordSpacing( context.convertToPainterUnits( d->textFont.wordSpacing(), d->fontSizeUnits, d->fontSizeMapUnitScale ) * scaleFactor  * scaleFactor );
+  font.setWordSpacing( context.convertToPainterUnits( d->textFont.wordSpacing(), d->fontSizeUnits, d->fontSizeMapUnitScale ) * scaleFactor * scaleFactor );
 
-  if ( d->capitalization == Qgis::Capitalization::SmallCaps
-       || d->capitalization == Qgis::Capitalization::AllSmallCaps )
+  if ( d->capitalization == Qgis::Capitalization::SmallCaps || d->capitalization == Qgis::Capitalization::AllSmallCaps )
     font.setCapitalization( QFont::SmallCaps );
 
   return font;
@@ -475,9 +447,8 @@ void QgsTextFormat::setOrientation( Qgis::TextOrientation orientation )
 Qgis::Capitalization QgsTextFormat::capitalization() const
 {
   // bit of complexity here to maintain API..
-  return d->capitalization == Qgis::Capitalization::MixedCase && d->textFont.capitalization() != QFont::MixedCase
-         ? static_cast< Qgis::Capitalization >( d->textFont.capitalization() )
-         : d->capitalization ;
+  return d->capitalization == Qgis::Capitalization::MixedCase && d->textFont.capitalization() != QFont::MixedCase ? static_cast< Qgis::Capitalization >( d->textFont.capitalization() )
+                                                                                                                  : d->capitalization;
 }
 
 void QgsTextFormat::setCapitalization( Qgis::Capitalization capitalization )
@@ -543,8 +514,7 @@ void QgsTextFormat::readFromLayer( QgsVectorLayer *layer )
 
   if ( layer->customProperty( u"labeling/fontSizeUnit"_s ).toString().isEmpty() )
   {
-    d->fontSizeUnits = layer->customProperty( u"labeling/fontSizeInMapUnits"_s, QVariant( false ) ).toBool() ?
-                       Qgis::RenderUnit::MapUnits : Qgis::RenderUnit::Points;
+    d->fontSizeUnits = layer->customProperty( u"labeling/fontSizeInMapUnits"_s, QVariant( false ) ).toBool() ? Qgis::RenderUnit::MapUnits : Qgis::RenderUnit::Points;
   }
   else
   {
@@ -584,8 +554,7 @@ void QgsTextFormat::readFromLayer( QgsVectorLayer *layer )
   {
     d->opacity = ( layer->customProperty( u"labeling/textOpacity"_s ).toDouble() );
   }
-  d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< Qgis::BlendMode >( layer->customProperty( u"labeling/blendMode"_s, QVariant( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
+  d->blendMode = QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( layer->customProperty( u"labeling/blendMode"_s, QVariant( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
   d->multilineHeight = layer->customProperty( u"labeling/multilineHeight"_s, QVariant( 1.0 ) ).toDouble();
   d->previewBackgroundColor = QgsTextRendererUtils::readColor( layer, u"labeling/previewBkgrdColor"_s, QColor( 255, 255, 255 ), false );
 
@@ -631,8 +600,7 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
       for ( const QString &family : std::as_const( families ) )
       {
         const QString processedFamily = QgsApplication::fontManager()->processFontFamilyName( family );
-        if ( QgsFontUtils::fontFamilyMatchOnSystem( processedFamily ) ||
-             QgsApplication::fontManager()->tryToDownloadFontFamily( processedFamily, matched ) )
+        if ( QgsFontUtils::fontFamilyMatchOnSystem( processedFamily ) || QgsApplication::fontManager()->tryToDownloadFontFamily( processedFamily, matched ) )
         {
           mTextFontFound = true;
           fontFamily = processedFamily;
@@ -668,8 +636,7 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
 
   if ( !textStyleElem.hasAttribute( u"fontSizeUnit"_s ) )
   {
-    d->fontSizeUnits = textStyleElem.attribute( u"fontSizeInMapUnits"_s ).toUInt() == 0 ? Qgis::RenderUnit::Points
-                       : Qgis::RenderUnit::MapUnits;
+    d->fontSizeUnits = textStyleElem.attribute( u"fontSizeInMapUnits"_s ).toUInt() == 0 ? Qgis::RenderUnit::Points : Qgis::RenderUnit::MapUnits;
   }
   else
   {
@@ -714,8 +681,7 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   d->orientation = QgsTextRendererUtils::decodeTextOrientation( textStyleElem.attribute( u"textOrientation"_s ) );
   d->previewBackgroundColor = QgsColorUtils::colorFromString( textStyleElem.attribute( u"previewBkgrdColor"_s, QgsColorUtils::colorToString( Qt::white ) ) );
 
-  d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< Qgis::BlendMode >( textStyleElem.attribute( u"blendMode"_s, QString::number( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
+  d->blendMode = QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( textStyleElem.attribute( u"blendMode"_s, QString::number( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
 
   if ( !textStyleElem.hasAttribute( u"multilineHeight"_s ) )
   {
@@ -998,10 +964,8 @@ bool QgsTextFormat::hasNonDefaultCompositionMode() const
   if ( mShadowSettings.enabled() && mShadowSettings.blendMode() != QPainter::CompositionMode_SourceOver )
     return true;
 
-  if ( d->mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::FontBlendMode )
-       || d->mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::ShadowBlendMode )
-       || d->mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::BufferBlendMode )
-       || d->mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::ShapeBlendMode ) )
+  if ( d->mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::FontBlendMode ) || d->mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::ShadowBlendMode )
+       || d->mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::BufferBlendMode ) || d->mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::ShapeBlendMode ) )
     return true;
 
   return false;
@@ -1072,7 +1036,7 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
   if ( d->mDataDefinedProperties.isActive( QgsPalLayerSettings::Property::Bold ) )
   {
     context.expressionContext().setOriginalValueVariable( d->textFont.bold() );
-    ddBold = d->mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Property::Bold, context.expressionContext(), false ) ;
+    ddBold = d->mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::Property::Bold, context.expressionContext(), false );
   }
 
   bool ddItalic = false;
@@ -1096,8 +1060,7 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
     newFont.setBold( ddBold );
     newFont.setItalic( ddItalic );
   }
-  else if ( !ddFontStyle.isEmpty()
-            && ddFontStyle.compare( "Ignore"_L1, Qt::CaseInsensitive ) != 0 )
+  else if ( !ddFontStyle.isEmpty() && ddFontStyle.compare( "Ignore"_L1, Qt::CaseInsensitive ) != 0 )
   {
     if ( !ddFontFamily.isEmpty() )
     {
@@ -1352,16 +1315,18 @@ QPixmap QgsTextFormat::textFormatPreviewPixmap( const QgsTextFormat &format, QSi
   double xtrans = 0;
   if ( tempFormat.buffer().enabled() )
     xtrans = tempFormat.buffer().sizeUnit() == Qgis::RenderUnit::Percentage
-             ? fontSize * tempFormat.buffer().size() / 100
-             : context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() );
+               ? fontSize * tempFormat.buffer().size() / 100
+               : context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() );
   if ( tempFormat.background().enabled() && tempFormat.background().sizeType() != QgsTextBackgroundSettings::SizeFixed )
     xtrans = std::max( xtrans, context.convertToPainterUnits( tempFormat.background().size().width(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
 
   double ytrans = 0.0;
   if ( tempFormat.buffer().enabled() )
-    ytrans = std::max( ytrans, tempFormat.buffer().sizeUnit() == Qgis::RenderUnit::Percentage
-                       ? fontSize * tempFormat.buffer().size() / 100
-                       : context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() ) );
+    ytrans = std::max(
+      ytrans,
+      tempFormat.buffer().sizeUnit() == Qgis::RenderUnit::Percentage ? fontSize * tempFormat.buffer().size() / 100
+                                                                     : context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() )
+    );
   if ( tempFormat.background().enabled() )
     ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat.background().size().height(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
 

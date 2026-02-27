@@ -39,10 +39,9 @@
 
 class QgsCoordinateReferenceSystem;
 
-class CORE_EXPORT QgsCopcPointCloudIndex: public QgsAbstractPointCloudIndex
+class CORE_EXPORT QgsCopcPointCloudIndex : public QgsAbstractPointCloudIndex
 {
   public:
-
     explicit QgsCopcPointCloudIndex();
     ~QgsCopcPointCloudIndex() override;
 

@@ -56,7 +56,6 @@ class QgsFeature;
 class CORE_EXPORT QgsSpatialIndexKDBush
 {
   public:
-
     /**
      * Constructor - creates KDBush index and bulk loads it with features from the iterator.
      *
@@ -168,7 +167,6 @@ class CORE_EXPORT QgsSpatialIndexKDBush
     qgssize size() const;
 
   private:
-
     //! Implicitly shared data pointer
     QgsSpatialIndexKDBushPrivate *d = nullptr;
 

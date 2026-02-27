@@ -25,7 +25,6 @@ rather accessed through :py:func:`QgsApplication.recentStyleHandler()`.
 #include "qgsrecentstylehandler.h"
 %End
   public:
-
     QgsRecentStyleHandler();
 %Docstring
 Creates a new recent style handler.

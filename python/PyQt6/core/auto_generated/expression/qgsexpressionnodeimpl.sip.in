@@ -22,7 +22,6 @@ A unary node is either negative as in boolean (not) or as in numbers
 #include "qgsexpressionnodeimpl.h"
 %End
   public:
-
     enum UnaryOperator /BaseType=IntEnum/
     {
       uoNot,
@@ -41,7 +40,7 @@ it with ``op``.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    QgsExpressionNodeUnaryOperator::UnaryOperator op() const;
+        QgsExpressionNodeUnaryOperator::UnaryOperator op() const;
 %Docstring
 Returns the unary operator.
 %End
@@ -65,6 +64,8 @@ Returns the node the operator will operate upon.
     virtual QSet<QString> referencedVariables() const;
 
     virtual QSet<QString> referencedFunctions() const;
+
+    virtual bool needsGeometry() const;
 
     virtual QgsExpressionNode *clone() const /Factory/;
 
@@ -92,7 +93,6 @@ A binary expression operator, which operates on two values.
 #include "qgsexpressionnodeimpl.h"
 %End
   public:
-
     enum BinaryOperator /BaseType=IntEnum/
     {
       // logical
@@ -137,8 +137,7 @@ Binary combination of the left and the right with op.
     QString str = QStringLiteral( "<QgsExpressionNodeBinaryOperator: %1>" ).arg( sipCpp->text() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
-
-    QgsExpressionNodeBinaryOperator::BinaryOperator op() const;
+        QgsExpressionNodeBinaryOperator::BinaryOperator op() const;
 %Docstring
 Returns the binary operator.
 %End
@@ -213,7 +212,6 @@ to reference map and array items.
 #include "qgsexpressionnodeimpl.h"
 %End
   public:
-
     QgsExpressionNodeIndexOperator( QgsExpressionNode *container /Transfer/, QgsExpressionNode *index /Transfer/ );
 %Docstring
 Constructor for QgsExpressionNodeIndexOperator.
@@ -259,7 +257,7 @@ Returns the index node, representing an array element index or map key.
     QgsExpressionNodeIndexOperator( const QgsExpressionNodeIndexOperator &other );
 };
 
-class QgsExpressionNodeBetweenOperator: QgsExpressionNode
+class QgsExpressionNodeBetweenOperator : QgsExpressionNode
 {
 %Docstring(signature="appended")
 SQL-like BETWEEN and NOT BETWEEN predicates.
@@ -271,7 +269,6 @@ SQL-like BETWEEN and NOT BETWEEN predicates.
 #include "qgsexpressionnodeimpl.h"
 %End
   public:
-
     QgsExpressionNodeBetweenOperator( QgsExpressionNode *node /Transfer/, QgsExpressionNode *nodeLowerBound /Transfer/, QgsExpressionNode *nodeHigherBound /Transfer/, bool negate = false );
 %Docstring
 This node tests if the result of ``node`` is between the result of
@@ -301,6 +298,8 @@ Returns the expression node.
     virtual QSet<QString> referencedVariables() const;
 
     virtual QSet<QString> referencedFunctions() const;
+
+    virtual bool needsGeometry() const;
 
     virtual QgsExpressionNode *clone() const /Factory/;
 
@@ -336,7 +335,6 @@ An expression node for value IN or NOT IN clauses.
 #include "qgsexpressionnodeimpl.h"
 %End
   public:
-
     QgsExpressionNodeInOperator( QgsExpressionNode *node /Transfer/, QgsExpressionNode::NodeList *list /Transfer/, bool notin = false );
 %Docstring
 This node tests if the result of ``node`` is in the result of ``list``.
@@ -376,6 +374,8 @@ Returns the list of nodes to search for matching values within.
 
     virtual QSet<QString> referencedFunctions() const;
 
+    virtual bool needsGeometry() const;
+
     virtual QgsExpressionNode *clone() const /Factory/;
 
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
@@ -395,7 +395,6 @@ An expression node for expression functions.
 #include "qgsexpressionnodeimpl.h"
 %End
   public:
-
     QgsExpressionNodeFunction( int fnIndex, QgsExpressionNode::NodeList *args /Transfer/ );
 %Docstring
 A function node consists of an index of the function in the global
@@ -420,7 +419,7 @@ function array and a list of arguments that will be passed to it.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    int fnIndex() const;
+      int fnIndex() const;
 %Docstring
 Returns the index of the node's function.
 %End
@@ -445,6 +444,8 @@ Returns a list of arguments specified for the function.
 
     virtual QSet<QString> referencedFunctions() const;
 
+
+    virtual bool needsGeometry() const;
 
     virtual QgsExpressionNode *clone() const /Factory/;
 
@@ -471,7 +472,6 @@ An expression node for literal values.
 #include "qgsexpressionnodeimpl.h"
 %End
   public:
-
     QgsExpressionNodeLiteral( const QVariant &value );
 %Docstring
 Constructor for QgsExpressionNodeLiteral, with the specified literal
@@ -484,7 +484,7 @@ Constructor for QgsExpressionNodeLiteral, with the specified literal
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    QVariant value() const;
+      QVariant value() const;
 %Docstring
 The value of the literal.
 %End
@@ -504,6 +504,8 @@ The value of the literal.
 
     virtual QSet<QString> referencedFunctions() const;
 
+
+    virtual bool needsGeometry() const;
 
     virtual QgsExpressionNode *clone() const /Factory/;
 
@@ -529,7 +531,6 @@ An expression node which takes its value from a feature's field.
 #include "qgsexpressionnodeimpl.h"
 %End
   public:
-
     QgsExpressionNodeColumnRef( const QString &name );
 %Docstring
 Constructor for QgsExpressionNodeColumnRef, referencing the column with
@@ -542,7 +543,7 @@ the specified ``name``.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    QString name() const;
+        QString name() const;
 %Docstring
 The name of the column.
 %End
@@ -564,7 +565,6 @@ The name of the column.
 
     virtual bool needsGeometry() const;
 
-
     virtual QgsExpressionNode *clone() const /Factory/;
 
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
@@ -582,7 +582,6 @@ An expression node for CASE WHEN clauses.
 #include "qgsexpressionnodeimpl.h"
 %End
   public:
-
     class WhenThen
     {
 %Docstring(signature="appended")
@@ -591,7 +590,6 @@ expression.
 %End
 
       public:
-
         WhenThen( QgsExpressionNode *whenExp, QgsExpressionNode *thenExp );
 %Docstring
 A combination of when and then. Simple as that.
@@ -663,7 +661,6 @@ The ELSE expression used for the condition.
     virtual QSet<QString> referencedVariables() const;
 
     virtual QSet<QString> referencedFunctions() const;
-
 
     virtual bool needsGeometry() const;
 

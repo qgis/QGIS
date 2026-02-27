@@ -33,10 +33,9 @@
 
 class QgsCoordinateReferenceSystem;
 
-class CORE_EXPORT QgsEptPointCloudIndex: public QgsAbstractPointCloudIndex
+class CORE_EXPORT QgsEptPointCloudIndex : public QgsAbstractPointCloudIndex
 {
   public:
-
     explicit QgsEptPointCloudIndex();
     ~QgsEptPointCloudIndex() override;
 
@@ -77,12 +76,12 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsAbstractPointCloudIndex
 
     struct AttributeStatistics
     {
-      int count = -1;
-      QVariant minimum;
-      QVariant maximum;
-      double mean = std::numeric_limits< double >::quiet_NaN();
-      double stDev = std::numeric_limits< double >::quiet_NaN();
-      double variance = std::numeric_limits< double >::quiet_NaN();
+        int count = -1;
+        QVariant minimum;
+        QVariant maximum;
+        double mean = std::numeric_limits< double >::quiet_NaN();
+        double stDev = std::numeric_limits< double >::quiet_NaN();
+        double variance = std::numeric_limits< double >::quiet_NaN();
     };
 
     QMap< QString, AttributeStatistics > mMetadataStats;

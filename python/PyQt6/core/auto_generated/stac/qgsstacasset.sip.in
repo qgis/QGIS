@@ -21,11 +21,7 @@ Class for storing a STAC asset's data.
 #include "qgsstacasset.h"
 %End
   public:
-    QgsStacAsset( const QString &href,
-                  const QString &title,
-                  const QString &description,
-                  const QString &mediaType,
-                  const QStringList &roles );
+    QgsStacAsset( const QString &href, const QString &title, const QString &description, const QString &mediaType, const QStringList &roles );
 %Docstring
 Constructor
 %End

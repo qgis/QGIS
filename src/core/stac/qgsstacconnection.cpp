@@ -118,8 +118,7 @@ QgsStacConnection::QgsStacConnection( const QString &name )
 
 QgsStacConnection::QgsStacConnection( const QString &uri, const QVariantMap &configuration )
   : QgsAbstractProviderConnection( uri, configuration )
-{
-}
+{}
 
 void QgsStacConnection::store( const QString &name ) const
 {

@@ -51,7 +51,7 @@ class CORE_EXPORT QgsMapLayerSelectionProperties : public QObject
     {
       sipType = 0;
     }
-    SIP_END
+  SIP_END
 #endif
 
   public:

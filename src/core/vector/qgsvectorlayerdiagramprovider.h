@@ -40,7 +40,6 @@ class QgsDiagramLabelFeature : public QgsLabelFeature
     {
       setFeature( feature );
     }
-
 };
 
 
@@ -58,7 +57,6 @@ class QgsAbstractFeatureSource;
 class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvider
 {
   public:
-
     //! Convenience constructor to initialize the provider from given vector layer
     explicit QgsVectorLayerDiagramProvider( QgsVectorLayer *layer, bool ownFeatureLoop = true );
 
@@ -107,7 +105,6 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
     QgsLabelFeature *registerDiagram( const QgsFeature &feat, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry() );
 
   protected:
-
     //! Diagram layer settings
     QgsDiagramLayerSettings mSettings;
     //! Diagram renderer instance (owned by mSettings)

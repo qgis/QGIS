@@ -51,7 +51,6 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
     Q_PROPERTY( bool isFetching READ isFetching NOTIFY isFetchingChanged );
 
   public:
-
 #ifndef SIP_RUN
     static inline QgsSettingsTreeNamedListNode *sTreeNewsFeed = QgsSettingsTree::sTreeApp->createNamedListNode( u"news-feed"_s );
     static const QgsSettingsEntryInteger64 *settingsFeedLastFetchTime;
@@ -76,7 +75,6 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
     class Entry
     {
       public:
-
         //! Unique entry identifier
         int key = 0;
 
@@ -227,7 +225,6 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
     void onFetch( const QString &content );
 
   private:
-
     QString mBaseUrl;
     QUrl mFeedUrl;
     QString mAuthCfg;
@@ -246,7 +243,6 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
     void fetchImageForEntry( const Entry &entry );
 
     friend class TestQgsNewsFeedParser;
-
 };
 
 #endif // QGSNEWSFEEDPARSER_H

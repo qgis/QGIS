@@ -31,7 +31,7 @@ const QgsSettingsEntryString *QgsGeometryOptions::settingsGeometryValidationDefa
 
 QgsGeometryOptions::QgsGeometryOptions()
 {
-  mGeometryChecks = settingsGeometryValidationDefaultChecks->value().split( ',' ) ;
+  mGeometryChecks = settingsGeometryValidationDefaultChecks->value().split( ',' );
 }
 
 bool QgsGeometryOptions::removeDuplicateNodes() const
@@ -112,8 +112,8 @@ void QgsGeometryOptions::writeXml( QDomNode &node ) const
 void QgsGeometryOptions::readXml( const QDomNode &node )
 {
   const QDomElement geometryOptionsElement = node.toElement();
-  setGeometryPrecision( geometryOptionsElement.attribute( u"geometryPrecision"_s,  u"0.0"_s ).toDouble() );
-  setRemoveDuplicateNodes( geometryOptionsElement.attribute( u"removeDuplicateNodes"_s,  u"0"_s ).toInt() == 1 );
+  setGeometryPrecision( geometryOptionsElement.attribute( u"geometryPrecision"_s, u"0.0"_s ).toDouble() );
+  setRemoveDuplicateNodes( geometryOptionsElement.attribute( u"removeDuplicateNodes"_s, u"0"_s ).toInt() == 1 );
 
   const QDomElement activeChecksElem = node.namedItem( u"activeChecks"_s ).toElement();
   const QVariant activeChecks = QgsXmlUtils::readVariant( activeChecksElem );

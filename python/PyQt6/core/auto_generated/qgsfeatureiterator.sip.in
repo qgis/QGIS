@@ -18,7 +18,6 @@ Internal feature iterator to be implemented within data providers.
 #include "qgsfeatureiterator.h"
 %End
   public:
-
     enum CompileStatus /BaseType=IntEnum/
     {
       NoCompilation,
@@ -83,7 +82,6 @@ compiler.
     };
 
   protected:
-
     virtual bool fetchFeature( QgsFeature &f ) = 0;
 %Docstring
 If you write a feature iterator for your provider, this is the method
@@ -229,7 +227,6 @@ layer.
 #include "qgsfeatureiterator.h"
 %End
   public:
-
     QgsFeatureIterator *__iter__();
 %MethodCode
     sipRes = sipCpp;
@@ -241,8 +238,7 @@ layer.
     bool result = false;
     Py_BEGIN_ALLOW_THREADS
     result = ( sipCpp->nextFeature( *f ) );
-    Py_END_ALLOW_THREADS
-    if ( result )
+    Py_END_ALLOW_THREADS if ( result )
       sipRes = sipConvertFromType( f.release(), sipType_QgsFeature, Py_None );
     else
     {
@@ -250,7 +246,7 @@ layer.
     }
 %End
 
-    QgsFeatureIterator();
+      QgsFeatureIterator();
 %Docstring
 Construct invalid iterator
 %End
@@ -313,8 +309,6 @@ compiler.
 
 
   protected:
-
-
 };
 
 

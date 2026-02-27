@@ -35,7 +35,6 @@ class QgsPlotWidget SIP_EXTERNAL;
 class CORE_EXPORT QgsPlotAbstractMetadata
 {
   public:
-
     /**
      * Constructor for QgsPlotAbstractMetadata with the specified class \a type.
      */
@@ -89,7 +88,6 @@ class CORE_EXPORT QgsPlotAbstractMetadata
     virtual QgsPlotWidget *createPlotWidget( QWidget *parent = nullptr ) = 0 SIP_TRANSFERBACK;
 
   private:
-
     QString mType;
     QString mVisibleName;
 };
@@ -111,14 +109,12 @@ typedef std::function<QgsPlotWidget *( QWidget *parent )> QgsPlotWidgetCreateFun
 class CORE_EXPORT QgsPlotMetadata : public QgsPlotAbstractMetadata
 {
   public:
-
     /**
      * Constructor for QgsPlotMetadata with the specified class \a type.
      */
-    QgsPlotMetadata( const QString &type, const QString &visibleName,
-                     const QgsPlotCreateFunc &pfCreate,
-                     const QgsPlotDataGathererCreateFunc &pdgfCreate = nullptr,
-                     const QgsPlotWidgetCreateFunc &pwfCreate = nullptr )
+    QgsPlotMetadata(
+      const QString &type, const QString &visibleName, const QgsPlotCreateFunc &pfCreate, const QgsPlotDataGathererCreateFunc &pdgfCreate = nullptr, const QgsPlotWidgetCreateFunc &pwfCreate = nullptr
+    )
       : QgsPlotAbstractMetadata( type, visibleName )
       , mCreateFunc( pfCreate )
       , mDataGathererCreateFunc( pdgfCreate )
@@ -153,7 +149,6 @@ class CORE_EXPORT QgsPlotMetadata : public QgsPlotAbstractMetadata
     QgsPlotCreateFunc mCreateFunc = nullptr;
     QgsPlotDataGathererCreateFunc mDataGathererCreateFunc = nullptr;
     QgsPlotWidgetCreateFunc mWidgetCreateFunc = nullptr;
-
 };
 
 #endif
@@ -173,7 +168,6 @@ class CORE_EXPORT QgsPlotRegistry : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Creates a new empty plot registry.
      *
@@ -251,16 +245,11 @@ class CORE_EXPORT QgsPlotRegistry : public QObject
     void plotAboutToBeRemoved( const QString &type );
 
   private:
-
 #ifdef SIP_RUN
     QgsPlotRegistry( const QgsPlotRegistry &rh );
 #endif
 
     QMap<QString, QgsPlotAbstractMetadata *> mMetadata;
-
 };
 
 #endif //QGSPLOTREGISTRY_H
-
-
-

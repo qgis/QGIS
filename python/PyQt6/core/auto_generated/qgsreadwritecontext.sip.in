@@ -23,7 +23,6 @@ objects.
 #include "qgsreadwritecontext.h"
 %End
   public:
-
     struct ReadWriteMessage
     {
         ReadWriteMessage( const QString &message = QString(), Qgis::MessageLevel level = Qgis::MessageLevel::Warning, const QStringList &categories = QStringList() );
@@ -112,7 +111,7 @@ Returns the stored messages and remove them
 .. versionadded:: 3.2
 %End
 
-    const QgsProjectTranslator *projectTranslator( ) const;
+    const QgsProjectTranslator *projectTranslator() const;
 %Docstring
 Returns the project translator
 
@@ -184,6 +183,7 @@ This would happen when it gets out of scope.
 Creates a popper
 %End
     ~QgsReadWriteContextCategoryPopper();
+
   private:
     QgsReadWriteContextCategoryPopper &operator=( const QgsReadWriteContextCategoryPopper & );
 };

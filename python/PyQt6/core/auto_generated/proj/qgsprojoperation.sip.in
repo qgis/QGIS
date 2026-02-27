@@ -22,7 +22,6 @@ Contains information about a PROJ operation.
 #include "qgsprojoperation.h"
 %End
   public:
-
     bool isValid() const;
 %Docstring
 Returns ``True`` if the body is a valid object, or ``False`` if it is a

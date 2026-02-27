@@ -19,7 +19,8 @@
 
 #include "qgsunittypes.h"
 
-QgsMeshDataProviderTemporalCapabilities::QgsMeshDataProviderTemporalCapabilities(): QgsDataProviderTemporalCapabilities()
+QgsMeshDataProviderTemporalCapabilities::QgsMeshDataProviderTemporalCapabilities()
+  : QgsDataProviderTemporalCapabilities()
 {}
 
 QgsMeshDatasetIndex QgsMeshDataProviderTemporalCapabilities::datasetIndexClosestFromRelativeTime( int group, qint64 timeSinceGlobalReference ) const
@@ -29,14 +30,13 @@ QgsMeshDatasetIndex QgsMeshDataProviderTemporalCapabilities::datasetIndexClosest
   if ( datasetTimes.isEmpty() )
     return QgsMeshDatasetIndex( group, 0 );
   const QDateTime groupReference = mGroupsReferenceDateTime[group];
-  const qint64 timeSinceGroupReference =
-    timeSinceGlobalReference - mGlobalReferenceDateTime.msecsTo( groupReference );
+  const qint64 timeSinceGroupReference = timeSinceGlobalReference - mGlobalReferenceDateTime.msecsTo( groupReference );
 
-  if ( timeSinceGroupReference > datasetTimes.last() // after last time
+  if ( timeSinceGroupReference > datasetTimes.last()       // after last time
        || timeSinceGroupReference < datasetTimes.first() ) // before first time
     return QgsMeshDatasetIndex();
 
-  for ( int i = 1 ; i < datasetTimes.count(); ++i )
+  for ( int i = 1; i < datasetTimes.count(); ++i )
   {
     const qint64 time1 = datasetTimes.at( i - 1 );
     const qint64 time2 = datasetTimes.at( i );
@@ -59,10 +59,9 @@ QgsMeshDatasetIndex QgsMeshDataProviderTemporalCapabilities::datasetIndexClosest
   if ( datasetTimes.isEmpty() )
     return QgsMeshDatasetIndex( group, 0 );
   const QDateTime groupReference = mGroupsReferenceDateTime[group];
-  const qint64 timeSinceGroupReference =
-    timeSinceGlobalReference - mGlobalReferenceDateTime.msecsTo( groupReference );
+  const qint64 timeSinceGroupReference = timeSinceGlobalReference - mGlobalReferenceDateTime.msecsTo( groupReference );
 
-  if ( timeSinceGroupReference > datasetTimes.last() // after last time
+  if ( timeSinceGroupReference > datasetTimes.last()       // after last time
        || timeSinceGroupReference < datasetTimes.first() ) // before first time
     return QgsMeshDatasetIndex();
 
@@ -78,8 +77,7 @@ QgsMeshDatasetIndex QgsMeshDataProviderTemporalCapabilities::datasetIndexClosest
 
 void QgsMeshDataProviderTemporalCapabilities::addGroupReferenceDateTime( int group, const QDateTime &reference )
 {
-  if ( ( !mGlobalReferenceDateTime.isValid() && reference.isValid() ) ||
-       ( reference.isValid()  && mGlobalReferenceDateTime.isValid() && reference < mGlobalReferenceDateTime ) )
+  if ( ( !mGlobalReferenceDateTime.isValid() && reference.isValid() ) || ( reference.isValid() && mGlobalReferenceDateTime.isValid() && reference < mGlobalReferenceDateTime ) )
     mGlobalReferenceDateTime = reference;
 
   mGroupsReferenceDateTime[group] = reference;
@@ -109,7 +107,6 @@ QDateTime QgsMeshDataProviderTemporalCapabilities::referenceTime() const
 
 QgsDateTimeRange QgsMeshDataProviderTemporalCapabilities::timeExtent() const
 {
-
   return timeExtent( mGlobalReferenceDateTime );
 }
 
@@ -117,8 +114,7 @@ QgsDateTimeRange QgsMeshDataProviderTemporalCapabilities::timeExtent( const QDat
 {
   QDateTime end;
   QDateTime begin;
-  for ( QHash<int, QDateTime>::const_iterator it = mGroupsReferenceDateTime.constBegin() ;
-        it != mGroupsReferenceDateTime.constEnd(); ++it )
+  for ( QHash<int, QDateTime>::const_iterator it = mGroupsReferenceDateTime.constBegin(); it != mGroupsReferenceDateTime.constEnd(); ++it )
   {
     QDateTime groupReference = it.value();
     if ( !groupReference.isValid() ) //the dataset group has not a valid reference time -->take global reference
@@ -143,7 +139,7 @@ QgsDateTimeRange QgsMeshDataProviderTemporalCapabilities::timeExtent( const QDat
       begin = groupReference.addMSecs( durationSinceFirst );
   }
 
-  return  QgsDateTimeRange( begin, end );
+  return QgsDateTimeRange( begin, end );
 }
 
 void QgsMeshDataProviderTemporalCapabilities::setTemporalUnit( Qgis::TemporalUnit timeUnit )

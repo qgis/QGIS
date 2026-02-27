@@ -23,7 +23,6 @@ will then work as expected.
 #include "qgspythonrunner.h"
 %End
   public:
-
     static bool isValid();
 %Docstring
 Returns ``True`` if the runner has an instance (and thus is able to run

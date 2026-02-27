@@ -21,7 +21,6 @@ An undo stack for :py:class:`QgsLayouts`.
 #include "qgslayoutundostack.h"
 %End
   public:
-
     QgsLayoutUndoStack( QgsLayout *layout );
 %Docstring
 Constructor for QgsLayoutUndoStack, for the specified parent ``layout``.

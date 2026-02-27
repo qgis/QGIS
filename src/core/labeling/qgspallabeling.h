@@ -54,7 +54,7 @@ namespace pal SIP_SKIP
   class Pal;
   class Layer;
   class LabelPosition;
-}
+} //namespace pal
 
 class QgsDiagramLayerSettings;
 class QgsRectangle;
@@ -99,23 +99,23 @@ class CORE_EXPORT QgsPalLayerSettings
     // *INDENT-OFF*
     //! Data definable properties.
     enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPalLayerSettings, Property ) : int
-      {
+    {
       // text style
-      Size = 0, //!< Label size
-      Bold = 1, //!< Use bold style
-      Italic = 2, //!< Use italic style
-      Underline = 3, //!< Use underline
-      Color = 4, //!< Text color
-      Strikeout = 5, //!< Use strikeout
-      Family = 6, //!< Font family
-      FontStyle = 21, //!< Font style name
-      FontSizeUnit = 22, //!< Font size units
-      FontTransp = 18, //!< Text transparency (deprecated)
-      FontOpacity = 92, //!< Text opacity
-      FontCase = 27, //!< Label text case
-      FontLetterSpacing = 28, //!< Letter spacing
-      FontWordSpacing = 29, //!< Word spacing
-      FontBlendMode = 30, //!< Text blend mode
+      Size = 0,                //!< Label size
+      Bold = 1,                //!< Use bold style
+      Italic = 2,              //!< Use italic style
+      Underline = 3,           //!< Use underline
+      Color = 4,               //!< Text color
+      Strikeout = 5,           //!< Use strikeout
+      Family = 6,              //!< Font family
+      FontStyle = 21,          //!< Font style name
+      FontSizeUnit = 22,       //!< Font size units
+      FontTransp = 18,         //!< Text transparency (deprecated)
+      FontOpacity = 92,        //!< Text opacity
+      FontCase = 27,           //!< Label text case
+      FontLetterSpacing = 28,  //!< Letter spacing
+      FontWordSpacing = 29,    //!< Word spacing
+      FontBlendMode = 30,      //!< Text blend mode
       FontStretchFactor = 113, //!< Font stretch factor, since QGIS 3.24
 
       // text formatting
@@ -139,17 +139,17 @@ class CORE_EXPORT QgsPalLayerSettings
       BufferSize = 7,
       BufferUnit = 43,
       BufferColor = 8,
-      BufferTransp = 19, //!< Buffer transparency (deprecated)
+      BufferTransp = 19,  //!< Buffer transparency (deprecated)
       BufferOpacity = 94, //!< Buffer opacity
       BufferJoinStyle = 44,
       BufferBlendMode = 45,
 
       // mask buffer
-      MaskEnabled = 104, //!< Whether the mask is enabled
+      MaskEnabled = 104,    //!< Whether the mask is enabled
       MaskBufferSize = 105, //!< Mask buffer size
       MaskBufferUnit = 106, //!< Mask buffer size unit
-      MaskOpacity = 107, //!< Mask opacity
-      MaskJoinStyle = 108, //!< Mask join style
+      MaskOpacity = 107,    //!< Mask opacity
+      MaskJoinStyle = 108,  //!< Mask join style
 
       // background
       ShapeDraw = 46,
@@ -166,7 +166,7 @@ class CORE_EXPORT QgsPalLayerSettings
       ShapeRadii = 56,
       ShapeRadiiUnits = 57,
       ShapeTransparency = 63, //!< Shape transparency (deprecated)
-      ShapeOpacity = 93, //!< Shape opacity
+      ShapeOpacity = 93,      //!< Shape opacity
       ShapeBlendMode = 64,
       ShapeFillColor = 58,
       ShapeStrokeColor = 59,
@@ -183,7 +183,7 @@ class CORE_EXPORT QgsPalLayerSettings
       ShadowRadius = 70,
       ShadowRadiusUnits = 71,
       ShadowTransparency = 72, //!< Shadow transparency (deprecated)
-      ShadowOpacity = 95, //!< Shadow opacity
+      ShadowOpacity = 95,      //!< Shadow opacity
       ShadowScale = 73,
       ShadowColor = 74,
       ShadowBlendMode = 75,
@@ -199,35 +199,35 @@ class CORE_EXPORT QgsPalLayerSettings
       OffsetRotation = 82,
       CurvedCharAngleInOut = 83,
       // (data defined only)
-      PositionX = 9, //!< X-coordinate data defined label position
-      PositionY = 10, //!< Y-coordinate data defined label position
+      PositionX = 9,       //!< X-coordinate data defined label position
+      PositionY = 10,      //!< Y-coordinate data defined label position
       PositionPoint = 114, //!< Point-coordinate data defined label position
-      Hali = 11, //!< Horizontal alignment for data defined label position (Left, Center, Right)
-      Vali = 12, //!< Vertical alignment for data defined label position (Bottom, Base, Half, Cap, Top)
-      Rotation = 14, //!< Label rotation (deprecated, for old project compatibility only)
-      LabelRotation = 96, //!< Label rotation
+      Hali = 11,           //!< Horizontal alignment for data defined label position (Left, Center, Right)
+      Vali = 12,           //!< Vertical alignment for data defined label position (Bottom, Base, Half, Cap, Top)
+      Rotation = 14,       //!< Label rotation (deprecated, for old project compatibility only)
+      LabelRotation = 96,  //!< Label rotation
       RepeatDistance = 84,
       RepeatDistanceUnit = 86,
       Priority = 87,
       PredefinedPositionOrder = 91,
       LinePlacementOptions = 99, //!< Line placement flags
-      OverrunDistance = 102, //!< Distance which labels can extend past either end of linear features
+      OverrunDistance = 102,     //!< Distance which labels can extend past either end of linear features
 
       // TODO QGIS 5.0 - rename this
       LabelAllParts = 103, //!< Multipart geometry behavior
 
       PolygonLabelOutside = 109, //!< Whether labels outside a polygon feature are permitted, or should be forced \since QGIS 3.14
-      LineAnchorPercent = 111, //!< Portion along line at which labels should be anchored \since QGIS 3.16
-      LineAnchorClipping = 112, //!< Clipping mode for line anchor calculation \since QGIS 3.20
-      LineAnchorType = 115, //!< Line anchor type \since QGIS 3.26
+      LineAnchorPercent = 111,   //!< Portion along line at which labels should be anchored \since QGIS 3.16
+      LineAnchorClipping = 112,  //!< Clipping mode for line anchor calculation \since QGIS 3.20
+      LineAnchorType = 115,      //!< Line anchor type \since QGIS 3.26
       LineAnchorTextPoint = 116, //!< Line anchor text point \since QGIS 3.26
-      CurvedLabelMode = 124, //!< Mode which determine how curved labels are generated and placed \since QGIS 4.0
+      CurvedLabelMode = 124,     //!< Mode which determine how curved labels are generated and placed \since QGIS 4.0
 
       // rendering
       ScaleVisibility = 23,
-      MinScale = 16, //!< Min scale (deprecated, for old project compatibility only)
+      MinScale = 16,     //!< Min scale (deprecated, for old project compatibility only)
       MinimumScale = 97, //!< Minimum map scale (ie most "zoomed out")
-      MaxScale = 17, //!< Max scale (deprecated, for old project compatibility only)
+      MaxScale = 17,     //!< Max scale (deprecated, for old project compatibility only)
       MaximumScale = 98, //!< Maximum map scale (ie most "zoomed in")
       FontLimitPixel = 24,
       FontMinPixel = 25,
@@ -237,12 +237,12 @@ class CORE_EXPORT QgsPalLayerSettings
       ZIndex = 90,
       CalloutDraw = 100, //!< Show callout
 
-      AllowDegradedPlacement = 117, //!< Allow degraded label placements \since QGIS 3.26
-      OverlapHandling = 118, //!< Overlap handling technique \since QGIS 3.26
+      AllowDegradedPlacement = 117,      //!< Allow degraded label placements \since QGIS 3.26
+      OverlapHandling = 118,             //!< Overlap handling technique \since QGIS 3.26
       WhitespaceCollisionHandling = 125, //!< Whitespace collision handling \since QGIS 4.0
 
-      LabelMarginDistance = 121, //!< Minimum distance from labels for this feature to other labels \since QGIS 3.44
-      RemoveDuplicateLabels = 122, //!< Whether this feature can cause removal of duplicate labels \since QGIS 3.44
+      LabelMarginDistance = 121,          //!< Minimum distance from labels for this feature to other labels \since QGIS 3.44
+      RemoveDuplicateLabels = 122,        //!< Whether this feature can cause removal of duplicate labels \since QGIS 3.44
       RemoveDuplicateLabelDistance = 123, //!< Minimum distance from labels for this feature to other labels with duplicate text \since QGIS 3.44
 
       // (data defined only)
@@ -647,7 +647,16 @@ class CORE_EXPORT QgsPalLayerSettings
      *
      * \deprecated QGIS 3.40. Will be removed from public API in QGIS 5.0.
      */
-    Q_DECL_DEPRECATED void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = nullptr, QgsRenderContext *context = nullptr, double *rotatedLabelX SIP_OUT = nullptr, double *rotatedLabelY SIP_OUT = nullptr ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED void calculateLabelSize(
+      const QFontMetricsF *fm,
+      const QString &text,
+      double &labelX,
+      double &labelY,
+      const QgsFeature *f = nullptr,
+      QgsRenderContext *context = nullptr,
+      double *rotatedLabelX SIP_OUT = nullptr,
+      double *rotatedLabelY SIP_OUT = nullptr
+    ) SIP_DEPRECATED;
 
     /**
      * Registers a feature for labeling.
@@ -678,8 +687,9 @@ class CORE_EXPORT QgsPalLayerSettings
      *
      * \note Not available in Python bindings
      */
-    std::vector< std::unique_ptr< QgsLabelFeature > > registerFeatureWithDetails( const QgsFeature &feature, QgsRenderContext &context,
-        QgsGeometry obstacleGeometry = QgsGeometry(), const QgsSymbol *symbol = nullptr );
+    std::vector< std::unique_ptr< QgsLabelFeature > > registerFeatureWithDetails(
+      const QgsFeature &feature, QgsRenderContext &context, QgsGeometry obstacleGeometry = QgsGeometry(), const QgsSymbol *symbol = nullptr
+    );
 
 #endif
 
@@ -882,7 +892,9 @@ class CORE_EXPORT QgsPalLayerSettings
     * \param screen can be used to specify the destination screen properties for the icon. This allows the icon to be generated using the correct DPI and device pixel ratio for the target screen (since QGIS 3.32)
     * \since QGIS 3.10
     */
-    static QPixmap labelSettingsPreviewPixmap( const QgsPalLayerSettings &settings, QSize size, const QString &previewText = QString(), int padding = 0, const QgsScreenProperties &screen = QgsScreenProperties() );
+    static QPixmap labelSettingsPreviewPixmap(
+      const QgsPalLayerSettings &settings, QSize size, const QString &previewText = QString(), int padding = 0, const QgsScreenProperties &screen = QgsScreenProperties()
+    );
 
     /**
      * Returns the layer's unplaced label visibility.
@@ -931,15 +943,14 @@ class CORE_EXPORT QgsPalLayerSettings
     int mFeaturesToLabel = 0; // total features that will probably be labeled, may be less (figured before PAL)
 #ifndef SIP_RUN
     mutable int mFeatsSendingToPal = 0; // total features tested for sending into PAL (relative to maxNumLabels)
-    mutable int mFeatsRegPal = 0; // number of features registered in PAL, when using limitNumLabels
+    mutable int mFeatsRegPal = 0;       // number of features registered in PAL, when using limitNumLabels
 #else
     int mFeatsSendingToPal; // total features tested for sending into PAL (relative to maxNumLabels)
-    int mFeatsRegPal; // number of features registered in PAL, when using limitNumLabels
+    int mFeatsRegPal;       // number of features registered in PAL, when using limitNumLabels
 #endif
 
   private:
-
-    friend class QgsVectorLayer;  // to allow calling readFromLayerCustomProperties()
+    friend class QgsVectorLayer; // to allow calling readFromLayerCustomProperties()
 
     /**
      * Reads labeling configuration from layer's custom properties to support loading of simple labeling from QGIS 2.x projects.
@@ -963,12 +974,9 @@ class CORE_EXPORT QgsPalLayerSettings
      * If the text orientation is set to rotation-based, the space taken to render
      * vertically oriented text will be written to \a rotatedSize.
      */
-    void calculateLabelMetrics( const QFontMetricsF &fm, QgsRenderContext &context,
-                                const QgsTextFormat &format,
-                                QgsTextDocument &document,
-                                QgsTextDocumentMetrics &documentMetrics,
-                                QSizeF &size, QSizeF &rotatedSize,
-                                QRectF &outerBounds ) const;
+    void calculateLabelMetrics(
+      const QFontMetricsF &fm, QgsRenderContext &context, const QgsTextFormat &format, QgsTextDocument &document, QgsTextDocumentMetrics &documentMetrics, QSizeF &size, QSizeF &rotatedSize, QRectF &outerBounds
+    ) const;
 
 
     enum DataDefinedValueType
@@ -990,13 +998,9 @@ class CORE_EXPORT QgsPalLayerSettings
     };
 
     // convenience data defined evaluation function
-    bool dataDefinedValEval( DataDefinedValueType valType,
-                             QgsPalLayerSettings::Property p,
-                             QVariant &exprVal, QgsExpressionContext &context, const QVariant &originalValue = QVariant() );
+    bool dataDefinedValEval( DataDefinedValueType valType, QgsPalLayerSettings::Property p, QVariant &exprVal, QgsExpressionContext &context, const QVariant &originalValue = QVariant() );
 
-    void parseTextStyle( QFont &labelFont,
-                         Qgis::RenderUnit fontunits,
-                         QgsRenderContext &context );
+    void parseTextStyle( QFont &labelFont, Qgis::RenderUnit fontunits, QgsRenderContext &context );
 
     void parseTextBuffer( QgsRenderContext &context );
 
@@ -1041,7 +1045,22 @@ class CORE_EXPORT QgsPalLayerSettings
      */
     QgsGeometry evaluateLabelGeometry( const QgsFeature &feature, QgsRenderContext &context, const QgsLabelLineSettings &lineSettings ) const;
 
-    std::unique_ptr< QgsTextLabelFeature> generateLabelFeature( QgsRenderContext &context, const QgsFeature &feature, int subPartId, QgsGeometry geom, const QgsGeometry &obstacleGeometry, QgsTextDocument doc, const QString &labelText, const QgsTextFormat &evaluatedFormat, const QgsSymbol *symbol, const QgsLabelLineSettings &lineSettings, const QgsLabelPointSettings &pointSettings, const QgsLabelPlacementSettings &placementSettings, bool isObstacle, bool doClip ) const;
+    std::unique_ptr< QgsTextLabelFeature> generateLabelFeature(
+      QgsRenderContext &context,
+      const QgsFeature &feature,
+      int subPartId,
+      QgsGeometry geom,
+      const QgsGeometry &obstacleGeometry,
+      QgsTextDocument doc,
+      const QString &labelText,
+      const QgsTextFormat &evaluatedFormat,
+      const QgsSymbol *symbol,
+      const QgsLabelLineSettings &lineSettings,
+      const QgsLabelPointSettings &pointSettings,
+      const QgsLabelPlacementSettings &placementSettings,
+      bool isObstacle,
+      bool doClip
+    ) const;
 
     /**
      * Registers a feature as an obstacle only (no label rendered)
@@ -1092,12 +1111,12 @@ class CORE_EXPORT QgsPalLayerSettings
 class CORE_EXPORT QgsPalLabeling
 {
   public:
-
     /**
      * Called to find out whether a specified \a layer is used for labeling.
      */
     static bool staticWillUseLayer( const QgsMapLayer *layer );
 
+    // clang-format off
     /**
      * Prepares a geometry for registration with PAL. Handles reprojection, rotation, clipping, etc.
      * \param geometry geometry to prepare
@@ -1108,6 +1127,7 @@ class CORE_EXPORT QgsPalLabeling
      * \returns prepared geometry
      */
     static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry(), bool mergeLines = false ) SIP_FACTORY;
+    // clang-format on
 
     /**
      * Checks whether a geometry requires preparation before registration with PAL
@@ -1118,7 +1138,9 @@ class CORE_EXPORT QgsPalLabeling
      * \param mergeLines TRUE if touching lines from this layer will be merged and treated as single features during labeling
      * \returns TRUE if geometry requires preparation
      */
-    static bool geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry(), bool mergeLines = false );
+    static bool geometryRequiresPreparation(
+      const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry(), bool mergeLines = false
+    );
 
     /**
      * Splits a \a text string to a list of separate lines, using a specified wrap character (\a wrapCharacter).
@@ -1144,28 +1166,22 @@ class CORE_EXPORT QgsPalLabeling
 
   private:
     //! Update temporary QgsPalLayerSettings with any data defined text style values
-    static void dataDefinedTextStyle( QgsPalLayerSettings &tmpLyr,
-                                      const QMap< QgsPalLayerSettings::Property, QVariant > &ddValues );
+    static void dataDefinedTextStyle( QgsPalLayerSettings &tmpLyr, const QMap< QgsPalLayerSettings::Property, QVariant > &ddValues );
 
     //! Update temporary QgsPalLayerSettings with any data defined text formatting values
-    static void dataDefinedTextFormatting( QgsPalLayerSettings &tmpLyr,
-                                           const QMap< QgsPalLayerSettings::Property, QVariant > &ddValues );
+    static void dataDefinedTextFormatting( QgsPalLayerSettings &tmpLyr, const QMap< QgsPalLayerSettings::Property, QVariant > &ddValues );
 
     //! Update temporary QgsPalLayerSettings with any data defined text buffer values
-    static void dataDefinedTextBuffer( QgsPalLayerSettings &tmpLyr,
-                                       const QMap< QgsPalLayerSettings::Property, QVariant > &ddValues );
+    static void dataDefinedTextBuffer( QgsPalLayerSettings &tmpLyr, const QMap< QgsPalLayerSettings::Property, QVariant > &ddValues );
 
     //! Update temporary QgsPalLayerSettings with any data defined mask values
-    static void dataDefinedTextMask( QgsPalLayerSettings &tmpLyr,
-                                     const QMap< QgsPalLayerSettings::Property, QVariant > &ddValues );
+    static void dataDefinedTextMask( QgsPalLayerSettings &tmpLyr, const QMap< QgsPalLayerSettings::Property, QVariant > &ddValues );
 
     //! Update temporary QgsPalLayerSettings with any data defined shape background values
-    static void dataDefinedShapeBackground( QgsPalLayerSettings &tmpLyr,
-                                            const QMap< QgsPalLayerSettings::Property, QVariant > &ddValues );
+    static void dataDefinedShapeBackground( QgsPalLayerSettings &tmpLyr, const QMap< QgsPalLayerSettings::Property, QVariant > &ddValues );
 
     //! Update temporary QgsPalLayerSettings with any data defined drop shadow values
-    static void dataDefinedDropShadow( QgsPalLayerSettings &tmpLyr,
-                                       const QMap< QgsPalLayerSettings::Property, QVariant > &ddValues );
+    static void dataDefinedDropShadow( QgsPalLayerSettings &tmpLyr, const QMap< QgsPalLayerSettings::Property, QVariant > &ddValues );
 
     friend class QgsVectorLayerLabelProvider; // to allow calling the static methods above
     friend class QgsDxfExport;                // to allow calling the static methods above

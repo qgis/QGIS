@@ -31,7 +31,7 @@ using namespace Qt::StringLiterals;
  * \class QgsCompoundCurve
  * \brief Compound curve geometry type.
  */
-class CORE_EXPORT QgsCompoundCurve: public QgsCurve
+class CORE_EXPORT QgsCompoundCurve : public QgsCurve
 {
   public:
     QgsCompoundCurve();
@@ -61,7 +61,6 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
           {
             return false;
           }
-
         }
         else
         {
@@ -69,7 +68,6 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
           {
             return false;
           }
-
         }
       }
 
@@ -77,7 +75,9 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     }
 #endif
   public:
+    // clang-format off
     bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override SIP_HOLDGIL
+      // clang-format on
     {
       return fuzzyHelper( other, epsilon, false );
     }
@@ -262,6 +262,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     QgsCompoundCurve *createEmptyWithSameType() const override SIP_FACTORY;
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString wkt = sipCpp->asWkt();
@@ -270,6 +271,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     QString str = u"<QgsCompoundCurve: %1>"_s.arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
   protected:

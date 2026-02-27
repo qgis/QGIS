@@ -31,17 +31,13 @@ QgsLayoutFrame::QgsLayoutFrame( QgsLayout *layout, QgsLayoutMultiFrame *multiFra
   , mMultiFrame( multiFrame )
   , mMultiFrameUuid( multiFrame ? multiFrame->uuid() : QString() )
 {
-
   //default to no background
   setBackgroundEnabled( false );
 
   if ( multiFrame )
   {
     //repaint frame when multiframe content changes
-    connect( multiFrame, &QgsLayoutMultiFrame::contentsChanged, this, [this]
-    {
-      update();
-    } );
+    connect( multiFrame, &QgsLayoutMultiFrame::contentsChanged, this, [this] { update(); } );
 
     //force recalculation of rect, so that multiframe specified sizes can be applied
     refreshItemSize();
@@ -129,7 +125,6 @@ bool QgsLayoutFrame::isEmpty() const
   }
 
   return false;
-
 }
 
 QgsExpressionContext QgsLayoutFrame::createExpressionContext() const
@@ -226,7 +221,7 @@ bool QgsLayoutFrame::readPropertiesFromElement( const QDomElement &itemElem, con
   mHideBackgroundIfEmpty = itemElem.attribute( u"hideBackgroundIfEmpty"_s, u"0"_s ).toInt();
 
   mMultiFrameUuid = itemElem.attribute( u"multiFrame"_s );
-  if ( mMultiFrameUuid.isEmpty( ) )
+  if ( mMultiFrameUuid.isEmpty() )
   {
     mMultiFrameUuid = itemElem.attribute( u"multiFrameTemplateUuid"_s );
   }

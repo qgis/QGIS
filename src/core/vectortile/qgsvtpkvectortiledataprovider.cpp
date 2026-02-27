@@ -80,7 +80,8 @@ QgsVtpkVectorTileDataProvider::QgsVtpkVectorTileDataProvider( const QgsVtpkVecto
   : QgsVectorTileDataProvider( other )
 {
   mIsValid = other.mIsValid;
-  mCrs = other.mCrs;;
+  mCrs = other.mCrs;
+  ;
   mExtent = other.mExtent;
   mMatrixSet = other.mMatrixSet;
   mLayerMetadata = other.mLayerMetadata;
@@ -267,7 +268,8 @@ QString QgsVtpkVectorTileDataProvider::htmlMetadata() const
 
   if ( reader.metadata().contains( u"minLOD"_s ) )
   {
-    metadata += u"<tr><td class=\"highlight\">"_s % tr( "Tile detail levels" ) % u"</td><td>"_s % u"%1 - %2"_s.arg( reader.metadata().value( u"minLOD"_s ).toInt() ).arg( reader.metadata().value( u"maxLOD"_s ).toInt() ) % u"</td></tr>\n"_s;
+    metadata += u"<tr><td class=\"highlight\">"_s % tr( "Tile detail levels" ) % u"</td><td>"_s
+                % u"%1 - %2"_s.arg( reader.metadata().value( u"minLOD"_s ).toInt() ).arg( reader.metadata().value( u"maxLOD"_s ).toInt() ) % u"</td></tr>\n"_s;
   }
 
   return metadata;
@@ -301,14 +303,11 @@ QgsVectorTileRawData QgsVtpkVectorTileDataProvider::loadFromVtpk( QgsVtpkTiles &
 
 QgsVtpkVectorTileDataProviderMetadata::QgsVtpkVectorTileDataProviderMetadata()
   : QgsProviderMetadata( QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY, QgsVtpkVectorTileDataProvider::DATA_PROVIDER_DESCRIPTION )
-{
-}
+{}
 
 QgsProviderMetadata::ProviderMetadataCapabilities QgsVtpkVectorTileDataProviderMetadata::capabilities() const
 {
-  return ProviderMetadataCapability::LayerTypesForUri
-         | ProviderMetadataCapability::PriorityForUri
-         | ProviderMetadataCapability::QuerySublayers;
+  return ProviderMetadataCapability::LayerTypesForUri | ProviderMetadataCapability::PriorityForUri | ProviderMetadataCapability::QuerySublayers;
 }
 
 QgsVtpkVectorTileDataProvider *QgsVtpkVectorTileDataProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
@@ -371,7 +370,7 @@ QList<QgsProviderSublayerDetails> QgsVtpkVectorTileDataProviderMetadata::querySu
     details.setProviderKey( key() );
     details.setType( Qgis::LayerType::VectorTile );
     details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( fileName ) );
-    return {details};
+    return { details };
   }
   else
   {
@@ -449,5 +448,3 @@ QList<Qgis::LayerType> QgsVtpkVectorTileDataProviderMetadata::supportedLayerType
 
 
 ///@endcond
-
-

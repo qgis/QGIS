@@ -20,7 +20,6 @@ Item representing the paper in a layout.
 #include "qgslayoutitempage.h"
 %End
   public:
-
     enum Orientation /BaseType=IntEnum/
     {
       Portrait,
@@ -138,7 +137,6 @@ interpreted as a page orientation.
 
 
   protected:
-
     virtual void draw( QgsLayoutItemRenderContext &context );
 
     virtual void drawFrame( QgsRenderContext &context );

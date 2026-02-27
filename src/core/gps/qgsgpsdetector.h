@@ -33,8 +33,7 @@
 #include "qgis_sip.h"
 
 #ifndef SIP_RUN
-template<class T>
-class QgsSettingsEntryEnumFlag;
+template<class T> class QgsSettingsEntryEnumFlag;
 #endif
 
 class QgsGpsConnection;
@@ -49,7 +48,6 @@ class CORE_EXPORT QgsGpsDetector : public QObject
 {
     Q_OBJECT
   public:
-
     // TODO QGIS 5.0 -- remove useUnsafeSignals option
 
     /**

@@ -28,13 +28,12 @@ class QgsFeedback;
 class CORE_EXPORT QgsAbstractFeatureIterator
 {
   public:
-
     //! Status of expression compilation for filter expression requests
     enum CompileStatus
     {
-      NoCompilation, //!< Expression could not be compiled or not attempt was made to compile expression
+      NoCompilation,     //!< Expression could not be compiled or not attempt was made to compile expression
       PartiallyCompiled, //!< Expression was partially compiled, but extra checks need to be applied to features
-      Compiled, //!< Expression was fully compiled and delegated to data provider source
+      Compiled,          //!< Expression was fully compiled and delegated to data provider source
     };
 
     //! base class constructor - stores the iteration parameters
@@ -82,10 +81,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * If you want to check if the iterator successfully completed, better use QgsFeatureIterator::isClosed().
      *
      */
-    virtual bool isValid() const
-    {
-      return mValid;
-    }
+    virtual bool isValid() const { return mValid; }
 
     /**
      * Indicator if there was an error when sending the compiled query to the server.
@@ -102,12 +98,11 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      */
     enum class RequestToSourceCrsResult : int
     {
-      Success, //!< Request was successfully updated to the source CRS, or no changes were required
+      Success,                             //!< Request was successfully updated to the source CRS, or no changes were required
       DistanceWithinMustBeCheckedManually, //!< The distance within request cannot be losslessly updated to the source CRS, and callers will need to take appropriate steps to handle the distance within requirement manually during feature iteration
     };
 
   protected:
-
     /**
      * If you write a feature iterator for your provider, this is the method you
      * need to implement!!
@@ -255,8 +250,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
  * \brief Helper template that cares of two things: 1. automatic deletion of source if owned by iterator, 2. notification of open/closed iterator.
  * \note not available in Python bindings (although present in SIP file)
 */
-template<typename T>
-class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
+template<typename T> class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
 {
   public:
     QgsAbstractFeatureIteratorFromSource( T *source, bool ownSource, const QgsFeatureRequest &request )
@@ -289,8 +283,8 @@ class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
 class CORE_EXPORT QgsFeatureIterator
 {
   public:
-
 #ifdef SIP_RUN
+    // clang-format off
     QgsFeatureIterator *__iter__();
     % MethodCode
     sipRes = sipCpp;
@@ -310,10 +304,12 @@ class CORE_EXPORT QgsFeatureIterator
       PyErr_SetString( PyExc_StopIteration, "" );
     }
     % End
+// clang-format on
 #endif
 
-    //! Construct invalid iterator
-    QgsFeatureIterator() = default;
+      //! Construct invalid iterator
+      QgsFeatureIterator()
+      = default;
     //! Construct a valid iterator
     QgsFeatureIterator( QgsAbstractFeatureIterator *iter SIP_TRANSFER );
     //! Copy constructor copies the iterator, increases ref.count
@@ -373,13 +369,11 @@ class CORE_EXPORT QgsFeatureIterator
      */
     bool compileFailed() const { return mIter->compileFailed(); }
 
-    friend bool operator== ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 ) SIP_SKIP;
-    friend bool operator!= ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 ) SIP_SKIP;
+    friend bool operator==( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 ) SIP_SKIP;
+    friend bool operator!=( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 ) SIP_SKIP;
 
   protected:
     QgsAbstractFeatureIterator *mIter = nullptr;
-
-
 };
 
 #ifndef SIP_RUN
@@ -430,12 +424,12 @@ inline bool QgsFeatureIterator::isClosed() const
   return mIter ? mIter->mClosed && !mIter->mZombie : true;
 }
 
-inline bool operator== ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 )
+inline bool operator==( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 )
 {
   return fi1.mIter == fi2.mIter;
 }
 
-inline bool operator!= ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 )
+inline bool operator!=( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 )
 {
   return !( fi1 == fi2 );
 }

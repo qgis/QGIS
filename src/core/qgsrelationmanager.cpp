@@ -246,7 +246,7 @@ void QgsRelationManager::writeProject( QDomDocument &doc )
     QgsDebugError( u"Unable to find qgis element in project file"_s );
     return;
   }
-  QDomNode qgisNode = nl.item( 0 );  // there should only be one
+  QDomNode qgisNode = nl.item( 0 ); // there should only be one
 
   QDomElement relationsNode = doc.createElement( u"relations"_s );
   qgisNode.appendChild( relationsNode );
@@ -286,8 +286,7 @@ void QgsRelationManager::layersRemoved( const QStringList &layers )
     {
       it.next();
 
-      if ( it.value().referencedLayerId() == layer
-           || it.value().referencingLayerId() == layer )
+      if ( it.value().referencedLayerId() == layer || it.value().referencingLayerId() == layer )
       {
         mRelations.remove( it.key() );
         relationsChanged = true;
@@ -304,7 +303,8 @@ static bool hasRelationWithEqualDefinition( const QList<QgsRelation> &existingRe
 {
   for ( const QgsRelation &cur : std::as_const( existingRelations ) )
   {
-    if ( cur.hasEqualDefinition( relation ) ) return true;
+    if ( cur.hasEqualDefinition( relation ) )
+      return true;
   }
   return false;
 }

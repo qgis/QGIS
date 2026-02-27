@@ -28,7 +28,6 @@ operations can be profiled from non-main threads.
 #include "qgsruntimeprofiler.h"
 %End
   public:
-
     QgsRuntimeProfiler();
 %Docstring
 Constructor to create a new runtime profiler.
@@ -187,7 +186,6 @@ directly. Instead, use :py:func:`QgsRuntimeProfiler.profile()`
 #include "qgsruntimeprofiler.h"
 %End
   public:
-
     QgsScopedRuntimeProfile( const QString &name, const QString &group = "startup", const QString &id = QString() );
 %Docstring
 Constructor for QgsScopedRuntimeProfile.

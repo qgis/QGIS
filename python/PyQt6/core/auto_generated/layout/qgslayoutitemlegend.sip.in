@@ -28,7 +28,7 @@ fit the needs of layout legends.
 Construct the model based on the given layer tree
 %End
 
-    QgsLegendModel( QgsLayerTree *rootNode,  QgsLayoutItemLegend *layout );
+    QgsLegendModel( QgsLayerTree *rootNode, QgsLayoutItemLegend *layout );
 %Docstring
 Alternative constructor.
 %End
@@ -69,7 +69,6 @@ A layout item subclass for map legends.
 #include "qgslayoutitemlegend.h"
 %End
   public:
-
 
     QgsLayoutItemLegend( QgsLayout *layout );
 %Docstring
@@ -742,7 +741,6 @@ Returns the legend's renderer settings object.
 
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

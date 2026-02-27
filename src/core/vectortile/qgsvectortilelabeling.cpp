@@ -19,5 +19,4 @@
 
 QgsVectorTileLabelProvider::QgsVectorTileLabelProvider( QgsVectorTileLayer *layer )
   : QgsVectorLayerLabelProvider( Qgis::GeometryType::Unknown, QgsFields(), layer->crs(), layer->id(), nullptr, layer )
-{
-}
+{}

@@ -21,8 +21,7 @@ Represents a CPT City color scheme.
 #include "qgscptcityarchive.h"
 %End
   public:
-    QgsCptCityArchive( const QString &archiveName = DEFAULT_CPTCITY_ARCHIVE,
-                       const QString &baseDir = QString() );
+    QgsCptCityArchive( const QString &archiveName = DEFAULT_CPTCITY_ARCHIVE, const QString &baseDir = QString() );
     ~QgsCptCityArchive();
 
 
@@ -75,8 +74,7 @@ Base class for all items in a :py:class:`QgsCptCityBrowserModel` model.
       AllRamps
     };
 
-    QgsCptCityDataItem( QgsCptCityDataItem::Type type, QgsCptCityDataItem *parent,
-                        const QString &name, const QString &path );
+    QgsCptCityDataItem( QgsCptCityDataItem::Type type, QgsCptCityDataItem *parent, const QString &name, const QString &path );
 
     bool hasChildren();
 
@@ -189,7 +187,6 @@ Finds a child index in vector of items using '==' operator.
 
   protected:
 
-
   signals:
 
     void beginInsertItems( QgsCptCityDataItem *parent, int first, int last );
@@ -252,14 +249,8 @@ providers for a :py:class:`QgsCptCityBrowserModel`.
 #include "qgscptcityarchive.h"
 %End
   public:
-    QgsCptCityColorRampItem( QgsCptCityDataItem *parent,
-                             const QString &name, const QString &path,
-                             const QString &variantName = QString(),
-                             bool initialize = false );
-    QgsCptCityColorRampItem( QgsCptCityDataItem *parent,
-                             const QString &name, const QString &path,
-                             const QStringList &variantList,
-                             bool initialize = false );
+    QgsCptCityColorRampItem( QgsCptCityDataItem *parent, const QString &name, const QString &path, const QString &variantName = QString(), bool initialize = false );
+    QgsCptCityColorRampItem( QgsCptCityDataItem *parent, const QString &name, const QString &path, const QStringList &variantList, bool initialize = false );
 
 
     virtual bool equal( const QgsCptCityDataItem *other );
@@ -274,7 +265,6 @@ providers for a :py:class:`QgsCptCityBrowserModel`.
     void init();
 
   protected:
-
 };
 
 
@@ -289,8 +279,7 @@ A logical collection of subcollections and color ramps for use in
 #include "qgscptcityarchive.h"
 %End
   public:
-    QgsCptCityCollectionItem( QgsCptCityDataItem *parent,
-                              const QString &name, const QString &path );
+    QgsCptCityCollectionItem( QgsCptCityDataItem *parent, const QString &name, const QString &path );
     ~QgsCptCityCollectionItem();
 
     void setPopulated();
@@ -311,8 +300,7 @@ A directory which contains subdirectories and color ramps for use in
 #include "qgscptcityarchive.h"
 %End
   public:
-    QgsCptCityDirectoryItem( QgsCptCityDataItem *parent,
-                             const QString &name, const QString &path );
+    QgsCptCityDirectoryItem( QgsCptCityDataItem *parent, const QString &name, const QString &path );
 
     virtual QVector<QgsCptCityDataItem *> createChildren();
 
@@ -320,8 +308,7 @@ A directory which contains subdirectories and color ramps for use in
     virtual bool equal( const QgsCptCityDataItem *other );
 
 
-    static QgsCptCityDataItem *dataItem( QgsCptCityDataItem *parent,
-                                         const QString &name, const QString &path );
+    static QgsCptCityDataItem *dataItem( QgsCptCityDataItem *parent, const QString &name, const QString &path );
 
   protected:
     QMap< QString, QStringList > rampsMap();
@@ -363,8 +350,7 @@ An "All ramps item", which contains all items in a flat hierarchy.
 #include "qgscptcityarchive.h"
 %End
   public:
-    QgsCptCityAllRampsItem( QgsCptCityDataItem *parent, const QString &name,
-                            const QVector<QgsCptCityDataItem *> &items );
+    QgsCptCityAllRampsItem( QgsCptCityDataItem *parent, const QString &name, const QVector<QgsCptCityDataItem *> &items );
 
     virtual QVector<QgsCptCityDataItem *> createChildren();
 
@@ -382,7 +368,6 @@ A custom item model for display of CPT City color palettes.
 #include "qgscptcityarchive.h"
 %End
   public:
-
     enum ViewType /BaseType=IntEnum/
     {
       Authors,
@@ -390,9 +375,7 @@ A custom item model for display of CPT City color palettes.
       List
     };
 
-    QgsCptCityBrowserModel( QObject *parent /TransferThis/ = 0,
-                            QgsCptCityArchive *archive = QgsCptCityArchive::defaultArchive(),
-                            ViewType Type = Authors );
+    QgsCptCityBrowserModel( QObject *parent /TransferThis/ = 0, QgsCptCityArchive *archive = QgsCptCityArchive::defaultArchive(), ViewType Type = Authors );
     ~QgsCptCityBrowserModel();
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
@@ -456,7 +439,6 @@ Returns index of a path
     void endRemoveItems();
 
   protected:
-
     void addRootItems();
     void removeRootItems();
 

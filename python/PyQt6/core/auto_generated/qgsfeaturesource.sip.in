@@ -21,7 +21,6 @@ method.
 #include "qgsfeaturesource.h"
 %End
   public:
-
     virtual ~QgsFeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const = 0;
@@ -68,7 +67,7 @@ feature count is unknown.
     sipRes = true;
 %End
 
-    virtual long long featureCount() const = 0;
+      virtual long long featureCount() const = 0;
 %Docstring
 Returns the number of features contained in the source, or -1 if the
 feature count is unknown.
@@ -137,8 +136,7 @@ features in the source.
 Returns a list of all feature IDs for features present in the source.
 %End
 
-    QgsVectorLayer *materialize( const QgsFeatureRequest &request,
-                                 QgsFeedback *feedback = 0 ) /Factory/;
+    QgsVectorLayer *materialize( const QgsFeatureRequest &request, QgsFeedback *feedback = 0 ) /Factory/;
 %Docstring
 Materializes a ``request`` (query) made against this feature source, by
 running it over the source and returning a new memory based vector layer

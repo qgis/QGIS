@@ -31,7 +31,6 @@ accessed through :py:func:`QgsApplication.imageCache()`.
 #include "qgsimagecache.h"
 %End
   public:
-
     QgsImageCache( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsImageCache, with the specified ``parent`` object.
@@ -46,7 +45,16 @@ Returns the maximum size of the cache, in bytes.
 .. versionadded:: 3.26
 %End
 
-    QImage pathAsImage( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache /Out/, bool blocking = false, double targetDpi = 96, int frameNumber = -1 );
+    QImage pathAsImage(
+      const QString &path,
+      const QSize size,
+      const bool keepAspectRatio,
+      const double opacity,
+      bool &fitsInCache /Out/,
+      bool blocking = false,
+      double targetDpi = 96,
+      int frameNumber = -1
+    );
 %Docstring
 Returns the specified ``path`` rendered as an image. If possible, a
 pre-existing cached version of the image will be used. If not, the image

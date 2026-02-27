@@ -58,7 +58,6 @@ class QgsSelectiveMaskingSourceSet;
 class CORE_EXPORT QgsLabelBlockingRegion
 {
   public:
-
     /**
      * Constructor for a label blocking region
      */
@@ -68,7 +67,6 @@ class CORE_EXPORT QgsLabelBlockingRegion
 
     //! Geometry of region to avoid placing labels within (in destination map coordinates and CRS)
     QgsGeometry geometry;
-
 };
 
 
@@ -273,8 +271,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * \note not available in Python bindings
      * \since QGIS 3.40
      */
-    template <typename T>
-    QVector<T> layers() const;
+    template<typename T> QVector<T> layers() const;
 #endif
 
     /**
@@ -438,10 +435,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * \see setTextRenderFormat()
      * \since QGIS 3.4.3
      */
-    Qgis::TextRenderFormat textRenderFormat() const
-    {
-      return mTextRenderFormat;
-    }
+    Qgis::TextRenderFormat textRenderFormat() const { return mTextRenderFormat; }
 
     /**
      * Sets the text render \a format, which dictates how text is rendered (e.g. as paths or real text objects).
@@ -962,7 +956,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     void setSelectiveMaskingSourceSets( const QVector< QgsSelectiveMaskingSourceSet > &sets );
 
   protected:
-
     double mDpi = 96.0;
     double mDpiTarget = -1;
 
@@ -1048,7 +1041,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     QList< QgsRenderedFeatureHandlerInterface * > mRenderedFeatureHandlers;
 
     QgsDoubleRange mZRange;
-
 };
 
 #endif // QGSMAPSETTINGS_H

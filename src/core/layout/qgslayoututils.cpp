@@ -163,17 +163,17 @@ void QgsLayoutUtils::relativeResizeRect( QRectF &rectToResize, const QRectF &bou
 {
   //linearly scale rectToResize relative to the scaling from boundsBefore to boundsAfter
   const double left = !qgsDoubleNear( boundsBefore.left(), boundsBefore.right() )
-                      ? relativePosition( rectToResize.left(), boundsBefore.left(), boundsBefore.right(), boundsAfter.left(), boundsAfter.right() )
-                      : boundsAfter.left();
+                        ? relativePosition( rectToResize.left(), boundsBefore.left(), boundsBefore.right(), boundsAfter.left(), boundsAfter.right() )
+                        : boundsAfter.left();
   const double right = !qgsDoubleNear( boundsBefore.left(), boundsBefore.right() )
-                       ? relativePosition( rectToResize.right(), boundsBefore.left(), boundsBefore.right(), boundsAfter.left(), boundsAfter.right() )
-                       : boundsAfter.right();
+                         ? relativePosition( rectToResize.right(), boundsBefore.left(), boundsBefore.right(), boundsAfter.left(), boundsAfter.right() )
+                         : boundsAfter.right();
   const double top = !qgsDoubleNear( boundsBefore.top(), boundsBefore.bottom() )
-                     ? relativePosition( rectToResize.top(), boundsBefore.top(), boundsBefore.bottom(), boundsAfter.top(), boundsAfter.bottom() )
-                     : boundsAfter.top();
+                       ? relativePosition( rectToResize.top(), boundsBefore.top(), boundsBefore.bottom(), boundsAfter.top(), boundsAfter.bottom() )
+                       : boundsAfter.top();
   const double bottom = !qgsDoubleNear( boundsBefore.top(), boundsBefore.bottom() )
-                        ? relativePosition( rectToResize.bottom(), boundsBefore.top(), boundsBefore.bottom(), boundsAfter.top(), boundsAfter.bottom() )
-                        : boundsAfter.bottom();
+                          ? relativePosition( rectToResize.bottom(), boundsBefore.top(), boundsBefore.bottom(), boundsAfter.top(), boundsAfter.bottom() )
+                          : boundsAfter.bottom();
 
   rectToResize.setRect( left, top, right - left, bottom - top );
 }
@@ -213,7 +213,6 @@ double QgsLayoutUtils::fontDescentMM( const QFont &font )
   QFont metricsFont = scaledFontPixelSize( font );
   QFontMetricsF fontMetrics( metricsFont );
   return ( fontMetrics.descent() / FONT_WORKAROUND_SCALE );
-
 }
 
 double QgsLayoutUtils::fontHeightMM( const QFont &font )
@@ -223,7 +222,6 @@ double QgsLayoutUtils::fontHeightMM( const QFont &font )
   QFont metricsFont = scaledFontPixelSize( font );
   QFontMetricsF fontMetrics( metricsFont );
   return ( fontMetrics.height() / FONT_WORKAROUND_SCALE );
-
 }
 
 double QgsLayoutUtils::fontHeightCharacterMM( const QFont &font, QChar character )
@@ -290,7 +288,9 @@ void QgsLayoutUtils::drawText( QPainter *painter, QPointF position, const QStrin
   painter->drawText( position * FONT_WORKAROUND_SCALE, text );
 }
 
-void QgsLayoutUtils::drawText( QPainter *painter, const QRectF &rect, const QString &text, const QFont &font, const QColor &color, const Qt::AlignmentFlag halignment, const Qt::AlignmentFlag valignment, const int flags )
+void QgsLayoutUtils::drawText(
+  QPainter *painter, const QRectF &rect, const QString &text, const QFont &font, const QColor &color, const Qt::AlignmentFlag halignment, const Qt::AlignmentFlag valignment, const int flags
+)
 {
   if ( !painter )
   {
@@ -301,8 +301,7 @@ void QgsLayoutUtils::drawText( QPainter *painter, const QRectF &rect, const QStr
   //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
   QFont textFont = scaledFontPixelSize( font );
 
-  QRectF scaledRect( rect.x() * FONT_WORKAROUND_SCALE, rect.y() * FONT_WORKAROUND_SCALE,
-                     rect.width() * FONT_WORKAROUND_SCALE, rect.height() * FONT_WORKAROUND_SCALE );
+  QRectF scaledRect( rect.x() * FONT_WORKAROUND_SCALE, rect.y() * FONT_WORKAROUND_SCALE, rect.width() * FONT_WORKAROUND_SCALE, rect.height() * FONT_WORKAROUND_SCALE );
 
   QgsScopedQPainterState painterState( painter );
   painter->setFont( textFont );

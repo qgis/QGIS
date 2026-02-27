@@ -29,8 +29,7 @@ using namespace Qt::StringLiterals;
 
 QgsConnectionRegistry::QgsConnectionRegistry( QObject *parent SIP_TRANSFERTHIS )
   : QObject( parent )
-{
-}
+{}
 
 QgsAbstractProviderConnection *QgsConnectionRegistry::createConnection( const QString &id )
 {

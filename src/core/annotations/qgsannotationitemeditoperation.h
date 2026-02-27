@@ -33,7 +33,6 @@
 class CORE_EXPORT QgsAnnotationItemEditContext
 {
   public:
-
     QgsAnnotationItemEditContext() = default;
 
     /**
@@ -65,10 +64,8 @@ class CORE_EXPORT QgsAnnotationItemEditContext
     void setRenderContext( const QgsRenderContext &context );
 
   private:
-
     QgsRectangle mCurrentItemBounds;
     QgsRenderContext mRenderContext;
-
 };
 
 /**
@@ -79,17 +76,16 @@ class CORE_EXPORT QgsAnnotationItemEditContext
 class CORE_EXPORT QgsAbstractAnnotationItemEditOperation
 {
   public:
-
     /**
      * Operation type
      */
     enum class Type : int
     {
-      MoveNode, //!< Move a node
-      DeleteNode, //!< Delete a node
-      AddNode, //!< Add a node
+      MoveNode,      //!< Move a node
+      DeleteNode,    //!< Delete a node
+      AddNode,       //!< Add a node
       TranslateItem, //!< Translate (move) an item
-      RotateItem, //!< Rotate an item \since QGIS 4.0
+      RotateItem,    //!< Rotate an item \since QGIS 4.0
     };
 
     /**
@@ -110,9 +106,7 @@ class CORE_EXPORT QgsAbstractAnnotationItemEditOperation
     QString itemId() const { return mItemId; }
 
   protected:
-
     QString mItemId;
-
 };
 
 /**
@@ -123,15 +117,13 @@ class CORE_EXPORT QgsAbstractAnnotationItemEditOperation
 class CORE_EXPORT QgsAnnotationItemEditOperationMoveNode : public QgsAbstractAnnotationItemEditOperation
 {
   public:
-
     /**
      * Constructor for QgsAnnotationItemEditOperationMoveNode, where the node with the specified \a id moves
      * from \a before to \a after (in layer coordinates).
      *
      * Since QGIS 3.40 the \a translatePixelsX and \a translatePixelsY arguments specify the translation in pixels.
      */
-    QgsAnnotationItemEditOperationMoveNode( const QString &itemId, QgsVertexId nodeId, const QgsPoint &before, const QgsPoint &after,
-                                            double translatePixelsX = 0, double translatePixelsY = 0 );
+    QgsAnnotationItemEditOperationMoveNode( const QString &itemId, QgsVertexId nodeId, const QgsPoint &before, const QgsPoint &after, double translatePixelsX = 0, double translatePixelsY = 0 );
 
     Type type() const override;
 
@@ -171,7 +163,6 @@ class CORE_EXPORT QgsAnnotationItemEditOperationMoveNode : public QgsAbstractAnn
     double translationYPixels() const { return mTranslatePixelsY; }
 
   private:
-
     QgsVertexId mNodeId;
     QgsPoint mBefore;
     QgsPoint mAfter;
@@ -189,7 +180,6 @@ class CORE_EXPORT QgsAnnotationItemEditOperationMoveNode : public QgsAbstractAnn
 class CORE_EXPORT QgsAnnotationItemEditOperationDeleteNode : public QgsAbstractAnnotationItemEditOperation
 {
   public:
-
     /**
      * Constructor for QgsAnnotationItemEditOperationDeleteNode, where the node with the specified \a id and previous
      * position \a before is deleted.
@@ -209,10 +199,8 @@ class CORE_EXPORT QgsAnnotationItemEditOperationDeleteNode : public QgsAbstractA
     QgsPoint before() const { return mBefore; }
 
   private:
-
     QgsVertexId mNodeId;
     QgsPoint mBefore;
-
 };
 
 /**
@@ -223,7 +211,6 @@ class CORE_EXPORT QgsAnnotationItemEditOperationDeleteNode : public QgsAbstractA
 class CORE_EXPORT QgsAnnotationItemEditOperationAddNode : public QgsAbstractAnnotationItemEditOperation
 {
   public:
-
     /**
      * Constructor for QgsAnnotationItemEditOperationAddNode at the specified \a point.
      */
@@ -237,9 +224,7 @@ class CORE_EXPORT QgsAnnotationItemEditOperationAddNode : public QgsAbstractAnno
     QgsPoint point() const { return mPoint; }
 
   private:
-
     QgsPoint mPoint;
-
 };
 
 
@@ -251,15 +236,13 @@ class CORE_EXPORT QgsAnnotationItemEditOperationAddNode : public QgsAbstractAnno
 class CORE_EXPORT QgsAnnotationItemEditOperationTranslateItem : public QgsAbstractAnnotationItemEditOperation
 {
   public:
-
     /**
      * Constructor for QgsAnnotationItemEditOperationTranslateItem, where the node with the specified \a id and translation
      * (in map units)
      *
      * Since QGIS 3.40 the \a translatePixelsX and \a translatePixelsY arguments specify the translation in pixels.
      */
-    QgsAnnotationItemEditOperationTranslateItem( const QString &itemId, double translateX, double translateY,
-        double translatePixelsX = 0, double translatePixelsY = 0 );
+    QgsAnnotationItemEditOperationTranslateItem( const QString &itemId, double translateX, double translateY, double translatePixelsX = 0, double translatePixelsY = 0 );
 
     Type type() const override;
 
@@ -299,13 +282,11 @@ class CORE_EXPORT QgsAnnotationItemEditOperationTranslateItem : public QgsAbstra
     double translationYPixels() const { return mTranslatePixelsY; }
 
   private:
-
     QgsVertexId mNodeId;
     double mTranslateX = 0;
     double mTranslateY = 0;
     double mTranslatePixelsX = 0;
     double mTranslatePixelsY = 0;
-
 };
 
 
@@ -317,7 +298,6 @@ class CORE_EXPORT QgsAnnotationItemEditOperationTranslateItem : public QgsAbstra
 class CORE_EXPORT QgsAnnotationItemEditOperationRotateItem : public QgsAbstractAnnotationItemEditOperation
 {
   public:
-
     /**
      * Constructor for QgsAnnotationItemEditOperationRotateItem, where the item with the specified \a itemId and rotation
      * \a angle (in degrees)
@@ -332,9 +312,7 @@ class CORE_EXPORT QgsAnnotationItemEditOperationRotateItem : public QgsAbstractA
     double angle() const { return mAngle; }
 
   private:
-
     double mAngle = 0;
-
 };
 
 
@@ -346,7 +324,6 @@ class CORE_EXPORT QgsAnnotationItemEditOperationRotateItem : public QgsAbstractA
 class CORE_EXPORT QgsAnnotationItemEditOperationTransientResults
 {
   public:
-
     /**
      * Constructor for QgsAnnotationItemEditOperationTransientResults.
      *
@@ -366,9 +343,7 @@ class CORE_EXPORT QgsAnnotationItemEditOperationTransientResults
     QgsGeometry representativeGeometry() const { return mRepresentativeGeometry; }
 
   private:
-
     QgsGeometry mRepresentativeGeometry;
-
 };
 
 #endif // QGSANNOTATIONITEMEDITOPERATION_H

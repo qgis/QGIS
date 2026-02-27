@@ -26,9 +26,7 @@ using namespace Qt::StringLiterals;
 
 QgsClassificationJenks::QgsClassificationJenks()
   : QgsClassificationMethod()
-{
-
-}
+{}
 
 QString QgsClassificationJenks::name() const
 {
@@ -53,8 +51,7 @@ QIcon QgsClassificationJenks::icon() const
 }
 
 
-QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &maximum,
-    const QList<double> &values, int nclasses, QString &error )
+QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &maximum, const QList<double> &values, int nclasses, QString &error )
 {
   Q_UNUSED( error )
   // Jenks Optimal (Natural Breaks) algorithm
@@ -72,7 +69,7 @@ QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &
 
   if ( nclasses <= 1 )
   {
-    return QList<double>() <<  maximum;
+    return QList<double>() << maximum;
   }
 
   if ( nclasses >= values.size() )
@@ -95,8 +92,8 @@ QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &
     QgsDebugMsgLevel( u"natural breaks (jenks) sample size: %1"_s.arg( sample.size() ), 2 );
     QgsDebugMsgLevel( u"values:%1"_s.arg( values.size() ), 2 );
 
-    sample[ 0 ] = minimum;
-    sample[ 1 ] = maximum;
+    sample[0] = minimum;
+    sample[1] = maximum;
 
     sorted = values.toVector();
     std::sort( sorted.begin(), sorted.end() );
@@ -112,7 +109,7 @@ QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &
       if ( ( i * ( mMaximumSize - 2 ) / ( sorted.size() - 2 ) ) > j )
       {
         j++;
-        sample[ j + 2 ] = sorted[ i ];
+        sample[j + 2] = sorted[i];
       }
     }
   }
@@ -158,7 +155,7 @@ QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &
     {
       const int i3 = l - m + 1;
 
-      const double val = sample[ i3 - 1 ];
+      const double val = sample[i3 - 1];
 
       s2 += val * val;
       s1 += val;

@@ -33,7 +33,6 @@
 class CORE_EXPORT QgsAnnotationPointTextItem : public QgsAnnotationItem
 {
   public:
-
     /**
      * Constructor for QgsAnnotationPointTextItem, containing the specified \a text at the specified \a point.
      */
@@ -149,7 +148,6 @@ class CORE_EXPORT QgsAnnotationPointTextItem : public QgsAnnotationItem
     void setRotationMode( Qgis::SymbolRotationMode mode );
 
   private:
-
     QString mText;
     QgsPointXY mPoint;
     QgsTextFormat mTextFormat;
@@ -160,7 +158,6 @@ class CORE_EXPORT QgsAnnotationPointTextItem : public QgsAnnotationItem
 #ifdef SIP_RUN
     QgsAnnotationPointTextItem( const QgsAnnotationPointTextItem &other );
 #endif
-
 };
 
 #endif // QGSANNOTATIONPOINTTEXTITEM_H

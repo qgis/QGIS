@@ -27,7 +27,13 @@ using namespace Qt::StringLiterals;
 QgsClassificationLogarithmic::QgsClassificationLogarithmic()
   : QgsClassificationMethod( NoFlag, 0 )
 {
-  QgsProcessingParameterEnum *param = new QgsProcessingParameterEnum( u"ZERO_NEG_VALUES_HANDLE"_s, QObject::tr( "Handling of 0 or negative values" ), QStringList() << QObject::tr( "no handling (faster)" ) << QObject::tr( "discard (slower)" ) << QObject::tr( "prepend range (slower)" ), false, 0 );
+  QgsProcessingParameterEnum *param = new QgsProcessingParameterEnum(
+    u"ZERO_NEG_VALUES_HANDLE"_s,
+    QObject::tr( "Handling of 0 or negative values" ),
+    QStringList() << QObject::tr( "no handling (faster)" ) << QObject::tr( "discard (slower)" ) << QObject::tr( "prepend range (slower)" ),
+    false,
+    0
+  );
   addParameter( param );
 }
 
@@ -77,7 +83,7 @@ QList<double> QgsClassificationLogarithmic::calculateBreaks( double &minimum, do
     {
       // there is no usable values
       if ( nvh == NegativeValueHandling::PrependBreak )
-        return QList<double>( {0} );
+        return QList<double>( { 0 } );
       else
         return QList<double>();
     }
@@ -106,7 +112,7 @@ QList<double> QgsClassificationLogarithmic::calculateBreaks( double &minimum, do
   QList<double> prettyBreaks { QgsSymbolLayerUtils::prettyBreaks( logMin, logMax, nclasses ) };
 
   // If case the first class greater than the actual log min increase the minimum log
-  while ( ! prettyBreaks.isEmpty() && prettyBreaks.first() < actualLogMin )
+  while ( !prettyBreaks.isEmpty() && prettyBreaks.first() < actualLogMin )
   {
     logMin += 1.0;
     prettyBreaks = QgsSymbolLayerUtils::prettyBreaks( logMin, logMax, nclasses );

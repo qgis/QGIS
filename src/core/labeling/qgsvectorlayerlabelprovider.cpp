@@ -50,7 +50,7 @@ using namespace pal;
 
 QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings, const QString &layerName )
   : QgsAbstractLabelProvider( layer, providerId )
-  , mSettings( settings ? * settings : QgsPalLayerSettings() ) // TODO: all providers should have valid settings?
+  , mSettings( settings ? *settings : QgsPalLayerSettings() ) // TODO: all providers should have valid settings?
   , mLayerGeometryType( layer->geometryType() )
   , mRenderer( layer->renderer() )
   , mFields( layer->fields() )
@@ -66,9 +66,11 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer *layer,
   init();
 }
 
-QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( Qgis::GeometryType geometryType, const QgsFields &fields, const QgsCoordinateReferenceSystem &crs, const QString &providerId, const QgsPalLayerSettings *settings, QgsMapLayer *layer, const QString &layerName )
+QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider(
+  Qgis::GeometryType geometryType, const QgsFields &fields, const QgsCoordinateReferenceSystem &crs, const QString &providerId, const QgsPalLayerSettings *settings, QgsMapLayer *layer, const QString &layerName
+)
   : QgsAbstractLabelProvider( layer, providerId )
-  , mSettings( settings ? * settings : QgsPalLayerSettings() ) // TODO: all providers should have valid settings?
+  , mSettings( settings ? *settings : QgsPalLayerSettings() ) // TODO: all providers should have valid settings?
   , mLayerGeometryType( geometryType )
   , mFields( fields )
   , mCrs( crs )
@@ -266,8 +268,7 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
     //TODO - remove when labeling is refactored to use screen units
     for ( int i = 0; i < boundLineString->numPoints(); ++i )
     {
-      QgsPointXY point = context.mapToPixel().toMapCoordinates( static_cast<int>( boundLineString->xAt( i ) ),
-                         static_cast<int>( boundLineString->yAt( i ) ) );
+      QgsPointXY point = context.mapToPixel().toMapCoordinates( static_cast<int>( boundLineString->xAt( i ) ), static_cast<int>( boundLineString->yAt( i ) ) );
       boundLineString->setXAt( i, point.x() );
       boundLineString->setYAt( i, point.y() );
     }
@@ -287,10 +288,7 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
     if ( context.coordinateTransform().isValid() )
     {
       // coordinate transforms may have resulted in nan coordinates - if so, strip these out
-      boundLineString->filterVertices( []( const QgsPoint & point )->bool
-      {
-        return std::isfinite( point.x() ) && std::isfinite( point.y() );
-      } );
+      boundLineString->filterVertices( []( const QgsPoint &point ) -> bool { return std::isfinite( point.x() ) && std::isfinite( point.y() ); } );
       if ( !boundLineString->isRing() )
         return QgsGeometry();
     }
@@ -483,9 +481,7 @@ void QgsVectorLayerLabelProvider::drawUnplacedLabel( QgsRenderContext &context, 
     return;
 
   QgsTextFormat format = mSettings.format();
-  if ( mSettings.drawLabels
-       && mSettings.unplacedVisibility() != Qgis::UnplacedLabelVisibility::NeverShow
-       && mEngine->engineSettings().flags() & Qgis::LabelingFlag::DrawUnplacedLabels )
+  if ( mSettings.drawLabels && mSettings.unplacedVisibility() != Qgis::UnplacedLabelVisibility::NeverShow && mEngine->engineSettings().flags() & Qgis::LabelingFlag::DrawUnplacedLabels )
   {
     QgsPalLayerSettings tmpLyr( mSettings );
     format = tmpLyr.format();
@@ -537,8 +533,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
   {
     // get rotated label's center point
     QPointF centerPt( outPt );
-    QgsPointXY outPt2 = xform.transform( label->getX() + label->getWidth() / 2,
-                                         label->getY() + label->getHeight() / 2 );
+    QgsPointXY outPt2 = xform.transform( label->getX() + label->getWidth() / 2, label->getY() + label->getHeight() / 2 );
 
     double xc = outPt2.x() - outPt.x();
     double yc = outPt2.y() - outPt.y();
@@ -567,8 +562,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     QgsTextRenderer::drawBackground( context, component, tmpLyr.format(), QgsTextDocumentMetrics(), Qgis::TextLayoutMode::Labeling );
   }
 
-  else if ( drawType == Qgis::TextComponent::Buffer
-            || drawType == Qgis::TextComponent::Text )
+  else if ( drawType == Qgis::TextComponent::Buffer || drawType == Qgis::TextComponent::Text )
   {
     // TODO: optimize access :)
     QgsTextLabelFeature *lf = static_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );
@@ -576,8 +570,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
 
     if ( auto *lMaskIdProvider = context.maskIdProvider() )
     {
-      int maskId = lMaskIdProvider->maskId( label->getFeaturePart()->layer()->provider()->layerId(),
-                                            label->getFeaturePart()->layer()->provider()->providerId() );
+      int maskId = lMaskIdProvider->maskId( label->getFeaturePart()->layer()->provider()->layerId(), label->getFeaturePart()->layer()->provider()->providerId() );
       context.setCurrentMaskId( maskId );
     }
 
@@ -591,8 +584,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     // but have to re-calculate these with the newly added text!
     std::optional< QgsTextDocument > newDocument;
     std::optional< QgsTextDocumentMetrics > newDocumentMetrics;
-    if ( !txt.isEmpty() && tmpLyr.placement == Qgis::LabelPlacement::Line &&
-         tmpLyr.lineSettings().addDirectionSymbol() )
+    if ( !txt.isEmpty() && tmpLyr.placement == Qgis::LabelPlacement::Line && tmpLyr.lineSettings().addDirectionSymbol() )
     {
       newDocument.emplace( *document );
       bool prependSymb = false;
@@ -632,7 +624,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
 
         case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight:
         {
-          QgsTextBlock &block = newDocument.value()[ 0 ];
+          QgsTextBlock &block = newDocument.value()[0];
           if ( prependSymb )
           {
             block.insert( 0, QgsTextFragment( symb ) );
@@ -680,8 +672,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
 
         QgsScopedRenderContextReferenceScaleOverride referenceScaleOverride( context, -1.0 );
         const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, tmpLyr.format(), context );
-        QgsTextRenderer::drawTextInternal( components, context, tmpLyr.format(), component, document,
-                                           metrics, hAlign, Qgis::TextVerticalAlignment::Top, Qgis::TextLayoutMode::Labeling );
+        QgsTextRenderer::drawTextInternal( components, context, tmpLyr.format(), component, document, metrics, hAlign, Qgis::TextVerticalAlignment::Top, Qgis::TextLayoutMode::Labeling );
         break;
       }
 
@@ -697,8 +688,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
 
         component.origin.ry() += verticalAlignOffset;
 
-        QgsTextRenderer::drawTextInternal( components, context, tmpLyr.format(), component, *document,
-                                           *documentMetrics, hAlign, Qgis::TextVerticalAlignment::Top, Qgis::TextLayoutMode::Labeling );
+        QgsTextRenderer::drawTextInternal( components, context, tmpLyr.format(), component, *document, *documentMetrics, hAlign, Qgis::TextVerticalAlignment::Top, Qgis::TextLayoutMode::Labeling );
         break;
       }
     }

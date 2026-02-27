@@ -182,7 +182,7 @@ bool QgsHeatmapRenderer::renderFeature( const QgsFeature &feature, QgsRenderCont
         {
           mCalculatedMaxValue = value;
         }
-        mValues[ index ] = value;
+        mValues[index] = value;
       }
     }
   }
@@ -241,9 +241,7 @@ void QgsHeatmapRenderer::renderImage( QgsRenderContext &context )
     return;
   }
 
-  QImage image( context.painter()->device()->width() / mRenderQuality,
-                context.painter()->device()->height() / mRenderQuality,
-                QImage::Format_ARGB32 );
+  QImage image( context.painter()->device()->width() / mRenderQuality, context.painter()->device()->height() / mRenderQuality, QImage::Format_ARGB32 );
   image.fill( Qt::transparent );
 
   const double scaleMax = mExplicitMax > 0 ? mExplicitMax : mCalculatedMaxValue;
@@ -272,8 +270,7 @@ void QgsHeatmapRenderer::renderImage( QgsRenderContext &context )
 
   if ( mRenderQuality > 1 )
   {
-    const QImage resized = image.scaled( context.painter()->device()->width(),
-                                         context.painter()->device()->height() );
+    const QImage resized = image.scaled( context.painter()->device()->width(), context.painter()->device()->height() );
     context.painter()->drawImage( 0, 0, resized );
   }
   else
@@ -419,14 +416,7 @@ bool QgsHeatmapRenderer::accept( QgsStyleEntityVisitorInterface *visitor ) const
 
 QList<QgsLayerTreeModelLegendNode *> QgsHeatmapRenderer::createLegendNodes( QgsLayerTreeLayer *nodeLayer ) const
 {
-  return
-  {
-    new QgsColorRampLegendNode( nodeLayer,
-                                mGradientRamp->clone(),
-                                mLegendSettings,
-                                0,
-                                1 )
-  };
+  return { new QgsColorRampLegendNode( nodeLayer, mGradientRamp->clone(), mLegendSettings, 0, 1 ) };
 }
 
 void QgsHeatmapRenderer::setColorRamp( QgsColorRamp *ramp )

@@ -43,7 +43,6 @@ Derived classes should implement their custom painting routines within a
       sipType = NULL;
 %End
   public:
-
     QgsAnnotation( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsAnnotation.
@@ -369,7 +368,6 @@ Emitted when the map layer associated with the annotation changes.
 %End
 
   protected:
-
     virtual void renderAnnotation( QgsRenderContext &context, QSizeF size ) const = 0;
 %Docstring
 Renders the annotation's contents to a target /a context at the
@@ -412,7 +410,6 @@ with creating copies.
 %End
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

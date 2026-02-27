@@ -10,7 +10,7 @@
 
 
 
-class QgsLayoutItemLabel: QgsLayoutItem
+class QgsLayoutItemLabel : QgsLayoutItem
 {
 %Docstring(signature="appended")
 A layout item subclass for text labels.
@@ -20,7 +20,6 @@ A layout item subclass for text labels.
 #include "qgslayoutitemlabel.h"
 %End
   public:
-
     enum Mode /BaseType=IntEnum/
     {
       ModeFont,

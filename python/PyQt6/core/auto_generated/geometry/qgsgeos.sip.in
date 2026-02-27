@@ -13,7 +13,7 @@
 
 
 
-class QgsGeos: QgsGeometryEngine
+class QgsGeos : QgsGeometryEngine
 {
 %Docstring(signature="appended")
 Does vector analysis using the GEOS library and handles import, export,
@@ -28,7 +28,6 @@ and exception handling.
 #include "qgsgeos.h"
 %End
   public:
-
     QgsGeos( const QgsAbstractGeometry *geometry, double precision = 0, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlag::SkipEmptyInteriorRings );
 %Docstring
 GEOS geometry engine constructor
@@ -314,19 +313,15 @@ This method requires a QGIS build based on GEOS 3.7 or later.
     virtual bool isSimple( QString *errorMsg = 0 ) const;
 
 
-     virtual EngineOperationResult splitGeometry( const QgsLineString &splitLine,
-                                         QVector<QgsGeometry> &newGeometries,
-                                         bool topological,
-                                         QgsPointSequence &topologyTestPoints,
-                                         QString *errorMsg = 0, bool skipIntersectionCheck = false ) const;
+     virtual EngineOperationResult splitGeometry(
+      const QgsLineString &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QgsPointSequence &topologyTestPoints, QString *errorMsg = 0, bool skipIntersectionCheck = false
+    ) const;
 
 
     virtual QgsAbstractGeometry *offsetCurve( double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = 0 ) const;
 
 
-    std::unique_ptr< QgsAbstractGeometry > singleSidedBuffer( double distance, int segments, Qgis::BufferSide side,
-        Qgis::JoinStyle joinStyle, double miterLimit,
-        QString *errorMsg /Out/ = 0 ) const;
+    std::unique_ptr< QgsAbstractGeometry > singleSidedBuffer( double distance, int segments, Qgis::BufferSide side, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg /Out/ = 0 ) const;
 %Docstring
 Returns a single sided buffer for a geometry. The buffer is only applied
 to one side of the geometry.

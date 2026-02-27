@@ -23,7 +23,6 @@ Encapsulates the contents and formatting of a single table cell.
 #include "qgstablecell.h"
 %End
   public:
-
     QgsTableCell( const QVariant &content = QVariant() );
 %Docstring
 Constructor for QgsTableCell, with the specified ``content``.

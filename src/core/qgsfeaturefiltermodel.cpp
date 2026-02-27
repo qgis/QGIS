@@ -157,4 +157,3 @@ void QgsFeatureFilterModel::setExtraIdentifierValueToNull()
 {
   setExtraIdentifierValue( nullIdentifier() );
 }
-

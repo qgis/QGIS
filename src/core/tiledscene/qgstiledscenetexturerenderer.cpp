@@ -97,10 +97,7 @@ QDomElement QgsTiledSceneTextureRenderer::save( QDomDocument &doc, const QgsRead
 
   {
     QDomElement fillSymbolElem = doc.createElement( u"fillSymbol"_s );
-    const QDomElement symbolElement = QgsSymbolLayerUtils::saveSymbol( QString(),
-                                      mFillSymbol.get(),
-                                      doc,
-                                      context );
+    const QDomElement symbolElement = QgsSymbolLayerUtils::saveSymbol( QString(), mFillSymbol.get(), doc, context );
     fillSymbolElem.appendChild( symbolElement );
     rendererElem.appendChild( fillSymbolElem );
   }
@@ -115,9 +112,7 @@ Qgis::TiledSceneRendererFlags QgsTiledSceneTextureRenderer::flags() const
   // force raster rendering for this renderer type -- there's no benefit in exporting these layers as a bunch
   // of triangular images which are pieced together, that adds a lot of extra content to the exports and results
   // in files which can be extremely slow to open and render in other viewers.
-  return Qgis::TiledSceneRendererFlag::RequiresTextures |
-         Qgis::TiledSceneRendererFlag::ForceRasterRender |
-         Qgis::TiledSceneRendererFlag::RendersTriangles;
+  return Qgis::TiledSceneRendererFlag::RequiresTextures | Qgis::TiledSceneRendererFlag::ForceRasterRender | Qgis::TiledSceneRendererFlag::RendersTriangles;
 }
 
 void QgsTiledSceneTextureRenderer::renderTriangle( QgsTiledSceneRenderContext &context, const QPolygonF &triangle )
@@ -139,8 +134,7 @@ void QgsTiledSceneTextureRenderer::renderTriangle( QgsTiledSceneRenderContext &c
   QPainter *painter = context.renderContext().painter();
   painter->setPen( Qt::NoPen );
 
-  auto unitNormal = []( const QPointF p1, const QPointF p2 )
-  {
+  auto unitNormal = []( const QPointF p1, const QPointF p2 ) {
     const float dx = p2.x() - p1.x();
     const float dy = p2.y() - p1.y();
     QPointF n( -dy, dx );
@@ -148,8 +142,7 @@ void QgsTiledSceneTextureRenderer::renderTriangle( QgsTiledSceneRenderContext &c
     return QPointF( n.x() / length, n.y() / length );
   };
 
-  auto intersect = []( const QPointF p1, const QPointF p2, const QPointF q1, const QPointF q2 )
-  {
+  auto intersect = []( const QPointF p1, const QPointF p2, const QPointF q1, const QPointF q2 ) {
     const double a1 = p2.y() - p1.y();
     const double b1 = p1.x() - p2.x();
     const double c1 = a1 * p1.x() + b1 * p1.y();
@@ -166,13 +159,11 @@ void QgsTiledSceneTextureRenderer::renderTriangle( QgsTiledSceneRenderContext &c
     }
     else
     {
-      return QPointF( ( b2 * c1 - b1 * c2 ) / det,
-                      ( a1 * c2 - a2 * c1 ) / det );
+      return QPointF( ( b2 * c1 - b1 * c2 ) / det, ( a1 * c2 - a2 * c1 ) / det );
     }
   };
 
-  auto smallestAngleInTriangle = []( const QPolygonF & triangle )
-  {
+  auto smallestAngleInTriangle = []( const QPolygonF &triangle ) {
     const QPointF p1 = triangle.at( 0 );
     const QPointF p2 = triangle.at( 1 );
     const QPointF p3 = triangle.at( 2 );
@@ -185,16 +176,10 @@ void QgsTiledSceneTextureRenderer::renderTriangle( QgsTiledSceneRenderContext &c
     const double b = std::sqrt( v2.x() * v2.x() + v2.y() * v2.y() );
     const double c = std::sqrt( v3.x() * v3.x() + v3.y() * v3.y() );
 
-    return std::min(
-             std::min(
-               std::acos( ( b * b + c * c - a * a )  / ( 2 * b * c ) ),
-               std::acos( ( a * a + c * c - b * b )  / ( 2 * a * c ) ) ),
-             std::acos( ( a * a + b * b - c * c )  / ( 2 * a * b ) )
-           );
+    return std::min( std::min( std::acos( ( b * b + c * c - a * a ) / ( 2 * b * c ) ), std::acos( ( a * a + c * c - b * b ) / ( 2 * a * c ) ) ), std::acos( ( a * a + b * b - c * c ) / ( 2 * a * b ) ) );
   };
 
-  auto growTriangle = [&unitNormal, &intersect]( const QPolygonF & triangle, float pixels )
-  {
+  auto growTriangle = [&unitNormal, &intersect]( const QPolygonF &triangle, float pixels ) {
     QPair< QPointF, QPointF > offsetEdges[3];
     for ( int i = 0; i < 3; ++i )
     {
@@ -248,20 +233,11 @@ void QgsTiledSceneTextureRenderer::renderTriangle( QgsTiledSceneRenderContext &c
     return;
   }
 
-  QgsPainting::drawTriangleUsingTexture(
-    painter,
-    growTriangle( triangle, 1 ),
-    context.textureImage(),
-    textureX1, textureY1,
-    textureX2, textureY2,
-    textureX3, textureY3
-  );
+  QgsPainting::drawTriangleUsingTexture( painter, growTriangle( triangle, 1 ), context.textureImage(), textureX1, textureY1, textureX2, textureY2, textureX3, textureY3 );
 }
 
 void QgsTiledSceneTextureRenderer::renderLine( QgsTiledSceneRenderContext &, const QPolygonF & )
-{
-
-}
+{}
 
 void QgsTiledSceneTextureRenderer::startRender( QgsTiledSceneRenderContext &context )
 {

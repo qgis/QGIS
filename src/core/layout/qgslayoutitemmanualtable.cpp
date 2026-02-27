@@ -42,8 +42,7 @@ QgsLayoutItemManualTable::QgsLayoutItemManualTable( QgsLayout *layout )
 }
 
 QgsLayoutItemManualTable::~QgsLayoutItemManualTable()
-{
-}
+{}
 
 int QgsLayoutItemManualTable::type() const
 {
@@ -114,11 +113,11 @@ QgsConditionalStyle QgsLayoutItemManualTable::conditionalCellStyle( int row, int
   if ( row < 0 || row >= mContents.size() )
     return QgsConditionalStyle();
 
-  const QgsTableRow &rowContents = mContents[ row ];
+  const QgsTableRow &rowContents = mContents[row];
   if ( column < 0 || column > rowContents.size() )
     return QgsConditionalStyle();
 
-  const QgsTableCell &c = rowContents[ column ];
+  const QgsTableCell &c = rowContents[column];
   QgsConditionalStyle res;
   if ( c.foregroundColor().isValid() )
     res.setTextColor( c.foregroundColor() );
@@ -327,7 +326,7 @@ bool QgsLayoutItemManualTable::calculateMaxRowHeights()
 
 QgsTextFormat QgsLayoutItemManualTable::textFormatForHeader( int column ) const
 {
-//  if ( mHeaders.value( column ).)
+  //  if ( mHeaders.value( column ).)
   return QgsLayoutTable::textFormatForHeader( column );
 }
 
@@ -376,11 +375,11 @@ void QgsLayoutItemManualTable::refreshColumns()
   if ( !mContents.empty() )
   {
     int colIndex = 0;
-    const QgsTableRow &firstRow = mContents[ 0 ];
+    const QgsTableRow &firstRow = mContents[0];
     columns.reserve( firstRow.size() );
     for ( const QgsTableCell &cell : firstRow )
     {
-      ( void )cell;
+      ( void ) cell;
       QgsLayoutTableColumn newCol( mHeaders.value( colIndex ).heading() );
       newCol.setWidth( mColumnWidths.value( colIndex ) );
       columns << newCol;

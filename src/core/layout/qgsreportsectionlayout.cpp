@@ -105,4 +105,3 @@ bool QgsReportSectionLayout::readPropertiesFromElement( const QDomElement &eleme
 }
 
 ///@endcond
-

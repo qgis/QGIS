@@ -40,7 +40,6 @@
 class CORE_EXPORT QgsPointCloudRequest
 {
   public:
-
     QgsPointCloudRequest();
 
     bool operator==( const QgsPointCloudRequest &other ) const;

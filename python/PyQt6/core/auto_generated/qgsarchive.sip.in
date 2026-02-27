@@ -21,7 +21,6 @@ Manages zip/unzip operations for an archive.
 #include "qgsarchive.h"
 %End
   public:
-
     QgsArchive();
 
     QgsArchive( const QgsArchive &other );
@@ -102,7 +101,6 @@ Allows managing the zip/unzip actions on project files.
 #include "qgsarchive.h"
 %End
   public:
-
     virtual bool unzip( const QString &zipFilename );
 
 %Docstring

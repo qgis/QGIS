@@ -45,7 +45,6 @@ class CORE_EXPORT QgsProcessing
     Q_GADGET
 
   public:
-
     //! Available Python output types
     enum class PythonOutputType SIP_MONKEYPATCH_SCOPEENUM
     {

@@ -36,7 +36,6 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
     Q_OBJECT
 
   public:
-
     /**
      * Chart series details covering all supported series types.
      *
@@ -49,21 +48,16 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
     class SeriesDetails
     {
       public:
-
         /**
          * Constructor for SeriesDetails with an optional \a name parameter to
          * provide a name string to the series.
          */
         explicit SeriesDetails( const QString &name = QString() )
-          : mName( name )
-        {};
+          : mName( name ) {};
 
         bool operator==( const SeriesDetails &other ) const
         {
-          return mName == other.mName
-                 && mXExpression == other.mXExpression
-                 && mYExpression == other.mYExpression
-                 && mFilterExpression == other.mFilterExpression;
+          return mName == other.mName && mXExpression == other.mXExpression && mYExpression == other.mYExpression && mFilterExpression == other.mFilterExpression;
         }
 
         /**
@@ -300,13 +294,11 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
     void refresh() override;
 
   protected:
-
     void draw( QgsLayoutItemRenderContext &context ) override;
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
   private:
-
     void refreshData();
     void gatherData();
     void processData();

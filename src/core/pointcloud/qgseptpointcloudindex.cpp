@@ -173,7 +173,7 @@ void QgsEptPointCloudIndex::loadManifest( const QByteArray &manifestJson )
   else
   {
     QFile metadataFile( fullMetadataPath );
-    if ( ! metadataFile.open( QIODevice::ReadOnly ) )
+    if ( !metadataFile.open( QIODevice::ReadOnly ) )
       return;
     metadataJson = metadataFile.readAll();
   }
@@ -197,11 +197,11 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
   if ( err.error != QJsonParseError::NoError )
     return false;
   const QJsonObject result = doc.object();
-  mDataType = result.value( "dataType"_L1 ).toString();  // "binary" or "laszip"
+  mDataType = result.value( "dataType"_L1 ).toString(); // "binary" or "laszip"
   if ( mDataType != "laszip"_L1 && mDataType != "binary"_L1 && mDataType != "zstandard"_L1 )
     return false;
 
-  const QString hierarchyType = result.value( "hierarchyType"_L1 ).toString();  // "json" or "gzip"
+  const QString hierarchyType = result.value( "hierarchyType"_L1 ).toString(); // "json" or "gzip"
   if ( hierarchyType != "json"_L1 )
     return false;
 
@@ -220,8 +220,7 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
   const QJsonArray boundsConforming = result.value( "boundsConforming"_L1 ).toArray();
   if ( boundsConforming.size() != 6 )
     return false;
-  mExtent.set( boundsConforming[0].toDouble(), boundsConforming[1].toDouble(),
-               boundsConforming[3].toDouble(), boundsConforming[4].toDouble() );
+  mExtent.set( boundsConforming[0].toDouble(), boundsConforming[1].toDouble(), boundsConforming[3].toDouble(), boundsConforming[4].toDouble() );
   mZMin = boundsConforming[2].toDouble();
   mZMax = boundsConforming[5].toDouble();
 
@@ -335,7 +334,7 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
 
     if ( schemaObj.contains( "counts"_L1 ) )
     {
-      QMap< int, int >  classCounts;
+      QMap< int, int > classCounts;
       const QJsonArray counts = schemaObj.value( "counts"_L1 ).toArray();
       for ( const QJsonValue &count : counts )
       {
@@ -361,7 +360,7 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
 
 #ifdef QGISDEBUG
   double dx = xmax - xmin, dy = ymax - ymin, dz = zmax - zmin;
-  QgsDebugMsgLevel( u"lvl0 node size in CRS units: %1 %2 %3"_s.arg( dx ).arg( dy ).arg( dz ), 2 );    // all dims should be the same
+  QgsDebugMsgLevel( u"lvl0 node size in CRS units: %1 %2 %3"_s.arg( dx ).arg( dy ).arg( dz ), 2 ); // all dims should be the same
   QgsDebugMsgLevel( u"res at lvl0 %1"_s.arg( dx / mSpan ), 2 );
   QgsDebugMsgLevel( u"res at lvl1 %1"_s.arg( dx / mSpan / 2 ), 2 );
   QgsDebugMsgLevel( u"res at lvl2 %1 with node size %2"_s.arg( dx / mSpan / 4 ).arg( dx / 4 ), 2 );
@@ -429,8 +428,7 @@ QgsPointCloudBlockRequest *QgsEptPointCloudIndex::asyncNodeData( const QgsPointC
 {
   if ( QgsPointCloudBlock *cached = getNodeDataFromCache( n, request ) )
   {
-    return new QgsCachedPointCloudBlockRequest( cached,  n, mUri, attributes(), request.attributes(),
-           scale(), offset(), mFilterExpression, request.filterRect() );
+    return new QgsCachedPointCloudBlockRequest( cached, n, mUri, attributes(), request.attributes(), scale(), offset(), mFilterExpression, request.filterRect() );
   }
 
   if ( mAccessType != Qgis::PointCloudAccessType::Remote )
@@ -512,7 +510,7 @@ QgsPointCloudStatistics QgsEptPointCloudIndex::metadataStatistics() const
   for ( QgsPointCloudAttribute attribute : attributes().attributes() )
   {
     QString name = attribute.name();
-    const AttributeStatistics &stats = mMetadataStats[ name ];
+    const AttributeStatistics &stats = mMetadataStats[name];
     if ( !stats.minimum.isValid() )
       continue;
     QgsPointCloudAttributeStatistics s;
@@ -522,9 +520,9 @@ QgsPointCloudStatistics QgsEptPointCloudIndex::metadataStatistics() const
     s.stDev = stats.stDev;
     s.count = stats.count;
 
-    s.classCount = mAttributeClasses[ name ];
+    s.classCount = mAttributeClasses[name];
 
-    statsMap[ name ] = std::move( s );
+    statsMap[name] = std::move( s );
   }
   return QgsPointCloudStatistics( pointCount(), statsMap );
 }
@@ -575,7 +573,7 @@ bool QgsEptPointCloudIndex::loadSingleNodeHierarchy( const QgsPointCloudNodeId &
   else
   {
     QFile file( filePath );
-    if ( ! file.open( QIODevice::ReadOnly ) )
+    if ( !file.open( QIODevice::ReadOnly ) )
     {
       QgsDebugError( u"Loading file failed: "_s + filePath );
       return false;
@@ -615,8 +613,7 @@ QVector<QgsPointCloudNodeId> QgsEptPointCloudIndex::nodePathToRoot( const QgsPoi
   {
     path.push_back( currentNode );
     currentNode = currentNode.parentNode();
-  }
-  while ( currentNode.d() >= 0 );
+  } while ( currentNode.d() >= 0 );
 
   return path;
 }

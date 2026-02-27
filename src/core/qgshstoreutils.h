@@ -27,7 +27,6 @@
 class CORE_EXPORT QgsHstoreUtils
 {
   public:
-
     /**
      * Returns a QVariantMap object containing the key and values from a hstore-formatted string.
      * \param string The hstored-formatted string
@@ -41,7 +40,6 @@ class CORE_EXPORT QgsHstoreUtils
      * \since QGIS 3.4
      */
     static QString build( const QVariantMap &map );
-
 };
 
 #endif //QGSHSTOREUTILS_H

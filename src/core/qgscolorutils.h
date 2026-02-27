@@ -37,7 +37,6 @@ class QgsReadWriteContext;
 class CORE_EXPORT QgsColorUtils
 {
   public:
-
     /**
      * Writes a \a color to an XML \a element, storing it under the specified \a identifier.
      *
@@ -52,8 +51,7 @@ class CORE_EXPORT QgsColorUtils
      *
      * \see readXml()
      */
-    static void writeXml( const QColor &color, const QString &identifier,
-                          QDomDocument &document, QDomElement &element, const QgsReadWriteContext &context );
+    static void writeXml( const QColor &color, const QString &identifier, QDomDocument &document, QDomElement &element, const QgsReadWriteContext &context );
 
     /**
      * Reads a color from an XML \a element, matching the specified \a identifier string.
@@ -117,7 +115,7 @@ class CORE_EXPORT QgsColorUtils
     static QString saveIccProfile( const QColorSpace &colorSpace, const QString &iccProfileFilePath );
 
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
 
     /**
      * Convert and returns Qt \a colorModel to Qgis::ColorModel. \a ok is set to true if \a colorModel
@@ -129,7 +127,6 @@ class CORE_EXPORT QgsColorUtils
     static Qgis::ColorModel toColorModel( QColorSpace::ColorModel colorModel, bool *ok = nullptr ) SIP_SKIP;
 
 #endif
-
 };
 
 #endif // QGSCOLORUTILS_H

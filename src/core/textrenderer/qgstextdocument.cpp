@@ -33,15 +33,11 @@ QgsTextDocument::QgsTextDocument() = default;
 
 QgsTextDocument::QgsTextDocument( const QgsTextDocument &other )
   : mBlocks( other.mBlocks )
-{
-
-}
+{}
 
 QgsTextDocument::QgsTextDocument( QgsTextDocument &&other )
   : mBlocks( std::move( other.mBlocks ) )
-{
-
-}
+{}
 
 QgsTextDocument &QgsTextDocument::operator=( const QgsTextDocument &other )
 {
@@ -118,7 +114,9 @@ QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
     // correctly...
     const thread_local QRegularExpression sRxPixelsToPtFix( u"(word-spacing|line-height|margin-top|margin-bottom|margin-left|margin-right):\\s*(-?\\d+(?:\\.\\d+)?)(?![%\\d])([a-zA-Z]*)"_s );
     line.replace( sRxPixelsToPtFix, u"\\1: \\2px"_s );
-    const thread_local QRegularExpression sRxMarginPixelsToPtFix( u"margin:\\s*(-?\\d+(?:\\.\\d+)?)([a-zA-Z]*)\\s*(-?\\d+(?:\\.\\d+)?)([a-zA-Z]*)\\s*(-?\\d+(?:\\.\\d+)?)([a-zA-Z]*)\\s*(-?\\d+(?:\\.\\d+)?)([a-zA-Z]*)"_s );
+    const thread_local QRegularExpression sRxMarginPixelsToPtFix(
+      u"margin:\\s*(-?\\d+(?:\\.\\d+)?)([a-zA-Z]*)\\s*(-?\\d+(?:\\.\\d+)?)([a-zA-Z]*)\\s*(-?\\d+(?:\\.\\d+)?)([a-zA-Z]*)\\s*(-?\\d+(?:\\.\\d+)?)([a-zA-Z]*)"_s
+    );
     line.replace( sRxMarginPixelsToPtFix, u"margin: \\1px \\3px \\5px \\7px"_s );
 
     // undo default margins on p, h1-6 elements. We didn't use to respect these and can't change the rendering
@@ -410,7 +408,7 @@ void QgsTextDocument::splitLines( const QString &wrapCharacter, int autoWrapLeng
 
         append( destinationBlock );
         destinationBlock.clear();
-        for ( int i = 1 ; i < thisParts.size() - 1; ++i )
+        for ( int i = 1; i < thisParts.size() - 1; ++i )
         {
           QgsTextBlock partBlock( QgsTextFragment( thisParts.at( i ), fragment.characterFormat() ) );
           partBlock.setBlockFormat( block.blockFormat() );
@@ -444,7 +442,7 @@ void QgsTextDocument::applyCapitalization( Qgis::Capitalization capitalization )
 
 bool QgsTextDocument::hasBackgrounds() const
 {
-  return std::any_of( mBlocks.begin(), mBlocks.end(), []( const QgsTextBlock & block ) { return block.hasBackgrounds(); } );
+  return std::any_of( mBlocks.begin(), mBlocks.end(), []( const QgsTextBlock &block ) { return block.hasBackgrounds(); } );
 }
 
 ///@cond PRIVATE

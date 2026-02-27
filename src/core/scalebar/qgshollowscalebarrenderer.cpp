@@ -41,16 +41,8 @@ QString QgsHollowScaleBarRenderer::visibleName() const
 
 QgsScaleBarRenderer::Flags QgsHollowScaleBarRenderer::flags() const
 {
-  return Flag::FlagUsesLineSymbol |
-         Flag::FlagUsesFillSymbol |
-         Flag::FlagUsesAlternateFillSymbol |
-         Flag::FlagRespectsUnits |
-         Flag::FlagRespectsMapUnitsPerScaleBarUnit |
-         Flag::FlagUsesUnitLabel |
-         Flag::FlagUsesSegments |
-         Flag::FlagUsesLabelBarSpace |
-         Flag::FlagUsesLabelVerticalPlacement |
-         Flag::FlagUsesLabelHorizontalPlacement;
+  return Flag::FlagUsesLineSymbol | Flag::FlagUsesFillSymbol | Flag::FlagUsesAlternateFillSymbol | Flag::FlagRespectsUnits | Flag::FlagRespectsMapUnitsPerScaleBarUnit | Flag::FlagUsesUnitLabel
+         | Flag::FlagUsesSegments | Flag::FlagUsesLabelBarSpace | Flag::FlagUsesLabelVerticalPlacement | Flag::FlagUsesLabelHorizontalPlacement;
 }
 
 int QgsHollowScaleBarRenderer::sortKey() const
@@ -74,7 +66,8 @@ void QgsHollowScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleB
   const double scaledLabelBarSpace = context.convertToPainterUnits( settings.labelBarSpace(), Qgis::RenderUnit::Millimeters );
   const double scaledBoxContentSpace = context.convertToPainterUnits( settings.boxContentSpace(), Qgis::RenderUnit::Millimeters );
   const QFontMetricsF fontMetrics = QgsTextRenderer::fontMetrics( context, settings.textFormat() );
-  const double barTopPosition = scaledBoxContentSpace + ( settings.labelVerticalPlacement() == Qgis::ScaleBarDistanceLabelVerticalPlacement::AboveSegment ? fontMetrics.ascent() + scaledLabelBarSpace : 0 );
+  const double barTopPosition = scaledBoxContentSpace
+                                + ( settings.labelVerticalPlacement() == Qgis::ScaleBarDistanceLabelVerticalPlacement::AboveSegment ? fontMetrics.ascent() + scaledLabelBarSpace : 0 );
   const double barHeight = context.convertToPainterUnits( settings.height(), Qgis::RenderUnit::Millimeters );
 
   painter->save();
@@ -122,12 +115,8 @@ void QgsHollowScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleB
       maxX = thisX + thisWidth;
 
     const QRectF segmentRect( thisX, barTopPosition, thisWidth, barHeight );
-    currentSymbol->renderPolygon( QPolygonF()
-                                  << segmentRect.topLeft()
-                                  << segmentRect.topRight()
-                                  << segmentRect.bottomRight()
-                                  << segmentRect.bottomLeft()
-                                  << segmentRect.topLeft(), nullptr, nullptr, context );
+    currentSymbol
+      ->renderPolygon( QPolygonF() << segmentRect.topLeft() << segmentRect.topRight() << segmentRect.bottomRight() << segmentRect.bottomLeft() << segmentRect.topLeft(), nullptr, nullptr, context );
     useColor = !useColor;
   }
 
@@ -145,30 +134,24 @@ void QgsHollowScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleB
 
       const double lineX = context.convertToPainterUnits( positions.at( i ), Qgis::RenderUnit::Millimeters ) + xOffset;
       const double lineLength = context.convertToPainterUnits( widths.at( i ), Qgis::RenderUnit::Millimeters );
-      lineSymbol->renderPolyline( QPolygonF()
-                                  << QPointF( lineX, barTopPosition + barHeight / 2.0 )
-                                  << QPointF( lineX + lineLength, barTopPosition + barHeight / 2.0 ),
-                                  nullptr, context, layer );
+      lineSymbol->renderPolyline( QPolygonF() << QPointF( lineX, barTopPosition + barHeight / 2.0 ) << QPointF( lineX + lineLength, barTopPosition + barHeight / 2.0 ), nullptr, context, layer );
     }
 
     // vertical lines
     for ( int i = 1; i < positions.size(); ++i )
     {
       const double lineX = context.convertToPainterUnits( positions.at( i ), Qgis::RenderUnit::Millimeters ) + xOffset;
-      lineSymbol->renderPolyline( QPolygonF()
-                                  << QPointF( lineX, barTopPosition )
-                                  << QPointF( lineX, barTopPosition + barHeight ),
-                                  nullptr, context, layer );
+      lineSymbol->renderPolyline( QPolygonF() << QPointF( lineX, barTopPosition ) << QPointF( lineX, barTopPosition + barHeight ), nullptr, context, layer );
     }
 
     // outside line
-    lineSymbol->renderPolyline( QPolygonF()
-                                << QPointF( minX, barTopPosition )
-                                << QPointF( maxX, barTopPosition )
-                                << QPointF( maxX, barTopPosition + barHeight )
-                                << QPointF( minX, barTopPosition + barHeight )
-                                << QPointF( minX, barTopPosition ),
-                                nullptr, context, layer );
+    lineSymbol->renderPolyline(
+      QPolygonF() << QPointF( minX, barTopPosition ) << QPointF( maxX, barTopPosition ) << QPointF( maxX, barTopPosition + barHeight ) << QPointF( minX, barTopPosition + barHeight )
+                  << QPointF( minX, barTopPosition ),
+      nullptr,
+      context,
+      layer
+    );
   }
 
   lineSymbol->stopRender( context );

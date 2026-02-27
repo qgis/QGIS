@@ -35,7 +35,7 @@ using namespace Qt::StringLiterals;
 QgsPointClusterRenderer::QgsPointClusterRenderer()
   : QgsPointDistanceRenderer( u"pointCluster"_s )
 {
-  mClusterSymbol = std::make_unique<QgsMarkerSymbol>( );
+  mClusterSymbol = std::make_unique<QgsMarkerSymbol>();
   mClusterSymbol->setSize( 4 );
   mClusterSymbol->setColor( QColor( 245, 75, 80 ) );
 
@@ -197,10 +197,7 @@ QgsPointClusterRenderer *QgsPointClusterRenderer::convertFromRenderer( const Qgs
   {
     return dynamic_cast<QgsPointClusterRenderer *>( renderer->clone() );
   }
-  else if ( renderer->type() == "singleSymbol"_L1 ||
-            renderer->type() == "categorizedSymbol"_L1 ||
-            renderer->type() == "graduatedSymbol"_L1 ||
-            renderer->type() == "RuleRenderer"_L1 )
+  else if ( renderer->type() == "singleSymbol"_L1 || renderer->type() == "categorizedSymbol"_L1 || renderer->type() == "graduatedSymbol"_L1 || renderer->type() == "RuleRenderer"_L1 )
   {
     QgsPointClusterRenderer *pointRenderer = new QgsPointClusterRenderer();
     pointRenderer->setEmbeddedRenderer( renderer->clone() );

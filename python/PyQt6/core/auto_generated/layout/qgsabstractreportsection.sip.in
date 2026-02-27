@@ -24,7 +24,6 @@ Current context for a report section.
 #include "qgsabstractreportsection.h"
 %End
   public:
-
     QgsFeature feature;
 
     QgsVectorLayer *currentLayer;
@@ -355,7 +354,6 @@ or ``False`` if visiting should be canceled.
 %End
 
   protected:
-
     enum SubSection /BaseType=IntEnum/
     {
       Header,

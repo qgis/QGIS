@@ -25,7 +25,6 @@ class is passed in the method :py:func:`QgsMeshEditor.advancedEdit()`.
 #include "qgsmeshadvancedediting.h"
 %End
   public:
-
     QgsMeshAdvancedEditing();
     virtual ~QgsMeshAdvancedEditing();
 
@@ -90,7 +89,6 @@ triangulated to take account of the new vertex in the shared edge.
 #include "qgsmeshadvancedediting.h"
 %End
   public:
-
     QgsMeshEditRefineFaces();
 
     virtual QString text() const;
@@ -127,7 +125,6 @@ $vertex_x <= 100 , $vertex_z + 80 , $vertex_z - 150)"
 #include "qgsmeshadvancedediting.h"
 %End
   public:
-
     QgsMeshTransformVerticesByExpression();
 
     virtual QString text() const;

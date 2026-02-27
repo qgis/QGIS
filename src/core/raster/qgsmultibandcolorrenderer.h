@@ -29,10 +29,9 @@ class QDomElement;
  * \ingroup core
   * \brief Renderer for multiband images with the color components.
 */
-class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
+class CORE_EXPORT QgsMultiBandColorRenderer : public QgsRasterRenderer
 {
   public:
-
     /**
      * Constructor for QgsMultiBandColorRenderer.
      * \param input input raster interface
@@ -43,10 +42,15 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
      * \param greenEnhancement optional contrast enhancement for green channel. Ownership is transferred to the renderer.
      * \param blueEnhancement optional contrast enhancement for blue channel. Ownership is transferred to the renderer.
      */
-    QgsMultiBandColorRenderer( QgsRasterInterface *input, int redBand, int greenBand, int blueBand,
-                               QgsContrastEnhancement *redEnhancement SIP_TRANSFER = nullptr,
-                               QgsContrastEnhancement *greenEnhancement SIP_TRANSFER = nullptr,
-                               QgsContrastEnhancement *blueEnhancement SIP_TRANSFER = nullptr );
+    QgsMultiBandColorRenderer(
+      QgsRasterInterface *input,
+      int redBand,
+      int greenBand,
+      int blueBand,
+      QgsContrastEnhancement *redEnhancement SIP_TRANSFER = nullptr,
+      QgsContrastEnhancement *greenEnhancement SIP_TRANSFER = nullptr,
+      QgsContrastEnhancement *blueEnhancement SIP_TRANSFER = nullptr
+    );
     ~QgsMultiBandColorRenderer() override;
 
     //! QgsMultiBandColorRenderer cannot be copied. Use clone() instead.
@@ -200,7 +204,6 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     std::unique_ptr< QgsContrastEnhancement > mRedContrastEnhancement;
     std::unique_ptr< QgsContrastEnhancement > mGreenContrastEnhancement;
     std::unique_ptr< QgsContrastEnhancement > mBlueContrastEnhancement;
-
 };
 
 #endif // QGSMULTIBANDCOLORRENDERER_H

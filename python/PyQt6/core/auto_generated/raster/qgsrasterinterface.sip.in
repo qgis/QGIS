@@ -320,10 +320,9 @@ Returns the band statistics.
    Use :py:class:`Qgis`.RasterBandStatistic instead of int for ``stats`` argument.
 %End
 
-    virtual QgsRasterBandStats bandStatistics( int bandNo,
-        Qgis::RasterBandStatistics stats = Qgis::RasterBandStatistic::All,
-        const QgsRectangle &extent = QgsRectangle(),
-        int sampleSize = 0, QgsRasterBlockFeedback *feedback = 0 );
+    virtual QgsRasterBandStats bandStatistics(
+      int bandNo, Qgis::RasterBandStatistics stats = Qgis::RasterBandStatistic::All, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0, QgsRasterBlockFeedback *feedback = 0
+    );
 %Docstring
 Returns the band statistics.
 
@@ -351,10 +350,7 @@ The parameters are the same as in
    Use :py:class:`Qgis`.RasterBandStatistic instead of int for ``stats`` argument.
 %End
 
-    virtual bool hasStatistics( int bandNo,
-                                Qgis::RasterBandStatistics stats = Qgis::RasterBandStatistic::All,
-                                const QgsRectangle &extent = QgsRectangle(),
-                                int sampleSize = 0 );
+    virtual bool hasStatistics( int bandNo, Qgis::RasterBandStatistics stats = Qgis::RasterBandStatistic::All, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0 );
 %Docstring
 Returns ``True`` if histogram is available (cached, already calculated).
 The parameters are the same as in
@@ -478,13 +474,7 @@ Returns ``True`` if histogram is available (cached, already calculated)
 %End
 
 
-    virtual void cumulativeCut( int bandNo,
-                                double lowerCount,
-                                double upperCount,
-                                double &lowerValue,
-                                double &upperValue,
-                                const QgsRectangle &extent = QgsRectangle(),
-                                int sampleSize = 0 );
+    virtual void cumulativeCut( int bandNo, double lowerCount, double upperCount, double &lowerValue, double &upperValue, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0 );
 %Docstring
 Find values for cumulative pixel count cut.
 
@@ -576,10 +566,9 @@ Fill in statistics defaults if not specified
    Use :py:class:`Qgis`.RasterBandStatistic instead of int for ``stats`` argument.
 %End
 
-    void initStatistics( QgsRasterBandStats &statistics, int bandNo,
-                         Qgis::RasterBandStatistics stats = Qgis::RasterBandStatistic::All,
-                         const QgsRectangle &boundingBox = QgsRectangle(),
-                         int binCount = 0 ) const;
+    void initStatistics(
+      QgsRasterBandStats &statistics, int bandNo, Qgis::RasterBandStatistics stats = Qgis::RasterBandStatistic::All, const QgsRectangle &boundingBox = QgsRectangle(), int binCount = 0
+    ) const;
 %Docstring
 Fill in statistics defaults if not specified
 %End

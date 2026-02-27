@@ -31,7 +31,6 @@ profiles contained in the manager.
 #include "qgselevationprofilemanager.h"
 %End
   public:
-
     explicit QgsElevationProfileManager( QgsProject *project /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsElevationProfileManager. The project will become the
@@ -148,9 +147,7 @@ Emitted when a profile is renamed
 %End
 
   protected:
-
     virtual void setupObjectConnections( QgsElevationProfile *profile );
-
 
 };
 

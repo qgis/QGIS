@@ -47,8 +47,7 @@ QgsLayoutItemShape::QgsLayoutItemShape( QgsLayout *layout )
   mShapeStyleSymbol = QgsFillSymbol::createSimple( properties );
   refreshSymbol( false );
 
-  connect( this, &QgsLayoutItemShape::sizePositionChanged, this, [this]
-  {
+  connect( this, &QgsLayoutItemShape::sizePositionChanged, this, [this] {
     updateBoundingRect();
     update();
     emit clipPathChanged();

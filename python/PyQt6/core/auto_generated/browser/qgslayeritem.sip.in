@@ -21,7 +21,6 @@ the providers.
 #include "qgslayeritem.h"
 %End
   public:
-
     QgsLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, Qgis::BrowserLayerType layerType, const QString &providerKey );
 %Docstring
 Constructor for QgsLayerItem.
@@ -34,7 +33,7 @@ Constructor for QgsLayerItem.
 %End
 
 
-    virtual bool equal( const QgsDataItem *other );
+      virtual bool equal( const QgsDataItem *other );
 
 
     virtual bool hasDragEnabled() const;
@@ -101,7 +100,6 @@ Delete this layer item Use
   protected:
 
   public:
-
     static QIcon iconForWkbType( Qgis::WkbType type );
 %Docstring
 Returns the icon for a vector layer whose geometry type is provided.
@@ -150,8 +148,6 @@ Set layer's ``metadata``.
 %End
 
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

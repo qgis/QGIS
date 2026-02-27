@@ -40,7 +40,6 @@ class CORE_EXPORT QgsLayerTreeCustomNode : public QgsLayerTreeNode
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor to create custom nodes that represent application objects other than layers and groups.
      *
@@ -55,17 +54,22 @@ class CORE_EXPORT QgsLayerTreeCustomNode : public QgsLayerTreeNode
 #endif
 
 #ifdef SIP_RUN
+    // clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = u"<QgsLayerTreeCustomNode: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
-    /**
+        /**
      * Returns the node's unique identifier.
      */
-    QString nodeId() const { return mId; };
+        QString nodeId() const
+    {
+      return mId;
+    };
 
     /**
      * Returns the node's name.
@@ -80,7 +84,7 @@ class CORE_EXPORT QgsLayerTreeCustomNode : public QgsLayerTreeNode
     /**
      * Read custom node from XML element <layer-tree-custom-node> and return the newly created node (or NULLPTR on error).
      */
-    static QgsLayerTreeCustomNode *readXml( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;  // cppcheck-suppress duplInheritedMember
+    static QgsLayerTreeCustomNode *readXml( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
 
     /**
      * Write custom node as XML element <layer-tree-custom-node> and add it to the given parent element.
@@ -102,7 +106,7 @@ class CORE_EXPORT QgsLayerTreeCustomNode : public QgsLayerTreeNode
     QgsLayerTreeCustomNode( const QgsLayerTreeCustomNode &other );
 #endif
 
-    QgsLayerTreeCustomNode &operator= ( const QgsLayerTreeCustomNode & ) = delete;
+    QgsLayerTreeCustomNode &operator=( const QgsLayerTreeCustomNode & ) = delete;
 
     QString mId;
     QString mName;

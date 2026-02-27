@@ -11,7 +11,7 @@
 
 
 
-class QgsCurve: QgsAbstractGeometry /Abstract/
+class QgsCurve : QgsAbstractGeometry /Abstract/
 {
 %Docstring(signature="appended")
 Abstract base class for curved geometry type.
@@ -21,7 +21,6 @@ Abstract base class for curved geometry type.
 #include "qgscurve.h"
 %End
   public:
-
     QgsCurve();
 
     virtual bool equals( const QgsCurve &other ) const = 0;

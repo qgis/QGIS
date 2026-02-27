@@ -20,12 +20,12 @@
 #include "qgis_sip.h"
 #include "qgssymbollayer.h"
 
-#define DEFAULT_SIMPLEMARKER_NAME         "circle"
-#define DEFAULT_SIMPLEMARKER_COLOR        QColor(255,0,0)
-#define DEFAULT_SIMPLEMARKER_BORDERCOLOR  QColor( 35, 35, 35 )
-#define DEFAULT_SIMPLEMARKER_JOINSTYLE    Qt::BevelJoin
-#define DEFAULT_SIMPLEMARKER_SIZE         Qgis::DEFAULT_POINT_SIZE
-#define DEFAULT_SIMPLEMARKER_ANGLE        0
+#define DEFAULT_SIMPLEMARKER_NAME "circle"
+#define DEFAULT_SIMPLEMARKER_COLOR QColor( 255, 0, 0 )
+#define DEFAULT_SIMPLEMARKER_BORDERCOLOR QColor( 35, 35, 35 )
+#define DEFAULT_SIMPLEMARKER_JOINSTYLE Qt::BevelJoin
+#define DEFAULT_SIMPLEMARKER_SIZE Qgis::DEFAULT_POINT_SIZE
+#define DEFAULT_SIMPLEMARKER_ANGLE 0
 
 #include <QPen>
 #include <QBrush>
@@ -46,9 +46,7 @@ class QgsPathResolver;
  */
 class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
 {
-
   public:
-
     //! Returns a list of all available shape types.
     static QList< Qgis::MarkerShape > availableShapes();
 
@@ -66,10 +64,9 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
     * \param angle symbol rotation angle
     * \param scaleMethod scaling method for data defined scaling
     */
-    QgsSimpleMarkerSymbolLayerBase( Qgis::MarkerShape shape = Qgis::MarkerShape::Circle,
-                                    double size = DEFAULT_SIMPLEMARKER_SIZE,
-                                    double angle = DEFAULT_SIMPLEMARKER_ANGLE,
-                                    Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+    QgsSimpleMarkerSymbolLayerBase(
+      Qgis::MarkerShape shape = Qgis::MarkerShape::Circle, double size = DEFAULT_SIMPLEMARKER_SIZE, double angle = DEFAULT_SIMPLEMARKER_ANGLE, Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD
+    );
 
     ~QgsSimpleMarkerSymbolLayerBase() override;
 
@@ -110,7 +107,6 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
     QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) override;
 
   protected:
-
     /**
      * Prepares the layer for drawing the specified shape (QPolygonF version)
      */
@@ -157,7 +153,6 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
     Qgis::MarkerShape mShape;
 
   private:
-
     /**
      * Derived classes must implement draw() to handle drawing the generated shape onto the painter surface.
      * \param context symbol render context
@@ -177,7 +172,6 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
 class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayerBase
 {
   public:
-
     /**
      * Constructor for QgsSimpleMarkerSymbolLayer.
     * \param shape symbol shape
@@ -188,13 +182,15 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     * \param strokeColor stroke color for symbol
     * \param penJoinStyle join style for stroke pen
     */
-    QgsSimpleMarkerSymbolLayer( Qgis::MarkerShape shape = Qgis::MarkerShape::Circle,
-                                double size = DEFAULT_SIMPLEMARKER_SIZE,
-                                double angle = DEFAULT_SIMPLEMARKER_ANGLE,
-                                Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
-                                const QColor &color = DEFAULT_SIMPLEMARKER_COLOR,
-                                const QColor &strokeColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR,
-                                Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEMARKER_JOINSTYLE );
+    QgsSimpleMarkerSymbolLayer(
+      Qgis::MarkerShape shape = Qgis::MarkerShape::Circle,
+      double size = DEFAULT_SIMPLEMARKER_SIZE,
+      double angle = DEFAULT_SIMPLEMARKER_ANGLE,
+      Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
+      const QColor &color = DEFAULT_SIMPLEMARKER_COLOR,
+      const QColor &strokeColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR,
+      Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEMARKER_JOINSTYLE
+    );
 
     ~QgsSimpleMarkerSymbolLayer() override;
 
@@ -367,7 +363,6 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     const QgsMapUnitScale &strokeWidthMapUnitScale() const { return mStrokeWidthMapUnitScale; }
 
   protected:
-
     /**
      * Draws the marker shape in the specified painter.
      * \param p destination QPainter
@@ -424,7 +419,6 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     void draw( QgsSymbolRenderContext &context, Qgis::MarkerShape shape, const QPolygonF &polygon, const QPainterPath &path ) override SIP_FORCE;
 
     double mCachedOpacity = 1.0;
-
 };
 
 /**
@@ -436,7 +430,6 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
 class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayerBase
 {
   public:
-
     /**
      * Constructor for QgsFilledMarkerSymbolLayer.
     * \param shape symbol shape
@@ -444,10 +437,9 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     * \param angle symbol rotation angle
     * \param scaleMethod size scaling method
     */
-    QgsFilledMarkerSymbolLayer( Qgis::MarkerShape shape = Qgis::MarkerShape::Circle,
-                                double size = DEFAULT_SIMPLEMARKER_SIZE,
-                                double angle = DEFAULT_SIMPLEMARKER_ANGLE,
-                                Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+    QgsFilledMarkerSymbolLayer(
+      Qgis::MarkerShape shape = Qgis::MarkerShape::Circle, double size = DEFAULT_SIMPLEMARKER_SIZE, double angle = DEFAULT_SIMPLEMARKER_ANGLE, Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD
+    );
 
     ~QgsFilledMarkerSymbolLayer() override;
 
@@ -489,8 +481,8 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
 
 //////////
 
-#define DEFAULT_SVGMARKER_SIZE         ( 2 * Qgis::DEFAULT_POINT_SIZE )
-#define DEFAULT_SVGMARKER_ANGLE        0
+#define DEFAULT_SVGMARKER_SIZE ( 2 * Qgis::DEFAULT_POINT_SIZE )
+#define DEFAULT_SVGMARKER_ANGLE 0
 
 /**
  * \ingroup core
@@ -501,10 +493,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
 {
   public:
     //! Constructs SVG marker symbol layer with picture from given absolute path to a SVG file
-    QgsSvgMarkerSymbolLayer( const QString &path,
-                             double size = DEFAULT_SVGMARKER_SIZE,
-                             double angle = DEFAULT_SVGMARKER_ANGLE,
-                             Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+    QgsSvgMarkerSymbolLayer( const QString &path, double size = DEFAULT_SVGMARKER_SIZE, double angle = DEFAULT_SVGMARKER_ANGLE, Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
     QgsSvgMarkerSymbolLayer( const QgsSvgMarkerSymbolLayer &other ) SIP_SKIP;
 
     ~QgsSvgMarkerSymbolLayer() override;
@@ -645,7 +634,6 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
   protected:
-
     /**
      * Calculates the marker aspect ratio between width and height.
      * \param context symbol render context
@@ -673,14 +661,13 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
   private:
     double calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const;
     void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledWidth, double scaledHeight, QPointF &offset, double &angle ) const;
-
 };
 
 
 //////////
 
-#define DEFAULT_RASTERMARKER_SIZE         ( 2 * Qgis::DEFAULT_POINT_SIZE )
-#define DEFAULT_RASTERMARKER_ANGLE        0
+#define DEFAULT_RASTERMARKER_SIZE ( 2 * Qgis::DEFAULT_POINT_SIZE )
+#define DEFAULT_RASTERMARKER_ANGLE 0
 
 /**
  * \ingroup core
@@ -692,10 +679,7 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
 {
   public:
     //! Constructs raster marker symbol layer with picture from given absolute path to a raster image file
-    QgsRasterMarkerSymbolLayer( const QString &path = QString(),
-                                double size = DEFAULT_SVGMARKER_SIZE,
-                                double angle = DEFAULT_SVGMARKER_ANGLE,
-                                Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+    QgsRasterMarkerSymbolLayer( const QString &path = QString(), double size = DEFAULT_SVGMARKER_SIZE, double angle = DEFAULT_SVGMARKER_ANGLE, Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 
     ~QgsRasterMarkerSymbolLayer() override;
 
@@ -819,7 +803,6 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
     QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) override;
 
   protected:
-
     /**
      * Sets common class properties from a \a properties map.
      *
@@ -852,22 +835,21 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
   private:
     double calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const;
     void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledWidth, double scaledHeight, QPointF &offset, double &angle ) const;
-
 };
 
 
 //////////
 
-#define POINT2MM(x) ( (x) * 25.4 / 72 ) // point is 1/72 of inch
-#define MM2POINT(x) ( (x) * 72 / 25.4 )
+#define POINT2MM( x ) ( ( x ) * 25.4 / 72 ) // point is 1/72 of inch
+#define MM2POINT( x ) ( ( x ) * 72 / 25.4 )
 
-#define DEFAULT_FONTMARKER_FONT   "Dingbats"
-#define DEFAULT_FONTMARKER_CHR    QChar('A')
-#define DEFAULT_FONTMARKER_SIZE   POINT2MM(12)
-#define DEFAULT_FONTMARKER_COLOR  QColor( 35, 35, 35 )
-#define DEFAULT_FONTMARKER_BORDERCOLOR  QColor(Qt::white)
-#define DEFAULT_FONTMARKER_JOINSTYLE    Qt::MiterJoin
-#define DEFAULT_FONTMARKER_ANGLE  0
+#define DEFAULT_FONTMARKER_FONT "Dingbats"
+#define DEFAULT_FONTMARKER_CHR QChar( 'A' )
+#define DEFAULT_FONTMARKER_SIZE POINT2MM( 12 )
+#define DEFAULT_FONTMARKER_COLOR QColor( 35, 35, 35 )
+#define DEFAULT_FONTMARKER_BORDERCOLOR QColor( Qt::white )
+#define DEFAULT_FONTMARKER_JOINSTYLE Qt::MiterJoin
+#define DEFAULT_FONTMARKER_ANGLE 0
 
 /**
  * \ingroup core
@@ -877,13 +859,14 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
 class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 {
   public:
-
     //! Constructs a font marker symbol layer.
-    QgsFontMarkerSymbolLayer( const QString &fontFamily = DEFAULT_FONTMARKER_FONT,
-                              QString chr = DEFAULT_FONTMARKER_CHR,
-                              double pointSize = DEFAULT_FONTMARKER_SIZE,
-                              const QColor &color = DEFAULT_FONTMARKER_COLOR,
-                              double angle = DEFAULT_FONTMARKER_ANGLE );
+    QgsFontMarkerSymbolLayer(
+      const QString &fontFamily = DEFAULT_FONTMARKER_FONT,
+      QString chr = DEFAULT_FONTMARKER_CHR,
+      double pointSize = DEFAULT_FONTMARKER_SIZE,
+      const QColor &color = DEFAULT_FONTMARKER_COLOR,
+      double angle = DEFAULT_FONTMARKER_ANGLE
+    );
 
     ~QgsFontMarkerSymbolLayer() override;
 
@@ -1055,11 +1038,10 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) override;
 
   private:
-
     QString mFontFamily;
     QString mFontStyle;
     QFont mFont;
-    std::unique_ptr< QFontMetrics >mFontMetrics;
+    std::unique_ptr< QFontMetrics > mFontMetrics;
 
     QString mString;
 
@@ -1103,13 +1085,10 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 class CORE_EXPORT QgsAnimatedMarkerSymbolLayer : public QgsRasterMarkerSymbolLayer
 {
   public:
-
     /**
      * Constructor for animated marker symbol layer using the specified source image \a path.
      */
-    QgsAnimatedMarkerSymbolLayer( const QString &path = QString(),
-                                  double size = DEFAULT_RASTERMARKER_SIZE,
-                                  double angle = DEFAULT_RASTERMARKER_ANGLE );
+    QgsAnimatedMarkerSymbolLayer( const QString &path = QString(), double size = DEFAULT_RASTERMARKER_SIZE, double angle = DEFAULT_RASTERMARKER_ANGLE );
 
     ~QgsAnimatedMarkerSymbolLayer() override;
 
@@ -1149,11 +1128,8 @@ class CORE_EXPORT QgsAnimatedMarkerSymbolLayer : public QgsRasterMarkerSymbolLay
     double mFrameRateFps = 10;
     bool mStaticPath = false;
     mutable QSet< QString > mPreparedPaths;
-
 };
 
 // clazy:excludeall=qstring-allocations
 
 #endif
-
-

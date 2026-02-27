@@ -20,18 +20,13 @@
 
 using namespace Qt::StringLiterals;
 
-QgsStacAsset::QgsStacAsset( const QString &href,
-                            const QString &title,
-                            const QString &description,
-                            const QString &mediaType,
-                            const QStringList &roles )
+QgsStacAsset::QgsStacAsset( const QString &href, const QString &title, const QString &description, const QString &mediaType, const QStringList &roles )
   : mHref( href )
   , mTitle( title )
   , mDescription( description )
   , mMediaType( mediaType )
   , mRoles( roles )
-{
-}
+{}
 
 QString QgsStacAsset::href() const
 {
@@ -61,17 +56,12 @@ QStringList QgsStacAsset::roles() const
 bool QgsStacAsset::isCloudOptimized() const
 {
   const QString format = formatName();
-  return format == "COG"_L1 ||
-         format == "COPC"_L1 ||
-         format == "EPT"_L1 ||
-         format == "Zarr"_L1 ||
-         format == "Parquet"_L1;
+  return format == "COG"_L1 || format == "COPC"_L1 || format == "EPT"_L1 || format == "Zarr"_L1 || format == "Parquet"_L1;
 }
 
 QString QgsStacAsset::formatName() const
 {
-  if ( mMediaType == "image/tiff; application=geotiff; profile=cloud-optimized"_L1 ||
-       mMediaType == "image/vnd.stac.geotiff; cloud-optimized=true"_L1 )
+  if ( mMediaType == "image/tiff; application=geotiff; profile=cloud-optimized"_L1 || mMediaType == "image/vnd.stac.geotiff; cloud-optimized=true"_L1 )
     return u"COG"_s;
   else if ( mMediaType == "application/vnd.laszip+copc"_L1 )
     return u"COPC"_s;
@@ -93,8 +83,7 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri( const QString &authcfg ) const
   {
     uri.layerType = u"raster"_s;
     uri.providerKey = u"gdal"_s;
-    if ( href().startsWith( "http"_L1, Qt::CaseInsensitive ) ||
-         href().startsWith( "ftp"_L1, Qt::CaseInsensitive ) )
+    if ( href().startsWith( "http"_L1, Qt::CaseInsensitive ) || href().startsWith( "ftp"_L1, Qt::CaseInsensitive ) )
     {
       uri.uri = u"/vsicurl/%1"_s.arg( href() );
       if ( !authcfg.isEmpty() )
@@ -129,8 +118,7 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri( const QString &authcfg ) const
   {
     uri.layerType = u"raster"_s;
     uri.providerKey = u"gdal"_s;
-    if ( href().startsWith( "http"_L1, Qt::CaseInsensitive ) ||
-         href().startsWith( "ftp"_L1, Qt::CaseInsensitive ) )
+    if ( href().startsWith( "http"_L1, Qt::CaseInsensitive ) || href().startsWith( "ftp"_L1, Qt::CaseInsensitive ) )
     {
       uri.uri = u"ZARR:\"/vsicurl/%1\""_s.arg( href() );
       if ( !authcfg.isEmpty() )
@@ -150,8 +138,7 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri( const QString &authcfg ) const
   {
     uri.layerType = u"vector"_s;
     uri.providerKey = u"ogr"_s;
-    if ( href().startsWith( "http"_L1, Qt::CaseInsensitive ) ||
-         href().startsWith( "ftp"_L1, Qt::CaseInsensitive ) )
+    if ( href().startsWith( "http"_L1, Qt::CaseInsensitive ) || href().startsWith( "ftp"_L1, Qt::CaseInsensitive ) )
     {
       uri.uri = u"/vsicurl/%1"_s.arg( href() );
       if ( !authcfg.isEmpty() )

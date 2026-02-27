@@ -64,16 +64,13 @@ void QgsRasterLayerLabelProvider::addLabel( const QgsPoint &mapPoint, const QStr
     QgsPointXY center = context.mapExtent().center();
 
     QTransform t = QTransform::fromTranslate( center.x(), center.y() );
-    t.rotate( - m2p.mapRotation() );
+    t.rotate( -m2p.mapRotation() );
     t.translate( -center.x(), -center.y() );
     geom.transform( t );
   }
 
   const double uPP = m2p.mapUnitsPerPixel();
-  auto feature = std::make_unique< QgsTextLabelFeature >( mLabels.size(),
-                 QgsGeos::asGeos( &geom ),
-                 QSizeF( size.width() * uPP,
-                         size.height() * uPP ) );
+  auto feature = std::make_unique< QgsTextLabelFeature >( mLabels.size(), QgsGeos::asGeos( &geom ), QSizeF( size.width() * uPP, size.height() * uPP ) );
 
   feature->setDocument( doc, documentMetrics );
   feature->setFixedAngle( 0 );
@@ -124,9 +121,7 @@ void QgsRasterLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
   const QPointF outPt = xform.transform( label->getX(), label->getY() ).toQPointF();
 
   QgsTextLabelFeature *lf = qgis::down_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );
-  QgsTextRenderer::drawDocument( outPt,
-                                 mFormat, lf->document(), lf->documentMetrics(), context, Qgis::TextHorizontalAlignment::Left,
-                                 label->getAlpha(), Qgis::TextLayoutMode::Labeling );
+  QgsTextRenderer::drawDocument( outPt, mFormat, lf->document(), lf->documentMetrics(), context, Qgis::TextHorizontalAlignment::Left, label->getAlpha(), Qgis::TextLayoutMode::Labeling );
 }
 
 void QgsRasterLayerLabelProvider::startRender( QgsRenderContext &context )
@@ -140,23 +135,24 @@ void QgsRasterLayerLabelProvider::startRender( QgsRenderContext &context )
 // RAII properties restorer for QgsRasterDataProvider
 struct RasterProviderSettingsRestorer
 {
-  QgsRasterDataProvider *mProvider;
-  const bool mProviderResampling;
-  const Qgis::RasterResamplingMethod mZoomedOutMethod;
-  const double mMaxOversampling;
+    QgsRasterDataProvider *mProvider;
+    const bool mProviderResampling;
+    const Qgis::RasterResamplingMethod mZoomedOutMethod;
+    const double mMaxOversampling;
 
-  RasterProviderSettingsRestorer( QgsRasterDataProvider *provider )
-    : mProvider( provider )
-    , mProviderResampling( provider->isProviderResamplingEnabled() )
-    , mZoomedOutMethod( provider->zoomedOutResamplingMethod() )
-    , mMaxOversampling( provider->maxOversampling() ) {}
+    RasterProviderSettingsRestorer( QgsRasterDataProvider *provider )
+      : mProvider( provider )
+      , mProviderResampling( provider->isProviderResamplingEnabled() )
+      , mZoomedOutMethod( provider->zoomedOutResamplingMethod() )
+      , mMaxOversampling( provider->maxOversampling() )
+    {}
 
-  ~RasterProviderSettingsRestorer()
-  {
-    mProvider->enableProviderResampling( mProviderResampling );
-    mProvider->setZoomedOutResamplingMethod( mZoomedOutMethod );
-    mProvider->setMaxOversampling( mMaxOversampling );
-  }
+    ~RasterProviderSettingsRestorer()
+    {
+      mProvider->enableProviderResampling( mProviderResampling );
+      mProvider->setZoomedOutResamplingMethod( mZoomedOutMethod );
+      mProvider->setMaxOversampling( mMaxOversampling );
+    }
 };
 ///@endcond
 
@@ -178,7 +174,7 @@ void QgsRasterLayerLabelProvider::generateLabels( QgsRenderContext &context, Qgs
   // iterate through blocks, directly over the provider.
   QgsRasterIterator iterator( provider );
 
-  const QSize maxTileSize {provider->maximumTileSize()};
+  const QSize maxTileSize { provider->maximumTileSize() };
   iterator.setMaximumTileWidth( maxTileSize.width() );
   iterator.setMaximumTileHeight( maxTileSize.height() );
   iterator.setSnapToPixelFactor( mResampleOver );
@@ -204,15 +200,7 @@ void QgsRasterLayerLabelProvider::generateLabels( QgsRenderContext &context, Qgs
   int subRegionHeight = 0;
   int subRegionLeft = 0;
   int subRegionTop = 0;
-  QgsRectangle rasterSubRegion = QgsRasterIterator::subRegion(
-                                   provider->extent(),
-                                   provider->xSize(),
-                                   provider->ySize(),
-                                   layerVisibleExtent,
-                                   subRegionWidth,
-                                   subRegionHeight,
-                                   subRegionLeft,
-                                   subRegionTop );
+  QgsRectangle rasterSubRegion = QgsRasterIterator::subRegion( provider->extent(), provider->xSize(), provider->ySize(), layerVisibleExtent, subRegionWidth, subRegionHeight, subRegionLeft, subRegionTop );
 
   const double rasterUnitsPerPixelX = provider->extent().width() / provider->xSize() * mResampleOver;
   const double rasterUnitsPerPixelY = provider->extent().height() / provider->ySize() * mResampleOver;
@@ -222,8 +210,7 @@ void QgsRasterLayerLabelProvider::generateLabels( QgsRenderContext &context, Qgs
   {
     // calculate size in painter units of one raster pixel
     QgsPointXY p1( rasterSubRegion.xMinimum(), rasterSubRegion.yMinimum() );
-    QgsPointXY p2( rasterSubRegion.xMinimum() + rasterSubRegion.width() / subRegionWidth,
-                   rasterSubRegion.yMinimum() + rasterSubRegion.height() / subRegionHeight );
+    QgsPointXY p2( rasterSubRegion.xMinimum() + rasterSubRegion.width() / subRegionWidth, rasterSubRegion.yMinimum() + rasterSubRegion.height() / subRegionHeight );
     try
     {
       p1 = context.coordinateTransform().transform( p1 );
@@ -236,8 +223,7 @@ void QgsRasterLayerLabelProvider::generateLabels( QgsRenderContext &context, Qgs
     }
     const QgsPointXY p1PainterUnits = context.mapToPixel().transform( p1 );
     const QgsPointXY p2PainterUnits = context.mapToPixel().transform( p2 );
-    const double painterUnitsPerRasterPixel = std::max( std::fabs( p1PainterUnits.x() - p2PainterUnits.x() ),
-        std::fabs( p1PainterUnits.y() - p2PainterUnits.y() ) ) * mResampleOver;
+    const double painterUnitsPerRasterPixel = std::max( std::fabs( p1PainterUnits.x() - p2PainterUnits.x() ), std::fabs( p1PainterUnits.y() - p2PainterUnits.y() ) ) * mResampleOver;
     if ( painterUnitsPerRasterPixel < minPixelSizePainterUnits )
       return;
   }
@@ -293,9 +279,7 @@ void QgsRasterLayerLabelProvider::generateLabels( QgsRenderContext &context, Qgs
             QgsPoint pixelCenter( currentX, currentY );
             pixelCenter.transform( context.coordinateTransform() );
 
-            addLabel( pixelCenter,
-                      numericFormat->formatDouble( value, numericContext ),
-                      context );
+            addLabel( pixelCenter, numericFormat->formatDouble( value, numericContext ), context );
             numberLabels++;
             if ( maxNumLabels > 0 && numberLabels >= maxNumLabels )
               return;
@@ -317,9 +301,7 @@ void QgsRasterLayerLabelProvider::generateLabels( QgsRenderContext &context, Qgs
 //
 
 void QgsAbstractRasterLayerLabeling::multiplyOpacity( double )
-{
-
-}
+{}
 
 bool QgsAbstractRasterLayerLabeling::isInScaleRange( double ) const
 {
@@ -587,8 +569,7 @@ bool QgsRasterLayerSimpleLabeling::isInScaleRange( double scale ) const
   // mMinScale (denominator!) is inclusive ( >= --> In range )
   // mMaxScale (denominator!) is exclusive ( < --> In range )
   return !mScaleVisibility
-         || ( ( mMinimumScale == 0 || !QgsScaleUtils::lessThanMaximumScale( scale, mMinimumScale ) )
-              && ( mMaximumScale == 0 || !QgsScaleUtils::equalToOrGreaterThanMinimumScale( scale, mMaximumScale ) ) );
+         || ( ( mMinimumScale == 0 || !QgsScaleUtils::lessThanMaximumScale( scale, mMinimumScale ) ) && ( mMaximumScale == 0 || !QgsScaleUtils::equalToOrGreaterThanMinimumScale( scale, mMaximumScale ) ) );
 }
 
 Qgis::RasterResamplingMethod QgsRasterLayerSimpleLabeling::resampleMethod() const

@@ -35,7 +35,6 @@ Measurement units are stored alongside the size.
 #include "qgslayoutsize.h"
 %End
   public:
-
     QgsLayoutSize( double width, double height, Qgis::LayoutUnit units = Qgis::LayoutUnit::Millimeters );
 %Docstring
 Constructor for QgsLayoutSize.

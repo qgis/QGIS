@@ -28,7 +28,6 @@ Connections management for OWS connections.
 %End
   public:
 
-
     QgsOwsConnection( const QString &service, const QString &connName );
 %Docstring
 Constructor

@@ -211,7 +211,6 @@ the same. QGIS is able to consume both flavors.
     static const QMetaObject staticMetaObject;
 
   public:
-
     enum CrsType /BaseType=IntEnum/
     {
       InternalCrsId,

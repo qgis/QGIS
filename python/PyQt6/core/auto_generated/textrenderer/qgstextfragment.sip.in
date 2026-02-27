@@ -35,7 +35,6 @@ image fragments.
 #include "qgstextfragment.h"
 %End
   public:
-
     explicit QgsTextFragment( const QString &text = QString(), const QgsTextCharacterFormat &format = QgsTextCharacterFormat() );
 %Docstring
 Constructor for QgsTextFragment, with the specified ``text`` and

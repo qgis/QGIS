@@ -80,7 +80,7 @@ Returns the number of features contained in the store.
     sipRes = true;
 %End
 
-    QgsFeatureList features() const;
+        QgsFeatureList features() const;
 %Docstring
 Returns the list of features contained in the store.
 %End
@@ -103,7 +103,8 @@ Returns the map of optional parameters.
 
 typedef QVector<QgsFeatureStore> QgsFeatureStoreList;
 
-%MappedType QgsFeatureStoreList
+%MappedType
+QgsFeatureStoreList
 {
 %TypeHeaderCode
 #include "qgsfeaturestore.h"

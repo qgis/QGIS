@@ -21,7 +21,6 @@ A layout item subclass that renders chart plots.
 #include "qgslayoutitemchart.h"
 %End
   public:
-
     class SeriesDetails
     {
 %Docstring(signature="appended")
@@ -36,13 +35,11 @@ Chart series details covering all supported series types.
 %End
 
       public:
-
         explicit SeriesDetails( const QString &name = QString() );
 %Docstring
 Constructor for SeriesDetails with an optional ``name`` parameter to
 provide a name string to the series.
 %End
-
         bool operator==( const SeriesDetails &other ) const;
 
         QString name() const;
@@ -310,7 +307,6 @@ The caller takes responsibility for deleting the returned object.
 
 
   protected:
-
     virtual void draw( QgsLayoutItemRenderContext &context );
 
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;

@@ -24,7 +24,6 @@ An abstract interface for implementations of legends for one map layer.
 #include "qgsmaplayerlegend.h"
 %End
   public:
-
     explicit QgsMapLayerLegend( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsMapLayerLegend

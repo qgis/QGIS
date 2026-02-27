@@ -21,7 +21,6 @@ elements.
 #include "qgslayoutserializableobject.h"
 %End
   public:
-
     virtual QString stringType() const = 0;
 %Docstring
 Returns the object type as a string.

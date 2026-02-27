@@ -23,7 +23,6 @@ distortion and meridian convergence.
 #include "qgsprojectionfactors.h"
 %End
   public:
-
     bool isValid() const;
 %Docstring
 Returns ``True`` if the factors are valid, or ``False`` if they could

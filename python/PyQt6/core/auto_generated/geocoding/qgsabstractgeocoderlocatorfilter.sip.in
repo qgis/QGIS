@@ -33,11 +33,7 @@ filter from a geocoder.
 #include "qgsabstractgeocoderlocatorfilter.h"
 %End
   public:
-
-    QgsAbstractGeocoderLocatorFilter( const QString &name, const QString &displayName,
-                                      const QString &prefix,
-                                      QgsGeocoderInterface *geocoder,
-                                      const QgsRectangle &boundingBox = QgsRectangle() );
+    QgsAbstractGeocoderLocatorFilter( const QString &name, const QString &displayName, const QString &prefix, QgsGeocoderInterface *geocoder, const QgsRectangle &boundingBox = QgsRectangle() );
 %Docstring
 Constructor for QgsAbstractGeocoderLocatorFilter.
 

@@ -24,7 +24,6 @@ The color can vary depending on the dataset value.
 #include "qgsinterpolatedlinerenderer.h"
 %End
   public:
-
     enum ColoringMethod /BaseType=IntEnum/
     {
       //! Render with a single color
@@ -226,7 +225,6 @@ on values.
 #include "qgsinterpolatedlinerenderer.h"
 %End
   public:
-
     void setInterpolatedWidth( const QgsInterpolatedLineWidth &strokeWidth );
 %Docstring
 Sets the stroke width used to render
@@ -320,7 +318,6 @@ The interpolation is done between two values defined at the extremities.
 #include "qgsinterpolatedlinerenderer.h"
 %End
   public:
-
     QgsInterpolatedLineSymbolLayer();
 
     static QgsSymbolLayer *create( const QVariantMap &properties ) /Factory/;

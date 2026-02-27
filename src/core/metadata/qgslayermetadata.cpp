@@ -431,29 +431,20 @@ bool QgsLayerMetadata::Extent::operator==( const QgsLayerMetadata::Extent &other
   return mSpatialExtents == other.mSpatialExtents && mTemporalExtents == other.mTemporalExtents;
 }
 
-bool QgsLayerMetadata::operator==( const QgsLayerMetadata &other )  const
+bool QgsLayerMetadata::operator==( const QgsLayerMetadata &other ) const
 {
-  return equals( other ) &&
-         mFees == other.mFees &&
-         mConstraints == other.mConstraints &&
-         mRights == other.mRights &&
-         mLicenses == other.mLicenses &&
-         mEncoding == other.mEncoding &&
-         mCrs == other.mCrs &&
-         mExtent == other.mExtent;
+  return equals( other ) && mFees == other.mFees && mConstraints == other.mConstraints && mRights == other.mRights && mLicenses == other.mLicenses && mEncoding == other.mEncoding && mCrs == other.mCrs
+         && mExtent == other.mExtent;
 }
 
 bool QgsLayerMetadata::contains( const QString &searchString ) const
 {
-
   if ( searchString.trimmed().isEmpty() )
   {
     return false;
   }
 
-  if ( title().contains( searchString, Qt::CaseInsensitive ) ||
-       identifier().contains( searchString, Qt::CaseInsensitive ) ||
-       abstract().contains( searchString, Qt::CaseInsensitive ) )
+  if ( title().contains( searchString, Qt::CaseInsensitive ) || identifier().contains( searchString, Qt::CaseInsensitive ) || abstract().contains( searchString, Qt::CaseInsensitive ) )
   {
     return true;
   }
@@ -486,9 +477,7 @@ bool QgsLayerMetadata::matches( const QVector<QRegularExpression> &searchReList 
 {
   for ( const QRegularExpression &re : std::as_const( searchReList ) )
   {
-    if ( re.match( title() ).hasMatch() ||
-         re.match( identifier() ).hasMatch() ||
-         re.match( abstract() ).hasMatch() )
+    if ( re.match( title() ).hasMatch() || re.match( identifier() ).hasMatch() || re.match( abstract() ).hasMatch() )
     {
       return true;
     }
@@ -513,7 +502,6 @@ bool QgsLayerMetadata::matches( const QVector<QRegularExpression> &searchReList 
         return true;
       }
     }
-
   }
 
   return false;
@@ -521,8 +509,7 @@ bool QgsLayerMetadata::matches( const QVector<QRegularExpression> &searchReList 
 
 bool QgsLayerMetadata::SpatialExtent::operator==( const QgsLayerMetadata::SpatialExtent &other ) const
 {
-  return extentCrs == other.extentCrs &&
-         bounds == other.bounds;
+  return extentCrs == other.extentCrs && bounds == other.bounds;
 }
 
 bool QgsLayerMetadata::Constraint::operator==( const QgsLayerMetadata::Constraint &other ) const

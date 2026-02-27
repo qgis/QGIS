@@ -25,7 +25,6 @@ Contains utilities for working with Sqlite data sources.
 #include "qgssqliteutils.h"
 %End
   public:
-
     static QString quotedString( const QString &value );
 %Docstring
 Returns a quoted string ``value``, surround by ' characters and with
@@ -53,7 +52,6 @@ Returns a string list of SQLite (and spatialite) system tables
 
 .. versionadded:: 3.8
 %End
-
 
 
 };

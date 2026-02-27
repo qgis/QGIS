@@ -36,17 +36,12 @@
 class CORE_EXPORT QgsRasterBandStats
 {
   public:
-
     QgsRasterBandStats() = default;
 
     //! Compares region, size etc. not collected statistics
     bool contains( const QgsRasterBandStats &s ) const
     {
-      return ( s.bandNumber == bandNumber &&
-               s.extent == extent &&
-               s.width == width &&
-               s.height == height &&
-               s.statsGathered == ( statsGathered & s.statsGathered ) );
+      return ( s.bandNumber == bandNumber && s.extent == extent && s.width == width && s.height == height && s.statsGathered == ( statsGathered & s.statsGathered ) );
     }
 
     //! \brief The gdal band number (starts at 1)

@@ -37,20 +37,17 @@ class QgsScreenProperties;
  * \note Only available in builds based on Qt 5.13 or later
  * \since QGIS 3.26
  */
-class CORE_EXPORT QgsCombinedStyleModel: public QConcatenateTablesProxyModel
+class CORE_EXPORT QgsCombinedStyleModel : public QConcatenateTablesProxyModel
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsCombinedStyleModel with the specified \a parent object.
      */
     explicit QgsCombinedStyleModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    QVariant headerData( int section, Qt::Orientation orientation,
-                         int role = Qt::DisplayRole ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
     /**
      * Adds a style to the model.
@@ -103,14 +100,12 @@ class CORE_EXPORT QgsCombinedStyleModel: public QConcatenateTablesProxyModel
     void addTargetScreenProperties( const QgsScreenProperties &properties );
 
   private:
-
     QList< QgsStyle * > mStyles;
     QHash< QgsStyle *, QgsStyleModel * > mOwnedStyleModels;
     QHash< QgsStyle *, QgsSingleItemModel * > mTitleModels;
 
     QList< QSize > mAdditionalSizes;
     QSet< QgsScreenProperties > mTargetScreenProperties;
-
 };
 
 #endif //QGSCOMBINEDSTYLEMODEL_H

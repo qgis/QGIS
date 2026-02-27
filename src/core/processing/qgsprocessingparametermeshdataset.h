@@ -39,7 +39,6 @@ using namespace Qt::StringLiterals;
 class CORE_EXPORT QgsProcessingParameterMeshDatasetGroups : public QgsProcessingParameterDefinition
 {
   public:
-
     /**
      * Constructor
      * \param name name of the parameter
@@ -48,11 +47,9 @@ class CORE_EXPORT QgsProcessingParameterMeshDatasetGroups : public QgsProcessing
      * \param supportedDataType a set of QgsMeshDatasetGroupMetadata::DataType values for data types supported by the parameter
      * \param optional whether the parameter is optional
      */
-    QgsProcessingParameterMeshDatasetGroups( const QString &name,
-        const QString &description = QString(),
-        const QString &meshLayerParameterName = QString(),
-        QSet<int> supportedDataType = QSet<int>(),
-        bool optional = false );
+    QgsProcessingParameterMeshDatasetGroups(
+      const QString &name, const QString &description = QString(), const QString &meshLayerParameterName = QString(), QSet<int> supportedDataType = QSet<int>(), bool optional = false
+    );
 
     QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override;
@@ -94,53 +91,26 @@ class CORE_EXPORT QgsProcessingParameterMeshDatasetGroups : public QgsProcessing
 class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetGroups : public QgsProcessingParameterType
 {
   public:
-    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
-    {
-      return new QgsProcessingParameterMeshDatasetGroups( name );
-    }
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY { return new QgsProcessingParameterMeshDatasetGroups( name ); }
 
-    QString description() const override
-    {
-      return QCoreApplication::translate( "Processing", "An input allowing selection dataset groups from a mesh layer" );
-    }
+    QString description() const override { return QCoreApplication::translate( "Processing", "An input allowing selection dataset groups from a mesh layer" ); }
 
-    QString name() const override
-    {
-      return QCoreApplication::translate( "Processing", "Mesh Dataset Groups" );
-    }
+    QString name() const override { return QCoreApplication::translate( "Processing", "Mesh Dataset Groups" ); }
 
-    QString id() const override
-    {
-      return QgsProcessingParameterMeshDatasetGroups::typeName();
-    }
+    QString id() const override { return QgsProcessingParameterMeshDatasetGroups::typeName(); }
 
-    QString pythonImportString() const override
-    {
-      return u"from qgis.core import QgsProcessingParameterMeshDatasetGroups"_s;
-    }
+    QString pythonImportString() const override { return u"from qgis.core import QgsProcessingParameterMeshDatasetGroups"_s; }
 
-    QString className() const override
-    {
-      return u"QgsProcessingParameterMeshDatasetGroups"_s;
-    }
+    QString className() const override { return u"QgsProcessingParameterMeshDatasetGroups"_s; }
 
-    QStringList acceptedPythonTypes() const override
-    {
-      return QStringList() << QObject::tr( "list[int]: list of dataset group indexes, see QgsProcessingParameterMeshDatasetGroups docs" );
-    }
+    QStringList acceptedPythonTypes() const override { return QStringList() << QObject::tr( "list[int]: list of dataset group indexes, see QgsProcessingParameterMeshDatasetGroups docs" ); }
 
     QStringList acceptedParameterTypes() const override
     {
-      return QStringList() << QgsProcessingParameterMeshDatasetGroups::typeName()
-             << QgsProcessingParameterString::typeName()
-             << QgsProcessingParameterNumber::typeName();
+      return QStringList() << QgsProcessingParameterMeshDatasetGroups::typeName() << QgsProcessingParameterString::typeName() << QgsProcessingParameterNumber::typeName();
     }
 
-    QStringList acceptedOutputTypes() const override
-    {
-      return QStringList() << QgsProcessingOutputString::typeName()
-             << QgsProcessingOutputNumber::typeName();
-    }
+    QStringList acceptedOutputTypes() const override { return QStringList() << QgsProcessingOutputString::typeName() << QgsProcessingOutputNumber::typeName(); }
 };
 
 ///@endcond
@@ -163,7 +133,6 @@ class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetGroups : public QgsProces
 class CORE_EXPORT QgsProcessingParameterMeshDatasetTime : public QgsProcessingParameterDefinition
 {
   public:
-
     /**
      * Constructor
      * \param name name of the parameter
@@ -172,10 +141,8 @@ class CORE_EXPORT QgsProcessingParameterMeshDatasetTime : public QgsProcessingPa
      * \param datasetGroupParameterName name of the associated dataset group parameter (\see QgsProcessingParameterMeshDatasetGroups)
      */
     QgsProcessingParameterMeshDatasetTime(
-      const QString &name,
-      const QString &description = QString(),
-      const QString &meshLayerParameterName = QString(),
-      const QString &datasetGroupParameterName = QString() );
+      const QString &name, const QString &description = QString(), const QString &meshLayerParameterName = QString(), const QString &datasetGroupParameterName = QString()
+    );
 
     QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override;
@@ -236,57 +203,29 @@ class CORE_EXPORT QgsProcessingParameterMeshDatasetTime : public QgsProcessingPa
  * \ingroup core
  * \since QGIS 3.18
  */
-class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetTime: public QgsProcessingParameterType
+class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetTime : public QgsProcessingParameterType
 {
   public:
-    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
-    {
-      return new QgsProcessingParameterMeshDatasetTime( name );
-    }
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY { return new QgsProcessingParameterMeshDatasetTime( name ); }
 
-    QString description() const override
-    {
-      return QCoreApplication::translate( "Processing", "An input allowing selection of dataset index from a mesh layer by time setting" );
-    }
+    QString description() const override { return QCoreApplication::translate( "Processing", "An input allowing selection of dataset index from a mesh layer by time setting" ); }
 
-    QString name() const override
-    {
-      return QCoreApplication::translate( "Processing", "Mesh Dataset Time" );
-    }
+    QString name() const override { return QCoreApplication::translate( "Processing", "Mesh Dataset Time" ); }
 
-    QString id() const override
-    {
-      return QgsProcessingParameterMeshDatasetTime::typeName();
-    }
+    QString id() const override { return QgsProcessingParameterMeshDatasetTime::typeName(); }
 
-    QString pythonImportString() const override
-    {
-      return u"from qgis.core import QgsProcessingParameterMeshDatasetTime"_s;
-    }
+    QString pythonImportString() const override { return u"from qgis.core import QgsProcessingParameterMeshDatasetTime"_s; }
 
-    QString className() const override
-    {
-      return u"QgsProcessingParameterMeshDatasetTime"_s;
-    }
+    QString className() const override { return u"QgsProcessingParameterMeshDatasetTime"_s; }
 
-    QStringList acceptedPythonTypes() const override
-    {
-      return QStringList() << QObject::tr( "dict{}: dictionary, see QgsProcessingParameterMeshDatasetTime docs" );
-    }
+    QStringList acceptedPythonTypes() const override { return QStringList() << QObject::tr( "dict{}: dictionary, see QgsProcessingParameterMeshDatasetTime docs" ); }
 
     QStringList acceptedParameterTypes() const override
     {
-      return QStringList()
-             << QgsProcessingParameterMeshDatasetTime::typeName()
-             << QgsProcessingParameterString::typeName()
-             << QgsProcessingParameterDateTime::typeName();
+      return QStringList() << QgsProcessingParameterMeshDatasetTime::typeName() << QgsProcessingParameterString::typeName() << QgsProcessingParameterDateTime::typeName();
     }
 
-    QStringList acceptedOutputTypes() const override
-    {
-      return QStringList()
-             << QgsProcessingOutputString::typeName();
-    }
+    QStringList acceptedOutputTypes() const override { return QStringList() << QgsProcessingOutputString::typeName(); }
 };
 
 ///@endcond

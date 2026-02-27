@@ -132,13 +132,12 @@ bool QgsPointDistanceRenderer::renderFeature( const QgsFeature &feature, QgsRend
         }
       }
 
-      const int groupIdx = mGroupIndex[ minDistFeatureId ];
+      const int groupIdx = mGroupIndex[minDistFeatureId];
       ClusteredGroup &group = mClusteredGroups[groupIdx];
 
       // calculate new centroid of group
       const QgsPointXY oldCenter = mGroupLocations.value( minDistFeatureId );
-      mGroupLocations[ minDistFeatureId ] = QgsPointXY( ( oldCenter.x() * group.size() + point->x() ) / ( group.size() + 1.0 ),
-                                            ( oldCenter.y() * group.size() + point->y() ) / ( group.size() + 1.0 ) );
+      mGroupLocations[minDistFeatureId] = QgsPointXY( ( oldCenter.x() * group.size() + point->x() ) / ( group.size() + 1.0 ), ( oldCenter.y() * group.size() + point->y() ) / ( group.size() + 1.0 ) );
 
       // add to a group
       group << GroupedFeature( pointFeature, symbol->clone(), selected, label );

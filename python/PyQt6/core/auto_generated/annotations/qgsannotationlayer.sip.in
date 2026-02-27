@@ -30,17 +30,14 @@ which are rendered according to the item's z-order.
 #include "qgsannotationlayer.h"
 %End
   public:
-
     struct LayerOptions
     {
-
-      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext );
+        explicit LayerOptions( const QgsCoordinateTransformContext &transformContext );
 %Docstring
 Constructor for LayerOptions.
 %End
 
-      QgsCoordinateTransformContext transformContext;
-
+        QgsCoordinateTransformContext transformContext;
     };
 
 
@@ -59,7 +56,7 @@ The ``options`` argument specifies load-time layer options.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    void reset();
+      void reset();
 %Docstring
 Resets the annotation layer to a default state, and clears all items
 from it.

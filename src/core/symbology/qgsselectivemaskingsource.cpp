@@ -19,6 +19,4 @@ QgsSelectiveMaskSource::QgsSelectiveMaskSource( const QString &layerId, Qgis::Se
   : mLayerId( layerId )
   , mSourceType( sourceType )
   , mSourceId( sourceId )
-{
-
-}
+{}

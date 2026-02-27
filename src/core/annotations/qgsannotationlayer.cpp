@@ -41,22 +41,12 @@ using namespace Qt::StringLiterals;
 class QgsAnnotationLayerSpatialIndex : public RTree<QString, float, 2, float>
 {
   public:
-
     void insert( const QString &uuid, const QgsRectangle &bounds )
     {
       std::array< float, 4 > scaledBounds = scaleBounds( bounds );
-      float aMin[2]
-      {
-        scaledBounds[0], scaledBounds[ 1]
-      };
-      float aMax[2]
-      {
-        scaledBounds[2], scaledBounds[ 3]
-      };
-      this->Insert(
-        aMin,
-        aMax,
-        uuid );
+      float aMin[2] { scaledBounds[0], scaledBounds[1] };
+      float aMax[2] { scaledBounds[2], scaledBounds[3] };
+      this->Insert( aMin, aMax, uuid );
     }
 
     /**
@@ -68,18 +58,9 @@ class QgsAnnotationLayerSpatialIndex : public RTree<QString, float, 2, float>
     void remove( const QString &uuid, const QgsRectangle &bounds )
     {
       std::array< float, 4 > scaledBounds = scaleBounds( bounds );
-      float aMin[2]
-      {
-        scaledBounds[0], scaledBounds[ 1]
-      };
-      float aMax[2]
-      {
-        scaledBounds[2], scaledBounds[ 3]
-      };
-      this->Remove(
-        aMin,
-        aMax,
-        uuid );
+      float aMin[2] { scaledBounds[0], scaledBounds[1] };
+      float aMax[2] { scaledBounds[2], scaledBounds[3] };
+      this->Remove( aMin, aMax, uuid );
     }
 
     /**
@@ -90,30 +71,16 @@ class QgsAnnotationLayerSpatialIndex : public RTree<QString, float, 2, float>
     bool intersects( const QgsRectangle &bounds, const std::function< bool( const QString &uuid )> &callback ) const
     {
       std::array< float, 4 > scaledBounds = scaleBounds( bounds );
-      float aMin[2]
-      {
-        scaledBounds[0], scaledBounds[ 1]
-      };
-      float aMax[2]
-      {
-        scaledBounds[2], scaledBounds[ 3]
-      };
-      this->Search(
-        aMin, aMax,
-        callback );
+      float aMin[2] { scaledBounds[0], scaledBounds[1] };
+      float aMax[2] { scaledBounds[2], scaledBounds[3] };
+      this->Search( aMin, aMax, callback );
       return true;
     }
 
   private:
     std::array<float, 4> scaleBounds( const QgsRectangle &bounds ) const
     {
-      return
-      {
-        static_cast< float >( bounds.xMinimum() ),
-        static_cast< float >( bounds.yMinimum() ),
-        static_cast< float >( bounds.xMaximum() ),
-        static_cast< float >( bounds.yMaximum() )
-      };
+      return { static_cast< float >( bounds.xMinimum() ), static_cast< float >( bounds.yMinimum() ), static_cast< float >( bounds.xMaximum() ), static_cast< float >( bounds.yMaximum() ) };
     }
 };
 ///@endcond
@@ -138,7 +105,6 @@ QgsAnnotationLayer::~QgsAnnotationLayer()
 {
   emit willBeDeleted();
   qDeleteAll( mItems );
-
 }
 
 void QgsAnnotationLayer::reset()
@@ -256,8 +222,7 @@ QStringList QgsAnnotationLayer::queryIndex( const QgsRectangle &bounds, QgsFeedb
 
   QStringList res;
 
-  mSpatialIndex->intersects( bounds, [&res, feedback]( const QString & uuid )->bool
-  {
+  mSpatialIndex->intersects( bounds, [&res, feedback]( const QString &uuid ) -> bool {
     res << uuid;
     return !feedback || !feedback->isCanceled();
   } );
@@ -461,7 +426,7 @@ bool QgsAnnotationLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
   // add the layer opacity
   if ( categories.testFlag( Rendering ) )
   {
-    QDomElement layerOpacityElem  = doc.createElement( u"layerOpacity"_s );
+    QDomElement layerOpacityElem = doc.createElement( u"layerOpacity"_s );
     const QDomText layerOpacityText = doc.createTextNode( QString::number( opacity() ) );
     layerOpacityElem.appendChild( layerOpacityText );
     node.appendChild( layerOpacityElem );
@@ -470,12 +435,12 @@ bool QgsAnnotationLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
   if ( categories.testFlag( Symbology ) )
   {
     // add the blend mode field
-    QDomElement blendModeElem  = doc.createElement( u"blendMode"_s );
+    QDomElement blendModeElem = doc.createElement( u"blendMode"_s );
     const QDomText blendModeText = doc.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
     blendModeElem.appendChild( blendModeText );
     node.appendChild( blendModeElem );
 
-    QDomElement paintEffectElem  = doc.createElement( u"paintEffect"_s );
+    QDomElement paintEffectElem = doc.createElement( u"paintEffect"_s );
     if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect.get() ) )
       mPaintEffect->saveProperties( doc, paintEffectElem );
     node.appendChild( paintEffectElem );
@@ -641,10 +606,7 @@ QString QgsAnnotationLayer::htmlMetadata() const
   QLocale locale = QLocale();
   locale.setNumberOptions( locale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
   const int itemCount = mItems.size();
-  metadata += u"<tr><td class=\"highlight\">"_s
-              + tr( "Item count" ) + u"</td><td>"_s
-              + locale.toString( static_cast<qlonglong>( itemCount ) )
-              + u"</td></tr>\n"_s;
+  metadata += u"<tr><td class=\"highlight\">"_s + tr( "Item count" ) + u"</td><td>"_s + locale.toString( static_cast<qlonglong>( itemCount ) ) + u"</td></tr>\n"_s;
   metadata += "</table>\n<br><br>"_L1;
 
   // CRS
@@ -659,7 +621,7 @@ QString QgsAnnotationLayer::htmlMetadata() const
   QMap< QString, int > itemCounts;
   for ( auto it = mItems.constBegin(); it != mItems.constEnd(); ++it )
   {
-    itemCounts[ it.value()->type() ]++;
+    itemCounts[it.value()->type()]++;
   }
 
   const QMap<QString, QString> itemTypes = QgsApplication::annotationItemRegistry()->itemTypes();
@@ -718,9 +680,7 @@ void QgsAnnotationLayer::setLinkedVisibilityLayer( QgsMapLayer *layer )
 // QgsAnnotationLayerDataProvider
 //
 ///@cond PRIVATE
-QgsAnnotationLayerDataProvider::QgsAnnotationLayerDataProvider(
-  const ProviderOptions &options,
-  Qgis::DataProviderReadFlags flags )
+QgsAnnotationLayerDataProvider::QgsAnnotationLayerDataProvider( const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsDataProvider( QString(), options, flags )
 {}
 

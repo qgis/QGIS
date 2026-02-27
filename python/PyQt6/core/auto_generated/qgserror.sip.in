@@ -61,7 +61,6 @@ provider - layer). Higher level messages are appended at the end.
 #include "qgserror.h"
 %End
   public:
-
     QgsError();
 
     QgsError( const QString &message, const QString &tag );

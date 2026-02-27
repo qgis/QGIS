@@ -28,8 +28,7 @@ using namespace Qt::StringLiterals;
 QgsHueSaturationFilter::QgsHueSaturationFilter( QgsRasterInterface *input )
   : QgsRasterInterface( input )
   , mColorizeColor( QColor::fromRgb( 255, 128, 128 ) )
-{
-}
+{}
 
 QgsHueSaturationFilter *QgsHueSaturationFilter::clone() const
 {
@@ -99,8 +98,7 @@ bool QgsHueSaturationFilter::setInput( QgsRasterInterface *input )
     return false;
   }
 
-  if ( input->dataType( 1 ) != Qgis::DataType::ARGB32_Premultiplied &&
-       input->dataType( 1 ) != Qgis::DataType::ARGB32 )
+  if ( input->dataType( 1 ) != Qgis::DataType::ARGB32_Premultiplied && input->dataType( 1 ) != Qgis::DataType::ARGB32 )
   {
     QgsDebugError( u"Unknown input data type"_s );
     return false;
@@ -111,7 +109,7 @@ bool QgsHueSaturationFilter::setInput( QgsRasterInterface *input )
   return true;
 }
 
-QgsRasterBlock *QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
+QgsRasterBlock *QgsHueSaturationFilter::block( int bandNo, QgsRectangle const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   Q_UNUSED( bandNo )
   QgsDebugMsgLevel( u"width = %1 height = %2 extent = %3"_s.arg( width ).arg( height ).arg( extent.toString() ), 4 );
@@ -277,7 +275,6 @@ void QgsHueSaturationFilter::processColorization( int &r, int &g, int &b, int &h
 // Process a change in saturation and update resultant HSL & RGB values
 void QgsHueSaturationFilter::processSaturation( int &r, int &g, int &b, int &h, int &s, int &l ) const
 {
-
   QColor myColor;
 
   // Are we converting layer to grayscale?
@@ -321,13 +318,13 @@ void QgsHueSaturationFilter::processSaturation( int &r, int &g, int &b, int &h, 
       if ( mSaturationScale < 1 )
       {
         // Lowering the saturation. Use a simple linear relationship
-        s = std::min( ( int )( s * mSaturationScale ), 255 );
+        s = std::min( ( int ) ( s * mSaturationScale ), 255 );
       }
       else
       {
         // Raising the saturation. Use a saturation curve to prevent
         // clipping at maximum saturation with ugly results.
-        s = std::min( ( int )( 255. * ( 1 - std::pow( 1 - ( s / 255. ), std::pow( mSaturationScale, 2 ) ) ) ), 255 );
+        s = std::min( ( int ) ( 255. * ( 1 - std::pow( 1 - ( s / 255. ), std::pow( mSaturationScale, 2 ) ) ) ), 255 );
       }
 
       // Saturation changed, so update rgb values
@@ -393,5 +390,4 @@ void QgsHueSaturationFilter::readXml( const QDomElement &filterElem )
   int mColorizeBlue = filterElem.attribute( u"colorizeBlue"_s, u"128"_s ).toInt();
   setColorizeColor( QColor::fromRgb( mColorizeRed, mColorizeGreen, mColorizeBlue ) );
   mColorizeStrength = filterElem.attribute( u"colorizeStrength"_s, u"100"_s ).toInt();
-
 }

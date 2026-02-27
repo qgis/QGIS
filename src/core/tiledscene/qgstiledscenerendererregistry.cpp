@@ -27,12 +27,8 @@ using namespace Qt::StringLiterals;
 QgsTiledSceneRendererRegistry::QgsTiledSceneRendererRegistry()
 {
   // add default renderers
-  addRenderer( new QgsTiledSceneRendererMetadata( u"texture"_s,
-               QObject::tr( "Textured" ),
-               QgsTiledSceneTextureRenderer::create ) );
-  addRenderer( new QgsTiledSceneRendererMetadata( u"wireframe"_s,
-               QObject::tr( "Wireframe" ),
-               QgsTiledSceneWireframeRenderer::create ) );
+  addRenderer( new QgsTiledSceneRendererMetadata( u"texture"_s, QObject::tr( "Textured" ), QgsTiledSceneTextureRenderer::create ) );
+  addRenderer( new QgsTiledSceneRendererMetadata( u"wireframe"_s, QObject::tr( "Wireframe" ), QgsTiledSceneWireframeRenderer::create ) );
 }
 
 QgsTiledSceneRendererRegistry::~QgsTiledSceneRendererRegistry()
@@ -82,4 +78,3 @@ QgsTiledSceneRenderer *QgsTiledSceneRendererRegistry::defaultRenderer( const Qgs
 {
   return new QgsTiledSceneTextureRenderer();
 }
-

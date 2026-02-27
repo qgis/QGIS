@@ -9,7 +9,7 @@
 
 
 
-class QgsLayoutItemManualTable: QgsLayoutTable
+class QgsLayoutItemManualTable : QgsLayoutTable
 {
 %Docstring(signature="appended")
 A layout table subclass that displays manually entered (and formatted)
@@ -22,7 +22,6 @@ content.
 #include "qgslayoutitemmanualtable.h"
 %End
   public:
-
     QgsLayoutItemManualTable( QgsLayout *layout /TransferThis/ );
 %Docstring
 Constructor for QgsLayoutItemManualTable, attached to the specified
@@ -144,7 +143,6 @@ Replaces the headers in the table with a specified list of
 %End
 
   protected:
-
     virtual bool writePropertiesToElement( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     virtual bool readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context );

@@ -220,8 +220,7 @@ void QgsLayoutItemChart::setSeriesList( const QList<QgsLayoutItemChart::SeriesDe
 }
 
 void QgsLayoutItemChart::draw( QgsLayoutItemRenderContext & )
-{
-}
+{}
 
 void QgsLayoutItemChart::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget * )
 {

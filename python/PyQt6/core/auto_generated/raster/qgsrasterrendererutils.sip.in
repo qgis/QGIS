@@ -21,10 +21,7 @@ Utility functions for raster renderers.
 #include "qgsrasterrendererutils.h"
 %End
   public:
-
-    static bool parseColorMapFile( const QString &path, QList<QgsColorRampShader::ColorRampItem> &items /Out/,
-                                   Qgis::ShaderInterpolationMethod &type /Out/,
-                                   QStringList &errors /Out/ );
+    static bool parseColorMapFile( const QString &path, QList<QgsColorRampShader::ColorRampItem> &items /Out/, Qgis::ShaderInterpolationMethod &type /Out/, QStringList &errors /Out/ );
 %Docstring
 Parses an exported color map file at the specified ``path`` and extracts
 the stored color ramp ``items`` and ramp shader ``type``.

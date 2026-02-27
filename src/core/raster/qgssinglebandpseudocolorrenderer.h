@@ -31,11 +31,9 @@ class QgsRasterShader;
  * \ingroup core
   * \brief Raster renderer pipe for single band pseudocolor.
   */
-class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
+class CORE_EXPORT QgsSingleBandPseudoColorRenderer : public QgsRasterRenderer
 {
-
   public:
-
     //! Note: takes ownership of QgsRasterShader
     QgsSingleBandPseudoColorRenderer( QgsRasterInterface *input, int band = -1, QgsRasterShader *shader SIP_TRANSFER = nullptr );
 
@@ -59,7 +57,7 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     //! Returns the raster shader
     const QgsRasterShader *shader() const SIP_PYNAME( constShader ) { return mShader.get(); }
 
-    bool canCreateRasterAttributeTable( ) const override;
+    bool canCreateRasterAttributeTable() const override;
 
     /**
      * Creates a color ramp shader
@@ -70,12 +68,14 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
      * \param clip clip out of range values
      * \param extent extent used in classification (only used in quantile mode)
      */
-    void createShader( QgsColorRamp *colorRamp SIP_TRANSFER = nullptr,
-                       Qgis::ShaderInterpolationMethod colorRampType = Qgis::ShaderInterpolationMethod::Linear,
-                       Qgis::ShaderClassificationMethod classificationMode = Qgis::ShaderClassificationMethod::Continuous,
-                       int classes = 0,
-                       bool clip = false,
-                       const QgsRectangle &extent = QgsRectangle() );
+    void createShader(
+      QgsColorRamp *colorRamp SIP_TRANSFER = nullptr,
+      Qgis::ShaderInterpolationMethod colorRampType = Qgis::ShaderInterpolationMethod::Linear,
+      Qgis::ShaderClassificationMethod classificationMode = Qgis::ShaderClassificationMethod::Continuous,
+      int classes = 0,
+      bool clip = false,
+      const QgsRectangle &extent = QgsRectangle()
+    );
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
     QList< QPair< QString, QColor > > legendSymbologyItems() const override;
@@ -133,7 +133,6 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     // values are not used by renderer in rendering process
     double mClassificationMin;
     double mClassificationMax;
-
 };
 
 #endif // QGSSINGLEBANDPSEUDOCOLORRENDERER_H

@@ -33,7 +33,6 @@ when constructing this class.
 #include "qgsgooglemapsgeocoder.h"
 %End
   public:
-
     QgsGoogleMapsGeocoder( const QString &apiKey, const QString &regionBias = QString() );
 %Docstring
 Constructor for QgsGoogleMapsGeocoder.

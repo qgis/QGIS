@@ -19,8 +19,7 @@
 
 QgsTemporalRangeObject::QgsTemporalRangeObject( bool enabled )
   : mTemporal( enabled )
-{
-}
+{}
 
 void QgsTemporalRangeObject::setIsTemporal( bool enabled )
 {
@@ -44,4 +43,3 @@ const QgsDateTimeRange &QgsTemporalRangeObject::temporalRange() const
 {
   return mDateTimeRange;
 }
-

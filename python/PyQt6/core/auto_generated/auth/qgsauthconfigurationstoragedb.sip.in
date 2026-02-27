@@ -21,7 +21,6 @@ QSqlDatabase based implementation of
 #include "qgsauthconfigurationstoragedb.h"
 %End
   public:
-
     QgsAuthConfigurationStorageDb( const QMap<QString, QVariant> &settings );
 %Docstring
 Creates a new QgsAuthConfigurationStorageDb instance from the specified
@@ -82,7 +81,7 @@ Returns the database connection used by this storage.
 
     virtual QgsAuthMethodConfigsMap authMethodConfigs( const QStringList &allowedMethods = QStringList() ) const;
 
-    virtual QgsAuthMethodConfigsMap authMethodConfigsWithPayload( ) const;
+    virtual QgsAuthMethodConfigsMap authMethodConfigsWithPayload() const;
 
     virtual QgsAuthMethodConfig loadMethodConfig( const QString &id, QString &payload /Out/, bool full = false ) const;
 
@@ -167,7 +166,7 @@ Returns the database connection used by this storage.
     virtual bool certTrustPolicyExists( const QSslCertificate &cert ) const;
 
 
-    virtual const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> masterPasswords( ) const;
+    virtual const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> masterPasswords() const;
 
     virtual bool storeMasterPassword( const QgsAuthConfigurationStorage::MasterPasswordConfig &config );
 
@@ -232,7 +231,6 @@ ready for the insertion into a SQL query.
 %End
 
   protected:
-
     bool authDbOpen() const;
 %Docstring
 Opens the connection to the database.
@@ -279,7 +277,6 @@ Creates the certificate tables in the database.
 %Docstring
 Checks the capabilities of the storage.
 %End
-
 
 
 

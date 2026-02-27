@@ -35,7 +35,6 @@ class QDomNode;
 class CORE_EXPORT QgsObjectCustomProperties
 {
   public:
-
     QgsObjectCustomProperties() = default;
 
     /**
@@ -87,7 +86,6 @@ class CORE_EXPORT QgsObjectCustomProperties
 
   protected:
     QMap<QString, QVariant> mMap;
-
 };
 
 #endif // QGSOBJECTCUSTOMPROPERTIES_H

@@ -20,7 +20,9 @@
 #include "qgslegendpatchshape.h"
 #include "qgsrendercontext.h"
 
-QgsSymbolRenderContext::QgsSymbolRenderContext( QgsRenderContext &c, Qgis::RenderUnit u, qreal opacity, bool selected, Qgis::SymbolRenderHints renderHints, const QgsFeature *f, const QgsFields &fields, const QgsMapUnitScale &mapUnitScale )
+QgsSymbolRenderContext::QgsSymbolRenderContext(
+  QgsRenderContext &c, Qgis::RenderUnit u, qreal opacity, bool selected, Qgis::SymbolRenderHints renderHints, const QgsFeature *f, const QgsFields &fields, const QgsMapUnitScale &mapUnitScale
+)
   : mRenderContext( c )
   , mOutputUnit( u )
   , mMapUnitScale( mapUnitScale )
@@ -29,8 +31,7 @@ QgsSymbolRenderContext::QgsSymbolRenderContext( QgsRenderContext &c, Qgis::Rende
   , mRenderHints( renderHints )
   , mFeature( f )
   , mFields( fields )
-{
-}
+{}
 
 QgsSymbolRenderContext::~QgsSymbolRenderContext() = default;
 
@@ -41,8 +42,7 @@ void QgsSymbolRenderContext::setOriginalValueVariable( const QVariant &value )
 
 bool QgsSymbolRenderContext::forceVectorRendering() const
 {
-  return mRenderContext.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::Default
-         || mRenderHints.testFlag( Qgis::SymbolRenderHint::ForceVectorRendering );
+  return mRenderContext.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::Default || mRenderHints.testFlag( Qgis::SymbolRenderHint::ForceVectorRendering );
 }
 
 double QgsSymbolRenderContext::outputLineWidth( double width ) const

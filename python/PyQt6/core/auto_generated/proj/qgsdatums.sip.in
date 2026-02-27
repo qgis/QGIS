@@ -26,7 +26,6 @@ Contains information about a member of a datum ensemble.
 #include "qgsdatums.h"
 %End
   public:
-
     QString name() const;
 %Docstring
 Returns the name of the member.
@@ -81,7 +80,6 @@ Contains information about a datum ensemble.
 #include "qgsdatums.h"
 %End
   public:
-
     bool isValid() const;
 %Docstring
 Returns ``True`` if the datum ensemble is a valid object, or ``False``

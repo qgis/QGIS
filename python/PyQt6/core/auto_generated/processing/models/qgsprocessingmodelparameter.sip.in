@@ -21,7 +21,6 @@ Represents an input parameter used by the model.
 #include "qgsprocessingmodelparameter.h"
 %End
   public:
-
     QgsProcessingModelParameter( const QString &parameterName = QString() );
 %Docstring
 Constructor for QgsProcessingModelParameter. The parameter name should

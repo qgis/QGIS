@@ -46,15 +46,20 @@ class CORE_EXPORT QgsBox3D
     Q_GADGET
 
   public:
-
     /**
     * Constructor for QgsBox3D which accepts the ranges of x/y/z coordinates. If \a normalize is FALSE then
     * the normalization step will not be applied automatically.
     */
 #ifndef SIP_RUN
-    QgsBox3D( double xmin = std::numeric_limits<double>::quiet_NaN(), double ymin = std::numeric_limits<double>::quiet_NaN(), double zmin = std::numeric_limits<double>::quiet_NaN(),
-              double xmax = std::numeric_limits<double>::quiet_NaN(), double ymax = std::numeric_limits<double>::quiet_NaN(), double zmax = std::numeric_limits<double>::quiet_NaN(),
-              bool normalize = true );
+    QgsBox3D(
+      double xmin = std::numeric_limits<double>::quiet_NaN(),
+      double ymin = std::numeric_limits<double>::quiet_NaN(),
+      double zmin = std::numeric_limits<double>::quiet_NaN(),
+      double xmax = std::numeric_limits<double>::quiet_NaN(),
+      double ymax = std::numeric_limits<double>::quiet_NaN(),
+      double zmax = std::numeric_limits<double>::quiet_NaN(),
+      bool normalize = true
+    );
 
     /**
      * Constructs a QgsBox3D from two points representing opposite corners of the box.
@@ -75,11 +80,10 @@ class CORE_EXPORT QgsBox3D
      * Constructs a QgsBox3D from a rectangle.
      * If \a normalize is FALSE then the normalization step will not be applied automatically.
      */
-    explicit QgsBox3D( const QgsRectangle &rect,
-                       double zMin = std::numeric_limits<double>::quiet_NaN(), double zMax = std::numeric_limits<double>::quiet_NaN(),
-                       bool normalize = true );
+    explicit QgsBox3D( const QgsRectangle &rect, double zMin = std::numeric_limits<double>::quiet_NaN(), double zMax = std::numeric_limits<double>::quiet_NaN(), bool normalize = true );
 
 #else
+    // clang-format off
     QgsBox3D( SIP_PYOBJECT x SIP_TYPEHINT( Optional[Union[QgsPoint, QgsVector3D, QgsRectangle, float]] ) = Py_None, SIP_PYOBJECT y SIP_TYPEHINT( Optional[QgsPoint, QgsVector3D, float] ) = Py_None, SIP_PYOBJECT z SIP_TYPEHINT( Optional[Union[bool, float]] ) = Py_None, SIP_PYOBJECT x2 SIP_TYPEHINT( Optional[Union[bool, float]] ) = Py_None, SIP_PYOBJECT y2 SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT z2 SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT n SIP_TYPEHINT( Optional[bool] ) = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double x2 = 0.0, double y2 = 0.0, double z2 = 0.0, bool n = true )];
     % MethodCode
     if ( sipCanConvertToType( a0, sipType_QgsRectangle, SIP_NOT_NONE ) && a4 == Py_None && a5 == Py_None && a6 == Py_None )
@@ -158,6 +162,7 @@ class CORE_EXPORT QgsBox3D
       sipIsErr = 1;
     }
     % End
+// clang-format on
 #endif
 
     /**
@@ -176,12 +181,14 @@ class CORE_EXPORT QgsBox3D
       }
     }
 
+    // clang-format off
     /**
      * Sets the minimum \a x value.
      * \see xMinimum()
      * \see setXMaximum()
      */
     void setXMinimum( double x ) SIP_HOLDGIL;
+    // clang-format on
 
     /**
      * Sets the maximum \a x value.
@@ -482,6 +489,7 @@ class CORE_EXPORT QgsBox3D
 
 
 #ifdef SIP_RUN
+// clang-format off
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = u"<QgsBox3D(%1, %2, %3, %4, %5, %6)>"_s
@@ -493,6 +501,7 @@ class CORE_EXPORT QgsBox3D
                   .arg( sipCpp->zMaximum() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+// clang-format on
 #endif
 
   private:

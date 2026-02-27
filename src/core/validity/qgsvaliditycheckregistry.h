@@ -37,9 +37,7 @@
  */
 class CORE_EXPORT QgsValidityCheckRegistry
 {
-
   public:
-
     QgsValidityCheckRegistry();
 
     ~QgsValidityCheckRegistry();
@@ -86,7 +84,6 @@ class CORE_EXPORT QgsValidityCheckRegistry
     QList< QgsValidityCheckResult > runChecks( int type, const QgsValidityCheckContext *context, QgsFeedback *feedback ) const;
 
   private:
-
 #ifdef SIP_RUN
     QgsValidityCheckRegistry( const QgsValidityCheckRegistry &rh );
 #endif
@@ -98,7 +95,6 @@ class CORE_EXPORT QgsValidityCheckRegistry
 
     //! Available checks, owned by this class
     QList< QgsAbstractValidityCheck * > mChecks;
-
 };
 
 #endif // QGSVALIDITYCHECKREGISTRY_H

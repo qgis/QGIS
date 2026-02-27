@@ -26,9 +26,7 @@
 QgsProjectStoredObjectManagerBase::QgsProjectStoredObjectManagerBase( QgsProject *project )
   : QObject( project )
   , mProject( project )
-{
-
-}
+{}
 
 void QgsProjectStoredObjectManagerBase::markProjectDirty()
 {
@@ -39,28 +37,22 @@ void QgsProjectStoredObjectManagerBase::markProjectDirty()
 // QgsAbstractProjectStoredObjectManager
 //
 
-template<class T>
-QgsAbstractProjectStoredObjectManager<T>::QgsAbstractProjectStoredObjectManager( QgsProject *project )
+template<class T> QgsAbstractProjectStoredObjectManager<T>::QgsAbstractProjectStoredObjectManager( QgsProject *project )
   : QgsProjectStoredObjectManagerBase( project )
-{
+{}
 
-}
-
-template<class T>
-QgsAbstractProjectStoredObjectManager<T>::~QgsAbstractProjectStoredObjectManager()
+template<class T> QgsAbstractProjectStoredObjectManager<T>::~QgsAbstractProjectStoredObjectManager()
 {
   Q_ASSERT_X( mObjects.isEmpty(), "~QgsAbstractProjectStoredObjectManager", "Subclasses of QgsAbstractProjectStoredObjectManager MUST explicitly call clearObjects() in their class destructor." );
   clearObjects();
 }
 
-template<class T>
-QList<T *> QgsAbstractProjectStoredObjectManager<T>::objects() const
+template<class T> QList<T *> QgsAbstractProjectStoredObjectManager<T>::objects() const
 {
   return mObjects;
 }
 
-template<class T>
-T *QgsAbstractProjectStoredObjectManager<T>::objectByName( const QString &name ) const
+template<class T> T *QgsAbstractProjectStoredObjectManager<T>::objectByName( const QString &name ) const
 {
   for ( T *l : mObjects )
   {
@@ -70,8 +62,7 @@ T *QgsAbstractProjectStoredObjectManager<T>::objectByName( const QString &name )
   return nullptr;
 }
 
-template<class T>
-void QgsAbstractProjectStoredObjectManager<T>::clearObjects()
+template<class T> void QgsAbstractProjectStoredObjectManager<T>::clearObjects()
 {
   const QList< T * > objects = mObjects;
   for ( T *l : objects )
@@ -80,8 +71,7 @@ void QgsAbstractProjectStoredObjectManager<T>::clearObjects()
   }
 }
 
-template<class T>
-bool QgsAbstractProjectStoredObjectManager<T>::addObject( T *object )
+template<class T> bool QgsAbstractProjectStoredObjectManager<T>::addObject( T *object )
 {
   if ( !object || mObjects.contains( object ) )
     return false;
@@ -106,8 +96,7 @@ bool QgsAbstractProjectStoredObjectManager<T>::addObject( T *object )
   return true;
 }
 
-template<class T>
-bool QgsAbstractProjectStoredObjectManager<T>::removeObject( T *object )
+template<class T> bool QgsAbstractProjectStoredObjectManager<T>::removeObject( T *object )
 {
   if ( !object )
     return false;
@@ -124,14 +113,12 @@ bool QgsAbstractProjectStoredObjectManager<T>::removeObject( T *object )
   return true;
 }
 
-template<class T>
-void QgsAbstractProjectStoredObjectManager<T>::setupObjectConnections( T * )
-{
-}
+template<class T> void QgsAbstractProjectStoredObjectManager<T>::setupObjectConnections( T * )
+{}
 
 #include "qgsmasterlayoutinterface.h"
 
-template class QgsAbstractProjectStoredObjectManager<QgsMasterLayoutInterface>;  // clazy:exclude=missing-qobject-macro
+template class QgsAbstractProjectStoredObjectManager<QgsMasterLayoutInterface>; // clazy:exclude=missing-qobject-macro
 
 #include "qgselevationprofile.h"
 

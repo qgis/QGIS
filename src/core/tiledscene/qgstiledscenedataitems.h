@@ -33,7 +33,6 @@ class CORE_EXPORT QgsTiledSceneRootItem : public QgsConnectionsRootItem
     QVector<QgsDataItem *> createChildren() override;
 
     QVariant sortKey() const override { return 8; }
-
 };
 
 //! Item implementation for tiled scene layers
@@ -42,7 +41,6 @@ class CORE_EXPORT QgsTiledSceneLayerItem : public QgsLayerItem
     Q_OBJECT
   public:
     QgsTiledSceneLayerItem( QgsDataItem *parent, QString name, QString path, const QString &encodedUri, const QString &provider );
-
 };
 
 

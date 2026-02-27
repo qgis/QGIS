@@ -22,13 +22,19 @@ transparent when rendering rasters.
 #include "qgsrastertransparency.h"
 %End
   public:
-
     QgsRasterTransparency();
 
     struct TransparentThreeValuePixel
     {
-
-      TransparentThreeValuePixel( double red = 0, double green = 0, double blue = 0, double opacity = 0, double fuzzyToleranceRed = 4 * DBL_EPSILON, double fuzzyToleranceGreen = 4 * DBL_EPSILON, double fuzzyToleranceBlue = 4 * DBL_EPSILON );
+        TransparentThreeValuePixel(
+          double red = 0,
+          double green = 0,
+          double blue = 0,
+          double opacity = 0,
+          double fuzzyToleranceRed = 4 * DBL_EPSILON,
+          double fuzzyToleranceGreen = 4 * DBL_EPSILON,
+          double fuzzyToleranceBlue = 4 * DBL_EPSILON
+        );
 %Docstring
 Constructor for TransparentThreeValuePixel.
 
@@ -55,22 +61,22 @@ Constructor for TransparentThreeValuePixel.
 .. versionadded:: 3.38
 %End
 
-      double red;
+        double red;
 
-      double green;
+        double green;
 
-      double blue;
+        double blue;
 
-      double opacity;
+        double opacity;
 
-      double fuzzyToleranceRed;
+        double fuzzyToleranceRed;
 
-      double fuzzyToleranceGreen;
+        double fuzzyToleranceGreen;
 
-      double fuzzyToleranceBlue;
+        double fuzzyToleranceBlue;
 
-      bool operator==( const QgsRasterTransparency::TransparentThreeValuePixel &other ) const;
-      bool operator!=( const QgsRasterTransparency::TransparentThreeValuePixel &other ) const;
+        bool operator==( const QgsRasterTransparency::TransparentThreeValuePixel &other ) const;
+        bool operator!=( const QgsRasterTransparency::TransparentThreeValuePixel &other ) const;
 
       SIP_PYOBJECT __repr__();
 %MethodCode
@@ -85,8 +91,7 @@ Constructor for TransparentThreeValuePixel.
 
     struct TransparentSingleValuePixel
     {
-
-      TransparentSingleValuePixel( double minimum = 0, double maximum = 0, double opacity = 0, bool includeMinimum = true, bool includeMaximum = true );
+        TransparentSingleValuePixel( double minimum = 0, double maximum = 0, double opacity = 0, bool includeMinimum = true, bool includeMaximum = true );
 %Docstring
 Constructor for TransparentSingleValuePixel.
 
@@ -101,18 +106,18 @@ Constructor for TransparentSingleValuePixel.
 .. versionadded:: 3.38
 %End
 
-      double min;
+        double min;
 
-      double max;
+        double max;
 
-      double opacity;
+        double opacity;
 
-      bool includeMinimum;
+        bool includeMinimum;
 
-      bool includeMaximum;
+        bool includeMaximum;
 
-      bool operator==( const QgsRasterTransparency::TransparentSingleValuePixel &other ) const;
-      bool operator!=( const QgsRasterTransparency::TransparentSingleValuePixel &other ) const;
+        bool operator==( const QgsRasterTransparency::TransparentSingleValuePixel &other ) const;
+        bool operator!=( const QgsRasterTransparency::TransparentSingleValuePixel &other ) const;
 
       SIP_PYOBJECT __repr__();
 %MethodCode

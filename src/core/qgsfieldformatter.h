@@ -33,7 +33,6 @@ class QgsVectorLayer;
 class CORE_EXPORT QgsFieldFormatterContext
 {
   public:
-
     QgsFieldFormatterContext() = default;
 
     /**
@@ -68,7 +67,6 @@ class CORE_EXPORT QgsFieldFormatterContext
 class CORE_EXPORT QgsFieldFormatter
 {
   public:
-
     QgsFieldFormatter() = default;
 
     virtual ~QgsFieldFormatter() = default;
@@ -80,7 +78,7 @@ class CORE_EXPORT QgsFieldFormatter
      */
     enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
-      CanProvideAvailableValues =  1   //!< Can provide possible values
+      CanProvideAvailableValues = 1 //!< Can provide possible values
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

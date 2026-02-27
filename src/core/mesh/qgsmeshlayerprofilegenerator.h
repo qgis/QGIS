@@ -36,7 +36,6 @@ class QgsAbstractTerrainProvider;
 class QgsProfileSnapContext;
 
 
-
 /**
  * \brief Implementation of QgsAbstractProfileResults for mesh layers.
  *
@@ -46,15 +45,12 @@ class QgsProfileSnapContext;
  */
 class CORE_EXPORT QgsMeshLayerProfileResults : public QgsAbstractProfileSurfaceResults
 {
-
   public:
-
     QString type() const override;
     using QgsAbstractProfileSurfaceResults::identify;
     QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
 
   private:
-
     QPointer< QgsMeshLayer > mLayer;
 
     friend class QgsMeshLayerProfileGenerator;
@@ -70,9 +66,7 @@ class CORE_EXPORT QgsMeshLayerProfileResults : public QgsAbstractProfileSurfaceR
  */
 class CORE_EXPORT QgsMeshLayerProfileGenerator : public QgsAbstractProfileSurfaceGenerator
 {
-
   public:
-
     /**
      * Constructor for QgsMeshLayerProfileGenerator.
      */
@@ -87,7 +81,6 @@ class CORE_EXPORT QgsMeshLayerProfileGenerator : public QgsAbstractProfileSurfac
     QString type() const override;
 
   private:
-
     double heightAt( double x, double y );
 
     QString mId;
@@ -112,8 +105,6 @@ class CORE_EXPORT QgsMeshLayerProfileGenerator : public QgsAbstractProfileSurfac
     std::unique_ptr< QgsMeshLayerProfileResults > mResults;
 
     friend class QgsMeshLayerProfileResults;
-
-
 };
 
 #endif // QGSMESHLAYERPROFILEGENERATOR_H

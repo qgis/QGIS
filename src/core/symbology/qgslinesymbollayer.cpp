@@ -72,7 +72,7 @@ void QgsSimpleLineSymbolLayer::setOutputUnit( Qgis::RenderUnit unit )
   mTrimDistanceEndUnit = unit;
 }
 
-Qgis::RenderUnit  QgsSimpleLineSymbolLayer::outputUnit() const
+Qgis::RenderUnit QgsSimpleLineSymbolLayer::outputUnit() const
 {
   Qgis::RenderUnit unit = QgsLineSymbolLayer::outputUnit();
   if ( mWidthUnit != unit || mOffsetUnit != unit || mCustomDashPatternUnit != unit )
@@ -84,8 +84,7 @@ Qgis::RenderUnit  QgsSimpleLineSymbolLayer::outputUnit() const
 
 bool QgsSimpleLineSymbolLayer::usesMapUnits() const
 {
-  return mWidthUnit == Qgis::RenderUnit::MapUnits || mWidthUnit == Qgis::RenderUnit::MetersInMapUnits
-         || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits;
+  return mWidthUnit == Qgis::RenderUnit::MapUnits || mWidthUnit == Qgis::RenderUnit::MetersInMapUnits || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits;
 }
 
 void QgsSimpleLineSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
@@ -98,9 +97,7 @@ void QgsSimpleLineSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
 
 QgsMapUnitScale QgsSimpleLineSymbolLayer::mapUnitScale() const
 {
-  if ( QgsLineSymbolLayer::mapUnitScale() == mWidthMapUnitScale &&
-       mWidthMapUnitScale == mOffsetMapUnitScale &&
-       mOffsetMapUnitScale == mCustomDashPatternMapUnitScale )
+  if ( QgsLineSymbolLayer::mapUnitScale() == mWidthMapUnitScale && mWidthMapUnitScale == mOffsetMapUnitScale && mOffsetMapUnitScale == mCustomDashPatternMapUnitScale )
   {
     return mWidthMapUnitScale;
   }
@@ -227,10 +224,10 @@ QgsSymbolLayer *QgsSimpleLineSymbolLayer::create( const QVariantMap &props )
     l->setTrimDistanceEndMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[u"trim_distance_end_map_unit_scale"_s].toString() ) );
 
   if ( props.contains( u"align_dash_pattern"_s ) )
-    l->setAlignDashPattern( props[ u"align_dash_pattern"_s].toInt() );
+    l->setAlignDashPattern( props[u"align_dash_pattern"_s].toInt() );
 
   if ( props.contains( u"tweak_dash_pattern_on_corners"_s ) )
-    l->setTweakDashPatternOnCorners( props[ u"tweak_dash_pattern_on_corners"_s].toInt() );
+    l->setTweakDashPatternOnCorners( props[u"tweak_dash_pattern_on_corners"_s].toInt() );
 
   l->restoreOldDataDefinedProperties( props );
 
@@ -280,7 +277,7 @@ void QgsSimpleLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 
   if ( mDashPatternOffset && mPen.style() != Qt::SolidLine )
   {
-    mPen.setDashOffset( context.renderContext().convertToPainterUnits( mDashPatternOffset, mDashPatternOffsetUnit, mDashPatternOffsetMapUnitScale ) / dashWidthDiv ) ;
+    mPen.setDashOffset( context.renderContext().convertToPainterUnits( mDashPatternOffset, mDashPatternOffsetUnit, mDashPatternOffsetMapUnitScale ) / dashWidthDiv );
   }
 
   mPen.setJoinStyle( mPenJoinStyle );
@@ -288,7 +285,7 @@ void QgsSimpleLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 
   mSelPen = mPen;
   QColor selColor = context.renderContext().selectionColor();
-  if ( ! SELECTION_IS_OPAQUE )
+  if ( !SELECTION_IS_OPAQUE )
     selColor.setAlphaF( context.opacity() );
   mSelPen.setColor( selColor );
 }
@@ -383,7 +380,6 @@ void QgsSimpleLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, con
     //restore painter to reset clip path
     p->restore();
   }
-
 }
 
 void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &pts, QgsSymbolRenderContext &context )
@@ -451,7 +447,7 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &pts, QgsSymbolRe
     bool foundNonNull = false;
     for ( int i = 0; i < pattern.size(); ++i )
     {
-      if ( i % 2 == 0  && !qgsDoubleNear( pattern[i], 0 ) )
+      if ( i % 2 == 0 && !qgsDoubleNear( pattern[i], 0 ) )
       {
         foundNonNull = true;
         break;
@@ -465,18 +461,14 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &pts, QgsSymbolRe
 
   // Disable 'Antialiasing' if the geometry was generalized in the current RenderContext (We known that it must have least #2 points).
   std::unique_ptr< QgsScopedQPainterState > painterState;
-  if ( points.size() <= 2 &&
-       ( context.renderContext().vectorSimplifyMethod().simplifyHints() & Qgis::VectorRenderingSimplificationFlag::AntialiasingSimplification ) &&
-       QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( points, context.renderContext().vectorSimplifyMethod().threshold() ) &&
-       ( p->renderHints() & QPainter::Antialiasing ) )
+  if ( points.size() <= 2 && ( context.renderContext().vectorSimplifyMethod().simplifyHints() & Qgis::VectorRenderingSimplificationFlag::AntialiasingSimplification )
+       && QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( points, context.renderContext().vectorSimplifyMethod().threshold() ) && ( p->renderHints() & QPainter::Antialiasing ) )
   {
     painterState = std::make_unique< QgsScopedQPainterState >( p );
     p->setRenderHint( QPainter::Antialiasing, false );
   }
 
-  const bool applyPatternTweaks = mAlignDashPattern
-                                  && ( pen.style() != Qt::SolidLine || !pen.dashPattern().empty() )
-                                  && pen.dashOffset() == 0;
+  const bool applyPatternTweaks = mAlignDashPattern && ( pen.style() != Qt::SolidLine || !pen.dashPattern().empty() ) && pen.dashOffset() == 0;
 
   if ( qgsDoubleNear( offset, 0 ) )
   {
@@ -495,7 +487,8 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &pts, QgsSymbolRe
   else
   {
     double scaledOffset = context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale );
-    if ( mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits && ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview || context.renderContext().flags() & Qgis::RenderContextFlag::RenderLayerTree ) )
+    if ( mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits
+         && ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview || context.renderContext().flags() & Qgis::RenderContextFlag::RenderLayerTree ) )
     {
       // rendering for symbol previews -- a size in meters in map units can't be calculated, so treat the size as millimeters
       // and clamp it to a reasonable range. It's the best we can do in this situation!
@@ -613,8 +606,7 @@ bool QgsSimpleLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, Q
   Qt::PenStyle penStyle = mUseCustomDashPattern ? Qt::CustomDashLine : mPenStyle;
   double width = QgsSymbolLayerUtils::rescaleUom( mWidth, mWidthUnit, props );
   QVector<qreal> customDashVector = QgsSymbolLayerUtils::rescaleUom( mCustomDashVector, mCustomDashPatternUnit, props );
-  QgsSymbolLayerUtils::lineToSld( doc, strokeElem, penStyle, mColor, context, width,
-                                  &mPenJoinStyle, &mPenCapStyle, &customDashVector );
+  QgsSymbolLayerUtils::lineToSld( doc, strokeElem, penStyle, mColor, context, width, &mPenJoinStyle, &mPenCapStyle, &customDashVector );
 
   // <se:PerpendicularOffset>
   if ( !qgsDoubleNear( mOffset, 0.0 ) )
@@ -631,14 +623,11 @@ QString QgsSimpleLineSymbolLayer::ogrFeatureStyle( double mmScaleFactor, double 
 {
   if ( mUseCustomDashPattern )
   {
-    return QgsSymbolLayerUtils::ogrFeatureStylePen( mWidth, mmScaleFactor, mapUnitScaleFactor,
-           mPen.color(), mPenJoinStyle,
-           mPenCapStyle, mOffset, &mCustomDashVector );
+    return QgsSymbolLayerUtils::ogrFeatureStylePen( mWidth, mmScaleFactor, mapUnitScaleFactor, mPen.color(), mPenJoinStyle, mPenCapStyle, mOffset, &mCustomDashVector );
   }
   else
   {
-    return QgsSymbolLayerUtils::ogrFeatureStylePen( mWidth, mmScaleFactor, mapUnitScaleFactor, mPen.color(), mPenJoinStyle,
-           mPenCapStyle, mOffset );
+    return QgsSymbolLayerUtils::ogrFeatureStylePen( mWidth, mmScaleFactor, mapUnitScaleFactor, mPen.color(), mPenJoinStyle, mPenCapStyle, mOffset );
   }
 }
 
@@ -657,10 +646,7 @@ QgsSymbolLayer *QgsSimpleLineSymbolLayer::createFromSld( QDomElement &element )
   Qt::PenCapStyle penCapStyle;
   QVector<qreal> customDashVector;
 
-  if ( !QgsSymbolLayerUtils::lineFromSld( strokeElem, penStyle,
-                                          color, width,
-                                          &penJoinStyle, &penCapStyle,
-                                          &customDashVector ) )
+  if ( !QgsSymbolLayerUtils::lineFromSld( strokeElem, penStyle, color, width, &penJoinStyle, &penCapStyle, &customDashVector ) )
     return nullptr;
 
   double offset = 0.0;
@@ -699,9 +685,9 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeWidth ) )
   {
     context.setOriginalValueVariable( mWidth );
-    double scaledWidth = context.renderContext().convertToPainterUnits(
-                           mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::Property::StrokeWidth, context.renderContext().expressionContext(), mWidth ),
-                           mWidthUnit, mWidthMapUnitScale );
+    double scaledWidth
+      = context.renderContext()
+          .convertToPainterUnits( mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::Property::StrokeWidth, context.renderContext().expressionContext(), mWidth ), mWidthUnit, mWidthMapUnitScale );
     pen.setWidthF( scaledWidth );
     selPen.setWidthF( scaledWidth );
     hasStrokeWidthExpression = true;
@@ -732,7 +718,8 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
 
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::CustomDash ) )
   {
-    const QString customDashString = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::CustomDash, context.renderContext().expressionContext(), QgsSymbolLayerUtils::encodeRealVector( mCustomDashVector ) );
+    const QString customDashString = mDataDefinedProperties
+                                       .valueAsString( QgsSymbolLayer::Property::CustomDash, context.renderContext().expressionContext(), QgsSymbolLayerUtils::encodeRealVector( mCustomDashVector ) );
     const QStringList dashList = customDashString.split( ';' );
     QVector<qreal> dashVector;
     for ( const QString &dash : dashList )
@@ -767,7 +754,8 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenStyle( mPenStyle ) );
-    const QString lineStyleString = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::StrokeStyle, context.renderContext().expressionContext(), QgsSymbolLayerUtils::encodePenStyle( mPenStyle ) );
+    const QString lineStyleString = mDataDefinedProperties
+                                      .valueAsString( QgsSymbolLayer::Property::StrokeStyle, context.renderContext().expressionContext(), QgsSymbolLayerUtils::encodePenStyle( mPenStyle ) );
     pen.setStyle( QgsSymbolLayerUtils::decodePenStyle( lineStyleString ) );
   }
 
@@ -775,7 +763,8 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::JoinStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle ) );
-    const QString joinStyleString = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::JoinStyle, context.renderContext().expressionContext(), QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle ) );
+    const QString joinStyleString = mDataDefinedProperties
+                                      .valueAsString( QgsSymbolLayer::Property::JoinStyle, context.renderContext().expressionContext(), QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle ) );
     pen.setJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( joinStyleString ) );
   }
 
@@ -783,7 +772,8 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::CapStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle ) );
-    const QString capStyleString = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::CapStyle, context.renderContext().expressionContext(), QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle ) );
+    const QString capStyleString = mDataDefinedProperties
+                                     .valueAsString( QgsSymbolLayer::Property::CapStyle, context.renderContext().expressionContext(), QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle ) );
     pen.setCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( capStyleString ) );
   }
 }
@@ -801,7 +791,7 @@ void QgsSimpleLineSymbolLayer::drawPathWithDashPatternTweaks( QPainter *painter,
   QVector< qreal > sourcePattern = pen.dashPattern();
   const double dashWidthDiv = pen.widthF();
   // back to painter units
-  for ( int i = 0; i < sourcePattern.size(); ++ i )
+  for ( int i = 0; i < sourcePattern.size(); ++i )
     sourcePattern[i] *= pen.widthF();
 
   QVector< qreal > buffer;
@@ -817,8 +807,7 @@ void QgsSimpleLineSymbolLayer::drawPathWithDashPatternTweaks( QPainter *painter,
   double currentRemainingDashLength = 0;
   double currentRemainingGapLength = 0;
 
-  auto compressPattern = []( const QVector< qreal > &buffer ) -> QVector< qreal >
-  {
+  auto compressPattern = []( const QVector< qreal > &buffer ) -> QVector< qreal > {
     QVector< qreal > result;
     result.reserve( buffer.size() );
     for ( auto it = buffer.begin(); it != buffer.end(); )
@@ -845,109 +834,110 @@ void QgsSimpleLineSymbolLayer::drawPathWithDashPatternTweaks( QPainter *painter,
   };
 
   double currentBufferLineLength = 0;
-  auto flushBuffer = [pen, painter, &buffer, &bufferedPoints, &previousSegmentBuffer, &currentRemainingDashLength, &currentRemainingGapLength,  &currentBufferLineLength, &totalBufferLength,
-                           dashWidthDiv, &compressPattern]( QPointF * nextPoint )
-  {
-    if ( buffer.empty() || bufferedPoints.size() < 2 )
-    {
-      return;
-    }
-
-    if ( currentRemainingDashLength )
-    {
-      // ended midway through a dash -- we want to finish this off
-      buffer << currentRemainingDashLength << 0.0;
-      totalBufferLength += currentRemainingDashLength;
-    }
-    QVector< qreal > compressed = compressPattern( buffer );
-    if ( !currentRemainingDashLength )
-    {
-      // ended midway through a gap -- we don't want this, we want to end at previous dash
-      totalBufferLength -= compressed.last();
-      compressed.last() = 0;
-    }
-
-    // rescale buffer for final bit of line -- we want to end at the end of a dash, not a gap
-    const double scaleFactor = currentBufferLineLength / totalBufferLength;
-
-    bool shouldFlushPreviousSegmentBuffer = false;
-
-    if ( !previousSegmentBuffer.empty() )
-    {
-      // add first dash from current buffer
-      QPolygonF firstDashSubstring = QgsSymbolLayerUtils::polylineSubstring( bufferedPoints, 0, compressed.first() * scaleFactor );
-      if ( !firstDashSubstring.empty() )
-        QgsSymbolLayerUtils::appendPolyline( previousSegmentBuffer, firstDashSubstring );
-
-      // then we skip over the first dash and gap for this segment
-      bufferedPoints = QgsSymbolLayerUtils::polylineSubstring( bufferedPoints, ( compressed.first() + compressed.at( 1 ) ) * scaleFactor, 0 );
-
-      compressed = compressed.mid( 2 );
-      shouldFlushPreviousSegmentBuffer = !compressed.empty();
-    }
-
-    if ( !previousSegmentBuffer.empty() && ( shouldFlushPreviousSegmentBuffer || !nextPoint ) )
-    {
-      QPen adjustedPen = pen;
-      adjustedPen.setStyle( Qt::SolidLine );
-      painter->setPen( adjustedPen );
-      QPainterPath path;
-      path.addPolygon( previousSegmentBuffer );
-      painter->drawPath( path );
-      previousSegmentBuffer.clear();
-    }
-
-    double finalDash = 0;
-    if ( nextPoint )
-    {
-      // sharp bend:
-      // 1. rewind buffered points line by final dash and gap length
-      // (later) 2. draw the bend with a solid line of length 2 * final dash size
-
-      if ( !compressed.empty() )
+  auto flushBuffer =
+    [pen, painter, &buffer, &bufferedPoints, &previousSegmentBuffer, &currentRemainingDashLength, &currentRemainingGapLength, &currentBufferLineLength, &totalBufferLength, dashWidthDiv, &compressPattern](
+      QPointF *nextPoint
+    ) {
+      if ( buffer.empty() || bufferedPoints.size() < 2 )
       {
-        finalDash = compressed.at( compressed.size() - 2 );
-        const double finalGap = compressed.size() > 2 ? compressed.at( compressed.size() - 3 ) : 0;
-
-        const QPolygonF thisPoints = bufferedPoints;
-        bufferedPoints = QgsSymbolLayerUtils::polylineSubstring( thisPoints, 0, -( finalDash + finalGap ) * scaleFactor );
-        previousSegmentBuffer = QgsSymbolLayerUtils::polylineSubstring( thisPoints, - finalDash * scaleFactor, 0 );
+        return;
       }
-      else
-      {
-        previousSegmentBuffer << bufferedPoints;
-      }
-    }
 
-    currentBufferLineLength = 0;
-    currentRemainingDashLength = 0;
-    currentRemainingGapLength = 0;
-    totalBufferLength = 0;
-    buffer.clear();
-
-    if ( !bufferedPoints.empty() && ( !compressed.empty() || !nextPoint ) )
-    {
-      QPen adjustedPen = pen;
-      if ( !compressed.empty() )
+      if ( currentRemainingDashLength )
       {
-        // maximum size of dash pattern is 32 elements
-        compressed = compressed.mid( 0, 32 );
-        std::for_each( compressed.begin(), compressed.end(), [scaleFactor, dashWidthDiv]( qreal & element ) { element *= scaleFactor / dashWidthDiv; } );
-        adjustedPen.setDashPattern( compressed );
+        // ended midway through a dash -- we want to finish this off
+        buffer << currentRemainingDashLength << 0.0;
+        totalBufferLength += currentRemainingDashLength;
       }
-      else
+      QVector< qreal > compressed = compressPattern( buffer );
+      if ( !currentRemainingDashLength )
       {
+        // ended midway through a gap -- we don't want this, we want to end at previous dash
+        totalBufferLength -= compressed.last();
+        compressed.last() = 0;
+      }
+
+      // rescale buffer for final bit of line -- we want to end at the end of a dash, not a gap
+      const double scaleFactor = currentBufferLineLength / totalBufferLength;
+
+      bool shouldFlushPreviousSegmentBuffer = false;
+
+      if ( !previousSegmentBuffer.empty() )
+      {
+        // add first dash from current buffer
+        QPolygonF firstDashSubstring = QgsSymbolLayerUtils::polylineSubstring( bufferedPoints, 0, compressed.first() * scaleFactor );
+        if ( !firstDashSubstring.empty() )
+          QgsSymbolLayerUtils::appendPolyline( previousSegmentBuffer, firstDashSubstring );
+
+        // then we skip over the first dash and gap for this segment
+        bufferedPoints = QgsSymbolLayerUtils::polylineSubstring( bufferedPoints, ( compressed.first() + compressed.at( 1 ) ) * scaleFactor, 0 );
+
+        compressed = compressed.mid( 2 );
+        shouldFlushPreviousSegmentBuffer = !compressed.empty();
+      }
+
+      if ( !previousSegmentBuffer.empty() && ( shouldFlushPreviousSegmentBuffer || !nextPoint ) )
+      {
+        QPen adjustedPen = pen;
         adjustedPen.setStyle( Qt::SolidLine );
+        painter->setPen( adjustedPen );
+        QPainterPath path;
+        path.addPolygon( previousSegmentBuffer );
+        painter->drawPath( path );
+        previousSegmentBuffer.clear();
       }
 
-      painter->setPen( adjustedPen );
-      QPainterPath path;
-      path.addPolygon( bufferedPoints );
-      painter->drawPath( path );
-    }
+      double finalDash = 0;
+      if ( nextPoint )
+      {
+        // sharp bend:
+        // 1. rewind buffered points line by final dash and gap length
+        // (later) 2. draw the bend with a solid line of length 2 * final dash size
 
-    bufferedPoints.clear();
-  };
+        if ( !compressed.empty() )
+        {
+          finalDash = compressed.at( compressed.size() - 2 );
+          const double finalGap = compressed.size() > 2 ? compressed.at( compressed.size() - 3 ) : 0;
+
+          const QPolygonF thisPoints = bufferedPoints;
+          bufferedPoints = QgsSymbolLayerUtils::polylineSubstring( thisPoints, 0, -( finalDash + finalGap ) * scaleFactor );
+          previousSegmentBuffer = QgsSymbolLayerUtils::polylineSubstring( thisPoints, -finalDash * scaleFactor, 0 );
+        }
+        else
+        {
+          previousSegmentBuffer << bufferedPoints;
+        }
+      }
+
+      currentBufferLineLength = 0;
+      currentRemainingDashLength = 0;
+      currentRemainingGapLength = 0;
+      totalBufferLength = 0;
+      buffer.clear();
+
+      if ( !bufferedPoints.empty() && ( !compressed.empty() || !nextPoint ) )
+      {
+        QPen adjustedPen = pen;
+        if ( !compressed.empty() )
+        {
+          // maximum size of dash pattern is 32 elements
+          compressed = compressed.mid( 0, 32 );
+          std::for_each( compressed.begin(), compressed.end(), [scaleFactor, dashWidthDiv]( qreal &element ) { element *= scaleFactor / dashWidthDiv; } );
+          adjustedPen.setDashPattern( compressed );
+        }
+        else
+        {
+          adjustedPen.setStyle( Qt::SolidLine );
+        }
+
+        painter->setPen( adjustedPen );
+        QPainterPath path;
+        path.addPolygon( bufferedPoints );
+        painter->drawPath( path );
+      }
+
+      bufferedPoints.clear();
+    };
 
   QPointF p1;
   QPointF p2 = *ptIt;
@@ -1095,8 +1085,7 @@ double QgsSimpleLineSymbolLayer::estimateMaxBleed( const QgsRenderContext &conte
   }
   else
   {
-    return context.convertToPainterUnits( ( mWidth / 2.0 ), mWidthUnit, mWidthMapUnitScale ) +
-           context.convertToPainterUnits( std::fabs( mOffset ), mOffsetUnit, mOffsetMapUnitScale );
+    return context.convertToPainterUnits( ( mWidth / 2.0 ), mWidthUnit, mWidthMapUnitScale ) + context.convertToPainterUnits( std::fabs( mOffset ), mOffsetUnit, mOffsetMapUnitScale );
   }
 }
 
@@ -1187,9 +1176,7 @@ double QgsSimpleLineSymbolLayer::dxfOffset( const QgsDxfExport &e, QgsSymbolRend
 QgsTemplatedLineSymbolLayerBase::QgsTemplatedLineSymbolLayerBase( bool rotateSymbol, double interval )
   : mRotateSymbols( rotateSymbol )
   , mInterval( interval )
-{
-
-}
+{}
 
 Qgis::MarkerLinePlacement QgsTemplatedLineSymbolLayerBase::placement() const
 {
@@ -1197,9 +1184,7 @@ Qgis::MarkerLinePlacement QgsTemplatedLineSymbolLayerBase::placement() const
     return Qgis::MarkerLinePlacement::Interval;
   else if ( mPlacements & Qgis::MarkerLinePlacement::Vertex )
     return Qgis::MarkerLinePlacement::Vertex;
-  else if ( ( mPlacements & Qgis::MarkerLinePlacement::FirstVertex )
-            && ( mPlacements & Qgis::MarkerLinePlacement::InnerVertices )
-            && ( mPlacements & Qgis::MarkerLinePlacement::LastVertex ) )
+  else if ( ( mPlacements & Qgis::MarkerLinePlacement::FirstVertex ) && ( mPlacements & Qgis::MarkerLinePlacement::InnerVertices ) && ( mPlacements & Qgis::MarkerLinePlacement::LastVertex ) )
     return Qgis::MarkerLinePlacement::Vertex; // retain round trip for deprecated old API
   else if ( mPlacements & Qgis::MarkerLinePlacement::LastVertex )
     return Qgis::MarkerLinePlacement::LastVertex;
@@ -1328,8 +1313,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, Q
       renderPolylineCentral( points, context, averageOver, blankSegments );
     if ( placements & Qgis::MarkerLinePlacement::Vertex )
       renderPolylineVertex( points, context, Qgis::MarkerLinePlacement::Vertex, blankSegments );
-    if ( placements & Qgis::MarkerLinePlacement::FirstVertex
-         && ( mPlaceOnEveryPart || !mHasRenderedFirstPart ) )
+    if ( placements & Qgis::MarkerLinePlacement::FirstVertex && ( mPlaceOnEveryPart || !mHasRenderedFirstPart ) )
     {
       renderPolylineVertex( points, context, Qgis::MarkerLinePlacement::FirstVertex, blankSegments );
       mHasRenderedFirstPart = mRenderingFeature;
@@ -1346,11 +1330,12 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, Q
   else
   {
     context.renderContext().setGeometry( nullptr ); //always use segmented geometry with offset
-    QList<QPolygonF> mline = ::offsetLine( points, context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale ), context.originalGeometryType() != Qgis::GeometryType::Unknown ? context.originalGeometryType() : Qgis::GeometryType::Line );
+    QList<QPolygonF> mline = ::
+      offsetLine( points, context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale ), context.originalGeometryType() != Qgis::GeometryType::Unknown ? context.originalGeometryType() : Qgis::GeometryType::Line );
 
     for ( int part = 0; part < mline.count(); ++part )
     {
-      const QPolygonF &points2 = mline[ part ];
+      const QPolygonF &points2 = mline[part];
 
       if ( placements & Qgis::MarkerLinePlacement::Interval )
         renderPolylineInterval( points2, context, averageOver, blankSegments );
@@ -1362,8 +1347,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, Q
         renderPolylineVertex( points2, context, Qgis::MarkerLinePlacement::InnerVertices, blankSegments );
       if ( placements & Qgis::MarkerLinePlacement::LastVertex )
         renderPolylineVertex( points2, context, Qgis::MarkerLinePlacement::LastVertex, blankSegments );
-      if ( placements & Qgis::MarkerLinePlacement::FirstVertex
-           && ( mPlaceOnEveryPart || !mHasRenderedFirstPart ) )
+      if ( placements & Qgis::MarkerLinePlacement::FirstVertex && ( mPlaceOnEveryPart || !mHasRenderedFirstPart ) )
       {
         renderPolylineVertex( points2, context, Qgis::MarkerLinePlacement::FirstVertex, blankSegments );
         mHasRenderedFirstPart = mRenderingFeature;
@@ -1466,9 +1450,7 @@ void QgsTemplatedLineSymbolLayerBase::setMapUnitScale( const QgsMapUnitScale &sc
 
 QgsMapUnitScale QgsTemplatedLineSymbolLayerBase::mapUnitScale() const
 {
-  if ( QgsLineSymbolLayer::mapUnitScale() == intervalMapUnitScale() &&
-       intervalMapUnitScale() == mOffsetMapUnitScale &&
-       mOffsetMapUnitScale == offsetAlongLineMapUnitScale() )
+  if ( QgsLineSymbolLayer::mapUnitScale() == intervalMapUnitScale() && intervalMapUnitScale() == mOffsetMapUnitScale && mOffsetMapUnitScale == offsetAlongLineMapUnitScale() )
   {
     return mOffsetMapUnitScale;
   }
@@ -1502,9 +1484,7 @@ QVariantMap QgsTemplatedLineSymbolLayerBase::properties() const
 
 bool QgsTemplatedLineSymbolLayerBase::canCauseArtifactsBetweenAdjacentTiles() const
 {
-  return mPlaceOnEveryPart
-         || ( mPlacements & Qgis::MarkerLinePlacement::Interval )
-         || ( mPlacements & Qgis::MarkerLinePlacement::CentralPoint )
+  return mPlaceOnEveryPart || ( mPlacements & Qgis::MarkerLinePlacement::Interval ) || ( mPlacements & Qgis::MarkerLinePlacement::CentralPoint )
          || ( mPlacements & Qgis::MarkerLinePlacement::SegmentCenter );
 }
 
@@ -1519,7 +1499,7 @@ void QgsTemplatedLineSymbolLayerBase::startFeatureRender( const QgsFeature &, Qg
 void QgsTemplatedLineSymbolLayerBase::stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context )
 {
   mRenderingFeature = false;
-  if ( mPlaceOnEveryPart  || !( mPlacements & Qgis::MarkerLinePlacement::LastVertex ) )
+  if ( mPlaceOnEveryPart || !( mPlacements & Qgis::MarkerLinePlacement::LastVertex ) )
   {
     removeMasks( context, true );
     return;
@@ -1652,8 +1632,7 @@ void QgsTemplatedLineSymbolLayerBase::setCommonProperties( QgsTemplatedLineSymbo
  */
 class BlankSegmentsWalker
 {
-  public :
-
+  public:
     BlankSegmentsWalker( const QPolygonF &points, const QgsBlankSegmentUtils::BlankSegments &blankSegments )
       : mBlankSegments( blankSegments )
       , mPoints( points )
@@ -1700,7 +1679,6 @@ class BlankSegmentsWalker
     }
 
   private:
-
     const QgsBlankSegmentUtils::BlankSegments &mBlankSegments;
     const QPolygonF &mPoints;
     QList<double> mDistances;
@@ -1845,7 +1823,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
 
     int pointNum = 0;
     BlankSegmentsWalker blankSegmentsWalker( points, blankSegments );
-    for ( int i = 0; i < symbolPoints.size(); ++ i )
+    for ( int i = 0; i < symbolPoints.size(); ++i )
     {
       if ( context.renderContext().renderingStopped() )
         break;
@@ -1871,7 +1849,6 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
   }
   else
   {
-
     // not averaging line angle -- always use exact section angle
     int pointNum = 0;
     QPointF lastPt = points[0];
@@ -1922,7 +1899,6 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
 
       lastPt = pt;
     }
-
   }
 }
 
@@ -1936,7 +1912,9 @@ static double _averageAngle( QPointF prevPt, QPointF pt, QPointF nextPt )
   return std::atan2( unitY, unitX );
 }
 
-void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &points, QgsSymbolRenderContext &context, Qgis::MarkerLinePlacement placement, const QgsBlankSegmentUtils::BlankSegments &blankSegments )
+void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex(
+  const QPolygonF &points, QgsSymbolRenderContext &context, Qgis::MarkerLinePlacement placement, const QgsBlankSegmentUtils::BlankSegments &blankSegments
+)
 {
   if ( points.isEmpty() )
     return;
@@ -1996,10 +1974,8 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
   }
 
   const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
-  if ( qgsDoubleNear( offsetAlongLine, 0.0 ) && context.renderContext().geometry()
-       && context.renderContext().geometry()->hasCurvedSegments() && ( placement == Qgis::MarkerLinePlacement::Vertex
-           || placement == Qgis::MarkerLinePlacement::InnerVertices
-           || placement == Qgis::MarkerLinePlacement::CurvePoint ) )
+  if ( qgsDoubleNear( offsetAlongLine, 0.0 ) && context.renderContext().geometry() && context.renderContext().geometry()->hasCurvedSegments()
+       && ( placement == Qgis::MarkerLinePlacement::Vertex || placement == Qgis::MarkerLinePlacement::InnerVertices || placement == Qgis::MarkerLinePlacement::CurvePoint ) )
   {
     QgsCoordinateTransform ct = context.renderContext().coordinateTransform();
     const QgsMapToPixel &mtp = context.renderContext().mapToPixel();
@@ -2121,12 +2097,10 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
     if ( placement == Qgis::MarkerLinePlacement::SegmentCenter )
     {
       QPointF currentPoint = points.at( i );
-      symbolPoint = QPointF( 0.5 * ( currentPoint.x() + prevPoint.x() ),
-                             0.5 * ( currentPoint.y() + prevPoint.y() ) );
+      symbolPoint = QPointF( 0.5 * ( currentPoint.x() + prevPoint.x() ), 0.5 * ( currentPoint.y() + prevPoint.y() ) );
       if ( rotateSymbols() )
       {
-        double angle = std::atan2( currentPoint.y() - prevPoint.y(),
-                                   currentPoint.x() - prevPoint.x() );
+        double angle = std::atan2( currentPoint.y() - prevPoint.y(), currentPoint.x() - prevPoint.x() );
         setSymbolLineAngle( angle * 180 / M_PI );
       }
       prevPoint = currentPoint;
@@ -2143,8 +2117,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
     }
 
     mFinalVertex = symbolPoint;
-    if ( ( i != points.count() - 1 || placement != Qgis::MarkerLinePlacement::LastVertex || mPlaceOnEveryPart || !mRenderingFeature )
-         && !blankSegmentsWalker.insideBlankSegment( symbolPoint, i ) )
+    if ( ( i != points.count() - 1 || placement != Qgis::MarkerLinePlacement::LastVertex || mPlaceOnEveryPart || !mRenderingFeature ) && !blankSegmentsWalker.insideBlankSegment( symbolPoint, i ) )
       renderSymbol( symbolPoint, context.feature(), rc, -1, useSelectedColor );
   }
 }
@@ -2168,7 +2141,7 @@ double QgsTemplatedLineSymbolLayerBase::markerAngle( const QPolygonF &points, bo
     QPointF prevPoint, nextPoint;
     while ( prevIndex >= 0 )
     {
-      prevPoint = points[ prevIndex ];
+      prevPoint = points[prevIndex];
       if ( prevPoint != pt )
       {
         break;
@@ -2178,7 +2151,7 @@ double QgsTemplatedLineSymbolLayerBase::markerAngle( const QPolygonF &points, bo
 
     while ( nextIndex < points.count() )
     {
-      nextPoint = points[ nextIndex ];
+      nextPoint = points[nextIndex];
       if ( nextPoint != pt )
       {
         break;
@@ -2224,7 +2197,9 @@ double QgsTemplatedLineSymbolLayerBase::markerAngle( const QPolygonF &points, bo
   return angle;
 }
 
-void QgsTemplatedLineSymbolLayerBase::renderOffsetVertexAlongLine( const QPolygonF &points, int vertex, double distance, QgsSymbolRenderContext &context, Qgis::MarkerLinePlacement placement, const QgsBlankSegmentUtils::BlankSegments &blankSegments )
+void QgsTemplatedLineSymbolLayerBase::renderOffsetVertexAlongLine(
+  const QPolygonF &points, int vertex, double distance, QgsSymbolRenderContext &context, Qgis::MarkerLinePlacement placement, const QgsBlankSegmentUtils::BlankSegments &blankSegments
+)
 {
   if ( points.isEmpty() )
     return;
@@ -2275,8 +2250,7 @@ void QgsTemplatedLineSymbolLayerBase::renderOffsetVertexAlongLine( const QPolygo
         setSymbolLineAngle( l.angle() * 180 / M_PI );
       }
       mFinalVertex = markerPoint;
-      if ( ( placement != Qgis::MarkerLinePlacement::LastVertex || mPlaceOnEveryPart || !mRenderingFeature )
-           && !blankSegmentsWalker.insideBlankSegment( markerPoint, i - 1 ) )
+      if ( ( placement != Qgis::MarkerLinePlacement::LastVertex || mPlaceOnEveryPart || !mRenderingFeature ) && !blankSegmentsWalker.insideBlankSegment( markerPoint, i - 1 ) )
         renderSymbol( markerPoint, context.feature(), rc, -1, useSelectedColor );
       return;
     }
@@ -2288,9 +2262,9 @@ void QgsTemplatedLineSymbolLayerBase::renderOffsetVertexAlongLine( const QPolygo
   //didn't find point
 }
 
-void QgsTemplatedLineSymbolLayerBase::collectOffsetPoints( const QVector<QPointF> &p, QVector<QPointF> &dest, double intervalPainterUnits, double initialOffset,
-    QList<int> *pointIndices,
-    double initialLag, int numberPointsRequired )
+void QgsTemplatedLineSymbolLayerBase::collectOffsetPoints(
+  const QVector<QPointF> &p, QVector<QPointF> &dest, double intervalPainterUnits, double initialOffset, QList<int> *pointIndices, double initialLag, int numberPointsRequired
+)
 {
   if ( p.empty() )
     return;
@@ -2412,8 +2386,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineCentral( const QPolygonF &po
     QPointF last = *it;
     for ( ++it; it != points.constEnd(); ++it )
     {
-      length += std::sqrt( ( last.x() - it->x() ) * ( last.x() - it->x() ) +
-                           ( last.y() - it->y() ) * ( last.y() - it->y() ) );
+      length += std::sqrt( ( last.x() - it->x() ) * ( last.x() - it->x() ) + ( last.y() - it->y() ) * ( last.y() - it->y() ) );
       last = *it;
     }
     if ( qgsDoubleNear( length, 0.0 ) )
@@ -2454,8 +2427,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineCentral( const QPolygonF &po
       for ( ++it; it != points.constEnd(); ++it )
       {
         next = *it;
-        next_at += std::sqrt( ( last.x() - it->x() ) * ( last.x() - it->x() ) +
-                              ( last.y() - it->y() ) * ( last.y() - it->y() ) );
+        next_at += std::sqrt( ( last.x() - it->x() ) * ( last.x() - it->x() ) + ( last.y() - it->y() ) * ( last.y() - it->y() ) );
         if ( next_at >= midPoint )
           break; // we have reached the center
         last = *it;
@@ -2498,7 +2470,6 @@ bool QgsMarkerLineSymbolLayer::setSubSymbol( QgsSymbol *symbol )
   mColor = mMarker->color();
   return true;
 }
-
 
 
 //
@@ -2801,13 +2772,10 @@ void QgsMarkerLineSymbolLayer::setOutputUnit( Qgis::RenderUnit unit )
 
 bool QgsMarkerLineSymbolLayer::usesMapUnits() const
 {
-  return  intervalUnit() == Qgis::RenderUnit::MapUnits || intervalUnit() == Qgis::RenderUnit::MetersInMapUnits
-          || offsetAlongLineUnit() == Qgis::RenderUnit::MapUnits || offsetAlongLineUnit() == Qgis::RenderUnit::MetersInMapUnits
-          || averageAngleUnit() == Qgis::RenderUnit::MapUnits || averageAngleUnit() == Qgis::RenderUnit::MetersInMapUnits
-          || mWidthUnit == Qgis::RenderUnit::MapUnits || mWidthUnit == Qgis::RenderUnit::MetersInMapUnits
-          || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits
-          || blankSegmentsUnit() == Qgis::RenderUnit::MapUnits
-          || ( mMarker && mMarker->usesMapUnits() );
+  return intervalUnit() == Qgis::RenderUnit::MapUnits || intervalUnit() == Qgis::RenderUnit::MetersInMapUnits || offsetAlongLineUnit() == Qgis::RenderUnit::MapUnits
+         || offsetAlongLineUnit() == Qgis::RenderUnit::MetersInMapUnits || averageAngleUnit() == Qgis::RenderUnit::MapUnits || averageAngleUnit() == Qgis::RenderUnit::MetersInMapUnits
+         || mWidthUnit == Qgis::RenderUnit::MapUnits || mWidthUnit == Qgis::RenderUnit::MetersInMapUnits || mOffsetUnit == Qgis::RenderUnit::MapUnits
+         || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits || blankSegmentsUnit() == Qgis::RenderUnit::MapUnits || ( mMarker && mMarker->usesMapUnits() );
 }
 
 QSet<QString> QgsMarkerLineSymbolLayer::usedAttributes( const QgsRenderContext &context ) const
@@ -2829,8 +2797,7 @@ bool QgsMarkerLineSymbolLayer::hasDataDefinedProperties() const
 
 double QgsMarkerLineSymbolLayer::estimateMaxBleed( const QgsRenderContext &context ) const
 {
-  return ( mMarker->size( context ) / 2.0 ) +
-         context.convertToPainterUnits( std::fabs( mOffset ), mOffsetUnit, mOffsetMapUnitScale );
+  return ( mMarker->size( context ) / 2.0 ) + context.convertToPainterUnits( std::fabs( mOffset ), mOffsetUnit, mOffsetMapUnitScale );
 }
 
 
@@ -2899,7 +2866,7 @@ void QgsHashedLineSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 QVariantMap QgsHashedLineSymbolLayer::properties() const
 {
   QVariantMap map = QgsTemplatedLineSymbolLayerBase::properties();
-  map[ u"hash_angle"_s ] = QString::number( mHashAngle );
+  map[u"hash_angle"_s] = QString::number( mHashAngle );
 
   map[u"hash_length"_s] = QString::number( mHashLength );
   map[u"hash_length_unit"_s] = QgsUnitTypes::encodeUnit( mHashLengthUnit );
@@ -2965,8 +2932,7 @@ double QgsHashedLineSymbolLayer::width( const QgsRenderContext &context ) const
 
 double QgsHashedLineSymbolLayer::estimateMaxBleed( const QgsRenderContext &context ) const
 {
-  return ( mHashSymbol->width( context ) / 2.0 )
-         + context.convertToPainterUnits( mHashLength, mHashLengthUnit, mHashLengthMapUnitScale )
+  return ( mHashSymbol->width( context ) / 2.0 ) + context.convertToPainterUnits( mHashLength, mHashLengthUnit, mHashLengthMapUnitScale )
          + context.convertToPainterUnits( std::fabs( mOffset ), mOffsetUnit, mOffsetMapUnitScale );
 }
 
@@ -3004,14 +2970,11 @@ void QgsHashedLineSymbolLayer::setDataDefinedProperty( QgsSymbolLayer::Property 
 
 bool QgsHashedLineSymbolLayer::usesMapUnits() const
 {
-  return mHashLengthUnit == Qgis::RenderUnit::MapUnits || mHashLengthUnit == Qgis::RenderUnit::MetersInMapUnits
-         || intervalUnit() == Qgis::RenderUnit::MapUnits || intervalUnit() == Qgis::RenderUnit::MetersInMapUnits
-         || offsetAlongLineUnit() == Qgis::RenderUnit::MapUnits || offsetAlongLineUnit() == Qgis::RenderUnit::MetersInMapUnits
-         || averageAngleUnit() == Qgis::RenderUnit::MapUnits || averageAngleUnit() == Qgis::RenderUnit::MetersInMapUnits
-         || mWidthUnit == Qgis::RenderUnit::MapUnits || mWidthUnit == Qgis::RenderUnit::MetersInMapUnits
-         || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits
-         || blankSegmentsUnit() == Qgis::RenderUnit::MapUnits
-         || ( mHashSymbol && mHashSymbol->usesMapUnits() );
+  return mHashLengthUnit == Qgis::RenderUnit::MapUnits || mHashLengthUnit == Qgis::RenderUnit::MetersInMapUnits || intervalUnit() == Qgis::RenderUnit::MapUnits
+         || intervalUnit() == Qgis::RenderUnit::MetersInMapUnits || offsetAlongLineUnit() == Qgis::RenderUnit::MapUnits || offsetAlongLineUnit() == Qgis::RenderUnit::MetersInMapUnits
+         || averageAngleUnit() == Qgis::RenderUnit::MapUnits || averageAngleUnit() == Qgis::RenderUnit::MetersInMapUnits || mWidthUnit == Qgis::RenderUnit::MapUnits
+         || mWidthUnit == Qgis::RenderUnit::MetersInMapUnits || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits
+         || blankSegmentsUnit() == Qgis::RenderUnit::MapUnits || ( mHashSymbol && mHashSymbol->usesMapUnits() );
 }
 
 void QgsHashedLineSymbolLayer::setSymbolLineAngle( double angle )
@@ -3051,7 +3014,7 @@ void QgsHashedLineSymbolLayer::renderSymbol( const QPointF &point, const QgsFeat
   QgsPointXY end = center.project( -w, 180 - ( mSymbolAngle + mSymbolLineAngle + hashAngle ) );
 
   QPolygonF points;
-  points <<  QPointF( start.x(), start.y() ) << QPointF( end.x(), end.y() );
+  points << QPointF( start.x(), start.y() ) << QPointF( end.x(), end.y() );
 
   const bool prevIsSubsymbol = context.flags() & Qgis::RenderContextFlag::RenderingSubSymbol;
   context.setFlag( Qgis::RenderContextFlag::RenderingSubSymbol );
@@ -3112,8 +3075,7 @@ void QgsAbstractBrushedLineSymbolLayer::renderPolylineUsingBrush( const QPolygon
   }
 }
 
-void QgsAbstractBrushedLineSymbolLayer::renderLine( const QPolygonF &points, QgsSymbolRenderContext &context, const double lineThickness,
-    const double patternLength, const QBrush &sourceBrush )
+void QgsAbstractBrushedLineSymbolLayer::renderLine( const QPolygonF &points, QgsSymbolRenderContext &context, const double lineThickness, const double patternLength, const QBrush &sourceBrush )
 {
   QPainter *p = context.renderContext().painter();
   if ( !p )
@@ -3157,8 +3119,7 @@ void QgsAbstractBrushedLineSymbolLayer::renderLine( const QPolygonF &points, Qgs
   const int imageWidth = static_cast< int >( std::ceil( maxX - minX ) + lineThickness * 2 ) + ANTIALIAS_ALLOWANCE_PIXELS * 2;
   const int imageHeight = static_cast< int >( std::ceil( maxY - minY ) + lineThickness * 2 ) + ANTIALIAS_ALLOWANCE_PIXELS * 2;
 
-  const bool isClosedLine = qgsDoubleNear( points.at( 0 ).x(), points.constLast().x(), 0.01 )
-                            && qgsDoubleNear( points.at( 0 ).y(), points.constLast().y(), 0.01 );
+  const bool isClosedLine = qgsDoubleNear( points.at( 0 ).x(), points.constLast().x(), 0.01 ) && qgsDoubleNear( points.at( 0 ).y(), points.constLast().y(), 0.01 );
 
   QImage temporaryImage( imageWidth, imageHeight, QImage::Format_ARGB32_Premultiplied );
   if ( temporaryImage.isNull() )
@@ -3229,8 +3190,7 @@ void QgsAbstractBrushedLineSymbolLayer::renderLine( const QPolygonF &points, Qgs
       break;
 
     const QPointF segmentEndPoint = inputPoints.at( i );
-    const double segmentAngleDegrees = 180.0 / M_PI * QgsGeometryUtilsBase::lineAngle( segmentStartPoint.x(), segmentStartPoint.y(),
-                                       segmentEndPoint.x(), segmentEndPoint.y() ) - 90;
+    const double segmentAngleDegrees = 180.0 / M_PI * QgsGeometryUtilsBase::lineAngle( segmentStartPoint.x(), segmentStartPoint.y(), segmentEndPoint.x(), segmentEndPoint.y() ) - 90;
 
     // left/right end points of the current segment polygon
     QgsPoint thisSegmentPolygonEndLeft;
@@ -3252,8 +3212,9 @@ void QgsAbstractBrushedLineSymbolLayer::renderLine( const QPolygonF &points, Qgs
 
         // angle of LAST line segment in the whole line (i.e. the one which will eventually connect back to the first point in the line). Used to determine
         // what angle the current segment polygon should START on.
-        const double lastSegmentAngleDegrees = 180.0 / M_PI * QgsGeometryUtilsBase::lineAngle( points.at( points.size() - 2 ).x(), points.at( points.size() - 2 ).y(),
-                                               segmentStartPoint.x(), segmentStartPoint.y() ) - 90;
+        const double lastSegmentAngleDegrees = 180.0 / M_PI
+                                                 * QgsGeometryUtilsBase::lineAngle( points.at( points.size() - 2 ).x(), points.at( points.size() - 2 ).y(), segmentStartPoint.x(), segmentStartPoint.y() )
+                                               - 90;
 
         // project out the LAST segment in the line by half the image thickness to either side of the line
         const QgsPoint lastSegmentStartPointLeft = QgsPoint( points.at( points.size() - 2 ) ).project( lineThickness / 2, lastSegmentAngleDegrees );
@@ -3300,8 +3261,7 @@ void QgsAbstractBrushedLineSymbolLayer::renderLine( const QPolygonF &points, Qgs
 
       // angle of NEXT line segment (i.e. not the one we are drawing right now). Used to determine
       // what angle the current segment polygon should end on
-      const double nextSegmentAngleDegrees = 180.0 / M_PI * QgsGeometryUtilsBase::lineAngle( segmentEndPoint.x(), segmentEndPoint.y(),
-                                             inputPoints.at( i + 1 ).x(), inputPoints.at( i + 1 ).y() ) - 90;
+      const double nextSegmentAngleDegrees = 180.0 / M_PI * QgsGeometryUtilsBase::lineAngle( segmentEndPoint.x(), segmentEndPoint.y(), inputPoints.at( i + 1 ).x(), inputPoints.at( i + 1 ).y() ) - 90;
 
       // project out the next segment by half the image thickness to either side of the line
       const QgsPoint nextSegmentStartPointLeft = QgsPoint( segmentEndPoint ).project( lineThickness / 2, nextSegmentAngleDegrees );
@@ -3368,11 +3328,10 @@ void QgsAbstractBrushedLineSymbolLayer::renderLine( const QPolygonF &points, Qgs
     imagePainter.setBrush( brush );
 
     // now draw the segment polygon
-    imagePainter.drawPolygon( QPolygonF() << prevSegmentPolygonEndLeft.toQPointF()
-                              << thisSegmentPolygonEndLeftForPainter.toQPointF()
-                              << thisSegmentPolygonEndRightForPainter.toQPointF()
-                              << prevSegmentPolygonEndRight.toQPointF()
-                              << prevSegmentPolygonEndLeft.toQPointF() );
+    imagePainter.drawPolygon(
+      QPolygonF() << prevSegmentPolygonEndLeft.toQPointF() << thisSegmentPolygonEndLeftForPainter.toQPointF() << thisSegmentPolygonEndRightForPainter.toQPointF()
+                  << prevSegmentPolygonEndRight.toQPointF() << prevSegmentPolygonEndLeft.toQPointF()
+    );
 
 #if 0 // for debugging, will draw the segment polygons
     imagePainter.setPen( QPen( QColor( 0, 255, 255 ), 2 ) );
@@ -3387,8 +3346,7 @@ void QgsAbstractBrushedLineSymbolLayer::renderLine( const QPolygonF &points, Qgs
 
     // calculate the new progress horizontal through the source image to account for the length
     // of the segment we've just drawn
-    progressThroughImage += sqrt( std::pow( segmentStartPoint.x() - segmentEndPoint.x(), 2 )
-                                  +  std::pow( segmentStartPoint.y() - segmentEndPoint.y(), 2 ) )
+    progressThroughImage += sqrt( std::pow( segmentStartPoint.x() - segmentEndPoint.x(), 2 ) + std::pow( segmentStartPoint.y() - segmentEndPoint.y(), 2 ) )
                             + ( i == 1 && cap != Qt::PenCapStyle::FlatCap ? lineThickness / 2 : 0 ); // for first point we extended the pattern out by half its thickess at the start
     progressThroughImage = fmod( progressThroughImage, patternLength );
 
@@ -3403,8 +3361,7 @@ void QgsAbstractBrushedLineSymbolLayer::renderLine( const QPolygonF &points, Qgs
     return;
 
   // lastly, draw the temporary image onto the destination painter at the correct place
-  p->drawImage( QPointF( minX - lineThickness - ANTIALIAS_ALLOWANCE_PIXELS,
-                         minY - lineThickness - ANTIALIAS_ALLOWANCE_PIXELS ), temporaryImage );
+  p->drawImage( QPointF( minX - lineThickness - ANTIALIAS_ALLOWANCE_PIXELS, minY - lineThickness - ANTIALIAS_ALLOWANCE_PIXELS ), temporaryImage );
 }
 
 
@@ -3414,8 +3371,7 @@ void QgsAbstractBrushedLineSymbolLayer::renderLine( const QPolygonF &points, Qgs
 
 QgsRasterLineSymbolLayer::QgsRasterLineSymbolLayer( const QString &path )
   : mPath( path )
-{
-}
+{}
 
 QgsRasterLineSymbolLayer::~QgsRasterLineSymbolLayer() = default;
 
@@ -3511,7 +3467,7 @@ void QgsRasterLineSymbolLayer::resolvePaths( QVariantMap &properties, const QgsP
     if ( saving )
       it.value() = QgsSymbolLayerUtils::svgSymbolPathToName( it.value().toString(), pathResolver );
     else
-      it.value() =  QgsSymbolLayerUtils::svgSymbolNameToPath( it.value().toString(), pathResolver );
+      it.value() = QgsSymbolLayerUtils::svgSymbolNameToPath( it.value().toString(), pathResolver );
   }
 }
 
@@ -3538,15 +3494,18 @@ void QgsRasterLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 
   double opacity = mOpacity * context.opacity();
   bool cached = false;
-  mLineImage = QgsApplication::imageCache()->pathAsImage( mPath,
-               QSize( static_cast< int >( std::round( originalSize.width() / originalSize.height() * std::max( 1.0, scaledHeight ) ) ),
-                      static_cast< int >( std::ceil( scaledHeight ) ) ),
-               true, opacity, cached, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
+  mLineImage = QgsApplication::imageCache()->pathAsImage(
+    mPath,
+    QSize( static_cast< int >( std::round( originalSize.width() / originalSize.height() * std::max( 1.0, scaledHeight ) ) ), static_cast< int >( std::ceil( scaledHeight ) ) ),
+    true,
+    opacity,
+    cached,
+    ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking )
+  );
 }
 
 void QgsRasterLineSymbolLayer::stopRender( QgsSymbolRenderContext & )
-{
-}
+{}
 
 void QgsRasterLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
 {
@@ -3554,8 +3513,7 @@ void QgsRasterLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
     return;
 
   QImage sourceImage = mLineImage;
-  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeWidth )
-       || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::File )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeWidth ) || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::File )
        || mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Opacity ) )
   {
     QString path = mPath;
@@ -3583,10 +3541,14 @@ void QgsRasterLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
     opacity *= context.opacity();
 
     bool cached = false;
-    sourceImage = QgsApplication::imageCache()->pathAsImage( path,
-                  QSize( static_cast< int >( std::round( originalSize.width() / originalSize.height() * std::max( 1.0, scaledHeight ) ) ),
-                         static_cast< int >( std::ceil( scaledHeight ) ) ),
-                  true, opacity, cached, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
+    sourceImage = QgsApplication::imageCache()->pathAsImage(
+      path,
+      QSize( static_cast< int >( std::round( originalSize.width() / originalSize.height() * std::max( 1.0, scaledHeight ) ) ), static_cast< int >( std::ceil( scaledHeight ) ) ),
+      true,
+      opacity,
+      cached,
+      ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking )
+    );
   }
 
   const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
@@ -3619,8 +3581,7 @@ Qgis::RenderUnit QgsRasterLineSymbolLayer::outputUnit() const
 
 bool QgsRasterLineSymbolLayer::usesMapUnits() const
 {
-  return mWidthUnit == Qgis::RenderUnit::MapUnits || mWidthUnit == Qgis::RenderUnit::MetersInMapUnits
-         || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits;
+  return mWidthUnit == Qgis::RenderUnit::MapUnits || mWidthUnit == Qgis::RenderUnit::MetersInMapUnits || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits;
 }
 
 void QgsRasterLineSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
@@ -3631,8 +3592,7 @@ void QgsRasterLineSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
 
 QgsMapUnitScale QgsRasterLineSymbolLayer::mapUnitScale() const
 {
-  if ( QgsLineSymbolLayer::mapUnitScale() == mWidthMapUnitScale &&
-       mWidthMapUnitScale == mOffsetMapUnitScale )
+  if ( QgsLineSymbolLayer::mapUnitScale() == mWidthMapUnitScale && mWidthMapUnitScale == mOffsetMapUnitScale )
   {
     return mWidthMapUnitScale;
   }
@@ -3780,12 +3740,10 @@ Qgis::SymbolLayerFlags QgsLineburstSymbolLayer::flags() const
 }
 
 void QgsLineburstSymbolLayer::startRender( QgsSymbolRenderContext & )
-{
-}
+{}
 
 void QgsLineburstSymbolLayer::stopRender( QgsSymbolRenderContext & )
-{
-}
+{}
 
 void QgsLineburstSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
 {
@@ -3825,8 +3783,8 @@ void QgsLineburstSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbol
   //create a QGradient with the desired properties
   QGradient gradient = QLinearGradient( QPointF( 0, 0 ), QPointF( 0, scaledWidth ) );
   //add stops to gradient
-  if ( mGradientColorType == Qgis::GradientColorSource::ColorRamp && mGradientRamp &&
-       ( mGradientRamp->type() == QgsGradientColorRamp::typeString() || mGradientRamp->type() == QgsCptCityColorRamp::typeString() ) )
+  if ( mGradientColorType == Qgis::GradientColorSource::ColorRamp && mGradientRamp
+       && ( mGradientRamp->type() == QgsGradientColorRamp::typeString() || mGradientRamp->type() == QgsCptCityColorRamp::typeString() ) )
   {
     //color ramp gradient
     QgsGradientColorRamp *gradRamp = static_cast<QgsGradientColorRamp *>( mGradientRamp.get() );
@@ -3862,8 +3820,7 @@ Qgis::RenderUnit QgsLineburstSymbolLayer::outputUnit() const
 
 bool QgsLineburstSymbolLayer::usesMapUnits() const
 {
-  return mWidthUnit == Qgis::RenderUnit::MapUnits || mWidthUnit == Qgis::RenderUnit::MetersInMapUnits
-         || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits;
+  return mWidthUnit == Qgis::RenderUnit::MapUnits || mWidthUnit == Qgis::RenderUnit::MetersInMapUnits || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits;
 }
 
 void QgsLineburstSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
@@ -3874,8 +3831,7 @@ void QgsLineburstSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
 
 QgsMapUnitScale QgsLineburstSymbolLayer::mapUnitScale() const
 {
-  if ( QgsLineSymbolLayer::mapUnitScale() == mWidthMapUnitScale &&
-       mWidthMapUnitScale == mOffsetMapUnitScale )
+  if ( QgsLineSymbolLayer::mapUnitScale() == mWidthMapUnitScale && mWidthMapUnitScale == mOffsetMapUnitScale )
   {
     return mWidthMapUnitScale;
   }
@@ -4055,7 +4011,8 @@ void QgsFilledLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
     if ( !qgsDoubleNear( offset, 0 ) )
     {
       double scaledOffset = context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale );
-      if ( mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits && ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview || context.renderContext().flags() & Qgis::RenderContextFlag::RenderLayerTree ) )
+      if ( mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits
+           && ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderSymbolPreview || context.renderContext().flags() & Qgis::RenderContextFlag::RenderLayerTree ) )
       {
         // rendering for symbol previews -- a size in meters in map units can't be calculated, so treat the size as millimeters
         // and clamp it to a reasonable range. It's the best we can do in this situation!
@@ -4093,9 +4050,7 @@ void QgsFilledLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
 
     if ( lineGeom )
     {
-      geos::unique_ptr buffered = QgsGeos::buffer( lineGeom.get(), scaledWidth / 2, 8,
-                                  QgsSymbolLayerUtils::penCapStyleToEndCapStyle( cap ),
-                                  QgsSymbolLayerUtils::penJoinStyleToJoinStyle( join ), 8 );
+      geos::unique_ptr buffered = QgsGeos::buffer( lineGeom.get(), scaledWidth / 2, 8, QgsSymbolLayerUtils::penCapStyleToEndCapStyle( cap ), QgsSymbolLayerUtils::penJoinStyleToJoinStyle( join ), 8 );
       if ( buffered )
       {
         // convert to rings
@@ -4203,8 +4158,7 @@ QColor QgsFilledLineSymbolLayer::color() const
 
 bool QgsFilledLineSymbolLayer::usesMapUnits() const
 {
-  return mWidthUnit == Qgis::RenderUnit::MapUnits || mWidthUnit == Qgis::RenderUnit::MetersInMapUnits
-         || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits
+  return mWidthUnit == Qgis::RenderUnit::MapUnits || mWidthUnit == Qgis::RenderUnit::MetersInMapUnits || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits
          || ( mFill && mFill->usesMapUnits() );
 }
 

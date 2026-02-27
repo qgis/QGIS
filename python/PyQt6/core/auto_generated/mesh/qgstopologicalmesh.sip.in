@@ -29,7 +29,6 @@ A topological face must:
 #include "qgstopologicalmesh.h"
 %End
   public:
-
     typedef QVector<int> FaceNeighbors;
 
     class TopologicalFaces
@@ -44,7 +43,6 @@ This class supports unique shared vertices between faces.
 %End
 
       public:
-
 
         void clear();
 %Docstring
@@ -70,7 +68,6 @@ mesh, only accessible from the QgsTopologicalMesh class.
 %End
 
       public:
-
 
 
         QList<int> removedFaceIndexes() const;

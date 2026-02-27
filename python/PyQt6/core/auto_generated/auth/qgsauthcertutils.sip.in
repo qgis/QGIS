@@ -106,8 +106,7 @@ Returns a list of concatenated CAs from a PEM or DER formatted file
 Returns the first cert from a PEM or DER formatted file
 %End
 
-    static QList<QSslCertificate> casMerge( const QList<QSslCertificate> &bundle1,
-                                            const QList<QSslCertificate> &bundle2 );
+    static QList<QSslCertificate> casMerge( const QList<QSslCertificate> &bundle1, const QList<QSslCertificate> &bundle2 );
 %Docstring
 casMerge merges two certificate bundles in a single one removing
 duplicates, the certificates from the ``bundle2`` are appended to
@@ -119,9 +118,7 @@ duplicates, the certificates from the ``bundle2`` are appended to
 :return: a list of unique certificates
 %End
 
-    static QSslKey keyFromFile( const QString &keypath,
-                                const QString &keypass = QString(),
-                                QString *algtype = 0 );
+    static QSslKey keyFromFile( const QString &keypath, const QString &keypass = QString(), QString *algtype = 0 );
 %Docstring
 Returns non-encrypted key from a PEM or DER formatted file
 
@@ -145,10 +142,7 @@ casRemoveSelfSigned remove self-signed CA certificates from ``caList``
 :return: a list of non self-signed certificates
 %End
 
-    static QStringList certKeyBundleToPem( const QString &certpath,
-                                           const QString &keypath,
-                                           const QString &keypass = QString(),
-                                           bool reencrypt = true );
+    static QStringList certKeyBundleToPem( const QString &certpath, const QString &keypath, const QString &keypass = QString(), bool reencrypt = true );
 %Docstring
 Returns list of certificate, private key and algorithm (as PEM text)
 from file path components
@@ -173,9 +167,7 @@ Determine if the PEM-encoded text of a key is PKCS#8 format
 
 
 
-    static QStringList pkcs12BundleToPem( const QString &bundlepath,
-                                          const QString &bundlepass = QString(),
-                                          bool reencrypt = true );
+    static QStringList pkcs12BundleToPem( const QString &bundlepath, const QString &bundlepass = QString(), bool reencrypt = true );
 %Docstring
 Returns list of certificate, private key and algorithm (as PEM text) for
 a PKCS#12 bundle
@@ -188,8 +180,7 @@ a PKCS#12 bundle
 :return: certificate, private key, key's algorithm type
 %End
 
-    static QList<QSslCertificate> pkcs12BundleCas( const QString &bundlepath,
-        const QString &bundlepass = QString() );
+    static QList<QSslCertificate> pkcs12BundleCas( const QString &bundlepath, const QString &bundlepass = QString() );
 %Docstring
 Returns list of CA certificates (as QSslCertificate) for a PKCS#12
 bundle
@@ -325,9 +316,7 @@ NULL
 :return: ``False`` if cert is NULL or has viability errors
 %End
 
-    static QList<QSslError> validateCertChain( const QList<QSslCertificate> &certificateChain,
-        const QString &hostName = QString(),
-        bool trustRootCa = false );
+    static QList<QSslError> validateCertChain( const QList<QSslCertificate> &certificateChain, const QString &hostName = QString(), bool trustRootCa = false );
 %Docstring
 validateCertChain validates the given ``certificateChain``
 

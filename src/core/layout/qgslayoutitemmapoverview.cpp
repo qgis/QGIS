@@ -39,7 +39,10 @@ using namespace Qt::StringLiterals;
 
 QgsLayoutItemMapOverview::QgsLayoutItemMapOverview( const QString &name, QgsLayoutItemMap *map )
   : QgsLayoutItemMapItem( name, map )
-  , mExtentLayer( std::make_unique< QgsVectorLayer >( u"Polygon?crs=EPSG:4326"_s, tr( "Overview" ), u"memory"_s, QgsVectorLayer::LayerOptions( map && map->layout() && map->layout()->project() ? map->layout()->project()->transformContext() : QgsCoordinateTransformContext() ) ) )
+  , mExtentLayer(
+      std::make_unique<
+        QgsVectorLayer >( u"Polygon?crs=EPSG:4326"_s, tr( "Overview" ), u"memory"_s, QgsVectorLayer::LayerOptions( map && map->layout() && map->layout()->project() ? map->layout()->project()->transformContext() : QgsCoordinateTransformContext() ) )
+    )
 {
   createDefaultFrameSymbol();
 }
@@ -76,22 +79,19 @@ void QgsLayoutItemMapOverview::draw( QPainter *painter )
 
   //get polygon for other overview frame map's extent (use visibleExtentPolygon as it accounts for map rotation)
   QPolygonF otherExtent = overviewFrameMap->visibleExtentPolygon();
-  if ( overviewFrameMap->crs() !=
-       mMap->crs() )
+  if ( overviewFrameMap->crs() != mMap->crs() )
   {
     QgsGeometry g = QgsGeometry::fromQPolygonF( otherExtent );
 
     // reproject extent
-    QgsCoordinateTransform ct( overviewFrameMap->crs(),
-                               mMap->crs(), mLayout->project() );
+    QgsCoordinateTransform ct( overviewFrameMap->crs(), mMap->crs(), mLayout->project() );
     g = g.densifyByCount( 20 );
     try
     {
       g.transform( ct );
     }
     catch ( QgsCsException & )
-    {
-    }
+    {}
 
     otherExtent = g.asQPolygonF();
   }
@@ -145,11 +145,8 @@ void QgsLayoutItemMapOverview::draw( QPainter *painter )
     //We are inverting the overview frame (ie, shading outside the intersecting extent)
     //Construct a polygon corresponding to the overview map extent
     QPolygonF outerPolygon;
-    outerPolygon << QPointF( 0, 0 )
-                 << QPointF( mMap->rect().width() * dotsPerMM, 0 )
-                 << QPointF( mMap->rect().width() * dotsPerMM, mMap->rect().height() * dotsPerMM )
-                 << QPointF( 0, mMap->rect().height() * dotsPerMM )
-                 << QPointF( 0, 0 );
+    outerPolygon << QPointF( 0, 0 ) << QPointF( mMap->rect().width() * dotsPerMM, 0 ) << QPointF( mMap->rect().width() * dotsPerMM, mMap->rect().height() * dotsPerMM )
+                 << QPointF( 0, mMap->rect().height() * dotsPerMM ) << QPointF( 0, 0 );
 
     //Intersecting extent is an inner ring for the shaded area
     rings.append( intersectPolygon );
@@ -169,7 +166,7 @@ bool QgsLayoutItemMapOverview::writeXml( QDomElement &elem, QDomDocument &doc, c
   //overview map frame
   QDomElement overviewFrameElem = doc.createElement( u"ComposerMapOverview"_s );
 
-  overviewFrameElem.setAttribute( u"frameMap"_s, mFrameMap ? mFrameMap ->uuid() : QString() );
+  overviewFrameElem.setAttribute( u"frameMap"_s, mFrameMap ? mFrameMap->uuid() : QString() );
   overviewFrameElem.setAttribute( u"blendMode"_s, static_cast< int >( QgsPainting::getBlendModeEnum( mBlendMode ) ) );
   overviewFrameElem.setAttribute( u"inverted"_s, mInverted );
   overviewFrameElem.setAttribute( u"centered"_s, mCentered );
@@ -279,16 +276,14 @@ QgsVectorLayer *QgsLayoutItemMapOverview::asMapLayer()
   if ( overviewFrameMap->crs() != mMap->crs() )
   {
     // reproject extent
-    QgsCoordinateTransform ct( overviewFrameMap->crs(),
-                               mMap->crs(), mLayout->project() );
+    QgsCoordinateTransform ct( overviewFrameMap->crs(), mMap->crs(), mLayout->project() );
     g = g.densifyByCount( 20 );
     try
     {
       g.transform( ct );
     }
     catch ( QgsCsException & )
-    {
-    }
+    {}
   }
 
   //get current map's extent as a QPolygonF
@@ -377,10 +372,7 @@ void QgsLayoutItemMapOverview::overviewExtentChanged()
     QgsRectangle otherExtent = mFrameMap->extent();
 
     QgsPointXY center = otherExtent.center();
-    QgsRectangle movedExtent( center.x() - extent.width() / 2,
-                              center.y() - extent.height() / 2,
-                              center.x() - extent.width() / 2 + extent.width(),
-                              center.y() - extent.height() / 2 + extent.height() );
+    QgsRectangle movedExtent( center.x() - extent.width() / 2, center.y() - extent.height() / 2, center.x() - extent.width() / 2 + extent.width(), center.y() - extent.height() / 2 + extent.height() );
     mMap->setExtent( movedExtent );
   }
 
@@ -395,9 +387,7 @@ void QgsLayoutItemMapOverview::overviewExtentChanged()
 
 QgsLayoutItemMapOverviewStack::QgsLayoutItemMapOverviewStack( QgsLayoutItemMap *map )
   : QgsLayoutItemMapItemStack( map )
-{
-
-}
+{}
 
 void QgsLayoutItemMapOverviewStack::addOverview( QgsLayoutItemMapOverview *overview )
 {
@@ -474,7 +464,7 @@ QList<QgsMapLayer *> QgsLayoutItemMapOverviewStack::modifyMapLayerList( const QL
 {
   QList<QgsMapLayer *> res = layers;
   res.reserve( layers.count() + mItems.count() );
-  for ( QgsLayoutItemMapItem  *item : std::as_const( mItems ) )
+  for ( QgsLayoutItemMapItem *item : std::as_const( mItems ) )
   {
     if ( !item )
       continue;

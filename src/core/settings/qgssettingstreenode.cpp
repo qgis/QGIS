@@ -166,9 +166,7 @@ void QgsSettingsTreeNamedListNode::initNamedList( const Qgis::SettingsTreeNodeOp
 }
 
 QgsSettingsTreeNamedListNode::~QgsSettingsTreeNamedListNode()
-{
-
-}
+{}
 
 
 QStringList QgsSettingsTreeNamedListNode::items( const QStringList &parentsNamedItems ) const
@@ -179,7 +177,10 @@ QStringList QgsSettingsTreeNamedListNode::items( const QStringList &parentsNamed
 QStringList QgsSettingsTreeNamedListNode::items( Qgis::SettingsOrigin origin, const QStringList &parentsNamedItems ) const
 {
   if ( namedNodesCount() - 1 != parentsNamedItems.count() )
-    throw QgsSettingsException( QObject::tr( "The number of given parent named items (%1) for the node '%2' doesn't match with the number of named items in the key (%3)." ).arg( QString::number( parentsNamedItems.count() ), mCompleteKey, QString::number( namedNodesCount() ) ) );
+    throw QgsSettingsException(
+      QObject::tr( "The number of given parent named items (%1) for the node '%2' doesn't match with the number of named items in the key (%3)." )
+        .arg( QString::number( parentsNamedItems.count() ), mCompleteKey, QString::number( namedNodesCount() ) )
+    );
 
 
   const QString completeKeyParam = completeKeyWithNamedItems( mItemsCompleteKey, parentsNamedItems );
@@ -193,7 +194,10 @@ QStringList QgsSettingsTreeNamedListNode::items( Qgis::SettingsOrigin origin, co
 void QgsSettingsTreeNamedListNode::setSelectedItem( const QString &item, const QStringList &parentsNamedItems )
 {
   if ( namedNodesCount() - 1 != parentsNamedItems.count() )
-    throw QgsSettingsException( QObject::tr( "The number of given parent named items (%1) for the node '%2' doesn't match with the number of named items in the key (%3)." ).arg( QString::number( parentsNamedItems.count() ), mCompleteKey, QString::number( namedNodesCount() ) ) );
+    throw QgsSettingsException(
+      QObject::tr( "The number of given parent named items (%1) for the node '%2' doesn't match with the number of named items in the key (%3)." )
+        .arg( QString::number( parentsNamedItems.count() ), mCompleteKey, QString::number( namedNodesCount() ) )
+    );
   if ( !mOptions.testFlag( Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting ) )
     throw QgsSettingsException( QObject::tr( "The named list node '%1' has no option to set the current selected entry." ).arg( mCompleteKey ) );
 
@@ -203,7 +207,10 @@ void QgsSettingsTreeNamedListNode::setSelectedItem( const QString &item, const Q
 QString QgsSettingsTreeNamedListNode::selectedItem( const QStringList &parentsNamedItems )
 {
   if ( namedNodesCount() - 1 != parentsNamedItems.count() )
-    throw QgsSettingsException( QObject::tr( "The number of given parent named items (%1) for the node '%2' doesn't match with the number of named items in the key (%3)." ).arg( QString::number( parentsNamedItems.count() ), mCompleteKey, QString::number( namedNodesCount() ) ) );
+    throw QgsSettingsException(
+      QObject::tr( "The number of given parent named items (%1) for the node '%2' doesn't match with the number of named items in the key (%3)." )
+        .arg( QString::number( parentsNamedItems.count() ), mCompleteKey, QString::number( namedNodesCount() ) )
+    );
   if ( !mOptions.testFlag( Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting ) )
     throw QgsSettingsException( QObject::tr( "The named list node '%1' has no option to set the current selected entry." ).arg( mCompleteKey ) );
 
@@ -213,7 +220,9 @@ QString QgsSettingsTreeNamedListNode::selectedItem( const QStringList &parentsNa
 void QgsSettingsTreeNamedListNode::deleteItem( const QString &item, const QStringList &parentsNamedItems )
 {
   if ( namedNodesCount() - 1 != parentsNamedItems.count() )
-    throw QgsSettingsException( QObject::tr( "The number of given parent named items (%1) doesn't match with the number of named items in the key (%2)." ).arg( parentsNamedItems.count(), namedNodesCount() ) );
+    throw QgsSettingsException(
+      QObject::tr( "The number of given parent named items (%1) doesn't match with the number of named items in the key (%2)." ).arg( parentsNamedItems.count(), namedNodesCount() )
+    );
 
   QStringList args = parentsNamedItems;
   args << item;
@@ -224,7 +233,9 @@ void QgsSettingsTreeNamedListNode::deleteItem( const QString &item, const QStrin
 void QgsSettingsTreeNamedListNode::deleteAllItems( const QStringList &parentsNamedItems )
 {
   if ( namedNodesCount() - 1 != parentsNamedItems.count() )
-    throw QgsSettingsException( QObject::tr( "The number of given parent named items (%1) doesn't match with the number of named items in the key (%2)." ).arg( parentsNamedItems.count(), namedNodesCount() ) );
+    throw QgsSettingsException(
+      QObject::tr( "The number of given parent named items (%1) doesn't match with the number of named items in the key (%2)." ).arg( parentsNamedItems.count(), namedNodesCount() )
+    );
 
   const QStringList children = items( parentsNamedItems );
   auto settings = QgsSettings::get();

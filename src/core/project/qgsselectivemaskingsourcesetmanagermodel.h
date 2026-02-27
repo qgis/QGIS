@@ -48,7 +48,6 @@ class CORE_EXPORT QgsSelectiveMaskingSourceSetManagerModel : public QgsProjectSt
     Q_OBJECT
 
   public:
-
     // *INDENT-OFF*
 
     /**
@@ -56,9 +55,9 @@ class CORE_EXPORT QgsSelectiveMaskingSourceSetManagerModel : public QgsProjectSt
      */
     enum class CustomRole : int
     {
-      Object = Qt::UserRole + 1, //!< Object
+      Object = Qt::UserRole + 1,        //!< Object
       IsEmptyObject = Qt::UserRole + 2, //!< TRUE if row represents the empty object
-      SetId = Qt::UserRole + 3, //!< Selective masking source set unique ID
+      SetId = Qt::UserRole + 3,         //!< Selective masking source set unique ID
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
@@ -81,7 +80,6 @@ class CORE_EXPORT QgsSelectiveMaskingSourceSetManagerModel : public QgsProjectSt
     QModelIndex indexFromSet( QgsSelectiveMaskingSourceSet *set ) const;
 
     QVariant data( const QModelIndex &index, int role ) const override;
-
 };
 
 
@@ -102,12 +100,10 @@ class CORE_EXPORT QgsSelectiveMaskingSourceSetManagerProxyModel : public QgsProj
 #endif
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsSelectiveMaskingSourceSetManagerProxyModel.
      */
     explicit QgsSelectiveMaskingSourceSetManagerProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
-
 };
 
 #endif // QGSSELECTIVEMASKINGSOURCESETMANAGERMODEL_H

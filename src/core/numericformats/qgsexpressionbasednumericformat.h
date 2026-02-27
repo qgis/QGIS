@@ -29,7 +29,6 @@
 class CORE_EXPORT QgsExpressionBasedNumericFormat : public QgsNumericFormat
 {
   public:
-
     QgsExpressionBasedNumericFormat();
 
     QString id() const override;
@@ -57,7 +56,6 @@ class CORE_EXPORT QgsExpressionBasedNumericFormat : public QgsNumericFormat
     QString expression() const { return mExpression.expression(); }
 
   private:
-
     mutable QgsExpression mExpression;
 };
 

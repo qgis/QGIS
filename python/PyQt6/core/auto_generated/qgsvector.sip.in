@@ -22,7 +22,6 @@ a 3D equivalent.
 #include "qgsvector.h"
 %End
   public:
-
     QgsVector();
 %Docstring
 Default constructor for QgsVector. Creates a vector with length of 0.0.

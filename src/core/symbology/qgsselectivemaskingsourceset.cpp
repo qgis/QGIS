@@ -27,9 +27,7 @@ using namespace Qt::StringLiterals;
 
 QgsSelectiveMaskingSourceSet::QgsSelectiveMaskingSourceSet()
   : mId( QUuid::createUuid().toString() )
-{
-
-}
+{}
 
 QVector<QgsSelectiveMaskSource> QgsSelectiveMaskingSourceSet::sources() const
 {

@@ -31,7 +31,6 @@
 #define PAL_GEOM_FUNCTION
 
 
-
 #include <cmath>
 
 #include "qgis_core.h"
@@ -51,7 +50,6 @@ namespace pal
   class CORE_EXPORT GeomFunction
   {
     public:
-
       /*
        *           o(x2,y2)
        *          /
@@ -61,14 +59,9 @@ namespace pal
        *      /
        *     o (x1, y1)
        */
-      static inline double cross_product( double x1, double y1, double x2, double y2, double x3, double y3 )
-      {
-        return ( x2 - x1 ) * ( y3 - y1 ) - ( x3 - x1 ) * ( y2 - y1 );
-      }
+      static inline double cross_product( double x1, double y1, double x2, double y2, double x3, double y3 ) { return ( x2 - x1 ) * ( y3 - y1 ) - ( x3 - x1 ) * ( y2 - y1 ); }
 
-      static void findLineCircleIntersection( double cx, double cy, double radius,
-                                              double x1, double y1, double x2, double y2,
-                                              double &xRes, double &yRes );
+      static void findLineCircleIntersection( double cx, double cy, double radius, double x1, double y1, double x2, double y2, double &xRes, double &yRes );
 
       /**
        * \brief Compute the convex hull in O(n·log(n))
@@ -82,16 +75,33 @@ namespace pal
       /**
        * Returns TRUE if the two segments intersect.
        */
-      static bool isSegIntersects( double x1, double y1, double x2, double y2,  // 1st segment
-                                   double x3, double y3, double x4, double y4 ); // 2nd segment
+      static bool isSegIntersects(
+        double x1,
+        double y1,
+        double x2,
+        double y2, // 1st segment
+        double x3,
+        double y3,
+        double x4,
+        double y4
+      ); // 2nd segment
 
       /**
        * Compute the point where two lines intersect.
        * \returns TRUE if the lines intersect, or FALSE if the lines are parallel
        */
-      static bool computeLineIntersection( double x1, double y1, double x2, double y2,  // 1st line (segment)
-                                           double x3, double y3, double x4, double y4,  // 2nd line segment
-                                           double *x, double *y );
+      static bool computeLineIntersection(
+        double x1,
+        double y1,
+        double x2,
+        double y2, // 1st line (segment)
+        double x3,
+        double y3,
+        double x4,
+        double y4, // 2nd line segment
+        double *x,
+        double *y
+      );
 
       //! Reorder points to have cross prod ((x,y)[i], (x,y)[i+1), point) > 0 when point is outside
       static bool reorderPolygon( std::vector< double > &x, std::vector< double> &y );
@@ -107,8 +117,7 @@ namespace pal
        * \returns TRUE if candidate is totally contained
        */
       static bool containsCandidate( const GEOSPreparedGeometry *geom, double x, double y, double width, double height, double alpha );
-
   };
-} //namespace
+} //namespace pal
 
 #endif

@@ -33,7 +33,6 @@ safely).
 #include "qgsmaprenderercache.h"
 %End
   public:
-
     QgsMapRendererCache();
 
     void clear();
@@ -81,11 +80,9 @@ repaint then the cache image will be cleared.
 .. seealso:: :py:func:`cacheImage`
 %End
 
-    void setCacheImageWithParameters( const QString &cacheKey,
-                                      const QImage &image,
-                                      const QgsRectangle &extent,
-                                      const QgsMapToPixel &mapToPixel,
-                                      const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >() );
+    void setCacheImageWithParameters(
+      const QString &cacheKey, const QImage &image, const QgsRectangle &extent, const QgsMapToPixel &mapToPixel, const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >()
+    );
 %Docstring
 Set the cached ``image`` for a particular ``cacheKey``, using a specific
 ``extent`` and ``mapToPixel`` (which may differ from the current cache

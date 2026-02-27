@@ -51,10 +51,7 @@ using namespace Qt::StringLiterals;
 #define PROVIDER_KEY u"vpc"_s
 #define PROVIDER_DESCRIPTION u"Virtual point cloud data provider"_s
 
-QgsVirtualPointCloudProvider::QgsVirtualPointCloudProvider(
-  const QString &uri,
-  const QgsDataProvider::ProviderOptions &options,
-  Qgis::DataProviderReadFlags flags )
+QgsVirtualPointCloudProvider::QgsVirtualPointCloudProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsPointCloudDataProvider( uri, options, flags )
 {
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
@@ -142,8 +139,7 @@ qint64 QgsVirtualPointCloudProvider::pointCount() const
   return static_cast<qint64>( mPointCount );
 }
 
-void QgsVirtualPointCloudProvider::loadIndex()
-{
+void QgsVirtualPointCloudProvider::loadIndex() {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   //no-op, there is no index
@@ -215,8 +211,7 @@ void QgsVirtualPointCloudProvider::parseFile()
     return;
   }
 
-  if ( data["type"] != "FeatureCollection" ||
-       !data.contains( "features" ) )
+  if ( data["type"] != "FeatureCollection" || !data.contains( "features" ) )
   {
     appendError( QgsErrorMessage( u"Invalid VPC file"_s ) );
     return;
@@ -228,11 +223,8 @@ void QgsVirtualPointCloudProvider::parseFile()
 
   for ( const auto &f : data["features"] )
   {
-    if ( !f.contains( "type" ) || f["type"] != "Feature" ||
-         !f.contains( "stac_version" ) ||
-         !f.contains( "assets" ) || !f["assets"].is_object() ||
-         !f.contains( "properties" ) || !f["properties"].is_object() ||
-         !f.contains( "geometry" ) || !f["geometry"].is_object() )
+    if ( !f.contains( "type" ) || f["type"] != "Feature" || !f.contains( "stac_version" ) || !f.contains( "assets" ) || !f["assets"].is_object() || !f.contains( "properties" )
+         || !f["properties"].is_object() || !f.contains( "geometry" ) || !f["geometry"].is_object() )
     {
       QgsDebugError( u"Malformed STAC item: %1"_s.arg( QString::fromStdString( f ) ) );
       continue;
@@ -280,8 +272,7 @@ void QgsVirtualPointCloudProvider::parseFile()
       mOverview = QgsPointCloudIndex();
 
     // Only COPC and EPT formats are currently supported. Other files will only have their bounds rendered
-    if ( !uri.endsWith( u"ept.json"_s, Qt::CaseSensitivity::CaseInsensitive ) &&
-         !uri.endsWith( u"copc.laz"_s, Qt::CaseSensitivity::CaseInsensitive ) )
+    if ( !uri.endsWith( u"ept.json"_s, Qt::CaseSensitivity::CaseInsensitive ) && !uri.endsWith( u"copc.laz"_s, Qt::CaseSensitivity::CaseInsensitive ) )
     {
       mContainsUnsupportedFiles = true;
       QgsDebugError( u"Unsupported point cloud uri: %1"_s.arg( uri ) );
@@ -309,14 +300,12 @@ void QgsVirtualPointCloudProvider::parseFile()
       nlohmann::json nativeBbox = f["properties"]["proj:bbox"];
       if ( nativeBbox.size() == 6 )
       {
-        extent = QgsRectangle( nativeBbox[0].get<double>(), nativeBbox[1].get<double>(),
-                               nativeBbox[3].get<double>(), nativeBbox[4].get<double>() );
+        extent = QgsRectangle( nativeBbox[0].get<double>(), nativeBbox[1].get<double>(), nativeBbox[3].get<double>(), nativeBbox[4].get<double>() );
         zRange = QgsDoubleRange( nativeBbox[2], nativeBbox[5] );
       }
       else if ( nativeBbox.size() == 4 )
       {
-        extent = QgsRectangle( nativeBbox[0].get<double>(), nativeBbox[1].get<double>(),
-                               nativeBbox[2].get<double>(), nativeBbox[3].get<double>() );
+        extent = QgsRectangle( nativeBbox[0].get<double>(), nativeBbox[1].get<double>(), nativeBbox[2].get<double>(), nativeBbox[3].get<double>() );
       }
       else
       {
@@ -433,11 +422,11 @@ void QgsVirtualPointCloudProvider::parseFile()
       for ( auto pcStat : pcStats )
       {
         if ( pcStat["name"] == "Red" )
-          mRedMax = std::max( mRedMax, pcStat[ "maximum" ].get<double>() );
+          mRedMax = std::max( mRedMax, pcStat["maximum"].get<double>() );
         if ( pcStat["name"] == "Green" )
-          mGreenMax = std::max( mRedMax, pcStat[ "maximum" ].get<double>() );
+          mGreenMax = std::max( mRedMax, pcStat["maximum"].get<double>() );
         if ( pcStat["name"] == "Blue" )
-          mBlueMax = std::max( mRedMax, pcStat[ "maximum" ].get<double>() );
+          mBlueMax = std::max( mRedMax, pcStat["maximum"].get<double>() );
       }
     }
 
@@ -479,7 +468,7 @@ void QgsVirtualPointCloudProvider::loadSubIndex( int i )
   if ( i >= mSubLayers.size() || i < 0 )
     return;
 
-  QgsPointCloudSubIndex &sl = mSubLayers[ i ];
+  QgsPointCloudSubIndex &sl = mSubLayers[i];
   // Index already loaded -> no need to load
   if ( sl.index() )
     return;
@@ -528,17 +517,13 @@ void QgsVirtualPointCloudProvider::populateAttributeCollection( QSet<QString> na
     mAttributes.push_back( QgsPointCloudAttribute( u"PointSourceId"_s, QgsPointCloudAttribute::UShort ) );
   if ( names.contains( "ScannerChannel"_L1 ) )
     mAttributes.push_back( QgsPointCloudAttribute( u"ScannerChannel"_s, QgsPointCloudAttribute::Char ) );
-  if ( names.contains( "Synthetic"_L1 ) ||
-       names.contains( "ClassFlags"_L1 ) )
+  if ( names.contains( "Synthetic"_L1 ) || names.contains( "ClassFlags"_L1 ) )
     mAttributes.push_back( QgsPointCloudAttribute( u"Synthetic"_s, QgsPointCloudAttribute::UChar ) );
-  if ( names.contains( "KeyPoint"_L1 ) ||
-       names.contains( "ClassFlags"_L1 ) )
+  if ( names.contains( "KeyPoint"_L1 ) || names.contains( "ClassFlags"_L1 ) )
     mAttributes.push_back( QgsPointCloudAttribute( u"KeyPoint"_s, QgsPointCloudAttribute::UChar ) );
-  if ( names.contains( "Withheld"_L1 ) ||
-       names.contains( "ClassFlags"_L1 ) )
+  if ( names.contains( "Withheld"_L1 ) || names.contains( "ClassFlags"_L1 ) )
     mAttributes.push_back( QgsPointCloudAttribute( u"Withheld"_s, QgsPointCloudAttribute::UChar ) );
-  if ( names.contains( "Overlap"_L1 ) ||
-       names.contains( "ClassFlags"_L1 ) )
+  if ( names.contains( "Overlap"_L1 ) || names.contains( "ClassFlags"_L1 ) )
     mAttributes.push_back( QgsPointCloudAttribute( u"Overlap"_s, QgsPointCloudAttribute::UChar ) );
   if ( names.contains( "GpsTime"_L1 ) )
     mAttributes.push_back( QgsPointCloudAttribute( u"GpsTime"_s, QgsPointCloudAttribute::Double ) );
@@ -550,29 +535,31 @@ void QgsVirtualPointCloudProvider::populateAttributeCollection( QSet<QString> na
     mAttributes.push_back( QgsPointCloudAttribute( u"Blue"_s, QgsPointCloudAttribute::UShort ) );
   if ( names.contains( "Infrared"_L1 ) )
     mAttributes.push_back( QgsPointCloudAttribute( u"Infrared"_s, QgsPointCloudAttribute::UShort ) );
-  names.subtract( { "X"_L1,
-                    "Y"_L1,
-                    "Z"_L1,
-                    "Intensity"_L1,
-                    "ReturnNumber"_L1,
-                    "NumberOfReturns"_L1,
-                    "ScanDirectionFlag"_L1,
-                    "EdgeOfFlightLine"_L1,
-                    "Classification"_L1,
-                    "ScanAngleRank"_L1,
-                    "UserData"_L1,
-                    "PointSourceId"_L1,
-                    "ScannerChannel"_L1,
-                    "ClassFlags"_L1,
-                    "Synthetic"_L1,
-                    "KeyPoint"_L1,
-                    "Withheld"_L1,
-                    "Overlap"_L1,
-                    "GpsTime"_L1,
-                    "Red"_L1,
-                    "Green"_L1,
-                    "Blue"_L1,
-                    "Infrared"_L1 } );
+  names.subtract(
+    { "X"_L1,
+      "Y"_L1,
+      "Z"_L1,
+      "Intensity"_L1,
+      "ReturnNumber"_L1,
+      "NumberOfReturns"_L1,
+      "ScanDirectionFlag"_L1,
+      "EdgeOfFlightLine"_L1,
+      "Classification"_L1,
+      "ScanAngleRank"_L1,
+      "UserData"_L1,
+      "PointSourceId"_L1,
+      "ScannerChannel"_L1,
+      "ClassFlags"_L1,
+      "Synthetic"_L1,
+      "KeyPoint"_L1,
+      "Withheld"_L1,
+      "Overlap"_L1,
+      "GpsTime"_L1,
+      "Red"_L1,
+      "Green"_L1,
+      "Blue"_L1,
+      "Infrared"_L1 }
+  );
   for ( const auto &name : names )
     mAttributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Double ) );
 }
@@ -644,10 +631,9 @@ QgsPointCloudRenderer *QgsVirtualPointCloudProvider::createRenderer( const QVari
   return new QgsPointCloudExtentRenderer();
 }
 
-QgsVirtualPointCloudProviderMetadata::QgsVirtualPointCloudProviderMetadata():
-  QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
-{
-}
+QgsVirtualPointCloudProviderMetadata::QgsVirtualPointCloudProviderMetadata()
+  : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
+{}
 
 QIcon QgsVirtualPointCloudProviderMetadata::icon() const
 {
@@ -669,7 +655,7 @@ QList<QgsProviderSublayerDetails> QgsVirtualPointCloudProviderMetadata::querySub
     details.setProviderKey( u"vpc"_s );
     details.setType( Qgis::LayerType::PointCloud );
     details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( uri ) );
-    return {details};
+    return { details };
   }
   else
   {
@@ -756,13 +742,10 @@ QString QgsVirtualPointCloudProviderMetadata::encodeUri( const QVariantMap &part
 
 QgsProviderMetadata::ProviderMetadataCapabilities QgsVirtualPointCloudProviderMetadata::capabilities() const
 {
-  return ProviderMetadataCapability::LayerTypesForUri
-         | ProviderMetadataCapability::PriorityForUri
-         | ProviderMetadataCapability::QuerySublayers;
+  return ProviderMetadataCapability::LayerTypesForUri | ProviderMetadataCapability::PriorityForUri | ProviderMetadataCapability::QuerySublayers;
 }
 
 #undef PROVIDER_KEY
 #undef PROVIDER_DESCRIPTION
 
 ///@endcond
-

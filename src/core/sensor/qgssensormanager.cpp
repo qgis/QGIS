@@ -26,8 +26,7 @@ using namespace Qt::StringLiterals;
 
 QgsSensorManager::QgsSensorManager( QObject *parent )
   : QObject( parent )
-{
-}
+{}
 
 QgsSensorManager::~QgsSensorManager()
 {

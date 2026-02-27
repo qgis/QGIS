@@ -23,7 +23,6 @@ GRASS location/mapset, database? wms source?
 #include "qgsdatacollectionitem.h"
 %End
   public:
-
     QgsDataCollectionItem( QgsDataItem *parent /TransferThis/, const QString &name, const QString &path = QString(), const QString &providerKey = QString() );
 %Docstring
 Constructor for QgsDataCollectionItem, with the specified ``parent``
@@ -49,7 +48,7 @@ the :py:class:`QgsDataItemProvider` that created this item.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    void addChild( QgsDataItem *item /Transfer/ );
+      void addChild( QgsDataItem *item /Transfer/ );
 
     static QIcon iconDir( const QColor &fillColor = QColor(), const QColor &strokeColor = QColor() );
 %Docstring
@@ -72,7 +71,6 @@ Returns the standard browser data collection icon.
 
 
   protected:
-
     static QIcon openDirIcon( const QColor &fillColor = QColor(), const QColor &strokeColor = QColor() );
 %Docstring
 Shared open directory icon.
@@ -92,10 +90,7 @@ can be used to specify a fill and stroke color for the icon.
 
 .. versionadded:: 3.4
 %End
-
 };
-
-
 
 
 /************************************************************************

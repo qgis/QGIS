@@ -42,7 +42,6 @@
 class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsMergedFeatureRenderer
 {
   public:
-
     /**
      * Constructor
      * \param embeddedRenderer optional embeddedRenderer. If NULLPTR, a default one will be assigned.
@@ -88,7 +87,6 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsMergedFeatureRenderer
      * \returns a new renderer if the conversion was possible, otherwise NULLPTR.
      */
     static QgsInvertedPolygonRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
-
 };
 
 

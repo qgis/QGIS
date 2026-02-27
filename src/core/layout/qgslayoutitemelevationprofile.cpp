@@ -50,10 +50,7 @@ using namespace Qt::StringLiterals;
 class QgsLayoutItemElevationProfilePlot : public Qgs2DXyPlot
 {
   public:
-
-    QgsLayoutItemElevationProfilePlot()
-    {
-    }
+    QgsLayoutItemElevationProfilePlot() {}
 
     void setRenderer( QgsProfilePlotRenderer *renderer )
     {
@@ -77,9 +74,7 @@ class QgsLayoutItemElevationProfilePlot : public Qgs2DXyPlot
     double xScale = 1;
 
   private:
-
     QgsProfilePlotRenderer *mRenderer = nullptr;
-
 };
 ///@endcond PRIVATE
 
@@ -98,10 +93,7 @@ QgsLayoutItemElevationProfile::QgsLayoutItemElevationProfile( QgsLayout *layout 
     connect( mLayout, &QgsLayout::refreshed, this, &QgsLayoutItemElevationProfile::invalidateCache );
   }
 
-  connect( this, &QgsLayoutItem::sizePositionChanged, this, [this]
-  {
-    invalidateCache();
-  } );
+  connect( this, &QgsLayoutItem::sizePositionChanged, this, [this] { invalidateCache(); } );
 
   //default to no background
   setBackgroundEnabled( false );
@@ -672,11 +664,9 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
 
       if (
         ( mRenderJob && mCacheInvalidated && !mDrawingPreview ) // current job was invalidated - start a new one
-        ||
-        ( !mRenderJob && !mDrawingPreview ) // this is the profiles's very first paint - trigger a cache update
+        || ( !mRenderJob && !mDrawingPreview )                  // this is the profiles's very first paint - trigger a cache update
       )
       {
-
         mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter );
         mBackgroundUpdateTimer->start( 1 );
       }
@@ -729,8 +719,7 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
     if ( !qgsDoubleNear( layoutSize.width(), 0.0 ) && !qgsDoubleNear( layoutSize.height(), 0.0 ) )
     {
       const bool forceVector = mLayout && mLayout->renderContext().rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::ForceVector;
-      if ( ( containsAdvancedEffects() || ( blendModeForRender() != QPainter::CompositionMode_SourceOver ) )
-           && !forceVector )
+      if ( ( containsAdvancedEffects() || ( blendModeForRender() != QPainter::CompositionMode_SourceOver ) ) && !forceVector )
       {
         // rasterize
         double destinationDpi = QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter ) * 25.4;
@@ -806,7 +795,7 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
         QgsScopedQPainterState painterState( painter );
         QgsScopedQPainterState stagedPainterState( painter );
         double dotsPerMM = paintDevice->logicalDpiX() / 25.4;
-        layoutSize *= dotsPerMM; // output size will be in dots (pixels)
+        layoutSize *= dotsPerMM;                        // output size will be in dots (pixels)
         painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
 
         const double mapUnitsPerPixel = static_cast<double>( mPlot->xMaximum() - mPlot->xMinimum() ) * mPlot->xScale / layoutSize.width();
@@ -880,8 +869,7 @@ void QgsLayoutItemElevationProfile::invalidateCache()
 }
 
 void QgsLayoutItemElevationProfile::draw( QgsLayoutItemRenderContext & )
-{
-}
+{}
 
 bool QgsLayoutItemElevationProfile::writePropertiesToElement( QDomElement &layoutProfileElem, QDomDocument &doc, const QgsReadWriteContext &rwContext ) const
 {
@@ -904,7 +892,7 @@ bool QgsLayoutItemElevationProfile::writePropertiesToElement( QDomElement &layou
   if ( mCurve )
   {
     QDomElement curveElem = doc.createElement( u"curve"_s );
-    curveElem.appendChild( doc.createTextNode( mCurve->asWkt( ) ) );
+    curveElem.appendChild( doc.createTextNode( mCurve->asWkt() ) );
     layoutProfileElem.appendChild( curveElem );
   }
 
@@ -1021,7 +1009,7 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
         const QString sourceId = sourceElement.attribute( u"id"_s );
         if ( QgsAbstractProfileSource *profileSource = QgsApplication::profileSourceRegistry()->findSourceById( sourceId ) )
         {
-          mSources << profileSource ;
+          mSources << profileSource;
         }
       }
       else if ( sourceElement.tagName() == "profileLayerSource"_L1 )
@@ -1061,8 +1049,7 @@ void QgsLayoutItemElevationProfile::recreateCachedImageInBackground()
     QgsProfilePlotRenderer *oldJob = mRenderJob.release();
     QPainter *oldPainter = mPainter.release();
     QImage *oldImage = mCacheRenderingImage.release();
-    connect( oldJob, &QgsProfilePlotRenderer::generationFinished, this, [oldPainter, oldJob, oldImage]
-    {
+    connect( oldJob, &QgsProfilePlotRenderer::generationFinished, this, [oldPainter, oldJob, oldImage] {
       oldJob->deleteLater();
       delete oldPainter;
       delete oldImage;
@@ -1141,8 +1128,7 @@ void QgsLayoutItemElevationProfile::profileGenerationFinished()
 
   mPlot->xScale = QgsUnitTypes::fromUnitToUnitFactor( mDistanceUnit, mCrs.mapUnits() );
 
-  const double mapUnitsPerPixel = static_cast< double >( mPlot->xMaximum() - mPlot->xMinimum() ) * mPlot->xScale /
-                                  mCacheRenderingImage->size().width();
+  const double mapUnitsPerPixel = static_cast< double >( mPlot->xMaximum() - mPlot->xMinimum() ) * mPlot->xScale / mCacheRenderingImage->size().width();
   rc.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
 
   // size must be in pixels, not layout units

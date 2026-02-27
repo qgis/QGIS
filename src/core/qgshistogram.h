@@ -36,7 +36,6 @@ class QgsVectorLayer;
 class CORE_EXPORT QgsHistogram
 {
   public:
-
     QgsHistogram() = default;
 
     virtual ~QgsHistogram() = default;
@@ -94,14 +93,12 @@ class CORE_EXPORT QgsHistogram
     QList<int> counts( int bins ) const;
 
   private:
-
     QList<double> mValues;
     double mMax = 0;
     double mMin = 0;
     double mIQR = 0;
 
     void prepareValues();
-
 };
 
 #endif // QGSHISTOGRAM_H

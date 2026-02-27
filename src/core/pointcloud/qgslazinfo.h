@@ -39,17 +39,17 @@ class CORE_EXPORT QgsLazInfo
   public:
     struct LazVlr
     {
-      QString userId;
-      int recordId;
-      QByteArray data;
+        QString userId;
+        int recordId;
+        QByteArray data;
     };
 
     struct ExtraBytesAttributeDetails
     {
-      QString attribute;
-      QgsPointCloudAttribute::DataType type;
-      int size;
-      int offset;
+        QString attribute;
+        QgsPointCloudAttribute::DataType type;
+        int size;
+        int offset;
     };
 
     //! Constructor for an empty laz info parser
@@ -68,10 +68,7 @@ class CORE_EXPORT QgsLazInfo
     void parseRawVlrEntries( char *data, uint64_t length );
 
     //! Returns the number of points contained in the LAZ file
-    uint64_t pointCount() const
-    {
-      return mHeader.version.major == 1 && mHeader.version.minor == 4 ? mHeader.point_count_14 : mHeader.point_count;
-    }
+    uint64_t pointCount() const { return mHeader.version.major == 1 && mHeader.version.minor == 4 ? mHeader.point_count_14 : mHeader.point_count; }
     //! Returns the scale of the points coordinates
     QgsVector3D scale() const { return mScale; }
     //! Returns the offset of the points coordinates
@@ -139,6 +136,7 @@ class CORE_EXPORT QgsLazInfo
     void parseCrs();
     void parseLazAttributes();
     void parseExtrabyteAttributes();
+
   private:
     bool mIsValid = false;
     QString mError;

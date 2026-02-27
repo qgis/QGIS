@@ -43,7 +43,7 @@ class CORE_EXPORT QgsRasterShaderFunction
       sipType = sipType_QgsColorRampShader;
     else
       sipType = 0;
-    SIP_END
+  SIP_END
 #endif
 
   public:
@@ -73,11 +73,7 @@ class CORE_EXPORT QgsRasterShaderFunction
      * \param returnAlpha The alpha component of the new RGBA value
      * \return TRUE if the return values are valid otherwise FALSE
     */
-    virtual bool shade( double value,
-                        int *returnRedValue SIP_OUT,
-                        int *returnGreenValue SIP_OUT,
-                        int *returnBlueValue SIP_OUT,
-                        int *returnAlpha SIP_OUT ) const;
+    virtual bool shade( double value, int *returnRedValue SIP_OUT, int *returnGreenValue SIP_OUT, int *returnBlueValue SIP_OUT, int *returnAlpha SIP_OUT ) const;
 
     /**
      * Generates an new RGBA value based on an original RGBA value.
@@ -92,14 +88,9 @@ class CORE_EXPORT QgsRasterShaderFunction
      * \param returnAlpha The alpha component of the new RGBA value
      * \return TRUE if the return values are valid otherwise FALSE
     */
-    virtual bool shade( double redValue,
-                        double greenValue,
-                        double blueValue,
-                        double alphaValue,
-                        int *returnRedValue SIP_OUT,
-                        int *returnGreenValue SIP_OUT,
-                        int *returnBlueValue SIP_OUT,
-                        int *returnAlpha SIP_OUT ) const;
+    virtual bool shade(
+      double redValue, double greenValue, double blueValue, double alphaValue, int *returnRedValue SIP_OUT, int *returnGreenValue SIP_OUT, int *returnBlueValue SIP_OUT, int *returnAlpha SIP_OUT
+    ) const;
 
     double minimumMaximumRange() const { return mMinimumMaximumRange; }
 
@@ -146,6 +137,5 @@ class CORE_EXPORT QgsRasterShaderFunction
 
     //! \brief Label precision
     int mLabelPrecision = 6;
-
 };
 #endif

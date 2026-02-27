@@ -27,23 +27,21 @@ Manages QGIS Server properties for a map layer.
     static const QMetaObject staticMetaObject;
 
   public:
-
     struct MetadataUrl
     {
-
-      MetadataUrl( const QString &url = QString(), const QString &type = QString(), const QString &format = QString() );
+        MetadataUrl( const QString &url = QString(), const QString &type = QString(), const QString &format = QString() );
 %Docstring
 Constructor for MetadataUrl.
 %End
 
-      QString url;
+        QString url;
 
-      QString type;
+        QString type;
 
-      QString format;
+        QString format;
 
 
-      bool operator==( const QgsServerMetadataUrlProperties::MetadataUrl &other ) const;
+        bool operator==( const QgsServerMetadataUrlProperties::MetadataUrl &other ) const;
     };
 
     virtual ~QgsServerMetadataUrlProperties();
@@ -102,7 +100,6 @@ Manages QGIS Server properties for WMS dimensions.
     static const QMetaObject staticMetaObject;
 
   public:
-
     enum PredefinedWmsDimensionName /BaseType=IntEnum/
     {
       TIME,
@@ -112,36 +109,37 @@ Manages QGIS Server properties for WMS dimensions.
 
     struct WmsDimensionInfo
     {
+        enum DefaultDisplay /BaseType=IntEnum/
+        {
+          AllValues,
+          MinValue,
+          MaxValue,
+          ReferenceValue,
+        };
 
-      enum DefaultDisplay /BaseType=IntEnum/
-      {
-        AllValues,
-        MinValue,
-        MaxValue,
-        ReferenceValue,
-      };
-
-      explicit WmsDimensionInfo( const QString &dimName,
-                                 const QString &dimFieldName,
-                                 const QString &dimEndFieldName = QString(),
-                                 const QString &dimUnits = QString(),
-                                 const QString &dimUnitSymbol = QString(),
-                                 const int &dimDefaultDisplayType = QgsServerWmsDimensionProperties::WmsDimensionInfo::AllValues,
-                                 const QVariant &dimReferenceValue = QVariant() );
+        explicit WmsDimensionInfo(
+          const QString &dimName,
+          const QString &dimFieldName,
+          const QString &dimEndFieldName = QString(),
+          const QString &dimUnits = QString(),
+          const QString &dimUnitSymbol = QString(),
+          const int &dimDefaultDisplayType = QgsServerWmsDimensionProperties::WmsDimensionInfo::AllValues,
+          const QVariant &dimReferenceValue = QVariant()
+        );
 %Docstring
 Constructor for WmsDimensionInfo.
 %End
 
-      bool operator==( const WmsDimensionInfo &other ) const;
-      bool operator!=( const WmsDimensionInfo &other ) const;
+        bool operator==( const WmsDimensionInfo &other ) const;
+        bool operator!=( const WmsDimensionInfo &other ) const;
 
-      QString name;
-      QString fieldName;
-      QString endFieldName;
-      QString units;
-      QString unitSymbol;
-      int defaultDisplayType;
-      QVariant referenceValue;
+        QString name;
+        QString fieldName;
+        QString endFieldName;
+        QString units;
+        QString unitSymbol;
+        int defaultDisplayType;
+        QVariant referenceValue;
     };
 
     virtual ~QgsServerWmsDimensionProperties();
@@ -204,11 +202,10 @@ Gets the parent layer
 
 
 
-
 };
 
 
-class QgsMapLayerServerProperties: QgsServerMetadataUrlProperties, QgsServerWmsDimensionProperties
+class QgsMapLayerServerProperties : QgsServerMetadataUrlProperties, QgsServerWmsDimensionProperties
 {
 %Docstring(signature="appended")
 Manages QGIS Server properties for a map layer.
@@ -223,7 +220,6 @@ Manages QGIS Server properties for a map layer.
     static const QMetaObject staticMetaObject;
 
   public:
-
     QgsMapLayerServerProperties( QgsMapLayer *layer = 0 );
 %Docstring
 Constructor - Creates a Map Layer QGIS Server Properties
@@ -505,7 +501,7 @@ Gets the parent layer
 };
 
 
-class QgsVectorLayerServerProperties: QgsMapLayerServerProperties
+class QgsVectorLayerServerProperties : QgsMapLayerServerProperties
 {
 %Docstring(signature="appended")
 Convenient class for API compatibility.

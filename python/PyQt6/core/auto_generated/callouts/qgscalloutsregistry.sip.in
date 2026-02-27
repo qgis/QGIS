@@ -28,7 +28,6 @@ Stores metadata about one callout renderer class.
 #include "qgscalloutsregistry.h"
 %End
   public:
-
     QgsCalloutAbstractMetadata( const QString &name, const QString &visibleName, const QIcon &icon = QIcon() );
 %Docstring
 Constructor for QgsCalloutAbstractMetadata, with the specified ``name``.
@@ -105,9 +104,6 @@ and their widgets.
 %End
   public:
 
-
-
-
     virtual QgsCallout *createCallout( const QVariantMap &properties, const QgsReadWriteContext &context ) /Factory/;
 
     virtual QgsCalloutWidget *createCalloutWidget( QgsMapLayer *vl ) /Factory/;
@@ -135,7 +131,6 @@ rather accessed through :py:func:`QgsApplication.calloutRegistry()`.
 #include "qgscalloutsregistry.h"
 %End
   public:
-
     QgsCalloutRegistry();
     ~QgsCalloutRegistry();
 

@@ -25,7 +25,6 @@ Container for all settings relating to text rendering.
 #include "qgstextformat.h"
 %End
   public:
-
     QgsTextFormat();
 %Docstring
 Default constructor for QgsTextFormat. Creates a text format initially
@@ -574,7 +573,6 @@ Defines a tab position for a text format.
 %End
 
       public:
-
         explicit Tab( double position );
 %Docstring
 Constructor for a Tab at the specified ``position``.

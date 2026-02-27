@@ -111,9 +111,8 @@ void QgsLayoutItemScaleBar::draw( QgsLayoutItemRenderContext &context )
       painter->setPen( QColor( 200, 0, 0, 255 ) );
       QTextDocument td;
       td.setTextWidth( thisPaintRect.width() );
-      td.setHtml( u"<span style=\"color: rgb(200,0,0);\"><b>%1</b><br>%2</span>"_s.arg(
-                    tr( "Invalid scale!" ),
-                    tr( "The scale bar cannot be rendered due to invalid settings or an incompatible linked map extent." ) ) );
+      td.setHtml( u"<span style=\"color: rgb(200,0,0);\"><b>%1</b><br>%2</span>"_s
+                    .arg( tr( "Invalid scale!" ), tr( "The scale bar cannot be rendered due to invalid settings or an incompatible linked map extent." ) ) );
       painter->setClipRect( thisPaintRect );
       QAbstractTextDocumentLayout::PaintContext ctx;
       td.documentLayout()->draw( painter, ctx );
@@ -492,7 +491,7 @@ void QgsLayoutItemScaleBar::refreshDataDefinedProperty( const QgsLayoutObject::D
     forceUpdate = true;
   }
 
-  if ( property ==  QgsLayoutObject::DataDefinedProperty::ScalebarLeftSegments || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
+  if ( property == QgsLayoutObject::DataDefinedProperty::ScalebarLeftSegments || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     refreshNumberOfSegmentsLeft( &context );
     forceUpdate = true;
@@ -677,8 +676,7 @@ double QgsLayoutItemScaleBar::mapWidth() const
     {
       try
       {
-        double measure = da.measureLine( QgsPointXY( mapExtent.xMinimum(), y ),
-                                         QgsPointXY( mapExtent.xMaximum(), y ) );
+        double measure = da.measureLine( QgsPointXY( mapExtent.xMinimum(), y ), QgsPointXY( mapExtent.xMaximum(), y ) );
         if ( std::isnan( measure ) )
         {
           // TODO report errors to user
@@ -1164,42 +1162,27 @@ bool QgsLayoutItemScaleBar::writePropertiesToElement( QDomElement &composerScale
   composerScaleBarElem.setAttribute( u"alignment"_s, QString::number( static_cast< int >( mSettings.alignment() ) ) );
 
   QDomElement lineSymbol = doc.createElement( u"lineSymbol"_s );
-  const QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QString(),
-                                 mSettings.lineSymbol(),
-                                 doc,
-                                 rwContext );
+  const QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QString(), mSettings.lineSymbol(), doc, rwContext );
   lineSymbol.appendChild( symbolElem );
   composerScaleBarElem.appendChild( lineSymbol );
 
   QDomElement divisionSymbol = doc.createElement( u"divisionLineSymbol"_s );
-  const QDomElement divisionSymbolElem = QgsSymbolLayerUtils::saveSymbol( QString(),
-                                         mSettings.divisionLineSymbol(),
-                                         doc,
-                                         rwContext );
+  const QDomElement divisionSymbolElem = QgsSymbolLayerUtils::saveSymbol( QString(), mSettings.divisionLineSymbol(), doc, rwContext );
   divisionSymbol.appendChild( divisionSymbolElem );
   composerScaleBarElem.appendChild( divisionSymbol );
 
   QDomElement subdivisionSymbol = doc.createElement( u"subdivisionLineSymbol"_s );
-  const QDomElement subdivisionSymbolElem = QgsSymbolLayerUtils::saveSymbol( QString(),
-      mSettings.subdivisionLineSymbol(),
-      doc,
-      rwContext );
+  const QDomElement subdivisionSymbolElem = QgsSymbolLayerUtils::saveSymbol( QString(), mSettings.subdivisionLineSymbol(), doc, rwContext );
   subdivisionSymbol.appendChild( subdivisionSymbolElem );
   composerScaleBarElem.appendChild( subdivisionSymbol );
 
   QDomElement fillSymbol1Elem = doc.createElement( u"fillSymbol1"_s );
-  const QDomElement symbol1Elem = QgsSymbolLayerUtils::saveSymbol( QString(),
-                                  mSettings.fillSymbol(),
-                                  doc,
-                                  rwContext );
+  const QDomElement symbol1Elem = QgsSymbolLayerUtils::saveSymbol( QString(), mSettings.fillSymbol(), doc, rwContext );
   fillSymbol1Elem.appendChild( symbol1Elem );
   composerScaleBarElem.appendChild( fillSymbol1Elem );
 
   QDomElement fillSymbol2Elem = doc.createElement( u"fillSymbol2"_s );
-  const QDomElement symbol2Elem = QgsSymbolLayerUtils::saveSymbol( QString(),
-                                  mSettings.alternateFillSymbol(),
-                                  doc,
-                                  rwContext );
+  const QDomElement symbol2Elem = QgsSymbolLayerUtils::saveSymbol( QString(), mSettings.alternateFillSymbol(), doc, rwContext );
   fillSymbol2Elem.appendChild( symbol2Elem );
   composerScaleBarElem.appendChild( fillSymbol2Elem );
 
@@ -1449,7 +1432,6 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
 
     fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
     mSettings.setAlternateFillSymbol( fillSymbol.release() );
-
   }
 
   //font color

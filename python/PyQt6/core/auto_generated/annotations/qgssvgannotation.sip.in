@@ -10,7 +10,7 @@
 
 
 
-class QgsSvgAnnotation: QgsAnnotation
+class QgsSvgAnnotation : QgsAnnotation
 {
 %Docstring(signature="appended")
 An annotation which renders the contents of an SVG file.
@@ -20,7 +20,6 @@ An annotation which renders the contents of an SVG file.
 #include "qgssvgannotation.h"
 %End
   public:
-
     QgsSvgAnnotation( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSvgAnnotation.
@@ -54,7 +53,6 @@ Returns a new QgsSvgAnnotation object.
 %End
 
   protected:
-
     virtual void renderAnnotation( QgsRenderContext &context, QSizeF size ) const;
 
 
