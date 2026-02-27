@@ -124,6 +124,7 @@ QgsFcgiServerRequest::QgsFcgiServerRequest()
     if ( result && strlen( result ) > 0 )
     {
       setHeader( headerName, result );
+      QgsMessageLog::logMessage( u"HTTP HEADER %1: %2"_s.arg( headerName ).arg( QString( result ) ), u"Server"_s, Qgis::MessageLevel::Info );
     }
   }
 
@@ -269,14 +270,6 @@ void QgsFcgiServerRequest::printRequestInfos( const QUrl &url ) const
     {
       QgsMessageLog::logMessage( u"%1: %2"_s.arg( envVar ).arg( QString( getenv( envVar.toStdString().c_str() ) ) ), u"Server"_s, Qgis::MessageLevel::Info );
     }
-  }
-
-  qDebug() << "Headers:";
-  qDebug() << "------------------------------------------------";
-  const QMap<QString, QString> &hdrs = headers();
-  for ( auto it = hdrs.constBegin(); it != hdrs.constEnd(); it++ )
-  {
-    qDebug() << it.key() << ": " << it.value();
   }
 }
 

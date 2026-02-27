@@ -422,7 +422,15 @@ QString QgsServerProjectUtils::serviceUrl( const QString &service, const QgsServ
   QUrl urlQUrl = request.baseUrl();
   if ( !proto.isEmpty() )
   {
-    urlQUrl.setScheme( proto );
+    QStringList forwardProto = proto.split( ','_L1 );
+    if ( forwardProto.length() > 0 )
+    {
+      urlQUrl.setScheme( forwardProto[0] );
+    }
+    else
+    {
+      urlQUrl.setScheme( proto );
+    }
   }
 
   if ( !host.isEmpty() )
