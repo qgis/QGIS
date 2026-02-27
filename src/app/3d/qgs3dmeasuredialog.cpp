@@ -18,7 +18,8 @@
 #include "qgisapp.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapsettings.h"
-#include "qgs3dmaptoolmeasureline.h"
+#include "qgs3dmaptoolmeasure.h"
+#include "qgsgeometryutils.h"
 #include "qgshelp.h"
 #include "qgsunittypes.h"
 
@@ -30,9 +31,10 @@
 
 using namespace Qt::StringLiterals;
 
-Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::WindowFlags f )
+Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasure *tool, Qt::WindowFlags f )
   : QDialog( nullptr, f )
   , mTool( tool )
+  , mMeasureArea( tool->measureArea() )
 {
   setupUi( this );
 
@@ -49,10 +51,24 @@ Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::Windo
   // Hide ellipsoidal and Cartesian radio button (not needed)
   mCartesian->hide();
   mEllipsoidal->hide();
-  groupBox->hide();
 
   // Update text for 3D specific
-  totalDistanceLabel->setText( tr( "Total 3D Distance" ) );
+  if ( !mMeasureArea )
+  {
+    groupBox->hide();
+    mTable->show();
+    totalDistanceLabel->setText( tr( "Total 3D Distance" ) );
+    editHorizontalTotal->show();
+    totalHorizontalDistanceLabel->show();
+  }
+  else
+  {
+    groupBox->show();
+    mTable->hide();
+    totalDistanceLabel->setText( tr( "Total 3D Area" ) );
+    editHorizontalTotal->show();
+    totalHorizontalDistanceLabel->setText( tr( "Total Horizontal Area" ) );
+  }
 
   // Initialize unit combo box
   // Add a configuration button
@@ -87,21 +103,42 @@ void Qgs3DMeasureDialog::restorePosition()
 
 void Qgs3DMeasureDialog::addPoint()
 {
-  const int numPoints = mTool->points().size();
-  if ( numPoints > 1 )
+  const unsigned int numPoints = mTool->points().size();
+  if ( !mMeasureArea )
   {
-    if ( !mTool->done() )
+    if ( numPoints > 1 )
     {
-      // Add new entry in the table
-      addMeasurement( lastDistance(), lastVerticalDistance(), lastHorizontalDistance() );
-      mTotal += lastDistance();
-      mHorizontalTotal += lastHorizontalDistance();
+      if ( !mTool->done() )
+      {
+        // Add new entry in the table
+        addMeasurement( lastDistance(), lastVerticalDistance(), lastHorizontalDistance() );
+        mTotal += lastDistance();
+        mHorizontalTotal += lastHorizontalDistance();
+        updateTotal();
+      }
+    }
+    else
+    {
       updateTotal();
     }
   }
-  else
+  else if ( mMeasureArea && numPoints >= 2 )
   {
+    QgsLineString ring( mTool->points() );
+    ring.close();
+    QgsPolygon polygon( ring.clone() );
+    mTotal = polygon.area3D();
+    mHorizontalTotal = polygon.area();
     updateTotal();
+
+    if ( !QgsGeometryUtils::isGeometryCoplanar( &polygon, 1e-3 ) )
+    {
+      mNotesLabel->setText( u"The selected points are not coplanar. The 3D area result may be inaccurate."_s );
+    }
+    else
+    {
+      mNotesLabel->setText( "" );
+    }
   }
 }
 
@@ -128,17 +165,49 @@ double Qgs3DMeasureDialog::lastHorizontalDistance()
 
 void Qgs3DMeasureDialog::repopulateComboBoxUnits()
 {
-  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Meters ), static_cast<int>( Qgis::DistanceUnit::Meters ) );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Kilometers ), static_cast<int>( Qgis::DistanceUnit::Kilometers ) );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Feet ), static_cast<int>( Qgis::DistanceUnit::Feet ) );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Yards ), static_cast<int>( Qgis::DistanceUnit::Yards ) );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Miles ), static_cast<int>( Qgis::DistanceUnit::Miles ) );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::NauticalMiles ), static_cast<int>( Qgis::DistanceUnit::NauticalMiles ) );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Centimeters ), static_cast<int>( Qgis::DistanceUnit::Centimeters ) );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Millimeters ), static_cast<int>( Qgis::DistanceUnit::Millimeters ) );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Inches ), static_cast<int>( Qgis::DistanceUnit::Inches ) );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Degrees ), static_cast<int>( Qgis::DistanceUnit::Degrees ) );
-  mUnitsCombo->addItem( tr( "map units" ), static_cast<int>( Qgis::DistanceUnit::Unknown ) );
+  mUnitsCombo->clear();
+  if ( mMeasureArea )
+  {
+    for ( const Qgis::AreaUnit unit :
+          {
+            Qgis::AreaUnit::SquareMeters,
+            Qgis::AreaUnit::SquareKilometers,
+            Qgis::AreaUnit::SquareFeet,
+            Qgis::AreaUnit::SquareYards,
+            Qgis::AreaUnit::SquareMiles,
+            Qgis::AreaUnit::Hectares,
+            Qgis::AreaUnit::Acres,
+            Qgis::AreaUnit::SquareCentimeters,
+            Qgis::AreaUnit::SquareMillimeters,
+            Qgis::AreaUnit::SquareNauticalMiles,
+            Qgis::AreaUnit::SquareInches,
+            Qgis::AreaUnit::SquareDegrees,
+          } )
+    {
+      mUnitsCombo->addItem( QgsUnitTypes::toString( unit ), static_cast<int>( unit ) );
+    }
+    mUnitsCombo->addItem( tr( "map units" ), static_cast<int>( Qgis::AreaUnit::Unknown ) );
+  }
+  else
+  {
+    for ( const Qgis::DistanceUnit unit :
+          {
+            Qgis::DistanceUnit::Meters,
+            Qgis::DistanceUnit::Kilometers,
+            Qgis::DistanceUnit::Feet,
+            Qgis::DistanceUnit::Yards,
+            Qgis::DistanceUnit::Miles,
+            Qgis::DistanceUnit::NauticalMiles,
+            Qgis::DistanceUnit::Centimeters,
+            Qgis::DistanceUnit::Millimeters,
+            Qgis::DistanceUnit::Inches,
+            Qgis::DistanceUnit::Degrees
+          } )
+    {
+      mUnitsCombo->addItem( QgsUnitTypes::toString( unit ), static_cast<int>( unit ) );
+    }
+    mUnitsCombo->addItem( tr( "map units" ), static_cast<int>( Qgis::DistanceUnit::Unknown ) );
+  }
 }
 
 void Qgs3DMeasureDialog::removeLastPoint()
@@ -146,12 +215,16 @@ void Qgs3DMeasureDialog::removeLastPoint()
   const int numPoints = mTool->points().size();
   if ( numPoints >= 1 )
   {
-    // Remove final row
-    delete mTable->takeTopLevelItem( mTable->topLevelItemCount() - 1 );
-    // Update total distance
-    const QgsLineString measureLine( mTool->points() );
-    mTotal = measureLine.length3D();
-    mHorizontalTotal = measureLine.length();
+    if ( !mMeasureArea )
+    {
+      // Remove final row
+      delete mTable->takeTopLevelItem( mTable->topLevelItemCount() - 1 );
+      // Update total distance
+      const QgsLineString measureLine( mTool->points() );
+      mTotal = measureLine.length3D();
+      mHorizontalTotal = measureLine.length();
+    }
+
     updateTotal();
   }
 }
@@ -166,7 +239,7 @@ void Qgs3DMeasureDialog::reject()
 void Qgs3DMeasureDialog::restart()
 {
   mTool->restart();
-  resetTable();
+  resetFields();
 }
 
 void Qgs3DMeasureDialog::closeEvent( QCloseEvent *e )
@@ -184,14 +257,32 @@ void Qgs3DMeasureDialog::updateSettings()
   mDisplayedDistanceUnit = QgsUnitTypes::decodeDistanceUnit(
     settings.value( u"qgis/measure/displayunits"_s, QgsUnitTypes::encodeUnit( Qgis::DistanceUnit::Unknown ) ).toString()
   );
+  mDisplayedAreaUnit = QgsProject::instance()->areaUnits();
+  mDa.setSourceCrs( mTool->canvas()->mapSettings()->crs(), QgsProject::instance()->transformContext() );
+
   setupTableHeader();
-  mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( static_cast<int>( mDisplayedDistanceUnit ) ) );
+
+  if ( mMeasureArea )
+  {
+    mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( static_cast<int>( mDisplayedAreaUnit ) ) );
+  }
+  else
+  {
+    mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( static_cast<int>( mDisplayedDistanceUnit ) ) );
+  }
 }
 
 void Qgs3DMeasureDialog::unitsChanged( int index )
 {
-  mDisplayedDistanceUnit = static_cast<Qgis::DistanceUnit>( mUnitsCombo->itemData( index ).toInt() );
-  updateTable();
+  if ( mMeasureArea )
+  {
+    mDisplayedAreaUnit = static_cast<Qgis::AreaUnit>( mUnitsCombo->itemData( index ).toInt() );
+  }
+  else
+  {
+    mDisplayedDistanceUnit = static_cast<Qgis::DistanceUnit>( mUnitsCombo->itemData( index ).toInt() );
+    updateTable();
+  }
   updateTotal();
 }
 
@@ -206,6 +297,14 @@ QString Qgs3DMeasureDialog::formatDistance( double distance ) const
   const QgsSettings settings;
   const bool baseUnit = settings.value( u"qgis/measure/keepbaseunit"_s, true ).toBool();
   return QgsUnitTypes::formatDistance( distance, mDecimalPlaces, mDisplayedDistanceUnit, baseUnit );
+}
+
+QString Qgs3DMeasureDialog::formatArea( double area ) const
+{
+  const double convertArea = mDa.convertAreaMeasurement( area, mDisplayedAreaUnit );
+  const QgsSettings settings;
+  const bool baseUnit = settings.value( u"qgis/measure/keepbaseunit"_s, true ).toBool();
+  return QgsDistanceArea::formatArea( convertArea, mDecimalPlaces, mDisplayedAreaUnit, baseUnit );
 }
 
 void Qgs3DMeasureDialog::showHelp()
@@ -256,39 +355,56 @@ void Qgs3DMeasureDialog::addMeasurement( double distance, double verticalDistanc
 void Qgs3DMeasureDialog::updateTotal()
 {
   // Update total with new displayed unit
-  editTotal->setText( formatDistance( convertLength( mTotal, mDisplayedDistanceUnit ) ) );
-  editHorizontalTotal->setText( formatDistance( convertLength( mHorizontalTotal, mDisplayedDistanceUnit ) ) );
+  if ( mMeasureArea )
+  {
+    editTotal->setText( formatArea( mTotal ) );
+    editHorizontalTotal->setText( formatArea( mHorizontalTotal ) );
+  }
+  else
+  {
+    editTotal->setText( formatDistance( convertLength( mTotal, mDisplayedDistanceUnit ) ) );
+    editHorizontalTotal->setText( formatDistance( convertLength( mHorizontalTotal, mDisplayedDistanceUnit ) ) );
+  }
 }
 
 void Qgs3DMeasureDialog::updateTable()
 {
-  setupTableHeader();
-
-  // Reset table
-  mTable->clear();
-
-  // Repopulate the table based on new displayed unit
-  QVector<QgsPoint>::const_iterator it;
-  bool isFirstPoint = true; // first point
-  QgsPoint p1, p2;
-  const QVector<QgsPoint> tmpPoints = mTool->points();
-  for ( it = tmpPoints.constBegin(); it != tmpPoints.constEnd(); ++it )
+  if ( mMeasureArea )
   {
-    p2 = *it;
-    if ( !isFirstPoint )
+    mTable->hide();
+  }
+  else
+  {
+    mTable->show();
+    setupTableHeader();
+
+    // Reset table
+    mTable->clear();
+
+    // Repopulate the table based on new displayed unit
+    QVector<QgsPoint>::const_iterator it;
+    bool isFirstPoint = true; // first point
+    QgsPoint p1, p2;
+    const QVector<QgsPoint> tmpPoints = mTool->points();
+    for ( it = tmpPoints.constBegin(); it != tmpPoints.constEnd(); ++it )
     {
-      const double distance = p1.distance3D( p2 );
-      const double verticalDistance = p2.z() - p1.z();
-      const double horizontalDistance = p1.distance( p2 );
-      addMeasurement( distance, verticalDistance, horizontalDistance );
+      p2 = *it;
+      if ( !isFirstPoint )
+      {
+        const double distance = p1.distance3D( p2 );
+        const double verticalDistance = p2.z() - p1.z();
+        const double horizontalDistance = p1.distance( p2 );
+        addMeasurement( distance, verticalDistance, horizontalDistance );
+      }
+      p1 = p2;
+      isFirstPoint = false;
     }
-    p1 = p2;
-    isFirstPoint = false;
   }
 }
 
-void Qgs3DMeasureDialog::resetTable()
+void Qgs3DMeasureDialog::resetFields()
 {
+  mNotesLabel->setText( "" );
   mTable->clear();
   mTotal = 0.;
   mHorizontalTotal = 0.;

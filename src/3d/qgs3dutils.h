@@ -365,14 +365,21 @@ class _3D_EXPORT Qgs3DUtils
 
     /**
      * Transform the given screen point to \a QgsPoint in map coordinates
-     * \note This transformation is not unique as we pick point halfway between near and far plane on the ray from the camera.
+     *
+     * \note This transformation is not unique as, by default, the point is picked
+     * halfway between the near and far planes along the ray cast from the camera.
+     * If a known Z value is provided, the intersection of the ray with the plane
+     * at that Z value is used instead.
+     *
      * \param size size of canvas
      * \param screenPoint point in screen coordinates
      * \param cameraController camera controller attached to the scene
      * \param mapSettings 3D map settings of the scene
+     * \param zKnown Optional known Z value in map coordinates. If set to NaN
+     * (default), the Z value is determined automatically.
      * \since QGIS 3.44
      */
-    static QgsPoint screenPointToMapCoordinates( const QPoint &screenPoint, QSize size, const QgsCameraController *cameraController, const Qgs3DMapSettings *mapSettings );
+    static QgsPoint screenPointToMapCoordinates( const QPoint &screenPoint, QSize size, const QgsCameraController *cameraController, const Qgs3DMapSettings *mapSettings, float zKnown = std::numeric_limits<float>::quiet_NaN() );
 
     /**
      * Computes the portion of the Y=y plane the camera is looking at

@@ -1560,6 +1560,22 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static double interpolateZ( const QgsPoint &a, const QgsPoint &b, const QgsPoint &c, double x, double y );
 
+    /**
+     * Returns whether a 3D geometry is coplanar.
+     *
+     * Empty, 2D geometries or geometries with fewer than three
+     * vertices are not considered coplanar.
+     *
+     * \param geom geometry to test
+     * \param tolerance numerical tolerance used for the point-to-plane distance check
+     * \returns true if all vertices are coplanar, false otherwise
+     *
+     * \note This function does not handle geometry collections.
+     *
+     * \since QGIS 4.0
+     */
+    static bool isGeometryCoplanar( const QgsAbstractGeometry *geom, double tolerance = 1e-8 );
+
   private:
 
     /**

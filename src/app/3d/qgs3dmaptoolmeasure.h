@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgs3dmaptoolmeasureline.h
+  qgs3dmaptoolmeasure.h
   --------------------------------------
   Date                 : Jun 2019
   Copyright            : (C) 2019 by Ismail Sunni
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGS3DMAPTOOLMEASURELINE_H
-#define QGS3DMAPTOOLMEASURELINE_H
+#ifndef QGS3DMAPTOOLMEASURE_H
+#define QGS3DMAPTOOLMEASURE_H
 
 #include <memory>
 
@@ -25,13 +25,16 @@ class Qgs3DMeasureDialog;
 class QgsRubberBand3D;
 
 
-class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
+class Qgs3DMapToolMeasure : public Qgs3DMapTool
 {
     Q_OBJECT
 
   public:
-    Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas );
-    ~Qgs3DMapToolMeasureLine() override;
+    Qgs3DMapToolMeasure( Qgs3DMapCanvas *canvas, bool measureArea );
+    ~Qgs3DMapToolMeasure() override;
+
+    //! returns whether measuring distance or area
+    bool measureArea() const { return mMeasureArea; }
 
     //! When we have added our last point, and not following
     bool done() const { return mDone; }
@@ -78,6 +81,12 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     //! Check if mouse was moved between mousePress and mouseRelease
     bool mMouseHasMoved = false;
     QPoint mMouseClickPos;
+
+    //! Z value for computing map coordinates on mouse move
+    float zMean = std::numeric_limits<float>::quiet_NaN();
+
+    //! Indicates whether we're measuring distances or areas
+    bool mMeasureArea = false;
 };
 
-#endif // QGS3DMAPTOOLMEASURELINE_H
+#endif // QGS3DMAPTOOLMEASURE_H
