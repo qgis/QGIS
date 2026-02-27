@@ -2760,6 +2760,29 @@ class GetNamedProjectColorObject : public QgsScopedExpressionFunction
 };
 
 
+class GetNamedProjectBookmark : public QgsScopedExpressionFunction
+{
+  public:
+    GetNamedProjectBookmark( const QgsProject *project );
+    GetNamedProjectBookmark( const QHash<QString, QVariantMap> &bookmarks );
+
+    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override;
+    QgsScopedExpressionFunction *clone() const override;
+
+  private:
+    QHash<QString, QVariantMap> mBookmarks;
+};
+
+class GetNamedUserBookmark : public QgsScopedExpressionFunction
+{
+  public:
+    GetNamedUserBookmark();
+    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override;
+    QgsScopedExpressionFunction *clone() const override;
+};
+
+
+
 
 class GetSensorData : public QgsScopedExpressionFunction
 {
