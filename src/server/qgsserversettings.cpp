@@ -272,42 +272,43 @@ void QgsServerSettings::loadQSettings( const QString &envOptPath ) const
 
 void QgsServerSettings::prioritize( const QMap<QgsServerSettingsEnv::EnvVar, QString> &env )
 {
-  const auto constKeys( env.keys() );
-  for ( const QgsServerSettingsEnv::EnvVar &e : constKeys )
+  for ( auto envIt = env.constBegin(); envIt != env.constEnd(); ++envIt )
   {
-    Setting s = mSettings[e];
+    const QgsServerSettingsEnv::EnvVar e = envIt.key();
+
+    auto settingIt = mSettings.find( e );
+    if ( settingIt == mSettings.end() )
+      continue;
 
     QVariant varValue;
-    if ( !env.value( e ).isEmpty() )
+    if ( !envIt.value().isEmpty() )
     {
-      varValue.setValue( env.value( e ) );
+      varValue.setValue( envIt.value() );
     }
 
-    if ( !QgsVariantUtils::isNull( varValue ) && varValue.canConvert( s.type ) )
+    if ( !QgsVariantUtils::isNull( varValue ) && varValue.canConvert( settingIt->type ) )
     {
-      s.val = varValue;
-      s.src = QgsServerSettingsEnv::ENVIRONMENT_VARIABLE;
+      settingIt->val = varValue;
+      settingIt->src = QgsServerSettingsEnv::ENVIRONMENT_VARIABLE;
     }
-    else if ( !s.iniKey.isEmpty() && QSettings().contains( s.iniKey ) && QSettings().value( s.iniKey ).canConvert( s.type ) )
+    else if ( !settingIt->iniKey.isEmpty() && QSettings().contains( settingIt->iniKey ) && QSettings().value( settingIt->iniKey ).canConvert( settingIt->type ) )
     {
-      s.val = QSettings().value( s.iniKey );
-      s.src = QgsServerSettingsEnv::INI_FILE;
+      settingIt->val = QSettings().value( settingIt->iniKey );
+      settingIt->src = QgsServerSettingsEnv::INI_FILE;
     }
     else
     {
-      s.val = QVariant();
-      s.src = QgsServerSettingsEnv::DEFAULT_VALUE;
+      settingIt->val = QVariant();
+      settingIt->src = QgsServerSettingsEnv::DEFAULT_VALUE;
     }
 
     // an empty string can be returned from QSettings. In this case, we want
     // to use the default value
-    if ( s.type == QMetaType::Type::QString && s.val.toString().isEmpty() )
+    if ( settingIt->type == QMetaType::Type::QString && settingIt->val.toString().isEmpty() )
     {
-      s.val = QVariant();
-      s.src = QgsServerSettingsEnv::DEFAULT_VALUE;
+      settingIt->val = QVariant();
+      settingIt->src = QgsServerSettingsEnv::DEFAULT_VALUE;
     }
-
-    mSettings[e] = s;
   }
 }
 
