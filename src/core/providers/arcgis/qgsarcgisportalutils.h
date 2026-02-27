@@ -50,6 +50,7 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \param requestHeaders optional additional request headers
      * \param feedback optional feedback argument for cancellation support
      * \param urlPrefix http web proxy url prefix
+     * \param forceRefresh if FALSE then previously cached replies may be used for the request. If it is set to TRUE then a new query is always performed. (since QGIS 4.0)
      *
      * \returns JSON user info
      * \since QGIS 3.24
@@ -62,7 +63,8 @@ class CORE_EXPORT QgsArcGisPortalUtils
       QString &errorText SIP_OUT,
       const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
       QgsFeedback *feedback = nullptr,
-      const QString &urlPrefix = QString()
+      const QString &urlPrefix = QString(),
+      bool forceRefresh = false
     );
 
     /**
@@ -106,7 +108,7 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \param requestHeaders optional additional request headers
      * \param feedback optional feedback argument for cancellation support
      * \param urlPrefix http web proxy url prefix
-     *
+     * \param forceRefresh if FALSE then previously cached replies may be used for the request. If it is set to TRUE then a new query is always performed. (since QGIS 4.0)
      * \returns a list of JSON group info
      * \since QGIS 3.24
      */
@@ -118,7 +120,8 @@ class CORE_EXPORT QgsArcGisPortalUtils
       QString &errorText SIP_OUT,
       const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
       QgsFeedback *feedback = nullptr,
-      const QString &urlPrefix = QString()
+      const QString &urlPrefix = QString(),
+      bool forceRefresh = false
     );
 
     /**
@@ -161,6 +164,7 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \param feedback optional feedback argument for cancellation support
      * \param pageSize number of results to retrieve for each request. Maximum value is 100.
      * \param urlPrefix http web proxy url prefix
+     * \param forceRefresh if FALSE then previously cached replies may be used for the request. If it is set to TRUE then a new query is always performed. (since QGIS 4.0)
      *
      * \returns a list of JSON item info for all items within the group
      * \since QGIS 3.24
@@ -174,7 +178,8 @@ class CORE_EXPORT QgsArcGisPortalUtils
       const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
       QgsFeedback *feedback = nullptr,
       int pageSize = 100,
-      const QString &urlPrefix = QString()
+      const QString &urlPrefix = QString(),
+      bool forceRefresh = false
     );
 
     /**
@@ -218,6 +223,7 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \param feedback optional feedback argument for cancellation support
      * \param pageSize number of results to retrieve for each request. Maximum value is 100.
      * \param urlPrefix http web proxy url prefix
+     * \param forceRefresh if FALSE then previously cached replies may be used for the request. If it is set to TRUE then a new query is always performed. (since QGIS 4.0)
      *
      * \returns a list of JSON item info for all items within the group
      * \since QGIS 3.24
@@ -232,7 +238,8 @@ class CORE_EXPORT QgsArcGisPortalUtils
       const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
       QgsFeedback *feedback = nullptr,
       int pageSize = 100,
-      const QString &urlPrefix = QString()
+      const QString &urlPrefix = QString(),
+      bool forceRefresh = false
     );
 
     /**

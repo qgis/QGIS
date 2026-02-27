@@ -32,7 +32,8 @@ Utility functions for working with ArcGIS REST services.
       QString &errorText /Out/,
       const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
       QgsFeedback *feedback = 0,
-      const QString &urlPrefix = QString()
+      const QString &urlPrefix = QString(),
+      bool forceRefresh = false
     );
 %Docstring
 Retrieves JSON user info for the specified user name.
@@ -48,6 +49,9 @@ details will be retrieved
 :param requestHeaders: optional additional request headers
 :param feedback: optional feedback argument for cancellation support
 :param urlPrefix: http web proxy url prefix
+:param forceRefresh: if ``False`` then previously cached replies may be
+                     used for the request. If it is set to ``True`` then
+                     a new query is always performed. (since QGIS 4.0)
 
 :return: - JSON user info
          - errorTitle: title summary of any encountered errors
@@ -99,7 +103,8 @@ details will be retrieved
       QString &errorText /Out/,
       const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
       QgsFeedback *feedback = 0,
-      const QString &urlPrefix = QString()
+      const QString &urlPrefix = QString(),
+      bool forceRefresh = false
     );
 %Docstring
 Retrieves JSON definitions for all groups which the specified user name
@@ -116,6 +121,9 @@ details will be retrieved
 :param requestHeaders: optional additional request headers
 :param feedback: optional feedback argument for cancellation support
 :param urlPrefix: http web proxy url prefix
+:param forceRefresh: if ``False`` then previously cached replies may be
+                     used for the request. If it is set to ``True`` then
+                     a new query is always performed. (since QGIS 4.0)
 
 :return: - a list of JSON group info
          - errorTitle: title summary of any encountered errors
@@ -168,7 +176,8 @@ details will be retrieved
       const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
       QgsFeedback *feedback = 0,
       int pageSize = 100,
-      const QString &urlPrefix = QString()
+      const QString &urlPrefix = QString(),
+      bool forceRefresh = false
     );
 %Docstring
 Retrieves JSON definitions for all items which belong the the specified
@@ -183,6 +192,9 @@ Retrieves JSON definitions for all items which belong the the specified
 :param pageSize: number of results to retrieve for each request. Maximum
                  value is 100.
 :param urlPrefix: http web proxy url prefix
+:param forceRefresh: if ``False`` then previously cached replies may be
+                     used for the request. If it is set to ``True`` then
+                     a new query is always performed. (since QGIS 4.0)
 
 :return: - a list of JSON item info for all items within the group
          - errorTitle: title summary of any encountered errors
@@ -235,7 +247,8 @@ Retrieves JSON definitions for all items which belong the the specified
       const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
       QgsFeedback *feedback = 0,
       int pageSize = 100,
-      const QString &urlPrefix = QString()
+      const QString &urlPrefix = QString(),
+      bool forceRefresh = false
     );
 %Docstring
 Retrieves JSON definitions for all items which belong the the specified
@@ -252,6 +265,9 @@ Retrieves JSON definitions for all items which belong the the specified
 :param pageSize: number of results to retrieve for each request. Maximum
                  value is 100.
 :param urlPrefix: http web proxy url prefix
+:param forceRefresh: if ``False`` then previously cached replies may be
+                     used for the request. If it is set to ``True`` then
+                     a new query is always performed. (since QGIS 4.0)
 
 :return: - a list of JSON item info for all items within the group
          - errorTitle: title summary of any encountered errors
