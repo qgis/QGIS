@@ -389,6 +389,9 @@ QgsMeshSpatialIndex &QgsMeshSpatialIndex::operator=( QgsMeshSpatialIndex &&other
 QList<int> QgsMeshSpatialIndex::intersects( const QgsRectangle &rect ) const
 {
   QList<int> list;
+  if ( rect.isNull() )
+    return list;
+
   QgisMeshVisitor visitor( list );
 
   const SpatialIndex::Region r = QgsSpatialIndexUtils::rectangleToRegion( rect );
