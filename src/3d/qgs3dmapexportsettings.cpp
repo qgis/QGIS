@@ -18,6 +18,7 @@
 #include "qgssettings.h"
 
 #include <QString>
+#include <QUrl>
 
 using namespace Qt::StringLiterals;
 
@@ -45,4 +46,21 @@ Qgs3DMapExportSettings::~Qgs3DMapExportSettings()
   settings.setValue( u"UI/last3DSceneExportSmoothEdges"_s, mSmoothEdges );
   settings.setValue( u"UI/last3DSceneExportExportNormals"_s, mExportNormals );
   settings.setValue( u"UI/last3DSceneExportExportTextures"_s, mExportTextures );
+}
+
+QString Qgs3DMapExportSettings::exportFileUri() const
+{
+  QString extension;
+  switch ( mExportFormat )
+  {
+    case Qgis::Export3DSceneFormat::Obj:
+      extension = u"obj"_s;
+      break;
+    case Qgis::Export3DSceneFormat::StlAscii:
+      extension = u"stl"_s;
+      break;
+  }
+
+  const QString path = QDir( sceneFolderPath() ).filePath( sceneName() + u"."_s + extension );
+  return QUrl::fromLocalFile( path ).toString();
 }

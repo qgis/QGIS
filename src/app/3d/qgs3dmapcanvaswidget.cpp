@@ -22,6 +22,7 @@
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapconfigwidget.h"
 #include "qgs3dmapexportsettings.h"
+#include "qgs3dmapexportwidget.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptoolidentify.h"
@@ -40,7 +41,6 @@
 #include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgsidentifyresultsdialog.h"
-#include "qgsmap3dexportwidget.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapthemecollection.h"
 #include "qgsmaptoolclippingplanes.h"
@@ -897,7 +897,7 @@ void Qgs3DMapCanvasWidget::exportScene()
   QgsGui::enableAutoGeometryRestore( &dlg );
 
   Qgs3DMapExportSettings exportSettings;
-  QgsMap3DExportWidget exportWidget( mCanvas->scene(), &exportSettings );
+  Qgs3DMapExportWidget exportWidget( mCanvas->scene(), &exportSettings );
 
   QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok, &dlg );
 
@@ -911,14 +911,14 @@ void Qgs3DMapCanvasWidget::exportScene()
   if ( dlg.exec() )
   {
     const bool success = exportWidget.exportScene();
-    const QString exportFilePath = QDir( exportSettings.sceneFolderPath() ).filePath( exportSettings.sceneName() + u".obj"_s );
+    const QString exportFileUri = exportSettings.exportFileUri();
     if ( success )
     {
-      mMessageBar->pushMessage( tr( "Export 3D scene" ), tr( "Successfully exported scene to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( exportFilePath ).toString(), QDir::toNativeSeparators( exportFilePath ) ), Qgis::MessageLevel::Success, 0 );
+      mMessageBar->pushMessage( tr( "Export 3D scene" ), tr( "Successfully exported scene to <a href=\"%1\">%2</a>" ).arg( exportFileUri, QDir::toNativeSeparators( exportFileUri ) ), Qgis::MessageLevel::Success, 0 );
     }
     else
     {
-      mMessageBar->pushMessage( tr( "Export 3D scene" ), tr( "Unable to export scene to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( exportFilePath ).toString(), QDir::toNativeSeparators( exportFilePath ) ), Qgis::MessageLevel::Warning, 0 );
+      mMessageBar->pushMessage( tr( "Export 3D scene" ), tr( "Unable to export scene to <a href=\"%1\">%2</a>" ).arg( exportFileUri, QDir::toNativeSeparators( exportFileUri ) ), Qgis::MessageLevel::Warning, 0 );
     }
   }
 }
