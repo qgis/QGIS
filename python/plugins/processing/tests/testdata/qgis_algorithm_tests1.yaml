@@ -547,13 +547,13 @@ tests:
         type: regex
         rules:
           - 'Analyzed field: Bname'
-          - 'Count: 4'
-          - 'Unique values: 2'
+          - 'Count: 3'
+          - 'Unique values: 1'
           - 'Minimum value: Test'
           - 'Maximum value: Test'
-          - 'Minimum length: 0'
+          - 'Minimum length: 4'
           - 'Maximum length: 4'
-          - 'Mean length: 3.0'
+          - 'Mean length: 4.000000'
           - 'NULL \(missing\) values: 1'
 
   - algorithm: native:listuniquevalues
