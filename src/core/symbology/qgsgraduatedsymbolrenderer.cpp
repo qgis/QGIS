@@ -1155,16 +1155,29 @@ Q_NOWARN_DEPRECATED_POP
 
 void QgsGraduatedSymbolRenderer::updateRangeLabels()
 {
-  for ( int i = 0; i < mRanges.count(); i++ )
+  if ( !mClassificationMethod )
+    return;
+
+  // Make auto-generated labels unambiguous using inequalities.
+  // First range:  lower ≤ x ≤ upper
+  // Others:       lower < x ≤ upper
+  for ( int i = 0; i < mRanges.count(); ++i )
   {
+    // Preserve user-edited labels
+    if ( !mRanges[i].label().isEmpty() )
+      continue;
+
     QgsClassificationMethod::ClassPosition pos = QgsClassificationMethod::Inner;
     if ( i == 0 )
       pos = QgsClassificationMethod::LowerBound;
     else if ( i == mRanges.count() - 1 )
       pos = QgsClassificationMethod::UpperBound;
+
+    // Delegate label creation to the classification method
     mRanges[i].setLabel( mClassificationMethod->labelForRange( mRanges[i], pos ) );
   }
 }
+
 
 void QgsGraduatedSymbolRenderer::calculateLabelPrecision( bool updateRanges )
 {
