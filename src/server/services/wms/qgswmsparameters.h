@@ -86,8 +86,8 @@ namespace QgsWms
       QgsRectangle mExtent;    // the request extent for this composer map
       float mScale = -1;
       float mRotation = 0;
-      float mGridX = 0;
-      float mGridY = 0;
+      float mGridX = -1;
+      float mGridY = -1;
       QList<QgsWmsParametersLayer> mLayers;                   // list of layers for this composer map
       QList<QgsWmsParametersHighlightLayer> mHighlightLayers; // list of highlight layers for this composer map
   };
