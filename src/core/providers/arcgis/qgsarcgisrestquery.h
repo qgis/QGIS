@@ -109,6 +109,7 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
      * Performs a blocking request to a URL and returns the retrieved data.
      */
     static QByteArray queryService( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = nullptr, QString *contentType = nullptr, const QString &urlPrefix = QString(), bool forceRefresh = false );
+
     /**
      * Performs a blocking request to a URL and returns the retrieved JSON content.
      */
