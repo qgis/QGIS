@@ -97,8 +97,9 @@ class PostGisDBPlugin(DBPlugin):
             "username",
             "password",
             "authcfg",
+            "session_role",
         ]
-        service, host, port, database, username, password, authcfg = (
+        service, host, port, database, username, password, authcfg, session_role = (
             settings.value(x, "", type=str) for x in settingsList
         )
 
@@ -121,6 +122,7 @@ class PostGisDBPlugin(DBPlugin):
             )
 
         uri.setUseEstimatedMetadata(useEstimatedMetadata)
+        uri.setParam("session_role", session_role)
 
         try:
             return self.connectToUri(uri)
