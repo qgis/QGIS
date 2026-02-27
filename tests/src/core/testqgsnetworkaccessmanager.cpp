@@ -23,6 +23,7 @@
 #include <QAuthenticator>
 #include <QHttpMultiPart>
 #include <QNetworkCookieJar>
+#include <QNetworkProxyFactory>
 #include <QNetworkReply>
 #include <QObject>
 #include <QString>
@@ -161,6 +162,7 @@ class TestQgsNetworkAccessManager : public QgsTest
     void fetchTimeout();
     void testCookieManagement();
     void testProxyExcludeList();
+    void testCustomProxyFactoryPrecedence();
     void testHandlers();
 
   private:
@@ -221,6 +223,51 @@ void TestQgsNetworkAccessManager::testProxyExcludeList()
   proxies = QgsNetworkAccessManager::instance()->proxyFactory()->queryProxy( QNetworkProxyQuery( QUrl( "noProxy/mystuff" ) ) );
   QCOMPARE( proxies.count(), 1 );
   QCOMPARE( proxies.at( 0 ).type(), QNetworkProxy::NoProxy );
+}
+
+void TestQgsNetworkAccessManager::testCustomProxyFactoryPrecedence()
+{
+  class FixedProxyFactory : public QNetworkProxyFactory
+  // Test proxyFactory that always returns a custom proxy
+  {
+    public:
+      QList<QNetworkProxy> queryProxy( const QNetworkProxyQuery & ) override
+      {
+        return { QNetworkProxy( QNetworkProxy::HttpProxy, u"extranet-proxy.mynetwork.test"_s, 8888 ) };
+      }
+  };
+
+  QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
+  const QNetworkProxyQuery query( QUrl( u"http://extranet.othernetwork.test/Service"_s ) );
+
+  // Reset any state left by previous tests (testProxyExcludeList doesn't tidy up)
+  nam->setFallbackProxyAndExcludes( QNetworkProxy(), QStringList(), QStringList() );
+
+  // No custom factory yet, saving "baseline" (NoProxy or possible systemProxy taken from ENV)
+  QVERIFY( nam->proxyFactories().isEmpty() );
+  QList<QNetworkProxy> result = nam->proxyFactory()->queryProxy( query );
+  QVERIFY( !result.isEmpty() );
+  const QNetworkProxy::ProxyType baselineType = result.first().type();
+
+  // Insert custom factory
+  FixedProxyFactory *factory = new FixedProxyFactory();
+  nam->insertProxyFactory( factory );
+
+  // Check if custom proxy is being returned
+  result = nam->proxyFactory()->queryProxy( query );
+  QVERIFY( !result.isEmpty() );
+  QCOMPARE( result.first().type(), QNetworkProxy::HttpProxy );
+  QCOMPARE( result.first().hostName(), u"extranet-proxy.mynetwork.test"_s );
+  QCOMPARE( result.first().port(), static_cast<quint16>( 8888 ) );
+
+  // Remove custom factory
+  nam->removeProxyFactory( factory );
+  delete factory;
+
+  // Check if we are back to baseline
+  result = nam->proxyFactory()->queryProxy( query );
+  QVERIFY( !result.isEmpty() );
+  QCOMPARE( result.first().type(), baselineType );
 }
 
 
