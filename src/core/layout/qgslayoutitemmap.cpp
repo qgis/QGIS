@@ -191,6 +191,7 @@ double QgsLayoutItemMap::scale() const
     return 0;
 
   QgsScaleCalculator calculator;
+  calculator.setEllipsoid( crs().ellipsoidAcronym() );
   calculator.setMapUnits( crs().mapUnits() );
   calculator.setDpi( 25.4 );  //Using mm
   if ( QgsProject *project = mLayout->project() )
@@ -219,6 +220,7 @@ void QgsLayoutItemMap::setScale( double scaleDenominator, bool forceUpdate )
     //and also apply to the map's original extent (see #9602)
     //we can't use the scaleRatio calculated earlier, as the scale can vary depending on extent for geographic coordinate systems
     QgsScaleCalculator calculator;
+    calculator.setEllipsoid( crs().ellipsoidAcronym() );
     calculator.setMapUnits( crs().mapUnits() );
     calculator.setDpi( 25.4 );  //QGraphicsView units are mm
     if ( mLayout && mLayout->project() )
@@ -511,6 +513,7 @@ void QgsLayoutItemMap::zoomContent( double factor, QPointF point )
     //and also apply to the map's original extent (see #9602)
     //we can't use the scaleRatio calculated earlier, as the scale can vary depending on extent for geographic coordinate systems
     QgsScaleCalculator calculator;
+    calculator.setEllipsoid( crs().ellipsoidAcronym() );
     calculator.setMapUnits( crs().mapUnits() );
     calculator.setDpi( 25.4 );  //QGraphicsView units are mm
     if ( mLayout && mLayout->project() )
@@ -3048,6 +3051,7 @@ void QgsLayoutItemMap::updateAtlasFeature()
   if ( mAtlasScalingMode == Fixed || mAtlasScalingMode == Predefined || isPointLayer )
   {
     QgsScaleCalculator calc;
+    calc.setEllipsoid( crs().ellipsoidAcronym() );
     calc.setMapUnits( crs().mapUnits() );
     calc.setDpi( 25.4 );
     if ( QgsProject *project = mLayout->project() )
