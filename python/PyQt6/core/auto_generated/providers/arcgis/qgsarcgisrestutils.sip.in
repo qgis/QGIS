@@ -197,7 +197,8 @@ Returns a null rectangle if the value cannot be converted.
       const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
       QgsArcGisRestUtils::FeatureToJsonFlags flags = QgsArcGisRestUtils::FeatureToJsonFlags(
         static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeGeometry ) | static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeNonObjectIdAttributes )
-      );
+      )
+    );
 %Docstring
 Converts a ``feature`` to an ArcGIS REST JSON representation.
 

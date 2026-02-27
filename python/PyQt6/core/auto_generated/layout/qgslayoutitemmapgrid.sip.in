@@ -431,22 +431,6 @@ styles. Ownership of ``symbol`` is transferred to the grid.
 .. seealso:: :py:func:`setStyle`
 %End
 
-    const QgsLineSymbol *lineSymbol() const;
-%Docstring
-Returns the line symbol used for drawing grid lines. This is only used
-for grids with QgsLayoutItemMapGrid.Solid or QgsLayoutItemMapGrid.Cross
-styles.
-
-.. seealso:: :py:func:`setLineSymbol`
-
-.. seealso:: :py:func:`markerSymbol`
-
-.. seealso:: :py:func:`style`
-
-.. note::
-
-   not available in Python bindings
-%End
     QgsLineSymbol *lineSymbol();
 %Docstring
 Returns the line symbol used for drawing grid lines. This is only used
@@ -473,21 +457,6 @@ used for grids with a QgsLayoutItemMapGrid.Markers style. Ownership of
 .. seealso:: :py:func:`setStyle`
 %End
 
-    const QgsMarkerSymbol *markerSymbol() const;
-%Docstring
-Returns the marker symbol used for drawing grid points. This is only
-used for grids with a QgsLayoutItemMapGrid.Markers style.
-
-.. seealso:: :py:func:`setMarkerSymbol`
-
-.. seealso:: :py:func:`lineSymbol`
-
-.. seealso:: :py:func:`style`
-
-.. note::
-
-   not available in Python bindings
-%End
     QgsMarkerSymbol *markerSymbol();
 %Docstring
 Returns the marker symbol used for drawing grid points. This is only

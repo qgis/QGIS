@@ -22,7 +22,6 @@ Utility functions for working with OGC SensorThings API services.
 #include "qgssensorthingsutils.h"
 %End
   public:
-    static const int DEFAULT_PAGE_SIZE;
     static const int DEFAULT_FEATURE_LIMIT;
     static const int DEFAULT_EXPANSION_LIMIT;
     static Qgis::SensorThingsEntity stringToEntity( const QString &type );

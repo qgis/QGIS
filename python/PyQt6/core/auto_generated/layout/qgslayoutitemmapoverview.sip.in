@@ -179,16 +179,6 @@ Returns the fill symbol used for drawing the overview extent.
 .. seealso:: :py:func:`setFrameSymbol`
 %End
 
-    const QgsFillSymbol *frameSymbol() const;
-%Docstring
-Returns the fill symbol used for drawing the overview extent.
-
-.. seealso:: :py:func:`setFrameSymbol`
-
-.. note::
-
-   not available in Python bindings
-%End
     QPainter::CompositionMode blendMode() const;
 %Docstring
 Retrieves the blending mode used for drawing the overview.

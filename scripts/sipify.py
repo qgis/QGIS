@@ -53,6 +53,8 @@ class Context:
         self.access: list[Visibility] = [Visibility.Public]
         """Stack of access specifiers (for e.g. nested classes)"""
         self.multiline_definition: MultiLineType = MultiLineType.NotMultiline
+        self.multiline_paren_depth: int = 0
+        """Tracks cumulative parenthesis depth for multiline definitions"""
         self.classname: list[str] = []
         self.class_and_struct: list[str] = []
         self.declared_classes: list[str] = []
@@ -690,11 +692,16 @@ def read_line():
     # - the current line is a comment closer or empty (the SIP annotation starts a new declaration)
     # - the current line already ends with ; (the declaration is complete; the SIP annotation
     #   on the next line is a modifier for a DIFFERENT declaration, e.g. SIP_SKIP on a move ctor)
+    #   EXCEPTION: if the next line is ONLY "SIP_SKIP" (nothing else), it applies to THIS
+    #   declaration — clang-format separated it from "func(); SIP_SKIP" onto its own line.
     while (
         CONTEXT.line_idx < CONTEXT.line_count
         and not re.search(r"\*/\s*$", new_line)
         and not re.match(r"^\s*$", new_line)
-        and not re.search(r";\s*$", new_line)
+        and (
+            not re.search(r";\s*$", new_line)
+            or re.match(r"^\s*SIP_SKIP\s*$", CONTEXT.input_lines[CONTEXT.line_idx])
+        )
         and re.match(
             r"^\s*SIP_(DEPRECATED|KEEPREFERENCE|SKIP|TRANSFER|TRANSFERBACK|FACTORY"
             r"|PYNAME\(|PYARGREMOVE|PYARGRENAME\(|CONSTRAINED"
@@ -837,10 +844,16 @@ def read_line():
     # clang-format may join them onto one line, but SIP requires them separate.
     # But don't split if the class part has SIP_SKIP — the whole line should be
     # processed as one unit so the skip applies to the template too.
+    # Also don't split forward declarations (ending with ;) — those are handled
+    # as a single unit by try_skip_forward_decl().
     template_class_match = re.match(
         r"^(\s*template\s*<[^>]*>)\s+(class|struct)\b(.*)$", new_line
     )
-    if template_class_match and "SIP_SKIP" not in template_class_match.group(3):
+    if (
+        template_class_match
+        and "SIP_SKIP" not in template_class_match.group(3)
+        and not re.match(r"^[^;{]*;\s*(//.*)?$", template_class_match.group(3))
+    ):
         class_line = f"{template_class_match.group(2)}{template_class_match.group(3)}"
         CONTEXT.input_lines.insert(CONTEXT.line_idx, class_line)
         CONTEXT.line_count += 1
@@ -1676,12 +1689,12 @@ def fix_annotations(line):
             parenthesis_balance = prev_line.count("(") - prev_line.count(")")
             if parenthesis_balance == 1:
                 CONTEXT.multiline_definition = MultiLineType.NotMultiline
-            # Concatenate with above line to bring previous commas
-            line = f"{prev_line} {line.lstrip()}\n"
-
-        # original perl regex was:
-        # (?<coma>, +)?(const )?(\w+)(\<(?>[^<>]|(?4))*\>)?\s+[\w&*]+\s+SIP_PYARGREMOVE( = [^()]*(\(\s*(?:[^()]++|(?6))*\s*\))?)?(?(<coma>)|,?)//
-        if "SIP_PYARGREMOVE" in line:
+            # In multiline mode, each parameter is on its own line.
+            # Remove trailing comma from previous line and discard the
+            # current SIP_PYARGREMOVE-annotated parameter entirely.
+            prev_line = re.sub(r",\s*$", "", prev_line)
+            line = prev_line
+        else:
             line = remove_sip_pyargremove(line)
 
         line = re.sub(r"\(\s+\)", "()", line)
@@ -1998,6 +2011,10 @@ def try_skip_sip_directives():
         CONTEXT.current_line,
     )
     if sip_directive_match:
+        # Close any open %TypeHeaderCode block before writing a new SIP directive
+        if CONTEXT.header_code:
+            CONTEXT.header_code = False
+            write_output("HCE", "%End\n")
         directive_name = sip_directive_match.group(1)
         trailing_content = (sip_directive_match.group(2) or "").strip()
         CONTEXT.current_line = f"%{directive_name}"
@@ -2249,6 +2266,7 @@ def try_process_sip_skip():
                     exit_with_error("could not reach opening definition")
             dbg_info("removed multiline definition of SIP_SKIP method")
             CONTEXT.multiline_definition = MultiLineType.NotMultiline
+            CONTEXT.multiline_paren_depth = 0
             try:
                 del CONTEXT.static_methods[
                     CONTEXT.current_fully_qualified_class_name()
@@ -2273,6 +2291,17 @@ def try_process_sip_skip():
                 ][CONTEXT.current_method_name]
             except KeyError:
                 pass
+        else:
+            # SIP_SKIP on a line that starts a new multiline function —
+            # skip continuation lines until parentheses are balanced
+            paren_depth = CONTEXT.current_line.count("(") - CONTEXT.current_line.count(
+                ")"
+            )
+            while paren_depth > 0:
+                next_line = read_line()
+                dbg_info(f"SIP_SKIP skipping continuation: {next_line}")
+                paren_depth += next_line.count("(") - next_line.count(")")
+                process_brackets()
 
         # also skip method body if there is one
         detect_and_remove_following_body_or_initializerlist()
@@ -3484,13 +3513,13 @@ def try_process_multiline_definition():
     # multiline definition (parenthesis left open)
     if CONTEXT.multiline_definition != MultiLineType.NotMultiline:
         dbg_info("on multiline")
-        # https://regex101.com/r/DN01iM/4
-        # TODO - original regex is incompatible with python -- it was:
-        # ^([^()]+(\((?:[^()]++|(?1))*\)))*[^()]*\)([^()](throw\([^()]+\))?)*$:
-        if re.match(
-            r"^([^()]+(\((?:[^()]|\([^()]*\))*\)))*[^()]*\)([^()](throw\([^()]+\))?)*",
-            CONTEXT.current_line,
-        ):
+        # Track parenthesis depth across the accumulated multiline definition
+        CONTEXT.multiline_paren_depth += CONTEXT.current_line.count(
+            "("
+        ) - CONTEXT.current_line.count(")")
+        dbg_info(f"multiline paren depth: {CONTEXT.multiline_paren_depth}")
+
+        if CONTEXT.multiline_paren_depth <= 0:
             dbg_info("ending multiline")
             # remove potential following body
             if (
@@ -3504,10 +3533,14 @@ def try_process_multiline_definition():
                 CONTEXT.output.pop()
                 write_output("MLT", f"{last_line};\n")
             CONTEXT.multiline_definition = MultiLineType.NotMultiline
+            CONTEXT.multiline_paren_depth = 0
         else:
             return True
     elif re.match(r"^[^()]+\([^()]*(?:\([^()]*\)[^()]*)*[^)]*$", CONTEXT.current_line):
         dbg_info(f"Multiline detected:: {CONTEXT.current_line}")
+        CONTEXT.multiline_paren_depth = CONTEXT.current_line.count(
+            "("
+        ) - CONTEXT.current_line.count(")")
         if re.match(r"^\s*((else )?if|while|for) *\(", CONTEXT.current_line):
             CONTEXT.multiline_definition = MultiLineType.ConditionalStatement
         else:

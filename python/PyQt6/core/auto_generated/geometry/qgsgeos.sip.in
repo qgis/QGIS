@@ -117,8 +117,6 @@ Curved geometries are not supported.
     virtual QgsAbstractGeometry *buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = 0 ) const;
 
 
-      const GEOSGeometry *geometry, double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = 0
-    );
 
     virtual QgsAbstractGeometry *simplify( double tolerance, QString *errorMsg = 0 ) const;
 

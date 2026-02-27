@@ -110,17 +110,6 @@ Returns the provider capabilities
    Use instead :py:func:`~QgsProviderRegistry.capabilities` method of individual data item provider.
 %End
 
-      const QString &providerKey,
-      const QString &uri,
-      const QgsFields &fields,
-      Qgis::WkbType wkbType,
-      const QgsCoordinateReferenceSystem &srs,
-      bool overwrite,
-      QMap<int, int> &oldToNewAttrIdxMap,
-      QString &errorMessage,
-      const QMap<QString, QVariant> *options,
-      QString &createdLayerName
-    );
 
 
     QgsRasterDataProvider *createRasterDataProvider(

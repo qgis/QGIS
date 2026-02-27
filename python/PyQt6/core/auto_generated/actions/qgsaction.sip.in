@@ -41,7 +41,7 @@ Create a new QgsAction
       bool capture,
       const QString &shortTitle = QString(),
       const QSet<QString> &actionScopes = QSet<QString>(),
-      const QString &notificationMessage = QString(), bool enabledOnlyWhenEditable SIP_PYARGREMOVE = false
+      const QString &notificationMessage = QString()
     );
 %Docstring
 Create a new QgsAction
@@ -69,7 +69,7 @@ Create a new QgsAction
       bool capture,
       const QString &shortTitle = QString(),
       const QSet<QString> &actionScopes = QSet<QString>(),
-      const QString &notificationMessage = QString(), bool enabledOnlyWhenEditable SIP_PYARGREMOVE = false
+      const QString &notificationMessage = QString()
     );
 %Docstring
 Create a new QgsAction

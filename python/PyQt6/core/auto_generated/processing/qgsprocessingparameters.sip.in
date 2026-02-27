@@ -339,6 +339,7 @@ parameters, their acceptable ranges, defaults, etc.
 
 %TypeHeaderCode
 #include "qgsprocessingparameters.h"
+%End
 %TypeHeaderCode
 #include "qgsprocessingparameteraggregate.h"
 #include "qgsprocessingparameterdxflayers.h"
@@ -346,7 +347,6 @@ parameters, their acceptable ranges, defaults, etc.
 #include "qgsprocessingparametertininputlayers.h"
 #include "qgsprocessingparametervectortilewriterlayers.h"
 #include "qgsprocessingparametermeshdataset.h"
-%End
 %End
 %ConvertToSubClassCode
     if ( sipCpp->type() == QgsProcessingParameterBoolean::typeName() )

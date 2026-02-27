@@ -30,6 +30,7 @@ change due to centralization.
 
 %TypeHeaderCode
 #include "qgsapplication.h"
+%End
 %TypeCode
     // Convert a Python argv list to a conventional C argc count and argv array.
     static char **qtgui_ArgvToC( PyObject *argvlist, int &argc )
@@ -73,7 +74,6 @@ change due to centralization.
         else PyList_SetSlice( argvlist, na, na + 1, NULL );
       }
     }
-%End
 %End
   public:
 

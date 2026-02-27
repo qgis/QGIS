@@ -53,7 +53,7 @@ Returns the maximum size of the cache, in bytes.
       bool &fitsInCache /Out/,
       bool blocking = false,
       double targetDpi = 96,
-int frameNumber = -1
+      int frameNumber = -1
     );
 %Docstring
 Returns the specified ``path`` rendered as an image. If possible, a
