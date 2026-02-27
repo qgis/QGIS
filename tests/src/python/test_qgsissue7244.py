@@ -1,4 +1,4 @@
-"""QGIS Unit tests for QgsSpatialiteProvider
+"""QGIS Unit tests for splitting features in vector layers
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -10,114 +10,86 @@ __author__ = "Vincent Mora"
 __date__ = "09/07/2013"
 __copyright__ = "Copyright 2013, The QGIS Project"
 
-import os
 import unittest
 
-from qgis.core import QgsPointXY, QgsVectorLayer
+from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsPointXY, QgsVectorLayer
 from qgis.testing import QgisTestCase, start_app
-from qgis.utils import spatialite_connect
 
-# Convenience instances in case you may need them
 start_app()
 
 
-def die(error_message):
-    raise Exception(error_message)
-
-
-class TestQgsSpatialiteProvider(QgisTestCase):
-    @classmethod
-    def setUpClass(cls):
-        """Run before all tests"""
-        super().setUpClass()
-        # create test db
-        if os.path.exists("test.sqlite"):
-            os.remove("test.sqlite")
-        con = spatialite_connect("test.sqlite", isolation_level=None)
-        cur = con.cursor()
-        cur.execute("BEGIN")
-        sql = "SELECT InitSpatialMetadata()"
-        cur.execute(sql)
-
-        # simple table with primary key
-        sql = "CREATE TABLE test_mpg (id SERIAL PRIMARY KEY, name STRING NOT NULL)"
-        cur.execute(sql)
-        sql = "SELECT AddGeometryColumn('test_mpg', 'geometry', 4326, 'MULTIPOLYGON', 'XY')"
-        cur.execute(sql)
-        sql = "INSERT INTO test_mpg (name, geometry) "
-        sql += "VALUES ('multipolygon with 8 squares', GeomFromText('MULTIPOLYGON("
-        for i in range(0, 4, 2):
-            for j in range(0, 4, 2):
-                sql += "(("
-                sql += str(i) + " " + str(j) + ","
-                sql += str(i + 1) + " " + str(j) + ","
-                sql += str(i + 1) + " " + str(j + 1) + ","
-                sql += str(i) + " " + str(j + 1) + ","
-                sql += str(i) + " " + str(j)
-                sql += ")),"
-        sql = sql[:-1]  # remove last comma
-        sql += ")', 4326))"
-        cur.execute(sql)
-
-        sql = "CREATE TABLE test_pg (id SERIAL PRIMARY KEY, name STRING NOT NULL)"
-        cur.execute(sql)
-        sql = "SELECT AddGeometryColumn('test_pg', 'geometry', 4326, 'POLYGON', 'XY')"
-        cur.execute(sql)
-        sql = "INSERT INTO test_pg (name, geometry) "
-        sql += "VALUES ('polygon with interior ring', GeomFromText('POLYGON((0 0,3 0,3 3,0 3,0 0),(1 1,1 2,2 2,2 1,1 1))', 4326))"
-        cur.execute(sql)
-        cur.execute("COMMIT")
-        con.close()
-
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
-        # for the time being, keep the file to check with qgis
-        # if os.path.exists("test.sqlite") :
-        #    os.remove("test.sqlite")
-        super().tearDownClass()
-
-    def setUp(self):
-        """Run before each test."""
-        pass
-
-    def tearDown(self):
-        """Run after each test."""
-        pass
-
+class TestQgsVectorLayerSplitFeatures(QgisTestCase):
     def test_SplitMultipolygon(self):
-        """Split multipolygon"""
-        layer = QgsVectorLayer(
-            "dbname=test.sqlite table=test_mpg (geometry)", "test_mpg", "spatialite"
+        """
+        Split multipolygon with 4 parts into 7
+        """
+        layer = QgsVectorLayer("MultiPolygon?crs=EPSG:4326", "test layer", "memory")
+        self.assertTrue(layer.isValid())
+        self.assertTrue(layer.isSpatial())
+        f = QgsFeature(layer.fields())
+        f.setGeometry(
+            QgsGeometry.fromWkt(
+                "MULTIPOLYGON(((0 0,1 0,1 1,0 1,0 0)),((0 2,1 2,1 3,0 3,0 2)),((2 0,3 0,3 1,2 1,2 0)),((2 2,3 2,3 3,2 3,2 2)))"
+            )
         )
-        assert layer.isValid()
-        assert layer.isSpatial()
-        layer.featureCount() == 1 or die("wrong number of features")
+        self.assertTrue(layer.dataProvider().addFeature(f))
+        self.assertEqual(layer.featureCount(), 1)
+
+        # cut through three of the polygons, should result in 7 features
         layer.startEditing()
-        layer.splitFeatures(
-            [QgsPointXY(0.5, -0.5), QgsPointXY(0.5, 1.5)], 0
-        ) == 0 or die("error in split of one polygon of multipolygon")
-        layer.splitFeatures([QgsPointXY(2.5, -0.5), QgsPointXY(2.5, 4)], 0) == 0 or die(
-            "error in split of two polygons of multipolygon at a time"
+        self.assertEqual(
+            layer.splitFeatures([QgsPointXY(0.5, -0.5), QgsPointXY(0.5, 1.5)], 0),
+            Qgis.GeometryOperationResult.Success,
         )
-        layer.commitChanges() or die("this commit should work")
-        layer.featureCount() == 7 or die("wrong number of features after 2 split")
+
+        self.assertEqual(
+            layer.splitFeatures([QgsPointXY(2.5, -0.5), QgsPointXY(2.5, 4)], 0),
+            Qgis.GeometryOperationResult.Success,
+        )
+
+        self.assertTrue(layer.commitChanges())
+
+        res = [f.geometry().asWkt(3) for f in layer.getFeatures()]
+        self.assertCountEqual(
+            res,
+            [
+                "MultiPolygon (((0 2, 0 3, 1 3, 1 2, 0 2)))",
+                "MultiPolygon (((0.5 1, 0.5 0, 0 0, 0 1, 0.5 1)))",
+                "MultiPolygon (((0.5 0, 0.5 1, 1 1, 1 0, 0.5 0)))",
+                "MultiPolygon (((2.5 1, 2.5 0, 2 0, 2 1, 2.5 1)))",
+                "MultiPolygon (((2.5 2, 2.5 3, 3 3, 3 2, 2.5 2)))",
+                "MultiPolygon (((2.5 3, 2.5 2, 2 2, 2 3, 2.5 3)))",
+                "MultiPolygon (((2.5 0, 2.5 1, 3 1, 3 0, 2.5 0)))",
+            ],
+        )
 
     def test_SplitTruToCreateCutEdge(self):
-        """Try to creat a cut edge"""
-        layer = QgsVectorLayer(
-            "dbname=test.sqlite table=test_pg (geometry)", "test_pg", "spatialite"
+        """
+        Donut shaped polygon with interior ring, try to cut through donut.
+
+        The polygon should not be modified
+        """
+        layer = QgsVectorLayer("Polygon?crs=EPSG:4326", "test layer", "memory")
+        self.assertTrue(layer.isValid())
+        self.assertTrue(layer.isSpatial())
+        f = QgsFeature(layer.fields())
+        f.setGeometry(
+            QgsGeometry.fromWkt("POLYGON((0 0,3 0,3 3,0 3,0 0),(1 1,1 2,2 2,2 1,1 1))")
         )
-        assert layer.isValid()
-        assert layer.isSpatial()
-        layer.featureCount() == 1 or die("wrong number of features")
+        self.assertTrue(layer.dataProvider().addFeature(f))
+        self.assertEqual(layer.featureCount(), 1)
+
         layer.startEditing()
-        layer.splitFeatures(
-            [QgsPointXY(1.5, -0.5), QgsPointXY(1.5, 1.5)], 0
-        ) == 0 or die("error when trying to create an invalid polygon in split")
-        layer.commitChanges() or die("this commit should work")
-        layer.featureCount() == 1 or die(
-            "wrong number of features, polygon should be unafected by cut"
+        self.assertEqual(
+            layer.splitFeatures([QgsPointXY(1.5, -0.5), QgsPointXY(1.5, 1.5)], 0),
+            Qgis.GeometryOperationResult.NothingHappened,
+        )
+
+        self.assertTrue(layer.commitChanges())
+
+        res = [f.geometry().asWkt(3) for f in layer.getFeatures()]
+        self.assertCountEqual(
+            res, ["Polygon ((0 0, 3 0, 3 3, 0 3, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1))"]
         )
 
 
